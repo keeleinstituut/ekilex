@@ -10,6 +10,10 @@ public class InexactSynMeaningRequest extends AbstractDataObject {
 
 	private Long targetMeaningId;
 
+	private Long inexactSynMeaningId;
+
+	private String datasetCode;
+
 	private List<String> targetMeaningWordValues;
 
 	private List<Definition> targetMeaningDefinitions;
@@ -22,7 +26,9 @@ public class InexactSynMeaningRequest extends AbstractDataObject {
 
 	private Long wordRelationId;
 
-	private Long inexactSynMeaningId;
+	private String translationLang;
+
+	private String translationLangWordValue;
 
 	private Long translationLangWordId;
 
@@ -34,12 +40,30 @@ public class InexactSynMeaningRequest extends AbstractDataObject {
 
 	private String relationType;
 
+	private boolean isSearchEnabled;
+
 	public Long getTargetMeaningId() {
 		return targetMeaningId;
 	}
 
 	public void setTargetMeaningId(Long targetMeaningId) {
 		this.targetMeaningId = targetMeaningId;
+	}
+
+	public Long getInexactSynMeaningId() {
+		return inexactSynMeaningId;
+	}
+
+	public void setInexactSynMeaningId(Long inexactSynMeaningId) {
+		this.inexactSynMeaningId = inexactSynMeaningId;
+	}
+
+	public String getDatasetCode() {
+		return datasetCode;
+	}
+
+	public void setDatasetCode(String datasetCode) {
+		this.datasetCode = datasetCode;
 	}
 
 	public List<String> getTargetMeaningWordValues() {
@@ -90,12 +114,20 @@ public class InexactSynMeaningRequest extends AbstractDataObject {
 		this.wordRelationId = wordRelationId;
 	}
 
-	public Long getInexactSynMeaningId() {
-		return inexactSynMeaningId;
+	public String getTranslationLang() {
+		return translationLang;
 	}
 
-	public void setInexactSynMeaningId(Long inexactSynMeaningId) {
-		this.inexactSynMeaningId = inexactSynMeaningId;
+	public void setTranslationLang(String translationLang) {
+		this.translationLang = translationLang;
+	}
+
+	public String getTranslationLangWordValue() {
+		return translationLangWordValue;
+	}
+
+	public void setTranslationLangWordValue(String translationLangWordValue) {
+		this.translationLangWordValue = translationLangWordValue;
 	}
 
 	public Long getTranslationLangWordId() {
@@ -136,5 +168,13 @@ public class InexactSynMeaningRequest extends AbstractDataObject {
 
 	public void setRelationType(String relationType) {
 		this.relationType = relationType;
+	}
+
+	public boolean isSearchEnabled() {
+		return isSearchEnabled;
+	}
+
+	public void setSearchEnabled(boolean searchEnabled) {
+		isSearchEnabled = searchEnabled;
 	}
 }

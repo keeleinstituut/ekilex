@@ -20,7 +20,6 @@ import eki.ekilex.data.ActivityLogData;
 import eki.ekilex.data.DatasetPermission;
 import eki.ekilex.data.Definition;
 import eki.ekilex.data.InexactSynMeaning;
-import eki.ekilex.data.InexactSynMeaningCandidate;
 import eki.ekilex.data.InexactSynMeaningRequest;
 import eki.ekilex.data.Word;
 import eki.ekilex.data.WordDescript;
@@ -33,7 +32,7 @@ import eki.ekilex.service.db.CudDbService;
 @Component
 public class InexactSynService extends AbstractSynSearchService {
 
-	private static final long NEW_ENTITY_ID = 0;
+	private static final long NEW_ENTITY_ID = -1;
 
 	@Autowired
 	private CudDbService cudDbService;
@@ -47,9 +46,9 @@ public class InexactSynService extends AbstractSynSearchService {
 	}
 
 	@Transactional
-	public List<InexactSynMeaningCandidate> getInexactSynMeaningCandidates(Long wordRelationId, String targetLang, String targetLangWordValue, String datasetCode) {
+	public List<InexactSynMeaning> getInexactSynMeaningCandidates(Long wordRelationId, String targetLang, String targetLangWordValue, String datasetCode) {
 
-		List<InexactSynMeaningCandidate> inexactSynMeaningCandidates = new ArrayList<>();
+		List<InexactSynMeaning> inexactSynMeaningCandidates = new ArrayList<>();
 		Word translationSynWord = synSearchDbService.getSynCandidateWord(wordRelationId);
 		String translationLang = translationSynWord.getLang();
 		String translationSynWordValue = translationSynWord.getWordValue();
@@ -71,7 +70,7 @@ public class InexactSynService extends AbstractSynSearchService {
 			List<WordLexeme> targetLangWords = lookupDbService.getMeaningWords(meaningId, datasetCode, targetLang);
 			List<Definition> definitions = synSearchDbService.getInexactSynMeaningDefinitions(meaningId, translationLang, targetLang);
 
-			InexactSynMeaningCandidate inexactSynMeaningCandidate = new InexactSynMeaningCandidate();
+			InexactSynMeaning inexactSynMeaningCandidate = new InexactSynMeaning();
 			inexactSynMeaningCandidate.setMeaningId(meaningId);
 			inexactSynMeaningCandidate.setDatasetCode(datasetCode);
 			inexactSynMeaningCandidate.setDatasetName(datasetName);
@@ -140,7 +139,7 @@ public class InexactSynService extends AbstractSynSearchService {
 			if (createTargetLangWord) {
 				targetLangWordCandidates = getWordCandidates(userRole, targetLangWordValue, targetLang, datasetCode);
 				if (targetLangWordCandidates.isEmpty()) {
-					meaningWordValues.add(targetLangWordValue);
+					// meaningWordValues.add(targetLangWordValue);
 					meaning.setComplete(true);
 				}
 			} else {
@@ -151,7 +150,7 @@ public class InexactSynService extends AbstractSynSearchService {
 		if (meaningWordValues.contains(targetLangWordValue)) {
 			translationLangWordCandidates = getWordCandidates(userRole, translationLangWordValue, translationLang, datasetCode);
 			if (translationLangWordCandidates.isEmpty()) {
-				meaningWordValues.add(translationLangWordValue);
+				// meaningWordValues.add(translationLangWordValue);
 				meaning.setComplete(true);
 			}
 		}
@@ -183,7 +182,7 @@ public class InexactSynService extends AbstractSynSearchService {
 		String translationLang = translationLangWord.getLang();
 
 		boolean isInexactSynDef = StringUtils.isNotBlank(inexactSynDefValue);
-		boolean createNewMeaning = Objects.equals(inexactSynMeaningId, NEW_ENTITY_ID);
+		boolean createNewMeaning = inexactSynMeaningId == null || Objects.equals(inexactSynMeaningId, NEW_ENTITY_ID);
 
 		List<String> targetMeaningWordValues = synSearchDbService.getMeaningWordValues(targetMeaningId, translationLang, targetLang);
 		List<Definition> targetMeaningDefinitions = synSearchDbService.getInexactSynMeaningDefinitions(targetMeaningId, translationLang, targetLang);
@@ -245,7 +244,7 @@ public class InexactSynService extends AbstractSynSearchService {
 		String translationLang = translationLangWord.getLang();
 
 		boolean isInexactSynDef = StringUtils.isNotBlank(inexactSynDefValue);
-		boolean createNewMeaning = Objects.equals(inexactSynMeaningId, NEW_ENTITY_ID);
+		boolean createNewMeaning = inexactSynMeaningId == null || Objects.equals(inexactSynMeaningId, NEW_ENTITY_ID);
 		boolean createNewTranslationLangWord = Objects.equals(translationLangWordId, NEW_ENTITY_ID);
 		boolean createNewTargetLangWord = Objects.equals(targetLangWordId, NEW_ENTITY_ID);
 
