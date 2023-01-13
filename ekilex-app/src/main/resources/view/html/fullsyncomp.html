@@ -110,61 +110,80 @@
   <div th:fragment="syn_data"
        th:if="${not #lists.isEmpty(lexeme.synonymLangGroups)}"
        class="orderable border-top">
-    <div class="orderable d-flex flex-row" th:each="synonymLangGroup,synonymLangGroupIter : ${lexeme.synonymLangGroups}">
-      <span th:text="${viewUtil.getLangIso2(synonymLangGroup.lang)}" class="mr-2"></span>
-      <th:block th:if="${synonymLangGroupIter.first}">
-        <div th:replace="fullsyndialog :: add_syn_meaning_word_dlg"></div>
-        <button type="button" class="btn btn-light badge mr-2"
-                th:title="#{fullsyn.add.new}"
-                data-toggle="modal"
-                th:data-target="${'#addSynMeaningWordDlg_' + lexeme.lexemeId}">
-          <i class="action-icon fa fa-plus" aria-hidden="true"></i>
-        </button>
-      </th:block>
-      <div data-plugin="sorter" data-sorter:type="syn" data-sorter:handle=".syn-handle">
-        <span th:each="syn,synIter : ${synonymLangGroup.synonyms}"
-              class="hidden-buttons draggable-syn-rel droppable-syn-rel do-refresh"
-              th:data-lexeme-id="${lexeme.lexemeId}"
-              th:data-orderby="${syn.orderBy}"
-              th:data-relation-id="${syn.relationId}"
-              th:data-syn-type="${syn.type}"
-              th:with="
-                isMeaningWordSyn=${syn.type == T(eki.common.constant.SynonymType).MEANING_WORD},
-                isMeaningRelSyn=${syn.type == T(eki.common.constant.SynonymType).MEANING_REL}">
-          <span class="hidden-buttons">
-            <th:block th:each="synWord, synWordIter : ${syn.words}">
-              <input type="hidden" class="relation-meaning-id" th:value="${syn.meaningId}"/>
-              <input type="hidden" name="synword-lexeme-id" th:value="${synWord.lexemeId}"/>
-              <span class="syn-handle">
-                <small class="font-weight-bold" th:text="${synWord.lexemeLevels}" th:if="${not #strings.isEmpty(synWord.lexemeLevels)}"></small>
-                <span th:utext="${viewUtil.getWordValueMarkup(synWord)}" th:styleappend="${isMeaningRelSyn ? 'color: #00874F' : 'color: #005aa9'}"></span>
-                <sup th:if="${synWord.homonymsExist}" th:text="${synWord.homonymNr}"></sup>
-                <small th:each="registerCode,regIter : ${synWord.lexemeRegisterCodes}" th:text="${registerCode + (regIter.last ? '' : ', ')}"></small>
-                <small th:if="${synWordIter.last}" th:text="${'[' + viewUtil.getFormattedWeight(syn.weight) + ']'}"></small>
-              </span>
-              <th:block th:if="${isMeaningWordSyn}">
-                <div th:replace="fullsyndialog :: edit_lexeme_weight_dlg"></div>
-                <button type="button" class="btn badge badge-secondary btn-xs"
-                        th:title="#{syn.edit.syn.lexeme.weight}"
-                        data-toggle="modal"
-                        th:data-target="${'#editLexemeWeightDlg_' + synWord.lexemeId}"
-                        sec:authorize="#vars.lexeme.crudGrant">
-                  <i class="fa fa-edit" aria-hidden="true"></i>
-                </button>
-                <button type="button" class="btn badge badge-warning"
-                        th:data-id="${synWord.lexemeId}"
-                        data-toggle="delete-syn-lexeme-confirm"
-                        sec:authorize="#vars.lexeme.crudGrant">
-                  <i class="fa fa-remove" aria-hidden="true" data-toggle="tooltip" th:title="#{syn.delete.syn.lexeme}"></i>
-                </button>
+    <th:block th:each="synonymLangGroup,synonymLangGroupIter : ${lexeme.synonymLangGroups}">
+      <div class="orderable d-flex flex-row">
+        <span th:text="${viewUtil.getLangIso2(synonymLangGroup.lang)}" class="mr-2"></span>
+        <th:block th:if="${synonymLangGroupIter.first}">
+          <div th:replace="fullsyndialog :: add_syn_meaning_word_dlg"></div>
+          <button type="button" class="btn btn-light badge mr-2"
+                  th:title="#{fullsyn.add.new}"
+                  data-toggle="modal"
+                  th:data-target="${'#addSynMeaningWordDlg_' + lexeme.lexemeId}">
+            <i class="action-icon fa fa-plus" aria-hidden="true"></i>
+          </button>
+        </th:block>
+        <div data-plugin="sorter" data-sorter:type="syn" data-sorter:handle=".syn-handle">
+          <span th:each="syn,synIter : ${synonymLangGroup.synonyms}"
+                class="hidden-buttons draggable-syn-rel droppable-syn-rel do-refresh"
+                th:data-lexeme-id="${lexeme.lexemeId}"
+                th:data-orderby="${syn.orderBy}"
+                th:data-relation-id="${syn.relationId}"
+                th:data-syn-type="${syn.type}"
+                th:with="
+                  isMeaningWordSyn=${syn.type == T(eki.common.constant.SynonymType).MEANING_WORD},
+                  isMeaningRelSyn=${syn.type == T(eki.common.constant.SynonymType).MEANING_REL}">
+            <span class="hidden-buttons">
+              <th:block th:each="synWord, synWordIter : ${syn.words}">
+                <input type="hidden" class="relation-meaning-id" th:value="${syn.meaningId}"/>
+                <input type="hidden" name="synword-lexeme-id" th:value="${synWord.lexemeId}"/>
+                <span class="syn-handle">
+                  <small class="font-weight-bold" th:text="${synWord.lexemeLevels}" th:if="${not #strings.isEmpty(synWord.lexemeLevels)}"></small>
+                  <span th:utext="${viewUtil.getWordValueMarkup(synWord)}" th:styleappend="${isMeaningRelSyn ? 'color: #00874F' : 'color: #005aa9'}"></span>
+                  <sup th:if="${synWord.homonymsExist}" th:text="${synWord.homonymNr}"></sup>
+                  <small th:each="registerCode,regIter : ${synWord.lexemeRegisterCodes}" th:text="${registerCode + (regIter.last ? '' : ', ')}"></small>
+                  <small th:if="${synWordIter.last}" th:text="${'[' + viewUtil.getFormattedWeight(syn.weight) + ']'}"></small>
+                </span>
+                <th:block th:if="${isMeaningWordSyn}">
+                  <div th:replace="fullsyndialog :: edit_lexeme_weight_dlg"></div>
+                  <button type="button" class="btn badge badge-secondary btn-xs"
+                          th:title="#{syn.edit.syn.lexeme.weight}"
+                          data-toggle="modal"
+                          th:data-target="${'#editLexemeWeightDlg_' + synWord.lexemeId}"
+                          sec:authorize="#vars.lexeme.crudGrant">
+                    <i class="fa fa-edit" aria-hidden="true"></i>
+                  </button>
+                  <button type="button" class="btn badge badge-warning"
+                          th:data-id="${synWord.lexemeId}"
+                          data-toggle="delete-syn-lexeme-confirm"
+                          sec:authorize="#vars.lexeme.crudGrant">
+                    <i class="fa fa-remove" aria-hidden="true" data-toggle="tooltip" th:title="#{syn.delete.syn.lexeme}"></i>
+                  </button>
+                </th:block>
+                <span th:unless="${synWordIter.last}">,</span>
               </th:block>
-              <span th:unless="${synWordIter.last}">,</span>
-            </th:block>
-            <span th:unless="${synIter.last}">|</span>
+              <span th:unless="${synIter.last}">|</span>
+            </span>
           </span>
-        </span>
+        </div>
       </div>
-    </div>
+      <th:block th:if="${synonymLangGroupIter.first}">
+<!--        TODO make clickable -->
+        <i class="fa fa-question" aria-hidden="true" th:if="${not #lists.isEmpty(lexeme.inexactSynonyms)}"></i>
+        <th:block th:each="inexactSyn, inexactSynIter : ${lexeme.inexactSynonyms}">
+          <span th:text="${inexactSyn.translationLangWordValue}"></span>
+          (
+          <th:block th:each="targetLangWord, targetLangWordIter : ${inexactSyn.targetLangWords}" th:if="${not #lists.isEmpty(inexactSyn.targetLangWords)}">
+            <span th:text="${targetLangWord.wordValue}"></span>
+            <span th:unless="${targetLangWordIter.last}">,</span>
+          </th:block>
+          <th:block th:if="${#lists.isEmpty(inexactSyn.targetLangWords)}">
+            <span th:text="${inexactSyn.inexactDefinitionValue}"></span>
+          </th:block>
+          )
+          <span th:unless="${inexactSynIter.last}">|</span>
+        </th:block>
+      </th:block>
+    </th:block>
   </div>
   <div class="modal-dialog modal-lg modal-dialog-scrollable" role="document" th:fragment="full_syn_relation_word_select">
     <div class="modal-content">

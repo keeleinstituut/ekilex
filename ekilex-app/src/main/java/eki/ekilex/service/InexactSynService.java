@@ -32,8 +32,6 @@ import eki.ekilex.service.db.CudDbService;
 @Component
 public class InexactSynService extends AbstractSynSearchService {
 
-	private static final long NEW_ENTITY_ID = -1;
-
 	@Autowired
 	private CudDbService cudDbService;
 
@@ -58,7 +56,7 @@ public class InexactSynService extends AbstractSynSearchService {
 		boolean includeTargetLangWord = StringUtils.isNotBlank(targetLangWordValue);
 		if (includeTargetLangWord) {
 			List<Long> targetLangWordMeaningIds = lookupDbService.getMeaningIds(targetLangWordValue, targetLang, datasetCode);
-			// TODO check for duplicates
+			targetLangWordMeaningIds.removeAll(meaningIds);
 			meaningIds.addAll(targetLangWordMeaningIds);
 		}
 
@@ -108,7 +106,7 @@ public class InexactSynService extends AbstractSynSearchService {
 			meaning.setInexactSynDefinitionMandatory(true);
 		}
 
-		meaning.setMeaningId(NEW_ENTITY_ID);
+		meaning.setMeaningId(null);
 		meaning.setDatasetCode(datasetCode);
 		meaning.setDatasetName(datasetName);
 		meaning.setDefinitions(definitions);
@@ -182,7 +180,7 @@ public class InexactSynService extends AbstractSynSearchService {
 		String translationLang = translationLangWord.getLang();
 
 		boolean isInexactSynDef = StringUtils.isNotBlank(inexactSynDefValue);
-		boolean createNewMeaning = inexactSynMeaningId == null || Objects.equals(inexactSynMeaningId, NEW_ENTITY_ID);
+		boolean createNewMeaning = inexactSynMeaningId == null;
 
 		List<String> targetMeaningWordValues = synSearchDbService.getMeaningWordValues(targetMeaningId, translationLang, targetLang);
 		List<Definition> targetMeaningDefinitions = synSearchDbService.getInexactSynMeaningDefinitions(targetMeaningId, translationLang, targetLang);
@@ -244,9 +242,9 @@ public class InexactSynService extends AbstractSynSearchService {
 		String translationLang = translationLangWord.getLang();
 
 		boolean isInexactSynDef = StringUtils.isNotBlank(inexactSynDefValue);
-		boolean createNewMeaning = inexactSynMeaningId == null || Objects.equals(inexactSynMeaningId, NEW_ENTITY_ID);
-		boolean createNewTranslationLangWord = Objects.equals(translationLangWordId, NEW_ENTITY_ID);
-		boolean createNewTargetLangWord = Objects.equals(targetLangWordId, NEW_ENTITY_ID);
+		boolean createNewMeaning = inexactSynMeaningId == null;
+		boolean createNewTranslationLangWord = translationLangWordId == null;
+		boolean createNewTargetLangWord = targetLangWordId == null;
 
 		if (createNewMeaning) {
 			inexactSynMeaningId = cudDbService.createMeaning();

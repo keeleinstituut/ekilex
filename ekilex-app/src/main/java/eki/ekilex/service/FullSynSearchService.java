@@ -16,6 +16,7 @@ import eki.ekilex.data.DefSourceAndNoteSourceTuple;
 import eki.ekilex.data.Definition;
 import eki.ekilex.data.EkiUser;
 import eki.ekilex.data.EkiUserProfile;
+import eki.ekilex.data.InexactSynonym;
 import eki.ekilex.data.Meaning;
 import eki.ekilex.data.SearchDatasetsRestriction;
 import eki.ekilex.data.SynRelation;
@@ -56,6 +57,7 @@ public class FullSynSearchService extends AbstractSynSearchService {
 			languagesOrder.sort(Comparator.comparing(orderLang -> !StringUtils.equals(orderLang.getCode(), synCandidateLangCode)));
 			populateLexeme(lexeme, languagesOrder, wordLang, synMeaningWordLangCodes, userRole, userProfile);
 			reorderFullSynLangGroups(lexeme, synCandidateLangCode);
+			populateInexactSynonyms(lexeme, wordLang, synCandidateLangCode);
 		});
 		lexemeLevelPreseUtil.combineLevels(synLexemes);
 		boolean isActiveTagComplete = conversionUtil.isLexemesActiveTagComplete(synLexemes, activeTag);
@@ -162,5 +164,18 @@ public class FullSynSearchService extends AbstractSynSearchService {
 			wordCandidates.add(wordCandidate);
 		}
 		return wordCandidates;
+	}
+
+	private void populateInexactSynonyms(WordLexeme lexeme, String lexemeWordLang, String inexactSynLang) {
+
+		Long meaningId = lexeme.getMeaningId();
+		String datasetCode = lexeme.getDatasetCode();
+		List<InexactSynonym> inexactSynonyms = synSearchDbService.getMeaningInexactSynonyms(meaningId, inexactSynLang);
+		inexactSynonyms.forEach(synonym -> {
+			Long synMeaningId = synonym.getMeaningId();
+			List<WordLexeme> lexemeLangWords = lookupDbService.getMeaningWords(synMeaningId, datasetCode, lexemeWordLang);
+			synonym.setTargetLangWords(lexemeLangWords);
+		});
+		lexeme.setInexactSynonyms(inexactSynonyms);
 	}
 }

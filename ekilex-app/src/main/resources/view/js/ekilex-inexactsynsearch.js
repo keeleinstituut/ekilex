@@ -53,6 +53,10 @@ $.fn.submitInexactSynMeaningSelectPlugin = function() {
 		submitBtn.on('click', function(e) {
 			e.preventDefault();
 			const form = $('#inexactSynMeaningForm');
+			const selectedMeaningIdInput = form.find('input[name=inexactSynMeaningId]:checked');
+			if (selectedMeaningIdInput.val() === 'new') {
+				selectedMeaningIdInput.val(null);
+			}
 			const formData = form.serialize();
 			const url = form.attr('action');
 			postInexactSynDataAndUpdateDlg(url, formData);
@@ -96,6 +100,8 @@ $.fn.submitWordBtnPlugin = function() {
 		submitBtn.on('click', function(e) {
 			e.preventDefault();
 			const form = $('#inexactSynWordForm');
+			const targetLangWordIdInput = form.find('input[name=targetLangWordId]:checked');
+			const translationLangWordIdInput = form.find('input[name=translationLangWordId]:checked');
 			const inexactSynDefInput = $('#inexactSynDef');
 			const inexactSynDefInputExists = inexactSynDefInput.length === 1;
 			if (inexactSynDefInputExists) {
@@ -107,6 +113,12 @@ $.fn.submitWordBtnPlugin = function() {
 					inexactSynDefInput.removeClass('is-invalid');
 					form.find('input[name=inexactSynDef]').val(inexactSynDefValue);
 				}
+			}
+			if (translationLangWordIdInput.val() === 'new') {
+				translationLangWordIdInput.val(null);
+			}
+			if (targetLangWordIdInput.val() === 'new') {
+				targetLangWordIdInput.val(null);
 			}
 
 			const formData = form.serialize();

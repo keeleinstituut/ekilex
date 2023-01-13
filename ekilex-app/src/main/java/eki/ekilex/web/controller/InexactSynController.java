@@ -104,7 +104,7 @@ public class InexactSynController extends AbstractPrivateSearchController {
 		model.addAttribute("data", requestData);
 
 		DatasetPermission userRole = userContext.getUserRole();
-		boolean createNewMeaning = inexactSynMeaningId == -1;
+		boolean createNewMeaning = inexactSynMeaningId == null;
 		boolean isTargetLangWordSearch = StringUtils.isNotBlank(targetLangWordValue);
 
 		if (isTargetLangWordSearch) {
@@ -178,6 +178,7 @@ public class InexactSynController extends AbstractPrivateSearchController {
 			inexactSynService.saveInexactSynMeaningAndRelation(requestData, datasetCode);
 		} catch (Exception e) {
 			// TODO log and return message to user
+			logger.error("aa", e);
 		}
 
 		// TODO return message

@@ -110,7 +110,7 @@
                     <div class="border border-dark rounded mb-2 p-2">
                       <div class="row mb-2">
                         <div class="col-12">
-                          <input type="radio" name="inexactSynMeaningId" class="ml-3 mr-3" data-plugin="enableSubmitInexactSynMeaningBtnPlugin" value="-1"/>
+                          <input type="radio" name="inexactSynMeaningId" class="ml-3 mr-3" data-plugin="enableSubmitInexactSynMeaningBtnPlugin" value="new"/>
                           <span>Sobiv tähendus puudub, loon uue</span>
                         </div>
                       </div>
@@ -147,8 +147,7 @@
                   <h4>Täienda tähendust</h4>
                   <hr/>
                   <div>Mõiste</div>
-                  <!-- TODO use flag to indicate new meaning? -->
-                  <th:block th:if="${meaning.meaningId != null && meaning.meaningId != -1}">
+                  <th:block th:if="${meaning.meaningId != null}">
                     <div class="row small">
                       <div class="col-4">ID</div>
                       <div class="col-8" th:text="${meaning.meaningId}"></div>
@@ -230,7 +229,7 @@
                       <div class="border border-dark rounded mb-2 p-2">
                         <div class="row mb-2">
                           <div class="col-12">
-                            <input type="radio" name="translationLangWordId" class="ml-3 mr-3" data-plugin="enableSubmitWordBtnPlugin" value="-1"/>
+                            <input type="radio" name="translationLangWordId" class="ml-3 mr-3" data-plugin="enableSubmitWordBtnPlugin" value="new"/>
                             <span>Sobiv keelend puudub, loon uue</span>
                           </div>
                         </div>
@@ -248,7 +247,7 @@
                       <div class="border border-dark rounded mb-2 p-2">
                         <div class="row mb-2">
                           <div class="col-12">
-                            <input type="radio" name="targetLangWordId" class="ml-3 mr-3" data-plugin="enableSubmitWordBtnPlugin" value="-1"/>
+                            <input type="radio" name="targetLangWordId" class="ml-3 mr-3" data-plugin="enableSubmitWordBtnPlugin" value="new"/>
                             <span>Sobiv keelend puudub, loon uue</span>
                           </div>
                         </div>
@@ -291,9 +290,8 @@
                 <div class="col-5">
                   <div class="border border-dark rounded mb-2 p-2">
                     <div class="row">
-                      <!-- TODO better solution? -->
-                      <div class="col-12" th:unless="${data.inexactSynMeaningId > 0}">Uus tähendus</div>
-                      <div class="col-12" th:if="${data.inexactSynMeaningId > 0}" th:text="'M' + ${data.inexactSynMeaningId}"></div>
+                      <div class="col-12" th:if="${data.inexactSynMeaningId == null}">Uus tähendus</div>
+                      <div class="col-12" th:if="${data.inexactSynMeaningId != null}" th:text="'M' + ${data.inexactSynMeaningId}"></div>
                     </div>
                     <hr/>
                     <div class="row">
