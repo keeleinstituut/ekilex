@@ -34,8 +34,6 @@ public class MeaningWord extends AbstractDataObject implements DecoratedWordType
 
 	private List<String> lexRegisterCodes;
 
-	private Integer directMatchLexRelCount;
-
 	private Long orderBy;
 
 	public Long getWordId() {
@@ -152,14 +150,6 @@ public class MeaningWord extends AbstractDataObject implements DecoratedWordType
 
 	public void setLexRegisterCodes(List<String> lexRegisterCodes) {
 		this.lexRegisterCodes = lexRegisterCodes;
-	}
-
-	public Integer getDirectMatchLexRelCount() {
-		return directMatchLexRelCount;
-	}
-
-	public void setDirectMatchLexRelCount(Integer directMatchLexRelCount) {
-		this.directMatchLexRelCount = directMatchLexRelCount;
 	}
 
 	public Long getOrderBy() {

@@ -39,20 +39,6 @@ class Sorter {
           })
         }
       });
-      this.main.find('.third-group-items').sortable({
-        items: '.sortable-third-group',
-        placeholder: "ui-state-highlight",
-        cancel: '',
-        handle: this.handle,
-        tolerance: 'pointer',
-        start: function(event, ui) {
-          ui.placeholder.css({
-            display: 'inline-block',
-            width: ui.item.outerWidth(),
-            height: ui.item.outerHeight(),
-          })
-        }
-      });
       this.bindSynonyms();
     } else {
       this.main.sortable({
@@ -161,19 +147,14 @@ class Sorter {
   /* Custom syn functionality */
   bindSynonyms() {
     const main = this.main;
-    const meaningWordDirectMatchSynOriginalOrder = [];
     const meaningWordSynOriginalOrder = [];
     const meaningRelSynOriginalOrder = [];
 
     main.find('.sortable-first-group').each(function() {
-      meaningWordDirectMatchSynOriginalOrder.push($(this).attr('data-orderby'));
-    });
-
-    main.find('.sortable-second-group').each(function() {
       meaningWordSynOriginalOrder.push($(this).attr('data-orderby'));
     });
 
-    main.find('.sortable-third-group').each(function() {
+    main.find('.sortable-second-group').each(function() {
       meaningRelSynOriginalOrder.push($(this).attr('data-orderby'));
     });
 
@@ -181,9 +162,8 @@ class Sorter {
       setTimeout(function() {
         const orderingBtn = ui.item;
         const synType = orderingBtn.attr('data-syn-type');
-        const isMeaningWordDirectMatchOrdering = synType === 'MEANING_WORD_DIRECT_MATCH';
         const isMeaningWordOrdering = synType === 'MEANING_WORD';
-        const opCode = (isMeaningWordDirectMatchOrdering || isMeaningWordOrdering) ? 'lexeme_meaning_word' : 'meaning_relation';
+        const opCode = isMeaningWordOrdering ? 'lexeme_meaning_word' : 'meaning_relation';
         let mainwordLexemeId = orderingBtn.attr('data-lexeme-id');
         const data = {
           additionalInfo: mainwordLexemeId,
@@ -191,18 +171,8 @@ class Sorter {
           items: [],
         };
 
-        if (isMeaningWordDirectMatchOrdering) {
+        if (isMeaningWordOrdering) {
           main.find('.sortable-first-group').each(function(index) {
-            const elem = $(this);
-            const lexemeId = elem.find('input[name="synword-lexeme-id"]').val();
-            data.items.push({
-              id: lexemeId,
-              orderby: meaningWordDirectMatchSynOriginalOrder[index],
-              text: elem.find('button:first').text(),
-            });
-          });
-        } else if (isMeaningWordOrdering) {
-          main.find('.sortable-second-group').each(function(index) {
             const elem = $(this);
             const lexemeId = elem.find('input[name="synword-lexeme-id"]').val();
             data.items.push({
@@ -212,7 +182,7 @@ class Sorter {
             });
           });
         } else {
-          main.find('.sortable-third-group').each(function(index) {
+          main.find('.sortable-second-group').each(function(index) {
             const elem = $(this);
             data.items.push({
               id: elem.attr('data-relation-id'),
@@ -291,17 +261,14 @@ class Sorter {
     this.main.children().each(function() {
       const $this = $(this);
       let synType = $this.attr('data-syn-type');
-      if (synType === 'MEANING_WORD_DIRECT_MATCH') {
+      if (synType === 'MEANING_WORD') {
         $this.addClass('sortable-first-group');
-      } else if (synType === 'MEANING_WORD') {
-        $this.addClass('sortable-second-group');
       } else if (synType === 'MEANING_REL') {
-        $this.addClass('sortable-third-group');
+        $this.addClass('sortable-second-group');
       }
     });
     this.main.find('.sortable-first-group').wrapAll('<span class="first-group-items">');
     this.main.find('.sortable-second-group').wrapAll('<span class="second-group-items">');
-    this.main.find('.sortable-third-group').wrapAll('<span class="third-group-items">');
   }
 
   initialize() {

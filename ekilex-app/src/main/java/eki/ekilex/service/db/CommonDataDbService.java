@@ -775,14 +775,6 @@ public class CommonDataDbService extends AbstractDataDbService {
 				.groupBy(wh.VALUE)
 				.asField();
 
-		Field<Integer> dlrelc = DSL.field(DSL.select(DSL.count(lrel.ID))
-				.from(lrel)
-				.where(
-						lrel.LEXEME1_ID.eq(l1.ID)
-								.and(lrel.LEXEME2_ID.eq(l2.ID))
-								.and(lrel.LEX_REL_TYPE_CODE.eq(LEX_REL_TYPE_CODE_DIRECT_MATCH))))
-				.as("direct_match_lex_rel_count");
-
 		Condition where =
 				l1.ID.eq(lexemeId)
 						.and(l2.MEANING_ID.eq(l1.MEANING_ID))
@@ -811,11 +803,10 @@ public class CommonDataDbService extends AbstractDataDbService {
 						l2.ID.as("lexeme_id"),
 						l2.WEIGHT.as("lexeme_weight"),
 						lrc.as("lex_register_codes"),
-						dlrelc,
 						l2.ORDER_BY)
 				.from(l1, l2, w2)
 				.where(where)
-				.orderBy(w2.LANG, dlrelc.desc(), l2.ORDER_BY)
+				.orderBy(w2.LANG, l2.ORDER_BY)
 				.fetchInto(MeaningWord.class);
 	}
 

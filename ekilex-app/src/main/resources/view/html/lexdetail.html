@@ -169,10 +169,9 @@
                        th:data-callback="${viewUtil.composeFunction('loadFullLexemeDetails', lexeme.lexemeId, lexeme.levels)}"
                        th:with="
                          isMeaningWordSyn=${syn.type == T(eki.common.constant.SynonymType).MEANING_WORD},
-                         isMeaningWordDirectMatchSyn=${syn.type == T(eki.common.constant.SynonymType).MEANING_WORD_DIRECT_MATCH},
                          isMeaningRelSyn=${syn.type == T(eki.common.constant.SynonymType).MEANING_REL}">
                     <th:block th:each="synWord, synWordIter : ${syn.words}">
-                      <th:block th:if="${isMeaningWordSyn || isMeaningWordDirectMatchSyn}">
+                      <th:block th:if="${isMeaningWordSyn}">
                         <div th:replace="lexdialog :: edit_meaning_word_and_lexeme_weight_dlg"></div>
                       </th:block>
                     </th:block>
@@ -193,7 +192,7 @@
                             <small class="text-gray fontSize-12" th:each="registerCode,regIter : ${synWord.lexemeRegisterCodes}" th:text="${registerCode + (regIter.last ? '' : ', ')}"></small>
                             <small class="text-gray fontSize-12" th:if="${synWordIter.last}" th:text="${'[' + viewUtil.getFormattedWeight(syn.weight) + ']'}"></small>
                           </button><span th:unless="${synWordIter.last}">,</span>
-                          <th:block th:if="${isMeaningWordSyn || isMeaningWordDirectMatchSyn}">
+                          <th:block th:if="${isMeaningWordSyn}">
                             <div th:replace="lexdialog :: edit_meaning_word_and_lexeme_weight_dlg"></div>
                             <div class="meaning_buttons">
                               <button type="button" class="btn badge badge-primary"

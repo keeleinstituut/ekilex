@@ -820,12 +820,7 @@ public class ConversionUtil implements GlobalConstant {
 
 		for (MeaningWord meaningWord : meaningWords) {
 			Synonym meaningWordSyn = new Synonym();
-			Integer directMatchLexRelCount = meaningWord.getDirectMatchLexRelCount();
-			if (directMatchLexRelCount > 0) {
-				meaningWordSyn.setType(SynonymType.MEANING_WORD_DIRECT_MATCH);
-			} else {
-				meaningWordSyn.setType(SynonymType.MEANING_WORD);
-			}
+			meaningWordSyn.setType(SynonymType.MEANING_WORD);
 			meaningWordSyn.setWordLang(meaningWord.getLang());
 			meaningWordSyn.setWeight(meaningWord.getLexemeWeight());
 			meaningWordSyn.setOrderBy(meaningWord.getOrderBy());
