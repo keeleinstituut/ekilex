@@ -88,7 +88,6 @@ public class InexactSynController extends AbstractPrivateSearchController {
 			}
 		}
 
-		// TODO disable selection where translation lang value is inserted but meaning candidate already has inexact syn definition
 		return INEXACT_SYN_COMPONENTS_PAGE + PAGE_FRAGMENT_ELEM + "inexact_syn_meaning_select";
 	}
 

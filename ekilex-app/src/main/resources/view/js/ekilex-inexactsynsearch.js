@@ -25,12 +25,24 @@ function initInexactSynSearchDlg(targetMeaningId, targetLang, wordRelationId) {
 	postInexactSynDataAndUpdateDlg(initInexactSearchUrl, initData);
 }
 
+$.fn.initInexactSynUpdateSearchBtnPlugin = function() {
+	return this.each(function() {
+		const btn = $(this);
+		btn.on('click', function(e) {
+			e.preventDefault();
+			const targetMeaningId = btn.data('target-meaning-id');
+			const targetLang = btn.data('target-lang');
+			const wordRelationId = btn.data('word-relation-id');
+			initInexactSynSearchDlg(targetMeaningId, targetLang, wordRelationId);
+		});
+	});
+}
+
 $.fn.submitInexactSynSearchMeaningsPlugin = function() {
 	return this.each(function() {
-		const obj = $(this);
-		obj.on('submit', function(e) {
+		const form = $(this);
+		form.on('submit', function(e) {
 			e.preventDefault();
-			const form = $('#inexactSynSearchMeaningsForm');
 			const formData = form.serialize();
 			const url = form.attr('action');
 			postInexactSynDataAndUpdateDlg(url, formData);
@@ -133,19 +145,6 @@ $.fn.relationSelectPlugin = function() {
 		const select = $(this);
 		select.on('change', function() {
 			$(document).find('button[name="submitRelationSelectBtn"]').removeAttr("disabled");
-		});
-	});
-}
-
-$.fn.submitInexactSynSearchMeaningsPlugin = function() {
-	return this.each(function() {
-		const obj = $(this);
-		obj.on('submit', function(e) {
-			e.preventDefault();
-			const form = $('#inexactSynSearchMeaningsForm');
-			const formData = form.serialize();
-			const url = form.attr('action');
-			postInexactSynDataAndUpdateDlg(url, formData);
 		});
 	});
 }

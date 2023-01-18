@@ -518,6 +518,7 @@ public class LookupDbService extends AbstractDataDbService {
 								.and(w.LANG.eq(wordLang))
 								.and(l.WORD_ID.eq(w.ID))
 								.and(l.DATASET_CODE.eq(datasetCode)))
+				.orderBy(l.MEANING_ID)
 				.fetchInto(Long.class);
 	}
 

@@ -25,7 +25,7 @@
                   <hr/>
                   <div>Eestikeelne vaste</div>
                   <th:block th:if="${data.isSearchEnabled}">
-                    <form th:action="@{/inexact_syn_search_meanings}" method="post" id="inexactSynSearchMeaningsForm" autocomplete="off" data-plugin="submitInexactSynSearchMeaningsPlugin">
+                    <form th:action="@{/inexact_syn_search_meanings}" method="post" autocomplete="off" data-plugin="submitInexactSynSearchMeaningsPlugin">
                       <th:block th:replace=" :: common_input_data"></th:block>
                       <input class="form-control" name="targetLangWordValue" th:placeholder="#{lex.placeholder.word.search}">
                       <hr/>
@@ -39,8 +39,13 @@
                       <span th:text="${data.targetLangWordValue}"></span>
                       <span th:if="${#strings.isEmpty(data.targetLangWordValue)}">-</span>
                     </div>
-                    <!-- TODO -->
-                    <a class="btn btn-sm btn-secondary mt-5">siia tagasi nupp</a>
+                    <div class="mt-5">
+                      <button type="button" class="btn btn-sm btn-secondary" data-plugin="initInexactSynUpdateSearchBtnPlugin"
+                              th:data-target-meaning-id="${data.targetMeaningId}"
+                              th:data-target-lang="${data.targetLang}"
+                              th:data-word-relation-id="${data.wordRelationId}">Muuda otsingut
+                      </button>
+                    </div>
                   </th:block>
                 </div>
               </div>
@@ -58,7 +63,9 @@
                       <div class="border border-dark rounded mb-2 p-2">
                         <div class="row mb-2">
                           <div class="col-4">
-                            <input type="radio" name="inexactSynMeaningId" class="ml-3 mr-3" data-plugin="enableSubmitInexactSynMeaningBtnPlugin" th:value="${meaningCandidate.meaningId}"/>
+                            <input type="radio" name="inexactSynMeaningId" class="ml-3 mr-3" data-plugin="enableSubmitInexactSynMeaningBtnPlugin"
+                                   th:value="${meaningCandidate.meaningId}"
+                                   th:disabled="${meaningCandidate.disabled}"/>
                             <small th:text="'M' + ${meaningCandidate.meaningId}"></small>
                           </div>
                           <div class="col-6">
@@ -124,12 +131,14 @@
         </div>
       </div>
       <div class="modal-footer">
+        <span class="mr-auto">Samm 1/3</span>
         <button type="button" class="btn btn-default" data-dismiss="modal" th:text="#{common.cancel}">Katkesta</button>
         <button type="button" class="btn btn-primary" name="submitInexactMeaningBtn" data-plugin="submitInexactSynMeaningSelectPlugin" disabled th:text="#{inexactsyn.next.step}">Järgmine samm</button>
       </div>
     </div>
   </div>
-  <div class="modal-dialog modal-dialog-scrollable h-100 mw-90" role="document" th:fragment="inexact_syn_word_select">
+  <div class="modal-dialog modal-dialog-scrollable h-100 mw-90" role="document" th:fragment="inexact_syn_word_select"
+       th:with="hasCandates=${not #lists.isEmpty(meaning.translationLangWordCandidates) || not #lists.isEmpty(meaning.targetLangWordCandidates)}">
     <div class="modal-content">
       <div class="modal-header">
         <h4>
@@ -186,17 +195,14 @@
 
                   <th:block th:if="${#strings.isEmpty(meaning.targetLangWordValue)}">
                     <div>Lühivihje</div>
-                    <!-- TODO if inexact syn def already exists, then possibility to update-->
                     <input class="form-control required-field" id="inexactSynDef"
                            th:placeholder="#{inexactsyn.placeholder.insert.inexact.syn.def}"
-                           th:value="${data.inexactSynDef}">
+                           th:value="${meaning.inexactSynDefValue}">
                   </th:block>
                   <th:block th:unless="${#strings.isEmpty(meaning.targetLangWordValue)}">
                     <div>Eestikeelne vaste</div>
                     <div class="font-weight-bold" th:text="${meaning.targetLangWordValue}"></div>
                   </th:block>
-                  <!-- TODO -->
-                  <a class="btn btn-sm btn-secondary mt-5">siia tagasi nupp</a>
                 </div>
               </div>
             </div>
@@ -208,14 +214,12 @@
                     <input type="hidden" name="targetLangWordValue" th:value="${data.targetLangWordValue}">
                     <input type="hidden" name="inexactSynDef" th:value="${data.inexactSynDef}">
                     <input type="hidden" name="inexactSynMeaningId" th:value="${meaning.meaningId}">
-                    <!-- TODO different message if no candidates. then it is inexact syn def submit without words select -->
-                    <!--  and submit button enabling should be updated-->
-                    <th:block th:if="${#lists.isEmpty(meaning.translationLangWordCandidates) && #lists.isEmpty(meaning.targetLangWordCandidates)}">
-                      <h4>Sisesta lühivihje</h4>
-                    </th:block>
-                    <th:block th:unless="${#lists.isEmpty(meaning.translationLangWordCandidates) && #lists.isEmpty(meaning.targetLangWordCandidates)}">
+                    <th:block th:if="${hasCandates}">
                       <h4>Nendel sõnadel on mitu erinevat tähendust. Vali oma keelenditele sobivaimad tähendused:</h4>
                       <hr/>
+                    </th:block>
+                    <th:block th:unless="${hasCandates}">
+                      <h4>Sisesta lühivihje</h4>
                     </th:block>
                     <div name="wordCandidatesDiv" id="translationLangWordCandidatesDiv" th:unless="${#lists.isEmpty(meaning.translationLangWordCandidates)}">
                       <div class="bg-light">
@@ -261,13 +265,20 @@
         </div>
       </div>
       <div class="modal-footer">
+        <div>
+          <form th:action="@{/inexact_syn_search_meanings}" method="post" autocomplete="off" data-plugin="submitInexactSynSearchMeaningsPlugin">
+            <th:block th:replace=" :: common_input_data"></th:block>
+            <input type="hidden" name="targetLangWordValue" th:value="${data.targetLangWordValue}">
+            <div>
+              <button type="submit" class="btn btn-sm btn-secondary">Eelmine samm</button>
+            </div>
+          </form>
+        </div>
+        <span class="mr-auto">Samm 2/3</span>
         <button type="button" class="btn btn-default" data-dismiss="modal" th:text="#{common.cancel}">Katkesta</button>
-        <th:block th:if="${#lists.isEmpty(meaning.translationLangWordCandidates) && #lists.isEmpty(meaning.targetLangWordCandidates)}">
-          <button type="button" class="btn btn-primary" name="submitInexactMeaningBtn" data-plugin="submitWordBtnPlugin" th:text="#{inexactsyn.next.step}">Järgmine samm</button>
-        </th:block>
-        <th:block th:unless="${#lists.isEmpty(meaning.translationLangWordCandidates) && #lists.isEmpty(meaning.targetLangWordCandidates)}">
-          <button type="button" class="btn btn-primary" name="submitInexactMeaningBtn" data-plugin="submitWordBtnPlugin" disabled th:text="#{inexactsyn.next.step}">Järgmine samm</button>
-        </th:block>
+        <button type="button" class="btn btn-primary" name="submitInexactMeaningBtn" data-plugin="submitWordBtnPlugin"
+                th:disabled="${hasCandates}"
+                th:text="#{inexactsyn.next.step}">Järgmine samm</button>
       </div>
     </div>
   </div>
@@ -374,6 +385,14 @@
         </div>
       </div>
       <div class="modal-footer">
+        <div>
+          <button type="button" class="btn btn-sm btn-secondary" data-plugin="initInexactSynUpdateSearchBtnPlugin"
+                  th:data-target-meaning-id="${data.targetMeaningId}"
+                  th:data-target-lang="${data.targetLang}"
+                  th:data-word-relation-id="${data.wordRelationId}">Muuda otsingut
+          </button>
+        </div>
+        <span class="mr-auto">Samm 3/3</span>
         <button type="button" class="btn btn-default" data-dismiss="modal" th:text="#{common.cancel}">Katkesta</button>
         <button type="button" class="btn btn-primary" name="submitRelationSelectBtn" data-plugin="submitRelationSelectPlugin" disabled>Loo tähenduse seos</button>
       </div>

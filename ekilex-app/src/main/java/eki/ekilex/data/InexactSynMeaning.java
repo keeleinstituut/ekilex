@@ -16,6 +16,8 @@ public class InexactSynMeaning extends AbstractDataObject {
 
 	private List<Definition> definitions;
 
+	private String inexactSynDefValue;
+
 	private List<String> meaningWordValues;
 
 	private String translationLangWordValue;
@@ -30,9 +32,9 @@ public class InexactSynMeaning extends AbstractDataObject {
 
 	private List<WordLexeme> targetLangWords;
 
-	private boolean isInexactSynDefinitionMandatory;
-
 	private boolean isComplete;
+
+	private boolean isDisabled;
 
 	public Long getMeaningId() {
 		return meaningId;
@@ -64,6 +66,14 @@ public class InexactSynMeaning extends AbstractDataObject {
 
 	public void setDefinitions(List<Definition> definitions) {
 		this.definitions = definitions;
+	}
+
+	public String getInexactSynDefValue() {
+		return inexactSynDefValue;
+	}
+
+	public void setInexactSynDefValue(String inexactSynDefValue) {
+		this.inexactSynDefValue = inexactSynDefValue;
 	}
 
 	public List<String> getMeaningWordValues() {
@@ -122,19 +132,19 @@ public class InexactSynMeaning extends AbstractDataObject {
 		this.targetLangWords = targetLangWords;
 	}
 
-	public boolean isInexactSynDefinitionMandatory() {
-		return isInexactSynDefinitionMandatory;
-	}
-
-	public void setInexactSynDefinitionMandatory(boolean inexactSynDefinitionMandatory) {
-		isInexactSynDefinitionMandatory = inexactSynDefinitionMandatory;
-	}
-
 	public boolean isComplete() {
 		return isComplete;
 	}
 
 	public void setComplete(boolean complete) {
 		isComplete = complete;
+	}
+
+	public boolean isDisabled() {
+		return isDisabled;
+	}
+
+	public void setDisabled(boolean disabled) {
+		isDisabled = disabled;
 	}
 }

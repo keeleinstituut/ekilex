@@ -3,7 +3,6 @@ package eki.ekilex.service;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 
 import javax.transaction.Transactional;
 
@@ -67,6 +66,7 @@ public class InexactSynService extends AbstractSynSearchService {
 			List<WordLexeme> translationLangWords = lookupDbService.getMeaningWords(meaningId, datasetCode, translationLang);
 			List<WordLexeme> targetLangWords = lookupDbService.getMeaningWords(meaningId, datasetCode, targetLang);
 			List<Definition> definitions = synSearchDbService.getInexactSynMeaningDefinitions(meaningId, translationLang, targetLang);
+			boolean inexactSynDefExists = definitions.stream().anyMatch(definition -> definition.getTypeCode().equals(DEFINITION_TYPE_CODE_INEXACT_SYN));
 
 			InexactSynMeaning inexactSynMeaningCandidate = new InexactSynMeaning();
 			inexactSynMeaningCandidate.setMeaningId(meaningId);
@@ -75,6 +75,10 @@ public class InexactSynService extends AbstractSynSearchService {
 			inexactSynMeaningCandidate.setTranslationLangWords(translationLangWords);
 			inexactSynMeaningCandidate.setTargetLangWords(targetLangWords);
 			inexactSynMeaningCandidate.setDefinitions(definitions);
+			if (includeTargetLangWord && inexactSynDefExists) {
+				inexactSynMeaningCandidate.setDisabled(true);
+			}
+
 			inexactSynMeaningCandidates.add(inexactSynMeaningCandidate);
 		}
 		return inexactSynMeaningCandidates;
@@ -102,8 +106,6 @@ public class InexactSynService extends AbstractSynSearchService {
 				meaningWordValues.add(targetLangWordValue);
 				meaning.setComplete(true);
 			}
-		} else {
-			meaning.setInexactSynDefinitionMandatory(true);
 		}
 
 		meaning.setMeaningId(null);
@@ -130,6 +132,11 @@ public class InexactSynService extends AbstractSynSearchService {
 
 		List<String> meaningWordValues = synSearchDbService.getMeaningWordValues(meaningId, translationLang, targetLang);
 		List<Definition> definitions = synSearchDbService.getInexactSynMeaningDefinitions(meaningId, translationLang, targetLang);
+		String inexactSynDefValue = definitions.stream()
+				.filter(definition -> definition.getTypeCode().equals(DEFINITION_TYPE_CODE_INEXACT_SYN))
+				.map(Definition::getValue)
+				.findFirst()
+				.orElse(null);
 		List<WordDescript> targetLangWordCandidates = new ArrayList<>();
 		List<WordDescript> translationLangWordCandidates = new ArrayList<>();
 
@@ -137,18 +144,14 @@ public class InexactSynService extends AbstractSynSearchService {
 			if (createTargetLangWord) {
 				targetLangWordCandidates = getWordCandidates(userRole, targetLangWordValue, targetLang, datasetCode);
 				if (targetLangWordCandidates.isEmpty()) {
-					// meaningWordValues.add(targetLangWordValue);
 					meaning.setComplete(true);
 				}
-			} else {
-				meaning.setInexactSynDefinitionMandatory(true); // TODO remove, not used in html?
 			}
 		}
 
 		if (meaningWordValues.contains(targetLangWordValue)) {
 			translationLangWordCandidates = getWordCandidates(userRole, translationLangWordValue, translationLang, datasetCode);
 			if (translationLangWordCandidates.isEmpty()) {
-				// meaningWordValues.add(translationLangWordValue);
 				meaning.setComplete(true);
 			}
 		}
@@ -157,6 +160,7 @@ public class InexactSynService extends AbstractSynSearchService {
 		meaning.setDatasetCode(datasetCode);
 		meaning.setDatasetName(datasetName);
 		meaning.setDefinitions(definitions);
+		meaning.setInexactSynDefValue(inexactSynDefValue);
 		meaning.setMeaningWordValues(meaningWordValues);
 		meaning.setTranslationLangWordValue(translationLangWordValue);
 		meaning.setTranslationLangWordCandidates(translationLangWordCandidates);
