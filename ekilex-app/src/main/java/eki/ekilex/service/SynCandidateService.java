@@ -138,13 +138,10 @@ public class SynCandidateService extends AbstractCudService implements GlobalCon
 		return wordLexemeMeaningId;
 	}
 
-	private void createSynCandidateWordRelation(Long headwordId, Long synCandidateWordId, BigDecimal weight) throws Exception {
+	private void createSynCandidateWordRelation(Long headwordId, Long synCandidateWordId, BigDecimal weight) {
 
-		boolean isManualEventOnUpdateEnabled = MANUAL_EVENT_ON_UPDATE_DISABLED;
-		ActivityLogData activityLog = activityLogService.prepareActivityLog("createSynCandidateWordRelation", headwordId, ActivityOwner.WORD, isManualEventOnUpdateEnabled);
 		Long createdRelationId = cudDbService.createWordRelation(headwordId, synCandidateWordId, WORD_REL_TYPE_CODE_RAW, UNDEFINED_RELATION_STATUS);
 		cudDbService.createWordRelationParam(createdRelationId, WORD_RELATION_PARAM_NAME_SYN_CANDIDATE, weight);
-		activityLogService.createActivityLog(activityLog, createdRelationId, ActivityEntity.WORD_RELATION);
 	}
 
 	private void createUsageSourceLink(Long usageId, Long sourceId, Long lexemeId, String sourceLinkValue) throws Exception {
