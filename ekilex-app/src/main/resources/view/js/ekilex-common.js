@@ -821,10 +821,10 @@ $.fn.loadDetailsPlugin = function() {
 	return this.each(function() {
 		const obj = $(this);
 		obj.on('click', function() {
-			const wordId = obj.data('id');
+			const wordOrMeaningId = obj.data('id');
 			const behaviour = obj.data('behaviour') || false;
-			const lastWordId = behaviour === 'replace' ? obj.parents('#details-area:first').attr('data-id') : false;
-			loadDetails(wordId, behaviour, lastWordId);
+			const lastWordOrMeaningId = behaviour === 'replace' ? obj.parents('#details-area:first').attr('data-id') : false;
+			loadDetails(wordOrMeaningId, behaviour, lastWordOrMeaningId);
 		})
 	})
 }
@@ -1161,35 +1161,36 @@ function scrollDetails(div, scrollPosition) {
 	}
 }
 
-function loadDetails(wordId, task, lastWordId) {
+function loadDetails(wordOrMeaningId, task, lastWordOrMeaningId) {
 	// Hide all existing loading spinners and show current one
 	$("[id^='select_wait_']").hide();
-	$("#select_wait_" + wordId).show();
+	$("#select_wait_" + wordOrMeaningId).show();
 	if (!task) {
 		$('#results_div .list-group-item').removeClass('active');
 	}
 	openWaitDlg();
+	console.log("viewType: " + viewType);
 
-	let wordDetailsUrl;
+	let detailsUrl;
 	switch (viewType) {
 		case 'term':
-			wordDetailsUrl = applicationUrl + 'termmeaningdetails/' + wordId;
+			detailsUrl = applicationUrl + 'termmeaningdetails/' + wordOrMeaningId;
 			break;
 		case 'lim_term':
-			wordDetailsUrl = applicationUrl + 'limtermmeaningdetails/' + wordId;
+			detailsUrl = applicationUrl + 'limtermmeaningdetails/' + wordOrMeaningId;
 			break;
 		default:
-			wordDetailsUrl = applicationUrl + 'worddetails/' + wordId;
+			detailsUrl = applicationUrl + 'worddetails/' + wordOrMeaningId;
 			let selectedMeaningIdInput = $('#selectedMeaningId');
 			const selectedMeaningId = selectedMeaningIdInput.val();
 			if (selectedMeaningId) {
-				wordDetailsUrl += '/' + selectedMeaningId;
+				detailsUrl += '/' + selectedMeaningId;
 				selectedMeaningIdInput.val('');
 			}
 			break;
 	}
 
-	$.get(wordDetailsUrl).done(function(data) {
+	$.get(detailsUrl).done(function(data) {
 
 		closeWaitDlg();
 
@@ -1204,7 +1205,7 @@ function loadDetails(wordId, task, lastWordId) {
 			}
 			resultColumn.find('[data-rel="details-area"]').slice(1).remove();
 			const breadCrumbs = getBreadcrumbsData(detailsDiv, {
-				id: parseInt(wordId),
+				id: parseInt(wordOrMeaningId),
 				word: dataObject.attr('data-word'),
 			});
 			dataObject.attr('data-breadcrumbs', JSON.stringify(breadCrumbs));
@@ -1212,20 +1213,20 @@ function loadDetails(wordId, task, lastWordId) {
 			detailsDiv = $('#details-area');
 			scrollDetails(detailsDiv, 0);
 		} else {
-			dataObject.find('[data-hideable="toolsColumn"]').attr('data-hideable', `toolsColumn-${wordId}`);
-			dataObject.find('#toolsColumn').attr('id', `toolsColumn-${wordId}`);
-			dataObject.find('[data-extendable="contentColumn"]').attr('data-extendable', `contentColumn-${wordId}`);
-			dataObject.find('#contentColumn').attr('id', `contentColumn-${wordId}`);
+			dataObject.find('[data-hideable="toolsColumn"]').attr('data-hideable', `toolsColumn-${wordOrMeaningId}`);
+			dataObject.find('#toolsColumn').attr('id', `toolsColumn-${wordOrMeaningId}`);
+			dataObject.find('[data-extendable="contentColumn"]').attr('data-extendable', `contentColumn-${wordOrMeaningId}`);
+			dataObject.find('#contentColumn').attr('id', `contentColumn-${wordOrMeaningId}`);
 			if (task === 'replace') {
-				detailsDiv = resultColumn.find(`[data-rel="details-area"][data-id="${lastWordId}"]`);
-				const retainScrollPosition = parseInt(dataObject.attr('data-id')) === parseInt(wordId);
+				detailsDiv = resultColumn.find(`[data-rel="details-area"][data-id="${lastWordOrMeaningId}"]`);
+				const retainScrollPosition = parseInt(dataObject.attr('data-id')) === parseInt(wordOrMeaningId);
 				const contentDiv = detailsDiv.find('.overflow-auto:first');
 				const scrollPosition = contentDiv.length 
 					&& retainScrollPosition 
 					? contentDiv[0].scrollTop 
 					: 0;
 				const breadCrumbs = getBreadcrumbsData(detailsDiv, {
-					id: parseInt(wordId),
+					id: parseInt(wordOrMeaningId),
 					word: dataObject.attr('data-word'),
 				});
 				dataObject.attr('data-breadcrumbs', JSON.stringify(breadCrumbs));
@@ -1235,7 +1236,7 @@ function loadDetails(wordId, task, lastWordId) {
 				scrollDetails(detailsDiv, scrollPosition);
 			} else {
 				const breadCrumbs = getBreadcrumbsData(dataObject, {
-					id: parseInt(wordId),
+					id: parseInt(wordOrMeaningId),
 					word: dataObject.attr('data-word'),
 				});
 				dataObject.attr('data-breadcrumbs', JSON.stringify(breadCrumbs));
@@ -1249,7 +1250,7 @@ function loadDetails(wordId, task, lastWordId) {
 
 		$(window).trigger('update:wordId');
 
-		$("#select_wait_" + wordId).hide();
+		$("#select_wait_" + wordOrMeaningId).hide();
 		$('.tooltip').remove();
 
 		$('[data-toggle="tooltip"]').tooltip({ trigger: 'hover' });
