@@ -66,6 +66,7 @@ public class InexactSynController extends AbstractPrivateSearchController {
 		String datasetCode = requestData.getDatasetCode();
 		String translationLangWordValue = requestData.getTranslationLangWordValue();
 		String translationLang = requestData.getTranslationLang();
+		boolean revertToPreviousStep = requestData.isRevertToPreviousStep();
 
 		DatasetPermission userRole = userContext.getUserRole();
 		List<InexactSynMeaning> meaningCandidates = inexactSynService.getInexactSynMeaningCandidates(wordRelationId, targetLang, targetLangWordValue, datasetCode);
@@ -75,6 +76,10 @@ public class InexactSynController extends AbstractPrivateSearchController {
 		model.addAttribute("data", requestData);
 
 		if (meaningCandidates.isEmpty()) {
+			if (revertToPreviousStep) {
+				requestData.setSearchEnabled(true);
+				return INEXACT_SYN_COMPONENTS_PAGE + PAGE_FRAGMENT_ELEM + "inexact_syn_meaning_select";
+			}
 			InexactSynMeaning newMeaning = inexactSynService
 					.initNewInexactSynMeaning(targetLangWordValue, targetLang, translationLangWordValue, translationLang, userRole);
 			boolean isMeaningComplete = newMeaning.isComplete();

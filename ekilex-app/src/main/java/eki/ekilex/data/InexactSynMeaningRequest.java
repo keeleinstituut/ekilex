@@ -42,6 +42,8 @@ public class InexactSynMeaningRequest extends AbstractDataObject {
 
 	private boolean isSearchEnabled;
 
+	private boolean revertToPreviousStep;
+
 	public Long getTargetMeaningId() {
 		return targetMeaningId;
 	}
@@ -176,5 +178,13 @@ public class InexactSynMeaningRequest extends AbstractDataObject {
 
 	public void setSearchEnabled(boolean searchEnabled) {
 		isSearchEnabled = searchEnabled;
+	}
+
+	public boolean isRevertToPreviousStep() {
+		return revertToPreviousStep;
+	}
+
+	public void setRevertToPreviousStep(boolean revertToPreviousStep) {
+		this.revertToPreviousStep = revertToPreviousStep;
 	}
 }

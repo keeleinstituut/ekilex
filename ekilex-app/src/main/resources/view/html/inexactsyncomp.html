@@ -269,6 +269,7 @@
           <form th:action="@{/inexact_syn_search_meanings}" method="post" autocomplete="off" data-plugin="submitInexactSynSearchMeaningsPlugin">
             <th:block th:replace=" :: common_input_data"></th:block>
             <input type="hidden" name="targetLangWordValue" th:value="${data.targetLangWordValue}">
+            <input type="hidden" name="revertToPreviousStep" value="true">
             <div>
               <button type="submit" class="btn btn-sm btn-secondary">Eelmine samm</button>
             </div>
@@ -386,11 +387,14 @@
       </div>
       <div class="modal-footer">
         <div>
-          <button type="button" class="btn btn-sm btn-secondary" data-plugin="initInexactSynUpdateSearchBtnPlugin"
-                  th:data-target-meaning-id="${data.targetMeaningId}"
-                  th:data-target-lang="${data.targetLang}"
-                  th:data-word-relation-id="${data.wordRelationId}">Muuda otsingut
-          </button>
+          <form th:action="@{/inexact_syn_search_meanings}" method="post" autocomplete="off" data-plugin="submitInexactSynSearchMeaningsPlugin">
+            <th:block th:replace=" :: common_input_data"></th:block>
+            <input type="hidden" name="targetLangWordValue" th:value="${data.targetLangWordValue}">
+            <input type="hidden" name="revertToPreviousStep" value="true">
+            <div>
+              <button type="submit" class="btn btn-sm btn-secondary">Eelmine samm</button>
+            </div>
+          </form>
         </div>
         <span class="mr-auto">Samm 3/3</span>
         <button type="button" class="btn btn-default" data-dismiss="modal" th:text="#{common.cancel}">Katkesta</button>
