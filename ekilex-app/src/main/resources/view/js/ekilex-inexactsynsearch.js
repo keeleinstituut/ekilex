@@ -158,16 +158,19 @@ $.fn.submitRelationSelectPlugin = function() {
 			const formData = form.serialize();
 			const url = form.attr('action');
 
-			// TODO post data, close modal, update page, display returned message
 			const inexactSynDlg = $('#inexactSynDlg');
 			$.ajax({
 				url: url,
 				data: formData,
 				method: 'POST'
-			}).done(function(message) {
+			}).done(function(response) {
 				inexactSynDlg.modal('hide');
 				refreshSynDetails();
-				openMessageDlg(message);
+				if (response.status === 'OK') {
+					openMessageDlg(response.message);
+				} else if (response.status === 'ERROR') {
+					openAlertDlg(response.message);
+				}
 			}).fail(function(data) {
 				inexactSynDlg.modal('hide');
 				console.log(data);

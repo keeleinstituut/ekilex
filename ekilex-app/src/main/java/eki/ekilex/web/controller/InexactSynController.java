@@ -1,12 +1,14 @@
 package eki.ekilex.web.controller;
 
 import java.util.List;
+import java.util.Locale;
 
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -14,10 +16,12 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.SessionAttributes;
 
+import eki.ekilex.constant.ResponseStatus;
 import eki.ekilex.constant.WebConstant;
 import eki.ekilex.data.DatasetPermission;
 import eki.ekilex.data.InexactSynMeaning;
 import eki.ekilex.data.InexactSynMeaningRequest;
+import eki.ekilex.data.Response;
 import eki.ekilex.data.Word;
 import eki.ekilex.service.InexactSynService;
 
@@ -175,18 +179,26 @@ public class InexactSynController extends AbstractPrivateSearchController {
 
 	@ResponseBody
 	@PostMapping(INEXACT_SYN_MEANING_RELATION_URI)
-	public String createInexactSynMeaningAndRelation(InexactSynMeaningRequest requestData) {
+	public Response createInexactSynMeaningAndRelation(InexactSynMeaningRequest requestData) {
 
+		Locale locale = LocaleContextHolder.getLocale();
 		String datasetCode = getDatasetCodeFromRole();
+		Response response = new Response();
 		try {
 			inexactSynService.saveInexactSynMeaningAndRelation(requestData, datasetCode);
 		} catch (Exception e) {
-			// TODO log and return message to user
-			logger.error("aa", e);
+			logger.error("Failed to create inexact syn meaning and relation: ", e);
+
+			response.setStatus(ResponseStatus.ERROR);
+			String message = messageSource.getMessage("inexactsyn.meaning.and.relation.create.fail", new Object[0], locale);
+			response.setMessage(message);
+			return response;
 		}
 
-		// TODO return message
-		return RESPONSE_OK_VER1;
+		response.setStatus(ResponseStatus.OK);
+		String message = messageSource.getMessage("inexactsyn.meaning.and.relation.create.success", new Object[0], locale);
+		response.setMessage(message);
+		return response;
 	}
 
 }

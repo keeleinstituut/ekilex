@@ -14,6 +14,7 @@ import static eki.ekilex.data.db.Tables.MEANING_RELATION;
 import static eki.ekilex.data.db.Tables.WORD;
 import static eki.ekilex.data.db.Tables.WORD_RELATION;
 import static eki.ekilex.data.db.Tables.WORD_RELATION_PARAM;
+import static org.jooq.impl.DSL.field;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -497,6 +498,18 @@ public class SynSearchDbService extends AbstractDataDbService {
 						def.MEANING_ID.eq(syn.field("meaning_id", Long.class))
 								.and(def.DEFINITION_TYPE_CODE.eq(DEFINITION_TYPE_CODE_INEXACT_SYN))))
 				.fetchInto(InexactSynonym.class);
+	}
+
+	public boolean meaningInexactSynRelationExists(Long meaningId1, Long meaningId2) {
+
+		return create
+				.select(field(DSL.count(MEANING_RELATION.ID).gt(0)).as("relation_exists"))
+				.from(MEANING_RELATION)
+				.where(
+						MEANING_RELATION.MEANING1_ID.eq(meaningId1)
+								.and(MEANING_RELATION.MEANING2_ID.eq(meaningId2))
+								.and(MEANING_RELATION.MEANING_REL_TYPE_CODE.in(MEANING_REL_TYPE_CODE_NARROW, MEANING_REL_TYPE_CODE_WIDE)))
+				.fetchSingleInto(Boolean.class);
 	}
 
 	public eki.ekilex.data.Definition getMeaningDefinition(Long meaningId, String definitionTypeCode) {

@@ -247,19 +247,27 @@ public class InexactSynService extends AbstractSynSearchService {
 
 		boolean isInexactSynDef = StringUtils.isNotBlank(inexactSynDefValue);
 		boolean createNewMeaning = inexactSynMeaningId == null;
-		boolean createNewTranslationLangWord = translationLangWordId == null;
-		boolean createNewTargetLangWord = targetLangWordId == null;
 
 		if (createNewMeaning) {
 			inexactSynMeaningId = cudDbService.createMeaning();
+		} else {
+			boolean inexactSynRelationExists = synSearchDbService.meaningInexactSynRelationExists(targetMeaningId, inexactSynMeaningId);
+			if (inexactSynRelationExists) {
+				return;
+			}
 		}
 
-		Long inexactSynTransltionLangLexemeId;
-		if (createNewTranslationLangWord) {
-			inexactSynTransltionLangLexemeId = createInexactSynWordAndLexeme(
-					inexactSynMeaningId, translationLangWordValue, translationLang, datasetCode, isManualEventOnUpdateEnabled);
-		} else {
-			inexactSynTransltionLangLexemeId = createInexactSynLexeme(inexactSynMeaningId, translationLangWordId, datasetCode, isManualEventOnUpdateEnabled);
+		boolean meaningHasTranslationLangWord = lookupDbService.meaningHasWord(inexactSynMeaningId, translationLangWordValue, translationLang);
+		if (!meaningHasTranslationLangWord) {
+			Long inexactSynTransltionLangLexemeId;
+			if (translationLangWordId == null) {
+				inexactSynTransltionLangLexemeId = createInexactSynWordAndLexeme(
+						inexactSynMeaningId, translationLangWordValue, translationLang, datasetCode, isManualEventOnUpdateEnabled);
+			} else {
+				inexactSynTransltionLangLexemeId = createInexactSynLexeme(inexactSynMeaningId, translationLangWordId, datasetCode, isManualEventOnUpdateEnabled);
+			}
+
+			cloneCandidateData(inexactSynMeaningId, wordRelationId, inexactSynTransltionLangLexemeId, datasetCode);
 		}
 
 		if (isInexactSynDef) {
@@ -271,14 +279,15 @@ public class InexactSynService extends AbstractSynSearchService {
 				createInexactSynDefinition(inexactSynMeaningId, inexactSynDefValue, targetLang, datasetCode, isManualEventOnUpdateEnabled);
 			}
 		} else {
-			if (createNewTargetLangWord) {
-				createInexactSynWordAndLexeme(inexactSynMeaningId, targetLangWordValue, targetLang, datasetCode, isManualEventOnUpdateEnabled);
-			} else {
-				createInexactSynLexeme(inexactSynMeaningId, targetLangWordId, datasetCode, isManualEventOnUpdateEnabled);
+			boolean meaningHasTargetLangWord = lookupDbService.meaningHasWord(inexactSynMeaningId, targetLangWordValue, targetLang);
+			if (!meaningHasTargetLangWord) {
+				if (targetLangWordId == null) {
+					createInexactSynWordAndLexeme(inexactSynMeaningId, targetLangWordValue, targetLang, datasetCode, isManualEventOnUpdateEnabled);
+				} else {
+					createInexactSynLexeme(inexactSynMeaningId, targetLangWordId, datasetCode, isManualEventOnUpdateEnabled);
+				}
 			}
 		}
-
-		cloneCandidateData(inexactSynMeaningId, wordRelationId, inexactSynTransltionLangLexemeId, datasetCode);
 
 		if (StringUtils.equals(MEANING_REL_TYPE_CODE_NARROW, relationType)) {
 			createInexactSynMeaningRelation(targetMeaningId, inexactSynMeaningId, isManualEventOnUpdateEnabled);
@@ -358,14 +367,14 @@ public class InexactSynService extends AbstractSynSearchService {
 		ActivityLogData activityLog;
 		Long meaningRelationId;
 
-		boolean relationExists = lookupDbService.meaningRelationExists(narrowMeaningId, wideMeaningId, MEANING_REL_TYPE_CODE_NARROW);
+		boolean relationExists = synSearchDbService.meaningInexactSynRelationExists(narrowMeaningId, wideMeaningId);
 		if (!relationExists) {
 			activityLog = activityLogService.prepareActivityLog("createInexactSynMeaningRelation", narrowMeaningId, ActivityOwner.MEANING, isManualEventOnUpdateEnabled);
 			meaningRelationId = cudDbService.createMeaningRelation(narrowMeaningId, wideMeaningId, MEANING_REL_TYPE_CODE_NARROW, null); // TODO check if correct direction?
 			activityLogService.createActivityLog(activityLog, meaningRelationId, ActivityEntity.MEANING_RELATION);
 		}
 
-		boolean oppositeRelationExists = lookupDbService.meaningRelationExists(wideMeaningId, narrowMeaningId, MEANING_REL_TYPE_CODE_WIDE);
+		boolean oppositeRelationExists = synSearchDbService.meaningInexactSynRelationExists(wideMeaningId, narrowMeaningId);
 		if (!oppositeRelationExists) {
 			activityLog = activityLogService.prepareActivityLog("createInexactSynMeaningRelation", wideMeaningId, ActivityOwner.MEANING, isManualEventOnUpdateEnabled);
 			meaningRelationId = cudDbService.createMeaningRelation(wideMeaningId, narrowMeaningId, MEANING_REL_TYPE_CODE_WIDE, null); // TODO check if correct direction?
