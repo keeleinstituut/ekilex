@@ -86,7 +86,7 @@
               <div class="col-md-4 mt-2">
                 <select required class="form-control required-field" name="complexity">
                   <option value="" hidden disabled selected th:text="#{common.select.complexity}">vali detailsus...</option>
-                  <option th:each="complexity : ${enabledComplexities}" th:value="${complexity}" th:text="#{'enum.complexity.' + ${complexity}}">value</option>
+                  <option th:each="complexity : ${complexities}" th:value="${complexity}" th:text="#{'enum.complexity.' + ${complexity}}">value</option>
                 </select>
               </div>
             </div>
@@ -173,7 +173,7 @@
                 <div class="formItem__title" th:text="#{lex.select.complexity}">Vali detailsus</div>
                 <div class="formItem__element">
                   <div class="radioTabs">
-                    <label class="radioTabs__item" th:each="complexity : ${enabledComplexities}">
+                    <label class="radioTabs__item" th:each="complexity : ${complexities}">
                       <input type="radio"
                              name="complexity"
                              th:checked="${complexity == 'DETAIL'}"
@@ -242,7 +242,7 @@
               <div class="formItem__title" th:text="#{lex.select.complexity}">Vali detailsus</div>
               <div class="formItem__element">
                 <div class="radioTabs">
-                  <label class="radioTabs__item" th:each="complexity : ${enabledComplexities}">
+                  <label class="radioTabs__item" th:each="complexity : ${complexities}">
                     <input type="radio" name="complexity" th:value="${complexity}" th:checked="${complexity == definition.complexity}" />
                     <span th:text="#{'enum.complexity.' + ${complexity}}">value</span>
                   </label>
@@ -577,7 +577,7 @@
               <div class="col-md-6">
                 <select required class="form-control required-field" name="complexity">
                   <option value="" hidden disabled selected th:text="#{common.select.complexity}">vali detailsus...</option>
-                  <option th:each="complexity : ${enabledComplexities}" th:value="${complexity}" th:text="#{'enum.complexity.' + ${complexity}}">value</option>
+                  <option th:each="complexity : ${complexities}" th:value="${complexity}" th:text="#{'enum.complexity.' + ${complexity}}">value</option>
                 </select>
               </div>
             </div>
@@ -608,7 +608,7 @@
             <div class="form-group row">
               <div class="col-md-6">
                 <select required class="form-control" name="complexity">
-                  <option th:each="complexity : ${enabledComplexities}"
+                  <option th:each="complexity : ${complexities}"
                           th:value="${complexity}"
                           th:selected="${complexity == government.complexity}"
                           th:text="#{'enum.complexity.' + ${complexity}}">value
@@ -647,7 +647,7 @@
               <div class="formItem__title" th:text="#{lex.select.complexity}">Vali detailsus</div>
               <div class="formItem__element">
                 <div class="radioTabs">
-                  <label class="radioTabs__item" th:each="complexity : ${enabledComplexities}">
+                  <label class="radioTabs__item" th:each="complexity : ${complexities}">
                     <input type="radio" name="complexity" th:value="${complexity}" />
                     <span th:text="#{'enum.complexity.' + ${complexity}}">value</span>
                   </label>
@@ -742,7 +742,7 @@
               <div class="formItem__title" th:text="#{lex.select.complexity}">Vali detailsus</div>
               <div class="formItem__element">
                 <div class="radioTabs">
-                  <label class="radioTabs__item" th:each="complexity : ${enabledComplexities}">
+                  <label class="radioTabs__item" th:each="complexity : ${complexities}">
                     <input
                       type="radio"
                       name="complexity" 
@@ -891,7 +891,7 @@
               <div class="col-md-4">
                 <select required class="form-control required-field" name="complexity">
                   <option value="" hidden disabled selected th:text="#{common.select.complexity}">vali detailsus...</option>
-                  <option th:each="complexity : ${enabledComplexities}" th:value="${complexity}" th:text="#{'enum.complexity.' + ${complexity}}">value</option>
+                  <option th:each="complexity : ${complexities}" th:value="${complexity}" th:text="#{'enum.complexity.' + ${complexity}}">value</option>
                 </select>
               </div>
             </div>
@@ -936,7 +936,7 @@
             <div class="form-group row">
               <div class="col-md-4">
                 <select required class="form-control" name="complexity">
-                  <option th:each="complexity : ${enabledComplexities}"
+                  <option th:each="complexity : ${complexities}"
                           th:value="${complexity}"
                           th:selected="${complexity == note.complexity}"
                           th:text="#{'enum.complexity.' + ${complexity}}">value
@@ -986,7 +986,7 @@
               <div class="col-md-4">
                 <select required class="form-control required-field" name="complexity">
                   <option value="" hidden disabled selected th:text="#{common.select.complexity}">vali detailsus...</option>
-                  <option th:each="complexity : ${enabledComplexities}" th:value="${complexity}" th:text="#{'enum.complexity.' + ${complexity}}">value</option>
+                  <option th:each="complexity : ${complexities}" th:value="${complexity}" th:text="#{'enum.complexity.' + ${complexity}}">value</option>
                 </select>
               </div>
             </div>
@@ -1030,7 +1030,7 @@
             <div class="form-group row">
               <div class="col-md-4">
                 <select required class="form-control" name="complexity">
-                  <option th:each="complexity : ${enabledComplexities}"
+                  <option th:each="complexity : ${complexities}"
                           th:value="${complexity}"
                           th:selected="${complexity == note.complexity}"
                           th:text="#{'enum.complexity.' + ${complexity}}">value
@@ -1604,7 +1604,7 @@
               <div class="col-md-4">
                 <select required class="form-control required-field" name="complexity">
                   <option value="" hidden disabled selected th:text="#{common.select.complexity}">vali detailsus...</option>
-                  <option th:each="complexity : ${enabledComplexities}" th:value="${complexity}" th:text="#{'enum.complexity.' + ${complexity}}">value</option>
+                  <option th:each="complexity : ${complexities}" th:value="${complexity}" th:text="#{'enum.complexity.' + ${complexity}}">value</option>
                 </select>
               </div>
             </div>
@@ -1632,7 +1632,7 @@
             <div class="form-group row">
               <div class="col-md-4">
                 <select required class="form-control" name="complexity">
-                  <option th:each="complexity : ${enabledComplexities}"
+                  <option th:each="complexity : ${complexities}"
                           th:value="${complexity}"
                           th:selected="${complexity == grammar.complexity}"
                           th:text="#{'enum.complexity.' + ${complexity}}">value
@@ -1965,7 +1965,7 @@
               <div class="col-md-4">
                 <select required class="form-control required-field" name="complexity">
                   <option value="" hidden disabled selected th:text="#{common.select.complexity}">vali detailsus...</option>
-                  <option th:each="complexity : ${enabledComplexities}" th:value="${complexity}" th:text="#{'enum.complexity.' + ${complexity}}">value</option>
+                  <option th:each="complexity : ${complexities}" th:value="${complexity}" th:text="#{'enum.complexity.' + ${complexity}}">value</option>
                 </select>
               </div>
             </div>
@@ -1995,7 +1995,7 @@
             <div class="form-group row">
               <div class="col-md-4">
                 <select required class="form-control" name="complexity">
-                  <option th:each="complexity : ${enabledComplexities}"
+                  <option th:each="complexity : ${complexities}"
                           th:value="${complexity}"
                           th:selected="${complexity == image.complexity}"
                           th:text="#{'enum.complexity.' + ${complexity}}">value
@@ -2100,7 +2100,7 @@
               <div class="col-md-4">
                 <select required class="form-control required-field" name="complexity">
                   <option value="" hidden disabled selected th:text="#{common.select.complexity}">vali detailsus...</option>
-                  <option th:each="complexity : ${enabledComplexities}" th:value="${complexity}" th:text="#{'enum.complexity.' + ${complexity}}">value</option>
+                  <option th:each="complexity : ${complexities}" th:value="${complexity}" th:text="#{'enum.complexity.' + ${complexity}}">value</option>
                 </select>
               </div>
             </div>
@@ -2130,7 +2130,7 @@
             <div class="form-group row">
               <div class="col-md-4">
                 <select required class="form-control" name="complexity">
-                  <option th:each="complexity : ${enabledComplexities}"
+                  <option th:each="complexity : ${complexities}"
                           th:value="${complexity}"
                           th:selected="${complexity == media.complexity}"
                           th:text="#{'enum.complexity.' + ${complexity}}">value
@@ -2159,7 +2159,7 @@
             <input type="hidden" name="opCode" value="lexeme_complexity">
             <input type="hidden" name="value" th:value="${lexeme.complexity}">
             <select class="form-control" name="value">
-              <option th:each="complexity : ${enabledComplexities}"
+              <option th:each="complexity : ${complexities}"
                       th:value="${complexity}"
                       th:selected="${complexity == lexeme.complexity}"
                       th:text="#{'enum.complexity.' + ${complexity}}"></option>

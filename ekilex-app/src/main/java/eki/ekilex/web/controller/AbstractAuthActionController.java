@@ -27,7 +27,6 @@ import eki.common.data.CodeValue;
 import eki.ekilex.constant.SystemConstant;
 import eki.ekilex.constant.WebConstant;
 import eki.ekilex.data.Classifier;
-import eki.ekilex.data.ComplexitySelect;
 import eki.ekilex.data.Dataset;
 import eki.ekilex.data.DatasetPermission;
 import eki.ekilex.data.EkiUser;
@@ -213,21 +212,7 @@ public abstract class AbstractAuthActionController implements WebConstant, Syste
 	}
 
 	@ModelAttribute("complexities")
-	public List<ComplexitySelect> getComplexities() {
-
-		List<ComplexitySelect> complexities = new ArrayList<>();
-		complexities.add(new ComplexitySelect(Complexity.ANY, false));
-		complexities.add(new ComplexitySelect(Complexity.SIMPLE, false));
-		complexities.add(new ComplexitySelect(Complexity.DETAIL, false));
-		complexities.add(new ComplexitySelect(Complexity.SIMPLE1, true));
-		complexities.add(new ComplexitySelect(Complexity.DETAIL1, true));
-		complexities.add(new ComplexitySelect(Complexity.SIMPLE2, true));
-		complexities.add(new ComplexitySelect(Complexity.DETAIL2, true));
-		return complexities;
-	}
-
-	@ModelAttribute("enabledComplexities")
-	public List<Complexity> getEnabledComplexities() {
+	public List<Complexity> getComplexities() {
 		return Arrays.asList(Complexity.ANY, Complexity.SIMPLE, Complexity.DETAIL);
 	}
 

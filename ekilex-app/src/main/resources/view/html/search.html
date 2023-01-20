@@ -207,7 +207,7 @@
                 </div>
                 <div class="value-input-container col-auto flex-grow-1 flex-shrink-1" th:if="${criteria.searchKey.name() == 'COMPLEXITY'}">
                   <select class="form-control" th:name="'criteriaGroups[' + ${critGroupStat.index} + '].searchCriteria[' + ${critStat.index} + '].searchValue'" data-live-search="true" data-style="btn-outline-secondary">
-                    <option th:each="complexity : ${enabledComplexities}"
+                    <option th:each="complexity : ${complexities}"
                             th:value="${complexity}"
                             th:selected="${criteria.searchValue == complexity.name()}"
                             th:text="#{'enum.complexity.' + ${complexity}}"></option>
@@ -631,7 +631,7 @@
             </div>
             <div name="COMPLEXITY" class="value-input-container col-auto flex-grow-1 flex-shrink-1">
               <select class="form-control" data-live-search="true" data-style="btn-outline-secondary">
-                <option th:each="complexity : ${enabledComplexities}" th:value="${complexity}" th:text="#{'enum.complexity.' + ${complexity}}"></option>
+                <option th:each="complexity : ${complexities}" th:value="${complexity}" th:text="#{'enum.complexity.' + ${complexity}}"></option>
               </select>
             </div>
             <div name="SOURCE_REF" class="value-input-container col-auto flex-grow-1 flex-shrink-1">
