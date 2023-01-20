@@ -216,7 +216,7 @@ public class LookupDbService extends AbstractDataDbService {
 								.as("dataset_codes"))
 				.from(w, l)
 				.where(
-						DSL.lower(w.VALUE).eq(DSL.lower(wordValue))
+						w.VALUE.eq(wordValue)
 								.and(w.IS_PUBLIC.isTrue())
 								.and(w.LANG.eq(wordLang))
 								.and(l.WORD_ID.eq(w.ID)))
@@ -725,7 +725,7 @@ public class LookupDbService extends AbstractDataDbService {
 				.select(field(DSL.count(w.ID).gt(0)).as("word_exists"))
 				.from(w)
 				.where(
-						DSL.lower(w.VALUE).eq(DSL.lower(wordValue))
+						w.VALUE.eq(wordValue)
 								.and(w.LANG.eq(wordLang))
 								.and(w.IS_PUBLIC.isTrue()))
 				.fetchSingleInto(Boolean.class);
