@@ -21,8 +21,6 @@
 		<module>ekilex-app</module>
 		<module>wordweb-app</module>
 		<module>ekistat-app</module>
-		<!-- temporary module -->
-		<module>esterm-xml2json</module>
 	</modules>
 
 	<developers>
