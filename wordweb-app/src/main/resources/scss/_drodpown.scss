@@ -166,10 +166,8 @@
 }
 
 .dropdown-game {
-
   z-index: 1;
   display: block;
-  margin-bottom: 1rem;
 
   &.show {
     .dropdown-toggle {
@@ -182,12 +180,6 @@
   @media (min-width: 768px) {
     display: none;
     visibility: hidden;
-  }
-
-  img {
-    display: inline-block;
-    width: 1.6rem;
-    margin-right: 5px;
   }
 
   .nav-link {
@@ -209,19 +201,31 @@
   }
 
   .dropdown-toggle {
+    padding: 14px;
     display: flex;
     align-items: center;
-    justify-content: space-between;
+    justify-content: flex-start;
     width: 100%;
     text-align: left;
     background-color: $white;
-    @include border-radius(10px);
 
-    border: solid 2px $gray-500;
+    font-size: 1.25rem;
+    color: $blue-300;
+    font-weight: 700;
+    // @include border-radius(10px);
+
+    // border: solid 2px $gray-500;
 
     &::after {
-      font-size: 20px;
-      color: $gray-500;
+      margin-left: auto;
+      font-size: 1.25rem;
+      color: $blue-300;
+    }
+
+    img {
+      display: inline-block;
+      width: 1.6rem;
+      margin-right: 16px;
     }
   }
 
@@ -253,6 +257,11 @@
       overflow-y: scroll;
     }
 
+    img {
+      display: inline-block;
+      width: 1.6rem;
+      margin-right: 5px;
+    }
   }
 
   .has-submenu {

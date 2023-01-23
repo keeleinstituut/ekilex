@@ -8,10 +8,18 @@
             th:src="@{/view/js/hash.js}"></script>
     <!-- <script type="text/javascript"
             th:src="@{/view/js/ww-aside-menu.js}"></script> -->
-    <script type="text/javascript"
-            th:src="@{/view/js/ww-common-audio.js}"></script>
+    <script type="text/javascript" th:src="@{/view/js/recorder.js}"></script>
+    <script type="text/javascript" th:src="@{/view/js/ww-common-audio.js}"></script>
     <script th:inline="javascript">
       var wordGameTranslations = {
+        'seeMore' : /*[[#{button.see.more}]]*/'Näita rohkem',
+        'seeLess' : /*[[#{button.see.less}]]*/'Näita vähem',
+        'searchClear' : /*[[#{aria.search.clear}]]*/'Puhasta otsing',
+        'search' : /*[[#{aria.search.search}]]*/'Otsi',
+        'recStart' : /*[[#{button.label.start.rec}]]*/'Dikteeri',
+        'recStop' : /*[[#{button.label.stop.rec}]]*/'Lõpeta',
+        'selectedLanguage' : /*[[#{label.wordgame.selected.language}]]*/'Õpitav keel',
+        'wgSearch' : /*[[#{label.wordgame.search}]]*/'Otsi sõna või teemat',
         'level' : /*[[#{label.wordgame.level}]]*/'Keeletase',
         'texttransform' : /*[[#{label.wordgame.texttransform}]]*/'Kirjatüüp',
         'beginner' : /*[[#{label.wordgame.beginner}]]*/'Algtase',
@@ -20,6 +28,18 @@
         'uppercase' : /*[[#{label.wordgame.uppercase}]]*/'Trükitäht',
         'towiki' : /*[[#{label.wordgame.towiki}]]*/'Sõnaveebi',
         'example' : /*[[#{label.wordgame.example}]]*/'Näitelause',
+        'examples' : /*[[#{label.wordgame.examples}]]*/'Näited',
+        'examplesmissing' : /*[[#{label.wordgame.examplesmissing}]]*/'Näitelause puudub.',
+        'searchnoresult' : /*[[#{label.wordgame.search.noresult}]]*/'Otsing “[0]” ei andnud tulemusi. Proovi muuta otsingut või õpitavat keelt.',
+        'searchnoresultshort' : /*[[#{label.wordgame.search.noresult.short}]]*/'Ei leidnud vastet',
+        'nocategory' : /*[[#{label.wordgame.nocategory}]]*/'Valitud õpitavas keeles ei ole sellist teemat. Proovi leida sõnu läbi otsingu või vali muu teema.',
+        'nowords' : /*[[#{label.wordgame.nowords}]]*/'Sellel tasemel ei ole pilte. Vaheta piltide nägemiseks keeleoskustaset.',
+        'selectionOfCategories' : /*[[#{label.wordgame.selection.of.categories}]]*/'Teemade valik',
+        'word' : /*[[#{label.wordgame.word}]]*/'SÕNA',
+        'category' : /*[[#{label.wordgame.category}]]*/'TEEMA',
+        'language-et' : /*[[#{label.wordgame.languages.et}]]*/'eesti keel',
+        'language-ru' : /*[[#{label.wordgame.languages.ru}]]*/'vene keel',
+        'language-en' : /*[[#{label.wordgame.languages.en}]]*/'inglise keel',
         'tocardfront' : /*[[#{label.wordgame.tocardfront}]]*/'Pilt',
         'nosound' : /*[[#{label.wordgame.nosound}]]*/'Sellel sõnal ei ole heli',
         'autoplay' : /*[[#{label.wordgame.autoplay}]]*/'Automaatne hääldamine',
@@ -29,9 +49,9 @@
         'feedback' : /*[[#{feedback.title}]]*/'Tagasiside',
       }
 
+      var speechRecognitionServiceUrl = /*[[${speechRecognitionServiceUrl}]]*/'/';
       const viewPath = /*[[@{/view}]]*/'/view';
     </script>
-    <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/twig.js/1.15.0/twig.min.js"></script> -->
     <script th:src="@{/view/js/twig.min.js}"></script>
     <script th:src="@{/view/js/ww-wordgame.js}"></script>
   </th:block>

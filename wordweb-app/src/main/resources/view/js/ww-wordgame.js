@@ -8,6 +8,9 @@ class WordGame {
       images: `${viewPath}/images`,
     }
   
+    this.languages = ['et'];
+    this.languagesWithSound = ['et'];
+    this.languageNames = {};
     this.images = []
     this.multiLevelMulticards = ['keha','nägu','jalg','käsi'];
     this.multiCaseMulticards = ['laps', 'vanem', 'vanavanem'];
@@ -134,7 +137,7 @@ class WordGame {
     ];
   
     this.options = {
-      lang: undefined,
+      wordgame_lang: undefined,
       active_category: undefined,
       level: undefined,
       text_transform: undefined,
@@ -146,6 +149,78 @@ class WordGame {
       type_2: 'col-lg-3 col-md-6 col-sm-6 col-xs-10 col-10',
       type_3: 'col-12',
     }
+
+    this.sortAlphabets = {
+      et: [
+        "a",
+        "b",
+        "c",
+        "d",
+        "e",
+        "f",
+        "g",
+        "h",
+        "i",
+        "j",
+        "k",
+        "l",
+        "m",
+        "n",
+        "o",
+        "p",
+        "q",
+        "r",
+        "s",
+        "š",
+        "z",
+        "ž",
+        "t",
+        "u",
+        "v",
+        "w",
+        "õ",
+        "ä",
+        "ö",
+        "ü",
+        "x",
+        "y",
+      ],
+      ru: [
+        "а",
+        "б",
+        "в",
+        "г",
+        "д",
+        "е",
+        "ё",
+        "ж",
+        "з",
+        "и",
+        "й",
+        "к",
+        "л",
+        "м",
+        "н",
+        "о",
+        "п",
+        "р",
+        "с",
+        "т",
+        "у",
+        "ф",
+        "х",
+        "ц",
+        "ч",
+        "ш",
+        "щ",
+        "ъ",
+        "ы",
+        "ь",
+        "э",
+        "ю",
+        "я",
+      ],
+    };
   }
 
   loadData(path, contentType) {
@@ -167,11 +242,12 @@ class WordGame {
     });
   }
 
-  async renderTemplate() {
+  async renderTemplate(full = false, searchError = null) {
     return new Promise((resolve, reject) => {
       const template = Twig.twig({
         data: this.htmlTemplate,
       });
+
       Twig.extendFilter('slug', function (str) {
         str = str.replace(/^\s+|\s+$/g, '');
         str = str.toLowerCase();
@@ -192,17 +268,26 @@ class WordGame {
       Twig.extendFilter('decode', function (str) {
         return decodeHTMLEntities(str);
       });
+
+      Twig.extendFilter('replaceString', function (str, value) {
+        return str.replace(/\.*(\[0\])\.*/, value);
+      });
+
       const html = template.render({
         data: this.parsedData,
+        searchError: searchError,
+        categoryTranslations: this.categoryTranslations,
+        languageNames: this.languageNames,
         emptySubCategories: this.parsedSubCategories,
         emptyCategories: this.parsedCategories,
+        languagesWithSound: this.languagesWithSound,
         options: this.options,
         labels: wordGameTranslations,
         viewPath: viewPath,
       });
 
       // re-render only necessary stuff
-      if (this.main.querySelector('.wordgame__options')) {
+      if (this.main.querySelector('.wordgame__options') && !full) {
         this.main.querySelector('.wordgame__content').innerHTML = $(html).find('.wordgame__content').html();
         this.main.querySelector('.dropdown-game').innerHTML = $(html).find('.dropdown-game').html();
         resolve(true);
@@ -227,12 +312,18 @@ class WordGame {
     var multicardsToAdd = [];
     
     this.origData = this.origData.concat(this.multiCards);
+    this.categoryTranslations = {};
     
     this.origData.forEach((item) => {
+      let isOtherLanguage = item.ee_category && item.ee_category.length > 0;
+
       if (item.type == 1) {
 
         item.image_link = item.not_interactive === 1 ? item.image_link : '';
         item.category = item.category.trim();
+        if (isOtherLanguage) {
+          item.ee_category = item.ee_category.trim();
+        }
         item.sub_category = item.sub_category.trim();
         item.A1_A2 = "no";
         item.A1_B1 = "no";
@@ -244,11 +335,12 @@ class WordGame {
             word: "Multikaart",
             word_link: "",
             category: `${item.category}`,
+            ee_category: `${isOtherLanguage ? item.ee_category : ''}`,
             sub_category: `${item.sub_category}`,
             example_1: "",
             example_2: "",
             example_3: "",
-            image_link: `${this.paths.images}/wordgame-multicards/${this.wordgameSlugify(item.sub_category)}.svg`,
+            image_link: `${this.paths.images}/wordgame-multicards/${item.multicard_filename ? item.multicard_filename : this.wordgameSlugify(item.sub_category)}.svg`,
             audio_link: "",
             level: "",
             A1_A2: "yes",
@@ -308,9 +400,12 @@ class WordGame {
 
     // separating data by category
     this.origData.forEach((item) => {
-      const category = item.category;
+      let isOtherLanguage = item.ee_category && item.ee_category.length > 0;
+      const category = isOtherLanguage ? item.ee_category : item.category;
+
       if (!this.parsedData[category]) {
         this.parsedData[category] = [];
+        this.categoryTranslations[category] = item.category;
       }
 
       item.examples = [item.example_1, item.example_2, item.example_3].filter(text => text);
@@ -445,8 +540,39 @@ class WordGame {
     this.setMenuPlaceholderIcons(parent);
 
     this.lazyLoad();
+
+    if (!element) {
+      this.bindSearch();
+      this.bindLanguageSelect();
+      this.bindVoiceSearch();
+      this.bindCollapseToggle();
+    }
   }
 
+  bindCollapseToggle() {
+    $('#wordgame-collapse-toggle').click((e) => {
+      $('#wordgame-collapse').toggleClass('collapse-open');
+    });
+  }
+
+  bindVoiceSearch() {
+    $("#wordgame-button-start-rec").click(function (e) {
+      console.log('aaaaa');
+      $('#wordgame-button-start-rec').prop('hidden', 'hidden');
+      $('#wordgame-button-stop-rec').prop('hidden', null);
+      $('.search-btn').prop('disabled', true);
+      startRecording();
+    });
+    
+    $("#wordgame-button-stop-rec").click(function (e) {
+      $('#wordgame-button-stop-rec').prop('hidden', 'hidden');
+      $('#wordgame-button-start-rec').prop('hidden', null);
+      $('.search-btn').prop('disabled', false);
+      stopRecording(function (audioBlob) {
+        sendToWebSocket(audioBlob);
+      });
+    });
+  }
 
   bindCards(parent) {
     this.bindFlipcardButtons(parent);
@@ -640,6 +766,12 @@ class WordGame {
   bindTextTransformFilter(parent) {
     parent.querySelectorAll('[text-transform]').forEach((item) => {
       item.addEventListener('click', (e) => {
+        parent.querySelectorAll(`[text-transform=${item.getAttribute('text-transform')}]`).forEach((el) => {
+          if (!el.checked) {
+            el.checked = true;
+          }
+        });
+
         this.options.text_transform = item.getAttribute('text-transform');
         const upperClass = 'wordgame-text-upper';
 
@@ -722,6 +854,12 @@ class WordGame {
   bindLevelFilter(parent) {
     parent.querySelectorAll('[sort-id]').forEach((item) => {
       item.addEventListener('click', (e) => {
+        parent.querySelectorAll(`[sort-id=${item.getAttribute('sort-id')}]`).forEach((el) => {
+          if (!el.checked) {
+            el.checked = true;
+          }
+        });
+
         this.options.level = item.getAttribute('sort-id');
         this.pushToUrl();
         this.renderTemplate();
@@ -759,11 +897,18 @@ class WordGame {
 
         if (this.main.querySelector('.dropdown-game')) {
           this.main.querySelector('.dropdown-game').classList.remove('show');
+          this.main.querySelector('.dropdown-game .dropdown-menu').classList.remove('show');
         }
-        this.pushToUrl();
-        this.renderTemplate();
+        
+        const asyncReRender = async () => {
+          await new Promise(r => setTimeout(r, 1));
+          this.pushToUrl();
+          await this.renderTemplate();
 
-        window.scrollTo(0, 0);
+          window.scrollTo(0, 0);
+        }
+
+        asyncReRender();
       });
     });
   }
@@ -779,6 +924,529 @@ class WordGame {
       });
     }
     $('.tooltip[role="tooltip"]').remove();
+  }
+
+  searchCategories(input) {
+    let categories = Object.keys(this.categoryTranslations).map((categoryKey) => {
+      return {
+        category: this.categoryTranslations[categoryKey],
+        categoryid: categoryKey
+      }
+    });
+
+    const items = JSON.parse(JSON.stringify(this.origData));
+    const inputLower = input.toLowerCase();
+
+    function CharCompare(a, b, alphabet, index) {
+      if (index == a.length || index == b.length) {
+        return 0;
+      }
+      var aChar = alphabet.indexOf(a.toLowerCase().charAt(index));
+      var bChar = alphabet.indexOf(b.toLowerCase().charAt(index));
+      if (aChar != bChar) {
+        return aChar - bChar
+      }
+      else {
+        return CharCompare(a, b, alphabet, index+1)
+      }
+    }
+
+    function searchWordsArray(splitWords) {
+      const inputWords = inputLower.split(' ');
+
+      if (inputWords.length <= 1) {
+        for (let i = 0; i < splitWords.length; i++) {
+          const word = splitWords[i];
+  
+          if (word.startsWith(inputLower) || word.endsWith(inputLower)) {
+            return true;
+          }
+        }
+      } else if (splitWords.length >= inputWords.length) {        
+        for (let i = 0; i < splitWords.length; i++) {
+          let matchingParts = 0;
+
+          for (let j = 0; j < inputWords.length; j++) {
+            if (i + j > splitWords.length - 1) {
+              break;
+            }
+
+            const word = splitWords[i + j];
+            const inputWord = inputWords[j];
+
+            if (j === 0 && word.endsWith(inputWord)) {
+              matchingParts++;
+            }
+            else if (j < inputWords.length - 1 && inputWord === word) {
+              matchingParts++;
+            } else if (word.startsWith(inputWord)) {
+              matchingParts++;
+            } else {
+              break;
+            }
+          }
+
+          if (matchingParts === inputWords.length) {  
+            return true;
+          }
+        }
+      }
+
+      return false;
+    }
+
+    let resultCategoryObjects = categories.filter(el => {
+      const splitWords = el.category.toLowerCase().split(' ');
+      return searchWordsArray(splitWords);
+    });
+
+    resultCategoryObjects = resultCategoryObjects.sort((a, b) => {
+      if (this.sortAlphabets[this.options.wordgame_lang]) {
+        return CharCompare(a.category, b.category, this.sortAlphabets[this.options.wordgame_lang], 0);
+      } else {
+        return a.category.localeCompare(b.category);
+      }
+    });
+
+    // bring exact string matches to front
+    resultCategoryObjects = resultCategoryObjects.sort((a, b) => {
+      return (a.category.toLowerCase() === inputLower) ? -1 : 1;
+    });
+
+
+
+    let resultWordObjects = items.filter(el => {
+      const splitWords = el.word.toLowerCase().split(' ');
+      const wordLevelCorrect = el.type === 1 ? true : this.options.level === 'algtase' ? el.A1_A2 === 'yes' : el.A1_B1 === 'yes';
+      return wordLevelCorrect && searchWordsArray(splitWords);
+    }).map((el) => {
+      let simplifiedObj = {
+        word: el.word,
+        category: el.category,
+        categoryid: el.ee_category || el.category,
+      };
+
+      if (el.type === 1) {
+        simplifiedObj.sub_category = el.sub_category;
+      }
+
+      return simplifiedObj;
+    });
+
+    resultWordObjects = resultWordObjects.sort((a, b) => {
+      const aCombined = `${a.word} ${a.category}`;
+      const bCombined = `${b.word} ${b.category}`;
+
+      if (this.sortAlphabets[this.options.wordgame_lang]) {
+        return CharCompare(aCombined, bCombined, this.sortAlphabets[this.options.wordgame_lang], 0);
+      } else {
+        return aCombined.localeCompare(bCombined);
+      }
+    });
+
+    resultWordObjects = resultWordObjects.sort((a, b) => {
+      if (a.word.toLowerCase() === inputLower) {
+        // bring exact string matches to front
+        if (a.word === b.word) {
+          if (this.sortAlphabets[this.options.wordgame_lang]) {
+            return CharCompare(a.category, b.category, this.sortAlphabets[this.options.wordgame_lang], 0);
+          } else {
+            return a.category.localeCompare(b.category);
+          }
+        } else {
+          return -1;
+        }
+      } else {
+        const aCombined = `${a.word} ${a.category}`;
+        const bCombined = `${b.word} ${b.category}`;
+  
+        if (this.sortAlphabets[this.options.wordgame_lang]) {
+          return CharCompare(aCombined, bCombined, this.sortAlphabets[this.options.wordgame_lang], 0);
+        } else {
+          return aCombined.localeCompare(bCombined);
+        }
+      }
+    });
+
+    // remove duplicate words that are in same category
+    let seenWordObjects = [];
+    resultWordObjects = resultWordObjects.filter((el) => {
+      if (seenWordObjects.includes(el.word + el.category)) {
+        return false;
+      } else {
+        seenWordObjects.push(el.word + el.category);
+        return true;
+      }
+    });
+
+    // limit the amount of results
+    resultCategoryObjects = resultCategoryObjects.slice(0, 5);
+    resultWordObjects = resultWordObjects.slice(0, 10);
+
+    let directMatchObject = null;
+
+    if (resultWordObjects.length > 0) { 
+      for (let i = 0; i < resultWordObjects.length; i++) {
+        const wordObj = resultWordObjects[i];
+        
+        if (inputLower === wordObj.word.toLowerCase()) {
+          directMatchObject = wordObj;
+          break;
+        }
+      }
+    }
+
+    if (!directMatchObject && resultCategoryObjects.length > 0) {
+      for (let i = 0; i < resultCategoryObjects.length; i++) {
+        const categoryObj = resultCategoryObjects[i];
+        
+        if (inputLower === categoryObj.category.toLowerCase()) {
+          directMatchObject = categoryObj;
+          break;
+        }
+      }
+    }
+    
+    const hasResults = resultCategoryObjects.length > 0 || resultWordObjects.length > 0;
+    
+    return { resultCategoryObjects, resultWordObjects, hasResults, directMatchObject, searchTerm: input };
+  }
+
+  bindSearch(parent) {
+    const searchElem = document.querySelector('#wordgame-search');
+    const searchContainer = searchElem.closest('.wordgame-search');
+    const searchClearBtn = document.querySelector('#wordgame-button-close');
+    const searchEnterBtn = document.querySelector('#wordgame-button-search');
+    const resultsElem = document.querySelector('#wordgame-search-results');
+    let currentFocus = -1;
+
+    if (searchElem) {
+      const categories = document.querySelectorAll('.wordgame__menu [data-category]');
+
+      const resultOpenHandler = (resultObj) => {
+        const { category, word, sub_category, categoryid } = resultObj;
+
+        searchContainer.classList.remove('open');
+        searchClearBtn.classList.add('wordgame-hidden');
+        searchElem.value = "";
+        
+        let activeCategoryElem = null;
+
+        categories.forEach((cat) => {
+          cat.classList.remove('wordgame-active');
+          cat.setAttribute('aria-selected', "false");
+
+          if (cat.getAttribute('data-category') === categoryid) {
+            activeCategoryElem = cat;
+          }
+        });
+        
+        this.options.active_category = categoryid;
+
+        if (activeCategoryElem) {
+          activeCategoryElem.classList.add('wordgame-active');
+          activeCategoryElem.setAttribute('aria-selected', "true");
+  
+          if (activeCategoryElem.classList.contains('nav-link')) {
+            this.main.querySelectorAll('[data-category]').forEach((elem) => {
+              if (elem.getAttribute('data-category') == this.options.active_category) {
+                elem.classList.add('wordgame-active');
+              }
+              else if (elem.classList.contains('wordgame-active')) {
+                elem.classList.remove('wordgame-active');
+              }
+            });
+          }
+        }
+
+        this.pushToUrl();
+
+        const asyncReRender = async () => {
+          await this.renderTemplate();
+
+          if (word) {
+            let scrollToCard = null;
+            const cardLabelElems = this.main.querySelectorAll('.wordgame__card__name');
+
+            for (let i = 0; i < cardLabelElems.length; i++) {
+              const cardLabelElem = cardLabelElems[i];
+
+              if (cardLabelElem.innerText === word) {
+                scrollToCard = cardLabelElem.closest('.wordgame__card');
+                break;
+              }
+            }
+
+            let scrollToSubcategory = null;
+            if (!scrollToCard && sub_category) {
+              const subcategoryElems = this.main.querySelectorAll('.wordgame__subcategory--header h3');
+
+              for (let i = 0; i < subcategoryElems.length; i++) {
+                const subcategoryElem = subcategoryElems[i];
+
+                if (subcategoryElem.innerText === sub_category) {
+                  scrollToSubcategory = subcategoryElem.closest('.subcategory-container');
+                  break;
+                }
+              }
+            }
+
+            if (scrollToCard || scrollToSubcategory) {
+              await new Promise(r => setTimeout(r, 100));
+
+              if (!scrollToCard && scrollToSubcategory) {
+                scrollToSubcategory.scrollIntoView({behavior: 'smooth', block: 'center'});
+
+                return;
+              }
+
+
+              scrollToCard.scrollIntoView({behavior: 'smooth', block: 'center'});
+
+              let animationRan = false;
+
+              await new Promise(r => setTimeout(r, 100));
+
+              const highlightAnimation = () => {
+                animationRan = true;
+                scrollToCard.classList.add('testanimation');
+                $(scrollToCard).on('animationend webkitAnimationEnd oAnimationEnd', () => {
+                  scrollToCard.classList.remove('testanimation');
+                });
+              }
+
+              let scrollTimeout = setTimeout(highlightAnimation, 150);
+
+              const handleScrollEvent = (e) => {
+                if (!animationRan) {
+                  clearTimeout(scrollTimeout);
+                  scrollTimeout = setTimeout(highlightAnimation, 150);
+                } else {
+                  document.removeEventListener('scroll', handleScrollEvent);
+                }
+              }
+
+              document.addEventListener('scroll', handleScrollEvent);
+            } else {
+              window.scrollTo(0, 0);
+            }
+          } else {
+            window.scrollTo(0, 0);
+          }
+        }
+
+        asyncReRender();
+      }
+
+      const resultClickHandler = (resultObj) => {    
+        return (e) => {
+          e.preventDefault();
+
+          resultOpenHandler(resultObj);
+        }
+      }
+
+      $(searchClearBtn).click(() => {
+        searchElem.value = "";
+        searchContainer.classList.remove('open');
+        searchClearBtn.classList.add('wordgame-hidden');
+      });
+
+      const createResultElements = (parentElem, resultObjects, isCategory = false) => {
+        const dividerElem = document.createElement('div');
+        dividerElem.className = 'wordgame-search__divider';
+        dividerElem.innerHTML = `<div>${isCategory ? wordGameTranslations.category.toUpperCase() || 'TEEMA' : wordGameTranslations.word.toUpperCase() || 'SÕNA'}</div><div class="wordgame-search__divider-line"></div>`;
+        parentElem.appendChild(dividerElem);
+
+        let resultsListElem = document.createElement('ul');
+        resultsListElem.className = "wordgame-search__list";
+
+        for (let i = 0; i < resultObjects.length; i++) {
+          const resultObj = resultObjects[i];
+          
+          let listElem = document.createElement('li');
+          listElem.className = "wordgame-search__list-item";
+
+          let resultButton = document.createElement('button');
+          resultButton.type = "button";
+          resultButton.tabIndex = "-1";
+          resultButton.className = "wordgame-search__list-result";
+          resultButton.onclick = resultClickHandler(resultObj);
+
+          if (isCategory) {
+            resultButton.innerHTML = `<span class="wordgame-search__category">${resultObj.category}</span>`;
+          } else {            
+            resultButton.innerHTML = `
+              <span class="wordgame-search__word">${resultObj.word}</span>
+              <span class="wordgame-search__minus">—</span>
+              <span class="wordgame-search__category">${resultObj.category}</span>
+            `;
+          }
+
+
+          listElem.appendChild(resultButton);
+
+          resultsListElem.appendChild(listElem);
+        }
+        
+        parentElem.appendChild(resultsListElem);
+      }
+      
+      let searchResults = {};
+
+      $(searchElem).on('input', () => {
+        const inputValue = searchElem.value;
+        currentFocus = -1;
+
+        if (searchClearBtn) {
+          if (inputValue.length > 0) {
+            searchClearBtn.classList.remove('wordgame-hidden');
+          } else {
+            searchClearBtn.classList.add('wordgame-hidden');
+          }
+        }
+
+        if (inputValue.length > 2) {
+          searchResults = this.searchCategories(inputValue);
+          const { resultCategoryObjects, resultWordObjects, hasResults } = searchResults
+
+          resultsElem.innerHTML = '';
+
+          if (hasResults) {
+            if (resultWordObjects.length > 0) {
+              createResultElements(resultsElem, resultWordObjects);
+            }
+
+            if (resultCategoryObjects.length > 0) {
+              createResultElements(resultsElem, resultCategoryObjects, true);
+            }
+          } else {
+            resultsElem.innerHTML = `<div class="wordgame-search__noresults">${wordGameTranslations.searchnoresultshort}</div>`;
+          }
+
+          searchContainer.classList.add('open');
+        } else {
+          searchContainer.classList.remove('open');
+          searchResults = {};
+        }
+      });
+
+      const directSearchHandler = () => {
+        const { hasResults, directMatchObject } = searchResults;
+
+        if (hasResults && directMatchObject && directMatchObject.category) {
+          resultOpenHandler(directMatchObject);
+        } else {
+          searchContainer.classList.remove('open');
+          searchClearBtn.classList.add('wordgame-hidden');
+          this.renderTemplate(false, searchElem.value);
+          searchElem.value = "";
+        }
+      }
+
+      const hideKeyboard = (element) => {
+        element.setAttribute('readonly', 'readonly');
+        element.setAttribute('disabled', 'true');
+        setTimeout(() => {
+          element.blur();
+          element.removeAttribute('readonly');
+          element.removeAttribute('disabled');
+        }, 100);
+      }
+    
+      $(searchElem).on('keydown', (e) => {
+        const buttonElems = resultsElem.querySelectorAll('.wordgame-search__list-result');
+
+        if (!buttonElems) {
+          if (e.key === 'Enter' || e.keyCode === 13) {
+            e.preventDefault();
+            directSearchHandler();
+            hideKeyboard(searchElem);
+            currentFocus = -1;
+          }
+
+          return;
+        }
+
+        const setActive = () => {
+          for (let i = 0; i < buttonElems.length; i++) {
+            buttonElems[i].classList.remove('wordgame-search__active-item');
+          }
+
+          if (currentFocus >= buttonElems.length) {
+            currentFocus = 0;
+          }
+          if (currentFocus < 0) {
+            currentFocus = buttonElems.length - 1;
+          }
+
+          buttonElems[currentFocus].classList.add('wordgame-search__active-item');
+        }
+
+        if (e.key === 'ArrowDown' || e.keyCode === 40) {
+          e.preventDefault();
+          currentFocus++;
+          setActive();
+        } else if (e.key === 'ArrowUp' || e.keyCode === 38) {
+          e.preventDefault();
+          currentFocus--;
+          setActive();
+        } else if (e.key === 'Enter' || e.keyCode === 13) {
+          e.preventDefault();
+
+          if (currentFocus > -1) {
+            buttonElems[currentFocus].click();
+          } else {
+            directSearchHandler();
+            hideKeyboard(searchElem);
+          }
+          currentFocus = -1;
+        }
+      });
+
+      $(searchEnterBtn).click((e) => {
+        directSearchHandler();
+      });
+
+      const handleClosingAutocomplete = (className, focusOut = false) => {
+        if ((className !== 'wordgame-search__input' && className !== 'wordgame-search__list-result') || focusOut) {
+          searchContainer.classList.remove('open');
+        }
+      }
+
+      document.addEventListener('focus', function (e) {
+        handleClosingAutocomplete(e.target.className);
+      }, true);
+
+      window.addEventListener('blur', function (e) {
+        handleClosingAutocomplete(e.target.className, true);
+      });
+
+      $(document).click((e) => {
+        handleClosingAutocomplete(e.target.className);
+      });
+    }
+  }
+
+  bindLanguageSelect() {
+    const selectElem = document.querySelector('#wordgame-language-select');
+
+    if (selectElem) {
+      selectElem.addEventListener('change', (e) => {
+        e.preventDefault();
+
+        this.options.wordgame_lang = e.currentTarget.value;
+
+        const asyncReRender = async () => {
+          await new Promise(r => setTimeout(r, 1));
+          this.pushToUrl();
+          this.initialize(true);
+          window.scrollTo(0, 0);
+        }
+
+        asyncReRender();
+      });
+    }
   }
 
   wordgameSlugify (str) {
@@ -883,25 +1551,66 @@ class WordGame {
     window.onbeforeprint = beforePrint;
   }
 
-  async initialize() {
+  async initialize(full = false, testJson = false) {
+    this.options.wordgame_lang = "et";
+    this.retrieveFromUrl();
+
     this.main = document.querySelector('#wordgame');
-    this.origData = await this.loadData(this.paths.data, 'application/json');
+
+    if (this.options.wordgame_lang === 'et') {
+      this.origData = await this.loadData(this.paths.data, 'application/json');
+    } else {
+      let err = false;
+      let tempData = {};
+
+      try {
+        tempData = await this.loadData(`${viewPath}/js/wordgame-data-${this.options.wordgame_lang}.json`, 'application/json');
+
+        if (tempData.error) {
+          err = true;
+        }
+      } catch (err) {
+        err = true;
+      }
+
+      if (err) {
+        // if fail to load other language then fallback to 'et'
+        this.origData = await this.loadData(this.paths.data, 'application/json');
+        this.options.wordgame_lang = "et";
+        this.pushToUrl();
+      } else {
+        this.origData = tempData;
+      }
+    }
+    
     this.htmlTemplate = await this.loadData(this.paths.template, 'text/html; charset=UTF-8');
+
     this.categorizeData();
-    this.options.active_category = Object.keys(this.parsedData)[0];
-    this.options.lang = "et";
+
+    // set defaults
+    this.options.wordgame_lang = "et";
     this.options.level = "kesktase";
     this.options.text_transform = "lower";
     this.options.autoplay = "off";
+    this.options.active_category = Object.keys(this.parsedData)[0];
     this.retrieveFromUrl();
-    this.printListener();
-
-    if (this.options.json) {
-      this.origData = await this.loadData(this.options.json, 'application/json');
+    
+    if (testJson !== false) {
+      this.origData = testJson;
       this.categorizeData();
     }
 
-    await this.renderTemplate();
+    // get language keys & translations for language select
+    Object.keys(wordGameTranslations).forEach((langKey) => {
+      // regex that selects the key after string 'language-'
+      const langKeyRegex = langKey.match(/language-([A-Za-z]+)/);
+
+      if (langKeyRegex) {
+        this.languageNames[langKeyRegex[1].toLowerCase()] = wordGameTranslations[langKey];
+      }
+    });
+    
+    await this.renderTemplate(full);
     
     window.addEventListener('scroll', () => {
       this.loadImages();
@@ -910,6 +1619,8 @@ class WordGame {
       this.updateImageAttributes();
       this.loadImages();
     });
+
+    this.printListener();
 
     if ($('body').find('#wordgame').length !== 0) {
       $('body').addClass('has-wordgame');
@@ -1013,7 +1724,12 @@ class WordGame {
   }
 }
 
-window.onload = function () {
-  const game = new WordGame();
-  game.initialize();
-}
+const wordGameInstance = new WordGame();
+
+// window.onload = function () {
+// }
+
+$(document).ready(function () {
+  wordGameInstance.initialize();
+	initialiseRecording(speechRecognitionServiceUrl);
+});

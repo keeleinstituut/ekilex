@@ -140,7 +140,7 @@ function sendToWebSocket(audioBlob) {
 				if (res.result) {
 					if (res.result.final) {
 						$('.search-phrase').val(res.result.hypotheses[0].transcript);
-						$('.search-btn').trigger('click');
+						$('.search-btn, .wordgame-search__button-search').trigger('click');
 					}
 				}
 			}
