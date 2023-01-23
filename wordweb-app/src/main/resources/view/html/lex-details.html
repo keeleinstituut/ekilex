@@ -221,20 +221,37 @@
                         <th:block th:each="syn,synIter : ${destinLangSyns}"
                                   th:with="
                                   isCollapsable=${synIter.count > T(eki.wordweb.constant.WebConstant).SYN_WORDS_DISPLAY_LIMIT},
-                                  isLimit=${synIter.count == T(eki.wordweb.constant.WebConstant).SYN_WORDS_DISPLAY_LIMIT}">
+                                  isLimit=${synIter.count == T(eki.wordweb.constant.WebConstant).SYN_WORDS_DISPLAY_LIMIT},
+                                  isInexactSyn=${syn.type == T(eki.common.constant.SynonymType).INEXACT_SYN_MEANING_REL}">
                           <span class="mr-1" th:classappend="${isCollapsable ? 'collapse collapse-target':''}">
                             <a th:href="@{${viewUtil.getSearchUri(sessionBean, searchMode, syn.word, syn.homonymNr)}}" class="matching-word "
                                th:classappend="${syn.wordId == wordId ? 'match' : ''}">
                               <span th:utext="${viewUtil.getWordValueMarkup(syn)}">tee</span>
                             </a>
                             <span th:if="${syn.additionalDataExists}" class="text-small">
-                              <!-- valueState matches -->
                               <span th:if="${(syn.mwLexValueState != null)}" th:text="${syn.mwLexValueState.value}"></span>
-  
                               <th:block th:if="${not #lists.isEmpty(syn.mwLexRegisters)}">
                                 <span class="type-two text-uppercase" th:each="register,regIter : ${syn.mwLexRegisters}" th:text="${register.value + (regIter.last ? '' : ', ')}"></span>
                               </th:block>
                             </span>
+                            <th:block th:if="${isInexactSyn}"
+                                  th:with="
+                                  sourceLangWordExists=${not #lists.isEmpty(syn.sourceLangInexctSynWords)},
+                                  inexactSynMeaningDefExists=${not #strings.isEmpty(syn.inexactSynMeaningDefinition)}">
+                              <span th:if="${sourceLangWordExists || inexactSynMeaningDefExists}">
+                                <span class="mr-n1">(</span>
+                                <th:block th:if="${sourceLangWordExists}">
+                                  <span th:each="sourceLangWord,sourceLangWordIter : ${syn.sourceLangInexctSynWords}">
+                                    <a th:href="@{${viewUtil.getSearchUri(sessionBean, searchMode, sourceLangWord.word, sourceLangWord.homonymNr)}}">
+                                      <span th:utext="${viewUtil.getWordValueMarkup(sourceLangWord)}"></span>
+                                    </a>
+                                    <span th:unless="${sourceLangWordIter.last}" class="ml-n1">,</span>
+                                  </span>
+                                </th:block>
+                                <span th:unless="${sourceLangWordExists}" th:text="${syn.inexactSynMeaningDefinition}"></span>
+                                <span class="ml-n1">)</span>
+                              </span>
+                            </th:block>
                             <span th:unless="${synIter.last}" class="ml-n1" th:classappend="${isLimit ? 'collapse-target collapse' : ''}">,</span>
                           </span>
                         </th:block>

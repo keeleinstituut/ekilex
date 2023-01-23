@@ -9,6 +9,7 @@ import eki.common.constant.Complexity;
 import eki.common.constant.SynonymType;
 import eki.common.data.Classifier;
 import eki.wordweb.data.ComplexityType;
+import eki.wordweb.data.Word;
 import eki.wordweb.data.WordTypeData;
 
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
@@ -41,6 +42,10 @@ public class TypeMeaningWord extends WordTypeData implements ComplexityType {
 	private String mwLexValueStateCode;
 
 	private Classifier mwLexValueState;
+
+	private List<Word> sourceLangInexctSynWords;
+
+	private String inexactSynMeaningDefinition;
 
 	private boolean additionalDataExists;
 
@@ -151,6 +156,22 @@ public class TypeMeaningWord extends WordTypeData implements ComplexityType {
 
 	public void setMwLexValueState(Classifier mwLexValueState) {
 		this.mwLexValueState = mwLexValueState;
+	}
+
+	public List<Word> getSourceLangInexctSynWords() {
+		return sourceLangInexctSynWords;
+	}
+
+	public void setSourceLangInexctSynWords(List<Word> sourceLangInexctSynWords) {
+		this.sourceLangInexctSynWords = sourceLangInexctSynWords;
+	}
+
+	public String getInexactSynMeaningDefinition() {
+		return inexactSynMeaningDefinition;
+	}
+
+	public void setInexactSynMeaningDefinition(String inexactSynMeaningDefinition) {
+		this.inexactSynMeaningDefinition = inexactSynMeaningDefinition;
 	}
 
 	public boolean isAdditionalDataExists() {

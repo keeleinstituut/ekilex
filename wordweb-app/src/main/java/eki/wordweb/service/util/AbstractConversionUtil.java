@@ -92,7 +92,7 @@ public abstract class AbstractConversionUtil implements WebConstant, SystemConst
 		if (Complexity.ANY.equals(dataComplexity)) {
 			return true;
 		}
-		return StringUtils.startsWith(dataComplexity.name(), lexComplexity.name());
+		return dataComplexity.equals(lexComplexity);
 	}
 
 	protected <T extends LangType> List<T> filter(List<T> list, String wordLang, List<String> destinLangs) {

@@ -112,6 +112,7 @@ create type type_meaning_relation as (
 				word_type_codes varchar(100) array,
 				complexity varchar(100),
 				weight numeric(5,4),
+        inexact_syn_def text,
 				lex_value_state_codes varchar(100) array,
 				lex_register_codes varchar(100) array,
 				lex_government_values text array,
@@ -1638,6 +1639,7 @@ select r.m1_id meaning_id,
          r.word_type_codes,
          r.complexity,
          r.weight,
+         r.inexact_syn_def,
          r.lex_value_state_codes,
          r.lex_register_codes,
          r.lex_government_values,
@@ -1656,6 +1658,7 @@ from (select mr.meaning1_id m1_id,
              w.lang word_lang,
              w.aspect_code aspect_code,
              l.complexity,
+             inexact_syn_def.value inexact_syn_def,
              mr.weight,
              (select array_agg(wt.word_type_code)
               from word_word_type wt
@@ -1705,6 +1708,7 @@ from (select mr.meaning1_id m1_id,
            join lexeme l on l.meaning_id = m.id and l.is_public = true
            join word w on w.id = l.word_id
            join dataset l_ds on l_ds.code = l.dataset_code and l_ds.is_public = true
+           left outer join definition inexact_syn_def on inexact_syn_def.meaning_id = m.id and inexact_syn_def.definition_type_code = 'kitsam/laiem tähendus teises keeles'
       where mr.meaning_rel_type_code != 'duplikaadikandidaat'
         and exists(select lex.id
                    from lexeme lex,
@@ -1713,7 +1717,7 @@ from (select mr.meaning1_id m1_id,
                      and lex.is_public = true
                      and lex_ds.code = lex.dataset_code
                      and lex_ds.is_public = true)
-      group by m.id, mr.id, w.id, l.id) r
+      group by m.id, mr.id, w.id, l.id, inexact_syn_def.id) r
 group by r.m1_id;
 
 

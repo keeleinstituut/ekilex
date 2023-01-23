@@ -89,6 +89,11 @@ public class TypeMeaningRelation extends UDTImpl<TypeMeaningRelationRecord> {
     public static final UDTField<TypeMeaningRelationRecord, BigDecimal> WEIGHT = createField(DSL.name("weight"), SQLDataType.NUMERIC(5, 4), TYPE_MEANING_RELATION, "");
 
     /**
+     * The attribute <code>public.type_meaning_relation.inexact_syn_def</code>.
+     */
+    public static final UDTField<TypeMeaningRelationRecord, String> INEXACT_SYN_DEF = createField(DSL.name("inexact_syn_def"), SQLDataType.CLOB, TYPE_MEANING_RELATION, "");
+
+    /**
      * The attribute <code>public.type_meaning_relation.lex_value_state_codes</code>.
      */
     public static final UDTField<TypeMeaningRelationRecord, String[]> LEX_VALUE_STATE_CODES = createField(DSL.name("lex_value_state_codes"), SQLDataType.VARCHAR.getArrayDataType(), TYPE_MEANING_RELATION, "");

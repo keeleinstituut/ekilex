@@ -17,6 +17,8 @@ public class TypeMeaningRelation extends WordTypeData implements ComplexityType 
 
 	private Float weight;
 
+	private String inexactSynDef;
+
 	private List<String> lexValueStateCodes;
 
 	private List<Classifier> lexValueStates;
@@ -54,6 +56,14 @@ public class TypeMeaningRelation extends WordTypeData implements ComplexityType 
 
 	public void setWeight(Float weight) {
 		this.weight = weight;
+	}
+
+	public String getInexactSynDef() {
+		return inexactSynDef;
+	}
+
+	public void setInexactSynDef(String inexactSynDef) {
+		this.inexactSynDef = inexactSynDef;
 	}
 
 	public List<String> getLexValueStateCodes() {
