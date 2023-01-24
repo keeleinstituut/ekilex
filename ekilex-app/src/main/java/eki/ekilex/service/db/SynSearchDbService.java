@@ -24,6 +24,7 @@ import org.jooq.Field;
 import org.jooq.Record14;
 import org.jooq.Record16;
 import org.jooq.Record3;
+import org.jooq.Record4;
 import org.jooq.Record6;
 import org.jooq.Result;
 import org.jooq.Table;
@@ -473,9 +474,10 @@ public class SynSearchDbService extends AbstractDataDbService {
 		MeaningRelation mr = MEANING_RELATION.as("mr");
 		Definition def = DEFINITION.as("def");
 
-		Table<Record3<Long, String, Long>> syn = DSL
+		Table<Record4<Long, Long, String, Long>> syn = DSL
 				.select(
 						l.MEANING_ID,
+						l.WORD_ID,
 						w.VALUE.as("translation_lang_word_value"),
 						w.ID.as("translation_lang_word_id"))
 				.from(mr, l, w)
@@ -493,7 +495,8 @@ public class SynSearchDbService extends AbstractDataDbService {
 						syn.field("translation_lang_word_value", String.class),
 						syn.field("translation_lang_word_id", Long.class),
 						def.VALUE.as("inexact_definition_value"),
-						syn.field("meaning_id", Long.class))
+						syn.field("meaning_id", Long.class),
+						syn.field("word_id", Long.class))
 				.from(syn.leftOuterJoin(def).on(
 						def.MEANING_ID.eq(syn.field("meaning_id", Long.class))
 								.and(def.DEFINITION_TYPE_CODE.eq(DEFINITION_TYPE_CODE_INEXACT_SYN))))

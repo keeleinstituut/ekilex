@@ -16,6 +16,8 @@ public class InexactSynonym extends AbstractDataObject {
 
 	private Long meaningId;
 
+	private Long wordId;
+
 	private List<WordLexeme> targetLangWords;
 
 	public String getTranslationLangWordValue() {
@@ -48,6 +50,14 @@ public class InexactSynonym extends AbstractDataObject {
 
 	public void setMeaningId(Long meaningId) {
 		this.meaningId = meaningId;
+	}
+
+	public Long getWordId() {
+		return wordId;
+	}
+
+	public void setWordId(Long wordId) {
+		this.wordId = wordId;
 	}
 
 	public List<WordLexeme> getTargetLangWords() {
