@@ -70,7 +70,6 @@ body.has-wordgame {
     align-items: flex-start;
 
     h1 {
-      // margin: 16px 24px 20px var(--wordgame-menu-margin-left);
       margin: 0;
       font-style: normal;
       font-weight: 700;
@@ -88,7 +87,6 @@ body.has-wordgame {
 
   &__options {
     width: 100%;
-    // margin-bottom: var(--wordgame-options-bottom-margin);
     background: none;
     box-shadow: none;
 
@@ -183,9 +181,11 @@ body.has-wordgame {
     gap: 16px;
 
     .wordgame-language-select {
+      height: 48px;
       padding: 12px 36px 12px 16px;
       border: 1px solid #8996A4;
       border-radius: 100px;
+      line-height: 19px;
 
       -webkit-appearance: none;
       -moz-appearance: none;
@@ -195,7 +195,7 @@ body.has-wordgame {
       background-image: url("data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTMiIGhlaWdodD0iNyIgdmlld0JveD0iMCAwIDEzIDciIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxwYXRoIGQ9Ik0xLjQxNzI4IDBDMC43MTQxNTYgMCAwLjM2MjU5NCAwLjg1OTM3NSAwLjg3MDQwNiAxLjM2NzE5TDUuODcwNDEgNi4zNjcxOUM2LjE4MjkxIDYuNjc5NjkgNi42OTA3MiA2LjY3OTY5IDcuMDAzMjIgNi4zNjcxOUwxMi4wMDMyIDEuMzY3MTlDMTIuNTExIDAuODU5Mzc1IDEyLjE1OTUgMCAxMS40NTYzIDBIMS40MTcyOFoiIGZpbGw9IiM4OTk2QTQiLz4KPC9zdmc+Cg==");
       background-repeat: no-repeat;
       background-position-x: calc(100% - 16px);
-      background-position-y: 22px;
+      background-position-y: 50%;
 
       &:focus,
       &:focus-visible {
@@ -311,8 +311,8 @@ body.has-wordgame {
 
     img {
       display: inline-block;
-      width: 26px;
-      margin-right: 5px;
+      width: 1.625rem;
+      margin-right: 0.3125rem;
     }
   }
 
@@ -794,8 +794,8 @@ body.has-wordgame {
 
 .wordgame__error {
   display: flex;
-  gap: 16px;
-  padding: 16px;
+  gap: 1rem;
+  padding: 1rem;
 
   background-color: #FFC107;
   color: #0E1013;
@@ -994,7 +994,7 @@ body.has-wordgame {
 
         transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out, border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
 
-        font-size: 1.25rem;
+        font-size: 20px;
 
         &:focus {
           outline: 0;
@@ -1031,8 +1031,8 @@ body.has-wordgame {
         user-select: none;
         background-color: transparent;
         border: 1px solid transparent;
-        padding: 0.375rem 0.75rem;
-        font-size: 1rem;
+        padding: 6px 12px;
+        font-size: 16px;
         line-height: 1;
         border-radius: 0.25rem;
         transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out, border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
@@ -1047,7 +1047,7 @@ body.has-wordgame {
       &-search {
         color: #ffffff;
         background: #00892E;
-        font-size: 0.875rem;
+        font-size: 14px;
 
         &:hover,
         &:focus {
@@ -1082,7 +1082,6 @@ body.has-wordgame {
     width: 100%;
     z-index: 3;
 
-    // padding: 0 32px 10px;
     padding-bottom: 8px;
 
     background-color: white;
@@ -1103,7 +1102,7 @@ body.has-wordgame {
     font-style: normal;
     font-weight: 400;
     font-size: 0.75rem;
-    line-height: 15px;    
+    line-height: 1rem;    
     text-transform: uppercase;
     color: #8996A4;
 
@@ -1143,7 +1142,6 @@ body.has-wordgame {
 
     display: flex;
     flex-direction: column;
-    // gap: 4px;
 
     &-result {
       width: 100%;
@@ -1206,7 +1204,7 @@ body.has-wordgame {
 }
 
 .testanimation {
-  animation: testhighlight 4s forwards ease;
+  animation: testhighlight 8s forwards ease-out;
 }
 
 @keyframes testhighlight {
@@ -1214,7 +1212,15 @@ body.has-wordgame {
     box-shadow: 0px 0px 0px 0px rgb(0, 137, 46);
   }
 
+  10% {
+    box-shadow: 0px 0px 16px 8px rgb(0, 137, 46);
+  }
+
   50% {
+    box-shadow: 0px 0px 16px 8px rgb(0, 137, 46);
+  }
+
+  90% {
     box-shadow: 0px 0px 16px 8px rgb(0, 137, 46);
   }
 
@@ -1225,6 +1231,12 @@ body.has-wordgame {
 
 .wordgame-hidden {
   display: none;
+}
+
+.wordgame-hidden-block {
+  visibility: hidden;
+  opacity: 0;
+  pointer-events: none;
 }
 
 @media (max-width: 768px) {

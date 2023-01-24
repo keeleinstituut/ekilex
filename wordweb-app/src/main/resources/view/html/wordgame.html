@@ -11,6 +11,28 @@
     <script type="text/javascript" th:src="@{/view/js/recorder.js}"></script>
     <script type="text/javascript" th:src="@{/view/js/ww-common-audio.js}"></script>
     <script th:inline="javascript">
+      // siin saab lisada keelte nimetusi
+      var wordGameLearningLanguages = {     
+        'et' : /*[[#{label.wordgame.languages.et}]]*/'eesti keel',
+        'ru' : /*[[#{label.wordgame.languages.ru}]]*/'vene keel',
+        'ua' : /*[[#{label.wordgame.languages.ua}]]*/'ukraina keel',
+        'en' : /*[[#{label.wordgame.languages.en}]]*/'inglise keel',
+      }
+
+      // siin saab lisada otsingu vihjeid desktop ja mobiili puhul
+      var wordGameSearchHints = {
+        'desktop': {          
+          'et' : /*[[#{label.wordgame.search.et}]]*/'Otsi sõna või teemat eesti keeles',
+          'ru' : /*[[#{label.wordgame.search.ru}]]*/'Otsi sõna või teemat vene keeles',
+          'ua' : /*[[#{label.wordgame.search.ua}]]*/'Otsi sõna või teemat ukraina keeles',
+        },
+        'mobile': {
+          'et' : /*[[#{label.wordgame.search.et.mobile}]]*/'Otsi eesti keeles',
+          'ru' : /*[[#{label.wordgame.search.ru.mobile}]]*/'Otsi vene keeles',
+          'ua' : /*[[#{label.wordgame.search.ua.mobile}]]*/'Otsi ukraina keeles',
+        },
+      }
+
       var wordGameTranslations = {
         'seeMore' : /*[[#{button.see.more}]]*/'Näita rohkem',
         'seeLess' : /*[[#{button.see.less}]]*/'Näita vähem',
@@ -37,9 +59,6 @@
         'selectionOfCategories' : /*[[#{label.wordgame.selection.of.categories}]]*/'Teemade valik',
         'word' : /*[[#{label.wordgame.word}]]*/'SÕNA',
         'category' : /*[[#{label.wordgame.category}]]*/'TEEMA',
-        'language-et' : /*[[#{label.wordgame.languages.et}]]*/'eesti keel',
-        'language-ru' : /*[[#{label.wordgame.languages.ru}]]*/'vene keel',
-        'language-en' : /*[[#{label.wordgame.languages.en}]]*/'inglise keel',
         'tocardfront' : /*[[#{label.wordgame.tocardfront}]]*/'Pilt',
         'nosound' : /*[[#{label.wordgame.nosound}]]*/'Sellel sõnal ei ole heli',
         'autoplay' : /*[[#{label.wordgame.autoplay}]]*/'Automaatne hääldamine',
@@ -47,6 +66,8 @@
         'off' : /*[[#{label.wordgame.off}]]*/'Väljas',
         'wordgame' : /*[[#{menu.wordgame}]]*/'Pilt ja heli',
         'feedback' : /*[[#{feedback.title}]]*/'Tagasiside',
+        'learningLanguagesList': wordGameLearningLanguages,
+        'searchHintsList': wordGameSearchHints
       }
 
       var speechRecognitionServiceUrl = /*[[${speechRecognitionServiceUrl}]]*/'/';

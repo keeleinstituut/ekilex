@@ -8,7 +8,7 @@ class WordGame {
       images: `${viewPath}/images`,
     }
   
-    this.languages = ['et'];
+    this.languages = ['et', 'ru', 'ua'];
     this.languagesWithSound = ['et'];
     this.languageNames = {};
     this.images = []
@@ -242,13 +242,34 @@ class WordGame {
     });
   }
 
+  getSearchHint(key) {
+    const hints = wordGameTranslations.searchHintsList;
+
+    let desktopHint = '...';
+    let mobileHint = '...';
+    
+    if (hints.desktop && hints.desktop[key]) {
+      desktopHint = hints.desktop[key];
+    }
+
+    if (hints.mobile && hints.mobile[key]) {
+      mobileHint = hints.mobile[key];
+    }
+
+    if (window.matchMedia('(max-width: 768px)').matches) {
+      return mobileHint;
+    } else {
+      return desktopHint;
+    }
+  }
+
   async renderTemplate(full = false, searchError = null) {
     return new Promise((resolve, reject) => {
       const template = Twig.twig({
         data: this.htmlTemplate,
       });
 
-      Twig.extendFilter('slug', function (str) {
+      Twig.extendFilter('slug', (str) => {
         str = str.replace(/^\s+|\s+$/g, '');
         str = str.toLowerCase();
 
@@ -265,12 +286,16 @@ class WordGame {
         return str;
       });
 
-      Twig.extendFilter('decode', function (str) {
-        return decodeHTMLEntities(str);
+      Twig.extendFilter('decode', (str) => {
+        return this.decodeHTMLEntities(str);
       });
 
-      Twig.extendFilter('replaceString', function (str, value) {
+      Twig.extendFilter('replaceString', (str, value) => {
         return str.replace(/\.*(\[0\])\.*/, value);
+      });
+
+      Twig.extendFilter('getSearchHint', (str) => {
+        return this.getSearchHint(str);
       });
 
       const html = template.render({
@@ -311,7 +336,9 @@ class WordGame {
     var addedMulticards = [];
     var multicardsToAdd = [];
     
-    this.origData = this.origData.concat(this.multiCards);
+    if (this.options.wordgame_lang === 'et') {
+      this.origData = this.origData.concat(this.multiCards);
+    }
     this.categoryTranslations = {};
     
     this.origData.forEach((item) => {
@@ -458,6 +485,7 @@ class WordGame {
 
       var catHasA = "no";
       var catHasB = "no";
+      let subCategoriesToModify = [];
 
       Object.keys(this.parsedData[key]).forEach((subkey) => {  
         items[subkey] = items[subkey].sort((a, b) => a.order - b.order);
@@ -466,15 +494,19 @@ class WordGame {
         var hasB = "no";
 
         items[subkey].forEach((item2) => {
-          if (item2.type != 1 || item2.image_link.trim() != null || item2.image_link.trim() != "") {
-            if (item2.A1_A2 == "yes") {
-              hasA = "yes";
-              catHasA = "yes";
-            }
-
-            if (item2.A1_B1 == "yes") {
-              hasB = "yes";
-              catHasB = "yes";
+          if (item2.type !== 1 || item2.image_link.trim() !== null || item2.image_link.trim() !== "") {
+            if (item2.type === 3) {
+              subCategoriesToModify.push({ key: key, subkey: subkey });
+            } else {
+              if (item2.A1_A2 == "yes") {
+                hasA = "yes";
+                catHasA = "yes";
+              }
+  
+              if (item2.A1_B1 == "yes") {
+                hasB = "yes";
+                catHasB = "yes";
+              }
             }
           }
         });
@@ -489,6 +521,11 @@ class WordGame {
         A1_A2: catHasA,
         A1_B1: catHasB
       };
+
+      subCategoriesToModify.forEach((el) => {
+        const { A1_A2, A1_B1 } = this.parsedCategories[el.key];
+        this.parsedSubCategories[el.key][el.subkey] = { A1_A2, A1_B1 };
+      });
 
       // Add empty cards to fix print layout, prevent empty rows between cards.
       // The bug is related to css "break-inside: avoid;", which is required
@@ -1601,12 +1638,9 @@ class WordGame {
     }
 
     // get language keys & translations for language select
-    Object.keys(wordGameTranslations).forEach((langKey) => {
-      // regex that selects the key after string 'language-'
-      const langKeyRegex = langKey.match(/language-([A-Za-z]+)/);
-
-      if (langKeyRegex) {
-        this.languageNames[langKeyRegex[1].toLowerCase()] = wordGameTranslations[langKey];
+    Object.keys(wordGameTranslations.learningLanguagesList).forEach((langKey) => {
+      if (this.languages.includes(langKey.toLowerCase())) {
+        this.languageNames[langKey] = wordGameTranslations.learningLanguagesList[langKey];
       }
     });
     

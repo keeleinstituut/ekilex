@@ -73,7 +73,7 @@
             </label>
           </div>
         </li>
-        <li>
+        <li {% if options.wordgame_lang not in languagesWithSound %} class="wordgame-hidden-block" {% endif %}>
           <span>
           {{labels.autoplay}}:
           </span>
@@ -162,7 +162,8 @@
         <div class="wordgame-search__bar">
           <input
             class="wordgame-search__input search-phrase"
-            placeholder="{{labels.wgSearch}}"
+            {# placeholder="{{labels.wgSearch}}" #}
+            placeholder="{{ options.wordgame_lang|getSearchHint }}"
             type="text" role="search"
             id="wordgame-search"
             autocapitalize="off"

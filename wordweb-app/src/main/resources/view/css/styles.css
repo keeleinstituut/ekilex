@@ -18933,9 +18933,11 @@ body.has-wordgame .header-container {
 }
 
 .wordgame__options-bottom .wordgame-language-select {
+  height: 48px;
   padding: 12px 36px 12px 16px;
   border: 1px solid #8996A4;
   border-radius: 100px;
+  line-height: 19px;
   -webkit-appearance: none;
   -moz-appearance: none;
   appearance: none;
@@ -18943,7 +18945,7 @@ body.has-wordgame .header-container {
   background-image: url("data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTMiIGhlaWdodD0iNyIgdmlld0JveD0iMCAwIDEzIDciIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxwYXRoIGQ9Ik0xLjQxNzI4IDBDMC43MTQxNTYgMCAwLjM2MjU5NCAwLjg1OTM3NSAwLjg3MDQwNiAxLjM2NzE5TDUuODcwNDEgNi4zNjcxOUM2LjE4MjkxIDYuNjc5NjkgNi42OTA3MiA2LjY3OTY5IDcuMDAzMjIgNi4zNjcxOUwxMi4wMDMyIDEuMzY3MTlDMTIuNTExIDAuODU5Mzc1IDEyLjE1OTUgMCAxMS40NTYzIDBIMS40MTcyOFoiIGZpbGw9IiM4OTk2QTQiLz4KPC9zdmc+Cg==");
   background-repeat: no-repeat;
   background-position-x: calc(100% - 16px);
-  background-position-y: 22px;
+  background-position-y: 50%;
 }
 
 .wordgame__options-bottom .wordgame-language-select:focus, .wordgame__options-bottom .wordgame-language-select:focus-visible {
@@ -19058,8 +19060,8 @@ body.has-wordgame .header-container {
 
 .wordgame__menu img {
   display: inline-block;
-  width: 26px;
-  margin-right: 5px;
+  width: 1.625rem;
+  margin-right: 0.3125rem;
 }
 
 .wordgame__col {
@@ -19558,8 +19560,8 @@ body.has-wordgame .header-container {
 
 .wordgame__error {
   display: flex;
-  gap: 16px;
-  padding: 16px;
+  gap: 1rem;
+  padding: 1rem;
   background-color: #FFC107;
   color: #0E1013;
 }
@@ -19739,7 +19741,7 @@ body.has-wordgame .header-container {
   padding: 0;
   border-radius: 50%;
   transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out, border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
-  font-size: 1.25rem;
+  font-size: 20px;
 }
 
 .wordgame-search__buttons .wordgame-search__button-close:focus, .wordgame-search__buttons .wordgame-search__button-voice:focus, .wordgame-search__buttons .wordgame-search__button-search:focus {
@@ -19773,8 +19775,8 @@ body.has-wordgame .header-container {
   user-select: none;
   background-color: transparent;
   border: 1px solid transparent;
-  padding: 0.375rem 0.75rem;
-  font-size: 1rem;
+  padding: 6px 12px;
+  font-size: 16px;
   line-height: 1;
   border-radius: 0.25rem;
   transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out, border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
@@ -19789,7 +19791,7 @@ body.has-wordgame .header-container {
 .wordgame-search__buttons .wordgame-search__button-search {
   color: #ffffff;
   background: #00892E;
-  font-size: 0.875rem;
+  font-size: 14px;
 }
 
 .wordgame-search__buttons .wordgame-search__button-search:hover, .wordgame-search__buttons .wordgame-search__button-search:focus {
@@ -19833,7 +19835,7 @@ body.has-wordgame .header-container {
   font-style: normal;
   font-weight: 400;
   font-size: 0.75rem;
-  line-height: 15px;
+  line-height: 1rem;
   text-transform: uppercase;
   color: #8996A4;
   padding: 0 var(--wordgame-search-sides-padding);
@@ -19923,15 +19925,21 @@ body.has-wordgame .header-container {
 }
 
 .testanimation {
-  -webkit-animation: testhighlight 4s forwards ease;
-  animation: testhighlight 4s forwards ease;
+  -webkit-animation: testhighlight 8s forwards ease-out;
+  animation: testhighlight 8s forwards ease-out;
 }
 
 @-webkit-keyframes testhighlight {
   0% {
     box-shadow: 0px 0px 0px 0px #00892e;
   }
+  10% {
+    box-shadow: 0px 0px 16px 8px #00892e;
+  }
   50% {
+    box-shadow: 0px 0px 16px 8px #00892e;
+  }
+  90% {
     box-shadow: 0px 0px 16px 8px #00892e;
   }
   100% {
@@ -19943,7 +19951,13 @@ body.has-wordgame .header-container {
   0% {
     box-shadow: 0px 0px 0px 0px #00892e;
   }
+  10% {
+    box-shadow: 0px 0px 16px 8px #00892e;
+  }
   50% {
+    box-shadow: 0px 0px 16px 8px #00892e;
+  }
+  90% {
     box-shadow: 0px 0px 16px 8px #00892e;
   }
   100% {
@@ -19953,6 +19967,12 @@ body.has-wordgame .header-container {
 
 .wordgame-hidden {
   display: none;
+}
+
+.wordgame-hidden-block {
+  visibility: hidden;
+  opacity: 0;
+  pointer-events: none;
 }
 
 @media (max-width: 768px) {
