@@ -539,6 +539,7 @@ public class LookupDbService extends AbstractDataDbService {
 								.and(LEXEME.DATASET_CODE.eq(datasetCode))
 								.and(LEXEME.WORD_ID.eq(WORD.ID))
 								.and(WORD.LANG.eq(wordLang)))
+				.orderBy(LEXEME.ORDER_BY)
 				.fetchInto(WordLexeme.class);
 	}
 

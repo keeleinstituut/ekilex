@@ -384,14 +384,14 @@ public class InexactSynService extends AbstractSynSearchService {
 		boolean relationExists = synSearchDbService.meaningInexactSynRelationExists(narrowMeaningId, wideMeaningId);
 		if (!relationExists) {
 			activityLog = activityLogService.prepareActivityLog("createInexactSynMeaningRelation", narrowMeaningId, ActivityOwner.MEANING, isManualEventOnUpdateEnabled);
-			meaningRelationId = cudDbService.createMeaningRelation(narrowMeaningId, wideMeaningId, MEANING_REL_TYPE_CODE_NARROW, null); // TODO check if correct direction?
+			meaningRelationId = cudDbService.createMeaningRelation(narrowMeaningId, wideMeaningId, MEANING_REL_TYPE_CODE_NARROW, null);
 			activityLogService.createActivityLog(activityLog, meaningRelationId, ActivityEntity.MEANING_RELATION);
 		}
 
 		boolean oppositeRelationExists = synSearchDbService.meaningInexactSynRelationExists(wideMeaningId, narrowMeaningId);
 		if (!oppositeRelationExists) {
 			activityLog = activityLogService.prepareActivityLog("createInexactSynMeaningRelation", wideMeaningId, ActivityOwner.MEANING, isManualEventOnUpdateEnabled);
-			meaningRelationId = cudDbService.createMeaningRelation(wideMeaningId, narrowMeaningId, MEANING_REL_TYPE_CODE_WIDE, null); // TODO check if correct direction?
+			meaningRelationId = cudDbService.createMeaningRelation(wideMeaningId, narrowMeaningId, MEANING_REL_TYPE_CODE_WIDE, null);
 			activityLogService.createActivityLog(activityLog, meaningRelationId, ActivityEntity.MEANING_RELATION);
 		}
 	}

@@ -487,7 +487,7 @@ public class SynSearchDbService extends AbstractDataDbService {
 								.and(mr.MEANING2_ID.eq(l.MEANING_ID))
 								.and(w.ID.eq(l.WORD_ID))
 								.and(w.LANG.eq(inexactSynTranslationLang)))
-				.orderBy(l.MEANING_ID)
+				.orderBy(mr.ORDER_BY)
 				.asTable("syn");
 
 		return create
