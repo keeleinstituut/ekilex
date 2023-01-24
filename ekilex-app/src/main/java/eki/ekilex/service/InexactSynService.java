@@ -2,12 +2,14 @@ package eki.ekilex.service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import javax.transaction.Transactional;
 
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.stereotype.Component;
 
 import eki.common.constant.ActivityEntity;
@@ -15,11 +17,13 @@ import eki.common.constant.ActivityOwner;
 import eki.common.constant.Complexity;
 import eki.common.constant.RelationStatus;
 import eki.common.exception.OperationDeniedException;
+import eki.ekilex.constant.ResponseStatus;
 import eki.ekilex.data.ActivityLogData;
 import eki.ekilex.data.DatasetPermission;
 import eki.ekilex.data.Definition;
 import eki.ekilex.data.InexactSynMeaning;
 import eki.ekilex.data.InexactSynMeaningRequest;
+import eki.ekilex.data.Response;
 import eki.ekilex.data.Word;
 import eki.ekilex.data.WordDescript;
 import eki.ekilex.data.WordLexeme;
@@ -228,9 +232,11 @@ public class InexactSynService extends AbstractSynSearchService {
 	}
 
 	@Transactional
-	public void saveInexactSynMeaningAndRelation(InexactSynMeaningRequest inexactSynMeaningRequest, String datasetCode) throws Exception {
+	public Response saveInexactSynMeaningAndRelation(InexactSynMeaningRequest inexactSynMeaningRequest, String datasetCode) throws Exception {
 
+		Locale locale = LocaleContextHolder.getLocale();
 		boolean isManualEventOnUpdateEnabled = MANUAL_EVENT_ON_UPDATE_DISABLED;
+		Response response = new Response();
 
 		Long inexactSynMeaningId = inexactSynMeaningRequest.getInexactSynMeaningId();
 		String relationType = inexactSynMeaningRequest.getRelationType();
@@ -253,7 +259,10 @@ public class InexactSynService extends AbstractSynSearchService {
 		} else {
 			boolean inexactSynRelationExists = synSearchDbService.meaningInexactSynRelationExists(targetMeaningId, inexactSynMeaningId);
 			if (inexactSynRelationExists) {
-				return;
+				response.setStatus(ResponseStatus.ERROR);
+				String message = messageSource.getMessage("inexactsyn.relation.exists", new Object[0], locale);
+				response.setMessage(message);
+				return response;
 			}
 		}
 
@@ -296,6 +305,11 @@ public class InexactSynService extends AbstractSynSearchService {
 		}
 
 		setRelationStatusProcessed(wordRelationId, isManualEventOnUpdateEnabled);
+
+		response.setStatus(ResponseStatus.OK);
+		String message = messageSource.getMessage("inexactsyn.meaning.and.relation.create.success", new Object[0], locale);
+		response.setMessage(message);
+		return response;
 	}
 
 	private Long createInexactSynWordAndLexeme(
