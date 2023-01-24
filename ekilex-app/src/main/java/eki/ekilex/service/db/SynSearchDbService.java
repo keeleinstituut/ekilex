@@ -692,7 +692,7 @@ public class SynSearchDbService extends AbstractDataDbService {
 		for (FreeformRecord sourceUsage : sourceUsages) {
 			Long sourceUsageId = sourceUsage.getId();
 			FreeformRecord targetUsage = sourceUsage.copy();
-			targetUsage.setIsPublic(PUBLICITY_PUBLIC);
+			targetUsage.setIsPublic(PUBLICITY_PRIVATE);
 			targetUsage.changed(FREEFORM.ORDER_BY, false);
 			targetUsage.store();
 			Long targetUsageId = targetUsage.getId();
@@ -740,7 +740,7 @@ public class SynSearchDbService extends AbstractDataDbService {
 			Long sourceDefinitionId = sourceDefinition.getId();
 			DefinitionRecord synDefinition = sourceDefinition.copy();
 			synDefinition.setMeaningId(targetMeaningId);
-			synDefinition.setIsPublic(PUBLICITY_PUBLIC);
+			synDefinition.setIsPublic(PUBLICITY_PRIVATE);
 			synDefinition.changed(DEFINITION.ORDER_BY, false);
 			synDefinition.store();
 			Long synDefinitionId = synDefinition.getId();
