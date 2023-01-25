@@ -526,7 +526,7 @@ public class LexemeConversionUtil extends AbstractConversionUtil {
 		}
 		List<TypeMeaningRelation> relatedMeanings = tuple.getRelatedMeanings();
 		if (CollectionUtils.isNotEmpty(relatedMeanings)) {
-			relatedMeanings = relatedMeanings.stream().filter(relation -> !StringUtils.equals(MEANING_REL_TYPE_CODE_SIMILAR, relation.getMeaningRelTypeCode())).collect(Collectors.toList());
+			relatedMeanings = relatedMeanings.stream().filter(relation -> !StringUtils.containsAny(relation.getMeaningRelTypeCode(), DISABLED_MEANING_RELATION_TYPE_CODES)).collect(Collectors.toList());
 		}
 		if (CollectionUtils.isNotEmpty(relatedMeanings)) {
 			relatedMeanings = filter(relatedMeanings, lexComplexity);
