@@ -343,6 +343,11 @@ public class TermSearchService extends AbstractSearchService {
 		List<Definition> definitions = commonDataDbService.getMeaningDefinitions(meaningId, CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
 		permCalculator.applyCrud(userRole, definitions);
 		permCalculator.filterVisibility(userRole, definitions);
+		definitions.forEach(definition -> {
+			if (StringUtils.equals(definition.getTypeCode(), DEFINITION_TYPE_CODE_INEXACT_SYN)) {
+				definition.setEditDisabled(true);
+			}
+		});
 		return definitions;
 	}
 

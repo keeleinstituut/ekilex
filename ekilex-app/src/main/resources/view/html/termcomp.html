@@ -414,7 +414,7 @@
               <span th:utext="${definition.value}"></span>
               <span class="font-italic text-info" th:text="${definition.typeValue}"></span>
               <span class="ctxt" th:text="'(' + #{'boolean.public.' + ${definition.public}} + ')'" th:if="${definition.crudGrant}"></span>
-              <span th:if="${#lists.isEmpty(definition.sourceLinks)}" class="show-on-mouseover">
+              <span th:if="${#lists.isEmpty(definition.sourceLinks)}" class="show-on-mouseover" th:unless="${definition.editDisabled}">
                 [
                 <button type="button" class="btn badge badge-secondary"
                         th:title="#{common.add.source.link}"
@@ -425,7 +425,7 @@
                 </button>
                 ]
               </span>
-              <div class="action-buttons-3">
+              <div class="action-buttons-3" th:unless="${definition.editDisabled}">
                 <button type="button" class="btn badge badge-primary"
                         th:title="#{common.edit}"
                         data-toggle="modal"

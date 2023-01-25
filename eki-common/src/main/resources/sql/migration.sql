@@ -1,6 +1,8 @@
 -- Mitmekeelse sõnakogu kitsamad-laiemad tähendused
 insert into definition_type (code, datasets) values ('kitsam/laiem tähendus teises keeles', '{}');
 
+insert into definition_type_label (code, value, lang, type) values ('kitsam/laiem tähendus teises keeles', 'kitsam/laiem tähendus teises keeles', 'est', 'descrip');
+
 insert into meaning_rel_type (code, datasets) values ('kitsam', '{}');
 insert into meaning_rel_type (code, datasets) values ('laiem', '{}');
 

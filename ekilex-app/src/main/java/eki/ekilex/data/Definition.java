@@ -28,6 +28,8 @@ public class Definition extends AbstractPublicEntity {
 
 	private List<SourceLink> sourceLinks;
 
+	private boolean isEditDisabled;
+
 	public Long getId() {
 		return id;
 	}
@@ -108,4 +110,11 @@ public class Definition extends AbstractPublicEntity {
 		this.sourceLinks = sourceLinks;
 	}
 
+	public boolean isEditDisabled() {
+		return isEditDisabled;
+	}
+
+	public void setEditDisabled(boolean editDisabled) {
+		isEditDisabled = editDisabled;
+	}
 }
