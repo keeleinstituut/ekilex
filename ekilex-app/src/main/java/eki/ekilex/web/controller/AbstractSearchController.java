@@ -8,6 +8,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -62,6 +63,13 @@ public abstract class AbstractSearchController extends AbstractAuthActionControl
 	@ModelAttribute("definitionTypes")
 	public List<Classifier> getDefinitionTypes() {
 		return commonDataService.getDefinitionTypes();
+	}
+
+	@ModelAttribute("enabledDefinitionTypes")
+	public List<Classifier> getEnabledDefinitionTypes() {
+		List<Classifier> definitionTypes = commonDataService.getDefinitionTypes();
+		definitionTypes = definitionTypes.stream().filter(type -> !StringUtils.equals(type.getCode(), DEFINITION_TYPE_CODE_INEXACT_SYN)).collect(Collectors.toList());
+		return definitionTypes;
 	}
 
 	@ModelAttribute("allLexemePos")

@@ -1182,7 +1182,7 @@
               <div class="col-md-4">
                 <select required class="form-control value-select required-field" name="itemType">
                   <option value="" hidden disabled selected th:text="#{common.select.type}">vali tüüp...</option>
-                  <option th:each="type : ${definitionTypes}" th:value="${type.code}" th:text="${type.value}">type</option>
+                  <option th:each="type : ${enabledDefinitionTypes}" th:value="${type.code}" th:text="${type.value}">type</option>
                 </select>
               </div>
             </div>
@@ -1228,7 +1228,7 @@
             <div class="form-group row">
               <div class="col-md-4">
                 <select required class="form-control value-select required-field" name="code">
-                  <option th:each="type : ${definitionTypes}" th:value="${type.code}" th:text="${type.value}" th:selected="${type.code == definition.typeCode}">type</option>
+                  <option th:each="type : ${enabledDefinitionTypes}" th:value="${type.code}" th:text="${type.value}" th:selected="${type.code == definition.typeCode}">type</option>
                 </select>
               </div>
             </div>
