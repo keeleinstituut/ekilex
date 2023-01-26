@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.transaction.Transactional;
 
@@ -54,8 +55,10 @@ public class FullSynSearchService extends AbstractSynSearchService {
 
 		List<WordLexeme> synLexemes = synSearchDbService.getWordPrimarySynonymLexemes(wordId, searchDatasetsRestriction, CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
 		synLexemes.forEach(lexeme -> {
-			languagesOrder.sort(Comparator.comparing(orderLang -> !StringUtils.equals(orderLang.getCode(), synCandidateLangCode)));
-			populateLexeme(lexeme, languagesOrder, wordLang, synMeaningWordLangCodes, userRole, userProfile);
+			List<ClassifierSelect> sortedLanguagesOrder = languagesOrder.stream()
+					.sorted(Comparator.comparing(orderLang -> !StringUtils.equals(orderLang.getCode(), synCandidateLangCode)))
+					.collect(Collectors.toList());
+			populateLexeme(lexeme, sortedLanguagesOrder, wordLang, synMeaningWordLangCodes, userRole, userProfile);
 			reorderFullSynLangGroups(lexeme, synCandidateLangCode);
 			populateInexactSynonyms(lexeme, wordLang, synCandidateLangCode);
 		});
