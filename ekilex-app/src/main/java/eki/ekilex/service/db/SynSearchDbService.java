@@ -24,7 +24,6 @@ import org.jooq.Field;
 import org.jooq.Record14;
 import org.jooq.Record16;
 import org.jooq.Record3;
-import org.jooq.Record4;
 import org.jooq.Record6;
 import org.jooq.Result;
 import org.jooq.Table;
@@ -33,7 +32,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import eki.common.constant.FreeformType;
-import eki.ekilex.data.InexactSynonym;
 import eki.ekilex.data.SearchDatasetsRestriction;
 import eki.ekilex.data.SynRelation;
 import eki.ekilex.data.TypeWordRelParam;
@@ -48,7 +46,6 @@ import eki.ekilex.data.db.tables.Lexeme;
 import eki.ekilex.data.db.tables.LexemeFreeform;
 import eki.ekilex.data.db.tables.LexemePos;
 import eki.ekilex.data.db.tables.LexemeRegister;
-import eki.ekilex.data.db.tables.MeaningRelation;
 import eki.ekilex.data.db.tables.Word;
 import eki.ekilex.data.db.tables.WordRelation;
 import eki.ekilex.data.db.tables.WordRelationParam;
@@ -465,42 +462,6 @@ public class SynSearchDbService extends AbstractDataDbService {
 								.and(DSL.or(wherePublic, whereInexact)))
 				.orderBy(DEFINITION.ORDER_BY)
 				.fetchInto(eki.ekilex.data.Definition.class);
-	}
-
-	public List<InexactSynonym> getMeaningInexactSynonyms(Long meaningId, String inexactSynTranslationLang) {
-
-		Word w = WORD.as("w");
-		Lexeme l = LEXEME.as("l");
-		MeaningRelation mr = MEANING_RELATION.as("mr");
-		Definition def = DEFINITION.as("def");
-
-		Table<Record4<Long, Long, String, Long>> syn = DSL
-				.select(
-						l.MEANING_ID,
-						l.WORD_ID,
-						w.VALUE.as("translation_lang_word_value"),
-						w.ID.as("translation_lang_word_id"))
-				.from(mr, l, w)
-				.where(
-						mr.MEANING1_ID.eq(meaningId)
-								.and(mr.MEANING_REL_TYPE_CODE.in(MEANING_REL_TYPE_CODE_NARROW, MEANING_REL_TYPE_CODE_WIDE))
-								.and(mr.MEANING2_ID.eq(l.MEANING_ID))
-								.and(w.ID.eq(l.WORD_ID))
-								.and(w.LANG.eq(inexactSynTranslationLang)))
-				.orderBy(mr.ORDER_BY)
-				.asTable("syn");
-
-		return create
-				.select(
-						syn.field("translation_lang_word_value", String.class),
-						syn.field("translation_lang_word_id", Long.class),
-						def.VALUE.as("inexact_definition_value"),
-						syn.field("meaning_id", Long.class),
-						syn.field("word_id", Long.class))
-				.from(syn.leftOuterJoin(def).on(
-						def.MEANING_ID.eq(syn.field("meaning_id", Long.class))
-								.and(def.DEFINITION_TYPE_CODE.eq(DEFINITION_TYPE_CODE_INEXACT_SYN))))
-				.fetchInto(InexactSynonym.class);
 	}
 
 	public boolean meaningInexactSynRelationExists(Long meaningId1, Long meaningId2) {

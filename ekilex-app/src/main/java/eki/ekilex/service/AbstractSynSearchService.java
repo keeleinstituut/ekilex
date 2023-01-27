@@ -11,6 +11,7 @@ import eki.ekilex.data.DatasetPermission;
 import eki.ekilex.data.DefSourceAndNoteSourceTuple;
 import eki.ekilex.data.Definition;
 import eki.ekilex.data.EkiUserProfile;
+import eki.ekilex.data.InexactSynonym;
 import eki.ekilex.data.Meaning;
 import eki.ekilex.data.MeaningRelation;
 import eki.ekilex.data.MeaningWord;
@@ -45,7 +46,8 @@ public abstract class AbstractSynSearchService extends AbstractWordSearchService
 		List<MeaningRelation> synMeaningRelations = commonDataDbService.getSynMeaningRelations(meaningId, datasetCode);
 		appendLexemeLevels(synMeaningRelations);
 		List<MeaningWord> meaningWords = commonDataDbService.getMeaningWords(lexemeId, meaningWordLangsRestriction);
-		List<SynonymLangGroup> synonymLangGroups = conversionUtil.composeSynonymLangGroups(synMeaningRelations, meaningWords, userProfile, headwordLanguage, languagesOrder);
+		List<InexactSynonym> inexactSynonyms = lookupDbService.getMeaningInexactSynonyms(meaningId, headwordLanguage, datasetCode);
+		List<SynonymLangGroup> synonymLangGroups = conversionUtil.composeSynonymLangGroups(synMeaningRelations, meaningWords, inexactSynonyms, userProfile, headwordLanguage, languagesOrder);
 
 		List<Definition> definitions = commonDataDbService.getMeaningDefinitions(meaningId, datasetCode, CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
 		List<DefSourceAndNoteSourceTuple> definitionsDataTuples = commonDataDbService.getMeaningDefSourceAndNoteSourceTuples(meaningId);

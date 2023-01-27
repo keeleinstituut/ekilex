@@ -1,5 +1,6 @@
 package eki.ekilex.service.db;
 
+import static eki.ekilex.data.db.Tables.DEFINITION;
 import static eki.ekilex.data.db.Tables.FORM;
 import static eki.ekilex.data.db.Tables.LEXEME;
 import static eki.ekilex.data.db.Tables.LEXEME_DERIV;
@@ -34,9 +35,11 @@ import java.util.Map;
 import org.apache.commons.lang3.StringUtils;
 import org.jooq.Condition;
 import org.jooq.Field;
+import org.jooq.JSON;
 import org.jooq.Record1;
 import org.jooq.Record2;
 import org.jooq.Record4;
+import org.jooq.Record6;
 import org.jooq.Table;
 import org.jooq.impl.DSL;
 import org.jooq.util.postgres.PostgresDSL;
@@ -44,10 +47,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import eki.ekilex.data.Classifier;
+import eki.ekilex.data.InexactSynonym;
 import eki.ekilex.data.SearchDatasetsRestriction;
 import eki.ekilex.data.WordLexeme;
 import eki.ekilex.data.WordLexemeMeaningIdTuple;
 import eki.ekilex.data.WordRelation;
+import eki.ekilex.data.db.tables.Definition;
 import eki.ekilex.data.db.tables.Lexeme;
 import eki.ekilex.data.db.tables.Meaning;
 import eki.ekilex.data.db.tables.MeaningRelMapping;
@@ -541,6 +546,53 @@ public class LookupDbService extends AbstractDataDbService {
 								.and(WORD.LANG.eq(wordLang)))
 				.orderBy(LEXEME.ORDER_BY)
 				.fetchInto(WordLexeme.class);
+	}
+
+	public List<InexactSynonym> getMeaningInexactSynonyms(Long meaningId, String targetLang, String datasetCode) {
+
+		MeaningRelation mr = MEANING_RELATION.as("mr");
+		Word wtarget = WORD.as("wtarget");
+		Word wtrans = WORD.as("wtrans");
+		Lexeme ltrans = LEXEME.as("ltrans");
+		Lexeme ltarget = LEXEME.as("ltarget");
+		Definition def = DEFINITION.as("def");
+
+		Table<Record6<Long, Long, String, Long, String, JSON>> syn = DSL
+				.select(
+						ltrans.MEANING_ID,
+						ltrans.WORD_ID,
+						wtrans.VALUE.as("translation_lang_word_value"),
+						wtrans.ID.as("translation_lang_word_id"),
+						wtrans.LANG.as("translation_lang"),
+						DSL.field("json_agg(json_build_object('wordId', wtarget.id, 'wordValue', wtarget.value) order by ltarget.order_by)", JSON.class).as("target_lang_words"))
+				.from(mr, ltrans, ltarget, wtrans, wtarget)
+				.where(
+						mr.MEANING1_ID.eq(meaningId)
+								.and(mr.MEANING_REL_TYPE_CODE.in(MEANING_REL_TYPE_CODE_NARROW, MEANING_REL_TYPE_CODE_WIDE))
+								.and(ltrans.MEANING_ID.eq(mr.MEANING2_ID))
+								.and(wtrans.ID.eq(ltrans.WORD_ID))
+								.and(wtrans.LANG.ne(targetLang))
+								.and(ltarget.MEANING_ID.eq(mr.MEANING2_ID))
+								.and(ltarget.DATASET_CODE.eq(datasetCode))
+								.and(wtarget.ID.eq(ltarget.WORD_ID))
+								.and(wtarget.LANG.eq(targetLang)))
+				.groupBy(ltrans.ID, wtrans.ID, mr.ORDER_BY)
+				.orderBy(mr.ORDER_BY)
+				.asTable("syn");
+
+		return create
+				.select(
+						syn.field("translation_lang_word_value", String.class),
+						syn.field("translation_lang_word_id", Long.class),
+						syn.field("meaning_id", Long.class),
+						syn.field("word_id", Long.class),
+						syn.field("translation_lang", String.class),
+						syn.field("target_lang_words", JSON.class),
+						def.VALUE.as("inexact_definition_value"))
+				.from(syn.leftOuterJoin(def).on(
+						def.MEANING_ID.eq(syn.field("meaning_id", Long.class))
+								.and(def.DEFINITION_TYPE_CODE.eq(DEFINITION_TYPE_CODE_INEXACT_SYN))))
+				.fetchInto(InexactSynonym.class);
 	}
 
 	public List<Classifier> getLexemeOppositeRelations(String relationTypeCode, String classifLabelLang, String classifLabelType) {

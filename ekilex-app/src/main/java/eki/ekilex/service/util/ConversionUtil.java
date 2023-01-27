@@ -47,6 +47,7 @@ import eki.ekilex.data.DefinitionNote;
 import eki.ekilex.data.EkiUserProfile;
 import eki.ekilex.data.Form;
 import eki.ekilex.data.ImageSourceTuple;
+import eki.ekilex.data.InexactSynonym;
 import eki.ekilex.data.Lexeme;
 import eki.ekilex.data.LexemeLangGroup;
 import eki.ekilex.data.LexemeNote;
@@ -814,7 +815,8 @@ public class ConversionUtil implements GlobalConstant {
 	}
 
 	public List<SynonymLangGroup> composeSynonymLangGroups(
-			List<MeaningRelation> synMeaningRelations, List<MeaningWord> meaningWords, EkiUserProfile userProfile, String wordLang, List<ClassifierSelect> languagesOrder) {
+			List<MeaningRelation> synMeaningRelations, List<MeaningWord> meaningWords, List<InexactSynonym> inexactSynonyms, EkiUserProfile userProfile,
+			String wordLang, List<ClassifierSelect> languagesOrder) {
 
 		List<Synonym> synonyms = new ArrayList<>();
 
@@ -928,15 +930,22 @@ public class ConversionUtil implements GlobalConstant {
 			String lang = synonym.getWordLang();
 			SynonymLangGroup synonymLangGroup = synonymLangGroupMap.get(lang);
 			if (synonymLangGroup == null) {
-				boolean isSelected = selectedLangCodes.contains(lang);
-				synonymLangGroup = new SynonymLangGroup();
-				synonymLangGroup.setLang(lang);
-				synonymLangGroup.setSelected(isSelected);
-				synonymLangGroup.setSynonyms(new ArrayList<>());
+				synonymLangGroup = initSynonymLangGroup(lang, selectedLangCodes);
 				synonymLangGroupMap.put(lang, synonymLangGroup);
 				synonymLangGroups.add(synonymLangGroup);
 			}
 			synonymLangGroup.getSynonyms().add(synonym);
+		}
+
+		for (InexactSynonym inexactSynonym : inexactSynonyms) {
+			String lang = inexactSynonym.getTranslationLang();
+			SynonymLangGroup synonymLangGroup = synonymLangGroupMap.get(lang);
+			if (synonymLangGroup == null) {
+				synonymLangGroup = initSynonymLangGroup(lang, selectedLangCodes);
+				synonymLangGroupMap.put(lang, synonymLangGroup);
+				synonymLangGroups.add(synonymLangGroup);
+			}
+			synonymLangGroup.getInexactSynonyms().add(inexactSynonym);
 		}
 
 		synonymLangGroups.sort((SynonymLangGroup gr1, SynonymLangGroup gr2) -> {
@@ -948,6 +957,18 @@ public class ConversionUtil implements GlobalConstant {
 		});
 
 		return synonymLangGroups;
+	}
+
+	private SynonymLangGroup initSynonymLangGroup(String lang, List<String> selectedLangCodes) {
+
+		boolean isSelected = selectedLangCodes.contains(lang);
+		SynonymLangGroup synonymLangGroup = new SynonymLangGroup();
+		synonymLangGroup.setLang(lang);
+		synonymLangGroup.setSelected(isSelected);
+		synonymLangGroup.setSynonyms(new ArrayList<>());
+		synonymLangGroup.setInexactSynonyms(new ArrayList<>());
+
+		return synonymLangGroup;
 	}
 
 	public List<List<MeaningRelation>> composeViewMeaningRelations(List<MeaningRelation> relations, EkiUserProfile userProfile, String sourceLang, List<ClassifierSelect> languagesOrder) {

@@ -12,13 +12,15 @@ public class InexactSynonym extends AbstractDataObject {
 
 	private Long translationLangWordId;
 
+	private String translationLang;
+
 	private String inexactDefinitionValue;
 
 	private Long meaningId;
 
 	private Long wordId;
 
-	private List<WordLexeme> targetLangWords;
+	private List<SimpleWord> targetLangWords;
 
 	public String getTranslationLangWordValue() {
 		return translationLangWordValue;
@@ -34,6 +36,14 @@ public class InexactSynonym extends AbstractDataObject {
 
 	public void setTranslationLangWordId(Long translationLangWordId) {
 		this.translationLangWordId = translationLangWordId;
+	}
+
+	public String getTranslationLang() {
+		return translationLang;
+	}
+
+	public void setTranslationLang(String translationLang) {
+		this.translationLang = translationLang;
 	}
 
 	public String getInexactDefinitionValue() {
@@ -60,11 +70,11 @@ public class InexactSynonym extends AbstractDataObject {
 		this.wordId = wordId;
 	}
 
-	public List<WordLexeme> getTargetLangWords() {
+	public List<SimpleWord> getTargetLangWords() {
 		return targetLangWords;
 	}
 
-	public void setTargetLangWords(List<WordLexeme> targetLangWords) {
+	public void setTargetLangWords(List<SimpleWord> targetLangWords) {
 		this.targetLangWords = targetLangWords;
 	}
 }

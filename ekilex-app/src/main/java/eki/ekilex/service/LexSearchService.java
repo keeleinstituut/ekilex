@@ -29,6 +29,7 @@ import eki.ekilex.data.EkiUserProfile;
 import eki.ekilex.data.FreeForm;
 import eki.ekilex.data.Government;
 import eki.ekilex.data.ImageSourceTuple;
+import eki.ekilex.data.InexactSynonym;
 import eki.ekilex.data.LexemeNote;
 import eki.ekilex.data.LexemeRelation;
 import eki.ekilex.data.Meaning;
@@ -202,7 +203,8 @@ public class LexSearchService extends AbstractWordSearchService {
 		List<MeaningRelation> synMeaningRelations = commonDataDbService.getSynMeaningRelations(meaningId, datasetCode);
 		appendLexemeLevels(synMeaningRelations);
 		List<MeaningWord> synMeaningWords = commonDataDbService.getMeaningWords(lexemeId, meaningWordLangsRestriction);
-		List<SynonymLangGroup> synonymLangGroups = conversionUtil.composeSynonymLangGroups(synMeaningRelations, synMeaningWords, userProfile, wordLang, languagesOrder);
+		List<InexactSynonym> inexactSynonyms = lookupDbService.getMeaningInexactSynonyms(meaningId, wordLang, datasetCode);
+		List<SynonymLangGroup> synonymLangGroups = conversionUtil.composeSynonymLangGroups(synMeaningRelations, synMeaningWords, inexactSynonyms, userProfile, wordLang, languagesOrder);
 
 		List<OrderedClassifier> meaningDomains = commonDataDbService.getMeaningDomains(meaningId, CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
 		List<Definition> definitions = commonDataDbService.getMeaningDefinitions(meaningId, datasetCode, CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);

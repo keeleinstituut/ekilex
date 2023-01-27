@@ -166,9 +166,9 @@
           </span>
         </div>
       </div>
-      <th:block th:if="${synonymLangGroupIter.first}">
-        <i class="fa fa-question" aria-hidden="true" th:if="${not #lists.isEmpty(lexeme.inexactSynonyms)}"></i>
-        <th:block th:each="inexactSyn, inexactSynIter : ${lexeme.inexactSynonyms}">
+      <th:block th:if="${synonymLangGroupIter.first && not #lists.isEmpty(synonymLangGroup.inexactSynonyms)}">
+        <i class="fa fa-question" aria-hidden="true"></i>
+        <th:block th:each="inexactSyn, inexactSynIter : ${synonymLangGroup.inexactSynonyms}">
            <a th:href="@{'/lexsearch?id=' + ${inexactSyn.wordId}}" th:text="${inexactSyn.translationLangWordValue}" target="_blank"></a>
           (
           <th:block th:each="targetLangWord, targetLangWordIter : ${inexactSyn.targetLangWords}" th:if="${not #lists.isEmpty(inexactSyn.targetLangWords)}">

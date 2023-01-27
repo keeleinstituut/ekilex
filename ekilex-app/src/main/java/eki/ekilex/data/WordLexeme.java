@@ -97,8 +97,6 @@ public class WordLexeme extends AbstractCrudEntity implements LexemeLevel, Decor
 
 	private List<SynonymLangGroup> synonymLangGroups;
 
-	private List<InexactSynonym> inexactSynonyms;
-
 	private boolean lexemeOrMeaningClassifiersExist;
 
 	public Long getWordId() {
@@ -470,14 +468,6 @@ public class WordLexeme extends AbstractCrudEntity implements LexemeLevel, Decor
 
 	public void setSynonymLangGroups(List<SynonymLangGroup> synonymLangGroups) {
 		this.synonymLangGroups = synonymLangGroups;
-	}
-
-	public List<InexactSynonym> getInexactSynonyms() {
-		return inexactSynonyms;
-	}
-
-	public void setInexactSynonyms(List<InexactSynonym> inexactSynonyms) {
-		this.inexactSynonyms = inexactSynonyms;
 	}
 
 	public boolean isLexemeOrMeaningClassifiersExist() {
