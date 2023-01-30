@@ -2,6 +2,7 @@ package eki.ekilex.data;
 
 import java.util.List;
 
+import eki.common.constant.Complexity;
 import eki.common.data.AbstractDataObject;
 
 public class MeaningWord extends AbstractDataObject implements DecoratedWordType {
@@ -31,6 +32,8 @@ public class MeaningWord extends AbstractDataObject implements DecoratedWordType
 	private Long lexemeId;
 
 	private Float lexemeWeight;
+
+	private Complexity lexemeComplexity;
 
 	private List<String> lexRegisterCodes;
 
@@ -142,6 +145,14 @@ public class MeaningWord extends AbstractDataObject implements DecoratedWordType
 
 	public void setLexemeWeight(Float lexemeWeight) {
 		this.lexemeWeight = lexemeWeight;
+	}
+
+	public Complexity getLexemeComplexity() {
+		return lexemeComplexity;
+	}
+
+	public void setLexemeComplexity(Complexity lexemeComplexity) {
+		this.lexemeComplexity = lexemeComplexity;
 	}
 
 	public List<String> getLexRegisterCodes() {

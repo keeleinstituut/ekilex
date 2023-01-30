@@ -750,7 +750,6 @@ public class CommonDataDbService extends AbstractDataDbService {
 		Lexeme l2 = LEXEME.as("l2");
 		Lexeme lh = LEXEME.as("lh");
 		LexemeRegister lreg = LEXEME_REGISTER.as("lreg");
-		LexRelation lrel = LEX_RELATION.as("lrel");
 		Word w2 = WORD.as("w2");
 		Word wh = WORD.as("wh");
 
@@ -802,6 +801,7 @@ public class CommonDataDbService extends AbstractDataDbService {
 						wtz.as("foreign"),
 						l2.ID.as("lexeme_id"),
 						l2.WEIGHT.as("lexeme_weight"),
+						l2.COMPLEXITY.as("lexeme_complexity"),
 						lrc.as("lex_register_codes"),
 						l2.ORDER_BY)
 				.from(l1, l2, w2)

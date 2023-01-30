@@ -339,6 +339,7 @@ public class SynSearchDbService extends AbstractDataDbService {
 						l.LEVEL1,
 						l.LEVEL2,
 						l.WEIGHT,
+						l.COMPLEXITY,
 						lposf.as("pos"),
 						lregf.as("registers"))
 				.from(l.innerJoin(ds).on(ds.CODE.eq(l.DATASET_CODE)))
@@ -593,6 +594,7 @@ public class SynSearchDbService extends AbstractDataDbService {
 		synLexeme.setWordId(wordId);
 		synLexeme.setDatasetCode(datasetCode);
 		synLexeme.setWeight(weight);
+		synLexeme.setComplexity(COMPLEXITY_DETAIL);
 		synLexeme.setLevel1(synLexemeLevel1);
 		synLexeme.setLevel2(DEFAULT_LEXEME_LEVEL);
 		synLexeme.setIsPublic(PUBLICITY_PUBLIC);
@@ -654,6 +656,7 @@ public class SynSearchDbService extends AbstractDataDbService {
 			Long sourceUsageId = sourceUsage.getId();
 			FreeformRecord targetUsage = sourceUsage.copy();
 			targetUsage.setIsPublic(PUBLICITY_PRIVATE);
+			targetUsage.setComplexity(COMPLEXITY_ANY);
 			targetUsage.changed(FREEFORM.ORDER_BY, false);
 			targetUsage.store();
 			Long targetUsageId = targetUsage.getId();
@@ -702,6 +705,7 @@ public class SynSearchDbService extends AbstractDataDbService {
 			DefinitionRecord synDefinition = sourceDefinition.copy();
 			synDefinition.setMeaningId(targetMeaningId);
 			synDefinition.setIsPublic(PUBLICITY_PRIVATE);
+			synDefinition.setComplexity(COMPLEXITY_ANY);
 			synDefinition.changed(DEFINITION.ORDER_BY, false);
 			synDefinition.store();
 			Long synDefinitionId = synDefinition.getId();
