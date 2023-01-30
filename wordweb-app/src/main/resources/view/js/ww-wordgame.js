@@ -1204,11 +1204,14 @@ class WordGame {
           if (word) {
             let scrollToCard = null;
             const cardLabelElems = this.main.querySelectorAll('.wordgame__card__name');
+            const wordLower = word ? word.toLowerCase() : '';
+            const subCatLower = sub_category ? sub_category.toLowerCase() : '';
 
             for (let i = 0; i < cardLabelElems.length; i++) {
               const cardLabelElem = cardLabelElems[i];
+              const dataName = cardLabelElem.getAttribute('data-origword');
 
-              if (cardLabelElem.innerText === word) {
+              if ((dataName && dataName.toLowerCase() === wordLower) || (cardLabelElem.innerText.trim().toLowerCase() === wordLower)) {
                 scrollToCard = cardLabelElem.closest('.wordgame__card');
                 break;
               }
@@ -1220,8 +1223,9 @@ class WordGame {
 
               for (let i = 0; i < subcategoryElems.length; i++) {
                 const subcategoryElem = subcategoryElems[i];
+                const dataCategory = subcategoryElem.getAttribute('data-origsub');
 
-                if (subcategoryElem.innerText === sub_category) {
+                if ((dataCategory && dataCategory.toLowerCase() === subCatLower) || (subcategoryElem.innerText.trim().toLowerCase() === subCatLower)) {
                   scrollToSubcategory = subcategoryElem.closest('.subcategory-container');
                   break;
                 }
@@ -1233,37 +1237,34 @@ class WordGame {
 
               if (!scrollToCard && scrollToSubcategory) {
                 scrollToSubcategory.scrollIntoView({behavior: 'smooth', block: 'center'});
+              } else { 
+                scrollToCard.scrollIntoView({behavior: 'smooth', block: 'center'});
 
-                return;
-              }
+                let animationRan = false;
 
+                await new Promise(r => setTimeout(r, 100));
 
-              scrollToCard.scrollIntoView({behavior: 'smooth', block: 'center'});
-
-              let animationRan = false;
-
-              await new Promise(r => setTimeout(r, 100));
-
-              const highlightAnimation = () => {
-                animationRan = true;
-                scrollToCard.classList.add('testanimation');
-                $(scrollToCard).on('animationend webkitAnimationEnd oAnimationEnd', () => {
-                  scrollToCard.classList.remove('testanimation');
-                });
-              }
-
-              let scrollTimeout = setTimeout(highlightAnimation, 150);
-
-              const handleScrollEvent = (e) => {
-                if (!animationRan) {
-                  clearTimeout(scrollTimeout);
-                  scrollTimeout = setTimeout(highlightAnimation, 150);
-                } else {
-                  document.removeEventListener('scroll', handleScrollEvent);
+                const highlightAnimation = () => {
+                  animationRan = true;
+                  scrollToCard.classList.add('testanimation');
+                  $(scrollToCard).on('animationend webkitAnimationEnd oAnimationEnd', () => {
+                    scrollToCard.classList.remove('testanimation');
+                  });
                 }
-              }
 
-              document.addEventListener('scroll', handleScrollEvent);
+                let scrollTimeout = setTimeout(highlightAnimation, 150);
+
+                const handleScrollEvent = (e) => {
+                  if (!animationRan) {
+                    clearTimeout(scrollTimeout);
+                    scrollTimeout = setTimeout(highlightAnimation, 150);
+                  } else {
+                    document.removeEventListener('scroll', handleScrollEvent);
+                  }
+                }
+
+                document.addEventListener('scroll', handleScrollEvent);
+              }
             } else {
               window.scrollTo(0, 0);
             }

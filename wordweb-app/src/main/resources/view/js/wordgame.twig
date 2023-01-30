@@ -283,7 +283,7 @@
       {% set is_static_picture = "wordgame_static_picture" in sub_key %}
       {% if not is_static_picture %}
         {% if sub_key is not null and sub_key is not empty %}
-        <h3>{{ sub_key }}</h3>
+        <h3 data-origsub="{{sub_key}}">{{sub_key}}</h3>
         {% endif %}
       {% endif %}
     </div>
@@ -331,8 +331,9 @@
                       audio-value="{{item.audio_link}}"
                       audio-type="play"
                       {% if (item.audio_link is empty or item.audio_link is null) and options.wordgame_lang in languagesWithSound %} title="{{labels.nosound}}" {% endif %}
-                      aria-label="Audio">
-                      {{ item.word }} {% if item.audio_link is not empty and item.audio_link is not null and options.wordgame_lang in languagesWithSound %} <img src="{{ viewPath }}/images/speaker-icon-dark.svg" aria-hidden="true" alt="{{labels.word}} icon"> {% endif %}
+                      aria-label="Audio"
+                      data-origword="{{item.word}}">
+                      {{item.word}} {% if item.audio_link is not empty and item.audio_link is not null and options.wordgame_lang in languagesWithSound %} <img src="{{ viewPath }}/images/speaker-icon-dark.svg" aria-hidden="true" alt="{{labels.word}} icon"> {% endif %}
                     </button>
                   </div>
                 </div>
@@ -362,8 +363,9 @@
                     audio-value="{{item.audio_link}}"
                     audio-type="play"
                     {% if (item.audio_link is empty or item.audio_link is null) and options.wordgame_lang in languagesWithSound %} title="{{labels.nosound}}" {% endif %}
-                    aria-label="Audio">
-                      {{ item.word }} {% if item.audio_link is not empty and item.audio_link is not null and options.wordgame_lang in languagesWithSound %} <img src="{{ viewPath }}/images/speaker-icon-dark.svg" aria-hidden="true" alt="{{labels.word}} icon"> {% endif %}
+                    aria-label="Audio"
+                    data-origword="{{item.word}}">
+                      {{item.word}} {% if item.audio_link is not empty and item.audio_link is not null and options.wordgame_lang in languagesWithSound %} <img src="{{ viewPath }}/images/speaker-icon-dark.svg" aria-hidden="true" alt="{{labels.word}} icon"> {% endif %}
                     </button>
                   </div>
                 </div>
@@ -399,8 +401,9 @@
                     audio-value="{{item.audio_link}}"
                     audio-type="play"
                     {% if (item.audio_link is empty or item.audio_link is null) and options.wordgame_lang in languagesWithSound %} title="{{labels.nosound}}" {% endif %}
-                    aria-label="Audio">
-                      {{ item.word }}
+                    aria-label="Audio"
+                    data-origword="{{item.word}}">
+                      {{item.word}}
                     </button>
                   </div>
                 </div>
@@ -415,8 +418,8 @@
                     </p>
                   </div>
                   <div class="wordgame__card--bottom">
-                    <button tabindex="-1" class="wordgame__card__name">
-                      {{ item.word }}
+                    <button tabindex="-1" class="wordgame__card__name" data-origword="{{item.word}}">
+                      {{item.word}}
                     </button>
                   </div>
                 </div>
