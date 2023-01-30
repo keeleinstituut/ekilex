@@ -564,18 +564,19 @@ public class LookupDbService extends AbstractDataDbService {
 						wtrans.VALUE.as("translation_lang_word_value"),
 						wtrans.ID.as("translation_lang_word_id"),
 						wtrans.LANG.as("translation_lang"),
-						DSL.field("json_agg(json_build_object('wordId', wtarget.id, 'wordValue', wtarget.value) order by ltarget.order_by)", JSON.class).as("target_lang_words"))
-				.from(mr, ltrans, ltarget, wtrans, wtarget)
+						DSL.field("json_agg(json_build_object('wordId', wtarget.id, 'wordValue', wtarget.value) order by ltarget.order_by) filter (where wtarget.id is not null)", JSON.class).as("target_lang_words"))
+				.from(
+						ltrans,
+						wtrans,
+						mr
+								.leftOuterJoin(ltarget).on(ltarget.MEANING_ID.eq(mr.MEANING2_ID).and(ltarget.DATASET_CODE.eq(datasetCode)))
+								.leftOuterJoin(wtarget).on(wtarget.ID.eq(ltarget.WORD_ID).and(wtarget.LANG.eq(targetLang))))
 				.where(
 						mr.MEANING1_ID.eq(meaningId)
 								.and(mr.MEANING_REL_TYPE_CODE.in(MEANING_REL_TYPE_CODE_NARROW, MEANING_REL_TYPE_CODE_WIDE))
 								.and(ltrans.MEANING_ID.eq(mr.MEANING2_ID))
 								.and(wtrans.ID.eq(ltrans.WORD_ID))
-								.and(wtrans.LANG.ne(targetLang))
-								.and(ltarget.MEANING_ID.eq(mr.MEANING2_ID))
-								.and(ltarget.DATASET_CODE.eq(datasetCode))
-								.and(wtarget.ID.eq(ltarget.WORD_ID))
-								.and(wtarget.LANG.eq(targetLang)))
+								.and(wtrans.LANG.ne(targetLang)))
 				.groupBy(ltrans.ID, wtrans.ID, mr.ORDER_BY)
 				.orderBy(mr.ORDER_BY)
 				.asTable("syn");
