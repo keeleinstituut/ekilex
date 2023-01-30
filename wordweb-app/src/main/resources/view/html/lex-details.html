@@ -234,21 +234,10 @@
                                 <span class="type-two text-uppercase" th:each="register,regIter : ${syn.mwLexRegisters}" th:text="${register.value + (regIter.last ? '' : ', ')}"></span>
                               </th:block>
                             </span>
-                            <th:block th:if="${isInexactSyn}"
-                                  th:with="
-                                  sourceLangWordExists=${not #lists.isEmpty(syn.sourceLangInexctSynWords)},
-                                  inexactSynMeaningDefExists=${not #strings.isEmpty(syn.inexactSynMeaningDefinition)}">
-                              <span th:if="${sourceLangWordExists || inexactSynMeaningDefExists}">
+                            <th:block th:if="${isInexactSyn}" th:with="inexactSynMeaningDefExists=${not #strings.isEmpty(syn.inexactSynMeaningDefinition)}">
+                              <span th:if="${inexactSynMeaningDefExists}">
                                 <span class="mr-n1">(</span>
-                                <th:block th:if="${sourceLangWordExists}">
-                                  <span th:each="sourceLangWord,sourceLangWordIter : ${syn.sourceLangInexctSynWords}">
-                                    <a th:href="@{${viewUtil.getSearchUri(sessionBean, searchMode, sourceLangWord.word, sourceLangWord.homonymNr)}}">
-                                      <span th:utext="${viewUtil.getWordValueMarkup(sourceLangWord)}"></span>
-                                    </a>
-                                    <span th:unless="${sourceLangWordIter.last}" class="ml-n1">,</span>
-                                  </span>
-                                </th:block>
-                                <span th:unless="${sourceLangWordExists}" th:text="${syn.inexactSynMeaningDefinition}"></span>
+                                <span th:text="${syn.inexactSynMeaningDefinition}"></span>
                                 <span class="ml-n1">)</span>
                               </span>
                             </th:block>

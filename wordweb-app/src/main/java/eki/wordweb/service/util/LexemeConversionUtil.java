@@ -413,23 +413,9 @@ public class LexemeConversionUtil extends AbstractConversionUtil {
 						|| CollectionUtils.isNotEmpty(destinLangInexactSyn.getMwLexGovernments());
 				destinLangInexactSyn.setAdditionalDataExists(additionalDataExists);
 
-				destinLangInexactSyn.setSourceLangInexctSynWords(new ArrayList<>());
 				List<TypeMeaningRelation> sourceLangInexactSynMeaningRels = sourceLangInexactSynMeaningRelsMap.get(meaningId);
 				if (CollectionUtils.isEmpty(sourceLangInexactSynMeaningRels)) {
 					destinLangInexactSyn.setInexactSynMeaningDefinition(destinLangInexactSynMeaningRel.getInexactSynDef());
-				} else {
-					for (TypeMeaningRelation sourceLangInexactSynMeaningRel : sourceLangInexactSynMeaningRels) {
-						Word sourceLangInexactSyn = new Word();
-						sourceLangInexactSyn.setWordId(sourceLangInexactSynMeaningRel.getWordId());
-						sourceLangInexactSyn.setWord(sourceLangInexactSynMeaningRel.getWord());
-						sourceLangInexactSyn.setWordPrese(sourceLangInexactSynMeaningRel.getWordPrese());
-						sourceLangInexactSyn.setHomonymNr(sourceLangInexactSynMeaningRel.getHomonymNr());
-						sourceLangInexactSyn.setLang(sourceLangInexactSynMeaningRel.getLang());
-						sourceLangInexactSyn.setWordTypeCodes(sourceLangInexactSynMeaningRel.getWordTypeCodes());
-						sourceLangInexactSyn.setAspectCode(sourceLangInexactSynMeaningRel.getAspectCode());
-						setWordTypeFlags(sourceLangInexactSyn);
-						destinLangInexactSyn.getSourceLangInexctSynWords().add(sourceLangInexactSyn);
-					}
 				}
 
 				destinLangInexactSynonyms.add(destinLangInexactSyn);
