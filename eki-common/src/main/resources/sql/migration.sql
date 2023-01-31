@@ -22,3 +22,9 @@ update definition set complexity = 'DETAIL' where complexity in ('DETAIL1', 'DET
 
 update freeform set complexity = 'SIMPLE' where complexity in ('SIMPLE1', 'SIMPLE2');
 update freeform set complexity = 'DETAIL' where complexity in ('DETAIL1', 'DETAIL2');
+
+-- Kahepoolsete tähenduste seoste mapping
+insert into meaning_rel_mapping (code1, code2) values ('soomõiste', 'liigimõiste');
+insert into meaning_rel_mapping (code1, code2) values ('liigimõiste', 'soomõiste');
+insert into meaning_rel_mapping (code1, code2) values ('tervikumõiste', 'osamõiste');
+insert into meaning_rel_mapping (code1, code2) values ('osamõiste', 'tervikumõiste');
