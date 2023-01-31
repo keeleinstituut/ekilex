@@ -1236,9 +1236,9 @@ class WordGame {
               await new Promise(r => setTimeout(r, 100));
 
               if (!scrollToCard && scrollToSubcategory) {
-                scrollToSubcategory.scrollIntoView({behavior: 'smooth', block: 'center'});
+                scrollToSubcategory.scrollIntoView({block: 'center'});
               } else { 
-                scrollToCard.scrollIntoView({behavior: 'smooth', block: 'center'});
+                scrollToCard.scrollIntoView({block: 'center'});
 
                 let animationRan = false;
 
