@@ -22,6 +22,7 @@ import eki.wordweb.data.LanguageData;
 import eki.wordweb.data.UiFilterElement;
 import eki.wordweb.service.db.CommonDataDbService;
 import eki.wordweb.service.util.ClassifierUtil;
+import eki.wordweb.service.util.DatasetUtil;
 import eki.wordweb.service.util.LanguageContext;
 
 @Component
@@ -32,6 +33,9 @@ public class CommonDataService implements SystemConstant {
 
 	@Autowired
 	private ClassifierUtil classifierUtil;
+
+	@Autowired
+	private DatasetUtil datasetUtil;
 
 	@Autowired
 	private MessageSource messageSource;
@@ -84,6 +88,7 @@ public class CommonDataService implements SystemConstant {
 		List<UiFilterElement> datasetFilter = new ArrayList<>();
 		datasetFilter.add(new UiFilterElement(DATASET_ALL, allDatasetsLabel, true));
 		List<Dataset> datasets = commonDataDbService.getDatasets();
+		datasets = datasetUtil.resortPriorityDatasets(datasets);
 		datasets.forEach(dataset -> {
 			datasetFilter.add(new UiFilterElement(dataset.getCode(), dataset.getName(), false));
 		});

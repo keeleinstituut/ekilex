@@ -230,7 +230,7 @@ public class CommonDataDbService implements SystemConstant {
 						ds.DESCRIPTION,
 						ds.IS_SUPERIOR)
 				.from(ds)
-				.orderBy(ds.ORDER_BY)
+				.orderBy(ds.NAME)
 				.fetchInto(Dataset.class);
 	}
 
@@ -240,7 +240,7 @@ public class CommonDataDbService implements SystemConstant {
 		return create
 				.select(ds.CODE)
 				.from(ds)
-				.orderBy(ds.ORDER_BY)
+				.orderBy(ds.NAME)
 				.fetchInto(String.class);
 	}
 
