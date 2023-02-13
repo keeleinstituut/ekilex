@@ -89,8 +89,7 @@
     margin: 0;
     &__wrapper {
       display: grid;
-      gap: 16px;
-      grid-template-columns: 0.1fr 1fr;
+      grid-template-columns: 100px 1fr;
       grid-auto-flow: column;
     }
 
