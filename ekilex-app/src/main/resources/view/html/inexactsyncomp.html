@@ -26,11 +26,63 @@
       3. Tähenduse seose loomine
     </span>
   </div>
+  <!-- end of Modal steps header -->
   <!-- Body title with divider -->
   <th:block th:fragment="inexact_syn_body_title(title)">
     <span class="inexact-syn-body-title" th:text="${title}"></span>
     <hr class="inexact-syn-body-divider inexact-syn-body-divider--negative-margin" />
   </th:block>
+  <!-- end of Body title with divider -->
+  <!-- Meaning candidate -->
+  <th:block th:fragment="inexact_syn_full_candidate(meaningCandidate, meaningCandidateIter)">
+      <div class="inexact-syn-body-candidate__header">
+        <div class="inexact-syn-body-candidate__input-wrapper">
+          <input type="radio" name="inexactSynMeaningId" data-plugin="enableSubmitInexactSynMeaningBtnPlugin"
+                 th:value="${meaningCandidate.meaningId}"
+                 th:disabled="${meaningCandidate.disabled}"/>
+          <span class="inexact-syn-body-candidate__identifier" th:text="'M' + ${meaningCandidate.meaningId}"></span>
+        </div>
+        <span class="inexact-syn-body-candidate__dataset" th:text="${meaningCandidate.datasetName}"></span>
+        <a class="inexact-syn-body-candidate__link" th:href="@{'/termsearch?id=' + ${meaningCandidate.meaningId}}" target="_blank" th:text="#{inexactsyn.display.meaning}">Vaata tervet kirjet</a>
+      </div>
+      <hr class="inexact-syn-body-divider"/>
+      <div class="inexact-syn-body-list__wrapper">
+        <span class="inexact-syn-body-list__title" th:text="#{term.terms}">Terminid</span>
+        <ul class="inexact-syn-body-list">
+          <th:block th:each="candidateTranslationLangWord : ${meaningCandidate.translationLangWords}">
+              <li 
+                class="inexact-syn-body-list__item"
+                th:utext="${candidateTranslationLangWord.wordValuePrese}"
+                th:classappend="${candidateTranslationLangWord.wordValue == data.translationLangWordValue ? 'inexact-syn-body-list__item--exact' : ''}"
+                >
+              </li>
+          </th:block>
+          <th:block th:each="candidateTargetLangWord : ${meaningCandidate.targetLangWords}">
+              <li 
+                class="inexact-syn-body-list__item"
+                th:utext="${candidateTargetLangWord.wordValuePrese}"
+                th:classappend="${candidateTargetLangWord.wordValue == data.targetLangWordValue ? 'inexact-syn-body-list__item--exact' : ''}"
+                >
+              </li>
+          </th:block>
+        </ul>
+      </div>
+      <div class="inexact-syn-body-list__wrapper">
+        <span class="inexact-syn-body-list__title" th:text="#{inexactsyn.definitions}">Seletused</span>
+        <ul class="inexact-syn-body-list">
+          <th:block
+            th:each="definition : ${meaningCandidate.definitions}"
+            th:with="isInexactSynDef = ${definition.typeCode == T(eki.common.constant.GlobalConstant).DEFINITION_TYPE_CODE_INEXACT_SYN}"
+            >
+            <li class="inexact-syn-body-list__item">
+              <span th:utext="${definition.value}"></span>
+              <span class="inexact-syn-body-list__item--exact" th:if="${isInexactSynDef}" th:text="${definition.typeCode}"></span>
+            </li>
+          </th:block>
+        </ul>
+      </div>
+  </th:block>
+  <!-- end of Meaning candidate -->
   <div class="modal-dialog modal-dialog-scrollable h-100 mw-90" role="document" th:fragment="inexact_syn_meaning_select">
     <div class="modal-content">
       <div class="modal-header">
@@ -82,68 +134,16 @@
                     <th:block th:replace=" :: common_input_data"></th:block>
                     <input type="hidden" name="targetLangWordValue" th:value="${data.targetLangWordValue}">
                     <th:block th:replace=" :: inexact_syn_body_title(#{inexactsyn.select.meaning})" />
-                    <div th:each="meaningCandidate,meaningCandidateIter : ${meaningCandidates}">
-                      <div class="border border-dark rounded mb-2 p-2">
-                        <div class="row mb-2">
-                          <div class="col-4">
-                            <input type="radio" name="inexactSynMeaningId" class="ml-3 mr-3" data-plugin="enableSubmitInexactSynMeaningBtnPlugin"
-                                   th:value="${meaningCandidate.meaningId}"
-                                   th:disabled="${meaningCandidate.disabled}"/>
-                            <small th:text="'M' + ${meaningCandidate.meaningId}"></small>
-                          </div>
-                          <div class="col-6">
-                            <span class="font-weight-bold float-right" th:text="${meaningCandidate.datasetName}"></span>
-                          </div>
-                          <div class="col-2">
-                            <a th:href="@{'/termsearch?id=' + ${meaningCandidate.meaningId}}" target="_blank" th:text="#{inexactsyn.display.meaning}">Vaata tervet kirjet</a>
-                          </div>
-                        </div>
-                        <hr/>
-                        <div class="row">
-                          <div class="col-2">
-                            <span class="lbl" th:text="#{term.terms}">Terminid</span>
-                          </div>
-                          <div class="col-10">
-                            <th:block th:each="candidateTranslationLangWord : ${meaningCandidate.translationLangWords}">
-                              <div style="display: list-item; position: absolute"></div>
-                              <div>
-                                <span th:utext="${candidateTranslationLangWord.wordValuePrese}"
-                                      th:classappend="${candidateTranslationLangWord.wordValue == data.translationLangWordValue ? 'font-weight-bold' : ''}"></span>
-                              </div>
-                            </th:block>
-                            <th:block th:each="candidateTargetLangWord : ${meaningCandidate.targetLangWords}">
-                              <div style="display: list-item; position: absolute"></div>
-                              <div>
-                                <span th:utext="${candidateTargetLangWord.wordValuePrese}"
-                                      th:classappend="${candidateTargetLangWord.wordValue == data.targetLangWordValue ? 'font-weight-bold' : ''}"></span>
-                              </div>
-                            </th:block>
-                          </div>
-                        </div>
-                        <div class="row">
-                          <div class="col-2">
-                            <span class="lbl" th:text="#{inexactsyn.definitions}">Seletused</span>
-                          </div>
-                          <div class="col-10">
-                            <th:block th:each="definition : ${meaningCandidate.definitions}"
-                                      th:with="isInexactSynDef = ${definition.typeCode == T(eki.common.constant.GlobalConstant).DEFINITION_TYPE_CODE_INEXACT_SYN}">
-                            <div style="display: list-item; position: absolute"></div>
-                              <div>
-                                <span th:utext="${definition.value}"></span>
-                                <span class="ctxt" th:if="${isInexactSynDef}" th:text="${definition.typeCode}"></span>
-                              </div>
-                            </th:block>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                    <div class="border border-dark rounded mb-2 p-2">
-                      <div class="row mb-2">
-                        <div class="col-12">
-                          <input type="radio" name="inexactSynMeaningId" class="ml-3 mr-3" data-plugin="enableSubmitInexactSynMeaningBtnPlugin" value="new"/>
-                          <span th:text="#{inexactsyn.create.new.meaning}">Sobiv tähendus puudub, loon uue</span>
-                        </div>
-                      </div>
+                    <th:block th:each="meaningCandidate,meaningCandidateIter : ${meaningCandidates}">
+                      <div class="inexact-syn-body-card">
+                        <th:block th:replace=" :: inexact_syn_full_candidate(${meaningCandidate}, ${meaningCandidateIter})" />
+                      </div> 
+                    </th:block>
+                    <div class="inexact-syn-body-card">
+                      <label class="inexact-syn-body-new__label">
+                          <input type="radio" name="inexactSynMeaningId" class="mr-3" data-plugin="enableSubmitInexactSynMeaningBtnPlugin" value="new"/>
+                          <span class="inexact-syn-body-new" th:text="#{inexactsyn.create.new.meaning}">Sobiv tähendus puudub, loon uue</span>
+                      </label>
                     </div>
                   </form>
                 </div>
@@ -317,85 +317,88 @@
             <div class="card-body h-100">
               <th:block th:replace=" :: inexact_syn_body_title(#{inexactsyn.select.meaning.relation})" />
               <div class="row">
-                <div class="col-5">
-                  <div class="border border-dark rounded mb-2 p-2">
-                    <div class="row">
-                      <div class="col-12" th:if="${data.inexactSynMeaningId == null}" th:text="#{inexactsyn.new.meaning}">Uus tähendus</div>
-                      <div class="col-12" th:if="${data.inexactSynMeaningId != null}" th:text="'M' + ${data.inexactSynMeaningId}"></div>
-                    </div>
-                    <hr/>
-                    <div class="row">
-                      <div class="col-4" th:text="#{inexactsyn.words}">Keelendid</div>
-                      <div class="col-8">
-                        <th:block th:each="meaningWordValue : ${data.inexactSynMeaningWordValues}">
-                          <div style="display: list-item; position: absolute"></div>
-                          <div>
-                            <span th:utext="${meaningWordValue}"></span>
-                          </div>
-                        </th:block>
-                      </div>
-                    </div>
-                    <div class="row">
-                      <div class="col-4" th:text="#{inexactsyn.definitions}">Seletused</div>
-                      <div class="col-8">
-                        <th:block th:each="definition : ${data.inexactSynMeaningDefinitions}"
-                                  th:with="isInexactSynDef = ${definition.typeCode == T(eki.common.constant.GlobalConstant).DEFINITION_TYPE_CODE_INEXACT_SYN}">
-                          <div style="display: list-item; position: absolute"></div>
-                          <div>
-                            <span th:utext="${definition.value}"></span>
-                            <span class="ctxt" th:if="${isInexactSynDef}" th:text="${definition.typeCode}"></span>
-                          </div>
-                        </th:block>
-                      </div>
-                    </div>
+                <div class="col-5 inexact-syn-body-card">
+                  <span th:if="${data.inexactSynMeaningId == null}" th:text="#{inexactsyn.new.meaning}">Uus tähendus</span>
+                  <span th:if="${data.inexactSynMeaningId != null}" th:text="'M' + ${data.inexactSynMeaningId}"></span>
+                  <hr class="inexact-syn-body-divider inexact-syn-body-divider--small">
+                  <div class="inexact-syn-body-list__wrapper">
+                    <span class="inexact-syn-body-list__title" th:text="#{inexactsyn.words}">Keelendid</span>
+                    <ul class="inexact-syn-body-list">
+                      <th:block th:each="meaningWordValue : ${data.inexactSynMeaningWordValues}">
+                        <li class="inexact-syn-body-list__item" th:utext="${meaningWordValue}"></li>
+                      </th:block>
+                    </ul>
+                  </div>
+                  <div class="inexact-syn-body-list__wrapper">
+                    <span class="inexact-syn-body-list__title" th:text="#{inexactsyn.definitions}">Seletused</span>
+                    <ul class="inexact-syn-body-list">
+                      <th:block
+                        th:each="definition : ${data.inexactSynMeaningDefinitions}"
+                        th:with="isInexactSynDef = ${definition.typeCode == T(eki.common.constant.GlobalConstant).DEFINITION_TYPE_CODE_INEXACT_SYN}"
+                        >
+                          <li class="inexact-syn-body-list__item" th:utext="${definition.value}"></li>
+                          <li class="inexact-syn-body-list__item inexact-syn-body-list__item--exact" th:if="${isInexactSynDef}" th:text="${definition.typeCode}"></li>
+                      </th:block>
+                    </ul>
                   </div>
                 </div>
                 <div class="col-2">
-                  <div class="border border-dark rounded mb-2 p-2">
                     <form th:action="@{/inexact_syn_meaning_relation}" method="post" id="relationForm" autocomplete="off">
                       <th:block th:replace=" :: common_input_data"></th:block>
                       <input type="hidden" name="targetLangWordValue" th:value="${data.targetLangWordValue}">
                       <input type="hidden" name="inexactSynDef" th:value="${data.inexactSynDef}">
                       <input type="hidden" name="inexactSynMeaningId" th:value="${data.inexactSynMeaningId}">
                       <input type="hidden" name="targetLangWordId" th:value="${data.targetLangWordId}">
-                      <select required class="form-control value-select required-field" name="relationType" data-plugin="relationSelectPlugin">
-                        <option value="" hidden disabled selected th:text="#{common.select.value}">vali väärtus...</option>
-                        <option th:value="${T(eki.common.constant.GlobalConstant).MEANING_REL_TYPE_CODE_NARROW}" th:text="#{inexactsyn.is.narrower.than}">on kitsam kui...</option>
-                        <option th:value="${T(eki.common.constant.GlobalConstant).MEANING_REL_TYPE_CODE_WIDE}" th:text="#{inexactsyn.is.wider.than}">on laiem kui...</option>
-                      </select>
+                      <div class="inexact-syn-body-card">
+                        <select required class="form-control value-select required-field" name="relationType" data-plugin="relationSelectPlugin">
+                          <option value="" hidden disabled selected="true" th:text="#{common.select.value}">vali väärtus...</option>
+                          <option th:value="${T(eki.common.constant.GlobalConstant).MEANING_REL_TYPE_CODE_NARROW}" th:text="#{inexactsyn.is.narrower.than}">on kitsam kui...</option>
+                          <option th:value="${T(eki.common.constant.GlobalConstant).MEANING_REL_TYPE_CODE_WIDE}" th:text="#{inexactsyn.is.wider.than}">on laiem kui...</option>
+                        </select>
+                        <div class="inexact-syn-relation-icons">
+                          <i class="fa fa-question"></i>
+                          <i
+                            class="fa fa-less-than"
+                            style="display: none;"
+                            th:data-relation-value="${dataRelationValue}"
+                            th:with="dataRelationValue=${T(eki.common.constant.GlobalConstant).MEANING_REL_TYPE_CODE_NARROW}"
+                            >
+                          </i>
+                          <i
+                            class="fa fa-greater-than"
+                            style="display: none;"
+                            th:data-relation-value="${dataRelationValue}"
+                            th:with="dataRelationValue=${T(eki.common.constant.GlobalConstant).MEANING_REL_TYPE_CODE_WIDE}"
+                            >
+                          </i>
+                        </div>
+                      </div>
                     </form>
-                  </div>
                 </div>
-                <div class="col-5">
-                  <div class="border border-dark rounded mb-2 p-2">
-                    <div class="row">
-                      <div class="col-12" th:text="'M' + ${data.targetMeaningId}"></div>
-                    </div>
-                    <hr/>
-                    <div class="row">
-                      <div class="col-4" th:text="#{inexactsyn.words}">Keelendid</div>
-                      <div class="col-8">
-                        <th:block th:each="meaningWordValue : ${data.targetMeaningWordValues}">
-                          <div style="display: list-item; position: absolute"></div>
-                          <div>
-                            <span th:utext="${meaningWordValue}"></span>
-                          </div>
-                        </th:block>
-                      </div>
-                    </div>
-                    <div class="row">
-                      <div class="col-4" th:text="#{inexactsyn.definitions}">Seletused</div>
-                      <div class="col-8">
-                        <th:block th:each="definition : ${data.targetMeaningDefinitions}"
-                                  th:with="isInexactSynDef = ${definition.typeCode == T(eki.common.constant.GlobalConstant).DEFINITION_TYPE_CODE_INEXACT_SYN}">
-                          <div style="display: list-item; position: absolute"></div>
-                          <div>
-                            <span th:utext="${definition.value}"></span>
-                            <span class="ctxt" th:if="${isInexactSynDef}" th:text="${definition.typeCode}"></span>
-                          </div>
-                        </th:block>
-                      </div>
-                    </div>
+                <div class="col-5 inexact-syn-body-card">
+                  <span th:text="'M' + ${data.targetMeaningId}"></span>
+                  <hr class="inexact-syn-body-divider inexact-syn-body-divider--small">
+                  <div class="inexact-syn-body-list__wrapper">
+                    <span class="inexact-syn-body-list__title" th:text="#{inexactsyn.words}">Keelendid</span>
+                    <ul class="inexact-syn-body-list">
+                      <th:block
+                        th:each="meaningWordValue : ${data.targetMeaningWordValues}"
+                        >
+                          <li class="inexact-syn-body-list__item" th:utext="${meaningWordValue}"></li>
+                      </th:block>
+                    </ul>
+                  </div>
+                  <div class="inexact-syn-body-list__wrapper">
+                    <span class="inexact-syn-body-list__title" th:text="#{inexactsyn.definitions}">Seletused</span>
+                    <ul class="inexact-syn-body-list">
+                      <th:block
+                        th:each="definition : ${data.targetMeaningDefinitions}"
+                        th:with="isInexactSynDef = ${definition.typeCode == T(eki.common.constant.GlobalConstant).DEFINITION_TYPE_CODE_INEXACT_SYN}"
+                        >
+                          <li class="inexact-syn-body-list__item" th:utext="${definition.value}"></li>
+                          <li class="inexact-syn-body-list__item inexact-syn-body-list__item--exact" th:if="${isInexactSynDef}" th:text="${definition.typeCode}"></li>
+                      </th:block>
+                    </ul>
                   </div>
                 </div>
               </div>

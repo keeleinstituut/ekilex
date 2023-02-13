@@ -140,11 +140,28 @@ $.fn.submitWordBtnPlugin = function() {
 	});
 }
 
+function handleRelationSelect(obj) {
+	const selectedVal = obj?.val();
+	const icons = obj?.siblings('.inexact-syn-relation-icons')?.children();
+	const activeIcon = icons?.filter(`[data-relation-value=${selectedVal}]`);
+	if (activeIcon) {
+		if (icons.attr('style')) {
+			// Remove default inline styles
+			icons.removeAttr('style');
+		}
+		// Hide all icons
+		icons.not(activeIcon).hide();
+		// Show active icon
+		activeIcon.show();
+	}
+}
+
 $.fn.relationSelectPlugin = function() {
 	return this.each(function() {
 		const select = $(this);
 		select.on('change', function() {
 			$(document).find('button[name="submitRelationSelectBtn"]').removeAttr("disabled");
+			handleRelationSelect(select);
 		});
 	});
 }

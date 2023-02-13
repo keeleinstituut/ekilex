@@ -24,46 +24,148 @@
     & .card {
       @extend %shadow-elevation-02;
       border: 0;
-
       &-body {
         // Enable margin-top: auto for search change div
         display: flex;
         flex-direction: column;
-        & .inexact-syn-body-title {
-          color: $gray-1000;
-          font-size: 1.125rem;
-        }
-
-        & .inexact-syn-body-divider {
-          border-top: 1px solid $gray-200;
-          margin: 24px 0;
-          &--negative-margin {
-            margin: 24px -20px;
-          }
-        }
-
-        & .inexact-syn-body-change-search {
-          font-size: 0.875rem;
-          color: $blue-400-v2;
-          border: 0;
-          background: none;
-          cursor: pointer;
-
-          &:focus {
-            outline-style: auto;
-          }
-          &__wrapper {
-            padding-top: 24px;
-            background-color: white;
-            border-top: 1px solid $gray-200;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            // Move to end vertically, break out of padding
-            margin: auto -20px 0;
-          }
-        }
       }
+    }
+  }
+  & .inexact-syn-body-card {
+    display: flex;
+    flex-direction: column;
+    border: 1px solid $gray-350;
+    background-color: white;
+    border-radius: 4px;
+    padding: 8px 16px;
+    gap: 8px;
+    // Add margin to all subsequent occurrences
+    &:not(:first-child) {
+      margin-top: 32px;
+    }
+  }
+
+  & .inexact-syn-body-candidate {
+    &__header {
+      display: flex;
+      align-items: center;
+    }
+    &__input-wrapper {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+    &__identifier,
+    &__dataset {
+      color: $gray-1000;
+    }
+
+    &__dataset,
+    &__link {
+      font-weight: 700;
+      font-size: 1rem;
+    }
+
+    &__dataset {
+      margin-left: auto;
+    }
+
+    &__identifier {
+      font-size: 0.75rem;
+    }
+
+    &__link {
+      color: $blue-350;
+      margin-left: 16px;
+    }
+
+    & .inexact-syn-body-divider {
+      margin: 8px 0;
+    }
+  }
+
+  & .inexact-syn-body-list {
+    padding-left: 32px;
+    margin: 0;
+    &__wrapper {
+      display: grid;
+      gap: 16px;
+      grid-template-columns: 0.1fr 1fr;
+      grid-auto-flow: column;
+    }
+
+    &__title {
+      text-transform: uppercase;
+      color: $gray-350;
+      font-size: 0.875rem;
+      font-weight: 700;
+    }
+    &__item {
+      color: $gray-1000;
+      font-size: 1rem;
+      font-weight: 400;
+      &--exact {
+        font-weight: 700;
+      }
+    }
+  }
+
+  & .inexact-syn-body-new {
+    color: $gray-1000;
+    font-size: 1rem;
+
+    &__label {
+      margin: 0;
+    }
+  }
+
+  & .inexact-syn-body-title {
+    color: $gray-1000;
+    font-size: 1.125rem;
+  }
+
+  & .inexact-syn-body-divider {
+    border-top: 1px solid $gray-200;
+    margin: 24px 0;
+    &--negative-margin {
+      margin: 24px -20px;
+    }
+
+    &--small {
+      margin: 8px 0;
+    }
+  }
+
+  & .inexact-syn-body-change-search {
+    font-size: 0.875rem;
+    color: $blue-400-v2;
+    border: 0;
+    background: none;
+    cursor: pointer;
+
+    &:focus {
+      outline-style: auto;
+    }
+    &__wrapper {
+      padding-top: 24px;
+      background-color: white;
+      border-top: 1px solid $gray-200;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      // Move to end vertically, break out of padding
+      margin: auto -20px 0;
+    }
+  }
+
+  & .inexact-syn-relation-icons {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    & i {
+      font-size: 3rem;
+      color: $gray-900;
+      font-weight: 900;
     }
   }
 
