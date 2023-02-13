@@ -1,0 +1,145 @@
+#inexactSynDlg {
+  .modal-header {
+    @extend %shadow-elevation-02;
+    border: 0;
+    & .inexact-syn-header {
+      display: flex;
+      align-items: center;
+      gap: 24px;
+
+      &__step {
+        font-size: 1rem;
+        color: $gray-300-v2;
+
+        &--active {
+          color: $blue-400-v2;
+        }
+      }
+    }
+  }
+
+  .modal-body {
+    background-color: $gray-100;
+
+    & .card {
+      @extend %shadow-elevation-02;
+      border: 0;
+
+      &-body {
+        // Enable margin-top: auto for search change div
+        display: flex;
+        flex-direction: column;
+        & .inexact-syn-body-title {
+          color: $gray-1000;
+          font-size: 1.125rem;
+        }
+
+        & .inexact-syn-body-divider {
+          border-top: 1px solid $gray-200;
+          margin: 24px 0;
+          &--negative-margin {
+            margin: 24px -20px;
+          }
+        }
+
+        & .inexact-syn-body-change-search {
+          font-size: 0.875rem;
+          color: $blue-400-v2;
+          border: 0;
+          background: none;
+          cursor: pointer;
+
+          &:focus {
+            outline-style: auto;
+          }
+          &__wrapper {
+            padding-top: 24px;
+            background-color: white;
+            border-top: 1px solid $gray-200;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            // Move to end vertically, break out of padding
+            margin: auto -20px 0;
+          }
+        }
+      }
+    }
+  }
+
+  .modal-footer {
+    & .inexact-syn-prev {
+      &__wrapper {
+        margin-left: 0;
+        margin-right: auto;
+        color: $gray-400;
+      }
+      &__contents {
+        display: flex;
+        align-items: center;
+      }
+      &__arrow {
+        font-size: 1.25rem;
+        color: $gray-400;
+      }
+
+      &__back-button {
+        padding: 0;
+        margin-left: 12px;
+        outline: 0;
+        border: 0;
+        background: none;
+        color: $gray-400;
+        // Re-add outline when focused
+        &:focus {
+          outline-style: auto;
+        }
+      }
+
+      &__progress {
+        margin-left: 16px;
+        font-size: 0.875rem;
+        display: flex;
+        align-items: center;
+        color: $gray-400;
+        &::before {
+          margin-right: 16px;
+          content: "|";
+          color: $gray-200;
+          font-size: 1rem;
+        }
+      }
+    }
+
+    & .inexact-syn-next-btns {
+      display: flex;
+      gap: 16px;
+      align-items: center;
+      font-size: 0.875rem;
+
+      &__cancel,
+      &__next {
+        // Reset button styles
+        border: 0;
+        padding: 0;
+        outline: 0;
+        margin: 0;
+        background: none;
+      }
+      &__cancel {
+        color: $gray-400;
+      }
+      &__next {
+        border-radius: 2px;
+        padding: 8px;
+        color: white;
+        cursor: pointer;
+        background-color: $blue-400-v2;
+        &:disabled {
+          background-color: $gray-350;
+          cursor: default;
+        }
+      }
+    }
+  }
+}

@@ -1,6 +1,8 @@
 $gray-100: #ecf0f2;
 $gray-200: #ccd9e0;
 $gray-300: #8a98a5;
+$gray-300-v2: #7D8C9B;
+$gray-350: #687887;
 $gray-400: #5d606e;
 $gray-900: #3f3f3f;
 $gray-1000: #0e1013;
@@ -11,6 +13,8 @@ $blue-100: #a0dcf8;
 $blue-200: #5aabe0;
 $blue-300: #3173b8;
 $blue-400: #005aa9;
+// Different blue-400 from inexactsyn proto?
+$blue-400-v2: #0053B3;
 $blue-900: #00377a;
 
 $red-100: #ffb9b9;
@@ -67,3 +71,8 @@ $border-color: $gray-200;
 $text-muted: $gray-200;
 
 $popover-inverted-bg: $gray-1000;
+
+// Use with @extend %shadow-elevation-02;
+%shadow-elevation-02 {
+  box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+}
