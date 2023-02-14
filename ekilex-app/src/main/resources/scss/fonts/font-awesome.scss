@@ -12,6 +12,32 @@
   font-weight: normal;
   font-style: normal;
 }
+
+// Free version of Font Awesome 6
+@font-face {
+  font-family: 'Font Awesome 6 Free';
+  font-style: normal;
+  font-weight: 400;
+  src: url('../fonts/fontawesome-6/fa-regular-400.woff2') format('woff2'),
+    url('../fonts/fontawesome-6/fa-regular-400.ttf') format('truetype');
+}
+
+@font-face {
+  font-family: 'Font Awesome 6 Free Brands';
+  font-style: normal;
+  font-weight: 400;
+  src: url('../fonts/fontawesome-6/fa-brands-400.woff2') format('woff2'),
+    url('../fonts/fontawesome-6/fa-brands-400.ttf') format('truetype');
+}
+
+@font-face {
+  font-family: 'Font Awesome 6 Free Solid';
+  font-style: normal;
+  font-weight: 900;
+  src: url('../fonts/fontawesome-6/fa-solid-900.woff2') format('woff2'),
+    url('../fonts/fontawesome-6/fa-solid-900.ttf') format('truetype');
+}
+
 .fa {
   display: inline-block;
   font: normal normal normal 14px/1 FontAwesome;

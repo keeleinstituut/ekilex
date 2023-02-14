@@ -45,10 +45,10 @@
                       data-plugin="changeSynRelationPlugin">
                 <i class="fa fa-remove" aria-hidden="true"></i>
               </button>
-              <div class="custom-control custom-switch" data-toggle="tooltip" th:title="#{inexactsyn.narrow.wide.rel.switch}">
-                <input type="checkbox" class="custom-control-input" name="inexactSynSwitch" th:id="${'inexactSynSwitch_' + synRelation.id}">
-                <label class="custom-control-label" th:for="${'inexactSynSwitch_' + synRelation.id}"></label>
-              </div>
+              <label class="inexact-syn-switch__wrapper">
+                <input type="checkbox" class="inexact-syn-switch" name="inexactSynSwitch" th:id="${'inexactSynSwitch_' + synRelation.id}">
+                <span class="inexact-syn-switch__slider"></span>
+              </label>
             </div>
           </div>
           <button type="button" class="btn btn-sm px-0 syn-stats-popover" data-trigger="hover" data-toggle="popover" th:data-title="${synRelation.wordValue}" data-html="true">
