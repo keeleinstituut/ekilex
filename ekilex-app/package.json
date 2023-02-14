@@ -3,7 +3,9 @@
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
-  "scripts": {},
+  "scripts": {
+    "dev-back": "mvn spring-boot:run -D spring-boot.run.profiles=dev"
+  },
   "author": "TripleDev OÜ",
   "license": "",
   "dependencies": {},

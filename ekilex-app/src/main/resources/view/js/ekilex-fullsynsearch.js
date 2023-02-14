@@ -45,7 +45,8 @@ function initializeFullSynSearch() {
 				revert: "invalid",
 				appendTo: "body",
 				containment: "window",
-				helper: "clone"
+				helper: "clone",
+				delay: 100
 			});
 
 			let scrollDebounce;
