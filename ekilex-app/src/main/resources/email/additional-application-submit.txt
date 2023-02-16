@@ -1,5 +1,0 @@
-Ekilexi kasutaja "[(${userName})]", kelle e-post on "[(${userEmail})]" esitas õiguste juurdesaamiseks taotluse.
-
-[# th:if="${not #strings.isEmpty(datasets)}"]Taotluses märgitud sõnakogud: [(${datasets})][/]
-
-[# th:if="${not #strings.isEmpty(comment)}"]Taotluse põhjendus: [(${comment})][/]

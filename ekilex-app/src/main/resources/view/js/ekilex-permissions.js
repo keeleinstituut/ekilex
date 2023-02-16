@@ -13,15 +13,7 @@ $(function() {
 			} else {
 				userEnableUrl = `${applicationUrl}permissions/disable/${userId}`;
 			}
-			$.get(userEnableUrl).done(function(data) {
-				$('#permissionsArea').replaceWith(data);
-				$wpm.bindObjects();
-			}).fail(function(data) {
-				console.log(data);
-				openAlertDlg(messages["common.error"]);
-			}).always(function() {
-				closeWaitDlg();
-			});
+			submitUrlAndUpdatePermissionsData(userEnableUrl);
 		});
 	}
 
@@ -38,15 +30,7 @@ $(function() {
 			} else {
 				userEnableUrl = `${applicationUrl}permissions/remapicrud/${userId}`;
 			}
-			$.get(userEnableUrl).done(function(data) {
-				$('#permissionsArea').replaceWith(data);
-				$wpm.bindObjects();
-			}).fail(function(data) {
-				console.log(data);
-				openAlertDlg(messages["common.error"]);
-			}).always(function() {
-				closeWaitDlg();
-			});
+			submitUrlAndUpdatePermissionsData(userEnableUrl);
 		});
 	}
 
@@ -63,15 +47,7 @@ $(function() {
 			} else {
 				setAdminUrl = `${applicationUrl}permissions/remadmin/${userId}`;
 			}
-			$.get(setAdminUrl).done(function(data) {
-				$('#permissionsArea').replaceWith(data);
-				$wpm.bindObjects();
-			}).fail(function(data) {
-				console.log(data);
-				openAlertDlg(messages["common.error"]);
-			}).always(function() {
-				closeWaitDlg();
-			});
+			submitUrlAndUpdatePermissionsData(setAdminUrl);
 		});
 	}
 
@@ -88,40 +64,7 @@ $(function() {
 			} else {
 				setMasterUrl = `${applicationUrl}permissions/remmaster/${userId}`;
 			}
-			$.get(setMasterUrl).done(function(data) {
-				$('#permissionsArea').replaceWith(data);
-				$wpm.bindObjects();
-			}).fail(function(data) {
-				console.log(data);
-				openAlertDlg(messages["common.error"]);
-			}).always(function() {
-				closeWaitDlg();
-			});
-		});
-	}
-
-	$.fn.applicationReviewedCheck = function() {
-		const main = $(this);
-		main.on('click', function(e) {
-			e.preventDefault();
-			openWaitDlg();
-			const applicationId = main.data('application-id');
-			const checked = main.is(':checked');
-			let setReviewedUrl;
-			if (checked) {
-				setReviewedUrl = `${applicationUrl}permissions/setapplicationreviewed/${applicationId}`;
-			} else {
-				setReviewedUrl = `${applicationUrl}permissions/remapplicationreviewed/${applicationId}`;
-			}
-			$.get(setReviewedUrl).done(function(data) {
-				$('#permissionsArea').replaceWith(data);
-				$wpm.bindObjects();
-			}).fail(function(data) {
-				console.log(data);
-				openAlertDlg(messages["common.error"]);
-			}).always(function() {
-				closeWaitDlg();
-			});
+			submitUrlAndUpdatePermissionsData(setMasterUrl);
 		});
 	}
 
@@ -134,7 +77,10 @@ $(function() {
 			const getDatasetLanguagesUrl = `${applicationUrl}permissions/dataset_languages/${datasetCode}`;
 			$.get(getDatasetLanguagesUrl).done(function(response) {
 				$languages.empty();
-				$languages.append($("<option value=''></option>"));
+				$languages.append($("<option></option>")
+					.attr("value", '')
+					.attr("selected", '')
+					.text(messages["common.all.languages"]));
 				const datasetLanguages = JSON.parse(response);
 				$.each(datasetLanguages, function(index, language) {
 					$languages.append($("<option></option>")
@@ -153,24 +99,27 @@ $(function() {
 		const main = $(this);
 		main.on('click', function(e) {
 			e.preventDefault();
-			openWaitDlg();
 			const form = main.closest('form');
 			const modalId = main.closest('.modal').attr('id');
-			$.ajax({
-				url: form.attr('action'),
-				data: form.serialize(),
-				method: 'POST',
-			}).done(function(data) {
-				$(`#${modalId}`).modal('hide');
-				$('#permissionsArea').replaceWith(data);
-				$wpm.bindObjects();
-			}).fail(function(data) {
-				$(`#${modalId}`).modal('hide');
-				console.log(data);
-				openAlertDlg(messages["common.error"]);
-			}).always(function() {
-				closeWaitDlg();
-			});
+			const isValid = checkRequiredFields(form);
+			if (isValid) {
+				openWaitDlg();
+				$.ajax({
+					url: form.attr('action'),
+					data: form.serialize(),
+					method: 'POST',
+				}).done(function(data) {
+					$(`#${modalId}`).modal('hide');
+					$('#permissionsArea').replaceWith(data);
+					$wpm.bindObjects();
+				}).fail(function(data) {
+					$(`#${modalId}`).modal('hide');
+					console.log(data);
+					openAlertDlg(messages["common.error"]);
+				}).always(function() {
+					closeWaitDlg();
+				});
+			}
 		});
 	}
 
@@ -206,15 +155,7 @@ $(function() {
 			openWaitDlg();
 			const userId = main.data('id');
 			const deleteReviewCommentUrl = `${applicationUrl}permissions/deletereviewcomment/${userId}`;
-			$.get(deleteReviewCommentUrl).done(function(data) {
-				$('#permissionsArea').replaceWith(data);
-				$wpm.bindObjects();
-			}).fail(function(data) {
-				console.log(data);
-				openAlertDlg(messages["common.error"]);
-			}).always(function() {
-				closeWaitDlg();
-			});
+			submitUrlAndUpdatePermissionsData(deleteReviewCommentUrl);
 		});
 	}
 });
@@ -222,15 +163,7 @@ $(function() {
 function deleteDatasetPermission(datasetPermId) {
 	openWaitDlg();
 	const deleteDatasetPermUrl = `${applicationUrl}permissions/deletedatasetperm/${datasetPermId}`;
-	$.get(deleteDatasetPermUrl).done(function(data) {
-		$('#permissionsArea').replaceWith(data);
-		$wpm.bindObjects();
-	}).fail(function(data) {
-		console.log(data);
-		openAlertDlg(messages["common.error"]);
-	}).always(function() {
-		closeWaitDlg();
-	});
+	submitUrlAndUpdatePermissionsData(deleteDatasetPermUrl);
 };
 
 function sendPermissionsEmail(userEmail) {
@@ -247,3 +180,21 @@ function sendPermissionsEmail(userEmail) {
 		openAlertDlg(messages["common.error"]);
 	});
 };
+
+function rejectApplication(applicationId) {
+	openWaitDlg();
+	const rejectApplicationUrl = `${applicationUrl}permissions/rejectapplication/${applicationId}`;
+	submitUrlAndUpdatePermissionsData(rejectApplicationUrl);
+}
+
+function submitUrlAndUpdatePermissionsData(url) {
+	$.get(url).done(function(data) {
+		$('#permissionsArea').replaceWith(data);
+		$wpm.bindObjects();
+	}).fail(function(data) {
+		console.log(data);
+		openAlertDlg(messages["common.error"]);
+	}).always(function() {
+		closeWaitDlg();
+	});
+}

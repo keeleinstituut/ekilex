@@ -49,6 +49,7 @@ import eki.common.constant.FreeformType;
 import eki.common.constant.GlobalConstant;
 import eki.common.constant.OrderingField;
 import eki.common.constant.PermConstant;
+import eki.ekilex.constant.ApplicationStatus;
 import eki.ekilex.constant.SystemConstant;
 import eki.ekilex.data.Classifier;
 import eki.ekilex.data.Dataset;
@@ -75,8 +76,23 @@ public class PermissionDbService implements SystemConstant, GlobalConstant, Perm
 		Condition enablePendingCond = DSL.exists(DSL
 				.select(eua.ID)
 				.from(eua)
-				.where(eua.USER_ID.eq(eu.ID)
-						.and(eua.IS_REVIEWED.isFalse())));
+				.where(
+						eua.USER_ID.eq(eu.ID)
+								.and(eua.STATUS.eq(ApplicationStatus.NEW.name()))));
+
+		Condition permissionDatasetCond = DSL.exists(DSL
+				.select(dsp.ID)
+				.from(dsp)
+				.where(
+						dsp.USER_ID.eq(eu.ID)
+								.and(dsp.DATASET_CODE.eq(userPermDatasetCodeFilter))));
+
+		Condition applicationDatasetCond = DSL.exists(DSL
+				.select(eua.ID)
+				.from(eua)
+				.where(
+						eua.USER_ID.eq(eu.ID)
+								.and(eua.DATASET_CODE.eq(userPermDatasetCodeFilter))));
 
 		Condition where = DSL.noCondition();
 		if (StringUtils.isNotBlank(userNameFilter)) {
@@ -84,12 +100,7 @@ public class PermissionDbService implements SystemConstant, GlobalConstant, Perm
 			where = where.and(DSL.or(DSL.lower(eu.NAME).like(userNameFilterLike), DSL.lower(eu.EMAIL).like(userNameFilterLike)));
 		}
 		if (StringUtils.isNotBlank(userPermDatasetCodeFilter)) {
-			where = where.andExists(DSL
-					.select(dsp.ID)
-					.from(dsp)
-					.where(
-							dsp.USER_ID.eq(eu.ID)
-							.and(dsp.DATASET_CODE.eq(userPermDatasetCodeFilter))));
+			where = where.and(DSL.or(permissionDatasetCond, applicationDatasetCond));
 		}
 		if (Boolean.TRUE.equals(userEnablePendingFilter)) {
 			where = where.and(enablePendingCond);

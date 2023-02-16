@@ -7,6 +7,7 @@ import org.springframework.context.MessageSource;
 import org.springframework.web.bind.annotation.ModelAttribute;
 
 import eki.ekilex.constant.WebConstant;
+import eki.ekilex.data.Classifier;
 import eki.ekilex.data.Dataset;
 import eki.ekilex.data.DatasetPermission;
 import eki.ekilex.service.CommonDataService;
@@ -31,9 +32,14 @@ public abstract class AbstractPublicPageController implements WebConstant {
 	@Autowired
 	protected MessageSource messageSource;
 
-	@ModelAttribute("allDatasets")
-	public List<Dataset> getAllDatasets() {
-		return commonDataService.getVisibleDatasets();
+	@ModelAttribute("datasetsWithOwner")
+	public List<Dataset> getDatasetsWithOwner() {
+		return commonDataService.getVisibleDatasetsWithOwner();
+	}
+
+	@ModelAttribute("allLanguages")
+	public List<Classifier> getAllLanguages() {
+		return commonDataService.getLanguages();
 	}
 
 	@ModelAttribute("userDatasetPermissions")

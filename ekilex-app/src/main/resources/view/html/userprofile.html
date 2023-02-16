@@ -43,7 +43,8 @@
           <tr>
             <th class="m-1 p-1" style="width: 10%" th:text="#{userprofile.dataset.code}">Sõnakogu kood</th>
             <th class="m-1 p-1" style="width: 70%" th:text="#{userprofile.dataset.name}">Sõnakogu nimetus</th>
-            <th class="m-1 p-1" style="width: 20%" th:text="#{userprofile.dataset.permission}">Õigus</th>
+            <th class="m-1 p-1" style="width: 10%" th:text="#{userprofile.dataset.permission}">Õigus</th>
+            <th class="m-1 p-1" style="width: 10%" th:text="#{userprofile.dataset.lang}">Keel</th>
           </tr>
           <th:block th:each="datasetPermission : ${userDatasetPermissions}">
             <tr>
@@ -55,6 +56,9 @@
               </td>
               <td class="m-1 p-1">
                 <span th:text="#{|authorityoperation.${datasetPermission.authOperation}|}"></span>
+              </td>
+              <td class="m-1 p-1">
+                <span th:text="${datasetPermission.authLangValue}"></span>
               </td>
             </tr>
           </th:block>
@@ -75,8 +79,11 @@
         <table class="table table-striped m-0 p-0 table-hover">
           <tr>
             <th class="m-1 p-1" style="width: 10%" th:text="#{userprofile.application.created}">Esitamise aeg</th>
-            <th class="m-1 p-1" style="width: 40%" th:text="#{userprofile.application.dataset.codes}">Taotluses märgitud sõnakogude koodid</th>
-            <th class="m-1 p-1" style="width: 50%" th:text="#{userprofile.application.comment}">Kommentaar</th>
+            <th class="m-1 p-1" style="width: 10%" th:text="#{userprofile.application.status}">Staatus</th>
+            <th class="m-1 p-1" style="width: 20%" th:text="#{userprofile.application.dataset.name}">Sõnakogu nimi</th>
+            <th class="m-1 p-1" style="width: 10%" th:text="#{userprofile.application.wished.auth.op}">Soovitud õigus</th>
+            <th class="m-1 p-1" style="width: 10%" th:text="#{userprofile.application.lang}">Keel</th>
+            <th class="m-1 p-1" style="width: 40%" th:text="#{userprofile.application.comment}">Kommentaar</th>
           </tr>
           <th:block th:each="userApplication : ${userApplications}">
             <tr>
@@ -84,7 +91,16 @@
                 <span th:text="${#dates.format(userApplication.created, 'dd.MM.yyyy HH:mm')}"></span>
               </td>
               <td class="m-1 p-1">
-                <span th:text="${userApplication.datasetCodes}"></span>
+                <span th:text="#{|applicationstatus.${userApplication.status}|}"></span>
+              </td>
+              <td class="m-1 p-1">
+                <span th:text="${userApplication.datasetName}"></span>
+              </td>
+              <td class="m-1 p-1">
+                <span th:text="#{|authorityoperation.${userApplication.authOperation}|}"></span>
+              </td>
+              <td class="m-1 p-1">
+                <span th:text="${userApplication.langValue}"></span>
               </td>
               <td class="m-1 p-1">
                 <span th:text="${userApplication.comment}"></span>

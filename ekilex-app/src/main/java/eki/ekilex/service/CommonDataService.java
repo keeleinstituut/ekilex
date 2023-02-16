@@ -45,6 +45,13 @@ public class CommonDataService implements SystemConstant, GlobalConstant {
 	}
 
 	@Transactional
+	public List<Dataset> getVisibleDatasetsWithOwner() {
+		List<Dataset> datasets = commonDataDbService.getVisibleDatasetsWithOwner();
+		datasets = datasetUtil.resortPriorityDatasets(datasets);
+		return datasets;
+	}
+
+	@Transactional
 	public List<String> getVisibleDatasetCodes() {
 		List<String> datasetCodes = getVisibleDatasets().stream().map(Dataset::getCode).collect(Collectors.toList());
 		return datasetCodes;

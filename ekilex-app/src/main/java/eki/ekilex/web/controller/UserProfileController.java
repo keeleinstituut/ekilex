@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.SessionAttributes;
 
+import eki.common.constant.AuthorityOperation;
 import eki.ekilex.constant.WebConstant;
 import eki.ekilex.data.EkiUser;
 import eki.ekilex.data.EkiUserApplication;
@@ -41,11 +42,13 @@ public class UserProfileController extends AbstractPrivatePageController {
 
 	@PostMapping(REAPPLY_URI)
 	public String reapply(
-			@RequestParam(name = "selectedDatasets", required = false) List<String> selectedDatasets,
-			@RequestParam(name = "applicationComment", required = false) String applicationComment) {
+			@RequestParam("datasetCode") String datasetCode,
+			@RequestParam("authOp") AuthorityOperation authOp,
+			@RequestParam("language") String lang,
+			@RequestParam("applicationComment") String applicationComment) {
 
 		EkiUser user = userContext.getUser();
-		userService.submitAdditionalUserApplication(user, selectedDatasets, applicationComment);
+		userService.submitUserApplication(user, datasetCode, authOp, lang, applicationComment);
 
 		return "redirect:" + USER_PROFILE_URI;
 	}

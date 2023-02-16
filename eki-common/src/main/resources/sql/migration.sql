@@ -28,3 +28,28 @@ insert into meaning_rel_mapping (code1, code2) values ('soomõiste', 'liigimõis
 insert into meaning_rel_mapping (code1, code2) values ('liigimõiste', 'soomõiste');
 insert into meaning_rel_mapping (code1, code2) values ('tervikumõiste', 'osamõiste');
 insert into meaning_rel_mapping (code1, code2) values ('osamõiste', 'tervikumõiste');
+
+-- Sõnakogu õiguste taotlemine
+alter table eki_user_application rename to eki_user_application_deprecated;
+alter sequence eki_user_application_id_seq rename to eki_user_application_deprecated_id_seq;
+
+create table eki_user_application
+(
+  id bigserial primary key,
+  user_id bigint references eki_user(id) on delete cascade not null,
+  dataset_code varchar(10) references dataset(code) on update cascade on delete cascade not null,
+  auth_operation varchar(100) not null,
+  lang char(3) references language(code) null,
+  comment text null,
+  status varchar(10) not null,
+  created timestamp not null default statement_timestamp()
+);
+alter sequence eki_user_application_id_seq restart with 10000;
+
+insert into eki_user_application(user_id, dataset_code, auth_operation, lang, comment, status)
+select euad.user_id, unnest(euad.datasets), 'CRUD', null, euad.comment, 'NEW'
+from eki_user_application_deprecated euad
+where euad.is_reviewed = false
+order by euad.created;
+
+drop table eki_user_application_deprecated;

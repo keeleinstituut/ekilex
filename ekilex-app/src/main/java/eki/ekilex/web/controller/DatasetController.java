@@ -29,6 +29,7 @@ import eki.ekilex.constant.WebConstant;
 import eki.ekilex.data.Classifier;
 import eki.ekilex.data.Dataset;
 import eki.ekilex.data.DatasetPermission;
+import eki.ekilex.data.EkiUser;
 import eki.ekilex.data.Origin;
 import eki.ekilex.service.CommonDataService;
 import eki.ekilex.service.DatasetService;
@@ -94,8 +95,8 @@ public class DatasetController extends AbstractPrivatePageController {
 		logger.debug("Creating dataset, name : {}", datasetFormData.getName());
 		datasetService.createDataset(datasetFormData);
 
-		Long userId = userContext.getUserId();
-		permissionService.createDatasetPermission(userId, datasetFormData.getCode(), AuthorityItem.DATASET, AuthorityOperation.OWN, null);
+		EkiUser user = userContext.getUser();
+		permissionService.createDatasetPermission(user, user, datasetFormData.getCode(), AuthorityItem.DATASET, AuthorityOperation.OWN, null);
 		userService.updateUserSecurityContext();
 
 		return REDIRECT_PREF + DATASETS_URI;

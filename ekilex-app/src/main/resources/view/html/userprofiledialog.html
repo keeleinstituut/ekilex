@@ -11,33 +11,48 @@
         </div>
         <form th:action="@{/reapply}" method="post">
           <div class="modal-body">
-            <div class="row no-gutters">
-              <label class="col-10 ml-5 col-form-label" th:text="#{userprofile.application.comment}">Taotluse kommentaar</label>
-              <div class="col-10 ml-5">
+            <div class="form-group row">
+              <div class="col-1"></div>
+              <div class="col-10">
+                <label class="col-form-label" th:text="#{userprofile.application.dataset.name}">Sõnakogu nimi</label>
+                <select required class="form-control required-field" name="datasetCode">
+                  <option value="" disabled selected th:text="#{common.select}">Vali</option>
+                  <option th:each="dataset : ${datasetsWithOwner}"
+                          th:value="${dataset.code}"
+                          th:text="${dataset.name}">name</option>
+                </select>
+              </div>
+            </div>
+            <div class="form-group row">
+              <div class="col-1"></div>
+              <div class="col-5">
+                <label class="col-form-label" th:text="#{userprofile.application.wished.auth.op}">Soovitud õigus</label>
+                <select required class="form-control required-field" name="authOp">
+                  <option th:value="${T(eki.common.constant.AuthorityOperation).READ}" th:text="#{authorityoperation.READ}" selected>
+                  <option th:value="${T(eki.common.constant.AuthorityOperation).CRUD}" th:text="#{authorityoperation.CRUD}">
+                  </option>
+                </select>
+              </div>
+              <div class="col-5">
+                <label class="col-form-label" th:text="#{userprofile.application.lang}">Keel</label>
+                <select class="form-control" name="language">
+                  <option value="" selected th:text="#{common.all.languages}">Kõik keeled</option>
+                  <option th:each="language : ${allLanguages}"
+                          th:value="${language.code}"
+                          th:text="${language.value}">language</option>
+                </select>
+              </div>
+            </div>
+            <div class="form-group row">
+              <div class="col-1"></div>
+              <div class="col-10">
+                <label class="col-form-label" th:text="#{userprofile.application.comment}">Taotluse kommentaar</label>
                 <textarea class="form-control md-textarea" rows="3" name="applicationComment"></textarea>
               </div>
             </div>
-            <div class="row no-gutters">
-              <span class="col-10 mt-3 ml-5">
-                <a class="btn btn-outline-secondary" data-toggle="collapse" href="#datasetsSelection" role="button" aria-expanded="false" aria-controls="datasetsSelection">
-                  <span th:text="#{userprofile.select.datasets}">Märgi sõnakogud, millele soovid õigusi</span>
-                </a>
-              </span>
-            </div>
-            <div class="mt-3 collapse" id="datasetsSelection">
-              <th:block th:each="dataset : ${allDatasets}">
-                <div class="row no-gutters">
-                  <span class="col-1 text-right">
-                    <input type="checkbox" name="selectedDatasets" th:value="${dataset.code}"/>
-                  </span>
-                  <span th:text="${dataset.code}" class="col-1 text-center"></span>
-                  <span th:text="${dataset.name}" class="col-10"></span>
-                </div>
-              </th:block>
-            </div>
           </div>
           <div class="modal-footer">
-            <button type="submit" class="btn btn-primary" th:text="#{userprofile.send.application}">Saada taotlus</button>
+            <button type="button" class="btn btn-primary" data-plugin="reapplyPlugin" th:text="#{userprofile.send.application}">Saada taotlus</button>
             <button type="button" class="btn btn-default" data-dismiss="modal" th:text="#{common.cancel}">Katkesta</button>
           </div>
         </form>

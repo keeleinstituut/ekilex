@@ -17,7 +17,7 @@ import org.jooq.ForeignKey;
 import org.jooq.Identity;
 import org.jooq.Name;
 import org.jooq.Record;
-import org.jooq.Row6;
+import org.jooq.Row8;
 import org.jooq.Schema;
 import org.jooq.Table;
 import org.jooq.TableField;
@@ -60,9 +60,19 @@ public class EkiUserApplication extends TableImpl<EkiUserApplicationRecord> {
     public final TableField<EkiUserApplicationRecord, Long> USER_ID = createField(DSL.name("user_id"), SQLDataType.BIGINT.nullable(false), this, "");
 
     /**
-     * The column <code>public.eki_user_application.datasets</code>.
+     * The column <code>public.eki_user_application.dataset_code</code>.
      */
-    public final TableField<EkiUserApplicationRecord, String[]> DATASETS = createField(DSL.name("datasets"), SQLDataType.VARCHAR(10).getArrayDataType(), this, "");
+    public final TableField<EkiUserApplicationRecord, String> DATASET_CODE = createField(DSL.name("dataset_code"), SQLDataType.VARCHAR(10).nullable(false), this, "");
+
+    /**
+     * The column <code>public.eki_user_application.auth_operation</code>.
+     */
+    public final TableField<EkiUserApplicationRecord, String> AUTH_OPERATION = createField(DSL.name("auth_operation"), SQLDataType.VARCHAR(100).nullable(false), this, "");
+
+    /**
+     * The column <code>public.eki_user_application.lang</code>.
+     */
+    public final TableField<EkiUserApplicationRecord, String> LANG = createField(DSL.name("lang"), SQLDataType.CHAR(3), this, "");
 
     /**
      * The column <code>public.eki_user_application.comment</code>.
@@ -70,14 +80,14 @@ public class EkiUserApplication extends TableImpl<EkiUserApplicationRecord> {
     public final TableField<EkiUserApplicationRecord, String> COMMENT = createField(DSL.name("comment"), SQLDataType.CLOB, this, "");
 
     /**
+     * The column <code>public.eki_user_application.status</code>.
+     */
+    public final TableField<EkiUserApplicationRecord, String> STATUS = createField(DSL.name("status"), SQLDataType.VARCHAR(10).nullable(false), this, "");
+
+    /**
      * The column <code>public.eki_user_application.created</code>.
      */
     public final TableField<EkiUserApplicationRecord, Timestamp> CREATED = createField(DSL.name("created"), SQLDataType.TIMESTAMP(6).nullable(false).defaultValue(DSL.field("statement_timestamp()", SQLDataType.TIMESTAMP)), this, "");
-
-    /**
-     * The column <code>public.eki_user_application.is_reviewed</code>.
-     */
-    public final TableField<EkiUserApplicationRecord, Boolean> IS_REVIEWED = createField(DSL.name("is_reviewed"), SQLDataType.BOOLEAN.nullable(false).defaultValue(DSL.field("false", SQLDataType.BOOLEAN)), this, "");
 
     private EkiUserApplication(Name alias, Table<EkiUserApplicationRecord> aliased) {
         this(alias, aliased, null);
@@ -124,26 +134,42 @@ public class EkiUserApplication extends TableImpl<EkiUserApplicationRecord> {
 
     @Override
     public UniqueKey<EkiUserApplicationRecord> getPrimaryKey() {
-        return Keys.EKI_USER_APPLICATION_PKEY;
+        return Keys.EKI_USER_APPLICATION_PKEY1;
     }
 
     @Override
     public List<UniqueKey<EkiUserApplicationRecord>> getKeys() {
-        return Arrays.<UniqueKey<EkiUserApplicationRecord>>asList(Keys.EKI_USER_APPLICATION_PKEY);
+        return Arrays.<UniqueKey<EkiUserApplicationRecord>>asList(Keys.EKI_USER_APPLICATION_PKEY1);
     }
 
     @Override
     public List<ForeignKey<EkiUserApplicationRecord, ?>> getReferences() {
-        return Arrays.<ForeignKey<EkiUserApplicationRecord, ?>>asList(Keys.EKI_USER_APPLICATION__EKI_USER_APPLICATION_USER_ID_FKEY);
+        return Arrays.<ForeignKey<EkiUserApplicationRecord, ?>>asList(Keys.EKI_USER_APPLICATION__EKI_USER_APPLICATION_USER_ID_FKEY1, Keys.EKI_USER_APPLICATION__EKI_USER_APPLICATION_DATASET_CODE_FKEY, Keys.EKI_USER_APPLICATION__EKI_USER_APPLICATION_LANG_FKEY);
     }
 
     private transient EkiUser _ekiUser;
+    private transient Dataset _dataset;
+    private transient Language _language;
 
     public EkiUser ekiUser() {
         if (_ekiUser == null)
-            _ekiUser = new EkiUser(this, Keys.EKI_USER_APPLICATION__EKI_USER_APPLICATION_USER_ID_FKEY);
+            _ekiUser = new EkiUser(this, Keys.EKI_USER_APPLICATION__EKI_USER_APPLICATION_USER_ID_FKEY1);
 
         return _ekiUser;
+    }
+
+    public Dataset dataset() {
+        if (_dataset == null)
+            _dataset = new Dataset(this, Keys.EKI_USER_APPLICATION__EKI_USER_APPLICATION_DATASET_CODE_FKEY);
+
+        return _dataset;
+    }
+
+    public Language language() {
+        if (_language == null)
+            _language = new Language(this, Keys.EKI_USER_APPLICATION__EKI_USER_APPLICATION_LANG_FKEY);
+
+        return _language;
     }
 
     @Override
@@ -173,11 +199,11 @@ public class EkiUserApplication extends TableImpl<EkiUserApplicationRecord> {
     }
 
     // -------------------------------------------------------------------------
-    // Row6 type methods
+    // Row8 type methods
     // -------------------------------------------------------------------------
 
     @Override
-    public Row6<Long, Long, String[], String, Timestamp, Boolean> fieldsRow() {
-        return (Row6) super.fieldsRow();
+    public Row8<Long, Long, String, String, String, String, String, Timestamp> fieldsRow() {
+        return (Row8) super.fieldsRow();
     }
 }

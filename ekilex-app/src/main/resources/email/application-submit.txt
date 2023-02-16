@@ -1,5 +1,8 @@
-Ekilexi kasutaja "[(${userName})]", kelle e-post on "[(${userEmail})]" esitas vaatamisõiguste taotluse.
+Ekilexi kasutaja "[(${userName})]", kelle e-post on "[(${userEmail})]" esitas sõnakogu õiguste taotluse.
 
-[# th:if="${not #strings.isEmpty(datasets)}"]Lisaks esitas ta muutmisõiguste taotluse sõnakogudele: [(${datasets})][/]
+Sõnakogu kood: [(${datasetCode})]
+Sõnakogu nimi: [(${datasetName})]
+Soovitud õigus: [# th:if="${#strings.equals(authOp.name(), 'CRUD')}"]muutmisõigus[/][# th:if="${#strings.equals(authOp.name(), 'READ')}"]vaatamisõigus[/]
+Taotluse põhjendus: [(${comment})]
 
-[# th:if="${not #strings.isEmpty(comment)}"]Taotluse põhjendus: [(${comment})][/]
+Õiguste taotlusi saad hallata siit: [(${datasetPermissionsUrl})]

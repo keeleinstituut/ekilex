@@ -1,8 +1,8 @@
 package eki.ekilex.service;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 
 import javax.transaction.Transactional;
 
@@ -20,8 +20,8 @@ import eki.common.constant.AuthorityItem;
 import eki.common.constant.AuthorityOperation;
 import eki.common.constant.GlobalConstant;
 import eki.common.util.CodeGenerator;
+import eki.ekilex.constant.ApplicationStatus;
 import eki.ekilex.constant.WebConstant;
-import eki.ekilex.data.Dataset;
 import eki.ekilex.data.DatasetPermission;
 import eki.ekilex.data.EkiUser;
 import eki.ekilex.data.EkiUserApplication;
@@ -32,7 +32,6 @@ import eki.ekilex.service.db.CommonDataDbService;
 import eki.ekilex.service.db.PermissionDbService;
 import eki.ekilex.service.db.UserDbService;
 import eki.ekilex.service.db.UserProfileDbService;
-import eki.ekilex.service.util.DatasetUtil;
 
 @Component
 public class UserService implements WebConstant, GlobalConstant {
@@ -71,9 +70,6 @@ public class UserService implements WebConstant, GlobalConstant {
 	@Autowired
 	private EmailService emailService;
 
-	@Autowired
-	private DatasetUtil datasetUtil;
-
 	public void updateUserSecurityContext() {
 
 		String userEmail = userContext.getUser().getEmail();
@@ -104,6 +100,14 @@ public class UserService implements WebConstant, GlobalConstant {
 		}
 		EkiUser user = userDbService.getUserByApiKey(apiKey);
 		applyPermissions(user, ACCESS_TYPE_API);
+		return user;
+	}
+
+	@Transactional
+	public EkiUser getUserById(Long id) {
+
+		EkiUser user = userDbService.getUserById(id);
+		applyPermissions(user, ACCESS_TYPE_USER);
 		return user;
 	}
 
@@ -287,11 +291,6 @@ public class UserService implements WebConstant, GlobalConstant {
 	}
 
 	@Transactional
-	public void setApplicationReviewed(Long applicationId, boolean isReviewed) {
-		userDbService.setApplicationReviewed(applicationId, isReviewed);
-	}
-
-	@Transactional
 	public void updateReviewComment(Long userId, String reviewComment) {
 		userDbService.updateReviewComment(userId, reviewComment);
 	}
@@ -326,48 +325,32 @@ public class UserService implements WebConstant, GlobalConstant {
 	}
 
 	@Transactional
-	public void submitUserApplication(EkiUser user, List<String> datasets, String comment) {
-		createUserApplication(user, datasets, comment);
-		List<String> adminEmails = userDbService.getAdminEmails();
-		boolean isAdditionalApplication = false;
-		emailService.sendApplicationSubmitEmail(user, adminEmails, datasets, comment, isAdditionalApplication);
+	public void submitUserApplication(EkiUser user, String datasetCode, AuthorityOperation authOp, String lang, String comment) {
+
+		createUserApplication(user, datasetCode, authOp, lang, comment);
+
+		String datasetPermissionsUrl = ekilexAppUrl + PERMISSIONS_URI + APPLICATIONS_URI + "/" + datasetCode;
+		List<String> datasetOwnerEmails = userDbService.getDatasetOwnerEmails(datasetCode);
+		Map<String, String> datasetNameMap = commonDataDbService.getDatasetNameMap();
+		String datasetName = datasetNameMap.get(datasetCode);
+		emailService.sendApplicationSubmitEmail(user, datasetOwnerEmails, datasetCode, datasetName, comment, authOp, datasetPermissionsUrl);
 	}
 
-	@Transactional
-	public void submitAdditionalUserApplication(EkiUser user, List<String> datasets, String comment) {
-		createUserApplication(user, datasets, comment);
-		List<String> adminEmails = userDbService.getAdminEmails();
-		boolean isAdditionalApplication = true;
-		emailService.sendApplicationSubmitEmail(user, adminEmails, datasets, comment, isAdditionalApplication);
-	}
+	private void createUserApplication(EkiUser user, String datasetCode, AuthorityOperation authOp, String lang, String comment) {
 
-	private void createUserApplication(EkiUser user, List<String> datasets, String comment) {
-
-		String[] datasetArr = null;
-		if (CollectionUtils.isNotEmpty(datasets)) {
-			datasetArr = datasets.toArray(new String[datasets.size()]);
-		}
 		Long userId = user.getId();
-		userDbService.createUserApplication(userId, datasetArr, comment);
+		if (StringUtils.isBlank(lang)) {
+			lang = null;
+		}
+		if (StringUtils.isBlank(comment)) {
+			comment = null;
+		}
+		userDbService.createUserApplication(userId, datasetCode, authOp, lang, comment, ApplicationStatus.NEW);
 	}
 
 	@Transactional
 	public List<EkiUserApplication> getUserApplications(Long userId) {
 		List<EkiUserApplication> userApplications = userDbService.getUserApplications(userId);
-		List<Dataset> datasets = commonDataDbService.getVisibleDatasets();
-		datasets = datasetUtil.resortPriorityDatasets(datasets);
-		for (EkiUserApplication userApplication : userApplications) {
-			List<String> userApplicationDatasetCodes = userApplication.getDatasetCodes();
-			if (CollectionUtils.isNotEmpty(userApplicationDatasetCodes)) {
-				List<Dataset> userApplicationDatasets = new ArrayList<>();
-				userApplication.setDatasets(userApplicationDatasets);
-				for (Dataset dataset : datasets) {
-					if (userApplicationDatasetCodes.contains(dataset.getCode())) {
-						userApplicationDatasets.add(dataset);
-					}
-				}
-			}
-		}
 		return userApplications;
 	}
 

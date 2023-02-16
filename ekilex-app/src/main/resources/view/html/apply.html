@@ -18,57 +18,55 @@
         <div class="alert alert-info" role="alert" th:if="${applicationReviewPending}">
           <div th:text="#{apply.application.pending}">Sinu Ekilexi sõnakogude õiguste taotlus on vastu võetud ning ootab rahuldamist. Seni saad Ekilexi kasutada vaatamisõigusega</div>
         </div>
-        <div class="container float-left" th:if="${applicationReviewPending && not #lists.isEmpty(userApplications)}">
+        <div th:if="${applicationReviewPending && not #lists.isEmpty(userApplications)}">
           <div>
             <b th:text="#{apply.user.applications}">Sinu sõnakogude muutmisõiguse taotlused</b>
           </div>
-          <th:block th:each="userApplication,userApplicationIter : ${userApplications}">
-            <div class="row no-gutters mt-3">
-              <div class="col-8">
-                <th:block th:each="dataset : ${userApplication.datasets}">
-                  <div class="row no-gutters">
-                    <span th:text="${dataset.code}" class="col-1"></span>
-                    <span th:text="${dataset.name}" class="col-10"></span>
-                  </div>
-                </th:block>
-              </div>
-            </div>
-            <hr class="mt-3" th:unless="${userApplicationIter.last}" />
-          </th:block>
+          <br/>
+          <div th:unless="${#lists.isEmpty(userApplications)}">
+            <table class="table table-striped m-0 p-0 table-hover">
+              <tr>
+                <th class="m-1 p-1" style="width: 10%" th:text="#{apply.application.created}">Esitamise aeg</th>
+                <th class="m-1 p-1" style="width: 10%" th:text="#{apply.application.status}">Staatus</th>
+                <th class="m-1 p-1" style="width: 20%" th:text="#{apply.application.dataset.name}">Sõnakogu nimi</th>
+                <th class="m-1 p-1" style="width: 10%" th:text="#{apply.application.wished.auth.op}">Soovitud õigus</th>
+                <th class="m-1 p-1" style="width: 10%" th:text="#{apply.application.lang}">Keel</th>
+                <th class="m-1 p-1" style="width: 40%" th:text="#{apply.application.comment}">Kommentaar</th>
+              </tr>
+              <th:block th:each="userApplication : ${userApplications}">
+                <tr>
+                  <td class="m-1 p-1">
+                    <span th:text="${#dates.format(userApplication.created, 'dd.MM.yyyy HH:mm')}"></span>
+                  </td>
+                  <td class="m-1 p-1">
+                    <span th:text="#{|applicationstatus.${userApplication.status}|}"></span>
+                  </td>
+                  <td class="m-1 p-1">
+                    <span th:text="${userApplication.datasetName}"></span>
+                  </td>
+                  <td class="m-1 p-1">
+                    <span th:text="#{|authorityoperation.${userApplication.authOperation}|}"></span>
+                  </td>
+                  <td class="m-1 p-1">
+                    <span th:text="${userApplication.langValue}"></span>
+                  </td>
+                  <td class="m-1 p-1">
+                    <span th:text="${userApplication.comment}"></span>
+                  </td>
+                </tr>
+              </th:block>
+            </table>
+          </div>
         </div>
         <div class="container float-left w-50">
-          <form th:action="@{/apply}" method="post">
-            <div class="row no-gutters">
-              <span class="col-10 mt-3 ml-5">
-                <a class="btn btn-outline-secondary" data-toggle="collapse" href="#datasetsSelection" role="button" aria-expanded="false" aria-controls="datasetsSelection">
-                  <span th:text="#{apply.crud}" th:if="${applicationNotSubmitted}">Soovin sõnakogude muutmisõigust</span>
-                  <span th:text="#{apply.additional.crud}" th:unless="${applicationNotSubmitted}">Lisa uus taotlus</span>
-                </a>
-              </span>
-            </div>
-            <div class="mt-3 collapse" id="datasetsSelection">
-              <th:block th:each="dataset : ${allDatasets}">
-                <div class="row no-gutters">
-                  <span class="col-1 text-right">
-                    <input type="checkbox" name="selectedDatasets" th:value="${dataset.code}" />
-                  </span>
-                  <span th:text="${dataset.code}" class="col-1 text-center"></span>
-                  <span th:text="${dataset.name}" class="col-10"></span>
-                </div>
-              </th:block>
-              <div class="row">
-                <div class="col-8 mt-3 ml-5">
-                  <label class="col-form-label" th:text="#{apply.comment}">Põhjendus</label>
-                  <textarea class="form-control" rows="3" name="applicationComment" required></textarea>
-                </div>
-              </div>
-              <div class="row">
-                <div class="col mt-3 ml-5">
-                  <button type="submit" class="btn btn-primary" th:text="#{apply.submit.application}">Saada taotlus</button>
-                </div>
-              </div>
-            </div>
-          </form>
+          <div class="row no-gutters">
+            <span class="col-10 mt-3 ml-5">
+              <button class="btn btn-primary" data-toggle="modal" data-target="#addApplicationDlg">
+                <span th:if="${applicationNotSubmitted}" th:text="#{apply.create.application}">Esita taotlus</span>
+                <span th:unless="${applicationNotSubmitted}" th:text="#{apply.add.new.application}">Lisa uus taotlus</span>
+              </button>
+            </span>
+          </div>
         </div>
       </div>
     </div>
@@ -116,6 +114,62 @@
         <div class="alert alert-warning" role="alert" th:if="${applicationDenied}">
           <div th:text="#{apply.denied}">Sinu Ekilexi kasutamise taotlus lükati tagasi.</div>
         </div>
+      </div>
+    </div>
+  </div>
+  <div id="addApplicationDlg" class="modal" role="dialog">
+    <div class="modal-dialog modal-lg" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+        </div>
+        <form th:action="@{/apply}" method="post">
+          <div class="modal-body">
+            <div class="form-group row">
+              <div class="col-1"></div>
+              <div class="col-10">
+                <label class="col-form-label" th:text="#{apply.application.dataset.name}">Sõnakogu nimi</label>
+                <select required class="form-control required-field" name="datasetCode">
+                  <option value="" disabled selected th:text="#{common.select}">Vali</option>
+                  <option th:each="dataset : ${datasetsWithOwner}"
+                          th:value="${dataset.code}"
+                          th:text="${dataset.name}">name</option>
+                </select>
+              </div>
+            </div>
+            <div class="form-group row">
+              <div class="col-1"></div>
+              <div class="col-5">
+                <label class="col-form-label" th:text="#{apply.application.wished.auth.op}">Soovitud õigus</label>
+                <select required class="form-control required-field" name="authOp">
+                  <option th:value="${T(eki.common.constant.AuthorityOperation).READ}" th:text="#{authorityoperation.READ}" selected>
+                  <option th:value="${T(eki.common.constant.AuthorityOperation).CRUD}" th:text="#{authorityoperation.CRUD}">
+                  </option>
+                </select>
+              </div>
+              <div class="col-5">
+                <label class="col-form-label" th:text="#{apply.application.lang}">Keel</label>
+                <select class="form-control" name="language">
+                  <option value="" selected th:text="#{common.all.languages}">Kõik keeled</option>
+                  <option th:each="language : ${allLanguages}"
+                          th:value="${language.code}"
+                          th:text="${language.value}">language</option>
+                </select>
+              </div>
+            </div>
+            <div class="form-group row">
+              <div class="col-1"></div>
+              <div class="col-10">
+                <label class="col-form-label" th:text="#{apply.application.comment}">Kommentaar</label>
+                <textarea class="form-control md-textarea" rows="3" name="applicationComment"></textarea>
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-primary" data-plugin="applyPlugin" th:text="#{apply.create.application}">Esita taotlus</button>
+            <button type="button" class="btn btn-default" data-dismiss="modal" th:text="#{common.cancel}">Katkesta</button>
+          </div>
+        </form>
       </div>
     </div>
   </div>

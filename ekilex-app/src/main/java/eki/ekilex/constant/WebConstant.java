@@ -32,6 +32,8 @@ public interface WebConstant {
 
 	String PERMISSIONS_URI = "/permissions";
 
+	String APPLICATIONS_URI = "/applications";
+
 	String SEARCH_PAGE = "search";
 
 	String SEARCH_URI = "/search";

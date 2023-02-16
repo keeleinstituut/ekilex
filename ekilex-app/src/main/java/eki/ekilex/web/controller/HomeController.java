@@ -1,7 +1,6 @@
 package eki.ekilex.web.controller;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 import org.apache.commons.collections4.CollectionUtils;
 import org.slf4j.Logger;
@@ -18,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import eki.common.constant.AuthorityOperation;
 import eki.ekilex.constant.WebConstant;
 import eki.ekilex.data.EkiUser;
 import eki.ekilex.data.EkiUserApplication;
@@ -91,8 +91,10 @@ public class HomeController extends AbstractPublicPageController {
 
 	@PostMapping(APPLY_URI)
 	public String apply(
-			@RequestParam(value = "selectedDatasets", required = false) List<String> selectedDatasets,
-			@RequestParam(value = "applicationComment", required = false) String applicationComment,
+			@RequestParam("datasetCode") String datasetCode,
+			@RequestParam("authOp") AuthorityOperation authOp,
+			@RequestParam("language") String lang,
+			@RequestParam("applicationComment") String applicationComment,
 			Model model) {
 
 		EkiUser user = userContext.getUser();
@@ -102,9 +104,10 @@ public class HomeController extends AbstractPublicPageController {
 			populateStatData(model);
 			return HOME_PAGE;
 		}
-		userService.submitUserApplication(user, selectedDatasets, applicationComment);
+
+		userService.submitUserApplication(user, datasetCode, authOp, lang, applicationComment);
 		populateUserApplicationData(user, model);
-		return APPLY_PAGE;
+		return "redirect:" + HOME_URI;
 	}
 
 	@PostMapping(APPLY_READ)
@@ -143,8 +146,6 @@ public class HomeController extends AbstractPublicPageController {
 		boolean applicationNotSubmitted = CollectionUtils.isEmpty(userApplications);
 		boolean applicationReviewPending = (user.getEnabled() == null) && CollectionUtils.isNotEmpty(userApplications);
 		boolean applicationDenied = Boolean.FALSE.equals(user.getEnabled());
-
-		userApplications = userApplications.stream().filter(application -> CollectionUtils.isNotEmpty(application.getDatasetCodes())).collect(Collectors.toList());
 
 		model.addAttribute("applicationNotSubmitted", applicationNotSubmitted);
 		model.addAttribute("applicationReviewPending", applicationReviewPending);

@@ -125,6 +125,18 @@ public class PermissionsController extends AbstractPrivatePageController {
 		return PERMISSIONS_PAGE;
 	}
 
+	@GetMapping(PERMISSIONS_URI + APPLICATIONS_URI + "/{datasetCode}")
+	public String searchGet(@PathVariable("datasetCode") String datasetCode, Model model) {
+
+		PermSearchBean permSearchBean = getPermSearchBean(model);
+		permSearchBean.setUserPermDatasetCodeFilter(datasetCode);
+		permSearchBean.setUserEnablePendingFilter(true);
+
+		populateUserPermDataModel(model);
+
+		return PERMISSIONS_PAGE;
+	}
+
 	@PostMapping(PERMISSIONS_URI + "/orderby")
 	public String orderBy(@RequestParam("orderBy") OrderingField orderBy, Model model, RedirectAttributes redirectAttributes) {
 
@@ -208,34 +220,21 @@ public class PermissionsController extends AbstractPrivatePageController {
 		return PERMISSIONS_PAGE + PAGE_FRAGMENT_ELEM + "permissions";
 	}
 
-	@GetMapping(PERMISSIONS_URI + "/setapplicationreviewed/{applicationId}")
-	public String setApplicationReviewed(@PathVariable("applicationId") Long applicationId, Model model) {
-
-		userService.setApplicationReviewed(applicationId, true);
-		populateUserPermDataModel(model);
-
-		return PERMISSIONS_PAGE + PAGE_FRAGMENT_ELEM + "permissions";
-	}
-
-	@GetMapping(PERMISSIONS_URI + "/remapplicationreviewed/{applicationId}")
-	public String remApplicationReviewed(@PathVariable("applicationId") Long applicationId, Model model) {
-
-		userService.setApplicationReviewed(applicationId, false);
-		populateUserPermDataModel(model);
-
-		return PERMISSIONS_PAGE + PAGE_FRAGMENT_ELEM + "permissions";
-	}
-
 	@PostMapping(PERMISSIONS_URI + "/adddatasetperm")
 	public String addDatasetPerm(
 			@RequestParam("userId") Long userId,
-			@RequestParam(value = "datasetCode", required = false) String datasetCode,
-			@RequestParam(value = "authItem", required = false) AuthorityItem authItem,
-			@RequestParam(value = "authOp", required = false) AuthorityOperation authOp,
+			@RequestParam("datasetCode") String datasetCode,
+			@RequestParam("authOp") AuthorityOperation authOp,
 			@RequestParam(value = "authLang", required = false) String authLang,
+			@RequestParam(value = "userApplicationId", required = false) Long userApplicationId,
 			Model model) {
 
-		permissionService.createDatasetPermission(userId, datasetCode, authItem, authOp, authLang);
+		EkiUser permittedUser = userService.getUserById(userId);
+		EkiUser permittingUser = userContext.getUser();
+		permissionService.createDatasetPermission(permittedUser, permittingUser, datasetCode, AuthorityItem.DATASET, authOp, authLang);
+		if (userApplicationId != null) {
+			permissionService.approveApplication(userApplicationId, permittingUser);
+		}
 		populateUserPermDataModel(model);
 
 		return PERMISSIONS_PAGE + PAGE_FRAGMENT_ELEM + "permissions";
@@ -246,7 +245,20 @@ public class PermissionsController extends AbstractPrivatePageController {
 			@PathVariable("datasetPermissionId") Long datasetPermissionId,
 			Model model) {
 
-		permissionService.deleteDatasetPermission(datasetPermissionId);
+		EkiUser user = userContext.getUser();
+		permissionService.deleteDatasetPermission(datasetPermissionId, user);
+		populateUserPermDataModel(model);
+
+		return PERMISSIONS_PAGE + PAGE_FRAGMENT_ELEM + "permissions";
+	}
+
+	@GetMapping(PERMISSIONS_URI + "/rejectapplication/{userApplicationId}")
+	public String rejectApplication(
+			@PathVariable("userApplicationId") Long userApplicationId,
+			Model model) {
+
+		EkiUser user = userContext.getUser();
+		permissionService.rejectApplication(userApplicationId, user);
 		populateUserPermDataModel(model);
 
 		return PERMISSIONS_PAGE + PAGE_FRAGMENT_ELEM + "permissions";

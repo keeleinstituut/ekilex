@@ -130,6 +130,11 @@ public abstract class AbstractAuthActionController implements WebConstant, Syste
 		return permissionService.getUserVisibleDatasets(userId);
 	}
 
+	@ModelAttribute("datasetsWithOwner")
+	public List<Dataset> getDatasetsWithOwner() {
+		return commonDataService.getVisibleDatasetsWithOwner();
+	}
+
 	@ModelAttribute("userRoleLanguages")
 	public List<Classifier> getUserRoleLanguages() {
 

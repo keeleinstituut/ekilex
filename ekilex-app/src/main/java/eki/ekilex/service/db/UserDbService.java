@@ -1,7 +1,10 @@
 package eki.ekilex.service.db;
 
+import static eki.ekilex.data.db.Tables.DATASET;
+import static eki.ekilex.data.db.Tables.DATASET_PERMISSION;
 import static eki.ekilex.data.db.Tables.EKI_USER;
 import static eki.ekilex.data.db.Tables.EKI_USER_APPLICATION;
+import static eki.ekilex.data.db.Tables.LANGUAGE_LABEL;
 import static eki.ekilex.data.db.Tables.TERMS_OF_USE;
 
 import java.util.List;
@@ -14,13 +17,17 @@ import org.jooq.impl.DSL;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import eki.common.constant.AuthorityItem;
+import eki.common.constant.AuthorityOperation;
 import eki.common.service.db.AbstractDbService;
+import eki.ekilex.constant.ApplicationStatus;
+import eki.ekilex.constant.SystemConstant;
 import eki.ekilex.data.EkiUser;
 import eki.ekilex.data.EkiUserApplication;
 import eki.ekilex.data.db.tables.records.EkiUserRecord;
 
 @Component
-public class UserDbService extends AbstractDbService {
+public class UserDbService extends AbstractDbService implements SystemConstant {
 
 	@Autowired
 	private DSLContext create;
@@ -34,6 +41,12 @@ public class UserDbService extends AbstractDbService {
 		ekiUser.setTermsVer(termsVer);
 		ekiUser.store();
 		return ekiUser.getId();
+	}
+
+	public EkiUser getUserById(Long id) {
+
+		Condition where = EKI_USER.ID.eq(id);
+		return getUser(where);
 	}
 
 	public EkiUser getUserByEmail(String email) {
@@ -168,10 +181,6 @@ public class UserDbService extends AbstractDbService {
 		create.update(EKI_USER).set(EKI_USER.IS_MASTER, isMaster).where(EKI_USER.ID.eq(userId)).execute();
 	}
 
-	public void setApplicationReviewed(Long applicationId, boolean isReviewed) {
-		create.update(EKI_USER_APPLICATION).set(EKI_USER_APPLICATION.IS_REVIEWED, isReviewed).where(EKI_USER_APPLICATION.ID.eq(applicationId)).execute();
-	}
-
 	public void updateReviewComment(Long userId, String reviewComment) {
 		create.update(EKI_USER).set(EKI_USER.REVIEW_COMMENT, reviewComment).where(EKI_USER.ID.eq(userId)).execute();
 	}
@@ -185,11 +194,31 @@ public class UserDbService extends AbstractDbService {
 				.fetchInto(String.class);
 	}
 
-	public void createUserApplication(Long userId, String[] datasets, String comment) {
+	public List<String> getDatasetOwnerEmails(String datasetCode) {
+
+		return create
+				.select(EKI_USER.EMAIL)
+				.from(EKI_USER, DATASET_PERMISSION)
+				.where(
+						EKI_USER.ID.eq(DATASET_PERMISSION.USER_ID)
+								.and(DATASET_PERMISSION.DATASET_CODE.eq(datasetCode))
+								.and(DATASET_PERMISSION.AUTH_ITEM.eq(AuthorityItem.DATASET.name()))
+								.and(DATASET_PERMISSION.AUTH_OPERATION.eq(AuthorityOperation.OWN.name())))
+				.fetchInto(String.class);
+	}
+
+	public void createUserApplication(Long userId, String datasetCode, AuthorityOperation authOp, String lang, String comment, ApplicationStatus status) {
 
 		create
-				.insertInto(EKI_USER_APPLICATION, EKI_USER_APPLICATION.USER_ID, EKI_USER_APPLICATION.DATASETS, EKI_USER_APPLICATION.COMMENT)
-				.values(userId, datasets, comment)
+				.insertInto(
+						EKI_USER_APPLICATION,
+						EKI_USER_APPLICATION.USER_ID,
+						EKI_USER_APPLICATION.DATASET_CODE,
+						EKI_USER_APPLICATION.AUTH_OPERATION,
+						EKI_USER_APPLICATION.LANG,
+						EKI_USER_APPLICATION.COMMENT,
+						EKI_USER_APPLICATION.STATUS)
+				.values(userId, datasetCode, authOp.name(), lang, comment, status.name())
 				.execute();
 	}
 
@@ -199,18 +228,54 @@ public class UserDbService extends AbstractDbService {
 				.select(
 						EKI_USER_APPLICATION.ID,
 						EKI_USER_APPLICATION.USER_ID,
-						EKI_USER_APPLICATION.DATASETS.as("dataset_codes"),
+						EKI_USER_APPLICATION.DATASET_CODE,
+						DATASET.NAME.as("dataset_name"),
+						EKI_USER_APPLICATION.AUTH_OPERATION,
+						EKI_USER_APPLICATION.LANG,
+						LANGUAGE_LABEL.VALUE.as("lang_value"),
 						EKI_USER_APPLICATION.COMMENT,
-						EKI_USER_APPLICATION.CREATED,
-						EKI_USER_APPLICATION.IS_REVIEWED.as("reviewed"))
-				.from(EKI_USER_APPLICATION)
+						EKI_USER_APPLICATION.STATUS,
+						EKI_USER_APPLICATION.CREATED)
+				.from(EKI_USER_APPLICATION
+						.innerJoin(DATASET).on(DATASET.CODE.eq(EKI_USER_APPLICATION.DATASET_CODE))
+						.leftOuterJoin(LANGUAGE_LABEL).on(LANGUAGE_LABEL.CODE.eq(EKI_USER_APPLICATION.LANG)
+								.and(LANGUAGE_LABEL.LANG.eq(CLASSIF_LABEL_LANG_EST))
+								.and(LANGUAGE_LABEL.TYPE.eq(CLASSIF_LABEL_TYPE_DESCRIP))))
 				.where(EKI_USER_APPLICATION.USER_ID.eq(userId))
 				.orderBy(EKI_USER_APPLICATION.CREATED.desc())
 				.fetchInto(EkiUserApplication.class);
 	}
 
+	public EkiUserApplication getUserApplication(Long userApplicationId) {
+
+		return create
+				.select(
+						EKI_USER_APPLICATION.ID,
+						EKI_USER_APPLICATION.USER_ID,
+						EKI_USER_APPLICATION.DATASET_CODE,
+						DATASET.NAME.as("dataset_name"),
+						EKI_USER_APPLICATION.AUTH_OPERATION,
+						EKI_USER_APPLICATION.LANG,
+						EKI_USER_APPLICATION.COMMENT,
+						EKI_USER_APPLICATION.STATUS,
+						EKI_USER_APPLICATION.CREATED)
+				.from(EKI_USER_APPLICATION
+						.innerJoin(DATASET).on(DATASET.CODE.eq(EKI_USER_APPLICATION.DATASET_CODE)))
+				.where(EKI_USER_APPLICATION.ID.eq(userApplicationId))
+				.fetchOneInto(EkiUserApplication.class);
+	}
+
 	public void updateApiKey(Long userId, String apiKey, boolean isApiCrud) {
 
 		create.update(EKI_USER).set(EKI_USER.API_KEY, apiKey).set(EKI_USER.IS_API_CRUD, isApiCrud).where(EKI_USER.ID.eq(userId)).execute();
+	}
+
+	public void updateApplicationStatus(Long userApplicationId, ApplicationStatus status) {
+
+		create
+				.update(EKI_USER_APPLICATION)
+				.set(EKI_USER_APPLICATION.STATUS, status.name())
+				.where(EKI_USER_APPLICATION.ID.eq(userApplicationId))
+				.execute();
 	}
 }

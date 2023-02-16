@@ -132,9 +132,11 @@ create table eki_user_application
 (
   id bigserial primary key,
   user_id bigint references eki_user(id) on delete cascade not null,
-  datasets varchar(10) array null,
+  dataset_code varchar(10) references dataset(code) on update cascade on delete cascade not null,
+  auth_operation varchar(100) not null,
+  lang char(3) references language(code) null,
   comment text null,
-  is_reviewed boolean default false not null,
+  status varchar(10) not null,
   created timestamp not null default statement_timestamp()
 );
 

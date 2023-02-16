@@ -39,3 +39,14 @@ $.fn.selectTagPrefsDlgPlugin = function() {
 		});
 	});
 }
+
+$.fn.reapplyPlugin = function() {
+	const main = $(this);
+	main.on('click', function(e) {
+		e.preventDefault();
+		const form = main.closest('form');
+		if (checkRequiredFields(form)) {
+			form.submit();
+		}
+	});
+}

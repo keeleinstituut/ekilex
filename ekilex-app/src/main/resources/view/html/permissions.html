@@ -157,20 +157,47 @@
                       <td class="p-1">
                         <span th:if="${#lists.isEmpty(userPerm.applications)}">-</span>
                         <th:block th:each="userApplication,userApplicationIter : ${userPerm.applications}">
-                          <div>
-                            <input type="checkbox"
-                                   th:title="#{permissions.reviewed}"
-                                   th:data-application-id="${userApplication.id}"
-                                   data-plugin="applicationReviewedCheck"
-                                   th:checked="${userApplication.reviewed}"
-                                   th:disabled="${#vars.isOwnPermission}"/>
+                          <div class="border">
+                            <span class="lbl" th:text="#{permissions.status}">Staatus</span>
+                            <span th:text="#{|applicationstatus.${userApplication.status}|}"></span>
+                            <div th:replace="permdialog :: approve_application_dlg"></div>
+                            <th:block th:if="${userApplication.status == T(eki.ekilex.constant.ApplicationStatus).NEW}">
+                              <button type="button" class="btn btn-xs badge badge-success" data-toggle="modal"
+                                      th:title="#{permissions.approve.application}"
+                                      th:data-target="${'#approveApplicationDlg_' + userApplication.id}"
+                                      sec:authorize="${#vars.isDatasetOwnerOrAdmin}"
+                                      th:disabled="${#vars.isOwnPermission}">
+                                <i class="fa fa-check" aria-hidden="true"></i>
+                              </button>
+                              <button class="btn btn-xs badge badge-warning" data-toggle="reject-application-confirm" data-placement="right"
+                                      th:data-application-id="${userApplication.id}"
+                                      sec:authorize="${#vars.isDatasetOwnerOrAdmin}"
+                                      th:disabled="${#vars.isOwnPermission}">
+                                <i class="fa fa-remove" aria-hidden="true"></i>
+                              </button>
+                            </th:block>
+                            <br/>
+                            <span class="lbl" th:text="#{permissions.time}">Aeg</span>
                             <span th:text="${#dates.format(userApplication.created, 'dd.MM.yyyy HH:mm')}"></span>
-                            <span th:if="${userApplication.datasetCodes != null}" th:text="${userApplication.datasetCodes}"></span>
-                            <span th:if="${!#strings.isEmpty(userApplication.comment)}" th:text="${userApplication.comment}"></span>
+                            <br/>
+                            <span class="lbl" th:text="#{permissions.dataset}">Sõnakogu</span>
+                            <span th:text="${userApplication.datasetName}"></span>
+                            <br/>
+                            <span class="lbl" th:text="#{permissions.wished.auth.op}">Soovitud õigus</span>
+                            <span th:text="#{|authorityoperation.${userApplication.authOperation}|}"></span>
+                            <br/>
+                            <span class="lbl" th:text="#{permissions.lang}">Keel</span>
+                            <span th:if="${!#strings.isEmpty(userApplication.lang)}" th:text="${userApplication.langValue}"></span>
+                            <span th:if="${#strings.isEmpty(userApplication.lang)}">-</span>
+                            <th:block th:if="${!#strings.isEmpty(userApplication.comment)}">
+                              <br/>
+                              <span class="lbl" th:text="#{permissions.comment}">Kommentaar</span>
+                              <span th:text="${userApplication.comment}"></span>
+                            </th:block>
                           </div>
                         </th:block>
                       </td>
-                      <td class="p-1 text-center">
+                      <td class="p-1">
                         <div th:replace="permdialog :: add_dataset_perm_dlg"></div>
                         <button type="button" class="btn badge badge-success" th:title="#{permissions.add.dataset.permission}"
                                 data-toggle="modal"
@@ -231,6 +258,15 @@
                 onConfirm : function() {
                   let userEmail = $(this).data('user-email');
                   sendPermissionsEmail(userEmail);
+                }
+              });
+              $('[data-toggle=reject-application-confirm]').confirmation({
+                btnOkLabel : /*[[#{common.yes}]]*/'Jah',
+                btnCancelLabel : /*[[#{common.no}]]*/'Ei',
+                title : /*[[#{permissions.confirm.application.reject}]]*/'Kinnita avalduse tagasilükkamine',
+                onConfirm: function () {
+                  let applicationId = $(this).data('application-id');
+                  rejectApplication(applicationId);
                 }
               });
             </script>

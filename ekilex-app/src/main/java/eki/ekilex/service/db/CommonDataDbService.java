@@ -3,6 +3,7 @@ package eki.ekilex.service.db;
 import static eki.ekilex.data.db.Tables.ASPECT;
 import static eki.ekilex.data.db.Tables.ASPECT_LABEL;
 import static eki.ekilex.data.db.Tables.DATASET;
+import static eki.ekilex.data.db.Tables.DATASET_PERMISSION;
 import static eki.ekilex.data.db.Tables.DEFINITION;
 import static eki.ekilex.data.db.Tables.DEFINITION_DATASET;
 import static eki.ekilex.data.db.Tables.DEFINITION_FREEFORM;
@@ -85,6 +86,8 @@ import org.jooq.impl.DSL;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Component;
 
+import eki.common.constant.AuthorityItem;
+import eki.common.constant.AuthorityOperation;
 import eki.common.constant.ClassifierName;
 import eki.common.constant.FreeformType;
 import eki.common.constant.ReferenceOwner;
@@ -138,9 +141,25 @@ public class CommonDataDbService extends AbstractDataDbService {
 		return create.selectFrom(DATASET).orderBy(DATASET.NAME).fetchInto(Dataset.class);
 	}
 
-	@Cacheable(value = CACHE_KEY_DATASET)
+	@Cacheable(value = CACHE_KEY_DATASET, key = "#root.methodName")
 	public List<Dataset> getVisibleDatasets() {
 		return create.select(DATASET.CODE, DATASET.NAME).from(DATASET).where(DATASET.IS_VISIBLE.isTrue()).orderBy(DATASET.NAME).fetchInto(Dataset.class);
+	}
+
+	@Cacheable(value = CACHE_KEY_DATASET, key = "#root.methodName")
+	public List<Dataset> getVisibleDatasetsWithOwner() {
+		return create
+				.select(DATASET.CODE, DATASET.NAME)
+				.from(DATASET)
+				.where(DATASET.IS_VISIBLE.isTrue()
+						.andExists(DSL
+								.select(DATASET_PERMISSION.ID)
+								.from(DATASET_PERMISSION)
+								.where(DATASET_PERMISSION.DATASET_CODE.eq(DATASET.CODE)
+										.and(DATASET_PERMISSION.AUTH_ITEM.eq(AuthorityItem.DATASET.name()))
+										.and(DATASET_PERMISSION.AUTH_OPERATION.eq(AuthorityOperation.OWN.name())))))
+				.orderBy(DATASET.NAME)
+				.fetchInto(Dataset.class);
 	}
 
 	@Cacheable(value = CACHE_KEY_TAG, key = "#root.methodName")

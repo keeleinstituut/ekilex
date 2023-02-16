@@ -1,9 +1,10 @@
 package eki.ekilex.data;
 
 import java.sql.Timestamp;
-import java.util.List;
 
+import eki.common.constant.AuthorityOperation;
 import eki.common.data.AbstractDataObject;
+import eki.ekilex.constant.ApplicationStatus;
 
 public class EkiUserApplication extends AbstractDataObject {
 
@@ -13,13 +14,19 @@ public class EkiUserApplication extends AbstractDataObject {
 
 	private Long userId;
 
-	private List<String> datasetCodes;
+	private String datasetCode;
 
-	private List<Dataset> datasets;
+	private String datasetName;
+
+	private AuthorityOperation authOperation;
+
+	private String lang;
+
+	private String langValue;
 
 	private String comment;
 
-	private boolean reviewed;
+	private ApplicationStatus status;
 
 	private Timestamp created;
 
@@ -39,20 +46,44 @@ public class EkiUserApplication extends AbstractDataObject {
 		this.userId = userId;
 	}
 
-	public List<String> getDatasetCodes() {
-		return datasetCodes;
+	public String getDatasetCode() {
+		return datasetCode;
 	}
 
-	public void setDatasetCodes(List<String> datasetCodes) {
-		this.datasetCodes = datasetCodes;
+	public void setDatasetCode(String datasetCode) {
+		this.datasetCode = datasetCode;
 	}
 
-	public List<Dataset> getDatasets() {
-		return datasets;
+	public String getDatasetName() {
+		return datasetName;
 	}
 
-	public void setDatasets(List<Dataset> datasets) {
-		this.datasets = datasets;
+	public void setDatasetName(String datasetName) {
+		this.datasetName = datasetName;
+	}
+
+	public AuthorityOperation getAuthOperation() {
+		return authOperation;
+	}
+
+	public void setAuthOperation(AuthorityOperation authOperation) {
+		this.authOperation = authOperation;
+	}
+
+	public String getLang() {
+		return lang;
+	}
+
+	public void setLang(String lang) {
+		this.lang = lang;
+	}
+
+	public String getLangValue() {
+		return langValue;
+	}
+
+	public void setLangValue(String langValue) {
+		this.langValue = langValue;
 	}
 
 	public String getComment() {
@@ -63,12 +94,12 @@ public class EkiUserApplication extends AbstractDataObject {
 		this.comment = comment;
 	}
 
-	public boolean isReviewed() {
-		return reviewed;
+	public ApplicationStatus getStatus() {
+		return status;
 	}
 
-	public void setReviewed(boolean reviewed) {
-		this.reviewed = reviewed;
+	public void setStatus(ApplicationStatus status) {
+		this.status = status;
 	}
 
 	public Timestamp getCreated() {
@@ -78,5 +109,4 @@ public class EkiUserApplication extends AbstractDataObject {
 	public void setCreated(Timestamp created) {
 		this.created = created;
 	}
-
 }

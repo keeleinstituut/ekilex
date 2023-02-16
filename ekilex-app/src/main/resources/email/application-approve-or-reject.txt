@@ -1,0 +1,12 @@
+[# th:if="${isApprove}"]Sinu õiguse taotlus sõnakogule "[(${datasetName})]" rahuldati.[/]
+[# th:if="${!isApprove}"]Sinu õiguse taotlus sõnakogule "[(${datasetName})]" lükati tagasi.[/]
+
+Kõik sinu õigused:
+
+[# th:if="${isEnabled}"]Sul on sõnakogude vaatamisõigused.
+[# th:if="${isAdmin}"]Sul on admin õigused.[/][# th:if="${!isAdmin}"]Sul puuduvad admin õigused.[/]
+[# th:if="${not #lists.isEmpty(datasetPermissions)}"][# th:each="datasetPermission : ${datasetPermissions}"]
+[# th:if="${#strings.equals(datasetPermission.authOperation.name(), 'CRUD')}"]Sul on sõnakogu "[(${datasetPermission.datasetName})]" muutmisõigus [/][# th:if="${#strings.equals(datasetPermission.authOperation.name(), 'OWN')}"]Sul on sõnakogu "[(${datasetPermission.datasetName})]" omanikuõigus [/][# th:if="${#strings.equals(datasetPermission.authOperation.name(), 'READ')}"]Sul on sõnakogu "[(${datasetPermission.datasetName})]" lugemisõigus [/][# th:if="${not #strings.isEmpty(datasetPermission.authLangValue)}"][(${datasetPermission.authLangValue})] keeles.[/][# th:if="${#strings.isEmpty(datasetPermission.authLangValue)}"]kõikides keeltes.[/]
+[/]
+[/][# th:if="${#lists.isEmpty(datasetPermissions) and !isAdmin}"]Sul puuduvad sõnakogude muutmisõigused.[/]
+[/][# th:if="${!isEnabled}"]Sul puudub Ekilexi kasutusõigus.[/]

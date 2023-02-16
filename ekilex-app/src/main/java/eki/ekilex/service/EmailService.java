@@ -24,11 +24,13 @@ import org.springframework.stereotype.Component;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
 
+import eki.common.constant.AuthorityOperation;
+import eki.ekilex.constant.WebConstant;
 import eki.ekilex.data.DatasetPermission;
 import eki.ekilex.data.EkiUser;
 
 @Component
-public class EmailService {
+public class EmailService implements WebConstant {
 
 	private static final Logger logger = LoggerFactory.getLogger(EmailService.class);
 
@@ -41,8 +43,9 @@ public class EmailService {
 	private static final String APPLICATION_SUBMIT_SUBJECT = "Ekilexi kasutaja õiguste taotlus";
 	private static final String APPLICATION_SUBMIT_TEMPLATE = "application-submit";
 
-	private static final String ADDITIONAL_APPLICATION_SUBMIT_SUBJECT = "Ekilexi kasutaja õiguste juurdetaotlemine";
-	private static final String ADDITIONAL_APPLICATION_SUBMIT_TEMPLATE = "additional-application-submit";
+	private static final String APPLICATION_APPROVE_SUBJECT = "Ekilexi kasutaja õiguste taotluse rahuldamine";
+	private static final String APPLICATION_REJECT_SUBJECT = "Ekilexi kasutaja õiguste taotluse mitterahuldamine";
+	private static final String APPLICATION_APPROVE_OR_REJECT_TEMPLATE = "application-approve-or-reject";
 
 	private static final String USER_PERMISSIONS_SUBJECT = "Ekilexi kasutaja õiguste nimekiri";
 	private static final String USER_PERMISSIONS_TEMPLATE = "user-permissions";
@@ -89,22 +92,18 @@ public class EmailService {
 		sendTextEmail(email, PASSWORD_RECOVERY_SUBJECT, PASSWORD_RECOVERY_TEMPLATE, context);
 	}
 
-	public void sendApplicationSubmitEmail(EkiUser user, List<String> emails, List<String> datasets, String comment, boolean isAdditionalApplication) {
+	public void sendApplicationSubmitEmail(
+			EkiUser user, List<String> emails, String datasetCode, String datasetName, String comment, AuthorityOperation authOp, String datasetPermissionsUrl) {
 
-		String joinedDatasets = null;
-		if (CollectionUtils.isNotEmpty(datasets)) {
-			joinedDatasets = String.join(", ", datasets);
-		}
 		Context context = new Context(locale);
 		context.setVariable("userName", user.getName());
 		context.setVariable("userEmail", user.getEmail());
-		context.setVariable("datasets", joinedDatasets);
+		context.setVariable("datasetCode", datasetCode);
+		context.setVariable("datasetName", datasetName);
+		context.setVariable("authOp", authOp);
 		context.setVariable("comment", comment);
-		if (isAdditionalApplication) {
-			sendTextEmail(emails, ADDITIONAL_APPLICATION_SUBMIT_SUBJECT, ADDITIONAL_APPLICATION_SUBMIT_TEMPLATE, context);
-		} else {
-			sendTextEmail(emails, APPLICATION_SUBMIT_SUBJECT, APPLICATION_SUBMIT_TEMPLATE, context);
-		}
+		context.setVariable("datasetPermissionsUrl", datasetPermissionsUrl);
+		sendTextEmail(emails, APPLICATION_SUBMIT_SUBJECT, APPLICATION_SUBMIT_TEMPLATE, context);
 	}
 
 	public void sendPermissionsEmail(EkiUser receiver, EkiUser sender) {
@@ -124,6 +123,31 @@ public class EmailService {
 		context.setVariable("isAdmin", isAdmin);
 		context.setVariable("datasetPermissions", datasetPermissions);
 		sendTextEmail(email, USER_PERMISSIONS_SUBJECT, USER_PERMISSIONS_TEMPLATE, context);
+	}
+
+	public void sendApplicationApprovalEmail(EkiUser applicant, EkiUser reviewer, String datasetName, boolean isApprove) {
+
+		String senderName = reviewer.getName();
+		String senderEmail = reviewer.getEmail();
+		String email = applicant.getEmail();
+		String name = applicant.getName();
+		List<DatasetPermission> datasetPermissions = applicant.getDatasetPermissions();
+		boolean isEnabled = BooleanUtils.toBoolean(applicant.getEnabled());
+		boolean isAdmin = applicant.isAdmin();
+
+		logger.info("User \"{}\" (email: \"{}\") initiated application approval email sending to user \"{}\" (email: \"{}\")", senderName, senderEmail, name, email);
+
+		Context context = new Context(locale);
+		context.setVariable("isApprove", isApprove);
+		context.setVariable("isEnabled", isEnabled);
+		context.setVariable("isAdmin", isAdmin);
+		context.setVariable("datasetPermissions", datasetPermissions);
+		context.setVariable("datasetName", datasetName);
+		if (isApprove) {
+			sendTextEmail(email, APPLICATION_APPROVE_SUBJECT, APPLICATION_APPROVE_OR_REJECT_TEMPLATE, context);
+		} else {
+			sendTextEmail(email, APPLICATION_REJECT_SUBJECT, APPLICATION_APPROVE_OR_REJECT_TEMPLATE, context);
+		}
 	}
 
 	public void sendTermsRefuseEmail(EkiUser user, List<String> emails) {
