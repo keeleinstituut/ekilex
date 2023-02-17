@@ -35,17 +35,17 @@
   <!-- end of Body title with divider -->
   <!-- Meaning candidate -->
   <th:block th:fragment="inexact_syn_full_candidate(meaningCandidate, meaningCandidateIter)">
-      <div class="inexact-syn-body-candidate__header">
-        <div class="inexact-syn-body-candidate__input-wrapper">
+      <div class="inexact-syn-meaning-candidate__header">
+        <div class="inexact-syn-meaning-candidate__input-wrapper">
           <input type="radio" name="inexactSynMeaningId" data-plugin="enableSubmitInexactSynMeaningBtnPlugin"
                  th:value="${meaningCandidate.meaningId}"
                  th:disabled="${meaningCandidate.disabled}"/>
-          <span class="inexact-syn-body-candidate__identifier" th:text="'M' + ${meaningCandidate.meaningId}"></span>
+          <span class="inexact-syn-meaning-candidate__identifier" th:text="'M' + ${meaningCandidate.meaningId}"></span>
         </div>
-        <span class="inexact-syn-body-candidate__dataset" th:text="${meaningCandidate.datasetName}"></span>
-        <a class="inexact-syn-body-candidate__link" th:href="@{'/termsearch?id=' + ${meaningCandidate.meaningId}}" target="_blank" th:text="#{inexactsyn.display.meaning}">Vaata tervet kirjet</a>
+        <span class="inexact-syn-meaning-candidate__dataset" th:text="${meaningCandidate.datasetName}"></span>
+        <a class="inexact-syn-meaning-candidate__link" th:href="@{'/termsearch?id=' + ${meaningCandidate.meaningId}}" target="_blank" th:text="#{inexactsyn.display.meaning}">Vaata tervet kirjet</a>
       </div>
-      <hr class="inexact-syn-body-divider"/>
+      <hr class="inexact-syn-body-divider inexact-syn-body-divider--small"/>
       <div class="inexact-syn-body-list__wrapper">
         <span class="inexact-syn-body-list__title" th:text="#{term.terms}">Terminid</span>
         <ul class="inexact-syn-body-list">
@@ -83,6 +83,96 @@
       </div>
   </th:block>
   <!-- end of Meaning candidate -->
+  <!-- Word candidate -->
+  <div
+    class="inexact-syn-word-candidate"
+    name="wordCandidatesDiv"
+    th:id="${id}"
+    th:fragment="inexact_syn_word_candidate(id, source, inputName, buttonText)"
+    >
+      <button
+        class="inexact-syn-word-candidate__trigger"
+        data-toggle="collapse"
+        aria-expanded="false"
+        th:data-target="'#' + ${id} + '-collapse'"
+        th:aria-controls="'#' + ${id} + '-collapse'"
+        type="button"
+        >
+        <span class="inexact-syn-word-candidate__icon" data-success="false"></span>
+        <span class="inexact-syn-word-candidate__button-title" th:text="${buttonText}"></span>
+        <span class="inexact-syn-word-candidate__arrow-indicator"></span>
+      </button>
+      <div class="inexact-syn-word-candidate__contents collapse" th:id="${id} + '-collapse'">
+        <th:block th:each="wordCandidate,wordCandidateIter : ${source}">
+          <div th:replace=" :: word_candidate_details(#{inputName})"></div>
+        </th:block>
+        <div class="inexact-syn-body-card">
+          <label class="inexact-syn-body-new__label">
+            <input type="radio" name="translationLangWordId" class="mr-3" data-plugin="enableSubmitWordBtnPlugin" value="new"/>
+            <span class="inexact-syn-body-new" th:text="#{inexactsyn.create.new.word}">Sobiv keelend puudub, loon uue</span>
+          </label>
+        </div>
+      </div>
+  </div>
+  <!-- end of Word candidate -->
+  <!-- Word candidate details -->
+  <div class="inexact-syn-body-card" th:fragment="word_candidate_details(inputName)">
+    <div class="inexact-syn-word-candidate__header">
+      <input type="radio" th:name="${inputName}" data-plugin="enableSubmitWordBtnPlugin"
+        th:value="${wordCandidate.word.wordId}"/>
+      <span class="inexact-syn-word-candidate__name" th:utext="${wordCandidate.word.wordValuePrese}"></span>
+      <span class="inexact-syn-word-candidate__identifier" th:text="'W' + ${wordCandidate.word.wordId}"></span>
+    </div>
+    <th:block th:each="lexeme,lexemeIter : ${wordCandidate.mainDatasetLexemes}">
+      <hr class="inexact-syn-body-divider" th:unless="${lexemeIter.first}">
+      <div th:replace=" :: word_candidate_lexeme_details"></div>
+    </th:block>
+    <th:block th:if="${#lists.size(wordCandidate.secondaryDatasetLexemes) > 0}">
+      <div>
+        <button
+          class="inexact-syn-word-candidate__read-more"
+          data-toggle="collapse"
+          th:data-target="${'#secondaryLexemesSelect' + wordCandidateIter.index}"
+          th:data-controls="${'#secondaryLexemesSelect' + wordCandidateIter.index}"
+          aria-expanded="false"
+          th:text="#{common.see.more}"
+          type="button"
+          >
+            Näita rohkem
+        </button>
+      </div>
+      <div class="collapse" th:id="${'secondaryLexemesSelect' + wordCandidateIter.index}">
+        <th:block th:each="lexeme,lexemeIter : ${wordCandidate.secondaryDatasetLexemes}">
+          <hr class="inexact-syn-body-divider" th:unless="${lexemeIter.first}">
+          <div th:replace=" :: word_candidate_lexeme_details"></div>
+        </th:block>
+      </div>
+    </th:block>
+  </div>
+  <!-- end of Word candidate details -->
+  <!-- Word candidate lexeme details -->
+  <div
+    class="inexact-syn-body-list__wrapper inexact-syn-body-list__wrapper--with-text"
+    th:fragment="word_candidate_lexeme_details">
+    <span class="inexact-syn-body-list__title" th:text="#{inexactsyn.definitions}">Seletused</span>
+    <ul class="inexact-syn-body-list">
+      <th:block
+        th:each="definition : ${lexeme.meaning.definitions}"
+        >
+        <li class="inexact-syn-body-list__item" th:utext="${definition.value}"></li>
+      </th:block>
+    </ul>
+    <span class="inexact-syn-word-candidate__source" th:text="${lexeme.datasetName}"></span>
+    <a
+      class="inexact-syn-word-candidate__link"
+      th:href="@{'/termsearch?id=' + ${lexeme.meaningId}}"
+      target="_blank"
+      th:text="#{termcreatemeaning.display.meaning}"
+      >
+      Vaata tervet kirjet
+    </a>
+  </div>
+  <!-- end of Word candidate lexeme details -->
   <div class="modal-dialog modal-dialog-scrollable h-100 mw-90" role="document" th:fragment="inexact_syn_meaning_select">
     <div class="modal-content">
       <div class="modal-header">
@@ -100,12 +190,11 @@
                   <hr class="inexact-syn-body-divider" />
                   <div th:text="#{inexactsyn.source.lang.word}">Eestikeelne vaste</div>
                   <th:block th:if="${data.isSearchEnabled}">
-                    <form th:action="@{/inexact_syn_search_meanings}" method="post" autocomplete="off" data-plugin="submitInexactSynSearchMeaningsPlugin">
+                    <form class="inexact-syn-body-search__wrapper" th:action="@{/inexact_syn_search_meanings}" method="post" autocomplete="off" data-plugin="submitInexactSynSearchMeaningsPlugin">
                       <th:block th:replace=" :: common_input_data"></th:block>
                       <input class="form-control" name="targetLangWordValue" th:placeholder="#{lex.placeholder.word.search}">
-                      <hr/>
-                      <div>
-                        <button type="submit" class="btn btn-primary" th:text="#{common.search}">Otsi</button>
+                      <div class="inexact-syn-body-search__button-wrapper">
+                        <button type="submit" class="btn btn-primary inexact-syn-body-search__button" th:text="#{common.search}">Otsi</button>
                       </div>
                     </form>
                   </th:block>
@@ -241,42 +330,22 @@
                     <th:block th:unless="${hasCandates}">
                       <span class="inexact-syn-body-title" th:text="#{inexactsyn.insert.inexact.syn.def}">Sisesta lühivihje</span>
                     </th:block>
-                    <div name="wordCandidatesDiv" id="translationLangWordCandidatesDiv" th:unless="${#lists.isEmpty(meaning.translationLangWordCandidates)}">
-                      <div class="bg-light">
-                        <i name="wordSelectionInProgressIcon" class="fa fa-question text-secondary"></i>
-                        <i name="wordSelectionCompleteIcon" class="fa fa-check-circle text-success" style="display: none;"></i>
-                        <span class="font-weight-bold" th:text="${meaning.translationLangWordValue}"></span>
-                      </div>
-                      <div th:each="wordCandidate,wordCandidateIter : ${meaning.translationLangWordCandidates}">
-                        <div th:replace=" :: word_candidate_details('translationLangWordId')"></div>
-                      </div>
-                      <div class="border border-dark rounded mb-2 p-2">
-                        <div class="row mb-2">
-                          <div class="col-12">
-                            <input type="radio" name="translationLangWordId" class="ml-3 mr-3" data-plugin="enableSubmitWordBtnPlugin" value="new"/>
-                            <span th:text="#{inexactsyn.create.new.word}">Sobiv keelend puudub, loon uue</span>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                    <div name="wordCandidatesDiv" id="targetLangWordCandidatesDiv" th:unless="${#lists.isEmpty(meaning.targetLangWordCandidates)}">
-                      <div class="bg-light">
-                        <i name="wordSelectionInProgressIcon" class="fa fa-question text-secondary"></i>
-                        <i name="wordSelectionCompleteIcon" class="fa fa-check-circle text-success" style="display: none;"></i>
-                        <span class="font-weight-bold" th:text="${meaning.targetLangWordValue}"></span>
-                      </div>
-                      <div th:each="wordCandidate,wordCandidateIter : ${meaning.targetLangWordCandidates}">
-                        <div th:replace=" :: word_candidate_details('targetLangWordId')"></div>
-                      </div>
-                      <div class="border border-dark rounded mb-2 p-2">
-                        <div class="row mb-2">
-                          <div class="col-12">
-                            <input type="radio" name="targetLangWordId" class="ml-3 mr-3" data-plugin="enableSubmitWordBtnPlugin" value="new"/>
-                            <span th:text="#{inexactsyn.create.new.word}">Sobiv keelend puudub, loon uue</span>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
+                    <th:block
+                      th:unless="${#lists.isEmpty(meaning.translationLangWordCandidates)}"
+                      th:replace=" :: inexact_syn_word_candidate(
+                        'translationLangWordCandidatesDiv',
+                        ${meaning.translationLangWordCandidates},
+                        'translationLangWordId',
+                        ${meaning.translationLangWordValue})"
+                      />
+                    <th:block
+                      th:unless="${#lists.isEmpty(meaning.targetLangWordCandidates)}"
+                      th:replace=" :: inexact_syn_word_candidate(
+                        'targetLangWordCandidatesDiv',
+                        ${meaning.targetLangWordCandidates},
+                        'targetLangWordId',
+                        ${meaning.targetLangWordValue})"
+                      />
                   </form>
                 </div>
               </div>
@@ -422,49 +491,6 @@
         <button type="button" class="btn btn-default" data-dismiss="modal" th:text="#{common.cancel}">Katkesta</button>
         <button type="button" class="btn btn-primary" name="submitRelationSelectBtn" data-plugin="submitRelationSelectPlugin" disabled>Loo tähenduse seos</button>
       </div>
-    </div>
-  </div>
-  <div class="border border-dark rounded mb-2 p-2" th:fragment="word_candidate_details(inputName)">
-    <div class="row mb-2">
-      <input type="radio" th:name="${inputName}" class="ml-3 mr-3" data-plugin="enableSubmitWordBtnPlugin" th:value="${wordCandidate.word.wordId}"/>
-      <span th:utext="${wordCandidate.word.wordValuePrese}"></span>
-      <small class="ml-3" th:text="'W' + ${wordCandidate.word.wordId}"></small>
-    </div>
-    <th:block th:each="lexeme,lexemeIter : ${wordCandidate.mainDatasetLexemes}">
-      <div th:replace=" :: word_candidate_lexeme_details"></div>
-    </th:block>
-    <th:block th:if="${#lists.size(wordCandidate.secondaryDatasetLexemes) > 0}">
-      <div class="row">
-        <a class="btn ml-3" data-toggle="collapse" th:href="${'#secondaryLexemesSelect' + wordCandidateIter.index}" role="button" aria-expanded="false">
-          <span class="lbl" th:text="#{common.see.more}">Näita rohkem</span>
-          <i class="fa fa-angle-down lbl"></i>
-        </a>
-      </div>
-      <div class="mt-3 collapse" th:id="${'secondaryLexemesSelect' + wordCandidateIter.index}">
-        <th:block th:each="lexeme,lexemeIter : ${wordCandidate.secondaryDatasetLexemes}">
-          <div th:replace=" :: word_candidate_lexeme_details"></div>
-        </th:block>
-      </div>
-    </th:block>
-  </div>
-  <div class="row" th:fragment="word_candidate_lexeme_details">
-    <hr th:unless="${lexemeIter.first}">
-    <div class="col-2">
-      <span class="lbl" th:text="#{inexactsyn.definitions}">Seletused</span>
-    </div>
-    <div class="col-6">
-      <th:block th:each="definition : ${lexeme.meaning.definitions}">
-        <div style="display: list-item; position: absolute"></div>
-        <div>
-          <span th:utext="${definition.value}"></span>
-        </div>
-      </th:block>
-    </div>
-    <div class="col-2">
-      <span th:text="${lexeme.datasetName}"></span>
-    </div>
-    <div class="col-2">
-      <a th:href="@{'/termsearch?id=' + ${lexeme.meaningId}}" target="_blank" th:text="#{termcreatemeaning.display.meaning}">Vaata tervet kirjet</a>
     </div>
   </div>
   <th:block th:fragment="common_input_data">

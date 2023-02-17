@@ -1,7 +1,11 @@
 #inexactSynDlg {
+  & .modal-content {
+    border-radius: 0;
+  }
   .modal-header {
     @extend %shadow-elevation-02;
     border: 0;
+    border-radius: 0;
     & .inexact-syn-header {
       display: flex;
       align-items: center;
@@ -20,6 +24,11 @@
 
   .modal-body {
     background-color: $gray-100;
+    padding: 8px;
+
+    & .container-fluid {
+      padding: 0;
+    }
 
     & .card {
       @extend %shadow-elevation-02;
@@ -28,9 +37,15 @@
         // Enable margin-top: auto for search change div
         display: flex;
         flex-direction: column;
+        // Add slight padding to the bottom in case scroll is needed
+        // This prevents last element from being edge to edge with the border
+        & form {
+          padding-bottom: 8px;
+        }
       }
     }
   }
+
   & .inexact-syn-body-card {
     display: flex;
     flex-direction: column;
@@ -45,7 +60,7 @@
     }
   }
 
-  & .inexact-syn-body-candidate {
+  & .inexact-syn-meaning-candidate {
     &__header {
       display: flex;
       align-items: center;
@@ -84,6 +99,137 @@
     }
   }
 
+  & .inexact-syn-word-candidate {
+    &:not(:first-child) {
+      margin-top: 40px;
+    }
+    &__trigger {
+      width: 100%;
+      padding: 8px 16px;
+      background-color: $gray-200;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      border: 0;
+      border-radius: 4px;
+
+      & .inexact-syn-word-candidate__arrow-indicator {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-left: auto;
+        &::after {
+          font-family: "Font Awesome 6 Free Solid";
+          font-weight: 900;
+          content: "\f078";
+          transition: transform 350ms ease-in-out;
+        }
+      }
+
+      &[aria-expanded="true"] {
+        & .inexact-syn-word-candidate__arrow-indicator {
+          &::after {
+            // Using transform instead of content change to allow for transition
+            transform: rotateZ(180deg);
+          }
+        }
+      }
+    }
+
+    &__icon {
+      background-color: white;
+      width: 20px;
+      height: 20px;
+      border-radius: 100px;
+      display: flex;
+      justify-content: center;
+
+      &::after {
+        font-family: "Font Awesome 6 Free Solid";
+        font-weight: 900;
+        content: "\3f";
+        color: $gray-200;
+      }
+
+      &[data-success="true"] {
+        background-color: $green-400;
+
+        &::after {
+          content: "\f00c";
+        }
+      }
+    }
+
+    &__button-title {
+      color: $gray-1000;
+      font-size: 1rem;
+      font-weight: 700;
+    }
+
+    &__contents {
+      padding: 24px 16px;
+    }
+
+    &__header {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid $gray-200;
+    }
+
+    &__name,
+    &__identifier {
+      color: black;
+    }
+
+    &__name,
+    &__source,
+    &__link,
+    &__read-more {
+      font-size: 1rem;
+      font-weight: 700;
+    }
+
+    &__identifier {
+      font-size: 0.75rem;
+      font-weight: 400;
+    }
+
+    &__source {
+      hyphens: auto;
+    }
+
+    &__link {
+      color: $blue-350;
+      // don't enlarge the link with whitespace when something else is tall
+      height: min-content;
+    }
+
+    &__read-more {
+      border: 0;
+      background: none;
+      color: $gray-350;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+
+      &::after {
+        font-family: "Font Awesome 6 Free Solid";
+        font-weight: 900;
+        content: "\f078";
+        transition: transform 350ms ease-in-out;
+      }
+
+      &[aria-expanded="true"] {
+        &::after {
+          // Using transform instead of content change to allow for transition
+          transform: rotateZ(180deg);
+        }
+      }
+    }
+  }
+
   & .inexact-syn-body-list {
     padding-left: 32px;
     margin: 0;
@@ -91,6 +237,12 @@
       display: grid;
       grid-template-columns: 100px 1fr;
       grid-auto-flow: column;
+
+      &--with-text {
+        // Add some level of responsiveness
+        grid-template-columns: 100px minmax(50px, 2fr) repeat(2, minmax(25px, 1.125fr));
+        gap: 8px;
+      }
     }
 
     &__title {
@@ -165,6 +317,26 @@
       font-size: 3rem;
       color: $gray-900;
       font-weight: 900;
+    }
+  }
+
+  & .inexact-syn-body-search {
+    &__wrapper {
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+    }
+
+    &__button {
+      width: 100%;
+      &-wrapper {
+        padding: 24px;
+        border-top: 1px solid $gray-200;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: auto -20px -20px;
+      }
     }
   }
 
@@ -277,7 +449,7 @@
       background: white;
       font-family: "Font Awesome 6 Free Solid";
       font-weight: 900;
-      content: '\f537';
+      content: "\f537";
       color: $gray-350;
       text-align: center;
     }

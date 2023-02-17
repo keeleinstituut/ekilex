@@ -82,8 +82,7 @@ $.fn.enableSubmitWordBtnPlugin = function() {
 		radioBtn.on('click', function() {
 			const selectedWordCandidatesDiv = radioBtn.closest('div[name="wordCandidatesDiv"]');
 			const selectedWordCandidatesDivId = selectedWordCandidatesDiv.attr('id');
-			const selectionInProgressIcon = selectedWordCandidatesDiv.find('i[name="wordSelectionInProgressIcon"]');
-			const selectionCompleteIcon = selectedWordCandidatesDiv.find('i[name="wordSelectionCompleteIcon"]');
+			const buttonIcon = selectedWordCandidatesDiv.find('.inexact-syn-word-candidate__icon');
 			const isTargetLangWordSelect = selectedWordCandidatesDivId === 'targetLangWordCandidatesDiv';
 			const isTranslationLangWordSelect = selectedWordCandidatesDivId === 'translationLangWordCandidatesDiv';
 			const otherWordCandidateSelectionExists = $('div[name="wordCandidatesDiv"]').length === 2;
@@ -100,8 +99,7 @@ $.fn.enableSubmitWordBtnPlugin = function() {
 				$('button[name="submitInexactMeaningBtn"]').removeAttr("disabled");
 			}
 
-			selectionInProgressIcon.hide();
-			selectionCompleteIcon.show();
+			buttonIcon.attr('data-success', 'true');
 		});
 	});
 }
