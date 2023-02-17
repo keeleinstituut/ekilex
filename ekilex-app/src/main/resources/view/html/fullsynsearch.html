@@ -110,6 +110,12 @@
                     <th:block th:replace="syncomp :: pos_data"></th:block>
                     <th:block th:replace="syncomp :: registers_data"></th:block>
                     <span class="pl-0 pr-2">
+                      <span class="ctxt" data-plugin="lexemePublicity"
+                            data-edit-enabled="false"
+                            th:data-public="${lexeme.public}"
+                            th:data-label="#{'boolean.public.' + ${lexeme.public}}">
+                        <span name="icon-span"></span>
+                      </span>
                       <span class="ctxt" th:text="'(' + #{'enum.complexity.' + ${lexeme.complexity}} + ')'" data-plugin="complexity"></span>
                       <span class="lbl" th:text="#{syn.lexeme.tags}">Ilmiku sildid</span>
                       <button type="button" class="btn btn-light badge"

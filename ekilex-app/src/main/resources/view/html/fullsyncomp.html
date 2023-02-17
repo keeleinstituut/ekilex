@@ -144,6 +144,12 @@
                   <small th:if="${synWordIter.last}" th:text="${'[' + viewUtil.getFormattedWeight(syn.weight) + ']'}"></small>
                 </span>
                 <th:block th:if="${isMeaningWordSyn}">
+                  <span class="ctxt" data-plugin="lexemePublicity"
+                        data-edit-enabled="false"
+                        th:data-public="${synWord.lexemePublic}"
+                        th:data-label="#{'boolean.public.' + ${synWord.lexemePublic}}">
+                    <span name="icon-span"></span>
+                  </span>
                   <span class="ctxt" th:text="'(' + #{'enum.complexity.' + ${synWord.lexemeComplexity}} + ')'" data-plugin="complexity"></span>
                   <div th:replace="fullsyndialog :: edit_lexeme_weight_dlg"></div>
                   <div th:replace="fullsyndialog :: edit_lexeme_complexity_dlg"></div>

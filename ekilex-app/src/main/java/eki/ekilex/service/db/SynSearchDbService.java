@@ -340,6 +340,7 @@ public class SynSearchDbService extends AbstractDataDbService {
 						l.LEVEL2,
 						l.WEIGHT,
 						l.COMPLEXITY,
+						l.IS_PUBLIC,
 						lposf.as("pos"),
 						lregf.as("registers"))
 				.from(l.innerJoin(ds).on(ds.CODE.eq(l.DATASET_CODE)))
