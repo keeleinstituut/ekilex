@@ -186,9 +186,21 @@ public class SearchDbService implements GlobalConstant, SystemConstant {
 
 		Field<String> searchWordLowerField = DSL.lower(searchWord);
 		boolean fiCollationExists = searchContext.isFiCollationExists();
+		boolean excludeQuestionable = searchContext.isExcludeQuestionable();
 
 		MviewWwWord w = MVIEW_WW_WORD.as("w");
 		MviewWwForm f = MVIEW_WW_FORM.as("f");
+
+		Condition whereForm =
+				f.WORD_ID.eq(w.WORD_ID)
+						.and(DSL.lower(f.VALUE).eq(searchWordLowerField))
+						.and(f.VALUE.ne(f.WORD))
+						.and(f.MORPH_CODE.ne(UNKNOWN_FORM_CODE))
+						.and(f.MORPH_EXISTS.isTrue());
+
+		if (excludeQuestionable) {
+			whereForm = whereForm.and(f.IS_QUESTIONABLE.isFalse());
+		}
 
 		Table<Record> ww = DSL
 				.select(w.fields())
@@ -204,12 +216,7 @@ public class SearchDbService implements GlobalConstant, SystemConstant {
 						.whereExists(DSL
 								.select(f.WORD_ID)
 								.from(f)
-								.where(f.WORD_ID.eq(w.WORD_ID)
-										.and(DSL.lower(f.VALUE).eq(searchWordLowerField))
-										.and(f.VALUE.ne(f.WORD))
-										.and(f.MORPH_CODE.ne(UNKNOWN_FORM_CODE))
-										.and(f.MORPH_EXISTS.isTrue())
-										.and(f.IS_QUESTIONABLE.isFalse()))))
+								.where(whereForm)))
 				.asTable("w");
 
 		Condition where = applyLangCompDatasetFilter(w, searchContext, DSL.noCondition());

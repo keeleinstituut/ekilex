@@ -203,7 +203,6 @@ from (
            and f.value != w.value
            and f.value != '-'
            and f.morph_exists = true
-           and f.is_questionable = false
            and exists
              (select w.id
               from lexeme as l,
