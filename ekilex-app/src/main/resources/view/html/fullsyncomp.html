@@ -84,7 +84,7 @@
           </div>
           <div class="d-flex flex-row small" data-toggle="tooltip" th:title="#{syn.definition}" th:each="definition : ${meaning.definitions}">
             <span th:utext="${definition.value}"></span>
-            <span th:each="sourceLink : ${definition.sourceLinks}">
+            <span class="text-nowrap" th:each="sourceLink : ${definition.sourceLinks}">
               [
               <a th:href="@{'/def_source_link:' + ${sourceLink.id}}" th:text="${sourceLink.value}"></a>
               <span th:if="${sourceLink.name != null}" th:text="${sourceLink.name}"></span>
@@ -93,7 +93,7 @@
           </div>
           <div class="d-flex flex-row small text-info" data-toggle="tooltip" th:title="#{syn.usage}" th:each="usage : ${meaning.usages}">
             <span th:utext="${usage.value}"></span>
-            <span th:each="sourceLink : ${usage.sourceLinks}">
+            <span class="text-nowrap" th:each="sourceLink : ${usage.sourceLinks}">
               [
               <a th:href="@{'/ff_source_link:' + ${sourceLink.id}}" th:text="${sourceLink.value}"></a>
               <span th:text="${sourceLink.name}" th:if="${sourceLink.name != null}"></span>
@@ -115,7 +115,7 @@
         <span th:text="${viewUtil.getLangIso2(synonymLangGroup.lang)}" class="mr-2"></span>
         <th:block th:if="${synonymLangGroupIter.first}">
           <div th:replace="fullsyndialog :: add_syn_meaning_word_dlg"></div>
-          <button type="button" class="btn btn-light badge mr-2"
+          <button type="button" class="btn btn-light badge mr-2 h-max-content mt-1"
                   th:title="#{fullsyn.add.new}"
                   data-toggle="modal"
                   th:data-target="${'#addSynMeaningWordDlg_' + lexeme.lexemeId}">
@@ -132,7 +132,7 @@
                 th:with="
                   isMeaningWordSyn=${syn.type == T(eki.common.constant.SynonymType).MEANING_WORD},
                   isMeaningRelSyn=${syn.type == T(eki.common.constant.SynonymType).MEANING_REL}">
-            <span class="hidden-buttons">
+            <span class="hidden-buttons text-nowrap">
               <th:block th:each="synWord, synWordIter : ${syn.words}">
                 <input type="hidden" class="relation-meaning-id" th:value="${syn.meaningId}"/>
                 <input type="hidden" name="synword-lexeme-id" th:value="${synWord.lexemeId}"/>
@@ -179,24 +179,24 @@
               <span th:unless="${synIter.last}">|</span>
             </span>
           </span>
+          <th:block th:if="${synonymLangGroupIter.first && not #lists.isEmpty(synonymLangGroup.inexactSynonyms)}">
+            <i class="less-than-equal-icon" aria-hidden="true"></i>
+            <th:block th:each="inexactSyn, inexactSynIter : ${synonymLangGroup.inexactSynonyms}">
+               <a th:href="@{'/lexsearch?id=' + ${inexactSyn.wordId}}" th:text="${inexactSyn.translationLangWordValue}" target="_blank"></a>
+              (
+              <th:block th:each="targetLangWord, targetLangWordIter : ${inexactSyn.targetLangWords}" th:if="${not #lists.isEmpty(inexactSyn.targetLangWords)}">
+                <a th:href="@{'/lexsearch?id=' + ${targetLangWord.wordId}}" th:text="${targetLangWord.wordValue}" target="_blank"></a>
+                <span th:unless="${targetLangWordIter.last}">,</span>
+              </th:block>
+              <th:block th:if="${#lists.isEmpty(inexactSyn.targetLangWords)}">
+                <span th:text="${inexactSyn.inexactDefinitionValue}"></span>
+              </th:block>
+              )
+              <span th:unless="${inexactSynIter.last}">|</span>
+            </th:block>
+          </th:block>
         </div>
       </div>
-      <th:block th:if="${synonymLangGroupIter.first && not #lists.isEmpty(synonymLangGroup.inexactSynonyms)}">
-        <i class="fa fa-question" aria-hidden="true"></i>
-        <th:block th:each="inexactSyn, inexactSynIter : ${synonymLangGroup.inexactSynonyms}">
-           <a th:href="@{'/lexsearch?id=' + ${inexactSyn.wordId}}" th:text="${inexactSyn.translationLangWordValue}" target="_blank"></a>
-          (
-          <th:block th:each="targetLangWord, targetLangWordIter : ${inexactSyn.targetLangWords}" th:if="${not #lists.isEmpty(inexactSyn.targetLangWords)}">
-            <a th:href="@{'/lexsearch?id=' + ${targetLangWord.wordId}}" th:text="${targetLangWord.wordValue}" target="_blank"></a>
-            <span th:unless="${targetLangWordIter.last}">,</span>
-          </th:block>
-          <th:block th:if="${#lists.isEmpty(inexactSyn.targetLangWords)}">
-            <span th:text="${inexactSyn.inexactDefinitionValue}"></span>
-          </th:block>
-          )
-          <span th:unless="${inexactSynIter.last}">|</span>
-        </th:block>
-      </th:block>
     </th:block>
   </div>
   <div class="modal-dialog modal-lg modal-dialog-scrollable" role="document" th:fragment="full_syn_relation_word_select">

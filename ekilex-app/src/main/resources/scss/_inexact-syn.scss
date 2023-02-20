@@ -452,6 +452,10 @@
       content: "\f537";
       color: $gray-350;
       text-align: center;
+      font-size: .625rem;
+      display: flex;
+      justify-content: center;
+      align-items: center;
     }
   }
 
@@ -462,4 +466,27 @@
       color: $blue-400-v2;
     }
   }
+}
+
+.less-than-equal-icon {
+  padding: 4px;
+  background-color: $gray-100;
+  display: inline-flex;
+  justify-content: center;
+  margin: 4px 4px 0 8px;
+  border-radius: 4px;
+  &::before {
+    font-family: "Font Awesome 6 Free Solid";
+    font-weight: 900;
+    font-style: normal;
+    font-size: .625rem;
+    content: "\f537";
+    height: 10px;
+    width: 10px;
+  }
+}
+
+
+.h-max-content {
+  height: max-content;
 }
