@@ -53,3 +53,6 @@ where euad.is_reviewed = false
 order by euad.created;
 
 drop table eki_user_application_deprecated;
+
+-- Osasüno kaal
+update meaning_relation set weight = 0 where meaning_rel_type_code = 'sarnane' and weight is null;

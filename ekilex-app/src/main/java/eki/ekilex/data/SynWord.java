@@ -37,6 +37,8 @@ public class SynWord extends AbstractDataObject implements DecoratedWordType {
 
 	private Complexity lexemeComplexity;
 
+	private boolean isLexemePublic;
+
 	public Long getWordId() {
 		return wordId;
 	}
@@ -159,5 +161,13 @@ public class SynWord extends AbstractDataObject implements DecoratedWordType {
 
 	public void setLexemeComplexity(Complexity lexemeComplexity) {
 		this.lexemeComplexity = lexemeComplexity;
+	}
+
+	public boolean isLexemePublic() {
+		return isLexemePublic;
+	}
+
+	public void setLexemePublic(boolean lexemePublic) {
+		this.isLexemePublic = lexemePublic;
 	}
 }

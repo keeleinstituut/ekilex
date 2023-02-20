@@ -821,6 +821,7 @@ public class CommonDataDbService extends AbstractDataDbService {
 						l2.ID.as("lexeme_id"),
 						l2.WEIGHT.as("lexeme_weight"),
 						l2.COMPLEXITY.as("lexeme_complexity"),
+						l2.IS_PUBLIC.as("is_lexeme_public"),
 						lrc.as("lex_register_codes"),
 						l2.ORDER_BY)
 				.from(l1, l2, w2)

@@ -35,6 +35,8 @@ public class MeaningWord extends AbstractDataObject implements DecoratedWordType
 
 	private Complexity lexemeComplexity;
 
+	private boolean isLexemePublic;
+
 	private List<String> lexRegisterCodes;
 
 	private Long orderBy;
@@ -153,6 +155,14 @@ public class MeaningWord extends AbstractDataObject implements DecoratedWordType
 
 	public void setLexemeComplexity(Complexity lexemeComplexity) {
 		this.lexemeComplexity = lexemeComplexity;
+	}
+
+	public boolean isLexemePublic() {
+		return isLexemePublic;
+	}
+
+	public void setLexemePublic(boolean lexemePublic) {
+		this.isLexemePublic = lexemePublic;
 	}
 
 	public List<String> getLexRegisterCodes() {
