@@ -5,7 +5,7 @@ function initializeFullSynSearch() {
 
 		const button = $(this);
 		const id = button.data('id');
-
+		highlightActiveResult(id);
 		$("[id^='syn_select_wait_']").hide();
 		$(`#syn_select_wait_${id}`).show();
 		openWaitDlg();
@@ -260,4 +260,13 @@ function initAddSynMeaningWordDlg(addDlg) {
 		});
 	});
 
+}
+
+
+function highlightActiveResult(id) {
+	const results = $('#results');
+	// Remove active class from all results
+	results.find('li.search-result-item').removeClass('active');
+	// Add class to the li element of selected id
+	results.find(`[data-id=${id}]`).parent().addClass('active');
 }
