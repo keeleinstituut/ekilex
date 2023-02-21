@@ -20,7 +20,11 @@ public class InexactSynonym extends AbstractDataObject {
 
 	private Long wordId;
 
+	private Long relationId;
+
 	private List<SimpleWord> targetLangWords;
+
+	private Long orderBy;
 
 	public String getTranslationLangWordValue() {
 		return translationLangWordValue;
@@ -70,11 +74,27 @@ public class InexactSynonym extends AbstractDataObject {
 		this.wordId = wordId;
 	}
 
+	public Long getRelationId() {
+		return relationId;
+	}
+
+	public void setRelationId(Long relationId) {
+		this.relationId = relationId;
+	}
+
 	public List<SimpleWord> getTargetLangWords() {
 		return targetLangWords;
 	}
 
 	public void setTargetLangWords(List<SimpleWord> targetLangWords) {
 		this.targetLangWords = targetLangWords;
+	}
+
+	public Long getOrderBy() {
+		return orderBy;
+	}
+
+	public void setOrderBy(Long orderBy) {
+		this.orderBy = orderBy;
 	}
 }

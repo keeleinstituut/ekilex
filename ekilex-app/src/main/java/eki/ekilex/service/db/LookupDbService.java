@@ -39,7 +39,7 @@ import org.jooq.JSON;
 import org.jooq.Record1;
 import org.jooq.Record2;
 import org.jooq.Record4;
-import org.jooq.Record6;
+import org.jooq.Record8;
 import org.jooq.Table;
 import org.jooq.impl.DSL;
 import org.jooq.util.postgres.PostgresDSL;
@@ -557,14 +557,16 @@ public class LookupDbService extends AbstractDataDbService {
 		Lexeme ltarget = LEXEME.as("ltarget");
 		Definition def = DEFINITION.as("def");
 
-		Table<Record6<Long, Long, String, Long, String, JSON>> syn = DSL
+		Table<Record8<Long, Long, String, Long, String, Long, Long, JSON>> syn = DSL
 				.select(
 						ltrans.MEANING_ID,
 						ltrans.WORD_ID,
 						wtrans.VALUE.as("translation_lang_word_value"),
 						wtrans.ID.as("translation_lang_word_id"),
 						wtrans.LANG.as("translation_lang"),
-						DSL.field("json_agg(json_build_object('wordId', wtarget.id, 'wordValue', wtarget.value) order by ltarget.order_by) filter (where wtarget.id is not null)", JSON.class).as("target_lang_words"))
+						mr.ID.as("relation_id"),
+						mr.ORDER_BY,
+						field("json_agg(json_build_object('wordId', wtarget.id, 'wordValue', wtarget.value) order by ltarget.order_by) filter (where wtarget.id is not null)", JSON.class).as("target_lang_words"))
 				.from(
 						ltrans,
 						wtrans,
@@ -577,7 +579,7 @@ public class LookupDbService extends AbstractDataDbService {
 								.and(ltrans.MEANING_ID.eq(mr.MEANING2_ID))
 								.and(wtrans.ID.eq(ltrans.WORD_ID))
 								.and(wtrans.LANG.ne(targetLang)))
-				.groupBy(ltrans.ID, wtrans.ID, mr.ORDER_BY)
+				.groupBy(ltrans.ID, wtrans.ID, mr.ID)
 				.orderBy(mr.ORDER_BY)
 				.asTable("syn");
 
@@ -589,6 +591,8 @@ public class LookupDbService extends AbstractDataDbService {
 						syn.field("word_id", Long.class),
 						syn.field("translation_lang", String.class),
 						syn.field("target_lang_words", JSON.class),
+						syn.field("relation_id", Long.class),
+						syn.field("order_by", Long.class),
 						def.VALUE.as("inexact_definition_value"))
 				.from(syn.leftOuterJoin(def).on(
 						def.MEANING_ID.eq(syn.field("meaning_id", Long.class))
