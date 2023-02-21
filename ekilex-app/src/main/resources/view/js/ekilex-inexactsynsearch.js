@@ -90,9 +90,9 @@ $.fn.enableSubmitWordBtnPlugin = function() {
 			let isWordSelectionSubmitEnabled = true;
 			if (otherWordCandidateSelectionExists) {
 				if (isTargetLangWordSelect) {
-					isWordSelectionSubmitEnabled = $('input[type=radio][name="translationLangWordId"]:checked').length === 1;
-				} else if (isTranslationLangWordSelect) {
 					isWordSelectionSubmitEnabled = $('input[type=radio][name="targetLangWordId"]:checked').length === 1;
+				} else if (isTranslationLangWordSelect) {
+					isWordSelectionSubmitEnabled = $('input[type=radio][name="translationLangWordId"]:checked').length === 1;
 				}
 			}
 			if (isWordSelectionSubmitEnabled) {

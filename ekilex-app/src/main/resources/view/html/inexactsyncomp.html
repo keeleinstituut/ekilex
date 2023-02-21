@@ -104,7 +104,7 @@
       </button>
       <div class="inexact-syn-word-candidate__contents collapse" th:id="${id} + '-collapse'">
         <th:block th:each="wordCandidate,wordCandidateIter : ${source}">
-          <div th:replace=" :: word_candidate_details(#{inputName})"></div>
+          <div th:replace=" :: word_candidate_details(${inputName})"></div>
         </th:block>
         <div class="inexact-syn-body-card">
           <label class="inexact-syn-body-new__label">
@@ -152,7 +152,7 @@
   <!-- end of Word candidate details -->
   <!-- Word candidate lexeme details -->
   <div
-    class="inexact-syn-body-list__wrapper inexact-syn-body-list__wrapper--with-text"
+    class="inexact-syn-body-list__wrapper inexact-syn-body-list__wrapper--extra-text"
     th:fragment="word_candidate_lexeme_details">
     <span class="inexact-syn-body-list__title" th:text="#{inexactsyn.definitions}">Seletused</span>
     <ul class="inexact-syn-body-list">
@@ -173,6 +173,24 @@
     </a>
   </div>
   <!-- end of Word candidate lexeme details -->
+  <!-- Text grid -->
+  <div class="inexact-syn-simple-grid" th:fragment="inexact_syn_gray_text_grid(title, text)">
+    <span class="inexact-syn-gray-text inexact-syn-gray-text--small" th:text="${title}"></span>
+    <span class="inexact-syn-gray-text inexact-syn-gray-text--small" th:text="${text}"></span>
+  </div>
+  <!-- end of Text grid -->
+  <!-- List grid -->
+  <div class="inexact-syn-simple-grid" th:fragment="inexact_syn_gray_list_grid(title, list)">
+    <span class="inexact-syn-gray-text inexact-syn-gray-text--small" th:text="${title}"></span>
+    <ul class="m-0 pl-3">
+      <th:block th:each="listItem : ${list}">
+        <li class="inexact-syn-gray-text inexact-syn-gray-text--small"
+          th:utext="${listItem}"
+          ></li>
+      </th:block>
+    </ul>
+  </div>
+  <!-- end of List grid -->
   <div class="modal-dialog modal-dialog-scrollable h-100 mw-90" role="document" th:fragment="inexact_syn_meaning_select">
     <div class="modal-content">
       <div class="modal-header">
@@ -268,37 +286,22 @@
                   <th:block th:replace=" :: inexact_syn_body_title(#{inexactsyn.update.meaning})" />
                   <div th:text="#{common.meaning}">Mõiste</div>
                   <th:block th:if="${meaning.meaningId != null}">
-                    <div class="row small">
-                      <div class="col-4" th:text="#{common.id}">ID</div>
-                      <div class="col-8" th:text="${meaning.meaningId}"></div>
-                    </div>
-                    <div class="row small">
-                      <div class="col-4" th:text="#{inexactsyn.words}">Keelendid</div>
-                      <div class="col-8">
-                        <th:block th:each="meaningWordValue : ${meaning.meaningWordValues}">
-                          <div style="display: list-item; position: absolute"></div>
-                          <div>
-                            <span th:utext="${meaningWordValue}"></span>
-                          </div>
-                        </th:block>
-                      </div>
-                    </div>
-                    <div class="row small">
-                      <div class="col-4" th:text="#{inexactsyn.definitions}">Seletused</div>
-                      <div class="col-8">
+                    <th:block th:replace=" :: inexact_syn_gray_text_grid(#{common.id}, ${meaning.meaningId})" />
+                    <th:block th:replace=" :: inexact_syn_gray_list_grid(#{inexactsyn.words}, ${meaning.meaningWordValues})" />
+                    <div class="inexact-syn-simple-grid">
+                      <span 
+                        class="inexact-syn-gray-text inexact-syn-gray-text--small" 
+                        th:text="#{inexactsyn.definitions}">Seletused</span>
+                      <ul class="m-0 pl-3">
                         <th:block th:each="definition : ${meaning.definitions}">
-                          <div style="display: list-item; position: absolute"></div>
-                          <div>
-                            <span th:utext="${definition.value}"></span>
-                          </div>
+                            <li
+                              class="inexact-syn-gray-text inexact-syn-gray-text--small"
+                              th:utext="${definition.value}"></li>
                         </th:block>
-                      </div>
+                      </ul>
                     </div>
                   </th:block>
-                  <div class="row small">
-                    <div class="col-4" th:text="#{inexactsyn.dataset}">Sõnakogu</div>
-                    <div class="col-8" th:text="${meaning.datasetName}"></div>
-                  </div>
+                  <th:block th:replace=" :: inexact_syn_gray_text_grid(#{inexactsyn.dataset}, ${meaning.datasetName})" />
                   <hr class="inexact-syn-body-divider"/>
                   <div th:text="#{inexactsyn.translation.lang.word}">Tõlkevaste</div>
                   <div class="font-weight-bold" th:utext="${meaning.translationLangWordValue}"></div>

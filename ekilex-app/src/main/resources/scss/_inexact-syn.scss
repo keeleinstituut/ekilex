@@ -238,7 +238,7 @@
       grid-template-columns: 100px 1fr;
       grid-auto-flow: column;
 
-      &--with-text {
+      &--extra-text {
         // Add some level of responsiveness
         grid-template-columns: 100px minmax(50px, 2fr) repeat(2, minmax(25px, 1.125fr));
         gap: 8px;
@@ -258,6 +258,23 @@
       &--exact {
         font-weight: 700;
       }
+    }
+  }
+
+  & .inexact-syn-simple-grid {
+    display: grid;
+    grid-template-columns: minmax(90px, 0.5fr) minmax(50px, 1fr);
+  }
+
+  & .inexact-syn-gray-text {
+    color: $gray-300;
+    font-weight: 400;
+    font-size: 1rem;
+    &::marker {
+      color: $gray-300;
+    }
+    &--small {
+      font-size: .875rem;
     }
   }
 
