@@ -111,7 +111,11 @@ function submitForm(form, failMessage, callback) {
 			if (detailsOpen.length) {
 				Cookies.set('details-open', detailsOpen.parent().attr('id'));
 			}
-			form.parents('#details-area:first, #meaning-details-area:first, #syn-details-area:first').find('#refresh-details').click();
+			ScrollStore.saveActiveScroll();
+			form
+				.parents('#details-area:first, #meaning-details-area:first, #syn-details-area:first')
+				.find('#refresh-details')
+				.click();
 		}
 	}).fail(function(data) {
 		console.log(data);
@@ -1211,7 +1215,7 @@ function loadDetails(wordOrMeaningId, task, lastWordOrMeaningId) {
 			dataObject.attr('data-breadcrumbs', JSON.stringify(breadCrumbs));
 			detailsDiv.replaceWith(dataObject[0].outerHTML);
 			detailsDiv = $('#details-area');
-			scrollDetails(detailsDiv, 0);
+			ScrollStore.loadPrevScroll();
 		} else {
 			dataObject.find('[data-hideable="toolsColumn"]').attr('data-hideable', `toolsColumn-${wordOrMeaningId}`);
 			dataObject.find('#toolsColumn').attr('id', `toolsColumn-${wordOrMeaningId}`);
@@ -1372,4 +1376,48 @@ function createCallback(data, optionalArgs) {
 		return () => window[func].apply(null, args);
 	}
 	return undefined
+}
+
+/**
+ * Class for storing scroll value
+ */
+class ScrollStore {
+  constructor() {
+		// We currently don't have class variable support
+		// This is a way to mimick that
+		this.constructor.prevScrollValue = 0;
+  }
+
+	static setPrevScroll(scroll) {
+		this.constructor.prevScrollValue = scroll;
+	};
+
+	static getContentScroll() {
+		const detailsArea = $('#syn-details-area');
+		const detailsAreaScrollContainer = detailsArea.find('.overflow-auto').first();
+		const detailsAreaScroll = detailsAreaScrollContainer.scrollTop();
+		// Return 0 if scroll value is nullish
+		return detailsAreaScroll ?? 0;
+	}
+
+	static setContentScroll(scroll) {
+		const detailsArea = $('#syn-details-area');
+		const detailsAreaScrollContainer = detailsArea.find('.overflow-auto').first();
+		detailsAreaScrollContainer.scrollTop(scroll);
+	}
+
+	static loadPrevScroll() {
+		this.setContentScroll(this.constructor.prevScrollValue);
+		this.constructor.prevScrollValue = 0;
+	}
+
+	static saveActiveScroll() {
+		this.constructor.prevScrollValue = this.getContentScroll();
+	}
+}
+
+let scrollStoreInstance;
+if (!scrollStoreInstance) {
+	// Conditionally creating new instance, we only need one.	
+	scrollStoreInstance = new ScrollStore();
 }

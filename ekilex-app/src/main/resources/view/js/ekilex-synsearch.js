@@ -13,11 +13,10 @@ function doPostRelationChange(actionUrl, callbackFunc) {
 }
 
 function refreshSynDetails() {
-	const selectedWordId = $('#syn-details-area').data('id');
+	const detailsArea = $('#syn-details-area')
+	const selectedWordId = detailsArea.data('id');
 	const refreshButton = $(`[name="synDetailsBtn"][data-id="${selectedWordId}"]`).first();
-
 	refreshButton.click();
-
 }
 
 function updateWordSynRelationsStatusDeleted() {
