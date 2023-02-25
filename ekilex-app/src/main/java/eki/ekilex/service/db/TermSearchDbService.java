@@ -420,9 +420,10 @@ public class TermSearchDbService extends AbstractDataDbService {
 
 	public eki.ekilex.data.Meaning getMeaning(Long meaningId, SearchDatasetsRestriction searchDatasetsRestriction) {
 
-		Condition dsWhere = searchFilterHelper.applyDatasetRestrictions(LEXEME, searchDatasetsRestriction, null);
-
 		Meaning m = MEANING.as("m");
+		Lexeme l = LEXEME.as("l");
+
+		Condition dsWhere = searchFilterHelper.applyDatasetRestrictions(l, searchDatasetsRestriction, null);
 		Field<Timestamp> mlacteof = getMeaningLastActivityEventOnField(m.ID, LastActivityType.EDIT);
 		Field<Timestamp> mlappeof = getMeaningLastActivityEventOnField(m.ID, LastActivityType.APPROVE);
 
@@ -432,12 +433,12 @@ public class TermSearchDbService extends AbstractDataDbService {
 						m.MANUAL_EVENT_ON,
 						mlacteof.as("last_activity_event_on"),
 						mlappeof.as("last_approve_event_on"),
-						DSL.arrayAggDistinct(LEXEME.ID).orderBy(LEXEME.ID).as("lexeme_ids"),
-						DSL.arrayAggDistinct(LEXEME.DATASET_CODE).as("lexeme_dataset_codes"))
-				.from(m, LEXEME)
+						DSL.arrayAggDistinct(l.ID).orderBy(l.ID).as("lexeme_ids"),
+						DSL.arrayAggDistinct(l.DATASET_CODE).as("lexeme_dataset_codes"))
+				.from(m, l)
 				.where(
 						m.ID.eq(meaningId)
-								.and(LEXEME.MEANING_ID.eq(m.ID))
+								.and(l.MEANING_ID.eq(m.ID))
 								.and(dsWhere))
 				.groupBy(m.ID)
 				.fetchOptionalInto(eki.ekilex.data.Meaning.class)

@@ -216,9 +216,10 @@ public class TermSearchService extends AbstractSearchService {
 		final String[] excludeLexemeAttributeTypes = new String[] {FreeformType.GOVERNMENT.name(), FreeformType.GRAMMAR.name(), FreeformType.USAGE.name(),
 				FreeformType.NOTE.name()};
 
+		Long userId = user.getId();
 		DatasetPermission userRole = user.getRecentRole();
 		boolean isAdmin = user.isAdmin();
-		SearchDatasetsRestriction searchDatasetsRestriction = composeDatasetsRestriction(selectedDatasetCodes, user.getId());
+		SearchDatasetsRestriction searchDatasetsRestriction = composeDatasetsRestriction(selectedDatasetCodes, userId);
 		Map<String, String> datasetNameMap = commonDataDbService.getDatasetNameMap();
 
 		Meaning meaning = termSearchDbService.getMeaning(meaningId, searchDatasetsRestriction);

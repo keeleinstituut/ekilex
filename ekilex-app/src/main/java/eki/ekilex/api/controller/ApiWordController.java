@@ -50,6 +50,22 @@ public class ApiWordController extends AbstractApiController {
 	}
 
 	@Order(602)
+	@PreAuthorize("principal.apiCrud && @permEval.isWordCrudGranted(principal, #crudRoleDataset, #word.wordId)")
+	@PostMapping(API_SERVICES_URI + WORD_URI + UPDATE_URI)
+	@ResponseBody
+	public ApiResponse updateWord(
+			@RequestParam("crudRoleDataset") String crudRoleDataset,
+			@RequestBody Word word) {
+
+		try {
+			wordService.updateWord(word, MANUAL_EVENT_ON_UPDATE_ENABLED);
+			return getOpSuccessResponse();
+		} catch (Exception e) {
+			return getOpFailResponse(e);
+		}
+	}
+
+	@Order(603)
 	@PreAuthorize("principal.apiCrud && @permEval.isWordCrudGranted(principal, #crudRoleDataset, #wordType.wordId)")
 	@PostMapping(API_SERVICES_URI + WORD_TYPE_URI + CREATE_URI)
 	@ResponseBody
@@ -67,7 +83,25 @@ public class ApiWordController extends AbstractApiController {
 		}
 	}
 
-	@Order(603)
+	@Order(604)
+	@PreAuthorize("principal.apiCrud && @permEval.isWordCrudGranted(principal, #crudRoleDataset, #wordType.wordId)")
+	@PostMapping(API_SERVICES_URI + WORD_TYPE_URI + DELETE_URI)
+	@ResponseBody
+	public ApiResponse deleteWordType(
+			@RequestParam("crudRoleDataset") String crudRoleDataset,
+			@RequestBody WordClassifier wordType) {
+
+		try {
+			Long wordId = wordType.getWordId();
+			String typeCode = wordType.getClassifierCode();
+			cudService.deleteWordType(wordId, typeCode, MANUAL_EVENT_ON_UPDATE_ENABLED);
+			return getOpSuccessResponse();
+		} catch (Exception e) {
+			return getOpFailResponse(e);
+		}
+	}
+
+	@Order(605)
 	@PreAuthorize("principal.apiCrud && @permEval.isWordCrudGranted(principal, #crudRoleDataset, #wordRelation.wordId)")
 	@PostMapping(API_SERVICES_URI + WORD_RELATION_URI + CREATE_URI)
 	@ResponseBody
@@ -87,7 +121,23 @@ public class ApiWordController extends AbstractApiController {
 		}
 	}
 
-	@Order(604)
+	@Order(606)
+	@PreAuthorize("principal.apiCrud && @permEval.isWordRelationCrudGranted(principal, #crudRoleDataset, #relationId)")
+	@PostMapping(API_SERVICES_URI + WORD_RELATION_URI + DELETE_URI)
+	@ResponseBody
+	public ApiResponse deleteWordRelation(
+			@RequestParam("crudRoleDataset") String crudRoleDataset,
+			@RequestParam("relationId") Long relationId) {
+
+		try {
+			cudService.deleteWordRelation(relationId, MANUAL_EVENT_ON_UPDATE_ENABLED);
+			return getOpSuccessResponse();
+		} catch (Exception e) {
+			return getOpFailResponse(e);
+		}
+	}
+
+	@Order(607)
 	@PreAuthorize("principal.apiCrud")
 	@PostMapping(API_SERVICES_URI + WORD_FORUM_URI + CREATE_URI)
 	@ResponseBody
@@ -105,7 +155,39 @@ public class ApiWordController extends AbstractApiController {
 		}
 	}
 
-	@Order(605)
+	@Order(608)
+	@PreAuthorize("principal.apiCrud && @permEval.isWordForumCrudGranted(principal, #wordForum.id)")
+	@PostMapping(API_SERVICES_URI + WORD_FORUM_URI + UPDATE_URI)
+	@ResponseBody
+	public ApiResponse updateWordForum(@RequestBody WordForum wordForum) {
+
+		try {
+			EkiUser user = userContext.getUser();
+			Long wordForumId = wordForum.getId();
+			String valuePrese = wordForum.getValuePrese();
+			valuePrese = valueUtil.trimAndCleanAndRemoveHtmlAndLimit(valuePrese);
+			cudService.updateWordForum(wordForumId, valuePrese, user);
+			return getOpSuccessResponse();
+		} catch (Exception e) {
+			return getOpFailResponse(e);
+		}
+	}
+
+	@Order(609)
+	@PreAuthorize("principal.apiCrud && @permEval.isWordForumCrudGranted(principal, #wordForumId)")
+	@PostMapping(API_SERVICES_URI + WORD_FORUM_URI + DELETE_URI)
+	@ResponseBody
+	public ApiResponse deleteWordForum(@RequestParam("wordForumId") Long wordForumId) {
+
+		try {
+			cudService.deleteWordForum(wordForumId);
+			return getOpSuccessResponse();
+		} catch (Exception e) {
+			return getOpFailResponse(e);
+		}
+	}
+
+	@Order(610)
 	@PreAuthorize("principal.apiCrud && @permEval.isWordCrudGranted(principal, #crudRoleDataset, #odWordRecommendation.wordId)")
 	@PostMapping(API_SERVICES_URI + OD_WORD_RECOMMENDATION + CREATE_URI)
 	@ResponseBody
@@ -124,41 +206,7 @@ public class ApiWordController extends AbstractApiController {
 		}
 	}
 
-	@Order(606)
-	@PreAuthorize("principal.apiCrud && @permEval.isWordCrudGranted(principal, #crudRoleDataset, #word.wordId)")
-	@PostMapping(API_SERVICES_URI + WORD_URI + UPDATE_URI)
-	@ResponseBody
-	public ApiResponse updateWord(
-			@RequestParam("crudRoleDataset") String crudRoleDataset,
-			@RequestBody Word word) {
-
-		try {
-			wordService.updateWord(word, MANUAL_EVENT_ON_UPDATE_ENABLED);
-			return getOpSuccessResponse();
-		} catch (Exception e) {
-			return getOpFailResponse(e);
-		}
-	}
-
-	@Order(607)
-	@PreAuthorize("principal.apiCrud && @permEval.isWordForumCrudGranted(principal, #wordForum.id)")
-	@PostMapping(API_SERVICES_URI + WORD_FORUM_URI + UPDATE_URI)
-	@ResponseBody
-	public ApiResponse updateWordForum(@RequestBody WordForum wordForum) {
-
-		try {
-			EkiUser user = userContext.getUser();
-			Long wordForumId = wordForum.getId();
-			String valuePrese = wordForum.getValuePrese();
-			valuePrese = valueUtil.trimAndCleanAndRemoveHtmlAndLimit(valuePrese);
-			cudService.updateWordForum(wordForumId, valuePrese, user);
-			return getOpSuccessResponse();
-		} catch (Exception e) {
-			return getOpFailResponse(e);
-		}
-	}
-
-	@Order(608)
+	@Order(611)
 	@PreAuthorize("principal.apiCrud && @permEval.isWordFreeformCrudGranted(principal, #crudRoleDataset, #odWordRecommendation.freeformId)")
 	@PostMapping(API_SERVICES_URI + OD_WORD_RECOMMENDATION + UPDATE_URI)
 	@ResponseBody
@@ -177,71 +225,7 @@ public class ApiWordController extends AbstractApiController {
 		}
 	}
 
-	@Order(609)
-	@PreAuthorize("principal.apiCrud && @permEval.isLexemeCrudGranted(principal, #crudRoleDataset, #lexemeId)")
-	@PostMapping(API_SERVICES_URI + LEXEME_URI + DELETE_URI)
-	@ResponseBody
-	public ApiResponse deleteLexeme(
-			@RequestParam("crudRoleDataset") String crudRoleDataset,
-			@RequestParam("lexemeId") Long lexemeId) {
-
-		try {
-			cudService.deleteLexeme(lexemeId, MANUAL_EVENT_ON_UPDATE_ENABLED);
-			return getOpSuccessResponse();
-		} catch (Exception e) {
-			return getOpFailResponse(e);
-		}
-	}
-
-   @Order(610)
-   @PreAuthorize("principal.apiCrud && @permEval.isWordCrudGranted(principal, #crudRoleDataset, #wordType.wordId)")
-   @PostMapping(API_SERVICES_URI + WORD_TYPE_URI + DELETE_URI)
-   @ResponseBody
-   public ApiResponse deleteWordType(
-		   @RequestParam("crudRoleDataset") String crudRoleDataset,
-		   @RequestBody WordClassifier wordType) {
-
-	   try {
-		   Long wordId = wordType.getWordId();
-		   String typeCode = wordType.getClassifierCode();
-		   cudService.deleteWordType(wordId, typeCode, MANUAL_EVENT_ON_UPDATE_ENABLED);
-		   return getOpSuccessResponse();
-	   } catch (Exception e) {
-		   return getOpFailResponse(e);
-	   }
-   }
-
-	@Order(611)
-	@PreAuthorize("principal.apiCrud && @permEval.isWordRelationCrudGranted(principal, #crudRoleDataset, #relationId)")
-	@PostMapping(API_SERVICES_URI + WORD_RELATION_URI + DELETE_URI)
-	@ResponseBody
-	public ApiResponse deleteWordRelation(
-			@RequestParam("crudRoleDataset") String crudRoleDataset,
-			@RequestParam("relationId") Long relationId) {
-
-		try {
-			cudService.deleteWordRelation(relationId, MANUAL_EVENT_ON_UPDATE_ENABLED);
-			return getOpSuccessResponse();
-		} catch (Exception e) {
-			return getOpFailResponse(e);
-		}
-	}
-
 	@Order(612)
-	@PreAuthorize("principal.apiCrud && @permEval.isWordForumCrudGranted(principal, #wordForumId)")
-	@PostMapping(API_SERVICES_URI + WORD_FORUM_URI + DELETE_URI)
-	@ResponseBody
-	public ApiResponse deleteWordForum(@RequestParam("wordForumId") Long wordForumId) {
-
-		try {
-			cudService.deleteWordForum(wordForumId);
-			return getOpSuccessResponse();
-		} catch (Exception e) {
-			return getOpFailResponse(e);
-		}
-	}
-
-	@Order(613)
 	@PreAuthorize("principal.apiCrud && @permEval.isWordFreeformCrudGranted(principal, #crudRoleDataset, #odWordRecommendationId)")
 	@PostMapping(API_SERVICES_URI + OD_WORD_RECOMMENDATION + DELETE_URI)
 	@ResponseBody
@@ -251,6 +235,22 @@ public class ApiWordController extends AbstractApiController {
 
 		try {
 			cudService.deleteOdWordRecommendation(odWordRecommendationId, MANUAL_EVENT_ON_UPDATE_ENABLED);
+			return getOpSuccessResponse();
+		} catch (Exception e) {
+			return getOpFailResponse(e);
+		}
+	}
+
+	@Order(613)
+	@PreAuthorize("principal.apiCrud && @permEval.isLexemeCrudGranted(principal, #crudRoleDataset, #lexemeId)")
+	@PostMapping(API_SERVICES_URI + LEXEME_URI + DELETE_URI)
+	@ResponseBody
+	public ApiResponse deleteLexeme(
+			@RequestParam("crudRoleDataset") String crudRoleDataset,
+			@RequestParam("lexemeId") Long lexemeId) {
+
+		try {
+			cudService.deleteLexeme(lexemeId, MANUAL_EVENT_ON_UPDATE_ENABLED);
 			return getOpSuccessResponse();
 		} catch (Exception e) {
 			return getOpFailResponse(e);

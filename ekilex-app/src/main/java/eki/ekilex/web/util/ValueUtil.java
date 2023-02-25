@@ -15,7 +15,7 @@ public class ValueUtil implements SystemConstant {
 	@Autowired
 	private TextDecorationService textDecorationService;
 
-	private String trimAndClean(String value) {
+	public String trimAndClean(String value) {
 		if (StringUtils.isBlank(value)) {
 			return StringUtils.trim(value);
 		}
@@ -25,22 +25,23 @@ public class ValueUtil implements SystemConstant {
 		char[] valueChars = cleanValue.toCharArray();
 		char prevChar = 0;
 		for (char valueChar : valueChars) {
-			if (valueChar == ' ' && prevChar == ' ') {
-				continue;
-			}
 			if (valueChar == '\r') {
-				continue;
+				valueChar = ' ';
 			}
 			if (valueChar == '\n') {
-				continue;
+				valueChar = ' ';
 			}
 			if (valueChar == '\t') {
+				valueChar = ' ';
+			}
+			if (valueChar == ' ' && prevChar == ' ') {
 				continue;
 			}
 			valueBuilder.append(valueChar);
 			prevChar = valueChar;
 		}
 		cleanValue = valueBuilder.toString();
+		cleanValue = StringUtils.trim(cleanValue);
 		return cleanValue;
 	}
 

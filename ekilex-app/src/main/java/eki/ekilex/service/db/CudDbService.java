@@ -127,7 +127,7 @@ public class CudDbService extends AbstractDataDbService {
 				.execute();
 	}
 
-	public void updateDefinition(Long id, String value, String valuePrese, String lang, Complexity complexity, String typeCode, boolean isPublic) {
+	public void updateDefinition(Long id, String value, String valuePrese, String lang, String typeCode, Complexity complexity, boolean isPublic) {
 		create.update(DEFINITION)
 				.set(DEFINITION.VALUE, value)
 				.set(DEFINITION.VALUE_PRESE, valuePrese)
@@ -237,7 +237,8 @@ public class CudDbService extends AbstractDataDbService {
 	}
 
 	public void updateLexemeLevels(Long lexemeId, Integer level1, Integer level2) {
-		create.update(LEXEME)
+		create
+				.update(LEXEME)
 				.set(LEXEME.LEVEL1, level1)
 				.set(LEXEME.LEVEL2, level2)
 				.where(LEXEME.ID.eq(lexemeId))
@@ -245,42 +246,48 @@ public class CudDbService extends AbstractDataDbService {
 	}
 
 	public void updateLexemeLevel1(Long lexemeId, Integer level1) {
-		create.update(LEXEME)
+		create
+				.update(LEXEME)
 				.set(LEXEME.LEVEL1, level1)
 				.where(LEXEME.ID.eq(lexemeId))
 				.execute();
 	}
 
 	public void updateLexemeLevel2(Long lexemeId, Integer level2) {
-		create.update(LEXEME)
+		create
+				.update(LEXEME)
 				.set(LEXEME.LEVEL2, level2)
 				.where(LEXEME.ID.eq(lexemeId))
 				.execute();
 	}
 
 	public void updateLexemeProcessState(Long lexemeId, boolean isPublic) {
-		create.update(LEXEME)
+		create
+				.update(LEXEME)
 				.set(LEXEME.IS_PUBLIC, isPublic)
 				.where(LEXEME.ID.eq(lexemeId))
 				.execute();
 	}
 
 	public void updateLexemeValueState(Long lexemeId, String valueStateCode) {
-		create.update(LEXEME)
+		create
+				.update(LEXEME)
 				.set(LEXEME.VALUE_STATE_CODE, valueStateCode)
 				.where(LEXEME.ID.eq(lexemeId))
 				.execute();
 	}
 
 	public void updateLexemeProficiencyLevel(Long lexemeId, String proficiencyLevelCode) {
-		create.update(LEXEME)
+		create
+				.update(LEXEME)
 				.set(LEXEME.PROFICIENCY_LEVEL_CODE, proficiencyLevelCode)
 				.where(LEXEME.ID.eq(lexemeId))
 				.execute();
 	}
 
 	public void updateLexemeComplexity(Long lexemeId, String complexity) {
-		create.update(LEXEME)
+		create
+				.update(LEXEME)
 				.set(LEXEME.COMPLEXITY, complexity)
 				.where(LEXEME.ID.eq(lexemeId))
 				.execute();
@@ -331,7 +338,8 @@ public class CudDbService extends AbstractDataDbService {
 	}
 
 	public void updateWordValue(Long wordId, String value, String valuePrese) {
-		create.update(WORD)
+		create
+				.update(WORD)
 				.set(WORD.VALUE, value)
 				.set(WORD.VALUE_PRESE, valuePrese)
 				.where(WORD.ID.eq(wordId))
@@ -339,14 +347,16 @@ public class CudDbService extends AbstractDataDbService {
 	}
 
 	public void updateWordValuePrese(Long wordId, String valuePrese) {
-		create.update(WORD)
+		create
+				.update(WORD)
 				.set(WORD.VALUE_PRESE, valuePrese)
 				.where(WORD.ID.eq(wordId))
 				.execute();
 	}
 
 	public void updateWordValueAndLang(Long wordId, String value, String valuePrese, String lang) {
-		create.update(WORD)
+		create
+				.update(WORD)
 				.set(WORD.VALUE, value)
 				.set(WORD.VALUE_PRESE, valuePrese)
 				.set(WORD.LANG, lang)
@@ -354,26 +364,44 @@ public class CudDbService extends AbstractDataDbService {
 				.execute();
 	}
 
+	public void updateWordValueAndAsWordAndLang(Long wordId, String value, String valuePrese, String valueAsWord, String lang) {
+		create
+				.update(WORD)
+				.set(WORD.VALUE, value)
+				.set(WORD.VALUE_PRESE, valuePrese)
+				.set(WORD.VALUE_AS_WORD, valueAsWord)
+				.set(WORD.LANG, lang)
+				.where(WORD.ID.eq(wordId))
+				.execute();
+	}
+
 	public void updateAsWordValue(Long wordId, String valueAsWord) {
-		create.update(WORD).set(WORD.VALUE_AS_WORD, valueAsWord).where(WORD.ID.eq(wordId)).execute();
+		create
+				.update(WORD)
+				.set(WORD.VALUE_AS_WORD, valueAsWord)
+				.where(WORD.ID.eq(wordId))
+				.execute();
 	}
 
 	public void updateWordVocalForm(Long wordId, String vocalForm) {
-		create.update(WORD)
+		create
+				.update(WORD)
 				.set(WORD.VOCAL_FORM, vocalForm)
 				.where(WORD.ID.eq(wordId))
 				.execute();
 	}
 
 	public void updateWordMorphophonoForm(Long wordId, String morphophonoForm) {
-		create.update(WORD)
+		create
+				.update(WORD)
 				.set(WORD.MORPHOPHONO_FORM, morphophonoForm)
 				.where(WORD.ID.eq(wordId))
 				.execute();
 	}
 
 	public void updateWordGender(Long wordId, String genderCode) {
-		create.update(WORD)
+		create
+				.update(WORD)
 				.set(WORD.GENDER_CODE, genderCode)
 				.where(WORD.ID.eq(wordId))
 				.execute();
@@ -391,21 +419,24 @@ public class CudDbService extends AbstractDataDbService {
 	}
 
 	public void updateWordAspect(Long wordId, String aspectCode) {
-		create.update(WORD)
+		create
+				.update(WORD)
 				.set(WORD.ASPECT_CODE, aspectCode)
 				.where(WORD.ID.eq(wordId))
 				.execute();
 	}
 
 	public void updateWordDisplayMorph(Long wordId, String displayMorphCode) {
-		create.update(WORD)
+		create
+				.update(WORD)
 				.set(WORD.DISPLAY_MORPH_CODE, displayMorphCode)
 				.where(WORD.ID.eq(wordId))
 				.execute();
 	}
 
 	public void updateWordLang(Long wordId, String langCode) {
-		create.update(WORD)
+		create
+				.update(WORD)
 				.set(WORD.LANG, langCode)
 				.where(WORD.ID.eq(wordId))
 				.execute();

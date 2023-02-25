@@ -34,6 +34,8 @@ public interface ApiConstant {
 
 	String LEXEME_URI = "/lexeme";
 
+	String TERM_MEANING_URI = "/term-meaning";
+
 	String MEANING_URI = "/meaning";
 
 	String SOURCE_URI = "/source";
@@ -61,6 +63,8 @@ public interface ApiConstant {
 	String UPDATE_URI = "/update";
 
 	String DELETE_URI = "/delete";
+
+	String SAVE_URI = "/save";
 
 	String JOIN_URI = "/join";
 

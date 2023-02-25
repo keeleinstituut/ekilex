@@ -1,4 +1,4 @@
-package eki.ekilex.service.api.db;
+package eki.ekilex.service.db.api;
 
 import static eki.ekilex.data.db.Tables.DATASET;
 import static eki.ekilex.data.db.Tables.LEXEME;

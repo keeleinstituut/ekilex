@@ -294,6 +294,9 @@ public class EkilexPermissionEvaluator implements PermissionEvaluator, PermConst
 	@Transactional
 	public boolean isWordCrudGranted(Principal principal, String crudRoleDataset, Long wordId) {
 
+		if (wordId == null) {
+			return true;
+		}
 		EkiUser user = (EkiUser) principal;
 		Long userId = user.getId();
 		DatasetPermission crudRole = getCrudRole(userId, crudRoleDataset);
@@ -316,7 +319,6 @@ public class EkilexPermissionEvaluator implements PermissionEvaluator, PermConst
 		if (isAdmin) {
 			return true;
 		}
-
 		boolean isGranted = permissionDbService.isGrantedForWordForum(userId, wordForumId);
 		return isGranted;
 	}
@@ -330,7 +332,6 @@ public class EkilexPermissionEvaluator implements PermissionEvaluator, PermConst
 		if (isAdmin) {
 			return true;
 		}
-
 		boolean isGranted = permissionDbService.isGrantedForMeaningForum(userId, meaningForumId);
 		return isGranted;
 	}
@@ -338,6 +339,9 @@ public class EkilexPermissionEvaluator implements PermissionEvaluator, PermConst
 	@Transactional
 	public boolean isLexemeCrudGranted(Principal principal, String crudRoleDataset, Long lexemeId) {
 
+		if (lexemeId == null) {
+			return true;
+		}
 		EkiUser user = (EkiUser) principal;
 		Long userId = user.getId();
 		DatasetPermission crudRole = getCrudRole(userId, crudRoleDataset);
@@ -348,6 +352,25 @@ public class EkilexPermissionEvaluator implements PermissionEvaluator, PermConst
 			return true;
 		}
 		boolean isGranted = permissionDbService.isGrantedForLexeme(userId, crudRole, lexemeId, AUTH_ITEM_DATASET, AUTH_OPS_CRUD);
+		return isGranted;
+	}
+
+	@Transactional
+	public boolean isMeaningCrudGranted(Principal principal, String crudRoleDataset, Long meaningId) {
+
+		if (meaningId == null) {
+			return true;
+		}
+		EkiUser user = (EkiUser) principal;
+		Long userId = user.getId();
+		DatasetPermission crudRole = getCrudRole(userId, crudRoleDataset);
+		if (crudRole == null) {
+			return false;
+		}
+		if (crudRole.isSuperiorPermission()) {
+			return true;
+		}
+		boolean isGranted = permissionDbService.isGrantedForMeaning(userId, crudRole, meaningId, AUTH_ITEM_DATASET, AUTH_OPS_CRUD);
 		return isGranted;
 	}
 

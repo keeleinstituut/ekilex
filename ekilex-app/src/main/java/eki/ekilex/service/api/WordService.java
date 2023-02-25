@@ -16,9 +16,9 @@ import eki.ekilex.data.SimpleWord;
 import eki.ekilex.data.WordLexemeMeaningIdTuple;
 import eki.ekilex.data.api.Word;
 import eki.ekilex.service.AbstractService;
-import eki.ekilex.service.api.db.WordDbService;
 import eki.ekilex.service.db.CudDbService;
 import eki.ekilex.service.db.TagDbService;
+import eki.ekilex.service.db.api.WordDbService;
 
 @Component
 public class WordService extends AbstractService {

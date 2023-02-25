@@ -146,13 +146,13 @@ public class LookupDbService extends AbstractDataDbService {
 	}
 
 	public List<Long> getWordIdsOfJoinCandidates(eki.ekilex.data.Word targetWord, List<String> userPrefDatasetCodes, List<String> userVisibleDatasetCodes) {
-	
+
 		String wordValue = targetWord.getWordValue();
 		String wordLang = targetWord.getLang();
 		Long wordIdToExclude = targetWord.getWordId();
 		boolean isPrefixoid = targetWord.isPrefixoid();
 		boolean isSuffixoid = targetWord.isSuffixoid();
-	
+
 		Condition whereCondition = WORD.VALUE.like(wordValue)
 				.and(WORD.ID.ne(wordIdToExclude))
 				.and(WORD.LANG.eq(wordLang))
@@ -163,7 +163,7 @@ public class LookupDbService extends AbstractDataDbService {
 						.where(
 								LEXEME.WORD_ID.eq(WORD.ID)
 										.and(LEXEME.DATASET_CODE.in(userPrefDatasetCodes))));
-	
+
 		if (isPrefixoid) {
 			whereCondition = whereCondition.andExists(DSL
 					.select(WORD_WORD_TYPE.ID)
@@ -183,8 +183,8 @@ public class LookupDbService extends AbstractDataDbService {
 					.where(WORD_WORD_TYPE.WORD_ID.eq(WORD.ID))
 					.and(WORD_WORD_TYPE.WORD_TYPE_CODE.in(WORD_TYPE_CODE_PREFIXOID, WORD_TYPE_CODE_SUFFIXOID)));
 		}
-	
-		Table<Record4<Long,Long,String,Boolean>> wl = DSL
+
+		Table<Record4<Long, Long, String, Boolean>> wl = DSL
 				.select(
 						WORD.ID.as("word_id"),
 						LEXEME.ID.as("lexeme_id"),
@@ -193,7 +193,7 @@ public class LookupDbService extends AbstractDataDbService {
 				.from(WORD, LEXEME)
 				.where(whereCondition)
 				.asTable("wl");
-	
+
 		return create
 				.selectDistinct(wl.field("word_id"))
 				.from(wl)
@@ -215,9 +215,9 @@ public class LookupDbService extends AbstractDataDbService {
 						w.LANG.as("word_lang"),
 						w.HOMONYM_NR,
 						DSL.field(DSL
-										.select(DSL.arrayAggDistinct(l.DATASET_CODE))
-										.from(l)
-										.where(l.WORD_ID.eq(w.ID)))
+								.select(DSL.arrayAggDistinct(l.DATASET_CODE))
+								.from(l)
+								.where(l.WORD_ID.eq(w.ID)))
 								.as("dataset_codes"))
 				.from(w, l)
 				.where(
@@ -248,7 +248,7 @@ public class LookupDbService extends AbstractDataDbService {
 	}
 
 	public int getWordLexemesMaxLevel1(Long wordId, String datasetCode) {
-	
+
 		return create
 				.select(DSL.max(LEXEME.LEVEL1))
 				.from(LEXEME)
@@ -280,7 +280,7 @@ public class LookupDbService extends AbstractDataDbService {
 	}
 
 	public Long getLexemeMeaningId(Long lexemeId) {
-	
+
 		return create
 				.select(LEXEME.MEANING_ID)
 				.from(LEXEME)
@@ -344,7 +344,7 @@ public class LookupDbService extends AbstractDataDbService {
 	}
 
 	public List<Long> getMeaningLexemeIds(Long meaningId, String lang, String datasetCode) {
-	
+
 		return create
 				.select(LEXEME.ID)
 				.from(LEXEME, WORD)
@@ -529,22 +529,29 @@ public class LookupDbService extends AbstractDataDbService {
 
 	public List<WordLexeme> getMeaningWords(Long meaningId, String datasetCode, String wordLang) {
 
+		Lexeme l = LEXEME.as("l");
+		Word w = WORD.as("w");
+
+		Condition where = l.MEANING_ID.eq(meaningId)
+				.and(l.DATASET_CODE.eq(datasetCode))
+				.and(l.WORD_ID.eq(w.ID));
+
+		if (StringUtils.isNotBlank(wordLang)) {
+			where = where.and(w.LANG.eq(wordLang));
+		}
+
 		return create
 				.select(
-						LEXEME.WORD_ID,
-						LEXEME.MEANING_ID,
-						LEXEME.ID.as("lexeme_id"),
-						WORD.VALUE.as("word_value"),
-						WORD.VALUE_PRESE.as("word_value_prese"),
-						WORD.LANG.as("word_lang"),
-						WORD.HOMONYM_NR.as("word_homonym_nr"))
-				.from(LEXEME, WORD)
-				.where(
-						LEXEME.MEANING_ID.eq(meaningId)
-								.and(LEXEME.DATASET_CODE.eq(datasetCode))
-								.and(LEXEME.WORD_ID.eq(WORD.ID))
-								.and(WORD.LANG.eq(wordLang)))
-				.orderBy(LEXEME.ORDER_BY)
+						l.WORD_ID,
+						l.MEANING_ID,
+						l.ID.as("lexeme_id"),
+						w.VALUE.as("word_value"),
+						w.VALUE_PRESE.as("word_value_prese"),
+						w.LANG.as("word_lang"),
+						w.HOMONYM_NR.as("word_homonym_nr"))
+				.from(l, w)
+				.where(where)
+				.orderBy(l.ORDER_BY)
 				.fetchInto(WordLexeme.class);
 	}
 
@@ -566,7 +573,8 @@ public class LookupDbService extends AbstractDataDbService {
 						wtrans.LANG.as("translation_lang"),
 						mr.ID.as("relation_id"),
 						mr.ORDER_BY,
-						field("json_agg(json_build_object('wordId', wtarget.id, 'wordValue', wtarget.value) order by ltarget.order_by) filter (where wtarget.id is not null)", JSON.class).as("target_lang_words"))
+						field("json_agg(json_build_object('wordId', wtarget.id, 'wordValue', wtarget.value) order by ltarget.order_by) filter (where wtarget.id is not null)", JSON.class)
+								.as("target_lang_words"))
 				.from(
 						ltrans,
 						wtrans,
@@ -716,7 +724,7 @@ public class LookupDbService extends AbstractDataDbService {
 	}
 
 	public boolean meaningRelationExists(Long meaningId1, Long meaningId2, String relationType) {
-	
+
 		return create
 				.select(field(DSL.count(MEANING_RELATION.ID).eq(1)).as("relation_exists"))
 				.from(MEANING_RELATION)
@@ -728,7 +736,7 @@ public class LookupDbService extends AbstractDataDbService {
 	}
 
 	public boolean lexemeRelationExists(Long lexemeId1, Long lexemeId2, String relationType) {
-	
+
 		return create
 				.select(field(DSL.count(LEX_RELATION.ID).eq(1)).as("relation_exists"))
 				.from(LEX_RELATION)
@@ -740,7 +748,7 @@ public class LookupDbService extends AbstractDataDbService {
 	}
 
 	public boolean wordRelationExists(Long wordId1, Long wordId2, String relationType) {
-	
+
 		return create
 				.select(field(DSL.count(WORD_RELATION.ID).eq(1)).as("relation_exists"))
 				.from(WORD_RELATION)
@@ -761,7 +769,7 @@ public class LookupDbService extends AbstractDataDbService {
 	}
 
 	public boolean wordLexemeExists(Long wordId, String datasetCode) {
-	
+
 		return create
 				.select(field(DSL.count(WORD.ID).gt(0)).as("word_lexeme_exists"))
 				.from(WORD)

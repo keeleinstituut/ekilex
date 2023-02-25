@@ -564,7 +564,7 @@ public class CudService extends AbstractCudService implements GlobalConstant, Pe
 		String value = textDecorationService.removeEkiElementMarkup(valuePrese);
 		Long meaningId = activityLogService.getOwnerId(definitionId, ActivityEntity.DEFINITION);
 		ActivityLogData activityLog = activityLogService.prepareActivityLog("updateDefinition", meaningId, ActivityOwner.MEANING, isManualEventOnUpdateEnabled);
-		cudDbService.updateDefinition(definitionId, value, valuePrese, lang, complexity, typeCode, isPublic);
+		cudDbService.updateDefinition(definitionId, value, valuePrese, lang, typeCode, complexity, isPublic);
 		activityLogService.createActivityLog(activityLog, definitionId, ActivityEntity.DEFINITION);
 	}
 
