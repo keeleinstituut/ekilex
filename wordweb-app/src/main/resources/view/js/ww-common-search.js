@@ -1,5 +1,4 @@
 $(document).ready(function() {
-
   var selectedHomonymItem = getSelectedHomonym();
   selectedHomonymItem.delay(500).queue(function() { }).trigger('click');
   selectedHomonymItem.addClass("animation-target");
@@ -110,7 +109,6 @@ function searchWordAutocomplete() {
   
   // if you remove "change" then virtual keyboard autocomplete does not work
   $(document).on("change input", "input[name='searchWord']", function () {
-
     if ($(".keyboard-search").hasClass("lang-open")) { // virtual keyboard enabled
       if ($('#KioskBoard-VirtualKeyboard').length) { // only run when virtual keyboard exist
         $(this).autocomplete(searchWordAutocompleteConfig).autocomplete("search");

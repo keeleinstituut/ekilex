@@ -99,7 +99,6 @@ $(document).ready(function () {
     keysEnterCanClose: true,
   });
 
-
   function keyboardOptionsCustom(keys){
 
     return {
@@ -128,7 +127,6 @@ $(document).ready(function () {
     };
   }
 
-
   function keyboardLang() { // select correct lang keys
     let lang = $(langBox + '#selected').attr('value');
     if (lang === 'estonia') {
@@ -140,7 +138,6 @@ $(document).ready(function () {
     }
   }
 
-
   function keyboardCallOut() {    // Open keyboard
     setTimeout(function () {
       window.document.querySelector(elementWhere).dispatchEvent(new Event('focus'));
@@ -151,7 +148,7 @@ $(document).ready(function () {
     clickSearchIfInputExists();
   });
 
-  function keyboardRun() {   
+  function keyboardRun() {
     keyboardLang();
     KioskBoard.customMerge(elementWhere, keyboardOptionsCustom(keys)); /* call out for KioskBoard with input element and options */
     keyboardCallOut(); // Open keyboard
@@ -166,11 +163,9 @@ $(document).ready(function () {
       $(langBox).hide();
       $(keyboardBtn).removeClass("active").attr('aria-pressed', false).hide();
       $(allKeyboardBtns).removeClass('lang-open');
-      KioskBoard.kill(elementWhere);
     } else {
       $(keyboardBtn).show();
     }
-
   });
   $(window).trigger('resize');
 
@@ -186,10 +181,8 @@ $(document).ready(function () {
     } else {
       langChange = false;
       KioskBoard.kill(elementWhere); /* remove keyboard */
-      
       $(langBox).fadeOut( "slow" );
       $(allKeyboardBtns).removeClass('lang-open');
-      
     }
   });
 
@@ -210,8 +203,5 @@ $(document).ready(function () {
     if (langChange) {
       keyboardRun();
     }
-
   });
-
-
 });

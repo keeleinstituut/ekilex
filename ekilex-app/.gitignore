@@ -3,7 +3,7 @@
 /.classpath
 /.project
 
-
+.sass-cache/
 .cache
 # Dependency directories
 node_modules/
