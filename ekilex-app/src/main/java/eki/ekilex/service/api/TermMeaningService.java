@@ -44,9 +44,15 @@ public class TermMeaningService extends AbstractService implements GlobalConstan
 	protected TextDecorationService textDecorationService;
 
 	@Transactional
-	public TermMeaning getTermMeaning(Long meaningId) {
+	public TermMeaning getTermMeaning(Long meaningId, String datasetCode) {
 
-		return termMeaningDbService.getTermMeaning(meaningId);
+		if (meaningId == null) {
+			return null;
+		}
+		if (StringUtils.isBlank(datasetCode)) {
+			return null;
+		}
+		return termMeaningDbService.getTermMeaning(meaningId, datasetCode);
 	}
 
 	@Transactional

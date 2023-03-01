@@ -136,7 +136,8 @@ public class EkilexPermissionEvaluator implements PermissionEvaluator, PermConst
 		if (crudRole.isSuperiorDataset()) {
 			return true;
 		}
-		return StringUtils.equals(crudRoleDataset, datasetCode);
+		boolean isGranted = StringUtils.equals(crudRoleDataset, datasetCode);
+		return isGranted;
 	}
 
 	// source crud

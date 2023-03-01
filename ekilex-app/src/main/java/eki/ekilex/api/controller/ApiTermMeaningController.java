@@ -25,14 +25,15 @@ public class ApiTermMeaningController extends AbstractApiController {
 	private TermMeaningService termMeaningService;
 
 	@Order(804)
-	@PreAuthorize("@permEval.isMeaningCrudGranted(principal, #crudRoleDataset, #meaningId)")
-	@GetMapping(API_SERVICES_URI + TERM_MEANING_URI + DETAILS_URI + "/{meaningId}")
+	@PreAuthorize("@permEval.isDatasetCrudGranted(principal, #crudRoleDataset, #datasetCode)")
+	@GetMapping(API_SERVICES_URI + TERM_MEANING_URI + DETAILS_URI + "/{meaningId}/{datasetCode}")
 	@ResponseBody
 	public TermMeaning getTermMeaning(
 			@RequestParam("crudRoleDataset") String crudRoleDataset,
-			@PathVariable("meaningId") Long meaningId) {
+			@PathVariable("meaningId") Long meaningId,
+			@PathVariable("datasetCode") String datasetCode) {
 
-		return termMeaningService.getTermMeaning(meaningId);
+		return termMeaningService.getTermMeaning(meaningId, datasetCode);
 	}
 
 	@Order(805)
