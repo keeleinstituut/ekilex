@@ -1817,7 +1817,7 @@
       <div th:each="forum : ${lexeme.meaning.forums}">
         <div th:replace="lexdialog :: edit_meaning_forum_dlg"></div>
         <div class="col hidden-buttons pr-5">
-          <div class="action-buttons-anchor">
+          <div class="action-buttons-anchor w-100">
             <span th:utext="${forum.valuePrese}"></span>
             <span class="ctxt" th:text="'[' + ${forum.modifiedBy} + ']'" th:if="${forum.modifiedBy != null}"></span>
             <span class="ctxt" th:text="'(' + ${#dates.format(forum.modifiedOn, 'dd.MM.yyyy')} + ')'" th:if="${forum.modifiedOn != null}"></span>
