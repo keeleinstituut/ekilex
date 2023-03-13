@@ -75,12 +75,7 @@
             <div th:utext="#{|label.form.found.detail.filtered.${isFiltered}|}">Ei leidnud midagi</div>
           </div>
           <span th:if="${#lists.isEmpty(wordsData.formMatchWordValues)}" class="h1 mt-4 ml-3 d-inline-block" th:utext="#{|label.word.not.found.detail.filtered.${isFiltered}|}">Ei leidnud midagi</span>
-          <h5 class="meaning-sub-heading">
-            <i class="fa fa-book mr-1 text-muted"></i>
-            <a th:href="${ekilexLimTermSearchUrl}" target="_blank">
-              <span th:text="#{limtermdata.title}">Terminivõrgustik</span>
-            </a>
-          </h5>
+          <!-- /Removed termsearch -->
         </th:block>
       </div>
     </main>
@@ -121,12 +116,7 @@
                     <div th:replace="term-details :: meaning-data"></div>
                   </section>
                 </th:block>
-                <h5 class="meaning-sub-heading">
-                  <i class="fa fa-book mr-1 text-muted"></i>
-                  <a th:href="${ekilexLimTermSearchUrl}" target="_blank">
-                    <span th:text="#{limtermdata.title}">Terminivõrgustik</span>
-                  </a>
-                </h5>
+                <!-- /Removed termsearch -->
                 <th:block th:if="${not #lists.isEmpty(wordData.limTermLexemes)}">
                   <section class="level-3-panel meaning-panel d-block" th:each="lexeme : ${wordData.limTermLexemes}">
                     <div th:replace="term-details :: meaning-data"></div>
