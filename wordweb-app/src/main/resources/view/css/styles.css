@@ -5140,15 +5140,6 @@ a.badge-dark:focus, a.badge-dark.focus {
   color: black;
 }
 
-@-webkit-keyframes progress-bar-stripes {
-  from {
-    background-position: 1rem 0;
-  }
-  to {
-    background-position: 0 0;
-  }
-}
-
 @keyframes progress-bar-stripes {
   from {
     background-position: 1rem 0;
@@ -5192,13 +5183,11 @@ a.badge-dark:focus, a.badge-dark.focus {
 }
 
 .progress-bar-animated {
-  -webkit-animation: progress-bar-stripes 1s linear infinite;
   animation: progress-bar-stripes 1s linear infinite;
 }
 
 @media (prefers-reduced-motion: reduce) {
   .progress-bar-animated {
-    -webkit-animation: none;
     animation: none;
   }
 }
@@ -6297,12 +6286,6 @@ a.close.disabled {
   text-align: center;
 }
 
-@-webkit-keyframes spinner-border {
-  to {
-    transform: rotate(360deg);
-  }
-}
-
 @keyframes spinner-border {
   to {
     transform: rotate(360deg);
@@ -6317,7 +6300,6 @@ a.close.disabled {
   border: 0.25em solid currentColor;
   border-right-color: transparent;
   border-radius: 50%;
-  -webkit-animation: spinner-border .75s linear infinite;
   animation: spinner-border .75s linear infinite;
 }
 
@@ -6325,15 +6307,6 @@ a.close.disabled {
   width: 1rem;
   height: 1rem;
   border-width: 0.2em;
-}
-
-@-webkit-keyframes spinner-grow {
-  0% {
-    transform: scale(0);
-  }
-  50% {
-    opacity: 1;
-  }
 }
 
 @keyframes spinner-grow {
@@ -6353,7 +6326,6 @@ a.close.disabled {
   background-color: currentColor;
   border-radius: 50%;
   opacity: 0;
-  -webkit-animation: spinner-grow .75s linear infinite;
   animation: spinner-grow .75s linear infinite;
 }
 
@@ -7470,7 +7442,6 @@ button.bg-dark:focus {
 }
 
 .position-sticky {
-  position: -webkit-sticky !important;
   position: sticky !important;
 }
 
@@ -7490,9 +7461,8 @@ button.bg-dark:focus {
   z-index: 1030;
 }
 
-@supports ((position: -webkit-sticky) or (position: sticky)) {
+@supports (position: sticky) {
   .sticky-top {
-    position: -webkit-sticky;
     position: sticky;
     top: 0;
     z-index: 1020;
@@ -9861,22 +9831,11 @@ a.text-dark:hover, a.text-dark:focus {
 }
 
 .fa-spin {
-  -webkit-animation: fa-spin 2s infinite linear;
   animation: fa-spin 2s infinite linear;
 }
 
 .fa-pulse {
-  -webkit-animation: fa-spin 1s infinite steps(8);
   animation: fa-spin 1s infinite steps(8);
-}
-
-@-webkit-keyframes fa-spin {
-  0% {
-    transform: rotate(0deg);
-  }
-  100% {
-    transform: rotate(360deg);
-  }
 }
 
 @keyframes fa-spin {
@@ -16081,7 +16040,6 @@ body.hidden-scroll {
   top: 50%;
   width: 40px;
   z-index: 1007;
-  -webkit-animation: pulsate 1s ease-out infinite;
   animation: pulsate 1s ease-out infinite;
 }
 
@@ -16095,20 +16053,6 @@ body.hidden-scroll {
 
 .sl-transition {
   transition: transform ease 200ms;
-}
-
-@-webkit-keyframes pulsate {
-  0% {
-    transform: scale(0.1);
-    opacity: 0.0;
-  }
-  50% {
-    opacity: 1;
-  }
-  100% {
-    transform: scale(1.2);
-    opacity: 0;
-  }
 }
 
 @keyframes pulsate {
@@ -16590,7 +16534,6 @@ body.hidden-scroll {
 }
 
 .dropdown-aside .dropdown-menu {
-  position: -webkit-sticky;
   position: sticky;
   top: 0;
   width: 100%;
@@ -17318,7 +17261,6 @@ body {
 }
 
 .header-container {
-  position: -webkit-sticky;
   position: sticky;
   top: 0;
   z-index: 2;
@@ -17567,20 +17509,7 @@ body {
 }
 
 .fade-target {
-  -webkit-animation: fade 750ms linear;
   animation: fade 750ms linear;
-}
-
-@-webkit-keyframes fade {
-  0% {
-    opacity: 0;
-  }
-  10% {
-    opacity: 0;
-  }
-  100% {
-    opacity: 1;
-  }
 }
 
 @keyframes fade {
@@ -17630,31 +17559,7 @@ body {
     max-width: 31.25rem !important;
   }
   .animation-target {
-    -webkit-animation: animation 1250ms linear both;
     animation: animation 1250ms linear both;
-  }
-  @-webkit-keyframes animation {
-    0% {
-      transform: matrix3d(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1);
-    }
-    70% {
-      transform: matrix3d(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1);
-    }
-    75% {
-      transform: matrix3d(1.05, 0, 0, 0, 0, 1.05, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1);
-    }
-    80% {
-      transform: matrix3d(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1);
-    }
-    85% {
-      transform: matrix3d(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1);
-    }
-    90% {
-      transform: matrix3d(1.05, 0, 0, 0, 0, 1.05, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1);
-    }
-    100% {
-      transform: matrix3d(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1);
-    }
   }
   @keyframes animation {
     0% {
@@ -17970,7 +17875,6 @@ body {
 }
 
 .search-wrap {
-  position: -webkit-sticky;
   position: sticky;
   top: 70px;
   z-index: 111;
@@ -18839,7 +18743,6 @@ body.has-wordgame .header-container {
 
 .wordgame__options-wrapper {
   display: grid;
-  max-width: -webkit-max-content;
   max-width: -moz-max-content;
   max-width: max-content;
   gap: 8px;
@@ -19012,7 +18915,6 @@ body.has-wordgame .header-container {
   border-right: 1px var(--wordgame-gray) solid;
   height: calc(100vh - 79px);
   overflow-y: scroll;
-  position: -webkit-sticky;
   position: sticky;
   top: 79px;
 }
@@ -19925,26 +19827,7 @@ body.has-wordgame .header-container {
 }
 
 .testanimation {
-  -webkit-animation: testhighlight 8s forwards ease-out;
   animation: testhighlight 8s forwards ease-out;
-}
-
-@-webkit-keyframes testhighlight {
-  0% {
-    box-shadow: 0px 0px 0px 0px #00892e;
-  }
-  10% {
-    box-shadow: 0px 0px 16px 8px #00892e;
-  }
-  50% {
-    box-shadow: 0px 0px 16px 8px #00892e;
-  }
-  90% {
-    box-shadow: 0px 0px 16px 8px #00892e;
-  }
-  100% {
-    box-shadow: 0px 0px 0px 0px #00892e;
-  }
 }
 
 @keyframes testhighlight {
@@ -19978,7 +19861,6 @@ body.has-wordgame .header-container {
 @media (max-width: 768px) {
   .wordgame__top-mobile-menu {
     display: block;
-    position: -webkit-sticky;
     position: sticky;
     top: 64px;
     z-index: 2;
@@ -20246,7 +20128,6 @@ eki-shy {
 }
 
 .learn-container-menu {
-  position: -webkit-sticky;
   position: sticky;
   top: 80px;
   height: 100%;
@@ -20263,7 +20144,6 @@ eki-shy {
 
 @media (max-width: 767.98px) {
   .learn-container-menu {
-    position: -webkit-sticky;
     position: sticky;
     top: 65px;
     z-index: 10;
@@ -20619,7 +20499,6 @@ eki-shy {
 
 @media (min-width: 768px) {
   .sticky-side-nav {
-    position: -webkit-sticky;
     position: sticky;
     top: 80px;
     max-height: calc(100vh - 100px);

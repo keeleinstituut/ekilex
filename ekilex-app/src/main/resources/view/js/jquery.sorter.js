@@ -39,6 +39,20 @@ class Sorter {
           })
         }
       });
+      this.main.find('.third-group-items').sortable({
+        items: '.sortable-third-group',
+        placeholder: "ui-state-highlight",
+        cancel: '',
+        handle: this.handle,
+        tolerance: 'pointer',
+        start: function(event, ui) {
+          ui.placeholder.css({
+            display: 'inline-block',
+            width: ui.item.outerWidth(),
+            height: ui.item.outerHeight(),
+          })
+        }
+      });
       this.bindSynonyms();
     } else {
       this.main.sortable({
@@ -158,6 +172,10 @@ class Sorter {
       meaningRelSynOriginalOrder.push($(this).attr('data-orderby'));
     });
 
+    main.find('.sortable-third-group').each(function() {
+      meaningRelSynOriginalOrder.push($(this).attr('data-orderby'));
+    });
+
     main.on('sortupdate', function(event, ui) {
       setTimeout(function() {
         const orderingBtn = ui.item;
@@ -186,6 +204,17 @@ class Sorter {
             const elem = $(this);
             data.items.push({
               id: elem.attr('data-relation-id'),
+              orderby: meaningRelSynOriginalOrder[index],
+              text: elem.find('button:first').text(),
+            });
+          });
+        }
+
+        if (opCode === 'meaning_relation') {
+          main.find('.sortable-third-group').each(function(index) {
+            const elem = $(this);
+            data.items.push({
+              id: elem.attr('data-id'),
               orderby: meaningRelSynOriginalOrder[index],
               text: elem.find('button:first').text(),
             });
@@ -265,10 +294,13 @@ class Sorter {
         $this.addClass('sortable-first-group');
       } else if (synType === 'MEANING_REL') {
         $this.addClass('sortable-second-group');
+      } else if (synType === 'INEXACT_SYN_MEANING_REL') {
+        $this.addClass('sortable-third-group');
       }
     });
     this.main.find('.sortable-first-group').wrapAll('<span class="first-group-items">');
     this.main.find('.sortable-second-group').wrapAll('<span class="second-group-items">');
+    this.main.find('.sortable-third-group').wrapAll('<span class="third-group-items">');
   }
 
   initialize() {
