@@ -33,7 +33,8 @@ function initSourceNameAutocomplete(dlg) {
 		select: function(event, ui) {
 			if (ui.item) {
 				dlg.find("input[name='searchFilter']").val(ui.item.value);
-				dlg.find('button[type="submit"]').click();
+				// Using data attribute as an additional selector to avoid also pressing the submit button that adds selection
+				dlg.find('button[type="submit"][data-submit-id="source_search_form"]').click();
 			}
 			return false;
 		},
