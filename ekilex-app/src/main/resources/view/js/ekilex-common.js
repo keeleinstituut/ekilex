@@ -680,9 +680,13 @@ function openAlertDlg(alertMessage, smallAlert = true, showAsAlert = true) {
 			addCss.addClass('border-color-green-400');
 		}
 		alertDlg.show();
-		setTimeout(function () { alertDlg.hide(); }, 5000);
+
+		if(success) {
+			setTimeout(function () { alertDlg.hide(); }, 5000);
+		}else {
+			setTimeout(function () { alertDlg.hide(); }, 7000);
+		}
 	} else {
-	
 		alertDlg.modal('show');
 		alertDlg.find('.modal-footer button').focus();
 	}
