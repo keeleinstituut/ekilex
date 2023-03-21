@@ -24,14 +24,14 @@
      inkscape:pagecheckerboard="0"
      showgrid="false"
      inkscape:zoom="3.6528371"
-     inkscape:cx="296.61876"
-     inkscape:cy="281.69885"
+     inkscape:cx="222.97737"
+     inkscape:cy="146.4615"
      inkscape:window-width="1440"
      inkscape:window-height="900"
      inkscape:window-x="0"
      inkscape:window-y="0"
      inkscape:window-maximized="0"
-     inkscape:current-layer="data-label=käsi"
+     inkscape:current-layer="Keha-mäpitud"
      inkscape:showpageshadow="2"
      inkscape:deskcolor="#505050"
      showguides="false" />
@@ -634,11 +634,12 @@
           <circle
              id="data-circle-käsi"
              opacity="0.2"
-             cx="207"
-             cy="211"
-             r="25"
+             cx="229.5"
+             cy="170.53523"
              fill="#687887"
-             inkscape:label="data-circle-käsi" />
+             inkscape:label="data-circle-käsi"
+             style="stroke-width:1.89998"
+             r="47.5" />
           <circle
              id="data-circle-jalg"
              opacity="0.2"
