@@ -1205,18 +1205,13 @@ function loadDetails(wordOrMeaningId, task, lastWordOrMeaningId) {
 		let detailsDiv = $('#details-area');
 		const resultColumn = $('#resultColumn:first');
 		const dataObject = $(data);
-
 		if (!task) {
 			if (detailsDiv.length === 0) {
 				detailsDiv = $('<div data-rel="details-area"></div>');
 				resultColumn.find('.scrollable-area').append(detailsDiv);
 			}
+			PanelBreadcrumbs.removeAllButFirstData();
 			resultColumn.find('[data-rel="details-area"]').slice(1).remove();
-			const breadCrumbs = getBreadcrumbsData(detailsDiv, {
-				id: parseInt(wordOrMeaningId),
-				word: dataObject.attr('data-word'),
-			});
-			dataObject.attr('data-breadcrumbs', JSON.stringify(breadCrumbs));
 			detailsDiv.replaceWith(dataObject[0].outerHTML);
 			detailsDiv = $('#details-area');
 			ScrollStore.loadPrevScroll();
@@ -1233,22 +1228,12 @@ function loadDetails(wordOrMeaningId, task, lastWordOrMeaningId) {
 					&& retainScrollPosition 
 					? contentDiv[0].scrollTop 
 					: 0;
-				const breadCrumbs = getBreadcrumbsData(detailsDiv, {
-					id: parseInt(wordOrMeaningId),
-					word: dataObject.attr('data-word'),
-				});
-				dataObject.attr('data-breadcrumbs', JSON.stringify(breadCrumbs));
 				const newDiv = $(dataObject[0].outerHTML);
 				detailsDiv.replaceWith(newDiv);
 				detailsDiv = newDiv;
 				scrollDetails(detailsDiv, scrollPosition);
 			} else {
-				const breadCrumbs = getBreadcrumbsData(dataObject, {
-					id: parseInt(wordOrMeaningId),
-					word: dataObject.attr('data-word'),
-				});
-				dataObject.attr('data-breadcrumbs', JSON.stringify(breadCrumbs));
-				detailsDiv = $(dataObject[0].outerHTML);
+				detailsDiv = $(dataObject?.[0]?.outerHTML);
 				resultColumn.find('.scrollable-area').append(detailsDiv);
 			}
 		}
@@ -1386,14 +1371,10 @@ function createCallback(data, optionalArgs) {
  * Class for storing scroll value
  */
 class ScrollStore {
-  constructor() {
-		// We currently don't have class variable support
-		// This is a way to mimick that
-		this.constructor.prevScrollValue = 0;
-  }
+	prevScrollValue = 0;
 
 	static setPrevScroll(scroll) {
-		this.constructor.prevScrollValue = scroll;
+		this.prevScrollValue = scroll;
 	};
 
 	static getContentScroll() {
@@ -1411,12 +1392,12 @@ class ScrollStore {
 	}
 
 	static loadPrevScroll() {
-		this.setContentScroll(this.constructor.prevScrollValue);
-		this.constructor.prevScrollValue = 0;
+		this.setContentScroll(this.prevScrollValue);
+		this.prevScrollValue = 0;
 	}
 
 	static saveActiveScroll() {
-		this.constructor.prevScrollValue = this.getContentScroll();
+		this.prevScrollValue = this.getContentScroll();
 	}
 }
 

@@ -362,6 +362,8 @@ $.fn.searchFormSubmitPlugin = function() {
 	return this.each(function() {
 		const obj = $(this);
 		obj.on('submit', function(e) {
+			// Save current data before page is changed
+			PanelBreadcrumbs.saveCurrentData();
 			openWaitDlg();
 			const currentSearchMode = obj.find('#searchMode').val();
 			const isSearchFilterValid = obj.find('#isSearchFilterValid').val();

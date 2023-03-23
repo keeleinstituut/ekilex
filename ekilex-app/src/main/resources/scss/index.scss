@@ -67,22 +67,26 @@
 .breadcrumbs {
   line-height: 32px;
   border-top: 1px solid $gray-200;
-  padding:0 8px;
+  // padding:0 8px;
   flex-shrink: 0;
-  overflow-x: auto;
-  overflow-y: hidden;
-  white-space: nowrap;
-
+  position: relative;
   ul, li {
     list-style: none;
     padding: 0;
     margin: 0;
   }
+
   ul {
     display: flex;
+    overflow-x: auto;
+    overflow-y: hidden;
+    white-space: nowrap;
+    margin: 0 1px;
+    padding: 0 8px;
   }
+
   li {
-    &:after{
+    &:not(:first-child):not(:last-child)::after{
       content: '';
       font-family: FontAwesome;
       display: inline-block;
@@ -98,16 +102,52 @@
       padding: 0;
       margin: 0;
       background: none;
+      &[data-current="true"] {
+        pointer-events: none;
+        color: $gray-400;
+      }
     }
     &:last-child {
       &:after {
         display: none;
       }
       padding-right: 20px;
-      pointer-events: none;
-      button {
-        color: $gray-400;
-      }
+    }
+  }
+
+  &__left-dots,
+  &__right-dots {
+    width: 12px;
+    color: $gray-breadcrumbs-dots;
+    font-size: 1rem;
+    display: none;
+    position: absolute;
+  }
+
+  &--right-scrollable {
+    & .breadcrumbs__right-dots {
+      display: block;
+      right: 1px;
+      padding-right: 8px;
+      background-color: white;
+      width: 20px;
+      padding-left: 2px;
+    }
+
+    & ul {
+      padding-right: 12px;
+    }
+  }
+  &--left-scrollable {
+    & .breadcrumbs__left-dots {
+      display: block;
+      left: 0;
+      background-color: white;
+      width: 22px;
+      padding-left: 6px;
+    }
+    & ul {
+      padding-left: 12px;
     }
   }
 }

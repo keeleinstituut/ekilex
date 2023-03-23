@@ -147,10 +147,6 @@
                   </div>
                 </th:block>
               </div>
-              <div th:id="${'breadcrumbs-' + wordId}" class="breadcrumbs" data-plugin="panelBreadcrumbs">
-                <ul>
-                </ul>
-              </div>
             </div>
             <div class="col-4 border-left border-light h-100 overflow-auto" id="toolsColumn">
               <div class="resize-area" data-plugin="panelResize"></div>
@@ -494,6 +490,12 @@
                 </div>
               </div>
             </div>
+          </div>
+          <div class="breadcrumbs" data-plugin="panelBreadcrumbs">
+            <ul>
+              <li><div class="breadcrumbs__left-dots">...</div></li>
+              <li><div class="breadcrumbs__right-dots">...</div></li>
+            </ul>
           </div>
         </div>
       </div>

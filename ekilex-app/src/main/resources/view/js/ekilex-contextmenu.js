@@ -195,7 +195,15 @@ class ContextMenu {
   }
 
   onClosepanel() {
-    $(`#details-area[data-id="${this.elementId}"]`).animate({
+    let detailsDiv = this?.element?.closest(`#details-area[data-id="${this.elementId}"]`);
+    const detailsDivParent = detailsDiv?.parent();
+    const detailsDivIndex = detailsDivParent?.children()?.index(detailsDiv);
+    // Remove data for the panel that is about to be removed
+    PanelBreadcrumbs.removeDataByIndex(detailsDivIndex);
+    if (!detailsDiv?.length) {
+      detailsDiv = $(`#details-area[data-id="${this.elementId}"]`);
+    }
+    detailsDiv.animate({
       opacity: 0,
     }, 250, function() {
       $(this).remove();
