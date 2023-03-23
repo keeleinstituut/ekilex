@@ -1,6 +1,6 @@
 module.exports = function (grunt) {
 
-	const browserList = ['opera >= 27', 'ff >= 45', 'chrome >= 45', 'ie >= 11'];
+	const browserList = ['opera >= 27', 'ff >= 45', 'chrome >= 45'];
 
 	var concatFile = 'src/main/resources/view/js/main.js';
 	grunt.task.registerTask("configureBabel", "configures babel options", function() {
@@ -97,6 +97,7 @@ module.exports = function (grunt) {
 		babel: {
 			options: {
 				presets: ['@babel/preset-env'],
+				plugins: ['@babel/plugin-proposal-class-properties'],
 				comments: false,
 				compact: true,
 				sourceMap: true,
