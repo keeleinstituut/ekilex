@@ -27,14 +27,14 @@
   }
 
   li {
-    &:not(:first-child):not(:last-child)::after{
+    &:not(:first-child):not(:last-child):not(.breadcrumbs--last)::after{
       content: '';
       font-family: FontAwesome;
       display: inline-block;
       vertical-align: middle;
       margin:0 8px;
     }
-    button {
+    button[data-id] {
       font-size: 12px;
       line-height: 15px;
       color: $gray-900;
@@ -53,6 +53,18 @@
         display: none;
       }
       padding-right: 20px;
+    }
+  }
+
+  &__dots {
+    appearance: none;
+    border: none;
+    padding: 0;
+    margin: 0;
+    background: none;
+    height: 32px;
+    &:focus {
+      outline-style: auto;
     }
   }
 

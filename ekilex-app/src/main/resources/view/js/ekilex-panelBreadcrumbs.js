@@ -2,6 +2,8 @@ class PanelBreadcrumbs {
   // Initialize data directly from storage if possible
   static breadcrumbsData = this.getSavedData();
   static activeId = {};
+  static scrollIntervalInstance = undefined;
+  static prevScrollValue = undefined;
   static init(breadcrumbs) {
     const detailsDiv = breadcrumbs?.closest("#details-area");
     const detailsDivParent = detailsDiv?.parent();
@@ -21,11 +23,12 @@ class PanelBreadcrumbs {
   }
 
   static addBreadcrumbs(breadcrumbs, index) {
-    const output = this?.breadcrumbsData?.[viewType]?.[index]
-      ?.map((value) => {
+    const data = this?.breadcrumbsData?.[viewType]?.[index];
+    const output = data
+      ?.map((value, i) => {
         // Use data-current to identify the active word
         return `
-      <li>
+      <li ${i === data?.length - 1 ? 'class="breadcrumbs--last"' : ''}>
         <button
           href="javascript:void(0);"
           data-current="${value?.id === this?.activeId?.[index]}"
@@ -45,7 +48,7 @@ class PanelBreadcrumbs {
 
   static addClickHandler(breadcrumbs) {
     // Same click handler as old iteration
-    breadcrumbs.find("button").on("click", (e) => {
+    breadcrumbs.find("button[data-id]").on("click", (e) => {
       const button = $(e?.target);
       const wordId = button.data("id");
       const behaviour = button.data("behaviour") || false;
@@ -76,7 +79,7 @@ class PanelBreadcrumbs {
     if (breadcrumbsScrollWidth > parentWidth) {
       breadcrumbsList.on("scroll", () => {
         // Recalculate as the sizes change
-        const maxScroll = breadcrumbsList?.prop('scrollWidth') - breadcrumbsParent?.outerWidth();
+        const maxScroll = breadcrumbsList?.prop('scrollWidth') - breadcrumbsList?.prop('clientWidth');
         const currentScroll = breadcrumbsList?.scrollLeft();
         const areLeftDotsVisible = currentScroll > 0;
         const areRightDotsVisible = currentScroll < maxScroll;
@@ -91,8 +94,9 @@ class PanelBreadcrumbs {
           breadcrumbs?.removeClass("breadcrumbs--right-scrollable");
         }
       });
-      // Trigger scroll once to start showing dots right away
-      breadcrumbsList.trigger('scroll');
+      // Scroll to end, add the scroll to end of JS event queue
+      setTimeout(() => breadcrumbsList?.scrollLeft(99999999), 0);
+      this.addScrollButtonHandlers(breadcrumbsList);
     }
   }
 
@@ -163,6 +167,42 @@ class PanelBreadcrumbs {
     }
     this.breadcrumbsData[viewType][index].push({ id, word });
     this.saveCurrentData();
+  }
+
+  static addScrollButtonHandlers(breadcrumbsList) {
+    breadcrumbsList?.on('mousedown', '.breadcrumbs__dots', (e) => {
+      // Clear existing interval on new click
+      if (this.scrollIntervalInstance !== undefined) {
+        this.clearScrollInterval();
+      }
+      // Get the current event target
+      const clickTarget = $(e?.target)
+      // Interval scrolling while mouse is held down
+      this.scrollIntervalInstance = setInterval(() => {
+        const currentScrollValue = breadcrumbsList?.scrollLeft();
+        // Get the scroll amount based on direction attribute
+        const scrollAmount = clickTarget?.data('scroll-direction') === 'left' ? -1 : 1;
+        const newScrollValue = currentScrollValue + scrollAmount;
+        const maxScroll = breadcrumbsList?.prop('scrollWidth') - breadcrumbsList?.prop('clientWidth');
+        // Stop interval if end was reached
+        if (newScrollValue !== maxScroll) {
+          breadcrumbsList?.scrollLeft(currentScrollValue + scrollAmount);
+        } else {
+          this.clearScrollInterval();
+        }
+      }, 50);
+    });
+    // Backup event listener to clear interval
+    breadcrumbsList?.on('mouseup', '.breadcrumbs__dots', () => {
+      this.clearScrollInterval();
+    })
+  }
+
+  static clearScrollInterval() {
+    if (this.scrollIntervalInstance) {
+      clearInterval(this.scrollIntervalInstance);
+      this.scrollIntervalInstance = undefined;
+    }
   }
 }
 
