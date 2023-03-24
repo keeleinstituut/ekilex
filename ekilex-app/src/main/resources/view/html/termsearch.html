@@ -66,11 +66,12 @@
     </div>
   </div>
   <th:block th:fragment="details" th:if="${meaning != null}">
+    <!--/* Temporary data-word attribute, the word should be the first word from meaning */-->
     <div style="height:100%;"
          th:data-id="${meaningId}"
          id="details-area"
          data-rel="details-area"
-         th:data-word="${meaningId}"
+         th:data-word="${meaning.lexemeLangGroups.get(0).lexemes.get(0).word.wordValue}"
          th:with="
            isMeaningLexemeCrudGranted=${#vars.meaning.subGrant},
            isMeaningAnyLexemeCrudGranted=${#vars.meaning.anyGrant}">
@@ -197,6 +198,12 @@
           </div>
         </th:block>
         <div th:replace="common :: #meaningActivityLogDlg"></div>
+        <div class="breadcrumbs breadcrumbs--term-view" data-plugin="panelBreadcrumbs">
+          <ul>
+            <li><div class="breadcrumbs__left-dots">...</div></li>
+            <li><div class="breadcrumbs__right-dots">...</div></li>
+          </ul>
+        </div>
       </div>
       <script th:replace="common :: confirmations"></script>
       <script>

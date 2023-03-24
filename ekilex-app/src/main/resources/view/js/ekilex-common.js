@@ -1175,6 +1175,7 @@ function loadDetails(wordOrMeaningId, task, lastWordOrMeaningId) {
 	$("#select_wait_" + wordOrMeaningId).show();
 	if (!task) {
 		$('#results_div .list-group-item').removeClass('active');
+		PanelBreadcrumbs.removeAllButFirstData();
 	}
 	openWaitDlg();
 	console.log("viewType: " + viewType);
@@ -1197,11 +1198,8 @@ function loadDetails(wordOrMeaningId, task, lastWordOrMeaningId) {
 			}
 			break;
 	}
-
 	$.get(detailsUrl).done(function(data) {
-
 		closeWaitDlg();
-
 		let detailsDiv = $('#details-area');
 		const resultColumn = $('#resultColumn:first');
 		const dataObject = $(data);
@@ -1210,7 +1208,6 @@ function loadDetails(wordOrMeaningId, task, lastWordOrMeaningId) {
 				detailsDiv = $('<div data-rel="details-area"></div>');
 				resultColumn.find('.scrollable-area').append(detailsDiv);
 			}
-			PanelBreadcrumbs.removeAllButFirstData();
 			resultColumn.find('[data-rel="details-area"]').slice(1).remove();
 			detailsDiv.replaceWith(dataObject[0].outerHTML);
 			detailsDiv = $('#details-area');
