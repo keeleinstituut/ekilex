@@ -3,7 +3,6 @@ class PanelBreadcrumbs {
   static breadcrumbsData = this.getSavedData();
   static activeId = {};
   static scrollIntervalInstance = undefined;
-  static prevScrollValue = undefined;
   static init(breadcrumbs) {
     const detailsDiv = breadcrumbs?.closest("#details-area");
     const detailsDivParent = detailsDiv?.parent();
