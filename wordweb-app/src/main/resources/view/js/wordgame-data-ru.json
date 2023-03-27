@@ -2947,7 +2947,7 @@
     "order": 16,
     "sub_category": "Продукты питания",
     "type": 2,
-    "word": "сосиска",
+    "word": "сосиски",
     "wordId": 500911,
     "word_link": "https://sonaveeb.ee/search/lite/dlall/сосиска/1"
   },
@@ -15118,6 +15118,24 @@
     "word": "десять",
     "wordId": 304626,
     "word_link": "https://sonaveeb.ee/search/lite/dlall/десять/1"
+  },
+  {
+    "A1_A2": "no",
+    "A1_B1": "no",
+    "audio_link": "",
+    "category": "Части тела",
+    "ee_category": "Kehaosad",
+    "example_1": "",
+    "example_2": "",
+    "example_3": "",
+    "image_link": "",
+    "multicard_filename": "keha-ru-B",
+    "order": 1,
+    "sub_category": "тело",
+    "type": 1,
+    "word": "таз",
+    "wordId": 300331,
+    "word_link": "https://sonaveeb.ee/search/unif/dlall/dsall/таз/1"
   },
   {
     "A1_A2": "yes",
