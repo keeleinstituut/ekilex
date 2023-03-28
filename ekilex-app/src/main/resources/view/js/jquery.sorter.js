@@ -301,6 +301,7 @@ class Sorter {
     this.main.find('.sortable-first-group').wrapAll('<span class="first-group-items">');
     this.main.find('.sortable-second-group').wrapAll('<span class="second-group-items">');
     this.main.find('.sortable-third-group').wrapAll('<span class="third-group-items">');
+    this.main.find('.third-group-items').prepend('<i class="less-than-equal-icon" aria-hidden="true"></i>');
   }
 
   initialize() {

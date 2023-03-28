@@ -135,7 +135,7 @@
       <span th:unless="${lexeme.wordLang == synonymLangGroup.lang}" th:text="${viewUtil.getLangIso2(synonymLangGroup.lang)}" class="mr-2"></span>
       <div data-plugin="sorter" data-sorter:type="syn" data-sorter:handle=".syn-handle">
         <span th:each="syn,synIter : ${synonymLangGroup.synonyms}"
-              class="hidden-buttons draggable-syn-rel droppable-syn-rel do-refresh"
+              class="hidden-buttons draggable-syn-rel droppable-syn-rel do-refresh mw-100"
               th:data-lexeme-id="${lexeme.lexemeId}"
               th:data-orderby="${syn.orderBy}"
               th:data-relation-id="${syn.relationId}"
@@ -147,13 +147,16 @@
             <th:block th:each="synWord, synWordIter : ${syn.words}">
               <input type="hidden" class="relation-meaning-id" th:value="${syn.meaningId}"/>
               <input type="hidden" name="synword-lexeme-id" th:value="${synWord.lexemeId}"/>
-              <span class="syn-handle">
+                <a th:href="@{'/lexsearch?id=' + ${synWord.wordId}}" th:utext="${viewUtil.getWordValueMarkup(synWord)}" th:styleappend="${isMeaningRelSyn ? 'color: #00874F' : 'color: #005aa9'}" target="_blank" rel="noopener noreferrer"></a>
                 <small class="font-weight-bold" th:text="${synWord.lexemeLevels}" th:if="${not #strings.isEmpty(synWord.lexemeLevels)}"></small>
-                <span th:utext="${viewUtil.getWordValueMarkup(synWord)}" th:styleappend="${isMeaningRelSyn ? 'color: #00874F' : 'color: #005aa9'}"></span>
                 <sup th:if="${synWord.homonymsExist}" th:text="${synWord.homonymNr}"></sup>
                 <small th:each="registerCode,regIter : ${synWord.lexemeRegisterCodes}" th:text="${registerCode + (regIter.last ? '' : ', ')}"></small>
                 <small th:if="${synWordIter.last}" th:text="${'[' + viewUtil.getFormattedWeight(syn.weight) + ']'}"></small>
-              </span>
+                <th:block th:if="${not isMeaningRelSyn}">
+                  <span class="syn-handle handle drag-handle text-muted p-0">
+                    <i class="fa fa-arrows text-muted" aria-hidden="true"></i>
+                  </span>
+                </th:block>
               <span th:unless="${synWordIter.last}">,</span>
             </th:block>
             <th:block th:if="${isMeaningRelSyn}">
@@ -172,6 +175,9 @@
                       sec:authorize="#vars.lexeme.crudGrant">
                 <i class="fa fa-remove" aria-hidden="true" data-toggle="tooltip" th:title="#{syn.delete.meaning.rel}"></i>
               </button>
+              <span class="syn-handle handle drag-handle text-muted p-0">
+                <i class="fa fa-arrows text-muted" aria-hidden="true"></i>
+              </span>
             </th:block>
             <span th:unless="${synIter.last}">|</span>
           </span>

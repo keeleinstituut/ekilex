@@ -143,7 +143,7 @@
                   <small th:each="registerCode,regIter : ${synWord.lexemeRegisterCodes}" th:text="${registerCode + (regIter.last ? '' : ', ')}"></small>
                   <small th:if="${synWordIter.last}" th:text="${'[' + viewUtil.getFormattedWeight(syn.weight) + ']'}"></small>
                   <th:block th:if="${not isMeaningWordSyn}">
-                    <span class="syn-handle handle drag-handle text-muted p-0 badge">
+                    <span class="syn-handle handle drag-handle text-muted p-0">
                       <i class="fa fa-arrows text-muted" aria-hidden="true"></i>
                     </span>
                   </th>
@@ -178,7 +178,7 @@
                           sec:authorize="#vars.lexeme.crudGrant">
                     <i class="fa fa-remove" aria-hidden="true" data-toggle="tooltip" th:title="#{syn.delete.syn.lexeme}"></i>
                   </button>
-                  <span class="syn-handle handle drag-handle text-muted p-0 badge">
+                  <span class="syn-handle handle drag-handle text-muted p-0">
                     <i class="fa fa-arrows text-muted" aria-hidden="true"></i>
                   </span>
                 </th:block>
@@ -190,13 +190,13 @@
           <th:block th:if="${synonymLangGroupIter.first && not #lists.isEmpty(synonymLangGroup.inexactSynonyms)}">
             <th:block th:each="inexactSyn, inexactSynIter : ${synonymLangGroup.inexactSynonyms}">
               <span 
-                class="hidden-buttons draggable-syn-rel droppable-syn-rel do-refresh" 
+                class=" draggable-syn-rel droppable-syn-rel do-refresh" 
                 name="temp-for-ordering" 
                 th:data-id="${inexactSyn.relationId}" 
                 th:data-orderby="${inexactSyn.orderBy}" 
                 data-op-code="meaning_relation" 
                 data-syn-type="INEXACT_SYN_MEANING_REL">
-                <span class="hidden-buttons text-nowrap">
+                <span class="text-nowrap">
                   <a th:href="@{'/lexsearch?id=' + ${inexactSyn.wordId}}" th:text="${inexactSyn.translationLangWordValue}" target="_blank"></a>
                   (
                   <th:block th:each="targetLangWord, targetLangWordIter : ${inexactSyn.targetLangWords}" th:if="${not #lists.isEmpty(inexactSyn.targetLangWords)}">
@@ -207,7 +207,7 @@
                     <span th:text="${inexactSyn.inexactDefinitionValue}"></span>
                   </th:block>
                   )
-                  <span class="syn-handle handle drag-handle text-muted p-0 badge">
+                  <span class="syn-handle handle drag-handle text-muted p-0">
                     <i class="fa fa-arrows text-muted" aria-hidden="true"></i>
                   </span>
                   <span th:unless="${inexactSynIter.last}">|</span>
