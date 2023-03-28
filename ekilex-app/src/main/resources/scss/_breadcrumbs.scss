@@ -46,6 +46,7 @@
       &[data-current="true"] {
         pointer-events: none;
         color: $gray-400;
+        font-weight: 700;
       }
     }
     &:last-child {
