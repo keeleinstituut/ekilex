@@ -189,7 +189,7 @@ class PanelBreadcrumbs {
         } else {
           this.clearScrollInterval();
         }
-      }, 50);
+      }, 25);
     });
     // Backup event listener to clear interval
     breadcrumbsList?.on('mouseup', '.breadcrumbs__dots', () => {
