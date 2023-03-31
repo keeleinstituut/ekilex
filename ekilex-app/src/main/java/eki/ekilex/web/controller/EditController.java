@@ -618,9 +618,6 @@ public class EditController extends AbstractMutableDataPageController {
 		case "meaning_relation":
 			response = cudService.deleteMeaningRelation(id, response, isManualEventOnUpdateEnabled);
 			break;
-		case "syn_meaning_relation":
-			response = cudService.deleteMeaningRelation(id, response, isManualEventOnUpdateEnabled);
-			break;
 		case "word_gender":
 			cudService.updateWordGenderWithDuplication(id, null, user, isManualEventOnUpdateEnabled);
 			break;
