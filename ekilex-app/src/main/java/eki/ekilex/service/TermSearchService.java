@@ -252,7 +252,7 @@ public class TermSearchService extends AbstractSearchService {
 		List<MeaningRelation> meaningRelations = commonDataDbService.getMeaningRelations(meaningId, meaningWordPreferredOrderDatasetCodes, CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
 		List<List<MeaningRelation>> viewRelations = conversionUtil.composeViewMeaningRelations(meaningRelations, userProfile, null, languagesOrder);
 		List<String> meaningTags = commonDataDbService.getMeaningTags(meaningId);
-
+		String meaningFirstWordValue = termSearchDbService.getMeaningFirstWordValueOrderedByLang(meaningId, searchDatasetsRestriction);
 		List<Long> lexemeIds = meaning.getLexemeIds();
 		List<Lexeme> lexemes = new ArrayList<>();
 
@@ -320,6 +320,7 @@ public class TermSearchService extends AbstractSearchService {
 		meaning.setViewRelations(viewRelations);
 		meaning.setTags(meaningTags);
 		meaning.setActiveTagComplete(isActiveTagComplete);
+		meaning.setFirstWordValue(meaningFirstWordValue);
 
 		return meaning;
 	}
@@ -328,7 +329,7 @@ public class TermSearchService extends AbstractSearchService {
 	public String getMeaningFirstWordValue(Long meaningId, List<String> datasets) {
 	
 		SearchDatasetsRestriction searchDatasetsRestriction = composeDatasetsRestriction(datasets);
-		return termSearchDbService.getMeaningFirstWord(meaningId, searchDatasetsRestriction);
+		return termSearchDbService.getMeaningFirstWordValue(meaningId, searchDatasetsRestriction);
 	}
 
 	private Lexeme composeLexeme(DatasetPermission userRole, Long lexemeId) {

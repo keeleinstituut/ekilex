@@ -21,6 +21,8 @@ public class Meaning extends AbstractCrudEntity {
 
 	private List<String> lexemeDatasetCodes;
 
+	private String firstWordValue;
+
 	private List<OrderedClassifier> domains;
 
 	private List<Classifier> semanticTypes;
@@ -107,6 +109,14 @@ public class Meaning extends AbstractCrudEntity {
 
 	public void setLexemeDatasetCodes(List<String> lexemeDatasetCodes) {
 		this.lexemeDatasetCodes = lexemeDatasetCodes;
+	}
+
+	public String getFirstWordValue() {
+		return firstWordValue;
+	}
+
+	public void setFirstWordValue(String firstWordValue) {
+		this.firstWordValue = firstWordValue;
 	}
 
 	public List<OrderedClassifier> getDomains() {

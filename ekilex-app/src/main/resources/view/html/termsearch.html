@@ -66,12 +66,11 @@
     </div>
   </div>
   <th:block th:fragment="details" th:if="${meaning != null}">
-    <!--/* Temporary data-word attribute, the word should be the first word from meaning */-->
     <div style="height:100%;"
          th:data-id="${meaningId}"
          id="details-area"
          data-rel="details-area"
-         th:data-word="${meaning.lexemeLangGroups.get(0).lexemes.get(0).word.wordValue}"
+         th:data-word="${meaning.firstWordValue}"
          th:with="
            isMeaningLexemeCrudGranted=${#vars.meaning.subGrant},
            isMeaningAnyLexemeCrudGranted=${#vars.meaning.anyGrant}">

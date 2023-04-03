@@ -499,7 +499,7 @@ public class TermSearchDbService extends AbstractDataDbService {
 				.fetchSingleInto(LexemeWordTuple.class);
 	}
 
-	public String getMeaningFirstWord(Long meaningId, SearchDatasetsRestriction searchDatasetsRestriction) {
+	public String getMeaningFirstWordValue(Long meaningId, SearchDatasetsRestriction searchDatasetsRestriction) {
 
 		Condition dsWhere = searchFilterHelper.applyDatasetRestrictions(LEXEME, searchDatasetsRestriction, null);
 
@@ -512,6 +512,24 @@ public class TermSearchDbService extends AbstractDataDbService {
 								.and(WORD.IS_PUBLIC.isTrue())
 								.and(dsWhere))
 				.orderBy(LEXEME.LEVEL1, LEXEME.LEVEL2, WORD.ID)
+				.limit(1)
+				.fetchSingleInto(String.class);
+	}
+
+	public String getMeaningFirstWordValueOrderedByLang(Long meaningId, SearchDatasetsRestriction searchDatasetsRestriction) {
+
+		Condition dsWhere = searchFilterHelper.applyDatasetRestrictions(LEXEME, searchDatasetsRestriction, null);
+
+		return create
+				.select(WORD.VALUE)
+				.from(WORD, LEXEME, LANGUAGE)
+				.where(
+						LEXEME.MEANING_ID.eq(meaningId)
+								.and(LEXEME.WORD_ID.eq(WORD.ID))
+								.and(WORD.IS_PUBLIC.isTrue())
+								.and(WORD.LANG.eq(LANGUAGE.CODE))
+								.and(dsWhere))
+				.orderBy(LANGUAGE.ORDER_BY, LEXEME.ORDER_BY)
 				.limit(1)
 				.fetchSingleInto(String.class);
 	}
