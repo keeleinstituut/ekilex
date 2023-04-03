@@ -2,12 +2,14 @@ package eki.ekilex.web.controller;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Locale;
 
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -515,15 +517,20 @@ public class EditController extends AbstractMutableDataPageController {
 
 		Response response = new Response();
 		boolean isManualEventOnUpdateEnabled = sessionBean.isManualEventOnUpdateEnabled();
+		Locale locale = LocaleContextHolder.getLocale();
 		EkiUser user = userContext.getUser();
 		DatasetPermission userRole = user.getRecentRole();
 		if (userRole == null) {
+			String errorMessage = messageSource.getMessage("common.delete.fail", new Object[0], locale);
 			response.setStatus(ResponseStatus.ERROR);
+			response.setMessage(errorMessage);
 			return response;
 		}
 
+		String successMessage = messageSource.getMessage("common.delete.success", new Object[0], locale);
 		String datasetCode = userRole.getDatasetCode();
 		response.setStatus(ResponseStatus.OK);
+		response.setMessage(successMessage);
 
 		switch (opCode) {
 		case "definition":
