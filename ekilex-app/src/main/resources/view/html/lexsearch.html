@@ -15,6 +15,7 @@
     </div>
   </div>
   <div class="container-fluid flex-grow-1 flex-shrink-1 d-flex flex-column h-100 overflow-auto" th:with="isSearchResult = ${wordsResult != null}">
+    <th:block th:replace="common :: user_message"></th:block>
     <div class="mt-4 float-left" th:if="${invalidSearch}">
       <div th:text="#{lex.search.invalid}"></div>
     </div>

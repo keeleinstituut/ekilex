@@ -38,6 +38,7 @@ import eki.ekilex.data.Response;
 import eki.ekilex.data.SimpleWord;
 import eki.ekilex.data.Tag;
 import eki.ekilex.data.UserContextData;
+import eki.ekilex.data.UserMessage;
 import eki.ekilex.data.Word;
 import eki.ekilex.data.WordDetails;
 import eki.ekilex.data.WordLexeme;
@@ -284,6 +285,7 @@ public class LexEditController extends AbstractPrivatePageController {
 			}
 			searchUri = searchHelper.composeSearchUriAndAppendId(selectedDatasets, wordValue, wordId);
 		}
+		addRedirectSuccessMessage(attributes, "lex.create.word.success");
 		return "redirect:" + LEX_SEARCH_URI + searchUri;
 	}
 
@@ -370,6 +372,13 @@ public class LexEditController extends AbstractPrivatePageController {
 		cudService.updateWordLexemesTagComplete(wordId, userRoleDatasetCode, activeTag, isManualEventOnUpdateEnabled);
 
 		return RESPONSE_OK_VER2;
+	}
+
+	private void addRedirectSuccessMessage(RedirectAttributes redirectAttributes, String successMessageKey) {
+
+		UserMessage userMessage = new UserMessage();
+		userMessage.setSuccessMessageKey(successMessageKey);
+		redirectAttributes.addFlashAttribute("userMessage", userMessage);
 	}
 
 }
