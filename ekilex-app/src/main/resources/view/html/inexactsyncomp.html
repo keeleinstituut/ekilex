@@ -333,22 +333,24 @@
                     <th:block th:unless="${hasCandates}">
                       <span class="inexact-syn-body-title" th:text="#{inexactsyn.insert.inexact.syn.def}">Sisesta lühivihje</span>
                     </th:block>
-                    <th:block
-                      th:unless="${#lists.isEmpty(meaning.translationLangWordCandidates)}"
-                      th:replace=" :: inexact_syn_word_candidate(
+                    <th:block th:unless="${#lists.isEmpty(meaning.translationLangWordCandidates)}">
+                      <th:block
+                        th:replace=" :: inexact_syn_word_candidate(
                         'translationLangWordCandidatesDiv',
                         ${meaning.translationLangWordCandidates},
                         'translationLangWordId',
                         ${meaning.translationLangWordValue})"
                       />
-                    <th:block
-                      th:unless="${#lists.isEmpty(meaning.targetLangWordCandidates)}"
-                      th:replace=" :: inexact_syn_word_candidate(
+                    </th:block>
+                    <th:block th:unless="${#lists.isEmpty(meaning.targetLangWordCandidates)}">
+                      <th:block
+                        th:replace=" :: inexact_syn_word_candidate(
                         'targetLangWordCandidatesDiv',
                         ${meaning.targetLangWordCandidates},
                         'targetLangWordId',
                         ${meaning.targetLangWordValue})"
                       />
+                    </th:block>
                   </form>
                 </div>
               </div>
