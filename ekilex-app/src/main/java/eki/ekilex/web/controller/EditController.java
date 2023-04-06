@@ -75,9 +75,15 @@ public class EditController extends AbstractMutableDataPageController {
 
 	@ResponseBody
 	@PostMapping(CREATE_ITEM_URI)
-	public String createItem(@RequestBody CreateItemRequest itemData, @ModelAttribute(name = SESSION_BEAN) SessionBean sessionBean) throws Exception {
+	public Response createItem(@RequestBody CreateItemRequest itemData, @ModelAttribute(name = SESSION_BEAN) SessionBean sessionBean) throws Exception {
 
 		logger.debug("Add new item : {}", itemData);
+
+		Locale locale = LocaleContextHolder.getLocale();
+		Response response = new Response();
+		String successMessage = messageSource.getMessage("common.create.success", new Object[0], locale);
+		response.setStatus(ResponseStatus.OK);
+		response.setMessage(successMessage);
 
 		EkiUser user = userContext.getUser();
 		String itemValue = itemData.getValue();
@@ -215,7 +221,7 @@ public class EditController extends AbstractMutableDataPageController {
 			cudService.createOdWordRecommendation(itemData.getId(), itemValue, isManualEventOnUpdateEnabled);
 			break;
 		}
-		return RESPONSE_OK_VER2;
+		return response;
 	}
 
 	private String getSourcePropertyValue(Long sourcePropertyId) {
@@ -229,9 +235,15 @@ public class EditController extends AbstractMutableDataPageController {
 
 	@ResponseBody
 	@PostMapping(UPDATE_ITEM_URI)
-	public String updateItem(@RequestBody UpdateItemRequest itemData, @ModelAttribute(name = SESSION_BEAN) SessionBean sessionBean) throws Exception {
+	public Response updateItem(@RequestBody UpdateItemRequest itemData, @ModelAttribute(name = SESSION_BEAN) SessionBean sessionBean) throws Exception {
 
 		logger.debug("Update item : {}", itemData);
+
+		Locale locale = LocaleContextHolder.getLocale();
+		Response response = new Response();
+		String successMessage = messageSource.getMessage("common.update.success", new Object[0], locale);
+		response.setStatus(ResponseStatus.OK);
+		response.setMessage(successMessage);
 
 		EkiUser user = userContext.getUser();
 		Long itemId = itemData.getId();
@@ -386,7 +398,7 @@ public class EditController extends AbstractMutableDataPageController {
 			sourceLinkService.updateDefinitionSourceLink(itemId, defSourceLinkValue, itemValue, isManualEventOnUpdateEnabled);
 			break;
 		}
-		return RESPONSE_OK_VER2;
+		return response;
 	}
 
 	@ResponseBody
