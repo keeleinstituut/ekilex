@@ -40,10 +40,12 @@ import eki.ekilex.data.SourceProperty;
 import eki.ekilex.data.UpdateItemRequest;
 import eki.ekilex.data.UpdateLexemeLevelsRequest;
 import eki.ekilex.data.UpdateListRequest;
+import eki.ekilex.data.UserContextData;
 import eki.ekilex.service.ComplexOpService;
 import eki.ekilex.service.CudService;
 import eki.ekilex.service.SourceLinkService;
 import eki.ekilex.service.SourceService;
+import eki.ekilex.service.SynCandidateService;
 import eki.ekilex.service.SynCudService;
 import eki.ekilex.service.util.ConversionUtil;
 import eki.ekilex.web.bean.SessionBean;
@@ -60,6 +62,9 @@ public class EditController extends AbstractMutableDataPageController {
 
 	@Autowired	
 	private SynCudService synCudService;
+
+	@Autowired
+	private SynCandidateService synCandidateService;
 
 	@Autowired
 	private ConversionUtil conversionUtil;
@@ -80,11 +85,6 @@ public class EditController extends AbstractMutableDataPageController {
 		logger.debug("Add new item : {}", itemData);
 
 		Locale locale = LocaleContextHolder.getLocale();
-		Response response = new Response();
-		String successMessage = messageSource.getMessage("common.create.success", new Object[0], locale);
-		response.setStatus(ResponseStatus.OK);
-		response.setMessage(successMessage);
-
 		EkiUser user = userContext.getUser();
 		String itemValue = itemData.getValue();
 		itemValue = valueUtil.trimAndCleanAndRemoveHtmlAndLimit(itemValue);
@@ -92,6 +92,7 @@ public class EditController extends AbstractMutableDataPageController {
 		boolean isManualEventOnUpdateEnabled = sessionBean.isManualEventOnUpdateEnabled();
 		String sourceLinkValue;
 		String datasetCode;
+		Response response = new Response();
 
 		switch (itemData.getOpCode()) {
 		case "definition":
@@ -220,7 +221,17 @@ public class EditController extends AbstractMutableDataPageController {
 		case "od_word_recommendation":
 			cudService.createOdWordRecommendation(itemData.getId(), itemValue, isManualEventOnUpdateEnabled);
 			break;
+		case "full_syn_candidate":
+			UserContextData userContextData = getUserContextData();
+			String candidateLang = userContextData.getFullSynCandidateLangCode();
+			String candidateDatasetCode = userContextData.getFullSynCandidateDatasetCode();
+			response = synCandidateService.createFullSynCandidate(itemData.getId(), itemValue, candidateLang, candidateDatasetCode);
+			return response;
 		}
+
+		String successMessage = messageSource.getMessage("common.create.success", new Object[0], locale);
+		response.setStatus(ResponseStatus.OK);
+		response.setMessage(successMessage);
 		return response;
 	}
 

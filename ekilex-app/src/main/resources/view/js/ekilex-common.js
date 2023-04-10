@@ -103,7 +103,13 @@ function submitForm(form, failMessage, callback) {
 		method: 'POST',
 		dataType: 'json',
 		contentType: 'application/json'
-	}).done(function() {
+	}).done(function(response) {
+		if (response.status === "OK") {
+			openMessageDlg(response.message);
+		} else if (response.status === "ERROR") {
+			openAlertDlg(response.message);
+		}
+
 		if (typeof callback === 'function') {
 			callback();
 		} else {

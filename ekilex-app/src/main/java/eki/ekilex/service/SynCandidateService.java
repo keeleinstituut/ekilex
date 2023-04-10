@@ -2,6 +2,7 @@ package eki.ekilex.service;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Locale;
 
 import javax.transaction.Transactional;
 
@@ -10,6 +11,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.stereotype.Component;
 
 import eki.common.constant.ActivityEntity;
@@ -17,7 +19,9 @@ import eki.common.constant.ActivityOwner;
 import eki.common.constant.Complexity;
 import eki.common.constant.GlobalConstant;
 import eki.common.constant.ReferenceType;
+import eki.ekilex.constant.ResponseStatus;
 import eki.ekilex.data.ActivityLogData;
+import eki.ekilex.data.Response;
 import eki.ekilex.data.Word;
 import eki.ekilex.data.WordLexemeMeaningIdTuple;
 import eki.ekilex.data.api.SourceLink;
@@ -26,17 +30,23 @@ import eki.ekilex.data.api.SynCandidateWord;
 import eki.ekilex.data.api.TextWithSource;
 import eki.ekilex.service.db.LookupDbService;
 import eki.ekilex.service.db.SourceLinkDbService;
+import eki.ekilex.service.db.SynSearchDbService;
 
 @Component
 public class SynCandidateService extends AbstractCudService implements GlobalConstant {
 
 	private static final Logger logger = LoggerFactory.getLogger(SynCandidateService.class);
 
+	private static final BigDecimal DEFAULT_SYN_CANDIDATE_WEIGHT = BigDecimal.valueOf(1);
+
 	@Autowired
 	private LookupDbService lookupDbService;
 
 	@Autowired
 	private SourceLinkDbService sourceLinkDbService;
+
+	@Autowired
+	private SynSearchDbService synSearchDbService;
 
 	@Transactional
 	public void createFullSynCandidacy(SynCandidacy synCandidacy) throws Exception {
@@ -62,6 +72,31 @@ public class SynCandidateService extends AbstractCudService implements GlobalCon
 				createSynCandidateWordRelation(headwordId, synCandidateWordId, synLexemeWeight);
 			}
 		}
+	}
+
+	@Transactional
+	public Response createFullSynCandidate(Long headwordId, String synCandidateWordValue, String synCandidateWordLang, String synCandidateDatasetCode) throws Exception {
+
+		Locale locale = LocaleContextHolder.getLocale();
+		Response response = new Response();
+
+		boolean synCandidateWordRelationExists = synSearchDbService
+				.synCandidateWordRelationExists(headwordId, synCandidateWordValue, WORD_REL_TYPE_CODE_RAW, synCandidateWordLang, synCandidateDatasetCode);
+		if (synCandidateWordRelationExists) {
+			String errorMessage = messageSource.getMessage("fullsyn.candidate.exists", new Object[0], locale);
+			response.setStatus(ResponseStatus.ERROR);
+			response.setMessage(errorMessage);
+			return response;
+		}
+
+		WordLexemeMeaningIdTuple synCandidateWordLexemeMeaningId = createSynCandidateWordAndLexemeAndMeaning(synCandidateWordValue, synCandidateWordLang, synCandidateDatasetCode);
+		Long synCandidateWordId = synCandidateWordLexemeMeaningId.getWordId();
+		createSynCandidateWordRelation(headwordId, synCandidateWordId, DEFAULT_SYN_CANDIDATE_WEIGHT);
+
+		String successMessage = messageSource.getMessage("common.create.success", new Object[0], locale);
+		response.setStatus(ResponseStatus.OK);
+		response.setMessage(successMessage);
+		return response;
 	}
 
 	private WordLexemeMeaningIdTuple handleSynCandidateWord(String synCandidateDatasetCode, SynCandidateWord synCandidateWord) throws Exception {

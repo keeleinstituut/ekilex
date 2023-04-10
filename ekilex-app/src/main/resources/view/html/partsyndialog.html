@@ -4,9 +4,9 @@
 </head>
 <body>
   <div th:id="${'addSynRelationDlg_' + wordId}" class="modal"
-        role="dialog"
-        th:fragment="add_syn_relation_dlg(wordId, language, relations)"
-        data-plugin="initAddSynRelationDlgPlugin">
+       role="dialog"
+       th:fragment="add_syn_relation_dlg(wordId, language, relations)"
+       data-plugin="initAddSynRelationDlgPlugin">
     <div class="modal-dialog modal-dialog-scrollable" role="document" style="max-width: 600px;">
       <div class="modal-content">
         <div class="modal-body">
@@ -43,9 +43,9 @@
     </div>
   </div>
   <div th:id="${'editSynMeaningRelationWeightDlg_' + syn.relationId}" class="modal"
-        role="dialog"
-        th:fragment="edit_syn_meaning_relation_weight_dlg"
-        data-plugin="initGenericTextEditDlgPlugin">
+       role="dialog"
+       th:fragment="edit_syn_meaning_relation_weight_dlg"
+       data-plugin="initGenericTextEditDlgPlugin">
     <div class="modal-dialog modal-sm" role="document">
       <div class="modal-content">
         <form th:action="@{/update_item}" method="post">
