@@ -208,6 +208,26 @@ public class SynSearchDbService extends AbstractDataDbService {
 				});
 	}
 
+	public boolean synCandidateWordRelationExists(Long wordId, String synCandidateWordValue, String relationType, String lang, String datasetCode) {
+
+		WordRelation wr = WORD_RELATION.as("wr");
+		Word w2 = WORD.as("w2");
+		Lexeme l2 = LEXEME.as("l2");
+
+		return create
+				.select(field(DSL.count(wr.ID).gt(0)).as("relation_exists"))
+				.from(wr, w2, l2)
+				.where(
+						wr.WORD1_ID.eq(wordId)
+								.and(wr.WORD_REL_TYPE_CODE.eq(relationType))
+								.and(wr.WORD2_ID.eq(w2.ID))
+								.and(w2.LANG.eq(lang))
+								.and(w2.VALUE.eq(synCandidateWordValue))
+								.and(l2.WORD_ID.eq(w2.ID))
+								.and(l2.DATASET_CODE.eq(datasetCode)))
+				.fetchSingleInto(Boolean.class);
+	}
+
 	public List<SynRelation> getWordFullSynRelations(Long wordId, String relationType, String datasetCode, String lang) {
 
 		WordRelation r = WORD_RELATION.as("r");

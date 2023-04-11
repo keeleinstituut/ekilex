@@ -163,6 +163,12 @@
                         <i class="action-icon fa fa-remove" aria-hidden="true"></i>
                       </span>
                     </button>
+                    <span class="border-left py-2"></span>
+                    <button type="button" class="btn btn-light px-2 rounded-0" data-toggle="modal" th:data-target="${'#addFullSynCandidateDlg_' + wordId}">
+                      <span th:title="#{syn.add.candidate}" data-toggle="tooltip">
+                        <i class="action-icon fa fa-plus" aria-hidden="true"></i>
+                      </span>
+                    </button>
                   </div>
                 </div>
                 <div th:replace="fullsyncomp :: syn_candidate_list"></div>
@@ -173,6 +179,7 @@
       </div>
     </div>
     <div th:replace="syndialog :: add_word_forum_dlg"></div>
+    <div th:replace="fullsyndialog :: add_full_syn_candidate_dlg"></div>
     <div id="relationWordSelectDlg" class="modal" role="dialog"></div>
     <div id="inexactSynDlg" class="modal" role="dialog" data-keyboard="false" data-backdrop="static"></div>
     <script>

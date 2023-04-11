@@ -3,6 +3,30 @@
 <head>
 </head>
 <body>
+  <div th:id="${'addFullSynCandidateDlg_' + wordId}" class="modal" role="dialog"
+       data-plugin="initGenericTextAddDlgAndFocusPlugin"
+       data-callback="refreshSynDetails"
+       th:fragment="add_full_syn_candidate_dlg">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <form th:action="@{/create_item}" method="post">
+          <div class="modal-body">
+            <input type="hidden" name="id" th:value="${wordId}">
+            <input type="hidden" name="opCode" value="full_syn_candidate">
+            <div class="form-group row">
+              <div class="col-md-12">
+                <input class="form-control" name="value"/>
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="submit" class="btn btn-primary" th:text="#{common.add}">Lisa</button>
+            <button type="button" class="btn btn-default" data-dismiss="modal" th:text="#{common.cancel}">Katkesta</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
   <div th:id="${'editLexemeWeightDlg_' + synWord.lexemeId}" class="modal"
        role="dialog"
        th:fragment="edit_lexeme_weight_dlg"
