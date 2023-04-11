@@ -13507,7 +13507,13 @@ function submitForm(form, failMessage, callback) {
 		method: 'POST',
 		dataType: 'json',
 		contentType: 'application/json'
-	}).done(function() {
+	}).done(function(response) {
+		if (response.status === "OK") {
+			openMessageDlg(response.message);
+		} else if (response.status === "ERROR") {
+			openAlertDlg(response.message);
+		}
+
 		if (typeof callback === 'function') {
 			callback();
 		} else {
@@ -18121,8 +18127,9 @@ $.fn.manualEventOnUpdateCheck = function () {
 
 function validateAndSubmitSimpleSearch() {
 	const searchForm = $('#searchForm');
-	const searchFilter = searchForm.find('input[name="simpleSearchFilter"]').val();
-	const isSearchFilterValid = validateSearchFilter(searchFilter);
+	const searchInput = searchForm.find('input[name="simpleSearchFilter"]');
+	const searchFilter = searchInput.val();
+	const isSearchFilterValid = validateSearchFilter(searchInput, searchFilter);
 	if (isSearchFilterValid) {
 		$('#isSearchFilterValid').val('true');
 		searchForm.submit();
@@ -18211,10 +18218,13 @@ function initCondition(conditionElement) {
 	displayDetailConditionButtons();
 };
 
-function validateSearchFilter(searchFilter) {
+function validateSearchFilter(input, searchFilter) {
 	if (searchFilter === '*') {
+		const message = messages["common.search.add.parameter"];
+		const errorTextField = $('<span class="search-input-error">' + message + '</span>')
 		closeWaitDlg();
-		openMessageDlg(messages["common.search.add.parameter"]);
+		input.addClass('search-input-invalid');
+		input.parent().append(errorTextField);
 		return false;
 	}
 	return true;

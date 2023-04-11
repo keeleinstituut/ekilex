@@ -13,6 +13,15 @@
   }
 }
 
+.search-input-error {
+  padding-left: 13px;
+  color: rgba(255,0,0,1);
+}
+
+.search-input-invalid {
+  border-color: rgba(255,0,0,1);
+}
+
 #searchColumn, #toolsColumn {
   display: none;
 }
