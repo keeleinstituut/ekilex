@@ -7,7 +7,8 @@ $.fn.createWordClickPlugin = function() {
 		const obj = $(this);
 		obj.on('click', function() {
 			const form = $('#createWordForm');
-			if (!checkRequiredFields(form)) {
+			const message = messages['term.add.term']
+			if (!checkRequiredFields(form, message)) {
 				return;
 			}
 			form.submit();

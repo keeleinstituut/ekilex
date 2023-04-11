@@ -13546,6 +13546,7 @@ $(document).on("change", "input.required-field, select.required-field, textarea.
 
 	if (requiredField.val()) {
 		markableField.removeClass('is-invalid');
+		$('.input-error-text').remove();
 	} else {
 		markableField.addClass('is-invalid');
 	}
@@ -13754,7 +13755,7 @@ function initNewWordDlg() {
 	});
 };
 
-function checkRequiredFields(form) {
+function checkRequiredFields(form, message) {
 
 	let isValid = true;
 
@@ -13770,7 +13771,17 @@ function checkRequiredFields(form) {
 		const fldVal = requiredField.val();
 
 		if (!fldVal) {
+			if(message){
+				let errorMessage = message;
+				const errorTextField = $('<span class="input-error-text">'+ errorMessage +'</span>');
+				markableField.parent().append(errorTextField);
+			}else {
+				let defaultErrorMessage = messages['common.error.input'];
+				const defaultErrorTextField = $('<span class="input-error-text">'+ defaultErrorMessage +'</span>');
+				markableField.parent().append(defaultErrorTextField);
+			}
 			markableField.addClass('is-invalid');
+			
 			isValid = false;
 		} else {
 			markableField.removeClass('is-invalid');
@@ -19005,7 +19016,8 @@ $.fn.createWordClickPlugin = function() {
 		const obj = $(this);
 		obj.on('click', function() {
 			const form = $('#createWordForm');
-			if (!checkRequiredFields(form)) {
+			const message = messages['term.add.term']
+			if (!checkRequiredFields(form, message)) {
 				return;
 			}
 			form.submit();
