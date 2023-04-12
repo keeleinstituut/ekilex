@@ -10,7 +10,7 @@
   line-height: 1.4;
   color: $gray-400;
   text-align: center;
+  cursor: default;
   background: $gray-100;
   @include border-radius(4px);
-	cursor: default;
 }

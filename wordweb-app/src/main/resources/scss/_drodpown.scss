@@ -201,17 +201,16 @@
   }
 
   .dropdown-toggle {
-    padding: 14px;
     display: flex;
     align-items: center;
     justify-content: flex-start;
     width: 100%;
+    padding: 14px;
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: $blue-300;
     text-align: left;
     background-color: $white;
-
-    font-size: 1.25rem;
-    color: $blue-300;
-    font-weight: 700;
     // @include border-radius(10px);
 
     // border: solid 2px $gray-500;

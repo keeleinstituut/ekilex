@@ -38,6 +38,10 @@
             <i class="fa fa-book mr-1"></i>
             <span th:text="#{label.od.recommend}" class="label-text">ÕS soovitab</span>
           </h5>
+          <div class="recommendation-additional-info">
+            <i class="fas fa-info-circle"></i>
+            <span>Selgitused on töös, nende sõnastus võib muutuda. Järgmine ÕS ilmub 2025. aastal.</span>
+          </div>
           <p th:utext="${odWordRecommendation.value}"></p>
           <p th:text="'(' + ${#dates.format(odWordRecommendation.modifiedOn, 'dd.MM.yyyy')} + ')'" th:if="${odWordRecommendation.modifiedOn != null}"></p>
         </div>

@@ -36,6 +36,24 @@
   }
 }
 
+.recommendation-additional-info {
+  display: flex;
+
+  i {
+    margin-right: 4px;
+    font-size: 22px;
+    color: $blue-350
+  }
+
+  span {
+    display: block;
+    padding-bottom: 16px;
+    font-size: 14px;
+    color: $gray-400;
+  }
+}
+
+
 @media (min-width: 1025px) {
   .main-search-input {
     padding: 1.125rem 12rem 1.125rem 1.15625rem;
@@ -43,10 +61,10 @@
 }
 
 .main-search-btns {
-  display: inline-flex;
   position: absolute;
   top: 50%;
   right: 4px;
+  display: inline-flex;
   transform: translateY(-50%);
   @include media-breakpoint-up(md){
     right: 16px;
@@ -60,10 +78,11 @@
   }
 }
 
-.keyboard-search, 
+.keyboard-search,
 .main-search-btns button:not(:last-child) {
   margin-right: 4.5px;
 }
+
 .speak-btn,
 .clear-btn {
   font-size: 17px;
@@ -99,9 +118,7 @@
 .keyboard-search {
   display: inline-flex;
   align-items: center;
-  padding: 0px;
-  align-items: center;
-  padding: 0px;
+  padding: 0;
   border-radius: 100px;
 
   &.lang-open {
@@ -120,9 +137,9 @@
   .fas.fa-keyboard {
     width: 27px;
     height: 28px;
+    font-size: 24px;
     font-style: normal;
     font-weight: 900;
-    font-size: 24px;
     line-height: 28px;
   }
 }
@@ -130,14 +147,14 @@
 #keyboard-lang-search {
   display: inline-flex;
   align-items: center;
-  padding: 8px;
   height: 40px;
+  padding: 8px;
 
   .dropdown-toggle {
     display: inline-flex;
+    font-size: 16px;
     font-style: normal;
     font-weight: 400;
-    font-size: 16px;
     line-height: 24px;
     color: $white;
   }
@@ -152,10 +169,10 @@
     .fa.fa-angle-down {
       width: 13px;
       height: 16px;
-      font-family: 'Font Awesome 5 Free';
+      font-family: "Font Awesome 5 Free";
+      font-size: 14px;
       font-style: normal;
       font-weight: 900;
-      font-size: 14px;
       line-height: 16px;
     }
   }

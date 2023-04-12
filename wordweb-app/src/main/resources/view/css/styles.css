@@ -6123,7 +6123,6 @@ a.close.disabled {
   float: left;
   width: 100%;
   margin-right: -100%;
-  -webkit-backface-visibility: hidden;
   backface-visibility: hidden;
   transition: transform 0.6s ease-in-out;
 }
@@ -16411,9 +16410,9 @@ body.hidden-scroll {
   line-height: 1.4;
   color: #5d606e;
   text-align: center;
+  cursor: default;
   background: #ecf0f2;
   border-radius: 4px;
-  cursor: default;
 }
 
 /* stylelint-disable */
@@ -16638,16 +16637,16 @@ body.hidden-scroll {
 }
 
 .dropdown-game .dropdown-toggle {
-  padding: 14px;
   display: flex;
   align-items: center;
   justify-content: flex-start;
   width: 100%;
+  padding: 14px;
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #2c6fb6;
   text-align: left;
   background-color: #fff;
-  font-size: 1.25rem;
-  color: #2c6fb6;
-  font-weight: 700;
 }
 
 .dropdown-game .dropdown-toggle::after {
@@ -16762,8 +16761,8 @@ body.hidden-scroll {
 }
 
 .ul-list-style {
-  list-style: disc;
   margin-bottom: 12px;
+  list-style: disc;
 }
 
 .dependence .dependence-unit {
@@ -17919,6 +17918,23 @@ body {
   height: 48px;
 }
 
+.recommendation-additional-info {
+  display: flex;
+}
+
+.recommendation-additional-info i {
+  margin-right: 4px;
+  font-size: 22px;
+  color: #0073e6;
+}
+
+.recommendation-additional-info span {
+  display: block;
+  padding-bottom: 16px;
+  font-size: 14px;
+  color: #5d606e;
+}
+
 @media (min-width: 1025px) {
   .main-search-input {
     padding: 1.125rem 12rem 1.125rem 1.15625rem;
@@ -17926,10 +17942,10 @@ body {
 }
 
 .main-search-btns {
-  display: inline-flex;
   position: absolute;
   top: 50%;
   right: 4px;
+  display: inline-flex;
   transform: translateY(-50%);
 }
 
@@ -17991,9 +18007,7 @@ body {
 .keyboard-search {
   display: inline-flex;
   align-items: center;
-  padding: 0px;
-  align-items: center;
-  padding: 0px;
+  padding: 0;
   border-radius: 100px;
 }
 
@@ -18012,24 +18026,24 @@ body {
 #keyboard-search-btn .fas.fa-keyboard {
   width: 27px;
   height: 28px;
+  font-size: 24px;
   font-style: normal;
   font-weight: 900;
-  font-size: 24px;
   line-height: 28px;
 }
 
 #keyboard-lang-search {
   display: inline-flex;
   align-items: center;
-  padding: 8px;
   height: 40px;
+  padding: 8px;
 }
 
 #keyboard-lang-search .dropdown-toggle {
   display: inline-flex;
+  font-size: 16px;
   font-style: normal;
   font-weight: 400;
-  font-size: 16px;
   line-height: 24px;
   color: #fff;
 }
@@ -18045,10 +18059,10 @@ body {
 #keyboard-lang-search .costom-keyboard-lang-angle-down .fa.fa-angle-down {
   width: 13px;
   height: 16px;
-  font-family: 'Font Awesome 5 Free';
+  font-family: "Font Awesome 5 Free";
+  font-size: 14px;
   font-style: normal;
   font-weight: 900;
-  font-size: 14px;
   line-height: 16px;
 }
 
@@ -19148,7 +19162,6 @@ body.has-wordgame .header-container {
 
 .card--type-2 {
   position: relative;
-  -webkit-backface-visibility: hidden;
   backface-visibility: hidden;
   transition: transform 0.25s;
   transform-style: preserve-3d;

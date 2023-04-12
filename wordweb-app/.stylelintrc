@@ -4,13 +4,14 @@
   ],
   "rules": {
     "property-blacklist": [
-      "border-radius",
       "border-top-left-radius",
       "border-top-right-radius",
       "border-bottom-right-radius",
       "border-bottom-left-radius",
       "transition"
     ],
+    "font-family-no-missing-generic-family-keyword": null,
+    "selector-max-id": null,
     "scss/dollar-variable-default": null
   }
 }
