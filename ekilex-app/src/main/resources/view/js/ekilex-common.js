@@ -1420,3 +1420,16 @@ if (!scrollStoreInstance) {
 	// Conditionally creating new instance, we only need one.	
 	scrollStoreInstance = new ScrollStore();
 }
+
+
+
+setTimeout(function() {
+	const errorMessage = $('#sameTermUserMessage');
+	if(errorMessage.length){
+		errorMessage.remove();
+		openAlertDlg(messages['termcreateword.usermessage.meaning.word.exists'])
+	}else {
+		return;
+	}
+}, 0);
+

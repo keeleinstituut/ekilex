@@ -14825,6 +14825,19 @@ if (!scrollStoreInstance) {
 	scrollStoreInstance = new ScrollStore();
 }
 
+
+
+setTimeout(function() {
+	const errorMessage = $('#sameTermUserMessage');
+	if(errorMessage.length){
+		errorMessage.remove();
+		openAlertDlg(messages['termcreateword.usermessage.meaning.word.exists'])
+	}else {
+		return;
+	}
+}, 0);
+
+
 const ContextMenuInstances = [];
 
 class ContextMenu {
