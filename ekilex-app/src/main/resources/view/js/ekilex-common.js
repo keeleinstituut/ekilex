@@ -1421,15 +1421,13 @@ if (!scrollStoreInstance) {
 	scrollStoreInstance = new ScrollStore();
 }
 
-
-
-setTimeout(function() {
-	const errorMessage = $('#sameTermUserMessage');
-	if(errorMessage.length){
-		errorMessage.remove();
-		openAlertDlg(messages['termcreateword.usermessage.meaning.word.exists'])
-	}else {
-		return;
+$(function() {
+	const successMessage = $('#successMessage');
+	const warningMessage = $('#warningMessage');
+	if (successMessage.length) {
+		openMessageDlg(successMessage.text());
+	} else if (warningMessage.length) {
+		openAlertDlg(warningMessage.text());
 	}
-}, 0);
+});
 

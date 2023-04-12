@@ -53,8 +53,7 @@
 	  'datasets.code.exists.validation': /*[[#{datasets.code.exists.validation}]]*/'Sellise koodiga sõnakogu on olemas.',
 	  'datasets.code.format.validation': /*[[#{datasets.code.format.validation}]]*/'Kood tohib sisaldada ainult tähti ja numbreid.',
 	  'term.meaning.table.max.meanings.exceeded': /*[[#{term.meaning.table.max.meanings.exceeded}]]*/'Tabelivaade käivitub ainult kuni 50 mõiste korral',
-    'term.add.term': /*[[#{term.add.term}]]*/'Lisa termin',
-    'termcreateword.usermessage.meaning.word.exists':  /*[[#{termcreateword.usermessage.meaning.word.exists}]]*/ 'Selline termin on mõiste all olemas'
+    'term.add.term': /*[[#{term.add.term}]]*/'Lisa termin'
   };
 </script>
 </head>
@@ -256,19 +255,9 @@
     </nav>
   </th:block>
   <th:block th:fragment="user_message">
-    <div th:if="${userMessage}">
-      <div class="alert alert-success mt-2" role="alert" th:if="${userMessage.successMessageKey}">
-        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-        <p th:text="#{${userMessage.successMessageKey}}"></p>
-      </div>
-      <div id="sameTermUserMessage" class="alert alert-danger mt-2" role="alert" th:if="${userMessage.warningMessageKey}">
-        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-        <p th:text="#{${userMessage.warningMessageKey}}"></p>
-      </div>
+    <div th:if="${userMessage}" style="display: none">
+      <div id="successMessage" th:text="#{${userMessage.successMessageKey}}" th:if="${userMessage.successMessageKey}"></div>
+      <div id="warningMessage" th:text="#{${userMessage.warningMessageKey}}" th:if="${userMessage.warningMessageKey}"></div>
     </div>
   </th:block>
   <th:block th:fragment="ordering_buttons(itemIter)">
