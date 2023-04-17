@@ -1,1 +1,15 @@
 Märkused ver 1.29.0 tarne kohta:
+
+* Ekilexi andmebaasi migratsiooni skript:
+  /eki-common/src/main/resources/sql/delivery.sql
+
+* Teha värske sõnaveebi laadimine:
+
+Kustutada ekilexi baasis kõik sõnaveebiga seotud vaated ja andmetüübid:
+  /eki-common/src/main/resources/sql/drop_all.sql sektsioon "wordweb associated views and types"
+
+Luua ekilexi baasis vaated:
+  /eki-common/src/main/resources/sql/create_views.sql
+
+Luua sõnaveebi baasis vaated:
+  /wordweb-app/fileresources/sql/create_mviews.sql
