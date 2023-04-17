@@ -6,12 +6,12 @@
 	<parent>
 		<groupId>eki.ekilex</groupId>
 		<artifactId>eki-root</artifactId>
-		<version>1.29-SNAPSHOT</version>
+		<version>1.30-SNAPSHOT</version>
 	</parent>
 
 	<groupId>eki.ekilex</groupId>
 	<artifactId>ekilex-app</artifactId>
-	<version>1.29-SNAPSHOT</version>
+	<version>1.30-SNAPSHOT</version>
 	<packaging>jar</packaging>
 
 	<name>Ekilex App</name>
