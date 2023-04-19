@@ -18,6 +18,10 @@ function toggleUsageMemberAdditionalFields(dlg, usageMemberType) {
 function initEkiEditorDlg(editDlg, editorOptions) {
 	let editFld = editDlg.find('[data-id="editFld"]');
 	let valueInput = editDlg.find('[name=value]');
+	let footer = editDlg.find('.modal-footer');
+	let cancelBtn = footer.find('[data-dismiss=modal]');
+	let errorText = messages["editor.error.add.note"];
+	let errorTemplate = '<span class="error-text">' + errorText + '</span>';
 	editFld.val(valueInput.val());
 
 	const complexityBtns = editDlg.find('[name="complexity"]');
@@ -25,6 +29,12 @@ function initEkiEditorDlg(editDlg, editorOptions) {
 		complexityBtns.eq(complexityBtns.length-1).prop('checked', true);
 	}
 	initCkEditor(editFld, editorOptions);
+
+	cancelBtn.off('click').on('click', function(){
+		if(errorTemplate) {
+			footer.find('.error-text').remove();
+		};
+	});
 
 	editDlg.find('button[type="submit"]').off('click').on('click', function(e) {
 		if (editFld.val()) {
@@ -36,11 +46,13 @@ function initEkiEditorDlg(editDlg, editorOptions) {
 				.replaceAll('class="eki-selected"', '')
 				.replace(/<[^/>][^>]*><\/[^>]+>/gm, '');
 			valueInput.val(editFldValue);
+			footer.find('.error-text').remove();
 			editFld.removeClass('is-invalid');
 			submitDialog(e, editDlg, messages["common.data.update.error"]);
 		} else {
 			e.preventDefault();
 			editFld.addClass('is-invalid');
+			footer.prepend(errorTemplate);
 		}
 	});
 };

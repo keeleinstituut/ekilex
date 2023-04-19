@@ -26,6 +26,10 @@
 	color: rgba(255,0,0,1);
 }
 
+.error-text {
+	color: rgba(255,0,0,1);
+}
+
 .scrollable-area {
 	overflow: auto;
 	height: 100%;
@@ -215,4 +219,12 @@
       }
     }
   }
+}
+
+select {
+	&.form-control {
+		&.is-invalid {
+			background-image: none;
+		}
+	}
 }

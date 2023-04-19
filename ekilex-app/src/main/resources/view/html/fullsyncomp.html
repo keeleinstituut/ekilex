@@ -143,6 +143,13 @@
                   <small th:each="registerCode,regIter : ${synWord.lexemeRegisterCodes}" th:text="${registerCode + (regIter.last ? '' : ', ')}"></small>
                   <small th:if="${synWordIter.last}" th:text="${'[' + viewUtil.getFormattedWeight(syn.weight) + ']'}"></small>
                   <th:block th:if="${not isMeaningWordSyn}">
+                    <button type="button" class="btn badge badge-warning"
+                      th:data-id="${syn.relationId}"
+                      data-op-code="meaning_relation"
+                      data-toggle="delete-confirm"
+                      sec:authorize="#vars.lexeme.crudGrant">
+                      <i class="fa fa-remove" aria-hidden="true" data-toggle="tooltip" th:title="#{syn.delete.syn.lexeme}"></i>
+                    </button>
                     <span class="syn-handle handle drag-handle text-muted p-0">
                       <i class="fa fa-arrows text-muted" aria-hidden="true"></i>
                     </span>
@@ -190,7 +197,7 @@
           <th:block th:if="${synonymLangGroupIter.first && not #lists.isEmpty(synonymLangGroup.inexactSynonyms)}">
             <th:block th:each="inexactSyn, inexactSynIter : ${synonymLangGroup.inexactSynonyms}">
               <span 
-                class=" draggable-syn-rel droppable-syn-rel do-refresh" 
+                class=" draggable-syn-rel droppable-syn-rel do-refresh hidden-buttons " 
                 name="temp-for-ordering" 
                 th:data-id="${inexactSyn.relationId}" 
                 th:data-orderby="${inexactSyn.orderBy}" 
@@ -207,6 +214,13 @@
                     <span th:text="${inexactSyn.inexactDefinitionValue}"></span>
                   </th:block>
                   )
+                  <button type="button" class="btn badge badge-warning"
+                    th:data-id="${inexactSyn.relationId}" 
+                    data-op-code="meaning_relation"
+                    data-toggle="delete-confirm"
+                    sec:authorize="#vars.lexeme.crudGrant">
+                    <i class="fa fa-remove" aria-hidden="true" data-toggle="tooltip" th:title="#{syn.delete.syn.lexeme}"></i>
+                  </button>
                   <span class="syn-handle handle drag-handle text-muted p-0">
                     <i class="fa fa-arrows text-muted" aria-hidden="true"></i>
                   </span>
