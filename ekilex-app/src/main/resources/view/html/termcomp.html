@@ -293,7 +293,7 @@
   <div class="row" th:if="${not #lists.isEmpty(meaning.domains)}" th:fragment="meaning_domain">
     <div class="col pr-0 col-w13rem">
       <span class="lbl" th:text="#{term.meaning.domain}">Valdkond</span>
-      <button type="button" class="btn badge badge-secondary float-right mr-4" th:title="#{common.add.new}"
+      <button type="button" class="btn badge badge-success float-right mr-4" th:title="#{common.add.new}"
               data-toggle="modal"
               th:data-target="${'#addMeaningDomainDlg_' + meaningId}"
               sec:authorize="#vars.meaning.crudGrant">
@@ -341,7 +341,7 @@
   <div class="row no-gutters" th:if="${not #lists.isEmpty(meaning.semanticTypes)}" th:fragment="meaning_semantic_type">
     <div class="col pr-0 col-w13rem">
       <span class="lbl" th:text="#{term.meaning.semantic.type}">Semantiline tüüp</span>
-      <button type="button" class="btn badge badge-secondary float-right mr-4" th:title="#{common.add.new}"
+      <button type="button" class="btn badge badge-success float-right mr-4" th:title="#{common.add.new}"
               data-toggle="modal"
               th:data-target="${'#addMeaningSemanticTypeDlg_' + meaningId}"
               sec:authorize="#vars.meaning.crudGrant">
@@ -379,7 +379,7 @@
   <div class="row no-gutters" th:fragment="meaning_definition">
     <div class="col pr-0 col-w13rem">
       <span class="lbl" th:text="#{term.definition}">Seletus</span>
-      <button type="button" class="btn badge badge-secondary float-right mr-4"
+      <button type="button" class="btn badge badge-success float-right mr-4"
               th:title="#{common.add.new}"
               data-toggle="modal"
               th:data-target="${'#addDefinitionDlg_' + meaningId}"
@@ -577,7 +577,7 @@
     <div class="col pr-0 col-w13rem">
       <span class="lbl">
         <span th:text="#{term.meaning.note}"></span>
-        <button type="button" class="btn badge badge-secondary float-right mr-4"
+        <button type="button" class="btn badge badge-success float-right mr-4"
                 th:title="#{common.add.new}"
                 data-toggle="modal"
                 th:data-target="${'#addMeaningNoteDlg_' + meaningId}"
@@ -683,7 +683,7 @@
     <div class="col pr-0 col-w13rem">
       <span class="lbl">
         Arutelu
-        <button type="button" class="btn badge badge-secondary float-right mr-4"
+        <button type="button" class="btn badge badge-success float-right mr-4"
                 th:title="#{common.add.new}"
                 data-toggle="modal"
                 th:data-target="${'#addLimTermMeaningNoteDlg_' + meaningId}"
@@ -786,7 +786,7 @@
     <hr>
     <div class="col pr-0 col-w13rem">
       <span class="lbl" th:text="#{term.meaning.image}">Pilt</span>
-      <button type="button" class="btn badge badge-secondary float-right mr-4"
+      <button type="button" class="btn badge badge-success float-right mr-4"
               title="Lisa pilt"
               data-toggle="modal"
               th:data-target="${'#addMeaningImageDlg_' + meaningId}"
@@ -940,7 +940,7 @@
     <hr>
     <div class="col pr-0 col-w13rem">
       <span class="lbl" th:text="#{term.meaning.media}">Videod ja muu meedia</span>
-      <button type="button" class="btn badge badge-secondary float-right mr-4"
+      <button type="button" class="btn badge badge-success float-right mr-4"
               th:title="#{term.add.media}"
               data-toggle="modal"
               th:data-target="${'#addMeaningMediaDlg_' + meaningId}"
@@ -999,7 +999,7 @@
     <hr/>
     <div class="col pr-0 col-w13rem">
       <span class="lbl" th:text="#{term.meaning.relation}">Tähenduse seos</span>
-      <button type="button" class="btn badge badge-secondary float-right mr-4"
+      <button type="button" class="btn badge badge-success float-right mr-4"
               title="Lisa seos"
               data-toggle="modal"
               th:data-target="${'#addMeaningRelationDlg_' + meaningId}"
@@ -1179,7 +1179,7 @@
   <div class="row no-gutters" th:if="${not #lists.isEmpty(meaning.tags)}" th:fragment="meaning_tags">
     <div class="col pr-0 col-w13rem">
       <span class="lbl" th:text="#{term.meaning.tag}">Tähenduse silt</span>
-      <button type="button" class="btn badge badge-secondary float-right mr-4"
+      <button type="button" class="btn badge badge-success float-right mr-4"
               th:title="#{common.add.new}"
               data-toggle="modal"
               th:data-target="${'#addMeaningTagDlg_' + meaningId}"

@@ -128,14 +128,8 @@
             data-plugin="refreshOpenPlugin"></button>
       <div class="card-body" th:id="${'lexeme-meaning-' + lexeme.meaningId}">
         <div th:if="${selectedMeaningId}" hidden id="lex-meaning-id-search-meaning-id" th:data-result-id="${selectedMeaningId}"></div>
-        <button type="button" name="lexeme-details-btn"
-                class="btn btn-secondary btn-sm btn-toggle float-right" title="Peida detailid"
-                th:data-id="${lexeme.lexemeId}" th:data-lex-levels="${lexeme.levels}" th:data-composition="lite"
-                data-plugin="openLexemeDetailsPlugin">
-          <i class="fa fa-angle-up" aria-hidden="true"></i>
-        </button>
-        <div class="d-flex flex-row align-items-center flex-wrap">
-          <div class="d-flex w-100">
+        <div class="d-flex flex-row align-items-center flex-wrap pb-1">
+          <div class="d-flex w-100 mb-2 align-items-baseline">
             <span class="btn pl-1 pr-1" th:if="${lexeme.levels != null}"
                   th:data-id="${lexeme.lexemeId}"
                   th:data-level1="${lexeme.level1}"
@@ -154,14 +148,14 @@
                     th:text="${lexeme.levels}">
               </span>
             </span>
-            <button class="btn text-gray" data-plugin="lexemePublicity"
+            <button class="btn text-gray pt-0 pb-0" data-plugin="lexemePublicity"
                     th:data-target="${'#editLexemePublicityDlg_' + lexeme.lexemeId}"
                     th:data-edit-enabled="${#vars.lexeme.crudGrant}"
                     th:data-public="${lexeme.public}"
                     th:data-label="#{'boolean.public.' + ${lexeme.public}}">
               <span name="icon-span"></span>
             </button>
-            <div class="w-100" style="margin-top:5px;">
+            <div class="d-flex w-100 mt-1 mr-2">
               <th:block th:each="synonymLangGroup : ${lexeme.synonymLangGroups}">
                 <div class="orderable d-flex flex-row mr-2 w-100">
                   <span th:if="${lexeme.wordLang == synonymLangGroup.lang}" class="mr-2 flex-shrink-0" style="width: 55px; white-space: nowrap;">
@@ -280,9 +274,25 @@
                   </div>
                 </div>
               </th:block>
+              <div class="d-flex w-100 justify-content-end">
+                <b th:text="${lexeme.datasetName}"></b>
+              </div>
             </div>
+            <button type="button" name="lexeme-details-btn"
+              class="btn btn-secondary btn-sm btn-toggle float-right" title="Peida detailid"
+              th:data-id="${lexeme.lexemeId}" th:data-lex-levels="${lexeme.levels}" th:data-composition="lite"
+              data-plugin="openLexemeDetailsPlugin">
+              <i class="fa fa-angle-up" aria-hidden="true"></i>
+            </button>
           </div>
           <div>
+            <button type="button" class="btn badge badge-success"
+                    th:title="#{lex.add.data}"
+                    data-toggle="modal"
+                    th:data-target="${'#addLexemeDataDlg_' + lexeme.lexemeId}"
+                    sec:authorize="#vars.lexeme.crudGrant">
+              <i class="fa fa-plus" aria-hidden="true"></i>
+            </button>
             <a class="btn btn-sm btn-primary"
                th:title="#{lex.join.meanings}"
                th:href="@{'/lexjoin/' + ${lexeme.lexemeId}}"
@@ -331,24 +341,15 @@
                data-target="#meaningActivityLogDlg"
                class="btn btn-secondary btn-compact ml-2">Logi</a>
           </div>
-          <div class="ml-auto">
-            <b th:text="${lexeme.datasetName}"></b>
+          <div class="ekiAccordion ml-auto" data-plugin="ekiAccordion">
+            <div th:replace="lexcomp :: meaning_forum"></div>
           </div>
         </div>
         <div>
           <hr/>
           <span class="lbl" th:unless="${lexeme.lexemeOrMeaningClassifiersExist}" th:text="#{lex.lexeme.data}">Ilmiku omadused</span>
-          <div class="text-right">
-            <button type="button" class="btn badge badge-success"
-                    th:title="#{lex.add.data}"
-                    data-toggle="modal"
-                    th:data-target="${'#addLexemeDataDlg_' + lexeme.lexemeId}"
-                    sec:authorize="#vars.lexeme.crudGrant">
-              <i class="fa fa-plus" aria-hidden="true"></i>
-            </button>
-          </div>
           <div class="row w-100 no-gutters">
-            <div class="card-body pb-4 col-8">
+            <div class="card-body pb-4 col-12">
               <th:block th:replace="lexcomp :: data_ids"></th:block>
               <th:block th:replace="lexcomp :: lexeme_tags"></th:block>
               <th:block th:replace="lexcomp :: lexeme_complexity"></th:block>
@@ -361,9 +362,6 @@
               <th:block th:replace="lexcomp :: lexeme_register"></th:block>
               <th:block th:replace="lexcomp :: meaning_domain"></th:block>
               <th:block th:replace="lexcomp :: meaning_semantic_type"></th:block>
-            </div>
-            <div class="col-4 ekiAccordion" data-plugin="ekiAccordion">
-              <div th:replace="lexcomp :: meaning_forum"></div>
             </div>
           </div>
         </div>

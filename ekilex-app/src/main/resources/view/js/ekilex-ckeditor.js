@@ -1,13 +1,13 @@
 CKEDITOR.disableAutoInline = true;
-CKEDITOR.config.removeFormatTags = CKEDITOR.config.removeFormatTags + ',eki-stress,eki-foreign,eki-highlight,eki-meta,eki-sub,eki-sup';
+CKEDITOR.config.removeFormatTags = CKEDITOR.config.removeFormatTags + ',eki-highlight,eki-foreign,eki-stress,eki-meta,eki-sub,eki-sup';
 CKEDITOR.config.entities = false;
 var buttons = [
 	{
-		id: 'stress',
-		label: 'Rõhk',
-		command: 'stress',
-		element: 'eki-stress',
-		styles: 'font-weight: bold; color: #EC0138;',
+		id: 'highlight',
+		label: 'Esiletõstetud',
+		command: 'highlight',
+		element: 'eki-highlight',
+		styles: 'font-weight:bold;',
 	},
 	{
 		id: 'foreign',
@@ -15,13 +15,13 @@ var buttons = [
 		command: 'foreign',
 		element: 'eki-foreign',
 		styles: 'color: #00874f; font-style: italic;',
-	}, 
+	},
 	{
-		id: 'highlight',
-		label: 'Esiletõstetud',
-		command: 'highlight',
-		element: 'eki-highlight',
-		styles: 'font-weight:bold;',
+		id: 'stress',
+		label: 'Rõhk',
+		command: 'stress',
+		element: 'eki-stress',
+		styles: 'color: #000; font-weight: normal;'
 	},
 	{
 		id: 'meta',
