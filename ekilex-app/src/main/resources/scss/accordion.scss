@@ -72,4 +72,20 @@
     }
   }
 
+  &.lex-internal-notice {
+    width: 250px;
+
+    .ekiAccordion__instance {
+      &--active {
+        position: absolute;
+        top: -14px;
+        z-index: 1;
+
+        >.ekiAccordion__content {
+          background-color: $white;
+        }
+      }
+    }
+
+  }
 }

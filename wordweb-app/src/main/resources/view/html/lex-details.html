@@ -328,7 +328,7 @@
                       </div>
                     </th:block>
                     <th:block th:if="${not #maps.isEmpty(lexeme.meaningNotesByLang)}">
-                      <div th:each="noteEntry : ${lexeme.meaningNotesByLang}">
+                      <div class="d-flex flex-row" th:each="noteEntry : ${lexeme.meaningNotesByLang}">
                         <span class="lang-code lang-code-sm mr-2 align-self-start"
                               th:with="langData=${viewUtil.getLangData(noteEntry.key)}"
                               th:text="${langData.codeIso2}" th:title="${langData.label}" data-toggle="tooltip"></span>

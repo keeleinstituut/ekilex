@@ -70,7 +70,7 @@
               </div>
             </div>
           </div>
-          <div class="ml-auto d-flex flex-row align-items-center">
+          <div class="d-flex flex-row w-50 ml-auto align-items-center justify-content-end">
             <b th:text="${lexeme.datasetName}" class="mr-2"></b>
             <button type="button" name="lexeme-details-btn"
                     class="btn btn-secondary btn-sm btn-toggle" title="Näita detaile"
@@ -155,7 +155,7 @@
                     th:data-label="#{'boolean.public.' + ${lexeme.public}}">
               <span name="icon-span"></span>
             </button>
-            <div class="d-flex w-100 mt-1 mr-2">
+            <div class="d-flex w-100 mt-1 mr-2 flex-column">
               <th:block th:each="synonymLangGroup : ${lexeme.synonymLangGroups}">
                 <div class="orderable d-flex flex-row mr-2 w-100">
                   <span th:if="${lexeme.wordLang == synonymLangGroup.lang}" class="mr-2 flex-shrink-0" style="width: 55px; white-space: nowrap;">
@@ -274,9 +274,9 @@
                   </div>
                 </div>
               </th:block>
-              <div class="d-flex w-100 justify-content-end">
-                <b th:text="${lexeme.datasetName}"></b>
-              </div>
+            </div>
+            <div class="d-flex w-50 justify-content-end flex-shrink-1 pr-1">
+              <b th:text="${lexeme.datasetName}"></b>
             </div>
             <button type="button" name="lexeme-details-btn"
               class="btn btn-secondary btn-sm btn-toggle float-right" title="Peida detailid"
@@ -341,7 +341,7 @@
                data-target="#meaningActivityLogDlg"
                class="btn btn-secondary btn-compact ml-2">Logi</a>
           </div>
-          <div class="ekiAccordion ml-auto" data-plugin="ekiAccordion">
+          <div class="ekiAccordion lex-internal-notice ml-auto" data-plugin="ekiAccordion">
             <div th:replace="lexcomp :: meaning_forum"></div>
           </div>
         </div>
