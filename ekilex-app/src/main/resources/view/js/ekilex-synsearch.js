@@ -24,7 +24,7 @@ function updateWordSynRelationsStatusDeleted() {
 	const wordId = $(this).data('word-id');
 	const lang = $(this).data('lang');
 	const dataset = $(this).data('dataset');
-	const actionUrl = `${applicationUrl}syn_relation_status/delete?wordId=${wordId}&lang=${lang}&datasetCode=${dataset}`;
+	const actionUrl = `${applicationUrl}syn_relation_status/delete?wordId=${wordId}&language=${lang}&datasetCode=${dataset}`;
 	const callbackFunc = () => refreshSynDetails();
 
 	doPostRelationChange(actionUrl, callbackFunc);

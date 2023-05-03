@@ -44,13 +44,13 @@ public class SynEditController extends AbstractPrivateSearchController {
 	@ResponseBody
 	public String updateWordSynRelationsStatusDeleted(
 			@RequestParam Long wordId,
-			@RequestParam String lang,
+			@RequestParam String language,
 			@RequestParam String datasetCode,
 			@ModelAttribute(name = SESSION_BEAN) SessionBean sessionBean) throws Exception {
 
-		logger.debug("Updating word {} lang {} dataset {} syn relation status to \"DELETED\"", wordId, lang, datasetCode);
+		logger.debug("Updating word {} lang {} dataset {} syn relation status to \"DELETED\"", wordId, language, datasetCode);
 		boolean isManualEventOnUpdateEnabled = sessionBean.isManualEventOnUpdateEnabled();
-		synCudService.updateWordSynRelationsStatusDeleted(wordId, datasetCode, lang, isManualEventOnUpdateEnabled);
+		synCudService.updateWordSynRelationsStatusDeleted(wordId, datasetCode, language, isManualEventOnUpdateEnabled);
 		return RESPONSE_OK_VER2;
 	}
 
