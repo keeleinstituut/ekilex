@@ -1,5 +1,8 @@
 package eki.ekilex.service;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +15,7 @@ import eki.common.service.TextDecorationService;
 import eki.ekilex.data.ActivityLogData;
 import eki.ekilex.data.FreeForm;
 import eki.ekilex.data.WordLexemeMeaningIdTuple;
+import eki.ekilex.data.WordRelation;
 import eki.ekilex.service.db.CudDbService;
 import eki.ekilex.service.db.LookupDbService;
 import eki.ekilex.service.db.TagDbService;
@@ -96,5 +100,25 @@ public abstract class AbstractCudService extends AbstractService {
 		String value = textDecorationService.removeEkiElementMarkup(valuePrese);
 		freeform.setValueText(value);
 		freeform.setValuePrese(valuePrese);
+	}
+
+	protected void moveCreatedWordRelationToFirst(Long wordId, Long relationId, String relTypeCode) {
+
+		List<WordRelation> existingRelations = lookupDbService.getWordRelations(wordId, relTypeCode);
+		if (existingRelations.size() > 1) {
+
+			WordRelation firstRelation = existingRelations.get(0);
+			List<Long> existingOrderByValues = existingRelations.stream().map(WordRelation::getOrderBy).collect(Collectors.toList());
+
+			cudDbService.updateWordRelationOrderBy(relationId, firstRelation.getOrderBy());
+			existingRelations.remove(existingRelations.size() - 1);
+			existingOrderByValues.remove(0);
+
+			int relIdx = 0;
+			for (WordRelation relation : existingRelations) {
+				cudDbService.updateWordRelationOrderBy(relation.getId(), existingOrderByValues.get(relIdx));
+				relIdx++;
+			}
+		}
 	}
 }
