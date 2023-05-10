@@ -14,6 +14,7 @@ import org.springframework.stereotype.Component;
 
 import eki.common.constant.ActivityEntity;
 import eki.common.constant.AuthorityItem;
+import eki.common.constant.AuthorityOperation;
 import eki.common.constant.GlobalConstant;
 import eki.common.constant.PermConstant;
 import eki.common.constant.ReferenceOwner;
@@ -107,6 +108,23 @@ public class EkilexPermissionEvaluator implements PermissionEvaluator, PermConst
 						&& AUTH_OPS_READ.contains(datasetPermission.getAuthOperation().name())
 						&& StringUtils.equals(datasetPermission.getDatasetCode(), DATASET_LIMITED));
 		return limitedAccessPermExists;
+	}
+
+	@Transactional
+	public boolean isSynPageAccessPermitted(Authentication authentication) {
+
+		EkiUser user = (EkiUser) authentication.getPrincipal();
+		DatasetPermission userRole = user.getRecentRole();
+		if (userRole == null) {
+			return false;
+		}
+		if (userRole.isSuperiorPermission()) {
+			return false;
+		}
+		if (AuthorityOperation.READ.equals(userRole.getAuthOperation())) {
+			return false;
+		}
+		return true;
 	}
 
 	@Transactional

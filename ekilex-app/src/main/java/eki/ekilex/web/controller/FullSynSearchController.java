@@ -12,6 +12,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -36,6 +38,7 @@ import eki.ekilex.data.UserContextData;
 import eki.ekilex.data.WordDescript;
 import eki.ekilex.data.WordDetails;
 import eki.ekilex.data.WordsResult;
+import eki.ekilex.security.EkilexPermissionEvaluator;
 import eki.ekilex.service.FullSynSearchService;
 import eki.ekilex.web.bean.SessionBean;
 
@@ -49,14 +52,14 @@ public class FullSynSearchController extends AbstractPrivateSearchController {
 	@Autowired
 	private FullSynSearchService fullSynSearchService;
 
-	@GetMapping(value = FULL_SYN_SEARCH_URI)
-	public String initPage(Model model) {
+	@Autowired
+	private EkilexPermissionEvaluator permissionEvaluator;
 
-		DatasetPermission userRole = userContext.getUserRole();
-		if (userRole == null) {
-			return REDIRECT_PREF + HOME_URI;
-		}
-		if (userRole.isSuperiorPermission()) {
+	@GetMapping(value = FULL_SYN_SEARCH_URI)
+	public String initPage(Authentication authentication, Model model) {
+
+		boolean isSynPageAccessPermitted = permissionEvaluator.isSynPageAccessPermitted(authentication);
+		if (!isSynPageAccessPermitted) {
 			return REDIRECT_PREF + HOME_URI;
 		}
 
@@ -66,6 +69,7 @@ public class FullSynSearchController extends AbstractPrivateSearchController {
 	}
 
 	@PostMapping(value = FULL_SYN_SEARCH_URI)
+	@PreAuthorize("@permEval.isSynPageAccessPermitted(authentication)")
 	public String synSearch(
 			@RequestParam(name = "searchMode", required = false) String searchMode,
 			@RequestParam(name = "simpleSearchFilter", required = false) String simpleSearchFilter,
@@ -90,6 +94,7 @@ public class FullSynSearchController extends AbstractPrivateSearchController {
 	}
 
 	@GetMapping(value = FULL_SYN_SEARCH_URI + "/**")
+	@PreAuthorize("@permEval.isSynPageAccessPermitted(authentication)")
 	public String synSearch(Model model, HttpServletRequest request) throws Exception {
 
 		String searchUri = StringUtils.removeStart(request.getRequestURI(), FULL_SYN_SEARCH_URI);
@@ -137,6 +142,7 @@ public class FullSynSearchController extends AbstractPrivateSearchController {
 	}
 
 	@GetMapping(FULL_SYN_WORD_DETAILS_URI + "/{wordId}")
+	@PreAuthorize("@permEval.isSynPageAccessPermitted(authentication)")
 	public String details(
 			@PathVariable("wordId") Long wordId,
 			@ModelAttribute(name = SESSION_BEAN) SessionBean sessionBean,
@@ -167,6 +173,7 @@ public class FullSynSearchController extends AbstractPrivateSearchController {
 	}
 
 	@PostMapping(FULL_SYN_SEARCH_WORDS_URI + "/{targetMeaningId}/{wordRelationId}")
+	@PreAuthorize("@permEval.isSynPageAccessPermitted(authentication)")
 	public String searchSynWordRelationWords(
 			@PathVariable Long targetMeaningId,
 			@PathVariable Long wordRelationId,
@@ -184,6 +191,7 @@ public class FullSynSearchController extends AbstractPrivateSearchController {
 	}
 
 	@GetMapping(FULL_SYN_SEARCH_WORDS_URI)
+	@PreAuthorize("@permEval.isSynPageAccessPermitted(authentication)")
 	public String searchSynMeaningWords(
 			@RequestParam Long targetMeaningId,
 			@RequestParam String wordValue,
