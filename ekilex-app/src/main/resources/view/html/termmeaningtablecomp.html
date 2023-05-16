@@ -9,12 +9,13 @@
     </td>
     <td>
       <div th:each="definition, definitionIter : ${meaningTableRow.definitions}">
+        <input type="hidden" name="definitionIds" th:value="${definition.definitionId}" th:if="${definition.crudGrant}">
         <input type="hidden" class="meaning-data-input" th:name="'definitions[' + ${definitionIter.index} + '].definitionId'" th:value="${definition.definitionId}">
         <span>
           <input type="hidden" class="meaning-data-input" th:name="'definitions[' + ${definitionIter.index} + '].valuePrese'">
           <span class="value-span" data-plugin="initTermMeaningTableEkiEditorDlgOnClickPlugin"
                 th:utext="${definition.valuePrese}"
-                th:data-edit-enabled="${#vars.definition.crudGrant}"></span>
+                th:data-edit-enabled="${definition.crudGrant}"></span>
         </span>
         <button class="btn text-gray"
                 data-plugin="meaningRowItemPublicity"
@@ -22,7 +23,7 @@
                 th:data-meaning-id="${meaningTableRow.meaningId}"
                 th:data-public="${definition.public}"
                 th:data-label="#{'boolean.public.' + ${definition.public}}"
-                th:data-edit-enabled="${#vars.definition.crudGrant}">
+                th:data-edit-enabled="${definition.crudGrant}">
           <span name="icon-span"></span>
           <input type="hidden" class="meaning-data-input"
                  th:id="${'definition-publicity-' + definition.definitionId}"
@@ -35,6 +36,7 @@
       <table class="table table-sm table-bordered">
         <tr th:each="lexeme, lexemeIter : ${meaningTableRow.lexemes}">
           <td style="width: 50%">
+            <input type="hidden" name="lexemeIds" th:value="${lexeme.lexemeId}" th:if="${lexeme.crudGrant}">
             <input type="hidden" class="meaning-data-input" th:name="'lexemes[' + ${lexemeIter.index} + '].lexemeId'" th:value="${lexeme.lexemeId}">
             <span th:utext="${lexeme.word.valuePrese}"></span>
             <span th:text="${'(' + viewUtil.getLangIso2(lexeme.word.lang) + ')'}" class="ml-1"></span>
@@ -45,7 +47,7 @@
                     th:data-meaning-id="${meaningTableRow.meaningId}"
                     th:data-public="${lexeme.public}"
                     th:data-label="#{'boolean.public.' + ${lexeme.public}}"
-                    th:data-edit-enabled="${#vars.lexeme.crudGrant}">
+                    th:data-edit-enabled="${lexeme.crudGrant}">
               <span name="icon-span"></span>
               <input type="hidden" class="meaning-data-input"
                      th:id="${'lexeme-publicity-' + lexeme.lexemeId}"
@@ -55,12 +57,13 @@
           </td>
           <td style="width: 50%">
             <div th:each="usage, usageIter : ${lexeme.usages}">
+              <input type="hidden" name="usageIds" th:value="${usage.freeformId}" th:if="${usage.crudGrant}">
               <input type="hidden" class="meaning-data-input" th:name="'usages[' + ${usage.index} + '].freeformId'" th:value="${usage.freeformId}">
               <span>
                 <input type="hidden" class="meaning-data-input" th:name="'usages[' + ${usage.index} + '].valuePrese'">
                 <span class="value-span" data-plugin="initTermMeaningTableEkiEditorDlgOnClickPlugin"
                       th:utext="${usage.valuePrese}"
-                      th:data-edit-enabled="${#vars.usage.crudGrant}"></span>
+                      th:data-edit-enabled="${usage.crudGrant}"></span>
               </span>
               <button class="btn text-gray"
                       data-plugin="meaningRowItemPublicity"
@@ -68,7 +71,7 @@
                       th:data-meaning-id="${meaningTableRow.meaningId}"
                       th:data-public="${usage.public}"
                       th:data-label="#{'boolean.public.' + ${usage.public}}"
-                      th:data-edit-enabled="${#vars.usage.crudGrant}">
+                      th:data-edit-enabled="${usage.crudGrant}">
                 <span name="icon-span"></span>
                 <input type="hidden" class="meaning-data-input"
                        th:id="${'usage-publicity-' + usage.freeformId}"

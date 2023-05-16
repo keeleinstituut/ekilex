@@ -32,7 +32,7 @@ $.fn.meaningRowItemPublicity = function() {
 	publicityBtn.on('click', function(e) {
 		e.preventDefault();
 		if (isEditEnabled) {
-			const editPublicityDlg = $("#editPublicityDlg");
+			const editPublicityDlg = $("#editRowItemPublicityDlg");
 			editPublicityDlg.find("input[name='publicityInputId']").val(publicityInputId);
 			editPublicityDlg.find("input[name='meaningId']").val(meaningId);
 			if (isPublic) {
@@ -53,22 +53,57 @@ $.fn.initMeaningRowItemPublicityDlgPlugin = function() {
 			configureSelectDlg(selectControl, editPublicityDlg);
 
 			selectControl.off('click').on('click', function(e) {
-				submitPublicityDlg(editPublicityDlg);
+				submitRowItemPublicity(editPublicityDlg);
 			});
 			selectControl.off('changed.bs.select').on('changed.bs.select', function(e) {
-				submitPublicityDlg(editPublicityDlg);
+				submitRowItemPublicity(editPublicityDlg);
 
 			});
 			selectControl.off('keydown').on('keydown', function(e) {
 				if (e.key === "Enter") {
-					submitPublicityDlg(editPublicityDlg);
+					submitRowItemPublicity(editPublicityDlg);
 				}
 			});
 		})
 	})
 }
 
-function submitPublicityDlg(editPublicityDlg) {
+$.fn.meaningTableItemsPublicity = function() {
+	const publicityBtn = $(this);
+	const type = publicityBtn.data('type');
+
+	publicityBtn.on('click', function(e) {
+		e.preventDefault();
+		const editPublicityDlg = $("#editTableItemsPublicityDlg");
+		editPublicityDlg.find("input[name='type']").val(type);
+		editPublicityDlg.modal('show', publicityBtn);
+	});
+}
+
+$.fn.initMeaningTableItemsPublicityDlgPlugin = function() {
+	return this.each(function() {
+		const editPublicityDlg = $(this);
+		editPublicityDlg.on('show.bs.modal', function() {
+			let selectControl = editPublicityDlg.find('select');
+			configureSelectDlg(selectControl, editPublicityDlg);
+
+			selectControl.off('click').on('click', function(e) {
+				submitTableItemsPublicity(editPublicityDlg);
+			});
+			selectControl.off('changed.bs.select').on('changed.bs.select', function(e) {
+				submitTableItemsPublicity(editPublicityDlg);
+
+			});
+			selectControl.off('keydown').on('keydown', function(e) {
+				if (e.key === "Enter") {
+					submitTableItemsPublicity(editPublicityDlg);
+				}
+			});
+		})
+	})
+}
+
+function submitRowItemPublicity(editPublicityDlg) {
 	const selectedValue = editPublicityDlg.find("select[name='public']").val();
 	const publicityInputId = editPublicityDlg.find("input[name='publicityInputId']").val();
 	const meaningId = editPublicityDlg.find("input[name='meaningId']").val();
@@ -78,6 +113,27 @@ function submitPublicityDlg(editPublicityDlg) {
 	publicityInput.val(selectedValue);
 	editPublicityDlg.modal('hide');
 	submitTermMeaningTableMeaning(meaningTableRow);
+}
+
+function submitTableItemsPublicity(editPublicityDlg) {
+	const selectedValue = editPublicityDlg.find("select[name='public']").val();
+	const type = editPublicityDlg.find("input[name='type']").val();
+	let ids;
+	let form;
+	if (type === "definition") {
+		ids = $("input[name='definitionIds']");
+		form = $("#updateDefinitionsPublicityForm")
+	} else if (type === "lexeme") {
+		ids = $("input[name='lexemeIds']");
+		form = $("#updateLexemesPublicityForm")
+	} else if (type === "usage") {
+		ids = $("input[name='usageIds']");
+		form = $("#updateUsagesPublicityForm")
+	}
+	const publicityInput = form.find("input[name='public']");
+	form.append(ids);
+	publicityInput.val(selectedValue);
+	form.submit();
 }
 
 function submitTermMeaningTableMeaning(meaningTableRow) {

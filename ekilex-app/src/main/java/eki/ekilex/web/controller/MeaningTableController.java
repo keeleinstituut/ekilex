@@ -61,6 +61,7 @@ public class MeaningTableController extends AbstractPrivateSearchController {
 		}
 
 		model.addAttribute("searchResult", meaningTableSearchResult);
+		model.addAttribute("searchUri", searchUri);
 
 		return TERM_MEANING_TABLE_PAGE;
 	}
@@ -80,5 +81,35 @@ public class MeaningTableController extends AbstractPrivateSearchController {
 
 		model.addAttribute("meaningTableRow", meaningTableRow);
 		return TERM_MEANING_TABLE_COMPONENTS_PAGE + PAGE_FRAGMENT_ELEM + "meaning_table_row";
+	}
+
+	@PostMapping(TERM_MEANING_TABLE_URI + UPDATE_DEFINITIONS_PUBLICITY_URI)
+	public String updateDefinitionsPublicity(
+			@RequestParam("definitionIds") List<Long> definitionIds,
+			@RequestParam("public") boolean isPublic,
+			@RequestParam("searchUri") String searchUri) {
+
+		// TODO service and user message
+		return REDIRECT_PREF + TERM_MEANING_TABLE_URI + searchUri;
+	}
+
+	@PostMapping(TERM_MEANING_TABLE_URI + UPDATE_LEXEMES_PUBLICITY_URI)
+	public String updateLexemesPublicity(
+			@RequestParam("lexemeIds") List<Long> lexemeIds,
+			@RequestParam("public") boolean isPublic,
+			@RequestParam("searchUri") String searchUri) {
+
+		// TODO service and user message
+		return REDIRECT_PREF + TERM_MEANING_TABLE_URI + searchUri;
+	}
+
+	@PostMapping(TERM_MEANING_TABLE_URI + UPDATE_USAGES_PUBLICITY_URI)
+	public String updateUsagesPublicity(
+			@RequestParam("usageIds") List<Long> usageIds,
+			@RequestParam("public") boolean isPublic,
+			@RequestParam("searchUri") String searchUri) {
+
+		// TODO service and user message
+		return REDIRECT_PREF + TERM_MEANING_TABLE_URI + searchUri;
 	}
 }

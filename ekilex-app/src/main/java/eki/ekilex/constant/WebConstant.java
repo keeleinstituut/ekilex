@@ -70,6 +70,12 @@ public interface WebConstant {
 
 	String UPDATE_MEANING_URI = "/update_meaning";
 
+	String UPDATE_LEXEMES_PUBLICITY_URI = "/update_lexemes_publicity";
+
+	String UPDATE_DEFINITIONS_PUBLICITY_URI = "/update_definitions_publicity";
+
+	String UPDATE_USAGES_PUBLICITY_URI = "/update_usages_publicity";
+
 	String LIM_TERM_PAGING_URI = "/lim_term_paging";
 
 	String TERM_COMPONENTS_PAGE = "termcomp";

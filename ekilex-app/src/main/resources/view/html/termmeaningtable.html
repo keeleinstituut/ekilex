@@ -12,12 +12,38 @@
       <div class="card-body">
         <th:block th:if="${searchResult.resultCount > 0}">
           <form id="updateMeaningForm" th:action="@{/termmeaningtable/update_meaning}" method="post"></form>
+          <form id="updateDefinitionsPublicityForm" th:action="@{/termmeaningtable/update_definitions_publicity}" method="post">
+            <input type="hidden" name="searchUri" th:value="${searchUri}">
+            <input type="hidden" name="public">
+          </form>
+          <form id="updateLexemesPublicityForm" th:action="@{/termmeaningtable/update_lexemes_publicity}" method="post">
+            <input type="hidden" name="searchUri" th:value="${searchUri}">
+            <input type="hidden" name="public">
+          </form>
+          <form id="updateUsagesPublicityForm" th:action="@{/termmeaningtable/update_usages_publicity}" method="post">
+            <input type="hidden" name="searchUri" th:value="${searchUri}">
+            <input type="hidden" name="public">
+          </form>
           <table class="table table-sm border-bottom">
             <tr>
               <th style="width: 10%" th:text="#{term.meaning.table.meaning.id}">mõiste id</th>
-              <th style="width: 30%" th:text="#{term.meaning.table.definitions}">seletused</th>
-              <th style="width: 30%" th:text="#{term.meaning.table.lexemes}">ilmikud</th>
-              <th style="width: 30%" th:text="#{term.meaning.table.usages}">kasutusnäited</th>
+              <th style="width: 30%">
+                <span th:text="#{term.meaning.table.definitions}">seletused</span>
+                <button class="btn text-gray" data-plugin="meaningTableItemsPublicity" data-type="definition">
+                  <span class="fa fa-lock"></span>
+                </button>
+              </th>
+              <th style="width: 30%">
+                <span th:text="#{term.meaning.table.lexemes}">ilmikud</span>
+                <button class="btn text-gray" data-plugin="meaningTableItemsPublicity" data-type="lexeme">
+                  <span class="fa fa-lock"></span>
+                </button>
+              </th>
+              <th style="width: 30%">
+                <span th:text="#{term.meaning.table.usages}">kasutusnäited</span>
+                <button class="btn text-gray" data-plugin="meaningTableItemsPublicity" data-type="usage">
+                  <span class="fa fa-lock"></span>
+                </button></th>
             </tr>
             <th:block th:each="meaningTableRow : ${searchResult.results}">
               <tr th:replace="termmeaningtablecomp :: meaning_table_row"></tr>
@@ -27,7 +53,7 @@
       </div>
     </div>
   </div>
-  <div id="editPublicityDlg" class="modal select-dlg" role="dialog" data-plugin="initMeaningRowItemPublicityDlgPlugin">
+  <div id="editRowItemPublicityDlg" class="modal select-dlg" role="dialog" data-plugin="initMeaningRowItemPublicityDlgPlugin">
     <div class="modal-dialog" role="document">
       <div class="modal-content">
         <div class="modal-body">
@@ -36,6 +62,19 @@
           <select class="form-control" name="public">
             <option value="true" th:text="#{boolean.public.true}">avalik</option>
             <option value="false" th:text="#{boolean.public.false}">mitteavalik</option>
+          </select>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div id="editTableItemsPublicityDlg" class="modal select-dlg" role="dialog" data-plugin="initMeaningTableItemsPublicityDlgPlugin">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-body">
+          <input type="hidden" name="type">
+          <select class="form-control" name="public">
+            <option value="true" th:text="#{term.meaning.table.all.public.true}">Avalikusta kõik</option>
+            <option value="false" th:text="#{term.meaning.table.all.public.false}">Mitteavalikusta kõik</option>
           </select>
         </div>
       </div>
