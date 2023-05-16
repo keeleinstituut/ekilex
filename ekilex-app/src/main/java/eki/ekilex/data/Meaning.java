@@ -9,6 +9,8 @@ public class Meaning extends AbstractCrudEntity {
 
 	private Long meaningId;
 
+	private String firstWordValue;
+
 	private List<Long> lexemeIds;
 
 	private List<Definition> definitions;
@@ -20,8 +22,6 @@ public class Meaning extends AbstractCrudEntity {
 	private List<LexemeLangGroup> lexemeLangGroups;
 
 	private List<String> lexemeDatasetCodes;
-
-	private String firstWordValue;
 
 	private List<OrderedClassifier> domains;
 
@@ -61,6 +61,14 @@ public class Meaning extends AbstractCrudEntity {
 
 	public void setMeaningId(Long meaningId) {
 		this.meaningId = meaningId;
+	}
+
+	public String getFirstWordValue() {
+		return firstWordValue;
+	}
+
+	public void setFirstWordValue(String firstWordValue) {
+		this.firstWordValue = firstWordValue;
 	}
 
 	public List<Long> getLexemeIds() {
@@ -109,14 +117,6 @@ public class Meaning extends AbstractCrudEntity {
 
 	public void setLexemeDatasetCodes(List<String> lexemeDatasetCodes) {
 		this.lexemeDatasetCodes = lexemeDatasetCodes;
-	}
-
-	public String getFirstWordValue() {
-		return firstWordValue;
-	}
-
-	public void setFirstWordValue(String firstWordValue) {
-		this.firstWordValue = firstWordValue;
 	}
 
 	public List<OrderedClassifier> getDomains() {
@@ -246,4 +246,5 @@ public class Meaning extends AbstractCrudEntity {
 	public void setManualEventOn(Timestamp manualEventOn) {
 		this.manualEventOn = manualEventOn;
 	}
+
 }
