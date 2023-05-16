@@ -18,6 +18,9 @@ import eki.ekilex.data.LexemeNote;
 import eki.ekilex.data.Meaning;
 import eki.ekilex.data.MeaningNote;
 import eki.ekilex.data.Source;
+import eki.ekilex.data.TypeMtDefinition;
+import eki.ekilex.data.TypeMtLexeme;
+import eki.ekilex.data.TypeMtLexemeFreeform;
 import eki.ekilex.data.Usage;
 import eki.ekilex.data.Word;
 import eki.ekilex.data.WordLexeme;
@@ -70,9 +73,21 @@ public class PermCalculator implements PermConstant {
 				Meaning meaning = (Meaning) crudEntity;
 				Long meaningId = meaning.getMeaningId();
 				isAnyGrant = permissionDbService.isGrantedForMeaningByAnyLexeme(userId, meaningId, AUTH_ITEM_DATASET, AUTH_OPS_CRUD);
+			} else if (crudEntity instanceof TypeMtLexeme) {
+				TypeMtLexeme lexeme = (TypeMtLexeme) crudEntity;
+				Long lexemeId = lexeme.getLexemeId();
+				isCrudGrant = permissionDbService.isGrantedForLexeme(userId, userRole, lexemeId, AUTH_ITEM_DATASET, AUTH_OPS_CRUD);
+			} else if (crudEntity instanceof TypeMtDefinition) {
+				TypeMtDefinition definition = (TypeMtDefinition) crudEntity;
+				Long definitionId = definition.getDefinitionId();
+				isCrudGrant = permissionDbService.isGrantedForDefinition(userId, userRole, definitionId, AUTH_ITEM_DATASET, AUTH_OPS_CRUD);
+			} else if (crudEntity instanceof TypeMtLexemeFreeform) {
+				TypeMtLexemeFreeform usage = (TypeMtLexemeFreeform) crudEntity;
+				Long usageId = usage.getFreeformId();
+				isCrudGrant = permissionDbService.isGrantedForUsage(userId, userRole, usageId, AUTH_ITEM_DATASET, AUTH_OPS_CRUD);
 			}
 
-			crudEntity.setCrudGrant(isCrudGrant);
+		crudEntity.setCrudGrant(isCrudGrant);
 			crudEntity.setAnyGrant(isAnyGrant);
 		}
 	}

@@ -525,7 +525,7 @@ public class CudService extends AbstractCudService implements GlobalConstant, Pe
 	public void updateLexemePublicity(Long lexemeId, boolean isPublic, boolean isManualEventOnUpdateEnabled) throws Exception {
 
 		ActivityLogData activityLog = activityLogService.prepareActivityLog("updateLexemePublicity", lexemeId, ActivityOwner.LEXEME, isManualEventOnUpdateEnabled);
-		cudDbService.updateLexemeProcessState(lexemeId, isPublic);
+		cudDbService.updateLexemePublicity(lexemeId, isPublic);
 		activityLogService.createActivityLog(activityLog, lexemeId, ActivityEntity.LEXEME);
 	}
 

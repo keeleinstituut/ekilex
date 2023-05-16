@@ -4,9 +4,8 @@ import java.time.LocalDateTime;
 
 import eki.common.constant.Complexity;
 import eki.common.constant.FreeformType;
-import eki.common.data.AbstractDataObject;
 
-public class TypeMtLexemeFreeform extends AbstractDataObject {
+public class TypeMtLexemeFreeform extends AbstractCrudEntity {
 
 	private static final long serialVersionUID = 1L;
 
@@ -33,6 +32,8 @@ public class TypeMtLexemeFreeform extends AbstractDataObject {
 	private String modifiedBy;
 
 	private LocalDateTime modifiedOn;
+
+	private int index;
 
 	public Long getLexemeId() {
 		return lexemeId;
@@ -130,4 +131,11 @@ public class TypeMtLexemeFreeform extends AbstractDataObject {
 		this.modifiedOn = modifiedOn;
 	}
 
+	public int getIndex() {
+		return index;
+	}
+
+	public void setIndex(int index) {
+		this.index = index;
+	}
 }

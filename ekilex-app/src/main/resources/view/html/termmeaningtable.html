@@ -11,6 +11,7 @@
     <div class="card mt-4 shadow">
       <div class="card-body">
         <th:block th:if="${searchResult.resultCount > 0}">
+          <form id="updateMeaningForm" th:action="@{/termmeaningtable/update_meaning}" method="post"></form>
           <table class="table table-sm border-bottom">
             <tr>
               <th style="width: 10%" th:text="#{term.meaning.table.meaning.id}">mõiste id</th>
@@ -18,39 +19,28 @@
               <th style="width: 30%" th:text="#{term.meaning.table.lexemes}">ilmikud</th>
               <th style="width: 30%" th:text="#{term.meaning.table.usages}">kasutusnäited</th>
             </tr>
-            <tr th:each="meaningTableRow : ${searchResult.results}">
-              <td>
-                <span th:text="${meaningTableRow.meaningId}"></span>
-              </td>
-              <td>
-                <div th:each="definition : ${meaningTableRow.definitions}">
-                  <span th:utext="${definition.value}"></span>
-                  <span class="ctxt" th:text="'(' + #{'boolean.public.' + ${definition.public}} + ')'" data-plugin="complexity"></span>
-                </div>
-              </td>
-              <td colspan="2">
-                <table class="table table-sm table-bordered">
-                  <tr th:each="lexeme : ${meaningTableRow.lexemes}">
-                    <td style="width: 50%">
-                      <span th:utext="${lexeme.word.valuePrese}"></span>
-                      <span th:text="${'(' + viewUtil.getLangIso2(lexeme.word.lang) + ')'}" class="ml-1"></span>
-                      <span th:text="'(' + ${lexeme.datasetCode + ')'}" class="ml-1"></span>
-                      <span class="ctxt" th:text="'(' + #{'boolean.public.' + ${lexeme.public}} + ')'" data-plugin="complexity"></span>
-                    </td>
-                    <td style="width: 50%">
-                      <div th:each="usage : ${lexeme.usages}">
-                        <span th:utext="${usage.valuePrese}"></span>
-                        <div class=" ctxt" th:text="'(' + #{'boolean.public.' + ${usage.public}} + ')'" data-plugin="complexity"></div>
-                      </div>
-                    </td>
-                  </tr>
-                </table>
-              </td>
-            </tr>
+            <th:block th:each="meaningTableRow : ${searchResult.results}">
+              <tr th:replace="termmeaningtablecomp :: meaning_table_row"></tr>
+            </th:block>
           </table>
         </th:block>
       </div>
     </div>
   </div>
+  <div id="editPublicityDlg" class="modal select-dlg" role="dialog" data-plugin="initMeaningRowItemPublicityDlgPlugin">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-body">
+          <input type="hidden" name="publicityInputId">
+          <input type="hidden" name="meaningId">
+          <select class="form-control" name="public">
+            <option value="true" th:text="#{boolean.public.true}">avalik</option>
+            <option value="false" th:text="#{boolean.public.false}">mitteavalik</option>
+          </select>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div th:replace="common :: #waitDlg"></div>
 </body>
 </html>

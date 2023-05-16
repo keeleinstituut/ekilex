@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="et" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head></head>
+<body>
+  <tr class="meaning-table-row" th:id="${meaningTableRow.meaningId}" th:fragment="meaning_table_row">
+    <td>
+      <input type="hidden" class="meaning-data-input" name="meaningId" th:value="${meaningTableRow.meaningId}">
+      <span th:text="${meaningTableRow.meaningId}"></span>
+    </td>
+    <td>
+      <div th:each="definition, definitionIter : ${meaningTableRow.definitions}">
+        <input type="hidden" class="meaning-data-input" th:name="'definitions[' + ${definitionIter.index} + '].definitionId'" th:value="${definition.definitionId}">
+        <span>
+          <input type="hidden" class="meaning-data-input" th:name="'definitions[' + ${definitionIter.index} + '].valuePrese'">
+          <span class="value-span" data-plugin="initTermMeaningTableEkiEditorDlgOnClickPlugin"
+                th:utext="${definition.valuePrese}"
+                th:data-edit-enabled="${#vars.definition.crudGrant}"></span>
+        </span>
+        <button class="btn text-gray"
+                data-plugin="meaningRowItemPublicity"
+                th:data-publicity-input-id="${'definition-publicity-' + definition.definitionId}"
+                th:data-meaning-id="${meaningTableRow.meaningId}"
+                th:data-public="${definition.public}"
+                th:data-label="#{'boolean.public.' + ${definition.public}}"
+                th:data-edit-enabled="${#vars.definition.crudGrant}">
+          <span name="icon-span"></span>
+          <input type="hidden" class="meaning-data-input"
+                 th:id="${'definition-publicity-' + definition.definitionId}"
+                 th:name="'definitions[' + ${definitionIter.index} + '].public'"
+                 th:value="${definition.public}">
+        </button>
+      </div>
+    </td>
+    <td colspan="2">
+      <table class="table table-sm table-bordered">
+        <tr th:each="lexeme, lexemeIter : ${meaningTableRow.lexemes}">
+          <td style="width: 50%">
+            <input type="hidden" class="meaning-data-input" th:name="'lexemes[' + ${lexemeIter.index} + '].lexemeId'" th:value="${lexeme.lexemeId}">
+            <span th:utext="${lexeme.word.valuePrese}"></span>
+            <span th:text="${'(' + viewUtil.getLangIso2(lexeme.word.lang) + ')'}" class="ml-1"></span>
+            <span th:text="'(' + ${lexeme.datasetCode + ')'}" class="ml-1"></span>
+            <button class="btn text-gray"
+                    data-plugin="meaningRowItemPublicity"
+                    th:data-publicity-input-id="${'lexeme-publicity-' + lexeme.lexemeId}"
+                    th:data-meaning-id="${meaningTableRow.meaningId}"
+                    th:data-public="${lexeme.public}"
+                    th:data-label="#{'boolean.public.' + ${lexeme.public}}"
+                    th:data-edit-enabled="${#vars.lexeme.crudGrant}">
+              <span name="icon-span"></span>
+              <input type="hidden" class="meaning-data-input"
+                     th:id="${'lexeme-publicity-' + lexeme.lexemeId}"
+                     th:name="'lexemes[' + ${lexemeIter.index} + '].public'"
+                     th:value="${lexeme.public}">
+            </button>
+          </td>
+          <td style="width: 50%">
+            <div th:each="usage, usageIter : ${lexeme.usages}">
+              <input type="hidden" class="meaning-data-input" th:name="'usages[' + ${usage.index} + '].freeformId'" th:value="${usage.freeformId}">
+              <span>
+                <input type="hidden" class="meaning-data-input" th:name="'usages[' + ${usage.index} + '].valuePrese'">
+                <span class="value-span" data-plugin="initTermMeaningTableEkiEditorDlgOnClickPlugin"
+                      th:utext="${usage.valuePrese}"
+                      th:data-edit-enabled="${#vars.usage.crudGrant}"></span>
+              </span>
+              <button class="btn text-gray"
+                      data-plugin="meaningRowItemPublicity"
+                      th:data-publicity-input-id="${'usage-publicity-' + usage.freeformId}"
+                      th:data-meaning-id="${meaningTableRow.meaningId}"
+                      th:data-public="${usage.public}"
+                      th:data-label="#{'boolean.public.' + ${usage.public}}"
+                      th:data-edit-enabled="${#vars.usage.crudGrant}">
+                <span name="icon-span"></span>
+                <input type="hidden" class="meaning-data-input"
+                       th:id="${'usage-publicity-' + usage.freeformId}"
+                       th:name="'usages[' + ${usage.index} + '].public'"
+                       th:value="${usage.public}">
+              </button>
+            </div>
+          </td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+</body>
+</html>

@@ -1308,7 +1308,6 @@ function loadDetails(wordOrMeaningId, task, lastWordOrMeaningId) {
 function initBasicInlineEkiEditorOnContent(obj, callback) {
 	const options = {
 		width: '100%',
-		height: obj.parent().height() - 44,
 		extraPlugins: 'ekiStyles',
 		extraAllowedContent: '',
 		removePlugins: 'sourcearea, elementspath',

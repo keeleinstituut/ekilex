@@ -170,7 +170,7 @@
       <span th:each="grammar,grammarIter : ${lexeme.grammars}" class="hidden-buttons">
         <span th:replace="lexdialog :: edit_lexeme_grammar_dlg"></span>
         <span th:utext="${grammar.valuePrese}"></span>
-        <span class="ctxt" th:text="'(' + #{'enum.complexity.' + ${grammar.complexity}} + ')'" data-plugin="complexity"></span>
+        <span class="ctxt" th:text="'(' + #{'enum.complexity.' + ${grammar.complexity}} + ')'" data-plugin="complexityAndPublicity"></span>
         <button type="button" class="btn badge badge-primary"
                 th:title="#{common.edit}"
                 data-toggle="modal"
@@ -714,9 +714,9 @@
             </div>
             <div class="invisible-buttons action-buttons-anchor mw-80">
               <span th:utext="${definition.value}"></span>
-              <span class="ctxt" th:text="'(' + #{'enum.complexity.' + ${definition.complexity}} + ')'" data-plugin="complexity"></span>
+              <span class="ctxt" th:text="'(' + #{'enum.complexity.' + ${definition.complexity}} + ')'" data-plugin="complexityAndPublicity"></span>
               <span class="ctxt" th:each="datasetCode,iter : ${definition.datasetCodes}" th:text="${(iter.first ? '[' : '') + datasetCode + (iter.last ? ']' : ', ')}"></span>
-              <span class="ctxt" th:text="'(' + #{'boolean.public.' + ${definition.public}} + ')'" th:if="${definition.crudGrant}" data-plugin="complexity"></span>
+              <span class="ctxt" th:text="'(' + #{'boolean.public.' + ${definition.public}} + ')'" th:if="${definition.crudGrant}" data-plugin="complexityAndPublicity"></span>
               <span th:if="${#lists.isEmpty(definition.sourceLinks)}" class="show-on-mouseover">
                 [
                 <button type="button" class="btn badge badge-success"
@@ -798,7 +798,7 @@
                 <div class="small invisible-buttons action-buttons-anchor mw-90 ml-4">
                   <div style="position: absolute; display: list-item;"></div>
                   <span th:utext="${note.valuePrese}"></span>
-                  <span class="ctxt" th:text="'(' + #{'boolean.public.' + ${note.public}} + ')'" th:if="${definition.crudGrant}" data-plugin="complexity"></span>
+                  <span class="ctxt" th:text="'(' + #{'boolean.public.' + ${note.public}} + ')'" th:if="${definition.crudGrant}" data-plugin="complexityAndPublicity"></span>
                   <span class="show-on-mouseover" th:if="${#lists.isEmpty(note.sourceLinks)}">
                     [
                     <button type="button" class="btn badge badge-success"
@@ -933,7 +933,7 @@
           <div class="col hidden-buttons">
             <div class="action-buttons-anchor">
               <span th:utext="${learnerComment.valuePrese}"></span>
-              <span class="ctxt" th:text="'(' + #{'enum.complexity.' + ${learnerComment.complexity}} + ')'" data-plugin="complexity"></span>
+              <span class="ctxt" th:text="'(' + #{'enum.complexity.' + ${learnerComment.complexity}} + ')'" data-plugin="complexityAndPublicity"></span>
               <div class="action-buttons-2">
                 <button type="button" class="btn badge badge-primary"
                         th:title="#{common.edit}"
@@ -1272,7 +1272,7 @@
             <div class="col hidden-buttons">
               <div class="action-buttons-anchor">
                 <span class="pr-3" th:text="${government.value}"></span>
-                <span class="ctxt" th:text="'(' + #{'enum.complexity.' + ${government.complexity}} + ')'" data-plugin="complexity"></span>
+                <span class="ctxt" th:text="'(' + #{'enum.complexity.' + ${government.complexity}} + ')'" data-plugin="complexityAndPublicity"></span>
                 <div class="action-buttons-2">
                   <button type="button" class="btn badge badge-primary"
                           th:title="#{common.edit}"
@@ -1327,8 +1327,8 @@
                 <div class="action-buttons-anchor">
                   <div class="d-inline-block" th:utext="${usage.value}"></div>
                   <div class="d-inline-block" th:if="${usage.typeValue != null}" th:text="'(' + ${usage.typeValue + ')'}"></div>
-                  <div class="d-inline-block ctxt" th:text="'(' + #{'enum.complexity.' + ${usage.complexity}} + ')'" data-plugin="complexity"></div>
-                  <div class="d-inline-block ctxt" th:text="'(' + #{'boolean.public.' + ${usage.public}} + ')'" th:if="${usage.crudGrant}" data-plugin="complexity"></div>
+                  <div class="d-inline-block ctxt" th:text="'(' + #{'enum.complexity.' + ${usage.complexity}} + ')'" data-plugin="complexityAndPublicity"></div>
+                  <div class="d-inline-block ctxt" th:text="'(' + #{'boolean.public.' + ${usage.public}} + ')'" th:if="${usage.crudGrant}" data-plugin="complexityAndPublicity"></div>
                   <div th:if="${#lists.isEmpty(usage.authors)}" class="show-on-mouseover" sec:authorize="#vars.usage.crudGrant">
                     (
                     <button type="button" class="btn badge badge-success hidden"
@@ -1530,8 +1530,8 @@
             </div>
             <div class="invisible-buttons action-buttons-anchor mw-90">
               <span th:utext="${note.valuePrese}"></span>
-              <span class="ctxt" th:text="'(' + #{'enum.complexity.' + ${note.complexity}} + ')'" data-plugin="complexity"></span>
-              <span class="ctxt" th:text="'(' + #{'boolean.public.' + ${note.public}} + ')'" th:if="${lexeme.crudGrant}" data-plugin="complexity"></span>
+              <span class="ctxt" th:text="'(' + #{'enum.complexity.' + ${note.complexity}} + ')'" data-plugin="complexityAndPublicity"></span>
+              <span class="ctxt" th:text="'(' + #{'boolean.public.' + ${note.public}} + ')'" th:if="${lexeme.crudGrant}" data-plugin="complexityAndPublicity"></span>
               <div class="action-buttons-2">
                 <button type="button" class="btn badge badge-primary"
                         th:title="#{common.edit}"
@@ -1591,8 +1591,8 @@
             </div>
             <div class="invisible-buttons action-buttons-anchor mw-90">
               <span th:utext="${note.valuePrese}"></span>
-              <span class="ctxt" th:text="'(' + #{'enum.complexity.' + ${note.complexity}} + ')'" th:if="${lexeme.meaning.crudGrant}" data-plugin="complexity"></span>
-              <span class="ctxt" th:text="'(' + #{'boolean.public.' + ${note.public}} + ')'" th:if="${lexeme.meaning.crudGrant}" data-plugin="complexity"></span>
+              <span class="ctxt" th:text="'(' + #{'enum.complexity.' + ${note.complexity}} + ')'" th:if="${lexeme.meaning.crudGrant}" data-plugin="complexityAndPublicity"></span>
+              <span class="ctxt" th:text="'(' + #{'boolean.public.' + ${note.public}} + ')'" th:if="${lexeme.meaning.crudGrant}" data-plugin="complexityAndPublicity"></span>
               <div class="action-buttons-2">
                 <button type="button" class="btn badge badge-primary"
                         th:title="#{common.edit}"

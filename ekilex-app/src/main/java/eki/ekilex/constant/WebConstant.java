@@ -66,6 +66,10 @@ public interface WebConstant {
 
 	String TERM_MEANING_TABLE_PAGE = "termmeaningtable";
 
+	String TERM_MEANING_TABLE_COMPONENTS_PAGE = "termmeaningtablecomp";
+
+	String UPDATE_MEANING_URI = "/update_meaning";
+
 	String LIM_TERM_PAGING_URI = "/lim_term_paging";
 
 	String TERM_COMPONENTS_PAGE = "termcomp";

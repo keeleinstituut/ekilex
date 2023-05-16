@@ -209,7 +209,7 @@ $.fn.relativeFormItem = function() {
 	});
 }
 
-$.fn.complexity = function() {
+$.fn.complexityAndPublicity = function() {
 	const main = $(this);
 	const text = main.text().trim();
 	const types = {

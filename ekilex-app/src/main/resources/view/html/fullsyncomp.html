@@ -162,7 +162,7 @@
                         th:data-label="#{'boolean.public.' + ${synWord.lexemePublic}}">
                     <span name="icon-span"></span>
                   </span>
-                  <span class="ctxt" th:text="'(' + #{'enum.complexity.' + ${synWord.lexemeComplexity}} + ')'" data-plugin="complexity"></span>
+                  <span class="ctxt" th:text="'(' + #{'enum.complexity.' + ${synWord.lexemeComplexity}} + ')'" data-plugin="complexityAndPublicity"></span>
                   <div th:replace="fullsyndialog :: edit_lexeme_weight_dlg"></div>
                   <div th:replace="fullsyndialog :: edit_lexeme_complexity_dlg"></div>
                   <button type="button" class="btn badge badge-secondary btn-xs"

@@ -261,7 +261,7 @@ public class CudDbService extends AbstractDataDbService {
 				.execute();
 	}
 
-	public void updateLexemeProcessState(Long lexemeId, boolean isPublic) {
+	public void updateLexemePublicity(Long lexemeId, boolean isPublic) {
 		create
 				.update(LEXEME)
 				.set(LEXEME.IS_PUBLIC, isPublic)
