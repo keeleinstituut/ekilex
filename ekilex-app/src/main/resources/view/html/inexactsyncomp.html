@@ -406,11 +406,8 @@
                   <div class="inexact-syn-body-list__wrapper">
                     <span class="inexact-syn-body-list__title" th:text="#{inexactsyn.definitions}">Seletused</span>
                     <ul class="inexact-syn-body-list">
-                      <th:block
-                        th:each="definition : ${data.inexactSynMeaningDefinitions}"
-                        th:with="isInexactSynDef = ${definition.typeCode == T(eki.common.constant.GlobalConstant).DEFINITION_TYPE_CODE_INEXACT_SYN}"
-                        >
-                          <li class="inexact-syn-body-list__item" th:utext="${definition.value}"></li>
+                      <th:block th:each="definition : ${data.inexactSynMeaningDefinitions}">
+                        <li class="inexact-syn-body-list__item" th:utext="${definition.value}"></li>
                       </th:block>
                     </ul>
                   </div>
@@ -464,11 +461,8 @@
                   <div class="inexact-syn-body-list__wrapper">
                     <span class="inexact-syn-body-list__title" th:text="#{inexactsyn.definitions}">Seletused</span>
                     <ul class="inexact-syn-body-list">
-                      <th:block
-                        th:each="definition : ${data.targetMeaningDefinitions}"
-                        th:with="isInexactSynDef = ${definition.typeCode == T(eki.common.constant.GlobalConstant).DEFINITION_TYPE_CODE_INEXACT_SYN}"
-                        >
-                          <li class="inexact-syn-body-list__item" th:utext="${definition.value}"></li>
+                      <th:block th:each="definition : ${data.targetMeaningDefinitions}">
+                        <li class="inexact-syn-body-list__item" th:utext="${definition.value}"></li>
                       </th:block>
                     </ul>
                   </div>
