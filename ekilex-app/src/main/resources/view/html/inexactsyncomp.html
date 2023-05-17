@@ -411,7 +411,6 @@
                         th:with="isInexactSynDef = ${definition.typeCode == T(eki.common.constant.GlobalConstant).DEFINITION_TYPE_CODE_INEXACT_SYN}"
                         >
                           <li class="inexact-syn-body-list__item" th:utext="${definition.value}"></li>
-                          <li class="inexact-syn-body-list__item inexact-syn-body-list__item--exact" th:if="${isInexactSynDef}" th:text="${definition.typeCode}"></li>
                       </th:block>
                     </ul>
                   </div>
@@ -470,7 +469,6 @@
                         th:with="isInexactSynDef = ${definition.typeCode == T(eki.common.constant.GlobalConstant).DEFINITION_TYPE_CODE_INEXACT_SYN}"
                         >
                           <li class="inexact-syn-body-list__item" th:utext="${definition.value}"></li>
-                          <li class="inexact-syn-body-list__item inexact-syn-body-list__item--exact" th:if="${isInexactSynDef}" th:text="${definition.typeCode}"></li>
                       </th:block>
                     </ul>
                   </div>
