@@ -141,7 +141,7 @@ function submitTermMeaningTableMeaning(meaningTableRow) {
 	const meaningDataValueSpans = meaningTableRow.find(".value-span");
 	meaningDataValueSpans.each(function() {
 		const span = $(this);
-		span.parent().find(".meaning-data-input").val(span.text());
+		span.parent().find(".meaning-data-input").val(span.html());
 	});
 
 	const form = $("#updateMeaningForm");
