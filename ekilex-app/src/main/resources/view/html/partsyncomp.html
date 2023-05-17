@@ -106,19 +106,19 @@
             <span class="px-2 handle drag-handle border-right border-light text-muted" title="Lohista siit">
               <i class="fa fa-ellipsis-v text-muted" aria-hidden="true"></i>
             </span>
-            <span class="small" th:text="#{syn.meaning.id}">Tähenduse id:</span>
-            <span class="small" th:text="${meaning.meaningId}"></span>
-            <span class="pr-2 small" th:if="${not #lists.isEmpty(meaning.lexPosCodes)}">
+            <span class="font-medium" th:text="#{syn.meaning.id}">Tähenduse id:</span>
+            <span class="font-medium" th:text="${meaning.meaningId}"></span>
+            <span class="pr-2 font-medium" th:if="${not #lists.isEmpty(meaning.lexPosCodes)}">
               <span th:each="posCode : ${meaning.lexPosCodes}">
                 <span class="font-italic" th:text="${posCode}"></span>
               </span>
             </span>
           </div>
           <div class="d-flex flex-row" data-toggle="tooltip" th:title="#{syn.definition}" th:each="definition : ${meaning.definitionValues}">
-            <span class="small" th:utext="${definition}"></span>
+            <span class="font-medium" th:utext="${definition}"></span>
           </div>
           <div class="d-flex flex-row" data-toggle="tooltip" th:title="#{syn.usage}" th:each="usage : ${meaning.usageValues}">
-            <span class="small text-info" th:utext="${usage}"></span>
+            <span class="font-medium text-info" th:utext="${usage}"></span>
           </div>
         </div>
       </li>

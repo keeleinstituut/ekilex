@@ -54,10 +54,6 @@
     border-radius: 4px;
     padding: 8px 16px;
     gap: 8px;
-    // Add margin to all subsequent occurrences
-    &:not(:first-child) {
-      margin-top: 32px;
-    }
   }
 
   & .inexact-syn-meaning-candidate {

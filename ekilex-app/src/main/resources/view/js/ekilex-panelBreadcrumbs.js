@@ -161,7 +161,7 @@ class PanelBreadcrumbs {
   static addData(id, word, index) {
     if (!Array.isArray(this?.breadcrumbsData?.[viewType]?.[index])) {
       // Create the object only if it does not already exist.
-      this.breadcrumbsData[viewType] ||= {};
+      this.breadcrumbsData[viewType] = {};
       this.breadcrumbsData[viewType][index] = [];
     }
     this.breadcrumbsData[viewType][index].push({ id, word });

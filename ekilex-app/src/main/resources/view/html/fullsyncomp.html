@@ -76,13 +76,13 @@
         </div>
         <div>
           <div data-toggle="tooltip" th:title="#{fullsyn.lexeme.pos}">
-            <span class="pr-2 small" th:if="${not #lists.isEmpty(meaning.lexPosCodes)}">
+            <span class="pr-2 font-medium" th:if="${not #lists.isEmpty(meaning.lexPosCodes)}">
               <span th:each="posCode : ${meaning.lexPosCodes}">
                 <span class="font-italic" th:text="${posCode}"></span>
               </span>
             </span>
           </div>
-          <div class="d-flex flex-row small" data-toggle="tooltip" th:title="#{syn.definition}" th:each="definition : ${meaning.definitions}">
+          <div class="d-flex flex-row font-medium" data-toggle="tooltip" th:title="#{syn.definition}" th:each="definition : ${meaning.definitions}">
             <span th:utext="${definition.value}"></span>
             <span class="text-nowrap" th:each="sourceLink : ${definition.sourceLinks}">
               [
@@ -91,7 +91,7 @@
               ]
             </span>
           </div>
-          <div class="d-flex flex-row small text-info" data-toggle="tooltip" th:title="#{syn.usage}" th:each="usage : ${meaning.usages}">
+          <div class="d-flex flex-row font-medium text-info" data-toggle="tooltip" th:title="#{syn.usage}" th:each="usage : ${meaning.usages}">
             <span th:utext="${usage.value}"></span>
             <span class="text-nowrap" th:each="sourceLink : ${usage.sourceLinks}">
               [
