@@ -168,7 +168,7 @@ public class MeaningTableDbService implements GlobalConstant, SystemConstant {
 				.fetchInto(MeaningTableRow.class);
 	}
 
-	private static Field<TypeMtLexemeFreeformRecord[]> getUsageRowField(Lexeme l, LexemeFreeform lff, Freeform ff, Condition wherel) {
+	private Field<TypeMtLexemeFreeformRecord[]> getUsageRowField(Lexeme l, LexemeFreeform lff, Freeform ff, Condition wherel) {
 
 		String urowsql = DSL
 				.row(
@@ -197,7 +197,7 @@ public class MeaningTableDbService implements GlobalConstant, SystemConstant {
 		return uf;
 	}
 
-	private static Field<TypeMtWordRecord[]> gerWordRowField(Language cll, Lexeme l, Word w, Condition wherel) {
+	private Field<TypeMtWordRecord[]> gerWordRowField(Language cll, Lexeme l, Word w, Condition wherel) {
 
 		String wrowsql = DSL
 				.row(
@@ -247,7 +247,7 @@ public class MeaningTableDbService implements GlobalConstant, SystemConstant {
 		return df;
 	}
 
-	private static Field<TypeMtLexemeRecord[]> getLexRowField(Language cll, Lexeme l, Word w, Condition wherel) {
+	private Field<TypeMtLexemeRecord[]> getLexRowField(Language cll, Lexeme l, Word w, Condition wherel) {
 
 		String lrowsql = DSL
 				.row(
@@ -332,6 +332,33 @@ public class MeaningTableDbService implements GlobalConstant, SystemConstant {
 		create.update(FREEFORM)
 				.set(FREEFORM.VALUE_TEXT, value)
 				.set(FREEFORM.VALUE_PRESE, valuePrese)
+				.set(FREEFORM.IS_PUBLIC, isPublic)
+				.set(FREEFORM.MODIFIED_BY, userName)
+				.set(FREEFORM.MODIFIED_ON, timestamp)
+				.where(FREEFORM.ID.eq(usageId))
+				.execute();
+	}
+
+	public void updateDefinitionPublicity(Long definitionId, boolean isPublic) {
+
+		create.update(DEFINITION)
+				.set(DEFINITION.IS_PUBLIC, isPublic)
+				.where(DEFINITION.ID.eq(definitionId))
+				.execute();
+	}
+
+	public void updateLexemePublicity(Long lexemeId, boolean isPublic) {
+
+		create.update(LEXEME)
+				.set(LEXEME.IS_PUBLIC, isPublic)
+				.where(LEXEME.ID.eq(lexemeId))
+				.execute();
+	}
+
+	public void updateUsagePublicity(Long usageId, boolean isPublic, String userName) {
+
+		Timestamp timestamp = new Timestamp(System.currentTimeMillis());
+		create.update(FREEFORM)
 				.set(FREEFORM.IS_PUBLIC, isPublic)
 				.set(FREEFORM.MODIFIED_BY, userName)
 				.set(FREEFORM.MODIFIED_ON, timestamp)

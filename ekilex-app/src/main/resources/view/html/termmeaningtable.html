@@ -73,13 +73,16 @@
         <div class="modal-body">
           <input type="hidden" name="type">
           <select class="form-control" name="public">
-            <option value="true" th:text="#{term.meaning.table.all.public.true}">Avalikusta kõik</option>
-            <option value="false" th:text="#{term.meaning.table.all.public.false}">Mitteavalikusta kõik</option>
+            <option value="true" th:text="#{term.meaning.table.set.all.public}">Avalikusta kõik</option>
+            <option value="false" th:text="#{term.meaning.table.set.all.non.public}">Mitteavalikusta kõik</option>
           </select>
         </div>
       </div>
     </div>
   </div>
+  <th:block th:replace="common :: user_message"></th:block>
+  <div th:replace="common :: #alertDlg"></div>
+  <div th:replace="common :: #alertSmall"></div>
   <div th:replace="common :: #waitDlg"></div>
 </body>
 </html>

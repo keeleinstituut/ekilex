@@ -187,4 +187,49 @@ public class MeaningTableService extends AbstractSearchService {
 			}
 		}
 	}
+
+	@Transactional
+	public void updateDefinitionsPublicity(List<Long> definitionIds, boolean isPublic, boolean isManualEventOnUpdateEnabled) throws Exception {
+
+		if (CollectionUtils.isEmpty(definitionIds)) {
+			return;
+		}
+
+		for (Long definitionId : definitionIds) {
+			Long meaningId = activityLogService.getOwnerId(definitionId, ActivityEntity.DEFINITION);
+			ActivityLogData activityLog = activityLogService.prepareActivityLog("updateDefinitionsPublicity", meaningId, ActivityOwner.MEANING, isManualEventOnUpdateEnabled);
+			meaningTableDbService.updateDefinitionPublicity(definitionId, isPublic);
+			activityLogService.createActivityLog(activityLog, definitionId, ActivityEntity.DEFINITION);
+		}
+	}
+
+	@Transactional
+	public void updateLexemesPublicity(List<Long> lexemeIds, boolean isPublic, boolean isManualEventOnUpdateEnabled) throws Exception {
+
+		if (CollectionUtils.isEmpty(lexemeIds)) {
+			return;
+		}
+
+		for (Long lexemeId : lexemeIds) {
+			ActivityLogData activityLog = activityLogService.prepareActivityLog("updateLexemesPublicity", lexemeId, ActivityOwner.LEXEME, isManualEventOnUpdateEnabled);
+			meaningTableDbService.updateLexemePublicity(lexemeId, isPublic);
+			activityLogService.createActivityLog(activityLog, lexemeId, ActivityEntity.LEXEME);
+		}
+	}
+
+	@Transactional
+	public void updateUsagesPublicity(List<Long> usageIds, boolean isPublic, EkiUser user, boolean isManualEventOnUpdateEnabled) throws Exception {
+
+		if (CollectionUtils.isEmpty(usageIds)) {
+			return;
+		}
+
+		String userName = user.getName();
+		for (Long usageId : usageIds) {
+			Long lexemeId = activityLogService.getOwnerId(usageId, ActivityEntity.USAGE);
+			ActivityLogData activityLog = activityLogService.prepareActivityLog("updateUsagesPublicity", lexemeId, ActivityOwner.LEXEME, isManualEventOnUpdateEnabled);
+			meaningTableDbService.updateUsagePublicity(usageId, isPublic, userName);
+			activityLogService.createActivityLog(activityLog, usageId, ActivityEntity.USAGE);
+		}
+	}
 }
