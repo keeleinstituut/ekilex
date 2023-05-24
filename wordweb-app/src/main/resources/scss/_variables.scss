@@ -18,6 +18,11 @@ $blue-350: #0073e6;
 $blue-400: #005aa9;
 $blue-900: #00377a;
 
+$banner-blue-hover: #002ca1;
+$banner-blue-bg: #000087;
+
+$banner-gray: #fdfdfd;
+
 $red-100: #ffb9b9;
 $red-400: #ec0138;
 
@@ -44,7 +49,8 @@ $font-weight-bold: 700;
 $headings-font-weight: $font-weight-normal;
 
 // stylelint-disable value-keyword-case
-$font-family-sans-serif:     "Inter", -apple-system, blinkmacsystemfont, "Segoe UI", roboto, "Helvetica Neue", arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+$font-family-sans-serif: "Inter", -apple-system, blinkmacsystemfont, "Segoe UI", roboto, "Helvetica Neue", arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+$font-family-open-sans: "Open Sans", -apple-system, blinkmacsystemfont, "Segoe UI", roboto, "Helvetica Neue", arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
 // stylelint-enable value-keyword-case
 
 $body-bg: $gray-010;

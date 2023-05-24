@@ -13,6 +13,8 @@ $(document).ready(function() {
 	});
 
 	$('[data-toggle="tooltip"]').tooltip();
+
+	closeSurveyBanner();
 });
 
 $(document).on("click", ".menu-btn", function(e) {
@@ -202,17 +204,29 @@ $.fn.scrollableTable = function() {
 	});
 }
 
+function closeSurveyBanner() {
+	const banner = $('.survey-banner');
+	const closeBtn = banner.find('.close-banner');
 
-	function calculateMaxHeightCollapseText(element, targetTextBox) {
-		if (!element.attr("data-max-height")){
-			const targetTextBoxWidth = targetTextBox.outerWidth(); // get maximum width, to calculate height correctly
-			element.css("width", targetTextBoxWidth +"px");
-			element.removeClass('d-none');
-			let dataHeight = element.outerHeight();	
-			element.attr('data-max-height', dataHeight);
-			element.addClass('d-none');
-		}
+	if(closeBtn) {
+		closeBtn.on('click', function() {
+			banner.addClass('hide');
+			$('body').removeClass('survey-active');
+		});
 	}
+}
+
+
+function calculateMaxHeightCollapseText(element, targetTextBox) {
+	if (!element.attr("data-max-height")){
+		const targetTextBoxWidth = targetTextBox.outerWidth(); // get maximum width, to calculate height correctly
+		element.css("width", targetTextBoxWidth +"px");
+		element.removeClass('d-none');
+		let dataHeight = element.outerHeight();	
+		element.attr('data-max-height', dataHeight);
+		element.addClass('d-none');
+	}
+}
 
 
 $(document).on('click', '[data-toggle="collapse-text"]', function () {

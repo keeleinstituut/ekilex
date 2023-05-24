@@ -62,12 +62,18 @@
 }
 
 /* stylelint-disable */
-.feedback-btn{
+.feedback-btn {
   @include media-breakpoint-down(sm){
     position: fixed;
     right: 8px;
     bottom: 8px;
     z-index: $zindex-dropdown;
+  }
+}
+
+.survey-active {
+  .feedback-btn {
+    bottom: 80px;
   }
 }
 
