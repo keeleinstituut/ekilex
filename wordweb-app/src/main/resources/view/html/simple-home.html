@@ -55,21 +55,6 @@
   	var speechRecognitionServiceUrl = /*[[${speechRecognitionServiceUrl}]]*/'/';
   	setActiveMenuItem('search-lite');
   </script>
-  <!--/ Survey banner large /-->
-  <div class="survey-banner survey-banner--large">
-    <a class="banner-body" href="https://sonaveeb.limesurvey.net/923746?newtest=Y&lang=et">
-      <span class="banner-left">
-        <span class="header-text">Osale uuringus</span>
-        <span class="small-text hide-md">Aita meil muuta Sõnaveeb veelgi kasutajasõbralikumaks!</span>
-        <span class="small-text-alt show-md">See võtab 10-15 minutit ja lisaks võid võita tänukingituse!</span>
-      </span>
-      <span class="banner-right">
-        <img src="../../view/images/banner-right-info.svg" alt="">
-      </span>
-    </a>
-    <button class="close-banner">
-      <i class="fas fa-times"></i>
-    </button>
-  </div>
+<div th:replace="common-app :: survey-banner-large"></div>
 </body>
 </html>

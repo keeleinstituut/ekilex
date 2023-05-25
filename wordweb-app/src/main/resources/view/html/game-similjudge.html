@@ -93,22 +93,6 @@
   	var getSimilJudgeGameBatchUrl = /*[[@{/games/similjudge/getgamebatch}]]*/"/games/similjudge/getgamebatch";
   	var submitSimilJudgeGameRowUrl = /*[[@{/games/similjudge/submitgamerow}]]*/"/games/similjudge/submitgamerow";
   </script>
-  <!--/ Survey banner small /-->
-  <div class="survey-banner survey-banner--small">
-    <a class="banner-body" href="https://sonaveeb.limesurvey.net/923746?newtest=Y&lang=et">
-      <span class="banner-left">
-        <span class="small-banner-header-text hide-sm">Osale uuringus</span>
-        <span class="small-banner-text hide-sm">Ja võid võita tänukingituse!</span>
-        <span class="header-text show-sm">Osale uuringus</span>
-        <span class="small-text-alt show-sm">See võtab 10-15 minutit ja lisaks võid võita tänukingituse!</span>
-      </span>
-      <span class="banner-right show-sm">
-        <img src="../../view/images/banner-right-info.svg" alt="">
-      </span>
-    </a>
-    <button class="close-banner">
-      <i class="fas fa-times"></i>
-    </button>
-  </div>
+  <div th:replace="common-app :: survey-banner-small"></div>
 </body>
 </html>
