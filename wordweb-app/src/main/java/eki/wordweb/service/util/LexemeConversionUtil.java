@@ -218,6 +218,9 @@ public class LexemeConversionUtil extends AbstractConversionUtil {
 				usageSourceLinks.forEach(sourceLink -> {
 					boolean isTranslator = ReferenceType.TRANSLATOR.equals(sourceLink.getType());
 					sourceLink.setTranslator(isTranslator);
+					if (StringUtils.isBlank(sourceLink.getValue())) {
+						sourceLink.setValue(sourceLink.getUsageSourceName());
+					}
 				});
 			}
 			usage.setSourceLinks(usageSourceLinks);

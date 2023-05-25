@@ -67,6 +67,11 @@ public class TypeSourceLink extends UDTImpl<TypeSourceLinkRecord> {
     public static final UDTField<TypeSourceLinkRecord, String> VALUE = createField(DSL.name("value"), SQLDataType.CLOB, TYPE_SOURCE_LINK, "");
 
     /**
+     * The attribute <code>public.type_source_link.usage_source_name</code>.
+     */
+    public static final UDTField<TypeSourceLinkRecord, String> USAGE_SOURCE_NAME = createField(DSL.name("usage_source_name"), SQLDataType.CLOB, TYPE_SOURCE_LINK, "");
+
+    /**
      * The attribute <code>public.type_source_link.order_by</code>.
      */
     public static final UDTField<TypeSourceLinkRecord, Long> ORDER_BY = createField(DSL.name("order_by"), SQLDataType.BIGINT, TYPE_SOURCE_LINK, "");

@@ -25,6 +25,7 @@ create type type_source_link as (
 				source_link_type varchar(100),
 				name text,
 				value text,
+				usage_source_name text,
 				order_by bigint,
 				source_id bigint,
 				source_props text array);
@@ -776,6 +777,7 @@ from (select m.id,
                                                          ffsl.type,
                                                          ffsl.name,
                                                          ffsl.value,
+                                                         null,
                                                          ffsl.order_by,
                                                          ffsl.source_id,
                                                          ffsl.source_props
@@ -817,6 +819,7 @@ from (select m.id,
                                                                    dsl.type,
                                                                    dsl.name,
                                                                    dsl.value,
+                                                                   null,
                                                                    dsl.order_by,
                                                                    s.source_id,
                                                                    s.source_props
@@ -1730,6 +1733,7 @@ select we.word_id,
          wesl.type,
          wesl.name,
          wesl.value,
+         null,
          wesl.order_by,
          s.source_id,
          s.source_props
@@ -1771,6 +1775,7 @@ select l.id lexeme_id,
          lsl.type,
          lsl.name,
          lsl.value,
+         null,
          lsl.order_by,
          s.source_id,
          s.source_props
@@ -1809,6 +1814,7 @@ select l.id lexeme_id,
          ffsl.type,
          ffsl.name,
          ffsl.value,
+         s.usage_source_name,
          ffsl.order_by,
          s.source_id,
          s.source_props
@@ -1822,13 +1828,17 @@ from lexeme l,
      lexeme_freeform lff,
      freeform_source_link ffsl,
      (select s.id source_id,
-             array_agg(ff.value_prese order by ff.order_by) source_props
+             array_agg(ff.value_prese order by ff.order_by) source_props,
+             array_to_string(array_agg(distinct usn.value_text), ',', '*') usage_source_name
       from source s,
            source_freeform sff,
-           freeform ff
+           freeform ff,
+           freeform usn
       where sff.source_id = s.id
       and   sff.freeform_id = ff.id
       and   ff.type not in ('SOURCE_FILE', 'EXTERNAL_SOURCE_ID')
+      and   sff.freeform_id = usn.id
+      and   ff.type = 'SOURCE_NAME'
       group by s.id) s
 where l.is_public = true
 and   lff.lexeme_id = l.id
@@ -1849,6 +1859,7 @@ select ffsl.meaning_id,
          ffsl.type,
          ffsl.name,
          ffsl.value,
+         null,
          ffsl.order_by,
          ffsl.source_id,
          ffsl.source_props
