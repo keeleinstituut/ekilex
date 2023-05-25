@@ -1,1 +1,4 @@
 Märkused ver 1.30.0 tarne kohta:
+
+* Peamiselt kasutajaliidese täiendused ja mõned bugide parandused
+* Seekord andmemudeli muudatusi ega andmebaasi migratsiooni skripti ei ole
