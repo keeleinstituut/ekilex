@@ -911,7 +911,7 @@ public class ConversionUtil implements GlobalConstant {
 			synonyms.addAll(meaningRelSyns);
 		}
 
-		if (CollectionUtils.isEmpty(synonyms)) {
+		if (CollectionUtils.isEmpty(synonyms) && CollectionUtils.isEmpty(inexactSynonyms)) {
 			return new ArrayList<>();
 		}
 
