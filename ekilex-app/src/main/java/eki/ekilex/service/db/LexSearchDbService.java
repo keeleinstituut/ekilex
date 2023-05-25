@@ -32,6 +32,7 @@ import java.util.List;
 import org.apache.commons.collections4.CollectionUtils;
 import org.jooq.Condition;
 import org.jooq.Field;
+import org.jooq.JSON;
 import org.jooq.Param;
 import org.jooq.Record17;
 import org.jooq.Record8;
@@ -72,7 +73,6 @@ import eki.ekilex.data.db.tables.WordGroup;
 import eki.ekilex.data.db.tables.WordGroupMember;
 import eki.ekilex.data.db.tables.WordRelTypeLabel;
 import eki.ekilex.data.db.tables.WordRelation;
-import eki.ekilex.data.db.udt.records.TypeClassifierRecord;
 import eki.ekilex.service.db.util.LexSearchConditionComposer;
 import eki.ekilex.service.db.util.SearchFilterHelper;
 
@@ -220,11 +220,11 @@ public class LexSearchDbService extends AbstractDataDbService {
 		Field<Boolean> wtsf = getWordIsSuffixoidField(w.ID);
 		Field<Boolean> wtz = getWordIsForeignField(w.ID);
 
-		Field<TypeClassifierRecord[]> lposf = getLexemePosField(l.ID, classifierLabelLang, classifierLabelTypeCode);
-		Field<TypeClassifierRecord[]> lderf = getLexemeDerivsField(l.ID, classifierLabelLang, classifierLabelTypeCode);
-		Field<TypeClassifierRecord[]> lregf = getLexemeRegistersField(l.ID, classifierLabelLang, classifierLabelTypeCode);
-		Field<TypeClassifierRecord> lvalstf = getLexemeValueStateField(l.ID, classifierLabelLang, classifierLabelTypeCode);
-		Field<TypeClassifierRecord> lproflf = getLexemeProficiencyLevelField(l.ID, classifierLabelLang, classifierLabelTypeCode);
+		Field<JSON> lposf = getLexemePosField(l.ID, classifierLabelLang, classifierLabelTypeCode);
+		Field<JSON> lderf = getLexemeDerivsField(l.ID, classifierLabelLang, classifierLabelTypeCode);
+		Field<JSON> lregf = getLexemeRegistersField(l.ID, classifierLabelLang, classifierLabelTypeCode);
+		Field<JSON> lvalstf = getLexemeValueStateField(l.ID, classifierLabelLang, classifierLabelTypeCode);
+		Field<JSON> lproflf = getLexemeProficiencyLevelField(l.ID, classifierLabelLang, classifierLabelTypeCode);
 
 		Condition dsWhere = searchFilterHelper.applyDatasetRestrictions(l, searchDatasetsRestriction, null);
 
@@ -282,11 +282,11 @@ public class LexSearchDbService extends AbstractDataDbService {
 		Field<Boolean> wtsf = getWordIsSuffixoidField(w.ID);
 		Field<Boolean> wtz = getWordIsForeignField(w.ID);
 
-		Field<TypeClassifierRecord[]> lposf = getLexemePosField(l.ID, classifierLabelLang, classifierLabelTypeCode);
-		Field<TypeClassifierRecord[]> lderf = getLexemeDerivsField(l.ID, classifierLabelLang, classifierLabelTypeCode);
-		Field<TypeClassifierRecord[]> lregf = getLexemeRegistersField(l.ID, classifierLabelLang, classifierLabelTypeCode);
-		Field<TypeClassifierRecord> lvalstf = getLexemeValueStateField(l.ID, classifierLabelLang, classifierLabelTypeCode);
-		Field<TypeClassifierRecord> lproflf = getLexemeProficiencyLevelField(l.ID, classifierLabelLang, classifierLabelTypeCode);
+		Field<JSON> lposf = getLexemePosField(l.ID, classifierLabelLang, classifierLabelTypeCode);
+		Field<JSON> lderf = getLexemeDerivsField(l.ID, classifierLabelLang, classifierLabelTypeCode);
+		Field<JSON> lregf = getLexemeRegistersField(l.ID, classifierLabelLang, classifierLabelTypeCode);
+		Field<JSON> lvalstf = getLexemeValueStateField(l.ID, classifierLabelLang, classifierLabelTypeCode);
+		Field<JSON> lproflf = getLexemeProficiencyLevelField(l.ID, classifierLabelLang, classifierLabelTypeCode);
 
 		return create
 				.select(

@@ -24,6 +24,7 @@ import java.util.List;
 
 import org.jooq.DSLContext;
 import org.jooq.Field;
+import org.jooq.JSON;
 import org.jooq.impl.DSL;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
@@ -31,7 +32,6 @@ import org.springframework.cache.annotation.Cacheable;
 import eki.common.constant.ClassifierName;
 import eki.common.constant.GlobalConstant;
 import eki.common.constant.LastActivityType;
-import eki.common.constant.TableName;
 import eki.ekilex.constant.SystemConstant;
 import eki.ekilex.data.SimpleWord;
 import eki.ekilex.data.db.tables.ActivityLog;
@@ -39,7 +39,6 @@ import eki.ekilex.data.db.tables.Lexeme;
 import eki.ekilex.data.db.tables.MeaningLastActivityLog;
 import eki.ekilex.data.db.tables.Word;
 import eki.ekilex.data.db.tables.WordLastActivityLog;
-import eki.ekilex.data.db.udt.records.TypeClassifierRecord;
 
 public abstract class AbstractDataDbService implements SystemConstant, GlobalConstant {
 
@@ -175,17 +174,16 @@ public abstract class AbstractDataDbService implements SystemConstant, GlobalCon
 		return wlaeof;
 	}
 
-	protected Field<TypeClassifierRecord[]> getLexemePosField(Field<Long> lexemeIdField, String classifierLabelLang, String classifierLabelTypeCode) {
+	protected Field<JSON> getLexemePosField(Field<Long> lexemeIdField, String classifierLabelLang, String classifierLabelTypeCode) {
 
-		String clrowsql = DSL.row(DSL.field(DSL.value(ClassifierName.POS.name())), POS_LABEL.CODE, POS_LABEL.VALUE).toString();
-		Field<TypeClassifierRecord[]> claggf = DSL.field(
-				"array_agg("
-						+ clrowsql
-						+ "::type_classifier "
-						+ "order by " + TableName.LEXEME_POS + ".order_by)",
-				TypeClassifierRecord[].class);
+		Field<JSON> claggf = DSL.field(DSL
+				.jsonArrayAgg(DSL
+						.jsonObject(
+								DSL.key("name").value(ClassifierName.POS.name()),
+								DSL.key("code").value(POS_LABEL.CODE),
+								DSL.key("value").value(POS_LABEL.VALUE))));
 
-		Field<TypeClassifierRecord[]> clf = DSL
+		Field<JSON> clf = DSL
 				.select(claggf)
 				.from(LEXEME_POS, POS_LABEL)
 				.where(
@@ -198,17 +196,16 @@ public abstract class AbstractDataDbService implements SystemConstant, GlobalCon
 		return clf;
 	}
 
-	protected Field<TypeClassifierRecord[]> getLexemeDerivsField(Field<Long> lexemeIdField, String classifierLabelLang, String classifierLabelTypeCode) {
+	protected Field<JSON> getLexemeDerivsField(Field<Long> lexemeIdField, String classifierLabelLang, String classifierLabelTypeCode) {
 
-		String clrowsql = DSL.row(DSL.field(DSL.value(ClassifierName.DERIV.name())), DERIV_LABEL.CODE, DERIV_LABEL.VALUE).toString();
-		Field<TypeClassifierRecord[]> claggf = DSL.field(
-				"array_agg("
-						+ clrowsql
-						+ "::type_classifier "
-						+ "order by " + TableName.LEXEME_DERIV + ".order_by)",
-				TypeClassifierRecord[].class);
+		Field<JSON> claggf = DSL.field(DSL
+				.jsonArrayAgg(DSL
+						.jsonObject(
+								DSL.key("name").value(ClassifierName.DERIV.name()),
+								DSL.key("code").value(DERIV_LABEL.CODE),
+								DSL.key("value").value(DERIV_LABEL.VALUE))));
 
-		Field<TypeClassifierRecord[]> clf = DSL
+		Field<JSON> clf = DSL
 				.select(claggf)
 				.from(LEXEME_DERIV, DERIV_LABEL)
 				.where(
@@ -221,17 +218,16 @@ public abstract class AbstractDataDbService implements SystemConstant, GlobalCon
 		return clf;
 	}
 
-	protected Field<TypeClassifierRecord[]> getLexemeRegistersField(Field<Long> lexemeIdField, String classifierLabelLang, String classifierLabelTypeCode) {
+	protected Field<JSON> getLexemeRegistersField(Field<Long> lexemeIdField, String classifierLabelLang, String classifierLabelTypeCode) {
 
-		String clrowsql = DSL.row(DSL.field(DSL.value(ClassifierName.REGISTER.name())), REGISTER_LABEL.CODE, REGISTER_LABEL.VALUE).toString();
-		Field<TypeClassifierRecord[]> claggf = DSL.field(
-				"array_agg("
-						+ clrowsql
-						+ "::type_classifier "
-						+ "order by " + TableName.LEXEME_REGISTER + ".order_by)",
-				TypeClassifierRecord[].class);
+		Field<JSON> claggf = DSL.field(DSL
+				.jsonArrayAgg(DSL
+						.jsonObject(
+								DSL.key("name").value(ClassifierName.REGISTER.name()),
+								DSL.key("code").value(REGISTER_LABEL.CODE),
+								DSL.key("value").value(REGISTER_LABEL.VALUE))));
 
-		Field<TypeClassifierRecord[]> clf = DSL
+		Field<JSON> clf = DSL
 				.select(claggf)
 				.from(LEXEME_REGISTER, REGISTER_LABEL)
 				.where(
@@ -244,17 +240,16 @@ public abstract class AbstractDataDbService implements SystemConstant, GlobalCon
 		return clf;
 	}
 
-	protected Field<TypeClassifierRecord[]> getLexemeRegionsField(Field<Long> lexemeIdField) {
-		
-		String clrowsql = DSL.row(DSL.field(DSL.value(ClassifierName.REGION.name())), REGION.CODE, REGION.CODE).toString();
-		Field<TypeClassifierRecord[]> claggf = DSL.field(
-				"array_agg("
-						+ clrowsql
-						+ "::type_classifier "
-						+ "order by " + TableName.LEXEME_REGION + ".order_by)",
-				TypeClassifierRecord[].class);
+	protected Field<JSON> getLexemeRegionsField(Field<Long> lexemeIdField) {
 
-		Field<TypeClassifierRecord[]> clf = DSL
+		Field<JSON> claggf = DSL.field(DSL
+				.jsonArrayAgg(DSL
+						.jsonObject(
+								DSL.key("name").value(ClassifierName.REGION.name()),
+								DSL.key("code").value(REGION.CODE),
+								DSL.key("value").value(REGION.CODE))));
+
+		Field<JSON> clf = DSL
 				.select(claggf)
 				.from(LEXEME_REGION, REGION)
 				.where(
@@ -265,14 +260,13 @@ public abstract class AbstractDataDbService implements SystemConstant, GlobalCon
 		return clf;
 	}
 
-	protected Field<TypeClassifierRecord> getLexemeValueStateField(Field<Long> lexemeIdField, String classifierLabelLang, String classifierLabelTypeCode) {
+	protected Field<JSON> getLexemeValueStateField(Field<Long> lexemeIdField, String classifierLabelLang, String classifierLabelTypeCode) {
 
-		String clrowsql = DSL.row(DSL.field(DSL.value(ClassifierName.VALUE_STATE.name())), VALUE_STATE_LABEL.CODE, VALUE_STATE_LABEL.VALUE).toString();
-		Field<TypeClassifierRecord> claggf = DSL.field(
-				"array_agg("
-						+ clrowsql
-						+ "::type_classifier)",
-				TypeClassifierRecord.class);
+		Field<JSON> claggf = DSL.field(DSL
+				.jsonObject(
+						DSL.key("name").value(ClassifierName.VALUE_STATE.name()),
+						DSL.key("code").value(VALUE_STATE_LABEL.CODE),
+						DSL.key("value").value(VALUE_STATE_LABEL.VALUE)));
 
 		return DSL
 				.select(claggf)
@@ -285,14 +279,13 @@ public abstract class AbstractDataDbService implements SystemConstant, GlobalCon
 				.asField();
 	}
 
-	protected Field<TypeClassifierRecord> getLexemeProficiencyLevelField(Field<Long> lexemeIdField, String classifierLabelLang, String classifierLabelTypeCode) {
+	protected Field<JSON> getLexemeProficiencyLevelField(Field<Long> lexemeIdField, String classifierLabelLang, String classifierLabelTypeCode) {
 
-		String clrowsql = DSL.row(DSL.field(DSL.value(ClassifierName.PROFICIENCY_LEVEL.name())), PROFICIENCY_LEVEL_LABEL.CODE, PROFICIENCY_LEVEL_LABEL.VALUE).toString();
-		Field<TypeClassifierRecord> claggf = DSL.field(
-				"array_agg("
-						+ clrowsql
-						+ "::type_classifier)",
-				TypeClassifierRecord.class);
+		Field<JSON> claggf = DSL.field(DSL
+				.jsonObject(
+						DSL.key("name").value(ClassifierName.PROFICIENCY_LEVEL.name()),
+						DSL.key("code").value(PROFICIENCY_LEVEL_LABEL.CODE),
+						DSL.key("value").value(PROFICIENCY_LEVEL_LABEL.VALUE)));
 
 		return DSL
 				.select(claggf)
@@ -305,17 +298,16 @@ public abstract class AbstractDataDbService implements SystemConstant, GlobalCon
 				.asField();
 	}
 
-	protected Field<TypeClassifierRecord[]> getMeaningDomainsField(Field<Long> meaningIdField, String classifierLabelLang, String classifierLabelTypeCode) {
+	protected Field<JSON> getMeaningDomainsField(Field<Long> meaningIdField, String classifierLabelLang, String classifierLabelTypeCode) {
 
-		String clrowsql = DSL.row(DSL.field(DSL.value(ClassifierName.DOMAIN.name())), DOMAIN_LABEL.CODE, DOMAIN_LABEL.VALUE).toString();
-		Field<TypeClassifierRecord[]> claggf = DSL.field(
-				"array_agg("
-						+ clrowsql
-						+ "::type_classifier "
-						+ "order by " + TableName.MEANING_DOMAIN + ".order_by)",
-				TypeClassifierRecord[].class);
+		Field<JSON> claggf = DSL.field(DSL
+				.jsonArrayAgg(DSL
+						.jsonObject(
+								DSL.key("name").value(ClassifierName.DOMAIN.name()),
+								DSL.key("code").value(DOMAIN_LABEL.CODE),
+								DSL.key("value").value(DOMAIN_LABEL.VALUE))));
 
-		Field<TypeClassifierRecord[]> clf = DSL
+		Field<JSON> clf = DSL
 				.select(claggf)
 				.from(MEANING_DOMAIN, DOMAIN_LABEL)
 				.where(

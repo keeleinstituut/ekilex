@@ -15,6 +15,7 @@ import java.util.List;
 import org.apache.commons.lang3.StringUtils;
 import org.jooq.Condition;
 import org.jooq.Field;
+import org.jooq.JSON;
 import org.jooq.Record17;
 import org.jooq.Record19;
 import org.jooq.Record3;
@@ -36,7 +37,6 @@ import eki.ekilex.data.db.tables.Lexeme;
 import eki.ekilex.data.db.tables.Meaning;
 import eki.ekilex.data.db.tables.Word;
 import eki.ekilex.data.db.tables.WordWordType;
-import eki.ekilex.data.db.udt.records.TypeClassifierRecord;
 import eki.ekilex.data.db.udt.records.TypeTermMeaningWordRecord;
 import eki.ekilex.service.db.util.SearchFilterHelper;
 import eki.ekilex.service.db.util.TermSearchConditionComposer;
@@ -144,7 +144,7 @@ public class TermSearchDbService extends AbstractDataDbService {
 						.innerJoin(wol).on(wol.CODE.eq(wo.LANG)))
 				.asTable("m");
 
-		Field<TypeClassifierRecord[]> mdf = getMeaningDomainsField(mm.field("meaning_id", Long.class), CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
+		Field<JSON> mdf = getMeaningDomainsField(mm.field("meaning_id", Long.class), CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
 
 		Field<TypeTermMeaningWordRecord[]> mw = DSL
 				.field("array_agg(row ("
@@ -323,7 +323,7 @@ public class TermSearchDbService extends AbstractDataDbService {
 						wm.ID)
 				.asTable("wm");
 
-		Field<TypeClassifierRecord[]> mdf = getMeaningDomainsField(wmm.field("meaning_id", Long.class), CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
+		Field<JSON> mdf = getMeaningDomainsField(wmm.field("meaning_id", Long.class), CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
 
 		Field<TypeTermMeaningWordRecord[]> mw = DSL
 				.field("array(select row ("
@@ -455,12 +455,12 @@ public class TermSearchDbService extends AbstractDataDbService {
 		Field<Boolean> wtsf = getWordIsSuffixoidField(w.ID);
 		Field<Boolean> wtz = getWordIsForeignField(w.ID);
 
-		Field<TypeClassifierRecord[]> lposf = getLexemePosField(l.ID, classifierLabelLang, classifierLabelTypeCode);
-		Field<TypeClassifierRecord[]> lderf = getLexemeDerivsField(l.ID, classifierLabelLang, classifierLabelTypeCode);
-		Field<TypeClassifierRecord[]> lregf = getLexemeRegistersField(l.ID, classifierLabelLang, classifierLabelTypeCode);
-		Field<TypeClassifierRecord[]> lrgnf = getLexemeRegionsField(l.ID);
-		Field<TypeClassifierRecord> lvalstf = getLexemeValueStateField(l.ID, classifierLabelLang, classifierLabelTypeCode);
-		Field<TypeClassifierRecord> lproflf = getLexemeProficiencyLevelField(l.ID, classifierLabelLang, classifierLabelTypeCode);
+		Field<JSON> lposf = getLexemePosField(l.ID, classifierLabelLang, classifierLabelTypeCode);
+		Field<JSON> lderf = getLexemeDerivsField(l.ID, classifierLabelLang, classifierLabelTypeCode);
+		Field<JSON> lregf = getLexemeRegistersField(l.ID, classifierLabelLang, classifierLabelTypeCode);
+		Field<JSON> lrgnf = getLexemeRegionsField(l.ID);
+		Field<JSON> lvalstf = getLexemeValueStateField(l.ID, classifierLabelLang, classifierLabelTypeCode);
+		Field<JSON> lproflf = getLexemeProficiencyLevelField(l.ID, classifierLabelLang, classifierLabelTypeCode);
 
 		return create
 				.select(

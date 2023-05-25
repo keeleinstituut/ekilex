@@ -21,6 +21,7 @@ import java.util.List;
 
 import org.jooq.Condition;
 import org.jooq.Field;
+import org.jooq.JSON;
 import org.jooq.Record14;
 import org.jooq.Record16;
 import org.jooq.Record3;
@@ -57,7 +58,6 @@ import eki.ekilex.data.db.tables.records.LexemeFreeformRecord;
 import eki.ekilex.data.db.tables.records.LexemePosRecord;
 import eki.ekilex.data.db.tables.records.LexemeRecord;
 import eki.ekilex.data.db.tables.records.WordRecord;
-import eki.ekilex.data.db.udt.records.TypeClassifierRecord;
 import eki.ekilex.data.db.udt.records.TypeWordRelMeaningRecord;
 import eki.ekilex.data.db.udt.records.TypeWordRelParamRecord;
 import eki.ekilex.service.db.util.JooqBugCompensator;
@@ -347,8 +347,8 @@ public class SynSearchDbService extends AbstractDataDbService {
 
 		Condition dsWhere = searchFilterHelper.applyDatasetRestrictions(l, searchDatasetsRestriction, null);
 
-		Field<TypeClassifierRecord[]> lposf = getLexemePosField(l.ID, classifierLabelLang, classifierLabelTypeCode);
-		Field<TypeClassifierRecord[]> lregf = getLexemeRegistersField(l.ID, classifierLabelLang, classifierLabelTypeCode);
+		Field<JSON> lposf = getLexemePosField(l.ID, classifierLabelLang, classifierLabelTypeCode);
+		Field<JSON> lregf = getLexemeRegistersField(l.ID, classifierLabelLang, classifierLabelTypeCode);
 
 		return create
 				.select(
