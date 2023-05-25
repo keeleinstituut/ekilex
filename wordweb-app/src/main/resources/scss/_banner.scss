@@ -290,6 +290,10 @@
         .banner-right {
           width: 10%;
           background-position: 100% 55%;
+
+          img {
+            display: none;
+          }
         }
       }
     }
@@ -303,7 +307,6 @@
         .banner-left {
           width: 100%;
           padding-right: 0;
-          padding-left: 85px;
         }
         .banner-right {
           width: auto;

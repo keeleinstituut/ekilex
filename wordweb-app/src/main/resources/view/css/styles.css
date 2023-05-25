@@ -18197,6 +18197,10 @@ body {
   bottom: 80px;
 }
 
+.survey-active .top-button {
+  bottom: 80px;
+}
+
 .btn-collapse.show .collapse-icon {
   transform: rotate(180deg);
 }
@@ -18969,13 +18973,15 @@ body {
     width: 10%;
     background-position: 100% 55%;
   }
+  .survey-banner--small .banner-body .banner-right img {
+    display: none;
+  }
 }
 
 @media screen and (max-width: 610px) {
   .survey-banner--large .banner-body .banner-left {
     width: 100%;
     padding-right: 0;
-    padding-left: 85px;
   }
   .survey-banner--large .banner-body .banner-right {
     width: auto;
