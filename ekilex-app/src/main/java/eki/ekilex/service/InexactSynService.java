@@ -264,6 +264,12 @@ public class InexactSynService extends AbstractSynSearchService {
 				response.setMessage(message);
 				return response;
 			}
+			if (inexactSynMeaningId.equals(targetMeaningId)) {
+				response.setStatus(ResponseStatus.ERROR);
+				String message = messageSource.getMessage("inexactsyn.relation.same.meaning", new Object[0], locale);
+				response.setMessage(message);
+				return response;
+			}
 		}
 
 		boolean meaningHasTranslationLangWord = lookupDbService.meaningHasWord(inexactSynMeaningId, translationLangWordValue, translationLang);
