@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="et" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="common :: common_header(~{::title},~{::links})">
+<title>Etümoloogia POC</title>
+<th:block th:fragment="links">
+</th:block>
+</head>
+<body class="body-with-navbar compacted d-flex flex-column">
+  <th:block th:replace="common :: nav_bar(activeItem = 'lex')"></th:block>
+  <div class="container-fluid">
+    <div class="card mt-4 shadow">
+      <div class="card-body">
+        <div>
+          <span th:utext="${wordEtym.word}"></span>
+          <i th:utext="${wordEtym.comment}"></i>
+        </div>
+        <div>
+          <span>Järgmise taseme tulemusi:</span>
+          <span th:text="${#lists.size(wordEtym.tree)}"></span>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>
