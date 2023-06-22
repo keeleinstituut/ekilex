@@ -1428,5 +1428,16 @@ $(function() {
 	} else if (warningMessage.length) {
 		openAlertDlg(warningMessage.text());
 	}
+
+	$('.btn-edit-etym').off('click').on('click', function(e) {
+		e.preventDefault();
+		var obj = $(this);
+		var linksBlock = obj.parent();
+		var container = obj.parents().find('.wordetym-card');
+		
+		obj.toggleClass('active');
+		linksBlock.toggleClass('active');
+		container.toggleClass('wordetym-card--active');
+	});
 });
 

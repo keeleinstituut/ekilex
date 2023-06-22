@@ -7,19 +7,94 @@
 </head>
 <body class="body-with-navbar compacted d-flex flex-column">
   <th:block th:replace="common :: nav_bar(activeItem = 'lex')"></th:block>
-  <div class="container-fluid">
-    <div class="card mt-4 shadow">
-      <div class="card-body">
-        <div>
-          <span th:utext="${wordEtym.word}"></span>
+  <th:block th:replace="wordetymdialog :: add_etym_lang_dlg"></th:block>
+  <div class="card">
+    <div class="card-body">
+      <button class="btn btn-default">
+        <span class="fa fa-arrow-left"></span>
+        Tagasi keelendi juurde
+      </button>
+    </div>
+  </div>
+  <div class="container-fluid h-100 wordetym-wrapper">
+    <div class="wordetym-card">
+      <div class="wordetym-card__header">
+        <div class="wordetym-card__info">
+          <span th:utext="${wordEtym.lang}" class="lang-abbr"></span>
+          <span th:utext="${wordEtym.word}" class="etym-text"></span>
           <i th:utext="${wordEtym.comment}"></i>
         </div>
-        <div>
-          <span>Järgmise taseme tulemusi:</span>
-          <span th:text="${#lists.size(wordEtym.tree)}"></span>
+      </div>
+      <div class="trace-1">
+        <div class="wordetym-card__body">
+          <hr class="etym-devider-top">
+          <div class="form-group row">
+            <div class="col-md-12">
+              <label for="etym-country">Päritolu riik</label>
+              <select id="etym-country" class="form-control value-select">
+                <option value="" hidden disabled selected th:text="#{common.select.value}">vali väärtus...</option>
+                <option>tag</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-group row eki-editor">
+            <div class="col-md-12">
+              <span>Kommentaar</span>
+              <div class="formItem">
+                <div class="formItem__element">
+                  <textarea data-id="editFld"></textarea>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="form-group row">
+            <div class="col-md-12">
+              <label for="etym-year">Etümoloogia kirje aasta</label>
+              <input id="etym-year" type="text" class="form-control w-30">
+            </div>
+          </div>
+          <div class="form-group row">
+            <div class="col-md-12">
+              <div class="form-check">
+                <input id="type" class="form-check-input" type="checkbox">
+                <label class="form-check-label" for="type">Päritoluinfo on kahtlane</label>
+              </div>
+            </div>
+          </div>
+          <span>Allikaviide</span>
+          <button class="reference_btn" type="button">
+            <span class="fa fa-external-link"></span>
+          </button>
+          <hr class="etym-devider-bottom">
+        </div>
+        <div class="wordetym-card__footer">
+          <button class="btn btn-default w-100 mr-1" type="button">Katkesta</button>
+          <button class="btn btn-primary w-100 ml-1" type="submit">Salvesta</button>
         </div>
       </div>
+
+      <div class="wordetym-card__links">
+        <button class="btn-edit-etym" type="button" data-plugin="initEkiEditorDlgEtym">
+          <span class="fa fa-pencil"></span>
+        </button>
+        <button class="btn-delete-etym" type="button">
+          <span class="fa fa-trash"></span>
+        </button>
+      </div>
+      <div class="etym-tree-link">
+        <button class="btn-add-etym" 
+                type="button"
+                th:title="#{common.add.new}" data-toggle="modal"
+                th:data-target="${'#addEtymLanguageDlg_' + wordEtym.wordId}">
+          <span class="fa fa-plus"></span>
+        </button>
+      </div>
     </div>
+
+    <!-- <div>
+      <span>Järgmise taseme tulemusi:</span>
+      <span th:text="${#lists.size(wordEtym.tree)}"></span>
+    </div> -->
   </div>
 </body>
 </html>

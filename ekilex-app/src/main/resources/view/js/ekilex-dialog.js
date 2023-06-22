@@ -56,6 +56,27 @@ $(function() {
 		})
 	}
 
+
+	$.fn.initEkiEditorDlgEtym = function() {
+		const editorOptions = {
+			height: '5em',
+			toolbarGroups: [
+				{
+					name: 'eki-styles',
+					groups: ['ekiStyles', 'ekiLink', 'cleanup', 'undo']
+				}
+			]
+		}
+
+		return this.each(function() {
+			const obj = $(this);
+			const container = obj.parents().find('.wordetym-card')
+			obj.on('click', function(e) {
+				initEkiEditorDlg(container, editorOptions);
+			})
+		})
+	}
+
 	$.fn.initLexWordValueEditorDlgAndFocusPlugin = function() {
 		const editorOptions = {
 			width: '100%',

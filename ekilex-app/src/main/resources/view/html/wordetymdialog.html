@@ -1,0 +1,46 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+</head>
+<body>
+  <div th:id="${'addEtymLanguageDlg_' + wordEtym.wordId}"
+       class="modal"
+       role="dialog"
+       th:fragment="add_etym_lang_dlg"
+       data-plugin="initAddMultiDataDlgPlugin">
+       <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <form th:action="@{/create_item}" method="post">
+            <div class="modal-header">
+              <h5 class="modal-title" th:text="#{lex.wordetym.add.language}">Lisa seose tegemiseks keelend</h5>
+            </div>
+            <div class="modal-body">
+
+              <div class="form-group row">
+                <div class="col-md-12">
+                  <label for="language">Keelend</label>
+                  <input id="language" class="form-control" type="text" name="language" th:placeholder="#{lex.placeholder.add.word}">
+                </div>
+
+              </div>
+              <div class="form-group row">
+                <div class="col-md-12">
+                  <label for="select-lang">Keel</label>
+                  <select id="select-lang" required class="form-control value-select required-field">
+                    <option value="" hidden disabled selected th:text="#{lex.placeholder.select.language}">vali keel</option>
+                    <option>eesti keel</option>
+                    <option value="">inglise keel</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-default w-100 mr-1" data-dismiss="modal" th:text="#{common.cancel}">Katkesta</button>
+              <button type="submit" class="btn btn-primary w-100 ml-1" th:text="#{lex.add.relation}">Lisa seos</button>
+            </div>
+          </form>
+        </div>
+      </div>
+  </div>
+</body>
+</html>
