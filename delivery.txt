@@ -1,1 +1,12 @@
 Märkused ver 1.31.0 tarne kohta:
+
+* Teha värske sõnaveebi laadimine:
+
+Kustutada ekilexi baasis kõik sõnaveebiga seotud vaated ja andmetüübid:
+  /eki-common/src/main/resources/sql/drop_all.sql sektsioon "wordweb associated views and types"
+
+Luua ekilexi baasis vaated:
+  /eki-common/src/main/resources/sql/create_views.sql
+
+Luua sõnaveebi baasis vaated:
+  /wordweb-app/fileresources/sql/create_mviews.sql
