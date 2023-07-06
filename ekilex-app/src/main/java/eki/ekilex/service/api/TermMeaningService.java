@@ -180,10 +180,12 @@ public class TermMeaningService extends AbstractService implements GlobalConstan
 					}
 				}
 
-				activityLog = activityLogService.prepareActivityLog(functName, lexemeId, ActivityOwner.LEXEME, MANUAL_EVENT_ON_UPDATE_ENABLED);
-				cudDbService.updateLexemeValueState(lexemeId, lexemeValueStateCode);
-				cudDbService.updateLexemePublicity(lexemeId, isLexemePublic);
-				activityLogService.createActivityLog(activityLog, lexemeId, ActivityEntity.LEXEME);
+				if (StringUtils.isNoneBlank(wordValue, wordLang)) {
+					activityLog = activityLogService.prepareActivityLog(functName, lexemeId, ActivityOwner.LEXEME, MANUAL_EVENT_ON_UPDATE_ENABLED);
+					cudDbService.updateLexemeValueState(lexemeId, lexemeValueStateCode);
+					cudDbService.updateLexemePublicity(lexemeId, isLexemePublic);
+					activityLogService.createActivityLog(activityLog, lexemeId, ActivityEntity.LEXEME);
+				}
 
 				if (CollectionUtils.isNotEmpty(lexemeNotes)) {
 
