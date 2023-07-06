@@ -10,6 +10,8 @@ public class TermWord extends AbstractDataObject {
 
 	private Long wordId;
 
+	private Long lexemeId;
+
 	private String value;
 
 	private String lang;
@@ -20,7 +22,7 @@ public class TermWord extends AbstractDataObject {
 
 	private List<TermFreeform> lexemeNotes;
 
-	private Boolean isLexemePublic;
+	private Boolean lexemePublicity;
 
 	private List<TermFreeform> usages;
 
@@ -30,6 +32,14 @@ public class TermWord extends AbstractDataObject {
 
 	public void setWordId(Long wordId) {
 		this.wordId = wordId;
+	}
+
+	public Long getLexemeId() {
+		return lexemeId;
+	}
+
+	public void setLexemeId(Long lexemeId) {
+		this.lexemeId = lexemeId;
 	}
 
 	public String getValue() {
@@ -72,12 +82,12 @@ public class TermWord extends AbstractDataObject {
 		this.lexemeNotes = lexemeNotes;
 	}
 
-	public Boolean getLexemePublic() {
-		return isLexemePublic;
+	public Boolean getLexemePublicity() {
+		return lexemePublicity;
 	}
 
-	public void setLexemePublic(Boolean lexemePublic) {
-		isLexemePublic = lexemePublic;
+	public void setLexemePublicity(Boolean lexemePublicity) {
+		this.lexemePublicity = lexemePublicity;
 	}
 
 	public List<TermFreeform> getUsages() {

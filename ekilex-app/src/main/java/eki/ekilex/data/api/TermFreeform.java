@@ -12,7 +12,7 @@ public class TermFreeform extends AbstractDataObject {
 
 	private String lang;
 
-	private Boolean isPublic;
+	private Boolean publicity;
 
 	public Long getId() {
 		return id;
@@ -38,11 +38,11 @@ public class TermFreeform extends AbstractDataObject {
 		this.lang = lang;
 	}
 
-	public Boolean getPublic() {
-		return isPublic;
+	public Boolean getPublicity() {
+		return publicity;
 	}
 
-	public void setPublic(Boolean aPublic) {
-		isPublic = aPublic;
+	public void setPublicity(Boolean publicity) {
+		this.publicity = publicity;
 	}
 }

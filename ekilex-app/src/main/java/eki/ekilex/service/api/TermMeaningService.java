@@ -128,7 +128,7 @@ public class TermMeaningService extends AbstractService implements GlobalConstan
 				String lexemeValueStateCode = word.getLexemeValueStateCode();
 				List<TermFreeform> lexemeNotes = word.getLexemeNotes();
 				List<TermFreeform> usages = word.getUsages();
-				boolean isLexemePublic = isPublic(word.getLexemePublic(), DEFAULT_LEXEME_PUBLICITY);
+				boolean isLexemePublic = isPublic(word.getLexemePublicity(), DEFAULT_LEXEME_PUBLICITY);
 
 				if ((wordId == null) && StringUtils.isAnyBlank(wordValue, wordLang)) {
 					continue;
@@ -193,7 +193,7 @@ public class TermMeaningService extends AbstractService implements GlobalConstan
 						Long lexemeNoteId = lexemeNote.getId();
 						String lexemeNoteValue = lexemeNote.getValue();
 						String lexemeNoteLang = lexemeNote.getLang();
-						boolean isLexemeNotePublic = isPublic(lexemeNote.getPublic(), DEFAULT_LEXEME_NOTE_PUBLICITY);
+						boolean isLexemeNotePublic = isPublic(lexemeNote.getPublicity(), DEFAULT_LEXEME_NOTE_PUBLICITY);
 
 						FreeForm freeform = initFreeform(FreeformType.NOTE, lexemeNoteValue, lexemeNoteLang, isLexemeNotePublic);
 
@@ -216,7 +216,7 @@ public class TermMeaningService extends AbstractService implements GlobalConstan
 						Long usageId = usage.getId();
 						String usageValue = usage.getValue();
 						String usageLang = usage.getLang();
-						boolean isUsagePublic = isPublic(usage.getPublic(), DEFAULT_USAGE_PUBLICITY);
+						boolean isUsagePublic = isPublic(usage.getPublicity(), DEFAULT_USAGE_PUBLICITY);
 
 						FreeForm freeform = initFreeform(FreeformType.USAGE, usageValue, usageLang, isUsagePublic);
 
@@ -262,7 +262,7 @@ public class TermMeaningService extends AbstractService implements GlobalConstan
 				Long meaningNoteId = meaningNote.getId();
 				String meaningNoteValue = meaningNote.getValue();
 				String meaningNoteLang = meaningNote.getLang();
-				boolean isMeaningNotePublic = isPublic(meaningNote.getPublic(), DEFAULT_MEANING_NOTE_PUBLICITY);
+				boolean isMeaningNotePublic = isPublic(meaningNote.getPublicity(), DEFAULT_MEANING_NOTE_PUBLICITY);
 
 				FreeForm freeform = initFreeform(FreeformType.NOTE, meaningNoteValue, meaningNoteLang, isMeaningNotePublic);
 
