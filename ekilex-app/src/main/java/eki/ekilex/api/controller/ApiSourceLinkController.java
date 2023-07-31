@@ -52,7 +52,7 @@ public class ApiSourceLinkController extends AbstractApiController {
 	@PreAuthorize("principal.apiCrud && @permEval.isSourceLinkCrudGranted(principal, #crudRoleDataset, #sourceLinkOwner, #sourceLinkId)")
 	@DeleteMapping(API_SERVICES_URI + SOURCE_LINK_URI + DELETE_URI)
 	@ResponseBody
-	public ApiResponse deleteFreeformSourceLink(
+	public ApiResponse deleteSourceLink(
 			@RequestParam("crudRoleDataset") String crudRoleDataset,
 			@RequestParam("sourceLinkOwner") ReferenceOwner sourceLinkOwner,
 			@RequestParam("sourceLinkId") Long sourceLinkId) {

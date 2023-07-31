@@ -91,7 +91,6 @@ import eki.common.constant.AuthorityOperation;
 import eki.common.constant.ClassifierName;
 import eki.common.constant.FreeformType;
 import eki.common.constant.ReferenceOwner;
-import eki.common.constant.SourceType;
 import eki.ekilex.data.Classifier;
 import eki.ekilex.data.Dataset;
 import eki.ekilex.data.DefSourceAndNoteSourceTuple;
@@ -1139,25 +1138,8 @@ public class CommonDataDbService extends AbstractDataDbService {
 		Freeform ut = FREEFORM.as("ut");
 		Freeform ud = FREEFORM.as("ud");
 		Freeform utype = FREEFORM.as("utype");
-		Freeform pname = FREEFORM.as("pname");
-		Source src = SOURCE.as("src");
-		SourceFreeform srcff = SOURCE_FREEFORM.as("srcff");
 		UsageTypeLabel utypelbl = USAGE_TYPE_LABEL.as("utypelbl");
 		FreeformSourceLink srcl = FREEFORM_SOURCE_LINK.as("uauthl");
-
-		Table<Record3<Long, String, String>> srcn = DSL
-				.select(
-						src.ID,
-						src.TYPE,
-						DSL.field("array_to_string(array_agg(distinct pname.value_text), ',', '*')").cast(String.class).as("src_name"))
-				.from(src, srcff, pname)
-				.where(
-						src.TYPE.eq(SourceType.PERSON.name())
-								.and(srcff.SOURCE_ID.eq(src.ID))
-								.and(srcff.FREEFORM_ID.eq(pname.ID))
-								.and(pname.TYPE.eq(FreeformType.SOURCE_NAME.name())))
-				.groupBy(src.ID)
-				.asTable("srcn");
 
 		return create
 				.select(
@@ -1178,16 +1160,12 @@ public class CommonDataDbService extends AbstractDataDbService {
 						srcl.ID.as("usage_source_link_id"),
 						srcl.TYPE.as("usage_source_link_type"),
 						srcl.NAME.as("usage_source_link_name"),
-						srcl.VALUE.as("usage_source_link_value"),
-						srcn.field("id").cast(Long.class).as("usage_source_id"),
-						srcn.field("type").cast(String.class).as("usage_source_type"),
-						srcn.field("src_name").cast(String.class).as("usage_source_name"))
+						srcl.VALUE.as("usage_source_link_value"))
 				.from(
 						ulff.innerJoin(u).on(ulff.FREEFORM_ID.eq(u.ID).and(u.TYPE.eq(FreeformType.USAGE.name())))
 								.leftOuterJoin(ut).on(ut.PARENT_ID.eq(u.ID).and(ut.TYPE.eq(FreeformType.USAGE_TRANSLATION.name())))
 								.leftOuterJoin(ud).on(ud.PARENT_ID.eq(u.ID).and(ud.TYPE.eq(FreeformType.USAGE_DEFINITION.name())))
 								.leftOuterJoin(srcl).on(srcl.FREEFORM_ID.eq(u.ID))
-								.leftOuterJoin(srcn).on(srcn.field("id").cast(Long.class).eq(srcl.SOURCE_ID))
 								.leftOuterJoin(utype).on(utype.PARENT_ID.eq(u.ID).and(utype.TYPE.eq(FreeformType.USAGE_TYPE.name())))
 								.leftOuterJoin(utypelbl).on(utypelbl.CODE.eq(utype.CLASSIF_CODE).and(utypelbl.LANG.eq(classifierLabelLang).and(utypelbl.TYPE.eq(classifierLabelTypeCode)))))
 				.where(ulff.LEXEME_ID.eq(lexemeId))

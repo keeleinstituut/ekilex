@@ -2,7 +2,6 @@ package eki.ekilex.data;
 
 import eki.common.constant.Complexity;
 import eki.common.constant.ReferenceType;
-import eki.common.constant.SourceType;
 import eki.common.data.AbstractDataObject;
 
 public class UsageTranslationDefinitionTuple extends AbstractDataObject {
@@ -42,12 +41,6 @@ public class UsageTranslationDefinitionTuple extends AbstractDataObject {
 	private String usageSourceLinkName;
 
 	private String usageSourceLinkValue;
-
-	private Long usageSourceId;
-
-	private SourceType usageSourceType;
-
-	private String usageSourceName;
 
 	private boolean isUsagePublic;
 
@@ -185,30 +178,6 @@ public class UsageTranslationDefinitionTuple extends AbstractDataObject {
 
 	public void setUsageSourceLinkValue(String usageSourceLinkValue) {
 		this.usageSourceLinkValue = usageSourceLinkValue;
-	}
-
-	public Long getUsageSourceId() {
-		return usageSourceId;
-	}
-
-	public void setUsageSourceId(Long usageSourceId) {
-		this.usageSourceId = usageSourceId;
-	}
-
-	public SourceType getUsageSourceType() {
-		return usageSourceType;
-	}
-
-	public void setUsageSourceType(SourceType usageSourceType) {
-		this.usageSourceType = usageSourceType;
-	}
-
-	public String getUsageSourceName() {
-		return usageSourceName;
-	}
-
-	public void setUsageSourceName(String usageSourceName) {
-		this.usageSourceName = usageSourceName;
 	}
 
 	public boolean isUsagePublic() {
