@@ -1011,8 +1011,16 @@ $.fn.updateTagCompletePlugin = function() {
 	return this.each(function() {
 		const obj = $(this);
 		obj.on('click', function() {
-			const wordId = obj.data('word-id');
-			const actionUrl = applicationUrl + "update_word_active_tag_complete/" + wordId;
+			const tagType = obj.data('tag-type');
+			let actionUrl;
+			if (tagType === 'lexeme-tag') {
+				const wordId = obj.data('word-id');
+				actionUrl = applicationUrl + "update_word_active_tag_complete/" + wordId;
+			} else if (tagType === 'meaning-tag') {
+				let meaningId = $(this).data('meaning-id');
+				actionUrl = applicationUrl + "update_meaning_active_tag_complete/" + meaningId;
+			}
+
 			$.post(actionUrl).done(function(data) {
 				if (data !== "{}") {
 					openAlertDlg(messages["common.error"]);
