@@ -24,6 +24,8 @@ public class TermWord extends AbstractDataObject {
 
 	private Boolean lexemePublicity;
 
+	private List<SourceLink> lexemeSourceLinks;
+
 	private List<TermFreeform> usages;
 
 	public Long getWordId() {
@@ -88,6 +90,14 @@ public class TermWord extends AbstractDataObject {
 
 	public void setLexemePublicity(Boolean lexemePublicity) {
 		this.lexemePublicity = lexemePublicity;
+	}
+
+	public List<SourceLink> getLexemeSourceLinks() {
+		return lexemeSourceLinks;
+	}
+
+	public void setLexemeSourceLinks(List<SourceLink> lexemeSourceLinks) {
+		this.lexemeSourceLinks = lexemeSourceLinks;
 	}
 
 	public List<TermFreeform> getUsages() {

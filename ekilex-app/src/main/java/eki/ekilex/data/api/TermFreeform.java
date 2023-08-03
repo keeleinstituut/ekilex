@@ -1,5 +1,7 @@
 package eki.ekilex.data.api;
 
+import java.util.List;
+
 import eki.common.data.AbstractDataObject;
 
 public class TermFreeform extends AbstractDataObject {
@@ -13,6 +15,8 @@ public class TermFreeform extends AbstractDataObject {
 	private String lang;
 
 	private Boolean publicity;
+
+	private List<SourceLink> sourceLinks;
 
 	public Long getId() {
 		return id;
@@ -44,5 +48,13 @@ public class TermFreeform extends AbstractDataObject {
 
 	public void setPublicity(Boolean publicity) {
 		this.publicity = publicity;
+	}
+
+	public List<SourceLink> getSourceLinks() {
+		return sourceLinks;
+	}
+
+	public void setSourceLinks(List<SourceLink> sourceLinks) {
+		this.sourceLinks = sourceLinks;
 	}
 }

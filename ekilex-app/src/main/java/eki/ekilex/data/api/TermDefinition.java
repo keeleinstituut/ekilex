@@ -1,5 +1,7 @@
 package eki.ekilex.data.api;
 
+import java.util.List;
+
 import eki.common.data.AbstractDataObject;
 
 public class TermDefinition extends AbstractDataObject {
@@ -13,6 +15,8 @@ public class TermDefinition extends AbstractDataObject {
 	private String lang;
 
 	private String definitionTypeCode;
+
+	private List<SourceLink> sourceLinks;
 
 	public Long getDefinitionId() {
 		return definitionId;
@@ -46,4 +50,11 @@ public class TermDefinition extends AbstractDataObject {
 		this.definitionTypeCode = definitionTypeCode;
 	}
 
+	public List<SourceLink> getSourceLinks() {
+		return sourceLinks;
+	}
+
+	public void setSourceLinks(List<SourceLink> sourceLinks) {
+		this.sourceLinks = sourceLinks;
+	}
 }

@@ -15,12 +15,14 @@ import eki.common.constant.ActivityOwner;
 import eki.common.constant.Complexity;
 import eki.common.constant.FreeformType;
 import eki.common.constant.GlobalConstant;
+import eki.common.constant.ReferenceType;
 import eki.common.service.TextDecorationService;
 import eki.ekilex.data.ActivityLogData;
 import eki.ekilex.data.Classifier;
 import eki.ekilex.data.FreeForm;
 import eki.ekilex.data.WordLexeme;
 import eki.ekilex.data.WordLexemeMeaningIdTuple;
+import eki.ekilex.data.api.SourceLink;
 import eki.ekilex.data.api.TermClassifier;
 import eki.ekilex.data.api.TermDefinition;
 import eki.ekilex.data.api.TermForum;
@@ -30,6 +32,7 @@ import eki.ekilex.data.api.TermWord;
 import eki.ekilex.service.AbstractService;
 import eki.ekilex.service.db.CudDbService;
 import eki.ekilex.service.db.LookupDbService;
+import eki.ekilex.service.db.SourceLinkDbService;
 import eki.ekilex.service.db.api.TermMeaningDbService;
 
 @Component
@@ -53,6 +56,9 @@ public class TermMeaningService extends AbstractService implements GlobalConstan
 
 	@Autowired
 	private CudDbService cudDbService;
+
+	@Autowired
+	private SourceLinkDbService sourceLinkDbService;
 
 	@Autowired
 	protected TextDecorationService textDecorationService;
@@ -98,6 +104,7 @@ public class TermMeaningService extends AbstractService implements GlobalConstan
 				String definitionValue = StringUtils.trim(definition.getValue());
 				String definitionLang = definition.getLang();
 				String definitionTypeCode = definition.getDefinitionTypeCode();
+				List<SourceLink> definitionSourceLinks = definition.getSourceLinks();
 				if (StringUtils.isAnyBlank(definitionValue, definitionLang)) {
 					continue;
 				}
@@ -109,6 +116,20 @@ public class TermMeaningService extends AbstractService implements GlobalConstan
 					cudDbService.updateDefinition(definitionId, definitionValue, definitionValue, definitionLang, definitionTypeCode, DEFAULT_COMPLEXITY, PUBLICITY_PUBLIC);
 				}
 				activityLogService.createActivityLog(activityLog, definitionId, ActivityEntity.DEFINITION);
+
+				if (CollectionUtils.isNotEmpty(definitionSourceLinks)) {
+
+					for (SourceLink definitionSourceLink : definitionSourceLinks) {
+						Long sourceLinkId = definitionSourceLink.getSourceLinkId();
+						Long sourceId = definitionSourceLink.getSourceId();
+						String sourceLinkValue = definitionSourceLink.getValue();
+						if (sourceLinkId == null) {
+							createDefinitionSourceLink(definitionId, sourceId, meaningId, sourceLinkValue, functName);
+						} else {
+							updateDefinitionSourceLink(sourceLinkId, meaningId, sourceLinkValue, functName);
+						}
+					}
+				}
 			}
 		}
 
@@ -129,6 +150,7 @@ public class TermMeaningService extends AbstractService implements GlobalConstan
 				List<TermFreeform> lexemeNotes = word.getLexemeNotes();
 				List<TermFreeform> usages = word.getUsages();
 				boolean isLexemePublic = isPublic(word.getLexemePublicity(), DEFAULT_LEXEME_PUBLICITY);
+				List<SourceLink> lexemeSourceLinks = word.getLexemeSourceLinks();
 
 				if ((wordId == null) && StringUtils.isAnyBlank(wordValue, wordLang)) {
 					continue;
@@ -196,6 +218,7 @@ public class TermMeaningService extends AbstractService implements GlobalConstan
 						String lexemeNoteValue = lexemeNote.getValue();
 						String lexemeNoteLang = lexemeNote.getLang();
 						boolean isLexemeNotePublic = isPublic(lexemeNote.getPublicity(), DEFAULT_LEXEME_NOTE_PUBLICITY);
+						List<SourceLink> lexemeNoteSourceLinks = lexemeNote.getSourceLinks();
 
 						FreeForm freeform = initFreeform(FreeformType.NOTE, lexemeNoteValue, lexemeNoteLang, isLexemeNotePublic);
 
@@ -207,6 +230,20 @@ public class TermMeaningService extends AbstractService implements GlobalConstan
 							cudDbService.updateFreeform(freeform, userName);
 						}
 						activityLogService.createActivityLog(activityLog, lexemeNoteId, ActivityEntity.LEXEME_NOTE);
+
+						if (CollectionUtils.isNotEmpty(lexemeNoteSourceLinks)) {
+
+							for (SourceLink lexemeNoteSourceLink : lexemeNoteSourceLinks) {
+								Long sourceLinkId = lexemeNoteSourceLink.getSourceLinkId();
+								Long sourceId = lexemeNoteSourceLink.getSourceId();
+								String sourceLinkValue = lexemeNoteSourceLink.getValue();
+								if (sourceLinkId == null) {
+									createFreeformSourceLink(lexemeNoteId, sourceId, sourceLinkValue, ActivityOwner.LEXEME, lexemeId, ActivityEntity.LEXEME_NOTE_SOURCE_LINK, functName);
+								} else {
+									updateFreeformSourceLink(sourceLinkId, sourceLinkValue, ActivityOwner.LEXEME, lexemeId, ActivityEntity.LEXEME_NOTE_SOURCE_LINK, functName);
+								}
+							}
+						}
 					}
 				}
 
@@ -219,6 +256,7 @@ public class TermMeaningService extends AbstractService implements GlobalConstan
 						String usageValue = usage.getValue();
 						String usageLang = usage.getLang();
 						boolean isUsagePublic = isPublic(usage.getPublicity(), DEFAULT_USAGE_PUBLICITY);
+						List<SourceLink> usageSourceLinks = usage.getSourceLinks();
 
 						FreeForm freeform = initFreeform(FreeformType.USAGE, usageValue, usageLang, isUsagePublic);
 
@@ -230,6 +268,34 @@ public class TermMeaningService extends AbstractService implements GlobalConstan
 							cudDbService.updateFreeform(freeform, userName);
 						}
 						activityLogService.createActivityLog(activityLog, usageId, ActivityEntity.USAGE);
+
+						if (CollectionUtils.isNotEmpty(usageSourceLinks)) {
+
+							for (SourceLink usageSourceLink : usageSourceLinks) {
+								Long sourceLinkId = usageSourceLink.getSourceLinkId();
+								Long sourceId = usageSourceLink.getSourceId();
+								String sourceLinkValue = usageSourceLink.getValue();
+								if (sourceLinkId == null) {
+									createFreeformSourceLink(usageId, sourceId, sourceLinkValue, ActivityOwner.LEXEME, lexemeId, ActivityEntity.USAGE_SOURCE_LINK, functName);
+								} else {
+									updateFreeformSourceLink(sourceLinkId, sourceLinkValue, ActivityOwner.LEXEME, lexemeId, ActivityEntity.USAGE_SOURCE_LINK, functName);
+								}
+							}
+						}
+					}
+				}
+
+				if (CollectionUtils.isNotEmpty(lexemeSourceLinks)) {
+
+					for (SourceLink lexemeSourceLink : lexemeSourceLinks) {
+						Long sourceLinkId = lexemeSourceLink.getSourceLinkId();
+						Long sourceId = lexemeSourceLink.getSourceId();
+						String sourceLinkValue = lexemeSourceLink.getValue();
+						if (sourceLinkId == null) {
+							createLexemeSourceLink(lexemeId, sourceId, sourceLinkValue, functName);
+						} else {
+							updateLexemeSourceLink(sourceLinkId, lexemeId, sourceLinkValue, functName);
+						}
 					}
 				}
 
@@ -265,6 +331,7 @@ public class TermMeaningService extends AbstractService implements GlobalConstan
 				String meaningNoteValue = meaningNote.getValue();
 				String meaningNoteLang = meaningNote.getLang();
 				boolean isMeaningNotePublic = isPublic(meaningNote.getPublicity(), DEFAULT_MEANING_NOTE_PUBLICITY);
+				List<SourceLink> meaningNoteSourceLinks = meaningNote.getSourceLinks();
 
 				FreeForm freeform = initFreeform(FreeformType.NOTE, meaningNoteValue, meaningNoteLang, isMeaningNotePublic);
 
@@ -276,6 +343,20 @@ public class TermMeaningService extends AbstractService implements GlobalConstan
 					cudDbService.updateFreeform(freeform, userName);
 				}
 				activityLogService.createActivityLog(activityLog, meaningNoteId, ActivityEntity.MEANING_NOTE);
+
+				if (CollectionUtils.isNotEmpty(meaningNoteSourceLinks)) {
+
+					for (SourceLink meaningNoteSourceLink : meaningNoteSourceLinks) {
+						Long sourceLinkId = meaningNoteSourceLink.getSourceLinkId();
+						Long sourceId = meaningNoteSourceLink.getSourceId();
+						String sourceLinkValue = meaningNoteSourceLink.getValue();
+						if (sourceLinkId == null) {
+							createFreeformSourceLink(meaningNoteId, sourceId, sourceLinkValue, ActivityOwner.MEANING, meaningId, ActivityEntity.MEANING_NOTE_SOURCE_LINK, functName);
+						} else {
+							updateFreeformSourceLink(sourceLinkId, sourceLinkValue, ActivityOwner.MEANING, meaningId, ActivityEntity.MEANING_NOTE_SOURCE_LINK, functName);
+						}
+					}
+				}
 			}
 		}
 
@@ -312,4 +393,58 @@ public class TermMeaningService extends AbstractService implements GlobalConstan
 
 		return itemPublicity == null ? defaultPublicity : itemPublicity;
 	}
+
+	private void createDefinitionSourceLink(Long definitionId, Long sourceId, Long meaningId, String sourceLinkValue, String functName) throws Exception {
+
+		ActivityLogData activityLog = activityLogService.prepareActivityLog(functName, meaningId, ActivityOwner.MEANING, MANUAL_EVENT_ON_UPDATE_DISABLED);
+		ReferenceType refType = ReferenceType.ANY;
+		String sourceLinkName = null;
+		Long sourceLinkId = sourceLinkDbService.createDefinitionSourceLink(definitionId, sourceId, refType, sourceLinkValue, sourceLinkName);
+		activityLogService.createActivityLog(activityLog, sourceLinkId, ActivityEntity.DEFINITION_SOURCE_LINK);
+	}
+
+	private void updateDefinitionSourceLink(Long sourceLinkId, Long meaningId, String sourceLinkValue, String functName) throws Exception {
+
+		ActivityLogData activityLog = activityLogService.prepareActivityLog(functName, meaningId, ActivityOwner.MEANING, MANUAL_EVENT_ON_UPDATE_DISABLED);
+		String sourceLinkName = null;
+		sourceLinkDbService.updateDefinitionSourceLink(sourceLinkId, sourceLinkValue, sourceLinkName);
+		activityLogService.createActivityLog(activityLog, sourceLinkId, ActivityEntity.DEFINITION_SOURCE_LINK);
+	}
+
+	private void createLexemeSourceLink(Long lexemeId, Long sourceId, String sourceLinkValue, String functName) throws Exception {
+
+		ActivityLogData activityLog = activityLogService.prepareActivityLog(functName, lexemeId, ActivityOwner.LEXEME, MANUAL_EVENT_ON_UPDATE_DISABLED);
+		ReferenceType refType = ReferenceType.ANY;
+		String sourceLinkName = null;
+		Long sourceLinkId = sourceLinkDbService.createLexemeSourceLink(lexemeId, sourceId, refType, sourceLinkValue, sourceLinkName);
+		activityLogService.createActivityLog(activityLog, sourceLinkId, ActivityEntity.LEXEME_SOURCE_LINK);
+	}
+
+	private void updateLexemeSourceLink(Long sourceLinkId, Long lexemeId, String sourceLinkValue, String functName) throws Exception {
+
+		ActivityLogData activityLog = activityLogService.prepareActivityLog(functName, lexemeId, ActivityOwner.LEXEME, MANUAL_EVENT_ON_UPDATE_DISABLED);
+		String sourceLinkName = null;
+		sourceLinkDbService.updateLexemeSourceLink(sourceLinkId, sourceLinkValue, sourceLinkName);
+		activityLogService.createActivityLog(activityLog, sourceLinkId, ActivityEntity.LEXEME_SOURCE_LINK);
+	}
+
+	private void createFreeformSourceLink(
+			Long freeformId, Long sourceId, String sourceLinkValue, ActivityOwner owner, Long ownerId, ActivityEntity activityEntity, String functName) throws Exception {
+
+		ActivityLogData activityLog = activityLogService.prepareActivityLog(functName, ownerId, owner, MANUAL_EVENT_ON_UPDATE_DISABLED);
+		ReferenceType refType = ReferenceType.ANY;
+		String sourceLinkName = null;
+		Long sourceLinkId = sourceLinkDbService.createFreeformSourceLink(freeformId, sourceId, refType, sourceLinkValue, sourceLinkName);
+		activityLogService.createActivityLog(activityLog, sourceLinkId, activityEntity);
+	}
+
+	private void updateFreeformSourceLink(
+			Long sourceLinkId, String sourceLinkValue, ActivityOwner owner, Long ownerId, ActivityEntity activityEntity, String functName) throws Exception {
+
+		ActivityLogData activityLog = activityLogService.prepareActivityLog(functName, ownerId, owner, MANUAL_EVENT_ON_UPDATE_DISABLED);
+		String sourceLinkName = null;
+		sourceLinkDbService.updateFreeformSourceLink(sourceLinkId, sourceLinkValue, sourceLinkName);
+		activityLogService.createActivityLog(activityLog, sourceLinkId, activityEntity);
+	}
+
 }

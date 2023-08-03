@@ -2,9 +2,12 @@ package eki.ekilex.service.db.api;
 
 import static eki.ekilex.data.db.Tables.DEFINITION;
 import static eki.ekilex.data.db.Tables.DEFINITION_DATASET;
+import static eki.ekilex.data.db.Tables.DEFINITION_SOURCE_LINK;
 import static eki.ekilex.data.db.Tables.FREEFORM;
+import static eki.ekilex.data.db.Tables.FREEFORM_SOURCE_LINK;
 import static eki.ekilex.data.db.Tables.LEXEME;
 import static eki.ekilex.data.db.Tables.LEXEME_FREEFORM;
+import static eki.ekilex.data.db.Tables.LEXEME_SOURCE_LINK;
 import static eki.ekilex.data.db.Tables.MEANING;
 import static eki.ekilex.data.db.Tables.MEANING_DOMAIN;
 import static eki.ekilex.data.db.Tables.MEANING_FORUM;
@@ -23,9 +26,12 @@ import eki.common.constant.FreeformType;
 import eki.ekilex.data.api.TermMeaning;
 import eki.ekilex.data.db.tables.Definition;
 import eki.ekilex.data.db.tables.DefinitionDataset;
+import eki.ekilex.data.db.tables.DefinitionSourceLink;
 import eki.ekilex.data.db.tables.Freeform;
+import eki.ekilex.data.db.tables.FreeformSourceLink;
 import eki.ekilex.data.db.tables.Lexeme;
 import eki.ekilex.data.db.tables.LexemeFreeform;
+import eki.ekilex.data.db.tables.LexemeSourceLink;
 import eki.ekilex.data.db.tables.Meaning;
 import eki.ekilex.data.db.tables.MeaningDomain;
 import eki.ekilex.data.db.tables.MeaningForum;
@@ -42,16 +48,58 @@ public class TermMeaningDbService {
 	public TermMeaning getTermMeaning(Long meaningId, String datasetCode) {
 
 		Meaning m = MEANING.as("m");
-		Lexeme l = LEXEME.as("l");
-		Word w = WORD.as("w");
-		Definition d = DEFINITION.as("d");
-		DefinitionDataset dd = DEFINITION_DATASET.as("dd");
-		Freeform ff = FREEFORM.as("ff");
-		MeaningFreeform mff = MEANING_FREEFORM.as("mff");
-		LexemeFreeform lff = LEXEME_FREEFORM.as("lff");
 		MeaningDomain md = MEANING_DOMAIN.as("md");
 		MeaningForum mfor = MEANING_FORUM.as("mfor");
+		MeaningFreeform mff = MEANING_FREEFORM.as("mff");
+
+		Lexeme l = LEXEME.as("l");
+		LexemeFreeform lff = LEXEME_FREEFORM.as("lff");
+		LexemeSourceLink lsl = LEXEME_SOURCE_LINK.as("lsl");
+
+		Word w = WORD.as("w");
 		WordWordType wwt = WORD_WORD_TYPE.as("wwt");
+
+		Definition d = DEFINITION.as("d");
+		DefinitionDataset dd = DEFINITION_DATASET.as("dd");
+		DefinitionSourceLink dsl = DEFINITION_SOURCE_LINK.as("dsl");
+		Freeform ff = FREEFORM.as("ff");
+		FreeformSourceLink ffsl = FREEFORM_SOURCE_LINK.as("ffsl");
+
+		Field<JSON> ffslf = DSL
+				.select(DSL
+						.jsonArrayAgg(DSL
+								.jsonObject(
+										DSL.key("sourceLinkId").value(ffsl.ID),
+										DSL.key("sourceId").value(ffsl.SOURCE_ID),
+										DSL.key("value").value(ffsl.VALUE)))
+						.orderBy(ffsl.ORDER_BY))
+				.from(ffsl)
+				.where(ffsl.FREEFORM_ID.eq(ff.ID))
+				.asField();
+
+		Field<JSON> dslf = DSL
+				.select(DSL
+						.jsonArrayAgg(DSL
+								.jsonObject(
+										DSL.key("sourceLinkId").value(dsl.ID),
+										DSL.key("sourceId").value(dsl.SOURCE_ID),
+										DSL.key("value").value(dsl.VALUE)))
+						.orderBy(dsl.ORDER_BY))
+				.from(dsl)
+				.where(dsl.DEFINITION_ID.eq(d.ID))
+				.asField();
+
+		Field<JSON> lslf = DSL
+				.select(DSL
+						.jsonArrayAgg(DSL
+								.jsonObject(
+										DSL.key("sourceLinkId").value(lsl.ID),
+										DSL.key("sourceId").value(lsl.SOURCE_ID),
+										DSL.key("value").value(lsl.VALUE)))
+						.orderBy(lsl.ORDER_BY))
+				.from(lsl)
+				.where(lsl.LEXEME_ID.eq(l.ID))
+				.asField();
 
 		Field<JSON> df = DSL
 				.select(DSL
@@ -60,7 +108,8 @@ public class TermMeaningDbService {
 										DSL.key("definitionId").value(d.ID),
 										DSL.key("value").value(d.VALUE),
 										DSL.key("lang").value(d.LANG),
-										DSL.key("definitionTypeCode").value(d.DEFINITION_TYPE_CODE)))
+										DSL.key("definitionTypeCode").value(d.DEFINITION_TYPE_CODE),
+										DSL.key("sourceLinks").value(dslf)))
 						.orderBy(d.ORDER_BY))
 				.from(d)
 				.where(
@@ -80,7 +129,8 @@ public class TermMeaningDbService {
 										DSL.key("id").value(ff.ID),
 										DSL.key("value").value(ff.VALUE_TEXT),
 										DSL.key("lang").value(ff.LANG),
-										DSL.key("publicity").value(ff.IS_PUBLIC)))
+										DSL.key("publicity").value(ff.IS_PUBLIC),
+										DSL.key("sourceLinks").value(ffslf)))
 						.orderBy(ff.ORDER_BY))
 				.from(ff, lff)
 				.where(
@@ -96,7 +146,8 @@ public class TermMeaningDbService {
 										DSL.key("id").value(ff.ID),
 										DSL.key("value").value(ff.VALUE_TEXT),
 										DSL.key("lang").value(ff.LANG),
-										DSL.key("publicity").value(ff.IS_PUBLIC)))
+										DSL.key("publicity").value(ff.IS_PUBLIC),
+										DSL.key("sourceLinks").value(ffslf)))
 						.orderBy(ff.ORDER_BY))
 				.from(ff, lff)
 				.where(
@@ -125,6 +176,7 @@ public class TermMeaningDbService {
 										DSL.key("lexemeValueStateCode").value(l.VALUE_STATE_CODE),
 										DSL.key("lexemeNotes").value(lnf),
 										DSL.key("lexemePublicity").value(l.IS_PUBLIC),
+										DSL.key("lexemeSourceLinks").value(lslf),
 										DSL.key("usages").value(uf)))
 						.orderBy(l.ORDER_BY))
 				.from(w, l)
@@ -152,7 +204,8 @@ public class TermMeaningDbService {
 										DSL.key("id").value(ff.ID),
 										DSL.key("value").value(ff.VALUE_TEXT),
 										DSL.key("lang").value(ff.LANG),
-										DSL.key("publicity").value(ff.IS_PUBLIC)))
+										DSL.key("publicity").value(ff.IS_PUBLIC),
+										DSL.key("sourceLinks").value(ffslf)))
 						.orderBy(ff.ORDER_BY))
 				.from(ff, mff)
 				.where(
