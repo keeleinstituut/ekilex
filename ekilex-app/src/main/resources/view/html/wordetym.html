@@ -17,7 +17,7 @@
     </div>
   </div>
   <div class="container-fluid h-100 wordetym-wrapper">
-    <div class="wordetym-card">
+    <div class="wordetym-card" data-plugin="wordetymCard">
       <div class="wordetym-card__header">
         <div class="wordetym-card__info">
           <span th:utext="${wordEtym.lang}" class="lang-abbr"></span>
@@ -25,7 +25,7 @@
           <i th:utext="${wordEtym.comment}"></i>
         </div>
       </div>
-      <div class="trace-1">
+      <div class="add-edit-etym">
         <div class="wordetym-card__body">
           <hr class="etym-devider-top">
           <div class="form-group row">
@@ -72,7 +72,18 @@
           <button class="btn btn-primary w-100 ml-1" type="submit">Salvesta</button>
         </div>
       </div>
-
+      <div class="display-etym-info">
+        <div class="wordetym-card__body">
+          <span class="origin mb-3">Kirjakeele sõna</span>
+          <span class="comment mb-3">Lorem ipsum dolor sit amet consectetur, adipisicing elit. Corrupti in ipsum atque!</span>
+          <span class="year mb-3">1911</span>
+          <span class="sources">
+            <span class="source-item">Tallinn</span>
+            <span class="source-item">Tallinn</span>
+            <span class="source-item">Tallinn</span>
+          </span>
+        </div>
+      </div>
       <div class="wordetym-card__links">
         <button class="btn-edit-etym" type="button" data-plugin="initEkiEditorDlgEtym">
           <span class="fa fa-pencil"></span>

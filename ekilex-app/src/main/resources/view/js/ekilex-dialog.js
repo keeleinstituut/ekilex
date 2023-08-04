@@ -56,7 +56,6 @@ $(function() {
 		})
 	}
 
-
 	$.fn.initEkiEditorDlgEtym = function() {
 		const editorOptions = {
 			height: '5em',

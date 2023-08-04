@@ -73,12 +73,14 @@
   }
 
   &.lex-internal-notice {
+    display: block;
     width: 250px;
+    height: 28px;
 
     .ekiAccordion__instance {
       &--active {
         position: absolute;
-        top: -14px;
+        top: 0;
         z-index: 1;
 
         >.ekiAccordion__content {
@@ -86,6 +88,33 @@
         }
       }
     }
+  }
+}
 
+@media screen and (max-width: 1600px) {
+  .ekiAccordion {
+    &.lex-internal-notice {
+      display: block;
+      height: 31px;
+      margin: 8px 0 0 0;
+  
+      .ekiAccordion__instance {
+        &--active {
+          top: 0;
+        }
+      }
+    }
+  }
+}
+
+.modal-open {
+  .ekiAccordion {
+    &.lex-internal-notice {
+      .ekiAccordion__instance {
+        &--active {
+          z-index: unset;
+        }
+      }
+    }
   }
 }
