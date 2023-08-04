@@ -646,7 +646,7 @@ public class EditController extends AbstractMutableDataPageController {
 			cudService.deleteWordForum(id);
 			break;
 		case "meaning_relation":
-			response = cudService.deleteMeaningRelation(id, response, isManualEventOnUpdateEnabled);
+			response = cudService.deleteMeaningRelation(id, response, MANUAL_EVENT_ON_UPDATE_DISABLED);
 			break;
 		case "word_gender":
 			cudService.updateWordGenderWithDuplication(id, null, user, isManualEventOnUpdateEnabled);
@@ -707,7 +707,7 @@ public class EditController extends AbstractMutableDataPageController {
 		for (Long id2 : ids) {
 			switch (opCode) {
 			case "meaning_relation":
-				cudService.createMeaningRelation(id1, id2, relationType, oppositeRelationType, isManualEventOnUpdateEnabled);
+				cudService.createMeaningRelation(id1, id2, relationType, oppositeRelationType, MANUAL_EVENT_ON_UPDATE_DISABLED);
 				break;
 			case "lexeme_relation":
 				cudService.createLexemeRelation(id1, id2, relationType, oppositeRelationType, isManualEventOnUpdateEnabled);

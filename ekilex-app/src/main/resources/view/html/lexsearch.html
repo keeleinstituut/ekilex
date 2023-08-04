@@ -79,6 +79,7 @@
                         th:if="${userRoleData.lexemeActiveTagChangeEnabled}"
                         sec:authorize="#vars.details.word.subGrant"
                         data-plugin="updateTagCompletePlugin"
+                        data-tag-type="lexeme-tag"
                         th:text="#{lex.update.tag.complete}">Märgi tehtuks
                 </button>
               </div>

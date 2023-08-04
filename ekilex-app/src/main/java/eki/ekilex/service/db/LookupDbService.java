@@ -238,6 +238,16 @@ public class LookupDbService extends AbstractDataDbService {
 				.fetchInto(Long.class);
 	}
 
+	public List<String> getWordTypeCodes(Long wordId) {
+
+		return create
+				.select(WORD_WORD_TYPE.WORD_TYPE_CODE)
+				.from(WORD_WORD_TYPE)
+				.where(WORD_WORD_TYPE.WORD_ID.eq(wordId))
+				.orderBy(WORD_WORD_TYPE.ORDER_BY)
+				.fetchInto(String.class);
+	}
+
 	public List<WordRelation> getWordRelations(Long wordId, String relTypeCode) {
 		return create.select(WORD_RELATION.ID, WORD_RELATION.ORDER_BY)
 				.from(WORD_RELATION)
@@ -277,6 +287,15 @@ public class LookupDbService extends AbstractDataDbService {
 				.from(LEXEME)
 				.where(LEXEME.ID.eq(lexemeId))
 				.fetchOneInto(String.class);
+	}
+
+	public Long getLexemeId(Long wordId, Long meaningId) {
+
+		return create
+				.select(LEXEME.ID)
+				.from(LEXEME)
+				.where(LEXEME.WORD_ID.eq(wordId).and(LEXEME.MEANING_ID.eq(meaningId)))
+				.fetchSingleInto(Long.class);
 	}
 
 	public Long getLexemeMeaningId(Long lexemeId) {
@@ -670,6 +689,17 @@ public class LookupDbService extends AbstractDataDbService {
 				.from(rmds)
 				.groupBy(meaningIdField)
 				.fetchMap(meaningIdField, DSL.arrayAggDistinct(datasetCodeField));
+	}
+
+	public boolean meaningDomainExists(Long meaningId, String domainCode, String domainOrigin) {
+
+		return create
+				.select(DSL.field(DSL.count(MEANING_DOMAIN.ID).gt(0)).as("meaning_domain_exists"))
+				.from(MEANING_DOMAIN)
+				.where(MEANING_DOMAIN.MEANING_ID.eq(meaningId)
+						.and(MEANING_DOMAIN.DOMAIN_CODE.eq(domainCode))
+						.and(MEANING_DOMAIN.DOMAIN_ORIGIN.eq(domainOrigin)))
+				.fetchSingleInto(Boolean.class);
 	}
 
 	public boolean meaningPublicLexemeExists(Long meaningId) {

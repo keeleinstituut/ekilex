@@ -116,7 +116,9 @@ public class SourceSearchController extends AbstractPrivateSearchController {
 		DatasetPermission userRole = user.getRecentRole();
 		List<Source> sources = new ArrayList<>();
 		Source source = sourceService.getSource(sourceId, userRole);
-		sources.add(source);
+		if (source != null) {
+			sources.add(source);
+		}
 
 		initSearchForms(SOURCE_SEARCH_PAGE, model);
 

@@ -35,6 +35,7 @@ import eki.ekilex.data.Classifier;
 import eki.ekilex.data.Collocation;
 import eki.ekilex.data.CollocationPosGroup;
 import eki.ekilex.data.CollocationTuple;
+import eki.ekilex.data.DatasetPermission;
 import eki.ekilex.data.DefSourceAndNoteSourceTuple;
 import eki.ekilex.data.Definition;
 import eki.ekilex.data.DefinitionLangGroup;
@@ -67,6 +68,7 @@ import eki.ekilex.data.WordRelation;
 import eki.ekilex.service.db.ActivityLogDbService;
 import eki.ekilex.service.db.CommonDataDbService;
 import eki.ekilex.service.db.LexSearchDbService;
+import eki.ekilex.service.db.LookupDbService;
 import eki.ekilex.service.db.SourceDbService;
 import eki.ekilex.service.util.ConversionUtil;
 
@@ -143,6 +145,9 @@ public class ActivityLogService implements SystemConstant, GlobalConstant {
 
 	@Autowired
 	private CommonDataDbService commonDataDbService;
+
+	@Autowired
+	private LookupDbService lookupDbService;
 
 	@Autowired
 	private ConversionUtil conversionUtil;
@@ -469,8 +474,13 @@ public class ActivityLogService implements SystemConstant, GlobalConstant {
 		}
 		for (Long meaningId : meaningIds) {
 			activityLogDbService.createOrUpdateMeaningLastActivityLog(meaningId, LastActivityType.EDIT);
-			if (isManualEventOnUpdateEnabled) {
-				activityLogDbService.updateMeaningManualEventOn(meaningId, eventOn);
+		}
+
+		if (isManualEventOnUpdateEnabled) {
+			List<Long> roleDatasetMeaningIds = filterRoleDatasetMeaningIds(meaningIds);
+			for (Long roleDatasetMeaningId : roleDatasetMeaningIds) {
+				activityLogDbService.updateMeaningManualEventOn(roleDatasetMeaningId, eventOn);
+
 			}
 		}
 
@@ -567,6 +577,25 @@ public class ActivityLogService implements SystemConstant, GlobalConstant {
 			activityLogDiffs.add(activityLogDiff);
 		}
 		return activityLogDiffs;
+	}
+
+	private List<Long> filterRoleDatasetMeaningIds(Long[] meaningIds) {
+
+		List<Long> roleDatasetMeaningIds = new ArrayList<>();
+		DatasetPermission userRole = userContext.getUserRole();
+		String roleDatasetCode = userRole.getDatasetCode();
+		boolean isSuperiorPermission = userRole.isSuperiorPermission();
+
+		if (!isSuperiorPermission) {
+			for (Long meaningId : meaningIds) {
+				String meaningDatasetCode = lookupDbService.getMeaningFirstDatasetCode(meaningId);
+				if (StringUtils.equals(meaningDatasetCode, roleDatasetCode)) {
+					roleDatasetMeaningIds.add(meaningId);
+				}
+			}
+		}
+
+		return roleDatasetMeaningIds;
 	}
 
 	private String getLexemeDetailsJson(Long lexemeId) throws Exception {

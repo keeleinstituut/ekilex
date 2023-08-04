@@ -65,7 +65,7 @@ public class WordEtymDbService extends AbstractDataDbService {
 										DSL.table("word_etym_recursion").as("rec")
 												.innerJoin(we).on(we.WORD_ID.eq(DSL.field("rec.related_word_id", Long.class)))
 												.leftOuterJoin(wer).on(wer.WORD_ETYM_ID.eq(we.ID)))
-								.where(DSL.field("rec.related_word_id", Long.class).ne(DSL.all(DSL.field("rec.related_word_ids", Long[].class)))) // TODO DSL.all works to avoid endless loop?
+								.where(DSL.field("rec.related_word_id", Long.class).ne(DSL.all(DSL.field("rec.related_word_ids", Long[].class))))
 								.orderBy(we.ORDER_BY, wer.ORDER_BY)));
 
 		Table<Record3<Long, String, String>> wt = DSL

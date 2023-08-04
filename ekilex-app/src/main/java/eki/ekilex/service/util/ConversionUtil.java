@@ -223,11 +223,7 @@ public class ConversionUtil implements GlobalConstant {
 					usageSource.setId(tuple.getUsageSourceLinkId());
 					usageSource.setType(tuple.getUsageSourceLinkType());
 					usageSource.setName(tuple.getUsageSourceLinkName());
-					if (StringUtils.isBlank(tuple.getUsageSourceLinkValue())) {
-						usageSource.setValue(tuple.getUsageSourceName());
-					} else {
-						usageSource.setValue(tuple.getUsageSourceLinkValue());
-					}
+					usageSource.setValue(tuple.getUsageSourceLinkValue());
 					usageSourceMap.put(usageSourceLinkId, usageSource);
 					if (ReferenceType.AUTHOR.equals(tuple.getUsageSourceLinkType())) {
 						usage.getAuthors().add(usageSource);
