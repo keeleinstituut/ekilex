@@ -101,7 +101,8 @@ public class WordDbService extends AbstractDataDbService {
 								.jsonObject(
 										DSL.key("sourceLinkId").value(ffsl.ID),
 										DSL.key("sourceId").value(ffsl.SOURCE_ID),
-										DSL.key("value").value(ffsl.VALUE)))
+										DSL.key("value").value(ffsl.VALUE),
+										DSL.key("type").value(ffsl.TYPE)))
 						.orderBy(ffsl.ORDER_BY))
 				.from(ffsl)
 				.where(ffsl.FREEFORM_ID.eq(ff.ID))
@@ -113,7 +114,8 @@ public class WordDbService extends AbstractDataDbService {
 								.jsonObject(
 										DSL.key("sourceLinkId").value(dsl.ID),
 										DSL.key("sourceId").value(dsl.SOURCE_ID),
-										DSL.key("value").value(dsl.VALUE)))
+										DSL.key("value").value(dsl.VALUE),
+										DSL.key("type").value(dsl.TYPE)))
 						.orderBy(dsl.ORDER_BY))
 				.from(dsl)
 				.where(dsl.DEFINITION_ID.eq(d.ID))

@@ -34,7 +34,6 @@ public class WordService extends AbstractApiCudService implements GlobalConstant
 
 	private static final boolean DEFAULT_USAGE_PUBLICITY = PUBLICITY_PUBLIC;
 
-
 	@Autowired
 	private TagDbService tagDbService;
 
