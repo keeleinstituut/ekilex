@@ -6,6 +6,8 @@ public class WordRelation extends AbstractDataObject {
 
 	private static final long serialVersionUID = 1L;
 
+	private Long id;
+
 	private Long wordId;
 
 	private Long targetWordId;
@@ -13,6 +15,14 @@ public class WordRelation extends AbstractDataObject {
 	private String relationTypeCode;
 
 	private String oppositeRelationTypeCode;
+
+	public Long getId() {
+		return id;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
+	}
 
 	public Long getWordId() {
 		return wordId;

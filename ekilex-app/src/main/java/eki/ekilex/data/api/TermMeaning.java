@@ -12,13 +12,13 @@ public class TermMeaning extends AbstractDataObject {
 
 	private String datasetCode;
 
-	private List<TermClassifier> domains;
+	private List<Classifier> domains;
 
-	private List<TermDefinition> definitions;
+	private List<Definition> definitions;
 
-	private List<TermFreeform> notes;
+	private List<Freeform> notes;
 
-	private List<TermForum> forums;
+	private List<Forum> forums;
 
 	private List<TermWord> words;
 
@@ -38,35 +38,35 @@ public class TermMeaning extends AbstractDataObject {
 		this.datasetCode = datasetCode;
 	}
 
-	public List<TermClassifier> getDomains() {
+	public List<Classifier> getDomains() {
 		return domains;
 	}
 
-	public void setDomains(List<TermClassifier> domains) {
+	public void setDomains(List<Classifier> domains) {
 		this.domains = domains;
 	}
 
-	public List<TermDefinition> getDefinitions() {
+	public List<Definition> getDefinitions() {
 		return definitions;
 	}
 
-	public void setDefinitions(List<TermDefinition> definitions) {
+	public void setDefinitions(List<Definition> definitions) {
 		this.definitions = definitions;
 	}
 
-	public List<TermFreeform> getNotes() {
+	public List<Freeform> getNotes() {
 		return notes;
 	}
 
-	public void setNotes(List<TermFreeform> notes) {
+	public void setNotes(List<Freeform> notes) {
 		this.notes = notes;
 	}
 
-	public List<TermForum> getForums() {
+	public List<Forum> getForums() {
 		return forums;
 	}
 
-	public void setForums(List<TermForum> forums) {
+	public void setForums(List<Forum> forums) {
 		this.forums = forums;
 	}
 

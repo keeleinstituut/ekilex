@@ -20,13 +20,13 @@ public class TermWord extends AbstractDataObject {
 
 	private String lexemeValueStateCode;
 
-	private List<TermFreeform> lexemeNotes;
+	private List<Freeform> lexemeNotes;
 
 	private Boolean lexemePublicity;
 
 	private List<SourceLink> lexemeSourceLinks;
 
-	private List<TermFreeform> usages;
+	private List<Freeform> usages;
 
 	public Long getWordId() {
 		return wordId;
@@ -76,11 +76,11 @@ public class TermWord extends AbstractDataObject {
 		this.lexemeValueStateCode = lexemeValueStateCode;
 	}
 
-	public List<TermFreeform> getLexemeNotes() {
+	public List<Freeform> getLexemeNotes() {
 		return lexemeNotes;
 	}
 
-	public void setLexemeNotes(List<TermFreeform> lexemeNotes) {
+	public void setLexemeNotes(List<Freeform> lexemeNotes) {
 		this.lexemeNotes = lexemeNotes;
 	}
 
@@ -100,11 +100,11 @@ public class TermWord extends AbstractDataObject {
 		this.lexemeSourceLinks = lexemeSourceLinks;
 	}
 
-	public List<TermFreeform> getUsages() {
+	public List<Freeform> getUsages() {
 		return usages;
 	}
 
-	public void setUsages(List<TermFreeform> usages) {
+	public void setUsages(List<Freeform> usages) {
 		this.usages = usages;
 	}
 }

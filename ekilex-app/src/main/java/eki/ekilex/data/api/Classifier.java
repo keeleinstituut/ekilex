@@ -2,7 +2,7 @@ package eki.ekilex.data.api;
 
 import eki.common.data.AbstractDataObject;
 
-public class TermClassifier extends AbstractDataObject {
+public class Classifier extends AbstractDataObject {
 
 	private static final long serialVersionUID = 1L;
 

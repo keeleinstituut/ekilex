@@ -4,26 +4,26 @@ import java.util.List;
 
 import eki.common.data.AbstractDataObject;
 
-public class TermFreeform extends AbstractDataObject {
+public class Definition extends AbstractDataObject {
 
 	private static final long serialVersionUID = 1L;
 
-	private Long id;
+	private Long definitionId;
 
 	private String value;
 
 	private String lang;
 
-	private Boolean publicity;
+	private String definitionTypeCode;
 
 	private List<SourceLink> sourceLinks;
 
-	public Long getId() {
-		return id;
+	public Long getDefinitionId() {
+		return definitionId;
 	}
 
-	public void setId(Long id) {
-		this.id = id;
+	public void setDefinitionId(Long definitionId) {
+		this.definitionId = definitionId;
 	}
 
 	public String getValue() {
@@ -42,12 +42,12 @@ public class TermFreeform extends AbstractDataObject {
 		this.lang = lang;
 	}
 
-	public Boolean getPublicity() {
-		return publicity;
+	public String getDefinitionTypeCode() {
+		return definitionTypeCode;
 	}
 
-	public void setPublicity(Boolean publicity) {
-		this.publicity = publicity;
+	public void setDefinitionTypeCode(String definitionTypeCode) {
+		this.definitionTypeCode = definitionTypeCode;
 	}
 
 	public List<SourceLink> getSourceLinks() {

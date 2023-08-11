@@ -5,7 +5,6 @@ import java.sql.Timestamp;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import java.util.Optional;
 
 import javax.transaction.Transactional;
 
@@ -21,7 +20,6 @@ import eki.common.constant.Complexity;
 import eki.common.constant.FreeformType;
 import eki.common.constant.GlobalConstant;
 import eki.common.constant.PermConstant;
-import eki.common.constant.WordRelationGroupType;
 import eki.ekilex.data.ActivityLogData;
 import eki.ekilex.data.Classifier;
 import eki.ekilex.data.DatasetPermission;
@@ -792,38 +790,6 @@ public class CudService extends AbstractCudService implements GlobalConstant, Pe
 			Long duplicateWordId = duplicateWordData(wordId, isManualEventOnUpdateEnabled);
 			updateWordLexemesWordId(wordId, duplicateWordId, datasetCode, isManualEventOnUpdateEnabled);
 			createWordType(duplicateWordId, typeCode, isManualEventOnUpdateEnabled);
-		}
-	}
-
-	@Transactional
-	public void createWordRelation(Long wordId, Long targetWordId, String relationTypeCode, String oppositeRelationTypeCode, boolean isManualEventOnUpdateEnabled) throws Exception {
-
-		ActivityLogData activityLog;
-		Optional<WordRelationGroupType> wordRelationGroupType = WordRelationGroupType.toRelationGroupType(relationTypeCode);
-		if (wordRelationGroupType.isPresent()) {
-			activityLog = activityLogService.prepareActivityLog("createWordRelation", wordId, ActivityOwner.WORD, isManualEventOnUpdateEnabled);
-			Long groupId = lookupDbService.getWordRelationGroupId(relationTypeCode, wordId);
-			if (groupId == null) {
-				groupId = cudDbService.createWordRelationGroup(relationTypeCode);
-				cudDbService.createWordRelationGroupMember(groupId, wordId);
-				cudDbService.createWordRelationGroupMember(groupId, targetWordId);
-			} else if (!lookupDbService.isMemberOfWordRelationGroup(groupId, targetWordId)) {
-				cudDbService.createWordRelationGroupMember(groupId, targetWordId);
-			}
-			activityLogService.createActivityLog(activityLog, targetWordId, ActivityEntity.WORD_RELATION_GROUP_MEMBER);
-		} else {
-			activityLog = activityLogService.prepareActivityLog("createWordRelation", wordId, ActivityOwner.WORD, isManualEventOnUpdateEnabled);
-			Long relationId = cudDbService.createWordRelation(wordId, targetWordId, relationTypeCode, null);
-			activityLogService.createActivityLog(activityLog, relationId, ActivityEntity.WORD_RELATION);
-			if (StringUtils.isNotEmpty(oppositeRelationTypeCode)) {
-				boolean oppositeRelationExists = lookupDbService.wordRelationExists(targetWordId, wordId, oppositeRelationTypeCode);
-				if (oppositeRelationExists) {
-					return;
-				}
-				activityLog = activityLogService.prepareActivityLog("createWordRelation", targetWordId, ActivityOwner.WORD, isManualEventOnUpdateEnabled);
-				Long oppositeRelationId = cudDbService.createWordRelation(targetWordId, wordId, oppositeRelationTypeCode, null);
-				activityLogService.createActivityLog(activityLog, oppositeRelationId, ActivityEntity.WORD_RELATION);
-			}
 		}
 	}
 

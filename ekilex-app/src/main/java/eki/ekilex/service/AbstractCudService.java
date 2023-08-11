@@ -1,16 +1,19 @@
 package eki.ekilex.service;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.transaction.Transactional;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import eki.common.constant.ActivityEntity;
 import eki.common.constant.ActivityOwner;
 import eki.common.constant.Complexity;
 import eki.common.constant.FreeformType;
+import eki.common.constant.WordRelationGroupType;
 import eki.common.service.TextDecorationService;
 import eki.ekilex.data.ActivityLogData;
 import eki.ekilex.data.FreeForm;
@@ -84,6 +87,38 @@ public abstract class AbstractCudService extends AbstractService {
 
 		Long usageId = createLexemeFreeform(ActivityEntity.USAGE, lexemeId, freeform, isManualEventOnUpdateEnabled);
 		return usageId;
+	}
+
+	@Transactional
+	public void createWordRelation(Long wordId, Long targetWordId, String relationTypeCode, String oppositeRelationTypeCode, boolean isManualEventOnUpdateEnabled) throws Exception {
+
+		ActivityLogData activityLog;
+		Optional<WordRelationGroupType> wordRelationGroupType = WordRelationGroupType.toRelationGroupType(relationTypeCode);
+		if (wordRelationGroupType.isPresent()) {
+			activityLog = activityLogService.prepareActivityLog("createWordRelation", wordId, ActivityOwner.WORD, isManualEventOnUpdateEnabled);
+			Long groupId = lookupDbService.getWordRelationGroupId(relationTypeCode, wordId);
+			if (groupId == null) {
+				groupId = cudDbService.createWordRelationGroup(relationTypeCode);
+				cudDbService.createWordRelationGroupMember(groupId, wordId);
+				cudDbService.createWordRelationGroupMember(groupId, targetWordId);
+			} else if (!lookupDbService.isMemberOfWordRelationGroup(groupId, targetWordId)) {
+				cudDbService.createWordRelationGroupMember(groupId, targetWordId);
+			}
+			activityLogService.createActivityLog(activityLog, targetWordId, ActivityEntity.WORD_RELATION_GROUP_MEMBER);
+		} else {
+			activityLog = activityLogService.prepareActivityLog("createWordRelation", wordId, ActivityOwner.WORD, isManualEventOnUpdateEnabled);
+			Long relationId = cudDbService.createWordRelation(wordId, targetWordId, relationTypeCode, null);
+			activityLogService.createActivityLog(activityLog, relationId, ActivityEntity.WORD_RELATION);
+			if (StringUtils.isNotEmpty(oppositeRelationTypeCode)) {
+				boolean oppositeRelationExists = lookupDbService.wordRelationExists(targetWordId, wordId, oppositeRelationTypeCode);
+				if (oppositeRelationExists) {
+					return;
+				}
+				activityLog = activityLogService.prepareActivityLog("createWordRelation", targetWordId, ActivityOwner.WORD, isManualEventOnUpdateEnabled);
+				Long oppositeRelationId = cudDbService.createWordRelation(targetWordId, wordId, oppositeRelationTypeCode, null);
+				activityLogService.createActivityLog(activityLog, oppositeRelationId, ActivityEntity.WORD_RELATION);
+			}
+		}
 	}
 
 	protected Long createLexemeFreeform(ActivityEntity activityEntity, Long lexemeId, FreeForm freeform, boolean isManualEventOnUpdateEnabled) throws Exception {

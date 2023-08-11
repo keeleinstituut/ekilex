@@ -4,6 +4,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
 import org.springframework.core.annotation.Order;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -13,7 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 import eki.ekilex.data.EkiUser;
 import eki.ekilex.data.WordForum;
 import eki.ekilex.data.api.ApiResponse;
-import eki.ekilex.data.api.Word;
+import eki.ekilex.data.api.LexWord;
 import eki.ekilex.data.api.WordClassifier;
 import eki.ekilex.data.api.WordFreeform;
 import eki.ekilex.data.api.WordRelation;
@@ -31,35 +33,30 @@ public class ApiWordController extends AbstractApiController {
 	private CudService cudService;
 
 	@Order(601)
-	@PreAuthorize("principal.apiCrud && @permEval.isWordCreateGranted(principal, #crudRoleDataset, #word)")
-	@PostMapping(API_SERVICES_URI + WORD_URI + CREATE_URI)
+	@PreAuthorize("@permEval.isDatasetCrudGranted(principal, #crudRoleDataset, #datasetCode)")
+	@GetMapping(API_SERVICES_URI + LEX_WORD_URI + DETAILS_URI + "/{wordId}/{datasetCode}")
 	@ResponseBody
-	public ApiResponse createWord(
+	public LexWord getLexWord(
 			@RequestParam("crudRoleDataset") String crudRoleDataset,
-			@RequestBody Word word) {
+			@PathVariable("wordId") Long wordId,
+			@PathVariable("datasetCode") String datasetCode) {
 
-		try {
-			Long wordId = wordService.createWord(word, MANUAL_EVENT_ON_UPDATE_ENABLED);
-			if (wordId == null) {
-				return getOpFailResponse("Invalid or unsupported word composition");
-			}
-			return getOpSuccessResponse(wordId);
-		} catch (Exception e) {
-			return getOpFailResponse(e);
-		}
+		return wordService.getLexWord(wordId, datasetCode);
 	}
 
 	@Order(602)
-	@PreAuthorize("principal.apiCrud && @permEval.isWordCrudGranted(principal, #crudRoleDataset, #word.wordId)")
-	@PostMapping(API_SERVICES_URI + WORD_URI + UPDATE_URI)
+	@PreAuthorize("principal.apiCrud "
+			+ "&& @permEval.isDatasetCrudGranted(principal, #crudRoleDataset, #lexWord.datasetCode) "
+			+ "&& @permEval.isWordCrudGranted(principal, #crudRoleDataset, #lexWord.wordId)")
+	@PostMapping(API_SERVICES_URI + LEX_WORD_URI + SAVE_URI)
 	@ResponseBody
-	public ApiResponse updateWord(
+	public ApiResponse saveLexWord(
 			@RequestParam("crudRoleDataset") String crudRoleDataset,
-			@RequestBody Word word) {
+			@RequestBody LexWord lexWord) {
 
 		try {
-			wordService.updateWord(word, MANUAL_EVENT_ON_UPDATE_ENABLED);
-			return getOpSuccessResponse();
+			Long wordId = wordService.saveLexWord(lexWord);
+			return getOpSuccessResponse(wordId);
 		} catch (Exception e) {
 			return getOpFailResponse(e);
 		}

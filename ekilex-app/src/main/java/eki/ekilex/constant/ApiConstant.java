@@ -16,6 +16,8 @@ public interface ApiConstant {
 
 	String WORD_URI = "/word";
 
+	String LEX_WORD_URI = "/lex-word";
+
 	String PUBLIC_WORD_URI = "/public_word";
 
 	String SYN_CANDIDATE_URI = "/syn_candidate";
