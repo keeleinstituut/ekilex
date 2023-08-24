@@ -76,6 +76,7 @@ import eki.ekilex.data.db.tables.Morph;
 import eki.ekilex.data.db.tables.MorphFreq;
 import eki.ekilex.data.db.tables.MorphLabel;
 import eki.ekilex.data.db.tables.Paradigm;
+import eki.ekilex.data.db.tables.ParadigmForm;
 import eki.ekilex.data.db.tables.Pos;
 import eki.ekilex.data.db.tables.PosGroup;
 import eki.ekilex.data.db.tables.PosGroupLabel;
@@ -546,6 +547,11 @@ public class Public extends SchemaImpl {
     public final Paradigm PARADIGM = Paradigm.PARADIGM;
 
     /**
+     * The table <code>public.paradigm_form</code>.
+     */
+    public final ParadigmForm PARADIGM_FORM = ParadigmForm.PARADIGM_FORM;
+
+    /**
      * The table <code>public.pos</code>.
      */
     public final Pos POS = Pos.POS;
@@ -890,7 +896,6 @@ public class Public extends SchemaImpl {
             Sequences.FEEDBACK_LOG_ID_SEQ,
             Sequences.FORM_FREQ_ID_SEQ,
             Sequences.FORM_ID_SEQ,
-            Sequences.FORM_ORDER_BY_SEQ,
             Sequences.FREEFORM_ID_SEQ,
             Sequences.FREEFORM_ORDER_BY_SEQ,
             Sequences.FREEFORM_SOURCE_LINK_ID_SEQ,
@@ -941,6 +946,8 @@ public class Public extends SchemaImpl {
             Sequences.MEANING_TAG_ID_SEQ,
             Sequences.MORPH_FREQ_ID_SEQ,
             Sequences.MORPH_ORDER_BY_SEQ,
+            Sequences.PARADIGM_FORM_ID_SEQ,
+            Sequences.PARADIGM_FORM_ORDER_BY_SEQ,
             Sequences.PARADIGM_ID_SEQ,
             Sequences.POS_GROUP_ORDER_BY_SEQ,
             Sequences.POS_ORDER_BY_SEQ,
@@ -1059,6 +1066,7 @@ public class Public extends SchemaImpl {
             MorphFreq.MORPH_FREQ,
             MorphLabel.MORPH_LABEL,
             Paradigm.PARADIGM,
+            ParadigmForm.PARADIGM_FORM,
             Pos.POS,
             PosGroup.POS_GROUP,
             PosGroupLabel.POS_GROUP_LABEL,

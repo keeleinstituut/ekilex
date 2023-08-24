@@ -15,6 +15,7 @@ import static eki.ekilex.data.db.Tables.MEANING;
 import static eki.ekilex.data.db.Tables.MORPH_FREQ;
 import static eki.ekilex.data.db.Tables.MORPH_LABEL;
 import static eki.ekilex.data.db.Tables.PARADIGM;
+import static eki.ekilex.data.db.Tables.PARADIGM_FORM;
 import static eki.ekilex.data.db.Tables.VALUE_STATE_LABEL;
 import static eki.ekilex.data.db.Tables.WORD;
 import static eki.ekilex.data.db.Tables.WORD_ETYMOLOGY;
@@ -64,6 +65,7 @@ import eki.ekilex.data.db.tables.Meaning;
 import eki.ekilex.data.db.tables.MorphFreq;
 import eki.ekilex.data.db.tables.MorphLabel;
 import eki.ekilex.data.db.tables.Paradigm;
+import eki.ekilex.data.db.tables.ParadigmForm;
 import eki.ekilex.data.db.tables.Word;
 import eki.ekilex.data.db.tables.WordEtymology;
 import eki.ekilex.data.db.tables.WordEtymologyRelation;
@@ -137,6 +139,7 @@ public class LexSearchDbService extends AbstractDataDbService {
 	public List<ParadigmFormTuple> getParadigmFormTuples(Long wordId, String classifierLabelLang, String classifierLabelTypeCode) {
 
 		Paradigm p = PARADIGM.as("p");
+		ParadigmForm pf = PARADIGM_FORM.as("pf");
 		Form f = FORM.as("f");
 		MorphLabel ml = MORPH_LABEL.as("ml");
 		FreqCorp fc = FREQ_CORP.as("fc");
@@ -196,15 +199,16 @@ public class LexSearchDbService extends AbstractDataDbService {
 						ml.VALUE.as("morph_value"),
 						mff.as("morph_frequency"),
 						fff.as("form_frequency"),
-						f.ORDER_BY.as("form_order_by"))
-				.from(p, f, ml)
+						pf.ORDER_BY.as("form_order_by"))
+				.from(p, pf, f, ml)
 				.where(
 						p.WORD_ID.eq(wordId)
-								.and(f.PARADIGM_ID.eq(p.ID))
+								.and(pf.PARADIGM_ID.eq(p.ID))
+								.and(pf.FORM_ID.eq(f.ID))
 								.and(ml.CODE.eq(f.MORPH_CODE))
 								.and(ml.LANG.eq(classifierLabelLang))
 								.and(ml.TYPE.eq(classifierLabelTypeCode)))
-				.orderBy(p.ID, f.ORDER_BY)
+				.orderBy(p.ID, pf.ORDER_BY)
 				.fetchInto(ParadigmFormTuple.class);
 	}
 

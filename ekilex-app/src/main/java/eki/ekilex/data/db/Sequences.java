@@ -136,11 +136,6 @@ public class Sequences {
     public static final Sequence<Long> FORM_ID_SEQ = Internal.createSequence("form_id_seq", Public.PUBLIC, SQLDataType.BIGINT.nullable(false), null, null, null, null, false, null);
 
     /**
-     * The sequence <code>public.form_order_by_seq</code>
-     */
-    public static final Sequence<Long> FORM_ORDER_BY_SEQ = Internal.createSequence("form_order_by_seq", Public.PUBLIC, SQLDataType.BIGINT.nullable(false), null, null, null, null, false, null);
-
-    /**
      * The sequence <code>public.freeform_id_seq</code>
      */
     public static final Sequence<Long> FREEFORM_ID_SEQ = Internal.createSequence("freeform_id_seq", Public.PUBLIC, SQLDataType.BIGINT.nullable(false), null, null, null, null, false, null);
@@ -389,6 +384,16 @@ public class Sequences {
      * The sequence <code>public.morph_order_by_seq</code>
      */
     public static final Sequence<Long> MORPH_ORDER_BY_SEQ = Internal.createSequence("morph_order_by_seq", Public.PUBLIC, SQLDataType.BIGINT.nullable(false), null, null, null, null, false, null);
+
+    /**
+     * The sequence <code>public.paradigm_form_id_seq</code>
+     */
+    public static final Sequence<Long> PARADIGM_FORM_ID_SEQ = Internal.createSequence("paradigm_form_id_seq", Public.PUBLIC, SQLDataType.BIGINT.nullable(false), null, null, null, null, false, null);
+
+    /**
+     * The sequence <code>public.paradigm_form_order_by_seq</code>
+     */
+    public static final Sequence<Long> PARADIGM_FORM_ORDER_BY_SEQ = Internal.createSequence("paradigm_form_order_by_seq", Public.PUBLIC, SQLDataType.BIGINT.nullable(false), null, null, null, null, false, null);
 
     /**
      * The sequence <code>public.paradigm_id_seq</code>

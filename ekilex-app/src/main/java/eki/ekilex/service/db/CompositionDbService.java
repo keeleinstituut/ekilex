@@ -28,6 +28,7 @@ import static eki.ekilex.data.db.Tables.MEANING_FREEFORM;
 import static eki.ekilex.data.db.Tables.MEANING_RELATION;
 import static eki.ekilex.data.db.Tables.MEANING_SEMANTIC_TYPE;
 import static eki.ekilex.data.db.Tables.PARADIGM;
+import static eki.ekilex.data.db.Tables.PARADIGM_FORM;
 import static eki.ekilex.data.db.Tables.WORD;
 import static eki.ekilex.data.db.Tables.WORD_ACTIVITY_LOG;
 import static eki.ekilex.data.db.Tables.WORD_ETYMOLOGY;
@@ -99,6 +100,7 @@ import eki.ekilex.data.db.tables.records.MeaningDomainRecord;
 import eki.ekilex.data.db.tables.records.MeaningFreeformRecord;
 import eki.ekilex.data.db.tables.records.MeaningRecord;
 import eki.ekilex.data.db.tables.records.MeaningRelationRecord;
+import eki.ekilex.data.db.tables.records.ParadigmFormRecord;
 import eki.ekilex.data.db.tables.records.ParadigmRecord;
 import eki.ekilex.data.db.tables.records.WordEtymologyRecord;
 import eki.ekilex.data.db.tables.records.WordEtymologyRelationRecord;
@@ -1016,11 +1018,19 @@ public class CompositionDbService extends AbstractDataDbService implements Globa
 			Long paradigmId = paradigm.getId();
 			Long clonedParadigmId = clonedParadigm.getId();
 
-			Result<FormRecord> forms = create.selectFrom(FORM).where(FORM.PARADIGM_ID.eq(paradigmId)).orderBy(FORM.ORDER_BY).fetch();
-			forms.stream().map(FormRecord::copy).forEach(clonedForm -> {
-				clonedForm.setParadigmId(clonedParadigmId);
-				clonedForm.changed(FORM.ORDER_BY, false);
+			Result<ParadigmFormRecord> paradigmForms = create.selectFrom(PARADIGM_FORM).where(PARADIGM_FORM.PARADIGM_ID.eq(paradigmId)).orderBy(PARADIGM_FORM.ORDER_BY).fetch();
+			paradigmForms.stream().map(ParadigmFormRecord::copy).forEach(clonedParadigmForm -> {
+				Long formId = clonedParadigmForm.getFormId();
+				FormRecord form = create.selectFrom(FORM).where(FORM.ID.eq(formId)).fetchOne();
+
+				FormRecord clonedForm = form.copy();
 				clonedForm.store();
+				Long clonedFormId = clonedForm.getId();
+
+				clonedParadigmForm.setParadigmId(clonedParadigmId);
+				clonedParadigmForm.setFormId(clonedFormId);
+				clonedParadigmForm.changed(PARADIGM_FORM.ORDER_BY, false);
+				clonedParadigmForm.store();
 			});
 		});
 	}

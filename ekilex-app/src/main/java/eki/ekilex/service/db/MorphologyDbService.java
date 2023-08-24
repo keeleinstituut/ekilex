@@ -2,6 +2,7 @@ package eki.ekilex.service.db;
 
 import static eki.ekilex.data.db.Tables.FORM;
 import static eki.ekilex.data.db.Tables.PARADIGM;
+import static eki.ekilex.data.db.Tables.PARADIGM_FORM;
 
 import java.util.List;
 
@@ -43,9 +44,8 @@ public class MorphologyDbService {
 
 	public Long createForm(Form form) {
 
-		return create
+		Long formId = create
 				.insertInto(FORM,
-						FORM.PARADIGM_ID,
 						FORM.MORPH_GROUP1,
 						FORM.MORPH_GROUP2,
 						FORM.MORPH_GROUP3,
@@ -59,7 +59,6 @@ public class MorphologyDbService {
 						FORM.DISPLAY_FORM,
 						FORM.AUDIO_FILE)
 				.values(
-						form.getParadigmId(),
 						form.getMorphGroup1(),
 						form.getMorphGroup2(),
 						form.getMorphGroup3(),
@@ -75,6 +74,17 @@ public class MorphologyDbService {
 				.returning(FORM.ID)
 				.fetchOne()
 				.getId();
+
+		create
+				.insertInto(PARADIGM_FORM,
+						PARADIGM_FORM.FORM_ID,
+						PARADIGM_FORM.PARADIGM_ID)
+				.values(
+						formId,
+						form.getParadigmId())
+				.execute();
+
+			return formId;
 	}
 
 	public void deleteParadigmsForWord(Long wordId) {
@@ -94,9 +104,26 @@ public class MorphologyDbService {
 	public List<Form> getForms(Long paradigmId) {
 
 		return create
-				.selectFrom(FORM)
-				.where(FORM.PARADIGM_ID.eq(paradigmId))
-				.orderBy(FORM.ORDER_BY)
+				.select(
+						FORM.ID,
+						PARADIGM_FORM.PARADIGM_ID,
+						FORM.MORPH_GROUP1,
+						FORM.MORPH_GROUP2,
+						FORM.MORPH_GROUP2,
+						FORM.MORPH_GROUP3,
+						FORM.DISPLAY_LEVEL,
+						FORM.MORPH_CODE,
+						FORM.MORPH_EXISTS,
+						FORM.IS_QUESTIONABLE,
+						FORM.VALUE,
+						FORM.VALUE_PRESE,
+						FORM.COMPONENTS,
+						FORM.DISPLAY_FORM,
+						FORM.AUDIO_FILE,
+						PARADIGM_FORM.ORDER_BY)
+				.from(FORM, PARADIGM_FORM)
+				.where(FORM.ID.eq(PARADIGM_FORM.FORM_ID).and(PARADIGM_FORM.PARADIGM_ID.eq(paradigmId)))
+				.orderBy(PARADIGM_FORM.ORDER_BY)
 				.fetchInto(Form.class);
 	}
 }

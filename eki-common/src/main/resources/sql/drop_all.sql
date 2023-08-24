@@ -89,6 +89,7 @@ drop table if exists meaning_domain;
 drop table if exists meaning_semantic_type;
 drop table if exists meaning_nr;
 drop table if exists meaning_tag;
+drop table if exists paradigm_form;
 drop table if exists form;
 drop table if exists paradigm;
 drop table if exists word_forum;

@@ -16,7 +16,7 @@ import org.jooq.ForeignKey;
 import org.jooq.Identity;
 import org.jooq.Name;
 import org.jooq.Record;
-import org.jooq.Row15;
+import org.jooq.Row13;
 import org.jooq.Schema;
 import org.jooq.Table;
 import org.jooq.TableField;
@@ -52,11 +52,6 @@ public class Form extends TableImpl<FormRecord> {
      * The column <code>public.form.id</code>.
      */
     public final TableField<FormRecord, Long> ID = createField(DSL.name("id"), SQLDataType.BIGINT.nullable(false).identity(true), this, "");
-
-    /**
-     * The column <code>public.form.paradigm_id</code>.
-     */
-    public final TableField<FormRecord, Long> PARADIGM_ID = createField(DSL.name("paradigm_id"), SQLDataType.BIGINT.nullable(false), this, "");
 
     /**
      * The column <code>public.form.morph_group1</code>.
@@ -112,11 +107,6 @@ public class Form extends TableImpl<FormRecord> {
      * The column <code>public.form.audio_file</code>.
      */
     public final TableField<FormRecord, String> AUDIO_FILE = createField(DSL.name("audio_file"), SQLDataType.VARCHAR(255), this, "");
-
-    /**
-     * The column <code>public.form.order_by</code>.
-     */
-    public final TableField<FormRecord, Long> ORDER_BY = createField(DSL.name("order_by"), SQLDataType.BIGINT.nullable(false).identity(true), this, "");
 
     /**
      * The column <code>public.form.is_questionable</code>.
@@ -178,18 +168,10 @@ public class Form extends TableImpl<FormRecord> {
 
     @Override
     public List<ForeignKey<FormRecord, ?>> getReferences() {
-        return Arrays.<ForeignKey<FormRecord, ?>>asList(Keys.FORM__FORM_PARADIGM_ID_FKEY, Keys.FORM__FORM_MORPH_CODE_FKEY);
+        return Arrays.<ForeignKey<FormRecord, ?>>asList(Keys.FORM__FORM_MORPH_CODE_FKEY);
     }
 
-    private transient Paradigm _paradigm;
     private transient Morph _morph;
-
-    public Paradigm paradigm() {
-        if (_paradigm == null)
-            _paradigm = new Paradigm(this, Keys.FORM__FORM_PARADIGM_ID_FKEY);
-
-        return _paradigm;
-    }
 
     public Morph morph() {
         if (_morph == null)
@@ -225,11 +207,11 @@ public class Form extends TableImpl<FormRecord> {
     }
 
     // -------------------------------------------------------------------------
-    // Row15 type methods
+    // Row13 type methods
     // -------------------------------------------------------------------------
 
     @Override
-    public Row15<Long, Long, String, String, String, Integer, String, Boolean, String, String, String[], String, String, Long, Boolean> fieldsRow() {
-        return (Row15) super.fieldsRow();
+    public Row13<Long, String, String, String, Integer, String, Boolean, String, String, String[], String, String, Boolean> fieldsRow() {
+        return (Row13) super.fieldsRow();
     }
 }

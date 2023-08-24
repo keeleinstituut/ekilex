@@ -107,3 +107,66 @@ begin
       insert into lexeme_tag (lexeme_id, tag_name) values (etym_word_first_lexeme_id, 'etümoloogia üle vaadata');
     end loop;
 end $$;
+
+-- Vormi migra (päringud võivad olla aeganõudvad)
+create table paradigm_form
+(
+  id bigserial primary key,
+  paradigm_id bigint references paradigm(id) on delete cascade not null,
+  form_id bigint references form(id) on delete cascade not null,
+  order_by bigserial
+);
+alter sequence paradigm_form_id_seq restart with 10000;
+
+create index paradigm_form_paradigm_id_idx on paradigm_form(paradigm_id);
+create index paradigm_form_form_id_idx on paradigm_form(form_id);
+create index form_display_form_idx on form(display_form);
+create index form_display_level_idx on form(display_level);
+
+insert into paradigm_form (paradigm_id, form_id)
+select p.id, f.id
+from paradigm p, form f
+where p.id = f.paradigm_id
+order by p.word_id, p.id, f.order_by, f.id;
+
+update paradigm_form pf
+set form_id = ff.form1_id
+from (select f1.id form1_id,
+             f2.id form2_id
+      from form f1,
+           form f2,
+           paradigm_form pf1,
+           paradigm_form pf2,
+           paradigm p1,
+           paradigm p2
+      where pf1.form_id = f1.id
+        and pf1.paradigm_id = p1.id
+        and pf2.form_id = f2.id
+        and pf2.paradigm_id = p2.id
+        and p1.word_id = p2.word_id
+        and f1.id < f2.id
+        and f1.display_level = f2.display_level
+        and f1.morph_code = f2.morph_code
+        and f1.value = f2.value
+        and f1.display_form = f2.display_form
+        and not exists(select f3.id
+                       from form f3,
+                            paradigm_form pf3,
+                            paradigm p3
+                       where pf3.form_id = f3.id
+                         and pf3.paradigm_id = p3.id
+                         and p3.word_id = p1.word_id
+                         and f3.id < f1.id
+                         and f3.display_level = f1.display_level
+                         and f3.morph_code = f1.morph_code
+                         and f3.value = f1.value
+                         and f3.display_form = f1.display_form)) ff
+where pf.form_id = ff.form2_id;
+
+delete
+from form f
+where not exists (select pf.id
+                  from paradigm_form pf
+                  where pf.form_id = f.id);
+
+alter table form drop column paradigm_id, drop column order_by;

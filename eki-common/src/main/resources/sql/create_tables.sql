@@ -790,7 +790,6 @@ alter sequence paradigm_id_seq restart with 10000;
 create table form
 (
   id bigserial primary key,
-  paradigm_id bigint references paradigm(id) on delete cascade not null,
   morph_group1 text null,
   morph_group2 text null,
   morph_group3 text null,
@@ -802,10 +801,18 @@ create table form
   value_prese text not null,
   components varchar(100) array null,
   display_form varchar(255) null,
-  audio_file varchar(255) null,
-  order_by bigserial
+  audio_file varchar(255) null
 );
 alter sequence form_id_seq restart with 10000;
+
+create table paradigm_form
+(
+  id bigserial primary key,
+  paradigm_id bigint references paradigm(id) on delete cascade not null,
+  form_id bigint references form(id) on delete cascade not null,
+  order_by bigserial
+);
+alter sequence paradigm_form_id_seq restart with 10000;
 
 -- tähendus
 create table meaning
@@ -1330,8 +1337,11 @@ create index form_value_idx on form(value);
 create index form_value_lower_idx on form(lower(value));
 create index form_value_lower_prefix_idx on form (lower(value) text_pattern_ops);
 create index form_morph_code_idx on form(morph_code);
-create index form_paradigm_id_idx on form(paradigm_id);
+create index form_display_form_idx on form(display_form);
+create index form_display_level_idx on form(display_level);
 create index paradigm_word_id_idx on paradigm(word_id);
+create index paradigm_form_paradigm_id_idx on paradigm_form(paradigm_id);
+create index paradigm_form_form_id_idx on paradigm_form(id);
 create index word_homonym_nr_idx on word(homonym_nr);
 create index word_lang_idx on word(lang);
 create index word_value_idx on word(value);

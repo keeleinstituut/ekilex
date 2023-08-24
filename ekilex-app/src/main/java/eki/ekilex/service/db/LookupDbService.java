@@ -19,6 +19,7 @@ import static eki.ekilex.data.db.Tables.MEANING_REL_TYPE_LABEL;
 import static eki.ekilex.data.db.Tables.MEANING_SEMANTIC_TYPE;
 import static eki.ekilex.data.db.Tables.MEANING_TAG;
 import static eki.ekilex.data.db.Tables.PARADIGM;
+import static eki.ekilex.data.db.Tables.PARADIGM_FORM;
 import static eki.ekilex.data.db.Tables.WORD;
 import static eki.ekilex.data.db.Tables.WORD_FREEFORM;
 import static eki.ekilex.data.db.Tables.WORD_GROUP;
@@ -793,8 +794,11 @@ public class LookupDbService extends AbstractDataDbService {
 
 		return create
 				.select(field(DSL.count(FORM.ID).gt(0)).as("forms_exist"))
-				.from(PARADIGM, FORM)
-				.where(PARADIGM.WORD_ID.eq(wordId).and(FORM.PARADIGM_ID.eq(PARADIGM.ID)))
+				.from(PARADIGM, PARADIGM_FORM, FORM)
+				.where(
+						PARADIGM.WORD_ID.eq(wordId)
+								.and(PARADIGM_FORM.PARADIGM_ID.eq(PARADIGM.ID))
+								.and(PARADIGM_FORM.FORM_ID.eq(FORM.ID)))
 				.fetchSingleInto(Boolean.class);
 	}
 

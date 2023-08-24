@@ -7,7 +7,8 @@ select w.id word_id,
        fml.value form_morph_value
 from word w
      inner join paradigm p on p.word_id = w.id
-     inner join form fa on fa.paradigm_id = p.id
+     inner join paradigm_form pf on pf.paradigm_id = p.id
+     inner join form fa on fa.id = pf.form_id
      inner join morph fm on fa.morph_code = fm.code
      left outer join morph_label fml on fml.code = fm.code and fml.lang = :defaultLabelLang and fml.type = :defaultLabelType
 where w.value = :word;

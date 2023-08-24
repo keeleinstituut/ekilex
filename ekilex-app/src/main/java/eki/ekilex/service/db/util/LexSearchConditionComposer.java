@@ -13,6 +13,7 @@ import static eki.ekilex.data.db.Tables.MEANING;
 import static eki.ekilex.data.db.Tables.MEANING_FREEFORM;
 import static eki.ekilex.data.db.Tables.MEANING_RELATION;
 import static eki.ekilex.data.db.Tables.PARADIGM;
+import static eki.ekilex.data.db.Tables.PARADIGM_FORM;
 import static eki.ekilex.data.db.Tables.WORD;
 import static eki.ekilex.data.db.Tables.WORD_FREEFORM;
 
@@ -54,6 +55,7 @@ import eki.ekilex.data.db.tables.Meaning;
 import eki.ekilex.data.db.tables.MeaningFreeform;
 import eki.ekilex.data.db.tables.MeaningRelation;
 import eki.ekilex.data.db.tables.Paradigm;
+import eki.ekilex.data.db.tables.ParadigmForm;
 import eki.ekilex.data.db.tables.Word;
 import eki.ekilex.data.db.tables.WordFreeform;
 
@@ -250,16 +252,18 @@ public class LexSearchConditionComposer implements GlobalConstant, ActivityFunct
 			} else if (SearchEntity.FORM.equals(searchEntity)) {
 
 				Paradigm p1 = Paradigm.PARADIGM.as("p1");
+				ParadigmForm pf1 = PARADIGM_FORM.as("pf1");
 				Form f1 = Form.FORM.as("f1");
 				Condition where1 = p1.WORD_ID.eq(w1.ID)
-						.and(f1.PARADIGM_ID.eq(p1.ID))
+						.and(pf1.PARADIGM_ID.eq(p1.ID))
+						.and(pf1.FORM_ID.eq(f1.ID))
 						.and(f1.MORPH_EXISTS.isTrue())
 						.and(f1.IS_QUESTIONABLE.isFalse())
 						.and(f1.MORPH_CODE.ne(UNKNOWN_FORM_CODE));
 
 				where1 = searchFilterHelper.applyValueFilters(SearchKey.VALUE, searchCriteria, f1.VALUE, where1, true);
 				where1 = searchFilterHelper.applyFormFrequencyFilters(searchCriteria, f1.ID, where1);
-				where = where.andExists(DSL.select(f1.ID).from(p1, f1).where(where1));
+				where = where.andExists(DSL.select(f1.ID).from(p1, pf1, f1).where(where1));
 
 				where = searchFilterHelper.applyValueFilters(SearchKey.LANGUAGE, searchCriteria, w1.LANG, where, false);
 
@@ -473,6 +477,7 @@ public class LexSearchConditionComposer implements GlobalConstant, ActivityFunct
 		Lexeme l1 = LEXEME.as("l1");
 		Form f1 = FORM.as("f1");
 		Paradigm p1 = PARADIGM.as("p1");
+		ParadigmForm pf1 = PARADIGM_FORM.as("pf1");
 		MeaningFreeform mff1 = MEANING_FREEFORM.as("mff1");
 		DefinitionFreeform dff1 = DEFINITION_FREEFORM.as("dff1");
 		LexemeFreeform lff1 = LEXEME_FREEFORM.as("lff1");
@@ -554,10 +559,11 @@ public class LexSearchConditionComposer implements GlobalConstant, ActivityFunct
 
 		// form select
 		where1 = p1.WORD_ID.eq(l1.WORD_ID)
-				.and(f1.PARADIGM_ID.eq(p1.ID));
+				.and(pf1.PARADIGM_ID.eq(p1.ID))
+				.and(pf1.FORM_ID.eq(f1.ID));
 		where1 = searchFilterHelper.applyDatasetRestrictions(l1, searchDatasetsRestriction, where1);
 		where1 = searchFilterHelper.applyValueFilters(SearchKey.VALUE, searchCriteria, f1.VALUE, where1, true);
-		SelectHavingStep<Record1<Long>> selectForm = DSL.select(l1.WORD_ID).from(l1, p1, f1).where(where1).groupBy(l1.WORD_ID);
+		SelectHavingStep<Record1<Long>> selectForm = DSL.select(l1.WORD_ID).from(l1, p1, pf1, f1).where(where1).groupBy(l1.WORD_ID);
 
 		Table<Record1<Long>> a1 = selectWordAndMeaningWord
 				.unionAll(selectDefinition)

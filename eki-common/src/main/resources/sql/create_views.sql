@@ -192,10 +192,12 @@ from (
                 lower(f.value) crit,
                 (array_agg(wl.order_by order by wl.order_by))[1] lang_order_by
          from form f,
+              paradigm_form pf,
               paradigm p,
               word w,
               language wl
-         where f.paradigm_id = p.id
+         where f.id = pf.form_id
+           and p.id = pf.paradigm_id
            and p.word_id = w.id
            and w.lang = wl.code
            and w.is_public = true
@@ -360,9 +362,11 @@ from (select w.id as word_id,
               and   wlal.activity_log_id = al.id) last_activity_event_on,
              (select count(f.id) > 0
               from paradigm p,
+                   paradigm_form pf,
                    form f
               where p.word_id = w.id
-              and   f.paradigm_id = p.id) forms_exist,
+              and   pf.paradigm_id = p.id
+              and   pf.form_id = f.id) forms_exist,
              (select min(ds.order_by)
               from lexeme l,
                    dataset ds
@@ -657,7 +661,7 @@ select w.id word_id,
        f.components,
        f.display_form,
        f.audio_file,
-       f.order_by,
+       pf.order_by,
        ff.form_freq_value,
        ff.form_freq_rank,
        ff.form_freq_rank_max,
@@ -667,8 +671,10 @@ select w.id word_id,
 from word w
   inner join paradigm p
           on p.word_id = w.id
+  inner join paradigm_form pf
+          on pf.paradigm_id = p.id
   inner join form f
-          on f.paradigm_id = p.id
+          on f.id = pf.form_id
   left outer join (select ff.form_id,
                           ff.value form_freq_value,
                           ff.rank form_freq_rank,

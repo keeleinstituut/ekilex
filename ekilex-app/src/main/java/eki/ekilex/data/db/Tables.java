@@ -76,6 +76,7 @@ import eki.ekilex.data.db.tables.Morph;
 import eki.ekilex.data.db.tables.MorphFreq;
 import eki.ekilex.data.db.tables.MorphLabel;
 import eki.ekilex.data.db.tables.Paradigm;
+import eki.ekilex.data.db.tables.ParadigmForm;
 import eki.ekilex.data.db.tables.Pos;
 import eki.ekilex.data.db.tables.PosGroup;
 import eki.ekilex.data.db.tables.PosGroupLabel;
@@ -504,6 +505,11 @@ public class Tables {
      * The table <code>public.paradigm</code>.
      */
     public static final Paradigm PARADIGM = Paradigm.PARADIGM;
+
+    /**
+     * The table <code>public.paradigm_form</code>.
+     */
+    public static final ParadigmForm PARADIGM_FORM = ParadigmForm.PARADIGM_FORM;
 
     /**
      * The table <code>public.pos</code>.
