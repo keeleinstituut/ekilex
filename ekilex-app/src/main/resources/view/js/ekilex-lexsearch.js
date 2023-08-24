@@ -98,7 +98,8 @@ $.fn.duplicateMeaningWordAndLexemePlugin = function() {
 		obj.on('click', function() {
 			const successCallback = obj.data("callback");
 			const successCallbackFunc = createCallback(successCallback);
-			const url = `${applicationUrl}meaningwordandlexduplicate/${lexemeid}`;
+			const lexemeId = obj.data('lexeme-id');
+			const url = `${applicationUrl}meaningwordandlexduplicate/${lexemeId}`;
 			$.post(url).done(function() {
 				successCallbackFunc();
 			}).fail(function(data) {
