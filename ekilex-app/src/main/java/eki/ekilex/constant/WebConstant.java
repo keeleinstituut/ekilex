@@ -114,10 +114,6 @@ public interface WebConstant {
 
 	String WW_FEEDBACK_PAGE = "wwfeedback";
 
-	String MORPHOLOGY_URI = "/morphology";
-
-	String MORPHOLOGY_PAGE = "morphology";
-
 	String LIM_TERM_SEARCH_URI = "/limtermsearch";
 
 	String LIM_TERM_SEARCH_PAGE = "limtermsearch";

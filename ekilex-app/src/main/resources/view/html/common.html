@@ -108,8 +108,6 @@
               <a class="dropdown-item side-menu-item" th:classappend="${activeItem == 'limterm' ? 'limterm' : ''}" th:href="@{/limtermsearch}" th:text="#{menu.lim.term}">Võrgustiku otsing</a>
               <div class="dropdown-divider"></div>
               <a class="dropdown-item side-menu-item" th:classappend="${activeItem == 'history' ? 'active' : ''}" th:href="@{/history}" th:text="#{menu.history}">Kustutatud andmed</a>
-              <a class="dropdown-item side-menu-item" th:classappend="${activeItem == 'morphology' ? 'active' : ''}" th:href="@{/morphology}"
-                 sec:authorize="#vars.userRoleData.admin" th:text="#{menu.morphology}">Morfoloogia haldus</a>
               <a class="dropdown-item side-menu-item" th:classappend="${activeItem == 'datasets' ? 'active' : ''}" th:href="@{/datasets}" th:text="#{menu.datasets}">Sõnakogude haldus</a>
               <a class="dropdown-item side-menu-item" th:classappend="${activeItem == 'fedtermupload' ? 'active' : ''}" th:href="@{/fedtermupload}"
                  sec:authorize="#vars.userRoleData.admin" th:text="#{menu.fedtermupload}">FedTerm liidestus</a>

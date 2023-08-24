@@ -36,9 +36,6 @@
         <p>
           <a th:href="@{/history}" th:text="#{menu.history}">Kustutatud andmed</a>
         </p>
-        <p sec:authorize="#authentication.principal.admin">
-          <a th:href="@{/morphology}" th:text="#{menu.morphology}">Morfoloogia haldus</a>
-        </p>
         <p>
           <a th:href="@{/datasets}" th:text="#{menu.datasets}">Sõnakogude haldus</a>
         </p>
