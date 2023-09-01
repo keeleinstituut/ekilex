@@ -140,15 +140,15 @@ public class SourceService extends AbstractSourceService implements GlobalConsta
 	}
 
 	@Transactional
-	public void createSourceProperty(Long sourceId, FreeformType freeformType, String valueText) throws Exception {
+	public void createSourceProperty(Long sourceId, FreeformType freeformType, String valueText, String roleDatasetCode) throws Exception {
 
-		ActivityLogData activityLog = activityLogService.prepareActivityLog("createSourceProperty", sourceId, ActivityOwner.SOURCE, MANUAL_EVENT_ON_UPDATE_DISABLED);
+		ActivityLogData activityLog = activityLogService.prepareActivityLog("createSourceProperty", sourceId, ActivityOwner.SOURCE, roleDatasetCode, MANUAL_EVENT_ON_UPDATE_DISABLED);
 		Long sourcePropertyId = sourceDbService.createSourceProperty(sourceId, freeformType, valueText);
 		activityLogService.createActivityLog(activityLog, sourcePropertyId, freeformType);
 	}
 
 	@Transactional
-	public void updateSourceProperty(Long sourcePropertyId, String valueText) throws Exception {
+	public void updateSourceProperty(Long sourcePropertyId, String valueText, String roleDatasetCode) throws Exception {
 
 		SourceProperty sourceProperty = sourceDbService.getSourceProperty(sourcePropertyId);
 		if (sourceProperty == null) {
@@ -156,13 +156,13 @@ public class SourceService extends AbstractSourceService implements GlobalConsta
 		}
 		ActivityLogOwnerEntityDescr freeformOwnerDescr = activityLogService.getFreeformOwnerDescr(sourcePropertyId);
 		ActivityLogData activityLog = activityLogService
-				.prepareActivityLog("updateSourceProperty", freeformOwnerDescr.getOwnerId(), freeformOwnerDescr.getOwnerName(), MANUAL_EVENT_ON_UPDATE_DISABLED);
+				.prepareActivityLog("updateSourceProperty", freeformOwnerDescr.getOwnerId(), freeformOwnerDescr.getOwnerName(), roleDatasetCode, MANUAL_EVENT_ON_UPDATE_DISABLED);
 		sourceDbService.updateSourceProperty(sourcePropertyId, valueText);
 		activityLogService.createActivityLog(activityLog, sourcePropertyId, freeformOwnerDescr.getEntityName());
 	}
 
 	@Transactional
-	public void deleteSourceProperty(Long sourcePropertyId) throws Exception {
+	public void deleteSourceProperty(Long sourcePropertyId, String roleDatasetCode) throws Exception {
 
 		SourceProperty sourceProperty = sourceDbService.getSourceProperty(sourcePropertyId);
 		if (sourceProperty == null) {
@@ -170,15 +170,15 @@ public class SourceService extends AbstractSourceService implements GlobalConsta
 		}
 		ActivityLogOwnerEntityDescr freeformOwnerDescr = activityLogService.getFreeformOwnerDescr(sourcePropertyId);
 		ActivityLogData activityLog = activityLogService
-				.prepareActivityLog("deleteSourceProperty", freeformOwnerDescr.getOwnerId(), freeformOwnerDescr.getOwnerName(), MANUAL_EVENT_ON_UPDATE_DISABLED);
+				.prepareActivityLog("deleteSourceProperty", freeformOwnerDescr.getOwnerId(), freeformOwnerDescr.getOwnerName(), roleDatasetCode, MANUAL_EVENT_ON_UPDATE_DISABLED);
 		sourceDbService.deleteSourceProperty(sourcePropertyId);
 		activityLogService.createActivityLog(activityLog, sourcePropertyId, freeformOwnerDescr.getEntityName());
 	}
 
 	@Transactional
-	public void updateSource(Long sourceId, SourceType type) throws Exception {
+	public void updateSource(Long sourceId, SourceType type, String roleDatasetCode) throws Exception {
 
-		ActivityLogData activityLog = activityLogService.prepareActivityLog("updateSource", sourceId, ActivityOwner.SOURCE, MANUAL_EVENT_ON_UPDATE_DISABLED);
+		ActivityLogData activityLog = activityLogService.prepareActivityLog("updateSource", sourceId, ActivityOwner.SOURCE, roleDatasetCode, MANUAL_EVENT_ON_UPDATE_DISABLED);
 		sourceDbService.updateSourceType(sourceId, type);
 		activityLogService.createActivityLog(activityLog, sourceId, ActivityEntity.SOURCE);
 	}
@@ -189,17 +189,17 @@ public class SourceService extends AbstractSourceService implements GlobalConsta
 	}
 
 	@Transactional
-	public void deleteSource(Long sourceId) throws Exception {
+	public void deleteSource(Long sourceId, String roleDatasetCode) throws Exception {
 
-		activityLogService.createActivityLog("deleteSource", sourceId, ActivityOwner.SOURCE, MANUAL_EVENT_ON_UPDATE_DISABLED);
+		activityLogService.createActivityLog("deleteSource", sourceId, ActivityOwner.SOURCE, roleDatasetCode, MANUAL_EVENT_ON_UPDATE_DISABLED);
 		sourceDbService.deleteSource(sourceId);
 	}
 
 	@Transactional
-	public void joinSources(Long targetSourceId, Long originSourceId) throws Exception {
+	public void joinSources(Long targetSourceId, Long originSourceId, String roleDatasetCode) throws Exception {
 
-		ActivityLogData activityLog1 = activityLogService.prepareActivityLog("joinSources", originSourceId, ActivityOwner.SOURCE, MANUAL_EVENT_ON_UPDATE_DISABLED);
-		ActivityLogData activityLog2 = activityLogService.prepareActivityLog("joinSources", targetSourceId, ActivityOwner.SOURCE, MANUAL_EVENT_ON_UPDATE_DISABLED);
+		ActivityLogData activityLog1 = activityLogService.prepareActivityLog("joinSources", originSourceId, ActivityOwner.SOURCE, roleDatasetCode, MANUAL_EVENT_ON_UPDATE_DISABLED);
+		ActivityLogData activityLog2 = activityLogService.prepareActivityLog("joinSources", targetSourceId, ActivityOwner.SOURCE, roleDatasetCode, MANUAL_EVENT_ON_UPDATE_DISABLED);
 
 		sourceDbService.joinSources(targetSourceId, originSourceId);
 

@@ -182,9 +182,9 @@ public class InexactSynController extends AbstractPrivateSearchController {
 	public Response createInexactSynMeaningAndRelation(InexactSynMeaningRequest requestData) {
 
 		Locale locale = LocaleContextHolder.getLocale();
-		String datasetCode = getDatasetCodeFromRole();
+		String roleDatasetCode = getDatasetCodeFromRole();
 		try {
-			Response response = inexactSynService.saveInexactSynMeaningAndRelation(requestData, datasetCode);
+			Response response = inexactSynService.saveInexactSynMeaningAndRelation(requestData, roleDatasetCode);
 			return response;
 		} catch (Exception e) {
 			logger.error("Failed to create inexact syn meaning and relation: ", e);

@@ -109,6 +109,22 @@ public class UserDbService extends AbstractDbService implements SystemConstant {
 				.orElse(null);
 	}
 
+	public List<EkiUser> getUsersByDatasetPermission(String datasetCode) {
+
+		return create
+				.select(
+						EKI_USER.ID,
+						EKI_USER.NAME,
+						EKI_USER.IS_ADMIN.as("admin"),
+						EKI_USER.IS_MASTER.as("master"))
+				.from(EKI_USER, DATASET_PERMISSION)
+				.where(
+						EKI_USER.ID.eq(DATASET_PERMISSION.USER_ID)
+								.and(DATASET_PERMISSION.DATASET_CODE.eq(datasetCode)))
+				.orderBy(EKI_USER.NAME)
+				.fetchInto(EkiUser.class);
+	}
+
 	public String getActiveTermsValue() {
 
 		return create

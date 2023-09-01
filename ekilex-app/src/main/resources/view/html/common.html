@@ -117,6 +117,8 @@
                  sec:authorize="#vars.userRoleData.admin" th:text="#{menu.tags}">Siltide haldus</a>
               <a class="dropdown-item side-menu-item" th:classappend="${activeItem == 'permissions' ? 'active' : ''}" th:href="@{/permissions}"
                  sec:authorize="#vars.userRoleData.datasetOwnerOrAdmin" th:text="#{menu.permissions}">Kasutajaõiguste haldus</a>
+              <a class="dropdown-item side-menu-item" th:classappend="${activeItem == 'workloadreport' ? 'active' : ''}" th:href="@{/workloadreport}"
+                 sec:authorize="#vars.userRoleData.admin" th:text="#{menu.workloadreport}">Muudatuste aruanne</a>
               <a class="dropdown-item side-menu-item" th:classappend="${activeItem == 'wwfeedback' ? 'active' : ''}" th:href="@{/wwfeedback}" th:text="#{menu.wwfeedback}">Sõnaveebi tagasiside</a>
               <a class="dropdown-item side-menu-item" th:classappend="${activeItem == 'stat' ? 'active' : ''}" th:href="@{/stat}" th:text="#{menu.stat}">Sõnaveebi statistika</a>
               <div class="dropdown-divider"></div>

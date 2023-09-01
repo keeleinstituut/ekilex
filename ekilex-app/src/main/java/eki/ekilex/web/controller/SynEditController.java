@@ -35,7 +35,8 @@ public class SynEditController extends AbstractPrivateSearchController {
 
 		logger.debug("Updating syn relation status id {}, new status {}", id, status);
 		boolean isManualEventOnUpdateEnabled = sessionBean.isManualEventOnUpdateEnabled();
-		synCudService.updateRelationStatus(id, status, isManualEventOnUpdateEnabled);
+		String roleDatasetCode = getDatasetCodeFromRole();
+		synCudService.updateRelationStatus(id, status, roleDatasetCode, isManualEventOnUpdateEnabled);
 		return RESPONSE_OK_VER2;
 	}
 
@@ -50,7 +51,8 @@ public class SynEditController extends AbstractPrivateSearchController {
 
 		logger.debug("Updating word {} lang {} dataset {} syn relation status to \"DELETED\"", wordId, language, datasetCode);
 		boolean isManualEventOnUpdateEnabled = sessionBean.isManualEventOnUpdateEnabled();
-		synCudService.updateWordSynRelationsStatusDeleted(wordId, datasetCode, language, isManualEventOnUpdateEnabled);
+		String roleDatasetCode = getDatasetCodeFromRole();
+		synCudService.updateWordSynRelationsStatusDeleted(wordId, datasetCode, language, roleDatasetCode, isManualEventOnUpdateEnabled);
 		return RESPONSE_OK_VER2;
 	}
 
@@ -64,7 +66,8 @@ public class SynEditController extends AbstractPrivateSearchController {
 			@ModelAttribute(name = SESSION_BEAN) SessionBean sessionBean) throws Exception {
 
 		boolean isManualEventOnUpdateEnabled = sessionBean.isManualEventOnUpdateEnabled();
-		synCudService.createSynMeaningRelation(targetMeaningId, sourceMeaningId, wordRelationId, isManualEventOnUpdateEnabled);
+		String roleDatasetCode = getDatasetCodeFromRole();
+		synCudService.createSynMeaningRelation(targetMeaningId, sourceMeaningId, wordRelationId, roleDatasetCode, isManualEventOnUpdateEnabled);
 		return RESPONSE_OK_VER2;
 	}
 
@@ -77,10 +80,10 @@ public class SynEditController extends AbstractPrivateSearchController {
 			@ModelAttribute(name = SESSION_BEAN) SessionBean sessionBean) throws Exception {
 
 		UserContextData userContextData = getUserContextData();
-		String datasetCode = userContextData.getUserRoleDatasetCode();
+		String roleDatasetCode = userContextData.getUserRoleDatasetCode();
 		boolean isManualEventOnUpdateEnabled = sessionBean.isManualEventOnUpdateEnabled();
 
-		synCudService.createSynMeaningWordWithCandidateData(targetMeaningId, null, wordRelationId, datasetCode, isManualEventOnUpdateEnabled);
+		synCudService.createSynMeaningWordWithCandidateData(targetMeaningId, null, wordRelationId, roleDatasetCode, isManualEventOnUpdateEnabled);
 		return RESPONSE_OK_VER2;
 	}
 
@@ -94,10 +97,10 @@ public class SynEditController extends AbstractPrivateSearchController {
 			@ModelAttribute(name = SESSION_BEAN) SessionBean sessionBean) throws Exception {
 
 		UserContextData userContextData = getUserContextData();
-		String datasetCode = userContextData.getUserRoleDatasetCode();
+		String roleDatasetCode = userContextData.getUserRoleDatasetCode();
 		boolean isManualEventOnUpdateEnabled = sessionBean.isManualEventOnUpdateEnabled();
 
-		synCudService.createSynMeaningWordWithCandidateData(targetMeaningId, wordId, wordRelationId, datasetCode, isManualEventOnUpdateEnabled);
+		synCudService.createSynMeaningWordWithCandidateData(targetMeaningId, wordId, wordRelationId, roleDatasetCode, isManualEventOnUpdateEnabled);
 		return RESPONSE_OK_VER2;
 	}
 
@@ -111,11 +114,11 @@ public class SynEditController extends AbstractPrivateSearchController {
 			@ModelAttribute(name = SESSION_BEAN) SessionBean sessionBean) throws Exception {
 
 		UserContextData userContextData = getUserContextData();
-		String datasetCode = userContextData.getUserRoleDatasetCode();
+		String roleDatasetCode = userContextData.getUserRoleDatasetCode();
 		String wordLang = userContextData.getFullSynCandidateLangCode();
 		boolean isManualEventOnUpdateEnabled = sessionBean.isManualEventOnUpdateEnabled();
 
-		synCudService.createSynMeaningWord(targetMeaningId, wordId, wordValue, wordLang, datasetCode, isManualEventOnUpdateEnabled);
+		synCudService.createSynMeaningWord(targetMeaningId, wordId, wordValue, wordLang, roleDatasetCode, isManualEventOnUpdateEnabled);
 		return RESPONSE_OK_VER2;
 	}
 

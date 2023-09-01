@@ -51,6 +51,9 @@
         <p sec:authorize="#vars.userRoleData.datasetOwnerOrAdmin">
           <a th:href="@{/permissions}" th:text="#{menu.permissions}">Õiguste haldus</a>
         </p>
+        <p sec:authorize="#authentication.principal.admin">
+          <a th:href="@{/workloadreport}" th:text="#{menu.workloadreport}">Muudatuste aruanne</a>
+        </p>
         <p sec:authorize="#authentication.principal.datasetCrudPermissionsExist">
           <a th:href="@{/wwfeedback}" th:text="#{menu.wwfeedback}">Sõnaveebi tagasiside</a>
         </p>

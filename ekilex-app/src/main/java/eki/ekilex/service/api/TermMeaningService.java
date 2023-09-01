@@ -57,7 +57,7 @@ public class TermMeaningService extends AbstractApiCudService {
 	}
 
 	@Transactional
-	public Long saveTermMeaning(TermMeaning termMeaning) throws Exception {
+	public Long saveTermMeaning(TermMeaning termMeaning, String roleDatasetCode) throws Exception {
 
 		final String functName = "saveTermMeaning";
 
@@ -74,13 +74,13 @@ public class TermMeaningService extends AbstractApiCudService {
 
 		if (meaningId == null) {
 			meaningId = cudDbService.createMeaning();
-			activityLogService.createActivityLog(functName, meaningId, ActivityOwner.MEANING, MANUAL_EVENT_ON_UPDATE_ENABLED);
+			activityLogService.createActivityLog(functName, meaningId, ActivityOwner.MEANING, roleDatasetCode, MANUAL_EVENT_ON_UPDATE_ENABLED);
 		}
 
 		if (CollectionUtils.isNotEmpty(definitions)) {
 
 			for (Definition definition : definitions) {
-				createOrUpdateDefinition(definition, meaningId, datasetCode, DEFAULT_COMPLEXITY, functName);
+				createOrUpdateDefinition(definition, meaningId, datasetCode, DEFAULT_COMPLEXITY, functName, roleDatasetCode);
 			}
 		}
 
@@ -112,7 +112,7 @@ public class TermMeaningService extends AbstractApiCudService {
 						} else {
 							WordLexemeMeaningIdTuple idTuple = cudDbService.createLexeme(wordId, datasetCode, meaningId, 1);
 							lexemeId = idTuple.getLexemeId();
-							activityLogService.createActivityLog(functName, lexemeId, ActivityOwner.LEXEME, MANUAL_EVENT_ON_UPDATE_ENABLED);
+							activityLogService.createActivityLog(functName, lexemeId, ActivityOwner.LEXEME, roleDatasetCode, MANUAL_EVENT_ON_UPDATE_ENABLED);
 						}
 					}
 				} else {
@@ -124,17 +124,17 @@ public class TermMeaningService extends AbstractApiCudService {
 						wordId = cudDbService.createWord(wordValue, wordValue, valueAsWord, wordLang, synWordHomNr);
 						WordLexemeMeaningIdTuple idTuple = cudDbService.createLexeme(wordId, datasetCode, meaningId, 1);
 						lexemeId = idTuple.getLexemeId();
-						activityLogService.createActivityLog(functName, wordId, ActivityOwner.WORD, MANUAL_EVENT_ON_UPDATE_ENABLED);
-						activityLogService.createActivityLog(functName, lexemeId, ActivityOwner.LEXEME, MANUAL_EVENT_ON_UPDATE_ENABLED);
+						activityLogService.createActivityLog(functName, wordId, ActivityOwner.WORD, roleDatasetCode, MANUAL_EVENT_ON_UPDATE_ENABLED);
+						activityLogService.createActivityLog(functName, lexemeId, ActivityOwner.LEXEME, roleDatasetCode, MANUAL_EVENT_ON_UPDATE_ENABLED);
 					} else {
 						if (existingWordIds.contains(wordId)) {
 							lexemeId = lookupDbService.getLexemeId(wordId, meaningId);
 						} else {
 							WordLexemeMeaningIdTuple idTuple = cudDbService.createLexeme(wordId, datasetCode, meaningId, 1);
 							lexemeId = idTuple.getLexemeId();
-							activityLogService.createActivityLog(functName, lexemeId, ActivityOwner.LEXEME, MANUAL_EVENT_ON_UPDATE_ENABLED);
+							activityLogService.createActivityLog(functName, lexemeId, ActivityOwner.LEXEME, roleDatasetCode, MANUAL_EVENT_ON_UPDATE_ENABLED);
 						}
-						activityLog = activityLogService.prepareActivityLog(functName, wordId, ActivityOwner.WORD, MANUAL_EVENT_ON_UPDATE_ENABLED);
+						activityLog = activityLogService.prepareActivityLog(functName, wordId, ActivityOwner.WORD, roleDatasetCode, MANUAL_EVENT_ON_UPDATE_ENABLED);
 						cudDbService.updateWordValueAndAsWordAndLang(wordId, wordValue, wordValue, valueAsWord, wordLang);
 						activityLogService.createActivityLog(activityLog, wordId, ActivityEntity.WORD);
 					}
@@ -145,7 +145,7 @@ public class TermMeaningService extends AbstractApiCudService {
 					List<String> existingWordTypeCodes = lookupDbService.getWordTypeCodes(wordId);
 					for (String wordTypeCode : wordTypeCodes) {
 						if (!existingWordTypeCodes.contains(wordTypeCode)) {
-							activityLog = activityLogService.prepareActivityLog(functName, wordId, ActivityOwner.WORD, MANUAL_EVENT_ON_UPDATE_ENABLED);
+							activityLog = activityLogService.prepareActivityLog(functName, wordId, ActivityOwner.WORD, roleDatasetCode, MANUAL_EVENT_ON_UPDATE_ENABLED);
 							Long wordTypeId = cudDbService.createWordType(wordId, wordTypeCode);
 							activityLogService.createActivityLog(activityLog, wordTypeId, ActivityEntity.WORD_TYPE);
 						}
@@ -153,7 +153,7 @@ public class TermMeaningService extends AbstractApiCudService {
 				}
 
 				if (StringUtils.isNoneBlank(wordValue, wordLang)) {
-					activityLog = activityLogService.prepareActivityLog(functName, lexemeId, ActivityOwner.LEXEME, MANUAL_EVENT_ON_UPDATE_ENABLED);
+					activityLog = activityLogService.prepareActivityLog(functName, lexemeId, ActivityOwner.LEXEME, roleDatasetCode, MANUAL_EVENT_ON_UPDATE_ENABLED);
 					cudDbService.updateLexemeValueState(lexemeId, lexemeValueStateCode);
 					cudDbService.updateLexemePublicity(lexemeId, isLexemePublic);
 					activityLogService.createActivityLog(activityLog, lexemeId, ActivityEntity.LEXEME);
@@ -172,7 +172,7 @@ public class TermMeaningService extends AbstractApiCudService {
 
 						FreeForm freeform = initFreeform(FreeformType.NOTE, lexemeNoteValue, lexemeNoteLang, isLexemeNotePublic);
 
-						activityLog = activityLogService.prepareActivityLog(functName, lexemeId, ActivityOwner.LEXEME, MANUAL_EVENT_ON_UPDATE_ENABLED);
+						activityLog = activityLogService.prepareActivityLog(functName, lexemeId, ActivityOwner.LEXEME, roleDatasetCode, MANUAL_EVENT_ON_UPDATE_ENABLED);
 						if (lexemeNoteId == null) {
 							lexemeNoteId = cudDbService.createLexemeFreeform(lexemeId, freeform, userName);
 						} else {
@@ -188,9 +188,13 @@ public class TermMeaningService extends AbstractApiCudService {
 								Long sourceId = lexemeNoteSourceLink.getSourceId();
 								String sourceLinkValue = lexemeNoteSourceLink.getValue();
 								if (sourceLinkId == null) {
-									createFreeformSourceLink(lexemeNoteId, sourceId, sourceLinkValue, DEFAULT_SOURCE_LINK_REF_TYPE, ActivityOwner.LEXEME, lexemeId, ActivityEntity.LEXEME_NOTE_SOURCE_LINK, functName);
+									createFreeformSourceLink(
+											lexemeNoteId, sourceId, sourceLinkValue, DEFAULT_SOURCE_LINK_REF_TYPE, ActivityOwner.LEXEME,
+											lexemeId, ActivityEntity.LEXEME_NOTE_SOURCE_LINK, functName, roleDatasetCode);
 								} else {
-									updateFreeformSourceLink(sourceLinkId, sourceLinkValue, ActivityOwner.LEXEME, lexemeId, ActivityEntity.LEXEME_NOTE_SOURCE_LINK, functName);
+									updateFreeformSourceLink(
+											sourceLinkId, sourceLinkValue, ActivityOwner.LEXEME, lexemeId, ActivityEntity.LEXEME_NOTE_SOURCE_LINK,
+											functName, roleDatasetCode);
 								}
 							}
 						}
@@ -200,7 +204,7 @@ public class TermMeaningService extends AbstractApiCudService {
 				if (CollectionUtils.isNotEmpty(usages)) {
 
 					for (Freeform usage : usages) {
-						createOrUpdateUsage(usage, lexemeId, DEFAULT_USAGE_PUBLICITY, functName);
+						createOrUpdateUsage(usage, lexemeId, DEFAULT_USAGE_PUBLICITY, functName, roleDatasetCode);
 					}
 				}
 
@@ -211,9 +215,9 @@ public class TermMeaningService extends AbstractApiCudService {
 						Long sourceId = lexemeSourceLink.getSourceId();
 						String sourceLinkValue = lexemeSourceLink.getValue();
 						if (sourceLinkId == null) {
-							createLexemeSourceLink(lexemeId, sourceId, sourceLinkValue, functName);
+							createLexemeSourceLink(lexemeId, sourceId, sourceLinkValue, functName, roleDatasetCode);
 						} else {
-							updateLexemeSourceLink(sourceLinkId, lexemeId, sourceLinkValue, functName);
+							updateLexemeSourceLink(sourceLinkId, lexemeId, sourceLinkValue, functName, roleDatasetCode);
 						}
 					}
 				}
@@ -234,7 +238,7 @@ public class TermMeaningService extends AbstractApiCudService {
 					classifier.setCode(domainCode);
 					classifier.setOrigin(domainOrigin);
 
-					activityLog = activityLogService.prepareActivityLog(functName, meaningId, ActivityOwner.MEANING, MANUAL_EVENT_ON_UPDATE_ENABLED);
+					activityLog = activityLogService.prepareActivityLog(functName, meaningId, ActivityOwner.MEANING, roleDatasetCode, MANUAL_EVENT_ON_UPDATE_ENABLED);
 					Long meaningDomainId = cudDbService.createMeaningDomain(meaningId, classifier);
 					activityLogService.createActivityLog(activityLog, meaningDomainId, ActivityEntity.DOMAIN);
 				}
@@ -254,7 +258,7 @@ public class TermMeaningService extends AbstractApiCudService {
 
 				FreeForm freeform = initFreeform(FreeformType.NOTE, meaningNoteValue, meaningNoteLang, isMeaningNotePublic);
 
-				activityLog = activityLogService.prepareActivityLog(functName, meaningId, ActivityOwner.MEANING, MANUAL_EVENT_ON_UPDATE_ENABLED);
+				activityLog = activityLogService.prepareActivityLog(functName, meaningId, ActivityOwner.MEANING, roleDatasetCode, MANUAL_EVENT_ON_UPDATE_ENABLED);
 				if (meaningNoteId == null) {
 					meaningNoteId = cudDbService.createMeaningFreeform(meaningId, freeform, userName);
 				} else {
@@ -270,9 +274,13 @@ public class TermMeaningService extends AbstractApiCudService {
 						Long sourceId = meaningNoteSourceLink.getSourceId();
 						String sourceLinkValue = meaningNoteSourceLink.getValue();
 						if (sourceLinkId == null) {
-							createFreeformSourceLink(meaningNoteId, sourceId, sourceLinkValue, DEFAULT_SOURCE_LINK_REF_TYPE, ActivityOwner.MEANING, meaningId, ActivityEntity.MEANING_NOTE_SOURCE_LINK, functName);
+							createFreeformSourceLink(
+									meaningNoteId, sourceId, sourceLinkValue, DEFAULT_SOURCE_LINK_REF_TYPE, ActivityOwner.MEANING, meaningId,
+									ActivityEntity.MEANING_NOTE_SOURCE_LINK, functName, roleDatasetCode);
 						} else {
-							updateFreeformSourceLink(sourceLinkId, sourceLinkValue, ActivityOwner.MEANING, meaningId, ActivityEntity.MEANING_NOTE_SOURCE_LINK, functName);
+							updateFreeformSourceLink(
+									sourceLinkId, sourceLinkValue, ActivityOwner.MEANING, meaningId, ActivityEntity.MEANING_NOTE_SOURCE_LINK,
+									functName, roleDatasetCode);
 						}
 					}
 				}
@@ -296,17 +304,17 @@ public class TermMeaningService extends AbstractApiCudService {
 		return meaningId;
 	}
 
-	private void createLexemeSourceLink(Long lexemeId, Long sourceId, String sourceLinkValue, String functName) throws Exception {
+	private void createLexemeSourceLink(Long lexemeId, Long sourceId, String sourceLinkValue, String functName, String roleDatasetCode) throws Exception {
 
-		ActivityLogData activityLog = activityLogService.prepareActivityLog(functName, lexemeId, ActivityOwner.LEXEME, MANUAL_EVENT_ON_UPDATE_ENABLED);
+		ActivityLogData activityLog = activityLogService.prepareActivityLog(functName, lexemeId, ActivityOwner.LEXEME, roleDatasetCode, MANUAL_EVENT_ON_UPDATE_ENABLED);
 		String sourceLinkName = null;
 		Long sourceLinkId = sourceLinkDbService.createLexemeSourceLink(lexemeId, sourceId, DEFAULT_SOURCE_LINK_REF_TYPE, sourceLinkValue, sourceLinkName);
 		activityLogService.createActivityLog(activityLog, sourceLinkId, ActivityEntity.LEXEME_SOURCE_LINK);
 	}
 
-	private void updateLexemeSourceLink(Long sourceLinkId, Long lexemeId, String sourceLinkValue, String functName) throws Exception {
+	private void updateLexemeSourceLink(Long sourceLinkId, Long lexemeId, String sourceLinkValue, String functName, String roleDatasetCode) throws Exception {
 
-		ActivityLogData activityLog = activityLogService.prepareActivityLog(functName, lexemeId, ActivityOwner.LEXEME, MANUAL_EVENT_ON_UPDATE_ENABLED);
+		ActivityLogData activityLog = activityLogService.prepareActivityLog(functName, lexemeId, ActivityOwner.LEXEME, roleDatasetCode, MANUAL_EVENT_ON_UPDATE_ENABLED);
 		String sourceLinkName = null;
 		sourceLinkDbService.updateLexemeSourceLink(sourceLinkId, sourceLinkValue, sourceLinkName);
 		activityLogService.createActivityLog(activityLog, sourceLinkId, ActivityEntity.LEXEME_SOURCE_LINK);

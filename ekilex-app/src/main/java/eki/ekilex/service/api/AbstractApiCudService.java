@@ -27,7 +27,7 @@ public abstract class AbstractApiCudService extends AbstractCudService implement
 	@Autowired
 	protected SourceLinkDbService sourceLinkDbService;
 
-	protected void createOrUpdateDefinition(Definition definition, Long meaningId, String datasetCode, Complexity complexity, String functName) throws Exception {
+	protected void createOrUpdateDefinition(Definition definition, Long meaningId, String datasetCode, Complexity complexity, String functName, String roleDatasetCode) throws Exception {
 
 		Long definitionId = definition.getDefinitionId();
 		String definitionValue = StringUtils.trim(definition.getValue());
@@ -39,7 +39,7 @@ public abstract class AbstractApiCudService extends AbstractCudService implement
 			return;
 		}
 
-		ActivityLogData activityLog = activityLogService.prepareActivityLog(functName, meaningId, ActivityOwner.MEANING, MANUAL_EVENT_ON_UPDATE_ENABLED);
+		ActivityLogData activityLog = activityLogService.prepareActivityLog(functName, meaningId, ActivityOwner.MEANING, roleDatasetCode, MANUAL_EVENT_ON_UPDATE_ENABLED);
 		if (definitionId == null) {
 			definitionId = cudDbService.createDefinition(meaningId, definitionValue, definitionValue, definitionLang, definitionTypeCode, complexity, PUBLICITY_PUBLIC);
 			cudDbService.createDefinitionDataset(definitionId, datasetCode);
@@ -55,15 +55,15 @@ public abstract class AbstractApiCudService extends AbstractCudService implement
 				Long sourceId = definitionSourceLink.getSourceId();
 				String sourceLinkValue = definitionSourceLink.getValue();
 				if (sourceLinkId == null) {
-					createDefinitionSourceLink(definitionId, sourceId, meaningId, sourceLinkValue, functName);
+					createDefinitionSourceLink(definitionId, sourceId, meaningId, sourceLinkValue, functName, roleDatasetCode);
 				} else {
-					updateDefinitionSourceLink(sourceLinkId, meaningId, sourceLinkValue, functName);
+					updateDefinitionSourceLink(sourceLinkId, meaningId, sourceLinkValue, functName, roleDatasetCode);
 				}
 			}
 		}
 	}
 
-	protected void createOrUpdateUsage(Freeform usage, Long lexemeId, boolean defaultPublicity, String functName) throws Exception {
+	protected void createOrUpdateUsage(Freeform usage, Long lexemeId, boolean defaultPublicity, String functName, String roleDatasetCode) throws Exception {
 
 		String userName = userContext.getUserName();
 		Long usageId = usage.getId();
@@ -74,7 +74,7 @@ public abstract class AbstractApiCudService extends AbstractCudService implement
 
 		FreeForm freeform = initFreeform(FreeformType.USAGE, usageValue, usageLang, isUsagePublic);
 
-		ActivityLogData activityLog = activityLogService.prepareActivityLog(functName, lexemeId, ActivityOwner.LEXEME, MANUAL_EVENT_ON_UPDATE_ENABLED);
+		ActivityLogData activityLog = activityLogService.prepareActivityLog(functName, lexemeId, ActivityOwner.LEXEME, roleDatasetCode, MANUAL_EVENT_ON_UPDATE_ENABLED);
 		if (usageId == null) {
 			usageId = cudDbService.createLexemeFreeform(lexemeId, freeform, userName);
 		} else {
@@ -94,9 +94,9 @@ public abstract class AbstractApiCudService extends AbstractCudService implement
 					refType = DEFAULT_SOURCE_LINK_REF_TYPE;
 				}
 				if (sourceLinkId == null) {
-					createFreeformSourceLink(usageId, sourceId, sourceLinkValue, refType, ActivityOwner.LEXEME, lexemeId, ActivityEntity.USAGE_SOURCE_LINK, functName);
+					createFreeformSourceLink(usageId, sourceId, sourceLinkValue, refType, ActivityOwner.LEXEME, lexemeId, ActivityEntity.USAGE_SOURCE_LINK, functName, roleDatasetCode);
 				} else {
-					updateFreeformSourceLink(sourceLinkId, sourceLinkValue, ActivityOwner.LEXEME, lexemeId, ActivityEntity.USAGE_SOURCE_LINK, functName);
+					updateFreeformSourceLink(sourceLinkId, sourceLinkValue, ActivityOwner.LEXEME, lexemeId, ActivityEntity.USAGE_SOURCE_LINK, functName, roleDatasetCode);
 				}
 			}
 		}
@@ -116,34 +116,34 @@ public abstract class AbstractApiCudService extends AbstractCudService implement
 
 	protected void createFreeformSourceLink(
 			Long freeformId, Long sourceId, String sourceLinkValue, ReferenceType refType, ActivityOwner owner, Long ownerId,
-			ActivityEntity activityEntity, String functName) throws Exception {
+			ActivityEntity activityEntity, String functName, String roleDatasetCode) throws Exception {
 
-		ActivityLogData activityLog = activityLogService.prepareActivityLog(functName, ownerId, owner, MANUAL_EVENT_ON_UPDATE_ENABLED);
+		ActivityLogData activityLog = activityLogService.prepareActivityLog(functName, ownerId, owner, roleDatasetCode, MANUAL_EVENT_ON_UPDATE_ENABLED);
 		String sourceLinkName = null;
 		Long sourceLinkId = sourceLinkDbService.createFreeformSourceLink(freeformId, sourceId, refType, sourceLinkValue, sourceLinkName);
 		activityLogService.createActivityLog(activityLog, sourceLinkId, activityEntity);
 	}
 
 	protected void updateFreeformSourceLink(
-			Long sourceLinkId, String sourceLinkValue, ActivityOwner owner, Long ownerId, ActivityEntity activityEntity, String functName) throws Exception {
+			Long sourceLinkId, String sourceLinkValue, ActivityOwner owner, Long ownerId, ActivityEntity activityEntity, String functName, String roleDatasetCode) throws Exception {
 
-		ActivityLogData activityLog = activityLogService.prepareActivityLog(functName, ownerId, owner, MANUAL_EVENT_ON_UPDATE_ENABLED);
+		ActivityLogData activityLog = activityLogService.prepareActivityLog(functName, ownerId, owner, roleDatasetCode, MANUAL_EVENT_ON_UPDATE_ENABLED);
 		String sourceLinkName = null;
 		sourceLinkDbService.updateFreeformSourceLink(sourceLinkId, sourceLinkValue, sourceLinkName);
 		activityLogService.createActivityLog(activityLog, sourceLinkId, activityEntity);
 	}
 
-	private void createDefinitionSourceLink(Long definitionId, Long sourceId, Long meaningId, String sourceLinkValue, String functName) throws Exception {
+	private void createDefinitionSourceLink(Long definitionId, Long sourceId, Long meaningId, String sourceLinkValue, String functName, String roleDatasetCode) throws Exception {
 
-		ActivityLogData activityLog = activityLogService.prepareActivityLog(functName, meaningId, ActivityOwner.MEANING, MANUAL_EVENT_ON_UPDATE_ENABLED);
+		ActivityLogData activityLog = activityLogService.prepareActivityLog(functName, meaningId, ActivityOwner.MEANING, roleDatasetCode, MANUAL_EVENT_ON_UPDATE_ENABLED);
 		String sourceLinkName = null;
 		Long sourceLinkId = sourceLinkDbService.createDefinitionSourceLink(definitionId, sourceId, DEFAULT_SOURCE_LINK_REF_TYPE, sourceLinkValue, sourceLinkName);
 		activityLogService.createActivityLog(activityLog, sourceLinkId, ActivityEntity.DEFINITION_SOURCE_LINK);
 	}
 
-	private void updateDefinitionSourceLink(Long sourceLinkId, Long meaningId, String sourceLinkValue, String functName) throws Exception {
+	private void updateDefinitionSourceLink(Long sourceLinkId, Long meaningId, String sourceLinkValue, String functName, String roleDatasetCode) throws Exception {
 
-		ActivityLogData activityLog = activityLogService.prepareActivityLog(functName, meaningId, ActivityOwner.MEANING, MANUAL_EVENT_ON_UPDATE_ENABLED);
+		ActivityLogData activityLog = activityLogService.prepareActivityLog(functName, meaningId, ActivityOwner.MEANING, roleDatasetCode, MANUAL_EVENT_ON_UPDATE_ENABLED);
 		String sourceLinkName = null;
 		sourceLinkDbService.updateDefinitionSourceLink(sourceLinkId, sourceLinkValue, sourceLinkName);
 		activityLogService.createActivityLog(activityLog, sourceLinkId, ActivityEntity.DEFINITION_SOURCE_LINK);

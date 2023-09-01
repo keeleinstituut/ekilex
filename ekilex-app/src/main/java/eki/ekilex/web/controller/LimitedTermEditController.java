@@ -50,6 +50,7 @@ public class LimitedTermEditController extends AbstractMutableDataPageController
 	@PostMapping(LIM_TERM_CREATE_WORD_URI)
 	public String createWord(WordLexemeMeaningDetails wordDetails, @ModelAttribute(name = SESSION_BEAN) SessionBean sessionBean) throws Exception {
 
+		String roleDatasetCode = getDatasetCodeFromRole();
 		valueUtil.trimAndCleanAndRemoveHtml(wordDetails);
 
 		String wordValue = wordDetails.getWordValue();
@@ -59,7 +60,7 @@ public class LimitedTermEditController extends AbstractMutableDataPageController
 			boolean isManualEventOnUpdateEnabled = sessionBean.isManualEventOnUpdateEnabled();
 			sessionBean.setRecentLanguage(language);
 			searchUri = searchHelper.composeSearchUri(limitedDatasets, wordValue);
-			cudService.createWord(wordDetails, isManualEventOnUpdateEnabled);
+			cudService.createWord(wordDetails, roleDatasetCode, isManualEventOnUpdateEnabled);
 		}
 		return "redirect:" + LIM_TERM_SEARCH_URI + searchUri;
 	}
@@ -95,7 +96,8 @@ public class LimitedTermEditController extends AbstractMutableDataPageController
 			@ModelAttribute(name = SESSION_BEAN) SessionBean sessionBean) throws Exception {
 
 		boolean isManualEventOnUpdateEnabled = sessionBean.isManualEventOnUpdateEnabled();
-		compositionService.joinMeanings(targetMeaningId, sourceMeaningIds, isManualEventOnUpdateEnabled);
+		String roleDatasetCode = getDatasetCodeFromRole();
+		compositionService.joinMeanings(targetMeaningId, sourceMeaningIds, roleDatasetCode, isManualEventOnUpdateEnabled);
 
 		String wordValue = termSearchService.getMeaningFirstWordValue(targetMeaningId, limitedDatasets);
 		String searchUri = searchHelper.composeSearchUriAndAppendId(limitedDatasets, wordValue, targetMeaningId);

@@ -19,7 +19,7 @@ import org.jooq.Identity;
 import org.jooq.JSONB;
 import org.jooq.Name;
 import org.jooq.Record;
-import org.jooq.Row12;
+import org.jooq.Row13;
 import org.jooq.Schema;
 import org.jooq.Table;
 import org.jooq.TableField;
@@ -111,6 +111,11 @@ public class ActivityLog extends TableImpl<ActivityLogRecord> {
      */
     public final TableField<ActivityLogRecord, TypeActivityLogDiffRecord[]> CURR_DIFFS = createField(DSL.name("curr_diffs"), eki.ekilex.data.db.udt.TypeActivityLogDiff.TYPE_ACTIVITY_LOG_DIFF.getDataType().getArrayDataType(), this, "");
 
+    /**
+     * The column <code>public.activity_log.dataset_code</code>.
+     */
+    public final TableField<ActivityLogRecord, String> DATASET_CODE = createField(DSL.name("dataset_code"), SQLDataType.VARCHAR(10), this, "");
+
     private ActivityLog(Name alias, Table<ActivityLogRecord> aliased) {
         this(alias, aliased, null);
     }
@@ -165,6 +170,20 @@ public class ActivityLog extends TableImpl<ActivityLogRecord> {
     }
 
     @Override
+    public List<ForeignKey<ActivityLogRecord, ?>> getReferences() {
+        return Arrays.<ForeignKey<ActivityLogRecord, ?>>asList(Keys.ACTIVITY_LOG__ACTIVITY_LOG_DATASET_CODE_FKEY);
+    }
+
+    private transient Dataset _dataset;
+
+    public Dataset dataset() {
+        if (_dataset == null)
+            _dataset = new Dataset(this, Keys.ACTIVITY_LOG__ACTIVITY_LOG_DATASET_CODE_FKEY);
+
+        return _dataset;
+    }
+
+    @Override
     public ActivityLog as(String alias) {
         return new ActivityLog(DSL.name(alias), this);
     }
@@ -191,11 +210,11 @@ public class ActivityLog extends TableImpl<ActivityLogRecord> {
     }
 
     // -------------------------------------------------------------------------
-    // Row12 type methods
+    // Row13 type methods
     // -------------------------------------------------------------------------
 
     @Override
-    public Row12<Long, String, Timestamp, String, Long, String, Long, String, JSONB, JSONB, TypeActivityLogDiffRecord[], TypeActivityLogDiffRecord[]> fieldsRow() {
-        return (Row12) super.fieldsRow();
+    public Row13<Long, String, Timestamp, String, Long, String, Long, String, JSONB, JSONB, TypeActivityLogDiffRecord[], TypeActivityLogDiffRecord[], String> fieldsRow() {
+        return (Row13) super.fieldsRow();
     }
 }

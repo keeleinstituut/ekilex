@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="et" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:replace="common :: common_header(~{::title},~{::links})">
+<title th:text="#{workloadreport.title}">Muudatuste aruanne</title>
+<th:block th:fragment="links">
+</th:block>
+</head>
+<body class="body-with-navbar">
+  <th:block th:replace="common :: nav_bar(activeItem = 'workloadreport')"></th:block>
+  <div class="container-fluid">
+    <div class="card mt-4 shadow">
+      <form th:action="@{/workloadreport/search}" method="post">
+        <div class="card-header">
+          <h5 class="card-title" th:text="#{workloadreport.title}">Muudatuste aruanne</h5>
+        </div>
+        <div class="card-body">
+          <div class="form-group row">
+            <label class="col-md-2 col-form-label" th:text="#{workloadreport.period}">Periood</label>
+            <div class="col-md-2 input-group date" data-provide="datepicker" th:title="#{workloadreport.period.from}" data-date-language="et" data-date-autoclose="true">
+              <input type="text" class="form-control bg-white required-field" name="dateFrom" th:value="${#temporals.format(dateFrom, 'dd.MM.yyyy')}" readonly>
+              <div class="input-group-addon input-group-append">
+                <div class="input-group-text">
+                  <i class="fa fa-calendar fa-lg"></i>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-2 input-group date" data-provide="datepicker" th:title="#{workloadreport.period.until}" data-date-language="et" data-date-autoclose="true">
+              <input type="text" class="form-control bg-white required-field" name="dateUntil" th:value="${#temporals.format(dateUntil, 'dd.MM.yyyy')}" readonly>
+              <div class="input-group-addon input-group-append">
+                <div class="input-group-text">
+                  <i class="fa fa-calendar fa-lg"></i>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="form-group row">
+            <label class="col-md-2 col-form-label" th:text="#{workloadreport.dataset}">Sõnakogu</label>
+            <div class="col-md-4">
+              <select required class="form-control required-field" name="datasetCode" data-plugin="workloadReportDatasetSelectPlugin">
+                <option value="" hidden disabled selected th:text="#{common.select}">Vali</option>
+                <option th:each="dataset : ${workloadReportDatasets}"
+                        th:value="${dataset.code}"
+                        th:text="${dataset.name}"
+                        th:selected="${dataset.code == datasetCode}">dataset
+                </option>
+              </select>
+            </div>
+          </div>
+          <div class="form-group row" id="dataset-users-div">
+            <th:block th:if="${userNames != null}">
+              <th:block th:replace="workloadreportcomp :: dataset_users_select"></th:block>
+            </th:block>
+          </div>
+          <div>
+            <th:block th:if="${workloadReport != null}">
+              <table class="table table-striped m-0 p-0 table-hover">
+                <tr>
+                  <th th:text="#{workloadreport.userName}">Muutja</th>
+                  <th th:text="#{workloadreport.createdWordCount}">Lisatud keelendeid</th>
+                  <th th:text="#{workloadreport.createdLexemeCount}">Lisatud ilmikuid</th>
+                  <th th:text="#{workloadreport.createdMeaningCount}">Lisatud mõisteid</th>
+                  <th th:text="#{workloadreport.updatedWordCount}">Muudetud keelendeid</th>
+                  <th th:text="#{workloadreport.updatedLexemeCount}">Muudetud ilmikuid</th>
+                  <th th:text="#{workloadreport.updatedMeaningCount}">Muudetud mõisteid</th>
+                  <th th:text="#{workloadreport.deletedWordCount}">Kustutatud keelendeid</th>
+                  <th th:text="#{workloadreport.deletedLexemeCount}">Kustutatud ilmikuid</th>
+                  <th th:text="#{workloadreport.deletedMeaningCount}">Kustutatud mõisteid</th>
+                </tr>
+                <th:block th:each="userReport : ${workloadReport.userReports}">
+                  <tr>
+                    <td>
+                      <span th:text="${userReport.userName}"></span>
+                    </td>
+                    <td>
+                      <span th:text="${userReport.createdWordCount}"></span>
+                    </td>
+                    <td>
+                      <span th:text="${userReport.createdLexemeCount}"></span>
+                    </td>
+                    <td>
+                      <span th:text="${userReport.createdMeaningCount}"></span>
+                    </td>
+                    <td>
+                      <span th:text="${userReport.updatedWordCount}"></span>
+                    </td>
+                    <td>
+                      <span th:text="${userReport.updatedLexemeCount}"></span>
+                    </td>
+                    <td>
+                      <span th:text="${userReport.updatedMeaningCount}"></span>
+                    </td>
+                    <td>
+                      <span th:text="${userReport.deletedWordCount}"></span>
+                    </td>
+                    <td>
+                      <span th:text="${userReport.deletedLexemeCount}"></span>
+                    </td>
+                    <td>
+                      <span th:text="${userReport.deletedMeaningCount}"></span>
+                    </td>
+                  </tr>
+                </th:block>
+                <tr class="font-weight-bold">
+                  <td th:text="#{workloadreport.total}">KOKKU:</td>
+                  <td>
+                    <span th:text="${workloadReport.totalReport.createdWordCount}"></span>
+                  </td>
+                  <td>
+                    <span th:text="${workloadReport.totalReport.createdLexemeCount}"></span>
+                  </td>
+                  <td>
+                    <span th:text="${workloadReport.totalReport.createdMeaningCount}"></span>
+                  </td>
+                  <td>
+                    <span th:text="${workloadReport.totalReport.updatedWordCount}"></span>
+                  </td>
+                  <td>
+                    <span th:text="${workloadReport.totalReport.updatedLexemeCount}"></span>
+                  </td>
+                  <td>
+                    <span th:text="${workloadReport.totalReport.updatedMeaningCount}"></span>
+                  </td>
+                  <td>
+                    <span th:text="${workloadReport.totalReport.deletedWordCount}"></span>
+                  </td>
+                  <td>
+                    <span th:text="${workloadReport.totalReport.deletedLexemeCount}"></span>
+                  </td>
+                  <td>
+                    <span th:text="${workloadReport.totalReport.deletedMeaningCount}"></span>
+                  </td>
+                </tr>
+              </table>
+            </th:block>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+  <div th:replace="common :: #waitDlg"></div>
+  <script th:inline="javascript">
+	  initDatasetUsersSelect();
+  </script>
+</body>
+</html>

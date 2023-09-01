@@ -92,7 +92,7 @@ public class MaintenanceService implements SystemConstant, GlobalConstant {
 		for (SourceTargetIdTuple homonym : homonyms) {
 			Long targetWordId = homonym.getTargetId();
 			Long sourceWordId = homonym.getSourceId();
-			compositionService.joinWords(targetWordId, sourceWordId, isManualEventOnUpdateEnabled);
+			compositionService.joinWords(targetWordId, sourceWordId, null, isManualEventOnUpdateEnabled);
 		}
 
 		logger.info("Homonyms merge finished");

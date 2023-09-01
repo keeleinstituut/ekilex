@@ -1195,7 +1195,8 @@ create table activity_log
 (
   id bigserial primary key,
   event_by text not null,
-  event_on timestamp not null default statement_timestamp(),  
+  event_on timestamp not null default statement_timestamp(),
+  dataset_code varchar(10) references dataset(code) null,
   funct_name text not null,
   owner_id bigint not null,
   owner_name text not null,
@@ -1484,6 +1485,7 @@ create index activity_log_event_by_idx on activity_log(event_by);
 create index activity_log_event_by_lower_idx on activity_log(lower(event_by));
 create index activity_log_owner_idx on activity_log(owner_name, owner_id);
 create index activity_log_owner_name_idx on activity_log(owner_name);
+create index activity_log_dataset_code_idx on activity_log(dataset_code);
 create index activity_funct_name_idx on activity_log(funct_name);
 create index activity_entity_name_idx on activity_log(entity_name);
 create index activity_entity_name_owner_name_event_on_idx on activity_log(entity_name, owner_name, (date_part('epoch', event_on) * 1000));

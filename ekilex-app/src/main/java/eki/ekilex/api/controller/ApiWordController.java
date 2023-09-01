@@ -55,7 +55,7 @@ public class ApiWordController extends AbstractApiController {
 			@RequestBody LexWord lexWord) {
 
 		try {
-			Long wordId = wordService.saveLexWord(lexWord);
+			Long wordId = wordService.saveLexWord(lexWord, crudRoleDataset);
 			return getOpSuccessResponse(wordId);
 		} catch (Exception e) {
 			return getOpFailResponse(e);
@@ -73,7 +73,7 @@ public class ApiWordController extends AbstractApiController {
 		try {
 			Long wordId = wordType.getWordId();
 			String typeCode = wordType.getClassifierCode();
-			cudService.createWordType(wordId, typeCode, MANUAL_EVENT_ON_UPDATE_ENABLED);
+			cudService.createWordType(wordId, typeCode, crudRoleDataset, MANUAL_EVENT_ON_UPDATE_ENABLED);
 			return getOpSuccessResponse();
 		} catch (Exception e) {
 			return getOpFailResponse(e);
@@ -91,7 +91,7 @@ public class ApiWordController extends AbstractApiController {
 		try {
 			Long wordId = wordType.getWordId();
 			String typeCode = wordType.getClassifierCode();
-			cudService.deleteWordType(wordId, typeCode, MANUAL_EVENT_ON_UPDATE_ENABLED);
+			cudService.deleteWordType(wordId, typeCode, crudRoleDataset, MANUAL_EVENT_ON_UPDATE_ENABLED);
 			return getOpSuccessResponse();
 		} catch (Exception e) {
 			return getOpFailResponse(e);
@@ -111,7 +111,7 @@ public class ApiWordController extends AbstractApiController {
 			Long targetWordId = wordRelation.getTargetWordId();
 			String relationTypeCode = wordRelation.getRelationTypeCode();
 			String oppositeRelationTypeCode = wordRelation.getOppositeRelationTypeCode();
-			cudService.createWordRelation(wordId, targetWordId, relationTypeCode, oppositeRelationTypeCode, MANUAL_EVENT_ON_UPDATE_ENABLED);
+			cudService.createWordRelation(wordId, targetWordId, relationTypeCode, oppositeRelationTypeCode, crudRoleDataset, MANUAL_EVENT_ON_UPDATE_ENABLED);
 			return getOpSuccessResponse();
 		} catch (Exception e) {
 			return getOpFailResponse(e);
@@ -127,7 +127,7 @@ public class ApiWordController extends AbstractApiController {
 			@RequestParam("relationId") Long relationId) {
 
 		try {
-			cudService.deleteWordRelation(relationId, MANUAL_EVENT_ON_UPDATE_ENABLED);
+			cudService.deleteWordRelation(relationId, crudRoleDataset, MANUAL_EVENT_ON_UPDATE_ENABLED);
 			return getOpSuccessResponse();
 		} catch (Exception e) {
 			return getOpFailResponse(e);
@@ -196,7 +196,7 @@ public class ApiWordController extends AbstractApiController {
 			Long wordId = odWordRecommendation.getWordId();
 			String valuePrese = odWordRecommendation.getValuePrese();
 			valuePrese = valueUtil.trimAndCleanAndRemoveHtmlAndLimit(valuePrese);
-			cudService.createOdWordRecommendation(wordId, valuePrese, MANUAL_EVENT_ON_UPDATE_ENABLED);
+			cudService.createOdWordRecommendation(wordId, valuePrese, crudRoleDataset, MANUAL_EVENT_ON_UPDATE_ENABLED);
 			return getOpSuccessResponse();
 		} catch (Exception e) {
 			return getOpFailResponse(e);
@@ -215,7 +215,7 @@ public class ApiWordController extends AbstractApiController {
 			Long freeformId = odWordRecommendation.getFreeformId();
 			String valuePrese = odWordRecommendation.getValuePrese();
 			valuePrese = valueUtil.trimAndCleanAndRemoveHtmlAndLimit(valuePrese);
-			cudService.updateOdWordRecommendation(freeformId, valuePrese, MANUAL_EVENT_ON_UPDATE_ENABLED);
+			cudService.updateOdWordRecommendation(freeformId, valuePrese, crudRoleDataset, MANUAL_EVENT_ON_UPDATE_ENABLED);
 			return getOpSuccessResponse();
 		} catch (Exception e) {
 			return getOpFailResponse(e);
@@ -231,7 +231,7 @@ public class ApiWordController extends AbstractApiController {
 			@RequestParam("odWordRecommendationId") Long odWordRecommendationId) {
 
 		try {
-			cudService.deleteOdWordRecommendation(odWordRecommendationId, MANUAL_EVENT_ON_UPDATE_ENABLED);
+			cudService.deleteOdWordRecommendation(odWordRecommendationId, crudRoleDataset, MANUAL_EVENT_ON_UPDATE_ENABLED);
 			return getOpSuccessResponse();
 		} catch (Exception e) {
 			return getOpFailResponse(e);
@@ -247,7 +247,7 @@ public class ApiWordController extends AbstractApiController {
 			@RequestParam("lexemeId") Long lexemeId) {
 
 		try {
-			cudService.deleteLexeme(lexemeId, MANUAL_EVENT_ON_UPDATE_ENABLED);
+			cudService.deleteLexeme(lexemeId, crudRoleDataset, MANUAL_EVENT_ON_UPDATE_ENABLED);
 			return getOpSuccessResponse();
 		} catch (Exception e) {
 			return getOpFailResponse(e);

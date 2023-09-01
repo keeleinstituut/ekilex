@@ -140,7 +140,8 @@ public class TermEditController extends AbstractMutableDataPageController {
 			@ModelAttribute(name = SESSION_BEAN) SessionBean sessionBean) throws Exception {
 
 		boolean isManualEventOnUpdateEnabled = sessionBean.isManualEventOnUpdateEnabled();
-		compositionService.joinMeanings(targetMeaningId, sourceMeaningIds, isManualEventOnUpdateEnabled);
+		String roleDatasetCode = getDatasetCodeFromRole();
+		compositionService.joinMeanings(targetMeaningId, sourceMeaningIds, roleDatasetCode, isManualEventOnUpdateEnabled);
 
 		List<String> datasets = getUserPreferredDatasetCodes();
 		String wordValue = termSearchService.getMeaningFirstWordValue(targetMeaningId, datasets);
@@ -155,9 +156,10 @@ public class TermEditController extends AbstractMutableDataPageController {
 
 		Locale locale = LocaleContextHolder.getLocale();
 		boolean isManualEventOnUpdateEnabled = sessionBean.isManualEventOnUpdateEnabled();
+		String roleDatasetCode = getDatasetCodeFromRole();
 		Optional<Long> clonedMeaning = Optional.empty();
 		try {
-			clonedMeaning = compositionService.optionalDuplicateMeaningWithLexemes(meaningId, isManualEventOnUpdateEnabled);
+			clonedMeaning = compositionService.optionalDuplicateMeaningWithLexemes(meaningId, roleDatasetCode, isManualEventOnUpdateEnabled);
 		} catch (Exception ignore) {
 			logger.error("", ignore);
 		}
@@ -195,6 +197,7 @@ public class TermEditController extends AbstractMutableDataPageController {
 		UserContextData userContextData = getUserContextData();
 		DatasetPermission userRole = userContextData.getUserRole();
 		boolean isManualEventOnUpdateEnabled = sessionBean.isManualEventOnUpdateEnabled();
+		String roleDatasetCode = getDatasetCodeFromRole();
 		model.addAttribute("backUri", backUri);
 		model.addAttribute("uriParams", uriParams);
 
@@ -212,7 +215,7 @@ public class TermEditController extends AbstractMutableDataPageController {
 			createWordDetails.setWordValue(wordValue);
 			createWordDetails.setLanguage(language);
 			createWordDetails.setDataset(datasetCode);
-			WordLexemeMeaningIdTuple wordLexemeMeaningId = cudService.createWord(createWordDetails, isManualEventOnUpdateEnabled);
+			WordLexemeMeaningIdTuple wordLexemeMeaningId = cudService.createWord(createWordDetails, roleDatasetCode, isManualEventOnUpdateEnabled);
 			Long meaningId = wordLexemeMeaningId.getMeaningId();
 			addRedirectSuccessMessage(redirectAttributes, "termcreatemeaning.usermessage.word.and.meaning.created");
 			String redirectToMeaning = composeRedirectToMeaning(meaningId, backUri);
@@ -233,7 +236,8 @@ public class TermEditController extends AbstractMutableDataPageController {
 			RedirectAttributes redirectAttributes) throws Exception {
 
 		boolean isManualEventOnUpdateEnabled = sessionBean.isManualEventOnUpdateEnabled();
-		WordLexemeMeaningIdTuple wordLexemeMeaningId = cudService.createLexeme(wordId, datasetCode, null, isManualEventOnUpdateEnabled);
+		String roleDatasetCode = getDatasetCodeFromRole();
+		WordLexemeMeaningIdTuple wordLexemeMeaningId = cudService.createLexeme(wordId, datasetCode, null, roleDatasetCode, isManualEventOnUpdateEnabled);
 		Long meaningId = wordLexemeMeaningId.getMeaningId();
 		addRedirectSuccessMessage(redirectAttributes, "termcreatemeaning.usermessage.meaning.created");
 		String redirectToMeaning = composeRedirectToMeaning(meaningId, backUri);
@@ -259,6 +263,7 @@ public class TermEditController extends AbstractMutableDataPageController {
 		UserContextData userContextData = getUserContextData();
 		DatasetPermission userRole = userContextData.getUserRole();
 		boolean isManualEventOnUpdateEnabled = sessionBean.isManualEventOnUpdateEnabled();
+		String roleDatasetCode = getDatasetCodeFromRole();
 		model.addAttribute("backUri", backUri);
 		model.addAttribute("uriParams", uriParams);
 
@@ -283,7 +288,7 @@ public class TermEditController extends AbstractMutableDataPageController {
 			wordDetails.setWordValue(wordValue);
 			wordDetails.setLanguage(language);
 			wordDetails.setDataset(datasetCode);
-			cudService.createWord(wordDetails, isManualEventOnUpdateEnabled);
+			cudService.createWord(wordDetails, roleDatasetCode, isManualEventOnUpdateEnabled);
 			addRedirectSuccessMessage(redirectAttributes, "termcreateword.usermessage.word.and.lexeme.created");
 			return REDIRECT_PREF + backUri + uriParams;
 		}
@@ -292,7 +297,7 @@ public class TermEditController extends AbstractMutableDataPageController {
 		if (isOtherDatasetOnlyWord) {
 			List<Word> words = lookupService.getWords(wordValue, language);
 			Long onlyWordId = words.get(0).getWordId();
-			cudService.createLexeme(onlyWordId, datasetCode, meaningId, isManualEventOnUpdateEnabled);
+			cudService.createLexeme(onlyWordId, datasetCode, meaningId, roleDatasetCode, isManualEventOnUpdateEnabled);
 			addRedirectSuccessMessage(redirectAttributes, "termcreateword.usermessage.lexeme.created");
 			return REDIRECT_PREF + backUri + uriParams;
 		}
@@ -313,7 +318,8 @@ public class TermEditController extends AbstractMutableDataPageController {
 			RedirectAttributes redirectAttributes) throws Exception {
 
 		boolean isManualEventOnUpdateEnabled = sessionBean.isManualEventOnUpdateEnabled();
-		cudService.createLexeme(wordId, datasetCode, meaningId, isManualEventOnUpdateEnabled);
+		String roleDatasetCode = getDatasetCodeFromRole();
+		cudService.createLexeme(wordId, datasetCode, meaningId, roleDatasetCode, isManualEventOnUpdateEnabled);
 
 		addRedirectSuccessMessage(redirectAttributes, "termcreateword.usermessage.lexeme.created");
 		return REDIRECT_PREF + backUri + uriParams;
@@ -332,6 +338,7 @@ public class TermEditController extends AbstractMutableDataPageController {
 
 		EkiUser user = userContext.getUser();
 		DatasetPermission userRole = user.getRecentRole();
+		String roleDatasetCode = userRole.getDatasetCode();
 		boolean isManualEventOnUpdateEnabled = sessionBean.isManualEventOnUpdateEnabled();
 		wordValuePrese = valueUtil.trimAndCleanAndRemoveHtmlAndLimit(wordValuePrese);
 		String wordValue = textDecorationService.removeEkiElementMarkup(wordValuePrese);
@@ -341,7 +348,7 @@ public class TermEditController extends AbstractMutableDataPageController {
 
 		boolean isOnlyValuePreseUpdate = lookupService.isOnlyValuePreseUpdate(wordId, wordValuePrese);
 		if (isOnlyValuePreseUpdate) {
-			boolean isUpdateSuccess = compositionService.updateWordValuePrese(user, wordId, wordValuePrese, isManualEventOnUpdateEnabled);
+			boolean isUpdateSuccess = compositionService.updateWordValuePrese(user, wordId, wordValuePrese, roleDatasetCode, isManualEventOnUpdateEnabled);
 			if (isUpdateSuccess) {
 				addRedirectSuccessMessage(redirectAttributes, "termupdateword.usermessage.word.value.prese.updated");
 			} else {
@@ -365,7 +372,7 @@ public class TermEditController extends AbstractMutableDataPageController {
 			model.addAttribute("details", details);
 			return TERM_UPDATE_WORD_PAGE;
 		} else {
-			compositionService.updateLexemeWordValue(lexemeId, wordValuePrese, language, isManualEventOnUpdateEnabled);
+			compositionService.updateLexemeWordValue(lexemeId, wordValuePrese, language, roleDatasetCode, isManualEventOnUpdateEnabled);
 			addRedirectSuccessMessage(redirectAttributes, "termupdateword.usermessage.word.updated");
 			return REDIRECT_PREF + backUri + uriParams;
 		}
@@ -381,7 +388,8 @@ public class TermEditController extends AbstractMutableDataPageController {
 			RedirectAttributes redirectAttributes) throws Exception {
 
 		boolean isManualEventOnUpdateEnabled = sessionBean.isManualEventOnUpdateEnabled();
-		compositionService.updateLexemeWordId(lexemeId, wordId, isManualEventOnUpdateEnabled);
+		String roleDatasetCode = getDatasetCodeFromRole();
+		compositionService.updateLexemeWordId(lexemeId, wordId, roleDatasetCode, isManualEventOnUpdateEnabled);
 
 		addRedirectSuccessMessage(redirectAttributes, "termupdateword.usermessage.word.updated");
 		return REDIRECT_PREF + backUri + uriParams;
@@ -408,7 +416,8 @@ public class TermEditController extends AbstractMutableDataPageController {
 	public String approveMeaning(@RequestParam("meaningId") Long meaningId, @ModelAttribute(name = SESSION_BEAN) SessionBean sessionBean) throws Exception {
 
 		boolean isManualEventOnUpdateEnabled = sessionBean.isManualEventOnUpdateEnabled();
-		compositionService.approveMeaning(meaningId, isManualEventOnUpdateEnabled);
+		String roleDatasetCode = getDatasetCodeFromRole();
+		compositionService.approveMeaning(meaningId, roleDatasetCode, isManualEventOnUpdateEnabled);
 
 		return RESPONSE_OK_VER2;
 	}

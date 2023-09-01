@@ -82,12 +82,13 @@ public class SourceEditController extends AbstractMutableDataPageController {
 
 		UserContextData userContextData = getUserContextData();
 		DatasetPermission userRole = userContextData.getUserRole();
+		String roleDatasetCode = userRole.getDatasetCode();
 		valueText = valueUtil.trimAndCleanAndRemoveHtmlAndLimit(valueText);
 
 		Long sourceId = sourceService.getSourceId(sourcePropertyId);
 		logger.debug("Updating source property with id: {}, source id: {}", sourcePropertyId, sourceId);
 
-		sourceService.updateSourceProperty(sourcePropertyId, valueText);
+		sourceService.updateSourceProperty(sourcePropertyId, valueText, roleDatasetCode);
 		Source source = sourceService.getSource(sourceId, userRole);
 		model.addAttribute("source", source);
 
@@ -105,9 +106,10 @@ public class SourceEditController extends AbstractMutableDataPageController {
 
 		UserContextData userContextData = getUserContextData();
 		DatasetPermission userRole = userContextData.getUserRole();
+		String roleDatasetCode = userRole.getDatasetCode();
 
 		valueText = valueUtil.trimAndCleanAndRemoveHtmlAndLimit(valueText);
-		sourceService.createSourceProperty(sourceId, type, valueText);
+		sourceService.createSourceProperty(sourceId, type, valueText, roleDatasetCode);
 		Source source = sourceService.getSource(sourceId, userRole);
 		model.addAttribute("source", source);
 
@@ -119,10 +121,11 @@ public class SourceEditController extends AbstractMutableDataPageController {
 
 		UserContextData userContextData = getUserContextData();
 		DatasetPermission userRole = userContextData.getUserRole();
+		String roleDatasetCode = userRole.getDatasetCode();
 		Long sourceId = sourceService.getSourceId(sourcePropertyId);
 		logger.debug("Deleting source property with id: {}, source id: {}", sourcePropertyId, sourceId);
 
-		sourceService.deleteSourceProperty(sourcePropertyId);
+		sourceService.deleteSourceProperty(sourcePropertyId, roleDatasetCode);
 		Source source = sourceService.getSource(sourceId, userRole);
 		model.addAttribute("source", source);
 
@@ -139,8 +142,9 @@ public class SourceEditController extends AbstractMutableDataPageController {
 
 		UserContextData userContextData = getUserContextData();
 		DatasetPermission userRole = userContextData.getUserRole();
+		String roleDatasetCode = userRole.getDatasetCode();
 
-		sourceService.updateSource(sourceId, type);
+		sourceService.updateSource(sourceId, type, roleDatasetCode);
 		Source source = sourceService.getSource(sourceId, userRole);
 		model.addAttribute("source", source);
 
@@ -151,13 +155,14 @@ public class SourceEditController extends AbstractMutableDataPageController {
 	@ResponseBody
 	public String createSource(@RequestBody SourceRequest source) throws Exception {
 
+		String roleDatasetCode = getDatasetCodeFromRole();
 		String sourceName = source.getName();
 		String shortName = source.getShortName();
 		SourceType sourceType = source.getType();
 		logger.debug("Creating new source, short name: {} name: {}", shortName, sourceName);
 
 		List<SourceProperty> sourceProperties = processSourceProperties(source);
-		Long sourceId = sourceService.createSource(sourceType, sourceProperties, MANUAL_EVENT_ON_UPDATE_DISABLED);
+		Long sourceId = sourceService.createSource(sourceType, sourceProperties, roleDatasetCode, MANUAL_EVENT_ON_UPDATE_DISABLED);
 		return String.valueOf(sourceId);
 	}
 
@@ -170,11 +175,12 @@ public class SourceEditController extends AbstractMutableDataPageController {
 		SourceType sourceType = source.getType();
 		Long sourceLinkOwnerId = source.getId();
 		String sourceLinkOwnerCode = source.getOpCode();
+		String roleDatasetCode = getDatasetCodeFromRole();
 		boolean isManualEventOnUpdateEnabled = sessionBean.isManualEventOnUpdateEnabled();
 		logger.debug("Creating new source and source link, short name: {} name: {}", shortName, sourceName);
 
 		List<SourceProperty> sourceProperties = processSourceProperties(source);
-		sourceLinkService.createSourceAndSourceLink(sourceType, sourceProperties, sourceLinkOwnerId, sourceLinkOwnerCode, isManualEventOnUpdateEnabled);
+		sourceLinkService.createSourceAndSourceLink(sourceType, sourceProperties, sourceLinkOwnerId, sourceLinkOwnerCode, roleDatasetCode, isManualEventOnUpdateEnabled);
 
 		return RESPONSE_OK_VER2;
 	}
@@ -202,8 +208,9 @@ public class SourceEditController extends AbstractMutableDataPageController {
 	public String deleteSource(@PathVariable("sourceId") Long sourceId) throws Exception {
 
 		logger.debug("Deleting source with id: {}", sourceId);
+		String roleDatasetCode = getDatasetCodeFromRole();
 
-		sourceService.deleteSource(sourceId);
+		sourceService.deleteSource(sourceId, roleDatasetCode);
 		return RESPONSE_OK_VER1;
 	}
 
@@ -227,7 +234,8 @@ public class SourceEditController extends AbstractMutableDataPageController {
 			@RequestParam("targetSourceId") Long targetSourceId,
 			@RequestParam("originSourceId") Long originSourceId) throws Exception {
 
-		sourceService.joinSources(targetSourceId, originSourceId);
+		String roleDatasetCode = getDatasetCodeFromRole();
+		sourceService.joinSources(targetSourceId, originSourceId, roleDatasetCode);
 		return "redirect:" + SOURCE_SEARCH_URI + "/" + targetSourceId;
 	}
 

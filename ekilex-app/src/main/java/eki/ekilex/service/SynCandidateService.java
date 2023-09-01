@@ -49,7 +49,7 @@ public class SynCandidateService extends AbstractCudService implements GlobalCon
 	private SynSearchDbService synSearchDbService;
 
 	@Transactional
-	public void createFullSynCandidacy(SynCandidacy synCandidacy) throws Exception {
+	public void createFullSynCandidacy(SynCandidacy synCandidacy, String roleDatasetCode) throws Exception {
 
 		String headwordValue = synCandidacy.getHeadwordValue();
 		String headwordLang = synCandidacy.getHeadwordLang();
@@ -64,7 +64,7 @@ public class SynCandidateService extends AbstractCudService implements GlobalCon
 
 			BigDecimal synLexemeWeight = synCandidateWord.getWeight();
 
-			WordLexemeMeaningIdTuple synCandidateWordLexemeMeaningId = handleSynCandidateWord(synCandidateDatasetCode, synCandidateWord);
+			WordLexemeMeaningIdTuple synCandidateWordLexemeMeaningId = handleSynCandidateWord(synCandidateDatasetCode, synCandidateWord, roleDatasetCode);
 
 			for (Word headword : existingHeadwords) {
 				Long headwordId = headword.getWordId();
@@ -75,7 +75,7 @@ public class SynCandidateService extends AbstractCudService implements GlobalCon
 	}
 
 	@Transactional
-	public Response createFullSynCandidate(Long headwordId, String synCandidateWordValue, String synCandidateWordLang, String synCandidateDatasetCode) throws Exception {
+	public Response createFullSynCandidate(Long headwordId, String synCandidateWordValue, String synCandidateWordLang, String synCandidateDatasetCode, String roleDatasetCode) throws Exception {
 
 		Locale locale = LocaleContextHolder.getLocale();
 		Response response = new Response();
@@ -89,7 +89,7 @@ public class SynCandidateService extends AbstractCudService implements GlobalCon
 			return response;
 		}
 
-		WordLexemeMeaningIdTuple synCandidateWordLexemeMeaningId = createSynCandidateWordAndLexemeAndMeaning(synCandidateWordValue, synCandidateWordLang, synCandidateDatasetCode);
+		WordLexemeMeaningIdTuple synCandidateWordLexemeMeaningId = createSynCandidateWordAndLexemeAndMeaning(synCandidateWordValue, synCandidateWordLang, synCandidateDatasetCode, roleDatasetCode);
 		Long synCandidateWordId = synCandidateWordLexemeMeaningId.getWordId();
 		createSynCandidateWordRelation(headwordId, synCandidateWordId, DEFAULT_SYN_CANDIDATE_WEIGHT);
 
@@ -99,7 +99,7 @@ public class SynCandidateService extends AbstractCudService implements GlobalCon
 		return response;
 	}
 
-	private WordLexemeMeaningIdTuple handleSynCandidateWord(String synCandidateDatasetCode, SynCandidateWord synCandidateWord) throws Exception {
+	private WordLexemeMeaningIdTuple handleSynCandidateWord(String synCandidateDatasetCode, SynCandidateWord synCandidateWord, String roleDatasetCode) throws Exception {
 
 		String synCandidateWordValue = synCandidateWord.getValue();
 		String synCandidateWordLang = synCandidateWord.getLang();
@@ -107,26 +107,26 @@ public class SynCandidateService extends AbstractCudService implements GlobalCon
 		List<TextWithSource> synDefinitions = synCandidateWord.getDefinitions();
 		List<TextWithSource> synUsages = synCandidateWord.getUsages();
 
-		WordLexemeMeaningIdTuple synCandidateWordLexemeMeaningId = createSynCandidateWordAndLexemeAndMeaning(synCandidateWordValue, synCandidateWordLang, synCandidateDatasetCode);
+		WordLexemeMeaningIdTuple synCandidateWordLexemeMeaningId = createSynCandidateWordAndLexemeAndMeaning(synCandidateWordValue, synCandidateWordLang, synCandidateDatasetCode, roleDatasetCode);
 
 		Long synCandidateLexemeId = synCandidateWordLexemeMeaningId.getLexemeId();
 		Long synCandidateMeaningId = synCandidateWordLexemeMeaningId.getMeaningId();
 
 		if (CollectionUtils.isNotEmpty(synPosCodes)) {
 			for (String posCode : synPosCodes) {
-				createLexemePos(synCandidateLexemeId, posCode, MANUAL_EVENT_ON_UPDATE_DISABLED);
+				createLexemePos(synCandidateLexemeId, posCode, roleDatasetCode, MANUAL_EVENT_ON_UPDATE_DISABLED);
 			}
 		}
 		if (CollectionUtils.isNotEmpty(synUsages)) {
 			for (TextWithSource usage : synUsages) {
 				String usageValue = usage.getValue();
 				List<SourceLink> usageSourceLinks = usage.getSourceLinks();
-				Long usageId = createUsage(synCandidateLexemeId, usageValue, synCandidateWordLang, Complexity.DETAIL, PUBLICITY_PRIVATE, MANUAL_EVENT_ON_UPDATE_DISABLED);
+				Long usageId = createUsage(synCandidateLexemeId, usageValue, synCandidateWordLang, Complexity.DETAIL, PUBLICITY_PRIVATE, roleDatasetCode, MANUAL_EVENT_ON_UPDATE_DISABLED);
 				if (CollectionUtils.isNotEmpty(usageSourceLinks)) {
 					for (SourceLink usageSourceLink : usageSourceLinks) {
 						Long sourceId = usageSourceLink.getSourceId();
 						String sourceLinkValue = usageSourceLink.getValue();
-						createUsageSourceLink(usageId, sourceId, synCandidateLexemeId, sourceLinkValue);
+						createUsageSourceLink(usageId, sourceId, synCandidateLexemeId, sourceLinkValue, roleDatasetCode);
 					}
 				}
 			}
@@ -137,12 +137,12 @@ public class SynCandidateService extends AbstractCudService implements GlobalCon
 				List<SourceLink> definitionSourceLinks = definition.getSourceLinks();
 				Long definitionId = createDefinition(
 						synCandidateMeaningId, definitionValue, synCandidateWordLang, synCandidateDatasetCode, Complexity.DETAIL,
-						DEFINITION_TYPE_CODE_UNDEFINED, PUBLICITY_PRIVATE, MANUAL_EVENT_ON_UPDATE_DISABLED);
+						DEFINITION_TYPE_CODE_UNDEFINED, PUBLICITY_PRIVATE, roleDatasetCode, MANUAL_EVENT_ON_UPDATE_DISABLED);
 				if (CollectionUtils.isNotEmpty(definitionSourceLinks)) {
 					for (SourceLink definitionSourceLink : definitionSourceLinks) {
 						Long sourceId = definitionSourceLink.getSourceId();
 						String sourceLinkValue = definitionSourceLink.getValue();
-						createDefinitionSourceLink(definitionId, sourceId, synCandidateMeaningId, sourceLinkValue);
+						createDefinitionSourceLink(definitionId, sourceId, synCandidateMeaningId, sourceLinkValue, roleDatasetCode);
 					}
 				}
 			}
@@ -151,7 +151,7 @@ public class SynCandidateService extends AbstractCudService implements GlobalCon
 		return synCandidateWordLexemeMeaningId;
 	}
 
-	private WordLexemeMeaningIdTuple createSynCandidateWordAndLexemeAndMeaning(String value, String lang, String datasetCode) throws Exception {
+	private WordLexemeMeaningIdTuple createSynCandidateWordAndLexemeAndMeaning(String value, String lang, String datasetCode, String roleDatasetCode) throws Exception {
 
 		value = textDecorationService.removeEkiElementMarkup(value);
 		String cleanValue = textDecorationService.unifyToApostrophe(value);
@@ -166,9 +166,9 @@ public class SynCandidateService extends AbstractCudService implements GlobalCon
 		Long meaningId = wordLexemeMeaningId.getMeaningId();
 		boolean isManualEventOnUpdateEnabled = MANUAL_EVENT_ON_UPDATE_DISABLED;
 		tagDbService.createLexemeAutomaticTags(lexemeId);
-		activityLogService.createActivityLog("createSynCandidateWordAndLexemeAndMeaning", wordId, ActivityOwner.WORD, isManualEventOnUpdateEnabled);
-		activityLogService.createActivityLog("createSynCandidateWordAndLexemeAndMeaning", lexemeId, ActivityOwner.LEXEME, isManualEventOnUpdateEnabled);
-		activityLogService.createActivityLog("createSynCandidateWordAndLexemeAndMeaning", meaningId, ActivityOwner.MEANING, isManualEventOnUpdateEnabled);
+		activityLogService.createActivityLog("createSynCandidateWordAndLexemeAndMeaning", wordId, ActivityOwner.WORD, roleDatasetCode, isManualEventOnUpdateEnabled);
+		activityLogService.createActivityLog("createSynCandidateWordAndLexemeAndMeaning", lexemeId, ActivityOwner.LEXEME, roleDatasetCode, isManualEventOnUpdateEnabled);
+		activityLogService.createActivityLog("createSynCandidateWordAndLexemeAndMeaning", meaningId, ActivityOwner.MEANING, roleDatasetCode, isManualEventOnUpdateEnabled);
 
 		return wordLexemeMeaningId;
 	}
@@ -180,18 +180,18 @@ public class SynCandidateService extends AbstractCudService implements GlobalCon
 		cudDbService.createWordRelationParam(createdRelationId, WORD_RELATION_PARAM_NAME_SYN_CANDIDATE, weight);
 	}
 
-	private void createUsageSourceLink(Long usageId, Long sourceId, Long lexemeId, String sourceLinkValue) throws Exception {
+	private void createUsageSourceLink(Long usageId, Long sourceId, Long lexemeId, String sourceLinkValue, String roleDatasetCode) throws Exception {
 
-		ActivityLogData activityLog = activityLogService.prepareActivityLog("createUsageSourceLink", lexemeId, ActivityOwner.LEXEME, MANUAL_EVENT_ON_UPDATE_DISABLED);
+		ActivityLogData activityLog = activityLogService.prepareActivityLog("createUsageSourceLink", lexemeId, ActivityOwner.LEXEME, roleDatasetCode, MANUAL_EVENT_ON_UPDATE_DISABLED);
 		ReferenceType refType = ReferenceType.ANY;
 		String sourceLinkName = null;
 		Long sourceLinkId = sourceLinkDbService.createFreeformSourceLink(usageId, sourceId, refType, sourceLinkValue, sourceLinkName);
 		activityLogService.createActivityLog(activityLog, sourceLinkId, ActivityEntity.USAGE_SOURCE_LINK);
 	}
 
-	private void createDefinitionSourceLink(Long definitionId, Long sourceId, Long meaningId, String sourceLinkValue) throws Exception {
+	private void createDefinitionSourceLink(Long definitionId, Long sourceId, Long meaningId, String sourceLinkValue, String roleDatasetCode) throws Exception {
 
-		ActivityLogData activityLog = activityLogService.prepareActivityLog("createDefinitionSourceLink", meaningId, ActivityOwner.MEANING, MANUAL_EVENT_ON_UPDATE_DISABLED);
+		ActivityLogData activityLog = activityLogService.prepareActivityLog("createDefinitionSourceLink", meaningId, ActivityOwner.MEANING, roleDatasetCode, MANUAL_EVENT_ON_UPDATE_DISABLED);
 		ReferenceType refType = ReferenceType.ANY;
 		String sourceLinkName = null;
 		Long sourceLinkId = sourceLinkDbService.createDefinitionSourceLink(definitionId, sourceId, refType, sourceLinkValue, sourceLinkName);

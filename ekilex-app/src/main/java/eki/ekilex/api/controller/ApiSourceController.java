@@ -79,7 +79,7 @@ public class ApiSourceController extends AbstractApiController {
 		});
 
 		try {
-			Long sourceId = sourceService.createSource(sourceType, completeSourceProperties, MANUAL_EVENT_ON_UPDATE_DISABLED);
+			Long sourceId = sourceService.createSource(sourceType, completeSourceProperties, null, MANUAL_EVENT_ON_UPDATE_DISABLED);
 			return getOpSuccessResponse(sourceId);
 		} catch (Exception e) {
 			return getOpFailResponse(e);
@@ -96,7 +96,7 @@ public class ApiSourceController extends AbstractApiController {
 			@RequestParam("sourceType") SourceType sourceType) {
 
 		try {
-			sourceService.updateSource(sourceId, sourceType);
+			sourceService.updateSource(sourceId, sourceType, crudRoleDataset);
 			return getOpSuccessResponse();
 		} catch (Exception e) {
 			return getOpFailResponse(e);
@@ -116,7 +116,7 @@ public class ApiSourceController extends AbstractApiController {
 			if (!isValidForDeletion) {
 				return getOpFailResponse("Cannot delete, source in use");
 			}
-			sourceService.deleteSource(sourceId);
+			sourceService.deleteSource(sourceId, crudRoleDataset);
 			return getOpSuccessResponse();
 		} catch (Exception e) {
 			return getOpFailResponse(e);
@@ -133,7 +133,7 @@ public class ApiSourceController extends AbstractApiController {
 			@RequestParam("sourceId2") Long sourceId2) {
 
 		try {
-			sourceService.joinSources(sourceId1, sourceId2);
+			sourceService.joinSources(sourceId1, sourceId2, crudRoleDataset);
 			return getOpSuccessResponse();
 		} catch (Exception e) {
 			return getOpFailResponse(e);
@@ -152,7 +152,7 @@ public class ApiSourceController extends AbstractApiController {
 
 		valueText = valueUtil.trimAndCleanAndRemoveHtmlAndLimit(valueText);
 		try {
-			sourceService.createSourceProperty(sourceId, type, valueText);
+			sourceService.createSourceProperty(sourceId, type, valueText, crudRoleDataset);
 			return getOpSuccessResponse();
 		} catch (Exception e) {
 			return getOpFailResponse(e);
@@ -170,7 +170,7 @@ public class ApiSourceController extends AbstractApiController {
 
 		valueText = valueUtil.trimAndCleanAndRemoveHtmlAndLimit(valueText);
 		try {
-			sourceService.updateSourceProperty(sourcePropertyId, valueText);
+			sourceService.updateSourceProperty(sourcePropertyId, valueText, crudRoleDataset);
 			return getOpSuccessResponse();
 		} catch (Exception e) {
 			return getOpFailResponse(e);
@@ -186,7 +186,7 @@ public class ApiSourceController extends AbstractApiController {
 			@RequestParam("sourcePropertyId") Long sourcePropertyId) {
 
 		try {
-			sourceService.deleteSourceProperty(sourcePropertyId);
+			sourceService.deleteSourceProperty(sourcePropertyId, crudRoleDataset);
 			return getOpSuccessResponse();
 		} catch (Exception e) {
 			return getOpFailResponse(e);

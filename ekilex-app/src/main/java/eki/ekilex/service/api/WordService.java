@@ -58,7 +58,7 @@ public class WordService extends AbstractApiCudService implements GlobalConstant
 	}
 
 	@Transactional
-	public Long saveLexWord(LexWord word) throws Exception {
+	public Long saveLexWord(LexWord word, String roleDatasetCode) throws Exception {
 
 		final String functName = "saveLexWord";
 
@@ -76,9 +76,9 @@ public class WordService extends AbstractApiCudService implements GlobalConstant
 
 		if (wordId == null) {
 			wordId = wordDbService.createWord(word, valueAsWord);
-			activityLogService.createActivityLog(functName, wordId, ActivityOwner.WORD, MANUAL_EVENT_ON_UPDATE_ENABLED);
+			activityLogService.createActivityLog(functName, wordId, ActivityOwner.WORD, roleDatasetCode, MANUAL_EVENT_ON_UPDATE_ENABLED);
 		} else {
-			activityLog = activityLogService.prepareActivityLog(functName, wordId, ActivityOwner.WORD, MANUAL_EVENT_ON_UPDATE_ENABLED);
+			activityLog = activityLogService.prepareActivityLog(functName, wordId, ActivityOwner.WORD, roleDatasetCode, MANUAL_EVENT_ON_UPDATE_ENABLED);
 
 			SimpleWord originalWord = wordDbService.getSimpleWord(wordId);
 			wordDbService.updateWord(word, valueAsWord);
@@ -94,7 +94,7 @@ public class WordService extends AbstractApiCudService implements GlobalConstant
 			List<String> existingWordTypeCodes = lookupDbService.getWordTypeCodes(wordId);
 			for (String wordTypeCode : wordTypeCodes) {
 				if (!existingWordTypeCodes.contains(wordTypeCode)) {
-					activityLog = activityLogService.prepareActivityLog(functName, wordId, ActivityOwner.WORD, MANUAL_EVENT_ON_UPDATE_ENABLED);
+					activityLog = activityLogService.prepareActivityLog(functName, wordId, ActivityOwner.WORD, roleDatasetCode, MANUAL_EVENT_ON_UPDATE_ENABLED);
 					Long wordTypeId = cudDbService.createWordType(wordId, wordTypeCode);
 					activityLogService.createActivityLog(activityLog, wordTypeId, ActivityEntity.WORD_TYPE);
 				}
@@ -123,7 +123,7 @@ public class WordService extends AbstractApiCudService implements GlobalConstant
 					Long wordRelationTargetWordId = wordRelation.getTargetWordId();
 					String relationTypeCode = wordRelation.getRelationTypeCode();
 					String oppositeRelationTypeCode = wordRelation.getOppositeRelationTypeCode();
-					createWordRelation(wordId, wordRelationTargetWordId, relationTypeCode, oppositeRelationTypeCode, MANUAL_EVENT_ON_UPDATE_ENABLED);
+					createWordRelation(wordId, wordRelationTargetWordId, relationTypeCode, oppositeRelationTypeCode, roleDatasetCode, MANUAL_EVENT_ON_UPDATE_ENABLED);
 				}
 			}
 		}
@@ -137,8 +137,8 @@ public class WordService extends AbstractApiCudService implements GlobalConstant
 				Long lexemeId = wordLexemeMeaningId.getLexemeId();
 				Long meaningId = wordLexemeMeaningId.getMeaningId();
 				tagDbService.createLexemeAutomaticTags(lexemeId);
-				activityLogService.createActivityLog(functName, lexemeId, ActivityOwner.LEXEME, MANUAL_EVENT_ON_UPDATE_ENABLED);
-				activityLogService.createActivityLog(functName, meaningId, ActivityOwner.MEANING, MANUAL_EVENT_ON_UPDATE_ENABLED);
+				activityLogService.createActivityLog(functName, lexemeId, ActivityOwner.LEXEME, roleDatasetCode, MANUAL_EVENT_ON_UPDATE_ENABLED);
+				activityLogService.createActivityLog(functName, meaningId, ActivityOwner.MEANING, roleDatasetCode, MANUAL_EVENT_ON_UPDATE_ENABLED);
 			}
 			return wordId;
 		}
@@ -157,8 +157,8 @@ public class WordService extends AbstractApiCudService implements GlobalConstant
 				lexemeId = wordLexemeMeaningId.getLexemeId();
 				meaningId = wordLexemeMeaningId.getMeaningId();
 				tagDbService.createLexemeAutomaticTags(lexemeId);
-				activityLogService.createActivityLog(functName, lexemeId, ActivityOwner.LEXEME, MANUAL_EVENT_ON_UPDATE_ENABLED);
-				activityLogService.createActivityLog(functName, meaningId, ActivityOwner.MEANING, MANUAL_EVENT_ON_UPDATE_ENABLED);
+				activityLogService.createActivityLog(functName, lexemeId, ActivityOwner.LEXEME, roleDatasetCode, MANUAL_EVENT_ON_UPDATE_ENABLED);
+				activityLogService.createActivityLog(functName, meaningId, ActivityOwner.MEANING, roleDatasetCode, MANUAL_EVENT_ON_UPDATE_ENABLED);
 			} else {
 				if (existingMeaningIds.contains(meaningId)) {
 					lexemeId = lookupDbService.getLexemeId(wordId, meaningId);
@@ -166,21 +166,21 @@ public class WordService extends AbstractApiCudService implements GlobalConstant
 					WordLexemeMeaningIdTuple wordLexemeMeaningId = cudDbService.createLexeme(wordId, datasetCode, meaningId, newLexemeLevel1);
 					lexemeId = wordLexemeMeaningId.getLexemeId();
 					tagDbService.createLexemeAutomaticTags(lexemeId);
-					activityLogService.createActivityLog(functName, lexemeId, ActivityOwner.LEXEME, MANUAL_EVENT_ON_UPDATE_ENABLED);
+					activityLogService.createActivityLog(functName, lexemeId, ActivityOwner.LEXEME, roleDatasetCode, MANUAL_EVENT_ON_UPDATE_ENABLED);
 				}
 			}
 
 			if (CollectionUtils.isNotEmpty(definitions)) {
 
 				for (Definition definition : definitions) {
-					createOrUpdateDefinition(definition, meaningId, datasetCode, DEFAULT_COMPLEXITY, functName);
+					createOrUpdateDefinition(definition, meaningId, datasetCode, DEFAULT_COMPLEXITY, functName, roleDatasetCode);
 				}
 			}
 
 			if (CollectionUtils.isNotEmpty(usages)) {
 
 				for (Freeform usage : usages) {
-					createOrUpdateUsage(usage, lexemeId, DEFAULT_USAGE_PUBLICITY, functName);
+					createOrUpdateUsage(usage, lexemeId, DEFAULT_USAGE_PUBLICITY, functName, roleDatasetCode);
 				}
 			}
 		}

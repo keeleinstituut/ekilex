@@ -180,6 +180,7 @@ public class ActivityLogDbService implements GlobalConstant {
 		return create.insertInto(
 				ACTIVITY_LOG,
 				ACTIVITY_LOG.EVENT_BY,
+				ACTIVITY_LOG.DATASET_CODE,
 				ACTIVITY_LOG.FUNCT_NAME,
 				ACTIVITY_LOG.OWNER_ID,
 				ACTIVITY_LOG.OWNER_NAME,
@@ -191,6 +192,7 @@ public class ActivityLogDbService implements GlobalConstant {
 				ACTIVITY_LOG.CURR_DIFFS)
 				.values(
 						activityLog.getEventBy(),
+						activityLog.getDatasetCode(),
 						activityLog.getFunctName(),
 						activityLog.getOwnerId(),
 						activityLog.getOwnerName().name(),

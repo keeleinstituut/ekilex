@@ -300,9 +300,9 @@ public class ActivityLogService implements SystemConstant, GlobalConstant {
 		throw new IllegalParamException("Unable to locate owner of the freeform");
 	}
 
-	public ActivityLogData prepareActivityLog(String functName, Long ownerId, ActivityOwner ownerName, boolean isManualEventOnUpdateEnabled) throws Exception {
+	public ActivityLogData prepareActivityLog(String functName, Long ownerId, ActivityOwner ownerName, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
 
-		ActivityLogData activityLogData = initCore(functName, ownerId, ownerName, isManualEventOnUpdateEnabled);
+		ActivityLogData activityLogData = initCore(functName, ownerId, ownerName, roleDatasetCode, isManualEventOnUpdateEnabled);
 
 		WordLexemeMeaningIds prevWlmIds;
 		String prevData;
@@ -333,13 +333,13 @@ public class ActivityLogService implements SystemConstant, GlobalConstant {
 		return activityLogData;
 	}
 
-	public void createActivityLog(String functName, Long ownerId, ActivityOwner ownerName, boolean isManualEventOnUpdateEnabled) throws Exception {
+	public void createActivityLog(String functName, Long ownerId, ActivityOwner ownerName, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
 
 		Long entityId = Long.valueOf(ownerId);
 		ActivityEntity entityName = ActivityEntity.valueOf(ownerName.name());
 		ActivityLogData activityLogData;
 		if (StringUtils.startsWith(functName, "delete")) {
-			activityLogData = prepareActivityLog(functName, ownerId, ownerName, isManualEventOnUpdateEnabled);
+			activityLogData = prepareActivityLog(functName, ownerId, ownerName, roleDatasetCode, isManualEventOnUpdateEnabled);
 			activityLogData.setEntityId(entityId);
 			activityLogData.setEntityName(entityName);
 			activityLogData.setCurrData(EMPTY_CONTENT_JSON);
@@ -354,7 +354,7 @@ public class ActivityLogService implements SystemConstant, GlobalConstant {
 				handleSourceActivityLog(activityLogData);
 			}
 		} else {
-			activityLogData = initCore(functName, ownerId, ownerName, isManualEventOnUpdateEnabled);
+			activityLogData = initCore(functName, ownerId, ownerName, roleDatasetCode, isManualEventOnUpdateEnabled);
 			activityLogData.setPrevData(EMPTY_CONTENT_JSON);
 			activityLogData.setPrevWlmIds(new WordLexemeMeaningIds());
 			createActivityLog(activityLogData, entityId, entityName);
@@ -433,10 +433,11 @@ public class ActivityLogService implements SystemConstant, GlobalConstant {
 		}
 	}
 
-	private ActivityLogData initCore(String functName, Long ownerId, ActivityOwner ownerName, boolean isManualEventOnUpdateEnabled) {
+	private ActivityLogData initCore(String functName, Long ownerId, ActivityOwner ownerName, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) {
 		String userName = userContext.getUserName();
 		ActivityLogData activityLogData = new ActivityLogData();
 		activityLogData.setEventBy(userName);
+		activityLogData.setDatasetCode(roleDatasetCode);
 		activityLogData.setFunctName(functName);
 		activityLogData.setOwnerId(ownerId);
 		activityLogData.setOwnerName(ownerName);

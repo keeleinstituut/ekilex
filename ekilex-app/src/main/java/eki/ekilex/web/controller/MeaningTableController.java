@@ -80,9 +80,10 @@ public class MeaningTableController extends AbstractPrivateSearchController {
 
 		boolean isManualEventOnUpdateEnabled = sessionBean.isManualEventOnUpdateEnabled();
 		EkiUser user = userContext.getUser();
+		String roleDatasetCode = getDatasetCodeFromRole();
 		Long meaningId = meaning.getMeaningId();
 
-		meaningTableService.updateTermMeaningTableMeaning(meaning, user, isManualEventOnUpdateEnabled);
+		meaningTableService.updateTermMeaningTableMeaning(meaning, user, roleDatasetCode, isManualEventOnUpdateEnabled);
 		MeaningTableRow meaningTableRow = meaningTableService.getMeaningTableRow(meaningId, user);
 
 		model.addAttribute("meaningTableRow", meaningTableRow);
@@ -98,8 +99,9 @@ public class MeaningTableController extends AbstractPrivateSearchController {
 			RedirectAttributes redirectAttributes) {
 
 		boolean isManualEventOnUpdateEnabled = sessionBean.isManualEventOnUpdateEnabled();
+		String roleDatasetCode = getDatasetCodeFromRole();
 		try {
-			meaningTableService.updateDefinitionsPublicity(definitionIds, isPublic, isManualEventOnUpdateEnabled);
+			meaningTableService.updateDefinitionsPublicity(definitionIds, isPublic, roleDatasetCode, isManualEventOnUpdateEnabled);
 			addRedirectSuccessMessage(redirectAttributes, "term.meaning.table.set.all.public.success");
 		} catch (Exception e) {
 			logger.error("Failed to update definitions publicity", e);
@@ -118,8 +120,9 @@ public class MeaningTableController extends AbstractPrivateSearchController {
 			RedirectAttributes redirectAttributes) {
 
 		boolean isManualEventOnUpdateEnabled = sessionBean.isManualEventOnUpdateEnabled();
+		String roleDatasetCode = getDatasetCodeFromRole();
 		try {
-			meaningTableService.updateLexemesPublicity(lexemeIds, isPublic, isManualEventOnUpdateEnabled);
+			meaningTableService.updateLexemesPublicity(lexemeIds, isPublic, roleDatasetCode, isManualEventOnUpdateEnabled);
 			addRedirectSuccessMessage(redirectAttributes, "term.meaning.table.set.all.public.success");
 		} catch (Exception e) {
 			logger.error("Failed to update lexemes publicity", e);

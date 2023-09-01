@@ -21,10 +21,10 @@ public abstract class AbstractSourceService extends AbstractService {
 	protected SourceLinkDbService sourceLinkDbService;
 
 	@Transactional
-	public Long createSource(SourceType sourceType, List<SourceProperty> sourceProperties, boolean isManualEventOnUpdateEnabled) throws Exception {
+	public Long createSource(SourceType sourceType, List<SourceProperty> sourceProperties, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
 
 		Long sourceId = sourceDbService.createSource(sourceType, sourceProperties);
-		activityLogService.createActivityLog("createSource", sourceId, ActivityOwner.SOURCE, isManualEventOnUpdateEnabled);
+		activityLogService.createActivityLog("createSource", sourceId, ActivityOwner.SOURCE, roleDatasetCode, isManualEventOnUpdateEnabled);
 		return sourceId;
 	}
 

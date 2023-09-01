@@ -52,10 +52,10 @@ public class ActivityLogTest extends AbstractTest implements GlobalConstant {
 
 		final Long ownerId = 123456L;
 
-		activityLogService.createActivityLog("dummy", ownerId, ActivityOwner.LEXEME, MANUAL_EVENT_ON_UPDATE_DISABLED);
-		activityLogService.createActivityLog("dummy", ownerId, ActivityOwner.WORD, MANUAL_EVENT_ON_UPDATE_DISABLED);
-		activityLogService.createActivityLog("dummy", ownerId, ActivityOwner.MEANING, MANUAL_EVENT_ON_UPDATE_DISABLED);
-		activityLogService.createActivityLog("dummy", ownerId, ActivityOwner.SOURCE, MANUAL_EVENT_ON_UPDATE_DISABLED);
+		activityLogService.createActivityLog("dummy", ownerId, ActivityOwner.LEXEME, null, MANUAL_EVENT_ON_UPDATE_DISABLED);
+		activityLogService.createActivityLog("dummy", ownerId, ActivityOwner.WORD, null, MANUAL_EVENT_ON_UPDATE_DISABLED);
+		activityLogService.createActivityLog("dummy", ownerId, ActivityOwner.MEANING, null, MANUAL_EVENT_ON_UPDATE_DISABLED);
+		activityLogService.createActivityLog("dummy", ownerId, ActivityOwner.SOURCE, null, MANUAL_EVENT_ON_UPDATE_DISABLED);
 	}
 
 	@Test
@@ -78,7 +78,7 @@ public class ActivityLogTest extends AbstractTest implements GlobalConstant {
 		String originalLang = "est";
 		String modifiedLang = "eng";
 
-		activityLog = activityLogService.prepareActivityLog(functName, ownerId, ownerName, MANUAL_EVENT_ON_UPDATE_DISABLED);
+		activityLog = activityLogService.prepareActivityLog(functName, ownerId, ownerName, null, MANUAL_EVENT_ON_UPDATE_DISABLED);
 		cudDbService.updateWordLang(wordId, modifiedLang);
 		activityLogService.createActivityLog(activityLog, entityId, entityName);
 
@@ -96,7 +96,7 @@ public class ActivityLogTest extends AbstractTest implements GlobalConstant {
 		entityName = ActivityEntity.WORD_TYPE;
 		modifiedWordTypeCode = "vv";
 
-		activityLog = activityLogService.prepareActivityLog(functName, ownerId, ownerName, MANUAL_EVENT_ON_UPDATE_DISABLED);
+		activityLog = activityLogService.prepareActivityLog(functName, ownerId, ownerName, null, MANUAL_EVENT_ON_UPDATE_DISABLED);
 		entityId = cudDbService.createWordType(wordId, modifiedWordTypeCode);
 		activityLogService.createActivityLog(activityLog, entityId, entityName);
 
@@ -112,7 +112,7 @@ public class ActivityLogTest extends AbstractTest implements GlobalConstant {
 		entityName = ActivityEntity.WORD_TYPE;
 		modifiedWordTypeCode = "rs";
 
-		activityLog = activityLogService.prepareActivityLog(functName, ownerId, ownerName, MANUAL_EVENT_ON_UPDATE_DISABLED);
+		activityLog = activityLogService.prepareActivityLog(functName, ownerId, ownerName, null, MANUAL_EVENT_ON_UPDATE_DISABLED);
 		entityId = cudDbService.createWordType(wordId, modifiedWordTypeCode);
 		activityLogService.createActivityLog(activityLog, entityId, entityName);
 
@@ -125,7 +125,7 @@ public class ActivityLogTest extends AbstractTest implements GlobalConstant {
 		entityId = Long.valueOf(10001L);
 		entityName = ActivityEntity.WORD_TYPE;
 
-		activityLog = activityLogService.prepareActivityLog(functName, ownerId, ownerName, MANUAL_EVENT_ON_UPDATE_DISABLED);
+		activityLog = activityLogService.prepareActivityLog(functName, ownerId, ownerName, null, MANUAL_EVENT_ON_UPDATE_DISABLED);
 		cudDbService.deleteWordWordType(entityId);
 		activityLogService.createActivityLog(activityLog, entityId, entityName);
 

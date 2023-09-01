@@ -114,6 +114,12 @@ public interface WebConstant {
 
 	String WW_FEEDBACK_PAGE = "wwfeedback";
 
+	String WORKLOAD_REPORT_URI = "/workloadreport";
+
+	String WORKLOAD_REPORT_PAGE = "workloadreport";
+
+	String WORKLOAD_REPORT_COMPONENTS_PAGE = "workloadreportcomp";
+
 	String LIM_TERM_SEARCH_URI = "/limtermsearch";
 
 	String LIM_TERM_SEARCH_PAGE = "limtermsearch";

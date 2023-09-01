@@ -1,5 +1,3 @@
--- recreate types and views
-
 -- Kasutusnäidete allikaviidete puuduvate väärtuste taastamine
 update freeform_source_link ffsl
 set value = s.source_name
@@ -170,3 +168,9 @@ where not exists (select pf.id
                   where pf.form_id = f.id);
 
 alter table form drop column paradigm_id, drop column order_by;
+
+-- Töömahu raporti jaoks logimise täiendamine
+alter table activity_log add column dataset_code varchar(10) references dataset(code) null;
+create index activity_log_dataset_code_idx on activity_log(dataset_code);
+
+-- Loo uuesti ekilexi tüübid (types) ja vaated (views)

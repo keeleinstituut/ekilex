@@ -158,7 +158,8 @@ public class LexEditController extends AbstractPrivatePageController {
 			@ModelAttribute(name = SESSION_BEAN) SessionBean sessionBean) throws Exception {
 
 		boolean isManualEventOnUpdateEnabled = sessionBean.isManualEventOnUpdateEnabled();
-		compositionService.joinLexemes(targetLexemeId, sourceLexemeIds, isManualEventOnUpdateEnabled);
+		String roleDatasetCode = getDatasetCodeFromRole();
+		compositionService.joinLexemes(targetLexemeId, sourceLexemeIds, roleDatasetCode, isManualEventOnUpdateEnabled);
 		SimpleWord lexemeSimpleWord = lookupService.getLexemeSimpleWord(targetLexemeId);
 		String lexemeWordValue = lexemeSimpleWord.getWordValue();
 		Long lexemeWordId = lexemeSimpleWord.getWordId();
@@ -174,9 +175,10 @@ public class LexEditController extends AbstractPrivatePageController {
 
 		Locale locale = LocaleContextHolder.getLocale();
 		boolean isManualEventOnUpdateEnabled = sessionBean.isManualEventOnUpdateEnabled();
+		String roleDatasetCode = getDatasetCodeFromRole();
 		List<Long> clonedLexemeIds = new ArrayList<>();
 		try {
-			clonedLexemeIds = compositionService.duplicateLexemeAndMeaningWithSameDatasetLexemes(lexemeId, isManualEventOnUpdateEnabled);
+			clonedLexemeIds = compositionService.duplicateLexemeAndMeaningWithSameDatasetLexemes(lexemeId, roleDatasetCode, isManualEventOnUpdateEnabled);
 		} catch (Exception ignore) {
 			logger.error("", ignore);
 		}
@@ -200,7 +202,8 @@ public class LexEditController extends AbstractPrivatePageController {
 
 		Locale locale = LocaleContextHolder.getLocale();
 		boolean isManualEventOnUpdateEnabled = sessionBean.isManualEventOnUpdateEnabled();
-		compositionService.duplicateEmptyLexemeAndMeaning(lexemeId, isManualEventOnUpdateEnabled);
+		String roleDatasetCode = getDatasetCodeFromRole();
+		compositionService.duplicateEmptyLexemeAndMeaning(lexemeId, roleDatasetCode, isManualEventOnUpdateEnabled);
 
 		String message = messageSource.getMessage("lex.duplicate.meaning", new Object[0], locale);
 		Response response = new Response();
@@ -214,7 +217,8 @@ public class LexEditController extends AbstractPrivatePageController {
 	public String duplicateMeaningWordAndLexeme(@PathVariable("lexemeId") Long lexemeId, @ModelAttribute(name = SESSION_BEAN) SessionBean sessionBean) throws Exception {
 
 		boolean isManualEventOnUpdateEnabled = sessionBean.isManualEventOnUpdateEnabled();
-		compositionService.duplicateLexemeAndWord(lexemeId, isManualEventOnUpdateEnabled);
+		String roleDatasetCode = getDatasetCodeFromRole();
+		compositionService.duplicateLexemeAndWord(lexemeId, roleDatasetCode, isManualEventOnUpdateEnabled);
 		return RESPONSE_OK_VER1;
 	}
 
@@ -245,7 +249,8 @@ public class LexEditController extends AbstractPrivatePageController {
 			@ModelAttribute(name = SESSION_BEAN) SessionBean sessionBean) throws Exception {
 
 		boolean isManualEventOnUpdateEnabled = sessionBean.isManualEventOnUpdateEnabled();
-		Long joinedWordId = compositionService.joinWords(targetWordId, sourceWordIds, isManualEventOnUpdateEnabled);
+		String roleDatasetCode = getDatasetCodeFromRole();
+		Long joinedWordId = compositionService.joinWords(targetWordId, sourceWordIds, roleDatasetCode, isManualEventOnUpdateEnabled);
 		return "redirect:" + WORD_BACK_URI + "/" + joinedWordId;
 	}
 
@@ -255,6 +260,7 @@ public class LexEditController extends AbstractPrivatePageController {
 			@ModelAttribute(name = SESSION_BEAN) SessionBean sessionBean,
 			RedirectAttributes attributes) throws Exception {
 
+		String roleDatasetCode = getDatasetCodeFromRole();
 		valueUtil.trimAndCleanAndRemoveHtml(wordDetails);
 
 		String wordValue = wordDetails.getWordValue();
@@ -270,7 +276,7 @@ public class LexEditController extends AbstractPrivatePageController {
 			int wordCount = lexSearchService.countWords(wordValue, allDatasets);
 			if (wordCount == 0) {
 				boolean isManualEventOnUpdateEnabled = sessionBean.isManualEventOnUpdateEnabled();
-				WordLexemeMeaningIdTuple wordLexemeMeaningId = cudService.createWord(wordDetails, isManualEventOnUpdateEnabled);
+				WordLexemeMeaningIdTuple wordLexemeMeaningId = cudService.createWord(wordDetails, roleDatasetCode, isManualEventOnUpdateEnabled);
 				wordId = wordLexemeMeaningId.getWordId();
 			} else {
 				attributes.addFlashAttribute("wordDetails", wordDetails);
@@ -294,6 +300,7 @@ public class LexEditController extends AbstractPrivatePageController {
 			WordLexemeMeaningDetails wordDetails,
 			@ModelAttribute(name = SESSION_BEAN) SessionBean sessionBean) throws Exception {
 
+		String roleDatasetCode = getDatasetCodeFromRole();
 		valueUtil.trimAndCleanAndRemoveHtml(wordDetails);
 
 		String wordValue = wordDetails.getWordValue();
@@ -301,7 +308,7 @@ public class LexEditController extends AbstractPrivatePageController {
 		if (StringUtils.isNotBlank(wordValue)) {
 			String dataset = wordDetails.getDataset();
 			boolean isManualEventOnUpdateEnabled = sessionBean.isManualEventOnUpdateEnabled();
-			WordLexemeMeaningIdTuple wordLexemeMeaningId = cudService.createWord(wordDetails, isManualEventOnUpdateEnabled);
+			WordLexemeMeaningIdTuple wordLexemeMeaningId = cudService.createWord(wordDetails, roleDatasetCode, isManualEventOnUpdateEnabled);
 			Long wordId = wordLexemeMeaningId.getWordId();
 			List<String> selectedDatasets = getUserPreferredDatasetCodes();
 			if (!selectedDatasets.contains(dataset)) {
@@ -344,8 +351,9 @@ public class LexEditController extends AbstractPrivatePageController {
 			@ModelAttribute(name = SESSION_BEAN) SessionBean sessionBean) throws Exception {
 
 		boolean isManualEventOnUpdateEnabled = sessionBean.isManualEventOnUpdateEnabled();
+		String roleDatasetCode = getDatasetCodeFromRole();
 		Long meaningId = NumberUtils.isDigits(meaningIdCode) ? NumberUtils.toLong(meaningIdCode) : null;
-		cudService.createLexeme(wordId, dataset, meaningId, isManualEventOnUpdateEnabled);
+		cudService.createLexeme(wordId, dataset, meaningId, roleDatasetCode, isManualEventOnUpdateEnabled);
 		Word word = lexSearchService.getWord(wordId);
 		String wordValue = word.getWordValue();
 		List<String> selectedDatasets = getUserPreferredDatasetCodes();

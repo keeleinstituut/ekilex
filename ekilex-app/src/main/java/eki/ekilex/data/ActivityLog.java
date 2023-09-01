@@ -17,6 +17,8 @@ public class ActivityLog extends AbstractDataObject {
 
 	private Timestamp eventOn;
 
+	private String datasetCode;
+
 	private String functName;
 
 	private Long ownerId;
@@ -59,6 +61,14 @@ public class ActivityLog extends AbstractDataObject {
 
 	public void setEventOn(Timestamp eventOn) {
 		this.eventOn = eventOn;
+	}
+
+	public String getDatasetCode() {
+		return datasetCode;
+	}
+
+	public void setDatasetCode(String datasetCode) {
+		this.datasetCode = datasetCode;
 	}
 
 	public String getFunctName() {

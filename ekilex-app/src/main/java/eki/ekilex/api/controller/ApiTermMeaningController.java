@@ -50,7 +50,7 @@ public class ApiTermMeaningController extends AbstractApiController {
 			if (CollectionUtils.isEmpty(termMeaning.getWords())) {
 				return getOpFailResponse("Missing words");
 			}
-			Long meaningId = termMeaningService.saveTermMeaning(termMeaning);
+			Long meaningId = termMeaningService.saveTermMeaning(termMeaning, crudRoleDataset);
 			return getOpSuccessResponse(meaningId);
 		} catch (Exception e) {
 			return getOpFailResponse(e);

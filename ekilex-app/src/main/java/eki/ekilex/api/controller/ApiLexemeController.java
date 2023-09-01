@@ -32,7 +32,7 @@ public class ApiLexemeController extends AbstractApiController {
 		try {
 			Long lexemeId = lexemePos.getLexemeId();
 			String posCode = lexemePos.getClassifierCode();
-			cudService.createLexemePos(lexemeId, posCode, MANUAL_EVENT_ON_UPDATE_ENABLED);
+			cudService.createLexemePos(lexemeId, posCode, crudRoleDataset, MANUAL_EVENT_ON_UPDATE_ENABLED);
 			return getOpSuccessResponse();
 		} catch (Exception e) {
 			return getOpFailResponse(e);
@@ -50,7 +50,7 @@ public class ApiLexemeController extends AbstractApiController {
 		try {
 			Long lexemeId = lexemePos.getLexemeId();
 			String posCode = lexemePos.getClassifierCode();
-			cudService.deleteLexemePos(lexemeId, posCode, MANUAL_EVENT_ON_UPDATE_ENABLED);
+			cudService.deleteLexemePos(lexemeId, posCode, crudRoleDataset, MANUAL_EVENT_ON_UPDATE_ENABLED);
 			return getOpSuccessResponse();
 		} catch (Exception e) {
 			return getOpFailResponse(e);
