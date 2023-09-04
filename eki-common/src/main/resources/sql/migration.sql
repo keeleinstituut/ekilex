@@ -173,4 +173,18 @@ alter table form drop column paradigm_id, drop column order_by;
 alter table activity_log add column dataset_code varchar(10) references dataset(code) null;
 create index activity_log_dataset_code_idx on activity_log(dataset_code);
 
+-- word_relation_param rikutud andmete taastamine
+delete
+from word_relation_param wrp1
+where exists (select wrp2.id
+              from word_relation_param wrp2
+              where wrp1.id = wrp2.id
+                and wrp1.word_relation_id = wrp2.word_relation_id
+                and wrp1.name = wrp2.name
+                and wrp1.value = wrp2.value
+                and wrp1.ctid > wrp2.ctid);
+
+alter table word_relation_param add constraint word_relation_param_pkey primary key (id);
+alter table word_relation_param add constraint word_relation_param_word_relation_id_name_key unique (word_relation_id, name);
+
 -- Loo uuesti ekilexi tüübid (types) ja vaated (views)

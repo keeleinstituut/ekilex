@@ -20,20 +20,6 @@ drop materialized view if exists mview_ww_definition_source_link;
 
 drop type if exists type_lang_complexity;
 
--- TODO following types are no longer in use. delete drop scripts later:
-drop type if exists type_meaning_word;
-drop type if exists type_freeform;
-drop type if exists type_definition;
-drop type if exists type_domain;
-drop type if exists type_media_file;
-drop type if exists type_usage;
-drop type if exists type_source_link;
-drop type if exists type_colloc_member;
-drop type if exists type_word_etym_relation;
-drop type if exists type_word_relation;
-drop type if exists type_lexeme_relation;
-drop type if exists type_meaning_relation;
-
 -- run this once:
 -- create extension dblink;
 -- SELECT dblink_connect('host=localhost user=ekilex password=3kil3x dbname=ekilex');

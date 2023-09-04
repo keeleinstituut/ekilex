@@ -4,10 +4,13 @@
 package eki.ekilex.data.db.tables;
 
 
+import eki.ekilex.data.db.Keys;
 import eki.ekilex.data.db.Public;
 import eki.ekilex.data.db.tables.records.WordRelationParamRecord;
 
 import java.math.BigDecimal;
+import java.util.Arrays;
+import java.util.List;
 
 import org.jooq.Field;
 import org.jooq.ForeignKey;
@@ -19,6 +22,7 @@ import org.jooq.Schema;
 import org.jooq.Table;
 import org.jooq.TableField;
 import org.jooq.TableOptions;
+import org.jooq.UniqueKey;
 import org.jooq.impl.DSL;
 import org.jooq.impl.SQLDataType;
 import org.jooq.impl.TableImpl;
@@ -106,6 +110,16 @@ public class WordRelationParam extends TableImpl<WordRelationParamRecord> {
     @Override
     public Identity<WordRelationParamRecord, Long> getIdentity() {
         return (Identity<WordRelationParamRecord, Long>) super.getIdentity();
+    }
+
+    @Override
+    public UniqueKey<WordRelationParamRecord> getPrimaryKey() {
+        return Keys.WORD_RELATION_PARAM_PKEY;
+    }
+
+    @Override
+    public List<UniqueKey<WordRelationParamRecord>> getKeys() {
+        return Arrays.<UniqueKey<WordRelationParamRecord>>asList(Keys.WORD_RELATION_PARAM_PKEY, Keys.WORD_RELATION_PARAM_WORD_RELATION_ID_NAME_KEY);
     }
 
     @Override
