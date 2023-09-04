@@ -43,6 +43,8 @@ public class Word extends AbstractCrudEntity implements DecoratedWordType {
 
 	private boolean foreign;
 
+	private boolean isWordPublic;
+
 	private Boolean lexemesArePublic;
 
 	private List<String> lexemesValueStateLabels;
@@ -193,6 +195,14 @@ public class Word extends AbstractCrudEntity implements DecoratedWordType {
 	@Override
 	public void setSuffixoid(boolean suffixoid) {
 		this.suffixoid = suffixoid;
+	}
+
+	public boolean isWordPublic() {
+		return isWordPublic;
+	}
+
+	public void setWordPublic(boolean wordPublic) {
+		isWordPublic = wordPublic;
 	}
 
 	@Override

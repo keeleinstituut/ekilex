@@ -30,6 +30,9 @@
               <small class="d-flex">
                 <span th:text="${#strings.listJoin(word.datasetCodes, ', ')}"></span>
               </small>
+              <small class="d-flex" th:if="${!word.wordPublic}">
+                <span>Mitteavalik keelend</span>
+              </small>
               <span class="d-flex align-items-start">
                 <small th:if="${not #lists.isEmpty(word.lexemesValueStateLabels)}">
                   <span th:text="${#strings.listJoin(word.lexemesValueStateLabels, ', ')}"></span>

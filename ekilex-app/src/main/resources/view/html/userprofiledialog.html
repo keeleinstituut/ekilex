@@ -136,7 +136,7 @@
               <label class="col-md-auto col-form-label" th:text="#{userprofile.pref.full.syn.candidate.dataset}">Tõlkevastete kandidaatide sõnakogu</label>
               <div class="col-md-12">
                 <select name="fullSynCandidateDatasetCode" class="classifier-select" th:title="#{userprofile.select.pref.full.syn.candidate.dataset}">
-                  <option th:each="dataset : ${userVisibleDatasets}"
+                  <option th:each="dataset : ${userVisibleNonPublicDatasets}"
                           th:value="${dataset.code}"
                           th:text="${dataset.name}"
                           th:selected="${dataset.code == userProfile.preferredFullSynCandidateDatasetCode}">dataset

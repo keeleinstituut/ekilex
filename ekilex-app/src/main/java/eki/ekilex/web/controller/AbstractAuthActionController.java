@@ -130,6 +130,12 @@ public abstract class AbstractAuthActionController implements WebConstant, Syste
 		return permissionService.getUserVisibleDatasets(userId);
 	}
 
+	@ModelAttribute("userVisibleNonPublicDatasets")
+	public List<Dataset> getUserVisibleNonPublicDatasets() {
+		Long userId = userContext.getUserId();
+		return permissionService.userVisibleNonPublicDatasets(userId);
+	}
+
 	@ModelAttribute("datasetsWithOwner")
 	public List<Dataset> getDatasetsWithOwner() {
 		return commonDataService.getVisibleDatasetsWithOwner();

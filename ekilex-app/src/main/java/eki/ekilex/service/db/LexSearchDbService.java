@@ -35,8 +35,8 @@ import org.jooq.Condition;
 import org.jooq.Field;
 import org.jooq.JSON;
 import org.jooq.Param;
-import org.jooq.Record17;
-import org.jooq.Record8;
+import org.jooq.Record18;
+import org.jooq.Record9;
 import org.jooq.Table;
 import org.jooq.impl.DSL;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -385,6 +385,7 @@ public class LexSearchDbService extends AbstractDataDbService {
 						w.DISPLAY_MORPH_CODE,
 						w.MORPHOPHONO_FORM,
 						w.MANUAL_EVENT_ON,
+						w.IS_PUBLIC.as("is_word_public"),
 						wff.as("word_frequency"),
 						wtf.as("word_type_codes"),
 						wtpf.as("prefixoid"),
@@ -608,7 +609,7 @@ public class LexSearchDbService extends AbstractDataDbService {
 				.where(ln.CODE.eq(w1.LANG))
 				.asField();
 
-		Table<Record8<Long, String, String, Integer, String, String, String, Long>> w = DSL
+		Table<Record9<Long, String, String, Integer, String, String, String, Boolean, Long>> w = DSL
 				.select(
 						w1.ID.as("word_id"),
 						w1.VALUE.as("word_value"),
@@ -617,6 +618,7 @@ public class LexSearchDbService extends AbstractDataDbService {
 						w1.LANG,
 						w1.GENDER_CODE,
 						w1.ASPECT_CODE,
+						w1.IS_PUBLIC.as("is_word_public"),
 						lnobf.as("lang_order_by"))
 				.from(w1)
 				.where(where)
@@ -682,7 +684,7 @@ public class LexSearchDbService extends AbstractDataDbService {
 		} else {
 			wvobf = w.field("word_value");
 		}
-		Table<Record17<Long, String, String, Integer, String, String, String, String, String[], Boolean, Boolean, Boolean, Boolean, String[], String[], String[], Timestamp>> ww = DSL
+		Table<Record18<Long, String, String, Integer, String, String, String, String, String, String[], Boolean, Boolean, Boolean, Boolean, String[], String[], String[], Timestamp>> ww = DSL
 				.select(
 						w.field("word_id", Long.class),
 						w.field("word_value", String.class),
@@ -692,6 +694,7 @@ public class LexSearchDbService extends AbstractDataDbService {
 						w.field("word_class", String.class),
 						w.field("gender_code", String.class),
 						w.field("aspect_code", String.class),
+						w.field("is_word_public", String.class),
 						wtf.as("word_type_codes"),
 						wtpf.as("prefixoid"),
 						wtsf.as("suffixoid"),
@@ -705,6 +708,7 @@ public class LexSearchDbService extends AbstractDataDbService {
 				.orderBy(
 						w.field("lang_order_by"),
 						wvobf,
+						w.field("is_word_public").desc(),
 						w.field("homonym_nr"))
 				.asTable("ww");
 

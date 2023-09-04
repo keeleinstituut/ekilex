@@ -95,6 +95,16 @@ public class PermissionService implements SystemConstant, GlobalConstant {
 	}
 
 	@Transactional
+	public List<Dataset> userVisibleNonPublicDatasets(Long userId) {
+		if (userId == null) {
+			return Collections.emptyList();
+		}
+		List<Dataset> datasets = permissionDbService.userVisibleNonPublicDatasets(userId);
+		datasets = datasetUtil.removePlaceholderDataset(datasets);
+		return datasets;
+	}
+
+	@Transactional
 	public List<Classifier> getUserDatasetLanguages(Long userId, String datasetCode) {
 		return permissionDbService.getUserDatasetLanguages(userId, datasetCode, CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
 	}

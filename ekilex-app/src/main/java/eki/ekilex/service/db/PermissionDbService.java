@@ -209,6 +209,32 @@ public class PermissionDbService implements SystemConstant, GlobalConstant, Perm
 				.fetchInto(Dataset.class);
 	}
 
+	public List<Dataset> userVisibleNonPublicDatasets(Long userId) {
+		Condition userIsAdminCond = DSL
+				.exists(DSL
+						.select(EKI_USER.ID)
+						.from(EKI_USER)
+						.where(EKI_USER.ID.eq(userId).and(EKI_USER.IS_ADMIN.isTrue())));
+		Condition userIsMasterCond = DSL
+				.exists(DSL
+						.select(EKI_USER.ID)
+						.from(EKI_USER)
+						.where(EKI_USER.ID.eq(userId).and(EKI_USER.IS_MASTER.isTrue())));
+		Condition datasetPermCond = DSL
+				.exists(DSL
+						.select(DATASET_PERMISSION.ID)
+						.from(DATASET_PERMISSION)
+						.where(DATASET_PERMISSION.DATASET_CODE.eq(DATASET.CODE).and(DATASET_PERMISSION.USER_ID.eq(userId))));
+		return create
+				.select(DATASET.CODE, DATASET.NAME, DATASET.IS_PUBLIC)
+				.from(DATASET)
+				.where(
+						DSL.or(DATASET.IS_VISIBLE.isTrue(), userIsAdminCond, userIsMasterCond, datasetPermCond)
+								.and(DATASET.IS_PUBLIC.isFalse()))
+				.orderBy(DATASET.NAME)
+				.fetchInto(Dataset.class);
+	}
+
 	public List<Dataset> getUserPermDatasets(Long userId) {
 		Condition userIsAdminCond = DSL
 				.exists(DSL

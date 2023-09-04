@@ -187,4 +187,29 @@ where exists (select wrp2.id
 alter table word_relation_param add constraint word_relation_param_pkey primary key (id);
 alter table word_relation_param add constraint word_relation_param_word_relation_id_name_key unique (word_relation_id, name);
 
+-- tõlkevastete vaate kaudu EKI sõnakogusse mitteavalike keelendite loomise piirang ja andmete parandus
+update eki_user_profile
+set preferred_full_syn_candidate_dataset_code = 'ing'
+where preferred_full_syn_candidate_dataset_code = 'eki';
+
+update word w
+set is_public = true,
+    homonym_nr = 1
+where w.is_public is false
+  and w.homonym_nr = 0
+  and exists (select l.id
+              from lexeme l
+              where l.word_id = w.id
+                and l.dataset_code = 'eki'
+                and l.is_public is true);
+
+update lexeme l
+set dataset_code = 'ing'
+where l.is_public is false
+  and l.dataset_code = 'eki'
+  and exists (select w.id
+              from word w
+              where w.id = l.word_id
+                and w.is_public is false);
+
 -- Loo uuesti ekilexi tüübid (types) ja vaated (views)
