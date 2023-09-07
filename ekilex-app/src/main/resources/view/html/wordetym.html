@@ -102,6 +102,116 @@
       </div>
     </div>
 
+    <div>
+      <ul class="etym-tree">
+        <li class="step-block level-1">
+          <button class="btn-add-etym-step">
+            <span class="fa fa-link"></span>
+          </button>
+          <div class="wordetym-card">
+            <div class="wordetym-card__header">
+              <div class="wordetym-card__info">
+                <span th:utext="${wordEtym.lang}" class="lang-abbr"></span>
+                <span th:utext="${wordEtym.word}" class="etym-text"></span>
+                <i th:utext="${wordEtym.comment}"></i>
+              </div>
+            </div>
+          </div>
+  
+          <ul>
+            <li class="step-block level-2">
+              <button class="btn-add-etym-step">
+                <span class="fa fa-link"></span>
+              </button>
+              <div class="wordetym-card">
+                <div class="wordetym-card__header">
+                  <div class="wordetym-card__info">
+                    <span th:utext="${wordEtym.lang}" class="lang-abbr"></span>
+                    <span th:utext="${wordEtym.word}" class="etym-text"></span>
+                    <i th:utext="${wordEtym.comment}"></i>
+                  </div>
+                </div>
+              </div>
+            </li>
+            <li class="step-block level-2">
+              <button class="btn-add-etym-step">
+                <span class="fa fa-link"></span>
+              </button>
+              <div class="wordetym-card">
+                <div class="wordetym-card__header">
+                  <div class="wordetym-card__info">
+                    <span th:utext="${wordEtym.lang}" class="lang-abbr"></span>
+                    <span th:utext="${wordEtym.word}" class="etym-text"></span>
+                    <i th:utext="${wordEtym.comment}"></i>
+                  </div>
+                </div>
+              </div>
+  
+              <ul>
+                <li class="step-block level-3">
+                  <button class="btn-add-etym-step">
+                    <span class="fa fa-link"></span>
+                  </button>
+                  <div class="wordetym-card inactive">
+                    <div class="wordetym-card__header">
+                      <div class="wordetym-card__info">
+                        <span th:utext="${wordEtym.lang}" class="lang-abbr"></span>
+                        <span th:utext="${wordEtym.word}" class="etym-text"></span>
+                        <i th:utext="${wordEtym.comment}"></i>
+                      </div>
+                    </div>
+                  </div>
+                </li>
+              </ul>
+            </li>
+            <li class="step-block level-2">
+              <button class="btn-add-etym-step">
+                <span class="fa fa-link"></span>
+              </button>
+              <div class="wordetym-card">
+                <div class="wordetym-card__header">
+                  <div class="wordetym-card__info">
+                    <span th:utext="${wordEtym.lang}" class="lang-abbr"></span>
+                    <span th:utext="${wordEtym.word}" class="etym-text"></span>
+                    <i th:utext="${wordEtym.comment}"></i>
+                  </div>
+                </div>
+              </div>
+            </li>
+            <li class="step-block level-2">
+              <button class="btn-add-etym-step">
+                <span class="fa fa-link"></span>
+              </button>
+              <div class="wordetym-card">
+                <div class="wordetym-card__header">
+                  <div class="wordetym-card__info">
+                    <span th:utext="${wordEtym.lang}" class="lang-abbr"></span>
+                    <span th:utext="${wordEtym.word}" class="etym-text"></span>
+                    <i th:utext="${wordEtym.comment}"></i>
+                  </div>
+                </div>
+              </div>
+            </li>
+          </ul>
+        </li>
+
+        <li class="step-block level-1">
+          <button class="btn-add-etym-step">
+            <span class="fa fa-link"></span>
+          </button>
+          <div class="wordetym-card">
+            <div class="wordetym-card__header">
+              <div class="wordetym-card__info">
+                <span th:utext="${wordEtym.lang}" class="lang-abbr"></span>
+                <span th:utext="${wordEtym.word}" class="etym-text"></span>
+                <i th:utext="${wordEtym.comment}"></i>
+              </div>
+            </div>
+          </div>
+        </li>
+      </ul>
+    </div>
+    
     <!-- <div>
       <span>Järgmise taseme tulemusi:</span>
       <span th:text="${#lists.size(wordEtym.tree)}"></span>
