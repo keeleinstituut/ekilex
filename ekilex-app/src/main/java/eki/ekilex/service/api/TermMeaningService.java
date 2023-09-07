@@ -66,6 +66,7 @@ public class TermMeaningService extends AbstractApiCudService {
 
 		String userName = userContext.getUserName();
 		Long meaningId = termMeaning.getMeaningId();
+		boolean isMeaningCreate = meaningId == null;
 		String datasetCode = termMeaning.getDatasetCode();
 		List<Definition> definitions = termMeaning.getDefinitions();
 		List<TermWord> words = termMeaning.getWords();
@@ -79,9 +80,8 @@ public class TermMeaningService extends AbstractApiCudService {
 
 		ActivityLogData activityLog;
 
-		if (meaningId == null) {
+		if (isMeaningCreate) {
 			meaningId = cudDbService.createMeaning();
-			activityLogService.createActivityLog(createFunctName, meaningId, ActivityOwner.MEANING, roleDatasetCode, MANUAL_EVENT_ON_UPDATE_ENABLED);
 		}
 
 		if (CollectionUtils.isNotEmpty(definitions)) {
@@ -233,6 +233,10 @@ public class TermMeaningService extends AbstractApiCudService {
 				}
 
 			}
+		}
+
+		if (isMeaningCreate) {
+			activityLogService.createActivityLog(createFunctName, meaningId, ActivityOwner.MEANING, roleDatasetCode, MANUAL_EVENT_ON_UPDATE_ENABLED);
 		}
 
 		if (CollectionUtils.isNotEmpty(domains)) {
