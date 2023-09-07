@@ -1,5 +1,6 @@
 package eki.ekilex.service.db.api;
 
+import static eki.ekilex.data.db.Tables.ACTIVITY_LOG;
 import static eki.ekilex.data.db.Tables.DEFINITION;
 import static eki.ekilex.data.db.Tables.DEFINITION_DATASET;
 import static eki.ekilex.data.db.Tables.DEFINITION_SOURCE_LINK;
@@ -15,6 +16,8 @@ import static eki.ekilex.data.db.Tables.MEANING_FREEFORM;
 import static eki.ekilex.data.db.Tables.WORD;
 import static eki.ekilex.data.db.Tables.WORD_WORD_TYPE;
 
+import java.sql.Timestamp;
+
 import org.jooq.DSLContext;
 import org.jooq.Field;
 import org.jooq.JSON;
@@ -22,8 +25,12 @@ import org.jooq.impl.DSL;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import eki.common.constant.ActivityEntity;
+import eki.common.constant.ActivityFunct;
+import eki.common.constant.ActivityOwner;
 import eki.common.constant.FreeformType;
 import eki.ekilex.data.api.TermMeaning;
+import eki.ekilex.data.db.tables.ActivityLog;
 import eki.ekilex.data.db.tables.Definition;
 import eki.ekilex.data.db.tables.DefinitionDataset;
 import eki.ekilex.data.db.tables.DefinitionSourceLink;
@@ -40,7 +47,7 @@ import eki.ekilex.data.db.tables.Word;
 import eki.ekilex.data.db.tables.WordWordType;
 
 @Component
-public class TermMeaningDbService {
+public class TermMeaningDbService implements ActivityFunct {
 
 	@Autowired
 	private DSLContext create;
@@ -64,6 +71,7 @@ public class TermMeaningDbService {
 		DefinitionSourceLink dsl = DEFINITION_SOURCE_LINK.as("dsl");
 		Freeform ff = FREEFORM.as("ff");
 		FreeformSourceLink ffsl = FREEFORM_SOURCE_LINK.as("ffsl");
+		ActivityLog al = ACTIVITY_LOG.as("al");
 
 		Field<JSON> ffslf = DSL
 				.select(DSL
@@ -72,6 +80,7 @@ public class TermMeaningDbService {
 										DSL.key("sourceLinkId").value(ffsl.ID),
 										DSL.key("sourceId").value(ffsl.SOURCE_ID),
 										DSL.key("value").value(ffsl.VALUE),
+										DSL.key("name").value(ffsl.NAME),
 										DSL.key("type").value(ffsl.TYPE)))
 						.orderBy(ffsl.ORDER_BY))
 				.from(ffsl)
@@ -85,6 +94,7 @@ public class TermMeaningDbService {
 										DSL.key("sourceLinkId").value(dsl.ID),
 										DSL.key("sourceId").value(dsl.SOURCE_ID),
 										DSL.key("value").value(dsl.VALUE),
+										DSL.key("name").value(dsl.NAME),
 										DSL.key("type").value(dsl.TYPE)))
 						.orderBy(dsl.ORDER_BY))
 				.from(dsl)
@@ -98,6 +108,7 @@ public class TermMeaningDbService {
 										DSL.key("sourceLinkId").value(lsl.ID),
 										DSL.key("sourceId").value(lsl.SOURCE_ID),
 										DSL.key("value").value(lsl.VALUE),
+										DSL.key("name").value(lsl.NAME),
 										DSL.key("type").value(lsl.TYPE)))
 						.orderBy(lsl.ORDER_BY))
 				.from(lsl)
@@ -228,15 +239,40 @@ public class TermMeaningDbService {
 				.where(mfor.MEANING_ID.eq(m.ID))
 				.asField();
 
+		Field<Timestamp> fceof = DSL
+				.select(al.EVENT_ON)
+				.from(al)
+				.where(
+						al.OWNER_ID.eq(meaningId)
+								.and(al.OWNER_NAME.eq(ActivityOwner.MEANING.name()))
+								.and(al.ENTITY_NAME.eq(ActivityEntity.MEANING.name()))
+								.and(al.FUNCT_NAME.like(LIKE_CREATE)))
+				.orderBy(al.EVENT_ON)
+				.limit(1)
+				.asField();
+
+		Field<JSON> cidf = DSL
+				.select(DSL
+						.jsonArrayAgg(ff.VALUE_TEXT)
+						.orderBy(ff.ORDER_BY))
+				.from(ff, mff)
+				.where(
+						mff.MEANING_ID.eq(m.ID)
+								.and(mff.FREEFORM_ID.eq(ff.ID))
+								.and(ff.TYPE.eq(FreeformType.CONCEPT_ID.name())))
+				.asField();
 
 		return create
 				.select(
 						m.ID.as("meaning_id"),
+						m.MANUAL_EVENT_ON.as("manual_event_on"),
+						fceof.as("first_create_event_on"),
 						DSL.val(datasetCode).as("dataset_code"),
 						df.as("definitions"),
 						mdf.as("domains"),
 						mnf.as("notes"),
 						mforf.as("forums"),
+						cidf.as("concept_ids"),
 						wf.as("words"))
 				.from(m)
 				.where(m.ID.eq(meaningId))

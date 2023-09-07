@@ -1,6 +1,9 @@
 package eki.ekilex.data.api;
 
+import java.time.LocalDate;
 import java.util.List;
+
+import com.fasterxml.jackson.annotation.JsonFormat;
 
 import eki.common.data.AbstractDataObject;
 
@@ -21,6 +24,14 @@ public class TermMeaning extends AbstractDataObject {
 	private List<Forum> forums;
 
 	private List<TermWord> words;
+
+	private List<String> conceptIds;
+
+	@JsonFormat(pattern = "dd.MM.yyyy")
+	private LocalDate manualEventOn;
+
+	@JsonFormat(pattern = "dd.MM.yyyy")
+	private LocalDate firstCreateEventOn;
 
 	public Long getMeaningId() {
 		return meaningId;
@@ -76,5 +87,29 @@ public class TermMeaning extends AbstractDataObject {
 
 	public void setWords(List<TermWord> words) {
 		this.words = words;
+	}
+
+	public List<String> getConceptIds() {
+		return conceptIds;
+	}
+
+	public void setConceptIds(List<String> conceptIds) {
+		this.conceptIds = conceptIds;
+	}
+
+	public LocalDate getManualEventOn() {
+		return manualEventOn;
+	}
+
+	public void setManualEventOn(LocalDate manualEventOn) {
+		this.manualEventOn = manualEventOn;
+	}
+
+	public LocalDate getFirstCreateEventOn() {
+		return firstCreateEventOn;
+	}
+
+	public void setFirstCreateEventOn(LocalDate firstCreateEventOn) {
+		this.firstCreateEventOn = firstCreateEventOn;
 	}
 }

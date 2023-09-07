@@ -2,6 +2,7 @@ package eki.ekilex.service.db;
 
 import static eki.ekilex.data.db.Tables.DEFINITION;
 import static eki.ekilex.data.db.Tables.FORM;
+import static eki.ekilex.data.db.Tables.FREEFORM;
 import static eki.ekilex.data.db.Tables.LEXEME;
 import static eki.ekilex.data.db.Tables.LEXEME_DERIV;
 import static eki.ekilex.data.db.Tables.LEXEME_POS;
@@ -13,6 +14,7 @@ import static eki.ekilex.data.db.Tables.LEX_REL_MAPPING;
 import static eki.ekilex.data.db.Tables.LEX_REL_TYPE_LABEL;
 import static eki.ekilex.data.db.Tables.MEANING;
 import static eki.ekilex.data.db.Tables.MEANING_DOMAIN;
+import static eki.ekilex.data.db.Tables.MEANING_FREEFORM;
 import static eki.ekilex.data.db.Tables.MEANING_RELATION;
 import static eki.ekilex.data.db.Tables.MEANING_REL_MAPPING;
 import static eki.ekilex.data.db.Tables.MEANING_REL_TYPE_LABEL;
@@ -47,6 +49,7 @@ import org.jooq.util.postgres.PostgresDSL;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import eki.common.constant.FreeformType;
 import eki.ekilex.data.Classifier;
 import eki.ekilex.data.InexactSynonym;
 import eki.ekilex.data.SearchDatasetsRestriction;
@@ -700,6 +703,18 @@ public class LookupDbService extends AbstractDataDbService {
 				.where(MEANING_DOMAIN.MEANING_ID.eq(meaningId)
 						.and(MEANING_DOMAIN.DOMAIN_CODE.eq(domainCode))
 						.and(MEANING_DOMAIN.DOMAIN_ORIGIN.eq(domainOrigin)))
+				.fetchSingleInto(Boolean.class);
+	}
+
+	public boolean meaningFreeformExists(Long meaningId, String freeformValue, FreeformType freeformType) {
+
+		return create
+				.select(DSL.field(DSL.count(FREEFORM.ID).gt(0)).as("meaning_freeform_exists"))
+				.from(MEANING_FREEFORM, FREEFORM)
+				.where(MEANING_FREEFORM.MEANING_ID.eq(meaningId)
+						.and(FREEFORM.ID.eq(MEANING_FREEFORM.FREEFORM_ID))
+						.and(FREEFORM.VALUE_TEXT.eq(freeformValue))
+						.and(FREEFORM.TYPE.eq(freeformType.name())))
 				.fetchSingleInto(Boolean.class);
 	}
 

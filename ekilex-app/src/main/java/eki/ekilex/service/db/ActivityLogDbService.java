@@ -38,6 +38,7 @@ import org.jooq.Condition;
 import org.jooq.DSLContext;
 import org.jooq.Field;
 import org.jooq.JSONB;
+import org.jooq.Record1;
 import org.jooq.Record2;
 import org.jooq.Table;
 import org.jooq.impl.DSL;
@@ -46,6 +47,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
 
 import eki.common.constant.ActivityEntity;
+import eki.common.constant.ActivityFunct;
 import eki.common.constant.ActivityOwner;
 import eki.common.constant.GlobalConstant;
 import eki.common.constant.LastActivityType;
@@ -69,7 +71,7 @@ import eki.ekilex.data.db.tables.WordLastActivityLog;
 import eki.ekilex.data.db.udt.records.TypeActivityLogDiffRecord;
 
 @Component
-public class ActivityLogDbService implements GlobalConstant {
+public class ActivityLogDbService implements GlobalConstant, ActivityFunct {
 
 	@Autowired
 	private DSLContext create;
@@ -398,6 +400,31 @@ public class ActivityLogDbService implements GlobalConstant {
 				.update(MEANING)
 				.set(MEANING.MANUAL_EVENT_ON, eventOn)
 				.where(MEANING.ID.eq(meaningId))
+				.execute();
+	}
+
+	public void updateMeaningFirstCreateEventOn(Long meaningId, Timestamp eventOn) {
+
+		ActivityLog al1 = ACTIVITY_LOG.as("al1");
+		ActivityLog al2 = ACTIVITY_LOG.as("al2");
+
+		Table<Record1<Long>> alt = DSL
+				.select(al2.ID.as("first_al_id"))
+				.from(al2)
+				.where(
+						al2.OWNER_ID.eq(meaningId)
+								.and(al2.OWNER_NAME.eq(ActivityOwner.MEANING.name()))
+								.and(al2.ENTITY_NAME.eq(ActivityEntity.MEANING.name()))
+								.and(al2.FUNCT_NAME.like(LIKE_CREATE)))
+				.orderBy(al2.EVENT_ON)
+				.limit(1)
+				.asTable("alt");
+
+		create
+				.update(al1)
+				.set(al1.EVENT_ON, eventOn)
+				.from(alt)
+				.where(al1.ID.eq(alt.field("first_al_id", Long.class)))
 				.execute();
 	}
 
