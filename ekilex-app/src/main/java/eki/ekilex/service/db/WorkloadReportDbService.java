@@ -7,6 +7,7 @@ import java.time.LocalDate;
 import java.util.List;
 
 import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.jooq.Condition;
 import org.jooq.DSLContext;
 import org.jooq.Record3;
@@ -41,6 +42,7 @@ public class WorkloadReportDbService extends AbstractDbService implements System
 
 		Timestamp from = Timestamp.valueOf(dateFrom.atStartOfDay());
 		Timestamp until = Timestamp.valueOf(dateUntil.plusDays(1).atStartOfDay());
+		String userNamesSimilarCrit = "(" + StringUtils.join(userNames, '|') + ")%";
 
 		Table<Record4<String, String, Long, String>> wl = DSL
 				.select(
@@ -54,7 +56,7 @@ public class WorkloadReportDbService extends AbstractDbService implements System
 				.from(al)
 				.where(
 						al.DATASET_CODE.eq(datasetCode)
-								.and(al.EVENT_BY.in(userNames))
+								.and(al.EVENT_BY.similarTo(userNamesSimilarCrit))
 								.and(al.EVENT_ON.ge(from))
 								.and(al.EVENT_ON.lt(until))
 								.and(al.OWNER_NAME.ne(ActivityOwner.SOURCE.name())))
@@ -62,12 +64,12 @@ public class WorkloadReportDbService extends AbstractDbService implements System
 
 		return create
 				.select(
-						wl.field("user_name"),
 						wl.field("activity_owner"),
 						wl.field("activity_type"),
+						wl.field("user_name"),
 						DSL.countDistinct(wl.field("owner_id")).as("count"))
 				.from(wl)
-				.groupBy(wl.field("user_name"), wl.field("activity_owner"), wl.field("activity_type"))
+				.groupBy(wl.field("activity_owner"), wl.field("activity_type"), wl.field("user_name"))
 				.fetchInto(WorkloadReportCount.class);
 	}
 
@@ -85,7 +87,8 @@ public class WorkloadReportDbService extends AbstractDbService implements System
 						.and(al.OWNER_NAME.ne(ActivityOwner.SOURCE.name()));
 
 		if (CollectionUtils.isNotEmpty(userNames)) {
-			where = where.and(al.EVENT_BY.in(userNames));
+			String userNamesSimilarCrit = "(" + StringUtils.join(userNames, '|') + ")%";
+			where = where.and(al.EVENT_BY.similarTo(userNamesSimilarCrit));
 		}
 
 		Table<Record3<String, Long, String>> wl = DSL
@@ -109,4 +112,41 @@ public class WorkloadReportDbService extends AbstractDbService implements System
 				.groupBy(wl.field("activity_owner"), wl.field("activity_type"))
 				.fetchInto(WorkloadReportCount.class);
 	}
+
+	public List<WorkloadReportCount> getWorkloadReportFunctionCounts(
+			LocalDate dateFrom, LocalDate dateUntil, String datasetCode, List<String> userNames, ActivityOwner activityOwner, CrudType activityType) {
+
+		ActivityLog al = ACTIVITY_LOG.as("al");
+
+		Timestamp from = Timestamp.valueOf(dateFrom.atStartOfDay());
+		Timestamp until = Timestamp.valueOf(dateUntil.plusDays(1).atStartOfDay());
+		String userNamesSimilarCrit = "(" + StringUtils.join(userNames, '|') + ")%";
+
+		Condition where = al.DATASET_CODE.eq(datasetCode)
+				.and(al.EVENT_BY.similarTo(userNamesSimilarCrit))
+				.and(al.EVENT_ON.ge(from))
+				.and(al.EVENT_ON.lt(until))
+				.and(al.OWNER_NAME.eq(activityOwner.name()));
+
+		if (CrudType.CREATE.equals(activityType)) {
+			where = where.and(al.FUNCT_NAME.in(CREATE_FUNCT_NAMES));
+		} else if (CrudType.DELETE.equals(activityType)) {
+			where = where.and(al.FUNCT_NAME.in(DELETE_FUNCT_NAMES));
+		} else if (CrudType.UPDATE.equals(activityType)) {
+			where = where.and(al.FUNCT_NAME.notIn(CREATE_FUNCT_NAMES)).and(al.FUNCT_NAME.notIn(DELETE_FUNCT_NAMES));
+		}
+
+		return create
+				.select(
+						al.FUNCT_NAME,
+						al.OWNER_NAME.as("activity_owner"),
+						al.ENTITY_NAME.as("activity_entity"),
+						al.EVENT_BY.as("user_name"),
+						DSL.countDistinct(al.ENTITY_ID).as("count"))
+				.from(al)
+				.where(where)
+				.groupBy(al.FUNCT_NAME, al.OWNER_NAME, al.ENTITY_NAME, al.EVENT_BY)
+				.fetchInto(WorkloadReportCount.class);
+	}
+
 }

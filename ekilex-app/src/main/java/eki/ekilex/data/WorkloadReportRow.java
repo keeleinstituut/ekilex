@@ -1,108 +1,83 @@
 package eki.ekilex.data;
 
+import java.util.List;
+
+import eki.common.constant.ActivityEntity;
+import eki.common.constant.ActivityOwner;
 import eki.common.data.AbstractDataObject;
+import eki.ekilex.constant.CrudType;
 
 public class WorkloadReportRow extends AbstractDataObject {
 
 	private static final long serialVersionUID = 1L;
 
-	private String userName;
+	private ActivityOwner activityOwner;
 
-	private int createdWordCount;
+	private ActivityEntity activityEntity;
 
-	private int createdLexemeCount;
+	private CrudType activityType;
 
-	private int createdMeaningCount;
+	private String functName;
 
-	private int updatedWordCount;
+	private List<WorkloadReportUserCount> userCounts;
 
-	private int updatedLexemeCount;
+	private int totalCount;
 
-	private int updatedMeaningCount;
+	private List<WorkloadReportRow> functionRows;
 
-	private int deletedWordCount;
-
-	private int deletedLexemeCount;
-
-	private int deletedMeaningCount;
-
-	public String getUserName() {
-		return userName;
+	public ActivityOwner getActivityOwner() {
+		return activityOwner;
 	}
 
-	public void setUserName(String userName) {
-		this.userName = userName;
+	public void setActivityOwner(ActivityOwner activityOwner) {
+		this.activityOwner = activityOwner;
 	}
 
-	public int getCreatedWordCount() {
-		return createdWordCount;
+	public ActivityEntity getActivityEntity() {
+		return activityEntity;
 	}
 
-	public void setCreatedWordCount(int createdWordCount) {
-		this.createdWordCount = createdWordCount;
+	public void setActivityEntity(ActivityEntity activityEntity) {
+		this.activityEntity = activityEntity;
 	}
 
-	public int getCreatedLexemeCount() {
-		return createdLexemeCount;
+	public CrudType getActivityType() {
+		return activityType;
 	}
 
-	public void setCreatedLexemeCount(int createdLexemeCount) {
-		this.createdLexemeCount = createdLexemeCount;
+	public void setActivityType(CrudType activityType) {
+		this.activityType = activityType;
 	}
 
-	public int getCreatedMeaningCount() {
-		return createdMeaningCount;
+	public String getFunctName() {
+		return functName;
 	}
 
-	public void setCreatedMeaningCount(int createdMeaningCount) {
-		this.createdMeaningCount = createdMeaningCount;
+	public void setFunctName(String functName) {
+		this.functName = functName;
 	}
 
-	public int getUpdatedWordCount() {
-		return updatedWordCount;
+	public List<WorkloadReportUserCount> getUserCounts() {
+		return userCounts;
 	}
 
-	public void setUpdatedWordCount(int updatedWordCount) {
-		this.updatedWordCount = updatedWordCount;
+	public void setUserCounts(List<WorkloadReportUserCount> userCounts) {
+		this.userCounts = userCounts;
 	}
 
-	public int getUpdatedLexemeCount() {
-		return updatedLexemeCount;
+	public int getTotalCount() {
+		return totalCount;
 	}
 
-	public void setUpdatedLexemeCount(int updatedLexemeCount) {
-		this.updatedLexemeCount = updatedLexemeCount;
+	public void setTotalCount(int totalCount) {
+		this.totalCount = totalCount;
 	}
 
-	public int getUpdatedMeaningCount() {
-		return updatedMeaningCount;
+	public List<WorkloadReportRow> getFunctionRows() {
+		return functionRows;
 	}
 
-	public void setUpdatedMeaningCount(int updatedMeaningCount) {
-		this.updatedMeaningCount = updatedMeaningCount;
-	}
-
-	public int getDeletedWordCount() {
-		return deletedWordCount;
-	}
-
-	public void setDeletedWordCount(int deletedWordCount) {
-		this.deletedWordCount = deletedWordCount;
-	}
-
-	public int getDeletedLexemeCount() {
-		return deletedLexemeCount;
-	}
-
-	public void setDeletedLexemeCount(int deletedLexemeCount) {
-		this.deletedLexemeCount = deletedLexemeCount;
-	}
-
-	public int getDeletedMeaningCount() {
-		return deletedMeaningCount;
-	}
-
-	public void setDeletedMeaningCount(int deletedMeaningCount) {
-		this.deletedMeaningCount = deletedMeaningCount;
+	public void setFunctionRows(List<WorkloadReportRow> functionRows) {
+		this.functionRows = functionRows;
 	}
 }

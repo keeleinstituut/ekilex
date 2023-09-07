@@ -55,81 +55,38 @@
             <th:block th:if="${workloadReport != null}">
               <table class="table table-striped m-0 p-0 table-hover">
                 <tr>
-                  <th th:text="#{workloadreport.userName}">Muutja</th>
-                  <th th:text="#{workloadreport.createdWordCount}">Lisatud keelendeid</th>
-                  <th th:text="#{workloadreport.createdLexemeCount}">Lisatud ilmikuid</th>
-                  <th th:text="#{workloadreport.createdMeaningCount}">Lisatud mõisteid</th>
-                  <th th:text="#{workloadreport.updatedWordCount}">Muudetud keelendeid</th>
-                  <th th:text="#{workloadreport.updatedLexemeCount}">Muudetud ilmikuid</th>
-                  <th th:text="#{workloadreport.updatedMeaningCount}">Muudetud mõisteid</th>
-                  <th th:text="#{workloadreport.deletedWordCount}">Kustutatud keelendeid</th>
-                  <th th:text="#{workloadreport.deletedLexemeCount}">Kustutatud ilmikuid</th>
-                  <th th:text="#{workloadreport.deletedMeaningCount}">Kustutatud mõisteid</th>
+                  <th></th>
+                  <th:block th:each="userName : ${workloadReport.userNames}">
+                    <th th:text="${userName}"></th>
+                  </th:block>
+                  <th th:text="#{workloadreport.total}">KOKKU:</th>
                 </tr>
-                <th:block th:each="userReport : ${workloadReport.userReports}">
-                  <tr>
+                <th:block th:each="reportRow : ${workloadReport.reportRows}">
+                  <tr class="font-weight-bold">
                     <td>
-                      <span th:text="${userReport.userName}"></span>
+                      <span th:text="#{|workloadreport.owner.type.${reportRow.activityOwner}.${reportRow.activityType}|}"></span>
                     </td>
-                    <td>
-                      <span th:text="${userReport.createdWordCount}"></span>
-                    </td>
-                    <td>
-                      <span th:text="${userReport.createdLexemeCount}"></span>
-                    </td>
-                    <td>
-                      <span th:text="${userReport.createdMeaningCount}"></span>
-                    </td>
-                    <td>
-                      <span th:text="${userReport.updatedWordCount}"></span>
-                    </td>
-                    <td>
-                      <span th:text="${userReport.updatedLexemeCount}"></span>
-                    </td>
-                    <td>
-                      <span th:text="${userReport.updatedMeaningCount}"></span>
-                    </td>
-                    <td>
-                      <span th:text="${userReport.deletedWordCount}"></span>
-                    </td>
-                    <td>
-                      <span th:text="${userReport.deletedLexemeCount}"></span>
-                    </td>
-                    <td>
-                      <span th:text="${userReport.deletedMeaningCount}"></span>
-                    </td>
+                    <th:block th:each="userCount : ${reportRow.userCounts}">
+                      <td>
+                        <span th:text="${userCount.count}"></span>
+                      </td>
+                    </th:block>
+                    <td class="font-weight-bold" th:text="${reportRow.totalCount}"></td>
                   </tr>
+                  <th:block th:each="functionRow : ${reportRow.functionRows}">
+                    <tr class="small">
+                      <td>
+                        <span th:text="${functionRow.functName}"></span>
+                      </td>
+                      <th:block th:each="functionRowUserCount : ${functionRow.userCounts}">
+                        <td>
+                          <span th:text="${functionRowUserCount.count}"></span>
+                        </td>
+                      </th:block>
+                      <td></td>
+                    </tr>
+                  </th:block>
                 </th:block>
-                <tr class="font-weight-bold">
-                  <td th:text="#{workloadreport.total}">KOKKU:</td>
-                  <td>
-                    <span th:text="${workloadReport.totalReport.createdWordCount}"></span>
-                  </td>
-                  <td>
-                    <span th:text="${workloadReport.totalReport.createdLexemeCount}"></span>
-                  </td>
-                  <td>
-                    <span th:text="${workloadReport.totalReport.createdMeaningCount}"></span>
-                  </td>
-                  <td>
-                    <span th:text="${workloadReport.totalReport.updatedWordCount}"></span>
-                  </td>
-                  <td>
-                    <span th:text="${workloadReport.totalReport.updatedLexemeCount}"></span>
-                  </td>
-                  <td>
-                    <span th:text="${workloadReport.totalReport.updatedMeaningCount}"></span>
-                  </td>
-                  <td>
-                    <span th:text="${workloadReport.totalReport.deletedWordCount}"></span>
-                  </td>
-                  <td>
-                    <span th:text="${workloadReport.totalReport.deletedLexemeCount}"></span>
-                  </td>
-                  <td>
-                    <span th:text="${workloadReport.totalReport.deletedMeaningCount}"></span>
-                  </td>
-                </tr>
               </table>
             </th:block>
           </div>

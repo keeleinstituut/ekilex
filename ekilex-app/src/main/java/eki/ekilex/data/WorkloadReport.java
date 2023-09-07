@@ -8,23 +8,23 @@ public class WorkloadReport extends AbstractDataObject {
 
 	private static final long serialVersionUID = 1L;
 
-	private List<WorkloadReportRow> userReports;
+	private List<String> userNames;
 
-	private WorkloadReportRow totalReport;
+	private List<WorkloadReportRow> reportRows;
 
-	public List<WorkloadReportRow> getUserReports() {
-		return userReports;
+	public List<String> getUserNames() {
+		return userNames;
 	}
 
-	public void setUserReports(List<WorkloadReportRow> userReports) {
-		this.userReports = userReports;
+	public void setUserNames(List<String> userNames) {
+		this.userNames = userNames;
 	}
 
-	public WorkloadReportRow getTotalReport() {
-		return totalReport;
+	public List<WorkloadReportRow> getReportRows() {
+		return reportRows;
 	}
 
-	public void setTotalReport(WorkloadReportRow totalReport) {
-		this.totalReport = totalReport;
+	public void setReportRows(List<WorkloadReportRow> reportRows) {
+		this.reportRows = reportRows;
 	}
 }

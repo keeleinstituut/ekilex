@@ -19,7 +19,7 @@ import eki.ekilex.constant.WebConstant;
 import eki.ekilex.data.Dataset;
 import eki.ekilex.data.EkiUser;
 import eki.ekilex.data.WorkloadReport;
-import eki.ekilex.service.WordloadReportService;
+import eki.ekilex.service.WorkloadReportService;
 
 @ConditionalOnWebApplication
 @Controller
@@ -27,7 +27,7 @@ import eki.ekilex.service.WordloadReportService;
 public class WorkloadReportController extends AbstractPrivatePageController {
 
 	@Autowired
-	private WordloadReportService wordloadReportService;
+	private WorkloadReportService workloadReportService;
 
 	@GetMapping(WORKLOAD_REPORT_URI)
 	public String init(Model model) {
@@ -37,7 +37,7 @@ public class WorkloadReportController extends AbstractPrivatePageController {
 			return "redirect:" + HOME_URI;
 		}
 
-		List<Dataset> workloadReportDatasets = wordloadReportService.getDatasets();
+		List<Dataset> workloadReportDatasets = workloadReportService.getDatasets();
 		model.addAttribute("workloadReportDatasets", workloadReportDatasets);
 
 		return WORKLOAD_REPORT_PAGE;
@@ -46,7 +46,7 @@ public class WorkloadReportController extends AbstractPrivatePageController {
 	@GetMapping(WORKLOAD_REPORT_URI + "/dataset_users/{datasetCode}")
 	public String getDatasetUsers(@PathVariable String datasetCode, Model model) {
 
-		List<EkiUser> datasetUsers = wordloadReportService.getUsersByDatasetPermission(datasetCode);
+		List<EkiUser> datasetUsers = workloadReportService.getUsersByDatasetPermission(datasetCode);
 		model.addAttribute("datasetUsers", datasetUsers);
 
 		return WORKLOAD_REPORT_COMPONENTS_PAGE + PAGE_FRAGMENT_ELEM + "dataset_users_select";
@@ -60,9 +60,9 @@ public class WorkloadReportController extends AbstractPrivatePageController {
 			@RequestParam(name = "userNames", required = false) List<String> userNames,
 			Model model) {
 
-		WorkloadReport workloadReport = wordloadReportService.getWorkloadReport(dateFrom, dateUntil, datasetCode, userNames);
-		List<Dataset> workloadReportDatasets = wordloadReportService.getDatasets();
-		List<EkiUser> datasetUsers = wordloadReportService.getUsersByDatasetPermission(datasetCode);
+		WorkloadReport workloadReport = workloadReportService.getWorkloadReport(dateFrom, dateUntil, datasetCode, userNames);
+		List<Dataset> workloadReportDatasets = workloadReportService.getDatasets();
+		List<EkiUser> datasetUsers = workloadReportService.getUsersByDatasetPermission(datasetCode);
 		if (userNames == null) {
 			userNames = new ArrayList<>();
 		}
