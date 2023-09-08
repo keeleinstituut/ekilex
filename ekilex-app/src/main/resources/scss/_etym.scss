@@ -32,7 +32,7 @@
       font-size: 18px;
       font-weight: 700;
       line-height: 22px;
-      color: $white;
+      color: $gray-900;
       background-color: $gray-200;
       border-radius: 2px;
     }
@@ -67,6 +67,7 @@
 
     .wordetym-card__header {
       .lang-abbr {
+        color: $white;
         background-color: $blue-400-v2;
       }
     }
@@ -76,7 +77,14 @@
     }
 
     .etym-tree-link {
-      display: block !important;
+      &::before {
+        height: 24px !important;
+        background-color: $green-400 !important;
+      }
+
+      .btn-add-etym {
+        display: flex !important;
+      }
     }
   }
 
@@ -275,7 +283,6 @@
     position: absolute;
     bottom: -50px;
     left: 24px;
-    display: none;
 
     &::before {
       content: '';
@@ -284,15 +291,15 @@
       left: 11px;
       display: block;
       width: 2px;
-      height: 24px;
-      background-color: $green-400;
+      height: 48px;
+      background-color: $gray-350;
     }
 
     .btn-add-etym {
       position: relative;
       width: 24px;
       height: 24px;
-      display: flex;
+      display: none;
       align-items: center;
       justify-content: center;
       background-color: $green-400;
@@ -420,30 +427,64 @@
   }
 }
 
-
 .step-block {
   position: relative;
 
-    &::before {
-      content: '';
-      position: absolute;
-      top: 34px;
-      left: -87px;
-      width: 5.4375rem;
-      height: auto;
-      display: block;
-      background-color: $white;
-      margin-top: 2px;
-      border-top: 0.125rem solid $gray-350;
-      bottom: 0;
-    }
-
-  .lang-abbr {
-    color: $gray-900;
+  &::before {
+    content: '';
+    position: absolute;
+    top: 34px;
+    left: -87px;
+    width: 5.4375rem;
+    height: auto;
+    display: block;
+    background-color: $white;
+    margin-top: 2px;
+    border-top: 0.125rem solid $gray-350;
+    bottom: 0;
   }
 
-  .etym-text {
-    color: $gray-900;
+  .btn-add-etym-step {
+    position: absolute;
+    left: -127px;
+    top: 17px;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: $gray-350;
+    border-radius: 50%;
+    border: none;
+    outline: none;
+
+    span {
+      font-size: 16px;
+      font-weight: 900;
+      line-height: 18px;
+      color: $white;
+      z-index: 2;
+    }
+  }
+
+  .wordetym-card {
+    .etym-tree-link {
+      bottom: -42px;
+      left: 21px;
+  
+      &::before {
+        height: 0;
+      }
+    }
+
+    &--active {
+      .etym-tree-link {
+    
+        &::before {
+          height: 16px !important;
+        }
+      }
+    }
   }
 
   ul {
@@ -510,28 +551,7 @@
     }
   }
 
-  .btn-add-etym-step {
-    position: absolute;
-    left: -127px;
-    top: 17px;
-    width: 40px;
-    height: 40px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background-color: $gray-350;
-    border-radius: 50%;
-    border: none;
-    outline: none;
 
-    span {
-      font-size: 16px;
-      font-weight: 900;
-      line-height: 18px;
-      color: $white;
-      z-index: 2;
-    }
-  }
 }
 
 .w-30 {
