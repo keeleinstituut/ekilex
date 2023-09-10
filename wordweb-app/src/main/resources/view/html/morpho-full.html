@@ -22,6 +22,12 @@
       <span th:unless="${formIter.last}">~</span>
     </th:block>
   </th:block>
+  <th:block th:fragment="morpho-verb-form-row-first(paradigm, morphCode, prefix
+    <th:block th:each="form, formIter : ${viewUtil.getForms(paradigm, morphCode)}" th:if="{formIter.index} == 0">
+      <th:block th:replace=" :: morpho-form-value(${form}, ${prefix})"></th:block>
+      <span th:unless="${formIter.last}">~</span>
+    </th:block>
+  </th:block>
   <th:block th:fragment="morpho-noun-form-row(paradigm, morphCode)">
     <th:block th:each="form, formIter : ${viewUtil.getForms(paradigm, morphCode)}">
       <table>
@@ -835,7 +841,7 @@
                       <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'ImpPrPl1', '')"></th:block>
                     </td>
                     <td>
-                      <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'ImpPrPl1', 'ärgem')"></th:block>
+                      <th:block th:replace=" :: morpho-verb-form-row-first(${paradigm}, 'ImpPrPl1', 'ärgem')"></th:block>
                       ~
                       <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'IndPrPl1', 'ärme')"></th:block>
                       ~
