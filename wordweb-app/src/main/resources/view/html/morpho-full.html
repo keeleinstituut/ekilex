@@ -33,7 +33,7 @@
       <table>
         <tr>
           <td>
-            <div class="word-section">
+            <div class="word-section" th:if="${form.morphExists}">
               <th:block th:replace=" :: morpho-form-value(${form}, '')"></th:block>
               <span th:unless="${formIter.last}">~</span>
             </div>
@@ -443,6 +443,7 @@
                     </td>
                     <td>
                       <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'PtsPtPs', 'ei ole')"></th:block>
+                      <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'PtsPtPs', '~ pole')"></th:block>
                     </td>
                   </tr>
                   <tr>
@@ -454,6 +455,7 @@
                     </td>
                     <td>
                       <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'PtsPtPs', 'ei ole')"></th:block>
+                      <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'PtsPtPs', '~ pole')"></th:block>
                     </td>
                   </tr>
                   <tr>
@@ -465,6 +467,7 @@
                     </td>
                     <td>
                       <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'PtsPtPs', 'ei ole')"></th:block>
+                      <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'PtsPtPs', '~ pole')"></th:block>
                     </td>
                   </tr>
                   <tr>
@@ -476,6 +479,7 @@
                     </td>
                     <td>
                       <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'PtsPtPs', 'ei ole')"></th:block>
+                      <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'PtsPtPs', '~ pole')"></th:block>
                     </td>
                   </tr>
                   <tr>
@@ -487,6 +491,7 @@
                     </td>
                     <td>
                       <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'PtsPtPs', 'ei ole')"></th:block>
+                      <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'PtsPtPs', '~ pole')"></th:block>
                     </td>
                   </tr>
                   <tr>
@@ -498,6 +503,7 @@
                     </td>
                     <td>
                       <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'PtsPtIps', 'ei ole')"></th:block>
+                      <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'PtsPtIps', '~ pole')"></th:block>
                     </td>
                   </tr>
                   <tr>
@@ -517,6 +523,7 @@
                     </td>
                     <td>
                       <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'PtsPtPs', 'ei olnud')"></th:block>
+                      <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'PtsPtPs', '~ polnud')"></th:block>
                     </td>
                   </tr>
                   <tr>
@@ -528,6 +535,7 @@
                     </td>
                     <td>
                       <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'PtsPtPs', 'ei olnud')"></th:block>
+                      <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'PtsPtPs', '~ polnud')"></th:block>
                     </td>
                   </tr>
                   <tr>
@@ -539,6 +547,7 @@
                     </td>
                     <td>
                       <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'PtsPtPs', 'ei olnud')"></th:block>
+                      <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'PtsPtPs', '~ polnud')"></th:block>
                     </td>
                   </tr>
                   <tr>
@@ -550,6 +559,7 @@
                     </td>
                     <td>
                       <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'PtsPtPs', 'ei olnud')"></th:block>
+                      <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'PtsPtPs', '~ polnud')"></th:block>
                     </td>
                   </tr>
                   <tr>
@@ -561,6 +571,7 @@
                     </td>
                     <td>
                       <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'PtsPtPs', 'ei olnud')"></th:block>
+                      <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'PtsPtPs', '~ polnud')"></th:block>
                     </td>
                   </tr>
                   <tr>
@@ -572,6 +583,7 @@
                     </td>
                     <td>
                       <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'PtsPtPs', 'ei olnud')"></th:block>
+                      <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'PtsPtPs', '~ polnud')"></th:block>
                     </td>
                   </tr>
                   <tr>
@@ -583,6 +595,7 @@
                     </td>
                     <td>
                       <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'PtsPtIps', 'ei olnud')"></th:block>
+                      <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'PtsPtPs', '~ polnud')"></th:block>
                     </td>
                   </tr>
                 </table>
@@ -702,6 +715,7 @@
                     </td>
                     <td>
                       <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'PtsPtPs', 'ei oleks')"></th:block>
+                      <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'PtsPtPs', '~ poleks')"></th:block>
                       <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'KndPtPs', '~ ei')"></th:block>
                     </td>
                   </tr>
@@ -715,6 +729,7 @@
                     </td>
                     <td>
                       <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'PtsPtPs', 'ei oleks')"></th:block>
+                      <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'PtsPtPs', '~ poleks')"></th:block>
                       <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'KndPtPs', '~ ei')"></th:block>
                     </td>
                   </tr>
@@ -728,6 +743,7 @@
                     </td>
                     <td>
                       <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'PtsPtPs', 'ei oleks')"></th:block>
+                      <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'PtsPtPs', '~ poleks')"></th:block>
                       <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'KndPtPs', '~ ei')"></th:block>
                     </td>
                   </tr>
@@ -741,6 +757,7 @@
                     </td>
                     <td>
                       <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'PtsPtPs', 'ei oleks')"></th:block>
+                      <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'PtsPtPs', '~ poleks')"></th:block>
                       <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'KndPtPs', '~ ei')"></th:block>
                     </td>
                   </tr>
@@ -754,6 +771,7 @@
                     </td>
                     <td>
                       <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'PtsPtPs', 'ei oleks')"></th:block>
+                      <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'PtsPtPs', '~ poleks')"></th:block>
                       <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'KndPtPs', '~ ei')"></th:block>
                     </td>
                   </tr>
@@ -767,6 +785,7 @@
                     </td>
                     <td>
                       <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'PtsPtPs', 'ei oleks')"></th:block>
+                      <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'PtsPtPs', '~ poleks')"></th:block>
                       <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'KndPtPs', '~ ei')"></th:block>
                     </td>
                   </tr>
@@ -780,6 +799,7 @@
                     </td>
                     <td>
                       <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'PtsPtIps', 'ei oleks')"></th:block>
+                      <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'PtsPtPs', '~ poleks')"></th:block>
                       <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'KndPtIps', '~ ei')"></th:block>
                     </td>
                   </tr>
@@ -937,6 +957,7 @@
                     </td>
                     <td>
                       <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'PtsPtPs', 'ei olevat')"></th:block>
+                      <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'PtsPtPs', '~ polevat')"></th:block>
                     </td>
                   </tr>
                   <tr>
@@ -948,6 +969,7 @@
                     </td>
                     <td>
                       <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'PtsPtIps', 'ei olevat')"></th:block>
+                      <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'PtsPtIps', '~ polevat')"></th:block>
                     </td>
                   </tr>
                 </table>
