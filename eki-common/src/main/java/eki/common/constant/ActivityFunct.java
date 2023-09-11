@@ -13,4 +13,6 @@ public interface ActivityFunct {
 	String JOIN = "join";
 
 	String JOIN_WORDS = "joinWords";
+
+	String UPDATE_MEANING_MANUAL_EVENT_ON_FUNCT = "updateMeaningManualEventOn";
 }

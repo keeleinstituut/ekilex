@@ -16,8 +16,6 @@ import static eki.ekilex.data.db.Tables.MEANING_FREEFORM;
 import static eki.ekilex.data.db.Tables.WORD;
 import static eki.ekilex.data.db.Tables.WORD_WORD_TYPE;
 
-import java.sql.Timestamp;
-
 import org.jooq.DSLContext;
 import org.jooq.Field;
 import org.jooq.JSON;
@@ -71,7 +69,8 @@ public class TermMeaningDbService implements ActivityFunct {
 		DefinitionSourceLink dsl = DEFINITION_SOURCE_LINK.as("dsl");
 		Freeform ff = FREEFORM.as("ff");
 		FreeformSourceLink ffsl = FREEFORM_SOURCE_LINK.as("ffsl");
-		ActivityLog al = ACTIVITY_LOG.as("al");
+		ActivityLog fceal = ACTIVITY_LOG.as("fceal");
+		ActivityLog meal = ACTIVITY_LOG.as("meal");
 
 		Field<JSON> ffslf = DSL
 				.select(DSL
@@ -239,18 +238,6 @@ public class TermMeaningDbService implements ActivityFunct {
 				.where(mfor.MEANING_ID.eq(m.ID))
 				.asField();
 
-		Field<Timestamp> fceof = DSL
-				.select(al.EVENT_ON)
-				.from(al)
-				.where(
-						al.OWNER_ID.eq(meaningId)
-								.and(al.OWNER_NAME.eq(ActivityOwner.MEANING.name()))
-								.and(al.ENTITY_NAME.eq(ActivityEntity.MEANING.name()))
-								.and(al.FUNCT_NAME.like(LIKE_CREATE)))
-				.orderBy(al.EVENT_ON)
-				.limit(1)
-				.asField();
-
 		Field<JSON> cidf = DSL
 				.select(DSL
 						.jsonArrayAgg(ff.VALUE_TEXT)
@@ -266,7 +253,9 @@ public class TermMeaningDbService implements ActivityFunct {
 				.select(
 						m.ID.as("meaning_id"),
 						m.MANUAL_EVENT_ON.as("manual_event_on"),
-						fceof.as("first_create_event_on"),
+						meal.EVENT_BY.as("manual_event_by"),
+						fceal.EVENT_ON.as("first_create_event_on"),
+						fceal.EVENT_BY.as("first_create_event_by"),
 						DSL.val(datasetCode).as("dataset_code"),
 						df.as("definitions"),
 						mdf.as("domains"),
@@ -274,7 +263,17 @@ public class TermMeaningDbService implements ActivityFunct {
 						mforf.as("forums"),
 						cidf.as("concept_ids"),
 						wf.as("words"))
-				.from(m)
+				.from(m
+						.leftOuterJoin(fceal).on(
+								fceal.OWNER_ID.eq(m.ID)
+										.and(fceal.OWNER_NAME.eq(ActivityOwner.MEANING.name()))
+										.and(fceal.ENTITY_NAME.eq(ActivityEntity.MEANING.name()))
+										.and(fceal.FUNCT_NAME.like(LIKE_CREATE)))
+						.leftOuterJoin(meal).on(
+								meal.OWNER_ID.eq(m.ID)
+										.and(meal.OWNER_NAME.eq(ActivityOwner.MEANING.name()))
+										.and(meal.ENTITY_NAME.eq(ActivityEntity.MEANING.name()))
+										.and(meal.FUNCT_NAME.eq(UPDATE_MEANING_MANUAL_EVENT_ON_FUNCT))))
 				.where(m.ID.eq(meaningId))
 				.fetchOptionalInto(TermMeaning.class)
 				.orElse(null);

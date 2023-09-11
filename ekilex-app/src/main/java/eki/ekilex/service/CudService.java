@@ -15,6 +15,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Component;
 
 import eki.common.constant.ActivityEntity;
+import eki.common.constant.ActivityFunct;
 import eki.common.constant.ActivityOwner;
 import eki.common.constant.Complexity;
 import eki.common.constant.FreeformType;
@@ -38,7 +39,7 @@ import eki.ekilex.service.util.LexemeLevelCalcUtil;
 
 @PreAuthorize("authentication.principal.datasetCrudPermissionsExist")
 @Component
-public class CudService extends AbstractCudService implements GlobalConstant, PermConstant {
+public class CudService extends AbstractCudService implements GlobalConstant, PermConstant, ActivityFunct {
 
 	@Autowired
 	private CompositionDbService compositionDbService;
@@ -206,7 +207,7 @@ public class CudService extends AbstractCudService implements GlobalConstant, Pe
 	public void updateMeaningManualEventOn(Long meaningId, String eventOnStr, String roleDatasetCode) throws Exception {
 
 		Timestamp eventOn = conversionUtil.dateStrToTimestamp(eventOnStr);
-		ActivityLogData activityLog = activityLogService.prepareActivityLog("updateMeaningManualEventOn", meaningId, ActivityOwner.MEANING, roleDatasetCode, MANUAL_EVENT_ON_UPDATE_DISABLED);
+		ActivityLogData activityLog = activityLogService.prepareActivityLog(UPDATE_MEANING_MANUAL_EVENT_ON_FUNCT, meaningId, ActivityOwner.MEANING, roleDatasetCode, MANUAL_EVENT_ON_UPDATE_DISABLED);
 		activityLogDbService.updateMeaningManualEventOn(meaningId, eventOn);
 		activityLogService.createActivityLog(activityLog, meaningId, ActivityEntity.MEANING);
 	}

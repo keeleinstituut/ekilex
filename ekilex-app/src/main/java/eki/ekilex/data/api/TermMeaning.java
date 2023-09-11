@@ -30,8 +30,12 @@ public class TermMeaning extends AbstractDataObject {
 	@JsonFormat(pattern = "dd.MM.yyyy")
 	private LocalDate manualEventOn;
 
+	private String manualEventBy;
+
 	@JsonFormat(pattern = "dd.MM.yyyy")
 	private LocalDate firstCreateEventOn;
+
+	private String firstCreateEventBy;
 
 	public Long getMeaningId() {
 		return meaningId;
@@ -105,11 +109,27 @@ public class TermMeaning extends AbstractDataObject {
 		this.manualEventOn = manualEventOn;
 	}
 
+	public String getManualEventBy() {
+		return manualEventBy;
+	}
+
+	public void setManualEventBy(String manualEventBy) {
+		this.manualEventBy = manualEventBy;
+	}
+
 	public LocalDate getFirstCreateEventOn() {
 		return firstCreateEventOn;
 	}
 
 	public void setFirstCreateEventOn(LocalDate firstCreateEventOn) {
 		this.firstCreateEventOn = firstCreateEventOn;
+	}
+
+	public String getFirstCreateEventBy() {
+		return firstCreateEventBy;
+	}
+
+	public void setFirstCreateEventBy(String firstCreateEventBy) {
+		this.firstCreateEventBy = firstCreateEventBy;
 	}
 }

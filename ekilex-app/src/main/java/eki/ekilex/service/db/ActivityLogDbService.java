@@ -403,7 +403,7 @@ public class ActivityLogDbService implements GlobalConstant, ActivityFunct {
 				.execute();
 	}
 
-	public void updateMeaningFirstCreateEventOn(Long meaningId, Timestamp eventOn) {
+	public void updateMeaningFirstCreateEvent(Long meaningId, Timestamp eventOn, String eventBy) {
 
 		ActivityLog al1 = ACTIVITY_LOG.as("al1");
 		ActivityLog al2 = ACTIVITY_LOG.as("al2");
@@ -423,6 +423,7 @@ public class ActivityLogDbService implements GlobalConstant, ActivityFunct {
 		create
 				.update(al1)
 				.set(al1.EVENT_ON, eventOn)
+				.set(al1.EVENT_BY, eventBy)
 				.from(alt)
 				.where(al1.ID.eq(alt.field("first_al_id", Long.class)))
 				.execute();

@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import eki.common.constant.ActivityEntity;
+import eki.common.constant.ActivityFunct;
 import eki.common.constant.ActivityOwner;
 import eki.common.constant.Complexity;
 import eki.common.constant.FreeformType;
@@ -31,7 +32,7 @@ import eki.ekilex.data.api.TermWord;
 import eki.ekilex.service.db.api.TermMeaningDbService;
 
 @Component
-public class TermMeaningService extends AbstractApiCudService {
+public class TermMeaningService extends AbstractApiCudService implements ActivityFunct {
 
 	private static final Complexity DEFAULT_COMPLEXITY = Complexity.DETAIL;
 
@@ -76,7 +77,9 @@ public class TermMeaningService extends AbstractApiCudService {
 		List<Forum> meaningForums = termMeaning.getForums();
 		List<String> conceptIds = termMeaning.getConceptIds();
 		LocalDate manualEventOn = termMeaning.getManualEventOn();
+		String manualEventBy = termMeaning.getManualEventBy();
 		LocalDate firstCreateEventOn = termMeaning.getFirstCreateEventOn();
+		String firstCreateEventBy = termMeaning.getFirstCreateEventBy();
 
 		ActivityLogData activityLog;
 
@@ -332,13 +335,21 @@ public class TermMeaningService extends AbstractApiCudService {
 		if (manualEventOn != null) {
 
 			Timestamp manualEventOnTs = Timestamp.valueOf(manualEventOn.atStartOfDay());
+			activityLog = activityLogService.prepareActivityLog(UPDATE_MEANING_MANUAL_EVENT_ON_FUNCT, meaningId, ActivityOwner.MEANING, roleDatasetCode, MANUAL_EVENT_ON_UPDATE_DISABLED);
+			if (StringUtils.isNotBlank(manualEventBy)) {
+				activityLog.setEventBy(manualEventBy);
+			}
 			activityLogDbService.updateMeaningManualEventOn(meaningId, manualEventOnTs);
+			activityLogService.createActivityLog(activityLog, meaningId, ActivityEntity.MEANING);
 		}
 
 		if (firstCreateEventOn != null) {
 
 			Timestamp firstCreateEventOnTs = Timestamp.valueOf(firstCreateEventOn.atStartOfDay());
-			activityLogDbService.updateMeaningFirstCreateEventOn(meaningId, firstCreateEventOnTs);
+			if (StringUtils.isBlank(firstCreateEventBy)) {
+				firstCreateEventBy = userName;
+			}
+			activityLogDbService.updateMeaningFirstCreateEvent(meaningId, firstCreateEventOnTs, firstCreateEventBy);
 		}
 
 		return meaningId;
