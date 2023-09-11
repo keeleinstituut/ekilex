@@ -22,7 +22,7 @@
       <span th:unless="${formIter.last}">~</span>
     </th:block>
   </th:block>
-  <th:block th:fragment="morpho-verb-form-row-first(paradigm, morphCode, prefix
+  <th:block th:fragment="morpho-verb-form-row-first(paradigm, morphCode, prefix)">
     <th:block th:each="form, formIter : ${viewUtil.getForms(paradigm, morphCode)}" th:if="{formIter.index} == 0">
       <th:block th:replace=" :: morpho-form-value(${form}, ${prefix})"></th:block>
       <span th:unless="${formIter.last}">~</span>
