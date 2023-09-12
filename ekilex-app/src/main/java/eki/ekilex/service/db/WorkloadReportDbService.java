@@ -36,13 +36,20 @@ public class WorkloadReportDbService extends AbstractDbService implements System
 	@Autowired
 	private DSLContext create;
 
-	public List<WorkloadReportCount> getWorkloadReportUserCounts(LocalDate dateFrom, LocalDate dateUntil, String datasetCode, List<String> userNames) {
+	public List<WorkloadReportCount> getWorkloadReportUserCounts(
+			LocalDate dateFrom, LocalDate dateUntil, List<String> datasetCodes, boolean includeUnspecifiedDatasets, List<String> userNames) {
 
 		ActivityLog al = ACTIVITY_LOG.as("al");
 
 		Timestamp from = Timestamp.valueOf(dateFrom.atStartOfDay());
 		Timestamp until = Timestamp.valueOf(dateUntil.plusDays(1).atStartOfDay());
-		String userNamesSimilarCrit = "(" + StringUtils.join(userNames, '|') + ")%";
+
+		Condition where = al.EVENT_ON.ge(from)
+				.and(al.EVENT_ON.lt(until))
+				.and(al.OWNER_NAME.ne(ActivityOwner.SOURCE.name()));
+
+		where = addDatasetsCondition(where, al, datasetCodes, includeUnspecifiedDatasets);
+		where = addUserNamesConditon(userNames, where, al);
 
 		Table<Record4<String, String, Long, String>> wl = DSL
 				.select(
@@ -54,12 +61,7 @@ public class WorkloadReportDbService extends AbstractDbService implements System
 								.when(al.FUNCT_NAME.in(DELETE_FUNCT_NAMES), CrudType.DELETE.name())
 								.otherwise(CrudType.UPDATE.name()).as("activity_type")))
 				.from(al)
-				.where(
-						al.DATASET_CODE.eq(datasetCode)
-								.and(al.EVENT_BY.similarTo(userNamesSimilarCrit))
-								.and(al.EVENT_ON.ge(from))
-								.and(al.EVENT_ON.lt(until))
-								.and(al.OWNER_NAME.ne(ActivityOwner.SOURCE.name())))
+				.where(where)
 				.asTable("wl");
 
 		return create
@@ -73,23 +75,20 @@ public class WorkloadReportDbService extends AbstractDbService implements System
 				.fetchInto(WorkloadReportCount.class);
 	}
 
-	public List<WorkloadReportCount> getWorkloadReportTotalCounts(LocalDate dateFrom, LocalDate dateUntil, String datasetCode, List<String> userNames) {
+	public List<WorkloadReportCount> getWorkloadReportTotalCounts(
+			LocalDate dateFrom, LocalDate dateUntil, List<String> datasetCodes, boolean includeUnspecifiedDatasets, List<String> userNames) {
 
 		ActivityLog al = ACTIVITY_LOG.as("al");
 
 		Timestamp from = Timestamp.valueOf(dateFrom.atStartOfDay());
 		Timestamp until = Timestamp.valueOf(dateUntil.plusDays(1).atStartOfDay());
 
-		Condition where =
-				al.DATASET_CODE.eq(datasetCode)
-						.and(al.EVENT_ON.ge(from))
-						.and(al.EVENT_ON.lt(until))
-						.and(al.OWNER_NAME.ne(ActivityOwner.SOURCE.name()));
+		Condition where = al.EVENT_ON.ge(from)
+				.and(al.EVENT_ON.lt(until))
+				.and(al.OWNER_NAME.ne(ActivityOwner.SOURCE.name()));
 
-		if (CollectionUtils.isNotEmpty(userNames)) {
-			String userNamesSimilarCrit = "(" + StringUtils.join(userNames, '|') + ")%";
-			where = where.and(al.EVENT_BY.similarTo(userNamesSimilarCrit));
-		}
+		where = addDatasetsCondition(where, al, datasetCodes, includeUnspecifiedDatasets);
+		where = addUserNamesConditon(userNames, where, al);
 
 		Table<Record3<String, Long, String>> wl = DSL
 				.select(
@@ -114,19 +113,19 @@ public class WorkloadReportDbService extends AbstractDbService implements System
 	}
 
 	public List<WorkloadReportCount> getWorkloadReportFunctionCounts(
-			LocalDate dateFrom, LocalDate dateUntil, String datasetCode, List<String> userNames, ActivityOwner activityOwner, CrudType activityType) {
+			LocalDate dateFrom, LocalDate dateUntil, List<String> datasetCodes, boolean includeUnspecifiedDatasets, List<String> userNames, ActivityOwner activityOwner, CrudType activityType) {
 
 		ActivityLog al = ACTIVITY_LOG.as("al");
 
 		Timestamp from = Timestamp.valueOf(dateFrom.atStartOfDay());
 		Timestamp until = Timestamp.valueOf(dateUntil.plusDays(1).atStartOfDay());
-		String userNamesSimilarCrit = "(" + StringUtils.join(userNames, '|') + ")%";
 
-		Condition where = al.DATASET_CODE.eq(datasetCode)
-				.and(al.EVENT_BY.similarTo(userNamesSimilarCrit))
-				.and(al.EVENT_ON.ge(from))
+		Condition where = al.EVENT_ON.ge(from)
 				.and(al.EVENT_ON.lt(until))
 				.and(al.OWNER_NAME.eq(activityOwner.name()));
+
+		where = addDatasetsCondition(where, al, datasetCodes, includeUnspecifiedDatasets);
+		where = addUserNamesConditon(userNames, where, al);
 
 		if (CrudType.CREATE.equals(activityType)) {
 			where = where.and(al.FUNCT_NAME.in(CREATE_FUNCT_NAMES));
@@ -149,4 +148,25 @@ public class WorkloadReportDbService extends AbstractDbService implements System
 				.fetchInto(WorkloadReportCount.class);
 	}
 
+	private Condition addUserNamesConditon(List<String> userNames, Condition where, ActivityLog al) {
+		if (CollectionUtils.isNotEmpty(userNames)) {
+			String userNamesSimilarCrit = "(" + StringUtils.join(userNames, '|') + ")%";
+			where = where.and(al.EVENT_BY.similarTo(userNamesSimilarCrit));
+		}
+		return where;
+	}
+
+	private Condition addDatasetsCondition(Condition where, ActivityLog al, List<String> datasetCodes, boolean includeUnspecifiedDatasets) {
+
+		if (includeUnspecifiedDatasets) {
+			if (CollectionUtils.isEmpty(datasetCodes)) {
+				where = where.and(al.DATASET_CODE.isNull());
+			} else {
+				where = where.and(DSL.or(al.DATASET_CODE.in(datasetCodes), al.DATASET_CODE.isNull()));
+			}
+		} else {
+			where = where.and(al.DATASET_CODE.in(datasetCodes));
+		}
+		return where;
+	}
 }

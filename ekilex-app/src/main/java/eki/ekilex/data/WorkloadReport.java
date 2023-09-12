@@ -12,6 +12,8 @@ public class WorkloadReport extends AbstractDataObject {
 
 	private List<WorkloadReportRow> reportRows;
 
+	private int resultCount;
+
 	public List<String> getUserNames() {
 		return userNames;
 	}
@@ -26,5 +28,13 @@ public class WorkloadReport extends AbstractDataObject {
 
 	public void setReportRows(List<WorkloadReportRow> reportRows) {
 		this.reportRows = reportRows;
+	}
+
+	public int getResultCount() {
+		return resultCount;
+	}
+
+	public void setResultCount(int resultCount) {
+		this.resultCount = resultCount;
 	}
 }

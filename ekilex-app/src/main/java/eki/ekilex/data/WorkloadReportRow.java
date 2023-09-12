@@ -2,7 +2,6 @@ package eki.ekilex.data;
 
 import java.util.List;
 
-import eki.common.constant.ActivityEntity;
 import eki.common.constant.ActivityOwner;
 import eki.common.data.AbstractDataObject;
 import eki.ekilex.constant.CrudType;
@@ -12,8 +11,6 @@ public class WorkloadReportRow extends AbstractDataObject {
 	private static final long serialVersionUID = 1L;
 
 	private ActivityOwner activityOwner;
-
-	private ActivityEntity activityEntity;
 
 	private CrudType activityType;
 
@@ -31,14 +28,6 @@ public class WorkloadReportRow extends AbstractDataObject {
 
 	public void setActivityOwner(ActivityOwner activityOwner) {
 		this.activityOwner = activityOwner;
-	}
-
-	public ActivityEntity getActivityEntity() {
-		return activityEntity;
-	}
-
-	public void setActivityEntity(ActivityEntity activityEntity) {
-		this.activityEntity = activityEntity;
 	}
 
 	public CrudType getActivityType() {

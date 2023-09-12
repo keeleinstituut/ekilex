@@ -34,14 +34,17 @@
             </div>
           </div>
           <div class="form-group row">
-            <label class="col-md-2 col-form-label" th:text="#{workloadreport.dataset}">Sõnakogu</label>
+            <label class="col-md-2 col-form-label" th:text="#{workloadreport.datasets}">Rolli sõnakogud</label>
             <div class="col-md-4">
-              <select required class="form-control required-field" name="datasetCode" data-plugin="workloadReportDatasetSelectPlugin">
-                <option value="" hidden disabled selected th:text="#{common.select}">Vali</option>
+              <select name="datasetCodes" class="dataset-select" multiple data-live-search="true" th:title="#{workloadreport.select.dataset.codes}" data-plugin="workloadReportDatasetSelectPlugin"
+                      data-actions-box="true" th:data-select-all-text="#{common.select.all}" th:data-deselect-all-text="#{common.unselect.all}">
+                <option value="dataset-none"
+                        th:text="#{workloadreport.dataset.none}"
+                        th:selected="${datasetCodes != null && #lists.contains(datasetCodes, 'dataset-none')}">Roll määramata</option>
                 <option th:each="dataset : ${workloadReportDatasets}"
                         th:value="${dataset.code}"
                         th:text="${dataset.name}"
-                        th:selected="${dataset.code == datasetCode}">dataset
+                        th:selected="${datasetCodes != null && #lists.contains(datasetCodes, dataset.code)}">dataset
                 </option>
               </select>
             </div>
@@ -53,7 +56,11 @@
           </div>
           <div>
             <th:block th:if="${workloadReport != null}">
-              <table class="table table-striped m-0 p-0 table-hover w-auto">
+              <hr/>
+              <div th:if="${workloadReport.resultCount == 0}">
+                <span class="font-weight-bold" th:text="#{workloadreport.no.results}">Tulemusi ei leitud</span>
+              </div>
+              <table class="table table-sm table-striped m-0 p-0 table-hover w-auto" th:if="${workloadReport.resultCount > 0}">
                 <tr>
                   <th></th>
                   <th:block th:each="userName : ${workloadReport.userNames}">
@@ -96,7 +103,7 @@
   </div>
   <div th:replace="common :: #waitDlg"></div>
   <script th:inline="javascript">
-	  initDatasetUsersSelect();
+	  initializeWorkloadReport();
   </script>
 </body>
 </html>

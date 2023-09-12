@@ -109,7 +109,24 @@ public class UserDbService extends AbstractDbService implements SystemConstant {
 				.orElse(null);
 	}
 
-	public List<EkiUser> getUsersByDatasetPermission(String datasetCode) {
+	public List<EkiUser> getUsersWithAnyDatasetPermission() {
+
+		return create
+				.select(
+						EKI_USER.ID,
+						EKI_USER.NAME,
+						EKI_USER.IS_ADMIN.as("admin"),
+						EKI_USER.IS_MASTER.as("master"))
+				.from(EKI_USER)
+				.whereExists(DSL
+						.select(DATASET_PERMISSION.ID)
+						.from(DATASET_PERMISSION)
+						.where(DATASET_PERMISSION.USER_ID.eq(EKI_USER.ID)))
+				.orderBy(EKI_USER.NAME)
+				.fetchInto(EkiUser.class);
+	}
+
+	public List<EkiUser> getUsersByDatasetPermission(List<String> datasetCodes) {
 
 		return create
 				.select(
@@ -120,7 +137,8 @@ public class UserDbService extends AbstractDbService implements SystemConstant {
 				.from(EKI_USER, DATASET_PERMISSION)
 				.where(
 						EKI_USER.ID.eq(DATASET_PERMISSION.USER_ID)
-								.and(DATASET_PERMISSION.DATASET_CODE.eq(datasetCode)))
+								.and(DATASET_PERMISSION.DATASET_CODE.in(datasetCodes)))
+				.groupBy(EKI_USER.ID)
 				.orderBy(EKI_USER.NAME)
 				.fetchInto(EkiUser.class);
 	}

@@ -43,10 +43,10 @@ public class WorkloadReportController extends AbstractPrivatePageController {
 		return WORKLOAD_REPORT_PAGE;
 	}
 
-	@GetMapping(WORKLOAD_REPORT_URI + "/dataset_users/{datasetCode}")
-	public String getDatasetUsers(@PathVariable String datasetCode, Model model) {
+	@GetMapping(WORKLOAD_REPORT_URI + "/dataset_users/{datasetCodes}")
+	public String getDatasetUsers(@PathVariable List<String> datasetCodes, Model model) {
 
-		List<EkiUser> datasetUsers = workloadReportService.getUsersByDatasetPermission(datasetCode);
+		List<EkiUser> datasetUsers = workloadReportService.getUsersByDatasetPermission(datasetCodes);
 		model.addAttribute("datasetUsers", datasetUsers);
 
 		return WORKLOAD_REPORT_COMPONENTS_PAGE + PAGE_FRAGMENT_ELEM + "dataset_users_select";
@@ -56,20 +56,21 @@ public class WorkloadReportController extends AbstractPrivatePageController {
 	public String search(
 			@RequestParam("dateFrom") @DateTimeFormat(pattern = "dd.MM.yyyy") LocalDate dateFrom,
 			@RequestParam("dateUntil") @DateTimeFormat(pattern = "dd.MM.yyyy") LocalDate dateUntil,
-			@RequestParam("datasetCode") String datasetCode,
+			@RequestParam("datasetCodes") List<String> datasetCodes,
 			@RequestParam(name = "userNames", required = false) List<String> userNames,
 			Model model) {
 
-		WorkloadReport workloadReport = workloadReportService.getWorkloadReport(dateFrom, dateUntil, datasetCode, userNames);
+		WorkloadReport workloadReport = workloadReportService.getWorkloadReport(dateFrom, dateUntil, datasetCodes, userNames);
 		List<Dataset> workloadReportDatasets = workloadReportService.getDatasets();
-		List<EkiUser> datasetUsers = workloadReportService.getUsersByDatasetPermission(datasetCode);
+		List<EkiUser> datasetUsers = workloadReportService.getUsersByDatasetPermission(datasetCodes);
+
 		if (userNames == null) {
 			userNames = new ArrayList<>();
 		}
 
 		model.addAttribute("dateFrom", dateFrom);
 		model.addAttribute("dateUntil", dateUntil);
-		model.addAttribute("datasetCode", datasetCode);
+		model.addAttribute("datasetCodes", datasetCodes);
 		model.addAttribute("userNames", userNames);
 
 		model.addAttribute("workloadReport", workloadReport);

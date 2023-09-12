@@ -7,6 +7,7 @@ import java.util.stream.Collectors;
 
 import javax.transaction.Transactional;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -26,6 +27,8 @@ import eki.ekilex.service.util.DatasetUtil;
 @Component
 public class WorkloadReportService {
 
+	private static final String DATASET_NONE = "dataset-none";
+
 	@Autowired
 	private WorkloadReportDbService workloadReportDbService;
 
@@ -39,8 +42,15 @@ public class WorkloadReportService {
 	private DatasetUtil datasetUtil;
 
 	@Transactional
-	public List<EkiUser> getUsersByDatasetPermission(String datasetCode) {
-		return userDbService.getUsersByDatasetPermission(datasetCode);
+	public List<EkiUser> getUsersByDatasetPermission(List<String> datasetCodes) {
+
+		List<EkiUser> users;
+		if (datasetCodes.contains(DATASET_NONE)) {
+			users = userDbService.getUsersWithAnyDatasetPermission();
+		} else {
+			users = userDbService.getUsersByDatasetPermission(datasetCodes);
+		}
+		return users;
 	}
 
 	@Transactional
@@ -51,10 +61,19 @@ public class WorkloadReportService {
 	}
 
 	@Transactional
-	public WorkloadReport getWorkloadReport(LocalDate dateFrom, LocalDate dateUntil, String datasetCode, List<String> userNames) {
+	public WorkloadReport getWorkloadReport(LocalDate dateFrom, LocalDate dateUntil, List<String> datasetCodes, List<String> userNames) {
 
-		List<WorkloadReportCount> totalCounts = workloadReportDbService.getWorkloadReportTotalCounts(dateFrom, dateUntil, datasetCode, userNames);
-		List<WorkloadReportCount> allUserCounts = workloadReportDbService.getWorkloadReportUserCounts(dateFrom, dateUntil, datasetCode, userNames);
+		boolean includeUnspecifiedDatasets = false;
+		List<String> filteredDatasetCodes;
+		if (datasetCodes.contains(DATASET_NONE)) {
+			includeUnspecifiedDatasets = true;
+			filteredDatasetCodes = datasetCodes.stream().filter(datasetCode -> StringUtils.equals(datasetCode, DATASET_NONE)).collect(Collectors.toList());
+		} else {
+			filteredDatasetCodes = datasetCodes.stream().collect(Collectors.toList());
+		}
+
+		List<WorkloadReportCount> totalCounts = workloadReportDbService.getWorkloadReportTotalCounts(dateFrom, dateUntil, filteredDatasetCodes, includeUnspecifiedDatasets, userNames);
+		List<WorkloadReportCount> allUserCounts = workloadReportDbService.getWorkloadReportUserCounts(dateFrom, dateUntil, filteredDatasetCodes, includeUnspecifiedDatasets, userNames);
 		List<String> allUserNames = allUserCounts.stream().map(WorkloadReportCount::getUserName).distinct().collect(Collectors.toList());
 
 		WorkloadReport workloadReport = new WorkloadReport();
@@ -82,7 +101,7 @@ public class WorkloadReportService {
 			}
 
 			List<WorkloadReportRow> functionRows = new ArrayList<>();
-			List<WorkloadReportCount> functionCounts = workloadReportDbService.getWorkloadReportFunctionCounts(dateFrom, dateUntil, datasetCode, userNames, activityOwner, activityType);
+			List<WorkloadReportCount> functionCounts = workloadReportDbService.getWorkloadReportFunctionCounts(dateFrom, dateUntil, filteredDatasetCodes, includeUnspecifiedDatasets, userNames, activityOwner, activityType);
 			List<String> functionNames = functionCounts.stream().map(WorkloadReportCount::getFunctName).distinct().collect(Collectors.toList());
 			for (String functionName : functionNames) {
 				List<WorkloadReportUserCount> functionUserCounts = new ArrayList<>();
@@ -102,7 +121,6 @@ public class WorkloadReportService {
 
 				WorkloadReportRow functionRow = new WorkloadReportRow();
 				functionRow.setActivityOwner(activityOwner);
-				// functionRow.setActivityEntity(todo); // TODO from first result?
 				functionRow.setUserCounts(functionUserCounts);
 				functionRow.setFunctName(functionName);
 
@@ -119,8 +137,10 @@ public class WorkloadReportService {
 			reportRows.add(reportRow);
 		}
 
+		int resultCount = reportRows.size();
 		workloadReport.setUserNames(allUserNames);
 		workloadReport.setReportRows(reportRows);
+		workloadReport.setResultCount(resultCount);
 		return workloadReport;
 	}
 }
