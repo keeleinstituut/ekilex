@@ -46,6 +46,11 @@ public class WordService extends AbstractApiCudService implements GlobalConstant
 	}
 
 	@Transactional
+	public List<Long> getWordIds(String wordValue, String datasetCode, String lang) {
+		return wordDbService.getWordsIds(wordValue, datasetCode, lang);
+	}
+
+	@Transactional
 	public LexWord getLexWord(Long wordId, String datasetCode) {
 
 		if (wordId == null) {
@@ -199,4 +204,5 @@ public class WordService extends AbstractApiCudService implements GlobalConstant
 		}
 		return valueAsWord;
 	}
+
 }

@@ -72,6 +72,8 @@ public interface ApiConstant {
 
 	String REPLACE_URI = "/replace";
 
+	String IDS_URI = "/ids";
+
 	String API_KEY_HEADER_NAME = "ekilex-api-key";
 
 	String EMPTY_API_KEY = "empty-api-key";

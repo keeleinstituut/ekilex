@@ -227,6 +227,18 @@ public class ApiSearchController extends AbstractApiController {
 	}
 
 	@Order(107)
+	@GetMapping(API_SERVICES_URI + WORD_URI + IDS_URI + "/{wordValue}/{datasetCode}/{lang}")
+	@ResponseBody
+	public List<Long> getWordIds(
+			@PathVariable("wordValue") String wordValue,
+			@PathVariable("datasetCode") String datasetCode,
+			@PathVariable("lang") String lang) {
+
+		List<Long> wordIds = wordService.getWordIds(wordValue, datasetCode, lang);
+		return wordIds;
+	}
+
+	@Order(108)
 	@GetMapping(API_SERVICES_URI + CLASSIFIERS_URI + "/{classifierName}")
 	public List<Classifier> getClassifiers(@PathVariable("classifierName") String classifierNameStr) {
 
@@ -240,19 +252,19 @@ public class ApiSearchController extends AbstractApiController {
 		return commonDataService.getClassifiers(classifierName);
 	}
 
-	@Order(108)
+	@Order(109)
 	@GetMapping(API_SERVICES_URI + DOMAIN_ORIGINS_URI)
 	public List<Origin> getDomainOrigins() {
 		return commonDataService.getDomainOrigins();
 	}
 
-	@Order(109)
+	@Order(110)
 	@GetMapping(API_SERVICES_URI + DOMAINS_URI + "/{origin}")
 	public List<Classifier> getDomains(@PathVariable("origin") String origin) {
 		return commonDataService.getDomains(origin);
 	}
 
-	@Order(110)
+	@Order(111)
 	@GetMapping(API_SERVICES_URI + DATASETS_URI)
 	public List<Dataset> getDatasets() {
 		return commonDataService.getAllDatasets();

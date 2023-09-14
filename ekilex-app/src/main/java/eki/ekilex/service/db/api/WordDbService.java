@@ -78,6 +78,24 @@ public class WordDbService extends AbstractDataDbService {
 				.fetchInto(eki.ekilex.data.api.Word.class);
 	}
 
+	public List<Long> getWordsIds(String wordValue, String datasetCode, String lang) {
+
+		Word w = WORD.as("w");
+		Lexeme l = LEXEME.as("l");
+
+		return create
+				.select(w.ID)
+				.from(w, l)
+				.where(
+						w.VALUE.eq(wordValue)
+								.and(w.LANG.eq(lang))
+								.and(w.IS_PUBLIC.isTrue())
+								.and(w.ID.eq(l.WORD_ID))
+								.and(l.DATASET_CODE.eq(datasetCode)))
+				.groupBy(w.ID)
+				.fetchInto(Long.class);
+	}
+
 	public LexWord getLexWord(Long wordId, String datasetCode) {
 
 		Word w = WORD.as("w");
