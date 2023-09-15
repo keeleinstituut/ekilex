@@ -1342,7 +1342,7 @@ create index form_display_form_idx on form(display_form);
 create index form_display_level_idx on form(display_level);
 create index paradigm_word_id_idx on paradigm(word_id);
 create index paradigm_form_paradigm_id_idx on paradigm_form(paradigm_id);
-create index paradigm_form_form_id_idx on paradigm_form(id);
+create index paradigm_form_form_id_idx on paradigm_form(form_id);
 create index word_homonym_nr_idx on word(homonym_nr);
 create index word_lang_idx on word(lang);
 create index word_value_idx on word(value);
