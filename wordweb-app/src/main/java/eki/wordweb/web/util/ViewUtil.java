@@ -14,6 +14,7 @@ import org.springframework.stereotype.Component;
 import eki.common.constant.DatasetType;
 import eki.common.constant.GlobalConstant;
 import eki.common.constant.TextDecoration;
+import eki.common.data.Classifier;
 import eki.wordweb.constant.CollocMemberGroup;
 import eki.wordweb.constant.SystemConstant;
 import eki.wordweb.constant.WebConstant;
@@ -155,6 +156,24 @@ public class ViewUtil implements WebConstant, SystemConstant, GlobalConstant {
 			htmlBuf.append("&nbsp;");
 		}
 		htmlBuf.append("</span>");
+		return htmlBuf.toString();
+	}
+
+	public String getPosesAndGenderTooltipHtml(List<Classifier> poses, Classifier gender) {
+
+		StringBuilder htmlBuf = new StringBuilder();
+		if (CollectionUtils.isNotEmpty(poses)) {
+			for (Classifier pos : poses) {
+				htmlBuf.append("<div>");
+				htmlBuf.append(pos.getValue());
+				htmlBuf.append("</div>");
+			}
+		}
+		if (gender != null) {
+			htmlBuf.append("<div>");
+			htmlBuf.append(gender.getValue());
+			htmlBuf.append("</div>");
+		}
 		return htmlBuf.toString();
 	}
 

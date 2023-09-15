@@ -149,6 +149,10 @@ public class LexemeWord extends WordTypeData implements LexemeLevel, ComplexityT
 
 	private boolean showSection3;
 
+	private boolean showPoses;
+
+	private boolean showWordDataAsHidden;
+
 	public Long getLexemeId() {
 		return lexemeId;
 	}
@@ -667,4 +671,19 @@ public class LexemeWord extends WordTypeData implements LexemeLevel, ComplexityT
 		this.showSection3 = showSection3;
 	}
 
+	public boolean isShowPoses() {
+		return showPoses;
+	}
+
+	public void setShowPoses(boolean showPoses) {
+		this.showPoses = showPoses;
+	}
+
+	public boolean isShowWordDataAsHidden() {
+		return showWordDataAsHidden;
+	}
+
+	public void setShowWordDataAsHidden(boolean showWordDataAsHidden) {
+		this.showWordDataAsHidden = showWordDataAsHidden;
+	}
 }

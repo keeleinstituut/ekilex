@@ -17,6 +17,7 @@ import org.springframework.stereotype.Component;
 
 import eki.common.constant.ClassifierName;
 import eki.common.constant.Complexity;
+import eki.common.constant.DatasetType;
 import eki.common.constant.RelationStatus;
 import eki.common.data.Classifier;
 import eki.wordweb.data.LexemeWord;
@@ -302,26 +303,63 @@ public class WordConversionUtil extends AbstractConversionUtil {
 				.flatMap(List::stream)
 				.distinct()
 				.collect(Collectors.toList());
-		boolean isSinglePos = CollectionUtils.size(summarisedPoses) == 1;
+
+		List<String> summarisedPosCodes = summarisedPoses.stream().map(Classifier::getCode).collect(Collectors.toList());
+
+		boolean isShowLexPoses = false;
+		boolean isShowTermPoses = false;
+		if (CollectionUtils.isNotEmpty(summarisedPosCodes)) {
+			isShowLexPoses = lexemeWords.stream()
+					.filter(lexeme -> DatasetType.LEX.equals(lexeme.getDatasetType()))
+					.anyMatch(lexeme -> lexeme.getPosCodes() == null || !CollectionUtils.isEqualCollection(lexeme.getPosCodes(), summarisedPosCodes));
+
+			isShowTermPoses = lexemeWords.stream()
+					.filter(lexeme -> DatasetType.TERM.equals(lexeme.getDatasetType()))
+					.anyMatch(lexeme -> lexeme.getPosCodes() == null || !CollectionUtils.isEqualCollection(lexeme.getPosCodes(), summarisedPosCodes));
+		}
+
 		for (LexemeWord lexemeWord : lexemeWords) {
-			boolean isShowSection1 = CollectionUtils.isNotEmpty(lexemeWord.getGrammars())
-					|| (CollectionUtils.isNotEmpty(lexemeWord.getPoses()) && !isSinglePos)
-					|| (lexemeWord.getValueState() != null);
-			boolean isShowSection2 = CollectionUtils.isNotEmpty(lexemeWord.getRelatedLexemes())
-					|| CollectionUtils.isNotEmpty(lexemeWord.getRelatedMeanings())
-					|| CollectionUtils.isNotEmpty(lexemeWord.getAdviceNotes())
-					|| CollectionUtils.isNotEmpty(lexemeWord.getLearnerComments())
-					|| CollectionUtils.isNotEmpty(lexemeWord.getLexemeNotes())
-					|| CollectionUtils.isNotEmpty(lexemeWord.getMeaningNotes())
-					|| CollectionUtils.isNotEmpty(lexemeWord.getLexemeSourceLinks());
-			boolean isShowSection3 = CollectionUtils.isNotEmpty(lexemeWord.getGovernments())
-					|| CollectionUtils.isNotEmpty(lexemeWord.getUsages())
-					|| CollectionUtils.isNotEmpty(lexemeWord.getImageFiles());
-			lexemeWord.setShowSection1(isShowSection1);
-			lexemeWord.setShowSection2(isShowSection2);
-			lexemeWord.setShowSection3(isShowSection3);
+
+			if (DatasetType.LEX.equals(lexemeWord.getDatasetType())) {
+
+				boolean isShowPoses = isShowLexPoses && (CollectionUtils.isNotEmpty(lexemeWord.getPoses()));
+				boolean isShowSection1 = isShowPoses
+						|| CollectionUtils.isNotEmpty(lexemeWord.getGrammars())
+						|| (lexemeWord.getValueState() != null);
+				boolean isShowSection2 = CollectionUtils.isNotEmpty(lexemeWord.getRelatedLexemes())
+						|| CollectionUtils.isNotEmpty(lexemeWord.getRelatedMeanings())
+						|| CollectionUtils.isNotEmpty(lexemeWord.getAdviceNotes())
+						|| CollectionUtils.isNotEmpty(lexemeWord.getLearnerComments())
+						|| CollectionUtils.isNotEmpty(lexemeWord.getLexemeNotes())
+						|| CollectionUtils.isNotEmpty(lexemeWord.getMeaningNotes())
+						|| CollectionUtils.isNotEmpty(lexemeWord.getLexemeSourceLinks());
+				boolean isShowSection3 = CollectionUtils.isNotEmpty(lexemeWord.getGovernments())
+						|| CollectionUtils.isNotEmpty(lexemeWord.getUsages())
+						|| CollectionUtils.isNotEmpty(lexemeWord.getImageFiles());
+				lexemeWord.setShowSection1(isShowSection1);
+				lexemeWord.setShowSection2(isShowSection2);
+				lexemeWord.setShowSection3(isShowSection3);
+				lexemeWord.setShowPoses(isShowPoses);
+
+			} else if (DatasetType.TERM.equals(lexemeWord.getDatasetType())) {
+
+				String wordValue = lexemeWord.getWord();
+				String wordLang = lexemeWord.getLang();
+				List<LexemeWord> meaningLexemes = lexemeWord.getMeaningLexemes();
+				for (LexemeWord meaningLexeme : meaningLexemes) {
+					String meaningLexemeWordValue = meaningLexeme.getWord();
+					String meaningLexemeWordlang = meaningLexeme.getLang();
+					if (StringUtils.equals(meaningLexemeWordValue, wordValue) && StringUtils.equals(meaningLexemeWordlang, wordLang)) {
+						meaningLexeme.setShowWordDataAsHidden(false);
+						meaningLexeme.setShowPoses(isShowTermPoses);
+					} else {
+						boolean isShowWordDataAsHidden = CollectionUtils.isNotEmpty(meaningLexeme.getPoses()) || meaningLexeme.getGender() != null;
+						meaningLexeme.setShowWordDataAsHidden(isShowWordDataAsHidden);
+						meaningLexeme.setShowPoses(true);
+					}
+				}
+			}
 		}
 		word.setSummarisedPoses(summarisedPoses);
-		word.setSinglePos(isSinglePos);
 	}
 }

@@ -279,6 +279,12 @@
                             <span th:utext="${viewUtil.getWordValueMarkup(meaningLexeme)}">tee</span>
                           </a>
                           <span class="text-small" th:if="${meaningLexeme.valueState != null}" th:text="${meaningLexeme.valueState.value}"></span>
+                          <th:block th:if="${meaningLexeme.showWordDataAsHidden}">
+                            <button type="button" class="btn btn-icon btn-sm" data-toggle="tooltip" data-html="true"
+                                    th:title="${viewUtil.getPosesAndGenderTooltipHtml(meaningLexeme.poses, meaningLexeme.gender)}">
+                              <i class="fas fa-info-circle"></i>
+                            </button>
+                          </th:block>
                         </div>
                       </div>
                       <div class="row text-small" th:if="${meaningLexeme.reliability != null}">
@@ -294,7 +300,6 @@
                       <div class="row" th:if="${not #lists.isEmpty(meaningLexeme.lexemeSourceLinks)}">
                         <div class="col">
                           <span class="definition-sources">
-                            <!--<span th:text="#{label.sources}">Allikad:</span>: -->
                             <th:block th:each="sourceLink,sourceLinkIter : ${meaningLexeme.lexemeSourceLinks}">
                               <button class="source-link btn btn-link-dark pt-0 px-0 pb-1" data-toggle="popover" data-html="true"
                                       th:title="#{label.source}" th:data-content="${#strings.listJoin(sourceLink.sourceProps, ', ')}">
@@ -318,19 +323,19 @@
                           </span>
                         </div>
                       </div>
-                      <div class="row" th:if="${meaningLexeme.gender != null}">
+                      <div class="row" th:if="${meaningLexeme.gender != null && !meaningLexeme.showWordDataAsHidden}">
                         <div class="col">
                           <span th:text="${meaningLexeme.gender.value}"></span>
                         </div>
                       </div>
-                      <div class="row" th:if="${not #lists.isEmpty(meaningLexeme.poses)}">
+                      <div class="row" th:if="${not #lists.isEmpty(meaningLexeme.poses) && meaningLexeme.showPoses && !meaningLexeme.showWordDataAsHidden}">
                         <div class="col">
                           <span class="tag" th:each="pos : ${meaningLexeme.poses}" th:text="${pos.value}"></span>
                         </div>
                       </div>
                       <div class="row" th:if="${not #lists.isEmpty(meaningLexeme.registers)}">
                         <div class="col">
-                          <span class="domain register mr-1 mb-1" th:each="register,registerIter : ${meaningLexeme.registers}" th:text="${register.value + (registerIter.last ? '' : ', ')}"></span>                          
+                          <span class="domain register mr-1 mb-1" th:each="register,registerIter : ${meaningLexeme.registers}" th:text="${register.value + (registerIter.last ? '' : ', ')}"></span>
                         </div>
                       </div>
                       <div class="row" th:if="${not #lists.isEmpty(meaningLexeme.wordTypes)}">

@@ -52,8 +52,6 @@ public class Word extends WordTypeData {
 
 	private boolean formsExist;
 
-	private boolean singlePos;
-
 	private boolean wordRelationsExist;
 
 	private boolean selected;
@@ -208,14 +206,6 @@ public class Word extends WordTypeData {
 
 	public void setFormsExist(boolean formsExist) {
 		this.formsExist = formsExist;
-	}
-
-	public boolean isSinglePos() {
-		return singlePos;
-	}
-
-	public void setSinglePos(boolean singlePos) {
-		this.singlePos = singlePos;
 	}
 
 	public boolean isWordRelationsExist() {

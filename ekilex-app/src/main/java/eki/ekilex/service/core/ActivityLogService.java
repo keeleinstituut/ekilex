@@ -481,7 +481,6 @@ public class ActivityLogService implements SystemConstant, GlobalConstant {
 			List<Long> roleDatasetMeaningIds = filterRoleDatasetMeaningIds(meaningIds);
 			for (Long roleDatasetMeaningId : roleDatasetMeaningIds) {
 				activityLogDbService.updateMeaningManualEventOn(roleDatasetMeaningId, eventOn);
-
 			}
 		}
 

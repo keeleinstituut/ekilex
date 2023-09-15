@@ -34,13 +34,12 @@
               <div class="meaning">
                 <div class="definition-row definition-area">
                   <div class="mb-3" th:if="${lexeme.showSection1}">
-                    <th:block th:if="${not #lists.isEmpty(lexeme.poses) && !wordData.word.singlePos}">
+                    <th:block th:if="${lexeme.showPoses}">
                       <span class="tag" th:each="pos : ${lexeme.poses}" th:text="${pos.value}"></span>
                     </th:block>
                     <span class="lexeme grammars tag" th:if="${not #lists.isEmpty(lexeme.grammars)}">
                       <span th:each="grammar,grammarIter : ${lexeme.grammars}" th:utext="${grammar.value + (grammarIter.last ? '' : ', ')}"></span>
                     </span>
-                    <!-- valueState meaning -->
                     <span class="lexeme tag" th:if="${lexeme.valueState != null}" th:text="${lexeme.valueState.value}"></span>
                   </div>
                   <th:block th:if="${not #maps.isEmpty(lexeme.definitionsByLang)}">
