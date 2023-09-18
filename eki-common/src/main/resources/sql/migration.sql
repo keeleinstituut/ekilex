@@ -1,3 +1,5 @@
+-- Kustuta ekilexi baasi tüübid (types) ja vaated (views)
+
 -- Kasutusnäidete allikaviidete puuduvate väärtuste taastamine
 update freeform_source_link ffsl
 set value = s.source_name
@@ -212,4 +214,4 @@ where l.is_public is false
               where w.id = l.word_id
                 and w.is_public is false);
 
--- Loo uuesti ekilexi tüübid (types) ja vaated (views)
+-- Loo uuesti ekilexi baasi tüübid (types) ja vaated (views)
