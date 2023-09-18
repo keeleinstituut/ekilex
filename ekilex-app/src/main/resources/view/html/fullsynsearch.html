@@ -65,9 +65,9 @@
                       <i class="action-icon fa fa-plus" aria-hidden="true"></i>
                     </button>
                   </div>
-                  <div th:each="forum : ${details.word.forums}">
+                  <div th:each="forum,forumIter : ${details.word.forums}">
                     <div th:replace="syndialog :: edit_word_forum_dlg"></div>
-                    <div class="col hidden-buttons pr-5">
+                    <div class="col hidden-buttons pr-5" th:classappend="${forumIter.last ? '' : 'mb-3'}">
                       <div class="action-buttons-anchor">
                         <span th:utext="${forum.valuePrese}"></span>
                         <span class="ctxt" th:text="'[' + ${forum.modifiedBy} + ']'" th:if="${forum.modifiedBy != null}"></span>
