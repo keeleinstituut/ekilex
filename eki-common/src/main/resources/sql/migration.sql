@@ -1,5 +1,3 @@
--- Kustuta ekilexi baasi tüübid (types) ja vaated (views)
-
 -- Kasutusnäidete allikaviidete puuduvate väärtuste taastamine
 update freeform_source_link ffsl
 set value = s.source_name
@@ -169,7 +167,7 @@ where not exists (select pf.id
                   from paradigm_form pf
                   where pf.form_id = f.id);
 
-alter table form drop column paradigm_id, drop column order_by;
+alter table form drop column paradigm_id cascade, drop column order_by cascade;
 
 -- Töömahu raporti jaoks logimise täiendamine
 alter table activity_log add column dataset_code varchar(10) references dataset(code) null;
