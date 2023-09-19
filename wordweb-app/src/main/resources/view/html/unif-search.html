@@ -126,7 +126,7 @@
               <div th:replace="common-search :: no-lexemes-exist"></div>
             </div>
           </div>
-          <div class="col-md-5 col-lg-4 more-data sidebar">
+          <div class="col-md-5 col-lg-4 more-data sidebar" th:unless="${wordData.word.incorrectWordForm}">
             <th:block th:replace="common-search-sidebar :: paradigms"></th:block>
             <th:block th:replace="common-search-sidebar :: od-word-recommendations"></th:block>
             <th:block th:replace="common-search-sidebar :: word-relations"></th:block>
@@ -137,6 +137,9 @@
             <th:block th:if="${wordData.word.lang == 'rus'}">
               <section th:replace="common-search-sidebar :: corp_rus"></section>
             </th:block>
+          </div>
+          <div class="col-md-5 col-lg-4 more-data sidebar" th:if="${wordData.word.incorrectWordForm}">
+            <th:block th:replace="common-search-sidebar :: od-word-recommendations"></th:block>
           </div>
         </div>
       </div>

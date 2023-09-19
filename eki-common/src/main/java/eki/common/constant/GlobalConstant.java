@@ -56,6 +56,8 @@ public interface GlobalConstant {
 
 	String WORD_TYPE_CODE_SYMBOL = "th";
 
+	String WORD_TYPE_CODE_INCORRECT_WORD_FORM = "viga";
+
 	String[] WORD_TYPE_CODES_ABBREVIATION = new String[] {"l", "th"};
 
 	String[] WORD_TYPE_CODES_FOREIGN = new String[] {"z", "lz"};

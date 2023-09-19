@@ -36,17 +36,20 @@ public abstract class AbstractConversionUtil implements WebConstant, SystemConst
 		boolean isSuffixoid = false;
 		boolean isAbbreviationWord = false;
 		boolean isForeignWord = false;
+		boolean isIncorrectWordForm = false;
 		List<String> wordTypeCodes = wordTypeData.getWordTypeCodes();
 		if (CollectionUtils.isNotEmpty(wordTypeCodes)) {
 			isPrefixoid = wordTypeCodes.contains(WORD_TYPE_CODE_PREFIXOID);
 			isSuffixoid = wordTypeCodes.contains(WORD_TYPE_CODE_SUFFIXOID);
 			isAbbreviationWord = CollectionUtils.containsAny(wordTypeCodes, Arrays.asList(WORD_TYPE_CODES_ABBREVIATION));
 			isForeignWord = CollectionUtils.containsAny(wordTypeCodes, Arrays.asList(WORD_TYPE_CODES_FOREIGN));
+			isIncorrectWordForm = wordTypeCodes.contains(WORD_TYPE_CODE_INCORRECT_WORD_FORM);
 		}
 		wordTypeData.setPrefixoid(isPrefixoid);
 		wordTypeData.setSuffixoid(isSuffixoid);
 		wordTypeData.setAbbreviationWord(isAbbreviationWord);
 		wordTypeData.setForeignWord(isForeignWord);
+		wordTypeData.setIncorrectWordForm(isIncorrectWordForm);
 
 		if (wordTypeData instanceof Word) {
 			Word word = (Word) wordTypeData;
