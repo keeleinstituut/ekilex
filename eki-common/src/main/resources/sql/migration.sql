@@ -212,4 +212,10 @@ where l.is_public is false
               where w.id = l.word_id
                 and w.is_public is false);
 
+-- Üleliigsete ekilexi funktsionaalsuste kustutamine
+drop extension dblink cascade;
+drop extension pg_stat_statements cascade;
+drop extension pg_trgm cascade;
+drop extension unaccent cascade;
+
 -- Loo uuesti ekilexi baasi tüübid (types) ja vaated (views)
