@@ -18,6 +18,11 @@ public class StatService {
 	private StatDbService statDbService;
 
 	@Transactional
+	public long getWwSearchStatCount() {
+		return statDbService.getWwSearchStatCount();
+	}
+
+	@Transactional
 	public Map<String, Integer> getWwSearchStat(String searchMode, String datasetCode, String lang, String resultsFrom, String resultsUntil) throws Exception {
 		return statDbService.getWwSearchStat(searchMode, datasetCode, lang, resultsFrom, resultsUntil);
 	}

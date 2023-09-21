@@ -27,6 +27,13 @@ public class ApiStatController implements StatConstant {
 	@Autowired
 	private StatService statService;
 
+	@GetMapping(STAT_API_SERVICES_URI + WW_STAT_COUNT_URI)
+	@ResponseBody
+	public long getWwSearchStatCount() {
+
+		return statService.getWwSearchStatCount();
+	}
+
 	@GetMapping(STAT_API_SERVICES_URI)
 	@ResponseBody
 	public Map<String, Integer> getSearchStat(
