@@ -476,12 +476,13 @@ public class CudDbService extends AbstractDataDbService {
 				.execute();
 	}
 
-	public void updateMeaningLexemesPublicity(Long meaningId, boolean isPublic) {
+	public void updateMeaningLexemesPublicity(Long meaningId, String datasetCode, boolean isPublic) {
 		create
 				.update(LEXEME)
 				.set(LEXEME.IS_PUBLIC, isPublic)
 				.where(
 						LEXEME.MEANING_ID.eq(meaningId)
+								.and(LEXEME.DATASET_CODE.eq(datasetCode))
 								.and(LEXEME.IS_PUBLIC.ne(isPublic)))
 				.execute();
 	}
@@ -500,12 +501,13 @@ public class CudDbService extends AbstractDataDbService {
 				.execute();
 	}
 
-	public void updateWordLexemesPublicity(Long wordId, boolean isPublic) {
+	public void updateWordLexemesPublicity(Long wordId, String datasetCode, boolean isPublic) {
 		create
 				.update(LEXEME)
 				.set(LEXEME.IS_PUBLIC, isPublic)
 				.where(
 						LEXEME.WORD_ID.eq(wordId)
+								.and(LEXEME.DATASET_CODE.eq(datasetCode))
 								.and(LEXEME.IS_PUBLIC.ne(isPublic)))
 				.execute();
 	}

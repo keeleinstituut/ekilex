@@ -1,12 +1,6 @@
-Märkused ver 1.31.0 tarne kohta:
+Märkused ver 1.31.1 tarne kohta:
 
-* Teha värske sõnaveebi laadimine:
+* Militerm andmete avalikkuse parandus
 
-Kustutada ekilexi baasis kõik sõnaveebiga seotud vaated ja andmetüübid:
-  /eki-common/src/main/resources/sql/drop_all.sql sektsioon "wordweb associated views and types"
-
-Luua ekilexi baasis vaated:
-  /eki-common/src/main/resources/sql/create_views.sql
-
-Luua sõnaveebi baasis vaated:
-  /wordweb-app/fileresources/sql/create_mviews.sql
+* sisaldab muuhulgas ka Ekilexi andmebaasi migratsiooni skripti:
+  /eki-common/src/main/resources/sql/delivery.sql
