@@ -38,6 +38,8 @@ public interface SystemConstant {
 
 	String CACHE_KEY_TAG = "tag";
 
+	String CACHE_KEY_WORKLOAD_REPORT = "workloadreport";
+
 	int MAX_TEXT_LENGTH_LIMIT = 2000;
 
 	int EXECUTE_QUEUE_DELAY_1_SEC = 1000;

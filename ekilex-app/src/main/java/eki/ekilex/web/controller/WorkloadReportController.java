@@ -15,11 +15,16 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.SessionAttributes;
 
+import eki.common.constant.ActivityOwner;
+import eki.ekilex.constant.SearchEntity;
+import eki.ekilex.constant.SearchResultMode;
 import eki.ekilex.constant.WebConstant;
 import eki.ekilex.data.Dataset;
 import eki.ekilex.data.EkiUser;
+import eki.ekilex.data.SearchFilter;
 import eki.ekilex.data.WorkloadReport;
 import eki.ekilex.service.WorkloadReportService;
+import eki.ekilex.web.util.SearchHelper;
 
 @ConditionalOnWebApplication
 @Controller
@@ -28,6 +33,9 @@ public class WorkloadReportController extends AbstractPrivatePageController {
 
 	@Autowired
 	private WorkloadReportService workloadReportService;
+
+	@Autowired
+	protected SearchHelper searchHelper;
 
 	@GetMapping(WORKLOAD_REPORT_URI)
 	public String init(Model model) {
@@ -78,5 +86,44 @@ public class WorkloadReportController extends AbstractPrivatePageController {
 		model.addAttribute("datasetUsers", datasetUsers);
 
 		return WORKLOAD_REPORT_PAGE;
+	}
+
+	@GetMapping(WORKLOAD_REPORT_URI + "/{searchPage}/{activityOwner}/{searchIds}")
+	public String sourceDetailSearch(
+			@PathVariable("searchPage") String searchPage,
+			@PathVariable("activityOwner") ActivityOwner activityOwner,
+			@PathVariable("searchIds") List<Long> searchIds) {
+
+		List<String> selectedDatasets = getUserPreferredDatasetCodes();
+		SearchFilter detailSearchFilter;
+
+		if (ActivityOwner.WORD.equals(activityOwner)) {
+			if (LEX_SEARCH_PAGE.equals(searchPage)) {
+				detailSearchFilter = searchHelper.createIdsDetailSearchFilter(SearchEntity.HEADWORD, searchIds);
+			} else {
+				detailSearchFilter = searchHelper.createIdsDetailSearchFilter(SearchEntity.TERM, searchIds);
+			}
+		} else if (ActivityOwner.MEANING.equals(activityOwner)) {
+			if (LEX_SEARCH_PAGE.equals(searchPage)) {
+				detailSearchFilter = searchHelper.createIdsDetailSearchFilter(SearchEntity.MEANING, searchIds);
+			} else {
+				detailSearchFilter = searchHelper.createIdsDetailSearchFilter(SearchEntity.CONCEPT, searchIds);
+			}
+		} else if (ActivityOwner.LEXEME.equals(activityOwner)) {
+			if (LEX_SEARCH_PAGE.equals(searchPage)) {
+				detailSearchFilter = searchHelper.createIdsDetailSearchFilter(SearchEntity.HEADWORD, searchIds);
+			} else {
+				detailSearchFilter = searchHelper.createIdsDetailSearchFilter(SearchEntity.CONCEPT, searchIds);
+			}
+		} else {
+			throw new UnsupportedOperationException();
+		}
+
+		String searchUri = searchHelper.composeSearchUri(SEARCH_MODE_DETAIL, selectedDatasets, null, detailSearchFilter, SearchResultMode.MEANING, null);
+		if (LEX_SEARCH_PAGE.equals(searchPage)) {
+			return "redirect:" + LEX_SEARCH_URI + searchUri;
+		} else {
+			return "redirect:" + TERM_SEARCH_URI + searchUri;
+		}
 	}
 }

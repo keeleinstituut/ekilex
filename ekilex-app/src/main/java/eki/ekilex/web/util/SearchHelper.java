@@ -439,6 +439,23 @@ public class SearchHelper implements WebConstant, GlobalConstant {
 		return detailSearchFilter;
 	}
 
+	public SearchFilter createIdsDetailSearchFilter(SearchEntity searchEntity, List<Long> searchIds) {
+
+		SearchKey searchKey = SearchKey.COMMA_SEPARATED_IDS;
+		SearchOperand searchOperand = SearchOperand.EQUALS;
+
+		SearchFilter detailSearchFilter = new SearchFilter();
+		SearchCriterion criterion = new SearchCriterion();
+		criterion.setSearchKey(searchKey);
+		criterion.setSearchOperand(searchOperand);
+		criterion.setSearchValue(searchIds);
+		SearchCriterionGroup searchGroup = new SearchCriterionGroup();
+		searchGroup.setEntity(searchEntity);
+		searchGroup.setSearchCriteria(asList(criterion));
+		detailSearchFilter.setCriteriaGroups(asList(searchGroup));
+		return detailSearchFilter;
+	}
+
 	public Long getMeaningIdSearchMeaningId(SearchFilter detailSearchFilter) {
 
 		List<SearchCriterionGroup> criteriaGroups = detailSearchFilter.getCriteriaGroups();
