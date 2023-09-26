@@ -89,41 +89,42 @@ public class WorkloadReportController extends AbstractPrivatePageController {
 	}
 
 	@GetMapping(WORKLOAD_REPORT_URI + "/{searchPage}/{activityOwner}/{searchIds}")
-	public String sourceDetailSearch(
+	public String workloadReportDetailSearch(
 			@PathVariable("searchPage") String searchPage,
 			@PathVariable("activityOwner") ActivityOwner activityOwner,
 			@PathVariable("searchIds") List<Long> searchIds) {
 
 		List<String> selectedDatasets = getUserPreferredDatasetCodes();
-		SearchFilter detailSearchFilter;
+		SearchEntity searchEntity;
 
 		if (ActivityOwner.WORD.equals(activityOwner)) {
 			if (LEX_SEARCH_PAGE.equals(searchPage)) {
-				detailSearchFilter = searchHelper.createIdsDetailSearchFilter(SearchEntity.HEADWORD, searchIds);
+				searchEntity = SearchEntity.HEADWORD;
 			} else {
-				detailSearchFilter = searchHelper.createIdsDetailSearchFilter(SearchEntity.TERM, searchIds);
+				searchEntity = SearchEntity.TERM;
 			}
 		} else if (ActivityOwner.MEANING.equals(activityOwner)) {
 			if (LEX_SEARCH_PAGE.equals(searchPage)) {
-				detailSearchFilter = searchHelper.createIdsDetailSearchFilter(SearchEntity.MEANING, searchIds);
+				searchEntity = SearchEntity.MEANING;
 			} else {
-				detailSearchFilter = searchHelper.createIdsDetailSearchFilter(SearchEntity.CONCEPT, searchIds);
+				searchEntity = SearchEntity.CONCEPT;
 			}
 		} else if (ActivityOwner.LEXEME.equals(activityOwner)) {
 			if (LEX_SEARCH_PAGE.equals(searchPage)) {
-				detailSearchFilter = searchHelper.createIdsDetailSearchFilter(SearchEntity.HEADWORD, searchIds);
+				searchEntity = SearchEntity.HEADWORD;
 			} else {
-				detailSearchFilter = searchHelper.createIdsDetailSearchFilter(SearchEntity.CONCEPT, searchIds);
+				searchEntity = SearchEntity.CONCEPT;
 			}
 		} else {
 			throw new UnsupportedOperationException();
 		}
 
+		SearchFilter detailSearchFilter = searchHelper.createIdsDetailSearchFilter(searchEntity, searchIds);
 		String searchUri = searchHelper.composeSearchUri(SEARCH_MODE_DETAIL, selectedDatasets, null, detailSearchFilter, SearchResultMode.MEANING, null);
 		if (LEX_SEARCH_PAGE.equals(searchPage)) {
-			return "redirect:" + LEX_SEARCH_URI + searchUri;
+			return REDIRECT_PREF + LEX_SEARCH_URI + searchUri;
 		} else {
-			return "redirect:" + TERM_SEARCH_URI + searchUri;
+			return REDIRECT_PREF + TERM_SEARCH_URI + searchUri;
 		}
 	}
 }
