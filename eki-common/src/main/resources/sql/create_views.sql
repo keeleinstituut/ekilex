@@ -1,6 +1,3 @@
--- run this once:
--- create extension unaccent;
-
 create type type_lang_complexity as (
 				lang varchar(10),
 				dataset_code varchar(10),

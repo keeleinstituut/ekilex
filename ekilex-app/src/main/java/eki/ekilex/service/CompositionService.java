@@ -318,7 +318,7 @@ public class CompositionService extends AbstractService implements GlobalConstan
 		activityLogService.joinApproveMeaning(targetMeaningId, sourceMeaningId);
 		joinMeaningsCommonWordsLexemes(targetMeaningId, sourceMeaningId);
 		compositionDbService.joinMeanings(targetMeaningId, sourceMeaningId);
-		updateMeaningLexemesPublicity(targetMeaningId);
+		updateMeaningLexemesPublicity(targetMeaningId, DATASET_EKI);
 
 		activityLogService.createActivityLog(activityLog1, sourceMeaningId, ActivityEntity.MEANING);
 		activityLogService.createActivityLog(activityLog2, targetMeaningId, ActivityEntity.MEANING);
@@ -346,7 +346,7 @@ public class CompositionService extends AbstractService implements GlobalConstan
 
 		joinMeaningsCommonWordsLexemes(targetMeaningId, sourceMeaningId);
 		compositionDbService.joinMeanings(targetMeaningId, sourceMeaningId);
-		updateMeaningLexemesPublicity(targetMeaningId);
+		updateMeaningLexemesPublicity(targetMeaningId, DATASET_EKI);
 
 		activityLogService.createActivityLog(activityLog1, sourceLexemeId, ActivityEntity.LEXEME);
 		activityLogService.createActivityLog(activityLog2, targetLexemeId, ActivityEntity.LEXEME);
@@ -376,7 +376,7 @@ public class CompositionService extends AbstractService implements GlobalConstan
 		joinLexemeData(targetWordId, sourceWordId);
 		joinParadigms(targetWordId, sourceWordId);
 		cudDbService.deleteWord(sourceWord);
-		updateWordLexemesPublicity(targetWordId);
+		updateWordLexemesPublicity(targetWordId, DATASET_EKI);
 
 		activityLogService.createActivityLog(activityLog1, sourceWordId, ActivityEntity.WORD);
 		activityLogService.createActivityLog(activityLog2, targetWordId, ActivityEntity.WORD);
@@ -481,19 +481,19 @@ public class CompositionService extends AbstractService implements GlobalConstan
 		}
 	}
 
-	private void updateMeaningLexemesPublicity(Long targetMeaningId) {
+	private void updateMeaningLexemesPublicity(Long targetMeaningId, String datasetCode) {
 
-		boolean publicLexemeExists = lookupDbService.meaningPublicLexemeExists(targetMeaningId);
+		boolean publicLexemeExists = lookupDbService.meaningPublicLexemeExists(targetMeaningId, datasetCode);
 		if (publicLexemeExists) {
-			cudDbService.updateMeaningLexemesPublicity(targetMeaningId, PUBLICITY_PUBLIC);
+			cudDbService.updateMeaningLexemesPublicity(targetMeaningId, datasetCode, PUBLICITY_PUBLIC);
 		}
 	}
 
-	private void updateWordLexemesPublicity(Long targetWordId) {
+	private void updateWordLexemesPublicity(Long targetWordId, String datasetCode) {
 
-		boolean publicLexemeExists = lookupDbService.wordPublicLexemeExists(targetWordId);
+		boolean publicLexemeExists = lookupDbService.wordPublicLexemeExists(targetWordId, datasetCode);
 		if (publicLexemeExists) {
-			cudDbService.updateWordLexemesPublicity(targetWordId, PUBLICITY_PUBLIC);
+			cudDbService.updateWordLexemesPublicity(targetWordId, datasetCode, PUBLICITY_PUBLIC);
 		}
 	}
 

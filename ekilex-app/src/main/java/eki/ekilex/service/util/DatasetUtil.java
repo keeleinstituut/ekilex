@@ -18,6 +18,7 @@ public class DatasetUtil implements GlobalConstant {
 	}
 
 	public List<Dataset> resortPriorityDatasets(List<Dataset> datasets) {
+		datasets = datasets.stream().collect(Collectors.toList());
 		Dataset datasetEki = datasets.stream().filter(dataset -> StringUtils.equals(dataset.getCode(), DATASET_EKI)).findFirst().orElse(null);
 		if (datasetEki != null) {
 			datasets.remove(datasetEki);

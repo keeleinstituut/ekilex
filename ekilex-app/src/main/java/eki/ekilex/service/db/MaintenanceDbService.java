@@ -4,11 +4,13 @@ import static eki.ekilex.data.db.Tables.COLLOCATION_FREEFORM;
 import static eki.ekilex.data.db.Tables.DATA_REQUEST;
 import static eki.ekilex.data.db.Tables.DEFINITION;
 import static eki.ekilex.data.db.Tables.DEFINITION_FREEFORM;
+import static eki.ekilex.data.db.Tables.FORM;
 import static eki.ekilex.data.db.Tables.FREEFORM;
 import static eki.ekilex.data.db.Tables.LEXEME;
 import static eki.ekilex.data.db.Tables.LEXEME_FREEFORM;
 import static eki.ekilex.data.db.Tables.MEANING;
 import static eki.ekilex.data.db.Tables.MEANING_FREEFORM;
+import static eki.ekilex.data.db.Tables.PARADIGM_FORM;
 import static eki.ekilex.data.db.Tables.SOURCE_FREEFORM;
 import static eki.ekilex.data.db.Tables.WORD;
 import static eki.ekilex.data.db.Tables.WORD_FREEFORM;
@@ -195,6 +197,18 @@ public class MaintenanceDbService extends AbstractDataDbService {
 						.select(LEXEME.ID)
 						.from(LEXEME)
 						.where(LEXEME.WORD_ID.eq(WORD.ID)))
+				.andExists(DSL.select(DSL.field(IGNORE_QUERY_LOG)))
+				.execute();
+	}
+
+	public int deleteFloatingForms() {
+
+		return create
+				.delete(FORM)
+				.whereNotExists(DSL
+						.select(PARADIGM_FORM.ID)
+						.from(PARADIGM_FORM)
+						.where(PARADIGM_FORM.FORM_ID.eq(FORM.ID)))
 				.andExists(DSL.select(DSL.field(IGNORE_QUERY_LOG)))
 				.execute();
 	}

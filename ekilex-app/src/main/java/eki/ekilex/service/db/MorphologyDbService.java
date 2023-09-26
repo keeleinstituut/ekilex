@@ -7,6 +7,7 @@ import static eki.ekilex.data.db.Tables.PARADIGM_FORM;
 import java.util.List;
 
 import org.jooq.DSLContext;
+import org.jooq.impl.DSL;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -42,46 +43,61 @@ public class MorphologyDbService {
 
 	}
 
-	public Long createForm(Form form) {
+	public Long createForm(Form form, Long wordId) {
 
 		Long formId = create
-				.insertInto(FORM,
-						FORM.MORPH_GROUP1,
-						FORM.MORPH_GROUP2,
-						FORM.MORPH_GROUP3,
-						FORM.DISPLAY_LEVEL,
-						FORM.MORPH_CODE,
-						FORM.MORPH_EXISTS,
-						FORM.IS_QUESTIONABLE,
-						FORM.VALUE,
-						FORM.VALUE_PRESE,
-						FORM.COMPONENTS,
-						FORM.DISPLAY_FORM,
-						FORM.AUDIO_FILE)
-				.values(
-						form.getMorphGroup1(),
-						form.getMorphGroup2(),
-						form.getMorphGroup3(),
-						form.getDisplayLevel(),
-						form.getMorphCode(),
-						form.isMorphExists(),
-						form.isQuestionable(),
-						form.getValue(),
-						form.getValuePrese(),
-						form.getComponents(),
-						form.getDisplayForm(),
-						form.getAudioFile())
-				.returning(FORM.ID)
-				.fetchOne()
-				.getId();
+				.select(FORM.ID)
+				.from(FORM, PARADIGM_FORM, PARADIGM)
+				.where(
+						FORM.DISPLAY_LEVEL.eq(form.getDisplayLevel())
+								.and(FORM.MORPH_CODE.eq(form.getMorphCode()))
+								.and(FORM.VALUE.eq(form.getValue()))
+								.and(FORM.DISPLAY_FORM.eq(form.getDisplayForm()))
+								.and(PARADIGM_FORM.FORM_ID.eq(FORM.ID))
+								.and(PARADIGM_FORM.PARADIGM_ID.eq(PARADIGM.ID))
+								.and(PARADIGM.WORD_ID.eq(wordId)))
+				.fetchOptionalInto(Long.class)
+				.orElse(null);
+
+		if (formId == null) {
+			formId = create
+					.insertInto(FORM,
+							FORM.MORPH_GROUP1,
+							FORM.MORPH_GROUP2,
+							FORM.MORPH_GROUP3,
+							FORM.DISPLAY_LEVEL,
+							FORM.MORPH_CODE,
+							FORM.MORPH_EXISTS,
+							FORM.IS_QUESTIONABLE,
+							FORM.VALUE,
+							FORM.VALUE_PRESE,
+							FORM.COMPONENTS,
+							FORM.DISPLAY_FORM,
+							FORM.AUDIO_FILE)
+					.values(
+							form.getMorphGroup1(),
+							form.getMorphGroup2(),
+							form.getMorphGroup3(),
+							form.getDisplayLevel(),
+							form.getMorphCode(),
+							form.isMorphExists(),
+							form.isQuestionable(),
+							form.getValue(),
+							form.getValuePrese(),
+							form.getComponents(),
+							form.getDisplayForm(),
+							form.getAudioFile())
+					.returning(FORM.ID)
+					.fetchOne()
+					.getId();
+		}
 
 		create
 				.insertInto(PARADIGM_FORM,
 						PARADIGM_FORM.FORM_ID,
 						PARADIGM_FORM.PARADIGM_ID)
 				.values(
-						formId,
-						form.getParadigmId())
+						formId, form.getParadigmId())
 				.execute();
 
 			return formId;
@@ -90,6 +106,17 @@ public class MorphologyDbService {
 	public void deleteParadigmsForWord(Long wordId) {
 
 		create.deleteFrom(PARADIGM).where(PARADIGM.WORD_ID.eq(wordId)).execute();
+	}
+
+	public int deleteFloatingForms() {
+
+		return create
+				.deleteFrom(FORM)
+				.whereNotExists(DSL
+						.select(PARADIGM_FORM.ID)
+						.from(PARADIGM_FORM)
+						.where(PARADIGM_FORM.FORM_ID.eq(FORM.ID)))
+				.execute();
 	}
 
 	public List<Paradigm> getParadigms(Long wordId) {

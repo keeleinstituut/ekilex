@@ -31,6 +31,10 @@ public class StatDbService {
 	@Autowired
 	private DSLContext create;
 
+	public long getWwSearchStatCount() {
+		return create.selectCount().from(WW_SEARCH).fetchOneInto(Long.class);
+	}
+
 	public Map<String, Integer> getWwSearchStat(String searchMode, String datasetCode, String lang, String resultsFrom, String resultsUntil) throws Exception {
 
 		Condition where = DSL.noCondition();

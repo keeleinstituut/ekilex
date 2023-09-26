@@ -1,6 +1,5 @@
 package eki.wordweb.service;
 
-import java.io.IOException;
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
@@ -23,12 +22,15 @@ import eki.common.constant.RequestOrigin;
 import eki.common.constant.StatType;
 import eki.common.data.ExceptionStat;
 import eki.common.data.SearchStat;
+import eki.common.exception.RemoteServiceException;
+import eki.wordweb.constant.WebConstant;
 import eki.wordweb.data.SearchRequest;
 import eki.wordweb.data.SearchValidation;
+import eki.wordweb.data.StatServiceStatus;
 import eki.wordweb.data.WordsData;
 
 @Component
-public class StatDataCollector implements GlobalConstant {
+public class StatDataCollector implements GlobalConstant, WebConstant {
 
 	private static Logger logger = LoggerFactory.getLogger(StatDataCollector.class);
 
@@ -42,6 +44,25 @@ public class StatDataCollector implements GlobalConstant {
 
 	@Value("${ekistat.service.key}")
 	private String serviceKey;
+
+	public StatServiceStatus getStatServiceStatus() {
+
+		StatServiceStatus statServiceStatus = new StatServiceStatus();
+		statServiceStatus.setServiceEnabled(serviceEnabled);
+		statServiceStatus.setServiceUrl(serviceUrl);
+		if (serviceEnabled) {
+			try {
+				long wwSearchStatCount = getWwSearchStatCount();
+				statServiceStatus.setWwSearchStatCount(wwSearchStatCount);
+				statServiceStatus.setResponseStatus("OK");
+			} catch (Exception e) {
+				statServiceStatus.setExceptionMessage(e.getMessage());
+				statServiceStatus.setResponseStatus("ERROR");
+				logger.error("Stat service status error: ", e);
+			}
+		}
+		return statServiceStatus;
+	}
 
 	@Async
 	public void postExceptionStat(Throwable exception) {
@@ -122,7 +143,7 @@ public class StatDataCollector implements GlobalConstant {
 		}
 	}
 
-	public void postStat(String url, Object statObject) throws IOException, InterruptedException {
+	private void postStat(String url, Object statObject) throws Exception {
 
 		ObjectMapper objectMapper = new ObjectMapper();
 		String requestBody = objectMapper.writeValueAsString(statObject);
@@ -140,4 +161,23 @@ public class StatDataCollector implements GlobalConstant {
 		}
 	}
 
+	private long getWwSearchStatCount() throws Exception {
+
+		HttpClient client = HttpClient.newBuilder().version(HttpClient.Version.HTTP_2).build();
+		String url = serviceUrl + WW_STAT_COUNT_URI;
+		HttpRequest request = HttpRequest.newBuilder()
+				.uri(URI.create(url))
+				.header(STAT_API_KEY_HEADER_NAME, serviceKey)
+				.GET()
+				.timeout(Duration.ofSeconds(REQUEST_TIMEOUT_SECONDS))
+				.build();
+
+		HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+		int statusCode = response.statusCode();
+		if (statusCode != HttpStatus.OK.value()) {
+			throw new RemoteServiceException("Unexpected response status code " + statusCode + " when getting ww stat count");
+		}
+		long wwSearchStatCount = Long.parseLong(response.body());
+		return wwSearchStatCount;
+	}
 }

@@ -39,9 +39,11 @@ public class MorphologyService {
 		for (Long wordId : wordIds) {
 			morphologyDbService.deleteParadigmsForWord(wordId);
 		}
+		morphologyDbService.deleteFloatingForms();
 
 		for (Paradigm paradigm : paradigms) {
 			Long paradigmId = morphologyDbService.createParadigm(paradigm);
+			Long wordId = paradigm.getWordId();
 			List<Form> forms = paradigm.getForms();
 			boolean orderByExists = forms.stream().allMatch(form -> form.getOrderBy() != null);
 			if (orderByExists) {
@@ -49,7 +51,7 @@ public class MorphologyService {
 			}
 			for (Form form : forms) {
 				form.setParadigmId(paradigmId);
-				morphologyDbService.createForm(form);
+				morphologyDbService.createForm(form, wordId);
 			}
 		}
 	}

@@ -49,6 +49,8 @@ public abstract class WordTypeData extends AbstractDataObject implements LangTyp
 
 	private boolean foreignWord;
 
+	private boolean incorrectWordForm;
+
 	public Long getWordId() {
 		return wordId;
 	}
@@ -198,5 +200,13 @@ public abstract class WordTypeData extends AbstractDataObject implements LangTyp
 
 	public void setForeignWord(boolean foreignWord) {
 		this.foreignWord = foreignWord;
+	}
+
+	public boolean isIncorrectWordForm() {
+		return incorrectWordForm;
+	}
+
+	public void setIncorrectWordForm(boolean incorrectWordForm) {
+		this.incorrectWordForm = incorrectWordForm;
 	}
 }

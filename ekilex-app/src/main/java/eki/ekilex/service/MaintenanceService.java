@@ -177,6 +177,11 @@ public class MaintenanceService implements SystemConstant, GlobalConstant {
 		if (deletedWordCount > 0) {
 			logger.debug("Maintenance service deleted {} floating words", deletedWordCount);
 		}
+
+		int deletedFormCount = maintenanceDbService.deleteFloatingForms();
+		if (deletedFormCount > 0) {
+			logger.debug("Maintenance service deleted {} floating forms", deletedFormCount);
+		}
 	}
 
 	@Scheduled(cron = DELETE_OUTDATED_DATA_REQUESTS_TIME_5_AM)
