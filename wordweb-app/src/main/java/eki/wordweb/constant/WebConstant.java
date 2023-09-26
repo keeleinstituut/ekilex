@@ -136,6 +136,8 @@ public interface WebConstant {
 
 	int AUTOCOMPLETE_MAX_RESULTS_LIMIT = 15;
 
+	int MASKED_SEARCH_WORD_MIN_LENGTH = 3;
+
 	String GENERIC_EKI_MARKUP_OPENING_PREFIX = "<eki-";
 
 	String GENERIC_EKI_MARKUP_CLOSING_PREFIX = "</eki-";

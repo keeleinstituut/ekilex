@@ -87,6 +87,10 @@ public abstract class AbstractSearchController extends AbstractController {
 	}
 
 	protected String decode(String value) {
+
+		if (StringUtils.isBlank(value) ) {
+			return value;
+		}
 		value = UriUtils.decode(value, UTF_8);
 		value = StringUtils.replace(value, ENCODE_SYM_SLASH, "/");
 		value = StringUtils.replace(value, ENCODE_SYM_BACKSLASH, "\\");
