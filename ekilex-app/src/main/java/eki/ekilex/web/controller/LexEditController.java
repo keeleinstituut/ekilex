@@ -166,7 +166,7 @@ public class LexEditController extends AbstractPrivatePageController {
 		List<String> datasets = getUserPreferredDatasetCodes();
 		String searchUri = searchHelper.composeSearchUriAndAppendId(datasets, lexemeWordValue, lexemeWordId);
 
-		return "redirect:" + LEX_SEARCH_URI + searchUri;
+		return REDIRECT_PREF + LEX_SEARCH_URI + searchUri;
 	}
 
 	@ResponseBody
@@ -251,7 +251,7 @@ public class LexEditController extends AbstractPrivatePageController {
 		boolean isManualEventOnUpdateEnabled = sessionBean.isManualEventOnUpdateEnabled();
 		String roleDatasetCode = getDatasetCodeFromRole();
 		Long joinedWordId = compositionService.joinWords(targetWordId, sourceWordIds, roleDatasetCode, isManualEventOnUpdateEnabled);
-		return "redirect:" + WORD_BACK_URI + "/" + joinedWordId;
+		return REDIRECT_PREF + WORD_BACK_URI + "/" + joinedWordId;
 	}
 
 	@PostMapping(LEX_CREATE_WORD_URI)
@@ -280,7 +280,7 @@ public class LexEditController extends AbstractPrivatePageController {
 				wordId = wordLexemeMeaningId.getWordId();
 			} else {
 				attributes.addFlashAttribute("wordDetails", wordDetails);
-				return "redirect:" + WORD_SELECT_URI;
+				return REDIRECT_PREF + WORD_SELECT_URI;
 			}
 
 			List<String> selectedDatasets = getUserPreferredDatasetCodes();
@@ -292,7 +292,7 @@ public class LexEditController extends AbstractPrivatePageController {
 			searchUri = searchHelper.composeSearchUriAndAppendId(selectedDatasets, wordValue, wordId);
 		}
 		addRedirectSuccessMessage(attributes, "lex.create.word.success");
-		return "redirect:" + LEX_SEARCH_URI + searchUri;
+		return REDIRECT_PREF + LEX_SEARCH_URI + searchUri;
 	}
 
 	@PostMapping(CREATE_HOMONYM_URI)
@@ -318,7 +318,7 @@ public class LexEditController extends AbstractPrivatePageController {
 			}
 			searchUri = searchHelper.composeSearchUriAndAppendId(selectedDatasets, wordValue, wordId);
 		}
-		return "redirect:" + LEX_SEARCH_URI + searchUri;
+		return REDIRECT_PREF + LEX_SEARCH_URI + searchUri;
 	}
 
 	@GetMapping(WORD_SELECT_URI)
@@ -363,7 +363,7 @@ public class LexEditController extends AbstractPrivatePageController {
 			userProfileService.updateUserPreferredDatasets(selectedDatasets, userId);
 		}
 		String searchUri = searchHelper.composeSearchUriAndAppendId(selectedDatasets, wordValue, wordId);
-		return "redirect:" + LEX_SEARCH_URI + searchUri;
+		return REDIRECT_PREF + LEX_SEARCH_URI + searchUri;
 	}
 
 	@PostMapping(UPDATE_WORD_ACTIVE_TAG_COMPLETE_URI + "/{wordId}")

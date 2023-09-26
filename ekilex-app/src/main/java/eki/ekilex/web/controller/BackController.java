@@ -40,7 +40,7 @@ public class BackController extends AbstractPrivatePageController {
 		String wordValue = word.getWordValue();
 		String searchUri = searchHelper.composeSearchUriAndAppendId(datasets, wordValue, wordId);
 
-		return "redirect:" + LEX_SEARCH_URI + searchUri;
+		return REDIRECT_PREF + LEX_SEARCH_URI + searchUri;
 	}
 
 	@GetMapping(LEX_BACK_URI + "/{lexemeId}")
@@ -52,7 +52,7 @@ public class BackController extends AbstractPrivatePageController {
 		Long lexemeWordId = lexemeSimpleWord.getWordId();
 		String searchUri = searchHelper.composeSearchUriAndAppendId(datasets, lexemeWordValue, lexemeWordId);
 
-		return "redirect:" + LEX_SEARCH_URI + searchUri;
+		return REDIRECT_PREF + LEX_SEARCH_URI + searchUri;
 	}
 
 	@GetMapping(MEANING_BACK_URI + "/{meaningId}")
@@ -62,7 +62,7 @@ public class BackController extends AbstractPrivatePageController {
 		String firstWordValue = termSearchService.getMeaningFirstWordValue(meaningId, datasets);
 		String searchUri = searchHelper.composeSearchUriAndAppendId(datasets, firstWordValue, meaningId);
 
-		return "redirect:" + TERM_SEARCH_URI + searchUri;
+		return REDIRECT_PREF + TERM_SEARCH_URI + searchUri;
 	}
 
 }

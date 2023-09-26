@@ -236,7 +236,7 @@ public class SourceEditController extends AbstractMutableDataPageController {
 
 		String roleDatasetCode = getDatasetCodeFromRole();
 		sourceService.joinSources(targetSourceId, originSourceId, roleDatasetCode);
-		return "redirect:" + SOURCE_SEARCH_URI + "/" + targetSourceId;
+		return REDIRECT_PREF + SOURCE_SEARCH_URI + "/" + targetSourceId;
 	}
 
 	@PostMapping(SEARCH_SOURCES_URI)

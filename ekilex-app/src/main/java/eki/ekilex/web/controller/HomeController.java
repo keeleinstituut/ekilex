@@ -47,7 +47,7 @@ public class HomeController extends AbstractPublicPageController {
 	public String index() {
 		boolean isAuthenticatedUser = userContext.isAuthenticatedUser();
 		if (isAuthenticatedUser) {
-			return "redirect:" + HOME_URI;
+			return REDIRECT_PREF + HOME_URI;
 		}
 		return "index";
 	}
@@ -56,7 +56,7 @@ public class HomeController extends AbstractPublicPageController {
 	public String home(Authentication authentication, Model model) throws Exception {
 		boolean isActiveTermsAgreed = permissionEvaluator.isActiveTermsAgreed(authentication);
 		if (!isActiveTermsAgreed) {
-			return "redirect:" + TERMS_AGREEMENT_PAGE_URI;
+			return REDIRECT_PREF + TERMS_AGREEMENT_PAGE_URI;
 		}
 		boolean isPrivatePageAccessPermitted = permissionEvaluator.isPrivatePageAccessPermitted(authentication);
 		if (isPrivatePageAccessPermitted) {
@@ -65,7 +65,7 @@ public class HomeController extends AbstractPublicPageController {
 		}
 		boolean isLimitedPageAccessPermitted = permissionEvaluator.isLimitedPageAccessPermitted(authentication);
 		if (isLimitedPageAccessPermitted) {
-			return "redirect:" + LIM_TERM_SEARCH_URI;
+			return REDIRECT_PREF + LIM_TERM_SEARCH_URI;
 		}
 		EkiUser user = userContext.getUser();
 		populateUserApplicationData(user, model);
@@ -83,7 +83,7 @@ public class HomeController extends AbstractPublicPageController {
 		boolean isUserEnabled = Boolean.TRUE.equals(user.getEnabled());
 		boolean datasetPermissionsExist = user.isDatasetPermissionsExist();
 		if (isUserEnabled && datasetPermissionsExist) {
-			return "redirect:" + HOME_URI;
+			return REDIRECT_PREF + HOME_URI;
 		}
 		populateUserApplicationData(user, model);
 		return APPLY_PAGE;
@@ -107,7 +107,7 @@ public class HomeController extends AbstractPublicPageController {
 
 		userService.submitUserApplication(user, datasetCode, authOp, lang, applicationComment);
 		populateUserApplicationData(user, model);
-		return "redirect:" + HOME_URI;
+		return REDIRECT_PREF + HOME_URI;
 	}
 
 	@PostMapping(APPLY_READ)
@@ -122,7 +122,7 @@ public class HomeController extends AbstractPublicPageController {
 		}
 		Long userId = user.getId();
 		userService.enableUserWithTestAndLimitedDatasetPerm(userId);
-		return "redirect:" + HOME_PAGE;
+		return REDIRECT_PREF + HOME_PAGE;
 	}
 
 	@PostMapping(APPLY_LIMITED_URI)
@@ -137,7 +137,7 @@ public class HomeController extends AbstractPublicPageController {
 		}
 		Long userId = user.getId();
 		userService.enableLimitedUser(userId);
-		return "redirect:" + LIM_TERM_SEARCH_URI;
+		return REDIRECT_PREF + LIM_TERM_SEARCH_URI;
 	}
 
 	private void populateUserApplicationData(EkiUser user, Model model) {
@@ -174,7 +174,7 @@ public class HomeController extends AbstractPublicPageController {
 	@GetMapping("/loginerror")
 	public String loginError(RedirectAttributes attributes) {
 		attributes.addFlashAttribute("loginerror", "Autentimine ebaõnnestus");
-		return "redirect:" + LOGIN_PAGE_URI;
+		return REDIRECT_PREF + LOGIN_PAGE_URI;
 	}
 
 	@PreAuthorize("authentication.principal.datasetPermissionsExist")
@@ -204,7 +204,7 @@ public class HomeController extends AbstractPublicPageController {
 		EkiUser user = userContext.getUser();
 		boolean activeTermsAgreed = user.isActiveTermsAgreed();
 		if (activeTermsAgreed) {
-			return "redirect:" + HOME_URI;
+			return REDIRECT_PREF + HOME_URI;
 		}
 
 		String activeTerms = userService.getActiveTermsValue();
@@ -218,7 +218,7 @@ public class HomeController extends AbstractPublicPageController {
 		EkiUser user = userContext.getUser();
 		Long userId = user.getId();
 		userService.agreeActiveTerms(userId);
-		return "redirect:" + HOME_URI;
+		return REDIRECT_PREF + HOME_URI;
 	}
 
 	@PostMapping(REFUSE_TERMS_URI)
@@ -226,7 +226,7 @@ public class HomeController extends AbstractPublicPageController {
 
 		EkiUser user = userContext.getUser();
 		userService.refuseTerms(user);
-		return "redirect:" + LOGOUT_URI;
+		return REDIRECT_PREF + LOGOUT_URI;
 	}
 
 }

@@ -83,7 +83,7 @@ public class TermSearchController extends AbstractPrivateSearchController {
 			Model model) throws Exception {
 
 		if (CollectionUtils.isEmpty(selectedDatasets)) {
-			return "redirect:" + TERM_SEARCH_URI;
+			return REDIRECT_PREF + TERM_SEARCH_URI;
 		}
 
 		simpleSearchFilter = valueUtil.trimAndCleanAndRemoveHtmlAndLimit(simpleSearchFilter);
@@ -97,7 +97,7 @@ public class TermSearchController extends AbstractPrivateSearchController {
 		userProfileService.updateUserPreferredDatasets(selectedDatasets, userId);
 
 		String searchUri = searchHelper.composeSearchUri(searchMode, selectedDatasets, simpleSearchFilter, detailSearchFilter, resultMode, resultLang);
-		return "redirect:" + TERM_SEARCH_URI + searchUri;
+		return REDIRECT_PREF + TERM_SEARCH_URI + searchUri;
 	}
 
 	@GetMapping(TERM_SEARCH_URI + "/**")

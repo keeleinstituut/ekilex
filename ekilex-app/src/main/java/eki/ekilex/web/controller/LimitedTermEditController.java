@@ -62,7 +62,7 @@ public class LimitedTermEditController extends AbstractMutableDataPageController
 			searchUri = searchHelper.composeSearchUri(limitedDatasets, wordValue);
 			cudService.createWord(wordDetails, roleDatasetCode, isManualEventOnUpdateEnabled);
 		}
-		return "redirect:" + LIM_TERM_SEARCH_URI + searchUri;
+		return REDIRECT_PREF + LIM_TERM_SEARCH_URI + searchUri;
 	}
 
 	@RequestMapping(LIM_TERM_MEANING_JOIN_URI + "/{targetMeaningId}")
@@ -102,7 +102,7 @@ public class LimitedTermEditController extends AbstractMutableDataPageController
 		String wordValue = termSearchService.getMeaningFirstWordValue(targetMeaningId, limitedDatasets);
 		String searchUri = searchHelper.composeSearchUriAndAppendId(limitedDatasets, wordValue, targetMeaningId);
 
-		return "redirect:" + LIM_TERM_SEARCH_URI + searchUri;
+		return REDIRECT_PREF + LIM_TERM_SEARCH_URI + searchUri;
 	}
 
 }

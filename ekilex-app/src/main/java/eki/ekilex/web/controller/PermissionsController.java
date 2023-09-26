@@ -60,7 +60,7 @@ public class PermissionsController extends AbstractPrivatePageController {
 
 		EkiUser user = userContext.getUser();
 		if (!user.isDatasetOwnershipExist() && !user.isAdmin()) {
-			return "redirect:" + HOME_URI;
+			return REDIRECT_PREF + HOME_URI;
 		}
 
 		PermSearchBean permFormBean = new PermSearchBean();
@@ -83,10 +83,10 @@ public class PermissionsController extends AbstractPrivatePageController {
 		if (StringUtils.isBlank(userNameFilter)
 				&& StringUtils.isBlank(userPermDatasetCodeFilter)
 				&& (userEnablePendingFilter == null)) {
-			return "redirect:" + PERMISSIONS_URI;
+			return REDIRECT_PREF + PERMISSIONS_URI;
 		}
 		if (userNameFilterLength > 0 && userNameFilterLength < minUserNameLength) {
-			return "redirect:" + PERMISSIONS_URI;
+			return REDIRECT_PREF + PERMISSIONS_URI;
 		}
 
 		PermSearchBean permSearchBean = getPermSearchBean(model);
@@ -109,10 +109,10 @@ public class PermissionsController extends AbstractPrivatePageController {
 		if (StringUtils.isBlank(userNameFilter)
 				&& StringUtils.isBlank(userPermDatasetCodeFilter)
 				&& StringUtils.isBlank(userEnablePendingFilterStr)) {
-			return "redirect:" + PERMISSIONS_URI;
+			return REDIRECT_PREF + PERMISSIONS_URI;
 		}
 		if (StringUtils.length(userNameFilter) == 1) {
-			return "redirect:" + PERMISSIONS_URI;
+			return REDIRECT_PREF + PERMISSIONS_URI;
 		}
 
 		PermSearchBean permSearchBean = getPermSearchBean(model);
@@ -145,7 +145,7 @@ public class PermissionsController extends AbstractPrivatePageController {
 
 		prepareSearchRedirect(permSearchBean, redirectAttributes);
 
-		return "redirect:" + PERMISSIONS_URI + "/search";
+		return REDIRECT_PREF + PERMISSIONS_URI + "/search";
 	}
 
 	@GetMapping(PERMISSIONS_URI + "/enable/{userId}")

@@ -71,7 +71,7 @@ public class LexSearchController extends AbstractPrivateSearchController {
 			Model model) throws Exception {
 
 		if (CollectionUtils.isEmpty(selectedDatasets)) {
-			return "redirect:" + LEX_SEARCH_URI;
+			return REDIRECT_PREF + LEX_SEARCH_URI;
 		}
 
 		final SearchResultMode resultMode = SearchResultMode.WORD;
@@ -88,7 +88,7 @@ public class LexSearchController extends AbstractPrivateSearchController {
 		}
 
 		String searchUri = searchHelper.composeSearchUri(searchMode, selectedDatasets, simpleSearchFilter, detailSearchFilter, resultMode, resultLang);
-		return "redirect:" + LEX_SEARCH_URI + searchUri;
+		return REDIRECT_PREF + LEX_SEARCH_URI + searchUri;
 	}
 
 	@GetMapping(value = LEX_SEARCH_URI + "/**")

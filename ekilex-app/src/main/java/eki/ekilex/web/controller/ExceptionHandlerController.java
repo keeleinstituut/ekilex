@@ -44,13 +44,13 @@ public class ExceptionHandlerController implements WebConstant, ApiConstant {
 		ModelAndView modelAndView = new ModelAndView();
 		if (exception instanceof HttpSessionRequiredException) {
 			modelAndView = new ModelAndView();
-			modelAndView.setViewName("redirect:/");
+			modelAndView.setViewName(REDIRECT_PREF + INDEX_URI);
 			return modelAndView;
 		}
 
 		if (exception instanceof TermsNotAcceptedException) {
 			modelAndView = new ModelAndView();
-			modelAndView.setViewName("redirect:" + TERMS_AGREEMENT_PAGE_URI);
+			modelAndView.setViewName(REDIRECT_PREF + TERMS_AGREEMENT_PAGE_URI);
 			return modelAndView;
 		}
 

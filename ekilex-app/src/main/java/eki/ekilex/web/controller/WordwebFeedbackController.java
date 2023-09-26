@@ -94,10 +94,10 @@ public class WordwebFeedbackController extends AbstractPublicPageController {
 			Model model) {
 
 		if (StringUtils.isBlank(searchFilter) && (notCommentedFilter == null)) {
-			return "redirect:" + WW_FEEDBACK_URI;
+			return REDIRECT_PREF + WW_FEEDBACK_URI;
 		}
 		if (StringUtils.isNotBlank(searchFilter) && StringUtils.length(searchFilter) < 3) {
-			return "redirect:" + WW_FEEDBACK_URI;
+			return REDIRECT_PREF + WW_FEEDBACK_URI;
 		}
 
 		WwFeedbackSearchBean wwFeedbackSearchBean = getWwFeedbackSearchBean(model);

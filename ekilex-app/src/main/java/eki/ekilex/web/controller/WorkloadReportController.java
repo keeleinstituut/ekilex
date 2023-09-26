@@ -34,7 +34,7 @@ public class WorkloadReportController extends AbstractPrivatePageController {
 
 		EkiUser user = userContext.getUser();
 		if (!user.isAdmin()) {
-			return "redirect:" + HOME_URI;
+			return REDIRECT_PREF + HOME_URI;
 		}
 
 		List<Dataset> workloadReportDatasets = workloadReportService.getDatasets();

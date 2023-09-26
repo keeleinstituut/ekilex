@@ -61,7 +61,7 @@ public class SourceSearchController extends AbstractPrivateSearchController {
 
 		String searchUri = searchHelper.composeSearchUri(searchMode, roleDatasets, simpleSearchFilter, detailSearchFilter, SearchResultMode.SOURCE, null);
 
-		return "redirect:" + SOURCE_SEARCH_URI + searchUri;
+		return REDIRECT_PREF + SOURCE_SEARCH_URI + searchUri;
 	}
 
 	@GetMapping(value = SOURCE_SEARCH_URI + "/**")
@@ -137,9 +137,9 @@ public class SourceSearchController extends AbstractPrivateSearchController {
 		SearchFilter detailSearchFilter = searchHelper.createSourceDetailSearchFilter(sourceId);
 		String searchUri = searchHelper.composeSearchUri(SEARCH_MODE_DETAIL, selectedDatasets, null, detailSearchFilter, SearchResultMode.MEANING, null);
 		if (LEX_SEARCH_PAGE.equals(searchPage)) {
-			return "redirect:" + LEX_SEARCH_URI + searchUri;
+			return REDIRECT_PREF + LEX_SEARCH_URI + searchUri;
 		} else {
-			return "redirect:" + TERM_SEARCH_URI + searchUri;
+			return REDIRECT_PREF + TERM_SEARCH_URI + searchUri;
 		}
 	}
 

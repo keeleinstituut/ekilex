@@ -50,7 +50,7 @@ public class UserProfileController extends AbstractPrivatePageController {
 		EkiUser user = userContext.getUser();
 		userService.submitUserApplication(user, datasetCode, authOp, lang, applicationComment);
 
-		return "redirect:" + USER_PROFILE_URI;
+		return REDIRECT_PREF + USER_PROFILE_URI;
 	}
 
 	@PostMapping(UPDATE_MEANING_REL_PREFS_URI)
@@ -78,7 +78,7 @@ public class UserProfileController extends AbstractPrivatePageController {
 		userProfile.setPreferredFullSynCandidateDatasetCode(fullSynCandidateDatasetCode);
 		userProfileService.updateUserProfile(userProfile);
 
-		return "redirect:" + USER_PROFILE_URI;
+		return REDIRECT_PREF + USER_PROFILE_URI;
 	}
 
 	@PostMapping(UPDATE_TAG_PREFS_URI)
@@ -92,7 +92,7 @@ public class UserProfileController extends AbstractPrivatePageController {
 		userProfile.setActiveTagName(activeTagName);
 		userProfileService.updateUserProfile(userProfile);
 
-		return "redirect:" + USER_PROFILE_URI;
+		return REDIRECT_PREF + USER_PROFILE_URI;
 	}
 
 	@PostMapping("/enable_approve_meaning")
@@ -102,7 +102,7 @@ public class UserProfileController extends AbstractPrivatePageController {
 		Long userId = userContext.getUserId();
 		userProfileService.updateApproveMeaningEnabled(userId, approveMeaningEnabled);
 
-		return "redirect:" + USER_PROFILE_URI;
+		return REDIRECT_PREF + USER_PROFILE_URI;
 	}
 
 	@PostMapping(GENERATE_API_KEY)
@@ -111,6 +111,6 @@ public class UserProfileController extends AbstractPrivatePageController {
 		EkiUser user = userContext.getUser();
 		userService.generateApiKey(user);
 
-		return "redirect:" + USER_PROFILE_URI;
+		return REDIRECT_PREF + USER_PROFILE_URI;
 	}
 }
