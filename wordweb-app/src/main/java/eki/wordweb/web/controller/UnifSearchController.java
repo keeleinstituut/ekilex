@@ -72,8 +72,11 @@ public class UnifSearchController extends AbstractSearchController {
 		if (StringUtils.isBlank(searchWord)) {
 			return REDIRECT_PREF + SEARCH_URI + UNIF_URI;
 		}
-		if (webUtil.isMaskedSearchCrit(searchWord) && (StringUtils.length(searchWord) < MASKED_SEARCH_WORD_MIN_LENGTH)) {
-			return REDIRECT_PREF + SEARCH_URI + UNIF_URI;
+		if (webUtil.isMaskedSearchCrit(searchWord)) {
+			searchWord = cleanupMask(searchWord);
+			if (StringUtils.length(searchWord) < MASKED_SEARCH_WORD_MIN_LENGTH) {
+				return REDIRECT_PREF + SEARCH_URI + UNIF_URI;
+			}
 		}
 		searchWord = textDecorationService.unifyToApostrophe(searchWord);
 		Integer selectedWordHomonymNr = nullSafe(selectedWordHomonymNrStr);
