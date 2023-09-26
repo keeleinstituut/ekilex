@@ -2,6 +2,7 @@ package eki.wordweb.service;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -29,6 +30,7 @@ import eki.wordweb.data.WordData;
 import eki.wordweb.data.WordForm;
 import eki.wordweb.data.WordSearchElement;
 import eki.wordweb.data.WordsData;
+import eki.wordweb.data.WordsMatchResult;
 import eki.wordweb.data.type.TypeCollocMember;
 import eki.wordweb.service.db.CommonDataDbService;
 import eki.wordweb.service.db.SearchDbService;
@@ -115,6 +117,24 @@ public abstract class AbstractSearchService implements SystemConstant, WebConsta
 	}
 
 	@Transactional
+	public WordsMatchResult getWordsWithMask(SearchFilter searchFilter) {
+
+		String searchWord = searchFilter.getSearchWord();
+
+		if (StringUtils.isBlank(searchWord)) {
+			return new WordsMatchResult(Collections.emptyList(), 0, false);
+		}
+		if (!StringUtils.containsAny(searchWord, QUERY_MULTIPLE_CHARACTERS_SYM, QUERY_SINGLE_CHARACTER_SYM)) {
+			return new WordsMatchResult(Collections.emptyList(), 0, false);
+		}
+
+		SearchContext searchContext = getSearchContext(searchFilter);
+		WordsMatchResult wordsMatchResult = searchDbService.getWordsWithMask(searchWord, searchContext);
+
+		return wordsMatchResult;
+	}
+
+	@Transactional
 	public WordsData getWords(SearchFilter searchFilter) {
 
 		String searchWord = searchFilter.getSearchWord();
@@ -125,8 +145,14 @@ public abstract class AbstractSearchService implements SystemConstant, WebConsta
 		wordConversionUtil.setAffixoidFlags(allWords);
 		wordConversionUtil.composeHomonymWrapups(allWords, searchContext);
 		wordConversionUtil.selectHomonym(allWords, homonymNr);
-		List<Word> wordMatchWords = allWords.stream().filter(word -> word.isWordMatch()).collect(Collectors.toList());
-		List<String> formMatchWordValues = allWords.stream().filter(word -> word.isFormMatch()).map(Word::getWord).distinct().collect(Collectors.toList());
+		List<Word> wordMatchWords = allWords.stream()
+				.filter(Word::isWordMatch)
+				.collect(Collectors.toList());
+		List<String> formMatchWordValues = allWords.stream()
+				.filter(Word::isFormMatch)
+				.map(Word::getWord)
+				.distinct()
+				.collect(Collectors.toList());
 		boolean resultsExist = CollectionUtils.isNotEmpty(wordMatchWords);
 		int resultCount = CollectionUtils.size(wordMatchWords);
 		boolean isSingleResult = resultCount == 1;

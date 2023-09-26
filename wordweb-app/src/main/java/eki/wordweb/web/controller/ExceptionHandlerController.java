@@ -30,7 +30,7 @@ public class ExceptionHandlerController implements WebConstant {
 		ModelAndView modelAndView;
 		if (exception instanceof HttpSessionRequiredException) {
 			modelAndView = new ModelAndView();
-			modelAndView.setViewName("redirect:/");
+			modelAndView.setViewName(REDIRECT_PREF + HOME_URI);
 			return modelAndView;
 		}
 

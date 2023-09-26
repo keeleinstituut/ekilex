@@ -31,14 +31,14 @@ public class DatasetHomeController extends AbstractController {
 
 	@GetMapping(DATASET_HOME_URI)
 	public String home() {
-		return "redirect:" + HOME_URI;
+		return REDIRECT_PREF + HOME_URI;
 	}
 
 	@GetMapping(DATASET_HOME_URI + "/{datasetCode}")
 	public String home(@PathVariable(name = "datasetCode") String datasetCode, Model model) {
 		DatasetHomeData datasetHomeData = datasetContentService.getDatasetHomeData(datasetCode);
 		if (!datasetHomeData.isValidDataset()) {
-			return "redirect:" + HOME_URI;
+			return REDIRECT_PREF + HOME_URI;
 		}
 		populateSearchModel(datasetHomeData, model);
 		return DATASET_HOME_PAGE;
@@ -52,11 +52,11 @@ public class DatasetHomeController extends AbstractController {
 
 		DatasetHomeData datasetHomeData = datasetContentService.getDatasetHomeData(datasetCode);
 		if (!datasetHomeData.isValidDataset()) {
-			return "redirect:" + HOME_URI;
+			return REDIRECT_PREF + HOME_URI;
 		}
 		Character firstLetter = firstLetterStr.charAt(0);
 		if (StringUtils.length(firstLetterStr) > 1) {
-			return "redirect:" + webUtil.composeDatasetFirstLetterSearchUri(datasetCode, firstLetter);
+			return REDIRECT_PREF + webUtil.composeDatasetFirstLetterSearchUri(datasetCode, firstLetter);
 		}
 		List<String> datasetWords = datasetContentService.getDatasetWords(datasetCode, firstLetter);
 		populateSearchModel(datasetHomeData, model);

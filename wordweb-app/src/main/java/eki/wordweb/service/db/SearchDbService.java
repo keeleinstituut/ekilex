@@ -54,6 +54,7 @@ import eki.wordweb.data.WordEtymTuple;
 import eki.wordweb.data.WordForm;
 import eki.wordweb.data.WordRelationsTuple;
 import eki.wordweb.data.WordSearchElement;
+import eki.wordweb.data.WordsMatchResult;
 import eki.wordweb.data.db.Routines;
 import eki.wordweb.data.db.tables.MviewWwCollocation;
 import eki.wordweb.data.db.tables.MviewWwCounts;
@@ -77,6 +78,7 @@ public class SearchDbService implements GlobalConstant, SystemConstant {
 
 	@Autowired
 	private DSLContext create;
+
 	public String getRandomWord(String lang) {
 
 		MviewWwWord w = MVIEW_WW_WORD.as("w");
@@ -178,6 +180,36 @@ public class SearchDbService implements GlobalConstant, SystemConstant {
 				.fetchGroups("sgroup", WordSearchElement.class);
 	}
 
+	public WordsMatchResult getWordsWithMask(String searchWord, SearchContext searchContext) {
+
+		searchWord = StringUtils.trim(searchWord);
+		searchWord = StringUtils.replace(searchWord, QUERY_MULTIPLE_CHARACTERS_SYM, "%");
+		searchWord = StringUtils.replace(searchWord, QUERY_SINGLE_CHARACTER_SYM, "_");
+		Field<String> searchWordLowerField = DSL.lower(searchWord);
+
+		MviewWwWordSearch w = MVIEW_WW_WORD_SEARCH.as("w");
+		Condition where = w.SGROUP.eq(WORD_SEARCH_GROUP_WORD).and(w.CRIT.like(searchWordLowerField));
+		where = applyLangCompDatasetFilter(w, searchContext, where);
+
+		List<String> wordValues = create
+				.select(w.WORD)
+				.from(w)
+				.where(where)
+				.orderBy(w.WORD)
+				.limit(MASKED_SEARCH_RESULT_LIMIT)
+				.fetchInto(String.class);
+
+		int resultCount = create
+				.selectCount()
+				.from(w)
+				.where(where)
+				.fetchSingleInto(int.class);
+
+		boolean resultsExist = resultCount > 0;
+
+		return new WordsMatchResult(wordValues, resultCount, resultsExist);
+	}
+
 	public List<Word> getWords(String searchWord, SearchContext searchContext) {
 
 		if (StringUtils.equals(searchWord, ILLEGAL_FORM_VALUE)) {
@@ -191,12 +223,11 @@ public class SearchDbService implements GlobalConstant, SystemConstant {
 		MviewWwWord w = MVIEW_WW_WORD.as("w");
 		MviewWwForm f = MVIEW_WW_FORM.as("f");
 
-		Condition whereForm =
-				f.WORD_ID.eq(w.WORD_ID)
-						.and(DSL.lower(f.VALUE).eq(searchWordLowerField))
-						.and(f.VALUE.ne(f.WORD))
-						.and(f.MORPH_CODE.ne(UNKNOWN_FORM_CODE))
-						.and(f.MORPH_EXISTS.isTrue());
+		Condition whereForm = f.WORD_ID.eq(w.WORD_ID)
+				.and(DSL.lower(f.VALUE).eq(searchWordLowerField))
+				.and(f.VALUE.ne(f.WORD))
+				.and(f.MORPH_CODE.ne(UNKNOWN_FORM_CODE))
+				.and(f.MORPH_EXISTS.isTrue());
 
 		if (excludeQuestionable) {
 			whereForm = whereForm.and(f.IS_QUESTIONABLE.isFalse());

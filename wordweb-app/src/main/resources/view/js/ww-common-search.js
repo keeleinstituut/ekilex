@@ -64,6 +64,14 @@ function searchWordAutocomplete() {
     source: function(request, response) {
       var wordFrag = request.term;
       var searchWordFragUrlWithParams = searchWordFragUrl + "/" + wordFrag;
+      if (wordFrag.indexOf('*') > -1) {
+		  response([]);
+		  return;
+	  }
+	  if (wordFrag.indexOf('?') > -1) {
+		  response([]);
+		  return;
+	  }
       $.ajax({
         url: searchWordFragUrlWithParams,
         type: "GET",

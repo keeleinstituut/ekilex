@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="et" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="common-app :: common_header(~{::title},~{::links}, simpleSearch)">
+<title>Otsing</title>
+<th:block th:fragment="links">
+  <script type="text/javascript" th:src="@{/view/js/recorder.js}"></script>
+  <script type="text/javascript" th:src="@{/view/js/ww-common-audio.js}"></script>
+  <script type="text/javascript" th:src="@{/view/js/ww-common-search.js}"></script>
+  <script type="text/javascript" th:src="@{/view/js/ww-search.js}"></script>
+  <script type="text/javascript" th:src="@{/view/js/ww-horizontal-scroll-panel.js}"></script>
+</th:block>
+</head>
+<body class="survey-active">
+  <div>
+    <th:block th:replace="common-app :: wcag-search"></th:block>
+    <th:block th:replace="common-app :: wcag-main"></th:block>
+  </div>
+  <th:block th:replace="common-app :: ie-user"></th:block>
+  <div th:replace="common-app :: menu-with-back-btn(pageContext = 'simpleSearch')"></div>
+  <div class="container-fluid homonym-page mt-3 mb-5">
+    <div class="search-results-header px-0">
+      <div class="d-flex flex-row flex-wrap align-items-center pb-3">
+        <div class="d-flex align-items-center">
+          <th:block th:replace="common-search :: lang-filter"></th:block>
+        </div>
+        <button name="feedback-btn" value="feedback" class="feedback-btn ml-auto btn btn-success py-0 show-with-details" role="button" type="button"
+                data-toggle="modal" data-target="#feedbackModal"
+                data-item-name="feedback" th:text="#{feedback.title}">Tagasiside</button>
+      </div>
+    </div>
+    <main role="main" class="content-panel px-3">
+      <div class="row word-details" th:if="${wordsMatchResult != null}">
+        <div class="col-12 pt-2" th:unless="${wordsMatchResult.resultsExist}">
+          <h5 th:text="#{label.masked.search.no.results}">Tulemusi ei leidu</h5>
+        </div>
+        <div class="col-12 d-md-block d-md-block d-flex flex-column" th:if="${wordsMatchResult.resultsExist}">
+          <div class="row flex-grow-1 flex-shrink-1">
+            <div class="col-md-12 col-lg-12 mt-2">
+              <span th:text="#{label.result.count(${wordsMatchResult.resultCount})}"></span>
+              <th:block th:if="${wordsMatchResult.resultCount > 100}">
+                <span th:text="|, #{label.result.limit(100)}|" class="ml-n1"></span>
+              </th:block>
+            </div>
+          </div>
+          <hr class="mt-1 mb-1"/>
+          <div class="row flex-grow-1 flex-shrink-1 mb-2">
+            <div class="col-md-12 col-lg-12">
+              <div class="row">
+                <th:block th:each="wordValue : ${wordsMatchResult.wordValues}">
+                  <div class="col-md-6 col-lg-6">
+                    <a th:href="@{${viewUtil.getSearchUri(sessionBean, searchMode, wordValue)}}" th:text="${wordValue}"></a>
+                  </div>
+                </th:block>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+  <div th:replace="common-app :: footer-content(pageContext = 'simpleSearch')"></div>
+  <script th:inline="javascript">
+  	var currentPage = /*[[@{/search/lite}]]*/"/search/lite";
+  	var searchWordFragUrl = /*[[@{/searchwordfrag/lite}]]*/"/searchwordfrag/lite";
+  	var wordDetailsUrl = /*[[@{/worddetails/lite}]]*/"/worddetails/lite";
+  	var morphoUrl = /*[[@{/morpho/lite}]]*/"/morpho/lite";
+  	var corpUrl = /*[[@{/corp/simple}]]*/"/corp/simple";
+  	var corpTransUrl = /*[[@{/corptrans}]]*/"/corptrans";
+  	var speechRecognitionServiceUrl = /*[[${speechRecognitionServiceUrl}]]*/'/';
+  	setActiveMenuItem('search-lite');
+  </script>
+</body>
+</html>

@@ -65,6 +65,27 @@ public abstract class AbstractSearchController extends AbstractController {
 		return Integer.valueOf(value);
 	}
 
+	protected String cleanupMask(String searchWord) {
+
+		if (StringUtils.isBlank(searchWord) ) {
+			return searchWord;
+		}
+		searchWord = StringUtils.trim(searchWord);
+		char wildcardChar = QUERY_MULTIPLE_CHARACTERS_SYM.charAt(0);
+		char[] searchWordChars = searchWord.toCharArray();
+		StringBuilder buf = new StringBuilder();
+		char prevChar = ' ';
+		for (char currChar : searchWordChars) {
+			if ((currChar == wildcardChar) && (currChar == prevChar)) {
+				continue;
+			}
+			buf.append(currChar);
+			prevChar = currChar;
+		}
+		searchWord = buf.toString();
+		return searchWord;
+	}
+
 	protected String decode(String value) {
 		value = UriUtils.decode(value, UTF_8);
 		value = StringUtils.replace(value, ENCODE_SYM_SLASH, "/");

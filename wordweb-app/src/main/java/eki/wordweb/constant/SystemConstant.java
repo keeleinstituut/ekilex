@@ -67,4 +67,6 @@ public interface SystemConstant {
 	String WORD_SEARCH_GROUP_FORM = "form";
 
 	String ILLEGAL_FORM_VALUE = "-";
+
+	int MASKED_SEARCH_RESULT_LIMIT = 100;
 }

@@ -2,15 +2,21 @@ package eki.wordweb.constant;
 
 public interface WebConstant {
 
+	String REDIRECT_PREF = "redirect:";
+
 	String DATASET_HOME_PAGE = "dataset-home";
 
 	String UNIF_HOME_PAGE = "unif-home";
 
 	String UNIF_SEARCH_PAGE = "unif-search";
 
+	String UNIF_WORDS_PAGE = "unif-words";
+
 	String LITE_HOME_PAGE = "simple-home";
 
 	String LITE_SEARCH_PAGE = "simple-search";
+
+	String LITE_WORDS_PAGE = "simple-words";
 
 	String MORPHO_SHORT_PAGE = "morpho-short";
 

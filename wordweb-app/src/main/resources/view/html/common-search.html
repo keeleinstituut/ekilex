@@ -10,7 +10,7 @@
                  class="main-search-input form-control search-phrase js-kioskboard-input" 
                  th:classappend="${pageContext == 'search' ? 'compact' : ''}"
                  th:placeholder="#{search.placeholder}" role="search"
-                 autocapitalize="off" autocorrect="off"
+                 autocapitalize="off" autocomplete="off"
                  data-kioskboard-type="keyboard" data-kioskboard-placement="bottom" data-kioskboard-specialcharacters="true" />
           <input type="hidden" name="destinLangsStr" th:value="${destinLangsStr}" />
           <input type="hidden" name="datasetCodesStr" th:value="${datasetCodesStr}" />

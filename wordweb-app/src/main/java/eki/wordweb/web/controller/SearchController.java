@@ -32,6 +32,6 @@ public class SearchController extends AbstractSearchController {
 		} else if (StringUtils.equals(SEARCH_MODE_SIMPLE, searchMode)) {
 			searchUri = webUtil.composeSimpleSearchUri(DESTIN_LANG_ALL, searchWord, homonymNr);
 		}
-		return "redirect:" + searchUri;
+		return REDIRECT_PREF + searchUri;
 	}
 }
