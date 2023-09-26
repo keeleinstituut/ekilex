@@ -198,7 +198,9 @@ public class SimpleSearchController extends AbstractSearchController {
 		Integer homonymNr = nullSafe(homonymNrStr);
 		boolean isMaskedSearchCrit = webUtil.isMaskedSearchCrit(searchWord);
 		if (isMaskedSearchCrit) {
-			searchWord = cleanupMask(searchWord);
+			String cleanSearchWord = cleanupMask(searchWord);
+			isValid = isValid & StringUtils.equals(searchWord, cleanSearchWord);
+			searchWord = cleanSearchWord;
 		} else if (homonymNr == null) {
 			homonymNr = 1;
 			isValid = isValid & false;
