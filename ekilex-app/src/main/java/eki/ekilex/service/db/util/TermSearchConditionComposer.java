@@ -123,6 +123,7 @@ public class TermSearchConditionComposer implements GlobalConstant, ActivityFunc
 				}
 
 				wherew = searchFilterHelper.applyIdFilters(SearchKey.ID, searchCriteria, w1.ID, wherew);
+				wherew = searchFilterHelper.applyCommaSeparatedIdsFilters(searchCriteria, w1.ID, wherew);
 				wherew = searchFilterHelper.applyWordActivityLogFilters(searchCriteria, w1.ID, wherew);
 				wherew = searchFilterHelper.applyWordTypeValueFilters(searchCriteria, w1.ID, wherew);
 				wherew = searchFilterHelper.applyWordTypeExistsFilters(searchCriteria, w1.ID, wherew);
@@ -143,6 +144,7 @@ public class TermSearchConditionComposer implements GlobalConstant, ActivityFunc
 				wherem = searchFilterHelper.applyDomainValueFilters(searchCriteria, m1.ID, wherem);
 				wherem = searchFilterHelper.applyDomainExistsFilters(searchCriteria, m1.ID, wherem);
 				wherem = searchFilterHelper.applyIdFilters(SearchKey.ID, searchCriteria, m1.ID, wherem);
+				wherem = searchFilterHelper.applyCommaSeparatedIdsFilters(searchCriteria, m1.ID, wherem);
 				wherem = searchFilterHelper.applyMeaningAttributeFilters(searchCriteria, m1.ID, wherem);
 				wherem = searchFilterHelper.applyMeaningRelationValueFilters(searchCriteria, m1.ID, wherem);
 				wherem = searchFilterHelper.applyMeaningRelationExistsFilters(searchCriteria, m1.ID, wherem);

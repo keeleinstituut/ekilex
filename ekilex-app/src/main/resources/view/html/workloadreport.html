@@ -87,7 +87,22 @@
                       </td>
                       <th:block th:each="functionRowUserCount : ${functionRow.userCounts}">
                         <td>
-                          <span th:text="${functionRowUserCount.count}"></span>
+                          <th:block th:if="${#lists.isEmpty(functionRowUserCount.ownerIds)}">
+                            <span th:text="${functionRowUserCount.count}"></span>
+                          </th:block>
+                          <th:block th:if="${not #lists.isEmpty(functionRowUserCount.ownerIds)}">
+                            <div data-toggle="tooltip" data-placement="top" th:title="${functionRowUserCount.wordValues}">
+                              <a href="#" role="button" data-toggle="dropdown" th:text="${functionRowUserCount.count}"></a>
+                              <div class="dropdown-menu">
+                                <a class="dropdown-item btn btn-secondary font-weight-bold btn-sm"
+                                   th:href="@{'/workloadreport/lexsearch/' + ${reportRow.activityOwner} + '/' + ${#strings.listJoin(functionRowUserCount.lexSearchIds, ', ')}}"
+                                   th:text="#{workloadreport.lex.search}">Leks otsing</a>
+                                <a class="dropdown-item btn btn-secondary font-weight-bold btn-sm"
+                                   th:href="@{'/workloadreport/termsearch/' + ${reportRow.activityOwner} + '/' + ${#strings.listJoin(functionRowUserCount.termSearchIds, ', ')}}"
+                                   th:text="#{workloadreport.term.search}">Term otsing</a>
+                              </div>
+                            </div>
+                          </th:block>
                         </td>
                       </th:block>
                       <td></td>

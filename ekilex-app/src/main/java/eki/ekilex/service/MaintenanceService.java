@@ -46,6 +46,7 @@ public class MaintenanceService implements SystemConstant, GlobalConstant {
 		clearDatasetCache();
 		clearUserCache();
 		clearTagCache();
+		clearWorkloadReportCache();
 	}
 
 	public void clearClassifCache() {
@@ -64,6 +65,10 @@ public class MaintenanceService implements SystemConstant, GlobalConstant {
 		cacheManager.getCache(CACHE_KEY_USER).clear();
 	}
 
+	private void clearWorkloadReportCache() {
+		cacheManager.getCache(CACHE_KEY_WORKLOAD_REPORT).clear();
+	}
+
 	@CacheEvict(allEntries = true, value = {CACHE_KEY_CLASSIF, CACHE_KEY_DATASET})
 	@Scheduled(fixedDelay = CACHE_EVICT_DELAY_60MIN, initialDelay = 5000)
 	public void classifCacheEvict() {
@@ -77,6 +82,11 @@ public class MaintenanceService implements SystemConstant, GlobalConstant {
 	@CacheEvict(allEntries = true, value = CACHE_KEY_TAG)
 	@Scheduled(fixedDelay = CACHE_EVICT_DELAY_60MIN, initialDelay = 5000)
 	public void tagCacheEvict() {
+	}
+
+	@CacheEvict(allEntries = true, value = CACHE_KEY_WORKLOAD_REPORT)
+	@Scheduled(fixedDelay = CACHE_EVICT_DELAY_60MIN, initialDelay = 5000)
+	public void workloadreportCacheEvict() {
 	}
 
 	@Scheduled(cron = MERGE_HOMONYMS_TIME_3_AM)

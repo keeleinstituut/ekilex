@@ -74,7 +74,7 @@ public class WorkloadReportService {
 
 		List<WorkloadReportCount> totalCounts = workloadReportDbService.getWorkloadReportTotalCounts(dateFrom, dateUntil, filteredDatasetCodes, includeUnspecifiedDatasets, userNames);
 		List<WorkloadReportCount> allUserCounts = workloadReportDbService.getWorkloadReportUserCounts(dateFrom, dateUntil, filteredDatasetCodes, includeUnspecifiedDatasets, userNames);
-		List<String> allUserNames = allUserCounts.stream().map(WorkloadReportCount::getUserName).distinct().collect(Collectors.toList());
+		List<String> allUserNames = allUserCounts.stream().map(WorkloadReportCount::getUserName).distinct().sorted(String::compareToIgnoreCase).collect(Collectors.toList());
 
 		WorkloadReport workloadReport = new WorkloadReport();
 		List<WorkloadReportRow> reportRows = new ArrayList<>();
@@ -101,21 +101,54 @@ public class WorkloadReportService {
 			}
 
 			List<WorkloadReportRow> functionRows = new ArrayList<>();
+			// TODO refactor getFunctionNames service to more general - return activityOwner and activityType as well
+			//  then it is possible to move it outside totalCounts loop and it will be 1 db call instead of 9?
+			List<String> functionNames = workloadReportDbService.getFunctionNames(activityOwner, activityType);
 			List<WorkloadReportCount> functionCounts = workloadReportDbService.getWorkloadReportFunctionCounts(dateFrom, dateUntil, filteredDatasetCodes, includeUnspecifiedDatasets, userNames, activityOwner, activityType);
-			List<String> functionNames = functionCounts.stream().map(WorkloadReportCount::getFunctName).distinct().collect(Collectors.toList());
 			for (String functionName : functionNames) {
 				List<WorkloadReportUserCount> functionUserCounts = new ArrayList<>();
 				for (String userName : allUserNames) {
-					int userFunctionCount = functionCounts.stream()
+					// TODO rename
+					WorkloadReportCount userFunctionCountRename = functionCounts.stream()
 							.filter(fc -> fc.getFunctName().equals(functionName))
 							.filter(fc -> fc.getUserName().equals(userName))
-							.map(WorkloadReportCount::getCount)
 							.findFirst()
-							.orElse(0);
+							.orElse(null);
+
+					int userFunctionCount = 0;
+					List<String> wordValues = new ArrayList<>();
+					List<Long> ownerIds = new ArrayList<>();
+					List<Long> lexSearchIds = new ArrayList<>();
+					List<Long> termSearchIds = new ArrayList<>();
+
+					if (userFunctionCountRename != null) {
+						userFunctionCount = userFunctionCountRename.getCount();
+						if (userFunctionCountRename.getWordValues() != null) {
+							wordValues = userFunctionCountRename.getWordValues();
+						}
+						if (userFunctionCountRename.getOwnerIds() != null) {
+							ownerIds = userFunctionCountRename.getOwnerIds();
+						}
+
+						if (ActivityOwner.LEXEME.equals(activityOwner)) {
+							List<Long> wordIds = userFunctionCountRename.getWordIds() == null ? new ArrayList<>() : userFunctionCountRename.getWordIds();
+							List<Long> meaningIds = userFunctionCountRename.getMeaningIds() == null ? new ArrayList<>() : userFunctionCountRename.getMeaningIds();
+
+							lexSearchIds = wordIds;
+							termSearchIds = meaningIds;
+						} else {
+							lexSearchIds = ownerIds;
+							termSearchIds = ownerIds;
+						}
+					}
 
 					WorkloadReportUserCount functionUserCount = new WorkloadReportUserCount();
 					functionUserCount.setUserName(userName);
 					functionUserCount.setCount(userFunctionCount);
+					functionUserCount.setWordValues(wordValues);
+					functionUserCount.setOwnerIds(ownerIds);
+					functionUserCount.setLexSearchIds(lexSearchIds);
+					functionUserCount.setTermSearchIds(termSearchIds);
 					functionUserCounts.add(functionUserCount);
 				}
 

@@ -45,7 +45,8 @@ public enum SearchKey {
 	MEANING_FORUM(OperandSets.VALUE_AND_EXISTS_OPERANDS, SearchValueType.TEXTUAL),
 	LEXEME_NOTE(OperandSets.VALUE_AND_EXISTS_OPERANDS, SearchValueType.TEXTUAL),
 	MEANING_NOTE(OperandSets.VALUE_AND_EXISTS_OPERANDS, SearchValueType.TEXTUAL),
-	DEFINITION_NOTE(OperandSets.VALUE_AND_EXISTS_OPERANDS, SearchValueType.TEXTUAL)
+	DEFINITION_NOTE(OperandSets.VALUE_AND_EXISTS_OPERANDS, SearchValueType.TEXTUAL),
+	COMMA_SEPARATED_IDS(new SearchOperand[] {SearchOperand.EQUALS}, SearchValueType.TEXTUAL)
 	;
 
 	private SearchOperand[] operands;

@@ -4,7 +4,7 @@ import java.util.List;
 
 import eki.common.data.AbstractDataObject;
 
-public class WorkloadReportUserCount extends AbstractDataObject {
+public class WorkloadReportUserCount extends AbstractDataObject { // TODO rename?
 
 	private static final long serialVersionUID = 1L;
 
@@ -12,7 +12,13 @@ public class WorkloadReportUserCount extends AbstractDataObject {
 
 	private int count;
 
+	private List<String> wordValues;
+
 	private List<Long> ownerIds;
+
+	private List<Long> lexSearchIds;
+
+	private List<Long> termSearchIds;
 
 	public String getUserName() {
 		return userName;
@@ -30,11 +36,35 @@ public class WorkloadReportUserCount extends AbstractDataObject {
 		this.count = count;
 	}
 
+	public List<String> getWordValues() {
+		return wordValues;
+	}
+
+	public void setWordValues(List<String> wordValues) {
+		this.wordValues = wordValues;
+	}
+
 	public List<Long> getOwnerIds() {
 		return ownerIds;
 	}
 
 	public void setOwnerIds(List<Long> ownerIds) {
 		this.ownerIds = ownerIds;
+	}
+
+	public List<Long> getLexSearchIds() {
+		return lexSearchIds;
+	}
+
+	public void setLexSearchIds(List<Long> lexSearchIds) {
+		this.lexSearchIds = lexSearchIds;
+	}
+
+	public List<Long> getTermSearchIds() {
+		return termSearchIds;
+	}
+
+	public void setTermSearchIds(List<Long> termSearchIds) {
+		this.termSearchIds = termSearchIds;
 	}
 }

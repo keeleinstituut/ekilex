@@ -229,6 +229,29 @@ public class SearchFilterHelper implements GlobalConstant, ActivityFunct {
 		return condition;
 	}
 
+	public Condition applyCommaSeparatedIdsFilters(List<SearchCriterion> searchCriteria, Field<Long> idField, Condition condition) {
+
+		List<SearchCriterion> filteredCriteria = searchCriteria.stream()
+				.filter(crit -> crit.getSearchKey().equals(SearchKey.COMMA_SEPARATED_IDS)
+						&& crit.getSearchOperand().equals(SearchOperand.EQUALS)
+						&& crit.getSearchValue() != null)
+				.collect(toList());
+
+		if (CollectionUtils.isEmpty(filteredCriteria)) {
+			return condition;
+		}
+
+		for (SearchCriterion criterion : filteredCriteria) {
+			String commaSeparatedSearchIdsStr = criterion.getSearchValue().toString();
+			commaSeparatedSearchIdsStr = RegExUtils.replaceAll(commaSeparatedSearchIdsStr, "[^0-9.,]", "");
+			List<String> idStrings = Arrays.asList(StringUtils.split(commaSeparatedSearchIdsStr, ','));
+
+			criterion.setSearchValue(commaSeparatedSearchIdsStr);
+			condition = condition.and(idField.in(idStrings));
+		}
+		return condition;
+	}
+
 	public Condition applyValueFilters(SearchKey searchKey, List<SearchCriterion> searchCriteria, Field<String> valueField, Condition condition, boolean isCaseInsensitive) throws Exception {
 
 		List<SearchCriterion> filteredCriteria = filterCriteriaBySearchKey(searchCriteria, searchKey);
