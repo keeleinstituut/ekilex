@@ -68,37 +68,37 @@
                   </th:block>
                   <th th:text="#{workloadreport.total}">KOKKU:</th>
                 </tr>
-                <th:block th:each="reportRow : ${workloadReport.reportRows}">
+                <th:block th:each="activityReport : ${workloadReport.activityReports}">
                   <tr class="font-weight-bold">
                     <td>
-                      <span th:text="#{|workloadreport.owner.type.${reportRow.activityOwner}.${reportRow.activityType}|}"></span>
+                      <span th:text="#{|workloadreport.owner.type.${activityReport.activityOwner}.${activityReport.activityType}|}"></span>
                     </td>
-                    <th:block th:each="userCount : ${reportRow.userCounts}">
+                    <th:block th:each="activityReportUser : ${activityReport.activityReportUsers}">
                       <td>
-                        <span th:text="${userCount.count}"></span>
+                        <span th:text="${activityReportUser.count}"></span>
                       </td>
                     </th:block>
-                    <td class="font-weight-bold" th:text="${reportRow.totalCount}"></td>
+                    <td class="font-weight-bold" th:text="${activityReport.totalCount}"></td>
                   </tr>
-                  <th:block th:each="functionRow : ${reportRow.functionRows}">
+                  <th:block th:each="functionReport : ${activityReport.functionReports}">
                     <tr class="small">
                       <td>
-                        <span th:text="${functionRow.functName}"></span>
+                        <span th:text="${functionReport.functName}"></span>
                       </td>
-                      <th:block th:each="functionRowUserCount : ${functionRow.userCounts}">
+                      <th:block th:each="functionReportUser : ${functionReport.functionReportUsers}">
                         <td>
-                          <th:block th:if="${#lists.isEmpty(functionRowUserCount.ownerIds)}">
-                            <span th:text="${functionRowUserCount.count}"></span>
+                          <th:block th:if="${#lists.isEmpty(functionReportUser.ownerIds)}">
+                            <span th:text="${functionReportUser.count}"></span>
                           </th:block>
-                          <th:block th:if="${not #lists.isEmpty(functionRowUserCount.ownerIds)}">
-                            <div data-toggle="tooltip" data-placement="top" th:title="${functionRowUserCount.wordValues}">
-                              <a href="#" role="button" data-toggle="dropdown" th:text="${functionRowUserCount.count}"></a>
+                          <th:block th:if="${not #lists.isEmpty(functionReportUser.ownerIds)}">
+                            <div data-toggle="tooltip" data-placement="top" th:title="${#strings.listJoin(functionReportUser.wordValues, ', ')}">
+                              <a href="#" role="button" data-toggle="dropdown" th:text="${functionReportUser.count}"></a>
                               <div class="dropdown-menu">
                                 <a class="dropdown-item btn btn-secondary font-weight-bold btn-sm"
-                                   th:href="@{'/workloadreport/lexsearch/' + ${reportRow.activityOwner} + '/' + ${#strings.listJoin(functionRowUserCount.lexSearchIds, ', ')}}"
+                                   th:href="@{'/workloadreport/lexsearch/' + ${activityReport.activityOwner} + '/' + ${#strings.listJoin(functionReportUser.lexSearchIds, ', ')}}"
                                    th:text="#{workloadreport.lex.search}">Leks otsing</a>
                                 <a class="dropdown-item btn btn-secondary font-weight-bold btn-sm"
-                                   th:href="@{'/workloadreport/termsearch/' + ${reportRow.activityOwner} + '/' + ${#strings.listJoin(functionRowUserCount.termSearchIds, ', ')}}"
+                                   th:href="@{'/workloadreport/termsearch/' + ${activityReport.activityOwner} + '/' + ${#strings.listJoin(functionReportUser.termSearchIds, ', ')}}"
                                    th:text="#{workloadreport.term.search}">Term otsing</a>
                               </div>
                             </div>

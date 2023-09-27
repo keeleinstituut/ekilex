@@ -145,8 +145,6 @@ public class WorkloadReportDbService extends AbstractDbService implements System
 		where = addActivityTypeCondition(where, al, activityType);
 
 		if (ActivityOwner.LEXEME.equals(activityOwner)) {
-			where = where.and(al.OWNER_ID.eq(l.ID)).and(l.WORD_ID.eq(w.ID));
-
 			return create
 					.select(
 							al.FUNCT_NAME,
@@ -158,14 +156,14 @@ public class WorkloadReportDbService extends AbstractDbService implements System
 							DSL.arrayAggDistinct(l.WORD_ID).as("word_ids"),
 							DSL.arrayAggDistinct(l.MEANING_ID).as("meaning_ids"),
 							DSL.arrayAggDistinct(w.VALUE).as("wordValues"))
-					.from(al, l, w)
+					.from(al
+							.leftOuterJoin(l).on(al.OWNER_ID.eq(l.ID))
+							.leftOuterJoin(w).on(l.WORD_ID.eq(w.ID)))
 					.where(where)
 					.groupBy(al.FUNCT_NAME, al.OWNER_NAME, al.ENTITY_NAME, al.EVENT_BY)
 					.fetchInto(WorkloadReportCount.class);
 
 		} else if (ActivityOwner.WORD.equals(activityOwner)) {
-			where = where.and(al.OWNER_ID.eq(w.ID));
-
 			return create
 					.select(
 							al.FUNCT_NAME,
@@ -175,7 +173,8 @@ public class WorkloadReportDbService extends AbstractDbService implements System
 							DSL.countDistinct(al.OWNER_ID).as("count"),
 							DSL.arrayAggDistinct(al.OWNER_ID).as("owner_ids"),
 							DSL.arrayAggDistinct(w.VALUE).as("wordValues"))
-					.from(al, w)
+					.from(al
+							.leftOuterJoin(w).on(al.OWNER_ID.eq(w.ID)))
 					.where(where)
 					.groupBy(al.FUNCT_NAME, al.OWNER_NAME, al.ENTITY_NAME, al.EVENT_BY)
 					.fetchInto(WorkloadReportCount.class);
@@ -215,6 +214,7 @@ public class WorkloadReportDbService extends AbstractDbService implements System
 	private Condition addUserNamesConditon(Condition where, ActivityLog al, List<String> userNames) {
 
 		if (CollectionUtils.isNotEmpty(userNames)) {
+			// using % wildcard to find API users as well
 			String userNamesSimilarCrit = "(" + StringUtils.join(userNames, '|') + ")%";
 			where = where.and(al.EVENT_BY.similarTo(userNamesSimilarCrit));
 		}

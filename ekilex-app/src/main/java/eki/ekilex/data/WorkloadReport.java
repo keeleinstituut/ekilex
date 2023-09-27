@@ -10,7 +10,7 @@ public class WorkloadReport extends AbstractDataObject {
 
 	private List<String> userNames;
 
-	private List<WorkloadReportRow> reportRows;
+	private List<WorkloadActivityReport> activityReports;
 
 	private int resultCount;
 
@@ -22,12 +22,12 @@ public class WorkloadReport extends AbstractDataObject {
 		this.userNames = userNames;
 	}
 
-	public List<WorkloadReportRow> getReportRows() {
-		return reportRows;
+	public List<WorkloadActivityReport> getActivityReports() {
+		return activityReports;
 	}
 
-	public void setReportRows(List<WorkloadReportRow> reportRows) {
-		this.reportRows = reportRows;
+	public void setActivityReports(List<WorkloadActivityReport> activityReports) {
+		this.activityReports = activityReports;
 	}
 
 	public int getResultCount() {

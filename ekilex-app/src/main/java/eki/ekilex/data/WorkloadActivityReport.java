@@ -6,7 +6,7 @@ import eki.common.constant.ActivityOwner;
 import eki.common.data.AbstractDataObject;
 import eki.ekilex.constant.CrudType;
 
-public class WorkloadReportRow extends AbstractDataObject {
+public class WorkloadActivityReport extends AbstractDataObject {
 
 	private static final long serialVersionUID = 1L;
 
@@ -14,13 +14,11 @@ public class WorkloadReportRow extends AbstractDataObject {
 
 	private CrudType activityType;
 
-	private String functName;
-
-	private List<WorkloadReportUserCount> userCounts;
+	private List<WorkloadReportUser> activityReportUsers;
 
 	private int totalCount;
 
-	private List<WorkloadReportRow> functionRows;
+	private List<WorkloadFunctionReport> functionReports;
 
 	public ActivityOwner getActivityOwner() {
 		return activityOwner;
@@ -38,20 +36,12 @@ public class WorkloadReportRow extends AbstractDataObject {
 		this.activityType = activityType;
 	}
 
-	public String getFunctName() {
-		return functName;
+	public List<WorkloadReportUser> getActivityReportUsers() {
+		return activityReportUsers;
 	}
 
-	public void setFunctName(String functName) {
-		this.functName = functName;
-	}
-
-	public List<WorkloadReportUserCount> getUserCounts() {
-		return userCounts;
-	}
-
-	public void setUserCounts(List<WorkloadReportUserCount> userCounts) {
-		this.userCounts = userCounts;
+	public void setActivityReportUsers(List<WorkloadReportUser> activityReportUsers) {
+		this.activityReportUsers = activityReportUsers;
 	}
 
 	public int getTotalCount() {
@@ -62,11 +52,11 @@ public class WorkloadReportRow extends AbstractDataObject {
 		this.totalCount = totalCount;
 	}
 
-	public List<WorkloadReportRow> getFunctionRows() {
-		return functionRows;
+	public List<WorkloadFunctionReport> getFunctionReports() {
+		return functionReports;
 	}
 
-	public void setFunctionRows(List<WorkloadReportRow> functionRows) {
-		this.functionRows = functionRows;
+	public void setFunctionReports(List<WorkloadFunctionReport> functionReports) {
+		this.functionReports = functionReports;
 	}
 }

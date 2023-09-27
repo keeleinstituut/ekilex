@@ -7,7 +7,7 @@ import eki.common.constant.ActivityOwner;
 import eki.common.data.AbstractDataObject;
 import eki.ekilex.constant.CrudType;
 
-public class WorkloadReportCount extends AbstractDataObject { // TODO rename?
+public class WorkloadReportCount extends AbstractDataObject {
 
 	private static final long serialVersionUID = 1L;
 
