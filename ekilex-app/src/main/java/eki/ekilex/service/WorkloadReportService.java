@@ -15,10 +15,11 @@ import eki.common.constant.ActivityOwner;
 import eki.ekilex.constant.CrudType;
 import eki.ekilex.data.Dataset;
 import eki.ekilex.data.EkiUser;
+import eki.ekilex.data.WorkloadActivityReport;
 import eki.ekilex.data.WorkloadReport;
 import eki.ekilex.data.WorkloadReportCount;
-import eki.ekilex.data.WorkloadReportRow;
-import eki.ekilex.data.WorkloadReportUserCount;
+import eki.ekilex.data.WorkloadFunctionReport;
+import eki.ekilex.data.WorkloadReportUser;
 import eki.ekilex.service.db.DatasetDbService;
 import eki.ekilex.service.db.UserDbService;
 import eki.ekilex.service.db.WorkloadReportDbService;
@@ -77,16 +78,16 @@ public class WorkloadReportService {
 		List<String> allUserNames = allUserCounts.stream().map(WorkloadReportCount::getUserName).distinct().sorted(String::compareToIgnoreCase).collect(Collectors.toList());
 
 		WorkloadReport workloadReport = new WorkloadReport();
-		List<WorkloadReportRow> reportRows = new ArrayList<>();
+		List<WorkloadActivityReport> activityReports = new ArrayList<>();
 
 		for (WorkloadReportCount totalCount : totalCounts) {
 			ActivityOwner activityOwner = totalCount.getActivityOwner();
 			CrudType activityType = totalCount.getActivityType();
 			int totalCountValue = totalCount.getCount();
 
-			List<WorkloadReportUserCount> userCounts = new ArrayList<>();
+			List<WorkloadReportUser> activityReportUsers = new ArrayList<>();
 			for (String userName : allUserNames) {
-				int userCount = allUserCounts.stream()
+				int activityReportUserCount = allUserCounts.stream()
 						.filter(uc -> uc.getUserName().equals(userName))
 						.filter(uc -> uc.getActivityOwner().equals(activityOwner))
 						.filter(uc -> uc.getActivityType().equals(activityType))
@@ -94,45 +95,42 @@ public class WorkloadReportService {
 						.findFirst()
 						.orElse(0);
 
-				WorkloadReportUserCount reportUserCount = new WorkloadReportUserCount();
-				reportUserCount.setUserName(userName);
-				reportUserCount.setCount(userCount);
-				userCounts.add(reportUserCount);
+				WorkloadReportUser activityReportUser = new WorkloadReportUser();
+				activityReportUser.setUserName(userName);
+				activityReportUser.setCount(activityReportUserCount);
+				activityReportUsers.add(activityReportUser);
 			}
 
-			List<WorkloadReportRow> functionRows = new ArrayList<>();
-			// TODO refactor getFunctionNames service to more general - return activityOwner and activityType as well
-			//  then it is possible to move it outside totalCounts loop and it will be 1 db call instead of 9?
+			List<WorkloadFunctionReport> functionReports = new ArrayList<>();
 			List<String> functionNames = workloadReportDbService.getFunctionNames(activityOwner, activityType);
 			List<WorkloadReportCount> functionCounts = workloadReportDbService.getWorkloadReportFunctionCounts(dateFrom, dateUntil, filteredDatasetCodes, includeUnspecifiedDatasets, userNames, activityOwner, activityType);
 			for (String functionName : functionNames) {
-				List<WorkloadReportUserCount> functionUserCounts = new ArrayList<>();
+				List<WorkloadReportUser> functionReportUsers = new ArrayList<>();
 				for (String userName : allUserNames) {
-					// TODO rename
-					WorkloadReportCount userFunctionCountRename = functionCounts.stream()
+					WorkloadReportCount userFunctionCount = functionCounts.stream()
 							.filter(fc -> fc.getFunctName().equals(functionName))
 							.filter(fc -> fc.getUserName().equals(userName))
 							.findFirst()
 							.orElse(null);
 
-					int userFunctionCount = 0;
+					int functionReportUserCount = 0;
 					List<String> wordValues = new ArrayList<>();
 					List<Long> ownerIds = new ArrayList<>();
 					List<Long> lexSearchIds = new ArrayList<>();
 					List<Long> termSearchIds = new ArrayList<>();
 
-					if (userFunctionCountRename != null) {
-						userFunctionCount = userFunctionCountRename.getCount();
-						if (userFunctionCountRename.getWordValues() != null) {
-							wordValues = userFunctionCountRename.getWordValues();
+					if (userFunctionCount != null) {
+						functionReportUserCount = userFunctionCount.getCount();
+						if (userFunctionCount.getWordValues() != null) {
+							wordValues = userFunctionCount.getWordValues();
 						}
-						if (userFunctionCountRename.getOwnerIds() != null) {
-							ownerIds = userFunctionCountRename.getOwnerIds();
+						if (userFunctionCount.getOwnerIds() != null) {
+							ownerIds = userFunctionCount.getOwnerIds();
 						}
 
 						if (ActivityOwner.LEXEME.equals(activityOwner)) {
-							List<Long> wordIds = userFunctionCountRename.getWordIds() == null ? new ArrayList<>() : userFunctionCountRename.getWordIds();
-							List<Long> meaningIds = userFunctionCountRename.getMeaningIds() == null ? new ArrayList<>() : userFunctionCountRename.getMeaningIds();
+							List<Long> wordIds = userFunctionCount.getWordIds() == null ? new ArrayList<>() : userFunctionCount.getWordIds();
+							List<Long> meaningIds = userFunctionCount.getMeaningIds() == null ? new ArrayList<>() : userFunctionCount.getMeaningIds();
 
 							lexSearchIds = wordIds;
 							termSearchIds = meaningIds;
@@ -142,37 +140,36 @@ public class WorkloadReportService {
 						}
 					}
 
-					WorkloadReportUserCount functionUserCount = new WorkloadReportUserCount();
-					functionUserCount.setUserName(userName);
-					functionUserCount.setCount(userFunctionCount);
-					functionUserCount.setWordValues(wordValues);
-					functionUserCount.setOwnerIds(ownerIds);
-					functionUserCount.setLexSearchIds(lexSearchIds);
-					functionUserCount.setTermSearchIds(termSearchIds);
-					functionUserCounts.add(functionUserCount);
+					WorkloadReportUser functionReportUser = new WorkloadReportUser();
+					functionReportUser.setUserName(userName);
+					functionReportUser.setCount(functionReportUserCount);
+					functionReportUser.setWordValues(wordValues);
+					functionReportUser.setOwnerIds(ownerIds);
+					functionReportUser.setLexSearchIds(lexSearchIds);
+					functionReportUser.setTermSearchIds(termSearchIds);
+					functionReportUsers.add(functionReportUser);
 				}
 
-				WorkloadReportRow functionRow = new WorkloadReportRow();
-				functionRow.setActivityOwner(activityOwner);
-				functionRow.setUserCounts(functionUserCounts);
-				functionRow.setFunctName(functionName);
+				WorkloadFunctionReport functionReport = new WorkloadFunctionReport();
+				functionReport.setFunctionReportUsers(functionReportUsers);
+				functionReport.setFunctName(functionName);
 
-				functionRows.add(functionRow);
+				functionReports.add(functionReport);
 			}
 
-			WorkloadReportRow reportRow = new WorkloadReportRow();
-			reportRow.setActivityOwner(activityOwner);
-			reportRow.setActivityType(activityType);
-			reportRow.setTotalCount(totalCountValue);
-			reportRow.setUserCounts(userCounts);
-			reportRow.setFunctionRows(functionRows);
+			WorkloadActivityReport activityReport = new WorkloadActivityReport();
+			activityReport.setActivityOwner(activityOwner);
+			activityReport.setActivityType(activityType);
+			activityReport.setTotalCount(totalCountValue);
+			activityReport.setActivityReportUsers(activityReportUsers);
+			activityReport.setFunctionReports(functionReports);
 
-			reportRows.add(reportRow);
+			activityReports.add(activityReport);
 		}
 
-		int resultCount = reportRows.size();
+		int resultCount = activityReports.size();
 		workloadReport.setUserNames(allUserNames);
-		workloadReport.setReportRows(reportRows);
+		workloadReport.setActivityReports(activityReports);
 		workloadReport.setResultCount(resultCount);
 		return workloadReport;
 	}

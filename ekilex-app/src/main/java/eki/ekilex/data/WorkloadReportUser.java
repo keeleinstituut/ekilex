@@ -4,7 +4,7 @@ import java.util.List;
 
 import eki.common.data.AbstractDataObject;
 
-public class WorkloadReportUserCount extends AbstractDataObject { // TODO rename?
+public class WorkloadReportUser extends AbstractDataObject {
 
 	private static final long serialVersionUID = 1L;
 
