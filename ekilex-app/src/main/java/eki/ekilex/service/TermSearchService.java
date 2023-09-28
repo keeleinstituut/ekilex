@@ -95,7 +95,7 @@ public class TermSearchService extends AbstractSearchService {
 		TermSearchResult termSearchResult;
 		if (StringUtils.isBlank(searchFilter)) {
 			termSearchResult = getEmptyResult();
-		} else if (StringUtils.containsOnly(searchFilter, QUERY_MULTIPLE_CHARACTERS_SYM)) {
+		} else if (StringUtils.containsOnly(searchFilter, SEARCH_MASK_CHARS)) {
 			throw new OperationDeniedException("Please be more specific. Use other means to dump data");
 		} else {
 			SearchDatasetsRestriction searchDatasetsRestriction = composeDatasetsRestriction(selectedDatasetCodes);

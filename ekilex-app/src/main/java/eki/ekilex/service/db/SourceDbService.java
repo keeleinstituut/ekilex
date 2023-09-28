@@ -88,7 +88,7 @@ public class SourceDbService implements GlobalConstant, ActivityFunct {
 
 	public List<SourcePropertyTuple> getSources(String searchFilter, SourceType sourceType, Long sourceIdToExclude) {
 
-		String maskedSearchFilter = searchFilter.replace(QUERY_MULTIPLE_CHARACTERS_SYM, "%").replace(QUERY_SINGLE_CHARACTER_SYM, "_");
+		String maskedSearchFilter = searchFilter.replace(SEARCH_MASK_CHARS, "%").replace(SEARCH_MASK_CHAR, "_");
 		Field<String> filterField = DSL.lower(maskedSearchFilter);
 
 		Source s = SOURCE.as("s");

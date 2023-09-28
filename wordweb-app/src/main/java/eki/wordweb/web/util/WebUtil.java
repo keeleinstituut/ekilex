@@ -26,18 +26,17 @@ public class WebUtil implements WebConstant, SystemConstant, GlobalConstant {
 	private String corpusServiceRusUrl;
 
 	public boolean isMaskedSearchCrit(String searchWord) {
-		if (StringUtils.containsAny(searchWord, QUERY_MULTIPLE_CHARACTERS_SYM, QUERY_SINGLE_CHARACTER_SYM)) {
+		if (StringUtils.containsAny(searchWord, SEARCH_MASK_CHARS, SEARCH_MASK_CHAR)) {
 			return true;
 		}
 		return false;
 	}
 
 	public String composeDetailSearchUri(String destinLangsStr, String datasetCodesStr, String word, Integer homonymNr) {
-		boolean isMaskedSearchCrit = isMaskedSearchCrit(word);
 		String encodedWord = encode(word);
 		String encodedDatasetCodesStr = encodeSeparatedValuesStr(datasetCodesStr);
 		String searchUri = StringUtils.join(SEARCH_URI, UNIF_URI, '/', destinLangsStr, '/', encodedDatasetCodesStr, '/', encodedWord);
-		if ((homonymNr != null) && !isMaskedSearchCrit) {
+		if ((homonymNr != null)) {
 			searchUri += "/" + homonymNr;
 		}
 		return searchUri;

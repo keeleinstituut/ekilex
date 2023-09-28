@@ -67,7 +67,7 @@ public class LexSearchConditionComposer implements GlobalConstant, ActivityFunct
 
 	public Condition createSearchCondition(Word word, String searchWordCrit, SearchDatasetsRestriction searchDatasetsRestriction) {
 
-		String maskedSearchFilter = searchWordCrit.replace(QUERY_MULTIPLE_CHARACTERS_SYM, "%").replace(QUERY_SINGLE_CHARACTER_SYM, "_");
+		String maskedSearchFilter = searchWordCrit.replace(SEARCH_MASK_CHARS, "%").replace(SEARCH_MASK_CHAR, "_");
 		Field<String> filterField = DSL.lower(maskedSearchFilter);
 
 		Condition where = composeWordDatasetsCondition(word, searchDatasetsRestriction);

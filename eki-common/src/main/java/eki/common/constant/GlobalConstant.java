@@ -94,9 +94,9 @@ public interface GlobalConstant {
 
 	String FORCE_QUERY_LOG = "'force query log'";
 
-	String QUERY_MULTIPLE_CHARACTERS_SYM = "*";
+	String SEARCH_MASK_CHARS = "*";
 
-	String QUERY_SINGLE_CHARACTER_SYM = "?";
+	String SEARCH_MASK_CHAR = "?";
 
 	String STAT_API_KEY_HEADER_NAME = "stat-api-key";
 

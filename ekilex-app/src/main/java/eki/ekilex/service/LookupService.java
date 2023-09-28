@@ -324,7 +324,7 @@ public class LookupService extends AbstractWordSearchService {
 		SearchDatasetsRestriction searchDatasetsRestriction = composeDatasetsRestriction(userPrefDatasetCodes);
 		List<WordLexeme> lexemes = new ArrayList<>();
 		if (isNotBlank(searchWord)) {
-			String cleanedUpFilter = searchWord.replace(QUERY_MULTIPLE_CHARACTERS_SYM, "").replace(QUERY_SINGLE_CHARACTER_SYM, "").replace("%", "").replace("_", "");
+			String cleanedUpFilter = searchWord.replace(SEARCH_MASK_CHARS, "").replace(SEARCH_MASK_CHAR, "").replace("%", "").replace("_", "");
 			WordsResult words = getWords(cleanedUpFilter, userPrefDatasetCodes, userRole, tagNames, DEFAULT_OFFSET, DEFAULT_MAX_RESULTS_LIMIT, true);
 			if (CollectionUtils.isNotEmpty(words.getWords())) {
 				Map<String, String> datasetNameMap = commonDataDbService.getDatasetNameMap();

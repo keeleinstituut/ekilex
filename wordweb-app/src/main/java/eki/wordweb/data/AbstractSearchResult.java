@@ -1,27 +1,21 @@
 package eki.wordweb.data;
 
-import java.util.List;
-
 import eki.common.data.AbstractDataObject;
 
-public class WordsMatchResult extends AbstractDataObject {
+public abstract class AbstractSearchResult extends AbstractDataObject {
 
 	private static final long serialVersionUID = 1L;
-
-	private List<String> wordValues;
 
 	private int resultCount;
 
 	private boolean resultsExist;
 
-	public WordsMatchResult(List<String> wordValues, int resultCount, boolean resultsExist) {
-		this.wordValues = wordValues;
+	private boolean singleResult;
+
+	public AbstractSearchResult(int resultCount, boolean resultsExist, boolean singleResult) {
 		this.resultCount = resultCount;
 		this.resultsExist = resultsExist;
-	}
-
-	public List<String> getWordValues() {
-		return wordValues;
+		this.singleResult = singleResult;
 	}
 
 	public int getResultCount() {
@@ -30,6 +24,10 @@ public class WordsMatchResult extends AbstractDataObject {
 
 	public boolean isResultsExist() {
 		return resultsExist;
+	}
+
+	public boolean isSingleResult() {
+		return singleResult;
 	}
 
 }

@@ -54,7 +54,7 @@ import eki.wordweb.data.WordEtymTuple;
 import eki.wordweb.data.WordForm;
 import eki.wordweb.data.WordRelationsTuple;
 import eki.wordweb.data.WordSearchElement;
-import eki.wordweb.data.WordsMatchResult;
+import eki.wordweb.data.WordsMatch;
 import eki.wordweb.data.db.Routines;
 import eki.wordweb.data.db.tables.MviewWwCollocation;
 import eki.wordweb.data.db.tables.MviewWwCounts;
@@ -180,11 +180,11 @@ public class SearchDbService implements GlobalConstant, SystemConstant {
 				.fetchGroups("sgroup", WordSearchElement.class);
 	}
 
-	public WordsMatchResult getWordsWithMask(String searchWord, SearchContext searchContext) {
+	public WordsMatch getWordsWithMask(String searchWord, SearchContext searchContext) {
 
 		searchWord = StringUtils.trim(searchWord);
-		searchWord = StringUtils.replace(searchWord, QUERY_MULTIPLE_CHARACTERS_SYM, "%");
-		searchWord = StringUtils.replace(searchWord, QUERY_SINGLE_CHARACTER_SYM, "_");
+		searchWord = StringUtils.replace(searchWord, SEARCH_MASK_CHARS, "%");
+		searchWord = StringUtils.replace(searchWord, SEARCH_MASK_CHAR, "_");
 		Field<String> searchWordLowerField = DSL.lower(searchWord);
 
 		MviewWwWordSearch w = MVIEW_WW_WORD_SEARCH.as("w");
@@ -206,8 +206,9 @@ public class SearchDbService implements GlobalConstant, SystemConstant {
 				.fetchSingleInto(int.class);
 
 		boolean resultsExist = resultCount > 0;
+		boolean singleResult = resultCount == 1;
 
-		return new WordsMatchResult(wordValues, resultCount, resultsExist);
+		return new WordsMatch(wordValues, resultCount, resultsExist, singleResult);
 	}
 
 	public List<Word> getWords(String searchWord, SearchContext searchContext) {

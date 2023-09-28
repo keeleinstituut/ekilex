@@ -30,7 +30,7 @@ import eki.wordweb.data.WordData;
 import eki.wordweb.data.WordForm;
 import eki.wordweb.data.WordSearchElement;
 import eki.wordweb.data.WordsData;
-import eki.wordweb.data.WordsMatchResult;
+import eki.wordweb.data.WordsMatch;
 import eki.wordweb.data.type.TypeCollocMember;
 import eki.wordweb.service.db.CommonDataDbService;
 import eki.wordweb.service.db.SearchDbService;
@@ -117,21 +117,21 @@ public abstract class AbstractSearchService implements SystemConstant, WebConsta
 	}
 
 	@Transactional
-	public WordsMatchResult getWordsWithMask(SearchFilter searchFilter) {
+	public WordsMatch getWordsWithMask(SearchFilter searchFilter) {
 
 		String searchWord = searchFilter.getSearchWord();
 
 		if (StringUtils.isBlank(searchWord)) {
-			return new WordsMatchResult(Collections.emptyList(), 0, false);
+			return new WordsMatch(Collections.emptyList(), 0, false, false);
 		}
-		if (!StringUtils.containsAny(searchWord, QUERY_MULTIPLE_CHARACTERS_SYM, QUERY_SINGLE_CHARACTER_SYM)) {
-			return new WordsMatchResult(Collections.emptyList(), 0, false);
+		if (!StringUtils.containsAny(searchWord, SEARCH_MASK_CHARS, SEARCH_MASK_CHAR)) {
+			return new WordsMatch(Collections.emptyList(), 0, false, false);
 		}
 
 		SearchContext searchContext = getSearchContext(searchFilter);
-		WordsMatchResult wordsMatchResult = searchDbService.getWordsWithMask(searchWord, searchContext);
+		WordsMatch wordsMatch = searchDbService.getWordsWithMask(searchWord, searchContext);
 
-		return wordsMatchResult;
+		return wordsMatch;
 	}
 
 	@Transactional

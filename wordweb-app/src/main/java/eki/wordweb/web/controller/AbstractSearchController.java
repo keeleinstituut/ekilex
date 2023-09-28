@@ -3,22 +3,22 @@ package eki.wordweb.web.controller;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.servlet.http.HttpServletRequest;
-
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.ui.Model;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.util.UriUtils;
 
-import eki.wordweb.data.SearchRequest;
-import eki.wordweb.data.SearchValidation;
 import eki.wordweb.data.UiFilterElement;
-import eki.wordweb.data.WordsData;
 import eki.wordweb.web.bean.SessionBean;
+import eki.wordweb.web.util.StatDataUtil;
 
 public abstract class AbstractSearchController extends AbstractController {
+
+	@Autowired
+	protected StatDataUtil statDataUtil;
 
 	protected void populateLangFilter(List<UiFilterElement> langFilter, SessionBean sessionBean, Model model) {
 
@@ -67,11 +67,11 @@ public abstract class AbstractSearchController extends AbstractController {
 
 	protected String cleanupMask(String searchWord) {
 
-		if (StringUtils.isBlank(searchWord) ) {
+		if (StringUtils.isBlank(searchWord)) {
 			return searchWord;
 		}
 		searchWord = StringUtils.trim(searchWord);
-		char wildcardChar = QUERY_MULTIPLE_CHARACTERS_SYM.charAt(0);
+		char wildcardChar = SEARCH_MASK_CHARS.charAt(0);
 		char[] searchWordChars = searchWord.toCharArray();
 		StringBuilder buf = new StringBuilder();
 		char prevChar = ' ';
@@ -86,9 +86,28 @@ public abstract class AbstractSearchController extends AbstractController {
 		return searchWord;
 	}
 
+	protected boolean isValidMaskedSearch(String searchWord, String cleanMaskSearchWord) {
+
+		if (StringUtils.isBlank(cleanMaskSearchWord)) {
+			return false;
+		}
+		char searchMaskCharsChar = SEARCH_MASK_CHARS.charAt(0);
+		char searchMaskCharChar = SEARCH_MASK_CHAR.charAt(0);
+		String testSearchWord = cleanMaskSearchWord;
+		testSearchWord = StringUtils.remove(testSearchWord, searchMaskCharsChar);
+		testSearchWord = StringUtils.remove(testSearchWord, searchMaskCharChar);
+		if (StringUtils.isBlank(testSearchWord)) {
+			return false;
+		}
+		if (StringUtils.containsOnly(cleanMaskSearchWord, searchMaskCharsChar, searchMaskCharChar)) {
+			return false;
+		}
+		return true;
+	}
+
 	protected String decode(String value) {
 
-		if (StringUtils.isBlank(value) ) {
+		if (StringUtils.isBlank(value)) {
 			return value;
 		}
 		value = UriUtils.decode(value, UTF_8);
@@ -96,24 +115,5 @@ public abstract class AbstractSearchController extends AbstractController {
 		value = StringUtils.replace(value, ENCODE_SYM_BACKSLASH, "\\");
 		value = StringUtils.replace(value, ENCODE_SYM_PERCENT, "%");
 		return value;
-	}
-
-	protected SearchRequest populateSearchRequest(HttpServletRequest request, boolean isSearchForm, String searchMode, SearchValidation searchValidation, WordsData wordsData) {
-
-		String sessionId = request.getSession().getId();
-		String userAgent = request.getHeader("User-Agent");
-		String referer = request.getHeader("referer");
-		String serverDomain = request.getServerName();
-
-		SearchRequest searchRequest = new SearchRequest();
-		searchRequest.setSearchValidation(searchValidation);
-		searchRequest.setWordsData(wordsData);
-		searchRequest.setSearchForm(isSearchForm);
-		searchRequest.setSearchMode(searchMode);
-		searchRequest.setSessionId(sessionId);
-		searchRequest.setUserAgent(userAgent);
-		searchRequest.setReferer(referer);
-		searchRequest.setServerDomain(serverDomain);
-		return searchRequest;
 	}
 }

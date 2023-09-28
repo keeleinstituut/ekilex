@@ -336,7 +336,7 @@ public class TermSearchConditionComposer implements GlobalConstant, ActivityFunc
 	public Table<Record3<Long, Long, Long[]>> composeFilteredMeaning(
 			String searchFilter, SearchDatasetsRestriction searchDatasetsRestriction, SearchResultMode resultMode) {
 
-		String maskedSearchFilter = searchFilter.replace(QUERY_MULTIPLE_CHARACTERS_SYM, "%").replace(QUERY_SINGLE_CHARACTER_SYM, "_");
+		String maskedSearchFilter = searchFilter.replace(SEARCH_MASK_CHARS, "%").replace(SEARCH_MASK_CHAR, "_");
 		Field<String> filterField = DSL.lower(maskedSearchFilter);
 
 		Meaning m = MEANING.as("m");
