@@ -2,6 +2,10 @@
   padding: 44px;
   background-color: $white;
   min-height: 1500px;
+
+  &.modifier-active {
+    padding-left: 450px;
+  }
 }
 
 .wordetym-card {
@@ -373,7 +377,6 @@
 .etym-tree {
   display: block;
   position: relative;
-
   @include reset-list;
 
   &::before {
@@ -386,6 +389,12 @@
     height: 100%;
     background-color: $white;
     border-left: 2px solid $gray-350
+  }
+
+  &.mofify-linking {
+    &::before {
+      border-color: $blue-200;
+    }
   }
 
   li > ul {
@@ -425,6 +434,32 @@
       }
     }
   }
+
+  .tree-edit-link {
+    .btn-add-etym-step {
+      &.active {
+        z-index: 3;
+        filter: drop-shadow(0px 4px 4px rgba(0, 0, 0, 0.25));
+      }
+    }
+
+    .wordetym-card {
+      display: none;
+      position: absolute;
+      left: -527px;
+      top: 17px;
+      padding: 16px;
+
+      &__links {
+        top: unset;
+        bottom: -2px;
+      }
+
+      &--active {
+        display: flex;
+      }
+    }
+  }
 }
 
 .step-block {
@@ -442,6 +477,12 @@
     margin-top: 2px;
     border-top: 0.125rem solid $gray-350;
     bottom: 0;
+  }
+
+  &.mofify-link {
+    &::before {
+      border-color: $blue-200;
+    }  
   }
 
   .btn-add-etym-step {
@@ -464,6 +505,11 @@
       line-height: 18px;
       color: $white;
       z-index: 2;
+    }
+
+    &.active {
+      background-color: $blue-400-v2;
+      border-radius: 0 100px 100px 0;
     }
   }
 
@@ -551,7 +597,41 @@
     }
   }
 
+  .related-records {
+    list-style: none;
+    padding: 0;
 
+    &::before {
+      content: none;
+    }
+
+    li {
+      display: flex;
+      align-items: center;
+      margin-top: 8px;
+
+      .lang-abbr {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 24px;
+        height: 24px;
+        font-size: 12px;
+        font-weight: 700;
+        line-height: 22px;
+        color: $gray-900;
+        background-color: $gray-200;
+        border-radius: 2px;
+      }
+
+      .etym-text {
+        margin-left: 8px;
+        font-size: 14px;
+        line-height: 21px;
+        font-weight: 700;
+      }
+    }
+  }
 }
 
 .w-30 {

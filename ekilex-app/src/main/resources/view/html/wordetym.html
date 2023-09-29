@@ -105,9 +105,36 @@
     <div>
       <ul class="etym-tree">
         <li class="step-block level-1">
-          <button class="btn-add-etym-step">
-            <span class="fa fa-link"></span>
-          </button>
+          <div class="tree-edit-link">
+            <button class="btn-add-etym-step" data-plugin="etymLinkModifier">
+              <span class="fa fa-link"></span>
+            </button>
+
+            <div class="wordetym-card">
+              <span>Seotud kirjed</span>
+              <div class="wordetym__header">
+                <ul class="related-records">
+                  <li>
+                    <span th:utext="${wordEtym.lang}" class="lang-abbr"></span>
+                    <span th:utext="${wordEtym.word}" class="etym-text"></span>
+                  </li>
+                  <li>
+                    <span th:utext="${wordEtym.lang}" class="lang-abbr"></span>
+                    <span th:utext="${wordEtym.word}" class="etym-text"></span>
+                  </li>
+                </ul>
+              </div>
+              <div class="wordetym-card__links">
+                <button class="btn-edit-etym" type="button" data-plugin="initEkiEditorDlgEtym">
+                  <span class="fa fa-pencil"></span>
+                </button>
+                <button class="btn-delete-etym" type="button">
+                  <span class="fa fa-trash"></span>
+                </button>
+              </div>
+            </div>
+          </div>
+
           <div class="wordetym-card" data-plugin="wordetymCard">
             <div class="wordetym-card__header">
               <div class="wordetym-card__info">
@@ -136,9 +163,36 @@
   
           <ul>
             <li class="step-block level-2">
-              <button class="btn-add-etym-step">
-                <span class="fa fa-link"></span>
-              </button>
+              <div class="tree-edit-link">
+                <button class="btn-add-etym-step" data-plugin="etymLinkModifier">
+                  <span class="fa fa-link"></span>
+                </button>
+    
+                <div class="wordetym-card">
+                  <span>Seotud kirjed</span>
+                  <div class="wordetym__header">
+                    <ul class="related-records">
+                      <li>
+                        <span th:utext="${wordEtym.lang}" class="lang-abbr"></span>
+                        <span th:utext="${wordEtym.word}" class="etym-text"></span>
+                      </li>
+                      <li>
+                        <span th:utext="${wordEtym.lang}" class="lang-abbr"></span>
+                        <span th:utext="${wordEtym.word}" class="etym-text"></span>
+                      </li>
+                    </ul>
+                  </div>
+                  <div class="wordetym-card__links">
+                    <button class="btn-edit-etym" type="button" data-plugin="initEkiEditorDlgEtym">
+                      <span class="fa fa-pencil"></span>
+                    </button>
+                    <button class="btn-delete-etym" type="button">
+                      <span class="fa fa-trash"></span>
+                    </button>
+                  </div>
+                </div>
+              </div>
+
               <div class="wordetym-card">
                 <div class="wordetym-card__header">
                   <div class="wordetym-card__info">
@@ -148,6 +202,7 @@
                   </div>
                 </div>
               </div>
+              
             </li>
             <li class="step-block level-2">
               <button class="btn-add-etym-step">
@@ -212,9 +267,35 @@
         </li>
 
         <li class="step-block level-1">
-          <button class="btn-add-etym-step">
-            <span class="fa fa-link"></span>
-          </button>
+          <div class="tree-edit-link">
+            <button class="btn-add-etym-step" data-plugin="etymLinkModifier">
+              <span class="fa fa-link"></span>
+            </button>
+
+            <div class="wordetym-card">
+              <span>Seotud kirjed</span>
+              <div class="wordetym__header">
+                <ul class="related-records">
+                  <li>
+                    <span th:utext="${wordEtym.lang}" class="lang-abbr"></span>
+                    <span th:utext="${wordEtym.word}" class="etym-text"></span>
+                  </li>
+                  <li>
+                    <span th:utext="${wordEtym.lang}" class="lang-abbr"></span>
+                    <span th:utext="${wordEtym.word}" class="etym-text"></span>
+                  </li>
+                </ul>
+              </div>
+              <div class="wordetym-card__links">
+                <button class="btn-edit-etym" type="button" data-plugin="initEkiEditorDlgEtym">
+                  <span class="fa fa-pencil"></span>
+                </button>
+                <button class="btn-delete-etym" type="button">
+                  <span class="fa fa-trash"></span>
+                </button>
+              </div>
+            </div>
+          </div>
           <div class="wordetym-card" data-plugin="wordetymCard">
             <div class="wordetym-card__header">
               <div class="wordetym-card__info">
