@@ -7,6 +7,8 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -86,6 +88,21 @@ public class WorkloadReportController extends AbstractPrivatePageController {
 		model.addAttribute("datasetUsers", datasetUsers);
 
 		return WORKLOAD_REPORT_PAGE;
+	}
+
+	@PostMapping(WORKLOAD_REPORT_URI + DOWNLOAD_URI)
+	public ResponseEntity<byte[]> download(
+			@RequestParam("dateFrom") @DateTimeFormat(pattern = "dd.MM.yyyy") LocalDate dateFrom,
+			@RequestParam("dateUntil") @DateTimeFormat(pattern = "dd.MM.yyyy") LocalDate dateUntil,
+			@RequestParam("datasetCodes") List<String> datasetCodes,
+			@RequestParam(name = "userNames", required = false) List<String> userNames) throws Exception {
+
+		byte[] workloadReportFileBytes = workloadReportService.getWorkloadReportFileBytes(dateFrom, dateUntil, datasetCodes, userNames);
+
+		return ResponseEntity
+				.ok()
+				.header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=raport.xlsx")
+				.body(workloadReportFileBytes);
 	}
 
 	@GetMapping(WORKLOAD_REPORT_URI + "/{searchPage}/{activityOwner}/{searchIds}")

@@ -9,11 +9,11 @@
   <th:block th:replace="common :: nav_bar(activeItem = 'workloadreport')"></th:block>
   <div class="container-fluid">
     <div class="card mt-4 shadow">
-      <form th:action="@{/workloadreport/search}" method="post">
-        <div class="card-header">
-          <h5 class="card-title" th:text="#{workloadreport.title}">Muudatuste aruanne</h5>
-        </div>
-        <div class="card-body">
+      <div class="card-header">
+        <h5 class="card-title" th:text="#{workloadreport.title}">Muudatuste aruanne</h5>
+      </div>
+      <div class="card-body">
+        <form th:action="@{/workloadreport/search}" method="post">
           <div class="form-group row">
             <label class="col-md-2 col-form-label" th:text="#{workloadreport.period}">Periood</label>
             <div class="col-md-2 input-group date" data-provide="datepicker" th:title="#{workloadreport.period.from}" data-date-language="et" data-date-autoclose="true">
@@ -54,13 +54,22 @@
               <th:block th:replace="workloadreportcomp :: dataset_users_select"></th:block>
             </th:block>
           </div>
-          <div>
-            <th:block th:if="${workloadReport != null}">
-              <hr/>
-              <div th:if="${workloadReport.resultCount == 0}">
-                <span class="font-weight-bold" th:text="#{workloadreport.no.results}">Tulemusi ei leitud</span>
-              </div>
-              <table class="table table-sm table-striped m-0 p-0 table-hover w-auto" th:if="${workloadReport.resultCount > 0}">
+        </form>
+        <div>
+          <th:block th:if="${workloadReport != null}">
+            <hr/>
+            <div th:if="${workloadReport.resultCount == 0}">
+              <span class="font-weight-bold" th:text="#{workloadreport.no.results}">Tulemusi ei leitud</span>
+            </div>
+            <div th:if="${workloadReport.resultCount > 0}">
+              <form th:action="@{/workloadreport/download}" method="post">
+                <input type="hidden" name="dateFrom" th:value="${#temporals.format(dateFrom, 'dd.MM.yyyy')}">
+                <input type="hidden" name="dateUntil" th:value="${#temporals.format(dateUntil, 'dd.MM.yyyy')}">
+                <input type="hidden" name="datasetCodes" th:value="${#strings.listJoin(datasetCodes, ', ')}">
+                <input type="hidden" name="userNames" th:value="${#strings.listJoin(userNames, ', ')}">
+                <button type="submit" class="btn btn-sm btn-secondary mb-2" th:text="#{workloadreport.download}">Laadi alla</button>
+              </form>
+              <table class="table table-sm table-striped m-0 p-0 table-hover w-auto">
                 <tr>
                   <th></th>
                   <th:block th:each="userName : ${workloadReport.userNames}">
@@ -110,10 +119,10 @@
                   </th:block>
                 </th:block>
               </table>
-            </th:block>
-          </div>
+            </div>
+          </th:block>
         </div>
-      </form>
+      </div>
     </div>
   </div>
   <div th:replace="common :: #waitDlg"></div>

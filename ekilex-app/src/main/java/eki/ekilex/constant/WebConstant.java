@@ -38,6 +38,8 @@ public interface WebConstant {
 
 	String SEARCH_URI = "/search";
 
+	String DOWNLOAD_URI = "/download";
+
 	String MAINTENANCE_URI = "/maintenance";
 
 	String VIEW_RESOURCES_URI = "/view";

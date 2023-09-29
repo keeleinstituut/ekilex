@@ -1,5 +1,6 @@
 package eki.ekilex.service;
 
+import java.io.ByteArrayOutputStream;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -8,6 +9,7 @@ import java.util.stream.Collectors;
 import javax.transaction.Transactional;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.poi.ss.usermodel.Workbook;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -16,9 +18,9 @@ import eki.ekilex.constant.CrudType;
 import eki.ekilex.data.Dataset;
 import eki.ekilex.data.EkiUser;
 import eki.ekilex.data.WorkloadActivityReport;
+import eki.ekilex.data.WorkloadFunctionReport;
 import eki.ekilex.data.WorkloadReport;
 import eki.ekilex.data.WorkloadReportCount;
-import eki.ekilex.data.WorkloadFunctionReport;
 import eki.ekilex.data.WorkloadReportUser;
 import eki.ekilex.service.db.DatasetDbService;
 import eki.ekilex.service.db.UserDbService;
@@ -41,6 +43,9 @@ public class WorkloadReportService {
 
 	@Autowired
 	private DatasetUtil datasetUtil;
+
+	@Autowired
+	private WorkbookService workbookService;
 
 	@Transactional
 	public List<EkiUser> getUsersByDatasetPermission(List<String> datasetCodes) {
@@ -172,5 +177,19 @@ public class WorkloadReportService {
 		workloadReport.setActivityReports(activityReports);
 		workloadReport.setResultCount(resultCount);
 		return workloadReport;
+	}
+
+	@Transactional
+	public byte[] getWorkloadReportFileBytes(LocalDate dateFrom, LocalDate dateUntil, List<String> datasetCodes, List<String> userNames) throws Exception {
+
+		WorkloadReport workloadReport = getWorkloadReport(dateFrom, dateUntil, datasetCodes, userNames);
+		Workbook workbook = workbookService.toWorkbook(workloadReport, dateFrom, dateUntil, datasetCodes);
+
+		ByteArrayOutputStream byteStream = new ByteArrayOutputStream();
+		workbook.write(byteStream);
+		byteStream.flush();
+		byte[] bytes = byteStream.toByteArray();
+		byteStream.close();
+		return bytes;
 	}
 }
