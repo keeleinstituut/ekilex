@@ -5,7 +5,7 @@
 <th:block th:fragment="dataset_users_select">
   <label class="col-md-2 col-form-label" th:text="#{workloadreport.dataset.users}">Sõnakogu kasutajad</label>
   <div class="col-md-4">
-    <select name="userNames" class="users-select" multiple data-live-search="true" th:title="#{workloadreport.select.dataset.users}"
+    <select name="userNames" id="users-select" class="users-select" multiple data-live-search="true" th:title="#{workloadreport.select.dataset.users}"
             data-actions-box="true" th:data-select-all-text="#{common.select.all}" th:data-deselect-all-text="#{common.unselect.all}">
       <option th:each="user : ${datasetUsers}"
               th:value="${user.name}"
