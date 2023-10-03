@@ -815,6 +815,39 @@ function refreshDetails() {
 	$('#refresh-details').click();
 }
 
+$.fn.refreshSearchResults = function() {
+	const btn = $(this);
+	btn.on('click', function(e) {
+		e.preventDefault();
+		openWaitDlg();
+		const form = btn.closest('form');
+		$.ajax({
+			url: form.attr('action'),
+			data: form.serialize(),
+			method: 'POST',
+		}).done(function(data) {
+			closeWaitDlg();
+			$('#results_div').html(data);
+			highlightActiveSearchResults();
+			initClassifierAutocomplete();
+			$wpm.bindObjects();
+		}).fail(function(data) {
+			closeWaitDlg();
+			console.log(data);
+			openAlertDlg(messages["common.error"]);
+		});
+	});
+}
+
+function highlightActiveSearchResults() {
+	if (QueryParams.get('id')) {
+		const idList = QueryParams.get('id').split(',');
+		idList.forEach(id => {
+			$(`#results button[data-id=${id}]`).parent().addClass('active');
+		});
+	}
+}
+
 function validateAndSubmitJoinForm(validateJoinUrl, joinForm, failMessage) {
 	$.ajax({
 		url: validateJoinUrl,

@@ -115,14 +115,25 @@ public abstract class AbstractSearchService extends AbstractService implements S
 
 	protected void setPagingData(int offset, int maxResultsLimit, int wordCount, PagingResult result) {
 
-		int currentPage = offset / maxResultsLimit + 1;
 		int totalPages = (wordCount + maxResultsLimit - 1) / maxResultsLimit;
+		int currentPage = offset / maxResultsLimit + 1;
+		if (currentPage > totalPages) {
+			currentPage = totalPages;
+		}
 		boolean previousPageExists = currentPage > 1;
 		boolean nextPageExists = currentPage < totalPages;
 
 		result.setCurrentPage(currentPage);
 		result.setTotalPages(totalPages);
+		result.setOffset(offset);
 		result.setPreviousPageExists(previousPageExists);
 		result.setNextPageExists(nextPageExists);
+	}
+
+	protected int getLastPageOffset(int resultCount) {
+
+		int totalPages = (resultCount + DEFAULT_MAX_RESULTS_LIMIT - 1) / DEFAULT_MAX_RESULTS_LIMIT;
+		int lastPageOffset = (totalPages - 1) * DEFAULT_MAX_RESULTS_LIMIT;
+		return lastPageOffset;
 	}
 }

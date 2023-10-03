@@ -57,6 +57,18 @@
                 <button type="button" data-plugin="tableViewTermSearchResults" class="btn btn-secondary" th:data-result-count="${termSearchResult.meaningCount}" th:text="#{term.meaning.table.title}">Tabelivaade</button>
               </form>
             </div>
+            <div>
+              <form th:action="@{/term_paging}" method="post">
+                <span>|</span>
+                <input type="hidden" name="searchUri" th:value="${searchUri}">
+                <input type="hidden" name="pageNum" th:value="${termSearchResult.currentPage}">
+                <input type="hidden" name="direction" value="page">
+                <input type="hidden" name="offset" value="0">
+                <button type="button" data-plugin="refreshSearchResults" class="btn btn-secondary" data-toggle="tooltip" th:title="#{common.refresh.search}">
+                  <i class="fa fa-refresh" aria-hidden="true"></i>
+                </button>
+              </form>
+            </div>
           </div>
         </th:block>
       </div>

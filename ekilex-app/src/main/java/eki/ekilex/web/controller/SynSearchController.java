@@ -74,7 +74,6 @@ public class SynSearchController extends AbstractPrivateSearchController {
 			wordsResult = fullSynSearchService.getWords(simpleSearchFilter, datasetCodes, userRole, tagNames, offset, DEFAULT_MAX_RESULTS_LIMIT, noLimit);
 		}
 
-		wordsResult.setOffset(offset);
 		model.addAttribute("wordsResult", wordsResult);
 		model.addAttribute("searchUri", searchUri);
 		return COMMON_SYN_COMPONENTS_PAGE + PAGE_FRAGMENT_ELEM + "search_result";

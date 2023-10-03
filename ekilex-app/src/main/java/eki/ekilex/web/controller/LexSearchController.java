@@ -178,7 +178,6 @@ public class LexSearchController extends AbstractPrivateSearchController {
 			wordsResult = lexSearchService.getWords(simpleSearchFilter, selectedDatasets, userRole, tagNames, offset, DEFAULT_MAX_RESULTS_LIMIT, noLimit);
 		}
 
-		wordsResult.setOffset(offset);
 		model.addAttribute("wordsResult", wordsResult);
 		model.addAttribute("searchUri", searchUri);
 		return LEX_COMPONENTS_PAGE + PAGE_FRAGMENT_ELEM + "search_result";

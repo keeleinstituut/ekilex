@@ -100,6 +100,11 @@ public class TermSearchService extends AbstractSearchService {
 		} else {
 			SearchDatasetsRestriction searchDatasetsRestriction = composeDatasetsRestriction(selectedDatasetCodes);
 			termSearchResult = termSearchDbService.getTermSearchResult(searchFilter, searchDatasetsRestriction, resultMode, resultLang, offset, noLimit);
+			int resultCount = termSearchResult.getResultCount();
+			if (CollectionUtils.isEmpty(termSearchResult.getResults()) && resultCount > 0) {
+				int lastPageOffset = getLastPageOffset(resultCount);
+				termSearchResult = termSearchDbService.getTermSearchResult(searchFilter, searchDatasetsRestriction, resultMode, resultLang, lastPageOffset, noLimit);
+			}
 			conversionUtil.cleanTermMeanings(termSearchResult.getResults());
 		}
 		completeResultParams(termSearchResult, offset);
@@ -138,6 +143,11 @@ public class TermSearchService extends AbstractSearchService {
 		} else {
 			SearchDatasetsRestriction searchDatasetsRestriction = composeDatasetsRestriction(selectedDatasetCodes);
 			termSearchResult = termSearchDbService.getTermSearchResult(searchFilter, searchDatasetsRestriction, resultMode, resultLang, offset, noLimit);
+			int resultCount = termSearchResult.getResultCount();
+			if (CollectionUtils.isEmpty(termSearchResult.getResults()) && resultCount > 0) {
+				int lastPageOffset = getLastPageOffset(resultCount);
+				termSearchResult = termSearchDbService.getTermSearchResult(searchFilter, searchDatasetsRestriction, resultMode, resultLang, lastPageOffset, noLimit);
+			}
 			conversionUtil.cleanTermMeanings(termSearchResult.getResults());
 		}
 		completeResultParams(termSearchResult, offset);
@@ -198,9 +208,7 @@ public class TermSearchService extends AbstractSearchService {
 		termSearchResult.setShowPaging(showPaging);
 		termSearchResult.setResultDownloadNow(resultDownloadNow);
 		termSearchResult.setResultDownloadLater(resultDownloadLater);
-		if (showPaging) {
-			setPagingData(offset, DEFAULT_MAX_RESULTS_LIMIT, resultCount, termSearchResult);
-		}
+		setPagingData(offset, DEFAULT_MAX_RESULTS_LIMIT, resultCount, termSearchResult);
 	}
 
 	@Transactional

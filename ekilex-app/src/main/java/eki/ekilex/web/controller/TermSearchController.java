@@ -204,7 +204,6 @@ public class TermSearchController extends AbstractPrivateSearchController {
 			termSearchResult = termSearchService.getTermSearchResult(simpleSearchFilter, selectedDatasets, resultMode, resultLang, offset, noLimit);
 		}
 
-		termSearchResult.setOffset(offset);
 		model.addAttribute("termSearchResult", termSearchResult);
 		model.addAttribute("searchUri", searchUri);
 

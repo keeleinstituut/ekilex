@@ -173,7 +173,6 @@ public class LimitedTermSearchController extends AbstractSearchController {
 			termSearchResult = termSearchService.getTermSearchResult(simpleSearchFilter, limitedDatasets, SearchResultMode.MEANING, null, offset, noLimit);
 		}
 
-		termSearchResult.setOffset(offset);
 		model.addAttribute("termSearchResult", termSearchResult);
 		model.addAttribute("searchUri", searchUri);
 

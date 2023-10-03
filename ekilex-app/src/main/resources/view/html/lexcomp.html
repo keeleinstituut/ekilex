@@ -5,8 +5,21 @@
   <div class="card-body p-0 d-flex flex-column h-100" th:fragment="search_result">
     <input type="hidden" id="selectedMeaningId" th:value="${selectedMeaningId}">
     <div class="bg-light rounded-top px-2 py-1">
-      <span th:text="#{lex.results.found}">Kokku leiti:</span>
-      <span th:text="${wordsResult.totalCount}"></span>
+      <div class="d-flex flex-row">
+        <span th:text="#{lex.results.found}">Kokku leiti:</span>
+        <span th:text="${wordsResult.totalCount}"></span>
+        <div class="d-flex ml-auto mr-2">
+          <form th:action="@{/lex_paging}" method="post">
+            <input type="hidden" name="searchUri" th:value="${searchUri}">
+            <input type="hidden" name="pageNum" th:value="${wordsResult.currentPage}">
+            <input type="hidden" name="direction" value="page">
+            <input type="hidden" name="offset" value="0">
+            <button type="button" data-plugin="refreshSearchResults" class="btn btn-sm btn-secondary" data-toggle="tooltip" th:title="#{common.refresh.search}">
+              <i class="fa fa-refresh" aria-hidden="true"></i>
+            </button>
+          </form>
+        </div>
+      </div>
     </div>
     <th:block th:replace=" :: search_result_rows"></th:block>
   </div>
