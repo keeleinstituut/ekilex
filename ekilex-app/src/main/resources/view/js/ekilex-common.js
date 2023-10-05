@@ -1210,6 +1210,10 @@ function getBreadcrumbsData(detailsDiv, word) {
 	return crumbs;
 }
 
+function getCurrentPageNum() {
+	return $('#pageNum').val();
+}
+
 // Scroll to result when searching by id in lex view
 function scrollDetails(div, scrollPosition) {
 	let overflowDiv = div.find('.overflow-auto').first();

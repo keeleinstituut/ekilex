@@ -134,12 +134,15 @@ public class TermSearchController extends AbstractPrivateSearchController {
 		Long userId = userContext.getUserId();
 		userProfileService.updateUserPreferredDatasets(selectedDatasets, userId);
 
+		Integer pageNum = getPageNum(request);
+		int offset = calculateOffset(pageNum);
+
 		TermSearchResult termSearchResult;
 		if (StringUtils.equals(SEARCH_MODE_DETAIL, searchMode)) {
 			searchHelper.addValidationMessages(detailSearchFilter);
-			termSearchResult = termSearchService.getTermSearchResult(detailSearchFilter, selectedDatasets, resultMode, resultLang, DEFAULT_OFFSET, noLimit);
+			termSearchResult = termSearchService.getTermSearchResult(detailSearchFilter, selectedDatasets, resultMode, resultLang, offset, noLimit);
 		} else {
-			termSearchResult = termSearchService.getTermSearchResult(simpleSearchFilter, selectedDatasets, resultMode, resultLang, DEFAULT_OFFSET, noLimit);
+			termSearchResult = termSearchService.getTermSearchResult(simpleSearchFilter, selectedDatasets, resultMode, resultLang, offset, noLimit);
 		}
 		boolean noResults = termSearchResult.getResultCount() == 0;
 		model.addAttribute("searchMode", searchMode);

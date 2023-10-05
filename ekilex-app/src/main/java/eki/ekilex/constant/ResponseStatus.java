@@ -2,5 +2,5 @@ package eki.ekilex.constant;
 
 public enum ResponseStatus {
 
-	OK, VALID, INVALID, ERROR
+	OK, VALID, INVALID, ERROR, MULTIPLE
 }

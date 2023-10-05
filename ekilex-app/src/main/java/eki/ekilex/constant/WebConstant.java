@@ -192,6 +192,8 @@ public interface WebConstant {
 
 	String SELECT_URI = "/select";
 
+	String INIT_URI = "/init";
+
 	String LEX_CREATE_WORD_URI = "/lex_create_word";
 
 	String TERM_CREATE_WORD_URI = "/termcreateword";
@@ -415,4 +417,8 @@ public interface WebConstant {
 	String USER_ROLE_DATA_KEY = "userRoleData";
 
 	String REQUEST_START_TIME_KEY = "request_start_time";
+
+	// request parameters
+
+	String REQUEST_PARAM_PAGE = "p";
 }

@@ -106,6 +106,19 @@ function duplicateMeaning() {
 function getTermSearchBackUri() {
 	const pathname = window.location.pathname;
 	const backUriStartIndex = pathname.indexOf('/termsearch');
-	const backUri = pathname.substring(backUriStartIndex);
+	let backUri = pathname.substring(backUriStartIndex);
+	const selectedIds = QueryParams.get('id');
+	const pageNum = getCurrentPageNum();
+
+	if (selectedIds !== undefined) {
+		backUri += "?id=" + selectedIds;
+		if (pageNum !== undefined) {
+			backUri += "&p=" + pageNum;
+		}
+	} else {
+		if (pageNum !== undefined) {
+			backUri += "?p=" + pageNum;
+		}
+	}
 	return backUri;
 }

@@ -122,14 +122,17 @@ public class LexSearchController extends AbstractPrivateSearchController {
 
 		userProfileService.updateUserPreferredDatasets(selectedDatasets, userId);
 
+		Integer pageNum = getPageNum(request);
+		int offset = calculateOffset(pageNum);
+
 		WordsResult wordsResult;
 		Long selectedMeaningId = null;
 		if (StringUtils.equals(SEARCH_MODE_DETAIL, searchMode)) {
 			searchHelper.addValidationMessages(detailSearchFilter);
-			wordsResult = lexSearchService.getWords(detailSearchFilter, selectedDatasets, userRole, tagNames, DEFAULT_OFFSET, DEFAULT_MAX_RESULTS_LIMIT, noLimit);
+			wordsResult = lexSearchService.getWords(detailSearchFilter, selectedDatasets, userRole, tagNames, offset, DEFAULT_MAX_RESULTS_LIMIT, noLimit);
 			selectedMeaningId = searchHelper.getMeaningIdSearchMeaningId(detailSearchFilter);
 		} else {
-			wordsResult = lexSearchService.getWords(simpleSearchFilter, selectedDatasets, userRole, tagNames, DEFAULT_OFFSET, DEFAULT_MAX_RESULTS_LIMIT, noLimit);
+			wordsResult = lexSearchService.getWords(simpleSearchFilter, selectedDatasets, userRole, tagNames, offset, DEFAULT_MAX_RESULTS_LIMIT, noLimit);
 		}
 		boolean noResults = wordsResult.getTotalCount() == 0;
 		model.addAttribute("searchMode", searchMode);

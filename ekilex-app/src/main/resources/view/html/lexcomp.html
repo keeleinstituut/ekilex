@@ -4,6 +4,7 @@
 <body>
   <div class="card-body p-0 d-flex flex-column h-100" th:fragment="search_result">
     <input type="hidden" id="selectedMeaningId" th:value="${selectedMeaningId}">
+    <input type="hidden" id="pageNum" th:value="${wordsResult.currentPage}">
     <div class="bg-light rounded-top px-2 py-1">
       <div class="d-flex flex-row">
         <span th:text="#{lex.results.found}">Kokku leiti:</span>

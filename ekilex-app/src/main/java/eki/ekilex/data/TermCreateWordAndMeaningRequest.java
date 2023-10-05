@@ -16,8 +16,6 @@ public class TermCreateWordAndMeaningRequest extends AbstractDataObject {
 
 	private String backUri;
 
-	private String uriParams;
-
 	private boolean clearResults;
 
 	public Long getMeaningId() {
@@ -58,14 +56,6 @@ public class TermCreateWordAndMeaningRequest extends AbstractDataObject {
 
 	public void setBackUri(String backUri) {
 		this.backUri = backUri;
-	}
-
-	public String getUriParams() {
-		return uriParams;
-	}
-
-	public void setUriParams(String uriParams) {
-		this.uriParams = uriParams;
 	}
 
 	public boolean isClearResults() {

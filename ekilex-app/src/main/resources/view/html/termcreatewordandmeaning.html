@@ -16,7 +16,6 @@
             <hr/>
             <form th:action="@{/termcreatewordandmeaning}" method="post" id="createWordForm" autocomplete="off" th:with="editEnabled = ${#lists.isEmpty(details.wordCandidates)}">
               <input type="hidden" name="backUri" th:value="${backUri}">
-              <input type="hidden" name="uriParams" th:value="${uriParams}">
               <input type="hidden" name="clearResults" value="false">
               <div class="form-group row">
                 <div class="col-12">
@@ -60,7 +59,7 @@
               <hr/>
               <div th:if="${editEnabled}">
                 <button type="button" class="btn btn-primary" data-plugin="createWordClickPlugin" th:text="#{term.add.term}">Lisa termin</button>
-                <a class="btn btn-default" th:href="@{${backUri + uriParams}}" th:text="#{common.cancel}">Katkesta</a>
+                <a class="btn btn-default" th:href="@{${backUri}}" th:text="#{common.cancel}">Katkesta</a>
               </div>
             </form>
           </div>
@@ -114,7 +113,7 @@
                   <span th:text="#{termcreatemeaning.edit.search}">Muudan terminit</span>
                 </button>
                 <div class="ml-auto mr-5">
-                  <a class="btn btn-default" th:href="@{${backUri + uriParams}}" th:text="#{common.cancel}">Katkesta</a>
+                  <a class="btn btn-default" th:href="@{${backUri}}" th:text="#{common.cancel}">Katkesta</a>
                   <button type="submit" class="btn btn-primary" id="selectWordBtn" disabled th:text="#{termcreatemeaning.create}">Loo uus mõiste</button>
                 </div>
               </div>

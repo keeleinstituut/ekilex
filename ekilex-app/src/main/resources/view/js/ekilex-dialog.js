@@ -119,14 +119,12 @@ $(function() {
 			const editDlg = $(this);
 			editDlg.on('show.bs.modal', function() {
 				const backUri = getTermSearchBackUri();
-				const uriParams = window.location.search;
 				const backUriFld = editDlg.find('input[name="backUri"]');
-				const uriParamsFld = editDlg.find('input[name="uriParams"]');
 				const editFld = editDlg.find('[data-id="editFld"]');
 				const valueInput = editDlg.find('[name=wordValuePrese]');
+
 				editFld.val(valueInput.val());
 				backUriFld.val(backUri);
-				uriParamsFld.val(uriParams);
 				initCkEditor(editFld, editorOptions);
 
 				editDlg.find('button[type="submit"]').off('click').on('click', function(e) {
@@ -138,7 +136,33 @@ $(function() {
 						const editWordForm = submitBtn.closest('form');
 						const isValid = checkRequiredFields(editWordForm);
 						if (isValid) {
-							editWordForm.submit();
+							$.ajax({
+								url: editWordForm.attr('action'),
+								data: editWordForm.serialize(),
+								method: 'POST',
+							}).done(function(response) {
+								editDlg.modal('hide');
+								refreshDetailsTermsSearch();
+								if (response.status === "OK") {
+									if (response.message != null) {
+										openMessageDlg(response.message);
+									}
+								} else if (response.status === "ERROR") {
+									if (response.message != null) {
+										openAlertDlg(response.message);
+									}
+								} else if (response.status === "MULTIPLE") {
+									const action = editWordForm.attr('action') + "/init/select";
+									editWordForm.attr("action", action);
+									editWordForm.submit();
+								} else {
+									openAlertDlg(messages["common.error"]);
+								}
+							}).fail(function(data) {
+								editDlg.modal('hide');
+								console.log(data);
+								openAlertDlg(messages["common.error"]);
+							});
 						}
 					}
 				});

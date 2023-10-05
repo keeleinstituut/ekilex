@@ -191,7 +191,6 @@ public class TermEditController extends AbstractMutableDataPageController {
 		String datasetCode = requestData.getDatasetCode();
 		String language = requestData.getLanguage();
 		String backUri = requestData.getBackUri();
-		String uriParams = requestData.getUriParams();
 		boolean clearResults = requestData.isClearResults();
 
 		UserContextData userContextData = getUserContextData();
@@ -199,7 +198,6 @@ public class TermEditController extends AbstractMutableDataPageController {
 		boolean isManualEventOnUpdateEnabled = sessionBean.isManualEventOnUpdateEnabled();
 		String roleDatasetCode = getDatasetCodeFromRole();
 		model.addAttribute("backUri", backUri);
-		model.addAttribute("uriParams", uriParams);
 
 		if (clearResults || StringUtils.isAnyBlank(wordValue, datasetCode, language)) {
 			TermCreateWordAndMeaningDetails details = lookupService.getDetailsForMeaningAndWordCreate(userRole, wordValue, language, datasetCode, false);
@@ -257,7 +255,6 @@ public class TermEditController extends AbstractMutableDataPageController {
 		String datasetCode = requestData.getDatasetCode();
 		String language = requestData.getLanguage();
 		String backUri = requestData.getBackUri();
-		String uriParams = requestData.getUriParams();
 		boolean clearResults = requestData.isClearResults();
 
 		UserContextData userContextData = getUserContextData();
@@ -265,7 +262,6 @@ public class TermEditController extends AbstractMutableDataPageController {
 		boolean isManualEventOnUpdateEnabled = sessionBean.isManualEventOnUpdateEnabled();
 		String roleDatasetCode = getDatasetCodeFromRole();
 		model.addAttribute("backUri", backUri);
-		model.addAttribute("uriParams", uriParams);
 
 		if (clearResults || StringUtils.isAnyBlank(wordValue, datasetCode, language)) {
 			TermCreateWordAndMeaningDetails details = lookupService.getDetailsForWordCreate(userRole, meaningId, wordValue, language, false);
@@ -278,7 +274,7 @@ public class TermEditController extends AbstractMutableDataPageController {
 		boolean meaningHasWord = lookupService.meaningHasWord(meaningId, wordValue, language);
 		if (meaningHasWord) {
 			addRedirectWarningMessage(redirectAttributes, "termcreateword.usermessage.meaning.word.exists");
-			return REDIRECT_PREF + backUri + uriParams;
+			return REDIRECT_PREF + backUri;
 		}
 
 		boolean wordExists = lookupService.wordExists(wordValue, language);
@@ -290,7 +286,7 @@ public class TermEditController extends AbstractMutableDataPageController {
 			wordDetails.setDataset(datasetCode);
 			cudService.createWord(wordDetails, roleDatasetCode, isManualEventOnUpdateEnabled);
 			addRedirectSuccessMessage(redirectAttributes, "termcreateword.usermessage.word.and.lexeme.created");
-			return REDIRECT_PREF + backUri + uriParams;
+			return REDIRECT_PREF + backUri;
 		}
 
 		boolean isOtherDatasetOnlyWord = lookupService.isOtherDatasetOnlyWord(wordValue, language, datasetCode);
@@ -299,7 +295,7 @@ public class TermEditController extends AbstractMutableDataPageController {
 			Long onlyWordId = words.get(0).getWordId();
 			cudService.createLexeme(onlyWordId, datasetCode, meaningId, roleDatasetCode, isManualEventOnUpdateEnabled);
 			addRedirectSuccessMessage(redirectAttributes, "termcreateword.usermessage.lexeme.created");
-			return REDIRECT_PREF + backUri + uriParams;
+			return REDIRECT_PREF + backUri;
 		}
 
 		TermCreateWordAndMeaningDetails details = lookupService.getDetailsForWordCreate(userRole, meaningId, wordValue, language, true);
@@ -313,7 +309,6 @@ public class TermEditController extends AbstractMutableDataPageController {
 			@RequestParam("meaningId") Long meaningId,
 			@RequestParam("datasetCode") String datasetCode,
 			@RequestParam("backUri") String backUri,
-			@RequestParam("uriParams") String uriParams,
 			@ModelAttribute(name = SESSION_BEAN) SessionBean sessionBean,
 			RedirectAttributes redirectAttributes) throws Exception {
 
@@ -322,20 +317,18 @@ public class TermEditController extends AbstractMutableDataPageController {
 		cudService.createLexeme(wordId, datasetCode, meaningId, roleDatasetCode, isManualEventOnUpdateEnabled);
 
 		addRedirectSuccessMessage(redirectAttributes, "termcreateword.usermessage.lexeme.created");
-		return REDIRECT_PREF + backUri + uriParams;
+		return REDIRECT_PREF + backUri;
 	}
 
 	@PostMapping(TERM_UPDATE_WORD_URI)
-	public String updateLexemeWord(
+	@ResponseBody
+	public Response updateLexemeWord(
 			@RequestParam("lexemeId") Long lexemeId,
 			@RequestParam("wordValuePrese") String wordValuePrese,
 			@RequestParam("language") String language,
-			@RequestParam("backUri") String backUri,
-			@RequestParam("uriParams") String uriParams,
-			@ModelAttribute(name = SESSION_BEAN) SessionBean sessionBean,
-			RedirectAttributes redirectAttributes,
-			Model model) throws Exception {
+			@ModelAttribute(name = SESSION_BEAN) SessionBean sessionBean) throws Exception {
 
+		Locale locale = LocaleContextHolder.getLocale();
 		EkiUser user = userContext.getUser();
 		DatasetPermission userRole = user.getRecentRole();
 		String roleDatasetCode = userRole.getDatasetCode();
@@ -345,37 +338,61 @@ public class TermEditController extends AbstractMutableDataPageController {
 		WordLexemeMeaningIdTuple wordLexemeMeaningId = lookupService.getWordLexemeMeaningId(lexemeId);
 		Long meaningId = wordLexemeMeaningId.getMeaningId();
 		Long wordId = wordLexemeMeaningId.getWordId();
+		Response response = new Response();
+		String message;
 
 		boolean isOnlyValuePreseUpdate = lookupService.isOnlyValuePreseUpdate(wordId, wordValuePrese);
 		if (isOnlyValuePreseUpdate) {
 			boolean isUpdateSuccess = compositionService.updateWordValuePrese(user, wordId, wordValuePrese, roleDatasetCode, isManualEventOnUpdateEnabled);
 			if (isUpdateSuccess) {
-				addRedirectSuccessMessage(redirectAttributes, "termupdateword.usermessage.word.value.prese.updated");
+				message = messageSource.getMessage("termupdateword.usermessage.word.value.prese.updated", new Object[0], locale);
+				response.setStatus(ResponseStatus.OK);
+				response.setMessage(message);
 			} else {
-				addRedirectWarningMessage(redirectAttributes, "termupdateword.usermessage.word.value.prese.update.fail");
+				message = messageSource.getMessage("termupdateword.usermessage.word.value.prese.update.fail", new Object[0], locale);
+				response.setStatus(ResponseStatus.ERROR);
+				response.setMessage(message);
 			}
-			return REDIRECT_PREF + backUri + uriParams;
+			return response;
 		}
 
 		boolean meaningHasWord = lookupService.meaningHasWord(meaningId, wordValue, language);
 		if (meaningHasWord) {
-			addRedirectWarningMessage(redirectAttributes, "termupdateword.usermessage.meaning.word.exists");
-			return REDIRECT_PREF + backUri + uriParams;
+			message = messageSource.getMessage("termupdateword.usermessage.meaning.word.exists", new Object[0], locale);
+			response.setStatus(ResponseStatus.ERROR);
+			response.setMessage(message);
+			return response;
 		}
 
 		List<Word> existingWords = lookupService.getWords(wordValue, language);
-
 		if (existingWords.size() > 1) {
-			TermUpdateWordDetails details = lookupService.getDetailsForWordUpdate(userRole, lexemeId, wordValuePrese, language);
-			model.addAttribute("backUri", backUri);
-			model.addAttribute("uriParams", uriParams);
-			model.addAttribute("details", details);
-			return TERM_UPDATE_WORD_PAGE;
+			response.setStatus(ResponseStatus.MULTIPLE);
 		} else {
 			compositionService.updateLexemeWordValue(lexemeId, wordValuePrese, language, roleDatasetCode, isManualEventOnUpdateEnabled);
-			addRedirectSuccessMessage(redirectAttributes, "termupdateword.usermessage.word.updated");
-			return REDIRECT_PREF + backUri + uriParams;
+			message = messageSource.getMessage("termupdateword.usermessage.word.updated", new Object[0], locale);
+			response.setStatus(ResponseStatus.OK);
+			response.setMessage(message);
 		}
+		return response;
+	}
+
+	@PostMapping(TERM_UPDATE_WORD_URI + INIT_URI + SELECT_URI)
+	public String selectLexemeWordId(
+			@RequestParam("lexemeId") Long lexemeId,
+			@RequestParam("wordValuePrese") String wordValuePrese,
+			@RequestParam("language") String language,
+			@RequestParam("backUri") String backUri,
+			@ModelAttribute(name = SESSION_BEAN) SessionBean sessionBean,
+			Model model) {
+
+		EkiUser user = userContext.getUser();
+		DatasetPermission userRole = user.getRecentRole();
+		wordValuePrese = valueUtil.trimAndCleanAndRemoveHtmlAndLimit(wordValuePrese);
+
+		TermUpdateWordDetails details = lookupService.getDetailsForWordUpdate(userRole, lexemeId, wordValuePrese, language);
+		model.addAttribute("backUri", backUri);
+		model.addAttribute("details", details);
+		return TERM_UPDATE_WORD_PAGE;
 	}
 
 	@PostMapping(TERM_UPDATE_WORD_URI + SELECT_URI)
@@ -383,7 +400,6 @@ public class TermEditController extends AbstractMutableDataPageController {
 			@RequestParam("lexemeId") Long lexemeId,
 			@RequestParam("wordId") Long wordId,
 			@RequestParam("backUri") String backUri,
-			@RequestParam("uriParams") String uriParams,
 			@ModelAttribute(name = SESSION_BEAN) SessionBean sessionBean,
 			RedirectAttributes redirectAttributes) throws Exception {
 
@@ -392,7 +408,7 @@ public class TermEditController extends AbstractMutableDataPageController {
 		compositionService.updateLexemeWordId(lexemeId, wordId, roleDatasetCode, isManualEventOnUpdateEnabled);
 
 		addRedirectSuccessMessage(redirectAttributes, "termupdateword.usermessage.word.updated");
-		return REDIRECT_PREF + backUri + uriParams;
+		return REDIRECT_PREF + backUri;
 	}
 
 	@PostMapping(UPDATE_MEANING_ACTIVE_TAG_COMPLETE_URI + "/{meaningId}")
@@ -438,6 +454,7 @@ public class TermEditController extends AbstractMutableDataPageController {
 
 	private String composeRedirectToMeaning(Long meaningId, String backUri) {
 
+		backUri = StringUtils.substringBefore(backUri, "?id=");
 		String meaningIdUri = "?id=" + meaningId;
 		return REDIRECT_PREF + backUri + meaningIdUri;
 	}

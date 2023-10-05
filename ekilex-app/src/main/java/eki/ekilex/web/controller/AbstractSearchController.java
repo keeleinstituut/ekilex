@@ -7,6 +7,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -185,5 +187,28 @@ public abstract class AbstractSearchController extends AbstractAuthActionControl
 				crit.setSearchValue(null);
 			}
 		}
+	}
+
+	protected Integer getPageNum(HttpServletRequest request) {
+
+		String pageNumParam = request.getParameter(REQUEST_PARAM_PAGE);
+		Integer pageNum;
+		try {
+			pageNum = Integer.valueOf(pageNumParam);
+		} catch (NumberFormatException e) {
+			pageNum = null;
+		}
+		return pageNum;
+	}
+
+	protected int calculateOffset(Integer pageNum) {
+
+		int offset;
+		if (pageNum != null && pageNum > 0) {
+			offset = (pageNum - 1) * DEFAULT_MAX_RESULTS_LIMIT;
+		} else {
+			offset = DEFAULT_OFFSET;
+		}
+		return offset;
 	}
 }

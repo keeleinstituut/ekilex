@@ -1465,8 +1465,7 @@
       <div class="modal-content">
         <form th:action="@{/termupdateword}" method="post">
           <div class="modal-body">
-            <input type="hidden" name="backUri" th:value="${backUri}">
-            <input type="hidden" name="uriParams" th:value="${uriParams}">
+            <input type="hidden" name="backUri">
             <input type="hidden" name="lexemeId" th:value="${lexeme.lexemeId}">
             <input type="hidden" name="wordValuePrese" th:value="${lexeme.word.wordValuePrese}">
             <div th:replace="components :: eki_editor_elem"></div>
