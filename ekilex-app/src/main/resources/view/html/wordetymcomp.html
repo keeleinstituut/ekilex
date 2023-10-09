@@ -143,5 +143,92 @@
       </div>
     </div>
   </div>
+
+  <div th:fragment="wordetym_edit_card" class="wordetym-card__edit">
+    <div class="">
+      <hr class="etym-devider-top">
+      <div class="form-group row p-0 m-0">
+        <div class="col-md-12 pt-3">
+          <label for="etym-country" th:utext="#{classifier.ETYMOLOGY_TYPE}">Päritolu liik</label>
+          <select id="etym-country" class="form-control value-select">
+            <option value="" hidden disabled selected th:text="#{common.select.value}">vali väärtus...</option>
+            <option>tag</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-group row p-0 m-0 eki-editor">
+        <div class="col-md-12 pt-3">
+          <span th:utext="#{lex.wordetym.comment}">Kommentaar</span>
+          <div class="formItem">
+            <div class="formItem__element">
+              <textarea data-id="editFld"></textarea>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="form-group row p-0 m-0">
+        <div class="col-md-12 pt-3">
+          <label for="etym-year" th:utext="#{lex.wordetym.year}">Etümoloogia kirje aasta</label>
+          <input id="etym-year" type="text" class="form-control w-30">
+        </div>
+      </div>
+      <div class="form-group row p-0 m-0">
+        <div class="col-md-12 pt-3">
+          <div class="form-check questionable-etym">
+            <input id="type" class="form-check-input" type="checkbox">
+            <label class="form-check-label" for="type" th:utext="#{lex.wordetym.questionable}">Päritoluinfo on kahtlane</label>
+          </div>
+        </div>
+      </div>
+      <div class="form-group row p-0 m-0">
+        <div class="col-md-12 pt-3">
+          <span th:utext="#{lex.source.link}">Allikaviide</span>
+          <button class="reference_btn" type="button">
+            <span class="fa fa-external-link"></span>
+          </button>
+        </div>
+      </div>
+      <div class="d-flex w-100 position-relative p-3 mt-3">
+        <hr class="etym-devider-top">
+        <button class="btn btn-default w-100 mr-1" type="button">Katkesta</button>
+        <button class="btn btn-primary w-100 ml-1" type="submit">Salvesta</button>
+      </div>
+    </div>
+
+  </div>
+
+  <div th:fragment="wordetym_edit_card_link">
+    <div class="tree-edit-link">
+      <button class="btn-add-etym-step" data-plugin="etymLinkModifier">
+        <span class="fa fa-link"></span>
+      </button>
+
+      <div class="wordetym-card">
+        <span>Seotud kirjed</span>
+        <div class="wordetym__header">
+          <ul class="related-records">
+            <li>
+              <span th:utext="${wordEtym.lang}" class="lang-abbr"></span>
+              <span th:utext="${wordEtym.word}" class="etym-text"></span>
+            </li>
+            <li>
+              <span th:utext="${wordEtym.lang}" class="lang-abbr"></span>
+              <span th:utext="${wordEtym.word}" class="etym-text"></span>
+            </li>
+          </ul>
+        </div>
+        <div class="wordetym-card__links">
+          <button class="btn-edit-etym" type="button" data-plugin="initEkiEditorDlgEtym">
+            <span class="fa fa-pencil"></span>
+          </button>
+          <button class="btn-delete-etym" type="button">
+            <span class="fa fa-trash"></span>
+          </button>
+        </div>
+      </div>
+    </div>
+
+
+  </div>
 </body>
 </html>

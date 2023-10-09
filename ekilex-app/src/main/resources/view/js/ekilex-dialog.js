@@ -76,6 +76,16 @@ $(function() {
 		})
 	}
 
+	$.fn.initEkiEditorDlgEtymLangRelation = function() {
+		return this.each(function() {
+			const obj = $(this);
+			const container = obj.parents().find('.wordetym-card');
+			obj.on('click', function() {
+				initAddMultiDataDlg(container);
+			});
+		});
+	}
+
 	$.fn.initLexWordValueEditorDlgAndFocusPlugin = function() {
 		const editorOptions = {
 			width: '100%',
