@@ -56,16 +56,48 @@
       </div>
     </div>
   </div>
-  <div th:id="${'editSourceTypeDlg_' + source.id}" class="modal select-dlg" role="dialog" th:fragment="edit_source_type_dlg"
-        data-plugin="initEditSourceTypeSelectDlgPlugin">
-    <div class="modal-dialog" role="document">
+  <div th:id="${'editSourceDlg_' + source.id}" class="modal" role="dialog" th:fragment="edit_source_dlg">
+    <div class="modal-dialog modal-" role="document">
       <div class="modal-content">
-        <form th:action="@{/update_source}">
+        <form th:action="@{/update_source}" method="post" data-plugin="editSourcePlugin">
           <div class="modal-body">
             <input type="hidden" name="sourceId" th:value="${source.id}">
-            <select class="form-control" name="sourceType">
-              <option th:each="type : ${sourceTypes}" th:value="${type}" th:text="#{|source.type.${type}|}" th:selected="${type == source.type}">value</option>
-            </select>
+            <div class="form-group row m-4">
+              <label class="col-12 col-form-label" th:text="#{source.type}">Tüüp</label>
+              <div class="col-md-6">
+                <select required class="form-control required-field" name="type">
+                  <option th:each="type : ${sourceTypes}" th:value="${type}" th:text="#{|source.type.${type}|}" th:selected="${type == source.type}">value</option>
+                </select>
+              </div>
+            </div>
+            <div class="form-group row m-4">
+              <label class="col-12 col-form-label" th:text="#{source.name}">Lühike kuju</label>
+              <div class="col-md-12">
+                <input class="form-control" name="name" th:value="${source.name}">
+              </div>
+            </div>
+            <div class="form-group row m-4">
+              <label class="col-12 col-form-label" th:text="#{source.description}">Pikk kuju</label>
+              <div class="col-md-12">
+                <textarea class="form-control" rows="3" name="description" th:text="${source.description}"></textarea>
+              </div>
+            </div>
+            <div class="form-group row m-4">
+              <label class="col-12 col-form-label" th:text="#{source.comment}">Mitteavalik kommentaar</label>
+              <div class="col-md-12">
+                <input class="form-control" name="comment" th:value="${source.comment}">
+              </div>
+            </div>
+            <div class="form-group form-check m-4">
+              <label class="col-12 form-check-label">
+                <input class="form-check-input" type="checkbox" name="public" th:checked="${source.public}" value="true">
+                <span th:text="#{boolean.public.true}">Avalik</span>
+              </label>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="submit" class="btn btn-primary" th:text="#{common.save}">Salvesta</button>
+            <button type="button" class="btn btn-default" data-dismiss="modal" th:text="#{common.cancel}">Katkesta</button>
           </div>
         </form>
       </div>

@@ -71,7 +71,23 @@ public class SourceDbService implements GlobalConstant, ActivityFunct {
 	@Autowired
 	private DSLContext create;
 
-	public List<SourcePropertyTuple> getSource(Long sourceId) {
+	public eki.ekilex.data.Source getSource(Long sourceId) {
+
+		Source s = SOURCE.as("s");
+		return create
+				.select(
+						s.ID,
+						s.TYPE,
+						s.NAME,
+						s.DESCRIPTION,
+						s.COMMENT,
+						s.IS_PUBLIC)
+				.from(s)
+				.where(s.ID.eq(sourceId))
+				.fetchOneInto(eki.ekilex.data.Source.class);
+	}
+
+	public List<SourcePropertyTuple> getSourcePropertyTuples(Long sourceId) {
 
 		Source s = SOURCE.as("s");
 		SourceFreeform spff = SOURCE_FREEFORM.as("spff");
@@ -79,14 +95,14 @@ public class SourceDbService implements GlobalConstant, ActivityFunct {
 		Condition where = s.ID.equal(sourceId);
 		Field<Boolean> spmf = DSL.field(DSL.val(Boolean.FALSE));
 
-		return getSources(s, spff, sp, spmf, where);
+		return getSourcePropertyTuples(s, spff, sp, spmf, where);
 	}
 
-	public List<SourcePropertyTuple> getSources(String searchFilterWithMetaCharacters, SourceType sourceType) {
-		return getSources(searchFilterWithMetaCharacters, sourceType, null);
+	public List<SourcePropertyTuple> getSourcePropertyTuples(String searchFilterWithMetaCharacters, SourceType sourceType) {
+		return getSourcePropertyTuples(searchFilterWithMetaCharacters, sourceType, null);
 	}
 
-	public List<SourcePropertyTuple> getSources(String searchFilter, SourceType sourceType, Long sourceIdToExclude) {
+	public List<SourcePropertyTuple> getSourcePropertyTuples(String searchFilter, SourceType sourceType, Long sourceIdToExclude) {
 
 		String maskedSearchFilter = searchFilter.replace(SEARCH_MASK_CHARS, "%").replace(SEARCH_MASK_CHAR, "_");
 		Field<String> filterField = DSL.lower(maskedSearchFilter);
@@ -110,10 +126,10 @@ public class SourceDbService implements GlobalConstant, ActivityFunct {
 		}
 		Condition where = DSL.exists(DSL.select(spcff.ID).from(spcff, spc).where(where1));
 
-		return getSources(s, spff, sp, spmf, where);
+		return getSourcePropertyTuples(s, spff, sp, spmf, where);
 	}
 
-	private List<SourcePropertyTuple> getSources(Source s, SourceFreeform spff, Freeform sp, Field<Boolean> spmf, Condition where) {
+	private List<SourcePropertyTuple> getSourcePropertyTuples(Source s, SourceFreeform spff, Freeform sp, Field<Boolean> spmf, Condition where) {
 
 		Field<Boolean> sptnf = DSL.field(sp.TYPE.eq(FreeformType.SOURCE_NAME.name()));
 
@@ -121,6 +137,10 @@ public class SourceDbService implements GlobalConstant, ActivityFunct {
 				.select(
 						s.ID.as("source_id"),
 						s.TYPE.as("source_type"),
+						s.NAME.as("source_name"),
+						s.DESCRIPTION.as("source_description"),
+						s.COMMENT.as("source_comment"),
+						s.IS_PUBLIC.as("is_source_public"),
 						sp.ID.as("source_property_id"),
 						sp.TYPE.as("source_property_type"),
 						sp.VALUE_TEXT.as("source_property_value_text"),
@@ -138,7 +158,7 @@ public class SourceDbService implements GlobalConstant, ActivityFunct {
 				.fetchInto(SourcePropertyTuple.class);
 	}
 
-	public List<SourcePropertyTuple> getSources(SearchFilter searchFilter) throws Exception {
+	public List<SourcePropertyTuple> getSourcePropertyTuples(SearchFilter searchFilter) throws Exception {
 
 		List<SearchCriterionGroup> searchCriteriaGroups = searchFilter.getCriteriaGroups();
 
@@ -173,7 +193,7 @@ public class SourceDbService implements GlobalConstant, ActivityFunct {
 			}
 		}
 
-		return getSources(s, spff, sp, spmf, where);
+		return getSourcePropertyTuples(s, spff, sp, spmf, where);
 	}
 
 	private Condition applySourceLinkDatasetFilters(List<SearchCriterion> searchCriteria, Field<Long> sourceIdField, Condition where) {
@@ -341,10 +361,10 @@ public class SourceDbService implements GlobalConstant, ActivityFunct {
 				.fetchInto(String.class);
 	}
 
-	public Long createSource(SourceType sourceType, List<SourceProperty> sourceProperties) {
+	public Long createSource(SourceType type, String name, String description, String comment, boolean isPublic, List<SourceProperty> sourceProperties) {
 
-		Long sourceId = create.insertInto(SOURCE, SOURCE.TYPE)
-				.values(sourceType.name())
+		Long sourceId = create.insertInto(SOURCE, SOURCE.TYPE, SOURCE.NAME, SOURCE.DESCRIPTION, SOURCE.COMMENT, SOURCE.IS_PUBLIC)
+				.values(type.name(), name, description, comment, isPublic)
 				.returning(SOURCE.ID)
 				.fetchOne()
 				.getId();
@@ -386,10 +406,14 @@ public class SourceDbService implements GlobalConstant, ActivityFunct {
 				.execute();
 	}
 
-	public void updateSourceType(Long sourceId, SourceType type) {
+	public void updateSource(Long sourceId, SourceType type, String name, String description, String comment, boolean isPublic) {
 
 		create.update(SOURCE)
 				.set(SOURCE.TYPE, type.name())
+				.set(SOURCE.NAME, name)
+				.set(SOURCE.DESCRIPTION, description)
+				.set(SOURCE.COMMENT, comment)
+				.set(SOURCE.IS_PUBLIC, isPublic)
 				.where(SOURCE.ID.eq(sourceId))
 				.execute();
 	}

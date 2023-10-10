@@ -716,7 +716,7 @@ public class ActivityLogService implements SystemConstant, GlobalConstant {
 
 	private String getSourceJson(Long sourceId) throws Exception {
 
-		List<SourcePropertyTuple> sourcePropertyTuples = sourceDbService.getSource(sourceId);
+		List<SourcePropertyTuple> sourcePropertyTuples = sourceDbService.getSourcePropertyTuples(sourceId);
 		if (CollectionUtils.isEmpty(sourcePropertyTuples)) {
 			return EMPTY_CONTENT_JSON;
 		}

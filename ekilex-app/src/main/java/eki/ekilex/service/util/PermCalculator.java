@@ -168,6 +168,14 @@ public class PermCalculator implements PermConstant {
 			isCrudGrant = permissionDbService.isGrantedForMeaning(userId, userRole, meaningId, AUTH_ITEM_DATASET, AUTH_OPS_CRUD);
 			isSubGrant = permissionDbService.isGrantedForMeaningByLexeme(userId, userRole, meaningId, AUTH_ITEM_DATASET, AUTH_OPS_CRUD);
 			isAnyGrant = permissionDbService.isGrantedForMeaningByAnyLexeme(userId, meaningId, AUTH_ITEM_DATASET, AUTH_OPS_CRUD);
+		} else if (crudEntity instanceof Source) {
+			Source source = (Source) crudEntity;
+			Long sourceId = source.getId();
+			if (userRole.isSuperiorDataset()) {
+				isCrudGrant = true;
+			} else {
+				isCrudGrant = permissionDbService.isGrantedForSource(userId, userRole, sourceId, AUTH_ITEM_DATASET, AUTH_OPS_CRUD);
+			}
 		}
 
 		crudEntity.setReadGrant(isReadGrant);

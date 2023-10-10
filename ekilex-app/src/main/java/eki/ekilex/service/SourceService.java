@@ -44,18 +44,12 @@ public class SourceService extends AbstractSourceService implements GlobalConsta
 	@Transactional
 	public Source getSource(Long sourceId, DatasetPermission userRole) {
 
-		List<SourcePropertyTuple> sourcePropertyTuples = sourceDbService.getSource(sourceId);
-		if (CollectionUtils.isEmpty(sourcePropertyTuples)) {
-			logger.warn("No source found for id {}", sourceId);
-			return null;
+		Source source = sourceDbService.getSource(sourceId);
+		List<SourcePropertyTuple> sourcePropertyTuples = sourceDbService.getSourcePropertyTuples(sourceId);
+		if (CollectionUtils.isNotEmpty(sourcePropertyTuples)) {
+			source = conversionUtil.composeSource(source, sourcePropertyTuples);
 		}
-		List<Source> sources = conversionUtil.composeSources(sourcePropertyTuples);
-		permCalculator.applyCrud(userRole, sources);
-		if (sources.size() > 1) {
-			logger.error("Single source query for id {} returned several. Fix this!", sourceId);
-		}
-		Source source = sources.get(0);
-
+		permCalculator.applyCrud(userRole, source);
 		return source;
 	}
 
@@ -95,7 +89,7 @@ public class SourceService extends AbstractSourceService implements GlobalConsta
 		if (StringUtils.isBlank(searchFilter)) {
 			return new ArrayList<>();
 		}
-		List<SourcePropertyTuple> sourcePropertyTuples = sourceDbService.getSources(searchFilter, sourceType);
+		List<SourcePropertyTuple> sourcePropertyTuples = sourceDbService.getSourcePropertyTuples(searchFilter, sourceType);
 		List<Source> sources = conversionUtil.composeSources(sourcePropertyTuples);
 		permCalculator.applyCrud(userRole, sources);
 
@@ -110,7 +104,7 @@ public class SourceService extends AbstractSourceService implements GlobalConsta
 		}
 		SourceType sourceType = excludedSource.getType();
 		Long excludedSourceId = excludedSource.getId();
-		List<SourcePropertyTuple> sourcePropertyTuples = sourceDbService.getSources(searchFilter, sourceType, excludedSourceId);
+		List<SourcePropertyTuple> sourcePropertyTuples = sourceDbService.getSourcePropertyTuples(searchFilter, sourceType, excludedSourceId);
 		List<Source> sources = conversionUtil.composeSources(sourcePropertyTuples);
 		permCalculator.applyCrud(userRole, sources);
 
@@ -123,7 +117,7 @@ public class SourceService extends AbstractSourceService implements GlobalConsta
 		if (CollectionUtils.isEmpty(searchFilter.getCriteriaGroups())) {
 			return new ArrayList<>();
 		}
-		List<SourcePropertyTuple> sourcePropertyTuples = sourceDbService.getSources(searchFilter);
+		List<SourcePropertyTuple> sourcePropertyTuples = sourceDbService.getSourcePropertyTuples(searchFilter);
 		List<Source> sources = conversionUtil.composeSources(sourcePropertyTuples);
 		permCalculator.applyCrud(userRole, sources);
 
@@ -176,10 +170,10 @@ public class SourceService extends AbstractSourceService implements GlobalConsta
 	}
 
 	@Transactional
-	public void updateSource(Long sourceId, SourceType type, String roleDatasetCode) throws Exception {
+	public void updateSource(Long sourceId, SourceType type, String name, String description, String comment, boolean isPublic, String roleDatasetCode) throws Exception {
 
 		ActivityLogData activityLog = activityLogService.prepareActivityLog("updateSource", sourceId, ActivityOwner.SOURCE, roleDatasetCode, MANUAL_EVENT_ON_UPDATE_DISABLED);
-		sourceDbService.updateSourceType(sourceId, type);
+		sourceDbService.updateSource(sourceId, type, name, description, comment, isPublic);
 		activityLogService.createActivityLog(activityLog, sourceId, ActivityEntity.SOURCE);
 	}
 

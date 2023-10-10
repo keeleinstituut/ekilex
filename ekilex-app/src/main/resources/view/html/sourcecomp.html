@@ -46,44 +46,47 @@
          sec:authorize="${#authentication.principal.datasetPermissionsExist}"
          th:text="#{source.activity.log}">Logi</a>
     </div>
-    <table class="w-100">
+    <div>
+      <div class="row">
+        <div class="col-2 text-right" th:text="#{source.id}">Allika id</div>
+        <div class="font-weight-bold" th:text="${source.id}"></div>
+        <button type="button" class="btn badge badge-primary ml-4" data-toggle="modal"
+                th:title="#{common.edit}"
+                th:data-target="${'#editSourceDlg_' + source.id}"
+                sec:authorize="#vars.source.crudGrant">
+          <i class="fa fa-edit" aria-hidden="true"></i>
+        </button>
+      </div>
+      <div class="row">
+        <div class="col-2 text-right" th:text="#{source.name}">Lühike kuju</div>
+        <div class="font-weight-bold" th:text="${source.name}"></div>
+      </div>
+      <div class="row">
+        <div class="col-2 text-right" th:text="#{source.description}">Pikk kuju</div>
+        <div class="font-weight-bold" th:text="${source.description}"></div>
+      </div>
+      <div class="row">
+        <div class="col-2 text-right" th:text="#{source.comment}">Mitteavalik kommentaar</div>
+        <div class="font-weight-bold" th:text="${source.comment}"></div>
+      </div>
+      <div class="row">
+        <div class="col-2 text-right" th:text="#{source.publicity}">Avalikkus</div>
+        <div class="font-weight-bold" th:text="#{'boolean.public.' + ${source.public}}">avalik/mitteavalik</div>
+      </div>
+      <div class="row">
+        <div class="col-2 text-right" th:text="#{source.type}">tüüp</div>
+        <div class="font-weight-bold" th:text="#{|source.type.${source.type}|}">tüüp</div>
+      </div>
+    </div>
+    <table class="table">
+
       <tr>
-        <td style="width: 100px;"></td>
-        <td>
-          <div class="row mb-1">
-            <table style="background-color: #ececec; font-weight: bold">
-              <tr>
-                <td th:text="#{source.id}">allika id</td>
-                <td th:text="${source.id}"></td>
-              </tr>
-              <tr>
-                <td th:text="#{source.type}">tüüp</td>
-                <td>
-                  <div class="hidden-buttons">
-                    <div class="col pl-0">
-                      <span th:text="#{|source.type.${source.type}|}"></span>
-                      <button type="button" class="btn badge badge-primary"
-                              th:title="#{common.edit}"
-                              data-toggle="modal"
-                              th:data-target="${'#editSourceTypeDlg_' + source.id}"
-                              sec:authorize="#vars.source.crudGrant">
-                        <i class="fa fa-caret-down" aria-hidden="true"></i>
-                      </button>
-                    </div>
-                  </div>
-                </td>
-              </tr>
-            </table>
-          </div>
-        </td>
-      </tr>
-      <tr>
-        <td style="width: 100px;"></td>
-        <td>
+        <td class="col-1"></td>
+        <td class="col-6">
           <th:block th:each="sourceProperty : ${source.sourceProperties}">
             <div th:replace="sourcedialog :: edit_source_property_dlg"></div>
             <div th:replace="sourcedialog :: add_source_property_dlg"></div>
-            <div th:replace="sourcedialog :: edit_source_type_dlg"></div>
+            <div th:replace="sourcedialog :: edit_source_dlg"></div>
             <div class="row">
               <div class="invisible-buttons action-buttons-anchor mw-90 mb-1">
                 <div style="display: list-item; position: absolute"></div>
@@ -147,7 +150,7 @@
           <th:block th:each="sourceProperty : ${source.sourceProperties}">
             <div th:replace="sourcedialog :: edit_source_property_dlg"></div>
             <div th:replace="sourcedialog :: add_source_property_dlg"></div>
-            <div th:replace="sourcedialog :: edit_source_type_dlg"></div>
+            <div th:replace="sourcedialog :: edit_source_dlg"></div>
             <div class="row">
               <div class="invisible-buttons action-buttons-anchor mw-90 mb-1">
                 <div style="display: list-item; position: absolute"></div>
@@ -180,7 +183,7 @@
           <td style="width: 50px"></td>
           <td>
             <div class="row mb-1">
-              <div class="col-3">
+              <div class="col-12">
                 <table class="table" style="background-color: #ececec; font-weight: bold">
                   <tr>
                     <td th:text="#{source.id}">allika id</td>
@@ -189,6 +192,22 @@
                   <tr>
                     <td th:text="#{source.type}">tüüp</td>
                     <td th:text="#{|source.type.${source.type}|}"></td>
+                  </tr>
+                  <tr>
+                    <td th:text="#{source.name}">Lühike kuju</td>
+                    <td th:text="${source.name}"></td>
+                  </tr>
+                  <tr>
+                    <td th:text="#{source.description}">Pikk kuju</td>
+                    <td th:text="${source.description}"></td>
+                  </tr>
+                  <tr>
+                    <td th:text="#{source.comment}">Mitteavalik kommentaar</td>
+                    <td th:text="${source.comment}"></td>
+                  </tr>
+                  <tr>
+                    <td th:text="#{source.publicity}">Avalikkus</td>
+                    <td th:text="#{'boolean.public.' + ${source.public}}">avalik/mitteavalik</td>
                   </tr>
                 </table>
               </div>

@@ -625,7 +625,11 @@ alter sequence freeform_id_seq restart with 10000;
 create table source
 (
   id bigserial primary key,
-  type varchar(100) not null
+  type varchar(100) not null,
+  name text null,
+  description text null,
+  comment text null,
+  is_public boolean not null default true
 );
 alter sequence source_id_seq restart with 10000;
 
@@ -1407,6 +1411,8 @@ create index freeform_lang_idx on freeform(lang);
 create index freeform_complexity_idx on freeform(complexity);
 create index freeform_is_public_idx on freeform(is_public);
 create index source_type_idx on source(type);
+create index source_name_idx on source(name);
+create index source_name_lower_idx on source(lower(name));
 create index source_freeform_source_id_idx on source_freeform(source_id);
 create index source_freeform_freeform_id_idx on source_freeform(freeform_id);
 create index meaning_freeform_meaning_id_idx on meaning_freeform(meaning_id);

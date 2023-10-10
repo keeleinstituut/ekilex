@@ -9,17 +9,29 @@ public class SourceRequest extends AbstractDataObject {
 
 	private static final long serialVersionUID = 1L;
 
+	private SourceType type;
+
 	private String name;
 
-	private String shortName;
+	private String description;
 
-	private SourceType type;
+	private String comment;
+
+	private boolean isPublic;
 
 	private List<SourceProperty> properties;
 
 	private Long id;
 
 	private String opCode;
+
+	public SourceType getType() {
+		return type;
+	}
+
+	public void setType(SourceType type) {
+		this.type = type;
+	}
 
 	public String getName() {
 		return name;
@@ -29,20 +41,28 @@ public class SourceRequest extends AbstractDataObject {
 		this.name = name;
 	}
 
-	public String getShortName() {
-		return shortName;
+	public String getDescription() {
+		return description;
 	}
 
-	public void setShortName(String shortName) {
-		this.shortName = shortName;
+	public void setDescription(String description) {
+		this.description = description;
 	}
 
-	public SourceType getType() {
-		return type;
+	public String getComment() {
+		return comment;
 	}
 
-	public void setType(SourceType type) {
-		this.type = type;
+	public void setComment(String comment) {
+		this.comment = comment;
+	}
+
+	public boolean isPublic() {
+		return isPublic;
+	}
+
+	public void setPublic(boolean isPublic) {
+		this.isPublic = isPublic;
 	}
 
 	public List<SourceProperty> getProperties() {

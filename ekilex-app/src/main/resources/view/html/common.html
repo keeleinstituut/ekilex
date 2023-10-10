@@ -323,7 +323,7 @@
           </td>
           <td>
             <div class="row mb-1">
-              <div class="col-3">
+              <div class="col-12">
                 <table class="table" style="background-color: #ececec; font-weight: bold">
                   <tr>
                     <td th:text="#{source.id}">allika id</td>
@@ -332,6 +332,22 @@
                   <tr>
                     <td th:text="#{source.type}">tüüp</td>
                     <td th:text="#{|source.type.${source.type}|}"></td>
+                  </tr>
+                  <tr>
+                    <td th:text="#{source.name}">Lühike kuju</td>
+                    <td th:text="${source.name}"></td>
+                  </tr>
+                  <tr>
+                    <td th:text="#{source.description}">Pikk kuju</td>
+                    <td th:text="${source.description}"></td>
+                  </tr>
+                  <tr>
+                    <td th:text="#{source.comment}">Mitteavalik kommentaar</td>
+                    <td th:text="${source.comment}"></td>
+                  </tr>
+                  <tr>
+                    <td th:text="#{source.publicity}">Avalikkus</td>
+                    <td th:text="#{'boolean.public.' + ${source.public}}">avalik/mitteavalik</td>
                   </tr>
                 </table>
               </div>
@@ -385,7 +401,7 @@
         <td style="width: 70px;"></td>
         <td>
           <div class="row m-1">
-            <div class="col-3">
+            <div class="col-12">
               <table class="table" style="background-color: #ececec; font-weight: bold">
                 <tr>
                   <td th:text="#{source.id}">allika id</td>
@@ -394,6 +410,22 @@
                 <tr>
                   <td th:text="#{source.type}">tüüp</td>
                   <td th:text="#{|source.type.${source.type}|}"></td>
+                </tr>
+                <tr>
+                  <td th:text="#{source.name}">Lühike kuju</td>
+                  <td th:text="${source.name}"></td>
+                </tr>
+                <tr>
+                  <td th:text="#{source.description}">Pikk kuju</td>
+                  <td th:text="${source.description}"></td>
+                </tr>
+                <tr>
+                  <td th:text="#{source.comment}">Mitteavalik kommentaar</td>
+                  <td th:text="${source.comment}"></td>
+                </tr>
+                <tr>
+                  <td th:text="#{source.publicity}">Avalikkus</td>
+                  <td th:text="#{'boolean.public.' + ${source.public}}">avalik/mitteavalik</td>
                 </tr>
               </table>
             </div>

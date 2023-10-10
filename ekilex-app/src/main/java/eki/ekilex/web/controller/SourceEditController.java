@@ -2,7 +2,9 @@ package eki.ekilex.web.controller;
 
 import java.util.List;
 import java.util.Locale;
+import java.util.stream.Collectors;
 
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -135,7 +137,11 @@ public class SourceEditController extends AbstractMutableDataPageController {
 	@PostMapping(UPDATE_SOURCE_URI)
 	public String updateSource(
 			@RequestParam("sourceId") Long sourceId,
-			@RequestParam("sourceType") SourceType type,
+			@RequestParam("type") SourceType type,
+			@RequestParam("name") String name,
+			@RequestParam("description") String description,
+			@RequestParam("comment") String comment,
+			@RequestParam(value = "public", required = false) boolean isPublic,
 			Model model) throws Exception {
 
 		logger.debug("Updating source type, source id: {}", sourceId);
@@ -144,7 +150,7 @@ public class SourceEditController extends AbstractMutableDataPageController {
 		DatasetPermission userRole = userContextData.getUserRole();
 		String roleDatasetCode = userRole.getDatasetCode();
 
-		sourceService.updateSource(sourceId, type, roleDatasetCode);
+		sourceService.updateSource(sourceId, type, name, description, comment, isPublic, roleDatasetCode);
 		Source source = sourceService.getSource(sourceId, userRole);
 		model.addAttribute("source", source);
 
@@ -156,13 +162,15 @@ public class SourceEditController extends AbstractMutableDataPageController {
 	public String createSource(@RequestBody SourceRequest source) throws Exception {
 
 		String roleDatasetCode = getDatasetCodeFromRole();
-		String sourceName = source.getName();
-		String shortName = source.getShortName();
 		SourceType sourceType = source.getType();
-		logger.debug("Creating new source, short name: {} name: {}", shortName, sourceName);
+		String name = source.getName();
+		String description = source.getDescription();
+		String comment = source.getComment();
+		boolean isPublic = source.isPublic();
+		logger.debug("Creating new source, name: {}", name);
 
 		List<SourceProperty> sourceProperties = processSourceProperties(source);
-		Long sourceId = sourceService.createSource(sourceType, sourceProperties, roleDatasetCode, MANUAL_EVENT_ON_UPDATE_DISABLED);
+		Long sourceId = sourceService.createSource(sourceType, name, description, comment, isPublic, sourceProperties, roleDatasetCode, MANUAL_EVENT_ON_UPDATE_DISABLED);
 		return String.valueOf(sourceId);
 	}
 
@@ -170,17 +178,20 @@ public class SourceEditController extends AbstractMutableDataPageController {
 	@ResponseBody
 	public String createSourceAndSourceLink(@RequestBody SourceRequest source, @ModelAttribute(name = SESSION_BEAN) SessionBean sessionBean) throws Exception {
 
-		String sourceName = source.getName();
-		String shortName = source.getShortName();
 		SourceType sourceType = source.getType();
+		String name = source.getName();
+		String description = source.getDescription();
+		String comment = source.getComment();
+		boolean isPublic = source.isPublic();
 		Long sourceLinkOwnerId = source.getId();
 		String sourceLinkOwnerCode = source.getOpCode();
 		String roleDatasetCode = getDatasetCodeFromRole();
 		boolean isManualEventOnUpdateEnabled = sessionBean.isManualEventOnUpdateEnabled();
-		logger.debug("Creating new source and source link, short name: {} name: {}", shortName, sourceName);
+		logger.debug("Creating new source and source link, name: {}", name);
 
 		List<SourceProperty> sourceProperties = processSourceProperties(source);
-		sourceLinkService.createSourceAndSourceLink(sourceType, sourceProperties, sourceLinkOwnerId, sourceLinkOwnerCode, roleDatasetCode, isManualEventOnUpdateEnabled);
+		sourceLinkService.createSourceAndSourceLink(
+				sourceType, name, description, comment, isPublic, sourceProperties, sourceLinkOwnerId, sourceLinkOwnerCode, roleDatasetCode, isManualEventOnUpdateEnabled);
 
 		return RESPONSE_OK_VER2;
 	}
@@ -260,27 +271,17 @@ public class SourceEditController extends AbstractMutableDataPageController {
 
 	private List<SourceProperty> processSourceProperties(SourceRequest source) {
 
-		String sourceShortName = source.getShortName();
-		String sourceName = source.getName();
 		List<SourceProperty> sourceProperties = source.getProperties();
-
-		SourceProperty name = new SourceProperty();
-		sourceName = valueUtil.trimAndCleanAndRemoveHtmlAndLimit(sourceName);
-		name.setType(FreeformType.SOURCE_NAME);
-		name.setValueText(sourceName);
-		sourceProperties.add(0, name);
-
-		SourceProperty shortName = new SourceProperty();
-		sourceShortName = valueUtil.trimAndCleanAndRemoveHtmlAndLimit(sourceShortName);
-		shortName.setType(FreeformType.SOURCE_NAME);
-		shortName.setValueText(sourceShortName);
-		sourceProperties.add(0, shortName);
 
 		sourceProperties.forEach(property -> {
 			String valueText = property.getValueText();
 			valueText = valueUtil.trimAndCleanAndRemoveHtmlAndLimit(valueText);
 			property.setValueText(valueText);
 		});
+
+		sourceProperties = sourceProperties.stream()
+				.filter(sourceProperty -> StringUtils.isNotBlank(sourceProperty.getValueText()))
+				.collect(Collectors.toList());
 
 		return sourceProperties;
 	}

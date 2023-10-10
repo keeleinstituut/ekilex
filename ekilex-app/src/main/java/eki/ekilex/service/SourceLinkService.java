@@ -4,7 +4,7 @@ import java.util.List;
 
 import javax.transaction.Transactional;
 
-import org.jooq.tools.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
 
 import eki.common.constant.ActivityEntity;
@@ -15,6 +15,7 @@ import eki.common.constant.GlobalConstant;
 import eki.common.constant.ReferenceOwner;
 import eki.common.constant.ReferenceType;
 import eki.common.constant.SourceType;
+import eki.common.exception.OperationDeniedException;
 import eki.ekilex.data.ActivityLogData;
 import eki.ekilex.data.ActivityLogOwnerEntityDescr;
 import eki.ekilex.data.SourceLink;
@@ -79,11 +80,21 @@ public class SourceLinkService extends AbstractSourceService implements GlobalCo
 
     @Transactional
     public void createSourceAndSourceLink(
-			SourceType sourceType, List<SourceProperty> sourceProperties, Long sourceLinkOwnerId, String sourceLinkOwnerCode, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
+			SourceType sourceType, String name, String description, String comment, boolean isPublic, List<SourceProperty> sourceProperties,
+			Long sourceLinkOwnerId, String sourceLinkOwnerCode, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
 
-        Long sourceId = createSource(sourceType, sourceProperties, roleDatasetCode, MANUAL_EVENT_ON_UPDATE_DISABLED);
+        Long sourceId = createSource(sourceType, name, description, comment, isPublic, sourceProperties, roleDatasetCode, MANUAL_EVENT_ON_UPDATE_DISABLED);
 
-		String sourceLinkValue = sourceProperties.get(0).getValueText();
+		String sourceLinkValue;
+		if (StringUtils.isNotBlank(name)) {
+			sourceLinkValue = name;
+		} else {
+			sourceLinkValue = sourceProperties.stream()
+					.filter(sourceProperty -> FreeformType.SOURCE_NAME.equals(sourceProperty.getType()))
+					.findFirst()
+					.map(SourceProperty::getValueText)
+					.orElseThrow(OperationDeniedException::new);
+		}
 		ReferenceType sourceLinkRefType = ReferenceType.ANY;
         String sourceLinkName = null;
 
