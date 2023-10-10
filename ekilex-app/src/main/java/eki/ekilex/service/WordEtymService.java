@@ -30,6 +30,9 @@ public class WordEtymService {
 		WordEtymPOCTuple headwordEtymTuple = wordEtymTupleMap.get(wordId);
 		WordEtymPOC wordEtym = composeEtymTree(headwordEtymTuple, wordEtymTupleMap);
 
+		int firstLevel = 0;
+		setLevels(wordEtym, firstLevel);
+
 		return wordEtym;
 	}
 
@@ -71,6 +74,19 @@ public class WordEtymService {
 			WordEtymPOC relWordEtymLevel = composeEtymLevel(relWordEtymTuple, relation.isQuestionable(), relation.isCompound(), relation.getComment());
 			wordEtymLevel.getTree().add(relWordEtymLevel);
 			composeEtymTree(relWordEtymLevel, relWordEtymTuple.getWordEtymRelations(), wordEtymTupleMap);
+		}
+	}
+
+	private void setLevels(WordEtymPOC wordEtym, int level) {
+
+		wordEtym.setLevel(level);
+
+		List<WordEtymPOC> wordEtymTree = wordEtym.getTree();
+		if (CollectionUtils.isNotEmpty(wordEtymTree)) {
+			level++;
+			for (WordEtymPOC nextLevelWordEtym : wordEtymTree) {
+				setLevels(nextLevelWordEtym, level);
+			}
 		}
 	}
 }

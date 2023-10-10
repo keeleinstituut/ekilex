@@ -10,6 +10,8 @@ public class WordEtymPOC extends AbstractDataObject {
 
 	private Long wordId;
 
+	private int level;
+
 	private String word;
 
 	private String lang;
@@ -32,6 +34,14 @@ public class WordEtymPOC extends AbstractDataObject {
 
 	public void setWordId(Long wordId) {
 		this.wordId = wordId;
+	}
+
+	public int getLevel() {
+		return level;
+	}
+
+	public void setLevel(int level) {
+		this.level = level;
 	}
 
 	public String getWord() {
