@@ -70,13 +70,13 @@ public class ApiSourceController extends AbstractApiController {
 			sourceProperties = sourceProperties.stream()
 					.sorted(Comparator.comparing(sourceProperty -> FreeformType.SOURCE_NAME.equals(sourceProperty.getType())))
 					.collect(Collectors.toList());
-		}
 
-		sourceProperties.forEach(sourceProperty -> {
-			String valueText = sourceProperty.getValueText();
-			valueText = valueUtil.trimAndCleanAndRemoveHtmlAndLimit(valueText);
-			sourceProperty.setValueText(valueText);
-		});
+			sourceProperties.forEach(sourceProperty -> {
+				String valueText = sourceProperty.getValueText();
+				valueText = valueUtil.trimAndCleanAndRemoveHtmlAndLimit(valueText);
+				sourceProperty.setValueText(valueText);
+			});
+		}
 
 		try {
 			Long sourceId = sourceService.createSource(sourceType, sourceName, sourceDescription, sourceComment, isSourcePublic, sourceProperties, null, MANUAL_EVENT_ON_UPDATE_DISABLED);

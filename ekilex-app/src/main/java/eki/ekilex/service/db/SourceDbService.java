@@ -369,8 +369,10 @@ public class SourceDbService implements GlobalConstant, ActivityFunct {
 				.fetchOne()
 				.getId();
 
-		for (SourceProperty sourceProperty : sourceProperties) {
-			createSourceProperty(sourceId, sourceProperty.getType(), sourceProperty.getValueText());
+		if (CollectionUtils.isNotEmpty(sourceProperties)) {
+			for (SourceProperty sourceProperty : sourceProperties) {
+				createSourceProperty(sourceId, sourceProperty.getType(), sourceProperty.getValueText());
+			}
 		}
 		return sourceId;
 	}

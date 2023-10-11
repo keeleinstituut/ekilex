@@ -2,6 +2,8 @@ package eki.ekilex.data;
 
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import eki.common.constant.SourceType;
 
 public class Source extends AbstractCrudEntity {
@@ -18,6 +20,7 @@ public class Source extends AbstractCrudEntity {
 
 	private String comment;
 
+	@JsonProperty("isPublic")
 	private boolean isPublic;
 
 	private List<String> nameTypeSourceProperties;
