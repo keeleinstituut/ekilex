@@ -23,6 +23,7 @@ public class WordEtymService {
 	public WordEtymPOC getWordEtym(Long wordId) {
 
 		List<WordEtymPOCTuple> wordEtymTuples = wordEtymDbService.getWordEtymTuples(wordId);
+		wordEtymTuples = combineTuplesRelations(wordEtymTuples);
 
 		Map<Long, WordEtymPOCTuple> wordEtymTupleMap = wordEtymTuples.stream().collect(Collectors.groupingBy(WordEtymPOCTuple::getWordEtymWordId)).entrySet()
 				.stream().collect(Collectors.toMap(entry -> entry.getKey(), entry -> entry.getValue().stream().distinct().collect(Collectors.toList()).get(0)));
@@ -34,6 +35,27 @@ public class WordEtymService {
 		setLevels(wordEtym, firstLevel);
 
 		return wordEtym;
+	}
+
+	private List<WordEtymPOCTuple> combineTuplesRelations(List<WordEtymPOCTuple> wordEtymTuplesWithDuplicates) {
+
+		List<WordEtymPOCTuple> uniqueWordEtymTuples = new ArrayList<>();
+		for (WordEtymPOCTuple wordEtymTuple : wordEtymTuplesWithDuplicates) {
+			Long wordEtymWordId = wordEtymTuple.getWordEtymWordId();
+			List<WordEtymPOCRel> wordEtymRelations = wordEtymTuple.getWordEtymRelations();
+
+			WordEtymPOCTuple uniqueWordEtymTuple = uniqueWordEtymTuples.stream()
+					.filter(tuple -> tuple.getWordEtymWordId().equals(wordEtymWordId))
+					.findFirst()
+					.orElse(null);
+
+			if (uniqueWordEtymTuple == null) {
+				uniqueWordEtymTuples.add(wordEtymTuple);
+			} else {
+				uniqueWordEtymTuple.getWordEtymRelations().addAll(wordEtymRelations);
+			}
+		}
+		return uniqueWordEtymTuples;
 	}
 
 	private WordEtymPOC composeEtymTree(WordEtymPOCTuple tuple, Map<Long, WordEtymPOCTuple> wordEtymTupleMap) {
