@@ -764,6 +764,17 @@ function deleteLexemeAndWordAndMeaning() {
 	executeMultiConfirmPostDelete(opName, opCode, lexemeId, successCallbackFunc);
 };
 
+function deleteWordEtymTreeCard() {
+  const opName = "delete";
+  const opCode = "wordEtym";
+  const element = $(this);
+  const lexemeId = element.attr("data-id");
+  const successCallback = element.attr("data-callback");
+  // const successCallbackFunc = createCallback(successCallback, element);
+
+  // executeMultiConfirmPostDelete(opName, opCode, lexemeId, successCallbackFunc);
+};
+
 function deleteLexemeAndRusMeaningLexemes() {
 	const opName = "delete";
 	const opCode = "rus_meaning_lexemes";

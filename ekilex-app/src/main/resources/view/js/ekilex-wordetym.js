@@ -66,9 +66,9 @@ $.fn.etymLinkModifier = function() {
       state = !state;
       var cards = $('.btn-add-etym-step').not($(this)).parent().find('.wordetym-card');
       var buttons = $('.btn-add-etym-step').not($(this));
+      var editBtn = card.find('.btn-edit-etym');
       
       if (state) {
-        console.log('poop')
         obj.addClass('active');
         wrapper.addClass('modifier-active');
         card.addClass('wordetym-card--active');
@@ -81,6 +81,13 @@ $.fn.etymLinkModifier = function() {
         card.removeClass('wordetym-card--active');
         parent.removeClass('edit-tree');
       }
+      
+      editBtn.off('click').on('click', function(e) {
+        e.preventDefault();
+        var main = $(this);
+        main.toggleClass('active');
+        card.toggleClass('add-edit-open');
+      });
     });
 
     $(window).on('click', function(e){
