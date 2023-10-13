@@ -3,28 +3,28 @@
 <head>
 </head>
 <body>
-  <div th:fragment="wordetym_card" class="wordetym-card" data-plugin="wordetymCard">
+  <div th:fragment="wordetym_card(etym)" class="wordetym-card" data-plugin="wordetymCard">
     <div class="wordetym-card__links">
       <button class="btn-edit-etym" type="button" data-plugin="initEkiEditorDlgEtym">
         <span class="fa fa-pencil"></span>
       </button>
       <button class="btn-delete-etym" 
               type="button"
-              data-id="${wordEtym.id}"
+              data-id="${etym.id}"
               data-toggle="deleteWordEtymTreeCard">
         <span class="fa fa-trash"></span>
       </button>
     </div>
     <div class="wordetym-card__header">
       <div class="wordetym-card__info">
-        <span th:utext="${wordEtym.lang}" class="lang-abbr"></span>
-        <span th:utext="${wordEtym.word}" class="etym-text"></span>
+        <span th:utext="${etym.lang}" class="lang-abbr"></span>
+        <span th:utext="${etym.word}" class="etym-text"></span>
       </div>
     </div>
     <div class="wordetym-card__body">
-      <span th:if="${wordEtym.etymologyTypeCode != null}" class="origin mb-3">Kirjakeele sõna</span>
-      <span th:if="${wordEtym.comment != null}" th:utext="${wordEtym.comment}" class="comment mb-3"></span>
-      <span th:if="${wordEtym.etymYear != null}" th:text="${wordEtym.etymYear}" class="year mb-3"></span>
+      <span th:if="${etym.etymologyTypeCode != null}" class="origin mb-3">Kirjakeele sõna</span>
+      <span th:if="${etym.comment != null}" th:utext="${etym.comment}" class="comment mb-3"></span>
+      <span th:if="${etym.etymYear != null}" th:text="${etym.etymYear}" class="year mb-3"></span>
       <ul class="sources-links">
         <li class="source-item">
           <a href="#" class="source-link">Tallinn</a>
@@ -43,7 +43,7 @@
               type="button"
               th:title="#{common.add.new}" 
               data-toggle="modal"
-              th:data-target="${'#addEtymLanguageDlg_' + wordEtym.wordId}">
+              th:data-target="${'#addEtymLanguageDlg_' + etym.wordId}">
         <span class="fa fa-plus"></span>
       </button>
     </div>
@@ -57,6 +57,7 @@
       });
     </script>
   </div>
+  
   <div th:fragment="wordetym_edit_card" class="wordetym-card__edit">
     <hr class="etym-devider-top">
     <div class="form-group row p-0 m-0">

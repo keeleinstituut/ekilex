@@ -16,52 +16,194 @@
     </div>
   </div>
   <div class="container-fluid h-100 wordetym-wrapper">
-    <div th:replace="wordetymcomp :: wordetym_card"></div>
+    <th:block th:if="${wordEtym.level == 0}">
+      level 0
+      <div th:replace="wordetymcomp :: wordetym_card(${wordEtym})"></div>
+    </th:block>
 
-    <ul th:each="etym : ${wordEtym.tree}" class="etym-tree">
-      <li class="step-block level-1">
-        <div th:replace="wordetymcomp :: wordetym_edit_card_link"></div>
-        <div class="wordetym-card" data-plugin="wordetymCard">
-          <div class="wordetym-card__links">
-            <button class="btn-edit-etym" type="button" data-plugin="initEkiEditorDlgEtym">
-              <span class="fa fa-pencil"></span>
-            </button>
-            <button class="btn-delete-etym" type="button">
-              <span class="fa fa-trash"></span>
-            </button>
-          </div>
-          <div class="wordetym-card__header">
-            <div class="wordetym-card__info">
-              <span th:utext="${wordEtym.lang}" class="lang-abbr"></span>
-              <span th:utext="${wordEtym.word}" class="etym-text"></span>
-            </div>
-          </div>
-          <div class="wordetym-card__body">
-            <span class="origin mb-3">Kirjakeele sõna</span>
-            <span th:utext="${etym.comment}" class="comment mb-3"></span>
-            <span th:text="${etym.etymYear}" class="year mb-3"></span>
-            <span class="sources-links">
-              <a href="#" class="source-item">Tallinn</a>
-              <a href="#" class="source-item">Tallinn</a>
-              <a href="#" class="source-item">Tallinn</a>
-            </span>
-          </div>
-          <div th:replace="wordetymcomp :: wordetym_edit_card"></div>
-          <div class="etym-tree-link">
-            <button class="btn-add-etym" 
-                    type="button"
-                    th:title="#{common.add.new}" 
-                    data-toggle="modal"
-                    th:data-target="${'#addEtymLanguageDlg_' + wordEtym.wordId}">
-              <span class="fa fa-plus"></span>
-            </button>
-          </div>
-        </div>
-
-        <ul>
-          <li class="step-block level-2">
+    <th:block th:if="${wordEtym.tree != null}">
+      <ul class="etym-tree">
+        <th:block th:each="etymlvl1 : ${wordEtym.tree}">
+          <li th:if="${etymlvl1.level == 1}" class="step-block level-1">
+            level 1
+            <div th:replace="wordetymcomp :: wordetym_edit_card_link"></div>
+            <div th:replace="wordetymcomp :: wordetym_card(${etymlvl1})"></div>
+              
+            <th:block th:if="${etymlvl1.tree != null}">
+              <ul> 
+                <th:block th:each="etymlvl2 : ${etymlvl1.tree}">
+                  <li th:if="${etymlvl2.level == 2}" class="step-block level-2">
+                    level 2
+                    <div th:replace="wordetymcomp :: wordetym_edit_card_link"></div>
+                    <div th:replace="wordetymcomp :: wordetym_card(${etymlvl2})"></div>
+                    
+                    <th:block th:if="${etymlvl2.tree != null}">
+                      <ul>
+                        <th:block th:each="etymlvl3 : ${etymlvl2.tree}">
+                          <li th:if="${etymlvl3.level == 3}" class="step-block level-3">
+                            level 3
+                            <div th:replace="wordetymcomp :: wordetym_edit_card_link"></div>
+                            <div th:replace="wordetymcomp :: wordetym_card(${etymlvl3})"></div>
+                          </li>
+                        </th:block>
+                      </ul>
+                    </th:block>
+                  </li>
+                  <!-- <li class="step-block level-2">
+                    <div th:replace="wordetymcomp :: wordetym_edit_card_link"></div>
+                    <div class="wordetym-card"  data-plugin="wordetymCard">
+                      <div class="wordetym-card__links">
+                        <button class="btn-edit-etym" type="button" data-plugin="initEkiEditorDlgEtym">
+                          <span class="fa fa-pencil"></span>
+                        </button>
+                        <button class="btn-delete-etym" type="button">
+                          <span class="fa fa-trash"></span>
+                        </button>
+                      </div>
+                      <div class="wordetym-card__header">
+                        <div class="wordetym-card__info">
+                          <span th:utext="${wordEtym.lang}" class="lang-abbr"></span>
+                          <span th:utext="${wordEtym.word}" class="etym-text"></span>
+                        </div>
+                      </div>
+                      <div th:replace="wordetymcomp :: wordetym_edit_card"></div>
+                      <div class="etym-tree-link">
+                        <button class="btn-add-etym" 
+                                type="button"
+                                th:title="#{common.add.new}" 
+                                data-toggle="modal"
+                                th:data-target="${'#addEtymLanguageDlg_' + wordEtym.wordId}">
+                          <span class="fa fa-plus"></span>
+                        </button>
+                      </div>
+                    </div>
+                    <ul>
+                      <li class="step-block level-3 small">
+                        <div th:replace="wordetymcomp :: wordetym_edit_card_link"></div>
+                        <div class="wordetym-card wordetym-card--small" data-plugin="wordetymCard">
+                          <div class="wordetym-card__header">
+                            <div class="wordetym-card__info">
+                              <span th:utext="${wordEtym.lang}" class="lang-abbr"></span>
+                              <span th:utext="${wordEtym.word}" class="etym-text"></span>
+                            </div>
+                          </div>
+                          <div class="wordetym-card__links">
+                            <button class="btn-edit-etym" type="button" data-plugin="initEkiEditorDlgEtym">
+                              <span class="fa fa-pencil"></span>
+                            </button>
+                            <button class="btn-delete-etym" type="button">
+                              <span class="fa fa-trash"></span>
+                            </button>
+                          </div>
+                        </div>
+                      </li>
+                    </ul>
+                  </li>
+                  <li class="step-block level-2">
+                    <div th:replace="wordetymcomp :: wordetym_edit_card_link"></div>
+                    <div class="wordetym-card"  data-plugin="wordetymCard">
+                      <div class="wordetym-card__links">
+                        <button class="btn-edit-etym" type="button" data-plugin="initEkiEditorDlgEtym">
+                          <span class="fa fa-pencil"></span>
+                        </button>
+                        <button class="btn-delete-etym" type="button">
+                          <span class="fa fa-trash"></span>
+                        </button>
+                      </div>
+                      <div class="wordetym-card__header">
+                        <div class="wordetym-card__info">
+                          <span th:utext="${wordEtym.lang}" class="lang-abbr"></span>
+                          <span th:utext="${wordEtym.word}" class="etym-text"></span>
+                        </div>
+                      </div>
+                      <div th:replace="wordetymcomp :: wordetym_edit_card"></div>
+                      <div class="etym-tree-link">
+                        <button class="btn-add-etym" 
+                                type="button"
+                                th:title="#{common.add.new}" 
+                                data-toggle="modal"
+                                th:data-target="${'#addEtymLanguageDlg_' + wordEtym.wordId}">
+                          <span class="fa fa-plus"></span>
+                        </button>
+                      </div>
+                    </div>
+                    <ul>
+                      <li class="step-block level-3">
+                        <div th:replace="wordetymcomp :: wordetym_edit_card_link"></div>
+                        <div class="wordetym-card" data-plugin="wordetymCard">
+                          <div class="wordetym-card__header">
+                            <div class="wordetym-card__info">
+                              <span th:utext="${wordEtym.lang}" class="lang-abbr"></span>
+                              <span th:utext="${wordEtym.word}" class="etym-text"></span>
+                            </div>
+                          </div>
+                          <div class="display-etym-info">
+                            <div class="wordetym-card__body">
+                              <span class="origin mb-3">Kirjakeele sõna</span>
+                              <span th:utext="${wordEtym.comment}" class="comment mb-3"></span>
+                              <span th:text="${wordEtym.etymYear}"class="year mb-3"></span>
+                              <span class="sources">
+                                <span class="source-item">Tallinn</span>
+                                <span class="source-item">Tallinn</span>
+                                <span class="source-item">Tallinn</span>
+                              </span>
+                            </div>
+                          </div>
+                          <div class="wordetym-card__links">
+                            <button class="btn-edit-etym" type="button" data-plugin="initEkiEditorDlgEtym">
+                              <span class="fa fa-pencil"></span>
+                            </button>
+                            <button class="btn-delete-etym" type="button">
+                              <span class="fa fa-trash"></span>
+                            </button>
+                          </div>
+                        </div>
+                      </li>
+                    </ul>
+                  </li>
+                  <li class="step-block level-2">
+                    <div th:replace="wordetymcomp :: wordetym_edit_card_link"></div>
+                    <div class="wordetym-card"  data-plugin="wordetymCard">
+                      <div class="wordetym-card__links">
+                        <button class="btn-edit-etym" type="button" data-plugin="initEkiEditorDlgEtym">
+                          <span class="fa fa-pencil"></span>
+                        </button>
+                        <button class="btn-delete-etym" type="button">
+                          <span class="fa fa-trash"></span>
+                        </button>
+                      </div>
+                      <div class="wordetym-card__header">
+                        <div class="wordetym-card__info">
+                          <span th:utext="${wordEtym.lang}" class="lang-abbr"></span>
+                          <span th:utext="${wordEtym.word}" class="etym-text"></span>
+                        </div>
+                      </div>
+                      <div th:replace="wordetymcomp :: wordetym_edit_card"></div>
+                      <div class="etym-tree-link">
+                        <button class="btn-add-etym" 
+                                type="button"
+                                th:title="#{common.add.new}" 
+                                data-toggle="modal"
+                                th:data-target="${'#addEtymLanguageDlg_' + wordEtym.wordId}">
+                          <span class="fa fa-plus"></span>
+                        </button>
+                      </div>
+                    </div>
+                  </li> -->
+                </th:block>
+              </ul>
+            </th:block>
+          </li>
+    
+          <!-- <li class="step-block level-1">
             <div th:replace="wordetymcomp :: wordetym_edit_card_link"></div>
             <div class="wordetym-card" data-plugin="wordetymCard">
+              <div class="wordetym-card__header">
+                <div class="wordetym-card__info">
+                  <span th:utext="${wordEtym.lang}" class="lang-abbr"></span>
+                  <span th:utext="${wordEtym.word}" class="etym-text"></span>
+                </div>
+              </div>
               <div class="wordetym-card__links">
                 <button class="btn-edit-etym" type="button" data-plugin="initEkiEditorDlgEtym">
                   <span class="fa fa-pencil"></span>
@@ -70,214 +212,22 @@
                   <span class="fa fa-trash"></span>
                 </button>
               </div>
-              <div class="wordetym-card__header">
-                <div class="wordetym-card__info">
-                  <span th:utext="${wordEtym.lang}" class="lang-abbr"></span>
-                  <span th:utext="${wordEtym.word}" class="etym-text"></span>
-                  <i th:utext="${wordEtym.comment}"></i>
-                </div>
-              </div>
-              <div class="wordetym-card__body">
-                <span class="origin mb-3">Kirjakeele sõna</span>
-                <span th:utext="${wordEtym.comment}" class="comment mb-3"></span>
-                <span th:text="${wordEtym.etymYear}" class="year mb-3"></span>
-                <span class="sources-links">
-                  <a href="#" class="source-item">Tallinn</a>
-                  <a href="#" class="source-item">Tallinn</a>
-                  <a href="#" class="source-item">Tallinn</a>
-                </span>
-              </div>
-              <div th:replace="wordetymcomp :: wordetym_edit_card"></div>
               <div class="etym-tree-link">
                 <button class="btn-add-etym" 
                         type="button"
-                        th:title="#{common.add.new}" 
-                        data-toggle="modal"
-                        th:data-target="${'#addEtymLanguageDlg_' + wordEtym.wordId}">
-                  <span class="fa fa-plus"></span>
-                </button>
-              </div>
-            </div>      
-          </li>
-          <li class="step-block level-2">
-            <div th:replace="wordetymcomp :: wordetym_edit_card_link"></div>
-            <div class="wordetym-card"  data-plugin="wordetymCard">
-              <div class="wordetym-card__links">
-                <button class="btn-edit-etym" type="button" data-plugin="initEkiEditorDlgEtym">
-                  <span class="fa fa-pencil"></span>
-                </button>
-                <button class="btn-delete-etym" type="button">
-                  <span class="fa fa-trash"></span>
-                </button>
-              </div>
-              <div class="wordetym-card__header">
-                <div class="wordetym-card__info">
-                  <span th:utext="${wordEtym.lang}" class="lang-abbr"></span>
-                  <span th:utext="${wordEtym.word}" class="etym-text"></span>
-                  <i th:utext="${wordEtym.comment}"></i>
-                </div>
-              </div>
-              <div th:replace="wordetymcomp :: wordetym_edit_card"></div>
-              <div class="etym-tree-link">
-                <button class="btn-add-etym" 
-                        type="button"
-                        th:title="#{common.add.new}" 
-                        data-toggle="modal"
+                        th:title="#{common.add.new}" data-toggle="modal"
                         th:data-target="${'#addEtymLanguageDlg_' + wordEtym.wordId}">
                   <span class="fa fa-plus"></span>
                 </button>
               </div>
             </div>
-            <ul>
-              <li class="step-block level-3 small">
-                <div th:replace="wordetymcomp :: wordetym_edit_card_link"></div>
-                <div class="wordetym-card wordetym-card--small" data-plugin="wordetymCard">
-                  <div class="wordetym-card__header">
-                    <div class="wordetym-card__info">
-                      <span th:utext="${wordEtym.lang}" class="lang-abbr"></span>
-                      <span th:utext="${wordEtym.word}" class="etym-text"></span>
-                      <i th:utext="${wordEtym.comment}"></i>
-                    </div>
-                  </div>
-                  <div class="wordetym-card__links">
-                    <button class="btn-edit-etym" type="button" data-plugin="initEkiEditorDlgEtym">
-                      <span class="fa fa-pencil"></span>
-                    </button>
-                    <button class="btn-delete-etym" type="button">
-                      <span class="fa fa-trash"></span>
-                    </button>
-                  </div>
-                </div>
-              </li>
-            </ul>
-          </li>
-          <li class="step-block level-2">
-            <div th:replace="wordetymcomp :: wordetym_edit_card_link"></div>
-            <div class="wordetym-card"  data-plugin="wordetymCard">
-              <div class="wordetym-card__links">
-                <button class="btn-edit-etym" type="button" data-plugin="initEkiEditorDlgEtym">
-                  <span class="fa fa-pencil"></span>
-                </button>
-                <button class="btn-delete-etym" type="button">
-                  <span class="fa fa-trash"></span>
-                </button>
-              </div>
-              <div class="wordetym-card__header">
-                <div class="wordetym-card__info">
-                  <span th:utext="${wordEtym.lang}" class="lang-abbr"></span>
-                  <span th:utext="${wordEtym.word}" class="etym-text"></span>
-                  <i th:utext="${wordEtym.comment}"></i>
-                </div>
-              </div>
-              <div th:replace="wordetymcomp :: wordetym_edit_card"></div>
-              <div class="etym-tree-link">
-                <button class="btn-add-etym" 
-                        type="button"
-                        th:title="#{common.add.new}" 
-                        data-toggle="modal"
-                        th:data-target="${'#addEtymLanguageDlg_' + wordEtym.wordId}">
-                  <span class="fa fa-plus"></span>
-                </button>
-              </div>
-            </div>
-            <ul>
-              <li class="step-block level-3">
-                <div th:replace="wordetymcomp :: wordetym_edit_card_link"></div>
-                <div class="wordetym-card" data-plugin="wordetymCard">
-                  <div class="wordetym-card__header">
-                    <div class="wordetym-card__info">
-                      <span th:utext="${wordEtym.lang}" class="lang-abbr"></span>
-                      <span th:utext="${wordEtym.word}" class="etym-text"></span>
-                      <i th:utext="${wordEtym.comment}"></i>
-                    </div>
-                  </div>
-                  <div class="display-etym-info">
-                    <div class="wordetym-card__body">
-                      <span class="origin mb-3">Kirjakeele sõna</span>
-                      <span th:text="${wordEtym.comment}" class="comment mb-3"></span>
-                      <span th:text="${wordEtym.etymYear}"class="year mb-3"></span>
-                      <span class="sources">
-                        <span class="source-item">Tallinn</span>
-                        <span class="source-item">Tallinn</span>
-                        <span class="source-item">Tallinn</span>
-                      </span>
-                    </div>
-                  </div>
-                  <div class="wordetym-card__links">
-                    <button class="btn-edit-etym" type="button" data-plugin="initEkiEditorDlgEtym">
-                      <span class="fa fa-pencil"></span>
-                    </button>
-                    <button class="btn-delete-etym" type="button">
-                      <span class="fa fa-trash"></span>
-                    </button>
-                  </div>
-                </div>
-              </li>
-            </ul>
-          </li>
-          <li class="step-block level-2">
-            <div th:replace="wordetymcomp :: wordetym_edit_card_link"></div>
-            <div class="wordetym-card"  data-plugin="wordetymCard">
-              <div class="wordetym-card__links">
-                <button class="btn-edit-etym" type="button" data-plugin="initEkiEditorDlgEtym">
-                  <span class="fa fa-pencil"></span>
-                </button>
-                <button class="btn-delete-etym" type="button">
-                  <span class="fa fa-trash"></span>
-                </button>
-              </div>
-              <div class="wordetym-card__header">
-                <div class="wordetym-card__info">
-                  <span th:utext="${wordEtym.lang}" class="lang-abbr"></span>
-                  <span th:utext="${wordEtym.word}" class="etym-text"></span>
-                  <i th:utext="${wordEtym.comment}"></i>
-                </div>
-              </div>
-              <div th:replace="wordetymcomp :: wordetym_edit_card"></div>
-              <div class="etym-tree-link">
-                <button class="btn-add-etym" 
-                        type="button"
-                        th:title="#{common.add.new}" 
-                        data-toggle="modal"
-                        th:data-target="${'#addEtymLanguageDlg_' + wordEtym.wordId}">
-                  <span class="fa fa-plus"></span>
-                </button>
-              </div>
-            </div>
-          </li>
-        </ul>
-      </li>
+          </li> -->
+        </th:block>
+      </ul>
+    </th:block>
 
-      <li class="step-block level-1">
-        <div th:replace="wordetymcomp :: wordetym_edit_card_link"></div>
-        <div class="wordetym-card" data-plugin="wordetymCard">
-          <div class="wordetym-card__header">
-            <div class="wordetym-card__info">
-              <span th:utext="${wordEtym.lang}" class="lang-abbr"></span>
-              <span th:utext="${wordEtym.word}" class="etym-text"></span>
-              <i th:utext="${wordEtym.comment}"></i>
-            </div>
-          </div>
-          <div class="wordetym-card__links">
-            <button class="btn-edit-etym" type="button" data-plugin="initEkiEditorDlgEtym">
-              <span class="fa fa-pencil"></span>
-            </button>
-            <button class="btn-delete-etym" type="button">
-              <span class="fa fa-trash"></span>
-            </button>
-          </div>
-          <div class="etym-tree-link">
-            <button class="btn-add-etym" 
-                    type="button"
-                    th:title="#{common.add.new}" data-toggle="modal"
-                    th:data-target="${'#addEtymLanguageDlg_' + wordEtym.wordId}">
-              <span class="fa fa-plus"></span>
-            </button>
-          </div>
-        </div>
-      </li>
-    </ul>
     
+    <!-- <div th:text="${wordEtym}"></div> -->
     <!-- <div>
       <span>Järgmise taseme tulemusi:</span>
       <span th:text="${#lists.size(wordEtym.tree)}"></span>
