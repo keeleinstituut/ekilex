@@ -18,11 +18,31 @@ $.fn.initAddSourcePropertyDlgPlugin = function() {
 	});
 }
 
-$.fn.initEditSourceTypeSelectDlgPlugin = function() {
+$.fn.editSourcePlugin = function() {
 	return this.each(function() {
-		const obj = $(this);
-		obj.on('show.bs.modal', function() {
-			initEditSourceTypeSelectDlg(obj);
+		const form = $(this);
+		const sourceId = form.find('[name=sourceId]').val();
+		form.on('submit', function(e) {
+			e.preventDefault();
+			const isValid = checkRequiredFields(form);
+			if (!isValid) {
+				return;
+			}
+
+			$.ajax({
+				url: form.attr('action'),
+				data: form.serialize(),
+				method: 'POST',
+			}).done(function (data) {
+				let dlg = form.parents('.modal');
+				dlg.modal('hide');
+				$(`#sourceSearchResult_${sourceId}`).replaceWith(data);
+				initDeleteConfirmations();
+				$wpm.bindObjects();
+			}).fail(function (data) {
+				console.log(data);
+				openAlertDlg(messages["common.error"]);
+			});
 		});
 	});
 }

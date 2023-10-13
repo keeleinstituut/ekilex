@@ -13,7 +13,7 @@ Olulisemad tehnoloogiad
 * Spring Security 5.3.2
 * Thymeleaf 3.0.9
 * Jooq 3.14.16
-* Postgres 9.6
+* Postgres 15.4
 
 Rakenduslikud moodulid
 ----------------------

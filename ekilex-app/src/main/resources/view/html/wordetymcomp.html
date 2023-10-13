@@ -1,0 +1,192 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+</head>
+<body>
+  <div th:fragment="wordetym_card(etym)" class="wordetym-card" data-plugin="wordetymCard">
+    <div class="wordetym-card__links">
+      <button class="btn-edit-etym" type="button" data-plugin="initEkiEditorDlgEtym">
+        <span class="fa fa-pencil"></span>
+      </button>
+      <button class="btn-delete-etym" 
+              type="button"
+              data-id="${etym.id}"
+              data-toggle="deleteWordEtymTreeCard">
+        <span class="fa fa-trash"></span>
+      </button>
+    </div>
+    <div class="wordetym-card__header">
+      <div class="wordetym-card__info">
+        <span th:utext="${etym.lang}" class="lang-abbr"></span>
+        <span th:utext="${etym.word}" class="etym-text"></span>
+      </div>
+    </div>
+    <div class="wordetym-card__body">
+      <span th:if="${etym.etymologyTypeCode != null}" class="origin mb-3">Kirjakeele sõna</span>
+      <span th:if="${etym.comment != null}" th:utext="${etym.comment}" class="comment mb-3"></span>
+      <span th:if="${etym.etymYear != null}" th:text="${etym.etymYear}" class="year mb-3"></span>
+      <ul class="sources-links">
+        <li class="source-item">
+          <a href="#" class="source-link">Tallinn</a>
+        </li>
+        <li class="source-item">
+          <a href="#" class="source-link">Tallinn</a>
+        </li>
+        <li class="source-item">
+          <a href="#" class="source-link">Tallinn</a>
+        </li>
+      </ul>
+    </div>
+    <div th:replace="wordetymcomp :: wordetym_edit_card"></div>
+    <div class="etym-tree-link">
+      <button class="btn-add-etym" 
+              type="button"
+              th:title="#{common.add.new}" 
+              data-toggle="modal"
+              th:data-target="${'#addEtymLanguageDlg_' + etym.wordId}">
+        <span class="fa fa-plus"></span>
+      </button>
+    </div>
+    <script>
+      $('[data-toggle=deleteWordEtymTreeCard]').confirmation({
+        btnOkLabel : /*[[#{common.yes}]]*/'Jah',
+        btnCancelLabel : /*[[#{common.no}]]*/'Ei',
+        title : /*[[#{common.confirm.delete}]]*/'Kinnita kustutamine',
+        placement: 'right',
+        onConfirm : deleteWordEtymTreeCard
+      });
+    </script>
+  </div>
+  
+  <div th:fragment="wordetym_edit_card" class="wordetym-card__edit">
+    <hr class="etym-devider-top">
+    <div class="form-group row p-0 m-0">
+      <div class="col-md-12 pt-3">
+        <label for="etym-country" th:utext="#{classifier.ETYMOLOGY_TYPE}">Päritolu liik</label>
+        <select id="etym-country" class="form-control value-select">
+          <option value="" hidden disabled selected th:text="#{common.select.value}">vali väärtus...</option>
+          <option>tag</option>
+        </select>
+      </div>
+    </div>
+    <div class="form-group row p-0 m-0 eki-editor">
+      <div class="col-md-12 pt-3">
+        <span th:utext="#{lex.wordetym.comment}">Kommentaar</span>
+        <div th:replace="components :: eki_editor_elem"></div>
+      </div>
+    </div>
+    <div class="form-group row p-0 m-0">
+      <div class="col-md-12 pt-3">
+        <label for="etym-year" th:utext="#{lex.wordetym.year}">Etümoloogia kirje aasta</label>
+        <input id="etym-year" type="text" class="form-control w-30">
+      </div>
+    </div>
+    <div class="form-group row p-0 m-0">
+      <div class="col-md-12 pt-3">
+        <div class="form-check questionable-etym">
+          <input id="type" class="form-check-input" type="checkbox">
+          <label class="form-check-label" for="type" th:utext="#{lex.wordetym.questionable}">Päritoluinfo on kahtlane</label>
+        </div>
+      </div>
+    </div>
+    <div class="form-group row p-0 m-0">
+      <div class="col-md-12 pt-3">
+        <span th:utext="#{lex.source.link}">Allikaviide</span>
+        <ul class="sources-links">
+          <li class="source-item">
+            <a href="#" class="source-link">Item 1</a>
+          </li>
+          <li class="source-item">
+            <a href="#" class="source-link">Item 2</a>
+          </li>
+          <li class="source-item">
+            <a href="#" class="source-link">Item 3</a>
+          </li>
+          <li class="source-item">
+            <button class="reference_btn" 
+                    type="button"
+                    data-toggle="modal"
+                    th:data-target="${'#addDefinitionSourceLinkDlg_' + wordEtym.wordId}">
+              <span class="fa fa-external-link"></span>
+            </button>
+          </li>
+        </ul>
+      </div>
+    </div>
+    <div class="d-flex w-100 position-relative p-3 mt-3">
+      <hr class="etym-devider-top">
+      <button class="btn btn-default w-100 mr-1" type="button" th:utext="#{lex.wordetym.cancel}">Katkesta</button>
+      <button class="btn btn-primary w-100 ml-1" type="submit" th:utext="#{lex.wordetym.save}">Salvesta</button>
+    </div>
+  </div>
+  <div th:fragment="wordetym_edit_card_tree_link" class="wordetym-card__edit">
+    <hr class="etym-devider-top">
+    <div class="form-group row p-0 m-0 eki-editor">
+      <div class="col-md-12 pt-3">
+        <span th:utext="#{lex.wordetym.comment}">Kommentaar</span>
+        <div th:replace="components :: eki_editor_elem"></div>
+      </div>
+    </div>
+    <div class="form-group row p-0 m-0">
+      <div class="col-md-12 pt-3">
+        <div class="form-check questionable-etym">
+          <input id="type" class="form-check-input" type="checkbox">
+          <label class="form-check-label" for="type" th:utext="#{lex.wordetym.questionable}">Päritoluinfo on kahtlane</label>
+        </div>
+      </div>
+    </div>
+    <div class="form-group row p-0 m-0">
+      <div class="col-md-12 pt-3">
+        <div class="form-check questionable-etym">
+          <input id="type" class="form-check-input" type="checkbox">
+          <label class="form-check-label" for="type" th:utext="#{lex.wordetym.compound.word}">Liitsõna</label>
+        </div>
+      </div>
+    </div>
+    <div class="d-flex w-100 position-relative p-3 mt-3">
+      <hr class="etym-devider-top">
+      <button class="btn btn-default w-100 mr-1" type="button" th:utext="#{lex.wordetym.cancel}">Katkesta</button>
+      <button class="btn btn-primary w-100 ml-1" type="submit" th:utext="#{lex.wordetym.save}">Salvesta</button>
+    </div>
+  </div>
+  <div th:fragment="wordetym_edit_card_link" class="tree-edit-link">
+    <button class="btn-add-etym-step" data-plugin="etymLinkModifier">
+      <span class="fa fa-link"></span>
+    </button>
+    <div class="wordetym-card">
+      <div class="wordetym-card__header">
+        <span th:utext="#{lex.wordetym.related.records}">Seotud kirjed</span>
+        <ul class="related-records">
+          <li>
+            <span th:utext="${wordEtym.lang}" class="lang-abbr"></span>
+            <span th:utext="${wordEtym.word}" class="etym-text"></span>
+          </li>
+          <li>
+            <span th:utext="${wordEtym.lang}" class="lang-abbr"></span>
+            <span th:utext="${wordEtym.word}" class="etym-text"></span>
+          </li>
+        </ul>
+      </div>
+      <div class="wordetym-card__body">
+        <span class="comment mb-3">Mingisugune kommentaar, mis käib selle seose kohta</span>
+        <span class="questionable-etym">
+          <input id="type" class="form-check-input" type="checkbox">
+          <label class="form-check-label" for="type" th:utext="#{lex.wordetym.questionable}">Päritoluinfo on kahtlane</label>
+        </span>
+      </div>
+      <div th:replace="wordetymcomp :: wordetym_edit_card_tree_link"></div>
+      <div class="wordetym-card__links">
+        <button class="btn-edit-etym" type="button" data-plugin="initEkiEditorEtymTreeLinkDlg">
+          <span class="fa fa-pencil"></span>
+        </button>
+        <button class="btn-delete-etym" 
+                type="button"               
+                data-id="${wordEtym.id}"
+                data-toggle="deleteWordEtymTreeCard">
+          <span class="fa fa-trash"></span>
+        </button>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

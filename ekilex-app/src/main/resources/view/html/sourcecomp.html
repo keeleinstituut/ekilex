@@ -46,6 +46,73 @@
          sec:authorize="${#authentication.principal.datasetPermissionsExist}"
          th:text="#{source.activity.log}">Logi</a>
     </div>
+    <div>
+      <div class="row">
+        <div class="col-2 text-right" th:text="#{source.id}">Allika id</div>
+        <div class="font-weight-bold" th:text="${source.id}"></div>
+        <button type="button" class="btn badge badge-primary ml-4" data-toggle="modal"
+                th:title="#{common.edit}"
+                th:data-target="${'#editSourceDlg_' + source.id}"
+                sec:authorize="#vars.source.crudGrant">
+          <i class="fa fa-edit" aria-hidden="true"></i>
+        </button>
+      </div>
+      <div class="row">
+        <div class="col-2 text-right" th:text="#{source.name}">Lühike kuju</div>
+        <div class="font-weight-bold" th:text="${source.name}"></div>
+      </div>
+      <div class="row">
+        <div class="col-2 text-right" th:text="#{source.description}">Pikk kuju</div>
+        <div class="font-weight-bold" th:text="${source.description}"></div>
+      </div>
+      <div class="row">
+        <div class="col-2 text-right" th:text="#{source.comment}">Mitteavalik kommentaar</div>
+        <div class="font-weight-bold" th:text="${source.comment}"></div>
+      </div>
+      <div class="row">
+        <div class="col-2 text-right" th:text="#{source.publicity}">Avalikkus</div>
+        <div class="font-weight-bold" th:text="#{'boolean.public.' + ${source.public}}">avalik/mitteavalik</div>
+      </div>
+      <div class="row">
+        <div class="col-2 text-right" th:text="#{source.type}">tüüp</div>
+        <div class="font-weight-bold" th:text="#{|source.type.${source.type}|}">tüüp</div>
+      </div>
+    </div>
+    <table class="table">
+
+      <tr>
+        <td class="col-1"></td>
+        <td class="col-6">
+          <th:block th:each="sourceProperty : ${source.sourceProperties}">
+            <div th:replace="sourcedialog :: edit_source_property_dlg"></div>
+            <div th:replace="sourcedialog :: add_source_property_dlg"></div>
+            <div th:replace="sourcedialog :: edit_source_dlg"></div>
+            <div class="row">
+              <div class="invisible-buttons action-buttons-anchor mw-90 mb-1">
+                <div style="display: list-item; position: absolute"></div>
+                <span th:text="#{|source.property.${sourceProperty.type}|}"></span>
+                -
+                <span th:text="${sourceProperty.valueText}" th:if="${sourceProperty.valueText != null}" th:style="${sourceProperty.valueMatch ? 'background-color: #eaffea' : ''}"></span>
+                <span th:text="${#dates.format(sourceProperty.valueDate, 'dd.MM.yyyy HH:mm')}" th:if="${sourceProperty.valueDate != null}"></span>
+                <div class="action-buttons-2" sec:authorize="#vars.source.crudGrant">
+                  <button type="button" class="btn badge badge-primary" title="Muuda" data-toggle="modal" th:data-target="${'#editSourcePropertyDlg_' + sourceProperty.id}">
+                    <i class="fa fa-edit" aria-hidden="true"></i>
+                  </button>
+                  <button type="button" class="btn badge badge-warning"
+                          th:data-source-property-id="${sourceProperty.id}"
+                          th:data-source-id="${source.id}"
+                          data-toggle="delete-source-property-confirm" data-placement="right">
+                    <i class="fa fa-remove" aria-hidden="true"></i>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </th:block>
+        </td>
+      </tr>
+    </table>
+  </div>
+  <div th:id="${'sourceSearchResult_' + source.id}" th:fragment="source_search_result_etym">
     <table class="w-100">
       <tr>
         <td style="width: 100px;"></td>
@@ -83,7 +150,7 @@
           <th:block th:each="sourceProperty : ${source.sourceProperties}">
             <div th:replace="sourcedialog :: edit_source_property_dlg"></div>
             <div th:replace="sourcedialog :: add_source_property_dlg"></div>
-            <div th:replace="sourcedialog :: edit_source_type_dlg"></div>
+            <div th:replace="sourcedialog :: edit_source_dlg"></div>
             <div class="row">
               <div class="invisible-buttons action-buttons-anchor mw-90 mb-1">
                 <div style="display: list-item; position: absolute"></div>
@@ -116,7 +183,7 @@
           <td style="width: 50px"></td>
           <td>
             <div class="row mb-1">
-              <div class="col-3">
+              <div class="col-12">
                 <table class="table" style="background-color: #ececec; font-weight: bold">
                   <tr>
                     <td th:text="#{source.id}">allika id</td>
@@ -125,6 +192,22 @@
                   <tr>
                     <td th:text="#{source.type}">tüüp</td>
                     <td th:text="#{|source.type.${source.type}|}"></td>
+                  </tr>
+                  <tr>
+                    <td th:text="#{source.name}">Lühike kuju</td>
+                    <td th:text="${source.name}"></td>
+                  </tr>
+                  <tr>
+                    <td th:text="#{source.description}">Pikk kuju</td>
+                    <td th:text="${source.description}"></td>
+                  </tr>
+                  <tr>
+                    <td th:text="#{source.comment}">Mitteavalik kommentaar</td>
+                    <td th:text="${source.comment}"></td>
+                  </tr>
+                  <tr>
+                    <td th:text="#{source.publicity}">Avalikkus</td>
+                    <td th:text="#{'boolean.public.' + ${source.public}}">avalik/mitteavalik</td>
                   </tr>
                 </table>
               </div>

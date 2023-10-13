@@ -243,4 +243,14 @@ where exists(select lt.id
              where lt.lexeme_id = l.id
                and lt.tag_name = 'mil muudetud mitteavalikuks');
 
+-- Allikate täiendus
+alter table source
+add column name text null,
+add column description text null,
+add column comment text null,
+add column is_public boolean not null default true;
+
+create index source_name_idx on source(name);
+create index source_name_lower_idx on source(lower(name));
+
 -- Loo uuesti ekilexi baasi tüübid (types) ja vaated (views)
