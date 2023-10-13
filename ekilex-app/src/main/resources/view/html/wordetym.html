@@ -17,7 +17,6 @@
   </div>
   <div class="container-fluid h-100 wordetym-wrapper">
     <th:block th:if="${wordEtym.level == 0}">
-      level 0
       <div th:replace="wordetymcomp :: wordetym_card(${wordEtym})"></div>
     </th:block>
 
@@ -25,7 +24,6 @@
       <ul class="etym-tree">
         <th:block th:each="etymlvl1 : ${wordEtym.tree}">
           <li th:if="${etymlvl1.level == 1}" class="step-block level-1">
-            level 1
             <div th:replace="wordetymcomp :: wordetym_edit_card_link"></div>
             <div th:replace="wordetymcomp :: wordetym_card(${etymlvl1})"></div>
               
@@ -33,7 +31,6 @@
               <ul> 
                 <th:block th:each="etymlvl2 : ${etymlvl1.tree}">
                   <li th:if="${etymlvl2.level == 2}" class="step-block level-2">
-                    level 2
                     <div th:replace="wordetymcomp :: wordetym_edit_card_link"></div>
                     <div th:replace="wordetymcomp :: wordetym_card(${etymlvl2})"></div>
                     
@@ -41,7 +38,6 @@
                       <ul>
                         <th:block th:each="etymlvl3 : ${etymlvl2.tree}">
                           <li th:if="${etymlvl3.level == 3}" class="step-block level-3">
-                            level 3
                             <div th:replace="wordetymcomp :: wordetym_edit_card_link"></div>
                             <div th:replace="wordetymcomp :: wordetym_card(${etymlvl3})"></div>
                           </li>
