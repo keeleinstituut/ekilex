@@ -287,12 +287,12 @@
         <div class="mb-0">
           <h5 class="font-weight-bold mb-0">
             <span th:text="#{sentence.same.as}"></span>
-            <a th:if="${wordData.word.lang == 'est'}" th:aria-label="|#{aria.search.from.keelenou} ${wordData.word.word}, #{aria.new.window}|"
+            <a th:if="${wordData.estHeadword}" th:aria-label="|#{aria.search.from.keelenou} ${wordData.word.word}, #{aria.new.window}|"
                th:href="${'https://portaal.eki.ee/sonaraamatud.html?Q=' + wordData.word.word}" target="_blank">
               EKI teistes sõnastikes
               <i class="fas fa-external-link-alt" aria-hidden="true"></i>
             </a>
-            <a th:if="${wordData.word.lang == 'rus'}" th:aria-label="|#{aria.search.from.eki.rus.est} ${wordData.word.word}, #{aria.new.window}|"
+            <a th:if="${wordData.rusHeadword}" th:aria-label="|#{aria.search.from.eki.rus.est} ${wordData.word.word}, #{aria.new.window}|"
                th:href="${'https://www.eki.ee/dict/ves/index.cgi?Q=' + wordData.word.word}" target="_blank">
               vene-eesti sõnaraamatus
               <i class="fas fa-external-link-alt" aria-hidden="true"></i>

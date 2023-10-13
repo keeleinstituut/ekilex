@@ -12,7 +12,7 @@ import org.jooq.Field;
 import org.jooq.ForeignKey;
 import org.jooq.Name;
 import org.jooq.Record;
-import org.jooq.Row5;
+import org.jooq.Row6;
 import org.jooq.Schema;
 import org.jooq.Table;
 import org.jooq.TableField;
@@ -57,6 +57,11 @@ public class MviewWwWordSearch extends TableImpl<MviewWwWordSearchRecord> {
      * The column <code>public.mview_ww_word_search.crit</code>.
      */
     public final TableField<MviewWwWordSearchRecord, String> CRIT = createField(DSL.name("crit"), SQLDataType.CLOB, this, "");
+
+    /**
+     * The column <code>public.mview_ww_word_search.word_langs</code>.
+     */
+    public final TableField<MviewWwWordSearchRecord, String[]> WORD_LANGS = createField(DSL.name("word_langs"), SQLDataType.CHAR.getArrayDataType(), this, "");
 
     /**
      * The column <code>public.mview_ww_word_search.lang_order_by</code>.
@@ -133,11 +138,11 @@ public class MviewWwWordSearch extends TableImpl<MviewWwWordSearchRecord> {
     }
 
     // -------------------------------------------------------------------------
-    // Row5 type methods
+    // Row6 type methods
     // -------------------------------------------------------------------------
 
     @Override
-    public Row5<String, String, String, Long, TypeLangComplexityRecord[]> fieldsRow() {
-        return (Row5) super.fieldsRow();
+    public Row6<String, String, String, String[], Long, TypeLangComplexityRecord[]> fieldsRow() {
+        return (Row6) super.fieldsRow();
     }
 }

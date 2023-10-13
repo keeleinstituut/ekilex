@@ -70,21 +70,21 @@ public class WordConversionUtil extends AbstractConversionUtil {
 				if (CollectionUtils.isNotEmpty(primaryMeaningWords)) {
 					Long meaningWordMeaningId = definitionMeaningId;
 					List<String> meaningWordValues = primaryMeaningWords.stream()
-								.filter(meaningWord -> meaningWord.getMeaningId().equals(meaningWordMeaningId))
-								.filter(meaningWord -> StringUtils.equals(wordLang, meaningWord.getLang()))
-								.map(meaningWord -> {
-									if (meaningWord.isPrefixoid()) {
-										return meaningWord.getWord() + "-";
-									} else if (meaningWord.isSuffixoid()) {
-										return "-" + meaningWord.getWord();
-									} else {
-										return meaningWord.getWord();
-									}
-								})
-								.distinct()
-								.collect(Collectors.toList());
-						String meaningWordsWrapup = StringUtils.join(meaningWordValues, ", ");
-						word.setMeaningWordsWrapup(meaningWordsWrapup);
+							.filter(meaningWord -> meaningWord.getMeaningId().equals(meaningWordMeaningId))
+							.filter(meaningWord -> StringUtils.equals(wordLang, meaningWord.getLang()))
+							.map(meaningWord -> {
+								if (meaningWord.isPrefixoid()) {
+									return meaningWord.getWord() + "-";
+								} else if (meaningWord.isSuffixoid()) {
+									return "-" + meaningWord.getWord();
+								} else {
+									return meaningWord.getWord();
+								}
+							})
+							.distinct()
+							.collect(Collectors.toList());
+					String meaningWordsWrapup = StringUtils.join(meaningWordValues, ", ");
+					word.setMeaningWordsWrapup(meaningWordsWrapup);
 				}
 			}
 		}
@@ -119,13 +119,18 @@ public class WordConversionUtil extends AbstractConversionUtil {
 			Word word,
 			WordRelationsTuple wordRelationsTuple,
 			Map<String, Long> langOrderByMap,
-			Complexity lexComplexity,
+			SearchContext searchContext,
 			Locale displayLocale,
 			String displayLang) {
 
 		if (wordRelationsTuple == null) {
 			return;
 		}
+
+		String wordLang = word.getLang();
+		Complexity lexComplexity = searchContext.getLexComplexity();
+		List<String> destinLangs = searchContext.getDestinLangs();
+
 		word.setWordGroups(new ArrayList<>());
 		word.setRelatedWords(new ArrayList<>());
 		word.setPrimaryRelatedWordTypeGroups(new ArrayList<>());
@@ -139,6 +144,7 @@ public class WordConversionUtil extends AbstractConversionUtil {
 		List<TypeWordRelation> wordRelations = wordRelationsTuple.getRelatedWords();
 		Map<String, List<TypeWordRelation>> wordRelationsMap = new HashMap<>();
 		if (CollectionUtils.isNotEmpty(wordRelations)) {
+			wordRelations = filter(wordRelations, wordLang, destinLangs);
 			wordRelations = wordRelations.stream()
 					.filter(relation -> !RelationStatus.DELETED.equals(relation.getRelationStatus()))
 					.filter(relation -> CollectionUtils.isNotEmpty(CollectionUtils.intersection(relation.getLexComplexities(), combinedLexComplexity)))
@@ -181,6 +187,7 @@ public class WordConversionUtil extends AbstractConversionUtil {
 
 		List<TypeWordRelation> allWordGroupMembers = wordRelationsTuple.getWordGroupMembers();
 		if (CollectionUtils.isNotEmpty(allWordGroupMembers)) {
+			allWordGroupMembers = filter(allWordGroupMembers, wordLang, destinLangs);
 			List<String> aspectCodeOrder = aspects.stream().map(Classifier::getCode).collect(Collectors.toList());
 			Map<Long, List<TypeWordRelation>> wordGroupMap = allWordGroupMembers.stream().collect(Collectors.groupingBy(TypeWordRelation::getWordGroupId));
 			List<Long> wordGroupIds = new ArrayList<>(wordGroupMap.keySet());

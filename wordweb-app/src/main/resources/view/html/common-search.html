@@ -71,7 +71,7 @@
         </button>
         <div class="dropdown-menu px-3" aria-labelledby="destinLangMenuButton">
           <th:block th:each="filterElem : ${langFilter}">
-            <a href="#" th:id="${'destin-lang-' + filterElem.code}" class="dropdown-item px-2 py-1 dropdown-item-multiselect"
+            <a href="#" th:id="|destin-lang-${filterElem.code}|" class="dropdown-item px-2 py-1 dropdown-item-multiselect"
                th:data-filter-code="${filterElem.code}" 
                th:text="${filterElem.value}" 
                th:classappend="${filterElem.selected ? 'active' : ''}">Keel</a>

@@ -143,12 +143,14 @@ as
 select ws.sgroup,
        ws.word,
        ws.crit,
+       ws.word_langs,
        ws.lang_order_by,
        wlc.lang_complexities
 from (
         (select 'word' as sgroup,
                 w.value word,
                 lower(w.value) crit,
+                array_agg(w.lang) word_langs,
                 (array_agg(wl.order_by order by wl.order_by))[1] lang_order_by
          from word w,
               language wl
@@ -167,6 +169,7 @@ from (
         (select 'as_word' as sgroup,
                 w.value word,
                 lower(w.value_as_word) crit,
+                array_agg(w.lang) word_langs,
                 (array_agg(wl.order_by order by wl.order_by))[1] lang_order_by
          from word w,
               language wl
@@ -187,6 +190,7 @@ from (
         (select 'form' as sgroup,
                 w.value word,
                 lower(f.value) crit,
+                array_agg(w.lang) word_langs,
                 (array_agg(wl.order_by order by wl.order_by))[1] lang_order_by
          from form f,
               paradigm_form pf,

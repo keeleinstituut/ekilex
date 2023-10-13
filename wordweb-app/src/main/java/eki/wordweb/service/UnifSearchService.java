@@ -36,7 +36,6 @@ public class UnifSearchService extends AbstractSearchService {
 
 		// query params + common data
 		SearchContext searchContext = getSearchContext(searchFilter);
-		Complexity lexComplexity = searchContext.getLexComplexity();
 		Map<String, Long> langOrderByMap = commonDataDbService.getLangOrderByMap();
 		Locale displayLocale = languageContext.getDisplayLocale();
 		String displayLang = languageContext.getDisplayLang();
@@ -47,7 +46,7 @@ public class UnifSearchService extends AbstractSearchService {
 		classifierUtil.applyClassifiers(word, displayLang);
 		wordConversionUtil.setWordTypeFlags(word);
 		WordRelationsTuple wordRelationsTuple = searchDbService.getWordRelationsTuple(wordId);
-		wordConversionUtil.composeWordRelations(word, wordRelationsTuple, langOrderByMap, lexComplexity, displayLocale, displayLang);
+		wordConversionUtil.composeWordRelations(word, wordRelationsTuple, langOrderByMap, searchContext, displayLocale, displayLang);
 		List<WordEtymTuple> wordEtymTuples = searchDbService.getWordEtymologyTuples(wordId);
 		etymConversionUtil.composeWordEtymology(word, wordEtymTuples, displayLang);
 		List<Form> forms = searchDbService.getWordForms(wordId, searchContext);
@@ -62,9 +61,15 @@ public class UnifSearchService extends AbstractSearchService {
 		Map<Long, Meaning> lexemeMeaningMap = meanings.stream().collect(Collectors.toMap(Meaning::getLexemeId, meaning -> meaning));
 		lexemeConversionUtil.composeMeanings(wordLang, lexemeWords, lexemeMeaningMap, allRelatedWords, langOrderByMap, searchContext, displayLang);
 
-		List<LexemeWord> lexLexemes = lexemeWords.stream().filter(lexeme -> DatasetType.LEX.equals(lexeme.getDatasetType())).collect(Collectors.toList());
-		List<LexemeWord> termLexemes = lexemeWords.stream().filter(lexeme -> DatasetType.TERM.equals(lexeme.getDatasetType()) && !StringUtils.equals(lexeme.getDatasetCode(), DATASET_LIMITED)).collect(Collectors.toList());
-		List<LexemeWord> limTermLexemes = lexemeWords.stream().filter(lexeme -> DatasetType.TERM.equals(lexeme.getDatasetType()) && StringUtils.equals(lexeme.getDatasetCode(), DATASET_LIMITED)).collect(Collectors.toList());
+		List<LexemeWord> lexLexemes = lexemeWords.stream()
+				.filter(lexeme -> DatasetType.LEX.equals(lexeme.getDatasetType()))
+				.collect(Collectors.toList());
+		List<LexemeWord> termLexemes = lexemeWords.stream()
+				.filter(lexeme -> DatasetType.TERM.equals(lexeme.getDatasetType()) && !StringUtils.equals(lexeme.getDatasetCode(), DATASET_LIMITED))
+				.collect(Collectors.toList());
+		List<LexemeWord> limTermLexemes = lexemeWords.stream()
+				.filter(lexeme -> DatasetType.TERM.equals(lexeme.getDatasetType()) && StringUtils.equals(lexeme.getDatasetCode(), DATASET_LIMITED))
+				.collect(Collectors.toList());
 
 		// lex conv
 		if (CollectionUtils.isNotEmpty(lexLexemes)) {
@@ -90,7 +95,7 @@ public class UnifSearchService extends AbstractSearchService {
 		// word common
 		wordConversionUtil.composeCommon(word, lexemeWords);
 
-		return composeWordData(word, forms, paradigms, lexLexemes, termLexemes, limTermLexemes);
+		return composeWordData(word, forms, paradigms, lexLexemes, termLexemes, limTermLexemes, searchContext);
 	}
 
 	@Transactional

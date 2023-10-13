@@ -4,6 +4,7 @@
 package eki.wordweb.data.db;
 
 
+import eki.wordweb.data.db.routines.DaitchMokotoff;
 import eki.wordweb.data.db.routines.Difference;
 import eki.wordweb.data.db.routines.Dmetaphone;
 import eki.wordweb.data.db.routines.DmetaphoneAlt;
@@ -16,6 +17,7 @@ import eki.wordweb.data.db.routines.GtrgmConsistent;
 import eki.wordweb.data.db.routines.GtrgmDecompress;
 import eki.wordweb.data.db.routines.GtrgmDistance;
 import eki.wordweb.data.db.routines.GtrgmIn;
+import eki.wordweb.data.db.routines.GtrgmOptions;
 import eki.wordweb.data.db.routines.GtrgmOut;
 import eki.wordweb.data.db.routines.GtrgmPenalty;
 import eki.wordweb.data.db.routines.GtrgmPicksplit;
@@ -33,6 +35,11 @@ import eki.wordweb.data.db.routines.Similarity;
 import eki.wordweb.data.db.routines.SimilarityDist;
 import eki.wordweb.data.db.routines.SimilarityOp;
 import eki.wordweb.data.db.routines.Soundex;
+import eki.wordweb.data.db.routines.StrictWordSimilarity;
+import eki.wordweb.data.db.routines.StrictWordSimilarityCommutatorOp;
+import eki.wordweb.data.db.routines.StrictWordSimilarityDistCommutatorOp;
+import eki.wordweb.data.db.routines.StrictWordSimilarityDistOp;
+import eki.wordweb.data.db.routines.StrictWordSimilarityOp;
 import eki.wordweb.data.db.routines.TextSoundex;
 import eki.wordweb.data.db.routines.WordSimilarity;
 import eki.wordweb.data.db.routines.WordSimilarityCommutatorOp;
@@ -49,6 +56,44 @@ import org.jooq.Field;
  */
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Routines {
+
+    /**
+     * Call <code>public.daitch_mokotoff</code>
+     */
+    public static String[] daitchMokotoff(
+          Configuration configuration
+        , String __1
+    ) {
+        DaitchMokotoff f = new DaitchMokotoff();
+        f.set__1(__1);
+
+        f.execute(configuration);
+        return f.getReturnValue();
+    }
+
+    /**
+     * Get <code>public.daitch_mokotoff</code> as a field.
+     */
+    public static Field<String[]> daitchMokotoff(
+          String __1
+    ) {
+        DaitchMokotoff f = new DaitchMokotoff();
+        f.set__1(__1);
+
+        return f.asField();
+    }
+
+    /**
+     * Get <code>public.daitch_mokotoff</code> as a field.
+     */
+    public static Field<String[]> daitchMokotoff(
+          Field<String> __1
+    ) {
+        DaitchMokotoff f = new DaitchMokotoff();
+        f.set__1(__1);
+
+        return f.asField();
+    }
 
     /**
      * Call <code>public.difference</code>
@@ -705,6 +750,20 @@ public class Routines {
         f.set__1(__1);
 
         return f.asField();
+    }
+
+    /**
+     * @deprecated Unknown data type. Please define an explicit {@link org.jooq.Binding} to specify how this type should be handled. Deprecation can be turned off using {@literal <deprecationOnUnknownTypes/>} in your code generator configuration.
+     */
+    @Deprecated
+    public static void gtrgmOptions(
+          Configuration configuration
+        , Object __1
+    ) {
+        GtrgmOptions p = new GtrgmOptions();
+        p.set__1(__1);
+
+        p.execute(configuration);
     }
 
     /**
@@ -1479,6 +1538,226 @@ public class Routines {
     ) {
         Soundex f = new Soundex();
         f.set__1(__1);
+
+        return f.asField();
+    }
+
+    /**
+     * Call <code>public.strict_word_similarity</code>
+     */
+    public static Float strictWordSimilarity(
+          Configuration configuration
+        , String __1
+        , String __2
+    ) {
+        StrictWordSimilarity f = new StrictWordSimilarity();
+        f.set__1(__1);
+        f.set__2(__2);
+
+        f.execute(configuration);
+        return f.getReturnValue();
+    }
+
+    /**
+     * Get <code>public.strict_word_similarity</code> as a field.
+     */
+    public static Field<Float> strictWordSimilarity(
+          String __1
+        , String __2
+    ) {
+        StrictWordSimilarity f = new StrictWordSimilarity();
+        f.set__1(__1);
+        f.set__2(__2);
+
+        return f.asField();
+    }
+
+    /**
+     * Get <code>public.strict_word_similarity</code> as a field.
+     */
+    public static Field<Float> strictWordSimilarity(
+          Field<String> __1
+        , Field<String> __2
+    ) {
+        StrictWordSimilarity f = new StrictWordSimilarity();
+        f.set__1(__1);
+        f.set__2(__2);
+
+        return f.asField();
+    }
+
+    /**
+     * Call <code>public.strict_word_similarity_commutator_op</code>
+     */
+    public static Boolean strictWordSimilarityCommutatorOp(
+          Configuration configuration
+        , String __1
+        , String __2
+    ) {
+        StrictWordSimilarityCommutatorOp f = new StrictWordSimilarityCommutatorOp();
+        f.set__1(__1);
+        f.set__2(__2);
+
+        f.execute(configuration);
+        return f.getReturnValue();
+    }
+
+    /**
+     * Get <code>public.strict_word_similarity_commutator_op</code> as a field.
+     */
+    public static Field<Boolean> strictWordSimilarityCommutatorOp(
+          String __1
+        , String __2
+    ) {
+        StrictWordSimilarityCommutatorOp f = new StrictWordSimilarityCommutatorOp();
+        f.set__1(__1);
+        f.set__2(__2);
+
+        return f.asField();
+    }
+
+    /**
+     * Get <code>public.strict_word_similarity_commutator_op</code> as a field.
+     */
+    public static Field<Boolean> strictWordSimilarityCommutatorOp(
+          Field<String> __1
+        , Field<String> __2
+    ) {
+        StrictWordSimilarityCommutatorOp f = new StrictWordSimilarityCommutatorOp();
+        f.set__1(__1);
+        f.set__2(__2);
+
+        return f.asField();
+    }
+
+    /**
+     * Call <code>public.strict_word_similarity_dist_commutator_op</code>
+     */
+    public static Float strictWordSimilarityDistCommutatorOp(
+          Configuration configuration
+        , String __1
+        , String __2
+    ) {
+        StrictWordSimilarityDistCommutatorOp f = new StrictWordSimilarityDistCommutatorOp();
+        f.set__1(__1);
+        f.set__2(__2);
+
+        f.execute(configuration);
+        return f.getReturnValue();
+    }
+
+    /**
+     * Get <code>public.strict_word_similarity_dist_commutator_op</code> as a field.
+     */
+    public static Field<Float> strictWordSimilarityDistCommutatorOp(
+          String __1
+        , String __2
+    ) {
+        StrictWordSimilarityDistCommutatorOp f = new StrictWordSimilarityDistCommutatorOp();
+        f.set__1(__1);
+        f.set__2(__2);
+
+        return f.asField();
+    }
+
+    /**
+     * Get <code>public.strict_word_similarity_dist_commutator_op</code> as a field.
+     */
+    public static Field<Float> strictWordSimilarityDistCommutatorOp(
+          Field<String> __1
+        , Field<String> __2
+    ) {
+        StrictWordSimilarityDistCommutatorOp f = new StrictWordSimilarityDistCommutatorOp();
+        f.set__1(__1);
+        f.set__2(__2);
+
+        return f.asField();
+    }
+
+    /**
+     * Call <code>public.strict_word_similarity_dist_op</code>
+     */
+    public static Float strictWordSimilarityDistOp(
+          Configuration configuration
+        , String __1
+        , String __2
+    ) {
+        StrictWordSimilarityDistOp f = new StrictWordSimilarityDistOp();
+        f.set__1(__1);
+        f.set__2(__2);
+
+        f.execute(configuration);
+        return f.getReturnValue();
+    }
+
+    /**
+     * Get <code>public.strict_word_similarity_dist_op</code> as a field.
+     */
+    public static Field<Float> strictWordSimilarityDistOp(
+          String __1
+        , String __2
+    ) {
+        StrictWordSimilarityDistOp f = new StrictWordSimilarityDistOp();
+        f.set__1(__1);
+        f.set__2(__2);
+
+        return f.asField();
+    }
+
+    /**
+     * Get <code>public.strict_word_similarity_dist_op</code> as a field.
+     */
+    public static Field<Float> strictWordSimilarityDistOp(
+          Field<String> __1
+        , Field<String> __2
+    ) {
+        StrictWordSimilarityDistOp f = new StrictWordSimilarityDistOp();
+        f.set__1(__1);
+        f.set__2(__2);
+
+        return f.asField();
+    }
+
+    /**
+     * Call <code>public.strict_word_similarity_op</code>
+     */
+    public static Boolean strictWordSimilarityOp(
+          Configuration configuration
+        , String __1
+        , String __2
+    ) {
+        StrictWordSimilarityOp f = new StrictWordSimilarityOp();
+        f.set__1(__1);
+        f.set__2(__2);
+
+        f.execute(configuration);
+        return f.getReturnValue();
+    }
+
+    /**
+     * Get <code>public.strict_word_similarity_op</code> as a field.
+     */
+    public static Field<Boolean> strictWordSimilarityOp(
+          String __1
+        , String __2
+    ) {
+        StrictWordSimilarityOp f = new StrictWordSimilarityOp();
+        f.set__1(__1);
+        f.set__2(__2);
+
+        return f.asField();
+    }
+
+    /**
+     * Get <code>public.strict_word_similarity_op</code> as a field.
+     */
+    public static Field<Boolean> strictWordSimilarityOp(
+          Field<String> __1
+        , Field<String> __2
+    ) {
+        StrictWordSimilarityOp f = new StrictWordSimilarityOp();
+        f.set__1(__1);
+        f.set__2(__2);
 
         return f.asField();
     }

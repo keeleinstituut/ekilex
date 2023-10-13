@@ -27,15 +27,21 @@ public abstract class AbstractSearchController extends AbstractController {
 		if (CollectionUtils.isEmpty(destinLangs)) {
 			destinLangs = new ArrayList<>();
 			destinLangs.add(DESTIN_LANG_ALL);
-			sessionBean.setDestinLangs(destinLangs);
+		} else if (destinLangs.contains(DESTIN_LANG_ALL)) {
+			destinLangs.remove(DESTIN_LANG_EST);
+		} else if (!destinLangs.contains(DESTIN_LANG_ALL) && !destinLangs.contains(DESTIN_LANG_EST)) {
+			destinLangs.add(DESTIN_LANG_EST);
 		}
+		sessionBean.setDestinLangs(destinLangs);
 		for (UiFilterElement langFilterElement : langFilter) {
-			boolean isSelected = destinLangs.contains(langFilterElement.getCode());
+			String langCode = langFilterElement.getCode();
+			boolean isSelected = destinLangs.contains(langCode);
 			langFilterElement.setSelected(isSelected);
 			if (isSelected) {
 				selectedLangs.add(langFilterElement.getValue());
 			}
 		}
+
 		String destinLangsStr = StringUtils.join(destinLangs, UI_FILTER_VALUES_SEPARATOR);
 		String selectedLangsStr = StringUtils.join(selectedLangs, ", ");
 		boolean isLangFiltered = !StringUtils.equals(destinLangsStr, DESTIN_LANG_ALL);

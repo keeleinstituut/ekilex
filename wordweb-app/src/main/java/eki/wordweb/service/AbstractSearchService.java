@@ -186,13 +186,18 @@ public abstract class AbstractSearchService implements SystemConstant, WebConsta
 			List<Paradigm> paradigms,
 			List<LexemeWord> lexLexemes,
 			List<LexemeWord> termLexemes,
-			List<LexemeWord> limTermLexemes) {
+			List<LexemeWord> limTermLexemes,
+			SearchContext searchContext) {
 
+		List<String> destinLangs = searchContext.getDestinLangs();
 		boolean lexemesExist = CollectionUtils.isNotEmpty(lexLexemes) || CollectionUtils.isNotEmpty(termLexemes) || CollectionUtils.isNotEmpty(limTermLexemes);
 		boolean relevantDataExists = lexemesExist || CollectionUtils.isNotEmpty(word.getRelatedWords());
 		boolean multipleLexLexemesExist = CollectionUtils.size(lexLexemes) > 1;
 		String firstAvailableAudioFile = null;
 		boolean morphologyExists = false;
+		boolean estHeadword = false;
+		boolean rusHeadword = false;
+		boolean rusContent = false;
 
 		if (CollectionUtils.isNotEmpty(forms)) {
 			Form firstAvailableWordForm = forms.stream()
@@ -205,6 +210,9 @@ public abstract class AbstractSearchService implements SystemConstant, WebConsta
 		if (CollectionUtils.isNotEmpty(paradigms)) {
 			morphologyExists = paradigms.stream().anyMatch(paradigm -> StringUtils.isNotBlank(paradigm.getWordClass()));
 		}
+		estHeadword = StringUtils.equals(LANGUAGE_CODE_EST, word.getLang());
+		rusHeadword = StringUtils.equals(LANGUAGE_CODE_RUS, word.getLang());
+		rusContent = CollectionUtils.isEmpty(destinLangs) || destinLangs.contains(DESTIN_LANG_RUS);
 
 		WordData wordData = new WordData();
 		wordData.setWord(word);
@@ -217,6 +225,10 @@ public abstract class AbstractSearchService implements SystemConstant, WebConsta
 		wordData.setRelevantDataExists(relevantDataExists);
 		wordData.setLexemesExist(lexemesExist);
 		wordData.setMultipleLexLexemesExist(multipleLexLexemesExist);
+		wordData.setEstHeadword(estHeadword);
+		wordData.setRusHeadword(rusHeadword);
+		wordData.setRusContent(rusContent);
+
 		return wordData;
 	}
 }

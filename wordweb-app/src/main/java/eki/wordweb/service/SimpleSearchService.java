@@ -16,12 +16,12 @@ import org.springframework.stereotype.Component;
 import eki.common.constant.Complexity;
 import eki.common.constant.DatasetType;
 import eki.wordweb.data.CollocationTuple;
-import eki.wordweb.data.SearchContext;
 import eki.wordweb.data.Form;
 import eki.wordweb.data.LexemeWord;
 import eki.wordweb.data.Meaning;
-import eki.wordweb.data.SearchFilter;
 import eki.wordweb.data.Paradigm;
+import eki.wordweb.data.SearchContext;
+import eki.wordweb.data.SearchFilter;
 import eki.wordweb.data.Word;
 import eki.wordweb.data.WordData;
 import eki.wordweb.data.WordRelationsTuple;
@@ -35,7 +35,6 @@ public class SimpleSearchService extends AbstractSearchService {
 
 		// query params + common data
 		SearchContext searchContext = getSearchContext(searchFilter);
-		Complexity lexComplexity = searchContext.getLexComplexity();
 		Map<String, Long> langOrderByMap = commonDataDbService.getLangOrderByMap();
 		Locale displayLocale = languageContext.getDisplayLocale();
 		String displayLang = languageContext.getDisplayLang();
@@ -46,7 +45,7 @@ public class SimpleSearchService extends AbstractSearchService {
 		classifierUtil.applyClassifiers(word, displayLang);
 		wordConversionUtil.setWordTypeFlags(word);
 		WordRelationsTuple wordRelationsTuple = searchDbService.getWordRelationsTuple(wordId);
-		wordConversionUtil.composeWordRelations(word, wordRelationsTuple, langOrderByMap, lexComplexity, displayLocale, displayLang);
+		wordConversionUtil.composeWordRelations(word, wordRelationsTuple, langOrderByMap, searchContext, displayLocale, displayLang);
 		List<Form> forms = searchDbService.getWordForms(wordId, searchContext);
 		List<Paradigm> paradigms = paradigmConversionUtil.composeParadigms(forms, displayLang);
 		List<String> allRelatedWords = wordConversionUtil.collectAllRelatedWords(word);
@@ -71,7 +70,7 @@ public class SimpleSearchService extends AbstractSearchService {
 		// word common
 		wordConversionUtil.composeCommon(word, lexemeWords);
 
-		return composeWordData(word, forms, paradigms, lexemeWords, Collections.emptyList(), Collections.emptyList());
+		return composeWordData(word, forms, paradigms, lexemeWords, Collections.emptyList(), Collections.emptyList(), searchContext);
 	}
 
 	@Override

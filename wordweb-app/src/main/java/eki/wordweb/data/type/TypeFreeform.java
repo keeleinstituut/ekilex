@@ -10,10 +10,11 @@ import eki.common.constant.Complexity;
 import eki.common.constant.FreeformType;
 import eki.common.data.AbstractDataObject;
 import eki.wordweb.data.ComplexityType;
+import eki.wordweb.data.LangType;
 import eki.wordweb.data.SourceLinkType;
 
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
-public class TypeFreeform extends AbstractDataObject implements ComplexityType, SourceLinkType {
+public class TypeFreeform extends AbstractDataObject implements ComplexityType, SourceLinkType, LangType {
 
 	private static final long serialVersionUID = 1L;
 
@@ -76,6 +77,7 @@ public class TypeFreeform extends AbstractDataObject implements ComplexityType, 
 		this.valueCut = valueCut;
 	}
 
+	@Override
 	public String getLang() {
 		return lang;
 	}

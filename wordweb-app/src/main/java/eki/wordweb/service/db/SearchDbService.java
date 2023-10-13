@@ -104,7 +104,8 @@ public class SearchDbService implements GlobalConstant, SystemConstant {
 	}
 
 	@SuppressWarnings("unchecked")
-	public Map<String, List<WordSearchElement>> getWordsByInfixLev(String wordInfix, String wordInfixUnaccent, SearchContext searchContext, int maxWordCount) {
+	public Map<String, List<WordSearchElement>> getWordsByInfixLev(
+			String wordInfix, String wordInfixUnaccent, SearchContext searchContext, int maxWordCount) {
 
 		Field<String> wordInfixLowerField = DSL.lower(wordInfix);
 		Field<String> wordInfixLowerLikeField = DSL.lower('%' + wordInfix + '%');
@@ -114,11 +115,37 @@ public class SearchDbService implements GlobalConstant, SystemConstant {
 		} else {
 			wordInfixLowerUnaccentLikeField = DSL.lower('%' + wordInfixUnaccent + '%');
 		}
+		List<String> destinLangs = searchContext.getDestinLangs();
 
 		MviewWwWordSearch w = MVIEW_WW_WORD_SEARCH.as("w");
 		MviewWwWordSearch aw = MVIEW_WW_WORD_SEARCH.as("aw");
 		MviewWwWordSearch f = MVIEW_WW_WORD_SEARCH.as("f");
 		Field<String> wgf = DSL.field(DSL.val(WORD_SEARCH_GROUP_WORD));
+
+		//and array['est', 'fra']::char(3) array @> ws.word_langs
+
+		Condition wwhere = w.SGROUP.eq(WORD_SEARCH_GROUP_WORD)
+				.and(w.CRIT.like(wordInfixLowerLikeField));
+
+		Condition awwhere = aw.SGROUP.eq(WORD_SEARCH_GROUP_AS_WORD)
+				.and(aw.CRIT.like(wordInfixLowerUnaccentLikeField));
+
+		Condition fwhere = applyLangCompDatasetFilter(f, searchContext, DSL.noCondition())
+				.and(f.SGROUP.eq(WORD_SEARCH_GROUP_FORM))
+				.and(f.CRIT.eq(wordInfixLowerField));
+
+		if (CollectionUtils.isNotEmpty(destinLangs)) {
+			if (destinLangs.size() == 1) {
+				String destinLang = destinLangs.get(0);
+				wwhere = wwhere.and(DSL.value(destinLang).eq(DSL.any(w.WORD_LANGS)));
+				awwhere = awwhere.and(DSL.value(destinLang).eq(DSL.any(aw.WORD_LANGS)));
+				fwhere = fwhere.and(DSL.value(destinLang).eq(DSL.any(f.WORD_LANGS)));
+			} else {
+				wwhere = wwhere.and(DSL.condition(toSqlArray(destinLangs) + "::char(3)[] @> {0}", w.WORD_LANGS));
+				awwhere = awwhere.and(DSL.condition(toSqlArray(destinLangs) + "::char(3)[] @> {0}", aw.WORD_LANGS));
+				fwhere = fwhere.and(DSL.condition(toSqlArray(destinLangs) + "::char(3)[] @> {0}", f.WORD_LANGS));
+			}
+		}
 
 		Table<Record5<String, String, String, Long, TypeLangComplexityRecord[]>> ws = DSL
 				.select(
@@ -128,9 +155,7 @@ public class SearchDbService implements GlobalConstant, SystemConstant {
 						w.LANG_ORDER_BY,
 						w.LANG_COMPLEXITIES)
 				.from(w)
-				.where(
-						w.SGROUP.eq(WORD_SEARCH_GROUP_WORD)
-								.and(w.CRIT.like(wordInfixLowerLikeField)))
+				.where(wwhere)
 				.unionAll(DSL
 						.select(
 								wgf.as("sgroup"),
@@ -139,16 +164,12 @@ public class SearchDbService implements GlobalConstant, SystemConstant {
 								aw.LANG_ORDER_BY,
 								aw.LANG_COMPLEXITIES)
 						.from(aw)
-						.where(
-								aw.SGROUP.eq(WORD_SEARCH_GROUP_AS_WORD)
-										.and(aw.CRIT.like(wordInfixLowerUnaccentLikeField))))
+						.where(awwhere))
 				.asTable("ws");
 
 		Field<Integer> wlf = DSL.field(Routines.levenshtein1(ws.field("word", String.class), wordInfixLowerField));
 
 		Condition wsWhere = applyLangCompDatasetFilter(ws, searchContext, DSL.noCondition());
-		Condition fWhere = f.SGROUP.eq(WORD_SEARCH_GROUP_FORM).and(f.CRIT.eq(wordInfixLowerField));
-		fWhere = applyLangCompDatasetFilter(f, searchContext, fWhere);
 
 		Table<Record3<String, String, Integer>> wfs = DSL
 				.select(
@@ -167,7 +188,7 @@ public class SearchDbService implements GlobalConstant, SystemConstant {
 								f.WORD,
 								DSL.field(DSL.val(0)).as("lev"))
 						.from(f)
-						.where(fWhere)
+						.where(fwhere)
 						.orderBy(f.WORD)
 						.limit(maxWordCount))
 				.asTable("wfs");
@@ -218,6 +239,7 @@ public class SearchDbService implements GlobalConstant, SystemConstant {
 		}
 
 		Field<String> searchWordLowerField = DSL.lower(searchWord);
+		List<String> destinLangs = searchContext.getDestinLangs();
 		boolean fiCollationExists = searchContext.isFiCollationExists();
 		boolean excludeQuestionable = searchContext.isExcludeQuestionable();
 
@@ -251,7 +273,16 @@ public class SearchDbService implements GlobalConstant, SystemConstant {
 								.where(whereForm)))
 				.asTable("w");
 
-		Condition where = applyLangCompDatasetFilter(w, searchContext, DSL.noCondition());
+		Condition where = applyLangCompDatasetFilter(ww, searchContext, DSL.noCondition());
+
+		if (CollectionUtils.isNotEmpty(destinLangs)) {
+			if (destinLangs.size() == 1) {
+				String destinLang = destinLangs.get(0);
+				where = where.and(ww.field("lang", String.class).eq(destinLang));
+			} else {
+				where = where.and(ww.field("lang", String.class).in(destinLangs));
+			}
+		}
 
 		Field<String> wvobf;
 		if (fiCollationExists) {
@@ -465,7 +496,7 @@ public class SearchDbService implements GlobalConstant, SystemConstant {
 				lcWhere = lcWhere.and(lc.field("dataset_code", String.class).in(datasetCodes));
 			}
 		}
-		where = where.andExists(DSL.selectFrom(lc).where(lcWhere));
+		where = where.andExists(DSL.select(DSL.val(1)).from(lc).where(lcWhere));
 		return where;
 	}
 
@@ -669,4 +700,8 @@ public class SearchDbService implements GlobalConstant, SystemConstant {
 				.fetchInto(CollocationTuple.class);
 	}
 
+	private String toSqlArray(List<String> values) {
+		String sqlArray = "(array['" + StringUtils.join(values, "','") + "'])";
+		return sqlArray;
+	}
 }

@@ -30,6 +30,12 @@ public class WordData extends AbstractDataObject {
 
 	private boolean multipleLexLexemesExist;
 
+	private boolean estHeadword;
+
+	private boolean rusHeadword;
+
+	private boolean rusContent;
+
 	public Word getWord() {
 		return word;
 	}
@@ -116,6 +122,30 @@ public class WordData extends AbstractDataObject {
 
 	public void setMultipleLexLexemesExist(boolean multipleLexLexemesExist) {
 		this.multipleLexLexemesExist = multipleLexLexemesExist;
+	}
+
+	public boolean isEstHeadword() {
+		return estHeadword;
+	}
+
+	public void setEstHeadword(boolean estHeadword) {
+		this.estHeadword = estHeadword;
+	}
+
+	public boolean isRusHeadword() {
+		return rusHeadword;
+	}
+
+	public void setRusHeadword(boolean rusHeadword) {
+		this.rusHeadword = rusHeadword;
+	}
+
+	public boolean isRusContent() {
+		return rusContent;
+	}
+
+	public void setRusContent(boolean rusContent) {
+		this.rusContent = rusContent;
 	}
 
 }

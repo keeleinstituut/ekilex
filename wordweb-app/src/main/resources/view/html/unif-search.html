@@ -99,7 +99,7 @@
                     <i class="fa fa-book mr-1 text-muted"></i>
                     <span th:text="#{lexdata.title}">EKI ühendsõnastik 2020</span>
                   </h5>
-                  <div class="alert bg-warning text-black px-3 py-1 d-flex align-items-center update-alert flex-nowrap" role="alert" th:if="${wordData.word.lang == 'rus'}">
+                  <div th:if="${wordData.rusHeadword}" class="alert bg-warning text-black px-3 py-1 d-flex align-items-center update-alert flex-nowrap" role="alert">
                     <i class="fa fa-exclamation-triangle small mr-2 mt-1" aria-hidden="true"></i>
                     <span th:text="#{warning.eki.rus}">See ei ole valmis sõnastik.</span>
                   </div>
@@ -131,10 +131,16 @@
             <th:block th:replace="common-search-sidebar :: od-word-recommendations"></th:block>
             <th:block th:replace="common-search-sidebar :: word-relations"></th:block>
             <th:block th:replace="common-search-sidebar :: etymology_new"></th:block>
-            <th:block th:replace="common-search-sidebar :: keelenou"></th:block>
-            <div th:if="${wordData.word.lang == 'est'}" id="corp" th:text="#{label.corp.search}">Otsin veebilauseid ...</div>
-            <div th:if="${wordData.word.lang == 'est'}" id="corpTrans" th:text="#{label.corp.translations.search}">Otsin tõlgitud näiteid ...</div>
-            <th:block th:if="${wordData.word.lang == 'rus'}">
+            <th:block th:if="${wordData.estHeadword || wordData.rusHeadword}">
+              <th:block th:replace="common-search-sidebar :: keelenou"></th:block>
+            </th:block>
+            <th:block th:if="${wordData.estHeadword}">
+              <div id="corp" th:text="#{label.corp.search}">Otsin veebilauseid ...</div>
+            </th:block>
+            <th:block th:if="${wordData.estHeadword && wordData.rusContent}">
+              <div id="corpTrans" th:text="#{label.corp.translations.search}">Otsin tõlgitud näiteid ...</div>
+            </th:block>
+            <th:block th:if="${wordData.rusHeadword}">
               <section th:replace="common-search-sidebar :: corp_rus"></section>
             </th:block>
           </div>

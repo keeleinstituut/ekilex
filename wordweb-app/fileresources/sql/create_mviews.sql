@@ -50,8 +50,9 @@ dblink(
 	sgroup varchar(10),
 	word text,
 	crit text,
+	word_langs char(3) array,
 	lang_order_by bigint,
-  lang_complexities type_lang_complexity array
+	lang_complexities type_lang_complexity array
 );
 
 create materialized view mview_ww_word as
@@ -71,7 +72,7 @@ dblink(
 	gender_code varchar(100),
 	aspect_code varchar(100),
 	vocal_form text,
-  manual_event_on timestamp,
+	manual_event_on timestamp,
 	last_activity_event_on timestamp,
 	lang_complexities type_lang_complexity array,
 	meaning_words json,
@@ -96,7 +97,7 @@ dblink(
 	paradigm_id bigint,
 	paradigm_comment text,
 	inflection_type varchar(100),
-  inflection_type_nr varchar(100),
+	inflection_type_nr varchar(100),
 	form_id bigint,
 	morph_group1 text,
 	morph_group2 text,
@@ -125,7 +126,7 @@ dblink(
 	'host=localhost user=ekilex password=3kil3x dbname=ekilex',
 	'select * from view_ww_meaning') as meaning(
 	meaning_id bigint,
-  manual_event_on timestamp,
+	manual_event_on timestamp,
 	last_approve_or_edit_event_on timestamp,
 	domain_codes json,
 	image_files json,
@@ -150,7 +151,7 @@ dblink(
 	dataset_name text,
 	value_state_code varchar(100),
 	proficiency_level_code varchar(100),
-  reliability integer,
+	reliability integer,
 	level1 integer,
 	level2 integer,
 	weight numeric(5,4),
@@ -336,6 +337,7 @@ create index mview_ww_word_search_sgroup_idx on mview_ww_word_search (sgroup);
 create index mview_ww_word_search_crit_idx on mview_ww_word_search (crit);
 create index mview_ww_word_search_crit_prefix_idx on mview_ww_word_search (crit text_pattern_ops);
 create index mview_ww_word_search_crit_tri_idx on mview_ww_word_search using gin(crit gin_trgm_ops);
+create index mview_ww_word_search_word_langs_idx on mview_ww_word_search using gin(word_langs);
 create index mview_ww_word_word_id_idx on mview_ww_word (word_id);
 create index mview_ww_word_value_idx on mview_ww_word (word);
 create index mview_ww_word_value_lower_idx on mview_ww_word (lower(word));
