@@ -78,15 +78,14 @@
         <div class="font-weight-bold" th:text="#{|source.type.${source.type}|}">tüüp</div>
       </div>
     </div>
+    <div th:replace="sourcedialog :: edit_source_dlg"></div>
     <table class="table">
-
       <tr>
         <td class="col-1"></td>
         <td class="col-6">
           <th:block th:each="sourceProperty : ${source.sourceProperties}">
             <div th:replace="sourcedialog :: edit_source_property_dlg"></div>
             <div th:replace="sourcedialog :: add_source_property_dlg"></div>
-            <div th:replace="sourcedialog :: edit_source_dlg"></div>
             <div class="row">
               <div class="invisible-buttons action-buttons-anchor mw-90 mb-1">
                 <div style="display: list-item; position: absolute"></div>
