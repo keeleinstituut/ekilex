@@ -49,8 +49,13 @@ public class SourceService extends AbstractSourceService implements GlobalConsta
 		if (CollectionUtils.isNotEmpty(sourcePropertyTuples)) {
 			source = conversionUtil.composeSource(source, sourcePropertyTuples);
 		}
-		permCalculator.applyCrud(userRole, source);
-		return source;
+		if (source == null) {
+			logger.warn("No source found for id {}", sourceId);
+			return null;
+		} else {
+			permCalculator.applyCrud(userRole, source);
+			return source;
+		}
 	}
 
 	@Transactional
