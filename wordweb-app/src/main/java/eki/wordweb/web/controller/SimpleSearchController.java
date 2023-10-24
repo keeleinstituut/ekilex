@@ -43,15 +43,15 @@ public class SimpleSearchController extends AbstractSearchController {
 	private SimpleSearchService simpleSearchService;
 
 	@GetMapping(LITE_URI)
-	public String home(Model model) {
-		populateSearchModel("", model);
+	public String home(HttpServletRequest request, Model model) {
+		populateSearchModel("", request, model);
 		model.addAttribute("wordsData", new WordsData());
 		return LITE_HOME_PAGE;
 	}
 
 	@GetMapping(SEARCH_URI + LITE_URI)
-	public String search(Model model) {
-		populateSearchModel("", model);
+	public String search(HttpServletRequest request, Model model) {
+		populateSearchModel("", request, model);
 		model.addAttribute("wordsData", new WordsData());
 		return LITE_SEARCH_PAGE;
 	}
@@ -97,10 +97,10 @@ public class SimpleSearchController extends AbstractSearchController {
 			RedirectAttributes redirectAttributes,
 			Model model) throws Exception {
 
-		boolean sessionBeanNotPresent = sessionBeanNotPresent(model);
+		boolean sessionBeanNotPresent = isSessionBeanNotPresent(model);
 		SessionBean sessionBean;
 		if (sessionBeanNotPresent) {
-			sessionBean = createSessionBean(model);
+			sessionBean = createSessionBean(true, request, model);
 		} else {
 			sessionBean = getSessionBean(model);
 		}
@@ -144,7 +144,7 @@ public class SimpleSearchController extends AbstractSearchController {
 			pageName = LITE_SEARCH_PAGE;
 		}
 
-		populateSearchModel(searchWord, model);
+		populateSearchModel(searchWord, request, model);
 
 		SearchStat searchStat = statDataUtil.composeSearchStat(request, isSearchForm, SEARCH_MODE_SIMPLE, searchValidation, searchResult);
 		statDataCollector.postSearchStat(searchStat);
@@ -176,9 +176,10 @@ public class SimpleSearchController extends AbstractSearchController {
 		SearchFilter searchFilter = new SearchFilter(destinLangs, datasetCodes);
 		WordData wordData = simpleSearchService.getWordData(wordId, searchFilter);
 
+		populateUserPref(sessionBean, model);
+		populateRecent(sessionBean, wordData);
 		model.addAttribute("wordData", wordData);
 		model.addAttribute("searchMode", SEARCH_MODE_SIMPLE);
-		populateRecent(sessionBean, wordData);
 
 		return LITE_SEARCH_PAGE + " :: worddetails";
 	}
@@ -272,11 +273,12 @@ public class SimpleSearchController extends AbstractSearchController {
 		searchValidation.setValid(isValid);
 	}
 
-	protected void populateSearchModel(String searchWord, Model model) {
+	private void populateSearchModel(String searchWord, HttpServletRequest request, Model model) {
 
 		List<UiFilterElement> langFilter = commonDataService.getSimpleLangFilter();
-		SessionBean sessionBean = populateCommonModel(model);
+		SessionBean sessionBean = populateCommonModel(true, request, model);
 		populateLangFilter(langFilter, sessionBean, model);
+		populateUserPref(sessionBean, model);
 
 		model.addAttribute("searchUri", SEARCH_URI + LITE_URI);
 		model.addAttribute("searchMode", SEARCH_MODE_SIMPLE);

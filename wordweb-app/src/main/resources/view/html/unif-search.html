@@ -103,18 +103,27 @@
                     <i class="fa fa-exclamation-triangle small mr-2 mt-1" aria-hidden="true"></i>
                     <span th:text="#{warning.eki.rus}">See ei ole valmis sõnastik.</span>
                   </div>
-                  <section class="level-3-panel meaning-panel d-flex flex-row" th:each="lexeme : ${wordData.lexLexemes}">
-                    <div th:replace="lex-details :: lexeme-data"></div>
-                  </section>
+                  <th:block th:each="lexeme : ${wordData.lexLexemes}">
+                    <section class="level-3-panel meaning-panel d-flex flex-row">
+                      <div th:replace="lex-details :: lexeme-data"></div>
+                    </section>
+                  </th:block>
                 </th:block>
                 <th:block th:if="${not #lists.isEmpty(wordData.termLexemes)}">
                   <h5 class="meaning-sub-heading">
-                    <i class="fa fa-book mr-1 text-muted"></i>
-                    <span th:text="#{termdata.title}">Oskussõnastikes</span>
+                    <a data-toggle="collapse" href="#term-section-collapse">
+                      <i class="fa fa-book mr-1 text-muted"></i>
+                      <span th:text="#{termdata.title}">Oskussõnastikes</span>
+                    </a>
                   </h5>
-                  <section class="level-3-panel meaning-panel d-block" th:each="lexeme : ${wordData.termLexemes}">
-                    <div th:replace="term-details :: meaning-data"></div>
-                  </section>
+                  <div id="term-section-collapse" data-name="term-section" class="collapse user-preference"
+                    th:classappend="${#lists.contains(uiSections, 'term-section') ? 'show' : ''}">
+                    <th:block th:each="lexeme : ${wordData.termLexemes}">
+                      <section class="level-3-panel meaning-panel d-block">
+                        <div th:replace="term-details :: meaning-data"></div>
+                      </section>
+                    </th:block>
+                  </div>
                 </th:block>
                 <!-- /Removed termsearch -->
                 <th:block th:if="${not #lists.isEmpty(wordData.limTermLexemes)}">
@@ -168,6 +177,7 @@
   	var corpUrl = /*[[@{/corp/detail}]]*/"/corp/detail";
   	var corpTransUrl = /*[[@{/corptrans}]]*/"/corptrans";
   	var speechRecognitionServiceUrl = /*[[${speechRecognitionServiceUrl}]]*/'/';
+  	var userPrefUrl = /*[[@{/user-pref}]]*/"/user-pref";
   	setActiveMenuItem('search-unif');
   </script>
 </body>

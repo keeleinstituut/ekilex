@@ -12,6 +12,8 @@ public class SessionBean extends AbstractDataObject {
 
 	private List<String> datasetCodes;
 
+	private List<String> uiSections;
+
 	private String searchWord;
 
 	private String recentWord;
@@ -32,6 +34,14 @@ public class SessionBean extends AbstractDataObject {
 
 	public void setDatasetCodes(List<String> datasetCodes) {
 		this.datasetCodes = datasetCodes;
+	}
+
+	public List<String> getUiSections() {
+		return uiSections;
+	}
+
+	public void setUiSections(List<String> uiSections) {
+		this.uiSections = uiSections;
 	}
 
 	public String getSearchWord() {

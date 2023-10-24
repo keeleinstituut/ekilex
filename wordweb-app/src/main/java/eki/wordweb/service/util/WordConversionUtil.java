@@ -260,6 +260,7 @@ public class WordConversionUtil extends AbstractConversionUtil {
 			Classifier wordRelTypeMatch = classifierUtil.reValue(wordRelType, "classifier.word_rel_type.raw.match", displayLocale);
 			wordRelationGroup = new WordRelationGroup();
 			wordRelationGroup.setWordRelType(wordRelTypeMatch);
+			wordRelationGroup.setCollapsible(true);
 			appendRelatedWordTypeGroup(wordRelationGroup, wordRelationGroups, wordRelationMatches, langOrderByMap);
 		} else {
 			wordRelationGroup = new WordRelationGroup();

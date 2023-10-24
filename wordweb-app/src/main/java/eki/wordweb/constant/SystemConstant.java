@@ -69,4 +69,14 @@ public interface SystemConstant {
 	String ILLEGAL_FORM_VALUE = "-";
 
 	int MASKED_SEARCH_RESULT_LIMIT = 100;
+
+	int COOKIE_AGE_ONE_MONTH = 2629743;
+
+	String COOKIE_NAME_DESTIN_LANGS = "ww-dl";
+
+	String COOKIE_NAME_DATASETS = "ww-ds";
+
+	String COOKIE_NAME_UI_LANG = "ww-uil";
+
+	String COOKIE_NAME_UI_SECTIONS = "ww-uis";
 }

@@ -43,7 +43,7 @@
             <span>Selgitused on töös, nende sõnastus võib muutuda. Järgmine ÕS ilmub 2025. aastal.</span>
           </div>
           <p th:utext="${odWordRecommendation.value}"></p>
-          <p th:text="'(' + ${#dates.format(odWordRecommendation.modifiedOn, 'dd.MM.yyyy')} + ')'" th:if="${odWordRecommendation.modifiedOn != null}"></p>
+          <p th:text="|(${#dates.format(odWordRecommendation.modifiedOn, 'dd.MM.yyyy')})|" th:if="${odWordRecommendation.modifiedOn != null}"></p>
         </div>
       </th:block>
     </section>
@@ -107,19 +107,41 @@
         <section class="level-3-panel row">
           <div class="col-12 word-relations">
             <h5 class="font-weight-bold d-flex align-items-center text-dark">
-              <span th:text="${#strings.capitalize(relationTypeGroup.wordRelType.value)}">Sõna seose liik</span>
+              <th:block th:if="${relationTypeGroup.collapsible}">
+                <a data-toggle="collapse" th:href="|#word-rel-type-collapse-${relationTypeGroup.wordRelType.code}|">
+                  <span th:text="${#strings.capitalize(relationTypeGroup.wordRelType.value)}">Sõna seose liik</span>
+                </a>
+              </th:block>
+              <th:block th:unless="${relationTypeGroup.collapsible}">
+                <span th:text="${#strings.capitalize(relationTypeGroup.wordRelType.value)}">Sõna seose liik</span>
+              </th:block>
               <button type="button" th:aria-label="#{label.word.primary.relations.info}" class="btn btn-icon btn-sm" data-toggle="tooltip" data-placement="top" th:title="#{label.word.primary.relations.info}">
                 <i class="fas fa-info-circle"></i>
               </button>
             </h5>
-            <div th:if="${relationTypeGroup.empty}">
-              <span th:text="#{label.no.data}">Andmed puuduvad</span>
-            </div>
-            <div th:if="${!relationTypeGroup.empty}">
-              <div class="word-grouper-wrapper">
-                <th:block th:with="wordRelType = ${relationTypeGroup.wordRelType}" th:include=" :: word-rel-group"></th:block>
+            <th:block th:if="${relationTypeGroup.collapsible}" th:with="collapseName=|word-rel-type-${relationTypeGroup.wordRelType.code}-panel|">
+              <div th:id="|word-rel-type-collapse-${relationTypeGroup.wordRelType.code}|" th:data-name="${collapseName}" class="collapse user-preference"
+                th:classappend="${#lists.contains(uiSections, collapseName) ? 'show' : ''}">
+                <div th:if="${relationTypeGroup.empty}">
+                  <span th:text="#{label.no.data}">Andmed puuduvad</span>
+                </div>
+                <div th:unless="${relationTypeGroup.empty}">
+                  <div class="word-grouper-wrapper">
+                    <th:block th:with="wordRelType = ${relationTypeGroup.wordRelType}" th:include=" :: word-rel-group"></th:block>
+                  </div>
+                </div>
               </div>
-            </div>
+            </th:block>
+            <th:block th:unless="${relationTypeGroup.collapsible}">
+              <div th:if="${relationTypeGroup.empty}">
+                <span th:text="#{label.no.data}">Andmed puuduvad</span>
+              </div>
+              <div th:unless="${relationTypeGroup.empty}">
+                <div class="word-grouper-wrapper">
+                  <th:block th:with="wordRelType = ${relationTypeGroup.wordRelType}" th:include=" :: word-rel-group"></th:block>
+                </div>
+              </div>
+            </th:block>
           </div>
         </section>
       </th:block>
@@ -288,12 +310,12 @@
           <h5 class="font-weight-bold mb-0">
             <span th:text="#{sentence.same.as}"></span>
             <a th:if="${wordData.estHeadword}" th:aria-label="|#{aria.search.from.keelenou} ${wordData.word.word}, #{aria.new.window}|"
-               th:href="${'https://portaal.eki.ee/sonaraamatud.html?Q=' + wordData.word.word}" target="_blank">
+               th:href="|https://portaal.eki.ee/sonaraamatud.html?Q=${wordData.word.word}|" target="_blank">
               EKI teistes sõnastikes
               <i class="fas fa-external-link-alt" aria-hidden="true"></i>
             </a>
             <a th:if="${wordData.rusHeadword}" th:aria-label="|#{aria.search.from.eki.rus.est} ${wordData.word.word}, #{aria.new.window}|"
-               th:href="${'https://www.eki.ee/dict/ves/index.cgi?Q=' + wordData.word.word}" target="_blank">
+               th:href="|https://www.eki.ee/dict/ves/index.cgi?Q=${wordData.word.word}|" target="_blank">
               vene-eesti sõnaraamatus
               <i class="fas fa-external-link-alt" aria-hidden="true"></i>
             </a>
@@ -302,81 +324,95 @@
       </div>
     </section>
   </th:block>
-  <section class="level-3-panel" th:fragment="corp" id="level-3-panel-sentences">
+  <section class="level-3-panel" th:fragment="corp">
     <div class="corp-panel">
       <div class="heading-wrapper">
         <h5 class="font-weight-bold mb-0 d-flex align-items-center text-dark">
-          <span th:text="#{label.corp.examples}">Veebilauseid</span>
+          <a data-toggle="collapse" href="#corp-panel-collapse">
+            <span th:text="#{label.corp.examples}">Veebilauseid</span>
+          </a>
           <button type="button" class="btn btn-icon btn-sm" data-toggle="tooltip" data-placement="top"
                   th:aria-label="#{|corpus.title.${searchMode}.${corpLang}|}" th:title="#{|corpus.title.${searchMode}.${corpLang}|}">
             <i class="fas fa-info-circle"></i>
           </button>
         </h5>
       </div>
-      <div class="corp-warning mb-1" th:unless="${#lists.isEmpty(sentences)}">
-        <i class="text-danger fa fa-exclamation-triangle mr-1 mt-1" aria-hidden="true"></i>
-        <span th:text="#{corpus.warning}"></span>
-      </div>
-      <th:block th:each="sentence, sentenceIter : ${sentences}"
-                th:with="isCollapsable=${sentenceIter.count > 2}">
-        <div class="sentence-wrapper"
-            th:classappend="${isCollapsable ? 'collapse collapse-target' : ''}">
-        <p class="mb-2" th:utext="${sentence.getLeftPart() + '<b>' + sentence.getMiddlePart() + '</b>' + sentence.getRightPart()}"></p>
+      <div id="corp-panel-collapse" data-name="corp-panel" class="collapse user-preference"
+        th:classappend="${#lists.contains(uiSections, 'corp-panel') ? 'show' : ''}">
+        <div id="corp-panel-sentences" class="collapse-subset">
+          <div class="corp-warning mb-1" th:unless="${#lists.isEmpty(sentences)}">
+            <i class="text-danger fa fa-exclamation-triangle mr-1 mt-1" aria-hidden="true"></i>
+            <span th:text="#{corpus.warning}"></span>
+          </div>
+          <th:block th:each="sentence, sentenceIter : ${sentences}"
+                    th:with="isCollapsable=${sentenceIter.count > 2}">
+            <div class="sentence-wrapper"
+                th:classappend="${isCollapsable ? 'collapse collapse-target' : ''}">
+              <p class="mb-2" th:utext="${sentence.getLeftPart() + '<b>' + sentence.getMiddlePart() + '</b>' + sentence.getRightPart()}"></p>
+            </div>
+          </th:block>
+          <button class="show-more btn btn-collapse btn-link-muted btn-sm ml-n2"
+                  type="button"
+                  aria-expanded="false"
+                  data-dynamic-text="true"
+                  data-toggle="collapse"
+                  data-target="#corp-panel-sentences .collapse-target"
+                  th:if="${#lists.size(sentences) > T(eki.wordweb.constant.WebConstant).CORPUS_SENTENCES_DISPLAY_LIMIT}">
+            <span class="btn-content see-more-content" data-toggle="tooltip" th:title="#{button.see.more}">
+              <i class="fa fa-ellipsis-h" aria-hidden="true"></i>
+            </span>
+            <span class="btn-content see-less-content">
+              <i class="fa fa-angle-up" aria-hidden="true"></i>
+              <span class="btn-txt" th:text="#{button.see.less}"></span>
+            </span>
+          </button>
         </div>
-      </th:block>
-      <button class="show-more btn btn-collapse btn-link-muted btn-sm ml-n2"
-              type="button"
-              aria-expanded="false"
-              data-dynamic-text="true"
-              data-toggle="collapse"
-              data-target="#level-3-panel-sentences .collapse-target"
-              th:if="${#lists.size(sentences) > T(eki.wordweb.constant.WebConstant).CORPUS_SENTENCES_DISPLAY_LIMIT}">
-        <span class="btn-content see-more-content" data-toggle="tooltip" th:title="#{button.see.more}">
-          <i class="fa fa-ellipsis-h" aria-hidden="true"></i>
-        </span>
-        <span class="btn-content see-less-content">
-          <i class="fa fa-angle-up" aria-hidden="true"></i>
-          <span class="btn-txt" th:text="#{button.see.less}"></span>
-        </span>
-      </button>
+      </div>
     </div>
     <script th:inline="javascript">
 		  $('.corp-panel [data-toggle="tooltip"]').tooltip();
     </script>
   </section>
-  <section class="level-3-panel" th:fragment="corp_trans" id="level-3-panel-translations">
+  <section class="level-3-panel" th:fragment="corp_trans">
     <div class="corp-panel">
       <div class="heading-wrapper">
         <h5 class="font-weight-bold mb-0 d-flex align-items-center text-dark">
-          <span th:text="#{label.corp.translations}">Tõlgitud näited</span>
+          <a data-toggle="collapse" href="#corp-trans-panel-collapse">
+            <span th:text="#{label.corp.translations}">Tõlgitud näited</span>
+          </a>
           <button type="button" class="btn btn-icon btn-sm" data-toggle="tooltip" data-placement="top"
                   th:aria-label="#{corpus.translations.title}" th:title="#{corpus.translations.title}">
             <i class="fas fa-info-circle"></i>
           </button>
         </h5>
       </div>
-      <th:block th:each="translation, translationIter : ${translations}"
-                th:with="isCollapsable=${translationIter.count > 2}">
-        <div class="sentence-wrapper"
-              th:classappend="${isCollapsable ? 'collapse collapse-target' : ''}">
-          <p class="mb-2" th:utext="${translation.sentence + ' - ' + translation.translatedSentence}"></p>
+      <div id="corp-trans-panel-collapse" data-name="corp-trans-panel" class="collapse user-preference"
+        th:classappend="${#lists.contains(uiSections, 'corp-trans-panel') ? 'show' : ''}">
+        <div id="corp-trans-panel-sentences" class="collapse-subset">
+          <th:block th:each="translation, translationIter : ${translations}"
+                    th:with="isCollapsable=${translationIter.count > 2}">
+            <div class="sentence-wrapper"
+                  th:classappend="${isCollapsable ? 'collapse collapse-target' : ''}">
+              <p class="mb-2" th:utext="${translation.sentence + ' - ' + translation.translatedSentence}"></p>
+            </div>
+          </th:block>
+          <button class="show-more btn btn-collapse btn-link-muted btn-sm ml-n2"
+                  type="button"
+                  aria-expanded="false"
+                  data-dynamic-text="true"
+                  data-toggle="collapse"
+                  data-target="#corp-trans-panel-sentences .collapse-target"
+                  th:if="${#lists.size(translations) > T(eki.wordweb.constant.WebConstant).CORPUS_SENTENCES_DISPLAY_LIMIT}">
+            <span class="btn-content see-more-content" data-toggle="tooltip" th:title="#{button.see.more}">
+              <i class="fa fa-ellipsis-h" aria-hidden="true"></i>
+            </span>
+            <span class="btn-content see-less-content">
+              <i class="fa fa-angle-up" aria-hidden="true"></i>
+              <span class="btn-txt" th:text="#{button.see.less}"></span>
+            </span>
+          </button>
         </div>
-      </th:block>
-      <button class="show-more btn btn-collapse btn-link-muted btn-sm ml-n2"
-              type="button"
-              aria-expanded="false"
-              data-dynamic-text="true"
-              data-toggle="collapse"
-              data-target="#level-3-panel-translations .collapse-target"
-              th:if="${#lists.size(translations) > T(eki.wordweb.constant.WebConstant).CORPUS_SENTENCES_DISPLAY_LIMIT}">
-        <span class="btn-content see-more-content" data-toggle="tooltip" th:title="#{button.see.more}">
-          <i class="fa fa-ellipsis-h" aria-hidden="true"></i>
-        </span>
-        <span class="btn-content see-less-content">
-          <i class="fa fa-angle-up" aria-hidden="true"></i>
-          <span class="btn-txt" th:text="#{button.see.less}"></span>
-        </span>
-      </button>
+      </div>
     </div>
     <script th:inline="javascript">
 		  $('.corp-panel [data-toggle="tooltip"]').tooltip();

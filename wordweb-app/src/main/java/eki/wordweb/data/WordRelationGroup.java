@@ -23,6 +23,8 @@ public class WordRelationGroup extends AbstractDataObject {
 
 	private boolean empty;
 
+	private boolean collapsible;
+
 	public Classifier getWordRelType() {
 		return wordRelType;
 	}
@@ -69,6 +71,14 @@ public class WordRelationGroup extends AbstractDataObject {
 
 	public void setEmpty(boolean empty) {
 		this.empty = empty;
+	}
+
+	public boolean isCollapsible() {
+		return collapsible;
+	}
+
+	public void setCollapsible(boolean collapsible) {
+		this.collapsible = collapsible;
 	}
 
 }

@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
@@ -35,12 +37,15 @@ public class DatasetHomeController extends AbstractController {
 	}
 
 	@GetMapping(DATASET_HOME_URI + "/{datasetCode}")
-	public String home(@PathVariable(name = "datasetCode") String datasetCode, Model model) {
+	public String home(
+			@PathVariable(name = "datasetCode") String datasetCode,
+			HttpServletRequest request,
+			Model model) {
 		DatasetHomeData datasetHomeData = datasetContentService.getDatasetHomeData(datasetCode);
 		if (!datasetHomeData.isValidDataset()) {
 			return REDIRECT_PREF + HOME_URI;
 		}
-		populateSearchModel(datasetHomeData, model);
+		populateSearchModel(datasetHomeData, request, model);
 		return DATASET_HOME_PAGE;
 	}
 
@@ -48,6 +53,7 @@ public class DatasetHomeController extends AbstractController {
 	public String openLetter(
 			@PathVariable(name = "datasetCode") String datasetCode,
 			@PathVariable(name = "firstLetter") String firstLetterStr,
+			HttpServletRequest request,
 			Model model) {
 
 		DatasetHomeData datasetHomeData = datasetContentService.getDatasetHomeData(datasetCode);
@@ -59,17 +65,17 @@ public class DatasetHomeController extends AbstractController {
 			return REDIRECT_PREF + webUtil.composeDatasetFirstLetterSearchUri(datasetCode, firstLetter);
 		}
 		List<String> datasetWords = datasetContentService.getDatasetWords(datasetCode, firstLetter);
-		populateSearchModel(datasetHomeData, model);
+		populateSearchModel(datasetHomeData, request, model);
 		model.addAttribute("datasetWords", datasetWords);
 		return DATASET_HOME_PAGE;
 	}
 
-	private void populateSearchModel(DatasetHomeData datasetHomeData, Model model) {
+	private void populateSearchModel(DatasetHomeData datasetHomeData, HttpServletRequest request, Model model) {
 
 		Dataset dataset = datasetHomeData.getDataset();
 		String datasetCode = dataset.getCode();
 
-		SessionBean sessionBean = populateCommonModel(model);
+		SessionBean sessionBean = populateCommonModel(true, request, model);
 		if (sessionBean.getDatasetCodes() == null) {
 			List<String> datasetCodes = new ArrayList<>(Arrays.asList(datasetCode));
 			sessionBean.setDatasetCodes(datasetCodes);

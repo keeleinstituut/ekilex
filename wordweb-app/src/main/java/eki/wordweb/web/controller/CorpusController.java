@@ -9,6 +9,7 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplicat
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.SessionAttributes;
 
@@ -18,6 +19,7 @@ import eki.wordweb.data.CorpusSentence;
 import eki.wordweb.data.CorpusTranslation;
 import eki.wordweb.service.CorpusEstService;
 import eki.wordweb.service.CorpusTranslationService;
+import eki.wordweb.web.bean.SessionBean;
 
 @ConditionalOnWebApplication
 @Controller
@@ -35,8 +37,10 @@ public class CorpusController implements WebConstant, SystemConstant {
 			@PathVariable("searchMode") String searchMode,
 			@PathVariable("wordLang") String wordLang,
 			@PathVariable("wordValue") String wordValue,
+			@ModelAttribute(SESSION_BEAN) SessionBean sessionBean,
 			Model model) {
 
+		List<String> uiSections = sessionBean.getUiSections();
 		List<CorpusSentence> sentences = new ArrayList<>();
 		if (StringUtils.equals(wordLang, DESTIN_LANG_EST)) {
 			sentences = corpusEstService.getSentences(wordValue, searchMode);
@@ -44,6 +48,7 @@ public class CorpusController implements WebConstant, SystemConstant {
 
 		model.addAttribute("sentences", sentences);
 		model.addAttribute("corpLang", wordLang);
+		model.addAttribute("uiSections", uiSections);
 
 		return "common-search-sidebar :: corp";
 	}
@@ -53,11 +58,15 @@ public class CorpusController implements WebConstant, SystemConstant {
 			@PathVariable("wordId") Long wordId,
 			@PathVariable("wordLang") String wordLang,
 			@PathVariable("wordValue") String wordValue,
+			@ModelAttribute(SESSION_BEAN) SessionBean sessionBean,
 			Model model) {
 
+		List<String> uiSections = sessionBean.getUiSections();
 		List<CorpusTranslation> translations = corpusTranslationService.getTranslations(wordId, wordLang,wordValue);
 
 		model.addAttribute("translations", translations);
+		model.addAttribute("uiSections", uiSections);
+
 		return "common-search-sidebar :: corp_trans";
 	}
 }

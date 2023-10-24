@@ -7,6 +7,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -14,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -45,16 +47,20 @@ public class UnifSearchController extends AbstractSearchController {
 	private UnifSearchService unifSearchService;
 
 	@GetMapping(HOME_URI)
-	public String home(Model model) {
-		populateSearchModel("", model);
+	public String home(HttpServletRequest request, Model model) {
+
+		populateSearchModel("", false, request, model);
 		model.addAttribute("wordsData", new WordsData());
+
 		return UNIF_HOME_PAGE;
 	}
 
 	@GetMapping(SEARCH_URI + UNIF_URI)
-	public String search(Model model) {
-		populateSearchModel("", model);
+	public String search(HttpServletRequest request, Model model) {
+
+		populateSearchModel("", false, request, model);
 		model.addAttribute("wordsData", new WordsData());
+
 		return UNIF_SEARCH_PAGE;
 	}
 
@@ -100,13 +106,14 @@ public class UnifSearchController extends AbstractSearchController {
 			@PathVariable(name = "searchWord") String searchWord,
 			@PathVariable(name = "homonymNr", required = false) String homonymNrStr,
 			HttpServletRequest request,
+			HttpServletResponse response,
 			RedirectAttributes redirectAttributes,
 			Model model) throws Exception {
 
-		boolean sessionBeanNotPresent = sessionBeanNotPresent(model);
+		boolean isSessionBeanNotPresent = isSessionBeanNotPresent(model);
 		SessionBean sessionBean;
-		if (sessionBeanNotPresent) {
-			sessionBean = createSessionBean(model);
+		if (isSessionBeanNotPresent) {
+			sessionBean = createSessionBean(true, request, model);
 		} else {
 			sessionBean = getSessionBean(model);
 		}
@@ -128,7 +135,7 @@ public class UnifSearchController extends AbstractSearchController {
 		sessionBean.setDatasetCodes(searchValidation.getDatasetCodes());
 		sessionBean.setLinkedLexemeId(linkedLexemeId);
 
-		if (sessionBeanNotPresent) {
+		if (isSessionBeanNotPresent) {
 			//to get rid of the sessionid in the url
 			return REDIRECT_PREF + searchValidation.getSearchUri();
 		} else if (!searchValidation.isValid()) {
@@ -138,6 +145,8 @@ public class UnifSearchController extends AbstractSearchController {
 
 		String pageName;
 		AbstractSearchResult searchResult;
+
+		setSearchCookies(request, response, searchValidation);
 
 		if (isMaskedSearchCrit) {
 
@@ -152,7 +161,7 @@ public class UnifSearchController extends AbstractSearchController {
 			pageName = UNIF_SEARCH_PAGE;
 		}
 
-		populateSearchModel(searchWord, model);
+		populateSearchModel(searchWord, true, request, model);
 
 		SearchStat searchStat = statDataUtil.composeSearchStat(request, isSearchForm, SEARCH_MODE_DETAIL, searchValidation, searchResult);
 		statDataCollector.postSearchStat(searchStat);
@@ -178,6 +187,7 @@ public class UnifSearchController extends AbstractSearchController {
 			@ModelAttribute(SESSION_BEAN) SessionBean sessionBean,
 			Model model) {
 
+		String ekilexLimTermSearchUrl = webUtil.getEkilexLimTermSearchUrl();
 		List<String> destinLangs = sessionBean.getDestinLangs();
 		List<String> datasetCodes = sessionBean.getDatasetCodes();
 		Long linkedLexemeId = sessionBean.getLinkedLexemeId();
@@ -189,7 +199,7 @@ public class UnifSearchController extends AbstractSearchController {
 		sessionBean.setRecentWord(wordValue);
 		sessionBean.setLinkedLexemeId(null);
 
-		String ekilexLimTermSearchUrl = webUtil.getEkilexLimTermSearchUrl();
+		populateUserPref(sessionBean, model);
 		model.addAttribute("wordData", wordData);
 		model.addAttribute("searchMode", SEARCH_MODE_DETAIL);
 		model.addAttribute("ekilexLimTermSearchUrl", ekilexLimTermSearchUrl);
@@ -219,6 +229,39 @@ public class UnifSearchController extends AbstractSearchController {
 		LinkedWordSearchElement linkWord = unifSearchService.getLinkWord(linkType, linkId, destinLangs, datasetCodes);
 
 		return linkWord;
+	}
+
+	@PostMapping(USER_PREF_URI + "/{elementName}/{elementValue}")
+	@ResponseBody
+	public String setUserPreference(
+			@PathVariable("elementName") String elementName,
+			@PathVariable("elementValue") String elementValue,
+			@CookieValue(name = COOKIE_NAME_UI_SECTIONS, required = false) String uiSectionsStr,
+			@ModelAttribute(SESSION_BEAN) SessionBean sessionBean,
+			HttpServletRequest request,
+			HttpServletResponse response) {
+
+		List<String> uiSections;
+		if (StringUtils.isBlank(uiSectionsStr)) {
+			uiSections = new ArrayList<>();
+		} else {
+			String[] uiSectionsArr = StringUtils.split(uiSectionsStr, COOKIE_VALUES_SEPARATOR);
+			uiSections = new ArrayList<>(Arrays.asList(uiSectionsArr));
+			deleteCookies(request, response, COOKIE_NAME_UI_SECTIONS);
+		}
+		if (StringUtils.equalsIgnoreCase(elementValue, "open")) {
+			if (!uiSections.contains(elementName)) {
+				uiSections.add(elementName);
+			}
+		} else if (StringUtils.equalsIgnoreCase(elementValue, "close")) {
+			uiSections.remove(elementName);
+		}
+		sessionBean.setUiSections(uiSections);
+		uiSectionsStr = StringUtils.join(uiSections, COOKIE_VALUES_SEPARATOR);
+
+		setCookie(response, COOKIE_NAME_UI_SECTIONS, uiSectionsStr);
+
+		return "OK";
 	}
 
 	private SearchValidation validateAndCorrectWordSearch(String destinLangsStr, String datasetCodesStr, String searchWord, String homonymNrStr) {
@@ -322,12 +365,13 @@ public class UnifSearchController extends AbstractSearchController {
 		searchValidation.setValid(isValid);
 	}
 
-	private void populateSearchModel(String searchWord, Model model) {
+	private void populateSearchModel(String searchWord, boolean isSearchFilterPresent, HttpServletRequest request, Model model) {
 
 		List<UiFilterElement> langFilter = commonDataService.getUnifLangFilter();
-		SessionBean sessionBean = populateCommonModel(model);
+		SessionBean sessionBean = populateCommonModel(isSearchFilterPresent, request, model);
 		populateLangFilter(langFilter, sessionBean, model);
 		populateDatasetFilter(sessionBean, model);
+		populateUserPref(sessionBean, model);
 
 		model.addAttribute("searchUri", SEARCH_URI + UNIF_URI);
 		model.addAttribute("searchMode", SEARCH_MODE_DETAIL);

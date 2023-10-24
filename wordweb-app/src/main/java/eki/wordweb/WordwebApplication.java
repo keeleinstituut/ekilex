@@ -47,7 +47,7 @@ public class WordwebApplication {
 	}
 
 	@Bean
-	public MessageSource messageSource() {
+	MessageSource messageSource() {
 		ReloadableResourceBundleMessageSource source = new ReloadableResourceBundleMessageSource();
 		source.setBasenames("classpath:/messages/messages");
 		source.setDefaultEncoding(StandardCharsets.UTF_8.name());
@@ -57,7 +57,7 @@ public class WordwebApplication {
 	}
 
 	@Bean
-	public TomcatServletWebServerFactory servletContainer() {
+	TomcatServletWebServerFactory servletContainer() {
 		TomcatServletWebServerFactory tomcat = new TomcatServletWebServerFactory();
 		tomcat.getSession().setTimeout(sessionTimeout);
 		if (ajpEnabled) {

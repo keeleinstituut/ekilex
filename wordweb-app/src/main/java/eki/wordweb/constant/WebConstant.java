@@ -88,6 +88,8 @@ public interface WebConstant {
 
 	String FILES_URI = "/files";
 
+	String USER_PREF_URI = "/user-pref";
+
 	String GAMES_LEXICDECIS_URI = GAMES_URI + "/lexicdecis";
 
 	String GAMES_SIMILJUDGE_URI = GAMES_URI + "/similjudge";
@@ -133,6 +135,8 @@ public interface WebConstant {
 	String ALTERNATIVE_FORMS_SEPARATOR = " ~ ";
 
 	char UI_FILTER_VALUES_SEPARATOR = ',';
+
+	char COOKIE_VALUES_SEPARATOR = '|';
 
 	int AUTOCOMPLETE_MAX_RESULTS_LIMIT = 15;
 

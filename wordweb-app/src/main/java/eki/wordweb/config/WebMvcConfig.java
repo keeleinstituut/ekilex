@@ -16,9 +16,6 @@ import org.springframework.web.util.UrlPathHelper;
 
 import java.util.Locale;
 
-/**
- * Thymeleaf and Spring MVC configuration.
- */
 @ConditionalOnWebApplication
 @Configuration
 public class WebMvcConfig implements WebMvcConfigurer {
