@@ -80,10 +80,10 @@ public class SourceLinkService extends AbstractSourceService implements GlobalCo
 
     @Transactional
     public void createSourceAndSourceLink(
-			SourceType sourceType, String name, String description, String comment, boolean isPublic, List<SourceProperty> sourceProperties,
+			SourceType sourceType, String name, String valuePrese, String comment, boolean isPublic, List<SourceProperty> sourceProperties,
 			Long sourceLinkOwnerId, String sourceLinkOwnerCode, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
 
-        Long sourceId = createSource(sourceType, name, description, comment, isPublic, sourceProperties, roleDatasetCode, MANUAL_EVENT_ON_UPDATE_DISABLED);
+        Long sourceId = createSource(sourceType, name, valuePrese, comment, isPublic, sourceProperties, roleDatasetCode, MANUAL_EVENT_ON_UPDATE_DISABLED);
 
 		String sourceLinkValue;
 		if (StringUtils.isNotBlank(name)) {

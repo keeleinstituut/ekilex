@@ -412,7 +412,6 @@ public class Keys {
     // FOREIGN KEY definitions
     // -------------------------------------------------------------------------
 
-    public static final ForeignKey<ActivityLogRecord, DatasetRecord> ACTIVITY_LOG__ACTIVITY_LOG_DATASET_CODE_FKEY = Internal.createForeignKey(ActivityLog.ACTIVITY_LOG, DSL.name("activity_log_dataset_code_fkey"), new TableField[] { ActivityLog.ACTIVITY_LOG.DATASET_CODE }, Keys.DATASET_PKEY, new TableField[] { Dataset.DATASET.CODE }, true);
     public static final ForeignKey<AspectLabelRecord, AspectRecord> ASPECT_LABEL__ASPECT_LABEL_CODE_FKEY = Internal.createForeignKey(AspectLabel.ASPECT_LABEL, DSL.name("aspect_label_code_fkey"), new TableField[] { AspectLabel.ASPECT_LABEL.CODE }, Keys.ASPECT_PKEY, new TableField[] { Aspect.ASPECT.CODE }, true);
     public static final ForeignKey<AspectLabelRecord, LanguageRecord> ASPECT_LABEL__ASPECT_LABEL_LANG_FKEY = Internal.createForeignKey(AspectLabel.ASPECT_LABEL, DSL.name("aspect_label_lang_fkey"), new TableField[] { AspectLabel.ASPECT_LABEL.LANG }, Keys.LANGUAGE_PKEY, new TableField[] { Language.LANGUAGE.CODE }, true);
     public static final ForeignKey<AspectLabelRecord, LabelTypeRecord> ASPECT_LABEL__ASPECT_LABEL_TYPE_FKEY = Internal.createForeignKey(AspectLabel.ASPECT_LABEL, DSL.name("aspect_label_type_fkey"), new TableField[] { AspectLabel.ASPECT_LABEL.TYPE }, Keys.LABEL_TYPE_PKEY, new TableField[] { LabelType.LABEL_TYPE.CODE }, true);

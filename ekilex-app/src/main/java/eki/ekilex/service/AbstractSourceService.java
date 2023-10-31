@@ -22,10 +22,11 @@ public abstract class AbstractSourceService extends AbstractService {
 
 	@Transactional
 	public Long createSource(
-			SourceType type, String name, String description, String comment, boolean isPublic, List<SourceProperty> sourceProperties, String roleDatasetCode,
+			SourceType type, String name, String valuePrese, String comment, boolean isPublic, List<SourceProperty> sourceProperties, String roleDatasetCode,
 			boolean isManualEventOnUpdateEnabled) throws Exception {
 
-		Long sourceId = sourceDbService.createSource(type, name, description, comment, isPublic, sourceProperties);
+		String value = textDecorationService.removeEkiElementMarkup(valuePrese);
+		Long sourceId = sourceDbService.createSource(type, name, value, valuePrese, comment, isPublic, sourceProperties);
 		activityLogService.createActivityLog("createSource", sourceId, ActivityOwner.SOURCE, roleDatasetCode, isManualEventOnUpdateEnabled);
 		return sourceId;
 	}

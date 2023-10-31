@@ -52,7 +52,7 @@ public class RegisterController extends AbstractPublicPageController {
 			@RequestParam("name") String name,
 			@RequestParam("salasona") String password,
 			@RequestParam("salasona2") String password2,
-			@RequestParam(value = "agreement", required = false) boolean agreement,
+			@RequestParam(name = "agreement", required = false) boolean agreement,
 			Model model,
 			RedirectAttributes attributes,
 			HttpServletRequest request) {

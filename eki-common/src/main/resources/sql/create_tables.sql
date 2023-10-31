@@ -627,7 +627,8 @@ create table source
   id bigserial primary key,
   type varchar(100) not null,
   name text null,
-  description text null,
+  value text null,
+  value_prese text null,
   comment text null,
   is_public boolean not null default true
 );
@@ -1200,7 +1201,7 @@ create table activity_log
   id bigserial primary key,
   event_by text not null,
   event_on timestamp not null default statement_timestamp(),
-  dataset_code varchar(10) references dataset(code) null,
+  dataset_code varchar(10) null,
   funct_name text not null,
   owner_id bigint not null,
   owner_name text not null,

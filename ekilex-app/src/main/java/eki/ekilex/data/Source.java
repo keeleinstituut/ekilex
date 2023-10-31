@@ -16,7 +16,9 @@ public class Source extends AbstractCrudEntity {
 
 	private String name;
 
-	private String description;
+	private String value;
+
+	private String valuePrese;
 
 	private String comment;
 
@@ -51,12 +53,20 @@ public class Source extends AbstractCrudEntity {
 		this.name = name;
 	}
 
-	public String getDescription() {
-		return description;
+	public String getValue() {
+		return value;
 	}
 
-	public void setDescription(String description) {
-		this.description = description;
+	public void setValue(String value) {
+		this.value = value;
+	}
+
+	public String getValuePrese() {
+		return valuePrese;
+	}
+
+	public void setValuePrese(String valuePrese) {
+		this.valuePrese = valuePrese;
 	}
 
 	public String getComment() {

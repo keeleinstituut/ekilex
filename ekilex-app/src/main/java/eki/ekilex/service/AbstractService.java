@@ -1,5 +1,6 @@
 package eki.ekilex.service;
 
+import eki.common.service.TextDecorationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 
@@ -25,4 +26,6 @@ public abstract class AbstractService {
 	@Autowired
 	protected MessageSource messageSource;
 
+	@Autowired
+	protected TextDecorationService textDecorationService;
 }

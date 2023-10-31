@@ -225,8 +225,8 @@ public class PermissionsController extends AbstractPrivatePageController {
 			@RequestParam("userId") Long userId,
 			@RequestParam("datasetCode") String datasetCode,
 			@RequestParam("authOp") AuthorityOperation authOp,
-			@RequestParam(value = "authLang", required = false) String authLang,
-			@RequestParam(value = "userApplicationId", required = false) Long userApplicationId,
+			@RequestParam(name = "authLang", required = false) String authLang,
+			@RequestParam(name = "userApplicationId", required = false) Long userApplicationId,
 			Model model) {
 
 		EkiUser permittedUser = userService.getUserById(userId);

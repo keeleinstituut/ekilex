@@ -38,8 +38,8 @@ public class TagController extends AbstractPrivatePageController {
 	public String createTag(
 			@RequestParam("tagName") String tagName,
 			@RequestParam("tagType") TagType tagType,
-			@RequestParam(value = "setAutomatically", required = false) boolean setAutomatically,
-			@RequestParam(value = "removeToComplete", required = false) boolean removeToComplete) {
+			@RequestParam(name = "setAutomatically", required = false) boolean setAutomatically,
+			@RequestParam(name = "removeToComplete", required = false) boolean removeToComplete) {
 
 		boolean isSuccessful = tagService.createTag(tagName, tagType, setAutomatically, removeToComplete);
 		if (isSuccessful) {
@@ -54,8 +54,8 @@ public class TagController extends AbstractPrivatePageController {
 			@RequestParam("currentTagName") String currentTagName,
 			@RequestParam("tagName") String tagName,
 			@RequestParam("tagOrder") Long tagOrder,
-			@RequestParam(value = "setAutomatically", required = false) boolean setAutomatically,
-			@RequestParam(value = "removeToComplete", required = false) boolean removeToComplete) {
+			@RequestParam(name = "setAutomatically", required = false) boolean setAutomatically,
+			@RequestParam(name = "removeToComplete", required = false) boolean removeToComplete) {
 
 		boolean isSuccessful = tagService.updateTag(currentTagName, tagName, tagOrder, setAutomatically, removeToComplete);
 		if (isSuccessful) {

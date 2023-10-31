@@ -79,7 +79,8 @@ public class SourceDbService implements GlobalConstant, ActivityFunct {
 						s.ID,
 						s.TYPE,
 						s.NAME,
-						s.DESCRIPTION,
+						s.VALUE,
+						s.VALUE_PRESE,
 						s.COMMENT,
 						s.IS_PUBLIC)
 				.from(s)
@@ -138,7 +139,8 @@ public class SourceDbService implements GlobalConstant, ActivityFunct {
 						s.ID.as("source_id"),
 						s.TYPE.as("source_type"),
 						s.NAME.as("source_name"),
-						s.DESCRIPTION.as("source_description"),
+						s.VALUE.as("source_value"),
+						s.VALUE_PRESE.as("source_value_prese"),
 						s.COMMENT.as("source_comment"),
 						s.IS_PUBLIC.as("is_source_public"),
 						sp.ID.as("source_property_id"),
@@ -361,10 +363,10 @@ public class SourceDbService implements GlobalConstant, ActivityFunct {
 				.fetchInto(String.class);
 	}
 
-	public Long createSource(SourceType type, String name, String description, String comment, boolean isPublic, List<SourceProperty> sourceProperties) {
+	public Long createSource(SourceType type, String name, String value, String valuePrese, String comment, boolean isPublic, List<SourceProperty> sourceProperties) {
 
-		Long sourceId = create.insertInto(SOURCE, SOURCE.TYPE, SOURCE.NAME, SOURCE.DESCRIPTION, SOURCE.COMMENT, SOURCE.IS_PUBLIC)
-				.values(type.name(), name, description, comment, isPublic)
+		Long sourceId = create.insertInto(SOURCE, SOURCE.TYPE, SOURCE.NAME, SOURCE.VALUE, SOURCE.VALUE_PRESE, SOURCE.COMMENT, SOURCE.IS_PUBLIC)
+				.values(type.name(), name, value, valuePrese, comment, isPublic)
 				.returning(SOURCE.ID)
 				.fetchOne()
 				.getId();
@@ -408,12 +410,13 @@ public class SourceDbService implements GlobalConstant, ActivityFunct {
 				.execute();
 	}
 
-	public void updateSource(Long sourceId, SourceType type, String name, String description, String comment, boolean isPublic) {
+	public void updateSource(Long sourceId, SourceType type, String name, String value, String valuePrese, String comment, boolean isPublic) {
 
 		create.update(SOURCE)
 				.set(SOURCE.TYPE, type.name())
 				.set(SOURCE.NAME, name)
-				.set(SOURCE.DESCRIPTION, description)
+				.set(SOURCE.VALUE, value)
+				.set(SOURCE.VALUE_PRESE, valuePrese)
 				.set(SOURCE.COMMENT, comment)
 				.set(SOURCE.IS_PUBLIC, isPublic)
 				.where(SOURCE.ID.eq(sourceId))

@@ -13,7 +13,7 @@ public class SourceRequest extends AbstractDataObject {
 
 	private String name;
 
-	private String description;
+	private String valuePrese;
 
 	private String comment;
 
@@ -41,12 +41,12 @@ public class SourceRequest extends AbstractDataObject {
 		this.name = name;
 	}
 
-	public String getDescription() {
-		return description;
+	public String getValuePrese() {
+		return valuePrese;
 	}
 
-	public void setDescription(String description) {
-		this.description = description;
+	public void setValuePrese(String valuePrese) {
+		this.valuePrese = valuePrese;
 	}
 
 	public String getComment() {

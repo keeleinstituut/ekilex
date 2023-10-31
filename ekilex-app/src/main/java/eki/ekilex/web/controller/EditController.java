@@ -537,7 +537,7 @@ public class EditController extends AbstractMutableDataPageController {
 	public Response deleteItem(
 			@RequestParam("opCode") String opCode,
 			@RequestParam("id") Long id,
-			@RequestParam(value = "value", required = false) String valueToDelete,
+			@RequestParam(name = "value", required = false) String valueToDelete,
 			@ModelAttribute(name = SESSION_BEAN) SessionBean sessionBean) throws Exception {
 
 		logger.debug("Delete operation : {} : for id {}, value {}", opCode, id, valueToDelete);

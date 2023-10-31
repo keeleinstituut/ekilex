@@ -139,9 +139,9 @@ public class SourceEditController extends AbstractMutableDataPageController {
 			@RequestParam("sourceId") Long sourceId,
 			@RequestParam("type") SourceType type,
 			@RequestParam("name") String name,
-			@RequestParam("description") String description,
+			@RequestParam("valuePrese") String valuePrese,
 			@RequestParam("comment") String comment,
-			@RequestParam(value = "public", required = false) boolean isPublic,
+			@RequestParam(name = "public", required = false) boolean isPublic,
 			Model model) throws Exception {
 
 		logger.debug("Updating source type, source id: {}", sourceId);
@@ -149,8 +149,9 @@ public class SourceEditController extends AbstractMutableDataPageController {
 		UserContextData userContextData = getUserContextData();
 		DatasetPermission userRole = userContextData.getUserRole();
 		String roleDatasetCode = userRole.getDatasetCode();
+		valuePrese = valueUtil.trimAndCleanAndRemoveHtmlAndLimit(valuePrese);
 
-		sourceService.updateSource(sourceId, type, name, description, comment, isPublic, roleDatasetCode);
+		sourceService.updateSource(sourceId, type, name, valuePrese, comment, isPublic, roleDatasetCode);
 		Source source = sourceService.getSource(sourceId, userRole);
 		model.addAttribute("source", source);
 
@@ -164,13 +165,14 @@ public class SourceEditController extends AbstractMutableDataPageController {
 		String roleDatasetCode = getDatasetCodeFromRole();
 		SourceType sourceType = source.getType();
 		String name = source.getName();
-		String description = source.getDescription();
+		String valuePrese = source.getValuePrese();
+		valuePrese = valueUtil.trimAndCleanAndRemoveHtmlAndLimit(valuePrese);
 		String comment = source.getComment();
 		boolean isPublic = source.isPublic();
 		logger.debug("Creating new source, name: {}", name);
 
 		List<SourceProperty> sourceProperties = processSourceProperties(source);
-		Long sourceId = sourceService.createSource(sourceType, name, description, comment, isPublic, sourceProperties, roleDatasetCode, MANUAL_EVENT_ON_UPDATE_DISABLED);
+		Long sourceId = sourceService.createSource(sourceType, name, valuePrese, comment, isPublic, sourceProperties, roleDatasetCode, MANUAL_EVENT_ON_UPDATE_DISABLED);
 		return String.valueOf(sourceId);
 	}
 
@@ -180,7 +182,8 @@ public class SourceEditController extends AbstractMutableDataPageController {
 
 		SourceType sourceType = source.getType();
 		String name = source.getName();
-		String description = source.getDescription();
+		String valuePrese = source.getValuePrese();
+		valuePrese = valueUtil.trimAndCleanAndRemoveHtmlAndLimit(valuePrese);
 		String comment = source.getComment();
 		boolean isPublic = source.isPublic();
 		Long sourceLinkOwnerId = source.getId();
@@ -191,7 +194,7 @@ public class SourceEditController extends AbstractMutableDataPageController {
 
 		List<SourceProperty> sourceProperties = processSourceProperties(source);
 		sourceLinkService.createSourceAndSourceLink(
-				sourceType, name, description, comment, isPublic, sourceProperties, sourceLinkOwnerId, sourceLinkOwnerCode, roleDatasetCode, isManualEventOnUpdateEnabled);
+				sourceType, name, valuePrese, comment, isPublic, sourceProperties, sourceLinkOwnerId, sourceLinkOwnerCode, roleDatasetCode, isManualEventOnUpdateEnabled);
 
 		return RESPONSE_OK_VER2;
 	}

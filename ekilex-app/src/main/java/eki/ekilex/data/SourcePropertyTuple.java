@@ -16,7 +16,9 @@ public class SourcePropertyTuple extends AbstractDataObject {
 
 	private String sourceName;
 
-	private String sourceDescription;
+	private String sourceValue;
+
+	private String sourceValuePrese;
 
 	private String sourceComment;
 
@@ -56,12 +58,20 @@ public class SourcePropertyTuple extends AbstractDataObject {
 		this.sourceName = sourceName;
 	}
 
-	public String getSourceDescription() {
-		return sourceDescription;
+	public String getSourceValue() {
+		return sourceValue;
 	}
 
-	public void setSourceDescription(String sourceDescription) {
-		this.sourceDescription = sourceDescription;
+	public void setSourceValue(String sourceValue) {
+		this.sourceValue = sourceValue;
+	}
+
+	public String getSourceValuePrese() {
+		return sourceValuePrese;
+	}
+
+	public void setSourceValuePrese(String sourceValuePrese) {
+		this.sourceValuePrese = sourceValuePrese;
 	}
 
 	public String getSourceComment() {

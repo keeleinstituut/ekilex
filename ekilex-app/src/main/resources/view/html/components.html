@@ -149,8 +149,8 @@
                 <td th:text="${source.name}"></td>
               </tr>
               <tr>
-                <td th:text="#{source.description}">Pikk kuju</td>
-                <td th:text="${source.description}"></td>
+                <td th:text="#{source.value}">Pikk kuju</td>
+                <td th:utext="${source.valuePrese}"></td>
               </tr>
               <tr>
                 <td th:text="#{source.comment}">Mitteavalik kommentaar</td>
@@ -259,8 +259,9 @@
       </div>
     </div>
   </form>
-  <form th:action="@{/create_source}" method="post" th:fragment="add_source_form">
+  <form th:action="@{/create_source}" method="post" data-plugin="initAddSourcePlugin" th:fragment="add_source_form">
     <div class="modal-body">
+      <input type="hidden" name="valuePrese">
       <div class="form-group row">
         <div class="col-md-12">
           <div class="border rounded">
@@ -280,9 +281,9 @@
               </div>
             </div>
             <div class="form-group row m-4">
-              <label class="col-12 col-form-label" th:text="#{source.description}">Pikk kuju</label>
+              <label class="col-12 col-form-label" th:text="#{source.value}">Pikk kuju</label>
               <div class="col-md-12">
-                <textarea class="form-control" rows="3" name="description"></textarea>
+                <div th:replace="components :: eki_editor_elem"></div>
               </div>
             </div>
             <div class="form-group row m-4">

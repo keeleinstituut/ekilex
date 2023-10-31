@@ -16,7 +16,7 @@ import org.jooq.ForeignKey;
 import org.jooq.Identity;
 import org.jooq.Name;
 import org.jooq.Record;
-import org.jooq.Row6;
+import org.jooq.Row7;
 import org.jooq.Schema;
 import org.jooq.Table;
 import org.jooq.TableField;
@@ -64,9 +64,9 @@ public class Source extends TableImpl<SourceRecord> {
     public final TableField<SourceRecord, String> NAME = createField(DSL.name("name"), SQLDataType.CLOB, this, "");
 
     /**
-     * The column <code>public.source.description</code>.
+     * The column <code>public.source.value</code>.
      */
-    public final TableField<SourceRecord, String> DESCRIPTION = createField(DSL.name("description"), SQLDataType.CLOB, this, "");
+    public final TableField<SourceRecord, String> VALUE = createField(DSL.name("value"), SQLDataType.CLOB, this, "");
 
     /**
      * The column <code>public.source.comment</code>.
@@ -77,6 +77,11 @@ public class Source extends TableImpl<SourceRecord> {
      * The column <code>public.source.is_public</code>.
      */
     public final TableField<SourceRecord, Boolean> IS_PUBLIC = createField(DSL.name("is_public"), SQLDataType.BOOLEAN.nullable(false).defaultValue(DSL.field("true", SQLDataType.BOOLEAN)), this, "");
+
+    /**
+     * The column <code>public.source.value_prese</code>.
+     */
+    public final TableField<SourceRecord, String> VALUE_PRESE = createField(DSL.name("value_prese"), SQLDataType.CLOB, this, "");
 
     private Source(Name alias, Table<SourceRecord> aliased) {
         this(alias, aliased, null);
@@ -158,11 +163,11 @@ public class Source extends TableImpl<SourceRecord> {
     }
 
     // -------------------------------------------------------------------------
-    // Row6 type methods
+    // Row7 type methods
     // -------------------------------------------------------------------------
 
     @Override
-    public Row6<Long, String, String, String, String, Boolean> fieldsRow() {
-        return (Row6) super.fieldsRow();
+    public Row7<Long, String, String, String, String, Boolean, String> fieldsRow() {
+        return (Row7) super.fieldsRow();
     }
 }

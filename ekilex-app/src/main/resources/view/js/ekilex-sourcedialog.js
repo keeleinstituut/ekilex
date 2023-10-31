@@ -18,16 +18,32 @@ $.fn.initAddSourcePropertyDlgPlugin = function() {
 	});
 }
 
+$.fn.initAddSourcePlugin = function() {
+	return this.each(function() {
+		const form = $(this);
+		const editFld = form.find('[data-id="editFld"]');
+		initCkEditor(editFld);
+	});
+}
+
 $.fn.editSourcePlugin = function() {
 	return this.each(function() {
 		const form = $(this);
 		const sourceId = form.find('[name=sourceId]').val();
+		const editFld = form.find('[data-id="editFld"]');
+		const valueInput = form.find('[name=valuePrese]');
+		editFld.val(valueInput.val());
+		initCkEditor(editFld);
+
 		form.on('submit', function(e) {
 			e.preventDefault();
 			const isValid = checkRequiredFields(form);
 			if (!isValid) {
 				return;
 			}
+
+			const editFldValue = editFld.val();
+			valueInput.val(editFldValue);
 
 			$.ajax({
 				url: form.attr('action'),

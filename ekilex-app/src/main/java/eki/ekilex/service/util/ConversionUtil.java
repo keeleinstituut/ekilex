@@ -1070,7 +1070,8 @@ public class ConversionUtil implements GlobalConstant {
 				source.setId(sourceId);
 				source.setType(tuple.getSourceType());
 				source.setName(tuple.getSourceName());
-				source.setDescription(tuple.getSourceDescription());
+				source.setValue(tuple.getSourceValue());
+				source.setValuePrese(tuple.getSourceValuePrese());
 				source.setComment(tuple.getSourceComment());
 				source.setPublic(tuple.isSourcePublic());
 				source.setSourceProperties(new ArrayList<>());

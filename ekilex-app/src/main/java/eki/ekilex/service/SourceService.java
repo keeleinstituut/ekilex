@@ -175,10 +175,11 @@ public class SourceService extends AbstractSourceService implements GlobalConsta
 	}
 
 	@Transactional
-	public void updateSource(Long sourceId, SourceType type, String name, String description, String comment, boolean isPublic, String roleDatasetCode) throws Exception {
+	public void updateSource(Long sourceId, SourceType type, String name, String valuePrese, String comment, boolean isPublic, String roleDatasetCode) throws Exception {
 
 		ActivityLogData activityLog = activityLogService.prepareActivityLog("updateSource", sourceId, ActivityOwner.SOURCE, roleDatasetCode, MANUAL_EVENT_ON_UPDATE_DISABLED);
-		sourceDbService.updateSource(sourceId, type, name, description, comment, isPublic);
+		String value = textDecorationService.removeEkiElementMarkup(valuePrese);
+		sourceDbService.updateSource(sourceId, type, name, value, valuePrese, comment, isPublic);
 		activityLogService.createActivityLog(activityLog, sourceId, ActivityEntity.SOURCE);
 	}
 

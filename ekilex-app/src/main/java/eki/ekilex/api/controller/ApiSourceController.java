@@ -48,14 +48,15 @@ public class ApiSourceController extends AbstractApiController {
 	@ResponseBody
 	public ApiResponse createSource(@RequestBody Source source) {
 
-		SourceType sourceType = source.getType();
-		String sourceName = source.getName();
-		String sourceDescription = source.getDescription();
-		String sourceComment = source.getComment();
-		boolean isSourcePublic = source.isPublic();
+		SourceType type = source.getType();
+		String name = source.getName();
+		String valuePrese = source.getValuePrese();
+		valuePrese = valueUtil.trimAndCleanAndRemoveHtmlAndLimit(valuePrese);
+		String comment = source.getComment();
+		boolean isPublic = source.isPublic();
 		List<SourceProperty> sourceProperties = source.getSourceProperties();
 
-		if (StringUtils.isBlank(sourceName)) {
+		if (StringUtils.isBlank(name)) {
 			if (CollectionUtils.isEmpty(sourceProperties)) {
 				return getOpFailResponse("Source has no name nor any properties");
 			} else {
@@ -79,7 +80,7 @@ public class ApiSourceController extends AbstractApiController {
 		}
 
 		try {
-			Long sourceId = sourceService.createSource(sourceType, sourceName, sourceDescription, sourceComment, isSourcePublic, sourceProperties, null, MANUAL_EVENT_ON_UPDATE_DISABLED);
+			Long sourceId = sourceService.createSource(type, name, valuePrese, comment, isPublic, sourceProperties, null, MANUAL_EVENT_ON_UPDATE_DISABLED);
 			return getOpSuccessResponse(sourceId);
 		} catch (Exception e) {
 			return getOpFailResponse(e);
@@ -92,15 +93,18 @@ public class ApiSourceController extends AbstractApiController {
 	@ResponseBody
 	public ApiResponse updateSource(
 			@RequestParam("crudRoleDataset") String crudRoleDataset,
-			@RequestParam("sourceId") Long sourceId,
-			@RequestParam("sourceType") SourceType sourceType,
-			@RequestParam("sourceName") String sourceName,
-			@RequestParam("sourceDescription") String sourceDescription,
-			@RequestParam("sourceComment") String sourceComment,
-			@RequestParam("isSourcePublic") boolean isSourcePublic) {
+			@RequestBody Source source) {
+
+		Long sourceId = source.getId();
+		SourceType type = source.getType();
+		String name = source.getName();
+		String valuePrese = source.getValuePrese();
+		valuePrese = valueUtil.trimAndCleanAndRemoveHtmlAndLimit(valuePrese);
+		String comment = source.getComment();
+		boolean isPublic = source.isPublic();
 
 		try {
-			sourceService.updateSource(sourceId, sourceType, sourceName, sourceDescription, sourceComment, isSourcePublic, crudRoleDataset);
+			sourceService.updateSource(sourceId, type, name, valuePrese, comment, isPublic, crudRoleDataset);
 			return getOpSuccessResponse();
 		} catch (Exception e) {
 			return getOpFailResponse(e);

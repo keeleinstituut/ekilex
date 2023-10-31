@@ -170,20 +170,6 @@ public class ActivityLog extends TableImpl<ActivityLogRecord> {
     }
 
     @Override
-    public List<ForeignKey<ActivityLogRecord, ?>> getReferences() {
-        return Arrays.<ForeignKey<ActivityLogRecord, ?>>asList(Keys.ACTIVITY_LOG__ACTIVITY_LOG_DATASET_CODE_FKEY);
-    }
-
-    private transient Dataset _dataset;
-
-    public Dataset dataset() {
-        if (_dataset == null)
-            _dataset = new Dataset(this, Keys.ACTIVITY_LOG__ACTIVITY_LOG_DATASET_CODE_FKEY);
-
-        return _dataset;
-    }
-
-    @Override
     public ActivityLog as(String alias) {
         return new ActivityLog(DSL.name(alias), this);
     }

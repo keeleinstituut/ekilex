@@ -172,7 +172,7 @@ where not exists (select pf.id
 alter table form drop column paradigm_id cascade, drop column order_by cascade;
 
 -- Töömahu raporti jaoks logimise täiendamine
-alter table activity_log add column dataset_code varchar(10) references dataset(code) null;
+alter table activity_log add column dataset_code varchar(10) null;
 create index activity_log_dataset_code_idx on activity_log(dataset_code);
 
 -- word_relation_param rikutud andmete taastamine
@@ -214,8 +214,20 @@ where l.is_public is false
               where w.id = l.word_id
                 and w.is_public is false);
 
--- Üleliigsete ekilexi laienduste kustutamine
-drop extension dblink cascade;
-drop extension pg_stat_statements cascade;
-drop extension pg_trgm cascade;
-drop extension unaccent cascade;
+-- Üleliigsete ekilexi laienduste ja funktsioonide kustutamine
+drop extension if exists dblink cascade;
+drop extension if exists pg_stat_statements cascade;
+drop extension if exists pg_trgm cascade;
+drop extension if exists unaccent cascade;
+drop function if exists merge_homonyms_to_eki(char(3) array);
+
+-- Allikate täiendus
+alter table source
+add column name text null,
+add column value text null,
+add column value_prese text null,
+add column comment text null,
+add column is_public boolean not null default true;
+
+create index source_name_idx on source(name);
+create index source_name_lower_idx on source(lower(name));

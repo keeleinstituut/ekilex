@@ -62,8 +62,8 @@
         <div class="font-weight-bold" th:text="${source.name}"></div>
       </div>
       <div class="row">
-        <div class="col-2 text-right" th:text="#{source.description}">Pikk kuju</div>
-        <div class="font-weight-bold" th:text="${source.description}"></div>
+        <div class="col-2 text-right" th:text="#{source.value}">Pikk kuju</div>
+        <div class="font-weight-bold" th:utext="${source.valuePrese}"></div>
       </div>
       <div class="row">
         <div class="col-2 text-right" th:text="#{source.comment}">Mitteavalik kommentaar</div>
@@ -197,8 +197,8 @@
                     <td th:text="${source.name}"></td>
                   </tr>
                   <tr>
-                    <td th:text="#{source.description}">Pikk kuju</td>
-                    <td th:text="${source.description}"></td>
+                    <td th:text="#{source.value}">Pikk kuju</td>
+                    <td th:utext="${source.valuePrese}"></td>
                   </tr>
                   <tr>
                     <td th:text="#{source.comment}">Mitteavalik kommentaar</td>

@@ -246,6 +246,7 @@ where exists(select lt.id
                and lt.tag_name = 'mil muudetud mitteavalikuks');
 
 -- Allikate täiendus
+-- (järgneb skript, mis muudab veel seda tabelit)
 alter table source
 add column name text null,
 add column description text null,
@@ -291,5 +292,11 @@ update freeform set lang = 'cre' where lang = 'aem';
 update freeform set lang = 'orv' where lang = 'qbi';
 
 delete from "language" where code in ('qab', 'gug', 'kab', 'aem', 'qbi');
+
+-- tarneks teha kohe korrektne source tabeli muutmine
+alter table source rename column description to value;
+alter table source add column value_prese text null;
+
+drop function if exists merge_homonyms_to_eki(char(3) array);
 
 -- Loo uuesti ekilexi baasi tüübid (types) ja vaated (views)
