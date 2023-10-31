@@ -260,9 +260,6 @@ public class SimpleSearchController extends AbstractSearchController {
 		} else if (destinLangs.contains(DESTIN_LANG_ALL) && (destinLangs.size() > 1)) {
 			destinLangs = Arrays.asList(DESTIN_LANG_ALL);
 			isValid = isValid & false;
-		} else if (!destinLangs.contains(DESTIN_LANG_ALL) && !destinLangs.contains(DESTIN_LANG_EST)) {
-			destinLangs.add(DESTIN_LANG_EST);
-			isValid = isValid & false;
 		}
 
 		// dataset

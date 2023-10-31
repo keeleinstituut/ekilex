@@ -72,6 +72,11 @@ public class MviewWwWord extends TableImpl<MviewWwWordRecord> {
     public final TableField<MviewWwWordRecord, String> LANG = createField(DSL.name("lang"), SQLDataType.CHAR(3), this, "");
 
     /**
+     * The column <code>public.mview_ww_word.lang_filt</code>.
+     */
+    public final TableField<MviewWwWordRecord, String> LANG_FILT = createField(DSL.name("lang_filt"), SQLDataType.VARCHAR(10), this, "");
+
+    /**
      * The column <code>public.mview_ww_word.lang_order_by</code>.
      */
     public final TableField<MviewWwWordRecord, Long> LANG_ORDER_BY = createField(DSL.name("lang_order_by"), SQLDataType.BIGINT, this, "");

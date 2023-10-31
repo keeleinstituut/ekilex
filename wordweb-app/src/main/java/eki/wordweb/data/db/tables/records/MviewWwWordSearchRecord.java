@@ -64,16 +64,16 @@ public class MviewWwWordSearchRecord extends TableRecordImpl<MviewWwWordSearchRe
     }
 
     /**
-     * Setter for <code>public.mview_ww_word_search.word_langs</code>.
+     * Setter for <code>public.mview_ww_word_search.langs_filt</code>.
      */
-    public void setWordLangs(String[] value) {
+    public void setLangsFilt(String[] value) {
         set(3, value);
     }
 
     /**
-     * Getter for <code>public.mview_ww_word_search.word_langs</code>.
+     * Getter for <code>public.mview_ww_word_search.langs_filt</code>.
      */
-    public String[] getWordLangs() {
+    public String[] getLangsFilt() {
         return (String[]) get(3);
     }
 
@@ -136,7 +136,7 @@ public class MviewWwWordSearchRecord extends TableRecordImpl<MviewWwWordSearchRe
 
     @Override
     public Field<String[]> field4() {
-        return MviewWwWordSearch.MVIEW_WW_WORD_SEARCH.WORD_LANGS;
+        return MviewWwWordSearch.MVIEW_WW_WORD_SEARCH.LANGS_FILT;
     }
 
     @Override
@@ -166,7 +166,7 @@ public class MviewWwWordSearchRecord extends TableRecordImpl<MviewWwWordSearchRe
 
     @Override
     public String[] component4() {
-        return getWordLangs();
+        return getLangsFilt();
     }
 
     @Override
@@ -196,7 +196,7 @@ public class MviewWwWordSearchRecord extends TableRecordImpl<MviewWwWordSearchRe
 
     @Override
     public String[] value4() {
-        return getWordLangs();
+        return getLangsFilt();
     }
 
     @Override
@@ -229,7 +229,7 @@ public class MviewWwWordSearchRecord extends TableRecordImpl<MviewWwWordSearchRe
 
     @Override
     public MviewWwWordSearchRecord value4(String[] value) {
-        setWordLangs(value);
+        setLangsFilt(value);
         return this;
     }
 
@@ -270,13 +270,13 @@ public class MviewWwWordSearchRecord extends TableRecordImpl<MviewWwWordSearchRe
     /**
      * Create a detached, initialised MviewWwWordSearchRecord
      */
-    public MviewWwWordSearchRecord(String sgroup, String word, String crit, String[] wordLangs, Long langOrderBy, TypeLangComplexityRecord[] langComplexities) {
+    public MviewWwWordSearchRecord(String sgroup, String word, String crit, String[] langsFilt, Long langOrderBy, TypeLangComplexityRecord[] langComplexities) {
         super(MviewWwWordSearch.MVIEW_WW_WORD_SEARCH);
 
         setSgroup(sgroup);
         setWord(word);
         setCrit(crit);
-        setWordLangs(wordLangs);
+        setLangsFilt(langsFilt);
         setLangOrderBy(langOrderBy);
         setLangComplexities(langComplexities);
     }

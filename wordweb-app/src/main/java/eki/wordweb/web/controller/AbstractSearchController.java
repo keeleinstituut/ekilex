@@ -66,11 +66,7 @@ public abstract class AbstractSearchController extends AbstractController {
 		List<String> selectedLangs = new ArrayList<>();
 		if (CollectionUtils.isEmpty(destinLangs)) {
 			destinLangs = new ArrayList<>();
-			destinLangs.add(DESTIN_LANG_EST);
-		} else if (destinLangs.contains(DESTIN_LANG_ALL)) {
-			destinLangs.remove(DESTIN_LANG_EST);
-		} else if (!destinLangs.contains(DESTIN_LANG_ALL) && !destinLangs.contains(DESTIN_LANG_EST)) {
-			destinLangs.add(DESTIN_LANG_EST);
+			destinLangs.add(DESTIN_LANG_ALL);
 		}
 		sessionBean.setDestinLangs(destinLangs);
 		for (UiFilterElement langFilterElement : langFilter) {

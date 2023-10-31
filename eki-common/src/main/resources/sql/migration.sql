@@ -170,8 +170,10 @@ where not exists (select pf.id
 alter table form drop column paradigm_id cascade, drop column order_by cascade;
 
 -- Töömahu raporti jaoks logimise täiendamine
+-- (edaspidi skript kõrvaldab fk reference constrainti)
 alter table activity_log add column dataset_code varchar(10) references dataset(code) null;
 create index activity_log_dataset_code_idx on activity_log(dataset_code);
+-- alter table activity_log drop constraint activity_log_dataset_code_fkey;
 
 -- word_relation_param rikutud andmete taastamine
 delete
@@ -252,5 +254,42 @@ add column is_public boolean not null default true;
 
 create index source_name_idx on source(name);
 create index source_name_lower_idx on source(lower(name));
+
+-- tarneks kõrvalda fk constrainti loomine üldse. siis pole järgmist vaja
+alter table activity_log drop constraint activity_log_dataset_code_fkey;
+
+-- keelekoodide parandused
+insert into "language" (code, datasets, order_by) select 'nds', datasets, order_by from "language" where code = 'qab';
+insert into "language" (code, datasets, order_by) select 'grn', datasets, order_by from "language" where code = 'gug';
+insert into "language" (code, datasets, order_by) select 'kbd', datasets, order_by from "language" where code = 'kab';
+insert into "language" (code, datasets, order_by) select 'cre', datasets, order_by from "language" where code = 'aem';
+insert into "language" (code, datasets, order_by) select 'orv', datasets, order_by from "language" where code = 'qbi';
+
+update language_label set code = 'nds' where code = 'qab';
+update language_label set code = 'grn' where code = 'gug';
+update language_label set code = 'kbd' where code = 'kab';
+update language_label set code = 'cre' where code = 'aem';
+update language_label set code = 'orv' where code = 'qbi';
+
+update language_label set value = code where code = 'nds' and "type" = 'iso2';
+update language_label set value = 'gn' where code = 'grn' and "type" = 'iso2';
+update language_label set value = code where code = 'kbd' and "type" = 'iso2';
+update language_label set value = 'cr' where code = 'cre' and "type" = 'iso2';
+update language_label set value = code where code = 'orv' and "type" = 'iso2';
+update language_label set value = code where value in ('ps', 'lt', 'lu', 've') and "type" = 'iso2';
+
+update word set lang = 'nds' where lang = 'qab';
+update word set lang = 'grn' where lang = 'gug';
+update word set lang = 'kbd' where lang = 'kab';
+update word set lang = 'cre' where lang = 'aem';
+update word set lang = 'orv' where lang = 'qbi';
+
+update freeform set lang = 'nds' where lang = 'qab';
+update freeform set lang = 'grn' where lang = 'gug';
+update freeform set lang = 'kbd' where lang = 'kab';
+update freeform set lang = 'cre' where lang = 'aem';
+update freeform set lang = 'orv' where lang = 'qbi';
+
+delete from "language" where code in ('qab', 'gug', 'kab', 'aem', 'qbi');
 
 -- Loo uuesti ekilexi baasi tüübid (types) ja vaated (views)

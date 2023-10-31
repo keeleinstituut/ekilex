@@ -59,9 +59,9 @@ public class MviewWwWordSearch extends TableImpl<MviewWwWordSearchRecord> {
     public final TableField<MviewWwWordSearchRecord, String> CRIT = createField(DSL.name("crit"), SQLDataType.CLOB, this, "");
 
     /**
-     * The column <code>public.mview_ww_word_search.word_langs</code>.
+     * The column <code>public.mview_ww_word_search.langs_filt</code>.
      */
-    public final TableField<MviewWwWordSearchRecord, String[]> WORD_LANGS = createField(DSL.name("word_langs"), SQLDataType.CHAR.getArrayDataType(), this, "");
+    public final TableField<MviewWwWordSearchRecord, String[]> LANGS_FILT = createField(DSL.name("langs_filt"), SQLDataType.VARCHAR.getArrayDataType(), this, "");
 
     /**
      * The column <code>public.mview_ww_word_search.lang_order_by</code>.

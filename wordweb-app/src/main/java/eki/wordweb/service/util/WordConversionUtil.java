@@ -17,7 +17,6 @@ import org.springframework.stereotype.Component;
 
 import eki.common.constant.ClassifierName;
 import eki.common.constant.Complexity;
-import eki.common.constant.DatasetType;
 import eki.common.constant.RelationStatus;
 import eki.common.data.Classifier;
 import eki.wordweb.data.LexemeWord;
@@ -303,32 +302,42 @@ public class WordConversionUtil extends AbstractConversionUtil {
 		return allRelatedWordValues;
 	}
 
-	public void composeCommon(Word word, List<LexemeWord> lexemeWords) {
+	public void composeCommon(Word word, List<LexemeWord> lexLexemes, List<LexemeWord> termLexemes) {
 
-		List<Classifier> summarisedPoses = lexemeWords.stream()
-				.filter(lexeme -> CollectionUtils.isNotEmpty(lexeme.getPoses()))
-				.map(LexemeWord::getPoses)
-				.flatMap(List::stream)
-				.distinct()
-				.collect(Collectors.toList());
+		List<Classifier> summarisedPoses = new ArrayList<>();
 
+		if (CollectionUtils.isNotEmpty(lexLexemes)) {
+			List<Classifier> lexSummarisedPoses = lexLexemes.stream()
+					.filter(lexeme -> CollectionUtils.isNotEmpty(lexeme.getPoses()))
+					.map(LexemeWord::getPoses)
+					.flatMap(List::stream)
+					.collect(Collectors.toList());
+			summarisedPoses.addAll(lexSummarisedPoses);
+		}
+
+		if (CollectionUtils.isNotEmpty(termLexemes)) {
+			List<Classifier> termSummarisedPoses = termLexemes.stream()
+					.filter(lexeme -> CollectionUtils.isNotEmpty(lexeme.getPoses()))
+					.map(LexemeWord::getPoses)
+					.flatMap(List::stream)
+					.collect(Collectors.toList());
+			summarisedPoses.addAll(termSummarisedPoses);
+		}
+
+		summarisedPoses = summarisedPoses.stream().distinct().collect(Collectors.toList());
 		List<String> summarisedPosCodes = summarisedPoses.stream().map(Classifier::getCode).collect(Collectors.toList());
 
 		boolean isShowLexPoses = false;
 		boolean isShowTermPoses = false;
-		if (CollectionUtils.isNotEmpty(summarisedPosCodes)) {
-			isShowLexPoses = lexemeWords.stream()
-					.filter(lexeme -> DatasetType.LEX.equals(lexeme.getDatasetType()))
-					.anyMatch(lexeme -> lexeme.getPosCodes() == null || !CollectionUtils.isEqualCollection(lexeme.getPosCodes(), summarisedPosCodes));
 
-			isShowTermPoses = lexemeWords.stream()
-					.filter(lexeme -> DatasetType.TERM.equals(lexeme.getDatasetType()))
-					.anyMatch(lexeme -> lexeme.getPosCodes() == null || !CollectionUtils.isEqualCollection(lexeme.getPosCodes(), summarisedPosCodes));
-		}
+		if (CollectionUtils.isNotEmpty(lexLexemes)) {
 
-		for (LexemeWord lexemeWord : lexemeWords) {
+			if (CollectionUtils.isNotEmpty(summarisedPosCodes)) {
+				isShowLexPoses = lexLexemes.stream()
+						.anyMatch(lexeme -> (lexeme.getPosCodes() == null) || !CollectionUtils.isEqualCollection(lexeme.getPosCodes(), summarisedPosCodes));
+			}
 
-			if (DatasetType.LEX.equals(lexemeWord.getDatasetType())) {
+			for (LexemeWord lexemeWord : lexLexemes) {
 
 				boolean isShowPoses = isShowLexPoses && (CollectionUtils.isNotEmpty(lexemeWord.getPoses()));
 				boolean isShowSection1 = isShowPoses
@@ -348,8 +357,17 @@ public class WordConversionUtil extends AbstractConversionUtil {
 				lexemeWord.setShowSection2(isShowSection2);
 				lexemeWord.setShowSection3(isShowSection3);
 				lexemeWord.setShowPoses(isShowPoses);
+			}
+		}
 
-			} else if (DatasetType.TERM.equals(lexemeWord.getDatasetType())) {
+		if (CollectionUtils.isNotEmpty(termLexemes)) {
+
+			if (CollectionUtils.isNotEmpty(summarisedPosCodes)) {
+				isShowTermPoses = termLexemes.stream()
+						.anyMatch(lexeme -> (lexeme.getPosCodes() == null) || !CollectionUtils.isEqualCollection(lexeme.getPosCodes(), summarisedPosCodes));
+			}
+
+			for (LexemeWord lexemeWord : termLexemes) {
 
 				String wordValue = lexemeWord.getWord();
 				String wordLang = lexemeWord.getLang();
@@ -368,6 +386,7 @@ public class WordConversionUtil extends AbstractConversionUtil {
 				}
 			}
 		}
+
 		word.setSummarisedPoses(summarisedPoses);
 	}
 }

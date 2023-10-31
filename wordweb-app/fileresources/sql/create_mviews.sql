@@ -50,7 +50,7 @@ dblink(
 	sgroup varchar(10),
 	word text,
 	crit text,
-	word_langs char(3) array,
+	langs_filt varchar(10) array,
 	lang_order_by bigint,
 	lang_complexities type_lang_complexity array
 );
@@ -65,6 +65,7 @@ dblink(
 	word_prese text,
 	as_word text,
 	lang char(3),
+	lang_filt varchar(10),
 	lang_order_by bigint,
 	homonym_nr integer,
 	word_type_codes varchar(100) array,
@@ -337,7 +338,7 @@ create index mview_ww_word_search_sgroup_idx on mview_ww_word_search (sgroup);
 create index mview_ww_word_search_crit_idx on mview_ww_word_search (crit);
 create index mview_ww_word_search_crit_prefix_idx on mview_ww_word_search (crit text_pattern_ops);
 create index mview_ww_word_search_crit_tri_idx on mview_ww_word_search using gin(crit gin_trgm_ops);
-create index mview_ww_word_search_word_langs_idx on mview_ww_word_search using gin(word_langs);
+create index mview_ww_word_search_langs_filt_idx on mview_ww_word_search using gin(langs_filt);
 create index mview_ww_word_word_id_idx on mview_ww_word (word_id);
 create index mview_ww_word_value_idx on mview_ww_word (word);
 create index mview_ww_word_value_lower_idx on mview_ww_word (lower(word));
@@ -347,6 +348,7 @@ create index mview_ww_word_as_value_lower_idx on mview_ww_word (lower(as_word));
 create index mview_ww_word_as_value_prefix_idx on mview_ww_word (as_word text_pattern_ops);
 create index mview_ww_word_as_value_lower_prefix_idx on mview_ww_word (lower(as_word) text_pattern_ops);
 create index mview_ww_word_lang_idx on mview_ww_word (lang);
+create index mview_ww_word_lang_filt_idx on mview_ww_word (lang_filt);
 create index mview_ww_form_word_id_idx on mview_ww_form (word_id);
 create index mview_ww_form_word_idx on mview_ww_form (word);
 create index mview_ww_form_word_lower_idx on mview_ww_form (lower(word));

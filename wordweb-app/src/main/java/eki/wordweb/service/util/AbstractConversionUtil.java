@@ -85,7 +85,9 @@ public abstract class AbstractConversionUtil implements WebConstant, SystemConst
 		if (lexComplexity == null) {
 			return list;
 		}
-		return list.stream().filter(elem -> isComplexityMatch(elem.getComplexity(), lexComplexity)).collect(Collectors.toList());
+		return list.stream()
+				.filter(elem -> isComplexityMatch(elem.getComplexity(), lexComplexity))
+				.collect(Collectors.toList());
 	}
 
 	protected boolean isComplexityMatch(Complexity dataComplexity, Complexity lexComplexity) {
@@ -105,7 +107,9 @@ public abstract class AbstractConversionUtil implements WebConstant, SystemConst
 		if (CollectionUtils.isEmpty(destinLangs)) {
 			return list;
 		}
-		return list.stream().filter(elem -> isLangFilterMatch(wordLang, elem.getLang(), destinLangs)).collect(Collectors.toList());
+		return list.stream()
+				.filter(elem -> isLangFilterMatch(wordLang, elem.getLang(), destinLangs))
+				.collect(Collectors.toList());
 	}
 
 	protected boolean isLangFilterMatch(String wordLang, String dataLang, List<String> destinLangs) {
@@ -113,6 +117,10 @@ public abstract class AbstractConversionUtil implements WebConstant, SystemConst
 			return true;
 		}
 		if (destinLangs.contains(DESTIN_LANG_ALL)) {
+			return true;
+		}
+		// forced estonian content
+		if (StringUtils.equals(DESTIN_LANG_EST, dataLang)) {
 			return true;
 		}
 		if (StringUtils.equals(wordLang, dataLang)) {
