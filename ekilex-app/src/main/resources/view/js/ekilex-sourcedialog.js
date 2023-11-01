@@ -42,7 +42,8 @@ $.fn.editSourcePlugin = function() {
 				return;
 			}
 
-			const editFldValue = editFld.val();
+			let editFldValue = editFld.val();
+			editFldValue = cleanEkiEditorValue(editFldValue);
 			valueInput.val(editFldValue);
 
 			$.ajax({

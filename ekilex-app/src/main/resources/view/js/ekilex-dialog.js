@@ -161,7 +161,8 @@ $(function() {
 					e.preventDefault();
 					const submitBtn = $(this);
 					if (editFld.val()) {
-						const editFldValue = editFld.val();
+						let editFldValue = editFld.val();
+						editFldValue = cleanEkiEditorValue(editFldValue);
 						valueInput.val(editFldValue);
 						const editWordForm = submitBtn.closest('form');
 						const isValid = checkRequiredFields(editWordForm);

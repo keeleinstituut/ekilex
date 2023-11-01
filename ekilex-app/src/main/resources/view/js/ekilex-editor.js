@@ -39,12 +39,7 @@ function initEkiEditorDlg(editDlg, editorOptions) {
 	editDlg.find('button[type="submit"]').off('click').on('click', function(e) {
 		if (editFld.val()) {
 			let editFldValue = editFld.val();
-			// Remove empty values, eki-selected class and empty elements.
-			editFldValue = editFldValue
-				.replace("<br>", "")
-				.replaceAll("&nbsp;", " ")
-				.replaceAll('class="eki-selected"', '')
-				.replace(/<[^/>][^>]*><\/[^>]+>/gm, '');
+			editFldValue = cleanEkiEditorValue(editFldValue);
 			valueInput.val(editFldValue);
 			footer.find('.error-text').remove();
 			editFld.removeClass('is-invalid');
@@ -56,3 +51,13 @@ function initEkiEditorDlg(editDlg, editorOptions) {
 		}
 	});
 };
+
+function cleanEkiEditorValue(editFldValue) {
+
+	// Remove empty values, eki-selected class and empty elements.
+	return editFldValue
+		.replace("<br>", "")
+		.replaceAll("&nbsp;", " ")
+		.replaceAll('class="eki-selected"', '')
+		.replace(/<[^/>][^>]*><\/[^>]+>/gm, '');
+}
