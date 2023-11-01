@@ -13,6 +13,8 @@ public class SourceRequest extends AbstractDataObject {
 
 	private String name;
 
+	private String shortName; // TODO delete later
+
 	private String valuePrese;
 
 	private String comment;
@@ -39,6 +41,14 @@ public class SourceRequest extends AbstractDataObject {
 
 	public void setName(String name) {
 		this.name = name;
+	}
+
+	public String getShortName() {
+		return shortName;
+	}
+
+	public void setShortName(String shortName) {
+		this.shortName = shortName;
 	}
 
 	public String getValuePrese() {

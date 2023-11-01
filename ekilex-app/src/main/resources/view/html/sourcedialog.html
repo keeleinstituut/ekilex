@@ -62,7 +62,7 @@
         <form th:action="@{/update_source}" method="post" data-plugin="editSourcePlugin">
           <div class="modal-body">
             <input type="hidden" name="sourceId" th:value="${source.id}">
-            <input type="hidden" name="valuePrese" th:value="${source.valuePrese}">
+            <!-- <input type="hidden" name="valuePrese" th:value="${source.valuePrese}"> -->
             <div class="form-group row m-4">
               <label class="col-12 col-form-label" th:text="#{source.type}">Tüüp</label>
               <div class="col-md-6">
@@ -71,30 +71,30 @@
                 </select>
               </div>
             </div>
-            <div class="form-group row m-4">
-              <label class="col-12 col-form-label" th:text="#{source.name}">Lühike kuju</label>
-              <div class="col-md-12">
-                <input class="form-control" name="name" th:value="${source.name}">
-              </div>
-            </div>
-            <div class="form-group row m-4">
-              <label class="col-12 col-form-label" th:text="#{source.value}">Pikk kuju</label>
-              <div class="col-md-12">
-                <div th:replace="components :: eki_editor_elem"></div>
-              </div>
-            </div>
-            <div class="form-group row m-4">
-              <label class="col-12 col-form-label" th:text="#{source.comment}">Mitteavalik kommentaar</label>
-              <div class="col-md-12">
-                <input class="form-control" name="comment" th:value="${source.comment}">
-              </div>
-            </div>
-            <div class="form-group form-check m-4">
-              <label class="col-12 form-check-label">
-                <input class="form-check-input" type="checkbox" name="public" th:checked="${source.public}" value="true">
-                <span th:text="#{boolean.public.true}">Avalik</span>
-              </label>
-            </div>
+            <!-- <div class="form-group row m-4"> -->
+            <!--   <label class="col-12 col-form-label" th:text="#{source.name}">Lühike kuju</label> -->
+            <!--   <div class="col-md-12"> -->
+            <!--     <input class="form-control" name="name" th:value="${source.name}"> -->
+            <!--   </div> -->
+            <!-- </div> -->
+            <!-- <div class="form-group row m-4"> -->
+            <!--   <label class="col-12 col-form-label" th:text="#{source.value}">Pikk kuju</label> -->
+            <!--   <div class="col-md-12"> -->
+            <!--     <div th:replace="components :: eki_editor_elem"></div> -->
+            <!--   </div> -->
+            <!-- </div> -->
+            <!-- <div class="form-group row m-4"> -->
+            <!--   <label class="col-12 col-form-label" th:text="#{source.comment}">Mitteavalik kommentaar</label> -->
+            <!--   <div class="col-md-12"> -->
+            <!--     <input class="form-control" name="comment" th:value="${source.comment}"> -->
+            <!--   </div> -->
+            <!-- </div> -->
+            <!-- <div class="form-group form-check m-4"> -->
+            <!--   <label class="col-12 form-check-label"> -->
+            <!--     <input class="form-check-input" type="checkbox" name="public" th:checked="${source.public}" value="true"> -->
+            <!--     <span th:text="#{boolean.public.true}">Avalik</span> -->
+            <!--   </label> -->
+            <!-- </div> -->
           </div>
           <div class="modal-footer">
             <button type="submit" class="btn btn-primary" th:text="#{common.save}">Salvesta</button>

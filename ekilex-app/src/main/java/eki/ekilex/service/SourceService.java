@@ -183,6 +183,15 @@ public class SourceService extends AbstractSourceService implements GlobalConsta
 		activityLogService.createActivityLog(activityLog, sourceId, ActivityEntity.SOURCE);
 	}
 
+	// TODO delete later
+	@Transactional
+	public void updateSourceType(Long sourceId, SourceType type, String roleDatasetCode) throws Exception {
+
+		ActivityLogData activityLog = activityLogService.prepareActivityLog("updateSource", sourceId, ActivityOwner.SOURCE, roleDatasetCode, MANUAL_EVENT_ON_UPDATE_DISABLED);
+		sourceDbService.updateSourceType(sourceId, type);
+		activityLogService.createActivityLog(activityLog, sourceId, ActivityEntity.SOURCE);
+	}
+
 	@Transactional
 	public boolean validateSourceDelete(Long sourceId) {
 		return sourceDbService.validateSourceDelete(sourceId);

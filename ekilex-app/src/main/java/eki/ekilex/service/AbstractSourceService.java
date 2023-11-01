@@ -31,4 +31,13 @@ public abstract class AbstractSourceService extends AbstractService {
 		return sourceId;
 	}
 
+	@Transactional
+	@Deprecated
+	public Long createSourceDeprecated(SourceType sourceType, List<SourceProperty> sourceProperties, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
+
+		Long sourceId = sourceDbService.createSourceDeprecated(sourceType, sourceProperties);
+		activityLogService.createActivityLog("createSource", sourceId, ActivityOwner.SOURCE, roleDatasetCode, isManualEventOnUpdateEnabled);
+		return sourceId;
+	}
+
 }

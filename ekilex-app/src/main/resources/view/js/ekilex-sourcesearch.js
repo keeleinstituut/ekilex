@@ -205,11 +205,12 @@ $.fn.addSourceSubmitPlugin = function() {
 		const obj = $(this);
 		obj.on('click', function() {
 			const addSourceForm = obj.closest('form');
-			const editFld = addSourceForm.find('[data-id="editFld"]');
-			const valueInput = addSourceForm.find('[name=valuePrese]');
-			let editFldValue = editFld.val();
-			editFldValue = cleanEkiEditorValue(editFldValue);
-			valueInput.val(editFldValue);
+			// TODO temporarily disabled, restore later
+			// const editFld = addSourceForm.find('[data-id="editFld"]');
+			// const valueInput = addSourceForm.find('[name=valuePrese]');
+			// let editFldValue = editFld.val();
+			// editFldValue = cleanEkiEditorValue(editFldValue);
+			// valueInput.val(editFldValue);
 			if (viewType === 'source') {
 				addSource(addSourceForm);
 			} else {

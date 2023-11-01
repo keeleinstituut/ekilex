@@ -78,34 +78,55 @@ public class SourceLinkService extends AbstractSourceService implements GlobalCo
 		return null;
 	}
 
-    @Transactional
-    public void createSourceAndSourceLink(
-			SourceType sourceType, String name, String valuePrese, String comment, boolean isPublic, List<SourceProperty> sourceProperties,
-			Long sourceLinkOwnerId, String sourceLinkOwnerCode, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
+	// TODO restore later
+    // @Transactional
+    // public void createSourceAndSourceLink(
+	// 		SourceType sourceType, String name, String valuePrese, String comment, boolean isPublic, List<SourceProperty> sourceProperties,
+	// 		Long sourceLinkOwnerId, String sourceLinkOwnerCode, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
+	//
+    //     Long sourceId = createSource(sourceType, name, valuePrese, comment, isPublic, sourceProperties, roleDatasetCode, MANUAL_EVENT_ON_UPDATE_DISABLED);
+	//
+	// 	String sourceLinkValue;
+	// 	if (StringUtils.isNotBlank(name)) {
+	// 		sourceLinkValue = name;
+	// 	} else {
+	// 		sourceLinkValue = sourceProperties.stream()
+	// 				.filter(sourceProperty -> FreeformType.SOURCE_NAME.equals(sourceProperty.getType()))
+	// 				.findFirst()
+	// 				.map(SourceProperty::getValueText)
+	// 				.orElseThrow(OperationDeniedException::new);
+	// 	}
+	// 	ReferenceType sourceLinkRefType = ReferenceType.ANY;
+    //     String sourceLinkName = null;
+	//
+	// 	if (ContentKey.DEFINITION_SOURCE_LINK.equals(sourceLinkOwnerCode)) {
+    //         createDefinitionSourceLink(sourceLinkOwnerId, sourceId, sourceLinkRefType, sourceLinkValue, sourceLinkName, roleDatasetCode, isManualEventOnUpdateEnabled);
+    //     } else if (ContentKey.LEXEME_SOURCE_LINK.equals(sourceLinkOwnerCode)) {
+    //     	createLexemeSourceLink(sourceLinkOwnerId, sourceId, sourceLinkRefType, sourceLinkValue, sourceLinkName, roleDatasetCode, isManualEventOnUpdateEnabled);
+	// 	} else if (ContentKey.FREEFORM_SOURCE_LINK.equals(sourceLinkOwnerCode)) {
+	// 		createFreeformSourceLink(sourceLinkOwnerId, sourceId, sourceLinkRefType, sourceLinkValue, sourceLinkName, roleDatasetCode, isManualEventOnUpdateEnabled);
+	// 	}
+    // }
 
-        Long sourceId = createSource(sourceType, name, valuePrese, comment, isPublic, sourceProperties, roleDatasetCode, MANUAL_EVENT_ON_UPDATE_DISABLED);
+	// TODO delete later
+	@Transactional
+	public void createSourceAndSourceLink(
+			SourceType sourceType, List<SourceProperty> sourceProperties, Long sourceLinkOwnerId, String sourceLinkOwnerCode, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
 
-		String sourceLinkValue;
-		if (StringUtils.isNotBlank(name)) {
-			sourceLinkValue = name;
-		} else {
-			sourceLinkValue = sourceProperties.stream()
-					.filter(sourceProperty -> FreeformType.SOURCE_NAME.equals(sourceProperty.getType()))
-					.findFirst()
-					.map(SourceProperty::getValueText)
-					.orElseThrow(OperationDeniedException::new);
-		}
+		Long sourceId = createSourceDeprecated(sourceType, sourceProperties, roleDatasetCode, MANUAL_EVENT_ON_UPDATE_DISABLED);
+
+		String sourceLinkValue = sourceProperties.get(0).getValueText();
 		ReferenceType sourceLinkRefType = ReferenceType.ANY;
-        String sourceLinkName = null;
+		String sourceLinkName = null;
 
 		if (ContentKey.DEFINITION_SOURCE_LINK.equals(sourceLinkOwnerCode)) {
-            createDefinitionSourceLink(sourceLinkOwnerId, sourceId, sourceLinkRefType, sourceLinkValue, sourceLinkName, roleDatasetCode, isManualEventOnUpdateEnabled);
-        } else if (ContentKey.LEXEME_SOURCE_LINK.equals(sourceLinkOwnerCode)) {
-        	createLexemeSourceLink(sourceLinkOwnerId, sourceId, sourceLinkRefType, sourceLinkValue, sourceLinkName, roleDatasetCode, isManualEventOnUpdateEnabled);
+			createDefinitionSourceLink(sourceLinkOwnerId, sourceId, sourceLinkRefType, sourceLinkValue, sourceLinkName, roleDatasetCode, isManualEventOnUpdateEnabled);
+		} else if (ContentKey.LEXEME_SOURCE_LINK.equals(sourceLinkOwnerCode)) {
+			createLexemeSourceLink(sourceLinkOwnerId, sourceId, sourceLinkRefType, sourceLinkValue, sourceLinkName, roleDatasetCode, isManualEventOnUpdateEnabled);
 		} else if (ContentKey.FREEFORM_SOURCE_LINK.equals(sourceLinkOwnerCode)) {
 			createFreeformSourceLink(sourceLinkOwnerId, sourceId, sourceLinkRefType, sourceLinkValue, sourceLinkName, roleDatasetCode, isManualEventOnUpdateEnabled);
 		}
-    }
+	}
 
 	private boolean isSupportedSourceLink(FreeformOwner freeformOwner) {
 		if (ActivityEntity.LEXEME.equals(freeformOwner.getEntity())

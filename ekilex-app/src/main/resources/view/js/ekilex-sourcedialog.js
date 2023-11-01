@@ -19,21 +19,23 @@ $.fn.initAddSourcePropertyDlgPlugin = function() {
 }
 
 $.fn.initAddSourcePlugin = function() {
-	return this.each(function() {
-		const form = $(this);
-		const editFld = form.find('[data-id="editFld"]');
-		initCkEditor(editFld);
-	});
+	// TODO temporarily disabled, restore later
+	// return this.each(function() {
+	// 	const form = $(this);
+	// 	const editFld = form.find('[data-id="editFld"]');
+	// 	initCkEditor(editFld);
+	// });
 }
 
 $.fn.editSourcePlugin = function() {
 	return this.each(function() {
 		const form = $(this);
 		const sourceId = form.find('[name=sourceId]').val();
-		const editFld = form.find('[data-id="editFld"]');
-		const valueInput = form.find('[name=valuePrese]');
-		editFld.val(valueInput.val());
-		initCkEditor(editFld);
+		// TODO temporarily disabled, restore later
+		// const editFld = form.find('[data-id="editFld"]');
+		// const valueInput = form.find('[name=valuePrese]');
+		// editFld.val(valueInput.val());
+		// initCkEditor(editFld);
 
 		form.on('submit', function(e) {
 			e.preventDefault();
@@ -42,9 +44,10 @@ $.fn.editSourcePlugin = function() {
 				return;
 			}
 
-			let editFldValue = editFld.val();
-			editFldValue = cleanEkiEditorValue(editFldValue);
-			valueInput.val(editFldValue);
+			// TODO temporarily disabled, restore later
+			// let editFldValue = editFld.val();
+			// editFldValue = cleanEkiEditorValue(editFldValue);
+			// valueInput.val(editFldValue);
 
 			$.ajax({
 				url: form.attr('action'),
