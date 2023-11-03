@@ -435,7 +435,7 @@
                               <span class="lang-code lang-code-sm mr-2 align-self-start"
                                     th:with="langData=${viewUtil.getLangData(noteEntry.key)}"
                                     th:text="${langData.codeIso2}" th:title="${langData.label}" data-toggle="tooltip"></span>
-                              <div class="d-flex flex-column">
+                              <div class="d-flex flex-column good-to-know-info">
                                 <th:block th:each="note : ${noteEntry.value}"
                                           th:with="isCollapsable=${not #strings.isEmpty(note.valueCut)}">
                                   <div th:id="|note-entry-text-${note.freeformId}|">

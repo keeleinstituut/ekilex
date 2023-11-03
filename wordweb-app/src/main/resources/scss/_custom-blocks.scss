@@ -6,3 +6,9 @@
   position: absolute;
   visibility: hidden;
 }
+
+.good-to-know-info {
+  div:not(:first-of-type) {
+    margin-top: .5rem;
+  }
+}
