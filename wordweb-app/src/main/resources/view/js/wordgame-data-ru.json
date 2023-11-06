@@ -8450,7 +8450,7 @@
     "example_1": "Пчёлы собирают мёд.",
     "example_2": "",
     "example_3": "",
-    "image_link": "https://sonaveeb.ee/files/images/mesilane.jpg",
+    "image_link": "https://sonaveeb.ee/files/images/mesilane.svg",
     "multicard_filename": null,
     "order": 6,
     "sub_category": "",
@@ -16717,7 +16717,7 @@
     "order": 12,
     "sub_category": "голова",
     "type": 1,
-    "word": "бровь",
+    "word": "брови",
     "wordId": 303344,
     "word_link": "https://sonaveeb.ee/search/lite/dlall/бровь/1"
   },
