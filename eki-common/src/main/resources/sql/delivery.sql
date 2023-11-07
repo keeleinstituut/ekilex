@@ -265,5 +265,3 @@ update freeform set lang = 'cre' where lang = 'aem';
 update freeform set lang = 'orv' where lang = 'qbi';
 
 delete from "language" where code in ('qab', 'gug', 'kab', 'aem', 'qbi');
-
-drop function if exists merge_homonyms_to_eki(char(3) array);
