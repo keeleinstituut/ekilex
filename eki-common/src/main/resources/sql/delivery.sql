@@ -215,6 +215,7 @@ where l.is_public is false
                 and w.is_public is false);
 
 -- Üleliigsete ekilexi laienduste ja funktsioonide kustutamine
+-- NB! laienduste kustutamiseks ja loomiseks on vaja postgres kasutaja õiguseid
 drop extension if exists dblink cascade;
 drop extension if exists pg_stat_statements cascade;
 drop extension if exists pg_trgm cascade;

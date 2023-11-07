@@ -1,36 +1,32 @@
 Märkused ver 1.32.0 tarne kohta:
 
-Uuendada postgres versioon 15.4:
+*	Uuendada postgres andmebaasi server versioonile 15.4
+	Testkeskkonnas äraproovitud uuendamise meetod oli järgnev:
+	- kõikide rakenduste vana andmebaasi dumpid sql kujul
+	- uue andmebaasi serveri ver 15.4 paigaldamine
+	- uues/uutes andmebaasi serveris/serverites kõigi rakenduste andmebaaside ja kasutajate loomine
+	- andmebaasi dumpide laadimine psql utiliidiga
+	
+NB! andmebaaside loomisel kasutada kodeeringut (encoding) UTF8 ja tähestikku (collation) et_EE.UTF-8; saadaval peab olema ka fi_FI.UTF-8
 
-* olemasoleva ver 9.6 andmebaaside salvestamiseks kasutada pg_dumpi: https://www.postgresql.org/docs/15/app-pgdump.html
-* salvestada dump ekilex, wordweb ja ekistat andmebaasidest. windows masinas töötab dumpi loomine nii:
-  pg_dump --file "<ekilex dumpi asukoht>" -v -U postgres --role=ekilex -E UTF8 -Fc ekilex
-  pg_dump --file "<wordweb dumpi asukoht>" -v -U postgres --role=wordweb -E UTF8 -Fc wordweb
-  pg_dump --file "<ekistat dumpi asukoht>" -v -U postgres --role=ekistat -E UTF8 -Fc ekistat
+*	Pärast postgres versiooni uuendamist käivitada migratsiooni skript ja teha värske sõnaveebi laadimine:
 
-* postgres ver 15.4 luua:
-  ekilex kasutaja ja andmebaas
-  wordweb kasutaja ja andmebaas
-  ekistat kasutaja ja andmebaas
-* OLULINE: andmebaaside loomisel kasutada kodeeringut (encoding) UTF8 ja tähestikku (collation) et_EE.UTF-8
+	- käivitada ekilexi andmebaasi migratsiooni skript (skript on aeganõudev ja seda on soovitatav käivitada mitmes osas):
+	/eki-common/src/main/resources/sql/delivery.sql
 
-* eelnevalt salvestatud andmebaaside taastamiseks kasutada pg_restore: https://www.postgresql.org/docs/15/app-pgrestore.html
-* windows masinas töötab restore nii:
-  pg_restore -v -U postgres -W -Fc -d ekilex <ekilex dumpi asukoht>
-  pg_restore -v -U postgres -W -Fc -d wordweb <wordweb dumpi asukoht>
-  pg_restore -v -U postgres -W -Fc -d ekistat <ekistat dumpi asukoht>
+	- kustutada ekilexi baasis kõik sõnaveebiga seotud vaated ja andmetüübid:
+	/eki-common/src/main/resources/sql/drop_all.sql sektsioon "wordweb associated views and types"
 
+	- luua ekilexi baasis vaated:
+	/eki-common/src/main/resources/sql/create_views.sql
 
-Pärast postgres versiooni uuendamist käivitada migratsiooni skript ja teha värske sõnaveebi laadimine:
+	- luua sõnaveebi baasis vaated:
+	/wordweb-app/fileresources/sql/create_mviews.sql
 
-* käivitada ekilexi andmebaasi migratsiooni skript (skript on aeganõudev ja seda on soovitatav käivitada mitmes osas):
-  /eki-common/src/main/resources/sql/delivery.sql
+NB! Uues postgres on muutunud õiguste mudel, mille järgi public schemas loodud andmebaasitabelid kuuluvad vastavale kasutajale.
+	Lõpuks tuleb tagada, et skriptidega loodud tabelitele ja vaadetele oleks vastava rakenduse kasutajal piisav juurdepääs. Eelistatult võiks rakenduse kasutaja olla loodud tabelite ja vaadete omanik.
 
-* kustutada ekilexi baasis kõik sõnaveebiga seotud vaated ja andmetüübid:
-  /eki-common/src/main/resources/sql/drop_all.sql sektsioon "wordweb associated views and types"
-
-* luua ekilexi baasis vaated:
-  /eki-common/src/main/resources/sql/create_views.sql
-
-* luua sõnaveebi baasis vaated:
-  /wordweb-app/fileresources/sql/create_mviews.sql
+*	Andmebaasi jõudlust tuleb teadlikult häälestada. Süsteemi andmebaasid on mahukad ning jõudlusele toetuvaid funktsioone lisandub pidevalt.
+	Meil on head kogemused selle koha soovitustega:
+	https://pgtune.leopard.in.ua/
+	Muuhulgas soovitame seal DB Type=Mixed type of application
