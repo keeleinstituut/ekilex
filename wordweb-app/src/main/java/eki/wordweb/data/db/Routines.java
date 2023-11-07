@@ -4,6 +4,7 @@
 package eki.wordweb.data.db;
 
 
+import eki.wordweb.data.db.routines.DaitchMokotoff;
 import eki.wordweb.data.db.routines.Difference;
 import eki.wordweb.data.db.routines.Dmetaphone;
 import eki.wordweb.data.db.routines.DmetaphoneAlt;
@@ -55,6 +56,44 @@ import org.jooq.Field;
  */
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Routines {
+
+    /**
+     * Call <code>public.daitch_mokotoff</code>
+     */
+    public static String[] daitchMokotoff(
+          Configuration configuration
+        , String __1
+    ) {
+        DaitchMokotoff f = new DaitchMokotoff();
+        f.set__1(__1);
+
+        f.execute(configuration);
+        return f.getReturnValue();
+    }
+
+    /**
+     * Get <code>public.daitch_mokotoff</code> as a field.
+     */
+    public static Field<String[]> daitchMokotoff(
+          String __1
+    ) {
+        DaitchMokotoff f = new DaitchMokotoff();
+        f.set__1(__1);
+
+        return f.asField();
+    }
+
+    /**
+     * Get <code>public.daitch_mokotoff</code> as a field.
+     */
+    public static Field<String[]> daitchMokotoff(
+          Field<String> __1
+    ) {
+        DaitchMokotoff f = new DaitchMokotoff();
+        f.set__1(__1);
+
+        return f.asField();
+    }
 
     /**
      * Call <code>public.difference</code>
