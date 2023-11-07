@@ -18,95 +18,95 @@ insert into etymology_type (code, datasets) values ('ühtlustamisel', '{}');
 insert into tag (name, type) values ('etümoloogia üle vaadata', 'LEX');
 
 do $$
-  declare
-    word_etym_row             record;
-    duplicate_word_etym_row   record;
-    etymology_type_codes      varchar(100)[];
-    word_etym_comment         text;
-    word_etym_comment_prese   text;
-    is_word_etym_questionable boolean;
-    etym_word_first_lexeme_id bigint;
-  begin
-    for word_etym_row in
-      (select we.id,
-              we.word_id,
-              we.etymology_type_code,
-              we.comment,
-              we.comment_prese,
-              we.is_questionable
-       from word_etymology we
-       where exists (select we2.id
-                     from word_etymology we2
-                     where we2.word_id = we.word_id
-                       and we2.order_by > we.order_by)
-         and not exists(select we3.id
-                        from word_etymology we3
-                        where we3.word_id = we.word_id
-                          and we3.order_by < we.order_by))
-      loop
-        etymology_type_codes := array []::text[];
-        word_etym_comment = word_etym_row.comment;
-        word_etym_comment_prese = word_etym_row.comment_prese;
-        is_word_etym_questionable = word_etym_row.is_questionable;
+declare
+  word_etym_row             record;
+  duplicate_word_etym_row   record;
+  etymology_type_codes      varchar(100)[];
+  word_etym_comment         text;
+  word_etym_comment_prese   text;
+  is_word_etym_questionable boolean;
+  etym_word_first_lexeme_id bigint;
+begin
+  for word_etym_row in
+    (select we.id,
+            we.word_id,
+            we.etymology_type_code,
+            we.comment,
+            we.comment_prese,
+            we.is_questionable
+     from word_etymology we
+     where exists (select we2.id
+                   from word_etymology we2
+                   where we2.word_id = we.word_id
+                     and we2.order_by > we.order_by)
+       and not exists(select we3.id
+                      from word_etymology we3
+                      where we3.word_id = we.word_id
+                        and we3.order_by < we.order_by))
+    loop
+      etymology_type_codes := array []::text[];
+      word_etym_comment = word_etym_row.comment;
+      word_etym_comment_prese = word_etym_row.comment_prese;
+      is_word_etym_questionable = word_etym_row.is_questionable;
 
-        if word_etym_row.etymology_type_code is not null then
-          etymology_type_codes := array_append(etymology_type_codes, word_etym_row.etymology_type_code);
-        end if;
+      if word_etym_row.etymology_type_code is not null then
+        etymology_type_codes := array_append(etymology_type_codes, word_etym_row.etymology_type_code);
+      end if;
 
-        for duplicate_word_etym_row in
-          (select we.id,
-                  we.word_id,
-                  we.etymology_type_code,
-                  we.comment,
-                  we.comment_prese,
-                  we.is_questionable
-           from word_etymology we
-           where word_etym_row.word_id = we.word_id
-             and word_etym_row.id != we.id)
-          loop
+      for duplicate_word_etym_row in
+        (select we.id,
+                we.word_id,
+                we.etymology_type_code,
+                we.comment,
+                we.comment_prese,
+                we.is_questionable
+         from word_etymology we
+         where word_etym_row.word_id = we.word_id
+           and word_etym_row.id != we.id)
+        loop
 
-            if duplicate_word_etym_row.comment is not null then
-              word_etym_comment := concat(word_etym_comment, '; ', duplicate_word_etym_row.comment);
-              word_etym_comment_prese := concat(word_etym_comment_prese, '; ', duplicate_word_etym_row.comment_prese);
+          if duplicate_word_etym_row.comment is not null then
+            word_etym_comment := concat(word_etym_comment, '; ', duplicate_word_etym_row.comment);
+            word_etym_comment_prese := concat(word_etym_comment_prese, '; ', duplicate_word_etym_row.comment_prese);
+          end if;
+
+          if duplicate_word_etym_row.etymology_type_code is not null then
+            if duplicate_word_etym_row.etymology_type_code != any (etymology_type_codes) then
+              etymology_type_codes := array_append(etymology_type_codes, duplicate_word_etym_row.etymology_type_code);
             end if;
+          end if;
 
-            if duplicate_word_etym_row.etymology_type_code is not null then
-              if duplicate_word_etym_row.etymology_type_code != any (etymology_type_codes) then
-                etymology_type_codes := array_append(etymology_type_codes, duplicate_word_etym_row.etymology_type_code);
-              end if;
-            end if;
+          if duplicate_word_etym_row.is_questionable is true then
+            is_word_etym_questionable := true;
+          end if;
 
-            if duplicate_word_etym_row.is_questionable is true then
-              is_word_etym_questionable := true;
-            end if;
+          delete from word_etymology where id = duplicate_word_etym_row.id;
+        end loop;
 
-            delete from word_etymology where id = duplicate_word_etym_row.id;
-          end loop;
+      if array_length(etymology_type_codes, 1) = 1 then
+        update word_etymology set etymology_type_code = etymology_type_codes[1] where id = word_etym_row.id;
+      end if;
 
-        if array_length(etymology_type_codes, 1) = 1 then
-          update word_etymology set etymology_type_code = etymology_type_codes[1] where id = word_etym_row.id;
-        end if;
+      if array_length(etymology_type_codes, 1) > 1 then
+        word_etym_comment := concat(word_etym_comment, '; Päritolu liigid: ', array_to_string(etymology_type_codes, ', '));
+        word_etym_comment_prese := concat(word_etym_comment_prese, '; Päritolu liigid: ', array_to_string(etymology_type_codes, ', '));
+        update word_etymology set etymology_type_code = 'ühtlustamisel' where id = word_etym_row.id;
+      end if;
 
-        if array_length(etymology_type_codes, 1) > 1 then
-          word_etym_comment := concat(word_etym_comment, '; Päritolu liigid: ', array_to_string(etymology_type_codes, ', '));
-          word_etym_comment_prese := concat(word_etym_comment_prese, '; Päritolu liigid: ', array_to_string(etymology_type_codes, ', '));
-          update word_etymology set etymology_type_code = 'ühtlustamisel' where id = word_etym_row.id;
-        end if;
+      update word_etymology set comment = word_etym_comment where id = word_etym_row.id;
+      update word_etymology set comment_prese = word_etym_comment_prese where id = word_etym_row.id;
+      update word_etymology set is_questionable = is_word_etym_questionable where id = word_etym_row.id;
 
-        update word_etymology set comment = word_etym_comment where id = word_etym_row.id;
-        update word_etymology set comment_prese = word_etym_comment_prese where id = word_etym_row.id;
-        update word_etymology set is_questionable = is_word_etym_questionable where id = word_etym_row.id;
+      select l.id
+      from lexeme l, dataset d
+      where l.word_id = word_etym_row.word_id and l.dataset_code = d.code
+      order by d.order_by, l.level1, l.level2
+      limit 1
+      into etym_word_first_lexeme_id;
 
-        select l.id
-        from lexeme l, dataset d
-        where l.word_id = word_etym_row.word_id and l.dataset_code = d.code
-        order by d.order_by, l.level1, l.level2
-        limit 1
-        into etym_word_first_lexeme_id;
-
-        insert into lexeme_tag (lexeme_id, tag_name) values (etym_word_first_lexeme_id, 'etümoloogia üle vaadata');
-      end loop;
-  end $$;
+      insert into lexeme_tag (lexeme_id, tag_name) values (etym_word_first_lexeme_id, 'etümoloogia üle vaadata');
+    end loop;
+end $$;
 
 -- Vormi migra (päringud võivad olla aeganõudvad)
 create table paradigm_form
@@ -231,3 +231,39 @@ add column is_public boolean not null default true;
 
 create index source_name_idx on source(name);
 create index source_name_lower_idx on source(lower(name));
+
+-- keelekoodide parandused
+insert into "language" (code, datasets, order_by) select 'nds', datasets, order_by from "language" where code = 'qab';
+insert into "language" (code, datasets, order_by) select 'grn', datasets, order_by from "language" where code = 'gug';
+insert into "language" (code, datasets, order_by) select 'kbd', datasets, order_by from "language" where code = 'kab';
+insert into "language" (code, datasets, order_by) select 'cre', datasets, order_by from "language" where code = 'aem';
+insert into "language" (code, datasets, order_by) select 'orv', datasets, order_by from "language" where code = 'qbi';
+
+update language_label set code = 'nds' where code = 'qab';
+update language_label set code = 'grn' where code = 'gug';
+update language_label set code = 'kbd' where code = 'kab';
+update language_label set code = 'cre' where code = 'aem';
+update language_label set code = 'orv' where code = 'qbi';
+
+update language_label set value = code where code = 'nds' and "type" = 'iso2';
+update language_label set value = 'gn' where code = 'grn' and "type" = 'iso2';
+update language_label set value = code where code = 'kbd' and "type" = 'iso2';
+update language_label set value = 'cr' where code = 'cre' and "type" = 'iso2';
+update language_label set value = code where code = 'orv' and "type" = 'iso2';
+update language_label set value = code where value in ('ps', 'lt', 'lu', 've') and "type" = 'iso2';
+
+update word set lang = 'nds' where lang = 'qab';
+update word set lang = 'grn' where lang = 'gug';
+update word set lang = 'kbd' where lang = 'kab';
+update word set lang = 'cre' where lang = 'aem';
+update word set lang = 'orv' where lang = 'qbi';
+
+update freeform set lang = 'nds' where lang = 'qab';
+update freeform set lang = 'grn' where lang = 'gug';
+update freeform set lang = 'kbd' where lang = 'kab';
+update freeform set lang = 'cre' where lang = 'aem';
+update freeform set lang = 'orv' where lang = 'qbi';
+
+delete from "language" where code in ('qab', 'gug', 'kab', 'aem', 'qbi');
+
+drop function if exists merge_homonyms_to_eki(char(3) array);
