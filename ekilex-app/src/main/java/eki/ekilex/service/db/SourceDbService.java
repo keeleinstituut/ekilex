@@ -379,21 +379,6 @@ public class SourceDbService implements GlobalConstant, ActivityFunct {
 		return sourceId;
 	}
 
-	@Deprecated
-	public Long createSourceDeprecated(SourceType sourceType, List<SourceProperty> sourceProperties) {
-
-		Long sourceId = create.insertInto(SOURCE, SOURCE.TYPE)
-				.values(sourceType.name())
-				.returning(SOURCE.ID)
-				.fetchOne()
-				.getId();
-
-		for (SourceProperty sourceProperty : sourceProperties) {
-			createSourceProperty(sourceId, sourceProperty.getType(), sourceProperty.getValueText());
-		}
-		return sourceId;
-	}
-
 	public Long createSourceProperty(Long sourceId, FreeformType type, String valueText) {
 
 		Long sourceFreeformId = create
@@ -434,15 +419,6 @@ public class SourceDbService implements GlobalConstant, ActivityFunct {
 				.set(SOURCE.VALUE_PRESE, valuePrese)
 				.set(SOURCE.COMMENT, comment)
 				.set(SOURCE.IS_PUBLIC, isPublic)
-				.where(SOURCE.ID.eq(sourceId))
-				.execute();
-	}
-
-	// TODO delete later
-	public void updateSourceType(Long sourceId, SourceType type) {
-
-		create.update(SOURCE)
-				.set(SOURCE.TYPE, type.name())
 				.where(SOURCE.ID.eq(sourceId))
 				.execute();
 	}
