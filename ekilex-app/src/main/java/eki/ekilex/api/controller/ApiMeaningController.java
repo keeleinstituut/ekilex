@@ -4,7 +4,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
 import org.springframework.core.annotation.Order;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -67,24 +66,6 @@ public class ApiMeaningController extends AbstractApiController {
 
 		try {
 			cudService.deleteMeaningForum(meaningForumId);
-			return getOpSuccessResponse();
-		} catch (Exception e) {
-			return getOpFailResponse(e);
-		}
-	}
-
-	@Order(806)
-	@PreAuthorize("principal.apiCrud "
-			+ "&& @permEval.isDatasetCrudGranted(principal, #crudRoleDataset, #crudRoleDataset) "
-			+ "&& @permEval.isMeaningCrudGranted(principal, #crudRoleDataset, #meaningId)")
-	@DeleteMapping(API_SERVICES_URI + MEANING_URI + DELETE_URI)
-	@ResponseBody
-	public ApiResponse deleteMeaning(
-			@RequestParam("crudRoleDataset") String crudRoleDataset,
-			@RequestParam("meaningId") Long meaningId) {
-
-		try {
-			cudService.deleteMeaningAndLexemes(meaningId, crudRoleDataset, MANUAL_EVENT_ON_UPDATE_DISABLED);
 			return getOpSuccessResponse();
 		} catch (Exception e) {
 			return getOpFailResponse(e);
