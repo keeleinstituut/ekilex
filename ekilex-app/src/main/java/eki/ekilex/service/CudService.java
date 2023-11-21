@@ -1347,8 +1347,7 @@ public class CudService extends AbstractCudService implements GlobalConstant, Pe
 		}
 	}
 
-	@Transactional
-	public void deleteMeaning(Long meaningId, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
+	private void deleteMeaning(Long meaningId, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
 
 		activityLogService.createActivityLog("deleteMeaning", meaningId, ActivityOwner.MEANING, roleDatasetCode, isManualEventOnUpdateEnabled);
 		cudDbService.deleteMeaning(meaningId);
