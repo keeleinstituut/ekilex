@@ -57,23 +57,22 @@
           <i class="fa fa-edit" aria-hidden="true"></i>
         </button>
       </div>
-      <!-- TODO temporarily disabled, restore later -->
-      <!-- <div class="row"> -->
-      <!--   <div class="col-2 text-right" th:text="#{source.name}">Lühike kuju</div> -->
-      <!--   <div class="font-weight-bold" th:text="${source.name}"></div> -->
-      <!-- </div> -->
-      <!-- <div class="row"> -->
-      <!--   <div class="col-2 text-right" th:text="#{source.value}">Pikk kuju</div> -->
-      <!--   <div class="font-weight-bold" th:utext="${source.valuePrese}"></div> -->
-      <!-- </div> -->
-      <!-- <div class="row"> -->
-      <!--   <div class="col-2 text-right" th:text="#{source.comment}">Mitteavalik kommentaar</div> -->
-      <!--   <div class="font-weight-bold" th:text="${source.comment}"></div> -->
-      <!-- </div> -->
-      <!-- <div class="row"> -->
-      <!--   <div class="col-2 text-right" th:text="#{source.publicity}">Avalikkus</div> -->
-      <!--   <div class="font-weight-bold" th:text="#{'boolean.public.' + ${source.public}}">avalik/mitteavalik</div> -->
-      <!-- </div> -->
+      <div class="row">
+        <div class="col-2 text-right" th:text="#{source.name}">Lühike kuju</div>
+        <div class="font-weight-bold" th:text="${source.name}"></div>
+      </div>
+      <div class="row">
+        <div class="col-2 text-right" th:text="#{source.value}">Pikk kuju</div>
+        <div class="font-weight-bold" th:utext="${source.valuePrese}"></div>
+      </div>
+      <div class="row">
+        <div class="col-2 text-right" th:text="#{source.comment}">Mitteavalik kommentaar</div>
+        <div class="font-weight-bold" th:text="${source.comment}"></div>
+      </div>
+      <div class="row">
+        <div class="col-2 text-right" th:text="#{source.publicity}">Avalikkus</div>
+        <div class="font-weight-bold" th:text="#{'boolean.public.' + ${source.public}}">avalik/mitteavalik</div>
+      </div>
       <div class="row">
         <div class="col-2 text-right" th:text="#{source.type}">tüüp</div>
         <div class="font-weight-bold" th:text="#{|source.type.${source.type}|}">tüüp</div>
@@ -193,23 +192,22 @@
                     <td th:text="#{source.type}">tüüp</td>
                     <td th:text="#{|source.type.${source.type}|}"></td>
                   </tr>
-                  <!-- TODO temporarily disabled, restore later -->
-                  <!-- <tr> -->
-                  <!--   <td th:text="#{source.name}">Lühike kuju</td> -->
-                  <!--   <td th:text="${source.name}"></td> -->
-                  <!-- </tr> -->
-                  <!-- <tr> -->
-                  <!--   <td th:text="#{source.value}">Pikk kuju</td> -->
-                  <!--   <td th:utext="${source.valuePrese}"></td> -->
-                  <!-- </tr> -->
-                  <!-- <tr> -->
-                  <!--   <td th:text="#{source.comment}">Mitteavalik kommentaar</td> -->
-                  <!--   <td th:text="${source.comment}"></td> -->
-                  <!-- </tr> -->
-                  <!-- <tr> -->
-                  <!--   <td th:text="#{source.publicity}">Avalikkus</td> -->
-                  <!--   <td th:text="#{'boolean.public.' + ${source.public}}">avalik/mitteavalik</td> -->
-                  <!-- </tr> -->
+                  <tr>
+                    <td th:text="#{source.name}">Lühike kuju</td>
+                    <td th:text="${source.name}"></td>
+                  </tr>
+                  <tr>
+                    <td th:text="#{source.value}">Pikk kuju</td>
+                    <td th:utext="${source.valuePrese}"></td>
+                  </tr>
+                  <tr>
+                    <td th:text="#{source.comment}">Mitteavalik kommentaar</td>
+                    <td th:text="${source.comment}"></td>
+                  </tr>
+                  <tr>
+                    <td th:text="#{source.publicity}">Avalikkus</td>
+                    <td th:text="#{'boolean.public.' + ${source.public}}">avalik/mitteavalik</td>
+                  </tr>
                 </table>
               </div>
               <div class="ml-4">
