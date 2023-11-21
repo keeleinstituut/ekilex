@@ -22,7 +22,6 @@ public class Source extends AbstractCrudEntity {
 
 	private String comment;
 
-	@JsonProperty("isPublic")
 	private boolean isPublic;
 
 	private List<String> nameTypeSourceProperties;
