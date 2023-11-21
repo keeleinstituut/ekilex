@@ -52,22 +52,7 @@ module.exports = function (grunt) {
 				dest: "src/main/resources/view/css/styles.css"
 			},
 		},
-
-		px_to_rem: {
-			dist: {
-				options: {
-					base: 16,
-					fallback: false,
-					fallback_existing_rem: false,
-					ignore: [],
-					map: false
-				},
-				files: {
-					'src/main/resources/view/css/styles.css': ['src/main/resources/view/css/styles.css']
-				}
-			}
-		},
-
+		
 		concat: {
 			components: {
 				options: {
@@ -113,7 +98,7 @@ module.exports = function (grunt) {
 		watch: {
 			css: {
 				files: ["src/main/resources/scss/*.scss"],
-				tasks: ['sass', 'px_to_rem', 'autoprefixer', 'clean:css', 'copy:css']
+				tasks: ['sass', 'autoprefixer', 'clean:css', 'copy:css']
 			},
 			js: {
 				files: ['src/main/resources/view/js/**/**.js', '!src/main/resources/view/js/main.js'],
@@ -132,11 +117,10 @@ module.exports = function (grunt) {
 		concat: true,
 		configureBabel: true,
 		sass: true,
-		px_to_rem: true,
 		autoprefixer: true,
 		babel: true,
 		'copy:assets': true,
-		watch: true
+		watch: true,
 	};
 
 	var tasksArray = new Array();
@@ -158,11 +142,9 @@ module.exports = function (grunt) {
 		}
 	}
 
-
 	grunt.initConfig(config);
 	require('load-grunt-tasks')(grunt);
 
 	grunt.registerTask('default', tasksArray);
 	grunt.registerTask('deploy', deployTasksArray);
-
 };
