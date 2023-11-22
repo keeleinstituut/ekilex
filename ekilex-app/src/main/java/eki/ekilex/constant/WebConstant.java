@@ -174,6 +174,8 @@ public interface WebConstant {
 
 	String ACTIVATE_PAGE_URI = "/activate";
 
+	String PROTO_URI = "/proto";
+
 	String PASSWORD_RECOVERY_URI = "/passwordrecovery";
 
 	String PASSWORD_RECOVERY_PAGE = "passwordrecovery";

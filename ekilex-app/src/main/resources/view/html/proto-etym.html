@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="et" xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="utf-8">
+<title>Proto</title>
+<meta name="viewport" content="width=device-width">
+<link rel="icon" type="image/svg+xml" th:href="@{/view/img/favicon/favicon.svg}" />
+<link rel="stylesheet" type="text/css" th:href="@{/view/css/styles.css}" />
+<link rel="stylesheet" type="text/css" th:href="@{/view/proto/tree-boxes.css}">
+<script type="text/javascript" src="https://code.jquery.com/jquery-latest.min.js"></script>
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
+<script type="text/javascript" src="https://d3js.org/d3.v5.min.js"></script>
+<script type="text/javascript" th:src="@{/view/proto/tree-boxes.js}"></script>
+</head>
+<body>
+  <div class="ml-5 mt-3">
+    <h1>Etümoloogia proto</h1>
+    <div>
+      <a th:href="@{/proto/etym/184766}">konteiner</a>
+    </div>
+    <div>
+      <a th:href="@{/proto/etym/157733}">aprikoos</a>
+    </div>
+    <div>
+      <a th:href="@{/proto/etym/226853}">reket</a>
+    </div>
+    <div>
+      <a th:href="@{/proto/etym/247450}">tudeng</a>
+    </div>
+    <th:block th:if="${wordEtymTree}">
+      <h5 th:text="|${wordEtymTree.wordId} ${wordEtymTree.wordValue}|" class="mt-3"></h5>
+      <input type="hidden" id="word-id" th:value="${wordEtymTree.wordId}">
+      <div id="tree-container"></div>
+      <th:block th:each="wordEtymNode : ${wordEtymTree.nodes}">
+        <div class="modal fade" th:id="|word-etym-node-edit-modal-${wordEtymNode.wordId}|" tabindex="-1" role="dialog" aria-hidden="true">
+          <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+              <div class="modal-body">
+                <div th:utext="|${wordEtymNode.word} (${wordEtymNode.lang})|"></div>
+                <div th:utext="${wordEtymNode.comment}"></div>
+              </div>
+              <div class="modal-footer">
+                <button type="submit" class="btn btn-primary" th:text="#{common.save}">Salvesta</button>
+                <button type="button" class="btn btn-default" data-dismiss="modal" th:text="#{common.cancel}">Katkesta</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </th:block>
+      <th:block th:each="wordEtymLink : ${wordEtymTree.links}">
+        <div class="modal fade" th:id="|word-etym-link-edit-modal-${wordEtymLink.wordEtymRelId}|" tabindex="-1" role="dialog" aria-hidden="true">
+          <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+              <div class="modal-body">
+                <div th:utext="|${wordEtymLink.sourceWordValue} -> ${wordEtymLink.targetWordValue}"></div>
+                <div th:utext="${wordEtymLink.comment}"></div>
+              </div>
+              <div class="modal-footer">
+                <button type="submit" class="btn btn-primary" th:text="#{common.save}">Salvesta</button>
+                <button type="button" class="btn btn-default" data-dismiss="modal" th:text="#{common.cancel}">Katkesta</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </th:block>
+      <script type="text/javascript">
+		var applicationUrl = /*[[@{/}]]*/'/';
+		initWordEtymTree();
+	  </script>
+    </th:block>
+  </div>
+</body>
+</html>

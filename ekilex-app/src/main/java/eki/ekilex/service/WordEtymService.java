@@ -5,13 +5,18 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import javax.transaction.Transactional;
+
 import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import eki.ekilex.data.WordEtymPOC;
-import eki.ekilex.data.WordEtymPOCRel;
-import eki.ekilex.data.WordEtymPOCTuple;
+import eki.common.data.IntWrap;
+import eki.ekilex.data.WordEtymNode;
+import eki.ekilex.data.WordEtymNodeLink;
+import eki.ekilex.data.WordEtymNodeRel;
+import eki.ekilex.data.WordEtymNodeTuple;
+import eki.ekilex.data.WordEtymTree;
 import eki.ekilex.service.db.WordEtymDbService;
 
 @Component
@@ -20,95 +25,145 @@ public class WordEtymService {
 	@Autowired
 	private WordEtymDbService wordEtymDbService;
 
-	public WordEtymPOC getWordEtym(Long wordId) {
+	@Transactional
+	public WordEtymTree getWordEtymTree(Long wordId) {
 
-		List<WordEtymPOCTuple> wordEtymTuples = wordEtymDbService.getWordEtymTuples(wordId);
-		wordEtymTuples = combineTuplesRelations(wordEtymTuples);
+		List<WordEtymNodeTuple> wordEtymTuples = wordEtymDbService.getWordEtymTuples(wordId);
 
-		Map<Long, WordEtymPOCTuple> wordEtymTupleMap = wordEtymTuples.stream().collect(Collectors.groupingBy(WordEtymPOCTuple::getWordEtymWordId)).entrySet()
-				.stream().collect(Collectors.toMap(entry -> entry.getKey(), entry -> entry.getValue().stream().distinct().collect(Collectors.toList()).get(0)));
+		Map<Long, WordEtymNodeTuple> wordEtymTupleMap = wordEtymTuples.stream()
+				.collect(Collectors.toMap(WordEtymNodeTuple::getWordEtymWordId, row -> row));
 
-		WordEtymPOCTuple headwordEtymTuple = wordEtymTupleMap.get(wordId);
-		WordEtymPOC wordEtym = composeEtymTree(headwordEtymTuple, wordEtymTupleMap);
+		WordEtymTree wordEtymTree = composeEtymTree(wordId, wordEtymTupleMap);
 
-		int firstLevel = 0;
-		setLevels(wordEtym, firstLevel);
-
-		return wordEtym;
+		return wordEtymTree;
 	}
 
-	private List<WordEtymPOCTuple> combineTuplesRelations(List<WordEtymPOCTuple> wordEtymTuplesWithDuplicates) {
+	private WordEtymTree composeEtymTree(Long wordId, Map<Long, WordEtymNodeTuple> wordEtymTupleMap) {
 
-		List<WordEtymPOCTuple> uniqueWordEtymTuples = new ArrayList<>();
-		for (WordEtymPOCTuple wordEtymTuple : wordEtymTuplesWithDuplicates) {
-			Long wordEtymWordId = wordEtymTuple.getWordEtymWordId();
-			List<WordEtymPOCRel> wordEtymRelations = wordEtymTuple.getWordEtymRelations();
+		int topLevel = 1;
+		WordEtymNodeTuple tuple = wordEtymTupleMap.get(wordId);
+		WordEtymNode root = createEtymNode(tuple, topLevel);
 
-			WordEtymPOCTuple uniqueWordEtymTuple = uniqueWordEtymTuples.stream()
-					.filter(tuple -> tuple.getWordEtymWordId().equals(wordEtymWordId))
-					.findFirst()
-					.orElse(null);
+		List<WordEtymNode> nodes = new ArrayList<>();
+		List<Long> processedWordIds = new ArrayList<>();
+		List<WordEtymNodeLink> links = new ArrayList<>();
 
-			if (uniqueWordEtymTuple == null) {
-				uniqueWordEtymTuples.add(wordEtymTuple);
-			} else {
-				uniqueWordEtymTuple.getWordEtymRelations().addAll(wordEtymRelations);
-			}
+		composeEtymNodes(root, nodes, tuple.getWordEtymRelations(), wordEtymTupleMap, processedWordIds);
+		composeEtymLinks(wordId, links, tuple.getWordEtymRelations(), wordEtymTupleMap);
+
+		WordEtymTree wordEtymTree = new WordEtymTree();
+		wordEtymTree.setWordId(wordId);
+		wordEtymTree.setWordValue(root.getWord());
+		wordEtymTree.setRoot(root);
+		wordEtymTree.setNodes(nodes);
+		wordEtymTree.setLinks(links);
+		applyMaxLevel(wordEtymTree);
+
+		return wordEtymTree;
+	}
+
+	private void composeEtymNodes(
+			WordEtymNode node,
+			List<WordEtymNode> nodes,
+			List<WordEtymNodeRel> relations,
+			Map<Long, WordEtymNodeTuple> wordEtymTupleMap,
+			List<Long> processedWordIds) {
+
+		int level = node.getLevel() + 1;
+		Long nodeLevelWordId = node.getWordId();
+		processedWordIds.add(nodeLevelWordId);
+		nodes.add(node);
+
+		if (CollectionUtils.isEmpty(relations)) {
+			return;
 		}
-		return uniqueWordEtymTuples;
+
+		for (WordEtymNodeRel relation : relations) {
+
+			Long relatedWordId = relation.getRelatedWordId();
+			if (processedWordIds.contains(relatedWordId)) {
+				continue;
+			}
+			WordEtymNodeTuple tuple = wordEtymTupleMap.get(relatedWordId);
+			WordEtymNode child = createEtymNode(tuple, level);
+			node.getChildren().add(child);
+			composeEtymNodes(child, nodes, tuple.getWordEtymRelations(), wordEtymTupleMap, processedWordIds);
+		}
 	}
 
-	private WordEtymPOC composeEtymTree(WordEtymPOCTuple tuple, Map<Long, WordEtymPOCTuple> wordEtymTupleMap) {
+	private void composeEtymLinks(
+			Long wordId,
+			List<WordEtymNodeLink> links,
+			List<WordEtymNodeRel> relations,
+			Map<Long, WordEtymNodeTuple> wordEtymTupleMap) {
 
-		WordEtymPOC wordEtymLevel = composeEtymLevel(tuple, tuple.isWordEtymIsQuestionable(), false, tuple.getWordEtymComment());
-		composeEtymTree(wordEtymLevel, tuple.getWordEtymRelations(), wordEtymTupleMap);
-		return wordEtymLevel;
+		if (CollectionUtils.isEmpty(relations)) {
+			return;
+		}
+
+		for (WordEtymNodeRel relation : relations) {
+
+			WordEtymNodeLink link = createEtymLink(wordId, relation, wordEtymTupleMap);
+			links.add(link);
+			Long relatedWordId = relation.getRelatedWordId();
+			WordEtymNodeTuple tuple = wordEtymTupleMap.get(relatedWordId);
+			composeEtymLinks(relatedWordId, links, tuple.getWordEtymRelations(), wordEtymTupleMap);
+		}
 	}
 
-	private WordEtymPOC composeEtymLevel(WordEtymPOCTuple tuple, boolean questionable, boolean compound, String comment) {
+	private WordEtymNode createEtymNode(WordEtymNodeTuple tuple, int level) {
 
-		WordEtymPOC wordEtymLevel = new WordEtymPOC();
+		WordEtymNode wordEtymLevel = new WordEtymNode();
 		wordEtymLevel.setWordId(tuple.getWordEtymWordId());
 		wordEtymLevel.setWord(tuple.getWordEtymWord());
 		wordEtymLevel.setLang(tuple.getWordEtymWordLang());
 		wordEtymLevel.setEtymologyTypeCode(tuple.getEtymologyTypeCode());
 		wordEtymLevel.setEtymYear(tuple.getEtymologyYear());
-		wordEtymLevel.setQuestionable(questionable);
-		wordEtymLevel.setCompound(compound);
-		wordEtymLevel.setComment(comment);
+		wordEtymLevel.setQuestionable(tuple.isQuestionable());
+		wordEtymLevel.setCompound(false);
+		wordEtymLevel.setComment(tuple.getComment());
+		wordEtymLevel.setLevel(level);
+		wordEtymLevel.setChildren(new ArrayList<>());
+
 		return wordEtymLevel;
 	}
 
-	private void composeEtymTree(WordEtymPOC wordEtymLevel, List<WordEtymPOCRel> wordEtymRelations, Map<Long, WordEtymPOCTuple> wordEtymTupleMap) {
+	private WordEtymNodeLink createEtymLink(Long wordId, WordEtymNodeRel relation, Map<Long, WordEtymNodeTuple> wordEtymTupleMap) {
 
-		if (CollectionUtils.isEmpty(wordEtymRelations)) {
-			return;
-		}
-		wordEtymLevel.setTree(new ArrayList<>());
+		WordEtymNodeTuple sourceWordTuple = wordEtymTupleMap.get(wordId);
+		WordEtymNodeTuple targetWordTuple = wordEtymTupleMap.get(relation.getRelatedWordId());
 
-		for (WordEtymPOCRel relation : wordEtymRelations) {
-			Long relatedWordId = relation.getRelatedWordId();
-			Long etymLevelWordId = wordEtymLevel.getWordId();
-			if (relatedWordId.equals(etymLevelWordId)) {
-				continue;
-			}
-			WordEtymPOCTuple relWordEtymTuple = wordEtymTupleMap.get(relatedWordId);
-			WordEtymPOC relWordEtymLevel = composeEtymLevel(relWordEtymTuple, relation.isQuestionable(), relation.isCompound(), relation.getComment());
-			wordEtymLevel.getTree().add(relWordEtymLevel);
-			composeEtymTree(relWordEtymLevel, relWordEtymTuple.getWordEtymRelations(), wordEtymTupleMap);
-		}
+		WordEtymNodeLink link = new WordEtymNodeLink();
+		link.setWordEtymRelId(relation.getWordEtymRelId());
+		link.setSourceWordId(wordId);
+		link.setSourceWordValue(sourceWordTuple.getWordEtymWord());
+		link.setTargetWordId(relation.getRelatedWordId());
+		link.setTargetWordValue(targetWordTuple.getWordEtymWord());
+		link.setComment(relation.getCommentPrese());
+		link.setQuestionable(relation.isQuestionable());
+		link.setCompound(relation.isCompound());
+
+		return link;
 	}
 
-	private void setLevels(WordEtymPOC wordEtym, int level) {
+	private void applyMaxLevel(WordEtymTree wordEtymTree) {
 
-		wordEtym.setLevel(level);
+		WordEtymNode wordEtymRoot = wordEtymTree.getRoot();
+		IntWrap totalMaxLevel = new IntWrap();
+		collectMaxLevels(wordEtymRoot, totalMaxLevel);
+		wordEtymTree.setMaxLevel(totalMaxLevel.getValue());
+	}
 
-		List<WordEtymPOC> wordEtymTree = wordEtym.getTree();
-		if (CollectionUtils.isNotEmpty(wordEtymTree)) {
-			level++;
-			for (WordEtymPOC nextLevelWordEtym : wordEtymTree) {
-				setLevels(nextLevelWordEtym, level);
-			}
+	private void collectMaxLevels(WordEtymNode wordEtymNode, IntWrap totalMaxLevel) {
+
+		int level = wordEtymNode.getLevel();
+		totalMaxLevel.setMax(level);
+		List<WordEtymNode> wordEtymChildren = wordEtymNode.getChildren();
+		if (CollectionUtils.isEmpty(wordEtymChildren)) {
+			return;
+		}
+		for (WordEtymNode wordEtymChild : wordEtymChildren) {
+			collectMaxLevels(wordEtymChild, totalMaxLevel);
 		}
 	}
 }

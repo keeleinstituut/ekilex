@@ -16,28 +16,28 @@
     </div>
   </div>
   <div class="container-fluid h-100 wordetym-wrapper">
-    <th:block th:if="${wordEtym.level == 0}">
+    <th:block th:if="${wordEtym.level == 1}">
       <div th:replace="wordetymcomp :: wordetym_card(${wordEtym})"></div>
     </th:block>
 
-    <th:block th:if="${wordEtym.tree != null}">
+    <th:block th:if="${wordEtym.children != null}">
       <ul class="etym-tree">
-        <th:block th:each="etymlvl1 : ${wordEtym.tree}">
-          <li th:if="${etymlvl1.level == 1}" class="step-block level-1">
+        <th:block th:each="etymlvl1 : ${wordEtym.children}">
+          <li th:if="${etymlvl1.level == 2}" class="step-block level-1">
             <div th:replace="wordetymcomp :: wordetym_edit_card_link"></div>
             <div th:replace="wordetymcomp :: wordetym_card(${etymlvl1})"></div>
               
-            <th:block th:if="${etymlvl1.tree != null}">
+            <th:block th:if="${etymlvl1.children != null}">
               <ul> 
-                <th:block th:each="etymlvl2 : ${etymlvl1.tree}">
-                  <li th:if="${etymlvl2.level == 2}" class="step-block level-2">
+                <th:block th:each="etymlvl2 : ${etymlvl1.children}">
+                  <li th:if="${etymlvl2.level == 3}" class="step-block level-2">
                     <div th:replace="wordetymcomp :: wordetym_edit_card_link"></div>
                     <div th:replace="wordetymcomp :: wordetym_card(${etymlvl2})"></div>
                     
-                    <th:block th:if="${etymlvl2.tree != null}">
+                    <th:block th:if="${etymlvl2.children != null}">
                       <ul>
-                        <th:block th:each="etymlvl3 : ${etymlvl2.tree}">
-                          <li th:if="${etymlvl3.level == 3}" class="step-block level-3">
+                        <th:block th:each="etymlvl3 : ${etymlvl2.children}">
+                          <li th:if="${etymlvl3.level == 4}" class="step-block level-3">
                             <div th:replace="wordetymcomp :: wordetym_edit_card_link"></div>
                             <div th:replace="wordetymcomp :: wordetym_card(${etymlvl3})"></div>
                           </li>
@@ -226,7 +226,7 @@
     <!-- <div th:text="${wordEtym}"></div> -->
     <!-- <div>
       <span>Järgmise taseme tulemusi:</span>
-      <span th:text="${#lists.size(wordEtym.tree)}"></span>
+      <span th:text="${#lists.size(wordEtym.children)}"></span>
     </div> -->
   </div>
   <div th:replace="wordetymdialog :: add_etym_lang_dlg"></div>

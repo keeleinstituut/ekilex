@@ -38,6 +38,7 @@ public class WebMvcConfig implements WebMvcConfigurer, WebConstant {
 		registry.addResourceHandler(VIEW_RESOURCES_URI + "/js/**").addResourceLocations("classpath:/view/js/");
 		registry.addResourceHandler(VIEW_RESOURCES_URI + "/img/**").addResourceLocations("classpath:/view/img/");
 		registry.addResourceHandler(VIEW_RESOURCES_URI + "/fonts/**").addResourceLocations("classpath:/view/fonts/");
+		registry.addResourceHandler(VIEW_RESOURCES_URI + "/proto/**").addResourceLocations("classpath:/view/proto/");
 	}
 
 	@Bean

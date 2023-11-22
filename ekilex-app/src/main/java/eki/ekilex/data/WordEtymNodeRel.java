@@ -2,13 +2,15 @@ package eki.ekilex.data;
 
 import eki.common.data.AbstractDataObject;
 
-public class WordEtymPOCRel extends AbstractDataObject {
+public class WordEtymNodeRel extends AbstractDataObject {
 
 	private static final long serialVersionUID = 1L;
 
 	private Long wordEtymRelId;
 
 	private String comment;
+
+	private String commentPrese;
 
 	private boolean isQuestionable;
 
@@ -30,6 +32,14 @@ public class WordEtymPOCRel extends AbstractDataObject {
 
 	public void setComment(String comment) {
 		this.comment = comment;
+	}
+
+	public String getCommentPrese() {
+		return commentPrese;
+	}
+
+	public void setCommentPrese(String commentPrese) {
+		this.commentPrese = commentPrese;
 	}
 
 	public boolean isQuestionable() {

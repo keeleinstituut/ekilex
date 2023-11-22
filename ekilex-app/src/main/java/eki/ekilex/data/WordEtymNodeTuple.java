@@ -4,7 +4,7 @@ import java.util.List;
 
 import eki.common.data.AbstractDataObject;
 
-public class WordEtymPOCTuple extends AbstractDataObject {
+public class WordEtymNodeTuple extends AbstractDataObject {
 
 	private static final long serialVersionUID = 1L;
 
@@ -22,11 +22,13 @@ public class WordEtymPOCTuple extends AbstractDataObject {
 
 	private String etymologyYear;
 
-	private String wordEtymComment;
+	private String comment;
 
-	private boolean wordEtymIsQuestionable;
+	private String commentPrese;
 
-	private List<WordEtymPOCRel> wordEtymRelations;
+	private boolean isQuestionable;
+
+	private List<WordEtymNodeRel> wordEtymRelations;
 
 	public Long getWordId() {
 		return wordId;
@@ -84,27 +86,35 @@ public class WordEtymPOCTuple extends AbstractDataObject {
 		this.etymologyYear = etymologyYear;
 	}
 
-	public String getWordEtymComment() {
-		return wordEtymComment;
+	public String getComment() {
+		return comment;
 	}
 
-	public void setWordEtymComment(String wordEtymComment) {
-		this.wordEtymComment = wordEtymComment;
+	public void setComment(String comment) {
+		this.comment = comment;
 	}
 
-	public boolean isWordEtymIsQuestionable() {
-		return wordEtymIsQuestionable;
+	public String getCommentPrese() {
+		return commentPrese;
 	}
 
-	public void setWordEtymIsQuestionable(boolean wordEtymIsQuestionable) {
-		this.wordEtymIsQuestionable = wordEtymIsQuestionable;
+	public void setCommentPrese(String commentPrese) {
+		this.commentPrese = commentPrese;
 	}
 
-	public List<WordEtymPOCRel> getWordEtymRelations() {
+	public boolean isQuestionable() {
+		return isQuestionable;
+	}
+
+	public void setQuestionable(boolean isQuestionable) {
+		this.isQuestionable = isQuestionable;
+	}
+
+	public List<WordEtymNodeRel> getWordEtymRelations() {
 		return wordEtymRelations;
 	}
 
-	public void setWordEtymRelations(List<WordEtymPOCRel> wordEtymRelations) {
+	public void setWordEtymRelations(List<WordEtymNodeRel> wordEtymRelations) {
 		this.wordEtymRelations = wordEtymRelations;
 	}
 }

@@ -8,7 +8,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 <link rel="apple-touch-icon" sizes="180x180" th:href="@{/view/img/favicon/apple-touch-icon.png}">
-<link rel="icon" type="image/svg+xml" th:href="@{/view/img/favicon/favicon.svg}"/>
+<link rel="icon" type="image/svg+xml" th:href="@{/view/img/favicon/favicon.svg}" />
 <link rel="icon" type="image/png" sizes="32x32" th:href="@{/view/img/favicon/favicon-32x32.png}">
 <link rel="icon" type="image/png" sizes="16x16" th:href="@{/view/img/favicon/favicon-16x16.png}">
 <link rel="manifest" th:href="@{/view/img/favicon/site.webmanifest}">
@@ -25,48 +25,49 @@
 	var applicationUrl = /*[[@{/}]]*/'/';
 	var applicationBaseUrl = /*[[${appData.baseUrl}]]*/'/';
 	const messages = {
-		'common.error': /*[[#{common.error}]]*/'Viga!',
-    'common.error.input': /*[[#{common.error.input}]]*/'Lisamiseks valige väärtus.',
-		'common.data.add.error': /*[[#{common.data.add.error}]]*/'Andmete muutmine ebaõnnestus.',
-		'common.data.update.error': /*[[#{common.data.update.error}]]*/'Andmete muutmine ebaõnnestus.',
-		'common.save.error': /*[[#{common.save.error}]]*/'Salvestamine ebaõnnestus',
-		'common.yes': /*[[#{common.yes}]]*/'Jah',
-		'common.no': /*[[#{common.no}]]*/'Ei',
-	  'common.please.wait': /*[[#{common.please.wait}]]*/'Palun oodake',
-	  'common.search.add.parameter': /*[[#{common.search.add.parameter}]]*/'Palun täiendage otsingu parameetrit.',
-	  'common.broken.link': /*[[#{common.broken.link}]]*/'Vigane link.',
-	  'common.all.languages': /*[[#{common.all.languages}]]*/'Kõik keeled',
-	  'common.confirm.delete': /*[[#{common.confirm.delete}]]*/'Kinnita kustutamine',
-	  'classifiers.confirm.delete': /*[[#{classifiers.confirm.delete}]]*/'Klassifikaatorit on võimalik kustutada siis, kui see ei ole kasutuses. Kas soovid kustutada?',
-	  'tag.in.use.confirm.delete': /*[[#{tag.in.use.confirm.delete}]]*/'Ettevaatust, silt on kasutusel. Kas oled kindel, et soovid kustutada?',
-	  'source.confirm.delete': /*[[#{source.confirm.delete}]]*/'Palun kinnita allika kustutamine',
-	  'source.attribute.confirm.delete': /*[[#{source.attribute.confirm.delete}]]*/'Palun kinnita allika atribuudi kustutamine',
-		'permissions.email.send.success': /*[[#{permissions.email.send.success}]]*/'Kiri saadetud',
-		'permissions.email.send.fail': /*[[#{permissions.email.send.fail}]]*/'Kirja saatmine ebaõnnestus',
-		'lexjoin.fail': /*[[#{lexjoin.fail}]]*/'Tähenduste ühendamine ebaõnnestus',
-		'meaningjoin.fail': /*[[#{meaningjoin.fail}]]*/'Tähenduste ühendamine ebaõnnestus',
-		'tag.save.fail': /*[[#{tag.save.fail}]]*/'Salvestamine ebaõnnestus. Kontrolli, kas sellise nimega silt on juba olemas',
-		'classifiers.save.fail': /*[[#{classifiers.save.fail}]]*/'Salvestamine ebaõnnestus. Kontrolli, kas sellise koodiga klassifikaator on juba olemas',
-		'syn.add.syn.relation.word.fail': /*[[#{syn.add.syn.relation.word.fail}]]*/'Keelendi lisamine ebaõnnestus.',
-		'syn.lexeme.exists': /*[[#{syn.lexeme.exists}]]*/'Ilmik on juba olemas.',
-		'syn.press.enter.for.lexeme': /*[[#{syn.press.enter.for.lexeme}]]*/'Ilmiku tekitamiseks vali paremalt tulbast sõna vajutades \'ENTER\'.',
-	  'datasets.code.exists.validation': /*[[#{datasets.code.exists.validation}]]*/'Sellise koodiga sõnakogu on olemas.',
-	  'datasets.code.format.validation': /*[[#{datasets.code.format.validation}]]*/'Kood tohib sisaldada ainult tähti ja numbreid.',
-	  'term.meaning.table.max.meanings.exceeded': /*[[#{term.meaning.table.max.meanings.exceeded}]]*/'Tabelivaade käivitub ainult kuni 50 mõiste korral',
-    'term.add.term': /*[[#{term.add.term}]]*/'Lisa termin',
-    'editor.error.add.note': /*[[#{editor.error.add.note}]]*/'Lisage tähenduse sisemärkus!',
-    'etym.related.records': /*[[#{etym.related.records}]]*/'Seotud kirjed'
-  };
+		'common.error' : /*[[#{common.error}]]*/'Viga!',
+		'common.error.input' : /*[[#{common.error.input}]]*/'Lisamiseks valige väärtus.',
+		'common.data.add.error' : /*[[#{common.data.add.error}]]*/'Andmete muutmine ebaõnnestus.',
+		'common.data.update.error' : /*[[#{common.data.update.error}]]*/'Andmete muutmine ebaõnnestus.',
+		'common.save.error' : /*[[#{common.save.error}]]*/'Salvestamine ebaõnnestus',
+		'common.yes' : /*[[#{common.yes}]]*/'Jah',
+		'common.no' : /*[[#{common.no}]]*/'Ei',
+		'common.please.wait' : /*[[#{common.please.wait}]]*/'Palun oodake',
+		'common.search.add.parameter' : /*[[#{common.search.add.parameter}]]*/'Palun täiendage otsingu parameetrit.',
+		'common.broken.link' : /*[[#{common.broken.link}]]*/'Vigane link.',
+		'common.all.languages' : /*[[#{common.all.languages}]]*/'Kõik keeled',
+		'common.confirm.delete' : /*[[#{common.confirm.delete}]]*/'Kinnita kustutamine',
+		'classifiers.confirm.delete' : /*[[#{classifiers.confirm.delete}]]*/'Klassifikaatorit on võimalik kustutada siis, kui see ei ole kasutuses. Kas soovid kustutada?',
+		'tag.in.use.confirm.delete' : /*[[#{tag.in.use.confirm.delete}]]*/'Ettevaatust, silt on kasutusel. Kas oled kindel, et soovid kustutada?',
+		'source.confirm.delete' : /*[[#{source.confirm.delete}]]*/'Palun kinnita allika kustutamine',
+		'source.attribute.confirm.delete' : /*[[#{source.attribute.confirm.delete}]]*/'Palun kinnita allika atribuudi kustutamine',
+		'permissions.email.send.success' : /*[[#{permissions.email.send.success}]]*/'Kiri saadetud',
+		'permissions.email.send.fail' : /*[[#{permissions.email.send.fail}]]*/'Kirja saatmine ebaõnnestus',
+		'lexjoin.fail' : /*[[#{lexjoin.fail}]]*/'Tähenduste ühendamine ebaõnnestus',
+		'meaningjoin.fail' : /*[[#{meaningjoin.fail}]]*/'Tähenduste ühendamine ebaõnnestus',
+		'tag.save.fail' : /*[[#{tag.save.fail}]]*/'Salvestamine ebaõnnestus. Kontrolli, kas sellise nimega silt on juba olemas',
+		'classifiers.save.fail' : /*[[#{classifiers.save.fail}]]*/'Salvestamine ebaõnnestus. Kontrolli, kas sellise koodiga klassifikaator on juba olemas',
+		'syn.add.syn.relation.word.fail' : /*[[#{syn.add.syn.relation.word.fail}]]*/'Keelendi lisamine ebaõnnestus.',
+		'syn.lexeme.exists' : /*[[#{syn.lexeme.exists}]]*/'Ilmik on juba olemas.',
+		'syn.press.enter.for.lexeme' : /*[[#{syn.press.enter.for.lexeme}]]*/'Ilmiku tekitamiseks vali paremalt tulbast sõna vajutades \'ENTER\'.',
+		'datasets.code.exists.validation' : /*[[#{datasets.code.exists.validation}]]*/'Sellise koodiga sõnakogu on olemas.',
+		'datasets.code.format.validation' : /*[[#{datasets.code.format.validation}]]*/'Kood tohib sisaldada ainult tähti ja numbreid.',
+		'term.meaning.table.max.meanings.exceeded' : /*[[#{term.meaning.table.max.meanings.exceeded}]]*/'Tabelivaade käivitub ainult kuni 50 mõiste korral',
+		'term.add.term' : /*[[#{term.add.term}]]*/'Lisa termin',
+		'editor.error.add.note' : /*[[#{editor.error.add.note}]]*/'Lisage tähenduse sisemärkus!',
+		'etym.related.records' : /*[[#{etym.related.records}]]*/'Seotud kirjed'
+	};
 </script>
-	<!-- Google tag (gtag.js) -->
-	<script async src="https://www.googletagmanager.com/gtag/js?id=G-3E8P83133Z"></script>
-	<script>
-		window.dataLayer = window.dataLayer || [];
-		function gtag(){dataLayer.push(arguments);}
-		gtag('js', new Date());
-
-		gtag('config', 'G-3E8P83133Z');
-	</script>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-3E8P83133Z"></script>
+<script>
+	window.dataLayer = window.dataLayer || [];
+	function gtag() {
+		dataLayer.push(arguments);
+	}
+	gtag('js', new Date());
+	gtag('config', 'G-3E8P83133Z');
+</script>
 </head>
 <body>
   <!-- Bootstrap core JS -->
@@ -84,7 +85,8 @@
     <nav class="navbar navbar-expand-md bg-primary navbar-dark main-navigation" th:classappend="${activeItem == 'partsyn' ? '' : 'fixed-top'}">
       <a th:href="@{/}">
         <span th:if="${activeItem == 'home' || activeItem == 'limterm'}" class="text-white">
-          Ekilex <small class="pl-2" th:text="${'v.' + appData.appVersion}">1.0.0</small>
+          Ekilex
+          <small class="pl-2" th:text="${'v.' + appData.appVersion}">1.0.0</small>
         </span>
       </a>
       <div th:if="${activeItem != 'home' && activeItem != 'limterm'}" class="dropdown side-menu">
@@ -94,32 +96,33 @@
         </button>
         <div id="sideMenu" class="side-menu-content dropdown-menu ml-n3" aria-labelledby="sideMenuButton">
           <a class="dropdown-item side-menu-header mt-n2 d-flex align-items-center" th:href="@{/home}" th:title="${appData.appName + ' ' + appData.appVersion}">
-            Ekilex <small class="text-secondary ml-auto" th:text="${'v.' + appData.appVersion}">1.0.0</small>
+            Ekilex
+            <small class="text-secondary ml-auto" th:text="${'v.' + appData.appVersion}">1.0.0</small>
           </a>
           <div>
             <div class="dropdown-header" th:text="#{menu.dropdown.header}">Rakenduse valik</div>
             <div>
               <a class="dropdown-item side-menu-item" th:classappend="${activeItem == 'lex' ? 'active' : ''}" th:href="@{/lexsearch}" th:text="#{menu.lex}">Leksikograafid</a>
               <a class="dropdown-item side-menu-item" th:classappend="${activeItem == 'term' ? 'active' : ''}" th:href="@{/termsearch}" th:text="#{menu.term}">Terminoloogid</a>
-              <a class="dropdown-item side-menu-item" th:classappend="${activeItem == 'partsyn' ? 'active' : ''}" th:href="@{/partsynsearch}"
-                 sec:authorize="#vars.userRoleData.crudRoleSelected" th:text="#{menu.partsyn}">Vasted</a>
-              <a class="dropdown-item side-menu-item" th:classappend="${activeItem == 'fullsyn' ? 'active' : ''}" th:href="@{/fullsynsearch}"
-                 sec:authorize="#vars.userRoleData.crudRoleSelected" th:text="#{menu.fullsyn}">Tõlkevasted</a>
+              <a class="dropdown-item side-menu-item" th:classappend="${activeItem == 'partsyn' ? 'active' : ''}" th:href="@{/partsynsearch}" sec:authorize="#vars.userRoleData.crudRoleSelected"
+                th:text="#{menu.partsyn}">Vasted</a>
+              <a class="dropdown-item side-menu-item" th:classappend="${activeItem == 'fullsyn' ? 'active' : ''}" th:href="@{/fullsynsearch}" sec:authorize="#vars.userRoleData.crudRoleSelected"
+                th:text="#{menu.fullsyn}">Tõlkevasted</a>
               <a class="dropdown-item side-menu-item" th:classappend="${activeItem == 'source' ? 'active' : ''}" th:href="@{/sourcesearch}" th:text="#{menu.source}">Allikate otsing</a>
               <a class="dropdown-item side-menu-item" th:classappend="${activeItem == 'limterm' ? 'limterm' : ''}" th:href="@{/limtermsearch}" th:text="#{menu.lim.term}">Võrgustiku otsing</a>
               <div class="dropdown-divider"></div>
               <a class="dropdown-item side-menu-item" th:classappend="${activeItem == 'history' ? 'active' : ''}" th:href="@{/history}" th:text="#{menu.history}">Kustutatud andmed</a>
               <a class="dropdown-item side-menu-item" th:classappend="${activeItem == 'datasets' ? 'active' : ''}" th:href="@{/datasets}" th:text="#{menu.datasets}">Sõnakogude haldus</a>
-              <a class="dropdown-item side-menu-item" th:classappend="${activeItem == 'fedtermupload' ? 'active' : ''}" th:href="@{/fedtermupload}"
-                 sec:authorize="#vars.userRoleData.admin" th:text="#{menu.fedtermupload}">FedTerm liidestus</a>
-              <a class="dropdown-item side-menu-item" th:classappend="${activeItem == 'classifiers' ? 'active' : ''}" th:href="@{/classifiers}"
-                 sec:authorize="#vars.userRoleData.admin" th:text="#{menu.classifiers}">Klassifikaatorite haldus</a>
-              <a class="dropdown-item side-menu-item" th:classappend="${activeItem == 'tags' ? 'active' : ''}" th:href="@{/tags}"
-                 sec:authorize="#vars.userRoleData.admin" th:text="#{menu.tags}">Siltide haldus</a>
-              <a class="dropdown-item side-menu-item" th:classappend="${activeItem == 'permissions' ? 'active' : ''}" th:href="@{/permissions}"
-                 sec:authorize="#vars.userRoleData.datasetOwnerOrAdmin" th:text="#{menu.permissions}">Kasutajaõiguste haldus</a>
-              <a class="dropdown-item side-menu-item" th:classappend="${activeItem == 'workloadreport' ? 'active' : ''}" th:href="@{/workloadreport}"
-                 sec:authorize="#vars.userRoleData.admin" th:text="#{menu.workloadreport}">Muudatuste aruanne</a>
+              <a class="dropdown-item side-menu-item" th:classappend="${activeItem == 'fedtermupload' ? 'active' : ''}" th:href="@{/fedtermupload}" sec:authorize="#vars.userRoleData.admin"
+                th:text="#{menu.fedtermupload}">FedTerm liidestus</a>
+              <a class="dropdown-item side-menu-item" th:classappend="${activeItem == 'classifiers' ? 'active' : ''}" th:href="@{/classifiers}" sec:authorize="#vars.userRoleData.admin"
+                th:text="#{menu.classifiers}">Klassifikaatorite haldus</a>
+              <a class="dropdown-item side-menu-item" th:classappend="${activeItem == 'tags' ? 'active' : ''}" th:href="@{/tags}" sec:authorize="#vars.userRoleData.admin" th:text="#{menu.tags}">Siltide
+                haldus</a>
+              <a class="dropdown-item side-menu-item" th:classappend="${activeItem == 'permissions' ? 'active' : ''}" th:href="@{/permissions}" sec:authorize="#vars.userRoleData.datasetOwnerOrAdmin"
+                th:text="#{menu.permissions}">Kasutajaõiguste haldus</a>
+              <a class="dropdown-item side-menu-item" th:classappend="${activeItem == 'workloadreport' ? 'active' : ''}" th:href="@{/workloadreport}" sec:authorize="#vars.userRoleData.admin"
+                th:text="#{menu.workloadreport}">Muudatuste aruanne</a>
               <a class="dropdown-item side-menu-item" th:classappend="${activeItem == 'wwfeedback' ? 'active' : ''}" th:href="@{/wwfeedback}" th:text="#{menu.wwfeedback}">Sõnaveebi tagasiside</a>
               <a class="dropdown-item side-menu-item" th:classappend="${activeItem == 'stat' ? 'active' : ''}" th:href="@{/stat}" th:text="#{menu.stat}">Sõnaveebi statistika</a>
               <div class="dropdown-divider"></div>
@@ -127,11 +130,7 @@
           </div>
         </div>
       </div>
-      <button type="button" class="btn btn-primary rounded-0"
-              data-toggle="modal"
-              data-target="#newWordDlg"
-              sec:authorize="#vars.userRoleData.crudRoleSelected"
-              th:if="${activeItem == 'lex'}">
+      <button type="button" class="btn btn-primary rounded-0" data-toggle="modal" data-target="#newWordDlg" sec:authorize="#vars.userRoleData.crudRoleSelected" th:if="${activeItem == 'lex'}">
         <i class="fa fa-plus mr-2" aria-hidden="true"></i>
         <span th:text="#{lex.new.word}">Uus keelend</span>
       </button>
@@ -142,11 +141,8 @@
           <span th:text="#{term.new.meaning}">Uus Mõiste</span>
         </button>
       </form>
-      <button type="button" class="btn btn-primary rounded-0 border-left ml-2"
-              data-toggle="modal"
-              data-target="#newLimTermWordDlg"
-              sec:authorize="#vars.userRoleData.crudRoleSelected"
-              th:if="${activeItem == 'limterm'}">
+      <button type="button" class="btn btn-primary rounded-0 border-left ml-2" data-toggle="modal" data-target="#newLimTermWordDlg" sec:authorize="#vars.userRoleData.crudRoleSelected"
+        th:if="${activeItem == 'limterm'}">
         <i class="fa fa-plus mr-2" aria-hidden="true"></i>
         <span th:text="#{term.lim.term.new.word}">Uus keelend</span>
       </button>
@@ -155,26 +151,12 @@
       </div>
       <ul th:if="${searchMode}" class="main-nav-tabs nav nav-tabs mb-n3 mx-auto align-self-start border-bottom-0">
         <li class="nav-item">
-          <a class="nav-link" th:classappend="${searchMode == 'SIMPLE'} ? 'active':''"
-            id="simpleSearchModeBtn"
-            th:text="#{common.search.mode.simple}"
-            data-toggle="tab"
-            href="#simple_search_filter"
-            role="tab"
-            aria-controls="simple_search_filter"
-            aria-selected="true"
-            data-plugin="chooseSearchModePlugin">Lihtotsing</a>
+          <a class="nav-link" th:classappend="${searchMode == 'SIMPLE'} ? 'active':''" id="simpleSearchModeBtn" th:text="#{common.search.mode.simple}" data-toggle="tab" href="#simple_search_filter"
+            role="tab" aria-controls="simple_search_filter" aria-selected="true" data-plugin="chooseSearchModePlugin">Lihtotsing</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" th:classappend="${searchMode == 'DETAIL'} ? 'active':''"
-            id="detailSearchModeBtn"
-            th:text="#{common.search.mode.detail}"
-            data-toggle="tab"
-            href="#detail_search_filter"
-            role="tab"
-            aria-controls="simple_search_filter"
-            aria-selected="true"
-            data-plugin="chooseSearchModePlugin">Detailotsing</a>
+          <a class="nav-link" th:classappend="${searchMode == 'DETAIL'} ? 'active':''" id="detailSearchModeBtn" th:text="#{common.search.mode.detail}" data-toggle="tab" href="#detail_search_filter"
+            role="tab" aria-controls="simple_search_filter" aria-selected="true" data-plugin="chooseSearchModePlugin">Detailotsing</a>
         </li>
       </ul>
       <th:block th:if="${activeItem == 'partsyn'}">
@@ -212,9 +194,7 @@
                 <div class="dropdown-header pb-0" th:text="#{common.active.role}">Aktiivne roll</div>
                 <div class="px-3 d-flex flex-row">
                   <th:block th:if="${userRoleData.roleSelected}" th:with="selectedRole = ${userRoleData.userRole}">
-                    <span class="pr-3"
-                          th:with="permissionName=#{|authorityoperation.${selectedRole.authOperation}|}"
-                          th:text="#{home.selectedrole(${selectedRole.datasetName}, ${permissionName})}">
+                    <span class="pr-3" th:with="permissionName=#{|authorityoperation.${selectedRole.authOperation}|}" th:text="#{home.selectedrole(${selectedRole.datasetName}, ${permissionName})}">
                     </span>
                   </th:block>
                   <th:block th:unless="${userRoleData.roleSelected}">
@@ -271,14 +251,10 @@
     </div>
   </th:block>
   <th:block th:fragment="ordering_buttons(itemIter)">
-    <button type="button" th:hidden="${itemIter.first}" class="btn badge badge-secondary order-up float-left"
-          th:title="#{common.update.ordering}"
-          data-plugin="changeItemOrderingPlugin">
+    <button type="button" th:hidden="${itemIter.first}" class="btn badge badge-secondary order-up float-left" th:title="#{common.update.ordering}" data-plugin="changeItemOrderingPlugin">
       <i class="fa fa-arrow-up" aria-hidden="true"></i>
     </button>
-    <button type="button" th:hidden="${itemIter.last}" class="btn badge badge-secondary order-down float-right"
-            th:title="#{common.update.ordering}"
-          data-plugin="changeItemOrderingPlugin">
+    <button type="button" th:hidden="${itemIter.last}" class="btn badge badge-secondary order-down float-right" th:title="#{common.update.ordering}" data-plugin="changeItemOrderingPlugin">
       <i class="fa fa-arrow-down" aria-hidden="true"></i>
     </button>
   </th:block>
@@ -305,11 +281,8 @@
   <div class="modal-body" data-name="sourceLinkDlgContent" th:fragment="source_link_dlg">
     <div id="noSourcesFoundDiv" th:if="${#lists.isEmpty(sources)}">
       <span th:text="#{source.search.not.found}">Nothing found</span>
-      <button class="btn btn-primary ml-4"
-              th:title="#{source.add.new}"
-              data-plugin="addSourceAndSourceLinkPlugin"
-              sec:authorize="${#authentication.principal.datasetCrudPermissionsExist}">Lisa uus allikas
-      </button>
+      <button class="btn btn-primary ml-4" th:title="#{source.add.new}" data-plugin="addSourceAndSourceLinkPlugin" sec:authorize="${#authentication.principal.datasetCrudPermissionsExist}">Lisa
+        uus allikas</button>
     </div>
     <div id="addSourceDiv" style="display: none;">
       <form th:replace="components :: add_source_form"></form>
@@ -440,8 +413,7 @@
           <th:block th:each="sourceProperty : ${source.sourceProperties}">
             <div class="row">
               <div class="mb-1">
-                <input th:if="${sourceProperty.type.toString() == 'SOURCE_NAME'}" type="radio" th:value="${sourceProperty.id}" name="id2"
-                       th:checked="${sourceLink.value == sourceProperty.valueText}">
+                <input th:if="${sourceProperty.type.toString() == 'SOURCE_NAME'}" type="radio" th:value="${sourceProperty.id}" name="id2" th:checked="${sourceLink.value == sourceProperty.valueText}">
                 <span th:text="#{|source.property.${sourceProperty.type}|}"></span>
                 -
                 <span th:text="${sourceProperty.valueText}" th:if="${sourceProperty.valueText != null}" th:style="${sourceProperty.valueMatch ? 'background-color: #eaffea' : ''}"></span>
@@ -470,12 +442,12 @@
   </div>
   <script th:inline="javascript" th:fragment="confirmations">
   	$('[data-toggle=confirmation]').confirmation({
-      btnOkLabel : /*[[#{common.yes}]]*/'Jah',
-      btnCancelLabel : /*[[#{common.no}]]*/'Ei'
+  		btnOkLabel : /*[[#{common.yes}]]*/'Jah',
+  		btnCancelLabel : /*[[#{common.no}]]*/'Ei'
   	});
   	$('[data-toggle=delete-confirm]').confirmation({
-      btnOkLabel : /*[[#{common.yes}]]*/'Jah',
-      btnCancelLabel : /*[[#{common.no}]]*/'Ei',
+  		btnOkLabel : /*[[#{common.yes}]]*/'Jah',
+  		btnCancelLabel : /*[[#{common.no}]]*/'Ei',
   		title : /*[[#{common.confirm.delete}]]*/'Kinnita kustutamine',
   		onConfirm : executeDelete
   	});
@@ -513,28 +485,27 @@
   <div id="alertSmall">
     <div class="alert-small-custom-content d-flex flex-row ">
       <div class="alert-small-custom-header d-flex flex-row w-100 h-100">
-      <div class="alert-custom d-flex flex-row w-100 h-100">
-        <div class="alert-custom-warning-hide w-100">
-        <div class="alert-custom-warning d-flex flex-row w-100" role="alert">
-          <i class="fa fa-times-circle" aria-hidden="true"></i>
-          <span class="alert-custom-message flex-grow-1 w-100" name="alert_message"></span>
+        <div class="alert-custom d-flex flex-row w-100 h-100">
+          <div class="alert-custom-warning-hide w-100">
+            <div class="alert-custom-warning d-flex flex-row w-100" role="alert">
+              <i class="fa fa-times-circle" aria-hidden="true"></i>
+              <span class="alert-custom-message flex-grow-1 w-100" name="alert_message"></span>
+            </div>
+          </div>
+          <div class="alert-custom-success-hide w-100">
+            <div class="alert-custom-success  d-flex flex-row w-100" role="alert">
+              <i class="fa fa-check-circle" aria-hidden="true"></i>
+              <span class="alert-custom-message flex-grow-1 w-100" name="alert_message"></span>
+            </div>
+          </div>
         </div>
-        </div>
-        <div class="alert-custom-success-hide w-100">
-        <div class="alert-custom-success  d-flex flex-row w-100" role="alert">
-          <i class="fa fa-check-circle" aria-hidden="true"></i>
-          <span class="alert-custom-message flex-grow-1 w-100" name="alert_message"></span>
-        </div>
-      </div>
-    </div>
         <button type="button" class="close" data-plugin="costomAlertClose">
           <i class="fa fa-times" aria-hidden="true"></i>
         </button>
       </div>
     </div>
-</div>
-  <div id="confirmDlg" class="modal" role="dialog">
   </div>
+  <div id="confirmDlg" class="modal" role="dialog"></div>
   <div id="waitDlg" class="modal" role="dialog" data-keyboard="false" data-backdrop="static">
     <div class="modal-dialog modal-dialog-centered modal-sm" role="document">
       <div class="modal-content">

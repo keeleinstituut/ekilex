@@ -1,0 +1,19 @@
+.node {
+	cursor: pointer;
+}
+
+.node text {
+	font: 20px sans-serif;
+}
+
+.link {
+	cursor: pointer;
+	fill: none;
+	stroke: rgb(150, 150, 150);
+	stroke-width: 2px;
+}
+
+.arrow {
+	fill: rgb(150, 150, 150);
+	stroke-width: 3px;
+}

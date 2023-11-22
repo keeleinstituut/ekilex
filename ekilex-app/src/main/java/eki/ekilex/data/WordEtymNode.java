@@ -4,13 +4,11 @@ import java.util.List;
 
 import eki.common.data.AbstractDataObject;
 
-public class WordEtymPOC extends AbstractDataObject {
+public class WordEtymNode extends AbstractDataObject {
 
 	private static final long serialVersionUID = 1L;
 
 	private Long wordId;
-
-	private int level;
 
 	private String word;
 
@@ -26,7 +24,9 @@ public class WordEtymPOC extends AbstractDataObject {
 
 	private String comment;
 
-	private List<WordEtymPOC> tree;
+	private int level;
+
+	private List<WordEtymNode> children;
 
 	public Long getWordId() {
 		return wordId;
@@ -34,14 +34,6 @@ public class WordEtymPOC extends AbstractDataObject {
 
 	public void setWordId(Long wordId) {
 		this.wordId = wordId;
-	}
-
-	public int getLevel() {
-		return level;
-	}
-
-	public void setLevel(int level) {
-		this.level = level;
 	}
 
 	public String getWord() {
@@ -100,11 +92,20 @@ public class WordEtymPOC extends AbstractDataObject {
 		this.comment = comment;
 	}
 
-	public List<WordEtymPOC> getTree() {
-		return tree;
+	public int getLevel() {
+		return level;
 	}
 
-	public void setTree(List<WordEtymPOC> tree) {
-		this.tree = tree;
+	public void setLevel(int level) {
+		this.level = level;
 	}
+
+	public List<WordEtymNode> getChildren() {
+		return children;
+	}
+
+	public void setChildren(List<WordEtymNode> children) {
+		this.children = children;
+	}
+
 }

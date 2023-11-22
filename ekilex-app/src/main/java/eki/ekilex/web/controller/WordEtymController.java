@@ -9,7 +9,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.SessionAttributes;
 
 import eki.ekilex.constant.WebConstant;
-import eki.ekilex.data.WordEtymPOC;
+import eki.ekilex.data.WordEtymNode;
+import eki.ekilex.data.WordEtymTree;
 import eki.ekilex.service.WordEtymService;
 
 @ConditionalOnWebApplication
@@ -23,8 +24,10 @@ public class WordEtymController extends AbstractPrivateSearchController {
 	@GetMapping("/wordetym/{wordId}")
 	public String wordEtymDetails(@PathVariable("wordId") Long wordId, Model model) {
 
-		WordEtymPOC wordEtym = wordEtymService.getWordEtym(wordId);
+		WordEtymTree wordEtymTree = wordEtymService.getWordEtymTree(wordId);
+		WordEtymNode wordEtym = wordEtymTree.getRoot();
 		model.addAttribute("wordEtym", wordEtym);
+
 		return "wordetym";
 	}
 }
