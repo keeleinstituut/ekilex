@@ -56,7 +56,7 @@ public class WorkloadReportController extends AbstractPrivatePageController {
 	@GetMapping(WORKLOAD_REPORT_URI + "/dataset_users/{datasetCodes}")
 	public String getDatasetUsers(@PathVariable List<String> datasetCodes, Model model) {
 
-		List<EkiUser> datasetUsers = workloadReportService.getUsersByDatasetPermission(datasetCodes);
+		List<EkiUser> datasetUsers = workloadReportService.getUsersByDatasetCrudPermission(datasetCodes);
 		model.addAttribute("datasetUsers", datasetUsers);
 
 		return WORKLOAD_REPORT_COMPONENTS_PAGE + PAGE_FRAGMENT_ELEM + "dataset_users_select";
@@ -72,7 +72,7 @@ public class WorkloadReportController extends AbstractPrivatePageController {
 
 		WorkloadReport workloadReport = workloadReportService.getWorkloadReport(dateFrom, dateUntil, datasetCodes, userNames);
 		List<Dataset> workloadReportDatasets = workloadReportService.getDatasets();
-		List<EkiUser> datasetUsers = workloadReportService.getUsersByDatasetPermission(datasetCodes);
+		List<EkiUser> datasetUsers = workloadReportService.getUsersByDatasetCrudPermission(datasetCodes);
 
 		if (userNames == null) {
 			userNames = new ArrayList<>();
