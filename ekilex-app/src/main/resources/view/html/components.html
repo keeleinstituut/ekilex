@@ -144,23 +144,22 @@
                 <td th:text="#{source.type}">tüüp</td>
                 <td th:text="#{|source.type.${source.type}|}"></td>
               </tr>
-              <!-- TODO temporarily disabled, restore later -->
-              <!-- <tr> -->
-              <!--   <td th:text="#{source.name}">Lühike kuju</td> -->
-              <!--   <td th:text="${source.name}"></td> -->
-              <!-- </tr> -->
-              <!-- <tr> -->
-              <!--   <td th:text="#{source.value}">Pikk kuju</td> -->
-              <!--   <td th:utext="${source.valuePrese}"></td> -->
-              <!-- </tr> -->
-              <!-- <tr> -->
-              <!--   <td th:text="#{source.comment}">Mitteavalik kommentaar</td> -->
-              <!--   <td th:text="${source.comment}"></td> -->
-              <!-- </tr> -->
-              <!-- <tr> -->
-              <!--   <td th:text="#{source.publicity}">Avalikkus</td> -->
-              <!--   <td th:text="#{'boolean.public.' + ${source.public}}">avalik/mitteavalik</td> -->
-              <!-- </tr> -->
+              <tr>
+                <td th:text="#{source.name}">Lühike kuju</td>
+                <td th:text="${source.name}"></td>
+              </tr>
+              <tr>
+                <td th:text="#{source.value}">Pikk kuju</td>
+                <td th:utext="${source.valuePrese}"></td>
+              </tr>
+              <tr>
+                <td th:text="#{source.comment}">Mitteavalik kommentaar</td>
+                <td th:text="${source.comment}"></td>
+              </tr>
+              <tr>
+                <td th:text="#{source.publicity}">Avalikkus</td>
+                <td th:text="#{'boolean.public.' + ${source.public}}">avalik/mitteavalik</td>
+              </tr>
             </table>
           </div>
         </div>
@@ -266,20 +265,6 @@
       <div class="form-group row">
         <div class="col-md-12">
           <div class="border rounded">
-            <!-- TODO delete later -->
-            <div class="form-group row m-4">
-              <label class="col-12 col-form-label">Lühinimi</label>
-              <div class="col-md-6">
-                <input class="form-control required-field" name="shortName" maxlength="30">
-              </div>
-            </div>
-            <!-- TODO delete later -->
-            <div class="form-group row m-4">
-              <label class="col-12 col-form-label">Pealkiri</label>
-              <div class="col-md-12">
-                <input class="form-control required-field" name="name">
-              </div>
-            </div>
             <div class="form-group row m-4">
               <label class="col-12 col-form-label" th:text="#{source.type}">Tüüp</label>
               <div class="col-md-6">
@@ -289,31 +274,30 @@
                 </select>
               </div>
             </div>
-            <!-- TODO restore later -->
-            <!-- <div class="form-group row m-4"> -->
-            <!--   <label class="col-12 col-form-label" th:text="#{source.name}">Lühike kuju</label> -->
-            <!--   <div class="col-md-12"> -->
-            <!--     <input class="form-control" name="name"> -->
-            <!--   </div> -->
-            <!-- </div> -->
-            <!-- <div class="form-group row m-4"> -->
-            <!--   <label class="col-12 col-form-label" th:text="#{source.value}">Pikk kuju</label> -->
-            <!--   <div class="col-md-12"> -->
-            <!--     <div th:replace="components :: eki_editor_elem"></div> -->
-            <!--   </div> -->
-            <!-- </div> -->
-            <!-- <div class="form-group row m-4"> -->
-            <!--   <label class="col-12 col-form-label" th:text="#{source.comment}">Mitteavalik kommentaar</label> -->
-            <!--   <div class="col-md-12"> -->
-            <!--     <input class="form-control" name="comment"> -->
-            <!--   </div> -->
-            <!-- </div> -->
-            <!-- <div class="form-group form-check m-4"> -->
-            <!--   <label class="col-12 form-check-label"> -->
-            <!--     <input class="form-check-input" type="checkbox" name="public" checked="checked" value="true"> -->
-            <!--     <span th:text="#{boolean.public.true}">Avalik</span> -->
-            <!--   </label> -->
-            <!-- </div> -->
+            <div class="form-group row m-4">
+              <label class="col-12 col-form-label" th:text="#{source.name}">Lühike kuju</label>
+              <div class="col-md-12">
+                <input class="form-control" name="name">
+              </div>
+            </div>
+            <div class="form-group row m-4">
+              <label class="col-12 col-form-label" th:text="#{source.value}">Pikk kuju</label>
+              <div class="col-md-12">
+                <div th:replace="components :: eki_editor_elem"></div>
+              </div>
+            </div>
+            <div class="form-group row m-4">
+              <label class="col-12 col-form-label" th:text="#{source.comment}">Mitteavalik kommentaar</label>
+              <div class="col-md-12">
+                <input class="form-control" name="comment">
+              </div>
+            </div>
+            <div class="form-group form-check m-4">
+              <label class="col-12 form-check-label">
+                <input class="form-check-input" type="checkbox" name="public" checked="checked" value="true">
+                <span th:text="#{boolean.public.true}">Avalik</span>
+              </label>
+            </div>
           </div>
         </div>
       </div>
@@ -339,10 +323,7 @@
             </div>
             <div class="form-group row p-2 m-2" name="propertyValue">
               <div class="col-12">
-                <!-- TODO delete later -->
-                <textarea rows="3" class="form-control required-field" name="properties[][valueText]"></textarea>
-                <!-- TODO restore later -->
-                <!-- <textarea rows="3" class="form-control" name="properties[][valueText]"></textarea> -->
+                <textarea rows="3" class="form-control" name="properties[][valueText]"></textarea>
               </div>
             </div>
           </div>

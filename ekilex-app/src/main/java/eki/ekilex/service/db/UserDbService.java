@@ -109,7 +109,7 @@ public class UserDbService extends AbstractDbService implements SystemConstant {
 				.orElse(null);
 	}
 
-	public List<EkiUser> getUsersWithAnyDatasetPermission() {
+	public List<EkiUser> getUsersWithAnyDatasetPermission(List<String> requiredAuthOps) {
 
 		return create
 				.select(
@@ -121,12 +121,14 @@ public class UserDbService extends AbstractDbService implements SystemConstant {
 				.whereExists(DSL
 						.select(DATASET_PERMISSION.ID)
 						.from(DATASET_PERMISSION)
-						.where(DATASET_PERMISSION.USER_ID.eq(EKI_USER.ID)))
+						.where(
+								DATASET_PERMISSION.USER_ID.eq(EKI_USER.ID)
+										.and(DATASET_PERMISSION.AUTH_OPERATION.in(requiredAuthOps))))
 				.orderBy(EKI_USER.NAME)
 				.fetchInto(EkiUser.class);
 	}
 
-	public List<EkiUser> getUsersByDatasetPermission(List<String> datasetCodes) {
+	public List<EkiUser> getUsersByDatasetPermission(List<String> datasetCodes, List<String> requiredAuthOps) {
 
 		return create
 				.select(
@@ -137,7 +139,8 @@ public class UserDbService extends AbstractDbService implements SystemConstant {
 				.from(EKI_USER, DATASET_PERMISSION)
 				.where(
 						EKI_USER.ID.eq(DATASET_PERMISSION.USER_ID)
-								.and(DATASET_PERMISSION.DATASET_CODE.in(datasetCodes)))
+								.and(DATASET_PERMISSION.DATASET_CODE.in(datasetCodes))
+								.and(DATASET_PERMISSION.AUTH_OPERATION.in(requiredAuthOps)))
 				.groupBy(EKI_USER.ID)
 				.orderBy(EKI_USER.NAME)
 				.fetchInto(EkiUser.class);

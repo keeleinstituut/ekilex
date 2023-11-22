@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
 import org.springframework.core.annotation.Order;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import eki.ekilex.data.api.ApiResponse;
 import eki.ekilex.data.api.TermMeaning;
+import eki.ekilex.service.CudService;
 import eki.ekilex.service.api.TermMeaningService;
 
 @ConditionalOnWebApplication
@@ -23,6 +25,9 @@ public class ApiTermMeaningController extends AbstractApiController {
 
 	@Autowired
 	private TermMeaningService termMeaningService;
+
+	@Autowired
+	private CudService cudService;
 
 	@Order(804)
 	@PreAuthorize("@permEval.isDatasetCrudGranted(principal, #crudRoleDataset, #datasetCode)")
@@ -52,6 +57,24 @@ public class ApiTermMeaningController extends AbstractApiController {
 			}
 			Long meaningId = termMeaningService.saveTermMeaning(termMeaning, crudRoleDataset);
 			return getOpSuccessResponse(meaningId);
+		} catch (Exception e) {
+			return getOpFailResponse(e);
+		}
+	}
+
+	@Order(806)
+	@PreAuthorize("principal.apiCrud "
+			+ "&& @permEval.isDatasetCrudGranted(principal, #crudRoleDataset, #crudRoleDataset) "
+			+ "&& @permEval.isMeaningCrudGranted(principal, #crudRoleDataset, #meaningId)")
+	@DeleteMapping(API_SERVICES_URI + TERM_MEANING_URI + DELETE_URI)
+	@ResponseBody
+	public ApiResponse deleteTermMeaning(
+			@RequestParam("crudRoleDataset") String crudRoleDataset,
+			@RequestParam("meaningId") Long meaningId) {
+
+		try {
+			cudService.deleteMeaningAndLexemes(meaningId, crudRoleDataset, MANUAL_EVENT_ON_UPDATE_DISABLED);
+			return getOpSuccessResponse();
 		} catch (Exception e) {
 			return getOpFailResponse(e);
 		}

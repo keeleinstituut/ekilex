@@ -11,11 +11,11 @@ $.fn.workloadReportDatasetSelectPlugin = function() {
 				const getDatasetUsersUrl = `${applicationUrl}workloadreport/dataset_users/${datasetCodes}`;
 				$.get(getDatasetUsersUrl).done(function(datasetUsersSelectHtml) {
 					datasetUsersDiv.html(datasetUsersSelectHtml);
-					$('.users-select').selectpicker({width: '100%'});
 					initDatasetUsersSelect();
 					$.each(selectedUsers, function(index, selectedUser) {
 						$("#users-select option[value='" + selectedUser + "']").prop('selected', true);
 					});
+					$('#users-select').selectpicker('refresh');
 					$wpm.bindObjects();
 				}).fail(function(data) {
 					openAlertDlg(messages["common.error"]);

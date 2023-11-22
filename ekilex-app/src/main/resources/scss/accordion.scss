@@ -3,8 +3,8 @@
   position: relative;
 
   &__instance {
-    border: $gray-200 1pxi solid;
-    margin-bottom: -1pxi;
+    border: $gray-200 1px solid;
+    margin-bottom: -1px;
     &--active {
       .ekiAccordion__title:before {
         content: "\f0d8";

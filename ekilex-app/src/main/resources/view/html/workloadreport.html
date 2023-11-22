@@ -103,10 +103,10 @@
                             <div data-toggle="tooltip" data-placement="top" th:title="${#strings.listJoin(functionReportUser.wordValues, ', ')}">
                               <a href="#" role="button" data-toggle="dropdown" th:text="${functionReportUser.count}"></a>
                               <div class="dropdown-menu">
-                                <a class="dropdown-item btn btn-secondary font-weight-bold btn-sm"
+                                <a class="dropdown-item btn btn-secondary font-weight-bold btn-sm" target="_blank"
                                    th:href="@{'/workloadreport/lexsearch/' + ${activityReport.activityOwner} + '/' + ${#strings.listJoin(functionReportUser.lexSearchIds, ', ')}}"
                                    th:text="#{workloadreport.lex.search}">Leks otsing</a>
-                                <a class="dropdown-item btn btn-secondary font-weight-bold btn-sm"
+                                <a class="dropdown-item btn btn-secondary font-weight-bold btn-sm" target="_blank"
                                    th:href="@{'/workloadreport/termsearch/' + ${activityReport.activityOwner} + '/' + ${#strings.listJoin(functionReportUser.termSearchIds, ', ')}}"
                                    th:text="#{workloadreport.term.search}">Term otsing</a>
                               </div>

@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import eki.common.constant.ActivityOwner;
+import eki.common.constant.PermConstant;
 import eki.ekilex.constant.CrudType;
 import eki.ekilex.data.Dataset;
 import eki.ekilex.data.EkiUser;
@@ -28,7 +29,7 @@ import eki.ekilex.service.db.WorkloadReportDbService;
 import eki.ekilex.service.util.DatasetUtil;
 
 @Component
-public class WorkloadReportService {
+public class WorkloadReportService implements PermConstant {
 
 	private static final String DATASET_NONE = "dataset-none";
 
@@ -48,13 +49,13 @@ public class WorkloadReportService {
 	private WorkbookService workbookService;
 
 	@Transactional
-	public List<EkiUser> getUsersByDatasetPermission(List<String> datasetCodes) {
+	public List<EkiUser> getUsersByDatasetCrudPermission(List<String> datasetCodes) {
 
 		List<EkiUser> users;
 		if (datasetCodes.contains(DATASET_NONE)) {
-			users = userDbService.getUsersWithAnyDatasetPermission();
+			users = userDbService.getUsersWithAnyDatasetPermission(AUTH_OPS_CRUD);
 		} else {
-			users = userDbService.getUsersByDatasetPermission(datasetCodes);
+			users = userDbService.getUsersByDatasetPermission(datasetCodes, AUTH_OPS_CRUD);
 		}
 		return users;
 	}
@@ -73,7 +74,7 @@ public class WorkloadReportService {
 		List<String> filteredDatasetCodes;
 		if (datasetCodes.contains(DATASET_NONE)) {
 			includeUnspecifiedDatasets = true;
-			filteredDatasetCodes = datasetCodes.stream().filter(datasetCode -> StringUtils.equals(datasetCode, DATASET_NONE)).collect(Collectors.toList());
+			filteredDatasetCodes = datasetCodes.stream().filter(datasetCode -> !StringUtils.equals(datasetCode, DATASET_NONE)).collect(Collectors.toList());
 		} else {
 			filteredDatasetCodes = datasetCodes.stream().collect(Collectors.toList());
 		}

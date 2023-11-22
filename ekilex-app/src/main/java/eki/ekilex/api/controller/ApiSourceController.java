@@ -43,6 +43,14 @@ public class ApiSourceController extends AbstractApiController {
 	}
 
 	@Order(202)
+	@GetMapping(API_SERVICES_URI + SOURCE_URI + DETAILS_URI + "/{sourceId}")
+	@ResponseBody
+	public Source getSource(@PathVariable("sourceId") Long sourceId) {
+
+		return sourceService.getSource(sourceId);
+	}
+
+	@Order(203)
 	@PreAuthorize("principal.apiCrud && principal.datasetCrudPermissionsExist")
 	@PostMapping(API_SERVICES_URI + SOURCE_URI + CREATE_URI)
 	@ResponseBody
@@ -87,7 +95,7 @@ public class ApiSourceController extends AbstractApiController {
 		}
 	}
 
-	@Order(203)
+	@Order(204)
 	@PreAuthorize("principal.apiCrud && @permEval.isSourceCrudGranted(authentication, #crudRoleDataset, #sourceId)")
 	@PostMapping(API_SERVICES_URI + SOURCE_URI + UPDATE_URI)
 	@ResponseBody
@@ -111,7 +119,7 @@ public class ApiSourceController extends AbstractApiController {
 		}
 	}
 
-	@Order(204)
+	@Order(205)
 	@PreAuthorize("principal.apiCrud && @permEval.isSourceCrudGranted(authentication, #crudRoleDataset, #sourceId)")
 	@DeleteMapping(API_SERVICES_URI + SOURCE_URI + DELETE_URI)
 	@ResponseBody
@@ -131,7 +139,7 @@ public class ApiSourceController extends AbstractApiController {
 		}
 	}
 
-	@Order(205)
+	@Order(206)
 	@PreAuthorize("principal.apiCrud && @permEval.isSourceCrudGranted(authentication, #crudRoleDataset, #sourceId1)")
 	@PostMapping(API_SERVICES_URI + SOURCE_URI + JOIN_URI)
 	@ResponseBody
@@ -148,7 +156,7 @@ public class ApiSourceController extends AbstractApiController {
 		}
 	}
 
-	@Order(206)
+	@Order(207)
 	@PreAuthorize("principal.apiCrud && @permEval.isSourceCrudGranted(authentication, #crudRoleDataset, #sourceId)")
 	@PostMapping(API_SERVICES_URI + SOURCE_PROPERTY_URI + CREATE_URI)
 	@ResponseBody
@@ -167,7 +175,7 @@ public class ApiSourceController extends AbstractApiController {
 		}
 	}
 
-	@Order(207)
+	@Order(208)
 	@PreAuthorize("principal.apiCrud && @permEval.isSourcePropertyCrudGranted(authentication, #crudRoleDataset, #sourcePropertyId)")
 	@PostMapping(API_SERVICES_URI + SOURCE_PROPERTY_URI + UPDATE_URI)
 	@ResponseBody
@@ -185,7 +193,7 @@ public class ApiSourceController extends AbstractApiController {
 		}
 	}
 
-	@Order(208)
+	@Order(209)
 	@PreAuthorize("principal.apiCrud && @permEval.isSourcePropertyCrudGranted(authentication, #crudRoleDataset, #sourcePropertyId)")
 	@DeleteMapping(API_SERVICES_URI + SOURCE_PROPERTY_URI + DELETE_URI)
 	@ResponseBody
