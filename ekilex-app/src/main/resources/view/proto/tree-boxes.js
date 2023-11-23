@@ -105,16 +105,16 @@ function render(svgg, root, nodes, links) {
 	nodeEnter
 		.append("rect")
 		.attr("rx", function(d) {
-			if (d.parent) {
-				return d.children || d._children ? 0 : 10
+			if (d.data.level == 1) {
+				return 10;
 			};
-			return 10;
+			return 0;
 		})
 		.attr("ry", function(d) {
-			if (d.parent) {
-				return d.children || d._children ? 0 : 10
+			if (d.data.level == 1) {
+				return 10;
 			};
-			return 10;
+			return 0;
 		})
 		.attr("x", 0)
 		.attr("y", -30)
