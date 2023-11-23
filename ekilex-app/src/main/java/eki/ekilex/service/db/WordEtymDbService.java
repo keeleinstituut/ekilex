@@ -65,8 +65,7 @@ public class WordEtymDbService extends AbstractDataDbService {
 						DSL.jsonbArrayAgg(DSL
 								.jsonObject(
 										DSL.key("wordEtymRelId").value(wer.ID),
-										DSL.key("comment").value(wer.COMMENT),
-										DSL.key("commentPrese").value(wer.COMMENT_PRESE),
+										DSL.key("comment").value(wer.COMMENT_PRESE),
 										DSL.key("questionable").value(wer.IS_QUESTIONABLE),
 										DSL.key("compound").value(wer.IS_COMPOUND),
 										DSL.key("relatedWordId").value(wer.RELATED_WORD_ID))))

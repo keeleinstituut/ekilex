@@ -30,6 +30,7 @@
     <th:block th:if="${wordEtymTree}">
       <h5 th:text="|${wordEtymTree.wordId} ${wordEtymTree.wordValue}|" class="mt-3"></h5>
       <input type="hidden" id="word-id" th:value="${wordEtymTree.wordId}">
+      <input type="hidden" id="app-url" th:value="@{/}">
       <div id="tree-container"></div>
       <th:block th:each="wordEtymNode : ${wordEtymTree.nodes}">
         <div class="modal fade" th:id="|word-etym-node-edit-modal-${wordEtymNode.wordId}|" tabindex="-1" role="dialog" aria-hidden="true">
@@ -64,7 +65,6 @@
         </div>
       </th:block>
       <script type="text/javascript">
-		var applicationUrl = /*[[@{/}]]*/'/';
 		initWordEtymTree();
 	  </script>
     </th:block>

@@ -28,7 +28,7 @@ public class WordEtymNodeTuple extends AbstractDataObject {
 
 	private boolean isQuestionable;
 
-	private List<WordEtymNodeRel> wordEtymRelations;
+	private List<WordEtymRel> wordEtymRelations;
 
 	public Long getWordId() {
 		return wordId;
@@ -110,11 +110,11 @@ public class WordEtymNodeTuple extends AbstractDataObject {
 		this.isQuestionable = isQuestionable;
 	}
 
-	public List<WordEtymNodeRel> getWordEtymRelations() {
+	public List<WordEtymRel> getWordEtymRelations() {
 		return wordEtymRelations;
 	}
 
-	public void setWordEtymRelations(List<WordEtymNodeRel> wordEtymRelations) {
+	public void setWordEtymRelations(List<WordEtymRel> wordEtymRelations) {
 		this.wordEtymRelations = wordEtymRelations;
 	}
 }

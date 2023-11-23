@@ -5,6 +5,7 @@ var nodeWidth = 200;
 function initWordEtymTree() {
 
 	var wordId = $("#word-id").val();
+	var applicationUrl = $("#app-url").val();
 	var wordEtymTreeUrl = applicationUrl + "proto/wordetymtree/" + wordId;
 
 	$.get(wordEtymTreeUrl).done(function(data) {

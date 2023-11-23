@@ -6,6 +6,8 @@ public class WordEtymRel extends AbstractDataObject {
 
 	private static final long serialVersionUID = 1L;
 
+	private Long wordEtymRelId;
+
 	private String comment;
 
 	private boolean questionable;
@@ -17,6 +19,14 @@ public class WordEtymRel extends AbstractDataObject {
 	private String relatedWord;
 
 	private String relatedWordLang;
+
+	public Long getWordEtymRelId() {
+		return wordEtymRelId;
+	}
+
+	public void setWordEtymRelId(Long wordEtymRelId) {
+		this.wordEtymRelId = wordEtymRelId;
+	}
 
 	public String getComment() {
 		return comment;

@@ -14,8 +14,8 @@ import org.springframework.stereotype.Component;
 import eki.common.data.IntWrap;
 import eki.ekilex.data.WordEtymNode;
 import eki.ekilex.data.WordEtymNodeLink;
-import eki.ekilex.data.WordEtymNodeRel;
 import eki.ekilex.data.WordEtymNodeTuple;
+import eki.ekilex.data.WordEtymRel;
 import eki.ekilex.data.WordEtymTree;
 import eki.ekilex.service.db.WordEtymDbService;
 
@@ -65,7 +65,7 @@ public class WordEtymService {
 	private void composeEtymNodes(
 			WordEtymNode node,
 			List<WordEtymNode> nodes,
-			List<WordEtymNodeRel> relations,
+			List<WordEtymRel> relations,
 			Map<Long, WordEtymNodeTuple> wordEtymTupleMap,
 			List<Long> processedWordIds) {
 
@@ -78,7 +78,7 @@ public class WordEtymService {
 			return;
 		}
 
-		for (WordEtymNodeRel relation : relations) {
+		for (WordEtymRel relation : relations) {
 
 			Long relatedWordId = relation.getRelatedWordId();
 			if (processedWordIds.contains(relatedWordId)) {
@@ -94,14 +94,14 @@ public class WordEtymService {
 	private void composeEtymLinks(
 			Long wordId,
 			List<WordEtymNodeLink> links,
-			List<WordEtymNodeRel> relations,
+			List<WordEtymRel> relations,
 			Map<Long, WordEtymNodeTuple> wordEtymTupleMap) {
 
 		if (CollectionUtils.isEmpty(relations)) {
 			return;
 		}
 
-		for (WordEtymNodeRel relation : relations) {
+		for (WordEtymRel relation : relations) {
 
 			WordEtymNodeLink link = createEtymLink(wordId, relation, wordEtymTupleMap);
 			links.add(link);
@@ -128,7 +128,7 @@ public class WordEtymService {
 		return wordEtymLevel;
 	}
 
-	private WordEtymNodeLink createEtymLink(Long wordId, WordEtymNodeRel relation, Map<Long, WordEtymNodeTuple> wordEtymTupleMap) {
+	private WordEtymNodeLink createEtymLink(Long wordId, WordEtymRel relation, Map<Long, WordEtymNodeTuple> wordEtymTupleMap) {
 
 		WordEtymNodeTuple sourceWordTuple = wordEtymTupleMap.get(wordId);
 		WordEtymNodeTuple targetWordTuple = wordEtymTupleMap.get(relation.getRelatedWordId());
@@ -139,7 +139,7 @@ public class WordEtymService {
 		link.setSourceWordValue(sourceWordTuple.getWordEtymWord());
 		link.setTargetWordId(relation.getRelatedWordId());
 		link.setTargetWordValue(targetWordTuple.getWordEtymWord());
-		link.setComment(relation.getCommentPrese());
+		link.setComment(relation.getComment());
 		link.setQuestionable(relation.isQuestionable());
 		link.setCompound(relation.isCompound());
 
