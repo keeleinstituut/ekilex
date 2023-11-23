@@ -29,6 +29,9 @@ public class WordEtymService {
 	public WordEtymTree getWordEtymTree(Long wordId) {
 
 		List<WordEtymNodeTuple> wordEtymTuples = wordEtymDbService.getWordEtymTuples(wordId);
+		if (CollectionUtils.isEmpty(wordEtymTuples)) {
+			return null;
+		}
 
 		Map<Long, WordEtymNodeTuple> wordEtymTupleMap = wordEtymTuples.stream()
 				.collect(Collectors.toMap(WordEtymNodeTuple::getWordEtymWordId, row -> row));
