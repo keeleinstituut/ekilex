@@ -157,14 +157,6 @@ function initLexemeLevelsDlg(editDlg) {
 	});
 };
 
-function initUsageAuthorDlg(addDlg) {
-	addDlg.find('.form-control').val(null);
-	addDlg.find('[data-name=dialogContent]').html(null);
-	const selectElem = addDlg.find('select');
-	selectElem.val(selectElem.find('option').first().val());
-	initRelationDialogLogic(addDlg, 'source-id');
-};
-
 function refreshDetailsSearch(id) {
 	const detailsOpen = $('.details-open');
 

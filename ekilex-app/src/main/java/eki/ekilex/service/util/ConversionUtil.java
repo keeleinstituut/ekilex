@@ -208,7 +208,6 @@ public class ConversionUtil implements GlobalConstant {
 				usage.setTypeValue(tuple.getUsageTypeValue());
 				usage.setTranslations(new ArrayList<>());
 				usage.setDefinitions(new ArrayList<>());
-				usage.setAuthors(new ArrayList<>());
 				usage.setSourceLinks(new ArrayList<>());
 				usage.setPublic(tuple.isUsagePublic());
 				usageMap.put(usageId, usage);
@@ -225,13 +224,7 @@ public class ConversionUtil implements GlobalConstant {
 					usageSource.setName(tuple.getUsageSourceLinkName());
 					usageSource.setValue(tuple.getUsageSourceLinkValue());
 					usageSourceMap.put(usageSourceLinkId, usageSource);
-					if (ReferenceType.AUTHOR.equals(tuple.getUsageSourceLinkType())) {
-						usage.getAuthors().add(usageSource);
-					} else if (ReferenceType.TRANSLATOR.equals(tuple.getUsageSourceLinkType())) {
-						usage.getAuthors().add(usageSource);
-					} else {
-						usage.getSourceLinks().add(usageSource);
-					}
+					usage.getSourceLinks().add(usageSource);
 				}
 			}
 			if (usageTranslationId != null) {

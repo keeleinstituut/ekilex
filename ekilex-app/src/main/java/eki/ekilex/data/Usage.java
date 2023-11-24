@@ -26,8 +26,6 @@ public class Usage extends AbstractPublicEntity {
 
 	private List<UsageDefinition> definitions;
 
-	private List<SourceLink> authors;
-
 	private List<SourceLink> sourceLinks;
 
 	public Long getId() {
@@ -100,14 +98,6 @@ public class Usage extends AbstractPublicEntity {
 
 	public void setDefinitions(List<UsageDefinition> definitions) {
 		this.definitions = definitions;
-	}
-
-	public List<SourceLink> getAuthors() {
-		return authors;
-	}
-
-	public void setAuthors(List<SourceLink> authors) {
-		this.authors = authors;
 	}
 
 	public List<SourceLink> getSourceLinks() {

@@ -140,11 +140,6 @@ public class EditController extends AbstractMutableDataPageController {
 			sourceLinkValue = getSourcePropertyValue(itemData.getId3());
 			sourceLinkService.createFreeformSourceLink(itemData.getId(), itemData.getId2(), ReferenceType.ANY, sourceLinkValue, itemValue, roleDatasetCode, isManualEventOnUpdateEnabled);
 			break;
-		case "usage_author":
-			sourceLinkValue = getSourceNameValue(itemData.getId2());
-			ReferenceType refType = ReferenceType.valueOf(itemData.getItemType());
-			sourceLinkService.createFreeformSourceLink(itemData.getId(), itemData.getId2(), refType, sourceLinkValue, null, roleDatasetCode, isManualEventOnUpdateEnabled);
-			break;
 		case "lexeme_deriv":
 			cudService.createLexemeDeriv(itemData.getId(), itemValue, roleDatasetCode, isManualEventOnUpdateEnabled);
 			break;
@@ -575,7 +570,6 @@ public class EditController extends AbstractMutableDataPageController {
 		case "usage_definition":
 			cudService.deleteUsageDefinition(id, roleDatasetCode, isManualEventOnUpdateEnabled);
 			break;
-		case "usage_author":
 		case ContentKey.FREEFORM_SOURCE_LINK:
 			sourceLinkService.deleteFreeformSourceLink(id, roleDatasetCode, isManualEventOnUpdateEnabled);
 			break;

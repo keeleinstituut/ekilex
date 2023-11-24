@@ -34,8 +34,6 @@ public class TypeSourceLink extends AbstractDataObject {
 
 	private List<String> sourceProps;
 
-	private boolean translator;
-
 	public ReferenceOwner getRefOwner() {
 		return refOwner;
 	}
@@ -106,14 +104,6 @@ public class TypeSourceLink extends AbstractDataObject {
 
 	public void setSourceProps(List<String> sourceProps) {
 		this.sourceProps = sourceProps;
-	}
-
-	public boolean isTranslator() {
-		return translator;
-	}
-
-	public void setTranslator(boolean translator) {
-		this.translator = translator;
 	}
 
 }

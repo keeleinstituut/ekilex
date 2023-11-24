@@ -678,42 +678,23 @@
       </div>
     </div>
   </div>
-  <div th:id="${'addUsageAuthorDlg_' + usage.id}"
+  <div th:id="${'addUsageSourceLinkDlg_' + usage.id}"
        th:data-callback="${viewUtil.composeFunction('loadFullLexemeDetails', lexeme.lexemeId, lexeme.levels)}"
-       class="modal" role="dialog" th:fragment="add_usage_author_dlg" data-plugin="initUsageAuthorDlgPlugin">
-    <div class="modal-dialog" role="document">
+       class="modal" role="dialog" th:fragment="add_usage_source_link_dlg"
+       data-plugin="initAddSourceLinkWithAutocompletePlugin">
+    <div class="modal-dialog" role="document" style="max-width: 1000px;">
       <div class="modal-content">
         <div class="modal-body">
-          <form th:action="@{/personsearch}">
-            <div class="form-row">
-              <div class="col-12">
-                <div class="form-group row">
-                  <div class="col-8">
-                    <input type="text" class="form-control" name="searchFilter" th:placeholder="#{lex.placeholder.person.search}">
-                  </div>
-                  <div class="col-2">
-                    <button type="submit" class="btn btn-primary" th:text="#{common.search}">Otsi</button>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </form>
-          <form th:action="@{/create_item}" method="post">
-            <input type="hidden" name="id" th:value="${usage.id}">
-            <input type="hidden" name="opCode" value="usage_author">
-            <input type="hidden" name="id2">
-            <div class="form-group row">
-              <div class="col-md-6">
-                <select required class="form-control required-field" name="itemType">
-                  <option value="" hidden disabled selected th:text="#{common.select.type}">vali tüüp...</option>
-                  <option th:value="AUTHOR" th:text="#{enum.reference.type.AUTHOR}"></option>
-                  <option th:value="TRANSLATOR" th:text="#{enum.reference.type.TRANSLATOR}"></option>
-                </select>
-              </div>
-            </div>
-            <div data-name="dialogContent"></div>
-          </form>
+          <form th:replace="components :: source_search_form"></form>
         </div>
+        <form name="sourceLinkForm" th:action="@{/create_item}" method="post">
+          <input type="hidden" name="id" th:value="${usage.id}">
+          <input type="hidden" name="opCode" value="ff_source_link">
+          <input type="hidden" name="id2">
+          <input type="hidden" name="id3">
+          <input type="hidden" name="value">
+          <div class="modal-body" data-name="sourceLinkDlgContent"></div>
+        </form>
         <div class="modal-footer">
           <button type="button" class="btn btn-default" data-dismiss="modal" th:text="#{common.cancel}">Katkesta</button>
         </div>
