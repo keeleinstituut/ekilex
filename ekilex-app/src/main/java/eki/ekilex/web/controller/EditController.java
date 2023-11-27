@@ -129,6 +129,7 @@ public class EditController extends AbstractMutableDataPageController {
 			cudService.createLexemeGovernment(itemData.getId(), itemValue, itemData.getComplexity(), roleDatasetCode, isManualEventOnUpdateEnabled);
 			break;
 		case ContentKey.DEFINITION_SOURCE_LINK:
+			// TODO remove id3 from source link creation later when source link value is source name or 'siseviide'
 			sourceLinkValue = getSourcePropertyValue(itemData.getId3());
 			sourceLinkService.createDefinitionSourceLink(itemData.getId(), itemData.getId2(), ReferenceType.ANY, sourceLinkValue, itemValue, roleDatasetCode, isManualEventOnUpdateEnabled);
 			break;
@@ -233,10 +234,6 @@ public class EditController extends AbstractMutableDataPageController {
 	private String getSourcePropertyValue(Long sourcePropertyId) {
 		SourceProperty sourceProperty = sourceService.getSourceProperty(sourcePropertyId);
 		return sourceProperty.getValueText();
-	}
-
-	private String getSourceNameValue(Long sourceId) {
-		return sourceService.getSourceNameValue(sourceId);
 	}
 
 	@ResponseBody

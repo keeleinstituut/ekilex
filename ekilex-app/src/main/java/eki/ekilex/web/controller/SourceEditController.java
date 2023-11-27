@@ -260,6 +260,7 @@ public class SourceEditController extends AbstractMutableDataPageController {
 			@RequestParam("previousSearch") String previousSearch,
 			Model model) {
 
+		// TODO remove join sources functionality after removing source attributes?
 		UserContextData userContextData = getUserContextData();
 		DatasetPermission userRole = userContextData.getUserRole();
 		Source targetSource = sourceService.getSource(targetSourceId, userRole);
