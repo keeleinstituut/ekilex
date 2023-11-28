@@ -205,18 +205,6 @@ public class LexSearchController extends AbstractPrivateSearchController {
 		return COMPONENTS_PAGE + PAGE_FRAGMENT_ELEM + "word_search_result";
 	}
 
-	@GetMapping("/personsearch")
-	public String searchPersons(@RequestParam String searchFilter, Model model) {
-
-		logger.debug("person search {}", searchFilter);
-
-		searchFilter = valueUtil.trimAndCleanAndRemoveHtmlAndLimit(searchFilter);
-		List<Source> sources = sourceService.getSources(searchFilter, SourceType.PERSON);
-		model.addAttribute("sourcesFoundBySearch", sources);
-
-		return COMPONENTS_PAGE + PAGE_FRAGMENT_ELEM + "source_search_result";
-	}
-
 	@GetMapping(value = {
 			WORD_DETAILS_URI + "/{wordId}",
 			WORD_DETAILS_URI + "/{wordId}/{selectedMeaningId}"

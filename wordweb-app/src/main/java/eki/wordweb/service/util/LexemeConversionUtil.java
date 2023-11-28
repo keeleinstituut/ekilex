@@ -225,12 +225,6 @@ public class LexemeConversionUtil extends AbstractConversionUtil {
 			classifierUtil.applyClassifiers(usage, displayLang);
 			Long usageId = usage.getUsageId();
 			List<TypeSourceLink> usageSourceLinks = lexemeFreeformSourceLinkMap.get(usageId);
-			if (CollectionUtils.isNotEmpty(usageSourceLinks)) {
-				usageSourceLinks.forEach(sourceLink -> {
-					boolean isTranslator = ReferenceType.TRANSLATOR.equals(sourceLink.getType());
-					sourceLink.setTranslator(isTranslator);
-				});
-			}
 			usage.setSourceLinks(usageSourceLinks);
 			boolean isPutOnSpeaker = StringUtils.equals(usage.getUsageLang(), DESTIN_LANG_EST);
 			usage.setPutOnSpeaker(isPutOnSpeaker);

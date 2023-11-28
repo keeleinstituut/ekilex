@@ -45,17 +45,17 @@ public class SourceService extends AbstractSourceService implements GlobalConsta
 	public Source getSource(Long sourceId, DatasetPermission userRole) {
 
 		Source source = sourceDbService.getSource(sourceId);
-		List<SourcePropertyTuple> sourcePropertyTuples = sourceDbService.getSourcePropertyTuples(sourceId);
-		if (CollectionUtils.isNotEmpty(sourcePropertyTuples)) {
-			source = conversionUtil.composeSource(source, sourcePropertyTuples);
-		}
 		if (source == null) {
 			logger.warn("No source found for id {}", sourceId);
 			return null;
-		} else {
-			permCalculator.applyCrud(userRole, source);
-			return source;
 		}
+
+		List<SourcePropertyTuple> sourcePropertyTuples = sourceDbService.getSourcePropertyTuples(sourceId);
+		if (CollectionUtils.isNotEmpty(sourcePropertyTuples)) {
+			conversionUtil.composeSource(source, sourcePropertyTuples);
+		}
+		permCalculator.applyCrud(userRole, source);
+		return source;
 	}
 
 	@Transactional
@@ -69,33 +69,24 @@ public class SourceService extends AbstractSourceService implements GlobalConsta
 	}
 
 	@Transactional
-	public String getSourceNameValue(Long sourceId) {
-		return sourceDbService.getSourceNameValue(sourceId);
-	}
-
-	@Transactional
 	public List<Source> getSources(String searchFilter) {
-		return getSources(searchFilter, null, null);
+		return getSources(searchFilter, null);
 	}
 
 	@Transactional
 	public List<Source> getSources(String searchFilter, DatasetPermission userRole) {
-		return getSources(searchFilter, null, userRole);
-	}
-
-	@Transactional
-	public List<Source> getSources(String searchFilter, SourceType sourceType) {
-		return getSources(searchFilter, sourceType, null);
-	}
-
-	@Transactional
-	public List<Source> getSources(String searchFilter, SourceType sourceType, DatasetPermission userRole) {
 
 		if (StringUtils.isBlank(searchFilter)) {
 			return new ArrayList<>();
 		}
-		List<SourcePropertyTuple> sourcePropertyTuples = sourceDbService.getSourcePropertyTuples(searchFilter, sourceType);
-		List<Source> sources = conversionUtil.composeSources(sourcePropertyTuples);
+		List<Source> sources = sourceDbService.getSources(searchFilter);
+		for (Source source : sources) {
+			Long sourceId = source.getId();
+			List<SourcePropertyTuple> sourcePropertyTuples = sourceDbService.getSourcePropertyTuples(sourceId);
+			if (CollectionUtils.isNotEmpty(sourcePropertyTuples)) {
+				conversionUtil.composeSource(source, sourcePropertyTuples);
+			}
+		}
 		permCalculator.applyCrud(userRole, sources);
 
 		return sources;
@@ -122,8 +113,14 @@ public class SourceService extends AbstractSourceService implements GlobalConsta
 		if (CollectionUtils.isEmpty(searchFilter.getCriteriaGroups())) {
 			return new ArrayList<>();
 		}
-		List<SourcePropertyTuple> sourcePropertyTuples = sourceDbService.getSourcePropertyTuples(searchFilter);
-		List<Source> sources = conversionUtil.composeSources(sourcePropertyTuples);
+		List<Source> sources = sourceDbService.getSources(searchFilter);
+		for (Source source : sources) {
+			Long sourceId = source.getId();
+			List<SourcePropertyTuple> sourcePropertyTuples = sourceDbService.getSourcePropertyTuples(sourceId);
+			if (CollectionUtils.isNotEmpty(sourcePropertyTuples)) {
+				conversionUtil.composeSource(source, sourcePropertyTuples);
+			}
+		}
 		permCalculator.applyCrud(userRole, sources);
 
 		return sources;
@@ -198,6 +195,7 @@ public class SourceService extends AbstractSourceService implements GlobalConsta
 	@Transactional
 	public void joinSources(Long targetSourceId, Long originSourceId, String roleDatasetCode) throws Exception {
 
+		// TODO remove this functionality after removing source properties?
 		ActivityLogData activityLog1 = activityLogService.prepareActivityLog("joinSources", originSourceId, ActivityOwner.SOURCE, roleDatasetCode, MANUAL_EVENT_ON_UPDATE_DISABLED);
 		ActivityLogData activityLog2 = activityLogService.prepareActivityLog("joinSources", targetSourceId, ActivityOwner.SOURCE, roleDatasetCode, MANUAL_EVENT_ON_UPDATE_DISABLED);
 

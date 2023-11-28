@@ -158,18 +158,6 @@
               <div>
                 <span th:utext="${usage.value}"></span>
                 <span th:if="${usage.typeValue != null}" th:text="'(' + ${usage.typeValue + ')'}"></span>
-                <span th:if="${not #lists.isEmpty(usage.authors)}">
-                  (
-                  <span th:each="sourceLink,sourceLinkIter : ${usage.authors}">
-                    <span th:text="#{'enum.reference.type.' + ${sourceLink.type}} + ': '"></span>
-                    <a th:href="@{'/ff_source_link:' + ${sourceLink.id}}" th:text="${sourceLink.value}" th:if="${sourceLink.value != null}"></a>
-                    <span th:if="${sourceLink.name != null}">
-                      <span th:text="${sourceLink.name}"></span>
-                    </span>
-                    <span th:unless="${sourceLinkIter.last}">, </span>
-                  </span>
-                  )
-                </span>
                 <span th:each="sourceLink : ${usage.sourceLinks}">
                   [
                   <a th:href="@{'/ff_source_link:' + ${sourceLink.id}}" th:text="${sourceLink.value}"></a>

@@ -279,6 +279,13 @@
                          autocomplete="off">
                   <div class="invalid-feedback d-block" th:text="${criteria.validationMessage}">warning</div>
                 </div>
+                <div class="value-input-container col-auto flex-grow-1 flex-shrink-1" th:if="${criteria.searchKey.name() == 'SOURCE_VALUE'}">
+                  <input type="text" class="form-control"
+                         th:value="${criteria.searchValue}"
+                         th:name="'criteriaGroups[' + ${critGroupStat.index} + '].searchCriteria[' + ${critStat.index} + '].searchValue'"
+                         autocomplete="off">
+                  <div class="invalid-feedback d-block" th:text="${criteria.validationMessage}">warning</div>
+                </div>
                 <div class="value-input-container col-auto flex-grow-1 flex-shrink-1" th:if="${criteria.searchKey.name() == 'SOURCE_ID'}">
                   <input type="text" class="form-control"
                          th:value="${criteria.searchValue}"
@@ -648,6 +655,9 @@
               <input type="text" class="form-control" autocomplete="off">
             </div>
             <div name="SOURCE_NAME" class="value-input-container col-auto flex-grow-1 flex-shrink-1">
+              <input type="text" class="form-control" autocomplete="off">
+            </div>
+            <div name="SOURCE_VALUE" class="value-input-container col-auto flex-grow-1 flex-shrink-1">
               <input type="text" class="form-control" autocomplete="off">
             </div>
             <div name="SOURCE_ID" class="value-input-container col-auto flex-grow-1 flex-shrink-1">

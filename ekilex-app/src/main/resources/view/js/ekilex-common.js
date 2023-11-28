@@ -483,40 +483,6 @@ $.fn.updateSourceLink = function() {
 	});
 };
 
-function initRelationDialogLogic(addDlg, idElementName) {
-	addDlg.find('button[type="submit"]').off('click').on('click', function(e) {
-		e.preventDefault();
-		const button = $(this);
-		const content = button.html();
-		button.html(content + ' <i class="fa fa-spinner fa-spin"></i>');
-		const form = button.closest('form');
-		const url = form.attr('action') + '?' + form.serialize();
-		$.get(url).done(function(data) {
-			addDlg.find('[data-name=dialogContent]').replaceWith(data);
-			addDlg.find(`button[data-${idElementName}]`).off('click').on('click', function(e) {
-				e.preventDefault();
-				const button = $(e.target);
-				addDlg.find('[name=id2]').val(button.data(idElementName));
-				const form = button.closest('form');
-				if (checkRequiredFields(form)) {
-					submitForm(form, messages["common.data.update.error"]).always(function() {
-						addDlg.modal('hide');
-					});
-				}
-			});
-		}).fail(function(data) {
-			console.log(data);
-			openAlertDlg(messages["common.error"]);
-		}).always(function() {
-			button.html(content);
-		});
-	});
-
-	addDlg.off('shown.bs.modal').on('shown.bs.modal', function() {
-		addDlg.find('.form-control').first().focus();
-	});
-};
-
 function initMultiselectRelationDlg(dlg) {
 
 	dlg.find('.form-control').val(null);

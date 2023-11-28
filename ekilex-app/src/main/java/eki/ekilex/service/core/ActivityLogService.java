@@ -9,12 +9,12 @@ import java.util.Objects;
 
 import javax.transaction.Transactional;
 
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.collections4.MapUtils;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import org.springframework.util.CollectionUtils;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -716,12 +716,15 @@ public class ActivityLogService implements SystemConstant, GlobalConstant {
 
 	private String getSourceJson(Long sourceId) throws Exception {
 
-		List<SourcePropertyTuple> sourcePropertyTuples = sourceDbService.getSourcePropertyTuples(sourceId);
-		if (CollectionUtils.isEmpty(sourcePropertyTuples)) {
+		Source source = sourceDbService.getSource(sourceId);
+		if (source == null) {
 			return EMPTY_CONTENT_JSON;
 		}
-		List<Source> sources = conversionUtil.composeSources(sourcePropertyTuples);
-		Source source = sources.get(0);
+
+		List<SourcePropertyTuple> sourcePropertyTuples = sourceDbService.getSourcePropertyTuples(sourceId);
+		if (CollectionUtils.isNotEmpty(sourcePropertyTuples)) {
+			conversionUtil.composeSource(source, sourcePropertyTuples);
+		}
 
 		ObjectMapper objectMapper = new ObjectMapper();
 		String sourceJson = objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(source);
