@@ -14,7 +14,9 @@ import eki.common.constant.ClassifierName;
 import eki.common.data.Classifier;
 import eki.wordweb.data.CollocationPosGroup;
 import eki.wordweb.data.CollocationTuple;
+import eki.wordweb.data.Dataset;
 import eki.wordweb.data.Form;
+import eki.wordweb.data.LanguagesDatasets;
 import eki.wordweb.data.LexemeWord;
 import eki.wordweb.data.Meaning;
 import eki.wordweb.data.WordEtymTuple;
@@ -59,6 +61,15 @@ public class ClassifierUtil {
 		classifierCode = word.getAspectCode();
 		classifier = getClassifier(ClassifierName.ASPECT, classifierCode, displayLang);
 		word.setAspect(classifier);
+	}
+
+	public void applyClassifiers(LanguagesDatasets languagesDatasets, String displayLang) {
+		List<String> classifierCodes = languagesDatasets.getLanguageCodes();
+		List<Classifier> classifiers = getClassifiers(ClassifierName.LANGUAGE, classifierCodes, displayLang);
+		languagesDatasets.setLanguages(classifiers);
+		List<String> datasetCodes = languagesDatasets.getDatasetCodes();
+		List<Dataset> datasets = getDatasets(datasetCodes);
+		languagesDatasets.setDatasets(datasets);
 	}
 
 	public String applyClassifiers(Form form, String displayLang) {
@@ -205,5 +216,13 @@ public class ClassifierUtil {
 		}
 		List<Classifier> classifiers = commonDataDbService.getClassifiersWithOrigin(name, codes, lang);
 		return classifiers;
+	}
+
+	private List<Dataset> getDatasets(List<String> codes) {
+		if (CollectionUtils.isEmpty(codes)) {
+			return Collections.emptyList();
+		}
+		List<Dataset> datasets = commonDataDbService.getDatasets(codes);
+		return datasets;
 	}
 }

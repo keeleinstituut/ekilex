@@ -62,26 +62,54 @@
       </div>
       <th:block th:replace="common-search :: homonyms"></th:block>
       <div class="word-details">
-        <th:block th:if="${!wordsData.resultsExist}" th:with="isFiltered = ${isLangFiltered || isDatasetFiltered}">
-          <div th:unless="${#lists.isEmpty(wordsData.formMatchWordValues)}" class="h1 mt-4 ml-3 d-inline-block">
-            <div>
-              <span th:text="#{label.word.form}">see on ka vorm sõnast</span>
-              <a href="#" class="word-form"
-                 th:each="word,wordIter : ${wordsData.formMatchWordValues}"
-                 th:text="${wordIter.last ? word : word + ',&nbsp;'}"
-                 th:data-word="${word}">
-              </a>
+        <th:block th:unless="${wordsData.resultsExist}" th:with="isFiltered = ${isLangFiltered || isDatasetFiltered}">
+          <th:block th:if="${#lists.isEmpty(wordsData.formMatchWordValues)}">
+            <th:block th:if="${wordsData.availableLanguagesDatasets.suggestionsExist}">
+              <div class="h3 mt-4 ml-3 d-inline-block">
+                Otsing annab tulemusi teistes keeltes või sõnakogudes kui sinu valitud filtris.
+              </div>
+              <div class="row mt-4 ml-3">
+                <div class="col-md-2">
+                  <th:block th:each="language : ${wordsData.availableLanguagesDatasets.languages}">
+                    <h6 th:text="${language.value}" class="font-wight-bold"></h6>
+                  </th:block>
+                </div>
+                <div class="col-md-6">
+                  <th:block th:each="dataset : ${wordsData.availableLanguagesDatasets.datasets}">
+                    <h6 th:text="${dataset.name}" class="font-wight-bold"></h6>
+                  </th:block>
+                </div>
+              </div>
+              <div class="mt-4 ml-3">
+                <a th:href="@{${viewUtil.getDetailSearchUri(searchWord)}}">
+                  Otsi uuesti ilma piiranguteta
+                </a>
+              </div>
+            </th:block>
+            <th:block th:unless="${wordsData.availableLanguagesDatasets.suggestionsExist}">
+              <div class="h1 mt-4 ml-3 d-inline-block" th:utext="#{|label.word.not.found.detail.filtered.${isFiltered}|}">Ei leidnud midagi</div>
+            </th:block>
+          </th:block>
+          <th:block th:unless="${#lists.isEmpty(wordsData.formMatchWordValues)}">
+            <div class="h1 mt-4 ml-3 d-inline-block">
+              <div>
+                <span th:text="#{label.word.form}">see on ka vorm sõnast</span>
+                <a href="#" class="word-form"
+                   th:each="word,wordIter : ${wordsData.formMatchWordValues}"
+                   th:text="${wordIter.last ? word : word + ',&nbsp;'}"
+                   th:data-word="${word}">
+                </a>
+              </div>
+              <div th:utext="#{|label.form.found.detail.filtered.${isFiltered}|}">Ei leidnud midagi</div>
             </div>
-            <div th:utext="#{|label.form.found.detail.filtered.${isFiltered}|}">Ei leidnud midagi</div>
-          </div>
-          <span th:if="${#lists.isEmpty(wordsData.formMatchWordValues)}" class="h1 mt-4 ml-3 d-inline-block" th:utext="#{|label.word.not.found.detail.filtered.${isFiltered}|}">Ei leidnud midagi</span>
+          </th:block>
           <!-- /Removed termsearch -->
         </th:block>
       </div>
     </main>
     <div class="row word-details" th:fragment="worddetails" th:if="${wordData.word != null}">
       <input id="selected-word-homonym-nr" type="hidden" th:value="${wordData.word.homonymNr}">
-      <div class="col-12 pt-2 ml-2" th:if="${!wordData.relevantDataExists}">
+      <div class="col-12 pt-2 ml-2" th:unless="${wordData.relevantDataExists}">
         <div class="row">
           <h5 th:text="#{label.lexeme.not.found}">Soovitud keeltes tulemusi ei leidu</h5>
         </div>

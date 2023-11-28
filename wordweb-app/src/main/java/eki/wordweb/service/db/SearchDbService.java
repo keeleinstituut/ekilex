@@ -45,6 +45,7 @@ import eki.common.constant.GlobalConstant;
 import eki.wordweb.constant.SystemConstant;
 import eki.wordweb.data.CollocationTuple;
 import eki.wordweb.data.Form;
+import eki.wordweb.data.LanguagesDatasets;
 import eki.wordweb.data.LexemeWord;
 import eki.wordweb.data.LinkedWordSearchElement;
 import eki.wordweb.data.Meaning;
@@ -221,7 +222,7 @@ public class SearchDbService implements GlobalConstant, SystemConstant {
 		return new WordsMatch(wordValues, resultCount, resultsExist, singleResult);
 	}
 
-	public List<Word> getWords(String searchWord, SearchContext searchContext) {
+	public List<Word> getWords(String searchWord, SearchContext searchContext, boolean ignoreForms) {
 
 		if (StringUtils.equals(searchWord, ILLEGAL_FORM_VALUE)) {
 			return Collections.emptyList();
@@ -234,35 +235,50 @@ public class SearchDbService implements GlobalConstant, SystemConstant {
 
 		MviewWwWord w = MVIEW_WW_WORD.as("w");
 		MviewWwForm f = MVIEW_WW_FORM.as("f");
+		Table<Record> ww;
 
-		Condition whereForm = f.WORD_ID.eq(w.WORD_ID)
-				.and(DSL.lower(f.VALUE).eq(searchWordLowerField))
-				.and(f.VALUE.ne(f.WORD))
-				.and(f.MORPH_CODE.ne(UNKNOWN_FORM_CODE))
-				.and(f.MORPH_EXISTS.isTrue());
+		if (ignoreForms) {
 
-		if (excludeQuestionable) {
-			whereForm = whereForm.and(f.IS_QUESTIONABLE.isFalse());
+			ww = DSL
+					.select(w.fields())
+					.select(DSL.field(DSL.val(true)).as("word_match"))
+					.select(DSL.field(DSL.val(false)).as("form_match"))
+					.from(w)
+					.where(DSL.or(
+							DSL.lower(w.WORD).eq(searchWordLowerField),
+							DSL.lower(w.AS_WORD).eq(searchWordLowerField)))
+					.asTable("w");
+
+		} else {
+
+			Condition whereForm = f.WORD_ID.eq(w.WORD_ID)
+					.and(DSL.lower(f.VALUE).eq(searchWordLowerField))
+					.and(f.VALUE.ne(f.WORD))
+					.and(f.MORPH_CODE.ne(UNKNOWN_FORM_CODE))
+					.and(f.MORPH_EXISTS.isTrue());
+
+			if (excludeQuestionable) {
+				whereForm = whereForm.and(f.IS_QUESTIONABLE.isFalse());
+			}
+			ww = DSL
+					.select(w.fields())
+					.select(DSL.field(DSL.val(true)).as("word_match"))
+					.select(DSL.field(DSL.val(false)).as("form_match"))
+					.from(w)
+					.where(DSL.or(
+							DSL.lower(w.WORD).eq(searchWordLowerField),
+							DSL.lower(w.AS_WORD).eq(searchWordLowerField)))
+					.unionAll(DSL
+							.select(w.fields())
+							.select(DSL.field(DSL.val(false)).as("word_match"))
+							.select(DSL.field(DSL.val(true)).as("form_match"))
+							.from(w)
+							.whereExists(DSL
+									.select(f.WORD_ID)
+									.from(f)
+									.where(whereForm)))
+					.asTable("w");
 		}
-
-		Table<Record> ww = DSL
-				.select(w.fields())
-				.select(DSL.field(DSL.val(true)).as("word_match"))
-				.select(DSL.field(DSL.val(false)).as("form_match"))
-				.from(w)
-				.where(DSL.or(
-						DSL.lower(w.WORD).eq(searchWordLowerField),
-						DSL.lower(w.AS_WORD).eq(searchWordLowerField)))
-				.unionAll(DSL
-						.select(w.fields())
-						.select(DSL.field(DSL.val(false)).as("word_match"))
-						.select(DSL.field(DSL.val(true)).as("form_match"))
-						.from(w)
-						.whereExists(DSL
-								.select(f.WORD_ID)
-								.from(f)
-								.where(whereForm)))
-				.asTable("w");
 
 		Condition where = applyContainingLangComplexityDatasetFilter(ww, searchContext, DSL.noCondition());
 
@@ -291,6 +307,33 @@ public class SearchDbService implements GlobalConstant, SystemConstant {
 						ww.field("word_type_order_by"),
 						ww.field("homonym_nr"))
 				.fetchInto(Word.class);
+	}
+
+	public LanguagesDatasets getAvailableLanguagesDatasets(String searchWord, Complexity lexComplexity) {
+
+		Field<String> searchWordLowerField = DSL.lower(searchWord);
+
+		MviewWwWord w = MVIEW_WW_WORD.as("w");
+		MviewWwLexeme l = MVIEW_WW_LEXEME.as("l");
+
+		List<String> complexityNames = composeFilteringComplexityNames(lexComplexity);
+
+		Table<?> lc = DSL.unnest(w.LANG_COMPLEXITIES).as("lc", "lang", "dataset_code", "lex_complexity", "data_complexity");
+		Condition lcWhere = lc.field("lex_complexity", String.class).in(complexityNames)
+				.and(lc.field("data_complexity", String.class).in(complexityNames));
+
+		return create
+				.select(
+						DSL.arrayAggDistinct(w.LANG).as("language_codes"),
+						DSL.arrayAggDistinct(l.DATASET_CODE).as("dataset_codes"))
+				.from(w, l)
+				.where(DSL.or(
+						DSL.lower(w.WORD).eq(searchWordLowerField),
+						DSL.lower(w.AS_WORD).eq(searchWordLowerField))
+						.and(l.WORD_ID.eq(w.WORD_ID))
+						.andExists(DSL.select(DSL.val(1)).from(lc).where(lcWhere)))
+				.fetchOptionalInto(LanguagesDatasets.class)
+				.orElse(null);
 	}
 
 	public List<LexemeWord> getWordLexemes(Long wordId, SearchContext searchContext) {

@@ -48,9 +48,9 @@ public class CommonDataDbService implements SystemConstant {
 						clv.LANG)
 				.from(clc.leftOuterJoin(clv).on(
 						clv.NAME.eq(clc.NAME)
-						.and(clv.CODE.eq(clc.CODE))
-						.and(clv.TYPE.eq(clc.TYPE))
-						.and(clv.LANG.eq(lang))))
+								.and(clv.CODE.eq(clc.CODE))
+								.and(clv.TYPE.eq(clc.TYPE))
+								.and(clv.LANG.eq(lang))))
 				.where(clc.NAME.eq(name.name())
 						.and(clc.CODE.eq(code))
 						.and(clc.TYPE.eq(DEFAULT_CLASSIF_VALUE_TYPE)))
@@ -76,10 +76,10 @@ public class CommonDataDbService implements SystemConstant {
 						clv.LANG)
 				.from(clc.leftOuterJoin(clv).on(
 						clv.NAME.eq(clc.NAME)
-						.and(clv.CODE.eq(clc.CODE))
-						.and(clv.ORIGIN.eq(clc.ORIGIN))
-						.and(clv.TYPE.eq(clc.TYPE))
-						.and(clv.LANG.eq(lang))))
+								.and(clv.CODE.eq(clc.CODE))
+								.and(clv.ORIGIN.eq(clc.ORIGIN))
+								.and(clv.TYPE.eq(clc.TYPE))
+								.and(clv.LANG.eq(lang))))
 				.where(clc.NAME.eq(name.name())
 						.and(clc.CODE.eq(code))
 						.and(clc.ORIGIN.eq(origin))
@@ -102,9 +102,9 @@ public class CommonDataDbService implements SystemConstant {
 						clv.LANG)
 				.from(clc.leftOuterJoin(clv).on(
 						clv.NAME.eq(clc.NAME)
-						.and(clv.CODE.eq(clc.CODE))
-						.and(clv.TYPE.eq(clc.TYPE))
-						.and(clv.LANG.eq(lang))))
+								.and(clv.CODE.eq(clc.CODE))
+								.and(clv.TYPE.eq(clc.TYPE))
+								.and(clv.LANG.eq(lang))))
 				.where(clc.NAME.eq(name.name())
 						.and(clc.TYPE.eq(DEFAULT_CLASSIF_VALUE_TYPE)))
 				.groupBy(clc.NAME, clc.CODE, clc.ORDER_BY, clv.VALUE, clv.LANG)
@@ -135,9 +135,9 @@ public class CommonDataDbService implements SystemConstant {
 						clv.LANG)
 				.from(clc.leftOuterJoin(clv).on(
 						clv.NAME.eq(clc.NAME)
-						.and(clv.CODE.eq(clc.CODE))
-						.and(clv.TYPE.eq(clc.TYPE))
-						.and(clv.LANG.eq(lang))))
+								.and(clv.CODE.eq(clc.CODE))
+								.and(clv.TYPE.eq(clc.TYPE))
+								.and(clv.LANG.eq(lang))))
 				.where(clc.NAME.eq(name.name())
 						.and(clc.CODE.in(codes))
 						.and(clc.TYPE.eq(DEFAULT_CLASSIF_VALUE_TYPE)))
@@ -217,6 +217,31 @@ public class CommonDataDbService implements SystemConstant {
 				.where(ds.CODE.eq(datasetCode))
 				.fetchOptionalInto(Dataset.class)
 				.orElse(null);
+	}
+
+	@Cacheable(value = CACHE_KEY_CLASSIF, key = "{#root.methodName, #codes}")
+	public List<Dataset> getDatasets(List<String> codes) {
+
+		if (CollectionUtils.isEmpty(codes)) {
+			return Collections.emptyList();
+		}
+		if (codes.size() == 1) {
+			String code = codes.get(0);
+			Dataset dataset = getDataset(code);
+			return Arrays.asList(dataset);
+		}
+		MviewWwDataset ds = MVIEW_WW_DATASET.as("ds");
+		return create
+				.select(
+						ds.CODE,
+						ds.TYPE,
+						ds.NAME,
+						ds.DESCRIPTION,
+						ds.IS_SUPERIOR)
+				.from(ds)
+				.where(ds.CODE.in(codes))
+				.orderBy(ds.NAME)
+				.fetchInto(Dataset.class);
 	}
 
 	@Cacheable(value = CACHE_KEY_CLASSIF, key = "#root.methodName")

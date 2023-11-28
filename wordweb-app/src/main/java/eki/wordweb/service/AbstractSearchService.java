@@ -21,6 +21,7 @@ import eki.wordweb.constant.SystemConstant;
 import eki.wordweb.constant.WebConstant;
 import eki.wordweb.data.CollocationTuple;
 import eki.wordweb.data.Form;
+import eki.wordweb.data.LanguagesDatasets;
 import eki.wordweb.data.LexemeWord;
 import eki.wordweb.data.Paradigm;
 import eki.wordweb.data.SearchContext;
@@ -131,6 +132,8 @@ public abstract class AbstractSearchService implements SystemConstant, WebConsta
 		SearchContext searchContext = getSearchContext(searchFilter);
 		WordsMatch wordsMatch = searchDbService.getWordsWithMask(searchWord, searchContext);
 
+		// TODO add filters recommendatiosn
+
 		return wordsMatch;
 	}
 
@@ -141,10 +144,11 @@ public abstract class AbstractSearchService implements SystemConstant, WebConsta
 		Integer homonymNr = searchFilter.getHomonymNr();
 
 		SearchContext searchContext = getSearchContext(searchFilter);
-		List<Word> allWords = searchDbService.getWords(searchWord, searchContext);
+		List<Word> allWords = searchDbService.getWords(searchWord, searchContext, false);
 		wordConversionUtil.setAffixoidFlags(allWords);
 		wordConversionUtil.composeHomonymWrapups(allWords, searchContext);
 		wordConversionUtil.selectHomonym(allWords, homonymNr);
+
 		List<Word> wordMatchWords = allWords.stream()
 				.filter(Word::isWordMatch)
 				.collect(Collectors.toList());
@@ -156,7 +160,44 @@ public abstract class AbstractSearchService implements SystemConstant, WebConsta
 		boolean resultsExist = CollectionUtils.isNotEmpty(wordMatchWords);
 		int resultCount = CollectionUtils.size(wordMatchWords);
 		boolean isSingleResult = resultCount == 1;
-		return new WordsData(wordMatchWords, formMatchWordValues, resultCount, resultsExist, isSingleResult);
+
+		if (resultsExist) {
+			return new WordsData(wordMatchWords, formMatchWordValues, resultCount, resultsExist, isSingleResult);
+		}
+
+		LanguagesDatasets availableLanguagesDatasets = searchDbService.getAvailableLanguagesDatasets(searchWord, searchContext.getLexComplexity());
+		String displayLang = languageContext.getDisplayLang();
+		composeFilteringSuggestions(searchFilter, availableLanguagesDatasets);
+		classifierUtil.applyClassifiers(availableLanguagesDatasets, displayLang);
+
+		return new WordsData(availableLanguagesDatasets);
+	}
+
+	private void composeFilteringSuggestions(SearchFilter searchFilter, LanguagesDatasets availableLanguagesDatasets) {
+
+		List<String> filteringLanguageCodes = searchFilter.getDestinLangs();
+		List<String> filteringDatasetCodes = searchFilter.getDatasetCodes();
+		List<String> availableLanguageCodes = availableLanguagesDatasets.getLanguageCodes();
+		List<String> availableDatasetCodes = availableLanguagesDatasets.getDatasetCodes();
+
+		boolean isFilterAllLangs = filteringLanguageCodes.stream().anyMatch(code -> StringUtils.equals(code, DESTIN_LANG_ALL));
+		boolean isFilterAllDatasets = filteringDatasetCodes.stream().anyMatch(code -> StringUtils.equals(code, DATASET_ALL));
+
+		if (isFilterAllLangs) {
+			availableLanguageCodes = Collections.emptyList();
+		} else if (CollectionUtils.isNotEmpty(availableLanguageCodes)) {
+			availableLanguageCodes = availableLanguageCodes.stream().filter(code -> !filteringLanguageCodes.contains(code)).collect(Collectors.toList());
+		}
+		if (isFilterAllDatasets) {
+			availableDatasetCodes = Collections.emptyList();
+		} else if (CollectionUtils.isNotEmpty(availableDatasetCodes)) {
+			availableDatasetCodes = availableDatasetCodes.stream().filter(code -> !filteringDatasetCodes.contains(code)).collect(Collectors.toList());
+		}
+		boolean suggestionsExist = CollectionUtils.isNotEmpty(availableLanguageCodes) || CollectionUtils.isNotEmpty(availableDatasetCodes);
+
+		availableLanguagesDatasets.setLanguageCodes(availableLanguageCodes);
+		availableLanguagesDatasets.setDatasetCodes(availableDatasetCodes);
+		availableLanguagesDatasets.setSuggestionsExist(suggestionsExist);
 	}
 
 	protected void compensateNullWords(Long wordId, List<CollocationTuple> collocTuples) {
