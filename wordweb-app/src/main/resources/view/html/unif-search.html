@@ -66,7 +66,7 @@
           <th:block th:if="${#lists.isEmpty(wordsData.formMatchWordValues)}">
             <th:block th:if="${wordsData.availableLanguagesDatasets.suggestionsExist}">
               <div class="h3 mt-4 ml-3 d-inline-block">
-                Otsing annab tulemusi teistes keeltes või sõnakogudes kui sinu valitud filtris.
+                <span th:text="#{label.search.filter.suggestion.detail}">Otsing annab tulemusi teistes keeltes või sõnakogudes kui sinu valitud filtris.</span>
               </div>
               <div class="row mt-4 ml-3">
                 <div class="col-md-2">
@@ -82,12 +82,14 @@
               </div>
               <div class="mt-4 ml-3">
                 <a th:href="@{${viewUtil.getDetailSearchUri(searchWord)}}">
-                  Otsi uuesti ilma piiranguteta
+                  <span th:text="#{label.search.filter.clear}">Otsi uuesti ilma piiranguteta</span>
                 </a>
               </div>
             </th:block>
             <th:block th:unless="${wordsData.availableLanguagesDatasets.suggestionsExist}">
-              <div class="h1 mt-4 ml-3 d-inline-block" th:utext="#{|label.word.not.found.detail.filtered.${isFiltered}|}">Ei leidnud midagi</div>
+              <div class="h1 mt-4 ml-3 d-inline-block">
+                <span th:utext="#{|label.word.not.found.detail.filtered.${isFiltered}|}">Ei leidnud midagi</span>
+              </div>
             </th:block>
           </th:block>
           <th:block th:unless="${#lists.isEmpty(wordsData.formMatchWordValues)}">

@@ -1,5 +1,6 @@
 package eki.wordweb.service;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -16,6 +17,7 @@ import eki.common.constant.ContentKey;
 import eki.common.constant.DatasetType;
 import eki.wordweb.data.CollocationTuple;
 import eki.wordweb.data.Form;
+import eki.wordweb.data.LanguagesDatasets;
 import eki.wordweb.data.LexemeWord;
 import eki.wordweb.data.LinkedWordSearchElement;
 import eki.wordweb.data.Meaning;
@@ -29,6 +31,34 @@ import eki.wordweb.data.WordRelationsTuple;
 
 @Component
 public class UnifSearchService extends AbstractSearchService {
+
+	@Override
+	public void composeFilteringSuggestions(SearchFilter searchFilter, LanguagesDatasets availableLanguagesDatasets) {
+
+		List<String> filteringLanguageCodes = searchFilter.getDestinLangs();
+		List<String> filteringDatasetCodes = searchFilter.getDatasetCodes();
+		List<String> availableLanguageCodes = availableLanguagesDatasets.getLanguageCodes();
+		List<String> availableDatasetCodes = availableLanguagesDatasets.getDatasetCodes();
+
+		boolean isFilterAllLangs = filteringLanguageCodes.stream().anyMatch(code -> StringUtils.equals(code, DESTIN_LANG_ALL));
+		boolean isFilterAllDatasets = filteringDatasetCodes.stream().anyMatch(code -> StringUtils.equals(code, DATASET_ALL));
+
+		if (isFilterAllLangs) {
+			availableLanguageCodes = Collections.emptyList();
+		} else if (CollectionUtils.isNotEmpty(availableLanguageCodes)) {
+			availableLanguageCodes = availableLanguageCodes.stream().filter(code -> !filteringLanguageCodes.contains(code)).collect(Collectors.toList());
+		}
+		if (isFilterAllDatasets) {
+			availableDatasetCodes = Collections.emptyList();
+		} else if (CollectionUtils.isNotEmpty(availableDatasetCodes)) {
+			availableDatasetCodes = availableDatasetCodes.stream().filter(code -> !filteringDatasetCodes.contains(code)).collect(Collectors.toList());
+		}
+		boolean suggestionsExist = CollectionUtils.isNotEmpty(availableLanguageCodes) || CollectionUtils.isNotEmpty(availableDatasetCodes);
+
+		availableLanguagesDatasets.setLanguageCodes(availableLanguageCodes);
+		availableLanguagesDatasets.setDatasetCodes(availableDatasetCodes);
+		availableLanguagesDatasets.setSuggestionsExist(suggestionsExist);
+	}
 
 	@Transactional
 	@Override

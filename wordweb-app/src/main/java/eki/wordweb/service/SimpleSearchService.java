@@ -17,6 +17,7 @@ import eki.common.constant.Complexity;
 import eki.common.constant.DatasetType;
 import eki.wordweb.data.CollocationTuple;
 import eki.wordweb.data.Form;
+import eki.wordweb.data.LanguagesDatasets;
 import eki.wordweb.data.LexemeWord;
 import eki.wordweb.data.Meaning;
 import eki.wordweb.data.Paradigm;
@@ -28,6 +29,26 @@ import eki.wordweb.data.WordRelationsTuple;
 
 @Component
 public class SimpleSearchService extends AbstractSearchService {
+
+	@Override
+	public void composeFilteringSuggestions(SearchFilter searchFilter, LanguagesDatasets availableLanguagesDatasets) {
+
+		List<String> filteringLanguageCodes = searchFilter.getDestinLangs();
+		List<String> availableLanguageCodes = availableLanguagesDatasets.getLanguageCodes();
+
+		boolean isFilterAllLangs = filteringLanguageCodes.stream().anyMatch(code -> StringUtils.equals(code, DESTIN_LANG_ALL));
+
+		if (isFilterAllLangs) {
+			availableLanguageCodes = Collections.emptyList();
+		} else if (CollectionUtils.isNotEmpty(availableLanguageCodes)) {
+			availableLanguageCodes = availableLanguageCodes.stream().filter(code -> !filteringLanguageCodes.contains(code)).collect(Collectors.toList());
+		}
+		boolean suggestionsExist = CollectionUtils.isNotEmpty(availableLanguageCodes);
+
+		availableLanguagesDatasets.setLanguageCodes(availableLanguageCodes);
+		availableLanguagesDatasets.setDatasetCodes(Collections.emptyList());
+		availableLanguagesDatasets.setSuggestionsExist(suggestionsExist);
+	}
 
 	@Transactional
 	@Override

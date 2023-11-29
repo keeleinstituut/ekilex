@@ -37,17 +37,36 @@
       </div>
       <th:block th:replace="common-search :: homonyms"></th:block>
       <div class="word-details">
-        <div class="message-wrap" th:if="${!wordsData.resultsExist}">
-          <div class="mt-4 ml-3 d-inline-block">
-            <span th:text="#{'label.word.not.found.simple'}" class="h1">Ei leidnud midagi</span>
-            <a th:href="@{${viewUtil.getDetailSearchUri(searchWord)}}" class="h1 text-break" th:text="${searchWord}"></a>
-          </div>
+        <div class="message-wrap" th:unless="${wordsData.resultsExist}">
+          <th:block th:if="${wordsData.availableLanguagesDatasets.suggestionsExist}">
+            <div class="h3 mt-4 ml-3 d-inline-block">
+              <span th:text="#{label.search.filter.suggestion.simple}">Otsing annab tulemusi teistes keeltes kui sinu valitud filtris.</span>
+            </div>
+            <div class="row mt-4 ml-3">
+              <div class="col-md-2">
+                <th:block th:each="language : ${wordsData.availableLanguagesDatasets.languages}">
+                  <h6 th:text="${language.value}" class="font-wight-bold"></h6>
+                </th:block>
+              </div>
+            </div>
+            <div class="mt-4 ml-3">
+              <a th:href="@{${viewUtil.getSimpleSearchUri(searchWord)}}">
+                <span th:text="#{label.search.filter.clear}">Otsi uuesti ilma piiranguteta</span>
+              </a>
+            </div>
+          </th:block>
+          <th:block th:unless="${wordsData.availableLanguagesDatasets.suggestionsExist}">
+            <div class="mt-4 ml-3 d-inline-block">
+              <span th:text="#{label.word.not.found.simple}" class="h1">Ei leidnud midagi</span>
+              <a th:href="@{${viewUtil.getDetailSearchUri(searchWord)}}" class="h1 text-break" th:text="${searchWord}"></a>
+            </div>
+          </th:block>
         </div>
       </div>
     </main>
     <div class="row word-details" th:fragment="worddetails" th:if="${wordData.word != null}">
       <input id="selected-word-homonym-nr" type="hidden" th:value="${wordData.word.homonymNr}">
-      <div class="col-12 pt-2 ml-2" th:if="${!wordData.relevantDataExists}">
+      <div class="col-12 pt-2 ml-2" th:unless="${wordData.relevantDataExists}">
         <div class="row">
           <h5 th:text="#{label.lexeme.not.found}">Soovitud keeltes tulemusi ei leidu</h5>
         </div>

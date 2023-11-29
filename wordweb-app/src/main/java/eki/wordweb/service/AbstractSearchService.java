@@ -80,6 +80,8 @@ public abstract class AbstractSearchService implements SystemConstant, WebConsta
 
 	public abstract SearchContext getSearchContext(SearchFilter searchFilter);
 
+	public abstract void composeFilteringSuggestions(SearchFilter searchFilter, LanguagesDatasets availableLanguagesDatasets);
+
 	public abstract WordData getWordData(Long wordId, SearchFilter searchFilter);
 
 	@Transactional
@@ -171,33 +173,6 @@ public abstract class AbstractSearchService implements SystemConstant, WebConsta
 		classifierUtil.applyClassifiers(availableLanguagesDatasets, displayLang);
 
 		return new WordsData(availableLanguagesDatasets);
-	}
-
-	private void composeFilteringSuggestions(SearchFilter searchFilter, LanguagesDatasets availableLanguagesDatasets) {
-
-		List<String> filteringLanguageCodes = searchFilter.getDestinLangs();
-		List<String> filteringDatasetCodes = searchFilter.getDatasetCodes();
-		List<String> availableLanguageCodes = availableLanguagesDatasets.getLanguageCodes();
-		List<String> availableDatasetCodes = availableLanguagesDatasets.getDatasetCodes();
-
-		boolean isFilterAllLangs = filteringLanguageCodes.stream().anyMatch(code -> StringUtils.equals(code, DESTIN_LANG_ALL));
-		boolean isFilterAllDatasets = filteringDatasetCodes.stream().anyMatch(code -> StringUtils.equals(code, DATASET_ALL));
-
-		if (isFilterAllLangs) {
-			availableLanguageCodes = Collections.emptyList();
-		} else if (CollectionUtils.isNotEmpty(availableLanguageCodes)) {
-			availableLanguageCodes = availableLanguageCodes.stream().filter(code -> !filteringLanguageCodes.contains(code)).collect(Collectors.toList());
-		}
-		if (isFilterAllDatasets) {
-			availableDatasetCodes = Collections.emptyList();
-		} else if (CollectionUtils.isNotEmpty(availableDatasetCodes)) {
-			availableDatasetCodes = availableDatasetCodes.stream().filter(code -> !filteringDatasetCodes.contains(code)).collect(Collectors.toList());
-		}
-		boolean suggestionsExist = CollectionUtils.isNotEmpty(availableLanguageCodes) || CollectionUtils.isNotEmpty(availableDatasetCodes);
-
-		availableLanguagesDatasets.setLanguageCodes(availableLanguageCodes);
-		availableLanguagesDatasets.setDatasetCodes(availableDatasetCodes);
-		availableLanguagesDatasets.setSuggestionsExist(suggestionsExist);
 	}
 
 	protected void compensateNullWords(Long wordId, List<CollocationTuple> collocTuples) {
