@@ -6,12 +6,12 @@ Sõnastiku- ja terminibaasisüsteem
 Olulisemad tehnoloogiad
 -----------------------
 
-* Java JDK 8 (x64 u144) 
-* Apache Maven 3.5.0
+* Java JDK 17 
+* Apache Maven 3.5.4
 * Spring Boot 2.6.12
-* Spring Framework 5.2.6
-* Spring Security 5.3.2
-* Thymeleaf 3.0.9
+* Spring Framework 5.3.23
+* Spring Security 5.6.7
+* Thymeleaf 3.0.15
 * Jooq 3.14.16
 * Postgres 15.4
 
