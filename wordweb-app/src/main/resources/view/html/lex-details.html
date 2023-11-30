@@ -375,7 +375,7 @@
                   <span class="tag mb-1 d-inline-block" data-toggle="tooltip"
                         th:each="government : ${lexeme.governments}"
                         th:text="${government.value}"
-                        th:title="${viewUtil.getGovernmentTooltipText(government)}"></span>
+                        th:title="${viewUtil.getGovernmentTooltipText(government, lexeme.posCodes)}"></span>
                 </div>
                 <div class="dependence-group" th:if="${not #lists.isEmpty(lexeme.usages)}">
                   <b class="text-medium text-gray-350" th:text="#{button.label.usages}">Näited</b>

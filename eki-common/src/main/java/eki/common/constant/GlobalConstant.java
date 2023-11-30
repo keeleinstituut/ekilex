@@ -62,6 +62,8 @@ public interface GlobalConstant {
 
 	String[] WORD_TYPE_CODES_FOREIGN = new String[] {"z", "lz"};
 
+	String LEXEME_POS_CODE_VERB = "v";
+
 	String[] GOVERNMENT_VALUES_MULTIPLE_CASE = new String[] {"keda", "mida", "keda/mida", "mida/keda"};
 
 	String[] GOVERNMENT_VALUES_PARTITIVE_CASE = new String[] {"keda*", "mida*", "keda/mida*", "mida/keda*"};

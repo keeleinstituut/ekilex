@@ -188,13 +188,19 @@ public class ViewUtil implements WebConstant, SystemConstant, GlobalConstant {
 		return htmlBuf.toString();
 	}
 
-	public String getGovernmentTooltipText(TypeFreeform government) {
+	public String getGovernmentTooltipText(TypeFreeform government, List<String> lexemePosCodes) {
+
+		String tooltipText = "";
+
+		boolean isVerb = CollectionUtils.isNotEmpty(lexemePosCodes) && lexemePosCodes.contains(LEXEME_POS_CODE_VERB);
+		if (!isVerb) {
+			return tooltipText;
+		}
 
 		Locale locale = languageContext.getDisplayLocale();
 		String governmentValue = government.getValue();
 		String[] messageArgs = {governmentValue};
 
-		String tooltipText = "";
 		if (ArrayUtils.contains(GOVERNMENT_VALUES_MULTIPLE_CASE, governmentValue)) {
 			tooltipText = messageSource.getMessage("label.government.multiple.case", messageArgs, locale);
 		} else if (ArrayUtils.contains(GOVERNMENT_VALUES_PARTITIVE_CASE, governmentValue)) {
