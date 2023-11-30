@@ -62,6 +62,10 @@ public interface GlobalConstant {
 
 	String[] WORD_TYPE_CODES_FOREIGN = new String[] {"z", "lz"};
 
+	String[] GOVERNMENT_VALUES_MULTIPLE_CASE = new String[] {"keda", "mida", "keda/mida", "mida/keda"};
+
+	String[] GOVERNMENT_VALUES_PARTITIVE_CASE = new String[] {"keda*", "mida*", "keda/mida*", "mida/keda*"};
+
 	String WORD_REL_TYPE_CODE_ASCPECTS = "ASPECTS";
 
 	String WORD_REL_TYPE_CODE_DERIVATIVE_BASE = "deriv_base";

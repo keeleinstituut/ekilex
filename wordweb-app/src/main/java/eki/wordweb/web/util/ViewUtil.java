@@ -3,12 +3,15 @@ package eki.wordweb.web.util;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.regex.Pattern;
 
 import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Component;
 
 import eki.common.constant.DatasetType;
@@ -25,7 +28,9 @@ import eki.wordweb.data.LanguageData;
 import eki.wordweb.data.LexemeWord;
 import eki.wordweb.data.Paradigm;
 import eki.wordweb.data.type.TypeCollocMember;
+import eki.wordweb.data.type.TypeFreeform;
 import eki.wordweb.service.CommonDataService;
+import eki.wordweb.service.util.LanguageContext;
 import eki.wordweb.web.bean.SessionBean;
 
 @Component
@@ -36,6 +41,12 @@ public class ViewUtil implements WebConstant, SystemConstant, GlobalConstant {
 
 	@Autowired
 	private WebUtil webUtil;
+
+	@Autowired
+	private MessageSource messageSource;
+
+	@Autowired
+	private LanguageContext languageContext;
 
 	private Pattern ekilexMarkupPattern;
 
@@ -175,6 +186,21 @@ public class ViewUtil implements WebConstant, SystemConstant, GlobalConstant {
 			htmlBuf.append("</div>");
 		}
 		return htmlBuf.toString();
+	}
+
+	public String getGovernmentTooltipText(TypeFreeform government) {
+
+		Locale locale = languageContext.getDisplayLocale();
+		String governmentValue = government.getValue();
+		String[] messageArgs = {governmentValue};
+
+		String tooltipText = "";
+		if (ArrayUtils.contains(GOVERNMENT_VALUES_MULTIPLE_CASE, governmentValue)) {
+			tooltipText = messageSource.getMessage("label.government.multiple.case", messageArgs, locale);
+		} else if (ArrayUtils.contains(GOVERNMENT_VALUES_PARTITIVE_CASE, governmentValue)) {
+			tooltipText = messageSource.getMessage("label.government.partitive.case", messageArgs, locale);
+		}
+		return tooltipText;
 	}
 
 	public List<Form> getForms(Paradigm paradigm, String morphCode) {
