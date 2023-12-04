@@ -23,6 +23,8 @@ public class TermMeaning extends AbstractDataObject {
 
 	private List<Forum> forums;
 
+	private List<String> tags;
+
 	private List<TermWord> words;
 
 	private List<String> conceptIds;
@@ -83,6 +85,14 @@ public class TermMeaning extends AbstractDataObject {
 
 	public void setForums(List<Forum> forums) {
 		this.forums = forums;
+	}
+
+	public List<String> getTags() {
+		return tags;
+	}
+
+	public void setTags(List<String> tags) {
+		this.tags = tags;
 	}
 
 	public List<TermWord> getWords() {

@@ -771,6 +771,28 @@ public class LookupDbService extends AbstractDataDbService {
 				.fetchSingleInto(Boolean.class);
 	}
 
+	public boolean lexemeTagExists(Long lexemeId, String tagName) {
+
+		return create
+				.select(field(DSL.count(LEXEME_TAG.ID).gt(0)).as("lexeme_tag_exists"))
+				.from(LEXEME_TAG)
+				.where(
+						LEXEME_TAG.LEXEME_ID.eq(lexemeId)
+								.and(LEXEME_TAG.TAG_NAME.eq(tagName)))
+				.fetchSingleInto(Boolean.class);
+	}
+
+	public boolean meaningTagExists(Long meaningId, String tagName) {
+
+		return create
+				.select(field(DSL.count(MEANING_TAG.ID).gt(0)).as("meaning_tag_exists"))
+				.from(MEANING_TAG)
+				.where(
+						MEANING_TAG.MEANING_ID.eq(meaningId)
+								.and(MEANING_TAG.TAG_NAME.eq(tagName)))
+				.fetchSingleInto(Boolean.class);
+	}
+
 	public boolean meaningRelationExists(Long meaningId1, Long meaningId2, String relationType) {
 
 		return create

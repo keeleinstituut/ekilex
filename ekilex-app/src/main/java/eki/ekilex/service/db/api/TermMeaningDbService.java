@@ -9,10 +9,12 @@ import static eki.ekilex.data.db.Tables.FREEFORM_SOURCE_LINK;
 import static eki.ekilex.data.db.Tables.LEXEME;
 import static eki.ekilex.data.db.Tables.LEXEME_FREEFORM;
 import static eki.ekilex.data.db.Tables.LEXEME_SOURCE_LINK;
+import static eki.ekilex.data.db.Tables.LEXEME_TAG;
 import static eki.ekilex.data.db.Tables.MEANING;
 import static eki.ekilex.data.db.Tables.MEANING_DOMAIN;
 import static eki.ekilex.data.db.Tables.MEANING_FORUM;
 import static eki.ekilex.data.db.Tables.MEANING_FREEFORM;
+import static eki.ekilex.data.db.Tables.MEANING_TAG;
 import static eki.ekilex.data.db.Tables.WORD;
 import static eki.ekilex.data.db.Tables.WORD_WORD_TYPE;
 
@@ -37,10 +39,12 @@ import eki.ekilex.data.db.tables.FreeformSourceLink;
 import eki.ekilex.data.db.tables.Lexeme;
 import eki.ekilex.data.db.tables.LexemeFreeform;
 import eki.ekilex.data.db.tables.LexemeSourceLink;
+import eki.ekilex.data.db.tables.LexemeTag;
 import eki.ekilex.data.db.tables.Meaning;
 import eki.ekilex.data.db.tables.MeaningDomain;
 import eki.ekilex.data.db.tables.MeaningForum;
 import eki.ekilex.data.db.tables.MeaningFreeform;
+import eki.ekilex.data.db.tables.MeaningTag;
 import eki.ekilex.data.db.tables.Word;
 import eki.ekilex.data.db.tables.WordWordType;
 
@@ -56,10 +60,12 @@ public class TermMeaningDbService implements ActivityFunct {
 		MeaningDomain md = MEANING_DOMAIN.as("md");
 		MeaningForum mfor = MEANING_FORUM.as("mfor");
 		MeaningFreeform mff = MEANING_FREEFORM.as("mff");
+		MeaningTag mt = MEANING_TAG.as("mt");
 
 		Lexeme l = LEXEME.as("l");
 		LexemeFreeform lff = LEXEME_FREEFORM.as("lff");
 		LexemeSourceLink lsl = LEXEME_SOURCE_LINK.as("lsl");
+		LexemeTag lt = LEXEME_TAG.as("lt");
 
 		Word w = WORD.as("w");
 		WordWordType wwt = WORD_WORD_TYPE.as("wwt");
@@ -177,6 +183,14 @@ public class TermMeaningDbService implements ActivityFunct {
 				.where(wwt.WORD_ID.eq(w.ID))
 				.asField();
 
+		Field<JSON> ltf = DSL
+				.select(DSL
+						.jsonArrayAgg(lt.TAG_NAME)
+						.orderBy(lt.ID))
+				.from(lt)
+				.where(lt.LEXEME_ID.eq(l.ID))
+				.asField();
+
 		Field<JSON> wf = DSL
 				.select(DSL
 						.jsonArrayAgg(DSL
@@ -188,6 +202,7 @@ public class TermMeaningDbService implements ActivityFunct {
 										DSL.key("wordTypeCodes").value(wwtf),
 										DSL.key("lexemeValueStateCode").value(l.VALUE_STATE_CODE),
 										DSL.key("lexemeNotes").value(lnf),
+										DSL.key("lexemeTags").value(ltf),
 										DSL.key("lexemePublicity").value(l.IS_PUBLIC),
 										DSL.key("lexemeSourceLinks").value(lslf),
 										DSL.key("usages").value(uf)))
@@ -249,6 +264,14 @@ public class TermMeaningDbService implements ActivityFunct {
 								.and(ff.TYPE.eq(FreeformType.CONCEPT_ID.name())))
 				.asField();
 
+		Field<JSON> mtf = DSL
+				.select(DSL
+						.jsonArrayAgg(mt.TAG_NAME)
+						.orderBy(mt.ID))
+				.from(mt)
+				.where(mt.MEANING_ID.eq(m.ID))
+				.asField();
+
 		return create
 				.select(
 						m.ID.as("meaning_id"),
@@ -261,6 +284,7 @@ public class TermMeaningDbService implements ActivityFunct {
 						mdf.as("domains"),
 						mnf.as("notes"),
 						mforf.as("forums"),
+						mtf.as("tags"),
 						cidf.as("concept_ids"),
 						wf.as("words"))
 				.from(m

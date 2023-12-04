@@ -75,6 +75,7 @@ public class TermMeaningService extends AbstractApiCudService implements Activit
 		List<Classifier> domains = termMeaning.getDomains();
 		List<Freeform> meaningNotes = termMeaning.getNotes();
 		List<Forum> meaningForums = termMeaning.getForums();
+		List<String> meaningTags = termMeaning.getTags();
 		List<String> conceptIds = termMeaning.getConceptIds();
 		LocalDate manualEventOn = termMeaning.getManualEventOn();
 		String manualEventBy = termMeaning.getManualEventBy();
@@ -110,6 +111,7 @@ public class TermMeaningService extends AbstractApiCudService implements Activit
 				Long lexemeId;
 				String lexemeValueStateCode = word.getLexemeValueStateCode();
 				List<Freeform> lexemeNotes = word.getLexemeNotes();
+				List<String> lexemeTags = word.getLexemeTags();
 				List<Freeform> usages = word.getUsages();
 				boolean isLexemePublic = isPublic(word.getLexemePublicity(), DEFAULT_LEXEME_PUBLICITY);
 				List<SourceLink> lexemeSourceLinks = word.getLexemeSourceLinks();
@@ -209,6 +211,19 @@ public class TermMeaningService extends AbstractApiCudService implements Activit
 											ActivityEntity.LEXEME_NOTE_SOURCE_LINK, roleDatasetCode);
 								}
 							}
+						}
+					}
+				}
+
+				if (CollectionUtils.isNotEmpty(lexemeTags)) {
+
+					for (String tagName : lexemeTags) {
+						boolean lexemeTagExists = lookupDbService.lexemeTagExists(lexemeId, tagName);
+						if (!lexemeTagExists) {
+							activityLog = activityLogService.prepareActivityLog("createLexemeTag", lexemeId, ActivityOwner.LEXEME, roleDatasetCode,
+									MANUAL_EVENT_ON_UPDATE_ENABLED);
+							Long lexemeTagId = cudDbService.createLexemeTag(lexemeId, tagName);
+							activityLogService.createActivityLog(activityLog, lexemeTagId, ActivityEntity.TAG);
 						}
 					}
 				}
@@ -314,6 +329,19 @@ public class TermMeaningService extends AbstractApiCudService implements Activit
 				if (meaningForumId == null) {
 					String meaningForumValue = meaningForum.getValue();
 					cudDbService.createMeaningForum(meaningId, meaningForumValue, meaningForumValue, userId, userName);
+				}
+			}
+		}
+
+		if (CollectionUtils.isNotEmpty(meaningTags)) {
+
+			for (String tagName : meaningTags) {
+				boolean meaningTagExists = lookupDbService.meaningTagExists(meaningId, tagName);
+				if (!meaningTagExists) {
+					activityLog = activityLogService.prepareActivityLog("createMeaningTag", meaningId, ActivityOwner.MEANING, roleDatasetCode,
+							MANUAL_EVENT_ON_UPDATE_ENABLED);
+					Long meaningTagId = cudDbService.createMeaningTag(meaningId, tagName);
+					activityLogService.createActivityLog(activityLog, meaningTagId, ActivityEntity.TAG);
 				}
 			}
 		}
