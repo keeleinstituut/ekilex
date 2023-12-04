@@ -312,7 +312,7 @@ public class CompositionService extends AbstractService implements GlobalConstan
 
 	private void joinMeanings(Long targetMeaningId, Long sourceMeaningId, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
 
-		ActivityLogData activityLog1 = activityLogService.prepareActivityLog("joinMeanings", sourceMeaningId, ActivityOwner.MEANING, roleDatasetCode, isManualEventOnUpdateEnabled);
+		ActivityLogData activityLog1 = activityLogService.prepareActivityLog("joinMeanings", sourceMeaningId, ActivityOwner.MEANING, roleDatasetCode, MANUAL_EVENT_ON_UPDATE_DISABLED);
 		ActivityLogData activityLog2 = activityLogService.prepareActivityLog("joinMeanings", targetMeaningId, ActivityOwner.MEANING, roleDatasetCode, isManualEventOnUpdateEnabled);
 
 		activityLogService.joinApproveMeaning(targetMeaningId, sourceMeaningId);
@@ -341,7 +341,7 @@ public class CompositionService extends AbstractService implements GlobalConstan
 		Long targetMeaningId = targetLexeme.getMeaningId();
 		Long sourceMeaningId = sourceLexeme.getMeaningId();
 
-		ActivityLogData activityLog1 = activityLogService.prepareActivityLog("joinLexemes", sourceLexemeId, ActivityOwner.LEXEME, roleDatasetCode, isManualEventOnUpdateEnabled);
+		ActivityLogData activityLog1 = activityLogService.prepareActivityLog("joinLexemes", sourceLexemeId, ActivityOwner.LEXEME, roleDatasetCode, MANUAL_EVENT_ON_UPDATE_DISABLED);
 		ActivityLogData activityLog2 = activityLogService.prepareActivityLog("joinLexemes", targetLexemeId, ActivityOwner.LEXEME, roleDatasetCode, isManualEventOnUpdateEnabled);
 
 		joinMeaningsCommonWordsLexemes(targetMeaningId, sourceMeaningId);
