@@ -92,12 +92,12 @@
       <div th:if="${activeItem != 'home' && activeItem != 'limterm'}" class="dropdown side-menu">
         <button type="button" class="btn btn-primary ml-n3 side-menu-btn" id="sideMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
           <i class="fa fa-bars mr-2" aria-hidden="true"></i>
-          <span th:text="#{'menu.' + ${activeItem}}">Aktiivne rakendus</span>
+          <span th:text="#{|menu.${activeItem}|}">Aktiivne rakendus</span>
         </button>
         <div id="sideMenu" class="side-menu-content dropdown-menu ml-n3" aria-labelledby="sideMenuButton">
-          <a class="dropdown-item side-menu-header mt-n2 d-flex align-items-center" th:href="@{/home}" th:title="${appData.appName + ' ' + appData.appVersion}">
+          <a class="dropdown-item side-menu-header mt-n2 d-flex align-items-center" th:href="@{/home}" th:title="|${appData.appName} ${appData.appVersion}|">
             Ekilex
-            <small class="text-secondary ml-auto" th:text="${'v.' + appData.appVersion}">1.0.0</small>
+            <small class="text-secondary ml-auto" th:text="|v.${appData.appVersion}|">1.0.0</small>
           </a>
           <div>
             <div class="dropdown-header" th:text="#{menu.dropdown.header}">Rakenduse valik</div>
@@ -151,11 +151,11 @@
       </div>
       <ul th:if="${searchMode}" class="main-nav-tabs nav nav-tabs mb-n3 mx-auto align-self-start border-bottom-0">
         <li class="nav-item">
-          <a class="nav-link" th:classappend="${searchMode == 'SIMPLE'} ? 'active':''" id="simpleSearchModeBtn" th:text="#{common.search.mode.simple}" data-toggle="tab" href="#simple_search_filter"
+          <a class="nav-link" th:classappend="${searchMode == 'SIMPLE'} ? 'active' : ''" id="simpleSearchModeBtn" th:text="#{common.search.mode.simple}" data-toggle="tab" href="#simple_search_filter"
             role="tab" aria-controls="simple_search_filter" aria-selected="true" data-plugin="chooseSearchModePlugin">Lihtotsing</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" th:classappend="${searchMode == 'DETAIL'} ? 'active':''" id="detailSearchModeBtn" th:text="#{common.search.mode.detail}" data-toggle="tab" href="#detail_search_filter"
+          <a class="nav-link" th:classappend="${searchMode == 'DETAIL'} ? 'active' : ''" id="detailSearchModeBtn" th:text="#{common.search.mode.detail}" data-toggle="tab" href="#detail_search_filter"
             role="tab" aria-controls="simple_search_filter" aria-selected="true" data-plugin="chooseSearchModePlugin">Detailotsing</a>
         </li>
       </ul>
@@ -167,11 +167,20 @@
       </th:block>
       <div th:if="${activeItem != 'limterm'}" class="navbar-nav" th:classappend="${searchMode == null ? 'ml-auto' : ''}">
         <th:block sec:authorize="isAuthenticated()">
-          <div class="btn mr-3" style="font-size: 16px">
-            <a class="btn-primary" href="mailto:kasutajatugi@ekilex.ee?subject=Ekilex" th:title="#{common.user.support}">
+          <div class="dropdown mt-2" th:if="${activeItem == 'home'}">
+            <button class="btn btn-primary px-2 dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+              <span th:text="#{menu.current.lang}"></span>
+            </button>
+            <div class="dropdown-menu">
+              <a class="dropdown-item" th:classappend="${#locale.language == 'et' ? 'active' : ''}" th:href="|@{/}?lang=et|">EE</a>
+              <a class="dropdown-item" th:classappend="${#locale.language == 'en' ? 'active' : ''}" th:href="|@{/}?lang=en|">EN</a>
+            </div>
+          </div>
+          <div class="mr-2 mt-2">
+            <a class="btn btn-primary px-1" href="mailto:kasutajatugi@ekilex.ee?subject=Ekilex" th:title="#{common.user.support}">
               <i class="fa fa-fw fa-envelope" aria-hidden="true"></i>
             </a>
-            <a class="btn-primary" href="https://keeleinstituut.github.io/ekilex/" target="ekilexUserManual" th:title="#{common.user.manual}">
+            <a class="btn btn-primary px-1" href="https://keeleinstituut.github.io/ekilex/" target="ekilexUserManual" th:title="#{common.user.manual}">
               <i class="fa fa-fw fa-info-circle" aria-hidden="true"></i>
             </a>
           </div>
