@@ -295,6 +295,7 @@ public class ProtoDbService implements SystemConstant {
 				.fetchInto(String.class);
 	}
 
+	// Requires PG ver 16 or more!
 	public List<String> searchDaitchMokotoffSoundexMatchSimilarityOrder(String wordCrit, String wordCritUnaccent) {
 
 		Field<String> wordCritLowerField = DSL.lower(wordCrit);

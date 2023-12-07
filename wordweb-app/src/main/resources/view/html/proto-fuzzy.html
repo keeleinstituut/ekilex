@@ -81,15 +81,20 @@
         <span>Daitch-Mokotoff Soundex match Similarity order</span>
         <span id="fuzzy-daitchmokotoffsim-log"></span>
       </h5>
+      <div>
+        <small>
+          <i>* Alates PG ver 16</i>
+        </small>
+      </div>
       <div class="row">
         <div class="col-5">
-          <input type="text" id="fuzzy-daitchmokotoffsim-inp" class="main-search-input form-control search-phrase compact ui-autocomplete-input">
+          <input type="text" id="fuzzy-daitchmokotoffsim-inp" class="main-search-input form-control search-phrase compact ui-autocomplete-input" disabled="disabled">
         </div>
       </div>
     </div>
   </div>
   <script th:inline="javascript">
-  	const fuzzySearchByAlgoUrl = /*[[${fuzzySearchByAlgoUrl}]]*/ '/proto/fuzzy/searchbyalgo/';
+  	const fuzzySearchByAlgoUrl = /*[[${fuzzySearchByAlgoUrl}]]*/'/proto/fuzzy/searchbyalgo/';
   	initFuzzyPage();
   </script>
 </body>
