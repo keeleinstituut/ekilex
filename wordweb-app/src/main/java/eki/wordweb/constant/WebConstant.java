@@ -90,6 +90,8 @@ public interface WebConstant {
 
 	String USER_PREF_URI = "/user-pref";
 
+	String PROTO_URI = "/proto";
+
 	String GAMES_LEXICDECIS_URI = GAMES_URI + "/lexicdecis";
 
 	String GAMES_SIMILJUDGE_URI = GAMES_URI + "/similjudge";

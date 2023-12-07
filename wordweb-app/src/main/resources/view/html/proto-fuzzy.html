@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="et" xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="utf-8">
+<title>Proto</title>
+<meta name="viewport" content="width=device-width">
+<link rel="icon" type="image/svg+xml" th:href="@{/view/images/favicon.ico}" />
+<link rel="stylesheet" type="text/css" th:href="@{/view/css/styles.css}" />
+<link rel="stylesheet" th:href="@{/view/css/jquery-ui.min.css}" />
+<script type="text/javascript" th:src="@{/view/js/jquery-3.2.1.min.js}"></script>
+<script type="text/javascript" th:src="@{/view/js/jquery-ui.min.js}"></script>
+<script type="text/javascript" th:src="@{/view/js/jquery.serializejson.js}"></script>
+<script type="text/javascript" th:src="@{/view/js/popper.min.js}"></script>
+<script type="text/javascript" th:src="@{/view/js/bootstrap.min.js}"></script>
+<script type="text/javascript" th:src="@{/view/js/simple-lightbox.js}"></script>
+<script type="text/javascript" th:src="@{/view/js/ww-common-app.js}"></script>
+<script type="text/javascript" th:src="@{/view/js/lazysizes.min.js}"></script>
+<script type="text/javascript" th:src="@{/view/js/ww-custom-elements.js}"></script>
+<script type="text/javascript" th:src="@{/view/js/ww-proto-fuzzy.js}"></script>
+</head>
+<body>
+  <div class="ml-5 mt-3">
+    <h1>Hägusotsingu proto</h1>
+    <div class="mt-4">
+      <h5>
+        <span>Infix match Levenshtein order</span>
+        <span id="fuzzy-infixlev-log"></span>
+      </h5>
+      <div class="row">
+        <div class="col-5">
+          <input type="text" id="fuzzy-infixlev-inp" class="main-search-input form-control search-phrase compact ui-autocomplete-input">
+        </div>
+      </div>
+    </div>
+    <div class="mt-4">
+      <h5>
+        <span>Trigram Similarity</span>
+        <span id="fuzzy-trigramsim-log"></span>
+      </h5>
+      <div class="row">
+        <div class="col-5">
+          <input type="text" id="fuzzy-trigramsim-inp" class="main-search-input form-control search-phrase compact ui-autocomplete-input">
+        </div>
+      </div>
+    </div>
+    <div class="mt-4">
+      <h5>
+        <span>Levenshtein Distance</span>
+        <span id="fuzzy-levenshteindist-log"></span>
+      </h5>
+      <div class="row">
+        <div class="col-5">
+          <input type="text" id="fuzzy-levenshteindist-inp" class="main-search-input form-control search-phrase compact ui-autocomplete-input">
+        </div>
+      </div>
+    </div>
+    <div class="mt-4">
+      <h5>
+        <span>Levenshtein Less Distance</span>
+        <span id="fuzzy-levenshteinlessdist-log"></span>
+      </h5>
+      <div class="row">
+        <div class="col-5">
+          <input type="text" id="fuzzy-levenshteinlessdist-inp" class="main-search-input form-control search-phrase compact ui-autocomplete-input">
+        </div>
+      </div>
+    </div>
+    <div class="mt-4">
+      <h5>
+        <span>Metaphone match Similarity order</span>
+        <span id="fuzzy-metaphonesim-log"></span>
+      </h5>
+      <div class="row">
+        <div class="col-5">
+          <input type="text" id="fuzzy-metaphonesim-inp" class="main-search-input form-control search-phrase compact ui-autocomplete-input">
+        </div>
+      </div>
+    </div>
+    <div class="mt-4">
+      <h5>
+        <span>Daitch-Mokotoff Soundex match Similarity order</span>
+        <span id="fuzzy-daitchmokotoffsim-log"></span>
+      </h5>
+      <div class="row">
+        <div class="col-5">
+          <input type="text" id="fuzzy-daitchmokotoffsim-inp" class="main-search-input form-control search-phrase compact ui-autocomplete-input">
+        </div>
+      </div>
+    </div>
+  </div>
+  <script type="text/javascript">
+  	var fuzzySearchByAlgoUrl = /*[[@{/proto/fuzzy/searchbyalgo/}]]*/"/proto/fuzzy/searchbyalgo/";
+  	initFuzzyPage();
+  </script>
+</body>
+</html>
