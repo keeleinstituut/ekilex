@@ -88,8 +88,8 @@
       </div>
     </div>
   </div>
-  <script type="text/javascript">
-  	var fuzzySearchByAlgoUrl = /*[[@{/proto/fuzzy/searchbyalgo/}]]*/"/proto/fuzzy/searchbyalgo/";
+  <script th:inline="javascript">
+  	const fuzzySearchByAlgoUrl = /*[[${fuzzySearchByAlgoUrl}]]*/ '/proto/fuzzy/searchbyalgo/';
   	initFuzzyPage();
   </script>
 </body>
