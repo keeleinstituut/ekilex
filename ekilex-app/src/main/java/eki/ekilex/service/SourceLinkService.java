@@ -18,6 +18,7 @@ import eki.common.constant.SourceType;
 import eki.common.exception.OperationDeniedException;
 import eki.ekilex.data.ActivityLogData;
 import eki.ekilex.data.ActivityLogOwnerEntityDescr;
+import eki.ekilex.data.Source;
 import eki.ekilex.data.SourceLink;
 import eki.ekilex.data.SourceProperty;
 import eki.ekilex.data.api.FreeformOwner;
@@ -220,5 +221,33 @@ public class SourceLinkService extends AbstractSourceService implements GlobalCo
 		ActivityLogData activityLog = activityLogService.prepareActivityLog("deleteDefinitionSourceLink", meaningId, ActivityOwner.MEANING, roleDatasetCode, isManualEventOnUpdateEnabled);
 		sourceLinkDbService.deleteDefinitionSourceLink(sourceLinkId);
 		activityLogService.createActivityLog(activityLog, sourceLinkId, ActivityEntity.DEFINITION_SOURCE_LINK);
+	}
+
+	@Transactional
+	// TODO remove this later when source link value is source name
+	public String getSourceLinkValueForCreate(Long sourceId, Long sourcePropertyId) {
+
+		if (sourcePropertyId != null) {
+			SourceProperty sourceProperty = sourceDbService.getSourceProperty(sourcePropertyId);
+			return sourceProperty.getValueText();
+		}
+
+		Source source = sourceDbService.getSource(sourceId);
+		return source.getName();
+	}
+
+	@Transactional
+	// TODO remove this later when source link value is source name
+	public String getSourceLinkValueForUpdate(Long sourcePropertyId, Long sourceLinkId, String sourceLinkContentKey) {
+
+		if (sourcePropertyId != null) {
+			SourceProperty sourceProperty = sourceDbService.getSourceProperty(sourcePropertyId);
+			return sourceProperty.getValueText();
+		}
+
+		SourceLink sourceLink = getSourceLink(sourceLinkId, sourceLinkContentKey);
+		Long sourceId = sourceLink.getSourceId();
+		Source source = sourceDbService.getSource(sourceId);
+		return source.getName();
 	}
 }

@@ -64,11 +64,6 @@ public class SourceService extends AbstractSourceService implements GlobalConsta
 	}
 
 	@Transactional
-	public SourceProperty getSourceProperty(Long sourcePropertyId) {
-		return sourceDbService.getSourceProperty(sourcePropertyId);
-	}
-
-	@Transactional
 	public List<Source> getSources(String searchFilter) {
 		return getSources(searchFilter, null);
 	}
