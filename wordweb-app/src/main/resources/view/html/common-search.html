@@ -128,6 +128,7 @@
         <span class="tag my-1" th:text="${wordType.value}"></span>
       </th:block>
       <span class="tag my-1" th:text="${wordData.word.displayMorph.value}" th:if="${wordData.word.displayMorph != null}">lühend</span>
+      <span class="tag my-1" th:text="${wordData.word.gender.value}" th:if="${wordData.word.gender != null}">sugu</span>
       <th:block th:each="summarisedPos : ${wordData.word.summarisedPoses}" th:if="${not #lists.isEmpty(wordData.word.summarisedPoses)}">
         <span class="tag my-1" th:text="${summarisedPos.value}"></span>
       </th:block>
