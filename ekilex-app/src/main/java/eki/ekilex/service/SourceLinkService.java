@@ -224,8 +224,31 @@ public class SourceLinkService extends AbstractSourceService implements GlobalCo
 	}
 
 	@Transactional
+	public void createLexemeSourceLink(
+			Long lexemeId, Long sourceId, Long sourcePropertyId, ReferenceType refType, String sourceLinkName, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
+
+		String sourceLinkValue = getSourceLinkValueForCreate(sourceId, sourcePropertyId);
+		createLexemeSourceLink(lexemeId, sourceId, refType, sourceLinkValue, sourceLinkName, roleDatasetCode, isManualEventOnUpdateEnabled);
+	}
+
+	@Transactional
+	public void createDefinitionSourceLink(
+			Long definitionId, Long sourceId, Long sourcePropertyId, ReferenceType refType, String sourceLinkName, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
+
+		String sourceLinkValue = getSourceLinkValueForCreate(sourceId, sourcePropertyId);
+		createDefinitionSourceLink(definitionId, sourceId, refType, sourceLinkValue, sourceLinkName, roleDatasetCode, isManualEventOnUpdateEnabled);
+	}
+
+	@Transactional
+	public void createFreeformSourceLink(
+			Long freeformId, Long sourceId, Long sourcePropertyId, ReferenceType refType, String sourceLinkName, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
+
+		String sourceLinkValue = getSourceLinkValueForCreate(sourceId, sourcePropertyId);
+		createFreeformSourceLink(freeformId, sourceId, refType, sourceLinkValue, sourceLinkName, roleDatasetCode, isManualEventOnUpdateEnabled);
+	}
+
 	// TODO remove this later when source link value is source name
-	public String getSourceLinkValueForCreate(Long sourceId, Long sourcePropertyId) {
+	private String getSourceLinkValueForCreate(Long sourceId, Long sourcePropertyId) {
 
 		if (sourcePropertyId != null) {
 			SourceProperty sourceProperty = sourceDbService.getSourceProperty(sourcePropertyId);
@@ -237,8 +260,28 @@ public class SourceLinkService extends AbstractSourceService implements GlobalCo
 	}
 
 	@Transactional
+	public void updateFreeformSourceLink(Long sourceLinkId, Long sourcePropertyId, String sourceLinkName, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
+
+		String sourceLinkValue = getSourceLinkValueForUpdate(sourcePropertyId, sourceLinkId, ContentKey.FREEFORM_SOURCE_LINK);
+		updateFreeformSourceLink(sourceLinkId, sourceLinkValue, sourceLinkName, roleDatasetCode, isManualEventOnUpdateEnabled);
+	}
+
+	@Transactional
+	public void updateLexemeSourceLink(Long sourceLinkId, Long sourcePropertyId, String sourceLinkName, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
+
+		String sourceLinkValue = getSourceLinkValueForUpdate(sourcePropertyId, sourceLinkId, ContentKey.LEXEME_SOURCE_LINK);
+		updateLexemeSourceLink(sourceLinkId, sourceLinkValue, sourceLinkName, roleDatasetCode, isManualEventOnUpdateEnabled);
+	}
+
+	@Transactional
+	public void updateDefinitionSourceLink(Long sourceLinkId, Long sourcePropertyId, String sourceLinkName, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
+
+		String sourceLinkValue = getSourceLinkValueForUpdate(sourcePropertyId, sourceLinkId, ContentKey.DEFINITION_SOURCE_LINK);
+		updateDefinitionSourceLink(sourceLinkId, sourceLinkValue, sourceLinkName, roleDatasetCode, isManualEventOnUpdateEnabled);
+	}
+
 	// TODO remove this later when source link value is source name
-	public String getSourceLinkValueForUpdate(Long sourcePropertyId, Long sourceLinkId, String sourceLinkContentKey) {
+	private String getSourceLinkValueForUpdate(Long sourcePropertyId, Long sourceLinkId, String sourceLinkContentKey) {
 
 		if (sourcePropertyId != null) {
 			SourceProperty sourceProperty = sourceDbService.getSourceProperty(sourcePropertyId);
