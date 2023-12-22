@@ -116,8 +116,7 @@
                       <span th:text="#{termdata.title}">Oskussõnastikes</span>
                     </a>
                   </h5>
-                  <div id="term-section-collapse" data-name="term-section" class="collapse user-preference"
-                    th:classappend="${#lists.contains(uiSections, 'term-section') ? 'show' : ''}">
+                  <div id="term-section-collapse" data-name="term-section" class="collapse user-preference show">
                     <th:block th:each="lexeme : ${wordData.termLexemes}">
                       <section class="level-3-panel meaning-panel d-block">
                         <div th:replace="term-details :: meaning-data"></div>

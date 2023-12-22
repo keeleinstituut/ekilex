@@ -1,32 +1,4 @@
-Märkused ver 1.32.0 tarne kohta:
+Märkused ver 1.32.1 tarne kohta:
 
-*	Uuendada postgres andmebaasi server versioonile 15.4
-	Testkeskkonnas äraproovitud uuendamise meetod oli järgnev:
-	- kõikide rakenduste vana andmebaasi dumpid sql kujul
-	- uue andmebaasi serveri ver 15.4 paigaldamine
-	- uues/uutes andmebaasi serveris/serverites kõigi rakenduste andmebaaside ja kasutajate loomine
-	- andmebaasi dumpide laadimine psql utiliidiga
-	
-NB! andmebaaside loomisel kasutada kodeeringut (encoding) UTF8 ja tähestikku (collation) et_EE.UTF-8; saadaval peab olema ka fi_FI.UTF-8
-
-*	Pärast postgres versiooni uuendamist käivitada migratsiooni skript ja teha värske sõnaveebi laadimine:
-
-	- käivitada ekilexi andmebaasi migratsiooni skript (skript on aeganõudev ja seda on soovitatav käivitada mitmes osas):
-	/eki-common/src/main/resources/sql/delivery.sql
-
-	- kustutada ekilexi baasis kõik sõnaveebiga seotud vaated ja andmetüübid:
-	/eki-common/src/main/resources/sql/drop_all.sql sektsioon "wordweb associated views and types"
-
-	- luua ekilexi baasis vaated:
-	/eki-common/src/main/resources/sql/create_views.sql
-
-	- luua sõnaveebi baasis vaated:
-	/wordweb-app/fileresources/sql/create_mviews.sql
-
-NB! Uues postgres on muutunud õiguste mudel, mille järgi public schemas loodud andmebaasitabelid kuuluvad vastavale kasutajale.
-	Lõpuks tuleb tagada, et skriptidega loodud tabelitele ja vaadetele oleks vastava rakenduse kasutajal piisav juurdepääs. Eelistatult võiks rakenduse kasutaja olla loodud tabelite ja vaadete omanik.
-
-*	Andmebaasi jõudlust tuleb teadlikult häälestada. Süsteemi andmebaasid on mahukad ning jõudlusele toetuvaid funktsioone lisandub pidevalt.
-	Meil on head kogemused selle koha soovitustega:
-	https://pgtune.leopard.in.ua/
-	Muuhulgas soovitame seal DB Type=Mixed type of application
+*	Tarne sisaldab minimaalse ulatusega koodimuudatust ühes Sõnaveebi kuvas. Mingeid täiendavaid määrangute muudatusi, migratsioone ega tegevusi pole.
+*	Lae alla versioon 1.32.1, ehita juurkataloogist, paigalda ainult uuendatud Sõnaveebi rakenduse jar
