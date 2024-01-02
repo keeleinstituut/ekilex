@@ -14,6 +14,8 @@ public class TermWord extends AbstractDataObject {
 
 	private String value;
 
+	private String valuePrese;
+
 	private String lang;
 
 	private List<String> wordTypeCodes;
@@ -52,6 +54,14 @@ public class TermWord extends AbstractDataObject {
 
 	public void setValue(String value) {
 		this.value = value;
+	}
+
+	public String getValuePrese() {
+		return valuePrese;
+	}
+
+	public void setValuePrese(String valuePrese) {
+		this.valuePrese = valuePrese;
 	}
 
 	public String getLang() {

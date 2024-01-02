@@ -103,10 +103,10 @@ public class TermMeaningService extends AbstractApiCudService implements Activit
 			for (TermWord word : words) {
 
 				Long wordId = word.getWordId();
-				String wordValue = StringUtils.trim(word.getValue());
+				String wordValuePrese = StringUtils.trim(word.getValuePrese());
 				String wordLang = word.getLang();
 				List<String> wordTypeCodes = word.getWordTypeCodes();
-				boolean isValueOrLangMissing = StringUtils.isAnyBlank(wordValue, wordLang);
+				boolean isValueOrLangMissing = StringUtils.isAnyBlank(wordValuePrese, wordLang);
 
 				Long lexemeId;
 				String lexemeValueStateCode = word.getLexemeValueStateCode();
@@ -129,12 +129,13 @@ public class TermMeaningService extends AbstractApiCudService implements Activit
 						}
 					}
 				} else {
+					String wordValue = textDecorationService.removeEkiElementMarkup(wordValuePrese);
 					String cleanValue = textDecorationService.unifyToApostrophe(wordValue);
 					String valueAsWord = textDecorationService.removeAccents(cleanValue);
 
 					if (wordId == null) {
 						int synWordHomNr = cudDbService.getWordNextHomonymNr(wordValue, wordLang);
-						wordId = cudDbService.createWord(wordValue, wordValue, valueAsWord, wordLang, synWordHomNr);
+						wordId = cudDbService.createWord(wordValue, wordValuePrese, valueAsWord, wordLang, synWordHomNr);
 						WordLexemeMeaningIdTuple idTuple = cudDbService.createLexeme(wordId, datasetCode, meaningId, 1);
 						lexemeId = idTuple.getLexemeId();
 						activityLogService.createActivityLog(createFunctName, wordId, ActivityOwner.WORD, roleDatasetCode, MANUAL_EVENT_ON_UPDATE_ENABLED);
@@ -148,7 +149,7 @@ public class TermMeaningService extends AbstractApiCudService implements Activit
 							activityLogService.createActivityLog(createFunctName, lexemeId, ActivityOwner.LEXEME, roleDatasetCode, MANUAL_EVENT_ON_UPDATE_ENABLED);
 						}
 						activityLog = activityLogService.prepareActivityLog(updateFunctName, wordId, ActivityOwner.WORD, roleDatasetCode, MANUAL_EVENT_ON_UPDATE_ENABLED);
-						cudDbService.updateWordValueAndAsWordAndLang(wordId, wordValue, wordValue, valueAsWord, wordLang);
+						cudDbService.updateWordValueAndAsWordAndLang(wordId, wordValue, wordValuePrese, valueAsWord, wordLang);
 						activityLogService.createActivityLog(activityLog, wordId, ActivityEntity.WORD);
 					}
 				}
@@ -328,6 +329,9 @@ public class TermMeaningService extends AbstractApiCudService implements Activit
 				Long meaningForumId = meaningForum.getId();
 				if (meaningForumId == null) {
 					String meaningForumValue = meaningForum.getValue();
+					if (StringUtils.isBlank(meaningForumValue)) {
+						throw new OperationDeniedException("Meaning forum value missing");
+					}
 					cudDbService.createMeaningForum(meaningId, meaningForumValue, meaningForumValue, userId, userName);
 				}
 			}
@@ -336,6 +340,9 @@ public class TermMeaningService extends AbstractApiCudService implements Activit
 		if (CollectionUtils.isNotEmpty(meaningTags)) {
 
 			for (String tagName : meaningTags) {
+				if (StringUtils.isBlank(tagName)) {
+					throw new OperationDeniedException("Meaning tag value missing");
+				}
 				boolean meaningTagExists = lookupDbService.meaningTagExists(meaningId, tagName);
 				if (!meaningTagExists) {
 					activityLog = activityLogService.prepareActivityLog("createMeaningTag", meaningId, ActivityOwner.MEANING, roleDatasetCode,

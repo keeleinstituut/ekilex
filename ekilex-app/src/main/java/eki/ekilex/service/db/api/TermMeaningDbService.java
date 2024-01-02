@@ -198,6 +198,7 @@ public class TermMeaningDbService implements ActivityFunct {
 										DSL.key("wordId").value(w.ID),
 										DSL.key("lexemeId").value(l.ID),
 										DSL.key("value").value(w.VALUE),
+										DSL.key("valuePrese").value(w.VALUE_PRESE),
 										DSL.key("lang").value(w.LANG),
 										DSL.key("wordTypeCodes").value(wwtf),
 										DSL.key("lexemeValueStateCode").value(l.VALUE_STATE_CODE),
