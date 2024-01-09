@@ -370,7 +370,7 @@
                 </div>
               </div>
               <div class="dependencies" th:if="${lexeme.showSection3}">
-                <div th:if="${not #lists.isEmpty(lexeme.governments)}" class="rekts-est d-flex flex-row align-items-baseline">
+                <div th:if="${not #lists.isEmpty(lexeme.governments)}" class="rekts-est d-flex flex-row align-items-baseline flex-wrap">
                   <b class="text-medium text-gray-350" th:text="#{label.government}">Rektsioon</b>
                   <span class="tag mb-1 d-inline-block" data-toggle="tooltip"
                         th:each="government : ${lexeme.governments}"
