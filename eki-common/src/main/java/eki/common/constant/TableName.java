@@ -61,6 +61,7 @@ public interface TableName {
 	String DEFINITION_SOURCE_LINK = "definition_source_link";
 	String DEFINITION_DATASET = "definition_dataset";
 	String PARADIGM = "paradigm";
+	String PARADIGM_FORM = "paradigm_form";
 	String FORM = "form";
 	String FORM_FREQUENCY = "form_frequency";
 	String FREEFORM = "freeform";
