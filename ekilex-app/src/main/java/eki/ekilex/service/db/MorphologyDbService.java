@@ -46,7 +46,7 @@ public class MorphologyDbService {
 	public Long createForm(Form form, Long wordId) {
 
 		Long formId = create
-				.select(FORM.ID)
+				.selectDistinct(FORM.ID)
 				.from(FORM, PARADIGM_FORM, PARADIGM)
 				.where(
 						FORM.DISPLAY_LEVEL.eq(form.getDisplayLevel())
