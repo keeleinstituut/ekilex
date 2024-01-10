@@ -472,6 +472,7 @@ public class ConversionUtil implements GlobalConstant {
 		Map<Long, Definition> definitionMap = definitions.stream().collect(Collectors.toMap(Definition::getId, definition -> definition));
 		List<Long> handledSourceLinkIds = new ArrayList<>();
 		Map<Long, DefinitionNote> noteMap = new HashMap<>();
+		Map<Long, SourceLink> noteSourceLinkMap = new HashMap<>();
 
 		for (DefSourceAndNoteSourceTuple definitionData : definitionsDataTuples) {
 			Long definitionId = definitionData.getDefinitionId();
@@ -530,19 +531,23 @@ public class ConversionUtil implements GlobalConstant {
 					noteMap.put(noteId, note);
 				}
 				if (noteSourceLinkId != null) {
-					ReferenceType noteSourceLinkType = definitionData.getNoteSourceLinkType();
-					String noteSourceLinkName = definitionData.getNoteSourceLinkName();
-					String noteSourceLinkValue = definitionData.getNoteSourceLinkValue();
-					Long noteSourceId = definitionData.getNoteSourceId();
-					SourceLink noteSourceLink = new SourceLink();
-					noteSourceLink.setOwner(ReferenceOwner.FREEFORM);
-					noteSourceLink.setOwnerId(noteId);
-					noteSourceLink.setId(noteSourceLinkId);
-					noteSourceLink.setType(noteSourceLinkType);
-					noteSourceLink.setName(noteSourceLinkName);
-					noteSourceLink.setValue(noteSourceLinkValue);
-					noteSourceLink.setSourceId(noteSourceId);
-					note.getSourceLinks().add(noteSourceLink);
+					SourceLink noteSourceLink = noteSourceLinkMap.get(noteSourceLinkId);
+					if (noteSourceLink == null) {
+						ReferenceType noteSourceLinkType = definitionData.getNoteSourceLinkType();
+						String noteSourceLinkName = definitionData.getNoteSourceLinkName();
+						String noteSourceLinkValue = definitionData.getNoteSourceLinkValue();
+						Long noteSourceId = definitionData.getNoteSourceId();
+						noteSourceLink = new SourceLink();
+						noteSourceLink.setOwner(ReferenceOwner.FREEFORM);
+						noteSourceLink.setOwnerId(noteId);
+						noteSourceLink.setId(noteSourceLinkId);
+						noteSourceLink.setType(noteSourceLinkType);
+						noteSourceLink.setName(noteSourceLinkName);
+						noteSourceLink.setValue(noteSourceLinkValue);
+						noteSourceLink.setSourceId(noteSourceId);
+						note.getSourceLinks().add(noteSourceLink);
+						noteSourceLinkMap.put(noteSourceLinkId, noteSourceLink);
+					}
 				}
 			}
 		}
