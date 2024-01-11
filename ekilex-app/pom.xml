@@ -65,6 +65,12 @@
 				<spring.boot.mainclass>eki.ekilex.cli.MeaningForumImporter</spring.boot.mainclass>
 			</properties>
 		</profile>
+		<profile>
+			<id>wscor</id>
+			<properties>
+				<spring.boot.mainclass>eki.ekilex.cli.WordStressCorrector</spring.boot.mainclass>
+			</properties>
+		</profile>
 	</profiles>
 
 	<build>
