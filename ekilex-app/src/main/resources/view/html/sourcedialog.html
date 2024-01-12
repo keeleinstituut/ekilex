@@ -57,7 +57,7 @@
     </div>
   </div>
   <div th:id="${'editSourceDlg_' + source.id}" class="modal" role="dialog" th:fragment="edit_source_dlg">
-    <div class="modal-dialog modal-" role="document">
+    <div class="modal-dialog modal-lg" role="document">
       <div class="modal-content">
         <form th:action="@{/update_source}" method="post" data-plugin="editSourcePlugin">
           <div class="modal-body">
@@ -67,14 +67,17 @@
               <label class="col-12 col-form-label" th:text="#{source.type}">Tüüp</label>
               <div class="col-md-6">
                 <select required class="form-control required-field" name="type">
-                  <option th:each="type : ${sourceTypes}" th:value="${type}" th:text="#{|source.type.${type}|}" th:selected="${type == source.type}">value</option>
+                  <option th:each="type : ${sourceTypes}"
+                          th:value="${type}"
+                          th:text="#{|source.type.${type}|}"
+                          th:selected="${type == source.type}">value</option>
                 </select>
               </div>
             </div>
             <div class="form-group row m-4">
               <label class="col-12 col-form-label" th:text="#{source.name}">Lühike kuju</label>
               <div class="col-md-12">
-                <input class="form-control" name="name" th:value="${source.name}">
+                <input class="form-control required-field" name="name" th:value="${source.name}">
               </div>
             </div>
             <div class="form-group row m-4">

@@ -7,6 +7,7 @@ import static eki.ekilex.data.db.Tables.FREEFORM_SOURCE_LINK;
 import static eki.ekilex.data.db.Tables.LEXEME_FREEFORM;
 import static eki.ekilex.data.db.Tables.LEXEME_SOURCE_LINK;
 import static eki.ekilex.data.db.Tables.MEANING_FREEFORM;
+import static eki.ekilex.data.db.Tables.SOURCE;
 import static eki.ekilex.data.db.Tables.SOURCE_FREEFORM;
 import static eki.ekilex.data.db.Tables.WORD_FREEFORM;
 
@@ -97,10 +98,10 @@ public class SourceLinkDbService {
 						FREEFORM_SOURCE_LINK.ID,
 						FREEFORM_SOURCE_LINK.TYPE,
 						FREEFORM_SOURCE_LINK.NAME,
-						FREEFORM_SOURCE_LINK.VALUE,
-						FREEFORM_SOURCE_LINK.SOURCE_ID)
-				.from(FREEFORM_SOURCE_LINK)
-				.where(FREEFORM_SOURCE_LINK.ID.eq(sourceLinkId))
+						FREEFORM_SOURCE_LINK.SOURCE_ID,
+						SOURCE.NAME.as("source_name"))
+				.from(FREEFORM_SOURCE_LINK, SOURCE)
+				.where(FREEFORM_SOURCE_LINK.ID.eq(sourceLinkId).and(FREEFORM_SOURCE_LINK.SOURCE_ID.eq(SOURCE.ID)))
 				.fetchOneInto(SourceLink.class);
 	}
 
@@ -114,9 +115,10 @@ public class SourceLinkDbService {
 						DEFINITION_SOURCE_LINK.TYPE,
 						DEFINITION_SOURCE_LINK.NAME,
 						DEFINITION_SOURCE_LINK.VALUE,
-						DEFINITION_SOURCE_LINK.SOURCE_ID)
-				.from(DEFINITION_SOURCE_LINK)
-				.where(DEFINITION_SOURCE_LINK.ID.eq(sourceLinkId))
+						DEFINITION_SOURCE_LINK.SOURCE_ID,
+						SOURCE.NAME.as("source_name"))
+				.from(DEFINITION_SOURCE_LINK, SOURCE)
+				.where(DEFINITION_SOURCE_LINK.ID.eq(sourceLinkId).and(DEFINITION_SOURCE_LINK.SOURCE_ID.eq(SOURCE.ID)))
 				.fetchOneInto(SourceLink.class);
 	}
 
@@ -130,37 +132,34 @@ public class SourceLinkDbService {
 						LEXEME_SOURCE_LINK.TYPE,
 						LEXEME_SOURCE_LINK.NAME,
 						LEXEME_SOURCE_LINK.VALUE,
-						LEXEME_SOURCE_LINK.SOURCE_ID)
-				.from(LEXEME_SOURCE_LINK)
-				.where(LEXEME_SOURCE_LINK.ID.eq(sourceLinkId))
+						LEXEME_SOURCE_LINK.SOURCE_ID,
+						SOURCE.NAME.as("source_name"))
+				.from(LEXEME_SOURCE_LINK, SOURCE)
+				.where(LEXEME_SOURCE_LINK.ID.eq(sourceLinkId).and(LEXEME_SOURCE_LINK.SOURCE_ID.eq(SOURCE.ID)))
 				.fetchOneInto(SourceLink.class);
 	}
 
-	public Long createLexemeSourceLink(
-			Long lexemeId, Long sourceId, ReferenceType refType, String sourceLinkValue, String sourceLinkName) {
+	public Long createLexemeSourceLink(Long lexemeId, Long sourceId, ReferenceType refType, String sourceLinkName) {
 		return create
 				.insertInto(
 						LEXEME_SOURCE_LINK,
 						LEXEME_SOURCE_LINK.LEXEME_ID,
 						LEXEME_SOURCE_LINK.SOURCE_ID,
 						LEXEME_SOURCE_LINK.TYPE,
-						LEXEME_SOURCE_LINK.VALUE,
 						LEXEME_SOURCE_LINK.NAME)
 				.values(
 						lexemeId,
 						sourceId,
 						refType.name(),
-						sourceLinkValue,
 						sourceLinkName)
 				.returning(LEXEME_SOURCE_LINK.ID)
 				.fetchOne()
 				.getId();
 	}
 
-	public void updateLexemeSourceLink(Long sourceLinkId, String sourceLinkValue, String sourceLinkName) {
+	public void updateLexemeSourceLink(Long sourceLinkId, String sourceLinkName) {
 		create
 				.update(LEXEME_SOURCE_LINK)
-				.set(LEXEME_SOURCE_LINK.VALUE, sourceLinkValue)
 				.set(LEXEME_SOURCE_LINK.NAME, sourceLinkName)
 				.where(LEXEME_SOURCE_LINK.ID.eq(sourceLinkId))
 				.execute();
@@ -172,31 +171,27 @@ public class SourceLinkDbService {
 				.execute();
 	}
 
-	public Long createFreeformSourceLink(
-			Long freeformId, Long sourceId, ReferenceType refType, String sourceLinkValue, String sourceLinkName) {
+	public Long createFreeformSourceLink(Long freeformId, Long sourceId, ReferenceType refType, String sourceLinkName) {
 		return create
 				.insertInto(
 						FREEFORM_SOURCE_LINK,
 						FREEFORM_SOURCE_LINK.FREEFORM_ID,
 						FREEFORM_SOURCE_LINK.SOURCE_ID,
 						FREEFORM_SOURCE_LINK.TYPE,
-						FREEFORM_SOURCE_LINK.VALUE,
 						FREEFORM_SOURCE_LINK.NAME)
 				.values(
 						freeformId,
 						sourceId,
 						refType.name(),
-						sourceLinkValue,
 						sourceLinkName)
 				.returning(FREEFORM_SOURCE_LINK.ID)
 				.fetchOne()
 				.getId();
 	}
 
-	public void updateFreeformSourceLink(Long sourceLinkId, String sourceLinkValue, String sourceLinkName) {
+	public void updateFreeformSourceLink(Long sourceLinkId, String sourceLinkName) {
 		create
 				.update(FREEFORM_SOURCE_LINK)
-				.set(FREEFORM_SOURCE_LINK.VALUE, sourceLinkValue)
 				.set(FREEFORM_SOURCE_LINK.NAME, sourceLinkName)
 				.where(FREEFORM_SOURCE_LINK.ID.eq(sourceLinkId))
 				.execute();
@@ -208,31 +203,27 @@ public class SourceLinkDbService {
 				.execute();
 	}
 
-	public Long createDefinitionSourceLink(
-			Long definitionId, Long sourceId, ReferenceType refType, String sourceLinkValue, String sourceLinkName) {
+	public Long createDefinitionSourceLink(Long definitionId, Long sourceId, ReferenceType refType, String sourceLinkName) {
 		return create
 				.insertInto(
 						DEFINITION_SOURCE_LINK,
 						DEFINITION_SOURCE_LINK.DEFINITION_ID,
 						DEFINITION_SOURCE_LINK.SOURCE_ID,
 						DEFINITION_SOURCE_LINK.TYPE,
-						DEFINITION_SOURCE_LINK.VALUE,
 						DEFINITION_SOURCE_LINK.NAME)
 				.values(
 						definitionId,
 						sourceId,
 						refType.name(),
-						sourceLinkValue,
 						sourceLinkName)
 				.returning(DEFINITION_SOURCE_LINK.ID)
 				.fetchOne()
 				.getId();
 	}
 
-	public void updateDefinitionSourceLink(Long sourceLinkId, String sourceLinkValue, String sourceLinkName) {
+	public void updateDefinitionSourceLink(Long sourceLinkId, String sourceLinkName) {
 		create
 				.update(DEFINITION_SOURCE_LINK)
-				.set(DEFINITION_SOURCE_LINK.VALUE, sourceLinkValue)
 				.set(DEFINITION_SOURCE_LINK.NAME, sourceLinkName)
 				.where(DEFINITION_SOURCE_LINK.ID.eq(sourceLinkId))
 				.execute();

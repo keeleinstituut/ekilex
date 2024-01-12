@@ -127,13 +127,13 @@ public class EditController extends AbstractMutableDataPageController {
 			cudService.createLexemeGovernment(itemData.getId(), itemValue, itemData.getComplexity(), roleDatasetCode, isManualEventOnUpdateEnabled);
 			break;
 		case ContentKey.DEFINITION_SOURCE_LINK:
-			sourceLinkService.createDefinitionSourceLink(itemData.getId(), itemData.getId2(), itemData.getId3(), ReferenceType.ANY, itemValue, roleDatasetCode, isManualEventOnUpdateEnabled);
+			sourceLinkService.createDefinitionSourceLink(itemData.getId(), itemData.getId2(), ReferenceType.ANY, itemValue, roleDatasetCode, isManualEventOnUpdateEnabled);
 			break;
 		case ContentKey.LEXEME_SOURCE_LINK:
-			sourceLinkService.createLexemeSourceLink(itemData.getId(), itemData.getId2(), itemData.getId3(), ReferenceType.ANY, itemValue, roleDatasetCode, isManualEventOnUpdateEnabled);
+			sourceLinkService.createLexemeSourceLink(itemData.getId(), itemData.getId2(), ReferenceType.ANY, itemValue, roleDatasetCode, isManualEventOnUpdateEnabled);
 			break;
 		case ContentKey.FREEFORM_SOURCE_LINK:
-			sourceLinkService.createFreeformSourceLink(itemData.getId(), itemData.getId2(), itemData.getId3(), ReferenceType.ANY, itemValue, roleDatasetCode, isManualEventOnUpdateEnabled);
+			sourceLinkService.createFreeformSourceLink(itemData.getId(), itemData.getId2(), ReferenceType.ANY, itemValue, roleDatasetCode, isManualEventOnUpdateEnabled);
 			break;
 		case "lexeme_deriv":
 			cudService.createLexemeDeriv(itemData.getId(), itemValue, roleDatasetCode, isManualEventOnUpdateEnabled);
@@ -379,13 +379,13 @@ public class EditController extends AbstractMutableDataPageController {
 			cudService.updateOdWordRecommendation(itemId, itemValue, roleDatasetCode, isManualEventOnUpdateEnabled);
 			break;
 		case ContentKey.FREEFORM_SOURCE_LINK:
-			sourceLinkService.updateFreeformSourceLink(itemId, itemData.getId2(), itemValue, roleDatasetCode, isManualEventOnUpdateEnabled);
+			sourceLinkService.updateFreeformSourceLink(itemId, itemValue, roleDatasetCode, isManualEventOnUpdateEnabled);
 			break;
 		case ContentKey.LEXEME_SOURCE_LINK:
-			sourceLinkService.updateLexemeSourceLink(itemId, itemData.getId2(), itemValue, roleDatasetCode, isManualEventOnUpdateEnabled);
+			sourceLinkService.updateLexemeSourceLink(itemId, itemValue, roleDatasetCode, isManualEventOnUpdateEnabled);
 			break;
 		case ContentKey.DEFINITION_SOURCE_LINK:
-			sourceLinkService.updateDefinitionSourceLink(itemId, itemData.getId2(), itemValue, roleDatasetCode, isManualEventOnUpdateEnabled);
+			sourceLinkService.updateDefinitionSourceLink(itemId, itemValue, roleDatasetCode, isManualEventOnUpdateEnabled);
 			break;
 		}
 		return response;

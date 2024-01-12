@@ -18,9 +18,9 @@ public class SourceLink extends AbstractDataObject {
 
 	private String name;
 
-	private String value;
-
 	private Long sourceId;
+
+	private String sourceName;
 
 	public ReferenceOwner getOwner() {
 		return owner;
@@ -62,14 +62,6 @@ public class SourceLink extends AbstractDataObject {
 		this.name = name;
 	}
 
-	public String getValue() {
-		return value;
-	}
-
-	public void setValue(String value) {
-		this.value = value;
-	}
-
 	public Long getSourceId() {
 		return sourceId;
 	}
@@ -78,4 +70,11 @@ public class SourceLink extends AbstractDataObject {
 		this.sourceId = sourceId;
 	}
 
+	public String getSourceName() {
+		return sourceName;
+	}
+
+	public void setSourceName(String sourceName) {
+		this.sourceName = sourceName;
+	}
 }

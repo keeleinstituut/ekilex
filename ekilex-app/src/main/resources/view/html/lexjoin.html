@@ -119,9 +119,9 @@
             <span th:if="${usage.typeValue != null}" th:text="'(' + ${usage.typeValue + ')'}"></span>
             <span th:if="${not #lists.isEmpty(usage.sourceLinks)}">
               [
-              <span th:each="sourceLink,sourceLinkIter : ${usage.sourceLinks}" th:if="${sourceLink.value != null}">
+              <span th:each="sourceLink,sourceLinkIter : ${usage.sourceLinks}" th:if="${sourceLink.sourceName != null}">
                 <span th:text="${sourceLink.name}" th:if="${sourceLink.name != null}"></span>
-                <span th:text="${sourceLink.value}"></span>
+                <span th:text="${sourceLink.sourceName}"></span>
                 <span th:unless="${sourceLinkIter.last}">, </span>
               </span>
               ]

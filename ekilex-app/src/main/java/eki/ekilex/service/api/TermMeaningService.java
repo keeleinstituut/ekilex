@@ -200,16 +200,14 @@ public class TermMeaningService extends AbstractApiCudService implements Activit
 							for (SourceLink lexemeNoteSourceLink : lexemeNoteSourceLinks) {
 								Long sourceLinkId = lexemeNoteSourceLink.getSourceLinkId();
 								Long sourceId = lexemeNoteSourceLink.getSourceId();
-								String sourceLinkValue = lexemeNoteSourceLink.getValue();
-								String sourceLinkName = lexemeNoteSourceLink.getName();
+								String sourceLinkName = lexemeNoteSourceLink.getSourceLinkName();
 								if (sourceLinkId == null) {
 									createFreeformSourceLink(
-											lexemeNoteId, sourceId, sourceLinkValue, sourceLinkName, DEFAULT_SOURCE_LINK_REF_TYPE, ActivityOwner.LEXEME,
-											lexemeId, ActivityEntity.LEXEME_NOTE_SOURCE_LINK, roleDatasetCode);
+											lexemeNoteId, sourceId, sourceLinkName, DEFAULT_SOURCE_LINK_REF_TYPE, ActivityOwner.LEXEME, lexemeId,
+											ActivityEntity.LEXEME_NOTE_SOURCE_LINK, roleDatasetCode);
 								} else {
 									updateFreeformSourceLink(
-											sourceLinkId, sourceLinkValue, sourceLinkName, ActivityOwner.LEXEME, lexemeId,
-											ActivityEntity.LEXEME_NOTE_SOURCE_LINK, roleDatasetCode);
+											sourceLinkId, sourceLinkName, ActivityOwner.LEXEME, lexemeId, ActivityEntity.LEXEME_NOTE_SOURCE_LINK, roleDatasetCode);
 								}
 							}
 						}
@@ -241,12 +239,11 @@ public class TermMeaningService extends AbstractApiCudService implements Activit
 					for (SourceLink lexemeSourceLink : lexemeSourceLinks) {
 						Long sourceLinkId = lexemeSourceLink.getSourceLinkId();
 						Long sourceId = lexemeSourceLink.getSourceId();
-						String sourceLinkValue = lexemeSourceLink.getValue();
-						String sourceLinkName = lexemeSourceLink.getName();
+						String sourceLinkName = lexemeSourceLink.getSourceLinkName();
 						if (sourceLinkId == null) {
-							createLexemeSourceLink(lexemeId, sourceId, sourceLinkValue, sourceLinkName, roleDatasetCode);
+							createLexemeSourceLink(lexemeId, sourceId, sourceLinkName, roleDatasetCode);
 						} else {
-							updateLexemeSourceLink(sourceLinkId, lexemeId, sourceLinkValue, sourceLinkName, roleDatasetCode);
+							updateLexemeSourceLink(sourceLinkId, lexemeId, sourceLinkName, roleDatasetCode);
 						}
 					}
 				}
@@ -305,16 +302,14 @@ public class TermMeaningService extends AbstractApiCudService implements Activit
 					for (SourceLink meaningNoteSourceLink : meaningNoteSourceLinks) {
 						Long sourceLinkId = meaningNoteSourceLink.getSourceLinkId();
 						Long sourceId = meaningNoteSourceLink.getSourceId();
-						String sourceLinkValue = meaningNoteSourceLink.getValue();
-						String sourceLinkName = meaningNoteSourceLink.getName();
+						String sourceLinkName = meaningNoteSourceLink.getSourceLinkName();
 						if (sourceLinkId == null) {
 							createFreeformSourceLink(
-									meaningNoteId, sourceId, sourceLinkValue, sourceLinkName, DEFAULT_SOURCE_LINK_REF_TYPE, ActivityOwner.MEANING, meaningId,
+									meaningNoteId, sourceId, sourceLinkName, DEFAULT_SOURCE_LINK_REF_TYPE, ActivityOwner.MEANING, meaningId,
 									ActivityEntity.MEANING_NOTE_SOURCE_LINK, roleDatasetCode);
 						} else {
 							updateFreeformSourceLink(
-									sourceLinkId, sourceLinkValue, sourceLinkName, ActivityOwner.MEANING, meaningId,
-									ActivityEntity.MEANING_NOTE_SOURCE_LINK, roleDatasetCode);
+									sourceLinkId, sourceLinkName, ActivityOwner.MEANING, meaningId, ActivityEntity.MEANING_NOTE_SOURCE_LINK, roleDatasetCode);
 						}
 					}
 				}
@@ -390,17 +385,17 @@ public class TermMeaningService extends AbstractApiCudService implements Activit
 		return meaningId;
 	}
 
-	private void createLexemeSourceLink(Long lexemeId, Long sourceId, String sourceLinkValue, String sourceLinkName, String roleDatasetCode) throws Exception {
+	private void createLexemeSourceLink(Long lexemeId, Long sourceId, String sourceLinkName, String roleDatasetCode) throws Exception {
 
 		ActivityLogData activityLog = activityLogService.prepareActivityLog("createLexemeSourceLink", lexemeId, ActivityOwner.LEXEME, roleDatasetCode, MANUAL_EVENT_ON_UPDATE_ENABLED);
-		Long sourceLinkId = sourceLinkDbService.createLexemeSourceLink(lexemeId, sourceId, DEFAULT_SOURCE_LINK_REF_TYPE, sourceLinkValue, sourceLinkName);
+		Long sourceLinkId = sourceLinkDbService.createLexemeSourceLink(lexemeId, sourceId, DEFAULT_SOURCE_LINK_REF_TYPE, sourceLinkName);
 		activityLogService.createActivityLog(activityLog, sourceLinkId, ActivityEntity.LEXEME_SOURCE_LINK);
 	}
 
-	private void updateLexemeSourceLink(Long sourceLinkId, Long lexemeId, String sourceLinkValue, String sourceLinkName, String roleDatasetCode) throws Exception {
+	private void updateLexemeSourceLink(Long sourceLinkId, Long lexemeId, String sourceLinkName, String roleDatasetCode) throws Exception {
 
 		ActivityLogData activityLog = activityLogService.prepareActivityLog("updateLexemeSourceLink", lexemeId, ActivityOwner.LEXEME, roleDatasetCode, MANUAL_EVENT_ON_UPDATE_ENABLED);
-		sourceLinkDbService.updateLexemeSourceLink(sourceLinkId, sourceLinkValue, sourceLinkName);
+		sourceLinkDbService.updateLexemeSourceLink(sourceLinkId, sourceLinkName);
 		activityLogService.createActivityLog(activityLog, sourceLinkId, ActivityEntity.LEXEME_SOURCE_LINK);
 	}
 

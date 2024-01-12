@@ -40,7 +40,9 @@ public class UsageTranslationDefinitionTuple extends AbstractDataObject {
 
 	private String usageSourceLinkName;
 
-	private String usageSourceLinkValue;
+	private Long usageSourceId;
+
+	private String usageSourceName;
 
 	private boolean isUsagePublic;
 
@@ -172,12 +174,20 @@ public class UsageTranslationDefinitionTuple extends AbstractDataObject {
 		this.usageSourceLinkName = usageSourceLinkName;
 	}
 
-	public String getUsageSourceLinkValue() {
-		return usageSourceLinkValue;
+	public Long getUsageSourceId() {
+		return usageSourceId;
 	}
 
-	public void setUsageSourceLinkValue(String usageSourceLinkValue) {
-		this.usageSourceLinkValue = usageSourceLinkValue;
+	public void setUsageSourceId(Long usageSourceId) {
+		this.usageSourceId = usageSourceId;
+	}
+
+	public String getUsageSourceName() {
+		return usageSourceName;
+	}
+
+	public void setUsageSourceName(String usageSourceName) {
+		this.usageSourceName = usageSourceName;
 	}
 
 	public boolean isUsagePublic() {

@@ -22,7 +22,9 @@ public class WordEtymTuple extends AbstractDataObject {
 
 	private ReferenceType wordEtymSourceLinkType;
 
-	private String wordEtymSourceLinkValue;
+	private Long wordEtymSourceId;
+
+	private String wordEtymSourceName;
 
 	private Long wordEtymRelId;
 
@@ -94,12 +96,20 @@ public class WordEtymTuple extends AbstractDataObject {
 		this.wordEtymSourceLinkType = wordEtymSourceLinkType;
 	}
 
-	public String getWordEtymSourceLinkValue() {
-		return wordEtymSourceLinkValue;
+	public Long getWordEtymSourceId() {
+		return wordEtymSourceId;
 	}
 
-	public void setWordEtymSourceLinkValue(String wordEtymSourceLinkValue) {
-		this.wordEtymSourceLinkValue = wordEtymSourceLinkValue;
+	public void setWordEtymSourceId(Long wordEtymSourceId) {
+		this.wordEtymSourceId = wordEtymSourceId;
+	}
+
+	public String getWordEtymSourceName() {
+		return wordEtymSourceName;
+	}
+
+	public void setWordEtymSourceName(String wordEtymSourceName) {
+		this.wordEtymSourceName = wordEtymSourceName;
 	}
 
 	public Long getWordEtymRelId() {
@@ -157,5 +167,4 @@ public class WordEtymTuple extends AbstractDataObject {
 	public void setRelatedWordLang(String relatedWordLang) {
 		this.relatedWordLang = relatedWordLang;
 	}
-
 }

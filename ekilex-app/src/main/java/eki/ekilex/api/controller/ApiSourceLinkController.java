@@ -32,12 +32,9 @@ public class ApiSourceLinkController extends AbstractApiController {
 			@RequestBody SourceLink sourceLink) {
 
 		try {
-			String name = sourceLink.getName();
-			name = valueUtil.trimAndCleanAndRemoveHtmlAndLimit(name);
-			sourceLink.setName(name);
-			String value = sourceLink.getValue();
-			value = valueUtil.trimAndCleanAndRemoveHtmlAndLimit(value);
-			sourceLink.setValue(value);
+			String sourceLinkName = sourceLink.getName();
+			sourceLinkName = valueUtil.trimAndCleanAndRemoveHtmlAndLimit(sourceLinkName);
+			sourceLink.setName(sourceLinkName);
 			Long sourceLinkId = sourceLinkService.createSourceLink(sourceLink, crudRoleDataset, MANUAL_EVENT_ON_UPDATE_ENABLED);
 			if (sourceLinkId == null) {
 				return getOpFailResponse("Invalid or unsupported source link composition");

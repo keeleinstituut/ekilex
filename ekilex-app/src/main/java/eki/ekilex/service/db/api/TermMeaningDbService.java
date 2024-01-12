@@ -15,6 +15,7 @@ import static eki.ekilex.data.db.Tables.MEANING_DOMAIN;
 import static eki.ekilex.data.db.Tables.MEANING_FORUM;
 import static eki.ekilex.data.db.Tables.MEANING_FREEFORM;
 import static eki.ekilex.data.db.Tables.MEANING_TAG;
+import static eki.ekilex.data.db.Tables.SOURCE;
 import static eki.ekilex.data.db.Tables.WORD;
 import static eki.ekilex.data.db.Tables.WORD_WORD_TYPE;
 
@@ -45,6 +46,7 @@ import eki.ekilex.data.db.tables.MeaningDomain;
 import eki.ekilex.data.db.tables.MeaningForum;
 import eki.ekilex.data.db.tables.MeaningFreeform;
 import eki.ekilex.data.db.tables.MeaningTag;
+import eki.ekilex.data.db.tables.Source;
 import eki.ekilex.data.db.tables.Word;
 import eki.ekilex.data.db.tables.WordWordType;
 
@@ -77,19 +79,22 @@ public class TermMeaningDbService implements ActivityFunct {
 		FreeformSourceLink ffsl = FREEFORM_SOURCE_LINK.as("ffsl");
 		ActivityLog fceal = ACTIVITY_LOG.as("fceal");
 		ActivityLog meal = ACTIVITY_LOG.as("meal");
+		Source s = SOURCE.as("s");
 
 		Field<JSON> ffslf = DSL
 				.select(DSL
 						.jsonArrayAgg(DSL
 								.jsonObject(
 										DSL.key("sourceLinkId").value(ffsl.ID),
-										DSL.key("sourceId").value(ffsl.SOURCE_ID),
-										DSL.key("value").value(ffsl.VALUE),
-										DSL.key("name").value(ffsl.NAME),
+										DSL.key("sourceId").value(s.ID),
+										DSL.key("sourceName").value(s.NAME),
+										DSL.key("sourceLinkName").value(ffsl.NAME),
 										DSL.key("type").value(ffsl.TYPE)))
 						.orderBy(ffsl.ORDER_BY))
-				.from(ffsl)
-				.where(ffsl.FREEFORM_ID.eq(ff.ID))
+				.from(ffsl, s)
+				.where(
+						ffsl.FREEFORM_ID.eq(ff.ID)
+								.and(ffsl.SOURCE_ID.eq(s.ID)))
 				.asField();
 
 		Field<JSON> dslf = DSL
@@ -97,13 +102,15 @@ public class TermMeaningDbService implements ActivityFunct {
 						.jsonArrayAgg(DSL
 								.jsonObject(
 										DSL.key("sourceLinkId").value(dsl.ID),
-										DSL.key("sourceId").value(dsl.SOURCE_ID),
-										DSL.key("value").value(dsl.VALUE),
-										DSL.key("name").value(dsl.NAME),
+										DSL.key("sourceId").value(s.ID),
+										DSL.key("sourceName").value(s.NAME),
+										DSL.key("sourceLinkName").value(dsl.NAME),
 										DSL.key("type").value(dsl.TYPE)))
 						.orderBy(dsl.ORDER_BY))
-				.from(dsl)
-				.where(dsl.DEFINITION_ID.eq(d.ID))
+				.from(dsl, s)
+				.where(
+						dsl.DEFINITION_ID.eq(d.ID)
+								.and(dsl.SOURCE_ID.eq(s.ID)))
 				.asField();
 
 		Field<JSON> lslf = DSL
@@ -111,13 +118,15 @@ public class TermMeaningDbService implements ActivityFunct {
 						.jsonArrayAgg(DSL
 								.jsonObject(
 										DSL.key("sourceLinkId").value(lsl.ID),
-										DSL.key("sourceId").value(lsl.SOURCE_ID),
-										DSL.key("value").value(lsl.VALUE),
-										DSL.key("name").value(lsl.NAME),
+										DSL.key("sourceId").value(s.ID),
+										DSL.key("sourceName").value(s.NAME),
+										DSL.key("sourceLinkName").value(lsl.NAME),
 										DSL.key("type").value(lsl.TYPE)))
 						.orderBy(lsl.ORDER_BY))
-				.from(lsl)
-				.where(lsl.LEXEME_ID.eq(l.ID))
+				.from(lsl, s)
+				.where(
+						lsl.LEXEME_ID.eq(l.ID)
+								.and(lsl.SOURCE_ID.eq(s.ID)))
 				.asField();
 
 		Field<JSON> df = DSL

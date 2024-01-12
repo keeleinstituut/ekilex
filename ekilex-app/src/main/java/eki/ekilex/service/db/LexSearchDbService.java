@@ -16,6 +16,7 @@ import static eki.ekilex.data.db.Tables.MORPH_FREQ;
 import static eki.ekilex.data.db.Tables.MORPH_LABEL;
 import static eki.ekilex.data.db.Tables.PARADIGM;
 import static eki.ekilex.data.db.Tables.PARADIGM_FORM;
+import static eki.ekilex.data.db.Tables.SOURCE;
 import static eki.ekilex.data.db.Tables.VALUE_STATE_LABEL;
 import static eki.ekilex.data.db.Tables.WORD;
 import static eki.ekilex.data.db.Tables.WORD_ETYMOLOGY;
@@ -66,6 +67,7 @@ import eki.ekilex.data.db.tables.MorphFreq;
 import eki.ekilex.data.db.tables.MorphLabel;
 import eki.ekilex.data.db.tables.Paradigm;
 import eki.ekilex.data.db.tables.ParadigmForm;
+import eki.ekilex.data.db.tables.Source;
 import eki.ekilex.data.db.tables.Word;
 import eki.ekilex.data.db.tables.WordEtymology;
 import eki.ekilex.data.db.tables.WordEtymologyRelation;
@@ -491,6 +493,7 @@ public class LexSearchDbService extends AbstractDataDbService {
 		WordEtymologySourceLink wesl = WORD_ETYMOLOGY_SOURCE_LINK.as("wesl");
 		WordEtymologyRelation wer = WORD_ETYMOLOGY_RELATION.as("wer");
 		Word w2 = WORD.as("w2");
+		Source s = SOURCE.as("s");
 
 		return create
 				.select(
@@ -501,7 +504,8 @@ public class LexSearchDbService extends AbstractDataDbService {
 						we.IS_QUESTIONABLE.as("word_etym_questionable"),
 						wesl.ID.as("word_etym_source_link_id"),
 						wesl.TYPE.as("word_etym_source_link_type"),
-						wesl.VALUE.as("word_etym_source_link_value"),
+						s.ID.as("word_etym_source_id"),
+						s.NAME.as("word_etym_source_name"),
 						wer.ID.as("word_etym_rel_id"),
 						wer.COMMENT_PRESE.as("word_etym_rel_comment"),
 						wer.IS_QUESTIONABLE.as("word_etym_rel_questionable"),
@@ -511,6 +515,7 @@ public class LexSearchDbService extends AbstractDataDbService {
 						w2.LANG.as("related_word_lang"))
 				.from(we
 						.leftOuterJoin(wesl).on(wesl.WORD_ETYM_ID.eq(we.ID))
+						.leftOuterJoin(s).on(wesl.SOURCE_ID.eq(s.ID))
 						.leftOuterJoin(wer).on(wer.WORD_ETYM_ID.eq(we.ID))
 						.leftOuterJoin(w2).on(w2.ID.eq(wer.RELATED_WORD_ID))
 						)

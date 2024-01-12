@@ -467,7 +467,7 @@
                 <div th:replace="termdialog :: edit_definition_source_link_dlg"></div>
                 <span>
                   [
-                  <a th:href="@{'/def_source_link:' + ${sourceLink.id}}" th:text="${sourceLink.value}"></a>
+                  <a th:href="@{'/def_source_link:' + ${sourceLink.id}}" th:text="${sourceLink.sourceName}"></a>
                   <span th:if="${sourceLink.name != null}" th:text="${sourceLink.name}"></span>
                   <button type="button" class="btn badge badge-primary"
                           th:title="#{common.edit}"
@@ -546,7 +546,7 @@
                       <div th:replace="termdialog :: edit_freeform_source_link_dlg"></div>
                       <span>
                         [
-                        <a th:href="@{'/ff_source_link:' + ${sourceLink.id}}" th:text="${sourceLink.value}"></a>
+                        <a th:href="@{'/ff_source_link:' + ${sourceLink.id}}" th:text="${sourceLink.sourceName}"></a>
                         <span th:if="${sourceLink.name != null}">
                           <span th:text="${sourceLink.name}"></span>
                         </span>
@@ -656,7 +656,7 @@
                 <div th:replace="termdialog :: edit_freeform_source_link_dlg"></div>
                 <span>
                   [
-                  <a th:href="@{'/ff_source_link:' + ${sourceLink.id}}" th:text="${sourceLink.value}"></a>
+                  <a th:href="@{'/ff_source_link:' + ${sourceLink.id}}" th:text="${sourceLink.sourceName}"></a>
                   <span th:if="${sourceLink.name != null}">
                     <span th:text="${sourceLink.name}"></span>
                   </span>
@@ -758,7 +758,7 @@
                 <div th:replace="termdialog :: edit_freeform_source_link_dlg"></div>
                 <span>
                   [
-                  <a th:href="@{'/ff_source_link:' + ${sourceLink.id}}" th:text="${sourceLink.value}"></a>
+                  <a th:href="@{'/ff_source_link:' + ${sourceLink.id}}" th:text="${sourceLink.sourceName}"></a>
                   <span th:if="${sourceLink.name != null}">
                     <span th:text="${sourceLink.name}"></span>
                   </span>
@@ -853,7 +853,7 @@
             <div th:replace="termdialog :: edit_freeform_source_link_dlg"></div>
             <span>
               [
-              <a th:href="@{'/ff_source_link:' + ${sourceLink.id}}" th:text="${sourceLink.value}"></a>
+              <a th:href="@{'/ff_source_link:' + ${sourceLink.id}}" th:text="${sourceLink.sourceName}"></a>
               <span th:if="${sourceLink.name != null}">
                 <span th:text="${sourceLink.name}"></span>
               </span>
@@ -913,7 +913,7 @@
               <div th:replace="termdialog :: edit_freeform_source_link_dlg"></div>
               <span>
                 [
-                <a th:href="@{'/ff_source_link:' + ${sourceLink.id}}" th:text="${sourceLink.value}"></a>
+                <a th:href="@{'/ff_source_link:' + ${sourceLink.id}}" th:text="${sourceLink.sourceName}"></a>
                 <span th:if="${sourceLink.name != null}">
                   <span th:text="${sourceLink.name}"></span>
                 </span>
@@ -1411,7 +1411,7 @@
         <div th:replace="termdialog :: edit_lexeme_source_link_dlg"></div>
         <span>
           [
-          <a th:href="@{'/lex_source_link:' + ${sourceLink.id}}" th:text="${sourceLink.value}"></a>
+          <a th:href="@{'/lex_source_link:' + ${sourceLink.id}}" th:text="${sourceLink.sourceName}"></a>
           <span th:if="${sourceLink.name != null}">
             <span th:text="${sourceLink.name}"></span>
           </span>
@@ -1490,7 +1490,7 @@
             <div th:replace="termdialog :: edit_freeform_source_link_dlg"></div>
             <span>
               [
-              <a th:href="@{'/ff_source_link:' + ${sourceLink.id}}" th:text="${sourceLink.value}"></a>
+              <a th:href="@{'/ff_source_link:' + ${sourceLink.id}}" th:text="${sourceLink.sourceName}"></a>
               <span th:text="${sourceLink.name}" th:if="${sourceLink.name != null}"></span>
               <button type="button" class="btn badge badge-primary"
                       th:title="#{common.edit}"
@@ -1634,7 +1634,7 @@
                 <div th:replace="termdialog :: edit_freeform_source_link_dlg"></div>
                 <span>
                   [
-                  <a th:href="@{'/ff_source_link:' + ${sourceLink.id}}" th:text="${sourceLink.value}"></a>
+                  <a th:href="@{'/ff_source_link:' + ${sourceLink.id}}" th:text="${sourceLink.sourceName}"></a>
                   <span th:if="${sourceLink.name != null}">
                     <span th:text="${sourceLink.name}"></span>
                   </span>

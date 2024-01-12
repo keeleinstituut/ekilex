@@ -125,8 +125,7 @@ public class SynCandidateService extends AbstractCudService implements GlobalCon
 				if (CollectionUtils.isNotEmpty(usageSourceLinks)) {
 					for (SourceLink usageSourceLink : usageSourceLinks) {
 						Long sourceId = usageSourceLink.getSourceId();
-						String sourceLinkValue = usageSourceLink.getValue();
-						createUsageSourceLink(usageId, sourceId, synCandidateLexemeId, sourceLinkValue, roleDatasetCode);
+						createUsageSourceLink(usageId, sourceId, synCandidateLexemeId, roleDatasetCode);
 					}
 				}
 			}
@@ -141,8 +140,7 @@ public class SynCandidateService extends AbstractCudService implements GlobalCon
 				if (CollectionUtils.isNotEmpty(definitionSourceLinks)) {
 					for (SourceLink definitionSourceLink : definitionSourceLinks) {
 						Long sourceId = definitionSourceLink.getSourceId();
-						String sourceLinkValue = definitionSourceLink.getValue();
-						createDefinitionSourceLink(definitionId, sourceId, synCandidateMeaningId, sourceLinkValue, roleDatasetCode);
+						createDefinitionSourceLink(definitionId, sourceId, synCandidateMeaningId, roleDatasetCode);
 					}
 				}
 			}
@@ -180,21 +178,21 @@ public class SynCandidateService extends AbstractCudService implements GlobalCon
 		cudDbService.createWordRelationParam(createdRelationId, WORD_RELATION_PARAM_NAME_SYN_CANDIDATE, weight);
 	}
 
-	private void createUsageSourceLink(Long usageId, Long sourceId, Long lexemeId, String sourceLinkValue, String roleDatasetCode) throws Exception {
+	private void createUsageSourceLink(Long usageId, Long sourceId, Long lexemeId, String roleDatasetCode) throws Exception {
 
 		ActivityLogData activityLog = activityLogService.prepareActivityLog("createUsageSourceLink", lexemeId, ActivityOwner.LEXEME, roleDatasetCode, MANUAL_EVENT_ON_UPDATE_DISABLED);
 		ReferenceType refType = ReferenceType.ANY;
 		String sourceLinkName = null;
-		Long sourceLinkId = sourceLinkDbService.createFreeformSourceLink(usageId, sourceId, refType, sourceLinkValue, sourceLinkName);
+		Long sourceLinkId = sourceLinkDbService.createFreeformSourceLink(usageId, sourceId, refType, sourceLinkName);
 		activityLogService.createActivityLog(activityLog, sourceLinkId, ActivityEntity.USAGE_SOURCE_LINK);
 	}
 
-	private void createDefinitionSourceLink(Long definitionId, Long sourceId, Long meaningId, String sourceLinkValue, String roleDatasetCode) throws Exception {
+	private void createDefinitionSourceLink(Long definitionId, Long sourceId, Long meaningId, String roleDatasetCode) throws Exception {
 
 		ActivityLogData activityLog = activityLogService.prepareActivityLog("createDefinitionSourceLink", meaningId, ActivityOwner.MEANING, roleDatasetCode, MANUAL_EVENT_ON_UPDATE_DISABLED);
 		ReferenceType refType = ReferenceType.ANY;
 		String sourceLinkName = null;
-		Long sourceLinkId = sourceLinkDbService.createDefinitionSourceLink(definitionId, sourceId, refType, sourceLinkValue, sourceLinkName);
+		Long sourceLinkId = sourceLinkDbService.createDefinitionSourceLink(definitionId, sourceId, refType, sourceLinkName);
 		activityLogService.createActivityLog(activityLog, sourceLinkId, ActivityEntity.DEFINITION_SOURCE_LINK);
 	}
 }

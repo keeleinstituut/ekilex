@@ -16,9 +16,9 @@ public class DefSourceAndNoteSourceTuple extends AbstractDataObject {
 
 	private String definitionSourceLinkName;
 
-	private String definitionSourceLinkValue;
-
 	private Long definitionSourceId;
+
+	private String definitionSourceName;
 
 	private Long noteId;
 
@@ -40,9 +40,9 @@ public class DefSourceAndNoteSourceTuple extends AbstractDataObject {
 
 	private String noteSourceLinkName;
 
-	private String noteSourceLinkValue;
-
 	private Long noteSourceId;
+
+	private String noteSourceName;
 
 	public Long getDefinitionId() {
 		return definitionId;
@@ -76,20 +76,20 @@ public class DefSourceAndNoteSourceTuple extends AbstractDataObject {
 		this.definitionSourceLinkName = definitionSourceLinkName;
 	}
 
-	public String getDefinitionSourceLinkValue() {
-		return definitionSourceLinkValue;
-	}
-
-	public void setDefinitionSourceLinkValue(String definitionSourceLinkValue) {
-		this.definitionSourceLinkValue = definitionSourceLinkValue;
-	}
-
 	public Long getDefinitionSourceId() {
 		return definitionSourceId;
 	}
 
 	public void setDefinitionSourceId(Long definitionSourceId) {
 		this.definitionSourceId = definitionSourceId;
+	}
+
+	public String getDefinitionSourceName() {
+		return definitionSourceName;
+	}
+
+	public void setDefinitionSourceName(String definitionSourceName) {
+		this.definitionSourceName = definitionSourceName;
 	}
 
 	public Long getNoteId() {
@@ -172,14 +172,6 @@ public class DefSourceAndNoteSourceTuple extends AbstractDataObject {
 		this.noteSourceLinkName = noteSourceLinkName;
 	}
 
-	public String getNoteSourceLinkValue() {
-		return noteSourceLinkValue;
-	}
-
-	public void setNoteSourceLinkValue(String noteSourceLinkValue) {
-		this.noteSourceLinkValue = noteSourceLinkValue;
-	}
-
 	public Long getNoteSourceId() {
 		return noteSourceId;
 	}
@@ -188,4 +180,11 @@ public class DefSourceAndNoteSourceTuple extends AbstractDataObject {
 		this.noteSourceId = noteSourceId;
 	}
 
+	public String getNoteSourceName() {
+		return noteSourceName;
+	}
+
+	public void setNoteSourceName(String noteSourceName) {
+		this.noteSourceName = noteSourceName;
+	}
 }

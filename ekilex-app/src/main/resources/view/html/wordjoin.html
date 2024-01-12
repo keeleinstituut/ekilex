@@ -165,7 +165,7 @@
               <span th:if="${wordEtym.etymologyYear != null}" th:text="${wordEtym.etymologyYear}"></span>
             </div>
             <div th:each="wordEtymSourceLink : ${wordEtym.wordEtymSourceLinks}">
-              <span th:text="${wordEtymSourceLink.value}"></span>
+              <span th:text="${wordEtymSourceLink.sourceName}"></span>
             </div>
             <div th:each="wordEtymRel : ${wordEtym.wordEtymRelations}">
               <span class="btn-link">

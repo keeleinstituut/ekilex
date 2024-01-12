@@ -45,7 +45,7 @@
       <span th:utext="${definition.value}"></span>
       <span th:each="sourceLink : ${definition.sourceLinks}">
         [
-        <a th:href="@{'/def_source_link:' + ${sourceLink.id}}" th:text="${sourceLink.value}"></a>
+        <a th:href="@{'/def_source_link:' + ${sourceLink.id}}" th:text="${sourceLink.sourceName}"></a>
         <span th:if="${sourceLink.name != null}" th:text="${sourceLink.name}"></span>
         ]
       </span>
@@ -57,7 +57,7 @@
         <span th:utext="${usage.value}"></span>
         <span th:each="sourceLink : ${usage.sourceLinks}">
           [
-          <a th:href="@{'/ff_source_link:' + ${sourceLink.id}}" th:text="${sourceLink.value}"></a>
+          <a th:href="@{'/ff_source_link:' + ${sourceLink.id}}" th:text="${sourceLink.sourceName}"></a>
           <span th:text="${sourceLink.name}" th:if="${sourceLink.name != null}"></span>
           ]
         </span>

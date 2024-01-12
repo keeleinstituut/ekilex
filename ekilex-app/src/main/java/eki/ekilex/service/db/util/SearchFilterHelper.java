@@ -1148,6 +1148,7 @@ public class SearchFilterHelper implements GlobalConstant, ActivityFunct {
 		if (CollectionUtils.isEmpty(existsCriteria)) {
 			for (SearchCriterion criterion : filteredCriteria) {
 				String searchValueStr = criterion.getSearchValue().toString();
+				// TODO use source.name
 				sourceCondition = applyValueFilter(searchValueStr, criterion.isNot(), criterion.getSearchOperand(), lsl.VALUE, sourceCondition, true);
 			}
 			where = where.and(DSL.exists(DSL.select(lsl.ID).from(lsl).where(sourceCondition)));
@@ -1565,6 +1566,7 @@ public class SearchFilterHelper implements GlobalConstant, ActivityFunct {
 		if (CollectionUtils.isEmpty(existsCriteria)) {
 			for (SearchCriterion criterion : filteredCriteria) {
 				String searchValueStr = criterion.getSearchValue().toString();
+				// TODO use source.name
 				sourceCondition = applyValueFilter(searchValueStr, criterion.isNot(), criterion.getSearchOperand(), ffsl.VALUE, sourceCondition, true);
 			}
 			where = where.and(DSL.exists(DSL.select(ffsl.ID).from(ffsl).where(sourceCondition)));
@@ -1621,6 +1623,7 @@ public class SearchFilterHelper implements GlobalConstant, ActivityFunct {
 		if (CollectionUtils.isEmpty(existsCriteria)) {
 			for (SearchCriterion criterion : filteredCriteria) {
 				String searchValueStr = criterion.getSearchValue().toString();
+				// TODO use source.name
 				sourceCondition = applyValueFilter(searchValueStr, criterion.isNot(), criterion.getSearchOperand(), dsl.VALUE, sourceCondition, true);
 			}
 			where = where.and(DSL.exists(DSL.select(dsl.ID).from(dsl).where(sourceCondition)));

@@ -10,6 +10,7 @@ import static eki.ekilex.data.db.Tables.LEXEME;
 import static eki.ekilex.data.db.Tables.LEXEME_FREEFORM;
 import static eki.ekilex.data.db.Tables.MEANING;
 import static eki.ekilex.data.db.Tables.PARADIGM;
+import static eki.ekilex.data.db.Tables.SOURCE;
 import static eki.ekilex.data.db.Tables.WORD;
 import static eki.ekilex.data.db.Tables.WORD_FORUM;
 import static eki.ekilex.data.db.Tables.WORD_RELATION;
@@ -34,6 +35,7 @@ import eki.ekilex.data.db.tables.Lexeme;
 import eki.ekilex.data.db.tables.LexemeFreeform;
 import eki.ekilex.data.db.tables.Meaning;
 import eki.ekilex.data.db.tables.Paradigm;
+import eki.ekilex.data.db.tables.Source;
 import eki.ekilex.data.db.tables.Word;
 import eki.ekilex.data.db.tables.WordForum;
 import eki.ekilex.data.db.tables.WordRelation;
@@ -112,18 +114,22 @@ public class WordDbService extends AbstractDataDbService {
 		DefinitionSourceLink dsl = DEFINITION_SOURCE_LINK.as("dsl");
 		Freeform ff = FREEFORM.as("ff");
 		FreeformSourceLink ffsl = FREEFORM_SOURCE_LINK.as("ffsl");
+		Source s = SOURCE.as("s");
 
 		Field<JSON> ffslf = DSL
 				.select(DSL
 						.jsonArrayAgg(DSL
 								.jsonObject(
 										DSL.key("sourceLinkId").value(ffsl.ID),
-										DSL.key("sourceId").value(ffsl.SOURCE_ID),
-										DSL.key("value").value(ffsl.VALUE),
+										DSL.key("sourceId").value(s.ID),
+										DSL.key("sourceName").value(s.NAME),
+										DSL.key("sourceLinkName").value(ffsl.NAME),
 										DSL.key("type").value(ffsl.TYPE)))
 						.orderBy(ffsl.ORDER_BY))
-				.from(ffsl)
-				.where(ffsl.FREEFORM_ID.eq(ff.ID))
+				.from(ffsl, s)
+				.where(
+						ffsl.FREEFORM_ID.eq(ff.ID)
+								.and(ffsl.SOURCE_ID.eq(s.ID)))
 				.asField();
 
 		Field<JSON> dslf = DSL
@@ -131,12 +137,15 @@ public class WordDbService extends AbstractDataDbService {
 						.jsonArrayAgg(DSL
 								.jsonObject(
 										DSL.key("sourceLinkId").value(dsl.ID),
-										DSL.key("sourceId").value(dsl.SOURCE_ID),
-										DSL.key("value").value(dsl.VALUE),
+										DSL.key("sourceId").value(s.ID),
+										DSL.key("sourceName").value(s.NAME),
+										DSL.key("sourceLinkName").value(dsl.NAME),
 										DSL.key("type").value(dsl.TYPE)))
 						.orderBy(dsl.ORDER_BY))
-				.from(dsl)
-				.where(dsl.DEFINITION_ID.eq(d.ID))
+				.from(dsl, s)
+				.where(
+						dsl.DEFINITION_ID.eq(d.ID)
+								.and(dsl.SOURCE_ID.eq(s.ID)))
 				.asField();
 
 		Field<JSON> wwtf = DSL
