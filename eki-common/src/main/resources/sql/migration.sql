@@ -7,3 +7,5 @@ update source set name = 'source-name-placeholder' where name is null;
 
 -- Allika lühike kuju kohustuslikuks väljaks
 alter table source alter column name set not null;
+
+-- Loo uuesti ekilexi baasi tüübid (types) ja vaated (views)

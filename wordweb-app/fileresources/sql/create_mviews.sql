@@ -381,6 +381,5 @@ create index mview_ww_counts_dataset_code_idx on mview_ww_counts (dataset_code);
 create index mview_ww_counts_lang_idx on mview_ww_counts (lang);
 
 -- experimental. yet to be verified
-create index mview_ww_word_search_crit_metaphone_idx on mview_ww_word_search (metaphone(substring(crit from 1 for 100), 5));
-create index mview_ww_word_search_crit_daitch_mokotoff_idx on mview_ww_word_search (daitch_mokotoff(crit));
-
+-- create index mview_ww_word_search_crit_metaphone_idx on mview_ww_word_search (metaphone(substring(crit from 1 for 100), 5));
+-- create index mview_ww_word_search_crit_daitch_mokotoff_idx on mview_ww_word_search (daitch_mokotoff(crit));

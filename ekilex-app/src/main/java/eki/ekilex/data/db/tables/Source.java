@@ -61,12 +61,17 @@ public class Source extends TableImpl<SourceRecord> {
     /**
      * The column <code>public.source.name</code>.
      */
-    public final TableField<SourceRecord, String> NAME = createField(DSL.name("name"), SQLDataType.CLOB, this, "");
+    public final TableField<SourceRecord, String> NAME = createField(DSL.name("name"), SQLDataType.CLOB.nullable(false), this, "");
 
     /**
      * The column <code>public.source.value</code>.
      */
     public final TableField<SourceRecord, String> VALUE = createField(DSL.name("value"), SQLDataType.CLOB, this, "");
+
+    /**
+     * The column <code>public.source.value_prese</code>.
+     */
+    public final TableField<SourceRecord, String> VALUE_PRESE = createField(DSL.name("value_prese"), SQLDataType.CLOB, this, "");
 
     /**
      * The column <code>public.source.comment</code>.
@@ -77,11 +82,6 @@ public class Source extends TableImpl<SourceRecord> {
      * The column <code>public.source.is_public</code>.
      */
     public final TableField<SourceRecord, Boolean> IS_PUBLIC = createField(DSL.name("is_public"), SQLDataType.BOOLEAN.nullable(false).defaultValue(DSL.field("true", SQLDataType.BOOLEAN)), this, "");
-
-    /**
-     * The column <code>public.source.value_prese</code>.
-     */
-    public final TableField<SourceRecord, String> VALUE_PRESE = createField(DSL.name("value_prese"), SQLDataType.CLOB, this, "");
 
     private Source(Name alias, Table<SourceRecord> aliased) {
         this(alias, aliased, null);
@@ -167,7 +167,7 @@ public class Source extends TableImpl<SourceRecord> {
     // -------------------------------------------------------------------------
 
     @Override
-    public Row7<Long, String, String, String, String, Boolean, String> fieldsRow() {
+    public Row7<Long, String, String, String, String, String, Boolean> fieldsRow() {
         return (Row7) super.fieldsRow();
     }
 }

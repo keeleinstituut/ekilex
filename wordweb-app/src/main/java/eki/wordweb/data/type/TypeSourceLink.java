@@ -1,7 +1,5 @@
 package eki.wordweb.data.type;
 
-import java.util.List;
-
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
@@ -24,7 +22,7 @@ public class TypeSourceLink extends AbstractDataObject {
 	@JsonProperty("source_link_type")
 	private ReferenceType type;
 
-	private String name;
+	private String sourceLinkName;
 
 	private String value;
 
@@ -32,7 +30,14 @@ public class TypeSourceLink extends AbstractDataObject {
 
 	private Long sourceId;
 
-	private List<String> sourceProps;
+	private String sourceName;
+
+	private String sourceValue;
+
+	private String sourceValuePrese;
+
+	@JsonProperty("is_source_public")
+	private boolean isSourcePublic;
 
 	public ReferenceOwner getRefOwner() {
 		return refOwner;
@@ -66,12 +71,12 @@ public class TypeSourceLink extends AbstractDataObject {
 		this.type = type;
 	}
 
-	public String getName() {
-		return name;
+	public String getSourceLinkName() {
+		return sourceLinkName;
 	}
 
-	public void setName(String name) {
-		this.name = name;
+	public void setSourceLinkName(String sourceLinkName) {
+		this.sourceLinkName = sourceLinkName;
 	}
 
 	public String getValue() {
@@ -98,12 +103,35 @@ public class TypeSourceLink extends AbstractDataObject {
 		this.sourceId = sourceId;
 	}
 
-	public List<String> getSourceProps() {
-		return sourceProps;
+	public String getSourceName() {
+		return sourceName;
 	}
 
-	public void setSourceProps(List<String> sourceProps) {
-		this.sourceProps = sourceProps;
+	public void setSourceName(String sourceName) {
+		this.sourceName = sourceName;
 	}
 
+	public String getSourceValue() {
+		return sourceValue;
+	}
+
+	public void setSourceValue(String sourceValue) {
+		this.sourceValue = sourceValue;
+	}
+
+	public String getSourceValuePrese() {
+		return sourceValuePrese;
+	}
+
+	public void setSourceValuePrese(String sourceValuePrese) {
+		this.sourceValuePrese = sourceValuePrese;
+	}
+
+	public boolean isSourcePublic() {
+		return isSourcePublic;
+	}
+
+	public void setSourcePublic(boolean sourcePublic) {
+		isSourcePublic = sourcePublic;
+	}
 }
