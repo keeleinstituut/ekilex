@@ -1145,14 +1145,7 @@ public class SearchFilterHelper implements GlobalConstant, ActivityFunct {
 		LexemeSourceLink lsl = LEXEME_SOURCE_LINK.as("lsl");
 		Condition sourceCondition = lsl.LEXEME_ID.eq(lexemeIdField);
 
-		if (CollectionUtils.isEmpty(existsCriteria)) {
-			for (SearchCriterion criterion : filteredCriteria) {
-				String searchValueStr = criterion.getSearchValue().toString();
-				// TODO use source.name
-				sourceCondition = applyValueFilter(searchValueStr, criterion.isNot(), criterion.getSearchOperand(), lsl.VALUE, sourceCondition, true);
-			}
-			where = where.and(DSL.exists(DSL.select(lsl.ID).from(lsl).where(sourceCondition)));
-		} else {
+		if (CollectionUtils.isNotEmpty(existsCriteria)) {
 			boolean isNot = existsCriteria.get(0).isNot();
 			Condition critWhere = DSL.exists(DSL.select(lsl.ID).from(lsl).where(sourceCondition));
 			if (isNot) {
@@ -1563,14 +1556,7 @@ public class SearchFilterHelper implements GlobalConstant, ActivityFunct {
 		FreeformSourceLink ffsl = FREEFORM_SOURCE_LINK.as("ffsl");
 		Condition sourceCondition = ffsl.FREEFORM_ID.eq(freeformIdField);
 
-		if (CollectionUtils.isEmpty(existsCriteria)) {
-			for (SearchCriterion criterion : filteredCriteria) {
-				String searchValueStr = criterion.getSearchValue().toString();
-				// TODO use source.name
-				sourceCondition = applyValueFilter(searchValueStr, criterion.isNot(), criterion.getSearchOperand(), ffsl.VALUE, sourceCondition, true);
-			}
-			where = where.and(DSL.exists(DSL.select(ffsl.ID).from(ffsl).where(sourceCondition)));
-		} else {
+		if (CollectionUtils.isNotEmpty(existsCriteria)) {
 			boolean isNot = existsCriteria.get(0).isNot();
 			Condition critWhere = DSL.exists(DSL.select(ffsl.ID).from(ffsl).where(sourceCondition));
 			if (isNot) {
@@ -1620,14 +1606,7 @@ public class SearchFilterHelper implements GlobalConstant, ActivityFunct {
 		DefinitionSourceLink dsl = DEFINITION_SOURCE_LINK.as("dsl");
 		Condition sourceCondition = dsl.DEFINITION_ID.eq(definitionIdField);
 
-		if (CollectionUtils.isEmpty(existsCriteria)) {
-			for (SearchCriterion criterion : filteredCriteria) {
-				String searchValueStr = criterion.getSearchValue().toString();
-				// TODO use source.name
-				sourceCondition = applyValueFilter(searchValueStr, criterion.isNot(), criterion.getSearchOperand(), dsl.VALUE, sourceCondition, true);
-			}
-			where = where.and(DSL.exists(DSL.select(dsl.ID).from(dsl).where(sourceCondition)));
-		} else {
+		if (CollectionUtils.isNotEmpty(existsCriteria)) {
 			boolean isNot = existsCriteria.get(0).isNot();
 			Condition critWhere = DSL.exists(DSL.select(dsl.ID).from(dsl).where(sourceCondition));
 			if (isNot) {
