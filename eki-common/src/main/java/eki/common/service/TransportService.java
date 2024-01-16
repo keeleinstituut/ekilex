@@ -44,7 +44,9 @@ public class TransportService extends AbstractLoaderCommons implements Initializ
 
 	private List<String> exportTableNames;
 
-	private List<String> importTableNames;
+	private List<String> importTableNamesMin;
+
+	private List<String> importTableNamesMax;
 
 	private Map<String, Map<String, TableColumn>> tablesColumnsMapForExport;
 
@@ -80,22 +82,17 @@ public class TransportService extends AbstractLoaderCommons implements Initializ
 		rootTableNamesArr = toLowerCase(rootTableNamesArr);
 		rootTables = Arrays.asList(rootTableNamesArr);
 
-		String[] importTableNamesArr = new String[] {
-				DATASET, FREEFORM,
-				WORD, WORD_GUID, WORD_WORD_TYPE, WORD_ETYMOLOGY, WORD_ETYMOLOGY_RELATION, WORD_ETYMOLOGY_SOURCE_LINK, WORD_RELATION,
-				WORD_GROUP_MEMBER, WORD_GROUP, WORD_ACTIVITY_LOG, WORD_FREEFORM,
+		this.importTableNamesMin = Arrays.asList(toLowerCase(
+				DATASET, FREEFORM, WORD, WORD_RELATION, WORD_GROUP_MEMBER, WORD_GROUP, WORD_FREEFORM, WORD_ACTIVITY_LOG,
 				MEANING, MEANING_FREEFORM, MEANING_NR, MEANING_DOMAIN, MEANING_RELATION, MEANING_ACTIVITY_LOG,
-				LEXEME, LEXEME_FREEFORM, LEXEME_POS, LEXEME_DERIV, LEXEME_REGISTER, LEXEME_REGION, LEXEME_FREQUENCY, LEXEME_RELATION,
-				LEXEME_SOURCE_LINK, LEXEME_TAG, LEXEME_ACTIVITY_LOG, LEX_COLLOC, LEX_COLLOC_POS_GROUP, LEX_COLLOC_REL_GROUP,
-				DEFINITION, DEFINITION_FREEFORM, DEFINITION_SOURCE_LINK, DEFINITION_DATASET,
-				COLLOCATION, PARADIGM, PARADIGM_FORM, FORM, FORM_FREQUENCY,
-				ACTIVITY_LOG, FREEFORM_SOURCE_LINK};
-
-		importTableNamesArr = toLowerCase(importTableNamesArr);
-		this.importTableNames = Arrays.asList(importTableNamesArr);
-		this.exportTableNames = new ArrayList<>(importTableNames);
-		this.exportTableNames.add(SOURCE.toLowerCase());
-		this.exportTableNames.add(SOURCE_FREEFORM.toLowerCase());
+				LEXEME, LEXEME_FREEFORM, LEXEME_POS, LEXEME_DERIV, LEXEME_REGISTER, LEXEME_REGION, LEXEME_FREQUENCY, LEXEME_RELATION, LEXEME_SOURCE_LINK, LEXEME_TAG, LEXEME_ACTIVITY_LOG,
+				DEFINITION, DEFINITION_FREEFORM, DEFINITION_SOURCE_LINK, DEFINITION_DATASET, FREEFORM_SOURCE_LINK));
+		this.importTableNamesMax = new ArrayList<>(importTableNamesMin);
+		this.importTableNamesMax.addAll(Arrays.asList(toLowerCase(
+				WORD_GUID, WORD_WORD_TYPE, WORD_ETYMOLOGY, WORD_ETYMOLOGY_RELATION, WORD_ETYMOLOGY_SOURCE_LINK,
+				COLLOCATION, LEX_COLLOC, LEX_COLLOC_POS_GROUP, LEX_COLLOC_REL_GROUP, PARADIGM, PARADIGM_FORM, FORM, FORM_FREQUENCY)));
+		this.exportTableNames = new ArrayList<>(importTableNamesMax);
+		this.exportTableNames.addAll(Arrays.asList(toLowerCase(SOURCE, SOURCE_FREEFORM, /*WORD_ACTIVITY_LOG, MEANING_ACTIVITY_LOG, LEXEME_ACTIVITY_LOG, */ ACTIVITY_LOG)));
 
 		Map<String, Object> paramMap = new HashMap<>();
 
@@ -125,7 +122,7 @@ public class TransportService extends AbstractLoaderCommons implements Initializ
 		paramMap.clear();
 		paramMap.put("constraintTypeFk", "FOREIGN KEY");
 		paramMap.put("ignoreFks", Arrays.asList("nothing"));
-		paramMap.put("tableNames", importTableNames);
+		paramMap.put("tableNames", importTableNamesMax);
 		foreignKeys = basicDbService.getResults(sqlSelectTablesForeignKeys, paramMap, new ForeignKeyRowMapper());
 		this.referringForeignKeysMapForImport = mapTablesForeignKeys(foreignKeys);
 		this.referringTableNamesMapForImport = mapReferringTableNames(foreignKeys);
@@ -150,8 +147,12 @@ public class TransportService extends AbstractLoaderCommons implements Initializ
 		return exportTableNames;
 	}
 
-	public List<String> getImportTableNames() {
-		return importTableNames;
+	public List<String> getImportTableNamesMin() {
+		return importTableNamesMin;
+	}
+
+	public List<String> getImportTableNamesMax() {
+		return importTableNamesMax;
 	}
 
 	public Map<String, Map<String, TableColumn>> getTablesColumnsMapForExport() {

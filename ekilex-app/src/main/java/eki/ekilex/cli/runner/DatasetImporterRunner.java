@@ -2,7 +2,9 @@ package eki.ekilex.cli.runner;
 
 import java.io.BufferedInputStream;
 import java.io.File;
+import java.io.FileWriter;
 import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -35,17 +37,17 @@ import org.springframework.stereotype.Component;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import eki.common.constant.DatasetType;
 import eki.common.constant.ActivityOwner;
+import eki.common.constant.DatasetType;
 import eki.common.data.AbstractDataObject;
 import eki.common.data.Count;
 import eki.common.data.PgVarcharArray;
-import eki.common.data.transport.ForeignKey;
 import eki.common.data.transport.TableColumn;
 import eki.common.exception.DataLoadingException;
 import eki.common.service.AbstractLoaderCommons;
 import eki.common.service.TransportService;
 import eki.common.util.CodeGenerator;
+import eki.ekilex.data.DatasetPermission;
 import eki.ekilex.data.EkiUser;
 import eki.ekilex.service.core.ActivityLogService;
 
@@ -71,7 +73,7 @@ public class DatasetImporterRunner extends AbstractLoaderCommons {
 	private static final String EKI_LINK_TEXT_FRAGMENT = "<eki-link";
 
 	private static final String[] TABLE_NAMES_THAT_PREREQUISIT_PARENT_DATA = new String[] {
-			DEFINITION, LEXEME_RELATION, MEANING_RELATION, WORD_RELATION, WORD_ETYMOLOGY_RELATION
+			DEFINITION, LEXEME_RELATION, MEANING_RELATION, WORD_RELATION, WORD_ETYMOLOGY_RELATION, WORD_FREEFORM, LEXEME_SOURCE_LINK, DEFINITION_SOURCE_LINK
 	};
 
 	private static final String COMBINED_ENTRY_NAME = "everything";
@@ -83,13 +85,21 @@ public class DatasetImporterRunner extends AbstractLoaderCommons {
 	private ActivityLogService activityLogService;
 
 	@Transactional(rollbackOn = Exception.class)
-	public void execute(boolean isCreate, boolean isAppend, String importFilePath) throws Exception {
+	public void execute(boolean isCreate, boolean isAppend, boolean isLoadMin, boolean isLoadMax, String importFilePath) throws Exception {
 
 		String importCode = CodeGenerator.generateUniqueId();
-		Context context = new Context(isCreate, isAppend, importCode);
-		createSecurityContext();
 
 		logger.info("Starting import \"{}\" from \"{}\"", importCode, importFilePath);
+
+		File importFile = new File(importFilePath);
+		String importFolderPath = StringUtils.replace(importFile.getParentFile().getPath(), "\\", "/") + "/";
+		String activityLogRelationsFilePath = importFolderPath + "activity-log-relations.tcv";
+		FileWriter activityLogFileWriter = new FileWriter(activityLogRelationsFilePath, StandardCharsets.UTF_8);
+		activityLogFileWriter.write("table\tparent_id_name\tparent_id\tactivity_log_id\n");
+		Context context = new Context(isCreate, isAppend, isLoadMin, isLoadMax, importCode);
+		context.setFileWriter(activityLogFileWriter);
+
+		createSecurityContext();
 
 		File zippedImportFile = new File(importFilePath);
 		ZipFile zipFile = new ZipFile(zippedImportFile);
@@ -117,13 +127,15 @@ public class DatasetImporterRunner extends AbstractLoaderCommons {
 				t2 = System.currentTimeMillis();
 				long timeMillis = t2 - t1;
 				String timeLog = toReadableFormat(timeMillis);
-				logger.info("File entry resolved at {}", timeLog);
+				logger.info("File entry resolved in {}", timeLog);
 				logger.info("Current record count {}", context.getCreatedRecordCount().getValue());
 				jsonInputStream.close();
 				zipEntryStream.close();
 			}
 		}
 		zipFile.close();
+		activityLogFileWriter.flush();
+		activityLogFileWriter.close();
 
 		resolveQueue(context);
 		createActivityLogs(context);
@@ -144,6 +156,12 @@ public class DatasetImporterRunner extends AbstractLoaderCommons {
 		user.setName("Sõnakogude laadur");
 		user.setAdmin(true);
 		user.setEnabled(Boolean.TRUE);
+
+		DatasetPermission recentRole = new DatasetPermission();
+		recentRole.setDatasetName("xxx");
+		recentRole.setSuperiorDataset(true);
+		recentRole.setSuperiorPermission(true);
+		user.setRecentRole(recentRole);
 
 		GrantedAuthority authority = new SimpleGrantedAuthority("import");
 		AnonymousAuthenticationToken authentication = new AnonymousAuthenticationToken("dsimp", user, Arrays.asList(authority));
@@ -185,11 +203,14 @@ public class DatasetImporterRunner extends AbstractLoaderCommons {
 
 	private void saveTablesData(Context context, String tableName, Map<String, Object> dataMap, Long queueId, List<Step> hierarchy) throws Exception {
 
-		List<String> supportedTableNames = transportService.getImportTableNames();
+		List<String> supportedTableNames = getImportTableNames(context);
 		boolean forceToQueue = ArrayUtils.contains(TABLE_NAMES_THAT_PREREQUISIT_PARENT_DATA, tableName) && (queueId == null);
-		if (!supportedTableNames.contains(tableName)) {
+		if (StringUtils.endsWithIgnoreCase(tableName, "_activity_log")) {
+			handleActivityLogRelations(context, tableName, dataMap);
 			return;
-		} else if (StringUtils.equalsIgnoreCase(DATASET, tableName)) {
+		} else if (!supportedTableNames.contains(tableName)) {
+			return;
+		} else if (StringUtils.equalsIgnoreCase(tableName, DATASET)) {
 			dataMap = compensateFieldsAndData(context, DATASET, dataMap);
 			handleDataset(context, dataMap);
 		} else if (forceToQueue) {
@@ -200,6 +221,23 @@ public class DatasetImporterRunner extends AbstractLoaderCommons {
 		}
 		handleReferringData(context, tableName, dataMap, hierarchy);
 		handleNestedData(context, tableName, dataMap, hierarchy);
+	}
+
+	private void handleActivityLogRelations(Context context, String tableName, Map<String, Object> dataMap) throws Exception {
+
+		String parentIdName = null;
+		if (StringUtils.equalsIgnoreCase(tableName, WORD_ACTIVITY_LOG)) {
+			parentIdName = "word_id";
+		} else if (StringUtils.equalsIgnoreCase(tableName, LEXEME_ACTIVITY_LOG)) {
+			parentIdName = "lexeme_id";
+		} else if (StringUtils.equalsIgnoreCase(tableName, MEANING_ACTIVITY_LOG)) {
+			parentIdName = "meaning_id";
+		}
+		if (parentIdName != null) {
+			String fileRow = tableName + "\t" + parentIdName + "\t" + dataMap.get(parentIdName) + "\t" + dataMap.get("activity_log_id") + "\n";
+			FileWriter fileWriter = context.getFileWriter();
+			fileWriter.write(fileRow);
+		}
 	}
 
 	private void handleDataset(Context context, Map<String, Object> dataMap) throws Exception {
@@ -220,10 +258,9 @@ public class DatasetImporterRunner extends AbstractLoaderCommons {
 		String importCode = context.getImportCode();
 
 		Map<String, TableColumn> tableColumnsMap = transportService.getTablesColumnsMapForImport().get(tableName);
-		List<ForeignKey> referringForeignKeys = transportService.getReferringForeignKeysMapForImport().get(tableName);
 		boolean queueExists = queueId != null;
 
-		FkReassignResult fkReassignResult = reassignFks(importCode, dataMap, tableColumnsMap, context);
+		FkReassignResult fkReassignResult = reassignFks(context, importCode, dataMap, tableColumnsMap);
 		if (fkReassignResult.isIgnore()) {
 			List<String> ignoredTableNames = context.getIgnoredTableNames();
 			if (!ignoredTableNames.contains(tableName)) {
@@ -233,15 +270,12 @@ public class DatasetImporterRunner extends AbstractLoaderCommons {
 			Map<String, Object> reassignedDataMap = fkReassignResult.getReassignedDataMap();
 			Map<String, Object> truncDataMap = truncate(reassignedDataMap, tableColumnsMap);
 			Long targetId = null;
-			// default behaviour - if there are no referrers, it is assumed the record is meant to be created
-			if (CollectionUtils.isEmpty(referringForeignKeys)) {
-				if (StringUtils.equalsIgnoreCase(tableName, DEFINITION_DATASET)) {
+			if (StringUtils.equalsIgnoreCase(tableName, DEFINITION_DATASET)) {
+				boolean recordExists = basicDbService.exists(tableName, truncDataMap);
+				if (!recordExists) {
 					basicDbService.createWithoutId(tableName, truncDataMap);
-				} else {
-					targetId = basicDbService.create(tableName, truncDataMap);
-					collectLoggingId(context, targetId, tableName);
+					context.getCreatedRecordCount().increment();
 				}
-				context.getCreatedRecordCount().increment();
 			} else {
 				Long sourceId = getPk(dataMap, tableColumnsMap);
 				boolean isCreate = false;
@@ -304,7 +338,7 @@ public class DatasetImporterRunner extends AbstractLoaderCommons {
 		if (CollectionUtils.isEmpty(referringTableNames)) {
 			return;
 		}
-		List<String> supportedTableNames = transportService.getImportTableNames();
+		List<String> supportedTableNames = getImportTableNames(context);
 		for (String referringTableName : referringTableNames) {
 			if (!supportedTableNames.contains(referringTableName)) {
 				continue;
@@ -316,7 +350,7 @@ public class DatasetImporterRunner extends AbstractLoaderCommons {
 
 	private void handleNestedData(Context context, String tableName, Map<String, Object> dataMap, List<Step> hierarchy) throws Exception {
 
-		List<String> supportedTableNames = transportService.getImportTableNames();
+		List<String> supportedTableNames = getImportTableNames(context);
 		Map<String, TableColumn> tableColumnsMap = transportService.getTablesColumnsMapForImport().get(tableName);
 		List<String> referredTableNames = transportService.getReferredTableNames(tableColumnsMap);
 
@@ -469,10 +503,21 @@ public class DatasetImporterRunner extends AbstractLoaderCommons {
 			return transportService.parse(valueStr);
 		} else if (StringUtils.equals(dataType, "array")) {
 			if (value instanceof List) {
-				@SuppressWarnings("unchecked")
-				List<String> list = (List<String>) value;
-				String[] array = list.toArray(new String[0]);
-				return new PgVarcharArray(array);
+				List<?> objList = (List<?>) value;
+				if (CollectionUtils.isNotEmpty(objList)) {
+					Object listElem = objList.stream().filter(obj -> obj != null).findAny().orElse(null);
+					if (listElem == null) {
+						return new PgVarcharArray(new String[0]);
+					}
+					Class<? extends Object> listGenClass = listElem.getClass();
+					if (listGenClass.equals(String.class)) {
+						String[] array = objList.toArray(new String[0]);
+						return new PgVarcharArray(array);
+					} else if (listGenClass.equals(Map.class)) {
+						// can't handle the truth
+						return null;
+					}
+				}
 			} else if (value instanceof String[]) {
 				String[] array = (String[]) value;
 				return new PgVarcharArray(array);
@@ -481,7 +526,7 @@ public class DatasetImporterRunner extends AbstractLoaderCommons {
 		return value;
 	}
 
-	private FkReassignResult reassignFks(String importCode, Map<String, Object> dataMap, Map<String, TableColumn> tableColumnsMap, Context context) throws Exception {
+	private FkReassignResult reassignFks(Context context, String importCode, Map<String, Object> dataMap, Map<String, TableColumn> tableColumnsMap) throws Exception {
 
 		boolean isCreate = context.isCreate();
 
@@ -498,7 +543,7 @@ public class DatasetImporterRunner extends AbstractLoaderCommons {
 		if (MapUtils.isEmpty(fkColumnsMap)) {
 			fkReassignSuccess = true;
 		} else {
-			List<String> supportedTableNames = transportService.getImportTableNames();
+			List<String> supportedTableNames = getImportTableNames(context);
 			Map<String, Object> tempFkMap = new HashMap<>();
 			for (Entry<String, Map<String, List<TableColumn>>> fkCompositeMapEntry : fkColumnsMap.entrySet()) {
 				String fkTableName = fkCompositeMapEntry.getKey();
@@ -636,6 +681,16 @@ public class DatasetImporterRunner extends AbstractLoaderCommons {
 		return valuePrese;
 	}
 
+	private List<String> getImportTableNames(Context context) {
+		if (context.isLoadMin()) {
+			return transportService.getImportTableNamesMin();
+		}
+		if (context.isLoadMax()) {
+			return transportService.getImportTableNamesMax();
+		}
+		return null;
+	}
+
 	private boolean recordExists(List<TableColumn> tableFkColumns, Map<String, Object> dataMap) throws Exception {
 		TableColumn tableFirstFkColumn = tableFkColumns.get(0);
 		String fkTableName = tableFirstFkColumn.getFkTableName();
@@ -769,6 +824,10 @@ public class DatasetImporterRunner extends AbstractLoaderCommons {
 
 		private boolean append;
 
+		private boolean loadMin;
+
+		private boolean loadMax;
+
 		private String importCode;
 
 		private List<Long> loggingWordIds;
@@ -791,9 +850,13 @@ public class DatasetImporterRunner extends AbstractLoaderCommons {
 
 		private List<String> ignoredTableNames;
 
-		public Context(boolean create, boolean append, String importCode) {
+		private FileWriter fileWriter;
+
+		public Context(boolean create, boolean append, boolean loadMin, boolean loadMax, String importCode) {
 			this.create = create;
 			this.append = append;
+			this.loadMin = loadMin;
+			this.loadMax = loadMax;
 			this.importCode = importCode;
 			this.loggingWordIds = new ArrayList<Long>();
 			this.loggingLexemeIds = new ArrayList<Long>();
@@ -813,6 +876,14 @@ public class DatasetImporterRunner extends AbstractLoaderCommons {
 
 		public boolean isAppend() {
 			return append;
+		}
+
+		public boolean isLoadMin() {
+			return loadMin;
+		}
+
+		public boolean isLoadMax() {
+			return loadMax;
 		}
 
 		public String getImportCode() {
@@ -862,6 +933,15 @@ public class DatasetImporterRunner extends AbstractLoaderCommons {
 		public List<String> getIgnoredTableNames() {
 			return ignoredTableNames;
 		}
+
+		public FileWriter getFileWriter() {
+			return fileWriter;
+		}
+
+		public void setFileWriter(FileWriter fileWriter) {
+			this.fileWriter = fileWriter;
+		}
+
 	}
 
 	class Step extends AbstractDataObject {

@@ -120,6 +120,32 @@ public class BasicDbService extends AbstractDbService {
 		return sqlScriptBuf.toString();
 	}
 
+	public boolean exists(String tableName, Map<String, Object> paramMap) {
+
+		List<String> fieldNames = new ArrayList<>(paramMap.keySet());
+		List<String> paramNames = new ArrayList<>();
+		for (String fieldName : fieldNames) {
+			paramNames.add(":" + fieldName);
+		}
+		StringBuffer sqlQueryBuf = new StringBuffer();
+		sqlQueryBuf.append("select count(*) > 0 from ");
+		sqlQueryBuf.append(tableName);
+		sqlQueryBuf.append(" where ");
+		for (int fieldIndex = 0; fieldIndex < fieldNames.size(); fieldIndex++) {
+			if (fieldIndex > 0) {
+				sqlQueryBuf.append(" and ");
+			}
+			String fieldName = fieldNames.get(fieldIndex);
+			sqlQueryBuf.append(fieldName);
+			sqlQueryBuf.append(" = :");
+			sqlQueryBuf.append(fieldName);
+		}
+		String sqlQueryStr = sqlQueryBuf.toString();
+
+		boolean exists = jdbcTemplate.queryForObject(sqlQueryStr, paramMap, boolean.class);
+		return exists;
+	}
+
 	public Long create(String tableName) throws Exception {
 
 		String sql = "insert into " + tableName + " (id) values (default) returning id";
@@ -142,7 +168,6 @@ public class BasicDbService extends AbstractDbService {
 		sqlQueryBuf.append(") values (");
 		sqlQueryBuf.append(StringUtils.join(paramNames, ", "));
 		sqlQueryBuf.append(") returning id");
-
 		String sqlQueryStr = sqlQueryBuf.toString();
 
 		Long id = jdbcTemplate.queryForObject(sqlQueryStr, paramMap, Long.class);

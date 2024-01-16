@@ -33,11 +33,17 @@ public class DatasetImporter implements CommandLineRunner {
 
 	private static final String ARG_KEY_IMPTYPE = "imptype";
 
+	private static final String ARG_KEY_IMPLOAD = "impload";
+
 	private static final String ARG_KEY_IMPFILE = "impfile";
 
 	private static final String OP_CREATE = "create";
 
 	private static final String OP_APPEND = "append";
+
+	private static final String OP_MIN = "min";
+
+	private static final String OP_MAX = "max";
 
 	@Autowired
 	private ConfigurableApplicationContext context;
@@ -48,7 +54,7 @@ public class DatasetImporter implements CommandLineRunner {
 	@Autowired
 	private DatasetImporterRunner datasetImporterRunner;
 
-	//mvn spring-boot:run -P dsimp -D spring-boot.run.profiles=<dev|prod> -D spring-boot.run.arguments="imptype=<create|append> impfile="<import file path>"" 
+	//mvn spring-boot:run -P dsimp -D spring-boot.run.profiles=<dev|prod> -D spring-boot.run.arguments="imptype=<create|append> impload=<min|max> impfile="<import file path>"" 
 	public static void main(String[] args) {
 		logger.info("Application starting up");
 		System.setProperty("org.jooq.no-logo", "true");
@@ -60,9 +66,15 @@ public class DatasetImporter implements CommandLineRunner {
 	public void run(String... args) throws Exception {
 
 		String importType = ConsolePromptUtil.getKeyValue(ARG_KEY_IMPTYPE, args);
+		String importLoad = ConsolePromptUtil.getKeyValue(ARG_KEY_IMPLOAD, args);
 		String importFilePath = ConsolePromptUtil.getKeyValue(ARG_KEY_IMPFILE, args);
 		if (StringUtils.isBlank(importType)) {
 			logger.warn("Please provide \"{}\" with arguments", ARG_KEY_IMPTYPE);
+			context.close();
+			return;
+		}
+		if (StringUtils.isBlank(importLoad)) {
+			logger.warn("Please provide \"{}\" with arguments", ARG_KEY_IMPLOAD);
 			context.close();
 			return;
 		}
@@ -73,6 +85,8 @@ public class DatasetImporter implements CommandLineRunner {
 		}
 		boolean isCreate = StringUtils.equals(OP_CREATE, importType);
 		boolean isAppend = StringUtils.equals(OP_APPEND, importType);
+		boolean isLoadMin = StringUtils.equals(OP_MIN, importLoad);
+		boolean isLoadMax = StringUtils.equals(OP_MAX, importLoad);
 		boolean isValidFilePath = isValidFilePath(importFilePath);
 		if (!isValidFilePath) {
 			logger.warn("Please provide valid \"{}\" with arguments", ARG_KEY_IMPFILE);
@@ -80,7 +94,7 @@ public class DatasetImporter implements CommandLineRunner {
 			return;
 		}
 		transportService.initialise();
-		datasetImporterRunner.execute(isCreate, isAppend, importFilePath);
+		datasetImporterRunner.execute(isCreate, isAppend, isLoadMin, isLoadMax, importFilePath);
 		context.close();
 	}
 

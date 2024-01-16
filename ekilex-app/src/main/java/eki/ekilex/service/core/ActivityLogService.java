@@ -509,7 +509,7 @@ public class ActivityLogService implements SystemConstant, GlobalConstant {
 		if (ActivityOwner.MEANING.equals(ownerName)) {
 			Long meaningId = Long.valueOf(ownerId);
 			if (StringUtils.equals(functName, FUNCT_NAME_APPROVE_MEANING)) {
-				activityLogDbService.createOrUpdateMeaningLastActivityLog(meaningId, LastActivityType.APPROVE);				
+				activityLogDbService.createOrUpdateMeaningLastActivityLog(meaningId, LastActivityType.APPROVE);
 			}
 		}
 	}
