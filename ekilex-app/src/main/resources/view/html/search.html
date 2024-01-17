@@ -268,7 +268,7 @@
                   <input type="text" class="form-control"
                          th:value="${criteria.searchValue}"
                          th:name="'criteriaGroups[' + ${critGroupStat.index} + '].searchCriteria[' + ${critStat.index} + '].searchValue'"
-                         th:hidden="${isExistsOperand}"
+                         hidden="hidden"
                          autocomplete="off">
                   <div class="invalid-feedback d-block" th:text="${criteria.validationMessage}">warning</div>
                 </div>
@@ -651,9 +651,7 @@
                 <option th:each="complexity : ${complexities}" th:value="${complexity}" th:text="#{'enum.complexity.' + ${complexity}}"></option>
               </select>
             </div>
-            <div name="SOURCE_REF" class="value-input-container col-auto flex-grow-1 flex-shrink-1">
-              <input type="text" class="form-control" autocomplete="off">
-            </div>
+            <div name="SOURCE_REF" class="value-input-container col-auto flex-grow-1 flex-shrink-1"></div>
             <div name="SOURCE_NAME" class="value-input-container col-auto flex-grow-1 flex-shrink-1">
               <input type="text" class="form-control" autocomplete="off">
             </div>

@@ -65,14 +65,7 @@ public class ApiSourceController extends AbstractApiController {
 		List<SourceProperty> sourceProperties = source.getSourceProperties();
 
 		if (StringUtils.isBlank(name)) {
-			if (CollectionUtils.isEmpty(sourceProperties)) {
-				return getOpFailResponse("Source has no name nor any properties");
-			} else {
-				boolean sourceHasNoNameProperties = sourceProperties.stream().noneMatch(sourceProperty -> FreeformType.SOURCE_NAME.equals(sourceProperty.getType()));
-				if (sourceHasNoNameProperties) {
-					return getOpFailResponse("Source has no name nor any SOURCE_NAME type properties");
-				}
-			}
+			return getOpFailResponse("Source has no name");
 		}
 
 		if (CollectionUtils.isNotEmpty(sourceProperties)) {

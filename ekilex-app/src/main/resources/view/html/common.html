@@ -420,7 +420,6 @@
           <th:block th:each="sourceProperty : ${source.sourceProperties}">
             <div class="row">
               <div class="mb-1">
-                <input th:if="${sourceProperty.type.toString() == 'SOURCE_NAME'}" type="radio" th:value="${sourceProperty.id}" name="id2" th:checked="${sourceLink.value == sourceProperty.valueText}">
                 <span th:text="#{|source.property.${sourceProperty.type}|}"></span>
                 -
                 <span th:text="${sourceProperty.valueText}" th:if="${sourceProperty.valueText != null}" th:style="${sourceProperty.valueMatch ? 'background-color: #eaffea' : ''}"></span>

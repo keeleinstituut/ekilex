@@ -57,14 +57,9 @@ public class TypeSourceLink extends UDTImpl<TypeSourceLinkRecord> {
     public static final UDTField<TypeSourceLinkRecord, String> SOURCE_LINK_TYPE = createField(DSL.name("source_link_type"), SQLDataType.VARCHAR(100), TYPE_SOURCE_LINK, "");
 
     /**
-     * The attribute <code>public.type_source_link.name</code>.
+     * The attribute <code>public.type_source_link.source_link_name</code>.
      */
-    public static final UDTField<TypeSourceLinkRecord, String> NAME = createField(DSL.name("name"), SQLDataType.CLOB, TYPE_SOURCE_LINK, "");
-
-    /**
-     * The attribute <code>public.type_source_link.value</code>.
-     */
-    public static final UDTField<TypeSourceLinkRecord, String> VALUE = createField(DSL.name("value"), SQLDataType.CLOB, TYPE_SOURCE_LINK, "");
+    public static final UDTField<TypeSourceLinkRecord, String> SOURCE_LINK_NAME = createField(DSL.name("source_link_name"), SQLDataType.CLOB, TYPE_SOURCE_LINK, "");
 
     /**
      * The attribute <code>public.type_source_link.order_by</code>.
@@ -77,9 +72,24 @@ public class TypeSourceLink extends UDTImpl<TypeSourceLinkRecord> {
     public static final UDTField<TypeSourceLinkRecord, Long> SOURCE_ID = createField(DSL.name("source_id"), SQLDataType.BIGINT, TYPE_SOURCE_LINK, "");
 
     /**
-     * The attribute <code>public.type_source_link.source_props</code>.
+     * The attribute <code>public.type_source_link.source_name</code>.
      */
-    public static final UDTField<TypeSourceLinkRecord, String[]> SOURCE_PROPS = createField(DSL.name("source_props"), SQLDataType.CLOB.getArrayDataType(), TYPE_SOURCE_LINK, "");
+    public static final UDTField<TypeSourceLinkRecord, String> SOURCE_NAME = createField(DSL.name("source_name"), SQLDataType.CLOB, TYPE_SOURCE_LINK, "");
+
+    /**
+     * The attribute <code>public.type_source_link.source_value</code>.
+     */
+    public static final UDTField<TypeSourceLinkRecord, String> SOURCE_VALUE = createField(DSL.name("source_value"), SQLDataType.CLOB, TYPE_SOURCE_LINK, "");
+
+    /**
+     * The attribute <code>public.type_source_link.source_value_prese</code>.
+     */
+    public static final UDTField<TypeSourceLinkRecord, String> SOURCE_VALUE_PRESE = createField(DSL.name("source_value_prese"), SQLDataType.CLOB, TYPE_SOURCE_LINK, "");
+
+    /**
+     * The attribute <code>public.type_source_link.is_source_public</code>.
+     */
+    public static final UDTField<TypeSourceLinkRecord, Boolean> IS_SOURCE_PUBLIC = createField(DSL.name("is_source_public"), SQLDataType.BOOLEAN, TYPE_SOURCE_LINK, "");
 
     /**
      * No further instances allowed

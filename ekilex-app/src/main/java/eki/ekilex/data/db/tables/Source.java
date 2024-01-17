@@ -61,7 +61,7 @@ public class Source extends TableImpl<SourceRecord> {
     /**
      * The column <code>public.source.name</code>.
      */
-    public final TableField<SourceRecord, String> NAME = createField(DSL.name("name"), SQLDataType.CLOB, this, "");
+    public final TableField<SourceRecord, String> NAME = createField(DSL.name("name"), SQLDataType.CLOB.nullable(false), this, "");
 
     /**
      * The column <code>public.source.value</code>.

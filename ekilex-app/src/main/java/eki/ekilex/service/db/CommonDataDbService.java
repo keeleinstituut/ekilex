@@ -56,7 +56,6 @@ import static eki.ekilex.data.db.Tables.REGISTER_LABEL;
 import static eki.ekilex.data.db.Tables.SEMANTIC_TYPE;
 import static eki.ekilex.data.db.Tables.SEMANTIC_TYPE_LABEL;
 import static eki.ekilex.data.db.Tables.SOURCE;
-import static eki.ekilex.data.db.Tables.SOURCE_FREEFORM;
 import static eki.ekilex.data.db.Tables.TAG;
 import static eki.ekilex.data.db.Tables.USAGE_TYPE;
 import static eki.ekilex.data.db.Tables.USAGE_TYPE_LABEL;
@@ -109,6 +108,8 @@ import eki.ekilex.data.SearchLangsRestriction;
 import eki.ekilex.data.SourceLink;
 import eki.ekilex.data.UsageTranslationDefinitionTuple;
 import eki.ekilex.data.WordForum;
+import eki.ekilex.data.db.tables.DefinitionFreeform;
+import eki.ekilex.data.db.tables.DefinitionSourceLink;
 import eki.ekilex.data.db.tables.Domain;
 import eki.ekilex.data.db.tables.DomainLabel;
 import eki.ekilex.data.db.tables.Freeform;
@@ -124,7 +125,6 @@ import eki.ekilex.data.db.tables.MeaningFreeform;
 import eki.ekilex.data.db.tables.MeaningRelTypeLabel;
 import eki.ekilex.data.db.tables.MeaningRelation;
 import eki.ekilex.data.db.tables.Source;
-import eki.ekilex.data.db.tables.SourceFreeform;
 import eki.ekilex.data.db.tables.UsageTypeLabel;
 import eki.ekilex.data.db.tables.Word;
 
@@ -596,10 +596,13 @@ public class CommonDataDbService extends AbstractDataDbService {
 						FREEFORM_SOURCE_LINK.ID.as("source_link_id"),
 						FREEFORM_SOURCE_LINK.TYPE.as("source_link_type"),
 						FREEFORM_SOURCE_LINK.NAME.as("source_link_name"),
-						FREEFORM_SOURCE_LINK.VALUE.as("source_link_value"),
-						FREEFORM_SOURCE_LINK.SOURCE_ID.as("source_id"))
-				.from(MEANING_FREEFORM, FREEFORM.leftOuterJoin(FREEFORM_SOURCE_LINK)
-						.on(FREEFORM_SOURCE_LINK.FREEFORM_ID.eq(FREEFORM.ID)))
+						FREEFORM_SOURCE_LINK.SOURCE_ID.as("source_id"),
+						SOURCE.NAME.as("source_name"))
+				.from(
+						MEANING_FREEFORM,
+						FREEFORM
+								.leftOuterJoin(FREEFORM_SOURCE_LINK).on(FREEFORM_SOURCE_LINK.FREEFORM_ID.eq(FREEFORM.ID))
+								.leftOuterJoin(SOURCE).on(FREEFORM_SOURCE_LINK.SOURCE_ID.eq(SOURCE.ID)))
 				.where(
 						MEANING_FREEFORM.MEANING_ID.eq(meaningId)
 								.and(FREEFORM.ID.eq(MEANING_FREEFORM.FREEFORM_ID))
@@ -612,6 +615,9 @@ public class CommonDataDbService extends AbstractDataDbService {
 
 		Freeform iff = FREEFORM.as("iff");
 		Freeform tff = FREEFORM.as("tff");
+		FreeformSourceLink ffsl = FREEFORM_SOURCE_LINK.as("ffsl");
+		MeaningFreeform mff = MEANING_FREEFORM.as("mff");
+		Source s = SOURCE.as("s");
 
 		return create
 				.select(
@@ -619,19 +625,19 @@ public class CommonDataDbService extends AbstractDataDbService {
 						iff.VALUE_TEXT.as("image_freeform_value_text"),
 						iff.COMPLEXITY.as("image_freeform_complexity"),
 						tff.VALUE_TEXT.as("title_freeform_value_text"),
-						FREEFORM_SOURCE_LINK.ID.as("source_link_id"),
-						FREEFORM_SOURCE_LINK.TYPE.as("source_link_type"),
-						FREEFORM_SOURCE_LINK.NAME.as("source_link_name"),
-						FREEFORM_SOURCE_LINK.VALUE.as("source_link_value"),
-						FREEFORM_SOURCE_LINK.SOURCE_ID.as("source_id"))
-				.from(
-						MEANING_FREEFORM,
+						ffsl.ID.as("source_link_id"),
+						ffsl.TYPE.as("source_link_type"),
+						ffsl.NAME.as("source_link_name"),
+						ffsl.SOURCE_ID.as("source_id"),
+						s.NAME.as("source_name"))
+				.from(mff,
 						iff
 								.leftOuterJoin(tff).on(tff.PARENT_ID.eq(iff.ID).and(tff.TYPE.eq(FreeformType.IMAGE_TITLE.name())))
-								.leftOuterJoin(FREEFORM_SOURCE_LINK).on(FREEFORM_SOURCE_LINK.FREEFORM_ID.eq(iff.ID)))
+								.leftOuterJoin(ffsl).on(ffsl.FREEFORM_ID.eq(iff.ID))
+								.leftOuterJoin(s).on(ffsl.SOURCE_ID.eq(s.ID)))
 				.where(
-						MEANING_FREEFORM.MEANING_ID.eq(meaningId)
-								.and(iff.ID.eq(MEANING_FREEFORM.FREEFORM_ID))
+						mff.MEANING_ID.eq(meaningId)
+								.and(iff.ID.eq(mff.FREEFORM_ID))
 								.and(iff.TYPE.eq(FreeformType.IMAGE_FILE.name())))
 				.orderBy(iff.ORDER_BY)
 				.fetchInto(ImageSourceTuple.class);
@@ -720,37 +726,46 @@ public class CommonDataDbService extends AbstractDataDbService {
 
 	public List<DefSourceAndNoteSourceTuple> getMeaningDefSourceAndNoteSourceTuples(Long meaningId) {
 
+		eki.ekilex.data.db.tables.Definition d = DEFINITION.as("d");
+		DefinitionSourceLink dsl = DEFINITION_SOURCE_LINK.as("dsl");
+		Freeform ff = FREEFORM.as("ff");
+		FreeformSourceLink ffsl = FREEFORM_SOURCE_LINK.as("ffsl");
+		DefinitionFreeform dff = DEFINITION_FREEFORM.as("dff");
+		Source ds = SOURCE.as("ds");
+		Source ffs = SOURCE.as("ffs");
+
 		return create
 				.select(
-						DEFINITION.ID.as("definition_id"),
-						DEFINITION_SOURCE_LINK.ID.as("definition_source_link_id"),
-						DEFINITION_SOURCE_LINK.TYPE.as("definition_source_link_type"),
-						DEFINITION_SOURCE_LINK.NAME.as("definition_source_link_name"),
-						DEFINITION_SOURCE_LINK.VALUE.as("definition_source_link_value"),
-						DEFINITION_SOURCE_LINK.SOURCE_ID.as("definition_source_id"),
-						FREEFORM.ID.as("note_id"),
-						FREEFORM.VALUE_TEXT.as("note_value_text"),
-						FREEFORM.VALUE_PRESE.as("note_value_prese"),
-						FREEFORM.LANG.as("note_lang"),
-						FREEFORM.COMPLEXITY.as("note_complexity"),
-						FREEFORM.IS_PUBLIC.as("is_note_public"),
-						FREEFORM.ORDER_BY.as("note_order_by"),
-						FREEFORM_SOURCE_LINK.ID.as("note_source_link_id"),
-						FREEFORM_SOURCE_LINK.TYPE.as("note_source_link_type"),
-						FREEFORM_SOURCE_LINK.NAME.as("note_source_link_name"),
-						FREEFORM_SOURCE_LINK.VALUE.as("note_source_link_value"),
-						FREEFORM_SOURCE_LINK.SOURCE_ID.as("note_source_id")
-						)
+						d.ID.as("definition_id"),
+						dsl.ID.as("definition_source_link_id"),
+						dsl.TYPE.as("definition_source_link_type"),
+						dsl.NAME.as("definition_source_link_name"),
+						dsl.SOURCE_ID.as("definition_source_id"),
+						ds.NAME.as("definition_source_name"),
+						ff.ID.as("note_id"),
+						ff.VALUE_TEXT.as("note_value_text"),
+						ff.VALUE_PRESE.as("note_value_prese"),
+						ff.LANG.as("note_lang"),
+						ff.COMPLEXITY.as("note_complexity"),
+						ff.IS_PUBLIC.as("is_note_public"),
+						ff.ORDER_BY.as("note_order_by"),
+						ffsl.ID.as("note_source_link_id"),
+						ffsl.TYPE.as("note_source_link_type"),
+						ffsl.NAME.as("note_source_link_name"),
+						ffsl.SOURCE_ID.as("note_source_id"),
+						ffs.NAME.as("note_source_name"))
 				.from(
-						DEFINITION
-								.leftOuterJoin(DEFINITION_SOURCE_LINK).on(DEFINITION_SOURCE_LINK.DEFINITION_ID.eq(DEFINITION.ID))
-								.leftOuterJoin(DEFINITION_FREEFORM).on(DEFINITION_FREEFORM.DEFINITION_ID.eq(DEFINITION.ID))
-								.leftOuterJoin(FREEFORM).on(
-										DEFINITION_FREEFORM.FREEFORM_ID.eq(FREEFORM.ID)
-												.and(FREEFORM.TYPE.eq(FreeformType.NOTE.name())))
-								.leftOuterJoin(FREEFORM_SOURCE_LINK).on(FREEFORM_SOURCE_LINK.FREEFORM_ID.eq(FREEFORM.ID)))
-				.where(DEFINITION.MEANING_ID.eq(meaningId))
-				.orderBy(FREEFORM.ORDER_BY)
+						d
+								.leftOuterJoin(dsl).on(dsl.DEFINITION_ID.eq(d.ID))
+								.leftOuterJoin(ds).on(dsl.SOURCE_ID.eq(ds.ID))
+								.leftOuterJoin(dff).on(dff.DEFINITION_ID.eq(d.ID))
+								.leftOuterJoin(ff).on(
+										dff.FREEFORM_ID.eq(ff.ID)
+												.and(ff.TYPE.eq(FreeformType.NOTE.name())))
+								.leftOuterJoin(ffsl).on(ffsl.FREEFORM_ID.eq(ff.ID))
+								.leftOuterJoin(ffs).on(ffsl.SOURCE_ID.eq(ffs.ID)))
+				.where(d.MEANING_ID.eq(meaningId))
+				.orderBy(ff.ORDER_BY)
 				.fetchInto(DefSourceAndNoteSourceTuple.class);
 	}
 
@@ -1064,10 +1079,10 @@ public class CommonDataDbService extends AbstractDataDbService {
 						LEXEME_SOURCE_LINK.ID,
 						LEXEME_SOURCE_LINK.TYPE,
 						LEXEME_SOURCE_LINK.NAME,
-						LEXEME_SOURCE_LINK.VALUE,
-						LEXEME_SOURCE_LINK.SOURCE_ID)
-				.from(LEXEME_SOURCE_LINK)
-				.where(LEXEME_SOURCE_LINK.LEXEME_ID.eq(lexemeId))
+						LEXEME_SOURCE_LINK.SOURCE_ID,
+						SOURCE.NAME.as("source_name"))
+				.from(LEXEME_SOURCE_LINK, SOURCE)
+				.where(LEXEME_SOURCE_LINK.LEXEME_ID.eq(lexemeId).and(LEXEME_SOURCE_LINK.SOURCE_ID.eq(SOURCE.ID)))
 				.orderBy(LEXEME_SOURCE_LINK.ORDER_BY)
 				.fetchInto(SourceLink.class);
 	}
@@ -1139,7 +1154,8 @@ public class CommonDataDbService extends AbstractDataDbService {
 		Freeform ud = FREEFORM.as("ud");
 		Freeform utype = FREEFORM.as("utype");
 		UsageTypeLabel utypelbl = USAGE_TYPE_LABEL.as("utypelbl");
-		FreeformSourceLink srcl = FREEFORM_SOURCE_LINK.as("uauthl");
+		FreeformSourceLink srcl = FREEFORM_SOURCE_LINK.as("srcl");
+		Source s = SOURCE.as("s");
 
 		return create
 				.select(
@@ -1160,12 +1176,14 @@ public class CommonDataDbService extends AbstractDataDbService {
 						srcl.ID.as("usage_source_link_id"),
 						srcl.TYPE.as("usage_source_link_type"),
 						srcl.NAME.as("usage_source_link_name"),
-						srcl.VALUE.as("usage_source_link_value"))
+						s.ID.as("usage_source_id"),
+						s.NAME.as("usage_source_name"))
 				.from(
 						ulff.innerJoin(u).on(ulff.FREEFORM_ID.eq(u.ID).and(u.TYPE.eq(FreeformType.USAGE.name())))
 								.leftOuterJoin(ut).on(ut.PARENT_ID.eq(u.ID).and(ut.TYPE.eq(FreeformType.USAGE_TRANSLATION.name())))
 								.leftOuterJoin(ud).on(ud.PARENT_ID.eq(u.ID).and(ud.TYPE.eq(FreeformType.USAGE_DEFINITION.name())))
 								.leftOuterJoin(srcl).on(srcl.FREEFORM_ID.eq(u.ID))
+								.leftOuterJoin(s).on(srcl.SOURCE_ID.eq(s.ID))
 								.leftOuterJoin(utype).on(utype.PARENT_ID.eq(u.ID).and(utype.TYPE.eq(FreeformType.USAGE_TYPE.name())))
 								.leftOuterJoin(utypelbl).on(utypelbl.CODE.eq(utype.CLASSIF_CODE).and(utypelbl.LANG.eq(classifierLabelLang).and(utypelbl.TYPE.eq(classifierLabelTypeCode)))))
 				.where(ulff.LEXEME_ID.eq(lexemeId))
@@ -1187,10 +1205,12 @@ public class CommonDataDbService extends AbstractDataDbService {
 						FREEFORM_SOURCE_LINK.ID.as("source_link_id"),
 						FREEFORM_SOURCE_LINK.TYPE.as("source_link_type"),
 						FREEFORM_SOURCE_LINK.NAME.as("source_link_name"),
-						FREEFORM_SOURCE_LINK.VALUE.as("source_link_value"),
-						FREEFORM_SOURCE_LINK.SOURCE_ID.as("source_id"))
-				.from(LEXEME_FREEFORM, FREEFORM.leftOuterJoin(FREEFORM_SOURCE_LINK)
-						.on(FREEFORM_SOURCE_LINK.FREEFORM_ID.eq(FREEFORM.ID)))
+						FREEFORM_SOURCE_LINK.SOURCE_ID.as("source_id"),
+						SOURCE.NAME.as("source_name"))
+				.from(LEXEME_FREEFORM,
+						FREEFORM
+								.leftOuterJoin(FREEFORM_SOURCE_LINK).on(FREEFORM_SOURCE_LINK.FREEFORM_ID.eq(FREEFORM.ID))
+								.leftOuterJoin(SOURCE).on(FREEFORM_SOURCE_LINK.SOURCE_ID.eq(SOURCE.ID)))
 				.where(
 						LEXEME_FREEFORM.LEXEME_ID.eq(lexemeId)
 								.and(FREEFORM.ID.eq(LEXEME_FREEFORM.FREEFORM_ID))

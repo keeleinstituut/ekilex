@@ -46,16 +46,20 @@ public class MorphologyDbService {
 	public Long createForm(Form form, Long wordId) {
 
 		Long formId = create
-				.selectDistinct(FORM.ID)
-				.from(FORM, PARADIGM_FORM, PARADIGM)
+				.select(FORM.ID)
+				.from(FORM)
 				.where(
 						FORM.DISPLAY_LEVEL.eq(form.getDisplayLevel())
 								.and(FORM.MORPH_CODE.eq(form.getMorphCode()))
 								.and(FORM.VALUE.eq(form.getValue()))
 								.and(FORM.DISPLAY_FORM.eq(form.getDisplayForm()))
-								.and(PARADIGM_FORM.FORM_ID.eq(FORM.ID))
-								.and(PARADIGM_FORM.PARADIGM_ID.eq(PARADIGM.ID))
-								.and(PARADIGM.WORD_ID.eq(wordId)))
+								.andExists(DSL
+										.select(PARADIGM.ID)
+										.from(PARADIGM, PARADIGM_FORM)
+										.where(
+												PARADIGM_FORM.FORM_ID.eq(FORM.ID)
+														.and(PARADIGM_FORM.PARADIGM_ID.eq(PARADIGM.ID))
+														.and(PARADIGM.WORD_ID.eq(wordId)))))
 				.fetchOptionalInto(Long.class)
 				.orElse(null);
 

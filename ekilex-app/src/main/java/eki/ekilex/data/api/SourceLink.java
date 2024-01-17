@@ -9,11 +9,11 @@ public class SourceLink extends AbstractDataObject {
 
 	private Long sourceLinkId;
 
+	private String sourceLinkName;
+
 	private Long sourceId;
 
-	private String value;
-
-	private String name;
+	private String sourceName;
 
 	private ReferenceType type;
 
@@ -25,6 +25,14 @@ public class SourceLink extends AbstractDataObject {
 		this.sourceLinkId = sourceLinkId;
 	}
 
+	public String getSourceLinkName() {
+		return sourceLinkName;
+	}
+
+	public void setSourceLinkName(String sourceLinkName) {
+		this.sourceLinkName = sourceLinkName;
+	}
+
 	public Long getSourceId() {
 		return sourceId;
 	}
@@ -33,20 +41,12 @@ public class SourceLink extends AbstractDataObject {
 		this.sourceId = sourceId;
 	}
 
-	public String getValue() {
-		return value;
+	public String getSourceName() {
+		return sourceName;
 	}
 
-	public void setValue(String value) {
-		this.value = value;
-	}
-
-	public String getName() {
-		return name;
-	}
-
-	public void setName(String name) {
-		this.name = name;
+	public void setSourceName(String sourceName) {
+		this.sourceName = sourceName;
 	}
 
 	public ReferenceType getType() {

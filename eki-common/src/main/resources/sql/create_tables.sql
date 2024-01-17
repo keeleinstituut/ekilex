@@ -626,7 +626,7 @@ create table source
 (
   id bigserial primary key,
   type varchar(100) not null,
-  name text null,
+  name text not null,
   value text null,
   value_prese text null,
   comment text null,

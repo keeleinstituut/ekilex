@@ -222,7 +222,8 @@ public class ConversionUtil implements GlobalConstant {
 					usageSource.setId(tuple.getUsageSourceLinkId());
 					usageSource.setType(tuple.getUsageSourceLinkType());
 					usageSource.setName(tuple.getUsageSourceLinkName());
-					usageSource.setValue(tuple.getUsageSourceLinkValue());
+					usageSource.setSourceId(tuple.getUsageSourceId());
+					usageSource.setSourceName(tuple.getUsageSourceName());
 					usageSourceMap.put(usageSourceLinkId, usageSource);
 					usage.getSourceLinks().add(usageSource);
 				}
@@ -267,7 +268,7 @@ public class ConversionUtil implements GlobalConstant {
 
 			T note = noteMap.get(noteId);
 			if (note == null) {
-				note = type.newInstance();
+				note = type.getDeclaredConstructor().newInstance();
 				sourceLinks = new ArrayList<>();
 				note.setSourceLinks(sourceLinks);
 				note.setId(noteId);
@@ -296,8 +297,8 @@ public class ConversionUtil implements GlobalConstant {
 				sourceLink.setId(sourceLinkId);
 				sourceLink.setType(tuple.getSourceLinkType());
 				sourceLink.setName(tuple.getSourceLinkName());
-				sourceLink.setValue(tuple.getSourceLinkValue());
 				sourceLink.setSourceId(tuple.getSourceId());
+				sourceLink.setSourceName(tuple.getSourceName());
 				sourceLinks.add(sourceLink);
 			}
 		}
@@ -337,8 +338,8 @@ public class ConversionUtil implements GlobalConstant {
 				sourceLink.setId(sourceLinkId);
 				sourceLink.setType(tuple.getSourceLinkType());
 				sourceLink.setName(tuple.getSourceLinkName());
-				sourceLink.setValue(tuple.getSourceLinkValue());
 				sourceLink.setSourceId(tuple.getSourceId());
+				sourceLink.setSourceName(tuple.getSourceName());
 				sourceLinks.add(sourceLink);
 			}
 		}
@@ -472,6 +473,7 @@ public class ConversionUtil implements GlobalConstant {
 		Map<Long, Definition> definitionMap = definitions.stream().collect(Collectors.toMap(Definition::getId, definition -> definition));
 		List<Long> handledSourceLinkIds = new ArrayList<>();
 		Map<Long, DefinitionNote> noteMap = new HashMap<>();
+		Map<Long, SourceLink> noteSourceLinkMap = new HashMap<>();
 
 		for (DefSourceAndNoteSourceTuple definitionData : definitionsDataTuples) {
 			Long definitionId = definitionData.getDefinitionId();
@@ -493,16 +495,16 @@ public class ConversionUtil implements GlobalConstant {
 			if (definitionSourceLinkId != null && !handledSourceLinkIds.contains(definitionSourceLinkId)) {
 				ReferenceType definitionSourceLinkType = definitionData.getDefinitionSourceLinkType();
 				String definitionSourceLinkName = definitionData.getDefinitionSourceLinkName();
-				String definitionSourceLinkValue = definitionData.getDefinitionSourceLinkValue();
 				Long definitionSourceId = definitionData.getDefinitionSourceId();
+				String definitionSourceName = definitionData.getDefinitionSourceName();
 				SourceLink definitionSourceLink = new SourceLink();
 				definitionSourceLink.setOwner(ReferenceOwner.DEFINITION);
 				definitionSourceLink.setOwnerId(definitionId);
 				definitionSourceLink.setId(definitionSourceLinkId);
 				definitionSourceLink.setType(definitionSourceLinkType);
 				definitionSourceLink.setName(definitionSourceLinkName);
-				definitionSourceLink.setValue(definitionSourceLinkValue);
 				definitionSourceLink.setSourceId(definitionSourceId);
+				definitionSourceLink.setSourceName(definitionSourceName);
 				definition.getSourceLinks().add(definitionSourceLink);
 				handledSourceLinkIds.add(definitionSourceLinkId);
 			}
@@ -530,19 +532,23 @@ public class ConversionUtil implements GlobalConstant {
 					noteMap.put(noteId, note);
 				}
 				if (noteSourceLinkId != null) {
-					ReferenceType noteSourceLinkType = definitionData.getNoteSourceLinkType();
-					String noteSourceLinkName = definitionData.getNoteSourceLinkName();
-					String noteSourceLinkValue = definitionData.getNoteSourceLinkValue();
-					Long noteSourceId = definitionData.getNoteSourceId();
-					SourceLink noteSourceLink = new SourceLink();
-					noteSourceLink.setOwner(ReferenceOwner.FREEFORM);
-					noteSourceLink.setOwnerId(noteId);
-					noteSourceLink.setId(noteSourceLinkId);
-					noteSourceLink.setType(noteSourceLinkType);
-					noteSourceLink.setName(noteSourceLinkName);
-					noteSourceLink.setValue(noteSourceLinkValue);
-					noteSourceLink.setSourceId(noteSourceId);
-					note.getSourceLinks().add(noteSourceLink);
+					SourceLink noteSourceLink = noteSourceLinkMap.get(noteSourceLinkId);
+					if (noteSourceLink == null) {
+						ReferenceType noteSourceLinkType = definitionData.getNoteSourceLinkType();
+						String noteSourceLinkName = definitionData.getNoteSourceLinkName();
+						Long noteSourceId = definitionData.getNoteSourceId();
+						String noteSourceName = definitionData.getNoteSourceName();
+						noteSourceLink = new SourceLink();
+						noteSourceLink.setOwner(ReferenceOwner.FREEFORM);
+						noteSourceLink.setOwnerId(noteId);
+						noteSourceLink.setId(noteSourceLinkId);
+						noteSourceLink.setType(noteSourceLinkType);
+						noteSourceLink.setName(noteSourceLinkName);
+						noteSourceLink.setSourceId(noteSourceId);
+						noteSourceLink.setSourceName(noteSourceName);
+						note.getSourceLinks().add(noteSourceLink);
+						noteSourceLinkMap.put(noteSourceLinkId, noteSourceLink);
+					}
 				}
 			}
 		}
@@ -733,7 +739,8 @@ public class ConversionUtil implements GlobalConstant {
 					sourceLink.setOwnerId(wordEtymId);
 					sourceLink.setId(wordEtymSourceLinkId);
 					sourceLink.setType(tuple.getWordEtymSourceLinkType());
-					sourceLink.setValue(tuple.getWordEtymSourceLinkValue());
+					sourceLink.setSourceId(tuple.getWordEtymSourceId());
+					sourceLink.setSourceName(tuple.getWordEtymSourceName());
 					wordEtym.getWordEtymSourceLinks().add(sourceLink);
 					wordEtymSourceLinkIds.add(wordEtymSourceLinkId);
 				}

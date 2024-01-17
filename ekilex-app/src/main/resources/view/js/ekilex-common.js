@@ -429,9 +429,7 @@ function initAddSourceLinkDlg(addDlg) {
 				const button = $(e.target);
 				const sourceName = button.closest('.form-group').find('.form-control').val();
 				const sourceId = button.data('source-id');
-				const selectedSourceNameId = $(`[name='source_${sourceId}']:checked`).val();
 				addDlg.find('[name=id2]').val(sourceId);
-				addDlg.find('[name=id3]').val(selectedSourceNameId);
 				addDlg.find('[name=value]').val(sourceName);
 				const form = button.closest('form');
 

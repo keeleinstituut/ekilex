@@ -565,7 +565,14 @@
       </button>
     </div>
   </th:block>
-
+  <th:block th:fragment="source-link" th:with="dataContent=${sourceLink.isSourcePublic} ? ${sourceLink.sourceValuePrese} : #{label.source.value.not.public}">
+    <button type="button" class="source-link btn btn-link-dark pt-0 px-0 pb-1" data-toggle="popover" data-html="true"
+            th:title="#{label.source}"
+            th:data-content="${dataContent}">
+      <span th:utext="${sourceLink.sourceName}"></span>
+      <span th:utext="| - ${sourceLink.sourceLinkName}|" th:unless="${#strings.isEmpty(sourceLink.sourceLinkName)}"></span>
+    </button>
+  </th:block>
   <th:block th:fragment="survey-banner-large">
     <!--/ Survey banner large /-->
     <div class="survey-banner survey-banner--large">

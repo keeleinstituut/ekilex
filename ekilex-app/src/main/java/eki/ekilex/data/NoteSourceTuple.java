@@ -34,9 +34,9 @@ public class NoteSourceTuple extends AbstractDataObject {
 
 	private String sourceLinkName;
 
-	private String sourceLinkValue;
-
 	private Long sourceId;
+
+	private String sourceName;
 
 	public Long getFreeformId() {
 		return freeformId;
@@ -82,8 +82,8 @@ public class NoteSourceTuple extends AbstractDataObject {
 		return isPublic;
 	}
 
-	public void setPublic(boolean isPublic) {
-		this.isPublic = isPublic;
+	public void setPublic(boolean aPublic) {
+		isPublic = aPublic;
 	}
 
 	public Long getOrderBy() {
@@ -134,14 +134,6 @@ public class NoteSourceTuple extends AbstractDataObject {
 		this.sourceLinkName = sourceLinkName;
 	}
 
-	public String getSourceLinkValue() {
-		return sourceLinkValue;
-	}
-
-	public void setSourceLinkValue(String sourceLinkValue) {
-		this.sourceLinkValue = sourceLinkValue;
-	}
-
 	public Long getSourceId() {
 		return sourceId;
 	}
@@ -150,4 +142,11 @@ public class NoteSourceTuple extends AbstractDataObject {
 		this.sourceId = sourceId;
 	}
 
+	public String getSourceName() {
+		return sourceName;
+	}
+
+	public void setSourceName(String sourceName) {
+		this.sourceName = sourceName;
+	}
 }

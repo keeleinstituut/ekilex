@@ -22,7 +22,7 @@
                 <option th:each="datasetType : ${enabledDatasetTypes}"
                         th:value="${datasetType.name()}"
                         th:text="#{|enum.datasettype.${datasetType.name()}|}"
-                        th:selected="${T(eki.common.constant.DatasetType).TERM}">
+                        th:selected="${datasetType == T(eki.common.constant.DatasetType).TERM}">
                 </option>
               </select>
             </div>

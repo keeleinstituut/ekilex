@@ -20,11 +20,13 @@ create type type_source_link as (
 				owner_id bigint,
 				source_link_id bigint,
 				source_link_type varchar(100),
-				name text,
-				value text,
+        source_link_name text,
 				order_by bigint,
 				source_id bigint,
-				source_props text array);
+        source_name text,
+        source_value text,
+        source_value_prese text,
+        is_source_public boolean);
 create type type_usage as (
 				usage_id bigint,
 				usage text,
@@ -801,10 +803,12 @@ from (select m.id,
                                                          ffsl.source_link_id,
                                                          ffsl.type,
                                                          ffsl.name,
-                                                         ffsl.value,
                                                          ffsl.order_by,
                                                          ffsl.source_id,
-                                                         ffsl.source_props
+                                                         ffsl.source_name,
+                                                         ffsl.source_value,
+                                                         ffsl.source_value_prese,
+                                                         ffsl.is_source_public
                                                          )::type_source_link
                                                        order by
                                                          ffsl.freeform_id,
@@ -817,18 +821,13 @@ from (select m.id,
                                                                       ffsl.name,
                                                                       ffsl.value,
                                                                       ffsl.order_by,
-                                                                      s.source_id,
-                                                                      s.source_props
-                                                               from freeform_source_link ffsl,
-                                                                    (select s.id source_id,
-                                                                            array_agg(ff.value_prese order by ff.order_by) source_props
-                                                                     from source s,
-                                                                          source_freeform sff,
-                                                                          freeform ff
-                                                                     where sff.source_id = s.id
-                                                                       and sff.freeform_id = ff.id
-                                                                     group by s.id) s
-                                                               where ffsl.source_id = s.source_id) ffsl on ffsl.freeform_id = ff.id
+                                                                      s.id source_id,
+                                                                      s.name source_name,
+                                                                      s.value source_value,
+                                                                      s.value_prese source_value_prese,
+                                                                      s.is_public is_source_public
+                                                               from freeform_source_link ffsl, source s
+                                                               where ffsl.source_id = s.id) ffsl on ffsl.freeform_id = ff.id
                                        where dff.definition_id = d.id
                                          and ff.id = dff.freeform_id
                                          and ff.type = 'NOTE'
@@ -842,25 +841,18 @@ from (select m.id,
                                                                    dsl.id,
                                                                    dsl.type,
                                                                    dsl.name,
-                                                                   dsl.value,
                                                                    dsl.order_by,
-                                                                   s.source_id,
-                                                                   s.source_props
+                                                                   s.id,
+                                                                   s.name,
+                                                                   s.value,
+                                                                   s.value_prese,
+                                                                   s.is_public
                                                                    )::type_source_link
                                                                  order by
                                                                    dsl.definition_id,
                                                                    dsl.order_by) source_links
-                                                 from definition_source_link dsl
-                                                        left outer join
-                                                      (select s.id source_id,
-                                                              array_agg(ff.value_prese order by ff.order_by) source_props
-                                                       from source s,
-                                                            source_freeform sff,
-                                                            freeform ff
-                                                       where sff.source_id = s.id
-                                                         and sff.freeform_id = ff.id
-                                                         and ff.type not in ('SOURCE_FILE', 'EXTERNAL_SOURCE_ID')
-                                                       group by s.id) s on s.source_id = dsl.source_id
+                                                 from definition_source_link dsl, source s
+                                                 where dsl.source_id = s.id
                                                  group by dsl.definition_id) source_links on source_links.definition_id = d.id
                          where d.is_public = true) d
                    group by d.meaning_id) d
@@ -1755,10 +1747,12 @@ select we.word_id,
          wesl.id,
          wesl.type,
          wesl.name,
-         wesl.value,
          wesl.order_by,
-         s.source_id,
-         s.source_props
+         s.id,
+         s.name,
+         s.value,
+         s.value_prese,
+         s.is_public
        )::type_source_link
        order by
        we.id,
@@ -1766,17 +1760,9 @@ select we.word_id,
        ) source_links
 from word_etymology we,
      word_etymology_source_link wesl,
-     (select s.id source_id,
-             array_agg(ff.value_prese order by ff.order_by) source_props
-      from source s,
-           source_freeform sff,
-           freeform ff
-      where sff.source_id = s.id
-      and   sff.freeform_id = ff.id
-      and   ff.type not in ('SOURCE_FILE', 'EXTERNAL_SOURCE_ID')
-      group by s.id) s
+     source s
 where wesl.word_etym_id = we.id
-and   wesl.source_id = s.source_id
+and   wesl.source_id = s.id
 and   exists (select l.id
               from lexeme l,
                    dataset ds
@@ -1796,10 +1782,12 @@ select l.id lexeme_id,
          lsl.id,
          lsl.type,
          lsl.name,
-         lsl.value,
          lsl.order_by,
-         s.source_id,
-         s.source_props
+         s.id,
+         s.name,
+         s.value,
+         s.value_prese,
+         s.is_public
        )::type_source_link
        order by
        l.id,
@@ -1808,18 +1796,10 @@ select l.id lexeme_id,
 from lexeme l,
      dataset ds,
      lexeme_source_link lsl,
-     (select s.id source_id,
-             array_agg(ff.value_prese order by ff.order_by) source_props
-      from source s,
-           source_freeform sff,
-           freeform ff
-      where sff.source_id = s.id
-      and   sff.freeform_id = ff.id
-      and   ff.type not in ('SOURCE_FILE', 'EXTERNAL_SOURCE_ID')
-      group by s.id) s
+     source s
 where l.is_public = true
 and   lsl.lexeme_id = l.id
-and   lsl.source_id = s.source_id
+and   lsl.source_id = s.id
 and   ds.code = l.dataset_code
 and   ds.is_public = true
 group by l.id
@@ -1834,10 +1814,12 @@ select l.id lexeme_id,
          ffsl.id,
          ffsl.type,
          ffsl.name,
-         ffsl.value,
          ffsl.order_by,
-         s.source_id,
-         s.source_props
+         s.id,
+         s.name,
+         s.value,
+         s.value_prese,
+         s.is_public
        )::type_source_link
        order by
        lff.id,
@@ -1847,19 +1829,11 @@ from lexeme l,
      dataset ds,
      lexeme_freeform lff,
      freeform_source_link ffsl,
-     (select s.id source_id,
-             array_agg(ff.value_prese order by ff.order_by) source_props
-      from source s,
-           source_freeform sff,
-           freeform ff
-      where sff.source_id = s.id
-      and   sff.freeform_id = ff.id
-      and   ff.type not in ('SOURCE_FILE', 'EXTERNAL_SOURCE_ID')
-      group by s.id) s
+     source s
 where l.is_public = true
 and   lff.lexeme_id = l.id
 and   lff.freeform_id = ffsl.freeform_id
-and   ffsl.source_id = s.source_id
+and   ffsl.source_id = s.id
 and   ds.code = l.dataset_code
 and   ds.is_public = true
 group by l.id
@@ -1874,10 +1848,12 @@ select ffsl.meaning_id,
          ffsl.source_link_id,
          ffsl.type,
          ffsl.name,
-         ffsl.value,
          ffsl.order_by,
          ffsl.source_id,
-         ffsl.source_props
+         ffsl.source_name,
+         ffsl.source_value,
+         ffsl.source_value_prese,
+         ffsl.is_source_public
        )::type_source_link
        order by
        ffsl.freeform_id,
@@ -1890,32 +1866,26 @@ from (select mff.meaning_id,
              ffsl.name,
              ffsl.value,
              ffsl.order_by,
-             s.source_id,
-             s.source_props
+             s.id source_id,
+             s.name source_name,
+             s.value source_value,
+             s.value_prese source_value_prese,
+             s.is_public is_source_public
       from lexeme l,
            dataset ds,
            meaning_freeform mff,
            freeform_source_link ffsl,
-           (select s.id source_id,
-                   array_agg(ff.value_prese order by ff.order_by) source_props
-            from source s,
-                 source_freeform sff,
-                 freeform ff
-            where sff.source_id = s.id
-            and   sff.freeform_id = ff.id
-            and   ff.type not in ('SOURCE_FILE', 'EXTERNAL_SOURCE_ID')
-            group by s.id) s
+           source s
       where l.is_public = true
       and   l.meaning_id = mff.meaning_id
       and   ffsl.freeform_id = mff.freeform_id
-      and   ffsl.source_id = s.source_id
+      and   ffsl.source_id = s.id
       and   ds.code = l.dataset_code
       and   ds.is_public = true
       group by mff.meaning_id,
                mff.freeform_id,
                ffsl.id,
-               s.source_id,
-               s.source_props) ffsl
+               s.id) ffsl
 group by ffsl.meaning_id
 order by ffsl.meaning_id;
 

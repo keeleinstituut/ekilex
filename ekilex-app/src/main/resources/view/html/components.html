@@ -269,15 +269,17 @@
               <label class="col-12 col-form-label" th:text="#{source.type}">Tüüp</label>
               <div class="col-md-6">
                 <select required class="form-control required-field" name="type">
-                  <option value="" hidden disabled selected th:text="#{source.select.type}">vali allika tüüp</option>
-                  <option th:each="type : ${sourceTypes}" th:value="${type}" th:text="#{|source.type.${type}|}">value</option>
+                  <option th:each="type : ${sourceTypes}"
+                          th:value="${type}"
+                          th:text="#{|source.type.${type}|}"
+                          th:selected="${type == T(eki.common.constant.SourceType).DOCUMENT}">value</option>
                 </select>
               </div>
             </div>
             <div class="form-group row m-4">
               <label class="col-12 col-form-label" th:text="#{source.name}">Lühike kuju</label>
               <div class="col-md-12">
-                <input class="form-control" name="name">
+                <input class="form-control required-field" name="name">
               </div>
             </div>
             <div class="form-group row m-4">
