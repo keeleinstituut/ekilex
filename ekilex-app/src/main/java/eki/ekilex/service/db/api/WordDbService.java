@@ -288,6 +288,8 @@ public class WordDbService extends AbstractDataDbService {
 		wordRecord.setAspectCode(word.getAspectCode());
 		wordRecord.setVocalForm(word.getVocalForm());
 		wordRecord.setMorphophonoForm(word.getMorphophonoForm());
+		wordRecord.setIsWord(Boolean.TRUE);
+		wordRecord.setIsCollocation(Boolean.FALSE);
 		if (homonymNr != null) {
 			wordRecord.setHomonymNr(homonymNr);
 		}

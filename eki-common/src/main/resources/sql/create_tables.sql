@@ -659,6 +659,8 @@ create table word
   vocal_form text null,
   morphophono_form text null,
   manual_event_on timestamp null,
+  is_word boolean not null,
+  is_collocation boolean not null,
   is_public boolean not null default true
 );
 alter sequence word_id_seq restart with 10000;
@@ -1359,6 +1361,8 @@ create index word_value_as_word_lower_prefix_idx on word(lower(value_as_word) te
 create index word_manual_event_on_idx on word(manual_event_on);
 create index word_morphophono_form_idx on word(morphophono_form);
 create index word_morphophono_form_lower_idx on word(lower(morphophono_form));
+create index word_is_word_idx on word(is_word);
+create index word_is_collocation_idx on word(is_collocation);
 create index word_is_public_idx on word(is_public);
 create index word_etym_word_id_idx on word_etymology(word_id);
 create index word_etym_etym_type_code_idx on word_etymology(etymology_type_code);

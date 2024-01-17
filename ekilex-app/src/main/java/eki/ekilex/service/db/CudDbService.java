@@ -621,8 +621,27 @@ public class CudDbService extends AbstractDataDbService {
 		boolean isPublic = false;
 
 		Long wordId = create
-				.insertInto(WORD, WORD.VALUE, WORD.VALUE_PRESE, WORD.VALUE_AS_WORD, WORD.MORPHOPHONO_FORM, WORD.HOMONYM_NR, WORD.LANG, WORD.IS_PUBLIC)
-				.values(value, valuePrese, valueAsWord, morphophonoForm, homonymNr, lang, isPublic)
+				.insertInto(
+						WORD,
+						WORD.VALUE,
+						WORD.VALUE_PRESE,
+						WORD.VALUE_AS_WORD,
+						WORD.MORPHOPHONO_FORM,
+						WORD.HOMONYM_NR,
+						WORD.LANG,
+						WORD.IS_WORD,
+						WORD.IS_COLLOCATION,
+						WORD.IS_PUBLIC)
+				.values(
+						value,
+						valuePrese,
+						valueAsWord,
+						morphophonoForm,
+						homonymNr,
+						lang,
+						Boolean.TRUE,
+						Boolean.FALSE,
+						isPublic)
 				.returning(WORD.ID)
 				.fetchOne()
 				.getId();
@@ -663,8 +682,25 @@ public class CudDbService extends AbstractDataDbService {
 		int homonymNr = getWordNextHomonymNr(value, lang);
 
 		Long wordId = create
-				.insertInto(WORD, WORD.VALUE, WORD.VALUE_PRESE, WORD.VALUE_AS_WORD, WORD.MORPHOPHONO_FORM, WORD.HOMONYM_NR, WORD.LANG)
-				.values(value, valuePrese, valueAsWord, morphophonoForm, homonymNr, lang)
+				.insertInto(
+						WORD,
+						WORD.VALUE,
+						WORD.VALUE_PRESE,
+						WORD.VALUE_AS_WORD,
+						WORD.MORPHOPHONO_FORM,
+						WORD.HOMONYM_NR,
+						WORD.LANG,
+						WORD.IS_WORD,
+						WORD.IS_COLLOCATION)
+				.values(
+						value,
+						valuePrese,
+						valueAsWord,
+						morphophonoForm,
+						homonymNr,
+						lang,
+						Boolean.TRUE,
+						Boolean.FALSE)
 				.returning(WORD.ID)
 				.fetchOne()
 				.getId();
@@ -692,8 +728,25 @@ public class CudDbService extends AbstractDataDbService {
 	public Long createWord(String wordValue, String valuePrese, String valueAsWord, String lang, int homNr) {
 
 		Long wordId = create
-				.insertInto(WORD, WORD.VALUE, WORD.VALUE_PRESE, WORD.VALUE_AS_WORD, WORD.MORPHOPHONO_FORM, WORD.HOMONYM_NR, WORD.LANG)
-				.values(wordValue, valuePrese, valueAsWord, wordValue, homNr, lang)
+				.insertInto(
+						WORD,
+						WORD.VALUE,
+						WORD.VALUE_PRESE,
+						WORD.VALUE_AS_WORD,
+						WORD.MORPHOPHONO_FORM,
+						WORD.HOMONYM_NR,
+						WORD.LANG,
+						WORD.IS_WORD,
+						WORD.IS_COLLOCATION)
+				.values(
+						wordValue,
+						valuePrese,
+						valueAsWord,
+						wordValue,
+						homNr,
+						lang,
+						Boolean.TRUE,
+						Boolean.FALSE)
 				.returning(WORD.ID)
 				.fetchOne()
 				.getId();
