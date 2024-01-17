@@ -65,6 +65,12 @@
 				<spring.boot.mainclass>eki.ekilex.cli.MeaningForumImporter</spring.boot.mainclass>
 			</properties>
 		</profile>
+		<profile>
+			<id>cmov</id>
+			<properties>
+				<spring.boot.mainclass>eki.ekilex.cli.CollocationMover</spring.boot.mainclass>
+			</properties>
+		</profile>
 	</profiles>
 
 	<build>

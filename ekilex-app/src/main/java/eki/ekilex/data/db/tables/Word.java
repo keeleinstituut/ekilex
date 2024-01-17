@@ -17,7 +17,7 @@ import org.jooq.ForeignKey;
 import org.jooq.Identity;
 import org.jooq.Name;
 import org.jooq.Record;
-import org.jooq.Row13;
+import org.jooq.Row15;
 import org.jooq.Schema;
 import org.jooq.Table;
 import org.jooq.TableField;
@@ -113,6 +113,16 @@ public class Word extends TableImpl<WordRecord> {
      * The column <code>public.word.is_public</code>.
      */
     public final TableField<WordRecord, Boolean> IS_PUBLIC = createField(DSL.name("is_public"), SQLDataType.BOOLEAN.nullable(false).defaultValue(DSL.field("true", SQLDataType.BOOLEAN)), this, "");
+
+    /**
+     * The column <code>public.word.is_word</code>.
+     */
+    public final TableField<WordRecord, Boolean> IS_WORD = createField(DSL.name("is_word"), SQLDataType.BOOLEAN.nullable(false), this, "");
+
+    /**
+     * The column <code>public.word.is_collocation</code>.
+     */
+    public final TableField<WordRecord, Boolean> IS_COLLOCATION = createField(DSL.name("is_collocation"), SQLDataType.BOOLEAN.nullable(false), this, "");
 
     private Word(Name alias, Table<WordRecord> aliased) {
         this(alias, aliased, null);
@@ -232,11 +242,11 @@ public class Word extends TableImpl<WordRecord> {
     }
 
     // -------------------------------------------------------------------------
-    // Row13 type methods
+    // Row15 type methods
     // -------------------------------------------------------------------------
 
     @Override
-    public Row13<Long, String, Integer, String, String, String, String, String, String, String, Timestamp, String, Boolean> fieldsRow() {
-        return (Row13) super.fieldsRow();
+    public Row15<Long, String, Integer, String, String, String, String, String, String, String, Timestamp, String, Boolean, Boolean, Boolean> fieldsRow() {
+        return (Row15) super.fieldsRow();
     }
 }

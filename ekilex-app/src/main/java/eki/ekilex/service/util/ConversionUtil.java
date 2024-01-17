@@ -1115,7 +1115,7 @@ public class ConversionUtil implements GlobalConstant {
 
 		CollocMember collocMember = new CollocMember();
 		collocMember.setWordId(collocTuple.getCollocMemberWordId());
-		collocMember.setWord(collocTuple.getCollocMemberWord());
+		collocMember.setWord(collocTuple.getCollocMemberWordValue());
 		collocMember.setWeight(collocTuple.getCollocMemberWeight());
 		collocation.getCollocMembers().add(collocMember);
 	}

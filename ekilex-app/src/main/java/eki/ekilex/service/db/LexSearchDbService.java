@@ -544,7 +544,7 @@ public class LexSearchDbService extends AbstractDataDbService {
 						c.SCORE.as("colloc_score"),
 						c.USAGES.as("colloc_usages"),
 						l2.WORD_ID.as("colloc_member_word_id"),
-						w2.VALUE.as("colloc_member_word"),
+						w2.VALUE.as("colloc_member_word_value"),
 						lc2.WEIGHT.as("colloc_member_weight"))
 				.from(pgr1, rgr1, lc1, lc2, c, l2, w2)
 				.where(
@@ -578,7 +578,7 @@ public class LexSearchDbService extends AbstractDataDbService {
 						c.SCORE.as("colloc_score"),
 						c.USAGES.as("colloc_usages"),
 						l2.WORD_ID.as("colloc_member_word_id"),
-						w2.VALUE.as("colloc_member_word"),
+						w2.VALUE.as("colloc_member_word_value"),
 						lc2.WEIGHT.as("colloc_member_weight"))
 				.from(lc1, lc2, c, l2, w2)
 				.where(
