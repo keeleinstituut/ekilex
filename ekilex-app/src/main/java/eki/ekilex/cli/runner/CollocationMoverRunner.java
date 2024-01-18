@@ -43,6 +43,7 @@ public class CollocationMoverRunner extends AbstractLoaderCommons implements Sys
 		logger.info("Collecting and moving collocations...");
 
 		File importFile = new File(importFilePath);
+		String importFolderPath = StringUtils.replace(importFile.getParentFile().getPath(), "\\", "/") + "/";
 		List<String> collocMemberFormMappingLines = readFileLines(importFile);
 		collocMemberFormMappingLines.remove(0);//remove header
 		
@@ -121,13 +122,13 @@ public class CollocationMoverRunner extends AbstractLoaderCommons implements Sys
 		}
 
 		Collections.sort(missingMembersCollocValues);
-		File missingMembersLogFile = new File("missing-members-colloc-values.txt");
+		File missingMembersLogFile = new File(importFolderPath + "missing-members-colloc-values.txt");
 		FileUtils.writeLines(missingMembersLogFile, "UTF-8", missingMembersCollocValues);
 
-		File existingCollocValueWordsLogFile = new File("existing-colloc-value-words.txt");
+		File existingCollocValueWordsLogFile = new File(importFolderPath + "existing-colloc-value-words.txt");
 		FileUtils.writeLines(existingCollocValueWordsLogFile, "UTF-8", existingCollocValueWordsLog);
 
-		File tooManyCollocValueWordsLogFile = new File("toomany-colloc-value-words.txt");
+		File tooManyCollocValueWordsLogFile = new File(importFolderPath + "toomany-colloc-value-words.txt");
 		FileUtils.writeLines(tooManyCollocValueWordsLogFile, "UTF-8", tooManyCollocValueWordsLog);
 
 		/*
