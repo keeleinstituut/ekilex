@@ -649,8 +649,10 @@ public class DatasetImporterRunner extends AbstractLoaderCommons {
 				dataMapCopy.put("value_prese", definitionValuePrese);
 			}
 		} else if (StringUtils.equalsIgnoreCase(WORD, tableName)) {
-			dataMapCopy.put("is_word", Boolean.TRUE);
-			dataMapCopy.put("is_collocation", Boolean.FALSE);
+			if (!dataMapCopy.containsKey("is_word")) {
+				dataMapCopy.put("is_word", Boolean.TRUE);
+				dataMapCopy.put("is_collocation", Boolean.FALSE);
+			}
 		}
 		return dataMapCopy;
 	}

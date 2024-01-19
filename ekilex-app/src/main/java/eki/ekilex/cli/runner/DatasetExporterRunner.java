@@ -105,8 +105,6 @@ public class DatasetExporterRunner extends AbstractLoaderCommons implements Init
 		tablesHierarchyPaths.add(composePath(WORD, WORD_ETYMOLOGY, WORD_ETYMOLOGY_RELATION));
 		tablesHierarchyPaths.add(composePath(WORD, WORD_ETYMOLOGY, WORD_ETYMOLOGY_SOURCE_LINK));
 		tablesHierarchyPaths.add(composePath(WORD, WORD_ETYMOLOGY, WORD_ETYMOLOGY_SOURCE_LINK, SOURCE));
-		tablesHierarchyPaths.add(composePath(WORD, WORD_ETYMOLOGY, WORD_ETYMOLOGY_SOURCE_LINK, SOURCE, SOURCE_FREEFORM));
-		tablesHierarchyPaths.add(composePath(WORD, WORD_ETYMOLOGY, WORD_ETYMOLOGY_SOURCE_LINK, SOURCE, SOURCE_FREEFORM, FREEFORM));
 
 		tablesHierarchyPaths.add(composePath(PARADIGM));
 		tablesHierarchyPaths.add(composePath(PARADIGM, PARADIGM_FORM));
@@ -122,16 +120,14 @@ public class DatasetExporterRunner extends AbstractLoaderCommons implements Init
 		tablesHierarchyPaths.add(composePath(MEANING, MEANING_FREEFORM, FREEFORM));
 		tablesHierarchyPaths.add(composePath(MEANING, MEANING_FREEFORM, FREEFORM, FREEFORM_SOURCE_LINK));
 		tablesHierarchyPaths.add(composePath(MEANING, MEANING_FREEFORM, FREEFORM, FREEFORM_SOURCE_LINK, SOURCE));
-		tablesHierarchyPaths.add(composePath(MEANING, MEANING_FREEFORM, FREEFORM, FREEFORM_SOURCE_LINK, SOURCE, SOURCE_FREEFORM));
-		tablesHierarchyPaths.add(composePath(MEANING, MEANING_FREEFORM, FREEFORM, FREEFORM_SOURCE_LINK, SOURCE, SOURCE_FREEFORM, FREEFORM));
 		tablesHierarchyPaths.add(composePath(MEANING, DEFINITION));
 		tablesHierarchyPaths.add(composePath(MEANING, DEFINITION, DEFINITION_DATASET));
 		tablesHierarchyPaths.add(composePath(MEANING, DEFINITION, DEFINITION_SOURCE_LINK));
 		tablesHierarchyPaths.add(composePath(MEANING, DEFINITION, DEFINITION_SOURCE_LINK, SOURCE));
-		tablesHierarchyPaths.add(composePath(MEANING, DEFINITION, DEFINITION_SOURCE_LINK, SOURCE, SOURCE_FREEFORM));
-		tablesHierarchyPaths.add(composePath(MEANING, DEFINITION, DEFINITION_SOURCE_LINK, SOURCE, SOURCE_FREEFORM, FREEFORM));
 		tablesHierarchyPaths.add(composePath(MEANING, DEFINITION, DEFINITION_FREEFORM));
 		tablesHierarchyPaths.add(composePath(MEANING, DEFINITION, DEFINITION_FREEFORM, FREEFORM));
+		tablesHierarchyPaths.add(composePath(MEANING, DEFINITION, DEFINITION_FREEFORM, FREEFORM, FREEFORM_SOURCE_LINK));
+		tablesHierarchyPaths.add(composePath(MEANING, DEFINITION, DEFINITION_FREEFORM, FREEFORM, FREEFORM_SOURCE_LINK, SOURCE));
 
 		tablesHierarchyPaths.add(composePath(COLLOCATION));
 
@@ -151,8 +147,6 @@ public class DatasetExporterRunner extends AbstractLoaderCommons implements Init
 		tablesHierarchyPaths.add(composePath(LEXEME, LEXEME_FREEFORM, FREEFORM, FREEFORM));
 		tablesHierarchyPaths.add(composePath(LEXEME, LEXEME_FREEFORM, FREEFORM, FREEFORM_SOURCE_LINK));
 		tablesHierarchyPaths.add(composePath(LEXEME, LEXEME_FREEFORM, FREEFORM, FREEFORM_SOURCE_LINK, SOURCE));
-		tablesHierarchyPaths.add(composePath(LEXEME, LEXEME_FREEFORM, FREEFORM, FREEFORM_SOURCE_LINK, SOURCE, SOURCE_FREEFORM));
-		tablesHierarchyPaths.add(composePath(LEXEME, LEXEME_FREEFORM, FREEFORM, FREEFORM_SOURCE_LINK, SOURCE, SOURCE_FREEFORM, FREEFORM));
 		tablesHierarchyPaths.add(composePath(LEXEME, LEX_COLLOC_POS_GROUP));
 		tablesHierarchyPaths.add(composePath(LEXEME, LEX_COLLOC_POS_GROUP, LEX_COLLOC_REL_GROUP));
 		tablesHierarchyPaths.add(composePath(LEXEME, LEX_COLLOC));
