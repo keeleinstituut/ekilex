@@ -1,4 +1,1 @@
-Märkused ver 1.33.0 tarne kohta:
-
-Käivitada rõhumärkide taastamise käsurearakendus:
-https://github.com/keeleinstituut/ekilex/wiki/Keelendite-rõhumärkide-taastaja
+Märkused ver 1.34.0 tarne kohta:
