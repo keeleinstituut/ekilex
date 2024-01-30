@@ -1,4 +1,110 @@
 Märkused ver 1.33.0 tarne kohta:
 
-Käivitada rõhumärkide taastamise käsurearakendus:
-https://github.com/keeleinstituut/ekilex/wiki/Keelendite-rõhumärkide-taastaja
+1) Võta githubist värske tarkvara versioon, mille viite arendaja annab
+
+2) Ehita tarkvara tarkvaraprojekti juurikast
+  
+  ../ekilex>mvn clean install -D skipTests
+  
+  Ekilex rakenduse pake asub
+  
+  ../ekilex/ekilex-app/target/ekilex-app.jar
+  
+  Sõnaveebi rakenduse pake asub
+  
+  ../ekilex/wordweb-app/target/wordweb-app.jar
+
+3) Käivita ekilex andmebaasis muudatuste skript:
+  
+  ../ekilex/eki-common/src/main/resources/sql/delivery.sql
+  
+  (skript sisaldab ka ühte mahukamat muudatust ning võib võtta mõne minuti)
+
+4) Keelendite rõhumärkide taastamine utiliitrakendusega.
+  
+  1. loo rakenduse "dev"-profiili määrangute fail:
+     
+	 ../ekilex/ekilex-app/src/main/resources/application-dev.properties
+  
+  2. sisusta fail ainult selles kontekstis oluliste rakenduse määrangutega:
+
+     server.port=1234
+     spring.datasource.url=jdbc:postgresql://localhost:5432/ekilex
+     spring.datasource.username=<username>
+     spring.datasource.password=<password>
+     
+     logging.level.root=warn
+     logging.level.eki.ekilex=debug
+     logging.level.eki.common=info
+     logging.level.org.jooq=warn
+
+     Andmebaasi ühenduse parameetrid peavad olema reaalsed selle keskkonna parameetrid.
+     Kuna erinevad ekilexi rakendused käivitavad ka veebikonteksti siis on oluline, et nende veebi pordid ei konkureeriks.
+	 Seepärast määra "server.port"-le mingi ajutine fiktiivne väärtus
+
+  3. käivita rakendus:
+     
+	 ../ekilex/ekilex-app>mvn spring-boot:run -P wscor -D spring-boot.run.profiles=dev
+	 
+	 Spring profiil "dev" tähendab automaatselt seda, et rakenduse logi jookseb otse terminali mitte logifaili.
+	 See on antud juhul kasulik kiireks tagassideks rakenduselt.
+	 Rakendus jookseb kümmekond sekundit.
+	 Logisse ilmuvad ainult mõned read andmeparanduse statistikaga ning logi lõppeb infoga "BUILD SUCCESS".
+	 Kui logi sisaldab midagi muud, informeeri arendajat.
+
+5) Sõnakogu "mtr" taastamine utiliitrakendusega.
+
+  1. kopeeri sõnakogu taastefail "mtr.zip" kohalikku failisüsteemi utiliitrakendusele juurdepääsetavasse kohta
+  
+  2. kasuta sama "dev"-profiili määrangute faili, mis eelmises punktis
+  
+  3. käivita rakendus:
+  
+     ../ekilex/ekilex-app>mvn spring-boot:run -P dsimp -D spring-boot.run.profiles=dev -D spring-boot.run.arguments="imptype=append impload=min impfile="<rada/rada/mtr.zip>""
+	 
+	 NB! Sisusta parameeter "impfile" korrektse viitega failile!
+	 NB! Märka topelt jutumärke!
+	 
+	 Rakendus jookseb u pool tundi, logi ilmub otse terminali.
+	 Logi näitab laadimise põhiprogressi protsentides. Siiski, kirja "Creating activity logs for" juures läheb mitmeid minuteid ilma täiendava tagasisideta.
+	 Viimase asjana peaks ilmuma "Done with import" ja "BUILD SUCCESS".
+	 Kui logi sisaldab midagi muud, informeeri arendajat.
+
+6) Kustuta Ekilex andmebaasis enam mittevajalikud laiendid ja funktsioonid:
+
+   drop extension if exists dblink cascade;
+   drop extension if exists pg_stat_statements cascade;
+   drop extension if exists pg_trgm cascade;
+   drop extension if exists unaccent cascade;
+   drop function if exists merge_homonyms_to_eki(char(3) array);
+  
+   NB! Vajab postgres õigustega kasutajat!
+
+7) Sõnaveebi andmebaasi agregeerimine.
+
+  1. kustuta Ekilex andmebaasis senised Sõnaveebiga seotud vaated ja andmetüübid. Järgnevas failis käivita AINULT sektsioon pealkirjaga "wordweb associated views and types"
+  
+     ../ekilex/eki-common/src/main/resources/sql/drop-all.sql
+	 
+  2. loo Ekilexi andmebaasis uued Sõnaveebi vaated ja andmetüübid skriptiga:
+  
+     ../ekilex/eki-common/src/main/resources/sql/create_views.sql
+
+  3. kustuta ja loo Sõnaveebi andmebaasis materjaliseeritud vaated ja andmetüübid skriptiga:
+  
+     ../ekilex/wordweb-app/fileresources/sql/create_mviews.sql
+	 
+	 NB! Muuda skriptis dblink parameetreid vastavalt keskkonnale!
+	 NB! Ühtegi veateadet ei tohi olla!
+
+	 Skript jookseb umbes pool tundi.
+
+8) Seo ekilex-app.jar ja wordweb-app.jar rakenduste teenustega nagu seni ja käivita. Kontrolli paigaldust:
+
+  1. peale käivitamist kontrolli kummagi rakenduse logifailidest kas käivitamisega kaasnesid veateated, neid ei ohiks olla ühtegi.
+  
+  2. ava Ekilexi rakenduse avaleht brauseris vastava keskkonna aadressil ja navigeeri vaatesse "/login", sisene testkasutajatunnustega: <arendaja annab turvalises kommunikatsioonikanalis>, avaneb avaleht pealkirjaga "Töölaud".
+  
+  3. ava Sõnaveebi rakenduse avaleht brauseris vastava keskkonna aadressil, kirjuta otsinguvälja mõne eestikeelse sõna sisaldava vähemalt kolme tähe kombinatsioon, mis peaks avama kiirotsingu (autocomplete) pakkumiste menüü.
+
+<märkmete lõpp>

@@ -1,1 +1,23 @@
 -- upgrade from ver 1.32.0 to 1.33.0
+
+-- Allikaviidetes autori ja tõlkija parameetrist loobumine
+update freeform_source_link set type = 'ANY' where type in ('AUTHOR', 'TRANSLATOR');
+update word_etymology_source_link set type = 'ANY' where type = 'AUTHOR';
+
+-- Ajutine lühikese kuju väärtus allikatele millel see väärtus puudub
+update source set name = 'source-name-placeholder' where name is null;
+
+-- Allika lühike kuju kohustuslikuks väljaks
+alter table source alter column name set not null;
+
+-- keelendid võivad olla ka kollokatsioonid
+alter table word add column is_word boolean;
+alter table word add column is_collocation boolean;
+update word set is_word = true;
+update word set is_collocation = false;
+alter table word alter column is_word set not null;
+alter table word alter column is_collocation set not null;
+create index word_is_word_idx on word(is_word);
+create index word_is_collocation_idx on word(is_collocation);
+
+-- Loo uuesti ekilexi baasi tüübid (types) ja vaated (views)
