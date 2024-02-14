@@ -183,7 +183,7 @@ public class LexSearchDbService extends AbstractDataDbService {
 														.and(ffa.FREQ_CORP_ID.eq(fca.ID)))
 										.orderBy(fca.CORP_DATE.desc())
 										.limit(1))))
-				.asField();		
+				.asField();
 
 		return create
 				.select(
@@ -441,8 +441,8 @@ public class LexSearchDbService extends AbstractDataDbService {
 								.innerJoin(w2).on(w2.ID.eq(wgrm2.WORD_ID))
 								.leftOuterJoin(wrtl).on(
 										wgr.WORD_REL_TYPE_CODE.eq(wrtl.CODE)
-												.and(wrtl.LANG.eq(classifierLabelLang)
-														.and(wrtl.TYPE.eq(classifierLabelTypeCode)))))
+												.and(wrtl.LANG.eq(classifierLabelLang))
+												.and(wrtl.TYPE.eq(classifierLabelTypeCode))))
 				.where(wgrm1.WORD_ID.eq(wordId))
 				.orderBy(wgrm2.ORDER_BY)
 				.fetchInto(eki.ekilex.data.WordRelation.class);
@@ -480,8 +480,8 @@ public class LexSearchDbService extends AbstractDataDbService {
 								.innerJoin(w2).on(w2.ID.eq(r.WORD2_ID).andExists(DSL.select(l2.ID).from(l2).where(l2.WORD_ID.eq(w2.ID))))
 								.leftOuterJoin(rtl).on(
 										r.WORD_REL_TYPE_CODE.eq(rtl.CODE)
-												.and(rtl.LANG.eq(classifierLabelLang)
-														.and(rtl.TYPE.eq(classifierLabelTypeCode)))))
+												.and(rtl.LANG.eq(classifierLabelLang))
+												.and(rtl.TYPE.eq(classifierLabelTypeCode))))
 				.where(r.WORD1_ID.eq(wordId))
 				.orderBy(r.ORDER_BY)
 				.fetchInto(eki.ekilex.data.WordRelation.class);
@@ -517,8 +517,7 @@ public class LexSearchDbService extends AbstractDataDbService {
 						.leftOuterJoin(wesl).on(wesl.WORD_ETYM_ID.eq(we.ID))
 						.leftOuterJoin(s).on(wesl.SOURCE_ID.eq(s.ID))
 						.leftOuterJoin(wer).on(wer.WORD_ETYM_ID.eq(we.ID))
-						.leftOuterJoin(w2).on(w2.ID.eq(wer.RELATED_WORD_ID))
-						)
+						.leftOuterJoin(w2).on(w2.ID.eq(wer.RELATED_WORD_ID)))
 				.where(we.WORD_ID.eq(wordId))
 				.orderBy(we.ORDER_BY, wesl.ORDER_BY, wer.ORDER_BY)
 				.fetchInto(WordEtymTuple.class);

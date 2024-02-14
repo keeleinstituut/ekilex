@@ -21,7 +21,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.SessionAttributes;
 
-import eki.common.constant.SourceType;
 import eki.ekilex.constant.SearchResultMode;
 import eki.ekilex.constant.WebConstant;
 import eki.ekilex.data.ClassifierSelect;
@@ -31,14 +30,12 @@ import eki.ekilex.data.EkiUserProfile;
 import eki.ekilex.data.InternalLinkSearchRequest;
 import eki.ekilex.data.SearchFilter;
 import eki.ekilex.data.SearchUriData;
-import eki.ekilex.data.Source;
 import eki.ekilex.data.Tag;
 import eki.ekilex.data.UserContextData;
 import eki.ekilex.data.WordDetails;
 import eki.ekilex.data.WordLexeme;
 import eki.ekilex.data.WordsResult;
 import eki.ekilex.service.LexSearchService;
-import eki.ekilex.service.SourceService;
 import eki.ekilex.web.bean.SessionBean;
 
 @ConditionalOnWebApplication
@@ -50,9 +47,6 @@ public class LexSearchController extends AbstractPrivateSearchController {
 
 	@Autowired
 	private LexSearchService lexSearchService;
-
-	@Autowired
-	private SourceService sourceService;
 
 	@GetMapping(value = LEX_SEARCH_URI)
 	public String initSearch(Model model) throws Exception {

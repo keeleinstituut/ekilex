@@ -43,7 +43,6 @@ import eki.ekilex.data.UserContextData;
 import eki.ekilex.service.ComplexOpService;
 import eki.ekilex.service.CudService;
 import eki.ekilex.service.SourceLinkService;
-import eki.ekilex.service.SourceService;
 import eki.ekilex.service.SynCandidateService;
 import eki.ekilex.service.SynCudService;
 import eki.ekilex.service.util.ConversionUtil;
@@ -67,9 +66,6 @@ public class EditController extends AbstractMutableDataPageController {
 
 	@Autowired
 	private ConversionUtil conversionUtil;
-
-	@Autowired
-	private SourceService sourceService;
 
 	@Autowired
 	private SourceLinkService sourceLinkService;

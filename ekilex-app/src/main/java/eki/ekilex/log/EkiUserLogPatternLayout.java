@@ -5,6 +5,6 @@ import ch.qos.logback.classic.PatternLayout;
 public class EkiUserLogPatternLayout extends PatternLayout {
 
 	static {
-		PatternLayout.defaultConverterMap.put("user", EkiUserLogConverter.class.getName());
+		PatternLayout.DEFAULT_CONVERTER_MAP.put("user", EkiUserLogConverter.class.getName());
 	}
 }
