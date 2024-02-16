@@ -487,6 +487,7 @@ public class LexSearchDbService extends AbstractDataDbService {
 				.fetchInto(eki.ekilex.data.WordRelation.class);
 	}
 
+	@Deprecated
 	public List<WordEtymTuple> getWordEtymology(Long wordId) {
 
 		WordEtymology we = WORD_ETYMOLOGY.as("we");

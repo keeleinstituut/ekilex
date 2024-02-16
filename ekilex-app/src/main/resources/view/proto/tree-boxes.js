@@ -145,7 +145,7 @@ function render(svgg, root, nodes, links) {
 			return "start";
 		})
 		.text(function(d) {
-			return d.data.word;
+			return d.data.wordValue;
 		});
 
 	// text lang
@@ -158,7 +158,7 @@ function render(svgg, root, nodes, links) {
 			return "middle";
 		})
 		.text(function(d) {
-			return d.data.lang;
+			return d.data.wordLang;
 		});
 
 	var nodeUpdate = nodeEnter.merge(node);

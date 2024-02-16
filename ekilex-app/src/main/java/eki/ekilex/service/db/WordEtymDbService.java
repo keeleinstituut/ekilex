@@ -1,8 +1,11 @@
 package eki.ekilex.service.db;
 
+import static eki.ekilex.data.db.Tables.LEXEME;
+import static eki.ekilex.data.db.Tables.MEANING;
 import static eki.ekilex.data.db.Tables.WORD;
 import static eki.ekilex.data.db.Tables.WORD_ETYMOLOGY;
 import static eki.ekilex.data.db.Tables.WORD_ETYMOLOGY_RELATION;
+import static eki.ekilex.data.db.Tables.WORD_ETYMOLOGY_SOURCE_LINK;
 
 import java.util.List;
 
@@ -15,9 +18,12 @@ import org.jooq.util.postgres.PostgresDSL;
 import org.springframework.stereotype.Component;
 
 import eki.ekilex.data.WordEtymNodeTuple;
+import eki.ekilex.data.db.tables.Lexeme;
+import eki.ekilex.data.db.tables.Meaning;
 import eki.ekilex.data.db.tables.Word;
 import eki.ekilex.data.db.tables.WordEtymology;
 import eki.ekilex.data.db.tables.WordEtymologyRelation;
+import eki.ekilex.data.db.tables.WordEtymologySourceLink;
 
 @Component
 public class WordEtymDbService extends AbstractDataDbService {
@@ -25,8 +31,13 @@ public class WordEtymDbService extends AbstractDataDbService {
 	public List<WordEtymNodeTuple> getWordEtymTuples(Long wordId) {
 
 		Word w = WORD.as("w");
+		Word w2 = WORD.as("w2");
+		Lexeme l1 = LEXEME.as("l1");
+		Lexeme l2 = LEXEME.as("l2");
+		Meaning m = MEANING.as("m");
 		WordEtymology we = WORD_ETYMOLOGY.as("we");
 		WordEtymologyRelation wer = WORD_ETYMOLOGY_RELATION.as("wer");
+		WordEtymologySourceLink wesl = WORD_ETYMOLOGY_SOURCE_LINK.as("wesl");
 
 		CommonTableExpression<Record5<Long, Long, Long, Long, Long[]>> werec = DSL
 				.name("werec")
@@ -60,12 +71,12 @@ public class WordEtymDbService extends AbstractDataDbService {
 								.where(DSL.field("werec.related_word_id", Long.class).ne(DSL.all(DSL.field("werec.related_word_ids", Long[].class))))
 								.orderBy(we.ORDER_BY, wer.ORDER_BY)));
 
-		Field<JSONB> wert = DSL
+		Field<JSONB> rsf = DSL
 				.select(
 						DSL.jsonbArrayAgg(DSL
 								.jsonObject(
 										DSL.key("wordEtymRelId").value(wer.ID),
-										DSL.key("comment").value(wer.COMMENT_PRESE),
+										DSL.key("commentPrese").value(wer.COMMENT_PRESE),
 										DSL.key("questionable").value(wer.IS_QUESTIONABLE),
 										DSL.key("compound").value(wer.IS_COMPOUND),
 										DSL.key("relatedWordId").value(wer.RELATED_WORD_ID))))
@@ -76,20 +87,55 @@ public class WordEtymDbService extends AbstractDataDbService {
 				.groupBy(wer.WORD_ETYM_ID)
 				.asField();
 
-		List<WordEtymNodeTuple> wordEtymTuples = create
+		Field<JSONB> slf = DSL
+				.select(
+						DSL.jsonbArrayAgg(DSL
+								.jsonObject(
+										DSL.key("id").value(wesl.ID),
+										DSL.key("wordEtymId").value(wesl.WORD_ETYM_ID),
+										DSL.key("sourceId").value(wesl.SOURCE_ID),
+										DSL.key("value").value(wesl.VALUE))))
+				.from(wesl)
+				.where(wesl.WORD_ETYM_ID.eq(werec.field("word_etym_id", Long.class)))
+				.groupBy(wesl.WORD_ETYM_ID)
+				.asField();
+
+		Field<JSONB> mwf = DSL
+				.select(
+						DSL.jsonbArrayAgg(DSL
+								.jsonObject(
+										DSL.key("wordId").value(w2.ID),
+										DSL.key("wordValue").value(w2.VALUE),
+										DSL.key("wordLang").value(w2.LANG))))
+				.from(l1, l2, w2, m)
+				.where(
+						l1.WORD_ID.eq(werec.field("word_etym_word_id", Long.class))
+								.and(l1.MEANING_ID.eq(m.ID))
+								.and(l1.IS_PUBLIC.isTrue())
+								.and(l2.MEANING_ID.eq(m.ID))
+								.and(l2.WORD_ID.eq(w2.ID))
+								.and(l2.IS_PUBLIC.isTrue())
+								.and(l2.DATASET_CODE.eq(DATASET_ETY))
+								.and(w2.ID.ne(l1.WORD_ID))
+								.and(w2.LANG.eq(LANGUAGE_CODE_EST)))
+				.groupBy(l1.WORD_ID)
+				.asField();
+
+		List<WordEtymNodeTuple> tuples = create
 				.withRecursive(werec)
 				.select(
 						werec.field("word_id", Long.class),
 						werec.field("word_etym_id", Long.class),
 						werec.field("word_etym_word_id", Long.class),
-						w.VALUE.as("word_etym_word"),
+						w.VALUE.as("word_etym_word_value"),
 						w.LANG.as("word_etym_word_lang"),
 						we.ETYMOLOGY_TYPE_CODE,
 						we.ETYMOLOGY_YEAR,
-						we.COMMENT,
 						we.COMMENT_PRESE,
 						we.IS_QUESTIONABLE,
-						wert.as("word_etym_relations"))
+						rsf.as("relations"),
+						slf.as("source_links"),
+						mwf.as("meaning_words"))
 				.from(
 						werec
 								.innerJoin(w).on(w.ID.eq(werec.field("word_etym_word_id", Long.class)))
@@ -105,7 +151,7 @@ public class WordEtymDbService extends AbstractDataDbService {
 						we.ORDER_BY)
 				.fetchInto(WordEtymNodeTuple.class);
 
-		return wordEtymTuples;
+		return tuples;
 	}
 
 }

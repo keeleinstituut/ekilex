@@ -706,6 +706,7 @@ public class ConversionUtil implements GlobalConstant {
 		}
 	}
 
+	@Deprecated
 	public List<WordEtym> composeWordEtymology(List<WordEtymTuple> wordEtymTuples) {
 
 		List<WordEtym> wordEtyms = new ArrayList<>();
@@ -748,7 +749,7 @@ public class ConversionUtil implements GlobalConstant {
 			if (wordEtymRelId != null) {
 				if (!wordEtymRelIds.contains(wordEtymRelId)) {
 					WordEtymRel wordEtymRel = new WordEtymRel();
-					wordEtymRel.setComment(tuple.getWordEtymRelComment());
+					wordEtymRel.setCommentPrese(tuple.getWordEtymRelComment());
 					wordEtymRel.setQuestionable(tuple.isWordEtymRelQuestionable());
 					wordEtymRel.setCompound(tuple.isWordEtymRelCompound());
 					wordEtymRel.setRelatedWordId(tuple.getRelatedWordId());

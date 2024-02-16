@@ -10,23 +10,27 @@ public class WordEtymNode extends AbstractDataObject {
 
 	private Long wordId;
 
-	private String word;
+	private String wordValue;
 
-	private String lang;
+	private String wordLang;
 
 	private String etymologyTypeCode;
 
-	private String etymYear;
+	private String etymologyYear;
 
 	private boolean questionable;
 
 	private boolean compound;
 
-	private String comment;
+	private String commentPrese;
 
-	private int level;
+	private List<WordEtymSourceLink> sourceLinks;
+
+	private List<WordEtymSyn> meaningWords;
 
 	private List<WordEtymNode> children;
+
+	private int level;
 
 	public Long getWordId() {
 		return wordId;
@@ -36,20 +40,20 @@ public class WordEtymNode extends AbstractDataObject {
 		this.wordId = wordId;
 	}
 
-	public String getWord() {
-		return word;
+	public String getWordValue() {
+		return wordValue;
 	}
 
-	public void setWord(String word) {
-		this.word = word;
+	public void setWordValue(String wordValue) {
+		this.wordValue = wordValue;
 	}
 
-	public String getLang() {
-		return lang;
+	public String getWordLang() {
+		return wordLang;
 	}
 
-	public void setLang(String lang) {
-		this.lang = lang;
+	public void setWordLang(String wordLang) {
+		this.wordLang = wordLang;
 	}
 
 	public String getEtymologyTypeCode() {
@@ -60,12 +64,12 @@ public class WordEtymNode extends AbstractDataObject {
 		this.etymologyTypeCode = etymologyTypeCode;
 	}
 
-	public String getEtymYear() {
-		return etymYear;
+	public String getEtymologyYear() {
+		return etymologyYear;
 	}
 
-	public void setEtymYear(String etymYear) {
-		this.etymYear = etymYear;
+	public void setEtymologyYear(String etymologyYear) {
+		this.etymologyYear = etymologyYear;
 	}
 
 	public boolean isQuestionable() {
@@ -84,20 +88,28 @@ public class WordEtymNode extends AbstractDataObject {
 		this.compound = compound;
 	}
 
-	public String getComment() {
-		return comment;
+	public String getCommentPrese() {
+		return commentPrese;
 	}
 
-	public void setComment(String comment) {
-		this.comment = comment;
+	public void setCommentPrese(String commentPrese) {
+		this.commentPrese = commentPrese;
 	}
 
-	public int getLevel() {
-		return level;
+	public List<WordEtymSourceLink> getSourceLinks() {
+		return sourceLinks;
 	}
 
-	public void setLevel(int level) {
-		this.level = level;
+	public void setSourceLinks(List<WordEtymSourceLink> sourceLinks) {
+		this.sourceLinks = sourceLinks;
+	}
+
+	public List<WordEtymSyn> getMeaningWords() {
+		return meaningWords;
+	}
+
+	public void setMeaningWords(List<WordEtymSyn> meaningWords) {
+		this.meaningWords = meaningWords;
 	}
 
 	public List<WordEtymNode> getChildren() {
@@ -106,6 +118,14 @@ public class WordEtymNode extends AbstractDataObject {
 
 	public void setChildren(List<WordEtymNode> children) {
 		this.children = children;
+	}
+
+	public int getLevel() {
+		return level;
+	}
+
+	public void setLevel(int level) {
+		this.level = level;
 	}
 
 }

@@ -4,6 +4,7 @@ import eki.common.constant.ReferenceType;
 import eki.common.data.AbstractDataObject;
 
 // should be replaced and removed at some point
+@Deprecated
 public class WordEtymTuple extends AbstractDataObject {
 
 	private static final long serialVersionUID = 1L;

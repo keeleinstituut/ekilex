@@ -16,7 +16,7 @@ public class WordEtymNodeLink extends AbstractDataObject {
 
 	private String targetWordValue;
 
-	private String comment;
+	private String commentPrese;
 
 	private boolean isQuestionable;
 
@@ -62,12 +62,12 @@ public class WordEtymNodeLink extends AbstractDataObject {
 		this.targetWordValue = targetWordValue;
 	}
 
-	public String getComment() {
-		return comment;
+	public String getCommentPrese() {
+		return commentPrese;
 	}
 
-	public void setComment(String comment) {
-		this.comment = comment;
+	public void setCommentPrese(String commentPrese) {
+		this.commentPrese = commentPrese;
 	}
 
 	public boolean isQuestionable() {

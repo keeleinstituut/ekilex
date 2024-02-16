@@ -27,6 +27,18 @@
     <div>
       <a th:href="@{/proto/etym/247450}">tudeng</a>
     </div>
+    <div>
+      <a th:href="@{/proto/etym/187796}">kuningvesi</a>
+    </div>
+    <div>
+      <a th:href="@{/proto/etym/196031}">lohe</a>
+    </div>
+    <div>
+      <a th:href="@{/proto/etym/252098}">vaar</a>
+    </div>
+    <div>
+      <a th:href="@{/proto/etym/159571}">bakter</a>
+    </div>
     <th:block th:if="${wordEtymTree}">
       <h5 th:text="|${wordEtymTree.wordId} ${wordEtymTree.wordValue}|" class="mt-3"></h5>
       <input type="hidden" id="word-id" th:value="${wordEtymTree.wordId}">
@@ -37,8 +49,8 @@
           <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
               <div class="modal-body">
-                <div th:utext="|${wordEtymNode.word} (${wordEtymNode.lang})|"></div>
-                <div th:utext="${wordEtymNode.comment}"></div>
+                <div th:utext="|${wordEtymNode.wordValue} (${wordEtymNode.wordLang})|"></div>
+                <div th:utext="${wordEtymNode.commentPrese}"></div>
               </div>
               <div class="modal-footer">
                 <button type="submit" class="btn btn-primary" th:text="#{common.save}">Salvesta</button>
@@ -54,7 +66,7 @@
             <div class="modal-content">
               <div class="modal-body">
                 <div th:utext="|${wordEtymLink.sourceWordValue} -> ${wordEtymLink.targetWordValue}"></div>
-                <div th:utext="${wordEtymLink.comment}"></div>
+                <div th:utext="${wordEtymLink.commentPrese}"></div>
               </div>
               <div class="modal-footer">
                 <button type="submit" class="btn btn-primary" th:text="#{common.save}">Salvesta</button>

@@ -14,7 +14,7 @@ public class WordEtymNodeTuple extends AbstractDataObject {
 
 	private Long wordEtymWordId;
 
-	private String wordEtymWord;
+	private String wordEtymWordValue;
 
 	private String wordEtymWordLang;
 
@@ -22,13 +22,15 @@ public class WordEtymNodeTuple extends AbstractDataObject {
 
 	private String etymologyYear;
 
-	private String comment;
-
 	private String commentPrese;
 
 	private boolean isQuestionable;
 
-	private List<WordEtymRel> wordEtymRelations;
+	private List<WordEtymRel> relations;
+
+	private List<WordEtymSourceLink> sourceLinks;
+
+	private List<WordEtymSyn> meaningWords;
 
 	public Long getWordId() {
 		return wordId;
@@ -54,12 +56,12 @@ public class WordEtymNodeTuple extends AbstractDataObject {
 		this.wordEtymWordId = wordEtymWordId;
 	}
 
-	public String getWordEtymWord() {
-		return wordEtymWord;
+	public String getWordEtymWordValue() {
+		return wordEtymWordValue;
 	}
 
-	public void setWordEtymWord(String wordEtymWord) {
-		this.wordEtymWord = wordEtymWord;
+	public void setWordEtymWordValue(String wordEtymWordValue) {
+		this.wordEtymWordValue = wordEtymWordValue;
 	}
 
 	public String getWordEtymWordLang() {
@@ -86,14 +88,6 @@ public class WordEtymNodeTuple extends AbstractDataObject {
 		this.etymologyYear = etymologyYear;
 	}
 
-	public String getComment() {
-		return comment;
-	}
-
-	public void setComment(String comment) {
-		this.comment = comment;
-	}
-
 	public String getCommentPrese() {
 		return commentPrese;
 	}
@@ -110,11 +104,28 @@ public class WordEtymNodeTuple extends AbstractDataObject {
 		this.isQuestionable = isQuestionable;
 	}
 
-	public List<WordEtymRel> getWordEtymRelations() {
-		return wordEtymRelations;
+	public List<WordEtymRel> getRelations() {
+		return relations;
 	}
 
-	public void setWordEtymRelations(List<WordEtymRel> wordEtymRelations) {
-		this.wordEtymRelations = wordEtymRelations;
+	public void setRelations(List<WordEtymRel> relations) {
+		this.relations = relations;
 	}
+
+	public List<WordEtymSourceLink> getSourceLinks() {
+		return sourceLinks;
+	}
+
+	public void setSourceLinks(List<WordEtymSourceLink> sourceLinks) {
+		this.sourceLinks = sourceLinks;
+	}
+
+	public List<WordEtymSyn> getMeaningWords() {
+		return meaningWords;
+	}
+
+	public void setMeaningWords(List<WordEtymSyn> meaningWords) {
+		this.meaningWords = meaningWords;
+	}
+
 }

@@ -51,12 +51,12 @@ public class WordEtymService {
 		List<Long> processedWordIds = new ArrayList<>();
 		List<WordEtymNodeLink> links = new ArrayList<>();
 
-		composeEtymNodes(root, nodes, tuple.getWordEtymRelations(), wordEtymTupleMap, processedWordIds);
-		composeEtymLinks(wordId, links, tuple.getWordEtymRelations(), wordEtymTupleMap);
+		composeEtymNodes(root, nodes, tuple.getRelations(), wordEtymTupleMap, processedWordIds);
+		composeEtymLinks(wordId, links, tuple.getRelations(), wordEtymTupleMap);
 
 		WordEtymTree wordEtymTree = new WordEtymTree();
 		wordEtymTree.setWordId(wordId);
-		wordEtymTree.setWordValue(root.getWord());
+		wordEtymTree.setWordValue(root.getWordValue());
 		wordEtymTree.setRoot(root);
 		wordEtymTree.setNodes(nodes);
 		wordEtymTree.setLinks(links);
@@ -90,7 +90,7 @@ public class WordEtymService {
 			WordEtymNodeTuple tuple = wordEtymTupleMap.get(relatedWordId);
 			WordEtymNode child = createEtymNode(tuple, level);
 			node.getChildren().add(child);
-			composeEtymNodes(child, nodes, tuple.getWordEtymRelations(), wordEtymTupleMap, processedWordIds);
+			composeEtymNodes(child, nodes, tuple.getRelations(), wordEtymTupleMap, processedWordIds);
 		}
 	}
 
@@ -110,7 +110,7 @@ public class WordEtymService {
 			links.add(link);
 			Long relatedWordId = relation.getRelatedWordId();
 			WordEtymNodeTuple tuple = wordEtymTupleMap.get(relatedWordId);
-			composeEtymLinks(relatedWordId, links, tuple.getWordEtymRelations(), wordEtymTupleMap);
+			composeEtymLinks(relatedWordId, links, tuple.getRelations(), wordEtymTupleMap);
 		}
 	}
 
@@ -118,15 +118,17 @@ public class WordEtymService {
 
 		WordEtymNode wordEtymLevel = new WordEtymNode();
 		wordEtymLevel.setWordId(tuple.getWordEtymWordId());
-		wordEtymLevel.setWord(tuple.getWordEtymWord());
-		wordEtymLevel.setLang(tuple.getWordEtymWordLang());
+		wordEtymLevel.setWordValue(tuple.getWordEtymWordValue());
+		wordEtymLevel.setWordLang(tuple.getWordEtymWordLang());
 		wordEtymLevel.setEtymologyTypeCode(tuple.getEtymologyTypeCode());
-		wordEtymLevel.setEtymYear(tuple.getEtymologyYear());
+		wordEtymLevel.setEtymologyYear(tuple.getEtymologyYear());
 		wordEtymLevel.setQuestionable(tuple.isQuestionable());
 		wordEtymLevel.setCompound(false);
-		wordEtymLevel.setComment(tuple.getComment());
-		wordEtymLevel.setLevel(level);
+		wordEtymLevel.setCommentPrese(tuple.getCommentPrese());
+		wordEtymLevel.setSourceLinks(tuple.getSourceLinks());
+		wordEtymLevel.setMeaningWords(tuple.getMeaningWords());
 		wordEtymLevel.setChildren(new ArrayList<>());
+		wordEtymLevel.setLevel(level);
 
 		return wordEtymLevel;
 	}
@@ -139,10 +141,10 @@ public class WordEtymService {
 		WordEtymNodeLink link = new WordEtymNodeLink();
 		link.setWordEtymRelId(relation.getWordEtymRelId());
 		link.setSourceWordId(wordId);
-		link.setSourceWordValue(sourceWordTuple.getWordEtymWord());
+		link.setSourceWordValue(sourceWordTuple.getWordEtymWordValue());
 		link.setTargetWordId(relation.getRelatedWordId());
-		link.setTargetWordValue(targetWordTuple.getWordEtymWord());
-		link.setComment(relation.getComment());
+		link.setTargetWordValue(targetWordTuple.getWordEtymWordValue());
+		link.setCommentPrese(relation.getCommentPrese());
 		link.setQuestionable(relation.isQuestionable());
 		link.setCompound(relation.isCompound());
 

@@ -8,17 +8,17 @@ public class WordEtymRel extends AbstractDataObject {
 
 	private Long wordEtymRelId;
 
-	private String comment;
-
-	private boolean questionable;
-
-	private boolean compound;
-
 	private Long relatedWordId;
 
 	private String relatedWord;
 
 	private String relatedWordLang;
+
+	private String commentPrese;
+
+	private boolean questionable;
+
+	private boolean compound;
 
 	public Long getWordEtymRelId() {
 		return wordEtymRelId;
@@ -26,30 +26,6 @@ public class WordEtymRel extends AbstractDataObject {
 
 	public void setWordEtymRelId(Long wordEtymRelId) {
 		this.wordEtymRelId = wordEtymRelId;
-	}
-
-	public String getComment() {
-		return comment;
-	}
-
-	public void setComment(String comment) {
-		this.comment = comment;
-	}
-
-	public boolean isQuestionable() {
-		return questionable;
-	}
-
-	public void setQuestionable(boolean questionable) {
-		this.questionable = questionable;
-	}
-
-	public boolean isCompound() {
-		return compound;
-	}
-
-	public void setCompound(boolean compound) {
-		this.compound = compound;
 	}
 
 	public Long getRelatedWordId() {
@@ -74,6 +50,30 @@ public class WordEtymRel extends AbstractDataObject {
 
 	public void setRelatedWordLang(String relatedWordLang) {
 		this.relatedWordLang = relatedWordLang;
+	}
+
+	public String getCommentPrese() {
+		return commentPrese;
+	}
+
+	public void setCommentPrese(String commentPrese) {
+		this.commentPrese = commentPrese;
+	}
+
+	public boolean isQuestionable() {
+		return questionable;
+	}
+
+	public void setQuestionable(boolean questionable) {
+		this.questionable = questionable;
+	}
+
+	public boolean isCompound() {
+		return compound;
+	}
+
+	public void setCompound(boolean compound) {
+		this.compound = compound;
 	}
 
 }
