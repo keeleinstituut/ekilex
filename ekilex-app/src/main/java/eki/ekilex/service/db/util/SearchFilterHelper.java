@@ -8,6 +8,7 @@ import static eki.ekilex.data.db.Tables.FORM_FREQ;
 import static eki.ekilex.data.db.Tables.FREEFORM;
 import static eki.ekilex.data.db.Tables.FREEFORM_SOURCE_LINK;
 import static eki.ekilex.data.db.Tables.FREQ_CORP;
+import static eki.ekilex.data.db.Tables.LEXEME;
 import static eki.ekilex.data.db.Tables.LEXEME_ACTIVITY_LOG;
 import static eki.ekilex.data.db.Tables.LEXEME_FREEFORM;
 import static eki.ekilex.data.db.Tables.LEXEME_POS;
@@ -19,6 +20,7 @@ import static eki.ekilex.data.db.Tables.MEANING_FORUM;
 import static eki.ekilex.data.db.Tables.MEANING_FREEFORM;
 import static eki.ekilex.data.db.Tables.MEANING_RELATION;
 import static eki.ekilex.data.db.Tables.MEANING_SEMANTIC_TYPE;
+import static eki.ekilex.data.db.Tables.MEANING_TAG;
 import static eki.ekilex.data.db.Tables.WORD_ACTIVITY_LOG;
 import static eki.ekilex.data.db.Tables.WORD_FORUM;
 import static eki.ekilex.data.db.Tables.WORD_FREEFORM;
@@ -87,6 +89,7 @@ import eki.ekilex.data.db.tables.MeaningForum;
 import eki.ekilex.data.db.tables.MeaningFreeform;
 import eki.ekilex.data.db.tables.MeaningRelation;
 import eki.ekilex.data.db.tables.MeaningSemanticType;
+import eki.ekilex.data.db.tables.MeaningTag;
 import eki.ekilex.data.db.tables.Source;
 import eki.ekilex.data.db.tables.Word;
 import eki.ekilex.data.db.tables.WordActivityLog;
@@ -777,26 +780,7 @@ public class SearchFilterHelper implements GlobalConstant, ActivityFunct {
 		return where;
 	}
 
-	public Condition applyLexemeTagFilters(List<SearchCriterion> searchCriteria, SearchDatasetsRestriction searchDatasetsRestriction, Word w1, Condition where) throws Exception {
-
-		Lexeme l1 = Lexeme.LEXEME.as("l1");
-		Condition where1 = l1.WORD_ID.eq(w1.ID);
-		return applyLexemeTagFilters(searchCriteria, searchDatasetsRestriction, l1, where1, where);
-	}
-
-	public Condition applyLexemeTagFilters(List<SearchCriterion> searchCriteria, SearchDatasetsRestriction searchDatasetsRestriction, Meaning m1, Condition where) throws Exception {
-
-		Lexeme l1 = Lexeme.LEXEME.as("l1");
-		Condition where1 = l1.MEANING_ID.eq(m1.ID);
-		return applyLexemeTagFilters(searchCriteria, searchDatasetsRestriction, l1, where1, where);
-	}
-
-	public Condition applyLexemeTagFilters(
-			List<SearchCriterion> searchCriteria,
-			SearchDatasetsRestriction searchDatasetsRestriction,
-			Lexeme l1,
-			Condition where1,
-			Condition where) throws Exception {
+	public Condition applyTagFilters(List<SearchCriterion> searchCriteria, SearchDatasetsRestriction searchDatasetsRestriction, Word w1, Condition where) throws Exception {
 
 		List<SearchCriterion> tagNameEqualsCrit = filterCriteriaBySearchKeyAndOperands(searchCriteria, SearchKey.TAG_NAME, SearchOperand.EQUALS);
 		List<SearchCriterion> tagNameNotEqualsCrit = filterCriteriaBySearchKeyAndOperands(searchCriteria, SearchKey.TAG_NAME, SearchOperand.NOT_CONTAINS);
@@ -805,25 +789,78 @@ public class SearchFilterHelper implements GlobalConstant, ActivityFunct {
 			return where;
 		}
 
+		Lexeme l1 = LEXEME.as("l1");
+		Lexeme l2 = LEXEME.as("l2");
 		LexemeTag lt = LEXEME_TAG.as("lt");
-		where1 = where1.and(lt.LEXEME_ID.eq(l1.ID));
+		MeaningTag mt = MEANING_TAG.as("mt");
 
+		Condition where1 = l1.WORD_ID.eq(w1.ID).and(lt.LEXEME_ID.eq(l1.ID));
 		where1 = applyDatasetRestrictions(l1, searchDatasetsRestriction, where1);
+		Condition where2 = l2.WORD_ID.eq(w1.ID).and(l2.MEANING_ID.eq(mt.MEANING_ID));
+		where2 = applyDatasetRestrictions(l2, searchDatasetsRestriction, where2);
 
 		if (CollectionUtils.isNotEmpty(tagNameEqualsCrit)) {
 			for (SearchCriterion criterion : tagNameEqualsCrit) {
 				String searchValueStr = criterion.getSearchValue().toString();
 				where1 = applyValueFilter(searchValueStr, criterion.isNot(), criterion.getSearchOperand(), lt.TAG_NAME, where1, true);
+				where2 = applyValueFilter(searchValueStr, criterion.isNot(), criterion.getSearchOperand(), mt.TAG_NAME, where2, true);
 			}
-			where = where.andExists(DSL.select(lt.ID).from(l1, lt).where(where1));
+			where = where.and(DSL
+					.exists(DSL.select(lt.ID).from(l1, lt).where(where1))
+					.orExists(DSL.select(mt.ID).from(l2, mt).where(where2)));
 		}
 		if (CollectionUtils.isNotEmpty(tagNameNotEqualsCrit)) {
 			for (SearchCriterion criterion : tagNameNotEqualsCrit) {
 				String searchValueStr = criterion.getSearchValue().toString();
 				where1 = applyValueFilter(searchValueStr, criterion.isNot(), criterion.getSearchOperand(), lt.TAG_NAME, where1, true);
+				where2 = applyValueFilter(searchValueStr, criterion.isNot(), criterion.getSearchOperand(), mt.TAG_NAME, where2, true);
 			}
-			where = where.andNotExists(DSL.select(lt.ID).from(l1, lt).where(where1));
+			where = where.and(DSL
+					.notExists(DSL.select(lt.ID).from(l1, lt).where(where1))
+					.orNotExists(DSL.select(mt.ID).from(l2, mt).where(where2)));
 		}
+
+		return where;
+	}
+
+	public Condition applyTagFilters(List<SearchCriterion> searchCriteria, SearchDatasetsRestriction searchDatasetsRestriction, Meaning m1, Condition where) throws Exception {
+
+		List<SearchCriterion> tagNameEqualsCrit = filterCriteriaBySearchKeyAndOperands(searchCriteria, SearchKey.TAG_NAME, SearchOperand.EQUALS);
+		List<SearchCriterion> tagNameNotEqualsCrit = filterCriteriaBySearchKeyAndOperands(searchCriteria, SearchKey.TAG_NAME, SearchOperand.NOT_CONTAINS);
+
+		if (CollectionUtils.isEmpty(tagNameEqualsCrit) && CollectionUtils.isEmpty(tagNameNotEqualsCrit)) {
+			return where;
+		}
+
+		Lexeme l1 = LEXEME.as("l1");
+		LexemeTag lt = LEXEME_TAG.as("lt");
+		MeaningTag mt = MEANING_TAG.as("mt");
+
+		Condition where1 = l1.MEANING_ID.eq(m1.ID).and(lt.LEXEME_ID.eq(l1.ID));
+		where1 = applyDatasetRestrictions(l1, searchDatasetsRestriction, where1);
+		Condition where2 = mt.MEANING_ID.eq(m1.ID);
+
+		if (CollectionUtils.isNotEmpty(tagNameEqualsCrit)) {
+			for (SearchCriterion criterion : tagNameEqualsCrit) {
+				String searchValueStr = criterion.getSearchValue().toString();
+				where1 = applyValueFilter(searchValueStr, criterion.isNot(), criterion.getSearchOperand(), lt.TAG_NAME, where1, true);
+				where2 = applyValueFilter(searchValueStr, criterion.isNot(), criterion.getSearchOperand(), mt.TAG_NAME, where2, true);
+			}
+			where = where.and(DSL
+					.exists(DSL.select(lt.ID).from(l1, lt).where(where1))
+					.orExists(DSL.select(mt.ID).from(mt).where(where2)));
+		}
+		if (CollectionUtils.isNotEmpty(tagNameNotEqualsCrit)) {
+			for (SearchCriterion criterion : tagNameNotEqualsCrit) {
+				String searchValueStr = criterion.getSearchValue().toString();
+				where1 = applyValueFilter(searchValueStr, criterion.isNot(), criterion.getSearchOperand(), lt.TAG_NAME, where1, true);
+				where2 = applyValueFilter(searchValueStr, criterion.isNot(), criterion.getSearchOperand(), mt.TAG_NAME, where2, true);
+			}
+			where = where.and(DSL
+					.notExists(DSL.select(lt.ID).from(l1, lt).where(where1))
+					.orNotExists(DSL.select(mt.ID).from(mt).where(where2)));
+		}
+
 		return where;
 	}
 
@@ -834,7 +871,7 @@ public class SearchFilterHelper implements GlobalConstant, ActivityFunct {
 			Meaning m1,
 			Condition wherem1) throws Exception {
 
-		Lexeme l1 = Lexeme.LEXEME.as("l1");
+		Lexeme l1 = LEXEME.as("l1");
 		Condition where1 = l1.MEANING_ID.eq(m1.ID);
 		return applyLexemeActivityLogFilters(searchCriteria, searchDatasetsRestriction, entityName, l1, where1, wherem1);
 	}
@@ -846,7 +883,7 @@ public class SearchFilterHelper implements GlobalConstant, ActivityFunct {
 			Word w1,
 			Condition wherew1) throws Exception {
 
-		Lexeme l1 = Lexeme.LEXEME.as("l1");
+		Lexeme l1 = LEXEME.as("l1");
 		Condition where1 = l1.WORD_ID.eq(w1.ID);
 		return applyLexemeActivityLogFilters(searchCriteria, searchDatasetsRestriction, entityName, l1, where1, wherew1);
 	}

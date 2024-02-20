@@ -143,7 +143,7 @@
                 <div class="value-input-container col-auto flex-grow-1 flex-shrink-1" th:if="${criteria.searchKey.name() == 'TAG_NAME'}">
                   <select class="form-control" th:name="'criteriaGroups[' + ${critGroupStat.index} + '].searchCriteria[' + ${critStat.index} + '].searchValue'" data-live-search="true" data-style="btn-outline-secondary">
                     <option value="" selected th:text="#{common.all.tags}">Kõik sildid</option>
-                    <option th:each="tag : ${lexemeTags}"
+                    <option th:each="tag : ${allTags}"
                             th:value="${tag}"
                             th:selected="${criteria.searchValue == tag}"
                             th:text="${tag}">Täääg</option>
@@ -617,7 +617,7 @@
             <div name="TAG_NAME" class="value-input-container col-auto flex-grow-1 flex-shrink-1">
               <select class="form-control" data-live-search="true" data-style="btn-outline-secondary">
                 <option value="" selected th:text="#{common.all.tags}">Kõik sildid</option>
-                <option th:each="tag : ${lexemeTags}" th:value="${tag}" th:text="${tag}">Täääg</option>
+                <option th:each="tag : ${allTags}" th:value="${tag}" th:text="${tag}">Täääg</option>
               </select>
             </div>
             <div name="DOMAIN" class="value-input-container col-auto flex-grow-1 flex-shrink-1">

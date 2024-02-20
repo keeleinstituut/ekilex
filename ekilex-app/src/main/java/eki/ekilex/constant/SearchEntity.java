@@ -29,7 +29,7 @@ public enum SearchEntity {
 	CONCEPT(new SearchKey[] {
 			SearchKey.DOMAIN, SearchKey.ID, SearchKey.COMMA_SEPARATED_IDS, SearchKey.ATTRIBUTE_NAME, SearchKey.ATTRIBUTE_VALUE, SearchKey.MEANING_RELATION, SearchKey.MEANING_NOTE,
 			SearchKey.MEANING_FORUM, SearchKey.CREATED_OR_UPDATED_BY, SearchKey.UPDATED_ON, SearchKey.CREATED_ON, SearchKey.LAST_UPDATE_ON, SearchKey.MANUAL_UPDATE_ON}),
-	NOTE(new SearchKey[] {SearchKey.VALUE_AND_EXISTS, SearchKey.SOURCE_REF, SearchKey.SOURCE_NAME, SearchKey.SOURCE_VALUE}),
+	NOTE(new SearchKey[] {SearchKey.VALUE_AND_EXISTS, SearchKey.PUBLICITY, SearchKey.SOURCE_REF, SearchKey.SOURCE_NAME, SearchKey.SOURCE_VALUE}),
 	TAG(new SearchKey[] {SearchKey.TAG_NAME, SearchKey.CREATED_OR_UPDATED_BY, SearchKey.CREATED_OR_UPDATED_ON}),
 	OD_RECOMMENDATION(new SearchKey[] {SearchKey.VALUE_AND_EXISTS, SearchKey.UPDATED_ON}),
 	CLUELESS(new SearchKey[] {SearchKey.VALUE, SearchKey.SOURCE_REF, SearchKey.SOURCE_ID}),

@@ -155,7 +155,7 @@ public class TermSearchConditionComposer implements GlobalConstant, ActivityFunc
 
 			} else if (SearchEntity.TAG.equals(searchEntity)) {
 
-				wherem = searchFilterHelper.applyLexemeTagFilters(searchCriteria, searchDatasetsRestriction, m1, wherem);
+				wherem = searchFilterHelper.applyTagFilters(searchCriteria, searchDatasetsRestriction, m1, wherem);
 				wherem = searchFilterHelper.applyLexemeActivityLogFilters(searchCriteria, searchDatasetsRestriction, ActivityEntity.TAG, m1, wherem);
 
 			} else if (SearchEntity.DEFINITION.equals(searchEntity)) {
@@ -243,6 +243,7 @@ public class TermSearchConditionComposer implements GlobalConstant, ActivityFunc
 				boolean isNotExistsSearch = searchFilterHelper.isNotExistsSearch(SearchKey.VALUE_AND_EXISTS, searchCriteria);
 
 				where3 = searchFilterHelper.applyValueFilters(SearchKey.VALUE_AND_EXISTS, searchCriteria, nff3.VALUE_TEXT, where3, true);
+				where3 = searchFilterHelper.applyPublicityFilters(searchCriteria, nff3.IS_PUBLIC, where3);
 				where3 = searchFilterHelper.applyFreeformSourceFilters(searchCriteria, nff3.ID, where3);
 				where3 = searchFilterHelper.applyFreeformSourceRefFilter(searchCriteria, nff3.ID, where3);
 
