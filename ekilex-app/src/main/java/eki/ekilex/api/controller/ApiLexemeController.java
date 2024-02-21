@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
 import org.springframework.core.annotation.Order;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -41,7 +42,7 @@ public class ApiLexemeController extends AbstractApiController {
 
 	@Order(902)
 	@PreAuthorize("principal.apiCrud && @permEval.isLexemeCrudGranted(principal, #crudRoleDataset, #lexemePos.lexemeId)")
-	@PostMapping(API_SERVICES_URI + LEXEME_POS_URI + DELETE_URI)
+	@DeleteMapping(API_SERVICES_URI + LEXEME_POS_URI + DELETE_URI)
 	@ResponseBody
 	public ApiResponse deleteLexemePos(
 			@RequestParam("crudRoleDataset") String crudRoleDataset,

@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
 import org.springframework.core.annotation.Order;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -45,7 +46,7 @@ public class ApiWordController extends AbstractApiController {
 
 	@Order(604)
 	@PreAuthorize("principal.apiCrud && @permEval.isWordCrudGranted(principal, #crudRoleDataset, #wordType.wordId)")
-	@PostMapping(API_SERVICES_URI + WORD_TYPE_URI + DELETE_URI)
+	@DeleteMapping(API_SERVICES_URI + WORD_TYPE_URI + DELETE_URI)
 	@ResponseBody
 	public ApiResponse deleteWordType(
 			@RequestParam("crudRoleDataset") String crudRoleDataset,
@@ -83,7 +84,7 @@ public class ApiWordController extends AbstractApiController {
 
 	@Order(606)
 	@PreAuthorize("principal.apiCrud && @permEval.isWordRelationCrudGranted(principal, #crudRoleDataset, #relationId)")
-	@PostMapping(API_SERVICES_URI + WORD_RELATION_URI + DELETE_URI)
+	@DeleteMapping(API_SERVICES_URI + WORD_RELATION_URI + DELETE_URI)
 	@ResponseBody
 	public ApiResponse deleteWordRelation(
 			@RequestParam("crudRoleDataset") String crudRoleDataset,
@@ -135,7 +136,7 @@ public class ApiWordController extends AbstractApiController {
 
 	@Order(609)
 	@PreAuthorize("principal.apiCrud && @permEval.isWordForumCrudGranted(principal, #wordForumId)")
-	@PostMapping(API_SERVICES_URI + WORD_FORUM_URI + DELETE_URI)
+	@DeleteMapping(API_SERVICES_URI + WORD_FORUM_URI + DELETE_URI)
 	@ResponseBody
 	public ApiResponse deleteWordForum(@RequestParam("wordForumId") Long wordForumId) {
 
@@ -187,7 +188,7 @@ public class ApiWordController extends AbstractApiController {
 
 	@Order(612)
 	@PreAuthorize("principal.apiCrud && @permEval.isWordFreeformCrudGranted(principal, #crudRoleDataset, #odWordRecommendationId)")
-	@PostMapping(API_SERVICES_URI + OD_WORD_RECOMMENDATION + DELETE_URI)
+	@DeleteMapping(API_SERVICES_URI + OD_WORD_RECOMMENDATION + DELETE_URI)
 	@ResponseBody
 	public ApiResponse deleteOdWordRecommendation(
 			@RequestParam("crudRoleDataset") String crudRoleDataset,
@@ -203,7 +204,7 @@ public class ApiWordController extends AbstractApiController {
 
 	@Order(613)
 	@PreAuthorize("principal.apiCrud && @permEval.isLexemeCrudGranted(principal, #crudRoleDataset, #lexemeId)")
-	@PostMapping(API_SERVICES_URI + LEXEME_URI + DELETE_URI)
+	@DeleteMapping(API_SERVICES_URI + LEXEME_URI + DELETE_URI)
 	@ResponseBody
 	public ApiResponse deleteLexeme(
 			@RequestParam("crudRoleDataset") String crudRoleDataset,

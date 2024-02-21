@@ -29,7 +29,7 @@ public class ApiTermMeaningController extends AbstractApiController {
 	@Autowired
 	private CudService cudService;
 
-	@Order(804)
+	@Order(850)
 	@PreAuthorize("@permEval.isDatasetCrudGranted(principal, #crudRoleDataset, #datasetCode)")
 	@GetMapping(API_SERVICES_URI + TERM_MEANING_URI + DETAILS_URI + "/{meaningId}/{datasetCode}")
 	@ResponseBody
@@ -41,7 +41,7 @@ public class ApiTermMeaningController extends AbstractApiController {
 		return termMeaningService.getTermMeaning(meaningId, datasetCode);
 	}
 
-	@Order(805)
+	@Order(851)
 	@PreAuthorize("principal.apiCrud "
 			+ "&& @permEval.isDatasetCrudGranted(principal, #crudRoleDataset, #termMeaning.datasetCode) "
 			+ "&& @permEval.isMeaningCrudGranted(principal, #crudRoleDataset, #termMeaning.meaningId)")
@@ -62,7 +62,7 @@ public class ApiTermMeaningController extends AbstractApiController {
 		}
 	}
 
-	@Order(806)
+	@Order(852)
 	@PreAuthorize("principal.apiCrud "
 			+ "&& @permEval.isDatasetCrudGranted(principal, #crudRoleDataset, #crudRoleDataset) "
 			+ "&& @permEval.isMeaningCrudGranted(principal, #crudRoleDataset, #meaningId)")

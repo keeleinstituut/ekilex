@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
 import org.springframework.core.annotation.Order;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -63,7 +64,7 @@ public class ApiMeaningController extends AbstractApiController {
 
 	@Order(803)
 	@PreAuthorize("principal.apiCrud && @permEval.isMeaningForumCrudGranted(principal, #meaningForumId)")
-	@PostMapping(API_SERVICES_URI + MEANING_FORUM_URI + DELETE_URI)
+	@DeleteMapping(API_SERVICES_URI + MEANING_FORUM_URI + DELETE_URI)
 	@ResponseBody
 	public ApiResponse deleteMeaningForum(@RequestParam("meaningForumId") Long meaningForumId) {
 
@@ -97,7 +98,7 @@ public class ApiMeaningController extends AbstractApiController {
 
 	@Order(805)
 	@PreAuthorize("principal.apiCrud && @permEval.isMeaningRelationCrudGranted(principal, #crudRoleDataset, #relationId)")
-	@PostMapping(API_SERVICES_URI + MEANING_RELATION_URI + DELETE_URI)
+	@DeleteMapping(API_SERVICES_URI + MEANING_RELATION_URI + DELETE_URI)
 	@ResponseBody
 	public ApiResponse deleteMeaningRelation(
 			@RequestParam("crudRoleDataset") String crudRoleDataset,
