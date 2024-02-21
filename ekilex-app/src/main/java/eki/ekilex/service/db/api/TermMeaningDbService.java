@@ -49,6 +49,7 @@ import eki.ekilex.data.db.tables.MeaningTag;
 import eki.ekilex.data.db.tables.Source;
 import eki.ekilex.data.db.tables.Word;
 import eki.ekilex.data.db.tables.WordWordType;
+import eki.ekilex.data.db.tables.records.LexemeRecord;
 
 @Component
 public class TermMeaningDbService implements ActivityFunct {
@@ -311,5 +312,15 @@ public class TermMeaningDbService implements ActivityFunct {
 				.where(m.ID.eq(meaningId))
 				.fetchOptionalInto(TermMeaning.class)
 				.orElse(null);
+	}
+
+	public LexemeRecord getLexeme(Long wordId, Long meaningId, String datasetCode) {
+		return create
+				.selectFrom(LEXEME)
+				.where(
+						LEXEME.WORD_ID.eq(wordId)
+								.and(LEXEME.MEANING_ID.eq(meaningId))
+								.and(LEXEME.DATASET_CODE.eq(datasetCode)))
+				.fetchOne();
 	}
 }

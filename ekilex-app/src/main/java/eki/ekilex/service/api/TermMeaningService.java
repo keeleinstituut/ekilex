@@ -29,6 +29,7 @@ import eki.ekilex.data.api.Freeform;
 import eki.ekilex.data.api.SourceLink;
 import eki.ekilex.data.api.TermMeaning;
 import eki.ekilex.data.api.TermWord;
+import eki.ekilex.data.db.tables.records.LexemeRecord;
 import eki.ekilex.service.db.api.TermMeaningDbService;
 
 @Component
@@ -109,11 +110,13 @@ public class TermMeaningService extends AbstractApiCudService implements Activit
 				boolean isValueOrLangMissing = StringUtils.isAnyBlank(wordValuePrese, wordLang);
 
 				Long lexemeId;
+				LexemeRecord lexeme = null;
 				String lexemeValueStateCode = word.getLexemeValueStateCode();
 				List<Freeform> lexemeNotes = word.getLexemeNotes();
 				List<String> lexemeTags = word.getLexemeTags();
 				List<Freeform> usages = word.getUsages();
-				boolean isLexemePublic = isPublic(word.getLexemePublicity(), DEFAULT_LEXEME_PUBLICITY);
+				Boolean lexemePublicity = word.getLexemePublicity();
+				boolean isLexemePublic = isPublic(lexemePublicity, DEFAULT_LEXEME_PUBLICITY);
 				List<SourceLink> lexemeSourceLinks = word.getLexemeSourceLinks();
 
 				if (isValueOrLangMissing) {
@@ -121,7 +124,8 @@ public class TermMeaningService extends AbstractApiCudService implements Activit
 						throw new OperationDeniedException("Word value and lang missing. Unable to create a new word");
 					} else {
 						if (existingWordIds.contains(wordId)) {
-							lexemeId = lookupDbService.getLexemeId(wordId, meaningId);
+							lexeme = termMeaningDbService.getLexeme(wordId, meaningId, datasetCode);
+							lexemeId = lexeme.getId();
 						} else {
 							WordLexemeMeaningIdTuple idTuple = cudDbService.createLexeme(wordId, datasetCode, meaningId, 1);
 							lexemeId = idTuple.getLexemeId();
@@ -142,7 +146,8 @@ public class TermMeaningService extends AbstractApiCudService implements Activit
 						activityLogService.createActivityLog(createFunctName, lexemeId, ActivityOwner.LEXEME, roleDatasetCode, MANUAL_EVENT_ON_UPDATE_ENABLED);
 					} else {
 						if (existingWordIds.contains(wordId)) {
-							lexemeId = lookupDbService.getLexemeId(wordId, meaningId);
+							lexeme = termMeaningDbService.getLexeme(wordId, meaningId, datasetCode);
+							lexemeId = lexeme.getId();
 						} else {
 							WordLexemeMeaningIdTuple idTuple = cudDbService.createLexeme(wordId, datasetCode, meaningId, 1);
 							lexemeId = idTuple.getLexemeId();
@@ -166,7 +171,13 @@ public class TermMeaningService extends AbstractApiCudService implements Activit
 					}
 				}
 
-				if (!isValueOrLangMissing) {
+				boolean isUpdateLexeme = false;
+				if (lexeme != null) {
+					String existingValueStateCode = lexeme.getValueStateCode();
+					Boolean existingIsPublic = lexeme.getIsPublic();
+					isUpdateLexeme = !StringUtils.equals(existingValueStateCode, lexemeValueStateCode) || (existingIsPublic != lexemePublicity);
+				}
+				if (isUpdateLexeme) {
 					activityLog = activityLogService.prepareActivityLog(updateFunctName, lexemeId, ActivityOwner.LEXEME, roleDatasetCode, MANUAL_EVENT_ON_UPDATE_ENABLED);
 					cudDbService.updateLexemeValueState(lexemeId, lexemeValueStateCode);
 					cudDbService.updateLexemePublicity(lexemeId, isLexemePublic);
