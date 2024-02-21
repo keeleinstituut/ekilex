@@ -375,6 +375,13 @@ public class EkilexPermissionEvaluator implements PermissionEvaluator, PermConst
 	}
 
 	@Transactional
+	public boolean isMeaningRelationCrudGranted(Principal principal, String crudRoleDataset, Long relationId) {
+
+		Long meaningId = activityLogDbService.getMeaningRelationOwnerId(relationId);
+		return isMeaningCrudGranted(principal, crudRoleDataset, meaningId);
+	}
+
+	@Transactional
 	public boolean isMeaningCrudGranted(Principal principal, String crudRoleDataset, Long meaningId) {
 
 		if (meaningId == null) {

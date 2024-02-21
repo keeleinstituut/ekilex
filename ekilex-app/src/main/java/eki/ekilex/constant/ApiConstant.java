@@ -16,6 +16,16 @@ public interface ApiConstant {
 
 	String WORD_URI = "/word";
 
+	String LEXEME_URI = "/lexeme";
+
+	String MEANING_URI = "/meaning";
+
+	String SOURCE_URI = "/source";
+
+	String PARADIGM_URI = "/paradigm";
+
+	String TERM_MEANING_URI = "/term-meaning";
+
 	String LEX_WORD_URI = "/lex-word";
 
 	String PUBLIC_WORD_URI = "/public_word";
@@ -28,25 +38,17 @@ public interface ApiConstant {
 
 	String WORD_FORUM_URI = "/word_forum";
 
+	String MEANING_RELATION_URI = "/meaning_relation";
+
 	String MEANING_FORUM_URI = "/meaning_forum";
 
 	String LEXEME_POS_URI = "/lexeme_pos";
 
 	String OD_WORD_RECOMMENDATION = "/od_word_recommendation";
 
-	String LEXEME_URI = "/lexeme";
-
-	String TERM_MEANING_URI = "/term-meaning";
-
-	String MEANING_URI = "/meaning";
-
-	String SOURCE_URI = "/source";
-
 	String SOURCE_PROPERTY_URI = "/source_property";
 
 	String SOURCE_LINK_URI = "/source_link";
-
-	String PARADIGM_URI = "/paradigm";
 
 	String FREQ_CORP_URI = "/freq_corp";
 

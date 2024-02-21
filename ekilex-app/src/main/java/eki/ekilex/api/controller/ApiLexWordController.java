@@ -14,14 +14,14 @@ import org.springframework.web.bind.annotation.RestController;
 
 import eki.ekilex.data.api.ApiResponse;
 import eki.ekilex.data.api.LexWord;
-import eki.ekilex.service.api.WordService;
+import eki.ekilex.service.api.LexWordService;
 
 @ConditionalOnWebApplication
 @RestController
 public class ApiLexWordController extends AbstractApiController {
 
 	@Autowired
-	private WordService wordService;
+	private LexWordService lexWordService;
 
 	@Order(601)
 	@PreAuthorize("@permEval.isDatasetCrudGranted(principal, #crudRoleDataset, #datasetCode)")
@@ -32,7 +32,7 @@ public class ApiLexWordController extends AbstractApiController {
 			@PathVariable("wordId") Long wordId,
 			@PathVariable("datasetCode") String datasetCode) {
 
-		return wordService.getLexWord(wordId, datasetCode);
+		return lexWordService.getLexWord(wordId, datasetCode);
 	}
 
 	@Order(602)
@@ -46,7 +46,7 @@ public class ApiLexWordController extends AbstractApiController {
 			@RequestBody LexWord lexWord) {
 
 		try {
-			Long wordId = wordService.saveLexWord(lexWord, crudRoleDataset);
+			Long wordId = lexWordService.saveLexWord(lexWord, crudRoleDataset);
 			return getOpSuccessResponse(wordId);
 		} catch (Exception e) {
 			return getOpFailResponse(e);

@@ -321,6 +321,7 @@ public class TermMeaningDbService implements ActivityFunct {
 						LEXEME.WORD_ID.eq(wordId)
 								.and(LEXEME.MEANING_ID.eq(meaningId))
 								.and(LEXEME.DATASET_CODE.eq(datasetCode)))
-				.fetchOne();
+				.fetchOptional()
+				.orElse(null);
 	}
 }

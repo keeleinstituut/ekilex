@@ -28,7 +28,7 @@ import eki.ekilex.service.db.TagDbService;
 import eki.ekilex.service.db.api.WordDbService;
 
 @Component
-public class WordService extends AbstractApiCudService implements GlobalConstant {
+public class LexWordService extends AbstractApiCudService implements GlobalConstant {
 
 	private static final Complexity DEFAULT_COMPLEXITY = Complexity.DETAIL;
 

@@ -44,7 +44,7 @@ import eki.ekilex.data.api.Word;
 import eki.ekilex.service.CommonDataService;
 import eki.ekilex.service.LexSearchService;
 import eki.ekilex.service.TermSearchService;
-import eki.ekilex.service.api.WordService;
+import eki.ekilex.service.api.LexWordService;
 
 @ConditionalOnWebApplication
 @RestController
@@ -60,7 +60,7 @@ public class ApiSearchController extends AbstractApiController {
 	private TermSearchService termSearchService;
 
 	@Autowired
-	private WordService wordService;
+	private LexWordService lexWordService;
 
 	@Autowired
 	private RequestMappingHandlerMapping requestMappingHandlerMapping;
@@ -222,7 +222,7 @@ public class ApiSearchController extends AbstractApiController {
 	@ResponseBody
 	public List<Word> getPublicWords(@PathVariable("datasetCode") String datasetCode) {
 
-		List<Word> publicWords = wordService.getPublicWords(datasetCode);
+		List<Word> publicWords = lexWordService.getPublicWords(datasetCode);
 		return publicWords;
 	}
 
@@ -234,7 +234,7 @@ public class ApiSearchController extends AbstractApiController {
 			@PathVariable("datasetCode") String datasetCode,
 			@PathVariable("lang") String lang) {
 
-		List<Long> wordIds = wordService.getWordIds(wordValue, datasetCode, lang);
+		List<Long> wordIds = lexWordService.getWordIds(wordValue, datasetCode, lang);
 		return wordIds;
 	}
 
