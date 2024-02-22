@@ -1036,7 +1036,8 @@ public class CudDbService extends AbstractDataDbService {
 		return meaningSemanticTypeCodeId;
 	}
 
-	public WordLexemeMeaningIdTuple createLexeme(Long wordId, String datasetCode, Long meaningId, int lexemeLevel1) throws Exception {
+	public WordLexemeMeaningIdTuple createLexeme(
+			Long wordId, String datasetCode, Long meaningId, int lexemeLevel1, String valueStateCode, boolean isPublic) throws Exception {
 
 		if (StringUtils.equals(datasetCode, DATASET_XXX)) {
 			throw new OperationDeniedException("Creating lexeme for hidden dataset. Please inform developers immediately!");
@@ -1061,9 +1062,24 @@ public class CudDbService extends AbstractDataDbService {
 		}
 		Long lexemeId = create
 				.insertInto(
-						LEXEME, LEXEME.MEANING_ID, LEXEME.WORD_ID, LEXEME.DATASET_CODE,
-						LEXEME.LEVEL1, LEXEME.LEVEL2, LEXEME.IS_PUBLIC, LEXEME.COMPLEXITY)
-				.values(meaningId, wordId, datasetCode, lexemeLevel1, 1, PUBLICITY_PUBLIC, COMPLEXITY_DETAIL)
+						LEXEME,
+						LEXEME.MEANING_ID,
+						LEXEME.WORD_ID,
+						LEXEME.DATASET_CODE,
+						LEXEME.LEVEL1,
+						LEXEME.LEVEL2,
+						LEXEME.VALUE_STATE_CODE,
+						LEXEME.IS_PUBLIC,
+						LEXEME.COMPLEXITY)
+				.values(
+						meaningId,
+						wordId,
+						datasetCode,
+						lexemeLevel1,
+						1,
+						valueStateCode,
+						isPublic,
+						COMPLEXITY_DETAIL)
 				.returning(LEXEME.ID)
 				.fetchOne()
 				.getId();

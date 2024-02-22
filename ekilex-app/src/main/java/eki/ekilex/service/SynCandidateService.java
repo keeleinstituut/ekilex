@@ -17,7 +17,6 @@ import org.springframework.stereotype.Component;
 import eki.common.constant.ActivityEntity;
 import eki.common.constant.ActivityOwner;
 import eki.common.constant.Complexity;
-import eki.common.constant.GlobalConstant;
 import eki.common.constant.ReferenceType;
 import eki.ekilex.constant.ResponseStatus;
 import eki.ekilex.data.ActivityLogData;
@@ -33,7 +32,7 @@ import eki.ekilex.service.db.SourceLinkDbService;
 import eki.ekilex.service.db.SynSearchDbService;
 
 @Component
-public class SynCandidateService extends AbstractCudService implements GlobalConstant {
+public class SynCandidateService extends AbstractCudService {
 
 	private static final Logger logger = LoggerFactory.getLogger(SynCandidateService.class);
 

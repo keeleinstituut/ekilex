@@ -16,7 +16,6 @@ import org.springframework.stereotype.Component;
 
 import eki.common.constant.ActivityEntity;
 import eki.common.constant.ActivityOwner;
-import eki.common.constant.GlobalConstant;
 import eki.common.constant.PermConstant;
 import eki.common.service.TextDecorationService;
 import eki.ekilex.data.ActivityLogData;
@@ -37,7 +36,7 @@ import eki.ekilex.service.db.TagDbService;
 import eki.ekilex.service.util.LexemeLevelCalcUtil;
 
 @Component
-public class CompositionService extends AbstractService implements GlobalConstant, PermConstant {
+public class CompositionService extends AbstractService implements PermConstant {
 
 	private static final int DEFAULT_LEXEME_LEVEL = 1;
 

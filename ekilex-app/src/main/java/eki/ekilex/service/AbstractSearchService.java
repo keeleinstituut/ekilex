@@ -9,9 +9,7 @@ import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import eki.common.constant.GlobalConstant;
 import eki.common.constant.PermConstant;
-import eki.ekilex.constant.SystemConstant;
 import eki.ekilex.data.Classifier;
 import eki.ekilex.data.Dataset;
 import eki.ekilex.data.PagingResult;
@@ -22,7 +20,7 @@ import eki.ekilex.data.SearchLangsRestriction;
 import eki.ekilex.service.db.CommonDataDbService;
 import eki.ekilex.service.db.PermissionDbService;
 
-public abstract class AbstractSearchService extends AbstractService implements SystemConstant, GlobalConstant, PermConstant {
+public abstract class AbstractSearchService extends AbstractService implements PermConstant {
 
 	@Autowired
 	protected CommonDataDbService commonDataDbService;

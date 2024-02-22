@@ -19,7 +19,6 @@ import eki.common.constant.ActivityFunct;
 import eki.common.constant.ActivityOwner;
 import eki.common.constant.Complexity;
 import eki.common.constant.FreeformType;
-import eki.common.constant.GlobalConstant;
 import eki.common.constant.PermConstant;
 import eki.ekilex.data.ActivityLogData;
 import eki.ekilex.data.Classifier;
@@ -39,7 +38,7 @@ import eki.ekilex.service.util.LexemeLevelCalcUtil;
 
 @PreAuthorize("authentication.principal.datasetCrudPermissionsExist")
 @Component
-public class CudService extends AbstractCudService implements GlobalConstant, PermConstant, ActivityFunct {
+public class CudService extends AbstractCudService implements PermConstant, ActivityFunct {
 
 	@Autowired
 	private CompositionDbService compositionDbService;

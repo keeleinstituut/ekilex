@@ -116,7 +116,7 @@ public class TermMeaningService extends AbstractApiCudService implements Activit
 				List<String> lexemeTags = word.getLexemeTags();
 				List<Freeform> usages = word.getUsages();
 				Boolean lexemePublicity = word.getLexemePublicity();
-				boolean isLexemePublic = isPublic(lexemePublicity, DEFAULT_LEXEME_PUBLICITY);
+				boolean isPublic = isPublic(lexemePublicity, DEFAULT_LEXEME_PUBLICITY);
 				List<SourceLink> lexemeSourceLinks = word.getLexemeSourceLinks();
 
 				if (isValueOrLangMissing) {
@@ -127,7 +127,7 @@ public class TermMeaningService extends AbstractApiCudService implements Activit
 							lexeme = termMeaningDbService.getLexeme(wordId, meaningId, datasetCode);
 							lexemeId = lexeme.getId();
 						} else {
-							WordLexemeMeaningIdTuple idTuple = cudDbService.createLexeme(wordId, datasetCode, meaningId, 1);
+							WordLexemeMeaningIdTuple idTuple = cudDbService.createLexeme(wordId, datasetCode, meaningId, 1, lexemeValueStateCode, isPublic);
 							lexemeId = idTuple.getLexemeId();
 							activityLogService.createActivityLog(createFunctName, lexemeId, ActivityOwner.LEXEME, roleDatasetCode, MANUAL_EVENT_ON_UPDATE_ENABLED);
 						}
@@ -140,7 +140,7 @@ public class TermMeaningService extends AbstractApiCudService implements Activit
 					if (wordId == null) {
 						int synWordHomNr = cudDbService.getWordNextHomonymNr(wordValue, wordLang);
 						wordId = cudDbService.createWord(wordValue, wordValuePrese, valueAsWord, wordLang, synWordHomNr);
-						WordLexemeMeaningIdTuple idTuple = cudDbService.createLexeme(wordId, datasetCode, meaningId, 1);
+						WordLexemeMeaningIdTuple idTuple = cudDbService.createLexeme(wordId, datasetCode, meaningId, 1, lexemeValueStateCode, isPublic);
 						lexemeId = idTuple.getLexemeId();
 						activityLogService.createActivityLog(createFunctName, wordId, ActivityOwner.WORD, roleDatasetCode, MANUAL_EVENT_ON_UPDATE_ENABLED);
 						activityLogService.createActivityLog(createFunctName, lexemeId, ActivityOwner.LEXEME, roleDatasetCode, MANUAL_EVENT_ON_UPDATE_ENABLED);
@@ -149,7 +149,7 @@ public class TermMeaningService extends AbstractApiCudService implements Activit
 							lexeme = termMeaningDbService.getLexeme(wordId, meaningId, datasetCode);
 							lexemeId = lexeme.getId();
 						} else {
-							WordLexemeMeaningIdTuple idTuple = cudDbService.createLexeme(wordId, datasetCode, meaningId, 1);
+							WordLexemeMeaningIdTuple idTuple = cudDbService.createLexeme(wordId, datasetCode, meaningId, 1, lexemeValueStateCode, isPublic);
 							lexemeId = idTuple.getLexemeId();
 							activityLogService.createActivityLog(createFunctName, lexemeId, ActivityOwner.LEXEME, roleDatasetCode, MANUAL_EVENT_ON_UPDATE_ENABLED);
 						}
@@ -180,7 +180,7 @@ public class TermMeaningService extends AbstractApiCudService implements Activit
 				if (isUpdateLexeme) {
 					activityLog = activityLogService.prepareActivityLog(updateFunctName, lexemeId, ActivityOwner.LEXEME, roleDatasetCode, MANUAL_EVENT_ON_UPDATE_ENABLED);
 					cudDbService.updateLexemeValueState(lexemeId, lexemeValueStateCode);
-					cudDbService.updateLexemePublicity(lexemeId, isLexemePublic);
+					cudDbService.updateLexemePublicity(lexemeId, isPublic);
 					activityLogService.createActivityLog(activityLog, lexemeId, ActivityEntity.LEXEME);
 				}
 

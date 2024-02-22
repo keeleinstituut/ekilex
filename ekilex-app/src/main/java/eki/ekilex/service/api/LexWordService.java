@@ -13,7 +13,6 @@ import org.springframework.stereotype.Component;
 import eki.common.constant.ActivityEntity;
 import eki.common.constant.ActivityOwner;
 import eki.common.constant.Complexity;
-import eki.common.constant.GlobalConstant;
 import eki.ekilex.data.ActivityLogData;
 import eki.ekilex.data.SimpleWord;
 import eki.ekilex.data.WordLexemeMeaningIdTuple;
@@ -28,7 +27,7 @@ import eki.ekilex.service.db.TagDbService;
 import eki.ekilex.service.db.api.WordDbService;
 
 @Component
-public class LexWordService extends AbstractApiCudService implements GlobalConstant {
+public class LexWordService extends AbstractApiCudService {
 
 	private static final Complexity DEFAULT_COMPLEXITY = Complexity.DETAIL;
 
@@ -139,7 +138,7 @@ public class LexWordService extends AbstractApiCudService implements GlobalConst
 
 		if (CollectionUtils.isEmpty(meanings)) {
 			if (existingMeaningIds.isEmpty()) {
-				WordLexemeMeaningIdTuple wordLexemeMeaningId = cudDbService.createLexeme(wordId, datasetCode, null, 1);
+				WordLexemeMeaningIdTuple wordLexemeMeaningId = cudDbService.createLexeme(wordId, datasetCode, null, 1, null, PUBLICITY_PUBLIC);
 				Long lexemeId = wordLexemeMeaningId.getLexemeId();
 				Long meaningId = wordLexemeMeaningId.getMeaningId();
 				tagDbService.createLexemeAutomaticTags(lexemeId);
@@ -159,7 +158,7 @@ public class LexWordService extends AbstractApiCudService implements GlobalConst
 			int newLexemeLevel1 = currentLexemesMaxLevel1 + 1;
 
 			if (meaningId == null) {
-				WordLexemeMeaningIdTuple wordLexemeMeaningId = cudDbService.createLexeme(wordId, datasetCode, null, newLexemeLevel1);
+				WordLexemeMeaningIdTuple wordLexemeMeaningId = cudDbService.createLexeme(wordId, datasetCode, null, newLexemeLevel1, null, PUBLICITY_PUBLIC);
 				lexemeId = wordLexemeMeaningId.getLexemeId();
 				meaningId = wordLexemeMeaningId.getMeaningId();
 				tagDbService.createLexemeAutomaticTags(lexemeId);
@@ -169,7 +168,7 @@ public class LexWordService extends AbstractApiCudService implements GlobalConst
 				if (existingMeaningIds.contains(meaningId)) {
 					lexemeId = lookupDbService.getLexemeId(wordId, meaningId);
 				} else {
-					WordLexemeMeaningIdTuple wordLexemeMeaningId = cudDbService.createLexeme(wordId, datasetCode, meaningId, newLexemeLevel1);
+					WordLexemeMeaningIdTuple wordLexemeMeaningId = cudDbService.createLexeme(wordId, datasetCode, meaningId, newLexemeLevel1, null, PUBLICITY_PUBLIC);
 					lexemeId = wordLexemeMeaningId.getLexemeId();
 					tagDbService.createLexemeAutomaticTags(lexemeId);
 					activityLogService.createActivityLog(createFunctName, lexemeId, ActivityOwner.LEXEME, roleDatasetCode, MANUAL_EVENT_ON_UPDATE_ENABLED);

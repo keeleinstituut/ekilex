@@ -11,20 +11,17 @@ import eki.common.constant.ActivityEntity;
 import eki.common.constant.ActivityOwner;
 import eki.common.constant.ContentKey;
 import eki.common.constant.FreeformType;
-import eki.common.constant.GlobalConstant;
 import eki.common.constant.ReferenceOwner;
 import eki.common.constant.ReferenceType;
 import eki.common.constant.SourceType;
-import eki.common.exception.OperationDeniedException;
 import eki.ekilex.data.ActivityLogData;
 import eki.ekilex.data.ActivityLogOwnerEntityDescr;
-import eki.ekilex.data.Source;
 import eki.ekilex.data.SourceLink;
 import eki.ekilex.data.SourceProperty;
 import eki.ekilex.data.api.FreeformOwner;
 
 @Component
-public class SourceLinkService extends AbstractSourceService implements GlobalConstant {
+public class SourceLinkService extends AbstractSourceService {
 
 	@Transactional
 	public SourceLink getSourceLink(Long sourceLinkId, ReferenceOwner referenceOwner) {

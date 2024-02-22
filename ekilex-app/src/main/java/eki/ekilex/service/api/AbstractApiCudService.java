@@ -10,7 +10,6 @@ import eki.common.constant.ActivityEntity;
 import eki.common.constant.ActivityOwner;
 import eki.common.constant.Complexity;
 import eki.common.constant.FreeformType;
-import eki.common.constant.GlobalConstant;
 import eki.common.constant.ReferenceType;
 import eki.ekilex.data.ActivityLogData;
 import eki.ekilex.data.FreeForm;
@@ -20,7 +19,7 @@ import eki.ekilex.data.api.SourceLink;
 import eki.ekilex.service.AbstractCudService;
 import eki.ekilex.service.db.SourceLinkDbService;
 
-public abstract class AbstractApiCudService extends AbstractCudService implements GlobalConstant {
+public abstract class AbstractApiCudService extends AbstractCudService {
 
 	protected static final ReferenceType DEFAULT_SOURCE_LINK_REF_TYPE = ReferenceType.ANY;
 

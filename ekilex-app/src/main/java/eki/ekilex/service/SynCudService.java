@@ -19,7 +19,6 @@ import org.springframework.web.client.HttpClientErrorException;
 
 import eki.common.constant.ActivityEntity;
 import eki.common.constant.ActivityOwner;
-import eki.common.constant.GlobalConstant;
 import eki.common.constant.RelationStatus;
 import eki.common.exception.OperationDeniedException;
 import eki.ekilex.constant.SystemConstant;
@@ -34,7 +33,7 @@ import eki.ekilex.service.db.CompositionDbService;
 import eki.ekilex.service.db.SynSearchDbService;
 
 @Component
-public class SynCudService extends AbstractCudService implements GlobalConstant, SystemConstant {
+public class SynCudService extends AbstractCudService implements SystemConstant {
 
 	private static final String USER_ADDED_WORD_RELATION_NAME = "user";
 
@@ -174,7 +173,7 @@ public class SynCudService extends AbstractCudService implements GlobalConstant,
 
 		int currentSynWordLexemesMaxLevel1 = lookupDbService.getWordLexemesMaxLevel1(synWordId, roleDatasetCode);
 		int synLexemeLevel1 = currentSynWordLexemesMaxLevel1 + 1;
-		cudDbService.createLexeme(synWordId, roleDatasetCode, targetMeaningId, synLexemeLevel1);
+		cudDbService.createLexeme(synWordId, roleDatasetCode, targetMeaningId, synLexemeLevel1, null, PUBLICITY_PUBLIC);
 
 		activityLogService.createActivityLog(activityLog, targetMeaningId, ActivityEntity.MEANING_WORD);
 	}

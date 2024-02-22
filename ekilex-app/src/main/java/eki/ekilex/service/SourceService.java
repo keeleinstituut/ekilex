@@ -16,7 +16,6 @@ import org.springframework.stereotype.Component;
 import eki.common.constant.ActivityEntity;
 import eki.common.constant.ActivityOwner;
 import eki.common.constant.FreeformType;
-import eki.common.constant.GlobalConstant;
 import eki.common.constant.SourceType;
 import eki.common.exception.OperationDeniedException;
 import eki.ekilex.data.ActivityLogData;
@@ -29,7 +28,7 @@ import eki.ekilex.data.SourcePropertyTuple;
 import eki.ekilex.service.util.PermCalculator;
 
 @Component
-public class SourceService extends AbstractSourceService implements GlobalConstant {
+public class SourceService extends AbstractSourceService {
 
 	private static final Logger logger = LoggerFactory.getLogger(SourceService.class);
 
