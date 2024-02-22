@@ -70,7 +70,7 @@
                 <th:block th:each="relation, relationIter : ${wordGroup.wordGroupMembers}">
                   <span class="word-options mb-1">
                     <a th:href="@{${viewUtil.getSearchUri(sessionBean, searchMode, relation.word, relation.homonymNr)}}" th:classappend="${relation.homonymsExist ? 'is-homonym':''}">
-                      <span th:utext="${viewUtil.getWordValueMarkup(relation)}" data-toggle="tooltip" data-placement="top" th:title="${relation.aspect.value}">tee</span>
+                      <span th:utext="${viewUtil.getWordValueMarkup(relation)}" data-toggle="tooltip" data-placement="top" th:title="${relation.aspect?.value}">tee</span>
                       <sup th:if="${relation.homonymsExist}" th:text="${relation.homonymNr}"></sup>
                     </a>
                     <span th:unless="${relationIter.last}">-</span>

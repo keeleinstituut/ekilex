@@ -72,11 +72,13 @@ public interface SystemConstant {
 
 	int COOKIE_AGE_ONE_MONTH = 2629743;
 
-	String COOKIE_NAME_DESTIN_LANGS = "ww-dl";
+	String COOKIE_NAME_PREFIX = "ww-";
 
-	String COOKIE_NAME_DATASETS = "ww-ds";
+	String COOKIE_NAME_DESTIN_LANGS = COOKIE_NAME_PREFIX + "dl";
 
-	String COOKIE_NAME_UI_LANG = "ww-uil";
+	String COOKIE_NAME_DATASETS = COOKIE_NAME_PREFIX + "ds";
 
-	String COOKIE_NAME_UI_SECTIONS = "ww-uis";
+	String COOKIE_NAME_UI_LANG = COOKIE_NAME_PREFIX + "uil";
+
+	String COOKIE_NAME_UI_SECTIONS = COOKIE_NAME_PREFIX + "uis";
 }

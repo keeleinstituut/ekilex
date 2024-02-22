@@ -70,6 +70,11 @@ public abstract class AbstractController implements WebConstant, SystemConstant,
 		return sessionBean;
 	}
 
+	protected SessionBean getSessionBean(Model model) {
+		SessionBean sessionBean = (SessionBean) model.asMap().get(SESSION_BEAN);
+		return sessionBean;
+	}
+
 	protected boolean isSessionBeanNotPresent(Model model) {
 		return !model.asMap().containsKey(SESSION_BEAN);
 	}
@@ -87,7 +92,9 @@ public abstract class AbstractController implements WebConstant, SystemConstant,
 
 			if (ArrayUtils.isNotEmpty(cookies)) {
 
-				Map<String, String> cookieMap = Arrays.stream(cookies).collect(Collectors.toMap(Cookie::getName, Cookie::getValue));
+				Map<String, String> cookieMap = Arrays.stream(cookies)
+						.filter(cookie -> StringUtils.startsWithIgnoreCase(cookie.getName(), COOKIE_NAME_PREFIX))
+						.collect(Collectors.toMap(Cookie::getName, Cookie::getValue));
 				String destinLangsStr = cookieMap.get(COOKIE_NAME_DESTIN_LANGS);
 				String datasetCodesStr = cookieMap.get(COOKIE_NAME_DATASETS);
 				String uiSectionsStr = cookieMap.get(COOKIE_NAME_UI_SECTIONS);
@@ -123,11 +130,6 @@ public abstract class AbstractController implements WebConstant, SystemConstant,
 
 		model.addAttribute(SESSION_BEAN, sessionBean);
 
-		return sessionBean;
-	}
-
-	protected SessionBean getSessionBean(Model model) {
-		SessionBean sessionBean = (SessionBean) model.asMap().get(SESSION_BEAN);
 		return sessionBean;
 	}
 
