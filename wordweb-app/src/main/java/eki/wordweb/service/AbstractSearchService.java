@@ -125,10 +125,10 @@ public abstract class AbstractSearchService implements SystemConstant, WebConsta
 		String searchWord = searchFilter.getSearchWord();
 
 		if (StringUtils.isBlank(searchWord)) {
-			return new WordsMatch(Collections.emptyList(), 0, false, false);
+			return new WordsMatch(Collections.emptyList(), false, false, 0);
 		}
 		if (!StringUtils.containsAny(searchWord, SEARCH_MASK_CHARS, SEARCH_MASK_CHAR)) {
-			return new WordsMatch(Collections.emptyList(), 0, false, false);
+			return new WordsMatch(Collections.emptyList(), false, false, 0);
 		}
 
 		SearchContext searchContext = getSearchContext(searchFilter);
@@ -159,12 +159,15 @@ public abstract class AbstractSearchService implements SystemConstant, WebConsta
 				.map(Word::getWord)
 				.distinct()
 				.collect(Collectors.toList());
-		boolean resultsExist = CollectionUtils.isNotEmpty(wordMatchWords);
-		int resultCount = CollectionUtils.size(wordMatchWords);
-		boolean isSingleResult = resultCount == 1;
 
-		if (resultsExist) {
-			return new WordsData(wordMatchWords, formMatchWordValues, resultCount, resultsExist, isSingleResult);
+		boolean wordResultsExist = CollectionUtils.isNotEmpty(wordMatchWords);
+		boolean formResultsExist = CollectionUtils.isNotEmpty(formMatchWordValues);
+		boolean anyResultsExist = wordResultsExist || formResultsExist;
+		int wordResultCount = CollectionUtils.size(wordMatchWords);
+		boolean isSingleResult = wordResultCount == 1;
+
+		if (anyResultsExist) {
+			return new WordsData(wordMatchWords, wordResultsExist, isSingleResult, wordResultCount, formMatchWordValues, formResultsExist);
 		}
 
 		LanguagesDatasets availableLanguagesDatasets = searchDbService.getAvailableLanguagesDatasets(searchWord, searchContext.getLexComplexity());

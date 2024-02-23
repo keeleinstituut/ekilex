@@ -219,7 +219,7 @@ public class SearchDbService implements GlobalConstant, SystemConstant {
 		boolean resultsExist = resultCount > 0;
 		boolean singleResult = resultCount == 1;
 
-		return new WordsMatch(wordValues, resultCount, resultsExist, singleResult);
+		return new WordsMatch(wordValues, resultsExist, singleResult, resultCount);
 	}
 
 	public List<Word> getWords(String searchWord, SearchContext searchContext, boolean ignoreForms) {

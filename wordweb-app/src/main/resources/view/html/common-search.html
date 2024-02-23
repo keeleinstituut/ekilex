@@ -57,7 +57,7 @@
     </div>
   </th:block>
   <th:block th:fragment="form-match">
-    <div class="mr-4 homonym-innerwrap show-with-details d-flex align-items-center" id="form-words" th:if="${not #lists.isEmpty(wordsData.formMatchWordValues)}">
+    <div class="mr-4 homonym-innerwrap show-with-details d-flex align-items-center" id="form-words" th:if="${wordsData.formResultsExist}">
       <span th:text="#{label.word.form}">see on ka vorm sõnast</span>
       <button class="btn btn-link px-0 ml-1 word-form" th:each="word : ${wordsData.formMatchWordValues}" th:text="${word}" th:data-word="${word}"></button>
     </div>

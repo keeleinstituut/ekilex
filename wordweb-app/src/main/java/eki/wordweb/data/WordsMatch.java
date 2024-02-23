@@ -8,8 +8,8 @@ public class WordsMatch extends AbstractSearchResult {
 
 	private List<String> wordValues;
 
-	public WordsMatch(List<String> wordValues, int resultCount, boolean resultsExist, boolean singleResult) {
-		super(resultCount, resultsExist, singleResult);
+	public WordsMatch(List<String> wordValues, boolean resultsExist, boolean singleResult, int resultCount) {
+		super(resultsExist, singleResult, resultCount);
 		this.wordValues = wordValues;
 	}
 
