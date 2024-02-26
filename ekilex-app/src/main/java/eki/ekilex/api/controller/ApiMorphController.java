@@ -34,12 +34,12 @@ public class ApiMorphController extends AbstractApiController {
 
 	@Order(402)
 	@PreAuthorize("principal.admin")
-	@PostMapping(API_SERVICES_URI + PARADIGM_URI + REPLACE_URI)
+	@PostMapping(API_SERVICES_URI + PARADIGM_URI + SAVE_URI)
 	@ResponseBody
-	public ApiResponse replaceMorphology(@RequestBody ParadigmWrapper paradigmWrapper) {
+	public ApiResponse saveMorphology(@RequestBody ParadigmWrapper paradigmWrapper) {
 
 		try {
-			morphologyService.replace(paradigmWrapper);
+			morphologyService.save(paradigmWrapper);
 			return getOpSuccessResponse();
 		} catch (Exception e) {
 			return getOpFailResponse(e);

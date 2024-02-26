@@ -2,34 +2,20 @@ package eki.ekilex.data.api;
 
 import eki.common.data.AbstractDataObject;
 
-public class Form extends AbstractDataObject {
+public class FormUnit extends AbstractDataObject {
 
 	private static final long serialVersionUID = 1L;
 
-	private Long id;
-
 	private String value;
-
-	private String valuePrese;
 
 	private String morphCode;
 
-	public Form() {
+	public FormUnit() {
 	}
 
-	public Form(Long id, String value, String valuePrese, String morphCode) {
-		this.id = id;
+	public FormUnit(String value, String morphCode) {
 		this.value = value;
-		this.valuePrese = valuePrese;
 		this.morphCode = morphCode;
-	}
-
-	public Long getId() {
-		return id;
-	}
-
-	public void setId(Long id) {
-		this.id = id;
 	}
 
 	public String getValue() {
@@ -38,14 +24,6 @@ public class Form extends AbstractDataObject {
 
 	public void setValue(String value) {
 		this.value = value;
-	}
-
-	public String getValuePrese() {
-		return valuePrese;
-	}
-
-	public void setValuePrese(String valuePrese) {
-		this.valuePrese = valuePrese;
 	}
 
 	public String getMorphCode() {

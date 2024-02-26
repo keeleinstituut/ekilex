@@ -22,7 +22,7 @@ public class Paradigm extends AbstractDataObject {
 
 	private boolean secondary;
 
-	private List<Form> forms;
+	private List<ParadigmForm> paradigmForms;
 
 	public Long getId() {
 		return id;
@@ -80,12 +80,12 @@ public class Paradigm extends AbstractDataObject {
 		this.secondary = secondary;
 	}
 
-	public List<Form> getForms() {
-		return forms;
+	public List<ParadigmForm> getParadigmForms() {
+		return paradigmForms;
 	}
 
-	public void setForms(List<Form> forms) {
-		this.forms = forms;
+	public void setParadigmForms(List<ParadigmForm> paradigmForms) {
+		this.paradigmForms = paradigmForms;
 	}
 
 }

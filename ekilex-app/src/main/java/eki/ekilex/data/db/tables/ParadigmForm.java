@@ -16,7 +16,7 @@ import org.jooq.ForeignKey;
 import org.jooq.Identity;
 import org.jooq.Name;
 import org.jooq.Record;
-import org.jooq.Row4;
+import org.jooq.Row12;
 import org.jooq.Schema;
 import org.jooq.Table;
 import org.jooq.TableField;
@@ -67,6 +67,46 @@ public class ParadigmForm extends TableImpl<ParadigmFormRecord> {
      * The column <code>public.paradigm_form.order_by</code>.
      */
     public final TableField<ParadigmFormRecord, Long> ORDER_BY = createField(DSL.name("order_by"), SQLDataType.BIGINT.nullable(false).identity(true), this, "");
+
+    /**
+     * The column <code>public.paradigm_form.morph_group1</code>.
+     */
+    public final TableField<ParadigmFormRecord, String> MORPH_GROUP1 = createField(DSL.name("morph_group1"), SQLDataType.CLOB, this, "");
+
+    /**
+     * The column <code>public.paradigm_form.morph_group2</code>.
+     */
+    public final TableField<ParadigmFormRecord, String> MORPH_GROUP2 = createField(DSL.name("morph_group2"), SQLDataType.CLOB, this, "");
+
+    /**
+     * The column <code>public.paradigm_form.morph_group3</code>.
+     */
+    public final TableField<ParadigmFormRecord, String> MORPH_GROUP3 = createField(DSL.name("morph_group3"), SQLDataType.CLOB, this, "");
+
+    /**
+     * The column <code>public.paradigm_form.display_level</code>.
+     */
+    public final TableField<ParadigmFormRecord, Integer> DISPLAY_LEVEL = createField(DSL.name("display_level"), SQLDataType.INTEGER.nullable(false).defaultValue(DSL.field("1", SQLDataType.INTEGER)), this, "");
+
+    /**
+     * The column <code>public.paradigm_form.display_form</code>.
+     */
+    public final TableField<ParadigmFormRecord, String> DISPLAY_FORM = createField(DSL.name("display_form"), SQLDataType.VARCHAR(255), this, "");
+
+    /**
+     * The column <code>public.paradigm_form.audio_file</code>.
+     */
+    public final TableField<ParadigmFormRecord, String> AUDIO_FILE = createField(DSL.name("audio_file"), SQLDataType.VARCHAR(255), this, "");
+
+    /**
+     * The column <code>public.paradigm_form.morph_exists</code>.
+     */
+    public final TableField<ParadigmFormRecord, Boolean> MORPH_EXISTS = createField(DSL.name("morph_exists"), SQLDataType.BOOLEAN.nullable(false).defaultValue(DSL.field("true", SQLDataType.BOOLEAN)), this, "");
+
+    /**
+     * The column <code>public.paradigm_form.is_questionable</code>.
+     */
+    public final TableField<ParadigmFormRecord, Boolean> IS_QUESTIONABLE = createField(DSL.name("is_questionable"), SQLDataType.BOOLEAN.nullable(false).defaultValue(DSL.field("false", SQLDataType.BOOLEAN)), this, "");
 
     private ParadigmForm(Name alias, Table<ParadigmFormRecord> aliased) {
         this(alias, aliased, null);
@@ -170,11 +210,11 @@ public class ParadigmForm extends TableImpl<ParadigmFormRecord> {
     }
 
     // -------------------------------------------------------------------------
-    // Row4 type methods
+    // Row12 type methods
     // -------------------------------------------------------------------------
 
     @Override
-    public Row4<Long, Long, Long, Long> fieldsRow() {
-        return (Row4) super.fieldsRow();
+    public Row12<Long, Long, Long, Long, String, String, String, Integer, String, String, Boolean, Boolean> fieldsRow() {
+        return (Row12) super.fieldsRow();
     }
 }

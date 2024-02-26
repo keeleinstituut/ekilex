@@ -16,7 +16,7 @@ import org.jooq.ForeignKey;
 import org.jooq.Identity;
 import org.jooq.Name;
 import org.jooq.Record;
-import org.jooq.Row13;
+import org.jooq.Row4;
 import org.jooq.Schema;
 import org.jooq.Table;
 import org.jooq.TableField;
@@ -54,34 +54,9 @@ public class Form extends TableImpl<FormRecord> {
     public final TableField<FormRecord, Long> ID = createField(DSL.name("id"), SQLDataType.BIGINT.nullable(false).identity(true), this, "");
 
     /**
-     * The column <code>public.form.morph_group1</code>.
-     */
-    public final TableField<FormRecord, String> MORPH_GROUP1 = createField(DSL.name("morph_group1"), SQLDataType.CLOB, this, "");
-
-    /**
-     * The column <code>public.form.morph_group2</code>.
-     */
-    public final TableField<FormRecord, String> MORPH_GROUP2 = createField(DSL.name("morph_group2"), SQLDataType.CLOB, this, "");
-
-    /**
-     * The column <code>public.form.morph_group3</code>.
-     */
-    public final TableField<FormRecord, String> MORPH_GROUP3 = createField(DSL.name("morph_group3"), SQLDataType.CLOB, this, "");
-
-    /**
-     * The column <code>public.form.display_level</code>.
-     */
-    public final TableField<FormRecord, Integer> DISPLAY_LEVEL = createField(DSL.name("display_level"), SQLDataType.INTEGER.nullable(false).defaultValue(DSL.field("1", SQLDataType.INTEGER)), this, "");
-
-    /**
      * The column <code>public.form.morph_code</code>.
      */
     public final TableField<FormRecord, String> MORPH_CODE = createField(DSL.name("morph_code"), SQLDataType.VARCHAR(100).nullable(false), this, "");
-
-    /**
-     * The column <code>public.form.morph_exists</code>.
-     */
-    public final TableField<FormRecord, Boolean> MORPH_EXISTS = createField(DSL.name("morph_exists"), SQLDataType.BOOLEAN.nullable(false), this, "");
 
     /**
      * The column <code>public.form.value</code>.
@@ -92,26 +67,6 @@ public class Form extends TableImpl<FormRecord> {
      * The column <code>public.form.value_prese</code>.
      */
     public final TableField<FormRecord, String> VALUE_PRESE = createField(DSL.name("value_prese"), SQLDataType.CLOB.nullable(false), this, "");
-
-    /**
-     * The column <code>public.form.components</code>.
-     */
-    public final TableField<FormRecord, String[]> COMPONENTS = createField(DSL.name("components"), SQLDataType.VARCHAR(100).getArrayDataType(), this, "");
-
-    /**
-     * The column <code>public.form.display_form</code>.
-     */
-    public final TableField<FormRecord, String> DISPLAY_FORM = createField(DSL.name("display_form"), SQLDataType.VARCHAR(255), this, "");
-
-    /**
-     * The column <code>public.form.audio_file</code>.
-     */
-    public final TableField<FormRecord, String> AUDIO_FILE = createField(DSL.name("audio_file"), SQLDataType.VARCHAR(255), this, "");
-
-    /**
-     * The column <code>public.form.is_questionable</code>.
-     */
-    public final TableField<FormRecord, Boolean> IS_QUESTIONABLE = createField(DSL.name("is_questionable"), SQLDataType.BOOLEAN.nullable(false).defaultValue(DSL.field("false", SQLDataType.BOOLEAN)), this, "");
 
     private Form(Name alias, Table<FormRecord> aliased) {
         this(alias, aliased, null);
@@ -207,11 +162,11 @@ public class Form extends TableImpl<FormRecord> {
     }
 
     // -------------------------------------------------------------------------
-    // Row13 type methods
+    // Row4 type methods
     // -------------------------------------------------------------------------
 
     @Override
-    public Row13<Long, String, String, String, Integer, String, Boolean, String, String, String[], String, String, Boolean> fieldsRow() {
-        return (Row13) super.fieldsRow();
+    public Row4<Long, String, String, String> fieldsRow() {
+        return (Row4) super.fieldsRow();
     }
 }

@@ -79,4 +79,97 @@ insert into domain_label (code, origin, value, lang, type) values ('vaba', 'has'
 insert into domain_label (code, origin, value, lang, type) values ('video', 'has', 'video- ja rollimängud', 'est', 'descrip');
 insert into domain_label (code, origin, value, lang, type) values ('üld', 'has', 'üldmõisted (asutused, meetodid)', 'est', 'descrip');
 
+-- morfoloogia muudatused
+
+alter table paradigm_form
+	add column morph_group1 text null,
+	add column morph_group2 text null,
+	add column morph_group3 text null,
+	add column display_level integer not null default 1,
+	add column display_form varchar(255) null,
+	add column audio_file varchar(255) null,
+	add column morph_exists boolean not null default true,
+	add column is_questionable boolean not null default false;
+
+update paradigm_form pf set
+	morph_group1 = f.morph_group1,
+	morph_group2 = f.morph_group2,
+	morph_group3 = f.morph_group3,
+	display_level = f.display_level,
+	display_form = f.display_form,
+	audio_file = f.audio_file,
+	morph_exists = f.morph_exists,
+	is_questionable = f.is_questionable
+from
+	form f
+where
+	f.id = pf.form_id;
+
+create index paradigm_form_display_form_idx on paradigm_form(display_form);
+create index paradigm_form_display_level_idx on paradigm_form(display_level);
+
+alter table form
+	drop column morph_group1 cascade,
+	drop column morph_group2 cascade,
+	drop column morph_group3 cascade,
+	drop column display_level cascade,
+	drop column display_form cascade,
+	drop column audio_file cascade,
+	drop column morph_exists cascade,
+	drop column is_questionable cascade,
+	drop column components cascade;
+
+update
+	paradigm_form pf
+set
+	form_id = ff.form1_id
+from
+	(
+	select
+		f1.id form1_id,
+		f2.id form2_id
+	from
+		form f1,
+		form f2,
+		paradigm_form pf1,
+		paradigm_form pf2,
+		paradigm p1,
+		paradigm p2
+	where
+		pf1.form_id = f1.id
+		and pf1.paradigm_id = p1.id
+		and pf2.form_id = f2.id
+		and pf2.paradigm_id = p2.id
+		and p1.word_id = p2.word_id
+		and f1.id < f2.id
+		and f1.morph_code = f2.morph_code
+		and f1.value = f2.value
+		and not exists(
+			select
+				f3.id
+			from
+				form f3,
+				paradigm_form pf3,
+				paradigm p3
+			where
+				pf3.form_id = f3.id
+				and pf3.paradigm_id = p3.id
+				and p3.word_id = p1.word_id
+				and f3.id < f1.id
+				and f3.morph_code = f1.morph_code
+				and f3.value = f1.value)) ff
+where
+	pf.form_id = ff.form2_id;
+
+delete
+from
+	form f
+where
+	not exists (
+		select
+			pf.id
+		from
+			paradigm_form pf
+		where
+			pf.form_id = f.id);
 

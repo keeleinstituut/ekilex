@@ -29,7 +29,7 @@ import eki.common.constant.GlobalConstant;
 import eki.common.data.PgVarcharArray;
 import eki.common.service.db.BasicDbService;
 import eki.ekilex.app.EkilexApplication;
-import eki.ekilex.data.api.Form;
+import eki.ekilex.data.api.ParadigmForm;
 import eki.ekilex.data.api.Paradigm;
 import eki.ekilex.data.api.ParadigmWrapper;
 import eki.ekilex.web.util.ValueUtil;
@@ -99,10 +99,9 @@ public class ArbitraryTest implements GlobalConstant {
 
 		List<Paradigm> paradigms = paradigmWrapper.getParadigms();
 		Paradigm firstParadigm = paradigms.get(0);
-		List<Form> forms = firstParadigm.getForms();
+		List<ParadigmForm> paradigmForms = firstParadigm.getParadigmForms();
 
-		assertEquals("Incorrect data count", 36, forms.size());
-
+		assertEquals("Incorrect data count", 36, paradigmForms.size());
 	}
 
 	@Test

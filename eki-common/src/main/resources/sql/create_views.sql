@@ -256,7 +256,7 @@ from (
            and f.morph_code != '??'
            and f.value != w.value
            and f.value != '-'
-           and f.morph_exists = true
+           and pf.morph_exists = true
            and exists
              (select w.id
               from lexeme as l,
@@ -705,18 +705,17 @@ select w.id word_id,
        p.inflection_type,
        p.inflection_type_nr,
        f.id form_id,
-       f.morph_group1,
-       f.morph_group2,
-       f.morph_group3,
-       f.display_level,
-       f.morph_code,
-       f.morph_exists,
-       f.is_questionable,
        f.value,
        f.value_prese,
-       f.components,
-       f.display_form,
-       f.audio_file,
+       f.morph_code,
+       pf.morph_group1,
+       pf.morph_group2,
+       pf.morph_group3,
+       pf.display_level,
+       pf.display_form,
+       pf.audio_file,
+       pf.morph_exists,
+       pf.is_questionable,
        pf.order_by,
        ff.form_freq_value,
        ff.form_freq_rank,
