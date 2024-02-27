@@ -24,8 +24,6 @@ public class TypeSourceLink extends AbstractDataObject {
 
 	private String sourceLinkName;
 
-	private String value;
-
 	private Long orderBy;
 
 	private Long sourceId;
@@ -77,14 +75,6 @@ public class TypeSourceLink extends AbstractDataObject {
 
 	public void setSourceLinkName(String sourceLinkName) {
 		this.sourceLinkName = sourceLinkName;
-	}
-
-	public String getValue() {
-		return value;
-	}
-
-	public void setValue(String value) {
-		this.value = value;
 	}
 
 	public Long getOrderBy() {

@@ -144,6 +144,7 @@ from
 		and f1.id < f2.id
 		and f1.morph_code = f2.morph_code
 		and f1.value = f2.value
+		and f1.value_prese is not null
 		and not exists(
 			select
 				f3.id

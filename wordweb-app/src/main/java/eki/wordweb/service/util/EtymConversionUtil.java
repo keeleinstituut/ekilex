@@ -95,7 +95,7 @@ public class EtymConversionUtil {
 		wordEtymLevel.setComment(comment);
 		List<TypeSourceLink> sourceLinks = wordEtymSourceLinkMap.get(tuple.getWordEtymId());
 		if (CollectionUtils.isNotEmpty(sourceLinks)) {
-			List<String> sourceLinkValues = sourceLinks.stream().map(TypeSourceLink::getValue).collect(Collectors.toList());
+			List<String> sourceLinkValues = sourceLinks.stream().map(TypeSourceLink::getSourceValue).collect(Collectors.toList());
 			wordEtymLevel.setSourceLinkValues(sourceLinkValues);
 		}
 		return wordEtymLevel;
