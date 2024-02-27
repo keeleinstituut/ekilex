@@ -45,7 +45,6 @@ function setup(data) {
 
   var nodeMap = {};
   nodes.forEach(function(d) {
-    console.log(d)
     d.y = d.depth * 90;
     nodeMap[d.data.wordId] = d;
   });
@@ -140,7 +139,7 @@ function render(svgg, root, nodes, links) {
     .attr("transform", function(d) {
       var nodeLength = d3.select(this).select(".node-border").attr("width");
       var position = Math.round(nodeLength / 4);
-      return "translate(" + ((d.x + position)) + "," + d.y + ")";
+      return "translate(" + (d.x + position) + "," + d.y + ")";
     })
     ;
 
@@ -150,31 +149,49 @@ function render(svgg, root, nodes, links) {
   });
 
   var linkEnter = link
-    .enter()
-    .insert("path", "g")
-    .attr("class", "link")
+  .enter()
+  .append("g")
+  .attr("class", "link")
+  ;
+
+  // append path to linkEnter
+  linkEnter
+    .append("path")
+    .attr("class", "link-path")
     .attr("d", function(d) {
-      var o = { x: root.x0, y: root.y0 };
-      return diagonal(o, o);
+      return diagonal({x: d.s_x, y: d.s_y}, {x: d.t_x, y: d.t_y});
     })
+    ;
+
+  // append circle to linkEnter
+  linkEnter
+    .append("circle")
+    .attr("class", "link-circle")
+    .attr("r", 10)
+    .attr("fill", "#173148")
+    .attr("stroke-width", 0)
+    .attr("cx", function(d) { return (d.s_x + d.t_x) / 2 + 120; })
+    .attr("cy", function(d) { return (d.s_y + d.t_y) / 2 + 20; })
     .on("click", clickLink)
     ;
 
-  var linkUpdate = linkEnter.merge(link);
-
-  linkUpdate
-    .attr("d", function(d) {
-      var sn = { x: d.s_x, y: d.s_y };
-      var tn = { x: d.t_x, y: d.t_y };
-      return diagonal(sn, tn);
-    });
+  //append icon on circle
+  linkEnter
+    .append("path")
+    .attr("class","link-icon")
+    .attr("d", "M4.425 10.5C4.425 9.2175 5.4675 8.175 6.75 8.175H9.75V6.75H6.75C4.68 6.75 3 8.43 3 10.5 3 12.57 4.68 14.25 6.75 14.25H9.75V12.825H6.75C5.4675 12.825 4.425 11.7825 4.425 10.5ZM7.5 11.25H13.5V9.75H7.5V11.25ZM14.25 6.75H11.25V8.175H14.25C15.5325 8.175 16.575 9.2175 16.575 10.5 16.575 11.7825 15.5325 12.825 14.25 12.825H11.25V14.25H14.25C16.32 14.25 18 12.57 18 10.5 18 8.43 16.32 6.75 14.25 6.75Z")
+    .attr("fill", "#fff")
+    .attr("stroke-width", 0)
+    .attr("transform", function(d) 
+      { return "translate(" + ((d.s_x + d.t_x) / 2 + 109.5) + "," + ((d.s_y + d.t_y) / 2 + 9.5) + ")" })
+    ;
 
   // link curviture
   function diagonal(s, d) {
-    path = `M ${s.x + 100} ${s.y + 40}
-            C ${s.x + 100} ${(s.y + d.y + 40) / 2},
-              ${d.x + 100} ${(s.y + d.y + 40) / 2},
-              ${d.x + 100} ${d.y}`;
+    path = `M ${s.x + 120} ${s.y + 40}
+            C ${s.x + 120} ${(s.y + d.y + 40) / 2},
+              ${d.x + 120} ${(s.y + d.y + 40) / 2},
+              ${d.x + 120} ${d.y}`;
     return path;
   }
 
