@@ -197,6 +197,11 @@ from (
               language wl
          where w.lang = wl.code
            and w.is_public = true
+           and not exists
+             (select wwt.id
+              from word_word_type wwt
+              where wwt.word_id = w.id
+                and wwt.word_type_code = 'viga')
            and exists
              (select w.id
               from lexeme as l,
@@ -222,6 +227,11 @@ from (
          where w.lang = wl.code
            and w.value_as_word is not null
            and w.is_public = true
+           and not exists
+             (select wwt.id
+              from word_word_type wwt
+              where wwt.word_id = w.id
+                and wwt.word_type_code = 'viga')
            and exists
              (select w.id
               from lexeme as l,
