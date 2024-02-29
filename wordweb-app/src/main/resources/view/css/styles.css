@@ -20419,7 +20419,7 @@ eki-link, ext-link {
 }
 
 eki-form {
-  color: #006321;
+  color: #20b900;
 }
 
 eki-shy::before {
@@ -20927,8 +20927,16 @@ eki-shy {
 }
 
 .morphology-paradigm table td {
-  min-width: 50%;
-  white-space: nowrap;
+  line-height: 1.4;
+  min-width: 30%;
+  max-width: 60%;
+  white-space: normal;
+}
+
+.morphology-paradigm table td div {
+  padding: 2px;
+  margin-right: 4px;
+  display: inline-block;
 }
 
 .homonym-image {
