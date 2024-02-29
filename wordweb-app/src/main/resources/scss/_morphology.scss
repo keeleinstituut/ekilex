@@ -50,8 +50,15 @@
   table {
     min-width: 100%;
     td {
-      min-width: 50%;
-      white-space: nowrap;
+      min-width: 30%;
+      max-width: 60%;
+      white-space: normal;
+      line-height: 1.4;
+      div {
+        padding: 2px;
+        margin-right: 4px;
+        display: inline-block;
+      }
     }
   }
 }
