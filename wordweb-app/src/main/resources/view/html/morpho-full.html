@@ -2,62 +2,65 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <body class="survey-active">
   <!-- contains morpho templates: morpho-muutumatu_est, morpho-verb_est, morpho-noomen_est, morpho-verb_rus -->
-  <th:block th:fragment="morpho-form-value(form, prefix)">
-    <th:block th:if="${form.morphExists && !#strings.isEmpty(form.value)}">
-      <span th:text="${prefix}" th:if="${!#strings.isEmpty(prefix) && !#strings.equals(form.value, '-')}"></span>
-      <span th:if="${form.questionable}" class="text-muted">*</span>
-      <span th:utext="${form.displayForm}" class="form-display-form-field" style="display: none;"></span>
-      <span th:utext="${form.valuePrese}" class="form-value-field" th:classappend="${form.questionable ? 'text-muted ml-n1' : ''}"></span>
-      <button type="button" aria-label="Kuula hääldust - lugemas" class="btn btn-speaker" th:if="${(form.audioFile != null) && #strings.isEmpty(prefix)}"
-        th:data-url-to-audio="@{'/files/audio/' + ${form.audioFile}}" onclick="generateAudioAndPlay(this)">
-        <span class="icon icon-speaker"></span>
+  <th:block th:fragment="table-header_est">
+    <div class="modal-header">
+      <h5 class="modal-title">
+        Sõnavormid
+        <span>EKI eesti keele morfoloogiline andmebaas 2019–</span>
+      </h5>
+      <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
       </button>
+    </div>
+  </th:block>
+
+  <th:block th:fragment="table-checks_est">
+    <ul class="nav nav-pills mb-3" data-plugin="tableTogglers">
+      <li class="nav-item">
+        <button type="button" class="nav-link" role="tab" data-rel="marks">
+          <span class="fa fa-check"></span>
+          märkidega <span class="form-display-form-field" style="display: none;"><b> &nbsp; NB! Siin on esitatud häälduskuju, mitte kirjapilt.</b></span>
+        </button>
+      </li>
+    </ul>
+  </th:block>
+
+  <!-- morpho-form-value(form, prefix, tilde) -->
+  <th:block th:fragment="morpho-form-value(form)" th:with="prefix=${prefix} ?: '', tilde=${tilde} ?: false">
+    <th:block th:if="${form.morphExists && !#strings.isEmpty(form.value)}">
+      <div style="display: inline-block; max-width: 40vw;">
+            <span th:if="${tilde}"> ~ </span>
+            <span th:if="${form.questionable}" class="text-muted">*</span>
+            <span th:text="${prefix}" th:if="${!#strings.isEmpty(prefix) && !#strings.equals(form.value, '-')}"></span>
+            <span th:utext="${form.displayForm}" class="form-display-form-field" style="display: none;"></span>
+            <span th:utext="${form.valuePrese}" class="form-value-field" th:classappend="${form.questionable ? 'text-muted ml-n1' : ''}"></span>
+            <button type="button" aria-label="Kuula hääldust - lugemas" class="btn btn-speaker" th:if="${(form.audioFile != null) && #strings.isEmpty(prefix)}"
+              th:data-url-to-audio="@{'/files/audio/' + ${form.audioFile}}" onclick="generateAudioAndPlay(this)">
+              <span class="icon icon-speaker"></span>
+            </button>
+      </div>
     </th:block>
   </th:block>
-  <th:block th:fragment="morpho-verb-form-row(paradigm, morphCode, prefix)">
+
+  <!-- morpho-form-row(paradigm, morphCode, prefix, tilde) -->
+  <th:block th:fragment="morpho-form-row(morphCode)" th:with="prefix=${prefix} ?: '', tilde=${tilde} ?: false">
     <th:block th:each="form, formIter : ${viewUtil.getForms(paradigm, morphCode)}">
-      <th:block th:replace=" :: morpho-form-value(${form}, ${prefix})"></th:block>
-      <span th:unless="${formIter.last}">~</span>
+      <th:block th:replace=" :: morpho-form-value(form=${form}, prefix=${prefix}, tilde=${tilde or not formIter.first})"></th:block>
     </th:block>
   </th:block>
-  <th:block th:fragment="morpho-verb-form-row-first(paradigm, morphCode, prefix)">
-    <th:block th:each="form, formIter : ${viewUtil.getForms(paradigm, morphCode)}" th:if="${formIter.index} == 0">
-      <th:block th:replace=" :: morpho-form-value(${form}, ${prefix})"></th:block>
+
+  <!-- morpho-form-row-first(paradigm, morphCode, prefix) -->
+  <th:block th:fragment="morpho-form-row-first(morphCode)" th:with="prefix=${prefix} ?: '', tilde=${tilde} ?: false">
+      <th:block th:replace=" :: morpho-form-value(form=${viewUtil.getForms(paradigm, morphCode)[0]}, prefix=${prefix}, tilde=${tilde})"></th:block>
+  </th:block>
+
+  <!-- morpho-form-row-tilde-if(paradigm, morphCode, prefix, ifCode) -->
+  <th:block th:fragment="morpho-form-row-tilde-if(morphCode, ifCode)" th:with="prefix=${prefix} ?: ''">
+    <th:block th:each="ifform, ifformIter : ${viewUtil.getForms(paradigm, ifCode)}" th:if="${ifformIter.index} == 0">
+      <th:block th:replace=" :: morpho-form-row(morphCode=${morphCode}, prefix=${prefix}, tilde=true)"></th:block>
     </th:block>
   </th:block>
-  <th:block th:fragment="morpho-noun-form-row(paradigm, morphCode)">
-    <th:block th:each="form, formIter : ${viewUtil.getForms(paradigm, morphCode)}">
-      <table>
-        <tr>
-          <td>
-            <div class="word-section" th:if="${form.morphExists}">
-              <th:block th:replace=" :: morpho-form-value(${form}, '')"></th:block>
-              <span th:unless="${formIter.last}">~</span>
-            </div>
-          </td>
-          <td>
-            <div class="rating" th:if="${form.morphExists && form.formFreqValue != null}" data-toggle="tooltip" data-placement="top"
-              th:title="#{|label.form.freq|(${form.formFreqValue}, ${form.morphFreqValue})}">
-              <div class="rating__row rating__row--highlighted">
-                <i class="fa-star" th:classappend="${form.formFreqRankScaled >= 1 ? 'fa' : 'far'}"></i>
-                <i class="fa-star" th:classappend="${form.formFreqRankScaled >= 2 ? 'fa' : 'far'}"></i>
-                <i class="fa-star" th:classappend="${form.formFreqRankScaled >= 3 ? 'fa' : 'far'}"></i>
-                <i class="fa-star" th:classappend="${form.formFreqRankScaled >= 4 ? 'fa' : 'far'}"></i>
-                <i class="fa-star" th:classappend="${form.formFreqRankScaled >= 5 ? 'fa' : 'far'}"></i>
-              </div>
-              <div class="rating__row">
-                <i class="fa-star" th:classappend="${form.morphFreqRankScaled >= 1 ? 'fa' : 'far'}"></i>
-                <i class="fa-star" th:classappend="${form.morphFreqRankScaled >= 2 ? 'fa' : 'far'}"></i>
-                <i class="fa-star" th:classappend="${form.morphFreqRankScaled >= 3 ? 'fa' : 'far'}"></i>
-                <i class="fa-star" th:classappend="${form.morphFreqRankScaled >= 4 ? 'fa' : 'far'}"></i>
-                <i class="fa-star" th:classappend="${form.morphFreqRankScaled >= 5 ? 'fa' : 'far'}"></i>
-              </div>
-            </div>
-          </td>
-        </tr>
-      </table>
-    </th:block>
-  </th:block>
+
   <th:block th:fragment="table-legend_est">
     <table>
       <tr class="form-display-form-field" style="display: none;">
@@ -137,31 +140,13 @@
       </tr>
     </table>
   </th:block>
+
   <th:block th:fragment="morpho-muutumatu_est">
     <div class="modal-dialog" role="document">
       <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title">
-            Sõnavormid
-            <span>EKI eesti keele morfoloogiline andmebaas 2019–</span>
-          </h5>
-          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-          </button>
-        </div>
+        <th:block th:replace=" :: table-header_est"></th:block>
         <div class="modal-body">
-          <ul class="nav nav-pills mb-3" data-plugin="tableTogglers">
-            <li class="nav-item">
-              <button type="button" class="nav-link" role="tab" data-rel="marks">
-                <span class="fa fa-check"></span>
-                märkidega
-              </button>
-              <span class="form-display-form-field" style="display: none;">
-                <br>
-                <b>NB! Siin on esitatud häälduskuju, mitte kirjapilt.</b>
-              </span>
-            </li>
-          </ul>
+          <th:block th:replace=" :: table-checks_est"></th:block>
           <p th:utext="${paradigm.comment}" class="paradigm-text"></p>
           <div>
             <div class="scrollable-table">
@@ -170,22 +155,11 @@
                   <tr>
                     <td>muutumatu</td>
                     <td>
-                      <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'ID', '')"></th:block>
+                      <th:block th:replace=" :: morpho-form-row('ID')"></th:block>
                     </td>
                   </tr>
                 </table>
               </div>
-            </div>
-          </div>
-          <div class="table-legend invisible" aria-hidden="true">
-            <div class="table-legend__item">Legend:</div>
-            <div class="table-legend__item">
-              <i class="fa fa-star highlight"></i>
-              Sõnavormi kasutussagedus selles sõnas
-            </div>
-            <div class="table-legend__item">
-              <i class="fa fa-star"></i>
-              Eeldatav kasutussagedus võrreldes teiste sõnadega
             </div>
           </div>
           <th:block th:replace=" :: table-legend_est"></th:block>
@@ -193,31 +167,13 @@
       </div>
     </div>
   </th:block>
+
   <th:block th:fragment="morpho-verb_est">
     <div class="modal-dialog" role="document">
       <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title">
-            Sõnavormid
-            <span>EKI eesti keele morfoloogiline andmebaas 2019–</span>
-          </h5>
-          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-          </button>
-        </div>
+        <th:block th:replace=" :: table-header_est"></th:block>
         <div class="modal-body">
-          <ul class="nav nav-pills mb-3" data-plugin="tableTogglers">
-            <li class="nav-item">
-              <button type="button" class="nav-link" role="tab" data-rel="marks">
-                <span class="fa fa-check"></span>
-                märkidega
-              </button>
-              <span class="form-display-form-field" style="display: none;">
-                <br>
-                <b>NB! Siin on esitatud häälduskuju, mitte kirjapilt.</b>
-              </span>
-            </li>
-          </ul>
+          <th:block th:replace=" :: table-checks_est"></th:block>
           <div>
             <p th:utext="${paradigm.comment}" class="paradigm-text"></p>
             <p>
@@ -247,10 +203,10 @@
                       <span class="highlight">ainsuse 1. isik</span>
                     </td>
                     <td>
-                      <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'IndPrSg1', '')"></th:block>
+                      <th:block th:replace=" :: morpho-form-row(morphCode='IndPrSg1')"></th:block>
                     </td>
                     <td>
-                      <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'IndPrPs_', 'ei')"></th:block>
+                      <th:block th:replace=" :: morpho-form-row(morphCode='IndPrPs_', prefix='ei')"></th:block>
                     </td>
                   </tr>
                   <tr>
@@ -259,10 +215,10 @@
                       <span class="highlight">ainsuse 2. isik</span>
                     </td>
                     <td>
-                      <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'IndPrSg2', '')"></th:block>
+                      <th:block th:replace=" :: morpho-form-row(morphCode='IndPrSg2')"></th:block>
                     </td>
                     <td>
-                      <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'IndPrPs_', 'ei')"></th:block>
+                      <th:block th:replace=" :: morpho-form-row(morphCode='IndPrPs_', prefix='ei')"></th:block>
                     </td>
                   </tr>
                   <tr>
@@ -271,10 +227,10 @@
                       <span class="highlight">ainsuse 3. isik</span>
                     </td>
                     <td>
-                      <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'IndPrSg3', '')"></th:block>
+                      <th:block th:replace=" :: morpho-form-row(morphCode='IndPrSg3')"></th:block>
                     </td>
                     <td>
-                      <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'IndPrPs_', 'ei')"></th:block>
+                      <th:block th:replace=" :: morpho-form-row(morphCode='IndPrPs_', prefix='ei')"></th:block>
                     </td>
                   </tr>
                   <tr>
@@ -283,10 +239,10 @@
                       <span class="highlight">mitmuse 1. isik</span>
                     </td>
                     <td>
-                      <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'IndPrPl1', '')"></th:block>
+                      <th:block th:replace=" :: morpho-form-row(morphCode='IndPrPl1')"></th:block>
                     </td>
                     <td>
-                      <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'IndPrPs_', 'ei')"></th:block>
+                      <th:block th:replace=" :: morpho-form-row(morphCode='IndPrPs_', prefix='ei')"></th:block>
                     </td>
                   </tr>
                   <tr>
@@ -295,10 +251,10 @@
                       <span class="highlight">mitmuse 2. isik</span>
                     </td>
                     <td>
-                      <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'IndPrPl2', '')"></th:block>
+                      <th:block th:replace=" :: morpho-form-row(morphCode='IndPrPl2')"></th:block>
                     </td>
                     <td>
-                      <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'IndPrPs_', 'ei')"></th:block>
+                      <th:block th:replace=" :: morpho-form-row(morphCode='IndPrPs_', prefix='ei')"></th:block>
                     </td>
                   </tr>
                   <tr>
@@ -307,19 +263,19 @@
                       <span class="highlight">mitmuse 3. isik</span>
                     </td>
                     <td>
-                      <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'IndPrPl3', '')"></th:block>
+                      <th:block th:replace=" :: morpho-form-row(morphCode='IndPrPl3')"></th:block>
                     </td>
                     <td>
-                      <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'IndPrPs_', 'ei')"></th:block>
+                      <th:block th:replace=" :: morpho-form-row(morphCode='IndPrPs_', prefix='ei')"></th:block>
                     </td>
                   </tr>
                   <tr>
                     <td>umbisikuline</td>
                     <td>
-                      <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'IndPrIps', '')"></th:block>
+                      <th:block th:replace=" :: morpho-form-row(morphCode='IndPrIps')"></th:block>
                     </td>
                     <td>
-                      <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'IndPrIps_', 'ei')"></th:block>
+                      <th:block th:replace=" :: morpho-form-row(morphCode='IndPrIps_', prefix='ei')"></th:block>
                     </td>
                   </tr>
                   <tr>
@@ -336,10 +292,10 @@
                       <span class="highlight">ainsuse 1. isik</span>
                     </td>
                     <td>
-                      <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'IndIpfSg1', '')"></th:block>
+                      <th:block th:replace=" :: morpho-form-row(morphCode='IndIpfSg1')"></th:block>
                     </td>
                     <td>
-                      <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'PtsPtPsNeg', 'ei')"></th:block>
+                      <th:block th:replace=" :: morpho-form-row(morphCode='PtsPtPsNeg', prefix='ei')"></th:block>
                     </td>
                   </tr>
                   <tr>
@@ -348,10 +304,10 @@
                       <span class="highlight">ainsuse 2. isik</span>
                     </td>
                     <td>
-                      <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'IndIpfSg2', '')"></th:block>
+                      <th:block th:replace=" :: morpho-form-row(morphCode='IndIpfSg2')"></th:block>
                     </td>
                     <td>
-                      <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'PtsPtPsNeg', 'ei')"></th:block>
+                      <th:block th:replace=" :: morpho-form-row(morphCode='PtsPtPsNeg', prefix='ei')"></th:block>
                     </td>
                   </tr>
                   <tr>
@@ -360,10 +316,10 @@
                       <span class="highlight">ainsuse 3. isik</span>
                     </td>
                     <td>
-                      <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'IndIpfSg3', '')"></th:block>
+                      <th:block th:replace=" :: morpho-form-row(morphCode='IndIpfSg3')"></th:block>
                     </td>
                     <td>
-                      <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'PtsPtPsNeg', 'ei')"></th:block>
+                      <th:block th:replace=" :: morpho-form-row(morphCode='PtsPtPsNeg', prefix='ei')"></th:block>
                     </td>
                   </tr>
                   <tr>
@@ -372,10 +328,10 @@
                       <span class="highlight">mitmuse 1. isik</span>
                     </td>
                     <td>
-                      <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'IndIpfPl1', '')"></th:block>
+                      <th:block th:replace=" :: morpho-form-row(morphCode='IndIpfPl1')"></th:block>
                     </td>
                     <td>
-                      <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'PtsPtPsNeg', 'ei')"></th:block>
+                      <th:block th:replace=" :: morpho-form-row(morphCode='PtsPtPsNeg', prefix='ei')"></th:block>
                     </td>
                   </tr>
                   <tr>
@@ -384,10 +340,10 @@
                       <span class="highlight">mitmuse 2. isik</span>
                     </td>
                     <td>
-                      <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'IndIpfPl2', '')"></th:block>
+                      <th:block th:replace=" :: morpho-form-row(morphCode='IndIpfPl2')"></th:block>
                     </td>
                     <td>
-                      <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'PtsPtPsNeg', 'ei')"></th:block>
+                      <th:block th:replace=" :: morpho-form-row(morphCode='PtsPtPsNeg', prefix='ei')"></th:block>
                     </td>
                   </tr>
                   <tr>
@@ -396,19 +352,19 @@
                       <span class="highlight">mitmuse 3. isik</span>
                     </td>
                     <td>
-                      <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'IndIpfPl3', '')"></th:block>
+                      <th:block th:replace=" :: morpho-form-row(morphCode='IndIpfPl3')"></th:block>
                     </td>
                     <td>
-                      <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'PtsPtPsNeg', 'ei')"></th:block>
+                      <th:block th:replace=" :: morpho-form-row(morphCode='PtsPtPsNeg', prefix='ei')"></th:block>
                     </td>
                   </tr>
                   <tr>
                     <td>umbisikuline</td>
                     <td>
-                      <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'IndIpfIps', '')"></th:block>
+                      <th:block th:replace=" :: morpho-form-row(morphCode='IndIpfIps')"></th:block>
                     </td>
                     <td>
-                      <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'PtsPtIpsNeg', 'ei')"></th:block>
+                      <th:block th:replace=" :: morpho-form-row(morphCode='PtsPtIpsNeg', prefix='ei')"></th:block>
                     </td>
                   </tr>
                   <tr>
@@ -425,11 +381,11 @@
                       <span class="highlight">ainsuse 1. isik</span>
                     </td>
                     <td>
-                      <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'PtsPtPs', 'olen')"></th:block>
+                      <th:block th:replace=" :: morpho-form-row(morphCode='PtsPtPs', prefix='olen')"></th:block>
                     </td>
                     <td>
-                      <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'PtsPtPs', 'ei ole')"></th:block>
-                      <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'PtsPtPs', '~ pole')"></th:block>
+                      <th:block th:replace=" :: morpho-form-row(morphCode='PtsPtPs', prefix='ei ole')"></th:block>
+                      <th:block th:replace=" :: morpho-form-row(morphCode='PtsPtPs', prefix='pole', tilde=true)"></th:block>
                     </td>
                   </tr>
                   <tr>
@@ -438,11 +394,11 @@
                       <span class="highlight">ainsuse 2. isik</span>
                     </td>
                     <td>
-                      <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'PtsPtPs', 'oled')"></th:block>
+                      <th:block th:replace=" :: morpho-form-row(morphCode='PtsPtPs', prefix='oled')"></th:block>
                     </td>
                     <td>
-                      <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'PtsPtPs', 'ei ole')"></th:block>
-                      <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'PtsPtPs', '~ pole')"></th:block>
+                      <th:block th:replace=" :: morpho-form-row(morphCode='PtsPtPs', prefix='ei ole')"></th:block>
+                      <th:block th:replace=" :: morpho-form-row(morphCode='PtsPtPs', prefix='pole', tilde=true)"></th:block>
                     </td>
                   </tr>
                   <tr>
@@ -451,11 +407,11 @@
                       <span class="highlight">ainsuse 3. isik</span>
                     </td>
                     <td>
-                      <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'PtsPtPs', 'on')"></th:block>
+                      <th:block th:replace=" :: morpho-form-row(morphCode='PtsPtPs', prefix='on')"></th:block>
                     </td>
                     <td>
-                      <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'PtsPtPs', 'ei ole')"></th:block>
-                      <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'PtsPtPs', '~ pole')"></th:block>
+                      <th:block th:replace=" :: morpho-form-row(morphCode='PtsPtPs', prefix='ei ole')"></th:block>
+                      <th:block th:replace=" :: morpho-form-row(morphCode='PtsPtPs', prefix='pole', tilde=true)"></th:block>
                     </td>
                   </tr>
                   <tr>
@@ -464,11 +420,11 @@
                       <span class="highlight">mitmuse 1. isik</span>
                     </td>
                     <td>
-                      <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'PtsPtPs', 'oleme')"></th:block>
+                      <th:block th:replace=" :: morpho-form-row(morphCode='PtsPtPs', prefix='oleme')"></th:block>
                     </td>
                     <td>
-                      <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'PtsPtPs', 'ei ole')"></th:block>
-                      <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'PtsPtPs', '~ pole')"></th:block>
+                      <th:block th:replace=" :: morpho-form-row(morphCode='PtsPtPs', prefix='ei ole')"></th:block>
+                      <th:block th:replace=" :: morpho-form-row(morphCode='PtsPtPs', prefix='pole', tilde=true)"></th:block>
                     </td>
                   </tr>
                   <tr>
@@ -477,11 +433,11 @@
                       <span class="highlight">mitmuse 2. isik</span>
                     </td>
                     <td>
-                      <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'PtsPtPs', 'olete')"></th:block>
+                      <th:block th:replace=" :: morpho-form-row(morphCode='PtsPtPs', prefix='olete')"></th:block>
                     </td>
                     <td>
-                      <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'PtsPtPs', 'ei ole')"></th:block>
-                      <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'PtsPtPs', '~ pole')"></th:block>
+                      <th:block th:replace=" :: morpho-form-row(morphCode='PtsPtPs', prefix='ei ole')"></th:block>
+                      <th:block th:replace=" :: morpho-form-row(morphCode='PtsPtPs', prefix='pole', tilde=true)"></th:block>
                     </td>
                   </tr>
                   <tr>
@@ -490,21 +446,21 @@
                       <span class="highlight">mitmuse 3. isik</span>
                     </td>
                     <td>
-                      <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'PtsPtPs', 'on')"></th:block>
+                      <th:block th:replace=" :: morpho-form-row(morphCode='PtsPtPs', prefix='on')"></th:block>
                     </td>
                     <td>
-                      <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'PtsPtPs', 'ei ole')"></th:block>
-                      <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'PtsPtPs', '~ pole')"></th:block>
+                      <th:block th:replace=" :: morpho-form-row(morphCode='PtsPtPs', prefix='ei ole')"></th:block>
+                      <th:block th:replace=" :: morpho-form-row(morphCode='PtsPtPs', prefix='pole', tilde=true)"></th:block>
                     </td>
                   </tr>
                   <tr>
                     <td>umbisikuline</td>
                     <td>
-                      <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'PtsPtIps', 'on')"></th:block>
+                      <th:block th:replace=" :: morpho-form-row(morphCode='PtsPtIps', prefix='on')"></th:block>
                     </td>
                     <td>
-                      <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'PtsPtIps', 'ei ole')"></th:block>
-                      <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'PtsPtIps', '~ pole')"></th:block>
+                      <th:block th:replace=" :: morpho-form-row(morphCode='PtsPtIps', prefix='ei ole')"></th:block>
+                      <th:block th:replace=" :: morpho-form-row(morphCode='PtsPtIps', prefix='pole', tilde=true)"></th:block>
                     </td>
                   </tr>
                   <tr>
@@ -521,11 +477,11 @@
                       <span class="highlight">ainsuse 1. isik</span>
                     </td>
                     <td>
-                      <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'PtsPtPs', 'olin')"></th:block>
+                      <th:block th:replace=" :: morpho-form-row(morphCode='PtsPtPs', prefix='olin')"></th:block>
                     </td>
                     <td>
-                      <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'PtsPtPs', 'ei olnud')"></th:block>
-                      <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'PtsPtPs', '~ polnud')"></th:block>
+                      <th:block th:replace=" :: morpho-form-row(morphCode='PtsPtPs', prefix='ei olnud')"></th:block>
+                      <th:block th:replace=" :: morpho-form-row(morphCode='PtsPtPs', prefix='polnud', tilde=true)"></th:block>
                     </td>
                   </tr>
                   <tr>
@@ -534,11 +490,11 @@
                       <span class="highlight">ainsuse 2. isik</span>
                     </td>
                     <td>
-                      <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'PtsPtPs', 'olid')"></th:block>
+                      <th:block th:replace=" :: morpho-form-row(morphCode='PtsPtPs', prefix='olid')"></th:block>
                     </td>
                     <td>
-                      <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'PtsPtPs', 'ei olnud')"></th:block>
-                      <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'PtsPtPs', '~ polnud')"></th:block>
+                      <th:block th:replace=" :: morpho-form-row(morphCode='PtsPtPs', prefix='ei olnud')"></th:block>
+                      <th:block th:replace=" :: morpho-form-row(morphCode='PtsPtPs', prefix='polnud', tilde=true)"></th:block>
                     </td>
                   </tr>
                   <tr>
@@ -547,11 +503,11 @@
                       <span class="highlight">ainsuse 3. isik</span>
                     </td>
                     <td>
-                      <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'PtsPtPs', 'oli')"></th:block>
+                      <th:block th:replace=" :: morpho-form-row(morphCode='PtsPtPs', prefix='oli')"></th:block>
                     </td>
                     <td>
-                      <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'PtsPtPs', 'ei olnud')"></th:block>
-                      <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'PtsPtPs', '~ polnud')"></th:block>
+                      <th:block th:replace=" :: morpho-form-row(morphCode='PtsPtPs', prefix='ei olnud')"></th:block>
+                      <th:block th:replace=" :: morpho-form-row(morphCode='PtsPtPs', prefix='polnud', tilde=true)"></th:block>
                     </td>
                   </tr>
                   <tr>
@@ -560,11 +516,11 @@
                       <span class="highlight">mitmuse 1. isik</span>
                     </td>
                     <td>
-                      <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'PtsPtPs', 'olime')"></th:block>
+                      <th:block th:replace=" :: morpho-form-row(morphCode='PtsPtPs', prefix='olime')"></th:block>
                     </td>
                     <td>
-                      <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'PtsPtPs', 'ei olnud')"></th:block>
-                      <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'PtsPtPs', '~ polnud')"></th:block>
+                      <th:block th:replace=" :: morpho-form-row(morphCode='PtsPtPs', prefix='ei olnud')"></th:block>
+                      <th:block th:replace=" :: morpho-form-row(morphCode='PtsPtPs', prefix='polnud', tilde=true)"></th:block>
                     </td>
                   </tr>
                   <tr>
@@ -573,11 +529,11 @@
                       <span class="highlight">mitmuse 2. isik</span>
                     </td>
                     <td>
-                      <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'PtsPtPs', 'olite')"></th:block>
+                      <th:block th:replace=" :: morpho-form-row(morphCode='PtsPtPs', prefix='olite')"></th:block>
                     </td>
                     <td>
-                      <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'PtsPtPs', 'ei olnud')"></th:block>
-                      <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'PtsPtPs', '~ polnud')"></th:block>
+                      <th:block th:replace=" :: morpho-form-row(morphCode='PtsPtPs', prefix='ei olnud')"></th:block>
+                      <th:block th:replace=" :: morpho-form-row(morphCode='PtsPtPs', prefix='polnud', tilde=true)"></th:block>
                     </td>
                   </tr>
                   <tr>
@@ -586,21 +542,21 @@
                       <span class="highlight">mitmuse 3. isik</span>
                     </td>
                     <td>
-                      <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'PtsPtPs', 'olid')"></th:block>
+                      <th:block th:replace=" :: morpho-form-row(morphCode='PtsPtPs', prefix='olid')"></th:block>
                     </td>
                     <td>
-                      <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'PtsPtPs', 'ei olnud')"></th:block>
-                      <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'PtsPtPs', '~ polnud')"></th:block>
+                      <th:block th:replace=" :: morpho-form-row(morphCode='PtsPtPs', prefix='ei olnud')"></th:block>
+                      <th:block th:replace=" :: morpho-form-row(morphCode='PtsPtPs', prefix='polnud', tilde=true)"></th:block>
                     </td>
                   </tr>
                   <tr>
                     <td>umbisikuline</td>
                     <td>
-                      <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'PtsPtIps', 'oli')"></th:block>
+                      <th:block th:replace=" :: morpho-form-row(morphCode='PtsPtIps', prefix='oli')"></th:block>
                     </td>
                     <td>
-                      <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'PtsPtIps', 'ei olnud')"></th:block>
-                      <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'PtsPtIps', '~ polnud')"></th:block>
+                      <th:block th:replace=" :: morpho-form-row(morphCode='PtsPtIps', prefix='ei olnud')"></th:block>
+                      <th:block th:replace=" :: morpho-form-row(morphCode='PtsPtIps', prefix='polnud', tilde=true)"></th:block>
                     </td>
                   </tr>
                 </table>
@@ -628,11 +584,11 @@
                       <span class="highlight">ainsuse 1. isik</span>
                     </td>
                     <td>
-                      <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'KndPrSg1', '')"></th:block>
-                      <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'KndPrPs', '~ ')"></th:block>
+                      <th:block th:replace=" :: morpho-form-row(morphCode='KndPrSg1')"></th:block>
+                      <th:block th:replace=" :: morpho-form-row-tilde-if(morphCode='KndPrPs', ifCode='KndPrSg1')"></th:block>
                     </td>
                     <td>
-                      <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'KndPrPs', 'ei')"></th:block>
+                      <th:block th:replace=" :: morpho-form-row(morphCode='KndPrPs', prefix='ei')"></th:block>
                     </td>
                   </tr>
                   <tr>
@@ -641,11 +597,11 @@
                       <span class="highlight">ainsuse 2. isik</span>
                     </td>
                     <td>
-                      <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'KndPrSg2', '')"></th:block>
-                      <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'KndPrPs', '~ ')"></th:block>
+                      <th:block th:replace=" :: morpho-form-row(morphCode='KndPrSg2')"></th:block>
+                      <th:block th:replace=" :: morpho-form-row-tilde-if(morphCode='KndPrPs', ifCode='KndPrSg2')"></th:block>
                     </td>
                     <td>
-                      <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'KndPrPs', 'ei')"></th:block>
+                      <th:block th:replace=" :: morpho-form-row(morphCode='KndPrPs', prefix='ei')"></th:block>
                     </td>
                   </tr>
                   <tr>
@@ -654,10 +610,10 @@
                       <span class="highlight">ainsuse 3. isik</span>
                     </td>
                     <td>
-                      <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'KndPrPs', '')"></th:block>
+                      <th:block th:replace=" :: morpho-form-row(morphCode='KndPrPs')"></th:block>
                     </td>
                     <td>
-                      <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'KndPrPs', 'ei')"></th:block>
+                      <th:block th:replace=" :: morpho-form-row(morphCode='KndPrPs', prefix='ei')"></th:block>
                     </td>
                   </tr>
                   <tr>
@@ -666,11 +622,11 @@
                       <span class="highlight">mitmuse 1. isik</span>
                     </td>
                     <td>
-                      <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'KndPrPl1', '')"></th:block>
-                      <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'KndPrPs', '~ ')"></th:block>
+                      <th:block th:replace=" :: morpho-form-row(morphCode='KndPrPl1')"></th:block>
+                      <th:block th:replace=" :: morpho-form-row-tilde-if(morphCode='KndPrPs', ifCode='KndPrPl1')"></th:block>
                     </td>
                     <td>
-                      <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'KndPrPs', 'ei')"></th:block>
+                      <th:block th:replace=" :: morpho-form-row(morphCode='KndPrPs', prefix='ei')"></th:block>
                     </td>
                   </tr>
                   <tr>
@@ -679,11 +635,11 @@
                       <span class="highlight">mitmuse 2. isik</span>
                     </td>
                     <td>
-                      <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'KndPrPl2', '')"></th:block>
-                      <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'KndPrPs', '~ ')"></th:block>
+                      <th:block th:replace=" :: morpho-form-row(morphCode='KndPrPl2')"></th:block>
+                      <th:block th:replace=" :: morpho-form-row-tilde-if(morphCode='KndPrPs', ifCode='KndPrPl2')"></th:block>
                     </td>
                     <td>
-                      <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'KndPrPs', 'ei')"></th:block>
+                      <th:block th:replace=" :: morpho-form-row(morphCode='KndPrPs', prefix='ei')"></th:block>
                     </td>
                   </tr>
                   <tr>
@@ -692,20 +648,20 @@
                       <span class="highlight">mitmuse 3. isik</span>
                     </td>
                     <td>
-                      <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'KndPrPl3', '')"></th:block>
-                      <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'KndPrPs', '~ ')"></th:block>
+                      <th:block th:replace=" :: morpho-form-row(morphCode='KndPrPl3')"></th:block>
+                      <th:block th:replace=" :: morpho-form-row-tilde-if(morphCode='KndPrPs', ifCode='KndPrPl3')"></th:block>
                     </td>
                     <td>
-                      <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'KndPrPs', 'ei')"></th:block>
+                      <th:block th:replace=" :: morpho-form-row(morphCode='KndPrPs', prefix='ei')"></th:block>
                     </td>
                   </tr>
                   <tr>
                     <td>umbisikuline</td>
                     <td>
-                      <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'KndPrIps', '')"></th:block>
+                      <th:block th:replace=" :: morpho-form-row(morphCode='KndPrIps')"></th:block>
                     </td>
                     <td>
-                      <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'KndPrIps', 'ei')"></th:block>
+                      <th:block th:replace=" :: morpho-form-row(morphCode='KndPrIps', prefix='ei')"></th:block>
                     </td>
                   </tr>
                   <tr>
@@ -722,13 +678,13 @@
                       <span class="highlight">ainsuse 1. isik</span>
                     </td>
                     <td>
-                      <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'PtsPtPs', 'oleks(in)')"></th:block>
-                      <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'KndPtSg1', '~ ')"></th:block>
+                      <th:block th:replace=" :: morpho-form-row(morphCode='PtsPtPs', prefix='oleks(in)')"></th:block>
+                      <th:block th:replace=" :: morpho-form-row-tilde-if(morphCode='KndPtSg1', ifCode='PtsPtPs')"></th:block>
                     </td>
                     <td>
-                      <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'PtsPtPs', 'ei oleks')"></th:block>
-                      <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'PtsPtPs', '~ poleks')"></th:block>
-                      <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'KndPtPs', '~ ei')"></th:block>
+                      <th:block th:replace=" :: morpho-form-row(morphCode='PtsPtPs', prefix='ei oleks')"></th:block>
+                      <th:block th:replace=" :: morpho-form-row-tilde-if(morphCode='PtsPtPs', ifCode='PtsPtPs', prefix='poleks')"></th:block>
+                      <th:block th:replace=" :: morpho-form-row-tilde-if(morphCode='KndPtPs', ifCode='PtsPtPs', prefix='ei')"></th:block>
                     </td>
                   </tr>
                   <tr>
@@ -737,13 +693,13 @@
                       <span class="highlight">ainsuse 2. isik</span>
                     </td>
                     <td>
-                      <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'PtsPtPs', 'oleks(id)')"></th:block>
-                      <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'KndPtSg2', '~ ')"></th:block>
+                      <th:block th:replace=" :: morpho-form-row(morphCode='PtsPtPs', prefix='oleks(id)')"></th:block>
+                      <th:block th:replace=" :: morpho-form-row-tilde-if(morphCode='KndPtSg2', ifCode='PtsPtPs')"></th:block>
                     </td>
                     <td>
-                      <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'PtsPtPs', 'ei oleks')"></th:block>
-                      <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'PtsPtPs', '~ poleks')"></th:block>
-                      <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'KndPtPs', '~ ei')"></th:block>
+                      <th:block th:replace=" :: morpho-form-row(morphCode='PtsPtPs', prefix='ei oleks')"></th:block>
+                      <th:block th:replace=" :: morpho-form-row-tilde-if(morphCode='PtsPtPs', ifCode='PtsPtPs', prefix='poleks')"></th:block>
+                      <th:block th:replace=" :: morpho-form-row-tilde-if(morphCode='KndPtPs', ifCode='PtsPtPs', prefix='ei')"></th:block>
                     </td>
                   </tr>
                   <tr>
@@ -752,13 +708,13 @@
                       <span class="highlight">ainsuse 3. isik</span>
                     </td>
                     <td>
-                      <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'PtsPtPs', 'oleks')"></th:block>
-                      <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'KndPtPs', '~ ')"></th:block>
+                      <th:block th:replace=" :: morpho-form-row(morphCode='PtsPtPs', prefix='oleks')"></th:block>
+                      <th:block th:replace=" :: morpho-form-row-tilde-if(morphCode='KndPtPs', ifCode='PtsPtPs')"></th:block>
                     </td>
                     <td>
-                      <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'PtsPtPs', 'ei oleks')"></th:block>
-                      <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'PtsPtPs', '~ poleks')"></th:block>
-                      <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'KndPtPs', '~ ei')"></th:block>
+                      <th:block th:replace=" :: morpho-form-row(morphCode='PtsPtPs', prefix='ei oleks')"></th:block>
+                      <th:block th:replace=" :: morpho-form-row(morphCode='PtsPtPs', prefix='poleks', tilde=true)"></th:block>
+                      <th:block th:replace=" :: morpho-form-row-tilde-if(morphCode='KndPtPs', ifCode='PtsPtPs', prefix='ei')"></th:block>
                     </td>
                   </tr>
                   <tr>
@@ -767,13 +723,13 @@
                       <span class="highlight">mitmuse 1. isik</span>
                     </td>
                     <td>
-                      <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'PtsPtPs', 'oleks(ime)')"></th:block>
-                      <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'KndPtPl1', '~ ')"></th:block>
+                      <th:block th:replace=" :: morpho-form-row(morphCode='PtsPtPs', prefix='oleks(ime)')"></th:block>
+                      <th:block th:replace=" :: morpho-form-row-tilde-if(morphCode='KndPtPl1', ifCode='PtsPtPs')"></th:block>
                     </td>
                     <td>
-                      <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'PtsPtPs', 'ei oleks')"></th:block>
-                      <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'PtsPtPs', '~ poleks')"></th:block>
-                      <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'KndPtPs', '~ ei')"></th:block>
+                      <th:block th:replace=" :: morpho-form-row(morphCode='PtsPtPs', prefix='ei oleks')"></th:block>
+                      <th:block th:replace=" :: morpho-form-row(morphCode='PtsPtPs', prefix='poleks', tilde=true)"></th:block>
+                      <th:block th:replace=" :: morpho-form-row-tilde-if(morphCode='KndPtPs', ifCode='PtsPtPs', prefix='ei')"></th:block>
                     </td>
                   </tr>
                   <tr>
@@ -782,13 +738,13 @@
                       <span class="highlight">mitmuse 2. isik</span>
                     </td>
                     <td>
-                      <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'PtsPtPs', 'oleks(ite)')"></th:block>
-                      <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'KndPtPl2', '~ ')"></th:block>
+                      <th:block th:replace=" :: morpho-form-row(morphCode='PtsPtPs', prefix='oleks(ite)')"></th:block>
+                      <th:block th:replace=" :: morpho-form-row-tilde-if(morphCode='KndPtPl2', ifCode='PtsPtPs')"></th:block>
                     </td>
                     <td>
-                      <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'PtsPtPs', 'ei oleks')"></th:block>
-                      <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'PtsPtPs', '~ poleks')"></th:block>
-                      <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'KndPtPs', '~ ei')"></th:block>
+                      <th:block th:replace=" :: morpho-form-row(morphCode='PtsPtPs', prefix='ei oleks')"></th:block>
+                      <th:block th:replace=" :: morpho-form-row(morphCode='PtsPtPs', prefix='poleks', tilde=true)"></th:block>
+                      <th:block th:replace=" :: morpho-form-row-tilde-if(morphCode='KndPtPs', ifCode='PtsPtPs', prefix='ei')"></th:block>
                     </td>
                   </tr>
                   <tr>
@@ -797,25 +753,25 @@
                       <span class="highlight">mitmuse 3. isik</span>
                     </td>
                     <td>
-                      <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'PtsPtPs', 'oleks(id)')"></th:block>
-                      <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'KndPtPl3', '~ ')"></th:block>
+                      <th:block th:replace=" :: morpho-form-row(morphCode='PtsPtPs', prefix='oleks(id)')"></th:block>
+                      <th:block th:replace=" :: morpho-form-row-tilde-if(morphCode='KndPtPl3', ifCode='PtsPtPs')"></th:block>
                     </td>
                     <td>
-                      <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'PtsPtPs', 'ei oleks')"></th:block>
-                      <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'PtsPtPs', '~ poleks')"></th:block>
-                      <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'KndPtPs', '~ ei')"></th:block>
+                      <th:block th:replace=" :: morpho-form-row(morphCode='PtsPtPs', prefix='ei oleks')"></th:block>
+                      <th:block th:replace=" :: morpho-form-row(morphCode='PtsPtPs', prefix='poleks', tilde=true)"></th:block>
+                      <th:block th:replace=" :: morpho-form-row-tilde-if(morphCode='KndPtPs', ifCode='PtsPtPs', prefix='ei')"></th:block>
                     </td>
                   </tr>
                   <tr>
                     <td>umbisikuline</td>
                     <td>
-                      <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'PtsPtIps', 'oleks')"></th:block>
-                      <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'KndPtIps', '~ ')"></th:block>
+                      <th:block th:replace=" :: morpho-form-row(morphCode='PtsPtIps', prefix='oleks')"></th:block>
+                      <th:block th:replace=" :: morpho-form-row-tilde-if(morphCode='KndPtIps', ifCode='PtsPtPs')"></th:block>
                     </td>
                     <td>
-                      <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'PtsPtIps', 'ei oleks')"></th:block>
-                      <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'PtsPtIps', '~ poleks')"></th:block>
-                      <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'KndPtIps', '~ ei')"></th:block>
+                      <th:block th:replace=" :: morpho-form-row(morphCode='PtsPtIps', prefix='ei oleks')"></th:block>
+                      <th:block th:replace=" :: morpho-form-row(morphCode='PtsPtIps', prefix='poleks', tilde=true)"></th:block>
+                      <th:block th:replace=" :: morpho-form-row-tilde-if(morphCode='KndPtIps', ifCode='PtsPtIps', prefix='ei')"></th:block>
                     </td>
                   </tr>
                 </table>
@@ -851,10 +807,10 @@
                       <span class="highlight">ainsuse 2. isik</span>
                     </td>
                     <td>
-                      <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'ImpPrSg2', '')"></th:block>
+                      <th:block th:replace=" :: morpho-form-row(morphCode='ImpPrSg2')"></th:block>
                     </td>
                     <td>
-                      <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'ImpPrSg2', 'ära')"></th:block>
+                      <th:block th:replace=" :: morpho-form-row(morphCode='ImpPrSg2', prefix='ära')"></th:block>
                     </td>
                   </tr>
                   <tr>
@@ -863,10 +819,10 @@
                       <span class="highlight">ainsuse 3. isik</span>
                     </td>
                     <td>
-                      <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'ImpPrPs', '')"></th:block>
+                      <th:block th:replace=" :: morpho-form-row(morphCode='ImpPrPs')"></th:block>
                     </td>
                     <td>
-                      <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'ImpPrPs', 'ärgu')"></th:block>
+                      <th:block th:replace=" :: morpho-form-row(morphCode='ImpPrPs', prefix='ärgu')"></th:block>
                     </td>
                   </tr>
                   <tr>
@@ -875,16 +831,17 @@
                       <span class="highlight">mitmuse 1. isik</span>
                     </td>
                     <td>
-                      <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'ImpPrPl1', '')"></th:block>
-                      ~
-                      <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'IndPrPl1', '')"></th:block>
+                    <th:block th:each="form, formIter : ${viewUtil.getForms(paradigm, 'ImpPrPl1')}" th:if="${formIter.index == 0 && form.morphExists && !#strings.isEmpty(form.value)}">
+                      <th:block th:replace=" :: morpho-form-row(morphCode='ImpPrPl1')"></th:block>
+                      <th:block th:replace=" :: morpho-form-row-tilde-if(morphCode='IndPrPl1', ifCode='ImpPrPl1')"></th:block>
+                    </th:block>
                     </td>
                     <td>
-                      <th:block th:replace=" :: morpho-verb-form-row-first(${paradigm}, 'ImpPrPl1', 'ärgem')"></th:block>
-                      ~
-                      <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'IndPrPl1', 'ärme')"></th:block>
-                      ~
-                      <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'IndPrPs_', 'ärme')"></th:block>
+                    <th:block th:each="form, formIter : ${viewUtil.getForms(paradigm, 'ImpPrPl1')}" th:if="${formIter.index == 0 && form.morphExists && !#strings.isEmpty(form.value)}">
+                      <th:block th:replace=" :: morpho-form-row-first(morphCode='ImpPrPl1', prefix='ärgem')"></th:block>
+                      <th:block th:replace=" :: morpho-form-row-tilde-if(morphCode='IndPrPl1', ifCode='ImpPrPl1', prefix='ärme')"></th:block>
+                      <th:block th:replace=" :: morpho-form-row-tilde-if(morphCode='IndPrPs_', ifCode='IndPrPl1', prefix='ärme')"></th:block>
+                    </th:block>
                     </td>
                   </tr>
                   <tr>
@@ -893,10 +850,10 @@
                       <span class="highlight">mitmuse 2. isik</span>
                     </td>
                     <td>
-                      <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'ImpPrPl2', '')"></th:block>
+                      <th:block th:replace=" :: morpho-form-row(morphCode='ImpPrPl2')"></th:block>
                     </td>
                     <td>
-                      <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'ImpPrPl2', 'ärge')"></th:block>
+                      <th:block th:replace=" :: morpho-form-row(morphCode='ImpPrPl2', prefix='ärge')"></th:block>
                     </td>
                   </tr>
                   <tr>
@@ -905,19 +862,19 @@
                       <span class="highlight">mitmuse 3. isik</span>
                     </td>
                     <td>
-                      <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'ImpPrPs', '')"></th:block>
+                      <th:block th:replace=" :: morpho-form-row(morphCode='ImpPrPs')"></th:block>
                     </td>
                     <td>
-                      <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'ImpPrPs', 'ärgu')"></th:block>
+                      <th:block th:replace=" :: morpho-form-row(morphCode='ImpPrPs', prefix='ärgu')"></th:block>
                     </td>
                   </tr>
                   <tr>
                     <td>umbisikuline</td>
                     <td>
-                      <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'ImpPrIps', '')"></th:block>
+                      <th:block th:replace=" :: morpho-form-row(morphCode='ImpPrIps')"></th:block>
                     </td>
                     <td>
-                      <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'ImpPrIps', 'ärgu')"></th:block>
+                      <th:block th:replace=" :: morpho-form-row(morphCode='ImpPrIps', prefix='ärgu')"></th:block>
                     </td>
                   </tr>
                 </table>
@@ -944,10 +901,10 @@
                       <span class="word-sufix">ma ... nad</span>
                     </td>
                     <td>
-                      <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'KvtPrPs', '')"></th:block>
+                      <th:block th:replace=" :: morpho-form-row(morphCode='KvtPrPs')"></th:block>
                     </td>
                     <td>
-                      <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'KvtPrPs', 'ei')"></th:block>
+                      <th:block th:replace=" :: morpho-form-row(morphCode='KvtPrPs', prefix='ei')"></th:block>
                     </td>
                   </tr>
                   <tr>
@@ -955,10 +912,10 @@
                       <span class="word-sufix">umbisikuline</span>
                     </td>
                     <td>
-                      <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'KvtPrIps', '')"></th:block>
+                      <th:block th:replace=" :: morpho-form-row(morphCode='KvtPrIps')"></th:block>
                     </td>
                     <td>
-                      <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'KvtPrIps', 'ei')"></th:block>
+                      <th:block th:replace=" :: morpho-form-row(morphCode='KvtPrIps', prefix='ei')"></th:block>
                     </td>
                   </tr>
                   <tr>
@@ -974,21 +931,21 @@
                       <span class="word-sufix">ma ... nad</span>
                     </td>
                     <td>
-                      <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'PtsPtPs', 'olevat')"></th:block>
+                      <th:block th:replace=" :: morpho-form-row(morphCode='PtsPtPs', prefix='olevat')"></th:block>
                     </td>
                     <td>
-                      <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'PtsPtPs', 'ei olevat')"></th:block>
-                      <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'PtsPtPs', '~ polevat')"></th:block>
+                      <th:block th:replace=" :: morpho-form-row(morphCode='PtsPtPs', prefix='ei olevat')"></th:block>
+                      <th:block th:replace=" :: morpho-form-row(morphCode='PtsPtPs', prefix='polevat', tilde=true)"></th:block>
                     </td>
                   </tr>
                   <tr>
                     <td>umbisikuline</td>
                     <td>
-                      <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'PtsPtIps', 'olevat')"></th:block>
+                      <th:block th:replace=" :: morpho-form-row(morphCode='PtsPtIps', prefix='olevat')"></th:block>
                     </td>
                     <td>
-                      <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'PtsPtIps', 'ei olevat')"></th:block>
-                      <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'PtsPtIps', '~ polevat')"></th:block>
+                      <th:block th:replace=" :: morpho-form-row(morphCode='PtsPtIps', prefix='ei olevat')"></th:block>
+                      <th:block th:replace=" :: morpho-form-row(morphCode='PtsPtIps', prefix='polevat', tilde=true)"></th:block>
                     </td>
                   </tr>
                 </table>
@@ -1014,7 +971,7 @@
                       <span class="highlight">-vorm</span>
                     </td>
                     <td>
-                      <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'Sup', '')"></th:block>
+                      <th:block th:replace=" :: morpho-form-row(morphCode='Sup')"></th:block>
                     </td>
                   </tr>
                   <tr>
@@ -1023,7 +980,7 @@
                       <span class="highlight">-vorm</span>
                     </td>
                     <td>
-                      <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'SupIn', '')"></th:block>
+                      <th:block th:replace=" :: morpho-form-row(morphCode='SupIn')"></th:block>
                     </td>
                   </tr>
                   <tr>
@@ -1032,7 +989,7 @@
                       <span class="highlight">-vorm</span>
                     </td>
                     <td>
-                      <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'SupEl', '')"></th:block>
+                      <th:block th:replace=" :: morpho-form-row(morphCode='SupEl')"></th:block>
                     </td>
                   </tr>
                   <tr>
@@ -1041,7 +998,7 @@
                       <span class="highlight">-vorm</span>
                     </td>
                     <td>
-                      <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'SupTr', '')"></th:block>
+                      <th:block th:replace=" :: morpho-form-row(morphCode='SupTr')"></th:block>
                     </td>
                   </tr>
                   <tr>
@@ -1050,7 +1007,7 @@
                       <span class="highlight">-vorm</span>
                     </td>
                     <td>
-                      <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'SupAb', '')"></th:block>
+                      <th:block th:replace=" :: morpho-form-row(morphCode='SupAb')"></th:block>
                     </td>
                   </tr>
                   <tr>
@@ -1059,7 +1016,7 @@
                       <span class="highlight">-vorm</span>
                     </td>
                     <td>
-                      <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'SupIps', '')"></th:block>
+                      <th:block th:replace=" :: morpho-form-row(morphCode='SupIps')"></th:block>
                     </td>
                   </tr>
                   <tr>
@@ -1072,7 +1029,7 @@
                       <span class="highlight">-vorm</span>
                     </td>
                     <td>
-                      <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'Inf', '')"></th:block>
+                      <th:block th:replace=" :: morpho-form-row(morphCode='Inf')"></th:block>
                     </td>
                   </tr>
                   <tr>
@@ -1081,7 +1038,7 @@
                       <span class="highlight">-vorm</span>
                     </td>
                     <td>
-                      <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'Ger', '')"></th:block>
+                      <th:block th:replace=" :: morpho-form-row(morphCode='Ger')"></th:block>
                     </td>
                   </tr>
                 </table>
@@ -1103,34 +1060,23 @@
                   <tr>
                     <td>isikuline</td>
                     <td>
-                      <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'PtsPrPs', '')"></th:block>
+                      <th:block th:replace=" :: morpho-form-row(morphCode='PtsPrPs')"></th:block>
                     </td>
                     <td>
-                      <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'PtsPtPs', '')"></th:block>
+                      <th:block th:replace=" :: morpho-form-row(morphCode='PtsPtPs')"></th:block>
                     </td>
                   </tr>
                   <tr>
                     <td>umbisikuline</td>
                     <td>
-                      <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'PtsPrIps', '')"></th:block>
+                      <th:block th:replace=" :: morpho-form-row(morphCode='PtsPrIps')"></th:block>
                     </td>
                     <td>
-                      <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'PtsPtIps', '')"></th:block>
+                      <th:block th:replace=" :: morpho-form-row(morphCode='PtsPtIps')"></th:block>
                     </td>
                   </tr>
                 </table>
               </div>
-            </div>
-          </div>
-          <div class="table-legend invisible" aria-hidden="true">
-            <div class="table-legend__item">Legend:</div>
-            <div class="table-legend__item">
-              <i class="fa fa-star highlight"></i>
-              Sõnavormi kasutussagedus selles sõnas
-            </div>
-            <div class="table-legend__item">
-              <i class="fa fa-star"></i>
-              Eeldatav kasutussagedus võrreldes teiste sõnadega
             </div>
           </div>
           <th:block th:replace=" :: table-legend_est"></th:block>
@@ -1138,31 +1084,13 @@
       </div>
     </div>
   </th:block>
+
   <th:block th:fragment="morpho-noomen_est">
     <div class="modal-dialog" role="document">
       <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title">
-            Sõnavormid
-            <span>EKI eesti keele morfoloogiline andmebaas 2019–</span>
-          </h5>
-          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-          </button>
-        </div>
+        <th:block th:replace=" :: table-header_est"></th:block>
         <div class="modal-body">
-          <ul class="nav nav-pills mb-3" data-plugin="tableTogglers">
-            <li class="nav-item">
-              <button type="button" class="nav-link" role="tab" data-rel="marks">
-                <span class="fa fa-check"></span>
-                märkidega
-              </button>
-              <span class="form-display-form-field" style="display: none;">
-                <br>
-                <b>NB! Siin on esitatud häälduskuju, mitte kirjapilt.</b>
-              </span>
-            </li>
-          </ul>
+          <th:block th:replace=" :: table-checks_est"></th:block>
           <div>
             <p th:utext="${paradigm.comment}" class="paradigm-text"></p>
             <p>
@@ -1190,10 +1118,10 @@
                       <span class="highlight">kes? mis?</span>
                     </td>
                     <td>
-                      <th:block th:replace=" :: morpho-noun-form-row(${paradigm}, 'SgN')"></th:block>
+                      <th:block th:replace=" :: morpho-form-row(morphCode='SgN')"></th:block>
                     </td>
                     <td>
-                      <th:block th:replace=" :: morpho-noun-form-row(${paradigm}, 'PlN')"></th:block>
+                      <th:block th:replace=" :: morpho-form-row(morphCode='PlN')"></th:block>
                     </td>
                   </tr>
                   <tr>
@@ -1203,10 +1131,10 @@
                       <span class="highlight">kelle? mille?</span>
                     </td>
                     <td>
-                      <th:block th:replace=" :: morpho-noun-form-row(${paradigm}, 'SgG')"></th:block>
+                      <th:block th:replace=" :: morpho-form-row(morphCode='SgG')"></th:block>
                     </td>
                     <td>
-                      <th:block th:replace=" :: morpho-noun-form-row(${paradigm}, 'PlG')"></th:block>
+                      <th:block th:replace=" :: morpho-form-row(morphCode='PlG')"></th:block>
                     </td>
                   </tr>
                   <tr>
@@ -1216,181 +1144,170 @@
                       <span class="highlight">keda? mida?</span>
                     </td>
                     <td>
-                      <th:block th:replace=" :: morpho-noun-form-row(${paradigm}, 'SgP')"></th:block>
+                      <th:block th:replace=" :: morpho-form-row(morphCode='SgP')"></th:block>
                     </td>
                     <td>
-                      <th:block th:replace=" :: morpho-noun-form-row(${paradigm}, 'PlP')"></th:block>
+                      <th:block th:replace=" :: morpho-form-row(morphCode='PlP')"></th:block>
                     </td>
                   </tr>
                   <tr>
                     <td>
                       lühike sisseütlev
                       <br />
-                      <span class="highlight">kellesse? millesse?</span>
+                      <span class="highlight">kuhu?</span>
                     </td>
                     <td>
-                      <th:block th:replace=" :: morpho-noun-form-row(${paradigm}, 'SgAdt')"></th:block>
+                      <th:block th:replace=" :: morpho-form-row(morphCode='SgAdt')"></th:block>
                     </td>
                     <td>
-                      <th:block th:replace=" :: morpho-noun-form-row(${paradigm}, 'PlAdt')"></th:block>
+                      <th:block th:replace=" :: morpho-form-row(morphCode='PlAdt')"></th:block>
                     </td>
                   </tr>
                   <tr>
                     <td>
                       sisseütlev
                       <br />
-                      <span class="highlight">kellesse? millesse?</span>
+                      <span class="highlight">kellesse? millesse? </span>
                     </td>
                     <td>
-                      <th:block th:replace=" :: morpho-noun-form-row(${paradigm}, 'SgIll')"></th:block>
+                      <th:block th:replace=" :: morpho-form-row(morphCode='SgIll')"></th:block>
                     </td>
                     <td>
-                      <th:block th:replace=" :: morpho-noun-form-row(${paradigm}, 'PlIll')"></th:block>
+                      <th:block th:replace=" :: morpho-form-row(morphCode='PlIll')"></th:block>
                     </td>
                   </tr>
                   <tr>
                     <td>
                       seesütlev
                       <br />
-                      <span class="highlight">kelles? milles?</span>
+                      <span class="highlight">kelles? milles? </span>
                     </td>
                     <td>
-                      <th:block th:replace=" :: morpho-noun-form-row(${paradigm}, 'SgIn')"></th:block>
+                      <th:block th:replace=" :: morpho-form-row(morphCode='SgIn')"></th:block>
                     </td>
                     <td>
-                      <th:block th:replace=" :: morpho-noun-form-row(${paradigm}, 'PlIn')"></th:block>
+                      <th:block th:replace=" :: morpho-form-row(morphCode='PlIn')"></th:block>
                     </td>
                   </tr>
                   <tr>
                     <td>
                       seestütlev
                       <br />
-                      <span class="highlight">kellest? millest?</span>
+                      <span class="highlight">kellest? millest? </span>
                     </td>
                     <td>
-                      <th:block th:replace=" :: morpho-noun-form-row(${paradigm}, 'SgEl')"></th:block>
+                      <th:block th:replace=" :: morpho-form-row(morphCode='SgEl')"></th:block>
                     </td>
                     <td>
-                      <th:block th:replace=" :: morpho-noun-form-row(${paradigm}, 'PlEl')"></th:block>
+                      <th:block th:replace=" :: morpho-form-row(morphCode='PlEl')"></th:block>
                     </td>
                   </tr>
                   <tr>
                     <td>
                       alaleütlev
                       <br />
-                      <span class="highlight">kellele? millele?</span>
+                      <span class="highlight">kellele? millele? </span>
                     </td>
                     <td>
-                      <th:block th:replace=" :: morpho-noun-form-row(${paradigm}, 'SgAll')"></th:block>
+                      <th:block th:replace=" :: morpho-form-row(morphCode='SgAll')"></th:block>
                     </td>
                     <td>
-                      <th:block th:replace=" :: morpho-noun-form-row(${paradigm}, 'PlAll')"></th:block>
+                      <th:block th:replace=" :: morpho-form-row(morphCode='PlAll')"></th:block>
                     </td>
                   </tr>
                   <tr>
                     <td>
                       alalütlev
                       <br />
-                      <span class="highlight">kellel? millel?</span>
+                      <span class="highlight">kellel? millel? </span>
                     </td>
                     <td>
-                      <th:block th:replace=" :: morpho-noun-form-row(${paradigm}, 'SgAd')"></th:block>
+                      <th:block th:replace=" :: morpho-form-row(morphCode='SgAd')"></th:block>
                     </td>
                     <td>
-                      <th:block th:replace=" :: morpho-noun-form-row(${paradigm}, 'PlAd')"></th:block>
+                      <th:block th:replace=" :: morpho-form-row(morphCode='PlAd')"></th:block>
                     </td>
                   </tr>
                   <tr>
                     <td>
                       alaltütlev
                       <br />
-                      <span class="highlight">kellelt? millelt?</span>
+                      <span class="highlight">kellelt? millelt? </span>
                     </td>
                     <td>
-                      <th:block th:replace=" :: morpho-noun-form-row(${paradigm}, 'SgAbl')"></th:block>
+                      <th:block th:replace=" :: morpho-form-row(morphCode='SgAbl')"></th:block>
                     </td>
                     <td>
-                      <th:block th:replace=" :: morpho-noun-form-row(${paradigm}, 'PlAbl')"></th:block>
+                      <th:block th:replace=" :: morpho-form-row(morphCode='PlAbl')"></th:block>
                     </td>
                   </tr>
                   <tr>
                     <td>
                       saav
                       <br />
-                      <span class="highlight">kelleks? milleks?</span>
+                      <span class="highlight">kelleks? milleks? </span>
                     </td>
                     <td>
-                      <th:block th:replace=" :: morpho-noun-form-row(${paradigm}, 'SgTr')"></th:block>
+                      <th:block th:replace=" :: morpho-form-row(morphCode='SgTr')"></th:block>
                     </td>
                     <td>
-                      <th:block th:replace=" :: morpho-noun-form-row(${paradigm}, 'PlTr')"></th:block>
+                      <th:block th:replace=" :: morpho-form-row(morphCode='PlTr')"></th:block>
                     </td>
                   </tr>
                   <tr>
                     <td>
                       rajav
                       <br />
-                      <span class="highlight">kelleni? milleni?</span>
+                      <span class="highlight">kelleni? milleni? </span>
                     </td>
                     <td>
-                      <th:block th:replace=" :: morpho-noun-form-row(${paradigm}, 'SgTer')"></th:block>
+                      <th:block th:replace=" :: morpho-form-row(morphCode='SgTer')"></th:block>
                     </td>
                     <td>
-                      <th:block th:replace=" :: morpho-noun-form-row(${paradigm}, 'PlTer')"></th:block>
+                      <th:block th:replace=" :: morpho-form-row(morphCode='PlTer')"></th:block>
                     </td>
                   </tr>
                   <tr>
                     <td>
                       olev
                       <br />
-                      <span class="highlight">kellena? millena?</span>
+                      <span class="highlight">kellena? millena? </span>
                     </td>
                     <td>
-                      <th:block th:replace=" :: morpho-noun-form-row(${paradigm}, 'SgEs')"></th:block>
+                      <th:block th:replace=" :: morpho-form-row(morphCode='SgEs')"></th:block>
                     </td>
                     <td>
-                      <th:block th:replace=" :: morpho-noun-form-row(${paradigm}, 'PlEs')"></th:block>
+                      <th:block th:replace=" :: morpho-form-row(morphCode='PlEs')"></th:block>
                     </td>
                   </tr>
                   <tr>
                     <td>
                       ilmaütlev
                       <br />
-                      <span class="highlight">kelleta? milleta?</span>
+                      <span class="highlight">kelleta? milleta? </span>
                     </td>
                     <td>
-                      <th:block th:replace=" :: morpho-noun-form-row(${paradigm}, 'SgAb')"></th:block>
+                      <th:block th:replace=" :: morpho-form-row(morphCode='SgAb')"></th:block>
                     </td>
                     <td>
-                      <th:block th:replace=" :: morpho-noun-form-row(${paradigm}, 'PlAb')"></th:block>
+                      <th:block th:replace=" :: morpho-form-row(morphCode='PlAb')"></th:block>
                     </td>
                   </tr>
                   <tr>
                     <td>
                       kaasaütlev
                       <br />
-                      <span class="highlight">kellega? millega?</span>
+                      <span class="highlight">kellega? millega? </span>
                     </td>
                     <td>
-                      <th:block th:replace=" :: morpho-noun-form-row(${paradigm}, 'SgKom')"></th:block>
+                      <th:block th:replace=" :: morpho-form-row(morphCode='SgKom')"></th:block>
                     </td>
                     <td>
-                      <th:block th:replace=" :: morpho-noun-form-row(${paradigm}, 'PlKom')"></th:block>
+                      <th:block th:replace=" :: morpho-form-row(morphCode='PlKom')"></th:block>
                     </td>
                   </tr>
                 </table>
               </div>
-            </div>
-          </div>
-          <div class="table-legend invisible" aria-hidden="true">
-            <div class="table-legend__item">Legend:</div>
-            <div class="table-legend__item">
-              <i class="fa fa-star highlight"></i>
-              Sõnavormi kasutussagedus selles sõnas
-            </div>
-            <div class="table-legend__item">
-              <i class="fa fa-star"></i>
-              Eeldatav kasutussagedus võrreldes teiste sõnadega
             </div>
           </div>
           <th:block th:replace=" :: table-legend_est"></th:block>
@@ -1398,6 +1315,7 @@
       </div>
     </div>
   </th:block>
+
   <th:block th:fragment="morpho-verb_rus">
     <div class="modal-dialog" role="document">
       <div class="modal-content">
@@ -1434,7 +1352,7 @@
                       <span class="highlight"> 1. лицо ед. ч. </span>
                     </td>
                     <td>
-                      <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'sing,1per,pres,indc', '')"></th:block>
+                      <th:block th:replace=" :: morpho-form-row(morphCode='sing,1per,pres,indc')"></th:block>
                     </td>
                   </tr>
                   <tr>
@@ -1443,7 +1361,7 @@
                       <span class="highlight">2. лицо ед. ч.</span>
                     </td>
                     <td>
-                      <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'sing,2per,pres,indc', '')"></th:block>
+                      <th:block th:replace=" :: morpho-form-row(morphCode='sing,2per,pres,indc')"></th:block>
                     </td>
                   </tr>
                   <tr>
@@ -1452,7 +1370,7 @@
                       <span class="highlight"> 3. лицо ед. ч. мужской род</span>
                     </td>
                     <td rowspan="3">
-                      <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'sing,3per,pres,indc', '')"></th:block>
+                      <th:block th:replace=" :: morpho-form-row(morphCode='sing,3per,pres,indc')"></th:block>
                     </td>
                   </tr>
                   <tr>
@@ -1473,7 +1391,7 @@
                       <span class="highlight">1. лицо мн. ч.</span>
                     </td>
                     <td>
-                      <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'plur,1per,pres,indc', '')"></th:block>
+                      <th:block th:replace=" :: morpho-form-row(morphCode='plur,1per,pres,indc')"></th:block>
                     </td>
                   </tr>
                   <tr>
@@ -1482,7 +1400,7 @@
                       <span class="highlight">2. лицо мн. ч.</span>
                     </td>
                     <td>
-                      <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'plur,2per,pres,indc', '')"></th:block>
+                      <th:block th:replace=" :: morpho-form-row(morphCode='plur,2per,pres,indc')"></th:block>
                     </td>
                   </tr>
                   <tr>
@@ -1491,7 +1409,7 @@
                       <span class="highlight">3. лицо мн. ч.</span>
                     </td>
                     <td>
-                      <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'plur,3per,pres,indc', '')"></th:block>
+                      <th:block th:replace=" :: morpho-form-row(morphCode='plur,3per,pres,indc')"></th:block>
                     </td>
                   </tr>
                   <tr>
@@ -1507,7 +1425,7 @@
                       <span class="highlight"> 1. лицо ед. ч. мужской род</span>
                     </td>
                     <td>
-                      <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'masc,sing,1per,past,indc', '')"></th:block>
+                      <th:block th:replace=" :: morpho-form-row(morphCode='masc,sing,1per,past,indc')"></th:block>
                     </td>
                   </tr>
                   <tr>
@@ -1516,7 +1434,7 @@
                       <span class="highlight">1. лицо ед. ч. женский род</span>
                     </td>
                     <td>
-                      <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'femn,sing,1per,past,indc', '')"></th:block>
+                      <th:block th:replace=" :: morpho-form-row(morphCode='femn,sing,1per,past,indc')"></th:block>
                     </td>
                   </tr>
                   <tr>
@@ -1525,7 +1443,7 @@
                       <span class="highlight">2. лицо ед. ч. мужской род</span>
                     </td>
                     <td>
-                      <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'masc,sing,2per,past,indc', '')"></th:block>
+                      <th:block th:replace=" :: morpho-form-row(morphCode='masc,sing,2per,past,indc')"></th:block>
                     </td>
                   </tr>
                   <tr>
@@ -1534,7 +1452,7 @@
                       <span class="highlight"> 2. лицо ед. ч. женский род</span>
                     </td>
                     <td>
-                      <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'femn,sing,2per,past,indc', '')"></th:block>
+                      <th:block th:replace=" :: morpho-form-row(morphCode='femn,sing,2per,past,indc')"></th:block>
                     </td>
                   </tr>
                   <tr>
@@ -1543,7 +1461,7 @@
                       <span class="highlight">3. лицо ед. ч. мужской род</span>
                     </td>
                     <td>
-                      <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'masc,sing,3per,past,indc', '')"></th:block>
+                      <th:block th:replace=" :: morpho-form-row(morphCode='masc,sing,3per,past,indc')"></th:block>
                     </td>
                   </tr>
                   <tr>
@@ -1552,7 +1470,7 @@
                       <span class="highlight">3. лицо ед. ч. женский род</span>
                     </td>
                     <td>
-                      <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'femn,sing,3per,past,indc', '')"></th:block>
+                      <th:block th:replace=" :: morpho-form-row(morphCode='femn,sing,3per,past,indc')"></th:block>
                     </td>
                   </tr>
                   <tr>
@@ -1561,7 +1479,7 @@
                       <span class="highlight">3. лицо ед. ч. средний род</span>
                     </td>
                     <td>
-                      <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'neut,sing,3per,past,indc', '')"></th:block>
+                      <th:block th:replace=" :: morpho-form-row(morphCode='neut,sing,3per,past,indc')"></th:block>
                     </td>
                   </tr>
                   <tr>
@@ -1570,7 +1488,7 @@
                       <span class="highlight">1. лицо мн. ч.</span>
                     </td>
                     <td rowspan="3">
-                      <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'plur,past,indc', '')"></th:block>
+                      <th:block th:replace=" :: morpho-form-row(morphCode='plur,past,indc')"></th:block>
                     </td>
                   </tr>
                   <tr>
@@ -1598,7 +1516,7 @@
                       <span class="highlight">1. лицо ед. ч.</span>
                     </td>
                     <td>
-                      <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'sing,1per,futr,indc', '')"></th:block>
+                      <th:block th:replace=" :: morpho-form-row(morphCode='sing,1per,futr,indc')"></th:block>
                     </td>
                   </tr>
                   <tr>
@@ -1607,7 +1525,7 @@
                       <span class="highlight"> 2. лицо ед. ч.</span>
                     </td>
                     <td>
-                      <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'sing,2per,futr,indc', '')"></th:block>
+                      <th:block th:replace=" :: morpho-form-row(morphCode='sing,2per,futr,indc')"></th:block>
                     </td>
                   </tr>
                   <tr>
@@ -1616,7 +1534,7 @@
                       <span class="highlight"> 3. лицо ед. ч. мужской род</span>
                     </td>
                     <td rowspan="3">
-                      <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'sing,3per,futr,indc', '')"></th:block>
+                      <th:block th:replace=" :: morpho-form-row(morphCode='sing,3per,futr,indc')"></th:block>
                     </td>
                   </tr>
                   <tr>
@@ -1637,7 +1555,7 @@
                       <span class="highlight"> 1. лицо мн. ч. </span>
                     </td>
                     <td>
-                      <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'plur,1per,futr,indc', '')"></th:block>
+                      <th:block th:replace=" :: morpho-form-row(morphCode='plur,1per,futr,indc')"></th:block>
                     </td>
                   </tr>
                   <tr>
@@ -1646,7 +1564,7 @@
                       <span class="highlight"> 2. лицо мн. ч.</span>
                     </td>
                     <td>
-                      <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'plur,2per,futr,indc', '')"></th:block>
+                      <th:block th:replace=" :: morpho-form-row(morphCode='plur,2per,futr,indc')"></th:block>
                     </td>
                   </tr>
                   <tr>
@@ -1655,7 +1573,7 @@
                       <span class="highlight">3. лицо мн. ч.</span>
                     </td>
                     <td>
-                      <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'plur,3per,futr,indc', '')"></th:block>
+                      <th:block th:replace=" :: morpho-form-row(morphCode='plur,3per,futr,indc')"></th:block>
                     </td>
                   </tr>
                 </table>
@@ -1676,7 +1594,7 @@
                       <span class="highlight">2. лицо ед. ч.</span>
                     </td>
                     <td>
-                      <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'sing,impr,excl', '')"></th:block>
+                      <th:block th:replace=" :: morpho-form-row(morphCode='sing,impr,excl')"></th:block>
                     </td>
                   </tr>
                   <tr>
@@ -1685,7 +1603,7 @@
                       <span class="highlight"> 2. лицо мн. ч.</span>
                     </td>
                     <td>
-                      <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'plur,impr,excl', '')"></th:block>
+                      <th:block th:replace=" :: morpho-form-row(morphCode='plur,impr,excl')"></th:block>
                     </td>
                   </tr>
                 </table>
@@ -1699,7 +1617,7 @@
                   </tr>
                   <tr>
                     <td>
-                      <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'INFN', '')"></th:block>
+                      <th:block th:replace=" :: morpho-form-row(morphCode='INFN')"></th:block>
                     </td>
                   </tr>
                 </table>
@@ -1721,7 +1639,7 @@
                       <span class="highlight">какой? что делающий? / missugune?</span>
                     </td>
                     <td>
-                      <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'PRTF,pres,actv', '')"></th:block>
+                      <th:block th:replace=" :: morpho-form-row(morphCode='PRTF,pres,actv')"></th:block>
                     </td>
                   </tr>
                   <tr>
@@ -1731,7 +1649,7 @@
                       <span class="highlight">какой? / missugune?</span>
                     </td>
                     <td>
-                      <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'PRTF,pres,pssv', '')"></th:block>
+                      <th:block th:replace=" :: morpho-form-row(morphCode='PRTF,pres,pssv')"></th:block>
                     </td>
                   </tr>
                   <tr>
@@ -1743,7 +1661,7 @@
                       <span class="highlight">какой? / missugune?</span>
                     </td>
                     <td>
-                      <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'PRTS,pres,pssv', '')"></th:block>
+                      <th:block th:replace=" :: morpho-form-row(morphCode='PRTS,pres,pssv')"></th:block>
                     </td>
                   </tr>
                   <tr>
@@ -1756,7 +1674,7 @@
                       <span class="highlight">какой? что делавший? что сделавший? / missugune?</span>
                     </td>
                     <td>
-                      <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'PRTF,past,actv', '')"></th:block>
+                      <th:block th:replace=" :: morpho-form-row(morphCode='PRTF,past,actv')"></th:block>
                     </td>
                   </tr>
                   <tr>
@@ -1766,7 +1684,7 @@
                       <span class="highlight">какой? / missugune?</span>
                     </td>
                     <td>
-                      <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'PRTF,past,pssv', '')"></th:block>
+                      <th:block th:replace=" :: morpho-form-row(morphCode='PRTF,past,pssv')"></th:block>
                     </td>
                   </tr>
                   <tr>
@@ -1778,7 +1696,7 @@
                       <span class="highlight">каков? / missugune?</span>
                     </td>
                     <td>
-                      <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'PRTS,past,pssv', '')"></th:block>
+                      <th:block th:replace=" :: morpho-form-row(morphCode='PRTS,past,pssv')"></th:block>
                     </td>
                   </tr>
                 </table>
@@ -1797,7 +1715,7 @@
                       <span class="highlight">что делая? что сделав? / mida tehes?</span>
                     </td>
                     <td>
-                      <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'GRND,pres', '')"></th:block>
+                      <th:block th:replace=" :: morpho-form-row(morphCode='GRND,pres')"></th:block>
                     </td>
                   </tr>
                   <tr>
@@ -1807,7 +1725,7 @@
                       <span class="highlight">что делая? что сделав? / mida tehes?</span>
                     </td>
                     <td>
-                      <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'GRND,past', '')"></th:block>
+                      <th:block th:replace=" :: morpho-form-row(morphCode='GRND,past')"></th:block>
                     </td>
                   </tr>
                 </table>
@@ -1861,10 +1779,10 @@
                       <span class="highlight">кто? что? / kes? mis?</span>
                     </td>
                     <td>
-                      <th:block th:replace=" :: morpho-noun-form-row(${paradigm}, 'sing,nomn')"></th:block>
+                      <th:block th:replace=" :: morpho-form-row(morphCode='sing,nomn')"></th:block>
                     </td>
                     <td>
-                      <th:block th:replace=" :: morpho-noun-form-row(${paradigm}, 'plur,nomn')"></th:block>
+                      <th:block th:replace=" :: morpho-form-row(morphCode='plur,nomn')"></th:block>
                     </td>
                   </tr>
                   <tr>
@@ -1874,10 +1792,10 @@
                       <span class="highlight">кого? чего? / kelle? mille?</span>
                     </td>
                     <td>
-                      <th:block th:replace=" :: morpho-noun-form-row(${paradigm}, 'sing,gent')"></th:block>
+                      <th:block th:replace=" :: morpho-form-row(morphCode='sing,gent')"></th:block>
                     </td>
                     <td>
-                      <th:block th:replace=" :: morpho-noun-form-row(${paradigm}, 'plur,gent')"></th:block>
+                      <th:block th:replace=" :: morpho-form-row(morphCode='plur,gent')"></th:block>
                     </td>
                   </tr>
                   <tr>
@@ -1887,10 +1805,10 @@
                       <span class="highlight">кому? чему? / kellele? millele?</span>
                     </td>
                     <td>
-                      <th:block th:replace=" :: morpho-noun-form-row(${paradigm}, 'sing,datv')"></th:block>
+                      <th:block th:replace=" :: morpho-form-row(morphCode='sing,datv')"></th:block>
                     </td>
                     <td>
-                      <th:block th:replace=" :: morpho-noun-form-row(${paradigm}, 'plur,datv')"></th:block>
+                      <th:block th:replace=" :: morpho-form-row(morphCode='plur,datv')"></th:block>
                     </td>
                   </tr>
                   <tr>
@@ -1900,10 +1818,10 @@
                       <span class="highlight">кого? что? / keda? mida?</span>
                     </td>
                     <td>
-                      <th:block th:replace=" :: morpho-noun-form-row(${paradigm}, 'sing,accs')"></th:block>
+                      <th:block th:replace=" :: morpho-form-row(morphCode='sing,accs')"></th:block>
                     </td>
                     <td>
-                      <th:block th:replace=" :: morpho-noun-form-row(${paradigm}, 'plur,accs')"></th:block>
+                      <th:block th:replace=" :: morpho-form-row(morphCode='plur,accs')"></th:block>
                     </td>
                   </tr>
                   <tr>
@@ -1913,10 +1831,10 @@
                       <span class="highlight">кем? чем? / kellega? millega?</span>
                     </td>
                     <td>
-                      <th:block th:replace=" :: morpho-noun-form-row(${paradigm}, 'sing,ablt')"></th:block>
+                      <th:block th:replace=" :: morpho-form-row(morphCode='sing,ablt')"></th:block>
                     </td>
                     <td>
-                      <th:block th:replace=" :: morpho-noun-form-row(${paradigm}, 'plur,ablt')"></th:block>
+                      <th:block th:replace=" :: morpho-form-row(morphCode='plur,ablt')"></th:block>
                     </td>
                   </tr>
                   <tr>
@@ -1926,10 +1844,10 @@
                       <span class="highlight">о ком? о чём? / kellest? millest?</span>
                     </td>
                     <td>
-                      <th:block th:replace=" :: morpho-noun-form-row(${paradigm}, 'sing,loct')"></th:block>
+                      <th:block th:replace=" :: morpho-form-row(morphCode='sing,loct')"></th:block>
                     </td>
                     <td>
-                      <th:block th:replace=" :: morpho-noun-form-row(${paradigm}, 'plur,loct')"></th:block>
+                      <th:block th:replace=" :: morpho-form-row(morphCode='plur,loct')"></th:block>
                     </td>
                   </tr>
                   <th:block th:each="form, formIter : ${viewUtil.getForms(paradigm, 'sing,gen2')}">
@@ -1941,7 +1859,7 @@
                           <span class="highlight">чего? / mille?</span>
                         </td>
                         <td>
-                          <th:block th:replace=" :: morpho-noun-form-row(${paradigm}, 'sing,gen2')"></th:block>
+                          <th:block th:replace=" :: morpho-form-row(morphCode='sing,gen2')"></th:block>
                         </td>
                         <td>&nbsp;</td>
                       </tr>
@@ -1956,7 +1874,7 @@
                           <span class="highlight">в чём? на чём? где? / milles? millel? kus?</span>
                         </td>
                         <td>
-                          <th:block th:replace=" :: morpho-noun-form-row(${paradigm}, 'sing,loc2')"></th:block>
+                          <th:block th:replace=" :: morpho-form-row(morphCode='sing,loc2')"></th:block>
                         </td>
                         <td>&nbsp;</td>
                       </tr>
@@ -1999,7 +1917,7 @@
                       <span class="highlight">сколько? / mitu?</span>
                     </td>
                     <td>
-                      <th:block th:replace=" :: morpho-noun-form-row(${paradigm}, 'nomn')"></th:block>
+                      <th:block th:replace=" :: morpho-form-row(morphCode='nomn')"></th:block>
                     </td>
                   </tr>
                   <tr>
@@ -2009,7 +1927,7 @@
                       <span class="highlight">скольких? / mitme?</span>
                     </td>
                     <td>
-                      <th:block th:replace=" :: morpho-noun-form-row(${paradigm}, 'gent')"></th:block>
+                      <th:block th:replace=" :: morpho-form-row(morphCode='gent')"></th:block>
                     </td>
                   </tr>
                   <tr>
@@ -2019,7 +1937,7 @@
                       <span class="highlight">скольким? / mitmele?</span>
                     </td>
                     <td>
-                      <th:block th:replace=" :: morpho-noun-form-row(${paradigm}, 'datv')"></th:block>
+                      <th:block th:replace=" :: morpho-form-row(morphCode='datv')"></th:block>
                     </td>
                   </tr>
                   <tr>
@@ -2032,7 +1950,7 @@
                       <span class="word-prefix-adjective-rus">одуш. / elus</span>
                     </td>
                     <td>
-                      <th:block th:replace=" :: morpho-noun-form-row(${paradigm}, 'accs,anim')"></th:block>
+                      <th:block th:replace=" :: morpho-form-row(morphCode='accs,anim')"></th:block>
                     </td>
                   </tr>
                   <tr>
@@ -2040,7 +1958,7 @@
                       <span class="word-prefix-adjective-rus">неодуш. / eluta</span>
                     </td>
                     <td>
-                      <th:block th:replace=" :: morpho-noun-form-row(${paradigm}, 'accs,inan')"></th:block>
+                      <th:block th:replace=" :: morpho-form-row(morphCode='accs,inan')"></th:block>
                     </td>
                   </tr>
                   <tr>
@@ -2050,7 +1968,7 @@
                       <span class="highlight">сколькими? / mitmega?</span>
                     </td>
                     <td>
-                      <th:block th:replace=" :: morpho-noun-form-row(${paradigm}, 'ablt')"></th:block>
+                      <th:block th:replace=" :: morpho-form-row(morphCode='ablt')"></th:block>
                     </td>
                   </tr>
                   <tr>
@@ -2060,7 +1978,7 @@
                       <span class="highlight">о скольких? / mitmest?</span>
                     </td>
                     <td>
-                      <th:block th:replace=" :: morpho-noun-form-row(${paradigm}, 'loct')"></th:block>
+                      <th:block th:replace=" :: morpho-form-row(morphCode='loct')"></th:block>
                     </td>
                   </tr>
                 </table>
@@ -2096,7 +2014,7 @@
               <span class="highlight">какой? / missugune?</span>
             </td>
             <td>
-              <th:block th:replace=" :: morpho-noun-form-row(${paradigm}, 'masc,sing,nomn')"></th:block>
+              <th:block th:replace=" :: morpho-form-row(morphCode='masc,sing,nomn')"></th:block>
             </td>
           </tr>
           <tr>
@@ -2106,7 +2024,7 @@
               <span class="highlight">какого? / missuguse?</span>
             </td>
             <td>
-              <th:block th:replace=" :: morpho-noun-form-row(${paradigm}, 'masc,sing,gent')"></th:block>
+              <th:block th:replace=" :: morpho-form-row(morphCode='masc,sing,gent')"></th:block>
             </td>
           </tr>
           <tr>
@@ -2116,7 +2034,7 @@
               <span class="highlight">какому? / missugusele?</span>
             </td>
             <td>
-              <th:block th:replace=" :: morpho-noun-form-row(${paradigm}, 'masc,sing,datv')"></th:block>
+              <th:block th:replace=" :: morpho-form-row(morphCode='masc,sing,datv')"></th:block>
             </td>
           </tr>
           <tr>
@@ -2129,7 +2047,7 @@
               <span class="word-prefix-adjective-rus">одуш. / elus</span>
             </td>
             <td>
-              <th:block th:replace=" :: morpho-noun-form-row(${paradigm}, 'masc,sing,accs,anim')"></th:block>
+              <th:block th:replace=" :: morpho-form-row(morphCode='masc,sing,accs,anim')"></th:block>
             </td>
           </tr>
           <tr>
@@ -2137,7 +2055,7 @@
               <span class="word-prefix-adjective-rus">неодуш. / eluta</span>
             </td>
             <td>
-              <th:block th:replace=" :: morpho-noun-form-row(${paradigm}, 'masc,sing,accs,inan')"></th:block>
+              <th:block th:replace=" :: morpho-form-row(morphCode='masc,sing,accs,inan')"></th:block>
             </td>
           </tr>
           <tr>
@@ -2147,7 +2065,7 @@
               <span class="highlight">каким? / missugusega?</span>
             </td>
             <td>
-              <th:block th:replace=" :: morpho-noun-form-row(${paradigm}, 'masc,sing,ablt')"></th:block>
+              <th:block th:replace=" :: morpho-form-row(morphCode='masc,sing,ablt')"></th:block>
             </td>
           </tr>
           <tr>
@@ -2157,7 +2075,7 @@
               <span class="highlight">о каком? / missugusest?</span>
             </td>
             <td>
-              <th:block th:replace=" :: morpho-noun-form-row(${paradigm}, 'masc,sing,loct')"></th:block>
+              <th:block th:replace=" :: morpho-form-row(morphCode='masc,sing,loct')"></th:block>
             </td>
           </tr>
           <tr>
@@ -2171,7 +2089,7 @@
               <span class="highlight">какая? / missugune?</span>
             </td>
             <td>
-              <th:block th:replace=" :: morpho-noun-form-row(${paradigm}, 'femn,sing,nomn')"></th:block>
+              <th:block th:replace=" :: morpho-form-row(morphCode='femn,sing,nomn')"></th:block>
             </td>
           </tr>
           <tr>
@@ -2181,7 +2099,7 @@
               <span class="highlight">какой? / missuguse?</span>
             </td>
             <td>
-              <th:block th:replace=" :: morpho-noun-form-row(${paradigm}, 'femn,sing,gent')"></th:block>
+              <th:block th:replace=" :: morpho-form-row(morphCode='femn,sing,gent')"></th:block>
             </td>
           </tr>
           <tr>
@@ -2191,7 +2109,7 @@
               <span class="highlight">какой? / missugusele?</span>
             </td>
             <td>
-              <th:block th:replace=" :: morpho-noun-form-row(${paradigm}, 'femn,sing,datv')"></th:block>
+              <th:block th:replace=" :: morpho-form-row(morphCode='femn,sing,datv')"></th:block>
             </td>
           </tr>
           <tr>
@@ -2204,7 +2122,7 @@
               <span class="word-prefix-adjective-rus">одуш. / elus</span>
             </td>
             <td rowspan="2">
-              <th:block th:replace=" :: morpho-noun-form-row(${paradigm}, 'femn,sing,accs')"></th:block>
+              <th:block th:replace=" :: morpho-form-row(morphCode='femn,sing,accs')"></th:block>
             </td>
           </tr>
           <tr>
@@ -2219,7 +2137,7 @@
               <span class="highlight">какой? / missugusega?</span>
             </td>
             <td>
-              <th:block th:replace=" :: morpho-noun-form-row(${paradigm}, 'femn,sing,ablt')"></th:block>
+              <th:block th:replace=" :: morpho-form-row(morphCode='femn,sing,ablt')"></th:block>
             </td>
           </tr>
           <tr>
@@ -2229,7 +2147,7 @@
               <span class="highlight">о какой? / missugusest?</span>
             </td>
             <td>
-              <th:block th:replace=" :: morpho-noun-form-row(${paradigm}, 'femn,sing,loct')"></th:block>
+              <th:block th:replace=" :: morpho-form-row(morphCode='femn,sing,loct')"></th:block>
             </td>
           </tr>
           <tr>
@@ -2243,7 +2161,7 @@
               <span class="highlight">какое? / missugune?</span>
             </td>
             <td>
-              <th:block th:replace=" :: morpho-noun-form-row(${paradigm}, 'neut,sing,nomn')"></th:block>
+              <th:block th:replace=" :: morpho-form-row(morphCode='neut,sing,nomn')"></th:block>
             </td>
           </tr>
           <tr>
@@ -2253,7 +2171,7 @@
               <span class="highlight">какого? / missuguse?</span>
             </td>
             <td>
-              <th:block th:replace=" :: morpho-noun-form-row(${paradigm}, 'neut,sing,gent')"></th:block>
+              <th:block th:replace=" :: morpho-form-row(morphCode='neut,sing,gent')"></th:block>
             </td>
           </tr>
           <tr>
@@ -2263,7 +2181,7 @@
               <span class="highlight">какому? / missugusele?</span>
             </td>
             <td>
-              <th:block th:replace=" :: morpho-noun-form-row(${paradigm}, 'neut,sing,datv')"></th:block>
+              <th:block th:replace=" :: morpho-form-row(morphCode='neut,sing,datv')"></th:block>
             </td>
           </tr>
           <tr>
@@ -2276,7 +2194,7 @@
               <span class="word-prefix-adjective-rus">одуш. / elus</span>
             </td>
             <td rowspan="2">
-              <th:block th:replace=" :: morpho-noun-form-row(${paradigm}, 'neut,sing,accs')"></th:block>
+              <th:block th:replace=" :: morpho-form-row(morphCode='neut,sing,accs')"></th:block>
             </td>
           </tr>
           <tr>
@@ -2291,7 +2209,7 @@
               <span class="highlight">каким? / missugusega?</span>
             </td>
             <td>
-              <th:block th:replace=" :: morpho-noun-form-row(${paradigm}, 'neut,sing,ablt')"></th:block>
+              <th:block th:replace=" :: morpho-form-row(morphCode='neut,sing,ablt')"></th:block>
             </td>
           </tr>
           <tr>
@@ -2301,7 +2219,7 @@
               <span class="highlight">о каком? / missugusest?</span>
             </td>
             <td>
-              <th:block th:replace=" :: morpho-noun-form-row(${paradigm}, 'neut,sing,loct')"></th:block>
+              <th:block th:replace=" :: morpho-form-row(morphCode='neut,sing,loct')"></th:block>
             </td>
           </tr>
           <tr>
@@ -2317,7 +2235,7 @@
               <span class="highlight">какие? / missugused?</span>
             </td>
             <td>
-              <th:block th:replace=" :: morpho-noun-form-row(${paradigm}, 'plur,nomn')"></th:block>
+              <th:block th:replace=" :: morpho-form-row(morphCode='plur,nomn')"></th:block>
             </td>
           </tr>
           <tr>
@@ -2327,7 +2245,7 @@
               <span class="highlight">каких? / missuguste?</span>
             </td>
             <td>
-              <th:block th:replace=" :: morpho-noun-form-row(${paradigm}, 'plur,gent')"></th:block>
+              <th:block th:replace=" :: morpho-form-row(morphCode='plur,gent')"></th:block>
             </td>
           </tr>
           <tr>
@@ -2337,7 +2255,7 @@
               <span class="highlight">каким? / missugustele?</span>
             </td>
             <td>
-              <th:block th:replace=" :: morpho-noun-form-row(${paradigm}, 'plur,datv')"></th:block>
+              <th:block th:replace=" :: morpho-form-row(morphCode='plur,datv')"></th:block>
             </td>
           </tr>
           <tr>
@@ -2350,7 +2268,7 @@
               <span class="word-prefix-adjective-rus">одуш. / elus</span>
             </td>
             <td>
-              <th:block th:replace=" :: morpho-noun-form-row(${paradigm}, 'plur,accs,anim')"></th:block>
+              <th:block th:replace=" :: morpho-form-row(morphCode='plur,accs,anim')"></th:block>
             </td>
           </tr>
           <tr>
@@ -2358,7 +2276,7 @@
               <span class="word-prefix-adjective-rus">неодуш. / eluta</span>
             </td>
             <td>
-              <th:block th:replace=" :: morpho-noun-form-row(${paradigm}, 'plur,accs,inan')"></th:block>
+              <th:block th:replace=" :: morpho-form-row(morphCode='plur,accs,inan')"></th:block>
             </td>
           </tr>
           <tr>
@@ -2368,7 +2286,7 @@
               <span class="highlight">какими? / missugustega?</span>
             </td>
             <td>
-              <th:block th:replace=" :: morpho-noun-form-row(${paradigm}, 'plur,ablt')"></th:block>
+              <th:block th:replace=" :: morpho-form-row(morphCode='plur,ablt')"></th:block>
             </td>
           </tr>
           <tr>
@@ -2378,7 +2296,7 @@
               <span class="highlight">о каких? / missugustest?</span>
             </td>
             <td>
-              <th:block th:replace=" :: morpho-noun-form-row(${paradigm}, 'plur,loct')"></th:block>
+              <th:block th:replace=" :: morpho-form-row(morphCode='plur,loct')"></th:block>
             </td>
           </tr>
         </table>
@@ -2440,7 +2358,7 @@
                       <span class="highlight">каков? / missugune?</span>
                     </td>
                     <td>
-                      <th:block th:replace=" :: morpho-noun-form-row(${paradigm}, 'ADJS,masc,sing')"></th:block>
+                      <th:block th:replace=" :: morpho-form-row(morphCode='ADJS,masc,sing')"></th:block>
                     </td>
                   </tr>
                   <tr>
@@ -2450,7 +2368,7 @@
                       <span class="highlight">какова? / missugune?</span>
                     </td>
                     <td>
-                      <th:block th:replace=" :: morpho-noun-form-row(${paradigm}, 'ADJS,femn,sing')"></th:block>
+                      <th:block th:replace=" :: morpho-form-row(morphCode='ADJS,femn,sing')"></th:block>
                     </td>
                   </tr>
                   <tr>
@@ -2460,7 +2378,7 @@
                       <span class="highlight">каково? / missugune?</span>
                     </td>
                     <td>
-                      <th:block th:replace=" :: morpho-noun-form-row(${paradigm}, 'ADJS,neut,sing')"></th:block>
+                      <th:block th:replace=" :: morpho-form-row(morphCode='ADJS,neut,sing')"></th:block>
                     </td>
                   </tr>
                   <tr>
@@ -2470,7 +2388,7 @@
                       <span class="highlight">каковы? / missugused?</span>
                     </td>
                     <td>
-                      <th:block th:replace=" :: morpho-noun-form-row(${paradigm}, 'ADJS,plur')"></th:block>
+                      <th:block th:replace=" :: morpho-form-row(morphCode='ADJS,plur')"></th:block>
                     </td>
                   </tr>
                 </table>
@@ -2538,7 +2456,7 @@
                       <span class="highlight">каков? / missugune?</span>
                     </td>
                     <td>
-                      <th:block th:replace=" :: morpho-noun-form-row(${paradigm}, 'PRTS,masc,sing')"></th:block>
+                      <th:block th:replace=" :: morpho-form-row(morphCode='PRTS,masc,sing')"></th:block>
                     </td>
                   </tr>
                   <tr>
@@ -2548,7 +2466,7 @@
                       <span class="highlight">какова? / missugune?</span>
                     </td>
                     <td>
-                      <th:block th:replace=" :: morpho-noun-form-row(${paradigm}, 'PRTS,femn,sing')"></th:block>
+                      <th:block th:replace=" :: morpho-form-row(morphCode='PRTS,femn,sing')"></th:block>
                     </td>
                   </tr>
                   <tr>
@@ -2558,7 +2476,7 @@
                       <span class="highlight">каково? / missugune?</span>
                     </td>
                     <td>
-                      <th:block th:replace=" :: morpho-noun-form-row(${paradigm}, 'PRTS,neut,sing')"></th:block>
+                      <th:block th:replace=" :: morpho-form-row(morphCode='PRTS,neut,sing')"></th:block>
                     </td>
                   </tr>
                   <tr>
@@ -2568,7 +2486,7 @@
                       <span class="highlight">каковы? / missugused?</span>
                     </td>
                     <td>
-                      <th:block th:replace=" :: morpho-noun-form-row(${paradigm}, 'PRTS,plur')"></th:block>
+                      <th:block th:replace=" :: morpho-form-row(morphCode='PRTS,plur')"></th:block>
                     </td>
                   </tr>
                 </table>
@@ -2601,7 +2519,7 @@
                   <tr>
                     <td>неизменяемое слово / muutumatu sõna</td>
                     <td>
-                      <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'ID', '')"></th:block>
+                      <th:block th:replace=" :: morpho-form-row(morphCode='ID')"></th:block>
                     </td>
                   </tr>
                 </table>
