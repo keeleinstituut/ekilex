@@ -111,6 +111,9 @@ public class ClassifierUtil {
 		classifierCode = meaningWord.getAspectCode();
 		classifier = getClassifier(ClassifierName.ASPECT, classifierCode, displayLang);
 		meaningWord.setAspect(classifier);
+		classifierCodes = meaningWord.getWordTypeCodes();
+		classifiers = getClassifiers(ClassifierName.WORD_TYPE, classifierCodes, displayLang);
+		meaningWord.setWordTypes(classifiers);
 		classifierCodes = meaningWord.getMwLexRegisterCodes();
 		classifiers = getClassifiers(ClassifierName.REGISTER, classifierCodes, displayLang);
 		meaningWord.setMwLexRegisters(classifiers);

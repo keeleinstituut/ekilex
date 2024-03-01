@@ -15,7 +15,6 @@ import org.springframework.stereotype.Component;
 
 import eki.common.constant.Complexity;
 import eki.common.constant.DatasetType;
-import eki.common.constant.ReferenceType;
 import eki.common.constant.SynonymType;
 import eki.common.data.Classifier;
 import eki.common.data.OrderedMap;
@@ -294,12 +293,13 @@ public class LexemeConversionUtil extends AbstractConversionUtil {
 			meaningWords = filter(meaningWords, lexComplexity);
 
 			for (TypeMeaningWord meaningWord : meaningWords) {
-				meaningWord.setType(SynonymType.MEANING_WORD);
 
+				meaningWord.setType(SynonymType.MEANING_WORD);
 				classifierUtil.applyClassifiers(meaningWord, displayLang);
 				setWordTypeFlags(meaningWord);
 				boolean additionalDataExists = (meaningWord.getAspect() != null)
 						|| (meaningWord.getMwLexValueState() != null)
+						|| CollectionUtils.isNotEmpty(meaningWord.getWordTypes())
 						|| CollectionUtils.isNotEmpty(meaningWord.getMwLexRegisters())
 						|| CollectionUtils.isNotEmpty(meaningWord.getMwLexGovernments());
 				meaningWord.setAdditionalDataExists(additionalDataExists);

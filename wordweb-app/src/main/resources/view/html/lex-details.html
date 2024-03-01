@@ -168,9 +168,10 @@
                               th:utext="${viewUtil.getWordValueMarkup(syn)}">tee</span>
                           </a>
                           <span th:if="${syn.additionalDataExists}" class="synonym-additional-meta text-small">
-                            <!-- valueState synonyms -->
                             <span th:if="${(syn.mwLexValueState != null)}" th:text="${syn.mwLexValueState.value}"></span>
-  
+                            <th:block th:if="${not #lists.isEmpty(syn.wordTypes)}">
+                              <span class="type-two text-uppercase" th:each="wordType,wtIter : ${syn.wordTypes}" th:text="${wordType.value + (wtIter.last ? '' : ', ')}"></span>
+                            </th:block>
                             <th:block th:if="${not #lists.isEmpty(syn.mwLexRegisters)}">
                               <span class="type-two text-uppercase" th:each="register,regIter : ${syn.mwLexRegisters}" th:text="${register.value + (regIter.last ? '' : ', ')}"></span>
                             </th:block>
@@ -220,6 +221,9 @@
                             </a>
                             <span th:if="${syn.additionalDataExists}" class="text-small">
                               <span th:if="${(syn.mwLexValueState != null)}" th:text="${syn.mwLexValueState.value}"></span>
+                              <th:block th:if="${not #lists.isEmpty(syn.wordTypes)}">
+                                <span class="type-two text-uppercase" th:each="wordType,wtIter : ${syn.wordTypes}" th:text="${wordType.value + (wtIter.last ? '' : ', ')}"></span>
+                              </th:block>
                               <th:block th:if="${not #lists.isEmpty(syn.mwLexRegisters)}">
                                 <span class="type-two text-uppercase" th:each="register,regIter : ${syn.mwLexRegisters}" th:text="${register.value + (regIter.last ? '' : ', ')}"></span>
                               </th:block>

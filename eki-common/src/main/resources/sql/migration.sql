@@ -1,5 +1,9 @@
+-- puuduvad siltide indeksid
+
 create index lexeme_tag_tag_name_lower_idx on lexeme_tag(lower(tag_name));
 create index meaning_tag_tag_name_lower_idx on meaning_tag(lower(tag_name));
+
+-- uued valdkondade komplektid
 
 insert into domain (code, origin, datasets) values ('ajal', 'har', '{}');
 insert into domain (code, origin, datasets) values ('alus', 'har', '{}');
@@ -79,7 +83,7 @@ insert into domain_label (code, origin, value, lang, type) values ('vaba', 'has'
 insert into domain_label (code, origin, value, lang, type) values ('video', 'has', 'video- ja rollimängud', 'est', 'descrip');
 insert into domain_label (code, origin, value, lang, type) values ('üld', 'has', 'üldmõisted (asutused, meetodid)', 'est', 'descrip');
 
--- morfoloogia muudatused
+-- morfoloogia muudatused, vormide ühestamine
 
 alter table paradigm_form
 	add column morph_group1 text null,
