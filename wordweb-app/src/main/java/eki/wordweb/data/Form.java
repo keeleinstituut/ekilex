@@ -1,7 +1,5 @@
 package eki.wordweb.data;
 
-import java.util.List;
-
 import eki.common.data.AbstractDataObject;
 import eki.common.data.Classifier;
 
@@ -42,8 +40,6 @@ public class Form extends AbstractDataObject {
 	private String valuePrese;
 
 	private String formsWrapup;
-
-	private List<String> components;
 
 	private String displayForm;
 
@@ -203,14 +199,6 @@ public class Form extends AbstractDataObject {
 
 	public void setFormsWrapup(String formsWrapup) {
 		this.formsWrapup = formsWrapup;
-	}
-
-	public List<String> getComponents() {
-		return components;
-	}
-
-	public void setComponents(List<String> components) {
-		this.components = components;
 	}
 
 	public String getDisplayForm() {

@@ -89,6 +89,21 @@ public class MviewWwForm extends TableImpl<MviewWwFormRecord> {
     public final TableField<MviewWwFormRecord, Long> FORM_ID = createField(DSL.name("form_id"), SQLDataType.BIGINT, this, "");
 
     /**
+     * The column <code>public.mview_ww_form.value</code>.
+     */
+    public final TableField<MviewWwFormRecord, String> VALUE = createField(DSL.name("value"), SQLDataType.CLOB, this, "");
+
+    /**
+     * The column <code>public.mview_ww_form.value_prese</code>.
+     */
+    public final TableField<MviewWwFormRecord, String> VALUE_PRESE = createField(DSL.name("value_prese"), SQLDataType.CLOB, this, "");
+
+    /**
+     * The column <code>public.mview_ww_form.morph_code</code>.
+     */
+    public final TableField<MviewWwFormRecord, String> MORPH_CODE = createField(DSL.name("morph_code"), SQLDataType.VARCHAR(100), this, "");
+
+    /**
      * The column <code>public.mview_ww_form.morph_group1</code>.
      */
     public final TableField<MviewWwFormRecord, String> MORPH_GROUP1 = createField(DSL.name("morph_group1"), SQLDataType.CLOB, this, "");
@@ -109,9 +124,14 @@ public class MviewWwForm extends TableImpl<MviewWwFormRecord> {
     public final TableField<MviewWwFormRecord, Integer> DISPLAY_LEVEL = createField(DSL.name("display_level"), SQLDataType.INTEGER, this, "");
 
     /**
-     * The column <code>public.mview_ww_form.morph_code</code>.
+     * The column <code>public.mview_ww_form.display_form</code>.
      */
-    public final TableField<MviewWwFormRecord, String> MORPH_CODE = createField(DSL.name("morph_code"), SQLDataType.VARCHAR(100), this, "");
+    public final TableField<MviewWwFormRecord, String> DISPLAY_FORM = createField(DSL.name("display_form"), SQLDataType.VARCHAR(255), this, "");
+
+    /**
+     * The column <code>public.mview_ww_form.audio_file</code>.
+     */
+    public final TableField<MviewWwFormRecord, String> AUDIO_FILE = createField(DSL.name("audio_file"), SQLDataType.VARCHAR(255), this, "");
 
     /**
      * The column <code>public.mview_ww_form.morph_exists</code>.
@@ -122,31 +142,6 @@ public class MviewWwForm extends TableImpl<MviewWwFormRecord> {
      * The column <code>public.mview_ww_form.is_questionable</code>.
      */
     public final TableField<MviewWwFormRecord, Boolean> IS_QUESTIONABLE = createField(DSL.name("is_questionable"), SQLDataType.BOOLEAN, this, "");
-
-    /**
-     * The column <code>public.mview_ww_form.value</code>.
-     */
-    public final TableField<MviewWwFormRecord, String> VALUE = createField(DSL.name("value"), SQLDataType.CLOB, this, "");
-
-    /**
-     * The column <code>public.mview_ww_form.value_prese</code>.
-     */
-    public final TableField<MviewWwFormRecord, String> VALUE_PRESE = createField(DSL.name("value_prese"), SQLDataType.CLOB, this, "");
-
-    /**
-     * The column <code>public.mview_ww_form.components</code>.
-     */
-    public final TableField<MviewWwFormRecord, String[]> COMPONENTS = createField(DSL.name("components"), SQLDataType.VARCHAR.getArrayDataType(), this, "");
-
-    /**
-     * The column <code>public.mview_ww_form.display_form</code>.
-     */
-    public final TableField<MviewWwFormRecord, String> DISPLAY_FORM = createField(DSL.name("display_form"), SQLDataType.VARCHAR(255), this, "");
-
-    /**
-     * The column <code>public.mview_ww_form.audio_file</code>.
-     */
-    public final TableField<MviewWwFormRecord, String> AUDIO_FILE = createField(DSL.name("audio_file"), SQLDataType.VARCHAR(255), this, "");
 
     /**
      * The column <code>public.mview_ww_form.order_by</code>.
