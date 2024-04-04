@@ -24,12 +24,12 @@
               th:text="#{source.add.new}">Lisa uus allikas
       </button>
     </div>
-    <div class="float-left w-100 mb-4" th:if="${sources != null}">
+    <div class="float-left w-100 mb-4" th:if="${sourceSearchResult.resultExist}">
       <div class="mt-2">
         <span th:text="#{source.results}">Tulemusi</span>
-        <span th:text="${sourceCount}">123</span>
+        <span th:text="${sourceSearchResult.resultCount}">123</span>
       </div>
-      <div th:each="source,sourceIter : ${sources}" class="card shadow mt-2">
+      <div th:each="source,sourceIter : ${sourceSearchResult.sources}" class="card shadow mt-2">
         <div class="card-body">
           <span class="font-weight-bold" th:text="${sourceIter.count + '.'}"></span>
           <th:block th:replace="sourcecomp :: source_search_result"></th:block>

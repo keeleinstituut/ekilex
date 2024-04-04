@@ -25,6 +25,7 @@ import eki.ekilex.data.EkiUser;
 import eki.ekilex.data.SearchFilter;
 import eki.ekilex.data.SearchUriData;
 import eki.ekilex.data.Source;
+import eki.ekilex.data.SourceSearchResult;
 import eki.ekilex.service.SourceService;
 
 @ConditionalOnWebApplication
@@ -40,6 +41,8 @@ public class SourceSearchController extends AbstractPrivateSearchController {
 	public String initSearch(Model model) {
 
 		initSearchForms(SOURCE_SEARCH_PAGE, model);
+		model.addAttribute("sourceSearchResult", new SourceSearchResult());
+
 		return SOURCE_SEARCH_PAGE;
 	}
 
@@ -76,9 +79,7 @@ public class SourceSearchController extends AbstractPrivateSearchController {
 
 		if (!searchUriData.isValid()) {
 			initSearchForms(SOURCE_SEARCH_PAGE, model);
-			List<Source> sources = new ArrayList<>();
-			model.addAttribute("sources", sources);
-			model.addAttribute("sourceCount", 0);
+			model.addAttribute("sourceSearchResult", new SourceSearchResult());
 			return SOURCE_SEARCH_PAGE;
 		}
 
@@ -90,18 +91,17 @@ public class SourceSearchController extends AbstractPrivateSearchController {
 		EkiUser user = userContext.getUser();
 		DatasetPermission userRole = user.getRecentRole();
 
-		List<Source> sources;
+		SourceSearchResult sourceSearchResult;
 		if (StringUtils.equals(SEARCH_MODE_SIMPLE, searchMode)) {
-			sources = sourceService.getSources(simpleSearchFilter, userRole);
+			sourceSearchResult = sourceService.getSourceSearchResult(simpleSearchFilter, userRole);
 		} else {
-			sources = sourceService.getSources(detailSearchFilter, userRole);
+			sourceSearchResult = sourceService.getSourceSearchResult(detailSearchFilter, userRole);
 		}
 
 		model.addAttribute("searchMode", searchMode);
 		model.addAttribute("simpleSearchFilter", simpleSearchFilter);
 		model.addAttribute("detailSearchFilter", detailSearchFilter);
-		model.addAttribute("sources", sources);
-		model.addAttribute("sourceCount", sources.size());
+		model.addAttribute("sourceSearchResult", sourceSearchResult);
 		model.addAttribute("searchUri", searchUri);
 
 		return SOURCE_SEARCH_PAGE;

@@ -76,7 +76,7 @@ public class SourceLinkController implements WebConstant {
 		model.addAttribute("sourceLink", sourceLink);
 		model.addAttribute("source", source);
 
-		return COMMON_PAGE + PAGE_FRAGMENT_ELEM + "edit_source_link_dlg";
+		return SOURCE_COMPONENTS_PAGE + PAGE_FRAGMENT_ELEM + "edit_source_link_dlg";
 	}
 
 	private String handleSourceLink(Long sourceLinkId, ReferenceOwner referenceOwner, Model model) {

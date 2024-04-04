@@ -30,6 +30,7 @@ import eki.ekilex.data.Response;
 import eki.ekilex.data.Source;
 import eki.ekilex.data.SourceProperty;
 import eki.ekilex.data.SourceRequest;
+import eki.ekilex.data.SourceSearchResult;
 import eki.ekilex.data.UserContextData;
 import eki.ekilex.service.SourceLinkService;
 import eki.ekilex.service.SourceService;
@@ -68,12 +69,11 @@ public class SourceEditController extends AbstractMutableDataPageController {
 		logger.debug("Searching by : \"{}\"", searchFilter);
 
 		searchFilter = valueUtil.trimAndCleanAndRemoveHtmlAndLimit(searchFilter);
-		List<Source> sources = sourceService.getSources(searchFilter);
+		SourceSearchResult sourceSearchResult = sourceService.getSourceSearchResult(searchFilter);
 		model.addAttribute("searchFilter", searchFilter);
-		model.addAttribute("sources", sources);
-		model.addAttribute("sourceCount", sources.size());
+		model.addAttribute("sourceSearchResult", sourceSearchResult);
 
-		return COMMON_PAGE + PAGE_FRAGMENT_ELEM + "source_link_dlg";
+		return SOURCE_COMPONENTS_PAGE + PAGE_FRAGMENT_ELEM + "source_link_dlg";
 	}
 
 	@PostMapping(UPDATE_SOURCE_PROPERTY_URI)

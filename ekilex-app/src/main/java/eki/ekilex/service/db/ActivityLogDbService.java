@@ -76,24 +76,47 @@ public class ActivityLogDbService implements GlobalConstant, ActivityFunct {
 	@Autowired
 	private DSLContext create;
 
+	public List<eki.ekilex.data.ActivityLog> getActivityLog(
+			Long ownerId, ActivityOwner owner, ActivityEntity entity, String functName) {
+
+		ActivityLog al = ACTIVITY_LOG.as("al");
+
+		Condition where = al.OWNER_ID.eq(ownerId)
+				.and(al.OWNER_NAME.eq(owner.name()))
+				.and(al.ENTITY_NAME.eq(entity.name()));
+
+		if (StringUtils.contains(functName, "%")) {
+			where = where.and(al.FUNCT_NAME.like(functName));
+		} else {
+			where = where.and(al.FUNCT_NAME.eq(functName));
+		}
+
+		return create
+				.selectFrom(al)
+				.where(where)
+				.orderBy(al.ID)
+				.fetchInto(eki.ekilex.data.ActivityLog.class);
+	}
+
 	public List<eki.ekilex.data.ActivityLog> getWordActivityLog(Long wordId) {
 
 		ActivityLog al = ACTIVITY_LOG.as("al");
 		WordActivityLog wal = WORD_ACTIVITY_LOG.as("wal");
 		Field<String> wvf = getWordValueField(al);
 
-		return create.select(
-				al.ID,
-				al.EVENT_BY,
-				al.EVENT_ON,
-				al.FUNCT_NAME,
-				al.OWNER_ID,
-				al.OWNER_NAME,
-				al.ENTITY_ID,
-				al.ENTITY_NAME,
-				al.PREV_DIFFS,
-				al.CURR_DIFFS,
-				wvf.as("word_value"))
+		return create
+				.select(
+						al.ID,
+						al.EVENT_BY,
+						al.EVENT_ON,
+						al.FUNCT_NAME,
+						al.OWNER_ID,
+						al.OWNER_NAME,
+						al.ENTITY_ID,
+						al.ENTITY_NAME,
+						al.PREV_DIFFS,
+						al.CURR_DIFFS,
+						wvf.as("word_value"))
 				.from(al, wal)
 				.where(
 						wal.WORD_ID.eq(wordId)
@@ -108,18 +131,19 @@ public class ActivityLogDbService implements GlobalConstant, ActivityFunct {
 		MeaningActivityLog mal = MEANING_ACTIVITY_LOG.as("mal");
 		Field<String> wvf = getWordValueField(al);
 
-		return create.select(
-				al.ID,
-				al.EVENT_BY,
-				al.EVENT_ON,
-				al.FUNCT_NAME,
-				al.OWNER_ID,
-				al.OWNER_NAME,
-				al.ENTITY_ID,
-				al.ENTITY_NAME,
-				al.PREV_DIFFS,
-				al.CURR_DIFFS,
-				wvf.as("word_value"))
+		return create
+				.select(
+						al.ID,
+						al.EVENT_BY,
+						al.EVENT_ON,
+						al.FUNCT_NAME,
+						al.OWNER_ID,
+						al.OWNER_NAME,
+						al.ENTITY_ID,
+						al.ENTITY_NAME,
+						al.PREV_DIFFS,
+						al.CURR_DIFFS,
+						wvf.as("word_value"))
 				.from(al, mal)
 				.where(
 						mal.MEANING_ID.eq(meaningId)
@@ -129,6 +153,7 @@ public class ActivityLogDbService implements GlobalConstant, ActivityFunct {
 	}
 
 	private Field<String> getWordValueField(ActivityLog al) {
+
 		Word w = WORD.as("w");
 		Lexeme l = LEXEME.as("l");
 		Field<String> wvf = DSL.field(DSL
@@ -149,17 +174,18 @@ public class ActivityLogDbService implements GlobalConstant, ActivityFunct {
 
 	public List<eki.ekilex.data.ActivityLog> getSourceActivityLog(Long sourceId) {
 
-		return create.select(
-				ACTIVITY_LOG.ID,
-				ACTIVITY_LOG.EVENT_BY,
-				ACTIVITY_LOG.EVENT_ON,
-				ACTIVITY_LOG.FUNCT_NAME,
-				ACTIVITY_LOG.OWNER_ID,
-				ACTIVITY_LOG.OWNER_NAME,
-				ACTIVITY_LOG.ENTITY_ID,
-				ACTIVITY_LOG.ENTITY_NAME,
-				ACTIVITY_LOG.PREV_DIFFS,
-				ACTIVITY_LOG.CURR_DIFFS)
+		return create
+				.select(
+						ACTIVITY_LOG.ID,
+						ACTIVITY_LOG.EVENT_BY,
+						ACTIVITY_LOG.EVENT_ON,
+						ACTIVITY_LOG.FUNCT_NAME,
+						ACTIVITY_LOG.OWNER_ID,
+						ACTIVITY_LOG.OWNER_NAME,
+						ACTIVITY_LOG.ENTITY_ID,
+						ACTIVITY_LOG.ENTITY_NAME,
+						ACTIVITY_LOG.PREV_DIFFS,
+						ACTIVITY_LOG.CURR_DIFFS)
 				.from(ACTIVITY_LOG, SOURCE_ACTIVITY_LOG)
 				.where(
 						SOURCE_ACTIVITY_LOG.SOURCE_ID.eq(sourceId)
@@ -179,19 +205,20 @@ public class ActivityLogDbService implements GlobalConstant, ActivityFunct {
 
 	public Long create(eki.ekilex.data.ActivityLog activityLog) {
 
-		return create.insertInto(
-				ACTIVITY_LOG,
-				ACTIVITY_LOG.EVENT_BY,
-				ACTIVITY_LOG.DATASET_CODE,
-				ACTIVITY_LOG.FUNCT_NAME,
-				ACTIVITY_LOG.OWNER_ID,
-				ACTIVITY_LOG.OWNER_NAME,
-				ACTIVITY_LOG.ENTITY_ID,
-				ACTIVITY_LOG.ENTITY_NAME,
-				ACTIVITY_LOG.PREV_DATA,
-				ACTIVITY_LOG.CURR_DATA,
-				ACTIVITY_LOG.PREV_DIFFS,
-				ACTIVITY_LOG.CURR_DIFFS)
+		return create
+				.insertInto(
+						ACTIVITY_LOG,
+						ACTIVITY_LOG.EVENT_BY,
+						ACTIVITY_LOG.DATASET_CODE,
+						ACTIVITY_LOG.FUNCT_NAME,
+						ACTIVITY_LOG.OWNER_ID,
+						ACTIVITY_LOG.OWNER_NAME,
+						ACTIVITY_LOG.ENTITY_ID,
+						ACTIVITY_LOG.ENTITY_NAME,
+						ACTIVITY_LOG.PREV_DATA,
+						ACTIVITY_LOG.CURR_DATA,
+						ACTIVITY_LOG.PREV_DIFFS,
+						ACTIVITY_LOG.CURR_DIFFS)
 				.values(
 						activityLog.getEventBy(),
 						activityLog.getDatasetCode(),
@@ -494,13 +521,14 @@ public class ActivityLogDbService implements GlobalConstant, ActivityFunct {
 		Definition d = DEFINITION.as("d");
 		Freeform ff = FREEFORM.as("ff");
 
-		return create.select(
-				ff.TYPE,
-				lff.LEXEME_ID,
-				wff.WORD_ID,
-				mff.MEANING_ID,
-				d.MEANING_ID.as("d_meaning_id"),
-				sff.SOURCE_ID)
+		return create
+				.select(
+						ff.TYPE,
+						lff.LEXEME_ID,
+						wff.WORD_ID,
+						mff.MEANING_ID,
+						d.MEANING_ID.as("d_meaning_id"),
+						sff.SOURCE_ID)
 				.from(
 						ff
 								.leftOuterJoin(lff).on(lff.FREEFORM_ID.eq(ff.ID))
@@ -524,13 +552,14 @@ public class ActivityLogDbService implements GlobalConstant, ActivityFunct {
 		Definition d = DEFINITION.as("d");
 		Freeform ff = FREEFORM.as("ff");
 
-		return create.select(
-				ff.TYPE,
-				lff.LEXEME_ID,
-				wff.WORD_ID,
-				mff.MEANING_ID,
-				d.MEANING_ID.as("d_meaning_id"),
-				sff.SOURCE_ID)
+		return create
+				.select(
+						ff.TYPE,
+						lff.LEXEME_ID,
+						wff.WORD_ID,
+						mff.MEANING_ID,
+						d.MEANING_ID.as("d_meaning_id"),
+						sff.SOURCE_ID)
 				.from(
 						ff
 								.leftOuterJoin(lff).on(lff.FREEFORM_ID.eq(ff.PARENT_ID))

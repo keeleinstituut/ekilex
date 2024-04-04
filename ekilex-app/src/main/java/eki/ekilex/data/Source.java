@@ -2,8 +2,6 @@ package eki.ekilex.data;
 
 import java.util.List;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-
 import eki.common.constant.SourceType;
 
 public class Source extends AbstractCrudEntity {

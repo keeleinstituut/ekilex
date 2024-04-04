@@ -852,7 +852,7 @@ alter sequence definition_id_seq restart with 10000;
 
 create table definition_dataset (
   definition_id bigint references definition(id) on delete cascade not null, 
-  dataset_code varchar(10) references dataset(code) on delete cascade not null, 
+  dataset_code varchar(10) references dataset(code) on update cascade on delete cascade not null, 
   primary key (definition_id, dataset_code)
 );
 
@@ -891,7 +891,7 @@ create table lexeme (
   id bigserial primary key, 
   word_id bigint references word(id) not null, 
   meaning_id bigint references meaning(id) not null, 
-  dataset_code varchar(10) references dataset(code) not null, 
+  dataset_code varchar(10) references dataset(code) on update cascade not null, 
   level1 integer default 0 not null, 
   level2 integer default 0 not null, 
   value_state_code varchar(100) references value_state(code) null, 
@@ -1313,6 +1313,10 @@ create index freeform_is_public_idx on freeform(is_public);
 create index source_type_idx on source(type);
 create index source_name_idx on source(name);
 create index source_name_lower_idx on source(lower(name));
+create index source_name_lower_prefix_idx on source(lower(name) text_pattern_ops);
+create index source_value_idx on source(value);
+create index source_value_lower_idx on source(lower(value));
+create index source_value_lower_prefix_idx on source(lower(value) text_pattern_ops);
 create index source_freeform_source_id_idx on source_freeform(source_id);
 create index source_freeform_freeform_id_idx on source_freeform(freeform_id);
 create index meaning_freeform_meaning_id_idx on meaning_freeform(meaning_id);

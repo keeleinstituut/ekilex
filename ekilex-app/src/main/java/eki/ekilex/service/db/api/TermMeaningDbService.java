@@ -1,6 +1,5 @@
 package eki.ekilex.service.db.api;
 
-import static eki.ekilex.data.db.Tables.ACTIVITY_LOG;
 import static eki.ekilex.data.db.Tables.DEFINITION;
 import static eki.ekilex.data.db.Tables.DEFINITION_DATASET;
 import static eki.ekilex.data.db.Tables.DEFINITION_SOURCE_LINK;
@@ -26,12 +25,10 @@ import org.jooq.impl.DSL;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import eki.common.constant.ActivityEntity;
 import eki.common.constant.ActivityFunct;
-import eki.common.constant.ActivityOwner;
 import eki.common.constant.FreeformType;
+import eki.common.constant.GlobalConstant;
 import eki.ekilex.data.api.TermMeaning;
-import eki.ekilex.data.db.tables.ActivityLog;
 import eki.ekilex.data.db.tables.Definition;
 import eki.ekilex.data.db.tables.DefinitionDataset;
 import eki.ekilex.data.db.tables.DefinitionSourceLink;
@@ -52,7 +49,7 @@ import eki.ekilex.data.db.tables.WordWordType;
 import eki.ekilex.data.db.tables.records.LexemeRecord;
 
 @Component
-public class TermMeaningDbService implements ActivityFunct {
+public class TermMeaningDbService implements ActivityFunct, GlobalConstant {
 
 	@Autowired
 	private DSLContext create;
@@ -78,8 +75,6 @@ public class TermMeaningDbService implements ActivityFunct {
 		DefinitionSourceLink dsl = DEFINITION_SOURCE_LINK.as("dsl");
 		Freeform ff = FREEFORM.as("ff");
 		FreeformSourceLink ffsl = FREEFORM_SOURCE_LINK.as("ffsl");
-		ActivityLog fceal = ACTIVITY_LOG.as("fceal");
-		ActivityLog meal = ACTIVITY_LOG.as("meal");
 		Source s = SOURCE.as("s");
 
 		Field<JSON> ffslf = DSL
@@ -287,9 +282,6 @@ public class TermMeaningDbService implements ActivityFunct {
 				.select(
 						m.ID.as("meaning_id"),
 						m.MANUAL_EVENT_ON.as("manual_event_on"),
-						meal.EVENT_BY.as("manual_event_by"),
-						fceal.EVENT_ON.as("first_create_event_on"),
-						fceal.EVENT_BY.as("first_create_event_by"),
 						DSL.val(datasetCode).as("dataset_code"),
 						df.as("definitions"),
 						mdf.as("domains"),
@@ -298,17 +290,7 @@ public class TermMeaningDbService implements ActivityFunct {
 						mtf.as("tags"),
 						cidf.as("concept_ids"),
 						wf.as("words"))
-				.from(m
-						.leftOuterJoin(fceal).on(
-								fceal.OWNER_ID.eq(m.ID)
-										.and(fceal.OWNER_NAME.eq(ActivityOwner.MEANING.name()))
-										.and(fceal.ENTITY_NAME.eq(ActivityEntity.MEANING.name()))
-										.and(fceal.FUNCT_NAME.like(LIKE_CREATE)))
-						.leftOuterJoin(meal).on(
-								meal.OWNER_ID.eq(m.ID)
-										.and(meal.OWNER_NAME.eq(ActivityOwner.MEANING.name()))
-										.and(meal.ENTITY_NAME.eq(ActivityEntity.MEANING.name()))
-										.and(meal.FUNCT_NAME.eq(UPDATE_MEANING_MANUAL_EVENT_ON_FUNCT))))
+				.from(m)
 				.where(m.ID.eq(meaningId))
 				.fetchOptionalInto(TermMeaning.class)
 				.orElse(null);

@@ -37,6 +37,7 @@ public class MorphologyDbService {
 
 		return create
 				.select(
+						f.ID.as("form_id"),
 						f.VALUE,
 						f.VALUE_PRESE,
 						f.MORPH_CODE,

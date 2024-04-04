@@ -1,7 +1,7 @@
 package eki.ekilex.service.api;
 
 import java.sql.Timestamp;
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -18,6 +18,7 @@ import eki.common.constant.ActivityOwner;
 import eki.common.constant.Complexity;
 import eki.common.constant.FreeformType;
 import eki.common.exception.OperationDeniedException;
+import eki.ekilex.data.ActivityLog;
 import eki.ekilex.data.ActivityLogData;
 import eki.ekilex.data.FreeForm;
 import eki.ekilex.data.WordLexeme;
@@ -57,7 +58,24 @@ public class TermMeaningService extends AbstractApiCudService implements Activit
 		if (StringUtils.isBlank(datasetCode)) {
 			return null;
 		}
-		return termMeaningDbService.getTermMeaning(meaningId, datasetCode);
+		TermMeaning termMeaning = termMeaningDbService.getTermMeaning(meaningId, datasetCode);
+		if (termMeaning != null) {
+			List<ActivityLog> firstCreateActivityLog = activityLogDbService.getActivityLog(meaningId, ActivityOwner.MEANING, ActivityEntity.MEANING, LIKE_CREATE);
+			List<ActivityLog> manualUpdateActivityLog = activityLogDbService.getActivityLog(meaningId, ActivityOwner.MEANING, ActivityEntity.MEANING, UPDATE_MEANING_MANUAL_EVENT_ON_FUNCT);
+			if (CollectionUtils.isNotEmpty(firstCreateActivityLog)) {
+				ActivityLog activityLog = firstCreateActivityLog.get(0);
+				LocalDateTime eventOn = activityLog.getEventOn().toLocalDateTime();
+				String eventBy = activityLog.getEventBy();
+				termMeaning.setFirstCreateEventOn(eventOn);
+				termMeaning.setFirstCreateEventBy(eventBy);
+			}
+			if (CollectionUtils.isNotEmpty(manualUpdateActivityLog)) {
+				ActivityLog activityLog = manualUpdateActivityLog.get(manualUpdateActivityLog.size() - 1);
+				String eventBy = activityLog.getEventBy();
+				termMeaning.setManualEventBy(eventBy);
+			}
+		}
+		return termMeaning;
 	}
 
 	@Transactional
@@ -78,9 +96,9 @@ public class TermMeaningService extends AbstractApiCudService implements Activit
 		List<Forum> meaningForums = termMeaning.getForums();
 		List<String> meaningTags = termMeaning.getTags();
 		List<String> conceptIds = termMeaning.getConceptIds();
-		LocalDate manualEventOn = termMeaning.getManualEventOn();
+		LocalDateTime manualEventOn = termMeaning.getManualEventOn();
 		String manualEventBy = termMeaning.getManualEventBy();
-		LocalDate firstCreateEventOn = termMeaning.getFirstCreateEventOn();
+		LocalDateTime firstCreateEventOn = termMeaning.getFirstCreateEventOn();
 		String firstCreateEventBy = termMeaning.getFirstCreateEventBy();
 
 		ActivityLogData activityLog;
@@ -375,7 +393,7 @@ public class TermMeaningService extends AbstractApiCudService implements Activit
 
 		if (manualEventOn != null) {
 
-			Timestamp manualEventOnTs = Timestamp.valueOf(manualEventOn.atStartOfDay());
+			Timestamp manualEventOnTs = Timestamp.valueOf(manualEventOn);
 			activityLog = activityLogService.prepareActivityLog(UPDATE_MEANING_MANUAL_EVENT_ON_FUNCT, meaningId, ActivityOwner.MEANING, roleDatasetCode, MANUAL_EVENT_ON_UPDATE_DISABLED);
 			if (StringUtils.isNotBlank(manualEventBy)) {
 				activityLog.setEventBy(manualEventBy);
@@ -386,7 +404,7 @@ public class TermMeaningService extends AbstractApiCudService implements Activit
 
 		if (firstCreateEventOn != null) {
 
-			Timestamp firstCreateEventOnTs = Timestamp.valueOf(firstCreateEventOn.atStartOfDay());
+			Timestamp firstCreateEventOnTs = Timestamp.valueOf(firstCreateEventOn);
 			if (StringUtils.isBlank(firstCreateEventBy)) {
 				firstCreateEventBy = userName;
 			}

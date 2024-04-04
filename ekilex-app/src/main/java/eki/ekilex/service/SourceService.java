@@ -25,6 +25,7 @@ import eki.ekilex.data.SearchFilter;
 import eki.ekilex.data.Source;
 import eki.ekilex.data.SourceProperty;
 import eki.ekilex.data.SourcePropertyTuple;
+import eki.ekilex.data.SourceSearchResult;
 import eki.ekilex.service.util.PermCalculator;
 
 @Component
@@ -63,27 +64,19 @@ public class SourceService extends AbstractSourceService {
 	}
 
 	@Transactional
-	public List<Source> getSources(String searchFilter) {
-		return getSources(searchFilter, null);
+	public SourceSearchResult getSourceSearchResult(String searchFilter) {
+
+		return getSourceSearchResult(searchFilter, null);
 	}
 
 	@Transactional
-	public List<Source> getSources(String searchFilter, DatasetPermission userRole) {
+	public SourceSearchResult getSourceSearchResult(String searchFilter, DatasetPermission userRole) {
 
 		if (StringUtils.isBlank(searchFilter)) {
-			return new ArrayList<>();
+			return new SourceSearchResult();
 		}
-		List<Source> sources = sourceDbService.getSources(searchFilter);
-		for (Source source : sources) {
-			Long sourceId = source.getId();
-			List<SourcePropertyTuple> sourcePropertyTuples = sourceDbService.getSourcePropertyTuples(sourceId);
-			if (CollectionUtils.isNotEmpty(sourcePropertyTuples)) {
-				conversionUtil.composeSource(source, sourcePropertyTuples);
-			}
-		}
-		permCalculator.applyCrud(userRole, sources);
-
-		return sources;
+		SourceSearchResult sourceSearchResult = sourceDbService.getSourceSearchResult(searchFilter);
+		return convertAndApplyCrud(sourceSearchResult, userRole);
 	}
 
 	@Transactional
@@ -102,22 +95,32 @@ public class SourceService extends AbstractSourceService {
 	}
 
 	@Transactional
-	public List<Source> getSources(SearchFilter searchFilter, DatasetPermission userRole) throws Exception {
+	public SourceSearchResult getSourceSearchResult(SearchFilter searchFilter, DatasetPermission userRole) throws Exception {
 
 		if (CollectionUtils.isEmpty(searchFilter.getCriteriaGroups())) {
-			return new ArrayList<>();
+			return new SourceSearchResult();
 		}
-		List<Source> sources = sourceDbService.getSources(searchFilter);
-		for (Source source : sources) {
-			Long sourceId = source.getId();
-			List<SourcePropertyTuple> sourcePropertyTuples = sourceDbService.getSourcePropertyTuples(sourceId);
-			if (CollectionUtils.isNotEmpty(sourcePropertyTuples)) {
-				conversionUtil.composeSource(source, sourcePropertyTuples);
-			}
-		}
-		permCalculator.applyCrud(userRole, sources);
+		SourceSearchResult sourceSearchResult = sourceDbService.getSourceSearchResult(searchFilter);
+		return convertAndApplyCrud(sourceSearchResult, userRole);
+	}
 
-		return sources;
+	private SourceSearchResult convertAndApplyCrud(SourceSearchResult sourceSearchResult, DatasetPermission userRole) {
+
+		List<Source> sources = sourceSearchResult.getSources();
+
+		if (CollectionUtils.isNotEmpty(sources)) {
+			// TODO should be removed soon
+			for (Source source : sources) {
+				Long sourceId = source.getId();
+				List<SourcePropertyTuple> sourcePropertyTuples = sourceDbService.getSourcePropertyTuples(sourceId);
+				if (CollectionUtils.isNotEmpty(sourcePropertyTuples)) {
+					conversionUtil.composeSource(source, sourcePropertyTuples);
+				}
+			}
+			permCalculator.applyCrud(userRole, sources);
+		}
+
+		return sourceSearchResult;
 	}
 
 	@Transactional

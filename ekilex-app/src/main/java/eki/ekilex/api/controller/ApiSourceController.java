@@ -23,6 +23,7 @@ import eki.common.constant.FreeformType;
 import eki.common.constant.SourceType;
 import eki.ekilex.data.Source;
 import eki.ekilex.data.SourceProperty;
+import eki.ekilex.data.SourceSearchResult;
 import eki.ekilex.data.api.ApiResponse;
 import eki.ekilex.service.SourceService;
 
@@ -36,10 +37,10 @@ public class ApiSourceController extends AbstractApiController {
 	@Order(201)
 	@GetMapping(API_SERVICES_URI + SOURCE_URI + SEARCH_URI + "/{searchFilter}")
 	@ResponseBody
-	public List<Source> sourceSearch(@PathVariable("searchFilter") String searchFilter) {
+	public SourceSearchResult sourceSearch(@PathVariable("searchFilter") String searchFilter) {
 
-		List<Source> sources = sourceService.getSources(searchFilter);
-		return sources;
+		SourceSearchResult sourceSearchResult = sourceService.getSourceSearchResult(searchFilter);
+		return sourceSearchResult;
 	}
 
 	@Order(202)

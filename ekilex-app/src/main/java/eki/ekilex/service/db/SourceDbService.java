@@ -41,11 +41,13 @@ import eki.common.constant.SourceType;
 import eki.ekilex.constant.SearchEntity;
 import eki.ekilex.constant.SearchKey;
 import eki.ekilex.constant.SearchOperand;
+import eki.ekilex.constant.SystemConstant;
 import eki.ekilex.data.SearchCriterion;
 import eki.ekilex.data.SearchCriterionGroup;
 import eki.ekilex.data.SearchFilter;
 import eki.ekilex.data.SourceProperty;
 import eki.ekilex.data.SourcePropertyTuple;
+import eki.ekilex.data.SourceSearchResult;
 import eki.ekilex.data.db.tables.ActivityLog;
 import eki.ekilex.data.db.tables.Definition;
 import eki.ekilex.data.db.tables.DefinitionFreeform;
@@ -63,7 +65,7 @@ import eki.ekilex.data.db.tables.records.FreeformRecord;
 import eki.ekilex.service.db.util.SearchFilterHelper;
 
 @Component
-public class SourceDbService implements GlobalConstant, ActivityFunct {
+public class SourceDbService implements GlobalConstant, SystemConstant, ActivityFunct {
 
 	@Autowired
 	private SearchFilterHelper searchFilterHelper;
@@ -99,17 +101,70 @@ public class SourceDbService implements GlobalConstant, ActivityFunct {
 		return getSourcePropertyTuples(s, spff, sp, spmf, where);
 	}
 
-	public List<eki.ekilex.data.Source> getSources(String searchFilter) {
+	public SourceSearchResult getSourceSearchResult(String searchFilter) {
 
-		searchFilter = '%' + StringUtils.lowerCase(searchFilter) + '%';
 		String maskedSearchFilter = searchFilter.replace(SEARCH_MASK_CHARS, "%").replace(SEARCH_MASK_CHAR, "_");
 		Field<String> filterField = DSL.lower(maskedSearchFilter);
-
 		Source s = SOURCE.as("s");
-
 		Condition where = DSL.or(DSL.lower(s.NAME).like(filterField), DSL.lower(s.VALUE).like(filterField));
 
-		return getSources(s, where);
+		List<eki.ekilex.data.Source> sources = getSources(s, where);
+		int resultCount = getSourceCount(s, where);
+		boolean resultExist = resultCount > 0;
+
+		SourceSearchResult sourceSearchResult = new SourceSearchResult();
+		sourceSearchResult.setSources(sources);
+		sourceSearchResult.setResultCount(resultCount);
+		sourceSearchResult.setResultExist(resultExist);
+
+		return sourceSearchResult;
+	}
+
+	public SourceSearchResult getSourceSearchResult(SearchFilter searchFilter) throws Exception {
+
+		Source s = SOURCE.as("s");
+		Condition where = DSL.noCondition();
+
+		List<SearchCriterionGroup> searchCriteriaGroups = searchFilter.getCriteriaGroups();
+		for (SearchCriterionGroup searchCriterionGroup : searchCriteriaGroups) {
+			List<SearchCriterion> searchCriteria = searchCriterionGroup.getSearchCriteria();
+			if (CollectionUtils.isEmpty(searchCriteria)) {
+				continue;
+			}
+
+			SearchEntity searchEntity = searchCriterionGroup.getEntity();
+			if (SearchEntity.SOURCE.equals(searchEntity)) {
+				boolean containsSearchKeys = searchFilterHelper.containsSearchKeys(searchCriteria, SearchKey.SOURCE_NAME, SearchKey.SOURCE_VALUE);
+
+				if (containsSearchKeys) {
+					List<SearchCriterion> filteredByNameCriteria = searchFilterHelper.filterCriteriaBySearchKey(searchCriteria, SearchKey.SOURCE_NAME);
+					List<SearchCriterion> filteredByValueCriteria = searchFilterHelper.filterCriteriaBySearchKey(searchCriteria, SearchKey.SOURCE_VALUE);
+
+					for (SearchCriterion criterion : filteredByNameCriteria) {
+						String searchValueStr = criterion.getSearchValue().toString();
+						where = searchFilterHelper.applyValueFilter(searchValueStr, criterion.isNot(), criterion.getSearchOperand(), s.NAME, where, true);
+					}
+					for (SearchCriterion criterion : filteredByValueCriteria) {
+						String searchValueStr = criterion.getSearchValue().toString();
+						where = searchFilterHelper.applyValueFilter(searchValueStr, criterion.isNot(), criterion.getSearchOperand(), s.VALUE, where, true);
+					}
+				}
+
+				where = applySourceLinkDatasetFilters(searchCriteria, s.ID, where);
+				where = applySourceActivityLogFilters(searchCriteria, s.ID, where);
+			}
+		}
+
+		List<eki.ekilex.data.Source> sources = getSources(s, where);
+		int resultCount = getSourceCount(s, where);
+		boolean resultExist = resultCount > 0;
+
+		SourceSearchResult sourceSearchResult = new SourceSearchResult();
+		sourceSearchResult.setSources(sources);
+		sourceSearchResult.setResultCount(resultCount);
+		sourceSearchResult.setResultExist(resultExist);
+
+		return sourceSearchResult;
 	}
 
 	public List<SourcePropertyTuple> getSourcePropertyTuples(String searchFilter, SourceType sourceType, Long sourceIdToExclude) {
@@ -167,44 +222,6 @@ public class SourceDbService implements GlobalConstant, ActivityFunct {
 						sptnf.desc(),
 						sp.ORDER_BY)
 				.fetchInto(SourcePropertyTuple.class);
-	}
-
-	public List<eki.ekilex.data.Source> getSources(SearchFilter searchFilter) throws Exception {
-
-		Source s = SOURCE.as("s");
-		Condition where = DSL.noCondition();
-
-		List<SearchCriterionGroup> searchCriteriaGroups = searchFilter.getCriteriaGroups();
-		for (SearchCriterionGroup searchCriterionGroup : searchCriteriaGroups) {
-			List<SearchCriterion> searchCriteria = searchCriterionGroup.getSearchCriteria();
-			if (CollectionUtils.isEmpty(searchCriteria)) {
-				continue;
-			}
-
-			SearchEntity searchEntity = searchCriterionGroup.getEntity();
-			if (SearchEntity.SOURCE.equals(searchEntity)) {
-				boolean containsSearchKeys = searchFilterHelper.containsSearchKeys(searchCriteria, SearchKey.SOURCE_NAME, SearchKey.SOURCE_VALUE);
-
-				if (containsSearchKeys) {
-					List<SearchCriterion> filteredByNameCriteria = searchFilterHelper.filterCriteriaBySearchKey(searchCriteria, SearchKey.SOURCE_NAME);
-					List<SearchCriterion> filteredByValueCriteria = searchFilterHelper.filterCriteriaBySearchKey(searchCriteria, SearchKey.SOURCE_VALUE);
-
-					for (SearchCriterion criterion : filteredByNameCriteria) {
-						String searchValueStr = criterion.getSearchValue().toString();
-						where = searchFilterHelper.applyValueFilter(searchValueStr, criterion.isNot(), criterion.getSearchOperand(), s.NAME, where, true);
-					}
-					for (SearchCriterion criterion : filteredByValueCriteria) {
-						String searchValueStr = criterion.getSearchValue().toString();
-						where = searchFilterHelper.applyValueFilter(searchValueStr, criterion.isNot(), criterion.getSearchOperand(), s.VALUE, where, true);
-					}
-				}
-
-				where = applySourceLinkDatasetFilters(searchCriteria, s.ID, where);
-				where = applySourceActivityLogFilters(searchCriteria, s.ID, where);
-			}
-		}
-
-		return getSources(s, where);
 	}
 
 	private Condition applySourceLinkDatasetFilters(List<SearchCriterion> searchCriteria, Field<Long> sourceIdField, Condition where) {
@@ -361,8 +378,22 @@ public class SourceDbService implements GlobalConstant, ActivityFunct {
 
 	public Long createSource(SourceType type, String name, String value, String valuePrese, String comment, boolean isPublic, List<SourceProperty> sourceProperties) {
 
-		Long sourceId = create.insertInto(SOURCE, SOURCE.TYPE, SOURCE.NAME, SOURCE.VALUE, SOURCE.VALUE_PRESE, SOURCE.COMMENT, SOURCE.IS_PUBLIC)
-				.values(type.name(), name, value, valuePrese, comment, isPublic)
+		Long sourceId = create
+				.insertInto(
+						SOURCE,
+						SOURCE.TYPE,
+						SOURCE.NAME,
+						SOURCE.VALUE,
+						SOURCE.VALUE_PRESE,
+						SOURCE.COMMENT,
+						SOURCE.IS_PUBLIC)
+				.values(
+						type.name(),
+						name,
+						value,
+						valuePrese,
+						comment,
+						isPublic)
 				.returning(SOURCE.ID)
 				.fetchOne()
 				.getId();
@@ -383,13 +414,22 @@ public class SourceDbService implements GlobalConstant, ActivityFunct {
 				.returning(FREEFORM.ID)
 				.fetchOne()
 				.getId();
-		create.insertInto(SOURCE_FREEFORM, SOURCE_FREEFORM.SOURCE_ID, SOURCE_FREEFORM.FREEFORM_ID).values(sourceId, sourceFreeformId).execute();
+		create
+				.insertInto(
+						SOURCE_FREEFORM,
+						SOURCE_FREEFORM.SOURCE_ID,
+						SOURCE_FREEFORM.FREEFORM_ID)
+				.values(
+						sourceId,
+						sourceFreeformId)
+				.execute();
 		return sourceFreeformId;
 	}
 
 	public void updateSourceProperty(Long sourceFreeformId, String valueText) {
 
-		create.update(FREEFORM)
+		create
+				.update(FREEFORM)
 				.set(FREEFORM.VALUE_TEXT, valueText)
 				.set(FREEFORM.VALUE_PRESE, valueText)
 				.where(FREEFORM.ID.eq(sourceFreeformId))
@@ -398,17 +438,20 @@ public class SourceDbService implements GlobalConstant, ActivityFunct {
 
 	public void deleteSourceProperty(Long sourceFreeformId) {
 
-		create.delete(FREEFORM)
+		create
+				.delete(FREEFORM)
 				.where(FREEFORM.ID.eq(sourceFreeformId))
 				.execute();
-		create.delete(SOURCE_FREEFORM)
+		create
+				.delete(SOURCE_FREEFORM)
 				.where(SOURCE_FREEFORM.FREEFORM_ID.eq(sourceFreeformId))
 				.execute();
 	}
 
 	public void updateSource(Long sourceId, SourceType type, String name, String value, String valuePrese, String comment, boolean isPublic) {
 
-		create.update(SOURCE)
+		create
+				.update(SOURCE)
 				.set(SOURCE.TYPE, type.name())
 				.set(SOURCE.NAME, name)
 				.set(SOURCE.VALUE, value)
@@ -490,7 +533,8 @@ public class SourceDbService implements GlobalConstant, ActivityFunct {
 
 	public boolean validateSourceDelete(Long sourceId) {
 
-		return create.select(DSL.field(DSL.count(SOURCE.ID).gt(0)).as("is_unbinded"))
+		return create
+				.select(DSL.field(DSL.count(SOURCE.ID).gt(0)).as("is_unbinded"))
 				.from(SOURCE)
 				.where(
 						SOURCE.ID.eq(sourceId)
@@ -537,7 +581,16 @@ public class SourceDbService implements GlobalConstant, ActivityFunct {
 				.from(s)
 				.where(where)
 				.orderBy(s.ID)
+				.limit(DEFAULT_MAX_RESULTS_LIMIT)
 				.fetchInto(eki.ekilex.data.Source.class);
 	}
 
+	private int getSourceCount(Source s, Condition where) {
+
+		return create
+				.select(DSL.count(s.ID))
+				.from(s)
+				.where(where)
+				.fetchSingleInto(int.class);
+	}
 }

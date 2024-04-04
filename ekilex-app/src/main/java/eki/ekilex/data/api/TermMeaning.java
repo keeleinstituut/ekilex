@@ -1,6 +1,6 @@
 package eki.ekilex.data.api;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
@@ -29,13 +29,13 @@ public class TermMeaning extends AbstractDataObject {
 
 	private List<String> conceptIds;
 
-	@JsonFormat(pattern = "dd.MM.yyyy")
-	private LocalDate manualEventOn;
+	@JsonFormat(pattern = "dd.MM.yyyy HH:mm")
+	private LocalDateTime manualEventOn;
 
 	private String manualEventBy;
 
-	@JsonFormat(pattern = "dd.MM.yyyy")
-	private LocalDate firstCreateEventOn;
+	@JsonFormat(pattern = "dd.MM.yyyy HH:mm")
+	private LocalDateTime firstCreateEventOn;
 
 	private String firstCreateEventBy;
 
@@ -111,11 +111,11 @@ public class TermMeaning extends AbstractDataObject {
 		this.conceptIds = conceptIds;
 	}
 
-	public LocalDate getManualEventOn() {
+	public LocalDateTime getManualEventOn() {
 		return manualEventOn;
 	}
 
-	public void setManualEventOn(LocalDate manualEventOn) {
+	public void setManualEventOn(LocalDateTime manualEventOn) {
 		this.manualEventOn = manualEventOn;
 	}
 
@@ -127,11 +127,11 @@ public class TermMeaning extends AbstractDataObject {
 		this.manualEventBy = manualEventBy;
 	}
 
-	public LocalDate getFirstCreateEventOn() {
+	public LocalDateTime getFirstCreateEventOn() {
 		return firstCreateEventOn;
 	}
 
-	public void setFirstCreateEventOn(LocalDate firstCreateEventOn) {
+	public void setFirstCreateEventOn(LocalDateTime firstCreateEventOn) {
 		this.firstCreateEventOn = firstCreateEventOn;
 	}
 
@@ -142,4 +142,5 @@ public class TermMeaning extends AbstractDataObject {
 	public void setFirstCreateEventBy(String firstCreateEventBy) {
 		this.firstCreateEventBy = firstCreateEventBy;
 	}
+
 }

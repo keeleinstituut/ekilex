@@ -6,6 +6,8 @@ public class ParadigmForm extends AbstractDataObject {
 
 	private static final long serialVersionUID = 1L;
 
+	private Long formId;
+
 	private String value;
 
 	private String valuePrese;
@@ -29,6 +31,14 @@ public class ParadigmForm extends AbstractDataObject {
 	private boolean isQuestionable;
 
 	private Long orderBy;
+
+	public Long getFormId() {
+		return formId;
+	}
+
+	public void setFormId(Long formId) {
+		this.formId = formId;
+	}
 
 	public String getValue() {
 		return value;
