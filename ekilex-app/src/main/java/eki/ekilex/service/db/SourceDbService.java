@@ -20,7 +20,6 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 
 import org.apache.commons.collections4.CollectionUtils;
-import org.apache.commons.lang3.StringUtils;
 import org.jooq.Condition;
 import org.jooq.DSLContext;
 import org.jooq.Field;
@@ -364,13 +363,14 @@ public class SourceDbService implements GlobalConstant, SystemConstant, Activity
 				.orElse(null);
 	}
 
-	public List<String> getSourceNames(String nameSearchFilter, int limit) {
+	public List<String> getSourceNames(String searchFilter, int limit) {
 
-		String nameSearchFilterCrit = '%' + StringUtils.lowerCase(nameSearchFilter) + '%';
+		String maskedSearchFilter = searchFilter.replace(SEARCH_MASK_CHARS, "%").replace(SEARCH_MASK_CHAR, "_");
+		Field<String> filterField = DSL.lower(maskedSearchFilter);
 		return create
 				.selectDistinct(SOURCE.NAME)
 				.from(SOURCE)
-				.where(DSL.lower(SOURCE.NAME).like(nameSearchFilterCrit))
+				.where(DSL.lower(SOURCE.NAME).like(filterField))
 				.orderBy(SOURCE.NAME)
 				.limit(limit)
 				.fetchInto(String.class);

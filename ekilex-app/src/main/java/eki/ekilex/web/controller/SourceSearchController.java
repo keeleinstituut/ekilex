@@ -107,31 +107,29 @@ public class SourceSearchController extends AbstractPrivateSearchController {
 		return SOURCE_SEARCH_PAGE;
 	}
 
-	@GetMapping(SOURCE_SEARCH_URI + "/{sourceId}")
-	public String searchById(@PathVariable("sourceId") Long sourceId, Model model) {
-
-		logger.debug("Searching by id: \"{}\"", sourceId);
+	@GetMapping(SOURCE_ID_SEARCH_URI + "/{sourceId}")
+	public String sourceIdSearch(@PathVariable("sourceId") Long sourceId, Model model) {
 
 		EkiUser user = userContext.getUser();
 		DatasetPermission userRole = user.getRecentRole();
-		List<Source> sources = new ArrayList<>();
+		
+		SourceSearchResult sourceSearchResult = new SourceSearchResult();
+		sourceSearchResult.setSources(new ArrayList<>());
 		Source source = sourceService.getSource(sourceId, userRole);
 		if (source != null) {
-			sources.add(source);
+			sourceSearchResult.getSources().add(source);
+			sourceSearchResult.setResultCount(1);
+			sourceSearchResult.setResultExist(true);
 		}
 
 		initSearchForms(SOURCE_SEARCH_PAGE, model);
-
-		model.addAttribute("sources", sources);
-		model.addAttribute("sourceCount", sources.size());
+		model.addAttribute("sourceSearchResult", sourceSearchResult);
 
 		return SOURCE_SEARCH_PAGE;
 	}
 
 	@GetMapping(SOURCE_DETAIL_SEARCH_URI + "/{searchPage}/{sourceId}")
 	public String sourceDetailSearch(@PathVariable("searchPage") String searchPage, @PathVariable("sourceId") Long sourceId) {
-
-		logger.debug("Source detail search by id: \"{}\"", sourceId);
 
 		List<String> selectedDatasets = getUserPreferredDatasetCodes();
 		SearchFilter detailSearchFilter = searchHelper.createSourceDetailSearchFilter(sourceId);

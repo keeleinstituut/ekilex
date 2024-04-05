@@ -1032,6 +1032,10 @@ public class ConversionUtil implements GlobalConstant {
 
 	public Source composeSource(Source source, List<SourcePropertyTuple> sourcePropertyTuples) {
 
+		if (CollectionUtils.isEmpty(sourcePropertyTuples)) {
+			return source;
+		}
+
 		List<SourceProperty> sourceProperties = new ArrayList<>();
 		for (SourcePropertyTuple tuple : sourcePropertyTuples) {
 

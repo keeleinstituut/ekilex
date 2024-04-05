@@ -44,8 +44,6 @@ public class SourceEditController extends AbstractMutableDataPageController {
 
 	private static final Logger logger = LoggerFactory.getLogger(SourceEditController.class);
 
-	private static final int AUTOCOMPLETE_MAX_RESULTS_LIMIT = 15;
-
 	@Autowired
 	private SourceService sourceService;
 
@@ -63,7 +61,7 @@ public class SourceEditController extends AbstractMutableDataPageController {
 		return sourceNames;
 	}
 
-	@GetMapping(SEARCH_SOURCES_URI)
+	@GetMapping(SOURCE_QUICK_SEARCH_URI)
 	public String sourceSearch(@RequestParam String searchFilter, Model model) {
 
 		logger.debug("Searching by : \"{}\"", searchFilter);
@@ -223,13 +221,13 @@ public class SourceEditController extends AbstractMutableDataPageController {
 
 		logger.debug("Deleting source with id: {}", sourceId);
 		String roleDatasetCode = getDatasetCodeFromRole();
-
 		sourceService.deleteSource(sourceId, roleDatasetCode);
+
 		return RESPONSE_OK_VER1;
 	}
 
-	@PostMapping(SOURCE_JOIN_URI)
-	public String joinSources(
+	@PostMapping(OPEN_SOURCE_JOIN_URI)
+	public String sourceJoin(
 			@RequestParam("sourceId") Long sourceId,
 			@RequestParam("previousSearch") String previousSearch,
 			Model model) {
@@ -243,18 +241,8 @@ public class SourceEditController extends AbstractMutableDataPageController {
 		return SOURCE_JOIN_PAGE;
 	}
 
-	@PostMapping(JOIN_SOURCES_URI)
-	public String joinSources(
-			@RequestParam("targetSourceId") Long targetSourceId,
-			@RequestParam("originSourceId") Long originSourceId) throws Exception {
-
-		String roleDatasetCode = getDatasetCodeFromRole();
-		sourceService.joinSources(targetSourceId, originSourceId, roleDatasetCode);
-		return REDIRECT_PREF + SOURCE_SEARCH_URI + "/" + targetSourceId;
-	}
-
-	@PostMapping(SEARCH_SOURCES_URI)
-	public String searchSources(
+	@PostMapping(SOURCE_JOIN_SEARCH_URI)
+	public String sourceJoinSearch(
 			@RequestParam("targetSourceId") Long targetSourceId,
 			@RequestParam(name = "searchFilter", required = false) String searchFilter,
 			@RequestParam("previousSearch") String previousSearch,
@@ -271,6 +259,17 @@ public class SourceEditController extends AbstractMutableDataPageController {
 		model.addAttribute("previousSearch", previousSearch);
 
 		return SOURCE_JOIN_PAGE;
+	}
+
+	@PostMapping(SOURCE_JOIN_URI)
+	public String joinSources(
+			@RequestParam("targetSourceId") Long targetSourceId,
+			@RequestParam("originSourceId") Long originSourceId) throws Exception {
+
+		String roleDatasetCode = getDatasetCodeFromRole();
+		sourceService.joinSources(targetSourceId, originSourceId, roleDatasetCode);
+
+		return REDIRECT_PREF + SOURCE_SEARCH_URI + "/" + targetSourceId;
 	}
 
 	private List<SourceProperty> processSourceProperties(SourceRequest source) {

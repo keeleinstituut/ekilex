@@ -51,9 +51,7 @@ public class SourceService extends AbstractSourceService {
 		}
 
 		List<SourcePropertyTuple> sourcePropertyTuples = sourceDbService.getSourcePropertyTuples(sourceId);
-		if (CollectionUtils.isNotEmpty(sourcePropertyTuples)) {
-			conversionUtil.composeSource(source, sourcePropertyTuples);
-		}
+		conversionUtil.composeSource(source, sourcePropertyTuples);
 		permCalculator.applyCrud(userRole, source);
 		return source;
 	}
@@ -113,9 +111,7 @@ public class SourceService extends AbstractSourceService {
 			for (Source source : sources) {
 				Long sourceId = source.getId();
 				List<SourcePropertyTuple> sourcePropertyTuples = sourceDbService.getSourcePropertyTuples(sourceId);
-				if (CollectionUtils.isNotEmpty(sourcePropertyTuples)) {
-					conversionUtil.composeSource(source, sourcePropertyTuples);
-				}
+				conversionUtil.composeSource(source, sourcePropertyTuples);
 			}
 			permCalculator.applyCrud(userRole, sources);
 		}

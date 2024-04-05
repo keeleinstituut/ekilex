@@ -4,6 +4,8 @@ public interface SystemConstant {
 
 	int DEFAULT_MAX_RESULTS_LIMIT = 50;
 
+	int AUTOCOMPLETE_MAX_RESULTS_LIMIT = 15;
+
 	int DEFAULT_MAX_DOWNLOAD_LIMIT = 25;
 
 	int DEFAULT_OFFSET = 0;

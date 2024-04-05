@@ -240,9 +240,15 @@ public interface WebConstant {
 
 	String SOURCE_SEARCH_RESULT = "source_search_result";
 
+	String SOURCE_QUICK_SEARCH_URI = "/sourcequicksearch";
+
 	String SOURCE_NAME_SEARCH_URI = "/sourcenamesearch";
 
+	String SOURCE_ID_SEARCH_URI = "/sourceidsearch";
+
 	String SOURCE_DETAIL_SEARCH_URI = "/sourcedetailsearch";
+
+	String SOURCE_JOIN_SEARCH_URI = "/sourcejoinsearch";
 
 	String UPDATE_SOURCE_PROPERTY_URI = "/update_source_property";
 
@@ -262,13 +268,11 @@ public interface WebConstant {
 
 	String DELETE_SOURCE_URI = "/delete_source";
 
+	String OPEN_SOURCE_JOIN_URI = "/open_source_join";
+
 	String SOURCE_JOIN_URI = "/source_join";
 
 	String SOURCE_JOIN_PAGE = "sourcejoin";
-
-	String JOIN_SOURCES_URI = "/join_sources";
-
-	String SEARCH_SOURCES_URI = "/search_sources";
 
 	String DATASETS_URI = "/datasets";
 

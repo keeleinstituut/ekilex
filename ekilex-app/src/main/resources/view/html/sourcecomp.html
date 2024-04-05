@@ -91,7 +91,7 @@
   </div>
   <div class="modal-body" data-name="sourceLinkDlgContent" th:fragment="edit_source_link_dlg">
     <div class="row m-1 float-right">
-      <a th:href="@{'/sourcesearch/' + ${source.id}}" class="btn btn-secondary btn-compact" th:text="#{source.edit.source}">Muuda allikat</a>
+      <a th:href="@{'/sourceidsearch/' + ${source.id}}" class="btn btn-secondary btn-compact" th:text="#{source.edit.source}">Muuda allikat</a>
     </div>
     <table>
       <tr>
@@ -173,7 +173,7 @@
         </button>
       </div>
       <div class="ml-2">
-        <form th:action="@{/source_join}" method="post">
+        <form th:action="@{/open_source_join}" method="post">
           <input type="hidden" name="previousSearch" th:value="${simpleSearchFilter}">
           <input type="hidden" name="sourceId" th:value="${source.id}">
           <button type="submit" class="btn btn-primary btn-sm" sec:authorize="#vars.source.crudGrant" th:text="#{source.join}">Ühenda</button>
@@ -370,7 +370,7 @@
                 </table>
               </div>
               <div class="ml-4">
-                <form th:action="@{/join_sources}" method="post">
+                <form th:action="@{/source_join}" method="post">
                   <input type="hidden" name="targetSourceId" th:value="${targetSource.id}">
                   <input type="hidden" name="originSourceId" th:value="${source.id}">
                   <button type="button" class="btn btn-primary"

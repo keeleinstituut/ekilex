@@ -22,7 +22,7 @@
         </div>
       </div>
       <div class="card-body">
-        <form th:action="@{/search_sources}" method="post">
+        <form th:action="@{/sourcejoinsearch}" method="post">
           <input type="hidden" name="targetSourceId" th:value="${targetSource.id}">
           <input type="hidden" name="previousSearch" th:value="${previousSearch}">
           <div class="form-row">
