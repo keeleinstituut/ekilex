@@ -36,6 +36,11 @@ public class Sequences {
     public static final Sequence<Long> COLLOCATION_ID_SEQ = Internal.createSequence("collocation_id_seq", Public.PUBLIC, SQLDataType.BIGINT.nullable(false), null, null, null, null, false, null);
 
     /**
+     * The sequence <code>public.collocation_member_id_seq</code>
+     */
+    public static final Sequence<Long> COLLOCATION_MEMBER_ID_SEQ = Internal.createSequence("collocation_member_id_seq", Public.PUBLIC, SQLDataType.BIGINT.nullable(false), null, null, null, null, false, null);
+
+    /**
      * The sequence <code>public.data_request_id_seq</code>
      */
     public static final Sequence<Long> DATA_REQUEST_ID_SEQ = Internal.createSequence("data_request_id_seq", Public.PUBLIC, SQLDataType.BIGINT.nullable(false), null, null, null, null, false, null);
@@ -424,6 +429,11 @@ public class Sequences {
      * The sequence <code>public.register_order_by_seq</code>
      */
     public static final Sequence<Long> REGISTER_ORDER_BY_SEQ = Internal.createSequence("register_order_by_seq", Public.PUBLIC, SQLDataType.BIGINT.nullable(false), null, null, null, null, false, null);
+
+    /**
+     * The sequence <code>public.rel_group_order_by_seq</code>
+     */
+    public static final Sequence<Long> REL_GROUP_ORDER_BY_SEQ = Internal.createSequence("rel_group_order_by_seq", Public.PUBLIC, SQLDataType.BIGINT.nullable(false), null, null, null, null, false, null);
 
     /**
      * The sequence <code>public.semantic_type_order_by_seq</code>

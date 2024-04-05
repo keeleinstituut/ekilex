@@ -9,6 +9,7 @@ import eki.ekilex.data.db.tables.Aspect;
 import eki.ekilex.data.db.tables.AspectLabel;
 import eki.ekilex.data.db.tables.Collocation;
 import eki.ekilex.data.db.tables.CollocationFreeform;
+import eki.ekilex.data.db.tables.CollocationMember;
 import eki.ekilex.data.db.tables.DataRequest;
 import eki.ekilex.data.db.tables.Dataset;
 import eki.ekilex.data.db.tables.DatasetPermission;
@@ -86,6 +87,8 @@ import eki.ekilex.data.db.tables.ProficiencyLevelLabel;
 import eki.ekilex.data.db.tables.Region;
 import eki.ekilex.data.db.tables.Register;
 import eki.ekilex.data.db.tables.RegisterLabel;
+import eki.ekilex.data.db.tables.RelGroup;
+import eki.ekilex.data.db.tables.RelGroupLabel;
 import eki.ekilex.data.db.tables.SemanticType;
 import eki.ekilex.data.db.tables.SemanticTypeLabel;
 import eki.ekilex.data.db.tables.Source;
@@ -210,6 +213,11 @@ public class Public extends SchemaImpl {
      * The table <code>public.collocation_freeform</code>.
      */
     public final CollocationFreeform COLLOCATION_FREEFORM = CollocationFreeform.COLLOCATION_FREEFORM;
+
+    /**
+     * The table <code>public.collocation_member</code>.
+     */
+    public final CollocationMember COLLOCATION_MEMBER = CollocationMember.COLLOCATION_MEMBER;
 
     /**
      * The table <code>public.data_request</code>.
@@ -597,6 +605,16 @@ public class Public extends SchemaImpl {
     public final RegisterLabel REGISTER_LABEL = RegisterLabel.REGISTER_LABEL;
 
     /**
+     * The table <code>public.rel_group</code>.
+     */
+    public final RelGroup REL_GROUP = RelGroup.REL_GROUP;
+
+    /**
+     * The table <code>public.rel_group_label</code>.
+     */
+    public final RelGroupLabel REL_GROUP_LABEL = RelGroupLabel.REL_GROUP_LABEL;
+
+    /**
      * The table <code>public.semantic_type</code>.
      */
     public final SemanticType SEMANTIC_TYPE = SemanticType.SEMANTIC_TYPE;
@@ -876,6 +894,7 @@ public class Public extends SchemaImpl {
             Sequences.ASPECT_ORDER_BY_SEQ,
             Sequences.COLLOCATION_FREEFORM_ID_SEQ,
             Sequences.COLLOCATION_ID_SEQ,
+            Sequences.COLLOCATION_MEMBER_ID_SEQ,
             Sequences.DATA_REQUEST_ID_SEQ,
             Sequences.DATASET_ORDER_BY_SEQ,
             Sequences.DATASET_PERMISSION_ID_SEQ,
@@ -954,6 +973,7 @@ public class Public extends SchemaImpl {
             Sequences.PROFICIENCY_LEVEL_ORDER_BY_SEQ,
             Sequences.REGION_ORDER_BY_SEQ,
             Sequences.REGISTER_ORDER_BY_SEQ,
+            Sequences.REL_GROUP_ORDER_BY_SEQ,
             Sequences.SEMANTIC_TYPE_ORDER_BY_SEQ,
             Sequences.SOURCE_ACTIVITY_LOG_ID_SEQ,
             Sequences.SOURCE_FREEFORM_ID_SEQ,
@@ -999,6 +1019,7 @@ public class Public extends SchemaImpl {
             AspectLabel.ASPECT_LABEL,
             Collocation.COLLOCATION,
             CollocationFreeform.COLLOCATION_FREEFORM,
+            CollocationMember.COLLOCATION_MEMBER,
             DataRequest.DATA_REQUEST,
             Dataset.DATASET,
             DatasetPermission.DATASET_PERMISSION,
@@ -1076,6 +1097,8 @@ public class Public extends SchemaImpl {
             Region.REGION,
             Register.REGISTER,
             RegisterLabel.REGISTER_LABEL,
+            RelGroup.REL_GROUP,
+            RelGroupLabel.REL_GROUP_LABEL,
             SemanticType.SEMANTIC_TYPE,
             SemanticTypeLabel.SEMANTIC_TYPE_LABEL,
             Source.SOURCE,

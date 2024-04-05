@@ -2,6 +2,7 @@ package eki.ekilex.data;
 
 import java.util.List;
 
+import eki.common.constant.Complexity;
 import eki.common.data.AbstractDataObject;
 
 public class Collocation extends AbstractDataObject {
@@ -19,6 +20,8 @@ public class Collocation extends AbstractDataObject {
 	private List<String> collocUsages;
 
 	private List<CollocMember> collocMembers;
+
+	private Complexity complexity;
 
 	public String getValue() {
 		return value;
@@ -66,6 +69,14 @@ public class Collocation extends AbstractDataObject {
 
 	public void setCollocMembers(List<CollocMember> collocMembers) {
 		this.collocMembers = collocMembers;
+	}
+
+	public Complexity getComplexity() {
+		return complexity;
+	}
+
+	public void setComplexity(Complexity complexity) {
+		this.complexity = complexity;
 	}
 
 }
