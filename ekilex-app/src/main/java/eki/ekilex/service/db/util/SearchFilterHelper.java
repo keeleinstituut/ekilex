@@ -817,7 +817,7 @@ public class SearchFilterHelper implements GlobalConstant, ActivityFunct {
 			}
 			where = where.and(DSL
 					.notExists(DSL.select(lt.ID).from(l1, lt).where(where1))
-					.orNotExists(DSL.select(mt.ID).from(l2, mt).where(where2)));
+					.andNotExists(DSL.select(mt.ID).from(l2, mt).where(where2)));
 		}
 
 		return where;
@@ -858,7 +858,7 @@ public class SearchFilterHelper implements GlobalConstant, ActivityFunct {
 			}
 			where = where.and(DSL
 					.notExists(DSL.select(lt.ID).from(l1, lt).where(where1))
-					.orNotExists(DSL.select(mt.ID).from(mt).where(where2)));
+					.andNotExists(DSL.select(mt.ID).from(mt).where(where2)));
 		}
 
 		return where;
