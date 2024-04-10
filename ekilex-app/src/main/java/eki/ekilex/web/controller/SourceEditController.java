@@ -171,6 +171,7 @@ public class SourceEditController extends AbstractMutableDataPageController {
 
 		List<SourceProperty> sourceProperties = processSourceProperties(source);
 		Long sourceId = sourceService.createSource(sourceType, name, valuePrese, comment, isPublic, sourceProperties, roleDatasetCode, MANUAL_EVENT_ON_UPDATE_DISABLED);
+
 		return String.valueOf(sourceId);
 	}
 

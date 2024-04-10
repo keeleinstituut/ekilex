@@ -159,7 +159,7 @@ function addSource(addSourceForm) {
 		dataType: 'json',
 		contentType: 'application/json'
 	}).done(function(sourceId) {
-		window.location = `${applicationUrl}sourcesearch/${sourceId}`;
+		window.location = `${applicationUrl}sourceidsearch/${sourceId}`;
 	}).fail(function(data) {
 		console.log(data);
 		openAlertDlg(messages["common.error"]);
