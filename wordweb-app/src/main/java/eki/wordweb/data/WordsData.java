@@ -20,7 +20,7 @@ public class WordsData extends AbstractSearchResult {
 		this.wordMatchWords = Collections.emptyList();
 		this.formMatchWordValues = Collections.emptyList();
 		this.formResultsExist = false;
-		this.availableLanguagesDatasets = null;
+		this.availableLanguagesDatasets = new LanguagesDatasets();
 	}
 
 	public WordsData(List<Word> wordMatchWords, boolean wordResultsExist, boolean wordSingleResult, int wordResultCount, List<String> formMatchWordValues, boolean formResultsExist) {
@@ -28,7 +28,7 @@ public class WordsData extends AbstractSearchResult {
 		this.wordMatchWords = wordMatchWords;
 		this.formMatchWordValues = formMatchWordValues;
 		this.formResultsExist = formResultsExist;
-		this.availableLanguagesDatasets = null;
+		this.availableLanguagesDatasets = new LanguagesDatasets();
 	}
 
 	public WordsData(LanguagesDatasets availableLanguagesDatasets) {
