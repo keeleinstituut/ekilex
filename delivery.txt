@@ -11,19 +11,19 @@ OSA 1
 1.1) Võta githubist värske tarkvara versioon harust, mille viite arendaja annab
 
 1.2) Ehita tarkvara tarkvaraprojekti juurikast
-  
+
      ../ekilex>mvn clean install -D skipTests
-  
+
      Ekilex rakenduse pake asub
-  
+
      ../ekilex/ekilex-app/target/ekilex-app.jar
-  
+
      Sõnaveebi rakenduse pake asub
-  
+
      ../ekilex/wordweb-app/target/wordweb-app.jar
 
 1.3) Käivita ekilex andmebaasis muudatuste skript:
-  
+
      ../ekilex/eki-common/src/main/resources/sql/delivery.sql
   
 OSA 2
@@ -36,37 +36,37 @@ OSA 2
 2.3) Käivita andmebaasis "ekilog" järgnev skript:
 
      ../ekilex/eki-common/src/main/resources/sql/create_ekilog.sql
-	 
+
 	 NB! Taga, et kõikide loodud struktuuride omanikuks on kasutaja "ekilog"
 
 2.4) Ava järgnev skript muutmiseks:
 
      https://gist.github.com/mlaubre/3ba088b7265edf6f714b16643ad49f78
-	 
+
 	 1. Muuda skriptis igalpool kus on viide dblink-le ekilex andmebaasi juurdepääsu parameetreid vastavalt keskkonnale.
-	 
+
 	 2. Käivita skript andmebaasis "ekilog"
-	 
-	 NB! Väga mahukas protsess, mis võtab umbes pool tundi
+
+	 NB! Protsess võtab umbes pool tundi
 	 NB! Enne järgmisi tegevusi oota skripti edukalt lõpetamiseni
 
 2.5) Lisa andmebaasile "ekilex" laiendus "postgres_fdw"
 
-2.6) Ava järgnev skript muutmiseks:
+2.6) Käivita andmebaasis "ekilex" järgnev skript:
+
+     https://gist.github.com/mlaubre/9be36948a97d6382b5ffb32906353916
+
+2.7) Ava järgnev skript muutmiseks:
 
      https://gist.github.com/mlaubre/a4ada74a5e759cd5d015ba9120f35fb5
-	 
+
 	 1. Muuda skriptis andmebaasi "ekilog" juurdepääsu parameetreid (host, password) vastavalt keskkonnale
-	 
+
 	 2. Käivita skript andmebaasis "ekilex"
-
-2.7) Käivita andmebaasis "ekilex" järgnev skript:
-
-     ../ekilex/eki-common/src/main/resources/sql/create_foreign.sql
 
 2.8) Käivita andmebaasis "ekilex" järgnev skript:
 
-     https://gist.github.com/mlaubre/9be36948a97d6382b5ffb32906353916
+     ../ekilex/eki-common/src/main/resources/sql/create_foreign.sql
 
 OSA 3
 -----
@@ -74,13 +74,13 @@ OSA 3
 3.1) Sõnaveebi andmebaasi agregeerimine.
 
      1. kustuta ja taasloo Ekilex andmebaasis senised Sõnaveebiga seotud vaated ja andmetüübid skriptiga:
-  
+
         ../ekilex/eki-common/src/main/resources/sql/create_views.sql
 
      2. kustuta ja loo Sõnaveebi andmebaasis materjaliseeritud vaated ja andmetüübid skriptiga:
-  
+
         ../ekilex/wordweb-app/fileresources/sql/create_mviews.sql
-	 
+
 	    NB! Muuda skriptis dblink parameetreid vastavalt keskkonnale!
 	    NB! Ühtegi veateadet ei tohi olla!
 
