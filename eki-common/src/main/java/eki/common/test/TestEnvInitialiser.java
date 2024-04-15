@@ -20,24 +20,22 @@ public class TestEnvInitialiser {
 
 	public void initDatabase() throws Exception {
 
-		final String scriptFilePath4 = "sql/test_data.sql";
-
 		initDatabaseWithoutTestData();
-		executeSqlScriptFile(scriptFilePath4);
+		executeSqlScriptFile("sql/test_data.sql");
 	}
 
 	//FIXME restore create views
 	public void initDatabaseWithoutTestData() throws Exception {
 
-		final String scriptFilePath1 = "sql/drop_all.sql";
-		final String scriptFilePath2 = "sql/create_tables.sql";
-		// final String scriptFilePath3 = "sql/create_views.sql";
-		final String scriptFilePath4 = "sql/create_functions.sql";
-		final String scriptFilePath5 = "sql/classifier-manual.sql";
-		final String scriptFilePath6 = "sql/classifier-main.sql";
-		final String scriptFilePath7 = "sql/classifier-domain.sql";
 		final String[] scriptFilePaths = new String[] {
-				scriptFilePath1, scriptFilePath2, /*scriptFilePath3, */scriptFilePath4, scriptFilePath5, scriptFilePath6, scriptFilePath7
+				"sql/drop_all.sql",
+				"sql/create_tables.sql",
+				//"sql/create_views.sql",
+				"sql/create_functions.sql",
+				"sql/create_foreign.sql",
+				"sql/classifier-manual.sql",
+				"sql/classifier-main.sql",
+				"sql/classifier-domain.sql"
 		};
 
 		for (String scriptFilePath : scriptFilePaths) {
@@ -73,6 +71,5 @@ public class TestEnvInitialiser {
 		String scriptFileContent = getSqlScriptFromClasspath(sqlScriptFilePath);
 		basicDbService.executeScript(scriptFileContent);
 	}
-
 
 }

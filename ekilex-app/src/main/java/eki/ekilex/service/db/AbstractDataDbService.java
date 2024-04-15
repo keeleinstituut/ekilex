@@ -1,6 +1,6 @@
 package eki.ekilex.service.db;
 
-import static eki.ekilex.data.db.Tables.ACTIVITY_LOG;
+import static eki.ekilex.data.db.Tables.ACTIVITY_LOG_FDW;
 import static eki.ekilex.data.db.Tables.DERIV_LABEL;
 import static eki.ekilex.data.db.Tables.DOMAIN_LABEL;
 import static eki.ekilex.data.db.Tables.LEXEME;
@@ -9,14 +9,14 @@ import static eki.ekilex.data.db.Tables.LEXEME_POS;
 import static eki.ekilex.data.db.Tables.LEXEME_REGION;
 import static eki.ekilex.data.db.Tables.LEXEME_REGISTER;
 import static eki.ekilex.data.db.Tables.MEANING_DOMAIN;
-import static eki.ekilex.data.db.Tables.MEANING_LAST_ACTIVITY_LOG;
+import static eki.ekilex.data.db.Tables.MEANING_LAST_ACTIVITY_LOG_FDW;
 import static eki.ekilex.data.db.Tables.POS_LABEL;
 import static eki.ekilex.data.db.Tables.PROFICIENCY_LEVEL_LABEL;
 import static eki.ekilex.data.db.Tables.REGION;
 import static eki.ekilex.data.db.Tables.REGISTER_LABEL;
 import static eki.ekilex.data.db.Tables.VALUE_STATE_LABEL;
 import static eki.ekilex.data.db.Tables.WORD;
-import static eki.ekilex.data.db.Tables.WORD_LAST_ACTIVITY_LOG;
+import static eki.ekilex.data.db.Tables.WORD_LAST_ACTIVITY_LOG_FDW;
 import static eki.ekilex.data.db.Tables.WORD_WORD_TYPE;
 
 import java.sql.Timestamp;
@@ -34,11 +34,11 @@ import eki.common.constant.GlobalConstant;
 import eki.common.constant.LastActivityType;
 import eki.ekilex.constant.SystemConstant;
 import eki.ekilex.data.SimpleWord;
-import eki.ekilex.data.db.tables.ActivityLog;
+import eki.ekilex.data.db.tables.ActivityLogFdw;
 import eki.ekilex.data.db.tables.Lexeme;
-import eki.ekilex.data.db.tables.MeaningLastActivityLog;
+import eki.ekilex.data.db.tables.MeaningLastActivityLogFdw;
 import eki.ekilex.data.db.tables.Word;
-import eki.ekilex.data.db.tables.WordLastActivityLog;
+import eki.ekilex.data.db.tables.WordLastActivityLogFdw;
 
 public abstract class AbstractDataDbService implements SystemConstant, GlobalConstant {
 
@@ -162,14 +162,14 @@ public abstract class AbstractDataDbService implements SystemConstant, GlobalCon
 	}
 
 	protected Field<Timestamp> getWordLastActivityEventOnField(Field<Long> wordIdField) {
-		WordLastActivityLog wlal = WORD_LAST_ACTIVITY_LOG.as("wlal");
-		ActivityLog al = ACTIVITY_LOG.as("al");
+		WordLastActivityLogFdw wlal = WORD_LAST_ACTIVITY_LOG_FDW.as("wlal");
+		ActivityLogFdw al = ACTIVITY_LOG_FDW.as("al");
 		Field<Timestamp> wlaeof = DSL.field(DSL
 				.select(al.EVENT_ON)
 				.from(wlal, al)
 				.where(
 						wlal.WORD_ID.eq(wordIdField)
-						.and(wlal.ACTIVITY_LOG_ID.eq(al.ID)))
+								.and(wlal.ACTIVITY_LOG_ID.eq(al.ID)))
 				.limit(1));
 		return wlaeof;
 	}
@@ -322,15 +322,15 @@ public abstract class AbstractDataDbService implements SystemConstant, GlobalCon
 	}
 
 	protected Field<Timestamp> getMeaningLastActivityEventOnField(Field<Long> meaningIdField, LastActivityType lastActivityType) {
-		MeaningLastActivityLog mlal = MEANING_LAST_ACTIVITY_LOG.as("mlal");
-		ActivityLog al = ACTIVITY_LOG.as("al");
+		MeaningLastActivityLogFdw mlal = MEANING_LAST_ACTIVITY_LOG_FDW.as("mlal");
+		ActivityLogFdw al = ACTIVITY_LOG_FDW.as("al");
 		Field<Timestamp> wlaeof = DSL.field(DSL
 				.select(al.EVENT_ON)
 				.from(mlal, al)
 				.where(
 						mlal.MEANING_ID.eq(meaningIdField)
-						.and(mlal.TYPE.eq(lastActivityType.name()))
-						.and(mlal.ACTIVITY_LOG_ID.eq(al.ID)))
+								.and(mlal.TYPE.eq(lastActivityType.name()))
+								.and(mlal.ACTIVITY_LOG_ID.eq(al.ID)))
 				.limit(1));
 		return wlaeof;
 	}

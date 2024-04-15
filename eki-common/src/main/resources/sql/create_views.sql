@@ -422,8 +422,8 @@ from (select w.id as word_id,
              w.vocal_form,
              w.manual_event_on,
              (select al.event_on
-              from word_last_activity_log wlal,
-                   activity_log al
+              from word_last_activity_log_fdw wlal,
+                   activity_log_fdw al
               where wlal.word_id = w.id
               and   wlal.activity_log_id = al.id) last_activity_event_on,
              (select count(f.id) > 0
@@ -796,8 +796,8 @@ select m.id meaning_id,
 from (select m.id,
              m.manual_event_on,
             (select al.event_on
-             from meaning_last_activity_log mlal,
-                  activity_log al
+             from meaning_last_activity_log_fdw mlal,
+                  activity_log_fdw al
              where mlal.meaning_id = m.id
              and   mlal.activity_log_id = al.id
              order by mlal.type

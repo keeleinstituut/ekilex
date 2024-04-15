@@ -1,6 +1,6 @@
 package eki.ekilex.service.db;
 
-import static eki.ekilex.data.db.Tables.ACTIVITY_LOG;
+import static eki.ekilex.data.db.Tables.ACTIVITY_LOG_FDW;
 import static eki.ekilex.data.db.Tables.DEFINITION;
 import static eki.ekilex.data.db.Tables.DEFINITION_FREEFORM;
 import static eki.ekilex.data.db.Tables.DEFINITION_SOURCE_LINK;
@@ -11,7 +11,7 @@ import static eki.ekilex.data.db.Tables.LEXEME_FREEFORM;
 import static eki.ekilex.data.db.Tables.LEXEME_SOURCE_LINK;
 import static eki.ekilex.data.db.Tables.MEANING_FREEFORM;
 import static eki.ekilex.data.db.Tables.SOURCE;
-import static eki.ekilex.data.db.Tables.SOURCE_ACTIVITY_LOG;
+import static eki.ekilex.data.db.Tables.SOURCE_ACTIVITY_LOG_FDW;
 import static eki.ekilex.data.db.Tables.SOURCE_FREEFORM;
 import static eki.ekilex.data.db.Tables.WORD_ETYMOLOGY_SOURCE_LINK;
 
@@ -47,7 +47,7 @@ import eki.ekilex.data.SearchFilter;
 import eki.ekilex.data.SourceProperty;
 import eki.ekilex.data.SourcePropertyTuple;
 import eki.ekilex.data.SourceSearchResult;
-import eki.ekilex.data.db.tables.ActivityLog;
+import eki.ekilex.data.db.tables.ActivityLogFdw;
 import eki.ekilex.data.db.tables.Definition;
 import eki.ekilex.data.db.tables.DefinitionFreeform;
 import eki.ekilex.data.db.tables.DefinitionSourceLink;
@@ -58,7 +58,7 @@ import eki.ekilex.data.db.tables.LexemeFreeform;
 import eki.ekilex.data.db.tables.LexemeSourceLink;
 import eki.ekilex.data.db.tables.MeaningFreeform;
 import eki.ekilex.data.db.tables.Source;
-import eki.ekilex.data.db.tables.SourceActivityLog;
+import eki.ekilex.data.db.tables.SourceActivityLogFdw;
 import eki.ekilex.data.db.tables.SourceFreeform;
 import eki.ekilex.data.db.tables.records.FreeformRecord;
 import eki.ekilex.service.db.util.SearchFilterHelper;
@@ -312,8 +312,8 @@ public class SourceDbService implements GlobalConstant, SystemConstant, Activity
 			return where;
 		}
 
-		SourceActivityLog sal = SOURCE_ACTIVITY_LOG.as("sal");
-		ActivityLog al = ACTIVITY_LOG.as("al");
+		SourceActivityLogFdw sal = SOURCE_ACTIVITY_LOG_FDW.as("sal");
+		ActivityLogFdw al = ACTIVITY_LOG_FDW.as("al");
 		Condition where1 = sal.SOURCE_ID.eq(sourceIdField).and(sal.ACTIVITY_LOG_ID.eq(al.ID)).and(al.OWNER_NAME.eq(ActivityOwner.SOURCE.name()));
 
 		for (SearchCriterion criterion : filteredCriteria) {
@@ -523,9 +523,9 @@ public class SourceDbService implements GlobalConstant, SystemConstant, Activity
 				.where(WORD_ETYMOLOGY_SOURCE_LINK.SOURCE_ID.eq(originSourceId))
 				.execute();
 
-		create.update(SOURCE_ACTIVITY_LOG)
-				.set(SOURCE_ACTIVITY_LOG.SOURCE_ID, targetSourceId)
-				.where(SOURCE_ACTIVITY_LOG.SOURCE_ID.eq(originSourceId))
+		create.update(SOURCE_ACTIVITY_LOG_FDW)
+				.set(SOURCE_ACTIVITY_LOG_FDW.SOURCE_ID, targetSourceId)
+				.where(SOURCE_ACTIVITY_LOG_FDW.SOURCE_ID.eq(originSourceId))
 				.execute();
 
 		deleteSource(originSourceId);

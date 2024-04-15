@@ -1,6 +1,6 @@
 package eki.ekilex.service.db;
 
-import static eki.ekilex.data.db.Tables.ACTIVITY_LOG;
+import static eki.ekilex.data.db.Tables.ACTIVITY_LOG_FDW;
 import static eki.ekilex.data.db.Tables.ASPECT;
 import static eki.ekilex.data.db.Tables.COLLOCATION;
 import static eki.ekilex.data.db.Tables.DATASET;
@@ -115,15 +115,15 @@ public class StatDataDbService implements GlobalConstant {
 
 	public List<StatDataRow> getActivityStatData(Timestamp from) {
 
-		Field<Integer> rowCount = DSL.field((DSL.count(ACTIVITY_LOG.ID)).as("row_count"));
+		Field<Integer> rowCount = DSL.field((DSL.count(ACTIVITY_LOG_FDW.ID)).as("row_count"));
 		return create
 				.select(
 						DSL.field(IGNORE_QUERY_LOG).as("comment"),
-						DSL.field(ACTIVITY_LOG.EVENT_BY).as("name"),
+						DSL.field(ACTIVITY_LOG_FDW.EVENT_BY).as("name"),
 						rowCount)
-				.from(ACTIVITY_LOG)
-				.where(DSL.field(ACTIVITY_LOG.EVENT_ON).gt(from))
-				.groupBy(ACTIVITY_LOG.EVENT_BY)
+				.from(ACTIVITY_LOG_FDW)
+				.where(DSL.field(ACTIVITY_LOG_FDW.EVENT_ON).gt(from))
+				.groupBy(ACTIVITY_LOG_FDW.EVENT_BY)
 				.orderBy(rowCount.desc())
 				.fetchInto(StatDataRow.class);
 	}

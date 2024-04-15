@@ -161,4 +161,3 @@ drop table if exists activity_log;
 drop table if exists source;
 drop table if exists meaning;
 drop table if exists dataset;
-drop type if exists type_activity_log_diff;

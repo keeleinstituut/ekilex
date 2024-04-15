@@ -1,6 +1,6 @@
 package eki.ekilex.service.db.util;
 
-import static eki.ekilex.data.db.Tables.ACTIVITY_LOG;
+import static eki.ekilex.data.db.Tables.ACTIVITY_LOG_FDW;
 import static eki.ekilex.data.db.Tables.DATASET;
 import static eki.ekilex.data.db.Tables.DEFINITION_FREEFORM;
 import static eki.ekilex.data.db.Tables.DEFINITION_SOURCE_LINK;
@@ -9,7 +9,7 @@ import static eki.ekilex.data.db.Tables.FREEFORM;
 import static eki.ekilex.data.db.Tables.FREEFORM_SOURCE_LINK;
 import static eki.ekilex.data.db.Tables.FREQ_CORP;
 import static eki.ekilex.data.db.Tables.LEXEME;
-import static eki.ekilex.data.db.Tables.LEXEME_ACTIVITY_LOG;
+import static eki.ekilex.data.db.Tables.LEXEME_ACTIVITY_LOG_FDW;
 import static eki.ekilex.data.db.Tables.LEXEME_FREEFORM;
 import static eki.ekilex.data.db.Tables.LEXEME_POS;
 import static eki.ekilex.data.db.Tables.LEXEME_REGISTER;
@@ -21,13 +21,13 @@ import static eki.ekilex.data.db.Tables.MEANING_FREEFORM;
 import static eki.ekilex.data.db.Tables.MEANING_RELATION;
 import static eki.ekilex.data.db.Tables.MEANING_SEMANTIC_TYPE;
 import static eki.ekilex.data.db.Tables.MEANING_TAG;
-import static eki.ekilex.data.db.Tables.WORD_ACTIVITY_LOG;
+import static eki.ekilex.data.db.Tables.WORD_ACTIVITY_LOG_FDW;
 import static eki.ekilex.data.db.Tables.WORD_FORUM;
 import static eki.ekilex.data.db.Tables.WORD_FREEFORM;
 import static eki.ekilex.data.db.Tables.WORD_FREQ;
 import static eki.ekilex.data.db.Tables.WORD_GROUP;
 import static eki.ekilex.data.db.Tables.WORD_GROUP_MEMBER;
-import static eki.ekilex.data.db.Tables.WORD_LAST_ACTIVITY_LOG;
+import static eki.ekilex.data.db.Tables.WORD_LAST_ACTIVITY_LOG_FDW;
 import static eki.ekilex.data.db.Tables.WORD_RELATION;
 import static eki.ekilex.data.db.Tables.WORD_WORD_TYPE;
 import static java.util.stream.Collectors.toList;
@@ -69,7 +69,7 @@ import eki.ekilex.constant.SearchOperand;
 import eki.ekilex.data.Classifier;
 import eki.ekilex.data.SearchCriterion;
 import eki.ekilex.data.SearchDatasetsRestriction;
-import eki.ekilex.data.db.tables.ActivityLog;
+import eki.ekilex.data.db.tables.ActivityLogFdw;
 import eki.ekilex.data.db.tables.DefinitionFreeform;
 import eki.ekilex.data.db.tables.DefinitionSourceLink;
 import eki.ekilex.data.db.tables.FormFreq;
@@ -77,7 +77,7 @@ import eki.ekilex.data.db.tables.Freeform;
 import eki.ekilex.data.db.tables.FreeformSourceLink;
 import eki.ekilex.data.db.tables.FreqCorp;
 import eki.ekilex.data.db.tables.Lexeme;
-import eki.ekilex.data.db.tables.LexemeActivityLog;
+import eki.ekilex.data.db.tables.LexemeActivityLogFdw;
 import eki.ekilex.data.db.tables.LexemeFreeform;
 import eki.ekilex.data.db.tables.LexemePos;
 import eki.ekilex.data.db.tables.LexemeRegister;
@@ -92,13 +92,13 @@ import eki.ekilex.data.db.tables.MeaningSemanticType;
 import eki.ekilex.data.db.tables.MeaningTag;
 import eki.ekilex.data.db.tables.Source;
 import eki.ekilex.data.db.tables.Word;
-import eki.ekilex.data.db.tables.WordActivityLog;
+import eki.ekilex.data.db.tables.WordActivityLogFdw;
 import eki.ekilex.data.db.tables.WordForum;
 import eki.ekilex.data.db.tables.WordFreeform;
 import eki.ekilex.data.db.tables.WordFreq;
 import eki.ekilex.data.db.tables.WordGroup;
 import eki.ekilex.data.db.tables.WordGroupMember;
-import eki.ekilex.data.db.tables.WordLastActivityLog;
+import eki.ekilex.data.db.tables.WordLastActivityLogFdw;
 import eki.ekilex.data.db.tables.WordRelation;
 import eki.ekilex.data.db.tables.WordWordType;
 
@@ -674,9 +674,9 @@ public class SearchFilterHelper implements GlobalConstant, ActivityFunct {
 
 	public Condition applyWordActivityLogFilters(List<SearchCriterion> searchCriteria, Field<Long> wordIdField, Condition wherew) throws Exception {
 
-		WordActivityLog wal = WORD_ACTIVITY_LOG.as("wal");
-		WordLastActivityLog wlal = WORD_LAST_ACTIVITY_LOG.as("wlal");
-		ActivityLog al = ACTIVITY_LOG.as("al");
+		WordActivityLogFdw wal = WORD_ACTIVITY_LOG_FDW.as("wal");
+		WordLastActivityLogFdw wlal = WORD_LAST_ACTIVITY_LOG_FDW.as("wlal");
+		ActivityLogFdw al = ACTIVITY_LOG_FDW.as("al");
 
 		List<SearchCriterion> filteredCriteriaByCreatedOrUpdatedByOnly = filterCriteriaBySearchKeys(searchCriteria, SearchKey.CREATED_OR_UPDATED_BY);
 		boolean isFilterByCreatedOrUpdatedByOnly = CollectionUtils.isNotEmpty(filteredCriteriaByCreatedOrUpdatedByOnly);
@@ -914,8 +914,8 @@ public class SearchFilterHelper implements GlobalConstant, ActivityFunct {
 			return where;
 		}
 
-		LexemeActivityLog lal = LEXEME_ACTIVITY_LOG.as("lal");
-		ActivityLog al = ACTIVITY_LOG.as("al");
+		LexemeActivityLogFdw lal = LEXEME_ACTIVITY_LOG_FDW.as("lal");
+		ActivityLogFdw al = ACTIVITY_LOG_FDW.as("al");
 		where1 = where1
 				.and(lal.LEXEME_ID.eq(l1.ID))
 				.and(lal.ACTIVITY_LOG_ID.eq(al.ID))

@@ -1,6 +1,6 @@
 package eki.ekilex.service.db;
 
-import static eki.ekilex.data.db.Tables.ACTIVITY_LOG;
+import static eki.ekilex.data.db.Tables.ACTIVITY_LOG_FDW;
 import static eki.ekilex.data.db.Tables.MEANING;
 import static eki.ekilex.data.db.Tables.WORD;
 
@@ -18,7 +18,7 @@ import org.springframework.stereotype.Component;
 import eki.common.constant.ActivityEntity;
 import eki.common.constant.GlobalConstant;
 import eki.ekilex.data.ActivityLogHistory;
-import eki.ekilex.data.db.tables.ActivityLog;
+import eki.ekilex.data.db.tables.ActivityLogFdw;
 import eki.ekilex.data.db.tables.Meaning;
 import eki.ekilex.data.db.tables.Word;
 
@@ -30,8 +30,8 @@ public class HistoryDbService implements GlobalConstant {
 
 	public List<ActivityLogHistory> getWordsHistory(int offset, int limit) {
 
-		ActivityLog al = ACTIVITY_LOG.as("al");
-		ActivityLog ala = ACTIVITY_LOG.as("ala");
+		ActivityLogFdw al = ACTIVITY_LOG_FDW.as("al");
+		ActivityLogFdw ala = ACTIVITY_LOG_FDW.as("ala");
 		Word w = WORD.as("w");
 
 		Field<String[]> wvf = DSL
@@ -67,8 +67,8 @@ public class HistoryDbService implements GlobalConstant {
 
 	public List<ActivityLogHistory> getMeaningsHistory(int offset, int limit) {
 
-		ActivityLog al = ACTIVITY_LOG.as("al");
-		ActivityLog ala = ACTIVITY_LOG.as("ala");
+		ActivityLogFdw al = ACTIVITY_LOG_FDW.as("al");
+		ActivityLogFdw ala = ACTIVITY_LOG_FDW.as("ala");
 		Meaning m = MEANING.as("m");
 
 		Field<String[]> wvf = DSL

@@ -16,11 +16,6 @@ import org.jooq.impl.SQLDataType;
 public class Sequences {
 
     /**
-     * The sequence <code>public.activity_log_id_seq</code>
-     */
-    public static final Sequence<Long> ACTIVITY_LOG_ID_SEQ = Internal.createSequence("activity_log_id_seq", Public.PUBLIC, SQLDataType.BIGINT.nullable(false), null, null, null, null, false, null);
-
-    /**
      * The sequence <code>public.aspect_order_by_seq</code>
      */
     public static final Sequence<Long> ASPECT_ORDER_BY_SEQ = Internal.createSequence("aspect_order_by_seq", Public.PUBLIC, SQLDataType.BIGINT.nullable(false), null, null, null, null, false, null);
@@ -221,11 +216,6 @@ public class Sequences {
     public static final Sequence<Long> LEX_RELATION_ORDER_BY_SEQ = Internal.createSequence("lex_relation_order_by_seq", Public.PUBLIC, SQLDataType.BIGINT.nullable(false), null, null, null, null, false, null);
 
     /**
-     * The sequence <code>public.lexeme_activity_log_id_seq</code>
-     */
-    public static final Sequence<Long> LEXEME_ACTIVITY_LOG_ID_SEQ = Internal.createSequence("lexeme_activity_log_id_seq", Public.PUBLIC, SQLDataType.BIGINT.nullable(false), null, null, null, null, false, null);
-
-    /**
      * The sequence <code>public.lexeme_deriv_id_seq</code>
      */
     public static final Sequence<Long> LEXEME_DERIV_ID_SEQ = Internal.createSequence("lexeme_deriv_id_seq", Public.PUBLIC, SQLDataType.BIGINT.nullable(false), null, null, null, null, false, null);
@@ -301,11 +291,6 @@ public class Sequences {
     public static final Sequence<Long> LEXEME_TAG_ID_SEQ = Internal.createSequence("lexeme_tag_id_seq", Public.PUBLIC, SQLDataType.BIGINT.nullable(false), null, null, null, null, false, null);
 
     /**
-     * The sequence <code>public.meaning_activity_log_id_seq</code>
-     */
-    public static final Sequence<Long> MEANING_ACTIVITY_LOG_ID_SEQ = Internal.createSequence("meaning_activity_log_id_seq", Public.PUBLIC, SQLDataType.BIGINT.nullable(false), null, null, null, null, false, null);
-
-    /**
      * The sequence <code>public.meaning_domain_id_seq</code>
      */
     public static final Sequence<Long> MEANING_DOMAIN_ID_SEQ = Internal.createSequence("meaning_domain_id_seq", Public.PUBLIC, SQLDataType.BIGINT.nullable(false), null, null, null, null, false, null);
@@ -334,11 +319,6 @@ public class Sequences {
      * The sequence <code>public.meaning_id_seq</code>
      */
     public static final Sequence<Long> MEANING_ID_SEQ = Internal.createSequence("meaning_id_seq", Public.PUBLIC, SQLDataType.BIGINT.nullable(false), null, null, null, null, false, null);
-
-    /**
-     * The sequence <code>public.meaning_last_activity_log_id_seq</code>
-     */
-    public static final Sequence<Long> MEANING_LAST_ACTIVITY_LOG_ID_SEQ = Internal.createSequence("meaning_last_activity_log_id_seq", Public.PUBLIC, SQLDataType.BIGINT.nullable(false), null, null, null, null, false, null);
 
     /**
      * The sequence <code>public.meaning_nr_id_seq</code>
@@ -431,11 +411,6 @@ public class Sequences {
     public static final Sequence<Long> SEMANTIC_TYPE_ORDER_BY_SEQ = Internal.createSequence("semantic_type_order_by_seq", Public.PUBLIC, SQLDataType.BIGINT.nullable(false), null, null, null, null, false, null);
 
     /**
-     * The sequence <code>public.source_activity_log_id_seq</code>
-     */
-    public static final Sequence<Long> SOURCE_ACTIVITY_LOG_ID_SEQ = Internal.createSequence("source_activity_log_id_seq", Public.PUBLIC, SQLDataType.BIGINT.nullable(false), null, null, null, null, false, null);
-
-    /**
      * The sequence <code>public.source_freeform_id_seq</code>
      */
     public static final Sequence<Long> SOURCE_FREEFORM_ID_SEQ = Internal.createSequence("source_freeform_id_seq", Public.PUBLIC, SQLDataType.BIGINT.nullable(false), null, null, null, null, false, null);
@@ -474,11 +449,6 @@ public class Sequences {
      * The sequence <code>public.value_state_order_by_seq</code>
      */
     public static final Sequence<Long> VALUE_STATE_ORDER_BY_SEQ = Internal.createSequence("value_state_order_by_seq", Public.PUBLIC, SQLDataType.BIGINT.nullable(false), null, null, null, null, false, null);
-
-    /**
-     * The sequence <code>public.word_activity_log_id_seq</code>
-     */
-    public static final Sequence<Long> WORD_ACTIVITY_LOG_ID_SEQ = Internal.createSequence("word_activity_log_id_seq", Public.PUBLIC, SQLDataType.BIGINT.nullable(false), null, null, null, null, false, null);
 
     /**
      * The sequence <code>public.word_etymology_id_seq</code>
@@ -559,11 +529,6 @@ public class Sequences {
      * The sequence <code>public.word_id_seq</code>
      */
     public static final Sequence<Long> WORD_ID_SEQ = Internal.createSequence("word_id_seq", Public.PUBLIC, SQLDataType.BIGINT.nullable(false), null, null, null, null, false, null);
-
-    /**
-     * The sequence <code>public.word_last_activity_log_id_seq</code>
-     */
-    public static final Sequence<Long> WORD_LAST_ACTIVITY_LOG_ID_SEQ = Internal.createSequence("word_last_activity_log_id_seq", Public.PUBLIC, SQLDataType.BIGINT.nullable(false), null, null, null, null, false, null);
 
     /**
      * The sequence <code>public.word_rel_type_order_by_seq</code>
