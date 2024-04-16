@@ -57,8 +57,6 @@
             <th:block th:each="sourceProperty,sourcePropertyIter : ${source.sourceProperties}">
               <div class="row">
                 <div class="mb-1">
-                  <input th:if="${sourceProperty.type.toString() == 'SOURCE_NAME'}" type="radio" th:value="${sourceProperty.id}" th:name="${'source_' + source.id}"
-                    th:checked="${sourcePropertyIter.count == 1}">
                   <span th:text="#{|source.property.${sourceProperty.type}|}"></span>
                   -
                   <span th:text="${sourceProperty.valueText}" th:if="${sourceProperty.valueText != null}" th:style="${sourceProperty.valueMatch ? 'background-color: #eaffea' : ''}"></span>
@@ -164,15 +162,6 @@
   <div th:id="${'sourceSearchResult_' + source.id}" th:fragment="source_search_result">
     <div class="col-auto form-inline">
       <div class="ml-auto">
-        <button type="button" class="btn badge badge-success float-right"
-                th:title="#{source.add.property}"
-                data-toggle="modal"
-                th:data-target="${'#addSourcePropertyDlg_' + source.id}"
-                sec:authorize="#vars.source.crudGrant">
-          <i class="fa fa-plus" aria-hidden="true"></i>
-        </button>
-      </div>
-      <div class="ml-2">
         <form th:action="@{/open_source_join}" method="post">
           <input type="hidden" name="previousSearch" th:value="${simpleSearchFilter}">
           <input type="hidden" name="sourceId" th:value="${source.id}">
@@ -238,13 +227,11 @@
       </div>
     </div>
     <div th:replace="sourcedialog :: edit_source_dlg"></div>
-    <div th:replace="sourcedialog :: add_source_property_dlg"></div>
     <table class="table">
       <tr>
         <td class="col-1"></td>
         <td class="col-6">
           <th:block th:each="sourceProperty : ${source.sourceProperties}">
-            <div th:replace="sourcedialog :: edit_source_property_dlg"></div>
             <div class="row">
               <div class="invisible-buttons action-buttons-anchor mw-90 mb-1">
                 <div style="display: list-item; position: absolute"></div>
@@ -252,17 +239,6 @@
                 -
                 <span th:text="${sourceProperty.valueText}" th:if="${sourceProperty.valueText != null}" th:style="${sourceProperty.valueMatch ? 'background-color: #eaffea' : ''}"></span>
                 <span th:text="${#dates.format(sourceProperty.valueDate, 'dd.MM.yyyy HH:mm')}" th:if="${sourceProperty.valueDate != null}"></span>
-                <div class="action-buttons-2" sec:authorize="#vars.source.crudGrant">
-                  <button type="button" class="btn badge badge-primary" title="Muuda" data-toggle="modal" th:data-target="${'#editSourcePropertyDlg_' + sourceProperty.id}">
-                    <i class="fa fa-edit" aria-hidden="true"></i>
-                  </button>
-                  <button type="button" class="btn badge badge-warning"
-                          th:data-source-property-id="${sourceProperty.id}"
-                          th:data-source-id="${source.id}"
-                          data-toggle="delete-source-property-confirm" data-placement="right">
-                    <i class="fa fa-remove" aria-hidden="true"></i>
-                  </button>
-                </div>
               </div>
             </div>
           </th:block>
@@ -306,8 +282,6 @@
         <td style="width: 100px;"></td>
         <td>
           <th:block th:each="sourceProperty : ${source.sourceProperties}">
-            <div th:replace="sourcedialog :: edit_source_property_dlg"></div>
-            <div th:replace="sourcedialog :: add_source_property_dlg"></div>
             <div th:replace="sourcedialog :: edit_source_dlg"></div>
             <div class="row">
               <div class="invisible-buttons action-buttons-anchor mw-90 mb-1">
@@ -316,17 +290,6 @@
                 -
                 <span th:text="${sourceProperty.valueText}" th:if="${sourceProperty.valueText != null}" th:style="${sourceProperty.valueMatch ? 'background-color: #eaffea' : ''}"></span>
                 <span th:text="${#dates.format(sourceProperty.valueDate, 'dd.MM.yyyy HH:mm')}" th:if="${sourceProperty.valueDate != null}"></span>
-                <div class="action-buttons-2" sec:authorize="#vars.source.crudGrant">
-                  <button type="button" class="btn badge badge-primary" title="Muuda" data-toggle="modal" th:data-target="${'#editSourcePropertyDlg_' + sourceProperty.id}">
-                    <i class="fa fa-edit" aria-hidden="true"></i>
-                  </button>
-                  <button type="button" class="btn badge badge-warning"
-                          th:data-source-property-id="${sourceProperty.id}"
-                          th:data-source-id="${source.id}"
-                          data-toggle="delete-source-property-confirm" data-placement="right">
-                    <i class="fa fa-remove" aria-hidden="true"></i>
-                  </button>
-                </div>
               </div>
             </div>
           </th:block>

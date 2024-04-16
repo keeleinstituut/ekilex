@@ -2,60 +2,6 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head></head>
 <body>
-  <div th:id="${'editSourcePropertyDlg_' + sourceProperty.id}" class="modal" role="dialog" th:fragment="edit_source_property_dlg"
-        data-plugin="initEditSourcePropertyDlgPlugin">
-    <div class="modal-dialog modal-lg" role="document">
-      <div class="modal-content">
-        <form th:action="@{/update_source_property}">
-          <div class="modal-body">
-            <input type="hidden" name="sourcePropertyId" th:value="${sourceProperty.id}">
-            <div class="form-group row">
-              <div class="col-auto">
-                <span th:text="#{|source.property.${sourceProperty.type}|}"></span>
-              </div>
-            </div>
-            <div class="form-group row">
-              <div class="col-12">
-                <textarea rows="3" class="form-control required-field" name="valueText" th:text="${sourceProperty.valueText}"></textarea>
-              </div>
-            </div>
-          </div>
-          <div class="modal-footer">
-            <button type="submit" class="btn btn-primary" th:data-source-id="${source.id}" th:text="#{common.edit}">Muuda</button>
-            <button type="button" class="btn btn-default" data-dismiss="modal" th:text="#{common.cancel}">Katkesta</button>
-          </div>
-        </form>
-      </div>
-    </div>
-  </div>
-  <div th:id="${'addSourcePropertyDlg_' + source.id}" class="modal" role="dialog" th:fragment="add_source_property_dlg"
-        data-plugin="initAddSourcePropertyDlgPlugin">
-    <div class="modal-dialog modal-lg" role="document">
-      <div class="modal-content">
-        <form th:action="@{/create_source_property}">
-          <div class="modal-body">
-            <input type="hidden" name="sourceId" th:value="${source.id}">
-            <div class="form-group row">
-              <div class="col-auto">
-                <select required class="form-control" name="type">
-                  <option th:each="type : ${sourcePropertyTypes}" th:value="${type}" th:text="#{|source.property.${type.name()}|}">value</option>
-                </select>
-              </div>
-            </div>
-            <div class="form-group row">
-              <div class="col-12">
-                <textarea rows="3" class="form-control required-field" name="valueText"></textarea>
-              </div>
-            </div>
-          </div>
-          <div class="modal-footer">
-            <button type="submit" class="btn btn-primary" th:data-source-id="${source.id}" th:text="#{common.add}">Lisa</button>
-            <button type="button" class="btn btn-default" data-dismiss="modal" th:text="#{common.cancel}">Katkesta</button>
-          </div>
-        </form>
-      </div>
-    </div>
-  </div>
   <div th:id="${'editSourceDlg_' + source.id}" class="modal" role="dialog" th:fragment="edit_source_dlg">
     <div class="modal-dialog modal-lg" role="document">
       <div class="modal-content">
