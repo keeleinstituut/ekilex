@@ -23,6 +23,7 @@
               <strong th:if="${historyType == 'word'}" th:text="#{history.word.title}">keelendid, terminid</strong>
               <strong th:if="${historyType == 'meaning'}" th:text="#{history.meaning.title}">tähendused, mõisted</strong>
             </h3>
+            <div class="alert alert-warning" role="alert">Täielik andmete agregeerimine ajutiselt peatatud</div>
             <table class="table table-sm table-hover mt-3">
               <tr>
                 <th th:text="#{history.event.on}">Tegevuse aeg</th>
