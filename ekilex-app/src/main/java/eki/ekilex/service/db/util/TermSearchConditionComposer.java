@@ -1,6 +1,6 @@
 package eki.ekilex.service.db.util;
 
-import static eki.ekilex.data.db.Tables.ACTIVITY_LOG_FDW;
+import static eki.ekilex.data.db.Tables.ACTIVITY_LOG;
 import static eki.ekilex.data.db.Tables.DEFINITION;
 import static eki.ekilex.data.db.Tables.DEFINITION_FREEFORM;
 import static eki.ekilex.data.db.Tables.DEFINITION_SOURCE_LINK;
@@ -10,9 +10,9 @@ import static eki.ekilex.data.db.Tables.LEXEME;
 import static eki.ekilex.data.db.Tables.LEXEME_FREEFORM;
 import static eki.ekilex.data.db.Tables.LEXEME_SOURCE_LINK;
 import static eki.ekilex.data.db.Tables.MEANING;
-import static eki.ekilex.data.db.Tables.MEANING_ACTIVITY_LOG_FDW;
+import static eki.ekilex.data.db.Tables.MEANING_ACTIVITY_LOG;
 import static eki.ekilex.data.db.Tables.MEANING_FREEFORM;
-import static eki.ekilex.data.db.Tables.MEANING_LAST_ACTIVITY_LOG_FDW;
+import static eki.ekilex.data.db.Tables.MEANING_LAST_ACTIVITY_LOG;
 import static eki.ekilex.data.db.Tables.WORD;
 
 import java.sql.Timestamp;
@@ -46,7 +46,7 @@ import eki.ekilex.data.SearchCriterion;
 import eki.ekilex.data.SearchCriterionGroup;
 import eki.ekilex.data.SearchDatasetsRestriction;
 import eki.ekilex.data.SearchFilter;
-import eki.ekilex.data.db.tables.ActivityLogFdw;
+import eki.ekilex.data.db.tables.ActivityLog;
 import eki.ekilex.data.db.tables.Definition;
 import eki.ekilex.data.db.tables.DefinitionFreeform;
 import eki.ekilex.data.db.tables.DefinitionSourceLink;
@@ -56,9 +56,9 @@ import eki.ekilex.data.db.tables.Lexeme;
 import eki.ekilex.data.db.tables.LexemeFreeform;
 import eki.ekilex.data.db.tables.LexemeSourceLink;
 import eki.ekilex.data.db.tables.Meaning;
-import eki.ekilex.data.db.tables.MeaningActivityLogFdw;
+import eki.ekilex.data.db.tables.MeaningActivityLog;
 import eki.ekilex.data.db.tables.MeaningFreeform;
-import eki.ekilex.data.db.tables.MeaningLastActivityLogFdw;
+import eki.ekilex.data.db.tables.MeaningLastActivityLog;
 import eki.ekilex.data.db.tables.Word;
 
 @Component
@@ -561,9 +561,9 @@ public class TermSearchConditionComposer implements GlobalConstant, ActivityFunc
 
 	private Condition applyMeaningActivityLogFilters(List<SearchCriterion> searchCriteria, Field<Long> meaningIdField, Condition wherem) throws Exception {
 
-		MeaningActivityLogFdw mal = MEANING_ACTIVITY_LOG_FDW.as("mal");
-		MeaningLastActivityLogFdw mlal = MEANING_LAST_ACTIVITY_LOG_FDW.as("mlal");
-		ActivityLogFdw al = ACTIVITY_LOG_FDW.as("al");
+		MeaningActivityLog mal = MEANING_ACTIVITY_LOG.as("mal");
+		MeaningLastActivityLog mlal = MEANING_LAST_ACTIVITY_LOG.as("mlal");
+		ActivityLog al = ACTIVITY_LOG.as("al");
 
 		List<SearchCriterion> filteredCriteriaByCreatedOrUpdatedByOnly = searchFilterHelper.filterCriteriaBySearchKeys(searchCriteria, SearchKey.CREATED_OR_UPDATED_BY);
 		boolean isFilterByCreatedOrUpdatedByOnly = CollectionUtils.isNotEmpty(filteredCriteriaByCreatedOrUpdatedByOnly);

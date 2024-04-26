@@ -139,7 +139,7 @@ public class ApiMeaningController extends AbstractApiController {
 
 	@Order(807)
 	@PreAuthorize("principal.apiCrud && @permEval.isMeaningCrudGranted(principal, #crudRoleDataset, #meaningTag.meaningId)")
-	@PostMapping(API_SERVICES_URI + MEANING_TAG_URI + CREATE_URI)
+	@PostMapping(API_SERVICES_URI + MEANING_TAG_URI + DELETE_URI)
 	@ResponseBody
 	public ApiResponse deleteMeaningTag(
 			@RequestParam("crudRoleDataset") String crudRoleDataset,

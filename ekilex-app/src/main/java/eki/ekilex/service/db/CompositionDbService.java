@@ -9,7 +9,7 @@ import static eki.ekilex.data.db.Tables.FORM;
 import static eki.ekilex.data.db.Tables.FREEFORM;
 import static eki.ekilex.data.db.Tables.FREEFORM_SOURCE_LINK;
 import static eki.ekilex.data.db.Tables.LEXEME;
-import static eki.ekilex.data.db.Tables.LEXEME_ACTIVITY_LOG_FDW;
+import static eki.ekilex.data.db.Tables.LEXEME_ACTIVITY_LOG;
 import static eki.ekilex.data.db.Tables.LEXEME_DERIV;
 import static eki.ekilex.data.db.Tables.LEXEME_FREEFORM;
 import static eki.ekilex.data.db.Tables.LEXEME_POS;
@@ -22,7 +22,7 @@ import static eki.ekilex.data.db.Tables.LEX_COLLOC_POS_GROUP;
 import static eki.ekilex.data.db.Tables.LEX_COLLOC_REL_GROUP;
 import static eki.ekilex.data.db.Tables.LEX_RELATION;
 import static eki.ekilex.data.db.Tables.MEANING;
-import static eki.ekilex.data.db.Tables.MEANING_ACTIVITY_LOG_FDW;
+import static eki.ekilex.data.db.Tables.MEANING_ACTIVITY_LOG;
 import static eki.ekilex.data.db.Tables.MEANING_DOMAIN;
 import static eki.ekilex.data.db.Tables.MEANING_FREEFORM;
 import static eki.ekilex.data.db.Tables.MEANING_RELATION;
@@ -30,7 +30,7 @@ import static eki.ekilex.data.db.Tables.MEANING_SEMANTIC_TYPE;
 import static eki.ekilex.data.db.Tables.PARADIGM;
 import static eki.ekilex.data.db.Tables.PARADIGM_FORM;
 import static eki.ekilex.data.db.Tables.WORD;
-import static eki.ekilex.data.db.Tables.WORD_ACTIVITY_LOG_FDW;
+import static eki.ekilex.data.db.Tables.WORD_ACTIVITY_LOG;
 import static eki.ekilex.data.db.Tables.WORD_ETYMOLOGY;
 import static eki.ekilex.data.db.Tables.WORD_ETYMOLOGY_RELATION;
 import static eki.ekilex.data.db.Tables.WORD_ETYMOLOGY_SOURCE_LINK;
@@ -67,15 +67,15 @@ import eki.ekilex.data.db.tables.LexCollocPosGroup;
 import eki.ekilex.data.db.tables.LexCollocRelGroup;
 import eki.ekilex.data.db.tables.LexRelation;
 import eki.ekilex.data.db.tables.Lexeme;
-import eki.ekilex.data.db.tables.LexemeActivityLogFdw;
+import eki.ekilex.data.db.tables.LexemeActivityLog;
 import eki.ekilex.data.db.tables.LexemeSourceLink;
 import eki.ekilex.data.db.tables.LexemeTag;
 import eki.ekilex.data.db.tables.Meaning;
-import eki.ekilex.data.db.tables.MeaningActivityLogFdw;
+import eki.ekilex.data.db.tables.MeaningActivityLog;
 import eki.ekilex.data.db.tables.MeaningRelation;
 import eki.ekilex.data.db.tables.MeaningSemanticType;
 import eki.ekilex.data.db.tables.Word;
-import eki.ekilex.data.db.tables.WordActivityLogFdw;
+import eki.ekilex.data.db.tables.WordActivityLog;
 import eki.ekilex.data.db.tables.WordEtymology;
 import eki.ekilex.data.db.tables.WordEtymologyRelation;
 import eki.ekilex.data.db.tables.WordGroupMember;
@@ -243,8 +243,8 @@ public class CompositionDbService extends AbstractDataDbService implements Globa
 		joinMeaningRelations(targetMeaningId, sourceMeaningId);
 		joinMeaningSemanticTypes(targetMeaningId, sourceMeaningId);
 
-		MeaningActivityLogFdw mals = MEANING_ACTIVITY_LOG_FDW.as("mals");
-		MeaningActivityLogFdw malt = MEANING_ACTIVITY_LOG_FDW.as("malt");
+		MeaningActivityLog mals = MEANING_ACTIVITY_LOG.as("mals");
+		MeaningActivityLog malt = MEANING_ACTIVITY_LOG.as("malt");
 		create
 				.update(mals)
 				.set(mals.MEANING_ID, targetMeaningId)
@@ -275,8 +275,8 @@ public class CompositionDbService extends AbstractDataDbService implements Globa
 		joinLexemeComplexity(targetLexemeId, sourceLexemeId);
 		joinLexemeTags(targetLexemeId, sourceLexemeId);
 
-		LexemeActivityLogFdw lals = LEXEME_ACTIVITY_LOG_FDW.as("lals");
-		LexemeActivityLogFdw lalt = LEXEME_ACTIVITY_LOG_FDW.as("lalt");
+		LexemeActivityLog lals = LEXEME_ACTIVITY_LOG.as("lals");
+		LexemeActivityLog lalt = LEXEME_ACTIVITY_LOG.as("lalt");
 		create
 				.update(lals)
 				.set(lals.LEXEME_ID, targetLexemeId)
@@ -1196,8 +1196,8 @@ public class CompositionDbService extends AbstractDataDbService implements Globa
 
 	private void joinWordActivityLogs(Long targetWordId, Long sourceWordId) {
 
-		WordActivityLogFdw wals = WORD_ACTIVITY_LOG_FDW.as("wals");
-		WordActivityLogFdw walt = WORD_ACTIVITY_LOG_FDW.as("walt");
+		WordActivityLog wals = WORD_ACTIVITY_LOG.as("wals");
+		WordActivityLog walt = WORD_ACTIVITY_LOG.as("walt");
 
 		create.update(wals)
 				.set(wals.WORD_ID, targetWordId)

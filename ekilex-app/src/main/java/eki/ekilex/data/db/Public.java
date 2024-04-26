@@ -4,8 +4,7 @@
 package eki.ekilex.data.db;
 
 
-import eki.ekilex.data.db.tables.ActivityLogFdw;
-import eki.ekilex.data.db.tables.ActivityLogIdFdw;
+import eki.ekilex.data.db.tables.ActivityLog;
 import eki.ekilex.data.db.tables.Aspect;
 import eki.ekilex.data.db.tables.AspectLabel;
 import eki.ekilex.data.db.tables.Collocation;
@@ -52,8 +51,7 @@ import eki.ekilex.data.db.tables.LexRelType;
 import eki.ekilex.data.db.tables.LexRelTypeLabel;
 import eki.ekilex.data.db.tables.LexRelation;
 import eki.ekilex.data.db.tables.Lexeme;
-import eki.ekilex.data.db.tables.LexemeActivityLogFdw;
-import eki.ekilex.data.db.tables.LexemeActivityLogIdFdw;
+import eki.ekilex.data.db.tables.LexemeActivityLog;
 import eki.ekilex.data.db.tables.LexemeDeriv;
 import eki.ekilex.data.db.tables.LexemeFreeform;
 import eki.ekilex.data.db.tables.LexemePos;
@@ -62,13 +60,11 @@ import eki.ekilex.data.db.tables.LexemeRegister;
 import eki.ekilex.data.db.tables.LexemeSourceLink;
 import eki.ekilex.data.db.tables.LexemeTag;
 import eki.ekilex.data.db.tables.Meaning;
-import eki.ekilex.data.db.tables.MeaningActivityLogFdw;
-import eki.ekilex.data.db.tables.MeaningActivityLogIdFdw;
+import eki.ekilex.data.db.tables.MeaningActivityLog;
 import eki.ekilex.data.db.tables.MeaningDomain;
 import eki.ekilex.data.db.tables.MeaningForum;
 import eki.ekilex.data.db.tables.MeaningFreeform;
-import eki.ekilex.data.db.tables.MeaningLastActivityLogFdw;
-import eki.ekilex.data.db.tables.MeaningLastActivityLogIdFdw;
+import eki.ekilex.data.db.tables.MeaningLastActivityLog;
 import eki.ekilex.data.db.tables.MeaningNr;
 import eki.ekilex.data.db.tables.MeaningRelMapping;
 import eki.ekilex.data.db.tables.MeaningRelType;
@@ -85,7 +81,6 @@ import eki.ekilex.data.db.tables.Pos;
 import eki.ekilex.data.db.tables.PosGroup;
 import eki.ekilex.data.db.tables.PosGroupLabel;
 import eki.ekilex.data.db.tables.PosLabel;
-import eki.ekilex.data.db.tables.PostgresFdwGetConnections;
 import eki.ekilex.data.db.tables.ProficiencyLevel;
 import eki.ekilex.data.db.tables.ProficiencyLevelLabel;
 import eki.ekilex.data.db.tables.Region;
@@ -94,8 +89,7 @@ import eki.ekilex.data.db.tables.RegisterLabel;
 import eki.ekilex.data.db.tables.SemanticType;
 import eki.ekilex.data.db.tables.SemanticTypeLabel;
 import eki.ekilex.data.db.tables.Source;
-import eki.ekilex.data.db.tables.SourceActivityLogFdw;
-import eki.ekilex.data.db.tables.SourceActivityLogIdFdw;
+import eki.ekilex.data.db.tables.SourceActivityLog;
 import eki.ekilex.data.db.tables.SourceFreeform;
 import eki.ekilex.data.db.tables.Tag;
 import eki.ekilex.data.db.tables.TempDsImportPkMap;
@@ -125,8 +119,7 @@ import eki.ekilex.data.db.tables.ViewWwWordEtymology;
 import eki.ekilex.data.db.tables.ViewWwWordRelation;
 import eki.ekilex.data.db.tables.ViewWwWordSearch;
 import eki.ekilex.data.db.tables.Word;
-import eki.ekilex.data.db.tables.WordActivityLogFdw;
-import eki.ekilex.data.db.tables.WordActivityLogIdFdw;
+import eki.ekilex.data.db.tables.WordActivityLog;
 import eki.ekilex.data.db.tables.WordEtymology;
 import eki.ekilex.data.db.tables.WordEtymologyRelation;
 import eki.ekilex.data.db.tables.WordEtymologySourceLink;
@@ -136,8 +129,7 @@ import eki.ekilex.data.db.tables.WordFreq;
 import eki.ekilex.data.db.tables.WordGroup;
 import eki.ekilex.data.db.tables.WordGroupMember;
 import eki.ekilex.data.db.tables.WordGuid;
-import eki.ekilex.data.db.tables.WordLastActivityLogFdw;
-import eki.ekilex.data.db.tables.WordLastActivityLogIdFdw;
+import eki.ekilex.data.db.tables.WordLastActivityLog;
 import eki.ekilex.data.db.tables.WordRelMapping;
 import eki.ekilex.data.db.tables.WordRelType;
 import eki.ekilex.data.db.tables.WordRelTypeLabel;
@@ -146,7 +138,6 @@ import eki.ekilex.data.db.tables.WordRelationParam;
 import eki.ekilex.data.db.tables.WordType;
 import eki.ekilex.data.db.tables.WordTypeLabel;
 import eki.ekilex.data.db.tables.WordWordType;
-import eki.ekilex.data.db.tables.records.PostgresFdwGetConnectionsRecord;
 import eki.ekilex.data.db.udt.TypeActivityLogDiff;
 import eki.ekilex.data.db.udt.TypeClassifier;
 import eki.ekilex.data.db.udt.TypeCollocMember;
@@ -176,8 +167,6 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.jooq.Catalog;
-import org.jooq.Configuration;
-import org.jooq.Result;
 import org.jooq.Sequence;
 import org.jooq.Table;
 import org.jooq.UDT;
@@ -198,14 +187,9 @@ public class Public extends SchemaImpl {
     public static final Public PUBLIC = new Public();
 
     /**
-     * The table <code>public.activity_log_fdw</code>.
+     * The table <code>public.activity_log</code>.
      */
-    public final ActivityLogFdw ACTIVITY_LOG_FDW = ActivityLogFdw.ACTIVITY_LOG_FDW;
-
-    /**
-     * The table <code>public.activity_log_id_fdw</code>.
-     */
-    public final ActivityLogIdFdw ACTIVITY_LOG_ID_FDW = ActivityLogIdFdw.ACTIVITY_LOG_ID_FDW;
+    public final ActivityLog ACTIVITY_LOG = ActivityLog.ACTIVITY_LOG;
 
     /**
      * The table <code>public.aspect</code>.
@@ -438,14 +422,9 @@ public class Public extends SchemaImpl {
     public final Lexeme LEXEME = Lexeme.LEXEME;
 
     /**
-     * The table <code>public.lexeme_activity_log_fdw</code>.
+     * The table <code>public.lexeme_activity_log</code>.
      */
-    public final LexemeActivityLogFdw LEXEME_ACTIVITY_LOG_FDW = LexemeActivityLogFdw.LEXEME_ACTIVITY_LOG_FDW;
-
-    /**
-     * The table <code>public.lexeme_activity_log_id_fdw</code>.
-     */
-    public final LexemeActivityLogIdFdw LEXEME_ACTIVITY_LOG_ID_FDW = LexemeActivityLogIdFdw.LEXEME_ACTIVITY_LOG_ID_FDW;
+    public final LexemeActivityLog LEXEME_ACTIVITY_LOG = LexemeActivityLog.LEXEME_ACTIVITY_LOG;
 
     /**
      * The table <code>public.lexeme_deriv</code>.
@@ -488,14 +467,9 @@ public class Public extends SchemaImpl {
     public final Meaning MEANING = Meaning.MEANING;
 
     /**
-     * The table <code>public.meaning_activity_log_fdw</code>.
+     * The table <code>public.meaning_activity_log</code>.
      */
-    public final MeaningActivityLogFdw MEANING_ACTIVITY_LOG_FDW = MeaningActivityLogFdw.MEANING_ACTIVITY_LOG_FDW;
-
-    /**
-     * The table <code>public.meaning_activity_log_id_fdw</code>.
-     */
-    public final MeaningActivityLogIdFdw MEANING_ACTIVITY_LOG_ID_FDW = MeaningActivityLogIdFdw.MEANING_ACTIVITY_LOG_ID_FDW;
+    public final MeaningActivityLog MEANING_ACTIVITY_LOG = MeaningActivityLog.MEANING_ACTIVITY_LOG;
 
     /**
      * The table <code>public.meaning_domain</code>.
@@ -513,14 +487,9 @@ public class Public extends SchemaImpl {
     public final MeaningFreeform MEANING_FREEFORM = MeaningFreeform.MEANING_FREEFORM;
 
     /**
-     * The table <code>public.meaning_last_activity_log_fdw</code>.
+     * The table <code>public.meaning_last_activity_log</code>.
      */
-    public final MeaningLastActivityLogFdw MEANING_LAST_ACTIVITY_LOG_FDW = MeaningLastActivityLogFdw.MEANING_LAST_ACTIVITY_LOG_FDW;
-
-    /**
-     * The table <code>public.meaning_last_activity_log_id_fdw</code>.
-     */
-    public final MeaningLastActivityLogIdFdw MEANING_LAST_ACTIVITY_LOG_ID_FDW = MeaningLastActivityLogIdFdw.MEANING_LAST_ACTIVITY_LOG_ID_FDW;
+    public final MeaningLastActivityLog MEANING_LAST_ACTIVITY_LOG = MeaningLastActivityLog.MEANING_LAST_ACTIVITY_LOG;
 
     /**
      * The table <code>public.meaning_nr</code>.
@@ -603,29 +572,6 @@ public class Public extends SchemaImpl {
     public final PosLabel POS_LABEL = PosLabel.POS_LABEL;
 
     /**
-     * The table <code>public.postgres_fdw_get_connections</code>.
-     */
-    public final PostgresFdwGetConnections POSTGRES_FDW_GET_CONNECTIONS = PostgresFdwGetConnections.POSTGRES_FDW_GET_CONNECTIONS;
-
-    /**
-     * Call <code>public.postgres_fdw_get_connections</code>.
-     */
-    public static Result<PostgresFdwGetConnectionsRecord> POSTGRES_FDW_GET_CONNECTIONS(
-          Configuration configuration
-    ) {
-        return configuration.dsl().selectFrom(eki.ekilex.data.db.tables.PostgresFdwGetConnections.POSTGRES_FDW_GET_CONNECTIONS.call(
-        )).fetch();
-    }
-
-    /**
-     * Get <code>public.postgres_fdw_get_connections</code> as a table.
-     */
-    public static PostgresFdwGetConnections POSTGRES_FDW_GET_CONNECTIONS() {
-        return eki.ekilex.data.db.tables.PostgresFdwGetConnections.POSTGRES_FDW_GET_CONNECTIONS.call(
-        );
-    }
-
-    /**
      * The table <code>public.proficiency_level</code>.
      */
     public final ProficiencyLevel PROFICIENCY_LEVEL = ProficiencyLevel.PROFICIENCY_LEVEL;
@@ -666,14 +612,9 @@ public class Public extends SchemaImpl {
     public final Source SOURCE = Source.SOURCE;
 
     /**
-     * The table <code>public.source_activity_log_fdw</code>.
+     * The table <code>public.source_activity_log</code>.
      */
-    public final SourceActivityLogFdw SOURCE_ACTIVITY_LOG_FDW = SourceActivityLogFdw.SOURCE_ACTIVITY_LOG_FDW;
-
-    /**
-     * The table <code>public.source_activity_log_id_fdw</code>.
-     */
-    public final SourceActivityLogIdFdw SOURCE_ACTIVITY_LOG_ID_FDW = SourceActivityLogIdFdw.SOURCE_ACTIVITY_LOG_ID_FDW;
+    public final SourceActivityLog SOURCE_ACTIVITY_LOG = SourceActivityLog.SOURCE_ACTIVITY_LOG;
 
     /**
      * The table <code>public.source_freeform</code>.
@@ -821,14 +762,9 @@ public class Public extends SchemaImpl {
     public final Word WORD = Word.WORD;
 
     /**
-     * The table <code>public.word_activity_log_fdw</code>.
+     * The table <code>public.word_activity_log</code>.
      */
-    public final WordActivityLogFdw WORD_ACTIVITY_LOG_FDW = WordActivityLogFdw.WORD_ACTIVITY_LOG_FDW;
-
-    /**
-     * The table <code>public.word_activity_log_id_fdw</code>.
-     */
-    public final WordActivityLogIdFdw WORD_ACTIVITY_LOG_ID_FDW = WordActivityLogIdFdw.WORD_ACTIVITY_LOG_ID_FDW;
+    public final WordActivityLog WORD_ACTIVITY_LOG = WordActivityLog.WORD_ACTIVITY_LOG;
 
     /**
      * The table <code>public.word_etymology</code>.
@@ -876,14 +812,9 @@ public class Public extends SchemaImpl {
     public final WordGuid WORD_GUID = WordGuid.WORD_GUID;
 
     /**
-     * The table <code>public.word_last_activity_log_fdw</code>.
+     * The table <code>public.word_last_activity_log</code>.
      */
-    public final WordLastActivityLogFdw WORD_LAST_ACTIVITY_LOG_FDW = WordLastActivityLogFdw.WORD_LAST_ACTIVITY_LOG_FDW;
-
-    /**
-     * The table <code>public.word_last_activity_log_id_fdw</code>.
-     */
-    public final WordLastActivityLogIdFdw WORD_LAST_ACTIVITY_LOG_ID_FDW = WordLastActivityLogIdFdw.WORD_LAST_ACTIVITY_LOG_ID_FDW;
+    public final WordLastActivityLog WORD_LAST_ACTIVITY_LOG = WordLastActivityLog.WORD_LAST_ACTIVITY_LOG;
 
     /**
      * The table <code>public.word_rel_mapping</code>.
@@ -941,6 +872,7 @@ public class Public extends SchemaImpl {
     @Override
     public final List<Sequence<?>> getSequences() {
         return Arrays.<Sequence<?>>asList(
+            Sequences.ACTIVITY_LOG_ID_SEQ,
             Sequences.ASPECT_ORDER_BY_SEQ,
             Sequences.COLLOCATION_FREEFORM_ID_SEQ,
             Sequences.COLLOCATION_ID_SEQ,
@@ -981,6 +913,7 @@ public class Public extends SchemaImpl {
             Sequences.LEX_REL_TYPE_ORDER_BY_SEQ,
             Sequences.LEX_RELATION_ID_SEQ,
             Sequences.LEX_RELATION_ORDER_BY_SEQ,
+            Sequences.LEXEME_ACTIVITY_LOG_ID_SEQ,
             Sequences.LEXEME_DERIV_ID_SEQ,
             Sequences.LEXEME_DERIV_ORDER_BY_SEQ,
             Sequences.LEXEME_FREEFORM_ID_SEQ,
@@ -996,12 +929,14 @@ public class Public extends SchemaImpl {
             Sequences.LEXEME_SOURCE_LINK_ID_SEQ,
             Sequences.LEXEME_SOURCE_LINK_ORDER_BY_SEQ,
             Sequences.LEXEME_TAG_ID_SEQ,
+            Sequences.MEANING_ACTIVITY_LOG_ID_SEQ,
             Sequences.MEANING_DOMAIN_ID_SEQ,
             Sequences.MEANING_DOMAIN_ORDER_BY_SEQ,
             Sequences.MEANING_FORUM_ID_SEQ,
             Sequences.MEANING_FORUM_ORDER_BY_SEQ,
             Sequences.MEANING_FREEFORM_ID_SEQ,
             Sequences.MEANING_ID_SEQ,
+            Sequences.MEANING_LAST_ACTIVITY_LOG_ID_SEQ,
             Sequences.MEANING_NR_ID_SEQ,
             Sequences.MEANING_REL_TYPE_ORDER_BY_SEQ,
             Sequences.MEANING_RELATION_ID_SEQ,
@@ -1020,6 +955,7 @@ public class Public extends SchemaImpl {
             Sequences.REGION_ORDER_BY_SEQ,
             Sequences.REGISTER_ORDER_BY_SEQ,
             Sequences.SEMANTIC_TYPE_ORDER_BY_SEQ,
+            Sequences.SOURCE_ACTIVITY_LOG_ID_SEQ,
             Sequences.SOURCE_FREEFORM_ID_SEQ,
             Sequences.SOURCE_ID_SEQ,
             Sequences.TAG_ORDER_BY_SEQ,
@@ -1028,6 +964,7 @@ public class Public extends SchemaImpl {
             Sequences.TERMS_OF_USE_ID_SEQ,
             Sequences.USAGE_TYPE_ORDER_BY_SEQ,
             Sequences.VALUE_STATE_ORDER_BY_SEQ,
+            Sequences.WORD_ACTIVITY_LOG_ID_SEQ,
             Sequences.WORD_ETYMOLOGY_ID_SEQ,
             Sequences.WORD_ETYMOLOGY_ORDER_BY_SEQ,
             Sequences.WORD_ETYMOLOGY_RELATION_ID_SEQ,
@@ -1044,6 +981,7 @@ public class Public extends SchemaImpl {
             Sequences.WORD_GROUP_MEMBER_ORDER_BY_SEQ,
             Sequences.WORD_GUID_ID_SEQ,
             Sequences.WORD_ID_SEQ,
+            Sequences.WORD_LAST_ACTIVITY_LOG_ID_SEQ,
             Sequences.WORD_REL_TYPE_ORDER_BY_SEQ,
             Sequences.WORD_RELATION_ID_SEQ,
             Sequences.WORD_RELATION_ORDER_BY_SEQ,
@@ -1056,8 +994,7 @@ public class Public extends SchemaImpl {
     @Override
     public final List<Table<?>> getTables() {
         return Arrays.<Table<?>>asList(
-            ActivityLogFdw.ACTIVITY_LOG_FDW,
-            ActivityLogIdFdw.ACTIVITY_LOG_ID_FDW,
+            ActivityLog.ACTIVITY_LOG,
             Aspect.ASPECT,
             AspectLabel.ASPECT_LABEL,
             Collocation.COLLOCATION,
@@ -1104,8 +1041,7 @@ public class Public extends SchemaImpl {
             LexRelTypeLabel.LEX_REL_TYPE_LABEL,
             LexRelation.LEX_RELATION,
             Lexeme.LEXEME,
-            LexemeActivityLogFdw.LEXEME_ACTIVITY_LOG_FDW,
-            LexemeActivityLogIdFdw.LEXEME_ACTIVITY_LOG_ID_FDW,
+            LexemeActivityLog.LEXEME_ACTIVITY_LOG,
             LexemeDeriv.LEXEME_DERIV,
             LexemeFreeform.LEXEME_FREEFORM,
             LexemePos.LEXEME_POS,
@@ -1114,13 +1050,11 @@ public class Public extends SchemaImpl {
             LexemeSourceLink.LEXEME_SOURCE_LINK,
             LexemeTag.LEXEME_TAG,
             Meaning.MEANING,
-            MeaningActivityLogFdw.MEANING_ACTIVITY_LOG_FDW,
-            MeaningActivityLogIdFdw.MEANING_ACTIVITY_LOG_ID_FDW,
+            MeaningActivityLog.MEANING_ACTIVITY_LOG,
             MeaningDomain.MEANING_DOMAIN,
             MeaningForum.MEANING_FORUM,
             MeaningFreeform.MEANING_FREEFORM,
-            MeaningLastActivityLogFdw.MEANING_LAST_ACTIVITY_LOG_FDW,
-            MeaningLastActivityLogIdFdw.MEANING_LAST_ACTIVITY_LOG_ID_FDW,
+            MeaningLastActivityLog.MEANING_LAST_ACTIVITY_LOG,
             MeaningNr.MEANING_NR,
             MeaningRelMapping.MEANING_REL_MAPPING,
             MeaningRelType.MEANING_REL_TYPE,
@@ -1137,7 +1071,6 @@ public class Public extends SchemaImpl {
             PosGroup.POS_GROUP,
             PosGroupLabel.POS_GROUP_LABEL,
             PosLabel.POS_LABEL,
-            PostgresFdwGetConnections.POSTGRES_FDW_GET_CONNECTIONS,
             ProficiencyLevel.PROFICIENCY_LEVEL,
             ProficiencyLevelLabel.PROFICIENCY_LEVEL_LABEL,
             Region.REGION,
@@ -1146,8 +1079,7 @@ public class Public extends SchemaImpl {
             SemanticType.SEMANTIC_TYPE,
             SemanticTypeLabel.SEMANTIC_TYPE_LABEL,
             Source.SOURCE,
-            SourceActivityLogFdw.SOURCE_ACTIVITY_LOG_FDW,
-            SourceActivityLogIdFdw.SOURCE_ACTIVITY_LOG_ID_FDW,
+            SourceActivityLog.SOURCE_ACTIVITY_LOG,
             SourceFreeform.SOURCE_FREEFORM,
             Tag.TAG,
             TempDsImportPkMap.TEMP_DS_IMPORT_PK_MAP,
@@ -1177,8 +1109,7 @@ public class Public extends SchemaImpl {
             ViewWwWordRelation.VIEW_WW_WORD_RELATION,
             ViewWwWordSearch.VIEW_WW_WORD_SEARCH,
             Word.WORD,
-            WordActivityLogFdw.WORD_ACTIVITY_LOG_FDW,
-            WordActivityLogIdFdw.WORD_ACTIVITY_LOG_ID_FDW,
+            WordActivityLog.WORD_ACTIVITY_LOG,
             WordEtymology.WORD_ETYMOLOGY,
             WordEtymologyRelation.WORD_ETYMOLOGY_RELATION,
             WordEtymologySourceLink.WORD_ETYMOLOGY_SOURCE_LINK,
@@ -1188,8 +1119,7 @@ public class Public extends SchemaImpl {
             WordGroup.WORD_GROUP,
             WordGroupMember.WORD_GROUP_MEMBER,
             WordGuid.WORD_GUID,
-            WordLastActivityLogFdw.WORD_LAST_ACTIVITY_LOG_FDW,
-            WordLastActivityLogIdFdw.WORD_LAST_ACTIVITY_LOG_ID_FDW,
+            WordLastActivityLog.WORD_LAST_ACTIVITY_LOG,
             WordRelMapping.WORD_REL_MAPPING,
             WordRelType.WORD_REL_TYPE,
             WordRelTypeLabel.WORD_REL_TYPE_LABEL,

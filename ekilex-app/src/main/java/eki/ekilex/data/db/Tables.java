@@ -4,8 +4,7 @@
 package eki.ekilex.data.db;
 
 
-import eki.ekilex.data.db.tables.ActivityLogFdw;
-import eki.ekilex.data.db.tables.ActivityLogIdFdw;
+import eki.ekilex.data.db.tables.ActivityLog;
 import eki.ekilex.data.db.tables.Aspect;
 import eki.ekilex.data.db.tables.AspectLabel;
 import eki.ekilex.data.db.tables.Collocation;
@@ -52,8 +51,7 @@ import eki.ekilex.data.db.tables.LexRelType;
 import eki.ekilex.data.db.tables.LexRelTypeLabel;
 import eki.ekilex.data.db.tables.LexRelation;
 import eki.ekilex.data.db.tables.Lexeme;
-import eki.ekilex.data.db.tables.LexemeActivityLogFdw;
-import eki.ekilex.data.db.tables.LexemeActivityLogIdFdw;
+import eki.ekilex.data.db.tables.LexemeActivityLog;
 import eki.ekilex.data.db.tables.LexemeDeriv;
 import eki.ekilex.data.db.tables.LexemeFreeform;
 import eki.ekilex.data.db.tables.LexemePos;
@@ -62,13 +60,11 @@ import eki.ekilex.data.db.tables.LexemeRegister;
 import eki.ekilex.data.db.tables.LexemeSourceLink;
 import eki.ekilex.data.db.tables.LexemeTag;
 import eki.ekilex.data.db.tables.Meaning;
-import eki.ekilex.data.db.tables.MeaningActivityLogFdw;
-import eki.ekilex.data.db.tables.MeaningActivityLogIdFdw;
+import eki.ekilex.data.db.tables.MeaningActivityLog;
 import eki.ekilex.data.db.tables.MeaningDomain;
 import eki.ekilex.data.db.tables.MeaningForum;
 import eki.ekilex.data.db.tables.MeaningFreeform;
-import eki.ekilex.data.db.tables.MeaningLastActivityLogFdw;
-import eki.ekilex.data.db.tables.MeaningLastActivityLogIdFdw;
+import eki.ekilex.data.db.tables.MeaningLastActivityLog;
 import eki.ekilex.data.db.tables.MeaningNr;
 import eki.ekilex.data.db.tables.MeaningRelMapping;
 import eki.ekilex.data.db.tables.MeaningRelType;
@@ -85,7 +81,6 @@ import eki.ekilex.data.db.tables.Pos;
 import eki.ekilex.data.db.tables.PosGroup;
 import eki.ekilex.data.db.tables.PosGroupLabel;
 import eki.ekilex.data.db.tables.PosLabel;
-import eki.ekilex.data.db.tables.PostgresFdwGetConnections;
 import eki.ekilex.data.db.tables.ProficiencyLevel;
 import eki.ekilex.data.db.tables.ProficiencyLevelLabel;
 import eki.ekilex.data.db.tables.Region;
@@ -94,8 +89,7 @@ import eki.ekilex.data.db.tables.RegisterLabel;
 import eki.ekilex.data.db.tables.SemanticType;
 import eki.ekilex.data.db.tables.SemanticTypeLabel;
 import eki.ekilex.data.db.tables.Source;
-import eki.ekilex.data.db.tables.SourceActivityLogFdw;
-import eki.ekilex.data.db.tables.SourceActivityLogIdFdw;
+import eki.ekilex.data.db.tables.SourceActivityLog;
 import eki.ekilex.data.db.tables.SourceFreeform;
 import eki.ekilex.data.db.tables.Tag;
 import eki.ekilex.data.db.tables.TempDsImportPkMap;
@@ -125,8 +119,7 @@ import eki.ekilex.data.db.tables.ViewWwWordEtymology;
 import eki.ekilex.data.db.tables.ViewWwWordRelation;
 import eki.ekilex.data.db.tables.ViewWwWordSearch;
 import eki.ekilex.data.db.tables.Word;
-import eki.ekilex.data.db.tables.WordActivityLogFdw;
-import eki.ekilex.data.db.tables.WordActivityLogIdFdw;
+import eki.ekilex.data.db.tables.WordActivityLog;
 import eki.ekilex.data.db.tables.WordEtymology;
 import eki.ekilex.data.db.tables.WordEtymologyRelation;
 import eki.ekilex.data.db.tables.WordEtymologySourceLink;
@@ -136,8 +129,7 @@ import eki.ekilex.data.db.tables.WordFreq;
 import eki.ekilex.data.db.tables.WordGroup;
 import eki.ekilex.data.db.tables.WordGroupMember;
 import eki.ekilex.data.db.tables.WordGuid;
-import eki.ekilex.data.db.tables.WordLastActivityLogFdw;
-import eki.ekilex.data.db.tables.WordLastActivityLogIdFdw;
+import eki.ekilex.data.db.tables.WordLastActivityLog;
 import eki.ekilex.data.db.tables.WordRelMapping;
 import eki.ekilex.data.db.tables.WordRelType;
 import eki.ekilex.data.db.tables.WordRelTypeLabel;
@@ -146,10 +138,6 @@ import eki.ekilex.data.db.tables.WordRelationParam;
 import eki.ekilex.data.db.tables.WordType;
 import eki.ekilex.data.db.tables.WordTypeLabel;
 import eki.ekilex.data.db.tables.WordWordType;
-import eki.ekilex.data.db.tables.records.PostgresFdwGetConnectionsRecord;
-
-import org.jooq.Configuration;
-import org.jooq.Result;
 
 
 /**
@@ -159,14 +147,9 @@ import org.jooq.Result;
 public class Tables {
 
     /**
-     * The table <code>public.activity_log_fdw</code>.
+     * The table <code>public.activity_log</code>.
      */
-    public static final ActivityLogFdw ACTIVITY_LOG_FDW = ActivityLogFdw.ACTIVITY_LOG_FDW;
-
-    /**
-     * The table <code>public.activity_log_id_fdw</code>.
-     */
-    public static final ActivityLogIdFdw ACTIVITY_LOG_ID_FDW = ActivityLogIdFdw.ACTIVITY_LOG_ID_FDW;
+    public static final ActivityLog ACTIVITY_LOG = ActivityLog.ACTIVITY_LOG;
 
     /**
      * The table <code>public.aspect</code>.
@@ -399,14 +382,9 @@ public class Tables {
     public static final Lexeme LEXEME = Lexeme.LEXEME;
 
     /**
-     * The table <code>public.lexeme_activity_log_fdw</code>.
+     * The table <code>public.lexeme_activity_log</code>.
      */
-    public static final LexemeActivityLogFdw LEXEME_ACTIVITY_LOG_FDW = LexemeActivityLogFdw.LEXEME_ACTIVITY_LOG_FDW;
-
-    /**
-     * The table <code>public.lexeme_activity_log_id_fdw</code>.
-     */
-    public static final LexemeActivityLogIdFdw LEXEME_ACTIVITY_LOG_ID_FDW = LexemeActivityLogIdFdw.LEXEME_ACTIVITY_LOG_ID_FDW;
+    public static final LexemeActivityLog LEXEME_ACTIVITY_LOG = LexemeActivityLog.LEXEME_ACTIVITY_LOG;
 
     /**
      * The table <code>public.lexeme_deriv</code>.
@@ -449,14 +427,9 @@ public class Tables {
     public static final Meaning MEANING = Meaning.MEANING;
 
     /**
-     * The table <code>public.meaning_activity_log_fdw</code>.
+     * The table <code>public.meaning_activity_log</code>.
      */
-    public static final MeaningActivityLogFdw MEANING_ACTIVITY_LOG_FDW = MeaningActivityLogFdw.MEANING_ACTIVITY_LOG_FDW;
-
-    /**
-     * The table <code>public.meaning_activity_log_id_fdw</code>.
-     */
-    public static final MeaningActivityLogIdFdw MEANING_ACTIVITY_LOG_ID_FDW = MeaningActivityLogIdFdw.MEANING_ACTIVITY_LOG_ID_FDW;
+    public static final MeaningActivityLog MEANING_ACTIVITY_LOG = MeaningActivityLog.MEANING_ACTIVITY_LOG;
 
     /**
      * The table <code>public.meaning_domain</code>.
@@ -474,14 +447,9 @@ public class Tables {
     public static final MeaningFreeform MEANING_FREEFORM = MeaningFreeform.MEANING_FREEFORM;
 
     /**
-     * The table <code>public.meaning_last_activity_log_fdw</code>.
+     * The table <code>public.meaning_last_activity_log</code>.
      */
-    public static final MeaningLastActivityLogFdw MEANING_LAST_ACTIVITY_LOG_FDW = MeaningLastActivityLogFdw.MEANING_LAST_ACTIVITY_LOG_FDW;
-
-    /**
-     * The table <code>public.meaning_last_activity_log_id_fdw</code>.
-     */
-    public static final MeaningLastActivityLogIdFdw MEANING_LAST_ACTIVITY_LOG_ID_FDW = MeaningLastActivityLogIdFdw.MEANING_LAST_ACTIVITY_LOG_ID_FDW;
+    public static final MeaningLastActivityLog MEANING_LAST_ACTIVITY_LOG = MeaningLastActivityLog.MEANING_LAST_ACTIVITY_LOG;
 
     /**
      * The table <code>public.meaning_nr</code>.
@@ -564,29 +532,6 @@ public class Tables {
     public static final PosLabel POS_LABEL = PosLabel.POS_LABEL;
 
     /**
-     * The table <code>public.postgres_fdw_get_connections</code>.
-     */
-    public static final PostgresFdwGetConnections POSTGRES_FDW_GET_CONNECTIONS = PostgresFdwGetConnections.POSTGRES_FDW_GET_CONNECTIONS;
-
-    /**
-     * Call <code>public.postgres_fdw_get_connections</code>.
-     */
-    public static Result<PostgresFdwGetConnectionsRecord> POSTGRES_FDW_GET_CONNECTIONS(
-          Configuration configuration
-    ) {
-        return configuration.dsl().selectFrom(eki.ekilex.data.db.tables.PostgresFdwGetConnections.POSTGRES_FDW_GET_CONNECTIONS.call(
-        )).fetch();
-    }
-
-    /**
-     * Get <code>public.postgres_fdw_get_connections</code> as a table.
-     */
-    public static PostgresFdwGetConnections POSTGRES_FDW_GET_CONNECTIONS() {
-        return eki.ekilex.data.db.tables.PostgresFdwGetConnections.POSTGRES_FDW_GET_CONNECTIONS.call(
-        );
-    }
-
-    /**
      * The table <code>public.proficiency_level</code>.
      */
     public static final ProficiencyLevel PROFICIENCY_LEVEL = ProficiencyLevel.PROFICIENCY_LEVEL;
@@ -627,14 +572,9 @@ public class Tables {
     public static final Source SOURCE = Source.SOURCE;
 
     /**
-     * The table <code>public.source_activity_log_fdw</code>.
+     * The table <code>public.source_activity_log</code>.
      */
-    public static final SourceActivityLogFdw SOURCE_ACTIVITY_LOG_FDW = SourceActivityLogFdw.SOURCE_ACTIVITY_LOG_FDW;
-
-    /**
-     * The table <code>public.source_activity_log_id_fdw</code>.
-     */
-    public static final SourceActivityLogIdFdw SOURCE_ACTIVITY_LOG_ID_FDW = SourceActivityLogIdFdw.SOURCE_ACTIVITY_LOG_ID_FDW;
+    public static final SourceActivityLog SOURCE_ACTIVITY_LOG = SourceActivityLog.SOURCE_ACTIVITY_LOG;
 
     /**
      * The table <code>public.source_freeform</code>.
@@ -782,14 +722,9 @@ public class Tables {
     public static final Word WORD = Word.WORD;
 
     /**
-     * The table <code>public.word_activity_log_fdw</code>.
+     * The table <code>public.word_activity_log</code>.
      */
-    public static final WordActivityLogFdw WORD_ACTIVITY_LOG_FDW = WordActivityLogFdw.WORD_ACTIVITY_LOG_FDW;
-
-    /**
-     * The table <code>public.word_activity_log_id_fdw</code>.
-     */
-    public static final WordActivityLogIdFdw WORD_ACTIVITY_LOG_ID_FDW = WordActivityLogIdFdw.WORD_ACTIVITY_LOG_ID_FDW;
+    public static final WordActivityLog WORD_ACTIVITY_LOG = WordActivityLog.WORD_ACTIVITY_LOG;
 
     /**
      * The table <code>public.word_etymology</code>.
@@ -837,14 +772,9 @@ public class Tables {
     public static final WordGuid WORD_GUID = WordGuid.WORD_GUID;
 
     /**
-     * The table <code>public.word_last_activity_log_fdw</code>.
+     * The table <code>public.word_last_activity_log</code>.
      */
-    public static final WordLastActivityLogFdw WORD_LAST_ACTIVITY_LOG_FDW = WordLastActivityLogFdw.WORD_LAST_ACTIVITY_LOG_FDW;
-
-    /**
-     * The table <code>public.word_last_activity_log_id_fdw</code>.
-     */
-    public static final WordLastActivityLogIdFdw WORD_LAST_ACTIVITY_LOG_ID_FDW = WordLastActivityLogIdFdw.WORD_LAST_ACTIVITY_LOG_ID_FDW;
+    public static final WordLastActivityLog WORD_LAST_ACTIVITY_LOG = WordLastActivityLog.WORD_LAST_ACTIVITY_LOG;
 
     /**
      * The table <code>public.word_rel_mapping</code>.

@@ -79,7 +79,7 @@ public class ApiLexemeController extends AbstractApiController {
 
 	@Order(904)
 	@PreAuthorize("principal.apiCrud && @permEval.isLexemeCrudGranted(principal, #crudRoleDataset, #lexemeTag.lexemeId)")
-	@PostMapping(API_SERVICES_URI + LEXEME_TAG_URI + CREATE_URI)
+	@PostMapping(API_SERVICES_URI + LEXEME_TAG_URI + DELETE_URI)
 	@ResponseBody
 	public ApiResponse deleteLexemeTag(
 			@RequestParam("crudRoleDataset") String crudRoleDataset,

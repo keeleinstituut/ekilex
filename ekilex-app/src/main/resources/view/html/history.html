@@ -23,23 +23,22 @@
               <strong th:if="${historyType == 'word'}" th:text="#{history.word.title}">keelendid, terminid</strong>
               <strong th:if="${historyType == 'meaning'}" th:text="#{history.meaning.title}">tähendused, mõisted</strong>
             </h3>
-            <div class="alert alert-warning" role="alert">Täielik andmete agregeerimine ajutiselt peatatud</div>
             <table class="table table-sm table-hover mt-3">
               <tr>
-                <th th:text="#{history.event.on}">Tegevuse aeg</th>
-                <th th:text="#{history.event.by}">Tegutseja</th>
-                <th th:text="#{history.event}">Tegevus</th>
-                <th th:text="#{history.entity.id}">Olemi ID</th>
-                <th th:if="${historyType == 'meaning'}" th:text="#{history.lexeme.ids}">Ilmikute ID-d</th>
-                <th th:text="#{history.word.values}">Keelendite väärtused</th>
-                <th th:if="${historyType == 'meaning'}" th:text="#{history.definition.values}">Definitsioonide väärtused</th>
+                <th th:text="#{history.event.on}" class="text-nowrap">Tegevuse aeg</th>
+                <th th:text="#{history.event.by}" class="text-nowrap">Tegutseja</th>
+                <th th:text="#{history.event}" class="text-nowrap">Tegevus</th>
+                <th th:text="#{history.entity.id}" class="text-nowrap">Olemi ID</th>
+                <th th:if="${historyType == 'meaning'}" th:text="#{history.lexeme.ids}" class="text-nowrap">Ilmikute ID-d</th>
+                <th th:text="#{history.word.values}" class="text-nowrap">Keelendite väärtused</th>
+                <th th:if="${historyType == 'meaning'}" th:text="#{history.definition.values}" class="text-nowrap">Definitsioonide väärtused</th>
               </tr>
               <th:block th:each="logRow : ${activityLogHistory}">
                 <tr>
-                  <td>
+                  <td class="text-nowrap">
                     <span th:text="${#dates.format(logRow.eventOn, 'dd.MM.yyyy HH:mm')}"></span>
                   </td>
-                  <td>
+                  <td class="text-nowrap">
                     <span th:text="${logRow.eventBy}"></span>
                   </td>
                   <td>
@@ -53,7 +52,7 @@
                       <div th:each="lexemeId : ${logRow.lexemeIds}" th:text="${lexemeId}"></div>
                     </th:block>
                   </td>
-                  <td>
+                  <td class="text-nowrap">
                     <th:block th:if="${logRow.wordValues}">
                       <div th:each="wordValue : ${logRow.wordValues}">
                         <i th:text="${wordValue}"></i>

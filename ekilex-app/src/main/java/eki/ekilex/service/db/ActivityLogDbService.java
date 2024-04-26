@@ -1,31 +1,31 @@
 package eki.ekilex.service.db;
 
-import static eki.ekilex.data.db.Tables.ACTIVITY_LOG_FDW;
+import static eki.ekilex.data.db.Tables.ACTIVITY_LOG;
 import static eki.ekilex.data.db.Tables.DEFINITION;
 import static eki.ekilex.data.db.Tables.DEFINITION_FREEFORM;
 import static eki.ekilex.data.db.Tables.DEFINITION_SOURCE_LINK;
 import static eki.ekilex.data.db.Tables.FREEFORM;
 import static eki.ekilex.data.db.Tables.FREEFORM_SOURCE_LINK;
 import static eki.ekilex.data.db.Tables.LEXEME;
-import static eki.ekilex.data.db.Tables.LEXEME_ACTIVITY_LOG_FDW;
+import static eki.ekilex.data.db.Tables.LEXEME_ACTIVITY_LOG;
 import static eki.ekilex.data.db.Tables.LEXEME_FREEFORM;
 import static eki.ekilex.data.db.Tables.LEXEME_SOURCE_LINK;
 import static eki.ekilex.data.db.Tables.LEX_RELATION;
 import static eki.ekilex.data.db.Tables.MEANING;
-import static eki.ekilex.data.db.Tables.MEANING_ACTIVITY_LOG_FDW;
+import static eki.ekilex.data.db.Tables.MEANING_ACTIVITY_LOG;
 import static eki.ekilex.data.db.Tables.MEANING_DOMAIN;
 import static eki.ekilex.data.db.Tables.MEANING_FREEFORM;
-import static eki.ekilex.data.db.Tables.MEANING_LAST_ACTIVITY_LOG_FDW;
+import static eki.ekilex.data.db.Tables.MEANING_LAST_ACTIVITY_LOG;
 import static eki.ekilex.data.db.Tables.MEANING_RELATION;
 import static eki.ekilex.data.db.Tables.PARADIGM;
 import static eki.ekilex.data.db.Tables.SOURCE;
-import static eki.ekilex.data.db.Tables.SOURCE_ACTIVITY_LOG_FDW;
+import static eki.ekilex.data.db.Tables.SOURCE_ACTIVITY_LOG;
 import static eki.ekilex.data.db.Tables.SOURCE_FREEFORM;
 import static eki.ekilex.data.db.Tables.WORD;
-import static eki.ekilex.data.db.Tables.WORD_ACTIVITY_LOG_FDW;
+import static eki.ekilex.data.db.Tables.WORD_ACTIVITY_LOG;
 import static eki.ekilex.data.db.Tables.WORD_ETYMOLOGY;
 import static eki.ekilex.data.db.Tables.WORD_FREEFORM;
-import static eki.ekilex.data.db.Tables.WORD_LAST_ACTIVITY_LOG_FDW;
+import static eki.ekilex.data.db.Tables.WORD_LAST_ACTIVITY_LOG;
 import static eki.ekilex.data.db.Tables.WORD_RELATION;
 import static eki.ekilex.data.db.Tables.WORD_WORD_TYPE;
 
@@ -53,22 +53,22 @@ import eki.common.constant.GlobalConstant;
 import eki.common.constant.LastActivityType;
 import eki.ekilex.data.TypeActivityLogDiff;
 import eki.ekilex.data.WordLexemeMeaningIds;
-import eki.ekilex.data.db.tables.ActivityLogFdw;
+import eki.ekilex.data.db.tables.ActivityLog;
 import eki.ekilex.data.db.tables.Definition;
 import eki.ekilex.data.db.tables.DefinitionFreeform;
 import eki.ekilex.data.db.tables.Freeform;
 import eki.ekilex.data.db.tables.Lexeme;
 import eki.ekilex.data.db.tables.LexemeFreeform;
 import eki.ekilex.data.db.tables.Meaning;
-import eki.ekilex.data.db.tables.MeaningActivityLogFdw;
+import eki.ekilex.data.db.tables.MeaningActivityLog;
 import eki.ekilex.data.db.tables.MeaningFreeform;
-import eki.ekilex.data.db.tables.MeaningLastActivityLogFdw;
-import eki.ekilex.data.db.tables.SourceActivityLogFdw;
+import eki.ekilex.data.db.tables.MeaningLastActivityLog;
+import eki.ekilex.data.db.tables.SourceActivityLog;
 import eki.ekilex.data.db.tables.SourceFreeform;
 import eki.ekilex.data.db.tables.Word;
-import eki.ekilex.data.db.tables.WordActivityLogFdw;
+import eki.ekilex.data.db.tables.WordActivityLog;
 import eki.ekilex.data.db.tables.WordFreeform;
-import eki.ekilex.data.db.tables.WordLastActivityLogFdw;
+import eki.ekilex.data.db.tables.WordLastActivityLog;
 import eki.ekilex.data.db.udt.records.TypeActivityLogDiffRecord;
 
 @Component
@@ -80,7 +80,7 @@ public class ActivityLogDbService implements GlobalConstant, ActivityFunct {
 	public List<eki.ekilex.data.ActivityLog> getActivityLog(
 			Long ownerId, ActivityOwner owner, ActivityEntity entity, String functName) {
 
-		ActivityLogFdw al = ACTIVITY_LOG_FDW.as("al");
+		ActivityLog al = ACTIVITY_LOG.as("al");
 
 		Condition where = al.OWNER_ID.eq(ownerId)
 				.and(al.OWNER_NAME.eq(owner.name()))
@@ -101,8 +101,8 @@ public class ActivityLogDbService implements GlobalConstant, ActivityFunct {
 
 	public List<eki.ekilex.data.ActivityLog> getWordActivityLog(Long wordId) {
 
-		ActivityLogFdw al = ACTIVITY_LOG_FDW.as("al");
-		WordActivityLogFdw wal = WORD_ACTIVITY_LOG_FDW.as("wal");
+		ActivityLog al = ACTIVITY_LOG.as("al");
+		WordActivityLog wal = WORD_ACTIVITY_LOG.as("wal");
 		Field<String> wvf = getWordValueField(al);
 
 		return create
@@ -128,8 +128,8 @@ public class ActivityLogDbService implements GlobalConstant, ActivityFunct {
 
 	public List<eki.ekilex.data.ActivityLog> getMeaningActivityLog(Long meaningId) {
 
-		ActivityLogFdw al = ACTIVITY_LOG_FDW.as("al");
-		MeaningActivityLogFdw mal = MEANING_ACTIVITY_LOG_FDW.as("mal");
+		ActivityLog al = ACTIVITY_LOG.as("al");
+		MeaningActivityLog mal = MEANING_ACTIVITY_LOG.as("mal");
 		Field<String> wvf = getWordValueField(al);
 
 		return create
@@ -153,7 +153,7 @@ public class ActivityLogDbService implements GlobalConstant, ActivityFunct {
 				.fetchInto(eki.ekilex.data.ActivityLog.class);
 	}
 
-	private Field<String> getWordValueField(ActivityLogFdw al) {
+	private Field<String> getWordValueField(ActivityLog al) {
 
 		Word w = WORD.as("w");
 		Lexeme l = LEXEME.as("l");
@@ -175,8 +175,8 @@ public class ActivityLogDbService implements GlobalConstant, ActivityFunct {
 
 	public List<eki.ekilex.data.ActivityLog> getSourceActivityLog(Long sourceId) {
 
-		ActivityLogFdw al = ACTIVITY_LOG_FDW.as("al");
-		SourceActivityLogFdw sal = SOURCE_ACTIVITY_LOG_FDW.as("sal");
+		ActivityLog al = ACTIVITY_LOG.as("al");
+		SourceActivityLog sal = SOURCE_ACTIVITY_LOG.as("sal");
 
 		return create
 				.select(
@@ -200,7 +200,7 @@ public class ActivityLogDbService implements GlobalConstant, ActivityFunct {
 
 	public Timestamp getActivityLogEventOn(Long activityLogId) {
 
-		ActivityLogFdw al = ACTIVITY_LOG_FDW.as("al");
+		ActivityLog al = ACTIVITY_LOG.as("al");
 
 		return create
 				.select(al.EVENT_ON)
@@ -213,18 +213,18 @@ public class ActivityLogDbService implements GlobalConstant, ActivityFunct {
 
 		return create
 				.insertInto(
-						ACTIVITY_LOG_FDW,
-						ACTIVITY_LOG_FDW.EVENT_BY,
-						ACTIVITY_LOG_FDW.DATASET_CODE,
-						ACTIVITY_LOG_FDW.FUNCT_NAME,
-						ACTIVITY_LOG_FDW.OWNER_ID,
-						ACTIVITY_LOG_FDW.OWNER_NAME,
-						ACTIVITY_LOG_FDW.ENTITY_ID,
-						ACTIVITY_LOG_FDW.ENTITY_NAME,
-						ACTIVITY_LOG_FDW.PREV_DATA,
-						ACTIVITY_LOG_FDW.CURR_DATA,
-						ACTIVITY_LOG_FDW.PREV_DIFFS,
-						ACTIVITY_LOG_FDW.CURR_DIFFS)
+						ACTIVITY_LOG,
+						ACTIVITY_LOG.EVENT_BY,
+						ACTIVITY_LOG.DATASET_CODE,
+						ACTIVITY_LOG.FUNCT_NAME,
+						ACTIVITY_LOG.OWNER_ID,
+						ACTIVITY_LOG.OWNER_NAME,
+						ACTIVITY_LOG.ENTITY_ID,
+						ACTIVITY_LOG.ENTITY_NAME,
+						ACTIVITY_LOG.PREV_DATA,
+						ACTIVITY_LOG.CURR_DATA,
+						ACTIVITY_LOG.PREV_DIFFS,
+						ACTIVITY_LOG.CURR_DIFFS)
 				.values(
 						activityLog.getEventBy(),
 						activityLog.getDatasetCode(),
@@ -237,7 +237,7 @@ public class ActivityLogDbService implements GlobalConstant, ActivityFunct {
 						JSONB.valueOf(activityLog.getCurrData()),
 						convert(activityLog.getPrevDiffs()),
 						convert(activityLog.getCurrDiffs()))
-				.returning(ACTIVITY_LOG_FDW.ID)
+				.returning(ACTIVITY_LOG.ID)
 				.fetchOne()
 				.getId();
 	}
@@ -247,9 +247,9 @@ public class ActivityLogDbService implements GlobalConstant, ActivityFunct {
 		for (Long lexemeId : lexemeIds) {
 			create
 					.insertInto(
-							LEXEME_ACTIVITY_LOG_FDW,
-							LEXEME_ACTIVITY_LOG_FDW.LEXEME_ID,
-							LEXEME_ACTIVITY_LOG_FDW.ACTIVITY_LOG_ID)
+							LEXEME_ACTIVITY_LOG,
+							LEXEME_ACTIVITY_LOG.LEXEME_ID,
+							LEXEME_ACTIVITY_LOG.ACTIVITY_LOG_ID)
 					.select(DSL
 							.select(DSL.val(lexemeId),DSL.val(activityLogId))
 							.whereExists(DSL.select(LEXEME.ID).from(LEXEME).where(LEXEME.ID.eq(lexemeId))))
@@ -262,9 +262,9 @@ public class ActivityLogDbService implements GlobalConstant, ActivityFunct {
 		for (Long wordId : wordIds) {
 			create
 					.insertInto(
-							WORD_ACTIVITY_LOG_FDW,
-							WORD_ACTIVITY_LOG_FDW.WORD_ID,
-							WORD_ACTIVITY_LOG_FDW.ACTIVITY_LOG_ID)
+							WORD_ACTIVITY_LOG,
+							WORD_ACTIVITY_LOG.WORD_ID,
+							WORD_ACTIVITY_LOG.ACTIVITY_LOG_ID)
 					.select(DSL
 							.select(DSL.val(wordId), DSL.val(activityLogId))
 							.whereExists(DSL.select(WORD.ID).from(WORD).where(WORD.ID.eq(wordId))))
@@ -277,9 +277,9 @@ public class ActivityLogDbService implements GlobalConstant, ActivityFunct {
 		for (Long meaningId : meaningIds) {
 			create
 					.insertInto(
-							MEANING_ACTIVITY_LOG_FDW,
-							MEANING_ACTIVITY_LOG_FDW.MEANING_ID,
-							MEANING_ACTIVITY_LOG_FDW.ACTIVITY_LOG_ID)
+							MEANING_ACTIVITY_LOG,
+							MEANING_ACTIVITY_LOG.MEANING_ID,
+							MEANING_ACTIVITY_LOG.ACTIVITY_LOG_ID)
 					.select(DSL
 							.select(DSL.val(meaningId), DSL.val(activityLogId))
 							.whereExists(DSL.select(MEANING.ID).from(MEANING).where(MEANING.ID.eq(meaningId))))
@@ -289,9 +289,9 @@ public class ActivityLogDbService implements GlobalConstant, ActivityFunct {
 
 	public Long createOrUpdateWordLastActivityLog(Long wordId) {
 
-		WordActivityLogFdw wal = WORD_ACTIVITY_LOG_FDW.as("wal");
-		WordLastActivityLogFdw wlal = WORD_LAST_ACTIVITY_LOG_FDW.as("wlal");
-		ActivityLogFdw al = ACTIVITY_LOG_FDW.as("al");
+		WordActivityLog wal = WORD_ACTIVITY_LOG.as("wal");
+		WordLastActivityLog wlal = WORD_LAST_ACTIVITY_LOG.as("wlal");
+		ActivityLog al = ACTIVITY_LOG.as("al");
 
 		Long activityLogId = create
 				.select(al.ID)
@@ -329,9 +329,9 @@ public class ActivityLogDbService implements GlobalConstant, ActivityFunct {
 
 	public void createOrUpdateMeaningLastActivityLog(Long meaningId, LastActivityType lastActivityType) {
 
-		MeaningActivityLogFdw mal = MEANING_ACTIVITY_LOG_FDW.as("mal");
-		MeaningLastActivityLogFdw mlal = MEANING_LAST_ACTIVITY_LOG_FDW.as("mlal");
-		ActivityLogFdw al = ACTIVITY_LOG_FDW.as("al");
+		MeaningActivityLog mal = MEANING_ACTIVITY_LOG.as("mal");
+		MeaningLastActivityLog mlal = MEANING_LAST_ACTIVITY_LOG.as("mlal");
+		ActivityLog al = ACTIVITY_LOG.as("al");
 		Long activityLogId = null;
 
 		if (LastActivityType.EDIT.equals(lastActivityType)) {
@@ -420,7 +420,7 @@ public class ActivityLogDbService implements GlobalConstant, ActivityFunct {
 	public void createSourceActivityLog(Long activityLogId, Long sourceId) {
 
 		create
-				.insertInto(SOURCE_ACTIVITY_LOG_FDW, SOURCE_ACTIVITY_LOG_FDW.SOURCE_ID, SOURCE_ACTIVITY_LOG_FDW.ACTIVITY_LOG_ID)
+				.insertInto(SOURCE_ACTIVITY_LOG, SOURCE_ACTIVITY_LOG.SOURCE_ID, SOURCE_ACTIVITY_LOG.ACTIVITY_LOG_ID)
 				.select(DSL
 						.select(DSL.val(sourceId), DSL.val(activityLogId))
 						.whereExists(DSL.select(SOURCE.ID).from(SOURCE).where(SOURCE.ID.eq(sourceId))))
@@ -447,8 +447,8 @@ public class ActivityLogDbService implements GlobalConstant, ActivityFunct {
 
 	public void updateMeaningFirstCreateEvent(Long meaningId, Timestamp eventOn, String eventBy) {
 
-		ActivityLogFdw al1 = ACTIVITY_LOG_FDW.as("al1");
-		ActivityLogFdw al2 = ACTIVITY_LOG_FDW.as("al2");
+		ActivityLog al1 = ACTIVITY_LOG.as("al1");
+		ActivityLog al2 = ACTIVITY_LOG.as("al2");
 
 		Table<Record1<Long>> alt = DSL
 				.select(al2.ID.as("first_al_id"))
@@ -691,32 +691,32 @@ public class ActivityLogDbService implements GlobalConstant, ActivityFunct {
 
 	public Timestamp getMeaningLastActivityLog(Long meaningId, LastActivityType lastActivityType) {
 		return create
-				.select(ACTIVITY_LOG_FDW.EVENT_ON)
-				.from(MEANING_LAST_ACTIVITY_LOG_FDW, ACTIVITY_LOG_FDW)
+				.select(ACTIVITY_LOG.EVENT_ON)
+				.from(MEANING_LAST_ACTIVITY_LOG, ACTIVITY_LOG)
 				.where(
-						MEANING_LAST_ACTIVITY_LOG_FDW.MEANING_ID.eq(meaningId)
-								.and(MEANING_LAST_ACTIVITY_LOG_FDW.ACTIVITY_LOG_ID.eq(ACTIVITY_LOG_FDW.ID))
-								.and(MEANING_LAST_ACTIVITY_LOG_FDW.TYPE.eq(lastActivityType.name())))
+						MEANING_LAST_ACTIVITY_LOG.MEANING_ID.eq(meaningId)
+								.and(MEANING_LAST_ACTIVITY_LOG.ACTIVITY_LOG_ID.eq(ACTIVITY_LOG.ID))
+								.and(MEANING_LAST_ACTIVITY_LOG.TYPE.eq(lastActivityType.name())))
 				.fetchOptionalInto(Timestamp.class)
 				.orElse(null);
 	}
 
 	public void deleteMeaningLastActivityLog(Long meaningId, LastActivityType lastActivityType) {
 		create
-				.deleteFrom(MEANING_LAST_ACTIVITY_LOG_FDW)
+				.deleteFrom(MEANING_LAST_ACTIVITY_LOG)
 				.where(
-						MEANING_LAST_ACTIVITY_LOG_FDW.MEANING_ID.eq(meaningId)
-								.and(MEANING_LAST_ACTIVITY_LOG_FDW.TYPE.eq(lastActivityType.name())))
+						MEANING_LAST_ACTIVITY_LOG.MEANING_ID.eq(meaningId)
+								.and(MEANING_LAST_ACTIVITY_LOG.TYPE.eq(lastActivityType.name())))
 				.execute();
 	}
 
 	public void moveMeaningLastActivityLog(Long targetMeaningId, Long sourceMeaningId, LastActivityType lastActivityType) {
 		create
-				.update(MEANING_LAST_ACTIVITY_LOG_FDW)
-				.set(MEANING_LAST_ACTIVITY_LOG_FDW.MEANING_ID, targetMeaningId)
+				.update(MEANING_LAST_ACTIVITY_LOG)
+				.set(MEANING_LAST_ACTIVITY_LOG.MEANING_ID, targetMeaningId)
 				.where(
-						MEANING_LAST_ACTIVITY_LOG_FDW.MEANING_ID.eq(sourceMeaningId)
-								.and(MEANING_LAST_ACTIVITY_LOG_FDW.TYPE.eq(lastActivityType.name())))
+						MEANING_LAST_ACTIVITY_LOG.MEANING_ID.eq(sourceMeaningId)
+								.and(MEANING_LAST_ACTIVITY_LOG.TYPE.eq(lastActivityType.name())))
 				.execute();
 	}
 }

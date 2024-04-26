@@ -1,6 +1,6 @@
 package eki.ekilex.service.db;
 
-import static eki.ekilex.data.db.Tables.ACTIVITY_LOG_FDW;
+import static eki.ekilex.data.db.Tables.ACTIVITY_LOG;
 import static eki.ekilex.data.db.Tables.LEXEME;
 import static eki.ekilex.data.db.Tables.WORD;
 
@@ -25,7 +25,7 @@ import eki.common.service.db.AbstractDbService;
 import eki.ekilex.constant.CrudType;
 import eki.ekilex.constant.SystemConstant;
 import eki.ekilex.data.WorkloadReportCount;
-import eki.ekilex.data.db.tables.ActivityLogFdw;
+import eki.ekilex.data.db.tables.ActivityLog;
 import eki.ekilex.data.db.tables.Lexeme;
 import eki.ekilex.data.db.tables.Word;
 
@@ -44,7 +44,7 @@ public class WorkloadReportDbService extends AbstractDbService implements System
 	public List<WorkloadReportCount> getWorkloadReportUserCounts(
 			LocalDate dateFrom, LocalDate dateUntil, List<String> datasetCodes, boolean includeUnspecifiedDatasets, List<String> userNames) {
 
-		ActivityLogFdw al = ACTIVITY_LOG_FDW.as("al");
+		ActivityLog al = ACTIVITY_LOG.as("al");
 
 		Timestamp from = Timestamp.valueOf(dateFrom.atStartOfDay());
 		Timestamp until = Timestamp.valueOf(dateUntil.plusDays(1).atStartOfDay());
@@ -83,7 +83,7 @@ public class WorkloadReportDbService extends AbstractDbService implements System
 	public List<WorkloadReportCount> getWorkloadReportTotalCounts(
 			LocalDate dateFrom, LocalDate dateUntil, List<String> datasetCodes, boolean includeUnspecifiedDatasets, List<String> userNames) {
 
-		ActivityLogFdw al = ACTIVITY_LOG_FDW.as("al");
+		ActivityLog al = ACTIVITY_LOG.as("al");
 
 		Timestamp from = Timestamp.valueOf(dateFrom.atStartOfDay());
 		Timestamp until = Timestamp.valueOf(dateUntil.plusDays(1).atStartOfDay());
@@ -129,7 +129,7 @@ public class WorkloadReportDbService extends AbstractDbService implements System
 	public List<WorkloadReportCount> getWorkloadReportFunctionCounts(
 			LocalDate dateFrom, LocalDate dateUntil, List<String> datasetCodes, boolean includeUnspecifiedDatasets, List<String> userNames, ActivityOwner activityOwner, CrudType activityType) {
 
-		ActivityLogFdw al = ACTIVITY_LOG_FDW.as("al");
+		ActivityLog al = ACTIVITY_LOG.as("al");
 		Lexeme l = LEXEME.as("l");
 		Word w = WORD.as("w");
 
@@ -197,7 +197,7 @@ public class WorkloadReportDbService extends AbstractDbService implements System
 	@Cacheable(value = CACHE_KEY_WORKLOAD_REPORT, key = "{#root.methodName, #activityOwner, #activityType}")
 	public List<String> getFunctionNames(ActivityOwner activityOwner, CrudType activityType) {
 
-		ActivityLogFdw al = ACTIVITY_LOG_FDW.as("al");
+		ActivityLog al = ACTIVITY_LOG.as("al");
 
 		Condition where = al.OWNER_NAME.eq(activityOwner.name());
 		where = addActivityTypeCondition(where, al, activityType);
@@ -211,7 +211,7 @@ public class WorkloadReportDbService extends AbstractDbService implements System
 				.fetchInto(String.class);
 	}
 
-	private Condition addUserNamesConditon(Condition where, ActivityLogFdw al, List<String> userNames) {
+	private Condition addUserNamesConditon(Condition where, ActivityLog al, List<String> userNames) {
 
 		if (CollectionUtils.isNotEmpty(userNames)) {
 			// using % wildcard to find API users as well
@@ -221,7 +221,7 @@ public class WorkloadReportDbService extends AbstractDbService implements System
 		return where;
 	}
 
-	private Condition addDatasetsCondition(Condition where, ActivityLogFdw al, List<String> datasetCodes, boolean includeUnspecifiedDatasets) {
+	private Condition addDatasetsCondition(Condition where, ActivityLog al, List<String> datasetCodes, boolean includeUnspecifiedDatasets) {
 
 		if (includeUnspecifiedDatasets) {
 			if (CollectionUtils.isEmpty(datasetCodes)) {
@@ -235,7 +235,7 @@ public class WorkloadReportDbService extends AbstractDbService implements System
 		return where;
 	}
 
-	private Condition addActivityTypeCondition(Condition where, ActivityLogFdw al, CrudType activityType) {
+	private Condition addActivityTypeCondition(Condition where, ActivityLog al, CrudType activityType) {
 
 		if (CrudType.CREATE.equals(activityType)) {
 			where = where.and(al.FUNCT_NAME.in(CREATE_FUNCT_NAMES));

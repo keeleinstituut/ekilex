@@ -1,6 +1,6 @@
 package eki.ekilex.service.db;
 
-import static eki.ekilex.data.db.Tables.ACTIVITY_LOG_FDW;
+import static eki.ekilex.data.db.Tables.ACTIVITY_LOG;
 import static eki.ekilex.data.db.Tables.MEANING;
 import static eki.ekilex.data.db.Tables.WORD;
 
@@ -18,11 +18,10 @@ import org.springframework.stereotype.Component;
 import eki.common.constant.ActivityEntity;
 import eki.common.constant.GlobalConstant;
 import eki.ekilex.data.ActivityLogHistory;
-import eki.ekilex.data.db.tables.ActivityLogFdw;
+import eki.ekilex.data.db.tables.ActivityLog;
 import eki.ekilex.data.db.tables.Meaning;
 import eki.ekilex.data.db.tables.Word;
 
-// TODO fix - json aggregation fails query
 @Component
 public class HistoryDbService implements GlobalConstant {
 
@@ -31,8 +30,8 @@ public class HistoryDbService implements GlobalConstant {
 
 	public List<ActivityLogHistory> getWordsHistory(int offset, int limit) {
 
-		ActivityLogFdw al = ACTIVITY_LOG_FDW.as("al");
-		ActivityLogFdw ala = ACTIVITY_LOG_FDW.as("ala");
+		ActivityLog al = ACTIVITY_LOG.as("al");
+		ActivityLog ala = ACTIVITY_LOG.as("ala");
 		Word w = WORD.as("w");
 
 		Field<String[]> wvf = DSL
@@ -53,11 +52,8 @@ public class HistoryDbService implements GlobalConstant {
 						al.OWNER_ID,
 						al.OWNER_NAME,
 						al.ENTITY_ID,
-						al.ENTITY_NAME
-						/*
-						wvf.as("word_values")
-						*/
-						)
+						al.ENTITY_NAME,
+						wvf.as("word_values"))
 				.from(al)
 				.where(
 						al.ENTITY_NAME.eq(ActivityEntity.WORD.name())
@@ -71,8 +67,8 @@ public class HistoryDbService implements GlobalConstant {
 
 	public List<ActivityLogHistory> getMeaningsHistory(int offset, int limit) {
 
-		ActivityLogFdw al = ACTIVITY_LOG_FDW.as("al");
-		ActivityLogFdw ala = ACTIVITY_LOG_FDW.as("ala");
+		ActivityLog al = ACTIVITY_LOG.as("al");
+		ActivityLog ala = ACTIVITY_LOG.as("ala");
 		Meaning m = MEANING.as("m");
 
 		Field<String[]> wvf = DSL
@@ -128,13 +124,10 @@ public class HistoryDbService implements GlobalConstant {
 						al.OWNER_ID,
 						al.OWNER_NAME,
 						al.ENTITY_ID,
-						al.ENTITY_NAME
-						/*
+						al.ENTITY_NAME,
 						wvf.as("word_values"),
 						dvf.as("definition_values"),
-						lif.as("lexeme_ids")
-						*/
-						)
+						lif.as("lexeme_ids"))
 				.from(al)
 				.where(
 						al.ENTITY_NAME.eq(ActivityEntity.MEANING.name())

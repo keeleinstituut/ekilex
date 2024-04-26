@@ -32,7 +32,6 @@ public class TestEnvInitialiser {
 				"sql/create_tables.sql",
 				//"sql/create_views.sql",
 				"sql/create_functions.sql",
-				"sql/create_foreign.sql",
 				"sql/classifier-manual.sql",
 				"sql/classifier-main.sql",
 				"sql/classifier-domain.sql"
