@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import eki.ekilex.data.api.ApiResponse;
 import eki.ekilex.data.api.LexemeClassifier;
+import eki.ekilex.data.api.LexemeTag;
 import eki.ekilex.service.CudService;
 
 @ConditionalOnWebApplication
@@ -58,4 +59,39 @@ public class ApiLexemeController extends AbstractApiController {
 		}
 	}
 
+	@Order(903)
+	@PreAuthorize("principal.apiCrud && @permEval.isLexemeCrudGranted(principal, #crudRoleDataset, #lexemeTag.lexemeId)")
+	@PostMapping(API_SERVICES_URI + LEXEME_TAG_URI + CREATE_URI)
+	@ResponseBody
+	public ApiResponse createLexemeTag(
+			@RequestParam("crudRoleDataset") String crudRoleDataset,
+			@RequestBody LexemeTag lexemeTag) {
+
+		try {
+			Long lexemeId = lexemeTag.getLexemeId();
+			String tagName = lexemeTag.getTagName();
+			cudService.createLexemeTag(lexemeId, tagName, crudRoleDataset, MANUAL_EVENT_ON_UPDATE_ENABLED);
+			return getOpSuccessResponse();
+		} catch (Exception e) {
+			return getOpFailResponse(e);
+		}
+	}
+
+	@Order(904)
+	@PreAuthorize("principal.apiCrud && @permEval.isLexemeCrudGranted(principal, #crudRoleDataset, #lexemeTag.lexemeId)")
+	@PostMapping(API_SERVICES_URI + LEXEME_TAG_URI + CREATE_URI)
+	@ResponseBody
+	public ApiResponse deleteLexemeTag(
+			@RequestParam("crudRoleDataset") String crudRoleDataset,
+			@RequestBody LexemeTag lexemeTag) {
+
+		try {
+			Long lexemeId = lexemeTag.getLexemeId();
+			String tagName = lexemeTag.getTagName();
+			cudService.deleteLexemeTag(lexemeId, tagName, crudRoleDataset, MANUAL_EVENT_ON_UPDATE_ENABLED);
+			return getOpSuccessResponse();
+		} catch (Exception e) {
+			return getOpFailResponse(e);
+		}
+	}
 }

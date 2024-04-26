@@ -17,6 +17,7 @@ import eki.ekilex.data.MeaningForum;
 import eki.ekilex.data.Response;
 import eki.ekilex.data.api.ApiResponse;
 import eki.ekilex.data.api.MeaningRelation;
+import eki.ekilex.data.api.MeaningTag;
 import eki.ekilex.service.CudService;
 
 @ConditionalOnWebApplication
@@ -113,6 +114,42 @@ public class ApiMeaningController extends AbstractApiController {
 			} else {
 				return new ApiResponse(true, opMessage);
 			}
+		} catch (Exception e) {
+			return getOpFailResponse(e);
+		}
+	}
+
+	@Order(806)
+	@PreAuthorize("principal.apiCrud && @permEval.isMeaningCrudGranted(principal, #crudRoleDataset, #meaningTag.meaningId)")
+	@PostMapping(API_SERVICES_URI + MEANING_TAG_URI + CREATE_URI)
+	@ResponseBody
+	public ApiResponse createMeaningTag(
+			@RequestParam("crudRoleDataset") String crudRoleDataset,
+			@RequestBody MeaningTag meaningTag) {
+
+		try {
+			Long meaningId = meaningTag.getMeaningId();
+			String tagName = meaningTag.getTagName();
+			cudService.createMeaningTag(meaningId, tagName, crudRoleDataset, MANUAL_EVENT_ON_UPDATE_ENABLED);
+			return getOpSuccessResponse();
+		} catch (Exception e) {
+			return getOpFailResponse(e);
+		}
+	}
+
+	@Order(807)
+	@PreAuthorize("principal.apiCrud && @permEval.isMeaningCrudGranted(principal, #crudRoleDataset, #meaningTag.meaningId)")
+	@PostMapping(API_SERVICES_URI + MEANING_TAG_URI + CREATE_URI)
+	@ResponseBody
+	public ApiResponse deleteMeaningTag(
+			@RequestParam("crudRoleDataset") String crudRoleDataset,
+			@RequestBody MeaningTag meaningTag) {
+
+		try {
+			Long meaningId = meaningTag.getMeaningId();
+			String tagName = meaningTag.getTagName();
+			cudService.deleteMeaningTag(meaningId, tagName, crudRoleDataset, MANUAL_EVENT_ON_UPDATE_ENABLED);
+			return getOpSuccessResponse();
 		} catch (Exception e) {
 			return getOpFailResponse(e);
 		}

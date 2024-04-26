@@ -50,6 +50,10 @@ public interface ApiConstant {
 
 	String SOURCE_LINK_URI = "/source_link";
 
+	String LEXEME_TAG_URI = "/lexeme_tag";
+
+	String MEANING_TAG_URI = "/meaning_tag";
+
 	String FREQ_CORP_URI = "/freq_corp";
 
 	String FORM_FREQ_URI = "/form_freq";
