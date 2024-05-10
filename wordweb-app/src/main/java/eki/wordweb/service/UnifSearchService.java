@@ -57,7 +57,7 @@ public class UnifSearchService extends AbstractSearchService {
 
 		availableLanguagesDatasets.setLanguageCodes(availableLanguageCodes);
 		availableLanguagesDatasets.setDatasetCodes(availableDatasetCodes);
-		availableLanguagesDatasets.setSuggestionsExist(suggestionsExist);
+		availableLanguagesDatasets.setAvailableFiltersExist(suggestionsExist);
 	}
 
 	@Transactional

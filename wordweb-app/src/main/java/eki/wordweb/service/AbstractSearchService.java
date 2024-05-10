@@ -162,12 +162,21 @@ public abstract class AbstractSearchService implements SystemConstant, WebConsta
 
 		boolean wordResultsExist = CollectionUtils.isNotEmpty(wordMatchWords);
 		boolean formResultsExist = CollectionUtils.isNotEmpty(formMatchWordValues);
-		boolean anyResultsExist = wordResultsExist || formResultsExist;
+		boolean wordOrFormResultsExist = wordResultsExist || formResultsExist;
 		int wordResultCount = CollectionUtils.size(wordMatchWords);
 		boolean isSingleResult = wordResultCount == 1;
 
-		if (anyResultsExist) {
+		if (wordOrFormResultsExist) {
 			return new WordsData(wordMatchWords, wordResultsExist, isSingleResult, wordResultCount, formMatchWordValues, formResultsExist);
+		}
+
+		String searchWordClean = textDecorationService.unifyToApostrophe(searchWord);
+		String searchWordUnaccent = textDecorationService.removeAccents(searchWordClean);
+		List<String> similarWordValues = searchDbService.getWordValuesBySimilarity(searchWord, searchWordUnaccent, searchContext, ALT_WORDS_DISPLAY_LIMIT);
+		boolean altResultsExist = CollectionUtils.isNotEmpty(similarWordValues);
+
+		if (altResultsExist) {
+			return new WordsData(similarWordValues, altResultsExist);
 		}
 
 		LanguagesDatasets availableLanguagesDatasets = searchDbService.getAvailableLanguagesDatasets(searchWord, searchContext.getLexComplexity());

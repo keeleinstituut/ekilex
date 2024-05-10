@@ -49,9 +49,8 @@
             </div>
           </div>
         </div>
-        <button name="feedback-btn" value="feedback" class="feedback-btn ml-auto btn btn-success py-0 show-with-details" role="button" type="button"
-                data-toggle="modal" data-target="#feedbackModal"
-                data-item-name="feedback" th:text="#{feedback.title}">Tagasiside</button>
+        <button name="feedback-btn" value="feedback" class="feedback-btn ml-auto btn btn-success py-0 show-with-details" role="button" type="button" data-toggle="modal" data-target="#feedbackModal"
+          data-item-name="feedback" th:text="#{feedback.title}">Tagasiside</button>
       </div>
     </div>
     <main id="mainContentArea" role="main" class="content-panel px-3 loading">
@@ -63,8 +62,8 @@
       <th:block th:replace="common-search :: homonyms"></th:block>
       <div class="word-details">
         <th:block th:unless="${wordsData.resultsExist}" th:with="isFiltered = ${isLangFiltered || isDatasetFiltered}">
-          <th:block th:unless="${wordsData.formResultsExist}">
-            <th:block th:if="${wordsData.availableLanguagesDatasets.suggestionsExist}">
+          <th:block th:unless="${wordsData.suggestionsExist}">
+            <th:block th:if="${wordsData.availableLanguagesDatasets.availableFiltersExist}">
               <div class="h3 mt-4 ml-3 d-inline-block">
                 <span th:text="#{label.search.filter.suggestion.detail}">Otsing annab tulemusi teistes keeltes või sõnakogudes kui sinu valitud filtris.</span>
               </div>
@@ -86,7 +85,7 @@
                 </a>
               </div>
             </th:block>
-            <th:block th:unless="${wordsData.availableLanguagesDatasets.suggestionsExist}">
+            <th:block th:unless="${wordsData.availableLanguagesDatasets.availableFiltersExist}">
               <div class="h1 mt-4 ml-3 d-inline-block">
                 <span th:utext="#{|label.word.not.found.detail.filtered.${isFiltered}|}">Ei leidnud midagi</span>
               </div>
@@ -95,12 +94,17 @@
           <th:block th:if="${wordsData.formResultsExist}">
             <div class="h1 mt-4 ml-3 d-inline-block">
               <div>
-                <span th:text="#{label.word.form}">see on ka vorm sõnast</span>
-                <a href="#" class="word-form"
-                   th:each="word,wordIter : ${wordsData.formMatchWordValues}"
-                   th:text="${wordIter.last ? word : word + ',&nbsp;'}"
-                   th:data-word="${word}">
-                </a>
+                <span th:text="#{label.suggest.form}">see on ka vorm sõnast</span>
+                <a href="#" class="word-form" th:each="word,wordIter : ${wordsData.suggestedWordValues}" th:text="${wordIter.last ? word : word + ',&nbsp;'}" th:data-word="${word}"> </a>
+              </div>
+              <div th:utext="#{|label.form.found.detail.filtered.${isFiltered}|}">Ei leidnud midagi</div>
+            </div>
+          </th:block>
+          <th:block th:if="${wordsData.altResultsExist}">
+            <div class="h1 mt-4 ml-3 d-inline-block">
+              <div>
+                <span th:text="#{label.suggest.alt}">mõned sarnased märksõnad</span>
+                <a href="#" class="word-form" th:each="word,wordIter : ${wordsData.suggestedWordValues}" th:text="${wordIter.last ? word : word + ',&nbsp;'}" th:data-word="${word}"> </a>
               </div>
               <div th:utext="#{|label.form.found.detail.filtered.${isFiltered}|}">Ei leidnud midagi</div>
             </div>
@@ -187,12 +191,12 @@
         </div>
       </div>
       <script th:inline="javascript">
-  	    var currentWord = /*[[${wordData.word.word}]]*/'';
-  	    var currentWordId = /*[[${wordData.word.wordId}]]*/'';
-  	    var currentWordLang = /*[[${wordData.word.lang}]]*/'';
-  	    var currentLinkedLexemeId = /*[[${wordData.linkedLexemeId}]]*/'';
-  	    scrollToLexeme(currentLinkedLexemeId);
-      </script>
+  		var currentWord = /*[[${wordData.word.word}]]*/'';
+  		var currentWordId = /*[[${wordData.word.wordId}]]*/'';
+  		var currentWordLang = /*[[${wordData.word.lang}]]*/'';
+  		var currentLinkedLexemeId = /*[[${wordData.linkedLexemeId}]]*/'';
+  		scrollToLexeme(currentLinkedLexemeId);
+  	  </script>
     </div>
   </div>
   <div th:replace="common-app :: footer-content"></div>

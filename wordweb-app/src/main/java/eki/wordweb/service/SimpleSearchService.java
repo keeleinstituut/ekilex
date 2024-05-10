@@ -47,7 +47,7 @@ public class SimpleSearchService extends AbstractSearchService {
 
 		availableLanguagesDatasets.setLanguageCodes(availableLanguageCodes);
 		availableLanguagesDatasets.setDatasetCodes(Collections.emptyList());
-		availableLanguagesDatasets.setSuggestionsExist(suggestionsExist);
+		availableLanguagesDatasets.setAvailableFiltersExist(suggestionsExist);
 	}
 
 	@Transactional

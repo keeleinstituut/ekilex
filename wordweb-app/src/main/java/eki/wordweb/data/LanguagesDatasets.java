@@ -17,7 +17,7 @@ public class LanguagesDatasets extends AbstractDataObject {
 
 	private List<Dataset> datasets;
 
-	private boolean suggestionsExist;
+	private boolean availableFiltersExist;
 
 	public List<String> getLanguageCodes() {
 		return languageCodes;
@@ -51,12 +51,12 @@ public class LanguagesDatasets extends AbstractDataObject {
 		this.datasets = datasets;
 	}
 
-	public boolean isSuggestionsExist() {
-		return suggestionsExist;
+	public boolean isAvailableFiltersExist() {
+		return availableFiltersExist;
 	}
 
-	public void setSuggestionsExist(boolean suggestionsExist) {
-		this.suggestionsExist = suggestionsExist;
+	public void setAvailableFiltersExist(boolean availableFiltersExist) {
+		this.availableFiltersExist = availableFiltersExist;
 	}
 
 }

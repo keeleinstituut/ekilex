@@ -38,7 +38,7 @@
       <th:block th:replace="common-search :: homonyms"></th:block>
       <div class="word-details">
         <div class="message-wrap" th:unless="${wordsData.resultsExist}">
-          <th:block th:if="${wordsData.availableLanguagesDatasets.suggestionsExist}">
+          <th:block th:if="${wordsData.availableLanguagesDatasets.availableFiltersExist}">
             <div class="h3 mt-4 ml-3 d-inline-block">
               <span th:text="#{label.search.filter.suggestion.simple}">Otsing annab tulemusi teistes keeltes kui sinu valitud filtris.</span>
             </div>
@@ -55,7 +55,7 @@
               </a>
             </div>
           </th:block>
-          <th:block th:unless="${wordsData.availableLanguagesDatasets.suggestionsExist}">
+          <th:block th:unless="${wordsData.availableLanguagesDatasets.availableFiltersExist}">
             <div class="mt-4 ml-3 d-inline-block">
               <span th:text="#{label.word.not.found.simple}" class="h1">Ei leidnud midagi</span>
               <a th:href="@{${viewUtil.getDetailSearchUri(searchWord)}}" class="h1 text-break" th:text="${searchWord}"></a>

@@ -31,7 +31,9 @@ import org.jooq.Record;
 import org.jooq.Record1;
 import org.jooq.Record2;
 import org.jooq.Record3;
+import org.jooq.Record4;
 import org.jooq.Record5;
+import org.jooq.SelectConditionStep;
 import org.jooq.Table;
 import org.jooq.impl.DSL;
 import org.jooq.util.postgres.PostgresDSL;
@@ -108,6 +110,8 @@ public class SearchDbService implements GlobalConstant, SystemConstant {
 	public Map<String, List<WordSearchElement>> getWordsByInfixLev(
 			String wordInfix, String wordInfixUnaccent, SearchContext searchContext, int maxWordCount) {
 
+		List<String> destinLangs = searchContext.getDestinLangs();
+
 		Field<String> wordInfixLowerField = DSL.lower(wordInfix);
 		Field<String> wordInfixLowerLikeField = DSL.lower('%' + wordInfix + '%');
 		Field<String> wordInfixLowerUnaccentLikeField;
@@ -116,7 +120,6 @@ public class SearchDbService implements GlobalConstant, SystemConstant {
 		} else {
 			wordInfixLowerUnaccentLikeField = DSL.lower('%' + wordInfixUnaccent + '%');
 		}
-		List<String> destinLangs = searchContext.getDestinLangs();
 
 		MviewWwWordSearch w = MVIEW_WW_WORD_SEARCH.as("w");
 		MviewWwWordSearch aw = MVIEW_WW_WORD_SEARCH.as("aw");
@@ -187,6 +190,70 @@ public class SearchDbService implements GlobalConstant, SystemConstant {
 						wfs.field("word", String.class))
 				.from(wfs)
 				.fetchGroups("sgroup", WordSearchElement.class);
+	}
+
+	public List<String> getWordValuesBySimilarity(String searchWord, String searchWordUnaccent, SearchContext searchContext, int limit) {
+
+		List<String> destinLangs = searchContext.getDestinLangs();
+
+		MviewWwWordSearch w = MVIEW_WW_WORD_SEARCH.as("w");
+		MviewWwWordSearch aw = MVIEW_WW_WORD_SEARCH.as("aw");
+		Table<Record4<String, Long, TypeLangComplexityRecord[], Float>> ws = null;
+
+		Field<String> searchWordLowerField = DSL.lower(searchWord);
+		Field<String> searchWordUnaccentLowerField = DSL.lower(searchWordUnaccent);
+		Field<Float> awsf = DSL.field(Routines.similarity(aw.WORD, searchWordLowerField));
+		Field<Float> wsf = DSL.field(Routines.similarity(w.WORD, searchWordLowerField));
+
+		Condition wwhere = applyWordLangFilter(w, destinLangs, DSL.noCondition())
+				.and(w.SGROUP.eq(WORD_SEARCH_GROUP_WORD))
+				.and(DSL.condition("{0} %> {1}", w.CRIT, searchWordLowerField));
+
+		Condition awwhere = applyWordLangFilter(aw, destinLangs, DSL.noCondition())
+				.and(aw.SGROUP.eq(WORD_SEARCH_GROUP_AS_WORD))
+				.and(DSL.condition("{0} %> {1}", aw.CRIT, searchWordUnaccentLowerField));
+
+		SelectConditionStep<Record4<String, Long, TypeLangComplexityRecord[], Float>> wselect = DSL
+				.select(
+						w.WORD,
+						w.LANG_ORDER_BY,
+						w.LANG_COMPLEXITIES,
+						wsf.as("sim"))
+				.from(w)
+				.where(wwhere);
+
+		boolean includeAsWordSearch = StringUtils.isNotBlank(searchWordUnaccent);
+
+		if (includeAsWordSearch) {
+
+			ws = wselect
+					.unionAll(DSL
+							.select(
+									aw.WORD,
+									aw.LANG_ORDER_BY,
+									aw.LANG_COMPLEXITIES,
+									awsf.as("sim"))
+							.from(aw)
+							.where(awwhere))
+					.asTable("ws");
+
+		} else {
+
+			ws = wselect
+					.asTable("ws");
+		}
+
+		Condition wsWhere = applyContainingLangComplexityDatasetFilter(ws, searchContext, DSL.noCondition());
+
+		return create
+				.select(ws.field("word"))
+				.from(ws)
+				.where(wsWhere)
+				.orderBy(
+						ws.field("lang_order_by"),
+						ws.field("sim").desc())
+				.limit(limit)
+				.fetchInto(String.class);
 	}
 
 	public WordsMatch getWordsWithMask(String searchWord, SearchContext searchContext) {
