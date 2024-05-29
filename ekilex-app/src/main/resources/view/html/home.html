@@ -93,6 +93,10 @@
             <th:block th:each="newsArticle : ${newsArticles}">
               <div class="col px-4">
                 <div>
+                  <span th:text="#{|enum.newsarticletype.${newsArticle.type.name()}|}"></span>
+                  <small th:text="${#temporals.format(newsArticle.created, 'dd.MM.yyyy HH:mm')}"></small>
+                </div>
+                <div>
                   <strong th:text="${newsArticle.title}"></strong>
                 </div>
                 <ul class="mb-0 pb-3 list-group">

@@ -29,20 +29,20 @@
         </div>
       </div>
       <div class="card-body">
-        <div class="col-md-6">
+        <div class="col-md-8">
           <table class="table table-sm">
             <th:block th:each="newsArticle : ${newsArticles}">
               <tr>
-                <td class="m-0 p-1 col-md-3">
-                  <div>
-                    <span th:text="${#temporals.format(newsArticle.created, 'dd.MM.yyyy HH:mm')}"></span>
-                  </div>
+                <td class="m-0 p-1 col-md-2">
                   <div>
                     <span th:text="#{|enum.newsarticletype.${newsArticle.type.name()}|}"></span>
                     <span th:text="|(${viewUtil.getLangIso2(newsArticle.lang)})|"></span>
                   </div>
+                  <div>
+                    <small th:text="${#temporals.format(newsArticle.created, 'dd.MM.yyyy HH:mm')}"></small>
+                  </div>
                 </td>
-                <td class="m-0 p-1 col-md-8">
+                <td class="m-0 p-1 col-md-9">
                   <div>
                     <strong th:text="${newsArticle.title}"></strong>
                   </div>
