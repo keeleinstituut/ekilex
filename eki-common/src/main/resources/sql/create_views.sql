@@ -5,8 +5,6 @@ drop view if exists view_ww_form;
 drop view if exists view_ww_meaning;
 drop view if exists view_ww_lexeme;
 drop view if exists view_ww_collocation;
-drop view if exists view_ww_classifier;
-drop view if exists view_ww_dataset;
 drop view if exists view_ww_word_etymology;
 drop view if exists view_ww_word_relation;
 drop view if exists view_ww_lexeme_relation;
@@ -18,6 +16,9 @@ drop view if exists view_ww_word_etym_source_link;
 drop view if exists view_ww_definition_source_link;
 drop view if exists view_ww_lexical_decision_data;
 drop view if exists view_ww_similarity_judgement_data;
+drop view if exists view_ww_classifier;
+drop view if exists view_ww_dataset;
+drop view if exists view_ww_news_article;
 drop type if exists type_meaning_word;
 drop type if exists type_freeform;
 drop type if exists type_lang_complexity;
@@ -2303,4 +2304,29 @@ create view view_ww_classifier
 		and cl.type = 'wordweb'
 	order by c.order_by, cl.lang, cl.type)
 );
+
+create view view_ww_news_article
+  as
+	(select
+		na.id news_article_id,
+		na.created,
+		na."type",
+		na.title,
+		na.lang,
+		array_agg(
+			ns.content
+			order by
+				ns.id
+		) news_sections
+	from
+		news_article na,
+		news_section ns
+	where
+		ns.news_article_id = na.id
+	group by
+		na.id
+	order by
+		na.created desc
+	);
+	
 

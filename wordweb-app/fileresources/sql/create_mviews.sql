@@ -7,8 +7,6 @@ drop materialized view if exists mview_ww_meaning;
 drop materialized view if exists mview_ww_lexeme;
 drop materialized view if exists mview_ww_collocation;
 drop materialized view if exists mview_ww_word_etymology;
-drop materialized view if exists mview_ww_classifier;
-drop materialized view if exists mview_ww_dataset;
 drop materialized view if exists mview_ww_word_relation;
 drop materialized view if exists mview_ww_lexeme_relation;
 drop materialized view if exists mview_ww_meaning_relation;
@@ -17,6 +15,9 @@ drop materialized view if exists mview_ww_lexeme_source_link;
 drop materialized view if exists mview_ww_lexeme_freeform_source_link;
 drop materialized view if exists mview_ww_meaning_freeform_source_link;
 drop materialized view if exists mview_ww_definition_source_link;
+drop materialized view if exists mview_ww_classifier;
+drop materialized view if exists mview_ww_dataset;
+drop materialized view if exists mview_ww_news_article;
 
 drop type if exists type_lang_complexity;
 
@@ -305,6 +306,19 @@ dblink(
 	order_by bigint
 );
 
+create materialized view mview_ww_news_article as
+select * from 
+dblink(
+	'host=localhost user=ekilex password=3kil3x dbname=ekilex',
+	'select * from view_ww_news_article') as news_article(
+	news_article_id bigint,
+	created timestamp,
+	type varchar(100),
+	title text,
+	lang char(3),
+	news_sections text array
+);
+
 create materialized view mview_ww_counts as
 (select 'dsall' as dataset_code,
        w.lang,
@@ -377,8 +391,7 @@ create index mview_ww_meaning_freeform_source_link_word_id_idx on mview_ww_meani
 create index mview_ww_classifier_name_code_lang_type_idx on mview_ww_classifier (name, code, lang, type);
 create index mview_ww_classifier_name_origin_code_lang_type_idx on mview_ww_classifier (name, origin, code, lang, type);
 create index mview_ww_counts_dataset_code_idx on mview_ww_counts (dataset_code);
+create index mview_ww_news_article_created_idx on mview_ww_news_article (created);
+create index mview_ww_news_article_type_idx on mview_ww_news_article (type);
+create index mview_ww_news_article_lang_idx on mview_ww_news_article (lang);
 create index mview_ww_counts_lang_idx on mview_ww_counts (lang);
-
--- experimental. yet to be verified
--- create index mview_ww_word_search_crit_metaphone_idx on mview_ww_word_search (metaphone(substring(crit from 1 for 100), 5));
--- create index mview_ww_word_search_crit_daitch_mokotoff_idx on mview_ww_word_search (daitch_mokotoff(crit));

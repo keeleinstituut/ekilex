@@ -28,15 +28,16 @@
 		'fb_service_error' : /*[[#{label.fb.missing.service}]]*/'Tagasiside teenus ei ole seadistatud.'
 	}
 </script>
-	<!-- Google tag (gtag.js) -->
-	<script async src="https://www.googletagmanager.com/gtag/js?id=G-DR23BQSFEN"></script>
-	<script>
-		window.dataLayer = window.dataLayer || [];
-		function gtag(){dataLayer.push(arguments);}
-		gtag('js', new Date());
-
-		gtag('config', 'G-DR23BQSFEN');
-	</script>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-DR23BQSFEN"></script>
+<script>
+	window.dataLayer = window.dataLayer || [];
+	function gtag() {
+		dataLayer.push(arguments);
+	}
+	gtag('js', new Date());
+	gtag('config', 'G-DR23BQSFEN');
+</script>
 </head>
 <body class="survey-active">
   <!-- Default favicon -->
@@ -72,7 +73,9 @@
     <!--/* script type="text/javascript" th:src="@{/view/js/nps-survey.js}"></script */-->
     <script type="text/javascript" th:src="@{/view/js/kiosk-board/src/kioskboard-custom.js}"></script>
     <script type="text/javascript" th:src="@{/view/js/kioskboard-run.js}"></script>
-    <script th:inline="javascript"> const  viewPathWordweb = /*[[@{/view}]]*/'/view';</script>
+    <script th:inline="javascript">
+		const viewPathWordweb = /*[[@{/view}]]*/'/view';
+	</script>
   </th:block>
   <!-- menu -->
   <th:block th:fragment="menu">
@@ -117,9 +120,9 @@
           <span th:text="#{menu.current.lang}"></span>
         </a>
         <div class="dropdown-menu" data-target="uiLangMenuButton" aria-expanded="true" aria-labelledby="uiLangMenuButton">
-          <a role="link" class="dropdown-item" href="?lang=et">EST</a>
-          <a role="link" class="dropdown-item" href="?lang=ru">RUS</a>
-          <a role="link" class="dropdown-item" href="?lang=en">ENG</a>
+          <a role="link" class="dropdown-item" href="?uilang=et">EST</a>
+          <a role="link" class="dropdown-item" href="?uilang=ru">RUS</a>
+          <a role="link" class="dropdown-item" href="?uilang=en">ENG</a>
         </div>
       </div>
       <button class="btn menu-btn btn-link align-items-center text-uppercase d-flex position-relative " th:aria-label="#{aria.menu.collapsed}" data-toggle="collapse" data-target="#headerLinks">
@@ -143,9 +146,9 @@
             <span th:text="#{menu.current.lang}"></span>
           </a>
           <div class="dropdown-menu" data-target="uiLangMenuButton" aria-expanded="true" aria-labelledby="uiLangMenuButton">
-            <a role="link" class="dropdown-item" href="?lang=et">EST</a>
-            <a role="link" class="dropdown-item" href="?lang=ru">RUS</a>
-            <a role="link" class="dropdown-item" href="?lang=en">ENG</a>
+            <a role="link" class="dropdown-item" href="?uilang=et">EST</a>
+            <a role="link" class="dropdown-item" href="?uilang=ru">RUS</a>
+            <a role="link" class="dropdown-item" href="?uilang=en">ENG</a>
           </div>
         </div>
         <a th:href="@{/}" class="nav-link menu-item" data-item-name="search-unif">
@@ -173,8 +176,14 @@
         <a aria-hidden="true" th:href="@{/games}" class="nav-link menu-item" data-item-name="games">
           <span th:text="#{menu.games}">Keelemängud</span>
         </a>
-        <a th:href="@{/contacts}" class="nav-link menu-item" data-item-name="contacts">
-          <span th:text="#{menu.contacts}">Kontakt</span>
+        <a th:href="@{/news}" class="nav-link menu-item" data-item-name="news">
+          <span th:text="#{menu.news}">Versiooniajalugu</span>
+        </a>
+        <a th:href="@{/ekilex-api}" class="nav-link menu-item" data-item-name="ekilex-api">
+          <span th:text="#{menu.ekilexapi}">Ekilex API</span>
+        </a>
+        <a th:href="@{/contact}" class="nav-link menu-item" data-item-name="contact">
+          <span th:text="#{menu.contact}">Kontakt</span>
         </a>
         <a th:href="@{/#}" role="button" data-toggle="modal" data-target="#feedbackModal" class="nav-link menu-item" data-item-name="feedback">
           <span th:text="#{menu.feedback}">Tagasiside</span>
@@ -184,6 +193,47 @@
         </a>
       </div>
     </div>
+  </th:block>
+  <th:block th:fragment="latest-ww-news-article">
+    <th:block th:if="${latestWordwebNewsArticle}">
+      <div id="latest-ww-news-article-modal" class="modal fade" tabindex="-1" role="dialog">
+        <div class="modal-dialog" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title">
+                <span th:text="${latestWordwebNewsArticle.title}"></span>
+                <small th:text="${#dates.format(latestWordwebNewsArticle.created, 'dd.MM.yyyy')}"></small>
+              </h5>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body">
+              <ul>
+                <th:block th:each="newsSection : ${latestWordwebNewsArticle.newsSections}">
+                  <li>
+                    <span th:text="${newsSection}" style="white-space: pre-line"></span>
+                  </li>
+                </th:block>
+              </ul>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <script th:inline="javascript">
+  		$(document).ready(function() {
+  			$("#latest-ww-news-article-modal").modal('show');
+  		});
+  		$('#latest-ww-news-article-modal').on('hide.bs.modal', function(e) {
+			if (newsAcceptUrl) {
+				$.post(newsAcceptUrl).done(function(response) {});
+			}
+  		});
+  	  </script>
+    </th:block>
   </th:block>
   <!-- WCAG main -->
   <th:block th:fragment="wcag-main">
@@ -272,7 +322,7 @@
             <div class="form-row">
               <div class="form-group col-12">
                 <div id="feedbackFailMsg" class="alert alert-danger d-none" th:text="#{label.fb.technical.error}">Tagasiside saatmine ebaõnnestus, proovige hiljem uuesti.</div>
-                <div id="feedbackSuccessMsg" class="alert alert-success d-none" th:text="#{label.fb.success}" >Aitähh saime tagasiside kätte</div>
+                <div id="feedbackSuccessMsg" class="alert alert-success d-none" th:text="#{label.fb.success}">Aitähh saime tagasiside kätte</div>
               </div>
             </div>
             <div class="form-group">
@@ -341,7 +391,11 @@
           <div class="col-12 col-md-4">
             <div class="d-flex flex-column d-md-block text-center text-md-left mb-2">
               <span th:text="#{general.lastupdate}">Sõnaveeb 2021</span>
-              <span th:if="${appData != null}" th:text="${'(' + appData.appName + '-' + appData.appVersion + ')'}"></span>
+              <th:block th:if="${appData}">
+                <a th:href="@{/news}">
+                  <span th:text="|(${appData.appName} ${appData.appVersion})|"></span>
+                </a>                
+              </th:block>
             </div>
           </div>
           <div class="col-12 col-md-4">
@@ -403,18 +457,18 @@
         </div>
       </div>
       <div class="form-row">
-          <div class="form-group col-12 col-md-6">
-            <label for="nameInput" class="col-form-label" th:text="#{label.fb.name}">Ees- ja perekonnanimi</label>
-            <span>*</span>
-            <input id="nameInput" type="text" class="form-control" name="senderName" required>
-            <div class="invalid-feedback" th:text="#{label.fb.required}">Väli on kohustuslik</div>
-          </div>
-          <div class="form-group col-12 col-md-6">
-            <label for="emailInput" class="col-form-label" th:text="#{label.fb.email}">E-post</label>
-            <span>*</span>
-            <input id="emailInput" type="email" class="form-control form-email" name="senderEmail" required>
-            <div class="invalid-feedback" th:text="#{label.fb.required}">Väli on kohustuslik</div>
-          </div>
+        <div class="form-group col-12 col-md-6">
+          <label for="nameInput" class="col-form-label" th:text="#{label.fb.name}">Ees- ja perekonnanimi</label>
+          <span>*</span>
+          <input id="nameInput" type="text" class="form-control" name="senderName" required>
+          <div class="invalid-feedback" th:text="#{label.fb.required}">Väli on kohustuslik</div>
+        </div>
+        <div class="form-group col-12 col-md-6">
+          <label for="emailInput" class="col-form-label" th:text="#{label.fb.email}">E-post</label>
+          <span>*</span>
+          <input id="emailInput" type="email" class="form-control form-email" name="senderEmail" required>
+          <div class="invalid-feedback" th:text="#{label.fb.required}">Väli on kohustuslik</div>
+        </div>
       </div>
       <div class="form-row">
         <div class="form-group col-12">
@@ -566,9 +620,7 @@
     </div>
   </th:block>
   <th:block th:fragment="source-link" th:with="dataContent=${sourceLink.isSourcePublic} ? ${sourceLink.sourceValuePrese} : #{label.source.value.not.public}">
-    <button type="button" class="source-link btn btn-link-dark pt-0 px-0 pb-1" data-toggle="popover" data-html="true"
-            th:title="#{label.source}"
-            th:data-content="${dataContent}">
+    <button type="button" class="source-link btn btn-link-dark pt-0 px-0 pb-1" data-toggle="popover" data-html="true" th:title="#{label.source}" th:data-content="${dataContent}">
       <span th:utext="${sourceLink.sourceName}"></span>
       <span th:utext="| - ${sourceLink.sourceLinkName}|" th:unless="${#strings.isEmpty(sourceLink.sourceLinkName)}"></span>
     </button>
@@ -591,7 +643,6 @@
       </button>
     </div>
   </th:block>
-
   <th:block th:fragment="survey-banner-small">
     <!--/ Survey banner small /-->
     <div class="survey-banner survey-banner--small">
@@ -613,4 +664,3 @@
   </th:block>
 </body>
 </html>
-

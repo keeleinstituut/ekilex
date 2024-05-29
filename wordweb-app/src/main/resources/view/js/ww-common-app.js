@@ -15,6 +15,7 @@ $(document).ready(function() {
 	$('[data-toggle="tooltip"]').tooltip();
 
 	closeSurveyBanner();
+	handleVirtualKeyboard();
 });
 
 $(document).on("click", ".menu-btn", function(e) {
@@ -48,11 +49,11 @@ $(document).on("click", "button[name='feedbackSendBtn']", function(event) {
 	var okMessage = feedbackForm.find('[name=ok_message]').text();
 	var acceptPrivacyStatement = feedbackForm.find('.modal-check');
 	$.ajax({
-		url : feedbackServiceUrl,
-		data : JSON.stringify(feedbackForm.serializeJSON()),
-		method : 'POST',
-		dataType : 'json',
-		contentType : 'application/json'
+		url: feedbackServiceUrl,
+		data: JSON.stringify(feedbackForm.serializeJSON()),
+		method: 'POST',
+		dataType: 'json',
+		contentType: 'application/json'
 	}).done(function(data) {
 		if (data.status === 'ok') {
 			dataDiv.addClass('d-none');
@@ -198,7 +199,7 @@ $.fn.scrollableTable = function() {
 				}
 			}
 		});
-		setTimeout(function(){
+		setTimeout(function() {
 			calculateDimensions();
 		}, 30);
 	});
@@ -208,7 +209,7 @@ function closeSurveyBanner() {
 	const banner = $('.survey-banner');
 	const closeBtn = banner.find('.close-banner');
 
-	if(closeBtn) {
+	if (closeBtn) {
 		closeBtn.on('click', function() {
 			banner.addClass('hide');
 			$('body').removeClass('survey-active');
@@ -218,18 +219,18 @@ function closeSurveyBanner() {
 
 
 function calculateMaxHeightCollapseText(element, targetTextBox) {
-	if (!element.attr("data-max-height")){
+	if (!element.attr("data-max-height")) {
 		const targetTextBoxWidth = targetTextBox.outerWidth(); // get maximum width, to calculate height correctly
-		element.css("width", targetTextBoxWidth +"px");
+		element.css("width", targetTextBoxWidth + "px");
 		element.removeClass('d-none');
-		let dataHeight = element.outerHeight();	
+		let dataHeight = element.outerHeight();
 		element.attr('data-max-height', dataHeight);
 		element.addClass('d-none');
 	}
 }
 
 
-$(document).on('click', '[data-toggle="collapse-text"]', function () {
+$(document).on('click', '[data-toggle="collapse-text"]', function() {
 	const btn = $(this);
 	const targetTextBox = $(btn.attr('data-target'));
 	const largeData = targetTextBox.siblings('.large-text-container');
@@ -240,7 +241,7 @@ $(document).on('click', '[data-toggle="collapse-text"]', function () {
 
 		let smallDataBoxHeight = smallData.attr("data-max-height") ?? '';
 		let largeDataBoxHeight = largeData.attr("data-max-height") ?? '';
-		
+
 		if (smallDataBoxHeight.length && largeDataBoxHeight.length) {
 			let dataTextBox;
 			if (btn.attr('aria-expanded') === 'true') {
@@ -262,7 +263,8 @@ $(document).on('click', '[data-toggle="collapse-text"]', function () {
 	}
 });
 
-$(document).ready(function () {
+function handleVirtualKeyboard() {
+
 	const allBtns = $(".main-search-btns");
 	const widthOfAllBtn = allBtns.outerWidth();
 	const widthVirtualKeyboard = allBtns.find('#keyboard-search-btn').outerWidth();
@@ -270,15 +272,15 @@ $(document).ready(function () {
 	let keyBoardpView = window.matchMedia('(min-width: 1025px)');
 	let noKeyBoardView = window.matchMedia('(min-width: 768px)');
 
-	$(document).on('click', '#keyboard-search-btn , #start-rec-btn, #stop-rec-btn', function () {
-		calview(widthOfAllBtnWithoutVirtualKeyboard, widthOfAllBtn, keyBoardpView,  noKeyBoardView);
+	$(document).on('click', '#keyboard-search-btn , #start-rec-btn, #stop-rec-btn', function() {
+		calview(widthOfAllBtnWithoutVirtualKeyboard, widthOfAllBtn, keyBoardpView, noKeyBoardView);
 	});
 
-	$(window).resize(function () {
-		calview(widthOfAllBtnWithoutVirtualKeyboard, widthOfAllBtn, keyBoardpView,  noKeyBoardView);
+	$(window).resize(function() {
+		calview(widthOfAllBtnWithoutVirtualKeyboard, widthOfAllBtn, keyBoardpView, noKeyBoardView);
 	});
 
-	function calview(widthOfAllBtnWithoutVirtualKeyboard, widthOfAllBtn,  keyBoardpView,  noKeyBoardView) {
+	function calview(widthOfAllBtnWithoutVirtualKeyboard, widthOfAllBtn, keyBoardpView, noKeyBoardView) {
 
 		if (keyBoardpView.matches) {
 			calPading(widthOfAllBtn, 192);
@@ -292,7 +294,7 @@ $(document).ready(function () {
 
 	function calPading(allClosedMainSearchBtnsWidth, mainSearchInputPadding) {
 		setTimeout(() => {
-			$("#keyboard-lang-search").promise().done(function () {
+			$("#keyboard-lang-search").promise().done(function() {
 
 				if ($('.keyboard-search').hasClass('lang-open') || $("#stop-rec-btn").is(":visible")) {
 
@@ -313,4 +315,4 @@ $(document).ready(function () {
 			});
 		}, "500")
 	}
-});
+}

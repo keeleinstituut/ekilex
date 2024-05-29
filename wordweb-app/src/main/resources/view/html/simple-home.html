@@ -10,6 +10,7 @@
 <body class="home-page d-flex flex-column survey-active">
   <th:block th:replace="common-app :: update-msg"></th:block>
   <th:block th:replace="common-app :: wcag-search"></th:block>
+  <th:block th:replace="common-app :: latest-ww-news-article"></th:block>
   <th:block th:replace="common-app :: ie-user"></th:block>
   <div class="header-container d-flex">
     <div th:replace="common-app :: lang-and-menu-btn"></div>
@@ -52,6 +53,7 @@
   	var currentPage = /*[[@{/lite}]]*/"/lite";
   	var searchWordFragUrl = /*[[@{/searchwordfrag/lite}]]*/"/searchwordfrag/lite";
   	var wordDetailsUrl = /*[[@{/worddetails/lite}]]*/"/worddetails/lite";
+  	var newsAcceptUrl = /*[[@{/newsaccept}]]*/"/newsaccept";
   	var speechRecognitionServiceUrl = /*[[${speechRecognitionServiceUrl}]]*/'/';
   	setActiveMenuItem('search-lite');
   </script>

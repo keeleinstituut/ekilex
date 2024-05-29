@@ -191,17 +191,16 @@
       </div>
     </div>
   </div>
-  <th:block th:fragment="change_role">
-    <hr/>
-    <form method="post" id="changeRoleForm" th:action="@{/change_role}">
+  <th:block th:fragment="select_role">
+    <form method="post" id="changeRoleForm" th:action="@{/select_role}">
       <div class="row">
         <label class="col-form-label col-auto" th:text="#{common.select.role}">Vali roll:</label>
-        <select class="form-control col-2" id="changeRoleSelect" name="permissionId" data-plugin="changeSubmitFormPlugin">
+        <select class="form-control col-4" id="changeRoleSelect" name="permissionId" data-plugin="changeSubmitFormPlugin">
           <option value="" hidden disabled th:selected="${!userRoleData.roleSelected}"></option>
           <th:block th:each="datasetPermission : ${userDatasetPermissions}">
             <option th:with="permissionName=#{|authorityoperation.${datasetPermission.authOperation}|}"
                     th:value="${datasetPermission.id}" th:text="${datasetPermission.datasetName + ' (' + permissionName + ')'
-                      + (datasetPermission.authLang != null ? ' - ' + datasetPermission.authLangValue : '')}"
+                      + (datasetPermission.authLang == null ? '' : ' - ' + datasetPermission.authLangValue)}"
                     th:selected="${permDataUtil.isRoleSelected(datasetPermission)}"/>
           </th:block>
         </select>

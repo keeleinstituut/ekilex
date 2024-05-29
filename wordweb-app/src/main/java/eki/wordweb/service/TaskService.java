@@ -14,8 +14,13 @@ public class TaskService implements SystemConstant {
 	public void corpusCacheEvict() {
 	}
 
+	@CacheEvict(allEntries = true, value = {CACHE_KEY_GENERIC})
+	@Scheduled(fixedDelay = CACHE_EVICT_DELAY_60MIN,  initialDelay = 5000)
+	public void genericCacheEvict() {
+	}
+
 	@CacheEvict(allEntries = true, value = {CACHE_KEY_CLASSIF})
 	@Scheduled(fixedDelay = CACHE_EVICT_DELAY_60MIN,  initialDelay = 5000)
-	public void corpusCacheClassif() {
+	public void classifCacheEvict() {
 	}
 }

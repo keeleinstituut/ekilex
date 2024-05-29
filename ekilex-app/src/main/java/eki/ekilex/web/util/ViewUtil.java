@@ -110,4 +110,14 @@ public class ViewUtil implements InitializingBean {
 		Optional<Classifier> classifier = classifiers.stream().filter(c -> c.getCode().equals(code)).findFirst();
 		return classifier.isPresent() ? classifier.get().getValue() : code;
 	}
+
+	public boolean enumEquals(Enum<?> enum1, Enum<?> enum2) {
+		if (enum1 == null) {
+			return false;
+		}
+		if (enum2 == null) {
+			return false;
+		}
+		return StringUtils.equals(enum1.name(), enum2.name());
+	}
 }

@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="et" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:replace="common :: common_header(_,~{::links})">
+<title th:text="#{newsarticle.title}">Info haldus</title>
+<th:block th:fragment="links">
+</th:block>
+</head>
+<body class="body-with-navbar">
+  <th:block th:replace="common :: nav_bar(activeItem = 'news')"></th:block>
+  <div class="container-fluid">
+    <div class="card mt-4 shadow">
+      <div class="card-header">
+        <div class="row">
+          <div class="col-md-10 mt-2">
+            <h5 class="card-title" th:text="#{newsarticle.title}">Uudiste haldus</h5>
+          </div>
+          <div class="col-md-2 text-nowrap">
+            <button type="button" class="btn btn-primary float-right" title="Lisa uudis" data-toggle="modal" data-target="#addNewsArticleDlg" th:text="#{common.add.new}"></button>
+            <div id="addNewsArticleDlg" class="modal" role="dialog">
+              <div class="modal-dialog modal-lg" role="document">
+                <div class="modal-content">
+                  <div id="add_news_article" th:with="newsArticle = ${newNewsArticle}, newsArticleEditAreaId = 'add_news_article'" th:fragment="add_news_article">
+                    <th:block th:replace="newscomp :: edit_news_article"></th:block>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="card-body">
+        <div class="col-md-6">
+          <table class="table table-sm">
+            <th:block th:each="newsArticle : ${newsArticles}">
+              <tr>
+                <td class="m-0 p-1 col-md-3">
+                  <div>
+                    <span th:text="${#temporals.format(newsArticle.created, 'dd.MM.yyyy HH:mm')}"></span>
+                  </div>
+                  <div>
+                    <span th:text="#{|enum.newsarticletype.${newsArticle.type.name()}|}"></span>
+                    <span th:text="|(${viewUtil.getLangIso2(newsArticle.lang)})|"></span>
+                  </div>
+                </td>
+                <td class="m-0 p-1 col-md-8">
+                  <div>
+                    <strong th:text="${newsArticle.title}"></strong>
+                  </div>
+                  <ul class="mb-0 pb-3 list-group">
+                    <th:block th:each="newsSection : ${newsArticle.newsSections}">
+                      <li>
+                        <span th:text="${newsSection.content}" style="white-space: pre-line"></span>
+                      </li>
+                    </th:block>
+                  </ul>
+                </td>
+                <td class="m-0 p-1 col-md-1">
+                  <button type="button" class="btn badge badge-primary" th:title="#{common.edit}" data-toggle="modal" th:data-target="|#editNewsArticleDlg_${newsArticle.id}|">
+                    <i class="fa fa-edit mt-1" aria-hidden="true"></i>
+                  </button>
+                  <button type="button" class="btn badge badge-warning" th:title="#{common.delete}" data-toggle="modal" th:data-target="|#deleteNewsArticleDlg_${newsArticle.id}|">
+                    <i class="fa fa-remove mt-1" aria-hidden="true"></i>
+                  </button>
+                  <div th:id="|editNewsArticleDlg_${newsArticle.id}|" class="modal" role="dialog">
+                    <div class="modal-dialog modal-lg" role="document">
+                      <div class="modal-content">
+                        <div th:id="|edit_news_article_${newsArticle.id}|" th:with="newsArticleEditAreaId = ${'edit_news_article_' + newsArticle.id}"
+                          th:fragment="|edit_news_article_${newsArticle.id}|">
+                          <th:block th:replace="newscomp :: edit_news_article"></th:block>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div th:id="|deleteNewsArticleDlg_${newsArticle.id}|" class="modal" role="dialog">
+                    <div class="modal-dialog modal-lg" role="document">
+                      <div class="modal-content">
+                        <form th:action="@{/news}" method="post">
+                          <input type="hidden" name="formOpName" value="delete">
+                          <input type="hidden" name="id" th:value="${newsArticle.id}">
+                          <div class="modal-header">
+                            <h5 class="modal-title">Kas soovid kustutada järgmise uudise?</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                              <span aria-hidden="true">&times;</span>
+                            </button>
+                          </div>
+                          <div class="modal-body">
+                            <table class="table table-sm table-borderless">
+                              <tr>
+                                <td class="m-0 p-1 col-md-3">
+                                  <div>
+                                    <span th:text="${#temporals.format(newsArticle.created, 'dd.MM.yyyy HH:mm')}"></span>
+                                  </div>
+                                  <div>
+                                    <span th:text="#{|enum.newsarticletype.${newsArticle.type.name()}|}"></span>
+                                    <span th:text="|(${viewUtil.getLangIso2(newsArticle.lang)})|"></span>
+                                  </div>
+                                </td>
+                                <td class="m-0 p-1 col-md-8">
+                                  <div>
+                                    <strong th:text="${newsArticle.title}"></strong>
+                                  </div>
+                                  <ul class="mb-0 pb-3 list-group">
+                                    <th:block th:each="newsSection : ${newsArticle.newsSections}">
+                                      <li>
+                                        <span th:text="${newsSection.content}" style="white-space: pre-line"></span>
+                                      </li>
+                                    </th:block>
+                                  </ul>
+                                </td>
+                              </tr>
+                            </table>
+                          </div>
+                          <div class="modal-footer">
+                            <button type="submit" class="btn btn-warning" th:text="#{common.delete}">Kustuta</button>
+                            <button type="button" class="btn btn-default" data-dismiss="modal" th:text="#{common.cancel}">Katkesta</button>
+                          </div>
+                        </form>
+                      </div>
+                    </div>
+                  </div>
+                </td>
+              </tr>
+            </th:block>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

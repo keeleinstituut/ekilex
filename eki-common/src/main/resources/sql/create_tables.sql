@@ -1103,6 +1103,20 @@ create table data_request (
 );
 alter sequence data_request_id_seq restart with 10000;
 
+create table news_article (
+	id bigserial primary key,
+	created timestamp not null default statement_timestamp(),
+	type varchar(100) not null,
+	title text not null,
+	lang char(3) references language(code) null
+);
+
+create table news_section (
+	id bigserial primary key,
+	news_article_id bigint not null references news_article(id) on delete cascade,
+	content text not null
+);
+
 create table activity_log (
   id bigserial primary key, 
   event_by text not null, 
@@ -1375,6 +1389,9 @@ create index word_freq_word_id_idx on word_freq(word_id);
 create index word_freq_value_id_idx on word_freq(value);
 create index word_freq_rank_id_idx on word_freq(rank);
 create index data_request_user_id_idx on data_request(user_id);
+create index news_article_type_idx on news_article(type);
+create index news_article_lang_idx on news_article(lang);
+create index news_section_news_article_id_idx on news_section(news_article_id);
 create index lexeme_activity_log_lexeme_id_idx on lexeme_activity_log(lexeme_id);
 create index lexeme_activity_log_log_id_idx on lexeme_activity_log(activity_log_id);
 create index word_activity_log_word_id_idx on word_activity_log(word_id);

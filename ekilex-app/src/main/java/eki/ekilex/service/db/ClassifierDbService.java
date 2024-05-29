@@ -43,16 +43,6 @@ public class ClassifierDbService extends AbstractDataDbService {
 				.fetchInto(String.class);
 	}
 
-	public List<String> getDomainCodes(String domainOrigin) {
-
-		return create
-				.select(DOMAIN.CODE)
-				.from(DOMAIN)
-				.where(DOMAIN.ORIGIN.eq(domainOrigin))
-				.orderBy(DOMAIN.ORDER_BY)
-				.fetchInto(String.class);
-	}
-
 	public List<ClassifierLabel> getClassifierLabels(String classifierName, String classifierCode) {
 
 		String labelTableName = getLabelTableName(classifierName);
@@ -62,6 +52,16 @@ public class ClassifierDbService extends AbstractDataDbService {
 				.from(labelTableName)
 				.where(CODE_FIELD.eq(classifierCode))
 				.fetchInto(ClassifierLabel.class);
+	}
+
+	public List<String> getDomainCodes(String domainOrigin) {
+
+		return create
+				.select(DOMAIN.CODE)
+				.from(DOMAIN)
+				.where(DOMAIN.ORIGIN.eq(domainOrigin))
+				.orderBy(DOMAIN.ORDER_BY)
+				.fetchInto(String.class);
 	}
 
 	public List<ClassifierLabel> getDomainLabels(String domainOrigin, String domainCode, String labelTypeCode) {
@@ -171,10 +171,10 @@ public class ClassifierDbService extends AbstractDataDbService {
 
 		String[] emptyArray = new String[0];
 		create
-					.insertInto(DSL.table(classifierName))
-					.columns(CODE_FIELD, DATASETS_FIELD)
-					.values(classifierCode, emptyArray)
-					.execute();
+				.insertInto(DSL.table(classifierName))
+				.columns(CODE_FIELD, DATASETS_FIELD)
+				.values(classifierCode, emptyArray)
+				.execute();
 	}
 
 	public void createDomain(String domainOrigin, String domainCode) {

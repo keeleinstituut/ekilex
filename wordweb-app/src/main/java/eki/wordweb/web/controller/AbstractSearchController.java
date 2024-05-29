@@ -2,13 +2,12 @@ package eki.wordweb.web.controller;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
-import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.collections4.CollectionUtils;
-import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +15,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.util.UriUtils;
 
+import eki.wordweb.data.NewsArticle;
 import eki.wordweb.data.SearchValidation;
 import eki.wordweb.data.UiFilterElement;
 import eki.wordweb.web.bean.SessionBean;
@@ -35,29 +35,6 @@ public abstract class AbstractSearchController extends AbstractController {
 
 		setCookie(response, COOKIE_NAME_DESTIN_LANGS, destinLangsStr);
 		setCookie(response, COOKIE_NAME_DATASETS, datasetCodesStr);
-	}
-
-	protected void deleteCookies(HttpServletRequest request, HttpServletResponse response, String... cookieNames) {
-
-		Cookie[] cookies = request.getCookies();
-		Cookie cookie;
-
-		if (ArrayUtils.isNotEmpty(cookies)) {
-			for (String cookieName : cookieNames) {
-				cookie = new Cookie(cookieName, null);
-				cookie.setPath("/");
-				cookie.setMaxAge(0);
-				response.addCookie(cookie);
-			}
-		}
-	}
-
-	protected void setCookie(HttpServletResponse response, String cookieName, String cookieValue) {
-
-		Cookie cookie = new Cookie(cookieName, cookieValue);
-		cookie.setPath("/");
-		cookie.setMaxAge(COOKIE_AGE_ONE_MONTH);
-		response.addCookie(cookie);
 	}
 
 	protected void populateLangFilter(List<UiFilterElement> langFilter, SessionBean sessionBean, Model model) {
@@ -96,6 +73,22 @@ public abstract class AbstractSearchController extends AbstractController {
 			sessionBean.setUiSections(uiSections);
 		}
 		model.addAttribute("uiSections", uiSections);
+	}
+
+	protected void populateLatestNewsModel(HttpServletRequest request, Model model) {
+
+		NewsArticle latestWordwebNewsArticle = commonDataService.getLatestWordwebNewsArticle();
+		if (latestWordwebNewsArticle == null) {
+			return;
+		}
+		Long latestNewsId = latestWordwebNewsArticle.getNewsArticleId();
+		String latestNewsIdStr = String.valueOf(latestNewsId);
+		Map<String, String> cookieMap = getWwCookieMap(request);
+		String userNewsId = cookieMap.get(COOKIE_NAME_NEWS_ID);
+		if (StringUtils.equals(latestNewsIdStr, userNewsId)) {
+			return;
+		}
+		model.addAttribute("latestWordwebNewsArticle", latestWordwebNewsArticle);
 	}
 
 	protected boolean isSearchForm(Model model) {

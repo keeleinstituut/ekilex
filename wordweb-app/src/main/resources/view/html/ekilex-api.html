@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="et" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="common-app :: common_header(~{::title},~{::links},_)">
+<title>Sõnaveeb - Portaalist</title>
+<th:block th:fragment="links">
+  <script type="text/javascript" th:src="@{/view/js/hash.js}"></script>
+</th:block>
+</head>
+<body class="survey-active">
+  <th:block th:replace="common-app :: wcag-sidebar"></th:block>
+  <th:block th:replace="common-app :: wcag-main"></th:block>
+  <th:block th:replace="common-app :: ie-user"></th:block>
+  <div th:replace="common-app :: menu"></div>
+  <div class="container">
+    <div class="learn-container p-5">
+      <div class="row">
+        <h2>Ekilex API</h2>
+      </div>
+      <div class="row">
+        <a href="https://github.com/keeleinstituut/ekilex/wiki/Ekilex-API">Ekilex API Wiki page</a>
+      </div>
+    </div>
+  </div>
+  <div th:replace="common-app :: footer-content"></div>
+  <th:block th:replace="common-app :: content-top"></th:block>
+  <script th:inline="javascript">
+  	setActiveMenuItem('ekilex-api');
+  </script>
+</body>
+</html>

@@ -19,6 +19,7 @@ import eki.wordweb.data.db.tables.MviewWwLexemeSourceLink;
 import eki.wordweb.data.db.tables.MviewWwMeaning;
 import eki.wordweb.data.db.tables.MviewWwMeaningFreeformSourceLink;
 import eki.wordweb.data.db.tables.MviewWwMeaningRelation;
+import eki.wordweb.data.db.tables.MviewWwNewsArticle;
 import eki.wordweb.data.db.tables.MviewWwWord;
 import eki.wordweb.data.db.tables.MviewWwWordEtymSourceLink;
 import eki.wordweb.data.db.tables.MviewWwWordEtymology;
@@ -127,6 +128,11 @@ public class Public extends SchemaImpl {
     public final MviewWwMeaningRelation MVIEW_WW_MEANING_RELATION = MviewWwMeaningRelation.MVIEW_WW_MEANING_RELATION;
 
     /**
+     * The table <code>public.mview_ww_news_article</code>.
+     */
+    public final MviewWwNewsArticle MVIEW_WW_NEWS_ARTICLE = MviewWwNewsArticle.MVIEW_WW_NEWS_ARTICLE;
+
+    /**
      * The table <code>public.mview_ww_word</code>.
      */
     public final MviewWwWord MVIEW_WW_WORD = MviewWwWord.MVIEW_WW_WORD;
@@ -201,6 +207,7 @@ public class Public extends SchemaImpl {
             MviewWwMeaning.MVIEW_WW_MEANING,
             MviewWwMeaningFreeformSourceLink.MVIEW_WW_MEANING_FREEFORM_SOURCE_LINK,
             MviewWwMeaningRelation.MVIEW_WW_MEANING_RELATION,
+            MviewWwNewsArticle.MVIEW_WW_NEWS_ARTICLE,
             MviewWwWord.MVIEW_WW_WORD,
             MviewWwWordEtymSourceLink.MVIEW_WW_WORD_ETYM_SOURCE_LINK,
             MviewWwWordEtymology.MVIEW_WW_WORD_ETYMOLOGY,

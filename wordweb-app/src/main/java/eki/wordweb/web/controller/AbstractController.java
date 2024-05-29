@@ -2,12 +2,14 @@ package eki.wordweb.web.controller;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -49,6 +51,29 @@ public abstract class AbstractController implements WebConstant, SystemConstant,
 	@Autowired
 	protected StatDataCollector statDataCollector;
 
+	protected void deleteCookies(HttpServletRequest request, HttpServletResponse response, String... cookieNames) {
+
+		Cookie[] cookies = request.getCookies();
+		Cookie cookie;
+
+		if (ArrayUtils.isNotEmpty(cookies)) {
+			for (String cookieName : cookieNames) {
+				cookie = new Cookie(cookieName, null);
+				cookie.setPath("/");
+				cookie.setMaxAge(0);
+				response.addCookie(cookie);
+			}
+		}
+	}
+
+	protected void setCookie(HttpServletResponse response, String cookieName, String cookieValue) {
+
+		Cookie cookie = new Cookie(cookieName, cookieValue);
+		cookie.setPath("/");
+		cookie.setMaxAge(COOKIE_AGE_ONE_MONTH);
+		response.addCookie(cookie);
+	}
+
 	protected SessionBean populateCommonModel(Model model) {
 
 		return populateCommonModel(false, null, model);
@@ -88,43 +113,36 @@ public abstract class AbstractController implements WebConstant, SystemConstant,
 
 		if (request != null) {
 
-			Cookie[] cookies = request.getCookies();
+			Map<String, String> cookieMap = getWwCookieMap(request);
+			String destinLangsStr = cookieMap.get(COOKIE_NAME_DESTIN_LANGS);
+			String datasetCodesStr = cookieMap.get(COOKIE_NAME_DATASETS);
+			String uiSectionsStr = cookieMap.get(COOKIE_NAME_UI_SECTIONS);
 
-			if (ArrayUtils.isNotEmpty(cookies)) {
+			if (!isSearchFilterPresent) {
 
-				Map<String, String> cookieMap = Arrays.stream(cookies)
-						.filter(cookie -> StringUtils.startsWithIgnoreCase(cookie.getName(), COOKIE_NAME_PREFIX))
-						.collect(Collectors.toMap(Cookie::getName, Cookie::getValue));
-				String destinLangsStr = cookieMap.get(COOKIE_NAME_DESTIN_LANGS);
-				String datasetCodesStr = cookieMap.get(COOKIE_NAME_DATASETS);
-				String uiSectionsStr = cookieMap.get(COOKIE_NAME_UI_SECTIONS);
-
-				if (!isSearchFilterPresent) {
-
-					if (StringUtils.isNotBlank(destinLangsStr)) {
-						String[] destinLangsArr = StringUtils.split(destinLangsStr, COOKIE_VALUES_SEPARATOR);
-						List<String> destinLangs = Arrays.stream(destinLangsArr)
-								.filter(destinLang -> StringUtils.equalsAny(destinLang, SUPPORTED_DETAIL_DESTIN_LANG_FILTERS))
-								.collect(Collectors.toList());
-						sessionBean.setDestinLangs(destinLangs);
-					}
-
-					if (StringUtils.isNotBlank(datasetCodesStr)) {
-						List<String> supportedDatasetCodes = commonDataService.getSupportedDatasetCodes();
-						String[] datasetCodesArr = StringUtils.split(datasetCodesStr, COOKIE_VALUES_SEPARATOR);
-						List<String> datasetCodes = Arrays.stream(datasetCodesArr)
-								.map(datasetCode -> UriUtils.decode(datasetCode, UTF_8))
-								.filter(datasetCode -> supportedDatasetCodes.contains(datasetCode))
-								.collect(Collectors.toList());
-						sessionBean.setDatasetCodes(datasetCodes);
-					}
+				if (StringUtils.isNotBlank(destinLangsStr)) {
+					String[] destinLangsArr = StringUtils.split(destinLangsStr, COOKIE_VALUES_SEPARATOR);
+					List<String> destinLangs = Arrays.stream(destinLangsArr)
+							.filter(destinLang -> StringUtils.equalsAny(destinLang, SUPPORTED_DETAIL_DESTIN_LANG_FILTERS))
+							.collect(Collectors.toList());
+					sessionBean.setDestinLangs(destinLangs);
 				}
 
-				if (StringUtils.isNotBlank(uiSectionsStr)) {
-					String[] uiSectionsArr = StringUtils.split(uiSectionsStr, COOKIE_VALUES_SEPARATOR);
-					List<String> uiSections = new ArrayList<>(Arrays.asList(uiSectionsArr));
-					sessionBean.setUiSections(uiSections);
+				if (StringUtils.isNotBlank(datasetCodesStr)) {
+					List<String> supportedDatasetCodes = commonDataService.getSupportedDatasetCodes();
+					String[] datasetCodesArr = StringUtils.split(datasetCodesStr, COOKIE_VALUES_SEPARATOR);
+					List<String> datasetCodes = Arrays.stream(datasetCodesArr)
+							.map(datasetCode -> UriUtils.decode(datasetCode, UTF_8))
+							.filter(datasetCode -> supportedDatasetCodes.contains(datasetCode))
+							.collect(Collectors.toList());
+					sessionBean.setDatasetCodes(datasetCodes);
 				}
+			}
+
+			if (StringUtils.isNotBlank(uiSectionsStr)) {
+				String[] uiSectionsArr = StringUtils.split(uiSectionsStr, COOKIE_VALUES_SEPARATOR);
+				List<String> uiSections = new ArrayList<>(Arrays.asList(uiSectionsArr));
+				sessionBean.setUiSections(uiSections);
 			}
 		}
 
@@ -133,4 +151,18 @@ public abstract class AbstractController implements WebConstant, SystemConstant,
 		return sessionBean;
 	}
 
+	protected Map<String, String> getWwCookieMap(HttpServletRequest request) {
+
+		Cookie[] cookies = request.getCookies();
+
+		if (ArrayUtils.isEmpty(cookies)) {
+			return new HashMap<>();
+		}
+
+		Map<String, String> cookieMap = Arrays.stream(cookies)
+				.filter(cookie -> StringUtils.startsWithIgnoreCase(cookie.getName(), COOKIE_NAME_PREFIX))
+				.collect(Collectors.toMap(Cookie::getName, Cookie::getValue));
+
+		return cookieMap;
+	}
 }

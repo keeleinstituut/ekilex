@@ -2,6 +2,7 @@ package eki.wordweb.service.db;
 
 import static eki.wordweb.data.db.Tables.MVIEW_WW_CLASSIFIER;
 import static eki.wordweb.data.db.Tables.MVIEW_WW_DATASET;
+import static eki.wordweb.data.db.Tables.MVIEW_WW_NEWS_ARTICLE;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -18,12 +19,15 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Component;
 
 import eki.common.constant.ClassifierName;
+import eki.common.constant.NewsArticleType;
 import eki.common.data.Classifier;
 import eki.wordweb.constant.SystemConstant;
 import eki.wordweb.data.Dataset;
 import eki.wordweb.data.LanguageData;
+import eki.wordweb.data.NewsArticle;
 import eki.wordweb.data.db.tables.MviewWwClassifier;
 import eki.wordweb.data.db.tables.MviewWwDataset;
+import eki.wordweb.data.db.tables.MviewWwNewsArticle;
 import eki.wordweb.data.type.TypeDomain;
 
 @Component
@@ -148,6 +152,7 @@ public class CommonDataDbService implements SystemConstant {
 
 	@Cacheable(value = CACHE_KEY_CLASSIF, key = "{#name, #codes, #lang}")
 	public List<Classifier> getClassifiersWithOrigin(ClassifierName name, List<TypeDomain> codes, String lang) {
+
 		if (CollectionUtils.isEmpty(codes)) {
 			return Collections.emptyList();
 		}
@@ -163,6 +168,7 @@ public class CommonDataDbService implements SystemConstant {
 
 	@Cacheable(value = CACHE_KEY_CLASSIF, key = "#root.methodName")
 	public Map<String, Long> getLangOrderByMap() {
+
 		MviewWwClassifier cl = MVIEW_WW_CLASSIFIER.as("cl");
 		return create
 				.select(cl.CODE, cl.ORDER_BY)
@@ -176,9 +182,11 @@ public class CommonDataDbService implements SystemConstant {
 
 	@Cacheable(value = CACHE_KEY_CLASSIF, key = "{#root.methodName, #lang}")
 	public Map<String, LanguageData> getLangDataMap(String lang) {
+
 		MviewWwClassifier cllbldflt = MVIEW_WW_CLASSIFIER.as("cllbldflt");
 		MviewWwClassifier cllbllang = MVIEW_WW_CLASSIFIER.as("cllbllang");
 		MviewWwClassifier cliso = MVIEW_WW_CLASSIFIER.as("cliso");
+
 		return create
 				.select(
 						cllbldflt.CODE,
@@ -204,6 +212,7 @@ public class CommonDataDbService implements SystemConstant {
 
 	@Cacheable(value = CACHE_KEY_CLASSIF, key = "{#root.methodName, #datasetCode}")
 	public Dataset getDataset(String datasetCode) {
+
 		MviewWwDataset ds = MVIEW_WW_DATASET.as("ds");
 		return create
 				.select(
@@ -246,7 +255,9 @@ public class CommonDataDbService implements SystemConstant {
 
 	@Cacheable(value = CACHE_KEY_CLASSIF, key = "#root.methodName")
 	public List<Dataset> getDatasets() {
+
 		MviewWwDataset ds = MVIEW_WW_DATASET.as("ds");
+
 		return create
 				.select(
 						ds.CODE,
@@ -261,12 +272,44 @@ public class CommonDataDbService implements SystemConstant {
 
 	@Cacheable(value = CACHE_KEY_CLASSIF, key = "#root.methodName")
 	public List<String> getDatasetCodes() {
+
 		MviewWwDataset ds = MVIEW_WW_DATASET.as("ds");
+
 		return create
 				.select(ds.CODE)
 				.from(ds)
 				.orderBy(ds.NAME)
 				.fetchInto(String.class);
+	}
+
+	@Cacheable(value = CACHE_KEY_GENERIC, key = "{#root.methodName, #lang}")
+	public NewsArticle getLatestWordwebNewsArticle(String lang) {
+
+		MviewWwNewsArticle na = MVIEW_WW_NEWS_ARTICLE.as("na");
+
+		return create
+				.selectFrom(na)
+				.where(
+						na.TYPE.eq(NewsArticleType.WORDWEB.name())
+								.and(na.LANG.eq(lang)))
+				.orderBy(na.CREATED.desc())
+				.limit(1)
+				.fetchOptionalInto(NewsArticle.class)
+				.orElse(null);
+	}
+
+	@Cacheable(value = CACHE_KEY_GENERIC, key = "{#root.methodName, #lang}")
+	public List<NewsArticle> getWordwebNewsArticles(String lang) {
+
+		MviewWwNewsArticle na = MVIEW_WW_NEWS_ARTICLE.as("na");
+
+		return create
+				.selectFrom(na)
+				.where(
+						na.TYPE.eq(NewsArticleType.WORDWEB.name())
+								.and(na.LANG.eq(lang)))
+				.orderBy(na.CREATED.desc())
+				.fetchInto(NewsArticle.class);
 	}
 
 	@Cacheable(value = CACHE_KEY_CLASSIF, key = "#root.methodName")

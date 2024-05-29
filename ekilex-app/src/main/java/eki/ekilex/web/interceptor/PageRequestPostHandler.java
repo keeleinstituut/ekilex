@@ -12,8 +12,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
 import org.springframework.stereotype.Component;
 import org.springframework.ui.ModelMap;
+import org.springframework.web.servlet.AsyncHandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
-import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 
 import eki.common.data.AppData;
 import eki.common.web.AppDataHolder;
@@ -28,7 +28,7 @@ import eki.ekilex.web.util.ViewUtil;
 
 @ConditionalOnWebApplication
 @Component
-public class PageRequestPostHandler extends HandlerInterceptorAdapter implements WebConstant, SystemConstant {
+public class PageRequestPostHandler implements AsyncHandlerInterceptor, WebConstant, SystemConstant {
 
 	private static Logger logger = LoggerFactory.getLogger(PageRequestPostHandler.class);
 
@@ -87,7 +87,7 @@ public class PageRequestPostHandler extends HandlerInterceptorAdapter implements
 			if (!modelMap.containsKey(USER_ROLE_DATA_KEY)) {
 				EkiUserRoleData roleData = userProfileUtil.getUserRoleData();
 				modelMap.addAttribute(USER_ROLE_DATA_KEY, roleData);
-			}			
+			}
 		}
 
 		logRequestProcessTime(request);

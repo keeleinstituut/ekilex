@@ -50,6 +50,8 @@ public interface SystemConstant {
 
 	String CACHE_KEY_CLASSIF = "classif";
 
+	String CACHE_KEY_GENERIC = "generic";
+
 	String CACHE_KEY_CORPUS = "corpus";
 
 	Float COLLOC_MEMBER_CONTEXT_WEIGHT = 0.5F;
@@ -81,4 +83,6 @@ public interface SystemConstant {
 	String COOKIE_NAME_UI_LANG = COOKIE_NAME_PREFIX + "uil";
 
 	String COOKIE_NAME_UI_SECTIONS = COOKIE_NAME_PREFIX + "uis";
+
+	String COOKIE_NAME_NEWS_ID = COOKIE_NAME_PREFIX + "nid";
 }

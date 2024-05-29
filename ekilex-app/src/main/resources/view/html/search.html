@@ -65,15 +65,15 @@
             <div class="col-auto">
               <select class="form-control" th:name="'criteriaGroups[' + ${critGroupStat.index} + '].entity'">
                 <option th:each="entity : ${T(eki.ekilex.constant.SearchEntity).getLexEntities()}"
-                        th:value="${entity}" th:selected="${group.entity == entity}"
+                        th:value="${entity}" th:selected="${viewUtil.enumEquals(group.entity, entity)}"
                         th:text="#{|lex.search.entity.${entity.name()}|}"
                         th:if="${searchPageName == 'lex_search'}">entityName</option>
                 <option th:each="entity : ${T(eki.ekilex.constant.SearchEntity).getTermEntities()}"
-                        th:value="${entity}" th:selected="${group.entity == entity}"
+                        th:value="${entity}" th:selected="${viewUtil.enumEquals(group.entity, entity)}"
                         th:text="#{|term.search.entity.${entity.name()}|}"
                         th:if="${searchPageName == 'term_search' || searchPageName == 'lim_term_search'}">entityName</option>
                 <option th:each="entity : ${T(eki.ekilex.constant.SearchEntity).getSourceEntities()}"
-                        th:value="${entity}" th:selected="${group.entity == entity}"
+                        th:value="${entity}" th:selected="${viewUtil.enumEquals(group.entity, entity)}"
                         th:text="#{|source.search.entity.${entity.name()}|}"
                         th:if="${searchPageName == 'source_search'}">entityName</option>
               </select>

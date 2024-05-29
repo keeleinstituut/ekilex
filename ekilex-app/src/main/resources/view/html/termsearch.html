@@ -23,16 +23,16 @@
               </div>
               <div class="col-auto">
                 <div class="btn-group btn-group-toggle" data-toggle="buttons">
-                  <label class="btn btn-secondary" th:classappend="${sessionBean.termSearchResultMode == T(eki.ekilex.constant.SearchResultMode).WORD ? 'active' : ''}">
+                  <label class="btn btn-secondary" th:classappend="${viewUtil.enumEquals(sessionBean.termSearchResultMode, T(eki.ekilex.constant.SearchResultMode).WORD) ? 'active' : ''}">
                     <span th:text="#{term.terms}">Terminid</span>
                     <input type="radio" name="resultMode" autocomplete="off" id="search-result-mode-1"
-                           th:checked="${sessionBean.termSearchResultMode == T(eki.ekilex.constant.SearchResultMode).WORD}"
+                           th:checked="${viewUtil.enumEquals(sessionBean.termSearchResultMode, T(eki.ekilex.constant.SearchResultMode).WORD)}"
                            th:value="${T(eki.ekilex.constant.SearchResultMode).WORD}"/>
                   </label>
-                  <label class="btn btn-secondary" th:classappend="${sessionBean.termSearchResultMode == T(eki.ekilex.constant.SearchResultMode).MEANING ? 'active' : ''}">
+                  <label class="btn btn-secondary" th:classappend="${viewUtil.enumEquals(sessionBean.termSearchResultMode, T(eki.ekilex.constant.SearchResultMode).MEANING) ? 'active' : ''}">
                     <span th:text="#{term.meanings}">Mõisted</span>
                     <input type="radio" name="resultMode" autocomplete="off" id="search-result-mode-2"
-                           th:checked="${sessionBean.termSearchResultMode == T(eki.ekilex.constant.SearchResultMode).MEANING}"
+                           th:checked="${viewUtil.enumEquals(sessionBean.termSearchResultMode, T(eki.ekilex.constant.SearchResultMode).MEANING)}"
                            th:value="${T(eki.ekilex.constant.SearchResultMode).MEANING}"/>
                   </label>
                 </div>

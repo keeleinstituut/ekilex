@@ -369,6 +369,7 @@ public class UnifSearchController extends AbstractSearchController {
 		populateLangFilter(langFilter, sessionBean, model);
 		populateDatasetFilter(sessionBean, model);
 		populateUserPref(sessionBean, model);
+		populateLatestNewsModel(request, model);
 
 		model.addAttribute("searchUri", SEARCH_URI + UNIF_URI);
 		model.addAttribute("searchMode", SEARCH_MODE_DETAIL);

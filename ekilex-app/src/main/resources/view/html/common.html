@@ -124,6 +124,7 @@
                 th:text="#{menu.permissions}">Kasutajaõiguste haldus</a>
               <a class="dropdown-item side-menu-item" th:classappend="${activeItem == 'workloadreport' ? 'active' : ''}" th:href="@{/workloadreport}" sec:authorize="#vars.userRoleData.admin"
                 th:text="#{menu.workloadreport}">Muudatuste aruanne</a>
+              <a class="dropdown-item side-menu-item" th:classappend="${activeItem == 'news' ? 'active' : ''}" th:href="@{/news}" th:text="#{menu.news}">Uudiste haldus</a>
               <a class="dropdown-item side-menu-item" th:classappend="${activeItem == 'wwfeedback' ? 'active' : ''}" th:href="@{/wwfeedback}" th:text="#{menu.wwfeedback}">Sõnaveebi tagasiside</a>
               <a class="dropdown-item side-menu-item" th:classappend="${activeItem == 'stat' ? 'active' : ''}" th:href="@{/stat}" th:text="#{menu.stat}">Sõnaveebi statistika</a>
               <div class="dropdown-divider"></div>
@@ -173,8 +174,8 @@
               <span th:text="#{menu.current.lang}"></span>
             </button>
             <div class="dropdown-menu">
-              <a class="dropdown-item" th:classappend="${#locale.language == 'et' ? 'active' : ''}" th:href="|@{/}?lang=et|">EE</a>
-              <a class="dropdown-item" th:classappend="${#locale.language == 'en' ? 'active' : ''}" th:href="|@{/}?lang=en|">EN</a>
+              <a class="dropdown-item" th:classappend="${#locale.language == 'et' ? 'active' : ''}" th:href="|@{/}?uilang=et|">EE</a>
+              <a class="dropdown-item" th:classappend="${#locale.language == 'en' ? 'active' : ''}" th:href="|@{/}?uilang=en|">EN</a>
             </div>
           </div>
           <div class="mr-2 mt-2">

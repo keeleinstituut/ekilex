@@ -19,6 +19,7 @@ import eki.common.data.Classifier;
 import eki.wordweb.constant.SystemConstant;
 import eki.wordweb.data.Dataset;
 import eki.wordweb.data.LanguageData;
+import eki.wordweb.data.NewsArticle;
 import eki.wordweb.data.UiFilterElement;
 import eki.wordweb.service.db.CommonDataDbService;
 import eki.wordweb.service.util.ClassifierUtil;
@@ -109,5 +110,17 @@ public class CommonDataService implements SystemConstant {
 		List<Dataset> allDatasets = commonDataDbService.getDatasets();
 		List<Dataset> termDatasets = allDatasets.stream().filter(dataset -> DatasetType.TERM.equals(dataset.getType())).collect(Collectors.toList());
 		return termDatasets;
+	}
+
+	@Transactional
+	public NewsArticle getLatestWordwebNewsArticle() {
+		String displayLang = languageContext.getDisplayLang();
+		return commonDataDbService.getLatestWordwebNewsArticle(displayLang);
+	}
+
+	@Transactional
+	public List<NewsArticle> getWordwebNewsArticles() {
+		String displayLang = languageContext.getDisplayLang();
+		return commonDataDbService.getWordwebNewsArticles(displayLang);
 	}
 }

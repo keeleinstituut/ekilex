@@ -290,4 +290,14 @@ public class ViewUtil implements WebConstant, SystemConstant, GlobalConstant {
 	public String getRusCorpWordUrl(String word) {
 		return webUtil.composeRusCorpWordUrl(word);
 	}
+
+	public boolean enumEquals(Enum<?> enum1, Enum<?> enum2) {
+		if (enum1 == null) {
+			return false;
+		}
+		if (enum2 == null) {
+			return false;
+		}
+		return StringUtils.equals(enum1.name(), enum2.name());
+	}
 }

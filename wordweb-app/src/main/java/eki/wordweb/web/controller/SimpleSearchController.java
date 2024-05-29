@@ -276,6 +276,7 @@ public class SimpleSearchController extends AbstractSearchController {
 		SessionBean sessionBean = populateCommonModel(true, request, model);
 		populateLangFilter(langFilter, sessionBean, model);
 		populateUserPref(sessionBean, model);
+		populateLatestNewsModel(request, model);
 
 		model.addAttribute("searchUri", SEARCH_URI + LITE_URI);
 		model.addAttribute("searchMode", SEARCH_MODE_SIMPLE);

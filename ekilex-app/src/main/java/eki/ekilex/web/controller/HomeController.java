@@ -21,9 +21,11 @@ import eki.common.constant.AuthorityOperation;
 import eki.ekilex.constant.WebConstant;
 import eki.ekilex.data.EkiUser;
 import eki.ekilex.data.EkiUserApplication;
+import eki.ekilex.data.NewsArticle;
 import eki.ekilex.data.StatData;
 import eki.ekilex.data.StatDataRow;
 import eki.ekilex.security.EkilexPermissionEvaluator;
+import eki.ekilex.service.NewsService;
 import eki.ekilex.service.StatDataService;
 import eki.ekilex.service.UserProfileService;
 
@@ -41,6 +43,9 @@ public class HomeController extends AbstractPublicPageController {
 	private UserProfileService userProfileService;
 
 	@Autowired
+	private NewsService newsService;
+
+	@Autowired
 	private EkilexPermissionEvaluator permissionEvaluator;
 
 	@GetMapping(INDEX_URI)
@@ -54,13 +59,15 @@ public class HomeController extends AbstractPublicPageController {
 
 	@GetMapping(HOME_URI)
 	public String home(Authentication authentication, Model model) throws Exception {
+
 		boolean isActiveTermsAgreed = permissionEvaluator.isActiveTermsAgreed(authentication);
 		if (!isActiveTermsAgreed) {
 			return REDIRECT_PREF + TERMS_AGREEMENT_PAGE_URI;
 		}
 		boolean isPrivatePageAccessPermitted = permissionEvaluator.isPrivatePageAccessPermitted(authentication);
 		if (isPrivatePageAccessPermitted) {
-			populateStatData(model);
+			populateNewsArticlesModel(model);
+			populateStatDataModel(model);
 			return HOME_PAGE;
 		}
 		boolean isLimitedPageAccessPermitted = permissionEvaluator.isLimitedPageAccessPermitted(authentication);
@@ -79,6 +86,7 @@ public class HomeController extends AbstractPublicPageController {
 
 	@GetMapping(APPLY_URI)
 	public String apply(Model model) {
+
 		EkiUser user = userContext.getUser();
 		boolean isUserEnabled = Boolean.TRUE.equals(user.getEnabled());
 		boolean datasetPermissionsExist = user.isDatasetPermissionsExist();
@@ -86,6 +94,7 @@ public class HomeController extends AbstractPublicPageController {
 			return REDIRECT_PREF + HOME_URI;
 		}
 		populateUserApplicationData(user, model);
+
 		return APPLY_PAGE;
 	}
 
@@ -101,12 +110,13 @@ public class HomeController extends AbstractPublicPageController {
 		boolean isUserEnabled = Boolean.TRUE.equals(user.getEnabled());
 		boolean datasetPermissionsExist = user.isDatasetPermissionsExist();
 		if (isUserEnabled && datasetPermissionsExist) {
-			populateStatData(model);
+			populateStatDataModel(model);
 			return HOME_PAGE;
 		}
 
 		userService.submitUserApplication(user, datasetCode, authOp, lang, applicationComment);
 		populateUserApplicationData(user, model);
+
 		return REDIRECT_PREF + HOME_URI;
 	}
 
@@ -117,7 +127,7 @@ public class HomeController extends AbstractPublicPageController {
 		boolean isUserEnabled = Boolean.TRUE.equals(user.getEnabled());
 		boolean datasetPermissionsExist = user.isDatasetPermissionsExist();
 		if (isUserEnabled && datasetPermissionsExist) {
-			populateStatData(model);
+			populateStatDataModel(model);
 			return HOME_PAGE;
 		}
 		Long userId = user.getId();
@@ -132,7 +142,7 @@ public class HomeController extends AbstractPublicPageController {
 		boolean isUserEnabled = Boolean.TRUE.equals(user.getEnabled());
 		boolean datasetPermissionsExist = user.isDatasetPermissionsExist();
 		if (isUserEnabled && datasetPermissionsExist) {
-			populateStatData(model);
+			populateStatDataModel(model);
 			return HOME_PAGE;
 		}
 		Long userId = user.getId();
@@ -153,7 +163,7 @@ public class HomeController extends AbstractPublicPageController {
 		model.addAttribute("userApplications", userApplications);
 	}
 
-	private void populateStatData(Model model) {
+	private void populateStatDataModel(Model model) {
 
 		StatData mainEntityStatData = statDataService.getMainEntityStatData();
 		List<StatDataRow> freeformStatData = statDataService.getFreeformStatData();
@@ -171,6 +181,13 @@ public class HomeController extends AbstractPublicPageController {
 		model.addAttribute("statExists", statExists);
 	}
 
+	private void populateNewsArticlesModel(Model model) {
+		List<NewsArticle> newsArticles = newsService.getLatestNewsArticlesOfTypes();
+		if (CollectionUtils.isNotEmpty(newsArticles)) {
+			model.addAttribute("newsArticles", newsArticles);
+		}
+	}
+
 	@GetMapping("/loginerror")
 	public String loginError(RedirectAttributes attributes) {
 		attributes.addFlashAttribute("loginerror", "Autentimine ebaõnnestus");
@@ -178,7 +195,7 @@ public class HomeController extends AbstractPublicPageController {
 	}
 
 	@PreAuthorize("authentication.principal.datasetPermissionsExist")
-	@PostMapping(CHANGE_ROLE_URI)
+	@PostMapping(SELECT_ROLE_URI)
 	public String changeRole(@RequestParam Long permissionId) {
 
 		logger.debug("User initiated role change, dataSetPermissionId: {}", permissionId);

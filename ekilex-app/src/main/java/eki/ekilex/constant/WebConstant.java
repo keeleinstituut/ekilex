@@ -318,6 +318,10 @@ public interface WebConstant {
 
 	String HISTORY_PAGE = "history";
 
+	String NEWS_URI = "/news";
+
+	String NEWS_PAGE = "news";
+
 	String STAT_URI = "/stat";
 
 	String STAT_PAGE = "stat";
@@ -326,7 +330,7 @@ public interface WebConstant {
 
 	String WW_STAT_URI = "/ww_stat";
 
-	String CHANGE_ROLE_URI = "/change_role";
+	String SELECT_ROLE_URI = "/select_role";
 
 	String MANUAL_EVENT_ON_UPDATE_URI = "/manual_event_on_update";
 

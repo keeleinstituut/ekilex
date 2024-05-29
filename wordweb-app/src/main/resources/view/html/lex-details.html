@@ -490,7 +490,7 @@
                               <span class="colloc-member" th:each="displayColloc,displayCollocIter : ${collocRelGr.displayCollocs}">
                                 <span th:if="${displayCollocIter.first}">
                                   <span th:each="collocMemGr : ${displayColloc.memberGroupOrder}">
-                                    <span th:if="${collocMemGr == T(eki.wordweb.constant.CollocMemberGroup).HEADWORD}">
+                                    <span th:if="${viewUtil.enumEquals(collocMemGr, T(eki.wordweb.constant.CollocMemberGroup).HEADWORD)}">
                                       <span th:if="${displayColloc.headwordMember.conjunct != null && displayColloc.headwordMember.preConjunct}" class="value"
                                             th:text="${displayColloc.headwordMember.conjunct}">
                                       </span>
@@ -499,7 +499,7 @@
                                             th:text="${displayColloc.headwordMember.conjunct}">
                                       </span>
                                     </span>
-                                    <span th:if="${collocMemGr == T(eki.wordweb.constant.CollocMemberGroup).PRIMARY}">
+                                    <span th:if="${viewUtil.enumEquals(collocMemGr, T(eki.wordweb.constant.CollocMemberGroup).PRIMARY)}">
                                       <span th:each="collocMem,collocMemIter : ${displayColloc.primaryMembers}">
                                         <span th:if="${collocMem.conjunct != null && collocMem.preConjunct}" class="value" th:text="${collocMem.conjunct}"></span>
                                         <a th:href="@{${viewUtil.getSearchUri(sessionBean, searchMode, collocMem.word, collocMem.homonymNr)}}">
@@ -508,7 +508,7 @@
                                         <span th:if="${collocMem.conjunct != null && collocMem.postConjunct}" class="value" th:text="${collocMem.conjunct}"></span>
                                       </span>
                                     </span>
-                                    <span th:if="${collocMemGr == T(eki.wordweb.constant.CollocMemberGroup).CONTEXT}">
+                                    <span th:if="${viewUtil.enumEquals(collocMemGr, T(eki.wordweb.constant.CollocMemberGroup).CONTEXT)}">
                                       <span th:each="collocMem,collocMemIter : ${displayColloc.contextMembers}">
                                         <span th:if="${collocMem.conjunct != null}" class="value" th:text="${collocMem.conjunct}"></span>
                                         <a th:href="@{${viewUtil.getSearchUri(sessionBean, searchMode, collocMem.word, collocMem.homonymNr)}}">
@@ -576,14 +576,14 @@
                           <span class="colloc-member" th:each="displayColloc,displayCollocIter : ${lexeme.limitedPrimaryDisplayCollocs}">
                             <span th:if="${displayCollocIter.first}">
                               <span th:each="collocMemGr : ${displayColloc.memberGroupOrder}">
-                                <span th:if="${collocMemGr == T(eki.wordweb.constant.CollocMemberGroup).HEADWORD}">
+                                <span th:if="${viewUtil.enumEquals(collocMemGr, T(eki.wordweb.constant.CollocMemberGroup).HEADWORD)}">
                                   <span th:if="${displayColloc.headwordMember.conjunct != null && displayColloc.headwordMember.preConjunct}" class="value"
                                         th:text="${displayColloc.headwordMember.conjunct}"></span>
                                   <span class="font-weight-bold" th:text="${displayColloc.headwordMember.form}"></span>
                                   <span th:if="${displayColloc.headwordMember.conjunct != null && displayColloc.headwordMember.postConjunct}" class="value"
                                         th:text="${displayColloc.headwordMember.conjunct}"></span>
                                 </span>
-                                <span th:if="${collocMemGr == T(eki.wordweb.constant.CollocMemberGroup).PRIMARY}">
+                                <span th:if="${viewUtil.enumEquals(collocMemGr, T(eki.wordweb.constant.CollocMemberGroup).PRIMARY)}">
                                   <span th:each="collocMem,collocMemIter : ${displayColloc.primaryMembers}">
                                     <span th:if="${collocMem.conjunct != null && collocMem.preConjunct}" class="value" th:text="${collocMem.conjunct}"></span>
                                     <a th:href="@{${viewUtil.getSearchUri(sessionBean, searchMode, collocMem.word, collocMem.homonymNr)}}">
@@ -592,7 +592,7 @@
                                     <span th:if="${collocMem.conjunct != null && collocMem.postConjunct}" class="value" th:text="${collocMem.conjunct}"></span>
                                   </span>
                                 </span>
-                                <span th:if="${collocMemGr == T(eki.wordweb.constant.CollocMemberGroup).CONTEXT}">
+                                <span th:if="${viewUtil.enumEquals(collocMemGr, T(eki.wordweb.constant.CollocMemberGroup).CONTEXT)}">
                                   <span th:each="collocMem,collocMemIter : ${displayColloc.contextMembers}">
                                     <span th:if="${collocMem.conjunct != null}" class="value" th:text="${collocMem.conjunct}"></span>
                                     <a th:href="@{${viewUtil.getSearchUri(sessionBean, searchMode, collocMem.word, collocMem.homonymNr)}}">

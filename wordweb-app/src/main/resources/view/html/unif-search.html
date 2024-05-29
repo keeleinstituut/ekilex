@@ -15,6 +15,7 @@
     <th:block th:replace="common-app :: wcag-search"></th:block>
     <th:block th:replace="common-app :: wcag-main"></th:block>
   </div>
+  <th:block th:replace="common-app :: latest-ww-news-article"></th:block>
   <th:block th:replace="common-app :: ie-user"></th:block>
   <div th:replace="common-app :: menu-with-back-btn"></div>
   <div class="container-fluid homonym-page mt-3 mb-5">
@@ -204,6 +205,7 @@
   	var currentPage = /*[[@{/search/unif}]]*/"/search/unif";
   	var searchWordFragUrl = /*[[@{/searchwordfrag/unif}]]*/"/searchwordfrag/unif";
   	var wordDetailsUrl = /*[[@{/worddetails/unif}]]*/"/worddetails/unif";
+  	var newsAcceptUrl = /*[[@{/newsaccept}]]*/"/newsaccept";
   	var morphoUrl = /*[[@{/morpho/unif}]]*/"/morpho/unif";
   	var searchLinkUrl = /*[[@{/searchlink/unif}]]*/"/searchlink/unif";
   	var corpUrl = /*[[@{/corp/detail}]]*/"/corp/detail";

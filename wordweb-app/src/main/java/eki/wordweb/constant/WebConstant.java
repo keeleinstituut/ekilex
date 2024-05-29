@@ -22,6 +22,10 @@ public interface WebConstant {
 
 	String MORPHO_FULL_PAGE = "morpho-full";
 
+	String NEWS_PAGE = "news";
+
+	String EKILEX_API_PAGE = "ekilex-api";
+
 	String LEARN_PAGE = "learn";
 
 	String WORDGAME_PAGE = "wordgame";
@@ -33,8 +37,8 @@ public interface WebConstant {
 	String COLLECTIONS_PAGE = "collections";
 
 	String ABOUT_PAGE = "about";
-	
-	String CONTACTS_PAGE = "contacts";
+
+	String CONTACT_PAGE = "contact";
 
 	String GAME_LEXICDECIS_PAGE = "game-lexicdecis";
 
@@ -45,12 +49,6 @@ public interface WebConstant {
 	String HOME_URI = "/";
 
 	String DATASET_HOME_URI = "/ds";
-
-	@Deprecated
-	String LEX_URI = "/lex";
-
-	@Deprecated
-	String TERM_URI = "/term";
 
 	String UNIF_URI = "/unif";
 
@@ -66,6 +64,12 @@ public interface WebConstant {
 
 	String FEELING_LUCKY_URI = "/feelinglucky";
 
+	String NEWS_URI = "/news";
+
+	String NEWS_ACCEPT_URI = "/newsaccept";
+
+	String EKILEX_API_URI = "/ekilex-api";
+
 	String MORPHO_URI = "/morpho";
 
 	String LEARN_URI = "/learn";
@@ -76,7 +80,7 @@ public interface WebConstant {
 
 	String ABOUT_URI = "/about";
 
-	String CONTACTS_URI = "/contacts";
+	String CONTACT_URI = "/contact";
 
 	String GAMES_URI = "/games";
 

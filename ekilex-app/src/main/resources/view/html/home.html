@@ -9,75 +9,106 @@
   <div class="container-fluid">
     <div class="card mt-4 shadow">
       <div class="card-header">
-        <h5 class="card-title" th:text="#{index.title}">Tere</h5>
+        <h4 th:text="#{index.title}" class="mt-2">Töölaud</h4>
       </div>
       <div class="card-body">
-        <p>
-          <a th:href="@{/lexsearch}" th:text="#{menu.lex}">Leksikograafid</a>
-        </p>
-        <p>
-          <a th:href="@{/termsearch}" th:text="#{menu.term}">Terminoloogid</a>
-        </p>
-        <p>
-          <a th:href="@{/partsynsearch}" th:if="${userRoleData.crudRoleSelected}" th:text="#{menu.partsyn}">Vasted</a>
-          <span th:unless="${userRoleData.crudRoleSelected}" th:title="#{menu.syn.select.crud.role}" th:text="#{menu.partsyn}">Vasted</span>
-        </p>
-        <p>
-          <a th:href="@{/fullsynsearch}" th:if="${userRoleData.crudRoleSelected}" th:text="#{menu.fullsyn}">Tõlkevasted</a>
-          <span th:unless="${userRoleData.crudRoleSelected}" th:title="#{menu.syn.select.crud.role}" th:text="#{menu.fullsyn}">Tõlkevasted</span>
-        </p>
-        <p>
-          <a th:href="@{/sourcesearch}" th:text="#{menu.source}">Allikate otsing</a>
-        </p>
-        <p>
-          <a th:href="@{/limtermsearch}" th:text="#{menu.lim.term}">Võrgustiku otsing</a>
-        </p>
+        <div class="row">
+          <div class="col">
+            <div class="p-1">
+              <a th:href="@{/lexsearch}" th:text="#{menu.lex}">Leksikograafid</a>
+            </div>
+            <div class="p-1">
+              <a th:href="@{/termsearch}" th:text="#{menu.term}">Terminoloogid</a>
+            </div>
+            <div class="p-1">
+              <a th:href="@{/partsynsearch}" th:if="${userRoleData.crudRoleSelected}" th:text="#{menu.partsyn}">Vasted</a>
+              <span th:unless="${userRoleData.crudRoleSelected}" th:title="#{menu.syn.select.crud.role}" th:text="#{menu.partsyn}">Vasted</span>
+            </div>
+            <div class="p-1">
+              <a th:href="@{/fullsynsearch}" th:if="${userRoleData.crudRoleSelected}" th:text="#{menu.fullsyn}">Tõlkevasted</a>
+              <span th:unless="${userRoleData.crudRoleSelected}" th:title="#{menu.syn.select.crud.role}" th:text="#{menu.fullsyn}">Tõlkevasted</span>
+            </div>
+            <div class="p-1">
+              <a th:href="@{/sourcesearch}" th:text="#{menu.source}">Allikate otsing</a>
+            </div>
+            <div class="p-1">
+              <a th:href="@{/limtermsearch}" th:text="#{menu.lim.term}">Võrgustiku otsing</a>
+            </div>
+            <div class="p-1 mt-3">
+              <th:block th:replace="components :: select_role" sec:authorize="#vars.userRoleData.roleChangeEnabled"></th:block>
+            </div>
+          </div>
+          <div class="col">
+            <div class="p-1">
+              <a th:href="@{/history}" th:text="#{menu.history}">Kustutatud andmed</a>
+            </div>
+            <div class="p-1">
+              <a th:href="@{/datasets}" th:text="#{menu.datasets}">Sõnakogude haldus</a>
+            </div>
+            <div sec:authorize="#vars.userRoleData.admin" class="p-1">
+              <a th:href="@{/fedtermupload}" th:text="#{menu.fedtermupload}">FedTerm liidestus</a>
+            </div>
+            <div sec:authorize="#vars.userRoleData.admin" class="p-1">
+              <a th:href="@{/classifiers}" th:text="#{menu.classifiers}">Klassifikaatorite haldus</a>
+            </div>
+            <div sec:authorize="#vars.userRoleData.admin" class="p-1">
+              <a th:href="@{/tags}" th:text="#{menu.tags}">Siltide haldus</a>
+            </div>
+            <div sec:authorize="#vars.userRoleData.datasetOwnerOrAdmin" class="p-1">
+              <a th:href="@{/permissions}" th:text="#{menu.permissions}">Õiguste haldus</a>
+            </div>
+            <div sec:authorize="#vars.userRoleData.admin" class="p-1">
+              <a th:href="@{/workloadreport}" th:text="#{menu.workloadreport}">Muudatuste aruanne</a>
+            </div>
+            <div sec:authorize="#vars.userRoleData.admin" class="p-1">
+              <a th:href="@{/news}" th:text="#{menu.news}">Uudiste haldus</a>
+            </div>
+            <div sec:authorize="#authentication.principal.datasetCrudPermissionsExist" class="p-1">
+              <a th:href="@{/wwfeedback}" th:text="#{menu.wwfeedback}">Sõnaveebi tagasiside</a>
+            </div>
+            <div class="p-1">
+              <a th:href="@{/stat}" th:text="#{menu.stat}">Sõnaveebi statistika</a>
+            </div>
+          </div>
+        </div>
         <hr />
-        <p>
-          <a th:href="@{/history}" th:text="#{menu.history}">Kustutatud andmed</a>
-        </p>
-        <p>
-          <a th:href="@{/datasets}" th:text="#{menu.datasets}">Sõnakogude haldus</a>
-        </p>
-        <p sec:authorize="#vars.userRoleData.admin">
-          <a th:href="@{/fedtermupload}" th:text="#{menu.fedtermupload}">FedTerm liidestus</a>
-        </p>
-        <p sec:authorize="#authentication.principal.admin">
-          <a th:href="@{/classifiers}" th:text="#{menu.classifiers}">Klassifikaatorite haldus</a>
-        </p>
-        <p sec:authorize="#vars.userRoleData.admin">
-          <a th:href="@{/tags}" th:text="#{menu.tags}">Siltide haldus</a>
-        </p>
-        <p sec:authorize="#vars.userRoleData.datasetOwnerOrAdmin">
-          <a th:href="@{/permissions}" th:text="#{menu.permissions}">Õiguste haldus</a>
-        </p>
-        <p sec:authorize="#authentication.principal.admin">
-          <a th:href="@{/workloadreport}" th:text="#{menu.workloadreport}">Muudatuste aruanne</a>
-        </p>
-        <p sec:authorize="#authentication.principal.datasetCrudPermissionsExist">
-          <a th:href="@{/wwfeedback}" th:text="#{menu.wwfeedback}">Sõnaveebi tagasiside</a>
-        </p>
-        <p>
-          <a th:href="@{/stat}" th:text="#{menu.stat}">Sõnaveebi statistika</a>
-        </p>
-        <th:block th:replace="components :: change_role" sec:authorize="#vars.userRoleData.roleChangeEnabled"></th:block>
-        <hr />
-        <p>
+        <div class="p-1">
           <a href="https://keeleinstituut.github.io/ekilex/" target="ekilexUserManual">
             <i class="fa fa-info-circle" aria-hidden="true"></i>
             <span th:text="#{menu.user.manual}"></span>
           </a>
-        </p>
-        <p>
+        </div>
+        <div class="p-1">
           <a th:href="@{/termsofuse}">
             <i class="fa fa-info-circle" aria-hidden="true"></i>
             <span th:text="#{menu.terms.of.use}"></span>
           </a>
-        </p>
+        </div>
       </div>
     </div>
+    <th:block th:if="${newsArticles}">
+      <div class="card mt-4 shadow">
+        <div class="card-body">
+          <div class="row">
+            <th:block th:each="newsArticle : ${newsArticles}">
+              <div class="col px-4">
+                <div>
+                  <strong th:text="${newsArticle.title}"></strong>
+                </div>
+                <ul class="mb-0 pb-3 list-group">
+                  <th:block th:each="newsSection : ${newsArticle.newsSections}">
+                    <li>
+                      <span th:text="${newsSection.content}" style="white-space: pre-line"></span>
+                    </li>
+                  </th:block>
+                </ul>
+              </div>
+            </th:block>
+          </div>
+        </div>
+      </div>
+    </th:block>
   </div>
-
   <div class="container-fluid" th:if="${statExists}">
     <div class="card mt-4 shadow">
       <div class="card-header">
@@ -135,8 +166,7 @@
             <th:block th:each="firstRowItemIndex: ${#numbers.sequence(0, #arrays.length(freeformStatData) - 1, columns)}">
               <tr>
                 <th:block th:each="rowItemCount: ${#numbers.sequence(0, columns - 1)}">
-                  <th th:if="${firstRowItemIndex + rowItemCount < #arrays.length(freeformStatData)}" th:text="${freeformStatData[firstRowItemIndex + rowItemCount].name}">
-                  </th>
+                  <th th:if="${firstRowItemIndex + rowItemCount < #arrays.length(freeformStatData)}" th:text="${freeformStatData[firstRowItemIndex + rowItemCount].name}"></th>
                 </th:block>
               </tr>
               <tr>
