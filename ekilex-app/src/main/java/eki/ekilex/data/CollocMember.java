@@ -1,5 +1,7 @@
 package eki.ekilex.data;
 
+import java.math.BigDecimal;
+
 import eki.common.data.AbstractDataObject;
 
 public class CollocMember extends AbstractDataObject {
@@ -10,7 +12,7 @@ public class CollocMember extends AbstractDataObject {
 
 	private String word;
 
-	private Float weight;
+	private BigDecimal weight;
 
 	public Long getWordId() {
 		return wordId;
@@ -28,11 +30,11 @@ public class CollocMember extends AbstractDataObject {
 		this.word = word;
 	}
 
-	public Float getWeight() {
+	public BigDecimal getWeight() {
 		return weight;
 	}
 
-	public void setWeight(Float weight) {
+	public void setWeight(BigDecimal weight) {
 		this.weight = weight;
 	}
 

@@ -1,5 +1,6 @@
 package eki.ekilex.data;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 import eki.common.constant.Complexity;
@@ -41,13 +42,15 @@ public class CollocationTuple extends AbstractDataObject {
 
 	private String collocMemberWordValue;
 
+	private Long collocMemberFormId;
+
 	private String collocMemberFormValue;
 
 	private String collocMemberMorphCode;
 
 	private String collocMemberConjunct;
 
-	private Float collocMemberWeight;
+	private BigDecimal collocMemberWeight;
 
 	private Integer collocGroupOrder;
 
@@ -181,6 +184,14 @@ public class CollocationTuple extends AbstractDataObject {
 		this.collocMemberWordValue = collocMemberWordValue;
 	}
 
+	public Long getCollocMemberFormId() {
+		return collocMemberFormId;
+	}
+
+	public void setCollocMemberFormId(Long collocMemberFormId) {
+		this.collocMemberFormId = collocMemberFormId;
+	}
+
 	public String getCollocMemberFormValue() {
 		return collocMemberFormValue;
 	}
@@ -205,11 +216,11 @@ public class CollocationTuple extends AbstractDataObject {
 		this.collocMemberConjunct = collocMemberConjunct;
 	}
 
-	public Float getCollocMemberWeight() {
+	public BigDecimal getCollocMemberWeight() {
 		return collocMemberWeight;
 	}
 
-	public void setCollocMemberWeight(Float collocMemberWeight) {
+	public void setCollocMemberWeight(BigDecimal collocMemberWeight) {
 		this.collocMemberWeight = collocMemberWeight;
 	}
 

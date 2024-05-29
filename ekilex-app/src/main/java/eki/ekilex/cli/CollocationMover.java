@@ -36,6 +36,7 @@ public class CollocationMover implements CommandLineRunner {
 	@Autowired
 	private CollocationMoverRunner runner;
 
+	//mvn spring-boot:run -P cmov -D spring-boot.run.profiles=<dev|prod> -D spring-boot.run.arguments="impfile="<import file path>"" 
 	public static void main(String[] args) {
 		logger.info("Application starting up");
 		System.setProperty("org.jooq.no-logo", "true");

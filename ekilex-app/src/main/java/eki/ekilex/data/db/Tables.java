@@ -9,6 +9,7 @@ import eki.ekilex.data.db.tables.Aspect;
 import eki.ekilex.data.db.tables.AspectLabel;
 import eki.ekilex.data.db.tables.Collocation;
 import eki.ekilex.data.db.tables.CollocationFreeform;
+import eki.ekilex.data.db.tables.CollocationMember;
 import eki.ekilex.data.db.tables.DataRequest;
 import eki.ekilex.data.db.tables.Dataset;
 import eki.ekilex.data.db.tables.DatasetPermission;
@@ -88,6 +89,8 @@ import eki.ekilex.data.db.tables.ProficiencyLevelLabel;
 import eki.ekilex.data.db.tables.Region;
 import eki.ekilex.data.db.tables.Register;
 import eki.ekilex.data.db.tables.RegisterLabel;
+import eki.ekilex.data.db.tables.RelGroup;
+import eki.ekilex.data.db.tables.RelGroupLabel;
 import eki.ekilex.data.db.tables.SemanticType;
 import eki.ekilex.data.db.tables.SemanticTypeLabel;
 import eki.ekilex.data.db.tables.Source;
@@ -172,6 +175,11 @@ public class Tables {
      * The table <code>public.collocation_freeform</code>.
      */
     public static final CollocationFreeform COLLOCATION_FREEFORM = CollocationFreeform.COLLOCATION_FREEFORM;
+
+    /**
+     * The table <code>public.collocation_member</code>.
+     */
+    public static final CollocationMember COLLOCATION_MEMBER = CollocationMember.COLLOCATION_MEMBER;
 
     /**
      * The table <code>public.data_request</code>.
@@ -567,6 +575,16 @@ public class Tables {
      * The table <code>public.register_label</code>.
      */
     public static final RegisterLabel REGISTER_LABEL = RegisterLabel.REGISTER_LABEL;
+
+    /**
+     * The table <code>public.rel_group</code>.
+     */
+    public static final RelGroup REL_GROUP = RelGroup.REL_GROUP;
+
+    /**
+     * The table <code>public.rel_group_label</code>.
+     */
+    public static final RelGroupLabel REL_GROUP_LABEL = RelGroupLabel.REL_GROUP_LABEL;
 
     /**
      * The table <code>public.semantic_type</code>.
