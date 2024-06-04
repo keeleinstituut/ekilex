@@ -26,11 +26,6 @@ public class Sequences {
     public static final Sequence<Long> ASPECT_ORDER_BY_SEQ = Internal.createSequence("aspect_order_by_seq", Public.PUBLIC, SQLDataType.BIGINT.nullable(false), null, null, null, null, false, null);
 
     /**
-     * The sequence <code>public.collocation_freeform_id_seq</code>
-     */
-    public static final Sequence<Long> COLLOCATION_FREEFORM_ID_SEQ = Internal.createSequence("collocation_freeform_id_seq", Public.PUBLIC, SQLDataType.BIGINT.nullable(false), null, null, null, null, false, null);
-
-    /**
      * The sequence <code>public.collocation_id_seq</code>
      */
     public static final Sequence<Long> COLLOCATION_ID_SEQ = Internal.createSequence("collocation_id_seq", Public.PUBLIC, SQLDataType.BIGINT.nullable(false), null, null, null, null, false, null);

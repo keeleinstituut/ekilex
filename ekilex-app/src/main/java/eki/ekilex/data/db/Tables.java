@@ -8,7 +8,6 @@ import eki.ekilex.data.db.tables.ActivityLog;
 import eki.ekilex.data.db.tables.Aspect;
 import eki.ekilex.data.db.tables.AspectLabel;
 import eki.ekilex.data.db.tables.Collocation;
-import eki.ekilex.data.db.tables.CollocationFreeform;
 import eki.ekilex.data.db.tables.CollocationMember;
 import eki.ekilex.data.db.tables.DataRequest;
 import eki.ekilex.data.db.tables.Dataset;
@@ -117,6 +116,7 @@ import eki.ekilex.data.db.tables.ViewWwLexicalDecisionData;
 import eki.ekilex.data.db.tables.ViewWwMeaning;
 import eki.ekilex.data.db.tables.ViewWwMeaningFreeformSourceLink;
 import eki.ekilex.data.db.tables.ViewWwMeaningRelation;
+import eki.ekilex.data.db.tables.ViewWwNewsArticle;
 import eki.ekilex.data.db.tables.ViewWwSimilarityJudgementData;
 import eki.ekilex.data.db.tables.ViewWwWord;
 import eki.ekilex.data.db.tables.ViewWwWordEtymSourceLink;
@@ -170,11 +170,6 @@ public class Tables {
      * The table <code>public.collocation</code>.
      */
     public static final Collocation COLLOCATION = Collocation.COLLOCATION;
-
-    /**
-     * The table <code>public.collocation_freeform</code>.
-     */
-    public static final CollocationFreeform COLLOCATION_FREEFORM = CollocationFreeform.COLLOCATION_FREEFORM;
 
     /**
      * The table <code>public.collocation_member</code>.
@@ -715,6 +710,11 @@ public class Tables {
      * The table <code>public.view_ww_meaning_relation</code>.
      */
     public static final ViewWwMeaningRelation VIEW_WW_MEANING_RELATION = ViewWwMeaningRelation.VIEW_WW_MEANING_RELATION;
+
+    /**
+     * The table <code>public.view_ww_news_article</code>.
+     */
+    public static final ViewWwNewsArticle VIEW_WW_NEWS_ARTICLE = ViewWwNewsArticle.VIEW_WW_NEWS_ARTICLE;
 
     /**
      * The table <code>public.view_ww_similarity_judgement_data</code>.

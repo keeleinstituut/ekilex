@@ -1,6 +1,5 @@
 package eki.ekilex.service.db;
 
-import static eki.ekilex.data.db.Tables.COLLOCATION_FREEFORM;
 import static eki.ekilex.data.db.Tables.DATA_REQUEST;
 import static eki.ekilex.data.db.Tables.DEFINITION;
 import static eki.ekilex.data.db.Tables.DEFINITION_FREEFORM;
@@ -161,10 +160,6 @@ public class MaintenanceDbService extends AbstractDataDbService {
 						.select(LEXEME_FREEFORM.ID)
 						.from(LEXEME_FREEFORM)
 						.where(LEXEME_FREEFORM.FREEFORM_ID.eq(FREEFORM.ID)))
-				.andNotExists(DSL
-						.select(COLLOCATION_FREEFORM.ID)
-						.from(COLLOCATION_FREEFORM)
-						.where(COLLOCATION_FREEFORM.FREEFORM_ID.eq(FREEFORM.ID)))
 				.andNotExists(DSL
 						.select(WORD_FREEFORM.ID)
 						.from(WORD_FREEFORM)

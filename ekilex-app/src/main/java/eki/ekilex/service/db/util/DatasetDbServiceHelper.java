@@ -1,7 +1,6 @@
 package eki.ekilex.service.db.util;
 
 import static eki.ekilex.data.db.Tables.COLLOCATION;
-import static eki.ekilex.data.db.Tables.COLLOCATION_FREEFORM;
 import static eki.ekilex.data.db.Tables.DEFINITION;
 import static eki.ekilex.data.db.Tables.DEFINITION_DATASET;
 import static eki.ekilex.data.db.Tables.DEFINITION_FREEFORM;
@@ -21,7 +20,6 @@ import org.jooq.impl.DSL;
 import org.springframework.stereotype.Component;
 
 import eki.ekilex.data.db.tables.Collocation;
-import eki.ekilex.data.db.tables.CollocationFreeform;
 import eki.ekilex.data.db.tables.Definition;
 import eki.ekilex.data.db.tables.DefinitionDataset;
 import eki.ekilex.data.db.tables.DefinitionFreeform;
@@ -150,38 +148,6 @@ public class DatasetDbServiceHelper {
 								.where(l2.ID.eq(lff.LEXEME_ID).and(l2.DATASET_CODE.ne(datasetCode))))))
 				.execute();
 	}
-
-	public void deleteCollocationFreeforms(String datasetCode, DSLContext create) {
-
-		Lexeme l1 = LEXEME.as("l1");
-		Lexeme l2 = LEXEME.as("l2");
-		Freeform ff = FREEFORM.as("ff");
-		LexColloc lc1 = LEX_COLLOC.as("lc1");
-		LexColloc lc2 = LEX_COLLOC.as("lc2");
-		CollocationFreeform cff = COLLOCATION_FREEFORM.as("cff");
-
-		create
-				.deleteFrom(ff)
-				.where(ff.ID.in(DSL
-						.select(cff.FREEFORM_ID)
-						.from(cff)
-						.whereExists(DSL
-								.select(lc1.ID)
-								.from(l1, lc1)
-								.where(
-										lc1.LEXEME_ID.eq(l1.ID)
-												.and(lc1.COLLOCATION_ID.eq(cff.COLLOCATION_ID))
-												.and(l1.DATASET_CODE.eq(datasetCode))))
-						.andNotExists(DSL
-								.select(lc2.ID)
-								.from(l2, lc2)
-								.where(
-										lc2.LEXEME_ID.eq(l2.ID)
-												.and(lc2.COLLOCATION_ID.eq(cff.COLLOCATION_ID))
-												.and(l2.DATASET_CODE.ne(datasetCode))))))
-				.execute();
-	}
-
 
 	public void deleteWordFreeforms(String datasetCode, DSLContext create) {
 

@@ -40,7 +40,6 @@ import eki.ekilex.data.FreeForm;
 import eki.ekilex.data.WordLexemeMeaningIdTuple;
 import eki.ekilex.data.migra.CollocationMember;
 import eki.ekilex.data.migra.MigraForm;
-import eki.ekilex.data.migra.MigraWord;
 import eki.ekilex.service.core.ActivityLogService;
 import eki.ekilex.service.db.CudDbService;
 import eki.ekilex.service.db.MigrationDbService;
@@ -70,6 +69,8 @@ public class CollocationMoverRunner extends AbstractLoaderCommons implements Sys
 
 	private boolean doSave = true;
 
+	private boolean doLog = true;
+
 	@Transactional(rollbackOn = Exception.class)
 	public void execute(String importFilePath) throws Exception {
 
@@ -90,7 +91,7 @@ public class CollocationMoverRunner extends AbstractLoaderCommons implements Sys
 				continue;
 			}
 			String[] collocMemberFormMappingCells = StringUtils.splitPreserveAllTokens(collocMemberFormMappingLine, CSV_SEPARATOR);
-			if (collocMemberFormMappingCells.length != 8) {
+			if (collocMemberFormMappingCells.length != 5) {
 				System.out.println(collocMemberFormMappingLine + "; " + collocMemberFormMappingCells.length);
 				continue;
 			}
@@ -98,8 +99,8 @@ public class CollocationMoverRunner extends AbstractLoaderCommons implements Sys
 			Long collocId = Long.valueOf(StringUtils.trim(collocMemberFormMappingCells[0]));
 			String collocValue = StringUtils.trim(collocMemberFormMappingCells[1]);
 			Long collocMemberWordId = Long.valueOf(StringUtils.trim(collocMemberFormMappingCells[2]));
-			String collocMemberFormValue = StringUtils.trim(collocMemberFormMappingCells[5]);
-			String collocMemberMorphCode = StringUtils.trim(collocMemberFormMappingCells[7]);
+			String collocMemberFormValue = StringUtils.trim(collocMemberFormMappingCells[3]);
+			String collocMemberMorphCode = StringUtils.trim(collocMemberFormMappingCells[4]);
 
 			CollocationTuple collocMemberFormMappingTuple = new CollocationTuple();
 			collocMemberFormMappingTuple.setCollocId(collocId);
@@ -126,12 +127,12 @@ public class CollocationMoverRunner extends AbstractLoaderCommons implements Sys
 		Count missingMembersCollocCount = new Count();
 		Count missingWordMorphCount = new Count();
 		Count missingCollocMemberFormMappingCount = new Count();
+		Count inconclusiveCollocMemberFormMappingCount = new Count();
 		Count existingCollocMemberFormCount = new Count();
-		Count illegalFormMappingCount = new Count();
-		Count collocIntegrityCoveredCount = new Count();
-		Count collocIntegrityFailureCount = new Count();
+		Count multipleCollocMemberFormMappingCount = new Count();
 		Count existingCollocMemberCount = new Count();
 		Count createdCollocMemberCount = new Count();
+		Count unresolvedCollocMemberCount = new Count();
 
 		boolean tagExists;
 		tagExists = tagDbService.tagExists(tagNameCollocMigration);
@@ -160,43 +161,21 @@ public class CollocationMoverRunner extends AbstractLoaderCommons implements Sys
 			String definitionValue = collocation.getDefinition();
 			Complexity complexity = collocation.getComplexity();
 
-			// resolve colloc value word and lexeme
+			// resolve colloc value word, lexeme, meaning
 
-			List<MigraWord> collocValueWords = migrationDbService.getWords(collocValue, languageCode);
-			List<Long> collocValueLexemeIds = new ArrayList<>();
+			WordLexemeMeaningIdTuple collocValueWordLexemeMeaningId = createCollocValueWordLexemeMeaning(
+					collocValue, languageCode, datasetCode, complexity, tagNameCollocMigration);
+			Long collocValueLexemeId = collocValueWordLexemeMeaningId.getLexemeId();
+			Long collocValueMeaningId = collocValueWordLexemeMeaningId.getMeaningId();
 
-			if (CollectionUtils.isEmpty(collocValueWords)) {
-
-				WordLexemeMeaningIdTuple wordLexemeMeaningId = createCollocValueWordLexemeMeaning(collocValue, languageCode, datasetCode, complexity, tagNameCollocMigration);
-				Long lexemeId = wordLexemeMeaningId.getLexemeId();
-				Long meaningId = wordLexemeMeaningId.getMeaningId();
-
-				createDefinition(meaningId, definitionValue, languageCode, datasetCode, complexity);
-				createUsages(lexemeId, collocUsages, languageCode, datasetCode, complexity);
-				addCollocValueLexemeId(lexemeId, collocValueLexemeIds);
-
-			} else {
-
-				for (MigraWord collocValueWord : collocValueWords) {
-
-					Long wordId = collocValueWord.getId();
-					WordLexemeMeaningIdTuple wordLexemeMeaningId = createCollocValueLexemeMeaning(wordId, datasetCode, complexity, tagNameCollocMigration);
-					Long lexemeId = wordLexemeMeaningId.getLexemeId();
-					Long meaningId = wordLexemeMeaningId.getMeaningId();
-
-					createDefinition(meaningId, definitionValue, languageCode, datasetCode, complexity);
-					createUsages(lexemeId, collocUsages, languageCode, datasetCode, complexity);
-					addCollocValueLexemeId(lexemeId, collocValueLexemeIds);
-				}
-			}
+			createDefinition(collocValueMeaningId, definitionValue, languageCode, datasetCode, complexity);
+			createUsages(collocValueLexemeId, collocUsages, languageCode, datasetCode, complexity);
 
 			// resolve colloc members
 
 			if (CollectionUtils.isEmpty(collocationAndMembers)) {
 
-				for (Long collocValueLexemeId : collocValueLexemeIds) {
-					addTag(collocValueLexemeId, tagNameCollocNoMembers);
-				}
+				addTag(collocValueLexemeId, tagNameCollocNoMembers);
 				if (!missingMembersCollocValues.contains(collocValue)) {
 					missingMembersCollocValues.add(collocValue);
 				}
@@ -204,13 +183,8 @@ public class CollocationMoverRunner extends AbstractLoaderCommons implements Sys
 
 			} else {
 
-				List<CollocationTuple> collocMembersForms = collocMemberFormMap.get(collocId);
-				Map<Long, CollocationTuple> collocMemberWordFormMap = null;
-				if (CollectionUtils.isNotEmpty(collocMembersForms)) {
-					collocMemberWordFormMap = collocMembersForms.stream().collect(Collectors.toMap(CollocationTuple::getCollocMemberWordId, tuple -> tuple));
-				}
+				List<CollocationTuple> collocMembersMappedForms = collocMemberFormMap.get(collocId);
 
-				boolean isIntegrityCovered = true;
 				for (CollocationTuple collocMemberTuple : collocationAndMembers) {
 
 					Long collocMemberWordId = collocMemberTuple.getCollocMemberWordId();
@@ -219,6 +193,7 @@ public class CollocationMoverRunner extends AbstractLoaderCommons implements Sys
 					List<MigraForm> collocMemberForms = migrationDbService.getForms(collocMemberWordId, collocMemberFormValue, null);
 					MigraForm collocMemberForm;
 					Long collocMemberFormId = null;
+					CollocationTuple collocMemberMappedFormCandidate;
 					String collocMemberMorphCode;
 
 					if (CollectionUtils.isEmpty(collocMemberForms)) {
@@ -226,7 +201,6 @@ public class CollocationMoverRunner extends AbstractLoaderCommons implements Sys
 						// missing morpho
 						missingWordMorphCount.increment();
 						collocMemberFormId = createUnknownForm(collocMemberWordId, collocMemberFormValue);
-						isIntegrityCovered = isIntegrityCovered && true;
 
 					} else if (collocMemberForms.size() == 1) {
 
@@ -234,71 +208,95 @@ public class CollocationMoverRunner extends AbstractLoaderCommons implements Sys
 						existingCollocMemberFormCount.increment();
 						collocMemberForm = collocMemberForms.get(0);
 						collocMemberFormId = collocMemberForm.getFormId();
-						isIntegrityCovered = isIntegrityCovered && true;
 
-					} else if (collocMemberWordFormMap == null) {
+					} else if (CollectionUtils.isEmpty(collocMembersMappedForms)) {
 
 						// missing morpho mapping for entire colloc
 						missingCollocMemberFormMappingCount.increment();
 						addLog(collocMemberFormIssues, collocId, collocValue, collocMemberWordId, collocMemberFormValue, collocMemberForms, "<s2.1>");
 						// TODO needs mapping
-						isIntegrityCovered = isIntegrityCovered && false;
+						// TODO ignoring, take any first
+						collocMemberForm = collocMemberForms.get(0);
+						collocMemberFormId = collocMemberForm.getFormId();
 
 					} else {
 
-						CollocationTuple collocMemberWordFormTuple = collocMemberWordFormMap.get(collocMemberWordId);
+						// more than one morphos by value only, looking for mapping
+						Map<Long, List<CollocationTuple>> collocMemberMappedFormCandidateMap = collocMembersMappedForms.stream().collect(Collectors.groupingBy(CollocationTuple::getCollocMemberWordId));
+						List<CollocationTuple> collocMemberMappedFormCandidates = collocMemberMappedFormCandidateMap.get(collocMemberWordId);
 
-						if (collocMemberWordFormTuple == null) {
+						if (CollectionUtils.isEmpty(collocMemberMappedFormCandidates)) {
 
 							// missing morpho mapping for the member
 							missingCollocMemberFormMappingCount.increment();
 							addLog(collocMemberFormIssues, collocId, collocValue, collocMemberWordId, collocMemberFormValue, collocMemberForms, "<s2.2>");
 							// TODO needs mapping
-							isIntegrityCovered = isIntegrityCovered && false;
+							// TODO ignoring, take any first
+							collocMemberForm = collocMemberForms.get(0);
+							collocMemberFormId = collocMemberForm.getFormId();
 
 						} else {
 
-							// morpho mapping exists
-							collocMemberMorphCode = collocMemberWordFormTuple.getCollocMemberMorphCode();
-							collocMemberForms = migrationDbService.getForms(collocMemberWordId, collocMemberFormValue, collocMemberMorphCode);
+							// morpho mapping(s) exists
 
-							if (CollectionUtils.isEmpty(collocMemberForms)) {
+							boolean isInconclusiveMapping = collocMemberMappedFormCandidates.stream()
+									.map(CollocationTuple::getCollocMemberMorphCode)
+									.anyMatch(morphCode -> StringUtils.equalsIgnoreCase(morphCode, "viga"));
 
-								// illegal morpho mapping
-								illegalFormMappingCount.increment();
-								collocMemberForms = migrationDbService.getForms(collocMemberWordId, collocMemberFormValue, null);
-								addLog(collocMemberFormIssues, collocId, collocValue, collocMemberWordId, collocMemberFormValue, collocMemberForms, "<s3>");
-								// TODO needs mapping fixed
-								isIntegrityCovered = isIntegrityCovered && false;
+							if (isInconclusiveMapping) {
+
+								// inconclusive form mapping
+								inconclusiveCollocMemberFormMappingCount.increment();
+								collocMemberForm = collocMemberForms.get(0);
+								collocMemberFormId = collocMemberForm.getFormId();
 
 							} else {
 
-								// perfect, go ahead
-								existingCollocMemberFormCount.increment();
-								collocMemberForm = collocMemberForms.get(0);
-								collocMemberFormId = collocMemberForm.getFormId();
-								isIntegrityCovered = isIntegrityCovered && true;
+								collocMemberMappedFormCandidates = collocMemberMappedFormCandidates.stream()
+										.filter(tuple -> !StringUtils.equalsIgnoreCase(tuple.getCollocMemberMorphCode(), "viga"))
+										.collect(Collectors.toList());
+
+								if (CollectionUtils.isEmpty(collocMemberMappedFormCandidates)) {
+
+									// missing morpho mapping for the member
+									missingCollocMemberFormMappingCount.increment();
+									addLog(collocMemberFormIssues, collocId, collocValue, collocMemberWordId, collocMemberFormValue, collocMemberForms, "<s2.3>");
+									// TODO needs mapping
+									// TODO ignoring, take any first
+									collocMemberForm = collocMemberForms.get(0);
+									collocMemberFormId = collocMemberForm.getFormId();
+
+								} else if (collocMemberMappedFormCandidates.size() == 1) {
+
+									// perfect, mapping exists
+									existingCollocMemberFormCount.increment();
+									collocMemberMappedFormCandidate = collocMemberMappedFormCandidates.get(0);
+									collocMemberMorphCode = collocMemberMappedFormCandidate.getCollocMemberMorphCode();
+									collocMemberForms = migrationDbService.getForms(collocMemberWordId, collocMemberFormValue, collocMemberMorphCode);
+									collocMemberForm = collocMemberForms.get(0);
+									collocMemberFormId = collocMemberForm.getFormId();
+
+								} else {
+
+									// multiple mappings, not an actual scenario
+									multipleCollocMemberFormMappingCount.increment();
+								}
 							}
 						}
 					}
 
-					if (collocMemberFormId != null) {
+					if (collocMemberFormId == null) {
 
-						for (Long collocValueLexemeId : collocValueLexemeIds) {
+						unresolvedCollocMemberCount.increment();
 
-							createCollocMember(collocValueLexemeId, collocMemberFormId, collocMemberTuple);
-							createdCollocMemberCount.increment();
-						}
+					} else {
+
+						createCollocMember(collocValueLexemeId, collocMemberFormId, collocMemberTuple);
+						createdCollocMemberCount.increment();
 					}
 				}
 
 				existingCollocMemberCount.increment(collocationAndMembers.size());
-
-				if (isIntegrityCovered) {
-					collocIntegrityCoveredCount.increment();
-				} else {
-					collocIntegrityFailureCount.increment();
-				}
 			}
 
 			collocCounter++;
@@ -318,13 +316,13 @@ public class CollocationMoverRunner extends AbstractLoaderCommons implements Sys
 		logger.info("colloc count: {}", collocIds.size());
 		logger.info("missingMembersCollocCount: {}", missingMembersCollocCount.getValue());
 		logger.info("missingWordMorphCount: {}", missingWordMorphCount.getValue());
-		logger.info("illegalFormMappingCount: {}", illegalFormMappingCount.getValue());
 		logger.info("missingCollocMemberMorphMappingCount: {}", missingCollocMemberFormMappingCount.getValue());
 		logger.info("existingCollocMemberFormCount: {}", existingCollocMemberFormCount.getValue());
-		logger.info("collocIntegrityCoveredCount: {}", collocIntegrityCoveredCount.getValue());
-		logger.info("collocIntegrityFailureCount: {}", collocIntegrityFailureCount.getValue());
 		logger.info("existingCollocMemberCount: {}", existingCollocMemberCount.getValue());
+		logger.info("inconclusiveCollocMemberFormMappingCount: {}", inconclusiveCollocMemberFormMappingCount.getValue());
+		logger.info("multipleCollocMemberFormMappingCount: {}", multipleCollocMemberFormMappingCount.getValue());
 		logger.info("createdCollocMemberCount: {}", createdCollocMemberCount.getValue());
+		logger.info("unresolvedCollocMemberCount: {}", unresolvedCollocMemberCount.getValue());
 
 		logger.info("Done");
 	}
@@ -370,14 +368,6 @@ public class CollocationMoverRunner extends AbstractLoaderCommons implements Sys
 		return formId;
 	}
 
-	private void addCollocValueLexemeId(Long lexemeId, List<Long> collocValueLexemeIds) {
-
-		if (!doSave) {
-			return;
-		}
-		collocValueLexemeIds.add(lexemeId);
-	}
-
 	private void createTag(final String tagName) {
 
 		if (!doSave) {
@@ -406,27 +396,11 @@ public class CollocationMoverRunner extends AbstractLoaderCommons implements Sys
 		Long meaningId = wordLexemeMeaningId.getMeaningId();
 		tagDbService.createLexemeAutomaticTags(lexemeId);
 		addTag(lexemeId, tagName);
-		activityLogService.createActivityLog(ACTIVITY_FUNCT_NAME, wordId, ActivityOwner.WORD, datasetCode, MANUAL_EVENT_ON_UPDATE_ENABLED);
-		activityLogService.createActivityLog(ACTIVITY_FUNCT_NAME, lexemeId, ActivityOwner.LEXEME, datasetCode, MANUAL_EVENT_ON_UPDATE_ENABLED);
-		activityLogService.createActivityLog(ACTIVITY_FUNCT_NAME, meaningId, ActivityOwner.MEANING, datasetCode, MANUAL_EVENT_ON_UPDATE_ENABLED);
-
-		return wordLexemeMeaningId;
-	}
-
-	private WordLexemeMeaningIdTuple createCollocValueLexemeMeaning(Long wordId, String datasetCode, Complexity complexity, String tagName) throws Exception {
-
-		if (!doSave) {
-			return new WordLexemeMeaningIdTuple();
+		if (doLog) {
+			activityLogService.createActivityLog(ACTIVITY_FUNCT_NAME, wordId, ActivityOwner.WORD, datasetCode, MANUAL_EVENT_ON_UPDATE_ENABLED);
+			activityLogService.createActivityLog(ACTIVITY_FUNCT_NAME, lexemeId, ActivityOwner.LEXEME, datasetCode, MANUAL_EVENT_ON_UPDATE_ENABLED);
+			activityLogService.createActivityLog(ACTIVITY_FUNCT_NAME, meaningId, ActivityOwner.MEANING, datasetCode, MANUAL_EVENT_ON_UPDATE_ENABLED);
 		}
-
-		WordLexemeMeaningIdTuple wordLexemeMeaningId = migrationDbService.createLexemeAndMeaning(wordId, datasetCode, complexity, PUBLICITY_PUBLIC);
-		Long lexemeId = wordLexemeMeaningId.getLexemeId();
-		Long meaningId = wordLexemeMeaningId.getMeaningId();
-		tagDbService.createLexemeAutomaticTags(lexemeId);
-		addTag(lexemeId, tagName);
-		activityLogService.createActivityLog(ACTIVITY_FUNCT_NAME, lexemeId, ActivityOwner.LEXEME, datasetCode, MANUAL_EVENT_ON_UPDATE_ENABLED);
-		activityLogService.createActivityLog(ACTIVITY_FUNCT_NAME, meaningId, ActivityOwner.MEANING, datasetCode, MANUAL_EVENT_ON_UPDATE_ENABLED);
-		migrationDbService.setWordIsCollocation(wordId);
 
 		return wordLexemeMeaningId;
 	}
@@ -440,10 +414,15 @@ public class CollocationMoverRunner extends AbstractLoaderCommons implements Sys
 			return;
 		}
 
-		ActivityLogData activityLog = activityLogService.prepareActivityLog(ACTIVITY_FUNCT_NAME, meaningId, ActivityOwner.MEANING, datasetCode, MANUAL_EVENT_ON_UPDATE_ENABLED);
+		ActivityLogData activityLog = null;
+		if (doLog) {
+			activityLog = activityLogService.prepareActivityLog(ACTIVITY_FUNCT_NAME, meaningId, ActivityOwner.MEANING, datasetCode, MANUAL_EVENT_ON_UPDATE_ENABLED);
+		}
 		Long definitionId = cudDbService.createDefinition(meaningId, definitionValue, definitionValue, languageCode, DEFINITION_TYPE_CODE_UNDEFINED, complexity, PUBLICITY_PUBLIC);
 		cudDbService.createDefinitionDataset(definitionId, datasetCode);
-		activityLogService.createActivityLog(activityLog, definitionId, ActivityEntity.DEFINITION);
+		if (doLog) {
+			activityLogService.createActivityLog(activityLog, definitionId, ActivityEntity.DEFINITION);
+		}
 	}
 
 	private void createUsages(Long lexemeId, List<String> collocUsages, final String languageCode, final String datasetCode, Complexity complexity) throws Exception {
@@ -465,9 +444,14 @@ public class CollocationMoverRunner extends AbstractLoaderCommons implements Sys
 			freeform.setComplexity(complexity);
 			freeform.setPublic(PUBLICITY_PUBLIC);
 
-			ActivityLogData activityLog = activityLogService.prepareActivityLog(ACTIVITY_FUNCT_NAME, lexemeId, ActivityOwner.LEXEME, datasetCode, MANUAL_EVENT_ON_UPDATE_ENABLED);
+			ActivityLogData activityLog = null;
+			if (doLog) {
+				activityLog = activityLogService.prepareActivityLog(ACTIVITY_FUNCT_NAME, lexemeId, ActivityOwner.LEXEME, datasetCode, MANUAL_EVENT_ON_UPDATE_ENABLED);
+			}
 			Long usageId = cudDbService.createLexemeFreeform(lexemeId, freeform, USER_NAME);
-			activityLogService.createActivityLog(activityLog, usageId, ActivityEntity.USAGE);
+			if (doLog) {
+				activityLogService.createActivityLog(activityLog, usageId, ActivityEntity.USAGE);
+			}
 
 		}
 	}

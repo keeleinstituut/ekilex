@@ -178,6 +178,7 @@ public class LexWordService extends AbstractApiCudService {
 			if (CollectionUtils.isNotEmpty(definitions)) {
 
 				for (Definition definition : definitions) {
+					// FIXME why forced complexity??
 					createOrUpdateDefinition(definition, meaningId, datasetCode, DEFAULT_COMPLEXITY, roleDatasetCode);
 				}
 			}

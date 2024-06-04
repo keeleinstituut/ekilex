@@ -151,9 +151,6 @@ public class DatasetDbService {
 		// delete lexeme freeforms
 		helper.deleteLexemeFreeforms(datasetCode, create);
 
-		// delete colloc freeforms
-		helper.deleteCollocationFreeforms(datasetCode, create);
-
 		// delete word freeforms
 		helper.deleteWordFreeforms(datasetCode, create);
 

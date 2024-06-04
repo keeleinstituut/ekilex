@@ -8,7 +8,6 @@ import eki.ekilex.data.db.tables.ActivityLog;
 import eki.ekilex.data.db.tables.Aspect;
 import eki.ekilex.data.db.tables.AspectLabel;
 import eki.ekilex.data.db.tables.Collocation;
-import eki.ekilex.data.db.tables.CollocationFreeform;
 import eki.ekilex.data.db.tables.CollocationMember;
 import eki.ekilex.data.db.tables.DataRequest;
 import eki.ekilex.data.db.tables.Dataset;
@@ -117,6 +116,7 @@ import eki.ekilex.data.db.tables.ViewWwLexicalDecisionData;
 import eki.ekilex.data.db.tables.ViewWwMeaning;
 import eki.ekilex.data.db.tables.ViewWwMeaningFreeformSourceLink;
 import eki.ekilex.data.db.tables.ViewWwMeaningRelation;
+import eki.ekilex.data.db.tables.ViewWwNewsArticle;
 import eki.ekilex.data.db.tables.ViewWwSimilarityJudgementData;
 import eki.ekilex.data.db.tables.ViewWwWord;
 import eki.ekilex.data.db.tables.ViewWwWordEtymSourceLink;
@@ -210,11 +210,6 @@ public class Public extends SchemaImpl {
      * The table <code>public.collocation</code>.
      */
     public final Collocation COLLOCATION = Collocation.COLLOCATION;
-
-    /**
-     * The table <code>public.collocation_freeform</code>.
-     */
-    public final CollocationFreeform COLLOCATION_FREEFORM = CollocationFreeform.COLLOCATION_FREEFORM;
 
     /**
      * The table <code>public.collocation_member</code>.
@@ -757,6 +752,11 @@ public class Public extends SchemaImpl {
     public final ViewWwMeaningRelation VIEW_WW_MEANING_RELATION = ViewWwMeaningRelation.VIEW_WW_MEANING_RELATION;
 
     /**
+     * The table <code>public.view_ww_news_article</code>.
+     */
+    public final ViewWwNewsArticle VIEW_WW_NEWS_ARTICLE = ViewWwNewsArticle.VIEW_WW_NEWS_ARTICLE;
+
+    /**
      * The table <code>public.view_ww_similarity_judgement_data</code>.
      */
     public final ViewWwSimilarityJudgementData VIEW_WW_SIMILARITY_JUDGEMENT_DATA = ViewWwSimilarityJudgementData.VIEW_WW_SIMILARITY_JUDGEMENT_DATA;
@@ -904,7 +904,6 @@ public class Public extends SchemaImpl {
         return Arrays.<Sequence<?>>asList(
             Sequences.ACTIVITY_LOG_ID_SEQ,
             Sequences.ASPECT_ORDER_BY_SEQ,
-            Sequences.COLLOCATION_FREEFORM_ID_SEQ,
             Sequences.COLLOCATION_ID_SEQ,
             Sequences.COLLOCATION_MEMBER_ID_SEQ,
             Sequences.DATA_REQUEST_ID_SEQ,
@@ -1032,7 +1031,6 @@ public class Public extends SchemaImpl {
             Aspect.ASPECT,
             AspectLabel.ASPECT_LABEL,
             Collocation.COLLOCATION,
-            CollocationFreeform.COLLOCATION_FREEFORM,
             CollocationMember.COLLOCATION_MEMBER,
             DataRequest.DATA_REQUEST,
             Dataset.DATASET,
@@ -1141,6 +1139,7 @@ public class Public extends SchemaImpl {
             ViewWwMeaning.VIEW_WW_MEANING,
             ViewWwMeaningFreeformSourceLink.VIEW_WW_MEANING_FREEFORM_SOURCE_LINK,
             ViewWwMeaningRelation.VIEW_WW_MEANING_RELATION,
+            ViewWwNewsArticle.VIEW_WW_NEWS_ARTICLE,
             ViewWwSimilarityJudgementData.VIEW_WW_SIMILARITY_JUDGEMENT_DATA,
             ViewWwWord.VIEW_WW_WORD,
             ViewWwWordEtymSourceLink.VIEW_WW_WORD_ETYM_SOURCE_LINK,
