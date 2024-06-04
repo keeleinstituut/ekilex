@@ -17,6 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import eki.common.exception.ApiException;
+import eki.common.exception.OperationDeniedException;
 import eki.ekilex.data.api.Form;
 import eki.ekilex.data.api.FormUnit;
 import eki.ekilex.data.api.Paradigm;
@@ -100,7 +101,10 @@ public class MorphologyService {
 				String morphCode = existingWordForm.getMorphCode();
 				FormUnit formUnit = new FormUnit(formValue, morphCode);
 				if (!formIdMap.containsKey(formUnit)) {
-					// TODO check if no colloc relations exist first
+					boolean isFormInUse = morphologyDbService.isFormInUse(formId);
+					if (isFormInUse) {
+						throw new OperationDeniedException("Can't delete form. Form \"" + formValue + " - " + morphCode + "\" is in use by a collocation");
+					}
 					morphologyDbService.deleteForm(formId);
 				}
 			}

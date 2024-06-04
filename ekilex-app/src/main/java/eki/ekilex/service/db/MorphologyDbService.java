@@ -3,6 +3,7 @@ package eki.ekilex.service.db;
 import static eki.ekilex.data.db.Tables.FORM;
 import static eki.ekilex.data.db.Tables.PARADIGM;
 import static eki.ekilex.data.db.Tables.PARADIGM_FORM;
+import static eki.ekilex.data.db.Tables.COLLOCATION_MEMBER;
 
 import java.util.List;
 
@@ -11,6 +12,7 @@ import org.jooq.impl.DSL;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import eki.ekilex.data.db.tables.CollocationMember;
 import eki.ekilex.data.db.tables.Form;
 import eki.ekilex.data.db.tables.Paradigm;
 import eki.ekilex.data.db.tables.ParadigmForm;
@@ -79,6 +81,17 @@ public class MorphologyDbService {
 										.and(pf.PARADIGM_ID.eq(p.ID))
 										.and(pf.FORM_ID.eq(f.ID))))
 				.fetchInto(eki.ekilex.data.api.Form.class);
+	}
+
+	public boolean isFormInUse(Long formId) {
+
+		CollocationMember cm = COLLOCATION_MEMBER.as("cm");
+
+		return create
+				.fetchExists(DSL
+						.select(cm.ID)
+						.from(cm)
+						.where(cm.MEMBER_FORM_ID.eq(formId)));
 	}
 
 	public Long createParadigm(Long wordId, eki.ekilex.data.api.Paradigm paradigm) {
@@ -172,17 +185,6 @@ public class MorphologyDbService {
 	public void deleteParadigmsForWord(Long wordId) {
 
 		create.deleteFrom(PARADIGM).where(PARADIGM.WORD_ID.eq(wordId)).execute();
-	}
-
-	public int deleteFloatingForms() {
-
-		return create
-				.deleteFrom(FORM)
-				.whereNotExists(DSL
-						.select(PARADIGM_FORM.ID)
-						.from(PARADIGM_FORM)
-						.where(PARADIGM_FORM.FORM_ID.eq(FORM.ID)))
-				.execute();
 	}
 
 }
