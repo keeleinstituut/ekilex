@@ -476,7 +476,7 @@ public class CudService extends AbstractCudService implements PermConstant, Acti
 	}
 
 	@Transactional
-	public void updateLexemeRegister(Long lexemeId, String currentRegister, String newRegister,String roleDatasetCode,  boolean isManualEventOnUpdateEnabled) throws Exception {
+	public void updateLexemeRegister(Long lexemeId, String currentRegister, String newRegister, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
 
 		ActivityLogData activityLog = activityLogService.prepareActivityLog("updateLexemeRegister", lexemeId, ActivityOwner.LEXEME, roleDatasetCode, isManualEventOnUpdateEnabled);
 		Long lexemeRegisterId = cudDbService.updateLexemeRegister(lexemeId, currentRegister, newRegister);
@@ -1093,14 +1093,6 @@ public class CudService extends AbstractCudService implements PermConstant, Acti
 	// --- DELETE ---
 
 	@Transactional
-	public void deleteWord(Long wordId, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
-
-		activityLogService.createActivityLog("deleteWord", wordId, ActivityOwner.WORD, roleDatasetCode, isManualEventOnUpdateEnabled);
-		SimpleWord word = lookupDbService.getSimpleWord(wordId);
-		cudDbService.deleteWord(word);
-	}
-
-	@Transactional
 	public void deleteWordType(Long wordId, String typeCode, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
 
 		if (StringUtils.isNotBlank(typeCode)) {
@@ -1177,13 +1169,20 @@ public class CudService extends AbstractCudService implements PermConstant, Acti
 		Long wordId = wordLexemeMeaningId.getWordId();
 		Long meaningId = wordLexemeMeaningId.getMeaningId();
 		updateLexemeLevels(lexemeId, "delete", roleDatasetCode, isManualEventOnUpdateEnabled);
+		if (isOnlyLexemeForMeaning) {
+			activityLogService.createActivityLog("deleteMeaning", meaningId, ActivityOwner.MEANING, roleDatasetCode, isManualEventOnUpdateEnabled);
+		}
+		if (isOnlyLexemeForWord) {
+			activityLogService.createActivityLog("deleteWord", wordId, ActivityOwner.WORD, roleDatasetCode, isManualEventOnUpdateEnabled);
+		}
 		activityLogService.createActivityLog("deleteLexeme", lexemeId, ActivityOwner.LEXEME, roleDatasetCode, isManualEventOnUpdateEnabled);
 		cudDbService.deleteLexeme(lexemeId);
 		if (isOnlyLexemeForMeaning) {
-			deleteMeaning(meaningId, roleDatasetCode, isManualEventOnUpdateEnabled);
+			cudDbService.deleteMeaning(meaningId);
 		}
 		if (isOnlyLexemeForWord) {
-			deleteWord(wordId, roleDatasetCode, isManualEventOnUpdateEnabled);
+			SimpleWord word = lookupDbService.getSimpleWord(wordId);
+			cudDbService.deleteWord(word);
 		}
 	}
 
@@ -1223,7 +1222,7 @@ public class CudService extends AbstractCudService implements PermConstant, Acti
 	public void deleteUsageDefinition(Long usageDefinitionId, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
 
 		Long lexemeId = activityLogService.getOwnerId(usageDefinitionId, ActivityEntity.USAGE_DEFINITION);
-		ActivityLogData activityLog = activityLogService.prepareActivityLog("deleteUsageDefinition", lexemeId, ActivityOwner.LEXEME,roleDatasetCode, isManualEventOnUpdateEnabled);
+		ActivityLogData activityLog = activityLogService.prepareActivityLog("deleteUsageDefinition", lexemeId, ActivityOwner.LEXEME, roleDatasetCode, isManualEventOnUpdateEnabled);
 		cudDbService.deleteFreeform(usageDefinitionId);
 		activityLogService.createActivityLog(activityLog, usageDefinitionId, ActivityEntity.USAGE_DEFINITION);
 	}
@@ -1344,12 +1343,6 @@ public class CudService extends AbstractCudService implements PermConstant, Acti
 			Long lexemeId = wordLexemeMeaningId.getLexemeId();
 			deleteLexeme(lexemeId, roleDatasetCode, isManualEventOnUpdateEnabled);
 		}
-	}
-
-	private void deleteMeaning(Long meaningId, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
-
-		activityLogService.createActivityLog("deleteMeaning", meaningId, ActivityOwner.MEANING, roleDatasetCode, isManualEventOnUpdateEnabled);
-		cudDbService.deleteMeaning(meaningId);
 	}
 
 	@Transactional
