@@ -458,7 +458,7 @@ from (select w.id as word_id,
   left outer join (select wt.word_id,
                           array_agg(wt.word_type_code order by wt.order_by) word_type_codes
                    from word_word_type wt
-                   where wt.word_type_code not in ('vv', 'yv')
+                   where wt.word_type_code not in ('vv', 'yv', 'vvar')
                    group by wt.word_id) wt
                on wt.word_id = w.word_id
   left outer join (select mw.word_id,
@@ -501,7 +501,7 @@ from (select w.id as word_id,
                                 (select array_agg(wt.word_type_code order by wt.order_by)
                                  from word_word_type wt
                                  where wt.word_id = w2.id
-                                   and wt.word_type_code not in ('vv', 'yv')
+                                   and wt.word_type_code not in ('vv', 'yv', 'vvar')
                                  group by wt.word_id) mw_word_type_codes,
                                 w2.aspect_code mw_aspect_code,
                                 l2.order_by mw_lex_order_by
@@ -1088,7 +1088,7 @@ from lexeme l
                                 (select array_agg(wt.word_type_code order by wt.order_by)
                                  from word_word_type wt
                                  where wt.word_id = w2.id
-                                 and   wt.word_type_code not in ('vv', 'yv')
+                                 and   wt.word_type_code not in ('vv', 'yv', 'vvar')
                                  group by wt.word_id) mw_word_type_codes,
                                 w2.aspect_code mw_aspect_code,
                                 l2.order_by mw_lex_order_by
@@ -1550,7 +1550,7 @@ from word w
                                               w.aspect_code,
                                               array_agg(wt.word_type_code order by wt.order_by) word_type_codes
                                        from word as w
-                                         left outer join word_word_type as wt on wt.word_id = w.id and wt.word_type_code not in ('vv', 'yv')
+                                         left outer join word_word_type as wt on wt.word_id = w.id and wt.word_type_code not in ('vv', 'yv', 'vvar')
                                        where exists (select l.id
                                                      from lexeme as l,
                                                           dataset ds
@@ -1616,7 +1616,7 @@ from word w
                                       w.aspect_code,
                                       array_agg(wt.word_type_code order by wt.order_by) word_type_codes
                                from word as w
-                                 left outer join word_word_type as wt on wt.word_id = w.id and wt.word_type_code not in ('vv', 'yv')
+                                 left outer join word_word_type as wt on wt.word_id = w.id and wt.word_type_code not in ('vv', 'yv', 'vvar')
                                where exists (select l.id
                                              from lexeme as l,
                                                   dataset ds
@@ -1674,7 +1674,7 @@ from lex_relation r
                      w.lang,
                      array_agg(wt.word_type_code order by wt.order_by) word_type_codes
               from word as w
-                left outer join word_word_type as wt on wt.word_id = w.id and wt.word_type_code not in ('vv', 'yv')
+                left outer join word_word_type as wt on wt.word_id = w.id and wt.word_type_code not in ('vv', 'yv', 'vvar')
               group by w.id) as w2 on w2.word_id = l2.word_id
 where exists (select l1.id
               from lexeme l1,
@@ -1724,7 +1724,7 @@ from (select mr.meaning1_id m1_id,
              (select array_agg(wt.word_type_code)
               from word_word_type wt
               where wt.word_id = w.id
-                and wt.word_type_code not in ('vv', 'yv')
+                and wt.word_type_code not in ('vv', 'yv', 'vvar')
               group by w.id) word_type_codes,
              (select array_agg(distinct l.value_state_code)
               from lexeme l,

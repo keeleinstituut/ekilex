@@ -19,6 +19,10 @@ create table news_section (
 
 create index news_section_news_article_id_idx on news_section(news_article_id);
 
+-- iso 2 keelekoodi fiks
+
+update language_label set value = 'lt' where code = 'lit' and type = 'iso2';
+
 -- kollokatsioonide kolimine
 
 drop table collocation_freeform cascade;
