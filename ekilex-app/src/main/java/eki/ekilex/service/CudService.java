@@ -1332,13 +1332,7 @@ public class CudService extends AbstractCudService implements PermConstant, Acti
 	@Transactional
 	public void deleteMeaningAndLexemes(Long meaningId, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
 
-		boolean isSuperiorPermission = StringUtils.equals(DATASET_XXX, roleDatasetCode);
-		List<WordLexemeMeaningIdTuple> wordLexemeMeaningIds;
-		if (isSuperiorPermission) {
-			wordLexemeMeaningIds = lookupDbService.getWordLexemeMeaningIdsByMeaning(meaningId);
-		} else {
-			wordLexemeMeaningIds = lookupDbService.getWordLexemeMeaningIdsByMeaning(meaningId, roleDatasetCode);
-		}
+		List<WordLexemeMeaningIdTuple> wordLexemeMeaningIds = lookupDbService.getWordLexemeMeaningIdsByMeaning(meaningId, roleDatasetCode);
 		for (WordLexemeMeaningIdTuple wordLexemeMeaningId : wordLexemeMeaningIds) {
 			Long lexemeId = wordLexemeMeaningId.getLexemeId();
 			deleteLexeme(lexemeId, roleDatasetCode, isManualEventOnUpdateEnabled);

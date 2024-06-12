@@ -124,7 +124,7 @@
   <div th:id="${'addDefinitionDlg_' + lexeme.lexemeId}"
        th:data-callback="${viewUtil.composeFunction('loadFullLexemeDetails', lexeme.lexemeId, lexeme.levels)}"
        class="modal" role="dialog" th:fragment="add_definition_dlg" data-plugin="initEkiEditorDlgAndFocusPlugin">
-    <div class="modal-dialog modal-lg" role="document" th:if="${userRoleData.roleSelected}">
+    <div class="modal-dialog modal-lg" role="document" th:if="${userRoleData.roleSelected || userRoleData.master}">
       <div class="modal-content">
         <form th:action="@{/create_item}" method="post">
             <div class="modal-header">
@@ -139,20 +139,21 @@
               <input type="hidden" name="itemType" th:value="${defaultDefinitionTypeCode}">
               <input type="hidden" name="value">
               <div th:replace="components :: eki_editor_elem"></div>
-              <div class="formItem" th:if="${userRoleData.userRole.superiorPermission}">
+              <div class="formItem" th:if="${userRoleData.master}">
                 <div class="formItem__title">Vali sõnakogu</div>
                 <div class="formItem__element">
                   <select class="form-control value-select required-field" name="dataset" required data-live-search="true">
-                    <option value="" hidden disabled th:selected="${userRoleData.userRole.superiorPermission}" th:text="#{common.select.dataset}">vali sõnakogu...</option>
+                    <option value="" hidden disabled th:selected="${!userRoleData.roleSelected}" th:text="#{common.select.dataset}">vali sõnakogu...</option>
                     <option th:each="dataset : ${userVisibleDatasets}"
                             th:value="${dataset.code}"
-                            th:text="${dataset.name}">
+                            th:text="${dataset.name}"
+                            th:selected="${userRoleData.roleSelected && (dataset.code == userRoleData.userRole.datasetCode)}">
                             dataset
                     </option>
                   </select>
                 </div>
               </div>
-              <div class="formItem mb-2" th:unless="${userRoleData.userRole.superiorPermission}">
+              <div class="formItem mb-2" th:unless="${userRoleData.master}">
                 <input type="hidden" name="dataset" th:value="${userRoleData.userRole.datasetCode}">
                 <div class="formItem__title" th:text="${userRoleData.userRole.datasetName}"></div>
               </div>
@@ -2434,7 +2435,7 @@
     </div>
   </div>
   <div id="newWordDlg" class="modal" role="dialog" th:fragment="new_word_dlg">
-    <div class="modal-dialog" role="document" th:if="${userRoleData.roleSelected}">
+    <div class="modal-dialog" role="document" th:if="${userRoleData.roleSelected || userRoleData.master}">
       <div class="modal-content">
         <form id="addWordForm" th:action="@{/lex_create_word}" method="post">
           <div class="modal-body">
@@ -2445,17 +2446,18 @@
               </div>
             </div>
             <div class="form-group row">
-              <div class="col-md-12" th:if="${userRoleData.userRole.superiorPermission}">
+              <div class="col-md-12" th:if="${userRoleData.master}">
                 <select name="dataset" required class="form-control required-field classifier-select" data-live-search="true">
-                  <option value="" hidden disabled th:selected="${userRoleData.userRole.superiorPermission}" th:text="#{common.select.dataset}">vali sõnakogu...</option>
+                  <option value="" hidden disabled th:selected="${!userRoleData.roleSelected}" th:text="#{common.select.dataset}">vali sõnakogu...</option>
                   <option th:each="dataset : ${userVisibleDatasets}"
                           th:value="${dataset.code}"
-                          th:text="${dataset.name}">
+                          th:text="${dataset.name}"
+                          th:selected="${userRoleData.roleSelected && (dataset.code == userRoleData.userRole.datasetCode)}">
                           dataset
                   </option>
                 </select>
               </div>
-              <div class="col-md-12" th:unless="${userRoleData.userRole.superiorPermission}">
+              <div class="col-md-12" th:unless="${userRoleData.master}">
                 <input type="hidden" name="dataset" th:value="${userRoleData.userRole.datasetCode}">
                 <span th:text="${userRoleData.userRole.datasetName}"></span>
               </div>

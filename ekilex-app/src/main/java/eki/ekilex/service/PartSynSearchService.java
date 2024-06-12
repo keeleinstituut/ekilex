@@ -32,19 +32,18 @@ public class PartSynSearchService extends AbstractSynSearchService {
 
 		DatasetPermission userRole = user.getRecentRole();
 		String synCandidateDatasetCode = userRole.getDatasetCode();
-		boolean isAdmin = user.isAdmin();
 		String datasetCode = userRole.getDatasetCode();
 		List<String> datasetCodeList = new ArrayList<>(Collections.singletonList(datasetCode));
 		SearchDatasetsRestriction searchDatasetsRestriction = composeDatasetsRestriction(datasetCodeList);
 
 		Word word = synSearchDbService.getWord(wordId);
-		permCalculator.applyCrud(userRole, word);
+		permCalculator.applyCrud(user, word);
 		List<WordForum> wordForums = commonDataDbService.getWordForums(wordId);
-		permCalculator.applyCrud(userRole, isAdmin, wordForums);
+		permCalculator.applyCrud(user, wordForums);
 		String wordLang = word.getLang();
 
 		List<WordLexeme> synLexemes = synSearchDbService.getWordPrimarySynonymLexemes(wordId, searchDatasetsRestriction, CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
-		synLexemes.forEach(lexeme -> populateLexeme(lexeme, languagesOrder, wordLang, synMeaningWordLangCodes, userRole, userProfile));
+		synLexemes.forEach(lexeme -> populateLexeme(lexeme, languagesOrder, wordLang, synMeaningWordLangCodes, user, userProfile));
 		lexemeLevelPreseUtil.combineLevels(synLexemes);
 		boolean isActiveTagComplete = conversionUtil.isLexemesActiveTagComplete(synLexemes, activeTag);
 

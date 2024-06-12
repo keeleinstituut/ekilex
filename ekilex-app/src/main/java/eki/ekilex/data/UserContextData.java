@@ -12,6 +12,8 @@ public class UserContextData extends AbstractDataObject {
 
 	private String userName;
 
+	private EkiUser user;
+
 	private DatasetPermission userRole;
 
 	private String userRoleDatasetCode;
@@ -31,11 +33,12 @@ public class UserContextData extends AbstractDataObject {
 	private String fullSynCandidateDatasetCode;
 
 	public UserContextData(
-			Long userId, String userName, DatasetPermission userRole, String userRoleDatasetCode, Tag activeTag, List<String> tagNames,
+			Long userId, String userName, EkiUser user, DatasetPermission userRole, String userRoleDatasetCode, Tag activeTag, List<String> tagNames,
 			List<String> preferredDatasetCodes, List<String> partSynCandidateLangCodes, List<String> synMeaningWordLangCodes,
 			String fullSynCandidateLangCode, String fullSynCandidateDatasetCode) {
 		this.userId = userId;
 		this.userName = userName;
+		this.user = user;
 		this.userRole = userRole;
 		this.userRoleDatasetCode = userRoleDatasetCode;
 		this.activeTag = activeTag;
@@ -53,6 +56,10 @@ public class UserContextData extends AbstractDataObject {
 
 	public String getUserName() {
 		return userName;
+	}
+
+	public EkiUser getUser() {
+		return user;
 	}
 
 	public DatasetPermission getUserRole() {

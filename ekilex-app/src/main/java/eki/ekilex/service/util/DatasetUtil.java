@@ -12,11 +12,6 @@ import eki.ekilex.data.Dataset;
 @Component
 public class DatasetUtil implements GlobalConstant {
 
-	public List<Dataset> removePlaceholderDataset(List<Dataset> datasets) {
-		datasets = datasets.stream().filter(dataset -> !StringUtils.equals(DATASET_XXX, dataset.getCode())).collect(Collectors.toList());
-		return datasets;
-	}
-
 	public List<Dataset> resortPriorityDatasets(List<Dataset> datasets) {
 		datasets = datasets.stream().collect(Collectors.toList());
 		Dataset datasetEki = datasets.stream().filter(dataset -> StringUtils.equals(dataset.getCode(), DATASET_EKI)).findFirst().orElse(null);

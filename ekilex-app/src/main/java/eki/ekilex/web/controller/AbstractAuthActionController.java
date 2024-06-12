@@ -10,11 +10,9 @@ import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
-import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.client.HttpClientErrorException;
 
 import eki.common.constant.Complexity;
 import eki.common.constant.DatasetType;
@@ -73,12 +71,13 @@ public abstract class AbstractAuthActionController implements WebConstant, Syste
 		EkiUser user = userContext.getUser();
 		DatasetPermission role = user.getRecentRole();
 		if (role == null) {
-			throw new HttpClientErrorException(HttpStatus.BAD_REQUEST, "Role has to be selected");
+			return DATASET_NA;
 		}
 		return role.getDatasetCode();
 	}
 
 	protected UserContextData getUserContextData() {
+
 		EkiUser user = userContext.getUser();
 		Long userId = user.getId();
 		String userName = user.getName();
@@ -98,7 +97,7 @@ public abstract class AbstractAuthActionController implements WebConstant, Syste
 		String fullSynCandidateDatasetCode = userProfile.getPreferredFullSynCandidateDatasetCode();
 
 		return new UserContextData(
-				userId, userName, userRole, userRoleDatasetCode, activeTag, preferredTagNames, preferredDatasetCodes,
+				userId, userName, user, userRole, userRoleDatasetCode, activeTag, preferredTagNames, preferredDatasetCodes,
 				partSynCandidateLangCodes, synMeaningWordLangCodes, fullSynCandidateLangCode, fullSynCandidateDatasetCode);
 	}
 
@@ -145,12 +144,12 @@ public abstract class AbstractAuthActionController implements WebConstant, Syste
 	public List<Classifier> getUserRoleLanguages() {
 
 		EkiUser user = userContext.getUser();
+		if (user.isMaster()) {
+			return commonDataService.getLanguages();
+		}
 		DatasetPermission userRole = user.getRecentRole();
 		if (userRole == null) {
 			return Collections.emptyList();
-		}
-		if (userRole.isSuperiorPermission()) {
-			return commonDataService.getLanguages();
 		}
 		Long userId = user.getId();
 		String datasetCode = userRole.getDatasetCode();

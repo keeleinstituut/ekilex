@@ -331,13 +331,13 @@ public class CollocationMoverRunner extends AbstractLoaderCommons implements Sys
 
 		EkiUser user = new EkiUser();
 		user.setName("Kollokatsioonide kolija");
-		user.setAdmin(true);
+		user.setAdmin(Boolean.TRUE);
+		user.setMaster(Boolean.TRUE);
 		user.setEnabled(Boolean.TRUE);
 
 		DatasetPermission recentRole = new DatasetPermission();
-		recentRole.setDatasetName("xxx");
+		recentRole.setDatasetName(DATASET_EKI);
 		recentRole.setSuperiorDataset(true);
-		recentRole.setSuperiorPermission(true);
 		user.setRecentRole(recentRole);
 
 		GrantedAuthority authority = new SimpleGrantedAuthority("import");

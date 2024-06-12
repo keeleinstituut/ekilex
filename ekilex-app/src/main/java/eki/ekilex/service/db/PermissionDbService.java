@@ -146,7 +146,6 @@ public class PermissionDbService implements SystemConstant, GlobalConstant, Perm
 						DATASET_PERMISSION.DATASET_CODE,
 						DATASET.NAME.as("dataset_name"),
 						DATASET.IS_SUPERIOR.as("is_superior_dataset"),
-						DSL.field(DATASET.CODE.eq(DATASET_XXX)).as("is_superior_permission"),
 						DATASET_PERMISSION.AUTH_OPERATION,
 						DATASET_PERMISSION.AUTH_ITEM,
 						DATASET_PERMISSION.AUTH_LANG,
@@ -173,7 +172,6 @@ public class PermissionDbService implements SystemConstant, GlobalConstant, Perm
 						DATASET_PERMISSION.USER_ID,
 						DATASET.NAME.as("dataset_name"),
 						DATASET.IS_SUPERIOR.as("is_superior_dataset"),
-						DSL.field(DATASET.CODE.eq(DATASET_XXX)).as("is_superior_permission"),
 						DATASET_PERMISSION.AUTH_LANG,
 						DATASET_PERMISSION.DATASET_CODE,
 						DATASET_PERMISSION.AUTH_OPERATION,
@@ -886,15 +884,6 @@ public class PermissionDbService implements SystemConstant, GlobalConstant, Perm
 				.select(field(DSL.count(MEANING_FORUM.ID).eq(1)).as("is_granted"))
 				.from(MEANING_FORUM)
 				.where(MEANING_FORUM.ID.eq(meaningForumId).and(MEANING_FORUM.CREATOR_ID.eq(userId)))
-				.fetchSingleInto(Boolean.class);
-	}
-
-	public boolean isMasterUser(Long userId) {
-
-		return create
-				.select(field(DSL.count(EKI_USER.ID).eq(1)).as("is_master"))
-				.from(EKI_USER)
-				.where(EKI_USER.ID.eq(userId).and(EKI_USER.IS_MASTER.isTrue()))
 				.fetchSingleInto(Boolean.class);
 	}
 }

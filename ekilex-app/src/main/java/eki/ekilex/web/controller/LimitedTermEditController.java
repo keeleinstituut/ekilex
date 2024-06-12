@@ -18,9 +18,8 @@ import org.springframework.web.bind.annotation.SessionAttributes;
 
 import eki.ekilex.constant.WebConstant;
 import eki.ekilex.data.ClassifierSelect;
-import eki.ekilex.data.DatasetPermission;
+import eki.ekilex.data.EkiUser;
 import eki.ekilex.data.Meaning;
-import eki.ekilex.data.UserContextData;
 import eki.ekilex.data.WordLexemeMeaningDetails;
 import eki.ekilex.service.CompositionService;
 import eki.ekilex.service.CudService;
@@ -66,11 +65,13 @@ public class LimitedTermEditController extends AbstractMutableDataPageController
 	}
 
 	@RequestMapping(LIM_TERM_MEANING_JOIN_URI + "/{targetMeaningId}")
-	public String search(@PathVariable("targetMeaningId") Long targetMeaningId, @RequestParam(name = "searchFilter", required = false) String searchFilter,
-			Model model, @ModelAttribute(name = SESSION_BEAN) SessionBean sessionBean) {
+	public String search(
+			@PathVariable("targetMeaningId") Long targetMeaningId,
+			@RequestParam(name = "searchFilter", required = false) String searchFilter,
+			@ModelAttribute(name = SESSION_BEAN) SessionBean sessionBean,
+			Model model) {
 
-		UserContextData userContextData = getUserContextData();
-		DatasetPermission userRole = userContextData.getUserRole();
+		EkiUser user = userContext.getUser();
 		List<ClassifierSelect> languagesOrder = sessionBean.getLanguagesOrder();
 
 		if (searchFilter == null) {
@@ -78,8 +79,8 @@ public class LimitedTermEditController extends AbstractMutableDataPageController
 			searchFilter = targetMeaningFirstWord;
 		}
 
-		Meaning targetMeaning = lookupService.getMeaningOfJoinTarget(userRole, targetMeaningId, languagesOrder);
-		List<Meaning> sourceMeanings = lookupService.getMeaningsOfJoinCandidates(userRole, limitedDatasets, searchFilter, languagesOrder, targetMeaningId);
+		Meaning targetMeaning = lookupService.getMeaningOfJoinTarget(user, targetMeaningId, languagesOrder);
+		List<Meaning> sourceMeanings = lookupService.getMeaningsOfJoinCandidates(user, limitedDatasets, searchFilter, languagesOrder, targetMeaningId);
 
 		model.addAttribute("searchFilter", searchFilter);
 		model.addAttribute("targetMeaningId", targetMeaningId);

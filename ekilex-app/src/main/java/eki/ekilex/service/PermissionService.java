@@ -68,7 +68,6 @@ public class PermissionService implements SystemConstant, GlobalConstant {
 			return Collections.emptyList();
 		}
 		List<Dataset> datasets = permissionDbService.getUserVisibleDatasets(userId);
-		datasets = datasetUtil.removePlaceholderDataset(datasets);
 		datasets = datasetUtil.resortPriorityDatasets(datasets);
 		return datasets;
 	}
@@ -79,7 +78,6 @@ public class PermissionService implements SystemConstant, GlobalConstant {
 			return Collections.emptyList();
 		}
 		List<Dataset> datasets = permissionDbService.getUserVisibleDatasets(userId);
-		datasets = datasetUtil.removePlaceholderDataset(datasets);
 		datasets = datasetUtil.resortPriorityDatasets(datasets);
 		List<String> datasetCodes = datasets.stream().map(Dataset::getCode).collect(Collectors.toList());
 		return datasetCodes;
@@ -100,7 +98,6 @@ public class PermissionService implements SystemConstant, GlobalConstant {
 			return Collections.emptyList();
 		}
 		List<Dataset> datasets = permissionDbService.userVisibleNonPublicDatasets(userId);
-		datasets = datasetUtil.removePlaceholderDataset(datasets);
 		return datasets;
 	}
 

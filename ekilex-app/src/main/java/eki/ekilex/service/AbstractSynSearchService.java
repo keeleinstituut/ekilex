@@ -7,9 +7,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import eki.ekilex.data.ClassifierSelect;
-import eki.ekilex.data.DatasetPermission;
 import eki.ekilex.data.DefSourceAndNoteSourceTuple;
 import eki.ekilex.data.Definition;
+import eki.ekilex.data.EkiUser;
 import eki.ekilex.data.EkiUserProfile;
 import eki.ekilex.data.InexactSynonym;
 import eki.ekilex.data.Meaning;
@@ -33,7 +33,11 @@ public abstract class AbstractSynSearchService extends AbstractWordSearchService
 	protected PermCalculator permCalculator;
 
 	protected void populateLexeme(
-			WordLexeme lexeme, List<ClassifierSelect> languagesOrder, String headwordLanguage, List<String> meaningWordLangs, DatasetPermission userRole,
+			WordLexeme lexeme,
+			List<ClassifierSelect> languagesOrder,
+			String headwordLanguage,
+			List<String> meaningWordLangs,
+			EkiUser user,
 			EkiUserProfile userProfile) {
 
 		Long lexemeId = lexeme.getLexemeId();
@@ -41,7 +45,7 @@ public abstract class AbstractSynSearchService extends AbstractWordSearchService
 		String datasetCode = lexeme.getDatasetCode();
 		SearchLangsRestriction meaningWordLangsRestriction = composeLangsRestriction(meaningWordLangs);
 
-		permCalculator.applyCrud(userRole, lexeme);
+		permCalculator.applyCrud(user, lexeme);
 
 		List<MeaningRelation> synMeaningRelations = commonDataDbService.getSynMeaningRelations(meaningId, datasetCode);
 		appendLexemeLevels(synMeaningRelations);
@@ -52,7 +56,7 @@ public abstract class AbstractSynSearchService extends AbstractWordSearchService
 		List<Definition> definitions = commonDataDbService.getMeaningDefinitions(meaningId, datasetCode, CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
 		List<DefSourceAndNoteSourceTuple> definitionsDataTuples = commonDataDbService.getMeaningDefSourceAndNoteSourceTuples(meaningId);
 		conversionUtil.composeMeaningDefinitions(definitions, definitionsDataTuples);
-		permCalculator.filterVisibility(userRole, definitions);
+		permCalculator.filterVisibility(user, definitions);
 
 		List<UsageTranslationDefinitionTuple> usageTranslationDefinitionTuples =
 				commonDataDbService.getLexemeUsageTranslationDefinitionTuples(lexemeId, CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);

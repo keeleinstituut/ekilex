@@ -28,7 +28,6 @@ import eki.common.data.Count;
 import eki.ekilex.constant.SearchResultMode;
 import eki.ekilex.constant.WebConstant;
 import eki.ekilex.data.ClassifierSelect;
-import eki.ekilex.data.DatasetPermission;
 import eki.ekilex.data.EkiUser;
 import eki.ekilex.data.EkiUserProfile;
 import eki.ekilex.data.SearchFilter;
@@ -87,8 +86,8 @@ public class PartSynSearchController extends AbstractPrivateSearchController {
 
 		String roleDatasetCode = getDatasetCodeFromRole();
 		List<String> roleDatasets = new ArrayList<>(Arrays.asList(roleDatasetCode));
-
 		String searchUri = searchHelper.composeSearchUri(searchMode, roleDatasets, simpleSearchFilter, detailSearchFilter, resultMode, resultLang);
+
 		return REDIRECT_PREF + PART_SYN_SEARCH_URI + searchUri;
 	}
 
@@ -114,7 +113,7 @@ public class PartSynSearchController extends AbstractPrivateSearchController {
 		boolean noLimit = false;
 
 		UserContextData userContextData = getUserContextData();
-		DatasetPermission userRole = userContextData.getUserRole();
+		EkiUser user = userContextData.getUser();
 		List<String> tagNames = userContextData.getTagNames();
 		String userRoleDatasetCode = userContextData.getUserRoleDatasetCode();
 		if (StringUtils.isEmpty(userRoleDatasetCode)) {
@@ -125,9 +124,9 @@ public class PartSynSearchController extends AbstractPrivateSearchController {
 		WordsResult wordsResult;
 		if (StringUtils.equals(SEARCH_MODE_DETAIL, searchMode)) {
 			searchHelper.addValidationMessages(detailSearchFilter);
-			wordsResult = partSynSearchService.getWords(detailSearchFilter, datasetCodes, userRole, tagNames, DEFAULT_OFFSET, DEFAULT_MAX_RESULTS_LIMIT, noLimit);
+			wordsResult = partSynSearchService.getWords(detailSearchFilter, datasetCodes, tagNames, user, DEFAULT_OFFSET, DEFAULT_MAX_RESULTS_LIMIT, noLimit);
 		} else {
-			wordsResult = partSynSearchService.getWords(simpleSearchFilter, datasetCodes, userRole, tagNames, DEFAULT_OFFSET, DEFAULT_MAX_RESULTS_LIMIT, noLimit);
+			wordsResult = partSynSearchService.getWords(simpleSearchFilter, datasetCodes, tagNames, user, DEFAULT_OFFSET, DEFAULT_MAX_RESULTS_LIMIT, noLimit);
 		}
 		boolean noResults = wordsResult.getTotalCount() == 0;
 		model.addAttribute("searchMode", searchMode);
@@ -182,16 +181,15 @@ public class PartSynSearchController extends AbstractPrivateSearchController {
 
 		final int maxResultsLimit = 250;
 		UserContextData userContextData = getUserContextData();
-		DatasetPermission userRole = userContextData.getUserRole();
+		EkiUser user = userContextData.getUser();
 		List<String> datasetCodes = userContextData.getPreferredDatasetCodes();
 		List<String> tagNames = userContextData.getTagNames();
 
-		WordsResult result = partSynSearchService.getWords(searchFilter, datasetCodes, userRole, tagNames, DEFAULT_OFFSET, maxResultsLimit, false);
+		WordsResult result = partSynSearchService.getWords(searchFilter, datasetCodes, tagNames, user, DEFAULT_OFFSET, maxResultsLimit, false);
 
 		model.addAttribute("wordsFoundBySearch", result.getWords());
 		model.addAttribute("totalCount", result.getTotalCount());
 		model.addAttribute("existingIds", excludedIds);
-
 		model.addAttribute("searchedWord", searchFilter);
 		model.addAttribute("selectedWordLanguage", language);
 		model.addAttribute("selectedWordMorphCode", morphCode);

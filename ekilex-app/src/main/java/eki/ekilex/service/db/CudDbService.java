@@ -37,7 +37,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.collections4.CollectionUtils;
-import org.apache.commons.lang3.StringUtils;
 import org.jooq.Field;
 import org.jooq.Record2;
 import org.jooq.Record4;
@@ -48,7 +47,6 @@ import org.springframework.stereotype.Component;
 
 import eki.common.constant.Complexity;
 import eki.common.constant.FreeformType;
-import eki.common.exception.OperationDeniedException;
 import eki.ekilex.data.Classifier;
 import eki.ekilex.data.FreeForm;
 import eki.ekilex.data.ListData;
@@ -127,14 +125,23 @@ public class CudDbService extends AbstractDataDbService {
 				.execute();
 	}
 
-	public void updateDefinition(Long id, String value, String valuePrese, String lang, String typeCode, Complexity complexity, boolean isPublic) {
-		create.update(DEFINITION)
-				.set(DEFINITION.VALUE, value)
-				.set(DEFINITION.VALUE_PRESE, valuePrese)
-				.set(DEFINITION.LANG, lang)
-				.set(DEFINITION.COMPLEXITY, complexity.name())
-				.set(DEFINITION.DEFINITION_TYPE_CODE, typeCode)
-				.set(DEFINITION.IS_PUBLIC, isPublic)
+	public void updateDefinition(Long id, String value, String valuePrese, String lang, String typeCode, Complexity complexity, Boolean isPublic) {
+
+		Map<Field<?>, Object> fieldAndValueMap = new HashMap<>();
+		fieldAndValueMap.put(DEFINITION.VALUE, value);
+		fieldAndValueMap.put(DEFINITION.VALUE_PRESE, valuePrese);
+		fieldAndValueMap.put(DEFINITION.LANG, lang);
+		fieldAndValueMap.put(DEFINITION.DEFINITION_TYPE_CODE, typeCode);
+		if (complexity != null) {
+			fieldAndValueMap.put(DEFINITION.COMPLEXITY, complexity.name());
+		}
+		if (isPublic != null) {
+			fieldAndValueMap.put(DEFINITION.IS_PUBLIC, isPublic);
+		}
+
+		create
+				.update(DEFINITION)
+				.set(fieldAndValueMap)
 				.where(DEFINITION.ID.eq(id))
 				.execute();
 	}
@@ -611,10 +618,6 @@ public class CudDbService extends AbstractDataDbService {
 			String lang,
 			String datasetCode) throws Exception {
 
-		if (StringUtils.equals(datasetCode, DATASET_XXX)) {
-			throw new OperationDeniedException("Creating lexeme for hidden dataset. Please inform developers immediately!");
-		}
-
 		WordLexemeMeaningIdTuple wordLexemeMeaningId = new WordLexemeMeaningIdTuple();
 
 		int homonymNr = 0;
@@ -673,10 +676,6 @@ public class CudDbService extends AbstractDataDbService {
 			String datasetCode,
 			boolean isPublic,
 			Long meaningId) throws Exception {
-
-		if (StringUtils.equals(datasetCode, DATASET_XXX)) {
-			throw new OperationDeniedException("Creating lexeme for hidden dataset. Please inform developers immediately!");
-		}
 
 		WordLexemeMeaningIdTuple wordLexemeMeaningId = new WordLexemeMeaningIdTuple();
 		int homonymNr = getWordNextHomonymNr(value, lang);
@@ -1038,10 +1037,6 @@ public class CudDbService extends AbstractDataDbService {
 
 	public WordLexemeMeaningIdTuple createLexeme(
 			Long wordId, String datasetCode, Long meaningId, int lexemeLevel1, String valueStateCode, boolean isPublic) throws Exception {
-
-		if (StringUtils.equals(datasetCode, DATASET_XXX)) {
-			throw new OperationDeniedException("Creating lexeme for hidden dataset. Please inform developers immediately!");
-		}
 
 		WordLexemeMeaningIdTuple wordLexemeMeaningId = new WordLexemeMeaningIdTuple();
 		if (meaningId == null) {

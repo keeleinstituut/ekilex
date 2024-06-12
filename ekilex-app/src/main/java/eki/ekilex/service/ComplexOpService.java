@@ -9,23 +9,26 @@ import javax.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import eki.common.constant.GlobalConstant;
 import eki.ekilex.data.DatasetPermission;
+import eki.ekilex.data.EkiUser;
 import eki.ekilex.data.LexemeDeleteConfirmation;
 import eki.ekilex.data.MeaningDeleteConfirmation;
 import eki.ekilex.data.WordLexemeMeaningIdTuple;
 import eki.ekilex.service.db.LookupDbService;
 
 @Component
-public class ComplexOpService {
+public class ComplexOpService implements GlobalConstant {
 
 	@Autowired
 	private LookupDbService lookupDbService;
 
 	@Transactional
-	public LexemeDeleteConfirmation validateLexemeDelete(Long lexemeId, DatasetPermission userRole) {
+	public LexemeDeleteConfirmation validateLexemeDelete(Long lexemeId, EkiUser user) {
 
 		LexemeDeleteConfirmation deleteConfirmation = new LexemeDeleteConfirmation();
 
+		DatasetPermission userRole = user.getRecentRole();
 		if (userRole == null) {
 			deleteConfirmation.setUserRoleExist(false);
 			deleteConfirmation.setShowConfirmation(true);
@@ -50,28 +53,27 @@ public class ComplexOpService {
 	}
 
 	@Transactional
-	public MeaningDeleteConfirmation validateMeaningDelete(Long meaningId, DatasetPermission userRole) {
+	public MeaningDeleteConfirmation validateMeaningDelete(Long meaningId, EkiUser user) {
 
 		MeaningDeleteConfirmation deleteConfirmation = new MeaningDeleteConfirmation();
 
+		DatasetPermission userRole = user.getRecentRole();
 		if (userRole == null) {
 			deleteConfirmation.setUserRoleExist(false);
 			return deleteConfirmation;
 		} else {
 			deleteConfirmation.setUserRoleExist(true);
 		}
-
 		String datasetCode = userRole.getDatasetCode();
-		boolean isSuperiorPermission = userRole.isSuperiorPermission();
-
 		boolean isOnlyLexemesForMeaning = lookupDbService.isOnlyLexemesForMeaning(meaningId, datasetCode);
-		if (isOnlyLexemesForMeaning || isSuperiorPermission) {
+
+		if (isOnlyLexemesForMeaning || user.isMaster()) {
 			deleteConfirmation.setMeaningDelete(true);
 			Map<Long, String[]> relatedMeaningsDatasetsMap = lookupDbService.getMeaningRelationDatasetCodes(meaningId);
 			deleteConfirmation.setRelatedMeaningsDatasetsMap(relatedMeaningsDatasetsMap);
 		}
 
-		List<Long> wordIdsToDelete = getWordIdsToBeDeleted(meaningId, datasetCode, isSuperiorPermission);
+		List<Long> wordIdsToDelete = getWordIdsToBeDeleted(meaningId, datasetCode, user);
 		List<String> wordValues = lookupDbService.getWordsValues(wordIdsToDelete);
 		deleteConfirmation.setWordValues(wordValues);
 
@@ -79,11 +81,12 @@ public class ComplexOpService {
 	}
 
 	@Transactional
-	public LexemeDeleteConfirmation validateLexemeAndMeaningLexemesDelete(Long lexemeId, String meaningLexemesLang, DatasetPermission userRole) {
+	public LexemeDeleteConfirmation validateLexemeAndMeaningLexemesDelete(Long lexemeId, EkiUser user) {
 
 		LexemeDeleteConfirmation deleteConfirmation = new LexemeDeleteConfirmation();
 		deleteConfirmation.setShowConfirmation(true);
 
+		DatasetPermission userRole = user.getRecentRole();
 		if (userRole == null) {
 			deleteConfirmation.setUserRoleExist(false);
 			return deleteConfirmation;
@@ -93,7 +96,9 @@ public class ComplexOpService {
 
 		String datasetCode = userRole.getDatasetCode();
 		Long meaningId = lookupDbService.getLexemeMeaningId(lexemeId);
-		List<Long> lexemeIdsToDelete = lookupDbService.getMeaningLexemeIds(meaningId, meaningLexemesLang, datasetCode);
+		// TODO this is very strange
+		final String forcedMeaningLexemesLang = LANGUAGE_CODE_RUS;
+		List<Long> lexemeIdsToDelete = lookupDbService.getMeaningLexemeIds(meaningId, forcedMeaningLexemesLang, datasetCode);
 		if (!lexemeIdsToDelete.contains(lexemeId)) {
 			lexemeIdsToDelete.add(lexemeId);
 		}
@@ -119,11 +124,11 @@ public class ComplexOpService {
 		return deleteConfirmation;
 	}
 
-	private List<Long> getWordIdsToBeDeleted(Long meaningId, String datasetCode, boolean isSuperiorPermission) {
+	private List<Long> getWordIdsToBeDeleted(Long meaningId, String datasetCode, EkiUser user) {
 
 		List<Long> wordIdsToBeDeleted = new ArrayList<>();
 		List<WordLexemeMeaningIdTuple> wordLexemeMeaningIds;
-		if (isSuperiorPermission) {
+		if (user.isMaster()) {
 			wordLexemeMeaningIds = lookupDbService.getWordLexemeMeaningIdsByMeaning(meaningId);
 		} else {
 			wordLexemeMeaningIds = lookupDbService.getWordLexemeMeaningIdsByMeaning(meaningId, datasetCode);

@@ -10,6 +10,8 @@ public class EkiUserRoleData extends AbstractDataObject {
 
 	private boolean admin;
 
+	private boolean master;
+
 	private boolean roleSelected;
 
 	private boolean crudRoleSelected;
@@ -36,6 +38,14 @@ public class EkiUserRoleData extends AbstractDataObject {
 
 	public void setAdmin(boolean admin) {
 		this.admin = admin;
+	}
+
+	public boolean isMaster() {
+		return master;
+	}
+
+	public void setMaster(boolean master) {
+		this.master = master;
 	}
 
 	public boolean isRoleSelected() {

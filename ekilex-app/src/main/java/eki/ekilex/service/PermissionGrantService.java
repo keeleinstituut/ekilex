@@ -7,6 +7,7 @@ import org.springframework.stereotype.Component;
 
 import eki.common.constant.PermConstant;
 import eki.ekilex.data.DatasetPermission;
+import eki.ekilex.data.EkiUser;
 import eki.ekilex.service.db.PermissionDbService;
 
 @Component
@@ -16,13 +17,15 @@ public class PermissionGrantService implements PermConstant {
 	private PermissionDbService permissionDbService;
 
 	@Transactional
-	public boolean isMeaningPairCrudGranted(Long userId, DatasetPermission userRole, Long meaningId1, Long meaningId2) {
+	public boolean isMeaningPairCrudGranted(EkiUser user, Long meaningId1, Long meaningId2) {
 
+		Long userId = user.getId();
+		if (user.isMaster()) {
+			return true;
+		}
+		DatasetPermission userRole = user.getRecentRole();
 		if (userRole == null) {
 			return false;
-		}
-		if (userRole.isSuperiorPermission()) {
-			return true;
 		}
 		boolean isGrantedForMeaning1 = permissionDbService.isGrantedForMeaning(userId, userRole, meaningId1, AUTH_ITEM_DATASET, AUTH_OPS_CRUD);
 		boolean isGrantedForMeaning2 = permissionDbService.isGrantedForMeaning(userId, userRole, meaningId2, AUTH_ITEM_DATASET, AUTH_OPS_CRUD);
@@ -38,13 +41,15 @@ public class PermissionGrantService implements PermConstant {
 	}
 
 	@Transactional
-	public boolean isWordPairCrudGranted(Long userId, DatasetPermission userRole, Long wordId1, Long wordId2) {
+	public boolean isWordPairCrudGranted(EkiUser user, Long wordId1, Long wordId2) {
 
+		Long userId = user.getId();
+		if (user.isMaster()) {
+			return true;
+		}
+		DatasetPermission userRole = user.getRecentRole();
 		if (userRole == null) {
 			return false;
-		}
-		if (userRole.isSuperiorPermission()) {
-			return true;
 		}
 		boolean isGrantedForWord1 = permissionDbService.isGrantedForWord(userId, userRole, wordId1, AUTH_ITEM_DATASET, AUTH_OPS_CRUD);
 		boolean isGrantedForWord2 = permissionDbService.isGrantedForWord(userId, userRole, wordId2, AUTH_ITEM_DATASET, AUTH_OPS_CRUD);

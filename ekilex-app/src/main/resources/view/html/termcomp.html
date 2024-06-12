@@ -5,8 +5,8 @@
   <div class="card-body px-2 pt-1 pb-2 d-flex flex-column h-100"
        th:fragment="term_search_result"
        th:with="
-         isWordResultMode=${sessionBean.termSearchResultMode == T(eki.ekilex.constant.SearchResultMode).WORD},
-         isMeaningResultMode=${sessionBean.termSearchResultMode == T(eki.ekilex.constant.SearchResultMode).MEANING}">
+         isWordResultMode=${viewUtil.enumEquals(sessionBean.termSearchResultMode, T(eki.ekilex.constant.SearchResultMode).WORD)},
+         isMeaningResultMode=${viewUtil.enumEquals(sessionBean.termSearchResultMode, T(eki.ekilex.constant.SearchResultMode).MEANING)}">
     <div class="row no-gutters">
       <div class="col-auto">
         <div class="btn-group btn-group-toggle btn-tabs" data-toggle="buttons">

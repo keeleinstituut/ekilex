@@ -21,6 +21,7 @@ import eki.common.exception.OperationDeniedException;
 import eki.common.service.util.LexemeLevelPreseUtil;
 import eki.ekilex.data.DatasetPermission;
 import eki.ekilex.data.Definition;
+import eki.ekilex.data.EkiUser;
 import eki.ekilex.data.Meaning;
 import eki.ekilex.data.MeaningRelation;
 import eki.ekilex.data.SearchDatasetsRestriction;
@@ -50,9 +51,10 @@ public abstract class AbstractWordSearchService extends AbstractSearchService {
 
 	@Transactional
 	public WordsResult getWords(
-			SearchFilter searchFilter, List<String> datasetCodes, DatasetPermission userRole, List<String> tagNames, int offset,
+			SearchFilter searchFilter, List<String> datasetCodes, List<String> tagNames, EkiUser user, int offset,
 			int maxResultsLimit, boolean noLimit) throws Exception {
 
+		DatasetPermission userRole = user.getRecentRole();
 		List<Word> words;
 		int wordCount;
 		if (!isValidSearchFilter(searchFilter)) {
@@ -82,8 +84,9 @@ public abstract class AbstractWordSearchService extends AbstractSearchService {
 
 	@Transactional
 	public WordsResult getWords(
-			String searchFilter, List<String> datasetCodes, DatasetPermission userRole, List<String> tagNames, int offset, int maxResultsLimit, boolean noLimit) throws Exception {
+			String searchFilter, List<String> datasetCodes, List<String> tagNames, EkiUser user, int offset, int maxResultsLimit, boolean noLimit) throws Exception {
 
+		DatasetPermission userRole = user.getRecentRole();
 		List<Word> words;
 		int wordCount;
 		if (StringUtils.isBlank(searchFilter)) {
@@ -149,7 +152,7 @@ public abstract class AbstractWordSearchService extends AbstractSearchService {
 		});
 	}
 
-	public List<WordDescript> getWordCandidates(DatasetPermission userRole, String wordValue, String language, String datasetCode) {
+	public List<WordDescript> getWordCandidates(String wordValue, String language, String datasetCode, EkiUser user) {
 
 		List<WordDescript> wordCandidates = new ArrayList<>();
 		SearchDatasetsRestriction searchDatasetsRestriction = composeDatasetsRestriction(Collections.emptyList());
@@ -163,7 +166,7 @@ public abstract class AbstractWordSearchService extends AbstractSearchService {
 				Long meaningId = lexeme.getMeaningId();
 				String lexemeDatasetCode = lexeme.getDatasetCode();
 				List<Definition> definitions = commonDataDbService.getMeaningDefinitions(meaningId, lexemeDatasetCode, CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
-				permCalculator.filterVisibility(userRole, definitions);
+				permCalculator.filterVisibility(user, definitions);
 				Meaning meaning = new Meaning();
 				meaning.setMeaningId(meaningId);
 				meaning.setDefinitions(definitions);

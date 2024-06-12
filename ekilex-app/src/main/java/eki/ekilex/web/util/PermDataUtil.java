@@ -46,18 +46,14 @@ public class PermDataUtil {
 	public boolean isSourceMeaningCrudGranted(Long sourceMeaningId, Long targetMeaningId) {
 
 		EkiUser user = userContext.getUser();
-		Long userId = user.getId();
-		DatasetPermission userRole = user.getRecentRole();
-		boolean isMeaningPairCrudGranted = permissionGrantService.isMeaningPairCrudGranted(userId, userRole, sourceMeaningId, targetMeaningId);
+		boolean isMeaningPairCrudGranted = permissionGrantService.isMeaningPairCrudGranted(user, sourceMeaningId, targetMeaningId);
 		return isMeaningPairCrudGranted;
 	}
 
 	public boolean isSourceWordCrudGranted(Long sourceWordId, Long targetWordId) {
 
 		EkiUser user = userContext.getUser();
-		Long userId = user.getId();
-		DatasetPermission userRole = user.getRecentRole();
-		boolean isWordPairCrudGranted = permissionGrantService.isWordPairCrudGranted(userId, userRole, sourceWordId, targetWordId);
+		boolean isWordPairCrudGranted = permissionGrantService.isWordPairCrudGranted(user, sourceWordId, targetWordId);
 		return isWordPairCrudGranted;
 	}
 

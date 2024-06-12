@@ -9,6 +9,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
 import org.springframework.context.i18n.LocaleContextHolder;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -18,7 +19,7 @@ import org.springframework.web.bind.annotation.SessionAttributes;
 
 import eki.ekilex.constant.ResponseStatus;
 import eki.ekilex.constant.WebConstant;
-import eki.ekilex.data.DatasetPermission;
+import eki.ekilex.data.EkiUser;
 import eki.ekilex.data.InexactSynMeaning;
 import eki.ekilex.data.InexactSynMeaningRequest;
 import eki.ekilex.data.Response;
@@ -36,11 +37,12 @@ public class InexactSynController extends AbstractPrivateSearchController {
 	private InexactSynService inexactSynService;
 
 	@PostMapping(INEXACT_SYN_INIT_URI)
+	@PreAuthorize("@permEval.isUserRoleSelected(authentication)")
 	public String initInexactSynSearch(
 			@RequestParam("targetMeaningId") Long targetMeaningId,
 			@RequestParam("targetLang") String targetLang,
 			@RequestParam("wordRelationId") Long wordRelationId,
-			Model model) {
+			Model model) throws Exception {
 
 		String datasetCode = getDatasetCodeFromRole();
 		Word translationLangWord = inexactSynService.getSynCandidateWord(wordRelationId);
@@ -72,7 +74,7 @@ public class InexactSynController extends AbstractPrivateSearchController {
 		String translationLang = requestData.getTranslationLang();
 		boolean revertToPreviousStep = requestData.isRevertToPreviousStep();
 
-		DatasetPermission userRole = userContext.getUserRole();
+		EkiUser user = userContext.getUser();
 		List<InexactSynMeaning> meaningCandidates = inexactSynService.getInexactSynMeaningCandidates(wordRelationId, targetLang, targetLangWordValue, datasetCode);
 
 		requestData.setSearchEnabled(false);
@@ -85,7 +87,7 @@ public class InexactSynController extends AbstractPrivateSearchController {
 				return INEXACT_SYN_COMPONENTS_PAGE + PAGE_FRAGMENT_ELEM + "inexact_syn_meaning_select";
 			}
 			InexactSynMeaning newMeaning = inexactSynService
-					.initNewInexactSynMeaning(targetLangWordValue, targetLang, translationLangWordValue, translationLang, userRole);
+					.initNewInexactSynMeaning(targetLangWordValue, targetLang, translationLangWordValue, translationLang, user);
 			boolean isMeaningComplete = newMeaning.isComplete();
 			if (isMeaningComplete) {
 				InexactSynMeaningRequest completedInexactSynMeaningData = inexactSynService.initCompletedInexactSynMeaning(requestData);
@@ -111,14 +113,14 @@ public class InexactSynController extends AbstractPrivateSearchController {
 
 		model.addAttribute("data", requestData);
 
-		DatasetPermission userRole = userContext.getUserRole();
+		EkiUser user = userContext.getUser();
 		boolean createNewMeaning = inexactSynMeaningId == null;
 		boolean isTargetLangWordSearch = StringUtils.isNotBlank(targetLangWordValue);
 
 		if (isTargetLangWordSearch) {
 			if (createNewMeaning) {
 				InexactSynMeaning newMeaning = inexactSynService
-						.initNewInexactSynMeaning(targetLangWordValue, targetLang, translationLangWordValue, translationLang, userRole);
+						.initNewInexactSynMeaning(targetLangWordValue, targetLang, translationLangWordValue, translationLang, user);
 				boolean isMeaningComplete = newMeaning.isComplete();
 				if (isMeaningComplete) {
 					InexactSynMeaningRequest completedInexactSynMeaningData = inexactSynService.initCompletedInexactSynMeaning(requestData);
@@ -139,7 +141,7 @@ public class InexactSynController extends AbstractPrivateSearchController {
 				return INEXACT_SYN_COMPONENTS_PAGE + PAGE_FRAGMENT_ELEM + "inexact_syn_relation_select";
 			} else {
 				InexactSynMeaning existingMeaning = inexactSynService
-						.initExistingInexactSynMeaning(inexactSynMeaningId, targetLangWordValue, targetLang, translationLangWordValue, translationLang, userRole);
+						.initExistingInexactSynMeaning(inexactSynMeaningId, targetLangWordValue, targetLang, translationLangWordValue, translationLang, user);
 
 				boolean isMeaningComplete = existingMeaning.isComplete();
 				if (isMeaningComplete) {
@@ -156,12 +158,12 @@ public class InexactSynController extends AbstractPrivateSearchController {
 
 			if (createNewMeaning) {
 				InexactSynMeaning newMeaning = inexactSynService
-						.initNewInexactSynMeaning(null, targetLang, translationLangWordValue, translationLang, userRole);
+						.initNewInexactSynMeaning(null, targetLang, translationLangWordValue, translationLang, user);
 				model.addAttribute("meaning", newMeaning);
 				return INEXACT_SYN_COMPONENTS_PAGE + PAGE_FRAGMENT_ELEM + "inexact_syn_word_select";
 			} else {
 				InexactSynMeaning existingMeaning = inexactSynService
-						.initExistingInexactSynMeaning(inexactSynMeaningId, targetLangWordValue, targetLang, translationLangWordValue, translationLang, userRole);
+						.initExistingInexactSynMeaning(inexactSynMeaningId, targetLangWordValue, targetLang, translationLangWordValue, translationLang, user);
 				model.addAttribute("meaning", existingMeaning);
 				return INEXACT_SYN_COMPONENTS_PAGE + PAGE_FRAGMENT_ELEM + "inexact_syn_word_select";
 			}
@@ -179,7 +181,8 @@ public class InexactSynController extends AbstractPrivateSearchController {
 
 	@ResponseBody
 	@PostMapping(INEXACT_SYN_MEANING_RELATION_URI)
-	public Response createInexactSynMeaningAndRelation(InexactSynMeaningRequest requestData) {
+	@PreAuthorize("@permEval.isUserRoleSelected(authentication)")
+	public Response createInexactSynMeaningAndRelation(InexactSynMeaningRequest requestData) throws Exception {
 
 		Locale locale = LocaleContextHolder.getLocale();
 		String roleDatasetCode = getDatasetCodeFromRole();

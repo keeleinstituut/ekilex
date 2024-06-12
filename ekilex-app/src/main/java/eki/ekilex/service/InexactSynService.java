@@ -21,6 +21,7 @@ import eki.ekilex.constant.ResponseStatus;
 import eki.ekilex.data.ActivityLogData;
 import eki.ekilex.data.DatasetPermission;
 import eki.ekilex.data.Definition;
+import eki.ekilex.data.EkiUser;
 import eki.ekilex.data.InexactSynMeaning;
 import eki.ekilex.data.InexactSynMeaningRequest;
 import eki.ekilex.data.Response;
@@ -90,20 +91,21 @@ public class InexactSynService extends AbstractSynSearchService {
 
 	@Transactional
 	public InexactSynMeaning initNewInexactSynMeaning(
-			String targetLangWordValue, String targetLang, String translationLangWordValue, String translationLang, DatasetPermission userRole) {
+			String targetLangWordValue, String targetLang, String translationLangWordValue, String translationLang, EkiUser user) {
 
-		InexactSynMeaning meaning = new InexactSynMeaning();
+		DatasetPermission userRole = user.getRecentRole();
 		String datasetCode = userRole.getDatasetCode();
 		String datasetName = userRole.getDatasetName();
 		boolean createTargetLangWord = StringUtils.isNotBlank(targetLangWordValue);
 
-		List<WordDescript> translationLangWordCandidates = getWordCandidates(userRole, translationLangWordValue, translationLang, datasetCode);
-
+		List<WordDescript> translationLangWordCandidates = getWordCandidates(translationLangWordValue, translationLang, datasetCode, user);
 		List<Definition> definitions = new ArrayList<>();
 		List<String> meaningWordValues = new ArrayList<>();
 		List<WordDescript> targetLangWordCandidates = new ArrayList<>();
+		InexactSynMeaning meaning = new InexactSynMeaning();
+
 		if (createTargetLangWord) {
-			targetLangWordCandidates = getWordCandidates(userRole, targetLangWordValue, targetLang, datasetCode);
+			targetLangWordCandidates = getWordCandidates(targetLangWordValue, targetLang, datasetCode, user);
 
 			if (translationLangWordCandidates.isEmpty() && targetLangWordCandidates.isEmpty()) {
 				meaningWordValues.add(translationLangWordValue);
@@ -127,9 +129,9 @@ public class InexactSynService extends AbstractSynSearchService {
 
 	@Transactional
 	public InexactSynMeaning initExistingInexactSynMeaning(
-			Long meaningId, String targetLangWordValue, String targetLang, String translationLangWordValue, String translationLang, DatasetPermission userRole) {
+			Long meaningId, String targetLangWordValue, String targetLang, String translationLangWordValue, String translationLang, EkiUser user) {
 
-		InexactSynMeaning meaning = new InexactSynMeaning();
+		DatasetPermission userRole = user.getRecentRole();
 		String datasetCode = userRole.getDatasetCode();
 		String datasetName = userRole.getDatasetName();
 		boolean createTargetLangWord = StringUtils.isNotBlank(targetLangWordValue);
@@ -143,10 +145,11 @@ public class InexactSynService extends AbstractSynSearchService {
 				.orElse(null);
 		List<WordDescript> targetLangWordCandidates = new ArrayList<>();
 		List<WordDescript> translationLangWordCandidates = new ArrayList<>();
+		InexactSynMeaning meaning = new InexactSynMeaning();
 
 		if (meaningWordValues.contains(translationLangWordValue)) {
 			if (createTargetLangWord) {
-				targetLangWordCandidates = getWordCandidates(userRole, targetLangWordValue, targetLang, datasetCode);
+				targetLangWordCandidates = getWordCandidates(targetLangWordValue, targetLang, datasetCode, user);
 				if (targetLangWordCandidates.isEmpty()) {
 					meaning.setComplete(true);
 				}
@@ -154,7 +157,7 @@ public class InexactSynService extends AbstractSynSearchService {
 		}
 
 		if (meaningWordValues.contains(targetLangWordValue)) {
-			translationLangWordCandidates = getWordCandidates(userRole, translationLangWordValue, translationLang, datasetCode);
+			translationLangWordCandidates = getWordCandidates(translationLangWordValue, translationLang, datasetCode, user);
 			if (translationLangWordCandidates.isEmpty()) {
 				meaning.setComplete(true);
 			}

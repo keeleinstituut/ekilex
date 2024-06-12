@@ -41,15 +41,14 @@ public class FullSynSearchService extends AbstractSynSearchService {
 			List<String> synMeaningWordLangCodes, Tag activeTag, EkiUser user, EkiUserProfile userProfile) {
 
 		DatasetPermission userRole = user.getRecentRole();
-		boolean isAdmin = user.isAdmin();
 		String datasetCode = userRole.getDatasetCode();
 		List<String> datasetCodeList = new ArrayList<>(Collections.singletonList(datasetCode));
 		SearchDatasetsRestriction searchDatasetsRestriction = composeDatasetsRestriction(datasetCodeList);
 
 		Word word = synSearchDbService.getWord(wordId);
-		permCalculator.applyCrud(userRole, word);
+		permCalculator.applyCrud(user, word);
 		List<WordForum> wordForums = commonDataDbService.getWordForums(wordId);
-		permCalculator.applyCrud(userRole, isAdmin, wordForums);
+		permCalculator.applyCrud(user, wordForums);
 		String wordLang = word.getLang();
 
 		List<WordLexeme> synLexemes = synSearchDbService.getWordPrimarySynonymLexemes(wordId, searchDatasetsRestriction, CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
@@ -57,7 +56,7 @@ public class FullSynSearchService extends AbstractSynSearchService {
 			List<ClassifierSelect> sortedLanguagesOrder = languagesOrder.stream()
 					.sorted(Comparator.comparing(orderLang -> !StringUtils.equals(orderLang.getCode(), synCandidateLangCode)))
 					.collect(Collectors.toList());
-			populateLexeme(lexeme, sortedLanguagesOrder, wordLang, synMeaningWordLangCodes, userRole, userProfile);
+			populateLexeme(lexeme, sortedLanguagesOrder, wordLang, synMeaningWordLangCodes, user, userProfile);
 			reorderFullSynLangGroups(lexeme, synCandidateLangCode);
 		});
 		lexemeLevelPreseUtil.combineLevels(synLexemes);
@@ -120,24 +119,24 @@ public class FullSynSearchService extends AbstractSynSearchService {
 	}
 
 	@Transactional
-	public List<WordDescript> getRelationWordCandidates(Long wordRelationId, DatasetPermission userRole) {
+	public List<WordDescript> getRelationWordCandidates(Long wordRelationId, EkiUser user) {
 
 		Word sourceWord = synSearchDbService.getSynCandidateWord(wordRelationId);
 		String sourceWordValue = sourceWord.getWordValue();
 		String sourceWordLang = sourceWord.getLang();
 
-		List<WordDescript> wordCandidates = getWordCandidates(sourceWordValue, sourceWordLang, userRole);
+		List<WordDescript> wordCandidates = getWordCandidates(sourceWordValue, sourceWordLang, user);
 		return wordCandidates;
 	}
 
 	@Transactional
-	public List<WordDescript> getMeaningWordCandidates(String wordValue, String wordLang, DatasetPermission userRole) {
+	public List<WordDescript> getMeaningWordCandidates(String wordValue, String wordLang, EkiUser user) {
 
-		List<WordDescript> wordCandidates = getWordCandidates(wordValue, wordLang, userRole);
+		List<WordDescript> wordCandidates = getWordCandidates(wordValue, wordLang, user);
 		return wordCandidates;
 	}
 
-	private List<WordDescript> getWordCandidates(String sourceWordValue, String sourceWordLang, DatasetPermission userRole) {
+	private List<WordDescript> getWordCandidates(String sourceWordValue, String sourceWordLang, EkiUser user) {
 
 		List<WordDescript> wordCandidates = new ArrayList<>();
 		SearchDatasetsRestriction searchDatasetsRestriction = composeDatasetsRestriction(Collections.emptyList());
@@ -151,7 +150,7 @@ public class FullSynSearchService extends AbstractSynSearchService {
 				Long meaningId = lexeme.getMeaningId();
 				String lexemeDatasetCode = lexeme.getDatasetCode();
 				List<Definition> definitions = commonDataDbService.getMeaningDefinitions(meaningId, lexemeDatasetCode, CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
-				permCalculator.filterVisibility(userRole, definitions);
+				permCalculator.filterVisibility(user, definitions);
 				Meaning meaning = new Meaning();
 				meaning.setMeaningId(meaningId);
 				meaning.setDefinitions(definitions);

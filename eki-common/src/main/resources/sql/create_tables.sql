@@ -96,34 +96,6 @@ create type type_mt_lexeme_freeform as (
   modified_on timestamp
 );
 
-create table terms_of_use (
-  id bigserial primary key, 
-  version varchar(100), 
-  value text not null, 
-  is_active boolean default false not null, 
-  unique(version)
-);
-alter sequence terms_of_use_id_seq restart with 10000;
-
-create table eki_user (
-  id bigserial primary key, 
-  name text not null, 
-  email text not null, 
-  password text not null, 
-  terms_ver varchar(100) null references terms_of_use(version), 
-  activation_key varchar(60) null, 
-  recovery_key varchar(60) null, 
-  api_key varchar(100) null, 
-  is_api_crud boolean default false, 
-  is_admin boolean default false, 
-  is_master boolean default false, 
-  is_enabled boolean, 
-  review_comment text, 
-  created timestamp not null default statement_timestamp(), 
-  unique(email)
-);
-alter sequence eki_user_id_seq restart with 10000;
-
 ---------------------------------
 -- klassifitseeritud andmestik --
 ---------------------------------
@@ -305,6 +277,23 @@ create table pos_group_label (
   unique(code, lang, type)
 );
 
+-- kol rel grupp
+create table rel_group
+(
+  code varchar(100) primary key,
+  datasets varchar(10) array not null,
+  order_by bigserial
+);
+
+create table rel_group_label
+(
+  code varchar(100) references rel_group(code) on delete cascade not null,
+  value text not null,
+  lang char(3) references language(code) not null,
+  type varchar(10) references label_type(code) not null,
+  unique(code, lang, type)
+);
+
 -- vormi märgend
 create table morph (
   code varchar(100) primary key, 
@@ -479,6 +468,35 @@ create table proficiency_level_label (
 ---------------------------
 -- dünaamiline andmestik --
 ---------------------------
+
+create table terms_of_use (
+  id bigserial primary key, 
+  version varchar(100), 
+  value text not null, 
+  is_active boolean default false not null, 
+  unique(version)
+);
+alter sequence terms_of_use_id_seq restart with 10000;
+
+create table eki_user (
+  id bigserial primary key, 
+  name text not null, 
+  email text not null, 
+  password text not null, 
+  terms_ver varchar(100) null references terms_of_use(version), 
+  activation_key varchar(60) null, 
+  recovery_key varchar(60) null, 
+  api_key varchar(100) null, 
+  is_api_crud boolean default false, 
+  is_admin boolean default false, 
+  is_master boolean default false, 
+  is_overpower boolean default false,
+  is_enabled boolean, 
+  review_comment text, 
+  created timestamp not null default statement_timestamp(), 
+  unique(email)
+);
+alter sequence eki_user_id_seq restart with 10000;
 
 -- sõnakogu
 create table dataset (
@@ -866,6 +884,7 @@ create table definition_freeform (
 alter sequence definition_freeform_id_seq restart with 10000;
 
 -- kollokatsioon
+-- TODO to be removed soon
 create table collocation (
   id bigserial primary key, 
   value text not null, 
@@ -876,15 +895,6 @@ create table collocation (
   complexity varchar(100) not null
 );
 alter sequence collocation_id_seq restart with 10000;
-
--- kollokatsiooni vabavorm
-create table collocation_freeform (
-  id bigserial primary key, 
-  collocation_id bigint references collocation(id) on delete cascade not null, 
-  freeform_id bigint references freeform(id) on delete cascade not null, 
-  unique(collocation_id, freeform_id)
-);
-alter sequence collocation_freeform_id_seq restart with 10000;
 
 -- ilmik
 create table lexeme (
@@ -976,6 +986,7 @@ create table lex_relation (
 alter sequence lex_relation_id_seq restart with 10000;
 
 -- ilmiku kollokatsiooni grupid
+-- TODO to be removed soon
 create table lex_colloc_pos_group (
   id bigserial primary key, 
   lexeme_id bigint references lexeme(id) on delete cascade not null, 
@@ -984,6 +995,7 @@ create table lex_colloc_pos_group (
 );
 alter sequence lex_colloc_pos_group_id_seq restart with 10000;
 
+-- TODO to be removed soon
 create table lex_colloc_rel_group (
   id bigserial primary key, 
   pos_group_id bigint references lex_colloc_pos_group(id) on delete cascade not null, 
@@ -995,6 +1007,7 @@ create table lex_colloc_rel_group (
 alter sequence lex_colloc_rel_group_id_seq restart with 10000;
 
 -- ilmiku kollokatsioon
+-- TODO to be removed soon
 create table lex_colloc (
   id bigserial primary key, 
   lexeme_id bigint references lexeme(id) on delete cascade not null, 
@@ -1008,6 +1021,21 @@ create table lex_colloc (
   unique(lexeme_id, collocation_id)
 );
 alter sequence lex_colloc_id_seq restart with 10000;
+
+create table collocation_member (
+	id bigserial primary key,
+	colloc_lexeme_id bigint references lexeme(id) not null,
+	member_lexeme_id bigint references lexeme(id) not null,
+	member_form_id bigint references form(id) not null,
+	pos_group_code varchar(100) references pos_group(code),
+	rel_group_code varchar(100) references rel_group(code),
+	conjunct varchar(100),
+	weight numeric(14, 4),
+	member_order integer not null,
+	group_order integer,
+	unique(colloc_lexeme_id, member_lexeme_id)
+);
+alter sequence collocation_member_id_seq restart with 10000;
 
 -- allikaviited
 create table freeform_source_link (
@@ -1110,12 +1138,14 @@ create table news_article (
 	title text not null,
 	lang char(3) references language(code) null
 );
+alter sequence news_article_id_seq restart with 10000;
 
 create table news_section (
 	id bigserial primary key,
 	news_article_id bigint not null references news_article(id) on delete cascade,
 	content text not null
 );
+alter sequence news_section_id_seq restart with 10000;
 
 create table activity_log (
   id bigserial primary key, 
@@ -1341,8 +1371,6 @@ create index word_freeform_word_id_idx on word_freeform(word_id);
 create index word_freeform_freeform_id_idx on word_freeform(freeform_id);
 create index definition_freeform_definition_id_idx on definition_freeform(definition_id);
 create index definition_freeform_freeform_id_idx on definition_freeform(freeform_id);
-create index collocation_freeform_collocation_id_idx on collocation_freeform(collocation_id);
-create index collocation_freeform_freeform_id_idx on collocation_freeform(freeform_id);
 create index freeform_source_link_freeform_id_idx on freeform_source_link(freeform_id);
 create index freeform_source_link_source_id_idx on freeform_source_link(source_id);
 create index freeform_source_link_name_idx on freeform_source_link(name);
@@ -1369,6 +1397,11 @@ create index lex_colloc_lexeme_id_idx on lex_colloc(lexeme_id);
 create index lex_colloc_rel_group_id_idx on lex_colloc(rel_group_id);
 create index lex_colloc_collocation_id_idx on lex_colloc(collocation_id);
 create index collocation_value_idx on collocation(value);
+create index collocation_member_colloc_lexeme_id_idx on collocation_member(colloc_lexeme_id);
+create index collocation_member_member_lexeme_id_idx on collocation_member(member_lexeme_id);
+create index collocation_member_member_form_id_idx on collocation_member(member_form_id);
+create index collocation_member_pos_group_code_idx on collocation_member(pos_group_code);
+create index collocation_member_rel_group_code_idx on collocation_member(rel_group_code);
 create index lexeme_register_lexeme_id_idx on lexeme_register(lexeme_id);
 create index lexeme_pos_lexeme_id_idx on lexeme_pos(lexeme_id);
 create index lexeme_pos_pos_code_idx on lexeme_pos(pos_code);

@@ -38,13 +38,7 @@ public class TermMeaningService extends AbstractApiCudService implements Activit
 
 	private static final Complexity DEFAULT_COMPLEXITY = Complexity.DETAIL;
 
-	private static final boolean DEFAULT_LEXEME_PUBLICITY = PUBLICITY_PUBLIC;
-
-	private static final boolean DEFAULT_MEANING_NOTE_PUBLICITY = PUBLICITY_PUBLIC;
-
-	private static final boolean DEFAULT_LEXEME_NOTE_PUBLICITY = PUBLICITY_PUBLIC;
-
-	private static final boolean DEFAULT_USAGE_PUBLICITY = PUBLICITY_PUBLIC;
+	private static final boolean DEFAULT_PUBLICITY = PUBLICITY_PUBLIC;
 
 	@Autowired
 	private TermMeaningDbService termMeaningDbService;
@@ -110,7 +104,7 @@ public class TermMeaningService extends AbstractApiCudService implements Activit
 		if (CollectionUtils.isNotEmpty(definitions)) {
 
 			for (Definition definition : definitions) {
-				createOrUpdateDefinition(definition, meaningId, datasetCode, DEFAULT_COMPLEXITY, roleDatasetCode);
+				createOrUpdateDefinition(definition, meaningId, datasetCode, DEFAULT_COMPLEXITY, DEFAULT_PUBLICITY, roleDatasetCode);
 			}
 		}
 
@@ -134,7 +128,7 @@ public class TermMeaningService extends AbstractApiCudService implements Activit
 				List<String> lexemeTags = word.getLexemeTags();
 				List<Freeform> usages = word.getUsages();
 				Boolean lexemePublicity = word.getLexemePublicity();
-				boolean isPublic = isPublic(lexemePublicity, DEFAULT_LEXEME_PUBLICITY);
+				boolean isPublic = isPublic(lexemePublicity, DEFAULT_PUBLICITY);
 				List<SourceLink> lexemeSourceLinks = word.getLexemeSourceLinks();
 
 				if (isValueOrLangMissing) {
@@ -209,10 +203,10 @@ public class TermMeaningService extends AbstractApiCudService implements Activit
 						Long lexemeNoteId = lexemeNote.getId();
 						String lexemeNoteValue = lexemeNote.getValue();
 						String lexemeNoteLang = lexemeNote.getLang();
-						boolean isLexemeNotePublic = isPublic(lexemeNote.getPublicity(), DEFAULT_LEXEME_NOTE_PUBLICITY);
+						boolean isLexemeNotePublic = isPublic(lexemeNote.getPublicity(), DEFAULT_PUBLICITY);
 						List<SourceLink> lexemeNoteSourceLinks = lexemeNote.getSourceLinks();
 
-						FreeForm freeform = initFreeform(FreeformType.NOTE, lexemeNoteValue, lexemeNoteLang, isLexemeNotePublic);
+						FreeForm freeform = initFreeform(FreeformType.NOTE, lexemeNoteValue, lexemeNoteLang, Complexity.DETAIL, isLexemeNotePublic);
 
 						if (lexemeNoteId == null) {
 							activityLog = activityLogService.prepareActivityLog("createLexemeNote", lexemeId, ActivityOwner.LEXEME, roleDatasetCode, MANUAL_EVENT_ON_UPDATE_ENABLED);
@@ -259,7 +253,7 @@ public class TermMeaningService extends AbstractApiCudService implements Activit
 				if (CollectionUtils.isNotEmpty(usages)) {
 
 					for (Freeform usage : usages) {
-						createOrUpdateUsage(usage, lexemeId, DEFAULT_USAGE_PUBLICITY, roleDatasetCode);
+						createOrUpdateUsage(usage, lexemeId, DEFAULT_COMPLEXITY, DEFAULT_PUBLICITY, roleDatasetCode);
 					}
 				}
 
@@ -311,10 +305,10 @@ public class TermMeaningService extends AbstractApiCudService implements Activit
 				Long meaningNoteId = meaningNote.getId();
 				String meaningNoteValue = meaningNote.getValue();
 				String meaningNoteLang = meaningNote.getLang();
-				boolean isMeaningNotePublic = isPublic(meaningNote.getPublicity(), DEFAULT_MEANING_NOTE_PUBLICITY);
+				boolean isMeaningNotePublic = isPublic(meaningNote.getPublicity(), DEFAULT_PUBLICITY);
 				List<SourceLink> meaningNoteSourceLinks = meaningNote.getSourceLinks();
 
-				FreeForm freeform = initFreeform(FreeformType.NOTE, meaningNoteValue, meaningNoteLang, isMeaningNotePublic);
+				FreeForm freeform = initFreeform(FreeformType.NOTE, meaningNoteValue, meaningNoteLang, Complexity.DETAIL, isMeaningNotePublic);
 
 				if (meaningNoteId == null) {
 					activityLog = activityLogService.prepareActivityLog("createMeaningFreeform", meaningId, ActivityOwner.MEANING, roleDatasetCode, MANUAL_EVENT_ON_UPDATE_ENABLED);
@@ -382,7 +376,7 @@ public class TermMeaningService extends AbstractApiCudService implements Activit
 			for (String conceptId : conceptIds) {
 				boolean meaningConceptIdExists = lookupDbService.meaningFreeformExists(meaningId, conceptId, FreeformType.CONCEPT_ID);
 				if (!meaningConceptIdExists) {
-					FreeForm freeform = initFreeform(FreeformType.CONCEPT_ID, conceptId, null, PUBLICITY_PUBLIC);
+					FreeForm freeform = initFreeform(FreeformType.CONCEPT_ID, conceptId, null, Complexity.DETAIL, PUBLICITY_PUBLIC);
 					activityLog = activityLogService.prepareActivityLog("createMeaningFreeform", meaningId, ActivityOwner.MEANING, roleDatasetCode,
 							MANUAL_EVENT_ON_UPDATE_ENABLED);
 					Long meaningFreeformId = cudDbService.createMeaningFreeform(meaningId, freeform, userName);

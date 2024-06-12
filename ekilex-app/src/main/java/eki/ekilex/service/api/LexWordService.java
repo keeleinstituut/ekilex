@@ -31,7 +31,7 @@ public class LexWordService extends AbstractApiCudService {
 
 	private static final Complexity DEFAULT_COMPLEXITY = Complexity.DETAIL;
 
-	private static final boolean DEFAULT_USAGE_PUBLICITY = PUBLICITY_PUBLIC;
+	private static final boolean DEFAULT_PUBLICITY = PUBLICITY_PUBLIC;
 
 	@Autowired
 	private TagDbService tagDbService;
@@ -178,15 +178,14 @@ public class LexWordService extends AbstractApiCudService {
 			if (CollectionUtils.isNotEmpty(definitions)) {
 
 				for (Definition definition : definitions) {
-					// FIXME why forced complexity??
-					createOrUpdateDefinition(definition, meaningId, datasetCode, DEFAULT_COMPLEXITY, roleDatasetCode);
+					createOrUpdateDefinition(definition, meaningId, datasetCode, DEFAULT_COMPLEXITY, DEFAULT_PUBLICITY, roleDatasetCode);
 				}
 			}
 
 			if (CollectionUtils.isNotEmpty(usages)) {
 
 				for (Freeform usage : usages) {
-					createOrUpdateUsage(usage, lexemeId, DEFAULT_USAGE_PUBLICITY, roleDatasetCode);
+					createOrUpdateUsage(usage, lexemeId, DEFAULT_COMPLEXITY, DEFAULT_PUBLICITY, roleDatasetCode);
 				}
 			}
 		}

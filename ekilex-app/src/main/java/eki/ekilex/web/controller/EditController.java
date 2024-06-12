@@ -58,7 +58,7 @@ public class EditController extends AbstractMutableDataPageController {
 	@Autowired
 	private CudService cudService;
 
-	@Autowired	
+	@Autowired
 	private SynCudService synCudService;
 
 	@Autowired
@@ -484,21 +484,21 @@ public class EditController extends AbstractMutableDataPageController {
 
 		logger.debug("Confirmation request: {} {} {}", opName, opCode, id);
 
-		DatasetPermission userRole = userContext.getUserRole();
+		EkiUser user = userContext.getUser();
 
 		switch (opName) {
 		case "delete":
 			switch (opCode) {
 			case "lexeme":
-				LexemeDeleteConfirmation lexemeDeleteConfirmation = complexOpService.validateLexemeDelete(id, userRole);
+				LexemeDeleteConfirmation lexemeDeleteConfirmation = complexOpService.validateLexemeDelete(id, user);
 				model.addAttribute("lexemeDeleteConfirmation", lexemeDeleteConfirmation);
 				return COMPONENTS_PAGE + PAGE_FRAGMENT_ELEM + "lexeme_delete_confirmation";
 			case "meaning":
-				MeaningDeleteConfirmation meaningDeleteConfirmation = complexOpService.validateMeaningDelete(id, userRole);
+				MeaningDeleteConfirmation meaningDeleteConfirmation = complexOpService.validateMeaningDelete(id, user);
 				model.addAttribute("meaningDeleteConfirmation", meaningDeleteConfirmation);
 				return COMPONENTS_PAGE + PAGE_FRAGMENT_ELEM + "meaning_delete_confirmation";
 			case "rus_meaning_lexemes":
-				LexemeDeleteConfirmation meaningLexemesDeleteConfirmation = complexOpService.validateLexemeAndMeaningLexemesDelete(id, LANGUAGE_CODE_RUS, userRole);
+				LexemeDeleteConfirmation meaningLexemesDeleteConfirmation = complexOpService.validateLexemeAndMeaningLexemesDelete(id, user);
 				model.addAttribute("lexemeDeleteConfirmation", meaningLexemesDeleteConfirmation);
 				return COMPONENTS_PAGE + PAGE_FRAGMENT_ELEM + "lexeme_delete_confirmation";
 			}

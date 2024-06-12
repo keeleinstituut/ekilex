@@ -110,7 +110,6 @@ public class EkilexPermissionEvaluator implements PermissionEvaluator, PermConst
 		return limitedAccessPermExists;
 	}
 
-	@Transactional
 	public boolean isSynPageAccessPermitted(Authentication authentication) {
 
 		EkiUser user = (EkiUser) authentication.getPrincipal();
@@ -118,10 +117,17 @@ public class EkilexPermissionEvaluator implements PermissionEvaluator, PermConst
 		if (userRole == null) {
 			return false;
 		}
-		if (userRole.isSuperiorPermission()) {
+		if (AuthorityOperation.READ.equals(userRole.getAuthOperation())) {
 			return false;
 		}
-		if (AuthorityOperation.READ.equals(userRole.getAuthOperation())) {
+		return true;
+	}
+
+	public boolean isUserRoleSelected(Authentication authentication) {
+
+		EkiUser user = (EkiUser) authentication.getPrincipal();
+		DatasetPermission userRole = user.getRecentRole();
+		if (userRole == null) {
 			return false;
 		}
 		return true;
@@ -140,16 +146,17 @@ public class EkilexPermissionEvaluator implements PermissionEvaluator, PermConst
 
 	// dataset crud
 
+	@Transactional
 	public boolean isDatasetCrudGranted(Principal principal, String crudRoleDataset, String datasetCode) {
 
 		EkiUser user = (EkiUser) principal;
+		if (user.isMaster()) {
+			return true;
+		}
 		Long userId = user.getId();
 		DatasetPermission crudRole = getCrudRole(userId, crudRoleDataset);
 		if (crudRole == null) {
 			return false;
-		}
-		if (crudRole.isSuperiorPermission()) {
-			return true;
 		}
 		if (crudRole.isSuperiorDataset()) {
 			return true;
@@ -164,13 +171,13 @@ public class EkilexPermissionEvaluator implements PermissionEvaluator, PermConst
 	public boolean isSourceCrudGranted(Authentication authentication, String crudRoleDataset, Long sourceId) {
 
 		EkiUser user = (EkiUser) authentication.getPrincipal();
+		if (user.isMaster()) {
+			return true;
+		}
 		Long userId = user.getId();
 		DatasetPermission crudRole = getCrudRole(userId, crudRoleDataset);
 		if (crudRole == null) {
 			return false;
-		}
-		if (crudRole.isSuperiorPermission()) {
-			return true;
 		}
 		if (crudRole.isSuperiorDataset()) {
 			return true;
@@ -183,13 +190,13 @@ public class EkilexPermissionEvaluator implements PermissionEvaluator, PermConst
 	public boolean isSourcePropertyCrudGranted(Authentication authentication, String crudRoleDataset, Long sourcePropertyId) {
 
 		EkiUser user = (EkiUser) authentication.getPrincipal();
+		if (user.isMaster()) {
+			return true;
+		}
 		Long userId = user.getId();
 		DatasetPermission crudRole = getCrudRole(userId, crudRoleDataset);
 		if (crudRole == null) {
 			return false;
-		}
-		if (crudRole.isSuperiorPermission()) {
-			return true;
 		}
 		if (crudRole.isSuperiorDataset()) {
 			return true;
@@ -209,13 +216,13 @@ public class EkilexPermissionEvaluator implements PermissionEvaluator, PermConst
 	public boolean isSourceLinkCrudGranted(Principal principal, String crudRoleDataset, SourceLink sourceLink) {
 
 		EkiUser user = (EkiUser) principal;
+		if (user.isMaster()) {
+			return true;
+		}
 		Long userId = user.getId();
 		DatasetPermission crudRole = getCrudRole(userId, crudRoleDataset);
 		if (crudRole == null) {
 			return false;
-		}
-		if (crudRole.isSuperiorPermission()) {
-			return true;
 		}
 		ReferenceOwner sourceLinkOwner = sourceLink.getOwner();
 		Long ownerId = sourceLink.getOwnerId();
@@ -230,17 +237,16 @@ public class EkilexPermissionEvaluator implements PermissionEvaluator, PermConst
 	}
 
 	@Transactional
-	public boolean isSourceLinkCrudGranted(
-			Principal principal, String crudRoleDataset, ReferenceOwner sourceLinkOwner, Long sourceLinkId) {
+	public boolean isSourceLinkCrudGranted(Principal principal, String crudRoleDataset, ReferenceOwner sourceLinkOwner, Long sourceLinkId) {
 
 		EkiUser user = (EkiUser) principal;
+		if (user.isMaster()) {
+			return true;
+		}
 		Long userId = user.getId();
 		DatasetPermission crudRole = getCrudRole(userId, crudRoleDataset);
 		if (crudRole == null) {
 			return false;
-		}
-		if (crudRole.isSuperiorPermission()) {
-			return true;
 		}
 		if (ReferenceOwner.FREEFORM.equals(sourceLinkOwner)) {
 			SourceLink sourceLink = sourceLinkDbService.getFreeformSourceLink(sourceLinkId);
@@ -259,6 +265,7 @@ public class EkilexPermissionEvaluator implements PermissionEvaluator, PermConst
 	}
 
 	private boolean isFreeformSourceLinkCrudGranted(Long userId, DatasetPermission crudRole, Long ownerId) {
+
 		FreeformOwner freeformOwner = sourceLinkDbService.getFreeformOwner(ownerId);
 		ActivityEntity entity = freeformOwner.getEntity();
 		Long entityId = freeformOwner.getEntityId();
@@ -278,18 +285,15 @@ public class EkilexPermissionEvaluator implements PermissionEvaluator, PermConst
 	public boolean isWordCreateGranted(Principal principal, String crudRoleDataset, Word word) {
 
 		EkiUser user = (EkiUser) principal;
+		if (user.isMaster()) {
+			return true;
+		}
 		Long userId = user.getId();
 		DatasetPermission crudRole = getCrudRole(userId, crudRoleDataset);
 		if (crudRole == null) {
 			return false;
 		}
 		String lexemeDataset = word.getLexemeDataset();
-		if (StringUtils.equals(lexemeDataset, DATASET_XXX)) {
-			return false;
-		}
-		if (crudRole.isSuperiorPermission()) {
-			return true;
-		}
 		if (StringUtils.equals(lexemeDataset, crudRoleDataset)) {
 			return true;
 		}
@@ -317,13 +321,13 @@ public class EkilexPermissionEvaluator implements PermissionEvaluator, PermConst
 			return true;
 		}
 		EkiUser user = (EkiUser) principal;
+		if (user.isMaster()) {
+			return true;
+		}
 		Long userId = user.getId();
 		DatasetPermission crudRole = getCrudRole(userId, crudRoleDataset);
 		if (crudRole == null) {
 			return false;
-		}
-		if (crudRole.isSuperiorPermission()) {
-			return true;
 		}
 		boolean isGranted = permissionDbService.isGrantedForWord(userId, crudRole, wordId, AUTH_ITEM_DATASET, AUTH_OPS_CRUD);
 		return isGranted;
@@ -362,13 +366,13 @@ public class EkilexPermissionEvaluator implements PermissionEvaluator, PermConst
 			return true;
 		}
 		EkiUser user = (EkiUser) principal;
+		if (user.isMaster()) {
+			return true;
+		}
 		Long userId = user.getId();
 		DatasetPermission crudRole = getCrudRole(userId, crudRoleDataset);
 		if (crudRole == null) {
 			return false;
-		}
-		if (crudRole.isSuperiorPermission()) {
-			return true;
 		}
 		boolean isGranted = permissionDbService.isGrantedForLexeme(userId, crudRole, lexemeId, AUTH_ITEM_DATASET, AUTH_OPS_CRUD);
 		return isGranted;
@@ -388,13 +392,13 @@ public class EkilexPermissionEvaluator implements PermissionEvaluator, PermConst
 			return true;
 		}
 		EkiUser user = (EkiUser) principal;
+		if (user.isMaster()) {
+			return true;
+		}
 		Long userId = user.getId();
 		DatasetPermission crudRole = getCrudRole(userId, crudRoleDataset);
 		if (crudRole == null) {
 			return false;
-		}
-		if (crudRole.isSuperiorPermission()) {
-			return true;
 		}
 		boolean isGranted = permissionDbService.isGrantedForMeaning(userId, crudRole, meaningId, AUTH_ITEM_DATASET, AUTH_OPS_CRUD);
 		return isGranted;

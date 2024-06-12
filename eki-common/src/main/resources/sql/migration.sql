@@ -23,6 +23,48 @@ create index news_section_news_article_id_idx on news_section(news_article_id);
 
 update language_label set value = 'lt' where code = 'lit' and type = 'iso2';
 
+-- puuduva artikli sisu agregeerimine kustutamiste tegevuslogides
+
+update
+	activity_log al
+set
+	prev_data = alc.missing_prev_data
+from
+	(
+	select
+		al1.id,
+		(
+		select
+			al2.curr_data
+		from
+			activity_log al2
+		where
+			al2.entity_name = al1.entity_name
+			and al2.entity_id = al1.entity_id
+			and al2.curr_data is not null
+			and al2.curr_data != '{}'
+		order by
+			al2.event_on desc
+		limit 1
+	) missing_prev_data
+	from
+		activity_log al1
+	where
+		al1.funct_name in ('deleteMeaning', 'deleteWord')
+		and al1.prev_data = '{}'
+	) alc
+where
+	al.id = alc.id
+	and alc.missing_prev_data is not null
+;
+
+-- kasutaja super sõnakogu rolli kolimine atribuudiks
+
+update eki_user eu set is_master = exists(select dp.id from dataset_permission dp where dp.user_id = eu.id and dp.dataset_code = 'xxx');
+update eki_user_profile eup set recent_dataset_permission_id = null where exists (select dp.id from dataset_permission dp where dp.dataset_code = 'xxx' and dp.id = eup.recent_dataset_permission_id);
+delete from dataset_permission where dataset_code = 'xxx';
+delete from dataset where code = 'xxx';
+
 -- kollokatsioonide kolimine
 
 drop table collocation_freeform cascade;

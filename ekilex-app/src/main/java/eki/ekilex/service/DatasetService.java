@@ -49,7 +49,6 @@ public class DatasetService implements SystemConstant, GlobalConstant {
 	@Transactional
 	public List<Dataset> getDatasets() {
 		List<Dataset> datasets = datasetDbService.getDatasets();
-		datasets = datasetUtil.removePlaceholderDataset(datasets);
 		datasets = datasetUtil.resortPriorityDatasets(datasets);
 		return datasets;
 	}

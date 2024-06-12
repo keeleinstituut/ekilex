@@ -26,12 +26,12 @@ import eki.common.constant.SourceType;
 import eki.ekilex.constant.ResponseStatus;
 import eki.ekilex.constant.WebConstant;
 import eki.ekilex.data.DatasetPermission;
+import eki.ekilex.data.EkiUser;
 import eki.ekilex.data.Response;
 import eki.ekilex.data.Source;
 import eki.ekilex.data.SourceProperty;
 import eki.ekilex.data.SourceRequest;
 import eki.ekilex.data.SourceSearchResult;
-import eki.ekilex.data.UserContextData;
 import eki.ekilex.service.SourceLinkService;
 import eki.ekilex.service.SourceService;
 import eki.ekilex.web.bean.SessionBean;
@@ -80,8 +80,8 @@ public class SourceEditController extends AbstractMutableDataPageController {
 			@RequestParam("valueText") String valueText,
 			Model model) throws Exception {
 
-		UserContextData userContextData = getUserContextData();
-		DatasetPermission userRole = userContextData.getUserRole();
+		EkiUser user = userContext.getUser();
+		DatasetPermission userRole = user.getRecentRole();
 		String roleDatasetCode = userRole.getDatasetCode();
 		valueText = valueUtil.trimAndCleanAndRemoveHtmlAndLimit(valueText);
 
@@ -89,7 +89,7 @@ public class SourceEditController extends AbstractMutableDataPageController {
 		logger.debug("Updating source property with id: {}, source id: {}", sourcePropertyId, sourceId);
 
 		sourceService.updateSourceProperty(sourcePropertyId, valueText, roleDatasetCode);
-		Source source = sourceService.getSource(sourceId, userRole);
+		Source source = sourceService.getSource(sourceId, user);
 		model.addAttribute("source", source);
 
 		return SOURCE_COMPONENTS_PAGE + PAGE_FRAGMENT_ELEM + SOURCE_SEARCH_RESULT;
@@ -104,13 +104,13 @@ public class SourceEditController extends AbstractMutableDataPageController {
 
 		logger.debug("Creating property for source with id: {}", sourceId);
 
-		UserContextData userContextData = getUserContextData();
-		DatasetPermission userRole = userContextData.getUserRole();
+		EkiUser user = userContext.getUser();
+		DatasetPermission userRole = user.getRecentRole();
 		String roleDatasetCode = userRole.getDatasetCode();
 
 		valueText = valueUtil.trimAndCleanAndRemoveHtmlAndLimit(valueText);
 		sourceService.createSourceProperty(sourceId, type, valueText, roleDatasetCode);
-		Source source = sourceService.getSource(sourceId, userRole);
+		Source source = sourceService.getSource(sourceId, user);
 		model.addAttribute("source", source);
 
 		return SOURCE_COMPONENTS_PAGE + PAGE_FRAGMENT_ELEM + SOURCE_SEARCH_RESULT;
@@ -119,14 +119,14 @@ public class SourceEditController extends AbstractMutableDataPageController {
 	@GetMapping(DELETE_SOURCE_PROPERTY_URI + "/{sourcePropertyId}")
 	public String deleteSourceProperty(@PathVariable("sourcePropertyId") Long sourcePropertyId, Model model) throws Exception {
 
-		UserContextData userContextData = getUserContextData();
-		DatasetPermission userRole = userContextData.getUserRole();
+		EkiUser user = userContext.getUser();
+		DatasetPermission userRole = user.getRecentRole();
 		String roleDatasetCode = userRole.getDatasetCode();
 		Long sourceId = sourceService.getSourceId(sourcePropertyId);
 		logger.debug("Deleting source property with id: {}, source id: {}", sourcePropertyId, sourceId);
 
 		sourceService.deleteSourceProperty(sourcePropertyId, roleDatasetCode);
-		Source source = sourceService.getSource(sourceId, userRole);
+		Source source = sourceService.getSource(sourceId, user);
 		model.addAttribute("source", source);
 
 		return SOURCE_COMPONENTS_PAGE + PAGE_FRAGMENT_ELEM + SOURCE_SEARCH_RESULT;
@@ -144,13 +144,13 @@ public class SourceEditController extends AbstractMutableDataPageController {
 
 		logger.debug("Updating source type, source id: {}", sourceId);
 
-		UserContextData userContextData = getUserContextData();
-		DatasetPermission userRole = userContextData.getUserRole();
+		EkiUser user = userContext.getUser();
+		DatasetPermission userRole = user.getRecentRole();
 		String roleDatasetCode = userRole.getDatasetCode();
 		valuePrese = valueUtil.trimAndCleanAndRemoveHtmlAndLimit(valuePrese);
 
 		sourceService.updateSource(sourceId, type, name, valuePrese, comment, isPublic, roleDatasetCode);
-		Source source = sourceService.getSource(sourceId, userRole);
+		Source source = sourceService.getSource(sourceId, user);
 		model.addAttribute("source", source);
 
 		return SOURCE_COMPONENTS_PAGE + PAGE_FRAGMENT_ELEM + SOURCE_SEARCH_RESULT;
@@ -233,9 +233,8 @@ public class SourceEditController extends AbstractMutableDataPageController {
 			@RequestParam("previousSearch") String previousSearch,
 			Model model) {
 
-		UserContextData userContextData = getUserContextData();
-		DatasetPermission userRole = userContextData.getUserRole();
-		Source targetSource = sourceService.getSource(sourceId, userRole);
+		EkiUser user = userContext.getUser();
+		Source targetSource = sourceService.getSource(sourceId, user);
 		model.addAttribute("targetSource", targetSource);
 		model.addAttribute("previousSearch", previousSearch);
 
@@ -249,11 +248,9 @@ public class SourceEditController extends AbstractMutableDataPageController {
 			@RequestParam("previousSearch") String previousSearch,
 			Model model) {
 
-		// TODO remove join sources functionality after removing source attributes?
-		UserContextData userContextData = getUserContextData();
-		DatasetPermission userRole = userContextData.getUserRole();
-		Source targetSource = sourceService.getSource(targetSourceId, userRole);
-		List<Source> sources = sourceService.getSourcesExcludingOne(searchFilter, targetSource, userRole);
+		EkiUser user = userContext.getUser();
+		Source targetSource = sourceService.getSource(targetSourceId, user);
+		List<Source> sources = sourceService.getSourcesExcludingOne(searchFilter, targetSource, user);
 		model.addAttribute("targetSource", targetSource);
 		model.addAttribute("sources", sources);
 		model.addAttribute("searchFilter", searchFilter);

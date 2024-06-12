@@ -26,7 +26,7 @@ public abstract class AbstractApiCudService extends AbstractCudService {
 	@Autowired
 	protected SourceLinkDbService sourceLinkDbService;
 
-	protected void createOrUpdateDefinition(Definition definition, Long meaningId, String datasetCode, Complexity complexity, String roleDatasetCode) throws Exception {
+	protected void createOrUpdateDefinition(Definition definition, Long meaningId, String datasetCode, Complexity defaultComplexity, Boolean defaultPublicity, String roleDatasetCode) throws Exception {
 
 		Long definitionId = definition.getDefinitionId();
 		String definitionValue = StringUtils.trim(definition.getValue());
@@ -41,11 +41,11 @@ public abstract class AbstractApiCudService extends AbstractCudService {
 		ActivityLogData activityLog;
 		if (definitionId == null) {
 			activityLog = activityLogService.prepareActivityLog("createDefinition", meaningId, ActivityOwner.MEANING, roleDatasetCode, MANUAL_EVENT_ON_UPDATE_ENABLED);
-			definitionId = cudDbService.createDefinition(meaningId, definitionValue, definitionValue, definitionLang, definitionTypeCode, complexity, PUBLICITY_PUBLIC);
+			definitionId = cudDbService.createDefinition(meaningId, definitionValue, definitionValue, definitionLang, definitionTypeCode, defaultComplexity, defaultPublicity);
 			cudDbService.createDefinitionDataset(definitionId, datasetCode);
 		} else {
 			activityLog = activityLogService.prepareActivityLog("updateDefinition", meaningId, ActivityOwner.MEANING, roleDatasetCode, MANUAL_EVENT_ON_UPDATE_ENABLED);
-			cudDbService.updateDefinition(definitionId, definitionValue, definitionValue, definitionLang, definitionTypeCode, complexity, PUBLICITY_PUBLIC);
+			cudDbService.updateDefinition(definitionId, definitionValue, definitionValue, definitionLang, definitionTypeCode, null, null);
 		}
 		activityLogService.createActivityLog(activityLog, definitionId, ActivityEntity.DEFINITION);
 
@@ -64,23 +64,26 @@ public abstract class AbstractApiCudService extends AbstractCudService {
 		}
 	}
 
-	protected void createOrUpdateUsage(Freeform usage, Long lexemeId, boolean defaultPublicity, String roleDatasetCode) throws Exception {
+	protected void createOrUpdateUsage(Freeform usage, Long lexemeId, Complexity defaultComplexity, Boolean defaultPublicity, String roleDatasetCode) throws Exception {
 
 		String userName = userContext.getUserName();
 		Long usageId = usage.getId();
 		String usageValue = usage.getValue();
 		String usageLang = usage.getLang();
-		boolean isUsagePublic = isPublic(usage.getPublicity(), defaultPublicity);
+		Boolean publicity = usage.getPublicity();
 		List<SourceLink> usageSourceLinks = usage.getSourceLinks();
 
-		FreeForm freeform = initFreeform(FreeformType.USAGE, usageValue, usageLang, isUsagePublic);
-
+		FreeForm freeform;
 		ActivityLogData activityLog;
+
 		if (usageId == null) {
 			activityLog = activityLogService.prepareActivityLog("createUsage", lexemeId, ActivityOwner.LEXEME, roleDatasetCode, MANUAL_EVENT_ON_UPDATE_ENABLED);
+			boolean isUsagePublic = isPublic(publicity, defaultPublicity);
+			freeform = initFreeform(FreeformType.USAGE, usageValue, usageLang, defaultComplexity, isUsagePublic);
 			usageId = cudDbService.createLexemeFreeform(lexemeId, freeform, userName);
 		} else {
 			activityLog = activityLogService.prepareActivityLog("updateUsage", lexemeId, ActivityOwner.LEXEME, roleDatasetCode, MANUAL_EVENT_ON_UPDATE_ENABLED);
+			freeform = initFreeform(FreeformType.USAGE, usageValue, usageLang, null, publicity);
 			freeform.setId(usageId);
 			cudDbService.updateFreeform(freeform, userName);
 		}
@@ -105,14 +108,14 @@ public abstract class AbstractApiCudService extends AbstractCudService {
 		}
 	}
 
-	protected FreeForm initFreeform(FreeformType freeformType, String value, String lang, boolean isPublic) {
+	protected FreeForm initFreeform(FreeformType freeformType, String value, String lang, Complexity complexity, Boolean isPublic) {
 
 		FreeForm freeform = new FreeForm();
 		freeform.setType(freeformType);
 		freeform.setValueText(value);
 		freeform.setValuePrese(value);
 		freeform.setLang(lang);
-		freeform.setComplexity(Complexity.DETAIL);
+		freeform.setComplexity(complexity);
 		freeform.setPublic(isPublic);
 		return freeform;
 	}

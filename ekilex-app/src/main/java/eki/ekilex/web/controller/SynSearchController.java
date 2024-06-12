@@ -5,8 +5,6 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
 import org.springframework.http.HttpStatus;
@@ -18,7 +16,7 @@ import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.client.HttpClientErrorException;
 
 import eki.ekilex.constant.WebConstant;
-import eki.ekilex.data.DatasetPermission;
+import eki.ekilex.data.EkiUser;
 import eki.ekilex.data.SearchFilter;
 import eki.ekilex.data.SearchUriData;
 import eki.ekilex.data.UserContextData;
@@ -29,8 +27,6 @@ import eki.ekilex.service.FullSynSearchService;
 @Controller
 @SessionAttributes(WebConstant.SESSION_BEAN)
 public class SynSearchController extends AbstractPrivateSearchController {
-
-	private static final Logger logger = LoggerFactory.getLogger(SynSearchController.class);
 
 	@Autowired
 	private FullSynSearchService fullSynSearchService;
@@ -51,7 +47,7 @@ public class SynSearchController extends AbstractPrivateSearchController {
 		boolean noLimit = false;
 
 		UserContextData userContextData = getUserContextData();
-		DatasetPermission userRole = userContextData.getUserRole();
+		EkiUser user = userContextData.getUser();
 		List<String> tagNames = userContextData.getTagNames();
 		String userRoleDatasetCode = userContextData.getUserRoleDatasetCode();
 		if (StringUtils.isEmpty(userRoleDatasetCode)) {
@@ -69,9 +65,9 @@ public class SynSearchController extends AbstractPrivateSearchController {
 
 		WordsResult wordsResult;
 		if (StringUtils.equals(SEARCH_MODE_DETAIL, searchMode)) {
-			wordsResult = fullSynSearchService.getWords(detailSearchFilter, datasetCodes, userRole, tagNames, offset, DEFAULT_MAX_RESULTS_LIMIT, noLimit);
+			wordsResult = fullSynSearchService.getWords(detailSearchFilter, datasetCodes, tagNames, user, offset, DEFAULT_MAX_RESULTS_LIMIT, noLimit);
 		} else {
-			wordsResult = fullSynSearchService.getWords(simpleSearchFilter, datasetCodes, userRole, tagNames, offset, DEFAULT_MAX_RESULTS_LIMIT, noLimit);
+			wordsResult = fullSynSearchService.getWords(simpleSearchFilter, datasetCodes, tagNames, user, offset, DEFAULT_MAX_RESULTS_LIMIT, noLimit);
 		}
 
 		model.addAttribute("wordsResult", wordsResult);

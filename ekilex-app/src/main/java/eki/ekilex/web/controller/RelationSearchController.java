@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.SessionAttributes;
 
 import eki.ekilex.constant.WebConstant;
-import eki.ekilex.data.DatasetPermission;
+import eki.ekilex.data.EkiUser;
 import eki.ekilex.data.UserContextData;
 import eki.ekilex.data.WordLexeme;
 import eki.ekilex.service.LexSearchService;
@@ -46,11 +46,11 @@ public class RelationSearchController extends AbstractMutableDataPageController 
 
 		String lexemeDatasetCode = lookupService.getLexemeDatasetCode(lexemeId);
 		UserContextData userContextData = getUserContextData();
-		DatasetPermission userRole = userContextData.getUserRole();
+		EkiUser user = userContextData.getUser();
 		List<String> tagNames = userContextData.getTagNames();
 		List<String> datasetCodes = Arrays.asList(lexemeDatasetCode);
 
-		List<WordLexeme> lexemes = lexSearchService.getWordLexemesWithDefinitionsData(searchFilter, datasetCodes, userRole, tagNames);
+		List<WordLexeme> lexemes = lexSearchService.getWordLexemesWithDefinitionsData(searchFilter, datasetCodes, tagNames, user);
 
 		model.addAttribute("lexemesFoundBySearch", lexemes);
 
@@ -68,11 +68,11 @@ public class RelationSearchController extends AbstractMutableDataPageController 
 		searchFilter = valueUtil.trimAndCleanAndRemoveHtmlAndLimit(searchFilter);
 
 		UserContextData userContextData = getUserContextData();
-		DatasetPermission userRole = userContextData.getUserRole();
+		EkiUser user = userContextData.getUser();
 		List<String> tagNames = userContextData.getTagNames();
 		List<String> datasetCodes = userContextData.getPreferredDatasetCodes();
 
-		List<WordLexeme> lexemes = lexSearchService.getWordLexemesWithDefinitionsData(searchFilter, datasetCodes, userRole, tagNames);
+		List<WordLexeme> lexemes = lexSearchService.getWordLexemesWithDefinitionsData(searchFilter, datasetCodes, tagNames, user);
 
 		List<WordLexeme> lexemesFilteredByMeaning = new ArrayList<>();
 		List<Long> distinctMeanings = new ArrayList<>();

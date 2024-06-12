@@ -29,12 +29,11 @@ public class UserProfileUtil implements PermConstant {
 
 	public EkiUserRoleData getUserRoleData() {
 
-		EkiUserRoleData ekiUserRoleData = new EkiUserRoleData();
-
 		EkiUser user = userContext.getUser();
 		DatasetPermission userRole = user.getRecentRole();
 
 		boolean isAdmin = user.isAdmin();
+		boolean isMaster = user.isMaster();
 		boolean isRoleSelected = userRole != null;
 		boolean isCrudRoleSelected = isCrudRoleSelected(userRole);
 		boolean isDatasetOwnerOrAdmin = isDatasetOwnerOrAdmin(user);
@@ -42,14 +41,17 @@ public class UserProfileUtil implements PermConstant {
 		boolean isRoleChangeEnabled = isRoleChangeEnabled(user);
 		boolean isLexemeActiveTagChangeEnabled = isLexemeActiveTagChangeEnabled(userRole);
 
+		EkiUserRoleData ekiUserRoleData = new EkiUserRoleData();
 		ekiUserRoleData.setUserRole(userRole);
 		ekiUserRoleData.setAdmin(isAdmin);
+		ekiUserRoleData.setMaster(isMaster);
 		ekiUserRoleData.setRoleSelected(isRoleSelected);
 		ekiUserRoleData.setCrudRoleSelected(isCrudRoleSelected);
 		ekiUserRoleData.setDatasetOwnerOrAdmin(isDatasetOwnerOrAdmin);
 		ekiUserRoleData.setDatasetCrudOwnerOrAdmin(isDatasetCrudOwnerOrAdmin);
 		ekiUserRoleData.setRoleChangeEnabled(isRoleChangeEnabled);
 		ekiUserRoleData.setLexemeActiveTagChangeEnabled(isLexemeActiveTagChangeEnabled);
+
 		return ekiUserRoleData;
 	}
 

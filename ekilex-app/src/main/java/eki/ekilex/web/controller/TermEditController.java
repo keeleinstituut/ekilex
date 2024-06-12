@@ -78,8 +78,7 @@ public class TermEditController extends AbstractMutableDataPageController {
 	public String search(@PathVariable("targetMeaningId") Long targetMeaningId, @RequestParam(name = "searchFilter", required = false) String searchFilter,
 			Model model, @ModelAttribute(name = SESSION_BEAN) SessionBean sessionBean) {
 
-		UserContextData userContextData = getUserContextData();
-		DatasetPermission userRole = userContextData.getUserRole();
+		EkiUser user = userContext.getUser();
 		List<String> userPrefDatasetCodes = getUserPreferredDatasetCodes();
 		List<ClassifierSelect> languagesOrder = sessionBean.getLanguagesOrder();
 
@@ -88,8 +87,8 @@ public class TermEditController extends AbstractMutableDataPageController {
 			searchFilter = targetMeaningFirstWord;
 		}
 
-		Meaning targetMeaning = lookupService.getMeaningOfJoinTarget(userRole, targetMeaningId, languagesOrder);
-		List<Meaning> sourceMeanings = lookupService.getMeaningsOfJoinCandidates(userRole, userPrefDatasetCodes, searchFilter, languagesOrder, targetMeaningId);
+		Meaning targetMeaning = lookupService.getMeaningOfJoinTarget(user, targetMeaningId, languagesOrder);
+		List<Meaning> sourceMeanings = lookupService.getMeaningsOfJoinCandidates(user, userPrefDatasetCodes, searchFilter, languagesOrder, targetMeaningId);
 
 		model.addAttribute("searchFilter", searchFilter);
 		model.addAttribute("targetMeaningId", targetMeaningId);
@@ -193,14 +192,13 @@ public class TermEditController extends AbstractMutableDataPageController {
 		String backUri = requestData.getBackUri();
 		boolean clearResults = requestData.isClearResults();
 
-		UserContextData userContextData = getUserContextData();
-		DatasetPermission userRole = userContextData.getUserRole();
+		EkiUser user = userContext.getUser();
 		boolean isManualEventOnUpdateEnabled = sessionBean.isManualEventOnUpdateEnabled();
 		String roleDatasetCode = getDatasetCodeFromRole();
 		model.addAttribute("backUri", backUri);
 
 		if (clearResults || StringUtils.isAnyBlank(wordValue, datasetCode, language)) {
-			TermCreateWordAndMeaningDetails details = lookupService.getDetailsForMeaningAndWordCreate(userRole, wordValue, language, datasetCode, false);
+			TermCreateWordAndMeaningDetails details = lookupService.getDetailsForMeaningAndWordCreate(user, wordValue, language, datasetCode, false);
 			model.addAttribute("details", details);
 			return TERM_CREATE_WORD_AND_MEANING_PAGE;
 		}
@@ -220,8 +218,9 @@ public class TermEditController extends AbstractMutableDataPageController {
 			return redirectToMeaning;
 		}
 
-		TermCreateWordAndMeaningDetails details = lookupService.getDetailsForMeaningAndWordCreate(userRole, wordValue, language, datasetCode, true);
+		TermCreateWordAndMeaningDetails details = lookupService.getDetailsForMeaningAndWordCreate(user, wordValue, language, datasetCode, true);
 		model.addAttribute("details", details);
+
 		return TERM_CREATE_WORD_AND_MEANING_PAGE;
 	}
 
@@ -257,14 +256,13 @@ public class TermEditController extends AbstractMutableDataPageController {
 		String backUri = requestData.getBackUri();
 		boolean clearResults = requestData.isClearResults();
 
-		UserContextData userContextData = getUserContextData();
-		DatasetPermission userRole = userContextData.getUserRole();
+		EkiUser user = userContext.getUser();
 		boolean isManualEventOnUpdateEnabled = sessionBean.isManualEventOnUpdateEnabled();
 		String roleDatasetCode = getDatasetCodeFromRole();
 		model.addAttribute("backUri", backUri);
 
 		if (clearResults || StringUtils.isAnyBlank(wordValue, datasetCode, language)) {
-			TermCreateWordAndMeaningDetails details = lookupService.getDetailsForWordCreate(userRole, meaningId, wordValue, language, false);
+			TermCreateWordAndMeaningDetails details = lookupService.getDetailsForWordCreate(user, meaningId, wordValue, language, false);
 			model.addAttribute("details", details);
 			return TERM_CREATE_WORD_PAGE;
 		}
@@ -298,8 +296,9 @@ public class TermEditController extends AbstractMutableDataPageController {
 			return REDIRECT_PREF + backUri;
 		}
 
-		TermCreateWordAndMeaningDetails details = lookupService.getDetailsForWordCreate(userRole, meaningId, wordValue, language, true);
+		TermCreateWordAndMeaningDetails details = lookupService.getDetailsForWordCreate(user, meaningId, wordValue, language, true);
 		model.addAttribute("details", details);
+
 		return TERM_CREATE_WORD_PAGE;
 	}
 
@@ -386,12 +385,12 @@ public class TermEditController extends AbstractMutableDataPageController {
 			Model model) {
 
 		EkiUser user = userContext.getUser();
-		DatasetPermission userRole = user.getRecentRole();
 		wordValuePrese = valueUtil.trimAndCleanAndRemoveHtmlAndLimit(wordValuePrese);
 
-		TermUpdateWordDetails details = lookupService.getDetailsForWordUpdate(userRole, lexemeId, wordValuePrese, language);
+		TermUpdateWordDetails details = lookupService.getDetailsForWordUpdate(user, lexemeId, wordValuePrese, language);
 		model.addAttribute("backUri", backUri);
 		model.addAttribute("details", details);
+
 		return TERM_UPDATE_WORD_PAGE;
 	}
 

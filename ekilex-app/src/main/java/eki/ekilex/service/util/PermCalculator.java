@@ -12,6 +12,7 @@ import eki.ekilex.data.AbstractPublicEntity;
 import eki.ekilex.data.DatasetPermission;
 import eki.ekilex.data.Definition;
 import eki.ekilex.data.DefinitionNote;
+import eki.ekilex.data.EkiUser;
 import eki.ekilex.data.Forum;
 import eki.ekilex.data.Lexeme;
 import eki.ekilex.data.LexemeNote;
@@ -32,124 +33,95 @@ public class PermCalculator implements PermConstant {
 	@Autowired
 	private PermissionDbService permissionDbService;
 
-	public void applyCrud(DatasetPermission userRole, List<? extends AbstractCrudEntity> crudEntities) {
-
-		if (userRole == null) {
-			return;
-		}
-
-		Long userId = userRole.getUserId();
-		AuthorityOperation authOperation = userRole.getAuthOperation();
-		boolean isCrudRole = AUTH_OPS_CRUD.contains(authOperation.name());
-
-		if (!isCrudRole) {
-			return;
-		}
+	public void applyCrud(EkiUser user, List<? extends AbstractCrudEntity> crudEntities) {
 
 		for (AbstractCrudEntity crudEntity : crudEntities) {
 
 			boolean isCrudGrant = false;
 			boolean isAnyGrant = false;
 
-			if (userRole.isSuperiorPermission()) {
+			Long userId = user.getId();
+			DatasetPermission userRole = user.getRecentRole();
+
+			if (user.isMaster()) {
 				isCrudGrant = isAnyGrant = true;
-			} else if (crudEntity instanceof Definition) {
-				Definition definition = (Definition) crudEntity;
-				Long definitionId = definition.getId();
-				isCrudGrant = permissionDbService.isGrantedForDefinition(userId, userRole, definitionId, AUTH_ITEM_DATASET, AUTH_OPS_CRUD);
-			} else if (crudEntity instanceof Usage) {
-				Usage usage = (Usage) crudEntity;
-				Long usageId = usage.getId();
-				isCrudGrant = permissionDbService.isGrantedForUsage(userId, userRole, usageId, AUTH_ITEM_DATASET, AUTH_OPS_CRUD);
-			} else if (crudEntity instanceof Source) {
-				Source source = (Source) crudEntity;
-				Long sourceId = source.getId();
-				if (userRole.isSuperiorDataset()) {
-					isCrudGrant = true;
-				} else {
-					isCrudGrant = permissionDbService.isGrantedForSource(userId, userRole, sourceId, AUTH_ITEM_DATASET, AUTH_OPS_CRUD);
-				}
-			} else if (crudEntity instanceof Meaning) {
-				Meaning meaning = (Meaning) crudEntity;
-				Long meaningId = meaning.getMeaningId();
-				isAnyGrant = permissionDbService.isGrantedForMeaningByAnyLexeme(userId, meaningId, AUTH_ITEM_DATASET, AUTH_OPS_CRUD);
-			} else if (crudEntity instanceof TypeMtLexeme) {
-				TypeMtLexeme lexeme = (TypeMtLexeme) crudEntity;
-				Long lexemeId = lexeme.getLexemeId();
-				isCrudGrant = permissionDbService.isGrantedForLexeme(userId, userRole, lexemeId, AUTH_ITEM_DATASET, AUTH_OPS_CRUD);
-			} else if (crudEntity instanceof TypeMtDefinition) {
-				TypeMtDefinition definition = (TypeMtDefinition) crudEntity;
-				Long definitionId = definition.getDefinitionId();
-				isCrudGrant = permissionDbService.isGrantedForDefinition(userId, userRole, definitionId, AUTH_ITEM_DATASET, AUTH_OPS_CRUD);
-			} else if (crudEntity instanceof TypeMtLexemeFreeform) {
-				TypeMtLexemeFreeform usage = (TypeMtLexemeFreeform) crudEntity;
-				Long usageId = usage.getFreeformId();
-				isCrudGrant = permissionDbService.isGrantedForUsage(userId, userRole, usageId, AUTH_ITEM_DATASET, AUTH_OPS_CRUD);
-			}
+			} else if (userRole == null) {
+				isCrudGrant = isAnyGrant = false;
+			} else {
 
-		crudEntity.setCrudGrant(isCrudGrant);
-			crudEntity.setAnyGrant(isAnyGrant);
-		}
-	}
+				AuthorityOperation authOperation = userRole.getAuthOperation();
+				boolean isCrudRole = AUTH_OPS_CRUD.contains(authOperation.name());
 
-	public void applyCrud(DatasetPermission userRole, boolean isAdmin, List<? extends AbstractCrudEntity> crudEntities) {
-
-		if (userRole == null) {
-			return;
-		}
-
-		Long userId = userRole.getUserId();
-		AuthorityOperation authOperation = userRole.getAuthOperation();
-		boolean isCrudRole = AUTH_OPS_CRUD.contains(authOperation.name());
-
-		if (!isCrudRole) {
-			return;
-		}
-
-		for (AbstractCrudEntity crudEntity : crudEntities) {
-			boolean isCrudGrant = false;
-
-			if (crudEntity instanceof Forum) {
-				if (isAdmin) {
-					isCrudGrant = true;
-				} else {
-					Forum forum = (Forum) crudEntity;
-					Long creatorId = forum.getCreatorId();
-					if (userId.equals(creatorId)) {
+				if (!isCrudRole) {
+					isCrudGrant = isAnyGrant = false;
+				} else if (crudEntity instanceof Definition) {
+					Definition definition = (Definition) crudEntity;
+					Long definitionId = definition.getId();
+					isCrudGrant = permissionDbService.isGrantedForDefinition(userId, userRole, definitionId, AUTH_ITEM_DATASET, AUTH_OPS_CRUD);
+				} else if (crudEntity instanceof Usage) {
+					Usage usage = (Usage) crudEntity;
+					Long usageId = usage.getId();
+					isCrudGrant = permissionDbService.isGrantedForUsage(userId, userRole, usageId, AUTH_ITEM_DATASET, AUTH_OPS_CRUD);
+				} else if (crudEntity instanceof Source) {
+					Source source = (Source) crudEntity;
+					Long sourceId = source.getId();
+					if (userRole.isSuperiorDataset()) {
 						isCrudGrant = true;
+					} else {
+						isCrudGrant = permissionDbService.isGrantedForSource(userId, userRole, sourceId, AUTH_ITEM_DATASET, AUTH_OPS_CRUD);
+					}
+				} else if (crudEntity instanceof Meaning) {
+					Meaning meaning = (Meaning) crudEntity;
+					Long meaningId = meaning.getMeaningId();
+					isAnyGrant = permissionDbService.isGrantedForMeaningByAnyLexeme(userId, meaningId, AUTH_ITEM_DATASET, AUTH_OPS_CRUD);
+				} else if (crudEntity instanceof TypeMtLexeme) {
+					TypeMtLexeme lexeme = (TypeMtLexeme) crudEntity;
+					Long lexemeId = lexeme.getLexemeId();
+					isCrudGrant = permissionDbService.isGrantedForLexeme(userId, userRole, lexemeId, AUTH_ITEM_DATASET, AUTH_OPS_CRUD);
+				} else if (crudEntity instanceof TypeMtDefinition) {
+					TypeMtDefinition definition = (TypeMtDefinition) crudEntity;
+					Long definitionId = definition.getDefinitionId();
+					isCrudGrant = permissionDbService.isGrantedForDefinition(userId, userRole, definitionId, AUTH_ITEM_DATASET, AUTH_OPS_CRUD);
+				} else if (crudEntity instanceof TypeMtLexemeFreeform) {
+					TypeMtLexemeFreeform usage = (TypeMtLexemeFreeform) crudEntity;
+					Long usageId = usage.getFreeformId();
+					isCrudGrant = permissionDbService.isGrantedForUsage(userId, userRole, usageId, AUTH_ITEM_DATASET, AUTH_OPS_CRUD);
+				} else if (crudEntity instanceof Forum) {
+					if (user.isAdmin()) {
+						isCrudGrant = true;
+					} else {
+						Forum forum = (Forum) crudEntity;
+						Long creatorId = forum.getCreatorId();
+						if (userId.equals(creatorId)) {
+							isCrudGrant = true;
+						}
 					}
 				}
 			}
 
 			crudEntity.setCrudGrant(isCrudGrant);
+			crudEntity.setAnyGrant(isAnyGrant);
 		}
 	}
 
-	public void applyCrud(DatasetPermission userRole, AbstractCrudEntity crudEntity) {
+	public void applyCrud(EkiUser user, AbstractCrudEntity crudEntity) {
 
-		if (userRole == null) {
-			return;
-		}
-
-		Long userId = userRole.getUserId();
-		AuthorityOperation authOperation = userRole.getAuthOperation();
-		boolean isCrudRole = AUTH_OPS_CRUD.contains(authOperation.name());
+		Long userId = user.getId();
+		DatasetPermission userRole = user.getRecentRole();
 
 		boolean isReadGrant = false;
 		boolean isCrudGrant = false;
 		boolean isSubGrant = false;
 		boolean isAnyGrant = false;
 
-		if (userRole.isSuperiorPermission()) {
-			isReadGrant = true;
-			if (isCrudRole) {
-				isCrudGrant = isSubGrant = isAnyGrant = true;
-			}
+		if (user.isMaster()) {
+			isReadGrant = isCrudGrant = isSubGrant = isAnyGrant = true;
+		} else if (userRole == null) {
+			// nothing
 		} else if (crudEntity instanceof Word) {
 			Word word = (Word) crudEntity;
 			Long wordId = word.getWordId();
-			boolean isMasterUser = permissionDbService.isMasterUser(userId);
-			isReadGrant = isMasterUser || permissionDbService.isGrantedForWord(userId, userRole, wordId, AUTH_ITEM_DATASET, AUTH_OPS_READ);
+			isReadGrant = permissionDbService.isGrantedForWord(userId, userRole, wordId, AUTH_ITEM_DATASET, AUTH_OPS_READ);
 			isCrudGrant = permissionDbService.isGrantedForWord(userId, userRole, wordId, AUTH_ITEM_DATASET, AUTH_OPS_CRUD);
 			isSubGrant = permissionDbService.isGrantedForWordByLexeme(userId, userRole, wordId, AUTH_ITEM_DATASET, AUTH_OPS_CRUD);
 		} else if (crudEntity instanceof Lexeme) {
@@ -163,8 +135,7 @@ public class PermCalculator implements PermConstant {
 		} else if (crudEntity instanceof Meaning) {
 			Meaning meaning = (Meaning) crudEntity;
 			Long meaningId = meaning.getMeaningId();
-			boolean isMasterUser = permissionDbService.isMasterUser(userId);
-			isReadGrant = isMasterUser || permissionDbService.isGrantedForMeaning(userId, userRole, meaningId, AUTH_ITEM_DATASET, AUTH_OPS_READ);
+			isReadGrant = permissionDbService.isGrantedForMeaning(userId, userRole, meaningId, AUTH_ITEM_DATASET, AUTH_OPS_READ);
 			isCrudGrant = permissionDbService.isGrantedForMeaning(userId, userRole, meaningId, AUTH_ITEM_DATASET, AUTH_OPS_CRUD);
 			isSubGrant = permissionDbService.isGrantedForMeaningByLexeme(userId, userRole, meaningId, AUTH_ITEM_DATASET, AUTH_OPS_CRUD);
 			isAnyGrant = permissionDbService.isGrantedForMeaningByAnyLexeme(userId, meaningId, AUTH_ITEM_DATASET, AUTH_OPS_CRUD);
@@ -184,17 +155,18 @@ public class PermCalculator implements PermConstant {
 		crudEntity.setAnyGrant(isAnyGrant);
 	}
 
-	public void filterVisibility(DatasetPermission userRole, List<? extends AbstractPublicEntity> publicEntities) {
+	public void filterVisibility(EkiUser user, List<? extends AbstractPublicEntity> publicEntities) {
 
+		Long userId = user.getId();
+		DatasetPermission userRole = user.getRecentRole();
+
+		if (user.isMaster()) {
+			return;
+		}
 		if (userRole == null) {
 			publicEntities.removeIf(entity -> !entity.isPublic());
 			return;
 		}
-		if (userRole.isSuperiorPermission()) {
-			return;
-		}
-
-		Long userId = userRole.getUserId();
 		publicEntities.removeIf(entity -> !isEntityVisible(userId, userRole, entity));
 	}
 

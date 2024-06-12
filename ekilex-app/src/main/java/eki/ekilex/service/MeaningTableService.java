@@ -112,32 +112,30 @@ public class MeaningTableService extends AbstractSearchService {
 	@Transactional
 	public MeaningTableRow getMeaningTableRow(Long meaningId, EkiUser user) {
 
-		DatasetPermission userRole = user.getRecentRole();
 		MeaningTableRow meaningTableRow = meaningTableDbService.getMeaningTableRow(meaningId);
 		aggregateMeaningTableRow(meaningTableRow);
-		applyCrud(meaningTableRow, userRole);
+		applyCrud(user, meaningTableRow);
 		return meaningTableRow;
 	}
 
 	private void applyCrud(MeaningTableSearchResult meaningTableSearchResult, EkiUser user) {
 
 		List<MeaningTableRow> results = meaningTableSearchResult.getResults();
-		DatasetPermission userRole = user.getRecentRole();
 
 		for (MeaningTableRow meaningTableRow : results) {
-			applyCrud(meaningTableRow, userRole);
+			applyCrud(user, meaningTableRow);
 		}
 	}
 
-	private void applyCrud(MeaningTableRow meaningTableRow, DatasetPermission userRole) {
+	private void applyCrud(EkiUser user, MeaningTableRow meaningTableRow) {
 
 		List<TypeMtLexeme> lexemes = ListUtils.emptyIfNull(meaningTableRow.getLexemes());
 		List<TypeMtDefinition> definitions = ListUtils.emptyIfNull(meaningTableRow.getDefinitions());
 		List<TypeMtLexemeFreeform> usages = ListUtils.emptyIfNull(meaningTableRow.getUsages());
 
-		permCalculator.applyCrud(userRole, lexemes);
-		permCalculator.applyCrud(userRole, definitions);
-		permCalculator.applyCrud(userRole, usages);
+		permCalculator.applyCrud(user, lexemes);
+		permCalculator.applyCrud(user, definitions);
+		permCalculator.applyCrud(user, usages);
 	}
 
 	@Transactional

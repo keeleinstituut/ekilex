@@ -39,6 +39,7 @@ import eki.ekilex.data.DatasetPermission;
 import eki.ekilex.data.DefSourceAndNoteSourceTuple;
 import eki.ekilex.data.Definition;
 import eki.ekilex.data.DefinitionLangGroup;
+import eki.ekilex.data.EkiUser;
 import eki.ekilex.data.FreeForm;
 import eki.ekilex.data.Government;
 import eki.ekilex.data.ImageSourceTuple;
@@ -582,11 +583,11 @@ public class ActivityLogService implements SystemConstant, GlobalConstant {
 	private List<Long> filterRoleDatasetMeaningIds(Long[] meaningIds) {
 
 		List<Long> roleDatasetMeaningIds = new ArrayList<>();
-		DatasetPermission userRole = userContext.getUserRole();
-		String roleDatasetCode = userRole.getDatasetCode();
-		boolean isSuperiorPermission = userRole.isSuperiorPermission();
+		EkiUser user = userContext.getUser();
 
-		if (!isSuperiorPermission) {
+		if (!user.isMaster()) {
+			DatasetPermission userRole = user.getRecentRole();
+			String roleDatasetCode = userRole.getDatasetCode();
 			for (Long meaningId : meaningIds) {
 				String meaningDatasetCode = lookupDbService.getMeaningFirstDatasetCode(meaningId);
 				if (StringUtils.equals(meaningDatasetCode, roleDatasetCode)) {

@@ -20,7 +20,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import eki.ekilex.constant.SearchResultMode;
-import eki.ekilex.data.DatasetPermission;
 import eki.ekilex.data.EkiUser;
 import eki.ekilex.data.SearchFilter;
 import eki.ekilex.data.SearchUriData;
@@ -86,16 +85,13 @@ public class SourceSearchController extends AbstractPrivateSearchController {
 		String searchMode = searchUriData.getSearchMode();
 		String simpleSearchFilter = searchUriData.getSimpleSearchFilter();
 		SearchFilter detailSearchFilter = searchUriData.getDetailSearchFilter();
-
-
 		EkiUser user = userContext.getUser();
-		DatasetPermission userRole = user.getRecentRole();
 
 		SourceSearchResult sourceSearchResult;
 		if (StringUtils.equals(SEARCH_MODE_SIMPLE, searchMode)) {
-			sourceSearchResult = sourceService.getSourceSearchResult(simpleSearchFilter, userRole);
+			sourceSearchResult = sourceService.getSourceSearchResult(simpleSearchFilter, user);
 		} else {
-			sourceSearchResult = sourceService.getSourceSearchResult(detailSearchFilter, userRole);
+			sourceSearchResult = sourceService.getSourceSearchResult(detailSearchFilter, user);
 		}
 
 		model.addAttribute("searchMode", searchMode);
@@ -111,11 +107,10 @@ public class SourceSearchController extends AbstractPrivateSearchController {
 	public String sourceIdSearch(@PathVariable("sourceId") Long sourceId, Model model) {
 
 		EkiUser user = userContext.getUser();
-		DatasetPermission userRole = user.getRecentRole();
-		
+
 		SourceSearchResult sourceSearchResult = new SourceSearchResult();
 		sourceSearchResult.setSources(new ArrayList<>());
-		Source source = sourceService.getSource(sourceId, userRole);
+		Source source = sourceService.getSource(sourceId, user);
 		if (source != null) {
 			sourceSearchResult.getSources().add(source);
 			sourceSearchResult.setResultCount(1);

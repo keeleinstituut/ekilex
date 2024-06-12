@@ -29,7 +29,7 @@
               <div class="form-group row">
                 <div class="col-12">
                   <label th:text="#{term.dataset}">Sõnakogu</label>
-                  <th:block th:if="${userRoleData.userRole.superiorPermission}">
+                  <th:block th:if="${userRoleData.master}">
                     <select required class="form-control required-field classifier-select" name="datasetCode" th:readonly="${!editEnabled}">
                       <option th:each="dataset : ${userVisibleDatasets}"
                               th:value="${dataset.code}"
@@ -38,7 +38,7 @@
                       </option>
                     </select>
                   </th:block>
-                  <th:block th:unless="${userRoleData.userRole.superiorPermission}">
+                  <th:block th:unless="${userRoleData.master}">
                     <input type="hidden" name="datasetCode" th:value="${userRoleData.userRole.datasetCode}">
                     <input class="form-control required-field" th:value="${userRoleData.userRole.datasetName}" disabled>
                   </th:block>

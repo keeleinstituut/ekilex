@@ -24,7 +24,6 @@ import org.springframework.web.bind.annotation.SessionAttributes;
 import eki.ekilex.constant.SearchResultMode;
 import eki.ekilex.constant.WebConstant;
 import eki.ekilex.data.ClassifierSelect;
-import eki.ekilex.data.DatasetPermission;
 import eki.ekilex.data.EkiUser;
 import eki.ekilex.data.EkiUserProfile;
 import eki.ekilex.data.InternalLinkSearchRequest;
@@ -111,7 +110,7 @@ public class LexSearchController extends AbstractPrivateSearchController {
 
 		UserContextData userContextData = getUserContextData();
 		Long userId = userContextData.getUserId();
-		DatasetPermission userRole = userContextData.getUserRole();
+		EkiUser user = userContextData.getUser();
 		List<String> tagNames = userContextData.getTagNames();
 
 		userProfileService.updateUserPreferredDatasets(selectedDatasets, userId);
@@ -123,10 +122,10 @@ public class LexSearchController extends AbstractPrivateSearchController {
 		Long selectedMeaningId = null;
 		if (StringUtils.equals(SEARCH_MODE_DETAIL, searchMode)) {
 			searchHelper.addValidationMessages(detailSearchFilter);
-			wordsResult = lexSearchService.getWords(detailSearchFilter, selectedDatasets, userRole, tagNames, offset, DEFAULT_MAX_RESULTS_LIMIT, noLimit);
+			wordsResult = lexSearchService.getWords(detailSearchFilter, selectedDatasets, tagNames, user, offset, DEFAULT_MAX_RESULTS_LIMIT, noLimit);
 			selectedMeaningId = searchHelper.getMeaningIdSearchMeaningId(detailSearchFilter);
 		} else {
-			wordsResult = lexSearchService.getWords(simpleSearchFilter, selectedDatasets, userRole, tagNames, offset, DEFAULT_MAX_RESULTS_LIMIT, noLimit);
+			wordsResult = lexSearchService.getWords(simpleSearchFilter, selectedDatasets, tagNames, user, offset, DEFAULT_MAX_RESULTS_LIMIT, noLimit);
 		}
 		boolean noResults = wordsResult.getTotalCount() == 0;
 		model.addAttribute("searchMode", searchMode);
@@ -157,7 +156,7 @@ public class LexSearchController extends AbstractPrivateSearchController {
 		boolean noLimit = false;
 
 		UserContextData userContextData = getUserContextData();
-		DatasetPermission userRole = userContextData.getUserRole();
+		EkiUser user = userContextData.getUser();
 		List<String> tagNames = userContextData.getTagNames();
 
 		if (StringUtils.equals("next", direction)) {
@@ -170,9 +169,9 @@ public class LexSearchController extends AbstractPrivateSearchController {
 
 		WordsResult wordsResult;
 		if (StringUtils.equals(SEARCH_MODE_DETAIL, searchMode)) {
-			wordsResult = lexSearchService.getWords(detailSearchFilter, selectedDatasets, userRole, tagNames, offset, DEFAULT_MAX_RESULTS_LIMIT, noLimit);
+			wordsResult = lexSearchService.getWords(detailSearchFilter, selectedDatasets, tagNames, user, offset, DEFAULT_MAX_RESULTS_LIMIT, noLimit);
 		} else {
-			wordsResult = lexSearchService.getWords(simpleSearchFilter, selectedDatasets, userRole, tagNames, offset, DEFAULT_MAX_RESULTS_LIMIT, noLimit);
+			wordsResult = lexSearchService.getWords(simpleSearchFilter, selectedDatasets, tagNames, user, offset, DEFAULT_MAX_RESULTS_LIMIT, noLimit);
 		}
 
 		model.addAttribute("wordsResult", wordsResult);
@@ -188,11 +187,11 @@ public class LexSearchController extends AbstractPrivateSearchController {
 		searchFilter = valueUtil.trimAndCleanAndRemoveHtmlAndLimit(searchFilter);
 
 		UserContextData userContextData = getUserContextData();
-		DatasetPermission userRole = userContextData.getUserRole();
+		EkiUser user = userContextData.getUser();
 		List<String> tagNames = userContextData.getTagNames();
 		List<String> datasetCodes = userContextData.getPreferredDatasetCodes();
 
-		WordsResult result = lexSearchService.getWords(searchFilter, datasetCodes, userRole, tagNames, DEFAULT_OFFSET, DEFAULT_MAX_RESULTS_LIMIT, false);
+		WordsResult result = lexSearchService.getWords(searchFilter, datasetCodes, tagNames, user, DEFAULT_OFFSET, DEFAULT_MAX_RESULTS_LIMIT, false);
 		model.addAttribute("wordsFoundBySearch", result.getWords());
 		model.addAttribute("totalCount", result.getTotalCount());
 
@@ -257,10 +256,10 @@ public class LexSearchController extends AbstractPrivateSearchController {
 		boolean noLimit = true;
 
 		UserContextData userContextData = getUserContextData();
-		DatasetPermission userRole = userContextData.getUserRole();
+		EkiUser user = userContext.getUser();
 		List<String> tagNames = userContextData.getTagNames();
 
-		WordsResult wordsResult = lexSearchService.getWords(searchFilter, datasets, userRole, tagNames, DEFAULT_OFFSET, DEFAULT_MAX_RESULTS_LIMIT, noLimit);
+		WordsResult wordsResult = lexSearchService.getWords(searchFilter, datasets, tagNames, user, DEFAULT_OFFSET, DEFAULT_MAX_RESULTS_LIMIT, noLimit);
 		wordsResult.setShowPaging(false);
 
 		model.addAttribute("wordsResult", wordsResult);

@@ -226,7 +226,6 @@ public class TermSearchService extends AbstractSearchService {
 
 		Long userId = user.getId();
 		DatasetPermission userRole = user.getRecentRole();
-		boolean isAdmin = user.isAdmin();
 		SearchDatasetsRestriction searchDatasetsRestriction = composeDatasetsRestriction(selectedDatasetCodes, userId);
 		Map<String, String> datasetNameMap = commonDataDbService.getDatasetNameMap();
 
@@ -235,13 +234,13 @@ public class TermSearchService extends AbstractSearchService {
 			return null;
 		}
 
-		permCalculator.applyCrud(userRole, meaning);
-		List<Definition> definitions = composeDefinitions(userRole, meaningId);
+		permCalculator.applyCrud(user, meaning);
+		List<Definition> definitions = composeDefinitions(user, meaningId);
 		List<DefSourceAndNoteSourceTuple> definitionsDataTuples = commonDataDbService.getMeaningDefSourceAndNoteSourceTuples(meaningId);
 		conversionUtil.composeMeaningDefinitions(definitions, definitionsDataTuples);
 		for (Definition definition : definitions) {
 			List<DefinitionNote> definitionNotes = definition.getNotes();
-			permCalculator.filterVisibility(userRole, definitionNotes);
+			permCalculator.filterVisibility(user, definitionNotes);
 		}
 		List<DefinitionLangGroup> definitionLangGroups = conversionUtil.composeMeaningDefinitionLangGroups(definitions, languagesOrder);
 		List<OrderedClassifier> domains = commonDataDbService.getMeaningDomains(meaningId, CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
@@ -251,10 +250,10 @@ public class TermSearchService extends AbstractSearchService {
 		List<Media> images = conversionUtil.composeMeaningImages(imageSourceTuples);
 		List<Media> medias = commonDataDbService.getMeaningMedias(meaningId);
 		List<MeaningForum> meaningForums = commonDataDbService.getMeaningForums(meaningId);
-		permCalculator.applyCrud(userRole, isAdmin, meaningForums);
+		permCalculator.applyCrud(user, meaningForums);
 		List<NoteSourceTuple> meaningNoteSourceTuples = commonDataDbService.getMeaningNoteSourceTuples(meaningId);
 		List<MeaningNote> meaningNotes = conversionUtil.composeNotes(MeaningNote.class, meaningId, meaningNoteSourceTuples);
-		permCalculator.filterVisibility(userRole, meaningNotes);
+		permCalculator.filterVisibility(user, meaningNotes);
 		List<NoteLangGroup> meaningNoteLangGroups = conversionUtil.composeNoteLangGroups(meaningNotes, languagesOrder);
 		List<String> meaningWordPreferredOrderDatasetCodes = new ArrayList<>(selectedDatasetCodes);
 		List<MeaningRelation> meaningRelations = commonDataDbService.getMeaningRelations(meaningId, meaningWordPreferredOrderDatasetCodes, CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
@@ -266,17 +265,17 @@ public class TermSearchService extends AbstractSearchService {
 
 		for (Long lexemeId : lexemeIds) {
 
-			Lexeme lexeme = composeLexeme(userRole, lexemeId);
+			Lexeme lexeme = composeLexeme(user, lexemeId);
 			Long wordId = lexeme.getWordId();
 			List<Classifier> wordTypes = commonDataDbService.getWordTypes(wordId, CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
 			List<WordForum> wordForums = commonDataDbService.getWordForums(wordId);
-			permCalculator.applyCrud(userRole, isAdmin, wordForums);
+			permCalculator.applyCrud(user, wordForums);
 			List<FreeForm> odWordRecommendations = commonDataDbService.getOdWordRecommendations(wordId);
 			List<FreeForm> lexemeFreeforms = commonDataDbService.getLexemeFreeforms(lexemeId, excludeLexemeAttributeTypes);
-			List<Usage> usages = composeUsages(userRole, lexemeId);
+			List<Usage> usages = composeUsages(user, lexemeId);
 			List<NoteSourceTuple> lexemeNoteSourceTuples = commonDataDbService.getLexemeNoteSourceTuples(lexemeId);
 			List<LexemeNote> lexemeNotes = conversionUtil.composeNotes(LexemeNote.class, lexemeId, lexemeNoteSourceTuples);
-			permCalculator.filterVisibility(userRole, lexemeNotes);
+			permCalculator.filterVisibility(user, lexemeNotes);
 			List<NoteLangGroup> lexemeNoteLangGroups = conversionUtil.composeNoteLangGroups(lexemeNotes, languagesOrder);
 			List<FreeForm> lexemeGrammars = commonDataDbService.getLexemeGrammars(lexemeId);
 			List<SourceLink> lexemeSourceLinks = commonDataDbService.getLexemeSourceLinks(lexemeId);
@@ -286,7 +285,7 @@ public class TermSearchService extends AbstractSearchService {
 			Word word = lexeme.getWord();
 			word.setForums(wordForums);
 			word.setOdWordRecommendations(odWordRecommendations);
-			permCalculator.applyCrud(userRole, word);
+			permCalculator.applyCrud(user, word);
 
 			boolean classifiersExist = StringUtils.isNotBlank(word.getGenderCode())
 					|| StringUtils.isNotBlank(lexeme.getLexemeValueStateCode())
@@ -340,19 +339,19 @@ public class TermSearchService extends AbstractSearchService {
 		return termSearchDbService.getMeaningFirstWordValue(meaningId, searchDatasetsRestriction);
 	}
 
-	private Lexeme composeLexeme(DatasetPermission userRole, Long lexemeId) {
+	private Lexeme composeLexeme(EkiUser user, Long lexemeId) {
 
 		LexemeWordTuple lexemeWordTuple = termSearchDbService.getLexemeWordTuple(lexemeId, CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
 		Lexeme lexeme = conversionUtil.composeLexeme(lexemeWordTuple);
-		permCalculator.applyCrud(userRole, lexeme);
+		permCalculator.applyCrud(user, lexeme);
 		return lexeme;
 	}
 
-	private List<Definition> composeDefinitions(DatasetPermission userRole, Long meaningId) {
+	private List<Definition> composeDefinitions(EkiUser user, Long meaningId) {
 
 		List<Definition> definitions = commonDataDbService.getMeaningDefinitions(meaningId, CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
-		permCalculator.applyCrud(userRole, definitions);
-		permCalculator.filterVisibility(userRole, definitions);
+		permCalculator.applyCrud(user, definitions);
+		permCalculator.filterVisibility(user, definitions);
 		definitions.forEach(definition -> {
 			if (StringUtils.equals(definition.getTypeCode(), DEFINITION_TYPE_CODE_INEXACT_SYN)) {
 				definition.setEditDisabled(true);
@@ -361,13 +360,13 @@ public class TermSearchService extends AbstractSearchService {
 		return definitions;
 	}
 
-	private List<Usage> composeUsages(DatasetPermission userRole, Long lexemeId) {
+	private List<Usage> composeUsages(EkiUser user, Long lexemeId) {
 
 		List<UsageTranslationDefinitionTuple> usageTranslationDefinitionTuples =
 				commonDataDbService.getLexemeUsageTranslationDefinitionTuples(lexemeId, CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
 		List<Usage> usages = conversionUtil.composeUsages(usageTranslationDefinitionTuples);
-		permCalculator.applyCrud(userRole, usages);
-		permCalculator.filterVisibility(userRole, usages);
+		permCalculator.applyCrud(user, usages);
+		permCalculator.filterVisibility(user, usages);
 		return usages;
 	}
 

@@ -45,8 +45,8 @@
             <div class="p-1">
               <a th:href="@{/datasets}" th:text="#{menu.datasets}">Sõnakogude haldus</a>
             </div>
-            <div sec:authorize="#vars.userRoleData.admin" class="p-1">
-              <a th:href="@{/fedtermupload}" th:text="#{menu.fedtermupload}">FedTerm liidestus</a>
+            <div sec:authorize="#vars.userRoleData.datasetOwnerOrAdmin" class="p-1">
+              <a th:href="@{/permissions}" th:text="#{menu.permissions}">Õiguste haldus</a>
             </div>
             <div sec:authorize="#vars.userRoleData.admin" class="p-1">
               <a th:href="@{/classifiers}" th:text="#{menu.classifiers}">Klassifikaatorite haldus</a>
@@ -54,14 +54,14 @@
             <div sec:authorize="#vars.userRoleData.admin" class="p-1">
               <a th:href="@{/tags}" th:text="#{menu.tags}">Siltide haldus</a>
             </div>
-            <div sec:authorize="#vars.userRoleData.datasetOwnerOrAdmin" class="p-1">
-              <a th:href="@{/permissions}" th:text="#{menu.permissions}">Õiguste haldus</a>
+            <div sec:authorize="#vars.userRoleData.admin" class="p-1">
+              <a th:href="@{/news}" th:text="#{menu.news}">Uudiste haldus</a>
             </div>
             <div sec:authorize="#vars.userRoleData.admin" class="p-1">
               <a th:href="@{/workloadreport}" th:text="#{menu.workloadreport}">Muudatuste aruanne</a>
             </div>
             <div sec:authorize="#vars.userRoleData.admin" class="p-1">
-              <a th:href="@{/news}" th:text="#{menu.news}">Uudiste haldus</a>
+              <a th:href="@{/fedtermupload}" th:text="#{menu.fedtermupload}">FedTerm liidestus</a>
             </div>
             <div sec:authorize="#authentication.principal.datasetCrudPermissionsExist" class="p-1">
               <a th:href="@{/wwfeedback}" th:text="#{menu.wwfeedback}">Sõnaveebi tagasiside</a>
