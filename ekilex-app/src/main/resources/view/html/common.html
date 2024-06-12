@@ -216,6 +216,10 @@
                     <span th:text="#{common.switch.role}">Vaheta</span>
                   </a>
                 </div>
+                <div class="px-3">
+                  <small th:if="${userRoleData.admin}" th:text="|[#{permissions.admin}]|">[admin]</small>
+                  <small th:if="${userRoleData.master}" th:text="|[#{permissions.master}]|">[master]</small>
+                </div>
               </div>
               <div class="dropdown-divider"></div>
               <a class="dropdown-item" th:href="@{/userprofile}" th:if="${userRoleData.roleSelected}">
