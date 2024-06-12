@@ -192,33 +192,36 @@ public class SearchDbService implements GlobalConstant, SystemConstant {
 				.fetchGroups("sgroup", WordSearchElement.class);
 	}
 
-	public List<String> getWordValuesBySimilarity(String searchWord, String searchWordUnaccent, SearchContext searchContext, int limit) {
+	public List<String> getWordValuesByLevenshteinLess(String searchWord, String searchWordUnaccent, SearchContext searchContext, int limit) {
 
 		List<String> destinLangs = searchContext.getDestinLangs();
 
+		final int D_MAX = 2;
+		final int MAX_LEV_DIST = 2;
+
 		MviewWwWordSearch w = MVIEW_WW_WORD_SEARCH.as("w");
 		MviewWwWordSearch aw = MVIEW_WW_WORD_SEARCH.as("aw");
-		Table<Record4<String, Long, TypeLangComplexityRecord[], Float>> ws = null;
+		Table<Record4<String, Long, TypeLangComplexityRecord[], Integer>> ws = null;
 
 		Field<String> searchWordLowerField = DSL.lower(searchWord);
 		Field<String> searchWordUnaccentLowerField = DSL.lower(searchWordUnaccent);
-		Field<Float> awsf = DSL.field(Routines.similarity(aw.WORD, searchWordLowerField));
-		Field<Float> wsf = DSL.field(Routines.similarity(w.WORD, searchWordLowerField));
+		Field<Integer> wsf = DSL.field(Routines.levenshteinLessEqual1(w.WORD, searchWordLowerField, DSL.val(MAX_LEV_DIST)));
+		Field<Integer> awsf = DSL.field(Routines.levenshteinLessEqual1(aw.WORD, searchWordLowerField, DSL.val(MAX_LEV_DIST)));
 
 		Condition wwhere = applyWordLangFilter(w, destinLangs, DSL.noCondition())
 				.and(w.SGROUP.eq(WORD_SEARCH_GROUP_WORD))
-				.and(DSL.condition("{0} %> {1}", w.CRIT, searchWordLowerField));
+				.and(Routines.levenshteinLessEqual1(w.CRIT, searchWordLowerField, DSL.val(D_MAX)).le(MAX_LEV_DIST));
 
 		Condition awwhere = applyWordLangFilter(aw, destinLangs, DSL.noCondition())
 				.and(aw.SGROUP.eq(WORD_SEARCH_GROUP_AS_WORD))
-				.and(DSL.condition("{0} %> {1}", aw.CRIT, searchWordUnaccentLowerField));
+				.and(Routines.levenshteinLessEqual1(aw.CRIT, searchWordUnaccentLowerField, DSL.val(D_MAX)).le(MAX_LEV_DIST));
 
-		SelectConditionStep<Record4<String, Long, TypeLangComplexityRecord[], Float>> wselect = DSL
+		SelectConditionStep<Record4<String, Long, TypeLangComplexityRecord[], Integer>> wselect = DSL
 				.select(
 						w.WORD,
 						w.LANG_ORDER_BY,
 						w.LANG_COMPLEXITIES,
-						wsf.as("sim"))
+						wsf.as("lev"))
 				.from(w)
 				.where(wwhere);
 
@@ -232,7 +235,7 @@ public class SearchDbService implements GlobalConstant, SystemConstant {
 									aw.WORD,
 									aw.LANG_ORDER_BY,
 									aw.LANG_COMPLEXITIES,
-									awsf.as("sim"))
+									awsf.as("lev"))
 							.from(aw)
 							.where(awwhere))
 					.asTable("ws");
@@ -251,7 +254,7 @@ public class SearchDbService implements GlobalConstant, SystemConstant {
 				.where(wsWhere)
 				.orderBy(
 						ws.field("lang_order_by"),
-						ws.field("sim").desc())
+						ws.field("lev"))
 				.limit(limit)
 				.fetchInto(String.class);
 	}

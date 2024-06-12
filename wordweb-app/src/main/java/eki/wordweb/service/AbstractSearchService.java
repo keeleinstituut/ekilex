@@ -172,7 +172,7 @@ public abstract class AbstractSearchService implements SystemConstant, WebConsta
 
 		String searchWordClean = textDecorationService.unifyToApostrophe(searchWord);
 		String searchWordUnaccent = textDecorationService.removeAccents(searchWordClean);
-		List<String> similarWordValues = searchDbService.getWordValuesBySimilarity(searchWord, searchWordUnaccent, searchContext, ALT_WORDS_DISPLAY_LIMIT);
+		List<String> similarWordValues = searchDbService.getWordValuesByLevenshteinLess(searchWord, searchWordUnaccent, searchContext, ALT_WORDS_DISPLAY_LIMIT);
 		boolean altResultsExist = CollectionUtils.isNotEmpty(similarWordValues);
 
 		if (altResultsExist) {
