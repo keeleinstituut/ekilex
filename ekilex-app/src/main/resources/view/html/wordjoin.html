@@ -173,7 +173,7 @@
                 <span th:if="${wordEtymRel.compound}">+</span>
                 <span th:text="${wordEtymRel.relatedWord + ' (' + viewUtil.getLangIso2(wordEtymRel.relatedWordLang) + ')'}"></span>
               </span>
-              <span th:if="${wordEtymRel.comment != null}" th:utext="${wordEtymRel.comment}"></span>
+              <span th:if="${wordEtymRel.commentPrese != null}" th:utext="${wordEtymRel.commentPrese}"></span>
             </div>
             <div th:if="${wordEtym.comment != null}" th:utext="${wordEtym.comment}"></div>
           </div>
