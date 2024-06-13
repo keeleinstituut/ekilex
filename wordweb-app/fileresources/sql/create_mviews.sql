@@ -315,8 +315,8 @@ dblink(
 	created timestamp,
 	type varchar(100),
 	title text,
-	lang char(3),
-	news_sections text array
+	content text,
+	lang char(3)
 );
 
 create materialized view mview_ww_counts as

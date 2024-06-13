@@ -65,14 +65,14 @@ public class MviewWwNewsArticle extends TableImpl<MviewWwNewsArticleRecord> {
     public final TableField<MviewWwNewsArticleRecord, String> TITLE = createField(DSL.name("title"), SQLDataType.CLOB, this, "");
 
     /**
+     * The column <code>public.mview_ww_news_article.content</code>.
+     */
+    public final TableField<MviewWwNewsArticleRecord, String> CONTENT = createField(DSL.name("content"), SQLDataType.CLOB, this, "");
+
+    /**
      * The column <code>public.mview_ww_news_article.lang</code>.
      */
     public final TableField<MviewWwNewsArticleRecord, String> LANG = createField(DSL.name("lang"), SQLDataType.CHAR(3), this, "");
-
-    /**
-     * The column <code>public.mview_ww_news_article.news_sections</code>.
-     */
-    public final TableField<MviewWwNewsArticleRecord, String[]> NEWS_SECTIONS = createField(DSL.name("news_sections"), SQLDataType.CLOB.getArrayDataType(), this, "");
 
     private MviewWwNewsArticle(Name alias, Table<MviewWwNewsArticleRecord> aliased) {
         this(alias, aliased, null);
@@ -143,7 +143,7 @@ public class MviewWwNewsArticle extends TableImpl<MviewWwNewsArticleRecord> {
     // -------------------------------------------------------------------------
 
     @Override
-    public Row6<Long, Timestamp, String, String, String, String[]> fieldsRow() {
+    public Row6<Long, Timestamp, String, String, String, String> fieldsRow() {
         return (Row6) super.fieldsRow();
     }
 }

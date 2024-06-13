@@ -76,7 +76,6 @@ import eki.ekilex.data.db.tables.Morph;
 import eki.ekilex.data.db.tables.MorphFreq;
 import eki.ekilex.data.db.tables.MorphLabel;
 import eki.ekilex.data.db.tables.NewsArticle;
-import eki.ekilex.data.db.tables.NewsSection;
 import eki.ekilex.data.db.tables.Paradigm;
 import eki.ekilex.data.db.tables.ParadigmForm;
 import eki.ekilex.data.db.tables.Pos;
@@ -552,11 +551,6 @@ public class Public extends SchemaImpl {
     public final NewsArticle NEWS_ARTICLE = NewsArticle.NEWS_ARTICLE;
 
     /**
-     * The table <code>public.news_section</code>.
-     */
-    public final NewsSection NEWS_SECTION = NewsSection.NEWS_SECTION;
-
-    /**
      * The table <code>public.paradigm</code>.
      */
     public final Paradigm PARADIGM = Paradigm.PARADIGM;
@@ -977,7 +971,6 @@ public class Public extends SchemaImpl {
             Sequences.MORPH_FREQ_ID_SEQ,
             Sequences.MORPH_ORDER_BY_SEQ,
             Sequences.NEWS_ARTICLE_ID_SEQ,
-            Sequences.NEWS_SECTION_ID_SEQ,
             Sequences.PARADIGM_FORM_ID_SEQ,
             Sequences.PARADIGM_FORM_ORDER_BY_SEQ,
             Sequences.PARADIGM_ID_SEQ,
@@ -1099,7 +1092,6 @@ public class Public extends SchemaImpl {
             MorphFreq.MORPH_FREQ,
             MorphLabel.MORPH_LABEL,
             NewsArticle.NEWS_ARTICLE,
-            NewsSection.NEWS_SECTION,
             Paradigm.PARADIGM,
             ParadigmForm.PARADIGM_FORM,
             Pos.POS,

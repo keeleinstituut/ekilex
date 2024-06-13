@@ -99,13 +99,9 @@
                 <div>
                   <strong th:text="${newsArticle.title}"></strong>
                 </div>
-                <ul class="mb-0 pb-3 list-group">
-                  <th:block th:each="newsSection : ${newsArticle.newsSections}">
-                    <li>
-                      <span th:text="${newsSection.content}" style="white-space: pre-line"></span>
-                    </li>
-                  </th:block>
-                </ul>
+                <div>
+                  <span th:text="${newsArticle.content}" style="white-space: pre-line"></span>
+                </div>
               </div>
             </th:block>
           </div>

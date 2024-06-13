@@ -1,7 +1,6 @@
 package eki.ekilex.data;
 
 import java.time.LocalDateTime;
-import java.util.List;
 
 import eki.common.constant.NewsArticleType;
 import eki.common.data.AbstractDataObject;
@@ -18,9 +17,9 @@ public class NewsArticle extends AbstractDataObject {
 
 	private String title;
 
-	private String lang;
+	private String content;
 
-	private List<NewsSection> newsSections;
+	private String lang;
 
 	public Long getId() {
 		return id;
@@ -54,20 +53,20 @@ public class NewsArticle extends AbstractDataObject {
 		this.title = title;
 	}
 
+	public String getContent() {
+		return content;
+	}
+
+	public void setContent(String content) {
+		this.content = content;
+	}
+
 	public String getLang() {
 		return lang;
 	}
 
 	public void setLang(String lang) {
 		this.lang = lang;
-	}
-
-	public List<NewsSection> getNewsSections() {
-		return newsSections;
-	}
-
-	public void setNewsSections(List<NewsSection> newsSections) {
-		this.newsSections = newsSections;
 	}
 
 }

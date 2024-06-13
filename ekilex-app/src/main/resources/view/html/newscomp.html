@@ -34,21 +34,9 @@
           </div>
         </div>
         <div class="form-group row">
-          <div class="col-md-2 col-form-label">Rida</div>
+          <div class="col-md-2 col-form-label">Sisu</div>
           <div class="col-md-6">
-            <th:block th:each="newsSection,newsSectionIter : ${newsArticle.newsSections}">
-              <div class="row mb-3">
-                <div class="col-md-11">
-                   <input type="hidden" th:name="|newsSections[${newsSectionIter.index}].id|" th:value="${newsSection.id}">
-                  <textarea th:name="|newsSections[${newsSectionIter.index}].content|" th:text="${newsSection.content}" rows="3" class="form-control md-textarea" autocomplete="off"></textarea>
-                </div>
-                <div class="col-md-1 p-0">
-                  <button type="button" class="btn badge badge-secondary mt-1" name="addNewsSection" data-plugin="addNewsSectionPlugin" th:data-area-id="${newsArticleEditAreaId}">
-                    <i class="fa fa-plus mt-1" aria-hidden="true"></i>
-                  </button>
-                </div>
-              </div>
-            </th:block>
+            <textarea name="content" th:text="${newsArticle.content}" rows="6" class="form-control md-textarea" autocomplete="off"></textarea>
           </div>
         </div>
       </div>

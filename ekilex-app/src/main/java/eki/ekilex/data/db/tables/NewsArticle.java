@@ -17,7 +17,7 @@ import org.jooq.ForeignKey;
 import org.jooq.Identity;
 import org.jooq.Name;
 import org.jooq.Record;
-import org.jooq.Row5;
+import org.jooq.Row6;
 import org.jooq.Schema;
 import org.jooq.Table;
 import org.jooq.TableField;
@@ -68,6 +68,11 @@ public class NewsArticle extends TableImpl<NewsArticleRecord> {
      * The column <code>public.news_article.title</code>.
      */
     public final TableField<NewsArticleRecord, String> TITLE = createField(DSL.name("title"), SQLDataType.CLOB.nullable(false), this, "");
+
+    /**
+     * The column <code>public.news_article.content</code>.
+     */
+    public final TableField<NewsArticleRecord, String> CONTENT = createField(DSL.name("content"), SQLDataType.CLOB.nullable(false), this, "");
 
     /**
      * The column <code>public.news_article.lang</code>.
@@ -168,11 +173,11 @@ public class NewsArticle extends TableImpl<NewsArticleRecord> {
     }
 
     // -------------------------------------------------------------------------
-    // Row5 type methods
+    // Row6 type methods
     // -------------------------------------------------------------------------
 
     @Override
-    public Row5<Long, Timestamp, String, String, String> fieldsRow() {
-        return (Row5) super.fieldsRow();
+    public Row6<Long, Timestamp, String, String, String, String> fieldsRow() {
+        return (Row6) super.fieldsRow();
     }
 }

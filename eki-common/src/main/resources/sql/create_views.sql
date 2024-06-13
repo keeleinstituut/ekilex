@@ -2312,19 +2312,10 @@ create view view_ww_news_article
 		na.created,
 		na."type",
 		na.title,
-		na.lang,
-		array_agg(
-			ns.content
-			order by
-				ns.id
-		) news_sections
+		na.content,
+		na.lang
 	from
-		news_article na,
-		news_section ns
-	where
-		ns.news_article_id = na.id
-	group by
-		na.id
+		news_article na
 	order by
 		na.created desc
 	);

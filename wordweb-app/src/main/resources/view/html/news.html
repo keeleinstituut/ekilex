@@ -31,13 +31,9 @@
                   <small th:text="${#temporals.format(newsArticle.created, 'dd.MM.yyyy')}"></small>
                 </h5>
               </div>
-              <ul>
-                <th:block th:each="newsSection : ${newsArticle.newsSections}">
-                  <li>
-                    <span th:text="${newsSection}" style="white-space: pre-line"></span>
-                  </li>
-                </th:block>
-              </ul>
+              <div>
+                <span th:text="${newsArticle.content}" style="white-space: pre-line"></span>
+              </div>
               <hr th:unless="${newsArticleIter.last}"/>
             </div>
           </th:block>

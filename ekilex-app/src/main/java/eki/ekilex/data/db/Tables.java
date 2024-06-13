@@ -76,7 +76,6 @@ import eki.ekilex.data.db.tables.Morph;
 import eki.ekilex.data.db.tables.MorphFreq;
 import eki.ekilex.data.db.tables.MorphLabel;
 import eki.ekilex.data.db.tables.NewsArticle;
-import eki.ekilex.data.db.tables.NewsSection;
 import eki.ekilex.data.db.tables.Paradigm;
 import eki.ekilex.data.db.tables.ParadigmForm;
 import eki.ekilex.data.db.tables.Pos;
@@ -510,11 +509,6 @@ public class Tables {
      * The table <code>public.news_article</code>.
      */
     public static final NewsArticle NEWS_ARTICLE = NewsArticle.NEWS_ARTICLE;
-
-    /**
-     * The table <code>public.news_section</code>.
-     */
-    public static final NewsSection NEWS_SECTION = NewsSection.NEWS_SECTION;
 
     /**
      * The table <code>public.paradigm</code>.

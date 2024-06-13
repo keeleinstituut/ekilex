@@ -7,15 +7,12 @@ import java.util.Locale;
 
 import javax.transaction.Transactional;
 
-import org.apache.commons.collections4.CollectionUtils;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.stereotype.Component;
 
 import eki.common.constant.NewsArticleType;
 import eki.ekilex.data.NewsArticle;
-import eki.ekilex.data.NewsSection;
 import eki.ekilex.service.db.NewsDbService;
 
 @Component
@@ -54,26 +51,6 @@ public class NewsService {
 			newsArticleId = newsDbService.createNewsArticle(newsArticle);
 		} else {
 			newsDbService.updateNewsArticle(newsArticleId, newsArticle);
-		}
-		List<NewsSection> newsSections = newsArticle.getNewsSections();
-		if (CollectionUtils.isNotEmpty(newsSections)) {
-			for (NewsSection newsSection : newsSections) {
-				Long newsSectionId = newsSection.getId();
-				String content = newsSection.getContent();
-				if (newsSectionId == null) {
-					if (StringUtils.isBlank(content)) {
-						continue;
-					} else {
-						newsDbService.createNewsSection(newsArticleId, newsSection);
-					}
-				} else {
-					if (StringUtils.isBlank(content)) {
-						newsDbService.deleteNewsSection(newsSectionId);
-					} else {
-						newsDbService.updateNewsSection(newsSectionId, newsSection);
-					}
-				}
-			}
 		}
 	}
 

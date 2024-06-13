@@ -1,7 +1,6 @@
 package eki.wordweb.data;
 
 import java.time.LocalDateTime;
-import java.util.List;
 
 import eki.common.data.AbstractDataObject;
 
@@ -15,7 +14,7 @@ public class NewsArticle extends AbstractDataObject {
 
 	private String title;
 
-	private List<String> newsSections;
+	private String content;
 
 	public Long getNewsArticleId() {
 		return newsArticleId;
@@ -41,12 +40,12 @@ public class NewsArticle extends AbstractDataObject {
 		this.title = title;
 	}
 
-	public List<String> getNewsSections() {
-		return newsSections;
+	public String getContent() {
+		return content;
 	}
 
-	public void setNewsSections(List<String> newsSections) {
-		this.newsSections = newsSections;
+	public void setContent(String content) {
+		this.content = content;
 	}
 
 }

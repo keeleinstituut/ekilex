@@ -65,21 +65,21 @@ public class ViewWwNewsArticle extends TableImpl<ViewWwNewsArticleRecord> {
     public final TableField<ViewWwNewsArticleRecord, String> TITLE = createField(DSL.name("title"), SQLDataType.CLOB, this, "");
 
     /**
+     * The column <code>public.view_ww_news_article.content</code>.
+     */
+    public final TableField<ViewWwNewsArticleRecord, String> CONTENT = createField(DSL.name("content"), SQLDataType.CLOB, this, "");
+
+    /**
      * The column <code>public.view_ww_news_article.lang</code>.
      */
     public final TableField<ViewWwNewsArticleRecord, String> LANG = createField(DSL.name("lang"), SQLDataType.CHAR(3), this, "");
-
-    /**
-     * The column <code>public.view_ww_news_article.news_sections</code>.
-     */
-    public final TableField<ViewWwNewsArticleRecord, String[]> NEWS_SECTIONS = createField(DSL.name("news_sections"), SQLDataType.CLOB.getArrayDataType(), this, "");
 
     private ViewWwNewsArticle(Name alias, Table<ViewWwNewsArticleRecord> aliased) {
         this(alias, aliased, null);
     }
 
     private ViewWwNewsArticle(Name alias, Table<ViewWwNewsArticleRecord> aliased, Field<?>[] parameters) {
-        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.view("create view \"view_ww_news_article\" as  SELECT na.id AS news_article_id,\n    na.created,\n    na.type,\n    na.title,\n    na.lang,\n    array_agg(ns.content ORDER BY ns.id) AS news_sections\n   FROM news_article na,\n    news_section ns\n  WHERE (ns.news_article_id = na.id)\n  GROUP BY na.id\n  ORDER BY na.created DESC;"));
+        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.view("create view \"view_ww_news_article\" as  SELECT id AS news_article_id,\n    created,\n    type,\n    title,\n    content,\n    lang\n   FROM news_article na\n  ORDER BY created DESC;"));
     }
 
     /**
@@ -143,7 +143,7 @@ public class ViewWwNewsArticle extends TableImpl<ViewWwNewsArticleRecord> {
     // -------------------------------------------------------------------------
 
     @Override
-    public Row6<Long, Timestamp, String, String, String, String[]> fieldsRow() {
+    public Row6<Long, Timestamp, String, String, String, String> fieldsRow() {
         return (Row6) super.fieldsRow();
     }
 }
