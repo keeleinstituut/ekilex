@@ -1153,7 +1153,7 @@
                   <option th:each="dataset : ${userVisibleDatasets}"
                           th:value="${dataset.code}"
                           th:text="${dataset.name}"
-                          th:selected="${userRoleData.roleSelected && (dataset.code = userRoleData.userRole.datasetCode)}">
+                          th:selected="${userRoleData.roleSelected && (dataset.code == userRoleData.userRole.datasetCode)}">
                           dataset
                   </option>
                 </select>
