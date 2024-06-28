@@ -1,10 +1,5 @@
 package eki.ekilex.api.controller;
 
-import java.util.Comparator;
-import java.util.List;
-import java.util.stream.Collectors;
-
-import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
@@ -19,10 +14,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import eki.common.constant.FreeformType;
-import eki.common.constant.SourceType;
+import eki.ekilex.data.EkiUser;
 import eki.ekilex.data.Source;
-import eki.ekilex.data.SourceProperty;
 import eki.ekilex.data.SourceSearchResult;
 import eki.ekilex.data.api.ApiResponse;
 import eki.ekilex.service.SourceService;
@@ -39,7 +32,8 @@ public class ApiSourceController extends AbstractApiController {
 	@ResponseBody
 	public SourceSearchResult sourceSearch(@PathVariable("searchFilter") String searchFilter) {
 
-		SourceSearchResult sourceSearchResult = sourceService.getSourceSearchResult(searchFilter);
+		EkiUser user = userContext.getUser();
+		SourceSearchResult sourceSearchResult = sourceService.getSourceSearchResult(searchFilter, user);
 		return sourceSearchResult;
 	}
 
@@ -52,37 +46,21 @@ public class ApiSourceController extends AbstractApiController {
 	}
 
 	@Order(203)
-	@PreAuthorize("principal.apiCrud && principal.datasetCrudPermissionsExist")
+	@PreAuthorize("principal.apiCrud && @permEval.isDatasetCrudGranted(authentication, #crudRoleDataset, #source.datasetCode)")
 	@PostMapping(API_SERVICES_URI + SOURCE_URI + CREATE_URI)
 	@ResponseBody
-	public ApiResponse createSource(@RequestBody Source source) {
+	public ApiResponse createSource(
+			@RequestParam("crudRoleDataset") String crudRoleDataset,
+			@RequestBody Source source) {
 
-		SourceType type = source.getType();
-		String name = source.getName();
-		String valuePrese = source.getValuePrese();
-		valuePrese = valueUtil.trimAndCleanAndRemoveHtmlAndLimit(valuePrese);
-		String comment = source.getComment();
-		boolean isPublic = source.isPublic();
-		List<SourceProperty> sourceProperties = source.getSourceProperties();
-
-		if (StringUtils.isBlank(name)) {
+		if (StringUtils.isBlank(source.getName())) {
 			return getOpFailResponse("Source has no name");
 		}
 
-		if (CollectionUtils.isNotEmpty(sourceProperties)) {
-			sourceProperties = sourceProperties.stream()
-					.sorted(Comparator.comparing(sourceProperty -> FreeformType.SOURCE_NAME.equals(sourceProperty.getType())))
-					.collect(Collectors.toList());
-
-			sourceProperties.forEach(sourceProperty -> {
-				String valueText = sourceProperty.getValueText();
-				valueText = valueUtil.trimAndCleanAndRemoveHtmlAndLimit(valueText);
-				sourceProperty.setValueText(valueText);
-			});
-		}
+		cleanupSource(source);
 
 		try {
-			Long sourceId = sourceService.createSource(type, name, valuePrese, comment, isPublic, sourceProperties, null, MANUAL_EVENT_ON_UPDATE_DISABLED);
+			Long sourceId = sourceService.createSource(source, crudRoleDataset, MANUAL_EVENT_ON_UPDATE_DISABLED);
 			return getOpSuccessResponse(sourceId);
 		} catch (Exception e) {
 			return getOpFailResponse(e);
@@ -90,27 +68,30 @@ public class ApiSourceController extends AbstractApiController {
 	}
 
 	@Order(204)
-	@PreAuthorize("principal.apiCrud && @permEval.isSourceCrudGranted(authentication, #crudRoleDataset, #sourceId)")
+	@PreAuthorize("principal.apiCrud "
+			+ "&& @permEval.isDatasetCrudGranted(authentication, #crudRoleDataset, #source.datasetCode) "
+			+ "&& @permEval.isSourceCrudGranted(authentication, #crudRoleDataset, #source.id)")
 	@PostMapping(API_SERVICES_URI + SOURCE_URI + UPDATE_URI)
 	@ResponseBody
 	public ApiResponse updateSource(
 			@RequestParam("crudRoleDataset") String crudRoleDataset,
 			@RequestBody Source source) {
 
-		Long sourceId = source.getId();
-		SourceType type = source.getType();
-		String name = source.getName();
-		String valuePrese = source.getValuePrese();
-		valuePrese = valueUtil.trimAndCleanAndRemoveHtmlAndLimit(valuePrese);
-		String comment = source.getComment();
-		boolean isPublic = source.isPublic();
+		cleanupSource(source);
 
 		try {
-			sourceService.updateSource(sourceId, type, name, valuePrese, comment, isPublic, crudRoleDataset);
+			sourceService.updateSource(source, crudRoleDataset);
 			return getOpSuccessResponse();
 		} catch (Exception e) {
 			return getOpFailResponse(e);
 		}
+	}
+
+	private void cleanupSource(Source source) {
+
+		String valuePrese = source.getValuePrese();
+		valuePrese = valueUtil.trimAndCleanAndRemoveHtmlAndLimit(valuePrese);
+		source.setValuePrese(valuePrese);
 	}
 
 	@Order(205)
@@ -144,59 +125,6 @@ public class ApiSourceController extends AbstractApiController {
 
 		try {
 			sourceService.joinSources(sourceId1, sourceId2, crudRoleDataset);
-			return getOpSuccessResponse();
-		} catch (Exception e) {
-			return getOpFailResponse(e);
-		}
-	}
-
-	@Order(207)
-	@PreAuthorize("principal.apiCrud && @permEval.isSourceCrudGranted(authentication, #crudRoleDataset, #sourceId)")
-	@PostMapping(API_SERVICES_URI + SOURCE_PROPERTY_URI + CREATE_URI)
-	@ResponseBody
-	public ApiResponse createSourceProperty(
-			@RequestParam("crudRoleDataset") String crudRoleDataset,
-			@RequestParam("sourceId") Long sourceId,
-			@RequestParam("type") FreeformType type,
-			@RequestParam("valueText") String valueText) {
-
-		valueText = valueUtil.trimAndCleanAndRemoveHtmlAndLimit(valueText);
-		try {
-			sourceService.createSourceProperty(sourceId, type, valueText, crudRoleDataset);
-			return getOpSuccessResponse();
-		} catch (Exception e) {
-			return getOpFailResponse(e);
-		}
-	}
-
-	@Order(208)
-	@PreAuthorize("principal.apiCrud && @permEval.isSourcePropertyCrudGranted(authentication, #crudRoleDataset, #sourcePropertyId)")
-	@PostMapping(API_SERVICES_URI + SOURCE_PROPERTY_URI + UPDATE_URI)
-	@ResponseBody
-	public ApiResponse updateSourceProperty(
-			@RequestParam("crudRoleDataset") String crudRoleDataset,
-			@RequestParam("sourcePropertyId") Long sourcePropertyId,
-			@RequestParam("valueText") String valueText) {
-
-		valueText = valueUtil.trimAndCleanAndRemoveHtmlAndLimit(valueText);
-		try {
-			sourceService.updateSourceProperty(sourcePropertyId, valueText, crudRoleDataset);
-			return getOpSuccessResponse();
-		} catch (Exception e) {
-			return getOpFailResponse(e);
-		}
-	}
-
-	@Order(209)
-	@PreAuthorize("principal.apiCrud && @permEval.isSourcePropertyCrudGranted(authentication, #crudRoleDataset, #sourcePropertyId)")
-	@DeleteMapping(API_SERVICES_URI + SOURCE_PROPERTY_URI + DELETE_URI)
-	@ResponseBody
-	public ApiResponse deleteSourceProperty(
-			@RequestParam("crudRoleDataset") String crudRoleDataset,
-			@RequestParam("sourcePropertyId") Long sourcePropertyId) {
-
-		try {
-			sourceService.deleteSourceProperty(sourcePropertyId, crudRoleDataset);
 			return getOpSuccessResponse();
 		} catch (Exception e) {
 			return getOpFailResponse(e);

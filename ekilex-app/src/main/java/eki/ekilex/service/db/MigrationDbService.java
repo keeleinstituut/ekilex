@@ -2,15 +2,25 @@ package eki.ekilex.service.db;
 
 import static eki.ekilex.data.db.Tables.COLLOCATION;
 import static eki.ekilex.data.db.Tables.COLLOCATION_MEMBER;
+import static eki.ekilex.data.db.Tables.DEFINITION_DATASET;
+import static eki.ekilex.data.db.Tables.DEFINITION_FREEFORM;
+import static eki.ekilex.data.db.Tables.DEFINITION_SOURCE_LINK;
 import static eki.ekilex.data.db.Tables.FORM;
+import static eki.ekilex.data.db.Tables.FREEFORM_SOURCE_LINK;
 import static eki.ekilex.data.db.Tables.LEXEME;
+import static eki.ekilex.data.db.Tables.LEXEME_FREEFORM;
+import static eki.ekilex.data.db.Tables.LEXEME_SOURCE_LINK;
 import static eki.ekilex.data.db.Tables.LEX_COLLOC;
 import static eki.ekilex.data.db.Tables.LEX_COLLOC_POS_GROUP;
 import static eki.ekilex.data.db.Tables.LEX_COLLOC_REL_GROUP;
 import static eki.ekilex.data.db.Tables.MEANING;
+import static eki.ekilex.data.db.Tables.MEANING_FREEFORM;
 import static eki.ekilex.data.db.Tables.PARADIGM;
 import static eki.ekilex.data.db.Tables.PARADIGM_FORM;
+import static eki.ekilex.data.db.Tables.SOURCE;
+import static eki.ekilex.data.db.Tables.SOURCE_ACTIVITY_LOG;
 import static eki.ekilex.data.db.Tables.WORD;
+import static eki.ekilex.data.db.Tables.WORD_ETYMOLOGY_SOURCE_LINK;
 
 import java.util.List;
 
@@ -28,19 +38,31 @@ import eki.common.constant.Complexity;
 import eki.ekilex.data.CollocationTuple;
 import eki.ekilex.data.WordLexemeMeaningIdTuple;
 import eki.ekilex.data.db.tables.Collocation;
+import eki.ekilex.data.db.tables.DefinitionDataset;
+import eki.ekilex.data.db.tables.DefinitionFreeform;
+import eki.ekilex.data.db.tables.DefinitionSourceLink;
 import eki.ekilex.data.db.tables.Form;
+import eki.ekilex.data.db.tables.FreeformSourceLink;
 import eki.ekilex.data.db.tables.LexColloc;
 import eki.ekilex.data.db.tables.LexCollocPosGroup;
 import eki.ekilex.data.db.tables.LexCollocRelGroup;
 import eki.ekilex.data.db.tables.Lexeme;
+import eki.ekilex.data.db.tables.LexemeFreeform;
+import eki.ekilex.data.db.tables.LexemeSourceLink;
+import eki.ekilex.data.db.tables.MeaningFreeform;
 import eki.ekilex.data.db.tables.Paradigm;
 import eki.ekilex.data.db.tables.ParadigmForm;
+import eki.ekilex.data.db.tables.Source;
+import eki.ekilex.data.db.tables.SourceActivityLog;
 import eki.ekilex.data.db.tables.Word;
+import eki.ekilex.data.db.tables.WordEtymologySourceLink;
 import eki.ekilex.data.migra.CollocationMember;
 import eki.ekilex.data.migra.MigraForm;
+import eki.ekilex.data.migra.MigraSourceLink;
 import eki.ekilex.data.migra.MigraWord;
+import eki.ekilex.data.migra.SourceLinkOwner;
 
-// temporary for collocations migration
+// temporary for data migration tools
 @Component
 public class MigrationDbService extends AbstractDataDbService {
 
@@ -396,5 +418,211 @@ public class MigrationDbService extends AbstractDataDbService {
 				.returning(COLLOCATION_MEMBER.ID)
 				.fetchOne()
 				.getId();
+	}
+
+	public List<eki.ekilex.data.Source> getSources() {
+
+		Source s = SOURCE.as("s");
+		return create
+				.selectFrom(s)
+				.orderBy(s.ID)
+				.fetchInto(eki.ekilex.data.Source.class);
+	}
+
+	public List<MigraSourceLink> getSourceLinks(Long sourceId, SourceLinkOwner sourceLinkOwner) {
+
+		FreeformSourceLink fsl = FREEFORM_SOURCE_LINK.as("fsl");
+		DefinitionSourceLink dsl = DEFINITION_SOURCE_LINK.as("dsl");
+		DefinitionDataset dds = DEFINITION_DATASET.as("dds");
+		LexemeSourceLink lsl = LEXEME_SOURCE_LINK.as("lsl");
+		WordEtymologySourceLink wesl = WORD_ETYMOLOGY_SOURCE_LINK.as("wesl");
+		MeaningFreeform mf = MEANING_FREEFORM.as("mf");
+		DefinitionFreeform df = DEFINITION_FREEFORM.as("df");
+		LexemeFreeform lf = LEXEME_FREEFORM.as("lf");
+		Lexeme l = LEXEME.as("l");
+
+		if (SourceLinkOwner.MEANING_FREEFORM_SOURCE_LINK.equals(sourceLinkOwner)) {
+
+			return create
+					.selectDistinct(
+							fsl.SOURCE_ID,
+							fsl.ID.as("source_link_id"),
+							DSL.field(DSL.val(sourceLinkOwner.name())).as("source_link_owner"),
+							fsl.FREEFORM_ID.as("source_link_owner_id"),
+							l.DATASET_CODE)
+					.from(fsl, mf, l)
+					.where(
+							fsl.SOURCE_ID.eq(sourceId)
+									.and(fsl.FREEFORM_ID.eq(mf.FREEFORM_ID))
+									.and(mf.MEANING_ID.eq(l.MEANING_ID)))
+					.orderBy(fsl.FREEFORM_ID, fsl.ID)
+					.fetchInto(MigraSourceLink.class);
+
+		} else if (SourceLinkOwner.DEFINITION_FREEFORM_SOURCE_LINK.equals(sourceLinkOwner)) {
+
+			return create
+					.selectDistinct(
+							fsl.SOURCE_ID,
+							fsl.ID.as("source_link_id"),
+							DSL.field(DSL.val(sourceLinkOwner.name())).as("source_link_owner"),
+							fsl.FREEFORM_ID.as("source_link_owner_id"),
+							dds.DATASET_CODE)
+					.from(fsl, df, dds)
+					.where(
+							fsl.SOURCE_ID.eq(sourceId)
+									.and(fsl.FREEFORM_ID.eq(df.FREEFORM_ID))
+									.and(df.DEFINITION_ID.eq(dds.DEFINITION_ID)))
+					.orderBy(fsl.FREEFORM_ID, fsl.ID)
+					.fetchInto(MigraSourceLink.class);
+
+		} else if (SourceLinkOwner.DEFINITION_SOURCE_LINK.equals(sourceLinkOwner)) {
+
+			return create
+					.selectDistinct(
+							dsl.SOURCE_ID,
+							dsl.ID.as("source_link_id"),
+							DSL.field(DSL.val(sourceLinkOwner.name())).as("source_link_owner"),
+							dsl.DEFINITION_ID.as("source_link_owner_id"),
+							dds.DATASET_CODE)
+					.from(dsl, dds)
+					.where(
+							dsl.SOURCE_ID.eq(sourceId)
+									.and(dsl.DEFINITION_ID.eq(dds.DEFINITION_ID)))
+					.orderBy(dsl.DEFINITION_ID, dsl.ID)
+					.fetchInto(MigraSourceLink.class);
+
+		} else if (SourceLinkOwner.LEXEME_FREEFORM_SOURCE_LINK.equals(sourceLinkOwner)) {
+
+			return create
+					.selectDistinct(
+							fsl.SOURCE_ID,
+							fsl.ID.as("source_link_id"),
+							DSL.field(DSL.val(sourceLinkOwner.name())).as("source_link_owner"),
+							fsl.FREEFORM_ID.as("source_link_owner_id"),
+							l.DATASET_CODE)
+					.from(fsl, lf, l)
+					.where(
+							fsl.SOURCE_ID.eq(sourceId)
+									.and(fsl.FREEFORM_ID.eq(lf.FREEFORM_ID))
+									.and(lf.LEXEME_ID.eq(l.ID)))
+					.orderBy(fsl.FREEFORM_ID, fsl.ID)
+					.fetchInto(MigraSourceLink.class);
+
+		} else if (SourceLinkOwner.LEXEME_SOURCE_LINK.equals(sourceLinkOwner)) {
+
+			return create
+					.selectDistinct(
+							lsl.SOURCE_ID,
+							lsl.ID.as("source_link_id"),
+							DSL.field(DSL.val(sourceLinkOwner.name())).as("source_link_owner"),
+							lsl.LEXEME_ID.as("source_link_owner_id"),
+							l.DATASET_CODE)
+					.from(lsl, l)
+					.where(
+							lsl.SOURCE_ID.eq(sourceId)
+									.and(lsl.LEXEME_ID.eq(l.ID)))
+					.orderBy(lsl.LEXEME_ID, lsl.ID)
+					.fetchInto(MigraSourceLink.class);
+
+		} else if (SourceLinkOwner.WORD_ETYM_SOURCE_LINK.equals(sourceLinkOwner)) {
+
+			return create
+					.selectDistinct(
+							wesl.SOURCE_ID,
+							wesl.ID.as("source_link_id"),
+							DSL.field(DSL.val(sourceLinkOwner.name())).as("source_link_owner"),
+							wesl.WORD_ETYM_ID.as("source_link_owner_id"),
+							DSL.field(DSL.val(DATASET_ETY)).as("dataset_code"))
+					.from(wesl)
+					.where(wesl.SOURCE_ID.eq(sourceId))
+					.orderBy(wesl.WORD_ETYM_ID, wesl.ID)
+					.fetchInto(MigraSourceLink.class);
+		}
+		return null;
+	}
+
+	public void relinkSourceLink(Long sourceId, MigraSourceLink sourceLink) {
+
+		Long sourceLinkId = sourceLink.getSourceLinkId();
+		SourceLinkOwner sourceLinkOwner = sourceLink.getSourceLinkOwner();
+
+		if (SourceLinkOwner.MEANING_FREEFORM_SOURCE_LINK.equals(sourceLinkOwner)) {
+
+			create
+					.update(FREEFORM_SOURCE_LINK)
+					.set(FREEFORM_SOURCE_LINK.SOURCE_ID, sourceId)
+					.where(FREEFORM_SOURCE_LINK.ID.eq(sourceLinkId))
+					.execute();
+
+		} else if (SourceLinkOwner.DEFINITION_FREEFORM_SOURCE_LINK.equals(sourceLinkOwner)) {
+
+			create
+					.update(FREEFORM_SOURCE_LINK)
+					.set(FREEFORM_SOURCE_LINK.SOURCE_ID, sourceId)
+					.where(FREEFORM_SOURCE_LINK.ID.eq(sourceLinkId))
+					.execute();
+
+		} else if (SourceLinkOwner.DEFINITION_SOURCE_LINK.equals(sourceLinkOwner)) {
+
+			create
+					.update(DEFINITION_SOURCE_LINK)
+					.set(DEFINITION_SOURCE_LINK.SOURCE_ID, sourceId)
+					.where(DEFINITION_SOURCE_LINK.ID.eq(sourceLinkId))
+					.execute();
+
+		} else if (SourceLinkOwner.LEXEME_FREEFORM_SOURCE_LINK.equals(sourceLinkOwner)) {
+
+			create
+					.update(FREEFORM_SOURCE_LINK)
+					.set(FREEFORM_SOURCE_LINK.SOURCE_ID, sourceId)
+					.where(FREEFORM_SOURCE_LINK.ID.eq(sourceLinkId))
+					.execute();
+
+		} else if (SourceLinkOwner.LEXEME_SOURCE_LINK.equals(sourceLinkOwner)) {
+
+			create
+					.update(LEXEME_SOURCE_LINK)
+					.set(LEXEME_SOURCE_LINK.SOURCE_ID, sourceId)
+					.where(LEXEME_SOURCE_LINK.ID.eq(sourceLinkId))
+					.execute();
+
+		} else if (SourceLinkOwner.WORD_ETYM_SOURCE_LINK.equals(sourceLinkOwner)) {
+
+			create
+					.update(WORD_ETYMOLOGY_SOURCE_LINK)
+					.set(WORD_ETYMOLOGY_SOURCE_LINK.SOURCE_ID, sourceId)
+					.where(WORD_ETYMOLOGY_SOURCE_LINK.ID.eq(sourceLinkId))
+					.execute();
+		}
+	}
+
+	public void duplicateActivityLog(Long sourceSourceId, Long targetSourceId) {
+
+		SourceActivityLog sal = SOURCE_ACTIVITY_LOG.as("sal");
+
+		create
+				.insertInto(
+						SOURCE_ACTIVITY_LOG,
+						SOURCE_ACTIVITY_LOG.ACTIVITY_LOG_ID,
+						SOURCE_ACTIVITY_LOG.SOURCE_ID)
+				.select(
+						DSL
+								.select(
+										sal.ACTIVITY_LOG_ID,
+										DSL.val(targetSourceId))
+								.from(sal)
+								.where(sal.SOURCE_ID.eq(sourceSourceId))
+								.orderBy(sal.ID))
+				.execute();
+
+	}
+
+	public void setSourceDataset(Long sourceId, String datasetCode) {
+
+		create
+				.update(SOURCE)
+				.set(SOURCE.DATASET_CODE, datasetCode)
+				.where(SOURCE.ID.eq(sourceId))
+				.execute();
 	}
 }

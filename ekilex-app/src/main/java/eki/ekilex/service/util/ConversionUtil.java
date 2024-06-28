@@ -1079,6 +1079,7 @@ public class ConversionUtil implements GlobalConstant {
 			if (source == null) {
 				source = new Source();
 				source.setId(sourceId);
+				source.setDatasetCode(tuple.getSourceDatasetCode());
 				source.setType(tuple.getSourceType());
 				source.setName(tuple.getSourceName());
 				source.setValue(tuple.getSourceValue());
@@ -1099,15 +1100,6 @@ public class ConversionUtil implements GlobalConstant {
 			source.getSourceProperties().add(sourceProperty);
 		}
 
-		sources.forEach(source -> {
-			List<SourceProperty> sourceProperties = source.getSourceProperties();
-			List<String> sourceNames = sourceProperties.stream()
-					.filter(sourceProperty -> FreeformType.SOURCE_NAME.equals(sourceProperty.getType()))
-					.map(SourceProperty::getValueText)
-					.collect(Collectors.toList());
-			// This is used in lex person search where first source name is displayed
-			source.setNameTypeSourceProperties(sourceNames);
-		});
 		return sources;
 	}
 

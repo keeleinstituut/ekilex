@@ -161,7 +161,9 @@ public class ApiSearchController extends AbstractApiController {
 
 		boolean noLimit = true;
 		List<String> datasets = parseDatasets(datasetsStr);
-		WordsResult results = lexSearchService.getWords(word, datasets, null, null, DEFAULT_OFFSET, DEFAULT_MAX_RESULTS_LIMIT, noLimit);
+		// TODO either specific role or anonymous user should be applied here
+		String userRoleDatasetCode = null;
+		WordsResult results = lexSearchService.getWords(word, datasets, null, userRoleDatasetCode, DEFAULT_OFFSET, DEFAULT_MAX_RESULTS_LIMIT, noLimit);
 		return results;
 	}
 
@@ -178,6 +180,7 @@ public class ApiSearchController extends AbstractApiController {
 		List<String> datasets = parseDatasets(datasetsStr);
 		boolean isFullData = true;
 		EkiUser user = userContext.getUser();
+		// TODO either specific role or anonymous user should be applied here
 		WordDetails result = lexSearchService.getWordDetails(wordId, null, datasets, null, user, null, null, isFullData);
 		return result;
 	}

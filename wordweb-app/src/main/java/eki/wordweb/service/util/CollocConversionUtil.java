@@ -87,8 +87,7 @@ public class CollocConversionUtil extends AbstractConversionUtil {
 				.collect(Collectors
 						.groupingBy(CollocationTuple::getRelGroupId, Collectors
 								.groupingBy(CollocationTuple::getCollocValue, Collectors
-										.mapping(tuple -> tuple.getCollocMembers().size(), Collectors
-												.maxBy(Integer::compare)))));
+										.mapping(tuple -> tuple.getCollocMembers().size(), Collectors.maxBy(Integer::compare)))));
 
 		collocTuples = collocTuples.stream()
 				.filter(tuple -> {

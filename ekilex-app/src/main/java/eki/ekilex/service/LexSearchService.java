@@ -78,7 +78,10 @@ public class LexSearchService extends AbstractWordSearchService {
 		if (word == null) {
 			return null;
 		}
-		DatasetPermission userRole = user.getRecentRole();
+		DatasetPermission userRole = null;
+		if (user != null) {
+			userRole = user.getRecentRole();
+		}
 		permCalculator.applyCrud(user, word);
 		String wordLang = word.getLang();
 		List<Classifier> wordTypes = commonDataDbService.getWordTypes(wordId, CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);

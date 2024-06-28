@@ -1,14 +1,11 @@
 package eki.ekilex.service;
 
-import java.util.List;
-
 import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
 import eki.common.constant.ActivityOwner;
-import eki.common.constant.SourceType;
-import eki.ekilex.data.SourceProperty;
+import eki.ekilex.data.Source;
 import eki.ekilex.service.db.SourceDbService;
 import eki.ekilex.service.db.SourceLinkDbService;
 
@@ -22,12 +19,19 @@ public abstract class AbstractSourceService extends AbstractService {
 
 	@Transactional
 	public Long createSource(
-			SourceType type, String name, String valuePrese, String comment, boolean isPublic, List<SourceProperty> sourceProperties, String roleDatasetCode,
+			Source source,
+			String roleDatasetCode,
 			boolean isManualEventOnUpdateEnabled) throws Exception {
 
+		String valuePrese = source.getValuePrese();
 		String value = textDecorationService.removeEkiElementMarkup(valuePrese);
-		Long sourceId = sourceDbService.createSource(type, name, value, valuePrese, comment, isPublic, sourceProperties);
+		source.setValue(value);
+		source.setDatasetCode(roleDatasetCode);
+
+		Long sourceId = sourceDbService.createSource(source);
+
 		activityLogService.createActivityLog("createSource", sourceId, ActivityOwner.SOURCE, roleDatasetCode, isManualEventOnUpdateEnabled);
+
 		return sourceId;
 	}
 }

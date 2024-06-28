@@ -35,13 +35,17 @@ public class PermCalculator implements PermConstant {
 
 	public void applyCrud(EkiUser user, List<? extends AbstractCrudEntity> crudEntities) {
 
+		if (user == null) {
+			return;
+		}
+
+		Long userId = user.getId();
+		DatasetPermission userRole = user.getRecentRole();
+
 		for (AbstractCrudEntity crudEntity : crudEntities) {
 
 			boolean isCrudGrant = false;
 			boolean isAnyGrant = false;
-
-			Long userId = user.getId();
-			DatasetPermission userRole = user.getRecentRole();
 
 			if (user.isMaster()) {
 				isCrudGrant = isAnyGrant = true;
@@ -105,6 +109,10 @@ public class PermCalculator implements PermConstant {
 	}
 
 	public void applyCrud(EkiUser user, AbstractCrudEntity crudEntity) {
+
+		if (user == null) {
+			return;
+		}
 
 		Long userId = user.getId();
 		DatasetPermission userRole = user.getRecentRole();

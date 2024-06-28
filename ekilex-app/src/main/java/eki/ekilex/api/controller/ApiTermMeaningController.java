@@ -30,7 +30,7 @@ public class ApiTermMeaningController extends AbstractApiController {
 	private CudService cudService;
 
 	@Order(850)
-	@PreAuthorize("@permEval.isDatasetCrudGranted(principal, #crudRoleDataset, #datasetCode)")
+	@PreAuthorize("@permEval.isDatasetCrudGranted(authentication, #crudRoleDataset, #datasetCode)")
 	@GetMapping(API_SERVICES_URI + TERM_MEANING_URI + DETAILS_URI + "/{meaningId}/{datasetCode}")
 	@ResponseBody
 	public TermMeaning getTermMeaning(
@@ -43,8 +43,8 @@ public class ApiTermMeaningController extends AbstractApiController {
 
 	@Order(851)
 	@PreAuthorize("principal.apiCrud "
-			+ "&& @permEval.isDatasetCrudGranted(principal, #crudRoleDataset, #termMeaning.datasetCode) "
-			+ "&& @permEval.isMeaningCrudGranted(principal, #crudRoleDataset, #termMeaning.meaningId)")
+			+ "&& @permEval.isDatasetCrudGranted(authentication, #crudRoleDataset, #termMeaning.datasetCode) "
+			+ "&& @permEval.isMeaningCrudGranted(authentication, #crudRoleDataset, #termMeaning.meaningId)")
 	@PostMapping(API_SERVICES_URI + TERM_MEANING_URI + SAVE_URI)
 	@ResponseBody
 	public ApiResponse saveTermMeaning(
@@ -64,8 +64,8 @@ public class ApiTermMeaningController extends AbstractApiController {
 
 	@Order(852)
 	@PreAuthorize("principal.apiCrud "
-			+ "&& @permEval.isDatasetCrudGranted(principal, #crudRoleDataset, #crudRoleDataset) "
-			+ "&& @permEval.isMeaningCrudGranted(principal, #crudRoleDataset, #meaningId)")
+			+ "&& @permEval.isDatasetCrudGranted(authentication, #crudRoleDataset, #crudRoleDataset) "
+			+ "&& @permEval.isMeaningCrudGranted(authentication, #crudRoleDataset, #meaningId)")
 	@DeleteMapping(API_SERVICES_URI + TERM_MEANING_URI + DELETE_URI)
 	@ResponseBody
 	public ApiResponse deleteTermMeaning(

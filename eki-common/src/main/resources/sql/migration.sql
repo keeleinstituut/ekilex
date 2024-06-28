@@ -124,3 +124,11 @@ create index collocation_member_member_lexeme_id_idx on collocation_member(membe
 create index collocation_member_member_form_id_idx on collocation_member(member_form_id);
 create index collocation_member_pos_group_code_idx on collocation_member(pos_group_code);
 create index collocation_member_rel_group_code_idx on collocation_member(rel_group_code);
+
+-- sõnakogupõhised allikad
+
+alter table source add column dataset_code varchar(10) references dataset(code) on update cascade;
+create index source_dataset_code_idx on source(dataset_code);
+-- run SourceDatasetApplier
+alter table source alter column dataset_code set not null;
+

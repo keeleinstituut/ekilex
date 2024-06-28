@@ -7,7 +7,7 @@
       <div class="modal-content">
         <form th:action="@{/update_source}" method="post" data-plugin="editSourcePlugin">
           <div class="modal-body">
-            <input type="hidden" name="sourceId" th:value="${source.id}">
+            <input type="hidden" name="id" th:value="${source.id}">
             <input type="hidden" name="valuePrese" th:value="${source.valuePrese}">
             <div class="form-group row m-4">
               <label class="col-12 col-form-label" th:text="#{source.type}">Tüüp</label>

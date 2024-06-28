@@ -2,11 +2,7 @@ package eki.ekilex.web.controller;
 
 import java.util.List;
 import java.util.Locale;
-import java.util.stream.Collectors;
 
-import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
 import org.springframework.context.i18n.LocaleContextHolder;
@@ -21,16 +17,12 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.SessionAttributes;
 
-import eki.common.constant.FreeformType;
-import eki.common.constant.SourceType;
 import eki.ekilex.constant.ResponseStatus;
 import eki.ekilex.constant.WebConstant;
-import eki.ekilex.data.DatasetPermission;
 import eki.ekilex.data.EkiUser;
 import eki.ekilex.data.Response;
 import eki.ekilex.data.Source;
-import eki.ekilex.data.SourceProperty;
-import eki.ekilex.data.SourceRequest;
+import eki.ekilex.data.SourceAndSourceLinkRequest;
 import eki.ekilex.data.SourceSearchResult;
 import eki.ekilex.service.SourceLinkService;
 import eki.ekilex.service.SourceService;
@@ -41,8 +33,6 @@ import eki.ekilex.web.util.ValueUtil;
 @Controller
 @SessionAttributes(WebConstant.SESSION_BEAN)
 public class SourceEditController extends AbstractMutableDataPageController {
-
-	private static final Logger logger = LoggerFactory.getLogger(SourceEditController.class);
 
 	@Autowired
 	private SourceService sourceService;
@@ -58,99 +48,33 @@ public class SourceEditController extends AbstractMutableDataPageController {
 	public List<String> sourceNameSearch(@PathVariable("nameSearchFilter") String nameSearchFilter) {
 
 		List<String> sourceNames = sourceService.getSourceNames(nameSearchFilter, AUTOCOMPLETE_MAX_RESULTS_LIMIT);
+
 		return sourceNames;
 	}
 
 	@GetMapping(SOURCE_QUICK_SEARCH_URI)
 	public String sourceSearch(@RequestParam String searchFilter, Model model) {
 
-		logger.debug("Searching by : \"{}\"", searchFilter);
-
+		EkiUser user = userContext.getUser();
 		searchFilter = valueUtil.trimAndCleanAndRemoveHtmlAndLimit(searchFilter);
-		SourceSearchResult sourceSearchResult = sourceService.getSourceSearchResult(searchFilter);
+		SourceSearchResult sourceSearchResult = sourceService.getSourceSearchResult(searchFilter, user);
 		model.addAttribute("searchFilter", searchFilter);
 		model.addAttribute("sourceSearchResult", sourceSearchResult);
 
 		return SOURCE_COMPONENTS_PAGE + PAGE_FRAGMENT_ELEM + "source_link_dlg";
 	}
 
-	@PostMapping(UPDATE_SOURCE_PROPERTY_URI)
-	public String updateSourceProperty(
-			@RequestParam("sourcePropertyId") Long sourcePropertyId,
-			@RequestParam("valueText") String valueText,
-			Model model) throws Exception {
-
-		EkiUser user = userContext.getUser();
-		DatasetPermission userRole = user.getRecentRole();
-		String roleDatasetCode = userRole.getDatasetCode();
-		valueText = valueUtil.trimAndCleanAndRemoveHtmlAndLimit(valueText);
-
-		Long sourceId = sourceService.getSourceId(sourcePropertyId);
-		logger.debug("Updating source property with id: {}, source id: {}", sourcePropertyId, sourceId);
-
-		sourceService.updateSourceProperty(sourcePropertyId, valueText, roleDatasetCode);
-		Source source = sourceService.getSource(sourceId, user);
-		model.addAttribute("source", source);
-
-		return SOURCE_COMPONENTS_PAGE + PAGE_FRAGMENT_ELEM + SOURCE_SEARCH_RESULT;
-	}
-
-	@PostMapping(CREATE_SOURCE_PROPERTY_URI)
-	public String createSourceProperty(
-			@RequestParam("sourceId") Long sourceId,
-			@RequestParam("type") FreeformType type,
-			@RequestParam("valueText") String valueText,
-			Model model) throws Exception {
-
-		logger.debug("Creating property for source with id: {}", sourceId);
-
-		EkiUser user = userContext.getUser();
-		DatasetPermission userRole = user.getRecentRole();
-		String roleDatasetCode = userRole.getDatasetCode();
-
-		valueText = valueUtil.trimAndCleanAndRemoveHtmlAndLimit(valueText);
-		sourceService.createSourceProperty(sourceId, type, valueText, roleDatasetCode);
-		Source source = sourceService.getSource(sourceId, user);
-		model.addAttribute("source", source);
-
-		return SOURCE_COMPONENTS_PAGE + PAGE_FRAGMENT_ELEM + SOURCE_SEARCH_RESULT;
-	}
-
-	@GetMapping(DELETE_SOURCE_PROPERTY_URI + "/{sourcePropertyId}")
-	public String deleteSourceProperty(@PathVariable("sourcePropertyId") Long sourcePropertyId, Model model) throws Exception {
-
-		EkiUser user = userContext.getUser();
-		DatasetPermission userRole = user.getRecentRole();
-		String roleDatasetCode = userRole.getDatasetCode();
-		Long sourceId = sourceService.getSourceId(sourcePropertyId);
-		logger.debug("Deleting source property with id: {}, source id: {}", sourcePropertyId, sourceId);
-
-		sourceService.deleteSourceProperty(sourcePropertyId, roleDatasetCode);
-		Source source = sourceService.getSource(sourceId, user);
-		model.addAttribute("source", source);
-
-		return SOURCE_COMPONENTS_PAGE + PAGE_FRAGMENT_ELEM + SOURCE_SEARCH_RESULT;
-	}
-
 	@PostMapping(UPDATE_SOURCE_URI)
 	public String updateSource(
-			@RequestParam("sourceId") Long sourceId,
-			@RequestParam("type") SourceType type,
-			@RequestParam("name") String name,
-			@RequestParam("valuePrese") String valuePrese,
-			@RequestParam("comment") String comment,
-			@RequestParam(name = "public", required = false) boolean isPublic,
+			@RequestBody Source source,
 			Model model) throws Exception {
 
-		logger.debug("Updating source type, source id: {}", sourceId);
-
+		Long sourceId = source.getId();
 		EkiUser user = userContext.getUser();
-		DatasetPermission userRole = user.getRecentRole();
-		String roleDatasetCode = userRole.getDatasetCode();
-		valuePrese = valueUtil.trimAndCleanAndRemoveHtmlAndLimit(valuePrese);
-
-		sourceService.updateSource(sourceId, type, name, valuePrese, comment, isPublic, roleDatasetCode);
-		Source source = sourceService.getSource(sourceId, user);
+		String roleDatasetCode = getDatasetCodeFromRole();
+		cleanupSource(source);
+		sourceService.updateSource(source, roleDatasetCode);
+		source = sourceService.getSource(sourceId, user);
 		model.addAttribute("source", source);
 
 		return SOURCE_COMPONENTS_PAGE + PAGE_FRAGMENT_ELEM + SOURCE_SEARCH_RESULT;
@@ -158,42 +82,26 @@ public class SourceEditController extends AbstractMutableDataPageController {
 
 	@PostMapping(CREATE_SOURCE_URI)
 	@ResponseBody
-	public String createSource(@RequestBody SourceRequest source) throws Exception {
+	public String createSource(@RequestBody Source source) throws Exception {
 
 		String roleDatasetCode = getDatasetCodeFromRole();
-		SourceType sourceType = source.getType();
-		String name = source.getName();
-		String valuePrese = source.getValuePrese();
-		valuePrese = valueUtil.trimAndCleanAndRemoveHtmlAndLimit(valuePrese);
-		String comment = source.getComment();
-		boolean isPublic = source.isPublic();
-		logger.debug("Creating new source, name: {}", name);
-
-		List<SourceProperty> sourceProperties = processSourceProperties(source);
-		Long sourceId = sourceService.createSource(sourceType, name, valuePrese, comment, isPublic, sourceProperties, roleDatasetCode, MANUAL_EVENT_ON_UPDATE_DISABLED);
+		cleanupSource(source);
+		Long sourceId = sourceService.createSource(source, roleDatasetCode, MANUAL_EVENT_ON_UPDATE_DISABLED);
 
 		return String.valueOf(sourceId);
 	}
 
 	@PostMapping(CREATE_SOURCE_AND_SOURCE_LINK_URI)
 	@ResponseBody
-	public String createSourceAndSourceLink(@RequestBody SourceRequest source, @ModelAttribute(name = SESSION_BEAN) SessionBean sessionBean) throws Exception {
+	public String createSourceAndSourceLink(@RequestBody SourceAndSourceLinkRequest source, @ModelAttribute(name = SESSION_BEAN) SessionBean sessionBean) throws Exception {
 
-		SourceType sourceType = source.getType();
-		String name = source.getName();
-		String valuePrese = source.getValuePrese();
-		valuePrese = valueUtil.trimAndCleanAndRemoveHtmlAndLimit(valuePrese);
-		String comment = source.getComment();
-		boolean isPublic = source.isPublic();
-		Long sourceLinkOwnerId = source.getId();
-		String sourceLinkOwnerCode = source.getOpCode();
+		Long sourceLinkOwnerId = source.getSourceOwnerId();
+		String sourceLinkOwnerName = source.getSourceOwnerName();
 		String roleDatasetCode = getDatasetCodeFromRole();
 		boolean isManualEventOnUpdateEnabled = sessionBean.isManualEventOnUpdateEnabled();
-		logger.debug("Creating new source and source link, name: {}", name);
 
-		List<SourceProperty> sourceProperties = processSourceProperties(source);
-		sourceLinkService.createSourceAndSourceLink(
-				sourceType, name, valuePrese, comment, isPublic, sourceProperties, sourceLinkOwnerId, sourceLinkOwnerCode, roleDatasetCode, isManualEventOnUpdateEnabled);
+		cleanupSource(source);
+		sourceLinkService.createSourceAndSourceLink(source, sourceLinkOwnerId, sourceLinkOwnerName, roleDatasetCode, isManualEventOnUpdateEnabled);
 
 		return RESPONSE_OK_VER2;
 	}
@@ -202,7 +110,6 @@ public class SourceEditController extends AbstractMutableDataPageController {
 	@ResponseBody
 	public Response validateSourceDelete(@PathVariable("sourceId") Long sourceId) {
 
-		logger.debug("Validating source delete, source id: {}", sourceId);
 		Locale locale = LocaleContextHolder.getLocale();
 
 		Response response = new Response();
@@ -220,7 +127,6 @@ public class SourceEditController extends AbstractMutableDataPageController {
 	@ResponseBody
 	public String deleteSource(@PathVariable("sourceId") Long sourceId) throws Exception {
 
-		logger.debug("Deleting source with id: {}", sourceId);
 		String roleDatasetCode = getDatasetCodeFromRole();
 		sourceService.deleteSource(sourceId, roleDatasetCode);
 
@@ -250,7 +156,7 @@ public class SourceEditController extends AbstractMutableDataPageController {
 
 		EkiUser user = userContext.getUser();
 		Source targetSource = sourceService.getSource(targetSourceId, user);
-		List<Source> sources = sourceService.getSourcesExcludingOne(searchFilter, targetSource, user);
+		List<Source> sources = sourceService.getSourcesBasedOnExcludedOne(searchFilter, targetSource, user);
 		model.addAttribute("targetSource", targetSource);
 		model.addAttribute("sources", sources);
 		model.addAttribute("searchFilter", searchFilter);
@@ -270,21 +176,10 @@ public class SourceEditController extends AbstractMutableDataPageController {
 		return REDIRECT_PREF + SOURCE_SEARCH_URI + "/" + targetSourceId;
 	}
 
-	private List<SourceProperty> processSourceProperties(SourceRequest source) {
+	private void cleanupSource(Source source) {
 
-		List<SourceProperty> sourceProperties = source.getProperties();
-
-		sourceProperties.forEach(property -> {
-			String valueText = property.getValueText();
-			valueText = valueUtil.trimAndCleanAndRemoveHtmlAndLimit(valueText);
-			property.setValueText(valueText);
-		});
-
-		sourceProperties = sourceProperties.stream()
-				.filter(sourceProperty -> StringUtils.isNotBlank(sourceProperty.getValueText()))
-				.collect(Collectors.toList());
-
-		return sourceProperties;
+		String valuePrese = source.getValuePrese();
+		valuePrese = valueUtil.trimAndCleanAndRemoveHtmlAndLimit(valuePrese);
+		source.setValuePrese(valuePrese);
 	}
-
 }

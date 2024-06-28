@@ -10,6 +10,8 @@ public class Source extends AbstractCrudEntity {
 
 	private Long id;
 
+	private String datasetCode;
+
 	private SourceType type;
 
 	private String name;
@@ -22,8 +24,6 @@ public class Source extends AbstractCrudEntity {
 
 	private boolean isPublic;
 
-	private List<String> nameTypeSourceProperties;
-
 	private List<SourceProperty> sourceProperties;
 
 	public Long getId() {
@@ -32,6 +32,14 @@ public class Source extends AbstractCrudEntity {
 
 	public void setId(Long id) {
 		this.id = id;
+	}
+
+	public String getDatasetCode() {
+		return datasetCode;
+	}
+
+	public void setDatasetCode(String datasetCode) {
+		this.datasetCode = datasetCode;
 	}
 
 	public SourceType getType() {
@@ -80,14 +88,6 @@ public class Source extends AbstractCrudEntity {
 
 	public void setPublic(boolean isPublic) {
 		this.isPublic = isPublic;
-	}
-
-	public List<String> getNameTypeSourceProperties() {
-		return nameTypeSourceProperties;
-	}
-
-	public void setNameTypeSourceProperties(List<String> nameTypeSourceProperties) {
-		this.nameTypeSourceProperties = nameTypeSourceProperties;
 	}
 
 	public List<SourceProperty> getSourceProperties() {

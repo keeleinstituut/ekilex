@@ -46,7 +46,7 @@ public class ApiMeaningController extends AbstractApiController {
 	}
 
 	@Order(802)
-	@PreAuthorize("principal.apiCrud && @permEval.isMeaningForumCrudGranted(principal, #meaningForum.id)")
+	@PreAuthorize("principal.apiCrud && @permEval.isMeaningForumCrudGranted(authentication, #meaningForum.id)")
 	@PostMapping(API_SERVICES_URI + MEANING_FORUM_URI + UPDATE_URI)
 	@ResponseBody
 	public ApiResponse updateMeaningForum(@RequestBody MeaningForum meaningForum) {
@@ -64,7 +64,7 @@ public class ApiMeaningController extends AbstractApiController {
 	}
 
 	@Order(803)
-	@PreAuthorize("principal.apiCrud && @permEval.isMeaningForumCrudGranted(principal, #meaningForumId)")
+	@PreAuthorize("principal.apiCrud && @permEval.isMeaningForumCrudGranted(authentication, #meaningForumId)")
 	@DeleteMapping(API_SERVICES_URI + MEANING_FORUM_URI + DELETE_URI)
 	@ResponseBody
 	public ApiResponse deleteMeaningForum(@RequestParam("meaningForumId") Long meaningForumId) {
@@ -78,7 +78,7 @@ public class ApiMeaningController extends AbstractApiController {
 	}
 
 	@Order(804)
-	@PreAuthorize("principal.apiCrud && @permEval.isMeaningCrudGranted(principal, #crudRoleDataset, #meaningRelation.meaningId)")
+	@PreAuthorize("principal.apiCrud && @permEval.isMeaningCrudGranted(authentication, #crudRoleDataset, #meaningRelation.meaningId)")
 	@PostMapping(API_SERVICES_URI + MEANING_RELATION_URI + CREATE_URI)
 	@ResponseBody
 	public ApiResponse createMeaningRelation(
@@ -98,7 +98,7 @@ public class ApiMeaningController extends AbstractApiController {
 	}
 
 	@Order(805)
-	@PreAuthorize("principal.apiCrud && @permEval.isMeaningRelationCrudGranted(principal, #crudRoleDataset, #relationId)")
+	@PreAuthorize("principal.apiCrud && @permEval.isMeaningRelationCrudGranted(authentication, #crudRoleDataset, #relationId)")
 	@DeleteMapping(API_SERVICES_URI + MEANING_RELATION_URI + DELETE_URI)
 	@ResponseBody
 	public ApiResponse deleteMeaningRelation(
@@ -120,7 +120,7 @@ public class ApiMeaningController extends AbstractApiController {
 	}
 
 	@Order(806)
-	@PreAuthorize("principal.apiCrud && @permEval.isMeaningCrudGranted(principal, #crudRoleDataset, #meaningTag.meaningId)")
+	@PreAuthorize("principal.apiCrud && @permEval.isMeaningCrudGranted(authentication, #crudRoleDataset, #meaningTag.meaningId)")
 	@PostMapping(API_SERVICES_URI + MEANING_TAG_URI + CREATE_URI)
 	@ResponseBody
 	public ApiResponse createMeaningTag(
@@ -138,7 +138,7 @@ public class ApiMeaningController extends AbstractApiController {
 	}
 
 	@Order(807)
-	@PreAuthorize("principal.apiCrud && @permEval.isMeaningCrudGranted(principal, #crudRoleDataset, #meaningTag.meaningId)")
+	@PreAuthorize("principal.apiCrud && @permEval.isMeaningCrudGranted(authentication, #crudRoleDataset, #meaningTag.meaningId)")
 	@PostMapping(API_SERVICES_URI + MEANING_TAG_URI + DELETE_URI)
 	@ResponseBody
 	public ApiResponse deleteMeaningTag(

@@ -27,7 +27,7 @@ public class ApiWordController extends AbstractApiController {
 	private CudService cudService;
 
 	@Order(603)
-	@PreAuthorize("principal.apiCrud && @permEval.isWordCrudGranted(principal, #crudRoleDataset, #wordType.wordId)")
+	@PreAuthorize("principal.apiCrud && @permEval.isWordCrudGranted(authentication, #crudRoleDataset, #wordType.wordId)")
 	@PostMapping(API_SERVICES_URI + WORD_TYPE_URI + CREATE_URI)
 	@ResponseBody
 	public ApiResponse createWordType(
@@ -45,7 +45,7 @@ public class ApiWordController extends AbstractApiController {
 	}
 
 	@Order(604)
-	@PreAuthorize("principal.apiCrud && @permEval.isWordCrudGranted(principal, #crudRoleDataset, #wordType.wordId)")
+	@PreAuthorize("principal.apiCrud && @permEval.isWordCrudGranted(authentication, #crudRoleDataset, #wordType.wordId)")
 	@DeleteMapping(API_SERVICES_URI + WORD_TYPE_URI + DELETE_URI)
 	@ResponseBody
 	public ApiResponse deleteWordType(
@@ -63,7 +63,7 @@ public class ApiWordController extends AbstractApiController {
 	}
 
 	@Order(605)
-	@PreAuthorize("principal.apiCrud && @permEval.isWordCrudGranted(principal, #crudRoleDataset, #wordRelation.wordId)")
+	@PreAuthorize("principal.apiCrud && @permEval.isWordCrudGranted(authentication, #crudRoleDataset, #wordRelation.wordId)")
 	@PostMapping(API_SERVICES_URI + WORD_RELATION_URI + CREATE_URI)
 	@ResponseBody
 	public ApiResponse createWordRelation(
@@ -83,7 +83,7 @@ public class ApiWordController extends AbstractApiController {
 	}
 
 	@Order(606)
-	@PreAuthorize("principal.apiCrud && @permEval.isWordRelationCrudGranted(principal, #crudRoleDataset, #relationId)")
+	@PreAuthorize("principal.apiCrud && @permEval.isWordRelationCrudGranted(authentication, #crudRoleDataset, #relationId)")
 	@DeleteMapping(API_SERVICES_URI + WORD_RELATION_URI + DELETE_URI)
 	@ResponseBody
 	public ApiResponse deleteWordRelation(
@@ -117,7 +117,7 @@ public class ApiWordController extends AbstractApiController {
 	}
 
 	@Order(608)
-	@PreAuthorize("principal.apiCrud && @permEval.isWordForumCrudGranted(principal, #wordForum.id)")
+	@PreAuthorize("principal.apiCrud && @permEval.isWordForumCrudGranted(authentication, #wordForum.id)")
 	@PostMapping(API_SERVICES_URI + WORD_FORUM_URI + UPDATE_URI)
 	@ResponseBody
 	public ApiResponse updateWordForum(@RequestBody WordForum wordForum) {
@@ -135,7 +135,7 @@ public class ApiWordController extends AbstractApiController {
 	}
 
 	@Order(609)
-	@PreAuthorize("principal.apiCrud && @permEval.isWordForumCrudGranted(principal, #wordForumId)")
+	@PreAuthorize("principal.apiCrud && @permEval.isWordForumCrudGranted(authentication, #wordForumId)")
 	@DeleteMapping(API_SERVICES_URI + WORD_FORUM_URI + DELETE_URI)
 	@ResponseBody
 	public ApiResponse deleteWordForum(@RequestParam("wordForumId") Long wordForumId) {
@@ -149,7 +149,7 @@ public class ApiWordController extends AbstractApiController {
 	}
 
 	@Order(610)
-	@PreAuthorize("principal.apiCrud && @permEval.isWordCrudGranted(principal, #crudRoleDataset, #odWordRecommendation.wordId)")
+	@PreAuthorize("principal.apiCrud && @permEval.isWordCrudGranted(authentication, #crudRoleDataset, #odWordRecommendation.wordId)")
 	@PostMapping(API_SERVICES_URI + OD_WORD_RECOMMENDATION + CREATE_URI)
 	@ResponseBody
 	public ApiResponse createOdWordRecommendation(
@@ -168,7 +168,7 @@ public class ApiWordController extends AbstractApiController {
 	}
 
 	@Order(611)
-	@PreAuthorize("principal.apiCrud && @permEval.isWordFreeformCrudGranted(principal, #crudRoleDataset, #odWordRecommendation.freeformId)")
+	@PreAuthorize("principal.apiCrud && @permEval.isWordFreeformCrudGranted(authentication, #crudRoleDataset, #odWordRecommendation.freeformId)")
 	@PostMapping(API_SERVICES_URI + OD_WORD_RECOMMENDATION + UPDATE_URI)
 	@ResponseBody
 	public ApiResponse updateOdWordRecommendation(
@@ -187,7 +187,7 @@ public class ApiWordController extends AbstractApiController {
 	}
 
 	@Order(612)
-	@PreAuthorize("principal.apiCrud && @permEval.isWordFreeformCrudGranted(principal, #crudRoleDataset, #odWordRecommendationId)")
+	@PreAuthorize("principal.apiCrud && @permEval.isWordFreeformCrudGranted(authentication, #crudRoleDataset, #odWordRecommendationId)")
 	@DeleteMapping(API_SERVICES_URI + OD_WORD_RECOMMENDATION + DELETE_URI)
 	@ResponseBody
 	public ApiResponse deleteOdWordRecommendation(
@@ -196,22 +196,6 @@ public class ApiWordController extends AbstractApiController {
 
 		try {
 			cudService.deleteOdWordRecommendation(odWordRecommendationId, crudRoleDataset, MANUAL_EVENT_ON_UPDATE_ENABLED);
-			return getOpSuccessResponse();
-		} catch (Exception e) {
-			return getOpFailResponse(e);
-		}
-	}
-
-	@Order(613)
-	@PreAuthorize("principal.apiCrud && @permEval.isLexemeCrudGranted(principal, #crudRoleDataset, #lexemeId)")
-	@DeleteMapping(API_SERVICES_URI + LEXEME_URI + DELETE_URI)
-	@ResponseBody
-	public ApiResponse deleteLexeme(
-			@RequestParam("crudRoleDataset") String crudRoleDataset,
-			@RequestParam("lexemeId") Long lexemeId) {
-
-		try {
-			cudService.deleteLexeme(lexemeId, crudRoleDataset, MANUAL_EVENT_ON_UPDATE_ENABLED);
 			return getOpSuccessResponse();
 		} catch (Exception e) {
 			return getOpFailResponse(e);

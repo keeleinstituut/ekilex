@@ -3,6 +3,7 @@ package eki.ekilex.service;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.transaction.Transactional;
 
@@ -15,17 +16,16 @@ import org.springframework.stereotype.Component;
 
 import eki.common.constant.ActivityEntity;
 import eki.common.constant.ActivityOwner;
-import eki.common.constant.FreeformType;
 import eki.common.constant.SourceType;
-import eki.common.exception.OperationDeniedException;
 import eki.ekilex.data.ActivityLogData;
-import eki.ekilex.data.ActivityLogOwnerEntityDescr;
+import eki.ekilex.data.Dataset;
 import eki.ekilex.data.EkiUser;
+import eki.ekilex.data.SearchDatasetsRestriction;
 import eki.ekilex.data.SearchFilter;
 import eki.ekilex.data.Source;
-import eki.ekilex.data.SourceProperty;
 import eki.ekilex.data.SourcePropertyTuple;
 import eki.ekilex.data.SourceSearchResult;
+import eki.ekilex.service.db.PermissionDbService;
 import eki.ekilex.service.util.PermCalculator;
 
 @Component
@@ -34,11 +34,23 @@ public class SourceService extends AbstractSourceService {
 	private static final Logger logger = LoggerFactory.getLogger(SourceService.class);
 
 	@Autowired
+	private PermissionDbService permissionDbService;
+
+	@Autowired
 	private PermCalculator permCalculator;
 
 	@Transactional
 	public Source getSource(Long sourceId) {
-		return getSource(sourceId, null);
+
+		Source source = sourceDbService.getSource(sourceId);
+		if (source == null) {
+			logger.warn("No source found for id {}", sourceId);
+			return null;
+		}
+
+		List<SourcePropertyTuple> sourcePropertyTuples = sourceDbService.getSourcePropertyTuples(sourceId);
+		conversionUtil.composeSource(source, sourcePropertyTuples);
+		return source;
 	}
 
 	@Transactional
@@ -57,35 +69,27 @@ public class SourceService extends AbstractSourceService {
 	}
 
 	@Transactional
-	public Long getSourceId(Long sourcePropertyId) {
-		return sourceDbService.getSourceId(sourcePropertyId);
-	}
-
-	@Transactional
-	public SourceSearchResult getSourceSearchResult(String searchFilter) {
-
-		return getSourceSearchResult(searchFilter, null);
-	}
-
-	@Transactional
 	public SourceSearchResult getSourceSearchResult(String searchFilter, EkiUser user) {
 
 		if (StringUtils.isBlank(searchFilter)) {
 			return new SourceSearchResult();
 		}
-		SourceSearchResult sourceSearchResult = sourceDbService.getSourceSearchResult(searchFilter);
+		Long userId = user.getId();
+		SearchDatasetsRestriction searchDatasetsRestriction = composeDatasetsRestriction(userId);
+		SourceSearchResult sourceSearchResult = sourceDbService.getSourceSearchResult(searchFilter, searchDatasetsRestriction);
 		return convertAndApplyCrud(sourceSearchResult, user);
 	}
 
 	@Transactional
-	public List<Source> getSourcesExcludingOne(String searchFilter, Source excludedSource, EkiUser user) {
+	public List<Source> getSourcesBasedOnExcludedOne(String searchFilter, Source excludedSource, EkiUser user) {
 
 		if (StringUtils.isBlank(searchFilter)) {
 			return new ArrayList<>();
 		}
+		String datasetCode = excludedSource.getDatasetCode();
 		SourceType sourceType = excludedSource.getType();
 		Long excludedSourceId = excludedSource.getId();
-		List<SourcePropertyTuple> sourcePropertyTuples = sourceDbService.getSourcePropertyTuples(searchFilter, sourceType, excludedSourceId);
+		List<SourcePropertyTuple> sourcePropertyTuples = sourceDbService.getSourcePropertyTuples(searchFilter, datasetCode, sourceType, excludedSourceId);
 		List<Source> sources = conversionUtil.composeSources(sourcePropertyTuples);
 		permCalculator.applyCrud(user, sources);
 
@@ -98,8 +102,36 @@ public class SourceService extends AbstractSourceService {
 		if (CollectionUtils.isEmpty(searchFilter.getCriteriaGroups())) {
 			return new SourceSearchResult();
 		}
-		SourceSearchResult sourceSearchResult = sourceDbService.getSourceSearchResult(searchFilter);
+		Long userId = user.getId();
+		SearchDatasetsRestriction searchDatasetsRestriction = composeDatasetsRestriction(userId);
+		SourceSearchResult sourceSearchResult = sourceDbService.getSourceSearchResult(searchFilter, searchDatasetsRestriction);
 		return convertAndApplyCrud(sourceSearchResult, user);
+	}
+
+	private SearchDatasetsRestriction composeDatasetsRestriction(Long userId) {
+
+		List<Dataset> availableDatasets = permissionDbService.getUserVisibleDatasets(userId);
+		List<String> availableDatasetCodes = availableDatasets.stream().map(Dataset::getCode).collect(Collectors.toList());
+		int availableDatasetsCount = availableDatasets.size();
+		List<String> userPermDatasetCodes;
+		boolean allDatasetsPermissions;
+		if (userId == null) {
+			userPermDatasetCodes = Collections.emptyList();
+			allDatasetsPermissions = false;
+		} else {
+			List<Dataset> userPermDatasets = permissionDbService.getUserPermDatasets(userId);
+			userPermDatasetCodes = userPermDatasets.stream().map(Dataset::getCode).collect(Collectors.toList());
+			int userPermDatasetsCount = userPermDatasetCodes.size();
+			allDatasetsPermissions = userPermDatasetsCount == availableDatasetsCount;
+		}
+		boolean singlePermDataset = userPermDatasetCodes.size() == 1;
+		SearchDatasetsRestriction searchDatasetsRestriction = new SearchDatasetsRestriction();
+		searchDatasetsRestriction.setAvailableDatasetCodes(availableDatasetCodes);
+		searchDatasetsRestriction.setUserPermDatasetCodes(userPermDatasetCodes);
+		searchDatasetsRestriction.setAllDatasetsPermissions(allDatasetsPermissions);
+		searchDatasetsRestriction.setSinglePermDataset(singlePermDataset);
+
+		return searchDatasetsRestriction;
 	}
 
 	private SourceSearchResult convertAndApplyCrud(SourceSearchResult sourceSearchResult, EkiUser user) {
@@ -129,47 +161,15 @@ public class SourceService extends AbstractSourceService {
 	}
 
 	@Transactional
-	public void createSourceProperty(Long sourceId, FreeformType freeformType, String valueText, String roleDatasetCode) throws Exception {
+	public void updateSource(Source source, String roleDatasetCode) throws Exception {
 
-		ActivityLogData activityLog = activityLogService.prepareActivityLog("createSourceProperty", sourceId, ActivityOwner.SOURCE, roleDatasetCode, MANUAL_EVENT_ON_UPDATE_DISABLED);
-		Long sourcePropertyId = sourceDbService.createSourceProperty(sourceId, freeformType, valueText);
-		activityLogService.createActivityLog(activityLog, sourcePropertyId, freeformType);
-	}
-
-	@Transactional
-	public void updateSourceProperty(Long sourcePropertyId, String valueText, String roleDatasetCode) throws Exception {
-
-		SourceProperty sourceProperty = sourceDbService.getSourceProperty(sourcePropertyId);
-		if (sourceProperty == null) {
-			throw new OperationDeniedException();
-		}
-		ActivityLogOwnerEntityDescr freeformOwnerDescr = activityLogService.getFreeformOwnerDescr(sourcePropertyId);
-		ActivityLogData activityLog = activityLogService
-				.prepareActivityLog("updateSourceProperty", freeformOwnerDescr.getOwnerId(), freeformOwnerDescr.getOwnerName(), roleDatasetCode, MANUAL_EVENT_ON_UPDATE_DISABLED);
-		sourceDbService.updateSourceProperty(sourcePropertyId, valueText);
-		activityLogService.createActivityLog(activityLog, sourcePropertyId, freeformOwnerDescr.getEntityName());
-	}
-
-	@Transactional
-	public void deleteSourceProperty(Long sourcePropertyId, String roleDatasetCode) throws Exception {
-
-		SourceProperty sourceProperty = sourceDbService.getSourceProperty(sourcePropertyId);
-		if (sourceProperty == null) {
-			throw new OperationDeniedException();
-		}
-		ActivityLogOwnerEntityDescr freeformOwnerDescr = activityLogService.getFreeformOwnerDescr(sourcePropertyId);
-		ActivityLogData activityLog = activityLogService
-				.prepareActivityLog("deleteSourceProperty", freeformOwnerDescr.getOwnerId(), freeformOwnerDescr.getOwnerName(), roleDatasetCode, MANUAL_EVENT_ON_UPDATE_DISABLED);
-		sourceDbService.deleteSourceProperty(sourcePropertyId);
-		activityLogService.createActivityLog(activityLog, sourcePropertyId, freeformOwnerDescr.getEntityName());
-	}
-
-	@Transactional
-	public void updateSource(Long sourceId, SourceType type, String name, String valuePrese, String comment, boolean isPublic, String roleDatasetCode) throws Exception {
+		Long sourceId = source.getId();
+		String valuePrese = source.getValuePrese();
+		String value = textDecorationService.removeEkiElementMarkup(valuePrese);
+		source.setValue(value);
 
 		ActivityLogData activityLog = activityLogService.prepareActivityLog("updateSource", sourceId, ActivityOwner.SOURCE, roleDatasetCode, MANUAL_EVENT_ON_UPDATE_DISABLED);
-		String value = textDecorationService.removeEkiElementMarkup(valuePrese);
-		sourceDbService.updateSource(sourceId, type, name, value, valuePrese, comment, isPublic);
+		sourceDbService.updateSource(source);
 		activityLogService.createActivityLog(activityLog, sourceId, ActivityEntity.SOURCE);
 	}
 

@@ -118,7 +118,6 @@
             <tr th:each="source : ${sourcesFoundBySearch}">
               <td>
                 <button type="button" class="btn btn-primary float-right btn-sm mr-2" th:data-source-id="${source.id}" th:text="#{common.add}">Lisa</button>
-                <div th:text="${source.nameTypeSourceProperties.get(0)}" th:if="${not #lists.isEmpty(source.nameTypeSourceProperties)}"></div>
               </td>
             </tr>
           </table>
@@ -260,6 +259,8 @@
   </form>
   <form th:action="@{/create_source}" method="post" data-plugin="initAddSourcePlugin" th:fragment="add_source_form">
     <div class="modal-body">
+      <input type="hidden" name="sourceOwnerId">
+      <input type="hidden" name="sourceOwnerName">
       <input type="hidden" name="valuePrese">
       <div class="form-group row">
         <div class="col-md-12">
@@ -298,34 +299,6 @@
                 <input class="form-check-input" type="checkbox" name="public" checked="checked" value="true">
                 <span th:text="#{boolean.public.true}">Avalik</span>
               </label>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="form-group row" id="source_property_element">
-        <div class="col-md-12">
-          <div class="border rounded" name="sourcePropertyGroup">
-            <div class="form-group row p-2 m-2">
-              <div class="col-auto">
-                <label th:title="#{source.property.name}">
-                  <select required class="form-control" name="properties[][type]">
-                    <option th:each="type : ${sourcePropertyTypes}" th:value="${type}" th:text="#{|source.property.${type.name()}|}">value</option>
-                  </select>
-                </label>
-              </div>
-              <div class="col-4 pl-0">
-                <button type="button" class="btn btn-success btn-sm mt-1" name="addPropertyGroupBtn" title="Lisa uus allika atribuut" data-plugin="addSourcePropertyGroup">
-                  <i class="fa fa-plus" aria-hidden="true"></i>
-                </button>
-                <button type="button" class="btn btn-danger btn-sm mt-1" name="removePropertyGroupBtn" title="Eemalda" data-plugin="removePropertyGroupPlugin">
-                  <i class="fa fa-minus" aria-hidden="true"></i>
-                </button>
-              </div>
-            </div>
-            <div class="form-group row p-2 m-2" name="propertyValue">
-              <div class="col-12">
-                <textarea rows="3" class="form-control" name="properties[][valueText]"></textarea>
-              </div>
             </div>
           </div>
         </div>

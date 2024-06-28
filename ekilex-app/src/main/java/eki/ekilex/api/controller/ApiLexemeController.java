@@ -24,7 +24,7 @@ public class ApiLexemeController extends AbstractApiController {
 	private CudService cudService;
 
 	@Order(901)
-	@PreAuthorize("principal.apiCrud && @permEval.isLexemeCrudGranted(principal, #crudRoleDataset, #lexemePos.lexemeId)")
+	@PreAuthorize("principal.apiCrud && @permEval.isLexemeCrudGranted(authentication, #crudRoleDataset, #lexemePos.lexemeId)")
 	@PostMapping(API_SERVICES_URI + LEXEME_POS_URI + CREATE_URI)
 	@ResponseBody
 	public ApiResponse createLexemePos(
@@ -42,7 +42,7 @@ public class ApiLexemeController extends AbstractApiController {
 	}
 
 	@Order(902)
-	@PreAuthorize("principal.apiCrud && @permEval.isLexemeCrudGranted(principal, #crudRoleDataset, #lexemePos.lexemeId)")
+	@PreAuthorize("principal.apiCrud && @permEval.isLexemeCrudGranted(authentication, #crudRoleDataset, #lexemePos.lexemeId)")
 	@DeleteMapping(API_SERVICES_URI + LEXEME_POS_URI + DELETE_URI)
 	@ResponseBody
 	public ApiResponse deleteLexemePos(
@@ -60,7 +60,7 @@ public class ApiLexemeController extends AbstractApiController {
 	}
 
 	@Order(903)
-	@PreAuthorize("principal.apiCrud && @permEval.isLexemeCrudGranted(principal, #crudRoleDataset, #lexemeTag.lexemeId)")
+	@PreAuthorize("principal.apiCrud && @permEval.isLexemeCrudGranted(authentication, #crudRoleDataset, #lexemeTag.lexemeId)")
 	@PostMapping(API_SERVICES_URI + LEXEME_TAG_URI + CREATE_URI)
 	@ResponseBody
 	public ApiResponse createLexemeTag(
@@ -78,7 +78,7 @@ public class ApiLexemeController extends AbstractApiController {
 	}
 
 	@Order(904)
-	@PreAuthorize("principal.apiCrud && @permEval.isLexemeCrudGranted(principal, #crudRoleDataset, #lexemeTag.lexemeId)")
+	@PreAuthorize("principal.apiCrud && @permEval.isLexemeCrudGranted(authentication, #crudRoleDataset, #lexemeTag.lexemeId)")
 	@PostMapping(API_SERVICES_URI + LEXEME_TAG_URI + DELETE_URI)
 	@ResponseBody
 	public ApiResponse deleteLexemeTag(
@@ -89,6 +89,23 @@ public class ApiLexemeController extends AbstractApiController {
 			Long lexemeId = lexemeTag.getLexemeId();
 			String tagName = lexemeTag.getTagName();
 			cudService.deleteLexemeTag(lexemeId, tagName, crudRoleDataset, MANUAL_EVENT_ON_UPDATE_ENABLED);
+			return getOpSuccessResponse();
+		} catch (Exception e) {
+			return getOpFailResponse(e);
+		}
+	}
+
+
+	@Order(920)
+	@PreAuthorize("principal.apiCrud && @permEval.isLexemeCrudGranted(authentication, #crudRoleDataset, #lexemeId)")
+	@DeleteMapping(API_SERVICES_URI + LEXEME_URI + DELETE_URI)
+	@ResponseBody
+	public ApiResponse deleteLexeme(
+			@RequestParam("crudRoleDataset") String crudRoleDataset,
+			@RequestParam("lexemeId") Long lexemeId) {
+
+		try {
+			cudService.deleteLexeme(lexemeId, crudRoleDataset, MANUAL_EVENT_ON_UPDATE_ENABLED);
 			return getOpSuccessResponse();
 		} catch (Exception e) {
 			return getOpFailResponse(e);

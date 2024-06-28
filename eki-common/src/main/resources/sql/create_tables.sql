@@ -588,6 +588,7 @@ alter sequence freeform_id_seq restart with 10000;
 -- allikas
 create table source (
   id bigserial primary key, 
+  dataset_code varchar(10) references dataset(code) on update cascade not null,
   type varchar(100) not null, 
   name text not null, 
   value text null, 
@@ -1348,6 +1349,7 @@ create index freeform_type_idx on freeform(type);
 create index freeform_lang_idx on freeform(lang);
 create index freeform_complexity_idx on freeform(complexity);
 create index freeform_is_public_idx on freeform(is_public);
+create index source_dataset_code_idx on source(dataset_code);
 create index source_type_idx on source(type);
 create index source_name_idx on source(name);
 create index source_name_lower_idx on source(lower(name));

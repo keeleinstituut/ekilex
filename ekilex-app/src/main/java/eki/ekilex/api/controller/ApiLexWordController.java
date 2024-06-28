@@ -24,7 +24,7 @@ public class ApiLexWordController extends AbstractApiController {
 	private LexWordService lexWordService;
 
 	@Order(860)
-	@PreAuthorize("@permEval.isDatasetCrudGranted(principal, #crudRoleDataset, #datasetCode)")
+	@PreAuthorize("@permEval.isDatasetCrudGranted(authentication, #crudRoleDataset, #datasetCode)")
 	@GetMapping(API_SERVICES_URI + LEX_WORD_URI + DETAILS_URI + "/{wordId}/{datasetCode}")
 	@ResponseBody
 	public LexWord getLexWord(
@@ -37,8 +37,8 @@ public class ApiLexWordController extends AbstractApiController {
 
 	@Order(861)
 	@PreAuthorize("principal.apiCrud "
-			+ "&& @permEval.isDatasetCrudGranted(principal, #crudRoleDataset, #lexWord.datasetCode) "
-			+ "&& @permEval.isWordCrudGranted(principal, #crudRoleDataset, #lexWord.wordId)")
+			+ "&& @permEval.isDatasetCrudGranted(authentication, #crudRoleDataset, #lexWord.datasetCode) "
+			+ "&& @permEval.isWordCrudGranted(authentication, #crudRoleDataset, #lexWord.wordId)")
 	@PostMapping(API_SERVICES_URI + LEX_WORD_URI + SAVE_URI)
 	@ResponseBody
 	public ApiResponse saveLexWord(

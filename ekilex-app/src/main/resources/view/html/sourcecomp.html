@@ -27,6 +27,10 @@
                     <td th:text="${source.id}"></td>
                   </tr>
                   <tr>
+                    <td th:text="#{source.dataset}">sõnakogu</td>
+                    <td th:text="${source.datasetCode}"></td>
+                  </tr>
+                  <tr>
                     <td th:text="#{source.type}">tüüp</td>
                     <td th:text="#{|source.type.${source.type}|}"></td>
                   </tr>
@@ -44,7 +48,7 @@
                   </tr>
                   <tr>
                     <td th:text="#{source.publicity}">Avalikkus</td>
-                    <td th:text="#{'boolean.public.' + ${source.public}}">avalik/mitteavalik</td>
+                    <td th:text="#{|boolean.public.${source.public}|}">avalik/mitteavalik</td>
                   </tr>
                 </table>
               </div>
@@ -103,6 +107,10 @@
                   <td th:text="${source.id}"></td>
                 </tr>
                 <tr>
+                  <td th:text="#{source.dataset}">sõnakogu</td>
+                  <td th:text="${source.datasetCode}"></td>
+                </tr>
+                <tr>
                   <td th:text="#{source.type}">tüüp</td>
                   <td th:text="#{|source.type.${source.type}|}"></td>
                 </tr>
@@ -120,7 +128,7 @@
                 </tr>
                 <tr>
                   <td th:text="#{source.publicity}">Avalikkus</td>
-                  <td th:text="#{'boolean.public.' + ${source.public}}">avalik/mitteavalik</td>
+                  <td th:text="#{|boolean.public.${source.public}|}">avalik/mitteavalik</td>
                 </tr>
               </table>
             </div>
@@ -159,7 +167,7 @@
       </tr>
     </table>
   </div>
-  <div th:id="${'sourceSearchResult_' + source.id}" th:fragment="source_search_result">
+  <div th:id="|sourceSearchResult_${source.id}|" th:fragment="source_search_result">
     <div class="col-auto form-inline">
       <div class="ml-auto">
         <form th:action="@{/open_source_join}" method="post">
@@ -206,6 +214,10 @@
         </button>
       </div>
       <div class="row">
+        <div class="col-2 text-right" th:text="#{source.dataset}">Sõnakogu</div>
+        <div class="font-weight-bold" th:text="${source.datasetCode}"></div>
+      </div>
+      <div class="row">
         <div class="col-2 text-right" th:text="#{source.name}">Lühike kuju</div>
         <div class="font-weight-bold" th:text="${source.name}"></div>
       </div>
@@ -227,26 +239,28 @@
       </div>
     </div>
     <div th:replace="sourcedialog :: edit_source_dlg"></div>
-    <table class="table">
-      <tr>
-        <td class="col-1"></td>
-        <td class="col-6">
-          <th:block th:each="sourceProperty : ${source.sourceProperties}">
-            <div class="row">
-              <div class="invisible-buttons action-buttons-anchor mw-90 mb-1">
-                <div style="display: list-item; position: absolute"></div>
-                <span th:text="#{|source.property.${sourceProperty.type}|}"></span>
-                -
-                <span th:text="${sourceProperty.valueText}" th:if="${sourceProperty.valueText != null}" th:style="${sourceProperty.valueMatch ? 'background-color: #eaffea' : ''}"></span>
-                <span th:text="${#dates.format(sourceProperty.valueDate, 'dd.MM.yyyy HH:mm')}" th:if="${sourceProperty.valueDate != null}"></span>
-              </div>
+    <th:block th:if="${source.sourceProperties}">
+      <div class="mt-3">
+        <div class="row">
+        <div class="col-2"></div>
+        <div class="col-10">
+        <th:block th:each="sourceProperty : ${source.sourceProperties}">
+          <div class="row">
+            <div class="invisible-buttons action-buttons-anchor mw-90 mb-1">
+              <div style="display: list-item; position: absolute"></div>
+              <span th:text="#{|source.property.${sourceProperty.type}|}"></span>
+              -
+              <span th:text="${sourceProperty.valueText}" th:if="${sourceProperty.valueText != null}" th:style="${sourceProperty.valueMatch ? 'background-color: #eaffea' : ''}"></span>
+              <span th:text="${#dates.format(sourceProperty.valueDate, 'dd.MM.yyyy HH:mm')}" th:if="${sourceProperty.valueDate != null}"></span>
             </div>
-          </th:block>
-        </td>
-      </tr>
-    </table>
+          </div>
+        </th:block>
+        </div>
+        </div>
+      </div>
+    </th:block>
   </div>
-  <div th:id="${'sourceSearchResult_' + source.id}" th:fragment="source_search_result_etym">
+  <div th:id="|sourceSearchResult_${source.id}|" th:fragment="source_search_result_etym">
     <table class="w-100">
       <tr>
         <td style="width: 100px;"></td>
@@ -311,6 +325,10 @@
                     <td th:text="${source.id}"></td>
                   </tr>
                   <tr>
+                    <td th:text="#{source.dataset}">sõnakogu</td>
+                    <td th:text="${source.datasetCode}"></td>
+                  </tr>
+                  <tr>
                     <td th:text="#{source.type}">tüüp</td>
                     <td th:text="#{|source.type.${source.type}|}"></td>
                   </tr>
@@ -328,7 +346,7 @@
                   </tr>
                   <tr>
                     <td th:text="#{source.publicity}">Avalikkus</td>
-                    <td th:text="#{'boolean.public.' + ${source.public}}">avalik/mitteavalik</td>
+                    <td th:text="#{|boolean.public.${source.public}|}">avalik/mitteavalik</td>
                   </tr>
                 </table>
               </div>

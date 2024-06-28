@@ -16,7 +16,7 @@ import org.jooq.ForeignKey;
 import org.jooq.Identity;
 import org.jooq.Name;
 import org.jooq.Record;
-import org.jooq.Row7;
+import org.jooq.Row8;
 import org.jooq.Schema;
 import org.jooq.Table;
 import org.jooq.TableField;
@@ -83,6 +83,11 @@ public class Source extends TableImpl<SourceRecord> {
      */
     public final TableField<SourceRecord, Boolean> IS_PUBLIC = createField(DSL.name("is_public"), SQLDataType.BOOLEAN.nullable(false).defaultValue(DSL.field("true", SQLDataType.BOOLEAN)), this, "");
 
+    /**
+     * The column <code>public.source.dataset_code</code>.
+     */
+    public final TableField<SourceRecord, String> DATASET_CODE = createField(DSL.name("dataset_code"), SQLDataType.VARCHAR(10).nullable(false), this, "");
+
     private Source(Name alias, Table<SourceRecord> aliased) {
         this(alias, aliased, null);
     }
@@ -137,6 +142,20 @@ public class Source extends TableImpl<SourceRecord> {
     }
 
     @Override
+    public List<ForeignKey<SourceRecord, ?>> getReferences() {
+        return Arrays.<ForeignKey<SourceRecord, ?>>asList(Keys.SOURCE__SOURCE_DATASET_CODE_FKEY);
+    }
+
+    private transient Dataset _dataset;
+
+    public Dataset dataset() {
+        if (_dataset == null)
+            _dataset = new Dataset(this, Keys.SOURCE__SOURCE_DATASET_CODE_FKEY);
+
+        return _dataset;
+    }
+
+    @Override
     public Source as(String alias) {
         return new Source(DSL.name(alias), this);
     }
@@ -163,11 +182,11 @@ public class Source extends TableImpl<SourceRecord> {
     }
 
     // -------------------------------------------------------------------------
-    // Row7 type methods
+    // Row8 type methods
     // -------------------------------------------------------------------------
 
     @Override
-    public Row7<Long, String, String, String, String, String, Boolean> fieldsRow() {
-        return (Row7) super.fieldsRow();
+    public Row8<Long, String, String, String, String, String, Boolean, String> fieldsRow() {
+        return (Row8) super.fieldsRow();
     }
 }

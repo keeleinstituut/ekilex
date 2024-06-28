@@ -77,6 +77,12 @@
 				<spring.boot.mainclass>eki.ekilex.cli.CollocationMover</spring.boot.mainclass>
 			</properties>
 		</profile>
+		<profile>
+			<id>sdsa</id>
+			<properties>
+				<spring.boot.mainclass>eki.ekilex.cli.SourceDatasetApplier</spring.boot.mainclass>
+			</properties>
+		</profile>
 	</profiles>
 
 	<build>

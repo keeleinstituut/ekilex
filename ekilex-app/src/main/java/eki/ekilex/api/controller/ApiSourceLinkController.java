@@ -24,7 +24,7 @@ public class ApiSourceLinkController extends AbstractApiController {
 	private SourceLinkService sourceLinkService;
 
 	@Order(301)
-	@PreAuthorize("principal.apiCrud && @permEval.isSourceLinkCrudGranted(principal, #crudRoleDataset, #sourceLink)")
+	@PreAuthorize("principal.apiCrud && @permEval.isSourceLinkCrudGranted(authentication, #crudRoleDataset, #sourceLink)")
 	@PostMapping(API_SERVICES_URI + SOURCE_LINK_URI + CREATE_URI)
 	@ResponseBody
 	public ApiResponse createSourceLink(
@@ -46,7 +46,7 @@ public class ApiSourceLinkController extends AbstractApiController {
 	}
 
 	@Order(302)
-	@PreAuthorize("principal.apiCrud && @permEval.isSourceLinkCrudGranted(principal, #crudRoleDataset, #sourceLinkOwner, #sourceLinkId)")
+	@PreAuthorize("principal.apiCrud && @permEval.isSourceLinkCrudGranted(authentication, #crudRoleDataset, #sourceLinkOwner, #sourceLinkId)")
 	@DeleteMapping(API_SERVICES_URI + SOURCE_LINK_URI + DELETE_URI)
 	@ResponseBody
 	public ApiResponse deleteSourceLink(

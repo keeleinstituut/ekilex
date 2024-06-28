@@ -12,6 +12,8 @@ public class SourcePropertyTuple extends AbstractDataObject {
 
 	private Long sourceId;
 
+	private String sourceDatasetCode;
+
 	private SourceType sourceType;
 
 	private String sourceName;
@@ -40,6 +42,14 @@ public class SourcePropertyTuple extends AbstractDataObject {
 
 	public void setSourceId(Long sourceId) {
 		this.sourceId = sourceId;
+	}
+
+	public String getSourceDatasetCode() {
+		return sourceDatasetCode;
+	}
+
+	public void setSourceDatasetCode(String sourceDatasetCode) {
+		this.sourceDatasetCode = sourceDatasetCode;
 	}
 
 	public SourceType getSourceType() {

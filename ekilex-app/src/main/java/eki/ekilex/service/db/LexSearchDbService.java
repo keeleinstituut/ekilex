@@ -32,6 +32,7 @@ import java.sql.Timestamp;
 import java.util.List;
 
 import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.jooq.Condition;
 import org.jooq.Field;
 import org.jooq.JSON;
@@ -44,7 +45,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import eki.ekilex.data.CollocationTuple;
-import eki.ekilex.data.DatasetPermission;
 import eki.ekilex.data.ParadigmFormTuple;
 import eki.ekilex.data.SearchCriterionGroup;
 import eki.ekilex.data.SearchDatasetsRestriction;
@@ -90,14 +90,14 @@ public class LexSearchDbService extends AbstractDataDbService {
 	private SearchFilterHelper searchFilterHelper;
 
 	public List<eki.ekilex.data.Word> getWords(
-			SearchFilter searchFilter, SearchDatasetsRestriction searchDatasetsRestriction, DatasetPermission userRole,
+			SearchFilter searchFilter, SearchDatasetsRestriction searchDatasetsRestriction, String userRoleDatasetCode,
 			List<String> tagNames, int offset, int maxResultsLimit, boolean noLimit) throws Exception {
 
 		List<SearchCriterionGroup> searchCriteriaGroups = searchFilter.getCriteriaGroups();
 		Word w1 = WORD.as("w1");
 		Condition wordCondition = lexSearchConditionComposer.createSearchCondition(w1, searchCriteriaGroups, searchDatasetsRestriction);
 
-		return execute(w1, wordCondition, searchDatasetsRestriction, userRole, tagNames, offset, maxResultsLimit, noLimit);
+		return execute(w1, wordCondition, searchDatasetsRestriction, userRoleDatasetCode, tagNames, offset, maxResultsLimit, noLimit);
 	}
 
 	public int countWords(SearchFilter searchFilter, SearchDatasetsRestriction searchDatasetsRestriction) throws Exception {
@@ -109,13 +109,13 @@ public class LexSearchDbService extends AbstractDataDbService {
 	}
 
 	public List<eki.ekilex.data.Word> getWords(
-			String searchWordCrit, SearchDatasetsRestriction searchDatasetsRestriction, DatasetPermission userRole,
+			String searchWordCrit, SearchDatasetsRestriction searchDatasetsRestriction, String userRoleDatasetCode,
 			List<String> tagNames, int offset, int maxResultsLimit, boolean noLimit) {
 
 		Word word = WORD.as("w");
 		Condition where = lexSearchConditionComposer.createSearchCondition(word, searchWordCrit, searchDatasetsRestriction);
 
-		return execute(word, where, searchDatasetsRestriction, userRole, tagNames, offset, maxResultsLimit, noLimit);
+		return execute(word, where, searchDatasetsRestriction, userRoleDatasetCode, tagNames, offset, maxResultsLimit, noLimit);
 	}
 
 	public int countWords(String wordWithMetaCharacters, SearchDatasetsRestriction searchDatasetsRestriction) {
@@ -599,7 +599,7 @@ public class LexSearchDbService extends AbstractDataDbService {
 
 	private List<eki.ekilex.data.Word> execute(
 			Word w1, Condition where, SearchDatasetsRestriction searchDatasetsRestriction,
-			DatasetPermission userRole, List<String> tagNames, int offset, int maxResultsLimit, boolean noLimit) {
+			String userRoleDatasetCode, List<String> tagNames, int offset, int maxResultsLimit, boolean noLimit) {
 
 		List<String> availableDatasetCodes = searchDatasetsRestriction.getAvailableDatasetCodes();
 
@@ -637,12 +637,11 @@ public class LexSearchDbService extends AbstractDataDbService {
 		Field<String[]> lxvslvf;
 		Field<Boolean> lxpsf;
 		Field<String[]> lxtnf;
-		if (userRole == null) {
+		if (StringUtils.isBlank(userRoleDatasetCode)) {
 			lxvslvf = DSL.field(DSL.val(new String[0]));
 			lxpsf = DSL.field(DSL.val((Boolean) null));
 			lxtnf = DSL.field(DSL.val(new String[0]));
 		} else {
-			String userRoleDatasetCode = userRole.getDatasetCode();
 			lxvslvf = DSL.field(DSL
 					.select(DSL.arrayAggDistinct(VALUE_STATE_LABEL.VALUE))
 					.from(l, VALUE_STATE_LABEL)

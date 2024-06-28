@@ -45,7 +45,6 @@ import eki.ekilex.service.db.CudDbService;
 import eki.ekilex.service.db.MigrationDbService;
 import eki.ekilex.service.db.TagDbService;
 
-// under construction!
 @Component
 public class CollocationMoverRunner extends AbstractLoaderCommons implements SystemConstant {
 
