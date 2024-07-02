@@ -46,14 +46,46 @@ public class LexemeConversionUtil extends AbstractConversionUtil {
 			return;
 		}
 		if (DatasetType.LEX.equals(datasetType)) {
+
 			Collections.sort(lexemeWords, Comparator
 					.comparing(LexemeWord::getDatasetOrderBy)
 					.thenComparing(LexemeWord::getLevel1)
 					.thenComparing(LexemeWord::getLevel2));
+
 		} else if (DatasetType.TERM.equals(datasetType)) {
-			Collections.sort(lexemeWords, Comparator
-					.comparing(LexemeWord::getDatasetOrderBy)
-					.thenComparing(LexemeWord::getLexemeOrderBy));
+
+			Comparator<LexemeWord> datasetNameAndLexemeOrderByComparator = new Comparator<LexemeWord>() {
+
+				@Override
+				public int compare(LexemeWord lexemeWord1, LexemeWord lexemeWord2) {
+
+					String datasetCode1 = lexemeWord1.getDatasetCode();
+					String datasetName1 = lexemeWord1.getDatasetName();
+					Long lexemeOrderBy1 = lexemeWord1.getLexemeOrderBy();
+
+					String datasetCode2 = lexemeWord2.getDatasetCode();
+					String datasetName2 = lexemeWord2.getDatasetName();
+					Long lexemeOrderBy2 = lexemeWord2.getLexemeOrderBy();
+
+					int datasetNameCompare = StringUtils.compare(datasetName1, datasetName2);
+					if (datasetNameCompare == 0) {
+						if (lexemeOrderBy1 > lexemeOrderBy2) {
+							return 1;
+						}
+						if (lexemeOrderBy2 > lexemeOrderBy1) {
+							return 1;
+						}
+					}
+					if (StringUtils.equals(DATASET_ESTERM, datasetCode1)) {
+						return -1;
+					}
+					if (StringUtils.equals(DATASET_ESTERM, datasetCode2)) {
+						return 1;
+					}
+					return datasetNameCompare;
+				}
+			};
+			Collections.sort(lexemeWords, datasetNameAndLexemeOrderByComparator);
 		}
 	}
 

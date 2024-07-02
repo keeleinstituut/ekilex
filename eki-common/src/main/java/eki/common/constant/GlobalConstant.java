@@ -16,6 +16,8 @@ public interface GlobalConstant {
 
 	String DATASET_ETY = "ety";
 
+	String DATASET_ESTERM = "esterm";
+
 	String DATASET_LIMITED = "vrk";
 
 	String DATASET_TEST = "kce";
