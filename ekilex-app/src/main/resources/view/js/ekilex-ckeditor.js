@@ -1,6 +1,7 @@
 CKEDITOR.disableAutoInline = true;
 CKEDITOR.config.removeFormatTags = CKEDITOR.config.removeFormatTags + ',eki-highlight,eki-foreign,eki-stress,eki-meta,eki-sub,eki-sup';
 CKEDITOR.config.entities = false;
+CKEDITOR.config.versionCheck = false;
 var buttons = [
 	{
 		id: 'highlight',
