@@ -13,12 +13,14 @@ import java.util.Map;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.jooq.DSLContext;
+import org.jooq.Field;
 import org.jooq.impl.DSL;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Component;
 
 import eki.common.constant.ClassifierName;
+import eki.common.constant.GlobalConstant;
 import eki.common.constant.NewsArticleType;
 import eki.common.data.Classifier;
 import eki.wordweb.constant.SystemConstant;
@@ -31,7 +33,7 @@ import eki.wordweb.data.db.tables.MviewWwNewsArticle;
 import eki.wordweb.data.type.TypeDomain;
 
 @Component
-public class CommonDataDbService implements SystemConstant {
+public class CommonDataDbService implements SystemConstant, GlobalConstant {
 
 	@Autowired
 	private DSLContext create;
@@ -240,6 +242,14 @@ public class CommonDataDbService implements SystemConstant {
 			return Arrays.asList(dataset);
 		}
 		MviewWwDataset ds = MVIEW_WW_DATASET.as("ds");
+		Field<Integer> dsobf = DSL
+				.when(ds.CODE.eq(DATASET_EKI), DSL.value(0))
+				.when(ds.CODE.eq(DATASET_ESTERM), DSL.value(1))
+				.otherwise(DSL.value(2));
+		List<Field<?>> orderByFields = new ArrayList<>();
+		orderByFields.add(dsobf);
+		orderByFields.add(ds.NAME);
+
 		return create
 				.select(
 						ds.CODE,
@@ -249,7 +259,7 @@ public class CommonDataDbService implements SystemConstant {
 						ds.IS_SUPERIOR)
 				.from(ds)
 				.where(ds.CODE.in(codes))
-				.orderBy(ds.NAME)
+				.orderBy(orderByFields)
 				.fetchInto(Dataset.class);
 	}
 
@@ -257,6 +267,13 @@ public class CommonDataDbService implements SystemConstant {
 	public List<Dataset> getDatasets() {
 
 		MviewWwDataset ds = MVIEW_WW_DATASET.as("ds");
+		Field<Integer> dsobf = DSL
+				.when(ds.CODE.eq(DATASET_EKI), DSL.value(0))
+				.when(ds.CODE.eq(DATASET_ESTERM), DSL.value(1))
+				.otherwise(DSL.value(2));
+		List<Field<?>> orderByFields = new ArrayList<>();
+		orderByFields.add(dsobf);
+		orderByFields.add(ds.NAME);
 
 		return create
 				.select(
@@ -266,7 +283,7 @@ public class CommonDataDbService implements SystemConstant {
 						ds.DESCRIPTION,
 						ds.IS_SUPERIOR)
 				.from(ds)
-				.orderBy(ds.NAME)
+				.orderBy(orderByFields)
 				.fetchInto(Dataset.class);
 	}
 
@@ -274,11 +291,18 @@ public class CommonDataDbService implements SystemConstant {
 	public List<String> getDatasetCodes() {
 
 		MviewWwDataset ds = MVIEW_WW_DATASET.as("ds");
+		Field<Integer> dsobf = DSL
+				.when(ds.CODE.eq(DATASET_EKI), DSL.value(0))
+				.when(ds.CODE.eq(DATASET_ESTERM), DSL.value(1))
+				.otherwise(DSL.value(2));
+		List<Field<?>> orderByFields = new ArrayList<>();
+		orderByFields.add(dsobf);
+		orderByFields.add(ds.NAME);
 
 		return create
 				.select(ds.CODE)
 				.from(ds)
-				.orderBy(ds.NAME)
+				.orderBy(orderByFields)
 				.fetchInto(String.class);
 	}
 
