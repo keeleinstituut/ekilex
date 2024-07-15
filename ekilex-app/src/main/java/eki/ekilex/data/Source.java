@@ -24,6 +24,8 @@ public class Source extends AbstractCrudEntity {
 
 	private boolean isPublic;
 
+	private boolean isPriority;
+
 	private List<SourceProperty> sourceProperties;
 
 	public Long getId() {
@@ -88,6 +90,14 @@ public class Source extends AbstractCrudEntity {
 
 	public void setPublic(boolean isPublic) {
 		this.isPublic = isPublic;
+	}
+
+	public boolean isPriority() {
+		return isPriority;
+	}
+
+	public void setPriority(boolean isPriority) {
+		this.isPriority = isPriority;
 	}
 
 	public List<SourceProperty> getSourceProperties() {

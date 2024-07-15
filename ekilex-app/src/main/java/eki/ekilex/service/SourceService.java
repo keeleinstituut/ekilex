@@ -19,6 +19,7 @@ import eki.common.constant.ActivityOwner;
 import eki.common.constant.SourceType;
 import eki.ekilex.data.ActivityLogData;
 import eki.ekilex.data.Dataset;
+import eki.ekilex.data.DatasetPermission;
 import eki.ekilex.data.EkiUser;
 import eki.ekilex.data.SearchDatasetsRestriction;
 import eki.ekilex.data.SearchFilter;
@@ -75,8 +76,13 @@ public class SourceService extends AbstractSourceService {
 			return new SourceSearchResult();
 		}
 		Long userId = user.getId();
+		DatasetPermission userRole = user.getRecentRole();
+		String userRoleDatasetCode = null;
+		if (userRole != null) {
+			userRoleDatasetCode = userRole.getDatasetCode();
+		}
 		SearchDatasetsRestriction searchDatasetsRestriction = composeDatasetsRestriction(userId);
-		SourceSearchResult sourceSearchResult = sourceDbService.getSourceSearchResult(searchFilter, searchDatasetsRestriction);
+		SourceSearchResult sourceSearchResult = sourceDbService.getSourceSearchResult(searchFilter, searchDatasetsRestriction, userRoleDatasetCode);
 		return convertAndApplyCrud(sourceSearchResult, user);
 	}
 
@@ -103,8 +109,13 @@ public class SourceService extends AbstractSourceService {
 			return new SourceSearchResult();
 		}
 		Long userId = user.getId();
+		DatasetPermission userRole = user.getRecentRole();
+		String userRoleDatasetCode = null;
+		if (userRole != null) {
+			userRoleDatasetCode = userRole.getDatasetCode();
+		}
 		SearchDatasetsRestriction searchDatasetsRestriction = composeDatasetsRestriction(userId);
-		SourceSearchResult sourceSearchResult = sourceDbService.getSourceSearchResult(searchFilter, searchDatasetsRestriction);
+		SourceSearchResult sourceSearchResult = sourceDbService.getSourceSearchResult(searchFilter, searchDatasetsRestriction, userRoleDatasetCode);
 		return convertAndApplyCrud(sourceSearchResult, user);
 	}
 

@@ -16,11 +16,13 @@ import static eki.ekilex.data.db.Tables.SOURCE_ACTIVITY_LOG;
 import static eki.ekilex.data.db.Tables.SOURCE_FREEFORM;
 import static eki.ekilex.data.db.Tables.WORD_ETYMOLOGY_SOURCE_LINK;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
 import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.jooq.Condition;
 import org.jooq.DSLContext;
 import org.jooq.Field;
@@ -102,7 +104,7 @@ public class SourceDbService implements GlobalConstant, SystemConstant, Activity
 		return getSourcePropertyTuples(s, spff, sp, spmf, where);
 	}
 
-	public SourceSearchResult getSourceSearchResult(String searchFilter, SearchDatasetsRestriction searchDatasetsRestriction) {
+	public SourceSearchResult getSourceSearchResult(String searchFilter, SearchDatasetsRestriction searchDatasetsRestriction, String priorityDatasetCode) {
 
 		String maskedSearchFilter = searchFilter.replace(SEARCH_MASK_CHARS, "%").replace(SEARCH_MASK_CHAR, "_");
 		Field<String> filterField = DSL.lower(maskedSearchFilter);
@@ -111,7 +113,7 @@ public class SourceDbService implements GlobalConstant, SystemConstant, Activity
 		where = applyDatasetRestrictions(s, searchDatasetsRestriction, where);
 		where = where.and(DSL.or(DSL.lower(s.NAME).like(filterField), DSL.lower(s.VALUE).like(filterField)));
 
-		List<eki.ekilex.data.Source> sources = getSources(s, where);
+		List<eki.ekilex.data.Source> sources = getSources(s, where, priorityDatasetCode);
 		int resultCount = getSourceCount(s, where);
 		boolean resultExist = resultCount > 0;
 
@@ -123,7 +125,7 @@ public class SourceDbService implements GlobalConstant, SystemConstant, Activity
 		return sourceSearchResult;
 	}
 
-	public SourceSearchResult getSourceSearchResult(SearchFilter searchFilter, SearchDatasetsRestriction searchDatasetsRestriction) throws Exception {
+	public SourceSearchResult getSourceSearchResult(SearchFilter searchFilter, SearchDatasetsRestriction searchDatasetsRestriction, String priorityDatasetCode) throws Exception {
 
 		Source s = SOURCE.as("s");
 		Condition where = DSL.noCondition();
@@ -159,7 +161,7 @@ public class SourceDbService implements GlobalConstant, SystemConstant, Activity
 			}
 		}
 
-		List<eki.ekilex.data.Source> sources = getSources(s, where);
+		List<eki.ekilex.data.Source> sources = getSources(s, where, priorityDatasetCode);
 		int resultCount = getSourceCount(s, where);
 		boolean resultExist = resultCount > 0;
 
@@ -544,13 +546,27 @@ public class SourceDbService implements GlobalConstant, SystemConstant, Activity
 
 		return create
 				.selectFrom(FREEFORM)
-				.where(FREEFORM.ID.in(DSL.select(SOURCE_FREEFORM.FREEFORM_ID)
-						.from(SOURCE_FREEFORM)
-						.where(SOURCE_FREEFORM.SOURCE_ID.eq(sourceId))))
+				.where(
+						FREEFORM.ID.in(DSL.select(SOURCE_FREEFORM.FREEFORM_ID)
+								.from(SOURCE_FREEFORM)
+								.where(SOURCE_FREEFORM.SOURCE_ID.eq(sourceId))))
 				.fetch();
 	}
 
-	private List<eki.ekilex.data.Source> getSources(Source s, Condition where) {
+	private List<eki.ekilex.data.Source> getSources(Source s, Condition where, String priorityDatasetCode) {
+
+		Field<Boolean> ipf;
+		List<Field<?>> orderByFields = new ArrayList<>();
+		if (StringUtils.isBlank(priorityDatasetCode)) {
+			ipf = DSL.field(DSL.val(Boolean.FALSE));
+		} else {
+			ipf = DSL.field(s.DATASET_CODE.eq(priorityDatasetCode));
+			Field<Integer> pdobf = DSL
+					.when(s.DATASET_CODE.eq(priorityDatasetCode), DSL.value(0))
+					.otherwise(DSL.value(1));
+			orderByFields.add(pdobf);
+		}
+		orderByFields.add(s.ID);
 
 		return create
 				.select(
@@ -561,10 +577,11 @@ public class SourceDbService implements GlobalConstant, SystemConstant, Activity
 						s.VALUE,
 						s.VALUE_PRESE,
 						s.COMMENT,
-						s.IS_PUBLIC)
+						s.IS_PUBLIC,
+						ipf.as("is_priority"))
 				.from(s)
 				.where(where)
-				.orderBy(s.ID)
+				.orderBy(orderByFields)
 				.limit(DEFAULT_MAX_RESULTS_LIMIT)
 				.fetchInto(eki.ekilex.data.Source.class);
 	}
