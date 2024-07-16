@@ -129,6 +129,7 @@ create index collocation_member_rel_group_code_idx on collocation_member(rel_gro
 
 alter table source add column dataset_code varchar(10) references dataset(code) on update cascade;
 create index source_dataset_code_idx on source(dataset_code);
--- run SourceDatasetApplier
-alter table source alter column dataset_code set not null;
+
+-- NB! käivita SourceDatasetApplier
+-- alter table source alter column dataset_code set not null;
 
