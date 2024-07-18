@@ -165,6 +165,7 @@ from (select left (w.value, 1) first_letter,
            dataset ds
       where w.value != ''
       and   w.is_public = true
+      and   w.is_word = true
       and   l.word_id = w.id
       and   l.is_public = true
       and   l.dataset_code = ds.code
@@ -198,6 +199,7 @@ from (
               language wl
          where w.lang = wl.code
            and w.is_public = true
+           and w.is_word = true
            and not exists
              (select wwt.id
               from word_word_type wwt
@@ -228,6 +230,7 @@ from (
          where w.lang = wl.code
            and w.value_as_word is not null
            and w.is_public = true
+           and w.is_word = true
            and not exists
              (select wwt.id
               from word_word_type wwt
@@ -264,6 +267,7 @@ from (
            and p.word_id = w.id
            and w.lang = wl.code
            and w.is_public = true
+           and w.is_word = true
            and f.morph_code != '??'
            and f.value != w.value
            and f.value != '-'
@@ -323,6 +327,7 @@ from (
               and ds.is_public = true
               and l.word_id = w.id
               and w.is_public = true
+              and w.is_word = true
               and lff.lexeme_id = l.id
               and lff.freeform_id = ff.id
               and ff.is_public = true
@@ -346,6 +351,7 @@ from (
             where l.is_public = true
               and l.word_id = w.id
               and w.is_public = true
+              and w.is_word = true
               and ds.code = l.dataset_code
               and ds.is_public = true
               and lff.lexeme_id = l.id
@@ -368,6 +374,7 @@ from (
             where l.is_public = true
               and l.word_id = w.id
               and w.is_public = true
+              and w.is_word = true
               and ds.code = l.dataset_code
               and ds.is_public = true
               and l.meaning_id = d.meaning_id
@@ -447,6 +454,7 @@ from (select w.id as word_id,
               and wt.word_type_code = 'pf') word_type_order_by
       from word as w
       where w.is_public = true
+      		and w.is_word = true
         and exists (select l.id
                     from lexeme as l,
                          dataset ds
@@ -516,6 +524,7 @@ from (select w.id as word_id,
                            inner join word w2
                                    on w2.id = l2.word_id
                                   and w2.is_public = true
+                                  and w2.is_word = true
                          where l1.is_public = true
                          and   l1ds.is_public = true
                          and   l2.is_public = true
@@ -550,6 +559,7 @@ from (select w.id as word_id,
                        inner join word w2
                                on w2.id = l2.word_id
                               and w2.is_public = true
+                              and w2.is_word = true
                      where l1.is_public = true
                      and   l1ds.is_public = true
                      and   l2.is_public = true
@@ -570,6 +580,7 @@ from (select w.id as word_id,
                      and   ds.is_public = true
                      and   l.word_id = w.id
                      and   w.is_public = true
+                     and   w.is_word = true
                      and   lff.lexeme_id = l.id
                      and   lff.freeform_id = ff.id
                      and   ff.is_public = true
@@ -622,6 +633,7 @@ from (select w.id as word_id,
                      and   l1ds.is_public = true
                      and   w1.id = l1.word_id
                      and   w1.is_public = true
+                     and   w1.is_word = true
                      and   not exists (select l2.id
                                        from lexeme l2,
                                             dataset l2ds
@@ -631,7 +643,7 @@ from (select w.id as word_id,
                                        and   l2.is_public = true
                                        and   l2ds.code = l2.dataset_code
                                        and   l2ds.is_public = true)
-                     and   not exists (select d.id from definition d where d.meaning_id = l1.meaning_id and   d.is_public = true)
+                     and   not exists (select d.id from definition d where d.meaning_id = l1.meaning_id and d.is_public = true)
                      and   not exists (select ff.id
                                        from lexeme_freeform lff,
                                             freeform ff
@@ -770,6 +782,7 @@ from word w
                                                                                                    and fcc.is_public = true
                                                                                                    and mff.morph_code = f.morph_code)
 where w.is_public = true
+      and w.is_word = true
   and exists (select l.id
               from lexeme as l,
                    dataset ds
@@ -1101,6 +1114,7 @@ from lexeme l
                          and   l1ds.is_public = true
                          and   l2.is_public = true
                          and   w2.is_public = true
+                         and   w2.is_word = true
                          and   l2ds.is_public = true
                          and   coalesce(l2.value_state_code, 'anything') != 'vigane') mw
                    group by mw.lexeme_id) mw on mw.lexeme_id = l.id
@@ -1188,6 +1202,7 @@ from lexeme l
                           and   ds.is_public = true
                           and   l.word_id = w.id
                           and   w.is_public = true
+                          and   w.is_word = true
                           and   lff.lexeme_id = l.id
                           and   lff.freeform_id = ff.id
                           and   ff.type in ('USAGE', 'GRAMMAR', 'GOVERNMENT', 'NOTE'))
@@ -1247,7 +1262,8 @@ from lexeme l
                           and   l2ds.code = l2.dataset_code
                           and   l2ds.is_public = true
                           and   w2.id = l2.word_id
-                          and   w2.is_public = true)
+                          and   w2.is_public = true
+                          and   w2.is_word = true)
                           union all
                           (select l1.id,
                                  w1.lang,
@@ -1262,6 +1278,7 @@ from lexeme l
                           and   l1ds.is_public = true
                           and   w1.id = l1.word_id
                           and   w1.is_public = true
+                          and   w1.is_word = true
                           and   not exists (select l2.id
                                             from lexeme l2,
                                                  dataset l2ds
@@ -1271,7 +1288,7 @@ from lexeme l
                                             and   l2.is_public = true
                                             and   l2ds.code = l2.dataset_code
                                             and   l2ds.is_public = true)
-                          and   not exists (select d.id from definition d where d.meaning_id = l1.meaning_id and   d.is_public = true)
+                          and   not exists (select d.id from definition d where d.meaning_id = l1.meaning_id and d.is_public = true)
                           and   not exists (select ff.id
                                             from lexeme_freeform lff,
                                                  freeform ff
@@ -1333,7 +1350,8 @@ from collocation as c
               and   l2ds.code = l2.dataset_code
               and   l2ds.is_public = true
               and   l2.word_id = w2.id
-              and   w2.is_public = true) lw2
+              and   w2.is_public = true
+              and   w2.is_word = true) lw2
           on lw2.lexeme_id = lc2.lexeme_id
   inner join lex_colloc_rel_group as rgr1
           on lc1.rel_group_id = rgr1.id
@@ -1634,6 +1652,7 @@ from word w
                          and   wgm2.word_id = w2.id) wg
                    group by wg.word_id) wg on wg.word_id = w.id
 where w.is_public = true
+      and w.is_word = true
 and   (wr.related_words is not null or wg.word_group_members is not null)
 and   exists (select l.id
               from lexeme l,
@@ -1767,7 +1786,7 @@ from (select mr.meaning1_id m1_id,
       from meaning_relation mr
            join meaning m on m.id = mr.meaning2_id
            join lexeme l on l.meaning_id = m.id and l.is_public = true
-           join word w on w.id = l.word_id
+           join word w on w.id = l.word_id and w.is_public = true and w.is_word = true
            join dataset l_ds on l_ds.code = l.dataset_code and l_ds.is_public = true
            left outer join definition inexact_syn_def on inexact_syn_def.meaning_id = m.id and inexact_syn_def.definition_type_code = 'kitsam/laiem tähendus teises keeles'
       where mr.meaning_rel_type_code != 'duplikaadikandidaat'
@@ -1956,7 +1975,8 @@ from ((select w.word,
                            and   ds.is_public = true)
              and   w.value not like '% %'
              and   length(w.value) > 2
-             and   w.is_public = true) w
+             and   w.is_public = true
+             and   w.is_word = true) w
        order by random())
        union all
        (select nw.word,
