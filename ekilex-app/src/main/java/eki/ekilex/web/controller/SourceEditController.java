@@ -65,9 +65,7 @@ public class SourceEditController extends AbstractMutableDataPageController {
 	}
 
 	@PostMapping(UPDATE_SOURCE_URI)
-	public String updateSource(
-			@RequestBody Source source,
-			Model model) throws Exception {
+	public String updateSource(Source source, Model model) throws Exception {
 
 		Long sourceId = source.getId();
 		EkiUser user = userContext.getUser();
@@ -173,7 +171,7 @@ public class SourceEditController extends AbstractMutableDataPageController {
 		String roleDatasetCode = getDatasetCodeFromRole();
 		sourceService.joinSources(targetSourceId, originSourceId, roleDatasetCode);
 
-		return REDIRECT_PREF + SOURCE_SEARCH_URI + "/" + targetSourceId;
+		return REDIRECT_PREF + SOURCE_ID_SEARCH_URI + "/" + targetSourceId;
 	}
 
 	private void cleanupSource(Source source) {

@@ -1,4 +1,4 @@
-Märkused ver 1.36.0 tarne kohta:
+Märkused ver 1.36.1 tarne kohta:
 
 1) Võta githubist värske tarkvara versioon, mille viite arendaja annab
 
@@ -17,64 +17,8 @@ Märkused ver 1.36.0 tarne kohta:
 3) Käivita ekilex andmebaasis muudatuste skript:
   
 	../ekilex/eki-common/src/main/resources/sql/delivery.sql
-  
-	NB! sültuvalt anmdebaasi olekust võib tegevuslogisid täiendav osa võtta isegi tunde 
-	NB! skripti välja kommenteeritud kõige viimane rida tuleb käivitada peale punkti 5
 
-4) Kollokatsioonide kolimine uude struktuuri utiliitrakendusega.
-  
-	1. loo rakenduse "dev"-profiili määrangute fail:
-     
-		../ekilex/ekilex-app/src/main/resources/application-dev.properties
-  
-	2. sisusta fail ainult selles kontekstis oluliste rakenduse määrangutega:
-
-		server.port=1234
-		spring.datasource.url=jdbc:postgresql://localhost:5432/ekilex
-		spring.datasource.username=<username>
-		spring.datasource.password=<password>
-
-		logging.level.root=warn
-		logging.level.eki.ekilex=debug
-		logging.level.eki.common=info
-		logging.level.org.jooq=warn
-
-		Andmebaasi ühenduse parameetrid peavad olema reaalsed selle keskkonna parameetrid.
-		Kuna erinevad ekilexi rakendused käivitavad ka veebikonteksti siis on oluline, et nende veebi pordid ei konkureeriks.
-		Seepärast määra "server.port"-le mingi ajutine fiktiivne väärtus
-
-	3. kopeeri kollokatsioonide liikmete vormikoodide mäpingute fail "colloc-member-form-map.tsv" kohalikku failisüsteemi utiliitrakendusele juurdepääsetavasse kohta
-
-	4. käivita rakendus:
-     
-		../ekilex/ekilex-app>mvn spring-boot:run -P cmov -D spring-boot.run.profiles=dev -D spring-boot.run.arguments="impfile="/path/to/colloc-member-form-map.tsv""
-
-		NB! Sisusta parameeter "impfile" korrektse viitega failile!
-		NB! Märka topelt jutumärke!
-
-		Spring profiil "dev" tähendab automaatselt seda, et rakenduse logi jookseb otse terminali mitte logifaili.
-		See on antud juhul kasulik kiireks tagassideks rakenduselt.
-		Logi näitab protsessi protsentuaalset edenemist.
-		Logi lõppeb infoga "BUILD SUCCESS".
-		Kui logi sisaldab midagi muud, informeeri arendajat.
-
-5) Allikatele sõnakogu määramine ja dubleerimine utiliirakendusega.
-
-	1. kasuta sama "dev"-profiili määrangute faili, mis eelmises punktis
-	
-	2. käivita rakendus:
-
-		../ekilex/ekilex-app>mvn spring-boot:run -P sdsa -D spring-boot.run.profiles=dev
-
-		Logi näitab protsessi protsentuaalset edenemist.
-		Logi lõppeb infoga "BUILD SUCCESS".
-		Kui logi sisaldab midagi muud, informeeri arendajat.
-
-6) Käivita andmebaasis migra skripti viimane välja kommenteeritud rida:
-	
-	psql>alter table source alter column dataset_code set not null;
-
-7) Sõnaveebi andmebaasi agregeerimine.
+4) Sõnaveebi andmebaasi agregeerimine.
 
 	1. kustuta ja taasloo Ekilex andmebaasis senised Sõnaveebiga seotud vaated ja andmetüübid skriptiga:
 
@@ -89,6 +33,6 @@ Märkused ver 1.36.0 tarne kohta:
 
 		Skript jookseb umbes pool tundi.
 
-8) Seo ekilex-app.jar ja wordweb-app.jar rakenduste teenustega nagu seni ja käivita. Kontrolli peale käivitamist kummagi rakenduse logifailidest kas käivitamisega kaasnesid veateated, neid ei ohiks olla ühtegi.
+5) Seo ekilex-app.jar ja wordweb-app.jar rakenduste teenustega nagu seni ja käivita. Kontrolli peale käivitamist kummagi rakenduse logifailidest kas käivitamisega kaasnesid veateated, neid ei ohiks olla ühtegi.
 
 <märkmete lõpp>
