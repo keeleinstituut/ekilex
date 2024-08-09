@@ -67,6 +67,7 @@ public class WordDbService extends AbstractDataDbService {
 				.from(w)
 				.where(
 						w.IS_PUBLIC.isTrue()
+								.and(w.IS_WORD.isTrue())
 								.andExists(DSL
 										.select(l.ID)
 										.from(l, ds)
