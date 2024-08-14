@@ -1,9 +1,9 @@
 $.fn.deleteConfirm = function() {
 	$(this).confirmation({
-		btnOkLabel : messages["common.yes"],
-		btnCancelLabel : messages["common.no"],
-		title : messages["common.confirm.delete"],
-		onConfirm : executeDelete
+		btnOkLabel: messages["common.yes"],
+		btnCancelLabel: messages["common.no"],
+		title: messages["common.confirm.delete"],
+		onConfirm: executeDelete
 	});
 };
 
@@ -14,7 +14,7 @@ function postJson(url, dataObject, failMessage = messages["common.save.error"], 
 		method: 'POST',
 		dataType: 'json',
 		contentType: 'application/json',
-		success: function(){
+		success: function() {
 			if (callback) {
 				callback();
 			}
@@ -373,17 +373,17 @@ function checkRequiredFields(form, message) {
 		const fldVal = requiredField.val();
 
 		if (!fldVal) {
-			if(message){
+			if (message) {
 				let errorMessage = message;
-				const errorTextField = $('<span class="input-error-text">'+ errorMessage +'</span>');
+				const errorTextField = $('<span class="input-error-text">' + errorMessage + '</span>');
 				markableField.parent().append(errorTextField);
-			}else {
+			} else {
 				let defaultErrorMessage = messages['common.error.input'];
-				const defaultErrorTextField = $('<span class="input-error-text">'+ defaultErrorMessage +'</span>');
+				const defaultErrorTextField = $('<span class="input-error-text">' + defaultErrorMessage + '</span>');
 				markableField.parent().append(defaultErrorTextField);
 			}
 			markableField.addClass('is-invalid');
-			
+
 			isValid = false;
 		} else {
 			markableField.removeClass('is-invalid');
@@ -457,14 +457,15 @@ function initAddSourceLinkDlg(addDlg) {
 function initEditSourceLinkDlg(editDlg) {
 	const sourceLinkContentKey = editDlg.find('input[name="opCode"]').val();
 	const sourceLinkId = editDlg.find('input[name="id"]').val();
-	const getSourceAndSourceLinkUrl = `${applicationUrl}source_and_source_link/${sourceLinkContentKey}/${sourceLinkId}`;
+	const editSourceLinkUrl = `${applicationUrl}edit_source_link/${sourceLinkContentKey}/${sourceLinkId}`;
 
-	$.get(getSourceAndSourceLinkUrl).done(function(data) {
-		editDlg.find('[data-name=sourceLinkDlgContent]').replaceWith(data);
-	}).fail(function(data) {
-		console.log(data);
-		openAlertDlg(messages["common.error"]);
-	});
+	$.get(editSourceLinkUrl)
+		.done(function(data) {
+			editDlg.find('[data-name=sourceLinkDlgContent]').replaceWith(data);
+		}).fail(function(data) {
+			console.log(data);
+			openAlertDlg(messages["common.error"]);
+		});
 }
 
 $.fn.updateSourceLink = function() {
@@ -557,7 +558,7 @@ function changeOppositeRelationSelectData(relationTypeSelect) {
 
 	$.ajax({
 		url: getOppositeClassifiersUrl,
-		data: {entity: entity, relationType: relationTypeValue},
+		data: { entity: entity, relationType: relationTypeValue },
 		method: 'GET',
 	}).done(function(classifiers) {
 		oppositeRelationSelect.children().remove();
@@ -636,12 +637,10 @@ function openAlertDlg(alertMessage, smallAlert = true, showAsAlert = true) {
 	let success = null;
 	let alertDlg = null;
 	if (smallAlert) {
-	
 		alertDlg = $('#alertSmall');
 		warning = '.alert-custom-warning-hide';
 		success = '.alert-custom-success-hide';
 	} else {
-	
 		alertDlg = $('#alertDlg');
 		warning = '.alert-warning';
 		success = '.alert-success';
@@ -657,15 +656,14 @@ function openAlertDlg(alertMessage, smallAlert = true, showAsAlert = true) {
 			addCss.addClass('border-color-red-400');
 			addCss.removeClass('border-color-green-400');
 		} else {
-		addCss.removeClass('border-color-red-400');
+			addCss.removeClass('border-color-red-400');
 			addCss.addClass('border-color-green-400');
 		}
 		alertDlg.show();
-
-		if(success) {
-			setTimeout(function () { alertDlg.hide(); }, 5000);
-		}else {
-			setTimeout(function () { alertDlg.hide(); }, 7000);
+		if (success) {
+			setTimeout(function() { alertDlg.hide(); }, 5000);
+		} else {
+			setTimeout(function() { alertDlg.hide(); }, 7000);
 		}
 	} else {
 		alertDlg.modal('show');
@@ -674,9 +672,9 @@ function openAlertDlg(alertMessage, smallAlert = true, showAsAlert = true) {
 
 };
 
-$.fn.costomAlertClose = function () {
+$.fn.costomAlertClose = function() {
 	const obj = $(this);
-	obj.on('click', function () {
+	obj.on('click', function() {
 		obj.closest('#alertSmall').hide();
 	});
 };
@@ -729,14 +727,14 @@ function deleteLexemeAndWordAndMeaning() {
 };
 
 function deleteWordEtymTreeCard() {
-  const opName = "delete";
-  const opCode = "wordEtym";
-  const element = $(this);
-  const lexemeId = element.attr("data-id");
-  const successCallback = element.attr("data-callback");
-  // const successCallbackFunc = createCallback(successCallback, element);
+	const opName = "delete";
+	const opCode = "wordEtym";
+	const element = $(this);
+	const lexemeId = element.attr("data-id");
+	const successCallback = element.attr("data-callback");
+	// const successCallbackFunc = createCallback(successCallback, element);
 
-  // executeMultiConfirmPostDelete(opName, opCode, lexemeId, successCallbackFunc);
+	// executeMultiConfirmPostDelete(opName, opCode, lexemeId, successCallbackFunc);
 };
 
 function deleteLexemeAndRusMeaningLexemes() {
@@ -914,11 +912,11 @@ $.fn.changeItemOrderingPlugin = function() {
 	});
 }
 
-$.fn.pagingBtnPlugin = function () {
+$.fn.pagingBtnPlugin = function() {
 	// Allows for adding plugin to an array
-	return this.each(function () {
+	return this.each(function() {
 		const button = $(this);
-		button.on('click', function () {
+		button.on('click', function() {
 			openWaitDlg();
 			let run = true;
 			let url;
@@ -955,7 +953,7 @@ $.fn.pagingBtnPlugin = function () {
 					url: url,
 					data: form.serialize(),
 					method: 'POST',
-				}).done(function (data) {
+				}).done(function(data) {
 					closeWaitDlg();
 					if (syn.length) {
 						$('#synSearchResultsDiv')
@@ -971,7 +969,7 @@ $.fn.pagingBtnPlugin = function () {
 					}
 
 					$wpm.bindObjects();
-				}).fail(function (data) {
+				}).fail(function(data) {
 					console.log(data);
 					closeWaitDlg();
 					openAlertDlg(messages["common.error"]);
@@ -983,10 +981,10 @@ $.fn.pagingBtnPlugin = function () {
 	});
 }
 
-$.fn.pagingInputPlugin = function () {
+$.fn.pagingInputPlugin = function() {
 	return this.each(function() {
 		const input = $(this);
-		input.on('input', function () {
+		input.on('input', function() {
 			const inputPageChkLength = input.val().trim().length;
 			if (inputPageChkLength > 0) {
 				$('.paging-submit').css("visibility", "visible");
@@ -994,7 +992,7 @@ $.fn.pagingInputPlugin = function () {
 				$('.paging-submit').css("visibility", "hidden");
 			}
 		});
-	
+
 		input.on('keydown', function(e) {
 			if (e.which === 13 || e.keyCode === 13) {
 				e.preventDefault();
@@ -1059,7 +1057,7 @@ function submitDetailedSearch(options) {
 	const searchParameters = {
 		'entity': 'select[name$="entity"]',
 		'not': 'input[name$=".not"]:checkbox',
-		'searchKey' : 'select[name$="searchKey"]',
+		'searchKey': 'select[name$="searchKey"]',
 		'searchOperand': 'select[name$="searchOperand"]',
 		'searchValue': 'input[name$="searchValue"]'
 	}
@@ -1079,8 +1077,8 @@ $(document).on('click', 'eki-link', function() {
 	const id = link.attr('data-link-id');
 	if (id) {
 		const linkType = link.attr('data-link-type');
-		
-		switch(linkType) {
+
+		switch (linkType) {
 			case 'word':
 				if (viewType === 'lex') {
 					// Open in new panel
@@ -1125,7 +1123,7 @@ $(document).on('click', 'ext-link', function() {
 		} else {
 			window.open(`https://${href}`, target);
 		}
-	} else  {
+	} else {
 		openAlertDlg(messages["common.broken.link"]);
 	}
 });
@@ -1258,9 +1256,9 @@ function loadDetails(wordOrMeaningId, task, lastWordOrMeaningId) {
 				detailsDiv = resultColumn.find(`[data-rel="details-area"][data-id="${lastWordOrMeaningId}"]`);
 				const retainScrollPosition = parseInt(dataObject.attr('data-id')) === parseInt(wordOrMeaningId);
 				const contentDiv = detailsDiv.find('.overflow-auto:first');
-				const scrollPosition = contentDiv.length 
-					&& retainScrollPosition 
-					? contentDiv[0].scrollTop 
+				const scrollPosition = contentDiv.length
+					&& retainScrollPosition
+					? contentDiv[0].scrollTop
 					: 0;
 				const newDiv = $(dataObject[0].outerHTML);
 				detailsDiv.replaceWith(newDiv);
@@ -1307,8 +1305,8 @@ function loadDetails(wordOrMeaningId, task, lastWordOrMeaningId) {
 		setTimeout(() => {
 
 			if (Cookies.get('details-open')) {
-				
-				const block = $('#'+Cookies.get('details-open'));
+
+				const block = $('#' + Cookies.get('details-open'));
 				if (block.children('.details-open').length == 0) {
 					block.find('[name="lexeme-details-btn"]').trigger('click');
 				}
@@ -1378,7 +1376,7 @@ function createCallback(data, optionalArgs) {
 	} else {
 		func = data;
 	}
-	
+
 	// Check if the function exists
 	if (window[func]) {
 		// Split args by comma

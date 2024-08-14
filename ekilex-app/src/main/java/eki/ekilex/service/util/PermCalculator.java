@@ -2,6 +2,7 @@ package eki.ekilex.service.util;
 
 import java.util.List;
 
+import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -160,6 +161,10 @@ public class PermCalculator implements PermConstant {
 	}
 
 	public void filterVisibility(EkiUser user, List<? extends AbstractPublicEntity> publicEntities) {
+
+		if (CollectionUtils.isEmpty(publicEntities)) {
+			return;
+		}
 
 		Long userId = user.getId();
 		DatasetPermission userRole = user.getRecentRole();

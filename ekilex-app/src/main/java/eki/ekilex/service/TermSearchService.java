@@ -216,7 +216,8 @@ public class TermSearchService extends AbstractSearchService {
 			EkiUser user,
 			Tag activeTag) throws Exception {
 
-		final String[] excludeMeaningAttributeTypes = new String[] {FreeformType.LEARNER_COMMENT.name(), FreeformType.NOTE.name(), FreeformType.SEMANTIC_TYPE.name()};
+		// TODO remove "MEANING_IMAGE" soon
+		final String[] excludeMeaningAttributeTypes = new String[] {FreeformType.LEARNER_COMMENT.name(), FreeformType.NOTE.name(), FreeformType.SEMANTIC_TYPE.name(), "MEANING_IMAGE"};
 		final String[] excludeLexemeAttributeTypes = new String[] {FreeformType.GOVERNMENT.name(), FreeformType.GRAMMAR.name(), FreeformType.USAGE.name(), FreeformType.NOTE.name()};
 
 		Long userId = user.getId();

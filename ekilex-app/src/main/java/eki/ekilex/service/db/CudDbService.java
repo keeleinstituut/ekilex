@@ -54,7 +54,6 @@ import org.jooq.impl.DSL;
 import org.springframework.stereotype.Component;
 
 import eki.common.constant.Complexity;
-import eki.common.constant.FreeformType;
 import eki.ekilex.data.Classifier;
 import eki.ekilex.data.FreeForm;
 import eki.ekilex.data.ListData;
@@ -592,6 +591,25 @@ public class CudDbService extends AbstractDataDbService {
 				.update(MEANING_NOTE)
 				.set(fieldAndValueMap)
 				.where(MEANING_NOTE.ID.eq(meaningNoteId))
+				.execute();
+	}
+
+	public void updateMeaningImage(Long meaningImageId, MeaningImage meaningImage) {
+
+		Map<Field<?>, Object> fieldAndValueMap = new HashMap<>();
+		fieldAndValueMap.put(MEANING_IMAGE.URL, meaningImage.getUrl());
+		fieldAndValueMap.put(MEANING_IMAGE.TITLE, meaningImage.getTitle());
+		//fieldAndValueMap.put(MEANING_IMAGE.IS_PUBLIC, meaningImage.isPublic()); not yet implemented in UI
+		fieldAndValueMap.put(MEANING_IMAGE.MODIFIED_BY, meaningImage.getModifiedBy());
+		fieldAndValueMap.put(MEANING_IMAGE.MODIFIED_ON, meaningImage.getModifiedOn());
+		if (meaningImage.getComplexity() != null) {
+			fieldAndValueMap.put(MEANING_IMAGE.COMPLEXITY, meaningImage.getComplexity().name());
+		}
+
+		create
+				.update(MEANING_IMAGE)
+				.set(fieldAndValueMap)
+				.where(MEANING_IMAGE.ID.eq(meaningImageId))
 				.execute();
 	}
 
@@ -1816,17 +1834,6 @@ public class CudDbService extends AbstractDataDbService {
 				.delete(MEANING_FORUM)
 				.where(MEANING_FORUM.ID.eq(meaningForumId))
 				.execute();
-	}
-
-	@Deprecated
-	public Long deleteImageTitle(Long imageFreeformId) {
-		return create
-				.delete(FREEFORM)
-				.where(FREEFORM.PARENT_ID.eq(imageFreeformId)
-						.and(FREEFORM.TYPE.eq(FreeformType.IMAGE_TITLE.name())))
-				.returning(FREEFORM.ID)
-				.fetchOne()
-				.getId();
 	}
 
 	public void deleteParadigm(Long paradigmId) {

@@ -2,7 +2,6 @@ package eki.ekilex.service.db;
 
 import static eki.ekilex.data.db.Tables.DEFINITION_NOTE_SOURCE_LINK;
 import static eki.ekilex.data.db.Tables.DEFINITION_SOURCE_LINK;
-import static eki.ekilex.data.db.Tables.FREEFORM_SOURCE_LINK;
 import static eki.ekilex.data.db.Tables.LEXEME_NOTE_SOURCE_LINK;
 import static eki.ekilex.data.db.Tables.LEXEME_SOURCE_LINK;
 import static eki.ekilex.data.db.Tables.MEANING_IMAGE_SOURCE_LINK;
@@ -406,42 +405,6 @@ public class SourceLinkDbService {
 		create
 				.deleteFrom(MEANING_IMAGE_SOURCE_LINK)
 				.where(MEANING_IMAGE_SOURCE_LINK.ID.eq(meaningImageSourceLinkId))
-				.execute();
-	}
-
-	@Deprecated
-	public Long createFreeformSourceLink(Long freeformId, Long sourceId, ReferenceType refType, String sourceLinkName) {
-		return create
-				.insertInto(
-						FREEFORM_SOURCE_LINK,
-						FREEFORM_SOURCE_LINK.FREEFORM_ID,
-						FREEFORM_SOURCE_LINK.SOURCE_ID,
-						FREEFORM_SOURCE_LINK.TYPE,
-						FREEFORM_SOURCE_LINK.NAME)
-				.values(
-						freeformId,
-						sourceId,
-						refType.name(),
-						sourceLinkName)
-				.returning(FREEFORM_SOURCE_LINK.ID)
-				.fetchOne()
-				.getId();
-	}
-
-	@Deprecated
-	public void updateFreeformSourceLink(Long sourceLinkId, String sourceLinkName) {
-		create
-				.update(FREEFORM_SOURCE_LINK)
-				.set(FREEFORM_SOURCE_LINK.NAME, sourceLinkName)
-				.where(FREEFORM_SOURCE_LINK.ID.eq(sourceLinkId))
-				.execute();
-	}
-
-	@Deprecated
-	public void deleteFreeformSourceLink(Long sourceLinkId) {
-		create
-				.delete(FREEFORM_SOURCE_LINK)
-				.where(FREEFORM_SOURCE_LINK.ID.eq(sourceLinkId))
 				.execute();
 	}
 

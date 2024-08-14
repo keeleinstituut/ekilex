@@ -23,7 +23,7 @@ drop table if exists usage cascade;
 
 create table usage (
   id bigserial primary key, 
-  original_freeform_id bigint references freeform(id) on delete cascade not null, -- to be dropped later
+  original_freeform_id bigint references freeform(id) on delete cascade, -- to be dropped later
   lexeme_id bigint references lexeme(id) on delete cascade not null, 
   value text null, 
   value_prese text null, 
@@ -61,7 +61,7 @@ create index usage_source_link_name_lower_idx on usage_source_link(lower(name));
 
 create table usage_translation (
   id bigserial primary key, 
-  original_freeform_id bigint references freeform(id) on delete cascade not null, -- to be dropped later
+  original_freeform_id bigint references freeform(id) on delete cascade, -- to be dropped later
   usage_id bigint references usage(id) on delete cascade not null, 
   value text null, 
   value_prese text null, 
@@ -80,7 +80,7 @@ create index usage_translation_lang_idx on usage_translation(lang);
 
 create table usage_definition (
   id bigserial primary key, 
-  original_freeform_id bigint references freeform(id) on delete cascade not null, -- to be dropped later
+  original_freeform_id bigint references freeform(id) on delete cascade, -- to be dropped later
   usage_id bigint references usage(id) on delete cascade not null, 
   value text null, 
   value_prese text null, 
@@ -99,7 +99,7 @@ create index usage_definition_lang_idx on usage_definition(lang);
 
 create table lexeme_note (
   id bigserial primary key, 
-  original_freeform_id bigint references freeform(id) on delete cascade not null, -- to be dropped later
+  original_freeform_id bigint references freeform(id) on delete cascade, -- to be dropped later
   lexeme_id bigint references lexeme(id) on delete cascade not null, 
   value text null, 
   value_prese text null, 
@@ -137,7 +137,7 @@ create index lexeme_note_source_link_name_lower_idx on lexeme_note_source_link(l
 
 create table meaning_note (
   id bigserial primary key, 
-  original_freeform_id bigint references freeform(id) on delete cascade not null, -- to be dropped later
+  original_freeform_id bigint references freeform(id) on delete cascade, -- to be dropped later
   meaning_id bigint references meaning(id) on delete cascade not null, 
   value text null, 
   value_prese text null, 
@@ -175,7 +175,7 @@ create index meaning_note_source_link_name_lower_idx on meaning_note_source_link
 
 create table meaning_image (
   id bigserial primary key, 
-  original_freeform_id bigint references freeform(id) on delete cascade not null, -- to be dropped later
+  original_freeform_id bigint references freeform(id) on delete cascade, -- to be dropped later
   meaning_id bigint references meaning(id) on delete cascade not null, 
   title text null, 
   url text null, 
@@ -212,7 +212,7 @@ create index meaning_image_source_link_name_lower_idx on meaning_image_source_li
 
 create table definition_note (
   id bigserial primary key, 
-  original_freeform_id bigint references freeform(id) on delete cascade not null, -- to be dropped later
+  original_freeform_id bigint references freeform(id) on delete cascade, -- to be dropped later
   definition_id bigint references definition(id) on delete cascade not null, 
   value text null, 
   value_prese text null, 
@@ -469,8 +469,8 @@ insert into meaning_image (
 select
 	f1.id,
 	mf.meaning_id,
-	f1.value_text,
 	f2.value_text,
+	f1.value_text,
 	f1.complexity,
 	f1.is_public,
 	f1.created_by,
@@ -551,6 +551,7 @@ where
 	fsl.freeform_id = dn.original_freeform_id
 order by dn.order_by, fsl.order_by;
 
-alter table lexeme_source_link drop column value;
-alter table definition_source_link drop column value;
+update freeform f set type = 'MEANING_IMAGE' where f.type = 'IMAGE_FILE' and exists (select 1 from meaning_freeform mf where mf.freeform_id = f.id);
+alter table lexeme_source_link drop column if exists value;
+alter table definition_source_link drop column if exists value;
 

@@ -176,10 +176,9 @@ public class LexSearchService extends AbstractWordSearchService {
 	private void populateLexeme(
 			WordLexeme lexeme, List<ClassifierSelect> languagesOrder, EkiUser user, EkiUserProfile userProfile, boolean isFullData) throws Exception {
 
-		final String[] excludeMeaningAttributeTypes = new String[] {
-				FreeformType.LEARNER_COMMENT.name(), FreeformType.SEMANTIC_TYPE.name(), FreeformType.NOTE.name()};
-		final String[] excludeLexemeAttributeTypes = new String[] {
-				FreeformType.GOVERNMENT.name(), FreeformType.GRAMMAR.name(), FreeformType.USAGE.name(), FreeformType.NOTE.name()};
+		// TODO remove "MEANING_IMAGE" soon
+		final String[] excludeMeaningAttributeTypes = new String[] {FreeformType.LEARNER_COMMENT.name(), FreeformType.SEMANTIC_TYPE.name(), FreeformType.NOTE.name(), "MEANING_IMAGE"};
+		final String[] excludeLexemeAttributeTypes = new String[] {FreeformType.GOVERNMENT.name(), FreeformType.GRAMMAR.name(), FreeformType.USAGE.name(), FreeformType.NOTE.name()};
 
 		List<String> preferredMeaningWordLangs = new ArrayList<>();
 		if (userProfile != null) {
@@ -195,7 +194,6 @@ public class LexSearchService extends AbstractWordSearchService {
 
 		permCalculator.applyCrud(user, lexeme);
 		List<String> lexemeTags = commonDataDbService.getLexemeTags(lexemeId);
-
 		List<MeaningRelation> synMeaningRelations = commonDataDbService.getSynMeaningRelations(meaningId, datasetCode);
 		appendLexemeLevels(synMeaningRelations);
 		List<MeaningWord> synMeaningWords = commonDataDbService.getMeaningWords(lexemeId, meaningWordLangsRestriction);

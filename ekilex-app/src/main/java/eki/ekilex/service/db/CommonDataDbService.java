@@ -793,7 +793,7 @@ public class CommonDataDbService extends AbstractDataDbService {
 										DSL.key("name").value(dsl.NAME),
 										DSL.key("sourceId").value(dsl.SOURCE_ID),
 										DSL.key("sourceName").value(s.NAME)))
-						.orderBy(dnsl.ORDER_BY))
+						.orderBy(dsl.ORDER_BY))
 				.from(dsl, s)
 				.where(
 						dsl.DEFINITION_ID.eq(d.ID)

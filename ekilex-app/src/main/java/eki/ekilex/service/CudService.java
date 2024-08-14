@@ -679,30 +679,19 @@ public class CudService extends AbstractCudService implements PermConstant, Acti
 	}
 
 	@Transactional
-	public void updateMeaningImage(Long meaningImageId, String valuePrese, Complexity complexity, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
+	public void updateMeaningImage(Long meaningImageId, String url, String title, Complexity complexity, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
 
-		// TODO to be upgraded or removed
+		MeaningImage meaningImage = new MeaningImage();
+		meaningImage.setUrl(url);
+		meaningImage.setTitle(title);
+		meaningImage.setComplexity(complexity);
+		//meaningImage.setPublic(isPublic); not yet implemented in UI
+		applyUpdate(meaningImage);
 
-		/*
-		FreeForm freeform = new FreeForm();
-		freeform.setId(meaningImageId);
-		freeform.setComplexity(complexity);
-		setFreeformValueTextAndValuePrese(freeform, valuePrese);
-		
-		updateFreeform(ActivityOwner.MEANING, ActivityEntity.IMAGE_FILE, freeform, roleDatasetCode, isManualEventOnUpdateEnabled);
-		*/
-	}
-
-	@Deprecated
-	@Transactional
-	public void updateImageTitle(Long imageId, String valuePrese, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
-
-		FreeForm freeform = new FreeForm();
-		freeform.setParentId(imageId);
-		freeform.setType(FreeformType.IMAGE_TITLE);
-		setFreeformValueTextAndValuePrese(freeform, valuePrese);
-
-		updateChildFreeform(ActivityOwner.MEANING, ActivityEntity.IMAGE_FILE, freeform, roleDatasetCode, isManualEventOnUpdateEnabled);
+		Long meaningId = activityLogService.getOwnerId(meaningImageId, ActivityEntity.MEANING_IMAGE);
+		ActivityLogData activityLog = activityLogService.prepareActivityLog("updateMeaningImage", meaningId, ActivityOwner.MEANING, roleDatasetCode, isManualEventOnUpdateEnabled);
+		cudDbService.updateMeaningImage(meaningImageId, meaningImage);
+		activityLogService.createActivityLog(activityLog, meaningImageId, ActivityEntity.MEANING_IMAGE);
 	}
 
 	@Transactional
@@ -758,16 +747,6 @@ public class CudService extends AbstractCudService implements PermConstant, Acti
 		ActivityLogData activityLog = activityLogService.prepareActivityLog("updateFreeform", ownerId, logOwner, roleDatasetCode, isManualEventOnUpdateEnabled);
 		cudDbService.updateFreeform(freeform, userName);
 		activityLogService.createActivityLog(activityLog, freeformId, activityEntity);
-	}
-
-	private void updateChildFreeform(ActivityOwner logOwner, ActivityEntity activityEntity, FreeForm freeform, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
-
-		String userName = userContext.getUserName();
-		Long parentId = freeform.getParentId();
-		Long ownerId = activityLogService.getOwnerId(parentId, activityEntity);
-		ActivityLogData activityLog = activityLogService.prepareActivityLog("updateChildFreeform", ownerId, logOwner, roleDatasetCode, isManualEventOnUpdateEnabled);
-		cudDbService.updateChildFreeform(freeform, userName);
-		activityLogService.createActivityLog(activityLog, parentId, activityEntity);
 	}
 
 	// --- CREATE ---
@@ -1040,21 +1019,11 @@ public class CudService extends AbstractCudService implements PermConstant, Acti
 		meaningImage.setUrl(url);
 		meaningImage.setComplexity(complexity);
 		meaningImage.setPublic(PUBLICITY_PUBLIC);
+		applyCreateUpdate(meaningImage);
 
 		ActivityLogData activityLog = activityLogService.prepareActivityLog("createMeaningImage", meaningId, ActivityOwner.MEANING, roleDatasetCode, isManualEventOnUpdateEnabled);
 		Long meaningImageId = cudDbService.createMeaningImage(meaningId, meaningImage);
 		activityLogService.createActivityLog(activityLog, meaningImageId, ActivityEntity.MEANING_IMAGE);
-	}
-
-	@Deprecated
-	@Transactional
-	public void createImageTitle(Long imageFreeformId, String valuePrese, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
-
-		FreeForm freeform = new FreeForm();
-		freeform.setParentId(imageFreeformId);
-		freeform.setType(FreeformType.IMAGE_TITLE);
-		setFreeformValueTextAndValuePrese(freeform, valuePrese);
-		createMeaningFreeformChildFreeform(ActivityEntity.IMAGE_FILE, freeform, roleDatasetCode, isManualEventOnUpdateEnabled);
 	}
 
 	@Transactional
@@ -1092,16 +1061,6 @@ public class CudService extends AbstractCudService implements PermConstant, Acti
 		ActivityLogData activityLog = activityLogService.prepareActivityLog("createMeaningFreeform", meaningId, ActivityOwner.MEANING, roleDatasetCode, isManualEventOnUpdateEnabled);
 		Long meaningFreeformId = cudDbService.createMeaningFreeform(meaningId, freeform, userName);
 		activityLogService.createActivityLog(activityLog, meaningFreeformId, activityEntity);
-	}
-
-	private void createMeaningFreeformChildFreeform(ActivityEntity activityEntity, FreeForm freeform, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
-
-		String userName = userContext.getUserName();
-		Long meaningFreeformId = freeform.getParentId();
-		Long meaningId = activityLogService.getOwnerId(meaningFreeformId, activityEntity);
-		ActivityLogData activityLog = activityLogService.prepareActivityLog("createChildFreeform", meaningId, ActivityOwner.MEANING, roleDatasetCode, isManualEventOnUpdateEnabled);
-		Long childFreeformId = cudDbService.createChildFreeform(freeform, userName);
-		activityLogService.createActivityLog(activityLog, childFreeformId, activityEntity);
 	}
 
 	// --- DELETE ---
@@ -1422,16 +1381,6 @@ public class CudService extends AbstractCudService implements PermConstant, Acti
 	public void deleteMeaningForum(Long meaningForumId) {
 
 		cudDbService.deleteMeaningForum(meaningForumId);
-	}
-
-	@Deprecated
-	@Transactional
-	public void deleteImageTitle(Long imageId, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
-
-		Long meaningId = activityLogService.getOwnerId(imageId, ActivityEntity.IMAGE_FILE);
-		ActivityLogData activityLog = activityLogService.prepareActivityLog("deleteImageTitle", meaningId, ActivityOwner.MEANING, roleDatasetCode, isManualEventOnUpdateEnabled);
-		Long imageTitleId = cudDbService.deleteImageTitle(imageId);
-		activityLogService.createActivityLog(activityLog, imageTitleId, ActivityEntity.IMAGE_TITLE);
 	}
 
 	@Transactional

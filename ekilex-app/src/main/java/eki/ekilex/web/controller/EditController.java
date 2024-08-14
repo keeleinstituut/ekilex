@@ -189,12 +189,7 @@ public class EditController extends AbstractMutableDataPageController {
 			cudService.createWordForum(id, value, user);
 			break;
 		case "meaning_image":
-			// TODO needs upgraded integration
 			cudService.createMeaningImage(id, value, value2, complexity, roleDatasetCode, isManualEventOnUpdateEnabled);
-			break;
-		case "image_title":
-			// TODO needs removing
-			cudService.createImageTitle(id, value, roleDatasetCode, isManualEventOnUpdateEnabled);
 			break;
 		case "meaning_media":
 			cudService.createMeaningMedia(id, value, complexity, roleDatasetCode, isManualEventOnUpdateEnabled);
@@ -261,6 +256,8 @@ public class EditController extends AbstractMutableDataPageController {
 		Long id2 = itemData.getId2();
 		String value = itemData.getValue();
 		value = valueUtil.trimAndCleanAndRemoveHtmlAndLimit(value);
+		String value2 = itemData.getValue2();
+		value2 = valueUtil.trimAndCleanAndRemoveHtmlAndLimit(value2);
 		String currentValue = itemData.getCurrentValue();
 		BigDecimal numberValue = itemData.getNumberValue();
 		String languageCode = itemData.getLanguage();
@@ -380,12 +377,7 @@ public class EditController extends AbstractMutableDataPageController {
 			cudService.updateWordForum(id, value, user);
 			break;
 		case "meaning_image":
-			// TODO needs upgraded integration
-			cudService.updateMeaningImage(id, value, complexity, roleDatasetCode, isManualEventOnUpdateEnabled);
-			break;
-		case "image_title":
-			// TODO needs removing
-			cudService.updateImageTitle(id, value, roleDatasetCode, isManualEventOnUpdateEnabled);
+			cudService.updateMeaningImage(id, value, value2, complexity, roleDatasetCode, isManualEventOnUpdateEnabled);
 			break;
 		case "meaning_media":
 			cudService.updateMeaningMedia(id, value, complexity, roleDatasetCode, isManualEventOnUpdateEnabled);
@@ -615,10 +607,6 @@ public class EditController extends AbstractMutableDataPageController {
 			break;
 		case "word_vocal_form":
 			cudService.updateWordVocalForm(id, null, roleDatasetCode, isManualEventOnUpdateEnabled);
-			break;
-		case "image_title":
-			// TODO needs removing
-			cudService.deleteImageTitle(id, roleDatasetCode, isManualEventOnUpdateEnabled);
 			break;
 		case "meaning_semantic_type":
 			cudService.deleteMeaningSemanticType(id, valueToDelete, roleDatasetCode, isManualEventOnUpdateEnabled);

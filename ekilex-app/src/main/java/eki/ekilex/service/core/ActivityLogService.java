@@ -159,25 +159,8 @@ public class ActivityLogService implements SystemConstant, GlobalConstant {
 		return resolveOwnerDescr(freeformOwnerDataMap);
 	}
 
-	// TODO image file + source link should be moved out too
-	public ActivityLogOwnerEntityDescr getFreeformSourceLinkOwnerDescrByFreeform(Long freeformId) throws Exception {
-		ActivityLogOwnerEntityDescr freeformOwnerDescr = getFreeformOwnerDescr(freeformId);
-		ActivityEntity sourceLinkActivityEntityName;
-		if (ActivityEntity.IMAGE_FILE.equals(freeformOwnerDescr.getEntityName())) {
-			sourceLinkActivityEntityName = ActivityEntity.MEANING_IMAGE_SOURCE_LINK;
-		} else {
-			throw new IllegalParamException("Missing activity entity source link owner mapping for " + freeformOwnerDescr.getEntityName());
-		}
-		return new ActivityLogOwnerEntityDescr(freeformOwnerDescr.getOwnerName(), freeformOwnerDescr.getOwnerId(), sourceLinkActivityEntityName);
-	}
-
-	public ActivityLogOwnerEntityDescr getFreeformSourceLinkOwnerDescrBySourceLink(Long sourceLinkId) throws Exception {
-		Long freeformId = activityLogDbService.getFreeformSourceLinkFreeformId(sourceLinkId);
-		return getFreeformSourceLinkOwnerDescrByFreeform(freeformId);
-	}
-
-	// TODO correct owners for moved freeforms
 	public Long getOwnerId(Long entityId, ActivityEntity entity) throws Exception {
+
 		if (FIRST_DEPTH_FREEFORM_ENTITIES.contains(entity)) {
 			ActivityLogOwnerEntityDescr freeformOwnerDescr = getFreeformOwnerDescr(entityId);
 			return freeformOwnerDescr.getOwnerId();
@@ -665,8 +648,8 @@ public class ActivityLogService implements SystemConstant, GlobalConstant {
 		if (meaning == null) {
 			return EMPTY_CONTENT_JSON;
 		}
-		final String[] excludeMeaningAttributeTypes = new String[] {
-				FreeformType.LEARNER_COMMENT.name(), FreeformType.SEMANTIC_TYPE.name(), FreeformType.NOTE.name()};
+		// TODO remove "MEANING_IMAGE" soon
+		final String[] excludeMeaningAttributeTypes = new String[] {FreeformType.LEARNER_COMMENT.name(), FreeformType.SEMANTIC_TYPE.name(), FreeformType.NOTE.name(), "MEANING_IMAGE"};
 
 		List<OrderedClassifier> meaningDomains = commonDataDbService.getMeaningDomains(meaningId, CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
 		List<String> meaningTags = commonDataDbService.getMeaningTags(meaningId);

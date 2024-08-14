@@ -1485,9 +1485,9 @@
       </div>
     </div>
   </div>
-  <div th:id="${'addImageSourceLinkDlg_' + image.id}" class="modal"
+  <div th:id="${'addMeaningImageSourceLinkDlg_' + image.id}" class="modal"
         role="dialog"
-        th:fragment="add_image_source_link_dlg"
+        th:fragment="add_meaning_image_source_link_dlg"
         data-plugin="initAddSourceLinkWithAutocompletePlugin">
     <div class="modal-dialog" role="document" style="max-width: 1000px;">
       <div class="modal-content">
@@ -1518,10 +1518,14 @@
             <input type="hidden" name="id" th:value="${meaningId}">
             <input type="hidden" name="opCode" value="meaning_image">
             <input type="hidden" name="complexity" th:value="${T(eki.common.constant.Complexity).DETAIL}">
-            <input type="hidden" name="value">
             <div class="form-group row">
               <div class="col-md-12">
-                <textarea class="form-control" rows="1" th:placeholder="#{term.placeholder.image.url}" name="value"></textarea>
+                <input type="text" class="form-control required-field" th:placeholder="#{term.placeholder.image.url}" name="value" required="required" autocomplete="off"></input>
+              </div>
+            </div>
+            <div class="form-group row">
+              <div class="col-md-12">
+                <input type="text" class="form-control" th:placeholder="#{term.placeholder.image.title}" name="value2" autocomplete="off"></input>
               </div>
             </div>
             <div class="modal-footer">
@@ -1546,63 +1550,18 @@
             <input type="hidden" name="complexity" th:value="${image.complexity}">
             <div class="form-group row">
               <div class="col-md-12">
-                <textarea class="form-control" rows="1" name="value" th:text="${image.sourceUrl}"></textarea>
+                <input type="text" class="form-control required-field" name="value" th:placeholder="#{term.placeholder.image.url}" th:value="${image.sourceUrl}" required="required" autocomplete="off"></input>
+              </div>
+            </div>
+            <div class="form-group row">
+              <div class="col-md-12">
+                <input type="text" class="form-control" name="value2" th:placeholder="#{term.placeholder.image.title}" th:value="${image.title}" autocomplete="off"></input>
               </div>
             </div>
             <div class="modal-footer">
               <button type="submit" class="btn btn-primary" th:text="#{common.save}">Salvesta</button>
               <button type="button" class="btn btn-default" data-dismiss="modal" th:text="#{common.cancel}">Katkesta</button>
             </div>
-          </div>
-        </form>
-      </div>
-    </div>
-  </div>
-  <div th:id="${'addImageTitleDlg_' + image.id}" class="modal"
-        role="dialog"
-        th:fragment="add_image_title_dlg"
-        data-plugin="initGenericTextAddDlgAndFocusPlugin">
-    <div class="modal-dialog modal-lg" role="document">
-      <div class="modal-content">
-        <form th:action="@{/create_item}" method="post">
-          <div class="modal-body">
-            <input type="hidden" name="id" th:value="${image.id}">
-            <input type="hidden" name="opCode" value="image_title">
-            <input type="hidden" name="value">
-            <div class="form-group row">
-              <div class="col-md-12">
-                <textarea class="form-control" rows="1" name="value"></textarea>
-              </div>
-            </div>
-          </div>
-          <div class="modal-footer">
-            <button type="submit" class="btn btn-primary" th:text="#{common.save}">Salvesta</button>
-            <button type="button" class="btn btn-default" data-dismiss="modal" th:text="#{common.cancel}">Katkesta</button>
-          </div>
-        </form>
-      </div>
-    </div>
-  </div>
-  <div th:id="${'editImageTitleDlg_' + image.id}" class="modal"
-        role="dialog"
-        th:fragment="edit_image_title_dlg"
-        data-plugin="initGenericTextEditDlgAndFocusPlugin">
-    <div class="modal-dialog modal-lg" role="document">
-      <div class="modal-content">
-        <form th:action="@{/update_item}" method="post">
-          <div class="modal-body">
-            <input type="hidden" name="id" th:value="${image.id}">
-            <input type="hidden" name="opCode" value="image_title">
-            <input type="hidden" name="value" th:value="${image.title}">
-            <div class="form-group row">
-              <div class="col-md-12">
-                <textarea class="form-control" rows="1" name="value" th:text="${image.title}"></textarea>
-              </div>
-            </div>
-          </div>
-          <div class="modal-footer">
-            <button type="submit" class="btn btn-primary" th:text="#{common.save}">Salvesta</button>
-            <button type="button" class="btn btn-default" data-dismiss="modal" th:text="#{common.cancel}">Katkesta</button>
           </div>
         </form>
       </div>
@@ -1659,25 +1618,6 @@
       </div>
     </div>
   </div>
-  <!--  TODO to be replaced with specific types of source link edit forms -->
-  <div th:id="${'editFreeformSourceLinkDlg_' + sourceLink.id}" class="modal"
-        role="dialog"
-        th:fragment="edit_freeform_source_link_dlg"
-        data-plugin="initEditSourceLinkDlgPlugin">
-    <div class="modal-dialog modal-lg" role="document">
-      <div class="modal-content">
-        <form name="sourceLinkForm" th:action="@{/update_item}" method="post">
-          <input type="hidden" name="id" th:value="${sourceLink.id}">
-          <input type="hidden" name="opCode" value="ff_source_link">
-          <div class="modal-body" data-name="sourceLinkDlgContent"></div>
-          <div class="modal-footer">
-            <button type="submit" class="btn btn-primary" data-plugin="updateSourceLink" th:text="#{common.edit}">Muuda</button>
-            <button type="button" class="btn btn-default" data-dismiss="modal" th:text="#{common.cancel}">Katkesta</button>
-          </div>
-        </form>
-      </div>
-    </div>
-  </div>
   <div th:id="${'editDefinitionSourceLinkDlg_' + sourceLink.id}" class="modal"
         role="dialog"
         th:fragment="edit_definition_source_link_dlg"
@@ -1696,6 +1636,24 @@
       </div>
     </div>
   </div>
+  <div th:id="${'editDefinitionNoteSourceLinkDlg_' + sourceLink.id}" class="modal"
+        role="dialog"
+        th:fragment="edit_definition_note_source_link_dlg"
+        data-plugin="initEditSourceLinkDlgPlugin">
+    <div class="modal-dialog modal-lg" role="document">
+      <div class="modal-content">
+        <form name="sourceLinkForm" th:action="@{/update_item}" method="post">
+          <input type="hidden" name="id" th:value="${sourceLink.id}">
+          <input type="hidden" name="opCode" value="definition_note_source_link">
+          <div class="modal-body" data-name="sourceLinkDlgContent"></div>
+          <div class="modal-footer">
+            <button type="submit" class="btn btn-primary" data-plugin="updateSourceLink" th:text="#{common.edit}">Muuda</button>
+            <button type="button" class="btn btn-default" data-dismiss="modal" th:text="#{common.cancel}">Katkesta</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
   <div th:id="${'editLexemeSourceLinkDlg_' + sourceLink.id}" class="modal"
         role="dialog"
         th:fragment="edit_lexeme_source_link_dlg"
@@ -1705,6 +1663,60 @@
         <form name="sourceLinkForm" th:action="@{/update_item}" method="post">
           <input type="hidden" name="id" th:value="${sourceLink.id}">
           <input type="hidden" name="opCode" value="lexeme_source_link">
+          <div class="modal-body" data-name="sourceLinkDlgContent"></div>
+          <div class="modal-footer">
+            <button type="submit" class="btn btn-primary" data-plugin="updateSourceLink" th:text="#{common.edit}">Muuda</button>
+            <button type="button" class="btn btn-default" data-dismiss="modal" th:text="#{common.cancel}">Katkesta</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+  <div th:id="${'editLexemeNoteSourceLinkDlg_' + sourceLink.id}" class="modal"
+        role="dialog"
+        th:fragment="edit_lexeme_note_source_link_dlg"
+        data-plugin="initEditSourceLinkDlgPlugin">
+    <div class="modal-dialog modal-lg" role="document">
+      <div class="modal-content">
+        <form name="sourceLinkForm" th:action="@{/update_item}" method="post">
+          <input type="hidden" name="id" th:value="${sourceLink.id}">
+          <input type="hidden" name="opCode" value="lexeme_note_source_link">
+          <div class="modal-body" data-name="sourceLinkDlgContent"></div>
+          <div class="modal-footer">
+            <button type="submit" class="btn btn-primary" data-plugin="updateSourceLink" th:text="#{common.edit}">Muuda</button>
+            <button type="button" class="btn btn-default" data-dismiss="modal" th:text="#{common.cancel}">Katkesta</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+  <div th:id="${'editMeaningNoteSourceLinkDlg_' + sourceLink.id}" class="modal"
+        role="dialog"
+        th:fragment="edit_meaning_note_source_link_dlg"
+        data-plugin="initEditSourceLinkDlgPlugin">
+    <div class="modal-dialog modal-lg" role="document">
+      <div class="modal-content">
+        <form name="sourceLinkForm" th:action="@{/update_item}" method="post">
+          <input type="hidden" name="id" th:value="${sourceLink.id}">
+          <input type="hidden" name="opCode" value="meaning_note_source_link">
+          <div class="modal-body" data-name="sourceLinkDlgContent"></div>
+          <div class="modal-footer">
+            <button type="submit" class="btn btn-primary" data-plugin="updateSourceLink" th:text="#{common.edit}">Muuda</button>
+            <button type="button" class="btn btn-default" data-dismiss="modal" th:text="#{common.cancel}">Katkesta</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+  <div th:id="${'editMeaningImageSourceLinkDlg_' + sourceLink.id}" class="modal"
+        role="dialog"
+        th:fragment="edit_meaning_image_source_link_dlg"
+        data-plugin="initEditSourceLinkDlgPlugin">
+    <div class="modal-dialog modal-lg" role="document">
+      <div class="modal-content">
+        <form name="sourceLinkForm" th:action="@{/update_item}" method="post">
+          <input type="hidden" name="id" th:value="${sourceLink.id}">
+          <input type="hidden" name="opCode" value="meaning_image_source_link">
           <div class="modal-body" data-name="sourceLinkDlgContent"></div>
           <div class="modal-footer">
             <button type="submit" class="btn btn-primary" data-plugin="updateSourceLink" th:text="#{common.edit}">Muuda</button>

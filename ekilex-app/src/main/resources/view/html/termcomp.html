@@ -543,7 +543,7 @@
                   </div>
                   <div class="small hidden-buttons ml-4">
                     <th:block th:each="sourceLink : ${note.sourceLinks}">
-                      <div th:replace="termdialog :: edit_freeform_source_link_dlg"></div>
+                      <div th:replace="termdialog :: edit_definition_note_source_link_dlg"></div>
                       <span>
                         [
                         <a th:href="@{'/definition_note_source_link:' + ${sourceLink.id}}" th:text="${sourceLink.sourceName}"></a>
@@ -553,7 +553,7 @@
                         <button type="button" class="btn badge badge-primary"
                                 th:title="#{common.edit}"
                                 data-toggle="modal"
-                                th:data-target="${'#editFreeformSourceLinkDlg_' + sourceLink.id}"
+                                th:data-target="${'#editDefinitionNoteSourceLinkDlg_' + sourceLink.id}"
                                 sec:authorize="#vars.definition.crudGrant">
                           <i class="fa fa-edit" aria-hidden="true"></i>
                         </button>
@@ -653,7 +653,7 @@
             </div>
             <div class="hidden-buttons">
               <th:block th:each="sourceLink : ${note.sourceLinks}">
-                <div th:replace="termdialog :: edit_freeform_source_link_dlg"></div>
+                <div th:replace="termdialog :: edit_meaning_note_source_link_dlg"></div>
                 <span>
                   [
                   <a th:href="@{'/meaning_note_source_link:' + ${sourceLink.id}}" th:text="${sourceLink.sourceName}"></a>
@@ -663,7 +663,7 @@
                   <button type="button" class="btn badge badge-primary"
                           th:title="#{common.edit}"
                           data-toggle="modal"
-                          th:data-target="${'#editFreeformSourceLinkDlg_' + sourceLink.id}"
+                          th:data-target="${'#editMeaningNoteSourceLinkDlg_' + sourceLink.id}"
                           sec:authorize="#vars.meaning.crudGrant">
                     <i class="fa fa-edit" aria-hidden="true"></i>
                   </button>
@@ -755,7 +755,7 @@
             </div>
             <div class="hidden-buttons">
               <th:block th:each="sourceLink : ${note.sourceLinks}">
-                <div th:replace="termdialog :: edit_freeform_source_link_dlg"></div>
+                <div th:replace="termdialog :: edit_meaning_note_source_link_dlg"></div>
                 <span>
                   [
                   <a th:href="@{'/meaning_note_source_link:' + ${sourceLink.id}}" th:text="${sourceLink.sourceName}"></a>
@@ -765,7 +765,7 @@
                   <button type="button" class="btn badge badge-primary"
                           th:title="#{common.edit}"
                           data-toggle="modal"
-                          th:data-target="${'#editFreeformSourceLinkDlg_' + sourceLink.id}"
+                          th:data-target="${'#editMeaningNoteSourceLinkDlg_' + sourceLink.id}"
                           sec:authorize="#ars.meaning.crudGrant">
                     <i class="fa fa-edit" aria-hidden="true"></i>
                   </button>
@@ -809,9 +809,7 @@
     <div class="col pl-0">
       <th:block th:each="image : ${meaning.images}">
         <div th:replace="termdialog :: edit_meaning_image_dlg"></div>
-        <div th:replace="termdialog :: add_image_title_dlg"></div>
-        <div th:replace="termdialog :: edit_image_title_dlg"></div>
-        <div th:replace="termdialog :: add_image_source_link_dlg"></div>
+        <div th:replace="termdialog :: add_meaning_image_source_link_dlg"></div>
         <div class="invisible-buttons action-buttons-anchor w-100">
           <img class="w-25" th:src="${image.sourceUrl}">
           <span class="invisible-buttons">
@@ -833,16 +831,9 @@
           </span>
           <span th:if="${#strings.isEmpty(image.title)}">
             <button type="button" class="btn badge badge-secondary align-bottom"
-                    th:title="#{term.add.image.title}"
-                    data-toggle="modal"
-                    th:data-target="${'#addImageTitleDlg_' + image.id}"
-                    sec:authorize="#vars.meaning.crudGrant">
-              <i class="fa fa-plus" aria-hidden="true"></i>
-            </button>
-            <button type="button" class="btn badge badge-secondary align-bottom"
                     th:title="#{common.add.source.link}"
                     data-toggle="modal"
-                    th:data-target="${'#addImageSourceLinkDlg_' + image.id}"
+                    th:data-target="${'#addMeaningImageSourceLinkDlg_' + image.id}"
                     sec:authorize="#vars.meaning.crudGrant">
               <i class="fa fa-external-link" aria-hidden="true"></i>
             </button>
@@ -850,7 +841,7 @@
         </div>
         <div class="col pl-0 hidden-buttons" th:if="${#strings.isEmpty(image.title)}">
           <th:block th:each="sourceLink : ${image.sourceLinks}">
-            <div th:replace="termdialog :: edit_freeform_source_link_dlg"></div>
+            <div th:replace="termdialog :: edit_meaning_image_source_link_dlg"></div>
             <span>
               [
               <a th:href="@{'/meaning_image_source_link:' + ${sourceLink.id}}" th:text="${sourceLink.sourceName}"></a>
@@ -860,7 +851,7 @@
               <button type="button" class="btn badge badge-primary"
                       th:title="#{common.edit}"
                       data-toggle="modal"
-                      th:data-target="${'#editFreeformSourceLinkDlg_' + sourceLink.id}"
+                      th:data-target="${'#editMeaningImageSourceLinkDlg_' + sourceLink.id}"
                       sec:authorize="#vars.meaning.crudGrant">
                 <i class="fa fa-edit" aria-hidden="true"></i>
               </button>
@@ -884,7 +875,7 @@
               <button type="button" class="btn badge badge-secondary"
                       th:title="#{common.add.source.link}"
                       data-toggle="modal"
-                      th:data-target="${'#addImageSourceLinkDlg_' + image.id}"
+                      th:data-target="${'#addMeaningImageSourceLinkDlg_' + image.id}"
                       sec:authorize="#vars.meaning.crudGrant">
                 <i class="fa fa-external-link" aria-hidden="true"></i>
               </button>
@@ -894,7 +885,7 @@
               <button type="button" class="btn badge badge-primary"
                       th:title="#{common.edit}"
                       data-toggle="modal"
-                      th:data-target="${'#editImageTitleDlg_' + image.id}"
+                      th:data-target="${'#editMeaningImageTitleDlg_' + image.id}"
                       sec:authorize="#vars.meaning.crudGrant">
                 <i class="fa fa-edit" aria-hidden="true"></i>
               </button>
@@ -910,7 +901,7 @@
           </div>
           <div class="hidden-buttons">
             <th:block th:each="sourceLink : ${image.sourceLinks}">
-              <div th:replace="termdialog :: edit_freeform_source_link_dlg"></div>
+              <div th:replace="termdialog :: edit_meaning_image_source_link_dlg"></div>
               <span>
                 [
                 <a th:href="@{'/meaning_image_source_link:' + ${sourceLink.id}}" th:text="${sourceLink.sourceName}"></a>
@@ -920,7 +911,7 @@
                 <button type="button" class="btn badge badge-primary"
                         th:title="#{common.edit}"
                         data-toggle="modal"
-                        th:data-target="${'#editFreeformSourceLinkDlg_' + sourceLink.id}"
+                        th:data-target="${'#editMeaningImageSourceLinkDlg_' + sourceLink.id}"
                         sec:authorize="#vars.meaning.crudGrant">
                   <i class="fa fa-edit" aria-hidden="true"></i>
                 </button>
@@ -938,7 +929,7 @@
             <button type="button" class="btn badge badge-secondary"
                     th:title="#{common.add.source.link}"
                     data-toggle="modal"
-                    th:data-target="${'#addImageSourceLinkDlg_' + image.id}"
+                    th:data-target="${'#addMeaningImageSourceLinkDlg_' + image.id}"
                     sec:authorize="#vars.meaning.crudGrant">
               <i class="fa fa-external-link" aria-hidden="true"></i>
             </button>
@@ -1454,7 +1445,6 @@
         <div class="invisible-buttons action-buttons-anchor mw-80 ml-3">
           <div style="display: list-item; position: absolute"></div>
           <span th:utext="${usage.value}"></span>
-          <span th:if="${usage.typeValue != null}" th:text="'(' + ${usage.typeValue + ')'}"></span>
           <div class="d-inline-block ctxt" th:text="'(' + #{'boolean.public.' + ${usage.public}} + ')'" th:if="${usage.crudGrant}"></div>
           <span class="show-on-mouseover" th:if="${#lists.isEmpty(usage.sourceLinks)}">
             [
@@ -1487,7 +1477,7 @@
         </div>
         <div class="hidden-buttons" th:if="${not #lists.isEmpty(usage.sourceLinks)}">
           <th:block th:each="sourceLink : ${usage.sourceLinks}">
-            <div th:replace="termdialog :: edit_freeform_source_link_dlg"></div>
+            <div th:replace="termdialog :: edit_usage_source_link_dlg"></div>
             <span>
               [
               <a th:href="@{'/usage_source_link:' + ${sourceLink.id}}" th:text="${sourceLink.sourceName}"></a>
@@ -1495,7 +1485,7 @@
               <button type="button" class="btn badge badge-primary"
                       th:title="#{common.edit}"
                       data-toggle="modal"
-                      th:data-target="${'#editFreeformSourceLinkDlg_' + sourceLink.id}"
+                      th:data-target="${'#editUsageSourceLinkDlg_' + sourceLink.id}"
                       sec:authorize="#vars.usage.crudGrant">
                 <i class="fa fa-edit" aria-hidden="true"></i>
               </button>
@@ -1631,7 +1621,7 @@
             </div>
             <div class="hidden-buttons">
               <th:block th:each="sourceLink : ${note.sourceLinks}">
-                <div th:replace="termdialog :: edit_freeform_source_link_dlg"></div>
+                <div th:replace="termdialog :: edit_lexeme_note_source_link_dlg"></div>
                 <span>
                   [
                   <a th:href="@{'/lexeme_note_source_link:' + ${sourceLink.id}}" th:text="${sourceLink.sourceName}"></a>
@@ -1641,7 +1631,7 @@
                   <button type="button" class="btn badge badge-primary"
                           th:title="#{common.edit}"
                           data-toggle="modal"
-                          th:data-target="${'#editFreeformSourceLinkDlg_' + sourceLink.id}"
+                          th:data-target="${'#editLexemeNoteSourceLinkDlg_' + sourceLink.id}"
                           sec:authorize="#vars.lexeme.crudGrant">
                     <i class="fa fa-edit" aria-hidden="true"></i>
                   </button>

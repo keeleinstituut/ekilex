@@ -425,7 +425,8 @@ public class LookupService extends AbstractWordSearchService {
 
 	private void composeMeaningSelectData(EkiUser user, Meaning meaning, List<ClassifierSelect> languagesOrder) {
 
-		final String[] excludeMeaningAttributeTypes = new String[] {FreeformType.LEARNER_COMMENT.name(), FreeformType.NOTE.name()};
+		// TODO remove "MEANING_IMAGE" soon
+		final String[] excludeMeaningAttributeTypes = new String[] {FreeformType.LEARNER_COMMENT.name(), FreeformType.NOTE.name(), "MEANING_IMAGE"};
 		Map<String, String> datasetNameMap = commonDataDbService.getDatasetNameMap();
 		Long meaningId = meaning.getMeaningId();
 

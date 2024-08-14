@@ -1,7 +1,5 @@
 package eki.ekilex.web.controller;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
 import org.springframework.stereotype.Controller;
@@ -21,8 +19,6 @@ import eki.ekilex.service.SourceService;
 @SessionAttributes(WebConstant.SESSION_BEAN)
 public class SourceLinkController implements WebConstant {
 
-	private static final Logger logger = LoggerFactory.getLogger(SourceLinkController.class);
-
 	@Autowired
 	private SourceLinkService sourceLinkService;
 
@@ -35,7 +31,6 @@ public class SourceLinkController implements WebConstant {
 			@PathVariable("sourceLinkId") String sourceLinkIdStr,
 			Model model) {
 
-		logger.debug("Requested source link \"{}:{}\"", sourceLinkContentKey, sourceLinkIdStr);
 		Long sourceLinkId = Long.valueOf(sourceLinkIdStr);
 
 		SourceLink sourceLink = sourceLinkService.getSourceLink(sourceLinkContentKey, sourceLinkId);
@@ -48,14 +43,11 @@ public class SourceLinkController implements WebConstant {
 		return COMPONENTS_PAGE + PAGE_FRAGMENT_ELEM + "source_link_details";
 	}
 
-	// TODO rename path to edit
-	@GetMapping(SOURCE_AND_SOURCE_LINK_URI + "/{sourceLinkContentKey}/{sourceLinkId}")
+	@GetMapping(EDIT_SOURCE_LINK_URI + "/{sourceLinkContentKey}/{sourceLinkId}")
 	public String editSourceLink(
 			@PathVariable("sourceLinkContentKey") String sourceLinkContentKey,
 			@PathVariable("sourceLinkId") Long sourceLinkId,
 			Model model) {
-
-		logger.debug("Requested {} type source link '{}' and source", sourceLinkContentKey, sourceLinkId);
 
 		SourceLink sourceLink = sourceLinkService.getSourceLink(sourceLinkContentKey, sourceLinkId);
 		Long sourceId = sourceLink.getSourceId();

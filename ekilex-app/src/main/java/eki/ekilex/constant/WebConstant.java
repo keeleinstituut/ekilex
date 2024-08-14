@@ -254,7 +254,7 @@ public interface WebConstant {
 
 	String CREATE_SOURCE_URI = "/create_source";
 
-	String SOURCE_AND_SOURCE_LINK_URI = "/source_and_source_link";
+	String EDIT_SOURCE_LINK_URI = "/edit_source_link";
 
 	String CREATE_SOURCE_AND_SOURCE_LINK_URI = "/create_source_and_source_link";
 

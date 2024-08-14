@@ -1933,15 +1933,19 @@
           <div class="modal-body">
             <input type="hidden" name="id" th:value="${lexeme.meaningId}">
             <input type="hidden" name="opCode" value="meaning_image">
-            <input type="hidden" name="value">
             <div class="form-group row">
               <div class="col-md-12">
-                <textarea class="form-control" rows="1" th:placeholder="#{lex.placeholder.image.url}" name="value"></textarea>
+                <input type="text" class="form-control required-field" name="value" th:placeholder="#{lex.placeholder.image.url}" required="required" autocomplete="off"></input>
+              </div>
+            </div>
+            <div class="form-group row">
+              <div class="col-md-12">
+                <input type="text" class="form-control" name="value2" th:placeholder="#{lex.placeholder.image.title}" autocomplete="off"></input>
               </div>
             </div>
             <div class="form-group row">
               <div class="col-md-4">
-                <select required class="form-control required-field" name="complexity">
+                <select required="required" class="form-control required-field" name="complexity">
                   <option value="" hidden disabled selected th:text="#{common.select.complexity}">vali detailsus...</option>
                   <option th:each="complexity : ${complexities}" th:value="${complexity}" th:text="#{'enum.complexity.' + ${complexity}}">value</option>
                 </select>
@@ -1967,7 +1971,12 @@
             <input type="hidden" name="opCode" value="meaning_image">
             <div class="form-group row">
               <div class="col-md-12">
-                <textarea class="form-control" rows="1" name="value" th:text="${image.sourceUrl}"></textarea>
+                <input type="text" class="form-control required-field" name="value" th:placeholder="#{lex.placeholder.image.url}" th:value="${image.sourceUrl}" required="required" autocomplete="off"></input>
+              </div>
+            </div>
+            <div class="form-group row">
+              <div class="col-md-12">
+                <input type="text" class="form-control" name="value2" th:placeholder="#{lex.placeholder.image.title}" th:value="${image.title}" autocomplete="off"></input>
               </div>
             </div>
             <div class="form-group row">
@@ -1990,9 +1999,9 @@
       </div>
     </div>
   </div>
-  <div th:id="${'addImageSourceLinkDlg_' + image.id}"
+  <div th:id="${'addMeaningImageSourceLinkDlg_' + image.id}"
        th:data-callback="${viewUtil.composeFunction('loadFullLexemeDetails', lexeme.lexemeId, lexeme.levels)}"
-       class="modal" role="dialog" th:fragment="add_image_source_link_dlg" data-plugin="initAddSourceLinkWithAutocompletePlugin">
+       class="modal" role="dialog" th:fragment="add_meaning_image_source_link_dlg" data-plugin="initAddSourceLinkWithAutocompletePlugin">
     <div class="modal-dialog" role="document" style="max-width: 1000px;">
       <div class="modal-content">
         <div class="modal-body">
@@ -2008,53 +2017,6 @@
         <div class="modal-footer">
           <button type="button" class="btn btn-default" data-dismiss="modal" th:text="#{common.cancel}">Katkesta</button>
         </div>
-      </div>
-    </div>
-  </div>
-  <div th:id="${'addImageTitleDlg_' + image.id}"
-       th:data-callback="${viewUtil.composeFunction('loadFullLexemeDetails', lexeme.lexemeId, lexeme.levels)}"
-       class="modal" role="dialog" th:fragment="add_image_title_dlg" data-plugin="initGenericTextAddDlgAndFocusPlugin">
-    <div class="modal-dialog modal-lg" role="document">
-      <div class="modal-content">
-        <form th:action="@{/create_item}" method="post">
-          <div class="modal-body">
-            <input type="hidden" name="id" th:value="${image.id}">
-            <input type="hidden" name="opCode" value="image_title">
-            <input type="hidden" name="value">
-            <div class="form-group row">
-              <div class="col-md-12">
-                <textarea class="form-control" rows="1" name="value"></textarea>
-              </div>
-            </div>
-          </div>
-          <div class="modal-footer">
-            <button type="submit" class="btn btn-primary" th:text="#{common.save}">Salvesta</button>
-            <button type="button" class="btn btn-default" data-dismiss="modal" th:text="#{common.cancel}">Katkesta</button>
-          </div>
-        </form>
-      </div>
-    </div>
-  </div>
-  <div th:id="${'editImageTitleDlg_' + image.id}"
-       th:data-callback="${viewUtil.composeFunction('loadFullLexemeDetails', lexeme.lexemeId, lexeme.levels)}"
-       class="modal" role="dialog" th:fragment="edit_image_title_dlg" data-plugin="initGenericTextEditDlgAndFocusPlugin">
-    <div class="modal-dialog modal-lg" role="document">
-      <div class="modal-content">
-        <form th:action="@{/update_item}" method="post">
-          <div class="modal-body">
-            <input type="hidden" name="id" th:value="${image.id}">
-            <input type="hidden" name="opCode" value="image_title">
-            <div class="form-group row">
-              <div class="col-md-12">
-                <textarea class="form-control" rows="1" name="value" th:text="${image.title}"></textarea>
-              </div>
-            </div>
-          </div>
-          <div class="modal-footer">
-            <button type="submit" class="btn btn-primary" th:text="#{common.save}">Salvesta</button>
-            <button type="button" class="btn btn-default" data-dismiss="modal" th:text="#{common.cancel}">Katkesta</button>
-          </div>
-        </form>
       </div>
     </div>
   </div>
@@ -2383,24 +2345,6 @@
       </div>
     </div>
   </div>
-  <!--  TODO to be replaced with specific types of source link edit forms -->
-  <div th:id="${'editFreeformSourceLinkDlg_' + sourceLink.id}"
-       th:data-callback="${viewUtil.composeFunction('loadFullLexemeDetails', lexeme.lexemeId, lexeme.levels)}"
-       class="modal" role="dialog" th:fragment="edit_freeform_source_link_dlg" data-plugin="initEditSourceLinkDlgPlugin">
-    <div class="modal-dialog modal-lg" role="document">
-      <div class="modal-content">
-        <form name="sourceLinkForm" th:action="@{/update_item}" method="post">
-          <input type="hidden" name="id" th:value="${sourceLink.id}">
-          <input type="hidden" name="opCode" value="ff_source_link">
-          <div class="modal-body" data-name="sourceLinkDlgContent"></div>
-          <div class="modal-footer">
-            <button type="submit" class="btn btn-primary" data-plugin="updateSourceLink">Muuda</button>
-            <button type="button" class="btn btn-default" data-dismiss="modal" th:text="#{common.cancel}">Katkesta</button>
-          </div>
-        </form>
-      </div>
-    </div>
-  </div>
   <div th:id="${'editDefinitionSourceLinkDlg_' + sourceLink.id}"
        th:data-callback="${viewUtil.composeFunction('loadFullLexemeDetails', lexeme.lexemeId, lexeme.levels)}"
        class="modal" role="dialog" th:fragment="edit_definition_source_link_dlg" data-plugin="initEditSourceLinkDlgPlugin">
@@ -2418,6 +2362,23 @@
       </div>
     </div>
   </div>
+  <div th:id="${'editDefinitionNoteSourceLinkDlg_' + sourceLink.id}"
+       th:data-callback="${viewUtil.composeFunction('loadFullLexemeDetails', lexeme.lexemeId, lexeme.levels)}"
+       class="modal" role="dialog" th:fragment="edit_definition_note_source_link_dlg" data-plugin="initEditSourceLinkDlgPlugin">
+    <div class="modal-dialog modal-lg" role="document">
+      <div class="modal-content">
+        <form name="sourceLinkForm" th:action="@{/update_item}" method="post">
+          <input type="hidden" name="id" th:value="${sourceLink.id}">
+          <input type="hidden" name="opCode" value="definition_note_source_link">
+          <div class="modal-body" data-name="sourceLinkDlgContent"></div>
+          <div class="modal-footer">
+            <button type="submit" class="btn btn-primary" data-plugin="updateSourceLink">Muuda</button>
+            <button type="button" class="btn btn-default" data-dismiss="modal" th:text="#{common.cancel}">Katkesta</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
   <div th:id="${'editLexemeSourceLinkDlg_' + sourceLink.id}"
        th:data-callback="${viewUtil.composeFunction('loadFullLexemeDetails', lexeme.lexemeId, lexeme.levels)}"
        class="modal" role="dialog" th:fragment="edit_lexeme_source_link_dlg" data-plugin="initEditSourceLinkDlgPlugin">
@@ -2426,6 +2387,74 @@
         <form name="sourceLinkForm" th:action="@{/update_item}" method="post">
           <input type="hidden" name="id" th:value="${sourceLink.id}">
           <input type="hidden" name="opCode" value="lexeme_source_link">
+          <div class="modal-body" data-name="sourceLinkDlgContent"></div>
+          <div class="modal-footer">
+            <button type="submit" class="btn btn-primary" data-plugin="updateSourceLink">Muuda</button>
+            <button type="button" class="btn btn-default" data-dismiss="modal" th:text="#{common.cancel}">Katkesta</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+  <div th:id="${'editLexemeNoteSourceLinkDlg_' + sourceLink.id}"
+       th:data-callback="${viewUtil.composeFunction('loadFullLexemeDetails', lexeme.lexemeId, lexeme.levels)}"
+       class="modal" role="dialog" th:fragment="edit_lexeme_note_source_link_dlg" data-plugin="initEditSourceLinkDlgPlugin">
+    <div class="modal-dialog modal-lg" role="document">
+      <div class="modal-content">
+        <form name="sourceLinkForm" th:action="@{/update_item}" method="post">
+          <input type="hidden" name="id" th:value="${sourceLink.id}">
+          <input type="hidden" name="opCode" value="lexeme_note_source_link">
+          <div class="modal-body" data-name="sourceLinkDlgContent"></div>
+          <div class="modal-footer">
+            <button type="submit" class="btn btn-primary" data-plugin="updateSourceLink">Muuda</button>
+            <button type="button" class="btn btn-default" data-dismiss="modal" th:text="#{common.cancel}">Katkesta</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+  <div th:id="${'editUsageSourceLinkDlg_' + sourceLink.id}"
+       th:data-callback="${viewUtil.composeFunction('loadFullLexemeDetails', lexeme.lexemeId, lexeme.levels)}"
+       class="modal" role="dialog" th:fragment="edit_usage_source_link_dlg" data-plugin="initEditSourceLinkDlgPlugin">
+    <div class="modal-dialog modal-lg" role="document">
+      <div class="modal-content">
+        <form name="sourceLinkForm" th:action="@{/update_item}" method="post">
+          <input type="hidden" name="id" th:value="${sourceLink.id}">
+          <input type="hidden" name="opCode" value="usage_source_link">
+          <div class="modal-body" data-name="sourceLinkDlgContent"></div>
+          <div class="modal-footer">
+            <button type="submit" class="btn btn-primary" data-plugin="updateSourceLink">Muuda</button>
+            <button type="button" class="btn btn-default" data-dismiss="modal" th:text="#{common.cancel}">Katkesta</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+  <div th:id="${'editMeaningNoteSourceLinkDlg_' + sourceLink.id}"
+       th:data-callback="${viewUtil.composeFunction('loadFullLexemeDetails', lexeme.lexemeId, lexeme.levels)}"
+       class="modal" role="dialog" th:fragment="edit_meaning_note_source_link_dlg" data-plugin="initEditSourceLinkDlgPlugin">
+    <div class="modal-dialog modal-lg" role="document">
+      <div class="modal-content">
+        <form name="sourceLinkForm" th:action="@{/update_item}" method="post">
+          <input type="hidden" name="id" th:value="${sourceLink.id}">
+          <input type="hidden" name="opCode" value="meaning_note_source_link">
+          <div class="modal-body" data-name="sourceLinkDlgContent"></div>
+          <div class="modal-footer">
+            <button type="submit" class="btn btn-primary" data-plugin="updateSourceLink">Muuda</button>
+            <button type="button" class="btn btn-default" data-dismiss="modal" th:text="#{common.cancel}">Katkesta</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+  <div th:id="${'editMeaningImageSourceLinkDlg_' + sourceLink.id}"
+       th:data-callback="${viewUtil.composeFunction('loadFullLexemeDetails', lexeme.lexemeId, lexeme.levels)}"
+       class="modal" role="dialog" th:fragment="edit_meaning_image_source_link_dlg" data-plugin="initEditSourceLinkDlgPlugin">
+    <div class="modal-dialog modal-lg" role="document">
+      <div class="modal-content">
+        <form name="sourceLinkForm" th:action="@{/update_item}" method="post">
+          <input type="hidden" name="id" th:value="${sourceLink.id}">
+          <input type="hidden" name="opCode" value="meaning_image_source_link">
           <div class="modal-body" data-name="sourceLinkDlgContent"></div>
           <div class="modal-footer">
             <button type="submit" class="btn btn-primary" data-plugin="updateSourceLink">Muuda</button>

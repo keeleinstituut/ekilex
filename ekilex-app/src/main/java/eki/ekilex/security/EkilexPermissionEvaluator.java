@@ -187,7 +187,6 @@ public class EkilexPermissionEvaluator implements PermissionEvaluator, PermConst
 
 	// source link crud
 
-	// TODO under construction
 	@Transactional
 	public boolean isSourceLinkCrudGranted(Authentication authentication, String crudRoleDataset, String sourceContentKey, SourceLink sourceLink) {
 
@@ -239,7 +238,6 @@ public class EkilexPermissionEvaluator implements PermissionEvaluator, PermConst
 		return false;
 	}
 
-	// TODO under construction
 	@Transactional
 	public boolean isSourceLinkCrudGranted(Authentication authentication, String crudRoleDataset, String sourceContentKey, Long sourceLinkId) {
 

@@ -28,7 +28,6 @@ import org.springframework.stereotype.Component;
 
 import eki.common.constant.FreeformType;
 import eki.common.constant.GlobalConstant;
-import eki.common.constant.ReferenceOwner;
 import eki.common.constant.SynonymType;
 import eki.ekilex.data.Classifier;
 import eki.ekilex.data.ClassifierSelect;
@@ -476,8 +475,6 @@ public class ConversionUtil implements GlobalConstant {
 			if (wordEtymSourceLinkId != null) {
 				if (!wordEtymSourceLinkIds.contains(wordEtymSourceLinkId)) {
 					SourceLink sourceLink = new SourceLink();
-					sourceLink.setOwner(ReferenceOwner.WORD_ETYM);
-					sourceLink.setOwnerId(wordEtymId);
 					sourceLink.setId(wordEtymSourceLinkId);
 					sourceLink.setType(tuple.getWordEtymSourceLinkType());
 					sourceLink.setSourceId(tuple.getWordEtymSourceId());

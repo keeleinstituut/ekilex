@@ -10,7 +10,6 @@ import eki.common.constant.ActivityOwner;
 import eki.common.constant.ContentKey;
 import eki.common.constant.ReferenceType;
 import eki.ekilex.data.ActivityLogData;
-import eki.ekilex.data.ActivityLogOwnerEntityDescr;
 import eki.ekilex.data.Source;
 import eki.ekilex.data.SourceLink;
 
@@ -357,37 +356,5 @@ public class SourceLinkService extends AbstractSourceService {
 		ActivityLogData activityLog = activityLogService.prepareActivityLog("deleteMeaningNoteSourceLink", meaningId, ActivityOwner.MEANING, roleDatasetCode, isManualEventOnUpdateEnabled);
 		sourceLinkDbService.deleteMeaningNoteSourceLink(sourceLinkId);
 		activityLogService.createActivityLog(activityLog, sourceLinkId, ActivityEntity.MEANING_NOTE_SOURCE_LINK);
-	}
-
-	@Deprecated
-	@Transactional
-	public Long createFreeformSourceLink(
-			Long freeformId, Long sourceId, ReferenceType refType, String sourceLinkName, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
-		ActivityLogOwnerEntityDescr freeformOwnerDescr = activityLogService.getFreeformSourceLinkOwnerDescrByFreeform(freeformId);
-		ActivityLogData activityLog = activityLogService
-				.prepareActivityLog("createFreeformSourceLink", freeformOwnerDescr.getOwnerId(), freeformOwnerDescr.getOwnerName(), roleDatasetCode, isManualEventOnUpdateEnabled);
-		Long sourceLinkId = sourceLinkDbService.createFreeformSourceLink(freeformId, sourceId, refType, sourceLinkName);
-		activityLogService.createActivityLog(activityLog, sourceLinkId, freeformOwnerDescr.getEntityName());
-		return sourceLinkId;
-	}
-
-	@Deprecated
-	@Transactional
-	public void updateFreeformSourceLink(Long sourceLinkId, String sourceLinkName, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
-		ActivityLogOwnerEntityDescr freeformOwnerDescr = activityLogService.getFreeformSourceLinkOwnerDescrBySourceLink(sourceLinkId);
-		ActivityLogData activityLog = activityLogService
-				.prepareActivityLog("updateFreeformSourceLink", freeformOwnerDescr.getOwnerId(), freeformOwnerDescr.getOwnerName(), roleDatasetCode, isManualEventOnUpdateEnabled);
-		sourceLinkDbService.updateFreeformSourceLink(sourceLinkId, sourceLinkName);
-		activityLogService.createActivityLog(activityLog, sourceLinkId, freeformOwnerDescr.getEntityName());
-	}
-
-	@Deprecated
-	@Transactional
-	public void deleteFreeformSourceLink(Long sourceLinkId, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
-		ActivityLogOwnerEntityDescr freeformOwnerDescr = activityLogService.getFreeformSourceLinkOwnerDescrBySourceLink(sourceLinkId);
-		ActivityLogData activityLog = activityLogService
-				.prepareActivityLog("deleteFreeformSourceLink", freeformOwnerDescr.getOwnerId(), freeformOwnerDescr.getOwnerName(), roleDatasetCode, isManualEventOnUpdateEnabled);
-		sourceLinkDbService.deleteFreeformSourceLink(sourceLinkId);
-		activityLogService.createActivityLog(activityLog, sourceLinkId, freeformOwnerDescr.getEntityName());
 	}
 }
