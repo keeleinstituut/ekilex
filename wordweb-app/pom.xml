@@ -4,13 +4,13 @@
 
 	<groupId>eki.wordweb</groupId>
 	<artifactId>wordweb-app</artifactId>
-	<version>1.36-SNAPSHOT</version>
+	<version>1.37-SNAPSHOT</version>
 	<packaging>jar</packaging>
 
 	<parent>
 		<groupId>eki.ekilex</groupId>
 		<artifactId>eki-root</artifactId>
-		<version>1.36-SNAPSHOT</version>
+		<version>1.37-SNAPSHOT</version>
 	</parent>
 
 	<name>Wordweb App</name>
