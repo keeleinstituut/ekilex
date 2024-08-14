@@ -3,6 +3,9 @@ package eki.ekilex.data.api;
 import java.util.List;
 
 import eki.common.data.AbstractDataObject;
+import eki.ekilex.data.LexemeNote;
+import eki.ekilex.data.SourceLink;
+import eki.ekilex.data.Usage;
 
 public class TermWord extends AbstractDataObject {
 
@@ -22,15 +25,15 @@ public class TermWord extends AbstractDataObject {
 
 	private String lexemeValueStateCode;
 
-	private List<Freeform> lexemeNotes;
+	private List<LexemeNote> lexemeNotes;
 
-	private Boolean lexemePublicity;
+	private boolean isPublic;
 
 	private List<SourceLink> lexemeSourceLinks;
 
 	private List<String> lexemeTags;
 
-	private List<Freeform> usages;
+	private List<Usage> usages;
 
 	public Long getWordId() {
 		return wordId;
@@ -88,20 +91,20 @@ public class TermWord extends AbstractDataObject {
 		this.lexemeValueStateCode = lexemeValueStateCode;
 	}
 
-	public List<Freeform> getLexemeNotes() {
+	public List<LexemeNote> getLexemeNotes() {
 		return lexemeNotes;
 	}
 
-	public void setLexemeNotes(List<Freeform> lexemeNotes) {
+	public void setLexemeNotes(List<LexemeNote> lexemeNotes) {
 		this.lexemeNotes = lexemeNotes;
 	}
 
-	public Boolean getLexemePublicity() {
-		return lexemePublicity;
+	public boolean isPublic() {
+		return isPublic;
 	}
 
-	public void setLexemePublicity(Boolean lexemePublicity) {
-		this.lexemePublicity = lexemePublicity;
+	public void setPublic(boolean isPublic) {
+		this.isPublic = isPublic;
 	}
 
 	public List<SourceLink> getLexemeSourceLinks() {
@@ -120,11 +123,11 @@ public class TermWord extends AbstractDataObject {
 		this.lexemeTags = lexemeTags;
 	}
 
-	public List<Freeform> getUsages() {
+	public List<Usage> getUsages() {
 		return usages;
 	}
 
-	public void setUsages(List<Freeform> usages) {
+	public void setUsages(List<Usage> usages) {
 		this.usages = usages;
 	}
 }

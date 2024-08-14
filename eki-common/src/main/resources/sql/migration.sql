@@ -1,134 +1,556 @@
--- uudised
+-- vabavormide kolimine olemiteks
 
-create table news_article (
-	id bigserial primary key,
-	created timestamp not null default statement_timestamp(),
-	type varchar(100) not null,
-	title text not null,
-	content text not null,
-	lang char(3) references language(code) null
-);
+----------
+-- drop --
+----------
 
-create index news_article_type_idx on news_article(type);
-create index news_article_lang_idx on news_article(lang);
+drop table if exists definition_note_source_link cascade;
+drop table if exists definition_note cascade;
+drop table if exists meaning_image_source_link cascade;
+drop table if exists meaning_image cascade;
+drop table if exists meaning_note_source_link cascade;
+drop table if exists meaning_note cascade;
+drop table if exists lexeme_note_source_link cascade;
+drop table if exists lexeme_note cascade;
+drop table if exists usage_definition cascade;
+drop table if exists usage_translation cascade;
+drop table if exists usage_source_link cascade;
+drop table if exists usage cascade;
 
--- iso 2 keelekoodi fiks
+------------
+-- create --
+------------
 
-update language_label set value = 'lt' where code = 'lit' and type = 'iso2';
-
--- puuduva artikli sisu agregeerimine kustutamiste tegevuslogides
-
-update
-	activity_log al
-set
-	prev_data = alc.missing_prev_data
-from
-	(
-	select
-		al1.id,
-		(
-		select
-			al2.curr_data
-		from
-			activity_log al2
-		where
-			al2.entity_name = al1.entity_name
-			and al2.entity_id = al1.entity_id
-			and al2.curr_data is not null
-			and al2.curr_data != '{}'
-		order by
-			al2.event_on desc
-		limit 1
-	) missing_prev_data
-	from
-		activity_log al1
-	where
-		al1.funct_name in ('deleteMeaning', 'deleteWord')
-		and al1.prev_data = '{}'
-	) alc
-where
-	al.id = alc.id
-	and alc.missing_prev_data is not null
-;
-
--- kasutaja super sõnakogu rolli kolimine atribuudiks
-
-update eki_user eu set is_master = exists(select dp.id from dataset_permission dp where dp.user_id = eu.id and dp.dataset_code = 'xxx');
-update eki_user_profile eup set recent_dataset_permission_id = null where exists (select dp.id from dataset_permission dp where dp.dataset_code = 'xxx' and dp.id = eup.recent_dataset_permission_id);
-delete from dataset_permission where dataset_code = 'xxx';
-delete from dataset where code = 'xxx';
-
--- kollokatsioonide kolimine
-
-drop table collocation_freeform cascade;
-
-create table rel_group
-(
-  code varchar(100) primary key,
-  datasets varchar(10) array not null,
+create table usage (
+  id bigserial primary key, 
+  original_freeform_id bigint references freeform(id) on delete cascade not null, -- to be dropped later
+  lexeme_id bigint references lexeme(id) on delete cascade not null, 
+  value text null, 
+  value_prese text null, 
+  lang char(3) references language(code) null, 
+  complexity varchar(100) null, 
+  is_public boolean default true not null, 
+  created_by text null, 
+  created_on timestamp null, 
+  modified_by text null, 
+  modified_on timestamp null, 
   order_by bigserial
 );
+alter sequence usage_id_seq restart with 10000;
 
-create table rel_group_label
-(
-  code varchar(100) references rel_group(code) on delete cascade not null,
-  value text not null,
-  lang char(3) references language(code) not null,
-  type varchar(10) references label_type(code) not null,
-  unique(code, lang, type)
+create index usage_original_freeform_id_idx on usage(original_freeform_id);
+create index usage_lexeme_id_idx on usage(lexeme_id);
+create index usage_lang_idx on usage(lang);
+create index usage_complexity_idx on usage(complexity);
+create index usage_is_public_idx on usage(is_public);
+
+create table usage_source_link (
+	id bigserial primary key, 
+	usage_id bigint references usage(id) on delete cascade not null, 
+	source_id bigint references source(id) on delete cascade not null, 
+	type varchar(100) not null, 
+	name text null, 
+	order_by bigserial
 );
+alter sequence usage_source_link_id_seq restart with 10000;
 
-insert into rel_group (code, datasets)
-(
-	select
-		name,
-		'{}'
-	from
-		lex_colloc_rel_group
-	group by
-		name
-	order by
-		name
+create index usage_source_link_usage_id_idx on usage_source_link(usage_id);
+create index usage_source_link_source_id_idx on usage_source_link(source_id);
+create index usage_source_link_name_idx on usage_source_link(name);
+create index usage_source_link_name_lower_idx on usage_source_link(lower(name));
+
+create table usage_translation (
+  id bigserial primary key, 
+  original_freeform_id bigint references freeform(id) on delete cascade not null, -- to be dropped later
+  usage_id bigint references usage(id) on delete cascade not null, 
+  value text null, 
+  value_prese text null, 
+  lang char(3) references language(code) null, 
+  created_by text null, 
+  created_on timestamp null, 
+  modified_by text null, 
+  modified_on timestamp null, 
+  order_by bigserial
 );
+alter sequence usage_translation_id_seq restart with 10000;
 
-insert into rel_group_label (code, value, lang, type)
-(
-	select
-		code,
-		code,
-		'est',
-		'descrip'
-	from 
-		rel_group
-	order by
-		order_by
+create index usage_translation_original_freeform_id_idx on usage_translation(original_freeform_id);
+create index usage_translation_usage_id_idx on usage_translation(usage_id);
+create index usage_translation_lang_idx on usage_translation(lang);
+
+create table usage_definition (
+  id bigserial primary key, 
+  original_freeform_id bigint references freeform(id) on delete cascade not null, -- to be dropped later
+  usage_id bigint references usage(id) on delete cascade not null, 
+  value text null, 
+  value_prese text null, 
+  lang char(3) references language(code) null, 
+  created_by text null, 
+  created_on timestamp null, 
+  modified_by text null, 
+  modified_on timestamp null, 
+  order_by bigserial
 );
+alter sequence usage_definition_id_seq restart with 10000;
 
-create table collocation_member (
-	id bigserial primary key,
-	colloc_lexeme_id bigint references lexeme(id) not null,
-	member_lexeme_id bigint references lexeme(id) not null,
-	member_form_id bigint references form(id) not null,
-	pos_group_code varchar(100) references pos_group(code),
-	rel_group_code varchar(100) references rel_group(code),
-	conjunct varchar(100),
-	weight numeric(14, 4),
-	member_order integer not null,
-	group_order integer,
-	unique(colloc_lexeme_id, member_lexeme_id)
+create index usage_definition_original_freeform_id_idx on usage_definition(original_freeform_id);
+create index usage_definition_usage_id_idx on usage_definition(usage_id);
+create index usage_definition_lang_idx on usage_definition(lang);
+
+create table lexeme_note (
+  id bigserial primary key, 
+  original_freeform_id bigint references freeform(id) on delete cascade not null, -- to be dropped later
+  lexeme_id bigint references lexeme(id) on delete cascade not null, 
+  value text null, 
+  value_prese text null, 
+  lang char(3) references language(code) null, 
+  complexity varchar(100) null, 
+  is_public boolean default true not null, 
+  created_by text null, 
+  created_on timestamp null, 
+  modified_by text null, 
+  modified_on timestamp null, 
+  order_by bigserial
 );
-alter sequence collocation_member_id_seq restart with 10000;
+alter sequence lexeme_note_id_seq restart with 10000;
 
-create index collocation_member_colloc_lexeme_id_idx on collocation_member(colloc_lexeme_id);
-create index collocation_member_member_lexeme_id_idx on collocation_member(member_lexeme_id);
-create index collocation_member_member_form_id_idx on collocation_member(member_form_id);
-create index collocation_member_pos_group_code_idx on collocation_member(pos_group_code);
-create index collocation_member_rel_group_code_idx on collocation_member(rel_group_code);
+create index lexeme_note_original_freeform_id_idx on lexeme_note(original_freeform_id);
+create index lexeme_note_lexeme_id_idx on lexeme_note(lexeme_id);
+create index lexeme_note_lang_idx on lexeme_note(lang);
+create index lexeme_note_complexity_idx on lexeme_note(complexity);
+create index lexeme_note_is_public_idx on lexeme_note(is_public);
 
--- sõnakogupõhised allikad
+create table lexeme_note_source_link (
+	id bigserial primary key, 
+	lexeme_note_id bigint references lexeme_note(id) on delete cascade not null, 
+	source_id bigint references source(id) on delete cascade not null, 
+	type varchar(100) not null, 
+	name text null, 
+	order_by bigserial
+);
+alter sequence lexeme_note_source_link_id_seq restart with 10000;
 
-alter table source add column dataset_code varchar(10) references dataset(code) on update cascade;
-create index source_dataset_code_idx on source(dataset_code);
--- run SourceDatasetApplier
-alter table source alter column dataset_code set not null;
+create index lexeme_note_source_link_lexeme_note_id_idx on lexeme_note_source_link(lexeme_note_id);
+create index lexeme_note_source_link_source_id_idx on lexeme_note_source_link(source_id);
+create index lexeme_note_source_link_name_idx on lexeme_note_source_link(name);
+create index lexeme_note_source_link_name_lower_idx on lexeme_note_source_link(lower(name));
+
+create table meaning_note (
+  id bigserial primary key, 
+  original_freeform_id bigint references freeform(id) on delete cascade not null, -- to be dropped later
+  meaning_id bigint references meaning(id) on delete cascade not null, 
+  value text null, 
+  value_prese text null, 
+  lang char(3) references language(code) null, 
+  complexity varchar(100) null, 
+  is_public boolean default true not null, 
+  created_by text null, 
+  created_on timestamp null, 
+  modified_by text null, 
+  modified_on timestamp null, 
+  order_by bigserial
+);
+alter sequence meaning_note_id_seq restart with 10000;
+
+create index meaning_note_original_freeform_id_idx on meaning_note(original_freeform_id);
+create index meaning_note_meaning_id_idx on meaning_note(meaning_id);
+create index meaning_note_lang_idx on meaning_note(lang);
+create index meaning_note_complexity_idx on meaning_note(complexity);
+create index meaning_note_is_public_idx on meaning_note(is_public);
+
+create table meaning_note_source_link (
+	id bigserial primary key, 
+	meaning_note_id bigint references meaning_note(id) on delete cascade not null, 
+	source_id bigint references source(id) on delete cascade not null, 
+	type varchar(100) not null, 
+	name text null, 
+	order_by bigserial
+);
+alter sequence meaning_note_source_link_id_seq restart with 10000;
+
+create index meaning_note_source_link_meaning_note_id_idx on meaning_note_source_link(meaning_note_id);
+create index meaning_note_source_link_source_id_idx on meaning_note_source_link(source_id);
+create index meaning_note_source_link_name_idx on meaning_note_source_link(name);
+create index meaning_note_source_link_name_lower_idx on meaning_note_source_link(lower(name));
+
+create table meaning_image (
+  id bigserial primary key, 
+  original_freeform_id bigint references freeform(id) on delete cascade not null, -- to be dropped later
+  meaning_id bigint references meaning(id) on delete cascade not null, 
+  title text null, 
+  url text null, 
+  complexity varchar(100) null, 
+  is_public boolean default true not null, 
+  created_by text null, 
+  created_on timestamp null, 
+  modified_by text null, 
+  modified_on timestamp null, 
+  order_by bigserial
+);
+alter sequence meaning_image_id_seq restart with 10000;
+
+create index meaning_image_original_freeform_id_idx on meaning_image(original_freeform_id);
+create index meaning_image_meaning_id_idx on meaning_image(meaning_id);
+create index meaning_image_lang_idx on meaning_image(title);
+create index meaning_image_complexity_idx on meaning_image(complexity);
+create index meaning_image_is_public_idx on meaning_image(is_public);
+
+create table meaning_image_source_link (
+	id bigserial primary key, 
+	meaning_image_id bigint references meaning_image(id) on delete cascade not null, 
+	source_id bigint references source(id) on delete cascade not null, 
+	type varchar(100) not null, 
+	name text null, 
+	order_by bigserial
+);
+alter sequence meaning_image_source_link_id_seq restart with 10000;
+
+create index meaning_image_source_link_meaning_image_id_idx on meaning_image_source_link(meaning_image_id);
+create index meaning_image_source_link_source_id_idx on meaning_image_source_link(source_id);
+create index meaning_image_source_link_name_idx on meaning_image_source_link(name);
+create index meaning_image_source_link_name_lower_idx on meaning_image_source_link(lower(name));
+
+create table definition_note (
+  id bigserial primary key, 
+  original_freeform_id bigint references freeform(id) on delete cascade not null, -- to be dropped later
+  definition_id bigint references definition(id) on delete cascade not null, 
+  value text null, 
+  value_prese text null, 
+  lang char(3) references language(code) null, 
+  complexity varchar(100) null, 
+  is_public boolean default true not null, 
+  created_by text null, 
+  created_on timestamp null, 
+  modified_by text null, 
+  modified_on timestamp null, 
+  order_by bigserial
+);
+alter sequence definition_note_id_seq restart with 10000;
+
+create index definition_note_original_freeform_id_idx on definition_note(original_freeform_id);
+create index definition_note_definition_id_idx on definition_note(definition_id);
+create index definition_note_lang_idx on definition_note(lang);
+create index definition_note_complexity_idx on definition_note(complexity);
+create index definition_note_is_public_idx on definition_note(is_public);
+
+create table definition_note_source_link (
+	id bigserial primary key, 
+	definition_note_id bigint references definition_note(id) on delete cascade not null, 
+	source_id bigint references source(id) on delete cascade not null, 
+	type varchar(100) not null, 
+	name text null, 
+	order_by bigserial
+);
+alter sequence definition_note_source_link_id_seq restart with 10000;
+
+create index definition_note_source_link_definition_note_id_idx on definition_note_source_link(definition_note_id);
+create index definition_note_source_link_source_id_idx on definition_note_source_link(source_id);
+create index definition_note_source_link_name_idx on definition_note_source_link(name);
+create index definition_note_source_link_name_lower_idx on definition_note_source_link(lower(name));
+
+------------
+-- insert --
+------------
+
+insert into usage (
+	original_freeform_id,
+	lexeme_id,
+	value,
+	value_prese,
+	lang,
+	complexity,
+	is_public,
+	created_by,
+	created_on,
+	modified_by,
+	modified_on)
+select
+	f.id,
+	lf.lexeme_id,
+	f.value_text,
+	f.value_prese,
+	f.lang,
+	f.complexity,
+	f.is_public,
+	f.created_by,
+	f.created_on,
+	f.modified_by,
+	f.modified_on
+from
+	lexeme_freeform lf,
+	freeform f
+where
+	lf.freeform_id = f.id
+	and f.type = 'USAGE'
+order by f.order_by;
+
+insert into usage_source_link (
+	usage_id,
+	source_id,
+	type,
+	name)
+select
+	u.id,
+	fsl.source_id,
+	fsl.type,
+	fsl.name
+from
+	usage u,
+	freeform_source_link fsl
+where
+	fsl.freeform_id = u.original_freeform_id
+order by u.order_by, fsl.order_by;
+
+insert into usage_translation (
+	original_freeform_id,
+	usage_id,
+	value,
+	value_prese,
+	lang,
+	created_by,
+	created_on,
+	modified_by,
+	modified_on)
+select
+	f.id,
+	u.id,
+	f.value_text,
+	f.value_prese,
+	f.lang,
+	f.created_by,
+	f.created_on,
+	f.modified_by,
+	f.modified_on
+from
+	usage u,
+	freeform f
+where
+	f.parent_id = u.original_freeform_id
+	and f.type = 'USAGE_TRANSLATION'
+order by u.order_by, f.order_by;
+
+insert into usage_definition (
+	original_freeform_id,
+	usage_id,
+	value,
+	value_prese,
+	lang,
+	created_by,
+	created_on,
+	modified_by,
+	modified_on)
+select
+	f.id,
+	u.id,
+	f.value_text,
+	f.value_prese,
+	f.lang,
+	f.created_by,
+	f.created_on,
+	f.modified_by,
+	f.modified_on
+from
+	usage u,
+	freeform f
+where
+	f.parent_id = u.original_freeform_id
+	and f.type = 'USAGE_DEFINITION'
+order by u.order_by, f.order_by;
+
+insert into lexeme_note (
+	original_freeform_id,
+	lexeme_id,
+	value,
+	value_prese,
+	lang,
+	complexity,
+	is_public,
+	created_by,
+	created_on,
+	modified_by,
+	modified_on)
+select
+	f.id,
+	lf.lexeme_id,
+	f.value_text,
+	f.value_prese,
+	f.lang,
+	f.complexity,
+	f.is_public,
+	f.created_by,
+	f.created_on,
+	f.modified_by,
+	f.modified_on
+from
+	lexeme_freeform lf,
+	freeform f
+where
+	lf.freeform_id = f.id
+	and f.type = 'NOTE'
+order by f.order_by;
+
+insert into lexeme_note_source_link (
+	lexeme_note_id,
+	source_id,
+	type,
+	name)
+select
+	ln.id,
+	fsl.source_id,
+	fsl.type,
+	fsl.name
+from
+	lexeme_note ln,
+	freeform_source_link fsl
+where
+	fsl.freeform_id = ln.original_freeform_id
+order by ln.order_by, fsl.order_by;
+
+insert into meaning_note (
+	original_freeform_id,
+	meaning_id,
+	value,
+	value_prese,
+	lang,
+	complexity,
+	is_public,
+	created_by,
+	created_on,
+	modified_by,
+	modified_on)
+select
+	f.id,
+	mf.meaning_id,
+	f.value_text,
+	f.value_prese,
+	f.lang,
+	f.complexity,
+	f.is_public,
+	f.created_by,
+	f.created_on,
+	f.modified_by,
+	f.modified_on
+from
+	meaning_freeform mf,
+	freeform f
+where
+	mf.freeform_id = f.id
+	and f.type = 'NOTE'
+order by f.order_by;
+
+insert into meaning_note_source_link (
+	meaning_note_id,
+	source_id,
+	type,
+	name)
+select
+	mn.id,
+	fsl.source_id,
+	fsl.type,
+	fsl.name
+from
+	meaning_note mn,
+	freeform_source_link fsl
+where
+	fsl.freeform_id = mn.original_freeform_id
+order by mn.order_by, fsl.order_by;
+
+insert into meaning_image (
+	original_freeform_id,
+	meaning_id,
+	title,
+	url,
+	complexity,
+	is_public,
+	created_by,
+	created_on,
+	modified_by,
+	modified_on)
+select
+	f1.id,
+	mf.meaning_id,
+	f1.value_text,
+	f2.value_text,
+	f1.complexity,
+	f1.is_public,
+	f1.created_by,
+	f1.created_on,
+	f1.modified_by,
+	f1.modified_on
+from
+	freeform f1
+	inner join meaning_freeform mf on mf.freeform_id = f1.id
+	left outer join freeform f2 on f2.parent_id = f1.id and f2.type = 'IMAGE_TITLE'
+where
+	f1.type = 'IMAGE_FILE'
+order by f1.order_by;
+
+insert into meaning_image_source_link (
+	meaning_image_id,
+	source_id,
+	type,
+	name)
+select
+	mi.id,
+	fsl.source_id,
+	fsl.type,
+	fsl.name
+from
+	meaning_image mi,
+	freeform_source_link fsl
+where
+	fsl.freeform_id = mi.original_freeform_id
+order by mi.order_by, fsl.order_by;
+
+insert into definition_note (
+	original_freeform_id,
+	definition_id,
+	value,
+	value_prese,
+	lang,
+	complexity,
+	is_public,
+	created_by,
+	created_on,
+	modified_by,
+	modified_on)
+select
+	f.id,
+	df.definition_id,
+	f.value_text,
+	f.value_prese,
+	f.lang,
+	f.complexity,
+	f.is_public,
+	f.created_by,
+	f.created_on,
+	f.modified_by,
+	f.modified_on
+from
+	definition_freeform df,
+	freeform f
+where
+	df.freeform_id = f.id
+	and f.type = 'NOTE'
+order by f.order_by;
+
+insert into definition_note_source_link (
+	definition_note_id,
+	source_id,
+	type,
+	name)
+select
+	dn.id,
+	fsl.source_id,
+	fsl.type,
+	fsl.name
+from
+	definition_note dn,
+	freeform_source_link fsl
+where
+	fsl.freeform_id = dn.original_freeform_id
+order by dn.order_by, fsl.order_by;
+
+alter table lexeme_source_link drop column value;
+alter table definition_source_link drop column value;
 

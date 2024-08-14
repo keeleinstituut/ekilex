@@ -1,17 +1,16 @@
 package eki.ekilex.data;
 
-import java.sql.Timestamp;
 import java.util.List;
 
 import eki.common.constant.Complexity;
 
-public class Note extends AbstractPublicEntity {
+public class Note extends AbstractCreateUpdateEntity implements ValueAndPrese {
 
 	private static final long serialVersionUID = 1L;
 
 	private Long id;
 
-	private String valueText;
+	private String value;
 
 	private String valuePrese;
 
@@ -20,10 +19,6 @@ public class Note extends AbstractPublicEntity {
 	private Complexity complexity;
 
 	private Long orderBy;
-
-	private String modifiedBy;
-
-	private Timestamp modifiedOn;
 
 	private List<SourceLink> sourceLinks;
 
@@ -35,12 +30,12 @@ public class Note extends AbstractPublicEntity {
 		this.id = id;
 	}
 
-	public String getValueText() {
-		return valueText;
+	public String getValue() {
+		return value;
 	}
 
-	public void setValueText(String valueText) {
-		this.valueText = valueText;
+	public void setValue(String value) {
+		this.value = value;
 	}
 
 	public String getValuePrese() {
@@ -75,22 +70,6 @@ public class Note extends AbstractPublicEntity {
 		this.orderBy = orderBy;
 	}
 
-	public String getModifiedBy() {
-		return modifiedBy;
-	}
-
-	public void setModifiedBy(String modifiedBy) {
-		this.modifiedBy = modifiedBy;
-	}
-
-	public Timestamp getModifiedOn() {
-		return modifiedOn;
-	}
-
-	public void setModifiedOn(Timestamp modifiedOn) {
-		this.modifiedOn = modifiedOn;
-	}
-
 	public List<SourceLink> getSourceLinks() {
 		return sourceLinks;
 	}
@@ -98,4 +77,5 @@ public class Note extends AbstractPublicEntity {
 	public void setSourceLinks(List<SourceLink> sourceLinks) {
 		this.sourceLinks = sourceLinks;
 	}
+
 }

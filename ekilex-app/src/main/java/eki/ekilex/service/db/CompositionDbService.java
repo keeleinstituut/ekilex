@@ -202,8 +202,7 @@ public class CompositionDbService extends AbstractDataDbService implements Globa
 		Meaning m1 = MEANING.as("m1");
 		Meaning m2 = MEANING.as("m2");
 
-		SelectConditionStep<Record1<Long>> wordIds = DSL.
-				selectDistinct(l1.WORD_ID)
+		SelectConditionStep<Record1<Long>> wordIds = DSL.selectDistinct(l1.WORD_ID)
 				.from(l1, m1)
 				.where(l1.MEANING_ID.eq(meaningId)
 						.and(l1.MEANING_ID.eq(m1.ID))
@@ -437,8 +436,11 @@ public class CompositionDbService extends AbstractDataDbService implements Globa
 		create.update(LEXEME_POS)
 				.set(LEXEME_POS.LEXEME_ID, lexemeId)
 				.where(LEXEME_POS.LEXEME_ID.eq(sourceLexemeId)
-						.and(LEXEME_POS.POS_CODE.notIn(
-								DSL.select(LEXEME_POS.POS_CODE).from(LEXEME_POS).where(LEXEME_POS.LEXEME_ID.eq(lexemeId))))).execute();
+						.and(LEXEME_POS.POS_CODE.notIn(DSL
+								.select(LEXEME_POS.POS_CODE)
+								.from(LEXEME_POS)
+								.where(LEXEME_POS.LEXEME_ID.eq(lexemeId)))))
+				.execute();
 	}
 
 	private void joinLexemeRegisters(Long lexemeId, Long sourceLexemeId) {
@@ -455,7 +457,8 @@ public class CompositionDbService extends AbstractDataDbService implements Globa
 
 		LexemeSourceLink lsl1 = LEXEME_SOURCE_LINK.as("lsl1");
 		LexemeSourceLink lsl2 = LEXEME_SOURCE_LINK.as("lsl2");
-		create.update(lsl1)
+		create
+				.update(lsl1)
 				.set(lsl1.LEXEME_ID, lexemeId)
 				.where(lsl1.LEXEME_ID.eq(sourceLexemeId))
 				.andNotExists(DSL
@@ -463,7 +466,7 @@ public class CompositionDbService extends AbstractDataDbService implements Globa
 						.from(lsl2)
 						.where(lsl2.LEXEME_ID.eq(lexemeId)
 								.and(lsl2.TYPE.eq(lsl1.TYPE))
-								.and(lsl2.VALUE.eq(lsl1.VALUE))))
+								.and(lsl2.SOURCE_ID.eq(lsl1.SOURCE_ID))))
 				.execute();
 	}
 
@@ -655,9 +658,9 @@ public class CompositionDbService extends AbstractDataDbService implements Globa
 	public void cloneLexemeSoureLinks(Long lexemeId, Long clonedLexemeId) {
 
 		Result<LexemeSourceLinkRecord> lexemeSourceLinks = create.selectFrom(LEXEME_SOURCE_LINK)
-						.where(LEXEME_SOURCE_LINK.LEXEME_ID.eq(lexemeId))
-						.orderBy(LEXEME_SOURCE_LINK.ORDER_BY)
-						.fetch();
+				.where(LEXEME_SOURCE_LINK.LEXEME_ID.eq(lexemeId))
+				.orderBy(LEXEME_SOURCE_LINK.ORDER_BY)
+				.fetch();
 		lexemeSourceLinks.stream().map(LexemeSourceLinkRecord::copy).forEach(clonedLexemeSourceLink -> {
 			clonedLexemeSourceLink.setLexemeId(clonedLexemeId);
 			clonedLexemeSourceLink.changed(LEXEME_SOURCE_LINK.ORDER_BY, false);
@@ -1006,7 +1009,6 @@ public class CompositionDbService extends AbstractDataDbService implements Globa
 		return clonedWord.getId();
 	}
 
-
 	public void cloneWordParadigmsAndForms(Long wordId, Long clonedWordId) {
 
 		Result<ParadigmRecord> paradigms = create.selectFrom(PARADIGM).where(PARADIGM.WORD_ID.eq(wordId)).fetch();
@@ -1332,8 +1334,7 @@ public class CompositionDbService extends AbstractDataDbService implements Globa
 
 	public Integer getWordHomonymNum(Long wordId) {
 
-		return create.
-				select(WORD.HOMONYM_NR)
+		return create.select(WORD.HOMONYM_NR)
 				.from(WORD)
 				.where(WORD.ID.eq(wordId))
 				.fetchOneInto(Integer.class);
@@ -1345,10 +1346,10 @@ public class CompositionDbService extends AbstractDataDbService implements Globa
 				.filter(sf -> targetFreeforms.stream()
 						.noneMatch(
 								tf -> tf.getType().equals(sf.getType()) &&
-								((Objects.nonNull(tf.getValueText()) && tf.getValueText().equals(sf.getValueText())) ||
-								(Objects.nonNull(tf.getValueNumber()) && tf.getValueNumber().equals(sf.getValueNumber())) ||
-								(Objects.nonNull(tf.getClassifCode()) && tf.getClassifCode().equals(sf.getClassifCode())) ||
-								(Objects.nonNull(tf.getValueDate()) && tf.getValueDate().equals(sf.getValueDate())))))
+										((Objects.nonNull(tf.getValueText()) && tf.getValueText().equals(sf.getValueText())) ||
+												(Objects.nonNull(tf.getValueNumber()) && tf.getValueNumber().equals(sf.getValueNumber())) ||
+												(Objects.nonNull(tf.getClassifCode()) && tf.getClassifCode().equals(sf.getClassifCode())) ||
+												(Objects.nonNull(tf.getValueDate()) && tf.getValueDate().equals(sf.getValueDate())))))
 				.map(FreeformRecord::getId)
 				.collect(Collectors.toList());
 	}

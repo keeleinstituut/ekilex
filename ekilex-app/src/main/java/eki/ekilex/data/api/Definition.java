@@ -3,14 +3,18 @@ package eki.ekilex.data.api;
 import java.util.List;
 
 import eki.common.data.AbstractDataObject;
+import eki.ekilex.data.SourceLink;
 
+// TODO should use common class
 public class Definition extends AbstractDataObject {
 
 	private static final long serialVersionUID = 1L;
 
-	private Long definitionId;
+	private Long id;
 
 	private String value;
+
+	private String valuePrese;
 
 	private String lang;
 
@@ -18,12 +22,12 @@ public class Definition extends AbstractDataObject {
 
 	private List<SourceLink> sourceLinks;
 
-	public Long getDefinitionId() {
-		return definitionId;
+	public Long getId() {
+		return id;
 	}
 
-	public void setDefinitionId(Long definitionId) {
-		this.definitionId = definitionId;
+	public void setId(Long id) {
+		this.id = id;
 	}
 
 	public String getValue() {
@@ -32,6 +36,14 @@ public class Definition extends AbstractDataObject {
 
 	public void setValue(String value) {
 		this.value = value;
+	}
+
+	public String getValuePrese() {
+		return valuePrese;
+	}
+
+	public void setValuePrese(String valuePrese) {
+		this.valuePrese = valuePrese;
 	}
 
 	public String getLang() {

@@ -1,19 +1,27 @@
 package eki.ekilex.service.db.util;
 
 import static eki.ekilex.data.db.Tables.DEFINITION;
-import static eki.ekilex.data.db.Tables.DEFINITION_FREEFORM;
+import static eki.ekilex.data.db.Tables.DEFINITION_NOTE;
+import static eki.ekilex.data.db.Tables.DEFINITION_NOTE_SOURCE_LINK;
 import static eki.ekilex.data.db.Tables.DEFINITION_SOURCE_LINK;
 import static eki.ekilex.data.db.Tables.FORM;
 import static eki.ekilex.data.db.Tables.FREEFORM;
-import static eki.ekilex.data.db.Tables.FREEFORM_SOURCE_LINK;
 import static eki.ekilex.data.db.Tables.LEXEME;
 import static eki.ekilex.data.db.Tables.LEXEME_FREEFORM;
+import static eki.ekilex.data.db.Tables.LEXEME_NOTE;
+import static eki.ekilex.data.db.Tables.LEXEME_NOTE_SOURCE_LINK;
 import static eki.ekilex.data.db.Tables.LEXEME_SOURCE_LINK;
 import static eki.ekilex.data.db.Tables.MEANING;
 import static eki.ekilex.data.db.Tables.MEANING_FREEFORM;
+import static eki.ekilex.data.db.Tables.MEANING_NOTE;
+import static eki.ekilex.data.db.Tables.MEANING_NOTE_SOURCE_LINK;
 import static eki.ekilex.data.db.Tables.MEANING_RELATION;
 import static eki.ekilex.data.db.Tables.PARADIGM;
 import static eki.ekilex.data.db.Tables.PARADIGM_FORM;
+import static eki.ekilex.data.db.Tables.USAGE;
+import static eki.ekilex.data.db.Tables.USAGE_DEFINITION;
+import static eki.ekilex.data.db.Tables.USAGE_SOURCE_LINK;
+import static eki.ekilex.data.db.Tables.USAGE_TRANSLATION;
 import static eki.ekilex.data.db.Tables.WORD;
 import static eki.ekilex.data.db.Tables.WORD_FREEFORM;
 
@@ -25,7 +33,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.jooq.Condition;
 import org.jooq.Field;
 import org.jooq.Record1;
-import org.jooq.Record2;
 import org.jooq.SelectHavingStep;
 import org.jooq.Table;
 import org.jooq.impl.DSL;
@@ -43,19 +50,27 @@ import eki.ekilex.data.SearchCriterion;
 import eki.ekilex.data.SearchCriterionGroup;
 import eki.ekilex.data.SearchDatasetsRestriction;
 import eki.ekilex.data.db.tables.Definition;
-import eki.ekilex.data.db.tables.DefinitionFreeform;
+import eki.ekilex.data.db.tables.DefinitionNote;
+import eki.ekilex.data.db.tables.DefinitionNoteSourceLink;
 import eki.ekilex.data.db.tables.DefinitionSourceLink;
 import eki.ekilex.data.db.tables.Form;
 import eki.ekilex.data.db.tables.Freeform;
-import eki.ekilex.data.db.tables.FreeformSourceLink;
 import eki.ekilex.data.db.tables.Lexeme;
 import eki.ekilex.data.db.tables.LexemeFreeform;
+import eki.ekilex.data.db.tables.LexemeNote;
+import eki.ekilex.data.db.tables.LexemeNoteSourceLink;
 import eki.ekilex.data.db.tables.LexemeSourceLink;
 import eki.ekilex.data.db.tables.Meaning;
 import eki.ekilex.data.db.tables.MeaningFreeform;
+import eki.ekilex.data.db.tables.MeaningNote;
+import eki.ekilex.data.db.tables.MeaningNoteSourceLink;
 import eki.ekilex.data.db.tables.MeaningRelation;
 import eki.ekilex.data.db.tables.Paradigm;
 import eki.ekilex.data.db.tables.ParadigmForm;
+import eki.ekilex.data.db.tables.Usage;
+import eki.ekilex.data.db.tables.UsageDefinition;
+import eki.ekilex.data.db.tables.UsageSourceLink;
+import eki.ekilex.data.db.tables.UsageTranslation;
 import eki.ekilex.data.db.tables.Word;
 import eki.ekilex.data.db.tables.WordFreeform;
 
@@ -71,6 +86,7 @@ public class LexSearchConditionComposer implements GlobalConstant, ActivityFunct
 		Field<String> filterField = DSL.lower(maskedSearchFilter);
 
 		Condition where = composeWordDatasetsCondition(word, searchDatasetsRestriction);
+		where = where.and(word.IS_WORD.isTrue());
 		if (StringUtils.containsAny(maskedSearchFilter, '%', '_')) {
 			where = where.and(DSL.or(DSL.lower(word.VALUE).like(filterField), DSL.lower(word.VALUE_AS_WORD).like(filterField)));
 		} else {
@@ -82,6 +98,7 @@ public class LexSearchConditionComposer implements GlobalConstant, ActivityFunct
 	public Condition createSearchCondition(Word w1, List<SearchCriterionGroup> searchCriteriaGroups, SearchDatasetsRestriction searchDatasetsRestriction) throws Exception {
 
 		Condition where = composeWordDatasetsCondition(w1, searchDatasetsRestriction);
+		where = where.and(w1.IS_WORD.isTrue());
 
 		for (SearchCriterionGroup searchCriterionGroup : searchCriteriaGroups) {
 
@@ -119,7 +136,7 @@ public class LexSearchConditionComposer implements GlobalConstant, ActivityFunct
 					where1 = searchFilterHelper.applyLexemeSourceFilters(searchCriteria, l1.ID, where1);
 					where1 = searchFilterHelper.applyLexemeFreeformFilters(SearchKey.LEXEME_GRAMMAR, FreeformType.GRAMMAR, searchCriteria, l1.ID, where1);
 					where1 = searchFilterHelper.applyLexemeFreeformFilters(SearchKey.LEXEME_GOVERNMENT, FreeformType.GOVERNMENT, searchCriteria, l1.ID, where1);
-					where1 = searchFilterHelper.applyLexemeFreeformFilters(SearchKey.LEXEME_NOTE, FreeformType.NOTE, searchCriteria, l1.ID, where1);
+					where1 = searchFilterHelper.applyLexemeNoteFilters(searchCriteria, l1.ID, where1);
 					where1 = searchFilterHelper.applyLexemeRegisterValueFilters(searchCriteria, l1.ID, where1);
 					where1 = searchFilterHelper.applyLexemeRegisterExistsFilters(searchCriteria, l1.ID, where1);
 					where1 = searchFilterHelper.applyLexemePosValueFilters(searchCriteria, l1.ID, where1);
@@ -142,7 +159,8 @@ public class LexSearchConditionComposer implements GlobalConstant, ActivityFunct
 							.and(mr.MEANING_REL_TYPE_CODE.eq(MEANING_REL_TYPE_CODE_SIMILAR))
 							.and(l2.WORD_ID.eq(w2.ID))
 							.and(w2.LANG.eq(w1.LANG))
-							.and(w2.IS_PUBLIC.isTrue());
+							.and(w2.IS_PUBLIC.isTrue())
+							.and(w2.IS_WORD.isTrue());
 
 					where1 = searchFilterHelper.applyDatasetRestrictions(l1, searchDatasetsRestriction, where1);
 					where1 = searchFilterHelper.applyDatasetRestrictions(l2, searchDatasetsRestriction, where1);
@@ -181,6 +199,7 @@ public class LexSearchConditionComposer implements GlobalConstant, ActivityFunct
 						.and(l1.MEANING_ID.eq(l2.MEANING_ID))
 						.and(l2.WORD_ID.eq(w2.ID))
 						.and(w2.IS_PUBLIC.isTrue())
+						.and(w2.IS_WORD.isTrue())
 						.and(l1.ID.ne(l2.ID));
 				where1 = searchFilterHelper.applyDatasetRestrictions(l1, searchDatasetsRestriction, where1);
 				where1 = searchFilterHelper.applyDatasetRestrictions(l2, searchDatasetsRestriction, where1);
@@ -188,7 +207,7 @@ public class LexSearchConditionComposer implements GlobalConstant, ActivityFunct
 				boolean containsSearchKeys;
 
 				containsSearchKeys = searchFilterHelper.containsSearchKeys(searchCriteria,
-						SearchKey.VALUE, SearchKey.ID, SearchKey.SOURCE_REF, SearchKey.SOURCE_NAME, SearchKey.SOURCE_VALUE,  SearchKey.ASPECT, SearchKey.WORD_TYPE,
+						SearchKey.VALUE, SearchKey.ID, SearchKey.SOURCE_REF, SearchKey.SOURCE_NAME, SearchKey.SOURCE_VALUE, SearchKey.ASPECT, SearchKey.WORD_TYPE,
 						SearchKey.PUBLICITY, SearchKey.LEXEME_GRAMMAR, SearchKey.LEXEME_GOVERNMENT, SearchKey.LEXEME_POS,
 						SearchKey.LEXEME_REGISTER, SearchKey.LEXEME_VALUE_STATE, SearchKey.COMPLEXITY,
 						SearchKey.CREATED_OR_UPDATED_BY, SearchKey.UPDATED_ON, SearchKey.CREATED_ON);
@@ -285,7 +304,7 @@ public class LexSearchConditionComposer implements GlobalConstant, ActivityFunct
 				where1 = searchFilterHelper.applyMeaningRelationValueFilters(searchCriteria, m1.ID, where1);
 				where1 = searchFilterHelper.applyMeaningRelationExistsFilters(searchCriteria, m1.ID, where1);
 				where1 = searchFilterHelper.applyMeaningForumFilters(searchCriteria, m1.ID, where1);
-				where1 = searchFilterHelper.applyMeaningFreeformFilters(SearchKey.MEANING_NOTE, FreeformType.NOTE, searchCriteria, m1.ID, where1);
+				where1 = searchFilterHelper.applyMeaningNoteFilters(searchCriteria, m1.ID, where1);
 				where = where.andExists(DSL.select(m1.ID).from(l1, m1).where(where1));
 
 			} else if (SearchEntity.DEFINITION.equals(searchEntity)) {
@@ -308,16 +327,14 @@ public class LexSearchConditionComposer implements GlobalConstant, ActivityFunct
 					where1 = searchFilterHelper.applyDefinitionSourceFilters(searchCriteria, d1.ID, where1);
 					where1 = searchFilterHelper.applyPublicityFilters(searchCriteria, d1.IS_PUBLIC, where1);
 					where1 = searchFilterHelper.applyLexemeComplexityFilters(searchCriteria, d1.COMPLEXITY, where1);
-					where1 = searchFilterHelper.applyDefinitionFreeformFilters(SearchKey.DEFINITION_NOTE, FreeformType.NOTE, searchCriteria, d1.ID, where1);
+					where1 = searchFilterHelper.applyDefinitionNoteFilters(searchCriteria, d1.ID, where1);
 					where = where.andExists(DSL.select(d1.ID).from(l1, m1, d1).where(where1));
 				}
 
 				boolean containsSearchKeys = searchFilterHelper.containsSearchKeys(searchCriteria, SearchKey.LANGUAGE);
 				if (containsSearchKeys) {
-					List<SearchCriterion> equalsValueCriteria = searchFilterHelper.filterCriteriaBySearchKeyAndOperands(searchCriteria, SearchKey.LANGUAGE,
-							SearchOperand.EQUALS);
-					List<SearchCriterion> notContainsValueCriteria = searchFilterHelper.filterCriteriaBySearchKeyAndOperands(searchCriteria, SearchKey.LANGUAGE,
-							SearchOperand.NOT_CONTAINS);
+					List<SearchCriterion> equalsValueCriteria = searchFilterHelper.filterCriteriaBySearchKeyAndOperands(searchCriteria, SearchKey.LANGUAGE, SearchOperand.EQUALS);
+					List<SearchCriterion> notContainsValueCriteria = searchFilterHelper.filterCriteriaBySearchKeyAndOperands(searchCriteria, SearchKey.LANGUAGE, SearchOperand.NOT_CONTAINS);
 
 					if (CollectionUtils.isNotEmpty(equalsValueCriteria)) {
 						where1 = searchFilterHelper.applyValueFilters(SearchKey.LANGUAGE, equalsValueCriteria, d1.LANG, where2, false);
@@ -331,112 +348,87 @@ public class LexSearchConditionComposer implements GlobalConstant, ActivityFunct
 
 			} else if (SearchEntity.USAGE.equals(searchEntity)) {
 
+				Usage u1 = USAGE.as("u1");
 				Lexeme l1 = LEXEME.as("l1");
-				LexemeFreeform l1ff = LEXEME_FREEFORM.as("l1ff");
-				Freeform u1 = FREEFORM.as("u1");
 
 				Condition where2 = l1.WORD_ID.eq(w1.ID)
-						.and(l1ff.LEXEME_ID.eq(l1.ID))
-						.and(l1ff.FREEFORM_ID.eq(u1.ID))
-						.and(u1.TYPE.eq(FreeformType.USAGE.name()));
+						.and(u1.LEXEME_ID.eq(l1.ID));
 				where2 = searchFilterHelper.applyDatasetRestrictions(l1, searchDatasetsRestriction, where2);
 				Condition where1;
 
 				boolean isNotExistsSearch = searchFilterHelper.isNotExistsSearch(SearchKey.VALUE_AND_EXISTS, searchCriteria);
 				if (isNotExistsSearch) {
-					where = where.andNotExists(DSL.select(u1.ID).from(l1, l1ff, u1).where(where2));
+					where = where.andNotExists(DSL.select(u1.ID).from(l1, u1).where(where2));
 				} else {
-					where1 = searchFilterHelper.applyValueFilters(SearchKey.VALUE_AND_EXISTS, searchCriteria, u1.VALUE_TEXT, where2, true);
+					where1 = searchFilterHelper.applyValueFilters(SearchKey.VALUE_AND_EXISTS, searchCriteria, u1.VALUE, where2, true);
 					where1 = searchFilterHelper.applyFreeformSourceFilters(searchCriteria, u1.ID, where1);
 					where1 = searchFilterHelper.applyFreeformSourceRefFilter(searchCriteria, u1.ID, where1);
 					where1 = searchFilterHelper.applyPublicityFilters(searchCriteria, u1.IS_PUBLIC, where1);
 					where1 = searchFilterHelper.applyLexemeComplexityFilters(searchCriteria, u1.COMPLEXITY, where1);
 
-					where = where.andExists(DSL.select(u1.ID).from(l1, l1ff, u1).where(where1));
+					where = where.andExists(DSL.select(u1.ID).from(l1, u1).where(where1));
 				}
 
 				boolean containsSearchKeys = searchFilterHelper.containsSearchKeys(searchCriteria, SearchKey.LANGUAGE);
 				if (containsSearchKeys) {
-					List<SearchCriterion> equalsValueCriteria = searchFilterHelper.filterCriteriaBySearchKeyAndOperands(searchCriteria, SearchKey.LANGUAGE,
-							SearchOperand.EQUALS);
-					List<SearchCriterion> notContainsValueCriteria = searchFilterHelper.filterCriteriaBySearchKeyAndOperands(searchCriteria, SearchKey.LANGUAGE,
-							SearchOperand.NOT_CONTAINS);
+					List<SearchCriterion> equalsValueCriteria = searchFilterHelper.filterCriteriaBySearchKeyAndOperands(searchCriteria, SearchKey.LANGUAGE, SearchOperand.EQUALS);
+					List<SearchCriterion> notContainsValueCriteria = searchFilterHelper.filterCriteriaBySearchKeyAndOperands(searchCriteria, SearchKey.LANGUAGE, SearchOperand.NOT_CONTAINS);
 
 					if (CollectionUtils.isNotEmpty(equalsValueCriteria)) {
 						where1 = searchFilterHelper.applyValueFilters(SearchKey.LANGUAGE, equalsValueCriteria, u1.LANG, where2, false);
-						where = where.andExists(DSL.select(u1.ID).from(l1, l1ff, u1).where(where1));
+						where = where.andExists(DSL.select(u1.ID).from(l1, u1).where(where1));
 					}
 					if (CollectionUtils.isNotEmpty(notContainsValueCriteria)) {
 						where1 = searchFilterHelper.applyValueFilters(SearchKey.LANGUAGE, notContainsValueCriteria, u1.LANG, where2, false);
-						where = where.andNotExists(DSL.select(u1.ID).from(l1, l1ff, u1).where(where1));
+						where = where.andNotExists(DSL.select(u1.ID).from(l1, u1).where(where1));
 					}
 				}
 
 			} else if (SearchEntity.NOTE.equals(searchEntity)) {
 
-				Freeform nff3 = FREEFORM.as("nff3");
-				Condition where3 = nff3.TYPE.eq(FreeformType.NOTE.name());
+				Lexeme l1 = LEXEME.as("l1");
+				LexemeNote ln1 = LEXEME_NOTE.as("ln1");
+				Definition d1 = DEFINITION.as("d1");
+				DefinitionNote dn1 = DEFINITION_NOTE.as("dn1");
+				Meaning m1 = MEANING.as("m1");
+				MeaningNote mn1 = MEANING_NOTE.as("mn1");
+
+				Condition where1;
+
+				// definition note select
+				where1 = l1.MEANING_ID.eq(m1.ID)
+						.and(d1.MEANING_ID.eq(m1.ID))
+						.and(dn1.DEFINITION_ID.eq(d1.ID));
+				where1 = searchFilterHelper.applyDatasetRestrictions(l1, searchDatasetsRestriction, where1);
+				where1 = searchFilterHelper.applyValueFilters(SearchKey.VALUE_AND_EXISTS, searchCriteria, dn1.VALUE, where1, true);
+				where1 = searchFilterHelper.applyPublicityFilters(searchCriteria, dn1.IS_PUBLIC, where1);
+				where1 = searchFilterHelper.applyDefinitionNoteSourceFilters(searchCriteria, dn1.ID, where1);
+				where1 = searchFilterHelper.applyDefinitionNoteSourceRefFilter(searchCriteria, dn1.ID, where1);
+				SelectHavingStep<Record1<Long>> selectDefinitionNote = DSL.select(l1.WORD_ID).from(l1, m1, d1, dn1).where(where1).groupBy(l1.WORD_ID);
+
+				// lexeme note select
+				where1 = ln1.LEXEME_ID.eq(l1.ID);
+				where1 = searchFilterHelper.applyDatasetRestrictions(l1, searchDatasetsRestriction, where1);
+				where1 = searchFilterHelper.applyValueFilters(SearchKey.VALUE_AND_EXISTS, searchCriteria, ln1.VALUE, where1, true);
+				where1 = searchFilterHelper.applyPublicityFilters(searchCriteria, ln1.IS_PUBLIC, where1);
+				where1 = searchFilterHelper.applyLexemeNoteSourceFilters(searchCriteria, ln1.ID, where1);
+				where1 = searchFilterHelper.applyLexemeNoteSourceRefFilter(searchCriteria, ln1.ID, where1);
+				SelectHavingStep<Record1<Long>> selectLexemeNote = DSL.select(l1.WORD_ID).from(l1, ln1).where(where1).groupBy(l1.WORD_ID);
+
+				// meaning note select
+				where1 = l1.MEANING_ID.eq(m1.ID).and(mn1.MEANING_ID.eq(m1.ID));
+				where1 = searchFilterHelper.applyDatasetRestrictions(l1, searchDatasetsRestriction, where1);
+				where1 = searchFilterHelper.applyValueFilters(SearchKey.VALUE_AND_EXISTS, searchCriteria, mn1.VALUE, where1, true);
+				where1 = searchFilterHelper.applyMeaningNoteSourceFilters(searchCriteria, mn1.ID, where1);
+				where1 = searchFilterHelper.applyMeaningNoteSourceRefFilter(searchCriteria, mn1.ID, where1);
+				SelectHavingStep<Record1<Long>> selectMeaningNote = DSL.select(l1.WORD_ID).from(l1, m1, mn1).where(where1).groupBy(l1.WORD_ID);
+
+				Table<Record1<Long>> n1 = selectDefinitionNote
+						.unionAll(selectLexemeNote)
+						.unionAll(selectMeaningNote)
+						.asTable("n1");
 
 				boolean isNotExistsSearch = searchFilterHelper.isNotExistsSearch(SearchKey.VALUE_AND_EXISTS, searchCriteria);
-
-				where3 = searchFilterHelper.applyValueFilters(SearchKey.VALUE_AND_EXISTS, searchCriteria, nff3.VALUE_TEXT, where3, true);
-				where3 = searchFilterHelper.applyPublicityFilters(searchCriteria, nff3.IS_PUBLIC, where3);
-				where3 = searchFilterHelper.applyFreeformSourceFilters(searchCriteria, nff3.ID, where3);
-				where3 = searchFilterHelper.applyFreeformSourceRefFilter(searchCriteria, nff3.ID, where3);
-
-				Table<Record1<Long>> n2 = DSL.select(nff3.ID.as("freeform_id")).from(nff3).where(where3).asTable("n2");
-
-				Lexeme l3 = LEXEME.as("l3");
-				Meaning m3 = MEANING.as("m3");
-				Definition d3 = DEFINITION.as("d3");
-
-				// notes owner #1
-				MeaningFreeform mff3 = MEANING_FREEFORM.as("mff3");
-				Condition mffWhere =
-						mff3.MEANING_ID.eq(m3.ID)
-								.and(l3.MEANING_ID.eq(m3.ID));
-				mffWhere = searchFilterHelper.applyDatasetRestrictions(l3, searchDatasetsRestriction, mffWhere);
-				Table<Record2<Long, Long>> mff2 = DSL
-						.select(l3.WORD_ID, mff3.FREEFORM_ID)
-						.from(l3, mff3, m3)
-						.where(mffWhere)
-						.asTable("mff2");
-
-				// notes owner #2
-				DefinitionFreeform dff3 = DEFINITION_FREEFORM.as("dff3");
-				Condition dffWhere =
-						dff3.DEFINITION_ID.eq(d3.ID)
-								.and(d3.MEANING_ID.eq(m3.ID))
-								.and(l3.MEANING_ID.eq(m3.ID));
-				dffWhere = searchFilterHelper.applyDatasetRestrictions(l3, searchDatasetsRestriction, dffWhere);
-				Table<Record2<Long, Long>> dff2 = DSL
-						.select(l3.WORD_ID, dff3.FREEFORM_ID)
-						.from(l3, dff3, m3, d3)
-						.where(dffWhere)
-						.asTable("dff2");
-
-				// notes owner #3
-				LexemeFreeform lff3 = LEXEME_FREEFORM.as("lff3");
-				Condition lffWhere = lff3.LEXEME_ID.eq(l3.ID);
-				lffWhere = searchFilterHelper.applyDatasetRestrictions(l3, searchDatasetsRestriction, lffWhere);
-				Table<Record2<Long, Long>> lff2 = DSL
-						.select(l3.WORD_ID, lff3.FREEFORM_ID)
-						.from(l3, lff3)
-						.where(lffWhere)
-						.asTable("lff2");
-
-				// notes owner #4
-				WordFreeform wff2 = WORD_FREEFORM.as("wff2");
-
-				// notes owners joined
-				Table<Record1<Long>> n1 = DSL
-						.select(DSL.coalesce(wff2.WORD_ID, mff2.field("word_id", Long.class), dff2.field("word_id"), lff2.field("word_id")).as("word_id"))
-						.from(n2
-								.leftOuterJoin(wff2).on(wff2.FREEFORM_ID.eq(n2.field("freeform_id", Long.class)))
-								.leftOuterJoin(mff2).on(mff2.field("freeform_id", Long.class).eq(n2.field("freeform_id", Long.class)))
-								.leftOuterJoin(dff2).on(dff2.field("freeform_id", Long.class).eq(n2.field("freeform_id", Long.class)))
-								.leftOuterJoin(lff2).on(lff2.field("freeform_id", Long.class).eq(n2.field("freeform_id", Long.class))))
-						.asTable("n1");
 
 				if (isNotExistsSearch) {
 					where = where.andNotExists(DSL.select(n1.field("word_id")).from(n1).where(n1.field("word_id", Long.class).eq(w1.ID)));
@@ -476,18 +468,24 @@ public class LexSearchConditionComposer implements GlobalConstant, ActivityFunct
 		}
 
 		Definition d1 = DEFINITION.as("d1");
-		Meaning m1 = MEANING.as("m1");
+		DefinitionNote dn1 = DEFINITION_NOTE.as("dn1");
 		Lexeme l1 = LEXEME.as("l1");
-		Form f1 = FORM.as("f1");
-		Paradigm p1 = PARADIGM.as("p1");
-		ParadigmForm pf1 = PARADIGM_FORM.as("pf1");
+		LexemeNote ln1 = LEXEME_NOTE.as("ln1");
+		Usage u1 = USAGE.as("u1");
+		UsageDefinition ud1 = USAGE_DEFINITION.as("ud1");
+		UsageTranslation ut1 = USAGE_TRANSLATION.as("ut1");
+		Meaning m1 = MEANING.as("m1");
+		MeaningNote mn1 = MEANING_NOTE.as("mn1");
 		MeaningFreeform mff1 = MEANING_FREEFORM.as("mff1");
-		DefinitionFreeform dff1 = DEFINITION_FREEFORM.as("dff1");
 		LexemeFreeform lff1 = LEXEME_FREEFORM.as("lff1");
 		WordFreeform wff1 = WORD_FREEFORM.as("wff1");
 		Freeform ff1 = FREEFORM.as("ff1");
 		Lexeme l2 = LEXEME.as("l2");
 		Word w2 = WORD.as("w2");
+		Form f1 = FORM.as("f1");
+		Paradigm p1 = PARADIGM.as("p1");
+		ParadigmForm pf1 = PARADIGM_FORM.as("pf1");
+
 		Condition where1;
 
 		// word and meaningword select
@@ -508,19 +506,40 @@ public class LexSearchConditionComposer implements GlobalConstant, ActivityFunct
 		where1 = searchFilterHelper.applyValueFilters(SearchKey.VALUE, searchCriteria, d1.VALUE, where1, true);
 		SelectHavingStep<Record1<Long>> selectDefinition = DSL.select(l1.WORD_ID).from(l1, m1, d1).where(where1).groupBy(l1.WORD_ID);
 
-		// definition ff select
+		// definition note select
 		where1 = l1.MEANING_ID.eq(m1.ID)
 				.and(d1.MEANING_ID.eq(m1.ID))
-				.and(dff1.DEFINITION_ID.eq(d1.ID))
-				.and(dff1.FREEFORM_ID.eq(ff1.ID))
-				.and(ff1.TYPE.eq(FreeformType.NOTE.name()));
+				.and(dn1.DEFINITION_ID.eq(d1.ID));
 		where1 = searchFilterHelper.applyDatasetRestrictions(l1, searchDatasetsRestriction, where1);
-		where1 = searchFilterHelper.applyValueFilters(SearchKey.VALUE, searchCriteria, ff1.VALUE_TEXT, where1, true);
-		SelectHavingStep<Record1<Long>> selectDefinitionFreeform = DSL.select(l1.WORD_ID).from(l1, dff1, ff1, m1, d1).where(where1).groupBy(l1.WORD_ID);
+		where1 = searchFilterHelper.applyValueFilters(SearchKey.VALUE, searchCriteria, dn1.VALUE, where1, true);
+		SelectHavingStep<Record1<Long>> selectDefinitionNote = DSL.select(l1.WORD_ID).from(l1, m1, d1, dn1).where(where1).groupBy(l1.WORD_ID);
+
+		// lexeme note select
+		where1 = ln1.LEXEME_ID.eq(l1.ID);
+		where1 = searchFilterHelper.applyDatasetRestrictions(l1, searchDatasetsRestriction, where1);
+		where1 = searchFilterHelper.applyValueFilters(SearchKey.VALUE, searchCriteria, ln1.VALUE, where1, true);
+		SelectHavingStep<Record1<Long>> selectLexemeNote = DSL.select(l1.WORD_ID).from(l1, ln1).where(where1).groupBy(l1.WORD_ID);
+
+		// usage select
+		where1 = u1.LEXEME_ID.eq(l1.ID);
+		where1 = searchFilterHelper.applyDatasetRestrictions(l1, searchDatasetsRestriction, where1);
+		where1 = searchFilterHelper.applyValueFilters(SearchKey.VALUE, searchCriteria, u1.VALUE, where1, true);
+		SelectHavingStep<Record1<Long>> selectUsage = DSL.select(l1.WORD_ID).from(l1, u1).where(where1).groupBy(l1.WORD_ID);
+
+		// usage definition select
+		where1 = u1.LEXEME_ID.eq(l1.ID).and(ud1.USAGE_ID.eq(u1.ID));
+		where1 = searchFilterHelper.applyDatasetRestrictions(l1, searchDatasetsRestriction, where1);
+		where1 = searchFilterHelper.applyValueFilters(SearchKey.VALUE, searchCriteria, ud1.VALUE, where1, true);
+		SelectHavingStep<Record1<Long>> selectUsageDefinition = DSL.select(l1.WORD_ID).from(l1, u1, ud1).where(where1).groupBy(l1.WORD_ID);
+
+		// usage translation select
+		where1 = u1.LEXEME_ID.eq(l1.ID).and(ut1.USAGE_ID.eq(u1.ID));
+		where1 = searchFilterHelper.applyDatasetRestrictions(l1, searchDatasetsRestriction, where1);
+		where1 = searchFilterHelper.applyValueFilters(SearchKey.VALUE, searchCriteria, ut1.VALUE, where1, true);
+		SelectHavingStep<Record1<Long>> selectUsageTranslation = DSL.select(l1.WORD_ID).from(l1, u1, ut1).where(where1).groupBy(l1.WORD_ID);
 
 		// lexeme ff select
-		String[] lexemeFreeformTypes = new String[] {
-				FreeformType.NOTE.name(), FreeformType.USAGE.name(), FreeformType.GOVERNMENT.name(), FreeformType.GRAMMAR.name()};
+		String[] lexemeFreeformTypes = new String[] {FreeformType.GOVERNMENT.name(), FreeformType.GRAMMAR.name()};
 		where1 = lff1.LEXEME_ID.eq(l1.ID)
 				.and(lff1.FREEFORM_ID.eq(ff1.ID))
 				.and(ff1.TYPE.in(lexemeFreeformTypes));
@@ -528,9 +547,14 @@ public class LexSearchConditionComposer implements GlobalConstant, ActivityFunct
 		where1 = searchFilterHelper.applyValueFilters(SearchKey.VALUE, searchCriteria, ff1.VALUE_TEXT, where1, true);
 		SelectHavingStep<Record1<Long>> selectLexemeFreeform = DSL.select(l1.WORD_ID).from(l1, lff1, ff1).where(where1).groupBy(l1.WORD_ID);
 
+		// meaning note select
+		where1 = l1.MEANING_ID.eq(m1.ID).and(mn1.MEANING_ID.eq(m1.ID));
+		where1 = searchFilterHelper.applyDatasetRestrictions(l1, searchDatasetsRestriction, where1);
+		where1 = searchFilterHelper.applyValueFilters(SearchKey.VALUE, searchCriteria, mn1.VALUE, where1, true);
+		SelectHavingStep<Record1<Long>> selectMeaningNote = DSL.select(l1.WORD_ID).from(l1, m1, mn1).where(where1).groupBy(l1.WORD_ID);
+
 		// meaning ff select
-		String[] meaningFreeformTypes = new String[] {
-				FreeformType.NOTE.name(), FreeformType.CONCEPT_ID.name(), FreeformType.LEARNER_COMMENT.name()};
+		String[] meaningFreeformTypes = new String[] {FreeformType.CONCEPT_ID.name(), FreeformType.LEARNER_COMMENT.name()};
 		where1 = l1.MEANING_ID.eq(m1.ID)
 				.and(mff1.MEANING_ID.eq(m1.ID))
 				.and(mff1.FREEFORM_ID.eq(ff1.ID))
@@ -538,27 +562,6 @@ public class LexSearchConditionComposer implements GlobalConstant, ActivityFunct
 		where1 = searchFilterHelper.applyDatasetRestrictions(l1, searchDatasetsRestriction, where1);
 		where1 = searchFilterHelper.applyValueFilters(SearchKey.VALUE, searchCriteria, ff1.VALUE_TEXT, where1, true);
 		SelectHavingStep<Record1<Long>> selectMeaningFreeform = DSL.select(l1.WORD_ID).from(l1, m1, mff1, ff1).where(where1).groupBy(l1.WORD_ID);
-
-		// word ff select
-		String[] wordFreeformTypes = new String[] {
-				FreeformType.NOTE.name(), FreeformType.OD_WORD_RECOMMENDATION.name()};
-		where1 = l1.WORD_ID.eq(w1.ID)
-				.and(wff1.WORD_ID.eq(w1.ID))
-				.and(wff1.FREEFORM_ID.eq(ff1.ID))
-				.and(ff1.TYPE.in(wordFreeformTypes));
-		where1 = searchFilterHelper.applyDatasetRestrictions(l1, searchDatasetsRestriction, where1);
-		where1 = searchFilterHelper.applyValueFilters(SearchKey.VALUE, searchCriteria, ff1.VALUE_TEXT, where1, true);
-		SelectHavingStep<Record1<Long>> selectWordFreeform = DSL.select(l1.WORD_ID).from(l1, w1, wff1, ff1).where(where1).groupBy(l1.WORD_ID);
-
-		// usage ff select
-		String[] usageFreeformTypes = new String[] {
-				FreeformType.USAGE_TRANSLATION.name(), FreeformType.USAGE_DEFINITION.name()};
-		where1 = lff1.LEXEME_ID.eq(l1.ID)
-				.and(lff1.FREEFORM_ID.eq(ff1.PARENT_ID))
-				.and(ff1.TYPE.in(usageFreeformTypes));
-		where1 = searchFilterHelper.applyDatasetRestrictions(l1, searchDatasetsRestriction, where1);
-		where1 = searchFilterHelper.applyValueFilters(SearchKey.VALUE, searchCriteria, ff1.VALUE_TEXT, where1, true);
-		SelectHavingStep<Record1<Long>> selectUsageFreeform = DSL.select(l1.WORD_ID).from(l1, lff1, ff1).where(where1).groupBy(l1.WORD_ID);
 
 		// form select
 		where1 = p1.WORD_ID.eq(l1.WORD_ID)
@@ -568,14 +571,27 @@ public class LexSearchConditionComposer implements GlobalConstant, ActivityFunct
 		where1 = searchFilterHelper.applyValueFilters(SearchKey.VALUE, searchCriteria, f1.VALUE, where1, true);
 		SelectHavingStep<Record1<Long>> selectForm = DSL.select(l1.WORD_ID).from(l1, p1, pf1, f1).where(where1).groupBy(l1.WORD_ID);
 
+		// word od recoomendation select
+		where1 = l1.WORD_ID.eq(w1.ID)
+				.and(wff1.WORD_ID.eq(w1.ID))
+				.and(wff1.FREEFORM_ID.eq(ff1.ID))
+				.and(ff1.TYPE.eq(FreeformType.OD_WORD_RECOMMENDATION.name()));
+		where1 = searchFilterHelper.applyDatasetRestrictions(l1, searchDatasetsRestriction, where1);
+		where1 = searchFilterHelper.applyValueFilters(SearchKey.VALUE, searchCriteria, ff1.VALUE_TEXT, where1, true);
+		SelectHavingStep<Record1<Long>> selectWordOdRecommendation = DSL.select(l1.WORD_ID).from(l1, w1, wff1, ff1).where(where1).groupBy(l1.WORD_ID);
+
 		Table<Record1<Long>> a1 = selectWordAndMeaningWord
 				.unionAll(selectDefinition)
-				.unionAll(selectDefinitionFreeform)
-				.unionAll(selectLexemeFreeform)
+				.unionAll(selectDefinitionNote)
+				.unionAll(selectMeaningNote)
 				.unionAll(selectMeaningFreeform)
-				.unionAll(selectWordFreeform)
-				.unionAll(selectUsageFreeform)
+				.unionAll(selectLexemeNote)
+				.unionAll(selectUsage)
+				.unionAll(selectUsageDefinition)
+				.unionAll(selectUsageTranslation)
+				.unionAll(selectLexemeFreeform)
 				.unionAll(selectForm)
+				.unionAll(selectWordOdRecommendation)
 				.asTable("a1");
 
 		where = where.andExists(DSL.select(a1.field("word_id")).from(a1).where(a1.field("word_id", Long.class).eq(w1.ID)));
@@ -585,86 +601,104 @@ public class LexSearchConditionComposer implements GlobalConstant, ActivityFunct
 	private Condition composeCluelessSourceFilter(
 			Word w1, List<SearchCriterion> searchCriteria, SearchDatasetsRestriction searchDatasetsRestriction, Condition where) throws Exception {
 
-		List<SearchCriterion> filteredCriteria = searchFilterHelper.filterSourceRefCriteria(searchCriteria);
-
-		if (CollectionUtils.isEmpty(filteredCriteria)) {
-			filteredCriteria = searchFilterHelper.filterCriteriaBySearchKey(searchCriteria, SearchKey.SOURCE_ID);
-		}
-
-		if (CollectionUtils.isEmpty(filteredCriteria)) {
-			return where;
-		}
-
 		Lexeme l1 = LEXEME.as("l1");
-		LexemeFreeform lff1 = LEXEME_FREEFORM.as("lff1");
-		MeaningFreeform mff1 = MEANING_FREEFORM.as("mff1");
-		DefinitionFreeform dff1 = DEFINITION_FREEFORM.as("dff1");
-		Freeform ff1 = FREEFORM.as("ff1");
-		Definition d1 = DEFINITION.as("d1");
-		FreeformSourceLink ffsl1 = FREEFORM_SOURCE_LINK.as("ffsl1");
-		DefinitionSourceLink dsl1 = DEFINITION_SOURCE_LINK.as("dsl1");
 		LexemeSourceLink lsl1 = LEXEME_SOURCE_LINK.as("lsl1");
+		LexemeNote ln1 = LEXEME_NOTE.as("ln1");
+		LexemeNoteSourceLink lnsl1 = LEXEME_NOTE_SOURCE_LINK.as("lnsl1");
+		Usage u1 = USAGE.as("u1");
+		UsageSourceLink usl1 = USAGE_SOURCE_LINK.as("usl1");
+		MeaningNote mn1 = MEANING_NOTE.as("mn1");
+		MeaningNoteSourceLink mnsl1 = MEANING_NOTE_SOURCE_LINK.as("mnsl1");
+		Definition d1 = DEFINITION.as("d1");
+		DefinitionSourceLink dsl1 = DEFINITION_SOURCE_LINK.as("dsl1");
+		DefinitionNote dn1 = DEFINITION_NOTE.as("dn1");
+		DefinitionNoteSourceLink dnsl1 = DEFINITION_NOTE_SOURCE_LINK.as("dnsl1");
+
 		Condition where1;
 
-		where1 = lsl1.LEXEME_ID.eq(l1.ID);
-		where1 = searchFilterHelper.applyValueFilters(SearchKey.SOURCE_REF, filteredCriteria, lsl1.VALUE, where1, true);
-		where1 = searchFilterHelper.applyIdFilters(SearchKey.SOURCE_ID, filteredCriteria, lsl1.SOURCE_ID, where1);
-		where1 = searchFilterHelper.applyDatasetRestrictions(l1, searchDatasetsRestriction, where1);
-		SelectHavingStep<Record1<Long>> selectLexemeSourceLinks = DSL.select(l1.WORD_ID).from(l1, lsl1).where(where1).groupBy(l1.WORD_ID);
+		List<SearchCriterion> filteredCriteria = searchFilterHelper.filterSourceRefCriteria(searchCriteria);
 
-		where1 = ffsl1.FREEFORM_ID.eq(ff1.ID)
-				.and(ff1.TYPE.eq(FreeformType.USAGE.name()))
-				.and(lff1.FREEFORM_ID.eq(ff1.ID))
-				.and(lff1.LEXEME_ID.eq(l1.ID));
-		where1 = searchFilterHelper.applyValueFilters(SearchKey.SOURCE_REF, filteredCriteria, ffsl1.VALUE, where1, true);
-		where1 = searchFilterHelper.applyIdFilters(SearchKey.SOURCE_ID, filteredCriteria, ffsl1.SOURCE_ID, where1);
-		where1 = searchFilterHelper.applyDatasetRestrictions(l1, searchDatasetsRestriction, where1);
-		SelectHavingStep<Record1<Long>> selectUsageSourceLinks = DSL.select(l1.WORD_ID).from(l1, lff1, ff1, ffsl1).where(where1).groupBy(l1.WORD_ID);
+		if (CollectionUtils.isNotEmpty(filteredCriteria)) {
 
-		where1 = dsl1.DEFINITION_ID.eq(d1.ID)
-				.and(l1.MEANING_ID.eq(d1.MEANING_ID));
-		where1 = searchFilterHelper.applyValueFilters(SearchKey.SOURCE_REF, filteredCriteria, dsl1.VALUE, where1, true);
-		where1 = searchFilterHelper.applyIdFilters(SearchKey.SOURCE_ID, filteredCriteria, dsl1.SOURCE_ID, where1);
-		where1 = searchFilterHelper.applyDatasetRestrictions(l1, searchDatasetsRestriction, where1);
-		SelectHavingStep<Record1<Long>> selectDefinitionSourceLinks = DSL.select(l1.WORD_ID).from(l1, d1, dsl1).where(where1).groupBy(l1.WORD_ID);
+			where1 = lsl1.LEXEME_ID.eq(l1.ID);
+			where1 = searchFilterHelper.applyDatasetRestrictions(l1, searchDatasetsRestriction, where1);
+			SelectHavingStep<Record1<Long>> selectLexemeSourceLinks = DSL.select(l1.WORD_ID).from(l1, lsl1).where(where1).groupBy(l1.WORD_ID);
 
-		where1 = ffsl1.FREEFORM_ID.eq(ff1.ID)
-				.and(ff1.TYPE.eq(FreeformType.NOTE.name()))
-				.and(lff1.FREEFORM_ID.eq(ff1.ID))
-				.and(lff1.LEXEME_ID.eq(l1.ID));
-		where1 = searchFilterHelper.applyValueFilters(SearchKey.SOURCE_REF, filteredCriteria, ffsl1.VALUE, where1, true);
-		where1 = searchFilterHelper.applyIdFilters(SearchKey.SOURCE_ID, filteredCriteria, ffsl1.SOURCE_ID, where1);
-		where1 = searchFilterHelper.applyDatasetRestrictions(l1, searchDatasetsRestriction, where1);
-		SelectHavingStep<Record1<Long>> selectLexemeNoteSourceLinks = DSL.select(l1.WORD_ID).from(l1, lff1, ff1, ffsl1).where(where1).groupBy(l1.WORD_ID);
+			where1 = ln1.LEXEME_ID.eq(l1.ID).and(lnsl1.LEXEME_NOTE_ID.eq(ln1.ID));
+			where1 = searchFilterHelper.applyDatasetRestrictions(l1, searchDatasetsRestriction, where1);
+			SelectHavingStep<Record1<Long>> selectLexemeNoteSourceLinks = DSL.select(l1.WORD_ID).from(l1, ln1, lnsl1).where(where1).groupBy(l1.WORD_ID);
 
-		where1 = ffsl1.FREEFORM_ID.eq(ff1.ID)
-				.and(ff1.TYPE.eq(FreeformType.NOTE.name()))
-				.and(mff1.FREEFORM_ID.eq(ff1.ID))
-				.and(mff1.MEANING_ID.eq(l1.MEANING_ID));
-		where1 = searchFilterHelper.applyValueFilters(SearchKey.SOURCE_REF, filteredCriteria, ffsl1.VALUE, where1, true);
-		where1 = searchFilterHelper.applyIdFilters(SearchKey.SOURCE_ID, filteredCriteria, ffsl1.SOURCE_ID, where1);
-		where1 = searchFilterHelper.applyDatasetRestrictions(l1, searchDatasetsRestriction, where1);
-		SelectHavingStep<Record1<Long>> selectMeaningNoteSourceLinks = DSL.select(l1.WORD_ID).from(l1, mff1, ff1, ffsl1).where(where1).groupBy(l1.WORD_ID);
+			where1 = u1.LEXEME_ID.eq(l1.ID).and(usl1.USAGE_ID.eq(u1.ID));
+			where1 = searchFilterHelper.applyDatasetRestrictions(l1, searchDatasetsRestriction, where1);
+			SelectHavingStep<Record1<Long>> selectUsageSourceLinks = DSL.select(l1.WORD_ID).from(l1, u1, usl1).where(where1).groupBy(l1.WORD_ID);
 
-		where1 = ffsl1.FREEFORM_ID.eq(ff1.ID)
-				.and(ff1.TYPE.eq(FreeformType.NOTE.name()))
-				.and(dff1.FREEFORM_ID.eq(ff1.ID))
-				.and(dff1.DEFINITION_ID.eq(d1.ID))
-				.and(l1.MEANING_ID.eq(d1.MEANING_ID));
-		where1 = searchFilterHelper.applyValueFilters(SearchKey.SOURCE_REF, filteredCriteria, ffsl1.VALUE, where1, true);
-		where1 = searchFilterHelper.applyIdFilters(SearchKey.SOURCE_ID, filteredCriteria, ffsl1.SOURCE_ID, where1);
-		where1 = searchFilterHelper.applyDatasetRestrictions(l1, searchDatasetsRestriction, where1);
-		SelectHavingStep<Record1<Long>> selectDefinitionNoteSourceLinks = DSL.select(l1.WORD_ID).from(l1, d1, dff1, ff1, ffsl1).where(where1).groupBy(l1.WORD_ID);
+			where1 = l1.MEANING_ID.eq(mn1.MEANING_ID).and(mnsl1.MEANING_NOTE_ID.eq(mn1.ID));
+			where1 = searchFilterHelper.applyDatasetRestrictions(l1, searchDatasetsRestriction, where1);
+			SelectHavingStep<Record1<Long>> selectMeaningNoteSourceLinks = DSL.select(l1.WORD_ID).from(l1, mn1, mnsl1).where(where1).groupBy(l1.WORD_ID);
 
-		Table<Record1<Long>> a1 = selectLexemeSourceLinks
-				.unionAll(selectUsageSourceLinks)
-				.unionAll(selectDefinitionSourceLinks)
-				.unionAll(selectLexemeNoteSourceLinks)
-				.unionAll(selectMeaningNoteSourceLinks)
-				.unionAll(selectDefinitionNoteSourceLinks)
-				.asTable("a1");
+			where1 = l1.MEANING_ID.eq(d1.MEANING_ID).and(dsl1.DEFINITION_ID.eq(d1.ID));
+			where1 = searchFilterHelper.applyDatasetRestrictions(l1, searchDatasetsRestriction, where1);
+			SelectHavingStep<Record1<Long>> selectDefinitionSourceLinks = DSL.select(l1.WORD_ID).from(l1, d1, dsl1).where(where1).groupBy(l1.WORD_ID);
 
-		where = where.andExists(DSL.select(a1.field("word_id")).from(a1).where(a1.field("word_id", Long.class).eq(w1.ID)));
+			where1 = l1.MEANING_ID.eq(d1.MEANING_ID).and(dn1.DEFINITION_ID.eq(d1.ID)).and(dnsl1.DEFINITION_NOTE_ID.eq(dn1.ID));
+			where1 = searchFilterHelper.applyDatasetRestrictions(l1, searchDatasetsRestriction, where1);
+			SelectHavingStep<Record1<Long>> selectDefinitionNoteSourceLinks = DSL.select(l1.WORD_ID).from(l1, d1, dn1, dnsl1).where(where1).groupBy(l1.WORD_ID);
+
+			Table<Record1<Long>> a1 = selectLexemeSourceLinks
+					.unionAll(selectLexemeNoteSourceLinks)
+					.unionAll(selectUsageSourceLinks)
+					.unionAll(selectMeaningNoteSourceLinks)
+					.unionAll(selectDefinitionSourceLinks)
+					.unionAll(selectDefinitionNoteSourceLinks)
+					.asTable("a1");
+
+			where = where.andExists(DSL.select(a1.field("word_id")).from(a1).where(a1.field("word_id", Long.class).eq(w1.ID)));
+		}
+
+		filteredCriteria = searchFilterHelper.filterCriteriaBySearchKey(searchCriteria, SearchKey.SOURCE_ID);
+
+		if (CollectionUtils.isNotEmpty(filteredCriteria)) {
+
+			where1 = lsl1.LEXEME_ID.eq(l1.ID);
+			where1 = searchFilterHelper.applyDatasetRestrictions(l1, searchDatasetsRestriction, where1);
+			where1 = searchFilterHelper.applyIdFilters(SearchKey.SOURCE_ID, filteredCriteria, lsl1.SOURCE_ID, where1);
+			SelectHavingStep<Record1<Long>> selectLexemeSourceLinks = DSL.select(l1.WORD_ID).from(l1, lsl1).where(where1).groupBy(l1.WORD_ID);
+
+			where1 = ln1.LEXEME_ID.eq(l1.ID).and(lnsl1.LEXEME_NOTE_ID.eq(ln1.ID));
+			where1 = searchFilterHelper.applyDatasetRestrictions(l1, searchDatasetsRestriction, where1);
+			where1 = searchFilterHelper.applyIdFilters(SearchKey.SOURCE_ID, filteredCriteria, lnsl1.SOURCE_ID, where1);
+			SelectHavingStep<Record1<Long>> selectLexemeNoteSourceLinks = DSL.select(l1.WORD_ID).from(l1, ln1, lnsl1).where(where1).groupBy(l1.WORD_ID);
+
+			where1 = u1.LEXEME_ID.eq(l1.ID).and(usl1.USAGE_ID.eq(u1.ID));
+			where1 = searchFilterHelper.applyDatasetRestrictions(l1, searchDatasetsRestriction, where1);
+			where1 = searchFilterHelper.applyIdFilters(SearchKey.SOURCE_ID, filteredCriteria, usl1.SOURCE_ID, where1);
+			SelectHavingStep<Record1<Long>> selectUsageSourceLinks = DSL.select(l1.WORD_ID).from(l1, u1, usl1).where(where1).groupBy(l1.WORD_ID);
+
+			where1 = l1.MEANING_ID.eq(mn1.MEANING_ID).and(mnsl1.MEANING_NOTE_ID.eq(mn1.ID));
+			where1 = searchFilterHelper.applyDatasetRestrictions(l1, searchDatasetsRestriction, where1);
+			where1 = searchFilterHelper.applyIdFilters(SearchKey.SOURCE_ID, filteredCriteria, mnsl1.SOURCE_ID, where1);
+			SelectHavingStep<Record1<Long>> selectMeaningNoteSourceLinks = DSL.select(l1.WORD_ID).from(l1, mn1, mnsl1).where(where1).groupBy(l1.WORD_ID);
+
+			where1 = l1.MEANING_ID.eq(d1.MEANING_ID).and(dsl1.DEFINITION_ID.eq(d1.ID));
+			where1 = searchFilterHelper.applyDatasetRestrictions(l1, searchDatasetsRestriction, where1);
+			where1 = searchFilterHelper.applyIdFilters(SearchKey.SOURCE_ID, filteredCriteria, dsl1.SOURCE_ID, where1);
+			SelectHavingStep<Record1<Long>> selectDefinitionSourceLinks = DSL.select(l1.WORD_ID).from(l1, d1, dsl1).where(where1).groupBy(l1.WORD_ID);
+
+			where1 = l1.MEANING_ID.eq(d1.MEANING_ID).and(dn1.DEFINITION_ID.eq(d1.ID)).and(dnsl1.DEFINITION_NOTE_ID.eq(dn1.ID));
+			where1 = searchFilterHelper.applyDatasetRestrictions(l1, searchDatasetsRestriction, where1);
+			where1 = searchFilterHelper.applyIdFilters(SearchKey.SOURCE_ID, filteredCriteria, dnsl1.SOURCE_ID, where1);
+			SelectHavingStep<Record1<Long>> selectDefinitionNoteSourceLinks = DSL.select(l1.WORD_ID).from(l1, d1, dn1, dnsl1).where(where1).groupBy(l1.WORD_ID);
+
+			Table<Record1<Long>> a1 = selectLexemeSourceLinks
+					.unionAll(selectLexemeNoteSourceLinks)
+					.unionAll(selectUsageSourceLinks)
+					.unionAll(selectMeaningNoteSourceLinks)
+					.unionAll(selectDefinitionSourceLinks)
+					.unionAll(selectDefinitionNoteSourceLinks)
+					.asTable("a1");
+
+			where = where.andExists(DSL.select(a1.field("word_id")).from(a1).where(a1.field("word_id", Long.class).eq(w1.ID)));
+		}
 
 		return where;
 	}

@@ -11,24 +11,30 @@ import org.springframework.security.access.PermissionEvaluator;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
 
-import eki.common.constant.ActivityEntity;
 import eki.common.constant.AuthorityItem;
 import eki.common.constant.AuthorityOperation;
+import eki.common.constant.ContentKey;
 import eki.common.constant.GlobalConstant;
 import eki.common.constant.PermConstant;
-import eki.common.constant.ReferenceOwner;
 import eki.common.exception.TermsNotAcceptedException;
 import eki.ekilex.data.DatasetPermission;
+import eki.ekilex.data.DefinitionNoteSourceLink;
+import eki.ekilex.data.DefinitionSourceLink;
 import eki.ekilex.data.EkiUser;
+import eki.ekilex.data.LexemeNoteSourceLink;
+import eki.ekilex.data.LexemeSourceLink;
+import eki.ekilex.data.MeaningImageSourceLink;
+import eki.ekilex.data.MeaningNoteSourceLink;
 import eki.ekilex.data.SourceLink;
-import eki.ekilex.data.api.FreeformOwner;
+import eki.ekilex.data.SourceLinkOwner;
+import eki.ekilex.data.UsageSourceLink;
 import eki.ekilex.service.db.ActivityLogDbService;
 import eki.ekilex.service.db.LookupDbService;
 import eki.ekilex.service.db.PermissionDbService;
 import eki.ekilex.service.db.SourceLinkDbService;
 
 @Component("permEval")
-public class EkilexPermissionEvaluator implements PermissionEvaluator, PermConstant, GlobalConstant {
+public class EkilexPermissionEvaluator implements PermissionEvaluator, PermConstant, GlobalConstant, ContentKey {
 
 	@Autowired
 	private PermissionDbService permissionDbService;
@@ -181,8 +187,9 @@ public class EkilexPermissionEvaluator implements PermissionEvaluator, PermConst
 
 	// source link crud
 
+	// TODO under construction
 	@Transactional
-	public boolean isSourceLinkCrudGranted(Authentication authentication, String crudRoleDataset, SourceLink sourceLink) {
+	public boolean isSourceLinkCrudGranted(Authentication authentication, String crudRoleDataset, String sourceContentKey, SourceLink sourceLink) {
 
 		EkiUser user = (EkiUser) authentication.getPrincipal();
 		if (user.isMaster()) {
@@ -198,20 +205,43 @@ public class EkilexPermissionEvaluator implements PermissionEvaluator, PermConst
 		if (!isSourceCrudGranted) {
 			return false;
 		}
-		ReferenceOwner sourceLinkOwner = sourceLink.getOwner();
-		Long ownerId = sourceLink.getOwnerId();
-		if (ReferenceOwner.FREEFORM.equals(sourceLinkOwner)) {
-			return isFreeformSourceLinkCrudGranted(userId, crudRole, ownerId);
-		} else if (ReferenceOwner.DEFINITION.equals(sourceLinkOwner)) {
-			return permissionDbService.isGrantedForDefinition(userId, crudRole, ownerId, AUTH_ITEM_DATASET, AUTH_OPS_CRUD);
-		} else if (ReferenceOwner.LEXEME.equals(sourceLinkOwner)) {
-			return permissionDbService.isGrantedForLexeme(userId, crudRole, ownerId, AUTH_ITEM_DATASET, AUTH_OPS_CRUD);
+		if (StringUtils.equals(DEFINITION_SOURCE_LINK, sourceContentKey)) {
+			DefinitionSourceLink definitionSourceLink = (DefinitionSourceLink) sourceLink;
+			Long definitionId = definitionSourceLink.getDefinitionId();
+			return permissionDbService.isGrantedForDefinition(userId, crudRole, definitionId, AUTH_ITEM_DATASET, AUTH_OPS_CRUD);
+		} else if (StringUtils.equals(DEFINITION_NOTE_SOURCE_LINK, sourceContentKey)) {
+			DefinitionNoteSourceLink definitionNoteSourceLink = (DefinitionNoteSourceLink) sourceLink;
+			Long definitionNoteId = definitionNoteSourceLink.getDefinitionNoteId();
+			return permissionDbService.isGrantedForDefinitionNote(userId, crudRole, definitionNoteId, AUTH_ITEM_DATASET, AUTH_OPS_CRUD);
+		} else if (StringUtils.equals(LEXEME_SOURCE_LINK, sourceContentKey)) {
+			LexemeSourceLink lexemeSourceLink = (LexemeSourceLink) sourceLink;
+			Long lexemeId = lexemeSourceLink.getLexemeId();
+			return permissionDbService.isGrantedForLexeme(userId, crudRole, lexemeId, AUTH_ITEM_DATASET, AUTH_OPS_CRUD);
+		} else if (StringUtils.equals(LEXEME_NOTE_SOURCE_LINK, sourceContentKey)) {
+			LexemeNoteSourceLink lexemeNoteSourceLink = (LexemeNoteSourceLink) sourceLink;
+			Long lexemeNoteId = lexemeNoteSourceLink.getLexemeNoteId();
+			return permissionDbService.isGrantedForLexemeNote(userId, crudRole, lexemeNoteId, AUTH_ITEM_DATASET, AUTH_OPS_CRUD);
+		} else if (StringUtils.equals(USAGE_SOURCE_LINK, sourceContentKey)) {
+			UsageSourceLink usageSourceLink = (UsageSourceLink) sourceLink;
+			Long usageId = usageSourceLink.getUsageId();
+			return permissionDbService.isGrantedForUsage(userId, crudRole, usageId, AUTH_ITEM_DATASET, AUTH_OPS_CRUD);
+		} else if (StringUtils.equals(MEANING_IMAGE_SOURCE_LINK, sourceContentKey)) {
+			MeaningImageSourceLink meaningImageSourceLink = (MeaningImageSourceLink) sourceLink;
+			Long meaningImageId = meaningImageSourceLink.getMeaningImageId();
+			Long meaningId = activityLogDbService.getMeaningImageOwnerId(meaningImageId);
+			return permissionDbService.isGrantedForMeaning(userId, crudRole, meaningId, AUTH_ITEM_DATASET, AUTH_OPS_CRUD);
+		} else if (StringUtils.equals(MEANING_NOTE_SOURCE_LINK, sourceContentKey)) {
+			MeaningNoteSourceLink meaningNoteSourceLink = (MeaningNoteSourceLink) sourceLink;
+			Long meaningNoteId = meaningNoteSourceLink.getMeaningNoteId();
+			Long meaningId = activityLogDbService.getMeaningNoteOwnerId(meaningNoteId);
+			return permissionDbService.isGrantedForMeaning(userId, crudRole, meaningId, AUTH_ITEM_DATASET, AUTH_OPS_CRUD);
 		}
 		return false;
 	}
 
+	// TODO under construction
 	@Transactional
-	public boolean isSourceLinkCrudGranted(Authentication authentication, String crudRoleDataset, ReferenceOwner sourceLinkOwner, Long sourceLinkId) {
+	public boolean isSourceLinkCrudGranted(Authentication authentication, String crudRoleDataset, String sourceContentKey, Long sourceLinkId) {
 
 		EkiUser user = (EkiUser) authentication.getPrincipal();
 		if (user.isMaster()) {
@@ -222,48 +252,72 @@ public class EkilexPermissionEvaluator implements PermissionEvaluator, PermConst
 		if (crudRole == null) {
 			return false;
 		}
-		if (ReferenceOwner.FREEFORM.equals(sourceLinkOwner)) {
-			SourceLink sourceLink = sourceLinkDbService.getFreeformSourceLink(sourceLinkId);
-			Long sourceId = sourceLink.getSourceId();
-			boolean isSourceCrudGranted = isSourceCrudGranted(authentication, crudRoleDataset, sourceId);
-			if (!isSourceCrudGranted) {
-				return false;
-			}
-			Long ownerId = sourceLink.getOwnerId();
-			return isFreeformSourceLinkCrudGranted(userId, crudRole, ownerId);
-		} else if (ReferenceOwner.DEFINITION.equals(sourceLinkOwner)) {
-			SourceLink sourceLink = sourceLinkDbService.getDefinitionSourceLink(sourceLinkId);
-			Long sourceId = sourceLink.getSourceId();
-			boolean isSourceCrudGranted = isSourceCrudGranted(authentication, crudRoleDataset, sourceId);
-			if (!isSourceCrudGranted) {
-				return false;
-			}
-			Long ownerId = sourceLink.getOwnerId();
-			return permissionDbService.isGrantedForDefinition(userId, crudRole, ownerId, AUTH_ITEM_DATASET, AUTH_OPS_CRUD);
-		} else if (ReferenceOwner.LEXEME.equals(sourceLinkOwner)) {
-			SourceLink sourceLink = sourceLinkDbService.getLexemeSourceLink(sourceLinkId);
-			Long sourceId = sourceLink.getSourceId();
-			boolean isSourceCrudGranted = isSourceCrudGranted(authentication, crudRoleDataset, sourceId);
-			if (!isSourceCrudGranted) {
-				return false;
-			}
-			Long ownerId = sourceLink.getOwnerId();
-			return permissionDbService.isGrantedForLexeme(userId, crudRole, ownerId, AUTH_ITEM_DATASET, AUTH_OPS_CRUD);
-		}
-		return false;
-	}
 
-	private boolean isFreeformSourceLinkCrudGranted(Long userId, DatasetPermission crudRole, Long ownerId) {
-
-		FreeformOwner freeformOwner = sourceLinkDbService.getFreeformOwner(ownerId);
-		ActivityEntity entity = freeformOwner.getEntity();
-		Long entityId = freeformOwner.getEntityId();
-		if (ActivityEntity.LEXEME.equals(entity)) {
-			return permissionDbService.isGrantedForLexeme(userId, crudRole, entityId, AUTH_ITEM_DATASET, AUTH_OPS_CRUD);
-		} else if (ActivityEntity.MEANING.equals(entity)) {
-			return permissionDbService.isGrantedForMeaning(userId, crudRole, entityId, AUTH_ITEM_DATASET, AUTH_OPS_CRUD);
-		} else if (ActivityEntity.DEFINITION.equals(entity)) {
-			return permissionDbService.isGrantedForDefinition(userId, crudRole, entityId, AUTH_ITEM_DATASET, AUTH_OPS_CRUD);
+		if (StringUtils.equals(DEFINITION_SOURCE_LINK, sourceContentKey)) {
+			SourceLinkOwner sourceLinkOwner = sourceLinkDbService.getDefinitionSourceLinkOwner(sourceLinkId);
+			Long definitionId = sourceLinkOwner.getOwnerId();
+			Long sourceId = sourceLinkOwner.getSourceId();
+			boolean isSourceCrudGranted = isSourceCrudGranted(authentication, crudRoleDataset, sourceId);
+			if (!isSourceCrudGranted) {
+				return false;
+			}
+			return permissionDbService.isGrantedForDefinition(userId, crudRole, definitionId, AUTH_ITEM_DATASET, AUTH_OPS_CRUD);
+		} else if (StringUtils.equals(DEFINITION_NOTE_SOURCE_LINK, sourceContentKey)) {
+			SourceLinkOwner sourceLinkOwner = sourceLinkDbService.getDefinitionNoteSourceLinkOwner(sourceLinkId);
+			Long definitionNoteId = sourceLinkOwner.getOwnerId();
+			Long sourceId = sourceLinkOwner.getSourceId();
+			boolean isSourceCrudGranted = isSourceCrudGranted(authentication, crudRoleDataset, sourceId);
+			if (!isSourceCrudGranted) {
+				return false;
+			}
+			return permissionDbService.isGrantedForDefinitionNote(userId, crudRole, definitionNoteId, AUTH_ITEM_DATASET, AUTH_OPS_CRUD);
+		} else if (StringUtils.equals(LEXEME_SOURCE_LINK, sourceContentKey)) {
+			SourceLinkOwner sourceLinkOwner = sourceLinkDbService.getLexemeSourceLinkOwner(sourceLinkId);
+			Long lexemeId = sourceLinkOwner.getOwnerId();
+			Long sourceId = sourceLinkOwner.getSourceId();
+			boolean isSourceCrudGranted = isSourceCrudGranted(authentication, crudRoleDataset, sourceId);
+			if (!isSourceCrudGranted) {
+				return false;
+			}
+			return permissionDbService.isGrantedForLexeme(userId, crudRole, lexemeId, AUTH_ITEM_DATASET, AUTH_OPS_CRUD);
+		} else if (StringUtils.equals(LEXEME_NOTE_SOURCE_LINK, sourceContentKey)) {
+			SourceLinkOwner sourceLinkOwner = sourceLinkDbService.getLexemeNoteSourceLinkOwner(sourceLinkId);
+			Long lexemeNoteId = sourceLinkOwner.getOwnerId();
+			Long sourceId = sourceLinkOwner.getSourceId();
+			boolean isSourceCrudGranted = isSourceCrudGranted(authentication, crudRoleDataset, sourceId);
+			if (!isSourceCrudGranted) {
+				return false;
+			}
+			return permissionDbService.isGrantedForLexemeNote(userId, crudRole, lexemeNoteId, AUTH_ITEM_DATASET, AUTH_OPS_CRUD);
+		} else if (StringUtils.equals(USAGE_SOURCE_LINK, sourceContentKey)) {
+			SourceLinkOwner sourceLinkOwner = sourceLinkDbService.getUsageSourceLinkOwner(sourceLinkId);
+			Long usageId = sourceLinkOwner.getOwnerId();
+			Long sourceId = sourceLinkOwner.getSourceId();
+			boolean isSourceCrudGranted = isSourceCrudGranted(authentication, crudRoleDataset, sourceId);
+			if (!isSourceCrudGranted) {
+				return false;
+			}
+			return permissionDbService.isGrantedForUsage(userId, crudRole, usageId, AUTH_ITEM_DATASET, AUTH_OPS_CRUD);
+		} else if (StringUtils.equals(MEANING_IMAGE_SOURCE_LINK, sourceContentKey)) {
+			SourceLinkOwner sourceLinkOwner = sourceLinkDbService.getMeaningImageSourceLinkOwner(sourceLinkId);
+			Long meaningImageId = sourceLinkOwner.getOwnerId();
+			Long sourceId = sourceLinkOwner.getSourceId();
+			boolean isSourceCrudGranted = isSourceCrudGranted(authentication, crudRoleDataset, sourceId);
+			if (!isSourceCrudGranted) {
+				return false;
+			}
+			Long meaningId = activityLogDbService.getMeaningImageOwnerId(meaningImageId);
+			return permissionDbService.isGrantedForMeaning(userId, crudRole, meaningId, AUTH_ITEM_DATASET, AUTH_OPS_CRUD);
+		} else if (StringUtils.equals(MEANING_NOTE_SOURCE_LINK, sourceContentKey)) {
+			SourceLinkOwner sourceLinkOwner = sourceLinkDbService.getMeaningNoteSourceLinkOwner(sourceLinkId);
+			Long meaningNoteId = sourceLinkOwner.getOwnerId();
+			Long sourceId = sourceLinkOwner.getSourceId();
+			boolean isSourceCrudGranted = isSourceCrudGranted(authentication, crudRoleDataset, sourceId);
+			if (!isSourceCrudGranted) {
+				return false;
+			}
+			Long meaningId = activityLogDbService.getMeaningNoteOwnerId(meaningNoteId);
+			return permissionDbService.isGrantedForMeaning(userId, crudRole, meaningId, AUTH_ITEM_DATASET, AUTH_OPS_CRUD);
 		}
 		return false;
 	}

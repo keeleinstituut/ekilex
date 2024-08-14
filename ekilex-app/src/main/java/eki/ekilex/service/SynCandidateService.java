@@ -14,21 +14,17 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.stereotype.Component;
 
-import eki.common.constant.ActivityEntity;
 import eki.common.constant.ActivityOwner;
 import eki.common.constant.Complexity;
-import eki.common.constant.ReferenceType;
 import eki.ekilex.constant.ResponseStatus;
-import eki.ekilex.data.ActivityLogData;
 import eki.ekilex.data.Response;
+import eki.ekilex.data.SourceLink;
 import eki.ekilex.data.Word;
 import eki.ekilex.data.WordLexemeMeaningIdTuple;
-import eki.ekilex.data.api.SourceLink;
 import eki.ekilex.data.api.SynCandidacy;
 import eki.ekilex.data.api.SynCandidateWord;
 import eki.ekilex.data.api.TextWithSource;
 import eki.ekilex.service.db.LookupDbService;
-import eki.ekilex.service.db.SourceLinkDbService;
 import eki.ekilex.service.db.SynSearchDbService;
 
 @Component
@@ -40,9 +36,6 @@ public class SynCandidateService extends AbstractCudService {
 
 	@Autowired
 	private LookupDbService lookupDbService;
-
-	@Autowired
-	private SourceLinkDbService sourceLinkDbService;
 
 	@Autowired
 	private SynSearchDbService synSearchDbService;
@@ -123,8 +116,7 @@ public class SynCandidateService extends AbstractCudService {
 				Long usageId = createUsage(synCandidateLexemeId, usageValue, synCandidateWordLang, Complexity.DETAIL, PUBLICITY_PRIVATE, roleDatasetCode, MANUAL_EVENT_ON_UPDATE_DISABLED);
 				if (CollectionUtils.isNotEmpty(usageSourceLinks)) {
 					for (SourceLink usageSourceLink : usageSourceLinks) {
-						Long sourceId = usageSourceLink.getSourceId();
-						createUsageSourceLink(usageId, sourceId, synCandidateLexemeId, roleDatasetCode);
+						createUsageSourceLink(synCandidateLexemeId, usageId, usageSourceLink, roleDatasetCode, MANUAL_EVENT_ON_UPDATE_DISABLED);
 					}
 				}
 			}
@@ -138,8 +130,7 @@ public class SynCandidateService extends AbstractCudService {
 						DEFINITION_TYPE_CODE_UNDEFINED, PUBLICITY_PRIVATE, roleDatasetCode, MANUAL_EVENT_ON_UPDATE_DISABLED);
 				if (CollectionUtils.isNotEmpty(definitionSourceLinks)) {
 					for (SourceLink definitionSourceLink : definitionSourceLinks) {
-						Long sourceId = definitionSourceLink.getSourceId();
-						createDefinitionSourceLink(definitionId, sourceId, synCandidateMeaningId, roleDatasetCode);
+						createDefinitionSourceLink(synCandidateMeaningId, definitionId, definitionSourceLink, roleDatasetCode, MANUAL_EVENT_ON_UPDATE_DISABLED);
 					}
 				}
 			}
@@ -177,6 +168,7 @@ public class SynCandidateService extends AbstractCudService {
 		cudDbService.createWordRelationParam(createdRelationId, WORD_RELATION_PARAM_NAME_SYN_CANDIDATE, weight);
 	}
 
+	/*
 	private void createUsageSourceLink(Long usageId, Long sourceId, Long lexemeId, String roleDatasetCode) throws Exception {
 
 		ActivityLogData activityLog = activityLogService.prepareActivityLog("createUsageSourceLink", lexemeId, ActivityOwner.LEXEME, roleDatasetCode, MANUAL_EVENT_ON_UPDATE_DISABLED);
@@ -194,4 +186,5 @@ public class SynCandidateService extends AbstractCudService {
 		Long sourceLinkId = sourceLinkDbService.createDefinitionSourceLink(definitionId, sourceId, refType, sourceLinkName);
 		activityLogService.createActivityLog(activityLog, sourceLinkId, ActivityEntity.DEFINITION_SOURCE_LINK);
 	}
+	*/
 }

@@ -24,14 +24,12 @@ import eki.ekilex.constant.SearchResultMode;
 import eki.ekilex.data.Classifier;
 import eki.ekilex.data.ClassifierSelect;
 import eki.ekilex.data.DatasetPermission;
-import eki.ekilex.data.DefSourceAndNoteSourceTuple;
 import eki.ekilex.data.Definition;
 import eki.ekilex.data.DefinitionLangGroup;
 import eki.ekilex.data.DefinitionNote;
 import eki.ekilex.data.EkiUser;
 import eki.ekilex.data.EkiUserProfile;
 import eki.ekilex.data.FreeForm;
-import eki.ekilex.data.ImageSourceTuple;
 import eki.ekilex.data.Lexeme;
 import eki.ekilex.data.LexemeLangGroup;
 import eki.ekilex.data.LexemeNote;
@@ -43,7 +41,6 @@ import eki.ekilex.data.MeaningNote;
 import eki.ekilex.data.MeaningRelation;
 import eki.ekilex.data.Media;
 import eki.ekilex.data.NoteLangGroup;
-import eki.ekilex.data.NoteSourceTuple;
 import eki.ekilex.data.OrderedClassifier;
 import eki.ekilex.data.SearchDatasetsRestriction;
 import eki.ekilex.data.SearchFilter;
@@ -52,7 +49,6 @@ import eki.ekilex.data.Tag;
 import eki.ekilex.data.TermMeaning;
 import eki.ekilex.data.TermSearchResult;
 import eki.ekilex.data.Usage;
-import eki.ekilex.data.UsageTranslationDefinitionTuple;
 import eki.ekilex.data.Word;
 import eki.ekilex.data.WordForum;
 import eki.ekilex.service.db.TermSearchDbService;
@@ -221,8 +217,7 @@ public class TermSearchService extends AbstractSearchService {
 			Tag activeTag) throws Exception {
 
 		final String[] excludeMeaningAttributeTypes = new String[] {FreeformType.LEARNER_COMMENT.name(), FreeformType.NOTE.name(), FreeformType.SEMANTIC_TYPE.name()};
-		final String[] excludeLexemeAttributeTypes = new String[] {FreeformType.GOVERNMENT.name(), FreeformType.GRAMMAR.name(), FreeformType.USAGE.name(),
-				FreeformType.NOTE.name()};
+		final String[] excludeLexemeAttributeTypes = new String[] {FreeformType.GOVERNMENT.name(), FreeformType.GRAMMAR.name(), FreeformType.USAGE.name(), FreeformType.NOTE.name()};
 
 		Long userId = user.getId();
 		DatasetPermission userRole = user.getRecentRole();
@@ -236,8 +231,6 @@ public class TermSearchService extends AbstractSearchService {
 
 		permCalculator.applyCrud(user, meaning);
 		List<Definition> definitions = composeDefinitions(user, meaningId);
-		List<DefSourceAndNoteSourceTuple> definitionsDataTuples = commonDataDbService.getMeaningDefSourceAndNoteSourceTuples(meaningId);
-		conversionUtil.composeMeaningDefinitions(definitions, definitionsDataTuples);
 		for (Definition definition : definitions) {
 			List<DefinitionNote> definitionNotes = definition.getNotes();
 			permCalculator.filterVisibility(user, definitionNotes);
@@ -246,13 +239,11 @@ public class TermSearchService extends AbstractSearchService {
 		List<OrderedClassifier> domains = commonDataDbService.getMeaningDomains(meaningId, CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
 		List<Classifier> semanticTypes = commonDataDbService.getMeaningSemanticTypes(meaningId, CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
 		List<FreeForm> meaningFreeforms = commonDataDbService.getMeaningFreeforms(meaningId, excludeMeaningAttributeTypes);
-		List<ImageSourceTuple> imageSourceTuples = commonDataDbService.getMeaningImageSourceTuples(meaningId);
-		List<Media> images = conversionUtil.composeMeaningImages(imageSourceTuples);
+		List<Media> images = commonDataDbService.getMeaningImagesAsMedia(meaningId);
 		List<Media> medias = commonDataDbService.getMeaningMedias(meaningId);
 		List<MeaningForum> meaningForums = commonDataDbService.getMeaningForums(meaningId);
 		permCalculator.applyCrud(user, meaningForums);
-		List<NoteSourceTuple> meaningNoteSourceTuples = commonDataDbService.getMeaningNoteSourceTuples(meaningId);
-		List<MeaningNote> meaningNotes = conversionUtil.composeNotes(MeaningNote.class, meaningId, meaningNoteSourceTuples);
+		List<MeaningNote> meaningNotes = commonDataDbService.getMeaningNotes(meaningId);
 		permCalculator.filterVisibility(user, meaningNotes);
 		List<NoteLangGroup> meaningNoteLangGroups = conversionUtil.composeNoteLangGroups(meaningNotes, languagesOrder);
 		List<String> meaningWordPreferredOrderDatasetCodes = new ArrayList<>(selectedDatasetCodes);
@@ -273,8 +264,7 @@ public class TermSearchService extends AbstractSearchService {
 			List<FreeForm> odWordRecommendations = commonDataDbService.getOdWordRecommendations(wordId);
 			List<FreeForm> lexemeFreeforms = commonDataDbService.getLexemeFreeforms(lexemeId, excludeLexemeAttributeTypes);
 			List<Usage> usages = composeUsages(user, lexemeId);
-			List<NoteSourceTuple> lexemeNoteSourceTuples = commonDataDbService.getLexemeNoteSourceTuples(lexemeId);
-			List<LexemeNote> lexemeNotes = conversionUtil.composeNotes(LexemeNote.class, lexemeId, lexemeNoteSourceTuples);
+			List<LexemeNote> lexemeNotes = commonDataDbService.getLexemeNotes(lexemeId);
 			permCalculator.filterVisibility(user, lexemeNotes);
 			List<NoteLangGroup> lexemeNoteLangGroups = conversionUtil.composeNoteLangGroups(lexemeNotes, languagesOrder);
 			List<FreeForm> lexemeGrammars = commonDataDbService.getLexemeGrammars(lexemeId);
@@ -334,7 +324,7 @@ public class TermSearchService extends AbstractSearchService {
 
 	@Transactional
 	public String getMeaningFirstWordValue(Long meaningId, List<String> datasets) {
-	
+
 		SearchDatasetsRestriction searchDatasetsRestriction = composeDatasetsRestriction(datasets);
 		return termSearchDbService.getMeaningFirstWordValue(meaningId, searchDatasetsRestriction);
 	}
@@ -362,9 +352,7 @@ public class TermSearchService extends AbstractSearchService {
 
 	private List<Usage> composeUsages(EkiUser user, Long lexemeId) {
 
-		List<UsageTranslationDefinitionTuple> usageTranslationDefinitionTuples =
-				commonDataDbService.getLexemeUsageTranslationDefinitionTuples(lexemeId, CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
-		List<Usage> usages = conversionUtil.composeUsages(usageTranslationDefinitionTuples);
+		List<Usage> usages = commonDataDbService.getUsages(lexemeId);
 		permCalculator.applyCrud(user, usages);
 		permCalculator.filterVisibility(user, usages);
 		return usages;

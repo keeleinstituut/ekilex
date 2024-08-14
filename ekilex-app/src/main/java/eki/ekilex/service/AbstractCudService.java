@@ -1,5 +1,6 @@
 package eki.ekilex.service;
 
+import java.sql.Timestamp;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -12,24 +13,35 @@ import org.springframework.beans.factory.annotation.Autowired;
 import eki.common.constant.ActivityEntity;
 import eki.common.constant.ActivityOwner;
 import eki.common.constant.Complexity;
-import eki.common.constant.FreeformType;
+import eki.common.constant.ReferenceType;
 import eki.common.constant.WordRelationGroupType;
 import eki.common.service.TextDecorationService;
+import eki.ekilex.data.AbstractCreateUpdateEntity;
 import eki.ekilex.data.ActivityLogData;
 import eki.ekilex.data.FreeForm;
+import eki.ekilex.data.Note;
+import eki.ekilex.data.SourceLink;
+import eki.ekilex.data.Usage;
+import eki.ekilex.data.ValueAndPrese;
 import eki.ekilex.data.WordLexemeMeaningIdTuple;
 import eki.ekilex.data.WordRelation;
 import eki.ekilex.service.db.CudDbService;
 import eki.ekilex.service.db.LookupDbService;
+import eki.ekilex.service.db.SourceLinkDbService;
 import eki.ekilex.service.db.TagDbService;
 
 public abstract class AbstractCudService extends AbstractService {
+
+	protected static final ReferenceType DEFAULT_SOURCE_LINK_REF_TYPE = ReferenceType.ANY;
 
 	@Autowired
 	protected TextDecorationService textDecorationService;
 
 	@Autowired
 	protected CudDbService cudDbService;
+
+	@Autowired
+	protected SourceLinkDbService sourceLinkDbService;
 
 	@Autowired
 	protected LookupDbService lookupDbService;
@@ -78,14 +90,23 @@ public abstract class AbstractCudService extends AbstractService {
 	@Transactional
 	public Long createUsage(Long lexemeId, String valuePrese, String lang, Complexity complexity, boolean isPublic, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
 
-		FreeForm freeform = new FreeForm();
-		freeform.setType(FreeformType.USAGE);
-		freeform.setLang(lang);
-		freeform.setComplexity(complexity);
-		freeform.setPublic(isPublic);
-		setFreeformValueTextAndValuePrese(freeform, valuePrese);
+		Usage usage = new Usage();
+		usage.setValuePrese(valuePrese);
+		usage.setLang(lang);
+		usage.setComplexity(complexity);
+		usage.setPublic(isPublic);
 
-		Long usageId = createLexemeFreeform(ActivityEntity.USAGE, lexemeId, freeform, roleDatasetCode, isManualEventOnUpdateEnabled);
+		return createUsage(lexemeId, usage, roleDatasetCode, isManualEventOnUpdateEnabled);
+	}
+
+	@Transactional
+	public Long createUsage(Long lexemeId, Usage usage, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
+
+		setValueAndPrese(usage);
+		applyCreateUpdate(usage);
+		ActivityLogData activityLog = activityLogService.prepareActivityLog("createUsage", lexemeId, ActivityOwner.LEXEME, roleDatasetCode, isManualEventOnUpdateEnabled);
+		Long usageId = cudDbService.createUsage(lexemeId, usage);
+		activityLogService.createActivityLog(activityLog, usageId, ActivityEntity.USAGE);
 		return usageId;
 	}
 
@@ -119,6 +140,104 @@ public abstract class AbstractCudService extends AbstractService {
 				activityLogService.createActivityLog(activityLog, oppositeRelationId, ActivityEntity.WORD_RELATION);
 			}
 		}
+	}
+
+	protected Long createUsageSourceLink(Long lexemeId, Long usageId, SourceLink sourceLink, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
+
+		ActivityLogData activityLog = activityLogService.prepareActivityLog("createUsageSourceLink", lexemeId, ActivityOwner.LEXEME, roleDatasetCode, isManualEventOnUpdateEnabled);
+		Long sourceLinkId = sourceLinkDbService.createUsageSourceLink(lexemeId, sourceLink);
+		activityLogService.createActivityLog(activityLog, sourceLinkId, ActivityEntity.USAGE_SOURCE_LINK);
+		return sourceLinkId;
+	}
+
+	protected void updateUsageSourceLink(Long lexemeId, Long sourceLinkId, String sourceLinkName, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
+
+		ActivityLogData activityLog = activityLogService.prepareActivityLog("updateUsageSourceLink", lexemeId, ActivityOwner.LEXEME, roleDatasetCode, isManualEventOnUpdateEnabled);
+		sourceLinkDbService.updateUsageSourceLink(sourceLinkId, sourceLinkName);
+		activityLogService.createActivityLog(activityLog, sourceLinkId, ActivityEntity.USAGE_SOURCE_LINK);
+	}
+
+	protected Long createLexemeNoteSourceLink(Long lexemeId, Long lexemeNoteId, SourceLink sourceLink, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
+
+		ActivityLogData activityLog = activityLogService.prepareActivityLog("createLexemeNoteSourceLink", lexemeId, ActivityOwner.LEXEME, roleDatasetCode, isManualEventOnUpdateEnabled);
+		Long sourceLinkId = sourceLinkDbService.createLexemeNoteSourceLink(lexemeNoteId, sourceLink);
+		activityLogService.createActivityLog(activityLog, sourceLinkId, ActivityEntity.LEXEME_NOTE_SOURCE_LINK);
+		return sourceLinkId;
+	}
+
+	protected void updateLexemeNoteSourceLink(Long lexemeId, Long sourceLinkId, String sourceLinkName, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
+
+		ActivityLogData activityLog = activityLogService.prepareActivityLog("updateLexemeNoteSourceLink", lexemeId, ActivityOwner.LEXEME, roleDatasetCode, isManualEventOnUpdateEnabled);
+		sourceLinkDbService.updateLexemeNoteSourceLink(sourceLinkId, sourceLinkName);
+		activityLogService.createActivityLog(activityLog, sourceLinkId, ActivityEntity.LEXEME_NOTE_SOURCE_LINK);
+	}
+
+	protected Long createMeaningNoteSourceLink(Long meaningId, Long meaningNoteId, SourceLink sourceLink, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
+
+		ActivityLogData activityLog = activityLogService.prepareActivityLog("createMeaningNoteSourceLink", meaningId, ActivityOwner.MEANING, roleDatasetCode, isManualEventOnUpdateEnabled);
+		Long sourceLinkId = sourceLinkDbService.createMeaningNoteSourceLink(meaningNoteId, sourceLink);
+		activityLogService.createActivityLog(activityLog, sourceLinkId, ActivityEntity.MEANING_NOTE_SOURCE_LINK);
+		return sourceLinkId;
+	}
+
+	protected void updateMeaningNoteSourceLink(Long meaningId, Long sourceLinkId, String sourceLinkName, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
+
+		ActivityLogData activityLog = activityLogService.prepareActivityLog("updateMeaningNoteSourceLink", meaningId, ActivityOwner.MEANING, roleDatasetCode, isManualEventOnUpdateEnabled);
+		sourceLinkDbService.updateMeaningNoteSourceLink(sourceLinkId, sourceLinkName);
+		activityLogService.createActivityLog(activityLog, sourceLinkId, ActivityEntity.MEANING_NOTE_SOURCE_LINK);
+	}
+
+	protected void createDefinitionSourceLink(Long meaningId, Long definitionId, SourceLink sourceLink, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
+
+		ActivityLogData activityLog = activityLogService.prepareActivityLog("createDefinitionSourceLink", meaningId, ActivityOwner.MEANING, roleDatasetCode, isManualEventOnUpdateEnabled);
+		Long sourceLinkId = sourceLinkDbService.createDefinitionSourceLink(definitionId, sourceLink);
+		activityLogService.createActivityLog(activityLog, sourceLinkId, ActivityEntity.DEFINITION_SOURCE_LINK);
+	}
+
+	protected void updateDefinitionSourceLink(Long meaningId, Long sourceLinkId, String sourceLinkName, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
+
+		ActivityLogData activityLog = activityLogService.prepareActivityLog("updateDefinitionSourceLink", meaningId, ActivityOwner.MEANING, roleDatasetCode, isManualEventOnUpdateEnabled);
+		sourceLinkDbService.updateDefinitionSourceLink(sourceLinkId, sourceLinkName);
+		activityLogService.createActivityLog(activityLog, sourceLinkId, ActivityEntity.DEFINITION_SOURCE_LINK);
+	}
+
+	protected Note initNote(String valuePrese, String lang, Complexity complexity, boolean isPublic) {
+
+		Note note = new Note();
+		note.setValuePrese(valuePrese);
+		note.setLang(lang);
+		note.setComplexity(complexity);
+		note.setPublic(isPublic);
+
+		setValueAndPrese(note);
+
+		return note;
+	}
+
+	protected void applyCreateUpdate(AbstractCreateUpdateEntity entity) {
+
+		String userName = userContext.getUserName();
+		Timestamp now = new Timestamp(System.currentTimeMillis());
+		entity.setCreatedBy(userName);
+		entity.setCreatedOn(now);
+		entity.setModifiedBy(userName);
+		entity.setModifiedOn(now);
+	}
+
+	protected void applyUpdate(AbstractCreateUpdateEntity entity) {
+
+		String userName = userContext.getUserName();
+		Timestamp now = new Timestamp(System.currentTimeMillis());
+		entity.setModifiedBy(userName);
+		entity.setModifiedOn(now);
+	}
+
+	public void setValueAndPrese(ValueAndPrese note) {
+
+		String valuePrese = StringUtils.trim(note.getValuePrese());
+		String value = textDecorationService.removeEkiElementMarkup(valuePrese);
+		note.setValue(value);
+		note.setValuePrese(valuePrese);
 	}
 
 	protected Long createLexemeFreeform(ActivityEntity activityEntity, Long lexemeId, FreeForm freeform, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {

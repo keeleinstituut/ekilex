@@ -3,6 +3,8 @@ package eki.ekilex.service.db.util;
 import static eki.ekilex.data.db.Tables.ACTIVITY_LOG;
 import static eki.ekilex.data.db.Tables.DATASET;
 import static eki.ekilex.data.db.Tables.DEFINITION_FREEFORM;
+import static eki.ekilex.data.db.Tables.DEFINITION_NOTE;
+import static eki.ekilex.data.db.Tables.DEFINITION_NOTE_SOURCE_LINK;
 import static eki.ekilex.data.db.Tables.DEFINITION_SOURCE_LINK;
 import static eki.ekilex.data.db.Tables.FORM_FREQ;
 import static eki.ekilex.data.db.Tables.FREEFORM;
@@ -11,6 +13,8 @@ import static eki.ekilex.data.db.Tables.FREQ_CORP;
 import static eki.ekilex.data.db.Tables.LEXEME;
 import static eki.ekilex.data.db.Tables.LEXEME_ACTIVITY_LOG;
 import static eki.ekilex.data.db.Tables.LEXEME_FREEFORM;
+import static eki.ekilex.data.db.Tables.LEXEME_NOTE;
+import static eki.ekilex.data.db.Tables.LEXEME_NOTE_SOURCE_LINK;
 import static eki.ekilex.data.db.Tables.LEXEME_POS;
 import static eki.ekilex.data.db.Tables.LEXEME_REGISTER;
 import static eki.ekilex.data.db.Tables.LEXEME_SOURCE_LINK;
@@ -18,6 +22,8 @@ import static eki.ekilex.data.db.Tables.LEXEME_TAG;
 import static eki.ekilex.data.db.Tables.MEANING_DOMAIN;
 import static eki.ekilex.data.db.Tables.MEANING_FORUM;
 import static eki.ekilex.data.db.Tables.MEANING_FREEFORM;
+import static eki.ekilex.data.db.Tables.MEANING_NOTE;
+import static eki.ekilex.data.db.Tables.MEANING_NOTE_SOURCE_LINK;
 import static eki.ekilex.data.db.Tables.MEANING_RELATION;
 import static eki.ekilex.data.db.Tables.MEANING_SEMANTIC_TYPE;
 import static eki.ekilex.data.db.Tables.MEANING_TAG;
@@ -71,6 +77,8 @@ import eki.ekilex.data.SearchCriterion;
 import eki.ekilex.data.SearchDatasetsRestriction;
 import eki.ekilex.data.db.tables.ActivityLog;
 import eki.ekilex.data.db.tables.DefinitionFreeform;
+import eki.ekilex.data.db.tables.DefinitionNote;
+import eki.ekilex.data.db.tables.DefinitionNoteSourceLink;
 import eki.ekilex.data.db.tables.DefinitionSourceLink;
 import eki.ekilex.data.db.tables.FormFreq;
 import eki.ekilex.data.db.tables.Freeform;
@@ -79,6 +87,8 @@ import eki.ekilex.data.db.tables.FreqCorp;
 import eki.ekilex.data.db.tables.Lexeme;
 import eki.ekilex.data.db.tables.LexemeActivityLog;
 import eki.ekilex.data.db.tables.LexemeFreeform;
+import eki.ekilex.data.db.tables.LexemeNote;
+import eki.ekilex.data.db.tables.LexemeNoteSourceLink;
 import eki.ekilex.data.db.tables.LexemePos;
 import eki.ekilex.data.db.tables.LexemeRegister;
 import eki.ekilex.data.db.tables.LexemeSourceLink;
@@ -87,6 +97,8 @@ import eki.ekilex.data.db.tables.Meaning;
 import eki.ekilex.data.db.tables.MeaningDomain;
 import eki.ekilex.data.db.tables.MeaningForum;
 import eki.ekilex.data.db.tables.MeaningFreeform;
+import eki.ekilex.data.db.tables.MeaningNote;
+import eki.ekilex.data.db.tables.MeaningNoteSourceLink;
 import eki.ekilex.data.db.tables.MeaningRelation;
 import eki.ekilex.data.db.tables.MeaningSemanticType;
 import eki.ekilex.data.db.tables.MeaningTag;
@@ -1169,6 +1181,43 @@ public class SearchFilterHelper implements GlobalConstant, ActivityFunct {
 		return where;
 	}
 
+	public Condition applyLexemeNoteFilters(
+			List<SearchCriterion> searchCriteria,
+			Field<Long> lexemeIdField,
+			Condition where) throws Exception {
+
+		List<SearchCriterion> filteredCriteria = searchCriteria.stream()
+				.filter(c -> c.getSearchKey().equals(SearchKey.LEXEME_NOTE))
+				.collect(toList());
+
+		if (CollectionUtils.isEmpty(filteredCriteria)) {
+			return where;
+		}
+
+		List<SearchCriterion> existsCriteria = filteredCriteria.stream().filter(crit -> crit.getSearchOperand().equals(SearchOperand.EXISTS)).collect(toList());
+
+		LexemeNote ln = LEXEME_NOTE.as("ln");
+		Condition where1 = ln.LEXEME_ID.eq(lexemeIdField);
+
+		if (CollectionUtils.isEmpty(existsCriteria)) {
+			for (SearchCriterion criterion : filteredCriteria) {
+				if (criterion.getSearchValue() != null) {
+					String searchValueStr = criterion.getSearchValue().toString();
+					where1 = applyValueFilter(searchValueStr, criterion.isNot(), criterion.getSearchOperand(), ln.VALUE, where1, true);
+				}
+			}
+			where = where.and(DSL.exists(DSL.select(ln.ID).from(ln).where(where1)));
+		} else {
+			boolean isNot = existsCriteria.get(0).isNot();
+			Condition critWhere = DSL.exists(DSL.select(ln.ID).from(ln).where(where1));
+			if (isNot) {
+				critWhere = DSL.not(critWhere);
+			}
+			where = where.and(critWhere);
+		}
+		return where;
+	}
+
 	public Condition applyLexemeSourceRefFilter(List<SearchCriterion> searchCriteria, Field<Long> lexemeIdField, Condition where) throws Exception {
 
 		List<SearchCriterion> filteredCriteria = filterSourceRefCriteria(searchCriteria);
@@ -1217,6 +1266,110 @@ public class SearchFilterHelper implements GlobalConstant, ActivityFunct {
 			sourceCondition = applyValueFilter(searchValueStr, criterion.isNot(), criterion.getSearchOperand(), s.VALUE, sourceCondition, true);
 		}
 		where = where.and(DSL.exists(DSL.select(s.ID).from(lsl, s).where(sourceCondition)));
+		return where;
+	}
+
+	public Condition applyLexemeNoteSourceFilters(List<SearchCriterion> searchCriteria, Field<Long> lexemeNoteIdField, Condition where) throws Exception {
+
+		boolean containsSearchKeys = containsSearchKeys(searchCriteria, SearchKey.SOURCE_NAME, SearchKey.SOURCE_VALUE);
+		if (!containsSearchKeys) {
+			return where;
+		}
+
+		List<SearchCriterion> filteredByNameCriteria = filterCriteriaBySearchKey(searchCriteria, SearchKey.SOURCE_NAME);
+		List<SearchCriterion> filteredByValueCriteria = filterCriteriaBySearchKey(searchCriteria, SearchKey.SOURCE_VALUE);
+
+		LexemeNoteSourceLink lnsl = LEXEME_NOTE_SOURCE_LINK.as("lnsl");
+		Source s = Source.SOURCE.as("s");
+
+		Condition sourceCondition = lnsl.LEXEME_NOTE_ID.eq(lexemeNoteIdField).and(lnsl.SOURCE_ID.eq(s.ID));
+
+		for (SearchCriterion criterion : filteredByNameCriteria) {
+			String searchValueStr = criterion.getSearchValue().toString();
+			sourceCondition = applyValueFilter(searchValueStr, criterion.isNot(), criterion.getSearchOperand(), s.NAME, sourceCondition, true);
+		}
+		for (SearchCriterion criterion : filteredByValueCriteria) {
+			String searchValueStr = criterion.getSearchValue().toString();
+			sourceCondition = applyValueFilter(searchValueStr, criterion.isNot(), criterion.getSearchOperand(), s.VALUE, sourceCondition, true);
+		}
+		return where.and(DSL.exists(DSL.select(s.ID).from(lnsl, s).where(sourceCondition)));
+	}
+
+	public Condition applyLexemeNoteSourceRefFilter(List<SearchCriterion> searchCriteria, Field<Long> lexemeNoteIdField, Condition where) throws Exception {
+
+		List<SearchCriterion> filteredCriteria = filterSourceRefCriteria(searchCriteria);
+
+		if (CollectionUtils.isEmpty(filteredCriteria)) {
+			return where;
+		}
+
+		List<SearchCriterion> existsCriteria = filteredCriteria.stream()
+				.filter(crit -> crit.getSearchOperand().equals(SearchOperand.EXISTS))
+				.collect(toList());
+
+		LexemeNoteSourceLink lnsl = LEXEME_NOTE_SOURCE_LINK.as("lnsl");
+		Condition sourceCondition = lnsl.LEXEME_NOTE_ID.eq(lexemeNoteIdField);
+
+		if (CollectionUtils.isNotEmpty(existsCriteria)) {
+			boolean isNot = existsCriteria.get(0).isNot();
+			Condition critWhere = DSL.exists(DSL.select(lnsl.ID).from(lnsl).where(sourceCondition));
+			if (isNot) {
+				critWhere = DSL.not(critWhere);
+			}
+			where = where.and(critWhere);
+		}
+		return where;
+	}
+
+	public Condition applyMeaningNoteSourceFilters(List<SearchCriterion> searchCriteria, Field<Long> meaningNoteIdField, Condition where) throws Exception {
+
+		boolean containsSearchKeys = containsSearchKeys(searchCriteria, SearchKey.SOURCE_NAME, SearchKey.SOURCE_VALUE);
+		if (!containsSearchKeys) {
+			return where;
+		}
+
+		List<SearchCriterion> filteredByNameCriteria = filterCriteriaBySearchKey(searchCriteria, SearchKey.SOURCE_NAME);
+		List<SearchCriterion> filteredByValueCriteria = filterCriteriaBySearchKey(searchCriteria, SearchKey.SOURCE_VALUE);
+
+		MeaningNoteSourceLink mnsl = MEANING_NOTE_SOURCE_LINK.as("mnsl");
+		Source s = Source.SOURCE.as("s");
+
+		Condition sourceCondition = mnsl.MEANING_NOTE_ID.eq(meaningNoteIdField).and(mnsl.SOURCE_ID.eq(s.ID));
+
+		for (SearchCriterion criterion : filteredByNameCriteria) {
+			String searchValueStr = criterion.getSearchValue().toString();
+			sourceCondition = applyValueFilter(searchValueStr, criterion.isNot(), criterion.getSearchOperand(), s.NAME, sourceCondition, true);
+		}
+		for (SearchCriterion criterion : filteredByValueCriteria) {
+			String searchValueStr = criterion.getSearchValue().toString();
+			sourceCondition = applyValueFilter(searchValueStr, criterion.isNot(), criterion.getSearchOperand(), s.VALUE, sourceCondition, true);
+		}
+		return where.and(DSL.exists(DSL.select(s.ID).from(mnsl, s).where(sourceCondition)));
+	}
+
+	public Condition applyMeaningNoteSourceRefFilter(List<SearchCriterion> searchCriteria, Field<Long> meaningNoteIdField, Condition where) throws Exception {
+
+		List<SearchCriterion> filteredCriteria = filterSourceRefCriteria(searchCriteria);
+
+		if (CollectionUtils.isEmpty(filteredCriteria)) {
+			return where;
+		}
+
+		List<SearchCriterion> existsCriteria = filteredCriteria.stream()
+				.filter(crit -> crit.getSearchOperand().equals(SearchOperand.EXISTS))
+				.collect(toList());
+
+		MeaningNoteSourceLink mnsl = MEANING_NOTE_SOURCE_LINK.as("mnsl");
+		Condition sourceCondition = mnsl.MEANING_NOTE_ID.eq(meaningNoteIdField);
+
+		if (CollectionUtils.isNotEmpty(existsCriteria)) {
+			boolean isNot = existsCriteria.get(0).isNot();
+			Condition critWhere = DSL.exists(DSL.select(mnsl.ID).from(mnsl).where(sourceCondition));
+			if (isNot) {
+				critWhere = DSL.not(critWhere);
+			}
+			where = where.and(critWhere);
+		}
 		return where;
 	}
 
@@ -1363,6 +1516,43 @@ public class SearchFilterHelper implements GlobalConstant, ActivityFunct {
 			boolean isNot = criterion.isNot();
 			Condition cntWhere = createCountCondition(searchOperand, cntTbl, countFieldName);
 			Condition critWhere = DSL.exists(DSL.selectFrom(cntTbl).where(cntWhere));
+			if (isNot) {
+				critWhere = DSL.not(critWhere);
+			}
+			where = where.and(critWhere);
+		}
+		return where;
+	}
+
+	public Condition applyMeaningNoteFilters(
+			List<SearchCriterion> searchCriteria,
+			Field<Long> meaningIdField,
+			Condition where) throws Exception {
+
+		List<SearchCriterion> filteredCriteria = searchCriteria.stream()
+				.filter(c -> c.getSearchKey().equals(SearchKey.MEANING_NOTE))
+				.collect(toList());
+
+		if (CollectionUtils.isEmpty(filteredCriteria)) {
+			return where;
+		}
+
+		List<SearchCriterion> existsCriteria = filteredCriteria.stream().filter(crit -> crit.getSearchOperand().equals(SearchOperand.EXISTS)).collect(toList());
+
+		MeaningNote mn = MEANING_NOTE.as("mn");
+		Condition where1 = mn.MEANING_ID.eq(meaningIdField);
+
+		if (CollectionUtils.isEmpty(existsCriteria)) {
+			for (SearchCriterion criterion : filteredCriteria) {
+				if (criterion.getSearchValue() != null) {
+					String searchValueStr = criterion.getSearchValue().toString();
+					where1 = applyValueFilter(searchValueStr, criterion.isNot(), criterion.getSearchOperand(), mn.VALUE, where1, true);
+				}
+			}
+			where = where.and(DSL.exists(DSL.select(mn.ID).from(mn).where(where1)));
+		} else {
+			boolean isNot = existsCriteria.get(0).isNot();
+			Condition critWhere = DSL.exists(DSL.select(mn.ID).from(mn).where(where1));
 			if (isNot) {
 				critWhere = DSL.not(critWhere);
 			}
@@ -1588,7 +1778,9 @@ public class SearchFilterHelper implements GlobalConstant, ActivityFunct {
 			return where;
 		}
 
-		List<SearchCriterion> existsCriteria = filteredCriteria.stream().filter(crit -> crit.getSearchOperand().equals(SearchOperand.EXISTS)).collect(toList());
+		List<SearchCriterion> existsCriteria = filteredCriteria.stream()
+				.filter(crit -> crit.getSearchOperand().equals(SearchOperand.EXISTS))
+				.collect(toList());
 
 		FreeformSourceLink ffsl = FREEFORM_SOURCE_LINK.as("ffsl");
 		Condition sourceCondition = ffsl.FREEFORM_ID.eq(freeformIdField);
@@ -1680,6 +1872,58 @@ public class SearchFilterHelper implements GlobalConstant, ActivityFunct {
 		return where.and(DSL.exists(DSL.select(s.ID).from(dsl, s).where(sourceCondition)));
 	}
 
+	public Condition applyDefinitionNoteSourceFilters(List<SearchCriterion> searchCriteria, Field<Long> definitionNoteIdField, Condition where) throws Exception {
+
+		boolean containsSearchKeys = containsSearchKeys(searchCriteria, SearchKey.SOURCE_NAME, SearchKey.SOURCE_VALUE);
+		if (!containsSearchKeys) {
+			return where;
+		}
+
+		List<SearchCriterion> filteredByNameCriteria = filterCriteriaBySearchKey(searchCriteria, SearchKey.SOURCE_NAME);
+		List<SearchCriterion> filteredByValueCriteria = filterCriteriaBySearchKey(searchCriteria, SearchKey.SOURCE_VALUE);
+
+		DefinitionNoteSourceLink dnsl = DEFINITION_NOTE_SOURCE_LINK.as("dnsl");
+		Source s = Source.SOURCE.as("s");
+
+		Condition sourceCondition = dnsl.DEFINITION_NOTE_ID.eq(definitionNoteIdField).and(dnsl.SOURCE_ID.eq(s.ID));
+
+		for (SearchCriterion criterion : filteredByNameCriteria) {
+			String searchValueStr = criterion.getSearchValue().toString();
+			sourceCondition = applyValueFilter(searchValueStr, criterion.isNot(), criterion.getSearchOperand(), s.NAME, sourceCondition, true);
+		}
+		for (SearchCriterion criterion : filteredByValueCriteria) {
+			String searchValueStr = criterion.getSearchValue().toString();
+			sourceCondition = applyValueFilter(searchValueStr, criterion.isNot(), criterion.getSearchOperand(), s.VALUE, sourceCondition, true);
+		}
+		return where.and(DSL.exists(DSL.select(s.ID).from(dnsl, s).where(sourceCondition)));
+	}
+
+	public Condition applyDefinitionNoteSourceRefFilter(List<SearchCriterion> searchCriteria, Field<Long> definitionNoteIdField, Condition where) throws Exception {
+
+		List<SearchCriterion> filteredCriteria = filterSourceRefCriteria(searchCriteria);
+
+		if (CollectionUtils.isEmpty(filteredCriteria)) {
+			return where;
+		}
+
+		List<SearchCriterion> existsCriteria = filteredCriteria.stream()
+				.filter(crit -> crit.getSearchOperand().equals(SearchOperand.EXISTS))
+				.collect(toList());
+
+		DefinitionNoteSourceLink dnsl = DEFINITION_NOTE_SOURCE_LINK.as("dnsl");
+		Condition sourceCondition = dnsl.DEFINITION_NOTE_ID.eq(definitionNoteIdField);
+
+		if (CollectionUtils.isNotEmpty(existsCriteria)) {
+			boolean isNot = existsCriteria.get(0).isNot();
+			Condition critWhere = DSL.exists(DSL.select(dnsl.ID).from(dnsl).where(sourceCondition));
+			if (isNot) {
+				critWhere = DSL.not(critWhere);
+			}
+			where = where.and(critWhere);
+		}
+		return where;
+	}
+
 	public Condition applyDefinitionFreeformFilters(
 			SearchKey searchKey,
 			FreeformType freeformType,
@@ -1714,6 +1958,43 @@ public class SearchFilterHelper implements GlobalConstant, ActivityFunct {
 		} else {
 			boolean isNot = existsCriteria.get(0).isNot();
 			Condition critWhere = DSL.exists(DSL.select(dff.ID).from(dff, ff).where(where1));
+			if (isNot) {
+				critWhere = DSL.not(critWhere);
+			}
+			where = where.and(critWhere);
+		}
+		return where;
+	}
+
+	public Condition applyDefinitionNoteFilters(
+			List<SearchCriterion> searchCriteria,
+			Field<Long> definitionIdField,
+			Condition where) throws Exception {
+
+		List<SearchCriterion> filteredCriteria = searchCriteria.stream()
+				.filter(c -> c.getSearchKey().equals(SearchKey.DEFINITION_NOTE))
+				.collect(toList());
+
+		if (CollectionUtils.isEmpty(filteredCriteria)) {
+			return where;
+		}
+
+		List<SearchCriterion> existsCriteria = filteredCriteria.stream().filter(crit -> crit.getSearchOperand().equals(SearchOperand.EXISTS)).collect(toList());
+
+		DefinitionNote dn = DEFINITION_NOTE.as("dn");
+		Condition where1 = dn.DEFINITION_ID.eq(definitionIdField);
+
+		if (CollectionUtils.isEmpty(existsCriteria)) {
+			for (SearchCriterion criterion : filteredCriteria) {
+				if (criterion.getSearchValue() != null) {
+					String searchValueStr = criterion.getSearchValue().toString();
+					where1 = applyValueFilter(searchValueStr, criterion.isNot(), criterion.getSearchOperand(), dn.VALUE, where1, true);
+				}
+			}
+			where = where.and(DSL.exists(DSL.select(dn.ID).from(dn).where(where1)));
+		} else {
+			boolean isNot = existsCriteria.get(0).isNot();
+			Condition critWhere = DSL.exists(DSL.select(dn.ID).from(dn).where(where1));
 			if (isNot) {
 				critWhere = DSL.not(critWhere);
 			}

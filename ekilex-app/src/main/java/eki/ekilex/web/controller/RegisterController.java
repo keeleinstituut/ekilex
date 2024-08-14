@@ -129,7 +129,7 @@ public class RegisterController extends AbstractPublicPageController {
 			return REGISTER_PAGE;
 		} else {
 			String message = messageSource.getMessage("register.activation.success", new Object[0], locale);
-			attributes.addFlashAttribute("success_message", "Kasutaja on aktiveeritud, head kasutamist.");
+			attributes.addFlashAttribute("success_message", message);
 			attributes.addFlashAttribute("userEmail", ekiUser.getEmail());
 			return REDIRECT_PREF + LOGIN_PAGE_URI;
 		}

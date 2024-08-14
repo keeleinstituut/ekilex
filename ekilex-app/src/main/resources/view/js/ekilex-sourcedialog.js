@@ -9,7 +9,7 @@ $.fn.initAddSourcePlugin = function() {
 $.fn.editSourcePlugin = function() {
 	return this.each(function() {
 		const form = $(this);
-		const sourceId = form.find('[name=sourceId]').val();
+		const sourceId = form.find('[name=id]').val();
 		const editFld = form.find('[data-id="editFld"]');
 		const valueInput = form.find('[name=valuePrese]');
 		editFld.val(valueInput.val());
@@ -33,7 +33,7 @@ $.fn.editSourcePlugin = function() {
 			}).done(function (data) {
 				let dlg = form.parents('.modal');
 				dlg.modal('hide');
-				$(`#sourceSearchResult_${sourceId}`).replaceWith(data);
+				$("#sourceSearchResult_" + sourceId).replaceWith(data);
 				initDeleteConfirmations();
 				$wpm.bindObjects();
 			}).fail(function (data) {

@@ -4,7 +4,7 @@ import java.util.List;
 
 import eki.common.constant.Complexity;
 
-public class Usage extends AbstractPublicEntity {
+public class Usage extends AbstractCreateUpdateEntity implements ValueAndPrese {
 
 	private static final long serialVersionUID = 1L;
 
@@ -12,15 +12,13 @@ public class Usage extends AbstractPublicEntity {
 
 	private String value;
 
+	private String valuePrese;
+
 	private String lang;
 
 	private Complexity complexity;
 
 	private Long orderBy;
-
-	private String typeCode;
-
-	private String typeValue;
 
 	private List<UsageTranslation> translations;
 
@@ -42,6 +40,14 @@ public class Usage extends AbstractPublicEntity {
 
 	public void setValue(String value) {
 		this.value = value;
+	}
+
+	public String getValuePrese() {
+		return valuePrese;
+	}
+
+	public void setValuePrese(String valuePrese) {
+		this.valuePrese = valuePrese;
 	}
 
 	public String getLang() {
@@ -66,22 +72,6 @@ public class Usage extends AbstractPublicEntity {
 
 	public void setOrderBy(Long orderBy) {
 		this.orderBy = orderBy;
-	}
-
-	public String getTypeCode() {
-		return typeCode;
-	}
-
-	public void setTypeCode(String typeCode) {
-		this.typeCode = typeCode;
-	}
-
-	public String getTypeValue() {
-		return typeValue;
-	}
-
-	public void setTypeValue(String typeValue) {
-		this.typeValue = typeValue;
 	}
 
 	public List<UsageTranslation> getTranslations() {

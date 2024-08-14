@@ -4,13 +4,12 @@ import static eki.ekilex.data.db.Tables.DATASET;
 import static eki.ekilex.data.db.Tables.DEFINITION;
 import static eki.ekilex.data.db.Tables.DEFINITION_DATASET;
 import static eki.ekilex.data.db.Tables.DEFINITION_SOURCE_LINK;
-import static eki.ekilex.data.db.Tables.FREEFORM;
-import static eki.ekilex.data.db.Tables.FREEFORM_SOURCE_LINK;
 import static eki.ekilex.data.db.Tables.LEXEME;
-import static eki.ekilex.data.db.Tables.LEXEME_FREEFORM;
 import static eki.ekilex.data.db.Tables.LEXEME_POS;
 import static eki.ekilex.data.db.Tables.LEXEME_REGISTER;
 import static eki.ekilex.data.db.Tables.MEANING_RELATION;
+import static eki.ekilex.data.db.Tables.USAGE;
+import static eki.ekilex.data.db.Tables.USAGE_SOURCE_LINK;
 import static eki.ekilex.data.db.Tables.WORD;
 import static eki.ekilex.data.db.Tables.WORD_RELATION;
 import static eki.ekilex.data.db.Tables.WORD_RELATION_PARAM;
@@ -32,7 +31,6 @@ import org.jooq.impl.DSL;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import eki.common.constant.FreeformType;
 import eki.ekilex.data.SearchDatasetsRestriction;
 import eki.ekilex.data.SynRelation;
 import eki.ekilex.data.TypeWordRelParam;
@@ -41,22 +39,20 @@ import eki.ekilex.data.db.Routines;
 import eki.ekilex.data.db.tables.Dataset;
 import eki.ekilex.data.db.tables.Definition;
 import eki.ekilex.data.db.tables.DefinitionSourceLink;
-import eki.ekilex.data.db.tables.Freeform;
-import eki.ekilex.data.db.tables.FreeformSourceLink;
 import eki.ekilex.data.db.tables.Lexeme;
-import eki.ekilex.data.db.tables.LexemeFreeform;
 import eki.ekilex.data.db.tables.LexemePos;
 import eki.ekilex.data.db.tables.LexemeRegister;
+import eki.ekilex.data.db.tables.Usage;
+import eki.ekilex.data.db.tables.UsageSourceLink;
 import eki.ekilex.data.db.tables.Word;
 import eki.ekilex.data.db.tables.WordRelation;
 import eki.ekilex.data.db.tables.WordRelationParam;
 import eki.ekilex.data.db.tables.records.DefinitionRecord;
 import eki.ekilex.data.db.tables.records.DefinitionSourceLinkRecord;
-import eki.ekilex.data.db.tables.records.FreeformRecord;
-import eki.ekilex.data.db.tables.records.FreeformSourceLinkRecord;
-import eki.ekilex.data.db.tables.records.LexemeFreeformRecord;
 import eki.ekilex.data.db.tables.records.LexemePosRecord;
 import eki.ekilex.data.db.tables.records.LexemeRecord;
+import eki.ekilex.data.db.tables.records.UsageRecord;
+import eki.ekilex.data.db.tables.records.UsageSourceLinkRecord;
 import eki.ekilex.data.db.tables.records.WordRecord;
 import eki.ekilex.data.db.udt.records.TypeWordRelMeaningRecord;
 import eki.ekilex.data.db.udt.records.TypeWordRelParamRecord;
@@ -466,10 +462,9 @@ public class SynSearchDbService extends AbstractDataDbService {
 
 	public List<eki.ekilex.data.Definition> getInexactSynMeaningDefinitions(Long meaningId, String... langs) {
 
-		Condition wherePublic =
-				DEFINITION.LANG.in(langs)
-						.and(DEFINITION.IS_PUBLIC.eq(PUBLICITY_PUBLIC))
-						.and(DEFINITION.DEFINITION_TYPE_CODE.ne(DEFINITION_TYPE_CODE_INEXACT_SYN));
+		Condition wherePublic = DEFINITION.LANG.in(langs)
+				.and(DEFINITION.IS_PUBLIC.eq(PUBLICITY_PUBLIC))
+				.and(DEFINITION.DEFINITION_TYPE_CODE.ne(DEFINITION_TYPE_CODE_INEXACT_SYN));
 
 		Condition whereInexact = DEFINITION.DEFINITION_TYPE_CODE.eq(DEFINITION_TYPE_CODE_INEXACT_SYN);
 
@@ -528,13 +523,8 @@ public class SynSearchDbService extends AbstractDataDbService {
 
 	private Field<String[]> getUsagesField(Field<Long> lexemeIdField, boolean isPublicDataOnly) {
 
-		Freeform u = FREEFORM.as("u");
-		LexemeFreeform lff = LEXEME_FREEFORM.as("lff");
-
-		Condition where =
-				lff.LEXEME_ID.eq(lexemeIdField)
-						.and(lff.FREEFORM_ID.eq(u.ID))
-						.and(u.TYPE.eq(FreeformType.USAGE.name()));
+		Usage u = USAGE.as("u");
+		Condition where = u.LEXEME_ID.eq(lexemeIdField);
 
 		if (isPublicDataOnly) {
 			where = where.and(u.IS_PUBLIC.isTrue());
@@ -542,7 +532,7 @@ public class SynSearchDbService extends AbstractDataDbService {
 
 		Field<String[]> uf = DSL.field(DSL
 				.select(DSL.arrayAgg(u.VALUE_PRESE).orderBy(u.ORDER_BY))
-				.from(u, lff)
+				.from(u)
 				.where(where)
 				.groupBy(lexemeIdField));
 		return uf;
@@ -630,10 +620,9 @@ public class SynSearchDbService extends AbstractDataDbService {
 
 		LexemePos tgtpos = LEXEME_POS.as("tgtpos");
 		LexemePos srcpos = LEXEME_POS.as("srcpos");
-		Freeform tgtu = FREEFORM.as("tgtu");
-		Freeform srcu = FREEFORM.as("srcu");
-		LexemeFreeform lexff = LEXEME_FREEFORM.as("lexff");
-		FreeformSourceLink ffsl = FREEFORM_SOURCE_LINK.as("ffsl");
+		Usage srcu = USAGE.as("srcu");
+		Usage tgtu = USAGE.as("tgtu");
+		UsageSourceLink usl = USAGE_SOURCE_LINK.as("usl");
 
 		Result<LexemePosRecord> sourceLexemePoses = create
 				.selectFrom(srcpos)
@@ -649,56 +638,50 @@ public class SynSearchDbService extends AbstractDataDbService {
 				.fetch();
 
 		for (LexemePosRecord sourceLexemePos : sourceLexemePoses) {
+
 			LexemePosRecord targetLexemePos = sourceLexemePos.copy();
 			targetLexemePos.setLexemeId(targetLexemeId);
 			targetLexemePos.changed(LEXEME_POS.ORDER_BY, false);
 			targetLexemePos.store();
 		}
 
-		Result<FreeformRecord> sourceUsages = create
+		Result<UsageRecord> sourceUsages = create
 				.select(srcu.fields())
-				.from(srcu, lexff)
+				.from(srcu)
 				.where(
-						lexff.LEXEME_ID.eq(sourceLexemeId)
-								.and(lexff.FREEFORM_ID.eq(srcu.ID))
-								.and(srcu.TYPE.eq(FreeformType.USAGE.name()))
+						srcu.LEXEME_ID.eq(sourceLexemeId)
 								.andNotExists(DSL
 										.select(tgtu.ID)
-										.from(tgtu, lexff)
+										.from(tgtu)
 										.where(
-												lexff.LEXEME_ID.eq(targetLexemeId)
-														.and(lexff.FREEFORM_ID.eq(tgtu.ID))
-														.and(tgtu.TYPE.eq(FreeformType.USAGE.name()))
-														.and(tgtu.VALUE_TEXT.eq(srcu.VALUE_TEXT)))))
+												tgtu.LEXEME_ID.eq(targetLexemeId)
+														.and(tgtu.VALUE.eq(srcu.VALUE)))))
 				.orderBy(srcu.ID)
-				.fetchInto(FREEFORM);
+				.fetchInto(USAGE);
 
-		for (FreeformRecord sourceUsage : sourceUsages) {
+		for (UsageRecord sourceUsage : sourceUsages) {
+
 			Long sourceUsageId = sourceUsage.getId();
-			FreeformRecord targetUsage = sourceUsage.copy();
+			UsageRecord targetUsage = sourceUsage.copy();
 			targetUsage.setIsPublic(PUBLICITY_PRIVATE);
 			targetUsage.setComplexity(COMPLEXITY_ANY);
-			targetUsage.changed(FREEFORM.ORDER_BY, false);
+			targetUsage.changed(USAGE.ORDER_BY, false);
 			targetUsage.store();
 			Long targetUsageId = targetUsage.getId();
 
-			Result<FreeformSourceLinkRecord> sourceUsageSourceLinks = create
-					.selectFrom(ffsl)
-					.where(ffsl.FREEFORM_ID.eq(sourceUsageId))
-					.orderBy(ffsl.ORDER_BY)
+			Result<UsageSourceLinkRecord> sourceUsageSourceLinks = create
+					.selectFrom(usl)
+					.where(usl.USAGE_ID.eq(sourceUsageId))
+					.orderBy(usl.ORDER_BY)
 					.fetch();
 
-			for (FreeformSourceLinkRecord sourceUsageSourceLink : sourceUsageSourceLinks) {
-				FreeformSourceLinkRecord targetUsageSourceLink = sourceUsageSourceLink.copy();
-				targetUsageSourceLink.setFreeformId(targetUsageId);
-				targetUsageSourceLink.changed(FREEFORM_SOURCE_LINK.ORDER_BY, false);
+			for (UsageSourceLinkRecord sourceUsageSourceLink : sourceUsageSourceLinks) {
+
+				UsageSourceLinkRecord targetUsageSourceLink = sourceUsageSourceLink.copy();
+				targetUsageSourceLink.setUsageId(targetUsageId);
+				targetUsageSourceLink.changed(USAGE_SOURCE_LINK.ORDER_BY, false);
 				targetUsageSourceLink.store();
 			}
-
-			LexemeFreeformRecord targetLexemeFreeform = create.newRecord(lexff);
-			targetLexemeFreeform.setLexemeId(targetLexemeId);
-			targetLexemeFreeform.setFreeformId(targetUsageId);
-			targetLexemeFreeform.store();
 		}
 	}
 
@@ -722,6 +705,7 @@ public class SynSearchDbService extends AbstractDataDbService {
 				.fetch();
 
 		for (DefinitionRecord sourceDefinition : sourceDefinitions) {
+
 			Long sourceDefinitionId = sourceDefinition.getId();
 			DefinitionRecord synDefinition = sourceDefinition.copy();
 			synDefinition.setMeaningId(targetMeaningId);
@@ -743,6 +727,7 @@ public class SynSearchDbService extends AbstractDataDbService {
 					.fetch();
 
 			for (DefinitionSourceLinkRecord sourceDefinitionSourceLink : sourceDefinitionSourceLinks) {
+
 				DefinitionSourceLinkRecord synDefinitionSourceLink = sourceDefinitionSourceLink.copy();
 				synDefinitionSourceLink.setDefinitionId(synDefinitionId);
 				synDefinitionSourceLink.changed(DEFINITION_SOURCE_LINK.ORDER_BY, false);

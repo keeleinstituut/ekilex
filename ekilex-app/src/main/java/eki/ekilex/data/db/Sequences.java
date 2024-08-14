@@ -61,6 +61,26 @@ public class Sequences {
     public static final Sequence<Long> DEFINITION_ID_SEQ = Internal.createSequence("definition_id_seq", Public.PUBLIC, SQLDataType.BIGINT.nullable(false), null, null, null, null, false, null);
 
     /**
+     * The sequence <code>public.definition_note_id_seq</code>
+     */
+    public static final Sequence<Long> DEFINITION_NOTE_ID_SEQ = Internal.createSequence("definition_note_id_seq", Public.PUBLIC, SQLDataType.BIGINT.nullable(false), null, null, null, null, false, null);
+
+    /**
+     * The sequence <code>public.definition_note_order_by_seq</code>
+     */
+    public static final Sequence<Long> DEFINITION_NOTE_ORDER_BY_SEQ = Internal.createSequence("definition_note_order_by_seq", Public.PUBLIC, SQLDataType.BIGINT.nullable(false), null, null, null, null, false, null);
+
+    /**
+     * The sequence <code>public.definition_note_source_link_id_seq</code>
+     */
+    public static final Sequence<Long> DEFINITION_NOTE_SOURCE_LINK_ID_SEQ = Internal.createSequence("definition_note_source_link_id_seq", Public.PUBLIC, SQLDataType.BIGINT.nullable(false), null, null, null, null, false, null);
+
+    /**
+     * The sequence <code>public.definition_note_source_link_order_by_seq</code>
+     */
+    public static final Sequence<Long> DEFINITION_NOTE_SOURCE_LINK_ORDER_BY_SEQ = Internal.createSequence("definition_note_source_link_order_by_seq", Public.PUBLIC, SQLDataType.BIGINT.nullable(false), null, null, null, null, false, null);
+
+    /**
      * The sequence <code>public.definition_order_by_seq</code>
      */
     public static final Sequence<Long> DEFINITION_ORDER_BY_SEQ = Internal.createSequence("definition_order_by_seq", Public.PUBLIC, SQLDataType.BIGINT.nullable(false), null, null, null, null, false, null);
@@ -251,6 +271,26 @@ public class Sequences {
     public static final Sequence<Long> LEXEME_ID_SEQ = Internal.createSequence("lexeme_id_seq", Public.PUBLIC, SQLDataType.BIGINT.nullable(false), null, null, null, null, false, null);
 
     /**
+     * The sequence <code>public.lexeme_note_id_seq</code>
+     */
+    public static final Sequence<Long> LEXEME_NOTE_ID_SEQ = Internal.createSequence("lexeme_note_id_seq", Public.PUBLIC, SQLDataType.BIGINT.nullable(false), null, null, null, null, false, null);
+
+    /**
+     * The sequence <code>public.lexeme_note_order_by_seq</code>
+     */
+    public static final Sequence<Long> LEXEME_NOTE_ORDER_BY_SEQ = Internal.createSequence("lexeme_note_order_by_seq", Public.PUBLIC, SQLDataType.BIGINT.nullable(false), null, null, null, null, false, null);
+
+    /**
+     * The sequence <code>public.lexeme_note_source_link_id_seq</code>
+     */
+    public static final Sequence<Long> LEXEME_NOTE_SOURCE_LINK_ID_SEQ = Internal.createSequence("lexeme_note_source_link_id_seq", Public.PUBLIC, SQLDataType.BIGINT.nullable(false), null, null, null, null, false, null);
+
+    /**
+     * The sequence <code>public.lexeme_note_source_link_order_by_seq</code>
+     */
+    public static final Sequence<Long> LEXEME_NOTE_SOURCE_LINK_ORDER_BY_SEQ = Internal.createSequence("lexeme_note_source_link_order_by_seq", Public.PUBLIC, SQLDataType.BIGINT.nullable(false), null, null, null, null, false, null);
+
+    /**
      * The sequence <code>public.lexeme_order_by_seq</code>
      */
     public static final Sequence<Long> LEXEME_ORDER_BY_SEQ = Internal.createSequence("lexeme_order_by_seq", Public.PUBLIC, SQLDataType.BIGINT.nullable(false), null, null, null, null, false, null);
@@ -336,9 +376,49 @@ public class Sequences {
     public static final Sequence<Long> MEANING_ID_SEQ = Internal.createSequence("meaning_id_seq", Public.PUBLIC, SQLDataType.BIGINT.nullable(false), null, null, null, null, false, null);
 
     /**
+     * The sequence <code>public.meaning_image_id_seq</code>
+     */
+    public static final Sequence<Long> MEANING_IMAGE_ID_SEQ = Internal.createSequence("meaning_image_id_seq", Public.PUBLIC, SQLDataType.BIGINT.nullable(false), null, null, null, null, false, null);
+
+    /**
+     * The sequence <code>public.meaning_image_order_by_seq</code>
+     */
+    public static final Sequence<Long> MEANING_IMAGE_ORDER_BY_SEQ = Internal.createSequence("meaning_image_order_by_seq", Public.PUBLIC, SQLDataType.BIGINT.nullable(false), null, null, null, null, false, null);
+
+    /**
+     * The sequence <code>public.meaning_image_source_link_id_seq</code>
+     */
+    public static final Sequence<Long> MEANING_IMAGE_SOURCE_LINK_ID_SEQ = Internal.createSequence("meaning_image_source_link_id_seq", Public.PUBLIC, SQLDataType.BIGINT.nullable(false), null, null, null, null, false, null);
+
+    /**
+     * The sequence <code>public.meaning_image_source_link_order_by_seq</code>
+     */
+    public static final Sequence<Long> MEANING_IMAGE_SOURCE_LINK_ORDER_BY_SEQ = Internal.createSequence("meaning_image_source_link_order_by_seq", Public.PUBLIC, SQLDataType.BIGINT.nullable(false), null, null, null, null, false, null);
+
+    /**
      * The sequence <code>public.meaning_last_activity_log_id_seq</code>
      */
     public static final Sequence<Long> MEANING_LAST_ACTIVITY_LOG_ID_SEQ = Internal.createSequence("meaning_last_activity_log_id_seq", Public.PUBLIC, SQLDataType.BIGINT.nullable(false), null, null, null, null, false, null);
+
+    /**
+     * The sequence <code>public.meaning_note_id_seq</code>
+     */
+    public static final Sequence<Long> MEANING_NOTE_ID_SEQ = Internal.createSequence("meaning_note_id_seq", Public.PUBLIC, SQLDataType.BIGINT.nullable(false), null, null, null, null, false, null);
+
+    /**
+     * The sequence <code>public.meaning_note_order_by_seq</code>
+     */
+    public static final Sequence<Long> MEANING_NOTE_ORDER_BY_SEQ = Internal.createSequence("meaning_note_order_by_seq", Public.PUBLIC, SQLDataType.BIGINT.nullable(false), null, null, null, null, false, null);
+
+    /**
+     * The sequence <code>public.meaning_note_source_link_id_seq</code>
+     */
+    public static final Sequence<Long> MEANING_NOTE_SOURCE_LINK_ID_SEQ = Internal.createSequence("meaning_note_source_link_id_seq", Public.PUBLIC, SQLDataType.BIGINT.nullable(false), null, null, null, null, false, null);
+
+    /**
+     * The sequence <code>public.meaning_note_source_link_order_by_seq</code>
+     */
+    public static final Sequence<Long> MEANING_NOTE_SOURCE_LINK_ORDER_BY_SEQ = Internal.createSequence("meaning_note_source_link_order_by_seq", Public.PUBLIC, SQLDataType.BIGINT.nullable(false), null, null, null, null, false, null);
 
     /**
      * The sequence <code>public.meaning_nr_id_seq</code>
@@ -474,6 +554,46 @@ public class Sequences {
      * The sequence <code>public.terms_of_use_id_seq</code>
      */
     public static final Sequence<Long> TERMS_OF_USE_ID_SEQ = Internal.createSequence("terms_of_use_id_seq", Public.PUBLIC, SQLDataType.BIGINT.nullable(false), null, null, null, null, false, null);
+
+    /**
+     * The sequence <code>public.usage_definition_id_seq</code>
+     */
+    public static final Sequence<Long> USAGE_DEFINITION_ID_SEQ = Internal.createSequence("usage_definition_id_seq", Public.PUBLIC, SQLDataType.BIGINT.nullable(false), null, null, null, null, false, null);
+
+    /**
+     * The sequence <code>public.usage_definition_order_by_seq</code>
+     */
+    public static final Sequence<Long> USAGE_DEFINITION_ORDER_BY_SEQ = Internal.createSequence("usage_definition_order_by_seq", Public.PUBLIC, SQLDataType.BIGINT.nullable(false), null, null, null, null, false, null);
+
+    /**
+     * The sequence <code>public.usage_id_seq</code>
+     */
+    public static final Sequence<Long> USAGE_ID_SEQ = Internal.createSequence("usage_id_seq", Public.PUBLIC, SQLDataType.BIGINT.nullable(false), null, null, null, null, false, null);
+
+    /**
+     * The sequence <code>public.usage_order_by_seq</code>
+     */
+    public static final Sequence<Long> USAGE_ORDER_BY_SEQ = Internal.createSequence("usage_order_by_seq", Public.PUBLIC, SQLDataType.BIGINT.nullable(false), null, null, null, null, false, null);
+
+    /**
+     * The sequence <code>public.usage_source_link_id_seq</code>
+     */
+    public static final Sequence<Long> USAGE_SOURCE_LINK_ID_SEQ = Internal.createSequence("usage_source_link_id_seq", Public.PUBLIC, SQLDataType.BIGINT.nullable(false), null, null, null, null, false, null);
+
+    /**
+     * The sequence <code>public.usage_source_link_order_by_seq</code>
+     */
+    public static final Sequence<Long> USAGE_SOURCE_LINK_ORDER_BY_SEQ = Internal.createSequence("usage_source_link_order_by_seq", Public.PUBLIC, SQLDataType.BIGINT.nullable(false), null, null, null, null, false, null);
+
+    /**
+     * The sequence <code>public.usage_translation_id_seq</code>
+     */
+    public static final Sequence<Long> USAGE_TRANSLATION_ID_SEQ = Internal.createSequence("usage_translation_id_seq", Public.PUBLIC, SQLDataType.BIGINT.nullable(false), null, null, null, null, false, null);
+
+    /**
+     * The sequence <code>public.usage_translation_order_by_seq</code>
+     */
+    public static final Sequence<Long> USAGE_TRANSLATION_ORDER_BY_SEQ = Internal.createSequence("usage_translation_order_by_seq", Public.PUBLIC, SQLDataType.BIGINT.nullable(false), null, null, null, null, false, null);
 
     /**
      * The sequence <code>public.usage_type_order_by_seq</code>

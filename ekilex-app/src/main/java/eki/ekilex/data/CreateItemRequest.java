@@ -15,15 +15,15 @@ public class CreateItemRequest extends AbstractDataObject {
 
 	private Long id3;
 
+	private String value;
+
+	private String value2;
+
 	private String itemType;
 
 	private String language;
 
 	private String dataset;
-
-	private String value;
-
-	private String value2;
 
 	private Complexity complexity;
 
@@ -61,6 +61,22 @@ public class CreateItemRequest extends AbstractDataObject {
 		this.id3 = id3;
 	}
 
+	public String getValue() {
+		return value;
+	}
+
+	public void setValue(String value) {
+		this.value = value;
+	}
+
+	public String getValue2() {
+		return value2;
+	}
+
+	public void setValue2(String value2) {
+		this.value2 = value2;
+	}
+
 	public String getItemType() {
 		return itemType;
 	}
@@ -85,22 +101,6 @@ public class CreateItemRequest extends AbstractDataObject {
 		this.dataset = dataset;
 	}
 
-	public String getValue() {
-		return value;
-	}
-
-	public void setValue(String value) {
-		this.value = value;
-	}
-
-	public String getValue2() {
-		return value2;
-	}
-
-	public void setValue2(String value2) {
-		this.value2 = value2;
-	}
-
 	public Complexity getComplexity() {
 		return complexity;
 	}
@@ -116,4 +116,5 @@ public class CreateItemRequest extends AbstractDataObject {
 	public void setPublic(boolean isPublic) {
 		this.isPublic = isPublic;
 	}
+
 }

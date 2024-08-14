@@ -3,6 +3,7 @@ package eki.ekilex.data.api;
 import java.util.List;
 
 import eki.common.data.AbstractDataObject;
+import eki.ekilex.data.Usage;
 
 public class LexMeaning extends AbstractDataObject {
 
@@ -14,7 +15,7 @@ public class LexMeaning extends AbstractDataObject {
 
 	private List<Definition> definitions;
 
-	private List<Freeform> usages;
+	private List<Usage> usages;
 
 	public Long getLexemeId() {
 		return lexemeId;
@@ -40,11 +41,11 @@ public class LexMeaning extends AbstractDataObject {
 		this.definitions = definitions;
 	}
 
-	public List<Freeform> getUsages() {
+	public List<Usage> getUsages() {
 		return usages;
 	}
 
-	public void setUsages(List<Freeform> usages) {
+	public void setUsages(List<Usage> usages) {
 		this.usages = usages;
 	}
 }

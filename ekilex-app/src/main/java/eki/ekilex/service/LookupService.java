@@ -43,7 +43,6 @@ import eki.ekilex.data.SourceLink;
 import eki.ekilex.data.TermCreateWordAndMeaningDetails;
 import eki.ekilex.data.TermUpdateWordDetails;
 import eki.ekilex.data.Usage;
-import eki.ekilex.data.UsageTranslationDefinitionTuple;
 import eki.ekilex.data.Word;
 import eki.ekilex.data.WordDescript;
 import eki.ekilex.data.WordDetails;
@@ -334,6 +333,7 @@ public class LookupService extends AbstractWordSearchService {
 					List<WordLexeme> wordLexemes = lexSearchDbService.getWordLexemes(word.getWordId(), searchDatasetsRestriction, CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
 					wordLexemes.removeIf(lex -> lex.getMeaningId().equals(excludedMeaningId));
 					wordLexemes.forEach(lexeme -> {
+
 						Long lexemeId = lexeme.getLexemeId();
 						Long meaningId = lexeme.getMeaningId();
 						String datasetCode = lexeme.getDatasetCode();
@@ -342,8 +342,7 @@ public class LookupService extends AbstractWordSearchService {
 						List<Definition> definitions = commonDataDbService.getMeaningDefinitions(meaningId, datasetCode, CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
 						permCalculator.filterVisibility(user, definitions);
 						List<Government> governments = commonDataDbService.getLexemeGovernments(lexemeId);
-						List<UsageTranslationDefinitionTuple> usageTranslationDefinitionTuples = commonDataDbService.getLexemeUsageTranslationDefinitionTuples(lexemeId, CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
-						List<Usage> usages = conversionUtil.composeUsages(usageTranslationDefinitionTuples);
+						List<Usage> usages = commonDataDbService.getUsages(lexemeId);
 						permCalculator.filterVisibility(user, usages);
 
 						lexeme.setDatasetName(datasetName);
@@ -438,12 +437,13 @@ public class LookupService extends AbstractWordSearchService {
 
 		List<Long> lexemeIds = meaning.getLexemeIds();
 		List<Lexeme> lexemes = new ArrayList<>();
+
 		for (Long lexemeId : lexemeIds) {
+
 			LexemeWordTuple lexemeWordTuple = termSearchDbService.getLexemeWordTuple(lexemeId, CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
 			Lexeme lexeme = conversionUtil.composeLexeme(lexemeWordTuple);
 			List<Classifier> wordTypes = commonDataDbService.getWordTypes(lexeme.getWordId(), CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
-			List<UsageTranslationDefinitionTuple> usageTranslationDefinitionTuples = commonDataDbService.getLexemeUsageTranslationDefinitionTuples(lexemeId, CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
-			List<Usage> usages = conversionUtil.composeUsages(usageTranslationDefinitionTuples);
+			List<Usage> usages = commonDataDbService.getUsages(lexemeId);
 			permCalculator.filterVisibility(user, usages);
 			List<SourceLink> lexemeRefLinks = commonDataDbService.getLexemeSourceLinks(lexemeId);
 			String dataset = lexeme.getDatasetCode();

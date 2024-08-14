@@ -50,6 +50,20 @@ public interface ApiConstant {
 
 	String SOURCE_LINK_URI = "/source_link";
 
+	String DEFINITION_SOURCE_LINK_URI = "/definition_source_link";
+
+	String DEFINITION_NOTE_SOURCE_LINK_URI = "/definition_note_source_link";
+
+	String LEXEME_SOURCE_LINK_URI = "/lexeme_source_link";
+
+	String LEXEME_NOTE_SOURCE_LINK_URI = "/lexeme_note_source_link";
+
+	String USAGE_SOURCE_LINK_URI = "/usage_source_link";
+
+	String MEANING_IMAGE_SOURCE_LINK_URI = "/meaning_image_source_link";
+
+	String MEANING_NOTE_SOURCE_LINK_URI = "/meaning_note_source_link";
+
 	String LEXEME_TAG_URI = "/lexeme_tag";
 
 	String MEANING_TAG_URI = "/meaning_tag";

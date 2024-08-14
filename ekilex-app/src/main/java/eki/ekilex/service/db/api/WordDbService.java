@@ -4,13 +4,12 @@ import static eki.ekilex.data.db.Tables.DATASET;
 import static eki.ekilex.data.db.Tables.DEFINITION;
 import static eki.ekilex.data.db.Tables.DEFINITION_DATASET;
 import static eki.ekilex.data.db.Tables.DEFINITION_SOURCE_LINK;
-import static eki.ekilex.data.db.Tables.FREEFORM;
-import static eki.ekilex.data.db.Tables.FREEFORM_SOURCE_LINK;
 import static eki.ekilex.data.db.Tables.LEXEME;
-import static eki.ekilex.data.db.Tables.LEXEME_FREEFORM;
 import static eki.ekilex.data.db.Tables.MEANING;
 import static eki.ekilex.data.db.Tables.PARADIGM;
 import static eki.ekilex.data.db.Tables.SOURCE;
+import static eki.ekilex.data.db.Tables.USAGE;
+import static eki.ekilex.data.db.Tables.USAGE_SOURCE_LINK;
 import static eki.ekilex.data.db.Tables.WORD;
 import static eki.ekilex.data.db.Tables.WORD_FORUM;
 import static eki.ekilex.data.db.Tables.WORD_RELATION;
@@ -23,19 +22,17 @@ import org.jooq.JSON;
 import org.jooq.impl.DSL;
 import org.springframework.stereotype.Component;
 
-import eki.common.constant.FreeformType;
 import eki.ekilex.data.api.LexWord;
 import eki.ekilex.data.db.tables.Dataset;
 import eki.ekilex.data.db.tables.Definition;
 import eki.ekilex.data.db.tables.DefinitionDataset;
 import eki.ekilex.data.db.tables.DefinitionSourceLink;
-import eki.ekilex.data.db.tables.Freeform;
-import eki.ekilex.data.db.tables.FreeformSourceLink;
 import eki.ekilex.data.db.tables.Lexeme;
-import eki.ekilex.data.db.tables.LexemeFreeform;
 import eki.ekilex.data.db.tables.Meaning;
 import eki.ekilex.data.db.tables.Paradigm;
 import eki.ekilex.data.db.tables.Source;
+import eki.ekilex.data.db.tables.Usage;
+import eki.ekilex.data.db.tables.UsageSourceLink;
 import eki.ekilex.data.db.tables.Word;
 import eki.ekilex.data.db.tables.WordForum;
 import eki.ekilex.data.db.tables.WordRelation;
@@ -67,6 +64,7 @@ public class WordDbService extends AbstractDataDbService {
 				.from(w)
 				.where(
 						w.IS_PUBLIC.isTrue()
+								.and(w.IS_WORD.isTrue())
 								.andExists(DSL
 										.select(l.ID)
 										.from(l, ds)
@@ -92,6 +90,7 @@ public class WordDbService extends AbstractDataDbService {
 						w.VALUE.eq(wordValue)
 								.and(w.LANG.eq(lang))
 								.and(w.IS_PUBLIC.isTrue())
+								.and(w.IS_WORD.isTrue())
 								.and(w.ID.eq(l.WORD_ID))
 								.and(l.DATASET_CODE.eq(datasetCode)))
 				.groupBy(w.ID)
@@ -104,33 +103,14 @@ public class WordDbService extends AbstractDataDbService {
 		WordWordType wwt = WORD_WORD_TYPE.as("wwt");
 		WordRelation wr = WORD_RELATION.as("wr");
 		WordForum wfor = WORD_FORUM.as("wfor");
-
 		Lexeme l = LEXEME.as("l");
-		LexemeFreeform lff = LEXEME_FREEFORM.as("lff");
+		Usage u = USAGE.as("u");
+		UsageSourceLink usl = USAGE_SOURCE_LINK.as("usl");
 		Meaning m = MEANING.as("m");
-
 		Definition d = DEFINITION.as("d");
 		DefinitionDataset dd = DEFINITION_DATASET.as("dd");
 		DefinitionSourceLink dsl = DEFINITION_SOURCE_LINK.as("dsl");
-		Freeform ff = FREEFORM.as("ff");
-		FreeformSourceLink ffsl = FREEFORM_SOURCE_LINK.as("ffsl");
 		Source s = SOURCE.as("s");
-
-		Field<JSON> ffslf = DSL
-				.select(DSL
-						.jsonArrayAgg(DSL
-								.jsonObject(
-										DSL.key("sourceLinkId").value(ffsl.ID),
-										DSL.key("sourceId").value(s.ID),
-										DSL.key("sourceName").value(s.NAME),
-										DSL.key("sourceLinkName").value(ffsl.NAME),
-										DSL.key("type").value(ffsl.TYPE)))
-						.orderBy(ffsl.ORDER_BY))
-				.from(ffsl, s)
-				.where(
-						ffsl.FREEFORM_ID.eq(ff.ID)
-								.and(ffsl.SOURCE_ID.eq(s.ID)))
-				.asField();
 
 		Field<JSON> dslf = DSL
 				.select(DSL
@@ -201,21 +181,36 @@ public class WordDbService extends AbstractDataDbService {
 														.and(dd.DATASET_CODE.eq(datasetCode)))))
 				.asField();
 
+		Field<JSON> uslf = DSL
+				.select(DSL
+						.jsonArrayAgg(DSL
+								.jsonObject(
+										DSL.key("sourceLinkId").value(usl.ID),
+										DSL.key("sourceId").value(s.ID),
+										DSL.key("sourceName").value(s.NAME),
+										DSL.key("sourceLinkName").value(usl.NAME),
+										DSL.key("type").value(usl.TYPE)))
+						.orderBy(usl.ORDER_BY))
+				.from(usl, s)
+				.where(
+						usl.USAGE_ID.eq(u.ID)
+								.and(usl.SOURCE_ID.eq(s.ID)))
+				.asField();
+
 		Field<JSON> uf = DSL
 				.select(DSL
 						.jsonArrayAgg(DSL
 								.jsonObject(
-										DSL.key("id").value(ff.ID),
-										DSL.key("value").value(ff.VALUE_TEXT),
-										DSL.key("lang").value(ff.LANG),
-										DSL.key("publicity").value(ff.IS_PUBLIC),
-										DSL.key("sourceLinks").value(ffslf)))
-						.orderBy(ff.ORDER_BY))
-				.from(ff, lff)
-				.where(
-						lff.LEXEME_ID.eq(l.ID)
-								.and(lff.FREEFORM_ID.eq(ff.ID))
-								.and(ff.TYPE.eq(FreeformType.USAGE.name())))
+										DSL.key("id").value(u.ID),
+										DSL.key("value").value(u.VALUE),
+										DSL.key("valuePrese").value(u.VALUE_PRESE),
+										DSL.key("lang").value(u.LANG),
+										DSL.key("complexity").value(u.COMPLEXITY),
+										DSL.key("isPublic").value(u.IS_PUBLIC),
+										DSL.key("sourceLinks").value(uslf)))
+						.orderBy(u.ORDER_BY))
+				.from(u)
+				.where(u.LEXEME_ID.eq(l.ID))
 				.asField();
 
 		Field<JSON> mf = DSL

@@ -43,6 +43,7 @@ import eki.ekilex.data.db.udt.records.TypeMtWordRecord;
 import eki.ekilex.service.db.util.SearchFilterHelper;
 import eki.ekilex.service.db.util.TermSearchConditionComposer;
 
+//TODO needs complete overhauling. remove all wrapper types
 @Component
 public class MeaningTableDbService implements GlobalConstant, SystemConstant {
 
@@ -168,6 +169,7 @@ public class MeaningTableDbService implements GlobalConstant, SystemConstant {
 				.fetchInto(MeaningTableRow.class);
 	}
 
+	@Deprecated
 	private Field<TypeMtLexemeFreeformRecord[]> getUsageRowField(Lexeme l, LexemeFreeform lff, Freeform ff, Condition wherel) {
 
 		String urowsql = DSL

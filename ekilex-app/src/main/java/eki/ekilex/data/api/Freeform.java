@@ -3,6 +3,7 @@ package eki.ekilex.data.api;
 import java.util.List;
 
 import eki.common.data.AbstractDataObject;
+import eki.ekilex.data.SourceLink;
 
 public class Freeform extends AbstractDataObject {
 

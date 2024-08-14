@@ -2,13 +2,14 @@ package eki.ekilex.service.db;
 
 import static eki.ekilex.data.db.Tables.DEFINITION;
 import static eki.ekilex.data.db.Tables.DEFINITION_SOURCE_LINK;
-import static eki.ekilex.data.db.Tables.FREEFORM;
-import static eki.ekilex.data.db.Tables.FREEFORM_SOURCE_LINK;
 import static eki.ekilex.data.db.Tables.LEXEME;
-import static eki.ekilex.data.db.Tables.LEXEME_FREEFORM;
+import static eki.ekilex.data.db.Tables.LEXEME_NOTE;
+import static eki.ekilex.data.db.Tables.LEXEME_NOTE_SOURCE_LINK;
 import static eki.ekilex.data.db.Tables.LEXEME_POS;
 import static eki.ekilex.data.db.Tables.MEANING;
-import static eki.ekilex.data.db.Tables.SOURCE_FREEFORM;
+import static eki.ekilex.data.db.Tables.SOURCE;
+import static eki.ekilex.data.db.Tables.USAGE;
+import static eki.ekilex.data.db.Tables.USAGE_SOURCE_LINK;
 import static eki.ekilex.data.db.Tables.WORD;
 import static eki.ekilex.data.db.Tables.WORD_WORD_TYPE;
 
@@ -20,17 +21,17 @@ import org.jooq.impl.DSL;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import eki.common.constant.FreeformType;
 import eki.ekilex.data.MeaningLexemeWordTuple;
 import eki.ekilex.data.db.tables.Definition;
 import eki.ekilex.data.db.tables.DefinitionSourceLink;
-import eki.ekilex.data.db.tables.Freeform;
-import eki.ekilex.data.db.tables.FreeformSourceLink;
 import eki.ekilex.data.db.tables.Lexeme;
-import eki.ekilex.data.db.tables.LexemeFreeform;
+import eki.ekilex.data.db.tables.LexemeNote;
+import eki.ekilex.data.db.tables.LexemeNoteSourceLink;
 import eki.ekilex.data.db.tables.LexemePos;
 import eki.ekilex.data.db.tables.Meaning;
-import eki.ekilex.data.db.tables.SourceFreeform;
+import eki.ekilex.data.db.tables.Source;
+import eki.ekilex.data.db.tables.Usage;
+import eki.ekilex.data.db.tables.UsageSourceLink;
 import eki.ekilex.data.db.tables.Word;
 import eki.ekilex.data.db.tables.WordWordType;
 import eki.ekilex.data.db.udt.records.TypeValueNameLangRecord;
@@ -84,15 +85,14 @@ public class FedTermDataDbService {
 		Lexeme l = LEXEME.as("l");
 		Meaning m = MEANING.as("m");
 		Definition d = DEFINITION.as("d");
+		DefinitionSourceLink dsl = DEFINITION_SOURCE_LINK.as("dsl");
 		WordWordType wt = WORD_WORD_TYPE.as("wt");
 		LexemePos lp = LEXEME_POS.as("lp");
-		LexemeFreeform lff = LEXEME_FREEFORM.as("lff");
-		SourceFreeform sff = SOURCE_FREEFORM.as("sff");
-		Freeform ln = FREEFORM.as("ln");
-		Freeform lu = FREEFORM.as("lu");
-		Freeform sn = FREEFORM.as("sn");
-		FreeformSourceLink ffsl = FREEFORM_SOURCE_LINK.as("ffsl");
-		DefinitionSourceLink dsl = DEFINITION_SOURCE_LINK.as("dsl");
+		LexemeNote ln = LEXEME_NOTE.as("ln");
+		LexemeNoteSourceLink lnsl = LEXEME_NOTE_SOURCE_LINK.as("lnsl");
+		Usage u = USAGE.as("u");
+		UsageSourceLink usl = USAGE_SOURCE_LINK.as("usl");
+		Source s = SOURCE.as("s");
 
 		Field<String> wtf = DSL
 				.select(wt.WORD_TYPE_CODE)
@@ -114,13 +114,12 @@ public class FedTermDataDbService {
 				.select(
 						DSL.field(
 								"array_agg("
-										+ "row(d.id, d.value, sn.value_text, d.lang)::type_value_name_lang "
-										+ "order by d.order_by, sn.order_by)",
+										+ "row(d.id, d.value, s.name, d.lang)::type_value_name_lang "
+										+ "order by d.order_by, dsl.order_by)",
 								TypeValueNameLangRecord[].class))
 				.from(d
 						.leftOuterJoin(dsl).on(dsl.DEFINITION_ID.eq(d.ID))
-						.leftOuterJoin(sff).on(sff.SOURCE_ID.eq(dsl.SOURCE_ID))
-						.leftOuterJoin(sn).on(sn.ID.eq(sff.FREEFORM_ID).and(sn.TYPE.eq(FreeformType.SOURCE_NAME.name()))))
+						.leftOuterJoin(s).on(s.ID.eq(dsl.SOURCE_ID)))
 				.where(
 						d.MEANING_ID.eq(m.ID)
 								.and(d.IS_PUBLIC.isTrue()))
@@ -131,30 +130,32 @@ public class FedTermDataDbService {
 				.select(
 						DSL.field(
 								"array_agg("
-										+ "row(ln.id, ln.value_text, sn.value_text, ln.lang)::type_value_name_lang "
-										+ "order by ln.order_by, sn.order_by)",
+										+ "row(ln.id, ln.value, s.name, ln.lang)::type_value_name_lang "
+										+ "order by ln.order_by, lnsl.order_by)",
 								TypeValueNameLangRecord[].class))
-				.from(lff
-						.innerJoin(ln).on(ln.ID.eq(lff.FREEFORM_ID).and(ln.TYPE.eq(FreeformType.NOTE.name())).and(ln.IS_PUBLIC.isTrue()))
-						.leftOuterJoin(ffsl).on(ffsl.FREEFORM_ID.eq(ln.ID))
-						.leftOuterJoin(sff).on(sff.SOURCE_ID.eq(ffsl.SOURCE_ID))
-						.leftOuterJoin(sn).on(sn.ID.eq(sff.FREEFORM_ID).and(sn.TYPE.eq(FreeformType.SOURCE_NAME.name()))))
-				.where(lff.LEXEME_ID.eq(l.ID))
+				.from(
+						ln
+								.leftOuterJoin(lnsl).on(lnsl.LEXEME_NOTE_ID.eq(ln.ID))
+								.leftOuterJoin(s).on(s.ID.eq(lnsl.SOURCE_ID)))
+				.where(
+						ln.LEXEME_ID.eq(l.ID)
+								.and(ln.IS_PUBLIC.isTrue()))
 				.asField();
 
 		Field<TypeValueNameLangRecord[]> luasf = DSL
 				.select(
 						DSL.field(
 								"array_agg("
-										+ "row(lu.id, lu.value_text, sn.value_text, lu.lang)::type_value_name_lang "
-										+ "order by lu.order_by, sn.order_by)",
+										+ "row(u.id, u.value, s.name, u.lang)::type_value_name_lang "
+										+ "order by u.order_by, usl.order_by)",
 								TypeValueNameLangRecord[].class))
-				.from(lff
-						.innerJoin(lu).on(lu.ID.eq(lff.FREEFORM_ID).and(lu.TYPE.eq(FreeformType.USAGE.name())).and(lu.IS_PUBLIC.isTrue()))
-						.leftOuterJoin(ffsl).on(ffsl.FREEFORM_ID.eq(lu.ID))
-						.leftOuterJoin(sff).on(sff.SOURCE_ID.eq(ffsl.SOURCE_ID))
-						.leftOuterJoin(sn).on(sn.ID.eq(sff.FREEFORM_ID).and(sn.TYPE.eq(FreeformType.SOURCE_NAME.name()))))
-				.where(lff.LEXEME_ID.eq(l.ID))
+				.from(
+						u
+								.leftOuterJoin(usl).on(usl.USAGE_ID.eq(u.ID))
+								.leftOuterJoin(s).on(s.ID.eq(lnsl.SOURCE_ID)))
+				.where(
+						u.LEXEME_ID.eq(l.ID)
+								.and(u.IS_PUBLIC.isTrue()))
 				.asField();
 
 		return create
@@ -180,6 +181,7 @@ public class FedTermDataDbService {
 								.and(l.MEANING_ID.in(meaningIds))
 								.and(l.WORD_ID.eq(w.ID))
 								.and(w.IS_PUBLIC.isTrue())
+								.and(w.IS_WORD.isTrue())
 								.and(l.MEANING_ID.eq(m.ID)))
 				.orderBy(w.VALUE, l.ORDER_BY)
 				.fetchInto(MeaningLexemeWordTuple.class);

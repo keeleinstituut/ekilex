@@ -6,7 +6,8 @@ import static eki.ekilex.data.db.Tables.DATASET;
 import static eki.ekilex.data.db.Tables.DATASET_PERMISSION;
 import static eki.ekilex.data.db.Tables.DEFINITION;
 import static eki.ekilex.data.db.Tables.DEFINITION_DATASET;
-import static eki.ekilex.data.db.Tables.DEFINITION_FREEFORM;
+import static eki.ekilex.data.db.Tables.DEFINITION_NOTE;
+import static eki.ekilex.data.db.Tables.DEFINITION_NOTE_SOURCE_LINK;
 import static eki.ekilex.data.db.Tables.DEFINITION_SOURCE_LINK;
 import static eki.ekilex.data.db.Tables.DEFINITION_TYPE;
 import static eki.ekilex.data.db.Tables.DEFINITION_TYPE_LABEL;
@@ -18,7 +19,6 @@ import static eki.ekilex.data.db.Tables.DOMAIN;
 import static eki.ekilex.data.db.Tables.DOMAIN_LABEL;
 import static eki.ekilex.data.db.Tables.ETYMOLOGY_TYPE;
 import static eki.ekilex.data.db.Tables.FREEFORM;
-import static eki.ekilex.data.db.Tables.FREEFORM_SOURCE_LINK;
 import static eki.ekilex.data.db.Tables.GENDER;
 import static eki.ekilex.data.db.Tables.GENDER_LABEL;
 import static eki.ekilex.data.db.Tables.GOVERNMENT_TYPE;
@@ -27,6 +27,8 @@ import static eki.ekilex.data.db.Tables.LANGUAGE;
 import static eki.ekilex.data.db.Tables.LANGUAGE_LABEL;
 import static eki.ekilex.data.db.Tables.LEXEME;
 import static eki.ekilex.data.db.Tables.LEXEME_FREEFORM;
+import static eki.ekilex.data.db.Tables.LEXEME_NOTE;
+import static eki.ekilex.data.db.Tables.LEXEME_NOTE_SOURCE_LINK;
 import static eki.ekilex.data.db.Tables.LEXEME_REGISTER;
 import static eki.ekilex.data.db.Tables.LEXEME_SOURCE_LINK;
 import static eki.ekilex.data.db.Tables.LEXEME_TAG;
@@ -37,6 +39,10 @@ import static eki.ekilex.data.db.Tables.MEANING;
 import static eki.ekilex.data.db.Tables.MEANING_DOMAIN;
 import static eki.ekilex.data.db.Tables.MEANING_FORUM;
 import static eki.ekilex.data.db.Tables.MEANING_FREEFORM;
+import static eki.ekilex.data.db.Tables.MEANING_IMAGE;
+import static eki.ekilex.data.db.Tables.MEANING_IMAGE_SOURCE_LINK;
+import static eki.ekilex.data.db.Tables.MEANING_NOTE;
+import static eki.ekilex.data.db.Tables.MEANING_NOTE_SOURCE_LINK;
 import static eki.ekilex.data.db.Tables.MEANING_RELATION;
 import static eki.ekilex.data.db.Tables.MEANING_REL_TYPE;
 import static eki.ekilex.data.db.Tables.MEANING_REL_TYPE_LABEL;
@@ -57,6 +63,10 @@ import static eki.ekilex.data.db.Tables.SEMANTIC_TYPE;
 import static eki.ekilex.data.db.Tables.SEMANTIC_TYPE_LABEL;
 import static eki.ekilex.data.db.Tables.SOURCE;
 import static eki.ekilex.data.db.Tables.TAG;
+import static eki.ekilex.data.db.Tables.USAGE;
+import static eki.ekilex.data.db.Tables.USAGE_DEFINITION;
+import static eki.ekilex.data.db.Tables.USAGE_SOURCE_LINK;
+import static eki.ekilex.data.db.Tables.USAGE_TRANSLATION;
 import static eki.ekilex.data.db.Tables.USAGE_TYPE;
 import static eki.ekilex.data.db.Tables.USAGE_TYPE_LABEL;
 import static eki.ekilex.data.db.Tables.VALUE_STATE;
@@ -78,6 +88,7 @@ import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.jooq.Condition;
 import org.jooq.Field;
+import org.jooq.JSON;
 import org.jooq.Record11;
 import org.jooq.Record3;
 import org.jooq.Table;
@@ -92,40 +103,47 @@ import eki.common.constant.FreeformType;
 import eki.common.constant.ReferenceOwner;
 import eki.ekilex.data.Classifier;
 import eki.ekilex.data.Dataset;
-import eki.ekilex.data.DefSourceAndNoteSourceTuple;
-import eki.ekilex.data.Definition;
 import eki.ekilex.data.FreeForm;
 import eki.ekilex.data.Government;
-import eki.ekilex.data.ImageSourceTuple;
 import eki.ekilex.data.LexemeRelation;
 import eki.ekilex.data.MeaningForum;
 import eki.ekilex.data.MeaningWord;
 import eki.ekilex.data.Media;
-import eki.ekilex.data.NoteSourceTuple;
 import eki.ekilex.data.OrderedClassifier;
 import eki.ekilex.data.Origin;
 import eki.ekilex.data.SearchLangsRestriction;
 import eki.ekilex.data.SourceLink;
-import eki.ekilex.data.UsageTranslationDefinitionTuple;
 import eki.ekilex.data.WordForum;
-import eki.ekilex.data.db.tables.DefinitionFreeform;
+import eki.ekilex.data.db.tables.Definition;
+import eki.ekilex.data.db.tables.DefinitionDataset;
+import eki.ekilex.data.db.tables.DefinitionNote;
+import eki.ekilex.data.db.tables.DefinitionNoteSourceLink;
 import eki.ekilex.data.db.tables.DefinitionSourceLink;
+import eki.ekilex.data.db.tables.DefinitionTypeLabel;
 import eki.ekilex.data.db.tables.Domain;
 import eki.ekilex.data.db.tables.DomainLabel;
 import eki.ekilex.data.db.tables.Freeform;
-import eki.ekilex.data.db.tables.FreeformSourceLink;
 import eki.ekilex.data.db.tables.Language;
 import eki.ekilex.data.db.tables.LexRelTypeLabel;
 import eki.ekilex.data.db.tables.LexRelation;
 import eki.ekilex.data.db.tables.Lexeme;
 import eki.ekilex.data.db.tables.LexemeFreeform;
+import eki.ekilex.data.db.tables.LexemeNote;
+import eki.ekilex.data.db.tables.LexemeNoteSourceLink;
 import eki.ekilex.data.db.tables.LexemeRegister;
 import eki.ekilex.data.db.tables.Meaning;
 import eki.ekilex.data.db.tables.MeaningFreeform;
+import eki.ekilex.data.db.tables.MeaningImage;
+import eki.ekilex.data.db.tables.MeaningImageSourceLink;
+import eki.ekilex.data.db.tables.MeaningNote;
+import eki.ekilex.data.db.tables.MeaningNoteSourceLink;
 import eki.ekilex.data.db.tables.MeaningRelTypeLabel;
 import eki.ekilex.data.db.tables.MeaningRelation;
 import eki.ekilex.data.db.tables.Source;
-import eki.ekilex.data.db.tables.UsageTypeLabel;
+import eki.ekilex.data.db.tables.Usage;
+import eki.ekilex.data.db.tables.UsageDefinition;
+import eki.ekilex.data.db.tables.UsageSourceLink;
+import eki.ekilex.data.db.tables.UsageTranslation;
 import eki.ekilex.data.db.tables.Word;
 
 //only common use data reading!
@@ -165,6 +183,7 @@ public class CommonDataDbService extends AbstractDataDbService {
 	public List<String> getTags() {
 		return create.select(TAG.NAME).from(TAG).orderBy(TAG.ORDER_BY).fetchInto(String.class);
 	}
+
 	@Cacheable(value = CACHE_KEY_TAG, key = "{#root.methodName, #tagType}")
 	public List<String> getTags(String tagType) {
 		return create.select(TAG.NAME).from(TAG).where(TAG.TYPE.eq(tagType)).orderBy(TAG.ORDER_BY).fetchInto(String.class);
@@ -545,6 +564,7 @@ public class CommonDataDbService extends AbstractDataDbService {
 	}
 
 	public List<FreeForm> getMeaningFreeforms(Long meaningId, String... excludeTypes) {
+
 		return create
 				.select(
 						FREEFORM.ID,
@@ -564,6 +584,7 @@ public class CommonDataDbService extends AbstractDataDbService {
 	}
 
 	public List<FreeForm> getMeaningLearnerComments(Long meaningId) {
+
 		return create
 				.select(
 						FREEFORM.ID,
@@ -580,67 +601,81 @@ public class CommonDataDbService extends AbstractDataDbService {
 				.fetchInto(FreeForm.class);
 	}
 
-	public List<NoteSourceTuple> getMeaningNoteSourceTuples(Long meaningId) {
+	public List<eki.ekilex.data.MeaningNote> getMeaningNotes(Long meaningId) {
 
-		return create
-				.select(
-						FREEFORM.ID.as("freeform_id"),
-						FREEFORM.VALUE_TEXT,
-						FREEFORM.VALUE_PRESE,
-						FREEFORM.LANG,
-						FREEFORM.COMPLEXITY,
-						FREEFORM.IS_PUBLIC,
-						FREEFORM.ORDER_BY,
-						FREEFORM.MODIFIED_BY,
-						FREEFORM.MODIFIED_ON,
-						FREEFORM_SOURCE_LINK.ID.as("source_link_id"),
-						FREEFORM_SOURCE_LINK.TYPE.as("source_link_type"),
-						FREEFORM_SOURCE_LINK.NAME.as("source_link_name"),
-						FREEFORM_SOURCE_LINK.SOURCE_ID.as("source_id"),
-						SOURCE.NAME.as("source_name"))
-				.from(
-						MEANING_FREEFORM,
-						FREEFORM
-								.leftOuterJoin(FREEFORM_SOURCE_LINK).on(FREEFORM_SOURCE_LINK.FREEFORM_ID.eq(FREEFORM.ID))
-								.leftOuterJoin(SOURCE).on(FREEFORM_SOURCE_LINK.SOURCE_ID.eq(SOURCE.ID)))
-				.where(
-						MEANING_FREEFORM.MEANING_ID.eq(meaningId)
-								.and(FREEFORM.ID.eq(MEANING_FREEFORM.FREEFORM_ID))
-								.and(FREEFORM.TYPE.eq(FreeformType.NOTE.name())))
-				.orderBy(FREEFORM.ORDER_BY)
-				.fetchInto(NoteSourceTuple.class);
-	}
-
-	public List<ImageSourceTuple> getMeaningImageSourceTuples(Long meaningId) {
-
-		Freeform iff = FREEFORM.as("iff");
-		Freeform tff = FREEFORM.as("tff");
-		FreeformSourceLink ffsl = FREEFORM_SOURCE_LINK.as("ffsl");
-		MeaningFreeform mff = MEANING_FREEFORM.as("mff");
+		MeaningNote mn = MEANING_NOTE.as("mn");
+		MeaningNoteSourceLink mnsl = MEANING_NOTE_SOURCE_LINK.as("mnsl");
 		Source s = SOURCE.as("s");
 
+		Field<JSON> mnslf = DSL
+				.select(DSL
+						.jsonArrayAgg(DSL
+								.jsonObject(
+										DSL.key("id").value(mnsl.ID),
+										DSL.key("type").value(mnsl.TYPE),
+										DSL.key("name").value(mnsl.NAME),
+										DSL.key("sourceId").value(mnsl.SOURCE_ID),
+										DSL.key("sourceName").value(s.NAME)))
+						.orderBy(mnsl.ORDER_BY))
+				.from(mnsl, s)
+				.where(
+						mnsl.MEANING_NOTE_ID.eq(mn.ID)
+								.and(mnsl.SOURCE_ID.eq(s.ID)))
+				.asField();
+
 		return create
 				.select(
-						iff.ID.as("image_freeform_id"),
-						iff.VALUE_TEXT.as("image_freeform_value_text"),
-						iff.COMPLEXITY.as("image_freeform_complexity"),
-						tff.VALUE_TEXT.as("title_freeform_value_text"),
-						ffsl.ID.as("source_link_id"),
-						ffsl.TYPE.as("source_link_type"),
-						ffsl.NAME.as("source_link_name"),
-						ffsl.SOURCE_ID.as("source_id"),
-						s.NAME.as("source_name"))
-				.from(mff,
-						iff
-								.leftOuterJoin(tff).on(tff.PARENT_ID.eq(iff.ID).and(tff.TYPE.eq(FreeformType.IMAGE_TITLE.name())))
-								.leftOuterJoin(ffsl).on(ffsl.FREEFORM_ID.eq(iff.ID))
-								.leftOuterJoin(s).on(ffsl.SOURCE_ID.eq(s.ID)))
+						mn.ID,
+						mn.MEANING_ID,
+						mn.VALUE,
+						mn.VALUE_PRESE,
+						mn.LANG,
+						mn.COMPLEXITY,
+						mn.CREATED_ON,
+						mn.CREATED_BY,
+						mn.MODIFIED_ON,
+						mn.MODIFIED_BY,
+						mn.ORDER_BY,
+						mnslf.as("source_links"))
+				.from(mn)
+				.where(mn.MEANING_ID.eq(meaningId))
+				.orderBy(mn.ORDER_BY)
+				.fetchInto(eki.ekilex.data.MeaningNote.class);
+	}
+
+	public List<Media> getMeaningImagesAsMedia(Long meaningId) {
+
+		MeaningImage mi = MEANING_IMAGE.as("mi");
+		MeaningImageSourceLink misl = MEANING_IMAGE_SOURCE_LINK.as("misl");
+		Source s = SOURCE.as("s");
+
+		Field<JSON> mislf = DSL
+				.select(DSL
+						.jsonArrayAgg(DSL
+								.jsonObject(
+										DSL.key("id").value(misl.ID),
+										DSL.key("type").value(misl.TYPE),
+										DSL.key("name").value(misl.NAME),
+										DSL.key("sourceId").value(misl.SOURCE_ID),
+										DSL.key("sourceName").value(s.NAME)))
+						.orderBy(misl.ORDER_BY))
+				.from(misl, s)
 				.where(
-						mff.MEANING_ID.eq(meaningId)
-								.and(iff.ID.eq(mff.FREEFORM_ID))
-								.and(iff.TYPE.eq(FreeformType.IMAGE_FILE.name())))
-				.orderBy(iff.ORDER_BY)
-				.fetchInto(ImageSourceTuple.class);
+						misl.MEANING_IMAGE_ID.eq(mi.ID)
+								.and(misl.SOURCE_ID.eq(s.ID)))
+				.asField();
+
+		return create
+				.select(
+						mi.ID,
+						mi.URL.as("source_url"),
+						mi.TITLE,
+						mi.COMPLEXITY,
+						mislf.as("source_links"))
+				.from(mi)
+				.where(mi.MEANING_ID.eq(meaningId))
+				.orderBy(mi.ORDER_BY)
+				.fetchInto(Media.class);
 	}
 
 	public List<Media> getMeaningMedias(Long meaningId) {
@@ -682,91 +717,112 @@ public class CommonDataDbService extends AbstractDataDbService {
 				.fetchInto(OrderedClassifier.class);
 	}
 
-	public List<Definition> getMeaningDefinitions(Long meaningId, String classifierLabelLang, String classifierLabelTypeCode) {
+	public List<eki.ekilex.data.Definition> getMeaningDefinitions(Long meaningId, String classifierLabelLang, String classifierLabelTypeCode) {
 		return getMeaningDefinitions(meaningId, null, classifierLabelLang, classifierLabelTypeCode);
 	}
 
-	public List<Definition> getMeaningDefinitions(Long meaningId, String datasetCode, String classifierLabelLang, String classifierLabelTypeCode) {
+	public List<eki.ekilex.data.Definition> getMeaningDefinitions(Long meaningId, String datasetCode, String classifierLabelLang, String classifierLabelTypeCode) {
 
-		Condition where = DEFINITION.MEANING_ID.eq(meaningId);
-		if (StringUtils.isNotBlank(datasetCode)) {
-			where = where.and(DSL
-					.exists(DSL
-							.select(DEFINITION_DATASET.DEFINITION_ID)
-							.from(DEFINITION_DATASET)
-							.where(
-									DEFINITION_DATASET.DEFINITION_ID.eq(DEFINITION.ID)
-											.and(DEFINITION_DATASET.DATASET_CODE.eq(datasetCode)))));
-		}
-		return create
-				.select(
-						DEFINITION.ID,
-						DEFINITION.VALUE_PRESE.as("value"),
-						DEFINITION.LANG,
-						DEFINITION.COMPLEXITY,
-						DEFINITION.ORDER_BY,
-						DEFINITION.DEFINITION_TYPE_CODE.as("type_code"),
-						DEFINITION_TYPE_LABEL.VALUE.as("type_value"),
-						DSL.field(DSL
-								.select(DSL.arrayAgg(DEFINITION_DATASET.DATASET_CODE))
-								.from(DEFINITION_DATASET)
-								.where(DEFINITION_DATASET.DEFINITION_ID.eq(DEFINITION.ID)))
-								.as("dataset_codes"),
-						DEFINITION.IS_PUBLIC.as("is_public"))
-				.from(
-						DEFINITION
-								.leftOuterJoin(DEFINITION_TYPE_LABEL).on(
-										DEFINITION.DEFINITION_TYPE_CODE.eq(DEFINITION_TYPE_LABEL.CODE)
-												.and(DEFINITION_TYPE_LABEL.LANG.eq(classifierLabelLang))
-												.and(DEFINITION_TYPE_LABEL.TYPE.eq(classifierLabelTypeCode))))
-				.where(where)
-				.orderBy(DEFINITION.ORDER_BY)
-				.fetchInto(Definition.class);
-	}
-
-	public List<DefSourceAndNoteSourceTuple> getMeaningDefSourceAndNoteSourceTuples(Long meaningId) {
-
-		eki.ekilex.data.db.tables.Definition d = DEFINITION.as("d");
+		Definition d = DEFINITION.as("d");
+		DefinitionDataset dds = DEFINITION_DATASET.as("dds");
+		DefinitionTypeLabel dtl = DEFINITION_TYPE_LABEL.as("dtl");
+		DefinitionNote dn = DEFINITION_NOTE.as("dn");
+		DefinitionNoteSourceLink dnsl = DEFINITION_NOTE_SOURCE_LINK.as("dnsl");
 		DefinitionSourceLink dsl = DEFINITION_SOURCE_LINK.as("dsl");
-		Freeform ff = FREEFORM.as("ff");
-		FreeformSourceLink ffsl = FREEFORM_SOURCE_LINK.as("ffsl");
-		DefinitionFreeform dff = DEFINITION_FREEFORM.as("dff");
-		Source ds = SOURCE.as("ds");
-		Source ffs = SOURCE.as("ffs");
+		Source s = SOURCE.as("s");
+
+		Condition where = d.MEANING_ID.eq(meaningId);
+		if (StringUtils.isNotBlank(datasetCode)) {
+			where = where
+					.andExists(DSL
+							.select(dds.DEFINITION_ID)
+							.from(dds)
+							.where(
+									dds.DEFINITION_ID.eq(d.ID)
+											.and(dds.DATASET_CODE.eq(datasetCode))));
+		}
+
+		Field<String[]> ddsf = DSL.field(DSL
+				.select(DSL.arrayAgg(dds.DATASET_CODE))
+				.from(dds)
+				.where(dds.DEFINITION_ID.eq(d.ID)));
+
+		Field<JSON> dnslf = DSL
+				.select(DSL
+						.jsonArrayAgg(DSL
+								.jsonObject(
+										DSL.key("id").value(dnsl.ID),
+										DSL.key("type").value(dnsl.TYPE),
+										DSL.key("name").value(dnsl.NAME),
+										DSL.key("sourceId").value(dnsl.SOURCE_ID),
+										DSL.key("sourceName").value(s.NAME)))
+						.orderBy(dnsl.ORDER_BY))
+				.from(dnsl, s)
+				.where(
+						dnsl.DEFINITION_NOTE_ID.eq(dn.ID)
+								.and(dnsl.SOURCE_ID.eq(s.ID)))
+				.asField();
+
+		Field<JSON> dnf = DSL
+				.select(DSL
+						.jsonArrayAgg(DSL
+								.jsonObject(
+										DSL.key("id").value(dn.ID),
+										DSL.key("definitionId").value(dn.DEFINITION_ID),
+										DSL.key("value").value(dn.VALUE),
+										DSL.key("valuePrese").value(dn.VALUE_PRESE),
+										DSL.key("lang").value(dn.LANG),
+										DSL.key("complexity").value(dn.COMPLEXITY),
+										DSL.key("createdOn").value(dn.CREATED_ON),
+										DSL.key("createdBy").value(dn.CREATED_BY),
+										DSL.key("modifiedOn").value(dn.MODIFIED_ON),
+										DSL.key("modifiedBy").value(dn.MODIFIED_BY),
+										DSL.key("orderBy").value(dn.ORDER_BY),
+										DSL.key("sourceLinks").value(dnslf)))
+						.orderBy(dn.ORDER_BY))
+				.from(dn)
+				.where(dn.DEFINITION_ID.eq(d.ID))
+				.asField();
+
+		Field<JSON> dslf = DSL
+				.select(DSL
+						.jsonArrayAgg(DSL
+								.jsonObject(
+										DSL.key("id").value(dsl.ID),
+										DSL.key("type").value(dsl.TYPE),
+										DSL.key("name").value(dsl.NAME),
+										DSL.key("sourceId").value(dsl.SOURCE_ID),
+										DSL.key("sourceName").value(s.NAME)))
+						.orderBy(dnsl.ORDER_BY))
+				.from(dsl, s)
+				.where(
+						dsl.DEFINITION_ID.eq(d.ID)
+								.and(dsl.SOURCE_ID.eq(s.ID)))
+				.asField();
 
 		return create
 				.select(
-						d.ID.as("definition_id"),
-						dsl.ID.as("definition_source_link_id"),
-						dsl.TYPE.as("definition_source_link_type"),
-						dsl.NAME.as("definition_source_link_name"),
-						dsl.SOURCE_ID.as("definition_source_id"),
-						ds.NAME.as("definition_source_name"),
-						ff.ID.as("note_id"),
-						ff.VALUE_TEXT.as("note_value_text"),
-						ff.VALUE_PRESE.as("note_value_prese"),
-						ff.LANG.as("note_lang"),
-						ff.COMPLEXITY.as("note_complexity"),
-						ff.IS_PUBLIC.as("is_note_public"),
-						ff.ORDER_BY.as("note_order_by"),
-						ffsl.ID.as("note_source_link_id"),
-						ffsl.TYPE.as("note_source_link_type"),
-						ffsl.NAME.as("note_source_link_name"),
-						ffsl.SOURCE_ID.as("note_source_id"),
-						ffs.NAME.as("note_source_name"))
+						d.ID,
+						d.VALUE,
+						d.VALUE_PRESE,
+						d.LANG,
+						d.COMPLEXITY,
+						d.ORDER_BY,
+						d.DEFINITION_TYPE_CODE.as("type_code"),
+						dtl.VALUE.as("type_value"),
+						d.IS_PUBLIC,
+						ddsf.as("dataset_codes"),
+						dnf.as("notes"),
+						dslf.as("source_links"))
 				.from(
 						d
-								.leftOuterJoin(dsl).on(dsl.DEFINITION_ID.eq(d.ID))
-								.leftOuterJoin(ds).on(dsl.SOURCE_ID.eq(ds.ID))
-								.leftOuterJoin(dff).on(dff.DEFINITION_ID.eq(d.ID))
-								.leftOuterJoin(ff).on(
-										dff.FREEFORM_ID.eq(ff.ID)
-												.and(ff.TYPE.eq(FreeformType.NOTE.name())))
-								.leftOuterJoin(ffsl).on(ffsl.FREEFORM_ID.eq(ff.ID))
-								.leftOuterJoin(ffs).on(ffsl.SOURCE_ID.eq(ffs.ID)))
-				.where(d.MEANING_ID.eq(meaningId))
-				.orderBy(ff.ORDER_BY)
-				.fetchInto(DefSourceAndNoteSourceTuple.class);
+								.leftOuterJoin(dtl).on(
+										d.DEFINITION_TYPE_CODE.eq(dtl.CODE)
+												.and(dtl.LANG.eq(classifierLabelLang))
+												.and(dtl.TYPE.eq(classifierLabelTypeCode))))
+				.where(where)
+				.orderBy(d.ORDER_BY)
+				.fetchInto(eki.ekilex.data.Definition.class);
 	}
 
 	public List<MeaningWord> getMeaningWords(Long lexemeId) {
@@ -807,13 +863,12 @@ public class CommonDataDbService extends AbstractDataDbService {
 				.groupBy(wh.VALUE)
 				.asField();
 
-		Condition where =
-				l1.ID.eq(lexemeId)
-						.and(l2.MEANING_ID.eq(l1.MEANING_ID))
-						.and(l2.ID.ne(l1.ID))
-						.and(l2.DATASET_CODE.eq(l1.DATASET_CODE))
-						.and(l2.WORD_ID.eq(w2.ID))
-						.and(w2.IS_PUBLIC.isTrue());
+		Condition where = l1.ID.eq(lexemeId)
+				.and(l2.MEANING_ID.eq(l1.MEANING_ID))
+				.and(l2.ID.ne(l1.ID))
+				.and(l2.DATASET_CODE.eq(l1.DATASET_CODE))
+				.and(l2.WORD_ID.eq(w2.ID))
+				.and(w2.IS_PUBLIC.isTrue());
 
 		if (!noLangsFiltering) {
 			List<String> filteringLangs = meaningWordLangsRestriction.getFilteringLangs();
@@ -873,8 +928,7 @@ public class CommonDataDbService extends AbstractDataDbService {
 						w2.HOMONYM_NR.as("word_homonym_nr"),
 						lexRegisterCodes,
 						mr.WEIGHT,
-						mr.ORDER_BY
-				)
+						mr.ORDER_BY)
 				.from(
 						mr
 								.innerJoin(m2).on(m2.ID.eq(mr.MEANING2_ID))
@@ -977,7 +1031,7 @@ public class CommonDataDbService extends AbstractDataDbService {
 				String meaningWordPreferredOrderDatasetCode = meaningWordPreferredOrderDatasetCodes.get(0);
 				orderByCond = orderByCond.and(l2.DATASET_CODE.eq(meaningWordPreferredOrderDatasetCode));
 			} else {
-				orderByCond = orderByCond.and(l2.DATASET_CODE.in(meaningWordPreferredOrderDatasetCodes));				
+				orderByCond = orderByCond.and(l2.DATASET_CODE.in(meaningWordPreferredOrderDatasetCodes));
 			}
 		}
 
@@ -1012,8 +1066,7 @@ public class CommonDataDbService extends AbstractDataDbService {
 						mr.MEANING_REL_TYPE_CODE.as("rel_type_code"),
 						mrtf.as("rel_type_label"),
 						mr.WEIGHT,
-						mr.ORDER_BY
-						)
+						mr.ORDER_BY)
 				.from(
 						mr
 								.innerJoin(m2).on(m2.ID.eq(mr.MEANING2_ID))
@@ -1146,77 +1199,132 @@ public class CommonDataDbService extends AbstractDataDbService {
 				.fetchInto(Government.class);
 	}
 
-	public List<UsageTranslationDefinitionTuple> getLexemeUsageTranslationDefinitionTuples(Long lexemeId, String classifierLabelLang, String classifierLabelTypeCode) {
+	public List<eki.ekilex.data.Usage> getUsages(Long lexemeId) {
 
-		LexemeFreeform ulff = LEXEME_FREEFORM.as("ulff");
-		Freeform u = FREEFORM.as("u");
-		Freeform ut = FREEFORM.as("ut");
-		Freeform ud = FREEFORM.as("ud");
-		Freeform utype = FREEFORM.as("utype");
-		UsageTypeLabel utypelbl = USAGE_TYPE_LABEL.as("utypelbl");
-		FreeformSourceLink srcl = FREEFORM_SOURCE_LINK.as("srcl");
+		Usage u = USAGE.as("u");
+		UsageTranslation ut = USAGE_TRANSLATION.as("ut");
+		UsageDefinition ud = USAGE_DEFINITION.as("ud");
+		UsageSourceLink usl = USAGE_SOURCE_LINK.as("usl");
 		Source s = SOURCE.as("s");
 
+		// usage_type ?
+
+		Field<JSON> utf = DSL
+				.select(DSL
+						.jsonArrayAgg(DSL
+								.jsonObject(
+										DSL.key("id").value(ut.ID),
+										DSL.key("usageId").value(ut.USAGE_ID),
+										DSL.key("value").value(ut.VALUE),
+										DSL.key("valuePrese").value(ut.VALUE_PRESE),
+										DSL.key("lang").value(ut.LANG),
+										DSL.key("createdBy").value(ut.CREATED_BY),
+										DSL.key("createdOn").value(ut.CREATED_ON),
+										DSL.key("modifiedBy").value(ut.MODIFIED_BY),
+										DSL.key("modifiedOn").value(ut.MODIFIED_ON),
+										DSL.key("orderBy").value(ut.ORDER_BY)))
+						.orderBy(ut.ORDER_BY))
+				.from(ut)
+				.where(ut.USAGE_ID.eq(u.ID))
+				.asField();
+
+		Field<JSON> udf = DSL
+				.select(DSL
+						.jsonArrayAgg(DSL
+								.jsonObject(
+										DSL.key("id").value(ud.ID),
+										DSL.key("usageId").value(ud.USAGE_ID),
+										DSL.key("value").value(ud.VALUE),
+										DSL.key("valuePrese").value(ud.VALUE_PRESE),
+										DSL.key("lang").value(ud.LANG),
+										DSL.key("createdBy").value(ud.CREATED_BY),
+										DSL.key("createdOn").value(ud.CREATED_ON),
+										DSL.key("modifiedBy").value(ud.MODIFIED_BY),
+										DSL.key("modifiedOn").value(ud.MODIFIED_ON),
+										DSL.key("orderBy").value(ud.ORDER_BY)))
+						.orderBy(ud.ORDER_BY))
+				.from(ud)
+				.where(ud.USAGE_ID.eq(u.ID))
+				.asField();
+
+		Field<JSON> uslf = DSL
+				.select(DSL
+						.jsonArrayAgg(DSL
+								.jsonObject(
+										DSL.key("id").value(usl.ID),
+										DSL.key("type").value(usl.TYPE),
+										DSL.key("name").value(usl.NAME),
+										DSL.key("sourceId").value(usl.SOURCE_ID),
+										DSL.key("sourceName").value(s.NAME)))
+						.orderBy(usl.ORDER_BY))
+				.from(usl, s)
+				.where(
+						usl.USAGE_ID.eq(u.ID)
+								.and(usl.SOURCE_ID.eq(s.ID)))
+				.asField();
+
 		return create
 				.select(
-						u.ID.as("usage_id"),
-						u.VALUE_PRESE.as("usage_value"),
-						u.LANG.as("usage_lang"),
-						u.COMPLEXITY.as("usage_complexity"),
-						u.ORDER_BY.as("usage_order_by"),
-						u.IS_PUBLIC.as("is_usage_public"),
-						utype.CLASSIF_CODE.as("usage_type_code"),
-						utypelbl.VALUE.as("usage_type_value"),
-						ut.ID.as("usage_translation_id"),
-						ut.VALUE_PRESE.as("usage_translation_value"),
-						ut.LANG.as("usage_translation_lang"),
-						ud.ID.as("usage_definition_id"),
-						ud.VALUE_PRESE.as("usage_definition_value"),
-						ud.LANG.as("usage_definition_lang"),
-						srcl.ID.as("usage_source_link_id"),
-						srcl.TYPE.as("usage_source_link_type"),
-						srcl.NAME.as("usage_source_link_name"),
-						s.ID.as("usage_source_id"),
-						s.NAME.as("usage_source_name"))
-				.from(
-						ulff.innerJoin(u).on(ulff.FREEFORM_ID.eq(u.ID).and(u.TYPE.eq(FreeformType.USAGE.name())))
-								.leftOuterJoin(ut).on(ut.PARENT_ID.eq(u.ID).and(ut.TYPE.eq(FreeformType.USAGE_TRANSLATION.name())))
-								.leftOuterJoin(ud).on(ud.PARENT_ID.eq(u.ID).and(ud.TYPE.eq(FreeformType.USAGE_DEFINITION.name())))
-								.leftOuterJoin(srcl).on(srcl.FREEFORM_ID.eq(u.ID))
-								.leftOuterJoin(s).on(srcl.SOURCE_ID.eq(s.ID))
-								.leftOuterJoin(utype).on(utype.PARENT_ID.eq(u.ID).and(utype.TYPE.eq(FreeformType.USAGE_TYPE.name())))
-								.leftOuterJoin(utypelbl).on(utypelbl.CODE.eq(utype.CLASSIF_CODE).and(utypelbl.LANG.eq(classifierLabelLang).and(utypelbl.TYPE.eq(classifierLabelTypeCode)))))
-				.where(ulff.LEXEME_ID.eq(lexemeId))
-				.orderBy(u.ORDER_BY, ut.ORDER_BY, ud.ORDER_BY, srcl.ORDER_BY)
-				.fetchInto(UsageTranslationDefinitionTuple.class);
+						u.ID,
+						u.VALUE,
+						u.VALUE_PRESE,
+						u.LANG,
+						u.COMPLEXITY,
+						u.IS_PUBLIC,
+						u.CREATED_BY,
+						u.CREATED_ON,
+						u.MODIFIED_BY,
+						u.MODIFIED_BY,
+						u.ORDER_BY,
+						utf.as("translations"),
+						udf.as("definitions"),
+						uslf.as("source_links"))
+				.from(u)
+				.where(u.LEXEME_ID.eq(lexemeId))
+				.orderBy(u.ORDER_BY)
+				.fetchInto(eki.ekilex.data.Usage.class);
 	}
 
-	public List<NoteSourceTuple> getLexemeNoteSourceTuples(Long lexemeId) {
+	public List<eki.ekilex.data.LexemeNote> getLexemeNotes(Long lexemeId) {
+
+		LexemeNote ln = LEXEME_NOTE.as("ln");
+		LexemeNoteSourceLink lnsl = LEXEME_NOTE_SOURCE_LINK.as("lnsl");
+		Source s = SOURCE.as("s");
+
+		Field<JSON> mnslf = DSL
+				.select(DSL
+						.jsonArrayAgg(DSL
+								.jsonObject(
+										DSL.key("id").value(lnsl.ID),
+										DSL.key("type").value(lnsl.TYPE),
+										DSL.key("name").value(lnsl.NAME),
+										DSL.key("sourceId").value(lnsl.SOURCE_ID),
+										DSL.key("sourceName").value(s.NAME)))
+						.orderBy(lnsl.ORDER_BY))
+				.from(lnsl, s)
+				.where(
+						lnsl.LEXEME_NOTE_ID.eq(ln.ID)
+								.and(lnsl.SOURCE_ID.eq(s.ID)))
+				.asField();
 
 		return create
 				.select(
-						FREEFORM.ID.as("freeform_id"),
-						FREEFORM.VALUE_TEXT,
-						FREEFORM.VALUE_PRESE,
-						FREEFORM.LANG,
-						FREEFORM.COMPLEXITY,
-						FREEFORM.IS_PUBLIC,
-						FREEFORM.ORDER_BY,
-						FREEFORM_SOURCE_LINK.ID.as("source_link_id"),
-						FREEFORM_SOURCE_LINK.TYPE.as("source_link_type"),
-						FREEFORM_SOURCE_LINK.NAME.as("source_link_name"),
-						FREEFORM_SOURCE_LINK.SOURCE_ID.as("source_id"),
-						SOURCE.NAME.as("source_name"))
-				.from(LEXEME_FREEFORM,
-						FREEFORM
-								.leftOuterJoin(FREEFORM_SOURCE_LINK).on(FREEFORM_SOURCE_LINK.FREEFORM_ID.eq(FREEFORM.ID))
-								.leftOuterJoin(SOURCE).on(FREEFORM_SOURCE_LINK.SOURCE_ID.eq(SOURCE.ID)))
-				.where(
-						LEXEME_FREEFORM.LEXEME_ID.eq(lexemeId)
-								.and(FREEFORM.ID.eq(LEXEME_FREEFORM.FREEFORM_ID))
-								.and(FREEFORM.TYPE.eq(FreeformType.NOTE.name())))
-				.orderBy(FREEFORM.ORDER_BY)
-				.fetchInto(NoteSourceTuple.class);
+						ln.ID,
+						ln.LEXEME_ID,
+						ln.VALUE,
+						ln.VALUE_PRESE,
+						ln.LANG,
+						ln.COMPLEXITY,
+						ln.CREATED_ON,
+						ln.CREATED_BY,
+						ln.MODIFIED_ON,
+						ln.MODIFIED_BY,
+						ln.ORDER_BY,
+						mnslf.as("source_links"))
+				.from(ln)
+				.where(ln.LEXEME_ID.eq(lexemeId))
+				.orderBy(ln.ORDER_BY)
+				.fetchInto(eki.ekilex.data.LexemeNote.class);
 	}
 
 	public List<LexemeRelation> getLexemeRelations(Long lexemeId, String classifierLabelLang, String classifierLabelTypeCode) {
@@ -1248,12 +1356,12 @@ public class CommonDataDbService extends AbstractDataDbService {
 						r.ORDER_BY)
 				.from(
 						r
-						.innerJoin(l2).on(l2.ID.eq(r.LEXEME2_ID))
-						.innerJoin(w2).on(w2.ID.eq(l2.WORD_ID).and(w2.IS_PUBLIC.isTrue()))
-						.leftOuterJoin(rtl).on(
-								r.LEX_REL_TYPE_CODE.eq(rtl.CODE)
-										.and(rtl.LANG.eq(classifierLabelLang)
-												.and(rtl.TYPE.eq(classifierLabelTypeCode)))))
+								.innerJoin(l2).on(l2.ID.eq(r.LEXEME2_ID))
+								.innerJoin(w2).on(w2.ID.eq(l2.WORD_ID).and(w2.IS_PUBLIC.isTrue()))
+								.leftOuterJoin(rtl).on(
+										r.LEX_REL_TYPE_CODE.eq(rtl.CODE)
+												.and(rtl.LANG.eq(classifierLabelLang)
+														.and(rtl.TYPE.eq(classifierLabelTypeCode)))))
 				.where(r.LEXEME1_ID.eq(lexemeId))
 				.groupBy(r.ID, l2.ID, w2.ID, rtl.VALUE)
 				.orderBy(r.ORDER_BY)

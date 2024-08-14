@@ -12,6 +12,8 @@ public class Definition extends AbstractPublicEntity {
 
 	private String value;
 
+	private String valuePrese;
+
 	private String lang;
 
 	private Complexity complexity;
@@ -44,6 +46,14 @@ public class Definition extends AbstractPublicEntity {
 
 	public void setValue(String value) {
 		this.value = value;
+	}
+
+	public String getValuePrese() {
+		return valuePrese;
+	}
+
+	public void setValuePrese(String valuePrese) {
+		this.valuePrese = valuePrese;
 	}
 
 	public String getLang() {

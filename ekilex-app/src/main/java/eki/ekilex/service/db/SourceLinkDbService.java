@@ -1,34 +1,32 @@
 package eki.ekilex.service.db;
 
-import static eki.ekilex.data.db.Tables.DEFINITION_FREEFORM;
+import static eki.ekilex.data.db.Tables.DEFINITION_NOTE_SOURCE_LINK;
 import static eki.ekilex.data.db.Tables.DEFINITION_SOURCE_LINK;
-import static eki.ekilex.data.db.Tables.FREEFORM;
 import static eki.ekilex.data.db.Tables.FREEFORM_SOURCE_LINK;
-import static eki.ekilex.data.db.Tables.LEXEME_FREEFORM;
+import static eki.ekilex.data.db.Tables.LEXEME_NOTE_SOURCE_LINK;
 import static eki.ekilex.data.db.Tables.LEXEME_SOURCE_LINK;
-import static eki.ekilex.data.db.Tables.MEANING_FREEFORM;
+import static eki.ekilex.data.db.Tables.MEANING_IMAGE_SOURCE_LINK;
+import static eki.ekilex.data.db.Tables.MEANING_NOTE_SOURCE_LINK;
 import static eki.ekilex.data.db.Tables.SOURCE;
-import static eki.ekilex.data.db.Tables.SOURCE_FREEFORM;
-import static eki.ekilex.data.db.Tables.WORD_FREEFORM;
+import static eki.ekilex.data.db.Tables.USAGE_SOURCE_LINK;
 
 import org.jooq.DSLContext;
-import org.jooq.Record2;
+import org.jooq.Field;
 import org.jooq.Table;
-import org.jooq.impl.DSL;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import eki.common.constant.ActivityEntity;
-import eki.common.constant.ReferenceOwner;
 import eki.common.constant.ReferenceType;
 import eki.ekilex.data.SourceLink;
-import eki.ekilex.data.api.FreeformOwner;
-import eki.ekilex.data.db.tables.DefinitionFreeform;
-import eki.ekilex.data.db.tables.Freeform;
-import eki.ekilex.data.db.tables.LexemeFreeform;
-import eki.ekilex.data.db.tables.MeaningFreeform;
-import eki.ekilex.data.db.tables.SourceFreeform;
-import eki.ekilex.data.db.tables.WordFreeform;
+import eki.ekilex.data.SourceLinkOwner;
+import eki.ekilex.data.db.tables.DefinitionNoteSourceLink;
+import eki.ekilex.data.db.tables.DefinitionSourceLink;
+import eki.ekilex.data.db.tables.LexemeNoteSourceLink;
+import eki.ekilex.data.db.tables.LexemeSourceLink;
+import eki.ekilex.data.db.tables.MeaningImageSourceLink;
+import eki.ekilex.data.db.tables.MeaningNoteSourceLink;
+import eki.ekilex.data.db.tables.Source;
+import eki.ekilex.data.db.tables.UsageSourceLink;
 
 @Component
 public class SourceLinkDbService {
@@ -36,107 +34,132 @@ public class SourceLinkDbService {
 	@Autowired
 	private DSLContext create;
 
-	public FreeformOwner getFreeformOwner(Long freeformId) {
-
-		Freeform ff = FREEFORM.as("ff");
-		LexemeFreeform lff = LEXEME_FREEFORM.as("lff");
-		MeaningFreeform mff = MEANING_FREEFORM.as("mff");
-		WordFreeform wff = WORD_FREEFORM.as("wff");
-		SourceFreeform sff = SOURCE_FREEFORM.as("sff");
-		DefinitionFreeform dff = DEFINITION_FREEFORM.as("dff");
-		final String fieldNameEntity = "entity";
-		final String fieldNameEntityId = "entity_id";
-
-		Table<Record2<String,Long>> xff = DSL
-				.select(
-						DSL.field(DSL.val(ActivityEntity.LEXEME.name())).as(fieldNameEntity),
-						lff.LEXEME_ID.as(fieldNameEntityId))
-				.from(lff)
-				.where(lff.FREEFORM_ID.eq(freeformId))
-				.unionAll(DSL
-						.select(
-								DSL.field(DSL.val(ActivityEntity.MEANING.name())).as(fieldNameEntity),
-								mff.MEANING_ID.as(fieldNameEntityId))
-						.from(mff)
-						.where(mff.FREEFORM_ID.eq(freeformId)))
-				.unionAll(DSL
-						.select(
-								DSL.field(DSL.val(ActivityEntity.WORD.name())).as(fieldNameEntity),
-								wff.WORD_ID.as(fieldNameEntityId))
-						.from(wff)
-						.where(wff.FREEFORM_ID.eq(freeformId)))
-				.unionAll(DSL
-						.select(
-								DSL.field(DSL.val(ActivityEntity.SOURCE.name())).as(fieldNameEntity),
-								sff.SOURCE_ID.as(fieldNameEntityId))
-						.from(sff)
-						.where(sff.FREEFORM_ID.eq(freeformId)))
-				.unionAll(DSL
-						.select(
-								DSL.field(DSL.val(ActivityEntity.DEFINITION.name())).as(fieldNameEntity),
-								dff.DEFINITION_ID.as(fieldNameEntityId))
-						.from(dff)
-						.where(dff.FREEFORM_ID.eq(freeformId)))
-				.asTable("xff");
-
-		return create
-				.select(
-						ff.TYPE,
-						xff.field(fieldNameEntity),
-						xff.field(fieldNameEntityId))
-				.from(ff, xff)
-				.where(ff.ID.eq(freeformId))
-				.fetchSingleInto(FreeformOwner.class);
-	}
-
-	public SourceLink getFreeformSourceLink(Long sourceLinkId) {
-
-		return create
-				.select(
-						DSL.field(DSL.val(ReferenceOwner.FREEFORM.name())).as("owner"),
-						FREEFORM_SOURCE_LINK.FREEFORM_ID.as("owner_id"),
-						FREEFORM_SOURCE_LINK.ID,
-						FREEFORM_SOURCE_LINK.TYPE,
-						FREEFORM_SOURCE_LINK.NAME,
-						FREEFORM_SOURCE_LINK.SOURCE_ID,
-						SOURCE.NAME.as("source_name"))
-				.from(FREEFORM_SOURCE_LINK, SOURCE)
-				.where(FREEFORM_SOURCE_LINK.ID.eq(sourceLinkId).and(FREEFORM_SOURCE_LINK.SOURCE_ID.eq(SOURCE.ID)))
-				.fetchOneInto(SourceLink.class);
-	}
-
 	public SourceLink getDefinitionSourceLink(Long sourceLinkId) {
 
-		return create
-				.select(
-						DSL.field(DSL.val(ReferenceOwner.DEFINITION.name())).as("owner"),
-						DEFINITION_SOURCE_LINK.DEFINITION_ID.as("owner_id"),
-						DEFINITION_SOURCE_LINK.ID,
-						DEFINITION_SOURCE_LINK.TYPE,
-						DEFINITION_SOURCE_LINK.NAME,
-						DEFINITION_SOURCE_LINK.VALUE,
-						DEFINITION_SOURCE_LINK.SOURCE_ID,
-						SOURCE.NAME.as("source_name"))
-				.from(DEFINITION_SOURCE_LINK, SOURCE)
-				.where(DEFINITION_SOURCE_LINK.ID.eq(sourceLinkId).and(DEFINITION_SOURCE_LINK.SOURCE_ID.eq(SOURCE.ID)))
-				.fetchOneInto(SourceLink.class);
+		DefinitionSourceLink sl = DEFINITION_SOURCE_LINK.as("sl");
+
+		return getSourceLink(sourceLinkId, sl);
+	}
+
+	public SourceLink getDefinitionNoteSourceLink(Long sourceLinkId) {
+
+		DefinitionNoteSourceLink sl = DEFINITION_NOTE_SOURCE_LINK.as("sl");
+
+		return getSourceLink(sourceLinkId, sl);
 	}
 
 	public SourceLink getLexemeSourceLink(Long sourceLinkId) {
 
+		LexemeSourceLink sl = LEXEME_SOURCE_LINK.as("sl");
+
+		return getSourceLink(sourceLinkId, sl);
+	}
+
+	public SourceLink getLexemeNoteSourceLink(Long sourceLinkId) {
+
+		LexemeNoteSourceLink sl = LEXEME_NOTE_SOURCE_LINK.as("sl");
+
+		return getSourceLink(sourceLinkId, sl);
+	}
+
+	public SourceLink getUsageSourceLink(Long sourceLinkId) {
+
+		UsageSourceLink sl = USAGE_SOURCE_LINK.as("sl");
+
+		return getSourceLink(sourceLinkId, sl);
+	}
+
+	public SourceLink getMeaningImageSourceLink(Long sourceLinkId) {
+
+		MeaningImageSourceLink sl = MEANING_IMAGE_SOURCE_LINK.as("sl");
+
+		return getSourceLink(sourceLinkId, sl);
+	}
+
+	public SourceLink getMeaningNoteSourceLink(Long sourceLinkId) {
+
+		MeaningNoteSourceLink sl = MEANING_NOTE_SOURCE_LINK.as("sl");
+
+		return getSourceLink(sourceLinkId, sl);
+	}
+
+	private SourceLink getSourceLink(Long sourceLinkId, Table<?> sl) {
+
+		Source s = SOURCE.as("s");
+
 		return create
 				.select(
-						DSL.field(DSL.val(ReferenceOwner.LEXEME.name())).as("owner"),
-						LEXEME_SOURCE_LINK.LEXEME_ID.as("owner_id"),
-						LEXEME_SOURCE_LINK.ID,
-						LEXEME_SOURCE_LINK.TYPE,
-						LEXEME_SOURCE_LINK.NAME,
-						LEXEME_SOURCE_LINK.VALUE,
-						LEXEME_SOURCE_LINK.SOURCE_ID,
-						SOURCE.NAME.as("source_name"))
-				.from(LEXEME_SOURCE_LINK, SOURCE)
-				.where(LEXEME_SOURCE_LINK.ID.eq(sourceLinkId).and(LEXEME_SOURCE_LINK.SOURCE_ID.eq(SOURCE.ID)))
+						sl.field("id", Long.class),
+						sl.field("type", String.class),
+						sl.field("name", String.class),
+						sl.field("source_id", Long.class),
+						s.NAME.as("source_name"))
+				.from(sl, s)
+				.where(
+						sl.field("id", Long.class).eq(sourceLinkId)
+								.and(sl.field("source_id", Long.class).eq(s.ID)))
 				.fetchOneInto(SourceLink.class);
+	}
+
+	public SourceLinkOwner getDefinitionSourceLinkOwner(Long sourceLinkId) {
+
+		DefinitionSourceLink sl = DEFINITION_SOURCE_LINK.as("sl");
+
+		return getOwner(sourceLinkId, sl, sl.DEFINITION_ID);
+	}
+
+	public SourceLinkOwner getDefinitionNoteSourceLinkOwner(Long sourceLinkId) {
+
+		DefinitionNoteSourceLink sl = DEFINITION_NOTE_SOURCE_LINK.as("sl");
+
+		return getOwner(sourceLinkId, sl, sl.DEFINITION_NOTE_ID);
+	}
+
+	public SourceLinkOwner getLexemeSourceLinkOwner(Long sourceLinkId) {
+
+		LexemeSourceLink sl = LEXEME_SOURCE_LINK.as("sl");
+
+		return getOwner(sourceLinkId, sl, sl.LEXEME_ID);
+	}
+
+	public SourceLinkOwner getLexemeNoteSourceLinkOwner(Long sourceLinkId) {
+
+		LexemeNoteSourceLink sl = LEXEME_NOTE_SOURCE_LINK.as("sl");
+
+		return getOwner(sourceLinkId, sl, sl.LEXEME_NOTE_ID);
+	}
+
+	public SourceLinkOwner getUsageSourceLinkOwner(Long sourceLinkId) {
+
+		UsageSourceLink sl = USAGE_SOURCE_LINK.as("sl");
+
+		return getOwner(sourceLinkId, sl, sl.USAGE_ID);
+	}
+
+	public SourceLinkOwner getMeaningImageSourceLinkOwner(Long sourceLinkId) {
+
+		MeaningImageSourceLink sl = MEANING_IMAGE_SOURCE_LINK.as("sl");
+
+		return getOwner(sourceLinkId, sl, sl.MEANING_IMAGE_ID);
+	}
+
+	public SourceLinkOwner getMeaningNoteSourceLinkOwner(Long sourceLinkId) {
+
+		MeaningNoteSourceLink sl = MEANING_NOTE_SOURCE_LINK.as("sl");
+
+		return getOwner(sourceLinkId, sl, sl.MEANING_NOTE_ID);
+	}
+
+	private SourceLinkOwner getOwner(Long sourceLinkId, Table<?> sl, Field<Long> parentIdField) {
+
+		return create
+				.select(
+						parentIdField.as("owner_id"),
+						sl.field("source_id", Long.class))
+				.from(sl)
+				.where(sl.field("id", Long.class).eq(sourceLinkId))
+				.fetchOptionalInto(SourceLinkOwner.class)
+				.orElse(null);
 	}
 
 	public Long createLexemeSourceLink(Long lexemeId, Long sourceId, ReferenceType refType, String sourceLinkName) {
@@ -157,10 +180,28 @@ public class SourceLinkDbService {
 				.getId();
 	}
 
-	public void updateLexemeSourceLink(Long sourceLinkId, String sourceLinkName) {
+	public Long createLexemeSourceLink(Long lexemeId, SourceLink sourceLink) {
+		return create
+				.insertInto(
+						LEXEME_SOURCE_LINK,
+						LEXEME_SOURCE_LINK.LEXEME_ID,
+						LEXEME_SOURCE_LINK.SOURCE_ID,
+						LEXEME_SOURCE_LINK.TYPE,
+						LEXEME_SOURCE_LINK.NAME)
+				.values(
+						lexemeId,
+						sourceLink.getSourceId(),
+						sourceLink.getType().name(),
+						sourceLink.getName())
+				.returning(LEXEME_SOURCE_LINK.ID)
+				.fetchOne()
+				.getId();
+	}
+
+	public void updateLexemeSourceLink(Long sourceLinkId, String name) {
 		create
 				.update(LEXEME_SOURCE_LINK)
-				.set(LEXEME_SOURCE_LINK.NAME, sourceLinkName)
+				.set(LEXEME_SOURCE_LINK.NAME, name)
 				.where(LEXEME_SOURCE_LINK.ID.eq(sourceLinkId))
 				.execute();
 	}
@@ -171,39 +212,106 @@ public class SourceLinkDbService {
 				.execute();
 	}
 
-	public Long createFreeformSourceLink(Long freeformId, Long sourceId, ReferenceType refType, String sourceLinkName) {
+	public Long createLexemeNoteSourceLink(Long lexemeNoteId, SourceLink sourceLink) {
 		return create
 				.insertInto(
-						FREEFORM_SOURCE_LINK,
-						FREEFORM_SOURCE_LINK.FREEFORM_ID,
-						FREEFORM_SOURCE_LINK.SOURCE_ID,
-						FREEFORM_SOURCE_LINK.TYPE,
-						FREEFORM_SOURCE_LINK.NAME)
+						LEXEME_NOTE_SOURCE_LINK,
+						LEXEME_NOTE_SOURCE_LINK.LEXEME_NOTE_ID,
+						LEXEME_NOTE_SOURCE_LINK.SOURCE_ID,
+						LEXEME_NOTE_SOURCE_LINK.TYPE,
+						LEXEME_NOTE_SOURCE_LINK.NAME)
 				.values(
-						freeformId,
-						sourceId,
-						refType.name(),
-						sourceLinkName)
-				.returning(FREEFORM_SOURCE_LINK.ID)
+						lexemeNoteId,
+						sourceLink.getSourceId(),
+						sourceLink.getType().name(),
+						sourceLink.getName())
+				.returning(LEXEME_NOTE_SOURCE_LINK.ID)
 				.fetchOne()
 				.getId();
 	}
 
-	public void updateFreeformSourceLink(Long sourceLinkId, String sourceLinkName) {
+	public void updateLexemeNoteSourceLink(Long lexemeNoteSourceLinkId, String name) {
 		create
-				.update(FREEFORM_SOURCE_LINK)
-				.set(FREEFORM_SOURCE_LINK.NAME, sourceLinkName)
-				.where(FREEFORM_SOURCE_LINK.ID.eq(sourceLinkId))
+				.update(LEXEME_NOTE_SOURCE_LINK)
+				.set(LEXEME_NOTE_SOURCE_LINK.NAME, name)
+				.where(LEXEME_NOTE_SOURCE_LINK.ID.eq(lexemeNoteSourceLinkId))
 				.execute();
 	}
 
-	public void deleteFreeformSourceLink(Long sourceLinkId) {
-		create.delete(FREEFORM_SOURCE_LINK)
-				.where(FREEFORM_SOURCE_LINK.ID.eq(sourceLinkId))
+	public void deleteLexemeNoteSourceLink(Long lexemeNoteSourceLinkId) {
+		create
+				.deleteFrom(LEXEME_NOTE_SOURCE_LINK)
+				.where(LEXEME_NOTE_SOURCE_LINK.ID.eq(lexemeNoteSourceLinkId))
 				.execute();
 	}
 
-	public Long createDefinitionSourceLink(Long definitionId, Long sourceId, ReferenceType refType, String sourceLinkName) {
+	public Long createUsageSourceLink(Long usageId, SourceLink sourceLink) {
+		return create
+				.insertInto(
+						USAGE_SOURCE_LINK,
+						USAGE_SOURCE_LINK.USAGE_ID,
+						USAGE_SOURCE_LINK.SOURCE_ID,
+						USAGE_SOURCE_LINK.TYPE,
+						USAGE_SOURCE_LINK.NAME)
+				.values(
+						usageId,
+						sourceLink.getSourceId(),
+						sourceLink.getType().name(),
+						sourceLink.getName())
+				.returning(USAGE_SOURCE_LINK.ID)
+				.fetchOne()
+				.getId();
+	}
+
+	public void updateUsageSourceLink(Long usageSourceLinkId, String name) {
+		create
+				.update(USAGE_SOURCE_LINK)
+				.set(USAGE_SOURCE_LINK.NAME, name)
+				.where(USAGE_SOURCE_LINK.ID.eq(usageSourceLinkId))
+				.execute();
+	}
+
+	public void deleteUsageSourceLink(Long usageSourceLinkId) {
+		create
+				.deleteFrom(USAGE_SOURCE_LINK)
+				.where(USAGE_SOURCE_LINK.ID.eq(usageSourceLinkId))
+				.execute();
+	}
+
+	public Long createMeaningNoteSourceLink(Long meaningNoteId, SourceLink sourceLink) {
+		return create
+				.insertInto(
+						MEANING_NOTE_SOURCE_LINK,
+						MEANING_NOTE_SOURCE_LINK.MEANING_NOTE_ID,
+						MEANING_NOTE_SOURCE_LINK.SOURCE_ID,
+						MEANING_NOTE_SOURCE_LINK.TYPE,
+						MEANING_NOTE_SOURCE_LINK.NAME)
+				.values(
+						meaningNoteId,
+						sourceLink.getSourceId(),
+						sourceLink.getType().name(),
+						sourceLink.getName())
+				.returning(MEANING_NOTE_SOURCE_LINK.ID)
+				.fetchOne()
+				.getId();
+	}
+
+	public void updateMeaningNoteSourceLink(Long meaningNoteSourceLinkId, String name) {
+		create
+				.update(MEANING_NOTE_SOURCE_LINK)
+				.set(MEANING_NOTE_SOURCE_LINK.NAME, name)
+				.where(MEANING_NOTE_SOURCE_LINK.ID.eq(meaningNoteSourceLinkId))
+				.execute();
+	}
+
+	public void deleteMeaningNoteSourceLink(Long meaningNoteSourceLinkId) {
+		create
+				.deleteFrom(MEANING_NOTE_SOURCE_LINK)
+				.where(MEANING_NOTE_SOURCE_LINK.ID.eq(meaningNoteSourceLinkId))
+				.execute();
+	}
+
+	public Long createDefinitionSourceLink(Long definitionId, SourceLink sourceLink) {
 		return create
 				.insertInto(
 						DEFINITION_SOURCE_LINK,
@@ -213,9 +321,9 @@ public class SourceLinkDbService {
 						DEFINITION_SOURCE_LINK.NAME)
 				.values(
 						definitionId,
-						sourceId,
-						refType.name(),
-						sourceLinkName)
+						sourceLink.getSourceId(),
+						sourceLink.getType().name(),
+						sourceLink.getName())
 				.returning(DEFINITION_SOURCE_LINK.ID)
 				.fetchOne()
 				.getId();
@@ -234,4 +342,107 @@ public class SourceLinkDbService {
 				.where(DEFINITION_SOURCE_LINK.ID.eq(sourceLinkId))
 				.execute();
 	}
+
+	public Long createDefinitionNoteSourceLink(Long definitionNoteId, SourceLink sourceLink) {
+		return create
+				.insertInto(
+						DEFINITION_NOTE_SOURCE_LINK,
+						DEFINITION_NOTE_SOURCE_LINK.DEFINITION_NOTE_ID,
+						DEFINITION_NOTE_SOURCE_LINK.SOURCE_ID,
+						DEFINITION_NOTE_SOURCE_LINK.TYPE,
+						DEFINITION_NOTE_SOURCE_LINK.NAME)
+				.values(
+						definitionNoteId,
+						sourceLink.getSourceId(),
+						sourceLink.getType().name(),
+						sourceLink.getName())
+				.returning(DEFINITION_NOTE_SOURCE_LINK.ID)
+				.fetchOne()
+				.getId();
+	}
+
+	public void updateDefinitionNoteSourceLink(Long definitionNoteSourceLinkId, String name) {
+		create
+				.update(DEFINITION_NOTE_SOURCE_LINK)
+				.set(DEFINITION_NOTE_SOURCE_LINK.NAME, name)
+				.where(DEFINITION_NOTE_SOURCE_LINK.ID.eq(definitionNoteSourceLinkId))
+				.execute();
+	}
+
+	public void deleteDefinitionNoteSourceLink(Long definitionNoteSourceLinkId) {
+		create
+				.deleteFrom(DEFINITION_NOTE_SOURCE_LINK)
+				.where(DEFINITION_NOTE_SOURCE_LINK.ID.eq(definitionNoteSourceLinkId))
+				.execute();
+	}
+
+	public Long createMeaningImageSourceLink(Long meaningImageId, SourceLink sourceLink) {
+		return create
+				.insertInto(
+						MEANING_IMAGE_SOURCE_LINK,
+						MEANING_IMAGE_SOURCE_LINK.MEANING_IMAGE_ID,
+						MEANING_IMAGE_SOURCE_LINK.SOURCE_ID,
+						MEANING_IMAGE_SOURCE_LINK.TYPE,
+						MEANING_IMAGE_SOURCE_LINK.NAME)
+				.values(
+						meaningImageId,
+						sourceLink.getSourceId(),
+						sourceLink.getType().name(),
+						sourceLink.getName())
+				.returning(MEANING_IMAGE_SOURCE_LINK.ID)
+				.fetchOne()
+				.getId();
+	}
+
+	public void updateMeaningImageSourceLink(Long meaningImageSourceLinkId, String name) {
+		create
+				.update(MEANING_IMAGE_SOURCE_LINK)
+				.set(MEANING_IMAGE_SOURCE_LINK.NAME, name)
+				.where(MEANING_IMAGE_SOURCE_LINK.ID.eq(meaningImageSourceLinkId))
+				.execute();
+	}
+
+	public void deleteMeaningImageSourceLink(Long meaningImageSourceLinkId) {
+		create
+				.deleteFrom(MEANING_IMAGE_SOURCE_LINK)
+				.where(MEANING_IMAGE_SOURCE_LINK.ID.eq(meaningImageSourceLinkId))
+				.execute();
+	}
+
+	@Deprecated
+	public Long createFreeformSourceLink(Long freeformId, Long sourceId, ReferenceType refType, String sourceLinkName) {
+		return create
+				.insertInto(
+						FREEFORM_SOURCE_LINK,
+						FREEFORM_SOURCE_LINK.FREEFORM_ID,
+						FREEFORM_SOURCE_LINK.SOURCE_ID,
+						FREEFORM_SOURCE_LINK.TYPE,
+						FREEFORM_SOURCE_LINK.NAME)
+				.values(
+						freeformId,
+						sourceId,
+						refType.name(),
+						sourceLinkName)
+				.returning(FREEFORM_SOURCE_LINK.ID)
+				.fetchOne()
+				.getId();
+	}
+
+	@Deprecated
+	public void updateFreeformSourceLink(Long sourceLinkId, String sourceLinkName) {
+		create
+				.update(FREEFORM_SOURCE_LINK)
+				.set(FREEFORM_SOURCE_LINK.NAME, sourceLinkName)
+				.where(FREEFORM_SOURCE_LINK.ID.eq(sourceLinkId))
+				.execute();
+	}
+
+	@Deprecated
+	public void deleteFreeformSourceLink(Long sourceLinkId) {
+		create
+				.delete(FREEFORM_SOURCE_LINK)
+				.where(FREEFORM_SOURCE_LINK.ID.eq(sourceLinkId))
+				.execute();
+	}
+
 }

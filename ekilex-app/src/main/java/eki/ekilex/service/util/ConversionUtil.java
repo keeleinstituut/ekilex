@@ -26,11 +26,9 @@ import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.stereotype.Component;
 
-import eki.common.constant.Complexity;
 import eki.common.constant.FreeformType;
 import eki.common.constant.GlobalConstant;
 import eki.common.constant.ReferenceOwner;
-import eki.common.constant.ReferenceType;
 import eki.common.constant.SynonymType;
 import eki.ekilex.data.Classifier;
 import eki.ekilex.data.ClassifierSelect;
@@ -40,26 +38,19 @@ import eki.ekilex.data.CollocationPosGroup;
 import eki.ekilex.data.CollocationRelGroup;
 import eki.ekilex.data.CollocationTuple;
 import eki.ekilex.data.DatasetPermission;
-import eki.ekilex.data.DefSourceAndNoteSourceTuple;
 import eki.ekilex.data.Definition;
 import eki.ekilex.data.DefinitionLangGroup;
-import eki.ekilex.data.DefinitionNote;
 import eki.ekilex.data.EkiUserProfile;
 import eki.ekilex.data.Form;
-import eki.ekilex.data.ImageSourceTuple;
 import eki.ekilex.data.InexactSynonym;
 import eki.ekilex.data.Lexeme;
 import eki.ekilex.data.LexemeLangGroup;
-import eki.ekilex.data.LexemeNote;
 import eki.ekilex.data.LexemeTag;
 import eki.ekilex.data.LexemeWordTuple;
-import eki.ekilex.data.MeaningNote;
 import eki.ekilex.data.MeaningRelation;
 import eki.ekilex.data.MeaningWord;
-import eki.ekilex.data.Media;
 import eki.ekilex.data.Note;
 import eki.ekilex.data.NoteLangGroup;
-import eki.ekilex.data.NoteSourceTuple;
 import eki.ekilex.data.Paradigm;
 import eki.ekilex.data.ParadigmFormTuple;
 import eki.ekilex.data.Source;
@@ -72,10 +63,6 @@ import eki.ekilex.data.SynonymLangGroup;
 import eki.ekilex.data.Tag;
 import eki.ekilex.data.TermMeaning;
 import eki.ekilex.data.TypeTermMeaningWord;
-import eki.ekilex.data.Usage;
-import eki.ekilex.data.UsageDefinition;
-import eki.ekilex.data.UsageTranslation;
-import eki.ekilex.data.UsageTranslationDefinitionTuple;
 import eki.ekilex.data.Word;
 import eki.ekilex.data.WordEtym;
 import eki.ekilex.data.WordEtymRel;
@@ -178,173 +165,6 @@ public class ConversionUtil implements GlobalConstant {
 			boolean formsExist = CollectionUtils.isNotEmpty(forms);
 			paradigm.setFormsExist(formsExist);
 		}
-	}
-
-	public List<Usage> composeUsages(List<UsageTranslationDefinitionTuple> usageTranslationDefinitionTuples) {
-
-		List<Usage> usages = new ArrayList<>();
-
-		Map<Long, Usage> usageMap = new HashMap<>();
-		Map<Long, SourceLink> usageSourceMap = new HashMap<>();
-		Map<Long, UsageTranslation> usageTranslationMap = new HashMap<>();
-		Map<Long, UsageDefinition> usageDefinitionMap = new HashMap<>();
-
-		for (UsageTranslationDefinitionTuple tuple : usageTranslationDefinitionTuples) {
-
-			Long usageId = tuple.getUsageId();
-			Long usageTranslationId = tuple.getUsageTranslationId();
-			Long usageDefinitionId = tuple.getUsageDefinitionId();
-			Long usageSourceLinkId = tuple.getUsageSourceLinkId();
-
-			Usage usage = usageMap.get(usageId);
-			if (usage == null) {
-				usage = new Usage();
-				usage.setId(usageId);
-				usage.setValue(tuple.getUsageValue());
-				usage.setLang(tuple.getUsageLang());
-				usage.setComplexity(tuple.getUsageComplexity());
-				usage.setOrderBy(tuple.getUsageOrderBy());
-				usage.setTypeCode(tuple.getUsageTypeCode());
-				usage.setTypeValue(tuple.getUsageTypeValue());
-				usage.setTranslations(new ArrayList<>());
-				usage.setDefinitions(new ArrayList<>());
-				usage.setSourceLinks(new ArrayList<>());
-				usage.setPublic(tuple.isUsagePublic());
-				usageMap.put(usageId, usage);
-				usages.add(usage);
-			}
-			if (usageSourceLinkId != null) {
-				SourceLink usageSource = usageSourceMap.get(usageSourceLinkId);
-				if (usageSource == null) {
-					usageSource = new SourceLink();
-					usageSource.setOwner(ReferenceOwner.FREEFORM);
-					usageSource.setOwnerId(usageId);
-					usageSource.setId(tuple.getUsageSourceLinkId());
-					usageSource.setType(tuple.getUsageSourceLinkType());
-					usageSource.setName(tuple.getUsageSourceLinkName());
-					usageSource.setSourceId(tuple.getUsageSourceId());
-					usageSource.setSourceName(tuple.getUsageSourceName());
-					usageSourceMap.put(usageSourceLinkId, usageSource);
-					usage.getSourceLinks().add(usageSource);
-				}
-			}
-			if (usageTranslationId != null) {
-				UsageTranslation usageTranslation = usageTranslationMap.get(usageTranslationId);
-				if (usageTranslation == null) {
-					usageTranslation = new UsageTranslation();
-					usageTranslation.setId(usageTranslationId);
-					usageTranslation.setValue(tuple.getUsageTranslationValue());
-					usageTranslation.setLang(tuple.getUsageTranslationLang());
-					usageTranslationMap.put(usageTranslationId, usageTranslation);
-					usage.getTranslations().add(usageTranslation);
-				}
-			}
-			if (usageDefinitionId != null) {
-				UsageDefinition usageDefinition = usageDefinitionMap.get(usageDefinitionId);
-				if (usageDefinition == null) {
-					usageDefinition = new UsageDefinition();
-					usageDefinition.setId(usageDefinitionId);
-					usageDefinition.setValue(tuple.getUsageDefinitionValue());
-					usageDefinition.setLang(tuple.getUsageDefinitionLang());
-					usageDefinitionMap.put(usageDefinitionId, usageDefinition);
-					usage.getDefinitions().add(usageDefinition);
-				}
-			}
-		}
-		return usages;
-	}
-
-	public <T extends Note> List<T> composeNotes(Class<T> type, Long parentId, List<NoteSourceTuple> noteSourceTuples) throws Exception {
-
-		List<T> notes = new ArrayList<>();
-
-		Map<Long, T> noteMap = new HashMap<>();
-		List<SourceLink> sourceLinks;
-
-		for (NoteSourceTuple tuple : noteSourceTuples) {
-
-			Long noteId = tuple.getFreeformId();
-			Long sourceLinkId = tuple.getSourceLinkId();
-
-			T note = noteMap.get(noteId);
-			if (note == null) {
-				note = type.getDeclaredConstructor().newInstance();
-				sourceLinks = new ArrayList<>();
-				note.setSourceLinks(sourceLinks);
-				note.setId(noteId);
-				note.setValueText(tuple.getValueText());
-				note.setValuePrese(tuple.getValuePrese());
-				note.setLang(tuple.getLang());
-				note.setComplexity(tuple.getComplexity());
-				note.setPublic(tuple.isPublic());
-				note.setOrderBy(tuple.getOrderBy());
-				note.setModifiedBy(tuple.getModifiedBy());
-				note.setModifiedOn(tuple.getModifiedOn());
-				if (note instanceof LexemeNote) {
-					((LexemeNote) note).setLexemeId(parentId);
-				} else if (note instanceof MeaningNote) {
-					((MeaningNote) note).setMeaningId(parentId);
-				}
-				noteMap.put(noteId, note);
-				notes.add(note);
-			} else {
-				sourceLinks = note.getSourceLinks();
-			}
-			if (sourceLinkId != null) {
-				SourceLink sourceLink = new SourceLink();
-				sourceLink.setOwner(ReferenceOwner.FREEFORM);
-				sourceLink.setOwnerId(noteId);
-				sourceLink.setId(sourceLinkId);
-				sourceLink.setType(tuple.getSourceLinkType());
-				sourceLink.setName(tuple.getSourceLinkName());
-				sourceLink.setSourceId(tuple.getSourceId());
-				sourceLink.setSourceName(tuple.getSourceName());
-				sourceLinks.add(sourceLink);
-			}
-		}
-
-		return notes;
-	}
-
-	public List<Media> composeMeaningImages(List<ImageSourceTuple> imageSourceTuples) {
-
-		List<Media> images = new ArrayList<>();
-
-		Map<Long, Media> imageMap = new HashMap<>();
-		List<SourceLink> sourceLinks;
-
-		for (ImageSourceTuple tuple : imageSourceTuples) {
-			Long imageId = tuple.getImageFreeformId();
-			Long sourceLinkId = tuple.getSourceLinkId();
-
-			Media image = imageMap.get(imageId);
-			if (image == null) {
-				image = new Media();
-				sourceLinks = new ArrayList<>();
-				image.setSourceLinks(sourceLinks);
-				image.setId(imageId);
-				image.setSourceUrl(tuple.getImageFreeformValueText());
-				image.setTitle(tuple.getTitleFreeformValueText());
-				image.setComplexity(tuple.getImageFreeformComplexity());
-				imageMap.put(imageId, image);
-				images.add(image);
-			} else {
-				sourceLinks = image.getSourceLinks();
-			}
-			if (sourceLinkId != null) {
-				SourceLink sourceLink = new SourceLink();
-				sourceLink.setOwner(ReferenceOwner.FREEFORM);
-				sourceLink.setOwnerId(imageId);
-				sourceLink.setId(sourceLinkId);
-				sourceLink.setType(tuple.getSourceLinkType());
-				sourceLink.setName(tuple.getSourceLinkName());
-				sourceLink.setSourceId(tuple.getSourceId());
-				sourceLink.setSourceName(tuple.getSourceName());
-				sourceLinks.add(sourceLink);
-			}
-		}
-
-		return images;
 	}
 
 	public Lexeme composeLexeme(LexemeWordTuple lexemeWordTuple) {
@@ -466,92 +286,6 @@ public class ConversionUtil implements GlobalConstant {
 		});
 
 		return noteLangGroups;
-	}
-
-	public void composeMeaningDefinitions(List<Definition> definitions, List<DefSourceAndNoteSourceTuple> definitionsDataTuples) {
-
-		Map<Long, Definition> definitionMap = definitions.stream().collect(Collectors.toMap(Definition::getId, definition -> definition));
-		List<Long> handledSourceLinkIds = new ArrayList<>();
-		Map<Long, DefinitionNote> noteMap = new HashMap<>();
-		Map<Long, SourceLink> noteSourceLinkMap = new HashMap<>();
-
-		for (DefSourceAndNoteSourceTuple definitionData : definitionsDataTuples) {
-			Long definitionId = definitionData.getDefinitionId();
-			Long definitionSourceLinkId = definitionData.getDefinitionSourceLinkId();
-			Long noteId = definitionData.getNoteId();
-			Long noteSourceLinkId = definitionData.getNoteSourceLinkId();
-
-			Definition definition = definitionMap.get(definitionId);
-			if (definition == null) {
-				continue;
-			}
-			if (definition.getSourceLinks() == null) {
-				definition.setSourceLinks(new ArrayList<>());
-			}
-			if (definition.getNotes() == null) {
-				definition.setNotes(new ArrayList<>());
-			}
-
-			if (definitionSourceLinkId != null && !handledSourceLinkIds.contains(definitionSourceLinkId)) {
-				ReferenceType definitionSourceLinkType = definitionData.getDefinitionSourceLinkType();
-				String definitionSourceLinkName = definitionData.getDefinitionSourceLinkName();
-				Long definitionSourceId = definitionData.getDefinitionSourceId();
-				String definitionSourceName = definitionData.getDefinitionSourceName();
-				SourceLink definitionSourceLink = new SourceLink();
-				definitionSourceLink.setOwner(ReferenceOwner.DEFINITION);
-				definitionSourceLink.setOwnerId(definitionId);
-				definitionSourceLink.setId(definitionSourceLinkId);
-				definitionSourceLink.setType(definitionSourceLinkType);
-				definitionSourceLink.setName(definitionSourceLinkName);
-				definitionSourceLink.setSourceId(definitionSourceId);
-				definitionSourceLink.setSourceName(definitionSourceName);
-				definition.getSourceLinks().add(definitionSourceLink);
-				handledSourceLinkIds.add(definitionSourceLinkId);
-			}
-
-			if (noteId != null) {
-				DefinitionNote note = noteMap.get(noteId);
-				if (note == null) {
-					String noteValueText = definitionData.getNoteValueText();
-					String noteValuePrese = definitionData.getNoteValuePrese();
-					String noteLang = definitionData.getNoteLang();
-					Complexity noteComplexity = definitionData.getNoteComplexity();
-					boolean isNotePublic = definitionData.isNotePublic();
-					Long noteOrderBy = definitionData.getNoteOrderBy();
-					note = new DefinitionNote();
-					note.setDefinitionId(definitionId);
-					note.setId(noteId);
-					note.setValueText(noteValueText);
-					note.setValuePrese(noteValuePrese);
-					note.setLang(noteLang);
-					note.setComplexity(noteComplexity);
-					note.setPublic(isNotePublic);
-					note.setOrderBy(noteOrderBy);
-					note.setSourceLinks(new ArrayList<>());
-					definition.getNotes().add(note);
-					noteMap.put(noteId, note);
-				}
-				if (noteSourceLinkId != null) {
-					SourceLink noteSourceLink = noteSourceLinkMap.get(noteSourceLinkId);
-					if (noteSourceLink == null) {
-						ReferenceType noteSourceLinkType = definitionData.getNoteSourceLinkType();
-						String noteSourceLinkName = definitionData.getNoteSourceLinkName();
-						Long noteSourceId = definitionData.getNoteSourceId();
-						String noteSourceName = definitionData.getNoteSourceName();
-						noteSourceLink = new SourceLink();
-						noteSourceLink.setOwner(ReferenceOwner.FREEFORM);
-						noteSourceLink.setOwnerId(noteId);
-						noteSourceLink.setId(noteSourceLinkId);
-						noteSourceLink.setType(noteSourceLinkType);
-						noteSourceLink.setName(noteSourceLinkName);
-						noteSourceLink.setSourceId(noteSourceId);
-						noteSourceLink.setSourceName(noteSourceName);
-						note.getSourceLinks().add(noteSourceLink);
-						noteSourceLinkMap.put(noteSourceLinkId, noteSourceLink);
-					}
-				}
-			}
-		}
 	}
 
 	public List<DefinitionLangGroup> composeMeaningDefinitionLangGroups(List<Definition> definitions, List<ClassifierSelect> languagesOrder) {
@@ -747,7 +481,7 @@ public class ConversionUtil implements GlobalConstant {
 					sourceLink.setId(wordEtymSourceLinkId);
 					sourceLink.setType(tuple.getWordEtymSourceLinkType());
 					sourceLink.setSourceId(tuple.getWordEtymSourceId());
-					sourceLink.setSourceName(tuple.getWordEtymSourceName());
+					//sourceLink.setSourceName(tuple.getWordEtymSourceName());
 					wordEtym.getWordEtymSourceLinks().add(sourceLink);
 					wordEtymSourceLinkIds.add(wordEtymSourceLinkId);
 				}

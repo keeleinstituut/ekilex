@@ -2,6 +2,7 @@ package eki.ekilex.cli.runner;
 
 import java.io.File;
 import java.math.BigDecimal;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -26,17 +27,17 @@ import org.springframework.stereotype.Component;
 import eki.common.constant.ActivityEntity;
 import eki.common.constant.ActivityOwner;
 import eki.common.constant.Complexity;
-import eki.common.constant.FreeformType;
 import eki.common.constant.TagType;
 import eki.common.data.Count;
 import eki.common.service.AbstractLoaderCommons;
 import eki.ekilex.constant.SystemConstant;
+import eki.ekilex.data.AbstractCreateUpdateEntity;
 import eki.ekilex.data.ActivityLogData;
 import eki.ekilex.data.Collocation;
 import eki.ekilex.data.CollocationTuple;
 import eki.ekilex.data.DatasetPermission;
 import eki.ekilex.data.EkiUser;
-import eki.ekilex.data.FreeForm;
+import eki.ekilex.data.Usage;
 import eki.ekilex.data.WordLexemeMeaningIdTuple;
 import eki.ekilex.data.migra.CollocationMember;
 import eki.ekilex.data.migra.MigraForm;
@@ -329,7 +330,7 @@ public class CollocationMoverRunner extends AbstractLoaderCommons implements Sys
 	private void createSecurityContext() {
 
 		EkiUser user = new EkiUser();
-		user.setName("Kollokatsioonide kolija");
+		user.setName(USER_NAME);
 		user.setAdmin(Boolean.TRUE);
 		user.setMaster(Boolean.TRUE);
 		user.setEnabled(Boolean.TRUE);
@@ -435,19 +436,19 @@ public class CollocationMoverRunner extends AbstractLoaderCommons implements Sys
 
 		for (String usageValue : collocUsages) {
 
-			FreeForm freeform = new FreeForm();
-			freeform.setType(FreeformType.USAGE);
-			freeform.setValueText(usageValue);
-			freeform.setValuePrese(usageValue);
-			freeform.setLang(languageCode);
-			freeform.setComplexity(complexity);
-			freeform.setPublic(PUBLICITY_PUBLIC);
+			Usage usage = new Usage();
+			usage.setValue(usageValue);
+			usage.setValuePrese(usageValue);
+			usage.setLang(languageCode);
+			usage.setComplexity(complexity);
+			usage.setPublic(PUBLICITY_PUBLIC);
+			applyCreateUpdate(usage);
 
 			ActivityLogData activityLog = null;
 			if (doLog) {
 				activityLog = activityLogService.prepareActivityLog(ACTIVITY_FUNCT_NAME, lexemeId, ActivityOwner.LEXEME, datasetCode, MANUAL_EVENT_ON_UPDATE_ENABLED);
 			}
-			Long usageId = cudDbService.createLexemeFreeform(lexemeId, freeform, USER_NAME);
+			Long usageId = cudDbService.createUsage(lexemeId, usage);
 			if (doLog) {
 				activityLogService.createActivityLog(activityLog, usageId, ActivityEntity.USAGE);
 			}
@@ -481,5 +482,14 @@ public class CollocationMoverRunner extends AbstractLoaderCommons implements Sys
 		collocationMember.setGroupOrder(collocGroupOrder);
 
 		migrationDbService.createCollocationMember(collocationMember);
+	}
+
+	private void applyCreateUpdate(AbstractCreateUpdateEntity entity) {
+
+		Timestamp now = new Timestamp(System.currentTimeMillis());
+		entity.setCreatedBy(USER_NAME);
+		entity.setCreatedOn(now);
+		entity.setModifiedBy(USER_NAME);
+		entity.setModifiedOn(now);
 	}
 }

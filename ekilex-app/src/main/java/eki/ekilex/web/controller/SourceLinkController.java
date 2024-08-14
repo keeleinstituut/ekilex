@@ -10,8 +10,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.SessionAttributes;
 
-import eki.common.constant.ContentKey;
-import eki.common.constant.ReferenceOwner;
 import eki.ekilex.constant.WebConstant;
 import eki.ekilex.data.Source;
 import eki.ekilex.data.SourceLink;
@@ -31,45 +29,35 @@ public class SourceLinkController implements WebConstant {
 	@Autowired
 	private SourceService sourceService;
 
-	@GetMapping("/" + ContentKey.FREEFORM_SOURCE_LINK + ":{sourceLinkId}")
-	public String ffSourceLink(
+	@GetMapping("/{sourceLinkContentKey}:{sourceLinkId}")
+	public String sourceLinkDetails(
+			@PathVariable("sourceLinkContentKey") String sourceLinkContentKey,
 			@PathVariable("sourceLinkId") String sourceLinkIdStr,
 			Model model) {
 
-		logger.debug("Requested freeform source link \"{}\"", sourceLinkIdStr);
+		logger.debug("Requested source link \"{}:{}\"", sourceLinkContentKey, sourceLinkIdStr);
 		Long sourceLinkId = Long.valueOf(sourceLinkIdStr);
-		return handleSourceLink(sourceLinkId, ReferenceOwner.FREEFORM, model);
+
+		SourceLink sourceLink = sourceLinkService.getSourceLink(sourceLinkContentKey, sourceLinkId);
+		Long sourceId = sourceLink.getSourceId();
+		Source source = sourceService.getSource(sourceId);
+
+		model.addAttribute("sourceLink", sourceLink);
+		model.addAttribute("source", source);
+
+		return COMPONENTS_PAGE + PAGE_FRAGMENT_ELEM + "source_link_details";
 	}
 
-	@GetMapping("/" + ContentKey.DEFINITION_SOURCE_LINK + ":{sourceLinkId}")
-	public String defSourceLink(
-			@PathVariable("sourceLinkId") String sourceLinkIdStr,
-			Model model) {
-
-		logger.debug("Requested definition source link \"{}\"", sourceLinkIdStr);
-		Long sourceLinkId = Long.valueOf(sourceLinkIdStr);
-		return handleSourceLink(sourceLinkId, ReferenceOwner.DEFINITION, model);
-	}
-
-	@GetMapping("/" + ContentKey.LEXEME_SOURCE_LINK + ":{sourceLinkId}")
-	public String lexSourceLink(
-			@PathVariable("sourceLinkId") String sourceLinkIdStr,
-			Model model) {
-
-		logger.debug("Requested lexeme source link \"{}\"", sourceLinkIdStr);
-		Long sourceLinkId = Long.valueOf(sourceLinkIdStr);
-		return handleSourceLink(sourceLinkId, ReferenceOwner.LEXEME, model);
-	}
-
+	// TODO rename path to edit
 	@GetMapping(SOURCE_AND_SOURCE_LINK_URI + "/{sourceLinkContentKey}/{sourceLinkId}")
-	public String getSourceAndSourceLink(
+	public String editSourceLink(
 			@PathVariable("sourceLinkContentKey") String sourceLinkContentKey,
 			@PathVariable("sourceLinkId") Long sourceLinkId,
 			Model model) {
 
 		logger.debug("Requested {} type source link '{}' and source", sourceLinkContentKey, sourceLinkId);
 
-		SourceLink sourceLink = sourceLinkService.getSourceLink(sourceLinkId, sourceLinkContentKey);
+		SourceLink sourceLink = sourceLinkService.getSourceLink(sourceLinkContentKey, sourceLinkId);
 		Long sourceId = sourceLink.getSourceId();
 		Source source = sourceService.getSource(sourceId);
 
@@ -77,15 +65,5 @@ public class SourceLinkController implements WebConstant {
 		model.addAttribute("source", source);
 
 		return SOURCE_COMPONENTS_PAGE + PAGE_FRAGMENT_ELEM + "edit_source_link_dlg";
-	}
-
-	private String handleSourceLink(Long sourceLinkId, ReferenceOwner referenceOwner, Model model) {
-
-		SourceLink sourceLink = sourceLinkService.getSourceLink(sourceLinkId, referenceOwner);
-		Long sourceId = sourceLink.getSourceId();
-		Source source = sourceService.getSource(sourceId);
-		model.addAttribute("source", source);
-
-		return COMPONENTS_PAGE + PAGE_FRAGMENT_ELEM + "source_link_details";
 	}
 }

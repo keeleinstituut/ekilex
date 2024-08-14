@@ -15,6 +15,8 @@ import eki.ekilex.data.db.tables.DatasetPermission;
 import eki.ekilex.data.db.tables.Definition;
 import eki.ekilex.data.db.tables.DefinitionDataset;
 import eki.ekilex.data.db.tables.DefinitionFreeform;
+import eki.ekilex.data.db.tables.DefinitionNote;
+import eki.ekilex.data.db.tables.DefinitionNoteSourceLink;
 import eki.ekilex.data.db.tables.DefinitionSourceLink;
 import eki.ekilex.data.db.tables.DefinitionType;
 import eki.ekilex.data.db.tables.DefinitionTypeLabel;
@@ -54,6 +56,8 @@ import eki.ekilex.data.db.tables.Lexeme;
 import eki.ekilex.data.db.tables.LexemeActivityLog;
 import eki.ekilex.data.db.tables.LexemeDeriv;
 import eki.ekilex.data.db.tables.LexemeFreeform;
+import eki.ekilex.data.db.tables.LexemeNote;
+import eki.ekilex.data.db.tables.LexemeNoteSourceLink;
 import eki.ekilex.data.db.tables.LexemePos;
 import eki.ekilex.data.db.tables.LexemeRegion;
 import eki.ekilex.data.db.tables.LexemeRegister;
@@ -64,7 +68,11 @@ import eki.ekilex.data.db.tables.MeaningActivityLog;
 import eki.ekilex.data.db.tables.MeaningDomain;
 import eki.ekilex.data.db.tables.MeaningForum;
 import eki.ekilex.data.db.tables.MeaningFreeform;
+import eki.ekilex.data.db.tables.MeaningImage;
+import eki.ekilex.data.db.tables.MeaningImageSourceLink;
 import eki.ekilex.data.db.tables.MeaningLastActivityLog;
+import eki.ekilex.data.db.tables.MeaningNote;
+import eki.ekilex.data.db.tables.MeaningNoteSourceLink;
 import eki.ekilex.data.db.tables.MeaningNr;
 import eki.ekilex.data.db.tables.MeaningRelMapping;
 import eki.ekilex.data.db.tables.MeaningRelType;
@@ -98,6 +106,10 @@ import eki.ekilex.data.db.tables.Tag;
 import eki.ekilex.data.db.tables.TempDsImportPkMap;
 import eki.ekilex.data.db.tables.TempDsImportQueue;
 import eki.ekilex.data.db.tables.TermsOfUse;
+import eki.ekilex.data.db.tables.Usage;
+import eki.ekilex.data.db.tables.UsageDefinition;
+import eki.ekilex.data.db.tables.UsageSourceLink;
+import eki.ekilex.data.db.tables.UsageTranslation;
 import eki.ekilex.data.db.tables.UsageType;
 import eki.ekilex.data.db.tables.UsageTypeLabel;
 import eki.ekilex.data.db.tables.ValueState;
@@ -204,6 +216,16 @@ public class Tables {
      * The table <code>public.definition_freeform</code>.
      */
     public static final DefinitionFreeform DEFINITION_FREEFORM = DefinitionFreeform.DEFINITION_FREEFORM;
+
+    /**
+     * The table <code>public.definition_note</code>.
+     */
+    public static final DefinitionNote DEFINITION_NOTE = DefinitionNote.DEFINITION_NOTE;
+
+    /**
+     * The table <code>public.definition_note_source_link</code>.
+     */
+    public static final DefinitionNoteSourceLink DEFINITION_NOTE_SOURCE_LINK = DefinitionNoteSourceLink.DEFINITION_NOTE_SOURCE_LINK;
 
     /**
      * The table <code>public.definition_source_link</code>.
@@ -401,6 +423,16 @@ public class Tables {
     public static final LexemeFreeform LEXEME_FREEFORM = LexemeFreeform.LEXEME_FREEFORM;
 
     /**
+     * The table <code>public.lexeme_note</code>.
+     */
+    public static final LexemeNote LEXEME_NOTE = LexemeNote.LEXEME_NOTE;
+
+    /**
+     * The table <code>public.lexeme_note_source_link</code>.
+     */
+    public static final LexemeNoteSourceLink LEXEME_NOTE_SOURCE_LINK = LexemeNoteSourceLink.LEXEME_NOTE_SOURCE_LINK;
+
+    /**
      * The table <code>public.lexeme_pos</code>.
      */
     public static final LexemePos LEXEME_POS = LexemePos.LEXEME_POS;
@@ -451,9 +483,29 @@ public class Tables {
     public static final MeaningFreeform MEANING_FREEFORM = MeaningFreeform.MEANING_FREEFORM;
 
     /**
+     * The table <code>public.meaning_image</code>.
+     */
+    public static final MeaningImage MEANING_IMAGE = MeaningImage.MEANING_IMAGE;
+
+    /**
+     * The table <code>public.meaning_image_source_link</code>.
+     */
+    public static final MeaningImageSourceLink MEANING_IMAGE_SOURCE_LINK = MeaningImageSourceLink.MEANING_IMAGE_SOURCE_LINK;
+
+    /**
      * The table <code>public.meaning_last_activity_log</code>.
      */
     public static final MeaningLastActivityLog MEANING_LAST_ACTIVITY_LOG = MeaningLastActivityLog.MEANING_LAST_ACTIVITY_LOG;
+
+    /**
+     * The table <code>public.meaning_note</code>.
+     */
+    public static final MeaningNote MEANING_NOTE = MeaningNote.MEANING_NOTE;
+
+    /**
+     * The table <code>public.meaning_note_source_link</code>.
+     */
+    public static final MeaningNoteSourceLink MEANING_NOTE_SOURCE_LINK = MeaningNoteSourceLink.MEANING_NOTE_SOURCE_LINK;
 
     /**
      * The table <code>public.meaning_nr</code>.
@@ -619,6 +671,26 @@ public class Tables {
      * The table <code>public.terms_of_use</code>.
      */
     public static final TermsOfUse TERMS_OF_USE = TermsOfUse.TERMS_OF_USE;
+
+    /**
+     * The table <code>public.usage</code>.
+     */
+    public static final Usage USAGE = Usage.USAGE;
+
+    /**
+     * The table <code>public.usage_definition</code>.
+     */
+    public static final UsageDefinition USAGE_DEFINITION = UsageDefinition.USAGE_DEFINITION;
+
+    /**
+     * The table <code>public.usage_source_link</code>.
+     */
+    public static final UsageSourceLink USAGE_SOURCE_LINK = UsageSourceLink.USAGE_SOURCE_LINK;
+
+    /**
+     * The table <code>public.usage_translation</code>.
+     */
+    public static final UsageTranslation USAGE_TRANSLATION = UsageTranslation.USAGE_TRANSLATION;
 
     /**
      * The table <code>public.usage_type</code>.

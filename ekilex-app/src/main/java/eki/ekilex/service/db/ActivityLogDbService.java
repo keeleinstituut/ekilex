@@ -3,24 +3,36 @@ package eki.ekilex.service.db;
 import static eki.ekilex.data.db.Tables.ACTIVITY_LOG;
 import static eki.ekilex.data.db.Tables.DEFINITION;
 import static eki.ekilex.data.db.Tables.DEFINITION_FREEFORM;
+import static eki.ekilex.data.db.Tables.DEFINITION_NOTE;
+import static eki.ekilex.data.db.Tables.DEFINITION_NOTE_SOURCE_LINK;
 import static eki.ekilex.data.db.Tables.DEFINITION_SOURCE_LINK;
 import static eki.ekilex.data.db.Tables.FREEFORM;
 import static eki.ekilex.data.db.Tables.FREEFORM_SOURCE_LINK;
 import static eki.ekilex.data.db.Tables.LEXEME;
 import static eki.ekilex.data.db.Tables.LEXEME_ACTIVITY_LOG;
 import static eki.ekilex.data.db.Tables.LEXEME_FREEFORM;
+import static eki.ekilex.data.db.Tables.LEXEME_NOTE;
+import static eki.ekilex.data.db.Tables.LEXEME_NOTE_SOURCE_LINK;
 import static eki.ekilex.data.db.Tables.LEXEME_SOURCE_LINK;
 import static eki.ekilex.data.db.Tables.LEX_RELATION;
 import static eki.ekilex.data.db.Tables.MEANING;
 import static eki.ekilex.data.db.Tables.MEANING_ACTIVITY_LOG;
 import static eki.ekilex.data.db.Tables.MEANING_DOMAIN;
 import static eki.ekilex.data.db.Tables.MEANING_FREEFORM;
+import static eki.ekilex.data.db.Tables.MEANING_IMAGE;
+import static eki.ekilex.data.db.Tables.MEANING_IMAGE_SOURCE_LINK;
 import static eki.ekilex.data.db.Tables.MEANING_LAST_ACTIVITY_LOG;
+import static eki.ekilex.data.db.Tables.MEANING_NOTE;
+import static eki.ekilex.data.db.Tables.MEANING_NOTE_SOURCE_LINK;
 import static eki.ekilex.data.db.Tables.MEANING_RELATION;
 import static eki.ekilex.data.db.Tables.PARADIGM;
 import static eki.ekilex.data.db.Tables.SOURCE;
 import static eki.ekilex.data.db.Tables.SOURCE_ACTIVITY_LOG;
 import static eki.ekilex.data.db.Tables.SOURCE_FREEFORM;
+import static eki.ekilex.data.db.Tables.USAGE;
+import static eki.ekilex.data.db.Tables.USAGE_DEFINITION;
+import static eki.ekilex.data.db.Tables.USAGE_SOURCE_LINK;
+import static eki.ekilex.data.db.Tables.USAGE_TRANSLATION;
 import static eki.ekilex.data.db.Tables.WORD;
 import static eki.ekilex.data.db.Tables.WORD_ACTIVITY_LOG;
 import static eki.ekilex.data.db.Tables.WORD_ETYMOLOGY;
@@ -251,7 +263,7 @@ public class ActivityLogDbService implements GlobalConstant, ActivityFunct {
 							LEXEME_ACTIVITY_LOG.LEXEME_ID,
 							LEXEME_ACTIVITY_LOG.ACTIVITY_LOG_ID)
 					.select(DSL
-							.select(DSL.val(lexemeId),DSL.val(activityLogId))
+							.select(DSL.val(lexemeId), DSL.val(activityLogId))
 							.whereExists(DSL.select(LEXEME.ID).from(LEXEME).where(LEXEME.ID.eq(lexemeId))))
 					.execute();
 		}
@@ -624,11 +636,74 @@ public class ActivityLogDbService implements GlobalConstant, ActivityFunct {
 				.orElse(null);
 	}
 
-	public Long getMeaningDefinitionOwnerId(Long definitionId) {
+	public Long getMeaningImageOwnerId(Long meaningImageId) {
+		return create
+				.select(MEANING_IMAGE.MEANING_ID)
+				.from(MEANING_IMAGE)
+				.where(MEANING_IMAGE.ID.eq(meaningImageId))
+				.fetchOptionalInto(Long.class)
+				.orElse(null);
+	}
+
+	public Long getMeaningImageSourceLinkOwnerId(Long sourceLinkId) {
+		return create
+				.select(MEANING_IMAGE.MEANING_ID)
+				.from(MEANING_IMAGE, MEANING_IMAGE_SOURCE_LINK)
+				.where(
+						MEANING_IMAGE_SOURCE_LINK.ID.eq(sourceLinkId)
+								.and(MEANING_IMAGE_SOURCE_LINK.MEANING_IMAGE_ID.eq(MEANING_IMAGE.ID)))
+				.fetchOptionalInto(Long.class)
+				.orElse(null);
+	}
+
+	public Long getMeaningNoteOwnerId(Long noteId) {
+		return create
+				.select(MEANING_NOTE.MEANING_ID)
+				.from(MEANING_NOTE)
+				.where(MEANING_NOTE.ID.eq(noteId))
+				.fetchOptionalInto(Long.class)
+				.orElse(null);
+	}
+
+	public Long getMeaningNoteSourceLinkOwnerId(Long sourceLinkId) {
+		return create
+				.select(MEANING_NOTE.MEANING_ID)
+				.from(MEANING_NOTE, MEANING_NOTE_SOURCE_LINK)
+				.where(
+						MEANING_NOTE_SOURCE_LINK.ID.eq(sourceLinkId)
+								.and(MEANING_NOTE_SOURCE_LINK.MEANING_NOTE_ID.eq(MEANING_NOTE.ID)))
+				.fetchOptionalInto(Long.class)
+				.orElse(null);
+	}
+
+	public Long getDefinitionOwnerId(Long definitionId) {
 		return create
 				.select(DEFINITION.MEANING_ID)
 				.from(DEFINITION)
 				.where(DEFINITION.ID.eq(definitionId))
+				.fetchOptionalInto(Long.class)
+				.orElse(null);
+	}
+
+	public Long getDefinitionNoteOwnerId(Long noteId) {
+		return create
+				.select(DEFINITION.MEANING_ID)
+				.from(DEFINITION, DEFINITION_NOTE)
+				.where(
+						DEFINITION_NOTE.ID.eq(noteId)
+								.and(DEFINITION_NOTE.DEFINITION_ID.eq(DEFINITION.ID)))
+				.fetchOptionalInto(Long.class)
+				.orElse(null);
+	}
+
+	public Long getDefinitionNoteSourceLinkOwnerId(Long sourceLinkId) {
+		return create
+				.select(DEFINITION.MEANING_ID)
+				.from(DEFINITION, DEFINITION_NOTE, DEFINITION_NOTE_SOURCE_LINK)
+				.where(
+						DEFINITION_NOTE_SOURCE_LINK.ID.eq(sourceLinkId)
+								.and(DEFINITION_NOTE_SOURCE_LINK.DEFINITION_NOTE_ID.eq(DEFINITION_NOTE.ID))
+								.and(DEFINITION_NOTE.DEFINITION_ID.eq(DEFINITION.ID)))
 				.fetchOptionalInto(Long.class)
 				.orElse(null);
 	}
@@ -669,13 +744,75 @@ public class ActivityLogDbService implements GlobalConstant, ActivityFunct {
 				.orElse(null);
 	}
 
+	public Long getLexemeNoteOwnerId(Long noteId) {
+		return create
+				.select(LEXEME_NOTE.LEXEME_ID)
+				.from(LEXEME_NOTE)
+				.where(LEXEME_NOTE.ID.eq(noteId))
+				.fetchOptionalInto(Long.class)
+				.orElse(null);
+	}
+
+	public Long getLexemeNoteSourceLinkOwnerId(Long sourceLinkId) {
+		return create
+				.select(LEXEME_NOTE.LEXEME_ID)
+				.from(LEXEME_NOTE, LEXEME_NOTE_SOURCE_LINK)
+				.where(
+						LEXEME_NOTE_SOURCE_LINK.ID.eq(sourceLinkId)
+								.and(LEXEME_NOTE_SOURCE_LINK.LEXEME_NOTE_ID.eq(LEXEME_NOTE.ID)))
+				.fetchOptionalInto(Long.class)
+				.orElse(null);
+	}
+
+	public Long getUsageOwnerId(Long usageId) {
+		return create
+				.select(USAGE.LEXEME_ID)
+				.from(USAGE)
+				.where(USAGE.ID.eq(usageId))
+				.fetchOptionalInto(Long.class)
+				.orElse(null);
+	}
+
+	public Long getUsageTranslationOwnerId(Long usageTranslationId) {
+		return create
+				.select(USAGE.LEXEME_ID)
+				.from(USAGE, USAGE_TRANSLATION)
+				.where(
+						USAGE_TRANSLATION.ID.eq(usageTranslationId)
+								.and(USAGE_TRANSLATION.USAGE_ID.eq(USAGE.ID)))
+				.fetchOptionalInto(Long.class)
+				.orElse(null);
+	}
+
+	public Long getUsageDefinitionOwnerId(Long usageDefinitionId) {
+		return create
+				.select(USAGE.LEXEME_ID)
+				.from(USAGE, USAGE_DEFINITION)
+				.where(
+						USAGE_DEFINITION.ID.eq(usageDefinitionId)
+								.and(USAGE_DEFINITION.USAGE_ID.eq(USAGE.ID)))
+				.fetchOptionalInto(Long.class)
+				.orElse(null);
+	}
+
+	public Long getUsageSourceLinkOwnerId(Long sourceLinkId) {
+		return create
+				.select(USAGE.LEXEME_ID)
+				.from(USAGE, USAGE_SOURCE_LINK)
+				.where(
+						USAGE_SOURCE_LINK.ID.eq(sourceLinkId)
+								.and(USAGE_SOURCE_LINK.USAGE_ID.eq(USAGE.ID)))
+				.fetchOptionalInto(Long.class)
+				.orElse(null);
+	}
+
 	public Long getDefinitionSourceLinkOwnerId(Long sourceLinkId) {
 		return create
 				.select(DEFINITION.MEANING_ID)
 				.from(DEFINITION, DEFINITION_SOURCE_LINK)
 				.where(
 						DEFINITION_SOURCE_LINK.ID.eq(sourceLinkId)
-						.and(DEFINITION_SOURCE_LINK.DEFINITION_ID.eq(DEFINITION.ID)))
+								.and(DEFINITION_SOURCE_LINK.DEFINITION_ID.eq(DEFINITION.ID)))
 				.fetchOptionalInto(Long.class)
 				.orElse(null);
 	}

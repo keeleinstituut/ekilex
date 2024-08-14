@@ -15,10 +15,10 @@ import eki.common.constant.ActivityOwner;
 import eki.common.constant.Complexity;
 import eki.ekilex.data.ActivityLogData;
 import eki.ekilex.data.SimpleWord;
+import eki.ekilex.data.Usage;
 import eki.ekilex.data.WordLexemeMeaningIdTuple;
 import eki.ekilex.data.api.Definition;
 import eki.ekilex.data.api.Forum;
-import eki.ekilex.data.api.Freeform;
 import eki.ekilex.data.api.LexMeaning;
 import eki.ekilex.data.api.LexWord;
 import eki.ekilex.data.api.Word;
@@ -98,6 +98,7 @@ public class LexWordService extends AbstractApiCudService {
 
 			List<String> existingWordTypeCodes = lookupDbService.getWordTypeCodes(wordId);
 			for (String wordTypeCode : wordTypeCodes) {
+
 				if (!existingWordTypeCodes.contains(wordTypeCode)) {
 					activityLog = activityLogService.prepareActivityLog("createWordType", wordId, ActivityOwner.WORD, roleDatasetCode, MANUAL_EVENT_ON_UPDATE_ENABLED);
 					Long wordTypeId = cudDbService.createWordType(wordId, wordTypeCode);
@@ -123,6 +124,7 @@ public class LexWordService extends AbstractApiCudService {
 		if (CollectionUtils.isNotEmpty(wordRelations)) {
 
 			for (WordRelation wordRelation : wordRelations) {
+
 				Long wordRelationId = wordRelation.getId();
 				if (wordRelationId == null) {
 					Long wordRelationTargetWordId = wordRelation.getTargetWordId();
@@ -153,7 +155,7 @@ public class LexWordService extends AbstractApiCudService {
 			Long lexemeId;
 			Long meaningId = meaning.getMeaningId();
 			List<Definition> definitions = meaning.getDefinitions();
-			List<Freeform> usages = meaning.getUsages();
+			List<Usage> usages = meaning.getUsages();
 			int currentLexemesMaxLevel1 = lookupDbService.getWordLexemesMaxLevel1(wordId, datasetCode);
 			int newLexemeLevel1 = currentLexemesMaxLevel1 + 1;
 
@@ -184,8 +186,8 @@ public class LexWordService extends AbstractApiCudService {
 
 			if (CollectionUtils.isNotEmpty(usages)) {
 
-				for (Freeform usage : usages) {
-					createOrUpdateUsage(usage, lexemeId, DEFAULT_COMPLEXITY, DEFAULT_PUBLICITY, roleDatasetCode);
+				for (Usage usage : usages) {
+					createOrUpdateUsage(lexemeId, usage, DEFAULT_COMPLEXITY, DEFAULT_PUBLICITY, roleDatasetCode);
 				}
 			}
 		}

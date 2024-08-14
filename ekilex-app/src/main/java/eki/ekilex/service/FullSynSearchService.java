@@ -13,7 +13,6 @@ import org.springframework.stereotype.Component;
 
 import eki.ekilex.data.ClassifierSelect;
 import eki.ekilex.data.DatasetPermission;
-import eki.ekilex.data.DefSourceAndNoteSourceTuple;
 import eki.ekilex.data.Definition;
 import eki.ekilex.data.EkiUser;
 import eki.ekilex.data.EkiUserProfile;
@@ -24,7 +23,6 @@ import eki.ekilex.data.SynonymLangGroup;
 import eki.ekilex.data.Tag;
 import eki.ekilex.data.TypeWordRelMeaning;
 import eki.ekilex.data.Usage;
-import eki.ekilex.data.UsageTranslationDefinitionTuple;
 import eki.ekilex.data.Word;
 import eki.ekilex.data.WordDescript;
 import eki.ekilex.data.WordDetails;
@@ -105,13 +103,8 @@ public class FullSynSearchService extends AbstractSynSearchService {
 			Long lexemeId = wordMeaning.getLexemeId();
 			Long meaningId = wordMeaning.getMeaningId();
 
-			List<UsageTranslationDefinitionTuple> usageTranslationDefinitionTuples = commonDataDbService.
-					getLexemeUsageTranslationDefinitionTuples(lexemeId, CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
-			List<Usage> usages = conversionUtil.composeUsages(usageTranslationDefinitionTuples);
-
+			List<Usage> usages = commonDataDbService.getUsages(lexemeId);
 			List<Definition> definitions = commonDataDbService.getMeaningDefinitions(meaningId, CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
-			List<DefSourceAndNoteSourceTuple> definitionsDataTuples = commonDataDbService.getMeaningDefSourceAndNoteSourceTuples(meaningId);
-			conversionUtil.composeMeaningDefinitions(definitions, definitionsDataTuples);
 
 			wordMeaning.setUsages(usages);
 			wordMeaning.setDefinitions(definitions);

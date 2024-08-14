@@ -82,137 +82,159 @@ public class EditController extends AbstractMutableDataPageController {
 		Locale locale = LocaleContextHolder.getLocale();
 		EkiUser user = userContext.getUser();
 		String roleDatasetCode = getDatasetCodeFromRole();
-		String itemValue = itemData.getValue();
-		itemValue = valueUtil.trimAndCleanAndRemoveHtmlAndLimit(itemValue);
-		String language = itemData.getLanguage();
+
+		Long id = itemData.getId();
+		Long id2 = itemData.getId2();
+		Long id3 = itemData.getId3();
+		String value = itemData.getValue();
+		value = valueUtil.trimAndCleanAndRemoveHtmlAndLimit(value);
+		String value2 = itemData.getValue2();
+		String type = itemData.getItemType();
+		String languageCode = itemData.getLanguage();
+		String datasetCode = itemData.getDataset();
+		Complexity complexity = itemData.getComplexity();
+		boolean isPublic = itemData.isPublic();
+
 		boolean isManualEventOnUpdateEnabled = sessionBean.isManualEventOnUpdateEnabled();
-		String datasetCode;
 		Response response = new Response();
 
 		switch (itemData.getOpCode()) {
 		case "definition":
-			datasetCode = itemData.getDataset();
-			cudService.createDefinition(itemData.getId(), itemValue, language, datasetCode, itemData.getComplexity(), itemData.getItemType(), itemData.isPublic(), roleDatasetCode, isManualEventOnUpdateEnabled);
+			cudService.createDefinition(id, value, languageCode, datasetCode, complexity, type, isPublic, roleDatasetCode, isManualEventOnUpdateEnabled);
 			break;
 		case "definition_note":
-			cudService.createDefinitionNote(itemData.getId(), itemValue, language, itemData.isPublic(), roleDatasetCode, isManualEventOnUpdateEnabled);
+			cudService.createDefinitionNote(id, value, languageCode, isPublic, roleDatasetCode, isManualEventOnUpdateEnabled);
 			break;
 		case "usage":
-			cudService.createUsage(itemData.getId(), itemValue, language, itemData.getComplexity(), itemData.isPublic(), roleDatasetCode, isManualEventOnUpdateEnabled);
+			cudService.createUsage(id, value, languageCode, complexity, isPublic, roleDatasetCode, isManualEventOnUpdateEnabled);
 			break;
 		case "usage_translation":
-			cudService.createUsageTranslation(itemData.getId(), itemValue, language, roleDatasetCode, isManualEventOnUpdateEnabled);
+			cudService.createUsageTranslation(id, value, languageCode, roleDatasetCode, isManualEventOnUpdateEnabled);
 			break;
 		case "usage_definition":
-			cudService.createUsageDefinition(itemData.getId(), itemValue, language, roleDatasetCode, isManualEventOnUpdateEnabled);
+			cudService.createUsageDefinition(id, value, languageCode, roleDatasetCode, isManualEventOnUpdateEnabled);
 			break;
 		case "lexeme_pos":
-			cudService.createLexemePos(itemData.getId(), itemValue, roleDatasetCode, isManualEventOnUpdateEnabled);
+			cudService.createLexemePos(id, value, roleDatasetCode, isManualEventOnUpdateEnabled);
 			break;
 		case "lexeme_tag":
-			cudService.createLexemeTag(itemData.getId(), itemValue, roleDatasetCode, isManualEventOnUpdateEnabled);
+			cudService.createLexemeTag(id, value, roleDatasetCode, isManualEventOnUpdateEnabled);
 			break;
 		case "meaning_tag":
-			cudService.createMeaningTag(itemData.getId(), itemValue, roleDatasetCode, isManualEventOnUpdateEnabled);
+			cudService.createMeaningTag(id, value, roleDatasetCode, isManualEventOnUpdateEnabled);
 			break;
 		case "meaning_domain":
-			Classifier meaningDomain = conversionUtil.classifierFromIdString(itemValue);
-			cudService.createMeaningDomain(itemData.getId2(), meaningDomain, roleDatasetCode, isManualEventOnUpdateEnabled);
+			Classifier meaningDomain = conversionUtil.classifierFromIdString(value);
+			cudService.createMeaningDomain(id2, meaningDomain, roleDatasetCode, isManualEventOnUpdateEnabled);
 			break;
 		case "government":
-			cudService.createLexemeGovernment(itemData.getId(), itemValue, itemData.getComplexity(), roleDatasetCode, isManualEventOnUpdateEnabled);
-			break;
-		case ContentKey.DEFINITION_SOURCE_LINK:
-			sourceLinkService.createDefinitionSourceLink(itemData.getId(), itemData.getId2(), ReferenceType.ANY, itemValue, roleDatasetCode, isManualEventOnUpdateEnabled);
-			break;
-		case ContentKey.LEXEME_SOURCE_LINK:
-			sourceLinkService.createLexemeSourceLink(itemData.getId(), itemData.getId2(), ReferenceType.ANY, itemValue, roleDatasetCode, isManualEventOnUpdateEnabled);
-			break;
-		case ContentKey.FREEFORM_SOURCE_LINK:
-			sourceLinkService.createFreeformSourceLink(itemData.getId(), itemData.getId2(), ReferenceType.ANY, itemValue, roleDatasetCode, isManualEventOnUpdateEnabled);
+			cudService.createLexemeGovernment(id, value, complexity, roleDatasetCode, isManualEventOnUpdateEnabled);
 			break;
 		case "lexeme_deriv":
-			cudService.createLexemeDeriv(itemData.getId(), itemValue, roleDatasetCode, isManualEventOnUpdateEnabled);
+			cudService.createLexemeDeriv(id, value, roleDatasetCode, isManualEventOnUpdateEnabled);
 			break;
 		case "lexeme_register":
-			cudService.createLexemeRegister(itemData.getId(), itemValue, roleDatasetCode, isManualEventOnUpdateEnabled);
+			cudService.createLexemeRegister(id, value, roleDatasetCode, isManualEventOnUpdateEnabled);
 			break;
 		case "lexeme_region":
-			cudService.createLexemeRegion(itemData.getId(), itemValue, roleDatasetCode, isManualEventOnUpdateEnabled);
+			cudService.createLexemeRegion(id, value, roleDatasetCode, isManualEventOnUpdateEnabled);
 			break;
 		case "lexeme_reliability":
-			cudService.updateLexemeReliability(itemData.getId(), itemValue, roleDatasetCode, isManualEventOnUpdateEnabled);
+			cudService.updateLexemeReliability(id, value, roleDatasetCode, isManualEventOnUpdateEnabled);
 			break;
 		case "word_gender":
-			cudService.updateWordGenderWithDuplication(itemData.getId3(), itemValue, user, isManualEventOnUpdateEnabled);
+			cudService.updateWordGenderWithDuplication(id3, value, user, isManualEventOnUpdateEnabled);
 			break;
 		case "word_type":
-			cudService.createWordTypeWithDuplication(itemData.getId3(), itemValue, user, isManualEventOnUpdateEnabled);
+			cudService.createWordTypeWithDuplication(id3, value, user, isManualEventOnUpdateEnabled);
 			break;
 		case "word_aspect":
-			cudService.updateWordAspect(itemData.getId3(), itemValue, roleDatasetCode, isManualEventOnUpdateEnabled);
+			cudService.updateWordAspect(id3, value, roleDatasetCode, isManualEventOnUpdateEnabled);
 			break;
 		case "word_display_morph":
-			cudService.updateWordDisplayMorph(itemData.getId3(), itemValue, roleDatasetCode, isManualEventOnUpdateEnabled);
+			cudService.updateWordDisplayMorph(id3, value, roleDatasetCode, isManualEventOnUpdateEnabled);
 			break;
 		case "word_morphophono_form":
-			cudService.updateWordMorphophonoForm(itemData.getId3(), itemValue, roleDatasetCode, isManualEventOnUpdateEnabled);
+			cudService.updateWordMorphophonoForm(id3, value, roleDatasetCode, isManualEventOnUpdateEnabled);
 			break;
 		case "word_vocal_form":
-			cudService.updateWordVocalForm(itemData.getId3(), itemValue, roleDatasetCode, isManualEventOnUpdateEnabled);
+			cudService.updateWordVocalForm(id3, value, roleDatasetCode, isManualEventOnUpdateEnabled);
 			break;
 		case "word_lang":
-			cudService.updateWordLang(itemData.getId3(), itemValue, roleDatasetCode, isManualEventOnUpdateEnabled);
+			cudService.updateWordLang(id3, value, roleDatasetCode, isManualEventOnUpdateEnabled);
 			break;
 		case "lexeme_grammar":
-			cudService.createLexemeGrammar(itemData.getId(), itemValue, itemData.getComplexity(), roleDatasetCode, isManualEventOnUpdateEnabled);
+			cudService.createLexemeGrammar(id, value, complexity, roleDatasetCode, isManualEventOnUpdateEnabled);
 			break;
 		case "lexeme_value_state":
-			cudService.updateLexemeValueState(itemData.getId(), itemValue, roleDatasetCode, isManualEventOnUpdateEnabled);
+			cudService.updateLexemeValueState(id, value, roleDatasetCode, isManualEventOnUpdateEnabled);
 			break;
 		case "lexeme_proficiency_level":
-			cudService.updateLexemeProficiencyLevel(itemData.getId(), itemValue, roleDatasetCode, isManualEventOnUpdateEnabled);
+			cudService.updateLexemeProficiencyLevel(id, value, roleDatasetCode, isManualEventOnUpdateEnabled);
 			break;
 		case "learner_comment":
-			cudService.createMeaningLearnerComment(itemData.getId(), itemValue, language, roleDatasetCode, isManualEventOnUpdateEnabled);
+			cudService.createMeaningLearnerComment(id, value, languageCode, roleDatasetCode, isManualEventOnUpdateEnabled);
 			break;
 		case "lexeme_note":
-			cudService.createLexemeNote(itemData.getId(), itemValue, language, itemData.getComplexity(), itemData.isPublic(), roleDatasetCode, isManualEventOnUpdateEnabled);
+			cudService.createLexemeNote(id, value, languageCode, complexity, isPublic, roleDatasetCode, isManualEventOnUpdateEnabled);
 			break;
 		case "meaning_note":
-			cudService.createMeaningNote(itemData.getId(), itemValue, language, itemData.getComplexity(), itemData.isPublic(), roleDatasetCode, isManualEventOnUpdateEnabled);
-			sessionBean.setRecentNoteLanguage(language);
+			cudService.createMeaningNote(id, value, languageCode, complexity, isPublic, roleDatasetCode, isManualEventOnUpdateEnabled);
+			sessionBean.setRecentNoteLanguage(languageCode);
 			break;
 		case "meaning_forum":
-			cudService.createMeaningForum(itemData.getId(), itemValue, user);
+			cudService.createMeaningForum(id, value, user);
 			break;
 		case "word_forum":
-			cudService.createWordForum(itemData.getId(), itemValue, user);
+			cudService.createWordForum(id, value, user);
 			break;
 		case "meaning_image":
-			cudService.createMeaningImage(itemData.getId(), itemValue, itemData.getComplexity(), roleDatasetCode, isManualEventOnUpdateEnabled);
+			// TODO needs upgraded integration
+			cudService.createMeaningImage(id, value, value2, complexity, roleDatasetCode, isManualEventOnUpdateEnabled);
 			break;
 		case "image_title":
-			cudService.createImageTitle(itemData.getId(), itemValue, roleDatasetCode, isManualEventOnUpdateEnabled);
+			// TODO needs removing
+			cudService.createImageTitle(id, value, roleDatasetCode, isManualEventOnUpdateEnabled);
 			break;
 		case "meaning_media":
-			cudService.createMeaningMedia(itemData.getId(), itemValue, itemData.getComplexity(), roleDatasetCode, isManualEventOnUpdateEnabled);
+			cudService.createMeaningMedia(id, value, complexity, roleDatasetCode, isManualEventOnUpdateEnabled);
 			break;
 		case "create_syn_word":
-			synCudService.createWordAndSynRelation(itemData.getId(), itemValue, roleDatasetCode, language, itemData.getValue2(), isManualEventOnUpdateEnabled);
+			synCudService.createWordAndSynRelation(id, value, roleDatasetCode, languageCode, value2, isManualEventOnUpdateEnabled);
 			break;
 		case "meaning_semantic_type":
-			cudService.createMeaningSemanticType(itemData.getId2(), itemValue, roleDatasetCode, isManualEventOnUpdateEnabled);
+			cudService.createMeaningSemanticType(id2, value, roleDatasetCode, isManualEventOnUpdateEnabled);
 			break;
 		case "od_word_recommendation":
-			cudService.createOdWordRecommendation(itemData.getId(), itemValue, roleDatasetCode, isManualEventOnUpdateEnabled);
+			cudService.createOdWordRecommendation(id, value, roleDatasetCode, isManualEventOnUpdateEnabled);
 			break;
 		case "full_syn_candidate":
 			UserContextData userContextData = getUserContextData();
 			String candidateLang = userContextData.getFullSynCandidateLangCode();
 			String candidateDatasetCode = userContextData.getFullSynCandidateDatasetCode();
-			response = synCandidateService.createFullSynCandidate(itemData.getId(), itemValue, candidateLang, candidateDatasetCode, roleDatasetCode);
+			response = synCandidateService.createFullSynCandidate(id, value, candidateLang, candidateDatasetCode, roleDatasetCode);
 			return response;
+		case ContentKey.DEFINITION_SOURCE_LINK:
+			sourceLinkService.createDefinitionSourceLink(id, id2, ReferenceType.ANY, value, roleDatasetCode, isManualEventOnUpdateEnabled);
+			break;
+		case ContentKey.DEFINITION_NOTE_SOURCE_LINK:
+			sourceLinkService.createDefinitionNoteSourceLink(id, id2, ReferenceType.ANY, value, roleDatasetCode, isManualEventOnUpdateEnabled);
+			break;
+		case ContentKey.LEXEME_SOURCE_LINK:
+			sourceLinkService.createLexemeSourceLink(id, id2, ReferenceType.ANY, value, roleDatasetCode, isManualEventOnUpdateEnabled);
+			break;
+		case ContentKey.LEXEME_NOTE_SOURCE_LINK:
+			sourceLinkService.createLexemeNoteSourceLink(id, id2, ReferenceType.ANY, value, roleDatasetCode, isManualEventOnUpdateEnabled);
+			break;
+		case ContentKey.USAGE_SOURCE_LINK:
+			sourceLinkService.createUsageSourceLink(id, id2, ReferenceType.ANY, value, roleDatasetCode, isManualEventOnUpdateEnabled);
+			break;
+		case ContentKey.MEANING_IMAGE_SOURCE_LINK:
+			sourceLinkService.createMeaningImageSourceLink(id, id2, ReferenceType.ANY, value, roleDatasetCode, isManualEventOnUpdateEnabled);
+			break;
+		case ContentKey.MEANING_NOTE_SOURCE_LINK:
+			sourceLinkService.createMeaningNoteSourceLink(id, id2, ReferenceType.ANY, value, roleDatasetCode, isManualEventOnUpdateEnabled);
+			break;
 		}
 
 		String successMessage = messageSource.getMessage("common.create.success", new Object[0], locale);
@@ -235,153 +257,168 @@ public class EditController extends AbstractMutableDataPageController {
 
 		EkiUser user = userContext.getUser();
 		String roleDatasetCode = getDatasetCodeFromRole();
-		Long itemId = itemData.getId();
-		String itemValue = itemData.getValue();
-		itemValue = valueUtil.trimAndCleanAndRemoveHtmlAndLimit(itemValue);
-		String itemCurrentValue = itemData.getCurrentValue();
-		BigDecimal itemNumberValue = itemData.getNumberValue();
-		String itemLanguage = itemData.getLanguage();
-		String itemCode = itemData.getCode();
-		Complexity itemComplexity = itemData.getComplexity();
+		Long id = itemData.getId();
+		Long id2 = itemData.getId2();
+		String value = itemData.getValue();
+		value = valueUtil.trimAndCleanAndRemoveHtmlAndLimit(value);
+		String currentValue = itemData.getCurrentValue();
+		BigDecimal numberValue = itemData.getNumberValue();
+		String languageCode = itemData.getLanguage();
+		String classifCode = itemData.getCode();
+		Complexity complexity = itemData.getComplexity();
 		boolean isPublic = itemData.isPublic();
 		boolean isManualEventOnUpdateEnabled = sessionBean.isManualEventOnUpdateEnabled();
 
 		switch (itemData.getOpCode()) {
 		case "user_lang_selection":
 			List<ClassifierSelect> languagesOrder = sessionBean.getLanguagesOrder();
-			ClassifierSelect langSelect = languagesOrder.stream().filter(classif -> StringUtils.equals(classif.getCode(), itemCode)).findFirst().get();
+			ClassifierSelect langSelect = languagesOrder.stream().filter(classif -> StringUtils.equals(classif.getCode(), classifCode)).findFirst().get();
 			langSelect.setSelected(!langSelect.isSelected());
 			break;
 		case "usage":
-			cudService.updateUsageValue(itemId, itemValue, itemComplexity, isPublic, roleDatasetCode, isManualEventOnUpdateEnabled);
+			cudService.updateUsage(id, value, complexity, isPublic, roleDatasetCode, isManualEventOnUpdateEnabled);
 			break;
 		case "usage_translation":
-			cudService.updateUsageTranslation(itemId, itemValue, itemLanguage, roleDatasetCode, isManualEventOnUpdateEnabled);
+			cudService.updateUsageTranslation(id, value, languageCode, roleDatasetCode, isManualEventOnUpdateEnabled);
 			break;
 		case "usage_definition":
-			cudService.updateUsageDefinitionValue(itemId, itemValue, roleDatasetCode, isManualEventOnUpdateEnabled);
+			cudService.updateUsageDefinition(id, value, roleDatasetCode, isManualEventOnUpdateEnabled);
 			break;
 		case "definition":
-			cudService.updateDefinition(itemId, itemValue, itemLanguage, itemComplexity, itemCode, isPublic, roleDatasetCode, isManualEventOnUpdateEnabled);
+			cudService.updateDefinition(id, value, languageCode, complexity, classifCode, isPublic, roleDatasetCode, isManualEventOnUpdateEnabled);
 			break;
 		case "definition_note":
-			cudService.updateDefinitionNote(itemId, itemValue, itemLanguage, isPublic, roleDatasetCode, isManualEventOnUpdateEnabled);
+			cudService.updateDefinitionNote(id, value, languageCode, isPublic, roleDatasetCode, isManualEventOnUpdateEnabled);
 			break;
 		case "lexeme_complexity":
-			cudService.updateLexemeComplexity(itemId, itemValue, roleDatasetCode, isManualEventOnUpdateEnabled);
+			cudService.updateLexemeComplexity(id, value, roleDatasetCode, isManualEventOnUpdateEnabled);
 			break;
 		case "lexeme_pos":
-			cudService.updateLexemePos(itemId, itemCurrentValue, itemValue, roleDatasetCode, isManualEventOnUpdateEnabled);
+			cudService.updateLexemePos(id, currentValue, value, roleDatasetCode, isManualEventOnUpdateEnabled);
 			break;
 		case "meaning_domain":
-			Classifier currentMeaningDomain = conversionUtil.classifierFromIdString(itemCurrentValue);
+			Classifier currentMeaningDomain = conversionUtil.classifierFromIdString(currentValue);
 			Classifier newMeaningDomain = conversionUtil.classifierFromIdString(itemData.getValue());
-			cudService.updateMeaningDomain(itemId, currentMeaningDomain, newMeaningDomain, roleDatasetCode, isManualEventOnUpdateEnabled);
+			cudService.updateMeaningDomain(id, currentMeaningDomain, newMeaningDomain, roleDatasetCode, isManualEventOnUpdateEnabled);
 			break;
 		case "government":
-			cudService.updateLexemeGovernment(itemId, itemValue, itemComplexity, roleDatasetCode, isManualEventOnUpdateEnabled);
+			cudService.updateLexemeGovernment(id, value, complexity, roleDatasetCode, isManualEventOnUpdateEnabled);
 			break;
 		case "lexeme_deriv":
-			cudService.updateLexemeDeriv(itemId, itemCurrentValue, itemValue, roleDatasetCode, isManualEventOnUpdateEnabled);
+			cudService.updateLexemeDeriv(id, currentValue, value, roleDatasetCode, isManualEventOnUpdateEnabled);
 			break;
 		case "lexeme_register":
-			cudService.updateLexemeRegister(itemId, itemCurrentValue, itemValue, roleDatasetCode, isManualEventOnUpdateEnabled);
+			cudService.updateLexemeRegister(id, currentValue, value, roleDatasetCode, isManualEventOnUpdateEnabled);
 			break;
 		case "lexeme_region":
-			cudService.updateLexemeRegion(itemId, itemCurrentValue, itemValue, roleDatasetCode, isManualEventOnUpdateEnabled);
+			cudService.updateLexemeRegion(id, currentValue, value, roleDatasetCode, isManualEventOnUpdateEnabled);
 			break;
 		case "lexeme_reliability":
-			cudService.updateLexemeReliability(itemId, itemValue, roleDatasetCode, isManualEventOnUpdateEnabled);
+			cudService.updateLexemeReliability(id, value, roleDatasetCode, isManualEventOnUpdateEnabled);
 			break;
 		case "lexeme_weight":
-			cudService.updateLexemeWeight(itemId, itemNumberValue, roleDatasetCode, isManualEventOnUpdateEnabled);
+			cudService.updateLexemeWeight(id, numberValue, roleDatasetCode, isManualEventOnUpdateEnabled);
 			break;
 		case "meaning_relation_weight":
-			cudService.updateMeaningRelationWeight(itemId, itemNumberValue, roleDatasetCode, isManualEventOnUpdateEnabled);
+			cudService.updateMeaningRelationWeight(id, numberValue, roleDatasetCode, isManualEventOnUpdateEnabled);
 			break;
 		case "word_value":
-			cudService.updateWordValue(itemId, itemValue, roleDatasetCode, isManualEventOnUpdateEnabled);
+			cudService.updateWordValue(id, value, roleDatasetCode, isManualEventOnUpdateEnabled);
 			break;
 		case "word_gender":
-			cudService.updateWordGenderWithDuplication(itemId, itemValue, user, isManualEventOnUpdateEnabled);
+			cudService.updateWordGenderWithDuplication(id, value, user, isManualEventOnUpdateEnabled);
 			break;
 		case "word_type":
-			cudService.updateWordTypeWithDuplication(itemId, itemCurrentValue, itemValue, user, isManualEventOnUpdateEnabled);
+			cudService.updateWordTypeWithDuplication(id, currentValue, value, user, isManualEventOnUpdateEnabled);
 			break;
 		case "word_data_and_lexeme_weight":
-			cudService.updateWordDataAndLexemeWeight(itemId, itemData.getId2(), itemValue, itemNumberValue, roleDatasetCode, isManualEventOnUpdateEnabled);
+			cudService.updateWordDataAndLexemeWeight(id, id2, value, numberValue, roleDatasetCode, isManualEventOnUpdateEnabled);
 			break;
 		case "lexeme_grammar":
-			cudService.updateLexemeGrammar(itemId, itemValue, itemComplexity, roleDatasetCode, isManualEventOnUpdateEnabled);
+			cudService.updateLexemeGrammar(id, value, complexity, roleDatasetCode, isManualEventOnUpdateEnabled);
 			break;
 		case "word_aspect":
-			cudService.updateWordAspect(itemId, itemValue, roleDatasetCode, isManualEventOnUpdateEnabled);
+			cudService.updateWordAspect(id, value, roleDatasetCode, isManualEventOnUpdateEnabled);
 			break;
 		case "word_display_morph":
-			cudService.updateWordDisplayMorph(itemId, itemValue, roleDatasetCode, isManualEventOnUpdateEnabled);
+			cudService.updateWordDisplayMorph(id, value, roleDatasetCode, isManualEventOnUpdateEnabled);
 			break;
 		case "word_morphophono_form":
-			cudService.updateWordMorphophonoForm(itemId, itemValue, roleDatasetCode, isManualEventOnUpdateEnabled);
+			cudService.updateWordMorphophonoForm(id, value, roleDatasetCode, isManualEventOnUpdateEnabled);
 			break;
 		case "word_vocal_form":
-			cudService.updateWordVocalForm(itemId, itemValue, roleDatasetCode, isManualEventOnUpdateEnabled);
+			cudService.updateWordVocalForm(id, value, roleDatasetCode, isManualEventOnUpdateEnabled);
 			break;
 		case "word_lang":
-			cudService.updateWordLang(itemId, itemValue, roleDatasetCode, isManualEventOnUpdateEnabled);
+			cudService.updateWordLang(id, value, roleDatasetCode, isManualEventOnUpdateEnabled);
 			break;
 		case "word_manual_event_on":
-			cudService.updateWordManualEventOn(itemId, itemValue, roleDatasetCode);
+			cudService.updateWordManualEventOn(id, value, roleDatasetCode);
 			break;
 		case "lexeme_publicity":
-			cudService.updateLexemePublicity(itemId, isPublic, roleDatasetCode, isManualEventOnUpdateEnabled);
+			cudService.updateLexemePublicity(id, isPublic, roleDatasetCode, isManualEventOnUpdateEnabled);
 			break;
 		case "lexeme_value_state":
-			cudService.updateLexemeValueState(itemId, itemValue, roleDatasetCode, isManualEventOnUpdateEnabled);
+			cudService.updateLexemeValueState(id, value, roleDatasetCode, isManualEventOnUpdateEnabled);
 			break;
 		case "lexeme_proficiency_level":
-			cudService.updateLexemeProficiencyLevel(itemId, itemValue, roleDatasetCode, isManualEventOnUpdateEnabled);
+			cudService.updateLexemeProficiencyLevel(id, value, roleDatasetCode, isManualEventOnUpdateEnabled);
 			break;
 		case "learner_comment":
-			cudService.updateMeaningLearnerComment(itemId, itemValue, roleDatasetCode, isManualEventOnUpdateEnabled);
+			cudService.updateMeaningLearnerComment(id, value, roleDatasetCode, isManualEventOnUpdateEnabled);
 			break;
 		case "lexeme_note":
-			cudService.updateLexemeNote(itemId, itemValue, itemLanguage, itemComplexity, isPublic, roleDatasetCode, isManualEventOnUpdateEnabled);
+			cudService.updateLexemeNote(id, value, languageCode, complexity, isPublic, roleDatasetCode, isManualEventOnUpdateEnabled);
 			break;
 		case "meaning_note":
-			cudService.updateMeaningNote(itemId, itemValue, itemLanguage, itemComplexity, isPublic, roleDatasetCode, isManualEventOnUpdateEnabled);
+			cudService.updateMeaningNote(id, value, languageCode, complexity, isPublic, roleDatasetCode, isManualEventOnUpdateEnabled);
 			break;
 		case "meaning_forum":
-			cudService.updateMeaningForum(itemId, itemValue, user);
+			cudService.updateMeaningForum(id, value, user);
 			break;
 		case "word_forum":
-			cudService.updateWordForum(itemId, itemValue, user);
+			cudService.updateWordForum(id, value, user);
 			break;
 		case "meaning_image":
-			cudService.updateMeaningImage(itemId, itemValue, itemComplexity, roleDatasetCode, isManualEventOnUpdateEnabled);
+			// TODO needs upgraded integration
+			cudService.updateMeaningImage(id, value, complexity, roleDatasetCode, isManualEventOnUpdateEnabled);
 			break;
 		case "image_title":
-			cudService.updateImageTitle(itemId, itemValue, roleDatasetCode, isManualEventOnUpdateEnabled);
+			// TODO needs removing
+			cudService.updateImageTitle(id, value, roleDatasetCode, isManualEventOnUpdateEnabled);
 			break;
 		case "meaning_media":
-			cudService.updateMeaningMedia(itemId, itemValue, itemComplexity, roleDatasetCode, isManualEventOnUpdateEnabled);
+			cudService.updateMeaningMedia(id, value, complexity, roleDatasetCode, isManualEventOnUpdateEnabled);
 			break;
 		case "meaning_semantic_type":
-			cudService.updateMeaningSemanticType(itemId, itemCurrentValue, itemValue, roleDatasetCode, isManualEventOnUpdateEnabled);
+			cudService.updateMeaningSemanticType(id, currentValue, value, roleDatasetCode, isManualEventOnUpdateEnabled);
 			break;
 		case "meaning_manual_event_on":
-			cudService.updateMeaningManualEventOn(itemId, itemValue, roleDatasetCode);
+			cudService.updateMeaningManualEventOn(id, value, roleDatasetCode);
 			break;
 		case "od_word_recommendation":
-			cudService.updateOdWordRecommendation(itemId, itemValue, roleDatasetCode, isManualEventOnUpdateEnabled);
-			break;
-		case ContentKey.FREEFORM_SOURCE_LINK:
-			sourceLinkService.updateFreeformSourceLink(itemId, itemValue, roleDatasetCode, isManualEventOnUpdateEnabled);
-			break;
-		case ContentKey.LEXEME_SOURCE_LINK:
-			sourceLinkService.updateLexemeSourceLink(itemId, itemValue, roleDatasetCode, isManualEventOnUpdateEnabled);
+			cudService.updateOdWordRecommendation(id, value, roleDatasetCode, isManualEventOnUpdateEnabled);
 			break;
 		case ContentKey.DEFINITION_SOURCE_LINK:
-			sourceLinkService.updateDefinitionSourceLink(itemId, itemValue, roleDatasetCode, isManualEventOnUpdateEnabled);
+			sourceLinkService.updateDefinitionSourceLink(id, value, roleDatasetCode, isManualEventOnUpdateEnabled);
+			break;
+		case ContentKey.DEFINITION_NOTE_SOURCE_LINK:
+			sourceLinkService.updateDefinitionNoteSourceLink(id, value, roleDatasetCode, isManualEventOnUpdateEnabled);
+			break;
+		case ContentKey.LEXEME_SOURCE_LINK:
+			sourceLinkService.updateLexemeSourceLink(id, value, roleDatasetCode, isManualEventOnUpdateEnabled);
+			break;
+		case ContentKey.LEXEME_NOTE_SOURCE_LINK:
+			sourceLinkService.updateLexemeNoteSourceLink(id, value, roleDatasetCode, isManualEventOnUpdateEnabled);
+			break;
+		case ContentKey.USAGE_SOURCE_LINK:
+			sourceLinkService.updateUsageSourceLink(id, value, roleDatasetCode, isManualEventOnUpdateEnabled);
+			break;
+		case ContentKey.MEANING_IMAGE_SOURCE_LINK:
+			sourceLinkService.updateMeaningImageSourceLink(id, value, roleDatasetCode, isManualEventOnUpdateEnabled);
+			break;
+		case ContentKey.MEANING_NOTE_SOURCE_LINK:
+			sourceLinkService.updateMeaningNoteSourceLink(id, value, roleDatasetCode, isManualEventOnUpdateEnabled);
 			break;
 		}
 		return response;
@@ -443,70 +480,6 @@ public class EditController extends AbstractMutableDataPageController {
 	}
 
 	@ResponseBody
-	@PostMapping(UPDATE_LEVELS_URI)
-	public String updateLexemeLevels(
-			@RequestParam("id") Long lexemeId,
-			@RequestParam("action") String action,
-			@ModelAttribute(name = SESSION_BEAN) SessionBean sessionBean) throws Exception {
-
-		logger.debug("Change lexeme levels for id {}, action {}", lexemeId, action);
-		boolean isManualEventOnUpdateEnabled = sessionBean.isManualEventOnUpdateEnabled();
-		String roleDatasetCode = getDatasetCodeFromRole();
-
-		cudService.updateLexemeLevels(lexemeId, action, roleDatasetCode, isManualEventOnUpdateEnabled);
-
-		return RESPONSE_OK_VER1;
-	}
-
-	@ResponseBody
-	@PostMapping(UPDATE_LEXEME_LEVELS_URI)
-	public String updateLexemeLevels(
-			@RequestBody UpdateLexemeLevelsRequest updateLexemeLevelsRequest,
-			@ModelAttribute(name = SESSION_BEAN) SessionBean sessionBean) throws Exception {
-
-		boolean isManualEventOnUpdateEnabled = sessionBean.isManualEventOnUpdateEnabled();
-		String roleDatasetCode = getDatasetCodeFromRole();
-		Long lexemeId = updateLexemeLevelsRequest.getLexemeId();
-		Integer position = updateLexemeLevelsRequest.getPosition();
-		logger.debug("Change lexeme levels for id {}, new position {}", lexemeId, position);
-
-		cudService.updateLexemeLevels(lexemeId, position, roleDatasetCode, isManualEventOnUpdateEnabled);
-
-		return RESPONSE_OK_VER1;
-	}
-
-	@PostMapping(CONFIRM_OP_URI)
-	public String confirmOperation(@RequestBody DeleteItemRequest deleteItemRequest, Model model) {
-
-		String opName = deleteItemRequest.getOpName();
-		String opCode = deleteItemRequest.getOpCode();
-		Long id = deleteItemRequest.getId();
-
-		logger.debug("Confirmation request: {} {} {}", opName, opCode, id);
-
-		EkiUser user = userContext.getUser();
-
-		switch (opName) {
-		case "delete":
-			switch (opCode) {
-			case "lexeme":
-				LexemeDeleteConfirmation lexemeDeleteConfirmation = complexOpService.validateLexemeDelete(id, user);
-				model.addAttribute("lexemeDeleteConfirmation", lexemeDeleteConfirmation);
-				return COMPONENTS_PAGE + PAGE_FRAGMENT_ELEM + "lexeme_delete_confirmation";
-			case "meaning":
-				MeaningDeleteConfirmation meaningDeleteConfirmation = complexOpService.validateMeaningDelete(id, user);
-				model.addAttribute("meaningDeleteConfirmation", meaningDeleteConfirmation);
-				return COMPONENTS_PAGE + PAGE_FRAGMENT_ELEM + "meaning_delete_confirmation";
-			case "rus_meaning_lexemes":
-				LexemeDeleteConfirmation meaningLexemesDeleteConfirmation = complexOpService.validateLexemeAndMeaningLexemesDelete(id, user);
-				model.addAttribute("lexemeDeleteConfirmation", meaningLexemesDeleteConfirmation);
-				return COMPONENTS_PAGE + PAGE_FRAGMENT_ELEM + "lexeme_delete_confirmation";
-			}
-		}
-		throw new UnsupportedOperationException("Unsupported confirm operation: " + opName + " " + opCode);
-	}
-
-	@ResponseBody
 	@PostMapping(DELETE_ITEM_URI)
 	public Response deleteItem(
 			@RequestParam("opCode") String opCode,
@@ -548,15 +521,6 @@ public class EditController extends AbstractMutableDataPageController {
 			break;
 		case "usage_definition":
 			cudService.deleteUsageDefinition(id, roleDatasetCode, isManualEventOnUpdateEnabled);
-			break;
-		case ContentKey.FREEFORM_SOURCE_LINK:
-			sourceLinkService.deleteFreeformSourceLink(id, roleDatasetCode, isManualEventOnUpdateEnabled);
-			break;
-		case ContentKey.DEFINITION_SOURCE_LINK:
-			sourceLinkService.deleteDefinitionSourceLink(id, roleDatasetCode, isManualEventOnUpdateEnabled);
-			break;
-		case ContentKey.LEXEME_SOURCE_LINK:
-			sourceLinkService.deleteLexemeSourceLink(id, roleDatasetCode, isManualEventOnUpdateEnabled);
 			break;
 		case "government":
 			cudService.deleteLexemeGovernment(id, roleDatasetCode, isManualEventOnUpdateEnabled);
@@ -653,6 +617,7 @@ public class EditController extends AbstractMutableDataPageController {
 			cudService.updateWordVocalForm(id, null, roleDatasetCode, isManualEventOnUpdateEnabled);
 			break;
 		case "image_title":
+			// TODO needs removing
 			cudService.deleteImageTitle(id, roleDatasetCode, isManualEventOnUpdateEnabled);
 			break;
 		case "meaning_semantic_type":
@@ -664,8 +629,93 @@ public class EditController extends AbstractMutableDataPageController {
 		case "paradigm":
 			cudService.deleteParadigm(id, roleDatasetCode, isManualEventOnUpdateEnabled);
 			break;
+		case ContentKey.DEFINITION_SOURCE_LINK:
+			sourceLinkService.deleteDefinitionSourceLink(id, roleDatasetCode, isManualEventOnUpdateEnabled);
+			break;
+		case ContentKey.DEFINITION_NOTE_SOURCE_LINK:
+			sourceLinkService.deleteDefinitionNoteSourceLink(id, roleDatasetCode, isManualEventOnUpdateEnabled);
+			break;
+		case ContentKey.LEXEME_SOURCE_LINK:
+			sourceLinkService.deleteLexemeSourceLink(id, roleDatasetCode, isManualEventOnUpdateEnabled);
+			break;
+		case ContentKey.LEXEME_NOTE_SOURCE_LINK:
+			sourceLinkService.deleteLexemeNoteSourceLink(id, roleDatasetCode, isManualEventOnUpdateEnabled);
+			break;
+		case ContentKey.USAGE_SOURCE_LINK:
+			sourceLinkService.deleteUsageSourceLink(id, roleDatasetCode, isManualEventOnUpdateEnabled);
+			break;
+		case ContentKey.MEANING_IMAGE_SOURCE_LINK:
+			sourceLinkService.deleteMeaningImageSourceLink(id, roleDatasetCode, isManualEventOnUpdateEnabled);
+			break;
+		case ContentKey.MEANING_NOTE_SOURCE_LINK:
+			sourceLinkService.deleteMeaningNoteSourceLink(id, roleDatasetCode, isManualEventOnUpdateEnabled);
+			break;
 		}
 		return response;
+	}
+
+	@ResponseBody
+	@PostMapping(UPDATE_LEVELS_URI)
+	public String updateLexemeLevels(
+			@RequestParam("id") Long lexemeId,
+			@RequestParam("action") String action,
+			@ModelAttribute(name = SESSION_BEAN) SessionBean sessionBean) throws Exception {
+
+		logger.debug("Change lexeme levels for id {}, action {}", lexemeId, action);
+		boolean isManualEventOnUpdateEnabled = sessionBean.isManualEventOnUpdateEnabled();
+		String roleDatasetCode = getDatasetCodeFromRole();
+
+		cudService.updateLexemeLevels(lexemeId, action, roleDatasetCode, isManualEventOnUpdateEnabled);
+
+		return RESPONSE_OK_VER1;
+	}
+
+	@ResponseBody
+	@PostMapping(UPDATE_LEXEME_LEVELS_URI)
+	public String updateLexemeLevels(
+			@RequestBody UpdateLexemeLevelsRequest updateLexemeLevelsRequest,
+			@ModelAttribute(name = SESSION_BEAN) SessionBean sessionBean) throws Exception {
+
+		boolean isManualEventOnUpdateEnabled = sessionBean.isManualEventOnUpdateEnabled();
+		String roleDatasetCode = getDatasetCodeFromRole();
+		Long lexemeId = updateLexemeLevelsRequest.getLexemeId();
+		Integer position = updateLexemeLevelsRequest.getPosition();
+		logger.debug("Change lexeme levels for id {}, new position {}", lexemeId, position);
+
+		cudService.updateLexemeLevels(lexemeId, position, roleDatasetCode, isManualEventOnUpdateEnabled);
+
+		return RESPONSE_OK_VER1;
+	}
+
+	@PostMapping(CONFIRM_OP_URI)
+	public String confirmOperation(@RequestBody DeleteItemRequest deleteItemRequest, Model model) {
+
+		String opName = deleteItemRequest.getOpName();
+		String opCode = deleteItemRequest.getOpCode();
+		Long id = deleteItemRequest.getId();
+
+		logger.debug("Confirmation request: {} {} {}", opName, opCode, id);
+
+		EkiUser user = userContext.getUser();
+
+		switch (opName) {
+		case "delete":
+			switch (opCode) {
+			case "lexeme":
+				LexemeDeleteConfirmation lexemeDeleteConfirmation = complexOpService.validateLexemeDelete(id, user);
+				model.addAttribute("lexemeDeleteConfirmation", lexemeDeleteConfirmation);
+				return COMPONENTS_PAGE + PAGE_FRAGMENT_ELEM + "lexeme_delete_confirmation";
+			case "meaning":
+				MeaningDeleteConfirmation meaningDeleteConfirmation = complexOpService.validateMeaningDelete(id, user);
+				model.addAttribute("meaningDeleteConfirmation", meaningDeleteConfirmation);
+				return COMPONENTS_PAGE + PAGE_FRAGMENT_ELEM + "meaning_delete_confirmation";
+			case "rus_meaning_lexemes":
+				LexemeDeleteConfirmation meaningLexemesDeleteConfirmation = complexOpService.validateLexemeAndMeaningLexemesDelete(id, user);
+				model.addAttribute("lexemeDeleteConfirmation", meaningLexemesDeleteConfirmation);
+				return COMPONENTS_PAGE + PAGE_FRAGMENT_ELEM + "lexeme_delete_confirmation";
+			}
+		}
+		throw new UnsupportedOperationException("Unsupported confirm operation: " + opName + " " + opCode);
 	}
 
 	@PostMapping(CREATE_RELATIONS_URI)

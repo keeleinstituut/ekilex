@@ -6,6 +6,7 @@ import java.util.List;
 import com.fasterxml.jackson.annotation.JsonFormat;
 
 import eki.common.data.AbstractDataObject;
+import eki.ekilex.data.MeaningNote;
 
 public class TermMeaning extends AbstractDataObject {
 
@@ -19,7 +20,7 @@ public class TermMeaning extends AbstractDataObject {
 
 	private List<Definition> definitions;
 
-	private List<Freeform> notes;
+	private List<MeaningNote> notes;
 
 	private List<Forum> forums;
 
@@ -71,11 +72,11 @@ public class TermMeaning extends AbstractDataObject {
 		this.definitions = definitions;
 	}
 
-	public List<Freeform> getNotes() {
+	public List<MeaningNote> getNotes() {
 		return notes;
 	}
 
-	public void setNotes(List<Freeform> notes) {
+	public void setNotes(List<MeaningNote> notes) {
 		this.notes = notes;
 	}
 

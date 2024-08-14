@@ -16,7 +16,6 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 
 import eki.common.constant.Complexity;
 import eki.common.constant.DatasetType;
-import eki.common.constant.FreeformType;
 import eki.common.constant.GlobalConstant;
 import eki.common.constant.SourceType;
 import eki.common.constant.TagType;
@@ -210,15 +209,6 @@ public abstract class AbstractAuthActionController implements WebConstant, Syste
 	@ModelAttribute("sourceTypes")
 	public List<SourceType> getSourceTypes() {
 		return Arrays.asList(SourceType.class.getEnumConstants());
-	}
-
-	@ModelAttribute("sourcePropertyTypes")
-	public List<FreeformType> getSourcePropertyTypes() {
-
-		return Arrays.asList(FreeformType.SOURCE_AUTHOR, FreeformType.SOURCE_NAME, FreeformType.EXTERNAL_SOURCE_ID, FreeformType.NOTE,
-				FreeformType.SOURCE_ISBN, FreeformType.SOURCE_ISSN, FreeformType.SOURCE_WWW, FreeformType.SOURCE_FILE, FreeformType.SOURCE_PUBLISHER,
-				FreeformType.SOURCE_PUBLICATION_NAME, FreeformType.SOURCE_PUBLICATION_PLACE, FreeformType.SOURCE_PUBLICATION_YEAR, FreeformType.SOURCE_CELEX,
-				FreeformType.SOURCE_RT, FreeformType.SOURCE_EXPLANATION, FreeformType.SOURCE_ARTICLE_TITLE, FreeformType.SOURCE_ARTICLE_AUTHOR);
 	}
 
 	@ModelAttribute("complexities")

@@ -8,9 +8,15 @@ public class SourceLink extends AbstractDataObject {
 
 	private static final long serialVersionUID = 1L;
 
+	// TODO is this necessary?
+	@Deprecated
 	private ReferenceOwner owner;
 
+	// TODO is this necessary?
+	@Deprecated
 	private Long ownerId;
+
+	private String contentKey;
 
 	private Long id;
 
@@ -36,6 +42,14 @@ public class SourceLink extends AbstractDataObject {
 
 	public void setOwnerId(Long ownerId) {
 		this.ownerId = ownerId;
+	}
+
+	public String getContentKey() {
+		return contentKey;
+	}
+
+	public void setContentKey(String contentKey) {
+		this.contentKey = contentKey;
 	}
 
 	public Long getId() {

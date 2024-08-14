@@ -495,7 +495,7 @@
         </div>
         <form name="sourceLinkForm" th:action="@{/create_item}" method="post">
           <input type="hidden" name="id" th:value="${lexeme.lexemeId}">
-          <input type="hidden" name="opCode" value="lex_source_link">
+          <input type="hidden" name="opCode" value="lexeme_source_link">
           <input type="hidden" name="id2">
           <input type="hidden" name="value">
           <div class="modal-body" data-name="sourceLinkDlgContent"></div>
@@ -517,7 +517,7 @@
         </div>
         <form name="sourceLinkForm" th:action="@{/create_item}" method="post">
           <input type="hidden" name="id" th:value="${usage.id}">
-          <input type="hidden" name="opCode" value="ff_source_link">
+          <input type="hidden" name="opCode" value="usage_source_link">
           <input type="hidden" name="id2">
           <input type="hidden" name="value">
           <div class="modal-body" data-name="sourceLinkDlgContent"></div>
@@ -951,7 +951,7 @@
         </div>
         <form name="sourceLinkForm" th:action="@{/create_item}" method="post">
           <input type="hidden" name="id" th:value="${note.id}">
-          <input type="hidden" name="opCode" value="ff_source_link">
+          <input type="hidden" name="opCode" value="lexeme_note_source_link">
           <input type="hidden" name="id2">
           <input type="hidden" name="value">
           <div class="modal-body" data-name="sourceLinkDlgContent"></div>
@@ -1121,7 +1121,7 @@
         </div>
         <form name="sourceLinkForm" th:action="@{/create_item}" method="post">
           <input type="hidden" name="id" th:value="${note.id}">
-          <input type="hidden" name="opCode" value="ff_source_link">
+          <input type="hidden" name="opCode" value="meaning_note_source_link">
           <input type="hidden" name="id2">
           <input type="hidden" name="value">
           <div class="modal-body" data-name="sourceLinkDlgContent"></div>
@@ -1255,7 +1255,7 @@
         </div>
         <form name="sourceLinkForm" th:action="@{/create_item}" method="post">
           <input type="hidden" name="id" th:value="${definition.id}">
-          <input type="hidden" name="opCode" value="def_source_link">
+          <input type="hidden" name="opCode" value="definition_source_link">
           <input type="hidden" name="id2">
           <input type="hidden" name="value">
           <div class="modal-body" data-name="sourceLinkDlgContent"></div>
@@ -1353,7 +1353,7 @@
         </div>
         <form name="sourceLinkForm" th:action="@{/create_item}" method="post">
           <input type="hidden" name="id" th:value="${note.id}">
-          <input type="hidden" name="opCode" value="ff_source_link">
+          <input type="hidden" name="opCode" value="definition_note_source_link">
           <input type="hidden" name="id2">
           <input type="hidden" name="value">
           <div class="modal-body" data-name="sourceLinkDlgContent"></div>
@@ -1496,7 +1496,7 @@
         </div>
         <form name="sourceLinkForm" th:action="@{/create_item}" method="post">
           <input type="hidden" name="id" th:value="${image.id}">
-          <input type="hidden" name="opCode" value="ff_source_link">
+          <input type="hidden" name="opCode" value="meaning_image_source_link">
           <input type="hidden" name="id2">
           <input type="hidden" name="value">
           <div class="modal-body" data-name="sourceLinkDlgContent"></div>
@@ -1659,6 +1659,7 @@
       </div>
     </div>
   </div>
+  <!--  TODO to be replaced with specific types of source link edit forms -->
   <div th:id="${'editFreeformSourceLinkDlg_' + sourceLink.id}" class="modal"
         role="dialog"
         th:fragment="edit_freeform_source_link_dlg"
@@ -1685,7 +1686,7 @@
       <div class="modal-content">
         <form name="sourceLinkForm" th:action="@{/update_item}" method="post">
           <input type="hidden" name="id" th:value="${sourceLink.id}">
-          <input type="hidden" name="opCode" value="def_source_link">
+          <input type="hidden" name="opCode" value="definition_source_link">
           <div class="modal-body" data-name="sourceLinkDlgContent"></div>
           <div class="modal-footer">
             <button type="submit" class="btn btn-primary" data-plugin="updateSourceLink" th:text="#{common.edit}">Muuda</button>
@@ -1703,7 +1704,7 @@
       <div class="modal-content">
         <form name="sourceLinkForm" th:action="@{/update_item}" method="post">
           <input type="hidden" name="id" th:value="${sourceLink.id}">
-          <input type="hidden" name="opCode" value="lex_source_link">
+          <input type="hidden" name="opCode" value="lexeme_source_link">
           <div class="modal-body" data-name="sourceLinkDlgContent"></div>
           <div class="modal-footer">
             <button type="submit" class="btn btn-primary" data-plugin="updateSourceLink" th:text="#{common.edit}">Muuda</button>
