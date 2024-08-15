@@ -29,7 +29,9 @@ public class TestEnvInitialiser {
 
 		final String[] scriptFilePaths = new String[] {
 				"sql/drop_all.sql",
+				"sql/create_types.sql",
 				"sql/create_tables.sql",
+				"sql/create_indexes.sql",
 				//"sql/create_views.sql",
 				"sql/create_functions.sql",
 				"sql/classifier-manual.sql",

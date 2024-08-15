@@ -1,101 +1,3 @@
-create type type_term_meaning_word as (
-  word_id bigint, 
-  word_value text, 
-  word_value_prese text, 
-  homonym_nr integer, 
-  lang char(3), 
-  word_type_codes varchar(100) array, 
-  prefixoid boolean, 
-  suffixoid boolean, 
-  "foreign" boolean, 
-  matching_word boolean, 
-  most_preferred boolean, 
-  least_preferred boolean, 
-  is_public boolean, 
-  dataset_codes varchar(10) array
-);
-
-create type type_word_rel_param as (
-  name text, 
-  value numeric(5, 4)
-);
-
-create type type_word_rel_meaning as (
-  meaning_id bigint, 
-  lexeme_id bigint, 
-  definition_values text array, 
-  usage_values text array, 
-  lex_register_codes varchar(100) array, 
-  lex_pos_codes varchar(100) array
-);
-
-create type type_classifier as (
-  name varchar(100), 
-  code varchar(100), 
-  value text
-);
-
-create type type_activity_log_diff as (
-  op varchar(100), 
-  path text, 
-  value text
-);
-
-create type type_value_name_lang as (
-  value_id bigint, 
-  value text, 
-  name text, 
-  lang char(3)
-);
-
-create type type_mt_definition as (
-  definition_id bigint, 
-  definition_type_code varchar(100), 
-  value text, 
-  value_prese text, 
-  lang char(3), 
-  complexity varchar(100), 
-  is_public boolean
-);
-
-create type type_mt_lexeme as (
-  lexeme_id bigint, 
-  word_id bigint, 
-  meaning_id bigint, 
-  dataset_code varchar(10), 
-  is_public boolean
-);
-
-create type type_mt_word as (
-  lexeme_id bigint, 
-  word_id bigint, 
-  value text, 
-  value_prese text, 
-  lang char(3), 
-  homonym_nr integer, 
-  display_morph_code varchar(100), 
-  gender_code varchar(100), 
-  aspect_code varchar(100), 
-  vocal_form text, 
-  morphophono_form text, 
-  manual_event_on timestamp
-);
-
-create type type_mt_lexeme_freeform as (
-  lexeme_id bigint, 
-  freeform_id bigint, 
-  "type" varchar(100), 
-  value_text text, 
-  value_prese text, 
-  lang char(3), 
-  complexity varchar(100), 
-  is_public boolean, 
-  created_by text, 
-  created_on timestamp, 
-  modified_by text, 
-  modified_on timestamp
-);
-
 ---------------------------------
 -- klassifitseeritud andmestik --
 ---------------------------------
@@ -562,6 +464,19 @@ create table eki_user_profile (
 );
 alter sequence eki_user_profile_id_seq restart with 10000;
 
+-- allikas
+create table source (
+  id bigserial primary key, 
+  dataset_code varchar(10) references dataset(code) on update cascade not null,
+  type varchar(100) not null, 
+  name text not null, 
+  value text null, 
+  value_prese text null, 
+  comment text null, 
+  is_public boolean not null default true
+);
+alter sequence source_id_seq restart with 10000;
+
 -- vabavorm
 create table freeform (
   id bigserial primary key, 
@@ -585,20 +500,17 @@ create table freeform (
 );
 alter sequence freeform_id_seq restart with 10000;
 
--- allikas
-create table source (
+create table freeform_source_link (
   id bigserial primary key, 
-  dataset_code varchar(10) references dataset(code) on update cascade not null,
+  freeform_id bigint references freeform(id) on delete cascade not null, 
+  source_id bigint references source(id) on delete cascade not null, 
   type varchar(100) not null, 
-  name text not null, 
+  name text null, 
   value text null, 
-  value_prese text null, 
-  comment text null, 
-  is_public boolean not null default true
+  order_by bigserial
 );
-alter sequence source_id_seq restart with 10000;
+alter sequence freeform_source_link_id_seq restart with 10000;
 
--- allika vabavorm
 create table source_freeform (
   id bigserial primary key, 
   source_id bigint references source(id) on delete cascade not null, 
@@ -696,6 +608,17 @@ create table word_etymology (
 );
 alter sequence word_etymology_id_seq restart with 10000;
 
+create table word_etymology_source_link (
+  id bigserial primary key, 
+  word_etym_id bigint references word_etymology(id) on delete cascade not null, 
+  source_id bigint references source(id) on delete cascade not null, 
+  type varchar(100) not null, 
+  name text null, 
+  value text null, 
+  order_by bigserial
+);
+alter sequence word_etymology_source_link_id_seq restart with 10000;
+
 create table word_etymology_relation (
   id bigserial primary key, 
   word_etym_id bigint references word_etymology(id) on delete cascade not null, 
@@ -776,6 +699,59 @@ create table meaning (
   id bigserial primary key, manual_event_on timestamp null
 );
 alter sequence meaning_id_seq restart with 10000;
+
+create table meaning_note (
+  id bigserial primary key, 
+  original_freeform_id bigint references freeform(id) on delete cascade, -- to be dropped later
+  meaning_id bigint references meaning(id) on delete cascade not null, 
+  value text not null, 
+  value_prese text not null, 
+  lang char(3) references language(code) not null, 
+  complexity varchar(100) not null, 
+  is_public boolean default true not null, 
+  created_by text null, 
+  created_on timestamp null, 
+  modified_by text null, 
+  modified_on timestamp null, 
+  order_by bigserial
+);
+alter sequence meaning_note_id_seq restart with 10000;
+
+create table meaning_note_source_link (
+	id bigserial primary key, 
+	meaning_note_id bigint references meaning_note(id) on delete cascade not null, 
+	source_id bigint references source(id) on delete cascade not null, 
+	type varchar(100) not null, 
+	name text null, 
+	order_by bigserial
+);
+alter sequence meaning_note_source_link_id_seq restart with 10000;
+
+create table meaning_image (
+  id bigserial primary key, 
+  original_freeform_id bigint references freeform(id) on delete cascade, -- to be dropped later
+  meaning_id bigint references meaning(id) on delete cascade not null, 
+  title text null, 
+  url text not null, 
+  complexity varchar(100) not null, 
+  is_public boolean default true not null, 
+  created_by text null, 
+  created_on timestamp null, 
+  modified_by text null, 
+  modified_on timestamp null, 
+  order_by bigserial
+);
+alter sequence meaning_image_id_seq restart with 10000;
+
+create table meaning_image_source_link (
+	id bigserial primary key, 
+	meaning_image_id bigint references meaning_image(id) on delete cascade not null, 
+	source_id bigint references source(id) on delete cascade not null, 
+	type varchar(100) not null, 
+	name text null, 
+	order_by bigserial
+);
+alter sequence meaning_image_source_link_id_seq restart with 10000;
 
 create table meaning_nr (
   id bigserial primary key, 
@@ -869,6 +845,44 @@ create table definition (
 );
 alter sequence definition_id_seq restart with 10000;
 
+create table definition_source_link (
+  id bigserial primary key, 
+  definition_id bigint references definition(id) on delete cascade not null, 
+  source_id bigint references source(id) on delete cascade not null, 
+  type varchar(100) not null, 
+  name text null, 
+  value text null, 
+  order_by bigserial
+);
+alter sequence definition_source_link_id_seq restart with 10000;
+
+create table definition_note (
+  id bigserial primary key, 
+  original_freeform_id bigint references freeform(id) on delete cascade, -- to be dropped later
+  definition_id bigint references definition(id) on delete cascade not null, 
+  value text not null, 
+  value_prese text not null, 
+  lang char(3) references language(code) not null, 
+  complexity varchar(100) not null, 
+  is_public boolean default true not null, 
+  created_by text null, 
+  created_on timestamp null, 
+  modified_by text null, 
+  modified_on timestamp null, 
+  order_by bigserial
+);
+alter sequence definition_note_id_seq restart with 10000;
+
+create table definition_note_source_link (
+	id bigserial primary key, 
+	definition_note_id bigint references definition_note(id) on delete cascade not null, 
+	source_id bigint references source(id) on delete cascade not null, 
+	type varchar(100) not null, 
+	name text null, 
+	order_by bigserial
+);
+alter sequence definition_note_source_link_id_seq restart with 10000;
+
 create table definition_dataset (
   definition_id bigint references definition(id) on delete cascade not null, 
   dataset_code varchar(10) references dataset(code) on update cascade on delete cascade not null, 
@@ -917,6 +931,101 @@ create table lexeme (
   )
 );
 alter sequence lexeme_id_seq restart with 10000;
+
+create table lexeme_source_link (
+  id bigserial primary key, 
+  lexeme_id bigint references lexeme(id) on delete cascade not null, 
+  source_id bigint references source(id) on delete cascade not null, 
+  type varchar(100) not null, 
+  name text null, 
+  value text null, 
+  order_by bigserial
+);
+alter sequence lexeme_source_link_id_seq restart with 10000;
+
+create table usage (
+  id bigserial primary key, 
+  original_freeform_id bigint references freeform(id) on delete cascade, -- to be dropped later
+  lexeme_id bigint references lexeme(id) on delete cascade not null, 
+  value text not null, 
+  value_prese text not null, 
+  lang char(3) references language(code) not null, 
+  complexity varchar(100) not null, 
+  is_public boolean not null default true, 
+  created_by text null, 
+  created_on timestamp null, 
+  modified_by text null, 
+  modified_on timestamp null, 
+  order_by bigserial
+);
+alter sequence usage_id_seq restart with 10000;
+
+create table usage_source_link (
+	id bigserial primary key, 
+	usage_id bigint references usage(id) on delete cascade not null, 
+	source_id bigint references source(id) on delete cascade not null, 
+	type varchar(100) not null, 
+	name text null, 
+	order_by bigserial
+);
+alter sequence usage_source_link_id_seq restart with 10000;
+
+create table usage_translation (
+  id bigserial primary key, 
+  original_freeform_id bigint references freeform(id) on delete cascade, -- to be dropped later
+  usage_id bigint references usage(id) on delete cascade not null, 
+  value text not null, 
+  value_prese text not null, 
+  lang char(3) references language(code) not null, 
+  created_by text null, 
+  created_on timestamp null, 
+  modified_by text null, 
+  modified_on timestamp null, 
+  order_by bigserial
+);
+alter sequence usage_translation_id_seq restart with 10000;
+
+create table usage_definition (
+  id bigserial primary key, 
+  original_freeform_id bigint references freeform(id) on delete cascade, -- to be dropped later
+  usage_id bigint references usage(id) on delete cascade not null, 
+  value text not null, 
+  value_prese text not null, 
+  lang char(3) references language(code) not null, 
+  created_by text null, 
+  created_on timestamp null, 
+  modified_by text null, 
+  modified_on timestamp null, 
+  order_by bigserial
+);
+alter sequence usage_definition_id_seq restart with 10000;
+
+create table lexeme_note (
+  id bigserial primary key, 
+  original_freeform_id bigint references freeform(id) on delete cascade, -- to be dropped later
+  lexeme_id bigint references lexeme(id) on delete cascade not null, 
+  value text not null, 
+  value_prese text not null, 
+  lang char(3) references language(code) not null, 
+  complexity varchar(100) not null, 
+  is_public boolean default true not null, 
+  created_by text null, 
+  created_on timestamp null, 
+  modified_by text null, 
+  modified_on timestamp null, 
+  order_by bigserial
+);
+alter sequence lexeme_note_id_seq restart with 10000;
+
+create table lexeme_note_source_link (
+	id bigserial primary key, 
+	lexeme_note_id bigint references lexeme_note(id) on delete cascade not null, 
+	source_id bigint references source(id) on delete cascade not null, 
+	type varchar(100) not null, 
+	name text null, 
+	order_by bigserial
+);
+alter sequence lexeme_note_source_link_id_seq restart with 10000;
 
 create table lexeme_tag (
   id bigserial primary key, 
@@ -1037,51 +1146,6 @@ create table collocation_member (
 	unique(colloc_lexeme_id, member_lexeme_id)
 );
 alter sequence collocation_member_id_seq restart with 10000;
-
--- allikaviited
-create table freeform_source_link (
-  id bigserial primary key, 
-  freeform_id bigint references freeform(id) on delete cascade not null, 
-  source_id bigint references source(id) on delete cascade not null, 
-  type varchar(100) not null, 
-  name text null, 
-  value text null, 
-  order_by bigserial
-);
-alter sequence freeform_source_link_id_seq restart with 10000;
-
-create table definition_source_link (
-  id bigserial primary key, 
-  definition_id bigint references definition(id) on delete cascade not null, 
-  source_id bigint references source(id) on delete cascade not null, 
-  type varchar(100) not null, 
-  name text null, 
-  value text null, 
-  order_by bigserial
-);
-alter sequence definition_source_link_id_seq restart with 10000;
-
-create table lexeme_source_link (
-  id bigserial primary key, 
-  lexeme_id bigint references lexeme(id) on delete cascade not null, 
-  source_id bigint references source(id) on delete cascade not null, 
-  type varchar(100) not null, 
-  name text null, 
-  value text null, 
-  order_by bigserial
-);
-alter sequence lexeme_source_link_id_seq restart with 10000;
-
-create table word_etymology_source_link (
-  id bigserial primary key, 
-  word_etym_id bigint references word_etymology(id) on delete cascade not null, 
-  source_id bigint references source(id) on delete cascade not null, 
-  type varchar(100) not null, 
-  name text null, 
-  value text null, 
-  order_by bigserial
-);
-alter sequence word_etymology_source_link_id_seq restart with 10000;
 
 create table freq_corp (
   id bigserial primary key, 
@@ -1262,203 +1326,3 @@ create table temp_ds_import_queue (
   content text not null
 );
 alter sequence temp_ds_import_queue_id_seq restart with 10000;
-
---- indexes
-create index eki_user_email_idx on eki_user(email);
-create index eki_user_api_key_idx on eki_user(api_key);
-create index eki_user_profile_user_id_idx on eki_user_profile(user_id);
-create index eki_user_profile_recent_dataset_permission_id_idx on eki_user_profile(recent_dataset_permission_id);
-create index dataset_code_idx on dataset(code);
-create index dataset_type_idx on dataset(type);
-create index dataset_perm_user_id_idx on dataset_permission(user_id);
-create index dataset_perm_dataset_code_idx on dataset_permission(dataset_code);
-create index dataset_perm_dataset_full_cmplx_idx on dataset_permission(user_id, auth_operation, auth_item, dataset_code, auth_lang);
-create index form_value_idx on form(value);
-create index form_value_lower_idx on form(lower(value));
-create index form_value_lower_prefix_idx on form (lower(value) text_pattern_ops);
-create index form_morph_code_idx on form(morph_code);
-create index paradigm_word_id_idx on paradigm(word_id);
-create index paradigm_form_paradigm_id_idx on paradigm_form(paradigm_id);
-create index paradigm_form_form_id_idx on paradigm_form(form_id);
-create index paradigm_form_display_form_idx on paradigm_form(display_form);
-create index paradigm_form_display_level_idx on paradigm_form(display_level);
-create index word_homonym_nr_idx on word(homonym_nr);
-create index word_lang_idx on word(lang);
-create index word_value_idx on word(value);
-create index word_value_lower_idx on word(lower(value));
-create index word_value_lower_prefix_idx on word(lower(value) text_pattern_ops);
-create index word_value_as_word_idx on word(value_as_word);
-create index word_value_as_word_lower_idx on word(lower(value_as_word));
-create index word_value_as_word_lower_prefix_idx on word(lower(value_as_word) text_pattern_ops);
-create index word_manual_event_on_idx on word(manual_event_on);
-create index word_morphophono_form_idx on word(morphophono_form);
-create index word_morphophono_form_lower_idx on word(lower(morphophono_form));
-create index word_is_word_idx on word(is_word);
-create index word_is_collocation_idx on word(is_collocation);
-create index word_is_public_idx on word(is_public);
-create index word_etym_word_id_idx on word_etymology(word_id);
-create index word_etym_etym_type_code_idx on word_etymology(etymology_type_code);
-create index word_etym_rel_word_etym_id_idx on word_etymology_relation(word_etym_id);
-create index word_etym_rel_rel_word_id_idx on word_etymology_relation(related_word_id);
-create index word_guid_word_id_idx on word_guid(word_id);
-create index word_guid_dataset_code_idx on word_guid(dataset_code);
-create index word_guid_guid_idx on word_guid(guid);
-create index word_group_member_group_id_idx on word_group_member(word_group_id);
-create index word_group_member_word_id_idx on word_group_member(word_id);
-create index word_word_type_word_id_idx on word_word_type(word_id);
-create index word_word_type_idx on word_word_type(word_type_code);
-create index meaning_manual_event_on_idx on meaning(manual_event_on);
-create index meaning_nr_meaning_id_idx on meaning_nr(meaning_id);
-create index meaning_nr_dataset_code_idx on meaning_nr(dataset_code);
-create index meaning_nr_mnr_idx on meaning_nr(mnr);
-create index lexeme_word_id_idx on lexeme(word_id);
-create index lexeme_meaning_id_idx on lexeme(meaning_id);
-create index lexeme_dataset_code_idx on lexeme(dataset_code);
-create index lexeme_value_state_code_idx on lexeme(value_state_code);
-create index lexeme_proficiency_level_code_idx on lexeme(proficiency_level_code);
-create index lexeme_is_public_idx on lexeme(is_public);
-create index lexeme_complexity_idx on lexeme(complexity);
-create index lexeme_tag_lexeme_id_idx on lexeme_tag(lexeme_id);
-create index lexeme_tag_tag_name_idx on lexeme_tag(tag_name);
-create index lexeme_tag_tag_name_lower_idx on lexeme_tag(lower(tag_name));
-create index definition_meaning_id_idx on definition(meaning_id);
-create index definition_lang_idx on definition(lang);
-create index definition_complexity_idx on definition(complexity);
-create index definition_is_public_idx on definition(is_public);
-create index meaning_relation_meaning1_id_idx on meaning_relation(meaning1_id);
-create index meaning_relation_meaning2_id_idx on meaning_relation(meaning2_id);
-create index meaning_rel_mapping_code1_idx on meaning_rel_mapping(code1);
-create index meaning_rel_mapping_code2_idx on meaning_rel_mapping(code2);
-create index meaning_tag_meaning_id_idx on meaning_tag(meaning_id);
-create index meaning_tag_tag_name_idx on meaning_tag(tag_name);
-create index meaning_tag_tag_name_lower_idx on meaning_tag(lower(tag_name));
-create index lex_relation_lexeme1_id_idx on lex_relation(lexeme1_id);
-create index lex_relation_lexeme2_id_idx on lex_relation(lexeme2_id);
-create index lex_rel_mapping_code1_idx on lex_rel_mapping(code1);
-create index lex_rel_mapping_code2_idx on lex_rel_mapping(code2);
-create index word_relation_word1_id_idx on word_relation(word1_id);
-create index word_relation_word2_id_idx on word_relation(word2_id);
-create index word_relation_word_rel_type_code_idx on word_relation(word_rel_type_code);
-create index word_relation_param_word_relation_id_idx on word_relation_param(word_relation_id);
-create index word_rel_mapping_code1_idx on word_rel_mapping(code1);
-create index word_rel_mapping_code2_idx on word_rel_mapping(code2);
-create index freeform_parent_id_idx on freeform(parent_id);
-create index freeform_value_text_idx on freeform(value_text);
-create index freeform_value_text_lower_idx on freeform(lower(value_text));
-create index freeform_type_idx on freeform(type);
-create index freeform_lang_idx on freeform(lang);
-create index freeform_complexity_idx on freeform(complexity);
-create index freeform_is_public_idx on freeform(is_public);
-create index source_dataset_code_idx on source(dataset_code);
-create index source_type_idx on source(type);
-create index source_name_idx on source(name);
-create index source_name_lower_idx on source(lower(name));
-create index source_name_lower_prefix_idx on source(lower(name) text_pattern_ops);
-create index source_value_idx on source(value);
-create index source_value_lower_idx on source(lower(value));
-create index source_value_lower_prefix_idx on source(lower(value) text_pattern_ops);
-create index source_freeform_source_id_idx on source_freeform(source_id);
-create index source_freeform_freeform_id_idx on source_freeform(freeform_id);
-create index meaning_freeform_meaning_id_idx on meaning_freeform(meaning_id);
-create index meaning_freeform_freeform_id_idx on meaning_freeform(freeform_id);
-create index lexeme_freeform_lexeme_id_idx on lexeme_freeform(lexeme_id);
-create index lexeme_freeform_freeform_id_idx on lexeme_freeform(freeform_id);
-create index word_freeform_word_id_idx on word_freeform(word_id);
-create index word_freeform_freeform_id_idx on word_freeform(freeform_id);
-create index definition_freeform_definition_id_idx on definition_freeform(definition_id);
-create index definition_freeform_freeform_id_idx on definition_freeform(freeform_id);
-create index freeform_source_link_freeform_id_idx on freeform_source_link(freeform_id);
-create index freeform_source_link_source_id_idx on freeform_source_link(source_id);
-create index freeform_source_link_name_idx on freeform_source_link(name);
-create index freeform_source_link_name_lower_idx on freeform_source_link(lower(name));
-create index freeform_source_link_value_idx on freeform_source_link(value);
-create index freeform_source_link_value_lower_idx on freeform_source_link(lower(value));
-create index definition_source_link_definition_id_idx on definition_source_link(definition_id);
-create index definition_source_link_source_id_idx on definition_source_link(source_id);
-create index definition_source_link_name_idx on definition_source_link(name);
-create index definition_source_link_name_lower_idx on definition_source_link(lower(name));
-create index definition_source_link_value_idx on definition_source_link(value);
-create index definition_source_link_value_lower_idx on definition_source_link(lower(value));
-create index lexeme_source_link_lexeme_id_idx on lexeme_source_link(lexeme_id);
-create index lexeme_source_link_source_id_idx on lexeme_source_link(source_id);
-create index lexeme_source_link_name_idx on lexeme_source_link(name);
-create index lexeme_source_link_name_lower_idx on lexeme_source_link(lower(name));
-create index lexeme_source_link_value_idx on lexeme_source_link(value);
-create index lexeme_source_link_value_lower_idx on lexeme_source_link(lower(value));
-create index word_etym_source_link_word_etym_id_idx on word_etymology_source_link(word_etym_id);
-create index word_etym_source_link_source_id_idx on word_etymology_source_link(source_id);
-create index lex_colloc_pos_group_lexeme_id_idx on lex_colloc_pos_group(lexeme_id);
-create index lex_colloc_rel_group_pos_group_id_idx on lex_colloc_rel_group(pos_group_id);
-create index lex_colloc_lexeme_id_idx on lex_colloc(lexeme_id);
-create index lex_colloc_rel_group_id_idx on lex_colloc(rel_group_id);
-create index lex_colloc_collocation_id_idx on lex_colloc(collocation_id);
-create index collocation_value_idx on collocation(value);
-create index collocation_member_colloc_lexeme_id_idx on collocation_member(colloc_lexeme_id);
-create index collocation_member_member_lexeme_id_idx on collocation_member(member_lexeme_id);
-create index collocation_member_member_form_id_idx on collocation_member(member_form_id);
-create index collocation_member_pos_group_code_idx on collocation_member(pos_group_code);
-create index collocation_member_rel_group_code_idx on collocation_member(rel_group_code);
-create index lexeme_register_lexeme_id_idx on lexeme_register(lexeme_id);
-create index lexeme_pos_lexeme_id_idx on lexeme_pos(lexeme_id);
-create index lexeme_pos_pos_code_idx on lexeme_pos(pos_code);
-create index lexeme_deriv_lexeme_id_idx on lexeme_deriv(lexeme_id);
-create index lexeme_region_lexeme_id_idx on lexeme_region(lexeme_id);
-create index meaning_domain_meaning_id_idx on meaning_domain(meaning_id);
-create index meaning_semantic_type_meaning_id_idx on meaning_semantic_type(meaning_id);
-create index form_freq_corp_id_idx on form_freq(freq_corp_id);
-create index form_freq_form_id_idx on form_freq(form_id);
-create index form_freq_value_id_idx on form_freq(value);
-create index form_freq_rank_id_idx on form_freq(rank);
-create index morph_freq_corp_id_idx on morph_freq(freq_corp_id);
-create index morph_freq_morph_code_idx on morph_freq(morph_code);
-create index morph_freq_value_id_idx on morph_freq(value);
-create index morph_freq_rank_id_idx on morph_freq(rank);
-create index word_freq_corp_id_idx on word_freq(freq_corp_id);
-create index word_freq_word_id_idx on word_freq(word_id);
-create index word_freq_value_id_idx on word_freq(value);
-create index word_freq_rank_id_idx on word_freq(rank);
-create index data_request_user_id_idx on data_request(user_id);
-create index news_article_type_idx on news_article(type);
-create index news_article_lang_idx on news_article(lang);
-create index lexeme_activity_log_lexeme_id_idx on lexeme_activity_log(lexeme_id);
-create index lexeme_activity_log_log_id_idx on lexeme_activity_log(activity_log_id);
-create index word_activity_log_word_id_idx on word_activity_log(word_id);
-create index word_activity_log_log_id_idx on word_activity_log(activity_log_id);
-create index word_last_activity_log_word_id_idx on word_last_activity_log(word_id);
-create index word_last_activity_log_log_id_idx on word_last_activity_log(activity_log_id);
-create index meaning_activity_log_meaning_id_idx on meaning_activity_log(meaning_id);
-create index meaning_activity_log_log_id_idx on meaning_activity_log(activity_log_id);
-create index meaning_last_activity_log_meaning_id_idx on meaning_last_activity_log(meaning_id);
-create index meaning_last_activity_log_log_id_idx on meaning_last_activity_log(activity_log_id);
-create index source_activity_log_source_id_idx on source_activity_log(source_id);
-create index source_activity_log_log_id_idx on source_activity_log(activity_log_id);
-create index activity_log_event_on_idx on activity_log(event_on);
-create index activity_log_event_on_desc_idx on activity_log(event_on desc);
-create index activity_log_event_on_ms_idx on activity_log((date_part('epoch', event_on) * 1000));
-create index activity_log_event_on_desc_ms_idx on activity_log((date_part('epoch', event_on) * 1000) desc);
-create index activity_log_event_by_idx on activity_log(event_by);
-create index activity_log_event_by_lower_idx on activity_log(lower(event_by));
-create index activity_log_owner_idx on activity_log(owner_name, owner_id);
-create index activity_log_owner_name_idx on activity_log(owner_name);
-create index activity_log_dataset_code_idx on activity_log(dataset_code);
-create index activity_funct_name_idx on activity_log(funct_name);
-create index activity_entity_name_idx on activity_log(entity_name);
-create index activity_entity_name_owner_name_event_on_idx on activity_log(entity_name, owner_name, (date_part('epoch', event_on) * 1000));
-create index activity_entity_id_idx on activity_log(entity_id);
-create index activity_curr_data_word_id_idx on activity_log(cast(curr_data ->> 'wordId' as bigint));
-create index activity_curr_data_meaning_id_idx on activity_log(cast(curr_data ->> 'meaningId' as bigint));
-create index activity_curr_data_lexeme_id_idx on activity_log(cast(curr_data ->> 'lexemeId' as bigint));
-create index feedback_log_comment_log_id_idx on feedback_log_comment(feedback_log_id);
-create index temp_ds_import_pk_map_import_code_idx on temp_ds_import_pk_map(import_code);
-create index temp_ds_import_pk_map_table_name_idx on temp_ds_import_pk_map(table_name);
-create index temp_ds_import_pk_map_source_pk_idx on temp_ds_import_pk_map(source_pk);
-create index temp_ds_import_pk_map_target_pk_idx on temp_ds_import_pk_map(target_pk);
-create index temp_ds_import_queue_import_code_idx on temp_ds_import_queue(import_code);
-create index temp_ds_import_queue_table_name_idx on temp_ds_import_queue(table_name);
-create index domain_code_origin_idx on domain(code, origin);
-create index domain_parent_code_origin_idx on domain(parent_code, parent_origin);
-create index domain_label_code_origin_idx on domain_label(code, origin);
-create index meaning_domain_code_origin_idx on meaning_domain(domain_code, domain_origin);
-create index definition_fts_idx on definition using gin(to_tsvector('simple', value));
-create index freeform_fts_idx on freeform using gin(to_tsvector('simple', value_text));
-create index form_fts_idx on form using gin(to_tsvector('simple', value));

@@ -25,11 +25,11 @@ create table usage (
   id bigserial primary key, 
   original_freeform_id bigint references freeform(id) on delete cascade, -- to be dropped later
   lexeme_id bigint references lexeme(id) on delete cascade not null, 
-  value text null, 
-  value_prese text null, 
-  lang char(3) references language(code) null, 
-  complexity varchar(100) null, 
-  is_public boolean default true not null, 
+  value text not null, 
+  value_prese text not null, 
+  lang char(3) references language(code) not null, 
+  complexity varchar(100) not null, 
+  is_public boolean not null default true, 
   created_by text null, 
   created_on timestamp null, 
   modified_by text null, 
@@ -63,9 +63,9 @@ create table usage_translation (
   id bigserial primary key, 
   original_freeform_id bigint references freeform(id) on delete cascade, -- to be dropped later
   usage_id bigint references usage(id) on delete cascade not null, 
-  value text null, 
-  value_prese text null, 
-  lang char(3) references language(code) null, 
+  value text not null, 
+  value_prese text not null, 
+  lang char(3) references language(code) not null, 
   created_by text null, 
   created_on timestamp null, 
   modified_by text null, 
@@ -82,9 +82,9 @@ create table usage_definition (
   id bigserial primary key, 
   original_freeform_id bigint references freeform(id) on delete cascade, -- to be dropped later
   usage_id bigint references usage(id) on delete cascade not null, 
-  value text null, 
-  value_prese text null, 
-  lang char(3) references language(code) null, 
+  value text not null, 
+  value_prese text not null, 
+  lang char(3) references language(code) not null, 
   created_by text null, 
   created_on timestamp null, 
   modified_by text null, 
@@ -101,10 +101,10 @@ create table lexeme_note (
   id bigserial primary key, 
   original_freeform_id bigint references freeform(id) on delete cascade, -- to be dropped later
   lexeme_id bigint references lexeme(id) on delete cascade not null, 
-  value text null, 
-  value_prese text null, 
-  lang char(3) references language(code) null, 
-  complexity varchar(100) null, 
+  value text not null, 
+  value_prese text not null, 
+  lang char(3) references language(code) not null, 
+  complexity varchar(100) not null, 
   is_public boolean default true not null, 
   created_by text null, 
   created_on timestamp null, 
@@ -139,10 +139,10 @@ create table meaning_note (
   id bigserial primary key, 
   original_freeform_id bigint references freeform(id) on delete cascade, -- to be dropped later
   meaning_id bigint references meaning(id) on delete cascade not null, 
-  value text null, 
-  value_prese text null, 
-  lang char(3) references language(code) null, 
-  complexity varchar(100) null, 
+  value text not null, 
+  value_prese text not null, 
+  lang char(3) references language(code) not null, 
+  complexity varchar(100) not null, 
   is_public boolean default true not null, 
   created_by text null, 
   created_on timestamp null, 
@@ -178,8 +178,8 @@ create table meaning_image (
   original_freeform_id bigint references freeform(id) on delete cascade, -- to be dropped later
   meaning_id bigint references meaning(id) on delete cascade not null, 
   title text null, 
-  url text null, 
-  complexity varchar(100) null, 
+  url text not null, 
+  complexity varchar(100) not null, 
   is_public boolean default true not null, 
   created_by text null, 
   created_on timestamp null, 
@@ -214,10 +214,10 @@ create table definition_note (
   id bigserial primary key, 
   original_freeform_id bigint references freeform(id) on delete cascade, -- to be dropped later
   definition_id bigint references definition(id) on delete cascade not null, 
-  value text null, 
-  value_prese text null, 
-  lang char(3) references language(code) null, 
-  complexity varchar(100) null, 
+  value text not null, 
+  value_prese text not null, 
+  lang char(3) references language(code) not null, 
+  complexity varchar(100) not null, 
   is_public boolean default true not null, 
   created_by text null, 
   created_on timestamp null, 
@@ -269,7 +269,7 @@ select
 	lf.lexeme_id,
 	f.value_text,
 	f.value_prese,
-	f.lang,
+	coalesce(f.lang, 'est'),
 	f.complexity,
 	f.is_public,
 	f.created_by,
@@ -316,7 +316,7 @@ select
 	u.id,
 	f.value_text,
 	f.value_prese,
-	f.lang,
+	coalesce(f.lang, 'rus'),
 	f.created_by,
 	f.created_on,
 	f.modified_by,
@@ -344,7 +344,7 @@ select
 	u.id,
 	f.value_text,
 	f.value_prese,
-	f.lang,
+	coalesce(f.lang, 'est'),
 	f.created_by,
 	f.created_on,
 	f.modified_by,
@@ -375,7 +375,7 @@ select
 	f.value_text,
 	f.value_prese,
 	f.lang,
-	f.complexity,
+	coalesce(f.complexity, 'DETAIL'),
 	f.is_public,
 	f.created_by,
 	f.created_on,
@@ -387,6 +387,7 @@ from
 where
 	lf.freeform_id = f.id
 	and f.type = 'NOTE'
+	and f.value_text is not null
 order by f.order_by;
 
 insert into lexeme_note_source_link (
@@ -422,9 +423,9 @@ select
 	f.id,
 	mf.meaning_id,
 	f.value_text,
-	f.value_prese,
+	coalesce(f.value_prese, f.value_text),
 	f.lang,
-	f.complexity,
+	coalesce(f.complexity, 'DETAIL'),
 	f.is_public,
 	f.created_by,
 	f.created_on,
@@ -436,6 +437,7 @@ from
 where
 	mf.freeform_id = f.id
 	and f.type = 'NOTE'
+	and f.value_text is not null
 order by f.order_by;
 
 insert into meaning_note_source_link (
@@ -483,6 +485,7 @@ from
 	left outer join freeform f2 on f2.parent_id = f1.id and f2.type = 'IMAGE_TITLE'
 where
 	f1.type = 'IMAGE_FILE'
+	and f1.value_text is not null
 order by f1.order_by;
 
 insert into meaning_image_source_link (
@@ -520,7 +523,7 @@ select
 	f.value_text,
 	f.value_prese,
 	f.lang,
-	f.complexity,
+	coalesce(f.complexity, 'DETAIL'),
 	f.is_public,
 	f.created_by,
 	f.created_on,
@@ -532,6 +535,7 @@ from
 where
 	df.freeform_id = f.id
 	and f.type = 'NOTE'
+	and f.value_text is not null
 order by f.order_by;
 
 insert into definition_note_source_link (

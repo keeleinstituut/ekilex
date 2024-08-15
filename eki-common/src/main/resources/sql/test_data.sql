@@ -201,6 +201,9 @@ insert into lexeme (id, word_id, meaning_id, dataset_code, is_public, complexity
 insert into lexeme (id, word_id, meaning_id, dataset_code, is_public, complexity) values (4032, 1017, 2015, 'evs', true, 'DETAIL');
 insert into lexeme (id, word_id, meaning_id, dataset_code, is_public, complexity) values (4033, 1018, 2016, 'evs', true, 'DETAIL');
 
+insert into usage (id, lexeme_id, value, value_prese, lang, complexity, is_public) values (1003, 4001, 'Hommikul oli hall maas', 'Hommikul oli hall maas', 'est', 'DETAIL', true);
+insert into usage (id, lexeme_id, value, value_prese, lang, complexity, is_public) values (1004, 4001, 'Haned lähevad, hallad taga', 'Haned lähevad, hallad taga', 'est', 'DETAIL', true);
+
 insert into lex_relation (id, lexeme1_id, lexeme2_id, lex_rel_type_code) values (1001, 4001, 4017, 'comp');
 insert into lex_relation (id, lexeme1_id, lexeme2_id, lex_rel_type_code) values (1002, 4001, 4018, 'comp');
 insert into lex_relation (id, lexeme1_id, lexeme2_id, lex_rel_type_code) values (1003, 4001, 4019, 'comp');
@@ -213,12 +216,9 @@ insert into lex_relation (id, lexeme1_id, lexeme2_id, lex_rel_type_code) values 
 
 insert into freeform (id, parent_id, type, value_text, lang, complexity) values (1001, null, 'CONCEPT_ID', '123456', null, 'DETAIL');
 insert into freeform (id, parent_id, type, value_text, lang, complexity) values (1002, null, 'GOVERNMENT', 'keda mida', 'est', 'DETAIL');
-insert into freeform (id, parent_id, type, value_text, lang, complexity) values (1003, null, 'USAGE', 'Hommikul oli hall maas', 'est', 'DETAIL');
-insert into freeform (id, parent_id, type, value_text, lang, complexity) values (1004, null, 'USAGE', 'Haned lähevad, hallad taga', 'est', 'DETAIL');
 
 insert into meaning_freeform (id, meaning_id, freeform_id) values (1001, 2024, 1001);
-insert into lexeme_freeform (id, lexeme_id, freeform_id) values (1002, 4001, 1003);
-insert into lexeme_freeform (id, lexeme_id, freeform_id) values (1003, 4001, 1004);
+insert into lexeme_freeform (id, lexeme_id, freeform_id) values (1001, 4001, 1002);
 
 insert into word_relation(id, word1_id, word2_id, word_rel_type_code, relation_status) values (1001, 1003, 1004, 'raw', 'UNDEFINED');
 insert into word_relation(id, word1_id, word2_id, word_rel_type_code, relation_status) values (1002, 1003, 1005, 'deriv', 'UNDEFINED');
