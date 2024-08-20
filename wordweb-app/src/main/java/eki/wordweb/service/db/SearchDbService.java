@@ -4,15 +4,11 @@ import static eki.wordweb.data.db.Tables.MVIEW_WW_COLLOCATION;
 import static eki.wordweb.data.db.Tables.MVIEW_WW_COUNTS;
 import static eki.wordweb.data.db.Tables.MVIEW_WW_FORM;
 import static eki.wordweb.data.db.Tables.MVIEW_WW_LEXEME;
-import static eki.wordweb.data.db.Tables.MVIEW_WW_LEXEME_FREEFORM_SOURCE_LINK;
 import static eki.wordweb.data.db.Tables.MVIEW_WW_LEXEME_RELATION;
-import static eki.wordweb.data.db.Tables.MVIEW_WW_LEXEME_SOURCE_LINK;
 import static eki.wordweb.data.db.Tables.MVIEW_WW_MEANING;
-import static eki.wordweb.data.db.Tables.MVIEW_WW_MEANING_FREEFORM_SOURCE_LINK;
 import static eki.wordweb.data.db.Tables.MVIEW_WW_MEANING_RELATION;
 import static eki.wordweb.data.db.Tables.MVIEW_WW_WORD;
 import static eki.wordweb.data.db.Tables.MVIEW_WW_WORD_ETYMOLOGY;
-import static eki.wordweb.data.db.Tables.MVIEW_WW_WORD_ETYM_SOURCE_LINK;
 import static eki.wordweb.data.db.Tables.MVIEW_WW_WORD_RELATION;
 import static eki.wordweb.data.db.Tables.MVIEW_WW_WORD_SEARCH;
 
@@ -63,14 +59,10 @@ import eki.wordweb.data.db.tables.MviewWwCollocation;
 import eki.wordweb.data.db.tables.MviewWwCounts;
 import eki.wordweb.data.db.tables.MviewWwForm;
 import eki.wordweb.data.db.tables.MviewWwLexeme;
-import eki.wordweb.data.db.tables.MviewWwLexemeFreeformSourceLink;
 import eki.wordweb.data.db.tables.MviewWwLexemeRelation;
-import eki.wordweb.data.db.tables.MviewWwLexemeSourceLink;
 import eki.wordweb.data.db.tables.MviewWwMeaning;
-import eki.wordweb.data.db.tables.MviewWwMeaningFreeformSourceLink;
 import eki.wordweb.data.db.tables.MviewWwMeaningRelation;
 import eki.wordweb.data.db.tables.MviewWwWord;
-import eki.wordweb.data.db.tables.MviewWwWordEtymSourceLink;
 import eki.wordweb.data.db.tables.MviewWwWordEtymology;
 import eki.wordweb.data.db.tables.MviewWwWordRelation;
 import eki.wordweb.data.db.tables.MviewWwWordSearch;
@@ -410,8 +402,6 @@ public class SearchDbService implements GlobalConstant, SystemConstant {
 
 		MviewWwLexeme l = MVIEW_WW_LEXEME.as("l");
 		MviewWwLexemeRelation lr = MVIEW_WW_LEXEME_RELATION.as("lr");
-		MviewWwLexemeSourceLink lsl = MVIEW_WW_LEXEME_SOURCE_LINK.as("lsl");
-		MviewWwLexemeFreeformSourceLink ffsl = MVIEW_WW_LEXEME_FREEFORM_SOURCE_LINK.as("ffsl");
 
 		Condition where = composeLexemeJoinCond(l, searchContext).and(l.WORD_ID.eq(wordId));
 
@@ -441,12 +431,9 @@ public class SearchDbService implements GlobalConstant, SystemConstant {
 						l.GRAMMARS,
 						l.GOVERNMENTS,
 						l.USAGES,
-						lsl.SOURCE_LINKS.as("lexeme_source_links"),
-						ffsl.SOURCE_LINKS.as("lexeme_freeform_source_links"),
+						l.SOURCE_LINKS.as("lexeme_source_links"),
 						lr.RELATED_LEXEMES)
 				.from(l
-						.leftOuterJoin(lsl).on(lsl.LEXEME_ID.eq(l.LEXEME_ID))
-						.leftOuterJoin(ffsl).on(ffsl.LEXEME_ID.eq(l.LEXEME_ID))
 						.leftOuterJoin(lr).on(lr.LEXEME_ID.eq(l.LEXEME_ID)))
 				.where(where)
 				.fetchInto(LexemeWord.class);
@@ -458,8 +445,6 @@ public class SearchDbService implements GlobalConstant, SystemConstant {
 		MviewWwLexeme l2 = MVIEW_WW_LEXEME.as("l2");
 		MviewWwWord w2 = MVIEW_WW_WORD.as("w2");
 		MviewWwLexemeRelation lr = MVIEW_WW_LEXEME_RELATION.as("lr");
-		MviewWwLexemeSourceLink lsl = MVIEW_WW_LEXEME_SOURCE_LINK.as("lsl");
-		MviewWwLexemeFreeformSourceLink ffsl = MVIEW_WW_LEXEME_FREEFORM_SOURCE_LINK.as("ffsl");
 
 		Condition whereL1 = composeLexemeJoinCond(l1, searchContext).and(l1.WORD_ID.eq(wordId));
 		Condition whereL2 = composeLexemeJoinCond(l2, searchContext);
@@ -490,6 +475,7 @@ public class SearchDbService implements GlobalConstant, SystemConstant {
 						l2.GRAMMARS,
 						l2.GOVERNMENTS,
 						l2.USAGES,
+						l2.SOURCE_LINKS.as("lexeme_source_links"),
 						w2.WORD,
 						w2.WORD_PRESE,
 						w2.AS_WORD,
@@ -498,14 +484,10 @@ public class SearchDbService implements GlobalConstant, SystemConstant {
 						w2.GENDER_CODE,
 						w2.ASPECT_CODE,
 						w2.WORD_TYPE_CODES,
-						lsl.SOURCE_LINKS.as("lexeme_source_links"),
-						ffsl.SOURCE_LINKS.as("lexeme_freeform_source_links"),
 						lr.RELATED_LEXEMES)
 				.from(l1
 						.innerJoin(l2).on(l2.MEANING_ID.eq(l1.MEANING_ID).and(whereL2))
 						.innerJoin(w2).on(w2.WORD_ID.eq(l2.WORD_ID))
-						.leftOuterJoin(lsl).on(lsl.LEXEME_ID.eq(l2.LEXEME_ID))
-						.leftOuterJoin(ffsl).on(ffsl.LEXEME_ID.eq(l2.LEXEME_ID))
 						.leftOuterJoin(lr).on(lr.LEXEME_ID.eq(l2.LEXEME_ID)))
 				.where(whereL1)
 				.fetchInto(LexemeWord.class);
@@ -624,7 +606,6 @@ public class SearchDbService implements GlobalConstant, SystemConstant {
 	public Word getWord(Long wordId) {
 
 		MviewWwWord w = MVIEW_WW_WORD.as("w");
-		MviewWwWordEtymSourceLink wesl = MVIEW_WW_WORD_ETYM_SOURCE_LINK.as("wesl");
 
 		return create
 				.select(
@@ -643,10 +624,9 @@ public class SearchDbService implements GlobalConstant, SystemConstant {
 						w.LAST_ACTIVITY_EVENT_ON,
 						w.MEANING_WORDS,
 						w.DEFINITIONS,
-						wesl.SOURCE_LINKS.as("word_etym_source_links"),
 						w.OD_WORD_RECOMMENDATIONS,
 						w.FORMS_EXIST)
-				.from(w.leftOuterJoin(wesl).on(wesl.WORD_ID.eq(wordId)))
+				.from(w)
 				.where(w.WORD_ID.eq(wordId))
 				.fetchOneInto(Word.class);
 	}
@@ -724,7 +704,6 @@ public class SearchDbService implements GlobalConstant, SystemConstant {
 		MviewWwLexeme l = MVIEW_WW_LEXEME.as("l");
 		MviewWwMeaning m = MVIEW_WW_MEANING.as("m");
 		MviewWwMeaningRelation mr = MVIEW_WW_MEANING_RELATION.as("mr");
-		MviewWwMeaningFreeformSourceLink ffsl = MVIEW_WW_MEANING_FREEFORM_SOURCE_LINK.as("ffsl");
 
 		Condition where = l.WORD_ID.eq(wordId);
 
@@ -735,19 +714,17 @@ public class SearchDbService implements GlobalConstant, SystemConstant {
 						m.MANUAL_EVENT_ON.as("meaning_manual_event_on"),
 						m.LAST_APPROVE_OR_EDIT_EVENT_ON.as("meaning_last_activity_event_on"),
 						m.DOMAIN_CODES,
-						m.IMAGE_FILES,
+						m.MEANING_IMAGES,
 						m.MEDIA_FILES,
 						m.SYSTEMATIC_POLYSEMY_PATTERNS,
 						m.SEMANTIC_TYPES,
 						m.LEARNER_COMMENTS,
 						m.NOTES,
 						m.DEFINITIONS,
-						mr.RELATED_MEANINGS,
-						ffsl.SOURCE_LINKS.as("freeform_source_links"))
+						mr.RELATED_MEANINGS)
 				.from(
 						l.innerJoin(m).on(m.MEANING_ID.eq(l.MEANING_ID))
-								.leftOuterJoin(mr).on(mr.MEANING_ID.eq(m.MEANING_ID))
-								.leftOuterJoin(ffsl).on(ffsl.MEANING_ID.eq(m.MEANING_ID)))
+								.leftOuterJoin(mr).on(mr.MEANING_ID.eq(m.MEANING_ID)))
 				.where(where)
 				.orderBy(m.MEANING_ID, l.LEXEME_ID)
 				.fetchInto(Meaning.class);
@@ -784,7 +761,8 @@ public class SearchDbService implements GlobalConstant, SystemConstant {
 						we.ETYMOLOGY_YEAR,
 						we.WORD_ETYM_COMMENT,
 						we.WORD_ETYM_IS_QUESTIONABLE,
-						we.WORD_ETYM_RELATIONS)
+						we.WORD_ETYM_RELATIONS,
+						we.SOURCE_LINKS)
 				.from(we)
 				.where(we.WORD_ID.eq(wordId))
 				.orderBy(we.WORD_ETYM_ORDER_BY)

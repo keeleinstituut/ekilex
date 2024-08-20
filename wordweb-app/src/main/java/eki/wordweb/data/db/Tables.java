@@ -13,15 +13,11 @@ import eki.wordweb.data.db.tables.MviewWwDataset;
 import eki.wordweb.data.db.tables.MviewWwDatasetWordMenu;
 import eki.wordweb.data.db.tables.MviewWwForm;
 import eki.wordweb.data.db.tables.MviewWwLexeme;
-import eki.wordweb.data.db.tables.MviewWwLexemeFreeformSourceLink;
 import eki.wordweb.data.db.tables.MviewWwLexemeRelation;
-import eki.wordweb.data.db.tables.MviewWwLexemeSourceLink;
 import eki.wordweb.data.db.tables.MviewWwMeaning;
-import eki.wordweb.data.db.tables.MviewWwMeaningFreeformSourceLink;
 import eki.wordweb.data.db.tables.MviewWwMeaningRelation;
 import eki.wordweb.data.db.tables.MviewWwNewsArticle;
 import eki.wordweb.data.db.tables.MviewWwWord;
-import eki.wordweb.data.db.tables.MviewWwWordEtymSourceLink;
 import eki.wordweb.data.db.tables.MviewWwWordEtymology;
 import eki.wordweb.data.db.tables.MviewWwWordRelation;
 import eki.wordweb.data.db.tables.MviewWwWordSearch;
@@ -81,29 +77,14 @@ public class Tables {
     public static final MviewWwLexeme MVIEW_WW_LEXEME = MviewWwLexeme.MVIEW_WW_LEXEME;
 
     /**
-     * The table <code>public.mview_ww_lexeme_freeform_source_link</code>.
-     */
-    public static final MviewWwLexemeFreeformSourceLink MVIEW_WW_LEXEME_FREEFORM_SOURCE_LINK = MviewWwLexemeFreeformSourceLink.MVIEW_WW_LEXEME_FREEFORM_SOURCE_LINK;
-
-    /**
      * The table <code>public.mview_ww_lexeme_relation</code>.
      */
     public static final MviewWwLexemeRelation MVIEW_WW_LEXEME_RELATION = MviewWwLexemeRelation.MVIEW_WW_LEXEME_RELATION;
 
     /**
-     * The table <code>public.mview_ww_lexeme_source_link</code>.
-     */
-    public static final MviewWwLexemeSourceLink MVIEW_WW_LEXEME_SOURCE_LINK = MviewWwLexemeSourceLink.MVIEW_WW_LEXEME_SOURCE_LINK;
-
-    /**
      * The table <code>public.mview_ww_meaning</code>.
      */
     public static final MviewWwMeaning MVIEW_WW_MEANING = MviewWwMeaning.MVIEW_WW_MEANING;
-
-    /**
-     * The table <code>public.mview_ww_meaning_freeform_source_link</code>.
-     */
-    public static final MviewWwMeaningFreeformSourceLink MVIEW_WW_MEANING_FREEFORM_SOURCE_LINK = MviewWwMeaningFreeformSourceLink.MVIEW_WW_MEANING_FREEFORM_SOURCE_LINK;
 
     /**
      * The table <code>public.mview_ww_meaning_relation</code>.
@@ -119,11 +100,6 @@ public class Tables {
      * The table <code>public.mview_ww_word</code>.
      */
     public static final MviewWwWord MVIEW_WW_WORD = MviewWwWord.MVIEW_WW_WORD;
-
-    /**
-     * The table <code>public.mview_ww_word_etym_source_link</code>.
-     */
-    public static final MviewWwWordEtymSourceLink MVIEW_WW_WORD_ETYM_SOURCE_LINK = MviewWwWordEtymSourceLink.MVIEW_WW_WORD_ETYM_SOURCE_LINK;
 
     /**
      * The table <code>public.mview_ww_word_etymology</code>.

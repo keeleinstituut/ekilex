@@ -12,7 +12,7 @@ import eki.wordweb.data.LangType;
 import eki.wordweb.data.SourceLinkType;
 
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
-public class TypeDefinition extends AbstractDataObject implements ComplexityType, LangType, SourceLinkType {
+public class TypeDefinition extends AbstractDataObject implements ComplexityType, SourceLinkType, LangType {
 
 	private static final long serialVersionUID = 1L;
 
@@ -32,16 +32,11 @@ public class TypeDefinition extends AbstractDataObject implements ComplexityType
 
 	private Complexity complexity;
 
-	private List<TypeFreeform> notes;
+	private List<TypeNote> notes;
 
 	private List<TypeSourceLink> sourceLinks;
 
 	private boolean subDataExists;
-
-	@Override
-	public Long getOwnerId() {
-		return definitionId;
-	}
 
 	public Long getLexemeId() {
 		return lexemeId;
@@ -109,11 +104,11 @@ public class TypeDefinition extends AbstractDataObject implements ComplexityType
 		this.complexity = complexity;
 	}
 
-	public List<TypeFreeform> getNotes() {
+	public List<TypeNote> getNotes() {
 		return notes;
 	}
 
-	public void setNotes(List<TypeFreeform> notes) {
+	public void setNotes(List<TypeNote> notes) {
 		this.notes = notes;
 	}
 

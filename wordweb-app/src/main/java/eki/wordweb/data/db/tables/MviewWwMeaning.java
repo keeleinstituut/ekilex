@@ -66,9 +66,9 @@ public class MviewWwMeaning extends TableImpl<MviewWwMeaningRecord> {
     public final TableField<MviewWwMeaningRecord, JSON> DOMAIN_CODES = createField(DSL.name("domain_codes"), SQLDataType.JSON, this, "");
 
     /**
-     * The column <code>public.mview_ww_meaning.image_files</code>.
+     * The column <code>public.mview_ww_meaning.meaning_images</code>.
      */
-    public final TableField<MviewWwMeaningRecord, JSON> IMAGE_FILES = createField(DSL.name("image_files"), SQLDataType.JSON, this, "");
+    public final TableField<MviewWwMeaningRecord, JSON> MEANING_IMAGES = createField(DSL.name("meaning_images"), SQLDataType.JSON, this, "");
 
     /**
      * The column <code>public.mview_ww_meaning.media_files</code>.

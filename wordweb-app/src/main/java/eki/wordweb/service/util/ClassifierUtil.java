@@ -25,7 +25,6 @@ import eki.wordweb.data.type.TypeDomain;
 import eki.wordweb.data.type.TypeLexemeRelation;
 import eki.wordweb.data.type.TypeMeaningRelation;
 import eki.wordweb.data.type.TypeMeaningWord;
-import eki.wordweb.data.type.TypeUsage;
 import eki.wordweb.data.type.TypeWordRelation;
 import eki.wordweb.service.db.CommonDataDbService;
 
@@ -127,14 +126,6 @@ public class ClassifierUtil {
 		List<TypeDomain> domainCodes = tuple.getDomainCodes();
 		classifiers = getClassifiersWithOrigin(ClassifierName.DOMAIN, domainCodes, displayLang);
 		lexemeWord.setDomains(classifiers);
-	}
-
-	public void applyClassifiers(TypeUsage usage, String displayLang) {
-		String classifierCode;
-		Classifier classifier;
-		classifierCode = usage.getUsageTypeCode();
-		classifier = getClassifier(ClassifierName.USAGE_TYPE, classifierCode, displayLang);
-		usage.setUsageType(classifier);
 	}
 
 	public void applyClassifiers(TypeLexemeRelation lexemeRelation, String displayLang) {

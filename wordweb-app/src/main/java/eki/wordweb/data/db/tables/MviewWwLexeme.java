@@ -175,6 +175,11 @@ public class MviewWwLexeme extends TableImpl<MviewWwLexemeRecord> {
      */
     public final TableField<MviewWwLexemeRecord, JSON> USAGES = createField(DSL.name("usages"), SQLDataType.JSON, this, "");
 
+    /**
+     * The column <code>public.mview_ww_lexeme.source_links</code>.
+     */
+    public final TableField<MviewWwLexemeRecord, JSON> SOURCE_LINKS = createField(DSL.name("source_links"), SQLDataType.JSON, this, "");
+
     private MviewWwLexeme(Name alias, Table<MviewWwLexemeRecord> aliased) {
         this(alias, aliased, null);
     }

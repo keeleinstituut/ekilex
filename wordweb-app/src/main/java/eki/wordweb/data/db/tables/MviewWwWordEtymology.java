@@ -12,7 +12,7 @@ import org.jooq.ForeignKey;
 import org.jooq.JSON;
 import org.jooq.Name;
 import org.jooq.Record;
-import org.jooq.Row12;
+import org.jooq.Row13;
 import org.jooq.Schema;
 import org.jooq.Table;
 import org.jooq.TableField;
@@ -103,6 +103,11 @@ public class MviewWwWordEtymology extends TableImpl<MviewWwWordEtymologyRecord> 
      */
     public final TableField<MviewWwWordEtymologyRecord, JSON> WORD_ETYM_RELATIONS = createField(DSL.name("word_etym_relations"), SQLDataType.JSON, this, "");
 
+    /**
+     * The column <code>public.mview_ww_word_etymology.source_links</code>.
+     */
+    public final TableField<MviewWwWordEtymologyRecord, JSON> SOURCE_LINKS = createField(DSL.name("source_links"), SQLDataType.JSON, this, "");
+
     private MviewWwWordEtymology(Name alias, Table<MviewWwWordEtymologyRecord> aliased) {
         this(alias, aliased, null);
     }
@@ -168,11 +173,11 @@ public class MviewWwWordEtymology extends TableImpl<MviewWwWordEtymologyRecord> 
     }
 
     // -------------------------------------------------------------------------
-    // Row12 type methods
+    // Row13 type methods
     // -------------------------------------------------------------------------
 
     @Override
-    public Row12<Long, Long, Long, String, String, String[], String, String, String, Boolean, Long, JSON> fieldsRow() {
-        return (Row12) super.fieldsRow();
+    public Row13<Long, Long, Long, String, String, String[], String, String, String, Boolean, Long, JSON, JSON> fieldsRow() {
+        return (Row13) super.fieldsRow();
     }
 }

@@ -57,7 +57,7 @@ public class DefinitionNote extends TableImpl<DefinitionNoteRecord> {
     /**
      * The column <code>public.definition_note.original_freeform_id</code>.
      */
-    public final TableField<DefinitionNoteRecord, Long> ORIGINAL_FREEFORM_ID = createField(DSL.name("original_freeform_id"), SQLDataType.BIGINT.nullable(false), this, "");
+    public final TableField<DefinitionNoteRecord, Long> ORIGINAL_FREEFORM_ID = createField(DSL.name("original_freeform_id"), SQLDataType.BIGINT, this, "");
 
     /**
      * The column <code>public.definition_note.definition_id</code>.
@@ -67,22 +67,22 @@ public class DefinitionNote extends TableImpl<DefinitionNoteRecord> {
     /**
      * The column <code>public.definition_note.value</code>.
      */
-    public final TableField<DefinitionNoteRecord, String> VALUE = createField(DSL.name("value"), SQLDataType.CLOB, this, "");
+    public final TableField<DefinitionNoteRecord, String> VALUE = createField(DSL.name("value"), SQLDataType.CLOB.nullable(false), this, "");
 
     /**
      * The column <code>public.definition_note.value_prese</code>.
      */
-    public final TableField<DefinitionNoteRecord, String> VALUE_PRESE = createField(DSL.name("value_prese"), SQLDataType.CLOB, this, "");
+    public final TableField<DefinitionNoteRecord, String> VALUE_PRESE = createField(DSL.name("value_prese"), SQLDataType.CLOB.nullable(false), this, "");
 
     /**
      * The column <code>public.definition_note.lang</code>.
      */
-    public final TableField<DefinitionNoteRecord, String> LANG = createField(DSL.name("lang"), SQLDataType.CHAR(3), this, "");
+    public final TableField<DefinitionNoteRecord, String> LANG = createField(DSL.name("lang"), SQLDataType.CHAR(3).nullable(false), this, "");
 
     /**
      * The column <code>public.definition_note.complexity</code>.
      */
-    public final TableField<DefinitionNoteRecord, String> COMPLEXITY = createField(DSL.name("complexity"), SQLDataType.VARCHAR(100), this, "");
+    public final TableField<DefinitionNoteRecord, String> COMPLEXITY = createField(DSL.name("complexity"), SQLDataType.VARCHAR(100).nullable(false), this, "");
 
     /**
      * The column <code>public.definition_note.is_public</code>.

@@ -6,10 +6,9 @@ import java.util.List;
 import eki.common.data.AbstractDataObject;
 import eki.wordweb.data.type.TypeDefinition;
 import eki.wordweb.data.type.TypeDomain;
-import eki.wordweb.data.type.TypeFreeform;
 import eki.wordweb.data.type.TypeMeaningRelation;
 import eki.wordweb.data.type.TypeMediaFile;
-import eki.wordweb.data.type.TypeSourceLink;
+import eki.wordweb.data.type.TypeNote;
 
 public class Meaning extends AbstractDataObject {
 
@@ -25,7 +24,7 @@ public class Meaning extends AbstractDataObject {
 
 	private List<TypeDomain> domainCodes;
 
-	private List<TypeMediaFile> imageFiles;
+	private List<TypeMediaFile> meaningImages;
 
 	private List<TypeMediaFile> mediaFiles;
 
@@ -35,13 +34,11 @@ public class Meaning extends AbstractDataObject {
 
 	private List<String> learnerComments;
 
-	private List<TypeFreeform> notes;
+	private List<TypeNote> notes;
 
 	private List<TypeDefinition> definitions;
 
 	private List<TypeMeaningRelation> relatedMeanings;
-
-	private List<TypeSourceLink> freeformSourceLinks;
 
 	public Long getLexemeId() {
 		return lexemeId;
@@ -83,12 +80,12 @@ public class Meaning extends AbstractDataObject {
 		this.domainCodes = domainCodes;
 	}
 
-	public List<TypeMediaFile> getImageFiles() {
-		return imageFiles;
+	public List<TypeMediaFile> getMeaningImages() {
+		return meaningImages;
 	}
 
-	public void setImageFiles(List<TypeMediaFile> imageFiles) {
-		this.imageFiles = imageFiles;
+	public void setMeaningImages(List<TypeMediaFile> meaningImages) {
+		this.meaningImages = meaningImages;
 	}
 
 	public List<TypeMediaFile> getMediaFiles() {
@@ -123,11 +120,11 @@ public class Meaning extends AbstractDataObject {
 		this.learnerComments = learnerComments;
 	}
 
-	public List<TypeFreeform> getNotes() {
+	public List<TypeNote> getNotes() {
 		return notes;
 	}
 
-	public void setNotes(List<TypeFreeform> notes) {
+	public void setNotes(List<TypeNote> notes) {
 		this.notes = notes;
 	}
 
@@ -145,14 +142,6 @@ public class Meaning extends AbstractDataObject {
 
 	public void setRelatedMeanings(List<TypeMeaningRelation> relatedMeanings) {
 		this.relatedMeanings = relatedMeanings;
-	}
-
-	public List<TypeSourceLink> getFreeformSourceLinks() {
-		return freeformSourceLinks;
-	}
-
-	public void setFreeformSourceLinks(List<TypeSourceLink> freeformSourceLinks) {
-		this.freeformSourceLinks = freeformSourceLinks;
 	}
 
 }

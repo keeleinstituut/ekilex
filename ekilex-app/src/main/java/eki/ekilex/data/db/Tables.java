@@ -120,17 +120,13 @@ import eki.ekilex.data.db.tables.ViewWwDataset;
 import eki.ekilex.data.db.tables.ViewWwDatasetWordMenu;
 import eki.ekilex.data.db.tables.ViewWwForm;
 import eki.ekilex.data.db.tables.ViewWwLexeme;
-import eki.ekilex.data.db.tables.ViewWwLexemeFreeformSourceLink;
 import eki.ekilex.data.db.tables.ViewWwLexemeRelation;
-import eki.ekilex.data.db.tables.ViewWwLexemeSourceLink;
 import eki.ekilex.data.db.tables.ViewWwLexicalDecisionData;
 import eki.ekilex.data.db.tables.ViewWwMeaning;
-import eki.ekilex.data.db.tables.ViewWwMeaningFreeformSourceLink;
 import eki.ekilex.data.db.tables.ViewWwMeaningRelation;
 import eki.ekilex.data.db.tables.ViewWwNewsArticle;
 import eki.ekilex.data.db.tables.ViewWwSimilarityJudgementData;
 import eki.ekilex.data.db.tables.ViewWwWord;
-import eki.ekilex.data.db.tables.ViewWwWordEtymSourceLink;
 import eki.ekilex.data.db.tables.ViewWwWordEtymology;
 import eki.ekilex.data.db.tables.ViewWwWordRelation;
 import eki.ekilex.data.db.tables.ViewWwWordSearch;
@@ -743,19 +739,9 @@ public class Tables {
     public static final ViewWwLexeme VIEW_WW_LEXEME = ViewWwLexeme.VIEW_WW_LEXEME;
 
     /**
-     * The table <code>public.view_ww_lexeme_freeform_source_link</code>.
-     */
-    public static final ViewWwLexemeFreeformSourceLink VIEW_WW_LEXEME_FREEFORM_SOURCE_LINK = ViewWwLexemeFreeformSourceLink.VIEW_WW_LEXEME_FREEFORM_SOURCE_LINK;
-
-    /**
      * The table <code>public.view_ww_lexeme_relation</code>.
      */
     public static final ViewWwLexemeRelation VIEW_WW_LEXEME_RELATION = ViewWwLexemeRelation.VIEW_WW_LEXEME_RELATION;
-
-    /**
-     * The table <code>public.view_ww_lexeme_source_link</code>.
-     */
-    public static final ViewWwLexemeSourceLink VIEW_WW_LEXEME_SOURCE_LINK = ViewWwLexemeSourceLink.VIEW_WW_LEXEME_SOURCE_LINK;
 
     /**
      * The table <code>public.view_ww_lexical_decision_data</code>.
@@ -766,11 +752,6 @@ public class Tables {
      * The table <code>public.view_ww_meaning</code>.
      */
     public static final ViewWwMeaning VIEW_WW_MEANING = ViewWwMeaning.VIEW_WW_MEANING;
-
-    /**
-     * The table <code>public.view_ww_meaning_freeform_source_link</code>.
-     */
-    public static final ViewWwMeaningFreeformSourceLink VIEW_WW_MEANING_FREEFORM_SOURCE_LINK = ViewWwMeaningFreeformSourceLink.VIEW_WW_MEANING_FREEFORM_SOURCE_LINK;
 
     /**
      * The table <code>public.view_ww_meaning_relation</code>.
@@ -791,11 +772,6 @@ public class Tables {
      * The table <code>public.view_ww_word</code>.
      */
     public static final ViewWwWord VIEW_WW_WORD = ViewWwWord.VIEW_WW_WORD;
-
-    /**
-     * The table <code>public.view_ww_word_etym_source_link</code>.
-     */
-    public static final ViewWwWordEtymSourceLink VIEW_WW_WORD_ETYM_SOURCE_LINK = ViewWwWordEtymSourceLink.VIEW_WW_WORD_ETYM_SOURCE_LINK;
 
     /**
      * The table <code>public.view_ww_word_etymology</code>.

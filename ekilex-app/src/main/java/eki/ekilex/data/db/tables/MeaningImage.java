@@ -57,7 +57,7 @@ public class MeaningImage extends TableImpl<MeaningImageRecord> {
     /**
      * The column <code>public.meaning_image.original_freeform_id</code>.
      */
-    public final TableField<MeaningImageRecord, Long> ORIGINAL_FREEFORM_ID = createField(DSL.name("original_freeform_id"), SQLDataType.BIGINT.nullable(false), this, "");
+    public final TableField<MeaningImageRecord, Long> ORIGINAL_FREEFORM_ID = createField(DSL.name("original_freeform_id"), SQLDataType.BIGINT, this, "");
 
     /**
      * The column <code>public.meaning_image.meaning_id</code>.
@@ -72,12 +72,12 @@ public class MeaningImage extends TableImpl<MeaningImageRecord> {
     /**
      * The column <code>public.meaning_image.url</code>.
      */
-    public final TableField<MeaningImageRecord, String> URL = createField(DSL.name("url"), SQLDataType.CLOB, this, "");
+    public final TableField<MeaningImageRecord, String> URL = createField(DSL.name("url"), SQLDataType.CLOB.nullable(false), this, "");
 
     /**
      * The column <code>public.meaning_image.complexity</code>.
      */
-    public final TableField<MeaningImageRecord, String> COMPLEXITY = createField(DSL.name("complexity"), SQLDataType.VARCHAR(100), this, "");
+    public final TableField<MeaningImageRecord, String> COMPLEXITY = createField(DSL.name("complexity"), SQLDataType.VARCHAR(100).nullable(false), this, "");
 
     /**
      * The column <code>public.meaning_image.is_public</code>.

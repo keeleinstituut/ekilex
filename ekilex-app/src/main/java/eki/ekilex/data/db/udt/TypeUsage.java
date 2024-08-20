@@ -7,6 +7,7 @@ package eki.ekilex.data.db.udt;
 import eki.ekilex.data.db.Public;
 import eki.ekilex.data.db.udt.records.TypeUsageRecord;
 
+import org.jooq.JSON;
 import org.jooq.Schema;
 import org.jooq.UDTField;
 import org.jooq.impl.DSL;
@@ -42,29 +43,24 @@ public class TypeUsage extends UDTImpl<TypeUsageRecord> {
     public static final UDTField<TypeUsageRecord, Long> USAGE_ID = createField(DSL.name("usage_id"), SQLDataType.BIGINT, TYPE_USAGE, "");
 
     /**
-     * The attribute <code>public.type_usage.usage</code>.
+     * The attribute <code>public.type_usage.value</code>.
      */
-    public static final UDTField<TypeUsageRecord, String> USAGE = createField(DSL.name("usage"), SQLDataType.CLOB, TYPE_USAGE, "");
+    public static final UDTField<TypeUsageRecord, String> VALUE = createField(DSL.name("value"), SQLDataType.CLOB, TYPE_USAGE, "");
 
     /**
-     * The attribute <code>public.type_usage.usage_prese</code>.
+     * The attribute <code>public.type_usage.value_prese</code>.
      */
-    public static final UDTField<TypeUsageRecord, String> USAGE_PRESE = createField(DSL.name("usage_prese"), SQLDataType.CLOB, TYPE_USAGE, "");
+    public static final UDTField<TypeUsageRecord, String> VALUE_PRESE = createField(DSL.name("value_prese"), SQLDataType.CLOB, TYPE_USAGE, "");
 
     /**
-     * The attribute <code>public.type_usage.usage_lang</code>.
+     * The attribute <code>public.type_usage.lang</code>.
      */
-    public static final UDTField<TypeUsageRecord, String> USAGE_LANG = createField(DSL.name("usage_lang"), SQLDataType.CHAR(3), TYPE_USAGE, "");
+    public static final UDTField<TypeUsageRecord, String> LANG = createField(DSL.name("lang"), SQLDataType.CHAR(3), TYPE_USAGE, "");
 
     /**
      * The attribute <code>public.type_usage.complexity</code>.
      */
     public static final UDTField<TypeUsageRecord, String> COMPLEXITY = createField(DSL.name("complexity"), SQLDataType.VARCHAR(100), TYPE_USAGE, "");
-
-    /**
-     * The attribute <code>public.type_usage.usage_type_code</code>.
-     */
-    public static final UDTField<TypeUsageRecord, String> USAGE_TYPE_CODE = createField(DSL.name("usage_type_code"), SQLDataType.VARCHAR(100), TYPE_USAGE, "");
 
     /**
      * The attribute <code>public.type_usage.usage_translations</code>.
@@ -75,6 +71,11 @@ public class TypeUsage extends UDTImpl<TypeUsageRecord> {
      * The attribute <code>public.type_usage.usage_definitions</code>.
      */
     public static final UDTField<TypeUsageRecord, String[]> USAGE_DEFINITIONS = createField(DSL.name("usage_definitions"), SQLDataType.CLOB.getArrayDataType(), TYPE_USAGE, "");
+
+    /**
+     * The attribute <code>public.type_usage.source_links</code>.
+     */
+    public static final UDTField<TypeUsageRecord, JSON> SOURCE_LINKS = createField(DSL.name("source_links"), SQLDataType.JSON, TYPE_USAGE, "");
 
     /**
      * No further instances allowed

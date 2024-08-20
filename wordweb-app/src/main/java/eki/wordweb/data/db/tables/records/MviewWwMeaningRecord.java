@@ -80,16 +80,16 @@ public class MviewWwMeaningRecord extends TableRecordImpl<MviewWwMeaningRecord> 
     }
 
     /**
-     * Setter for <code>public.mview_ww_meaning.image_files</code>.
+     * Setter for <code>public.mview_ww_meaning.meaning_images</code>.
      */
-    public void setImageFiles(JSON value) {
+    public void setMeaningImages(JSON value) {
         set(4, value);
     }
 
     /**
-     * Getter for <code>public.mview_ww_meaning.image_files</code>.
+     * Getter for <code>public.mview_ww_meaning.meaning_images</code>.
      */
-    public JSON getImageFiles() {
+    public JSON getMeaningImages() {
         return (JSON) get(4);
     }
 
@@ -213,7 +213,7 @@ public class MviewWwMeaningRecord extends TableRecordImpl<MviewWwMeaningRecord> 
 
     @Override
     public Field<JSON> field5() {
-        return MviewWwMeaning.MVIEW_WW_MEANING.IMAGE_FILES;
+        return MviewWwMeaning.MVIEW_WW_MEANING.MEANING_IMAGES;
     }
 
     @Override
@@ -268,7 +268,7 @@ public class MviewWwMeaningRecord extends TableRecordImpl<MviewWwMeaningRecord> 
 
     @Override
     public JSON component5() {
-        return getImageFiles();
+        return getMeaningImages();
     }
 
     @Override
@@ -323,7 +323,7 @@ public class MviewWwMeaningRecord extends TableRecordImpl<MviewWwMeaningRecord> 
 
     @Override
     public JSON value5() {
-        return getImageFiles();
+        return getMeaningImages();
     }
 
     @Override
@@ -382,7 +382,7 @@ public class MviewWwMeaningRecord extends TableRecordImpl<MviewWwMeaningRecord> 
 
     @Override
     public MviewWwMeaningRecord value5(JSON value) {
-        setImageFiles(value);
+        setMeaningImages(value);
         return this;
     }
 
@@ -452,14 +452,14 @@ public class MviewWwMeaningRecord extends TableRecordImpl<MviewWwMeaningRecord> 
     /**
      * Create a detached, initialised MviewWwMeaningRecord
      */
-    public MviewWwMeaningRecord(Long meaningId, Timestamp manualEventOn, Timestamp lastApproveOrEditEventOn, JSON domainCodes, JSON imageFiles, JSON mediaFiles, String[] systematicPolysemyPatterns, String[] semanticTypes, String[] learnerComments, JSON notes, JSON definitions) {
+    public MviewWwMeaningRecord(Long meaningId, Timestamp manualEventOn, Timestamp lastApproveOrEditEventOn, JSON domainCodes, JSON meaningImages, JSON mediaFiles, String[] systematicPolysemyPatterns, String[] semanticTypes, String[] learnerComments, JSON notes, JSON definitions) {
         super(MviewWwMeaning.MVIEW_WW_MEANING);
 
         setMeaningId(meaningId);
         setManualEventOn(manualEventOn);
         setLastApproveOrEditEventOn(lastApproveOrEditEventOn);
         setDomainCodes(domainCodes);
-        setImageFiles(imageFiles);
+        setMeaningImages(meaningImages);
         setMediaFiles(mediaFiles);
         setSystematicPolysemyPatterns(systematicPolysemyPatterns);
         setSemanticTypes(semanticTypes);

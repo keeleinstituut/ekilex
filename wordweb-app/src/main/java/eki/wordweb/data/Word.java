@@ -7,7 +7,6 @@ import eki.common.data.Classifier;
 import eki.wordweb.data.type.TypeDefinition;
 import eki.wordweb.data.type.TypeFreeform;
 import eki.wordweb.data.type.TypeMeaningWord;
-import eki.wordweb.data.type.TypeSourceLink;
 import eki.wordweb.data.type.TypeWordRelation;
 
 public class Word extends WordTypeData {
@@ -33,8 +32,6 @@ public class Word extends WordTypeData {
 	private List<Classifier> summarisedPoses;
 
 	private WordEtymLevel wordEtymologyTree;
-
-	private List<TypeSourceLink> wordEtymSourceLinks;
 
 	private List<TypeWordRelation> relatedWords;
 
@@ -134,14 +131,6 @@ public class Word extends WordTypeData {
 
 	public void setWordEtymologyTree(WordEtymLevel wordEtymologyTree) {
 		this.wordEtymologyTree = wordEtymologyTree;
-	}
-
-	public List<TypeSourceLink> getWordEtymSourceLinks() {
-		return wordEtymSourceLinks;
-	}
-
-	public void setWordEtymSourceLinks(List<TypeSourceLink> wordEtymSourceLinks) {
-		this.wordEtymSourceLinks = wordEtymSourceLinks;
 	}
 
 	public List<TypeWordRelation> getRelatedWords() {

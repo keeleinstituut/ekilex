@@ -40,11 +40,6 @@ public class TypeFreeform extends AbstractDataObject implements ComplexityType, 
 
 	private List<TypeSourceLink> sourceLinks;
 
-	@Override
-	public Long getOwnerId() {
-		return freeformId;
-	}
-
 	public Long getFreeformId() {
 		return freeformId;
 	}

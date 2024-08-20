@@ -1,7 +1,6 @@
 package eki.wordweb.service.util;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -31,36 +30,36 @@ public class EtymConversionUtil {
 			classifierUtil.applyClassifiers(tuple, displayLang);
 		});
 
-		List<TypeSourceLink> wordEtymSourceLinks = word.getWordEtymSourceLinks();
-
-		Map<Long, List<TypeSourceLink>> wordEtymSourceLinkMap = new HashMap<>();
-		if (CollectionUtils.isNotEmpty(wordEtymSourceLinks)) {
-			wordEtymSourceLinkMap = wordEtymSourceLinks.stream().collect(Collectors.groupingBy(TypeSourceLink::getOwnerId));
-		}
-
-		composeWordEtymTree(word, wordEtymTuples, wordEtymSourceLinkMap);
+		composeWordEtymTree(word, wordEtymTuples);
 	}
 
-	private void composeWordEtymTree(Word word, List<WordEtymTuple> wordEtymTuples, Map<Long, List<TypeSourceLink>> wordEtymSourceLinkMap) {
+	private void composeWordEtymTree(Word word, List<WordEtymTuple> wordEtymTuples) {
 
 		Map<Long, WordEtymTuple> wordEtymTupleMap = wordEtymTuples.stream().collect(Collectors.groupingBy(WordEtymTuple::getWordEtymWordId))
-				.entrySet().stream().collect(Collectors.toMap(entry -> entry.getKey(), entry -> entry.getValue().stream().distinct().collect(Collectors.toList()).get(0)));
+				.entrySet().stream()
+				.collect(Collectors.toMap(
+						entry -> entry.getKey(),
+						entry -> entry.getValue().stream()
+								.distinct()
+								.collect(Collectors.toList())
+								.get(0)));
 
-		WordEtymTuple headwordEtymTuple = wordEtymTupleMap.get(word.getWordId());
-		WordEtymLevel headwordEtymLevel = composeEtymTree(headwordEtymTuple, wordEtymTupleMap, wordEtymSourceLinkMap);
+		Long wordId = word.getWordId();
+		WordEtymTuple headwordEtymTuple = wordEtymTupleMap.get(wordId);
+		WordEtymLevel headwordEtymLevel = composeEtymTree(headwordEtymTuple, wordEtymTupleMap);
 		word.setWordEtymologyTree(headwordEtymLevel);
 	}
 
-	private WordEtymLevel composeEtymTree(WordEtymTuple tuple, Map<Long, WordEtymTuple> wordEtymTupleMap, Map<Long, List<TypeSourceLink>> wordEtymSourceLinkMap) {
+	private WordEtymLevel composeEtymTree(WordEtymTuple tuple, Map<Long, WordEtymTuple> wordEtymTupleMap) {
 
-		WordEtymLevel wordEtymLevel = composeEtymLevel(tuple, tuple.isWordEtymIsQuestionable(), false, tuple.getWordEtymComment(), wordEtymSourceLinkMap);
-		composeEtymTree(wordEtymLevel, tuple.getWordEtymRelations(), wordEtymTupleMap, wordEtymSourceLinkMap);
+		WordEtymLevel wordEtymLevel = composeEtymLevel(tuple, tuple.isWordEtymIsQuestionable(), false, tuple.getWordEtymComment());
+		composeEtymTree(wordEtymLevel, tuple.getWordEtymRelations(), wordEtymTupleMap);
 		return wordEtymLevel;
 	}
 
 	private void composeEtymTree(
 			WordEtymLevel wordEtymLevel, List<TypeWordEtymRelation> wordEtymRelations,
-			Map<Long, WordEtymTuple> wordEtymTupleMap, Map<Long, List<TypeSourceLink>> wordEtymSourceLinkMap) {
+			Map<Long, WordEtymTuple> wordEtymTupleMap) {
 
 		if (CollectionUtils.isEmpty(wordEtymRelations)) {
 			return;
@@ -74,13 +73,14 @@ public class EtymConversionUtil {
 				continue;
 			}
 			WordEtymTuple relWordEtymTuple = wordEtymTupleMap.get(relatedWordId);
-			WordEtymLevel relWordEtymLevel = composeEtymLevel(relWordEtymTuple, relation.isQuestionable(), relation.isCompound(), relation.getComment(), wordEtymSourceLinkMap);
+			WordEtymLevel relWordEtymLevel = composeEtymLevel(relWordEtymTuple, relation.isQuestionable(), relation.isCompound(), relation.getComment());
 			wordEtymLevel.getTree().add(relWordEtymLevel);
-			composeEtymTree(relWordEtymLevel, relWordEtymTuple.getWordEtymRelations(), wordEtymTupleMap, wordEtymSourceLinkMap);
+			composeEtymTree(relWordEtymLevel, relWordEtymTuple.getWordEtymRelations(), wordEtymTupleMap);
 		}
 	}
 
-	private WordEtymLevel composeEtymLevel(WordEtymTuple tuple, boolean questionable, boolean compound, String comment, Map<Long, List<TypeSourceLink>> wordEtymSourceLinkMap) {
+	private WordEtymLevel composeEtymLevel(WordEtymTuple tuple, boolean questionable, boolean compound, String comment) {
+
 		WordEtymLevel wordEtymLevel = new WordEtymLevel();
 		wordEtymLevel.setWordId(tuple.getWordEtymWordId());
 		wordEtymLevel.setWord(tuple.getWordEtymWord());
@@ -93,7 +93,7 @@ public class EtymConversionUtil {
 		wordEtymLevel.setQuestionable(questionable);
 		wordEtymLevel.setCompound(compound);
 		wordEtymLevel.setComment(comment);
-		List<TypeSourceLink> sourceLinks = wordEtymSourceLinkMap.get(tuple.getWordEtymId());
+		List<TypeSourceLink> sourceLinks = tuple.getSourceLinks();
 		if (CollectionUtils.isNotEmpty(sourceLinks)) {
 			List<String> sourceLinkValues = sourceLinks.stream().map(TypeSourceLink::getSourceValue).collect(Collectors.toList());
 			wordEtymLevel.setSourceLinkValues(sourceLinkValues);

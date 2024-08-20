@@ -9,17 +9,18 @@ drop view if exists view_ww_word_etymology;
 drop view if exists view_ww_word_relation;
 drop view if exists view_ww_lexeme_relation;
 drop view if exists view_ww_meaning_relation;
-drop view if exists view_ww_lexeme_source_link;
-drop view if exists view_ww_lexeme_freeform_source_link;
-drop view if exists view_ww_meaning_freeform_source_link;
-drop view if exists view_ww_word_etym_source_link;
-drop view if exists view_ww_definition_source_link;
+drop view if exists view_ww_lexeme_source_link; -- to be removed later
+drop view if exists view_ww_lexeme_freeform_source_link; -- to be removed later
+drop view if exists view_ww_meaning_freeform_source_link; -- to be removed later
+drop view if exists view_ww_word_etym_source_link; -- to be removed later
+drop view if exists view_ww_definition_source_link; -- to be removed later
 drop view if exists view_ww_lexical_decision_data;
 drop view if exists view_ww_similarity_judgement_data;
 drop view if exists view_ww_classifier;
 drop view if exists view_ww_dataset;
 drop view if exists view_ww_news_article;
 drop type if exists type_meaning_word;
+drop type if exists type_note;
 drop type if exists type_freeform;
 drop type if exists type_lang_complexity;
 drop type if exists type_definition;
@@ -46,31 +47,45 @@ create type type_definition as (
 				value_prese text,
 				lang char(3),
 				complexity varchar(100),
-        source_links json,
+        		source_links json,
 				notes json);
 create type type_domain as (origin varchar(100), code varchar(100));
-create type type_media_file as (freeform_id bigint, source_url text, title text, complexity varchar(100));
+create type type_media_file as (
+				id bigint,
+				source_url text,
+				title text,
+				complexity varchar(100),
+				source_links json);
 create type type_source_link as (
-				ref_owner varchar(100),
-				owner_id bigint,
 				source_link_id bigint,
 				source_link_type varchar(100),
-        source_link_name text,
+        		source_link_name text,
 				order_by bigint,
 				source_id bigint,
-        source_name text,
-        source_value text,
-        source_value_prese text,
-        is_source_public boolean);
+		        source_name text,
+		        source_value text,
+		        source_value_prese text,
+		        is_source_public boolean);
 create type type_usage as (
 				usage_id bigint,
-				usage text,
-				usage_prese text,
-				usage_lang char(3),
+				value text,
+				value_prese text,
+				lang char(3),
 				complexity varchar(100),
-				usage_type_code varchar(100),
 				usage_translations text array,
-				usage_definitions text array);
+				usage_definitions text array,
+				source_links json);
+create type type_note as (
+				note_id bigint,
+				value text,
+				value_prese text,
+				lang char(3),
+				complexity varchar(100),
+				created_by text,
+				created_on timestamp,
+        		modified_by text,
+        		modified_on timestamp,
+        		source_links json);
 create type type_freeform as (
 				freeform_id bigint,
 				type varchar(100),
@@ -79,8 +94,8 @@ create type type_freeform as (
 				complexity varchar(100),
 				created_by text,
 				created_on timestamp,
-        modified_by text,
-        modified_on timestamp);
+        		modified_by text,
+        		modified_on timestamp);
 create type type_colloc_member as (
 				lexeme_id bigint,
 				word_id bigint,
@@ -331,10 +346,45 @@ from (
               and lff.lexeme_id = l.id
               and lff.freeform_id = ff.id
               and ff.is_public = true
-              and ff.type in ('USAGE',
-                              'GRAMMAR',
-                              'GOVERNMENT',
-                              'NOTE'))
+              and ff.type in ('GRAMMAR', 'GOVERNMENT'))
+         union all
+           (select
+                 w.value as word,
+                 coalesce(ln.lang, w.lang) lang,
+                 l.dataset_code,
+                 l.complexity lex_complexity,
+                 ln.complexity data_complexity
+            from word w,
+                 lexeme l,
+                 lexeme_note ln,
+                 dataset ds
+            where l.is_public = true
+              and ds.code = l.dataset_code
+              and ds.is_public = true
+              and l.word_id = w.id
+              and w.is_public = true
+              and w.is_word = true
+              and ln.lexeme_id = l.id
+              and ln.is_public = true)
+         union all
+           (select
+                 w.value as word,
+                 u.lang,
+                 l.dataset_code,
+                 l.complexity lex_complexity,
+                 u.complexity data_complexity
+            from word w,
+                 lexeme l,
+                 usage u,
+                 dataset ds
+            where l.is_public = true
+              and l.word_id = w.id
+              and w.is_public = true
+              and w.is_word = true
+              and ds.code = l.dataset_code
+              and ds.is_public = true
+              and u.lexeme_id = l.id
+              and u.is_public = true)
          union all
            (select
                  w.value as word,
@@ -344,9 +394,8 @@ from (
                  u.complexity data_complexity
             from word w,
                  lexeme l,
-                 lexeme_freeform lff,
-                 freeform u,
-                 freeform ut,
+                 usage u,
+                 usage_translation ut,
                  dataset ds
             where l.is_public = true
               and l.word_id = w.id
@@ -354,12 +403,9 @@ from (
               and w.is_word = true
               and ds.code = l.dataset_code
               and ds.is_public = true
-              and lff.lexeme_id = l.id
-              and lff.freeform_id = u.id
-              and u.type = 'USAGE'
+              and u.lexeme_id = l.id
               and u.is_public = true
-              and ut.parent_id = u.id
-              and ut.type = 'USAGE_TRANSLATION')
+              and ut.usage_id = u.id)
          union all
            (select
                  w.value as word,
@@ -384,7 +430,7 @@ where ws.word = wlc.word
 order by ws.sgroup,
          ws.word,
          ws.crit;
-
+         
 create view view_ww_word
 as
 select w.word_id,
@@ -584,7 +630,39 @@ from (select w.id as word_id,
                      and   lff.lexeme_id = l.id
                      and   lff.freeform_id = ff.id
                      and   ff.is_public = true
-                     and   ff.type in ('USAGE', 'GRAMMAR', 'GOVERNMENT', 'NOTE'))
+                     and   ff.type in ('GRAMMAR', 'GOVERNMENT'))
+                     union all
+                     (select l.word_id,
+                            coalesce(ln.lang, w.lang) lang,
+                            l.dataset_code,
+                            l.complexity lex_complexity,
+                            ln.complexity data_complexity
+                     from word w,
+                          lexeme l,
+                          lexeme_note ln,
+                          dataset ds
+                     where l.is_public = true
+                     and   ds.code = l.dataset_code
+                     and   ds.is_public = true
+                     and   l.word_id = w.id
+                     and   w.is_public = true
+                     and   w.is_word = true
+                     and   ln.lexeme_id = l.id
+                     and   ln.is_public = true)
+                     union all
+                     (select l.word_id,
+                            u.lang,
+                            l.dataset_code,
+                            l.complexity lex_complexity,
+                            u.complexity data_complexity
+                     from lexeme l,
+                          usage u,
+                          dataset ds
+                     where l.is_public = true
+                     and   ds.code = l.dataset_code
+                     and   ds.is_public = true
+                     and   u.lexeme_id = l.id
+                     and   u.is_public = true)
                      union all
                      (select l.word_id,
                             ut.lang,
@@ -592,19 +670,15 @@ from (select w.id as word_id,
                             l.complexity lex_complexity,
                             u.complexity data_complexity
                      from lexeme l,
-                          lexeme_freeform lff,
-                          freeform u,
-                          freeform ut,
+                          usage u,
+                          usage_translation ut,
                           dataset ds
                      where l.is_public = true
                      and   ds.code = l.dataset_code
                      and   ds.is_public = true
-                     and   lff.lexeme_id = l.id
-                     and   lff.freeform_id = u.id
-                     and   u.type = 'USAGE'
+                     and   u.lexeme_id = l.id
                      and   u.is_public = true
-                     and   ut.parent_id = u.id
-                     and   ut.type = 'USAGE_TRANSLATION')
+                     and   ut.usage_id = u.id)
                      union all
                      (select l.word_id,
                             d.lang,
@@ -644,12 +718,14 @@ from (select w.id as word_id,
                                        and   l2ds.code = l2.dataset_code
                                        and   l2ds.is_public = true)
                      and   not exists (select d.id from definition d where d.meaning_id = l1.meaning_id and d.is_public = true)
+                     and   not exists (select ln.id from lexeme_note ln where ln.lexeme_id = l1.id and ln.is_public = true)
+                     and   not exists (select u.id from usage u where u.lexeme_id = l1.id and u.is_public = true)
                      and   not exists (select ff.id
                                        from lexeme_freeform lff,
                                             freeform ff
                                        where lff.lexeme_id = l1.id
                                        and   lff.freeform_id = ff.id
-                                       and   ff.type in ('USAGE', 'GRAMMAR', 'GOVERNMENT', 'NOTE')))) lc
+                                       and   ff.type in ('GRAMMAR', 'GOVERNMENT')))) lc
               group by lc.word_id) lc
           on lc.word_id = w.word_id
   left outer join (select wd.word_id,
@@ -800,7 +876,7 @@ select m.id meaning_id,
        m.manual_event_on,
        m.last_approve_or_edit_event_on,
        m_dom.domain_codes,
-       m_img.image_files,
+       m_img.meaning_images,
        m_media.media_files,
        m_spp.systematic_polysemy_patterns,
        m_smt.semantic_types,
@@ -838,8 +914,8 @@ from (select m.id,
                             d.value_prese,
                             d.lang,
                             d.complexity,
-                            source_links,
-                            notes
+                            d.source_links,
+                            d.notes
                           )::type_definition
                           order by
                           d.order_by
@@ -851,101 +927,104 @@ from (select m.id,
                                 d.lang,
                                 d.complexity,
                                 d.order_by,
-                                source_links,
+                                dsl.source_links,
                                 (select json_agg(notes) as notes
-                                 from (select ff.value_prese as value,
+                                 from (select dn.value_prese as value,
                                               json_agg(row (
-                                                         'FREEFORM',
-                                                         ffsl.freeform_id,
-                                                         ffsl.source_link_id,
-                                                         ffsl.type,
-                                                         ffsl.name,
-                                                         ffsl.order_by,
-                                                         ffsl.source_id,
-                                                         ffsl.source_name,
-                                                         ffsl.source_value,
-                                                         ffsl.source_value_prese,
-                                                         ffsl.is_source_public
+                                                         dnsl.source_link_id,
+                                                         dnsl.type,
+                                                         dnsl.name,
+                                                         dnsl.order_by,
+                                                         dnsl.source_id,
+                                                         dnsl.source_name,
+                                                         dnsl.source_value,
+                                                         dnsl.source_value_prese,
+                                                         dnsl.is_source_public
                                                          )::type_source_link
                                                        order by
-                                                         ffsl.freeform_id,
-                                                         ffsl.order_by) source_links
-                                       from definition_freeform dff,
-                                            freeform ff
-                                              left outer join (select ffsl.freeform_id,
-                                                                      ffsl.id source_link_id,
-                                                                      ffsl.type,
-                                                                      ffsl.name,
-                                                                      ffsl.value,
-                                                                      ffsl.order_by,
+                                                         dnsl.order_by) source_links
+                                       from definition_note dn
+                                              left outer join (select dnsl.definition_note_id,
+                                                                      dnsl.id source_link_id,
+                                                                      dnsl.type,
+                                                                      dnsl.name,
+                                                                      dnsl.order_by,
                                                                       s.id source_id,
                                                                       s.name source_name,
                                                                       s.value source_value,
                                                                       s.value_prese source_value_prese,
                                                                       s.is_public is_source_public
-                                                               from freeform_source_link ffsl, source s
-                                                               where ffsl.source_id = s.id) ffsl on ffsl.freeform_id = ff.id
-                                       where dff.definition_id = d.id
-                                         and ff.id = dff.freeform_id
-                                         and ff.type = 'NOTE'
-                                         and ff.is_public = true
-                                       group by ff.id, ff.value_prese) notes) notes
+                                                               from definition_note_source_link dnsl, source s
+                                                               where dnsl.source_id = s.id) dnsl on dnsl.definition_note_id = dn.id
+                                       where dn.definition_id = d.id
+                                         and dn.is_public = true
+                                       group by dn.id, dn.value_prese) notes) notes
                          from definition d
-                                left outer join (select dsl.definition_id,
-                                                        json_agg(row (
-                                                                   'DEFINITION',
-                                                                   dsl.definition_id,
-                                                                   dsl.id,
-                                                                   dsl.type,
-                                                                   dsl.name,
-                                                                   dsl.order_by,
-                                                                   s.id,
-                                                                   s.name,
-                                                                   s.value,
-                                                                   s.value_prese,
-                                                                   s.is_public
-                                                                   )::type_source_link
-                                                                 order by
-                                                                   dsl.definition_id,
-                                                                   dsl.order_by) source_links
-                                                 from definition_source_link dsl, source s
-                                                 where dsl.source_id = s.id
-                                                 group by dsl.definition_id) source_links on source_links.definition_id = d.id
+                         left outer join (select dsl.definition_id,
+                                                 json_agg(row (
+                                                           dsl.id,
+                                                           dsl.type,
+                                                           dsl.name,
+                                                           dsl.order_by,
+                                                           s.id,
+                                                           s.name,
+                                                           s.value,
+                                                           s.value_prese,
+                                                           s.is_public
+                                                           )::type_source_link
+                                                         order by
+                                                           dsl.definition_id,
+                                                           dsl.order_by) source_links
+                                          from definition_source_link dsl, source s
+                                          where dsl.source_id = s.id
+                                          group by dsl.definition_id) dsl on dsl.definition_id = d.id
                          where d.is_public = true) d
-                   group by d.meaning_id) d
-               on d.meaning_id = m.id
-  left outer join (select mff.meaning_id,
+                   group by d.meaning_id) d on d.meaning_id = m.id
+  left outer join (select mi.meaning_id,
                           json_agg(row (
-                            ff_if.id,
-                            ff_if.value_text,
-                            ff_it.value_text,
-                            ff_if.complexity
+                            mi.id,
+                            mi.url,
+                            mi.title,
+                            mi.complexity,
+                            misl.source_links
                           )::type_media_file
                           order by
-                          ff_if.order_by,
-                          ff_it.order_by
-                          ) image_files
-                   from meaning_freeform mff
-                     inner join freeform ff_if
-                             on ff_if.id = mff.freeform_id
-                            and ff_if.type = 'IMAGE_FILE'
-                     left outer join freeform ff_it
-                                  on ff_it.parent_id = ff_if.id
-                                 and ff_it.type = 'IMAGE_TITLE'
-                   group by mff.meaning_id) m_img on m_img.meaning_id = m.id
+                          mi.order_by
+                          ) meaning_images
+                   from meaning_image mi
+                   left outer join (select misl.meaning_image_id,
+										   json_agg(row (
+													   misl.id,
+													   misl.type,
+													   misl.name,
+													   misl.order_by,
+													   s.id,
+													   s.name,
+													   s.value,
+													   s.value_prese,
+													   s.is_public
+													   )::type_source_link
+													 order by
+													   misl.meaning_image_id,
+													   misl.order_by) source_links
+										 from meaning_image_source_link misl, source s
+										 where misl.source_id = s.id
+										 group by misl.meaning_image_id) misl on misl.meaning_image_id = mi.id
+                   group by mi.meaning_id) m_img on m_img.meaning_id = m.id
   left outer join (select mff.meaning_id,
                           json_agg(row (
                                       ff_mf.id,
                                       ff_mf.value_text,
                                       null,
-                                      ff_mf.complexity
+                                      ff_mf.complexity,
+                                      null
                                       )::type_media_file
                                     order by ff_mf.order_by
                             ) media_files
-                   from meaning_freeform mff
-                          inner join freeform ff_mf
-                                     on ff_mf.id = mff.freeform_id
-                                       and ff_mf.type = 'MEDIA_FILE'
+                   from meaning_freeform mff,
+                   		freeform ff_mf
+                   where ff_mf.id = mff.freeform_id
+                   and 	 ff_mf.type = 'MEDIA_FILE'
                    group by mff.meaning_id) m_media on m_media.meaning_id = m.id
   left outer join (select mf.meaning_id,
                           array_agg(ff.value_text order by ff.order_by) systematic_polysemy_patterns
@@ -968,23 +1047,51 @@ from (select m.id,
                    where mf.freeform_id = ff.id
                    and   ff.type = 'LEARNER_COMMENT'
                    group by mf.meaning_id) m_lcm on m_lcm.meaning_id = m.id
-  left outer join (select mf.meaning_id,
+  left outer join (select mn.meaning_id,
                           json_agg(row (
-                            ff.id,
-                            ff.type,
-                            ff.value_prese,
-                            ff.lang,
-                            ff.complexity,
-                            ff.created_by,
-                            ff.created_on,
-                            ff.modified_by,
-                            ff.modified_on)::type_freeform order by ff.order_by) notes
-                   from meaning_freeform mf,
-                        freeform ff
-                   where mf.freeform_id = ff.id
-                   and   ff.type = 'NOTE'
-                   and   ff.is_public = true
-                   group by mf.meaning_id) m_pnt on m_pnt.meaning_id = m.id
+                            mn.meaning_note_id,
+                            mn.value,
+                            mn.value_prese,
+                            mn.lang,
+                            mn.complexity,
+                            mn.created_by,
+                            mn.created_on,
+                            mn.modified_by,
+                            mn.modified_on,
+                            mn.source_links)::type_note order by mn.order_by) notes
+                   from (select mn.meaning_id,
+                   				mn.id meaning_note_id,
+                   				mn.value,
+                   				mn.value_prese,
+                   				mn.lang,
+                   				mn.complexity,
+                   				mn.created_by,
+                   				mn.created_on,
+                   				mn.modified_by,
+                   				mn.modified_on,
+                   				mn.order_by,
+                   				mnsl.source_links
+                   		 from meaning_note mn
+                   		 left outer join (select mnsl.meaning_note_id,
+												json_agg(row (
+														   mnsl.id,
+														   mnsl.type,
+														   mnsl.name,
+														   mnsl.order_by,
+														   s.id,
+														   s.name,
+														   s.value,
+														   s.value_prese,
+														   s.is_public
+														   )::type_source_link
+														 order by
+														   mnsl.meaning_note_id,
+														   mnsl.order_by) source_links
+										 from meaning_note_source_link mnsl, source s
+										 where mnsl.source_id = s.id
+										 group by mnsl.meaning_note_id) mnsl on mnsl.meaning_note_id = mn.id
+                   		 where mn.is_public = true) mn
+                   group by mn.meaning_id) m_pnt on m_pnt.meaning_id = m.id
 order by m.id;
 
 create view view_ww_lexeme
@@ -1014,7 +1121,8 @@ select l.id lexeme_id,
        pnote.notes,
        gramm.grammars,
        gov.governments,
-       usg.usages
+       usg.usages,
+       lsl.source_links
 from lexeme l
   inner join dataset ds on ds.code = l.dataset_code
   left outer join (select l_reg.lexeme_id, array_agg(l_reg.register_code order by l_reg.order_by) register_codes from lexeme_register l_reg group by l_reg.lexeme_id) l_reg on l_reg.lexeme_id = l.id
@@ -1028,14 +1136,51 @@ from lexeme l
                    where lf.freeform_id = ff.id
                    and   ff.type = 'ADVICE_NOTE'
                    group by lf.lexeme_id) anote on anote.lexeme_id = l.id
-  left outer join (select lf.lexeme_id,
-                          json_agg(row (ff.id, ff.type, ff.value_prese, ff.lang, ff.complexity, null, null, null, null)::type_freeform order by ff.order_by) notes
-                   from lexeme_freeform lf,
-                        freeform ff
-                   where lf.freeform_id = ff.id
-                   and   ff.type = 'NOTE'
-                   and   ff.is_public = true
-                   group by lf.lexeme_id) pnote on pnote.lexeme_id = l.id
+  left outer join (select ln.lexeme_id,
+                          json_agg(row (
+                          	ln.lexeme_note_id,
+                          	ln.value,
+                          	ln.value_prese,
+                          	ln.lang,
+                          	ln.complexity,
+                          	ln.created_by,
+                            ln.created_on,
+                            ln.modified_by,
+                            ln.modified_on,
+                          	ln.source_links)::type_note order by ln.order_by) notes
+                   from (select ln.lexeme_id,
+                   				ln.id lexeme_note_id,
+                   				ln.value,
+	                          	ln.value_prese,
+	                          	ln.lang,
+	                          	ln.complexity,
+	                          	ln.created_by,
+	                            ln.created_on,
+	                            ln.modified_by,
+	                            ln.modified_on,
+	                            ln.order_by,
+	                            lnsl.source_links
+                   		from lexeme_note ln
+                   		left outer join (select lnsl.lexeme_note_id,
+												json_agg(row (
+														   lnsl.id,
+														   lnsl.type,
+														   lnsl.name,
+														   lnsl.order_by,
+														   s.id,
+														   s.name,
+														   s.value,
+														   s.value_prese,
+														   s.is_public
+														   )::type_source_link
+														 order by
+														   lnsl.lexeme_note_id,
+														   lnsl.order_by) source_links
+										 from lexeme_note_source_link lnsl, source s
+										 where lnsl.source_id = s.id
+										 group by lnsl.lexeme_note_id) lnsl on lnsl.lexeme_note_id = ln.id
+                   		where ln.is_public = true) ln
+                   group by ln.lexeme_id) pnote on pnote.lexeme_id = l.id
   left outer join (select lf.lexeme_id,
                           json_agg(row (ff.id, ff.type, ff.value_prese, ff.lang, ff.complexity, null, null, null, null)::type_freeform order by ff.order_by) grammars
                    from lexeme_freeform lf,
@@ -1121,45 +1266,72 @@ from lexeme l
   left outer join (select u.lexeme_id,
                           json_agg(row (
                                 u.usage_id,
-                                u.usage,
-                                u.usage_prese,
-                                u.usage_lang,
+                                u.value,
+                                u.value_prese,
+                                u.lang,
                                 u.complexity,
-                                u.usage_type_code,
                                 u.usage_translations,
-                                u.usage_definitions)::type_usage
+                                u.usage_definitions,
+                                u.source_links)::type_usage
                                 order by u.order_by) usages
-                   from (select lf.lexeme_id,
+                   from (select u.lexeme_id,
                                 u.id usage_id,
-                                u.value_text USAGE,
-                                u.value_prese usage_prese,
-                                u.lang usage_lang,
+                                u.value,
+                                u.value_prese,
+                                u.lang,
                                 u.complexity,
                                 u.order_by,
-                                utp.classif_code usage_type_code,
                                 ut.usage_translations,
-                                ud.usage_definitions
-                         from lexeme_freeform lf
-                           inner join freeform u
-                                   on lf.freeform_id = u.id
-                                  and u.type = 'USAGE'
-                                  and u.is_public = true
-                           left outer join freeform utp
-                                        on utp.parent_id = u.id
-                                       and utp.type = 'USAGE_TYPE'
-                           left outer join (select ut.parent_id usage_id,
-                                                   array_agg(ut.value_prese order by ut.order_by) usage_translations
-                                            from freeform ut
-                                            where ut.type = 'USAGE_TRANSLATION'
-                                            -- TODO this hack is based on realistic data and fulfils necessary prerequisite for data filtering at ww
-                                            and   ut.lang = 'rus'
-                                            group by ut.parent_id) ut on ut.usage_id = u.id
-                           left outer join (select ud.parent_id usage_id,
-                                                   array_agg(ud.value_prese order by ud.order_by) usage_definitions
-                                            from freeform ud
-                                            where ud.type = 'USAGE_DEFINITION'
-                                            group by ud.parent_id) ud on ud.usage_id = u.id) u
+                                ud.usage_definitions,
+                                usl.source_links
+                         from usage u
+	                     left outer join (select usl.usage_id,
+												 json_agg(row (
+													   usl.id,
+													   usl.type,
+													   usl.name,
+													   usl.order_by,
+													   s.id,
+													   s.name,
+													   s.value,
+													   s.value_prese,
+													   s.is_public
+													   )::type_source_link
+													 order by
+													   usl.usage_id,
+													   usl.order_by) source_links
+										  from usage_source_link usl, source s
+										  where usl.source_id = s.id
+										  group by usl.usage_id) usl on usl.usage_id = u.id
+	                     left outer join (select ut.usage_id,
+	                                             array_agg(ut.value_prese order by ut.order_by) usage_translations
+	                                      from usage_translation ut
+	                                      where ut.lang = 'rus'
+	                                      group by ut.usage_id) ut on ut.usage_id = u.id
+	                     left outer join (select ud.usage_id,
+	                                             array_agg(ud.value_prese order by ud.order_by) usage_definitions
+	                                      from usage_definition ud
+	                                      group by ud.usage_id) ud on ud.usage_id = u.id
+	                     where u.is_public = true) u
                    group by u.lexeme_id) usg on usg.lexeme_id = l.id
+  left outer join (select lsl.lexeme_id,
+						  json_agg(row (
+								   lsl.id,
+								   lsl.type,
+								   lsl.name,
+								   lsl.order_by,
+								   s.id,
+								   s.name,
+								   s.value,
+								   s.value_prese,
+								   s.is_public
+								   )::type_source_link
+								 order by
+								   lsl.lexeme_id,
+								   lsl.order_by) source_links
+				   from lexeme_source_link lsl, source s
+				   where lsl.source_id = s.id
+				   group by lsl.lexeme_id) lsl on lsl.lexeme_id = l.id
   left outer join (select lc.id,
                           array_agg(distinct row (
                                  case 
@@ -1205,7 +1377,43 @@ from lexeme l
                           and   w.is_word = true
                           and   lff.lexeme_id = l.id
                           and   lff.freeform_id = ff.id
-                          and   ff.type in ('USAGE', 'GRAMMAR', 'GOVERNMENT', 'NOTE'))
+                          and   ff.type in ('GRAMMAR', 'GOVERNMENT'))
+                          union all
+                          (select l.id,
+                                 coalesce(ln.lang, w.lang) lang,
+                                 l.dataset_code,
+                                 l.complexity lex_complexity,
+                                 ln.complexity data_complexity
+                          from word w,
+                               lexeme l,
+                               lexeme_note ln,
+                               dataset ds
+                          where l.is_public = true
+                          and   ds.code = l.dataset_code
+                          and   ds.is_public = true
+                          and   l.word_id = w.id
+                          and   w.is_public = true
+                          and   w.is_word = true
+                          and   ln.lexeme_id = l.id
+                          and   ln.is_public = true)
+                          union all
+                          (select l.id,
+                                 coalesce(u.lang, w.lang) lang,
+                                 l.dataset_code,
+                                 l.complexity lex_complexity,
+                                 u.complexity data_complexity
+                          from word w,
+                               lexeme l,
+                               usage u,
+                               dataset ds
+                          where l.is_public = true
+                          and   ds.code = l.dataset_code
+                          and   ds.is_public = true
+                          and   l.word_id = w.id
+                          and   w.is_public = true
+                          and   w.is_word = true
+                          and   u.lexeme_id = l.id
+                          and   u.is_public = true)
                           union all
                           (select l.id,
                                  ut.lang,
@@ -1213,19 +1421,15 @@ from lexeme l
                                  l.complexity lex_complexity,
                                  u.complexity data_complexity
                           from lexeme l,
-                               lexeme_freeform lff,
-                               freeform u,
-                               freeform ut,
+                               usage u,
+                               usage_translation ut,
                                dataset ds
                           where l.is_public = true
                           and   ds.code = l.dataset_code
                           and   ds.is_public = true
-                          and   lff.lexeme_id = l.id
-                          and   lff.freeform_id = u.id
-                          and   u.type = 'USAGE'
+                          and   u.lexeme_id = l.id
                           and   u.is_public = true
-                          and   ut.parent_id = u.id
-                          and   ut.type = 'USAGE_TRANSLATION')
+                          and   ut.usage_id = u.id)
                           union all
                           (select l.id,
                                  d.lang,
@@ -1280,21 +1484,23 @@ from lexeme l
                           and   w1.is_public = true
                           and   w1.is_word = true
                           and   not exists (select l2.id
-                                            from lexeme l2,
-                                                 dataset l2ds
-                                            where l2.meaning_id = l1.meaning_id
-                                            and   l2.dataset_code = l1.dataset_code
-                                            and   l2.id != l1.id
-                                            and   l2.is_public = true
-                                            and   l2ds.code = l2.dataset_code
-                                            and   l2ds.is_public = true)
-                          and   not exists (select d.id from definition d where d.meaning_id = l1.meaning_id and d.is_public = true)
-                          and   not exists (select ff.id
-                                            from lexeme_freeform lff,
-                                                 freeform ff
-                                            where lff.lexeme_id = l1.id
-                                            and   lff.freeform_id = ff.id
-                                            and   ff.type in ('USAGE', 'GRAMMAR', 'GOVERNMENT', 'NOTE')))) lc
+	                                        from lexeme l2,
+	                                             dataset l2ds
+	                                        where l2.meaning_id = l1.meaning_id
+	                                        and   l2.dataset_code = l1.dataset_code
+	                                        and   l2.id != l1.id
+	                                        and   l2.is_public = true
+	                                        and   l2ds.code = l2.dataset_code
+	                                        and   l2ds.is_public = true)
+		                  and   not exists (select d.id from definition d where d.meaning_id = l1.meaning_id and d.is_public = true)
+		                  and   not exists (select ln.id from lexeme_note ln where ln.lexeme_id = l1.id and ln.is_public = true)
+		                  and   not exists (select u.id from usage u where u.lexeme_id = l1.id and u.is_public = true)
+		                  and   not exists (select ff.id
+	                                        from lexeme_freeform lff,
+	                                        	 freeform ff
+	                                        where lff.lexeme_id = l1.id
+	                                        and   lff.freeform_id = ff.id
+	                                        and   ff.type in ('GRAMMAR', 'GOVERNMENT')))) lc
                    group by lc.id) l_lc on l_lc.id = l.id
 where l.is_public = true
 and   ds.is_public = true
@@ -1427,71 +1633,76 @@ select
   we.comment_prese word_etym_comment,
   we.is_questionable word_etym_is_questionable,
   we.order_by word_etym_order_by,
-  wer.word_etym_relations
+  wer.word_etym_relations,
+  wesl.source_links
 from
   word_etym_recursion rec
   inner join word_etymology we on we.id = rec.word_etym_id
-  inner join (
-    select
-      w.id,
-      w.lang,
-      w.value word
-    from
-      word w
-    where
-      exists (
-        select
-          l.id
-        from
-          lexeme l,
-          dataset ds
-        where
-        l.word_id = w.id
-        and l.is_public = true
-        and ds.code = l.dataset_code
-        and ds.type = 'LEX')
-    group by
-      w.id
-  ) w on w.id = rec.word_etym_word_id
-  left outer join (
-    select
-      wer.word_etym_id,
-      wer.related_word_id,
-      jsonb_agg(
-        row(
-            wer.id,
-            wer.comment_prese,
-            wer.is_questionable,
-            wer.is_compound,
-            wer.related_word_id
-        ):: type_word_etym_relation
-        order by wer.order_by
-      ) word_etym_relations
-    from
-      word_etymology_relation wer
-    group by wer.word_etym_id, wer.related_word_id
-  ) wer on wer.word_etym_id = rec.word_etym_id and wer.related_word_id != rec.word_id
-  left outer join (
-    select
-      l1.word_id,
-      array_agg(w2.value) meaning_words
-    from
-      lexeme l1,
-      meaning m,
-      lexeme l2,
-      word w2
-    where
-      l1.meaning_id = m.id
-      and l2.meaning_id = m.id
-      and l1.word_id != l2.word_id
-      and l1.is_public = true
-      and l2.dataset_code = 'ety'
-      and l2.is_public = true
-      and l2.word_id = w2.id
-      and w2.lang = 'est'
-    group by
-      l1.word_id
-  ) mw2 on mw2.word_id = rec.word_etym_word_id
+  inner join (select w.id,
+				     w.lang,
+				     w.value word
+			  from word w
+			  where exists (
+				        select
+				          l.id
+				        from
+				          lexeme l,
+				          dataset ds
+				        where
+				        l.word_id = w.id
+				        and l.is_public = true
+				        and ds.code = l.dataset_code
+				        and ds.type = 'LEX')
+			  group by w.id) w on w.id = rec.word_etym_word_id
+  left outer join (select wer.word_etym_id,
+					      wer.related_word_id,
+					      jsonb_agg(row (
+					            wer.id,
+					            wer.comment_prese,
+					            wer.is_questionable,
+					            wer.is_compound,
+					            wer.related_word_id
+					        	):: type_word_etym_relation
+					        order by
+					        	wer.order_by) word_etym_relations
+					from word_etymology_relation wer
+					group by wer.word_etym_id, wer.related_word_id) wer on wer.word_etym_id = rec.word_etym_id and wer.related_word_id != rec.word_id
+  left outer join (select wesl.word_etym_id,
+						  jsonb_agg(row (
+								   wesl.id,
+								   wesl.type,
+								   wesl.name,
+								   wesl.order_by,
+								   s.id,
+								   s.name,
+								   s.value,
+								   s.value_prese,
+								   s.is_public
+								   ):: type_source_link
+								 order by
+								   wesl.word_etym_id,
+								   wesl.order_by) source_links
+				   from word_etymology_source_link wesl, source s
+				   where wesl.source_id = s.id
+				   group by wesl.word_etym_id) wesl on wesl.word_etym_id = rec.word_etym_id
+  left outer join (select l1.word_id,
+					      array_agg(w2.value) meaning_words
+				   from
+						lexeme l1,
+						meaning m,
+						lexeme l2,
+						word w2
+				   where
+						l1.meaning_id = m.id
+					    and l2.meaning_id = m.id
+					    and l1.word_id != l2.word_id
+					    and l1.is_public = true
+					    and l2.dataset_code = 'ety'
+					    and l2.is_public = true
+					    and l2.word_id = w2.id
+					    and w2.lang = 'est'
+				   group by
+						l1.word_id) mw2 on mw2.word_id = rec.word_etym_word_id
 group by
   rec.word_id,
   rec.word_etym_id,
@@ -1501,11 +1712,12 @@ group by
   w.id,
   w.word,
   w.lang,
-  wer.word_etym_relations
+  wer.word_etym_relations,
+  wesl.source_links
 order by
   rec.word_id,
   we.order_by;
-
+  
 create view view_ww_word_relation 
 as
 select w.id word_id,
@@ -1799,158 +2011,6 @@ from (select mr.meaning1_id m1_id,
                      and lex_ds.is_public = true)
       group by m.id, mr.id, w.id, l.id, inexact_syn_def.id) r
 group by r.m1_id;
-
-
-create view view_ww_word_etym_source_link 
-as
-select we.word_id,
-       json_agg(row (
-         'WORD_ETYM',
-         wesl.word_etym_id,
-         wesl.id,
-         wesl.type,
-         wesl.name,
-         wesl.order_by,
-         s.id,
-         s.name,
-         s.value,
-         s.value_prese,
-         s.is_public
-       )::type_source_link
-       order by
-       we.id,
-       wesl.order_by
-       ) source_links
-from word_etymology we,
-     word_etymology_source_link wesl,
-     source s
-where wesl.word_etym_id = we.id
-and   wesl.source_id = s.id
-and   exists (select l.id
-              from lexeme l,
-                   dataset ds
-              where l.word_id = we.word_id
-              and   l.is_public = true
-              and   ds.code = l.dataset_code
-              and   ds.is_public = true)
-group by we.word_id
-order by we.word_id;
-
-create view view_ww_lexeme_source_link 
-as
-select l.id lexeme_id,
-       json_agg(row (
-         'LEXEME',
-         l.id,
-         lsl.id,
-         lsl.type,
-         lsl.name,
-         lsl.order_by,
-         s.id,
-         s.name,
-         s.value,
-         s.value_prese,
-         s.is_public
-       )::type_source_link
-       order by
-       l.id,
-       lsl.order_by
-       ) source_links
-from lexeme l,
-     dataset ds,
-     lexeme_source_link lsl,
-     source s
-where l.is_public = true
-and   lsl.lexeme_id = l.id
-and   lsl.source_id = s.id
-and   ds.code = l.dataset_code
-and   ds.is_public = true
-group by l.id
-order by l.id;
-
-create view view_ww_lexeme_freeform_source_link 
-as
-select l.id lexeme_id,
-       json_agg(row (
-         'FREEFORM',
-         ffsl.freeform_id,
-         ffsl.id,
-         ffsl.type,
-         ffsl.name,
-         ffsl.order_by,
-         s.id,
-         s.name,
-         s.value,
-         s.value_prese,
-         s.is_public
-       )::type_source_link
-       order by
-       lff.id,
-       ffsl.order_by
-       ) source_links
-from lexeme l,
-     dataset ds,
-     lexeme_freeform lff,
-     freeform_source_link ffsl,
-     source s
-where l.is_public = true
-and   lff.lexeme_id = l.id
-and   lff.freeform_id = ffsl.freeform_id
-and   ffsl.source_id = s.id
-and   ds.code = l.dataset_code
-and   ds.is_public = true
-group by l.id
-order by l.id;
-
-create view view_ww_meaning_freeform_source_link 
-as
-select ffsl.meaning_id,
-       json_agg(row (
-         'FREEFORM',
-         ffsl.freeform_id,
-         ffsl.source_link_id,
-         ffsl.type,
-         ffsl.name,
-         ffsl.order_by,
-         ffsl.source_id,
-         ffsl.source_name,
-         ffsl.source_value,
-         ffsl.source_value_prese,
-         ffsl.is_source_public
-       )::type_source_link
-       order by
-       ffsl.freeform_id,
-       ffsl.order_by
-       ) source_links
-from (select mff.meaning_id,
-             mff.freeform_id,
-             ffsl.id source_link_id,
-             ffsl.type,
-             ffsl.name,
-             ffsl.value,
-             ffsl.order_by,
-             s.id source_id,
-             s.name source_name,
-             s.value source_value,
-             s.value_prese source_value_prese,
-             s.is_public is_source_public
-      from lexeme l,
-           dataset ds,
-           meaning_freeform mff,
-           freeform_source_link ffsl,
-           source s
-      where l.is_public = true
-      and   l.meaning_id = mff.meaning_id
-      and   ffsl.freeform_id = mff.freeform_id
-      and   ffsl.source_id = s.id
-      and   ds.code = l.dataset_code
-      and   ds.is_public = true
-      group by mff.meaning_id,
-               mff.freeform_id,
-               ffsl.id,
-               s.id) ffsl
-group by ffsl.meaning_id
-order by ffsl.meaning_id;
 
 create view view_ww_lexical_decision_data 
 as

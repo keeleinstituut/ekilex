@@ -57,7 +57,7 @@ public class UsageTranslation extends TableImpl<UsageTranslationRecord> {
     /**
      * The column <code>public.usage_translation.original_freeform_id</code>.
      */
-    public final TableField<UsageTranslationRecord, Long> ORIGINAL_FREEFORM_ID = createField(DSL.name("original_freeform_id"), SQLDataType.BIGINT.nullable(false), this, "");
+    public final TableField<UsageTranslationRecord, Long> ORIGINAL_FREEFORM_ID = createField(DSL.name("original_freeform_id"), SQLDataType.BIGINT, this, "");
 
     /**
      * The column <code>public.usage_translation.usage_id</code>.
@@ -67,17 +67,17 @@ public class UsageTranslation extends TableImpl<UsageTranslationRecord> {
     /**
      * The column <code>public.usage_translation.value</code>.
      */
-    public final TableField<UsageTranslationRecord, String> VALUE = createField(DSL.name("value"), SQLDataType.CLOB, this, "");
+    public final TableField<UsageTranslationRecord, String> VALUE = createField(DSL.name("value"), SQLDataType.CLOB.nullable(false), this, "");
 
     /**
      * The column <code>public.usage_translation.value_prese</code>.
      */
-    public final TableField<UsageTranslationRecord, String> VALUE_PRESE = createField(DSL.name("value_prese"), SQLDataType.CLOB, this, "");
+    public final TableField<UsageTranslationRecord, String> VALUE_PRESE = createField(DSL.name("value_prese"), SQLDataType.CLOB.nullable(false), this, "");
 
     /**
      * The column <code>public.usage_translation.lang</code>.
      */
-    public final TableField<UsageTranslationRecord, String> LANG = createField(DSL.name("lang"), SQLDataType.CHAR(3), this, "");
+    public final TableField<UsageTranslationRecord, String> LANG = createField(DSL.name("lang"), SQLDataType.CHAR(3).nullable(false), this, "");
 
     /**
      * The column <code>public.usage_translation.created_by</code>.

@@ -100,7 +100,6 @@ import eki.common.constant.AuthorityItem;
 import eki.common.constant.AuthorityOperation;
 import eki.common.constant.ClassifierName;
 import eki.common.constant.FreeformType;
-import eki.common.constant.ReferenceOwner;
 import eki.ekilex.data.Classifier;
 import eki.ekilex.data.Dataset;
 import eki.ekilex.data.FreeForm;
@@ -1127,8 +1126,6 @@ public class CommonDataDbService extends AbstractDataDbService {
 	public List<SourceLink> getLexemeSourceLinks(Long lexemeId) {
 		return create
 				.select(
-						DSL.field(DSL.val(ReferenceOwner.LEXEME.name())).as("owner"),
-						LEXEME_SOURCE_LINK.LEXEME_ID.as("owner_id"),
 						LEXEME_SOURCE_LINK.ID,
 						LEXEME_SOURCE_LINK.TYPE,
 						LEXEME_SOURCE_LINK.NAME,
@@ -1206,8 +1203,6 @@ public class CommonDataDbService extends AbstractDataDbService {
 		UsageDefinition ud = USAGE_DEFINITION.as("ud");
 		UsageSourceLink usl = USAGE_SOURCE_LINK.as("usl");
 		Source s = SOURCE.as("s");
-
-		// usage_type ?
 
 		Field<JSON> utf = DSL
 				.select(DSL

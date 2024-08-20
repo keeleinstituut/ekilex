@@ -372,9 +372,9 @@
                     <div class="usage-item" th:if="${!isCollapsable}">
                       <div class="example-sentence-wrap">
                         <span class="example-text example-text-w-audio">
-                          <span class="example-text-value" th:utext="${usage.usagePrese}"></span>
-                          <button class="btn btn-speaker" th:aria-label="|#{aria.listen} - ${usage.usage}|" th:if="${usage.putOnSpeaker}"
-                                  th:data-words="${usage.usage}"
+                          <span class="example-text-value" th:utext="${usage.valuePrese}"></span>
+                          <button class="btn btn-speaker" th:aria-label="|#{aria.listen} - ${usage.value}|" th:if="${usage.putOnSpeaker}"
+                                  th:data-words="${usage.value}"
                                   th:attr="onclick=${usage.putOnSpeaker ? 'generateAudioAndPlay(this)' : ''}">
                             <span class="icon icon-speaker"></span>
                           </button>
@@ -404,8 +404,8 @@
                         <div class="usage-item" th:if="${isCollapsable}">
                           <div class="example-sentence-wrap">
                             <span class="example-text example-text-w-audio">
-                              <span class="example-text-value" th:utext="${usage.usagePrese}"></span>
-                              <button class="btn btn-speaker" th:aria-label="|#{aria.listen} - ${usage.usage}|" th:if="${usage.putOnSpeaker}" th:data-words="${usage.usage}"
+                              <span class="example-text-value" th:utext="${usage.valuePrese}"></span>
+                              <button class="btn btn-speaker" th:aria-label="|#{aria.listen} - ${usage.value}|" th:if="${usage.putOnSpeaker}" th:data-words="${usage.value}"
                                       th:attr="onclick=${usage.putOnSpeaker ? 'generateAudioAndPlay(this)' : ''}">
                                 <span class="icon icon-speaker"></span>
                               </button>
@@ -450,15 +450,15 @@
                     </span>
                   </button>
                 </div>
-                <div class="mt-3 d-flex flex-wrap row" th:if="${not #lists.isEmpty(lexeme.imageFiles)}">
-                  <th:block th:each="imageFile : ${lexeme.imageFiles}">
+                <div class="mt-3 d-flex flex-wrap row" th:if="${not #lists.isEmpty(lexeme.meaningImages)}">
+                  <th:block th:each="meaningImage : ${lexeme.meaningImages}">
                     <div class="col-12 col-md-4 mb-3 d-flex flex-column">
-                      <a th:href="${imageFile.sourceUrl}" class="gallery-image my-auto">
-                        <img class="homonym-image m-0 p-0" th:src="${imageFile.sourceUrl}" th:title="${imageFile.title}">
-                        <span class="additional-meta text-muted text-small py-1 d-block" th:utext="${imageFile.title}"></span>
+                      <a th:href="${meaningImage.sourceUrl}" class="gallery-image my-auto">
+                        <img class="homonym-image m-0 p-0" th:src="${meaningImage.sourceUrl}" th:title="${meaningImage.title}">
+                        <span class="additional-meta text-muted text-small py-1 d-block" th:utext="${meaningImage.title}"></span>
                       </a>
-                      <th:block th:if="${not #lists.isEmpty(imageFile.sourceLinks)}">
-                        <div th:each="sourceLink : ${imageFile.sourceLinks}">
+                      <th:block th:if="${not #lists.isEmpty(meaningImage.sourceLinks)}">
+                        <div th:each="sourceLink : ${meaningImage.sourceLinks}">
                           <th:block th:replace="common-app :: source-link"></th:block>
                         </div>
                       </th:block>

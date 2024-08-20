@@ -57,7 +57,7 @@ public class MeaningNote extends TableImpl<MeaningNoteRecord> {
     /**
      * The column <code>public.meaning_note.original_freeform_id</code>.
      */
-    public final TableField<MeaningNoteRecord, Long> ORIGINAL_FREEFORM_ID = createField(DSL.name("original_freeform_id"), SQLDataType.BIGINT.nullable(false), this, "");
+    public final TableField<MeaningNoteRecord, Long> ORIGINAL_FREEFORM_ID = createField(DSL.name("original_freeform_id"), SQLDataType.BIGINT, this, "");
 
     /**
      * The column <code>public.meaning_note.meaning_id</code>.
@@ -67,22 +67,22 @@ public class MeaningNote extends TableImpl<MeaningNoteRecord> {
     /**
      * The column <code>public.meaning_note.value</code>.
      */
-    public final TableField<MeaningNoteRecord, String> VALUE = createField(DSL.name("value"), SQLDataType.CLOB, this, "");
+    public final TableField<MeaningNoteRecord, String> VALUE = createField(DSL.name("value"), SQLDataType.CLOB.nullable(false), this, "");
 
     /**
      * The column <code>public.meaning_note.value_prese</code>.
      */
-    public final TableField<MeaningNoteRecord, String> VALUE_PRESE = createField(DSL.name("value_prese"), SQLDataType.CLOB, this, "");
+    public final TableField<MeaningNoteRecord, String> VALUE_PRESE = createField(DSL.name("value_prese"), SQLDataType.CLOB.nullable(false), this, "");
 
     /**
      * The column <code>public.meaning_note.lang</code>.
      */
-    public final TableField<MeaningNoteRecord, String> LANG = createField(DSL.name("lang"), SQLDataType.CHAR(3), this, "");
+    public final TableField<MeaningNoteRecord, String> LANG = createField(DSL.name("lang"), SQLDataType.CHAR(3).nullable(false), this, "");
 
     /**
      * The column <code>public.meaning_note.complexity</code>.
      */
-    public final TableField<MeaningNoteRecord, String> COMPLEXITY = createField(DSL.name("complexity"), SQLDataType.VARCHAR(100), this, "");
+    public final TableField<MeaningNoteRecord, String> COMPLEXITY = createField(DSL.name("complexity"), SQLDataType.VARCHAR(100).nullable(false), this, "");
 
     /**
      * The column <code>public.meaning_note.is_public</code>.

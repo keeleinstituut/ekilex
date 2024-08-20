@@ -19,6 +19,7 @@ import eki.ekilex.data.db.udt.TypeMtDefinition;
 import eki.ekilex.data.db.udt.TypeMtLexeme;
 import eki.ekilex.data.db.udt.TypeMtLexemeFreeform;
 import eki.ekilex.data.db.udt.TypeMtWord;
+import eki.ekilex.data.db.udt.TypeNote;
 import eki.ekilex.data.db.udt.TypeSourceLink;
 import eki.ekilex.data.db.udt.TypeTermMeaningWord;
 import eki.ekilex.data.db.udt.TypeUsage;
@@ -110,6 +111,11 @@ public class UDTs {
      * The type <code>public.type_mt_word</code>
      */
     public static final TypeMtWord TYPE_MT_WORD = eki.ekilex.data.db.udt.TypeMtWord.TYPE_MT_WORD;
+
+    /**
+     * The type <code>public.type_note</code>
+     */
+    public static final TypeNote TYPE_NOTE = eki.ekilex.data.db.udt.TypeNote.TYPE_NOTE;
 
     /**
      * The type <code>public.type_source_link</code>

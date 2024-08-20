@@ -352,7 +352,7 @@ public class WordConversionUtil extends AbstractConversionUtil {
 						|| CollectionUtils.isNotEmpty(lexemeWord.getLexemeSourceLinks());
 				boolean isShowSection3 = CollectionUtils.isNotEmpty(lexemeWord.getGovernments())
 						|| CollectionUtils.isNotEmpty(lexemeWord.getUsages())
-						|| CollectionUtils.isNotEmpty(lexemeWord.getImageFiles());
+						|| CollectionUtils.isNotEmpty(lexemeWord.getMeaningImages());
 				lexemeWord.setShowSection1(isShowSection1);
 				lexemeWord.setShowSection2(isShowSection2);
 				lexemeWord.setShowSection3(isShowSection3);

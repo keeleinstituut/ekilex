@@ -14,6 +14,7 @@ import eki.wordweb.data.type.TypeLexemeRelation;
 import eki.wordweb.data.type.TypeMeaningRelation;
 import eki.wordweb.data.type.TypeMeaningWord;
 import eki.wordweb.data.type.TypeMediaFile;
+import eki.wordweb.data.type.TypeNote;
 import eki.wordweb.data.type.TypeSourceLink;
 import eki.wordweb.data.type.TypeUsage;
 
@@ -59,13 +60,13 @@ public class LexemeWord extends WordTypeData implements LexemeLevel, ComplexityT
 
 	private List<String> adviceNotes;
 
-	private List<TypeFreeform> lexemeNotes;
+	private List<TypeNote> lexemeNotes;
 
-	private Map<String, List<TypeFreeform>> lexemeNotesByLang;
+	private Map<String, List<TypeNote>> lexemeNotesByLang;
 
-	private List<TypeFreeform> meaningNotes;
+	private List<TypeNote> meaningNotes;
 
-	private Map<String, List<TypeFreeform>> meaningNotesByLang;
+	private Map<String, List<TypeNote>> meaningNotesByLang;
 
 	private List<TypeFreeform> grammars;
 
@@ -93,7 +94,7 @@ public class LexemeWord extends WordTypeData implements LexemeLevel, ComplexityT
 
 	private List<Classifier> domains;
 
-	private List<TypeMediaFile> imageFiles;
+	private List<TypeMediaFile> meaningImages;
 
 	private List<TypeMediaFile> mediaFiles;
 
@@ -132,8 +133,6 @@ public class LexemeWord extends WordTypeData implements LexemeLevel, ComplexityT
 	private List<DisplayColloc> limitedPrimaryDisplayCollocs;
 
 	private List<TypeSourceLink> lexemeSourceLinks;
-
-	private List<TypeSourceLink> lexemeFreeformSourceLinks;
 
 	private List<LexemeWord> meaningLexemes;
 
@@ -185,7 +184,6 @@ public class LexemeWord extends WordTypeData implements LexemeLevel, ComplexityT
 		this.meaningLastActivityEventOn = meaningLastActivityEventOn;
 	}
 
-	@Override
 	public String getDatasetCode() {
 		return datasetCode;
 	}
@@ -234,7 +232,6 @@ public class LexemeWord extends WordTypeData implements LexemeLevel, ComplexityT
 		this.proficiencyLevelCode = proficiencyLevelCode;
 	}
 
-	@Override
 	public Integer getLevel1() {
 		return level1;
 	}
@@ -243,7 +240,6 @@ public class LexemeWord extends WordTypeData implements LexemeLevel, ComplexityT
 		this.level1 = level1;
 	}
 
-	@Override
 	public Integer getLevel2() {
 		return level2;
 	}
@@ -252,17 +248,14 @@ public class LexemeWord extends WordTypeData implements LexemeLevel, ComplexityT
 		this.level2 = level2;
 	}
 
-	@Override
 	public String getLevels() {
 		return levels;
 	}
 
-	@Override
 	public void setLevels(String levels) {
 		this.levels = levels;
 	}
 
-	@Override
 	public Complexity getComplexity() {
 		return complexity;
 	}
@@ -311,35 +304,35 @@ public class LexemeWord extends WordTypeData implements LexemeLevel, ComplexityT
 		this.adviceNotes = adviceNotes;
 	}
 
-	public List<TypeFreeform> getLexemeNotes() {
+	public List<TypeNote> getLexemeNotes() {
 		return lexemeNotes;
 	}
 
-	public void setLexemeNotes(List<TypeFreeform> lexemeNotes) {
+	public void setLexemeNotes(List<TypeNote> lexemeNotes) {
 		this.lexemeNotes = lexemeNotes;
 	}
 
-	public Map<String, List<TypeFreeform>> getLexemeNotesByLang() {
+	public Map<String, List<TypeNote>> getLexemeNotesByLang() {
 		return lexemeNotesByLang;
 	}
 
-	public void setLexemeNotesByLang(Map<String, List<TypeFreeform>> lexemeNotesByLang) {
+	public void setLexemeNotesByLang(Map<String, List<TypeNote>> lexemeNotesByLang) {
 		this.lexemeNotesByLang = lexemeNotesByLang;
 	}
 
-	public List<TypeFreeform> getMeaningNotes() {
+	public List<TypeNote> getMeaningNotes() {
 		return meaningNotes;
 	}
 
-	public void setMeaningNotes(List<TypeFreeform> meaningNotes) {
+	public void setMeaningNotes(List<TypeNote> meaningNotes) {
 		this.meaningNotes = meaningNotes;
 	}
 
-	public Map<String, List<TypeFreeform>> getMeaningNotesByLang() {
+	public Map<String, List<TypeNote>> getMeaningNotesByLang() {
 		return meaningNotesByLang;
 	}
 
-	public void setMeaningNotesByLang(Map<String, List<TypeFreeform>> meaningNotesByLang) {
+	public void setMeaningNotesByLang(Map<String, List<TypeNote>> meaningNotesByLang) {
 		this.meaningNotesByLang = meaningNotesByLang;
 	}
 
@@ -447,12 +440,12 @@ public class LexemeWord extends WordTypeData implements LexemeLevel, ComplexityT
 		this.domains = domains;
 	}
 
-	public List<TypeMediaFile> getImageFiles() {
-		return imageFiles;
+	public List<TypeMediaFile> getMeaningImages() {
+		return meaningImages;
 	}
 
-	public void setImageFiles(List<TypeMediaFile> imageFiles) {
-		this.imageFiles = imageFiles;
+	public void setMeaningImages(List<TypeMediaFile> meaningImages) {
+		this.meaningImages = meaningImages;
 	}
 
 	public List<TypeMediaFile> getMediaFiles() {
@@ -607,14 +600,6 @@ public class LexemeWord extends WordTypeData implements LexemeLevel, ComplexityT
 		this.lexemeSourceLinks = lexemeSourceLinks;
 	}
 
-	public List<TypeSourceLink> getLexemeFreeformSourceLinks() {
-		return lexemeFreeformSourceLinks;
-	}
-
-	public void setLexemeFreeformSourceLinks(List<TypeSourceLink> lexemeFreeformSourceLinks) {
-		this.lexemeFreeformSourceLinks = lexemeFreeformSourceLinks;
-	}
-
 	public List<LexemeWord> getMeaningLexemes() {
 		return meaningLexemes;
 	}
@@ -686,4 +671,5 @@ public class LexemeWord extends WordTypeData implements LexemeLevel, ComplexityT
 	public void setShowWordDataAsHidden(boolean showWordDataAsHidden) {
 		this.showWordDataAsHidden = showWordDataAsHidden;
 	}
+
 }

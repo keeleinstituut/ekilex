@@ -57,7 +57,7 @@ public class LexemeNote extends TableImpl<LexemeNoteRecord> {
     /**
      * The column <code>public.lexeme_note.original_freeform_id</code>.
      */
-    public final TableField<LexemeNoteRecord, Long> ORIGINAL_FREEFORM_ID = createField(DSL.name("original_freeform_id"), SQLDataType.BIGINT.nullable(false), this, "");
+    public final TableField<LexemeNoteRecord, Long> ORIGINAL_FREEFORM_ID = createField(DSL.name("original_freeform_id"), SQLDataType.BIGINT, this, "");
 
     /**
      * The column <code>public.lexeme_note.lexeme_id</code>.
@@ -67,22 +67,22 @@ public class LexemeNote extends TableImpl<LexemeNoteRecord> {
     /**
      * The column <code>public.lexeme_note.value</code>.
      */
-    public final TableField<LexemeNoteRecord, String> VALUE = createField(DSL.name("value"), SQLDataType.CLOB, this, "");
+    public final TableField<LexemeNoteRecord, String> VALUE = createField(DSL.name("value"), SQLDataType.CLOB.nullable(false), this, "");
 
     /**
      * The column <code>public.lexeme_note.value_prese</code>.
      */
-    public final TableField<LexemeNoteRecord, String> VALUE_PRESE = createField(DSL.name("value_prese"), SQLDataType.CLOB, this, "");
+    public final TableField<LexemeNoteRecord, String> VALUE_PRESE = createField(DSL.name("value_prese"), SQLDataType.CLOB.nullable(false), this, "");
 
     /**
      * The column <code>public.lexeme_note.lang</code>.
      */
-    public final TableField<LexemeNoteRecord, String> LANG = createField(DSL.name("lang"), SQLDataType.CHAR(3), this, "");
+    public final TableField<LexemeNoteRecord, String> LANG = createField(DSL.name("lang"), SQLDataType.CHAR(3).nullable(false), this, "");
 
     /**
      * The column <code>public.lexeme_note.complexity</code>.
      */
-    public final TableField<LexemeNoteRecord, String> COMPLEXITY = createField(DSL.name("complexity"), SQLDataType.VARCHAR(100), this, "");
+    public final TableField<LexemeNoteRecord, String> COMPLEXITY = createField(DSL.name("complexity"), SQLDataType.VARCHAR(100).nullable(false), this, "");
 
     /**
      * The column <code>public.lexeme_note.is_public</code>.

@@ -57,7 +57,7 @@ public class UsageDefinition extends TableImpl<UsageDefinitionRecord> {
     /**
      * The column <code>public.usage_definition.original_freeform_id</code>.
      */
-    public final TableField<UsageDefinitionRecord, Long> ORIGINAL_FREEFORM_ID = createField(DSL.name("original_freeform_id"), SQLDataType.BIGINT.nullable(false), this, "");
+    public final TableField<UsageDefinitionRecord, Long> ORIGINAL_FREEFORM_ID = createField(DSL.name("original_freeform_id"), SQLDataType.BIGINT, this, "");
 
     /**
      * The column <code>public.usage_definition.usage_id</code>.
@@ -67,17 +67,17 @@ public class UsageDefinition extends TableImpl<UsageDefinitionRecord> {
     /**
      * The column <code>public.usage_definition.value</code>.
      */
-    public final TableField<UsageDefinitionRecord, String> VALUE = createField(DSL.name("value"), SQLDataType.CLOB, this, "");
+    public final TableField<UsageDefinitionRecord, String> VALUE = createField(DSL.name("value"), SQLDataType.CLOB.nullable(false), this, "");
 
     /**
      * The column <code>public.usage_definition.value_prese</code>.
      */
-    public final TableField<UsageDefinitionRecord, String> VALUE_PRESE = createField(DSL.name("value_prese"), SQLDataType.CLOB, this, "");
+    public final TableField<UsageDefinitionRecord, String> VALUE_PRESE = createField(DSL.name("value_prese"), SQLDataType.CLOB.nullable(false), this, "");
 
     /**
      * The column <code>public.usage_definition.lang</code>.
      */
-    public final TableField<UsageDefinitionRecord, String> LANG = createField(DSL.name("lang"), SQLDataType.CHAR(3), this, "");
+    public final TableField<UsageDefinitionRecord, String> LANG = createField(DSL.name("lang"), SQLDataType.CHAR(3).nullable(false), this, "");
 
     /**
      * The column <code>public.usage_definition.created_by</code>.

@@ -1,5 +1,6 @@
 package eki.wordweb.data.type;
 
+import java.sql.Timestamp;
 import java.util.List;
 
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
@@ -12,34 +13,38 @@ import eki.wordweb.data.LangType;
 import eki.wordweb.data.SourceLinkType;
 
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
-public class TypeUsage extends AbstractDataObject implements ComplexityType, SourceLinkType, LangType {
+public class TypeNote extends AbstractDataObject implements ComplexityType, SourceLinkType, LangType {
 
 	private static final long serialVersionUID = 1L;
 
-	private Long usageId;
+	private Long noteId;
 
 	private String value;
 
 	private String valuePrese;
 
+	private String valueCut;
+
 	private String lang;
 
 	private Complexity complexity;
 
-	private List<String> usageTranslations;
+	private String createdBy;
 
-	private List<String> usageDefinitions;
+	private Timestamp createdOn;
+
+	private String modifiedBy;
+
+	private Timestamp modifiedOn;
 
 	private List<TypeSourceLink> sourceLinks;
 
-	private boolean putOnSpeaker;
-
-	public Long getUsageId() {
-		return usageId;
+	public Long getNoteId() {
+		return noteId;
 	}
 
-	public void setUsageId(Long usageId) {
-		this.usageId = usageId;
+	public void setNoteId(Long noteId) {
+		this.noteId = noteId;
 	}
 
 	public String getValue() {
@@ -58,6 +63,14 @@ public class TypeUsage extends AbstractDataObject implements ComplexityType, Sou
 		this.valuePrese = valuePrese;
 	}
 
+	public String getValueCut() {
+		return valueCut;
+	}
+
+	public void setValueCut(String valueCut) {
+		this.valueCut = valueCut;
+	}
+
 	public String getLang() {
 		return lang;
 	}
@@ -74,20 +87,36 @@ public class TypeUsage extends AbstractDataObject implements ComplexityType, Sou
 		this.complexity = complexity;
 	}
 
-	public List<String> getUsageTranslations() {
-		return usageTranslations;
+	public String getCreatedBy() {
+		return createdBy;
 	}
 
-	public void setUsageTranslations(List<String> usageTranslations) {
-		this.usageTranslations = usageTranslations;
+	public void setCreatedBy(String createdBy) {
+		this.createdBy = createdBy;
 	}
 
-	public List<String> getUsageDefinitions() {
-		return usageDefinitions;
+	public Timestamp getCreatedOn() {
+		return createdOn;
 	}
 
-	public void setUsageDefinitions(List<String> usageDefinitions) {
-		this.usageDefinitions = usageDefinitions;
+	public void setCreatedOn(Timestamp createdOn) {
+		this.createdOn = createdOn;
+	}
+
+	public String getModifiedBy() {
+		return modifiedBy;
+	}
+
+	public void setModifiedBy(String modifiedBy) {
+		this.modifiedBy = modifiedBy;
+	}
+
+	public Timestamp getModifiedOn() {
+		return modifiedOn;
+	}
+
+	public void setModifiedOn(Timestamp modifiedOn) {
+		this.modifiedOn = modifiedOn;
 	}
 
 	@Override
@@ -98,14 +127,6 @@ public class TypeUsage extends AbstractDataObject implements ComplexityType, Sou
 	@Override
 	public void setSourceLinks(List<TypeSourceLink> sourceLinks) {
 		this.sourceLinks = sourceLinks;
-	}
-
-	public boolean isPutOnSpeaker() {
-		return putOnSpeaker;
-	}
-
-	public void setPutOnSpeaker(boolean putOnSpeaker) {
-		this.putOnSpeaker = putOnSpeaker;
 	}
 
 }

@@ -7,14 +7,14 @@ drop materialized view if exists mview_ww_meaning;
 drop materialized view if exists mview_ww_lexeme;
 drop materialized view if exists mview_ww_collocation;
 drop materialized view if exists mview_ww_word_etymology;
+drop materialized view if exists mview_ww_word_etym_source_link; -- to be removed later
 drop materialized view if exists mview_ww_word_relation;
 drop materialized view if exists mview_ww_lexeme_relation;
 drop materialized view if exists mview_ww_meaning_relation;
-drop materialized view if exists mview_ww_word_etym_source_link;
-drop materialized view if exists mview_ww_lexeme_source_link;
-drop materialized view if exists mview_ww_lexeme_freeform_source_link;
-drop materialized view if exists mview_ww_meaning_freeform_source_link;
-drop materialized view if exists mview_ww_definition_source_link;
+drop materialized view if exists mview_ww_lexeme_source_link; -- to be removed later
+drop materialized view if exists mview_ww_lexeme_freeform_source_link; -- to be removed later
+drop materialized view if exists mview_ww_meaning_freeform_source_link; -- to be removed later
+drop materialized view if exists mview_ww_definition_source_link; -- to be removed later
 drop materialized view if exists mview_ww_classifier;
 drop materialized view if exists mview_ww_dataset;
 drop materialized view if exists mview_ww_news_article;
@@ -130,7 +130,7 @@ dblink(
 	manual_event_on timestamp,
 	last_approve_or_edit_event_on timestamp,
 	domain_codes json,
-	image_files json,
+	meaning_images json,
 	media_files json,
 	systematic_polysemy_patterns text array,
 	semantic_types text array,
@@ -169,7 +169,8 @@ dblink(
 	notes json,
 	grammars json,
 	governments json,
-	usages json
+	usages json,
+	source_links json
 );
 
 create materialized view mview_ww_collocation as
@@ -210,7 +211,8 @@ dblink(
 	word_etym_comment text,
 	word_etym_is_questionable boolean,
 	word_etym_order_by bigint,
-	word_etym_relations json
+	word_etym_relations json,
+	source_links json
 );
 
 create materialized view mview_ww_word_relation as
@@ -239,42 +241,6 @@ dblink(
 	'select * from view_ww_meaning_relation') as meaning_relation(
 	meaning_id bigint,
 	related_meanings json
-);
-
-create materialized view mview_ww_word_etym_source_link as
-select * from
-dblink(
-	'host=localhost user=ekilex password=3kil3x dbname=ekilex',
-	'select * from view_ww_word_etym_source_link') as word_etym_source_link(
-	word_id bigint,
-	source_links json
-);
-
-create materialized view mview_ww_lexeme_source_link as
-select * from
-dblink(
-	'host=localhost user=ekilex password=3kil3x dbname=ekilex',
-	'select * from view_ww_lexeme_source_link') as lexeme_source_link(
-	lexeme_id bigint,
-	source_links json
-);
-
-create materialized view mview_ww_lexeme_freeform_source_link as
-select * from
-dblink(
-	'host=localhost user=ekilex password=3kil3x dbname=ekilex',
-	'select * from view_ww_lexeme_freeform_source_link') as lexeme_freeform_source_link(
-	lexeme_id bigint,
-	source_links json
-);
-
-create materialized view mview_ww_meaning_freeform_source_link as
-select * from
-dblink(
-	'host=localhost user=ekilex password=3kil3x dbname=ekilex',
-	'select * from view_ww_meaning_freeform_source_link') as meaning_freeform_source_link(
-	meaning_id bigint,
-	source_links json
 );
 
 create materialized view mview_ww_dataset as
@@ -384,10 +350,6 @@ create index mview_ww_word_etymology_word_id_idx on mview_ww_word_etymology (wor
 create index mview_ww_word_relation_word_id_idx on mview_ww_word_relation (word_id);
 create index mview_ww_lexeme_relation_lexeme_id_idx on mview_ww_lexeme_relation (lexeme_id);
 create index mview_ww_meaning_relation_meaning_id_idx on mview_ww_meaning_relation (meaning_id);
-create index mview_ww_word_etym_source_link_word_id_idx on mview_ww_word_etym_source_link (word_id);
-create index mview_ww_lexeme_source_link_word_id_idx on mview_ww_lexeme_source_link (lexeme_id);
-create index mview_ww_lexeme_freeform_source_link_word_id_idx on mview_ww_lexeme_freeform_source_link (lexeme_id);
-create index mview_ww_meaning_freeform_source_link_word_id_idx on mview_ww_meaning_freeform_source_link (meaning_id);
 create index mview_ww_classifier_name_code_lang_type_idx on mview_ww_classifier (name, code, lang, type);
 create index mview_ww_classifier_name_origin_code_lang_type_idx on mview_ww_classifier (name, origin, code, lang, type);
 create index mview_ww_counts_dataset_code_idx on mview_ww_counts (dataset_code);

@@ -15,7 +15,7 @@ public class TypeMediaFile extends AbstractDataObject implements ComplexityType,
 
 	private static final long serialVersionUID = 1L;
 
-	private Long freeformId;
+	private Long id;
 
 	private String sourceUrl;
 
@@ -25,17 +25,12 @@ public class TypeMediaFile extends AbstractDataObject implements ComplexityType,
 
 	private List<TypeSourceLink> sourceLinks;
 
-	@Override
-	public Long getOwnerId() {
-		return freeformId;
+	public Long getId() {
+		return id;
 	}
 
-	public Long getFreeformId() {
-		return freeformId;
-	}
-
-	public void setFreeformId(Long freeformId) {
-		this.freeformId = freeformId;
+	public void setId(Long id) {
+		this.id = id;
 	}
 
 	public String getSourceUrl() {
@@ -54,7 +49,6 @@ public class TypeMediaFile extends AbstractDataObject implements ComplexityType,
 		this.title = title;
 	}
 
-	@Override
 	public Complexity getComplexity() {
 		return complexity;
 	}

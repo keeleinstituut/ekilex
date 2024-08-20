@@ -7,6 +7,7 @@ package eki.ekilex.data.db.udt;
 import eki.ekilex.data.db.Public;
 import eki.ekilex.data.db.udt.records.TypeMediaFileRecord;
 
+import org.jooq.JSON;
 import org.jooq.Schema;
 import org.jooq.UDTField;
 import org.jooq.impl.DSL;
@@ -37,9 +38,9 @@ public class TypeMediaFile extends UDTImpl<TypeMediaFileRecord> {
     }
 
     /**
-     * The attribute <code>public.type_media_file.freeform_id</code>.
+     * The attribute <code>public.type_media_file.id</code>.
      */
-    public static final UDTField<TypeMediaFileRecord, Long> FREEFORM_ID = createField(DSL.name("freeform_id"), SQLDataType.BIGINT, TYPE_MEDIA_FILE, "");
+    public static final UDTField<TypeMediaFileRecord, Long> ID = createField(DSL.name("id"), SQLDataType.BIGINT, TYPE_MEDIA_FILE, "");
 
     /**
      * The attribute <code>public.type_media_file.source_url</code>.
@@ -55,6 +56,11 @@ public class TypeMediaFile extends UDTImpl<TypeMediaFileRecord> {
      * The attribute <code>public.type_media_file.complexity</code>.
      */
     public static final UDTField<TypeMediaFileRecord, String> COMPLEXITY = createField(DSL.name("complexity"), SQLDataType.VARCHAR(100), TYPE_MEDIA_FILE, "");
+
+    /**
+     * The attribute <code>public.type_media_file.source_links</code>.
+     */
+    public static final UDTField<TypeMediaFileRecord, JSON> SOURCE_LINKS = createField(DSL.name("source_links"), SQLDataType.JSON, TYPE_MEDIA_FILE, "");
 
     /**
      * No further instances allowed

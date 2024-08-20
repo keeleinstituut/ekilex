@@ -1,7 +1,6 @@
 package eki.wordweb.service.util;
 
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -134,22 +133,13 @@ public abstract class AbstractConversionUtil implements WebConstant, SystemConst
 		return false;
 	}
 
-	protected <T extends SourceLinkType> void applySourceLinks(List<T> list, List<TypeSourceLink> allSourceLinks) {
-		if (CollectionUtils.isEmpty(list)) {
+	protected void convertContainingSourceLinkUrlsToHrefs(List<? extends SourceLinkType> sourceLinkTypes) {
+		if (CollectionUtils.isEmpty(sourceLinkTypes)) {
 			return;
 		}
-		if (CollectionUtils.isEmpty(allSourceLinks)) {
-			return;
-		}
-		Map<Long, List<TypeSourceLink>> sourceLinkMap = new HashMap<>();
-		if (CollectionUtils.isNotEmpty(allSourceLinks)) {
-			sourceLinkMap = allSourceLinks.stream().collect(Collectors.groupingBy(TypeSourceLink::getOwnerId));
-		}
-		for (T entity : list) {
-			Long ownerId = entity.getOwnerId();
-			List<TypeSourceLink> sourceLinks = sourceLinkMap.get(ownerId);
+		for (SourceLinkType sourceLinkType : sourceLinkTypes) {
+			List<TypeSourceLink> sourceLinks = sourceLinkType.getSourceLinks();
 			convertUrlsToHrefs(sourceLinks);
-			entity.setSourceLinks(sourceLinks);
 		}
 	}
 

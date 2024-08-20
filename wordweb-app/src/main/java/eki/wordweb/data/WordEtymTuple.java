@@ -7,6 +7,7 @@ import com.fasterxml.jackson.databind.annotation.JsonNaming;
 
 import eki.common.data.AbstractDataObject;
 import eki.common.data.Classifier;
+import eki.wordweb.data.type.TypeSourceLink;
 import eki.wordweb.data.type.TypeWordEtymRelation;
 
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
@@ -39,6 +40,8 @@ public class WordEtymTuple extends AbstractDataObject {
 	private boolean wordEtymIsQuestionable;
 
 	private List<TypeWordEtymRelation> wordEtymRelations;
+
+	private List<TypeSourceLink> sourceLinks;
 
 	public Long getWordId() {
 		return wordId;
@@ -142,6 +145,14 @@ public class WordEtymTuple extends AbstractDataObject {
 
 	public void setWordEtymRelations(List<TypeWordEtymRelation> wordEtymRelations) {
 		this.wordEtymRelations = wordEtymRelations;
+	}
+
+	public List<TypeSourceLink> getSourceLinks() {
+		return sourceLinks;
+	}
+
+	public void setSourceLinks(List<TypeSourceLink> sourceLinks) {
+		this.sourceLinks = sourceLinks;
 	}
 
 }

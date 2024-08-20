@@ -57,7 +57,7 @@ public class Usage extends TableImpl<UsageRecord> {
     /**
      * The column <code>public.usage.original_freeform_id</code>.
      */
-    public final TableField<UsageRecord, Long> ORIGINAL_FREEFORM_ID = createField(DSL.name("original_freeform_id"), SQLDataType.BIGINT.nullable(false), this, "");
+    public final TableField<UsageRecord, Long> ORIGINAL_FREEFORM_ID = createField(DSL.name("original_freeform_id"), SQLDataType.BIGINT, this, "");
 
     /**
      * The column <code>public.usage.lexeme_id</code>.
@@ -67,22 +67,22 @@ public class Usage extends TableImpl<UsageRecord> {
     /**
      * The column <code>public.usage.value</code>.
      */
-    public final TableField<UsageRecord, String> VALUE = createField(DSL.name("value"), SQLDataType.CLOB, this, "");
+    public final TableField<UsageRecord, String> VALUE = createField(DSL.name("value"), SQLDataType.CLOB.nullable(false), this, "");
 
     /**
      * The column <code>public.usage.value_prese</code>.
      */
-    public final TableField<UsageRecord, String> VALUE_PRESE = createField(DSL.name("value_prese"), SQLDataType.CLOB, this, "");
+    public final TableField<UsageRecord, String> VALUE_PRESE = createField(DSL.name("value_prese"), SQLDataType.CLOB.nullable(false), this, "");
 
     /**
      * The column <code>public.usage.lang</code>.
      */
-    public final TableField<UsageRecord, String> LANG = createField(DSL.name("lang"), SQLDataType.CHAR(3), this, "");
+    public final TableField<UsageRecord, String> LANG = createField(DSL.name("lang"), SQLDataType.CHAR(3).nullable(false), this, "");
 
     /**
      * The column <code>public.usage.complexity</code>.
      */
-    public final TableField<UsageRecord, String> COMPLEXITY = createField(DSL.name("complexity"), SQLDataType.VARCHAR(100), this, "");
+    public final TableField<UsageRecord, String> COMPLEXITY = createField(DSL.name("complexity"), SQLDataType.VARCHAR(100).nullable(false), this, "");
 
     /**
      * The column <code>public.usage.is_public</code>.

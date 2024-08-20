@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
 
-import eki.common.constant.ReferenceOwner;
 import eki.common.constant.ReferenceType;
 import eki.common.data.AbstractDataObject;
 
@@ -13,14 +12,10 @@ public class TypeSourceLink extends AbstractDataObject {
 
 	private static final long serialVersionUID = 1L;
 
-	private ReferenceOwner refOwner;
-
-	private Long ownerId;
-
 	private Long sourceLinkId;
 
 	@JsonProperty("source_link_type")
-	private ReferenceType type;
+	private ReferenceType sourceLinkType;
 
 	private String sourceLinkName;
 
@@ -37,22 +32,6 @@ public class TypeSourceLink extends AbstractDataObject {
 	@JsonProperty("is_source_public")
 	private boolean isSourcePublic;
 
-	public ReferenceOwner getRefOwner() {
-		return refOwner;
-	}
-
-	public void setRefOwner(ReferenceOwner refOwner) {
-		this.refOwner = refOwner;
-	}
-
-	public Long getOwnerId() {
-		return ownerId;
-	}
-
-	public void setOwnerId(Long ownerId) {
-		this.ownerId = ownerId;
-	}
-
 	public Long getSourceLinkId() {
 		return sourceLinkId;
 	}
@@ -61,12 +40,12 @@ public class TypeSourceLink extends AbstractDataObject {
 		this.sourceLinkId = sourceLinkId;
 	}
 
-	public ReferenceType getType() {
-		return type;
+	public ReferenceType getSourceLinkType() {
+		return sourceLinkType;
 	}
 
-	public void setType(ReferenceType type) {
-		this.type = type;
+	public void setSourceLinkType(ReferenceType sourceLinkType) {
+		this.sourceLinkType = sourceLinkType;
 	}
 
 	public String getSourceLinkName() {

@@ -385,6 +385,20 @@ public class ViewWwLexemeRecord extends TableRecordImpl<ViewWwLexemeRecord> {
         return (JSON) get(25);
     }
 
+    /**
+     * Setter for <code>public.view_ww_lexeme.source_links</code>.
+     */
+    public void setSourceLinks(JSON value) {
+        set(26, value);
+    }
+
+    /**
+     * Getter for <code>public.view_ww_lexeme.source_links</code>.
+     */
+    public JSON getSourceLinks() {
+        return (JSON) get(26);
+    }
+
     // -------------------------------------------------------------------------
     // Constructors
     // -------------------------------------------------------------------------
@@ -399,7 +413,7 @@ public class ViewWwLexemeRecord extends TableRecordImpl<ViewWwLexemeRecord> {
     /**
      * Create a detached, initialised ViewWwLexemeRecord
      */
-    public ViewWwLexemeRecord(Long lexemeId, Long wordId, Long meaningId, String datasetCode, String datasetType, String datasetName, String valueStateCode, String proficiencyLevelCode, Integer reliability, Integer level1, Integer level2, BigDecimal weight, String complexity, Long datasetOrderBy, Long lexemeOrderBy, TypeLangComplexityRecord[] langComplexities, String[] registerCodes, String[] posCodes, String[] regionCodes, String[] derivCodes, JSON meaningWords, String[] adviceNotes, JSON notes, JSON grammars, JSON governments, JSON usages) {
+    public ViewWwLexemeRecord(Long lexemeId, Long wordId, Long meaningId, String datasetCode, String datasetType, String datasetName, String valueStateCode, String proficiencyLevelCode, Integer reliability, Integer level1, Integer level2, BigDecimal weight, String complexity, Long datasetOrderBy, Long lexemeOrderBy, TypeLangComplexityRecord[] langComplexities, String[] registerCodes, String[] posCodes, String[] regionCodes, String[] derivCodes, JSON meaningWords, String[] adviceNotes, JSON notes, JSON grammars, JSON governments, JSON usages, JSON sourceLinks) {
         super(ViewWwLexeme.VIEW_WW_LEXEME);
 
         setLexemeId(lexemeId);
@@ -428,5 +442,6 @@ public class ViewWwLexemeRecord extends TableRecordImpl<ViewWwLexemeRecord> {
         setGrammars(grammars);
         setGovernments(governments);
         setUsages(usages);
+        setSourceLinks(sourceLinks);
     }
 }

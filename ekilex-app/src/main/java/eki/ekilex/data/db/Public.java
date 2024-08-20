@@ -120,17 +120,13 @@ import eki.ekilex.data.db.tables.ViewWwDataset;
 import eki.ekilex.data.db.tables.ViewWwDatasetWordMenu;
 import eki.ekilex.data.db.tables.ViewWwForm;
 import eki.ekilex.data.db.tables.ViewWwLexeme;
-import eki.ekilex.data.db.tables.ViewWwLexemeFreeformSourceLink;
 import eki.ekilex.data.db.tables.ViewWwLexemeRelation;
-import eki.ekilex.data.db.tables.ViewWwLexemeSourceLink;
 import eki.ekilex.data.db.tables.ViewWwLexicalDecisionData;
 import eki.ekilex.data.db.tables.ViewWwMeaning;
-import eki.ekilex.data.db.tables.ViewWwMeaningFreeformSourceLink;
 import eki.ekilex.data.db.tables.ViewWwMeaningRelation;
 import eki.ekilex.data.db.tables.ViewWwNewsArticle;
 import eki.ekilex.data.db.tables.ViewWwSimilarityJudgementData;
 import eki.ekilex.data.db.tables.ViewWwWord;
-import eki.ekilex.data.db.tables.ViewWwWordEtymSourceLink;
 import eki.ekilex.data.db.tables.ViewWwWordEtymology;
 import eki.ekilex.data.db.tables.ViewWwWordRelation;
 import eki.ekilex.data.db.tables.ViewWwWordSearch;
@@ -169,6 +165,7 @@ import eki.ekilex.data.db.udt.TypeMtDefinition;
 import eki.ekilex.data.db.udt.TypeMtLexeme;
 import eki.ekilex.data.db.udt.TypeMtLexemeFreeform;
 import eki.ekilex.data.db.udt.TypeMtWord;
+import eki.ekilex.data.db.udt.TypeNote;
 import eki.ekilex.data.db.udt.TypeSourceLink;
 import eki.ekilex.data.db.udt.TypeTermMeaningWord;
 import eki.ekilex.data.db.udt.TypeUsage;
@@ -783,19 +780,9 @@ public class Public extends SchemaImpl {
     public final ViewWwLexeme VIEW_WW_LEXEME = ViewWwLexeme.VIEW_WW_LEXEME;
 
     /**
-     * The table <code>public.view_ww_lexeme_freeform_source_link</code>.
-     */
-    public final ViewWwLexemeFreeformSourceLink VIEW_WW_LEXEME_FREEFORM_SOURCE_LINK = ViewWwLexemeFreeformSourceLink.VIEW_WW_LEXEME_FREEFORM_SOURCE_LINK;
-
-    /**
      * The table <code>public.view_ww_lexeme_relation</code>.
      */
     public final ViewWwLexemeRelation VIEW_WW_LEXEME_RELATION = ViewWwLexemeRelation.VIEW_WW_LEXEME_RELATION;
-
-    /**
-     * The table <code>public.view_ww_lexeme_source_link</code>.
-     */
-    public final ViewWwLexemeSourceLink VIEW_WW_LEXEME_SOURCE_LINK = ViewWwLexemeSourceLink.VIEW_WW_LEXEME_SOURCE_LINK;
 
     /**
      * The table <code>public.view_ww_lexical_decision_data</code>.
@@ -806,11 +793,6 @@ public class Public extends SchemaImpl {
      * The table <code>public.view_ww_meaning</code>.
      */
     public final ViewWwMeaning VIEW_WW_MEANING = ViewWwMeaning.VIEW_WW_MEANING;
-
-    /**
-     * The table <code>public.view_ww_meaning_freeform_source_link</code>.
-     */
-    public final ViewWwMeaningFreeformSourceLink VIEW_WW_MEANING_FREEFORM_SOURCE_LINK = ViewWwMeaningFreeformSourceLink.VIEW_WW_MEANING_FREEFORM_SOURCE_LINK;
 
     /**
      * The table <code>public.view_ww_meaning_relation</code>.
@@ -831,11 +813,6 @@ public class Public extends SchemaImpl {
      * The table <code>public.view_ww_word</code>.
      */
     public final ViewWwWord VIEW_WW_WORD = ViewWwWord.VIEW_WW_WORD;
-
-    /**
-     * The table <code>public.view_ww_word_etym_source_link</code>.
-     */
-    public final ViewWwWordEtymSourceLink VIEW_WW_WORD_ETYM_SOURCE_LINK = ViewWwWordEtymSourceLink.VIEW_WW_WORD_ETYM_SOURCE_LINK;
 
     /**
      * The table <code>public.view_ww_word_etymology</code>.
@@ -1232,17 +1209,13 @@ public class Public extends SchemaImpl {
             ViewWwDatasetWordMenu.VIEW_WW_DATASET_WORD_MENU,
             ViewWwForm.VIEW_WW_FORM,
             ViewWwLexeme.VIEW_WW_LEXEME,
-            ViewWwLexemeFreeformSourceLink.VIEW_WW_LEXEME_FREEFORM_SOURCE_LINK,
             ViewWwLexemeRelation.VIEW_WW_LEXEME_RELATION,
-            ViewWwLexemeSourceLink.VIEW_WW_LEXEME_SOURCE_LINK,
             ViewWwLexicalDecisionData.VIEW_WW_LEXICAL_DECISION_DATA,
             ViewWwMeaning.VIEW_WW_MEANING,
-            ViewWwMeaningFreeformSourceLink.VIEW_WW_MEANING_FREEFORM_SOURCE_LINK,
             ViewWwMeaningRelation.VIEW_WW_MEANING_RELATION,
             ViewWwNewsArticle.VIEW_WW_NEWS_ARTICLE,
             ViewWwSimilarityJudgementData.VIEW_WW_SIMILARITY_JUDGEMENT_DATA,
             ViewWwWord.VIEW_WW_WORD,
-            ViewWwWordEtymSourceLink.VIEW_WW_WORD_ETYM_SOURCE_LINK,
             ViewWwWordEtymology.VIEW_WW_WORD_ETYMOLOGY,
             ViewWwWordRelation.VIEW_WW_WORD_RELATION,
             ViewWwWordSearch.VIEW_WW_WORD_SEARCH,
@@ -1286,6 +1259,7 @@ public class Public extends SchemaImpl {
             TypeMtLexeme.TYPE_MT_LEXEME,
             TypeMtLexemeFreeform.TYPE_MT_LEXEME_FREEFORM,
             TypeMtWord.TYPE_MT_WORD,
+            TypeNote.TYPE_NOTE,
             TypeSourceLink.TYPE_SOURCE_LINK,
             TypeTermMeaningWord.TYPE_TERM_MEANING_WORD,
             TypeUsage.TYPE_USAGE,

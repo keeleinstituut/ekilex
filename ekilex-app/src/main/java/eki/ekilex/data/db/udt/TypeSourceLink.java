@@ -37,16 +37,6 @@ public class TypeSourceLink extends UDTImpl<TypeSourceLinkRecord> {
     }
 
     /**
-     * The attribute <code>public.type_source_link.ref_owner</code>.
-     */
-    public static final UDTField<TypeSourceLinkRecord, String> REF_OWNER = createField(DSL.name("ref_owner"), SQLDataType.VARCHAR(100), TYPE_SOURCE_LINK, "");
-
-    /**
-     * The attribute <code>public.type_source_link.owner_id</code>.
-     */
-    public static final UDTField<TypeSourceLinkRecord, Long> OWNER_ID = createField(DSL.name("owner_id"), SQLDataType.BIGINT, TYPE_SOURCE_LINK, "");
-
-    /**
      * The attribute <code>public.type_source_link.source_link_id</code>.
      */
     public static final UDTField<TypeSourceLinkRecord, Long> SOURCE_LINK_ID = createField(DSL.name("source_link_id"), SQLDataType.BIGINT, TYPE_SOURCE_LINK, "");
