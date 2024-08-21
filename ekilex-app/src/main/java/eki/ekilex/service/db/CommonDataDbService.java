@@ -630,6 +630,7 @@ public class CommonDataDbService extends AbstractDataDbService {
 						mn.VALUE_PRESE,
 						mn.LANG,
 						mn.COMPLEXITY,
+						mn.IS_PUBLIC,
 						mn.CREATED_ON,
 						mn.CREATED_BY,
 						mn.MODIFIED_ON,
@@ -772,6 +773,7 @@ public class CommonDataDbService extends AbstractDataDbService {
 										DSL.key("valuePrese").value(dn.VALUE_PRESE),
 										DSL.key("lang").value(dn.LANG),
 										DSL.key("complexity").value(dn.COMPLEXITY),
+										DSL.key("public").value(dn.IS_PUBLIC),
 										DSL.key("createdOn").value(dn.CREATED_ON),
 										DSL.key("createdBy").value(dn.CREATED_BY),
 										DSL.key("modifiedOn").value(dn.MODIFIED_ON),
@@ -1179,18 +1181,15 @@ public class CommonDataDbService extends AbstractDataDbService {
 
 		LexemeFreeform glff = LEXEME_FREEFORM.as("glff");
 		Freeform g = FREEFORM.as("g");
-		Freeform gt = FREEFORM.as("gt");
 
 		return create
 				.select(
 						g.ID,
 						g.VALUE_TEXT.as("value"),
-						gt.CLASSIF_CODE.as("type_code"),
 						g.COMPLEXITY,
 						g.ORDER_BY)
-				.from(
-						glff.innerJoin(g).on(glff.FREEFORM_ID.eq(g.ID).and(g.TYPE.eq(FreeformType.GOVERNMENT.name())))
-								.leftOuterJoin(gt).on(gt.PARENT_ID.eq(g.ID).and(gt.TYPE.eq(FreeformType.GOVERNMENT_TYPE.name()))))
+				.from(glff
+						.innerJoin(g).on(glff.FREEFORM_ID.eq(g.ID).and(g.TYPE.eq(FreeformType.GOVERNMENT.name()))))
 				.where(glff.LEXEME_ID.eq(lexemeId))
 				.orderBy(g.ORDER_BY)
 				.fetchInto(Government.class);
@@ -1310,6 +1309,7 @@ public class CommonDataDbService extends AbstractDataDbService {
 						ln.VALUE_PRESE,
 						ln.LANG,
 						ln.COMPLEXITY,
+						ln.IS_PUBLIC,
 						ln.CREATED_ON,
 						ln.CREATED_BY,
 						ln.MODIFIED_ON,

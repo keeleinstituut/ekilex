@@ -1178,7 +1178,7 @@ public class CudService extends AbstractCudService implements PermConstant, Acti
 
 		Long lexemeId = activityLogService.getOwnerId(usageId, ActivityEntity.USAGE);
 		ActivityLogData activityLog = activityLogService.prepareActivityLog("deleteUsage", lexemeId, ActivityOwner.LEXEME, roleDatasetCode, isManualEventOnUpdateEnabled);
-		cudDbService.deleteFreeform(usageId);
+		cudDbService.deleteUsage(usageId);
 		activityLogService.createActivityLog(activityLog, usageId, ActivityEntity.USAGE);
 	}
 
@@ -1187,7 +1187,7 @@ public class CudService extends AbstractCudService implements PermConstant, Acti
 
 		Long lexemeId = activityLogService.getOwnerId(usageTranslationId, ActivityEntity.USAGE_TRANSLATION);
 		ActivityLogData activityLog = activityLogService.prepareActivityLog("deleteUsageTranslation", lexemeId, ActivityOwner.LEXEME, roleDatasetCode, isManualEventOnUpdateEnabled);
-		cudDbService.deleteFreeform(usageTranslationId);
+		cudDbService.deleteUsageTranslation(usageTranslationId);
 		activityLogService.createActivityLog(activityLog, usageTranslationId, ActivityEntity.USAGE_TRANSLATION);
 	}
 
@@ -1196,7 +1196,7 @@ public class CudService extends AbstractCudService implements PermConstant, Acti
 
 		Long lexemeId = activityLogService.getOwnerId(usageDefinitionId, ActivityEntity.USAGE_DEFINITION);
 		ActivityLogData activityLog = activityLogService.prepareActivityLog("deleteUsageDefinition", lexemeId, ActivityOwner.LEXEME, roleDatasetCode, isManualEventOnUpdateEnabled);
-		cudDbService.deleteFreeform(usageDefinitionId);
+		cudDbService.deleteUsageDefinition(usageDefinitionId);
 		activityLogService.createActivityLog(activityLog, usageDefinitionId, ActivityEntity.USAGE_DEFINITION);
 	}
 
@@ -1223,8 +1223,8 @@ public class CudService extends AbstractCudService implements PermConstant, Acti
 
 		Long lexemeId = activityLogService.getOwnerId(lexemeNoteId, ActivityEntity.LEXEME_NOTE);
 		ActivityLogData activityLog = activityLogService.prepareActivityLog("deleteLexemeNote", lexemeId, ActivityOwner.LEXEME, roleDatasetCode, isManualEventOnUpdateEnabled);
-		cudDbService.deleteFreeform(lexemeNoteId);
-		activityLogService.createActivityLog(activityLog, lexemeNoteId, ActivityEntity.GRAMMAR);
+		cudDbService.deleteLexemeNote(lexemeNoteId);
+		activityLogService.createActivityLog(activityLog, lexemeNoteId, ActivityEntity.LEXEME_NOTE);
 	}
 
 	@Transactional
@@ -1373,7 +1373,7 @@ public class CudService extends AbstractCudService implements PermConstant, Acti
 
 		Long meaningId = activityLogService.getOwnerId(meaningNoteId, ActivityEntity.MEANING_NOTE);
 		ActivityLogData activityLog = activityLogService.prepareActivityLog("deleteMeaningNote", meaningId, ActivityOwner.MEANING, roleDatasetCode, isManualEventOnUpdateEnabled);
-		cudDbService.deleteFreeform(meaningNoteId);
+		cudDbService.deleteMeaningNote(meaningNoteId);
 		activityLogService.createActivityLog(activityLog, meaningNoteId, ActivityEntity.MEANING_NOTE);
 	}
 

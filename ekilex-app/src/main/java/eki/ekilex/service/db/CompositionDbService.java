@@ -1348,7 +1348,6 @@ public class CompositionDbService extends AbstractDataDbService implements Globa
 								tf -> tf.getType().equals(sf.getType()) &&
 										((Objects.nonNull(tf.getValueText()) && tf.getValueText().equals(sf.getValueText())) ||
 												(Objects.nonNull(tf.getValueNumber()) && tf.getValueNumber().equals(sf.getValueNumber())) ||
-												(Objects.nonNull(tf.getClassifCode()) && tf.getClassifCode().equals(sf.getClassifCode())) ||
 												(Objects.nonNull(tf.getValueDate()) && tf.getValueDate().equals(sf.getValueDate())))))
 				.map(FreeformRecord::getId)
 				.collect(Collectors.toList());

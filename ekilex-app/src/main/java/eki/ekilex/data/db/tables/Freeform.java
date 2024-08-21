@@ -18,7 +18,7 @@ import org.jooq.ForeignKey;
 import org.jooq.Identity;
 import org.jooq.Name;
 import org.jooq.Record;
-import org.jooq.Row18;
+import org.jooq.Row15;
 import org.jooq.Schema;
 import org.jooq.Table;
 import org.jooq.TableField;
@@ -84,21 +84,6 @@ public class Freeform extends TableImpl<FreeformRecord> {
      * The column <code>public.freeform.value_number</code>.
      */
     public final TableField<FreeformRecord, BigDecimal> VALUE_NUMBER = createField(DSL.name("value_number"), SQLDataType.NUMERIC(14, 4), this, "");
-
-    /**
-     * The column <code>public.freeform.value_array</code>.
-     */
-    public final TableField<FreeformRecord, String[]> VALUE_ARRAY = createField(DSL.name("value_array"), SQLDataType.CLOB.getArrayDataType(), this, "");
-
-    /**
-     * The column <code>public.freeform.classif_name</code>.
-     */
-    public final TableField<FreeformRecord, String> CLASSIF_NAME = createField(DSL.name("classif_name"), SQLDataType.CLOB, this, "");
-
-    /**
-     * The column <code>public.freeform.classif_code</code>.
-     */
-    public final TableField<FreeformRecord, String> CLASSIF_CODE = createField(DSL.name("classif_code"), SQLDataType.VARCHAR(100), this, "");
 
     /**
      * The column <code>public.freeform.lang</code>.
@@ -242,11 +227,11 @@ public class Freeform extends TableImpl<FreeformRecord> {
     }
 
     // -------------------------------------------------------------------------
-    // Row18 type methods
+    // Row15 type methods
     // -------------------------------------------------------------------------
 
     @Override
-    public Row18<Long, Long, String, String, String, Timestamp, BigDecimal, String[], String, String, String, String, Long, Boolean, String, Timestamp, String, Timestamp> fieldsRow() {
-        return (Row18) super.fieldsRow();
+    public Row15<Long, Long, String, String, String, Timestamp, BigDecimal, String, String, Long, Boolean, String, Timestamp, String, Timestamp> fieldsRow() {
+        return (Row15) super.fieldsRow();
     }
 }

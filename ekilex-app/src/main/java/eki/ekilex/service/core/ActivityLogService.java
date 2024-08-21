@@ -580,8 +580,7 @@ public class ActivityLogService implements SystemConstant, GlobalConstant {
 		if (lexeme == null) {
 			return EMPTY_CONTENT_JSON;
 		}
-		final String[] excludeLexemeAttributeTypes = new String[] {
-				FreeformType.GOVERNMENT.name(), FreeformType.GRAMMAR.name(), FreeformType.USAGE.name(), FreeformType.NOTE.name()};
+		final String[] excludeLexemeAttributeTypes = new String[] {FreeformType.GOVERNMENT.name(), FreeformType.GRAMMAR.name(), FreeformType.USAGE.name(), FreeformType.NOTE.name()};
 
 		List<MeaningWord> meaningWords = commonDataDbService.getMeaningWords(lexemeId);
 		List<String> lexemeTags = commonDataDbService.getLexemeTags(lexemeId);

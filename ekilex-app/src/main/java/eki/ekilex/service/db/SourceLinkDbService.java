@@ -310,6 +310,39 @@ public class SourceLinkDbService {
 				.execute();
 	}
 
+	public Long createMeaningImageSourceLink(Long meaningImageId, SourceLink sourceLink) {
+		return create
+				.insertInto(
+						MEANING_IMAGE_SOURCE_LINK,
+						MEANING_IMAGE_SOURCE_LINK.MEANING_IMAGE_ID,
+						MEANING_IMAGE_SOURCE_LINK.SOURCE_ID,
+						MEANING_IMAGE_SOURCE_LINK.TYPE,
+						MEANING_IMAGE_SOURCE_LINK.NAME)
+				.values(
+						meaningImageId,
+						sourceLink.getSourceId(),
+						sourceLink.getType().name(),
+						sourceLink.getName())
+				.returning(MEANING_IMAGE_SOURCE_LINK.ID)
+				.fetchOne()
+				.getId();
+	}
+
+	public void updateMeaningImageSourceLink(Long meaningImageSourceLinkId, String name) {
+		create
+				.update(MEANING_IMAGE_SOURCE_LINK)
+				.set(MEANING_IMAGE_SOURCE_LINK.NAME, name)
+				.where(MEANING_IMAGE_SOURCE_LINK.ID.eq(meaningImageSourceLinkId))
+				.execute();
+	}
+
+	public void deleteMeaningImageSourceLink(Long meaningImageSourceLinkId) {
+		create
+				.deleteFrom(MEANING_IMAGE_SOURCE_LINK)
+				.where(MEANING_IMAGE_SOURCE_LINK.ID.eq(meaningImageSourceLinkId))
+				.execute();
+	}
+
 	public Long createDefinitionSourceLink(Long definitionId, SourceLink sourceLink) {
 		return create
 				.insertInto(
@@ -372,39 +405,6 @@ public class SourceLinkDbService {
 		create
 				.deleteFrom(DEFINITION_NOTE_SOURCE_LINK)
 				.where(DEFINITION_NOTE_SOURCE_LINK.ID.eq(definitionNoteSourceLinkId))
-				.execute();
-	}
-
-	public Long createMeaningImageSourceLink(Long meaningImageId, SourceLink sourceLink) {
-		return create
-				.insertInto(
-						MEANING_IMAGE_SOURCE_LINK,
-						MEANING_IMAGE_SOURCE_LINK.MEANING_IMAGE_ID,
-						MEANING_IMAGE_SOURCE_LINK.SOURCE_ID,
-						MEANING_IMAGE_SOURCE_LINK.TYPE,
-						MEANING_IMAGE_SOURCE_LINK.NAME)
-				.values(
-						meaningImageId,
-						sourceLink.getSourceId(),
-						sourceLink.getType().name(),
-						sourceLink.getName())
-				.returning(MEANING_IMAGE_SOURCE_LINK.ID)
-				.fetchOne()
-				.getId();
-	}
-
-	public void updateMeaningImageSourceLink(Long meaningImageSourceLinkId, String name) {
-		create
-				.update(MEANING_IMAGE_SOURCE_LINK)
-				.set(MEANING_IMAGE_SOURCE_LINK.NAME, name)
-				.where(MEANING_IMAGE_SOURCE_LINK.ID.eq(meaningImageSourceLinkId))
-				.execute();
-	}
-
-	public void deleteMeaningImageSourceLink(Long meaningImageSourceLinkId) {
-		create
-				.deleteFrom(MEANING_IMAGE_SOURCE_LINK)
-				.where(MEANING_IMAGE_SOURCE_LINK.ID.eq(meaningImageSourceLinkId))
 				.execute();
 	}
 

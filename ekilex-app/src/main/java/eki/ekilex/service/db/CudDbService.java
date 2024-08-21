@@ -1718,6 +1718,34 @@ public class CudDbService extends AbstractDataDbService {
 				.execute();
 	}
 
+	public void deleteLexemeNote(Long lexemeNoteId) {
+		create
+				.deleteFrom(LEXEME_NOTE)
+				.where(LEXEME_NOTE.ID.eq(lexemeNoteId))
+				.execute();
+	}
+
+	public void deleteUsage(Long usageId) {
+		create
+				.deleteFrom(USAGE)
+				.where(USAGE.ID.eq(usageId))
+				.execute();
+	}
+
+	public void deleteUsageTranslation(Long usageTranslationId) {
+		create
+				.deleteFrom(USAGE_TRANSLATION)
+				.where(USAGE_TRANSLATION.ID.eq(usageTranslationId))
+				.execute();
+	}
+
+	public void deleteUsageDefinition(Long usageDefinitionId) {
+		create
+				.deleteFrom(USAGE_DEFINITION)
+				.where(USAGE_DEFINITION.ID.eq(usageDefinitionId))
+				.execute();
+	}
+
 	public void deleteLexemePos(Long lexemePosId) {
 		create
 				.delete(LEXEME_POS)
@@ -1798,6 +1826,13 @@ public class CudDbService extends AbstractDataDbService {
 		create
 				.delete(MEANING)
 				.where(MEANING.ID.eq(meaningId))
+				.execute();
+	}
+
+	public void deleteMeaningNote(Long meaningNoteId) {
+		create
+				.deleteFrom(MEANING_NOTE)
+				.where(MEANING_NOTE.ID.eq(meaningNoteId))
 				.execute();
 	}
 

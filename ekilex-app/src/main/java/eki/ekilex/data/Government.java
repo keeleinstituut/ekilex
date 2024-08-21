@@ -11,8 +11,6 @@ public class Government extends AbstractDataObject {
 
 	private String value;
 
-	private String typeCode;
-
 	private Complexity complexity;
 
 	private Long orderBy;
@@ -31,14 +29,6 @@ public class Government extends AbstractDataObject {
 
 	public void setValue(String value) {
 		this.value = value;
-	}
-
-	public String getTypeCode() {
-		return typeCode;
-	}
-
-	public void setTypeCode(String typeCode) {
-		this.typeCode = typeCode;
 	}
 
 	public Complexity getComplexity() {

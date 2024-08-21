@@ -331,9 +331,6 @@ public class EditController extends AbstractMutableDataPageController {
 		case "word_data_and_lexeme_weight":
 			cudService.updateWordDataAndLexemeWeight(id, id2, value, numberValue, roleDatasetCode, isManualEventOnUpdateEnabled);
 			break;
-		case "lexeme_grammar":
-			cudService.updateLexemeGrammar(id, value, complexity, roleDatasetCode, isManualEventOnUpdateEnabled);
-			break;
 		case "word_aspect":
 			cudService.updateWordAspect(id, value, roleDatasetCode, isManualEventOnUpdateEnabled);
 			break;
@@ -363,6 +360,9 @@ public class EditController extends AbstractMutableDataPageController {
 			break;
 		case "learner_comment":
 			cudService.updateMeaningLearnerComment(id, value, roleDatasetCode, isManualEventOnUpdateEnabled);
+			break;
+		case "lexeme_grammar":
+			cudService.updateLexemeGrammar(id, value, complexity, roleDatasetCode, isManualEventOnUpdateEnabled);
 			break;
 		case "lexeme_note":
 			cudService.updateLexemeNote(id, value, languageCode, complexity, isPublic, roleDatasetCode, isManualEventOnUpdateEnabled);
