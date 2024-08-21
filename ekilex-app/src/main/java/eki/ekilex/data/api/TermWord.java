@@ -25,9 +25,9 @@ public class TermWord extends AbstractDataObject {
 
 	private String lexemeValueStateCode;
 
-	private List<LexemeNote> lexemeNotes;
-
 	private boolean isPublic;
+
+	private List<LexemeNote> lexemeNotes;
 
 	private List<SourceLink> lexemeSourceLinks;
 
@@ -91,20 +91,20 @@ public class TermWord extends AbstractDataObject {
 		this.lexemeValueStateCode = lexemeValueStateCode;
 	}
 
-	public List<LexemeNote> getLexemeNotes() {
-		return lexemeNotes;
-	}
-
-	public void setLexemeNotes(List<LexemeNote> lexemeNotes) {
-		this.lexemeNotes = lexemeNotes;
-	}
-
 	public boolean isPublic() {
 		return isPublic;
 	}
 
 	public void setPublic(boolean isPublic) {
 		this.isPublic = isPublic;
+	}
+
+	public List<LexemeNote> getLexemeNotes() {
+		return lexemeNotes;
+	}
+
+	public void setLexemeNotes(List<LexemeNote> lexemeNotes) {
+		this.lexemeNotes = lexemeNotes;
 	}
 
 	public List<SourceLink> getLexemeSourceLinks() {
@@ -130,4 +130,5 @@ public class TermWord extends AbstractDataObject {
 	public void setUsages(List<Usage> usages) {
 		this.usages = usages;
 	}
+
 }

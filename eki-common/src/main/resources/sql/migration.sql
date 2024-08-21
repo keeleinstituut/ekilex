@@ -559,3 +559,11 @@ update freeform f set type = 'MEANING_IMAGE' where f.type = 'IMAGE_FILE' and exi
 alter table lexeme_source_link drop column if exists value;
 alter table definition_source_link drop column if exists value;
 
+-- kasutamata väljad vabavormides
+
+alter table freeform drop column value_array cascade;
+alter table freeform drop column classif_code cascade;
+alter table freeform drop column classif_name cascade;
+
+-- freeform.value_date ? (USAGE, SOURCE_PUBLICATION_YEAR)
+-- freeform.value_number ? (NOTE, IMAGE_FILE, MEANING_IMAGE)

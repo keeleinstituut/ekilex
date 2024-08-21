@@ -116,11 +116,11 @@ public class WordDbService extends AbstractDataDbService {
 				.select(DSL
 						.jsonArrayAgg(DSL
 								.jsonObject(
-										DSL.key("sourceLinkId").value(dsl.ID),
+										DSL.key("id").value(dsl.ID),
+										DSL.key("type").value(dsl.TYPE),
+										DSL.key("name").value(dsl.NAME),
 										DSL.key("sourceId").value(s.ID),
-										DSL.key("sourceName").value(s.NAME),
-										DSL.key("sourceLinkName").value(dsl.NAME),
-										DSL.key("type").value(dsl.TYPE)))
+										DSL.key("sourceName").value(s.NAME)))
 						.orderBy(dsl.ORDER_BY))
 				.from(dsl, s)
 				.where(
@@ -164,7 +164,7 @@ public class WordDbService extends AbstractDataDbService {
 				.select(DSL
 						.jsonArrayAgg(DSL
 								.jsonObject(
-										DSL.key("definitionId").value(d.ID),
+										DSL.key("id").value(d.ID),
 										DSL.key("value").value(d.VALUE),
 										DSL.key("lang").value(d.LANG),
 										DSL.key("definitionTypeCode").value(d.DEFINITION_TYPE_CODE),
@@ -185,11 +185,11 @@ public class WordDbService extends AbstractDataDbService {
 				.select(DSL
 						.jsonArrayAgg(DSL
 								.jsonObject(
-										DSL.key("sourceLinkId").value(usl.ID),
+										DSL.key("id").value(usl.ID),
+										DSL.key("type").value(usl.TYPE),
+										DSL.key("name").value(usl.NAME),
 										DSL.key("sourceId").value(s.ID),
-										DSL.key("sourceName").value(s.NAME),
-										DSL.key("sourceLinkName").value(usl.NAME),
-										DSL.key("type").value(usl.TYPE)))
+										DSL.key("sourceName").value(s.NAME)))
 						.orderBy(usl.ORDER_BY))
 				.from(usl, s)
 				.where(
@@ -206,7 +206,7 @@ public class WordDbService extends AbstractDataDbService {
 										DSL.key("valuePrese").value(u.VALUE_PRESE),
 										DSL.key("lang").value(u.LANG),
 										DSL.key("complexity").value(u.COMPLEXITY),
-										DSL.key("isPublic").value(u.IS_PUBLIC),
+										DSL.key("public").value(u.IS_PUBLIC),
 										DSL.key("sourceLinks").value(uslf)))
 						.orderBy(u.ORDER_BY))
 				.from(u)

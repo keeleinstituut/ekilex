@@ -153,7 +153,7 @@ public class TermMeaningDbService implements ActivityFunct, GlobalConstant {
 				.from(lnsl, s)
 				.where(
 						lnsl.LEXEME_NOTE_ID.eq(ln.ID)
-								.and(mnsl.SOURCE_ID.eq(s.ID)))
+								.and(lnsl.SOURCE_ID.eq(s.ID)))
 				.asField();
 
 		Field<JSON> lnf = DSL
@@ -198,7 +198,6 @@ public class TermMeaningDbService implements ActivityFunct, GlobalConstant {
 						.jsonArrayAgg(DSL
 								.jsonObject(
 										DSL.key("id").value(u.ID),
-										DSL.key("lexemeId").value(u.LEXEME_ID),
 										DSL.key("value").value(u.VALUE),
 										DSL.key("valuePrese").value(u.VALUE_PRESE),
 										DSL.key("lang").value(u.LANG),
@@ -241,10 +240,10 @@ public class TermMeaningDbService implements ActivityFunct, GlobalConstant {
 										DSL.key("lang").value(w.LANG),
 										DSL.key("wordTypeCodes").value(wwtf),
 										DSL.key("lexemeValueStateCode").value(l.VALUE_STATE_CODE),
+										DSL.key("public").value(l.IS_PUBLIC),
 										DSL.key("lexemeNotes").value(lnf),
-										DSL.key("lexemeTags").value(ltf),
-										DSL.key("lexemePublicity").value(l.IS_PUBLIC),
 										DSL.key("lexemeSourceLinks").value(lslf),
+										DSL.key("lexemeTags").value(ltf),
 										DSL.key("usages").value(uf)))
 						.orderBy(l.ORDER_BY))
 				.from(w, l)

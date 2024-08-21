@@ -585,6 +585,24 @@
       </div>
     </div>
   </div>
+  <div th:id="${'editUsageSourceLinkDlg_' + sourceLink.id}" class="modal"
+       role="dialog"
+       th:fragment="edit_usage_source_link_dlg"
+       data-plugin="initEditSourceLinkDlgPlugin">
+    <div class="modal-dialog modal-lg" role="document">
+      <div class="modal-content">
+        <form name="sourceLinkForm" th:action="@{/update_item}" method="post">
+          <input type="hidden" name="id" th:value="${sourceLink.id}">
+          <input type="hidden" name="opCode" value="usage_source_link">
+          <div class="modal-body" data-name="sourceLinkDlgContent"></div>
+          <div class="modal-footer">
+            <button type="submit" class="btn btn-primary" data-plugin="updateSourceLink">Muuda</button>
+            <button type="button" class="btn btn-default" data-dismiss="modal" th:text="#{common.cancel}">Katkesta</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
   <div th:id="${'addLexemeRelationDlg_' + lexeme.lexemeId}" class="modal"
         role="dialog"
         th:fragment="add_lexeme_relation_dlg"
