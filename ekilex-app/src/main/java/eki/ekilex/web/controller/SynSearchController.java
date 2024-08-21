@@ -71,7 +71,8 @@ public class SynSearchController extends AbstractPrivateSearchController {
 		}
 
 		model.addAttribute("wordsResult", wordsResult);
-		model.addAttribute("searchUri", searchUri);
+		model.addAttribute("searchUri", searchUri); // no way of knowing which syn page context
+
 		return COMMON_SYN_COMPONENTS_PAGE + PAGE_FRAGMENT_ELEM + "search_result";
 	}
 }

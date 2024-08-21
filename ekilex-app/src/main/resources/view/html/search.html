@@ -21,10 +21,9 @@
         <th:block th:replace="::detail_search(${searchPageName})"></th:block>
         <th:block th:replace="::simple_search"></th:block>
       </div>
-      <div class="d-flex flex-row align-items-center"
-           th:with="detailsUri=${searchPageName == 'lex_search' ? 'lexsearch' : searchPageName == 'term_search' ? 'termsearch' : searchPageName == 'lim_term_search' ? 'limtermsearch' : ''}">
-        <button type="button" id="share-details-link" th:data-details-uri="${detailsUri}"
-                class="btn btn-light ml-2" data-plugin="shareDetailsLinkPlugin" th:text="#{common.search.share.details.link}">Otselink
+      <div class="d-flex flex-row align-items-center">
+        <button type="button" id="share-search-link" th:data-search-uri="${searchUri}"
+                class="btn btn-light ml-2" data-plugin="shareSearchLinkPlugin" th:text="#{common.search.share.details.link}">Otselink
         </button>
       </div>
     </div>

@@ -67,7 +67,7 @@ public class MeaningTableController extends AbstractPrivateSearchController {
 		}
 
 		model.addAttribute("searchResult", meaningTableSearchResult);
-		model.addAttribute("searchUri", searchUri);
+		model.addAttribute("searchUri", TERM_MEANING_TABLE_URI + searchUri);
 
 		return TERM_MEANING_TABLE_PAGE;
 	}

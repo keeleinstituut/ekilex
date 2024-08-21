@@ -150,15 +150,13 @@ public class TermSearchController extends AbstractPrivateSearchController {
 		model.addAttribute("detailSearchFilter", detailSearchFilter);
 		model.addAttribute("termSearchResult", termSearchResult);
 		model.addAttribute("noResults", noResults);
-		model.addAttribute("searchUri", searchUri);
+		model.addAttribute("searchUri", TERM_SEARCH_URI + searchUri);
 
 		return TERM_SEARCH_PAGE;
 	}
 
 	@GetMapping(TERM_MEANING_DETAILS_URI + "/{meaningId}")
 	public String meaningDetails(@PathVariable("meaningId") Long meaningId, @ModelAttribute(name = SESSION_BEAN) SessionBean sessionBean, Model model) throws Exception {
-
-		logger.debug("meaning details for {}", meaningId);
 
 		List<ClassifierSelect> languagesOrder = sessionBean.getLanguagesOrder();
 		EkiUser user = userContext.getUser();
@@ -183,7 +181,6 @@ public class TermSearchController extends AbstractPrivateSearchController {
 			Model model) throws Exception {
 
 		SearchUriData searchUriData = searchHelper.parseSearchUri(TERM_SEARCH_PAGE, searchUri);
-
 		String searchMode = searchUriData.getSearchMode();
 		List<String> selectedDatasets = searchUriData.getSelectedDatasets();
 		String simpleSearchFilter = searchUriData.getSimpleSearchFilter();
@@ -208,7 +205,7 @@ public class TermSearchController extends AbstractPrivateSearchController {
 		}
 
 		model.addAttribute("termSearchResult", termSearchResult);
-		model.addAttribute("searchUri", searchUri);
+		model.addAttribute("searchUri", TERM_SEARCH_URI + searchUri);
 
 		return TERM_COMPONENTS_PAGE + PAGE_FRAGMENT_ELEM + "term_search_result";
 	}
@@ -217,8 +214,6 @@ public class TermSearchController extends AbstractPrivateSearchController {
 	public String searchMeaningInternalLink(@RequestBody InternalLinkSearchRequest internalLinkSearchRequest, Model model) throws Exception {
 
 		String searchFilter = internalLinkSearchRequest.getSearchFilter();
-		logger.debug("meaning internal link search {}", searchFilter);
-
 		List<String> datasets = Collections.emptyList();
 		SearchResultMode resultMode = SearchResultMode.MEANING;
 		String resultLang = null;

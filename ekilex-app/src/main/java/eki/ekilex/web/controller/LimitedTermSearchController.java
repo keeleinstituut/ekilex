@@ -111,7 +111,7 @@ public class LimitedTermSearchController extends AbstractSearchController {
 		model.addAttribute("detailSearchFilter", detailSearchFilter);
 		model.addAttribute("termSearchResult", termSearchResult);
 		model.addAttribute("noResults", noResults);
-		model.addAttribute("searchUri", searchUri);
+		model.addAttribute("searchUri", LIM_TERM_SEARCH_URI + searchUri);
 
 		return LIM_TERM_SEARCH_PAGE;
 	}
@@ -174,7 +174,7 @@ public class LimitedTermSearchController extends AbstractSearchController {
 		}
 
 		model.addAttribute("termSearchResult", termSearchResult);
-		model.addAttribute("searchUri", searchUri);
+		model.addAttribute("searchUri", LIM_TERM_SEARCH_URI + searchUri);
 
 		return TERM_COMPONENTS_PAGE + PAGE_FRAGMENT_ELEM + "lim_term_search_result";
 	}

@@ -43,11 +43,11 @@ $.fn.detailSearchModePlugin = function() {
 
 function detailSearchModeBtnValue() {
 	let output = "";
-	$(".detail-search-group").each(function () {
+	$(".detail-search-group").each(function() {
 		const group = $(this);
 		let selected = group.find("select[name$='entity'] option:selected").text() ? (group.find("select[name$='entity'] option:selected").text() + "-") : "";
 
-		group.find('.detail-search-sub-row').each(function () {
+		group.find('.detail-search-sub-row').each(function() {
 			const obj = $(this);
 			const notChksTitle = obj.find('[name$="not"]').is(':checked') ? (obj.find('[name$="not"]').attr('title').toLowerCase() + "-") : "";
 			const searchKey = obj.find("select[name$='searchKey'] option:selected").text() ? (obj.find("select[name$='searchKey'] option:selected").text() + "-") : "";
@@ -105,7 +105,7 @@ function displayNotOperandChk() {
 		"MANUAL_UPDATE_ON", "ATTRIBUTE_NAME"];
 
 	const notChks = $('#detail_search_filter').find('[name$="not"]');
-	notChks.each(function () {
+	notChks.each(function() {
 		const notChk = $(this);
 		const searchEntity = notChk.closest('.detail-search-group').find('[name$="entity"]').val();
 		const searchKey = notChk.closest('.detail-search-sub-row').find('[name$="searchKey"]').val();
@@ -122,10 +122,10 @@ function displayNotOperandChk() {
 
 function initialiseSearchForm() {
 	detailSearchModeBtnValue();
-  manualEventOnUpdateCheckCheckboxValueUpdate();
+	manualEventOnUpdateCheckCheckboxValueUpdate();
 };
 
-$.fn.manualEventOnDivView = function () {
+$.fn.manualEventOnDivView = function() {
 	const obj = $(this);
 	const dataViewType = $("#searchForm").attr('action');
 	if (dataViewType) {
@@ -159,10 +159,10 @@ function manualEventOnUpdateItemsHide(obj) {
 		.removeClass("date-i-edit-big");
 }
 
-$.fn.mouseManualEventOnUpdateCheck = function (e) {
+$.fn.mouseManualEventOnUpdateCheck = function(e) {
 	let obj = $(this);
 	let data = obj.find(".date-check-input");
-	obj.on("click", function (e) { //box on click does not do activate check-box "checked"
+	obj.on("click", function(e) { //box on click does not do activate check-box "checked"
 		e.preventDefault();
 	});
 
@@ -171,16 +171,16 @@ $.fn.mouseManualEventOnUpdateCheck = function (e) {
 		manualEventOnUpdateItemsShow(obj);
 	} else {
 		let timeout;
-		obj.on("mouseenter", function () {
+		obj.on("mouseenter", function() {
 			if (timeout != null) clearTimeout(timeout);
 
-			timeout = setTimeout(function () {
+			timeout = setTimeout(function() {
 				obj.animate({ width: "168", marginLeft: 0 }, { duration: 225 });
 				manualEventOnUpdateItemsShow(obj);
 			}, 225);
 		});
 
-		obj.on("mouseleave", function () {
+		obj.on("mouseleave", function() {
 			if (timeout != null) {
 				clearTimeout(timeout);
 				obj.animate({ width: "32", marginLeft: 0 }, { duration: 225 });
@@ -191,9 +191,9 @@ $.fn.mouseManualEventOnUpdateCheck = function (e) {
 	}
 };
 
-$.fn.manualEventOnUpdateCheck = function () {
+$.fn.manualEventOnUpdateCheck = function() {
 	const main = $(this);
-	main.on('click', function (e) {
+	main.on('click', function(e) {
 		e.preventDefault();
 		openWaitDlg();
 		const checked = main.is(':checked');
@@ -203,13 +203,13 @@ $.fn.manualEventOnUpdateCheck = function () {
 		} else {
 			manualEventOnUpdateUrl = applicationUrl + 'manual_event_on_update/true';
 		}
-		$.get(manualEventOnUpdateUrl).done(function (data) {
+		$.get(manualEventOnUpdateUrl).done(function(data) {
 			$('#manualEventOnDiv').replaceWith(data);
 			$wpm.bindObjects();
-		}).fail(function (data) {
+		}).fail(function(data) {
 			console.log(data);
 			openAlertDlg(messages["common.error"]);
-		}).always(function () {
+		}).always(function() {
 			manualEventOnUpdateCheckCheckboxValueUpdate();
 			closeWaitDlg();
 		});
@@ -255,7 +255,7 @@ function replaceSearchValueElement(searchKey, searchValueElement) {
 	}
 
 	if (isAutofillElement) {
-		copyOfValueTemplate.selectpicker({width: '100%'})
+		copyOfValueTemplate.selectpicker({ width: '100%' })
 	}
 };
 
@@ -264,8 +264,8 @@ function initialiseDetailSearch() {
 	displayDetailGroupButtons();
 	displayNotOperandChk();
 
-	$('[data-live-search="true"]:not(:hidden)').each(function () {
-		$(this).selectpicker({width: '100%'});
+	$('[data-live-search="true"]:not(:hidden)').each(function() {
+		$(this).selectpicker({ width: '100%' });
 	})
 };
 
@@ -305,7 +305,7 @@ function initCondition(conditionElement) {
 	searchKeySelect.val(searchKey);
 	searchKeySelect.change();
 	const templClasslist = $('#searchValueTemplates').find(`[name="${searchKey}"]`)[0].classList;
-	$(conditionElement).find('.value-input-container')[0].classList = templClasslist ;
+	$(conditionElement).find('.value-input-container')[0].classList = templClasslist;
 	displayDetailConditionButtons();
 };
 
@@ -321,21 +321,24 @@ function validateSearchFilter(input, searchFilter) {
 	return true;
 };
 
-$.fn.shareDetailsLinkPlugin = function() {
+$.fn.shareSearchLinkPlugin = function() {
 	return this.each(function() {
 		const obj = $(this);
 		obj.on('click', function() {
 			const searchParams = new URLSearchParams(window.location.search);
 			const idParam = searchParams.get("id");
-			const detailsUri = obj.data('details-uri');
+			const searchUri = obj.data('search-uri');
+			let shareLink;
 			if (idParam) {
-				const shareLink = `${applicationBaseUrl}/${detailsUri}?id=${idParam}`;
-				const tempCopyField = $("<input>");
-				$("body").append(tempCopyField);
-				tempCopyField.val(shareLink).select();
-				document.execCommand('copy');
-				tempCopyField.remove();			
+				shareLink = `${applicationBaseUrl}${searchUri}?id=${idParam}`;
+			} else {
+				shareLink = `${applicationBaseUrl}${searchUri}`;
 			}
+			const tempCopyField = $("<input>");
+			$("body").append(tempCopyField);
+			tempCopyField.val(shareLink).select();
+			document.execCommand('copy');
+			tempCopyField.remove();
 		});
 	});
 }

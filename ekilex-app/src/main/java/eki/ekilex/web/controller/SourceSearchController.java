@@ -98,7 +98,7 @@ public class SourceSearchController extends AbstractPrivateSearchController {
 		model.addAttribute("simpleSearchFilter", simpleSearchFilter);
 		model.addAttribute("detailSearchFilter", detailSearchFilter);
 		model.addAttribute("sourceSearchResult", sourceSearchResult);
-		model.addAttribute("searchUri", searchUri);
+		model.addAttribute("searchUri", SOURCE_SEARCH_URI + searchUri);
 
 		return SOURCE_SEARCH_PAGE;
 	}

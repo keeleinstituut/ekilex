@@ -133,7 +133,7 @@ public class LexSearchController extends AbstractPrivateSearchController {
 		model.addAttribute("detailSearchFilter", detailSearchFilter);
 		model.addAttribute("wordsResult", wordsResult);
 		model.addAttribute("noResults", noResults);
-		model.addAttribute("searchUri", searchUri);
+		model.addAttribute("searchUri", LEX_SEARCH_URI + searchUri);
 		model.addAttribute("selectedMeaningId", selectedMeaningId);
 
 		return LEX_SEARCH_PAGE;
@@ -148,7 +148,6 @@ public class LexSearchController extends AbstractPrivateSearchController {
 			Model model) throws Exception {
 
 		SearchUriData searchUriData = searchHelper.parseSearchUri(LEX_SEARCH_PAGE, searchUri);
-
 		String searchMode = searchUriData.getSearchMode();
 		List<String> selectedDatasets = searchUriData.getSelectedDatasets();
 		String simpleSearchFilter = searchUriData.getSimpleSearchFilter();
@@ -175,14 +174,13 @@ public class LexSearchController extends AbstractPrivateSearchController {
 		}
 
 		model.addAttribute("wordsResult", wordsResult);
-		model.addAttribute("searchUri", searchUri);
+		model.addAttribute("searchUri", LEX_SEARCH_URI + searchUri);
+
 		return LEX_COMPONENTS_PAGE + PAGE_FRAGMENT_ELEM + "search_result";
 	}
 
 	@GetMapping("/wordsearch")
 	public String searchWord(@RequestParam String searchFilter, Model model) throws Exception {
-
-		logger.debug("word search {}", searchFilter);
 
 		searchFilter = valueUtil.trimAndCleanAndRemoveHtmlAndLimit(searchFilter);
 
@@ -208,8 +206,6 @@ public class LexSearchController extends AbstractPrivateSearchController {
 			@ModelAttribute(name = SESSION_BEAN) SessionBean sessionBean,
 			Model model) throws Exception {
 
-		logger.debug("word details for {}", wordId);
-
 		List<ClassifierSelect> languagesOrder = sessionBean.getLanguagesOrder();
 		EkiUser user = userContext.getUser();
 		Long userId = user.getId();
@@ -232,8 +228,6 @@ public class LexSearchController extends AbstractPrivateSearchController {
 			@ModelAttribute(name = SESSION_BEAN) SessionBean sessionBean,
 			Model model) throws Exception {
 
-		logger.debug("lexeme {} details for {}", composition, lexemeId);
-
 		List<ClassifierSelect> languagesOrder = sessionBean.getLanguagesOrder();
 		EkiUser user = userContext.getUser();
 		Long userId = user.getId();
@@ -250,8 +244,6 @@ public class LexSearchController extends AbstractPrivateSearchController {
 	public String searchWordInternalLink(@RequestBody InternalLinkSearchRequest internalLinkSearchRequest, Model model) throws Exception {
 
 		String searchFilter = internalLinkSearchRequest.getSearchFilter();
-		logger.debug("word internal link search {}", searchFilter);
-
 		List<String> datasets = Collections.emptyList();
 		boolean noLimit = true;
 

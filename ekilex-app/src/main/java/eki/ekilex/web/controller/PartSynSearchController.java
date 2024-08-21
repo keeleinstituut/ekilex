@@ -134,7 +134,7 @@ public class PartSynSearchController extends AbstractPrivateSearchController {
 		model.addAttribute("detailSearchFilter", detailSearchFilter);
 		model.addAttribute("wordsResult", wordsResult);
 		model.addAttribute("noResults", noResults);
-		model.addAttribute("searchUri", searchUri);
+		model.addAttribute("searchUri", PART_SYN_SEARCH_URI + searchUri);
 
 		return PART_SYN_SEARCH_PAGE;
 	}

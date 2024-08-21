@@ -92,7 +92,7 @@ public class FullSynSearchController extends AbstractPrivateSearchController {
 		return REDIRECT_PREF + FULL_SYN_SEARCH_URI + searchUri;
 	}
 
-	@GetMapping(value = FULL_SYN_SEARCH_URI + "/**")
+	@GetMapping(value = "searchUri" + "/**")
 	@PreAuthorize("@permEval.isSynPageAccessPermitted(authentication)")
 	public String synSearch(Model model, HttpServletRequest request) throws Exception {
 
@@ -135,7 +135,7 @@ public class FullSynSearchController extends AbstractPrivateSearchController {
 		model.addAttribute("detailSearchFilter", detailSearchFilter);
 		model.addAttribute("wordsResult", wordsResult);
 		model.addAttribute("noResults", noResults);
-		model.addAttribute("searchUri", searchUri);
+		model.addAttribute("searchUri", FULL_SYN_SEARCH_URI + searchUri);
 
 		return FULL_SYN_SEARCH_PAGE;
 	}
