@@ -145,7 +145,7 @@ public abstract class AbstractCudService extends AbstractService {
 	protected Long createUsageSourceLink(Long lexemeId, Long usageId, SourceLink sourceLink, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
 
 		ActivityLogData activityLog = activityLogService.prepareActivityLog("createUsageSourceLink", lexemeId, ActivityOwner.LEXEME, roleDatasetCode, isManualEventOnUpdateEnabled);
-		Long sourceLinkId = sourceLinkDbService.createUsageSourceLink(lexemeId, sourceLink);
+		Long sourceLinkId = sourceLinkDbService.createUsageSourceLink(usageId, sourceLink);
 		activityLogService.createActivityLog(activityLog, sourceLinkId, ActivityEntity.USAGE_SOURCE_LINK);
 		return sourceLinkId;
 	}
