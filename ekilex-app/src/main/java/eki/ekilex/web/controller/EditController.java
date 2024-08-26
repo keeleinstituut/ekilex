@@ -77,7 +77,9 @@ public class EditController extends AbstractMutableDataPageController {
 	@PostMapping(CREATE_ITEM_URI)
 	public Response createItem(@RequestBody CreateItemRequest itemData, @ModelAttribute(name = SESSION_BEAN) SessionBean sessionBean) throws Exception {
 
-		logger.debug("Add new item : {}", itemData);
+		boolean isManualEventOnUpdateEnabled = sessionBean.isManualEventOnUpdateEnabled();
+
+		logger.debug("Create item: {}; auto update: {}", itemData, isManualEventOnUpdateEnabled);
 
 		Locale locale = LocaleContextHolder.getLocale();
 		EkiUser user = userContext.getUser();
@@ -95,7 +97,6 @@ public class EditController extends AbstractMutableDataPageController {
 		Complexity complexity = itemData.getComplexity();
 		boolean isPublic = itemData.isPublic();
 
-		boolean isManualEventOnUpdateEnabled = sessionBean.isManualEventOnUpdateEnabled();
 		Response response = new Response();
 
 		switch (itemData.getOpCode()) {
@@ -242,7 +243,9 @@ public class EditController extends AbstractMutableDataPageController {
 	@PostMapping(UPDATE_ITEM_URI)
 	public Response updateItem(@RequestBody UpdateItemRequest itemData, @ModelAttribute(name = SESSION_BEAN) SessionBean sessionBean) throws Exception {
 
-		logger.debug("Update item : {}", itemData);
+		boolean isManualEventOnUpdateEnabled = sessionBean.isManualEventOnUpdateEnabled();
+
+		logger.debug("Update item: {}; auto update: {}", itemData, isManualEventOnUpdateEnabled);
 
 		Locale locale = LocaleContextHolder.getLocale();
 		Response response = new Response();
@@ -264,7 +267,6 @@ public class EditController extends AbstractMutableDataPageController {
 		String classifCode = itemData.getCode();
 		Complexity complexity = itemData.getComplexity();
 		boolean isPublic = itemData.isPublic();
-		boolean isManualEventOnUpdateEnabled = sessionBean.isManualEventOnUpdateEnabled();
 
 		switch (itemData.getOpCode()) {
 		case "user_lang_selection":
@@ -479,10 +481,11 @@ public class EditController extends AbstractMutableDataPageController {
 			@RequestParam(name = "value", required = false) String valueToDelete,
 			@ModelAttribute(name = SESSION_BEAN) SessionBean sessionBean) throws Exception {
 
-		logger.debug("Delete operation : {} : for id {}, value {}", opCode, id, valueToDelete);
+		boolean isManualEventOnUpdateEnabled = sessionBean.isManualEventOnUpdateEnabled();
+
+		logger.debug("Delete operation: {};  id: {}; value: {}; auto update: {}", opCode, id, valueToDelete, isManualEventOnUpdateEnabled);
 
 		Response response = new Response();
-		boolean isManualEventOnUpdateEnabled = sessionBean.isManualEventOnUpdateEnabled();
 		Locale locale = LocaleContextHolder.getLocale();
 		EkiUser user = userContext.getUser();
 		DatasetPermission userRole = user.getRecentRole();
@@ -746,8 +749,9 @@ public class EditController extends AbstractMutableDataPageController {
 			@PathVariable("isEnabled") boolean isEnabled,
 			@ModelAttribute(name = SESSION_BEAN) SessionBean sessionBean) {
 
-		logger.debug("Updating manual event enabled to {}", isEnabled);
+		logger.debug("Auto update is now: {}", isEnabled);
 		sessionBean.setManualEventOnUpdateEnabled(isEnabled);
+
 		return SEARCH_PAGE + PAGE_FRAGMENT_ELEM + "manual_event_on_chk";
 	}
 
