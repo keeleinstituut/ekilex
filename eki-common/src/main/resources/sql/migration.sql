@@ -567,3 +567,271 @@ alter table freeform drop column classif_name cascade;
 
 -- freeform.value_date ? (USAGE, SOURCE_PUBLICATION_YEAR)
 -- freeform.value_number ? (NOTE, IMAGE_FILE, MEANING_IMAGE)
+
+-- muuda ilma selge päritolufailita kasutamata allikate sõnakogu tegutsejate õiguste järgi
+
+-- skript #1
+
+update "source" su
+set dataset_code = s.sugg_dataset_code
+from (
+	select
+		s.id,
+		case
+			when array_length(s.event_by_perm_dataset_codes, 1) = 1 then s.event_by_perm_dataset_codes[1]
+			when 'eki' = any(s.event_by_perm_dataset_codes) then 'eki'
+			when (s.event_by = 'Esta Prangel (API)' and s.name like '%§%') then 'RTtermleg'
+			when array_length(s.event_by_perm_dataset_codes, 1) > 1 then 'kce'
+			else 'kce'
+		end sugg_dataset_code
+	from
+	(
+		select
+			s.*,
+			(
+				select
+					array_agg(distinct dp.dataset_code)
+				from
+					eki_user eu,
+					dataset_permission dp
+				where
+					eu.name = s.event_by
+					and dp.user_id = eu.id
+					and dp.auth_operation in ('OWN', 'CRUD')
+					and dp.dataset_code not in ('kce', 'vrk')
+				group by
+					eu.name
+			) event_by_perm_dataset_codes
+		from
+			(
+			select
+				s.*,
+				(
+					select
+						f.value_text
+					from
+						source_freeform sf,
+						freeform f
+					where
+						sf.source_id = s.id
+						and sf.freeform_id = f.id
+						and f."type" = 'SOURCE_FILE'
+					limit 1
+				) source_file,
+				(
+					select
+						al.event_by
+					from
+						source_activity_log sal,
+						activity_log al
+					where
+						sal.source_id = s.id
+						and sal.activity_log_id = al.id
+					order by
+						al.id
+					limit 1
+				) event_by
+			from
+				"source" s
+			where
+				not exists (
+					select
+						xsl.id
+					from
+						freeform_source_link xsl
+					where
+						xsl.source_id = s.id
+				)
+				and not exists (
+					select
+						xsl.id
+					from
+						word_etymology_source_link xsl
+					where
+						xsl.source_id = s.id
+				)
+				and not exists (
+					select
+						xsl.id
+					from
+						meaning_note_source_link xsl
+					where
+						xsl.source_id = s.id
+				)
+				and not exists (
+					select
+						xsl.id
+					from
+						meaning_image_source_link xsl
+					where
+						xsl.source_id = s.id
+				)
+				and not exists (
+					select
+						xsl.id
+					from
+						definition_source_link xsl
+					where
+						xsl.source_id = s.id
+				)
+				and not exists (
+					select
+						xsl.id
+					from
+						definition_note_source_link xsl
+					where
+						xsl.source_id = s.id
+				)
+				and not exists (
+					select
+						xsl.id
+					from
+						lexeme_source_link xsl
+					where
+						xsl.source_id = s.id
+				)
+				and not exists (
+					select
+						xsl.id
+					from
+						usage_source_link xsl
+					where
+						xsl.source_id = s.id
+				)
+				and not exists (
+					select
+						xsl.id
+					from
+						lexeme_note_source_link xsl
+					where
+						xsl.source_id = s.id
+				)
+		) s
+		where
+			s.source_file is null
+			and s.dataset_code = 'esterm'
+		order by s.id
+	) s
+) s
+where su.id = s.id
+;
+
+-- skript #2
+
+update "source" su
+set dataset_code = s.sugg_dataset_code
+from (
+	select
+		s.*,
+		case 
+			when s.source_file = 'ev2' then 'eki'
+			when s.source_file = 'ss1' then 'eki'
+			when s.source_file = 'aia' then 'ait'
+			when s.source_file = 'Raamatukogusõnastik' then 'rara'
+			when s.source_file = 'mtfsrc-kem_lisa-1593400016.xml' then 'kem'
+			when s.source_file = 'militerm-yld.xm' then 'mil'
+			when s.source_file = 'militerm-aap.xml' then 'mil'
+			when s.source_file = 'esterm.xml' then 'esterm'
+			else 'kce'
+		end sugg_dataset_code
+	from
+	(
+		select
+			s.*,
+			(
+				select
+					f.value_text
+				from
+					source_freeform sf,
+					freeform f
+				where
+					sf.source_id = s.id
+					and sf.freeform_id = f.id
+					and f."type" = 'SOURCE_FILE'
+				limit 1
+			) source_file
+		from
+			"source" s
+		where
+			not exists (
+				select
+					xsl.id
+				from
+					freeform_source_link xsl
+				where
+					xsl.source_id = s.id
+			)
+			and not exists (
+				select
+					xsl.id
+				from
+					word_etymology_source_link xsl
+				where
+					xsl.source_id = s.id
+			)
+			and not exists (
+				select
+					xsl.id
+				from
+					meaning_note_source_link xsl
+				where
+					xsl.source_id = s.id
+			)
+			and not exists (
+				select
+					xsl.id
+				from
+					meaning_image_source_link xsl
+				where
+					xsl.source_id = s.id
+			)
+			and not exists (
+				select
+					xsl.id
+				from
+					definition_source_link xsl
+				where
+					xsl.source_id = s.id
+			)
+			and not exists (
+				select
+					xsl.id
+				from
+					definition_note_source_link xsl
+				where
+					xsl.source_id = s.id
+			)
+			and not exists (
+				select
+					xsl.id
+				from
+					lexeme_source_link xsl
+				where
+					xsl.source_id = s.id
+			)
+			and not exists (
+				select
+					xsl.id
+				from
+					usage_source_link xsl
+				where
+					xsl.source_id = s.id
+			)
+			and not exists (
+				select
+					xsl.id
+				from
+					lexeme_note_source_link xsl
+				where
+					xsl.source_id = s.id
+			)
+		) s
+	where
+		s.source_file is not null
+		and s.dataset_code = 'esterm'
+	order by
+		s.id
+) s
+where su.id = s.id
+;
+
