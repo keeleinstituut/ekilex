@@ -16,7 +16,6 @@ import org.springframework.stereotype.Component;
 
 import eki.common.constant.ActivityEntity;
 import eki.common.constant.ActivityOwner;
-import eki.common.constant.SourceType;
 import eki.ekilex.data.ActivityLogData;
 import eki.ekilex.data.Dataset;
 import eki.ekilex.data.DatasetPermission;
@@ -92,11 +91,9 @@ public class SourceService extends AbstractSourceService {
 		if (StringUtils.isBlank(searchFilter)) {
 			return new ArrayList<>();
 		}
-		String datasetCode = excludedSource.getDatasetCode();
-		SourceType sourceType = excludedSource.getType();
 		Long excludedSourceId = excludedSource.getId();
-		List<SourcePropertyTuple> sourcePropertyTuples = sourceDbService.getSourcePropertyTuples(searchFilter, datasetCode, sourceType, excludedSourceId);
-		List<Source> sources = conversionUtil.composeSources(sourcePropertyTuples);
+		String datasetCode = excludedSource.getDatasetCode();
+		List<Source> sources = sourceDbService.getSources(searchFilter, datasetCode, excludedSourceId);
 		permCalculator.applyCrud(user, sources);
 
 		return sources;

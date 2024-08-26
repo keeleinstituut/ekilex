@@ -39,7 +39,6 @@ import eki.common.constant.ActivityFunct;
 import eki.common.constant.ActivityOwner;
 import eki.common.constant.FreeformType;
 import eki.common.constant.GlobalConstant;
-import eki.common.constant.SourceType;
 import eki.ekilex.constant.SearchEntity;
 import eki.ekilex.constant.SearchKey;
 import eki.ekilex.constant.SearchOperand;
@@ -173,31 +172,20 @@ public class SourceDbService implements GlobalConstant, SystemConstant, Activity
 		return sourceSearchResult;
 	}
 
-	public List<SourcePropertyTuple> getSourcePropertyTuples(
-			String searchFilter,
-			String datasetCode,
-			SourceType sourceType,
-			Long sourceIdToExclude) {
+	public List<eki.ekilex.data.Source> getSources(String searchFilter, String datasetCode, Long sourceIdToExclude) {
 
 		String maskedSearchFilter = searchFilter.replace(SEARCH_MASK_CHARS, "%").replace(SEARCH_MASK_CHAR, "_");
 		Field<String> filterField = DSL.lower(maskedSearchFilter);
-
 		Source s = SOURCE.as("s");
-		SourceFreeform spff = SOURCE_FREEFORM.as("spff");
-		Freeform sp = FREEFORM.as("sp");
-		SourceFreeform spcff = SOURCE_FREEFORM.as("spcff");
-		Freeform spc = FREEFORM.as("spc");
-		Field<Boolean> spmf = DSL.field(DSL.lower(sp.VALUE_TEXT).like(filterField));
+		Condition where = DSL.noCondition();
+		where = where
+				.and(s.DATASET_CODE.eq(datasetCode))
+				.and(s.ID.ne(sourceIdToExclude))
+				.and(DSL.or(DSL.lower(s.NAME).like(filterField), DSL.lower(s.VALUE).like(filterField)));
 
-		Condition where1 = spcff.SOURCE_ID.eq(s.ID)
-				.and(spcff.FREEFORM_ID.eq(spc.ID))
-				.and(spcff.SOURCE_ID.notEqual(sourceIdToExclude))
-				.and(DSL.lower(spc.VALUE_TEXT).like(filterField));
+		List<eki.ekilex.data.Source> sources = getSources(s, where, datasetCode);
 
-		Condition where = s.DATASET_CODE.eq(datasetCode).and(s.TYPE.eq(sourceType.name()));
-		where = where.and(DSL.exists(DSL.select(spcff.ID).from(spcff, spc).where(where1)));
-
-		return getSourcePropertyTuples(s, spff, sp, spmf, where);
+		return sources;
 	}
 
 	private List<SourcePropertyTuple> getSourcePropertyTuples(Source s, SourceFreeform spff, Freeform sp, Field<Boolean> spmf, Condition where) {
