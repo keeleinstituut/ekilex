@@ -134,6 +134,9 @@ public class SourceSearchController extends AbstractPrivateSearchController {
 			sourceSearchResult = sourceService.getSourceSearchResult(detailSearchFilter, user, offset, DEFAULT_MAX_RESULTS_LIMIT);
 		}
 
+		model.addAttribute("searchMode", searchMode);
+		model.addAttribute("simpleSearchFilter", simpleSearchFilter);
+		model.addAttribute("detailSearchFilter", detailSearchFilter);
 		model.addAttribute("sourceSearchResult", sourceSearchResult);
 		model.addAttribute("searchUri", SOURCE_SEARCH_URI + searchUri);
 
