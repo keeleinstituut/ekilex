@@ -103,7 +103,9 @@ public class SourceDbService implements GlobalConstant, SystemConstant, Activity
 		return getSourcePropertyTuples(s, spff, sp, spmf, where);
 	}
 
-	public SourceSearchResult getSourceSearchResult(String searchFilter, SearchDatasetsRestriction searchDatasetsRestriction, String priorityDatasetCode) {
+	// TODO add offset and limit
+	public SourceSearchResult getSourceSearchResult(
+			String searchFilter, SearchDatasetsRestriction searchDatasetsRestriction, String priorityDatasetCode, int offset, int maxResultsLimit) {
 
 		String maskedSearchFilter = searchFilter.replace(SEARCH_MASK_CHARS, "%").replace(SEARCH_MASK_CHAR, "_");
 		Field<String> filterField = DSL.lower(maskedSearchFilter);
@@ -112,7 +114,7 @@ public class SourceDbService implements GlobalConstant, SystemConstant, Activity
 		where = applyDatasetRestrictions(s, searchDatasetsRestriction, where);
 		where = where.and(DSL.or(DSL.lower(s.NAME).like(filterField), DSL.lower(s.VALUE).like(filterField)));
 
-		List<eki.ekilex.data.Source> sources = getSources(s, where, priorityDatasetCode);
+		List<eki.ekilex.data.Source> sources = getSources(s, where, priorityDatasetCode, offset, maxResultsLimit);
 		int resultCount = getSourceCount(s, where);
 		boolean resultExist = resultCount > 0;
 
@@ -124,7 +126,8 @@ public class SourceDbService implements GlobalConstant, SystemConstant, Activity
 		return sourceSearchResult;
 	}
 
-	public SourceSearchResult getSourceSearchResult(SearchFilter searchFilter, SearchDatasetsRestriction searchDatasetsRestriction, String priorityDatasetCode) throws Exception {
+	public SourceSearchResult getSourceSearchResult(
+			SearchFilter searchFilter, SearchDatasetsRestriction searchDatasetsRestriction, String priorityDatasetCode, int offset, int maxResultsLimit) throws Exception {
 
 		Source s = SOURCE.as("s");
 		Condition where = DSL.noCondition();
@@ -160,7 +163,7 @@ public class SourceDbService implements GlobalConstant, SystemConstant, Activity
 			}
 		}
 
-		List<eki.ekilex.data.Source> sources = getSources(s, where, priorityDatasetCode);
+		List<eki.ekilex.data.Source> sources = getSources(s, where, priorityDatasetCode, offset, maxResultsLimit);
 		int resultCount = getSourceCount(s, where);
 		boolean resultExist = resultCount > 0;
 
@@ -172,7 +175,8 @@ public class SourceDbService implements GlobalConstant, SystemConstant, Activity
 		return sourceSearchResult;
 	}
 
-	public List<eki.ekilex.data.Source> getSources(String searchFilter, String datasetCode, Long sourceIdToExclude) {
+	public List<eki.ekilex.data.Source> getSources(
+			String searchFilter, String datasetCode, Long sourceIdToExclude, int offset, int maxResultsLimit) {
 
 		String maskedSearchFilter = searchFilter.replace(SEARCH_MASK_CHARS, "%").replace(SEARCH_MASK_CHAR, "_");
 		Field<String> filterField = DSL.lower(maskedSearchFilter);
@@ -183,7 +187,7 @@ public class SourceDbService implements GlobalConstant, SystemConstant, Activity
 				.and(s.ID.ne(sourceIdToExclude))
 				.and(DSL.or(DSL.lower(s.NAME).like(filterField), DSL.lower(s.VALUE).like(filterField)));
 
-		List<eki.ekilex.data.Source> sources = getSources(s, where, datasetCode);
+		List<eki.ekilex.data.Source> sources = getSources(s, where, datasetCode, offset, maxResultsLimit);
 
 		return sources;
 	}
@@ -541,7 +545,8 @@ public class SourceDbService implements GlobalConstant, SystemConstant, Activity
 				.fetch();
 	}
 
-	private List<eki.ekilex.data.Source> getSources(Source s, Condition where, String priorityDatasetCode) {
+	private List<eki.ekilex.data.Source> getSources(
+			Source s, Condition where, String priorityDatasetCode, int offset, int maxResultsLimit) {
 
 		Field<Boolean> ipf;
 		List<Field<?>> orderByFields = new ArrayList<>();
@@ -570,7 +575,8 @@ public class SourceDbService implements GlobalConstant, SystemConstant, Activity
 				.from(s)
 				.where(where)
 				.orderBy(orderByFields)
-				.limit(DEFAULT_MAX_RESULTS_LIMIT)
+				.offset(offset)
+				.limit(maxResultsLimit)
 				.fetchInto(eki.ekilex.data.Source.class);
 	}
 

@@ -196,12 +196,10 @@ public class TermSearchService extends AbstractSearchService {
 
 		int resultCount = termSearchResult.getResultCount();
 		boolean resultExist = resultCount > 0;
-		boolean showPaging = resultCount > DEFAULT_MAX_RESULTS_LIMIT;
 		boolean resultDownloadNow = resultExist && (resultCount < DEFAULT_MAX_DOWNLOAD_LIMIT);
 		boolean resultDownloadLater = resultExist && (resultCount >= DEFAULT_MAX_DOWNLOAD_LIMIT);
 
 		termSearchResult.setResultExist(resultExist);
-		termSearchResult.setShowPaging(showPaging);
 		termSearchResult.setResultDownloadNow(resultDownloadNow);
 		termSearchResult.setResultDownloadLater(resultDownloadLater);
 		setPagingData(offset, DEFAULT_MAX_RESULTS_LIMIT, resultCount, termSearchResult);

@@ -87,11 +87,13 @@ public class SourceSearchController extends AbstractPrivateSearchController {
 		SearchFilter detailSearchFilter = searchUriData.getDetailSearchFilter();
 		EkiUser user = userContext.getUser();
 
+		int offset = getPageNumAndCalculateOffset(request);
+
 		SourceSearchResult sourceSearchResult;
 		if (StringUtils.equals(SEARCH_MODE_SIMPLE, searchMode)) {
-			sourceSearchResult = sourceService.getSourceSearchResult(simpleSearchFilter, user);
+			sourceSearchResult = sourceService.getSourceSearchResult(simpleSearchFilter, user, offset, DEFAULT_MAX_RESULTS_LIMIT);
 		} else {
-			sourceSearchResult = sourceService.getSourceSearchResult(detailSearchFilter, user);
+			sourceSearchResult = sourceService.getSourceSearchResult(detailSearchFilter, user, offset, DEFAULT_MAX_RESULTS_LIMIT);
 		}
 
 		model.addAttribute("searchMode", searchMode);
@@ -101,6 +103,41 @@ public class SourceSearchController extends AbstractPrivateSearchController {
 		model.addAttribute("searchUri", SOURCE_SEARCH_URI + searchUri);
 
 		return SOURCE_SEARCH_PAGE;
+	}
+
+	@PostMapping(SOURCE_PAGING_URI)
+	public String paging(
+			@RequestParam("offset") int offset,
+			@RequestParam("searchUri") String searchUri,
+			@RequestParam("direction") String direction,
+			@RequestParam(name = "pageNum", required = false) Integer pageNum,
+			Model model) throws Exception {
+
+		SearchUriData searchUriData = searchHelper.parseSearchUri(SOURCE_SEARCH_PAGE, searchUri);
+		String searchMode = searchUriData.getSearchMode();
+		String simpleSearchFilter = searchUriData.getSimpleSearchFilter();
+		SearchFilter detailSearchFilter = searchUriData.getDetailSearchFilter();
+		EkiUser user = userContext.getUser();
+
+		if (StringUtils.equals("next", direction)) {
+			offset += DEFAULT_MAX_RESULTS_LIMIT;
+		} else if (StringUtils.equals("previous", direction)) {
+			offset -= DEFAULT_MAX_RESULTS_LIMIT;
+		} else if (StringUtils.equals("page", direction)) {
+			offset = (pageNum - 1) * DEFAULT_MAX_RESULTS_LIMIT;
+		}
+
+		SourceSearchResult sourceSearchResult;
+		if (StringUtils.equals(SEARCH_MODE_SIMPLE, searchMode)) {
+			sourceSearchResult = sourceService.getSourceSearchResult(simpleSearchFilter, user, offset, DEFAULT_MAX_RESULTS_LIMIT);
+		} else {
+			sourceSearchResult = sourceService.getSourceSearchResult(detailSearchFilter, user, offset, DEFAULT_MAX_RESULTS_LIMIT);
+		}
+
+		model.addAttribute("sourceSearchResult", sourceSearchResult);
+		model.addAttribute("searchUri", SOURCE_SEARCH_URI + searchUri);
+
+		return SOURCE_COMPONENTS_PAGE + PAGE_FRAGMENT_ELEM + "search_result";
 	}
 
 	@GetMapping(SOURCE_ID_SEARCH_URI + "/{sourceId}")

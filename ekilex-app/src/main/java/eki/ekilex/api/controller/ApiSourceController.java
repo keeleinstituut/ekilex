@@ -33,7 +33,7 @@ public class ApiSourceController extends AbstractApiController {
 	public SourceSearchResult sourceSearch(@PathVariable("searchFilter") String searchFilter) {
 
 		EkiUser user = userContext.getUser();
-		SourceSearchResult sourceSearchResult = sourceService.getSourceSearchResult(searchFilter, user);
+		SourceSearchResult sourceSearchResult = sourceService.getSourceSearchResult(searchFilter, user, DEFAULT_OFFSET, DEFAULT_MAX_RESULTS_LIMIT);
 		return sourceSearchResult;
 	}
 

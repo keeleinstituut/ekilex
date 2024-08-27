@@ -111,21 +111,23 @@ public abstract class AbstractSearchService extends AbstractService implements P
 		return searchLangsRestriction;
 	}
 
-	protected void setPagingData(int offset, int maxResultsLimit, int wordCount, PagingResult result) {
+	protected void setPagingData(int offset, int maxResultsLimit, int resultCount, PagingResult result) {
 
-		int totalPages = (wordCount + maxResultsLimit - 1) / maxResultsLimit;
+		int totalPages = (resultCount + maxResultsLimit - 1) / maxResultsLimit;
 		int currentPage = offset / maxResultsLimit + 1;
 		if (currentPage > totalPages) {
 			currentPage = totalPages;
 		}
+		boolean showPaging = resultCount > maxResultsLimit;
 		boolean previousPageExists = currentPage > 1;
 		boolean nextPageExists = currentPage < totalPages;
 
+		result.setShowPaging(showPaging);
+		result.setPreviousPageExists(previousPageExists);
+		result.setNextPageExists(nextPageExists);
 		result.setCurrentPage(currentPage);
 		result.setTotalPages(totalPages);
 		result.setOffset(offset);
-		result.setPreviousPageExists(previousPageExists);
-		result.setNextPageExists(nextPageExists);
 	}
 
 	protected int getLastPageOffset(int resultCount) {

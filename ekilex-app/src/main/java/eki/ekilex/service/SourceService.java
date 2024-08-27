@@ -69,7 +69,7 @@ public class SourceService extends AbstractSourceService {
 	}
 
 	@Transactional
-	public SourceSearchResult getSourceSearchResult(String searchFilter, EkiUser user) {
+	public SourceSearchResult getSourceSearchResult(String searchFilter, EkiUser user, int offset, int maxResultsLimit) {
 
 		if (StringUtils.isBlank(searchFilter)) {
 			return new SourceSearchResult();
@@ -81,26 +81,15 @@ public class SourceService extends AbstractSourceService {
 			userRoleDatasetCode = userRole.getDatasetCode();
 		}
 		SearchDatasetsRestriction searchDatasetsRestriction = composeDatasetsRestriction(userId);
-		SourceSearchResult sourceSearchResult = sourceDbService.getSourceSearchResult(searchFilter, searchDatasetsRestriction, userRoleDatasetCode);
-		return convertAndApplyCrud(sourceSearchResult, user);
+		SourceSearchResult sourceSearchResult = sourceDbService.getSourceSearchResult(searchFilter, searchDatasetsRestriction, userRoleDatasetCode, offset, maxResultsLimit);
+		convertAndApplyCrud(sourceSearchResult, user);
+		setPagingData(offset, maxResultsLimit, sourceSearchResult);
+
+		return sourceSearchResult;
 	}
 
 	@Transactional
-	public List<Source> getSourcesBasedOnExcludedOne(String searchFilter, Source excludedSource, EkiUser user) {
-
-		if (StringUtils.isBlank(searchFilter)) {
-			return new ArrayList<>();
-		}
-		Long excludedSourceId = excludedSource.getId();
-		String datasetCode = excludedSource.getDatasetCode();
-		List<Source> sources = sourceDbService.getSources(searchFilter, datasetCode, excludedSourceId);
-		permCalculator.applyCrud(user, sources);
-
-		return sources;
-	}
-
-	@Transactional
-	public SourceSearchResult getSourceSearchResult(SearchFilter searchFilter, EkiUser user) throws Exception {
+	public SourceSearchResult getSourceSearchResult(SearchFilter searchFilter, EkiUser user, int offset, int maxResultsLimit) throws Exception {
 
 		if (CollectionUtils.isEmpty(searchFilter.getCriteriaGroups())) {
 			return new SourceSearchResult();
@@ -112,8 +101,25 @@ public class SourceService extends AbstractSourceService {
 			userRoleDatasetCode = userRole.getDatasetCode();
 		}
 		SearchDatasetsRestriction searchDatasetsRestriction = composeDatasetsRestriction(userId);
-		SourceSearchResult sourceSearchResult = sourceDbService.getSourceSearchResult(searchFilter, searchDatasetsRestriction, userRoleDatasetCode);
-		return convertAndApplyCrud(sourceSearchResult, user);
+		SourceSearchResult sourceSearchResult = sourceDbService.getSourceSearchResult(searchFilter, searchDatasetsRestriction, userRoleDatasetCode, offset, maxResultsLimit);
+		convertAndApplyCrud(sourceSearchResult, user);
+		setPagingData(offset, maxResultsLimit, sourceSearchResult);
+
+		return sourceSearchResult;
+	}
+
+	@Transactional
+	public List<Source> getSourcesBasedOnExcludedOne(String searchFilter, Source excludedSource, EkiUser user) {
+
+		if (StringUtils.isBlank(searchFilter)) {
+			return new ArrayList<>();
+		}
+		Long excludedSourceId = excludedSource.getId();
+		String datasetCode = excludedSource.getDatasetCode();
+		List<Source> sources = sourceDbService.getSources(searchFilter, datasetCode, excludedSourceId, DEFAULT_OFFSET, DEFAULT_MAX_RESULTS_LIMIT);
+		permCalculator.applyCrud(user, sources);
+
+		return sources;
 	}
 
 	private SearchDatasetsRestriction composeDatasetsRestriction(Long userId) {
@@ -140,6 +146,26 @@ public class SourceService extends AbstractSourceService {
 		searchDatasetsRestriction.setSinglePermDataset(singlePermDataset);
 
 		return searchDatasetsRestriction;
+	}
+
+	private void setPagingData(int offset, int maxResultsLimit, SourceSearchResult result) {
+
+		int resultCount = result.getResultCount();
+		int totalPages = (resultCount + maxResultsLimit - 1) / maxResultsLimit;
+		int currentPage = offset / maxResultsLimit + 1;
+		if (currentPage > totalPages) {
+			currentPage = totalPages;
+		}
+		boolean showPaging = resultCount > maxResultsLimit;
+		boolean previousPageExists = currentPage > 1;
+		boolean nextPageExists = currentPage < totalPages;
+
+		result.setShowPaging(showPaging);
+		result.setPreviousPageExists(previousPageExists);
+		result.setNextPageExists(nextPageExists);
+		result.setCurrentPage(currentPage);
+		result.setTotalPages(totalPages);
+		result.setOffset(offset);
 	}
 
 	private SourceSearchResult convertAndApplyCrud(SourceSearchResult sourceSearchResult, EkiUser user) {

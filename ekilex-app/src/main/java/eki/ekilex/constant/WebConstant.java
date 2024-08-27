@@ -238,7 +238,7 @@ public interface WebConstant {
 
 	String SOURCE_SEARCH_PAGE = "sourcesearch";
 
-	String SOURCE_SEARCH_RESULT = "source_search_result";
+	String SOURCE_DETAILS_FRAGMENT = "source_details";
 
 	String SOURCE_QUICK_SEARCH_URI = "/sourcequicksearch";
 
@@ -249,6 +249,8 @@ public interface WebConstant {
 	String SOURCE_DETAIL_SEARCH_URI = "/sourcedetailsearch";
 
 	String SOURCE_JOIN_SEARCH_URI = "/sourcejoinsearch";
+
+	String SOURCE_PAGING_URI = "/source_paging";
 
 	String UPDATE_SOURCE_URI = "/update_source";
 

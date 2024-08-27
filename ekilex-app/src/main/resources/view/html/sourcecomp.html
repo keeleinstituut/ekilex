@@ -168,7 +168,28 @@
       </tr>
     </table>
   </div>
-  <div th:id="|sourceSearchResult_${source.id}|" th:fragment="source_search_result">
+  <div th:fragment="search_result">
+    <input type="hidden" id="pageNum" th:value="${sourceSearchResult.currentPage}">
+    <div class="mt-2">
+      <span th:text="#{source.results}">Tulemusi</span>
+      <span th:text="${sourceSearchResult.resultCount}">123</span>
+    </div>
+    <div th:each="source,sourceIter : ${sourceSearchResult.sources}" class="card shadow mt-2">
+      <div class="card-body">
+        <span class="font-weight-bold" th:text="|${sourceSearchResult.offset + sourceIter.count}.|"></span>
+        <th:block th:replace="sourcecomp :: source_details"></th:block>
+      </div>
+    </div>
+    <div th:if="${sourceSearchResult.showPaging}">
+      <div th:replace="components :: paging(${sourceSearchResult})"></div>
+    </div>
+    <div th:replace="common :: #alertDlg"></div>
+    <div th:replace="common :: #alertSmall"></div>
+    <script th:inline="javascript">
+      initDeleteConfirmations();
+    </script>
+  </div>
+  <div th:id="|sourceDetails_${source.id}|" th:fragment="source_details">
     <div class="col-auto form-inline">
       <div class="ml-auto">
         <form th:action="@{/open_source_join}" method="post">
@@ -248,7 +269,7 @@
       </div>
     </th:block>
   </div>
-  <div th:id="|sourceSearchResult_${source.id}|" th:fragment="source_search_result_etym">
+  <div th:id="|sourceDetails_${source.id}|" th:fragment="etym_source_details">
     <table class="w-100">
       <tr>
         <td style="width: 100px;"></td>

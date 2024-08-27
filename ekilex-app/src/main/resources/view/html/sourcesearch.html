@@ -16,7 +16,7 @@
       </div>
     </div>
     <div>
-      <button class="btn btn-secondary mt-2"
+      <button class="btn btn-primary mt-2"
               th:title="#{source.add.new}"
               data-toggle="modal"
               data-target="#addSourceDlg"
@@ -24,17 +24,11 @@
               th:text="#{source.add.new}">Lisa uus allikas
       </button>
     </div>
-    <div class="float-left w-100 mb-4" th:if="${sourceSearchResult.resultExist}">
-      <div class="mt-2">
-        <span th:text="#{source.results}">Tulemusi</span>
-        <span th:text="${sourceSearchResult.resultCount}">123</span>
-      </div>
-      <div th:each="source,sourceIter : ${sourceSearchResult.sources}" class="card shadow mt-2">
-        <div class="card-body">
-          <span class="font-weight-bold" th:text="${sourceIter.count + '.'}"></span>
-          <th:block th:replace="sourcecomp :: source_search_result"></th:block>
-        </div>
-      </div>
+    <div class="mt-3" th:unless="${sourceSearchResult.resultExist}">
+      <h5 th:text="#{source.noresults}">Tulemusi pole</h5>
+    </div>
+    <div id="results_div" class="float-left w-100 mb-4 mt-2" th:if="${sourceSearchResult.resultExist}">
+      <div th:replace="sourcecomp :: search_result"></div>
     </div>
   </div>
   <div id="sourceActivityLogDlg" class="modal" role="dialog" data-plugin="activityLogDlgPlugin">
@@ -48,8 +42,6 @@
     </div>
   </div>
   <div th:replace="sourcedialog :: add_source_dlg"></div>
-  <div th:replace="common :: #alertDlg"></div>
-  <div th:replace="common :: #alertSmall"></div>
   <script th:inline="javascript">
 	  initializeSourceSearch();
   </script>

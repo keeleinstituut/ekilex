@@ -189,26 +189,23 @@ public abstract class AbstractSearchController extends AbstractAuthActionControl
 		}
 	}
 
-	protected Integer getPageNum(HttpServletRequest request) {
+	protected int getPageNumAndCalculateOffset(HttpServletRequest request) {
 
 		String pageNumParam = request.getParameter(REQUEST_PARAM_PAGE);
-		Integer pageNum;
+		if (StringUtils.isBlank(pageNumParam)) {
+			return DEFAULT_OFFSET;
+		}
+		Integer pageNum = null;
 		try {
 			pageNum = Integer.valueOf(pageNumParam);
 		} catch (NumberFormatException e) {
-			pageNum = null;
+			return DEFAULT_OFFSET;
 		}
-		return pageNum;
-	}
-
-	protected int calculateOffset(Integer pageNum) {
-
-		int offset;
-		if (pageNum != null && pageNum > 0) {
-			offset = (pageNum - 1) * DEFAULT_MAX_RESULTS_LIMIT;
-		} else {
-			offset = DEFAULT_OFFSET;
+		if (pageNum == null) {
+			return DEFAULT_OFFSET;
 		}
+		pageNum = Math.max(pageNum, DEFAULT_OFFSET);
+		int offset = (pageNum - 1) * DEFAULT_MAX_RESULTS_LIMIT;
 		return offset;
 	}
 }

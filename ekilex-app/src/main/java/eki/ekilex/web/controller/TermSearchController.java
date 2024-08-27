@@ -134,8 +134,7 @@ public class TermSearchController extends AbstractPrivateSearchController {
 		Long userId = userContext.getUserId();
 		userProfileService.updateUserPreferredDatasets(selectedDatasets, userId);
 
-		Integer pageNum = getPageNum(request);
-		int offset = calculateOffset(pageNum);
+		int offset = getPageNumAndCalculateOffset(request);
 
 		TermSearchResult termSearchResult;
 		if (StringUtils.equals(SEARCH_MODE_DETAIL, searchMode)) {

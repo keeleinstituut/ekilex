@@ -57,7 +57,7 @@ public class SourceEditController extends AbstractMutableDataPageController {
 
 		EkiUser user = userContext.getUser();
 		searchFilter = valueUtil.trimAndCleanAndRemoveHtmlAndLimit(searchFilter);
-		SourceSearchResult sourceSearchResult = sourceService.getSourceSearchResult(searchFilter, user);
+		SourceSearchResult sourceSearchResult = sourceService.getSourceSearchResult(searchFilter, user, DEFAULT_OFFSET, DEFAULT_MAX_RESULTS_LIMIT);
 		model.addAttribute("searchFilter", searchFilter);
 		model.addAttribute("sourceSearchResult", sourceSearchResult);
 
@@ -75,7 +75,7 @@ public class SourceEditController extends AbstractMutableDataPageController {
 		source = sourceService.getSource(sourceId, user);
 		model.addAttribute("source", source);
 
-		return SOURCE_COMPONENTS_PAGE + PAGE_FRAGMENT_ELEM + SOURCE_SEARCH_RESULT;
+		return SOURCE_COMPONENTS_PAGE + PAGE_FRAGMENT_ELEM + SOURCE_DETAILS_FRAGMENT;
 	}
 
 	@PostMapping(CREATE_SOURCE_URI)

@@ -24,7 +24,7 @@
         <div th:if="${noResults == true}">
           <div th:text="#{lex.not.found}">Not found.</div>
         </div>
-        <div id="results_div" class="card shadow navigate-panel h-100 d-flex flex-column" th:if="${not #lists.isEmpty(wordsResult.words)}">
+        <div id="results_div" class="card shadow navigate-panel h-100 d-flex flex-column" th:if="${wordsResult.totalCount > 0}">
           <div th:replace="lexcomp :: search_result"></div>
         </div>
       </div>

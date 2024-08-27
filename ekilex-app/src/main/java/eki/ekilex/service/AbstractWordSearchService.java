@@ -51,8 +51,8 @@ public abstract class AbstractWordSearchService extends AbstractSearchService {
 
 	@Transactional
 	public WordsResult getWords(
-			SearchFilter searchFilter, List<String> datasetCodes, List<String> tagNames, EkiUser user, int offset,
-			int maxResultsLimit, boolean noLimit) throws Exception {
+			SearchFilter searchFilter, List<String> datasetCodes, List<String> tagNames, EkiUser user,
+			int offset, int maxResultsLimit, boolean noLimit) throws Exception {
 
 		String userRoleDatasetCode = null;
 		if (user != null) {
@@ -68,7 +68,7 @@ public abstract class AbstractWordSearchService extends AbstractSearchService {
 			SearchDatasetsRestriction searchDatasetsRestriction = composeDatasetsRestriction(datasetCodes);
 			words = lexSearchDbService.getWords(searchFilter, searchDatasetsRestriction, userRoleDatasetCode, tagNames, offset, maxResultsLimit, noLimit);
 			wordCount = words.size();
-			if ((!noLimit && wordCount == maxResultsLimit) || offset > DEFAULT_OFFSET) {
+			if ((!noLimit && wordCount == maxResultsLimit) || (offset > DEFAULT_OFFSET)) {
 				wordCount = lexSearchDbService.countWords(searchFilter, searchDatasetsRestriction);
 				if (CollectionUtils.isEmpty(words) && wordCount > 0) {
 					int lastPageOffset = getLastPageOffset(wordCount);
@@ -79,16 +79,15 @@ public abstract class AbstractWordSearchService extends AbstractSearchService {
 		WordsResult result = new WordsResult();
 		result.setWords(words);
 		result.setTotalCount(wordCount);
-
-		boolean showPaging = wordCount > maxResultsLimit;
-		result.setShowPaging(showPaging);
 		setPagingData(offset, maxResultsLimit, wordCount, result);
+
 		return result;
 	}
 
 	@Transactional
 	public WordsResult getWords(
-			String searchFilter, List<String> datasetCodes, List<String> tagNames, EkiUser user, int offset, int maxResultsLimit, boolean noLimit) throws Exception {
+			String searchFilter, List<String> datasetCodes, List<String> tagNames, EkiUser user,
+			int offset, int maxResultsLimit, boolean noLimit) throws Exception {
 
 		String userRoleDatasetCode = null;
 		if (user != null) {
@@ -100,7 +99,8 @@ public abstract class AbstractWordSearchService extends AbstractSearchService {
 
 	@Transactional
 	public WordsResult getWords(
-			String searchFilter, List<String> datasetCodes, List<String> tagNames, String userRoleDatasetCode, int offset, int maxResultsLimit, boolean noLimit) throws Exception {
+			String searchFilter, List<String> datasetCodes, List<String> tagNames, String userRoleDatasetCode,
+			int offset, int maxResultsLimit, boolean noLimit) throws Exception {
 
 		List<Word> words;
 		int wordCount;
@@ -124,10 +124,8 @@ public abstract class AbstractWordSearchService extends AbstractSearchService {
 		WordsResult result = new WordsResult();
 		result.setWords(words);
 		result.setTotalCount(wordCount);
-
-		boolean showPaging = wordCount > maxResultsLimit;
-		result.setShowPaging(showPaging);
 		setPagingData(offset, maxResultsLimit, wordCount, result);
+
 		return result;
 	}
 

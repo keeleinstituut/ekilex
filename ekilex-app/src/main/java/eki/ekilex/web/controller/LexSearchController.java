@@ -115,8 +115,7 @@ public class LexSearchController extends AbstractPrivateSearchController {
 
 		userProfileService.updateUserPreferredDatasets(selectedDatasets, userId);
 
-		Integer pageNum = getPageNum(request);
-		int offset = calculateOffset(pageNum);
+		int offset = getPageNumAndCalculateOffset(request);
 
 		WordsResult wordsResult;
 		Long selectedMeaningId = null;

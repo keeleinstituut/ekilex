@@ -33,7 +33,7 @@ $.fn.editSourcePlugin = function() {
 			}).done(function (data) {
 				let dlg = form.parents('.modal');
 				dlg.modal('hide');
-				$("#sourceSearchResult_" + sourceId).replaceWith(data);
+				$("#sourceDetails_" + sourceId).replaceWith(data);
 				initDeleteConfirmations();
 				$wpm.bindObjects();
 			}).fail(function (data) {
