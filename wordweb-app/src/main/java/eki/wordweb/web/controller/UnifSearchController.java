@@ -73,8 +73,8 @@ public class UnifSearchController extends AbstractSearchController {
 			@RequestParam(name = "linkedLexemeId", required = false) Long linkedLexemeId,
 			RedirectAttributes redirectAttributes) {
 
-		searchWord = StringUtils.trim(searchWord);
 		searchWord = decode(searchWord);
+		searchWord = cleanupMain(searchWord);
 		if (StringUtils.isBlank(searchWord)) {
 			return REDIRECT_PREF + SEARCH_URI + UNIF_URI;
 		}
@@ -178,7 +178,9 @@ public class UnifSearchController extends AbstractSearchController {
 		List<String> destinLangs = sessionBean.getDestinLangs();
 		List<String> datasetCodes = sessionBean.getDatasetCodes();
 		SearchFilter searchFilter = new SearchFilter(destinLangs, datasetCodes);
-		return unifSearchService.getWordsByInfixLev(wordFragment, searchFilter, AUTOCOMPLETE_MAX_RESULTS_LIMIT);
+		Map<String, List<String>> wordsMap = unifSearchService.getWordsByInfixLev(wordFragment, searchFilter, AUTOCOMPLETE_MAX_RESULTS_LIMIT);
+
+		return wordsMap;
 	}
 
 	@GetMapping(WORD_DETAILS_URI + UNIF_URI + "/{wordId}")

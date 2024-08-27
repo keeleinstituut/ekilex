@@ -110,6 +110,21 @@ public abstract class AbstractSearchController extends AbstractController {
 		return Integer.valueOf(value);
 	}
 
+	protected String cleanupMain(String value) {
+
+		value = StringUtils.trim(value);
+		if (StringUtils.isBlank(value)) {
+			return value;
+		}
+		while (StringUtils.endsWith(value, "-")) {
+			value = StringUtils.removeEnd(value, "-");
+		}
+		while (StringUtils.startsWith(value, "-")) {
+			value = StringUtils.removeStart(value, "-");
+		}
+		return value;
+	}
+
 	protected String cleanupMask(String searchWord) {
 
 		if (StringUtils.isBlank(searchWord)) {
@@ -161,4 +176,5 @@ public abstract class AbstractSearchController extends AbstractController {
 		value = StringUtils.replace(value, ENCODE_SYM_PERCENT, "%");
 		return value;
 	}
+
 }

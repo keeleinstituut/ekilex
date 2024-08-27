@@ -58,13 +58,13 @@ public class SimpleSearchController extends AbstractSearchController {
 
 	@PostMapping(SEARCH_URI + LITE_URI)
 	public String searchWords(
-			@RequestParam(name = "destinLangsStr") String destinLangsStr,
 			@RequestParam(name = "searchWord") String searchWord,
+			@RequestParam(name = "destinLangsStr") String destinLangsStr,
 			@RequestParam(name = "selectedWordHomonymNr", required = false) String selectedWordHomonymNrStr,
 			RedirectAttributes redirectAttributes) {
 
-		searchWord = StringUtils.trim(searchWord);
 		searchWord = decode(searchWord);
+		searchWord = cleanupMain(searchWord);
 		if (StringUtils.isBlank(searchWord)) {
 			return REDIRECT_PREF + SEARCH_URI + LITE_URI;
 		}
@@ -161,8 +161,9 @@ public class SimpleSearchController extends AbstractSearchController {
 		List<String> destinLangs = sessionBean.getDestinLangs();
 		List<String> datasetCodes = sessionBean.getDatasetCodes();
 		SearchFilter searchFilter = new SearchFilter(destinLangs, datasetCodes);
+		Map<String, List<String>> wordsMap = simpleSearchService.getWordsByInfixLev(wordFragment, searchFilter, AUTOCOMPLETE_MAX_RESULTS_LIMIT);
 
-		return simpleSearchService.getWordsByInfixLev(wordFragment, searchFilter, AUTOCOMPLETE_MAX_RESULTS_LIMIT);
+		return wordsMap;
 	}
 
 	@GetMapping(WORD_DETAILS_URI + LITE_URI + "/{wordId}")
