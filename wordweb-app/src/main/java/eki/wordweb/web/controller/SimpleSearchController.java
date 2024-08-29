@@ -61,6 +61,7 @@ public class SimpleSearchController extends AbstractSearchController {
 			@RequestParam(name = "searchWord") String searchWord,
 			@RequestParam(name = "destinLangsStr") String destinLangsStr,
 			@RequestParam(name = "selectedWordHomonymNr", required = false) String selectedWordHomonymNrStr,
+			@RequestParam(name = "selectedWordLang", required = false) String selectedWordLang,
 			RedirectAttributes redirectAttributes) {
 
 		searchWord = decode(searchWord);
@@ -80,19 +81,20 @@ public class SimpleSearchController extends AbstractSearchController {
 			selectedWordHomonymNr = nullSafe(selectedWordHomonymNrStr);
 		}
 		searchWord = textDecorationService.unifyToApostrophe(searchWord);
-		String searchUri = webUtil.composeSimpleSearchUri(destinLangsStr, searchWord, selectedWordHomonymNr);
+		String searchUri = webUtil.composeSimpleSearchUri(destinLangsStr, searchWord, selectedWordHomonymNr, selectedWordLang);
 		setSearchFormAttribute(redirectAttributes, Boolean.TRUE);
 
 		return REDIRECT_PREF + searchUri;
 	}
 
 	@GetMapping({
-			SEARCH_URI + LITE_URI + "/{destinLangs}/{searchWord}/{homonymNr}",
+			SEARCH_URI + LITE_URI + "/{destinLangs}/{searchWord}/{homonymNr}/{lang}",
 			SEARCH_URI + LITE_URI + "/{destinLangs}/{searchWord}"})
 	public String searchSimpleWordsByUri(
 			@PathVariable(name = "destinLangs") String destinLangsStr,
 			@PathVariable(name = "searchWord") String searchWord,
 			@PathVariable(name = "homonymNr", required = false) String homonymNrStr,
+			@PathVariable(name = "lang", required = false) String lang,
 			HttpServletRequest request,
 			RedirectAttributes redirectAttributes,
 			Model model) throws Exception {
@@ -113,7 +115,7 @@ public class SimpleSearchController extends AbstractSearchController {
 		if (isMaskedSearchCrit) {
 			searchValidation = validateAndCorrectMaskedSearch(destinLangsStr, searchWord);
 		} else {
-			searchValidation = validateAndCorrectWordSearch(destinLangsStr, searchWord, homonymNrStr);
+			searchValidation = validateAndCorrectWordSearch(destinLangsStr, searchWord, homonymNrStr, lang);
 		}
 
 		sessionBean.setSearchWord(searchValidation.getSearchWord());
@@ -191,7 +193,7 @@ public class SimpleSearchController extends AbstractSearchController {
 		sessionBean.setRecentWord(wordValue);
 	}
 
-	private SearchValidation validateAndCorrectWordSearch(String destinLangsStr, String searchWord, String homonymNrStr) {
+	private SearchValidation validateAndCorrectWordSearch(String destinLangsStr, String searchWord, String homonymNrStr, String lang) {
 
 		SearchValidation searchValidation = new SearchValidation();
 		searchValidation.setValid(true);
@@ -204,14 +206,19 @@ public class SimpleSearchController extends AbstractSearchController {
 		Integer homonymNr = nullSafe(homonymNrStr);
 		if (homonymNr == null) {
 			homonymNr = 1;
-			isValid = isValid & false;
+		}
+
+		// word lang
+		if (StringUtils.length(lang) != 3) {
+			lang = null;
 		}
 
 		destinLangsStr = StringUtils.join(searchValidation.getDestinLangs(), UI_FILTER_VALUES_SEPARATOR);
-		String searchUri = webUtil.composeSimpleSearchUri(destinLangsStr, searchWord, homonymNr);
+		String searchUri = webUtil.composeSimpleSearchUri(destinLangsStr, searchWord, homonymNr, lang);
 
 		searchValidation.setSearchWord(searchWord);
 		searchValidation.setHomonymNr(homonymNr);
+		searchValidation.setLang(lang);
 		searchValidation.setSearchUri(searchUri);
 		searchValidation.setValid(isValid);
 
@@ -233,7 +240,7 @@ public class SimpleSearchController extends AbstractSearchController {
 		isValid = isValid & StringUtils.equals(searchWord, cleanMaskSearchWord);
 
 		destinLangsStr = StringUtils.join(searchValidation.getDestinLangs(), UI_FILTER_VALUES_SEPARATOR);
-		String searchUri = webUtil.composeSimpleSearchUri(destinLangsStr, cleanMaskSearchWord, null);
+		String searchUri = webUtil.composeSimpleSearchUri(destinLangsStr, cleanMaskSearchWord, null, null);
 
 		searchValidation.setSearchWord(cleanMaskSearchWord);
 		searchValidation.setSearchUri(searchUri);

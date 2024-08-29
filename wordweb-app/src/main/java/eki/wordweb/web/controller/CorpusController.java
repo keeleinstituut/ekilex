@@ -32,11 +32,11 @@ public class CorpusController implements WebConstant, SystemConstant {
 	@Autowired
 	private CorpusTranslationService corpusTranslationService;
 
-	@GetMapping(CORP_URI + "/{searchMode}/{wordLang}/{wordValue}")
+	@GetMapping(CORP_URI + "/{searchMode}/{wordValue}/{wordLang}")
 	public String searchFromCorpus(
 			@PathVariable("searchMode") String searchMode,
-			@PathVariable("wordLang") String wordLang,
 			@PathVariable("wordValue") String wordValue,
+			@PathVariable("wordLang") String wordLang,
 			@ModelAttribute(SESSION_BEAN) SessionBean sessionBean,
 			Model model) {
 
@@ -53,16 +53,16 @@ public class CorpusController implements WebConstant, SystemConstant {
 		return "common-search-sidebar :: corp";
 	}
 
-	@GetMapping(CORP_TRANS_URI + "/{wordId}/{wordLang}/{wordValue}")
+	@GetMapping(CORP_TRANS_URI + "/{wordId}/{wordValue}/{wordLang}")
 	public String searchFromTranslationCorpus(
 			@PathVariable("wordId") Long wordId,
-			@PathVariable("wordLang") String wordLang,
 			@PathVariable("wordValue") String wordValue,
+			@PathVariable("wordLang") String wordLang,
 			@ModelAttribute(SESSION_BEAN) SessionBean sessionBean,
 			Model model) {
 
 		List<String> uiSections = sessionBean.getUiSections();
-		List<CorpusTranslation> translations = corpusTranslationService.getTranslations(wordId, wordLang,wordValue);
+		List<CorpusTranslation> translations = corpusTranslationService.getTranslations(wordId, wordValue, wordLang);
 
 		model.addAttribute("translations", translations);
 		model.addAttribute("uiSections", uiSections);

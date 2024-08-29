@@ -38,6 +38,7 @@ public class WordConversionUtil extends AbstractConversionUtil {
 		Complexity lexComplexity = searchContext.getLexComplexity();
 
 		for (Word word : words) {
+
 			String wordLang = word.getLang();
 			List<TypeDefinition> definitions = word.getDefinitions();
 			List<TypeMeaningWord> meaningWords = word.getMeaningWords();
@@ -96,21 +97,32 @@ public class WordConversionUtil extends AbstractConversionUtil {
 		}
 	}
 
-	public void selectHomonym(List<Word> words, Integer homonymNr) {
+	public void selectHomonymWithLang(List<Word> words, Integer homonymNr, String lang) {
 
 		if (CollectionUtils.isEmpty(words)) {
 			return;
 		}
-		boolean homonymNrExists = words.stream().anyMatch(word -> word.getHomonymNr().equals(homonymNr));
-		if (homonymNrExists) {
+		Word firstWord = words.get(0);
+		if (homonymNr == null) {
+			firstWord.setSelected(true);
+		} else if (StringUtils.isBlank(lang)) {
+			firstWord.setSelected(true);
+		} else {
+			boolean isSelected = false;
 			for (Word word : words) {
-				if (homonymNr.equals(word.getHomonymNr())) {
-					word.setSelected(true);
+
+				Integer wordHomonymNr = word.getHomonymNr();
+				String wordLang = word.getLang();
+				isSelected = homonymNr.equals(wordHomonymNr) && StringUtils.equals(lang, wordLang);
+				word.setSelected(isSelected);
+
+				if (isSelected) {
 					break;
 				}
 			}
-		} else {
-			words.get(0).setSelected(true);
+			if (!isSelected) {
+				firstWord.setSelected(true);
+			}
 		}
 	}
 

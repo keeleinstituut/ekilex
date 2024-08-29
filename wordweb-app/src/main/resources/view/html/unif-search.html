@@ -115,6 +115,7 @@
     </main>
     <div class="row word-details" th:fragment="worddetails" th:if="${wordData.word != null}">
       <input id="selected-word-homonym-nr" type="hidden" th:value="${wordData.word.homonymNr}">
+      <input id="selected-word-lang" type="hidden" th:value="${wordData.word.lang}">
       <div class="col-12 pt-2 ml-2" th:unless="${wordData.relevantDataExists}">
         <div class="row">
           <h5 th:text="#{label.lexeme.not.found}">Soovitud keeltes tulemusi ei leidu</h5>

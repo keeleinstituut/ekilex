@@ -68,6 +68,7 @@ public class UnifSearchController extends AbstractSearchController {
 	public String searchWords(
 			@RequestParam(name = "searchWord") String searchWord,
 			@RequestParam(name = "selectedWordHomonymNr", required = false) String selectedWordHomonymNrStr,
+			@RequestParam(name = "selectedWordLang", required = false) String selectedWordLang,
 			@RequestParam(name = "destinLangsStr") String destinLangsStr,
 			@RequestParam(name = "datasetCodesStr") String datasetCodesStr,
 			@RequestParam(name = "linkedLexemeId", required = false) Long linkedLexemeId,
@@ -90,7 +91,7 @@ public class UnifSearchController extends AbstractSearchController {
 			selectedWordHomonymNr = nullSafe(selectedWordHomonymNrStr);
 		}
 		searchWord = textDecorationService.unifyToApostrophe(searchWord);
-		String searchUri = webUtil.composeDetailSearchUri(destinLangsStr, datasetCodesStr, searchWord, selectedWordHomonymNr);
+		String searchUri = webUtil.composeDetailSearchUri(destinLangsStr, datasetCodesStr, searchWord, selectedWordHomonymNr, selectedWordLang);
 		setSearchFormAttribute(redirectAttributes, Boolean.TRUE);
 		redirectAttributes.addFlashAttribute("linkedLexemeId", linkedLexemeId);
 
@@ -98,13 +99,14 @@ public class UnifSearchController extends AbstractSearchController {
 	}
 
 	@GetMapping({
-			SEARCH_URI + UNIF_URI + "/{destinLangs}/{datasetCodes}/{searchWord}/{homonymNr}",
+			SEARCH_URI + UNIF_URI + "/{destinLangs}/{datasetCodes}/{searchWord}/{homonymNr}/{lang}",
 			SEARCH_URI + UNIF_URI + "/{destinLangs}/{datasetCodes}/{searchWord}"})
 	public String searchUnifWordsByUri(
 			@PathVariable(name = "destinLangs") String destinLangsStr,
 			@PathVariable(name = "datasetCodes") String datasetCodesStr,
 			@PathVariable(name = "searchWord") String searchWord,
 			@PathVariable(name = "homonymNr", required = false) String homonymNrStr,
+			@PathVariable(name = "lang", required = false) String lang,
 			HttpServletRequest request,
 			HttpServletResponse response,
 			RedirectAttributes redirectAttributes,
@@ -127,7 +129,7 @@ public class UnifSearchController extends AbstractSearchController {
 		if (isMaskedSearchCrit) {
 			searchValidation = validateAndCorrectMaskedSearch(destinLangsStr, datasetCodesStr, searchWord);
 		} else {
-			searchValidation = validateAndCorrectWordSearch(destinLangsStr, datasetCodesStr, searchWord, homonymNrStr);
+			searchValidation = validateAndCorrectWordSearch(destinLangsStr, datasetCodesStr, searchWord, homonymNrStr, lang);
 		}
 
 		sessionBean.setSearchWord(searchValidation.getSearchWord());
@@ -213,7 +215,7 @@ public class UnifSearchController extends AbstractSearchController {
 	public String feelingLucky() {
 
 		String randomWord = unifSearchService.getRandomWord();
-		String searchUri = webUtil.composeDetailSearchUri(DESTIN_LANG_ALL, DATASET_ALL, randomWord, null);
+		String searchUri = webUtil.composeDetailSearchUri(DESTIN_LANG_ALL, DATASET_ALL, randomWord, null, null);
 
 		return REDIRECT_PREF + searchUri;
 	}
@@ -266,12 +268,12 @@ public class UnifSearchController extends AbstractSearchController {
 		return "OK";
 	}
 
-	private SearchValidation validateAndCorrectWordSearch(String destinLangsStr, String datasetCodesStr, String searchWord, String homonymNrStr) {
+	private SearchValidation validateAndCorrectWordSearch(String destinLangsStr, String datasetCodesStr, String searchWord, String homonymNrStr, String lang) {
 
 		SearchValidation searchValidation = new SearchValidation();
 		searchValidation.setValid(true);
 
-		// lang and dataset
+		// lang and dataset filter
 		applyDestinLangAndDatasetValidations(searchValidation, destinLangsStr, datasetCodesStr);
 		boolean isValid = searchValidation.isValid();
 
@@ -279,15 +281,20 @@ public class UnifSearchController extends AbstractSearchController {
 		Integer homonymNr = nullSafe(homonymNrStr);
 		if (homonymNr == null) {
 			homonymNr = 1;
-			isValid = isValid & false;
+		}
+
+		// word lang
+		if (StringUtils.length(lang) != 3) {
+			lang = null;
 		}
 
 		destinLangsStr = StringUtils.join(searchValidation.getDestinLangs(), UI_FILTER_VALUES_SEPARATOR);
 		datasetCodesStr = StringUtils.join(searchValidation.getDatasetCodes(), UI_FILTER_VALUES_SEPARATOR);
-		String searchUri = webUtil.composeDetailSearchUri(destinLangsStr, datasetCodesStr, searchWord, homonymNr);
+		String searchUri = webUtil.composeDetailSearchUri(destinLangsStr, datasetCodesStr, searchWord, homonymNr, lang);
 
 		searchValidation.setSearchWord(searchWord);
 		searchValidation.setHomonymNr(homonymNr);
+		searchValidation.setLang(lang);
 		searchValidation.setSearchUri(searchUri);
 		searchValidation.setValid(isValid);
 
@@ -310,7 +317,7 @@ public class UnifSearchController extends AbstractSearchController {
 
 		destinLangsStr = StringUtils.join(searchValidation.getDestinLangs(), UI_FILTER_VALUES_SEPARATOR);
 		datasetCodesStr = StringUtils.join(searchValidation.getDatasetCodes(), UI_FILTER_VALUES_SEPARATOR);
-		String searchUri = webUtil.composeDetailSearchUri(destinLangsStr, datasetCodesStr, cleanMaskSearchWord, null);
+		String searchUri = webUtil.composeDetailSearchUri(destinLangsStr, datasetCodesStr, cleanMaskSearchWord, null, null);
 
 		searchValidation.setSearchWord(cleanMaskSearchWord);
 		searchValidation.setSearchUri(searchUri);

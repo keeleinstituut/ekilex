@@ -102,6 +102,7 @@ create type type_colloc_member as (
 				word text,
 				form text,
 				homonym_nr integer,
+				lang char(3),
 				conjunct varchar(100),
 				weight numeric(14,4));
 create type type_meaning_word as (
@@ -1527,6 +1528,7 @@ select l1.id as lexeme_id,
              lw2.word,
              lc2.member_form,
              lw2.homonym_nr,
+             lw2.lang,
              lc2.conjunct,
              lc2.weight
              )::type_colloc_member
@@ -1548,7 +1550,8 @@ from collocation as c
   inner join (select distinct l2.id lexeme_id,
                      l2.word_id,
                      w2.value word,
-                     w2.homonym_nr
+                     w2.homonym_nr,
+                     w2.lang
               from lexeme as l2,
                    word as w2,
                    dataset as l2ds

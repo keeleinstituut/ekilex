@@ -134,8 +134,6 @@ public abstract class AbstractSearchService implements SystemConstant, WebConsta
 		SearchContext searchContext = getSearchContext(searchFilter);
 		WordsMatch wordsMatch = searchDbService.getWordsWithMask(searchWord, searchContext);
 
-		// TODO add filters recommendatiosn
-
 		return wordsMatch;
 	}
 
@@ -144,12 +142,13 @@ public abstract class AbstractSearchService implements SystemConstant, WebConsta
 
 		String searchWord = searchFilter.getSearchWord();
 		Integer homonymNr = searchFilter.getHomonymNr();
+		String lang = searchFilter.getLang();
 
 		SearchContext searchContext = getSearchContext(searchFilter);
 		List<Word> allWords = searchDbService.getWords(searchWord, searchContext, false);
 		wordConversionUtil.setAffixoidFlags(allWords);
 		wordConversionUtil.composeHomonymWrapups(allWords, searchContext);
-		wordConversionUtil.selectHomonym(allWords, homonymNr);
+		wordConversionUtil.selectHomonymWithLang(allWords, homonymNr, lang);
 
 		List<Word> wordMatchWords = allWords.stream()
 				.filter(Word::isWordMatch)

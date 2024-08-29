@@ -16,6 +16,8 @@ public class SearchFilter extends AbstractDataObject {
 
 	private Integer homonymNr;
 
+	private String lang;
+
 	public SearchFilter() {
 	}
 
@@ -54,6 +56,14 @@ public class SearchFilter extends AbstractDataObject {
 
 	public void setHomonymNr(Integer homonymNr) {
 		this.homonymNr = homonymNr;
+	}
+
+	public String getLang() {
+		return lang;
+	}
+
+	public void setLang(String lang) {
+		this.lang = lang;
 	}
 
 }

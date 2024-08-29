@@ -228,7 +228,7 @@
                 <span class="mr-2" th:text="${relationType.value}"></span>
                 <th:block th:each="relation, relationIter : ${lexeme.relatedMeaningsByType.get(relationType)}">
                   <div class="relation-item mr-1">
-                    <a th:href="@{${viewUtil.getSearchUri(sessionBean, searchMode, relation.word, relation.homonymNr)}}">
+                    <a th:href="@{${viewUtil.getSearchUri(sessionBean, searchMode, relation.word, relation.homonymNr, relation.lang)}}">
                       <span th:utext="${viewUtil.getWordValueMarkup(relation)}">tee</span>
                     </a>
                     <th:block th:if="${not #lists.isEmpty(relation.lexRegisters)}">
@@ -259,7 +259,7 @@
                     <div th:each="meaningLexeme,meaninglexemeIter : ${meaningLangLexemes}" th:classappend="${meaninglexemeIter.last ? '' : 'mb-1'}">
                       <div class="row">
                         <div class="col-12">
-                          <a th:href="@{${viewUtil.getSearchUri(sessionBean, searchMode, meaningLexeme.word, meaningLexeme.homonymNr)}}" class="matching-word "
+                          <a th:href="@{${viewUtil.getSearchUri(sessionBean, searchMode, meaningLexeme.word, meaningLexeme.homonymNr, meaningLexeme.lang)}}" class="matching-word "
                              th:classappend="${meaningLexeme.wordId == wordId ? 'match' : ''}">
                             <span th:utext="${viewUtil.getWordValueMarkup(meaningLexeme)}">tee</span>
                           </a>

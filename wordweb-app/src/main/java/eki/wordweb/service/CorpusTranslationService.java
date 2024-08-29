@@ -27,16 +27,16 @@ public class CorpusTranslationService extends AbstractCorpusService {
 
 	private static final int RESULTS_LIMIT = 39;
 
-	@Cacheable(value = CACHE_KEY_CORPUS, key = "{#root.methodName, #wordId, #wordLang, #wordValue}")
-	public List<CorpusTranslation> getTranslations(Long wordId, String wordLang, String wordValue) {
+	@Cacheable(value = CACHE_KEY_CORPUS, key = "{#root.methodName, #wordId, #wordValue, #wordLang}")
+	public List<CorpusTranslation> getTranslations(Long wordId, String wordValue, String wordLang) {
 
-		URI corpusUrl = composeCorpusUrl(wordId, wordLang, wordValue);
+		URI corpusUrl = composeCorpusUrl(wordId, wordValue, wordLang);
 		Map<String, Object> response = requestSentences(corpusUrl);
 		List<CorpusTranslation> translations = parseResponse(response);
 		return translations;
 	}
 
-	private URI composeCorpusUrl(Long wordId, String wordLang, String wordValue) {
+	private URI composeCorpusUrl(Long wordId, String wordValue, String wordLang) {
 
 		if (isBlank(serviceUrl)) {
 			return null;

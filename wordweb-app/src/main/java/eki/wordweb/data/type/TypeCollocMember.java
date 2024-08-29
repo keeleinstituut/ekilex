@@ -20,6 +20,8 @@ public class TypeCollocMember extends AbstractDataObject {
 
 	private Integer homonymNr;
 
+	private String lang;
+
 	private String conjunct;
 
 	private Float weight;
@@ -72,6 +74,14 @@ public class TypeCollocMember extends AbstractDataObject {
 
 	public void setHomonymNr(Integer homonymNr) {
 		this.homonymNr = homonymNr;
+	}
+
+	public String getLang() {
+		return lang;
+	}
+
+	public void setLang(String lang) {
+		this.lang = lang;
 	}
 
 	public String getConjunct() {

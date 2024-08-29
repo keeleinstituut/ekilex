@@ -32,21 +32,29 @@ public class WebUtil implements WebConstant, SystemConstant, GlobalConstant {
 		return false;
 	}
 
-	public String composeDetailSearchUri(String destinLangsStr, String datasetCodesStr, String word, Integer homonymNr) {
+	public String composeDetailSearchUri(String destinLangsStr, String datasetCodesStr, String word, Integer homonymNr, String lang) {
 		String encodedWord = encode(word);
 		String encodedDatasetCodesStr = encodeSeparatedValuesStr(datasetCodesStr);
-		String searchUri = StringUtils.join(SEARCH_URI, UNIF_URI, '/', destinLangsStr, '/', encodedDatasetCodesStr, '/', encodedWord);
-		if ((homonymNr != null)) {
-			searchUri += "/" + homonymNr;
+		String searchUri;
+		if (homonymNr == null) {
+			searchUri = StringUtils.join(SEARCH_URI, UNIF_URI, '/', destinLangsStr, '/', encodedDatasetCodesStr, '/', encodedWord);
+		} else if (StringUtils.isBlank(lang)) {
+			searchUri = StringUtils.join(SEARCH_URI, UNIF_URI, '/', destinLangsStr, '/', encodedDatasetCodesStr, '/', encodedWord);
+		} else {
+			searchUri = StringUtils.join(SEARCH_URI, UNIF_URI, '/', destinLangsStr, '/', encodedDatasetCodesStr, '/', encodedWord, '/', homonymNr, '/', lang);
 		}
 		return searchUri;
 	}
 
-	public String composeSimpleSearchUri(String destinLangsStr, String word, Integer homonymNr) {
+	public String composeSimpleSearchUri(String destinLangsStr, String word, Integer homonymNr, String lang) {
 		String encodedWord = encode(word);
-		String searchUri = StringUtils.join(SEARCH_URI, LITE_URI, '/', destinLangsStr, '/', encodedWord);
-		if (homonymNr != null) {
-			searchUri += "/" + homonymNr;
+		String searchUri;
+		if (homonymNr == null) {
+			searchUri = StringUtils.join(SEARCH_URI, LITE_URI, '/', destinLangsStr, '/', encodedWord);
+		} else if (StringUtils.isBlank(lang)) {
+			searchUri = StringUtils.join(SEARCH_URI, LITE_URI, '/', destinLangsStr, '/', encodedWord);
+		} else {
+			searchUri = StringUtils.join(SEARCH_URI, LITE_URI, '/', destinLangsStr, '/', encodedWord, '/', homonymNr, '/', lang);
 		}
 		return searchUri;
 	}

@@ -237,15 +237,15 @@ public class ViewUtil implements WebConstant, SystemConstant, GlobalConstant {
 		return value;
 	}
 
-	public String getSearchUri(SessionBean sessionBean, String searchMode, String word, Integer homonymNr) {
+	public String getSearchUri(SessionBean sessionBean, String searchMode, String word, Integer homonymNr, String lang) {
 		List<String> destinLangs = sessionBean.getDestinLangs();
 		String destinLangsStr = StringUtils.join(destinLangs, UI_FILTER_VALUES_SEPARATOR);
 		if (StringUtils.equals(SEARCH_MODE_DETAIL, searchMode)) {
 			List<String> datasetCodes = sessionBean.getDatasetCodes();
 			String datasetCodesStr = StringUtils.join(datasetCodes, UI_FILTER_VALUES_SEPARATOR);
-			return webUtil.composeDetailSearchUri(destinLangsStr, datasetCodesStr, word, homonymNr);
+			return webUtil.composeDetailSearchUri(destinLangsStr, datasetCodesStr, word, homonymNr, lang);
 		} else if (StringUtils.equals(SEARCH_MODE_SIMPLE, searchMode)) {
-			return webUtil.composeSimpleSearchUri(destinLangsStr, word, homonymNr);
+			return webUtil.composeSimpleSearchUri(destinLangsStr, word, homonymNr, lang);
 		}
 		return null;
 	}
@@ -256,25 +256,25 @@ public class ViewUtil implements WebConstant, SystemConstant, GlobalConstant {
 		if (StringUtils.equals(SEARCH_MODE_DETAIL, searchMode)) {
 			List<String> datasetCodes = sessionBean.getDatasetCodes();
 			String datasetCodesStr = StringUtils.join(datasetCodes, UI_FILTER_VALUES_SEPARATOR);
-			return webUtil.composeDetailSearchUri(destinLangsStr, datasetCodesStr, word, null);
+			return webUtil.composeDetailSearchUri(destinLangsStr, datasetCodesStr, word, null, null);
 		} else if (StringUtils.equals(SEARCH_MODE_SIMPLE, searchMode)) {
-			return webUtil.composeSimpleSearchUri(destinLangsStr, word, null);
+			return webUtil.composeSimpleSearchUri(destinLangsStr, word, null, null);
 		}
 		return null;
 	}
 
 	public String getDetailSearchUri(String word) {
-		String uri = webUtil.composeDetailSearchUri(DESTIN_LANG_ALL, DATASET_ALL, word, null);
+		String uri = webUtil.composeDetailSearchUri(DESTIN_LANG_ALL, DATASET_ALL, word, null, null);
 		return uri;
 	}
 
 	public String getSimpleSearchUri(String word) {
-		String uri = webUtil.composeSimpleSearchUri(DESTIN_LANG_ALL, word, null);
+		String uri = webUtil.composeSimpleSearchUri(DESTIN_LANG_ALL, word, null, null);
 		return uri;
 	}
 
 	public String getDetailSearchUri(String word, String datasetCode) {
-		String uri = webUtil.composeDetailSearchUri(DESTIN_LANG_ALL, datasetCode, word, null);
+		String uri = webUtil.composeDetailSearchUri(DESTIN_LANG_ALL, datasetCode, word, null, null);
 		return uri;
 	}
 

@@ -26,7 +26,6 @@ function searchWordAutocompleteHeight() {
 				'overflow-x': 'hidden',
 				'max-height': maxAutocompleHeight
 			});
-
 		}
 	}
 }
@@ -141,6 +140,7 @@ $(document).on("click", "eki-link", function(e) {
 			const searchForm = $('#hiddenSearchForm');
 			searchForm.find("input[name='searchWord']").val(data.word);
 			searchForm.find("input[name='selectedWordHomonymNr']").val(data.homonymNr);
+			searchForm.find("input[name='selectedWordLang']").val(data.lang);
 			searchForm.find("input[name='linkedLexemeId']").val(data.lexemeId);
 			searchForm.submit();
 		} else {
@@ -198,7 +198,7 @@ $(document).on("click", "a[id^='destin-lang-']", function(e) {
 	}).get();
 	$("input[name='destinLangsStr']").val(destinLangsStr);
 	$("#selected-langs").text(selectedLangs);
-	setSelectedWordHomonymNr();
+	setSelectedWordHomonymNrAndLang();
 	clickSearchIfInputExists();
 });
 
@@ -229,13 +229,15 @@ $(document).on("click", "a[id^='dataset-']", function(e) {
 	}
 	$("input[name='datasetCodesStr']").val(datasetCodesStr);
 	$("#selected-datasets").text(selectedDatasetsStr);
-	setSelectedWordHomonymNr();
+	setSelectedWordHomonymNrAndLang();
 	clickSearchIfInputExists();
 });
 
-function setSelectedWordHomonymNr() {
-	var selectedHomonymNr = $("#selected-word-homonym-nr").val();
-	$("input[name='selectedWordHomonymNr']").val(selectedHomonymNr);
+function setSelectedWordHomonymNrAndLang() {
+	var selectedWordHomonymNr = $("#selected-word-homonym-nr").val();
+	var selectedWordLang = $("#selected-word-lang").val();
+	$("input[name='selectedWordHomonymNr']").val(selectedWordHomonymNr);
+	$("input[name='selectedWordLang']").val(selectedWordLang);
 }
 
 function clickSearchIfInputExists() {
