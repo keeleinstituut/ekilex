@@ -198,7 +198,7 @@ public class TermEditController extends AbstractMutableDataPageController {
 		model.addAttribute("backUri", backUri);
 
 		if (clearResults || StringUtils.isAnyBlank(wordValue, datasetCode, language)) {
-			TermCreateWordAndMeaningDetails details = lookupService.getDetailsForMeaningAndWordCreate(user, wordValue, language, datasetCode, false);
+			TermCreateWordAndMeaningDetails details = lookupService.getDetailsForMeaningAndWordCreate(user, wordValue, language, roleDatasetCode, false);
 			model.addAttribute("details", details);
 			return TERM_CREATE_WORD_AND_MEANING_PAGE;
 		}

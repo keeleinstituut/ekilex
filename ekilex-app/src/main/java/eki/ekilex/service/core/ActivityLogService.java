@@ -560,14 +560,12 @@ public class ActivityLogService implements SystemConstant, GlobalConstant {
 		List<Long> roleDatasetMeaningIds = new ArrayList<>();
 		EkiUser user = userContext.getUser();
 
-		if (!user.isMaster()) {
-			DatasetPermission userRole = user.getRecentRole();
-			String roleDatasetCode = userRole.getDatasetCode();
-			for (Long meaningId : meaningIds) {
-				String meaningDatasetCode = lookupDbService.getMeaningFirstDatasetCode(meaningId);
-				if (StringUtils.equals(meaningDatasetCode, roleDatasetCode)) {
-					roleDatasetMeaningIds.add(meaningId);
-				}
+		DatasetPermission userRole = user.getRecentRole();
+		String roleDatasetCode = userRole.getDatasetCode();
+		for (Long meaningId : meaningIds) {
+			String meaningDatasetCode = lookupDbService.getMeaningFirstDatasetCode(meaningId);
+			if (StringUtils.equals(meaningDatasetCode, roleDatasetCode)) {
+				roleDatasetMeaningIds.add(meaningId);
 			}
 		}
 
