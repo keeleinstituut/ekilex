@@ -2,9 +2,6 @@ package eki.common.constant;
 
 public interface ContentKey {
 
-	@Deprecated
-	String FREEFORM_SOURCE_LINK = "ff_source_link";
-
 	String DEFINITION_SOURCE_LINK = "definition_source_link";
 
 	String DEFINITION_NOTE_SOURCE_LINK = "definition_note_source_link";

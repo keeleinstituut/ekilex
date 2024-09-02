@@ -429,6 +429,7 @@ public class MigrationDbService extends AbstractDataDbService {
 				.fetchInto(eki.ekilex.data.Source.class);
 	}
 
+	@Deprecated
 	public List<MigraSourceLink> getSourceLinks(Long sourceId, SourceLinkOwner sourceLinkOwner) {
 
 		FreeformSourceLink fsl = FREEFORM_SOURCE_LINK.as("fsl");
@@ -541,6 +542,7 @@ public class MigrationDbService extends AbstractDataDbService {
 		return null;
 	}
 
+	@Deprecated
 	public void relinkSourceLink(Long sourceId, MigraSourceLink sourceLink) {
 
 		Long sourceLinkId = sourceLink.getSourceLinkId();

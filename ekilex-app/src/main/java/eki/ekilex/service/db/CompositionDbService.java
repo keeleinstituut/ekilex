@@ -7,7 +7,6 @@ import static eki.ekilex.data.db.Tables.DEFINITION_FREEFORM;
 import static eki.ekilex.data.db.Tables.DEFINITION_SOURCE_LINK;
 import static eki.ekilex.data.db.Tables.FORM;
 import static eki.ekilex.data.db.Tables.FREEFORM;
-import static eki.ekilex.data.db.Tables.FREEFORM_SOURCE_LINK;
 import static eki.ekilex.data.db.Tables.LEXEME;
 import static eki.ekilex.data.db.Tables.LEXEME_ACTIVITY_LOG;
 import static eki.ekilex.data.db.Tables.LEXEME_DERIV;
@@ -87,7 +86,6 @@ import eki.ekilex.data.db.tables.records.DefinitionRecord;
 import eki.ekilex.data.db.tables.records.DefinitionSourceLinkRecord;
 import eki.ekilex.data.db.tables.records.FormRecord;
 import eki.ekilex.data.db.tables.records.FreeformRecord;
-import eki.ekilex.data.db.tables.records.FreeformSourceLinkRecord;
 import eki.ekilex.data.db.tables.records.LexCollocRecord;
 import eki.ekilex.data.db.tables.records.LexRelationRecord;
 import eki.ekilex.data.db.tables.records.LexemeDerivRecord;
@@ -960,21 +958,12 @@ public class CompositionDbService extends AbstractDataDbService implements Globa
 	}
 
 	private Long cloneFreeform(Long freeformId, Long parentFreeformId) {
+
 		FreeformRecord freeform = create.selectFrom(FREEFORM).where(FREEFORM.ID.eq(freeformId)).fetchOne();
 		FreeformRecord clonedFreeform = freeform.copy();
 		clonedFreeform.setParentId(parentFreeformId);
 		clonedFreeform.changed(FREEFORM.ORDER_BY, false);
 		clonedFreeform.store();
-		Result<FreeformSourceLinkRecord> freeformSourceLinks = create.selectFrom(FREEFORM_SOURCE_LINK)
-				.where(FREEFORM_SOURCE_LINK.FREEFORM_ID.eq(freeformId))
-				.orderBy(FREEFORM_SOURCE_LINK.ORDER_BY)
-				.fetch();
-		freeformSourceLinks.forEach(sl -> {
-			FreeformSourceLinkRecord clonedSourceLink = sl.copy();
-			clonedSourceLink.setFreeformId(clonedFreeform.getId());
-			clonedSourceLink.changed(FREEFORM_SOURCE_LINK.ORDER_BY, false);
-			clonedSourceLink.store();
-		});
 		List<FreeformRecord> childFreeforms = create.selectFrom(FREEFORM)
 				.where(FREEFORM.PARENT_ID.eq(freeformId))
 				.orderBy(FREEFORM.ORDER_BY)

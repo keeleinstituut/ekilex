@@ -218,8 +218,8 @@ public class TermSearchConditionComposer implements GlobalConstant, ActivityFunc
 					wherel = wherel.andNotExists(DSL.select(u1.ID).from(u1).where(whereff2));
 				} else {
 					whereff1 = searchFilterHelper.applyValueFilters(SearchKey.VALUE_AND_EXISTS, searchCriteria, u1.VALUE, whereff2, true);
-					whereff1 = searchFilterHelper.applyFreeformSourceFilters(searchCriteria, u1.ID, whereff1);
-					whereff1 = searchFilterHelper.applyFreeformSourceRefFilter(searchCriteria, u1.ID, whereff1);
+					whereff1 = searchFilterHelper.applyUsageSourceFilters(searchCriteria, u1.ID, whereff1);
+					whereff1 = searchFilterHelper.applyUsageSourceRefFilter(searchCriteria, u1.ID, whereff1);
 					whereff1 = searchFilterHelper.applyPublicityFilters(searchCriteria, u1.IS_PUBLIC, whereff1);
 					whereff1 = searchFilterHelper.applyLexemeComplexityFilters(searchCriteria, u1.COMPLEXITY, whereff1);
 					wherel = wherel.andExists(DSL.select(u1.ID).from(u1).where(whereff1));

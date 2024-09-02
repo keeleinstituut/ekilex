@@ -1,5 +1,6 @@
 package eki.common.constant;
 
+//TODO update data structures
 public interface TableName {
 
 	String EKI_USER = "eki_user";
@@ -65,6 +66,7 @@ public interface TableName {
 	String FORM = "form";
 	String FORM_FREQUENCY = "form_frequency";
 	String FREEFORM = "freeform";
+	@Deprecated
 	String FREEFORM_SOURCE_LINK = "freeform_source_link";
 	String COLLOCATION = "collocation";
 	String COLLOCATION_FREEFORM = "collocation_freeform";

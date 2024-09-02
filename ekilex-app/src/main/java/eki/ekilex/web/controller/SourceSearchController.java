@@ -113,11 +113,11 @@ public class SourceSearchController extends AbstractPrivateSearchController {
 			@RequestParam(name = "pageNum", required = false) Integer pageNum,
 			Model model) throws Exception {
 
+		EkiUser user = userContext.getUser();
 		SearchUriData searchUriData = searchHelper.parseSearchUri(SOURCE_SEARCH_PAGE, searchUri);
 		String searchMode = searchUriData.getSearchMode();
 		String simpleSearchFilter = searchUriData.getSimpleSearchFilter();
 		SearchFilter detailSearchFilter = searchUriData.getDetailSearchFilter();
-		EkiUser user = userContext.getUser();
 
 		if (StringUtils.equals("next", direction)) {
 			offset += DEFAULT_MAX_RESULTS_LIMIT;
@@ -147,7 +147,6 @@ public class SourceSearchController extends AbstractPrivateSearchController {
 	public String sourceIdSearch(@PathVariable("sourceId") Long sourceId, Model model) {
 
 		EkiUser user = userContext.getUser();
-
 		SourceSearchResult sourceSearchResult = new SourceSearchResult();
 		sourceSearchResult.setSources(new ArrayList<>());
 		Source source = sourceService.getSource(sourceId, user);
@@ -167,6 +166,13 @@ public class SourceSearchController extends AbstractPrivateSearchController {
 	public String sourceDetailSearch(@PathVariable("searchPage") String searchPage, @PathVariable("sourceId") Long sourceId) {
 
 		List<String> selectedDatasets = getUserPreferredDatasetCodes();
+		Source source = sourceService.getSource(sourceId);
+		if (source != null) {
+			String sourceDatasetCode = source.getDatasetCode();
+			if (!selectedDatasets.contains(sourceDatasetCode)) {
+				selectedDatasets.add(sourceDatasetCode);
+			}
+		}
 		SearchFilter detailSearchFilter = searchHelper.createSourceDetailSearchFilter(sourceId);
 		String searchUri = searchHelper.composeSearchUri(SEARCH_MODE_DETAIL, selectedDatasets, null, detailSearchFilter, SearchResultMode.MEANING, null);
 		if (LEX_SEARCH_PAGE.equals(searchPage)) {

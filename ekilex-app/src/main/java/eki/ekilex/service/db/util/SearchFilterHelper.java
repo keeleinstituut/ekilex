@@ -8,7 +8,6 @@ import static eki.ekilex.data.db.Tables.DEFINITION_NOTE_SOURCE_LINK;
 import static eki.ekilex.data.db.Tables.DEFINITION_SOURCE_LINK;
 import static eki.ekilex.data.db.Tables.FORM_FREQ;
 import static eki.ekilex.data.db.Tables.FREEFORM;
-import static eki.ekilex.data.db.Tables.FREEFORM_SOURCE_LINK;
 import static eki.ekilex.data.db.Tables.FREQ_CORP;
 import static eki.ekilex.data.db.Tables.LEXEME;
 import static eki.ekilex.data.db.Tables.LEXEME_ACTIVITY_LOG;
@@ -27,6 +26,7 @@ import static eki.ekilex.data.db.Tables.MEANING_NOTE_SOURCE_LINK;
 import static eki.ekilex.data.db.Tables.MEANING_RELATION;
 import static eki.ekilex.data.db.Tables.MEANING_SEMANTIC_TYPE;
 import static eki.ekilex.data.db.Tables.MEANING_TAG;
+import static eki.ekilex.data.db.Tables.USAGE_SOURCE_LINK;
 import static eki.ekilex.data.db.Tables.WORD_ACTIVITY_LOG;
 import static eki.ekilex.data.db.Tables.WORD_FORUM;
 import static eki.ekilex.data.db.Tables.WORD_FREEFORM;
@@ -82,7 +82,6 @@ import eki.ekilex.data.db.tables.DefinitionNoteSourceLink;
 import eki.ekilex.data.db.tables.DefinitionSourceLink;
 import eki.ekilex.data.db.tables.FormFreq;
 import eki.ekilex.data.db.tables.Freeform;
-import eki.ekilex.data.db.tables.FreeformSourceLink;
 import eki.ekilex.data.db.tables.FreqCorp;
 import eki.ekilex.data.db.tables.Lexeme;
 import eki.ekilex.data.db.tables.LexemeActivityLog;
@@ -103,6 +102,7 @@ import eki.ekilex.data.db.tables.MeaningRelation;
 import eki.ekilex.data.db.tables.MeaningSemanticType;
 import eki.ekilex.data.db.tables.MeaningTag;
 import eki.ekilex.data.db.tables.Source;
+import eki.ekilex.data.db.tables.UsageSourceLink;
 import eki.ekilex.data.db.tables.Word;
 import eki.ekilex.data.db.tables.WordActivityLog;
 import eki.ekilex.data.db.tables.WordForum;
@@ -1321,6 +1321,58 @@ public class SearchFilterHelper implements GlobalConstant, ActivityFunct {
 		return where;
 	}
 
+	public Condition applyUsageSourceFilters(List<SearchCriterion> searchCriteria, Field<Long> usageIdField, Condition where) throws Exception {
+
+		boolean containsSearchKeys = containsSearchKeys(searchCriteria, SearchKey.SOURCE_NAME, SearchKey.SOURCE_VALUE);
+		if (!containsSearchKeys) {
+			return where;
+		}
+
+		List<SearchCriterion> filteredByNameCriteria = filterCriteriaBySearchKey(searchCriteria, SearchKey.SOURCE_NAME);
+		List<SearchCriterion> filteredByValueCriteria = filterCriteriaBySearchKey(searchCriteria, SearchKey.SOURCE_VALUE);
+
+		UsageSourceLink usl = USAGE_SOURCE_LINK.as("usl");
+		Source s = Source.SOURCE.as("s");
+
+		Condition sourceCondition = usl.USAGE_ID.eq(usageIdField).and(usl.SOURCE_ID.eq(s.ID));
+
+		for (SearchCriterion criterion : filteredByNameCriteria) {
+			String searchValueStr = criterion.getSearchValue().toString();
+			sourceCondition = applyValueFilter(searchValueStr, criterion.isNot(), criterion.getSearchOperand(), s.NAME, sourceCondition, true);
+		}
+		for (SearchCriterion criterion : filteredByValueCriteria) {
+			String searchValueStr = criterion.getSearchValue().toString();
+			sourceCondition = applyValueFilter(searchValueStr, criterion.isNot(), criterion.getSearchOperand(), s.VALUE, sourceCondition, true);
+		}
+		return where.and(DSL.exists(DSL.select(s.ID).from(usl, s).where(sourceCondition)));
+	}
+
+	public Condition applyUsageSourceRefFilter(List<SearchCriterion> searchCriteria, Field<Long> usageIdField, Condition where) throws Exception {
+
+		List<SearchCriterion> filteredCriteria = filterSourceRefCriteria(searchCriteria);
+
+		if (CollectionUtils.isEmpty(filteredCriteria)) {
+			return where;
+		}
+
+		List<SearchCriterion> existsCriteria = filteredCriteria.stream()
+				.filter(crit -> crit.getSearchOperand().equals(SearchOperand.EXISTS))
+				.collect(toList());
+
+		UsageSourceLink usl = USAGE_SOURCE_LINK.as("usl");
+		Condition sourceCondition = usl.USAGE_ID.eq(usageIdField);
+
+		if (CollectionUtils.isNotEmpty(existsCriteria)) {
+			boolean isNot = existsCriteria.get(0).isNot();
+			Condition critWhere = DSL.exists(DSL.select(usl.ID).from(usl).where(sourceCondition));
+			if (isNot) {
+				critWhere = DSL.not(critWhere);
+			}
+			where = where.and(critWhere);
+		}
+		return where;
+	}
+
 	public Condition applyMeaningNoteSourceFilters(List<SearchCriterion> searchCriteria, Field<Long> meaningNoteIdField, Condition where) throws Exception {
 
 		boolean containsSearchKeys = containsSearchKeys(searchCriteria, SearchKey.SOURCE_NAME, SearchKey.SOURCE_VALUE);
@@ -1768,58 +1820,6 @@ public class SearchFilterHelper implements GlobalConstant, ActivityFunct {
 			throw new IllegalArgumentException("Unsupported operand " + searchOperand);
 		}
 		return condition;
-	}
-
-	public Condition applyFreeformSourceRefFilter(List<SearchCriterion> searchCriteria, Field<Long> freeformIdField, Condition where) throws Exception {
-
-		List<SearchCriterion> filteredCriteria = filterSourceRefCriteria(searchCriteria);
-
-		if (CollectionUtils.isEmpty(filteredCriteria)) {
-			return where;
-		}
-
-		List<SearchCriterion> existsCriteria = filteredCriteria.stream()
-				.filter(crit -> crit.getSearchOperand().equals(SearchOperand.EXISTS))
-				.collect(toList());
-
-		FreeformSourceLink ffsl = FREEFORM_SOURCE_LINK.as("ffsl");
-		Condition sourceCondition = ffsl.FREEFORM_ID.eq(freeformIdField);
-
-		if (CollectionUtils.isNotEmpty(existsCriteria)) {
-			boolean isNot = existsCriteria.get(0).isNot();
-			Condition critWhere = DSL.exists(DSL.select(ffsl.ID).from(ffsl).where(sourceCondition));
-			if (isNot) {
-				critWhere = DSL.not(critWhere);
-			}
-			where = where.and(critWhere);
-		}
-		return where;
-	}
-
-	public Condition applyFreeformSourceFilters(List<SearchCriterion> searchCriteria, Field<Long> freeformIdField, Condition where) throws Exception {
-
-		boolean containsSearchKeys = containsSearchKeys(searchCriteria, SearchKey.SOURCE_NAME, SearchKey.SOURCE_VALUE);
-		if (!containsSearchKeys) {
-			return where;
-		}
-
-		List<SearchCriterion> filteredByNameCriteria = filterCriteriaBySearchKey(searchCriteria, SearchKey.SOURCE_NAME);
-		List<SearchCriterion> filteredByValueCriteria = filterCriteriaBySearchKey(searchCriteria, SearchKey.SOURCE_VALUE);
-
-		FreeformSourceLink usl = FREEFORM_SOURCE_LINK.as("usl");
-		Source s = Source.SOURCE.as("s");
-
-		Condition sourceCondition = usl.FREEFORM_ID.eq(freeformIdField).and(usl.SOURCE_ID.eq(s.ID));
-
-		for (SearchCriterion criterion : filteredByNameCriteria) {
-			String searchValueStr = criterion.getSearchValue().toString();
-			sourceCondition = applyValueFilter(searchValueStr, criterion.isNot(), criterion.getSearchOperand(), s.NAME, sourceCondition, true);
-		}
-		for (SearchCriterion criterion : filteredByValueCriteria) {
-			String searchValueStr = criterion.getSearchValue().toString();
-			sourceCondition = applyValueFilter(searchValueStr, criterion.isNot(), criterion.getSearchOperand(), s.VALUE, sourceCondition, true);
-		}
-		return where.and(DSL.exists(DSL.select(s.ID).from(usl, s).where(sourceCondition)));
 	}
 
 	public Condition applyDefinitionSourceRefFilter(List<SearchCriterion> searchCriteria, Field<Long> definitionIdField, Condition where) throws Exception {

@@ -3,17 +3,24 @@ package eki.ekilex.service.db;
 import static eki.ekilex.data.db.Tables.ACTIVITY_LOG;
 import static eki.ekilex.data.db.Tables.DATASET;
 import static eki.ekilex.data.db.Tables.DEFINITION;
-import static eki.ekilex.data.db.Tables.DEFINITION_FREEFORM;
+import static eki.ekilex.data.db.Tables.DEFINITION_NOTE;
+import static eki.ekilex.data.db.Tables.DEFINITION_NOTE_SOURCE_LINK;
 import static eki.ekilex.data.db.Tables.DEFINITION_SOURCE_LINK;
 import static eki.ekilex.data.db.Tables.FREEFORM;
 import static eki.ekilex.data.db.Tables.FREEFORM_SOURCE_LINK;
 import static eki.ekilex.data.db.Tables.LEXEME;
-import static eki.ekilex.data.db.Tables.LEXEME_FREEFORM;
+import static eki.ekilex.data.db.Tables.LEXEME_NOTE;
+import static eki.ekilex.data.db.Tables.LEXEME_NOTE_SOURCE_LINK;
 import static eki.ekilex.data.db.Tables.LEXEME_SOURCE_LINK;
-import static eki.ekilex.data.db.Tables.MEANING_FREEFORM;
+import static eki.ekilex.data.db.Tables.MEANING_IMAGE;
+import static eki.ekilex.data.db.Tables.MEANING_IMAGE_SOURCE_LINK;
+import static eki.ekilex.data.db.Tables.MEANING_NOTE;
+import static eki.ekilex.data.db.Tables.MEANING_NOTE_SOURCE_LINK;
 import static eki.ekilex.data.db.Tables.SOURCE;
 import static eki.ekilex.data.db.Tables.SOURCE_ACTIVITY_LOG;
 import static eki.ekilex.data.db.Tables.SOURCE_FREEFORM;
+import static eki.ekilex.data.db.Tables.USAGE;
+import static eki.ekilex.data.db.Tables.USAGE_SOURCE_LINK;
 import static eki.ekilex.data.db.Tables.WORD_ETYMOLOGY_SOURCE_LINK;
 
 import java.util.ArrayList;
@@ -29,7 +36,6 @@ import org.jooq.Field;
 import org.jooq.Record1;
 import org.jooq.Result;
 import org.jooq.SelectHavingStep;
-import org.jooq.Table;
 import org.jooq.impl.DSL;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -51,17 +57,23 @@ import eki.ekilex.data.SourcePropertyTuple;
 import eki.ekilex.data.SourceSearchResult;
 import eki.ekilex.data.db.tables.ActivityLog;
 import eki.ekilex.data.db.tables.Definition;
-import eki.ekilex.data.db.tables.DefinitionFreeform;
+import eki.ekilex.data.db.tables.DefinitionNote;
+import eki.ekilex.data.db.tables.DefinitionNoteSourceLink;
 import eki.ekilex.data.db.tables.DefinitionSourceLink;
 import eki.ekilex.data.db.tables.Freeform;
-import eki.ekilex.data.db.tables.FreeformSourceLink;
 import eki.ekilex.data.db.tables.Lexeme;
-import eki.ekilex.data.db.tables.LexemeFreeform;
+import eki.ekilex.data.db.tables.LexemeNote;
+import eki.ekilex.data.db.tables.LexemeNoteSourceLink;
 import eki.ekilex.data.db.tables.LexemeSourceLink;
-import eki.ekilex.data.db.tables.MeaningFreeform;
+import eki.ekilex.data.db.tables.MeaningImage;
+import eki.ekilex.data.db.tables.MeaningImageSourceLink;
+import eki.ekilex.data.db.tables.MeaningNote;
+import eki.ekilex.data.db.tables.MeaningNoteSourceLink;
 import eki.ekilex.data.db.tables.Source;
 import eki.ekilex.data.db.tables.SourceActivityLog;
 import eki.ekilex.data.db.tables.SourceFreeform;
+import eki.ekilex.data.db.tables.Usage;
+import eki.ekilex.data.db.tables.UsageSourceLink;
 import eki.ekilex.data.db.tables.records.FreeformRecord;
 import eki.ekilex.service.db.util.SearchFilterHelper;
 
@@ -103,7 +115,6 @@ public class SourceDbService implements GlobalConstant, SystemConstant, Activity
 		return getSourcePropertyTuples(s, spff, sp, spmf, where);
 	}
 
-	// TODO add offset and limit
 	public SourceSearchResult getSourceSearchResult(
 			String searchFilter, SearchDatasetsRestriction searchDatasetsRestriction, String priorityDatasetCode, int offset, int maxResultsLimit) {
 
@@ -134,7 +145,9 @@ public class SourceDbService implements GlobalConstant, SystemConstant, Activity
 		where = applyDatasetRestrictions(s, searchDatasetsRestriction, where);
 
 		List<SearchCriterionGroup> searchCriteriaGroups = searchFilter.getCriteriaGroups();
+
 		for (SearchCriterionGroup searchCriterionGroup : searchCriteriaGroups) {
+
 			List<SearchCriterion> searchCriteria = searchCriterionGroup.getSearchCriteria();
 			if (CollectionUtils.isEmpty(searchCriteria)) {
 				continue;
@@ -271,14 +284,20 @@ public class SourceDbService implements GlobalConstant, SystemConstant, Activity
 			return where;
 		}
 
-		Definition d = DEFINITION.as("d");
 		Lexeme l = LEXEME.as("l");
 		LexemeSourceLink lsl = LEXEME_SOURCE_LINK.as("lsl");
+		LexemeNote ln = LEXEME_NOTE.as("ln");
+		LexemeNoteSourceLink lnsl = LEXEME_NOTE_SOURCE_LINK.as("lnsl");
+		Usage u = USAGE.as("u");
+		UsageSourceLink usl = USAGE_SOURCE_LINK.as("usl");
+		Definition d = DEFINITION.as("d");
 		DefinitionSourceLink dsl = DEFINITION_SOURCE_LINK.as("dsl");
-		FreeformSourceLink ffsl = FREEFORM_SOURCE_LINK.as("ffsl");
-		LexemeFreeform lff = LEXEME_FREEFORM.as("lff");
-		MeaningFreeform mff = MEANING_FREEFORM.as("mff");
-		DefinitionFreeform dff = DEFINITION_FREEFORM.as("dff");
+		DefinitionNote dn = DEFINITION_NOTE.as("dn");
+		DefinitionNoteSourceLink dnsl = DEFINITION_NOTE_SOURCE_LINK.as("dnsl");
+		MeaningImage mi = MEANING_IMAGE.as("mi");
+		MeaningImageSourceLink misl = MEANING_IMAGE_SOURCE_LINK.as("misl");
+		MeaningNote mn = MEANING_NOTE.as("mn");
+		MeaningNoteSourceLink mnsl = MEANING_NOTE_SOURCE_LINK.as("mnsl");
 
 		for (SearchCriterion criterion : filteredCriteria) {
 
@@ -294,6 +313,24 @@ public class SourceDbService implements GlobalConstant, SystemConstant, Activity
 										.and(lsl.LEXEME_ID.eq(l.ID))
 										.and(lsl.SOURCE_ID.eq(sourceIdField)));
 
+				SelectHavingStep<Record1<Long>> selectLexemeNoteSourceLinks = DSL
+						.select(l.ID)
+						.from(l, ln, lnsl)
+						.where(
+								l.DATASET_CODE.eq(datasetCode)
+										.and(ln.LEXEME_ID.eq(l.ID))
+										.and(lnsl.LEXEME_NOTE_ID.eq(ln.ID))
+										.and(lnsl.SOURCE_ID.eq(sourceIdField)));
+
+				SelectHavingStep<Record1<Long>> selectUsageSourceLinks = DSL
+						.select(l.ID)
+						.from(l, u, usl)
+						.where(
+								l.DATASET_CODE.eq(datasetCode)
+										.and(u.LEXEME_ID.eq(l.ID))
+										.and(usl.USAGE_ID.eq(u.ID))
+										.and(usl.SOURCE_ID.eq(sourceIdField)));
+
 				SelectHavingStep<Record1<Long>> selectDefinitionSourceLinks = DSL
 						.select(l.ID)
 						.from(l, d, dsl)
@@ -303,42 +340,42 @@ public class SourceDbService implements GlobalConstant, SystemConstant, Activity
 										.and(dsl.DEFINITION_ID.eq(d.ID))
 										.and(dsl.SOURCE_ID.eq(sourceIdField)));
 
-				SelectHavingStep<Record1<Long>> selectLexemeFreeformSourceLinks = DSL
+				SelectHavingStep<Record1<Long>> selectDefinitionNoteSourceLinks = DSL
 						.select(l.ID)
-						.from(l, lff, ffsl)
-						.where(
-								l.DATASET_CODE.eq(datasetCode)
-										.and(lff.LEXEME_ID.eq(l.ID))
-										.and(ffsl.FREEFORM_ID.eq(lff.FREEFORM_ID))
-										.and(ffsl.SOURCE_ID.eq(sourceIdField)));
-
-				SelectHavingStep<Record1<Long>> selectMeaningFreeformSourceLinks = DSL
-						.select(l.ID)
-						.from(l, mff, ffsl)
-						.where(
-								l.DATASET_CODE.eq(datasetCode)
-										.and(mff.MEANING_ID.eq(l.MEANING_ID))
-										.and(ffsl.FREEFORM_ID.eq(mff.FREEFORM_ID))
-										.and(ffsl.SOURCE_ID.eq(sourceIdField)));
-
-				SelectHavingStep<Record1<Long>> selectDefinitionFreeformSourceLinks = DSL
-						.select(l.ID)
-						.from(l, d, dff, ffsl)
+						.from(l, d, dn, dnsl)
 						.where(
 								l.DATASET_CODE.eq(datasetCode)
 										.and(d.MEANING_ID.eq(l.MEANING_ID))
-										.and(dff.DEFINITION_ID.eq(d.ID))
-										.and(ffsl.FREEFORM_ID.eq(dff.FREEFORM_ID))
-										.and(ffsl.SOURCE_ID.eq(sourceIdField)));
+										.and(dn.DEFINITION_ID.eq(d.ID))
+										.and(dnsl.DEFINITION_NOTE_ID.eq(dn.ID))
+										.and(dnsl.SOURCE_ID.eq(sourceIdField)));
 
-				Table<Record1<Long>> all = selectLexemeSourceLinks
-						.unionAll(selectDefinitionSourceLinks)
-						.unionAll(selectLexemeFreeformSourceLinks)
-						.unionAll(selectMeaningFreeformSourceLinks)
-						.unionAll(selectDefinitionFreeformSourceLinks)
-						.asTable("all");
+				SelectHavingStep<Record1<Long>> selectMeaningImageSourceLinks = DSL
+						.select(l.ID)
+						.from(l, mi, misl)
+						.where(
+								l.DATASET_CODE.eq(datasetCode)
+										.and(mi.MEANING_ID.eq(l.MEANING_ID))
+										.and(misl.MEANING_IMAGE_ID.eq(mi.ID))
+										.and(misl.SOURCE_ID.eq(sourceIdField)));
 
-				where = where.andExists(DSL.select(all.field("id")).from(all));
+				SelectHavingStep<Record1<Long>> selectMeaningNoteSourceLinks = DSL
+						.select(l.ID)
+						.from(l, mn, mnsl)
+						.where(
+								l.DATASET_CODE.eq(datasetCode)
+										.and(mn.MEANING_ID.eq(l.MEANING_ID))
+										.and(mnsl.MEANING_NOTE_ID.eq(mn.ID))
+										.and(mnsl.SOURCE_ID.eq(sourceIdField)));
+
+				where = where.and(DSL
+						.exists(selectLexemeSourceLinks)
+						.orExists(selectLexemeNoteSourceLinks)
+						.orExists(selectUsageSourceLinks)
+						.orExists(selectDefinitionSourceLinks)
+						.orExists(selectDefinitionNoteSourceLinks)
+						.orExists(selectMeaningImageSourceLinks)
+						.orExists(selectMeaningNoteSourceLinks));
 			}
 		}
 		return where;
@@ -476,9 +513,21 @@ public class SourceDbService implements GlobalConstant, SystemConstant, Activity
 		}
 
 		create
-				.update(FREEFORM_SOURCE_LINK)
-				.set(FREEFORM_SOURCE_LINK.SOURCE_ID, targetSourceId)
-				.where(FREEFORM_SOURCE_LINK.SOURCE_ID.eq(originSourceId))
+				.update(LEXEME_SOURCE_LINK)
+				.set(LEXEME_SOURCE_LINK.SOURCE_ID, targetSourceId)
+				.where(LEXEME_SOURCE_LINK.SOURCE_ID.eq(originSourceId))
+				.execute();
+
+		create
+				.update(LEXEME_NOTE_SOURCE_LINK)
+				.set(LEXEME_NOTE_SOURCE_LINK.SOURCE_ID, targetSourceId)
+				.where(LEXEME_NOTE_SOURCE_LINK.SOURCE_ID.eq(originSourceId))
+				.execute();
+
+		create
+				.update(USAGE_SOURCE_LINK)
+				.set(USAGE_SOURCE_LINK.SOURCE_ID, targetSourceId)
+				.where(USAGE_SOURCE_LINK.SOURCE_ID.eq(originSourceId))
 				.execute();
 
 		create
@@ -488,9 +537,28 @@ public class SourceDbService implements GlobalConstant, SystemConstant, Activity
 				.execute();
 
 		create
-				.update(LEXEME_SOURCE_LINK)
-				.set(LEXEME_SOURCE_LINK.SOURCE_ID, targetSourceId)
-				.where(LEXEME_SOURCE_LINK.SOURCE_ID.eq(originSourceId))
+				.update(DEFINITION_NOTE_SOURCE_LINK)
+				.set(DEFINITION_NOTE_SOURCE_LINK.SOURCE_ID, targetSourceId)
+				.where(DEFINITION_NOTE_SOURCE_LINK.SOURCE_ID.eq(originSourceId))
+				.execute();
+
+		create
+				.update(MEANING_IMAGE_SOURCE_LINK)
+				.set(MEANING_IMAGE_SOURCE_LINK.SOURCE_ID, targetSourceId)
+				.where(MEANING_IMAGE_SOURCE_LINK.SOURCE_ID.eq(originSourceId))
+				.execute();
+
+		create
+				.update(MEANING_NOTE_SOURCE_LINK)
+				.set(MEANING_NOTE_SOURCE_LINK.SOURCE_ID, targetSourceId)
+				.where(MEANING_NOTE_SOURCE_LINK.SOURCE_ID.eq(originSourceId))
+				.execute();
+
+		// TODO should be removed later
+		create
+				.update(FREEFORM_SOURCE_LINK)
+				.set(FREEFORM_SOURCE_LINK.SOURCE_ID, targetSourceId)
+				.where(FREEFORM_SOURCE_LINK.SOURCE_ID.eq(originSourceId))
 				.execute();
 
 		create
@@ -516,17 +584,33 @@ public class SourceDbService implements GlobalConstant, SystemConstant, Activity
 				.where(
 						SOURCE.ID.eq(sourceId)
 								.andNotExists(DSL
+										.select(LEXEME_SOURCE_LINK.ID)
+										.from(LEXEME_SOURCE_LINK)
+										.where(LEXEME_SOURCE_LINK.SOURCE_ID.eq(sourceId)))
+								.andNotExists(DSL
+										.select(LEXEME_NOTE_SOURCE_LINK.ID)
+										.from(LEXEME_NOTE_SOURCE_LINK)
+										.where(LEXEME_NOTE_SOURCE_LINK.SOURCE_ID.eq(sourceId)))
+								.andNotExists(DSL
+										.select(USAGE_SOURCE_LINK.ID)
+										.from(USAGE_SOURCE_LINK)
+										.where(USAGE_SOURCE_LINK.SOURCE_ID.eq(sourceId)))
+								.andNotExists(DSL
 										.select(DEFINITION_SOURCE_LINK.ID)
 										.from(DEFINITION_SOURCE_LINK)
 										.where(DEFINITION_SOURCE_LINK.SOURCE_ID.eq(sourceId)))
 								.andNotExists(DSL
-										.select(FREEFORM_SOURCE_LINK.ID)
-										.from(FREEFORM_SOURCE_LINK)
-										.where(FREEFORM_SOURCE_LINK.SOURCE_ID.eq(sourceId)))
+										.select(DEFINITION_NOTE_SOURCE_LINK.ID)
+										.from(DEFINITION_NOTE_SOURCE_LINK)
+										.where(DEFINITION_NOTE_SOURCE_LINK.SOURCE_ID.eq(sourceId)))
 								.andNotExists(DSL
-										.select(LEXEME_SOURCE_LINK.ID)
-										.from(LEXEME_SOURCE_LINK)
-										.where(LEXEME_SOURCE_LINK.SOURCE_ID.eq(sourceId)))
+										.select(MEANING_IMAGE_SOURCE_LINK.ID)
+										.from(MEANING_IMAGE_SOURCE_LINK)
+										.where(MEANING_IMAGE_SOURCE_LINK.SOURCE_ID.eq(sourceId)))
+								.andNotExists(DSL
+										.select(MEANING_NOTE_SOURCE_LINK.ID)
+										.from(MEANING_NOTE_SOURCE_LINK)
+										.where(MEANING_NOTE_SOURCE_LINK.SOURCE_ID.eq(sourceId)))
 								.andNotExists(DSL
 										.select(WORD_ETYMOLOGY_SOURCE_LINK.ID)
 										.from(WORD_ETYMOLOGY_SOURCE_LINK)

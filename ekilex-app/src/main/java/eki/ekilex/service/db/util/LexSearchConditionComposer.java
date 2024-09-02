@@ -361,8 +361,8 @@ public class LexSearchConditionComposer implements GlobalConstant, ActivityFunct
 					where = where.andNotExists(DSL.select(u1.ID).from(l1, u1).where(where2));
 				} else {
 					where1 = searchFilterHelper.applyValueFilters(SearchKey.VALUE_AND_EXISTS, searchCriteria, u1.VALUE, where2, true);
-					where1 = searchFilterHelper.applyFreeformSourceFilters(searchCriteria, u1.ID, where1);
-					where1 = searchFilterHelper.applyFreeformSourceRefFilter(searchCriteria, u1.ID, where1);
+					where1 = searchFilterHelper.applyUsageSourceFilters(searchCriteria, u1.ID, where1);
+					where1 = searchFilterHelper.applyUsageSourceRefFilter(searchCriteria, u1.ID, where1);
 					where1 = searchFilterHelper.applyPublicityFilters(searchCriteria, u1.IS_PUBLIC, where1);
 					where1 = searchFilterHelper.applyLexemeComplexityFilters(searchCriteria, u1.COMPLEXITY, where1);
 

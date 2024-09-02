@@ -1,5 +1,6 @@
 package eki.ekilex.data.migra;
 
+@Deprecated
 public enum SourceLinkOwner {
 
 	DEFINITION_SOURCE_LINK,

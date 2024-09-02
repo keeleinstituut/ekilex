@@ -248,7 +248,6 @@ public class TermMeaningService extends AbstractApiCudService implements Activit
 				if (CollectionUtils.isNotEmpty(usages)) {
 
 					for (Usage usage : usages) {
-						// TODO refactor 
 						createOrUpdateUsage(lexemeId, usage, DEFAULT_COMPLEXITY, DEFAULT_PUBLICITY, roleDatasetCode);
 					}
 				}
