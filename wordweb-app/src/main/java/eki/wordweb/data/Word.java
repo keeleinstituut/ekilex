@@ -15,6 +15,8 @@ public class Word extends WordTypeData {
 
 	private String vocalForm;
 
+	private String morphComment;
+
 	private String alternativeWord;
 
 	private Timestamp manualEventOn;
@@ -59,6 +61,14 @@ public class Word extends WordTypeData {
 
 	public void setVocalForm(String vocalForm) {
 		this.vocalForm = vocalForm;
+	}
+
+	public String getMorphComment() {
+		return morphComment;
+	}
+
+	public void setMorphComment(String morphComment) {
+		this.morphComment = morphComment;
 	}
 
 	public String getAlternativeWord() {

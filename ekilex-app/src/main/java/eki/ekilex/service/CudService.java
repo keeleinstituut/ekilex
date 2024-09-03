@@ -199,6 +199,14 @@ public class CudService extends AbstractCudService implements PermConstant, Acti
 	}
 
 	@Transactional
+	public void updateWordMorphComment(Long wordId, String value, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
+
+		ActivityLogData activityLog = activityLogService.prepareActivityLog("updateWordMorphComment", wordId, ActivityOwner.WORD, roleDatasetCode, isManualEventOnUpdateEnabled);
+		cudDbService.updateWordMorphComment(wordId, value);
+		activityLogService.createActivityLog(activityLog, wordId, ActivityEntity.WORD);
+	}
+
+	@Transactional
 	public void updateWordManualEventOn(Long wordId, String eventOnStr, String roleDatasetCode) throws Exception {
 
 		Timestamp eventOn = conversionUtil.dateStrToTimestamp(eventOnStr);

@@ -169,6 +169,7 @@
               <div th:replace="lexdialog :: edit_word_display_morph_dlg"></div>
               <div th:replace="lexdialog :: edit_word_vocal_form_dlg"></div>
               <div th:replace="lexdialog :: edit_word_morphophono_form_dlg"></div>
+              <div th:replace="lexdialog :: edit_word_morph_comment_dlg"></div>
               <div th:replace="lexdialog :: edit_word_manual_event_on_dlg"></div>
               <div class="mb-2">
                 <div class="ekiAccordion" data-plugin="ekiAccordion">
@@ -267,6 +268,32 @@
                       <span th:text="#{lex.paradigms}">Sõnavormid</span>
                     </div>
                     <div class="ekiAccordion__content">
+                      <div class="col hidden-buttons pr-5 pb-2">
+                        <div class="action-buttons-anchor">
+                          <span th:text="${details.word.morphComment}" th:if="${details.word.morphComment}"></span>
+                          <small th:unless="${details.word.morphComment}">
+                            <i th:text="#{lex.add.word.morph.comment}" class="text-muted"></i>
+                          </small>
+                          <div class="action-buttons-2">
+                            <button type="button" class="btn badge badge-primary"
+                                    th:title="#{common.edit}"
+                                    data-toggle="modal"
+                                    th:data-target="${'#editWordMorphCommentDlg_' + wordId}"
+                                    sec:authorize="#vars.details.word.crudGrant">
+                              <i class="fa fa-edit" aria-hidden="true"></i>
+                            </button>
+                            <button type="button" class="btn badge badge-warning"
+                                    th:data-id="${wordId}"
+                                    data-op-code="word_morph_comment"
+                                    data-toggle="delete-confirm"
+                                    data-placement="right"
+                                    sec:authorize="#vars.details.word.crudGrant">
+                              <i class="fa fa-remove" aria-hidden="true"></i>
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                      <hr />
                       <div th:if="${#lists.isEmpty(details.paradigms)}" th:text="#{common.no.content}">
                         Sisu puudub...
                       </div>
@@ -306,7 +333,7 @@
                                         style="white-space:nowrap; font-size:80%;"></span>
                                   </td>
                                 </tr>
-                                <tr>
+                                <tr th:unless="${paradigmIter.last}">
                                   <td colspan="2" class="pt-2 border-bottom">
                                   </td>
                                 </tr>

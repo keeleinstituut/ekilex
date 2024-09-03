@@ -17,7 +17,7 @@ import org.jooq.ForeignKey;
 import org.jooq.Identity;
 import org.jooq.Name;
 import org.jooq.Record;
-import org.jooq.Row15;
+import org.jooq.Row16;
 import org.jooq.Schema;
 import org.jooq.Table;
 import org.jooq.TableField;
@@ -123,6 +123,11 @@ public class Word extends TableImpl<WordRecord> {
      * The column <code>public.word.is_collocation</code>.
      */
     public final TableField<WordRecord, Boolean> IS_COLLOCATION = createField(DSL.name("is_collocation"), SQLDataType.BOOLEAN.nullable(false), this, "");
+
+    /**
+     * The column <code>public.word.morph_comment</code>.
+     */
+    public final TableField<WordRecord, String> MORPH_COMMENT = createField(DSL.name("morph_comment"), SQLDataType.CLOB, this, "");
 
     private Word(Name alias, Table<WordRecord> aliased) {
         this(alias, aliased, null);
@@ -242,11 +247,11 @@ public class Word extends TableImpl<WordRecord> {
     }
 
     // -------------------------------------------------------------------------
-    // Row15 type methods
+    // Row16 type methods
     // -------------------------------------------------------------------------
 
     @Override
-    public Row15<Long, String, Integer, String, String, String, String, String, String, String, Timestamp, String, Boolean, Boolean, Boolean> fieldsRow() {
-        return (Row15) super.fieldsRow();
+    public Row16<Long, String, Integer, String, String, String, String, String, String, String, Timestamp, String, Boolean, Boolean, Boolean, String> fieldsRow() {
+        return (Row16) super.fieldsRow();
     }
 }

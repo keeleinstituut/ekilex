@@ -529,6 +529,7 @@ create table word (
   aspect_code varchar(100) references aspect(code) null, 
   vocal_form text null, 
   morphophono_form text null, 
+  morph_comment text null,
   manual_event_on timestamp null, 
   is_word boolean not null, 
   is_collocation boolean not null, 

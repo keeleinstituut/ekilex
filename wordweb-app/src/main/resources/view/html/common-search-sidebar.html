@@ -10,6 +10,9 @@
             <i class="fas fa-info-circle"></i>
           </button>
         </h5>
+        <div th:if="${wordData.word.morphComment}">
+          <span th:text="${wordData.word.morphComment}"></span>
+        </div>
         <th:block th:each="paradigm,paradigmIter : ${wordData.paradigms}">
           <div class="morphology-paradigm" th:with="morphtemplates=${ {'muutumatu_est', 'verb_est', 'noomen_est', 'verb_rus', 'noun_rus', 'numeral_rus', 'adjective_rus', 'adjective1_rus', 'adjective2_rus', 'indeclinable_rus', 'participle_rus'} }">
             <th:block th:if="${morphtemplates.contains(paradigm.wordClass+'_'+ wordData.word.lang)}">

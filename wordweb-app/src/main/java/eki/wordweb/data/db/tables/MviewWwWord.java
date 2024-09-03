@@ -87,11 +87,6 @@ public class MviewWwWord extends TableImpl<MviewWwWordRecord> {
     public final TableField<MviewWwWordRecord, Integer> HOMONYM_NR = createField(DSL.name("homonym_nr"), SQLDataType.INTEGER, this, "");
 
     /**
-     * The column <code>public.mview_ww_word.word_type_codes</code>.
-     */
-    public final TableField<MviewWwWordRecord, String[]> WORD_TYPE_CODES = createField(DSL.name("word_type_codes"), SQLDataType.VARCHAR.getArrayDataType(), this, "");
-
-    /**
      * The column <code>public.mview_ww_word.display_morph_code</code>.
      */
     public final TableField<MviewWwWordRecord, String> DISPLAY_MORPH_CODE = createField(DSL.name("display_morph_code"), SQLDataType.VARCHAR(100), this, "");
@@ -112,6 +107,11 @@ public class MviewWwWord extends TableImpl<MviewWwWordRecord> {
     public final TableField<MviewWwWordRecord, String> VOCAL_FORM = createField(DSL.name("vocal_form"), SQLDataType.CLOB, this, "");
 
     /**
+     * The column <code>public.mview_ww_word.morph_comment</code>.
+     */
+    public final TableField<MviewWwWordRecord, String> MORPH_COMMENT = createField(DSL.name("morph_comment"), SQLDataType.CLOB, this, "");
+
+    /**
      * The column <code>public.mview_ww_word.manual_event_on</code>.
      */
     public final TableField<MviewWwWordRecord, Timestamp> MANUAL_EVENT_ON = createField(DSL.name("manual_event_on"), SQLDataType.TIMESTAMP(0), this, "");
@@ -120,6 +120,11 @@ public class MviewWwWord extends TableImpl<MviewWwWordRecord> {
      * The column <code>public.mview_ww_word.last_activity_event_on</code>.
      */
     public final TableField<MviewWwWordRecord, Timestamp> LAST_ACTIVITY_EVENT_ON = createField(DSL.name("last_activity_event_on"), SQLDataType.TIMESTAMP(0), this, "");
+
+    /**
+     * The column <code>public.mview_ww_word.word_type_codes</code>.
+     */
+    public final TableField<MviewWwWordRecord, String[]> WORD_TYPE_CODES = createField(DSL.name("word_type_codes"), SQLDataType.VARCHAR.getArrayDataType(), this, "");
 
     /**
      * The column <code>public.mview_ww_word.lang_complexities</code>.

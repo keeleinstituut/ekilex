@@ -135,72 +135,72 @@ public class ViewWwWordRecord extends TableRecordImpl<ViewWwWordRecord> {
     }
 
     /**
-     * Setter for <code>public.view_ww_word.word_type_codes</code>.
-     */
-    public void setWordTypeCodes(String[] value) {
-        set(8, value);
-    }
-
-    /**
-     * Getter for <code>public.view_ww_word.word_type_codes</code>.
-     */
-    public String[] getWordTypeCodes() {
-        return (String[]) get(8);
-    }
-
-    /**
      * Setter for <code>public.view_ww_word.display_morph_code</code>.
      */
     public void setDisplayMorphCode(String value) {
-        set(9, value);
+        set(8, value);
     }
 
     /**
      * Getter for <code>public.view_ww_word.display_morph_code</code>.
      */
     public String getDisplayMorphCode() {
-        return (String) get(9);
+        return (String) get(8);
     }
 
     /**
      * Setter for <code>public.view_ww_word.gender_code</code>.
      */
     public void setGenderCode(String value) {
-        set(10, value);
+        set(9, value);
     }
 
     /**
      * Getter for <code>public.view_ww_word.gender_code</code>.
      */
     public String getGenderCode() {
-        return (String) get(10);
+        return (String) get(9);
     }
 
     /**
      * Setter for <code>public.view_ww_word.aspect_code</code>.
      */
     public void setAspectCode(String value) {
-        set(11, value);
+        set(10, value);
     }
 
     /**
      * Getter for <code>public.view_ww_word.aspect_code</code>.
      */
     public String getAspectCode() {
-        return (String) get(11);
+        return (String) get(10);
     }
 
     /**
      * Setter for <code>public.view_ww_word.vocal_form</code>.
      */
     public void setVocalForm(String value) {
-        set(12, value);
+        set(11, value);
     }
 
     /**
      * Getter for <code>public.view_ww_word.vocal_form</code>.
      */
     public String getVocalForm() {
+        return (String) get(11);
+    }
+
+    /**
+     * Setter for <code>public.view_ww_word.morph_comment</code>.
+     */
+    public void setMorphComment(String value) {
+        set(12, value);
+    }
+
+    /**
+     * Getter for <code>public.view_ww_word.morph_comment</code>.
+     */
+    public String getMorphComment() {
         return (String) get(12);
     }
 
@@ -233,129 +233,143 @@ public class ViewWwWordRecord extends TableRecordImpl<ViewWwWordRecord> {
     }
 
     /**
+     * Setter for <code>public.view_ww_word.word_type_codes</code>.
+     */
+    public void setWordTypeCodes(String[] value) {
+        set(15, value);
+    }
+
+    /**
+     * Getter for <code>public.view_ww_word.word_type_codes</code>.
+     */
+    public String[] getWordTypeCodes() {
+        return (String[]) get(15);
+    }
+
+    /**
      * Setter for <code>public.view_ww_word.lang_complexities</code>.
      */
     public void setLangComplexities(TypeLangComplexityRecord[] value) {
-        set(15, value);
+        set(16, value);
     }
 
     /**
      * Getter for <code>public.view_ww_word.lang_complexities</code>.
      */
     public TypeLangComplexityRecord[] getLangComplexities() {
-        return (TypeLangComplexityRecord[]) get(15);
+        return (TypeLangComplexityRecord[]) get(16);
     }
 
     /**
      * Setter for <code>public.view_ww_word.meaning_words</code>.
      */
     public void setMeaningWords(JSON value) {
-        set(16, value);
+        set(17, value);
     }
 
     /**
      * Getter for <code>public.view_ww_word.meaning_words</code>.
      */
     public JSON getMeaningWords() {
-        return (JSON) get(16);
+        return (JSON) get(17);
     }
 
     /**
      * Setter for <code>public.view_ww_word.definitions</code>.
      */
     public void setDefinitions(JSON value) {
-        set(17, value);
+        set(18, value);
     }
 
     /**
      * Getter for <code>public.view_ww_word.definitions</code>.
      */
     public JSON getDefinitions() {
-        return (JSON) get(17);
+        return (JSON) get(18);
     }
 
     /**
      * Setter for <code>public.view_ww_word.od_word_recommendations</code>.
      */
     public void setOdWordRecommendations(JSON value) {
-        set(18, value);
+        set(19, value);
     }
 
     /**
      * Getter for <code>public.view_ww_word.od_word_recommendations</code>.
      */
     public JSON getOdWordRecommendations() {
-        return (JSON) get(18);
+        return (JSON) get(19);
     }
 
     /**
      * Setter for <code>public.view_ww_word.freq_value</code>.
      */
     public void setFreqValue(BigDecimal value) {
-        set(19, value);
+        set(20, value);
     }
 
     /**
      * Getter for <code>public.view_ww_word.freq_value</code>.
      */
     public BigDecimal getFreqValue() {
-        return (BigDecimal) get(19);
+        return (BigDecimal) get(20);
     }
 
     /**
      * Setter for <code>public.view_ww_word.freq_rank</code>.
      */
     public void setFreqRank(Long value) {
-        set(20, value);
+        set(21, value);
     }
 
     /**
      * Getter for <code>public.view_ww_word.freq_rank</code>.
      */
     public Long getFreqRank() {
-        return (Long) get(20);
+        return (Long) get(21);
     }
 
     /**
      * Setter for <code>public.view_ww_word.forms_exist</code>.
      */
     public void setFormsExist(Boolean value) {
-        set(21, value);
+        set(22, value);
     }
 
     /**
      * Getter for <code>public.view_ww_word.forms_exist</code>.
      */
     public Boolean getFormsExist() {
-        return (Boolean) get(21);
+        return (Boolean) get(22);
     }
 
     /**
      * Setter for <code>public.view_ww_word.min_ds_order_by</code>.
      */
     public void setMinDsOrderBy(Long value) {
-        set(22, value);
+        set(23, value);
     }
 
     /**
      * Getter for <code>public.view_ww_word.min_ds_order_by</code>.
      */
     public Long getMinDsOrderBy() {
-        return (Long) get(22);
+        return (Long) get(23);
     }
 
     /**
      * Setter for <code>public.view_ww_word.word_type_order_by</code>.
      */
     public void setWordTypeOrderBy(Long value) {
-        set(23, value);
+        set(24, value);
     }
 
     /**
      * Getter for <code>public.view_ww_word.word_type_order_by</code>.
      */
     public Long getWordTypeOrderBy() {
-        return (Long) get(23);
+        return (Long) get(24);
     }
 
     // -------------------------------------------------------------------------
@@ -372,7 +386,7 @@ public class ViewWwWordRecord extends TableRecordImpl<ViewWwWordRecord> {
     /**
      * Create a detached, initialised ViewWwWordRecord
      */
-    public ViewWwWordRecord(Long wordId, String word, String wordPrese, String asWord, String lang, String langFilt, Long langOrderBy, Integer homonymNr, String[] wordTypeCodes, String displayMorphCode, String genderCode, String aspectCode, String vocalForm, Timestamp manualEventOn, Timestamp lastActivityEventOn, TypeLangComplexityRecord[] langComplexities, JSON meaningWords, JSON definitions, JSON odWordRecommendations, BigDecimal freqValue, Long freqRank, Boolean formsExist, Long minDsOrderBy, Long wordTypeOrderBy) {
+    public ViewWwWordRecord(Long wordId, String word, String wordPrese, String asWord, String lang, String langFilt, Long langOrderBy, Integer homonymNr, String displayMorphCode, String genderCode, String aspectCode, String vocalForm, String morphComment, Timestamp manualEventOn, Timestamp lastActivityEventOn, String[] wordTypeCodes, TypeLangComplexityRecord[] langComplexities, JSON meaningWords, JSON definitions, JSON odWordRecommendations, BigDecimal freqValue, Long freqRank, Boolean formsExist, Long minDsOrderBy, Long wordTypeOrderBy) {
         super(ViewWwWord.VIEW_WW_WORD);
 
         setWordId(wordId);
@@ -383,13 +397,14 @@ public class ViewWwWordRecord extends TableRecordImpl<ViewWwWordRecord> {
         setLangFilt(langFilt);
         setLangOrderBy(langOrderBy);
         setHomonymNr(homonymNr);
-        setWordTypeCodes(wordTypeCodes);
         setDisplayMorphCode(displayMorphCode);
         setGenderCode(genderCode);
         setAspectCode(aspectCode);
         setVocalForm(vocalForm);
+        setMorphComment(morphComment);
         setManualEventOn(manualEventOn);
         setLastActivityEventOn(lastActivityEventOn);
+        setWordTypeCodes(wordTypeCodes);
         setLangComplexities(langComplexities);
         setMeaningWords(meaningWords);
         setDefinitions(definitions);

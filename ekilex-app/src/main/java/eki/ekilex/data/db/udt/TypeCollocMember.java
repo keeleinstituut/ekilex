@@ -64,6 +64,11 @@ public class TypeCollocMember extends UDTImpl<TypeCollocMemberRecord> {
     public static final UDTField<TypeCollocMemberRecord, Integer> HOMONYM_NR = createField(DSL.name("homonym_nr"), SQLDataType.INTEGER, TYPE_COLLOC_MEMBER, "");
 
     /**
+     * The attribute <code>public.type_colloc_member.lang</code>.
+     */
+    public static final UDTField<TypeCollocMemberRecord, String> LANG = createField(DSL.name("lang"), SQLDataType.CHAR(3), TYPE_COLLOC_MEMBER, "");
+
+    /**
      * The attribute <code>public.type_colloc_member.conjunct</code>.
      */
     public static final UDTField<TypeCollocMemberRecord, String> CONJUNCT = createField(DSL.name("conjunct"), SQLDataType.VARCHAR(100), TYPE_COLLOC_MEMBER, "");

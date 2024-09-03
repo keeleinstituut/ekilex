@@ -69,13 +69,14 @@ dblink(
 	lang_filt varchar(10),
 	lang_order_by bigint,
 	homonym_nr integer,
-	word_type_codes varchar(100) array,
 	display_morph_code varchar(100),
 	gender_code varchar(100),
 	aspect_code varchar(100),
 	vocal_form text,
+	morph_comment text,
 	manual_event_on timestamp,
 	last_activity_event_on timestamp,
+	word_type_codes varchar(100) array,
 	lang_complexities type_lang_complexity array,
 	meaning_words json,
 	definitions json,
@@ -353,7 +354,7 @@ create index mview_ww_meaning_relation_meaning_id_idx on mview_ww_meaning_relati
 create index mview_ww_classifier_name_code_lang_type_idx on mview_ww_classifier (name, code, lang, type);
 create index mview_ww_classifier_name_origin_code_lang_type_idx on mview_ww_classifier (name, origin, code, lang, type);
 create index mview_ww_counts_dataset_code_idx on mview_ww_counts (dataset_code);
+create index mview_ww_counts_lang_idx on mview_ww_counts (lang);
 create index mview_ww_news_article_created_idx on mview_ww_news_article (created);
 create index mview_ww_news_article_type_idx on mview_ww_news_article (type);
 create index mview_ww_news_article_lang_idx on mview_ww_news_article (lang);
-create index mview_ww_counts_lang_idx on mview_ww_counts (lang);

@@ -21,6 +21,8 @@ public class Word extends AbstractCrudEntity implements DecoratedWordType {
 
 	private String lang;
 
+	private String displayMorphCode;
+
 	private String genderCode;
 
 	private String aspectCode;
@@ -29,7 +31,7 @@ public class Word extends AbstractCrudEntity implements DecoratedWordType {
 
 	private String morphophonoForm;
 
-	private String displayMorphCode;
+	private String morphComment;
 
 	private String wordFrequency;
 
@@ -75,24 +77,20 @@ public class Word extends AbstractCrudEntity implements DecoratedWordType {
 		this.wordId = wordId;
 	}
 
-	@Override
 	public String getWordValue() {
 		return wordValue;
 	}
 
-	@Override
-	public void setWordValue(String value) {
-		this.wordValue = value;
+	public void setWordValue(String wordValue) {
+		this.wordValue = wordValue;
 	}
 
-	@Override
 	public String getWordValuePrese() {
 		return wordValuePrese;
 	}
 
-	@Override
-	public void setWordValuePrese(String valuePrese) {
-		this.wordValuePrese = valuePrese;
+	public void setWordValuePrese(String wordValuePrese) {
+		this.wordValuePrese = wordValuePrese;
 	}
 
 	public Integer getHomonymNr() {
@@ -109,6 +107,14 @@ public class Word extends AbstractCrudEntity implements DecoratedWordType {
 
 	public void setLang(String lang) {
 		this.lang = lang;
+	}
+
+	public String getDisplayMorphCode() {
+		return displayMorphCode;
+	}
+
+	public void setDisplayMorphCode(String displayMorphCode) {
+		this.displayMorphCode = displayMorphCode;
 	}
 
 	public String getGenderCode() {
@@ -143,12 +149,12 @@ public class Word extends AbstractCrudEntity implements DecoratedWordType {
 		this.morphophonoForm = morphophonoForm;
 	}
 
-	public String getDisplayMorphCode() {
-		return displayMorphCode;
+	public String getMorphComment() {
+		return morphComment;
 	}
 
-	public void setDisplayMorphCode(String displayMorphCode) {
-		this.displayMorphCode = displayMorphCode;
+	public void setMorphComment(String morphComment) {
+		this.morphComment = morphComment;
 	}
 
 	public String getWordFrequency() {
@@ -159,12 +165,10 @@ public class Word extends AbstractCrudEntity implements DecoratedWordType {
 		this.wordFrequency = wordFrequency;
 	}
 
-	@Override
 	public String[] getWordTypeCodes() {
 		return wordTypeCodes;
 	}
 
-	@Override
 	public void setWordTypeCodes(String[] wordTypeCodes) {
 		this.wordTypeCodes = wordTypeCodes;
 	}
@@ -177,42 +181,36 @@ public class Word extends AbstractCrudEntity implements DecoratedWordType {
 		this.wordTypes = wordTypes;
 	}
 
-	@Override
 	public boolean isPrefixoid() {
 		return prefixoid;
 	}
 
-	@Override
 	public void setPrefixoid(boolean prefixoid) {
 		this.prefixoid = prefixoid;
 	}
 
-	@Override
 	public boolean isSuffixoid() {
 		return suffixoid;
 	}
 
-	@Override
 	public void setSuffixoid(boolean suffixoid) {
 		this.suffixoid = suffixoid;
+	}
+
+	public boolean isForeign() {
+		return foreign;
+	}
+
+	public void setForeign(boolean foreign) {
+		this.foreign = foreign;
 	}
 
 	public boolean isWordPublic() {
 		return isWordPublic;
 	}
 
-	public void setWordPublic(boolean wordPublic) {
-		isWordPublic = wordPublic;
-	}
-
-	@Override
-	public boolean isForeign() {
-		return foreign;
-	}
-
-	@Override
-	public void setForeign(boolean foreign) {
-		this.foreign = foreign;
+	public void setWordPublic(boolean isWordPublic) {
+		this.isWordPublic = isWordPublic;
 	}
 
 	public Boolean getLexemesArePublic() {
@@ -302,4 +300,5 @@ public class Word extends AbstractCrudEntity implements DecoratedWordType {
 	public void setManualEventOn(Timestamp manualEventOn) {
 		this.manualEventOn = manualEventOn;
 	}
+
 }

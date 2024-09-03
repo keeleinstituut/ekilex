@@ -840,3 +840,24 @@ where su.id = s.id
 update word set value = trim(value, chr(160)) where value != trim(value, chr(160));
 update word set value_prese = trim(value_prese, chr(160)) where value_prese != trim(value_prese, chr(160));
 update word set morphophono_form = trim(morphophono_form, chr(160)) where morphophono_form != trim(morphophono_form, chr(160));
+
+-- lekseemi märkuste eemaldamine
+
+delete
+from
+	lexeme_note ln
+where
+	ln.value like 'Grammatiline sugu:%'
+	and exists (
+		select
+			1
+		from
+			lexeme l
+		where
+			l.id = ln.lexeme_id
+			and l.dataset_code in ('has', 'har', 'usu')
+	);
+
+-- morfoloogia kommentaari väli
+
+alter table word add column morph_comment text;

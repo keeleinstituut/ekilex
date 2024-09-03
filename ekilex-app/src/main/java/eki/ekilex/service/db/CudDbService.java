@@ -484,6 +484,14 @@ public class CudDbService extends AbstractDataDbService {
 				.execute();
 	}
 
+	public void updateWordLang(Long wordId, String langCode) {
+		create
+				.update(WORD)
+				.set(WORD.LANG, langCode)
+				.where(WORD.ID.eq(wordId))
+				.execute();
+	}
+
 	public void updateWordValueAndLang(Long wordId, String value, String valuePrese, String lang) {
 		create
 				.update(WORD)
@@ -564,10 +572,10 @@ public class CudDbService extends AbstractDataDbService {
 				.execute();
 	}
 
-	public void updateWordLang(Long wordId, String langCode) {
+	public void updateWordMorphComment(Long wordId, String value) {
 		create
 				.update(WORD)
-				.set(WORD.LANG, langCode)
+				.set(WORD.MORPH_COMMENT, value)
 				.where(WORD.ID.eq(wordId))
 				.execute();
 	}
@@ -1904,4 +1912,5 @@ public class CudDbService extends AbstractDataDbService {
 								.where(MEANING_FREEFORM.MEANING_ID.eq(meaningId))))
 				.execute();
 	}
+
 }

@@ -431,7 +431,7 @@ where ws.word = wlc.word
 order by ws.sgroup,
          ws.word,
          ws.crit;
-         
+
 create view view_ww_word
 as
 select w.word_id,
@@ -445,13 +445,14 @@ select w.word_id,
        end lang_filt,
        w.lang_order_by,
        w.homonym_nr,
-       wt.word_type_codes,
        w.display_morph_code,
        w.gender_code,
        w.aspect_code,
        w.vocal_form,
+       w.morph_comment,
        w.manual_event_on,
        w.last_activity_event_on,
+       wt.word_type_codes,
        lc.lang_complexities,
        mw.meaning_words,
        wd.definitions,
@@ -475,6 +476,7 @@ from (select w.id as word_id,
              w.gender_code,
              w.aspect_code,
              w.vocal_form,
+             w.morph_comment,
              w.manual_event_on,
              (select al.event_on
               from word_last_activity_log wlal,

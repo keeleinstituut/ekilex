@@ -378,6 +378,9 @@ public class EditController extends AbstractMutableDataPageController {
 		case "word_forum":
 			cudService.updateWordForum(id, value, user);
 			break;
+		case "word_morph_comment":
+			cudService.updateWordMorphComment(id, value, roleDatasetCode, isManualEventOnUpdateEnabled);
+			break;
 		case "meaning_image":
 			cudService.updateMeaningImage(id, value, value2, complexity, roleDatasetCode, isManualEventOnUpdateEnabled);
 			break;
@@ -610,6 +613,9 @@ public class EditController extends AbstractMutableDataPageController {
 			break;
 		case "word_vocal_form":
 			cudService.updateWordVocalForm(id, null, roleDatasetCode, isManualEventOnUpdateEnabled);
+			break;
+		case "word_morph_comment":
+			cudService.updateWordMorphComment(id, null, roleDatasetCode, isManualEventOnUpdateEnabled);
 			break;
 		case "meaning_semantic_type":
 			cudService.deleteMeaningSemanticType(id, valueToDelete, roleDatasetCode, isManualEventOnUpdateEnabled);

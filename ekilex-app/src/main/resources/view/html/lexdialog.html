@@ -1515,6 +1515,36 @@
       </div>
     </div>
   </div>
+  <div th:id="${'editWordMorphCommentDlg_' + wordId}" class="modal"
+        role="dialog"
+        th:fragment="edit_word_morph_comment_dlg"
+        data-plugin="initGenericTextEditDlgAndFocusPlugin">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <form th:action="@{/update_item}" method="post">
+          <div class="modal-header">
+            <h5 class="modal-title" th:text="#{lex.edit.word.morph.comment}">Muuda morfoloogia kommentaari</h5>
+            <button type="button" class="close" aria-label="Close" data-role="close" data-dismiss="modal">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <input type="hidden" name="id" th:value="${wordId}">
+            <input type="hidden" name="opCode" value="word_morph_comment">
+            <div class="form-group row">
+              <div class="col-md-12">
+                <textarea class="form-control" rows="3" name="value" th:text="${details.word.morphComment}"></textarea>
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="submit" class="btn btn-primary" th:text="#{common.save}">Salvesta</button>
+            <button type="button" class="btn btn-default" data-dismiss="modal" th:text="#{common.cancel}">Katkesta</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
   <div th:id="${'editLexemePublicityDlg_' + lexeme.lexemeId}"
        th:data-callback="${viewUtil.composeFunction('loadFullLexemeDetails', lexeme.lexemeId, lexeme.levels)}"
        class="modal select-dlg" role="dialog" th:fragment="edit_lexeme_publicity_dlg" data-plugin="initSelectDlgPlugin">

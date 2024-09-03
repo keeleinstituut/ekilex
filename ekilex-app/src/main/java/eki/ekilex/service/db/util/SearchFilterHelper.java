@@ -1672,10 +1672,11 @@ public class SearchFilterHelper implements GlobalConstant, ActivityFunct {
 
 		if (CollectionUtils.isEmpty(existsCriteria)) {
 			for (SearchCriterion criterion : filteredCriteria) {
-				if (criterion.getSearchValue() != null) {
-					String searchValueStr = criterion.getSearchValue().toString();
-					where1 = applyValueFilter(searchValueStr, criterion.isNot(), criterion.getSearchOperand(), mf.VALUE, where1, true);
+				if (criterion.getSearchValue() == null) {
+					continue;
 				}
+				String searchValueStr = criterion.getSearchValue().toString();
+				where1 = applyValueFilter(searchValueStr, criterion.isNot(), criterion.getSearchOperand(), mf.VALUE, where1, true);
 			}
 			where = where.and(DSL.exists(DSL.select(mf.ID).from(mf).where(where1)));
 		} else {
@@ -1703,7 +1704,6 @@ public class SearchFilterHelper implements GlobalConstant, ActivityFunct {
 		for (SearchCriterion criterion : filteredCriteria) {
 			Classifier domain = (Classifier) criterion.getSearchValue();
 			boolean isNot = criterion.isNot();
-
 			Condition critWhere = md.DOMAIN_CODE.eq(domain.getCode()).and(md.DOMAIN_ORIGIN.eq(domain.getOrigin()));
 			if (isNot) {
 				critWhere = DSL.not(critWhere);
