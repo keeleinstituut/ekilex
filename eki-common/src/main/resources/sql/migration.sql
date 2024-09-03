@@ -835,3 +835,8 @@ from (
 where su.id = s.id
 ;
 
+-- ms nähtamatute realõppude trim
+
+update word set value = trim(value, chr(160)) where value != trim(value, chr(160));
+update word set value_prese = trim(value_prese, chr(160)) where value_prese != trim(value_prese, chr(160));
+update word set morphophono_form = trim(morphophono_form, chr(160)) where morphophono_form != trim(morphophono_form, chr(160));
