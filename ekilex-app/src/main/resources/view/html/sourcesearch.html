@@ -7,14 +7,14 @@
 </head>
 <body class="body-with-navbar">
   <th:block th:replace="common :: nav_bar(activeItem = 'source')"></th:block>
-  <div class="container-fluid">
-    <div class="card shadow rounded-0 border-0 flex-shrink-0">
-      <div class="card-body px-2 py-3">
-        <form th:action="@{/sourcesearch}" method="post">
-          <th:block th:replace="search :: search_form('source_search', false)"></th:block>
-        </form>
-      </div>
+  <div class="card shadow rounded-0 border-0 flex-shrink-0" style="z-index: 10;">
+    <div class="card-body px-2 py-3">
+      <form th:action="@{/sourcesearch}" method="post">
+        <th:block th:replace="search :: search_form('source_search', false)"></th:block>
+      </form>
     </div>
+  </div>
+  <div class="container-fluid flex-grow-1 flex-shrink-1 d-flex flex-column h-100 overflow-auto">
     <div>
       <button class="btn btn-primary mt-2"
               th:title="#{source.add.new}"
@@ -24,14 +24,12 @@
               th:text="#{source.add.new}">Lisa uus allikas
       </button>
     </div>
-    <th:block th:if="${sourceSearchResult}">
-      <div class="mt-3" th:unless="${sourceSearchResult.resultExist}">
-        <h5 th:text="#{source.noresults}">Tulemusi pole</h5>
-      </div>
-      <div id="results_div" class="float-left w-100 mb-4 mt-2" th:if="${sourceSearchResult.resultExist}">
-        <div th:replace="sourcecomp :: search_result"></div>
-      </div>
-    </th:block>
+    <div class="mt-3" th:unless="${sourceSearchResult.resultExist}">
+      <h5 th:text="#{source.noresults}">Tulemusi pole</h5>
+    </div>
+    <div id="results_div" class="float-left w-100 mb-4 mt-2" th:if="${sourceSearchResult.resultExist}">
+      <div th:replace="sourcecomp :: search_result"></div>
+    </div>
   </div>
   <div id="sourceActivityLogDlg" class="modal" role="dialog" data-plugin="activityLogDlgPlugin">
     <div class="modal-dialog modal-lg" role="document">
@@ -44,8 +42,9 @@
     </div>
   </div>
   <div th:replace="sourcedialog :: add_source_dlg"></div>
+  <div th:replace="common :: #waitDlg"></div>
   <script th:inline="javascript">
-	  initializeSourceSearch();
+    initializeSourceSearch();
   </script>
 </body>
 </html>

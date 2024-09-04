@@ -180,7 +180,7 @@
         <th:block th:replace="sourcecomp :: source_details"></th:block>
       </div>
     </div>
-    <div th:if="${sourceSearchResult.showPaging}">
+    <div class="fixed-bottom" style="background-color: #fff; padding-bottom: 6px;" th:if="${sourceSearchResult.showPaging}">
       <div th:replace="components :: paging(${sourceSearchResult})"></div>
     </div>
     <div th:replace="common :: #alertDlg"></div>
@@ -386,17 +386,17 @@
       </table>
     </div>
     <script th:inline="javascript">
-		$('[data-toggle=join-confirm]')
-				.confirmation(
-						{
-							btnOkLabel : /*[[#{common.yes}]]*/'Jah',
-							btnCancelLabel : /*[[#{common.no}]]*/'Ei',
-							title : /*[[#{source.confirm.join}]]*/'Kas olete kindel, et soovite allikad ühendada?',
-							onConfirm : function() {
-								$(this).closest('form').submit();
-							}
-						});
-	</script>
+    $('[data-toggle=join-confirm]')
+        .confirmation(
+            {
+              btnOkLabel : /*[[#{common.yes}]]*/'Jah',
+              btnCancelLabel : /*[[#{common.no}]]*/'Ei',
+              title : /*[[#{source.confirm.join}]]*/'Kas olete kindel, et soovite allikad ühendada?',
+              onConfirm : function() {
+                $(this).closest('form').submit();
+              }
+            });
+  </script>
   </th:block>
 </body>
 </html>
