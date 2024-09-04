@@ -7,17 +7,29 @@ public class Form extends AbstractDataObject {
 
 	private static final long serialVersionUID = 1L;
 
-	private Long formId;
+	private String wordClass;
+
+	private String lang;
+
+	private String morphComment;
 
 	private Long paradigmId;
-
-	private String wordClass;
 
 	private String paradigmComment;
 
 	private String inflectionType;
 
 	private String inflectionTypeNr;
+
+	private Long formId;
+
+	private String value;
+
+	private String valuePrese;
+
+	private String morphCode;
+
+	private Classifier morph;
 
 	private String morphGroup1;
 
@@ -27,25 +39,13 @@ public class Form extends AbstractDataObject {
 
 	private Integer displayLevel;
 
-	private String morphCode;
+	private String displayForm;
 
-	private Classifier morph;
+	private String audioFile;
 
 	private boolean morphExists;
 
 	private boolean isQuestionable;
-
-	private String value;
-
-	private String valuePrese;
-
-	private String formsWrapup;
-
-	private String displayForm;
-
-	private String displayFormsWrapup;
-
-	private String audioFile;
 
 	private Integer orderBy;
 
@@ -65,12 +65,32 @@ public class Form extends AbstractDataObject {
 
 	private int morphFreqRankScaled;
 
-	public Long getFormId() {
-		return formId;
+	private String formsWrapup;
+
+	private String displayFormsWrapup;
+
+	public String getWordClass() {
+		return wordClass;
 	}
 
-	public void setFormId(Long formId) {
-		this.formId = formId;
+	public void setWordClass(String wordClass) {
+		this.wordClass = wordClass;
+	}
+
+	public String getLang() {
+		return lang;
+	}
+
+	public void setLang(String lang) {
+		this.lang = lang;
+	}
+
+	public String getMorphComment() {
+		return morphComment;
+	}
+
+	public void setMorphComment(String morphComment) {
+		this.morphComment = morphComment;
 	}
 
 	public Long getParadigmId() {
@@ -79,14 +99,6 @@ public class Form extends AbstractDataObject {
 
 	public void setParadigmId(Long paradigmId) {
 		this.paradigmId = paradigmId;
-	}
-
-	public String getWordClass() {
-		return wordClass;
-	}
-
-	public void setWordClass(String wordClass) {
-		this.wordClass = wordClass;
 	}
 
 	public String getParadigmComment() {
@@ -111,6 +123,46 @@ public class Form extends AbstractDataObject {
 
 	public void setInflectionTypeNr(String inflectionTypeNr) {
 		this.inflectionTypeNr = inflectionTypeNr;
+	}
+
+	public Long getFormId() {
+		return formId;
+	}
+
+	public void setFormId(Long formId) {
+		this.formId = formId;
+	}
+
+	public String getValue() {
+		return value;
+	}
+
+	public void setValue(String value) {
+		this.value = value;
+	}
+
+	public String getValuePrese() {
+		return valuePrese;
+	}
+
+	public void setValuePrese(String valuePrese) {
+		this.valuePrese = valuePrese;
+	}
+
+	public String getMorphCode() {
+		return morphCode;
+	}
+
+	public void setMorphCode(String morphCode) {
+		this.morphCode = morphCode;
+	}
+
+	public Classifier getMorph() {
+		return morph;
+	}
+
+	public void setMorph(Classifier morph) {
+		this.morph = morph;
 	}
 
 	public String getMorphGroup1() {
@@ -145,20 +197,20 @@ public class Form extends AbstractDataObject {
 		this.displayLevel = displayLevel;
 	}
 
-	public String getMorphCode() {
-		return morphCode;
+	public String getDisplayForm() {
+		return displayForm;
 	}
 
-	public void setMorphCode(String morphCode) {
-		this.morphCode = morphCode;
+	public void setDisplayForm(String displayForm) {
+		this.displayForm = displayForm;
 	}
 
-	public Classifier getMorph() {
-		return morph;
+	public String getAudioFile() {
+		return audioFile;
 	}
 
-	public void setMorph(Classifier morph) {
-		this.morph = morph;
+	public void setAudioFile(String audioFile) {
+		this.audioFile = audioFile;
 	}
 
 	public boolean isMorphExists() {
@@ -175,54 +227,6 @@ public class Form extends AbstractDataObject {
 
 	public void setQuestionable(boolean isQuestionable) {
 		this.isQuestionable = isQuestionable;
-	}
-
-	public String getValue() {
-		return value;
-	}
-
-	public void setValue(String value) {
-		this.value = value;
-	}
-
-	public String getValuePrese() {
-		return valuePrese;
-	}
-
-	public void setValuePrese(String valuePrese) {
-		this.valuePrese = valuePrese;
-	}
-
-	public String getFormsWrapup() {
-		return formsWrapup;
-	}
-
-	public void setFormsWrapup(String formsWrapup) {
-		this.formsWrapup = formsWrapup;
-	}
-
-	public String getDisplayForm() {
-		return displayForm;
-	}
-
-	public void setDisplayForm(String displayForm) {
-		this.displayForm = displayForm;
-	}
-
-	public String getDisplayFormsWrapup() {
-		return displayFormsWrapup;
-	}
-
-	public void setDisplayFormsWrapup(String displayFormsWrapup) {
-		this.displayFormsWrapup = displayFormsWrapup;
-	}
-
-	public String getAudioFile() {
-		return audioFile;
-	}
-
-	public void setAudioFile(String audioFile) {
-		this.audioFile = audioFile;
 	}
 
 	public Integer getOrderBy() {
@@ -295,6 +299,22 @@ public class Form extends AbstractDataObject {
 
 	public void setMorphFreqRankScaled(int morphFreqRankScaled) {
 		this.morphFreqRankScaled = morphFreqRankScaled;
+	}
+
+	public String getFormsWrapup() {
+		return formsWrapup;
+	}
+
+	public void setFormsWrapup(String formsWrapup) {
+		this.formsWrapup = formsWrapup;
+	}
+
+	public String getDisplayFormsWrapup() {
+		return displayFormsWrapup;
+	}
+
+	public void setDisplayFormsWrapup(String displayFormsWrapup) {
+		this.displayFormsWrapup = displayFormsWrapup;
 	}
 
 }

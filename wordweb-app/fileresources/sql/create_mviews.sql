@@ -97,6 +97,7 @@ dblink(
 	word_class varchar(100),
 	word text,
 	lang char(3),
+	morph_comment text,
 	paradigm_id bigint,
 	paradigm_comment text,
 	inflection_type varchar(100),

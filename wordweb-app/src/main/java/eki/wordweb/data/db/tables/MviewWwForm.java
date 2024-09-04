@@ -64,6 +64,11 @@ public class MviewWwForm extends TableImpl<MviewWwFormRecord> {
     public final TableField<MviewWwFormRecord, String> LANG = createField(DSL.name("lang"), SQLDataType.CHAR(3), this, "");
 
     /**
+     * The column <code>public.mview_ww_form.morph_comment</code>.
+     */
+    public final TableField<MviewWwFormRecord, String> MORPH_COMMENT = createField(DSL.name("morph_comment"), SQLDataType.CLOB, this, "");
+
+    /**
      * The column <code>public.mview_ww_form.paradigm_id</code>.
      */
     public final TableField<MviewWwFormRecord, Long> PARADIGM_ID = createField(DSL.name("paradigm_id"), SQLDataType.BIGINT, this, "");

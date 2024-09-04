@@ -13,7 +13,9 @@ public class Paradigm extends AbstractDataObject {
 
 	private String wordClass;
 
-	private String comment;
+	private String morphComment;
+
+	private String paradigmComment;
 
 	private String inflectionType;
 	
@@ -37,12 +39,20 @@ public class Paradigm extends AbstractDataObject {
 		this.wordClass = wordClass;
 	}
 
-	public String getComment() {
-		return comment;
+	public String getMorphComment() {
+		return morphComment;
 	}
 
-	public void setComment(String comment) {
-		this.comment = comment;
+	public void setMorphComment(String morphComment) {
+		this.morphComment = morphComment;
+	}
+
+	public String getParadigmComment() {
+		return paradigmComment;
+	}
+
+	public void setParadigmComment(String paradigmComment) {
+		this.paradigmComment = paradigmComment;
 	}
 
 	public String getInflectionType() {

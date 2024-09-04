@@ -13,54 +13,51 @@
       </button>
     </div>
   </th:block>
-
   <th:block th:fragment="table-checks_est">
     <ul class="nav nav-pills mb-3" data-plugin="tableTogglers">
       <li class="nav-item">
         <button type="button" class="nav-link" role="tab" data-rel="marks">
           <span class="fa fa-check"></span>
-          märkidega <span class="form-display-form-field" style="display: none;"><b> &nbsp; NB! Siin on esitatud häälduskuju, mitte kirjapilt.</b></span>
+          märkidega
+          <span class="form-display-form-field" style="display: none;">
+            <b> &nbsp; NB! Siin on esitatud häälduskuju, mitte kirjapilt.</b>
+          </span>
         </button>
       </li>
     </ul>
   </th:block>
-
   <!-- morpho-form-value(form, prefix, tilde) -->
   <th:block th:fragment="morpho-form-value(form)" th:with="prefix=${prefix} ?: '', tilde=${tilde} ?: false">
     <th:block th:if="${form.morphExists && !#strings.isEmpty(form.value)}">
       <div style="display: inline-block; max-width: 40vw;">
-            <span th:if="${tilde}"> ~ </span>
-            <span th:if="${form.questionable}" class="text-muted">*</span>
-            <span th:text="${prefix}" th:if="${!#strings.isEmpty(prefix) && !#strings.equals(form.value, '-')}"></span>
-            <span th:utext="${form.displayForm}" class="form-display-form-field" style="display: none;"></span>
-            <span th:utext="${form.valuePrese}" class="form-value-field" th:classappend="${form.questionable ? 'text-muted ml-n1' : ''}"></span>
-            <button type="button" aria-label="Kuula hääldust - lugemas" class="btn btn-speaker" th:if="${(form.audioFile != null) && #strings.isEmpty(prefix)}"
-              th:data-url-to-audio="@{'/files/audio/' + ${form.audioFile}}" onclick="generateAudioAndPlay(this)">
-              <span class="icon icon-speaker"></span>
-            </button>
+        <span th:if="${tilde}"> ~ </span>
+        <span th:if="${form.questionable}" class="text-muted">*</span>
+        <span th:text="${prefix}" th:if="${!#strings.isEmpty(prefix) && !#strings.equals(form.value, '-')}"></span>
+        <span th:utext="${form.displayForm}" class="form-display-form-field" style="display: none;"></span>
+        <span th:utext="${form.valuePrese}" class="form-value-field" th:classappend="${form.questionable ? 'text-muted ml-n1' : ''}"></span>
+        <button type="button" aria-label="Kuula hääldust - lugemas" class="btn btn-speaker" th:if="${(form.audioFile != null) && #strings.isEmpty(prefix)}"
+          th:data-url-to-audio="@{'/files/audio/' + ${form.audioFile}}" onclick="generateAudioAndPlay(this)">
+          <span class="icon icon-speaker"></span>
+        </button>
       </div>
     </th:block>
   </th:block>
-
   <!-- morpho-form-row(paradigm, morphCode, prefix, tilde) -->
   <th:block th:fragment="morpho-form-row(morphCode)" th:with="prefix=${prefix} ?: '', tilde=${tilde} ?: false">
     <th:block th:each="form, formIter : ${viewUtil.getForms(paradigm, morphCode)}">
       <th:block th:replace=" :: morpho-form-value(form=${form}, prefix=${prefix}, tilde=${tilde or not formIter.first})"></th:block>
     </th:block>
   </th:block>
-
   <!-- morpho-form-row-first(paradigm, morphCode, prefix) -->
   <th:block th:fragment="morpho-form-row-first(morphCode)" th:with="prefix=${prefix} ?: '', tilde=${tilde} ?: false">
-      <th:block th:replace=" :: morpho-form-value(form=${viewUtil.getForms(paradigm, morphCode)[0]}, prefix=${prefix}, tilde=${tilde})"></th:block>
+    <th:block th:replace=" :: morpho-form-value(form=${viewUtil.getForms(paradigm, morphCode)[0]}, prefix=${prefix}, tilde=${tilde})"></th:block>
   </th:block>
-
   <!-- morpho-form-row-tilde-if(paradigm, morphCode, prefix, ifCode) -->
   <th:block th:fragment="morpho-form-row-tilde-if(morphCode, ifCode)" th:with="prefix=${prefix} ?: ''">
     <th:block th:each="ifform, ifformIter : ${viewUtil.getForms(paradigm, ifCode)}" th:if="${ifformIter.index} == 0">
       <th:block th:replace=" :: morpho-form-row(morphCode=${morphCode}, prefix=${prefix}, tilde=true)"></th:block>
     </th:block>
   </th:block>
-
   <th:block th:fragment="table-legend_est">
     <table>
       <tr class="form-display-form-field" style="display: none;">
@@ -127,7 +124,8 @@
         <td class="legend-sign" style="min-width: none; width: 40px"></td>
         <td class="legend-text" style="min-width: none; width: 90%">
           Vt ka EKI teatmiku artiklit
-          <a href="https://eki.ee/teatmik/haaldusmargid-uhendsonastikus/" target="ext-link">Hääldusmärgid ühendsõnastikus</a>.
+          <a href="https://eki.ee/teatmik/haaldusmargid-uhendsonastikus/" target="ext-link">Hääldusmärgid ühendsõnastikus</a>
+          .
         </td>
       </tr>
     </table>
@@ -140,14 +138,14 @@
       </tr>
     </table>
   </th:block>
-
   <th:block th:fragment="morpho-muutumatu_est">
     <div class="modal-dialog" role="document">
       <div class="modal-content">
         <th:block th:replace=" :: table-header_est"></th:block>
         <div class="modal-body">
           <th:block th:replace=" :: table-checks_est"></th:block>
-          <p th:utext="${paradigm.comment}" class="paradigm-text"></p>
+          <p th:text="${paradigm.morphComment}" th:if="${paradigm.morphComment}"></p>
+          <p th:utext="${paradigm.paradigmComment}" class="paradigm-text"></p>
           <div>
             <div class="scrollable-table">
               <div class="scrollable-table--scroller">
@@ -167,7 +165,6 @@
       </div>
     </div>
   </th:block>
-
   <th:block th:fragment="morpho-verb_est">
     <div class="modal-dialog" role="document">
       <div class="modal-content">
@@ -175,7 +172,8 @@
         <div class="modal-body">
           <th:block th:replace=" :: table-checks_est"></th:block>
           <div>
-            <p th:utext="${paradigm.comment}" class="paradigm-text"></p>
+            <p th:text="${paradigm.morphComment}" th:if="${paradigm.morphComment}"></p>
+            <p th:utext="${paradigm.paradigmComment}" class="paradigm-text"></p>
             <p>
               <span class="uppercase" th:text="#{label.morpho.inflectiontype}">Muuttüüp</span>
               <span th:text="${paradigm.inflectionType}">31i</span>
@@ -831,17 +829,17 @@
                       <span class="highlight">mitmuse 1. isik</span>
                     </td>
                     <td>
-                    <th:block th:each="form, formIter : ${viewUtil.getForms(paradigm, 'ImpPrPl1')}" th:if="${formIter.index == 0 && form.morphExists && !#strings.isEmpty(form.value)}">
-                      <th:block th:replace=" :: morpho-form-row(morphCode='ImpPrPl1')"></th:block>
-                      <th:block th:replace=" :: morpho-form-row-tilde-if(morphCode='IndPrPl1', ifCode='ImpPrPl1')"></th:block>
-                    </th:block>
+                      <th:block th:each="form, formIter : ${viewUtil.getForms(paradigm, 'ImpPrPl1')}" th:if="${formIter.index == 0 && form.morphExists && !#strings.isEmpty(form.value)}">
+                        <th:block th:replace=" :: morpho-form-row(morphCode='ImpPrPl1')"></th:block>
+                        <th:block th:replace=" :: morpho-form-row-tilde-if(morphCode='IndPrPl1', ifCode='ImpPrPl1')"></th:block>
+                      </th:block>
                     </td>
                     <td>
-                    <th:block th:each="form, formIter : ${viewUtil.getForms(paradigm, 'ImpPrPl1')}" th:if="${formIter.index == 0 && form.morphExists && !#strings.isEmpty(form.value)}">
-                      <th:block th:replace=" :: morpho-form-row-first(morphCode='ImpPrPl1', prefix='ärgem')"></th:block>
-                      <th:block th:replace=" :: morpho-form-row-tilde-if(morphCode='IndPrPl1', ifCode='ImpPrPl1', prefix='ärme')"></th:block>
-                      <th:block th:replace=" :: morpho-form-row-tilde-if(morphCode='IndPrPs_', ifCode='IndPrPl1', prefix='ärme')"></th:block>
-                    </th:block>
+                      <th:block th:each="form, formIter : ${viewUtil.getForms(paradigm, 'ImpPrPl1')}" th:if="${formIter.index == 0 && form.morphExists && !#strings.isEmpty(form.value)}">
+                        <th:block th:replace=" :: morpho-form-row-first(morphCode='ImpPrPl1', prefix='ärgem')"></th:block>
+                        <th:block th:replace=" :: morpho-form-row-tilde-if(morphCode='IndPrPl1', ifCode='ImpPrPl1', prefix='ärme')"></th:block>
+                        <th:block th:replace=" :: morpho-form-row-tilde-if(morphCode='IndPrPs_', ifCode='IndPrPl1', prefix='ärme')"></th:block>
+                      </th:block>
                     </td>
                   </tr>
                   <tr>
@@ -1084,7 +1082,6 @@
       </div>
     </div>
   </th:block>
-
   <th:block th:fragment="morpho-noomen_est">
     <div class="modal-dialog" role="document">
       <div class="modal-content">
@@ -1092,7 +1089,8 @@
         <div class="modal-body">
           <th:block th:replace=" :: table-checks_est"></th:block>
           <div>
-            <p th:utext="${paradigm.comment}" class="paradigm-text"></p>
+            <p th:text="${paradigm.morphComment}" th:if="${paradigm.morphComment}"></p>
+            <p th:utext="${paradigm.paradigmComment}" class="paradigm-text"></p>
             <p>
               <span class="uppercase" th:text="#{label.morpho.inflectiontype}">Muuttüüp</span>
               <span th:text="${paradigm.inflectionType}">22e</span>
@@ -1315,7 +1313,6 @@
       </div>
     </div>
   </th:block>
-
   <th:block th:fragment="morpho-verb_rus">
     <div class="modal-dialog" role="document">
       <div class="modal-content">
@@ -1330,7 +1327,8 @@
         </div>
         <div class="modal-body">
           <div>
-            <p th:utext="${paradigm.comment}" class="paradigm-text"></p>
+            <p th:text="${paradigm.morphComment}" th:if="${paradigm.morphComment}"></p>
+            <p th:utext="${paradigm.paradigmComment}" class="paradigm-text"></p>
             <div class="scrollable-table">
               <div class="scrollable-table--scroller">
                 <table class="stretch-middle-td">
@@ -1751,7 +1749,8 @@
         </div>
         <div class="modal-body">
           <div>
-            <p th:utext="${paradigm.comment}" class="paradigm-text"></p>
+            <p th:text="${paradigm.morphComment}" th:if="${paradigm.morphComment}"></p>
+            <p th:utext="${paradigm.paradigmComment}" class="paradigm-text"></p>
             <div class="scrollable-table">
               <div class="scrollable-table--scroller">
                 <table class="first-row-sizes">
@@ -1903,7 +1902,8 @@
         </div>
         <div class="modal-body">
           <div>
-            <p th:utext="${paradigm.comment}" class="paradigm-text"></p>
+            <p th:text="${paradigm.morphComment}" th:if="${paradigm.morphComment}"></p>
+            <p th:utext="${paradigm.paradigmComment}" class="paradigm-text"></p>
             <div class="scrollable-table">
               <div class="scrollable-table--scroller">
                 <table class="stretch-middle-td">
@@ -2317,7 +2317,8 @@
         </div>
         <div class="modal-body">
           <div>
-            <p th:utext="${paradigm.comment}" class="paradigm-text"></p>
+            <p th:text="${paradigm.morphComment}" th:if="${paradigm.morphComment}"></p>
+            <p th:utext="${paradigm.paradigmComment}" class="paradigm-text"></p>
             <th:block th:replace=" :: morpho-rus-adj-basetable(${paradigm})"></th:block>
           </div>
           <th:block th:replace=" :: table-legend_rus"></th:block>
@@ -2339,7 +2340,8 @@
         </div>
         <div class="modal-body">
           <div>
-            <p th:utext="${paradigm.comment}" class="paradigm-text"></p>
+            <p th:text="${paradigm.morphComment}" th:if="${paradigm.morphComment}"></p>
+            <p th:utext="${paradigm.paradigmComment}" class="paradigm-text"></p>
             <h2>Прилагательное / Omadussõna</h2>
             <th:block th:replace=" :: morpho-rus-adj-basetable(${paradigm})"></th:block>
             <div class="scrollable-table">
@@ -2414,7 +2416,8 @@
         </div>
         <div class="modal-body">
           <div>
-            <p th:utext="${paradigm.comment}" class="paradigm-text"></p>
+            <p th:text="${paradigm.morphComment}" th:if="${paradigm.morphComment}"></p>
+            <p th:utext="${paradigm.paradigmComment}" class="paradigm-text"></p>
             <h2>Превосходная степень / Ülivõrre</h2>
             <th:block th:replace=" :: morpho-rus-adj-basetable(${paradigm})"></th:block>
           </div>
@@ -2437,7 +2440,8 @@
         </div>
         <div class="modal-body">
           <div>
-            <p th:utext="${paradigm.comment}" class="paradigm-text"></p>
+            <p th:text="${paradigm.morphComment}" th:if="${paradigm.morphComment}"></p>
+            <p th:utext="${paradigm.paradigmComment}" class="paradigm-text"></p>
             <h2>Причастие / Kesksõna</h2>
             <th:block th:replace=" :: morpho-rus-adj-basetable(${paradigm})"></th:block>
             <div class="scrollable-table">
@@ -2512,7 +2516,8 @@
         </div>
         <div class="modal-body">
           <div>
-            <p th:utext="${paradigm.comment}" class="paradigm-text"></p>
+            <p th:text="${paradigm.morphComment}" th:if="${paradigm.morphComment}"></p>
+            <p th:utext="${paradigm.paradigmComment}" class="paradigm-text"></p>
             <div class="scrollable-table">
               <div class="scrollable-table--scroller">
                 <table class="pb-5">
