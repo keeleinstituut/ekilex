@@ -180,7 +180,7 @@ public class SynCudService extends AbstractCudService implements SystemConstant 
 
 	@Transactional
 	public void createWordAndSynRelation(
-			Long existingWordId, String valuePrese, String roleDatasetCode, String language, String weightStr, boolean isManualEventOnUpdateEnabled) throws Exception {
+			Long existingWordId, String valuePrese, String weightStr, String language, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
 
 		String value = textDecorationService.removeEkiElementMarkup(valuePrese);
 		String cleanValue = textDecorationService.unifyToApostrophe(value);

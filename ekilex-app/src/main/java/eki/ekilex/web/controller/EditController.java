@@ -196,7 +196,7 @@ public class EditController extends AbstractMutableDataPageController {
 			cudService.createMeaningMedia(id, value, complexity, roleDatasetCode, isManualEventOnUpdateEnabled);
 			break;
 		case "create_syn_word":
-			synCudService.createWordAndSynRelation(id, value, roleDatasetCode, languageCode, value2, isManualEventOnUpdateEnabled);
+			synCudService.createWordAndSynRelation(id, value, value2, languageCode, roleDatasetCode, isManualEventOnUpdateEnabled);
 			break;
 		case "meaning_semantic_type":
 			cudService.createMeaningSemanticType(id2, value, roleDatasetCode, isManualEventOnUpdateEnabled);

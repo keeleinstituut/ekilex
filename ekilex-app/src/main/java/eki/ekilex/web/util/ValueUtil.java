@@ -34,6 +34,12 @@ public class ValueUtil implements SystemConstant {
 			if (valueChar == '\t') {
 				valueChar = ' ';
 			}
+			if (valueChar == '\u00A0') { // non-breaking space as unicode
+				valueChar = ' ';
+			}
+			if (valueChar == 160) { // non-breaking space as char map code
+				valueChar = ' ';
+			}
 			if (valueChar == ' ' && prevChar == ' ') {
 				continue;
 			}

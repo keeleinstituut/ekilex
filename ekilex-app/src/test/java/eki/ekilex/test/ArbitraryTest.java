@@ -107,9 +107,9 @@ public class ArbitraryTest implements GlobalConstant {
 	@Test
 	public void testTextCleanup() throws Exception {
 
-		String nastyUserInputText = "    aaa \rbbb   \t\n ccc двор<eki-stress>я</eki-stress>нское \n сосл<eki-stress>о</eki-stress>вие <h2>????<p>!!!</p></h2> üõöä éĕćåá \t  \n  ";
+		String nastyUserInputText = "    aaa \rbbb   \t\n ccc -start-   -end- двор<eki-stress>я</eki-stress>нское \n сосл<eki-stress>о</eki-stress>вие <h2>????<p>!!!</p></h2> üõöä éĕćåá \t  \n  ";
 		String cleanUserInputText = valueUtil.trimAndCleanAndRemoveHtmlAndLimit(nastyUserInputText);
-		String expectedCleanResult = "aaa bbb ccc двор<eki-stress>я</eki-stress>нское сосл<eki-stress>о</eki-stress>вие ????!!! üõöä éĕćåá";
+		String expectedCleanResult = "aaa bbb ccc -start- -end- двор<eki-stress>я</eki-stress>нское сосл<eki-stress>о</eki-stress>вие ????!!! üõöä éĕćåá";
 
 		assertEquals("Incoorect test result", expectedCleanResult, cleanUserInputText);
 	}
