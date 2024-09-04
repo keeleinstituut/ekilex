@@ -40,7 +40,6 @@ public class SourceSearchController extends AbstractPrivateSearchController {
 	public String initSearch(Model model) {
 
 		initSearchForms(SOURCE_SEARCH_PAGE, model);
-		model.addAttribute("sourceSearchResult", new SourceSearchResult());
 
 		return SOURCE_SEARCH_PAGE;
 	}

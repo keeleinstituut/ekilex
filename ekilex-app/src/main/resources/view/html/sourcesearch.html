@@ -24,12 +24,14 @@
               th:text="#{source.add.new}">Lisa uus allikas
       </button>
     </div>
-    <div class="mt-3" th:unless="${sourceSearchResult.resultExist}">
-      <h5 th:text="#{source.noresults}">Tulemusi pole</h5>
-    </div>
-    <div id="results_div" class="float-left w-100 mb-4 mt-2" th:if="${sourceSearchResult.resultExist}">
-      <div th:replace="sourcecomp :: search_result"></div>
-    </div>
+    <th:block th:if="${sourceSearchResult}">
+      <div class="mt-3" th:unless="${sourceSearchResult.resultExist}">
+        <h5 th:text="#{source.noresults}">Tulemusi pole</h5>
+      </div>
+      <div id="results_div" class="float-left w-100 mb-4 mt-2" th:if="${sourceSearchResult.resultExist}">
+        <div th:replace="sourcecomp :: search_result"></div>
+      </div>
+    </th:block>
   </div>
   <div id="sourceActivityLogDlg" class="modal" role="dialog" data-plugin="activityLogDlgPlugin">
     <div class="modal-dialog modal-lg" role="document">
