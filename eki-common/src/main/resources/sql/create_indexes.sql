@@ -138,6 +138,9 @@ create index lexeme_pos_pos_code_idx on lexeme_pos(pos_code);
 create index lexeme_deriv_lexeme_id_idx on lexeme_deriv(lexeme_id);
 create index lexeme_region_lexeme_id_idx on lexeme_region(lexeme_id);
 create index meaning_domain_meaning_id_idx on meaning_domain(meaning_id);
+create index meaning_domain_code_origin_idx on meaning_domain(domain_code, domain_origin);
+create index meaning_domain_origin_idx on meaning_domain(domain_origin);
+create index meaning_domain_code_idx on meaning_domain(domain_code);
 create index meaning_semantic_type_meaning_id_idx on meaning_semantic_type(meaning_id);
 create index usage_original_freeform_id_idx on usage(original_freeform_id);
 create index usage_lexeme_id_idx on usage(lexeme_id);
@@ -243,7 +246,6 @@ create index temp_ds_import_queue_table_name_idx on temp_ds_import_queue(table_n
 create index domain_code_origin_idx on domain(code, origin);
 create index domain_parent_code_origin_idx on domain(parent_code, parent_origin);
 create index domain_label_code_origin_idx on domain_label(code, origin);
-create index meaning_domain_code_origin_idx on meaning_domain(domain_code, domain_origin);
 create index definition_fts_idx on definition using gin(to_tsvector('simple', value));
 create index freeform_fts_idx on freeform using gin(to_tsvector('simple', value_text));
 create index form_fts_idx on form using gin(to_tsvector('simple', value));

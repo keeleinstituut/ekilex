@@ -6,6 +6,7 @@ import static eki.ekilex.data.db.Tables.DEFINITION_FREEFORM;
 import static eki.ekilex.data.db.Tables.DEFINITION_NOTE;
 import static eki.ekilex.data.db.Tables.DEFINITION_NOTE_SOURCE_LINK;
 import static eki.ekilex.data.db.Tables.DEFINITION_SOURCE_LINK;
+import static eki.ekilex.data.db.Tables.DOMAIN;
 import static eki.ekilex.data.db.Tables.FORM_FREQ;
 import static eki.ekilex.data.db.Tables.FREEFORM;
 import static eki.ekilex.data.db.Tables.FREQ_CORP;
@@ -55,10 +56,12 @@ import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.RegExUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.jooq.CommonTableExpression;
 import org.jooq.Condition;
 import org.jooq.Field;
 import org.jooq.Record1;
 import org.jooq.Record2;
+import org.jooq.Record3;
 import org.jooq.SelectConditionStep;
 import org.jooq.SelectJoinStep;
 import org.jooq.Table;
@@ -80,6 +83,7 @@ import eki.ekilex.data.db.tables.DefinitionFreeform;
 import eki.ekilex.data.db.tables.DefinitionNote;
 import eki.ekilex.data.db.tables.DefinitionNoteSourceLink;
 import eki.ekilex.data.db.tables.DefinitionSourceLink;
+import eki.ekilex.data.db.tables.Domain;
 import eki.ekilex.data.db.tables.FormFreq;
 import eki.ekilex.data.db.tables.Freeform;
 import eki.ekilex.data.db.tables.FreqCorp;
@@ -1692,25 +1696,68 @@ public class SearchFilterHelper implements GlobalConstant, ActivityFunct {
 
 	public Condition applyDomainValueFilters(List<SearchCriterion> searchCriteria, Field<Long> meaningIdField, Condition where) {
 
-		List<SearchCriterion> filteredCriteria = filterCriteriaBySearchKeyAndOperands(searchCriteria, SearchKey.DOMAIN, SearchOperand.EQUALS);
+		List<SearchCriterion> filteredCriteria = filterCriteriaBySearchKeyAndOperands(searchCriteria, SearchKey.DOMAIN, SearchOperand.EQUALS, SearchOperand.SUB_CONTAINS);
 
 		if (CollectionUtils.isEmpty(filteredCriteria)) {
 			return where;
 		}
 
 		MeaningDomain md = MEANING_DOMAIN.as("md");
-
+		Domain d = DOMAIN.as("d");
 		Condition where1 = md.MEANING_ID.eq(meaningIdField);
+
 		for (SearchCriterion criterion : filteredCriteria) {
-			Classifier domain = (Classifier) criterion.getSearchValue();
+
 			boolean isNot = criterion.isNot();
-			Condition critWhere = md.DOMAIN_CODE.eq(domain.getCode()).and(md.DOMAIN_ORIGIN.eq(domain.getOrigin()));
+			SearchOperand searchOperand = criterion.getSearchOperand();
+			Classifier domainClassif = (Classifier) criterion.getSearchValue();
+			String domainCode = domainClassif.getCode();
+			String domainOrigin = domainClassif.getOrigin();
+			Condition critWhere = null;
+
+			if (SearchOperand.EQUALS.equals(searchOperand)) {
+
+				critWhere = md.DOMAIN_ORIGIN.eq(domainOrigin).and(md.DOMAIN_CODE.eq(domainCode));
+
+			} else if (SearchOperand.SUB_CONTAINS.equals(searchOperand)) {
+
+				CommonTableExpression<Record3<String, String, String>> dt = DSL
+						.name("dt")
+						.fields("origin", "code", "parent_code")
+						.as(DSL
+								.select(
+										d.ORIGIN,
+										d.CODE,
+										d.PARENT_CODE)
+								.from(d)
+								.where(
+										d.ORIGIN.eq(domainOrigin)
+												.and(d.CODE.eq(domainCode)))
+								.unionAll(DSL
+										.select(
+												d.ORIGIN,
+												d.CODE,
+												d.PARENT_CODE)
+										.from(DSL.table("dt"), d)
+										.where(
+												d.ORIGIN.eq(DSL.field("dt.origin", String.class))
+														.and(d.PARENT_CODE.eq(DSL.field("dt.code", String.class))))));
+
+				critWhere = md.DOMAIN_ORIGIN.eq(domainOrigin)
+						.and(md.DOMAIN_CODE.in(
+								DSL
+										.withRecursive(dt)
+										.select(dt.field("code", String.class))
+										.from(dt)));
+
+			}
 			if (isNot) {
 				critWhere = DSL.not(critWhere);
 			}
 			where1 = where1.and(critWhere);
 		}
 		where = where.and(DSL.exists(DSL.select(md.ID).from(md).where(where1)));
+
 		return where;
 	}
 
