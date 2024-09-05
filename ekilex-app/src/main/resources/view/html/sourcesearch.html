@@ -28,7 +28,7 @@
       <div class="mt-3" th:unless="${sourceSearchResult.resultExist}">
         <h5 th:text="#{source.noresults}">Tulemusi pole</h5>
       </div>
-      <div id="results_div" class="float-left w-100 mb-4 mt-2" th:if="${sourceSearchResult.resultExist}">
+      <div id="results_div" class="source-search-results float-left w-100 mt-2" th:if="${sourceSearchResult.resultExist}">
         <div th:replace="sourcecomp :: search_result"></div>
       </div>
     </th:block>
