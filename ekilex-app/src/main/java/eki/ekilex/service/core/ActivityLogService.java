@@ -50,6 +50,8 @@ import eki.ekilex.data.MeaningWord;
 import eki.ekilex.data.Media;
 import eki.ekilex.data.NoteLangGroup;
 import eki.ekilex.data.OrderedClassifier;
+import eki.ekilex.data.Paradigm;
+import eki.ekilex.data.ParadigmFormTuple;
 import eki.ekilex.data.Source;
 import eki.ekilex.data.SourceLink;
 import eki.ekilex.data.SourcePropertyTuple;
@@ -117,6 +119,8 @@ public class ActivityLogService implements SystemConstant, GlobalConstant {
 			ActivityEntity.GOVERNMENT_VARIANT,
 			ActivityEntity.GOVERNMENT_OPTIONAL,
 			ActivityEntity.SEMANTIC_TYPE_GROUP);
+
+	private static final String FUNCT_NAME_DELETE_PARADIGM = "deleteParadigm";
 
 	@Autowired
 	protected UserContext userContext;
@@ -291,7 +295,7 @@ public class ActivityLogService implements SystemConstant, GlobalConstant {
 			activityLogData.setPrevWlmIds(prevWlmIds);
 		} else if (ActivityOwner.WORD.equals(ownerName)) {
 			Long wordId = Long.valueOf(ownerId);
-			prevData = getWordDetailsJson(wordId);
+			prevData = getWordDetailsJson(wordId, functName);
 			prevWlmIds = activityLogDbService.getLexemeMeaningIds(wordId);
 			activityLogData.setPrevData(prevData);
 			activityLogData.setPrevWlmIds(prevWlmIds);
@@ -345,6 +349,7 @@ public class ActivityLogService implements SystemConstant, GlobalConstant {
 
 		activityLogData.setEntityId(entityId);
 		activityLogData.setEntityName(entityName);
+		String functName = activityLogData.getFunctName();
 		ActivityOwner ownerName = activityLogData.getOwnerName();
 		Long ownerId = activityLogData.getOwnerId();
 		WordLexemeMeaningIds currWlmIds = null;
@@ -359,7 +364,7 @@ public class ActivityLogService implements SystemConstant, GlobalConstant {
 			handleWlmActivityLog(activityLogData);
 		} else if (ActivityOwner.WORD.equals(ownerName)) {
 			Long wordId = Long.valueOf(ownerId);
-			currData = getWordDetailsJson(wordId);
+			currData = getWordDetailsJson(wordId, functName);
 			currWlmIds = activityLogDbService.getLexemeMeaningIds(wordId);
 			activityLogData.setCurrData(currData);
 			activityLogData.setCurrWlmIds(currWlmIds);
@@ -613,7 +618,7 @@ public class ActivityLogService implements SystemConstant, GlobalConstant {
 		return lexemeJson;
 	}
 
-	private String getWordDetailsJson(Long wordId) throws Exception {
+	private String getWordDetailsJson(Long wordId, String functName) throws Exception {
 
 		Word word = lexSearchDbService.getWord(wordId);
 		if (word == null) {
@@ -626,12 +631,18 @@ public class ActivityLogService implements SystemConstant, GlobalConstant {
 		List<WordEtymTuple> wordEtymTuples = lexSearchDbService.getWordEtymology(wordId);
 		List<WordEtym> wordEtymology = conversionUtil.composeWordEtymology(wordEtymTuples);
 		List<FreeForm> odWordRecommendations = commonDataDbService.getOdWordRecommendations(wordId);
+		List<Paradigm> paradigms = null;
+		if (StringUtils.equals(FUNCT_NAME_DELETE_PARADIGM, functName)) {
+			List<ParadigmFormTuple> paradigmFormTuples = lexSearchDbService.getParadigmFormTuples(wordId, CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
+			paradigms = conversionUtil.composeParadigms(paradigmFormTuples);
+		}
 
 		word.setWordTypes(wordTypes);
 		word.setRelations(wordRelations);
 		word.setGroups(wordGroups);
 		word.setEtymology(wordEtymology);
 		word.setOdWordRecommendations(odWordRecommendations);
+		word.setParadigms(paradigms);
 
 		ObjectMapper objectMapper = new ObjectMapper();
 		String wordDetailsJson = objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(word);

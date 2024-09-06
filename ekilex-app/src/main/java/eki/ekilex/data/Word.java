@@ -65,6 +65,8 @@ public class Word extends AbstractCrudEntity implements DecoratedWordType {
 
 	private List<FreeForm> odWordRecommendations;
 
+	private List<Paradigm> paradigms;
+
 	private Timestamp lastActivityEventOn;
 
 	private Timestamp manualEventOn;
@@ -283,6 +285,14 @@ public class Word extends AbstractCrudEntity implements DecoratedWordType {
 
 	public void setOdWordRecommendations(List<FreeForm> odWordRecommendations) {
 		this.odWordRecommendations = odWordRecommendations;
+	}
+
+	public List<Paradigm> getParadigms() {
+		return paradigms;
+	}
+
+	public void setParadigms(List<Paradigm> paradigms) {
+		this.paradigms = paradigms;
 	}
 
 	public Timestamp getLastActivityEventOn() {
