@@ -7,7 +7,6 @@ import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
 
 import eki.common.constant.Complexity;
-import eki.common.constant.FreeformType;
 import eki.common.data.AbstractDataObject;
 import eki.wordweb.data.ComplexityType;
 import eki.wordweb.data.LangType;
@@ -20,7 +19,7 @@ public class TypeFreeform extends AbstractDataObject implements ComplexityType, 
 
 	private Long freeformId;
 
-	private FreeformType type;
+	private String freeformTypeCode;
 
 	private String value;
 
@@ -48,12 +47,12 @@ public class TypeFreeform extends AbstractDataObject implements ComplexityType, 
 		this.freeformId = freeformId;
 	}
 
-	public FreeformType getType() {
-		return type;
+	public String getFreeformTypeCode() {
+		return freeformTypeCode;
 	}
 
-	public void setType(FreeformType type) {
-		this.type = type;
+	public void setFreeformTypeCode(String freeformTypeCode) {
+		this.freeformTypeCode = freeformTypeCode;
 	}
 
 	public String getValue() {

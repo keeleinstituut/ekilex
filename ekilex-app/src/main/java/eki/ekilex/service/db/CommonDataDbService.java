@@ -3,6 +3,7 @@ package eki.ekilex.service.db;
 import static eki.ekilex.data.db.Tables.ASPECT;
 import static eki.ekilex.data.db.Tables.ASPECT_LABEL;
 import static eki.ekilex.data.db.Tables.DATASET;
+import static eki.ekilex.data.db.Tables.DATASET_FREEFORM_TYPE;
 import static eki.ekilex.data.db.Tables.DATASET_PERMISSION;
 import static eki.ekilex.data.db.Tables.DEFINITION;
 import static eki.ekilex.data.db.Tables.DEFINITION_DATASET;
@@ -19,6 +20,8 @@ import static eki.ekilex.data.db.Tables.DOMAIN;
 import static eki.ekilex.data.db.Tables.DOMAIN_LABEL;
 import static eki.ekilex.data.db.Tables.ETYMOLOGY_TYPE;
 import static eki.ekilex.data.db.Tables.FREEFORM;
+import static eki.ekilex.data.db.Tables.FREEFORM_TYPE;
+import static eki.ekilex.data.db.Tables.FREEFORM_TYPE_LABEL;
 import static eki.ekilex.data.db.Tables.GENDER;
 import static eki.ekilex.data.db.Tables.GENDER_LABEL;
 import static eki.ekilex.data.db.Tables.GOVERNMENT_TYPE;
@@ -99,7 +102,7 @@ import org.springframework.stereotype.Component;
 import eki.common.constant.AuthorityItem;
 import eki.common.constant.AuthorityOperation;
 import eki.common.constant.ClassifierName;
-import eki.common.constant.FreeformType;
+import eki.common.constant.FreeformOwner;
 import eki.ekilex.data.Classifier;
 import eki.ekilex.data.Dataset;
 import eki.ekilex.data.FreeForm;
@@ -201,6 +204,22 @@ public class CommonDataDbService extends AbstractDataDbService {
 	}
 
 	@Cacheable(value = CACHE_KEY_CLASSIF, key = "{#root.methodName, #classifierLabelLang, #classifierLabelTypeCode}")
+	public List<Classifier> getFreeformTypes(String classifierLabelLang, String classifierLabelTypeCode) {
+		return create
+				.select(
+						DSL.field(DSL.value(ClassifierName.FREEFORM_TYPE.name())).as("name"),
+						FREEFORM_TYPE.CODE,
+						DSL.coalesce(FREEFORM_TYPE_LABEL.VALUE, FREEFORM_TYPE.CODE).as("value"))
+				.from(FREEFORM_TYPE
+						.leftOuterJoin(FREEFORM_TYPE_LABEL).on(
+								FREEFORM_TYPE_LABEL.CODE.eq(FREEFORM_TYPE.CODE)
+										.and(FREEFORM_TYPE_LABEL.LANG.eq(classifierLabelLang))
+										.and(FREEFORM_TYPE_LABEL.TYPE.eq(classifierLabelTypeCode))))
+				.orderBy(FREEFORM_TYPE.ORDER_BY)
+				.fetchInto(Classifier.class);
+	}
+
+	@Cacheable(value = CACHE_KEY_CLASSIF, key = "{#root.methodName, #classifierLabelLang, #classifierLabelTypeCode}")
 	public List<Classifier> getPoses(String classifierLabelLang, String classifierLabelTypeCode) {
 		return create
 				.select(
@@ -208,7 +227,10 @@ public class CommonDataDbService extends AbstractDataDbService {
 						POS_LABEL.CODE,
 						POS_LABEL.VALUE)
 				.from(POS_LABEL, POS)
-				.where(POS_LABEL.LANG.eq(classifierLabelLang).and(POS_LABEL.TYPE.eq(classifierLabelTypeCode)).and(POS_LABEL.CODE.eq(POS.CODE)))
+				.where(
+						POS_LABEL.LANG.eq(classifierLabelLang)
+								.and(POS_LABEL.TYPE.eq(classifierLabelTypeCode))
+								.and(POS_LABEL.CODE.eq(POS.CODE)))
 				.orderBy(POS.ORDER_BY)
 				.fetchInto(Classifier.class);
 	}
@@ -221,7 +243,10 @@ public class CommonDataDbService extends AbstractDataDbService {
 						REGISTER_LABEL.CODE,
 						REGISTER_LABEL.VALUE)
 				.from(REGISTER_LABEL, REGISTER)
-				.where(REGISTER_LABEL.LANG.eq(classifierLabelLang).and(REGISTER_LABEL.TYPE.eq(classifierLabelTypeCode)).and(REGISTER_LABEL.CODE.eq(REGISTER.CODE)))
+				.where(
+						REGISTER_LABEL.LANG.eq(classifierLabelLang)
+								.and(REGISTER_LABEL.TYPE.eq(classifierLabelTypeCode))
+								.and(REGISTER_LABEL.CODE.eq(REGISTER.CODE)))
 				.orderBy(REGISTER.ORDER_BY)
 				.fetchInto(Classifier.class);
 	}
@@ -246,7 +271,10 @@ public class CommonDataDbService extends AbstractDataDbService {
 						DERIV_LABEL.CODE,
 						DERIV_LABEL.VALUE)
 				.from(DERIV_LABEL, DERIV)
-				.where(DERIV_LABEL.LANG.eq(classifierLabelLang).and(DERIV_LABEL.TYPE.eq(classifierLabelTypeCode)).and(DERIV_LABEL.CODE.eq(DERIV.CODE)))
+				.where(
+						DERIV_LABEL.LANG.eq(classifierLabelLang)
+								.and(DERIV_LABEL.TYPE.eq(classifierLabelTypeCode))
+								.and(DERIV_LABEL.CODE.eq(DERIV.CODE)))
 				.orderBy(DERIV.ORDER_BY)
 				.fetchInto(Classifier.class);
 	}
@@ -259,7 +287,10 @@ public class CommonDataDbService extends AbstractDataDbService {
 						GENDER_LABEL.CODE,
 						GENDER_LABEL.VALUE)
 				.from(GENDER_LABEL, GENDER)
-				.where(GENDER_LABEL.LANG.eq(classifierLabelLang).and(GENDER_LABEL.TYPE.eq(classifierLabelTypeCode)).and(GENDER_LABEL.CODE.eq(GENDER.CODE)))
+				.where(
+						GENDER_LABEL.LANG.eq(classifierLabelLang)
+								.and(GENDER_LABEL.TYPE.eq(classifierLabelTypeCode))
+								.and(GENDER_LABEL.CODE.eq(GENDER.CODE)))
 				.orderBy(GENDER.ORDER_BY)
 				.fetchInto(Classifier.class);
 	}
@@ -272,7 +303,10 @@ public class CommonDataDbService extends AbstractDataDbService {
 						ASPECT_LABEL.CODE,
 						ASPECT_LABEL.VALUE)
 				.from(ASPECT_LABEL, ASPECT)
-				.where(ASPECT_LABEL.LANG.eq(classifierLabelLang).and(ASPECT_LABEL.TYPE.eq(classifierLabelTypeCode)).and(ASPECT_LABEL.CODE.eq(ASPECT.CODE)))
+				.where(
+						ASPECT_LABEL.LANG.eq(classifierLabelLang)
+								.and(ASPECT_LABEL.TYPE.eq(classifierLabelTypeCode))
+								.and(ASPECT_LABEL.CODE.eq(ASPECT.CODE)))
 				.orderBy(ASPECT.ORDER_BY)
 				.fetchInto(Classifier.class);
 	}
@@ -305,7 +339,10 @@ public class CommonDataDbService extends AbstractDataDbService {
 						WORD_TYPE_LABEL.CODE,
 						WORD_TYPE_LABEL.VALUE)
 				.from(WORD_TYPE_LABEL, WORD_TYPE)
-				.where(WORD_TYPE_LABEL.LANG.eq(classifierLabelLang).and(WORD_TYPE_LABEL.TYPE.eq(classifierLabelTypeCode)).and(WORD_TYPE_LABEL.CODE.eq(WORD_TYPE.CODE)))
+				.where(
+						WORD_TYPE_LABEL.LANG.eq(classifierLabelLang)
+								.and(WORD_TYPE_LABEL.TYPE.eq(classifierLabelTypeCode))
+								.and(WORD_TYPE_LABEL.CODE.eq(WORD_TYPE.CODE)))
 				.orderBy(WORD_TYPE.ORDER_BY)
 				.fetchInto(Classifier.class);
 	}
@@ -318,7 +355,10 @@ public class CommonDataDbService extends AbstractDataDbService {
 						WORD_REL_TYPE_LABEL.CODE,
 						WORD_REL_TYPE_LABEL.VALUE)
 				.from(WORD_REL_TYPE_LABEL, WORD_REL_TYPE)
-				.where(WORD_REL_TYPE_LABEL.LANG.eq(classifierLabelLang).and(WORD_REL_TYPE_LABEL.TYPE.eq(classifierLabelTypeCode)).and(WORD_REL_TYPE_LABEL.CODE.eq(WORD_REL_TYPE.CODE)))
+				.where(
+						WORD_REL_TYPE_LABEL.LANG.eq(classifierLabelLang)
+								.and(WORD_REL_TYPE_LABEL.TYPE.eq(classifierLabelTypeCode))
+								.and(WORD_REL_TYPE_LABEL.CODE.eq(WORD_REL_TYPE.CODE)))
 				.orderBy(WORD_REL_TYPE.ORDER_BY)
 				.fetchInto(Classifier.class);
 	}
@@ -331,7 +371,10 @@ public class CommonDataDbService extends AbstractDataDbService {
 						LEX_REL_TYPE_LABEL.CODE,
 						LEX_REL_TYPE_LABEL.VALUE)
 				.from(LEX_REL_TYPE_LABEL, LEX_REL_TYPE)
-				.where(LEX_REL_TYPE_LABEL.LANG.eq(classifierLabelLang).and(LEX_REL_TYPE_LABEL.TYPE.eq(classifierLabelType)).and(LEX_REL_TYPE_LABEL.CODE.eq(LEX_REL_TYPE.CODE)))
+				.where(
+						LEX_REL_TYPE_LABEL.LANG.eq(classifierLabelLang)
+								.and(LEX_REL_TYPE_LABEL.TYPE.eq(classifierLabelType))
+								.and(LEX_REL_TYPE_LABEL.CODE.eq(LEX_REL_TYPE.CODE)))
 				.orderBy(LEX_REL_TYPE.ORDER_BY)
 				.fetchInto(Classifier.class);
 	}
@@ -344,7 +387,10 @@ public class CommonDataDbService extends AbstractDataDbService {
 						MEANING_REL_TYPE_LABEL.CODE,
 						MEANING_REL_TYPE_LABEL.VALUE)
 				.from(MEANING_REL_TYPE_LABEL, MEANING_REL_TYPE)
-				.where(MEANING_REL_TYPE_LABEL.LANG.eq(classifierLabelLang).and(MEANING_REL_TYPE_LABEL.TYPE.eq(classifierLabelType)).and(MEANING_REL_TYPE_LABEL.CODE.eq(MEANING_REL_TYPE.CODE)))
+				.where(
+						MEANING_REL_TYPE_LABEL.LANG.eq(classifierLabelLang)
+								.and(MEANING_REL_TYPE_LABEL.TYPE.eq(classifierLabelType))
+								.and(MEANING_REL_TYPE_LABEL.CODE.eq(MEANING_REL_TYPE.CODE)))
 				.orderBy(MEANING_REL_TYPE.ORDER_BY)
 				.fetchInto(Classifier.class);
 	}
@@ -357,7 +403,10 @@ public class CommonDataDbService extends AbstractDataDbService {
 						DEFINITION_TYPE_LABEL.CODE,
 						DEFINITION_TYPE_LABEL.VALUE)
 				.from(DEFINITION_TYPE_LABEL, DEFINITION_TYPE)
-				.where(DEFINITION_TYPE_LABEL.LANG.eq(classifierLabelLang).and(DEFINITION_TYPE_LABEL.TYPE.eq(classifierLabelType)).and(DEFINITION_TYPE_LABEL.CODE.eq(DEFINITION_TYPE.CODE)))
+				.where(
+						DEFINITION_TYPE_LABEL.LANG.eq(classifierLabelLang)
+								.and(DEFINITION_TYPE_LABEL.TYPE.eq(classifierLabelType))
+								.and(DEFINITION_TYPE_LABEL.CODE.eq(DEFINITION_TYPE.CODE)))
 				.orderBy(DEFINITION_TYPE.ORDER_BY)
 				.fetchInto(Classifier.class);
 	}
@@ -370,7 +419,10 @@ public class CommonDataDbService extends AbstractDataDbService {
 						MORPH_LABEL.CODE,
 						MORPH_LABEL.VALUE)
 				.from(MORPH_LABEL, MORPH)
-				.where(MORPH_LABEL.LANG.eq(classifierLabelLang).and(MORPH_LABEL.TYPE.eq(classifierLabelTypeCode)).and(MORPH_LABEL.CODE.eq(MORPH.CODE)))
+				.where(
+						MORPH_LABEL.LANG.eq(classifierLabelLang)
+								.and(MORPH_LABEL.TYPE.eq(classifierLabelTypeCode))
+								.and(MORPH_LABEL.CODE.eq(MORPH.CODE)))
 				.orderBy(MORPH.ORDER_BY)
 				.fetchInto(Classifier.class);
 	}
@@ -383,7 +435,10 @@ public class CommonDataDbService extends AbstractDataDbService {
 						VALUE_STATE_LABEL.CODE,
 						VALUE_STATE_LABEL.VALUE)
 				.from(VALUE_STATE_LABEL, VALUE_STATE)
-				.where(VALUE_STATE_LABEL.LANG.eq(classifierLabelLang).and(VALUE_STATE_LABEL.TYPE.eq(classifierLabelType)).and(VALUE_STATE_LABEL.CODE.eq(VALUE_STATE.CODE)))
+				.where(
+						VALUE_STATE_LABEL.LANG.eq(classifierLabelLang)
+								.and(VALUE_STATE_LABEL.TYPE.eq(classifierLabelType))
+								.and(VALUE_STATE_LABEL.CODE.eq(VALUE_STATE.CODE)))
 				.orderBy(VALUE_STATE.ORDER_BY)
 				.fetchInto(Classifier.class);
 	}
@@ -396,7 +451,10 @@ public class CommonDataDbService extends AbstractDataDbService {
 						PROFICIENCY_LEVEL_LABEL.CODE,
 						PROFICIENCY_LEVEL_LABEL.VALUE)
 				.from(PROFICIENCY_LEVEL_LABEL, PROFICIENCY_LEVEL)
-				.where(PROFICIENCY_LEVEL_LABEL.LANG.eq(classifierLabelLang).and(PROFICIENCY_LEVEL_LABEL.TYPE.eq(classifierLabelType)).and(PROFICIENCY_LEVEL_LABEL.CODE.eq(PROFICIENCY_LEVEL.CODE)))
+				.where(
+						PROFICIENCY_LEVEL_LABEL.LANG.eq(classifierLabelLang)
+								.and(PROFICIENCY_LEVEL_LABEL.TYPE.eq(classifierLabelType))
+								.and(PROFICIENCY_LEVEL_LABEL.CODE.eq(PROFICIENCY_LEVEL.CODE)))
 				.orderBy(PROFICIENCY_LEVEL.ORDER_BY)
 				.fetchInto(Classifier.class);
 	}
@@ -452,7 +510,10 @@ public class CommonDataDbService extends AbstractDataDbService {
 						SEMANTIC_TYPE_LABEL.CODE,
 						SEMANTIC_TYPE_LABEL.VALUE)
 				.from(SEMANTIC_TYPE_LABEL, SEMANTIC_TYPE)
-				.where(SEMANTIC_TYPE_LABEL.LANG.eq(classifierLabelLang).and(SEMANTIC_TYPE_LABEL.TYPE.eq(classifierLabelType)).and(SEMANTIC_TYPE_LABEL.CODE.eq(SEMANTIC_TYPE.CODE)))
+				.where(
+						SEMANTIC_TYPE_LABEL.LANG.eq(classifierLabelLang)
+								.and(SEMANTIC_TYPE_LABEL.TYPE.eq(classifierLabelType))
+								.and(SEMANTIC_TYPE_LABEL.CODE.eq(SEMANTIC_TYPE.CODE)))
 				.orderBy(SEMANTIC_TYPE.ORDER_BY)
 				.fetchInto(Classifier.class);
 	}
@@ -465,7 +526,10 @@ public class CommonDataDbService extends AbstractDataDbService {
 						DISPLAY_MORPH_LABEL.CODE,
 						DISPLAY_MORPH_LABEL.VALUE)
 				.from(DISPLAY_MORPH_LABEL, DISPLAY_MORPH)
-				.where(DISPLAY_MORPH_LABEL.LANG.eq(classifierLabelLang).and(DISPLAY_MORPH_LABEL.TYPE.eq(classifierLabelType)).and(DISPLAY_MORPH_LABEL.CODE.eq(DISPLAY_MORPH.CODE)))
+				.where(
+						DISPLAY_MORPH_LABEL.LANG.eq(classifierLabelLang)
+								.and(DISPLAY_MORPH_LABEL.TYPE.eq(classifierLabelType))
+								.and(DISPLAY_MORPH_LABEL.CODE.eq(DISPLAY_MORPH.CODE)))
 				.orderBy(DISPLAY_MORPH.ORDER_BY)
 				.fetchInto(Classifier.class);
 	}
@@ -478,7 +542,10 @@ public class CommonDataDbService extends AbstractDataDbService {
 						GOVERNMENT_TYPE_LABEL.CODE,
 						GOVERNMENT_TYPE_LABEL.VALUE)
 				.from(GOVERNMENT_TYPE_LABEL, GOVERNMENT_TYPE)
-				.where(GOVERNMENT_TYPE_LABEL.LANG.eq(classifierLabelLang).and(GOVERNMENT_TYPE_LABEL.TYPE.eq(classifierLabelType)).and(GOVERNMENT_TYPE_LABEL.CODE.eq(GOVERNMENT_TYPE.CODE)))
+				.where(
+						GOVERNMENT_TYPE_LABEL.LANG.eq(classifierLabelLang)
+								.and(GOVERNMENT_TYPE_LABEL.TYPE.eq(classifierLabelType))
+								.and(GOVERNMENT_TYPE_LABEL.CODE.eq(GOVERNMENT_TYPE.CODE)))
 				.orderBy(GOVERNMENT_TYPE.ORDER_BY)
 				.fetchInto(Classifier.class);
 	}
@@ -503,7 +570,10 @@ public class CommonDataDbService extends AbstractDataDbService {
 						POS_GROUP_LABEL.CODE,
 						POS_GROUP_LABEL.VALUE)
 				.from(POS_GROUP_LABEL, POS_GROUP)
-				.where(POS_GROUP_LABEL.LANG.eq(classifierLabelLang).and(POS_GROUP_LABEL.TYPE.eq(classifierLabelType)).and(POS_GROUP_LABEL.CODE.eq(POS_GROUP.CODE)))
+				.where(
+						POS_GROUP_LABEL.LANG.eq(classifierLabelLang)
+								.and(POS_GROUP_LABEL.TYPE.eq(classifierLabelType))
+								.and(POS_GROUP_LABEL.CODE.eq(POS_GROUP.CODE)))
 				.orderBy(POS_GROUP.ORDER_BY)
 				.fetchInto(Classifier.class);
 	}
@@ -516,7 +586,10 @@ public class CommonDataDbService extends AbstractDataDbService {
 						USAGE_TYPE_LABEL.CODE,
 						USAGE_TYPE_LABEL.VALUE)
 				.from(USAGE_TYPE_LABEL, USAGE_TYPE)
-				.where(USAGE_TYPE_LABEL.LANG.eq(classifierLabelLang).and(USAGE_TYPE_LABEL.TYPE.eq(classifierLabelType)).and(USAGE_TYPE_LABEL.CODE.eq(USAGE_TYPE.CODE)))
+				.where(
+						USAGE_TYPE_LABEL.LANG.eq(classifierLabelLang)
+								.and(USAGE_TYPE_LABEL.TYPE.eq(classifierLabelType))
+								.and(USAGE_TYPE_LABEL.CODE.eq(USAGE_TYPE.CODE)))
 				.orderBy(USAGE_TYPE.ORDER_BY)
 				.fetchInto(Classifier.class);
 	}
@@ -562,12 +635,12 @@ public class CommonDataDbService extends AbstractDataDbService {
 				.orElse(null);
 	}
 
-	public List<FreeForm> getMeaningFreeforms(Long meaningId, String... excludeTypes) {
+	public List<FreeForm> getMeaningFreeforms(Long meaningId, String... excludedFreeformTypeCodes) {
 
 		return create
 				.select(
 						FREEFORM.ID,
-						FREEFORM.TYPE,
+						FREEFORM.FREEFORM_TYPE_CODE,
 						FREEFORM.VALUE_TEXT,
 						FREEFORM.VALUE_PRESE,
 						FREEFORM.VALUE_DATE,
@@ -577,7 +650,7 @@ public class CommonDataDbService extends AbstractDataDbService {
 				.where(
 						MEANING_FREEFORM.MEANING_ID.eq(meaningId)
 								.and(FREEFORM.ID.eq(MEANING_FREEFORM.FREEFORM_ID))
-								.and(FREEFORM.TYPE.notIn(excludeTypes)))
+								.and(FREEFORM.FREEFORM_TYPE_CODE.notIn(excludedFreeformTypeCodes)))
 				.orderBy(FREEFORM.ORDER_BY)
 				.fetchInto(FreeForm.class);
 	}
@@ -595,7 +668,7 @@ public class CommonDataDbService extends AbstractDataDbService {
 				.where(
 						MEANING_FREEFORM.MEANING_ID.eq(meaningId)
 								.and(FREEFORM.ID.eq(MEANING_FREEFORM.FREEFORM_ID))
-								.and(FREEFORM.TYPE.eq(FreeformType.LEARNER_COMMENT.name())))
+								.and(FREEFORM.FREEFORM_TYPE_CODE.eq(LEARNER_COMMENT_CODE)))
 				.orderBy(FREEFORM.ORDER_BY)
 				.fetchInto(FreeForm.class);
 	}
@@ -678,7 +751,7 @@ public class CommonDataDbService extends AbstractDataDbService {
 				.fetchInto(Media.class);
 	}
 
-	public List<Media> getMeaningMedias(Long meaningId) {
+	public List<Media> getMeaningMediaFiles(Long meaningId) {
 
 		Freeform ff = FREEFORM.as("ff");
 		MeaningFreeform mff = MEANING_FREEFORM.as("mff");
@@ -692,7 +765,7 @@ public class CommonDataDbService extends AbstractDataDbService {
 				.where(
 						mff.MEANING_ID.eq(meaningId)
 								.and(ff.ID.eq(mff.FREEFORM_ID))
-								.and(ff.TYPE.eq(FreeformType.MEDIA_FILE.name())))
+								.and(ff.FREEFORM_TYPE_CODE.eq(MEDIA_FILE_CODE)))
 				.fetchInto(Media.class);
 	}
 
@@ -1015,7 +1088,7 @@ public class CommonDataDbService extends AbstractDataDbService {
 						.and(l2.WORD_ID.eq(w2.ID))
 						.and(lff.LEXEME_ID.eq(l2.ID))
 						.and(ff.ID.eq(lff.FREEFORM_ID))
-						.and(ff.TYPE.eq(FreeformType.GOVERNMENT.name())))
+						.and(ff.FREEFORM_TYPE_CODE.eq(GOVERNMENT_CODE)))
 				.groupBy(l2.WORD_ID, l2.MEANING_ID));
 
 		Field<String[]> ldsf = DSL.field(DSL
@@ -1105,11 +1178,11 @@ public class CommonDataDbService extends AbstractDataDbService {
 				.fetchInto(MeaningForum.class);
 	}
 
-	public List<FreeForm> getLexemeFreeforms(Long lexemeId, String... excludedTypes) {
+	public List<FreeForm> getLexemeFreeforms(Long lexemeId, String... excludedFreeformTypeCodes) {
 		return create
 				.select(
 						FREEFORM.ID,
-						FREEFORM.TYPE,
+						FREEFORM.FREEFORM_TYPE_CODE,
 						FREEFORM.VALUE_TEXT,
 						FREEFORM.VALUE_PRESE,
 						FREEFORM.VALUE_DATE,
@@ -1120,7 +1193,7 @@ public class CommonDataDbService extends AbstractDataDbService {
 				.where(
 						LEXEME_FREEFORM.LEXEME_ID.eq(lexemeId)
 								.and(FREEFORM.ID.eq(LEXEME_FREEFORM.FREEFORM_ID))
-								.and(FREEFORM.TYPE.notIn(excludedTypes)))
+								.and(FREEFORM.FREEFORM_TYPE_CODE.notIn(excludedFreeformTypeCodes)))
 				.orderBy(FREEFORM.ORDER_BY)
 				.fetchInto(FreeForm.class);
 	}
@@ -1151,7 +1224,7 @@ public class CommonDataDbService extends AbstractDataDbService {
 				.from(FREEFORM, LEXEME_FREEFORM)
 				.where(LEXEME_FREEFORM.LEXEME_ID.eq(lexemeId)
 						.and(FREEFORM.ID.eq(LEXEME_FREEFORM.FREEFORM_ID))
-						.and(FREEFORM.TYPE.eq(FreeformType.GRAMMAR.name())))
+						.and(FREEFORM.FREEFORM_TYPE_CODE.eq(GRAMMAR_CODE)))
 				.orderBy(FREEFORM.ORDER_BY)
 				.fetchInto(FreeForm.class);
 	}
@@ -1172,7 +1245,7 @@ public class CommonDataDbService extends AbstractDataDbService {
 				.where(
 						WORD_FREEFORM.WORD_ID.eq(wordId)
 								.and(FREEFORM.ID.eq(WORD_FREEFORM.FREEFORM_ID))
-								.and(FREEFORM.TYPE.eq(FreeformType.OD_WORD_RECOMMENDATION.name())))
+								.and(FREEFORM.FREEFORM_TYPE_CODE.eq(OD_WORD_RECOMMENDATION_CODE)))
 				.orderBy(FREEFORM.ORDER_BY)
 				.fetchInto(FreeForm.class);
 	}
@@ -1189,7 +1262,7 @@ public class CommonDataDbService extends AbstractDataDbService {
 						g.COMPLEXITY,
 						g.ORDER_BY)
 				.from(glff
-						.innerJoin(g).on(glff.FREEFORM_ID.eq(g.ID).and(g.TYPE.eq(FreeformType.GOVERNMENT.name()))))
+						.innerJoin(g).on(glff.FREEFORM_ID.eq(g.ID).and(g.FREEFORM_TYPE_CODE.eq(GOVERNMENT_CODE))))
 				.where(glff.LEXEME_ID.eq(lexemeId))
 				.orderBy(g.ORDER_BY)
 				.fetchInto(Government.class);
@@ -1387,15 +1460,15 @@ public class CommonDataDbService extends AbstractDataDbService {
 		return DSL.field(DSL.value(classifierName.name())).as("name");
 	}
 
-	public List<Classifier> getDatasetClassifiers(ClassifierName classifierName, String datasetCode, String labelLanguage, String labelType) {
+	public List<Classifier> getDatasetClassifiers(ClassifierName classifierName, String datasetCode, String classifierLabelLang, String classifierLabelTypeCode) {
 		String[] datasetCodes = {datasetCode};
 		if (ClassifierName.LANGUAGE.equals(classifierName)) {
 			return create.select(getClassifierNameField(ClassifierName.LANGUAGE), LANGUAGE.CODE, LANGUAGE_LABEL.VALUE, LANGUAGE.ORDER_BY)
 					.from(LANGUAGE, LANGUAGE_LABEL)
 					.where(
 							LANGUAGE.CODE.eq(LANGUAGE_LABEL.CODE)
-									.and(LANGUAGE_LABEL.TYPE.eq(labelType))
-									.and(LANGUAGE_LABEL.LANG.eq(labelLanguage))
+									.and(LANGUAGE_LABEL.TYPE.eq(classifierLabelTypeCode))
+									.and(LANGUAGE_LABEL.LANG.eq(classifierLabelLang))
 									.and(LANGUAGE.DATASETS.contains(datasetCodes)))
 					.fetchInto(Classifier.class);
 		} else if (ClassifierName.DOMAIN.equals(classifierName)) {
@@ -1409,8 +1482,8 @@ public class CommonDataDbService extends AbstractDataDbService {
 							DOMAIN.CODE.eq(DOMAIN_LABEL.CODE)
 									.and(DOMAIN.ORIGIN.eq(DOMAIN_LABEL.ORIGIN))
 									.and(DOMAIN.DATASETS.contains(datasetCodes))
-									.and(DOMAIN_LABEL.TYPE.eq(labelType))
-									.and(DOMAIN_LABEL.LANG.eq(labelLanguage)))
+									.and(DOMAIN_LABEL.TYPE.eq(classifierLabelTypeCode))
+									.and(DOMAIN_LABEL.LANG.eq(classifierLabelLang)))
 					.orderBy(DOMAIN.CODE, DOMAIN_LABEL.LANG.desc())
 					.fetchInto(Classifier.class);
 		}
@@ -1435,4 +1508,23 @@ public class CommonDataDbService extends AbstractDataDbService {
 				.fetchInto(Classifier.class);
 	}
 
+	public List<Classifier> getDatasetFreeformTypes(String datasetCode, FreeformOwner freeformOwner, String classifierLabelLang, String classifierLabelTypeCode) {
+		return create
+				.select(
+						DSL.field(DSL.value(ClassifierName.FREEFORM_TYPE.name())).as("name"),
+						FREEFORM_TYPE.CODE,
+						DSL.coalesce(FREEFORM_TYPE_LABEL.VALUE, FREEFORM_TYPE.CODE).as("value"))
+				.from(
+						DATASET_FREEFORM_TYPE
+								.innerJoin(FREEFORM_TYPE).on(FREEFORM_TYPE.CODE.eq(DATASET_FREEFORM_TYPE.FREEFORM_TYPE_CODE))
+								.leftOuterJoin(FREEFORM_TYPE_LABEL).on(
+										FREEFORM_TYPE_LABEL.CODE.eq(FREEFORM_TYPE.CODE)
+												.and(FREEFORM_TYPE_LABEL.LANG.eq(classifierLabelLang))
+												.and(FREEFORM_TYPE_LABEL.TYPE.eq(classifierLabelTypeCode))))
+				.where(
+						DATASET_FREEFORM_TYPE.DATASET_CODE.eq(datasetCode)
+								.and(DATASET_FREEFORM_TYPE.FREEFORM_OWNER.eq(freeformOwner.name())))
+				.orderBy(FREEFORM_TYPE.ORDER_BY)
+				.fetchInto(Classifier.class);
+	}
 }

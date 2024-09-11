@@ -49,9 +49,9 @@ public class TypeMtLexemeFreeform extends UDTImpl<TypeMtLexemeFreeformRecord> {
     public static final UDTField<TypeMtLexemeFreeformRecord, Long> FREEFORM_ID = createField(DSL.name("freeform_id"), SQLDataType.BIGINT, TYPE_MT_LEXEME_FREEFORM, "");
 
     /**
-     * The attribute <code>public.type_mt_lexeme_freeform.type</code>.
+     * The attribute <code>public.type_mt_lexeme_freeform.freeform_type_code</code>.
      */
-    public static final UDTField<TypeMtLexemeFreeformRecord, String> TYPE = createField(DSL.name("type"), SQLDataType.VARCHAR(100), TYPE_MT_LEXEME_FREEFORM, "");
+    public static final UDTField<TypeMtLexemeFreeformRecord, String> FREEFORM_TYPE_CODE = createField(DSL.name("freeform_type_code"), SQLDataType.VARCHAR(100), TYPE_MT_LEXEME_FREEFORM, "");
 
     /**
      * The attribute <code>public.type_mt_lexeme_freeform.value_text</code>.

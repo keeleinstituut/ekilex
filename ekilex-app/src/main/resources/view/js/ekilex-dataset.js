@@ -16,18 +16,9 @@ function initializeDatasets() {
 
 	initClassifierAutocomplete();
 
-	$('.dataset-domain-select').selectpicker({width : '100%'});
+	$('.dataset-domain-select').selectpicker({ width: '100%' });
 	$('.dataset-origin-select').selectpicker();
 }
-
-function emptyClassifSelect(modal, classifSelectName) {
-	const form = modal.find('form');
-	const classifSelect = form.find(`select[name=${classifSelectName}]`);
-	classifSelect.find("option").each(function () {
-		$(this).removeAttr("selected");
-	});
-	classifSelect.selectpicker('refresh');
-};
 
 function populateDomains(domainsSelect, originCode, previousDomainsValue) {
 	const getOriginDomainsUrl = applicationUrl + 'origin_domains/' + originCode;
@@ -65,7 +56,7 @@ function markClassifierDomains(form, dataset) {
 		const domainsSelect = form.find('select[name="domains"]');
 		const originSelect = form.find('select[name="origins"]');
 		domainsSelect.attr("disabled", false);
-		$.each(dataset.origins, function (key, origin) {
+		$.each(dataset.origins, function(key, origin) {
 			let originOption = originSelect.find("option[value='" + origin + "']");
 			originOption.attr("selected", "selected");
 
@@ -73,7 +64,7 @@ function markClassifierDomains(form, dataset) {
 		originSelect.selectpicker('refresh');
 
 		const previousDomainsIds = dataset.domains.map(domain => domain.jsonStr);
-		originSelect.find('option:selected').each(function () {
+		originSelect.find('option:selected').each(function() {
 			const originCode = $(this).val();
 			populateDomains(domainsSelect, originCode, previousDomainsIds);
 		});
@@ -82,12 +73,19 @@ function markClassifierDomains(form, dataset) {
 
 function markSelectedClassifiers(form, classifSelectName, classifArray) {
 	const classifSelect = form.find('select[name="' + classifSelectName + '"]');
-
-	$.each(classifArray, function (key, classif) {
+	$.each(classifArray, function(key, classif) {
 		const classifOption = classifSelect.find("option[value='" + classif.jsonStr + "']");
 		classifOption.attr("selected", "selected");
 	});
+	classifSelect.selectpicker('refresh');
+};
 
+function emptyClassifSelect(modal, classifSelectName) {
+	const form = modal.find('form');
+	const classifSelect = form.find(`select[name=${classifSelectName}]`);
+	classifSelect.find("option").each(function() {
+		$(this).removeAttr("selected");
+	});
 	classifSelect.selectpicker('refresh');
 };
 
@@ -204,20 +202,25 @@ $.fn.editDatasetDlgPlugin = function() {
 	return this.each(function() {
 		const obj = $(this);
 		obj.on('hide.bs.modal', function() {
-			emptyClassifSelect(obj, "languages");
-			emptyClassifSelect(obj, "origins");
 
+			emptyClassifSelect(obj, "languages");
+			emptyClassifSelect(obj, "wordFreeformTypes");
+			emptyClassifSelect(obj, "lexemeFreeformTypes");
+			emptyClassifSelect(obj, "meaningFreeformTypes");
+			emptyClassifSelect(obj, "definitionFreeformTypes");
+			emptyClassifSelect(obj, "origins");
 			const domains = obj.find('select[name="domains"]');
 			emptyAndDisableSelect(domains);
 		});
 
 		obj.on('show.bs.modal', function(e) {
+
 			const datasetCode = $(e.relatedTarget).data('dataset-code');
 			const fetchUrl = `${applicationUrl}dataset/${datasetCode}`;
 			const form = obj.find('form');
 
 			$.get(fetchUrl).done(function(dataset) {
-			
+
 				form.find('input[name="code"]').val(dataset.code);
 				form.find('input[name="name"]').val(dataset.name);
 				form.find('select[name="type"]').val(dataset.type);
@@ -227,6 +230,10 @@ $.fn.editDatasetDlgPlugin = function() {
 				form.find('input[name="public"]').attr('checked', dataset.public);
 				form.find('input[name="visible"]').attr('checked', dataset.visible);
 				markSelectedClassifiers(form, "languages", dataset.languages);
+				markSelectedClassifiers(form, "wordFreeformTypes", dataset.wordFreeformTypes);
+				markSelectedClassifiers(form, "lexemeFreeformTypes", dataset.lexemeFreeformTypes);
+				markSelectedClassifiers(form, "meaningFreeformTypes", dataset.meaningFreeformTypes);
+				markSelectedClassifiers(form, "definitionFreeformTypes", dataset.definitionFreeformTypes);
 				markClassifierDomains(form, dataset);
 
 			}).fail(function(data) {
@@ -241,10 +248,10 @@ $.fn.deleteDatasetConfirmPlugin = function() {
 	return this.each(function() {
 		const obj = $(this);
 		obj.confirmation({
-			btnOkLabel : messages["common.yes"],
-			btnCancelLabel : messages["common.no"],
-			title : messages["common.confirm.delete"],
-			onConfirm : function() {
+			btnOkLabel: messages["common.yes"],
+			btnCancelLabel: messages["common.no"],
+			title: messages["common.confirm.delete"],
+			onConfirm: function() {
 				const code = obj.data('code');
 				deleteDataset(code);
 			}

@@ -61,9 +61,9 @@ public class Freeform extends TableImpl<FreeformRecord> {
     public final TableField<FreeformRecord, Long> PARENT_ID = createField(DSL.name("parent_id"), SQLDataType.BIGINT, this, "");
 
     /**
-     * The column <code>public.freeform.type</code>.
+     * The column <code>public.freeform.freeform_type_code</code>.
      */
-    public final TableField<FreeformRecord, String> TYPE = createField(DSL.name("type"), SQLDataType.VARCHAR(100).nullable(false), this, "");
+    public final TableField<FreeformRecord, String> FREEFORM_TYPE_CODE = createField(DSL.name("freeform_type_code"), SQLDataType.VARCHAR(100).nullable(false), this, "");
 
     /**
      * The column <code>public.freeform.value_text</code>.
@@ -180,10 +180,11 @@ public class Freeform extends TableImpl<FreeformRecord> {
 
     @Override
     public List<ForeignKey<FreeformRecord, ?>> getReferences() {
-        return Arrays.<ForeignKey<FreeformRecord, ?>>asList(Keys.FREEFORM__FREEFORM_PARENT_ID_FKEY, Keys.FREEFORM__FREEFORM_LANG_FKEY);
+        return Arrays.<ForeignKey<FreeformRecord, ?>>asList(Keys.FREEFORM__FREEFORM_PARENT_ID_FKEY, Keys.FREEFORM__FREEFORM_TYPE_CODE_FKEY, Keys.FREEFORM__FREEFORM_LANG_FKEY);
     }
 
     private transient Freeform _freeform;
+    private transient FreeformType _freeformType;
     private transient Language _language;
 
     public Freeform freeform() {
@@ -191,6 +192,13 @@ public class Freeform extends TableImpl<FreeformRecord> {
             _freeform = new Freeform(this, Keys.FREEFORM__FREEFORM_PARENT_ID_FKEY);
 
         return _freeform;
+    }
+
+    public FreeformType freeformType() {
+        if (_freeformType == null)
+            _freeformType = new FreeformType(this, Keys.FREEFORM__FREEFORM_TYPE_CODE_FKEY);
+
+        return _freeformType;
     }
 
     public Language language() {

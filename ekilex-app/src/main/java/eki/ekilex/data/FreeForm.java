@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import eki.common.constant.Complexity;
-import eki.common.constant.FreeformType;
 import eki.common.data.AbstractDataObject;
 
 public class FreeForm extends AbstractDataObject {
@@ -16,7 +15,9 @@ public class FreeForm extends AbstractDataObject {
 
 	private Long parentId;
 
-	private FreeformType type;
+	private String freeformTypeCode;
+
+	private Classifier freeformType;
 
 	private String valueText;
 
@@ -32,7 +33,7 @@ public class FreeForm extends AbstractDataObject {
 
 	private List<FreeForm> children = new ArrayList<>();
 
-	private Boolean isPublic;
+	private boolean isPublic;
 
 	private String modifiedBy;
 
@@ -54,12 +55,20 @@ public class FreeForm extends AbstractDataObject {
 		this.parentId = parentId;
 	}
 
-	public FreeformType getType() {
-		return type;
+	public String getFreeformTypeCode() {
+		return freeformTypeCode;
 	}
 
-	public void setType(FreeformType type) {
-		this.type = type;
+	public void setFreeformTypeCode(String freeformTypeCode) {
+		this.freeformTypeCode = freeformTypeCode;
+	}
+
+	public Classifier getFreeformType() {
+		return freeformType;
+	}
+
+	public void setFreeformType(Classifier freeformType) {
+		this.freeformType = freeformType;
 	}
 
 	public String getValueText() {
@@ -118,11 +127,11 @@ public class FreeForm extends AbstractDataObject {
 		this.children = children;
 	}
 
-	public Boolean isPublic() {
+	public boolean isPublic() {
 		return isPublic;
 	}
 
-	public void setPublic(Boolean isPublic) {
+	public void setPublic(boolean isPublic) {
 		this.isPublic = isPublic;
 	}
 
@@ -141,4 +150,5 @@ public class FreeForm extends AbstractDataObject {
 	public void setModifiedOn(Timestamp modifiedOn) {
 		this.modifiedOn = modifiedOn;
 	}
+
 }

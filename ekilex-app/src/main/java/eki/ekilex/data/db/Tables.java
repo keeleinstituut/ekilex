@@ -11,6 +11,7 @@ import eki.ekilex.data.db.tables.Collocation;
 import eki.ekilex.data.db.tables.CollocationMember;
 import eki.ekilex.data.db.tables.DataRequest;
 import eki.ekilex.data.db.tables.Dataset;
+import eki.ekilex.data.db.tables.DatasetFreeformType;
 import eki.ekilex.data.db.tables.DatasetPermission;
 import eki.ekilex.data.db.tables.Definition;
 import eki.ekilex.data.db.tables.DefinitionDataset;
@@ -36,6 +37,8 @@ import eki.ekilex.data.db.tables.Form;
 import eki.ekilex.data.db.tables.FormFreq;
 import eki.ekilex.data.db.tables.Freeform;
 import eki.ekilex.data.db.tables.FreeformSourceLink;
+import eki.ekilex.data.db.tables.FreeformType;
+import eki.ekilex.data.db.tables.FreeformTypeLabel;
 import eki.ekilex.data.db.tables.FreqCorp;
 import eki.ekilex.data.db.tables.GameNonword;
 import eki.ekilex.data.db.tables.Gender;
@@ -194,6 +197,11 @@ public class Tables {
     public static final Dataset DATASET = Dataset.DATASET;
 
     /**
+     * The table <code>public.dataset_freeform_type</code>.
+     */
+    public static final DatasetFreeformType DATASET_FREEFORM_TYPE = DatasetFreeformType.DATASET_FREEFORM_TYPE;
+
+    /**
      * The table <code>public.dataset_permission</code>.
      */
     public static final DatasetPermission DATASET_PERMISSION = DatasetPermission.DATASET_PERMISSION;
@@ -317,6 +325,16 @@ public class Tables {
      * The table <code>public.freeform_source_link</code>.
      */
     public static final FreeformSourceLink FREEFORM_SOURCE_LINK = FreeformSourceLink.FREEFORM_SOURCE_LINK;
+
+    /**
+     * The table <code>public.freeform_type</code>.
+     */
+    public static final FreeformType FREEFORM_TYPE = FreeformType.FREEFORM_TYPE;
+
+    /**
+     * The table <code>public.freeform_type_label</code>.
+     */
+    public static final FreeformTypeLabel FREEFORM_TYPE_LABEL = FreeformTypeLabel.FREEFORM_TYPE_LABEL;
 
     /**
      * The table <code>public.freq_corp</code>.

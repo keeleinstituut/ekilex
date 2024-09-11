@@ -20,7 +20,7 @@ import org.jooq.impl.DSL;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import eki.common.constant.FreeformType;
+import eki.common.constant.FreeformConstant;
 import eki.common.constant.GlobalConstant;
 import eki.ekilex.constant.SearchResultMode;
 import eki.ekilex.constant.SystemConstant;
@@ -45,7 +45,7 @@ import eki.ekilex.service.db.util.TermSearchConditionComposer;
 
 //TODO needs complete overhauling. remove all wrapper types
 @Component
-public class MeaningTableDbService implements GlobalConstant, SystemConstant {
+public class MeaningTableDbService implements GlobalConstant, SystemConstant, FreeformConstant {
 
 	@Autowired
 	protected DSLContext create;
@@ -176,7 +176,7 @@ public class MeaningTableDbService implements GlobalConstant, SystemConstant {
 				.row(
 						l.ID,
 						ff.ID,
-						ff.TYPE,
+						ff.FREEFORM_TYPE_CODE,
 						Routines.encodeText(ff.VALUE_TEXT),
 						Routines.encodeText(ff.VALUE_PRESE),
 						ff.LANG,
@@ -194,7 +194,7 @@ public class MeaningTableDbService implements GlobalConstant, SystemConstant {
 				.where(
 						wherel.and(lff.LEXEME_ID.eq(l.ID))
 								.and(lff.FREEFORM_ID.eq(ff.ID))
-								.and(ff.TYPE.eq(FreeformType.USAGE.name())))
+								.and(ff.FREEFORM_TYPE_CODE.eq(USAGE_CODE)))
 				.asField();
 		return uf;
 	}

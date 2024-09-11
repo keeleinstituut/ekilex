@@ -443,7 +443,7 @@
     <th:block th:unless="${#strings.isEmpty(details.word.lang)}">
       <div class="hover-actions-container hover-actions-container-outline">
         <span data-toggle="tooltip" data-boundary="window" data-placement="top"
-              th:text="${viewUtil.getClassifierValue(details.word.lang, allLanguages)}"
+              th:text="${viewUtil.getClassifierValue(details.word.lang, languages)}"
               th:title="#{lex.word.language}"></span>
         <div class="hover-actions">
           <div class="btn-group">
@@ -1159,7 +1159,7 @@
       <table>
         <tr th:each="freeform : ${lexeme.meaning.freeforms}">
           <td class="align-text-top pr-3">
-            <span th:text="${freeform.type}"></span>
+            <span th:text="${freeform.freeformTypeCode}"></span>
           </td>
           <td>
             <span th:utext="${freeform.valueText}" th:if="${freeform.valueText != null}"></span>
@@ -1615,7 +1615,7 @@
       <table>
         <tr th:each="freeform : ${lexeme.lexemeFreeforms}">
           <td class="align-text-top pr-3">
-            <span th:text="${freeform.type}"></span>
+            <span th:text="${freeform.freeformTypeCode}"></span>
           </td>
           <td>
             <span th:utext="${freeform.valueText}" th:if="${freeform.valueText != null}"></span>

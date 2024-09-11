@@ -4,6 +4,8 @@ create index eki_user_profile_user_id_idx on eki_user_profile(user_id);
 create index eki_user_profile_recent_dataset_permission_id_idx on eki_user_profile(recent_dataset_permission_id);
 create index dataset_code_idx on dataset(code);
 create index dataset_type_idx on dataset(type);
+create index dataset_freeform_type_dataset_code_idx on dataset_freeform_type(dataset_code);
+create index dataset_freeform_type_freeform_owner_idx on dataset_freeform_type(freeform_owner);
 create index dataset_perm_user_id_idx on dataset_permission(user_id);
 create index dataset_perm_dataset_code_idx on dataset_permission(dataset_code);
 create index dataset_perm_dataset_full_cmplx_idx on dataset_permission(user_id, auth_operation, auth_item, dataset_code, auth_lang);
@@ -79,7 +81,7 @@ create index word_rel_mapping_code2_idx on word_rel_mapping(code2);
 create index freeform_parent_id_idx on freeform(parent_id);
 create index freeform_value_text_idx on freeform(value_text);
 create index freeform_value_text_lower_idx on freeform(lower(value_text));
-create index freeform_type_idx on freeform(type);
+create index freeform_type_code_idx on freeform(freeform_type_code);
 create index freeform_lang_idx on freeform(lang);
 create index freeform_complexity_idx on freeform(complexity);
 create index freeform_is_public_idx on freeform(is_public);
@@ -249,3 +251,9 @@ create index domain_label_code_origin_idx on domain_label(code, origin);
 create index definition_fts_idx on definition using gin(to_tsvector('simple', value));
 create index freeform_fts_idx on freeform using gin(to_tsvector('simple', value_text));
 create index form_fts_idx on form using gin(to_tsvector('simple', value));
+create index usage_fts_idx on usage using gin(to_tsvector('simple', value));
+create index lexeme_note_fts_idx on lexeme_note using gin(to_tsvector('simple', value));
+create index meaning_note_fts_idx on meaning_note using gin(to_tsvector('simple', value));
+create index definition_note_fts_idx on definition_note using gin(to_tsvector('simple', value));
+
+

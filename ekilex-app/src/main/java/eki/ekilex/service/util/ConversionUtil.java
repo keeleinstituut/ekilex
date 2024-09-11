@@ -26,7 +26,6 @@ import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.stereotype.Component;
 
-import eki.common.constant.FreeformType;
 import eki.common.constant.GlobalConstant;
 import eki.common.constant.SynonymType;
 import eki.ekilex.data.Classifier;
@@ -777,13 +776,13 @@ public class ConversionUtil implements GlobalConstant {
 		for (SourcePropertyTuple tuple : sourcePropertyTuples) {
 
 			Long sourcePropertyId = tuple.getSourcePropertyId();
-			FreeformType sourcePropertyType = tuple.getSourcePropertyType();
+			String sourcePropertyTypeCode = tuple.getSourcePropertyTypeCode();
 			String sourcePropertyValueText = tuple.getSourcePropertyValueText();
 			Timestamp sourcePropertyValueDate = tuple.getSourcePropertyValueDate();
 
 			SourceProperty sourceProperty = new SourceProperty();
 			sourceProperty.setId(sourcePropertyId);
-			sourceProperty.setType(sourcePropertyType);
+			sourceProperty.setTypeCode(sourcePropertyTypeCode);
 			sourceProperty.setValueText(sourcePropertyValueText);
 			sourceProperty.setValueDate(sourcePropertyValueDate);
 			sourceProperties.add(sourceProperty);
@@ -801,7 +800,7 @@ public class ConversionUtil implements GlobalConstant {
 
 			Long sourceId = tuple.getSourceId();
 			Long sourcePropertyId = tuple.getSourcePropertyId();
-			FreeformType sourcePropertyType = tuple.getSourcePropertyType();
+			String sourcePropertyTypeCode = tuple.getSourcePropertyTypeCode();
 			String sourcePropertyValueText = tuple.getSourcePropertyValueText();
 			Timestamp sourcePropertyValueDate = tuple.getSourcePropertyValueDate();
 			boolean sourcePropertyMatch = tuple.isSourcePropertyMatch();
@@ -824,7 +823,7 @@ public class ConversionUtil implements GlobalConstant {
 
 			SourceProperty sourceProperty = new SourceProperty();
 			sourceProperty.setId(sourcePropertyId);
-			sourceProperty.setType(sourcePropertyType);
+			sourceProperty.setTypeCode(sourcePropertyTypeCode);
 			sourceProperty.setValueText(sourcePropertyValueText);
 			sourceProperty.setValueDate(sourcePropertyValueDate);
 			sourceProperty.setValueMatch(sourcePropertyMatch);

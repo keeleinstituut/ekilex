@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 
 import eki.common.constant.Complexity;
 import eki.common.constant.DatasetType;
+import eki.common.constant.FreeformConstant;
 import eki.common.constant.GlobalConstant;
 import eki.common.constant.SourceType;
 import eki.common.constant.TagType;
@@ -28,6 +29,7 @@ import eki.ekilex.data.Dataset;
 import eki.ekilex.data.DatasetPermission;
 import eki.ekilex.data.EkiUser;
 import eki.ekilex.data.EkiUserProfile;
+import eki.ekilex.data.Origin;
 import eki.ekilex.data.Tag;
 import eki.ekilex.data.UserContextData;
 import eki.ekilex.service.CommonDataService;
@@ -40,7 +42,7 @@ import eki.ekilex.web.bean.SessionBean;
 import eki.ekilex.web.util.ValueUtil;
 
 @PreAuthorize("isAuthenticated() && @permEval.isActiveTermsAgreed(authentication)")
-public abstract class AbstractAuthActionController implements WebConstant, SystemConstant, GlobalConstant {
+public abstract class AbstractAuthActionController implements WebConstant, SystemConstant, GlobalConstant, FreeformConstant {
 
 	@Autowired
 	protected UserContext userContext;
@@ -111,7 +113,6 @@ public abstract class AbstractAuthActionController implements WebConstant, Syste
 	}
 
 	protected List<String> getUserPreferredDatasetCodes() {
-
 		Long userId = userContext.getUserId();
 		EkiUserProfile userProfile = userProfileService.getUserProfile(userId);
 		return userProfile.getPreferredDatasets();
@@ -139,6 +140,28 @@ public abstract class AbstractAuthActionController implements WebConstant, Syste
 		return commonDataService.getVisibleDatasetsWithOwner();
 	}
 
+	@ModelAttribute("userOwnedDatasets")
+	public List<Dataset> getUserOwnedDatasets() {
+		Long userId = userContext.getUserId();
+		return permissionService.getUserOwnedDatasets(userId);
+	}
+
+	@ModelAttribute("userDatasetPermissions")
+	public List<DatasetPermission> getUserDatasetPermissions() {
+		Long userId = userContext.getUserId();
+		return permissionService.getUserDatasetPermissions(userId);
+	}
+
+	@ModelAttribute("availableFreeformTypes")
+	public List<Classifier> getAvailableFreeformTypes() {
+		return commonDataService.getAvailableFreeformTypes();
+	}
+
+	@ModelAttribute("languages")
+	public List<Classifier> getLanguages() {
+		return commonDataService.getLanguages();
+	}
+
 	@ModelAttribute("userRoleLanguages")
 	public List<Classifier> getUserRoleLanguages() {
 
@@ -164,16 +187,9 @@ public abstract class AbstractAuthActionController implements WebConstant, Syste
 		return accessibleLanguages;
 	}
 
-	@ModelAttribute("userOwnedDatasets")
-	public List<Dataset> getUserOwnedDatasets() {
-		Long userId = userContext.getUserId();
-		return permissionService.getUserOwnedDatasets(userId);
-	}
-
-	@ModelAttribute("userDatasetPermissions")
-	public List<DatasetPermission> getUserDatasetPermissions() {
-		Long userId = userContext.getUserId();
-		return permissionService.getUserDatasetPermissions(userId);
+	@ModelAttribute("origins")
+	public List<Origin> getOrigins() {
+		return commonDataService.getDomainOrigins();
 	}
 
 	@ModelAttribute("allTags")
@@ -194,11 +210,6 @@ public abstract class AbstractAuthActionController implements WebConstant, Syste
 	@ModelAttribute("tagTypes")
 	public List<TagType> getTagTypes() {
 		return Arrays.asList(TagType.class.getEnumConstants());
-	}
-
-	@ModelAttribute("allLanguages")
-	public List<Classifier> getAllLanguages() {
-		return commonDataService.getLanguages();
 	}
 
 	@ModelAttribute("ekiMarkupElements")

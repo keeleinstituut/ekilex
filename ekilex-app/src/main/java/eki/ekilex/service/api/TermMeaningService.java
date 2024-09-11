@@ -16,7 +16,7 @@ import eki.common.constant.ActivityEntity;
 import eki.common.constant.ActivityFunct;
 import eki.common.constant.ActivityOwner;
 import eki.common.constant.Complexity;
-import eki.common.constant.FreeformType;
+import eki.common.constant.FreeformConstant;
 import eki.common.exception.OperationDeniedException;
 import eki.ekilex.data.ActivityLog;
 import eki.ekilex.data.ActivityLogData;
@@ -36,7 +36,7 @@ import eki.ekilex.data.db.tables.records.LexemeRecord;
 import eki.ekilex.service.db.api.TermMeaningDbService;
 
 @Component
-public class TermMeaningService extends AbstractApiCudService implements ActivityFunct {
+public class TermMeaningService extends AbstractApiCudService implements ActivityFunct, FreeformConstant {
 
 	private static final Complexity DEFAULT_COMPLEXITY = Complexity.DETAIL;
 
@@ -366,10 +366,10 @@ public class TermMeaningService extends AbstractApiCudService implements Activit
 		if (CollectionUtils.isNotEmpty(conceptIds)) {
 
 			for (String conceptId : conceptIds) {
-				boolean meaningConceptIdExists = lookupDbService.meaningFreeformExists(meaningId, conceptId, FreeformType.CONCEPT_ID);
+				boolean meaningConceptIdExists = lookupDbService.meaningFreeformExists(meaningId, conceptId, CONCEPT_ID_CODE);
 				if (!meaningConceptIdExists) {
 					FreeForm freeform = new FreeForm();
-					freeform.setType(FreeformType.CONCEPT_ID);
+					freeform.setFreeformTypeCode(CONCEPT_ID_CODE);
 					freeform.setValueText(conceptId);
 					freeform.setValuePrese(conceptId);
 					freeform.setLang(null);

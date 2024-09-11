@@ -23,7 +23,7 @@ drop table if exists usage cascade;
 
 create table usage (
   id bigserial primary key, 
-  original_freeform_id bigint references freeform(id) on delete cascade, -- to be dropped later
+  original_freeform_id bigint, -- to be dropped later
   lexeme_id bigint references lexeme(id) on delete cascade not null, 
   value text not null, 
   value_prese text not null, 
@@ -43,6 +43,7 @@ create index usage_lexeme_id_idx on usage(lexeme_id);
 create index usage_lang_idx on usage(lang);
 create index usage_complexity_idx on usage(complexity);
 create index usage_is_public_idx on usage(is_public);
+create index usage_fts_idx on usage using gin(to_tsvector('simple', value));
 
 create table usage_source_link (
 	id bigserial primary key, 
@@ -61,7 +62,7 @@ create index usage_source_link_name_lower_idx on usage_source_link(lower(name));
 
 create table usage_translation (
   id bigserial primary key, 
-  original_freeform_id bigint references freeform(id) on delete cascade, -- to be dropped later
+  original_freeform_id bigint, -- to be dropped later
   usage_id bigint references usage(id) on delete cascade not null, 
   value text not null, 
   value_prese text not null, 
@@ -80,7 +81,7 @@ create index usage_translation_lang_idx on usage_translation(lang);
 
 create table usage_definition (
   id bigserial primary key, 
-  original_freeform_id bigint references freeform(id) on delete cascade, -- to be dropped later
+  original_freeform_id bigint, -- to be dropped later
   usage_id bigint references usage(id) on delete cascade not null, 
   value text not null, 
   value_prese text not null, 
@@ -99,7 +100,7 @@ create index usage_definition_lang_idx on usage_definition(lang);
 
 create table lexeme_note (
   id bigserial primary key, 
-  original_freeform_id bigint references freeform(id) on delete cascade, -- to be dropped later
+  original_freeform_id bigint, -- to be dropped later
   lexeme_id bigint references lexeme(id) on delete cascade not null, 
   value text not null, 
   value_prese text not null, 
@@ -119,6 +120,7 @@ create index lexeme_note_lexeme_id_idx on lexeme_note(lexeme_id);
 create index lexeme_note_lang_idx on lexeme_note(lang);
 create index lexeme_note_complexity_idx on lexeme_note(complexity);
 create index lexeme_note_is_public_idx on lexeme_note(is_public);
+create index lexeme_note_fts_idx on lexeme_note using gin(to_tsvector('simple', value));
 
 create table lexeme_note_source_link (
 	id bigserial primary key, 
@@ -137,7 +139,7 @@ create index lexeme_note_source_link_name_lower_idx on lexeme_note_source_link(l
 
 create table meaning_note (
   id bigserial primary key, 
-  original_freeform_id bigint references freeform(id) on delete cascade, -- to be dropped later
+  original_freeform_id bigint, -- to be dropped later
   meaning_id bigint references meaning(id) on delete cascade not null, 
   value text not null, 
   value_prese text not null, 
@@ -157,6 +159,7 @@ create index meaning_note_meaning_id_idx on meaning_note(meaning_id);
 create index meaning_note_lang_idx on meaning_note(lang);
 create index meaning_note_complexity_idx on meaning_note(complexity);
 create index meaning_note_is_public_idx on meaning_note(is_public);
+create index meaning_note_fts_idx on meaning_note using gin(to_tsvector('simple', value));
 
 create table meaning_note_source_link (
 	id bigserial primary key, 
@@ -175,7 +178,7 @@ create index meaning_note_source_link_name_lower_idx on meaning_note_source_link
 
 create table meaning_image (
   id bigserial primary key, 
-  original_freeform_id bigint references freeform(id) on delete cascade, -- to be dropped later
+  original_freeform_id bigint, -- to be dropped later
   meaning_id bigint references meaning(id) on delete cascade not null, 
   title text null, 
   url text not null, 
@@ -212,7 +215,7 @@ create index meaning_image_source_link_name_lower_idx on meaning_image_source_li
 
 create table definition_note (
   id bigserial primary key, 
-  original_freeform_id bigint references freeform(id) on delete cascade, -- to be dropped later
+  original_freeform_id bigint, -- to be dropped later
   definition_id bigint references definition(id) on delete cascade not null, 
   value text not null, 
   value_prese text not null, 
@@ -232,6 +235,7 @@ create index definition_note_definition_id_idx on definition_note(definition_id)
 create index definition_note_lang_idx on definition_note(lang);
 create index definition_note_complexity_idx on definition_note(complexity);
 create index definition_note_is_public_idx on definition_note(is_public);
+create index definition_note_fts_idx on definition_note using gin(to_tsvector('simple', value));
 
 create table definition_note_source_link (
 	id bigserial primary key, 
@@ -861,3 +865,94 @@ where
 -- morfoloogia kommentaari väli
 
 alter table word add column morph_comment text;
+
+-- vabavormi liik klassifikaatoriks
+
+create table freeform_type (
+	code varchar(100) primary key,
+	datasets varchar(10) array not null,
+	order_by bigserial
+);
+
+create table freeform_type_label (
+	code varchar(100) references freeform_type(code) on delete cascade not null,
+	value text not null,
+	lang char(3) references language(code) not null,
+	type varchar(10) references label_type(code) not null,
+	unique(code, lang, type)
+);
+
+insert into freeform_type (code, datasets) values ('CONCEPT_ID', '{}');
+insert into freeform_type (code, datasets) values ('DESCRIBER', '{}');
+insert into freeform_type (code, datasets) values ('DESCRIBING_YEAR', '{}');
+insert into freeform_type (code, datasets) values ('EXTERNAL_SOURCE_ID', '{}');
+insert into freeform_type (code, datasets) values ('FAMILY', '{}');
+insert into freeform_type (code, datasets) values ('GENUS', '{}');
+insert into freeform_type (code, datasets) values ('GOVERNMENT', '{}');
+insert into freeform_type (code, datasets) values ('GOVERNMENT_OPTIONAL', '{}');
+insert into freeform_type (code, datasets) values ('GOVERNMENT_PLACEMENT', '{}');
+insert into freeform_type (code, datasets) values ('GOVERNMENT_VARIANT', '{}');
+insert into freeform_type (code, datasets) values ('GRAMMAR', '{}');
+insert into freeform_type (code, datasets) values ('IMAGE_FILE', '{}');
+insert into freeform_type (code, datasets) values ('IMAGE_TITLE', '{}');
+insert into freeform_type (code, datasets) values ('LEARNER_COMMENT', '{}');
+insert into freeform_type (code, datasets) values ('MEANING_IMAGE', '{}');
+insert into freeform_type (code, datasets) values ('MEDIA_FILE', '{}');
+insert into freeform_type (code, datasets) values ('NOTE', '{}');
+insert into freeform_type (code, datasets) values ('OD_WORD_RECOMMENDATION', '{}');
+insert into freeform_type (code, datasets) values ('SEMANTIC_TYPE', '{}');
+insert into freeform_type (code, datasets) values ('SEMANTIC_TYPE_GROUP', '{}');
+insert into freeform_type (code, datasets) values ('SOURCE_ARTICLE_AUTHOR', '{}');
+insert into freeform_type (code, datasets) values ('SOURCE_ARTICLE_TITLE', '{}');
+insert into freeform_type (code, datasets) values ('SOURCE_AUTHOR', '{}');
+insert into freeform_type (code, datasets) values ('SOURCE_CELEX', '{}');
+insert into freeform_type (code, datasets) values ('SOURCE_EXPLANATION', '{}');
+insert into freeform_type (code, datasets) values ('SOURCE_FILE', '{}');
+insert into freeform_type (code, datasets) values ('SOURCE_ISBN', '{}');
+insert into freeform_type (code, datasets) values ('SOURCE_ISSN', '{}');
+insert into freeform_type (code, datasets) values ('SOURCE_NAME', '{}');
+insert into freeform_type (code, datasets) values ('SOURCE_PUBLICATION_NAME', '{}');
+insert into freeform_type (code, datasets) values ('SOURCE_PUBLICATION_PLACE', '{}');
+insert into freeform_type (code, datasets) values ('SOURCE_PUBLICATION_YEAR', '{}');
+insert into freeform_type (code, datasets) values ('SOURCE_PUBLISHER', '{}');
+insert into freeform_type (code, datasets) values ('SOURCE_RT', '{}');
+insert into freeform_type (code, datasets) values ('SOURCE_WWW', '{}');
+insert into freeform_type (code, datasets) values ('SYSTEMATIC_POLYSEMY_PATTERN', '{}');
+insert into freeform_type (code, datasets) values ('USAGE', '{}');
+insert into freeform_type (code, datasets) values ('USAGE_DEFINITION', '{}');
+insert into freeform_type (code, datasets) values ('USAGE_TRANSLATION', '{}');
+
+drop index freeform_type_idx cascade;
+
+alter table freeform rename column "type" to freeform_type_code;
+alter table freeform add constraint freeform_type_code_fkey foreign key (freeform_type_code) references freeform_type (code) on update cascade;
+create index freeform_type_code_idx on freeform (freeform_type_code);
+
+drop type if exists type_mt_lexeme_freeform;
+
+create type type_mt_lexeme_freeform as (
+	lexeme_id bigint,
+	freeform_id bigint,
+	freeform_type_code varchar(100),
+	value_text text,
+	value_prese text,
+	lang char(3),
+	complexity varchar(100),
+	is_public boolean,
+	created_by text,
+	created_on timestamp,
+	modified_by text,
+	modified_on timestamp
+);
+
+create table dataset_freeform_type (
+	id bigserial primary key,
+	dataset_code varchar(10) references dataset(code) on update cascade on delete cascade not null,
+	freeform_owner varchar(10) not null,
+	freeform_type_code varchar(100) references freeform_type(code) on delete cascade not null,
+	unique (dataset_code, freeform_owner, freeform_type_code)
+);
+
+create index dataset_freeform_type_dataset_code_idx on dataset_freeform_type(dataset_code);
+create index dataset_freeform_type_freeform_owner_idx on dataset_freeform_type(freeform_owner);
+

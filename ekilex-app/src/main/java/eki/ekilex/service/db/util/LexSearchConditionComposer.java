@@ -41,7 +41,7 @@ import org.springframework.stereotype.Component;
 
 import eki.common.constant.ActivityEntity;
 import eki.common.constant.ActivityFunct;
-import eki.common.constant.FreeformType;
+import eki.common.constant.FreeformConstant;
 import eki.common.constant.GlobalConstant;
 import eki.ekilex.constant.SearchEntity;
 import eki.ekilex.constant.SearchKey;
@@ -75,7 +75,7 @@ import eki.ekilex.data.db.tables.Word;
 import eki.ekilex.data.db.tables.WordFreeform;
 
 @Component
-public class LexSearchConditionComposer implements GlobalConstant, ActivityFunct {
+public class LexSearchConditionComposer implements GlobalConstant, ActivityFunct, FreeformConstant {
 
 	@Autowired
 	private SearchFilterHelper searchFilterHelper;
@@ -134,8 +134,8 @@ public class LexSearchConditionComposer implements GlobalConstant, ActivityFunct
 					where1 = searchFilterHelper.applyPublicityFilters(searchCriteria, l1.IS_PUBLIC, where1);
 					where1 = searchFilterHelper.applyLexemeSourceRefFilter(searchCriteria, l1.ID, where1);
 					where1 = searchFilterHelper.applyLexemeSourceFilters(searchCriteria, l1.ID, where1);
-					where1 = searchFilterHelper.applyLexemeFreeformFilters(SearchKey.LEXEME_GRAMMAR, FreeformType.GRAMMAR, searchCriteria, l1.ID, where1);
-					where1 = searchFilterHelper.applyLexemeFreeformFilters(SearchKey.LEXEME_GOVERNMENT, FreeformType.GOVERNMENT, searchCriteria, l1.ID, where1);
+					where1 = searchFilterHelper.applyLexemeFreeformFilters(SearchKey.LEXEME_GRAMMAR, GRAMMAR_CODE, searchCriteria, l1.ID, where1);
+					where1 = searchFilterHelper.applyLexemeFreeformFilters(SearchKey.LEXEME_GOVERNMENT, GOVERNMENT_CODE, searchCriteria, l1.ID, where1);
 					where1 = searchFilterHelper.applyLexemeNoteFilters(searchCriteria, l1.ID, where1);
 					where1 = searchFilterHelper.applyLexemeRegisterValueFilters(searchCriteria, l1.ID, where1);
 					where1 = searchFilterHelper.applyLexemeRegisterExistsFilters(searchCriteria, l1.ID, where1);
@@ -231,8 +231,8 @@ public class LexSearchConditionComposer implements GlobalConstant, ActivityFunct
 						where1 = searchFilterHelper.applyLexemeSourceRefFilter(searchCriteria, l2.ID, where1);
 						where1 = searchFilterHelper.applyLexemeSourceFilters(searchCriteria, l2.ID, where1);
 						where1 = searchFilterHelper.applyPublicityFilters(searchCriteria, l2.IS_PUBLIC, where1);
-						where1 = searchFilterHelper.applyLexemeFreeformFilters(SearchKey.LEXEME_GRAMMAR, FreeformType.GRAMMAR, searchCriteria, l2.ID, where1);
-						where1 = searchFilterHelper.applyLexemeFreeformFilters(SearchKey.LEXEME_GOVERNMENT, FreeformType.GOVERNMENT, searchCriteria, l2.ID, where1);
+						where1 = searchFilterHelper.applyLexemeFreeformFilters(SearchKey.LEXEME_GRAMMAR, GRAMMAR_CODE, searchCriteria, l2.ID, where1);
+						where1 = searchFilterHelper.applyLexemeFreeformFilters(SearchKey.LEXEME_GOVERNMENT, GOVERNMENT_CODE, searchCriteria, l2.ID, where1);
 						where1 = searchFilterHelper.applyLexemePosValueFilters(searchCriteria, l2.ID, where1);
 						where1 = searchFilterHelper.applyLexemePosExistsFilters(searchCriteria, l2.ID, where1);
 						where1 = searchFilterHelper.applyLexemeRegisterValueFilters(searchCriteria, l2.ID, where1);
@@ -539,10 +539,9 @@ public class LexSearchConditionComposer implements GlobalConstant, ActivityFunct
 		SelectHavingStep<Record1<Long>> selectUsageTranslation = DSL.select(l1.WORD_ID).from(l1, u1, ut1).where(where1).groupBy(l1.WORD_ID);
 
 		// lexeme ff select
-		String[] lexemeFreeformTypes = new String[] {FreeformType.GOVERNMENT.name(), FreeformType.GRAMMAR.name()};
 		where1 = lff1.LEXEME_ID.eq(l1.ID)
 				.and(lff1.FREEFORM_ID.eq(ff1.ID))
-				.and(ff1.TYPE.in(lexemeFreeformTypes));
+				.and(ff1.FREEFORM_TYPE_CODE.in(CLUELESS_SEARCH_LEXEME_FF_TYPE_CODES));
 		where1 = searchFilterHelper.applyDatasetRestrictions(l1, searchDatasetsRestriction, where1);
 		where1 = searchFilterHelper.applyValueFilters(SearchKey.VALUE, searchCriteria, ff1.VALUE_TEXT, where1, true);
 		SelectHavingStep<Record1<Long>> selectLexemeFreeform = DSL.select(l1.WORD_ID).from(l1, lff1, ff1).where(where1).groupBy(l1.WORD_ID);
@@ -554,11 +553,10 @@ public class LexSearchConditionComposer implements GlobalConstant, ActivityFunct
 		SelectHavingStep<Record1<Long>> selectMeaningNote = DSL.select(l1.WORD_ID).from(l1, m1, mn1).where(where1).groupBy(l1.WORD_ID);
 
 		// meaning ff select
-		String[] meaningFreeformTypes = new String[] {FreeformType.CONCEPT_ID.name(), FreeformType.LEARNER_COMMENT.name()};
 		where1 = l1.MEANING_ID.eq(m1.ID)
 				.and(mff1.MEANING_ID.eq(m1.ID))
 				.and(mff1.FREEFORM_ID.eq(ff1.ID))
-				.and(ff1.TYPE.in(meaningFreeformTypes));
+				.and(ff1.FREEFORM_TYPE_CODE.in(CLUELESS_SEARCH_MEANING_FF_TYPE_CODES));
 		where1 = searchFilterHelper.applyDatasetRestrictions(l1, searchDatasetsRestriction, where1);
 		where1 = searchFilterHelper.applyValueFilters(SearchKey.VALUE, searchCriteria, ff1.VALUE_TEXT, where1, true);
 		SelectHavingStep<Record1<Long>> selectMeaningFreeform = DSL.select(l1.WORD_ID).from(l1, m1, mff1, ff1).where(where1).groupBy(l1.WORD_ID);
@@ -575,7 +573,7 @@ public class LexSearchConditionComposer implements GlobalConstant, ActivityFunct
 		where1 = l1.WORD_ID.eq(w1.ID)
 				.and(wff1.WORD_ID.eq(w1.ID))
 				.and(wff1.FREEFORM_ID.eq(ff1.ID))
-				.and(ff1.TYPE.eq(FreeformType.OD_WORD_RECOMMENDATION.name()));
+				.and(ff1.FREEFORM_TYPE_CODE.eq(OD_WORD_RECOMMENDATION_CODE));
 		where1 = searchFilterHelper.applyDatasetRestrictions(l1, searchDatasetsRestriction, where1);
 		where1 = searchFilterHelper.applyValueFilters(SearchKey.VALUE, searchCriteria, ff1.VALUE_TEXT, where1, true);
 		SelectHavingStep<Record1<Long>> selectWordOdRecommendation = DSL.select(l1.WORD_ID).from(l1, w1, wff1, ff1).where(where1).groupBy(l1.WORD_ID);

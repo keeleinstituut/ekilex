@@ -107,7 +107,7 @@
                 <div class="value-input-container col-auto flex-grow-1 flex-shrink-1" th:if="${criteria.searchKey.name() == 'LANGUAGE'}">
                   <select class="form-control" th:name="'criteriaGroups[' + ${critGroupStat.index} + '].searchCriteria[' + ${critStat.index} + '].searchValue'" data-live-search="true" data-style="btn-outline-secondary">
                     <option value="" th:text="#{common.all.languages}">Kõik keeled</option>
-                    <option th:each="language : ${allLanguages}"
+                    <option th:each="language : ${languages}"
                             th:value="${language.code}"
                             th:selected="${criteria.searchValue == language.code}"
                             th:text="${language.value}">language</option>
@@ -600,7 +600,7 @@
             <div name="LANGUAGE" class="value-input-container col-auto flex-grow-1 flex-shrink-1">
               <select class="form-control" data-live-search="true" data-style="btn-outline-secondary">
                 <option value="" selected th:text="#{common.all.languages}">Kõik keeled</option>
-                <option th:each="language : ${allLanguages}" th:value="${language.code}" th:text="${language.value}">language</option>
+                <option th:each="language : ${languages}" th:value="${language.code}" th:text="${language.value}">language</option>
               </select>
             </div>
             <div name="WORD_TYPE" class="value-input-container col-auto flex-grow-1 flex-shrink-1">

@@ -41,6 +41,14 @@ public class Dataset extends AbstractDataObject {
 
 	private List<Classifier> languages;
 
+	private List<Classifier> wordFreeformTypes;
+
+	private List<Classifier> lexemeFreeformTypes;
+
+	private List<Classifier> meaningFreeformTypes;
+
+	private List<Classifier> definitionFreeformTypes;
+
 	public String getCode() {
 		return code;
 	}
@@ -151,6 +159,38 @@ public class Dataset extends AbstractDataObject {
 
 	public void setLanguages(List<Classifier> languages) {
 		this.languages = languages;
+	}
+
+	public List<Classifier> getWordFreeformTypes() {
+		return wordFreeformTypes;
+	}
+
+	public void setWordFreeformTypes(List<Classifier> wordFreeformTypes) {
+		this.wordFreeformTypes = wordFreeformTypes;
+	}
+
+	public List<Classifier> getLexemeFreeformTypes() {
+		return lexemeFreeformTypes;
+	}
+
+	public void setLexemeFreeformTypes(List<Classifier> lexemeFreeformTypes) {
+		this.lexemeFreeformTypes = lexemeFreeformTypes;
+	}
+
+	public List<Classifier> getMeaningFreeformTypes() {
+		return meaningFreeformTypes;
+	}
+
+	public void setMeaningFreeformTypes(List<Classifier> meaningFreeformTypes) {
+		this.meaningFreeformTypes = meaningFreeformTypes;
+	}
+
+	public List<Classifier> getDefinitionFreeformTypes() {
+		return definitionFreeformTypes;
+	}
+
+	public void setDefinitionFreeformTypes(List<Classifier> definitionFreeformTypes) {
+		this.definitionFreeformTypes = definitionFreeformTypes;
 	}
 
 }

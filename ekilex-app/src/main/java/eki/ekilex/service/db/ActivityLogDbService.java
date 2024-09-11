@@ -549,7 +549,7 @@ public class ActivityLogDbService implements GlobalConstant, ActivityFunct {
 
 		return create
 				.select(
-						ff.TYPE,
+						ff.FREEFORM_TYPE_CODE,
 						lff.LEXEME_ID,
 						wff.WORD_ID,
 						mff.MEANING_ID,
@@ -580,7 +580,7 @@ public class ActivityLogDbService implements GlobalConstant, ActivityFunct {
 
 		return create
 				.select(
-						ff.TYPE,
+						ff.FREEFORM_TYPE_CODE,
 						lff.LEXEME_ID,
 						wff.WORD_ID,
 						mff.MEANING_ID,

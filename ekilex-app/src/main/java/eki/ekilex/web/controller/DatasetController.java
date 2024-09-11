@@ -30,10 +30,7 @@ import eki.ekilex.data.Classifier;
 import eki.ekilex.data.Dataset;
 import eki.ekilex.data.DatasetPermission;
 import eki.ekilex.data.EkiUser;
-import eki.ekilex.data.Origin;
-import eki.ekilex.service.CommonDataService;
 import eki.ekilex.service.DatasetService;
-import eki.ekilex.service.PermissionService;
 import eki.ekilex.service.UserService;
 import eki.ekilex.web.util.ClassifierEditor;
 
@@ -50,25 +47,9 @@ public class DatasetController extends AbstractPrivatePageController {
 	@Autowired
 	private UserService userService;
 
-	@Autowired
-	private PermissionService permissionService;
-
-	@Autowired
-	private CommonDataService commonDataService;
-
 	@InitBinder
 	public void initBinder(WebDataBinder binder) {
 		binder.registerCustomEditor(Classifier.class, new ClassifierEditor());
-	}
-
-	@ModelAttribute("languages")
-	public List<Classifier> getLanguages() {
-		return commonDataService.getLanguages();
-	}
-
-	@ModelAttribute("origins")
-	public List<Origin> getOrigins() {
-		return commonDataService.getDomainOrigins();
 	}
 
 	@GetMapping(DATASETS_URI)
@@ -139,19 +120,21 @@ public class DatasetController extends AbstractPrivatePageController {
 
 	@GetMapping(ORIGIN_DOMAINS_URI + "/{originCode}")
 	@ResponseBody
-	public String getOriginDomains(@PathVariable String originCode) throws Exception {
+	public String getDomainsOfOrigin(@PathVariable String originCode) throws Exception {
 
 		List<Classifier> originDomains = datasetService.getDomains(originCode);
 
 		ObjectMapper jsonMapper = new ObjectMapper();
-		return jsonMapper.writeValueAsString(originDomains);
+		String domainsOfOriginJson = jsonMapper.writeValueAsString(originDomains);
+		return domainsOfOriginJson;
 	}
 
 	@GetMapping(DATASET_URI + "/{datasetCode}")
 	@ResponseBody
-	public Dataset fetchDataset(@PathVariable String datasetCode) {
-		logger.debug("Fetching dataset code {}", datasetCode);
+	public Dataset getDataset(@PathVariable String datasetCode) {
+
 		Dataset dataset = datasetService.getDataset(datasetCode);
+
 		return dataset;
 	}
 }

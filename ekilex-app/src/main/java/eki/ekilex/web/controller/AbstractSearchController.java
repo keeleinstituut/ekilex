@@ -116,7 +116,7 @@ public abstract class AbstractSearchController extends AbstractAuthActionControl
 
 	@ModelAttribute("meaningAttributes")
 	public String[] getMeaningAttributes() {
-		return MEANING_ATTRIBUTES;
+		return MEANING_ATTRIBUTE_FF_TYPE_CODES;
 	}
 
 	protected void initSearchForms(String searchPage, Model model) {

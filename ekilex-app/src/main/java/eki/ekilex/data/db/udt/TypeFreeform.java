@@ -44,9 +44,9 @@ public class TypeFreeform extends UDTImpl<TypeFreeformRecord> {
     public static final UDTField<TypeFreeformRecord, Long> FREEFORM_ID = createField(DSL.name("freeform_id"), SQLDataType.BIGINT, TYPE_FREEFORM, "");
 
     /**
-     * The attribute <code>public.type_freeform.type</code>.
+     * The attribute <code>public.type_freeform.freeform_type_code</code>.
      */
-    public static final UDTField<TypeFreeformRecord, String> TYPE = createField(DSL.name("type"), SQLDataType.VARCHAR(100), TYPE_FREEFORM, "");
+    public static final UDTField<TypeFreeformRecord, String> FREEFORM_TYPE_CODE = createField(DSL.name("freeform_type_code"), SQLDataType.VARCHAR(100), TYPE_FREEFORM, "");
 
     /**
      * The attribute <code>public.type_freeform.value</code>.

@@ -18,7 +18,6 @@ import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.core.util.DefaultPrettyPrinter;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import eki.common.constant.FreeformType;
 import eki.common.exception.OperationDeniedException;
 import eki.ekilex.constant.SearchResultMode;
 import eki.ekilex.data.Classifier;
@@ -214,10 +213,6 @@ public class TermSearchService extends AbstractSearchService {
 			EkiUser user,
 			Tag activeTag) throws Exception {
 
-		// TODO remove "MEANING_IMAGE" soon
-		final String[] excludeMeaningAttributeTypes = new String[] {FreeformType.LEARNER_COMMENT.name(), FreeformType.NOTE.name(), FreeformType.SEMANTIC_TYPE.name(), "MEANING_IMAGE"};
-		final String[] excludeLexemeAttributeTypes = new String[] {FreeformType.GOVERNMENT.name(), FreeformType.GRAMMAR.name(), FreeformType.USAGE.name(), FreeformType.NOTE.name()};
-
 		Long userId = user.getId();
 		DatasetPermission userRole = user.getRecentRole();
 		SearchDatasetsRestriction searchDatasetsRestriction = composeDatasetsRestriction(selectedDatasetCodes, userId);
@@ -237,9 +232,9 @@ public class TermSearchService extends AbstractSearchService {
 		List<DefinitionLangGroup> definitionLangGroups = conversionUtil.composeMeaningDefinitionLangGroups(definitions, languagesOrder);
 		List<OrderedClassifier> domains = commonDataDbService.getMeaningDomains(meaningId, CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
 		List<Classifier> semanticTypes = commonDataDbService.getMeaningSemanticTypes(meaningId, CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
-		List<FreeForm> meaningFreeforms = commonDataDbService.getMeaningFreeforms(meaningId, excludeMeaningAttributeTypes);
+		List<FreeForm> meaningFreeforms = commonDataDbService.getMeaningFreeforms(meaningId, EXCLUDED_MEANING_ATTRIBUTE_FF_TYPE_CODES);
 		List<Media> images = commonDataDbService.getMeaningImagesAsMedia(meaningId);
-		List<Media> medias = commonDataDbService.getMeaningMedias(meaningId);
+		List<Media> medias = commonDataDbService.getMeaningMediaFiles(meaningId);
 		List<MeaningForum> meaningForums = commonDataDbService.getMeaningForums(meaningId);
 		permCalculator.applyCrud(user, meaningForums);
 		List<MeaningNote> meaningNotes = commonDataDbService.getMeaningNotes(meaningId);
@@ -261,7 +256,7 @@ public class TermSearchService extends AbstractSearchService {
 			List<WordForum> wordForums = commonDataDbService.getWordForums(wordId);
 			permCalculator.applyCrud(user, wordForums);
 			List<FreeForm> odWordRecommendations = commonDataDbService.getOdWordRecommendations(wordId);
-			List<FreeForm> lexemeFreeforms = commonDataDbService.getLexemeFreeforms(lexemeId, excludeLexemeAttributeTypes);
+			List<FreeForm> lexemeFreeforms = commonDataDbService.getLexemeFreeforms(lexemeId, EXCLUDED_LEXEME_ATTRIBUTE_FF_TYPE_CODES);
 			List<Usage> usages = composeUsages(user, lexemeId);
 			List<LexemeNote> lexemeNotes = commonDataDbService.getLexemeNotes(lexemeId);
 			permCalculator.filterVisibility(user, lexemeNotes);

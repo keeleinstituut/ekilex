@@ -49,7 +49,6 @@ import org.jooq.util.postgres.PostgresDSL;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import eki.common.constant.FreeformType;
 import eki.ekilex.data.Classifier;
 import eki.ekilex.data.InexactSynonym;
 import eki.ekilex.data.SearchDatasetsRestriction;
@@ -706,7 +705,7 @@ public class LookupDbService extends AbstractDataDbService {
 				.fetchSingleInto(Boolean.class);
 	}
 
-	public boolean meaningFreeformExists(Long meaningId, String freeformValue, FreeformType freeformType) {
+	public boolean meaningFreeformExists(Long meaningId, String freeformValue, String freeformTypeCode) {
 
 		return create
 				.select(DSL.field(DSL.count(FREEFORM.ID).gt(0)).as("meaning_freeform_exists"))
@@ -714,7 +713,7 @@ public class LookupDbService extends AbstractDataDbService {
 				.where(MEANING_FREEFORM.MEANING_ID.eq(meaningId)
 						.and(FREEFORM.ID.eq(MEANING_FREEFORM.FREEFORM_ID))
 						.and(FREEFORM.VALUE_TEXT.eq(freeformValue))
-						.and(FREEFORM.TYPE.eq(freeformType.name())))
+						.and(FREEFORM.FREEFORM_TYPE_CODE.eq(freeformTypeCode)))
 				.fetchSingleInto(Boolean.class);
 	}
 

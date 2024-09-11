@@ -51,16 +51,16 @@ public class TypeMtLexemeFreeformRecord extends UDTRecordImpl<TypeMtLexemeFreefo
     }
 
     /**
-     * Setter for <code>public.type_mt_lexeme_freeform.type</code>.
+     * Setter for <code>public.type_mt_lexeme_freeform.freeform_type_code</code>.
      */
-    public void setType(String value) {
+    public void setFreeformTypeCode(String value) {
         set(2, value);
     }
 
     /**
-     * Getter for <code>public.type_mt_lexeme_freeform.type</code>.
+     * Getter for <code>public.type_mt_lexeme_freeform.freeform_type_code</code>.
      */
-    public String getType() {
+    public String getFreeformTypeCode() {
         return (String) get(2);
     }
 
@@ -216,7 +216,7 @@ public class TypeMtLexemeFreeformRecord extends UDTRecordImpl<TypeMtLexemeFreefo
 
     @Override
     public Field<String> field3() {
-        return TypeMtLexemeFreeform.TYPE;
+        return TypeMtLexemeFreeform.FREEFORM_TYPE_CODE;
     }
 
     @Override
@@ -276,7 +276,7 @@ public class TypeMtLexemeFreeformRecord extends UDTRecordImpl<TypeMtLexemeFreefo
 
     @Override
     public String component3() {
-        return getType();
+        return getFreeformTypeCode();
     }
 
     @Override
@@ -336,7 +336,7 @@ public class TypeMtLexemeFreeformRecord extends UDTRecordImpl<TypeMtLexemeFreefo
 
     @Override
     public String value3() {
-        return getType();
+        return getFreeformTypeCode();
     }
 
     @Override
@@ -398,7 +398,7 @@ public class TypeMtLexemeFreeformRecord extends UDTRecordImpl<TypeMtLexemeFreefo
 
     @Override
     public TypeMtLexemeFreeformRecord value3(String value) {
-        setType(value);
+        setFreeformTypeCode(value);
         return this;
     }
 
@@ -487,12 +487,12 @@ public class TypeMtLexemeFreeformRecord extends UDTRecordImpl<TypeMtLexemeFreefo
     /**
      * Create a detached, initialised TypeMtLexemeFreeformRecord
      */
-    public TypeMtLexemeFreeformRecord(Long lexemeId, Long freeformId, String type, String valueText, String valuePrese, String lang, String complexity, Boolean isPublic, String createdBy, Timestamp createdOn, String modifiedBy, Timestamp modifiedOn) {
+    public TypeMtLexemeFreeformRecord(Long lexemeId, Long freeformId, String freeformTypeCode, String valueText, String valuePrese, String lang, String complexity, Boolean isPublic, String createdBy, Timestamp createdOn, String modifiedBy, Timestamp modifiedOn) {
         super(TypeMtLexemeFreeform.TYPE_MT_LEXEME_FREEFORM);
 
         setLexemeId(lexemeId);
         setFreeformId(freeformId);
-        setType(type);
+        setFreeformTypeCode(freeformTypeCode);
         setValueText(valueText);
         setValuePrese(valuePrese);
         setLang(lang);

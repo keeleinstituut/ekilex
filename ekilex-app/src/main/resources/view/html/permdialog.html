@@ -35,7 +35,7 @@
                 <label class="col-form-label" th:text="#{permissions.lang}">Keel</label>
                 <select class="form-control" name="authLang">
                   <option value="" selected th:text="#{common.all.languages}">Kõik keeled</option>
-                  <option th:each="language : ${allLanguages}"
+                  <option th:each="language : ${languages}"
                           th:value="${language.code}"
                           th:text="${language.value}">language</option>
                 </select>
@@ -81,7 +81,7 @@
                 <label class="col-form-label" th:text="#{permissions.lang}">Keel</label>
                 <select class="form-control" name="authLang">
                   <option value="" selected th:text="#{common.all.languages}">Kõik keeled</option>
-                  <option th:each="language : ${allLanguages}"
+                  <option th:each="language : ${languages}"
                           th:value="${language.code}"
                           th:selected="${language.code == userApplication.lang}"
                           th:text="${language.value}">language</option>

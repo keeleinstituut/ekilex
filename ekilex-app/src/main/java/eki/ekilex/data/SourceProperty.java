@@ -2,9 +2,9 @@ package eki.ekilex.data;
 
 import java.sql.Timestamp;
 
-import eki.common.constant.FreeformType;
-import eki.common.data.AbstractDataObject;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
+import eki.common.data.AbstractDataObject;
 
 @JsonIgnoreProperties("valueMatch")
 public class SourceProperty extends AbstractDataObject {
@@ -15,7 +15,7 @@ public class SourceProperty extends AbstractDataObject {
 
 	private Long id;
 
-	private FreeformType type;
+	private String typeCode;
 
 	private String valueText;
 
@@ -39,12 +39,12 @@ public class SourceProperty extends AbstractDataObject {
 		this.id = id;
 	}
 
-	public FreeformType getType() {
-		return type;
+	public String getTypeCode() {
+		return typeCode;
 	}
 
-	public void setType(FreeformType type) {
-		this.type = type;
+	public void setTypeCode(String typeCode) {
+		this.typeCode = typeCode;
 	}
 
 	public String getValueText() {

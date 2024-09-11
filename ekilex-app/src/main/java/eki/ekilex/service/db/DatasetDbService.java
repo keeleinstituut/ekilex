@@ -1,8 +1,10 @@
 package eki.ekilex.service.db;
 
 import static eki.ekilex.data.db.Tables.DATASET;
+import static eki.ekilex.data.db.Tables.DATASET_FREEFORM_TYPE;
 import static eki.ekilex.data.db.Tables.DOMAIN;
 import static eki.ekilex.data.db.Tables.EKI_USER_PROFILE;
+import static eki.ekilex.data.db.Tables.FREEFORM_TYPE;
 import static eki.ekilex.data.db.Tables.LANGUAGE;
 import static eki.ekilex.data.db.Tables.LEXEME;
 import static eki.ekilex.data.db.Tables.MEANING;
@@ -22,6 +24,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import eki.common.constant.ClassifierName;
+import eki.common.constant.FreeformOwner;
 import eki.ekilex.data.Classifier;
 import eki.ekilex.data.Dataset;
 import eki.ekilex.service.db.util.DatasetDbServiceHelper;
@@ -181,24 +184,88 @@ public class DatasetDbService {
 
 	public boolean datasetCodeExists(String datasetCode) {
 		return create.fetchExists(
-				create.select()
+				create
+						.select()
 						.from(DATASET)
 						.where(DATASET.CODE.equalIgnoreCase(datasetCode)));
 	}
 
-	public void addDatasetToClassifier(ClassifierName classifierName, String datasetCode, List<Classifier> addedClassifiers) {
+	public void addDatasetToClassifiers(ClassifierName classifierName, String datasetCode, List<Classifier> classifiers) {
 
-		if (CollectionUtils.isNotEmpty(addedClassifiers)) {
+		if (CollectionUtils.isNotEmpty(classifiers)) {
 			if (ClassifierName.LANGUAGE.equals(classifierName)) {
-				List<String> languageCodes = addedClassifiers.stream().map(Classifier::getCode).collect(Collectors.toList());
-				create.update(LANGUAGE)
-						.set(LANGUAGE.DATASETS, DSL.field(PostgresDSL.arrayAppend(LANGUAGE.DATASETS, datasetCode)))
-						.where(LANGUAGE.CODE.in(languageCodes))
+
+				addDatasetToClassifiers(classifierName, datasetCode, classifiers, null);
+
+			} else if (ClassifierName.FREEFORM_TYPE.equals(classifierName)) {
+
+				List<String> codes = classifiers.stream().map(Classifier::getCode).collect(Collectors.toList());
+
+				create
+						.update(FREEFORM_TYPE)
+						.set(FREEFORM_TYPE.DATASETS, DSL.field(PostgresDSL.arrayAppend(FREEFORM_TYPE.DATASETS, datasetCode)))
+						.where(FREEFORM_TYPE.CODE.in(codes))
 						.execute();
 
 			} else if (ClassifierName.DOMAIN.equals(classifierName)) {
-				List<Row2<String, String>> codeOriginTuples = addedClassifiers.stream().map(c -> DSL.row(DSL.val(c.getCode()), DSL.val(c.getOrigin()))).collect(Collectors.toList());
-				create.update(DOMAIN)
+
+				addDatasetToClassifiers(classifierName, datasetCode, classifiers, null);
+
+			} else {
+				throw new UnsupportedOperationException();
+			}
+		}
+	}
+
+	public void addDatasetToClassifiers(ClassifierName classifierName, String datasetCode, List<Classifier> classifiers, FreeformOwner freeformOwner) {
+
+		if (CollectionUtils.isNotEmpty(classifiers)) {
+			if (ClassifierName.LANGUAGE.equals(classifierName)) {
+
+				List<String> codes = classifiers.stream().map(Classifier::getCode).collect(Collectors.toList());
+
+				create
+						.update(LANGUAGE)
+						.set(LANGUAGE.DATASETS, DSL.field(PostgresDSL.arrayAppend(LANGUAGE.DATASETS, datasetCode)))
+						.where(
+								LANGUAGE.CODE.in(codes)
+										.and(DSL.val(datasetCode).ne(DSL.any(LANGUAGE.DATASETS))))
+						.execute();
+
+			} else if (ClassifierName.FREEFORM_TYPE.equals(classifierName)) {
+
+				List<String> codes = classifiers.stream().map(Classifier::getCode).collect(Collectors.toList());
+
+				create
+						.update(FREEFORM_TYPE)
+						.set(FREEFORM_TYPE.DATASETS, DSL.field(PostgresDSL.arrayAppend(FREEFORM_TYPE.DATASETS, datasetCode)))
+						.where(
+								FREEFORM_TYPE.CODE.in(codes)
+										.and(DSL.val(datasetCode).ne(DSL.any(FREEFORM_TYPE.DATASETS))))
+						.execute();
+
+				for (Classifier classifier : classifiers) {
+
+					create
+							.insertInto(
+									DATASET_FREEFORM_TYPE,
+									DATASET_FREEFORM_TYPE.DATASET_CODE,
+									DATASET_FREEFORM_TYPE.FREEFORM_OWNER,
+									DATASET_FREEFORM_TYPE.FREEFORM_TYPE_CODE)
+							.values(
+									datasetCode,
+									freeformOwner.name(),
+									classifier.getCode())
+							.execute();
+				}
+
+			} else if (ClassifierName.DOMAIN.equals(classifierName)) {
+
+				List<Row2<String, String>> codeOriginTuples = classifiers.stream()
+						.map(classif -> DSL.row(DSL.val(classif.getCode()), DSL.val(classif.getOrigin())))
+						.collect(Collectors.toList());
+				create
+						.update(DOMAIN)
 						.set(DOMAIN.DATASETS, DSL.field(PostgresDSL.arrayAppend(DOMAIN.DATASETS, datasetCode)))
 						.where(DSL.row(DOMAIN.CODE, DOMAIN.ORIGIN).in(codeOriginTuples))
 						.execute();
@@ -209,16 +276,33 @@ public class DatasetDbService {
 		}
 	}
 
-	public void removeDatasetFromAllClassifiers(ClassifierName classifierName, String datasetCode) {
+	public void removeDatasetFromClassifiers(ClassifierName classifierName, String datasetCode) {
 
 		if (ClassifierName.LANGUAGE.equals(classifierName)) {
-			create.update(LANGUAGE)
+
+			create
+					.update(LANGUAGE)
 					.set(LANGUAGE.DATASETS, DSL.field(PostgresDSL.arrayRemove(LANGUAGE.DATASETS, datasetCode)))
 					.where(DSL.val(datasetCode).eq(DSL.any(LANGUAGE.DATASETS)))
 					.execute();
 
+		} else if (ClassifierName.FREEFORM_TYPE.equals(classifierName)) {
+
+			create
+					.update(FREEFORM_TYPE)
+					.set(FREEFORM_TYPE.DATASETS, DSL.field(PostgresDSL.arrayRemove(FREEFORM_TYPE.DATASETS, datasetCode)))
+					.where(DSL.val(datasetCode).eq(DSL.any(FREEFORM_TYPE.DATASETS)))
+					.execute();
+
+			create
+					.deleteFrom(DATASET_FREEFORM_TYPE)
+					.where(DATASET_FREEFORM_TYPE.DATASET_CODE.eq(datasetCode))
+					.execute();
+
 		} else if (ClassifierName.DOMAIN.equals(classifierName)) {
-			create.update(DOMAIN)
+
+			create
+					.update(DOMAIN)
 					.set(DOMAIN.DATASETS, DSL.field(PostgresDSL.arrayRemove(DOMAIN.DATASETS, datasetCode)))
 					.where(DSL.val(datasetCode).eq(DSL.any(DOMAIN.DATASETS)))
 					.execute();
@@ -229,7 +313,8 @@ public class DatasetDbService {
 
 	public void removeDatasetFromUserProfile(String datasetCode) {
 
-		create.update(EKI_USER_PROFILE)
+		create
+				.update(EKI_USER_PROFILE)
 				.set(EKI_USER_PROFILE.PREFERRED_DATASETS, DSL.field(PostgresDSL.arrayRemove(EKI_USER_PROFILE.PREFERRED_DATASETS, datasetCode)))
 				.where(DSL.val(datasetCode).eq(DSL.any(EKI_USER_PROFILE.PREFERRED_DATASETS)))
 				.execute();

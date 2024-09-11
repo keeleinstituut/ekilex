@@ -78,7 +78,7 @@
       </div>
       <div class="col pl-0">
         <th:block th:each="freeform : ${meaning.freeforms}">
-          <div th:if="${freeform.type.toString() == 'CONCEPT_ID'}">
+          <div th:if="${freeform.freeformTypeCode == 'CONCEPT_ID'}">
             <div style="display: list-item; position: absolute"></div>
             <span th:utext="${freeform.valueText}" th:if="${freeform.valueText != null}"></span>
           </div>

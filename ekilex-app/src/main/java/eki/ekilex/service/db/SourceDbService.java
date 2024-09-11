@@ -43,7 +43,7 @@ import org.springframework.stereotype.Component;
 import eki.common.constant.ActivityEntity;
 import eki.common.constant.ActivityFunct;
 import eki.common.constant.ActivityOwner;
-import eki.common.constant.FreeformType;
+import eki.common.constant.FreeformConstant;
 import eki.common.constant.GlobalConstant;
 import eki.ekilex.constant.SearchEntity;
 import eki.ekilex.constant.SearchKey;
@@ -78,7 +78,7 @@ import eki.ekilex.data.db.tables.records.FreeformRecord;
 import eki.ekilex.service.db.util.SearchFilterHelper;
 
 @Component
-public class SourceDbService implements GlobalConstant, SystemConstant, ActivityFunct {
+public class SourceDbService implements GlobalConstant, SystemConstant, ActivityFunct, FreeformConstant {
 
 	@Autowired
 	private SearchFilterHelper searchFilterHelper;
@@ -207,7 +207,7 @@ public class SourceDbService implements GlobalConstant, SystemConstant, Activity
 
 	private List<SourcePropertyTuple> getSourcePropertyTuples(Source s, SourceFreeform spff, Freeform sp, Field<Boolean> spmf, Condition where) {
 
-		Field<Boolean> sptnf = DSL.field(sp.TYPE.eq(FreeformType.SOURCE_NAME.name()));
+		Field<Boolean> sptnf = DSL.field(sp.FREEFORM_TYPE_CODE.eq(SOURCE_NAME_CODE));
 
 		return create
 				.select(
@@ -220,7 +220,7 @@ public class SourceDbService implements GlobalConstant, SystemConstant, Activity
 						s.COMMENT.as("source_comment"),
 						s.IS_PUBLIC.as("is_source_public"),
 						sp.ID.as("source_property_id"),
-						sp.TYPE.as("source_property_type"),
+						sp.FREEFORM_TYPE_CODE.as("source_property_type_code"),
 						sp.VALUE_TEXT.as("source_property_value_text"),
 						sp.VALUE_DATE.as("source_property_value_date"),
 						spmf.as("source_property_match"))
@@ -495,7 +495,7 @@ public class SourceDbService implements GlobalConstant, SystemConstant, Activity
 
 		List<Long> uniqueFreeformsIds = originSourceFreeforms.stream()
 				.filter(origin -> targetSourceFreeforms.stream()
-						.noneMatch(target -> target.getType().equals(origin.getType())
+						.noneMatch(target -> StringUtils.equals(target.getFreeformTypeCode(), origin.getFreeformTypeCode())
 								&& Objects.nonNull(target.getValueText())
 								&& target.getValueText().equals(origin.getValueText())))
 				.map(FreeformRecord::getId)

@@ -41,6 +41,11 @@ public class Sequences {
     public static final Sequence<Long> DATA_REQUEST_ID_SEQ = Internal.createSequence("data_request_id_seq", Public.PUBLIC, SQLDataType.BIGINT.nullable(false), null, null, null, null, false, null);
 
     /**
+     * The sequence <code>public.dataset_freeform_type_id_seq</code>
+     */
+    public static final Sequence<Long> DATASET_FREEFORM_TYPE_ID_SEQ = Internal.createSequence("dataset_freeform_type_id_seq", Public.PUBLIC, SQLDataType.BIGINT.nullable(false), null, null, null, null, false, null);
+
+    /**
      * The sequence <code>public.dataset_order_by_seq</code>
      */
     public static final Sequence<Long> DATASET_ORDER_BY_SEQ = Internal.createSequence("dataset_order_by_seq", Public.PUBLIC, SQLDataType.BIGINT.nullable(false), null, null, null, null, false, null);
@@ -174,6 +179,11 @@ public class Sequences {
      * The sequence <code>public.freeform_source_link_order_by_seq</code>
      */
     public static final Sequence<Long> FREEFORM_SOURCE_LINK_ORDER_BY_SEQ = Internal.createSequence("freeform_source_link_order_by_seq", Public.PUBLIC, SQLDataType.BIGINT.nullable(false), null, null, null, null, false, null);
+
+    /**
+     * The sequence <code>public.freeform_type_order_by_seq</code>
+     */
+    public static final Sequence<Long> FREEFORM_TYPE_ORDER_BY_SEQ = Internal.createSequence("freeform_type_order_by_seq", Public.PUBLIC, SQLDataType.BIGINT.nullable(false), null, null, null, null, false, null);
 
     /**
      * The sequence <code>public.freq_corp_id_seq</code>

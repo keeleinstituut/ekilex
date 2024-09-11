@@ -367,6 +367,21 @@ create table proficiency_level_label (
   unique(code, lang, type)
 );
 
+-- vabavormi liik
+create table freeform_type (
+	code varchar(100) primary key,
+	datasets varchar(10) array not null,
+	order_by bigserial
+);
+
+create table freeform_type_label (
+	code varchar(100) references freeform_type(code) on delete cascade not null,
+	value text not null,
+	lang char(3) references language(code) not null,
+	type varchar(10) references label_type(code) not null,
+	unique(code, lang, type)
+);
+
 ---------------------------
 -- dünaamiline andmestik --
 ---------------------------
@@ -414,6 +429,14 @@ create table dataset (
   is_public boolean default true, 
   is_superior boolean default false, 
   order_by bigserial
+);
+
+create table dataset_freeform_type (
+	id bigserial primary key,
+	dataset_code varchar(10) references dataset(code) on update cascade on delete cascade not null,
+	freeform_owner varchar(10) not null,
+	freeform_type_code varchar(100) references freeform_type(code) on delete cascade not null,
+	unique (dataset_code, freeform_owner, freeform_type_code)
 );
 
 create table dataset_permission (
@@ -481,7 +504,7 @@ alter sequence source_id_seq restart with 10000;
 create table freeform (
   id bigserial primary key, 
   parent_id bigint references freeform(id) on delete cascade null, 
-  type varchar(100) not null, 
+  freeform_type_code varchar(100) not null, 
   value_text text null, 
   value_prese text null, 
   value_date timestamp null, 

@@ -88,10 +88,6 @@ public interface GlobalConstant {
 
 	String WORD_RELATION_PARAM_NAME_SYN_CANDIDATE = "syn candidate";
 
-	String[] MEANING_ATTRIBUTES = new String[] {
-			FreeformType.CONCEPT_ID.name(), FreeformType.GENUS.name(), FreeformType.FAMILY.name(), FreeformType.DESCRIBER.name(),
-			FreeformType.DESCRIBING_YEAR.name(), FreeformType.SOURCE_FILE.name()};
-
 	char DISPLAY_FORM_STRESS_SYMBOL = '"';
 
 	String[] DISPLAY_FORM_IGNORE_SYMBOLS = new String[] {"[", "]", "*"};

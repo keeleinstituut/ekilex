@@ -2,7 +2,6 @@ package eki.ekilex.data;
 
 import java.sql.Timestamp;
 
-import eki.common.constant.FreeformType;
 import eki.common.constant.SourceType;
 import eki.common.data.AbstractDataObject;
 
@@ -28,7 +27,7 @@ public class SourcePropertyTuple extends AbstractDataObject {
 
 	private Long sourcePropertyId;
 
-	private FreeformType sourcePropertyType;
+	private String sourcePropertyTypeCode;
 
 	private String sourcePropertyValueText;
 
@@ -108,12 +107,12 @@ public class SourcePropertyTuple extends AbstractDataObject {
 		this.sourcePropertyId = sourcePropertyId;
 	}
 
-	public FreeformType getSourcePropertyType() {
-		return sourcePropertyType;
+	public String getSourcePropertyTypeCode() {
+		return sourcePropertyTypeCode;
 	}
 
-	public void setSourcePropertyType(FreeformType sourcePropertyType) {
-		this.sourcePropertyType = sourcePropertyType;
+	public void setSourcePropertyTypeCode(String sourcePropertyTypeCode) {
+		this.sourcePropertyTypeCode = sourcePropertyTypeCode;
 	}
 
 	public String getSourcePropertyValueText() {

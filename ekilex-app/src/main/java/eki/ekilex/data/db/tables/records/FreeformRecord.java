@@ -53,16 +53,16 @@ public class FreeformRecord extends UpdatableRecordImpl<FreeformRecord> implemen
     }
 
     /**
-     * Setter for <code>public.freeform.type</code>.
+     * Setter for <code>public.freeform.freeform_type_code</code>.
      */
-    public void setType(String value) {
+    public void setFreeformTypeCode(String value) {
         set(2, value);
     }
 
     /**
-     * Getter for <code>public.freeform.type</code>.
+     * Getter for <code>public.freeform.freeform_type_code</code>.
      */
-    public String getType() {
+    public String getFreeformTypeCode() {
         return (String) get(2);
     }
 
@@ -269,7 +269,7 @@ public class FreeformRecord extends UpdatableRecordImpl<FreeformRecord> implemen
 
     @Override
     public Field<String> field3() {
-        return Freeform.FREEFORM.TYPE;
+        return Freeform.FREEFORM.FREEFORM_TYPE_CODE;
     }
 
     @Override
@@ -344,7 +344,7 @@ public class FreeformRecord extends UpdatableRecordImpl<FreeformRecord> implemen
 
     @Override
     public String component3() {
-        return getType();
+        return getFreeformTypeCode();
     }
 
     @Override
@@ -419,7 +419,7 @@ public class FreeformRecord extends UpdatableRecordImpl<FreeformRecord> implemen
 
     @Override
     public String value3() {
-        return getType();
+        return getFreeformTypeCode();
     }
 
     @Override
@@ -496,7 +496,7 @@ public class FreeformRecord extends UpdatableRecordImpl<FreeformRecord> implemen
 
     @Override
     public FreeformRecord value3(String value) {
-        setType(value);
+        setFreeformTypeCode(value);
         return this;
     }
 
@@ -606,12 +606,12 @@ public class FreeformRecord extends UpdatableRecordImpl<FreeformRecord> implemen
     /**
      * Create a detached, initialised FreeformRecord
      */
-    public FreeformRecord(Long id, Long parentId, String type, String valueText, String valuePrese, Timestamp valueDate, BigDecimal valueNumber, String lang, String complexity, Long orderBy, Boolean isPublic, String createdBy, Timestamp createdOn, String modifiedBy, Timestamp modifiedOn) {
+    public FreeformRecord(Long id, Long parentId, String freeformTypeCode, String valueText, String valuePrese, Timestamp valueDate, BigDecimal valueNumber, String lang, String complexity, Long orderBy, Boolean isPublic, String createdBy, Timestamp createdOn, String modifiedBy, Timestamp modifiedOn) {
         super(Freeform.FREEFORM);
 
         setId(id);
         setParentId(parentId);
-        setType(type);
+        setFreeformTypeCode(freeformTypeCode);
         setValueText(valueText);
         setValuePrese(valuePrese);
         setValueDate(valueDate);

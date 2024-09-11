@@ -30,7 +30,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import eki.common.constant.ActivityFunct;
-import eki.common.constant.FreeformType;
+import eki.common.constant.FreeformConstant;
 import eki.common.constant.GlobalConstant;
 import eki.ekilex.data.api.TermMeaning;
 import eki.ekilex.data.db.tables.Definition;
@@ -57,7 +57,7 @@ import eki.ekilex.data.db.tables.WordWordType;
 import eki.ekilex.data.db.tables.records.LexemeRecord;
 
 @Component
-public class TermMeaningDbService implements ActivityFunct, GlobalConstant {
+public class TermMeaningDbService implements ActivityFunct, GlobalConstant, FreeformConstant {
 
 	@Autowired
 	private DSLContext create;
@@ -320,7 +320,7 @@ public class TermMeaningDbService implements ActivityFunct, GlobalConstant {
 				.where(
 						mff.MEANING_ID.eq(m.ID)
 								.and(mff.FREEFORM_ID.eq(ff.ID))
-								.and(ff.TYPE.eq(FreeformType.CONCEPT_ID.name())))
+								.and(ff.FREEFORM_TYPE_CODE.eq(CONCEPT_ID_CODE)))
 				.asField();
 
 		Field<JSON> mtf = DSL

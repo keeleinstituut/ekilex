@@ -26,6 +26,10 @@ import eki.ekilex.service.db.CommonDataDbService;
 @Component
 public class ClassifierService implements GlobalConstant, SystemConstant {
 
+	private static final ClassifierName[] nonEditableClassifNames = new ClassifierName[] {ClassifierName.LABEL_TYPE};
+
+	private static final String[] editableLabelTypes = new String[] {CLASSIF_LABEL_TYPE_DESCRIP, CLASSIF_LABEL_TYPE_WORDWEB};
+
 	@Autowired
 	private ClassifierDbService classifierDbService;
 
@@ -34,10 +38,6 @@ public class ClassifierService implements GlobalConstant, SystemConstant {
 
 	@Autowired
 	private MaintenanceService maintenanceService;
-
-	private final ClassifierName[] nonEditableClassifNames = new ClassifierName[] {ClassifierName.LABEL_TYPE};
-
-	private final String[] editableLabelTypes = new String[] {CLASSIF_LABEL_TYPE_DESCRIP, CLASSIF_LABEL_TYPE_WORDWEB};
 
 	public List<String> getEditableClassifierNames() {
 

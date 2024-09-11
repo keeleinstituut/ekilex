@@ -37,16 +37,16 @@ public class TypeFreeformRecord extends UDTRecordImpl<TypeFreeformRecord> implem
     }
 
     /**
-     * Setter for <code>public.type_freeform.type</code>.
+     * Setter for <code>public.type_freeform.freeform_type_code</code>.
      */
-    public void setType(String value) {
+    public void setFreeformTypeCode(String value) {
         set(1, value);
     }
 
     /**
-     * Getter for <code>public.type_freeform.type</code>.
+     * Getter for <code>public.type_freeform.freeform_type_code</code>.
      */
-    public String getType() {
+    public String getFreeformTypeCode() {
         return (String) get(1);
     }
 
@@ -169,7 +169,7 @@ public class TypeFreeformRecord extends UDTRecordImpl<TypeFreeformRecord> implem
 
     @Override
     public Field<String> field2() {
-        return TypeFreeform.TYPE;
+        return TypeFreeform.FREEFORM_TYPE_CODE;
     }
 
     @Override
@@ -214,7 +214,7 @@ public class TypeFreeformRecord extends UDTRecordImpl<TypeFreeformRecord> implem
 
     @Override
     public String component2() {
-        return getType();
+        return getFreeformTypeCode();
     }
 
     @Override
@@ -259,7 +259,7 @@ public class TypeFreeformRecord extends UDTRecordImpl<TypeFreeformRecord> implem
 
     @Override
     public String value2() {
-        return getType();
+        return getFreeformTypeCode();
     }
 
     @Override
@@ -305,7 +305,7 @@ public class TypeFreeformRecord extends UDTRecordImpl<TypeFreeformRecord> implem
 
     @Override
     public TypeFreeformRecord value2(String value) {
-        setType(value);
+        setFreeformTypeCode(value);
         return this;
     }
 
@@ -379,11 +379,11 @@ public class TypeFreeformRecord extends UDTRecordImpl<TypeFreeformRecord> implem
     /**
      * Create a detached, initialised TypeFreeformRecord
      */
-    public TypeFreeformRecord(Long freeformId, String type, String value, String lang, String complexity, String createdBy, Timestamp createdOn, String modifiedBy, Timestamp modifiedOn) {
+    public TypeFreeformRecord(Long freeformId, String freeformTypeCode, String value, String lang, String complexity, String createdBy, Timestamp createdOn, String modifiedBy, Timestamp modifiedOn) {
         super(TypeFreeform.TYPE_FREEFORM);
 
         setFreeformId(freeformId);
-        setType(type);
+        setFreeformTypeCode(freeformTypeCode);
         setValue(value);
         setLang(lang);
         setComplexity(complexity);

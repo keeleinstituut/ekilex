@@ -84,7 +84,7 @@ create type type_mt_word as (
 create type type_mt_lexeme_freeform as (
   lexeme_id bigint, 
   freeform_id bigint, 
-  "type" varchar(100), 
+  freeform_type_code varchar(100), 
   value_text text, 
   value_prese text, 
   lang char(3), 

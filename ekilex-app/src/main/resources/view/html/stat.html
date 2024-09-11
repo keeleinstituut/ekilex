@@ -31,7 +31,7 @@
             <div class="col-md-2">
               <select class="form-control value-select" name="searchLang">
                 <option value="" th:text="#{stat.all.languages}">Kõik keeled</option>
-                <option th:each="lang : ${allLanguages}"
+                <option th:each="lang : ${languages}"
                         th:value="${lang.code}"
                         th:text="${lang.value}">lang</option>
                 </option>

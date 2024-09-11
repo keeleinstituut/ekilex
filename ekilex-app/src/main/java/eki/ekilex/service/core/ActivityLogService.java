@@ -23,7 +23,7 @@ import com.flipkart.zjsonpatch.JsonDiff;
 
 import eki.common.constant.ActivityEntity;
 import eki.common.constant.ActivityOwner;
-import eki.common.constant.FreeformType;
+import eki.common.constant.FreeformConstant;
 import eki.common.constant.GlobalConstant;
 import eki.common.constant.LastActivityType;
 import eki.common.exception.IllegalParamException;
@@ -72,7 +72,7 @@ import eki.ekilex.service.db.SourceDbService;
 import eki.ekilex.service.util.ConversionUtil;
 
 @Component
-public class ActivityLogService implements SystemConstant, GlobalConstant {
+public class ActivityLogService implements SystemConstant, GlobalConstant, FreeformConstant {
 
 	private static final String ACTIVITY_LOG_DIFF_FIELD_NAME = "diff";
 
@@ -225,54 +225,54 @@ public class ActivityLogService implements SystemConstant, GlobalConstant {
 		if (MapUtils.isEmpty(freeformOwnerDataMap)) {
 			throw new IllegalParamException("Unable to locate freeform");
 		}
-		String ffTypeName = (String) freeformOwnerDataMap.get("type");
+		String ffTypeCode = (String) freeformOwnerDataMap.get("freeform_type_code");
 		ActivityEntity activityEntity;
 		Long id;
 		id = (Long) freeformOwnerDataMap.get("lexeme_id");
 		if (id != null) {
 			try {
-				activityEntity = ActivityEntity.valueOf(ffTypeName);
+				activityEntity = ActivityEntity.valueOf(ffTypeCode);
 			} catch (Exception e) {
-				throw new IllegalParamException("Missing activity entity owner mapping for lexeme freeform " + ffTypeName);
+				throw new IllegalParamException("Missing activity entity owner mapping for lexeme freeform " + ffTypeCode);
 			}
 			return new ActivityLogOwnerEntityDescr(ActivityOwner.LEXEME, id, activityEntity);
 		}
 		id = (Long) freeformOwnerDataMap.get("word_id");
 		if (id != null) {
 			try {
-				activityEntity = ActivityEntity.valueOf(ffTypeName);
+				activityEntity = ActivityEntity.valueOf(ffTypeCode);
 			} catch (Exception e) {
-				throw new IllegalParamException("Missing activity entity owner mapping for word freeform " + ffTypeName);
+				throw new IllegalParamException("Missing activity entity owner mapping for word freeform " + ffTypeCode);
 			}
 			return new ActivityLogOwnerEntityDescr(ActivityOwner.WORD, id, activityEntity);
 		}
 		id = (Long) freeformOwnerDataMap.get("meaning_id");
 		if (id != null) {
 			try {
-				activityEntity = ActivityEntity.valueOf(ffTypeName);
+				activityEntity = ActivityEntity.valueOf(ffTypeCode);
 			} catch (Exception e) {
-				throw new IllegalParamException("Missing activity entity owner mapping for meaning freeform " + ffTypeName);
+				throw new IllegalParamException("Missing activity entity owner mapping for meaning freeform " + ffTypeCode);
 			}
 			return new ActivityLogOwnerEntityDescr(ActivityOwner.MEANING, id, activityEntity);
 		}
 		id = (Long) freeformOwnerDataMap.get("d_meaning_id");
 		if (id != null) {
 			try {
-				activityEntity = ActivityEntity.valueOf(ffTypeName);
+				activityEntity = ActivityEntity.valueOf(ffTypeCode);
 			} catch (Exception e) {
-				throw new IllegalParamException("Missing activity entity owner mapping for definition freeform " + ffTypeName);
+				throw new IllegalParamException("Missing activity entity owner mapping for definition freeform " + ffTypeCode);
 			}
 			return new ActivityLogOwnerEntityDescr(ActivityOwner.MEANING, id, activityEntity);
 		}
 		id = (Long) freeformOwnerDataMap.get("source_id");
 		if (id != null) {
-			if (StringUtils.equals(FreeformType.NOTE.name(), ffTypeName)) {
+			if (StringUtils.equals(NOTE_CODE, ffTypeCode)) {
 				activityEntity = ActivityEntity.SOURCE_NOTE;
 			} else {
 				try {
-					activityEntity = ActivityEntity.valueOf(ffTypeName);
+					activityEntity = ActivityEntity.valueOf(ffTypeCode);
 				} catch (Exception e) {
-					throw new IllegalParamException("Missing activity entity owner mapping for source freeform " + ffTypeName);
+					throw new IllegalParamException("Missing activity entity owner mapping for source freeform " + ffTypeCode);
 				}
 			}
 			return new ActivityLogOwnerEntityDescr(ActivityOwner.SOURCE, id, activityEntity);
@@ -384,16 +384,6 @@ public class ActivityLogService implements SystemConstant, GlobalConstant {
 		}
 	}
 
-	public void createActivityLog(ActivityLogData activityLogData, Long entityId, FreeformType freeformType) throws Exception {
-
-		try {
-			ActivityEntity entityName = ActivityEntity.valueOf(freeformType.name());
-			createActivityLog(activityLogData, entityId, entityName);
-		} catch (Exception e) {
-			throw new IllegalParamException("Missing entity mapping for " + freeformType);
-		}
-	}
-
 	public void joinApproveMeaning(Long targetMeaningId, Long sourceMeaningId) {
 
 		final Timestamp targetMeaningLastActivityEventOn = activityLogDbService.getMeaningLastActivityLog(targetMeaningId, LastActivityType.APPROVE);
@@ -415,6 +405,7 @@ public class ActivityLogService implements SystemConstant, GlobalConstant {
 	}
 
 	private ActivityLogData initCore(String functName, Long ownerId, ActivityOwner ownerName, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) {
+
 		String userName = userContext.getUserName();
 		ActivityLogData activityLogData = new ActivityLogData();
 		activityLogData.setEventBy(userName);
@@ -423,6 +414,7 @@ public class ActivityLogService implements SystemConstant, GlobalConstant {
 		activityLogData.setOwnerId(ownerId);
 		activityLogData.setOwnerName(ownerName);
 		activityLogData.setManualEventOnUpdateEnabled(isManualEventOnUpdateEnabled);
+
 		return activityLogData;
 	}
 
@@ -583,14 +575,13 @@ public class ActivityLogService implements SystemConstant, GlobalConstant {
 		if (lexeme == null) {
 			return EMPTY_CONTENT_JSON;
 		}
-		final String[] excludeLexemeAttributeTypes = new String[] {FreeformType.GOVERNMENT.name(), FreeformType.GRAMMAR.name(), FreeformType.USAGE.name(), FreeformType.NOTE.name()};
 
 		List<MeaningWord> meaningWords = commonDataDbService.getMeaningWords(lexemeId);
 		List<String> lexemeTags = commonDataDbService.getLexemeTags(lexemeId);
 		List<Government> governments = commonDataDbService.getLexemeGovernments(lexemeId);
 		List<FreeForm> grammars = commonDataDbService.getLexemeGrammars(lexemeId);
 		List<Usage> usages = commonDataDbService.getUsages(lexemeId);
-		List<FreeForm> lexemeFreeforms = commonDataDbService.getLexemeFreeforms(lexemeId, excludeLexemeAttributeTypes);
+		List<FreeForm> lexemeFreeforms = commonDataDbService.getLexemeFreeforms(lexemeId, EXCLUDED_LEXEME_ATTRIBUTE_FF_TYPE_CODES);
 		List<LexemeNote> lexemeNotes = commonDataDbService.getLexemeNotes(lexemeId);
 		List<NoteLangGroup> lexemeNoteLangGroups = conversionUtil.composeNoteLangGroups(lexemeNotes, null);
 		List<LexemeRelation> lexemeRelations = commonDataDbService.getLexemeRelations(lexemeId, CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
@@ -656,16 +647,14 @@ public class ActivityLogService implements SystemConstant, GlobalConstant {
 		if (meaning == null) {
 			return EMPTY_CONTENT_JSON;
 		}
-		// TODO remove "MEANING_IMAGE" soon
-		final String[] excludeMeaningAttributeTypes = new String[] {FreeformType.LEARNER_COMMENT.name(), FreeformType.SEMANTIC_TYPE.name(), FreeformType.NOTE.name(), "MEANING_IMAGE"};
 
 		List<OrderedClassifier> meaningDomains = commonDataDbService.getMeaningDomains(meaningId, CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
 		List<String> meaningTags = commonDataDbService.getMeaningTags(meaningId);
 		List<Definition> definitions = commonDataDbService.getMeaningDefinitions(meaningId, CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
-		List<FreeForm> meaningFreeforms = commonDataDbService.getMeaningFreeforms(meaningId, excludeMeaningAttributeTypes);
+		List<FreeForm> meaningFreeforms = commonDataDbService.getMeaningFreeforms(meaningId, EXCLUDED_MEANING_ATTRIBUTE_FF_TYPE_CODES);
 		List<FreeForm> meaningLearnerComments = commonDataDbService.getMeaningLearnerComments(meaningId);
 		List<Media> meaningImages = commonDataDbService.getMeaningImagesAsMedia(meaningId);
-		List<Media> meaningMedias = commonDataDbService.getMeaningMedias(meaningId);
+		List<Media> meaningMedias = commonDataDbService.getMeaningMediaFiles(meaningId);
 		List<MeaningNote> meaningNotes = commonDataDbService.getMeaningNotes(meaningId);
 		List<NoteLangGroup> meaningNoteLangGroups = conversionUtil.composeNoteLangGroups(meaningNotes, null);
 		List<Classifier> meaningSemanticTypes = commonDataDbService.getMeaningSemanticTypes(meaningId, CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);

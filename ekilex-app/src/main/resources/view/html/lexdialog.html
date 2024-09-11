@@ -1416,7 +1416,7 @@
             <input type="hidden" name="id3" th:value="${wordId}">
             <input type="hidden" name="opCode" value="word_lang">
             <select required class="form-control" name="value">
-              <option th:each="item : ${allLanguages}" th:value="${item.code}" th:text="${item.value}">value</option>
+              <option th:each="item : ${languages}" th:value="${item.code}" th:text="${item.value}">value</option>
             </select>
           </div>
         </form>
@@ -1434,7 +1434,7 @@
             <input type="hidden" name="id" th:value="${wordId}">
             <input type="hidden" name="opCode" value="word_lang">
             <select required class="form-control" name="value">
-              <option th:each="item : ${allLanguages}" th:value="${item.code}" th:text="${item.value}" th:selected="${item.code == details.word.lang}">value</option>
+              <option th:each="item : ${languages}" th:value="${item.code}" th:text="${item.value}" th:selected="${item.code == details.word.lang}">value</option>
             </select>
           </div>
         </form>

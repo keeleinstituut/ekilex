@@ -91,10 +91,10 @@ public class StatDataDbService implements GlobalConstant {
 		return create
 				.select(
 						DSL.field(IGNORE_QUERY_LOG).as("comment"),
-						DSL.field(FREEFORM.TYPE).as("name"),
+						DSL.field(FREEFORM.FREEFORM_TYPE_CODE).as("name"),
 						rowCount)
 				.from(FREEFORM)
-				.groupBy(FREEFORM.TYPE)
+				.groupBy(FREEFORM.FREEFORM_TYPE_CODE)
 				.orderBy(rowCount.desc())
 				.fetchInto(StatDataRow.class);
 	}

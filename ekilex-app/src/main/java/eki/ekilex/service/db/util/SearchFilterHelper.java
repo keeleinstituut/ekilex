@@ -2,7 +2,6 @@ package eki.ekilex.service.db.util;
 
 import static eki.ekilex.data.db.Tables.ACTIVITY_LOG;
 import static eki.ekilex.data.db.Tables.DATASET;
-import static eki.ekilex.data.db.Tables.DEFINITION_FREEFORM;
 import static eki.ekilex.data.db.Tables.DEFINITION_NOTE;
 import static eki.ekilex.data.db.Tables.DEFINITION_NOTE_SOURCE_LINK;
 import static eki.ekilex.data.db.Tables.DEFINITION_SOURCE_LINK;
@@ -71,7 +70,7 @@ import org.springframework.stereotype.Component;
 import eki.common.constant.ActivityEntity;
 import eki.common.constant.ActivityFunct;
 import eki.common.constant.ActivityOwner;
-import eki.common.constant.FreeformType;
+import eki.common.constant.FreeformConstant;
 import eki.common.constant.GlobalConstant;
 import eki.ekilex.constant.SearchKey;
 import eki.ekilex.constant.SearchOperand;
@@ -79,7 +78,6 @@ import eki.ekilex.data.Classifier;
 import eki.ekilex.data.SearchCriterion;
 import eki.ekilex.data.SearchDatasetsRestriction;
 import eki.ekilex.data.db.tables.ActivityLog;
-import eki.ekilex.data.db.tables.DefinitionFreeform;
 import eki.ekilex.data.db.tables.DefinitionNote;
 import eki.ekilex.data.db.tables.DefinitionNoteSourceLink;
 import eki.ekilex.data.db.tables.DefinitionSourceLink;
@@ -119,7 +117,7 @@ import eki.ekilex.data.db.tables.WordRelation;
 import eki.ekilex.data.db.tables.WordWordType;
 
 @Component
-public class SearchFilterHelper implements GlobalConstant, ActivityFunct {
+public class SearchFilterHelper implements GlobalConstant, ActivityFunct, FreeformConstant {
 
 	private DateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy");
 
@@ -481,7 +479,7 @@ public class SearchFilterHelper implements GlobalConstant, ActivityFunct {
 		Freeform ff = FREEFORM.as("ff");
 		Condition wordFreeformCondition = wff.WORD_ID.eq(wordIdField)
 				.and(wff.FREEFORM_ID.eq(ff.ID))
-				.and(ff.TYPE.eq(FreeformType.OD_WORD_RECOMMENDATION.name()));
+				.and(ff.FREEFORM_TYPE_CODE.eq(OD_WORD_RECOMMENDATION_CODE));
 
 		boolean isNotExistsSearch = isNotExistsSearch(SearchKey.VALUE_AND_EXISTS, filteredCriteria);
 		if (isNotExistsSearch) {
@@ -512,7 +510,7 @@ public class SearchFilterHelper implements GlobalConstant, ActivityFunct {
 		Freeform ff = FREEFORM.as("ff");
 		Condition wordFreeformCondition = wff.WORD_ID.eq(wordIdField)
 				.and(wff.FREEFORM_ID.eq(ff.ID))
-				.and(ff.TYPE.eq(FreeformType.OD_WORD_RECOMMENDATION.name()));
+				.and(ff.FREEFORM_TYPE_CODE.eq(OD_WORD_RECOMMENDATION_CODE));
 
 		for (SearchCriterion criterion : filteredCriteria) {
 			if (criterion.getSearchValue() != null) {
@@ -521,48 +519,6 @@ public class SearchFilterHelper implements GlobalConstant, ActivityFunct {
 			}
 		}
 		where = where.andExists(DSL.select(wff.WORD_ID).from(wff, ff).where(wordFreeformCondition));
-		return where;
-	}
-
-	public Condition applyWordFreeformFilters(
-			SearchKey searchKey,
-			FreeformType freeformType,
-			List<SearchCriterion> searchCriteria,
-			Field<Long> wordIdField,
-			Condition where) throws Exception {
-
-		List<SearchCriterion> filteredCriteria = searchCriteria.stream()
-				.filter(c -> c.getSearchKey().equals(searchKey))
-				.collect(toList());
-
-		if (CollectionUtils.isEmpty(filteredCriteria)) {
-			return where;
-		}
-
-		List<SearchCriterion> existsCriteria = filteredCriteria.stream().filter(crit -> crit.getSearchOperand().equals(SearchOperand.EXISTS)).collect(toList());
-
-		WordFreeform wff = WORD_FREEFORM.as("wff");
-		Freeform ff = FREEFORM.as("ff");
-		Condition where1 = wff.WORD_ID.eq(wordIdField)
-				.and(wff.FREEFORM_ID.eq(ff.ID))
-				.and(ff.TYPE.eq(freeformType.name()));
-
-		if (CollectionUtils.isEmpty(existsCriteria)) {
-			for (SearchCriterion criterion : filteredCriteria) {
-				if (criterion.getSearchValue() != null) {
-					String searchValueStr = criterion.getSearchValue().toString();
-					where1 = applyValueFilter(searchValueStr, criterion.isNot(), criterion.getSearchOperand(), ff.VALUE_TEXT, where1, true);
-				}
-			}
-			where = where.and(DSL.exists(DSL.select(wff.ID).from(wff, ff).where(where1)));
-		} else {
-			boolean isNot = existsCriteria.get(0).isNot();
-			Condition critWhere = DSL.exists(DSL.select(wff.ID).from(wff, ff).where(where1));
-			if (isNot) {
-				critWhere = DSL.not(critWhere);
-			}
-			where = where.and(critWhere);
-		}
 		return where;
 	}
 
@@ -1145,7 +1101,7 @@ public class SearchFilterHelper implements GlobalConstant, ActivityFunct {
 
 	public Condition applyLexemeFreeformFilters(
 			SearchKey searchKey,
-			FreeformType freeformType,
+			String freeformTypeCode,
 			List<SearchCriterion> searchCriteria,
 			Field<Long> lexemeIdField,
 			Condition where) throws Exception {
@@ -1164,7 +1120,7 @@ public class SearchFilterHelper implements GlobalConstant, ActivityFunct {
 		Freeform ff = FREEFORM.as("ff");
 		Condition where1 = lff.LEXEME_ID.eq(lexemeIdField)
 				.and(lff.FREEFORM_ID.eq(ff.ID))
-				.and(ff.TYPE.eq(freeformType.name()));
+				.and(ff.FREEFORM_TYPE_CODE.eq(freeformTypeCode));
 
 		if (CollectionUtils.isEmpty(existsCriteria)) {
 			for (SearchCriterion criterion : filteredCriteria) {
@@ -1495,14 +1451,14 @@ public class SearchFilterHelper implements GlobalConstant, ActivityFunct {
 				.filter(c -> c.getSearchKey().equals(SearchKey.ATTRIBUTE_NAME))
 				.collect(toList());
 
-		List<String> meaningAttributes = new ArrayList<>();
+		List<String> meaningAttributeCodes = new ArrayList<>();
 		if (CollectionUtils.isNotEmpty(filteredNameCriteria)) {
 			for (SearchCriterion criterion : filteredNameCriteria) {
 				String searchValueStr = criterion.getSearchValue().toString();
-				meaningAttributes.add(searchValueStr);
+				meaningAttributeCodes.add(searchValueStr);
 			}
 		} else {
-			meaningAttributes = Arrays.asList(MEANING_ATTRIBUTES);
+			meaningAttributeCodes = Arrays.asList(MEANING_ATTRIBUTE_FF_TYPE_CODES);
 		}
 
 		MeaningFreeform mff = MEANING_FREEFORM.as("mff");
@@ -1510,7 +1466,7 @@ public class SearchFilterHelper implements GlobalConstant, ActivityFunct {
 
 		Condition meaningFreeformCondition = mff.MEANING_ID.eq(meaningIdField)
 				.and(mff.FREEFORM_ID.eq(ff.ID))
-				.and(ff.TYPE.in(meaningAttributes));
+				.and(ff.FREEFORM_TYPE_CODE.in(meaningAttributeCodes));
 
 		boolean isNotExistsSearch = isNotExistsSearch(SearchKey.ATTRIBUTE_VALUE, filteredValueCriteria);
 		if (isNotExistsSearch) {
@@ -1609,48 +1565,6 @@ public class SearchFilterHelper implements GlobalConstant, ActivityFunct {
 		} else {
 			boolean isNot = existsCriteria.get(0).isNot();
 			Condition critWhere = DSL.exists(DSL.select(mn.ID).from(mn).where(where1));
-			if (isNot) {
-				critWhere = DSL.not(critWhere);
-			}
-			where = where.and(critWhere);
-		}
-		return where;
-	}
-
-	public Condition applyMeaningFreeformFilters(
-			SearchKey searchKey,
-			FreeformType freeformType,
-			List<SearchCriterion> searchCriteria,
-			Field<Long> meaningIdField,
-			Condition where) throws Exception {
-
-		List<SearchCriterion> filteredCriteria = searchCriteria.stream()
-				.filter(c -> c.getSearchKey().equals(searchKey))
-				.collect(toList());
-
-		if (CollectionUtils.isEmpty(filteredCriteria)) {
-			return where;
-		}
-
-		List<SearchCriterion> existsCriteria = filteredCriteria.stream().filter(crit -> crit.getSearchOperand().equals(SearchOperand.EXISTS)).collect(toList());
-
-		MeaningFreeform mff = MEANING_FREEFORM.as("mff");
-		Freeform ff = FREEFORM.as("ff");
-		Condition where1 = mff.MEANING_ID.eq(meaningIdField)
-				.and(mff.FREEFORM_ID.eq(ff.ID))
-				.and(ff.TYPE.eq(freeformType.name()));
-
-		if (CollectionUtils.isEmpty(existsCriteria)) {
-			for (SearchCriterion criterion : filteredCriteria) {
-				if (criterion.getSearchValue() != null) {
-					String searchValueStr = criterion.getSearchValue().toString();
-					where1 = applyValueFilter(searchValueStr, criterion.isNot(), criterion.getSearchOperand(), ff.VALUE_TEXT, where1, true);
-				}
-			}
-			where = where.and(DSL.exists(DSL.select(mff.ID).from(mff, ff).where(where1)));
-		} else {
-			boolean isNot = existsCriteria.get(0).isNot();
-			Condition critWhere = DSL.exists(DSL.select(mff.ID).from(mff, ff).where(where1));
 			if (isNot) {
 				critWhere = DSL.not(critWhere);
 			}
@@ -1963,48 +1877,6 @@ public class SearchFilterHelper implements GlobalConstant, ActivityFunct {
 		if (CollectionUtils.isNotEmpty(existsCriteria)) {
 			boolean isNot = existsCriteria.get(0).isNot();
 			Condition critWhere = DSL.exists(DSL.select(dnsl.ID).from(dnsl).where(sourceCondition));
-			if (isNot) {
-				critWhere = DSL.not(critWhere);
-			}
-			where = where.and(critWhere);
-		}
-		return where;
-	}
-
-	public Condition applyDefinitionFreeformFilters(
-			SearchKey searchKey,
-			FreeformType freeformType,
-			List<SearchCriterion> searchCriteria,
-			Field<Long> definitionIdField,
-			Condition where) throws Exception {
-
-		List<SearchCriterion> filteredCriteria = searchCriteria.stream()
-				.filter(c -> c.getSearchKey().equals(searchKey))
-				.collect(toList());
-
-		if (CollectionUtils.isEmpty(filteredCriteria)) {
-			return where;
-		}
-
-		List<SearchCriterion> existsCriteria = filteredCriteria.stream().filter(crit -> crit.getSearchOperand().equals(SearchOperand.EXISTS)).collect(toList());
-
-		DefinitionFreeform dff = DEFINITION_FREEFORM.as("dff");
-		Freeform ff = FREEFORM.as("ff");
-		Condition where1 = dff.DEFINITION_ID.eq(definitionIdField)
-				.and(dff.FREEFORM_ID.eq(ff.ID))
-				.and(ff.TYPE.eq(freeformType.name()));
-
-		if (CollectionUtils.isEmpty(existsCriteria)) {
-			for (SearchCriterion criterion : filteredCriteria) {
-				if (criterion.getSearchValue() != null) {
-					String searchValueStr = criterion.getSearchValue().toString();
-					where1 = applyValueFilter(searchValueStr, criterion.isNot(), criterion.getSearchOperand(), ff.VALUE_TEXT, where1, true);
-				}
-			}
-			where = where.and(DSL.exists(DSL.select(dff.ID).from(dff, ff).where(where1)));
-		} else {
-			boolean isNot = existsCriteria.get(0).isNot();
-			Condition critWhere = DSL.exists(DSL.select(dff.ID).from(dff, ff).where(where1));
 			if (isNot) {
 				critWhere = DSL.not(critWhere);
 			}

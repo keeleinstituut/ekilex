@@ -20,7 +20,6 @@ import org.springframework.stereotype.Component;
 
 import eki.common.constant.ActivityOwner;
 import eki.common.constant.ClassifierName;
-import eki.common.constant.FreeformType;
 import eki.common.service.TextDecorationService;
 import eki.ekilex.data.Classifier;
 import eki.ekilex.data.ClassifierSelect;
@@ -425,8 +424,6 @@ public class LookupService extends AbstractWordSearchService {
 
 	private void composeMeaningSelectData(EkiUser user, Meaning meaning, List<ClassifierSelect> languagesOrder) {
 
-		// TODO remove "MEANING_IMAGE" soon
-		final String[] excludeMeaningAttributeTypes = new String[] {FreeformType.LEARNER_COMMENT.name(), FreeformType.NOTE.name(), "MEANING_IMAGE"};
 		Map<String, String> datasetNameMap = commonDataDbService.getDatasetNameMap();
 		Long meaningId = meaning.getMeaningId();
 
@@ -434,7 +431,7 @@ public class LookupService extends AbstractWordSearchService {
 		permCalculator.filterVisibility(user, definitions);
 		List<DefinitionLangGroup> definitionLangGroups = conversionUtil.composeMeaningDefinitionLangGroups(definitions, languagesOrder);
 		List<OrderedClassifier> domains = commonDataDbService.getMeaningDomains(meaningId, CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
-		List<FreeForm> meaningFreeforms = commonDataDbService.getMeaningFreeforms(meaningId, excludeMeaningAttributeTypes);
+		List<FreeForm> meaningFreeforms = commonDataDbService.getMeaningFreeforms(meaningId, EXCLUDED_MEANING_ATTRIBUTE_FF_TYPE_CODES_MIN);
 
 		List<Long> lexemeIds = meaning.getLexemeIds();
 		List<Lexeme> lexemes = new ArrayList<>();

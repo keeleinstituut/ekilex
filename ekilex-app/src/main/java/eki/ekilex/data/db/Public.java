@@ -11,6 +11,7 @@ import eki.ekilex.data.db.tables.Collocation;
 import eki.ekilex.data.db.tables.CollocationMember;
 import eki.ekilex.data.db.tables.DataRequest;
 import eki.ekilex.data.db.tables.Dataset;
+import eki.ekilex.data.db.tables.DatasetFreeformType;
 import eki.ekilex.data.db.tables.DatasetPermission;
 import eki.ekilex.data.db.tables.Definition;
 import eki.ekilex.data.db.tables.DefinitionDataset;
@@ -36,6 +37,8 @@ import eki.ekilex.data.db.tables.Form;
 import eki.ekilex.data.db.tables.FormFreq;
 import eki.ekilex.data.db.tables.Freeform;
 import eki.ekilex.data.db.tables.FreeformSourceLink;
+import eki.ekilex.data.db.tables.FreeformType;
+import eki.ekilex.data.db.tables.FreeformTypeLabel;
 import eki.ekilex.data.db.tables.FreqCorp;
 import eki.ekilex.data.db.tables.GameNonword;
 import eki.ekilex.data.db.tables.Gender;
@@ -235,6 +238,11 @@ public class Public extends SchemaImpl {
     public final Dataset DATASET = Dataset.DATASET;
 
     /**
+     * The table <code>public.dataset_freeform_type</code>.
+     */
+    public final DatasetFreeformType DATASET_FREEFORM_TYPE = DatasetFreeformType.DATASET_FREEFORM_TYPE;
+
+    /**
      * The table <code>public.dataset_permission</code>.
      */
     public final DatasetPermission DATASET_PERMISSION = DatasetPermission.DATASET_PERMISSION;
@@ -358,6 +366,16 @@ public class Public extends SchemaImpl {
      * The table <code>public.freeform_source_link</code>.
      */
     public final FreeformSourceLink FREEFORM_SOURCE_LINK = FreeformSourceLink.FREEFORM_SOURCE_LINK;
+
+    /**
+     * The table <code>public.freeform_type</code>.
+     */
+    public final FreeformType FREEFORM_TYPE = FreeformType.FREEFORM_TYPE;
+
+    /**
+     * The table <code>public.freeform_type_label</code>.
+     */
+    public final FreeformTypeLabel FREEFORM_TYPE_LABEL = FreeformTypeLabel.FREEFORM_TYPE_LABEL;
 
     /**
      * The table <code>public.freq_corp</code>.
@@ -950,6 +968,7 @@ public class Public extends SchemaImpl {
             Sequences.COLLOCATION_ID_SEQ,
             Sequences.COLLOCATION_MEMBER_ID_SEQ,
             Sequences.DATA_REQUEST_ID_SEQ,
+            Sequences.DATASET_FREEFORM_TYPE_ID_SEQ,
             Sequences.DATASET_ORDER_BY_SEQ,
             Sequences.DATASET_PERMISSION_ID_SEQ,
             Sequences.DEFINITION_FREEFORM_ID_SEQ,
@@ -977,6 +996,7 @@ public class Public extends SchemaImpl {
             Sequences.FREEFORM_ORDER_BY_SEQ,
             Sequences.FREEFORM_SOURCE_LINK_ID_SEQ,
             Sequences.FREEFORM_SOURCE_LINK_ORDER_BY_SEQ,
+            Sequences.FREEFORM_TYPE_ORDER_BY_SEQ,
             Sequences.FREQ_CORP_ID_SEQ,
             Sequences.GAME_NONWORD_ID_SEQ,
             Sequences.GENDER_ORDER_BY_SEQ,
@@ -1100,6 +1120,7 @@ public class Public extends SchemaImpl {
             CollocationMember.COLLOCATION_MEMBER,
             DataRequest.DATA_REQUEST,
             Dataset.DATASET,
+            DatasetFreeformType.DATASET_FREEFORM_TYPE,
             DatasetPermission.DATASET_PERMISSION,
             Definition.DEFINITION,
             DefinitionDataset.DEFINITION_DATASET,
@@ -1125,6 +1146,8 @@ public class Public extends SchemaImpl {
             FormFreq.FORM_FREQ,
             Freeform.FREEFORM,
             FreeformSourceLink.FREEFORM_SOURCE_LINK,
+            FreeformType.FREEFORM_TYPE,
+            FreeformTypeLabel.FREEFORM_TYPE_LABEL,
             FreqCorp.FREQ_CORP,
             GameNonword.GAME_NONWORD,
             Gender.GENDER,

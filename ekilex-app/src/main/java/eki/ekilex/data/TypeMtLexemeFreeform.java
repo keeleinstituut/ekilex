@@ -3,7 +3,6 @@ package eki.ekilex.data;
 import java.time.LocalDateTime;
 
 import eki.common.constant.Complexity;
-import eki.common.constant.FreeformType;
 
 public class TypeMtLexemeFreeform extends AbstractCrudEntity {
 
@@ -13,7 +12,7 @@ public class TypeMtLexemeFreeform extends AbstractCrudEntity {
 
 	private Long freeformId;
 
-	private FreeformType type;
+	private String freeformTypeCode;
 
 	private String valueText;
 
@@ -51,12 +50,12 @@ public class TypeMtLexemeFreeform extends AbstractCrudEntity {
 		this.freeformId = freeformId;
 	}
 
-	public FreeformType getType() {
-		return type;
+	public String getFreeformTypeCode() {
+		return freeformTypeCode;
 	}
 
-	public void setType(FreeformType type) {
-		this.type = type;
+	public void setFreeformTypeCode(String freeformTypeCode) {
+		this.freeformTypeCode = freeformTypeCode;
 	}
 
 	public String getValueText() {

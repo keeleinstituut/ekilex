@@ -18,7 +18,7 @@ import eki.common.constant.ActivityEntity;
 import eki.common.constant.ActivityFunct;
 import eki.common.constant.ActivityOwner;
 import eki.common.constant.Complexity;
-import eki.common.constant.FreeformType;
+import eki.common.constant.FreeformConstant;
 import eki.common.constant.PermConstant;
 import eki.ekilex.data.ActivityLogData;
 import eki.ekilex.data.Classifier;
@@ -43,7 +43,7 @@ import eki.ekilex.service.util.LexemeLevelCalcUtil;
 
 @PreAuthorize("authentication.principal.datasetCrudPermissionsExist")
 @Component
-public class CudService extends AbstractCudService implements PermConstant, ActivityFunct {
+public class CudService extends AbstractCudService implements PermConstant, ActivityFunct, FreeformConstant {
 
 	@Autowired
 	private CompositionDbService compositionDbService;
@@ -896,7 +896,7 @@ public class CudService extends AbstractCudService implements PermConstant, Acti
 	public void createLexemeGovernment(Long lexemeId, String government, Complexity complexity, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
 
 		FreeForm freeform = new FreeForm();
-		freeform.setType(FreeformType.GOVERNMENT);
+		freeform.setFreeformTypeCode(GOVERNMENT_CODE);
 		freeform.setComplexity(complexity);
 		setFreeformValueTextAndValuePrese(freeform, government);
 
@@ -907,7 +907,7 @@ public class CudService extends AbstractCudService implements PermConstant, Acti
 	public void createLexemeGrammar(Long lexemeId, String valuePrese, Complexity complexity, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
 
 		FreeForm freeform = new FreeForm();
-		freeform.setType(FreeformType.GRAMMAR);
+		freeform.setFreeformTypeCode(GRAMMAR_CODE);
 		freeform.setComplexity(complexity);
 		setFreeformValueTextAndValuePrese(freeform, valuePrese);
 
@@ -972,7 +972,7 @@ public class CudService extends AbstractCudService implements PermConstant, Acti
 	public void createMeaningLearnerComment(Long meaningId, String valuePrese, String lang, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
 
 		FreeForm freeform = new FreeForm();
-		freeform.setType(FreeformType.LEARNER_COMMENT);
+		freeform.setFreeformTypeCode(LEARNER_COMMENT_CODE);
 		freeform.setLang(lang);
 		freeform.setComplexity(Complexity.SIMPLE);
 		setFreeformValueTextAndValuePrese(freeform, valuePrese);
@@ -1038,7 +1038,7 @@ public class CudService extends AbstractCudService implements PermConstant, Acti
 	public void createMeaningMedia(Long meaningId, String valuePrese, Complexity complexity, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
 
 		FreeForm freeform = new FreeForm();
-		freeform.setType(FreeformType.MEDIA_FILE);
+		freeform.setFreeformTypeCode(MEDIA_FILE_CODE);
 		freeform.setComplexity(complexity);
 		setFreeformValueTextAndValuePrese(freeform, valuePrese);
 		createMeaningFreeform(ActivityEntity.MEDIA_FILE, meaningId, freeform, roleDatasetCode, isManualEventOnUpdateEnabled);
@@ -1048,7 +1048,7 @@ public class CudService extends AbstractCudService implements PermConstant, Acti
 	public void createOdWordRecommendation(Long wordId, String valuePrese, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
 
 		FreeForm freeform = new FreeForm();
-		freeform.setType(FreeformType.OD_WORD_RECOMMENDATION);
+		freeform.setFreeformTypeCode(OD_WORD_RECOMMENDATION_CODE);
 		freeform.setComplexity(Complexity.DETAIL);
 		freeform.setPublic(true);
 		setFreeformValueTextAndValuePrese(freeform, valuePrese);

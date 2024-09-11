@@ -2,17 +2,22 @@ package eki.ekilex.service;
 
 import static java.util.stream.Collectors.groupingBy;
 
+import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
 import javax.transaction.Transactional;
 
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import eki.common.constant.ClassifierName;
+import eki.common.constant.FreeformConstant;
 import eki.common.constant.GlobalConstant;
 import eki.common.constant.TagType;
 import eki.ekilex.constant.SystemConstant;
@@ -24,13 +29,40 @@ import eki.ekilex.service.util.DatasetUtil;
 
 // only common use data aggregation!
 @Component
-public class CommonDataService implements SystemConstant, GlobalConstant {
+public class CommonDataService implements InitializingBean, SystemConstant, GlobalConstant, FreeformConstant {
 
 	@Autowired
 	private CommonDataDbService commonDataDbService;
 
 	@Autowired
 	private DatasetUtil datasetUtil;
+
+	private List<String> technicalFreeformTypesCodes;
+
+	@Override
+	public void afterPropertiesSet() throws Exception {
+
+		ClassLoader classLoader = this.getClass().getClassLoader();
+		InputStream resourceFileInputStream = classLoader.getResourceAsStream(TECHNICAL_FF_TYPE_CODES_FILE_PATH);
+		List<String> resourceFileLines = IOUtils.readLines(resourceFileInputStream, UTF_8);
+		resourceFileInputStream.close();
+
+		technicalFreeformTypesCodes = new ArrayList<>();
+		for (String resourceFileLine : resourceFileLines) {
+			if (StringUtils.isBlank(resourceFileLine)) {
+				continue;
+			}
+			String freeformTypeCode = StringUtils.trim(resourceFileLine);
+			technicalFreeformTypesCodes.add(freeformTypeCode);
+		}
+	}
+
+	@Transactional
+	public List<Classifier> getAvailableFreeformTypes() {
+		List<Classifier> freeformTypes = commonDataDbService.getFreeformTypes(CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
+		freeformTypes.removeIf(classifier -> technicalFreeformTypesCodes.contains(classifier.getCode()));
+		return freeformTypes;
+	}
 
 	@Transactional
 	public List<Dataset> getAllDatasets() {

@@ -30,6 +30,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
 
 import eki.common.constant.ClassifierName;
+import eki.common.constant.FreeformConstant;
 import eki.common.constant.GlobalConstant;
 import eki.common.constant.LastActivityType;
 import eki.ekilex.constant.SystemConstant;
@@ -40,7 +41,7 @@ import eki.ekilex.data.db.tables.MeaningLastActivityLog;
 import eki.ekilex.data.db.tables.Word;
 import eki.ekilex.data.db.tables.WordLastActivityLog;
 
-public abstract class AbstractDataDbService implements SystemConstant, GlobalConstant {
+public abstract class AbstractDataDbService implements SystemConstant, GlobalConstant, FreeformConstant {
 
 	@Autowired
 	protected DSLContext create;

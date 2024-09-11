@@ -95,9 +95,7 @@ public class CudDbService extends AbstractDataDbService {
 		fieldAndValueMap.put(FREEFORM.VALUE_PRESE, freeform.getValuePrese());
 		fieldAndValueMap.put(FREEFORM.MODIFIED_BY, userName);
 		fieldAndValueMap.put(FREEFORM.MODIFIED_ON, timestamp);
-		if (freeform.isPublic() != null) {
-			fieldAndValueMap.put(FREEFORM.IS_PUBLIC, freeform.isPublic());
-		}
+		fieldAndValueMap.put(FREEFORM.IS_PUBLIC, freeform.isPublic());
 		if (freeform.getLang() != null) {
 			fieldAndValueMap.put(FREEFORM.LANG, freeform.getLang());
 		}
@@ -109,32 +107,6 @@ public class CudDbService extends AbstractDataDbService {
 				.update(FREEFORM)
 				.set(fieldAndValueMap)
 				.where(FREEFORM.ID.eq(freeform.getId()))
-				.execute();
-	}
-
-	public void updateChildFreeform(FreeForm freeform, String userName) {
-
-		Timestamp timestamp = new Timestamp(System.currentTimeMillis());
-
-		Map<Field<?>, Object> fieldAndValueMap = new HashMap<>();
-		fieldAndValueMap.put(FREEFORM.VALUE_TEXT, freeform.getValueText());
-		fieldAndValueMap.put(FREEFORM.VALUE_PRESE, freeform.getValuePrese());
-		fieldAndValueMap.put(FREEFORM.MODIFIED_BY, userName);
-		fieldAndValueMap.put(FREEFORM.MODIFIED_ON, timestamp);
-		if (freeform.isPublic() != null) {
-			fieldAndValueMap.put(FREEFORM.IS_PUBLIC, freeform.isPublic());
-		}
-		if (freeform.getLang() != null) {
-			fieldAndValueMap.put(FREEFORM.LANG, freeform.getLang());
-		}
-		if (freeform.getComplexity() != null) {
-			fieldAndValueMap.put(FREEFORM.COMPLEXITY, freeform.getComplexity().name());
-		}
-
-		create
-				.update(FREEFORM)
-				.set(fieldAndValueMap)
-				.where(FREEFORM.PARENT_ID.eq(freeform.getParentId()).and(FREEFORM.TYPE.eq(freeform.getType().name())))
 				.execute();
 	}
 
@@ -1600,17 +1572,16 @@ public class CudDbService extends AbstractDataDbService {
 	private Long createFreeform(FreeForm freeform, String userName) {
 
 		Timestamp timestamp = new Timestamp(System.currentTimeMillis());
-		boolean isPublic = freeform.isPublic() == null ? PUBLICITY_PUBLIC : freeform.isPublic();
 		String complexity = freeform.getComplexity() == null ? null : freeform.getComplexity().name();
 
 		FreeformRecord freeformRecord = create.newRecord(FREEFORM);
 		freeformRecord.setParentId(freeform.getParentId());
-		freeformRecord.setType(freeform.getType().name());
+		freeformRecord.setFreeformTypeCode(freeform.getFreeformTypeCode());
 		freeformRecord.setValueText(freeform.getValueText());
 		freeformRecord.setValuePrese(freeform.getValuePrese());
 		freeformRecord.setLang(freeform.getLang());
 		freeformRecord.setComplexity(complexity);
-		freeformRecord.setIsPublic(isPublic);
+		freeformRecord.setIsPublic(freeform.isPublic());
 		freeformRecord.setCreatedBy(userName);
 		freeformRecord.setCreatedOn(timestamp);
 		freeformRecord.setModifiedBy(userName);

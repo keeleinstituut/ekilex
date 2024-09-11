@@ -12,7 +12,10 @@ import eki.ekilex.data.Classifier;
 public class ClassifierUtil {
 
 	public String toJson(Classifier classifier) {
-		return new ReflectionToStringBuilder(classifier, ToStringStyle.JSON_STYLE).setExcludeFieldNames("value", "jsonStr").toString();
+		ReflectionToStringBuilder jsonBuilder = new ReflectionToStringBuilder(classifier, ToStringStyle.JSON_STYLE);
+		jsonBuilder.setExcludeNullValues(true);
+		jsonBuilder.setExcludeFieldNames("datasets", "value", "jsonStr");
+		return jsonBuilder.toString();
 	}
 
 	public void populateClassifierJson(List<Classifier> classifiers) {

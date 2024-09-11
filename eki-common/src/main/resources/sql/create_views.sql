@@ -88,7 +88,7 @@ create type type_note as (
         		source_links json);
 create type type_freeform as (
 				freeform_id bigint,
-				type varchar(100),
+				freeform_type_code varchar(100),
 				value text,
 				lang char(3),
 				complexity varchar(100),
@@ -347,7 +347,7 @@ from (
               and lff.lexeme_id = l.id
               and lff.freeform_id = ff.id
               and ff.is_public = true
-              and ff.type in ('GRAMMAR', 'GOVERNMENT'))
+              and ff.freeform_type_code in ('GRAMMAR', 'GOVERNMENT'))
          union all
            (select
                  w.value as word,
@@ -633,7 +633,7 @@ from (select w.id as word_id,
                      and   lff.lexeme_id = l.id
                      and   lff.freeform_id = ff.id
                      and   ff.is_public = true
-                     and   ff.type in ('GRAMMAR', 'GOVERNMENT'))
+                     and   ff.freeform_type_code in ('GRAMMAR', 'GOVERNMENT'))
                      union all
                      (select l.word_id,
                             coalesce(ln.lang, w.lang) lang,
@@ -728,7 +728,7 @@ from (select w.id as word_id,
                                             freeform ff
                                        where lff.lexeme_id = l1.id
                                        and   lff.freeform_id = ff.id
-                                       and   ff.type in ('GRAMMAR', 'GOVERNMENT')))) lc
+                                       and   ff.freeform_type_code in ('GRAMMAR', 'GOVERNMENT')))) lc
               group by lc.word_id) lc
           on lc.word_id = w.word_id
   left outer join (select wd.word_id,
@@ -774,11 +774,11 @@ from (select w.id as word_id,
                    group by wd.word_id) wd
                on wd.word_id = w.word_id
   left outer join (select wf.word_id,
-                          json_agg(row (ff.id, ff.type, ff.value_prese, null, null, null, null, ff.modified_by, ff.modified_on)::type_freeform order by ff.order_by) od_word_recommendations
+                          json_agg(row (ff.id, ff.freeform_type_code, ff.value_prese, null, null, null, null, ff.modified_by, ff.modified_on)::type_freeform order by ff.order_by) od_word_recommendations
                    from word_freeform wf,
                         freeform ff
                    where wf.freeform_id = ff.id
-                   and   ff.type = 'OD_WORD_RECOMMENDATION'
+                   and   ff.freeform_type_code = 'OD_WORD_RECOMMENDATION'
                    group by wf.word_id) od_ws
                on od_ws.word_id = w.word_id
   left outer join (select wf.word_id,
@@ -1028,28 +1028,28 @@ from (select m.id,
                    from meaning_freeform mff,
                    		freeform ff_mf
                    where ff_mf.id = mff.freeform_id
-                   and 	 ff_mf.type = 'MEDIA_FILE'
+                   and 	 ff_mf.freeform_type_code = 'MEDIA_FILE'
                    group by mff.meaning_id) m_media on m_media.meaning_id = m.id
   left outer join (select mf.meaning_id,
                           array_agg(ff.value_text order by ff.order_by) systematic_polysemy_patterns
                    from meaning_freeform mf,
                         freeform ff
                    where mf.freeform_id = ff.id
-                   and   ff.type = 'SYSTEMATIC_POLYSEMY_PATTERN'
+                   and   ff.freeform_type_code = 'SYSTEMATIC_POLYSEMY_PATTERN'
                    group by mf.meaning_id) m_spp on m_spp.meaning_id = m.id
   left outer join (select mf.meaning_id,
                           array_agg(ff.value_text order by ff.order_by) semantic_types
                    from meaning_freeform mf,
                         freeform ff
                    where mf.freeform_id = ff.id
-                   and   ff.type = 'SEMANTIC_TYPE'
+                   and   ff.freeform_type_code = 'SEMANTIC_TYPE'
                    group by mf.meaning_id) m_smt on m_smt.meaning_id = m.id
   left outer join (select mf.meaning_id,
                           array_agg(ff.value_prese order by ff.order_by) learner_comments
                    from meaning_freeform mf,
                         freeform ff
                    where mf.freeform_id = ff.id
-                   and   ff.type = 'LEARNER_COMMENT'
+                   and   ff.freeform_type_code = 'LEARNER_COMMENT'
                    group by mf.meaning_id) m_lcm on m_lcm.meaning_id = m.id
   left outer join (select mn.meaning_id,
                           json_agg(row (
@@ -1138,7 +1138,7 @@ from lexeme l
                    from lexeme_freeform lf,
                         freeform ff
                    where lf.freeform_id = ff.id
-                   and   ff.type = 'ADVICE_NOTE'
+                   and   ff.freeform_type_code = 'ADVICE_NOTE'
                    group by lf.lexeme_id) anote on anote.lexeme_id = l.id
   left outer join (select ln.lexeme_id,
                           json_agg(row (
@@ -1186,18 +1186,18 @@ from lexeme l
                    		where ln.is_public = true) ln
                    group by ln.lexeme_id) pnote on pnote.lexeme_id = l.id
   left outer join (select lf.lexeme_id,
-                          json_agg(row (ff.id, ff.type, ff.value_prese, ff.lang, ff.complexity, null, null, null, null)::type_freeform order by ff.order_by) grammars
+                          json_agg(row (ff.id, ff.freeform_type_code, ff.value_prese, ff.lang, ff.complexity, null, null, null, null)::type_freeform order by ff.order_by) grammars
                    from lexeme_freeform lf,
                         freeform ff
                    where lf.freeform_id = ff.id
-                   and   ff.type = 'GRAMMAR'
+                   and   ff.freeform_type_code = 'GRAMMAR'
                    group by lf.lexeme_id) gramm on gramm.lexeme_id = l.id
   left outer join (select lf.lexeme_id,
-                          json_agg(row (ff.id, ff.type, ff.value_prese, ff.lang, ff.complexity, null, null, null, null)::type_freeform order by ff.order_by) governments
+                          json_agg(row (ff.id, ff.freeform_type_code, ff.value_prese, ff.lang, ff.complexity, null, null, null, null)::type_freeform order by ff.order_by) governments
                    from lexeme_freeform lf,
                         freeform ff
                    where lf.freeform_id = ff.id
-                   and   ff.type = 'GOVERNMENT'
+                   and   ff.freeform_type_code = 'GOVERNMENT'
                    group by lf.lexeme_id) gov on gov.lexeme_id = l.id
   left outer join (select mw.lexeme_id,
                           json_agg(row (
@@ -1233,12 +1233,12 @@ from lexeme l
                                 l2.id mw_lex_id,
                                 l2.complexity mw_lex_complexity,
                                 l2.weight mw_lex_weight,
-                                (select jsonb_agg(row (ff.id, ff.type, ff.value_text, ff.lang, ff.complexity, null, null, null, null)::type_freeform order by ff.order_by)
+                                (select jsonb_agg(row (ff.id, ff.freeform_type_code, ff.value_text, ff.lang, ff.complexity, null, null, null, null)::type_freeform order by ff.order_by)
                                  from lexeme_freeform lf,
                                       freeform ff
                                  where lf.lexeme_id = l2.id
                                  and   lf.freeform_id = ff.id
-                                 and   ff.type = 'GOVERNMENT'
+                                 and   ff.freeform_type_code = 'GOVERNMENT'
                                  group by lf.lexeme_id) mw_lex_governments,
                                 (select array_agg(l_reg.register_code order by l_reg.order_by) from lexeme_register l_reg where l_reg.lexeme_id = l2.id group by l_reg.lexeme_id) mw_lex_register_codes,
                                 l2.value_state_code mw_lex_value_state_code,
@@ -1381,7 +1381,7 @@ from lexeme l
                           and   w.is_word = true
                           and   lff.lexeme_id = l.id
                           and   lff.freeform_id = ff.id
-                          and   ff.type in ('GRAMMAR', 'GOVERNMENT'))
+                          and   ff.freeform_type_code in ('GRAMMAR', 'GOVERNMENT'))
                           union all
                           (select l.id,
                                  coalesce(ln.lang, w.lang) lang,
@@ -1504,7 +1504,7 @@ from lexeme l
 	                                        	 freeform ff
 	                                        where lff.lexeme_id = l1.id
 	                                        and   lff.freeform_id = ff.id
-	                                        and   ff.type in ('GRAMMAR', 'GOVERNMENT')))) lc
+	                                        and   ff.freeform_type_code in ('GRAMMAR', 'GOVERNMENT')))) lc
                    group by lc.id) l_lc on l_lc.id = l.id
 where l.is_public = true
 and   ds.is_public = true
@@ -1996,7 +1996,7 @@ from (select mr.meaning1_id m1_id,
                 and l_ds.is_public = true
                 and lff.lexeme_id = l.id
                 and ff.id = lff.freeform_id
-                and ff.type = 'GOVERNMENT'
+                and ff.freeform_type_code = 'GOVERNMENT'
               group by l.word_id, l.meaning_id) lex_government_values,
              l.order_by lex_order_by,
              mr.meaning_rel_type_code meaning_rel_type_code,
@@ -2406,4 +2406,3 @@ create view view_ww_news_article
 		na.created desc
 	);
 	
-

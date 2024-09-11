@@ -24,7 +24,8 @@ public enum ClassifierName {
 	DEFINITION_TYPE(true),
 	REGION(false),
 	SEMANTIC_TYPE(true),
-	PROFICIENCY_LEVEL(true)
+	PROFICIENCY_LEVEL(true),
+	FREEFORM_TYPE(true)
 	;
 
 	private boolean hasLabel;
