@@ -62,7 +62,7 @@
             <th:block th:each="sourceProperty,sourcePropertyIter : ${source.sourceProperties}">
               <div class="row">
                 <div class="mb-1">
-                  <span th:text="#{|source.property.${sourceProperty.type}|}"></span>
+                  <span th:text="#{|source.property.${sourceProperty.typeCode}|}"></span>
                   -
                   <span th:text="${sourceProperty.valueText}" th:if="${sourceProperty.valueText != null}" th:style="${sourceProperty.valueMatch ? 'background-color: #eaffea' : ''}"></span>
                   <span th:text="${#dates.format(sourceProperty.valueDate, 'dd.MM.yyyy HH:mm')}" th:if="${sourceProperty.valueDate != null}"></span>
@@ -142,7 +142,7 @@
           <th:block th:each="sourceProperty : ${source.sourceProperties}">
             <div class="row">
               <div class="mb-1">
-                <span th:text="#{|source.property.${sourceProperty.type}|}"></span>
+                <span th:text="#{|source.property.${sourceProperty.typeCode}|}"></span>
                 -
                 <span th:text="${sourceProperty.valueText}" th:if="${sourceProperty.valueText != null}" th:style="${sourceProperty.valueMatch ? 'background-color: #eaffea' : ''}"></span>
                 <span th:text="${#dates.format(sourceProperty.valueDate, 'dd.MM.yyyy HH:mm')}" th:if="${sourceProperty.valueDate != null}"></span>
@@ -257,7 +257,7 @@
               <div class="row">
                 <div class="invisible-buttons action-buttons-anchor mw-90 mb-1">
                   <div style="display: list-item; position: absolute"></div>
-                  <span th:text="#{|source.property.${sourceProperty.type}|}"></span>
+                  <span th:text="#{|source.property.${sourceProperty.typeCode}|}"></span>
                   -
                   <span th:text="${sourceProperty.valueText}" th:if="${sourceProperty.valueText != null}" th:style="${sourceProperty.valueMatch ? 'background-color: #eaffea' : ''}"></span>
                   <span th:text="${#dates.format(sourceProperty.valueDate, 'dd.MM.yyyy HH:mm')}" th:if="${sourceProperty.valueDate != null}"></span>
@@ -306,7 +306,7 @@
             <div class="row">
               <div class="invisible-buttons action-buttons-anchor mw-90 mb-1">
                 <div style="display: list-item; position: absolute"></div>
-                <span th:text="#{|source.property.${sourceProperty.type}|}"></span>
+                <span th:text="#{|source.property.${sourceProperty.typeCode}|}"></span>
                 -
                 <span th:text="${sourceProperty.valueText}" th:if="${sourceProperty.valueText != null}" th:style="${sourceProperty.valueMatch ? 'background-color: #eaffea' : ''}"></span>
                 <span th:text="${#dates.format(sourceProperty.valueDate, 'dd.MM.yyyy HH:mm')}" th:if="${sourceProperty.valueDate != null}"></span>
@@ -374,7 +374,7 @@
               <div class="row">
                 <div class="mb-1">
                   <div style="display: list-item; position: absolute"></div>
-                  <span th:text="#{|source.property.${sourceProperty.type}|}"></span>
+                  <span th:text="#{|source.property.${sourceProperty.typeCode}|}"></span>
                   -
                   <span th:text="${sourceProperty.valueText}" th:if="${sourceProperty.valueText != null}"></span>
                   <span th:text="${#dates.format(sourceProperty.valueDate, 'dd.MM.yyyy HH:mm')}" th:if="${sourceProperty.valueDate != null}"></span>

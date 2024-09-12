@@ -171,7 +171,7 @@
           <div class="row ml-0 mr-0">
             <div class="mb-1">
               <div style="display: list-item; position: absolute"></div>
-              <span class="text-break" th:text="#{|source.property.${sourceProperty.type}|}"></span>
+              <span class="text-break" th:text="#{|source.property.${sourceProperty.typeCode}|}"></span>
               -
               <span class="text-break" th:text="${sourceProperty.valueText}" th:if="${sourceProperty.valueText != null}"></span>
               <span class="text-break" th:text="${#dates.format(sourceProperty.valueDate, 'dd.MM.yyyy HH:mm')}" th:if="${sourceProperty.valueDate != null}"></span>
