@@ -123,7 +123,20 @@
                     <option th:each="wordType : ${wordTypes}"
                             th:value="${wordType.code}"
                             th:selected="${criteria.searchValue == wordType.code}"
-                            th:text="${wordType.value}">wordType</option>
+                            th:text="${wordType.value}">word type</option>
+                  </select>
+                </div>
+                <div class="value-input-container col-auto flex-grow-1 flex-shrink-1" th:if="${criteria.searchKey.name() == 'DISPLAY_MORPH'}">
+                  <select class="form-control"
+                          th:name="'criteriaGroups[' + ${critGroupStat.index} + '].searchCriteria[' + ${critStat.index} + '].searchValue'"
+                          data-live-search="true"
+                          data-style="btn-outline-secondary"
+                          th:hidden="${isExistsOperand}"
+                          th:disabled="${isExistsOperand}">
+                    <option th:each="wordDisplayMorph : ${wordDisplayMorphs}"
+                            th:value="${wordDisplayMorph.code}"
+                            th:selected="${criteria.searchValue == wordDisplayMorph.code}"
+                            th:text="${wordDisplayMorph.value}">word display morph</option>
                   </select>
                 </div>
                 <div class="value-input-container col-auto flex-grow-1 flex-shrink-1" th:if="${criteria.searchKey.name() == 'ASPECT'}">
@@ -289,6 +302,14 @@
                   <input type="text" class="form-control"
                          th:value="${criteria.searchValue}"
                          th:name="'criteriaGroups[' + ${critGroupStat.index} + '].searchCriteria[' + ${critStat.index} + '].searchValue'"
+                         autocomplete="off">
+                  <div class="invalid-feedback d-block" th:text="${criteria.validationMessage}">warning</div>
+                </div>
+                <div class="value-input-container col-auto flex-grow-1 flex-shrink-1" th:if="${criteria.searchKey.name() == 'VOCAL_FORM'}">
+                  <input type="text" class="form-control"
+                         th:value="${criteria.searchValue}"
+                         th:name="'criteriaGroups[' + ${critGroupStat.index} + '].searchCriteria[' + ${critStat.index} + '].searchValue'"
+                         th:hidden="${isExistsOperand}"
                          autocomplete="off">
                   <div class="invalid-feedback d-block" th:text="${criteria.validationMessage}">warning</div>
                 </div>
@@ -461,6 +482,18 @@
                             th:text="${register.value}">register</option>
                   </select>
                 </div>
+                <div class="value-input-container col-auto flex-grow-1 flex-shrink-1" th:if="${criteria.searchKey.name() == 'LEXEME_DERIV'}">
+                  <select class="form-control"
+                          th:name="'criteriaGroups[' + ${critGroupStat.index} + '].searchCriteria[' + ${critStat.index} + '].searchValue'"
+                          data-live-search="true"
+                          th:hidden="${isExistsOperand}"
+                          th:disabled="${isExistsOperand}">
+                    <option th:each="deriv : ${allLexemeDerivs}"
+                            th:value="${deriv.code}"
+                            th:selected="${criteria.searchValue == deriv.code}"
+                            th:text="${deriv.value}">deriv</option>
+                  </select>
+                </div>
                 <div class="value-input-container col-auto flex-grow-1 flex-shrink-1" th:if="${criteria.searchKey.name() == 'LEXEME_VALUE_STATE'}">
                   <select class="form-control"
                           th:name="'criteriaGroups[' + ${critGroupStat.index} + '].searchCriteria[' + ${critStat.index} + '].searchValue'"
@@ -471,6 +504,18 @@
                             th:value="${valueState.code}"
                             th:selected="${criteria.searchValue == valueState.code}"
                             th:text="${valueState.value}">value state</option>
+                  </select>
+                </div>
+                <div class="value-input-container col-auto flex-grow-1 flex-shrink-1" th:if="${criteria.searchKey.name() == 'LEXEME_RELATION'}">
+                  <select class="form-control"
+                          th:name="'criteriaGroups[' + ${critGroupStat.index} + '].searchCriteria[' + ${critStat.index} + '].searchValue'"
+                          data-live-search="true"
+                          th:hidden="${isExistsOperand}"
+                          th:disabled="${isExistsOperand}">
+                    <option th:each="relationType : ${lexemeRelationTypes}"
+                            th:value="${relationType.code}"
+                            th:selected="${criteria.searchValue == relationType.code}"
+                            th:text="${relationType.value}">relation type</option>
                   </select>
                 </div>
                 <div class="value-input-container col-auto flex-grow-1 flex-shrink-1" th:if="${criteria.searchKey.name() == 'LEXEME_PROFICIENCY_LEVEL'}">
@@ -608,6 +653,11 @@
                 <option th:each="wordType : ${wordTypes}" th:value="${wordType.code}" th:text="${wordType.value}">wordType</option>
               </select>
             </div>
+            <div name="DISPLAY_MORPH" class="value-input-container col-auto flex-grow-1 flex-shrink-1">
+              <select class="form-control" data-live-search="true" data-style="btn-outline-secondary">
+                <option th:each="wordDisplayMorph : ${wordDisplayMorphs}" th:value="${wordDisplayMorph.code}" th:text="${wordDisplayMorph.value}">word display morph</option>
+              </select>
+            </div>
             <div name="ASPECT" class="value-input-container col-auto flex-grow-1 flex-shrink-1">
               <select class="form-control" data-live-search="true" data-style="btn-outline-secondary">
                 <option th:each="aspect : ${wordAspects}" th:value="${aspect.code}" th:text="${aspect.value}">aspect</option>
@@ -660,6 +710,9 @@
               <input type="text" class="form-control" autocomplete="off">
             </div>
             <div name="SOURCE_ID" class="value-input-container col-auto flex-grow-1 flex-shrink-1">
+              <input type="text" class="form-control" autocomplete="off">
+            </div>
+            <div name="VOCAL_FORM" class="value-input-container col-auto flex-grow-1 flex-shrink-1">
               <input type="text" class="form-control" autocomplete="off">
             </div>
             <div name="MORPHOPHONO_FORM" class="value-input-container col-auto flex-grow-1 flex-shrink-1">
@@ -761,9 +814,19 @@
                 <option th:each="register : ${allLexemeRegisters}" th:value="${register.code}" th:text="${register.value}">register</option>
               </select>
             </div>
+            <div name="LEXEME_DERIV" class="value-input-container col-auto flex-grow-1 flex-shrink-1">
+              <select class="form-control" data-live-search="true" data-style="btn-outline-secondary">
+                <option th:each="deriv : ${allLexemeDerivs}" th:value="${deriv.code}" th:text="${deriv.value}">deriv</option>
+              </select>
+            </div>
             <div name="LEXEME_VALUE_STATE" class="value-input-container col-auto flex-grow-1 flex-shrink-1">
               <select class="form-control" data-live-search="true" data-style="btn-outline-secondary">
                 <option th:each="valueState : ${lexemeValueStates}" th:value="${valueState.code}" th:text="${valueState.value}">value state</option>
+              </select>
+            </div>
+            <div name="LEXEME_RELATION" class="value-input-container col-auto flex-grow-1 flex-shrink-1">
+              <select class="form-control" data-live-search="true" data-style="btn-outline-secondary">
+                <option th:each="lexemeRelationType : ${lexemeRelationTypes}" th:value="${lexemeRelationType.code}" th:text="${lexemeRelationType.value}">lexeme relation type</option>
               </select>
             </div>
             <div name="LEXEME_PROFICIENCY_LEVEL" class="value-input-container col-auto flex-grow-1 flex-shrink-1">

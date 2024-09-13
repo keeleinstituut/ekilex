@@ -118,7 +118,9 @@ public class LexSearchConditionComposer implements GlobalConstant, ActivityFunct
 				boolean containsSearchKeys;
 
 				containsSearchKeys = searchFilterHelper.containsSearchKeys(searchCriteria, SearchKey.VALUE);
+
 				if (containsSearchKeys) {
+
 					Condition where1 = searchFilterHelper.applyValueFilters(SearchKey.VALUE, searchCriteria, w1.VALUE, DSL.noCondition(), true);
 					Condition where2 = searchFilterHelper.applyValueFilters(SearchKey.VALUE, searchCriteria, w1.VALUE_AS_WORD, DSL.noCondition(), true);
 					where = where.and(DSL.or(where1, where2));
@@ -126,9 +128,11 @@ public class LexSearchConditionComposer implements GlobalConstant, ActivityFunct
 
 				containsSearchKeys = searchFilterHelper.containsSearchKeys(searchCriteria,
 						SearchKey.SOURCE_REF, SearchKey.SOURCE_NAME, SearchKey.SOURCE_VALUE, SearchKey.PUBLICITY, SearchKey.LEXEME_GRAMMAR,
-						SearchKey.LEXEME_VALUE_STATE, SearchKey.LEXEME_PROFICIENCY_LEVEL, SearchKey.LEXEME_GOVERNMENT,
-						SearchKey.COMPLEXITY, SearchKey.LEXEME_POS, SearchKey.LEXEME_REGISTER, SearchKey.LEXEME_NOTE);
+						SearchKey.LEXEME_VALUE_STATE, SearchKey.LEXEME_PROFICIENCY_LEVEL, SearchKey.LEXEME_RELATION, SearchKey.LEXEME_GOVERNMENT,
+						SearchKey.COMPLEXITY, SearchKey.LEXEME_POS, SearchKey.LEXEME_REGISTER, SearchKey.LEXEME_DERIV, SearchKey.LEXEME_NOTE);
+
 				if (containsSearchKeys) {
+
 					Condition where1 = l1.WORD_ID.eq(w1.ID);
 					where1 = searchFilterHelper.applyDatasetRestrictions(l1, searchDatasetsRestriction, where1);
 					where1 = searchFilterHelper.applyPublicityFilters(searchCriteria, l1.IS_PUBLIC, where1);
@@ -139,6 +143,10 @@ public class LexSearchConditionComposer implements GlobalConstant, ActivityFunct
 					where1 = searchFilterHelper.applyLexemeNoteFilters(searchCriteria, l1.ID, where1);
 					where1 = searchFilterHelper.applyLexemeRegisterValueFilters(searchCriteria, l1.ID, where1);
 					where1 = searchFilterHelper.applyLexemeRegisterExistsFilters(searchCriteria, l1.ID, where1);
+					where1 = searchFilterHelper.applyLexemeDerivValueFilters(searchCriteria, l1.ID, where1);
+					where1 = searchFilterHelper.applyLexemeDerivExistsFilters(searchCriteria, l1.ID, where1);
+					where1 = searchFilterHelper.applyLexemeRelationValueFilters(searchCriteria, l1.ID, where1);
+					where1 = searchFilterHelper.applyLexemeRelationExistsFilters(searchCriteria, l1.ID, where1);
 					where1 = searchFilterHelper.applyLexemePosValueFilters(searchCriteria, l1.ID, where1);
 					where1 = searchFilterHelper.applyLexemePosExistsFilters(searchCriteria, l1.ID, where1);
 					where1 = searchFilterHelper.applyLexemeComplexityFilters(searchCriteria, l1.COMPLEXITY, where1);
@@ -149,6 +157,7 @@ public class LexSearchConditionComposer implements GlobalConstant, ActivityFunct
 
 				containsSearchKeys = searchFilterHelper.containsSearchKeys(searchCriteria, SearchKey.SECONDARY_MEANING_WORD);
 				if (containsSearchKeys) {
+
 					MeaningRelation mr = MEANING_RELATION.as("mr");
 					Lexeme l2 = Lexeme.LEXEME.as("l2");
 					Word w2 = Word.WORD.as("w2");
@@ -179,7 +188,9 @@ public class LexSearchConditionComposer implements GlobalConstant, ActivityFunct
 				where = searchFilterHelper.applyIdFilters(SearchKey.ID, searchCriteria, w1.ID, where);
 				where = searchFilterHelper.applyCommaSeparatedIdsFilters(searchCriteria, w1.ID, where);
 				where = searchFilterHelper.applyValueFilters(SearchKey.LANGUAGE, searchCriteria, w1.LANG, where, false);
+				where = searchFilterHelper.applyWordDisplayMorphFilters(searchCriteria, w1.DISPLAY_MORPH_CODE, where);
 				where = searchFilterHelper.applyWordAspectFilters(searchCriteria, w1.ASPECT_CODE, where);
+				where = searchFilterHelper.applyWordVocalFormFilters(searchCriteria, w1.VOCAL_FORM, where);
 				where = searchFilterHelper.applyWordMorphophonoFormFilters(searchCriteria, w1.MORPHOPHONO_FORM, where);
 				where = searchFilterHelper.applyWordTypeValueFilters(searchCriteria, w1.ID, where);
 				where = searchFilterHelper.applyWordTypeExistsFilters(searchCriteria, w1.ID, where);
@@ -211,6 +222,7 @@ public class LexSearchConditionComposer implements GlobalConstant, ActivityFunct
 						SearchKey.PUBLICITY, SearchKey.LEXEME_GRAMMAR, SearchKey.LEXEME_GOVERNMENT, SearchKey.LEXEME_POS,
 						SearchKey.LEXEME_REGISTER, SearchKey.LEXEME_VALUE_STATE, SearchKey.COMPLEXITY,
 						SearchKey.CREATED_OR_UPDATED_BY, SearchKey.UPDATED_ON, SearchKey.CREATED_ON);
+
 				if (containsSearchKeys) {
 
 					boolean containsSearchKeys1 = searchFilterHelper.containsSearchKeys(searchCriteria, SearchKey.VALUE);
