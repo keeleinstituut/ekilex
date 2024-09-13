@@ -96,13 +96,13 @@
 }
 
 .source-search-pagination {
+  position: sticky;
+  bottom: 0;
   background-color: #fff;
   padding-bottom: 8px;
 }
 
 .source-search-results {
-  margin-bottom: 64px;
-
   hr {
     margin: 4px 0;
   }
