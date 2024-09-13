@@ -180,7 +180,7 @@
         <th:block th:replace="sourcecomp :: source_details"></th:block>
       </div>
     </div>
-    <div class="source-search-pagination fixed-bottom" th:if="${sourceSearchResult.showPaging}">
+    <div class="source-search-pagination" th:if="${sourceSearchResult.showPaging}">
       <div th:replace="components :: paging(${sourceSearchResult})"></div>
     </div>
     <div th:replace="common :: #alertDlg"></div>
