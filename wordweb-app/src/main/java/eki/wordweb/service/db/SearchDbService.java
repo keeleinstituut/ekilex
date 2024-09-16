@@ -363,8 +363,8 @@ public class SearchDbService implements GlobalConstant, SystemConstant {
 				.selectFrom(ww)
 				.where(where)
 				.orderBy(
-						ww.field("min_ds_order_by"),
 						ww.field("lang_order_by"),
+						ww.field("min_ds_order_by"),
 						wvobf,
 						ww.field("word_type_order_by"),
 						ww.field("homonym_nr"))
