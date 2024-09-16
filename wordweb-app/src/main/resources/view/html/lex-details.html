@@ -170,10 +170,16 @@
                           <span th:if="${syn.additionalDataExists}" class="synonym-additional-meta text-small">
                             <span th:if="${(syn.mwLexValueState != null)}" th:text="${syn.mwLexValueState.value}"></span>
                             <th:block th:if="${not #lists.isEmpty(syn.wordTypes)}">
-                              <span class="type-two text-uppercase" th:each="wordType,wtIter : ${syn.wordTypes}" th:text="${wordType.value + (wtIter.last ? '' : ', ')}"></span>
+                              <th:block th:each="wordType,wtIter : ${syn.wordTypes}">
+                                <span th:text="${wordType.value}" class="type-two text-uppercase"></span>
+                                <span th:unless="${wtIter.last}" class="ml-n1">,</span>
+                              </th:block>
                             </th:block>
                             <th:block th:if="${not #lists.isEmpty(syn.mwLexRegisters)}">
-                              <span class="type-two text-uppercase" th:each="register,regIter : ${syn.mwLexRegisters}" th:text="${register.value + (regIter.last ? '' : ', ')}"></span>
+                              <th:block th:each="register, rIter : ${syn.mwLexRegisters}">
+                                <span th:text="${register.value}" class="type-two text-uppercase"></span>
+                                <span th:unless="${rIter.last}" class="ml-n1">,</span>
+                              </th:block>
                             </th:block>
                           </span>
                           <span th:unless="${synIter.last}" class="ml-n1" th:classappend="${isLimit ? 'collapse-target collapse' : ''}">,</span>
@@ -222,10 +228,16 @@
                             <span th:if="${syn.additionalDataExists}" class="text-small">
                               <span th:if="${(syn.mwLexValueState != null)}" th:text="${syn.mwLexValueState.value}"></span>
                               <th:block th:if="${not #lists.isEmpty(syn.wordTypes)}">
-                                <span class="type-two text-uppercase" th:each="wordType,wtIter : ${syn.wordTypes}" th:text="${wordType.value + (wtIter.last ? '' : ', ')}"></span>
+                                <th:block th:each="wordType,wtIter : ${syn.wordTypes}">
+                                  <span th:text="${wordType.value}" class="type-two text-uppercase"></span>
+                                  <span th:unless="${wtIter.last}" class="ml-n1">,</span>
+                                </th:block>
                               </th:block>
                               <th:block th:if="${not #lists.isEmpty(syn.mwLexRegisters)}">
-                                <span class="type-two text-uppercase" th:each="register,regIter : ${syn.mwLexRegisters}" th:text="${register.value + (regIter.last ? '' : ', ')}"></span>
+                                <th:block th:each="register, rIter : ${syn.mwLexRegisters}">
+                                  <span th:text="${register.value}" class="type-two text-uppercase"></span>
+                                  <span th:unless="${rIter.last}" class="ml-n1">,</span>
+                                </th:block>
                               </th:block>
                             </span>
                             <th:block th:if="${isInexactSyn}" th:with="inexactSynMeaningDefExists=${not #strings.isEmpty(syn.inexactSynMeaningDefinition)}">
@@ -279,6 +291,12 @@
                         <a th:href="@{${viewUtil.getSearchUri(sessionBean, searchMode, relation.word, relation.homonymNr, relation.lang)}}">
                           <span th:utext="${viewUtil.getWordValueMarkup(relation)}">tee</span>
                         </a>
+                        <th:block th:if="${not #lists.isEmpty(relation.wordTypes)}">
+                          <th:block th:each="wordType,wtIter : ${relation.wordTypes}">
+                            <span th:text="${wordType.value}" class="text-small text-uppercase"></span>
+                            <span th:unless="${wtIter.last}" class="ml-n1">,</span>
+                          </th:block>
+                        </th:block>
                         <th:block th:if="${not #lists.isEmpty(relation.lexRegisters)}">
                           <th:block th:each="register, rIter : ${relation.lexRegisters}">
                             <span class="rections register">

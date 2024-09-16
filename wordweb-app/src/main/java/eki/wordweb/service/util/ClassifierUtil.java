@@ -147,6 +147,9 @@ public class ClassifierUtil {
 		classifierCodes = meaningRelation.getLexValueStateCodes();
 		classifiers = getClassifiers(ClassifierName.VALUE_STATE, classifierCodes, displayLang);
 		meaningRelation.setLexValueStates(classifiers);
+		classifierCodes = meaningRelation.getWordTypeCodes();
+		classifiers = getClassifiers(ClassifierName.WORD_TYPE, classifierCodes, displayLang);
+		meaningRelation.setWordTypes(classifiers);
 		classifierCodes = meaningRelation.getLexRegisterCodes();
 		classifiers = getClassifiers(ClassifierName.REGISTER, classifierCodes, displayLang);
 		meaningRelation.setLexRegisters(classifiers);

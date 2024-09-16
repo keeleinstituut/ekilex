@@ -434,6 +434,7 @@ public class LexemeConversionUtil extends AbstractConversionUtil {
 				classifierUtil.applyClassifiers(synMeaningRel, displayLang);
 				boolean additionalDataExists = (synMeaningRel.getAspect() != null)
 						|| (synMeaningRel.getMwLexValueState() != null)
+						|| CollectionUtils.isNotEmpty(synMeaningRel.getWordTypes())
 						|| CollectionUtils.isNotEmpty(synMeaningRel.getMwLexRegisters())
 						|| CollectionUtils.isNotEmpty(synMeaningRel.getMwLexGovernments());
 				synMeaningRel.setAdditionalDataExists(additionalDataExists);
@@ -468,9 +469,10 @@ public class LexemeConversionUtil extends AbstractConversionUtil {
 					.collect(Collectors.groupingBy(TypeMeaningRelation::getMeaningId));
 
 			for (TypeMeaningRelation destinLangInexactSynMeaningRel : destinLangInexactSynMeaningRels) {
-				Long meaningId = destinLangInexactSynMeaningRel.getMeaningId();
-				TypeMeaningWord destinLangInexactSyn = new TypeMeaningWord();
 
+				Long meaningId = destinLangInexactSynMeaningRel.getMeaningId();
+
+				TypeMeaningWord destinLangInexactSyn = new TypeMeaningWord();
 				destinLangInexactSyn.setType(SynonymType.INEXACT_SYN_MEANING_REL);
 				destinLangInexactSyn.setMeaningId(meaningId);
 				destinLangInexactSyn.setWordId(destinLangInexactSynMeaningRel.getWordId());
@@ -491,6 +493,7 @@ public class LexemeConversionUtil extends AbstractConversionUtil {
 				classifierUtil.applyClassifiers(destinLangInexactSyn, displayLang);
 				boolean additionalDataExists = (destinLangInexactSyn.getAspect() != null)
 						|| (destinLangInexactSyn.getMwLexValueState() != null)
+						|| CollectionUtils.isNotEmpty(destinLangInexactSyn.getWordTypes())
 						|| CollectionUtils.isNotEmpty(destinLangInexactSyn.getMwLexRegisters())
 						|| CollectionUtils.isNotEmpty(destinLangInexactSyn.getMwLexGovernments());
 				destinLangInexactSyn.setAdditionalDataExists(additionalDataExists);
