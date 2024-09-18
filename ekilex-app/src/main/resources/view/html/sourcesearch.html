@@ -5,7 +5,7 @@
 <th:block th:fragment="links">
 </th:block>
 </head>
-<body class="body-with-navbar">
+<body class="d-flex flex-column body-with-navbar overflow-hidden">
   <th:block th:replace="common :: nav_bar(activeItem = 'source')"></th:block>
   <div class="card shadow rounded-0 border-0 flex-shrink-0" style="z-index: 10;">
     <div class="card-body px-2 py-3">
@@ -14,7 +14,7 @@
       </form>
     </div>
   </div>
-  <div class="container-fluid d-flex flex-column h-100">
+  <div class="container-fluid d-flex flex-column h-100 overflow-auto">
     <div>
       <button class="btn btn-primary mt-2"
               th:title="#{source.add.new}"
