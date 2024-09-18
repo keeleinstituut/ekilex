@@ -108,18 +108,18 @@ public class UnifSearchService extends AbstractSearchService {
 			collocConversionUtil.compose(wordId, lexLexemes, collocTuples, searchContext, displayLang);
 			lexemeConversionUtil.flagEmptyLexemes(lexLexemes);
 			lexLexemes = lexLexemes.stream().filter(lexeme -> !lexeme.isEmptyLexeme()).collect(Collectors.toList());
-			lexemeConversionUtil.sortLexemes(lexLexemes, DatasetType.LEX);
+			lexemeConversionUtil.sortLexLexemes(lexLexemes);
 			lexemeLevelPreseUtil.combineLevels(lexLexemes);
 		}
 
 		// term conv
 		if (CollectionUtils.isNotEmpty(termLexemes)) {
-			lexemeConversionUtil.sortLexemes(termLexemes, DatasetType.TERM);
+			lexemeConversionUtil.sortTermLexemes(termLexemes, word);
 		}
 
 		// lim term conv
 		if (CollectionUtils.isNotEmpty(limTermLexemes)) {
-			lexemeConversionUtil.sortLexemes(limTermLexemes, DatasetType.TERM);
+			lexemeConversionUtil.sortTermLexemes(limTermLexemes, word);
 		}
 
 		// word common

@@ -22,6 +22,7 @@ import eki.common.service.TextDecorationService;
 import eki.wordweb.data.LexemeWord;
 import eki.wordweb.data.Meaning;
 import eki.wordweb.data.SearchContext;
+import eki.wordweb.data.Word;
 import eki.wordweb.data.WordTypeData;
 import eki.wordweb.data.type.TypeDefinition;
 import eki.wordweb.data.type.TypeFreeform;
@@ -39,55 +40,91 @@ public class LexemeConversionUtil extends AbstractConversionUtil {
 	@Autowired
 	private TextDecorationService textDecorationService;
 
-	public void sortLexemes(List<LexemeWord> lexemeWords, DatasetType datasetType) {
+	public void sortLexLexemes(List<LexemeWord> lexemeWords) {
+
 		if (CollectionUtils.isEmpty(lexemeWords)) {
 			return;
 		}
-		if (datasetType == null) {
+		Collections.sort(lexemeWords, Comparator
+				.comparing(LexemeWord::getDatasetOrderBy)
+				.thenComparing(LexemeWord::getLevel1)
+				.thenComparing(LexemeWord::getLevel2));
+	}
+
+	public void sortTermLexemesDefault(List<LexemeWord> lexemeWords) {
+
+		if (CollectionUtils.isEmpty(lexemeWords)) {
 			return;
 		}
-		if (DatasetType.LEX.equals(datasetType)) {
 
-			Collections.sort(lexemeWords, Comparator
-					.comparing(LexemeWord::getDatasetOrderBy)
-					.thenComparing(LexemeWord::getLevel1)
-					.thenComparing(LexemeWord::getLevel2));
+		Collections.sort(lexemeWords, Comparator
+				.comparing(LexemeWord::getLexemeOrderBy));
+	}
 
-		} else if (DatasetType.TERM.equals(datasetType)) {
+	public void sortTermLexemes(List<LexemeWord> lexemeWords, Word headword) {
 
-			Comparator<LexemeWord> datasetNameAndLexemeOrderByComparator = new Comparator<LexemeWord>() {
-
-				@Override
-				public int compare(LexemeWord lexemeWord1, LexemeWord lexemeWord2) {
-
-					String datasetCode1 = lexemeWord1.getDatasetCode();
-					String datasetName1 = lexemeWord1.getDatasetName();
-					Long lexemeOrderBy1 = lexemeWord1.getLexemeOrderBy();
-
-					String datasetCode2 = lexemeWord2.getDatasetCode();
-					String datasetName2 = lexemeWord2.getDatasetName();
-					Long lexemeOrderBy2 = lexemeWord2.getLexemeOrderBy();
-
-					int datasetNameCompare = StringUtils.compare(datasetName1, datasetName2);
-					if (datasetNameCompare == 0) {
-						if (lexemeOrderBy1 > lexemeOrderBy2) {
-							return 1;
-						}
-						if (lexemeOrderBy2 > lexemeOrderBy1) {
-							return 1;
-						}
-					}
-					if (StringUtils.equals(DATASET_ESTERM, datasetCode1)) {
-						return -1;
-					}
-					if (StringUtils.equals(DATASET_ESTERM, datasetCode2)) {
-						return 1;
-					}
-					return datasetNameCompare;
-				}
-			};
-			Collections.sort(lexemeWords, datasetNameAndLexemeOrderByComparator);
+		if (CollectionUtils.isEmpty(lexemeWords)) {
+			return;
 		}
+
+		Comparator<LexemeWord> datasetNameComparator = new Comparator<LexemeWord>() {
+
+			@Override
+			public int compare(LexemeWord lexemeWord1, LexemeWord lexemeWord2) {
+
+				String datasetCode1 = lexemeWord1.getDatasetCode();
+				String datasetCode2 = lexemeWord2.getDatasetCode();
+
+				if (StringUtils.equals(DATASET_ESTERM, datasetCode1) && StringUtils.equals(DATASET_ESTERM, datasetCode2)) {
+					return 0;
+				}
+				if (StringUtils.equals(DATASET_ESTERM, datasetCode1)) {
+					return -1;
+				}
+				if (StringUtils.equals(DATASET_ESTERM, datasetCode2)) {
+					return 1;
+				}
+				return 0;
+			}
+
+		};
+
+		Comparator<LexemeWord> headwordValueStateComparator = new Comparator<LexemeWord>() {
+
+			@Override
+			public int compare(LexemeWord lexemeWord1, LexemeWord lexemeWord2) {
+
+				if (headword == null) {
+					return 0;
+				}
+
+				String headwordValue = headword.getWord();
+				List<TypeMeaningWord> meaningWords1 = lexemeWord1.getMeaningWords();
+				boolean isPreferred1 = meaningWords1.stream()
+						.anyMatch(mw -> StringUtils.equals(headwordValue, mw.getWord())
+								&& StringUtils.equals(VALUE_STATE_MOST_PREFERRED, mw.getMwLexValueStateCode()));
+				List<TypeMeaningWord> meaningWords2 = lexemeWord2.getMeaningWords();
+				boolean isPreferred2 = meaningWords2.stream()
+						.anyMatch(mw -> StringUtils.equals(headwordValue, mw.getWord())
+								&& StringUtils.equals(VALUE_STATE_MOST_PREFERRED, mw.getMwLexValueStateCode()));
+
+				if (isPreferred1 && isPreferred2) {
+					return 0;
+				}
+				if (isPreferred1 && !isPreferred2) {
+					return -1;
+				}
+				if (!isPreferred1 && isPreferred2) {
+					return 1;
+				}
+				return 0;
+			}
+		};
+
+		Collections.sort(lexemeWords,
+				datasetNameComparator
+						.thenComparing(headwordValueStateComparator)
+						.thenComparing(Comparator.comparing(LexemeWord::getLexemeOrderBy)));
 	}
 
 	public void flagEmptyLexemes(List<LexemeWord> lexemeWords) {
@@ -326,7 +363,7 @@ public class LexemeConversionUtil extends AbstractConversionUtil {
 
 			meaningLexemes = filter(meaningLexemes, wordLang, destinLangs);
 			lexemeWord.setMeaningLexemes(meaningLexemes);
-			sortLexemes(meaningLexemes, DatasetType.TERM);
+			sortTermLexemesDefault(meaningLexemes);
 			Map<String, List<LexemeWord>> meaningLexemesByLangUnordered = meaningLexemes.stream().collect(Collectors.groupingBy(LexemeWord::getLang));
 			meaningLexemesByLangOrdered = composeOrderedMap(meaningLexemesByLangUnordered, langOrderByMap);
 		}

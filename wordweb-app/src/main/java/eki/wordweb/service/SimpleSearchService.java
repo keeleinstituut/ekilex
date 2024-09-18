@@ -84,7 +84,7 @@ public class SimpleSearchService extends AbstractSearchService {
 			collocConversionUtil.compose(wordId, lexemeWords, collocTuples, searchContext, displayLang);
 			lexemeConversionUtil.flagEmptyLexemes(lexemeWords);
 			lexemeWords = lexemeWords.stream().filter(lexeme -> !lexeme.isEmptyLexeme()).collect(Collectors.toList());
-			lexemeConversionUtil.sortLexemes(lexemeWords, DatasetType.LEX);
+			lexemeConversionUtil.sortLexLexemes(lexemeWords);
 			lexemeLevelPreseUtil.combineLevels(lexemeWords);
 		}
 
