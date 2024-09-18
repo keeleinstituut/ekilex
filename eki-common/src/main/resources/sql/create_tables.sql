@@ -723,7 +723,7 @@ alter sequence meaning_id_seq restart with 10000;
 
 create table meaning_note (
   id bigserial primary key, 
-  original_freeform_id bigint references freeform(id) on delete cascade, -- to be dropped later
+  original_freeform_id bigint, -- to be dropped later
   meaning_id bigint references meaning(id) on delete cascade not null, 
   value text not null, 
   value_prese text not null, 
@@ -750,7 +750,7 @@ alter sequence meaning_note_source_link_id_seq restart with 10000;
 
 create table meaning_image (
   id bigserial primary key, 
-  original_freeform_id bigint references freeform(id) on delete cascade, -- to be dropped later
+  original_freeform_id bigint, -- to be dropped later
   meaning_id bigint references meaning(id) on delete cascade not null, 
   title text null, 
   url text not null, 
@@ -879,7 +879,7 @@ alter sequence definition_source_link_id_seq restart with 10000;
 
 create table definition_note (
   id bigserial primary key, 
-  original_freeform_id bigint references freeform(id) on delete cascade, -- to be dropped later
+  original_freeform_id bigint, -- to be dropped later
   definition_id bigint references definition(id) on delete cascade not null, 
   value text not null, 
   value_prese text not null, 
@@ -966,7 +966,7 @@ alter sequence lexeme_source_link_id_seq restart with 10000;
 
 create table usage (
   id bigserial primary key, 
-  original_freeform_id bigint references freeform(id) on delete cascade, -- to be dropped later
+  original_freeform_id bigint, -- to be dropped later
   lexeme_id bigint references lexeme(id) on delete cascade not null, 
   value text not null, 
   value_prese text not null, 
@@ -993,7 +993,7 @@ alter sequence usage_source_link_id_seq restart with 10000;
 
 create table usage_translation (
   id bigserial primary key, 
-  original_freeform_id bigint references freeform(id) on delete cascade, -- to be dropped later
+  original_freeform_id bigint, -- to be dropped later
   usage_id bigint references usage(id) on delete cascade not null, 
   value text not null, 
   value_prese text not null, 
@@ -1008,7 +1008,7 @@ alter sequence usage_translation_id_seq restart with 10000;
 
 create table usage_definition (
   id bigserial primary key, 
-  original_freeform_id bigint references freeform(id) on delete cascade, -- to be dropped later
+  original_freeform_id bigint, -- to be dropped later
   usage_id bigint references usage(id) on delete cascade not null, 
   value text not null, 
   value_prese text not null, 
@@ -1023,7 +1023,7 @@ alter sequence usage_definition_id_seq restart with 10000;
 
 create table lexeme_note (
   id bigserial primary key, 
-  original_freeform_id bigint references freeform(id) on delete cascade, -- to be dropped later
+  original_freeform_id bigint, -- to be dropped later
   lexeme_id bigint references lexeme(id) on delete cascade not null, 
   value text not null, 
   value_prese text not null, 
