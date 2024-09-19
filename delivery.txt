@@ -1,3 +1,71 @@
-Märkused ver 1.36.0 tarne kohta:
+Märkused ver 1.37.0 tarne kohta:
 
+1) Võta githubist värske tarkvara versioon, mille viite arendaja annab
 
+2) seadista stat serveri ja teenuse liidestuse parameetrid:
+
+   ekilexi application-<env>.properties failis:
+   
+   ekistat.service.url=https://vaike.eki.ee/ekistat/api/stat
+   ekistat.service.key=mingid_keerulised_stringid
+   
+   sõnaveebi application-<env>.properties failis
+   
+   ekistat.service.enabled=true
+   ekistat.service.url=https://vaike.eki.ee/ekistat/api/stat
+   ekistat.service.key=mingid_keerulised_stringid
+
+3) Ehita tarkvara tarkvaraprojekti juurikast
+  
+   ../ekilex>mvn clean install -D skipTests
+  
+   Ekilex rakenduse pake asub
+  
+   ../ekilex/ekilex-app/target/ekilex-app.jar
+  
+   Sõnaveebi rakenduse pake asub
+  
+   ../ekilex/wordweb-app/target/wordweb-app.jar
+
+4) Käivita ekilex andmebaasis muudatuste skript:
+  
+   ../ekilex/eki-common/src/main/resources/sql/delivery.sql
+
+5) Sõnaveebi andmebaasi agregeerimine.
+
+   1. kustuta ja taasloo Ekilex andmebaasis senised Sõnaveebiga seotud vaated ja andmetüübid skriptiga:
+
+      ../ekilex/eki-common/src/main/resources/sql/create_views.sql
+
+   2. kustuta ja loo Sõnaveebi andmebaasis materjaliseeritud vaated ja andmetüübid skriptiga:
+
+      ../ekilex/wordweb-app/fileresources/sql/create_mviews.sql
+
+      NB! Muuda skriptis dblink parameetreid vastavalt keskkonnale!
+      NB! Ühtegi veateadet ei tohi olla!
+
+      Skript jookseb umbes pool tundi.
+
+6) Kaasajasta Sõnaveebi materialiseeritud andmebaasivaadete uuendamise skripti.
+   (tarne koosseisus värskelt loodud andmebaasivaadete puhul pole seda vaja käivitada)
+   Praegu kehtiv loetelu:
+
+   refresh materialized view mview_ww_counts;
+   refresh materialized view mview_ww_dataset_word_menu;
+   refresh materialized view mview_ww_word_search;
+   refresh materialized view mview_ww_word;
+   refresh materialized view mview_ww_form;
+   refresh materialized view mview_ww_meaning;
+   refresh materialized view mview_ww_lexeme;
+   refresh materialized view mview_ww_collocation;
+   refresh materialized view mview_ww_word_etymology;
+   refresh materialized view mview_ww_word_relation;
+   refresh materialized view mview_ww_lexeme_relation;
+   refresh materialized view mview_ww_meaning_relation;
+   refresh materialized view mview_ww_classifier;
+   refresh materialized view mview_ww_dataset;
+   refresh materialized view mview_ww_news_article;
+
+7) Seo ekilex-app.jar ja wordweb-app.jar rakenduste teenustega nagu seni ja käivita. Kontrolli peale käivitamist kummagi rakenduse logifailidest kas käivitamisega kaasnesid veateated, neid ei ohiks olla ühtegi.
+
+<märkmete lõpp>
