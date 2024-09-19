@@ -54,7 +54,7 @@
                   <small th:if="${lexeme.levels != null}" th:text="${'[ ' + lexeme.levels + ' ]'}"></small>
                 </div>
                 <div th:if="${not #lists.isEmpty(lexeme.meaning.definitions)}">
-                  <span th:text="${lexeme.meaning.definitions.get(0).value}"></span>
+                  <span th:text="${lexeme.meaning.definitions.get(0).valuePrese}"></span>
                 </div>
               </td>
             </tr>
@@ -96,7 +96,7 @@
                   </div>
                 </div>
                 <div th:if="${not #lists.isEmpty(lexeme.meaning.definitions)}">
-                  <span th:utext="${lexeme.meaning.definitions.get(0).value}"></span>
+                  <span th:utext="${lexeme.meaning.definitions.get(0).valuePrese}"></span>
                 </div>
               </td>
             </tr>

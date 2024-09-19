@@ -83,7 +83,7 @@
         <div class="d-flex flex-column">
           <div class="d-flex align-items-center flex-wrap">
             <div th:if="${not #lists.isEmpty(lexeme.meaning.definitions)}">
-              <span th:utext="${lexeme.meaning.definitions.get(0).value}"></span>
+              <span th:utext="${lexeme.meaning.definitions.get(0).valuePrese}"></span>
             </div>
           </div>
         </div>
