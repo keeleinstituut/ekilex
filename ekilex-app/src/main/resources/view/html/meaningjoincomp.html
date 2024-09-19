@@ -29,7 +29,7 @@
           <div th:each="definition, itemIter: ${definitionLangGroup.definitions}">
             <div style="display: list-item; position: absolute"></div>
             <div>
-              <span th:utext="${definition.value}"></span>
+              <span th:utext="${definition.valuePrese}"></span>
               <span class="font-italic text-info" th:text="${definition.typeValue}"></span>
               <span th:each="sourceLink : ${definition.sourceLinks}">
                 [
@@ -156,7 +156,7 @@
             <th:block th:each="usage : ${lexeme.usages}">
               <div style="display: list-item; position: absolute"></div>
               <div>
-                <span th:utext="${usage.value}"></span>
+                <span th:utext="${usage.valuePrese}"></span>
                 <span th:each="sourceLink : ${usage.sourceLinks}">
                   [
                   <a th:href="@{'/usage_source_link:' + ${sourceLink.id}}" th:text="${sourceLink.sourceName}"></a>

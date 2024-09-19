@@ -42,7 +42,7 @@
   <div th:fragment="definitions_data">
     <div class="d-flex flex-row flex-wrap ml-3" th:each="definition : ${lexeme.meaning.definitions}">
       <div style="display: list-item; position: absolute"></div>
-      <span th:utext="${definition.value}"></span>
+      <span th:utext="${definition.valuePrese}"></span>
       <span th:each="sourceLink : ${definition.sourceLinks}">
         [
         <a th:href="@{'/definition_source_link:' + ${sourceLink.id}}" th:text="${sourceLink.sourceName}"></a>
@@ -54,7 +54,7 @@
   <div th:data-id="${lexeme.lexemeId}" th:fragment="usages_data">
     <th:block th:if="${not #lists.isEmpty(lexeme.usages)}">
       <div class="d-flex flex-wrap ml-3 text-secondary" th:each="usage : ${lexeme.usages}">
-        <span th:utext="${usage.value}"></span>
+        <span th:utext="${usage.valuePrese}"></span>
         <span th:each="sourceLink : ${usage.sourceLinks}">
           [
           <a th:href="@{'/usage_source_link:' + ${sourceLink.id}}" th:text="${sourceLink.sourceName}"></a>

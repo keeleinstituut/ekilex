@@ -20,7 +20,7 @@
                 <span class="lang-code lang-code-sm mr-2 align-self-start"
                       th:with="langData=${viewUtil.getLangData(noteEntry.key)}"
                       th:text="${langData.codeIso2}" th:title="${langData.label}" data-toggle="tooltip"></span>
-                <div><p class="mb-1" th:each="note, noteIter : ${noteEntry.value}" th:utext="${note.value}"></p></div>
+                <div><p class="mb-1" th:each="note, noteIter : ${noteEntry.value}" th:utext="${note.valuePrese}"></p></div>
               </div>
             </div>
           </div>
@@ -132,7 +132,7 @@
                               </th:block>
                               <th:block th:if="${not #lists.isEmpty(definition.notes)}">
                                 <span th:each="note : ${definition.notes}">
-                                  <span class="additional-meta mb-2" th:utext="${note.value}"></span>
+                                  <span class="additional-meta mb-2" th:utext="${note.valuePrese}"></span>
                                   <span class="definition-sources">
                                     <th:block th:each="sourceLink,sourceLinkIter : ${note.sourceLinks}">
                                       <th:block th:replace="common-app :: source-link"></th:block>
@@ -336,7 +336,7 @@
                         <span class="lang-code lang-code-sm mr-2 align-self-start"
                               th:with="langData=${viewUtil.getLangData(noteEntry.key)}"
                               th:text="${langData.codeIso2}" th:title="${langData.label}" data-toggle="tooltip"></span>
-                        <div><p  class="mb-1" th:each="note, noteIter : ${noteEntry.value}" th:utext="${note.value}"></p></div>
+                        <div><p  class="mb-1" th:each="note, noteIter : ${noteEntry.value}" th:utext="${note.valuePrese}"></p></div>
                       </div>
                     </th:block>
                     <th:block th:if="${not #maps.isEmpty(lexeme.meaningNotesByLang)}">
@@ -347,7 +347,7 @@
                         </span>
                         <div class="d-flex flex-column good-to-know-info">
                           <div th:each="note : ${noteEntry.value}">
-                            <span th:utext="${note.value}"></span>
+                            <span th:utext="${note.valuePrese}"></span>
                             <th:block th:if="${not #lists.isEmpty(note.sourceLinks)}">
                               <span class="definition-sources">
                                 <span th:each="sourceLink : ${note.sourceLinks}">

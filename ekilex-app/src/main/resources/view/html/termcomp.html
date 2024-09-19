@@ -423,7 +423,7 @@
               <th:block th:replace="common :: ordering_buttons(${itemIter})" sec:authorize="#vars.meaning.crudGrant"></th:block>
             </div>
             <div class="invisible-buttons action-buttons-anchor mw-80">
-              <span th:utext="${definition.value}"></span>
+              <span th:utext="${definition.valuePrese}"></span>
               <span class="font-italic text-info" th:text="${definition.typeValue}"></span>
               <span class="ctxt" th:text="'(' + #{'boolean.public.' + ${definition.public}} + ')'" th:if="${definition.crudGrant}"></span>
               <span th:if="${#lists.isEmpty(definition.sourceLinks)}" class="show-on-mouseover" th:unless="${definition.editDisabled}">
@@ -1444,7 +1444,7 @@
         <div th:replace="termdialog :: add_usage_source_link_dlg"></div>
         <div class="invisible-buttons action-buttons-anchor mw-80 ml-3">
           <div style="display: list-item; position: absolute"></div>
-          <span th:utext="${usage.value}"></span>
+          <span th:utext="${usage.valuePrese}"></span>
           <div class="d-inline-block ctxt" th:text="'(' + #{'boolean.public.' + ${usage.public}} + ')'" th:if="${usage.crudGrant}"></div>
           <span class="show-on-mouseover" th:if="${#lists.isEmpty(usage.sourceLinks)}">
             [

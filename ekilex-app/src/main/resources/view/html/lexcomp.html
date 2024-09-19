@@ -730,7 +730,7 @@
               <th:block th:replace="common :: ordering_buttons(${itemIter})" sec:authorize="#vars.lexeme.meaning.crudGrant"></th:block>
             </div>
             <div class="invisible-buttons action-buttons-anchor mw-80">
-              <span th:utext="${definition.value}"></span>
+              <span th:utext="${definition.valuePrese}"></span>
               <span class="ctxt" th:text="'(' + #{'enum.complexity.' + ${definition.complexity}} + ')'" data-plugin="complexityAndPublicity"></span>
               <span class="ctxt" th:each="datasetCode,iter : ${definition.datasetCodes}" th:text="${(iter.first ? '[' : '') + datasetCode + (iter.last ? ']' : ', ')}"></span>
               <span class="ctxt" th:text="'(' + #{'boolean.public.' + ${definition.public}} + ')'" th:if="${definition.crudGrant}" data-plugin="complexityAndPublicity"></span>
@@ -1324,7 +1324,7 @@
               <th:block th:replace="common :: ordering_buttons(${usageIter})" sec:authorize="#vars.usage.crudGrant"></th:block>
             </div>
             <div class="invisible-buttons action-buttons-anchor mw-80">
-              <span th:utext="${usage.value}"></span>
+              <span th:utext="${usage.valuePrese}"></span>
               <span class="ctxt" th:text="'(' + #{'enum.complexity.' + ${usage.complexity}} + ')'" data-plugin="complexityAndPublicity"></span>
               <span class="ctxt" th:text="'(' + #{'boolean.public.' + ${usage.public}} + ')'" th:if="${usage.crudGrant}" data-plugin="complexityAndPublicity"></span>
               <span th:if="${#lists.isEmpty(usage.sourceLinks)}" class="show-on-mouseover" sec:authorize="#vars.usage.crudGrant">

@@ -75,7 +75,7 @@
             th:with="isInexactSynDef = ${definition.typeCode == T(eki.common.constant.GlobalConstant).DEFINITION_TYPE_CODE_INEXACT_SYN}"
             >
             <li class="inexact-syn-body-list__item">
-              <span th:utext="${definition.value}"></span>
+              <span th:utext="${definition.valuePrese}"></span>
               <span class="inexact-syn-body-list__item--exact" th:if="${isInexactSynDef}" th:text="${definition.typeCode}"></span>
             </li>
           </th:block>
@@ -159,7 +159,7 @@
       <th:block
         th:each="definition : ${lexeme.meaning.definitions}"
         >
-        <li class="inexact-syn-body-list__item" th:utext="${definition.value}"></li>
+        <li class="inexact-syn-body-list__item" th:utext="${definition.valuePrese}"></li>
       </th:block>
     </ul>
     <span class="inexact-syn-word-candidate__source" th:text="${lexeme.datasetName}"></span>
@@ -296,7 +296,7 @@
                         <th:block th:each="definition : ${meaning.definitions}">
                             <li
                               class="inexact-syn-gray-text inexact-syn-gray-text--small"
-                              th:utext="${definition.value}"></li>
+                              th:utext="${definition.valuePrese}"></li>
                         </th:block>
                       </ul>
                     </div>
@@ -407,7 +407,7 @@
                     <span class="inexact-syn-body-list__title" th:text="#{inexactsyn.definitions}">Seletused</span>
                     <ul class="inexact-syn-body-list">
                       <th:block th:each="definition : ${data.inexactSynMeaningDefinitions}">
-                        <li class="inexact-syn-body-list__item" th:utext="${definition.value}"></li>
+                        <li class="inexact-syn-body-list__item" th:utext="${definition.valuePrese}"></li>
                       </th:block>
                     </ul>
                   </div>
@@ -462,7 +462,7 @@
                     <span class="inexact-syn-body-list__title" th:text="#{inexactsyn.definitions}">Seletused</span>
                     <ul class="inexact-syn-body-list">
                       <th:block th:each="definition : ${data.targetMeaningDefinitions}">
-                        <li class="inexact-syn-body-list__item" th:utext="${definition.value}"></li>
+                        <li class="inexact-syn-body-list__item" th:utext="${definition.valuePrese}"></li>
                       </th:block>
                     </ul>
                   </div>

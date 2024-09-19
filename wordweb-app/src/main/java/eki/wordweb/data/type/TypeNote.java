@@ -23,7 +23,7 @@ public class TypeNote extends AbstractDataObject implements ComplexityType, Sour
 
 	private String valuePrese;
 
-	private String valueCut;
+	private String valuePreseCut;
 
 	private String lang;
 
@@ -63,12 +63,12 @@ public class TypeNote extends AbstractDataObject implements ComplexityType, Sour
 		this.valuePrese = valuePrese;
 	}
 
-	public String getValueCut() {
-		return valueCut;
+	public String getValuePreseCut() {
+		return valuePreseCut;
 	}
 
-	public void setValueCut(String valueCut) {
-		this.valueCut = valueCut;
+	public void setValuePreseCut(String valuePreseCut) {
+		this.valuePreseCut = valuePreseCut;
 	}
 
 	public String getLang() {

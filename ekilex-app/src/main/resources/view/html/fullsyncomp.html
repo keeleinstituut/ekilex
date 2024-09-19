@@ -83,7 +83,7 @@
             </span>
           </div>
           <div class="d-flex flex-row font-medium" data-toggle="tooltip" th:title="#{syn.definition}" th:each="definition : ${meaning.definitions}">
-            <span th:utext="${definition.value}"></span>
+            <span th:utext="${definition.valuePrese}"></span>
             <span class="text-nowrap" th:each="sourceLink : ${definition.sourceLinks}">
               [
               <a th:href="@{'/definition_source_link:' + ${sourceLink.id}}" th:text="${sourceLink.sourceName}"></a>
@@ -92,7 +92,7 @@
             </span>
           </div>
           <div class="d-flex flex-row font-medium text-info" data-toggle="tooltip" th:title="#{syn.usage}" th:each="usage : ${meaning.usages}">
-            <span th:utext="${usage.value}"></span>
+            <span th:utext="${usage.valuePrese}"></span>
             <span class="text-nowrap" th:each="sourceLink : ${usage.sourceLinks}">
               [
               <a th:href="@{'/usage_source_link:' + ${sourceLink.id}}" th:text="${sourceLink.sourceName}"></a>
@@ -269,7 +269,7 @@
                     <th:block th:each="definition : ${lexeme.meaning.definitions}">
                       <div style="display: list-item; position: absolute"></div>
                       <div>
-                        <span th:utext="${definition.value}"></span>
+                        <span th:utext="${definition.valuePrese}"></span>
                       </div>
                     </th:block>
                   </div>
@@ -323,7 +323,7 @@
                   <th:block th:each="definition : ${lexeme.meaning.definitions}">
                     <div style="display: list-item; position: absolute"></div>
                     <div>
-                      <span th:utext="${definition.value}"></span>
+                      <span th:utext="${definition.valuePrese}"></span>
                     </div>
                   </th:block>
                 </div>

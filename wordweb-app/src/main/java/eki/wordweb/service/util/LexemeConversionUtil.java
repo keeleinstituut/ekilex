@@ -261,9 +261,9 @@ public class LexemeConversionUtil extends AbstractConversionUtil {
 		lexemeWord.setLexemeNotesByLang(notesByLangOrdered);
 
 		notes.forEach(note -> {
-			String value = note.getValue();
-			String valueCut = getOversizeValuePreseCut(value, NOTE_OVERSIZE_LIMIT);
-			note.setValueCut(valueCut);
+			String valuePrese = note.getValuePrese();
+			String valuePreseCut = getOversizeValuePreseCut(valuePrese, NOTE_OVERSIZE_LIMIT);
+			note.setValuePreseCut(valuePreseCut);
 		});
 	}
 
@@ -291,9 +291,9 @@ public class LexemeConversionUtil extends AbstractConversionUtil {
 		lexemeWord.setMeaningNotesByLang(notesByLangOrdered);
 
 		notes.forEach(note -> {
-			String value = note.getValue();
-			String valueCut = getOversizeValuePreseCut(value, NOTE_OVERSIZE_LIMIT);
-			note.setValueCut(valueCut);
+			String valuePrese = note.getValuePrese();
+			String valuePreseCut = getOversizeValuePreseCut(valuePrese, NOTE_OVERSIZE_LIMIT);
+			note.setValuePreseCut(valuePreseCut);
 		});
 	}
 

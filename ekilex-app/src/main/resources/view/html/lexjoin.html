@@ -105,7 +105,7 @@
       <span class="lbl" th:text="#{lex.definitions}">Seletused</span>
       <table>
         <tr th:each="definition : ${lexeme.meaning.definitions}">
-          <td th:utext="${definition.value}"></td>
+          <td th:utext="${definition.valuePrese}"></td>
         </tr>
       </table>
     </div>
@@ -115,7 +115,7 @@
       <table th:each="usage,usageIter : ${lexeme.usages}" class="border">
         <tr>
           <td>
-            <span th:utext="${usage.value}"></span>
+            <span th:utext="${usage.valuePrese}"></span>
             <span th:if="${not #lists.isEmpty(usage.sourceLinks)}">
               [
               <span th:each="sourceLink,sourceLinkIter : ${usage.sourceLinks}" th:if="${sourceLink.sourceName != null}">

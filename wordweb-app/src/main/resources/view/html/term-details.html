@@ -117,7 +117,7 @@
                           <th:block th:if="${not #lists.isEmpty(definition.notes)}">
                             <ul class="ul-list-style m-0">
                               <li th:each="note : ${definition.notes}">
-                                <span class="additional-meta mb-2" th:utext="${note.value}"></span>
+                                <span class="additional-meta mb-2" th:utext="${note.valuePrese}"></span>
                                 <span class="definition-sources">
                                   <th:block th:each="sourceLink,sourceLinkIter : ${note.sourceLinks}">
                                     <th:block th:replace="common-app :: source-link"></th:block>
@@ -153,13 +153,13 @@
                           <div th:id="${'note-entry-text-' + note.noteId}">
                             <th:block th:if="${isCollapsable}">
                               <div class="note-value collapse-text">
-                                <span class="small-text-addition" th:utext="${note.valueCut}"></span>
+                                <span class="small-text-addition" th:utext="${note.valuePreseCut}"></span>
                               </div>
                               <div class="small-text-container get-height d-none">
-                                <span class="small-text-addition" th:utext="${note.valueCut}"></span>
+                                <span class="small-text-addition" th:utext="${note.valuePreseCut}"></span>
                               </div>
                               <div class="large-text-container get-height d-none">
-                                <span class="large-text-addition" th:utext="${note.value}"></span>
+                                <span class="large-text-addition" th:utext="${note.valuePrese}"></span>
                               </div>
                               <button
                                     th:id="${'note-entry-show-more-btn-' + note.noteId}"
@@ -179,7 +179,7 @@
                                 </span>
                               </button>
                             </th:block>
-                            <span th:unless="${isCollapsable}" th:utext="${note.value}"></span>
+                            <span th:unless="${isCollapsable}" th:utext="${note.valuePrese}"></span>
                             <span th:if="${isLimTerm}" th:utext="${'[' + note.createdBy + ']'}" class="text-muted text-small"></span>
                             <th:block th:if="${not #lists.isEmpty(note.sourceLinks)}">
                               <span class="definition-sources">
@@ -414,13 +414,13 @@
                                   <div th:id="|note-entry-text-${note.noteId}|">
                                     <th:block th:if="${isCollapsable}">
                                       <div class="note-value collapse-text">
-                                        <span class="small-text-addition" th:utext="${note.valueCut}"></span>
+                                        <span class="small-text-addition" th:utext="${note.valuePreseCut}"></span>
                                       </div>
                                       <div class="small-text-container get-height d-none">
-                                        <span class="small-text-addition" th:utext="${note.valueCut}"></span>
+                                        <span class="small-text-addition" th:utext="${note.valuePreseCut}"></span>
                                       </div>
                                       <div class="large-text-container get-height d-none">
-                                        <span class="large-text-addition" th:utext="${note.value}"></span>
+                                        <span class="large-text-addition" th:utext="${note.valuePrese}"></span>
                                       </div>
                                       <button
                                           th:id="|note-entry-show-more-btn-${note.noteId}|"
@@ -439,7 +439,7 @@
                                         </span>
                                       </button>
                                     </th:block>
-                                    <span th:unless="${isCollapsable}" th:utext="${note.value}"></span>
+                                    <span th:unless="${isCollapsable}" th:utext="${note.valuePrese}"></span>
                                     <th:block th:if="${not #lists.isEmpty(note.sourceLinks)}">
                                       <span class="definition-sources">
                                         <th:block th:each="sourceLink,sourceLinkIter : ${note.sourceLinks}">
