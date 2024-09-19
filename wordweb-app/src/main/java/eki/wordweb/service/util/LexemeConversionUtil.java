@@ -73,7 +73,9 @@ public class LexemeConversionUtil extends AbstractConversionUtil {
 			public int compare(LexemeWord lexemeWord1, LexemeWord lexemeWord2) {
 
 				String datasetCode1 = lexemeWord1.getDatasetCode();
+				String datasetName1 = lexemeWord1.getDatasetName();
 				String datasetCode2 = lexemeWord2.getDatasetCode();
+				String datasetName2 = lexemeWord2.getDatasetName();
 
 				if (StringUtils.equals(DATASET_ESTERM, datasetCode1) && StringUtils.equals(DATASET_ESTERM, datasetCode2)) {
 					return 0;
@@ -84,7 +86,7 @@ public class LexemeConversionUtil extends AbstractConversionUtil {
 				if (StringUtils.equals(DATASET_ESTERM, datasetCode2)) {
 					return 1;
 				}
-				return StringUtils.compare(lexemeWord1.getDatasetName(), lexemeWord2.getDatasetName());
+				return StringUtils.compare(datasetName1, datasetName2);
 			}
 
 		};
