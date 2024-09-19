@@ -149,7 +149,7 @@
                     <div class="flex-shrink-1">
                       <ul th:class="${noteEntry.value.size() &lt;= 1}  ? 'list-unstyled m-0' : 'ul-list-style' ">
                         <li th:each="note : ${noteEntry.value}"
-                            th:with="isCollapsable=${not #strings.isEmpty(note.valueCut)}">
+                            th:with="isCollapsable=${not #strings.isEmpty(note.valuePreseCut)}">
                           <div th:id="${'note-entry-text-' + note.noteId}">
                             <th:block th:if="${isCollapsable}">
                               <div class="note-value collapse-text">
@@ -410,7 +410,7 @@
                                     th:text="${langData.codeIso2}" th:title="${langData.label}" data-toggle="tooltip"></span>
                               <div class="d-flex flex-column good-to-know-info">
                                 <th:block th:each="note : ${noteEntry.value}"
-                                          th:with="isCollapsable=${not #strings.isEmpty(note.valueCut)}">
+                                          th:with="isCollapsable=${not #strings.isEmpty(note.valuePreseCut)}">
                                   <div th:id="|note-entry-text-${note.noteId}|">
                                     <th:block th:if="${isCollapsable}">
                                       <div class="note-value collapse-text">

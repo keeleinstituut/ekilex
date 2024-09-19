@@ -1407,7 +1407,7 @@
                 <div class="col hidden-buttons ml-2">
                   <!-- intentional generic lexeme perm on translations -->
                   <div class="action-buttons-anchor">
-                    <span th:utext="${usageTranslation.value}"></span>
+                    <span th:utext="${usageTranslation.valuePrese}"></span>
                     <span th:text="|(${viewUtil.getLangIso2(usageTranslation.lang)})|"></span>
                     <div class="action-buttons-3">
                       <button type="button" class="btn badge badge-primary"
@@ -1446,7 +1446,7 @@
                 <div th:replace="lexdialog :: edit_usage_definition_dlg"></div>
                 <div class="col hidden-buttons ml-2">
                   <div class="action-buttons-anchor">
-                    <span th:utext="${usageDefinition.value}"></span>
+                    <span th:utext="${usageDefinition.valuePrese}"></span>
                     <div class="action-buttons-3">
                       <button type="button" class="btn badge badge-primary"
                               th:title="#{common.edit}"
