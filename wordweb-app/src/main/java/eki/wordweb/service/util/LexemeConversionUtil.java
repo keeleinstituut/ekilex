@@ -84,7 +84,7 @@ public class LexemeConversionUtil extends AbstractConversionUtil {
 				if (StringUtils.equals(DATASET_ESTERM, datasetCode2)) {
 					return 1;
 				}
-				return 0;
+				return StringUtils.compare(lexemeWord1.getDatasetName(), lexemeWord2.getDatasetName());
 			}
 
 		};
