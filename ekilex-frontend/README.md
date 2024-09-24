@@ -6,3 +6,7 @@
 1. Run npm ci
 2. Run npm build
 2. Run npm run start
+
+
+## Technologies
+This project uses Next.js and React along with Tailwind
