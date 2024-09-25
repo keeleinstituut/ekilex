@@ -128,6 +128,9 @@ public class EditController extends AbstractMutableDataPageController {
 			Classifier meaningDomain = conversionUtil.classifierFromIdString(value);
 			cudService.createMeaningDomain(id2, meaningDomain, roleDatasetCode, isManualEventOnUpdateEnabled);
 			break;
+		case "lexeme_freeform":
+			cudService.createLexemeFreeform(id, value, type, isPublic, roleDatasetCode, isManualEventOnUpdateEnabled);
+			break;
 		case "government":
 			cudService.createLexemeGovernment(id, value, complexity, roleDatasetCode, isManualEventOnUpdateEnabled);
 			break;
@@ -195,6 +198,9 @@ public class EditController extends AbstractMutableDataPageController {
 		case "meaning_media":
 			cudService.createMeaningMedia(id, value, complexity, roleDatasetCode, isManualEventOnUpdateEnabled);
 			break;
+		case "meaning_freeform":
+			cudService.createMeaningFreeform(id, value, type, isPublic, roleDatasetCode, isManualEventOnUpdateEnabled);
+			break;
 		case "create_syn_word":
 			synCudService.createWordAndSynRelation(id, value, value2, languageCode, roleDatasetCode, isManualEventOnUpdateEnabled);
 			break;
@@ -222,6 +228,9 @@ public class EditController extends AbstractMutableDataPageController {
 		case ContentKey.LEXEME_NOTE_SOURCE_LINK:
 			sourceLinkService.createLexemeNoteSourceLink(id, id2, ReferenceType.ANY, value, roleDatasetCode, isManualEventOnUpdateEnabled);
 			break;
+		case ContentKey.LEXEME_FREEFORM_SOURCE_LINK:
+			sourceLinkService.createLexemeFreeformSourceLink(id, id2, ReferenceType.ANY, value, roleDatasetCode, isManualEventOnUpdateEnabled);
+			break;
 		case ContentKey.USAGE_SOURCE_LINK:
 			sourceLinkService.createUsageSourceLink(id, id2, ReferenceType.ANY, value, roleDatasetCode, isManualEventOnUpdateEnabled);
 			break;
@@ -230,6 +239,9 @@ public class EditController extends AbstractMutableDataPageController {
 			break;
 		case ContentKey.MEANING_NOTE_SOURCE_LINK:
 			sourceLinkService.createMeaningNoteSourceLink(id, id2, ReferenceType.ANY, value, roleDatasetCode, isManualEventOnUpdateEnabled);
+			break;
+		case ContentKey.MEANING_FREEFORM_SOURCE_LINK:
+			sourceLinkService.createMeaningFreeformSourceLink(id, id2, ReferenceType.ANY, value, roleDatasetCode, isManualEventOnUpdateEnabled);
 			break;
 		}
 
@@ -247,12 +259,6 @@ public class EditController extends AbstractMutableDataPageController {
 
 		logger.debug("Update item: {}; auto update: {}", itemData, isManualEventOnUpdateEnabled);
 
-		Locale locale = LocaleContextHolder.getLocale();
-		Response response = new Response();
-		String successMessage = messageSource.getMessage("common.update.success", new Object[0], locale);
-		response.setStatus(ResponseStatus.OK);
-		response.setMessage(successMessage);
-
 		EkiUser user = userContext.getUser();
 		String roleDatasetCode = getDatasetCodeFromRole();
 		Long id = itemData.getId();
@@ -267,6 +273,12 @@ public class EditController extends AbstractMutableDataPageController {
 		String classifCode = itemData.getCode();
 		Complexity complexity = itemData.getComplexity();
 		boolean isPublic = itemData.isPublic();
+
+		Locale locale = LocaleContextHolder.getLocale();
+		Response response = new Response();
+		String successMessage = messageSource.getMessage("common.update.success", new Object[0], locale);
+		response.setStatus(ResponseStatus.OK);
+		response.setMessage(successMessage);
 
 		switch (itemData.getOpCode()) {
 		case "user_lang_selection":
@@ -299,6 +311,9 @@ public class EditController extends AbstractMutableDataPageController {
 			Classifier currentMeaningDomain = conversionUtil.classifierFromIdString(currentValue);
 			Classifier newMeaningDomain = conversionUtil.classifierFromIdString(itemData.getValue());
 			cudService.updateMeaningDomain(id, currentMeaningDomain, newMeaningDomain, roleDatasetCode, isManualEventOnUpdateEnabled);
+			break;
+		case "lexeme_freeform":
+			cudService.updateLexemeFreeform(id, value, isPublic, roleDatasetCode, isManualEventOnUpdateEnabled);
 			break;
 		case "government":
 			cudService.updateLexemeGovernment(id, value, complexity, roleDatasetCode, isManualEventOnUpdateEnabled);
@@ -387,6 +402,9 @@ public class EditController extends AbstractMutableDataPageController {
 		case "meaning_media":
 			cudService.updateMeaningMedia(id, value, complexity, roleDatasetCode, isManualEventOnUpdateEnabled);
 			break;
+		case "meaning_freeform":
+			cudService.updateMeaningFreeform(id, value, isPublic, roleDatasetCode, isManualEventOnUpdateEnabled);
+			break;
 		case "meaning_semantic_type":
 			cudService.updateMeaningSemanticType(id, currentValue, value, roleDatasetCode, isManualEventOnUpdateEnabled);
 			break;
@@ -405,6 +423,9 @@ public class EditController extends AbstractMutableDataPageController {
 		case ContentKey.LEXEME_SOURCE_LINK:
 			sourceLinkService.updateLexemeSourceLink(id, value, roleDatasetCode, isManualEventOnUpdateEnabled);
 			break;
+		case ContentKey.LEXEME_FREEFORM_SOURCE_LINK:
+			sourceLinkService.updateLexemeFreeformSourceLink(id, value, roleDatasetCode, isManualEventOnUpdateEnabled);
+			break;
 		case ContentKey.LEXEME_NOTE_SOURCE_LINK:
 			sourceLinkService.updateLexemeNoteSourceLink(id, value, roleDatasetCode, isManualEventOnUpdateEnabled);
 			break;
@@ -416,6 +437,9 @@ public class EditController extends AbstractMutableDataPageController {
 			break;
 		case ContentKey.MEANING_NOTE_SOURCE_LINK:
 			sourceLinkService.updateMeaningNoteSourceLink(id, value, roleDatasetCode, isManualEventOnUpdateEnabled);
+			break;
+		case ContentKey.MEANING_FREEFORM_SOURCE_LINK:
+			sourceLinkService.updateMeaningFreeformSourceLink(id, value, roleDatasetCode, isManualEventOnUpdateEnabled);
 			break;
 		}
 		return response;
@@ -452,6 +476,12 @@ public class EditController extends AbstractMutableDataPageController {
 			break;
 		case "meaning_domain":
 			cudService.updateMeaningDomainOrdering(items, roleDatasetCode, isManualEventOnUpdateEnabled);
+			break;
+		case "lexeme_freeform":
+			cudService.updateLexemeFreeformOrdering(items, roleDatasetCode, isManualEventOnUpdateEnabled);
+			break;
+		case "meaning_freeform":
+			cudService.updateMeaningFreeformOrdering(items, roleDatasetCode, isManualEventOnUpdateEnabled);
 			break;
 		case "government":
 			cudService.updateGovernmentOrdering(items, roleDatasetCode, isManualEventOnUpdateEnabled);
@@ -519,6 +549,9 @@ public class EditController extends AbstractMutableDataPageController {
 			break;
 		case "usage_definition":
 			cudService.deleteUsageDefinition(id, roleDatasetCode, isManualEventOnUpdateEnabled);
+			break;
+		case "lexeme_freeform":
+			cudService.deleteLexemeFreeform(id, roleDatasetCode, isManualEventOnUpdateEnabled);
 			break;
 		case "government":
 			cudService.deleteLexemeGovernment(id, roleDatasetCode, isManualEventOnUpdateEnabled);
@@ -596,6 +629,9 @@ public class EditController extends AbstractMutableDataPageController {
 		case "meaning_media":
 			cudService.deleteMeaningMedia(id, roleDatasetCode, isManualEventOnUpdateEnabled);
 			break;
+		case "meaning_freeform":
+			cudService.deleteMeaningFreeform(id, roleDatasetCode, isManualEventOnUpdateEnabled);
+			break;
 		case "word_type":
 			cudService.deleteWordTypeWithDuplication(id, valueToDelete, user, isManualEventOnUpdateEnabled);
 			break;
@@ -635,6 +671,9 @@ public class EditController extends AbstractMutableDataPageController {
 		case ContentKey.LEXEME_SOURCE_LINK:
 			sourceLinkService.deleteLexemeSourceLink(id, roleDatasetCode, isManualEventOnUpdateEnabled);
 			break;
+		case ContentKey.LEXEME_FREEFORM_SOURCE_LINK:
+			sourceLinkService.deleteLexemeFreeformSourceLink(id, roleDatasetCode, isManualEventOnUpdateEnabled);
+			break;
 		case ContentKey.LEXEME_NOTE_SOURCE_LINK:
 			sourceLinkService.deleteLexemeNoteSourceLink(id, roleDatasetCode, isManualEventOnUpdateEnabled);
 			break;
@@ -646,6 +685,9 @@ public class EditController extends AbstractMutableDataPageController {
 			break;
 		case ContentKey.MEANING_NOTE_SOURCE_LINK:
 			sourceLinkService.deleteMeaningNoteSourceLink(id, roleDatasetCode, isManualEventOnUpdateEnabled);
+			break;
+		case ContentKey.MEANING_FREEFORM_SOURCE_LINK:
+			sourceLinkService.deleteMeaningFreeformSourceLink(id, roleDatasetCode, isManualEventOnUpdateEnabled);
 			break;
 		}
 		return response;

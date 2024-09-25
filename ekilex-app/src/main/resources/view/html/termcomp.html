@@ -982,7 +982,7 @@
   <div class="row no-gutters" th:if="${not #lists.isEmpty(meaning.freeforms)}" th:fragment="meaning_freeform">
     <hr/>
     <div class="col pr-0 col-w13rem">
-      <span class="lbl" th:text="#{term.meaning.attributes}">Tähenduse atribuudid</span>
+      <span class="lbl" th:text="#{term.meaning.freeforms}">Tähenduse atribuudid</span>
     </div>
     <div class="col pl-0">
       <table>
@@ -1662,7 +1662,7 @@
   <div th:if="${not #lists.isEmpty(lexeme.freeforms)}" class="row no-gutters" th:fragment="lexeme_freeform">
     <hr/>
     <div class="col pr-0 col-w13rem">
-      <span class="lbl" th:text="#{term.lexeme.attributes}">Ilmiku atribuudid</span>
+      <span class="lbl" th:text="#{term.lexeme.freeforms}">Ilmiku atribuudid</span>
     </div>
     <div class="col pl-0">
       <table>

@@ -7,6 +7,7 @@ import static eki.ekilex.data.db.Tables.DEFINITION_NOTE;
 import static eki.ekilex.data.db.Tables.DEFINITION_NOTE_SOURCE_LINK;
 import static eki.ekilex.data.db.Tables.DEFINITION_SOURCE_LINK;
 import static eki.ekilex.data.db.Tables.FREEFORM;
+import static eki.ekilex.data.db.Tables.FREEFORM_SOURCE_LINK;
 import static eki.ekilex.data.db.Tables.LEXEME;
 import static eki.ekilex.data.db.Tables.LEXEME_ACTIVITY_LOG;
 import static eki.ekilex.data.db.Tables.LEXEME_FREEFORM;
@@ -596,6 +597,15 @@ public class ActivityLogDbService implements GlobalConstant, ActivityFunct {
 								.leftOuterJoin(d).on(d.ID.eq(dff.DEFINITION_ID)))
 				.where(ff.ID.eq(freeformId))
 				.fetchOptionalMap()
+				.orElse(null);
+	}
+
+	public Long getFreeformSourceLinkOwnerId(Long sourceLinkId) {
+		return create
+				.select(FREEFORM_SOURCE_LINK.FREEFORM_ID)
+				.from(FREEFORM_SOURCE_LINK)
+				.where(FREEFORM_SOURCE_LINK.ID.eq(sourceLinkId))
+				.fetchOptionalInto(Long.class)
 				.orElse(null);
 	}
 

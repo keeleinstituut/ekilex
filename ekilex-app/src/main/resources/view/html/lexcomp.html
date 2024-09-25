@@ -1150,10 +1150,11 @@
       </th:block>
     </div>
   </div>
+  <!-- 
   <div class="row" th:if="${not #lists.isEmpty(lexeme.meaning.freeforms)}" th:fragment="meaning_freeform">
     <hr/>
     <div class="col pr-0 col-w13rem">
-      <span class="lbl" th:text="#{lex.meaning.attributes}">Tähenduse atribuudid</span>
+      <span class="lbl" th:text="#{lex.meaning.freeforms}">Tähenduse atribuudid</span>
     </div>
     <div class="col pl-0">
       <table>
@@ -1167,6 +1168,104 @@
           </td>
         </tr>
       </table>
+    </div>
+  </div>
+   -->
+  <div class="row" th:if="${not #lists.isEmpty(lexeme.meaning.freeforms)}" th:fragment="meaning_freeform">
+    <hr/>
+    <div class="col pr-0 col-w13rem">
+      <span class="lbl" th:text="#{lex.meaning.freeforms}">Tähenduse atribuudid</span>
+      <button type="button" class="btn badge badge-success float-right mr-4"
+              th:title="#{common.add.new}"
+              data-toggle="modal"
+              th:data-target="${'#addMeaningFreeformDlg_' + lexeme.lexemeId}"
+              sec:authorize="#vars.lexeme.meaning.crudGrant">
+        <i class="fa fa-plus" aria-hidden="true"></i>
+      </button>
+    </div>
+    <div class="col pl-0">
+      <div class="orderable" data-op-code="meaning_freeform">
+        <div th:each="freeform,freeformIter : ${lexeme.meaning.freeforms}"
+             th:data-id="${freeform.id}"
+             th:data-orderby="${freeform.orderBy}">
+          <div th:replace="lexdialog :: edit_meaning_freeform_dlg"></div>
+          <div th:replace="lexdialog :: add_meaning_freeform_source_link_dlg"></div>
+          <div class="action-column">
+            <th:block th:replace="common :: ordering_buttons(${freeformIter})" sec:authorize="#vars.lexeme.meaning.crudGrant"></th:block>
+          </div>
+          <div class="invisible-buttons action-buttons-anchor mw-80">
+            <span th:text="${freeform.freeformTypeValue}" class="text-monospace pr-3"></span>
+            <span th:utext="${freeform.valuePrese}"></span>
+            <span class="ctxt" th:text="'(' + #{'boolean.public.' + ${freeform.public}} + ')'" data-plugin="complexityAndPublicity"></span>
+            <span th:if="${#lists.isEmpty(freeform.sourceLinks)}" class="show-on-mouseover">
+              [
+              <button type="button" class="btn badge badge-success hidden"
+                      th:title="#{common.add.source.link}"
+                      data-toggle="modal"
+                      th:data-target="${'#addMeaningFreeformSourceLinkDlg_' + lexeme.lexemeId + '_' + freeform.id}"
+                      sec:authorize="#vars.lexeme.meaning.crudGrant">
+                <i class="fa fa-external-link" aria-hidden="true"></i>
+              </button>
+              ]
+            </span>
+            <div class="action-buttons-3">
+              <button type="button" class="btn badge badge-primary"
+                      th:title="#{common.edit}"
+                      data-toggle="modal"
+                      th:data-target="${'#editMeaningFreeformDlg_' + lexeme.lexemeId + '_' + freeform.id}"
+                      sec:authorize="#vars.lexeme.meaning.crudGrant">
+                <i class="fa fa-edit" aria-hidden="true"></i>
+              </button>
+              <button type="button" class="btn badge badge-warning"
+                      data-op-code="meaning_freeform"
+                      th:data-id="${freeform.id}"
+                      th:data-callback="${viewUtil.composeFunction('loadFullLexemeDetails', lexeme.lexemeId, lexeme.levels)}"
+                      data-toggle="delete-confirm"
+                      data-placement="right"
+                      sec:authorize="#vars.lexeme.meaning.crudGrant">
+                <i class="fa fa-remove" aria-hidden="true"></i>
+              </button>
+            </div>
+          </div>
+          <div class="hidden-buttons">
+            <th:block th:each="sourceLink : ${freeform.sourceLinks}" th:if="${not #lists.isEmpty(freeform.sourceLinks)}">
+              <div th:replace="lexdialog :: edit_meaning_freeform_source_link_dlg"></div>
+              <span>
+                [
+                <a th:href="@{'/meaning_freeform_source_link:' + ${sourceLink.id}}" th:text="${sourceLink.sourceName}"></a>
+                <span th:text="${sourceLink.name}" th:if="${sourceLink.name != null}"></span>
+                <button type="button" class="btn badge badge-primary"
+                        th:title="#{common.edit}"
+                        data-toggle="modal"
+                        th:data-target="${'#editMeaningFreeformSourceLinkDlg_' + sourceLink.id}"
+                        sec:authorize="#vars.lexeme.meaning.crudGrant">
+                  <i class="fa fa-edit" aria-hidden="true"></i>
+                </button>
+                <button type="button" class="btn badge badge-warning"
+                        data-op-code="meaning_freeform_source_link"
+                        th:data-id="${sourceLink.id}"
+                        th:data-callback="${viewUtil.composeFunction('loadFullLexemeDetails', lexeme.lexemeId, lexeme.levels)}"
+                        data-toggle="delete-confirm"
+                        data-placement="right"
+                        sec:authorize="#vars.lexeme.meaning.crudGrant">
+                  <i class="fa fa-remove" aria-hidden="true"></i>
+                </button>
+                ]
+              </span>
+            </th:block>
+            <button type="button" class="btn badge badge-success hidden"
+                    th:title="#{common.add.source.link}"
+                    data-toggle="modal"
+                    th:data-target="${'#addMeaningFreeformSourceLinkDlg_' + lexeme.lexemeId + '_' + freeform.id}"
+                    sec:authorize="#vars.lexeme.meaning.crudGrant">
+              <i class="fa fa-external-link" aria-hidden="true"></i>
+            </button>
+          </div>
+          <div class="w-50" th:unless="${freeformIter.last}">
+            <hr/>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
   <div class="row" th:if="${not #lists.isEmpty(lexeme.meaning.viewRelations)}" th:fragment="meaning_relation">
@@ -1609,20 +1708,98 @@
   <div class="row" th:if="${not #lists.isEmpty(lexeme.lexemeFreeforms)}" th:fragment="lexeme_freeform">
     <hr/>
     <div class="col pr-0 col-w13rem">
-      <span class="lbl" th:text="#{lex.lexeme.attributes}">Ilmiku atribuudid</span>
+      <span class="lbl" th:text="#{lex.lexeme.freeforms}">Ilmiku atribuudid</span>
+      <button type="button" class="btn badge badge-success float-right mr-4"
+              th:title="#{common.add.new}"
+              data-toggle="modal"
+              th:data-target="${'#addLexemeFreeformDlg_' + lexeme.lexemeId}"
+              sec:authorize="#vars.lexeme.crudGrant">
+        <i class="fa fa-plus" aria-hidden="true"></i>
+      </button>
     </div>
     <div class="col pl-0">
-      <table>
-        <tr th:each="freeform : ${lexeme.lexemeFreeforms}">
-          <td class="align-text-top pr-3">
-            <span th:text="${freeform.freeformTypeCode}"></span>
-          </td>
-          <td>
-            <span th:utext="${freeform.valueText}" th:if="${freeform.valueText != null}"></span>
-            <span th:text="${#dates.format(freeform.valueDate, 'dd.MM.yyyy HH:mm')}" th:if="${freeform.valueDate != null}"></span>
-          </td>
-        </tr>
-      </table>
+      <div class="orderable" data-op-code="lexeme_freeform">
+        <div th:each="freeform,freeformIter : ${lexeme.lexemeFreeforms}"
+             th:data-id="${freeform.id}"
+             th:data-orderby="${freeform.orderBy}">
+          <div th:replace="lexdialog :: edit_lexeme_freeform_dlg"></div>
+          <div th:replace="lexdialog :: add_lexeme_freeform_source_link_dlg"></div>
+          <div class="action-column">
+            <th:block th:replace="common :: ordering_buttons(${freeformIter})" sec:authorize="#vars.lexeme.crudGrant"></th:block>
+          </div>
+          <div class="invisible-buttons action-buttons-anchor mw-80">
+            <span th:text="${freeform.freeformTypeValue}" class="text-monospace pr-3"></span>
+            <span th:utext="${freeform.valuePrese}"></span>
+            <span class="ctxt" th:text="'(' + #{'boolean.public.' + ${freeform.public}} + ')'" data-plugin="complexityAndPublicity"></span>
+            <span th:if="${#lists.isEmpty(freeform.sourceLinks)}" class="show-on-mouseover">
+              [
+              <button type="button" class="btn badge badge-success hidden"
+                      th:title="#{common.add.source.link}"
+                      data-toggle="modal"
+                      th:data-target="${'#addLexemeFreeformSourceLinkDlg_' + lexeme.lexemeId + '_' + freeform.id}"
+                      sec:authorize="#vars.lexeme.crudGrant">
+                <i class="fa fa-external-link" aria-hidden="true"></i>
+              </button>
+              ]
+            </span>
+            <div class="action-buttons-3">
+              <button type="button" class="btn badge badge-primary"
+                      th:title="#{common.edit}"
+                      data-toggle="modal"
+                      th:data-target="${'#editLexemeFreeformDlg_' + lexeme.lexemeId + '_' + freeform.id}"
+                      sec:authorize="#vars.lexeme.crudGrant">
+                <i class="fa fa-edit" aria-hidden="true"></i>
+              </button>
+              <button type="button" class="btn badge badge-warning"
+                      data-op-code="lexeme_freeform"
+                      th:data-id="${freeform.id}"
+                      th:data-callback="${viewUtil.composeFunction('loadFullLexemeDetails', lexeme.lexemeId, lexeme.levels)}"
+                      data-toggle="delete-confirm"
+                      data-placement="right"
+                      sec:authorize="#vars.lexeme.crudGrant">
+                <i class="fa fa-remove" aria-hidden="true"></i>
+              </button>
+            </div>
+          </div>
+          <div class="hidden-buttons">
+            <th:block th:each="sourceLink : ${freeform.sourceLinks}" th:if="${not #lists.isEmpty(freeform.sourceLinks)}">
+              <div th:replace="lexdialog :: edit_lexeme_freeform_source_link_dlg"></div>
+              <span>
+                [
+                <a th:href="@{'/lexeme_freeform_source_link:' + ${sourceLink.id}}" th:text="${sourceLink.sourceName}"></a>
+                <span th:text="${sourceLink.name}" th:if="${sourceLink.name != null}"></span>
+                <button type="button" class="btn badge badge-primary"
+                        th:title="#{common.edit}"
+                        data-toggle="modal"
+                        th:data-target="${'#editLexemeFreeformSourceLinkDlg_' + sourceLink.id}"
+                        sec:authorize="#vars.lexeme.crudGrant">
+                  <i class="fa fa-edit" aria-hidden="true"></i>
+                </button>
+                <button type="button" class="btn badge badge-warning"
+                        data-op-code="lexeme_freeform_source_link"
+                        th:data-id="${sourceLink.id}"
+                        th:data-callback="${viewUtil.composeFunction('loadFullLexemeDetails', lexeme.lexemeId, lexeme.levels)}"
+                        data-toggle="delete-confirm"
+                        data-placement="right"
+                        sec:authorize="#vars.lexeme.crudGrant">
+                  <i class="fa fa-remove" aria-hidden="true"></i>
+                </button>
+                ]
+              </span>
+            </th:block>
+            <button type="button" class="btn badge badge-success hidden"
+                    th:title="#{common.add.source.link}"
+                    data-toggle="modal"
+                    th:data-target="${'#addLexemeFreeformSourceLinkDlg_' + lexeme.lexemeId + '_' + freeform.id}"
+                    sec:authorize="#vars.lexeme.crudGrant">
+              <i class="fa fa-external-link" aria-hidden="true"></i>
+            </button>
+          </div>
+          <div class="w-50" th:unless="${freeformIter.last}">
+            <hr/>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
   <div class="row" th:if="${not #lists.isEmpty(lexeme.lexemeRelations)}" th:fragment="lexeme_relation">
