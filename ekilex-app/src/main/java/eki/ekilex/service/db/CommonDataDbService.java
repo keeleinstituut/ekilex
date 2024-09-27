@@ -20,6 +20,7 @@ import static eki.ekilex.data.db.Tables.DOMAIN;
 import static eki.ekilex.data.db.Tables.DOMAIN_LABEL;
 import static eki.ekilex.data.db.Tables.ETYMOLOGY_TYPE;
 import static eki.ekilex.data.db.Tables.FREEFORM;
+import static eki.ekilex.data.db.Tables.FREEFORM_SOURCE_LINK;
 import static eki.ekilex.data.db.Tables.FREEFORM_TYPE;
 import static eki.ekilex.data.db.Tables.FREEFORM_TYPE_LABEL;
 import static eki.ekilex.data.db.Tables.GENDER;
@@ -125,6 +126,8 @@ import eki.ekilex.data.db.tables.DefinitionTypeLabel;
 import eki.ekilex.data.db.tables.Domain;
 import eki.ekilex.data.db.tables.DomainLabel;
 import eki.ekilex.data.db.tables.Freeform;
+import eki.ekilex.data.db.tables.FreeformSourceLink;
+import eki.ekilex.data.db.tables.FreeformTypeLabel;
 import eki.ekilex.data.db.tables.Language;
 import eki.ekilex.data.db.tables.LexRelTypeLabel;
 import eki.ekilex.data.db.tables.LexRelation;
@@ -635,23 +638,58 @@ public class CommonDataDbService extends AbstractDataDbService {
 				.orElse(null);
 	}
 
-	public List<FreeForm> getMeaningFreeforms(Long meaningId, String... excludedFreeformTypeCodes) {
+	public List<FreeForm> getMeaningFreeforms(Long meaningId, String[] excludedFreeformTypeCodes, String classifierLabelLang, String classifierLabelTypeCode) {
+
+		Freeform f = FREEFORM.as("f");
+		MeaningFreeform mf = MEANING_FREEFORM.as("mf");
+		FreeformTypeLabel ftl = FREEFORM_TYPE_LABEL.as("ftl");
+		FreeformSourceLink fsl = FREEFORM_SOURCE_LINK.as("fsl");
+		Source s = SOURCE.as("s");
+
+		Field<JSON> fslf = DSL
+				.select(DSL
+						.jsonArrayAgg(DSL
+								.jsonObject(
+										DSL.key("id").value(fsl.ID),
+										DSL.key("type").value(fsl.TYPE),
+										DSL.key("name").value(fsl.NAME),
+										DSL.key("sourceId").value(fsl.SOURCE_ID),
+										DSL.key("sourceName").value(s.NAME)))
+						.orderBy(fsl.ORDER_BY))
+				.from(fsl, s)
+				.where(
+						fsl.FREEFORM_ID.eq(f.ID)
+								.and(fsl.SOURCE_ID.eq(s.ID)))
+				.asField();
 
 		return create
 				.select(
-						FREEFORM.ID,
-						FREEFORM.FREEFORM_TYPE_CODE,
-						FREEFORM.VALUE_TEXT,
-						FREEFORM.VALUE_PRESE,
-						FREEFORM.VALUE_DATE,
-						FREEFORM.LANG,
-						FREEFORM.COMPLEXITY)
-				.from(FREEFORM, MEANING_FREEFORM)
-				.where(
-						MEANING_FREEFORM.MEANING_ID.eq(meaningId)
-								.and(FREEFORM.ID.eq(MEANING_FREEFORM.FREEFORM_ID))
-								.and(FREEFORM.FREEFORM_TYPE_CODE.notIn(excludedFreeformTypeCodes)))
-				.orderBy(FREEFORM.ORDER_BY)
+						f.ID,
+						f.FREEFORM_TYPE_CODE,
+						DSL.coalesce(ftl.VALUE, f.FREEFORM_TYPE_CODE).as("freeform_type_value"),
+						f.VALUE_TEXT,
+						f.VALUE_PRESE,
+						f.VALUE_DATE,
+						f.LANG,
+						f.COMPLEXITY,
+						f.ORDER_BY,
+						f.IS_PUBLIC,
+						f.CREATED_BY,
+						f.CREATED_ON,
+						f.MODIFIED_BY,
+						f.MODIFIED_ON,
+						fslf.as("source_links"))
+				.from(
+						mf
+								.innerJoin(f).on(
+										f.ID.eq(mf.FREEFORM_ID)
+												.and(f.FREEFORM_TYPE_CODE.notIn(excludedFreeformTypeCodes)))
+								.leftOuterJoin(ftl).on(
+										ftl.CODE.eq(f.FREEFORM_TYPE_CODE)
+												.and(ftl.TYPE.eq(classifierLabelTypeCode))
+												.and(ftl.LANG.eq(classifierLabelLang))))
+				.where(mf.MEANING_ID.eq(meaningId))
+				.orderBy(f.ORDER_BY)
 				.fetchInto(FreeForm.class);
 	}
 
@@ -1178,23 +1216,58 @@ public class CommonDataDbService extends AbstractDataDbService {
 				.fetchInto(MeaningForum.class);
 	}
 
-	public List<FreeForm> getLexemeFreeforms(Long lexemeId, String... excludedFreeformTypeCodes) {
+	public List<FreeForm> getLexemeFreeforms(Long lexemeId, String[] excludedFreeformTypeCodes, String classifierLabelLang, String classifierLabelTypeCode) {
+
+		Freeform f = FREEFORM.as("f");
+		LexemeFreeform lf = LEXEME_FREEFORM.as("lf");
+		FreeformTypeLabel ftl = FREEFORM_TYPE_LABEL.as("ftl");
+		FreeformSourceLink fsl = FREEFORM_SOURCE_LINK.as("fsl");
+		Source s = SOURCE.as("s");
+
+		Field<JSON> fslf = DSL
+				.select(DSL
+						.jsonArrayAgg(DSL
+								.jsonObject(
+										DSL.key("id").value(fsl.ID),
+										DSL.key("type").value(fsl.TYPE),
+										DSL.key("name").value(fsl.NAME),
+										DSL.key("sourceId").value(fsl.SOURCE_ID),
+										DSL.key("sourceName").value(s.NAME)))
+						.orderBy(fsl.ORDER_BY))
+				.from(fsl, s)
+				.where(
+						fsl.FREEFORM_ID.eq(f.ID)
+								.and(fsl.SOURCE_ID.eq(s.ID)))
+				.asField();
+
 		return create
 				.select(
-						FREEFORM.ID,
-						FREEFORM.FREEFORM_TYPE_CODE,
-						FREEFORM.VALUE_TEXT,
-						FREEFORM.VALUE_PRESE,
-						FREEFORM.VALUE_DATE,
-						FREEFORM.LANG,
-						FREEFORM.COMPLEXITY,
-						FREEFORM.ORDER_BY)
-				.from(FREEFORM, LEXEME_FREEFORM)
-				.where(
-						LEXEME_FREEFORM.LEXEME_ID.eq(lexemeId)
-								.and(FREEFORM.ID.eq(LEXEME_FREEFORM.FREEFORM_ID))
-								.and(FREEFORM.FREEFORM_TYPE_CODE.notIn(excludedFreeformTypeCodes)))
-				.orderBy(FREEFORM.ORDER_BY)
+						f.ID,
+						f.FREEFORM_TYPE_CODE,
+						DSL.coalesce(ftl.VALUE, f.FREEFORM_TYPE_CODE).as("freeform_type_value"),
+						f.VALUE_TEXT,
+						f.VALUE_PRESE,
+						f.VALUE_DATE,
+						f.LANG,
+						f.COMPLEXITY,
+						f.ORDER_BY,
+						f.IS_PUBLIC,
+						f.CREATED_BY,
+						f.CREATED_ON,
+						f.MODIFIED_BY,
+						f.MODIFIED_ON,
+						fslf.as("source_links"))
+				.from(
+						lf
+								.innerJoin(f).on(
+										f.ID.eq(lf.FREEFORM_ID)
+												.and(f.FREEFORM_TYPE_CODE.notIn(excludedFreeformTypeCodes)))
+								.leftOuterJoin(ftl).on(
+										ftl.CODE.eq(f.FREEFORM_TYPE_CODE)
+												.and(ftl.TYPE.eq(classifierLabelTypeCode))
+												.and(ftl.LANG.eq(classifierLabelLang))))
+				.where(lf.LEXEME_ID.eq(lexemeId))
+				.orderBy(f.ORDER_BY)
 				.fetchInto(FreeForm.class);
 	}
 

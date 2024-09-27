@@ -240,20 +240,20 @@ public abstract class AbstractCudService extends AbstractService {
 		note.setValuePrese(valuePrese);
 	}
 
-	protected Long createLexemeFreeform(ActivityEntity activityEntity, Long lexemeId, FreeForm freeform, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
-
-		String userName = userContext.getUserName();
-		ActivityLogData activityLog = activityLogService.prepareActivityLog("createLexemeFreeform", lexemeId, ActivityOwner.LEXEME, roleDatasetCode, isManualEventOnUpdateEnabled);
-		Long lexemeFreeformId = cudDbService.createLexemeFreeform(lexemeId, freeform, userName);
-		activityLogService.createActivityLog(activityLog, lexemeFreeformId, activityEntity);
-		return lexemeFreeformId;
-	}
-
 	protected void setFreeformValueTextAndValuePrese(FreeForm freeform, String valuePrese) {
 
 		String value = textDecorationService.removeEkiElementMarkup(valuePrese);
 		freeform.setValueText(value);
 		freeform.setValuePrese(valuePrese);
+	}
+
+	protected Long createLexemeFreeform(ActivityEntity activityEntity, Long lexemeId, FreeForm freeform, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
+
+		String userName = userContext.getUserName();
+		ActivityLogData activityLog = activityLogService.prepareActivityLog("createLexemeFreeform", lexemeId, ActivityOwner.LEXEME, roleDatasetCode, isManualEventOnUpdateEnabled);
+		Long freeformId = cudDbService.createLexemeFreeform(lexemeId, freeform, userName);
+		activityLogService.createActivityLog(activityLog, freeformId, activityEntity);
+		return freeformId;
 	}
 
 	protected void moveCreatedWordRelationToFirst(Long wordId, Long relationId, String relTypeCode) {

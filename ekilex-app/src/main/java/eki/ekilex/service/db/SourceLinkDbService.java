@@ -2,6 +2,7 @@ package eki.ekilex.service.db;
 
 import static eki.ekilex.data.db.Tables.DEFINITION_NOTE_SOURCE_LINK;
 import static eki.ekilex.data.db.Tables.DEFINITION_SOURCE_LINK;
+import static eki.ekilex.data.db.Tables.FREEFORM_SOURCE_LINK;
 import static eki.ekilex.data.db.Tables.LEXEME_NOTE_SOURCE_LINK;
 import static eki.ekilex.data.db.Tables.LEXEME_SOURCE_LINK;
 import static eki.ekilex.data.db.Tables.MEANING_IMAGE_SOURCE_LINK;
@@ -20,6 +21,7 @@ import eki.ekilex.data.SourceLink;
 import eki.ekilex.data.SourceLinkOwner;
 import eki.ekilex.data.db.tables.DefinitionNoteSourceLink;
 import eki.ekilex.data.db.tables.DefinitionSourceLink;
+import eki.ekilex.data.db.tables.FreeformSourceLink;
 import eki.ekilex.data.db.tables.LexemeNoteSourceLink;
 import eki.ekilex.data.db.tables.LexemeSourceLink;
 import eki.ekilex.data.db.tables.MeaningImageSourceLink;
@@ -32,6 +34,13 @@ public class SourceLinkDbService {
 
 	@Autowired
 	private DSLContext create;
+
+	public SourceLink getFreeformSourceLink(Long sourceLinkId) {
+
+		FreeformSourceLink sl = FREEFORM_SOURCE_LINK.as("sl");
+
+		return getSourceLink(sourceLinkId, sl);
+	}
 
 	public SourceLink getDefinitionSourceLink(Long sourceLinkId) {
 
@@ -159,6 +168,39 @@ public class SourceLinkDbService {
 				.where(sl.field("id", Long.class).eq(sourceLinkId))
 				.fetchOptionalInto(SourceLinkOwner.class)
 				.orElse(null);
+	}
+
+	public Long createFreeformSourceLink(Long freeformId, SourceLink sourceLink) {
+		return create
+				.insertInto(
+						FREEFORM_SOURCE_LINK,
+						FREEFORM_SOURCE_LINK.FREEFORM_ID,
+						FREEFORM_SOURCE_LINK.SOURCE_ID,
+						FREEFORM_SOURCE_LINK.TYPE,
+						FREEFORM_SOURCE_LINK.NAME)
+				.values(
+						freeformId,
+						sourceLink.getSourceId(),
+						sourceLink.getType().name(),
+						sourceLink.getName())
+				.returning(FREEFORM_SOURCE_LINK.ID)
+				.fetchOne()
+				.getId();
+	}
+
+	public void updateFreeformSourceLink(Long freeformSourceLinkId, String name) {
+		create
+				.update(FREEFORM_SOURCE_LINK)
+				.set(FREEFORM_SOURCE_LINK.NAME, name)
+				.where(FREEFORM_SOURCE_LINK.ID.eq(freeformSourceLinkId))
+				.execute();
+	}
+
+	public void deleteFreeformSourceLink(Long freeformSourceLinkId) {
+		create
+				.deleteFrom(FREEFORM_SOURCE_LINK)
+				.where(FREEFORM_SOURCE_LINK.ID.eq(freeformSourceLinkId))
+				.execute();
 	}
 
 	public Long createLexemeSourceLink(Long lexemeId, Long sourceId, ReferenceType refType, String sourceLinkName) {

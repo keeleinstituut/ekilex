@@ -79,6 +79,7 @@ public class ActivityLogService implements SystemConstant, GlobalConstant, Freef
 	private static final String EMPTY_CONTENT_JSON = "{}";
 
 	private static final List<ActivityEntity> FIRST_DEPTH_FREEFORM_ENTITIES = Arrays.asList(
+			ActivityEntity.FREEFORM,
 			ActivityEntity.GOVERNMENT,
 			ActivityEntity.GOVERNMENT_TYPE,
 			ActivityEntity.GRAMMAR,
@@ -171,6 +172,10 @@ public class ActivityLogService implements SystemConstant, GlobalConstant, Freef
 		} else if (SECOND_DEPTH_FREEFORM_ENTITIES.contains(entity)) {
 			Map<String, Object> freeformOwnerDataMap = activityLogDbService.getSecondDepthFreeformOwnerDataMap(entityId);
 			ActivityLogOwnerEntityDescr freeformOwnerDescr = resolveOwnerDescr(freeformOwnerDataMap);
+			return freeformOwnerDescr.getOwnerId();
+		} else if (ActivityEntity.FREEFORM_SOURCE_LINK.equals(entity)) {
+			Long freeformId = activityLogDbService.getFreeformSourceLinkOwnerId(entityId);
+			ActivityLogOwnerEntityDescr freeformOwnerDescr = getFreeformOwnerDescr(freeformId);
 			return freeformOwnerDescr.getOwnerId();
 		} else if (ActivityEntity.LEXEME_SOURCE_LINK.equals(entity)) {
 			return activityLogDbService.getLexemeSourceLinkOwnerId(entityId);
@@ -581,7 +586,7 @@ public class ActivityLogService implements SystemConstant, GlobalConstant, Freef
 		List<Government> governments = commonDataDbService.getLexemeGovernments(lexemeId);
 		List<FreeForm> grammars = commonDataDbService.getLexemeGrammars(lexemeId);
 		List<Usage> usages = commonDataDbService.getUsages(lexemeId);
-		List<FreeForm> lexemeFreeforms = commonDataDbService.getLexemeFreeforms(lexemeId, EXCLUDED_LEXEME_ATTRIBUTE_FF_TYPE_CODES);
+		List<FreeForm> lexemeFreeforms = commonDataDbService.getLexemeFreeforms(lexemeId, EXCLUDED_LEXEME_ATTRIBUTE_FF_TYPE_CODES, CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
 		List<LexemeNote> lexemeNotes = commonDataDbService.getLexemeNotes(lexemeId);
 		List<NoteLangGroup> lexemeNoteLangGroups = conversionUtil.composeNoteLangGroups(lexemeNotes, null);
 		List<LexemeRelation> lexemeRelations = commonDataDbService.getLexemeRelations(lexemeId, CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
@@ -651,7 +656,7 @@ public class ActivityLogService implements SystemConstant, GlobalConstant, Freef
 		List<OrderedClassifier> meaningDomains = commonDataDbService.getMeaningDomains(meaningId, CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
 		List<String> meaningTags = commonDataDbService.getMeaningTags(meaningId);
 		List<Definition> definitions = commonDataDbService.getMeaningDefinitions(meaningId, CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
-		List<FreeForm> meaningFreeforms = commonDataDbService.getMeaningFreeforms(meaningId, EXCLUDED_MEANING_ATTRIBUTE_FF_TYPE_CODES);
+		List<FreeForm> meaningFreeforms = commonDataDbService.getMeaningFreeforms(meaningId, EXCLUDED_MEANING_ATTRIBUTE_FF_TYPE_CODES, CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
 		List<FreeForm> meaningLearnerComments = commonDataDbService.getMeaningLearnerComments(meaningId);
 		List<Media> meaningImages = commonDataDbService.getMeaningImagesAsMedia(meaningId);
 		List<Media> meaningMedias = commonDataDbService.getMeaningMediaFiles(meaningId);

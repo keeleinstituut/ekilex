@@ -221,7 +221,7 @@ public class LexSearchService extends AbstractWordSearchService {
 			List<Usage> usages = commonDataDbService.getUsages(lexemeId);
 			permCalculator.applyCrud(user, usages);
 			permCalculator.filterVisibility(user, usages);
-			List<FreeForm> lexemeFreeforms = commonDataDbService.getLexemeFreeforms(lexemeId, EXCLUDED_LEXEME_ATTRIBUTE_FF_TYPE_CODES);
+			List<FreeForm> lexemeFreeforms = commonDataDbService.getLexemeFreeforms(lexemeId, EXCLUDED_LEXEME_ATTRIBUTE_FF_TYPE_CODES, CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
 			List<LexemeNote> lexemeNotes = commonDataDbService.getLexemeNotes(lexemeId);
 			permCalculator.filterVisibility(user, lexemeNotes);
 			List<NoteLangGroup> lexemeNoteLangGroups = conversionUtil.composeNoteLangGroups(lexemeNotes, languagesOrder);
@@ -231,7 +231,7 @@ public class LexSearchService extends AbstractWordSearchService {
 			List<CollocationPosGroup> collocationPosGroups = conversionUtil.composeCollocPosGroups(primaryCollocTuples);
 			List<CollocationTuple> secondaryCollocTuples = lexSearchDbService.getSecondaryCollocationTuples(lexemeId);
 			List<Collocation> secondaryCollocations = conversionUtil.composeCollocations(secondaryCollocTuples);
-			List<FreeForm> meaningFreeforms = commonDataDbService.getMeaningFreeforms(meaningId, EXCLUDED_MEANING_ATTRIBUTE_FF_TYPE_CODES);
+			List<FreeForm> meaningFreeforms = commonDataDbService.getMeaningFreeforms(meaningId, EXCLUDED_MEANING_ATTRIBUTE_FF_TYPE_CODES, CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
 			List<FreeForm> meaningLearnerComments = commonDataDbService.getMeaningLearnerComments(meaningId);
 			List<Media> meaningImages = commonDataDbService.getMeaningImagesAsMedia(meaningId);
 			List<Media> meaningMedias = commonDataDbService.getMeaningMediaFiles(meaningId);
@@ -254,7 +254,6 @@ public class LexSearchService extends AbstractWordSearchService {
 			lexeme.setCollocationPosGroups(collocationPosGroups);
 			lexeme.setSecondaryCollocations(secondaryCollocations);
 
-			permCalculator.applyCrud(user, meaning);
 			meaning.setFreeforms(meaningFreeforms);
 			meaning.setLearnerComments(meaningLearnerComments);
 			meaning.setImages(meaningImages);
@@ -264,6 +263,7 @@ public class LexSearchService extends AbstractWordSearchService {
 			meaning.setRelations(meaningRelations);
 			meaning.setViewRelations(viewMeaningRelations);
 			meaning.setDefinitionLangGroups(definitionLangGroups);
+			permCalculator.applyCrud(user, meaning);
 
 			boolean lexemeOrMeaningClassifiersExist = StringUtils.isNotBlank(lexeme.getLexemeValueStateCode())
 					|| StringUtils.isNotBlank(lexeme.getLexemeProficiencyLevelCode())

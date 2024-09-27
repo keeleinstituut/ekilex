@@ -1,13 +1,11 @@
 package eki.ekilex.data;
 
 import java.sql.Timestamp;
-import java.util.ArrayList;
 import java.util.List;
 
 import eki.common.constant.Complexity;
-import eki.common.data.AbstractDataObject;
 
-public class FreeForm extends AbstractDataObject {
+public class FreeForm extends AbstractCreateUpdateEntity {
 
 	private static final long serialVersionUID = 1L;
 
@@ -17,7 +15,7 @@ public class FreeForm extends AbstractDataObject {
 
 	private String freeformTypeCode;
 
-	private Classifier freeformType;
+	private String freeformTypeValue;
 
 	private String valueText;
 
@@ -31,13 +29,7 @@ public class FreeForm extends AbstractDataObject {
 
 	private Long orderBy;
 
-	private List<FreeForm> children = new ArrayList<>();
-
-	private boolean isPublic;
-
-	private String modifiedBy;
-
-	private Timestamp modifiedOn;
+	private List<SourceLink> sourceLinks;
 
 	public Long getId() {
 		return id;
@@ -63,12 +55,12 @@ public class FreeForm extends AbstractDataObject {
 		this.freeformTypeCode = freeformTypeCode;
 	}
 
-	public Classifier getFreeformType() {
-		return freeformType;
+	public String getFreeformTypeValue() {
+		return freeformTypeValue;
 	}
 
-	public void setFreeformType(Classifier freeformType) {
-		this.freeformType = freeformType;
+	public void setFreeformTypeValue(String freeformTypeValue) {
+		this.freeformTypeValue = freeformTypeValue;
 	}
 
 	public String getValueText() {
@@ -119,36 +111,12 @@ public class FreeForm extends AbstractDataObject {
 		this.orderBy = orderBy;
 	}
 
-	public List<FreeForm> getChildren() {
-		return children;
+	public List<SourceLink> getSourceLinks() {
+		return sourceLinks;
 	}
 
-	public void setChildren(List<FreeForm> children) {
-		this.children = children;
-	}
-
-	public boolean isPublic() {
-		return isPublic;
-	}
-
-	public void setPublic(boolean isPublic) {
-		this.isPublic = isPublic;
-	}
-
-	public String getModifiedBy() {
-		return modifiedBy;
-	}
-
-	public void setModifiedBy(String modifiedBy) {
-		this.modifiedBy = modifiedBy;
-	}
-
-	public Timestamp getModifiedOn() {
-		return modifiedOn;
-	}
-
-	public void setModifiedOn(Timestamp modifiedOn) {
-		this.modifiedOn = modifiedOn;
+	public void setSourceLinks(List<SourceLink> sourceLinks) {
+		this.sourceLinks = sourceLinks;
 	}
 
 }

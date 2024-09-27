@@ -232,7 +232,7 @@ public class TermSearchService extends AbstractSearchService {
 		List<DefinitionLangGroup> definitionLangGroups = conversionUtil.composeMeaningDefinitionLangGroups(definitions, languagesOrder);
 		List<OrderedClassifier> domains = commonDataDbService.getMeaningDomains(meaningId, CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
 		List<Classifier> semanticTypes = commonDataDbService.getMeaningSemanticTypes(meaningId, CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
-		List<FreeForm> meaningFreeforms = commonDataDbService.getMeaningFreeforms(meaningId, EXCLUDED_MEANING_ATTRIBUTE_FF_TYPE_CODES);
+		List<FreeForm> meaningFreeforms = commonDataDbService.getMeaningFreeforms(meaningId, EXCLUDED_MEANING_ATTRIBUTE_FF_TYPE_CODES, CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
 		List<Media> images = commonDataDbService.getMeaningImagesAsMedia(meaningId);
 		List<Media> medias = commonDataDbService.getMeaningMediaFiles(meaningId);
 		List<MeaningForum> meaningForums = commonDataDbService.getMeaningForums(meaningId);
@@ -256,7 +256,7 @@ public class TermSearchService extends AbstractSearchService {
 			List<WordForum> wordForums = commonDataDbService.getWordForums(wordId);
 			permCalculator.applyCrud(user, wordForums);
 			List<FreeForm> odWordRecommendations = commonDataDbService.getOdWordRecommendations(wordId);
-			List<FreeForm> lexemeFreeforms = commonDataDbService.getLexemeFreeforms(lexemeId, EXCLUDED_LEXEME_ATTRIBUTE_FF_TYPE_CODES);
+			List<FreeForm> lexemeFreeforms = commonDataDbService.getLexemeFreeforms(lexemeId, EXCLUDED_LEXEME_ATTRIBUTE_FF_TYPE_CODES, CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
 			List<Usage> usages = composeUsages(user, lexemeId);
 			List<LexemeNote> lexemeNotes = commonDataDbService.getLexemeNotes(lexemeId);
 			permCalculator.filterVisibility(user, lexemeNotes);
