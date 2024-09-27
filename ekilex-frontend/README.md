@@ -1,5 +1,6 @@
 # Requirements
-Nodejs 18+
+Nodejs 18+  
+NPM (included with Nodejs install)  
 Either an .env* file containing API_URL or that same variable already defined in your environment  
 For example you can have a file called ```.env.local``` containing ```API_URL=http://localhost:5555```
 
