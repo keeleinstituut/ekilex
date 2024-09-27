@@ -1,9 +1,10 @@
+import { CookieKeys } from "@/lib/enums/cookie-keys.enum";
 import { cookies } from "next/headers";
 import Link from "next/link";
 
 export default function Home() {
   const userCookies = cookies();
-  if (userCookies.get("JSESSIONID")) {
+  if (userCookies.get(CookieKeys.JSESSIONID)) {
     return (
       <Link href="/permissions" className="text-eki-blue">
         Kasutajaõiguste haldus

@@ -1,3 +1,4 @@
+import { CookieKeys } from "@/lib/enums/cookie-keys.enum";
 import { Paths } from "@/lib/enums/paths.enum";
 import { NextRequest, NextResponse } from "next/server";
 
@@ -21,7 +22,7 @@ export function middleware(request: NextRequest) {
   // Forward request if it's to an unprotected path or when the request has a session cookie
   if (
     unprotectedPaths.some((url) => pathname.startsWith(url)) ||
-    request.cookies.get("JSESSIONID")
+    request.cookies.get(CookieKeys.JSESSIONID)
   ) {
     return NextResponse.next();
   }
