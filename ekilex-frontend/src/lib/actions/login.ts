@@ -4,7 +4,7 @@ import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import { Paths } from "../enums/paths.enum";
 
-export async function login(formData: unknown) {
+export async function login(formData: unknown): Promise<void> {
   await fetch(`${process.env.API_URL}/dologin`, {
     method: "POST",
     body: new URLSearchParams(formData as URLSearchParams),

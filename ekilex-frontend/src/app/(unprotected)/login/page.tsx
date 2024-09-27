@@ -1,7 +1,7 @@
-import LoginForm from "@/components/login/login-form";
 import { Paths } from "@/lib/enums/paths.enum";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
+import LoginForm from "./login-form";
 
 export default async function Page() {
   if (cookies().get("JSESSIONID")) {
