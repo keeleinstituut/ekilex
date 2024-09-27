@@ -11,8 +11,8 @@ For example you can have a file called ```.env.local``` containing ```API_URL=ht
 4. Run npm run dev
 
 ## Running prod build (assumes ekilex-app is already running)
-1. Make sure you've added either an .env* file or added the variable into your environment that points to ekilex-app
-2. Move into the ekilex-frontend folder in your terminal/script
+1. Move into the ekilex-frontend folder in your terminal/script
+2. Either add an .env* file containing ```API_URL``` or add the variable into your environment, the variable should point to the url that ekilex-app is served from
 3. Run npm ci
 4. Run npm build
 5. Run npm run start
