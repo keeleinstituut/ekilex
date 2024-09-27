@@ -12,7 +12,7 @@ export default function PermissionsForm({
   const router = useRouter();
   const pathname = usePathname();
   const [state, setState] = useState({
-    userNameFilter: searchParams.userNameFilter,
+    userNameFilter: searchParams.userNameFilter ?? "",
   });
   const handleSubmit = (event: FormEvent) => {
     event.preventDefault();
