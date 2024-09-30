@@ -84,6 +84,7 @@
       <div th:replace="termdialog :: add_meaning_media_dlg"></div>
       <div th:replace="termdialog :: add_meaning_tag_dlg"></div>
       <div th:replace="termdialog :: add_meaning_forum_dlg"></div>
+      <div th:replace="termdialog :: add_meaning_freeform_dlg"></div>
       <button id="refresh-details" hidden="hidden" th:data-id="${meaningId}" name="details-btn"
             data-behaviour="replace"
             data-plugin="loadDetailsPlugin"></button>
@@ -155,7 +156,9 @@
                 <div th:replace="termdialog :: add_lexeme_relation_dlg"></div>
                 <div th:replace="termdialog :: add_lexeme_note_dlg"></div>
                 <div th:replace="termdialog :: add_lexeme_tag_dlg"></div>
+                <div th:replace="termdialog :: add_lexeme_freeform_dlg"></div>
                 <div th:replace="termdialog :: add_word_forum_dlg"></div>
+                <div th:replace="termdialog :: add_word_freeform_dlg"></div>
                 <div th:replace="termdialog :: add_od_word_recommendation_dlg"></div>
                 <div th:replace="termdialog :: edit_lexeme_publicity_dlg"></div>
                 <div th:replace="termdialog :: edit_lexeme_value_state_dlg"></div>
@@ -191,6 +194,7 @@
                        data-plugin="ekiAccordion">
                     <div th:replace="termcomp :: word_od_recommendation"></div>
                     <div th:replace="termcomp :: word_forum"></div>
+                    <div th:replace="termcomp :: word_freeform"></div>
                   </div>
                 </div>
               </div>

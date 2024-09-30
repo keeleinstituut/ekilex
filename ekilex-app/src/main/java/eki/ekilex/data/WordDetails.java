@@ -10,15 +10,7 @@ public class WordDetails extends AbstractDataObject {
 
 	private Word word;
 
-	private List<Classifier> wordTypes;
-
-	private List<Paradigm> paradigms;
-
 	private List<WordLexeme> lexemes;
-
-	private List<WordEtym> wordEtymology;
-
-	private List<FreeForm> odWordRecommendations;
 
 	private WordRelationDetails wordRelationDetails;
 
@@ -37,44 +29,12 @@ public class WordDetails extends AbstractDataObject {
 		this.word = word;
 	}
 
-	public List<Classifier> getWordTypes() {
-		return wordTypes;
-	}
-
-	public void setWordTypes(List<Classifier> wordTypes) {
-		this.wordTypes = wordTypes;
-	}
-
-	public List<Paradigm> getParadigms() {
-		return paradigms;
-	}
-
-	public void setParadigms(List<Paradigm> paradigms) {
-		this.paradigms = paradigms;
-	}
-
 	public List<WordLexeme> getLexemes() {
 		return lexemes;
 	}
 
 	public void setLexemes(List<WordLexeme> lexemes) {
 		this.lexemes = lexemes;
-	}
-
-	public List<WordEtym> getWordEtymology() {
-		return wordEtymology;
-	}
-
-	public void setWordEtymology(List<WordEtym> wordEtymology) {
-		this.wordEtymology = wordEtymology;
-	}
-
-	public List<FreeForm> getOdWordRecommendations() {
-		return odWordRecommendations;
-	}
-
-	public void setOdWordRecommendations(List<FreeForm> odWordRecommendations) {
-		this.odWordRecommendations = odWordRecommendations;
 	}
 
 	public WordRelationDetails getWordRelationDetails() {

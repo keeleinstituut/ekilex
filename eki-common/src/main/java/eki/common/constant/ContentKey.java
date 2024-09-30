@@ -14,6 +14,8 @@ public interface ContentKey {
 
 	String USAGE_SOURCE_LINK = "usage_source_link";
 
+	String WORD_FREEFORM_SOURCE_LINK = "word_freeform_source_link";
+
 	String MEANING_IMAGE_SOURCE_LINK = "meaning_image_source_link";
 
 	String MEANING_NOTE_SOURCE_LINK = "meaning_note_source_link";

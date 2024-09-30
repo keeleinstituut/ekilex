@@ -126,12 +126,12 @@
     </div>
   </th:block>
   <th:block th:fragment="word_types(details)" th:if="${details != null}">
-    <div class="row" th:if="${not #lists.isEmpty(details.wordTypes)}">
+    <div class="row" th:if="${not #lists.isEmpty(details.word.wordTypes)}">
       <div class="col pr-0 col-w13rem">
         <span class="lbl" th:text="#{lex.word.type}">Keelendi tüüp</span>
       </div>
       <div class="col pl-0">
-        <span th:each="classif,classifIter : ${details.wordTypes}" class="hidden-buttons">
+        <span th:each="classif,classifIter : ${details.word.wordTypes}" class="hidden-buttons">
           <span th:text="${classif.code}"></span>
           <th:block th:unless="${classif.code == classif.value}">
             -
@@ -152,12 +152,12 @@
     </div>
   </th:block>
   <th:block th:fragment="etymology(details)" th:if="${details != null}">
-    <div class="row mb-2" th:if="${not #lists.isEmpty(details.wordEtymology)}">
+    <div class="row mb-2" th:if="${not #lists.isEmpty(details.word.etymology)}">
       <div class="col pr-0 col-w13rem">
         <span class="lbl" th:text="#{lex.word.etymology}">Päritolu</span>
       </div>
       <div class="col pl-0 small" style="line-height: 0.8rem;">
-        <th:block th:each="wordEtym, itemIter : ${details.wordEtymology}">
+        <th:block th:each="wordEtym, itemIter : ${details.word.etymology}">
           <div>
             <div>
               <span th:if="${wordEtym.questionable}">?</span>

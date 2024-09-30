@@ -607,7 +607,7 @@
     </th:block>
   </div>
   <div class="mr-1" th:fragment="word_type">
-    <th:block th:if="${#lists.isEmpty(details.wordTypes)}">
+    <th:block th:if="${#lists.isEmpty(details.word.wordTypes)}">
       <button type="button" class="btn btn-secondary btn-compact btn-sm"
               data-toggle="modal"
               th:data-target="${'#addWordTypeDlg_' + wordId}"
@@ -616,8 +616,8 @@
         <span th:text="#{lex.word.type}">Keelendi tüüp</span>
       </button>
     </th:block>
-    <th:block th:unless="${#lists.isEmpty(details.wordTypes)}">
-      <div th:each="classif,classifIter : ${details.wordTypes}"
+    <th:block th:unless="${#lists.isEmpty(details.word.wordTypes)}">
+      <div th:each="classif,classifIter : ${details.word.wordTypes}"
            th:title="#{lex.word.type}"
            data-toggle="tooltip" data-boundary="window" data-placement="top"
            class="hover-actions-container hover-actions-container-outline">
@@ -1150,27 +1150,6 @@
       </th:block>
     </div>
   </div>
-  <!-- 
-  <div class="row" th:if="${not #lists.isEmpty(lexeme.meaning.freeforms)}" th:fragment="meaning_freeform">
-    <hr/>
-    <div class="col pr-0 col-w13rem">
-      <span class="lbl" th:text="#{lex.meaning.freeforms}">Tähenduse atribuudid</span>
-    </div>
-    <div class="col pl-0">
-      <table>
-        <tr th:each="freeform : ${lexeme.meaning.freeforms}">
-          <td class="align-text-top pr-3">
-            <span th:text="${freeform.freeformTypeCode}"></span>
-          </td>
-          <td>
-            <span th:utext="${freeform.valueText}" th:if="${freeform.valueText != null}"></span>
-            <span th:text="${#dates.format(freeform.valueDate, 'dd.MM.yyyy HH:mm')}" th:if="${freeform.valueDate != null}"></span>
-          </td>
-        </tr>
-      </table>
-    </div>
-  </div>
-   -->
   <div class="row" th:if="${not #lists.isEmpty(lexeme.meaning.freeforms)}" th:fragment="meaning_freeform">
     <hr/>
     <div class="col pr-0 col-w13rem">
@@ -1208,7 +1187,7 @@
               </button>
               ]
             </span>
-            <div class="action-buttons-3">
+            <div class="action-buttons-2">
               <button type="button" class="btn badge badge-primary"
                       th:title="#{common.edit}"
                       data-toggle="modal"
@@ -1260,9 +1239,6 @@
                     sec:authorize="#vars.lexeme.meaning.crudGrant">
               <i class="fa fa-external-link" aria-hidden="true"></i>
             </button>
-          </div>
-          <div class="w-50" th:unless="${freeformIter.last}">
-            <hr/>
           </div>
         </div>
       </div>

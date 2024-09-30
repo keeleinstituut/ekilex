@@ -79,8 +79,9 @@ public class LexSearchService extends AbstractWordSearchService {
 		}
 		permCalculator.applyCrud(user, word);
 		String wordLang = word.getLang();
-		List<Classifier> wordTypes = commonDataDbService.getWordTypes(wordId, CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
 		List<WordLexeme> lexemes = lexSearchDbService.getWordLexemes(wordId, searchDatasetsRestriction, CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
+		List<FreeForm> wordFreeforms = commonDataDbService.getWordFreeforms(wordId, EXCLUDED_WORD_ATTRIBUTE_FF_TYPE_CODES, CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
+		List<Classifier> wordTypes = commonDataDbService.getWordTypes(wordId, CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
 		List<ParadigmFormTuple> paradigmFormTuples = lexSearchDbService.getParadigmFormTuples(wordId, CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
 		List<Paradigm> paradigms = conversionUtil.composeParadigms(paradigmFormTuples);
 		List<WordRelation> wordRelations = lexSearchDbService.getWordRelations(wordId, CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
@@ -111,15 +112,17 @@ public class LexSearchService extends AbstractWordSearchService {
 		lexemeLevelPreseUtil.combineLevels(lexemes);
 		boolean isActiveTagComplete = conversionUtil.isLexemesActiveTagComplete(userRole, lexemes, activeTag);
 
+		word.setWordTypes(wordTypes);
+		word.setParadigms(paradigms);
+		word.setEtymology(wordEtymology);
+		word.setForums(wordForums);
+		word.setOdWordRecommendations(odWordRecommendations);
+		word.setFreeforms(wordFreeforms);
+
 		WordDetails wordDetails = new WordDetails();
 		wordDetails.setWord(word);
-		wordDetails.setWordTypes(wordTypes);
-		wordDetails.setParadigms(paradigms);
 		wordDetails.setLexemes(lexemes);
-		wordDetails.setWordEtymology(wordEtymology);
-		wordDetails.setOdWordRecommendations(odWordRecommendations);
 		wordDetails.setWordRelationDetails(wordRelationDetails);
-		word.setForums(wordForums);
 		wordDetails.setActiveTagComplete(isActiveTagComplete);
 
 		return wordDetails;

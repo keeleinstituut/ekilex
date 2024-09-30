@@ -303,11 +303,12 @@ public class LookupService extends AbstractWordSearchService {
 		lexemeLevelPreseUtil.combineLevels(lexemes);
 		String firstDefinitionValue = getFirstDefinitionValue(lexemes);
 
+		word.setWordTypes(wordTypes);
+		word.setEtymology(wordEtymology);
+
 		WordDetails wordDetails = new WordDetails();
 		wordDetails.setWord(word);
-		wordDetails.setWordTypes(wordTypes);
 		wordDetails.setLexemes(lexemes);
-		wordDetails.setWordEtymology(wordEtymology);
 		wordDetails.setFirstDefinitionValue(firstDefinitionValue);
 
 		return wordDetails;

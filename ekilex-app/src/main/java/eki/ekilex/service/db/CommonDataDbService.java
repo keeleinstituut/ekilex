@@ -117,6 +117,7 @@ import eki.ekilex.data.Origin;
 import eki.ekilex.data.SearchLangsRestriction;
 import eki.ekilex.data.SourceLink;
 import eki.ekilex.data.WordForum;
+import eki.ekilex.data.db.tables.DatasetFreeformType;
 import eki.ekilex.data.db.tables.Definition;
 import eki.ekilex.data.db.tables.DefinitionDataset;
 import eki.ekilex.data.db.tables.DefinitionNote;
@@ -127,6 +128,7 @@ import eki.ekilex.data.db.tables.Domain;
 import eki.ekilex.data.db.tables.DomainLabel;
 import eki.ekilex.data.db.tables.Freeform;
 import eki.ekilex.data.db.tables.FreeformSourceLink;
+import eki.ekilex.data.db.tables.FreeformType;
 import eki.ekilex.data.db.tables.FreeformTypeLabel;
 import eki.ekilex.data.db.tables.Language;
 import eki.ekilex.data.db.tables.LexRelTypeLabel;
@@ -150,6 +152,7 @@ import eki.ekilex.data.db.tables.UsageDefinition;
 import eki.ekilex.data.db.tables.UsageSourceLink;
 import eki.ekilex.data.db.tables.UsageTranslation;
 import eki.ekilex.data.db.tables.Word;
+import eki.ekilex.data.db.tables.WordFreeform;
 
 //only common use data reading!
 @Component
@@ -219,6 +222,35 @@ public class CommonDataDbService extends AbstractDataDbService {
 										.and(FREEFORM_TYPE_LABEL.LANG.eq(classifierLabelLang))
 										.and(FREEFORM_TYPE_LABEL.TYPE.eq(classifierLabelTypeCode))))
 				.orderBy(FREEFORM_TYPE.ORDER_BY)
+				.fetchInto(Classifier.class);
+	}
+
+	public List<Classifier> getFreeformTypes(String datasetCode, FreeformOwner freeformOwner, String classifierLabelLang, String classifierLabelTypeCode) {
+
+		FreeformType ft = FREEFORM_TYPE.as("ft");
+		FreeformTypeLabel ftl = FREEFORM_TYPE_LABEL.as("ftl");
+		DatasetFreeformType dsft = DATASET_FREEFORM_TYPE.as("dsft");
+
+		return create
+				.select(
+						DSL.field(DSL.value(ClassifierName.FREEFORM_TYPE.name())).as("name"),
+						ft.CODE,
+						DSL.coalesce(ftl.VALUE, ft.CODE).as("value"))
+				.from(ft
+						.leftOuterJoin(ftl).on(
+								ftl.CODE.eq(ft.CODE)
+										.and(ftl.LANG.eq(classifierLabelLang))
+										.and(ftl.TYPE.eq(classifierLabelTypeCode))))
+				.whereExists(DSL
+						.select(dsft.ID)
+						.from(dsft)
+						.where(
+								dsft.DATASET_CODE.eq(datasetCode)
+										.and(dsft.FREEFORM_OWNER.eq(freeformOwner.name()))
+										.and(dsft.FREEFORM_TYPE_CODE.eq(ft.CODE)))
+
+				)
+				.orderBy(ft.ORDER_BY)
 				.fetchInto(Classifier.class);
 	}
 
@@ -621,6 +653,82 @@ public class CommonDataDbService extends AbstractDataDbService {
 				.where(WORD_FORUM.WORD_ID.eq(wordId))
 				.orderBy(WORD_FORUM.ORDER_BY.desc())
 				.fetchInto(WordForum.class);
+	}
+
+	public List<FreeForm> getOdWordRecommendations(Long wordId) {
+
+		return create
+				.select(
+						FREEFORM.ID,
+						FREEFORM.VALUE_TEXT,
+						FREEFORM.VALUE_PRESE,
+						FREEFORM.LANG,
+						FREEFORM.COMPLEXITY,
+						FREEFORM.ORDER_BY,
+						FREEFORM.MODIFIED_BY,
+						FREEFORM.MODIFIED_ON)
+				.from(FREEFORM, WORD_FREEFORM)
+				.where(
+						WORD_FREEFORM.WORD_ID.eq(wordId)
+								.and(FREEFORM.ID.eq(WORD_FREEFORM.FREEFORM_ID))
+								.and(FREEFORM.FREEFORM_TYPE_CODE.eq(OD_WORD_RECOMMENDATION_CODE)))
+				.orderBy(FREEFORM.ORDER_BY)
+				.fetchInto(FreeForm.class);
+	}
+
+	public List<FreeForm> getWordFreeforms(Long wordId, String[] excludedFreeformTypeCodes, String classifierLabelLang, String classifierLabelTypeCode) {
+
+		Freeform f = FREEFORM.as("f");
+		WordFreeform wf = WORD_FREEFORM.as("wf");
+		FreeformTypeLabel ftl = FREEFORM_TYPE_LABEL.as("ftl");
+		FreeformSourceLink fsl = FREEFORM_SOURCE_LINK.as("fsl");
+		Source s = SOURCE.as("s");
+
+		Field<JSON> fslf = DSL
+				.select(DSL
+						.jsonArrayAgg(DSL
+								.jsonObject(
+										DSL.key("id").value(fsl.ID),
+										DSL.key("type").value(fsl.TYPE),
+										DSL.key("name").value(fsl.NAME),
+										DSL.key("sourceId").value(fsl.SOURCE_ID),
+										DSL.key("sourceName").value(s.NAME)))
+						.orderBy(fsl.ORDER_BY))
+				.from(fsl, s)
+				.where(
+						fsl.FREEFORM_ID.eq(f.ID)
+								.and(fsl.SOURCE_ID.eq(s.ID)))
+				.asField();
+
+		return create
+				.select(
+						f.ID,
+						f.FREEFORM_TYPE_CODE,
+						DSL.coalesce(ftl.VALUE, f.FREEFORM_TYPE_CODE).as("freeform_type_value"),
+						f.VALUE_TEXT,
+						f.VALUE_PRESE,
+						f.VALUE_DATE,
+						f.LANG,
+						f.COMPLEXITY,
+						f.ORDER_BY,
+						f.IS_PUBLIC,
+						f.CREATED_BY,
+						f.CREATED_ON,
+						f.MODIFIED_BY,
+						f.MODIFIED_ON,
+						fslf.as("source_links"))
+				.from(
+						wf
+								.innerJoin(f).on(
+										f.ID.eq(wf.FREEFORM_ID)
+												.and(f.FREEFORM_TYPE_CODE.notIn(excludedFreeformTypeCodes)))
+								.leftOuterJoin(ftl).on(
+										ftl.CODE.eq(f.FREEFORM_TYPE_CODE)
+												.and(ftl.TYPE.eq(classifierLabelTypeCode))
+												.and(ftl.LANG.eq(classifierLabelLang))))
+				.where(wf.WORD_ID.eq(wordId))
+				.orderBy(f.ORDER_BY)
+				.fetchInto(FreeForm.class);
 	}
 
 	public eki.ekilex.data.Meaning getMeaning(Long meaningId) {
@@ -1298,27 +1406,6 @@ public class CommonDataDbService extends AbstractDataDbService {
 				.where(LEXEME_FREEFORM.LEXEME_ID.eq(lexemeId)
 						.and(FREEFORM.ID.eq(LEXEME_FREEFORM.FREEFORM_ID))
 						.and(FREEFORM.FREEFORM_TYPE_CODE.eq(GRAMMAR_CODE)))
-				.orderBy(FREEFORM.ORDER_BY)
-				.fetchInto(FreeForm.class);
-	}
-
-	public List<FreeForm> getOdWordRecommendations(Long wordId) {
-
-		return create
-				.select(
-						FREEFORM.ID,
-						FREEFORM.VALUE_TEXT,
-						FREEFORM.VALUE_PRESE,
-						FREEFORM.LANG,
-						FREEFORM.COMPLEXITY,
-						FREEFORM.ORDER_BY,
-						FREEFORM.MODIFIED_BY,
-						FREEFORM.MODIFIED_ON)
-				.from(FREEFORM, WORD_FREEFORM)
-				.where(
-						WORD_FREEFORM.WORD_ID.eq(wordId)
-								.and(FREEFORM.ID.eq(WORD_FREEFORM.FREEFORM_ID))
-								.and(FREEFORM.FREEFORM_TYPE_CODE.eq(OD_WORD_RECOMMENDATION_CODE)))
 				.orderBy(FREEFORM.ORDER_BY)
 				.fetchInto(FreeForm.class);
 	}

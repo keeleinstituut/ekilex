@@ -121,13 +121,6 @@ public class EditController extends AbstractMutableDataPageController {
 		case "lexeme_tag":
 			cudService.createLexemeTag(id, value, roleDatasetCode, isManualEventOnUpdateEnabled);
 			break;
-		case "meaning_tag":
-			cudService.createMeaningTag(id, value, roleDatasetCode, isManualEventOnUpdateEnabled);
-			break;
-		case "meaning_domain":
-			Classifier meaningDomain = conversionUtil.classifierFromIdString(value);
-			cudService.createMeaningDomain(id2, meaningDomain, roleDatasetCode, isManualEventOnUpdateEnabled);
-			break;
 		case "lexeme_freeform":
 			cudService.createLexemeFreeform(id, value, type, isPublic, roleDatasetCode, isManualEventOnUpdateEnabled);
 			break;
@@ -145,6 +138,18 @@ public class EditController extends AbstractMutableDataPageController {
 			break;
 		case "lexeme_reliability":
 			cudService.updateLexemeReliability(id, value, roleDatasetCode, isManualEventOnUpdateEnabled);
+			break;
+		case "lexeme_grammar":
+			cudService.createLexemeGrammar(id, value, complexity, roleDatasetCode, isManualEventOnUpdateEnabled);
+			break;
+		case "lexeme_value_state":
+			cudService.updateLexemeValueState(id, value, roleDatasetCode, isManualEventOnUpdateEnabled);
+			break;
+		case "lexeme_proficiency_level":
+			cudService.updateLexemeProficiencyLevel(id, value, roleDatasetCode, isManualEventOnUpdateEnabled);
+			break;
+		case "lexeme_note":
+			cudService.createLexemeNote(id, value, languageCode, complexity, isPublic, roleDatasetCode, isManualEventOnUpdateEnabled);
 			break;
 		case "word_gender":
 			cudService.updateWordGenderWithDuplication(id3, value, user, isManualEventOnUpdateEnabled);
@@ -167,45 +172,14 @@ public class EditController extends AbstractMutableDataPageController {
 		case "word_lang":
 			cudService.updateWordLang(id3, value, roleDatasetCode, isManualEventOnUpdateEnabled);
 			break;
-		case "lexeme_grammar":
-			cudService.createLexemeGrammar(id, value, complexity, roleDatasetCode, isManualEventOnUpdateEnabled);
-			break;
-		case "lexeme_value_state":
-			cudService.updateLexemeValueState(id, value, roleDatasetCode, isManualEventOnUpdateEnabled);
-			break;
-		case "lexeme_proficiency_level":
-			cudService.updateLexemeProficiencyLevel(id, value, roleDatasetCode, isManualEventOnUpdateEnabled);
-			break;
-		case "learner_comment":
-			cudService.createMeaningLearnerComment(id, value, languageCode, roleDatasetCode, isManualEventOnUpdateEnabled);
-			break;
-		case "lexeme_note":
-			cudService.createLexemeNote(id, value, languageCode, complexity, isPublic, roleDatasetCode, isManualEventOnUpdateEnabled);
-			break;
-		case "meaning_note":
-			cudService.createMeaningNote(id, value, languageCode, complexity, isPublic, roleDatasetCode, isManualEventOnUpdateEnabled);
-			sessionBean.setRecentNoteLanguage(languageCode);
-			break;
-		case "meaning_forum":
-			cudService.createMeaningForum(id, value, user);
-			break;
 		case "word_forum":
 			cudService.createWordForum(id, value, user);
 			break;
-		case "meaning_image":
-			cudService.createMeaningImage(id, value, value2, complexity, roleDatasetCode, isManualEventOnUpdateEnabled);
-			break;
-		case "meaning_media":
-			cudService.createMeaningMedia(id, value, complexity, roleDatasetCode, isManualEventOnUpdateEnabled);
-			break;
-		case "meaning_freeform":
-			cudService.createMeaningFreeform(id, value, type, isPublic, roleDatasetCode, isManualEventOnUpdateEnabled);
+		case "word_freeform":
+			cudService.createWordFreeform(id, value, type, isPublic, roleDatasetCode, isManualEventOnUpdateEnabled);
 			break;
 		case "create_syn_word":
 			synCudService.createWordAndSynRelation(id, value, value2, languageCode, roleDatasetCode, isManualEventOnUpdateEnabled);
-			break;
-		case "meaning_semantic_type":
-			cudService.createMeaningSemanticType(id2, value, roleDatasetCode, isManualEventOnUpdateEnabled);
 			break;
 		case "od_word_recommendation":
 			cudService.createOdWordRecommendation(id, value, roleDatasetCode, isManualEventOnUpdateEnabled);
@@ -216,6 +190,35 @@ public class EditController extends AbstractMutableDataPageController {
 			String candidateDatasetCode = userContextData.getFullSynCandidateDatasetCode();
 			response = synCandidateService.createFullSynCandidate(id, value, candidateLang, candidateDatasetCode, roleDatasetCode);
 			return response;
+		case "learner_comment":
+			cudService.createMeaningLearnerComment(id, value, languageCode, roleDatasetCode, isManualEventOnUpdateEnabled);
+			break;
+		case "meaning_note":
+			cudService.createMeaningNote(id, value, languageCode, complexity, isPublic, roleDatasetCode, isManualEventOnUpdateEnabled);
+			sessionBean.setRecentNoteLanguage(languageCode);
+			break;
+		case "meaning_forum":
+			cudService.createMeaningForum(id, value, user);
+			break;
+		case "meaning_image":
+			cudService.createMeaningImage(id, value, value2, complexity, roleDatasetCode, isManualEventOnUpdateEnabled);
+			break;
+		case "meaning_media":
+			cudService.createMeaningMedia(id, value, complexity, roleDatasetCode, isManualEventOnUpdateEnabled);
+			break;
+		case "meaning_freeform":
+			cudService.createMeaningFreeform(id, value, type, isPublic, roleDatasetCode, isManualEventOnUpdateEnabled);
+			break;
+		case "meaning_semantic_type":
+			cudService.createMeaningSemanticType(id2, value, roleDatasetCode, isManualEventOnUpdateEnabled);
+			break;
+		case "meaning_tag":
+			cudService.createMeaningTag(id, value, roleDatasetCode, isManualEventOnUpdateEnabled);
+			break;
+		case "meaning_domain":
+			Classifier meaningDomain = conversionUtil.classifierFromIdString(value);
+			cudService.createMeaningDomain(id2, meaningDomain, roleDatasetCode, isManualEventOnUpdateEnabled);
+			break;
 		case ContentKey.DEFINITION_SOURCE_LINK:
 			sourceLinkService.createDefinitionSourceLink(id, id2, ReferenceType.ANY, value, roleDatasetCode, isManualEventOnUpdateEnabled);
 			break;
@@ -233,6 +236,9 @@ public class EditController extends AbstractMutableDataPageController {
 			break;
 		case ContentKey.USAGE_SOURCE_LINK:
 			sourceLinkService.createUsageSourceLink(id, id2, ReferenceType.ANY, value, roleDatasetCode, isManualEventOnUpdateEnabled);
+			break;
+		case ContentKey.WORD_FREEFORM_SOURCE_LINK:
+			sourceLinkService.createWordFreeformSourceLink(id, id2, ReferenceType.ANY, value, roleDatasetCode, isManualEventOnUpdateEnabled);
 			break;
 		case ContentKey.MEANING_IMAGE_SOURCE_LINK:
 			sourceLinkService.createMeaningImageSourceLink(id, id2, ReferenceType.ANY, value, roleDatasetCode, isManualEventOnUpdateEnabled);
@@ -286,6 +292,12 @@ public class EditController extends AbstractMutableDataPageController {
 			ClassifierSelect langSelect = languagesOrder.stream().filter(classif -> StringUtils.equals(classif.getCode(), classifCode)).findFirst().get();
 			langSelect.setSelected(!langSelect.isSelected());
 			break;
+		case "definition":
+			cudService.updateDefinition(id, value, languageCode, complexity, classifCode, isPublic, roleDatasetCode, isManualEventOnUpdateEnabled);
+			break;
+		case "definition_note":
+			cudService.updateDefinitionNote(id, value, languageCode, isPublic, roleDatasetCode, isManualEventOnUpdateEnabled);
+			break;
 		case "usage":
 			cudService.updateUsage(id, value, complexity, isPublic, roleDatasetCode, isManualEventOnUpdateEnabled);
 			break;
@@ -295,22 +307,11 @@ public class EditController extends AbstractMutableDataPageController {
 		case "usage_definition":
 			cudService.updateUsageDefinition(id, value, roleDatasetCode, isManualEventOnUpdateEnabled);
 			break;
-		case "definition":
-			cudService.updateDefinition(id, value, languageCode, complexity, classifCode, isPublic, roleDatasetCode, isManualEventOnUpdateEnabled);
-			break;
-		case "definition_note":
-			cudService.updateDefinitionNote(id, value, languageCode, isPublic, roleDatasetCode, isManualEventOnUpdateEnabled);
-			break;
 		case "lexeme_complexity":
 			cudService.updateLexemeComplexity(id, value, roleDatasetCode, isManualEventOnUpdateEnabled);
 			break;
 		case "lexeme_pos":
 			cudService.updateLexemePos(id, currentValue, value, roleDatasetCode, isManualEventOnUpdateEnabled);
-			break;
-		case "meaning_domain":
-			Classifier currentMeaningDomain = conversionUtil.classifierFromIdString(currentValue);
-			Classifier newMeaningDomain = conversionUtil.classifierFromIdString(itemData.getValue());
-			cudService.updateMeaningDomain(id, currentMeaningDomain, newMeaningDomain, roleDatasetCode, isManualEventOnUpdateEnabled);
 			break;
 		case "lexeme_freeform":
 			cudService.updateLexemeFreeform(id, value, isPublic, roleDatasetCode, isManualEventOnUpdateEnabled);
@@ -333,8 +334,23 @@ public class EditController extends AbstractMutableDataPageController {
 		case "lexeme_weight":
 			cudService.updateLexemeWeight(id, numberValue, roleDatasetCode, isManualEventOnUpdateEnabled);
 			break;
-		case "meaning_relation_weight":
-			cudService.updateMeaningRelationWeight(id, numberValue, roleDatasetCode, isManualEventOnUpdateEnabled);
+		case "lexeme_publicity":
+			cudService.updateLexemePublicity(id, isPublic, roleDatasetCode, isManualEventOnUpdateEnabled);
+			break;
+		case "lexeme_value_state":
+			cudService.updateLexemeValueState(id, value, roleDatasetCode, isManualEventOnUpdateEnabled);
+			break;
+		case "lexeme_proficiency_level":
+			cudService.updateLexemeProficiencyLevel(id, value, roleDatasetCode, isManualEventOnUpdateEnabled);
+			break;
+		case "learner_comment":
+			cudService.updateMeaningLearnerComment(id, value, roleDatasetCode, isManualEventOnUpdateEnabled);
+			break;
+		case "lexeme_grammar":
+			cudService.updateLexemeGrammar(id, value, complexity, roleDatasetCode, isManualEventOnUpdateEnabled);
+			break;
+		case "lexeme_note":
+			cudService.updateLexemeNote(id, value, languageCode, complexity, isPublic, roleDatasetCode, isManualEventOnUpdateEnabled);
 			break;
 		case "word_value":
 			cudService.updateWordValue(id, value, roleDatasetCode, isManualEventOnUpdateEnabled);
@@ -366,23 +382,22 @@ public class EditController extends AbstractMutableDataPageController {
 		case "word_manual_event_on":
 			cudService.updateWordManualEventOn(id, value, roleDatasetCode);
 			break;
-		case "lexeme_publicity":
-			cudService.updateLexemePublicity(id, isPublic, roleDatasetCode, isManualEventOnUpdateEnabled);
+		case "word_forum":
+			cudService.updateWordForum(id, value, user);
 			break;
-		case "lexeme_value_state":
-			cudService.updateLexemeValueState(id, value, roleDatasetCode, isManualEventOnUpdateEnabled);
+		case "word_freeform":
+			cudService.updateWordFreeform(id, value, isPublic, roleDatasetCode, isManualEventOnUpdateEnabled);
 			break;
-		case "lexeme_proficiency_level":
-			cudService.updateLexemeProficiencyLevel(id, value, roleDatasetCode, isManualEventOnUpdateEnabled);
+		case "word_morph_comment":
+			cudService.updateWordMorphComment(id, value, roleDatasetCode, isManualEventOnUpdateEnabled);
 			break;
-		case "learner_comment":
-			cudService.updateMeaningLearnerComment(id, value, roleDatasetCode, isManualEventOnUpdateEnabled);
+		case "od_word_recommendation":
+			cudService.updateOdWordRecommendation(id, value, roleDatasetCode, isManualEventOnUpdateEnabled);
 			break;
-		case "lexeme_grammar":
-			cudService.updateLexemeGrammar(id, value, complexity, roleDatasetCode, isManualEventOnUpdateEnabled);
-			break;
-		case "lexeme_note":
-			cudService.updateLexemeNote(id, value, languageCode, complexity, isPublic, roleDatasetCode, isManualEventOnUpdateEnabled);
+		case "meaning_domain":
+			Classifier currentMeaningDomain = conversionUtil.classifierFromIdString(currentValue);
+			Classifier newMeaningDomain = conversionUtil.classifierFromIdString(itemData.getValue());
+			cudService.updateMeaningDomain(id, currentMeaningDomain, newMeaningDomain, roleDatasetCode, isManualEventOnUpdateEnabled);
 			break;
 		case "meaning_note":
 			cudService.updateMeaningNote(id, value, languageCode, complexity, isPublic, roleDatasetCode, isManualEventOnUpdateEnabled);
@@ -390,11 +405,8 @@ public class EditController extends AbstractMutableDataPageController {
 		case "meaning_forum":
 			cudService.updateMeaningForum(id, value, user);
 			break;
-		case "word_forum":
-			cudService.updateWordForum(id, value, user);
-			break;
-		case "word_morph_comment":
-			cudService.updateWordMorphComment(id, value, roleDatasetCode, isManualEventOnUpdateEnabled);
+		case "meaning_relation_weight":
+			cudService.updateMeaningRelationWeight(id, numberValue, roleDatasetCode, isManualEventOnUpdateEnabled);
 			break;
 		case "meaning_image":
 			cudService.updateMeaningImage(id, value, value2, complexity, roleDatasetCode, isManualEventOnUpdateEnabled);
@@ -410,9 +422,6 @@ public class EditController extends AbstractMutableDataPageController {
 			break;
 		case "meaning_manual_event_on":
 			cudService.updateMeaningManualEventOn(id, value, roleDatasetCode);
-			break;
-		case "od_word_recommendation":
-			cudService.updateOdWordRecommendation(id, value, roleDatasetCode, isManualEventOnUpdateEnabled);
 			break;
 		case ContentKey.DEFINITION_SOURCE_LINK:
 			sourceLinkService.updateDefinitionSourceLink(id, value, roleDatasetCode, isManualEventOnUpdateEnabled);
@@ -431,6 +440,9 @@ public class EditController extends AbstractMutableDataPageController {
 			break;
 		case ContentKey.USAGE_SOURCE_LINK:
 			sourceLinkService.updateUsageSourceLink(id, value, roleDatasetCode, isManualEventOnUpdateEnabled);
+			break;
+		case ContentKey.WORD_FREEFORM_SOURCE_LINK:
+			sourceLinkService.updateWordFreeformSourceLink(id, value, roleDatasetCode, isManualEventOnUpdateEnabled);
 			break;
 		case ContentKey.MEANING_IMAGE_SOURCE_LINK:
 			sourceLinkService.updateMeaningImageSourceLink(id, value, roleDatasetCode, isManualEventOnUpdateEnabled);
@@ -565,9 +577,6 @@ public class EditController extends AbstractMutableDataPageController {
 		case "lexeme_tag":
 			cudService.deleteLexemeTag(id, valueToDelete, roleDatasetCode, isManualEventOnUpdateEnabled);
 			break;
-		case "meaning_tag":
-			cudService.deleteMeaningTag(id, valueToDelete, roleDatasetCode, isManualEventOnUpdateEnabled);
-			break;
 		case "lexeme_deriv":
 			cudService.deleteLexemeDeriv(id, valueToDelete, roleDatasetCode, isManualEventOnUpdateEnabled);
 			break;
@@ -598,6 +607,9 @@ public class EditController extends AbstractMutableDataPageController {
 		case "rus_meaning_lexemes":
 			cudService.deleteLexemeAndMeaningLexemes(id, LANGUAGE_CODE_RUS, roleDatasetCode, isManualEventOnUpdateEnabled);
 			break;
+		case "meaning_tag":
+			cudService.deleteMeaningTag(id, valueToDelete, roleDatasetCode, isManualEventOnUpdateEnabled);
+			break;
 		case "learner_comment":
 			cudService.deleteMeaningLearnerComment(id, roleDatasetCode, isManualEventOnUpdateEnabled);
 			break;
@@ -614,15 +626,6 @@ public class EditController extends AbstractMutableDataPageController {
 		case "meaning_forum":
 			cudService.deleteMeaningForum(id);
 			break;
-		case "word_forum":
-			cudService.deleteWordForum(id);
-			break;
-		case "meaning_relation":
-			response = cudService.deleteMeaningRelation(id, response, roleDatasetCode, MANUAL_EVENT_ON_UPDATE_DISABLED);
-			break;
-		case "word_gender":
-			cudService.updateWordGenderWithDuplication(id, null, user, isManualEventOnUpdateEnabled);
-			break;
 		case "meaning_image":
 			cudService.deleteMeaningImage(id, roleDatasetCode, isManualEventOnUpdateEnabled);
 			break;
@@ -631,6 +634,21 @@ public class EditController extends AbstractMutableDataPageController {
 			break;
 		case "meaning_freeform":
 			cudService.deleteMeaningFreeform(id, roleDatasetCode, isManualEventOnUpdateEnabled);
+			break;
+		case "meaning_relation":
+			response = cudService.deleteMeaningRelation(id, response, roleDatasetCode, MANUAL_EVENT_ON_UPDATE_DISABLED);
+			break;
+		case "meaning_semantic_type":
+			cudService.deleteMeaningSemanticType(id, valueToDelete, roleDatasetCode, isManualEventOnUpdateEnabled);
+			break;
+		case "word_forum":
+			cudService.deleteWordForum(id);
+			break;
+		case "word_freeform":
+			cudService.deleteWordFreeform(id, roleDatasetCode, isManualEventOnUpdateEnabled);
+			break;
+		case "word_gender":
+			cudService.updateWordGenderWithDuplication(id, null, user, isManualEventOnUpdateEnabled);
 			break;
 		case "word_type":
 			cudService.deleteWordTypeWithDuplication(id, valueToDelete, user, isManualEventOnUpdateEnabled);
@@ -652,9 +670,6 @@ public class EditController extends AbstractMutableDataPageController {
 			break;
 		case "word_morph_comment":
 			cudService.updateWordMorphComment(id, null, roleDatasetCode, isManualEventOnUpdateEnabled);
-			break;
-		case "meaning_semantic_type":
-			cudService.deleteMeaningSemanticType(id, valueToDelete, roleDatasetCode, isManualEventOnUpdateEnabled);
 			break;
 		case "od_word_recommendation":
 			cudService.deleteOdWordRecommendation(id, roleDatasetCode, isManualEventOnUpdateEnabled);
@@ -679,6 +694,9 @@ public class EditController extends AbstractMutableDataPageController {
 			break;
 		case ContentKey.USAGE_SOURCE_LINK:
 			sourceLinkService.deleteUsageSourceLink(id, roleDatasetCode, isManualEventOnUpdateEnabled);
+			break;
+		case ContentKey.WORD_FREEFORM_SOURCE_LINK:
+			sourceLinkService.deleteWordFreeformSourceLink(id, roleDatasetCode, isManualEventOnUpdateEnabled);
 			break;
 		case ContentKey.MEANING_IMAGE_SOURCE_LINK:
 			sourceLinkService.deleteMeaningImageSourceLink(id, roleDatasetCode, isManualEventOnUpdateEnabled);

@@ -620,6 +620,7 @@ public class ActivityLogService implements SystemConstant, GlobalConstant, Freef
 		if (word == null) {
 			return EMPTY_CONTENT_JSON;
 		}
+		List<FreeForm> wordFreeforms = commonDataDbService.getWordFreeforms(wordId, EXCLUDED_WORD_ATTRIBUTE_FF_TYPE_CODES, CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
 		List<Classifier> wordTypes = commonDataDbService.getWordTypes(wordId, CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
 		List<WordRelation> wordRelations = lexSearchDbService.getWordRelations(wordId, CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
 		List<WordRelation> wordGroupMembers = lexSearchDbService.getWordGroupMembers(wordId, CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
@@ -633,6 +634,7 @@ public class ActivityLogService implements SystemConstant, GlobalConstant, Freef
 			paradigms = conversionUtil.composeParadigms(paradigmFormTuples);
 		}
 
+		word.setFreeforms(wordFreeforms);
 		word.setWordTypes(wordTypes);
 		word.setRelations(wordRelations);
 		word.setGroups(wordGroups);
