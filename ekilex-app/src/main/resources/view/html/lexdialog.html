@@ -225,7 +225,7 @@
           <div class="modal-body">
             <input type="hidden" name="id" th:value="${definition.id}">
             <input type="hidden" name="opCode" value="definition">
-            <input type="hidden" name="value" th:value="${definition.value}">
+            <input type="hidden" name="value" th:value="${definition.valuePrese}">
             <input type="hidden" name="code" th:value="${definition.typeCode}">
             <input type="hidden" name="complexity" th:value="${definition.complexity}">
             <div th:replace="components :: eki_editor_elem"></div>
@@ -715,7 +715,7 @@
           <div class="modal-body">
             <input type="hidden" name="id" th:value="${usage.id}">
             <input type="hidden" name="opCode" value="usage">
-            <input type="hidden" name="value" th:value="${usage.value}">
+            <input type="hidden" name="value" th:value="${usage.valuePrese}">
             <input type="hidden" name="complexity" th:value="${usage.complexity}">
             <div th:replace="components :: eki_editor_elem"></div>
             <div class="formItem">

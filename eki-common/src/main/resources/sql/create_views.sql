@@ -933,7 +933,8 @@ from (select m.id,
                                 d.order_by,
                                 dsl.source_links,
                                 (select json_agg(notes) as notes
-                                 from (select dn.value_prese as value,
+                                 from (select dn.value,
+                                              dn.value_prese,
                                               json_agg(row (
                                                          dnsl.source_link_id,
                                                          dnsl.type,
