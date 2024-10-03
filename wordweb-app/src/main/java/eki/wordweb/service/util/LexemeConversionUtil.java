@@ -591,7 +591,6 @@ public class LexemeConversionUtil extends AbstractConversionUtil {
 				definition.setSubDataExists(subDataExists);
 				definition.setValuePreseCut(valuePreseCut);
 				convertContainingSourceLinkUrlsToHrefs(notes);
-				convertUrlsToHrefs(sourceLinks);
 			});
 		}
 

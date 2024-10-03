@@ -151,6 +151,9 @@ public abstract class AbstractConversionUtil implements WebConstant, SystemConst
 		final String[] urlPrefixes = new String[] {"http://", "https://"};
 		for (TypeSourceLink sourceLink : sourceLinks) {
 			String valuePrese = sourceLink.getSourceValuePrese();
+			if (StringUtils.contains(valuePrese, "<a href=")) {
+				continue;
+			}
 			if (StringUtils.containsAny(valuePrese, urlPrefixes)) {
 				StringBuffer convertedValuePreseBuf = new StringBuffer();
 				String processingSubstr = new String(valuePrese);
@@ -168,8 +171,7 @@ public abstract class AbstractConversionUtil implements WebConstant, SystemConst
 					}
 					processingSubstr = StringUtils.substring(processingSubstr, urlEndIndex);
 					convertedValuePreseBuf.append(preLinkSubstr);
-					convertedValuePreseBuf.append("<a ");
-					convertedValuePreseBuf.append("href=\"");
+					convertedValuePreseBuf.append("<a href=\"");
 					convertedValuePreseBuf.append(url);
 					convertedValuePreseBuf.append("\" target=\"_blank\">");
 					convertedValuePreseBuf.append(url);
@@ -178,8 +180,8 @@ public abstract class AbstractConversionUtil implements WebConstant, SystemConst
 				if (urlEndIndex != -1) {
 					convertedValuePreseBuf.append(processingSubstr);
 				}
-				valuePrese = convertedValuePreseBuf.toString();
-				sourceLink.setSourceValuePrese(valuePrese);
+				String convertedValuePrese = convertedValuePreseBuf.toString();
+				sourceLink.setSourceValuePrese(convertedValuePrese);
 			}
 		}
 	}
