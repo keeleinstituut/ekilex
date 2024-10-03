@@ -30,7 +30,6 @@ import eki.ekilex.data.WordDescript;
 import eki.ekilex.data.WordLexeme;
 import eki.ekilex.data.WordLexemeMeaningIdTuple;
 import eki.ekilex.data.db.tables.records.LexemeRecord;
-import eki.ekilex.service.db.CompositionDbService;
 import eki.ekilex.service.db.CudDbService;
 
 @Component
@@ -38,9 +37,6 @@ public class InexactSynService extends AbstractSynSearchService {
 
 	@Autowired
 	private CudDbService cudDbService;
-
-	@Autowired
-	private CompositionDbService compositionDbService;
 
 	@Transactional
 	public Word getSynCandidateWord(Long wordRelationId) {
@@ -373,7 +369,7 @@ public class InexactSynService extends AbstractSynSearchService {
 		Word translationSynSourceWord = synSearchDbService.getSynCandidateWord(wordRelationId);
 		Long sourceWordWordId = translationSynSourceWord.getWordId();
 
-		List<LexemeRecord> sourceWordLexemes = compositionDbService.getWordLexemes(sourceWordWordId);
+		List<LexemeRecord> sourceWordLexemes = lookupDbService.getLexemeRecordsByWord(sourceWordWordId);
 		if (sourceWordLexemes.size() != 1) {
 			throw new OperationDeniedException();
 		}

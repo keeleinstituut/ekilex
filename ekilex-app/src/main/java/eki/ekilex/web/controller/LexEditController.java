@@ -21,7 +21,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.SessionAttributes;
@@ -72,7 +71,7 @@ public class LexEditController extends AbstractPrivatePageController {
 	@Autowired
 	private CudService cudService;
 
-	@RequestMapping(LEX_JOIN_URI + "/{targetLexemeId}")
+	@GetMapping(LEX_JOIN_URI + "/{targetLexemeId}")
 	public String lexJoin(
 			@PathVariable("targetLexemeId") Long targetLexemeId,
 			@RequestParam(name = "searchFilter", required = false) String searchFilter,

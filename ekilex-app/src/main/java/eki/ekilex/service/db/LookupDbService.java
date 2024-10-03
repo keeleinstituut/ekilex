@@ -43,6 +43,7 @@ import org.jooq.Record1;
 import org.jooq.Record2;
 import org.jooq.Record4;
 import org.jooq.Record8;
+import org.jooq.SelectConditionStep;
 import org.jooq.Table;
 import org.jooq.impl.DSL;
 import org.jooq.util.postgres.PostgresDSL;
@@ -50,6 +51,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import eki.ekilex.data.Classifier;
+import eki.ekilex.data.IdPair;
 import eki.ekilex.data.InexactSynonym;
 import eki.ekilex.data.SearchDatasetsRestriction;
 import eki.ekilex.data.WordLexeme;
@@ -61,14 +63,17 @@ import eki.ekilex.data.db.tables.Meaning;
 import eki.ekilex.data.db.tables.MeaningRelMapping;
 import eki.ekilex.data.db.tables.MeaningRelation;
 import eki.ekilex.data.db.tables.Word;
+import eki.ekilex.data.db.tables.records.LexRelationRecord;
 import eki.ekilex.data.db.tables.records.LexemeDerivRecord;
 import eki.ekilex.data.db.tables.records.LexemePosRecord;
+import eki.ekilex.data.db.tables.records.LexemeRecord;
 import eki.ekilex.data.db.tables.records.LexemeRegionRecord;
 import eki.ekilex.data.db.tables.records.LexemeRegisterRecord;
 import eki.ekilex.data.db.tables.records.LexemeTagRecord;
 import eki.ekilex.data.db.tables.records.MeaningDomainRecord;
 import eki.ekilex.data.db.tables.records.MeaningSemanticTypeRecord;
 import eki.ekilex.data.db.tables.records.MeaningTagRecord;
+import eki.ekilex.data.db.tables.records.WordRecord;
 import eki.ekilex.data.db.tables.records.WordWordTypeRecord;
 import eki.ekilex.service.db.util.SearchFilterHelper;
 
@@ -479,6 +484,127 @@ public class LookupDbService extends AbstractDataDbService {
 						LEXEME.WORD_ID.eq(wordId)
 								.and(LEXEME.DATASET_CODE.eq(datasetCode)))
 				.fetchInto(WordLexemeMeaningIdTuple.class);
+	}
+
+	public WordRecord getWordRecord(Long wordId) {
+		return create.selectFrom(WORD).where(WORD.ID.eq(wordId)).fetchOne();
+	}
+
+	public LexemeRecord getLexemeRecord(Long lexemeId) {
+		return create.selectFrom(LEXEME).where(LEXEME.ID.eq(lexemeId)).fetchOne();
+	}
+
+	public LexemeRecord getLexemeRecord(Long wordId, Long meaningId, String datasetCode) {
+		return create
+				.selectFrom(LEXEME)
+				.where(
+						LEXEME.WORD_ID.eq(wordId)
+								.and(LEXEME.MEANING_ID.eq(meaningId))
+								.and(LEXEME.DATASET_CODE.eq(datasetCode)))
+				.fetchOne();
+	}
+
+	public List<LexemeRecord> getLexemeRecordsWithHigherLevel1(Long wordId, String datasetCode, Integer level1) {
+		return create
+				.selectFrom(LEXEME)
+				.where(LEXEME.WORD_ID.eq(wordId)
+						.and(LEXEME.DATASET_CODE.eq(datasetCode))
+						.and(LEXEME.LEVEL1.gt(level1)))
+				.fetch();
+	}
+
+	public List<LexemeRecord> getLexemeRecordsWithHigherLevel2(Long wordId, String datasetCode, Integer level1, Integer level2) {
+		return create
+				.selectFrom(LEXEME)
+				.where(LEXEME.WORD_ID.eq(wordId)
+						.and(LEXEME.DATASET_CODE.eq(datasetCode))
+						.and(LEXEME.LEVEL1.eq(level1))
+						.and(LEXEME.LEVEL2.gt(level2)))
+				.fetch();
+	}
+
+	public Integer getLevel2MinimumValue(Long wordId, String datasetCode, Integer level1) {
+		return create
+				.select(DSL.min(LEXEME.LEVEL2))
+				.from(LEXEME)
+				.where(LEXEME.WORD_ID.eq(wordId)
+						.and(LEXEME.DATASET_CODE.eq(datasetCode))
+						.and(LEXEME.LEVEL1.eq(level1)))
+				.fetchOneInto(Integer.class);
+	}
+
+	public List<LexemeRecord> getLexemeRecordsByWord(Long wordId) {
+		return create
+				.selectFrom(LEXEME)
+				.where(LEXEME.WORD_ID.eq(wordId))
+				.orderBy(LEXEME.ORDER_BY)
+				.fetch();
+	}
+
+	public List<LexemeRecord> getLexemeRecordsByMeaning(Long meaningId) {
+		return create
+				.selectFrom(LEXEME)
+				.where(LEXEME.MEANING_ID.eq(meaningId))
+				.orderBy(LEXEME.ORDER_BY)
+				.fetch();
+	}
+
+	public List<LexemeRecord> getLexemeRecordsByMeaning(Long meaningId, String datasetCode) {
+		return create
+				.selectFrom(LEXEME)
+				.where(LEXEME.MEANING_ID.eq(meaningId)
+						.and(LEXEME.DATASET_CODE.eq(datasetCode)))
+				.orderBy(LEXEME.ORDER_BY)
+				.fetch();
+	}
+
+	public List<Long> getMeaningDefinitionIds(Long meaningId, boolean publicDataOnly) {
+
+		Condition where = DEFINITION.MEANING_ID.eq(meaningId);
+		if (publicDataOnly) {
+			where = where.and(DEFINITION.IS_PUBLIC.isTrue());
+		}
+		return create.select(DEFINITION.ID).from(DEFINITION).where(where).orderBy(DEFINITION.ORDER_BY).fetchInto(Long.class);
+	}
+
+	public List<IdPair> getMeaningsCommonWordsLexemeIdPairs(Long meaningId, Long sourceMeaningId) {
+
+		Lexeme l1 = LEXEME.as("l1");
+		Lexeme l2 = LEXEME.as("l2");
+		Meaning m1 = MEANING.as("m1");
+		Meaning m2 = MEANING.as("m2");
+
+		SelectConditionStep<Record1<Long>> wordIds = DSL.selectDistinct(l1.WORD_ID)
+				.from(l1, m1)
+				.where(l1.MEANING_ID.eq(meaningId)
+						.and(l1.MEANING_ID.eq(m1.ID))
+						.andExists(DSL
+								.select(l2.ID)
+								.from(l2, m2)
+								.where(m2.ID.eq(sourceMeaningId)
+										.and(l2.MEANING_ID.eq(m2.ID))
+										.and(l2.WORD_ID.eq(l1.WORD_ID)))));
+
+		return create
+				.select(l1.ID.as("id1"), l2.ID.as("id2"))
+				.from(l1, l2)
+				.where(l1.WORD_ID.in(wordIds)
+						.and(l1.DATASET_CODE.eq(l2.DATASET_CODE))
+						.and(l1.MEANING_ID.eq(meaningId))
+						.and(l2.MEANING_ID.eq(sourceMeaningId))
+						.and(l2.WORD_ID.eq(l1.WORD_ID)))
+				.fetchInto(IdPair.class);
+	}
+
+	public List<LexRelationRecord> getLexRelationRecords(Long lexemeId) {
+
+		return create
+				.selectFrom(LEX_RELATION)
+				.where(
+						LEX_RELATION.LEXEME1_ID.eq(lexemeId)
+								.or(LEX_RELATION.LEXEME2_ID.eq(lexemeId)))
+				.orderBy(LEX_RELATION.ORDER_BY)
+				.fetch();
 	}
 
 	public List<eki.ekilex.data.Meaning> getMeanings(String searchFilter, SearchDatasetsRestriction searchDatasetsRestriction, Long excludedMeaningId) {
@@ -945,4 +1071,5 @@ public class LookupDbService extends AbstractDataDbService {
 								.and(WORD.VALUE_PRESE.ne(wordValuePrese)))
 				.fetchSingleInto(Boolean.class);
 	}
+
 }
