@@ -83,7 +83,6 @@ public class ActivityLogService implements SystemConstant, GlobalConstant, Freef
 			ActivityEntity.GOVERNMENT,
 			ActivityEntity.GOVERNMENT_TYPE,
 			ActivityEntity.GRAMMAR,
-			ActivityEntity.CONCEPT_ID,
 			ActivityEntity.LTB_ID,
 			ActivityEntity.LTB_SOURCE,
 			ActivityEntity.ADVICE_NOTE,
@@ -108,10 +107,6 @@ public class ActivityLogService implements SystemConstant, GlobalConstant, Freef
 			ActivityEntity.MEDIA_FILE,
 			ActivityEntity.SEMANTIC_TYPE,
 			ActivityEntity.SYSTEMATIC_POLYSEMY_PATTERN,
-			ActivityEntity.GENUS,
-			ActivityEntity.FAMILY,
-			ActivityEntity.DESCRIBER,
-			ActivityEntity.DESCRIBING_YEAR,
 			ActivityEntity.OD_WORD_RECOMMENDATION,
 			ActivityEntity.ADVICE_NOTE);
 
@@ -235,39 +230,19 @@ public class ActivityLogService implements SystemConstant, GlobalConstant, Freef
 		Long id;
 		id = (Long) freeformOwnerDataMap.get("lexeme_id");
 		if (id != null) {
-			try {
-				activityEntity = ActivityEntity.valueOf(ffTypeCode);
-			} catch (Exception e) {
-				throw new IllegalParamException("Missing activity entity owner mapping for lexeme freeform " + ffTypeCode);
-			}
-			return new ActivityLogOwnerEntityDescr(ActivityOwner.LEXEME, id, activityEntity);
+			return new ActivityLogOwnerEntityDescr(ActivityOwner.LEXEME, id, ActivityEntity.FREEFORM);
 		}
 		id = (Long) freeformOwnerDataMap.get("word_id");
 		if (id != null) {
-			try {
-				activityEntity = ActivityEntity.valueOf(ffTypeCode);
-			} catch (Exception e) {
-				throw new IllegalParamException("Missing activity entity owner mapping for word freeform " + ffTypeCode);
-			}
-			return new ActivityLogOwnerEntityDescr(ActivityOwner.WORD, id, activityEntity);
+			return new ActivityLogOwnerEntityDescr(ActivityOwner.WORD, id, ActivityEntity.FREEFORM);
 		}
 		id = (Long) freeformOwnerDataMap.get("meaning_id");
 		if (id != null) {
-			try {
-				activityEntity = ActivityEntity.valueOf(ffTypeCode);
-			} catch (Exception e) {
-				throw new IllegalParamException("Missing activity entity owner mapping for meaning freeform " + ffTypeCode);
-			}
-			return new ActivityLogOwnerEntityDescr(ActivityOwner.MEANING, id, activityEntity);
+			return new ActivityLogOwnerEntityDescr(ActivityOwner.MEANING, id, ActivityEntity.FREEFORM);
 		}
 		id = (Long) freeformOwnerDataMap.get("d_meaning_id");
 		if (id != null) {
-			try {
-				activityEntity = ActivityEntity.valueOf(ffTypeCode);
-			} catch (Exception e) {
-				throw new IllegalParamException("Missing activity entity owner mapping for definition freeform " + ffTypeCode);
-			}
-			return new ActivityLogOwnerEntityDescr(ActivityOwner.MEANING, id, activityEntity);
+			return new ActivityLogOwnerEntityDescr(ActivityOwner.MEANING, id, ActivityEntity.FREEFORM);
 		}
 		id = (Long) freeformOwnerDataMap.get("source_id");
 		if (id != null) {
