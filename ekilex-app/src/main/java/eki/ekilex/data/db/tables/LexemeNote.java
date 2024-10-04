@@ -169,19 +169,11 @@ public class LexemeNote extends TableImpl<LexemeNoteRecord> {
 
     @Override
     public List<ForeignKey<LexemeNoteRecord, ?>> getReferences() {
-        return Arrays.<ForeignKey<LexemeNoteRecord, ?>>asList(Keys.LEXEME_NOTE__LEXEME_NOTE_ORIGINAL_FREEFORM_ID_FKEY, Keys.LEXEME_NOTE__LEXEME_NOTE_LEXEME_ID_FKEY, Keys.LEXEME_NOTE__LEXEME_NOTE_LANG_FKEY);
+        return Arrays.<ForeignKey<LexemeNoteRecord, ?>>asList(Keys.LEXEME_NOTE__LEXEME_NOTE_LEXEME_ID_FKEY, Keys.LEXEME_NOTE__LEXEME_NOTE_LANG_FKEY);
     }
 
-    private transient Freeform _freeform;
     private transient Lexeme _lexeme;
     private transient Language _language;
-
-    public Freeform freeform() {
-        if (_freeform == null)
-            _freeform = new Freeform(this, Keys.LEXEME_NOTE__LEXEME_NOTE_ORIGINAL_FREEFORM_ID_FKEY);
-
-        return _freeform;
-    }
 
     public Lexeme lexeme() {
         if (_lexeme == null)

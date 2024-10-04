@@ -169,19 +169,11 @@ public class Usage extends TableImpl<UsageRecord> {
 
     @Override
     public List<ForeignKey<UsageRecord, ?>> getReferences() {
-        return Arrays.<ForeignKey<UsageRecord, ?>>asList(Keys.USAGE__USAGE_ORIGINAL_FREEFORM_ID_FKEY, Keys.USAGE__USAGE_LEXEME_ID_FKEY, Keys.USAGE__USAGE_LANG_FKEY);
+        return Arrays.<ForeignKey<UsageRecord, ?>>asList(Keys.USAGE__USAGE_LEXEME_ID_FKEY, Keys.USAGE__USAGE_LANG_FKEY);
     }
 
-    private transient Freeform _freeform;
     private transient Lexeme _lexeme;
     private transient Language _language;
-
-    public Freeform freeform() {
-        if (_freeform == null)
-            _freeform = new Freeform(this, Keys.USAGE__USAGE_ORIGINAL_FREEFORM_ID_FKEY);
-
-        return _freeform;
-    }
 
     public Lexeme lexeme() {
         if (_lexeme == null)

@@ -169,19 +169,11 @@ public class MeaningNote extends TableImpl<MeaningNoteRecord> {
 
     @Override
     public List<ForeignKey<MeaningNoteRecord, ?>> getReferences() {
-        return Arrays.<ForeignKey<MeaningNoteRecord, ?>>asList(Keys.MEANING_NOTE__MEANING_NOTE_ORIGINAL_FREEFORM_ID_FKEY, Keys.MEANING_NOTE__MEANING_NOTE_MEANING_ID_FKEY, Keys.MEANING_NOTE__MEANING_NOTE_LANG_FKEY);
+        return Arrays.<ForeignKey<MeaningNoteRecord, ?>>asList(Keys.MEANING_NOTE__MEANING_NOTE_MEANING_ID_FKEY, Keys.MEANING_NOTE__MEANING_NOTE_LANG_FKEY);
     }
 
-    private transient Freeform _freeform;
     private transient Meaning _meaning;
     private transient Language _language;
-
-    public Freeform freeform() {
-        if (_freeform == null)
-            _freeform = new Freeform(this, Keys.MEANING_NOTE__MEANING_NOTE_ORIGINAL_FREEFORM_ID_FKEY);
-
-        return _freeform;
-    }
 
     public Meaning meaning() {
         if (_meaning == null)

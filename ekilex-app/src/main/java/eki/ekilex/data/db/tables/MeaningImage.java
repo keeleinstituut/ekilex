@@ -164,18 +164,10 @@ public class MeaningImage extends TableImpl<MeaningImageRecord> {
 
     @Override
     public List<ForeignKey<MeaningImageRecord, ?>> getReferences() {
-        return Arrays.<ForeignKey<MeaningImageRecord, ?>>asList(Keys.MEANING_IMAGE__MEANING_IMAGE_ORIGINAL_FREEFORM_ID_FKEY, Keys.MEANING_IMAGE__MEANING_IMAGE_MEANING_ID_FKEY);
+        return Arrays.<ForeignKey<MeaningImageRecord, ?>>asList(Keys.MEANING_IMAGE__MEANING_IMAGE_MEANING_ID_FKEY);
     }
 
-    private transient Freeform _freeform;
     private transient Meaning _meaning;
-
-    public Freeform freeform() {
-        if (_freeform == null)
-            _freeform = new Freeform(this, Keys.MEANING_IMAGE__MEANING_IMAGE_ORIGINAL_FREEFORM_ID_FKEY);
-
-        return _freeform;
-    }
 
     public Meaning meaning() {
         if (_meaning == null)
