@@ -1,3 +1,41 @@
 Märkused ver 1.38.0 tarne kohta:
 
+1) Võta githubist värske tarkvara versioon, mille viite arendaja annab
+
+2) Ehita tarkvara tarkvaraprojekti juurikast
+  
+   ../ekilex>mvn clean install -D skipTests
+  
+   Ekilex rakenduse pake asub
+  
+   ../ekilex/ekilex-app/target/ekilex-app.jar
+  
+   Sõnaveebi rakenduse pake asub
+  
+   ../ekilex/wordweb-app/target/wordweb-app.jar
+
+3) Käivita ekilex andmebaasis muudatuste skript:
+  
+   ../ekilex/eki-common/src/main/resources/sql/delivery.sql
+
+   Skript on seekord lühike ja kiire
+
+4) Sõnaveebi andmebaasi agregeerimine.
+
+   1. kustuta ja taasloo Ekilex andmebaasis senised Sõnaveebiga seotud vaated ja andmetüübid skriptiga:
+
+      ../ekilex/eki-common/src/main/resources/sql/create_views.sql
+
+   2. kustuta ja loo Sõnaveebi andmebaasis materjaliseeritud vaated ja andmetüübid skriptiga:
+
+      ../ekilex/wordweb-app/fileresources/sql/create_mviews.sql
+
+      NB! Muuda skriptis dblink parameetreid vastavalt keskkonnale!
+      NB! Ühtegi veateadet ei tohi olla!
+
+      Skript jookseb umbes pool tundi.
+
+5) Seo ekilex-app.jar ja wordweb-app.jar rakenduste teenustega nagu seni ja käivita. Kontrolli peale käivitamist kummagi rakenduse logifailidest kas käivitamisega kaasnesid veateated, neid ei ohiks olla ühtegi.
+
+<märkmete lõpp>
 
