@@ -1,0 +1,7 @@
+/* Only used for component development */
+@font-face {
+  font-family: "Inter";
+  src: url("fonts/Inter.woff2") format("woff2 supports variations"),
+      url("fonts/Inter.woff2") format("woff2-variations");
+  font-weight: 100 1000;
+}

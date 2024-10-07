@@ -14,10 +14,13 @@ export default defineConfig({
   build: {
     lib: {
       entry: resolve(__dirname, "src/library.ts"),
-      name: "eki-components",
-      fileName: (format) => `eki-components.${format}.js`,
+      fileName: "eki-components",
       formats: ["es"],
     },
     outDir: "eki-components",
+    minify: true,
+    cssMinify: true,
+    emptyOutDir: true,
+    copyPublicDir: false,
   },
 });
