@@ -5,7 +5,7 @@
   }}
 />
 
-<div class="absolute top-[53px] right-[15px] overflow-hidden">
+<div class="absolute top-[53px] right-[15px] overflow-hidden z-10">
   <div
     class="bg-eki-white border border-eki-light-blue text-eki-dark-blue-text rounded-lg pl-7 pr-2 py-4 grid grid-cols-[1fr_24px] gap-2 transition-[transform] w-[335px] left-0"
     class:translate-x-[calc(100%+15px)]={!isVisible}
