@@ -12,7 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
 import org.springframework.stereotype.Component;
 import org.springframework.ui.ModelMap;
-import org.springframework.web.servlet.AsyncHandlerInterceptor;
+import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
 
 import eki.common.data.AppData;
@@ -21,28 +21,16 @@ import eki.ekilex.constant.SystemConstant;
 import eki.ekilex.constant.WebConstant;
 import eki.ekilex.data.EkiUserProfile;
 import eki.ekilex.data.EkiUserRoleData;
-import eki.ekilex.web.util.ClassifierUtil;
-import eki.ekilex.web.util.PermDataUtil;
 import eki.ekilex.web.util.UserProfileUtil;
-import eki.ekilex.web.util.ViewUtil;
 
 @ConditionalOnWebApplication
 @Component
-public class PageRequestPostHandler implements AsyncHandlerInterceptor, WebConstant, SystemConstant {
+public class PageRequestPostHandler implements HandlerInterceptor, WebConstant, SystemConstant {
 
 	private static Logger logger = LoggerFactory.getLogger(PageRequestPostHandler.class);
 
 	@Autowired
 	private AppDataHolder appDataHolder;
-
-	@Autowired
-	private ViewUtil viewUtil;
-
-	@Autowired
-	private PermDataUtil permDataUtil;
-
-	@Autowired
-	private ClassifierUtil classifierUtil;
 
 	@Autowired
 	private UserProfileUtil userProfileUtil;
@@ -70,15 +58,6 @@ public class PageRequestPostHandler implements AsyncHandlerInterceptor, WebConst
 			if (!modelMap.containsKey(APP_DATA_MODEL_KEY)) {
 				AppData appData = appDataHolder.getAppData();
 				modelMap.addAttribute(APP_DATA_MODEL_KEY, appData);
-			}
-			if (!modelMap.containsKey(VIEW_UTIL_KEY)) {
-				modelMap.addAttribute(VIEW_UTIL_KEY, viewUtil);
-			}
-			if (!modelMap.containsKey(PERM_DATA_UTIL_KEY)) {
-				modelMap.addAttribute(PERM_DATA_UTIL_KEY, permDataUtil);
-			}
-			if (!modelMap.containsKey(CLASSIFIER_UTIL_KEY)) {
-				modelMap.addAttribute(CLASSIFIER_UTIL_KEY, classifierUtil);
 			}
 			if (!modelMap.containsKey(USER_PROFILE_KEY)) {
 				EkiUserProfile userProfile = userProfileUtil.getUserProfile();

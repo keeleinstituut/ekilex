@@ -50,7 +50,7 @@
                 <span class="fa fa-ellipsis-v"></span>
               </div>
               <div class="hover-actions-container hover-actions-container-outline">
-                <h1 th:data-id="${wordId}" th:id="${'word-value-' + wordId}" th:utext="${viewUtil.getWordValueMarkup(details.word)}" th:title="${details.word.wordFrequency}" class="mb-0">Aktiivne sõna</h1>
+                <h1 th:data-id="${wordId}" th:id="${'word-value-' + wordId}" th:utext="${@viewUtil.getWordValueMarkup(details.word)}" th:title="${details.word.wordFrequency}" class="mb-0">Aktiivne sõna</h1>
                 <div class="hover-actions hover-actions-bottom-right">
                   <button type="button" class="btn btn-compact btn-secondary"
                           title="Muuda"
@@ -372,7 +372,7 @@
                                         data-contextmenu:compare="Ava uues paneelis"
                                         data-behaviour="replace"
                                         name="details-btn">
-                                  <span th:utext="${viewUtil.getWordValueMarkup(relation)}"></span>
+                                  <span th:utext="${@viewUtil.getWordValueMarkup(relation)}"></span>
                                 </button>
                                 <button type="button" class="btn badge badge-warning"
                                         th:data-id="${relation.id}"
@@ -405,7 +405,7 @@
                                       data-contextmenu:compare="Ava uues paneelis"
                                       data-behaviour="replace"
                                       name="details-btn">
-                                <span th:utext="${viewUtil.getWordValueMarkup(relation) + ' (' + viewUtil.getLangIso2(relation.wordLang) + ')'}"></span>
+                                <span th:utext="${@viewUtil.getWordValueMarkup(relation) + ' (' + @viewUtil.getLangIso2(relation.wordLang) + ')'}"></span>
                               </button>
                               <button type="button" class="btn badge badge-warning"
                                       th:data-id="${relation.id}"
@@ -459,7 +459,7 @@
                               data-contextmenu:compare="Ava uues paneelis"
                               data-behaviour="replace"
                               name="details-btn">
-                              <span th:utext="${viewUtil.getWordValueMarkup(relation) + ' (' + viewUtil.getLangIso2(relation.wordLang) + ')'}"></span>
+                              <span th:utext="${@viewUtil.getWordValueMarkup(relation) + ' (' + @viewUtil.getLangIso2(relation.wordLang) + ')'}"></span>
                             </button>
                             <div class="sidebar-ordering__buttons">
                               <button type="button" class="btn badge badge-warning"
@@ -503,7 +503,7 @@
                               <span>
                                 <span th:if="${wordEtymRel.questionable}">?</span>
                                 <span th:if="${wordEtymRel.compound}">+</span>
-                                <span th:text="${wordEtymRel.relatedWord + ' (' + viewUtil.getLangIso2(wordEtymRel.relatedWordLang) + ')'}"></span>
+                                <span th:text="${wordEtymRel.relatedWord + ' (' + @viewUtil.getLangIso2(wordEtymRel.relatedWordLang) + ')'}"></span>
                               </span>
                             </button>
                             <span th:if="${wordEtymRel.commentPrese != null}" th:utext="${wordEtymRel.commentPrese}"></span>

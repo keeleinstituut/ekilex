@@ -48,7 +48,7 @@
               <div class="row">
                 <th:block th:each="wordValue : ${wordsMatch.wordValues}">
                   <div class="col-md-6 col-lg-6">
-                    <a th:href="@{${viewUtil.getSearchUri(sessionBean, searchMode, wordValue)}}" th:text="${wordValue}"></a>
+                    <a th:href="@{${@viewUtil.getSearchUri(sessionBean, searchMode, wordValue)}}" th:text="${wordValue}"></a>
                   </div>
                 </th:block>
               </div>

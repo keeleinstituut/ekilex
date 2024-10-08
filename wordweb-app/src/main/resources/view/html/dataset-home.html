@@ -39,7 +39,7 @@
         </div>
         <div class="text-center mt-5">
           <th:block th:each="firstLetter : ${datasetHomeData.firstLetters}">
-            <a th:href="@{${viewUtil.getDatasetFirstLetterSearchUri(datasetHomeData.dataset.code, firstLetter)}}">
+            <a th:href="@{${@viewUtil.getDatasetFirstLetterSearchUri(datasetHomeData.dataset.code, firstLetter)}}">
               <span th:text="${firstLetter}"></span>
             </a>
           </th:block>
@@ -50,7 +50,7 @@
               <hr />
               <th:block th:each="word : ${datasetWords}">
                 <div class="text-left">
-                  <a th:href="@{${viewUtil.getDetailSearchUri(word, datasetHomeData.dataset.code)}}" th:text="${word}"></a>
+                  <a th:href="@{${@viewUtil.getDetailSearchUri(word, datasetHomeData.dataset.code)}}" th:text="${word}"></a>
                 </div>
               </th:block>
             </div>

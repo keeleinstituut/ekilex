@@ -81,7 +81,7 @@
                   </tr>
                   <th:block th:each="userPerm : ${ekiUserPermissions}"
                             th:with="
-                              isOwnPermission=${#vars.permDataUtil.isOwnPermission(userPerm.id)},
+                              isOwnPermission=${#vars.@permDataUtil.isOwnPermission(userPerm.id)},
                               isAdmin=${#vars.userRoleData.admin},
                               isDatasetOwnerOrAdmin=${#vars.userRoleData.datasetOwnerOrAdmin}">
                     <tr>

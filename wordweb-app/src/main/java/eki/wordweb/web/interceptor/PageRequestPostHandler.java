@@ -11,7 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
 import org.springframework.stereotype.Component;
 import org.springframework.ui.ModelMap;
-import org.springframework.web.servlet.AsyncHandlerInterceptor;
+import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
 
 import eki.common.data.AppData;
@@ -19,19 +19,15 @@ import eki.common.web.AppDataHolder;
 import eki.wordweb.constant.SystemConstant;
 import eki.wordweb.constant.WebConstant;
 import eki.wordweb.web.util.UserAgentUtil;
-import eki.wordweb.web.util.ViewUtil;
 
 @ConditionalOnWebApplication
 @Component
-public class PageRequestPostHandler implements AsyncHandlerInterceptor, WebConstant, SystemConstant {
+public class PageRequestPostHandler implements HandlerInterceptor, WebConstant, SystemConstant {
 
 	private static final Logger logger = LoggerFactory.getLogger(PageRequestPostHandler.class);
 
 	@Autowired
 	private AppDataHolder appDataHolder;
-
-	@Autowired
-	private ViewUtil viewUtil;
 
 	@Autowired
 	protected UserAgentUtil userAgentUtil;
@@ -61,9 +57,6 @@ public class PageRequestPostHandler implements AsyncHandlerInterceptor, WebConst
 		if (!modelMap.containsKey(APP_DATA_MODEL_KEY)) {
 			AppData appData = appDataHolder.getAppData();
 			modelMap.addAttribute(APP_DATA_MODEL_KEY, appData);
-		}
-		if (!modelMap.containsKey(VIEW_UTIL_MODEL_KEY)) {
-			modelMap.addAttribute(VIEW_UTIL_MODEL_KEY, viewUtil);
 		}
 
 		logRequestProcessTime(request);

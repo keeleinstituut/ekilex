@@ -21,7 +21,7 @@
           </span>
           <div class="mr-auto pl-0 d-flex flex-row flex-nowrap align-items-center">
             <p class="py-2 pr-1 m-0 list-item-value" th:inline="text">
-              <span th:utext="${viewUtil.getWordValueMarkup(synRelation)}"></span>
+              <span th:utext="${@viewUtil.getWordValueMarkup(synRelation)}"></span>
             </p>
           </div>
           <div class="hover-actions">
@@ -112,7 +112,7 @@
        class="orderable border-top">
     <th:block th:each="synonymLangGroup,synonymLangGroupIter : ${lexeme.synonymLangGroups}">
       <div class="orderable d-flex flex-row">
-        <span th:text="${viewUtil.getLangIso2(synonymLangGroup.lang)}" class="mr-2"></span>
+        <span th:text="${@viewUtil.getLangIso2(synonymLangGroup.lang)}" class="mr-2"></span>
         <th:block th:if="${synonymLangGroupIter.first}">
           <div th:replace="fullsyndialog :: add_syn_meaning_word_dlg"></div>
           <button type="button" class="btn btn-light badge mr-2 h-max-content mt-1"
@@ -137,11 +137,11 @@
                 <input type="hidden" class="relation-meaning-id" th:value="${syn.meaningId}"/>
                 <input type="hidden" name="synword-lexeme-id" th:value="${synWord.lexemeId}"/>
                 <span>
-                  <a th:href="@{'/lexsearch?id=' + ${synWord.wordId}}" th:utext="${viewUtil.getWordValueMarkup(synWord)}" th:styleappend="${isMeaningRelSyn ? 'color: #00874F' : 'color: #005aa9'}" target="_blank"></a>
+                  <a th:href="@{'/lexsearch?id=' + ${synWord.wordId}}" th:utext="${@viewUtil.getWordValueMarkup(synWord)}" th:styleappend="${isMeaningRelSyn ? 'color: #00874F' : 'color: #005aa9'}" target="_blank"></a>
                   <small class="font-weight-bold" th:text="${synWord.lexemeLevels}" th:if="${not #strings.isEmpty(synWord.lexemeLevels)}"></small>
                   <sup th:if="${synWord.homonymsExist}" th:text="${synWord.homonymNr}"></sup>
                   <small th:each="registerCode,regIter : ${synWord.lexemeRegisterCodes}" th:text="${registerCode + (regIter.last ? '' : ', ')}"></small>
-                  <small th:if="${synWordIter.last}" th:text="${'[' + viewUtil.getFormattedWeight(syn.weight) + ']'}"></small>
+                  <small th:if="${synWordIter.last}" th:text="${'[' + @viewUtil.getFormattedWeight(syn.weight) + ']'}"></small>
                   <th:block th:if="${not isMeaningWordSyn}">
                     <button type="button" class="btn badge badge-warning"
                       th:data-id="${syn.relationId}"

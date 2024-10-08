@@ -3,7 +3,7 @@
 <body class="survey-active">
   <th:block th:fragment="morpho-forms(paradigm, morphCode)">
     <td>
-      <th:block th:each="form, formIter : ${viewUtil.getForms(paradigm, morphCode)}">
+      <th:block th:each="form, formIter : ${@viewUtil.getForms(paradigm, morphCode)}">
         <th:block th:if="${form.morphExists && !#strings.isEmpty(form.value)}">
           <span th:unless="${formIter.first}">~</span>
           <span th:if="${form.questionable}" class="text-muted">*</span>

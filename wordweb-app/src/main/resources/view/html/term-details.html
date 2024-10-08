@@ -2,8 +2,8 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <body class="survey-active">
   <th:block th:fragment="meaning-data" th:with="
-            isProTerm = ${viewUtil.isProTermData(lexeme)},
-            isLimTerm = ${viewUtil.isLimTermData(lexeme)}">
+            isProTerm = ${@viewUtil.isProTermData(lexeme)},
+            isLimTerm = ${@viewUtil.isLimTermData(lexeme)}">
     <div th:id="|lexeme-section-${lexeme.lexemeId}|">
       <h6 class="font-weight-bold">
         <a th:href="@{'/ds/' + ${lexeme.datasetCode}}" th:text="${lexeme.datasetName}">Aianduse terminibaas</a>
@@ -14,7 +14,7 @@
             <div class="mb-1">
               <span>ID:</span>
               <th:block th:if="${isLimTerm}">
-                <a th:href="${viewUtil.getEkilexLimTermMeaningDetailsUrl(lexeme.meaningId)}">
+                <a th:href="${@viewUtil.getEkilexLimTermMeaningDetailsUrl(lexeme.meaningId)}">
                   <span class="mr-2" th:aria-label="${wordData.word.word}" th:text="${lexeme.meaningId}"></span>
                 </a>
               </th:block>
@@ -34,7 +34,7 @@
             <th:block th:if="${not #maps.isEmpty(lexeme.definitionsByLang)}">
               <div class="mb-0 d-flex flex-row" th:each="definitionEntry : ${lexeme.definitionsByLang}">
                 <span class="additional-meta lang-code lang-code-sm mr-2 align-self-start"
-                      th:with="langData=${viewUtil.getLangData(definitionEntry.key)}"
+                      th:with="langData=${@viewUtil.getLangData(definitionEntry.key)}"
                       th:text="${langData.codeIso2}" th:title="${langData.label}" data-toggle="tooltip"></span>
                 <div class="flex-shrink-1" style="font-weight: 500;">
                   <ul th:class="${definitionEntry.value.size() &lt;= 1}  ? 'list-unstyled m-0' : 'ul-list-style' ">
@@ -144,7 +144,7 @@
               <div class="col-12">
                 <div class="mb-0 d-flex flex-row" th:each="noteEntry : ${lexeme.meaningNotesByLang}">
                   <span class="lang-code lang-code-sm mr-2 align-self-start"
-                        th:with="langData=${viewUtil.getLangData(noteEntry.key)}"
+                        th:with="langData=${@viewUtil.getLangData(noteEntry.key)}"
                         th:text="${langData.codeIso2}" th:title="${langData.label}" data-toggle="tooltip"></span>
                     <div class="flex-shrink-1">
                       <ul th:class="${noteEntry.value.size() &lt;= 1}  ? 'list-unstyled m-0' : 'ul-list-style' ">
@@ -228,8 +228,8 @@
                 <span class="mr-2" th:text="${relationType.value}"></span>
                 <th:block th:each="relation, relationIter : ${lexeme.relatedMeaningsByType.get(relationType)}">
                   <div class="relation-item mr-1">
-                    <a th:href="@{${viewUtil.getSearchUri(sessionBean, searchMode, relation.word, relation.homonymNr, relation.lang)}}">
-                      <span th:utext="${viewUtil.getWordValueMarkup(relation)}">tee</span>
+                    <a th:href="@{${@viewUtil.getSearchUri(sessionBean, searchMode, relation.word, relation.homonymNr, relation.lang)}}">
+                      <span th:utext="${@viewUtil.getWordValueMarkup(relation)}">tee</span>
                     </a>
                     <th:block th:if="${not #lists.isEmpty(relation.lexRegisters)}">
                       <th:block th:each="register, rIter : ${relation.lexRegisters}">
@@ -252,21 +252,21 @@
                      th:with="meaningLangLexemes=${meaninglexemeEntry.value}"
                      th:classappend="${meaninglexemeEntryIter.last ? '' : 'mb-2'}">
                   <span class="lang-code lang-code-sm mr-2 align-self-start"
-                        th:with="langData=${viewUtil.getLangData(meaninglexemeEntry.key)}"
+                        th:with="langData=${@viewUtil.getLangData(meaninglexemeEntry.key)}"
                         th:text="${langData.codeIso2}" th:title="${langData.label}" data-toggle="tooltip">
                   </span>
                   <div class="flex-shrink-1">
                     <div th:each="meaningLexeme,meaninglexemeIter : ${meaningLangLexemes}" th:classappend="${meaninglexemeIter.last ? '' : 'mb-1'}">
                       <div class="row">
                         <div class="col-12">
-                          <a th:href="@{${viewUtil.getSearchUri(sessionBean, searchMode, meaningLexeme.word, meaningLexeme.homonymNr, meaningLexeme.lang)}}" class="matching-word "
+                          <a th:href="@{${@viewUtil.getSearchUri(sessionBean, searchMode, meaningLexeme.word, meaningLexeme.homonymNr, meaningLexeme.lang)}}" class="matching-word "
                              th:classappend="${meaningLexeme.wordId == wordId ? 'match' : ''}">
-                            <span th:utext="${viewUtil.getWordValueMarkup(meaningLexeme)}">tee</span>
+                            <span th:utext="${@viewUtil.getWordValueMarkup(meaningLexeme)}">tee</span>
                           </a>
                           <span class="text-small" th:if="${meaningLexeme.valueState != null}" th:text="${meaningLexeme.valueState.value}"></span>
                           <th:block th:if="${meaningLexeme.showWordDataAsHidden}">
                             <button type="button" class="btn btn-icon btn-sm" data-toggle="tooltip" data-html="true"
-                                    th:title="${viewUtil.getPosesAndGenderTooltipHtml(meaningLexeme.poses, meaningLexeme.gender)}">
+                                    th:title="${@viewUtil.getPosesAndGenderTooltipHtml(meaningLexeme.poses, meaningLexeme.gender)}">
                               <i class="fas fa-info-circle"></i>
                             </button>
                           </th:block>
@@ -406,7 +406,7 @@
                           <div class="col-12">
                             <div class="d-flex flex-row" th:each="noteEntry : ${meaningLexeme.lexemeNotesByLang}">
                               <span class="lang-code lang-code-sm mr-2 align-self-start"
-                                    th:with="langData=${viewUtil.getLangData(noteEntry.key)}"
+                                    th:with="langData=${@viewUtil.getLangData(noteEntry.key)}"
                                     th:text="${langData.codeIso2}" th:title="${langData.label}" data-toggle="tooltip"></span>
                               <div class="d-flex flex-column good-to-know-info">
                                 <th:block th:each="note : ${noteEntry.value}"

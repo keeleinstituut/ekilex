@@ -5,8 +5,8 @@
   <div class="card-body px-2 pt-1 pb-2 d-flex flex-column h-100"
        th:fragment="term_search_result"
        th:with="
-         isWordResultMode=${viewUtil.enumEquals(sessionBean.termSearchResultMode, T(eki.ekilex.constant.SearchResultMode).WORD)},
-         isMeaningResultMode=${viewUtil.enumEquals(sessionBean.termSearchResultMode, T(eki.ekilex.constant.SearchResultMode).MEANING)}">
+         isWordResultMode=${@viewUtil.enumEquals(sessionBean.termSearchResultMode, T(eki.ekilex.constant.SearchResultMode).WORD)},
+         isMeaningResultMode=${@viewUtil.enumEquals(sessionBean.termSearchResultMode, T(eki.ekilex.constant.SearchResultMode).MEANING)}">
     <div class="row no-gutters">
       <div class="col-auto">
         <div class="btn-group btn-group-toggle btn-tabs" data-toggle="buttons">
@@ -265,8 +265,8 @@
                       <span th:if="${meaningWord.leastPreferred}" class="badge badge-pill badge-danger">&nbsp;</span>
                       <span th:unless="${meaningWord.mostPreferred or meaningWord.leastPreferred}" class="badge badge-pill badge-light">&nbsp;</span>
                     </span>
-                    <span th:utext="${viewUtil.getWordValueMarkup(meaningWord)}" th:class="${meaningWord.matchingWord ? 'font-weight-bold' : ''}"></span>
-                    <span th:text="${'(' + viewUtil.getLangIso2(meaningWord.lang) + ')'}"></span>
+                    <span th:utext="${@viewUtil.getWordValueMarkup(meaningWord)}" th:class="${meaningWord.matchingWord ? 'font-weight-bold' : ''}"></span>
+                    <span th:text="${'(' + @viewUtil.getLangIso2(meaningWord.lang) + ')'}"></span>
                     <span class="ctxt mt-2">
                       <span th:each="datasetCode,itemIter : ${meaningWord.datasetCodes}">
                         <span th:text="${datasetCode}"></span>
@@ -402,7 +402,7 @@
     <div class="col pl-0">
       <th:block th:each="definitionLangGroup : ${meaning.definitionLangGroups}">
         <div>
-          <span th:text="${viewUtil.getLangIso2(definitionLangGroup.lang)}" class="mr-2"></span>
+          <span th:text="${@viewUtil.getLangIso2(definitionLangGroup.lang)}" class="mr-2"></span>
           <button name="lang-collapse-btn" type="button" class="btn badge badge-secondary btn-toggle"
                   th:data-lang="${definitionLangGroup.lang}"
                   th:title="${definitionLangGroup.selected} ? #{common.hide.lang.group} : #{common.show.lang.group}"
@@ -601,7 +601,7 @@
     <div class="col pl-0">
       <th:block th:each="noteLangGroup : ${meaning.noteLangGroups}">
         <div>
-          <span th:text="${viewUtil.getLangIso2(noteLangGroup.lang)}" class="mr-2"></span>
+          <span th:text="${@viewUtil.getLangIso2(noteLangGroup.lang)}" class="mr-2"></span>
           <button name="lang-collapse-btn" type="button" class="btn badge badge-secondary btn-toggle"
                   th:data-lang="${noteLangGroup.lang}"
                   th:title="${noteLangGroup.selected} ? #{common.hide.lang.group} : #{common.show.lang.group}"
@@ -707,7 +707,7 @@
     <div class="col pl-0">
       <th:block th:each="noteLangGroup : ${meaning.noteLangGroups}">
         <div>
-          <span th:text="${viewUtil.getLangIso2(noteLangGroup.lang)}" class="mr-2"></span>
+          <span th:text="${@viewUtil.getLangIso2(noteLangGroup.lang)}" class="mr-2"></span>
           <button name="lang-collapse-btn" type="button" class="btn badge badge-secondary btn-toggle"
                   th:data-lang="${noteLangGroup.lang}"
                   th:title="${noteLangGroup.selected} ? #{common.hide.lang.group} : #{common.show.lang.group}"
@@ -1096,8 +1096,8 @@
               <button type="button" class="btn btn-link p-0" th:data-id="${relation.meaningId}" name="details-btn"
                     data-behaviour="replace"
                     data-plugin="loadDetailsPlugin">
-                <span th:utext="${viewUtil.getWordValueMarkup(relation)}"></span>
-                <span th:text="${'(' + viewUtil.getLangIso2(relation.wordLang) + ')'}"></span>
+                <span th:utext="${@viewUtil.getWordValueMarkup(relation)}"></span>
+                <span th:text="${'(' + @viewUtil.getLangIso2(relation.wordLang) + ')'}"></span>
                 <th:block th:each="datasetCode, dsIter : ${relation.datasetCodes}">
                   <span th:if="${dsIter.first}">[</span>
                   <span th:text="${datasetCode}"></span>
@@ -1152,7 +1152,7 @@
         <span class="ttl word-value"
               th:data-id="${lexeme.wordId}"
               th:id="${'word-value-' + lexeme.wordId}"
-              th:utext="${viewUtil.getWordValueMarkup(lexeme.word)}"></span>
+              th:utext="${@viewUtil.getWordValueMarkup(lexeme.word)}"></span>
         <button type="button" class="btn badge badge-primary"
                 th:title="#{common.edit}"
                 data-toggle="modal"
@@ -1616,7 +1616,7 @@
             <button type="button" class="btn btn-link btn-xs" th:data-id="${relation.meaningId}" name="details-btn"
                   data-behaviour="replace"
                   data-plugin="loadDetailsPlugin">
-              <span th:utext="${viewUtil.getWordValueMarkup(relation) + ' (' + viewUtil.getLangIso2(relation.wordLang) + ')'}"></span>
+              <span th:utext="${@viewUtil.getWordValueMarkup(relation) + ' (' + @viewUtil.getLangIso2(relation.wordLang) + ')'}"></span>
             </button>
             <button type="button" class="btn badge badge-warning"
                     th:data-id="${relation.id}"
@@ -1651,7 +1651,7 @@
     <div class="col pl-0">
       <th:block th:each="noteLangGroup : ${lexeme.noteLangGroups}">
         <div>
-          <span th:text="${viewUtil.getLangIso2(noteLangGroup.lang)}" class="mr-2"></span>
+          <span th:text="${@viewUtil.getLangIso2(noteLangGroup.lang)}" class="mr-2"></span>
           <button name="lang-collapse-btn" type="button" class="btn badge badge-secondary btn-toggle"
                   th:data-lang="${noteLangGroup.lang}"
                   th:title="${noteLangGroup.selected} ? #{common.hide.lang.group} : #{common.show.lang.group}"
@@ -1841,7 +1841,7 @@
       <span class="lbl" th:text="#{term.word.gender}">Sugu</span>
     </div>
     <div class="col pl-0">
-      <span th:text="${viewUtil.getClassifierValue(lexeme.word.genderCode, wordGenders)}"></span>
+      <span th:text="${@viewUtil.getClassifierValue(lexeme.word.genderCode, wordGenders)}"></span>
       <button type="button" class="btn badge badge-primary" th:title="#{common.edit}"
               data-toggle="modal"
               th:data-target="${'#editWordGenderDlg_' + lexeme.lexemeId + '_' + lexeme.wordId}">

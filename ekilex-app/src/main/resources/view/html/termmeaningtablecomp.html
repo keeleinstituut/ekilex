@@ -39,7 +39,7 @@
             <input type="hidden" name="lexemeIds" th:value="${lexeme.lexemeId}" th:if="${lexeme.crudGrant}">
             <input type="hidden" class="meaning-data-input" th:name="'lexemes[' + ${lexemeIter.index} + '].lexemeId'" th:value="${lexeme.lexemeId}">
             <span th:utext="${lexeme.word.valuePrese}"></span>
-            <span th:text="${'(' + viewUtil.getLangIso2(lexeme.word.lang) + ')'}" class="ml-1"></span>
+            <span th:text="${'(' + @viewUtil.getLangIso2(lexeme.word.lang) + ')'}" class="ml-1"></span>
             <span th:text="'(' + ${lexeme.datasetCode + ')'}" class="ml-1"></span>
             <button class="btn text-gray"
                     data-plugin="meaningRowItemPublicity"

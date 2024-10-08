@@ -7,8 +7,8 @@
       <div class="col col-w2rem">
         <input name="sourceMeaningIds" type="checkbox" class="mt-2"
                th:value="${meaning.meaningId}"
-               th:if="${permDataUtil.isMeaningValidForJoin(meaning, targetMeaning)}"
-               sec:authorize="#vars.permDataUtil.isSourceMeaningCrudGranted(#vars.meaning.meaningId, #vars.targetMeaningId)"/>
+               th:if="${@permDataUtil.isMeaningValidForJoin(meaning, targetMeaning)}"
+               sec:authorize="#vars.@permDataUtil.isSourceMeaningCrudGranted(#vars.meaning.meaningId, #vars.targetMeaningId)"/>
         <input type="checkbox" class="mt-2" th:if="${meaning.meaningId == targetMeaningId}" checked="checked" disabled="disabled"/>
       </div>
     </div>
@@ -88,8 +88,8 @@
     <th:block th:each="lexemeLangGroup : ${meaning.lexemeLangGroups}">
       <div class="border rounded mb-2 p-2" th:each="lexeme : ${lexemeLangGroup.lexemes}">
         <div>
-          <span th:utext="${viewUtil.getWordValueMarkup(lexeme.word)}" class="font-weight-bold"></span>
-          <span th:text="${'(' + viewUtil.getLangIso2(lexeme.word.lang) + ')'}" class="ml-2"></span>
+          <span th:utext="${@viewUtil.getWordValueMarkup(lexeme.word)}" class="font-weight-bold"></span>
+          <span th:text="${'(' + @viewUtil.getLangIso2(lexeme.word.lang) + ')'}" class="ml-2"></span>
           <b class="float-right" th:text="${lexeme.datasetCode}"></b>
         </div>
         <div class="row">
