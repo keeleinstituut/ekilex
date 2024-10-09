@@ -7,9 +7,6 @@ export const ekiComponentBase = (
 ) =>
   class extends customElementConstructor {
     component = this;
-    constructor() {
-      super();
-    }
     connectedCallback() {
       super.connectedCallback();
       // Add these shared styles to component's shadow dom

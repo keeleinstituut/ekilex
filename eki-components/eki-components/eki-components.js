@@ -421,7 +421,7 @@ const $t = '*,:before,:after{--tw-border-spacing-x: 0;--tw-border-spacing-y: 0;-
 P.replaceSync($t);
 const xt = (e) => class extends e {
   constructor() {
-    super();
+    super(...arguments);
     g(this, "component", this);
   }
   connectedCallback() {
