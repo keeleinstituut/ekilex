@@ -208,6 +208,21 @@
               </tr>
             </th:block>
           </table>
+          <h5 class="pt-4">API kasutamine</h5>
+          <table th:with="columns=${15}" class="table table-striped table-condensed">
+            <th:block th:each="firstRowItemIndex: ${#numbers.sequence(0, #arrays.length(apiRequestStatData) - 1, columns)}">
+              <tr>
+                <th:block th:each="rowItemCount: ${#numbers.sequence(0, columns - 1)}">
+                  <th th:if="${firstRowItemIndex + rowItemCount < #arrays.length(apiRequestStatData)}" th:text="${apiRequestStatData[firstRowItemIndex + rowItemCount].name}"></th>
+                </th:block>
+              </tr>
+              <tr>
+                <th:block th:each="rowItemCount: ${#numbers.sequence(0, columns - 1)}">
+                  <td th:if="${firstRowItemIndex + rowItemCount < #arrays.length(apiRequestStatData)}" th:text="${apiRequestStatData[firstRowItemIndex + rowItemCount].rowCount}"></td>
+                </th:block>
+              </tr>
+            </th:block>
+          </table>
         </div>
       </div>
     </div>

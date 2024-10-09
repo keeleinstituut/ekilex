@@ -16,9 +16,6 @@ import org.springframework.web.servlet.i18n.SessionLocaleResolver;
 import eki.ekilex.constant.WebConstant;
 import eki.ekilex.web.interceptor.PageRequestPostHandler;
 
-/**
- * Thymeleaf and Spring MVC configuration.
- */
 @ConditionalOnWebApplication
 @Configuration
 public class WebMvcConfig implements WebMvcConfigurer, WebConstant {

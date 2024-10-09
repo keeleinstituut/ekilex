@@ -21,6 +21,16 @@ public class Sequences {
     public static final Sequence<Long> ACTIVITY_LOG_ID_SEQ = Internal.createSequence("activity_log_id_seq", Public.PUBLIC, SQLDataType.BIGINT.nullable(false), null, null, null, null, false, null);
 
     /**
+     * The sequence <code>public.api_error_count_id_seq</code>
+     */
+    public static final Sequence<Long> API_ERROR_COUNT_ID_SEQ = Internal.createSequence("api_error_count_id_seq", Public.PUBLIC, SQLDataType.BIGINT.nullable(false), null, null, null, null, false, null);
+
+    /**
+     * The sequence <code>public.api_request_count_id_seq</code>
+     */
+    public static final Sequence<Long> API_REQUEST_COUNT_ID_SEQ = Internal.createSequence("api_request_count_id_seq", Public.PUBLIC, SQLDataType.BIGINT.nullable(false), null, null, null, null, false, null);
+
+    /**
      * The sequence <code>public.aspect_order_by_seq</code>
      */
     public static final Sequence<Long> ASPECT_ORDER_BY_SEQ = Internal.createSequence("aspect_order_by_seq", Public.PUBLIC, SQLDataType.BIGINT.nullable(false), null, null, null, null, false, null);

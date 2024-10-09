@@ -239,6 +239,13 @@ create index activity_curr_data_word_id_idx on activity_log(cast(curr_data ->> '
 create index activity_curr_data_meaning_id_idx on activity_log(cast(curr_data ->> 'meaningId' as bigint));
 create index activity_curr_data_lexeme_id_idx on activity_log(cast(curr_data ->> 'lexemeId' as bigint));
 create index feedback_log_comment_log_id_idx on feedback_log_comment(feedback_log_id);
+create index api_request_count_auth_name_idx on api_request_count(auth_name);
+create index api_request_count_generic_path_idx on api_request_count(generic_path);
+create index api_request_count_count_idx on api_request_count(count);
+create index api_error_count_auth_name_idx on api_error_count(auth_name);
+create index api_error_count_generic_path_idx on api_error_count(generic_path);
+create index api_error_count_message_idx on api_error_count(message);
+create index api_error_count_count_idx on api_error_count(count);
 create index temp_ds_import_pk_map_import_code_idx on temp_ds_import_pk_map(import_code);
 create index temp_ds_import_pk_map_table_name_idx on temp_ds_import_pk_map(table_name);
 create index temp_ds_import_pk_map_source_pk_idx on temp_ds_import_pk_map(source_pk);

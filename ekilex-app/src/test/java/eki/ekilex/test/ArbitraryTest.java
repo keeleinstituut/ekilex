@@ -9,6 +9,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.StringTokenizer;
 
 import javax.transaction.Transactional;
 
@@ -29,8 +30,8 @@ import eki.common.constant.GlobalConstant;
 import eki.common.data.PgVarcharArray;
 import eki.common.service.db.BasicDbService;
 import eki.ekilex.app.EkilexApplication;
-import eki.ekilex.data.api.ParadigmForm;
 import eki.ekilex.data.api.Paradigm;
+import eki.ekilex.data.api.ParadigmForm;
 import eki.ekilex.data.api.ParadigmWrapper;
 import eki.ekilex.web.util.ValueUtil;
 
@@ -52,8 +53,7 @@ public class ArbitraryTest implements GlobalConstant {
 	@Before
 	public void beforeTest() throws Exception {
 
-		String createDummyTableSql =
-				"create table " + DUMMY_TABLE + " ("
+		String createDummyTableSql = "create table " + DUMMY_TABLE + " ("
 				+ "id bigserial primary key, "
 				+ "value_array text array null"
 				+ ");";

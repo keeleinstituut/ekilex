@@ -50,6 +50,8 @@ drop type if exists type_mt_word;
 drop type if exists type_mt_lexeme_freeform;
 drop table if exists temp_ds_import_pk_map;
 drop table if exists temp_ds_import_queue;
+drop table if exists api_request_count;
+drop table if exists api_error_count;
 drop table if exists feedback_log_comment;
 drop table if exists feedback_log;
 drop table if exists game_nonword;

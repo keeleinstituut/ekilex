@@ -5,6 +5,8 @@ package eki.ekilex.data.db;
 
 
 import eki.ekilex.data.db.tables.ActivityLog;
+import eki.ekilex.data.db.tables.ApiErrorCount;
+import eki.ekilex.data.db.tables.ApiRequestCount;
 import eki.ekilex.data.db.tables.Aspect;
 import eki.ekilex.data.db.tables.AspectLabel;
 import eki.ekilex.data.db.tables.Collocation;
@@ -138,6 +140,8 @@ import eki.ekilex.data.db.tables.WordType;
 import eki.ekilex.data.db.tables.WordTypeLabel;
 import eki.ekilex.data.db.tables.WordWordType;
 import eki.ekilex.data.db.tables.records.ActivityLogRecord;
+import eki.ekilex.data.db.tables.records.ApiErrorCountRecord;
+import eki.ekilex.data.db.tables.records.ApiRequestCountRecord;
 import eki.ekilex.data.db.tables.records.AspectLabelRecord;
 import eki.ekilex.data.db.tables.records.AspectRecord;
 import eki.ekilex.data.db.tables.records.CollocationMemberRecord;
@@ -290,6 +294,10 @@ public class Keys {
     // -------------------------------------------------------------------------
 
     public static final UniqueKey<ActivityLogRecord> ACTIVITY_LOG_PKEY = Internal.createUniqueKey(ActivityLog.ACTIVITY_LOG, DSL.name("activity_log_pkey"), new TableField[] { ActivityLog.ACTIVITY_LOG.ID }, true);
+    public static final UniqueKey<ApiErrorCountRecord> API_ERROR_COUNT_AUTH_NAME_GENERIC_PATH_MESSAGE_KEY = Internal.createUniqueKey(ApiErrorCount.API_ERROR_COUNT, DSL.name("api_error_count_auth_name_generic_path_message_key"), new TableField[] { ApiErrorCount.API_ERROR_COUNT.AUTH_NAME, ApiErrorCount.API_ERROR_COUNT.GENERIC_PATH, ApiErrorCount.API_ERROR_COUNT.MESSAGE }, true);
+    public static final UniqueKey<ApiErrorCountRecord> API_ERROR_COUNT_PKEY = Internal.createUniqueKey(ApiErrorCount.API_ERROR_COUNT, DSL.name("api_error_count_pkey"), new TableField[] { ApiErrorCount.API_ERROR_COUNT.ID }, true);
+    public static final UniqueKey<ApiRequestCountRecord> API_REQUEST_COUNT_AUTH_NAME_GENERIC_PATH_KEY = Internal.createUniqueKey(ApiRequestCount.API_REQUEST_COUNT, DSL.name("api_request_count_auth_name_generic_path_key"), new TableField[] { ApiRequestCount.API_REQUEST_COUNT.AUTH_NAME, ApiRequestCount.API_REQUEST_COUNT.GENERIC_PATH }, true);
+    public static final UniqueKey<ApiRequestCountRecord> API_REQUEST_COUNT_PKEY = Internal.createUniqueKey(ApiRequestCount.API_REQUEST_COUNT, DSL.name("api_request_count_pkey"), new TableField[] { ApiRequestCount.API_REQUEST_COUNT.ID }, true);
     public static final UniqueKey<AspectRecord> ASPECT_PKEY = Internal.createUniqueKey(Aspect.ASPECT, DSL.name("aspect_pkey"), new TableField[] { Aspect.ASPECT.CODE }, true);
     public static final UniqueKey<AspectLabelRecord> ASPECT_LABEL_CODE_LANG_TYPE_KEY = Internal.createUniqueKey(AspectLabel.ASPECT_LABEL, DSL.name("aspect_label_code_lang_type_key"), new TableField[] { AspectLabel.ASPECT_LABEL.CODE, AspectLabel.ASPECT_LABEL.LANG, AspectLabel.ASPECT_LABEL.TYPE }, true);
     public static final UniqueKey<CollocationRecord> COLLOCATION_PKEY = Internal.createUniqueKey(Collocation.COLLOCATION, DSL.name("collocation_pkey"), new TableField[] { Collocation.COLLOCATION.ID }, true);

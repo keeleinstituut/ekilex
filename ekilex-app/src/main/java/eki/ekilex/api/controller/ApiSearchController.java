@@ -12,11 +12,14 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
 import org.springframework.core.annotation.Order;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -157,13 +160,17 @@ public class ApiSearchController extends AbstractApiController {
 	})
 	@ResponseBody
 	public WordsResult lexSearch(
-			@PathVariable("word") String word, @PathVariable(value = "datasets", required = false) String datasetsStr) throws Exception {
+			@PathVariable("word") String word,
+			@PathVariable(value = "datasets", required = false) String datasetsStr,
+			Authentication authentication,
+			HttpServletRequest request) throws Exception {
 
 		boolean noLimit = true;
 		List<String> datasets = parseDatasets(datasetsStr);
 		// TODO either specific role or anonymous user should be applied here
 		String userRoleDatasetCode = null;
 		WordsResult results = lexSearchService.getWords(word, datasets, null, userRoleDatasetCode, DEFAULT_OFFSET, DEFAULT_MAX_RESULTS_LIMIT, noLimit);
+		addRequestStat(authentication, request);
 		return results;
 	}
 
@@ -175,13 +182,16 @@ public class ApiSearchController extends AbstractApiController {
 	@ResponseBody
 	public WordDetails getWordDetails(
 			@PathVariable("wordId") Long wordId,
-			@PathVariable(value = "datasets", required = false) String datasetsStr) throws Exception {
+			@PathVariable(value = "datasets", required = false) String datasetsStr,
+			Authentication authentication,
+			HttpServletRequest request) throws Exception {
 
 		List<String> datasets = parseDatasets(datasetsStr);
 		boolean isFullData = true;
 		EkiUser user = userContext.getUser();
 		// TODO either specific role or anonymous user should be applied here
 		WordDetails result = lexSearchService.getWordDetails(wordId, null, datasets, null, user, null, null, isFullData);
+		addRequestStat(authentication, request);
 		return result;
 	}
 
@@ -192,13 +202,17 @@ public class ApiSearchController extends AbstractApiController {
 	})
 	@ResponseBody
 	public TermSearchResult termSearch(
-			@PathVariable("word") String word, @PathVariable(value = "datasets", required = false) String datasetsStr) throws Exception {
+			@PathVariable("word") String word,
+			@PathVariable(value = "datasets", required = false) String datasetsStr,
+			Authentication authentication,
+			HttpServletRequest request) throws Exception {
 
 		boolean noLimit = true;
 		List<String> datasets = parseDatasets(datasetsStr);
 		SearchResultMode resultMode = SearchResultMode.MEANING;
 		String resultLang = null;
 		TermSearchResult results = termSearchService.getTermSearchResult(word, datasets, resultMode, resultLang, DEFAULT_OFFSET, noLimit);
+		addRequestStat(authentication, request);
 		return results;
 	}
 
@@ -210,22 +224,29 @@ public class ApiSearchController extends AbstractApiController {
 	@ResponseBody
 	public Meaning getMeaningDetails(
 			@PathVariable("meaningId") Long meaningId,
-			@PathVariable(value = "datasets", required = false) String datasetsStr) throws Exception {
+			@PathVariable(value = "datasets", required = false) String datasetsStr,
+			Authentication authentication,
+			HttpServletRequest request) throws Exception {
 
 		List<String> datasets = parseDatasets(datasetsStr);
 		List<Classifier> allLanguages = commonDataService.getLanguages();
 		List<ClassifierSelect> languagesOrder = convert(allLanguages);
 		EkiUser user = userContext.getUser();
 		Meaning meaning = termSearchService.getMeaning(meaningId, datasets, languagesOrder, null, user, null);
+		addRequestStat(authentication, request);
 		return meaning;
 	}
 
 	@Order(106)
 	@GetMapping(API_SERVICES_URI + PUBLIC_WORD_URI + "/{datasetCode}")
 	@ResponseBody
-	public List<Word> getPublicWords(@PathVariable("datasetCode") String datasetCode) {
+	public List<Word> getPublicWords(
+			@PathVariable("datasetCode") String datasetCode,
+			Authentication authentication,
+			HttpServletRequest request) {
 
 		List<Word> publicWords = lexWordService.getPublicWords(datasetCode);
+		addRequestStat(authentication, request);
 		return publicWords;
 	}
 
@@ -235,15 +256,22 @@ public class ApiSearchController extends AbstractApiController {
 	public List<Long> getWordIds(
 			@PathVariable("wordValue") String wordValue,
 			@PathVariable("datasetCode") String datasetCode,
-			@PathVariable("lang") String lang) {
+			@PathVariable("lang") String lang,
+			Authentication authentication,
+			HttpServletRequest request) {
 
 		List<Long> wordIds = lexWordService.getWordIds(wordValue, datasetCode, lang);
+		addRequestStat(authentication, request);
 		return wordIds;
 	}
 
 	@Order(108)
 	@GetMapping(API_SERVICES_URI + CLASSIFIERS_URI + "/{classifierName}")
-	public List<Classifier> getClassifiers(@PathVariable("classifierName") String classifierNameStr) {
+	@ResponseBody
+	public List<Classifier> getClassifiers(
+			@PathVariable("classifierName") String classifierNameStr,
+			Authentication authentication,
+			HttpServletRequest request) {
 
 		ClassifierName classifierName = null;
 		try {
@@ -252,25 +280,39 @@ public class ApiSearchController extends AbstractApiController {
 		} catch (Exception e) {
 			return null;
 		}
-		return commonDataService.getClassifiers(classifierName);
+		List<Classifier> classifiers = commonDataService.getClassifiers(classifierName);
+		addRequestStat(authentication, request);
+		return classifiers;
 	}
 
 	@Order(109)
 	@GetMapping(API_SERVICES_URI + DOMAIN_ORIGINS_URI)
-	public List<Origin> getDomainOrigins() {
-		return commonDataService.getDomainOrigins();
+	@ResponseBody
+	public List<Origin> getDomainOrigins(Authentication authentication, HttpServletRequest request) {
+		List<Origin> domainOrigins = commonDataService.getDomainOrigins();
+		addRequestStat(authentication, request);
+		return domainOrigins;
 	}
 
 	@Order(110)
 	@GetMapping(API_SERVICES_URI + DOMAINS_URI + "/{origin}")
-	public List<Classifier> getDomains(@PathVariable("origin") String origin) {
-		return commonDataService.getDomains(origin);
+	@ResponseBody
+	public List<Classifier> getDomains(
+			@PathVariable("origin") String origin,
+			Authentication authentication,
+			HttpServletRequest request) {
+		List<Classifier> domains = commonDataService.getDomains(origin);
+		addRequestStat(authentication, request);
+		return domains;
 	}
 
 	@Order(111)
 	@GetMapping(API_SERVICES_URI + DATASETS_URI)
-	public List<Dataset> getDatasets() {
-		return commonDataService.getAllDatasets();
+	@ResponseBody
+	public List<Dataset> getDatasets(Authentication authentication, HttpServletRequest request) {
+		List<Dataset> allDatasets = commonDataService.getAllDatasets();
+		addRequestStat(authentication, request);
+		return allDatasets;
 	}
 
 	private List<ClassifierSelect> convert(List<Classifier> allLanguages) {

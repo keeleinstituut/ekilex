@@ -5,6 +5,8 @@ package eki.ekilex.data.db;
 
 
 import eki.ekilex.data.db.tables.ActivityLog;
+import eki.ekilex.data.db.tables.ApiErrorCount;
+import eki.ekilex.data.db.tables.ApiRequestCount;
 import eki.ekilex.data.db.tables.Aspect;
 import eki.ekilex.data.db.tables.AspectLabel;
 import eki.ekilex.data.db.tables.Collocation;
@@ -165,6 +167,16 @@ public class Tables {
      * The table <code>public.activity_log</code>.
      */
     public static final ActivityLog ACTIVITY_LOG = ActivityLog.ACTIVITY_LOG;
+
+    /**
+     * The table <code>public.api_error_count</code>.
+     */
+    public static final ApiErrorCount API_ERROR_COUNT = ApiErrorCount.API_ERROR_COUNT;
+
+    /**
+     * The table <code>public.api_request_count</code>.
+     */
+    public static final ApiRequestCount API_REQUEST_COUNT = ApiRequestCount.API_REQUEST_COUNT;
 
     /**
      * The table <code>public.aspect</code>.

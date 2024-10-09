@@ -2,12 +2,15 @@ package eki.ekilex.api.controller;
 
 import java.util.List;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
 import org.springframework.core.annotation.Order;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -40,7 +43,9 @@ public class ApiSynController extends AbstractApiController {
 	@ResponseBody
 	public ApiResponse createSynCandidacy(
 			@RequestParam("crudRoleDataset") String crudRoleDataset,
-			@RequestBody SynCandidacy synCandidacy) {
+			@RequestBody SynCandidacy synCandidacy,
+			Authentication authentication,
+			HttpServletRequest request) {
 
 		try {
 			String headwordValue = synCandidacy.getHeadwordValue();
@@ -48,29 +53,29 @@ public class ApiSynController extends AbstractApiController {
 			String datasetCode = synCandidacy.getSynCandidateDatasetCode();
 			List<SynCandidateWord> synCandidateWords = synCandidacy.getSynCandidateWords();
 			if (StringUtils.isBlank(headwordValue)) {
-				return getOpFailResponse("Missing headword value");
+				return getOpFailResponse(authentication, request, "Missing headword value");
 			}
 			if (StringUtils.isBlank(headwordLang)) {
-				return getOpFailResponse("Missing headword lang");
+				return getOpFailResponse(authentication, request, "Missing headword lang");
 			}
 			if (StringUtils.isBlank(datasetCode)) {
-				return getOpFailResponse("Missing dataset code");
+				return getOpFailResponse(authentication, request, "Missing dataset code");
 			}
 			if (CollectionUtils.isEmpty(synCandidateWords)) {
-				return getOpFailResponse("Missing synonym/match candidates");
+				return getOpFailResponse(authentication, request, "Missing synonym/match candidates");
 			}
 			boolean datasetExists = datasetService.datasetExists(datasetCode);
 			if (!datasetExists) {
-				return getOpFailResponse("Dataset does not exist");
+				return getOpFailResponse(authentication, request, "Dataset does not exist");
 			}
 			boolean headwordExists = lookupService.wordExists(headwordValue, headwordLang);
 			if (!headwordExists) {
-				return getOpFailResponse("Headword does not exist");
+				return getOpFailResponse(authentication, request, "Headword does not exist");
 			}
 			synCandidateService.createFullSynCandidacy(synCandidacy, crudRoleDataset);
-			return getOpSuccessResponse();
+			return getOpSuccessResponse(authentication, request);
 		} catch (Exception e) {
-			return getOpFailResponse(e);
+			return getOpFailResponse(authentication, request, e);
 		}
 	}
 }

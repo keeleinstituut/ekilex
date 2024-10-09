@@ -2,10 +2,13 @@ package eki.ekilex.api.controller;
 
 import java.util.List;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
 import org.springframework.core.annotation.Order;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -27,22 +30,30 @@ public class ApiMorphController extends AbstractApiController {
 
 	@Order(401)
 	@GetMapping(API_SERVICES_URI + PARADIGM_URI + DETAILS_URI + "/{wordId}")
-	public List<Paradigm> getParadigms(@PathVariable("wordId") Long wordId) {
+	public List<Paradigm> getParadigms(
+			@PathVariable("wordId") Long wordId,
+			Authentication authentication,
+			HttpServletRequest request) {
 
-		return morphologyService.getParadigms(wordId);
+		List<Paradigm> paradigms = morphologyService.getParadigms(wordId);
+		addRequestStat(authentication, request);
+		return paradigms;
 	}
 
 	@Order(402)
 	@PreAuthorize("principal.admin")
 	@PostMapping(API_SERVICES_URI + PARADIGM_URI + SAVE_URI)
 	@ResponseBody
-	public ApiResponse saveMorphology(@RequestBody ParadigmWrapper paradigmWrapper) {
+	public ApiResponse saveMorphology(
+			@RequestBody ParadigmWrapper paradigmWrapper,
+			Authentication authentication,
+			HttpServletRequest request) {
 
 		try {
 			morphologyService.save(paradigmWrapper);
-			return getOpSuccessResponse();
+			return getOpSuccessResponse(authentication, request);
 		} catch (Exception e) {
-			return getOpFailResponse(e);
+			return getOpFailResponse(authentication, request, e);
 		}
 	}
 

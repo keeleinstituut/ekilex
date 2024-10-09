@@ -17,6 +17,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import eki.common.data.AppData;
 import eki.common.web.AppDataHolder;
+import eki.ekilex.constant.ApiConstant;
 import eki.ekilex.constant.SystemConstant;
 import eki.ekilex.constant.WebConstant;
 import eki.ekilex.data.EkiUserProfile;
@@ -25,7 +26,7 @@ import eki.ekilex.web.util.UserProfileUtil;
 
 @ConditionalOnWebApplication
 @Component
-public class PageRequestPostHandler implements HandlerInterceptor, WebConstant, SystemConstant {
+public class PageRequestPostHandler implements HandlerInterceptor, WebConstant, ApiConstant, SystemConstant {
 
 	private static Logger logger = LoggerFactory.getLogger(PageRequestPostHandler.class);
 
@@ -98,7 +99,11 @@ public class PageRequestPostHandler implements HandlerInterceptor, WebConstant, 
 		long endTime = System.currentTimeMillis();
 		long requestTime = endTime - startTime;
 
-		ekilexInfoContributor.appendRequestTime(requestTime);
+		if (StringUtils.startsWith(servletPath, API_SERVICES_URI)) {
+			ekilexInfoContributor.appendApiRequestTime(requestTime);
+		} else {
+			ekilexInfoContributor.appendUiRequestTime(requestTime);
+		}
 
 		logger.info("Request process time for \"{}\" - {} ms", servletPath, requestTime);
 	}

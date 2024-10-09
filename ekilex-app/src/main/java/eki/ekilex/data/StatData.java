@@ -37,7 +37,7 @@ public class StatData extends AbstractDataObject {
 	private long morphCount;
 
 	private long derivCount;
-	
+
 	private long domainCount;
 
 	public long getWordCount() {
@@ -175,4 +175,5 @@ public class StatData extends AbstractDataObject {
 	public void setDomainCount(long domainCount) {
 		this.domainCount = domainCount;
 	}
+
 }

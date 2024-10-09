@@ -6,7 +6,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -37,14 +36,14 @@ public class SecurityConfig {
 		@Override
 		public void configure(HttpSecurity http) throws Exception {
 
-            http
-                    .antMatcher(API_SERVICES_URI + "/**")
-                    .csrf(Customizer.withDefaults())
-                    .sessionManagement(management -> management.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                    .addFilter(createApiKeyAuthFilter())
-                    .authorizeHttpRequests()
-                    .anyRequest()
-                    .authenticated();
+			http
+					.antMatcher(API_SERVICES_URI + "/**")
+					.csrf(csrf -> csrf.disable())
+					.sessionManagement(management -> management.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+					.addFilter(createApiKeyAuthFilter())
+					.authorizeHttpRequests()
+					.anyRequest()
+					.authenticated();
 		}
 
 		private ApiKeyAuthFilter createApiKeyAuthFilter() {
@@ -68,32 +67,35 @@ public class SecurityConfig {
 		@Override
 		public void configure(HttpSecurity http) throws Exception {
 
-            http
-                    .authorizeHttpRequests()
-                    .antMatchers(
-                            INDEX_URI,
-                            LOGIN_PAGE_URI,
-                            LOGIN_ERROR_URI,
-                            REGISTER_PAGE_URI + "/**",
-                            TERMS_OF_USE_PAGE_URI,
-                            VIEW_RESOURCES_URI + "/**",
-                            SEND_FEEDBACK_URI,
-                            FAKE_REGISTER_AND_PASSWORD_RECOVERY_URI,
-                            PASSWORD_RECOVERY_URI + "/**",
-                            PASSWORD_SET_PAGE_URI + "/**")
-                    .permitAll()
-                    .anyRequest().authenticated()
-                    .and()
-                    .formLogin(login -> login
-                            .loginPage(LOGIN_PAGE_URI)
-                            .loginProcessingUrl(LOGIN_URI)
-                            .usernameParameter("email")
-                            .defaultSuccessUrl(HOME_URI)
-                            .failureUrl(LOGIN_ERROR_URI))
-                    .logout(logout -> logout
-                            .logoutUrl(LOGOUT_URI)
-                            .logoutSuccessUrl(INDEX_URI))
-                    .csrf(Customizer.withDefaults());
+			http
+					.csrf(csrf -> csrf.disable())
+					.authorizeHttpRequests(
+							authorize -> authorize
+									.antMatchers(INDEX_URI,
+											LOGIN_PAGE_URI,
+											LOGIN_ERROR_URI,
+											REGISTER_PAGE_URI + "/**",
+											TERMS_OF_USE_PAGE_URI,
+											VIEW_RESOURCES_URI + "/**",
+											SEND_FEEDBACK_URI,
+											FAKE_REGISTER_AND_PASSWORD_RECOVERY_URI,
+											PASSWORD_RECOVERY_URI + "/**",
+											PASSWORD_SET_PAGE_URI + "/**")
+									.permitAll()
+									.anyRequest()
+									.authenticated())
+					.formLogin(login -> login
+							.loginPage(LOGIN_PAGE_URI)
+							.loginProcessingUrl(LOGIN_URI)
+							.usernameParameter("email")
+							.defaultSuccessUrl(HOME_URI)
+							.failureUrl(LOGIN_ERROR_URI))
+					.logout(logout -> logout
+							.logoutUrl(LOGOUT_URI)
+							.invalidateHttpSession(true)
+							.clearAuthentication(true)
+							.deleteCookies("JSESSIONID")
+							.logoutSuccessUrl(INDEX_URI));
 		}
 
 		@Override
