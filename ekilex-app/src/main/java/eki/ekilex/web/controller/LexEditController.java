@@ -71,10 +71,9 @@ public class LexEditController extends AbstractPrivatePageController {
 	@Autowired
 	private CudService cudService;
 
-	@GetMapping(LEX_JOIN_URI + "/{targetLexemeId}")
-	public String lexJoin(
+	@GetMapping(LEX_JOIN_INIT_URI + "/{targetLexemeId}")
+	public String lexJoinInit(
 			@PathVariable("targetLexemeId") Long targetLexemeId,
-			@RequestParam(name = "searchFilter", required = false) String searchFilter,
 			@ModelAttribute(name = SESSION_BEAN) SessionBean sessionBean,
 			Model model) throws Exception {
 
@@ -89,10 +88,36 @@ public class LexEditController extends AbstractPrivatePageController {
 		Long sourceLexemeMeaningId = targetLexeme.getMeaningId();
 		String targetLexemeWord = targetLexeme.getWordValue();
 		String targetLexemeDatasetCode = targetLexeme.getDatasetCode();
-		if (searchFilter == null) {
-			searchFilter = targetLexemeWord;
-		}
+		Integer wordHomonymNumber = targetLexeme.getWordHomonymNr();
 
+		List<WordLexeme> sourceLexemes = lookupService
+				.getWordLexemesOfJoinCandidates(user, datasetCodes, targetLexemeWord, wordHomonymNumber, sourceLexemeMeaningId, tagNames, targetLexemeDatasetCode);
+
+		model.addAttribute("targetLexeme", targetLexeme);
+		model.addAttribute("searchFilter", targetLexemeWord);
+		model.addAttribute("sourceLexemes", sourceLexemes);
+
+		return LEX_JOIN_PAGE;
+	}
+
+	@PostMapping(LEX_JOIN_SEARCH_URI)
+	public String lexJoinSearch(
+			@RequestParam("targetLexemeId") Long targetLexemeId,
+			@RequestParam("searchFilter") String searchFilter,
+			@ModelAttribute(name = SESSION_BEAN) SessionBean sessionBean,
+			Model model) throws Exception {
+
+		List<ClassifierSelect> languagesOrder = sessionBean.getLanguagesOrder();
+		EkiUser user = userContext.getUser();
+		Long userId = user.getId();
+		UserContextData userContextData = getUserContextData();
+		List<String> tagNames = userContextData.getTagNames();
+		List<String> datasetCodes = userContextData.getPreferredDatasetCodes();
+		EkiUserProfile userProfile = userProfileService.getUserProfile(userId);
+		WordLexeme targetLexeme = lexSearchService.getWordLexeme(targetLexemeId, languagesOrder, userProfile, user, true);
+		Long sourceLexemeMeaningId = targetLexeme.getMeaningId();
+		String targetLexemeWord = targetLexeme.getWordValue();
+		String targetLexemeDatasetCode = targetLexeme.getDatasetCode();
 		Integer wordHomonymNumber = null;
 		if (StringUtils.equals(searchFilter, targetLexemeWord)) {
 			wordHomonymNumber = targetLexeme.getWordHomonymNr();
@@ -108,9 +133,11 @@ public class LexEditController extends AbstractPrivatePageController {
 		return LEX_JOIN_PAGE;
 	}
 
-	@PostMapping(VALIDATE_LEX_JOIN_URI)
+	@PostMapping(LEX_JOIN_VALIDATE_URI)
 	@ResponseBody
-	public Response validateJoin(@RequestParam("targetLexemeId") Long targetLexemeId, @RequestParam("sourceLexemeIds") List<Long> sourceLexemeIds) {
+	public Response lexJoinValidate(
+			@RequestParam("targetLexemeId") Long targetLexemeId,
+			@RequestParam("sourceLexemeIds") List<Long> sourceLexemeIds) {
 
 		Response response = new Response();
 		Locale locale = LocaleContextHolder.getLocale();
@@ -149,7 +176,7 @@ public class LexEditController extends AbstractPrivatePageController {
 	}
 
 	@PostMapping(LEX_JOIN_URI)
-	public String join(
+	public String lexJoin(
 			@RequestParam("targetLexemeId") Long targetLexemeId,
 			@RequestParam("sourceLexemeIds") List<Long> sourceLexemeIds,
 			@ModelAttribute(name = SESSION_BEAN) SessionBean sessionBean) throws Exception {

@@ -8,7 +8,7 @@
         <input name="sourceMeaningIds" type="checkbox" class="mt-2"
                th:value="${meaning.meaningId}"
                th:if="${@permDataUtil.isMeaningValidForJoin(meaning, targetMeaning)}"
-               sec:authorize="#vars.@permDataUtil.isSourceMeaningCrudGranted(#vars.meaning.meaningId, #vars.targetMeaningId)"/>
+               sec:authorize="@permDataUtil.isSourceMeaningCrudGranted(#vars.meaning.meaningId, #vars.targetMeaningId)"/>
         <input type="checkbox" class="mt-2" th:if="${meaning.meaningId == targetMeaningId}" checked="checked" disabled="disabled"/>
       </div>
     </div>

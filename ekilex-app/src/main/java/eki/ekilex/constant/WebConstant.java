@@ -126,11 +126,15 @@ public interface WebConstant {
 
 	String LIM_TERM_SEARCH_PAGE = "limtermsearch";
 
+	String LEX_JOIN_SEARCH_URI = "/lexjoinsearch";
+
+	String LEX_JOIN_INIT_URI = "/lexjoininit";
+
 	String LEX_JOIN_URI = "/lexjoin";
 
 	String LEX_JOIN_PAGE = "lexjoin";
 
-	String VALIDATE_LEX_JOIN_URI = "/validatelexjoin";
+	String LEX_JOIN_VALIDATE_URI = "/lexjoinvalidate";
 
 	String LEX_DUPLICATE_URI = "/lexduplicate";
 

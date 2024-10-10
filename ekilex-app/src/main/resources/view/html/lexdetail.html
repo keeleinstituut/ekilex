@@ -297,7 +297,7 @@
             </button>
             <a class="btn btn-sm btn-primary"
                th:title="#{lex.join.meanings}"
-               th:href="@{'/lexjoin/' + ${lexeme.lexemeId}}"
+               th:href="@{'/lexjoininit/' + ${lexeme.lexemeId}}"
                sec:authorize="#vars.lexeme.crudGrant"
                th:text="#{lex.join}">Ühenda</a>
             <button th:id="${'duplicateLexemeBtn_' + lexeme.lexemeId}" class="btn btn-sm btn-primary"

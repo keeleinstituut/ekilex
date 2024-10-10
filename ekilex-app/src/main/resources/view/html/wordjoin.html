@@ -52,7 +52,7 @@
                 <input name="sourceWordIds" type="checkbox" class="mt-2"
                        th:value="${sourceWordDetails.word.wordId}"
                        th:if="${@permDataUtil.isWordValidForJoin(sourceWordDetails.word.wordId, targetWordDetails.word.wordId)}"
-                       sec:authorize="#vars.@permDataUtil.isSourceWordCrudGranted(#vars.sourceWordDetails.word.wordId, #vars.targetWordDetails.word.wordId)"/>
+                       sec:authorize="@permDataUtil.isSourceWordCrudGranted(#vars.sourceWordDetails.word.wordId, #vars.targetWordDetails.word.wordId)"/>
                 <span th:utext="${@viewUtil.getWordValueMarkup(sourceWordDetails.word)}" class="wttl ml-2"></span>
                 <span th:text="${sourceWordDetails.word.homonymNr}" th:if="${sourceWordDetails.word.homonymNr > 0}" class="ml-2"></span>
                 <span th:text="${'(' + @viewUtil.getLangIso2(sourceWordDetails.word.lang) + ')'}" class="ml-2"></span>

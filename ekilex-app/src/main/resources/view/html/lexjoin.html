@@ -34,7 +34,8 @@
       </div>
       <th:block th:if="${#lists.isEmpty(validationMessages)}">
         <div class="card-body">
-          <form th:action="@{'/lexjoin/' + ${targetLexeme.lexemeId}}" method="post">
+          <form th:action="@{/lexjoinsearch}" method="post">
+            <input type="hidden" name="targetLexemeId" th:value="${targetLexeme.lexemeId}">
             <div class="form-row" name="searchFilter">
               <div class="col-12">
                 <div class="form-group row">
@@ -77,7 +78,7 @@
         <input name="sourceLexemeIds" type="checkbox" class="mt-2"
           th:value="${lexeme.lexemeId}"
           th:if="${lexeme.meaningId != targetLexeme.meaningId && lexeme.datasetCode == targetLexeme.datasetCode}"
-          sec:authorize="#vars.@permDataUtil.isSourceMeaningCrudGranted(#vars.lexeme.meaningId, #vars.targetLexeme.meaningId)"/>
+          sec:authorize="@permDataUtil.isSourceMeaningCrudGranted(#vars.lexeme.meaningId, #vars.targetLexeme.meaningId)"/>
         <input type="checkbox" class="mt-2" th:if="${lexeme.meaningId == targetLexeme.meaningId}" checked="checked" th:disabled="true" />
       </div>
       <div class="col">
