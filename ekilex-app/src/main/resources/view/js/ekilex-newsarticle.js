@@ -7,7 +7,7 @@ $.fn.saveNewsArticlePlugin = function() {
 			if (!checkRequiredFields(form)) {
 				return;
 			}
-			form.submit();
+			form.trigger('submit');
 		});
 	});
 }

@@ -18,7 +18,7 @@ function initSelectTagPrefsDlg(dlg) {
 function validateAndSubmitMeaningRelationPrefsForm(dlg) {
 	let form = dlg.find('form');
 	if (checkRequiredFields(form)) {
-		form.submit();
+		form.trigger('submit');
 	}
 }
 
@@ -46,7 +46,7 @@ $.fn.reapplyPlugin = function() {
 		e.preventDefault();
 		const form = main.closest('form');
 		if (checkRequiredFields(form)) {
-			form.submit();
+			form.trigger('submit');
 		}
 	});
 }

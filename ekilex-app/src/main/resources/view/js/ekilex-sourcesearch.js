@@ -92,7 +92,7 @@ function addSourceAndSourceLink(addSourceForm) {
 	const successCallback = sourceModal.attr("data-callback");
 	let successCallbackFunc = createCallback(successCallback);
 	if (!successCallbackFunc) {
-		successCallbackFunc = () => $('#refresh-details').click();
+		successCallbackFunc = () => $('#refresh-details').trigger('click');
 	}
 
 	$.ajax({

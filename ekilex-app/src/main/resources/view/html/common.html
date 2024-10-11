@@ -72,7 +72,8 @@
 <body>
   <!-- Bootstrap core JS -->
   <th:block th:fragment="js">
-    <script type="text/javascript" th:src="@{/view/js/_jquery-3.2.1.js}"></script>
+    <script type="text/javascript" th:src="@{/view/js/jquery-3.7.1.min.js}"></script>
+    <script src="https://code.jquery.com/jquery-migrate-3.5.2.js"></script>
     <!-- TODO make it part of source code -->
     <script type="text/javascript" src="https://cdn.ckeditor.com/4.22.0/standard/ckeditor.js"></script>
     <script type="text/javascript" th:src="@{/view/js/ckeditor.jquery.js}"></script>
@@ -81,6 +82,7 @@
   <!-- Bootstrap core CSS -->
   <th:block th:fragment="css">
     <link rel="stylesheet" th:href="@{/view/css/styles.css}" />
+    <link rel="stylesheet" th:href="@{/view/css/jquery-ui.min.css}" />
   </th:block>
   <th:block th:fragment="nav_bar">
     <nav class="navbar navbar-expand-md bg-primary navbar-dark main-navigation" th:classappend="${activeItem == 'partsyn' ? '' : 'fixed-top'}">

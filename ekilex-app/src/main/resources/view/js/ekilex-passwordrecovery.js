@@ -6,7 +6,7 @@ $.fn.passwordRecoveryPlugin = function() {
 			const code = obj.data('code');
 			const action = applicationUrl + "passwordrecovery/" + code;
 			passRecoveryForm.attr("action", action);
-			passRecoveryForm.submit();
+			passRecoveryForm.trigger('submit');
 		});
 	});
 }

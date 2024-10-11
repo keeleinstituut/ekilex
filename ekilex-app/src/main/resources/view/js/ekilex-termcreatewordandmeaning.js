@@ -11,7 +11,7 @@ $.fn.createWordClickPlugin = function() {
 			if (!checkRequiredFields(form, message)) {
 				return;
 			}
-			form.submit();
+			form.trigger('submit');
 		});
 	});
 }
@@ -27,7 +27,7 @@ $.fn.enableSelectWordBtnPlugin = function() {
 
 function enableSelectWordBtn() {
 	if ($('input[name="wordId"]:checked').length === 1) {
-		$("#selectWordBtn").removeAttr("disabled");
+		$("#selectWordBtn").prop("disabled", false);
 	}
 }
 
@@ -37,7 +37,7 @@ $.fn.editWordClickPlugin = function() {
 		obj.on('click', function() {
 			const form = $('#createWordForm');
 			form.find('input[name="clearResults"]').val(true);
-			form.submit();
+			form.trigger('submit');
 		});
 	});
 }
@@ -49,7 +49,7 @@ $.fn.initCreateWordPlugin = function() {
 			const form = btn.closest('form');
 			const backUri = getTermSearchBackUri();
 			form.find('input[name="backUri"]').val(backUri);
-			form.submit();
+			form.trigger('submit');
 		});
 	});
 }

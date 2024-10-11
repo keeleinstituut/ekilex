@@ -37,12 +37,12 @@ function doPostDelete(deleteUrl, callback, force) {
 			if (parsedParams.id && !force) {
 				if (parsedParams.opCode === 'syn_meaning_relation') {
 					const word = $(`[data-id="${parsedParams.id}"]:first`);
-					word.parents('[data-rel="details-area"]:first').find('[name="details-btn"]:first, [name="synDetailsBtn"]:first').click();
+					word.parents('[data-rel="details-area"]:first').find('[name="details-btn"]:first, [name="synDetailsBtn"]:first').trigger('click');
 				}
 				else if ($(`#lexeme-details-${parsedParams.id}`).length) {
 					const elem = $(`#lexeme-details-${parsedParams.id}`);
 					const parent = elem.parents('[data-rel="details-area"]');
-					parent.find('[name="details-btn"]:first').click();
+					parent.find('[name="details-btn"]:first').trigger('click');
 				} else {
 
 					let elem = $(`#resultColumn [data-id*="${parsedParams.id}"]:first`);
@@ -52,19 +52,19 @@ function doPostDelete(deleteUrl, callback, force) {
 					let parent = elem.parents('.details-open:first');
 
 					if (elem.is('[data-rel="details-area"]')) {
-						elem.find('[name="details-btn"]:first, [name="synDetailsBtn"]:first').click();
+						elem.find('[name="details-btn"]:first, [name="synDetailsBtn"]:first').trigger('click');
 					}
 					else if (!parent.length) {
 						parent = elem.parents('[data-rel="details-area"]:first');
 
 						const results = parent.find('[name="details-btn"]:first, [name="synDetailsBtn"]:first');
 						if (results.length) {
-							results.click();
+							results.trigger('click');
 						} else {
-							$('#refresh-details').click();
+							$('#refresh-details').trigger('click');
 						}
 					} else {
-						parent.find('#refresh-open:first').click();
+						parent.find('#refresh-open:first').trigger('click');
 					}
 				}
 
@@ -121,7 +121,7 @@ function submitForm(form, failMessage, callback) {
 			form
 				.parents('#details-area:first, #meaning-details-area:first, #syn-details-area:first')
 				.find('#refresh-details')
-				.click();
+				.trigger('click');
 		}
 	}).fail(function(data) {
 		console.log(data);
@@ -130,7 +130,7 @@ function submitForm(form, failMessage, callback) {
 };
 
 function alignAndFocus(e, dlg) {
-	dlg.find('.form-control').first().focus();
+	dlg.find('.form-control').first().trigger('focus');
 	if (e.relatedTarget) {
 		let dlgTop = ($(e.relatedTarget).offset().top - $(window).scrollTop()) - dlg.find('.modal-content').height() - 30;
 		if (dlgTop < 0) {
@@ -230,7 +230,7 @@ function executeDelete(deleteUrl) {
 	const successCallback = $this.attr("data-callback");
 	let successCallbackFunc = createCallback(successCallback);
 	if (!successCallback) {
-		successCallbackFunc = () => $('#refresh-details').click();
+		successCallbackFunc = () => $('#refresh-details').trigger('click');
 	}
 	doPostDelete(deleteUrl, successCallbackFunc);
 };
@@ -318,7 +318,7 @@ function configureSelectDlg(selectControl, selectDlg) {
 		if (overTheEdge > 0) {
 			modalContent.css('left', dlgLeft - modalContent.width());
 		}
-		selectDlg.find('.form-control').first().focus();
+		selectDlg.find('.form-control').first().trigger('focus');
 		$('.modal-backdrop').css('opacity', 0);
 	});
 };
@@ -327,7 +327,7 @@ function initNewWordDlg() {
 	const newWordDlg = $('#newWordDlg');
 	const formControl = newWordDlg.find('.form-control');
 	newWordDlg.on('shown.bs.modal', function(e) {
-		formControl.first().focus();
+		formControl.first().trigger('focus');
 		formControl.each(function() {
 			$(this).removeClass('is-invalid');
 		});
@@ -450,7 +450,7 @@ function initAddSourceLinkDlg(addDlg) {
 	});
 
 	addDlg.off('shown.bs.modal').on('shown.bs.modal', function() {
-		addDlg.find('.form-control').first().focus();
+		addDlg.find('.form-control').first().trigger('focus');
 	});
 };
 
@@ -542,7 +542,7 @@ function initMultiselectRelationDlg(dlg) {
 	});
 
 	dlg.off('shown.bs.modal').on('shown.bs.modal', function() {
-		dlg.find('.form-control').first().focus();
+		dlg.find('.form-control').first().trigger('focus');
 		const relationTypeSelect = dlg.find("select[name='relationType']");
 		changeOppositeRelationSelectData(relationTypeSelect);
 	});
@@ -577,7 +577,7 @@ function changeOppositeRelationSelectData(relationTypeSelect) {
 				$.each(classifiers, function(index, classifier) {
 					oppositeRelationSelect.append(new Option(classifier.value, classifier.code));
 				});
-				oppositeRelationSelect.removeAttr('disabled');
+				oppositeRelationSelect.prop('disabled', false);
 				oppositeRelationDiv.show();
 				break;
 		}
@@ -606,7 +606,7 @@ function openSourceDetails(elem) {
 	const dlg = $($elem.data('target'));
 	const url = $elem.attr('href');
 	dlg.off('shown.bs.modal').on('shown.bs.modal', function(e) {
-		dlg.find('.close').focus();
+		dlg.find('.close').trigger('focus');
 		dlg.find('.modal-body').html(null);
 		$.get(url).done(function(data) {
 			dlg.find('.modal-body').html(data);
@@ -624,7 +624,7 @@ function openAlertDlg(alertMessage, showAsAlert = true) {
 	alertDlg.find('.alert-warning').prop('hidden', !showAsAlert);
 	alertDlg.find('.alert-success').prop('hidden', showAsAlert);
 	alertDlg.modal('show');
-	alertDlg.find('.modal-footer button').focus();
+	alertDlg.find('.modal-footer button').trigger('focus');
 };
 */
 
@@ -667,7 +667,7 @@ function openAlertDlg(alertMessage, smallAlert = true, showAsAlert = true) {
 		}
 	} else {
 		alertDlg.modal('show');
-		alertDlg.find('.modal-footer button').focus();
+		alertDlg.find('.modal-footer button').trigger('focus');
 	}
 
 };
@@ -708,7 +708,7 @@ function openConfirmDlg(confirmDlgHtml, callback, ...callbackArgs) {
 	confirmDlg.html(confirmDlgHtml);
 	confirmDlg.modal('show');
 	const okBtn = confirmDlg.find('.modal-footer [name=ok]');
-	okBtn.focus();
+	okBtn.trigger('focus');
 	okBtn.off('click').on('click', function() {
 		confirmDlg.modal('hide');
 		callback(...callbackArgs);
@@ -785,7 +785,7 @@ function initClassifierAutocomplete() {
 };
 
 function refreshDetails() {
-	$('#refresh-details').click();
+	$('#refresh-details').trigger('click');
 }
 
 $.fn.refreshSearchResults = function() {
@@ -866,7 +866,7 @@ $.fn.activityLogDlgPlugin = function() {
 		dlg.on('show.bs.modal', function(e) {
 			const link = $(e.relatedTarget);
 			const url = link.attr('href');
-			dlg.find('.close').focus();
+			dlg.find('.close').trigger('focus');
 			dlg.find('.modal-body').html(null);
 			$.get(url).done(function(data) {
 				dlg.find('.modal-body').html(data);
@@ -996,7 +996,7 @@ $.fn.pagingInputPlugin = function() {
 		input.on('keydown', function(e) {
 			if (e.which === 13 || e.keyCode === 13) {
 				e.preventDefault();
-				input.siblings('.paging-submit').click();
+				input.siblings('.paging-submit').trigger('click');
 			}
 		})
 	})
