@@ -2,16 +2,16 @@
 // add on click handlers to details buttons in search result table
 function initializeTermSearch() {
 	$(document).on('change', '[name="resultLang"]', function() {
-		$(this).closest('form').submit();
+		$(this).closest('form').trigger('submit');
 	});
 
 	$(document).on('change', '[name="resultMode"]', function() {
-		$(this).closest('form').submit();
+		$(this).closest('form').trigger('submit');
 	});
 
 	const detailsButtons = $('#results').find('[name="meaning-details-btn"]');
 	if (detailsButtons.length > 0) {
-		detailsButtons.first().click();
+		detailsButtons.first().trigger('click');
 	}
 
 	initNewWordDlg();
@@ -64,17 +64,17 @@ $.fn.tableViewTermSearchResults = function() {
 		if (resultCount > 50) {
 			openAlertDlg(messages["term.meaning.table.max.meanings.exceeded"]);
 		} else {
-			main.closest('form').submit();
+			main.closest('form').trigger('submit');
 		}
 	});
 }
 
 function refreshDetailsTermsSearch() {
-	$('#refresh-details').click();
+	$('#refresh-details').trigger('click');
 };
 
 function doNewSearchTermSearch() {
-	$('#simple_search_filter').find('button[type=submit]').click();
+	$('#simple_search_filter').find('button[type=submit]').trigger('click');
 };
 
 function deleteMeaningAndLexemesAndWords() {

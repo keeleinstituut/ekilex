@@ -100,7 +100,7 @@ function initializePartSynSearch() {
 						}
 					});
 				}, 150);
-			}).scroll();
+			}).trigger('scroll');
 
 			$(document).find('.droppable-lexeme').droppable({
 				accept: function(draggableDiv) {
@@ -162,12 +162,12 @@ function initializePartSynSearch() {
 	$(document).on('keydown', handleKeyPress);
 
 	if ($('#synSearchResultsDiv').html() == undefined) {
-		$(document).find('input[name="simpleSearchFilter"]').focus();
+		$(document).find('input[name="simpleSearchFilter"]').trigger('focus');
 	}
 
 	const detailButtons = $('#results').find('[name="synDetailsBtn"]');
 	if (detailButtons.length >= 1) {
-		detailButtons.eq(0).click();
+		detailButtons.eq(0).trigger('click');
 	}
 	detailSearchBtn();  
 }
@@ -238,7 +238,7 @@ function initAddSynRelationDlg(addDlg) {
 	});
 
 	addDlg.off('shown.bs.modal').on('shown.bs.modal', function(e) {
-		addDlg.find('.form-control').first().focus();
+		addDlg.find('.form-control').first().trigger('focus');
 	});
 }
 
@@ -405,9 +405,9 @@ function handleEscapeKeyPress(currentActivePanelIndex) {
 
 		navItem.find('.keyboard-nav-list-item-active').removeClass('keyboard-nav-list-item-active');
 
-		$("#keyboardEditBtn").removeAttr('disabled');
+		$("#keyboardEditBtn").prop('disabled', false);
 
-		$(document).find('input[name="simpleSearchFilter"]').val('').focus();
+		$(document).find('input[name="simpleSearchFilter"]').val('').trigger('focus');
 	});
 	$('body').removeClass('keyboard-edit-mode-active');
 	IS_KEYBOARD_MODE = false;
@@ -459,7 +459,7 @@ function handleEnterKeyPress(e, currentActivePanelIndex, currentSelectedItem, cu
 		}
 	} else if (currentActivePanelIndex == "1") {
 		$(document).find('.keyboard-nav-list-item-selected').removeClass('keyboard-nav-list-item-selected');
-		currentSelectedItem.find('button[name="synDetailsBtn"]').click();
+		currentSelectedItem.find('button[name="synDetailsBtn"]').trigger('click');
 
 		$('div[data-panel-index="1"]').removeAttr('data-active-panel').removeClass('keyboard-nav-list-active');
 		activateSynCandidatesList();

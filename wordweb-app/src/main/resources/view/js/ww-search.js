@@ -116,7 +116,7 @@ $(document).on("click", "a[id^='word-details-link']", function() {
 });
 
 $(document).on("click", "a[id^='feedback-link']", function() {
-	$("button[name='feedback-btn']").click();
+	$("button[name='feedback-btn']").trigger('click');
 });
 
 $(document).on("click", ".homonym-item", function() {

@@ -1,8 +1,8 @@
 Bootstrap v4.0.0
 
-jQuery v3.2.1
+jQuery v3.7.1
 
-jQuery UI v1.12.1
+jQuery UI v1.14.0
 Includes: 
 widget.js, 
 position.js, 
@@ -26,7 +26,6 @@ effects/effect-slide.js,
 effects/effect-transfer.js, 
 focusable.js, 
 form-reset-mixin.js, 
-jquery-1-7.js, 
 keycode.js, 
 labels.js, 
 scroll-parent.js, 

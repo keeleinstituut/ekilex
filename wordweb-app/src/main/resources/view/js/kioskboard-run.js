@@ -155,7 +155,7 @@ $(document).ready(function () {
   }
 
   /* remove keyboard on mobile view*/
-  $(window).resize(function () {
+  $(window).on('resize', function () {
     let mobileView = window.matchMedia('(max-width: 1024px)');
 
     if (mobileView.matches) {

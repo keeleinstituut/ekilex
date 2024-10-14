@@ -16,7 +16,7 @@ function refreshSynDetails() {
 	const detailsArea = $('#syn-details-area')
 	const selectedWordId = detailsArea.data('id');
 	const refreshButton = $(`[name="synDetailsBtn"][data-id="${selectedWordId}"]`).first();
-	refreshButton.click();
+	refreshButton.trigger('click');
 }
 
 function updateWordSynRelationsStatusDeleted() {

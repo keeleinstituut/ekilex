@@ -84,7 +84,7 @@ function emptyClassifSelect(modal, classifSelectName) {
 	const form = modal.find('form');
 	const classifSelect = form.find(`select[name=${classifSelectName}]`);
 	classifSelect.find("option").each(function() {
-		$(this).removeAttr("selected");
+		$(this).prop("selected", false);
 	});
 	classifSelect.selectpicker('refresh');
 };
@@ -133,7 +133,7 @@ function checkAndAddDataset(addDatasetForm) {
 
 		if (responseCode === 'OK') {
 			openWaitDlg(messages["common.please.wait"]);
-			addDatasetForm.submit();
+			addDatasetForm.trigger('submit');
 			closeWaitDlg();
 		} else if (responseCode === 'CODE_EXISTS') {
 			showFieldError(newCodeField, messages["datasets.code.exists.validation"]);
@@ -168,7 +168,7 @@ $.fn.saveDatasetPlugin = function() {
 			e.preventDefault();
 			openWaitDlg(messages["common.please.wait"]);
 			const form = obj.closest('form');
-			form.submit();
+			form.trigger('submit');
 		});
 	});
 }
