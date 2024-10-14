@@ -5,7 +5,7 @@ class FormValidate {
   }
 
 	bindEvents() {
-		this.formItems.removeAttr('required');
+		this.formItems.prop('required', false);
 		this.form.on('submit', (e) => {
 			this.validate(e);
 		});

@@ -70,7 +70,7 @@ function initializeFullSynSearch() {
 						}
 					});
 				}, 150);
-			}).scroll();
+			}).trigger('scroll');
 
 			$(document).find('.droppable-lexeme').droppable({
 				accept: function(draggableDiv) {
@@ -117,12 +117,12 @@ function initializeFullSynSearch() {
 	$(document).find('.draggable-syn-rel').draggable();
 
 	if ($('#synSearchResultsDiv').html() == undefined) {
-		$(document).find('input[name="simpleSearchFilter"]').focus();
+		$(document).find('input[name="simpleSearchFilter"]').trigger('focus');
 	}
 
 	const detailButtons = $('#results').find('[name="synDetailsBtn"]');
 	if (detailButtons.length >= 1) {
-		detailButtons.eq(0).click();
+		detailButtons.eq(0).trigger('click');
 	}
 	detailSearchBtn();
 }
@@ -214,7 +214,7 @@ $.fn.enableSelectSynWordBtnPlugin = function() {
 
 function enableSelectSynWordBtn(form) {
 	if (form.find('input[type=radio][name="wordId"]:checked').length === 1) {
-		$(document).find('button[name="submitSelectedSynWordBtn"]').removeAttr("disabled");
+		$(document).find('button[name="submitSelectedSynWordBtn"]').prop("disabled", false);
 	}
 }
 

@@ -4,7 +4,7 @@ $.fn.applyPlugin = function() {
 		e.preventDefault();
 		const form = main.closest('form');
 		if (checkRequiredFields(form)) {
-			form.submit();
+			form.trigger('submit');
 		}
 	});
 }

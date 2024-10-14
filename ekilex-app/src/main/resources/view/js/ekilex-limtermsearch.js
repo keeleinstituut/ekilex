@@ -24,7 +24,7 @@ $.fn.duplicateLimTermMeaningPlugin = function() {
 function initNewLimTermWordDlg() {
 	const newWordDlg = $('#newLimTermWordDlg');
 	newWordDlg.on('shown.bs.modal', function(e) {
-		newWordDlg.find('.form-control').first().focus();
+		newWordDlg.find('.form-control').first().trigger('focus');
 		newWordDlg.find('.form-control').each(function() {
 			$(this).removeClass('is-invalid');
 		});
@@ -58,7 +58,7 @@ $.fn.limTermWordFormSubmitPlugin = function() {
 			if (!isValid) {
 				return;
 			}
-			addWordForm.submit();
+			addWordForm.trigger('submit');
 		});
 	});
 }

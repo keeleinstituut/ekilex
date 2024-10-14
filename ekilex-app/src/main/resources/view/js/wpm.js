@@ -25,7 +25,7 @@ const $wpm = {
       var resizeDelay = 200;
       var resizeDebounce = false;
 
-      $(window).bind("resize", function(e){
+      $(window).on("resize", function(e){
          clearTimeout(resizeDebounce);
 
          resizeDebounce = setTimeout(function(){

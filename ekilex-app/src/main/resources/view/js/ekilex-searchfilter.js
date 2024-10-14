@@ -115,7 +115,7 @@ function displayNotOperandChk() {
 			notChk.attr('disabled', true);
 			notChk.prop('checked', false);
 		} else {
-			notChk.removeAttr('disabled');
+			notChk.prop('disabled', false);
 		}
 	});
 }
@@ -223,7 +223,7 @@ function validateAndSubmitSimpleSearch() {
 	const isSearchFilterValid = validateSearchFilter(searchInput, searchFilter);
 	if (isSearchFilterValid) {
 		$('#isSearchFilterValid').val('true');
-		searchForm.submit();
+		searchForm.trigger('submit');
 	}
 };
 
@@ -295,7 +295,7 @@ function createAndAttachCopyFromLastItem(parentElement, itemName, indexName) {
 function initConditionGroup(groupElement) {
 	const entitySelect = groupElement.find('select[name$="entity"]');
 	entitySelect.val(entitySelect.find('option').first().val());
-	entitySelect.change();
+	entitySelect.trigger('change');
 	displayDetailGroupButtons();
 };
 
@@ -303,7 +303,7 @@ function initCondition(conditionElement) {
 	const searchKeySelect = conditionElement.find('select[name$="searchKey"]');
 	const searchKey = searchKeySelect.find('option').first().val();
 	searchKeySelect.val(searchKey);
-	searchKeySelect.change();
+	searchKeySelect.trigger('change');
 	const templClasslist = $('#searchValueTemplates').find(`[name="${searchKey}"]`)[0].classList;
 	$(conditionElement).find('.value-input-container')[0].classList = templClasslist;
 	displayDetailConditionButtons();
@@ -360,7 +360,7 @@ $.fn.datasetDlgFocusBtnPlugin = function() {
 	return this.each(function() {
 		const obj = $(this);
 		obj.on('shown.bs.modal', function() {
-			obj.find('.btn').first().focus();
+			obj.find('.btn').first().trigger('focus');
 		});
 	});
 }

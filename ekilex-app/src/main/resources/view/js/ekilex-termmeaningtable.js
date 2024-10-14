@@ -133,7 +133,7 @@ function submitTableItemsPublicity(editPublicityDlg) {
 	const publicityInput = form.find("input[name='public']");
 	form.append(ids);
 	publicityInput.val(selectedValue);
-	form.submit();
+	form.trigger('submit');
 }
 
 function submitTermMeaningTableMeaning(meaningTableRow) {

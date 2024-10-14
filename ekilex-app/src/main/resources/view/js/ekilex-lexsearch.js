@@ -148,8 +148,8 @@ function initLexemeLevelsDlg(editDlg) {
 
 		$.post(url).done(function() {
 			const detailsButton = editDlg.parents('[data-rel="details-area"]:first').find('[name="details-btn"]:first');
-			detailsButton.click();
-			editDlg.find('button.close').click();
+			detailsButton.trigger('click');
+			editDlg.find('button.close').trigger('click');
 		}).fail(function(data) {
 			alert("Andmete muutmine ebaõnnestus.");
 			console.log(data);
@@ -179,11 +179,11 @@ function refreshDetailsSearch(id) {
 	}
 
 	refreshButton = refreshButton.find('#refresh-details');
-	refreshButton.click();
+	refreshButton.trigger('click');
 };
 
 function doNewSearchLexDetail() {
-	$('#simple_search_filter').find('button[type=submit]').click();
+	$('#simple_search_filter').find('button[type=submit]').trigger('click');
 };
 
 
@@ -198,7 +198,7 @@ $.fn.relativeFormItem = function() {
 		if (relative.attr('type') === 'radio') {
 			relative.prop('checked', true);
 		}
-		relative.change();
+		relative.trigger('change');
 	});
 }
 
