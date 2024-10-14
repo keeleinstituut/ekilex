@@ -32,27 +32,27 @@ public class CorpusEstService extends AbstractCorpusService {
 	private String corpNameSimple;
 
 	@Value("${corpus.service.est.word.key.detail:}")
-	private String wordKeyDetail;
+	private String wordQueryParamKeyDetail;
 
 	@Value("${corpus.service.est.word.key.simple:}")
-	private String wordKeySimple;
+	private String wordQueryParamKeySimple;
 
 	@Value("#{${corpus.service.est.parameters}}")
-	private MultiValueMap<String, String> queryParametersMap;
+	private MultiValueMap<String, String> defaultQueryParamsMap;
 
 	private final String[] POS_PUNCTUATIONS = new String[] {"Z", "_Z_"};
 
 	private final String QUOTATION_MARK = "\"";
 
 	@Cacheable(value = CACHE_KEY_CORPUS, key = "{#root.methodName, #wordValue, #searchMode}")
-	public List<CorpusSentence> getSentences(String wordValue, String searchMode) {
+	public List<CorpusSentence> getCorpusSentences(String wordValue, String searchMode) {
 
-		URI corpusUrl = composeCorpusUrl(wordValue, searchMode);
-		Map<String, Object> response = requestSentences(corpusUrl);
+		URI corpusUrl = composeCorpusUri(wordValue, searchMode);
+		Map<String, Object> response = request(corpusUrl);
 		return parseResponse(response);
 	}
 
-	private URI composeCorpusUrl(String wordValue, String searchMode) {
+	private URI composeCorpusUri(String wordValue, String searchMode) {
 
 		if (isBlank(serviceUrl)) {
 			return null;
@@ -60,25 +60,46 @@ public class CorpusEstService extends AbstractCorpusService {
 
 		boolean isPosQuery = false;
 		String corpName = null;
-		String wordKey = null;
+		String queryParamKey = null;
 		if (StringUtils.equals(searchMode, SEARCH_MODE_DETAIL)) {
 			isPosQuery = true;
 			corpName = corpNameDetail;
-			wordKey = wordKeyDetail;
+			queryParamKey = wordQueryParamKeyDetail;
 		} else if (StringUtils.equals(searchMode, SEARCH_MODE_SIMPLE)) {
 			corpName = corpNameSimple;
-			wordKey = wordKeySimple;
+			queryParamKey = wordQueryParamKeySimple;
 		}
 
-		String querySentence = parseWordValueToQueryString(wordValue, wordKey, isPosQuery);
+		String queryString = composeQueryString(wordValue, queryParamKey, isPosQuery);
 
 		return UriComponentsBuilder.fromUriString(serviceUrl)
 				.queryParam("corpus", corpName)
-				.queryParam("cqp", querySentence)
-				.queryParams(queryParametersMap)
+				.queryParam("cqp", queryString)
+				.queryParams(defaultQueryParamsMap)
 				.encode(StandardCharsets.UTF_8)
 				.build()
 				.toUri();
+	}
+
+	private String composeQueryString(String wordValue, String queryParamKey, boolean isPosQuery) {
+
+		String[] wordValueTokens = StringUtils.split(wordValue, " ");
+		List<String> queryParams = new ArrayList<>();
+		for (String wordValueToken : wordValueTokens) {
+			String queryParam = createQueryParam(queryParamKey, wordValueToken, isPosQuery);
+			queryParams.add(queryParam);
+		}
+		String queryString = String.join(" ", queryParams);
+		return queryString;
+	}
+
+	private String createQueryParam(String queryParamKey, String queryParamValue, boolean isPosQuery) {
+
+		if (isPosQuery) {
+			return "[" + queryParamKey + "=\"" + queryParamValue + "-.?\"]";
+		} else {
+			return "[" + queryParamKey + "=\"" + queryParamValue + "\"]";
+		}
 	}
 
 	private List<CorpusSentence> parseResponse(Map<String, Object> response) {

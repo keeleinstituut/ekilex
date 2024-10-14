@@ -1,21 +1,19 @@
 package eki.wordweb.service;
 
 import java.net.URI;
-import java.util.ArrayList;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpRequest.Builder;
+import java.net.http.HttpResponse;
+import java.net.http.HttpResponse.BodyHandlers;
+import java.time.Duration;
 import java.util.Collections;
-import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.json.JsonParser;
 import org.springframework.boot.json.JsonParserFactory;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.client.RestTemplate;
 
 import eki.common.constant.GlobalConstant;
 import eki.wordweb.constant.SystemConstant;
@@ -24,7 +22,9 @@ public abstract class AbstractCorpusService implements SystemConstant, GlobalCon
 
 	private static final Logger logger = LoggerFactory.getLogger(AbstractCorpusService.class);
 
-	protected Map<String, Object> requestSentences(URI corpusUrl) {
+	private final int CONNECTION_TIMEOUT_SEC = 5;
+
+	protected Map<String, Object> request(URI corpusUrl) {
 
 		Map<String, Object> response = Collections.emptyMap();
 		if (isNotEnabled(corpusUrl)) {
@@ -39,43 +39,33 @@ public abstract class AbstractCorpusService implements SystemConstant, GlobalCon
 		return response;
 	}
 
-	protected String parseWordValueToQueryString(String wordValue, String wordQueryKey, boolean isPosQuery) {
-
-		String[] words = StringUtils.split(wordValue, " ");
-		List<String> wordQuerys = new ArrayList<>();
-		for (String word : words) {
-			String wordQuery = createWordQueryString(word, wordQueryKey, isPosQuery);
-			wordQuerys.add(wordQuery);
-		}
-		String wordsQueryString = String.join(" ", wordQuerys);
-		return wordsQueryString;
-	}
-
-	private String createWordQueryString(String word, String wordQueryKey, boolean isPosQuery) {
-
-		if (isPosQuery) {
-			return "[" + wordQueryKey + "=\"" + word + "-.?\"]";
-		} else {
-			return "[" + wordQueryKey + "=\"" + word + "\"]";
-		}
-	}
-
 	private String doGetRequest(URI url) {
 
-		HttpHeaders headers = new HttpHeaders();
-
-		HttpEntity<String> entity = new HttpEntity<>(null, headers);
-		RestTemplate restTemplate = new RestTemplate();
-
-		logger.debug("Sending request to > {}", url.toString());
+		String responseBody = null;
+		logger.debug("Requesting > \"{}\"", url.toString());
 		try {
-			ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.GET, entity, String.class);
-			return response.getBody();
+			Builder httpRequestBuilder = HttpRequest.newBuilder(url);
+			httpRequestBuilder = httpRequestBuilder.header("Accept", "*/*");
+			HttpRequest request = httpRequestBuilder
+					.GET()
+					.timeout(Duration.ofSeconds(CONNECTION_TIMEOUT_SEC))
+					.build();
+			HttpClient client = HttpClient.newBuilder()
+					.version(HttpClient.Version.HTTP_2)
+					.connectTimeout(Duration.ofSeconds(CONNECTION_TIMEOUT_SEC))
+					.build();
+			HttpResponse<String> response = client.send(request, BodyHandlers.ofString());
+			int statusCode = response.statusCode();
+			if (statusCode == 200) {
+				responseBody = response.body();				
+			} else {
+				logger.warn("Request returned HTTP{} with: \"{}\"", statusCode, responseBody);
+			}
 		} catch (Exception e) {
 			logger.error("Error with requesting {}", url);
 			logger.error(e.getMessage());
-			return null;
 		}
+		return responseBody;
 	}
 
 	private boolean isNotEnabled(URI corpusUrl) {

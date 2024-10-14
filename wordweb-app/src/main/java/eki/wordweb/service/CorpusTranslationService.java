@@ -28,21 +28,22 @@ public class CorpusTranslationService extends AbstractCorpusService {
 	private static final int RESULTS_LIMIT = 39;
 
 	@Cacheable(value = CACHE_KEY_CORPUS, key = "{#root.methodName, #wordId, #wordValue, #wordLang}")
-	public List<CorpusTranslation> getTranslations(Long wordId, String wordValue, String wordLang) {
+	public List<CorpusTranslation> getCorpusTranslations(Long wordId, String wordValue, String wordLang) {
 
-		URI corpusUrl = composeCorpusUrl(wordId, wordValue, wordLang);
-		Map<String, Object> response = requestSentences(corpusUrl);
+		URI corpusUrl = composeCorpusUri(wordId, wordValue, wordLang);
+		Map<String, Object> response = request(corpusUrl);
 		List<CorpusTranslation> translations = parseResponse(response);
 		return translations;
 	}
 
-	private URI composeCorpusUrl(Long wordId, String wordValue, String wordLang) {
+	private URI composeCorpusUri(Long wordId, String wordValue, String wordLang) {
 
 		if (isBlank(serviceUrl)) {
 			return null;
 		}
 
-		return UriComponentsBuilder.fromUriString(serviceUrl)
+		return UriComponentsBuilder
+				.fromUriString(serviceUrl)
 				.queryParam("corpus", corpNameEstRus)
 				.queryParam("wordId", wordId)
 				.queryParam("word", wordValue)
