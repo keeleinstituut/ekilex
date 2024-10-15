@@ -5,10 +5,13 @@ import java.util.List;
 import eki.common.constant.OrderingField;
 import eki.common.data.AbstractDataObject;
 import eki.ekilex.data.EkiUserPermData;
+import eki.ekilex.data.EkiUserRoleData;
 
 public class PermPageModel extends AbstractDataObject {
 
 	private static final long serialVersionUID = 1L;
+
+	private EkiUserRoleData userRoleData;
 
 	private String userNameFilter;
 
@@ -19,6 +22,14 @@ public class PermPageModel extends AbstractDataObject {
 	private OrderingField orderBy;
 
 	private List<EkiUserPermData> ekiUserPermissions;
+
+	public EkiUserRoleData getUserRoleData() {
+		return userRoleData;
+	}
+
+	public void setUserRoleData(EkiUserRoleData userRoleData) {
+		this.userRoleData = userRoleData;
+	}
 
 	public String getUserNameFilter() {
 		return userNameFilter;
