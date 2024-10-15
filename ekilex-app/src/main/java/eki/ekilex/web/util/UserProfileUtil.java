@@ -30,6 +30,12 @@ public class UserProfileUtil implements PermConstant {
 	public EkiUserRoleData getUserRoleData() {
 
 		EkiUser user = userContext.getUser();
+
+		return getUserRoleData(user);
+	}
+
+	public EkiUserRoleData getUserRoleData(EkiUser user) {
+
 		DatasetPermission userRole = user.getRecentRole();
 
 		boolean isAdmin = user.isAdmin();
