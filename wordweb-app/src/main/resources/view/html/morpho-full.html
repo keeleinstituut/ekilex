@@ -144,7 +144,7 @@
         <th:block th:replace=" :: table-header_est"></th:block>
         <div class="modal-body">
           <th:block th:replace=" :: table-checks_est"></th:block>
-          <p th:text="${paradigm.morphComment}" th:if="${paradigm.morphComment}"></p>
+          <p th:utext="${paradigm.morphComment}" th:if="${paradigm.morphComment}"></p>
           <p th:utext="${paradigm.paradigmComment}" class="paradigm-text"></p>
           <div>
             <div class="scrollable-table">
@@ -172,7 +172,7 @@
         <div class="modal-body">
           <th:block th:replace=" :: table-checks_est"></th:block>
           <div>
-            <p th:text="${paradigm.morphComment}" th:if="${paradigm.morphComment}"></p>
+            <p th:utext="${paradigm.morphComment}" th:if="${paradigm.morphComment}"></p>
             <p th:utext="${paradigm.paradigmComment}" class="paradigm-text"></p>
             <p>
               <span class="uppercase" th:text="#{label.morpho.inflectiontype}">Muuttüüp</span>
@@ -1089,7 +1089,7 @@
         <div class="modal-body">
           <th:block th:replace=" :: table-checks_est"></th:block>
           <div>
-            <p th:text="${paradigm.morphComment}" th:if="${paradigm.morphComment}"></p>
+            <p th:utext="${paradigm.morphComment}" th:if="${paradigm.morphComment}"></p>
             <p th:utext="${paradigm.paradigmComment}" class="paradigm-text"></p>
             <p>
               <span class="uppercase" th:text="#{label.morpho.inflectiontype}">Muuttüüp</span>
@@ -1327,7 +1327,7 @@
         </div>
         <div class="modal-body">
           <div>
-            <p th:text="${paradigm.morphComment}" th:if="${paradigm.morphComment}"></p>
+            <p th:utext="${paradigm.morphComment}" th:if="${paradigm.morphComment}"></p>
             <p th:utext="${paradigm.paradigmComment}" class="paradigm-text"></p>
             <div class="scrollable-table">
               <div class="scrollable-table--scroller">
@@ -1749,7 +1749,7 @@
         </div>
         <div class="modal-body">
           <div>
-            <p th:text="${paradigm.morphComment}" th:if="${paradigm.morphComment}"></p>
+            <p th:utext="${paradigm.morphComment}" th:if="${paradigm.morphComment}"></p>
             <p th:utext="${paradigm.paradigmComment}" class="paradigm-text"></p>
             <div class="scrollable-table">
               <div class="scrollable-table--scroller">
@@ -1902,7 +1902,7 @@
         </div>
         <div class="modal-body">
           <div>
-            <p th:text="${paradigm.morphComment}" th:if="${paradigm.morphComment}"></p>
+            <p th:utext="${paradigm.morphComment}" th:if="${paradigm.morphComment}"></p>
             <p th:utext="${paradigm.paradigmComment}" class="paradigm-text"></p>
             <div class="scrollable-table">
               <div class="scrollable-table--scroller">
@@ -2317,7 +2317,7 @@
         </div>
         <div class="modal-body">
           <div>
-            <p th:text="${paradigm.morphComment}" th:if="${paradigm.morphComment}"></p>
+            <p th:utext="${paradigm.morphComment}" th:if="${paradigm.morphComment}"></p>
             <p th:utext="${paradigm.paradigmComment}" class="paradigm-text"></p>
             <th:block th:replace=" :: morpho-rus-adj-basetable(${paradigm})"></th:block>
           </div>
@@ -2340,7 +2340,7 @@
         </div>
         <div class="modal-body">
           <div>
-            <p th:text="${paradigm.morphComment}" th:if="${paradigm.morphComment}"></p>
+            <p th:utext="${paradigm.morphComment}" th:if="${paradigm.morphComment}"></p>
             <p th:utext="${paradigm.paradigmComment}" class="paradigm-text"></p>
             <h2>Прилагательное / Omadussõna</h2>
             <th:block th:replace=" :: morpho-rus-adj-basetable(${paradigm})"></th:block>
@@ -2416,7 +2416,7 @@
         </div>
         <div class="modal-body">
           <div>
-            <p th:text="${paradigm.morphComment}" th:if="${paradigm.morphComment}"></p>
+            <p th:utext="${paradigm.morphComment}" th:if="${paradigm.morphComment}"></p>
             <p th:utext="${paradigm.paradigmComment}" class="paradigm-text"></p>
             <h2>Превосходная степень / Ülivõrre</h2>
             <th:block th:replace=" :: morpho-rus-adj-basetable(${paradigm})"></th:block>
@@ -2440,7 +2440,7 @@
         </div>
         <div class="modal-body">
           <div>
-            <p th:text="${paradigm.morphComment}" th:if="${paradigm.morphComment}"></p>
+            <p th:utext="${paradigm.morphComment}" th:if="${paradigm.morphComment}"></p>
             <p th:utext="${paradigm.paradigmComment}" class="paradigm-text"></p>
             <h2>Причастие / Kesksõna</h2>
             <th:block th:replace=" :: morpho-rus-adj-basetable(${paradigm})"></th:block>
@@ -2516,7 +2516,7 @@
         </div>
         <div class="modal-body">
           <div>
-            <p th:text="${paradigm.morphComment}" th:if="${paradigm.morphComment}"></p>
+            <p th:utext="${paradigm.morphComment}" th:if="${paradigm.morphComment}"></p>
             <p th:utext="${paradigm.paradigmComment}" class="paradigm-text"></p>
             <div class="scrollable-table">
               <div class="scrollable-table--scroller">

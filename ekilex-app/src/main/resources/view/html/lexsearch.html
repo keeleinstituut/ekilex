@@ -271,7 +271,7 @@
                     <div class="ekiAccordion__content">
                       <div class="col hidden-buttons pr-5 pb-2">
                         <div class="action-buttons-anchor">
-                          <span th:text="${details.word.morphComment}" th:if="${details.word.morphComment}"></span>
+                          <span th:utext="${details.word.morphComment}" th:if="${details.word.morphComment}"></span>
                           <small th:unless="${details.word.morphComment}">
                             <i th:text="#{lex.add.word.morph.comment}" class="text-muted"></i>
                           </small>

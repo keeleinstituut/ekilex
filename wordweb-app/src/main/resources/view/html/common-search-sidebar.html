@@ -11,7 +11,7 @@
           </button>
         </h5>
         <div th:if="${wordData.word.morphComment}">
-          <span th:text="${wordData.word.morphComment}"></span>
+          <span th:utext="${wordData.word.morphComment}"></span>
         </div>
         <th:block th:each="paradigm,paradigmIter : ${wordData.paradigms}">
           <div class="morphology-paradigm"
