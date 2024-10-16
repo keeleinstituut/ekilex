@@ -1,1 +1,1 @@
-import Toast from "./components/Toast.svelte";
+import Toast from "./components/toast/Toast.svelte";

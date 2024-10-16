@@ -198,20 +198,21 @@
   <th:block th:fragment="latest-ww-news-article">
     <th:block th:if="${latestWordwebNewsArticle}">
       <eki-toast
-        th:attr="
-          title=${latestWordwebNewsArticle.title} + ' ' + ${#temporals.format(latestWordwebNewsArticle.created, 'dd.MM.yyyy')},
-          body=${latestWordwebNewsArticle.content},
-          text=#{menu.close},
-          read-more-text='Loe lähemalt',
-          read-more-url='https://google.com'"
-        id="latest-ww-news-toast"
-        ></eki-toast>
+        id="latest-ww-news-toast-container">
+      </eki-toast>
       <script th:inline="javascript">
         $(document).ready(function() {
-          const toast = $("#latest-ww-news-toast").get(0);
-          toast.setVisibility(true);
+          const toastContainer = $("#latest-ww-news-toast-container").get(0);
+          // The following comment syntax is for thymeleaf to embed variables
+          toastContainer.addToast({
+            title:/*[[${latestWordwebNewsArticle.title} + ' ' + ${#temporals.format(latestWordwebNewsArticle.created, 'dd.MM.yyyy')}]]*/ "",
+            body:/*[[${latestWordwebNewsArticle.content}]]*/ "",
+            closeLabel:/*[[#{menu.close}]]*/ "",
+            readMoreText:'Loe lähemalt',
+            readMoreUrl:'/news'
+          });
         });
-        $('#latest-ww-news-toast').on('eki-toast-closed', function(e) {
+        $('#latest-ww-news-toast-container').on('eki-toast-closed', function(e) {
           if (newsAcceptUrl) {
             $.post(newsAcceptUrl).done(function(response) {});
           }

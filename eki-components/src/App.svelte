@@ -9,19 +9,24 @@ Hello world
   bind:this={toast}
 ></Toast> -->
 
-<eki-toast
-  title="Versioon 1.37"
-  body="Värsked täiendused ootavad sind."
-  close-label="Sulge"
-  read-more-text="Loe lähemalt"
-  read-more-url="https://google.com"
-  bind:this={toast}
-></eki-toast>
+<eki-toast bind:this={toastContainer}></eki-toast>
 
-<button on:click={() => toast.setVisibility((prev) => !prev)}>toggle</button>
+<button
+  on:click={() =>
+    toastContainer.addToast({
+      title: "Versioon 1.37",
+      body: "Värsked täiendused ootavad sind.",
+      closeLabel: "Sulge",
+      readMoreText: "Loe lähemalt",
+      readMoreUrl: "https://google.com",
+    })}>addToast</button
+>
 
 <script>
   // import Toast from "./components/Toast.svelte";
   import "./dev.css";
-  let toast;
+  /**
+   * @type {{ addToast: (arg0: { title: string; body: string; closeLabel: string; readMoreText: string; readMoreUrl: string; }) => any; }}
+   */
+  let toastContainer;
 </script>

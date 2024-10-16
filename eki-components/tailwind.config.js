@@ -8,10 +8,4 @@ export default {
       "eki-dark-blue-text": "#173148",
     },
   },
-  plugins: [
-    /** @type {import("tailwindcss/types/config").PluginCreator} */
-    ({ addVariant }) => {
-      addVariant("starting", "@starting-style");
-    },
-  ],
 };
