@@ -1,50 +1,44 @@
 <!DOCTYPE html>
 <html lang="et" xmlns:th="http://www.thymeleaf.org">
-<head th:replace="common-app :: common_header(~{::title},~{::links},_)">
-<title>Sõnaveeb - Versioonid</title>
-<th:block th:fragment="links">
-  <script type="text/javascript" th:src="@{/view/js/hash.js}"></script>
-</th:block>
-</head>
-<body class="survey-active">
-  <th:block th:replace="common-app :: wcag-sidebar"></th:block>
-  <th:block th:replace="common-app :: wcag-main"></th:block>
-  <th:block th:replace="common-app :: ie-user"></th:block>
-  <div th:replace="common-app :: menu"></div>
-  <div class="container">
-    <div class="learn-container p-5">
-      <div class="row">
-        <h3 th:text="#{label.news.title}">Sõnaveebi versiooniajalugu</h3>
+  <head th:replace="common-app :: common_header(~{::title},~{::links},_)">
+    <title>Sõnaveeb - Versioonid</title>
+    <th:block th:fragment="links">
+      <script type="text/javascript" th:src="@{/view/js/hash.js}"></script>
+    </th:block>
+  </head>
+  <body class="survey-active news-page">
+    <th:block th:replace="common-app :: wcag-sidebar"></th:block>
+    <th:block th:replace="common-app :: wcag-main"></th:block>
+    <th:block th:replace="common-app :: ie-user"></th:block>
+    <div th:replace="common-app :: menu"></div>
+    <div class="news-page__wrapper">
+      <div class="news-page__header">
+        <h1 th:text="#{label.news.title}">Teavituste ajalugu</h1>
+        <p th:text="#{label.news.description}">Description</p>
       </div>
-      <th:block th:unless="${newsArticles}">
-        <div class="row mt-3">
-          <span th:text="#{label.news.missing.data}">Hetkel andmed puuduvad....</span>
-        </div>
-      </th:block>
-      <th:block th:if="${newsArticles}">
-        <div class="row mt-3">
+      <div class="news-page__content">
+        <th:block th:unless="${newsArticles}">
+          <div th:text="#{label.news.missing.data}">
+            Hetkel andmed puuduvad....
+          </div>
+        </th:block>
+        <th:block th:if="${newsArticles}">
           <th:block th:each="newsArticle, newsArticleIter : ${newsArticles}">
-            <div>
-              <div>
-                <h5>
-                  <span th:text="${newsArticle.title}"></span>
-                  <small th:text="${#temporals.format(newsArticle.created, 'dd.MM.yyyy')}"></small>
-                </h5>
-              </div>
-              <div>
-                <span th:text="${newsArticle.content}" style="white-space: pre-line"></span>
-              </div>
-              <hr th:unless="${newsArticleIter.last}"/>
+            <div class="news-page__item">
+              <h2 th:text="${newsArticle.title}">Pealkiri</h2>
+              <p th:text="${newsArticle.content}"></p>
+              <small
+                th:text="${#temporals.format(newsArticle.created, 'dd.MM.yyyy')}"
+              ></small>
             </div>
           </th:block>
-        </div>
-      </th:block>
+        </th:block>
+      </div>
     </div>
-  </div>
-  <div th:replace="common-app :: footer-content"></div>
-  <th:block th:replace="common-app :: content-top"></th:block>
-  <script th:inline="javascript">
-    setActiveMenuItem('news');
-  </script>
-</body>
+    <div th:replace="common-app :: footer-content"></div>
+    <th:block th:replace="common-app :: content-top"></th:block>
+    <script th:inline="javascript">
+      setActiveMenuItem("news");
+    </script>
+  </body>
 </html>
