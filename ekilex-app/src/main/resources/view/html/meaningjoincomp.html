@@ -80,7 +80,7 @@
         <th:block th:each="freeform : ${meaning.freeforms}">
           <div th:if="${freeform.freeformTypeCode == 'CONCEPT_ID'}">
             <div style="display: list-item; position: absolute"></div>
-            <span th:utext="${freeform.valueText}" th:if="${freeform.valueText != null}"></span>
+            <span th:utext="${freeform.value}"></span>
           </div>
         </th:block>
       </div>

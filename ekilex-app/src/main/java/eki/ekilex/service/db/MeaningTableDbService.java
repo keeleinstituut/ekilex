@@ -177,7 +177,7 @@ public class MeaningTableDbService implements GlobalConstant, SystemConstant, Fr
 						l.ID,
 						ff.ID,
 						ff.FREEFORM_TYPE_CODE,
-						Routines.encodeText(ff.VALUE_TEXT),
+						Routines.encodeText(ff.VALUE),
 						Routines.encodeText(ff.VALUE_PRESE),
 						ff.LANG,
 						ff.COMPLEXITY,
@@ -328,11 +328,12 @@ public class MeaningTableDbService implements GlobalConstant, SystemConstant, Fr
 				.execute();
 	}
 
+	@Deprecated
 	public void updateUsage(Long usageId, String value, String valuePrese, boolean isPublic, String userName) {
 
 		Timestamp timestamp = new Timestamp(System.currentTimeMillis());
 		create.update(FREEFORM)
-				.set(FREEFORM.VALUE_TEXT, value)
+				.set(FREEFORM.VALUE, value)
 				.set(FREEFORM.VALUE_PRESE, valuePrese)
 				.set(FREEFORM.IS_PUBLIC, isPublic)
 				.set(FREEFORM.MODIFIED_BY, userName)
@@ -357,6 +358,7 @@ public class MeaningTableDbService implements GlobalConstant, SystemConstant, Fr
 				.execute();
 	}
 
+	@Deprecated
 	public void updateUsagePublicity(Long usageId, boolean isPublic, String userName) {
 
 		Timestamp timestamp = new Timestamp(System.currentTimeMillis());

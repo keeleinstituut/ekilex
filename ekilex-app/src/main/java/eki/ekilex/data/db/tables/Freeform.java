@@ -8,7 +8,6 @@ import eki.ekilex.data.db.Keys;
 import eki.ekilex.data.db.Public;
 import eki.ekilex.data.db.tables.records.FreeformRecord;
 
-import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.util.Arrays;
 import java.util.List;
@@ -18,7 +17,7 @@ import org.jooq.ForeignKey;
 import org.jooq.Identity;
 import org.jooq.Name;
 import org.jooq.Record;
-import org.jooq.Row15;
+import org.jooq.Row13;
 import org.jooq.Schema;
 import org.jooq.Table;
 import org.jooq.TableField;
@@ -66,24 +65,14 @@ public class Freeform extends TableImpl<FreeformRecord> {
     public final TableField<FreeformRecord, String> FREEFORM_TYPE_CODE = createField(DSL.name("freeform_type_code"), SQLDataType.VARCHAR(100).nullable(false), this, "");
 
     /**
-     * The column <code>public.freeform.value_text</code>.
+     * The column <code>public.freeform.value</code>.
      */
-    public final TableField<FreeformRecord, String> VALUE_TEXT = createField(DSL.name("value_text"), SQLDataType.CLOB, this, "");
+    public final TableField<FreeformRecord, String> VALUE = createField(DSL.name("value"), SQLDataType.CLOB.nullable(false), this, "");
 
     /**
      * The column <code>public.freeform.value_prese</code>.
      */
     public final TableField<FreeformRecord, String> VALUE_PRESE = createField(DSL.name("value_prese"), SQLDataType.CLOB, this, "");
-
-    /**
-     * The column <code>public.freeform.value_date</code>.
-     */
-    public final TableField<FreeformRecord, Timestamp> VALUE_DATE = createField(DSL.name("value_date"), SQLDataType.TIMESTAMP(6), this, "");
-
-    /**
-     * The column <code>public.freeform.value_number</code>.
-     */
-    public final TableField<FreeformRecord, BigDecimal> VALUE_NUMBER = createField(DSL.name("value_number"), SQLDataType.NUMERIC(14, 4), this, "");
 
     /**
      * The column <code>public.freeform.lang</code>.
@@ -235,11 +224,11 @@ public class Freeform extends TableImpl<FreeformRecord> {
     }
 
     // -------------------------------------------------------------------------
-    // Row15 type methods
+    // Row13 type methods
     // -------------------------------------------------------------------------
 
     @Override
-    public Row15<Long, Long, String, String, String, Timestamp, BigDecimal, String, String, Long, Boolean, String, Timestamp, String, Timestamp> fieldsRow() {
-        return (Row15) super.fieldsRow();
+    public Row13<Long, Long, String, String, String, String, String, Long, Boolean, String, Timestamp, String, Timestamp> fieldsRow() {
+        return (Row13) super.fieldsRow();
     }
 }

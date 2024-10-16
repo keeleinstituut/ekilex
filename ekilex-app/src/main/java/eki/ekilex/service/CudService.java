@@ -204,7 +204,7 @@ public class CudService extends AbstractCudService implements PermConstant, Acti
 		FreeForm freeform = new FreeForm();
 		freeform.setId(freeformId);
 		freeform.setPublic(isPublic);
-		setFreeformValueTextAndValuePrese(freeform, value);
+		setFreeformValueAndPrese(freeform, value);
 		applyUpdate(freeform);
 
 		updateFreeform(ActivityOwner.WORD, ActivityEntity.FREEFORM, freeform, roleDatasetCode, isManualEventOnUpdateEnabled);
@@ -511,7 +511,7 @@ public class CudService extends AbstractCudService implements PermConstant, Acti
 		FreeForm freeform = new FreeForm();
 		freeform.setId(lexemeGovernmentId);
 		freeform.setComplexity(complexity);
-		setFreeformValueTextAndValuePrese(freeform, value);
+		setFreeformValueAndPrese(freeform, value);
 		applyUpdate(freeform);
 
 		updateFreeform(ActivityOwner.LEXEME, ActivityEntity.GOVERNMENT, freeform, roleDatasetCode, isManualEventOnUpdateEnabled);
@@ -523,7 +523,7 @@ public class CudService extends AbstractCudService implements PermConstant, Acti
 		FreeForm freeform = new FreeForm();
 		freeform.setId(lexemeGrammarId);
 		freeform.setComplexity(complexity);
-		setFreeformValueTextAndValuePrese(freeform, valuePrese);
+		setFreeformValueAndPrese(freeform, valuePrese);
 		applyUpdate(freeform);
 
 		updateFreeform(ActivityOwner.LEXEME, ActivityEntity.GRAMMAR, freeform, roleDatasetCode, isManualEventOnUpdateEnabled);
@@ -575,7 +575,7 @@ public class CudService extends AbstractCudService implements PermConstant, Acti
 		FreeForm freeform = new FreeForm();
 		freeform.setId(freeformId);
 		freeform.setPublic(isPublic);
-		setFreeformValueTextAndValuePrese(freeform, value);
+		setFreeformValueAndPrese(freeform, value);
 		applyUpdate(freeform);
 
 		updateFreeform(ActivityOwner.LEXEME, ActivityEntity.FREEFORM, freeform, roleDatasetCode, isManualEventOnUpdateEnabled);
@@ -702,7 +702,7 @@ public class CudService extends AbstractCudService implements PermConstant, Acti
 
 		FreeForm freeform = new FreeForm();
 		freeform.setId(learnerCommentId);
-		setFreeformValueTextAndValuePrese(freeform, valuePrese);
+		setFreeformValueAndPrese(freeform, valuePrese);
 		applyUpdate(freeform);
 
 		updateFreeform(ActivityOwner.MEANING, ActivityEntity.LEARNER_COMMENT, freeform, roleDatasetCode, isManualEventOnUpdateEnabled);
@@ -759,7 +759,7 @@ public class CudService extends AbstractCudService implements PermConstant, Acti
 		FreeForm freeform = new FreeForm();
 		freeform.setId(mediaId);
 		freeform.setComplexity(complexity);
-		setFreeformValueTextAndValuePrese(freeform, valuePrese);
+		setFreeformValueAndPrese(freeform, valuePrese);
 		applyUpdate(freeform);
 
 		updateFreeform(ActivityOwner.MEANING, ActivityEntity.MEDIA_FILE, freeform, roleDatasetCode, isManualEventOnUpdateEnabled);
@@ -771,7 +771,7 @@ public class CudService extends AbstractCudService implements PermConstant, Acti
 		FreeForm freeform = new FreeForm();
 		freeform.setId(freeformId);
 		freeform.setPublic(isPublic);
-		setFreeformValueTextAndValuePrese(freeform, value);
+		setFreeformValueAndPrese(freeform, value);
 		applyUpdate(freeform);
 
 		updateFreeform(ActivityOwner.MEANING, ActivityEntity.FREEFORM, freeform, roleDatasetCode, isManualEventOnUpdateEnabled);
@@ -782,7 +782,7 @@ public class CudService extends AbstractCudService implements PermConstant, Acti
 
 		FreeForm freeform = new FreeForm();
 		freeform.setId(freeformId);
-		setFreeformValueTextAndValuePrese(freeform, valuePrese);
+		setFreeformValueAndPrese(freeform, valuePrese);
 		applyUpdate(freeform);
 
 		updateFreeform(ActivityOwner.WORD, ActivityEntity.OD_WORD_RECOMMENDATION, freeform, roleDatasetCode, isManualEventOnUpdateEnabled);
@@ -894,7 +894,7 @@ public class CudService extends AbstractCudService implements PermConstant, Acti
 		freeform.setFreeformTypeCode(freeformTypeCode);
 		freeform.setComplexity(Complexity.DETAIL);
 		freeform.setPublic(isPublic);
-		setFreeformValueTextAndValuePrese(freeform, valuePrese);
+		setFreeformValueAndPrese(freeform, valuePrese);
 		applyCreateUpdate(freeform);
 
 		createWordFreeform(ActivityEntity.FREEFORM, wordId, freeform, roleDatasetCode, isManualEventOnUpdateEnabled);
@@ -976,7 +976,7 @@ public class CudService extends AbstractCudService implements PermConstant, Acti
 		FreeForm freeform = new FreeForm();
 		freeform.setFreeformTypeCode(GOVERNMENT_CODE);
 		freeform.setComplexity(complexity);
-		setFreeformValueTextAndValuePrese(freeform, government);
+		setFreeformValueAndPrese(freeform, government);
 		applyCreateUpdate(freeform);
 
 		createLexemeFreeform(ActivityEntity.GOVERNMENT, lexemeId, freeform, roleDatasetCode, isManualEventOnUpdateEnabled);
@@ -988,7 +988,7 @@ public class CudService extends AbstractCudService implements PermConstant, Acti
 		FreeForm freeform = new FreeForm();
 		freeform.setFreeformTypeCode(GRAMMAR_CODE);
 		freeform.setComplexity(complexity);
-		setFreeformValueTextAndValuePrese(freeform, valuePrese);
+		setFreeformValueAndPrese(freeform, valuePrese);
 		applyCreateUpdate(freeform);
 
 		createLexemeFreeform(ActivityEntity.GRAMMAR, lexemeId, freeform, roleDatasetCode, isManualEventOnUpdateEnabled);
@@ -1011,7 +1011,7 @@ public class CudService extends AbstractCudService implements PermConstant, Acti
 		freeform.setFreeformTypeCode(freeformTypeCode);
 		freeform.setComplexity(Complexity.DETAIL);
 		freeform.setPublic(isPublic);
-		setFreeformValueTextAndValuePrese(freeform, valuePrese);
+		setFreeformValueAndPrese(freeform, valuePrese);
 		applyCreateUpdate(freeform);
 
 		createLexemeFreeform(ActivityEntity.FREEFORM, lexemeId, freeform, roleDatasetCode, isManualEventOnUpdateEnabled);
@@ -1068,7 +1068,7 @@ public class CudService extends AbstractCudService implements PermConstant, Acti
 		freeform.setFreeformTypeCode(LEARNER_COMMENT_CODE);
 		freeform.setLang(lang);
 		freeform.setComplexity(Complexity.SIMPLE);
-		setFreeformValueTextAndValuePrese(freeform, valuePrese);
+		setFreeformValueAndPrese(freeform, valuePrese);
 		applyCreateUpdate(freeform);
 
 		createMeaningFreeform(ActivityEntity.LEARNER_COMMENT, meaningId, freeform, roleDatasetCode, isManualEventOnUpdateEnabled);
@@ -1134,7 +1134,7 @@ public class CudService extends AbstractCudService implements PermConstant, Acti
 		FreeForm freeform = new FreeForm();
 		freeform.setFreeformTypeCode(MEDIA_FILE_CODE);
 		freeform.setComplexity(complexity);
-		setFreeformValueTextAndValuePrese(freeform, valuePrese);
+		setFreeformValueAndPrese(freeform, valuePrese);
 		applyCreateUpdate(freeform);
 
 		createMeaningFreeform(ActivityEntity.MEDIA_FILE, meaningId, freeform, roleDatasetCode, isManualEventOnUpdateEnabled);
@@ -1147,7 +1147,7 @@ public class CudService extends AbstractCudService implements PermConstant, Acti
 		freeform.setFreeformTypeCode(freeformTypeCode);
 		freeform.setComplexity(Complexity.DETAIL);
 		freeform.setPublic(isPublic);
-		setFreeformValueTextAndValuePrese(freeform, valuePrese);
+		setFreeformValueAndPrese(freeform, valuePrese);
 		applyCreateUpdate(freeform);
 
 		createMeaningFreeform(ActivityEntity.FREEFORM, meaningId, freeform, roleDatasetCode, isManualEventOnUpdateEnabled);
@@ -1160,7 +1160,7 @@ public class CudService extends AbstractCudService implements PermConstant, Acti
 		freeform.setFreeformTypeCode(OD_WORD_RECOMMENDATION_CODE);
 		freeform.setComplexity(Complexity.DETAIL);
 		freeform.setPublic(true);
-		setFreeformValueTextAndValuePrese(freeform, valuePrese);
+		setFreeformValueAndPrese(freeform, valuePrese);
 		createWordFreeform(ActivityEntity.OD_WORD_RECOMMENDATION, wordId, freeform, roleDatasetCode, isManualEventOnUpdateEnabled);
 	}
 

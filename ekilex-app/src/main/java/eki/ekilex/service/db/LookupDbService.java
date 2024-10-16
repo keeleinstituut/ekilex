@@ -838,7 +838,7 @@ public class LookupDbService extends AbstractDataDbService {
 				.from(MEANING_FREEFORM, FREEFORM)
 				.where(MEANING_FREEFORM.MEANING_ID.eq(meaningId)
 						.and(FREEFORM.ID.eq(MEANING_FREEFORM.FREEFORM_ID))
-						.and(FREEFORM.VALUE_TEXT.eq(freeformValue))
+						.and(FREEFORM.VALUE.eq(freeformValue))
 						.and(FREEFORM.FREEFORM_TYPE_CODE.eq(freeformTypeCode)))
 				.fetchSingleInto(Boolean.class);
 	}

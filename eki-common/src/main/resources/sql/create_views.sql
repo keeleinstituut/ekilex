@@ -162,7 +162,7 @@ create type type_meaning_relation as (
 				word_type_codes varchar(100) array,
 				complexity varchar(100),
 				weight numeric(5,4),
-        inexact_syn_def text,
+        		inexact_syn_def text,
 				lex_value_state_codes varchar(100) array,
 				lex_register_codes varchar(100) array,
 				lex_government_values text array,
@@ -1019,7 +1019,7 @@ from (select m.id,
   left outer join (select mff.meaning_id,
                           json_agg(row (
                                       ff_mf.id,
-                                      ff_mf.value_text,
+                                      ff_mf.value,
                                       null,
                                       ff_mf.complexity,
                                       null
@@ -1032,14 +1032,14 @@ from (select m.id,
                    and 	 ff_mf.freeform_type_code = 'MEDIA_FILE'
                    group by mff.meaning_id) m_media on m_media.meaning_id = m.id
   left outer join (select mf.meaning_id,
-                          array_agg(ff.value_text order by ff.order_by) systematic_polysemy_patterns
+                          array_agg(ff.value order by ff.order_by) systematic_polysemy_patterns
                    from meaning_freeform mf,
                         freeform ff
                    where mf.freeform_id = ff.id
                    and   ff.freeform_type_code = 'SYSTEMATIC_POLYSEMY_PATTERN'
                    group by mf.meaning_id) m_spp on m_spp.meaning_id = m.id
   left outer join (select mf.meaning_id,
-                          array_agg(ff.value_text order by ff.order_by) semantic_types
+                          array_agg(ff.value order by ff.order_by) semantic_types
                    from meaning_freeform mf,
                         freeform ff
                    where mf.freeform_id = ff.id
@@ -1135,7 +1135,7 @@ from lexeme l
   left outer join (select l_rgn.lexeme_id, array_agg(l_rgn.region_code order by l_rgn.order_by) region_codes from lexeme_region l_rgn group by l_rgn.lexeme_id) l_rgn on l_rgn.lexeme_id = l.id
   left outer join (select l_der.lexeme_id, array_agg(l_der.deriv_code) deriv_codes from lexeme_deriv l_der group by l_der.lexeme_id) l_der on l_der.lexeme_id = l.id
   left outer join (select lf.lexeme_id,
-                          array_agg(ff.value_text order by ff.order_by) advice_notes
+                          array_agg(ff.value order by ff.order_by) advice_notes
                    from lexeme_freeform lf,
                         freeform ff
                    where lf.freeform_id = ff.id
@@ -1234,7 +1234,7 @@ from lexeme l
                                 l2.id mw_lex_id,
                                 l2.complexity mw_lex_complexity,
                                 l2.weight mw_lex_weight,
-                                (select jsonb_agg(row (ff.id, ff.freeform_type_code, ff.value_text, ff.lang, ff.complexity, null, null, null, null)::type_freeform order by ff.order_by)
+                                (select jsonb_agg(row (ff.id, ff.freeform_type_code, ff.value, ff.lang, ff.complexity, null, null, null, null)::type_freeform order by ff.order_by)
                                  from lexeme_freeform lf,
                                       freeform ff
                                  where lf.lexeme_id = l2.id
@@ -1985,7 +1985,7 @@ from (select mr.meaning1_id m1_id,
                 and l_ds.code = l.dataset_code
                 and l_ds.is_public = true
               group by l.word_id, l.meaning_id) lex_register_codes,
-             (select array_agg(ff.value_text)
+             (select array_agg(ff.value)
               from freeform ff,
                    lexeme_freeform lff,
                    lexeme l,

@@ -555,7 +555,7 @@ public class SearchFilterHelper implements GlobalConstant, ActivityFunct, Freefo
 			for (SearchCriterion criterion : filteredCriteria) {
 				if (criterion.getSearchValue() != null) {
 					String searchValueStr = criterion.getSearchValue().toString();
-					wordFreeformCondition = applyValueFilter(searchValueStr, criterion.isNot(), criterion.getSearchOperand(), ff.VALUE_TEXT, wordFreeformCondition, true);
+					wordFreeformCondition = applyValueFilter(searchValueStr, criterion.isNot(), criterion.getSearchOperand(), ff.VALUE, wordFreeformCondition, true);
 				}
 			}
 			where = where.andExists(DSL.select(wff.WORD_ID).from(wff, ff).where(wordFreeformCondition));
@@ -1306,7 +1306,7 @@ public class SearchFilterHelper implements GlobalConstant, ActivityFunct, Freefo
 			for (SearchCriterion criterion : filteredCriteria) {
 				if (criterion.getSearchValue() != null) {
 					String searchValueStr = criterion.getSearchValue().toString();
-					where1 = applyValueFilter(searchValueStr, criterion.isNot(), criterion.getSearchOperand(), ff.VALUE_TEXT, where1, true);
+					where1 = applyValueFilter(searchValueStr, criterion.isNot(), criterion.getSearchOperand(), ff.VALUE, where1, true);
 				}
 			}
 			where = where.and(DSL.exists(DSL.select(lff.ID).from(lff, ff).where(where1)));
@@ -1655,7 +1655,7 @@ public class SearchFilterHelper implements GlobalConstant, ActivityFunct, Freefo
 			for (SearchCriterion criterion : filteredValueCriteria) {
 				if (criterion.getSearchValue() != null) {
 					String searchValueStr = criterion.getSearchValue().toString();
-					meaningFreeformCondition = applyValueFilter(searchValueStr, criterion.isNot(), criterion.getSearchOperand(), ff.VALUE_TEXT, meaningFreeformCondition, true);
+					meaningFreeformCondition = applyValueFilter(searchValueStr, criterion.isNot(), criterion.getSearchOperand(), ff.VALUE, meaningFreeformCondition, true);
 				}
 			}
 			where = where.and(DSL.exists(DSL.select(mff.ID).from(mff, ff).where(meaningFreeformCondition)));

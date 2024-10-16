@@ -555,7 +555,7 @@ public class LexSearchConditionComposer implements GlobalConstant, ActivityFunct
 				.and(lff1.FREEFORM_ID.eq(ff1.ID))
 				.and(ff1.FREEFORM_TYPE_CODE.in(CLUELESS_SEARCH_LEXEME_FF_TYPE_CODES));
 		where1 = searchFilterHelper.applyDatasetRestrictions(l1, searchDatasetsRestriction, where1);
-		where1 = searchFilterHelper.applyValueFilters(SearchKey.VALUE, searchCriteria, ff1.VALUE_TEXT, where1, true);
+		where1 = searchFilterHelper.applyValueFilters(SearchKey.VALUE, searchCriteria, ff1.VALUE, where1, true);
 		SelectHavingStep<Record1<Long>> selectLexemeFreeform = DSL.select(l1.WORD_ID).from(l1, lff1, ff1).where(where1).groupBy(l1.WORD_ID);
 
 		// meaning note select
@@ -570,7 +570,7 @@ public class LexSearchConditionComposer implements GlobalConstant, ActivityFunct
 				.and(mff1.FREEFORM_ID.eq(ff1.ID))
 				.and(ff1.FREEFORM_TYPE_CODE.in(CLUELESS_SEARCH_MEANING_FF_TYPE_CODES));
 		where1 = searchFilterHelper.applyDatasetRestrictions(l1, searchDatasetsRestriction, where1);
-		where1 = searchFilterHelper.applyValueFilters(SearchKey.VALUE, searchCriteria, ff1.VALUE_TEXT, where1, true);
+		where1 = searchFilterHelper.applyValueFilters(SearchKey.VALUE, searchCriteria, ff1.VALUE, where1, true);
 		SelectHavingStep<Record1<Long>> selectMeaningFreeform = DSL.select(l1.WORD_ID).from(l1, m1, mff1, ff1).where(where1).groupBy(l1.WORD_ID);
 
 		// form select
@@ -587,7 +587,7 @@ public class LexSearchConditionComposer implements GlobalConstant, ActivityFunct
 				.and(wff1.FREEFORM_ID.eq(ff1.ID))
 				.and(ff1.FREEFORM_TYPE_CODE.eq(OD_WORD_RECOMMENDATION_CODE));
 		where1 = searchFilterHelper.applyDatasetRestrictions(l1, searchDatasetsRestriction, where1);
-		where1 = searchFilterHelper.applyValueFilters(SearchKey.VALUE, searchCriteria, ff1.VALUE_TEXT, where1, true);
+		where1 = searchFilterHelper.applyValueFilters(SearchKey.VALUE, searchCriteria, ff1.VALUE, where1, true);
 		SelectHavingStep<Record1<Long>> selectWordOdRecommendation = DSL.select(l1.WORD_ID).from(l1, w1, wff1, ff1).where(where1).groupBy(l1.WORD_ID);
 
 		Table<Record1<Long>> a1 = selectWordAndMeaningWord

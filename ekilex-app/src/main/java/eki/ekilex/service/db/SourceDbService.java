@@ -221,8 +221,7 @@ public class SourceDbService implements GlobalConstant, SystemConstant, Activity
 						s.IS_PUBLIC.as("is_source_public"),
 						sp.ID.as("source_property_id"),
 						sp.FREEFORM_TYPE_CODE.as("source_property_type_code"),
-						sp.VALUE_TEXT.as("source_property_value_text"),
-						sp.VALUE_DATE.as("source_property_value_date"),
+						sp.VALUE.as("source_property_value"),
 						spmf.as("source_property_match"))
 				.from(
 						s
@@ -496,8 +495,8 @@ public class SourceDbService implements GlobalConstant, SystemConstant, Activity
 		List<Long> uniqueFreeformsIds = originSourceFreeforms.stream()
 				.filter(origin -> targetSourceFreeforms.stream()
 						.noneMatch(target -> StringUtils.equals(target.getFreeformTypeCode(), origin.getFreeformTypeCode())
-								&& Objects.nonNull(target.getValueText())
-								&& target.getValueText().equals(origin.getValueText())))
+								&& Objects.nonNull(target.getValue())
+								&& target.getValue().equals(origin.getValue())))
 				.map(FreeformRecord::getId)
 				.collect(Collectors.toList());
 

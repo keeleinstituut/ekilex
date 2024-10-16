@@ -370,7 +370,7 @@ public class TermMeaningService extends AbstractApiCudService implements Activit
 				if (!meaningConceptIdExists) {
 					FreeForm freeform = new FreeForm();
 					freeform.setFreeformTypeCode(CONCEPT_ID_CODE);
-					freeform.setValueText(conceptId);
+					freeform.setValue(conceptId);
 					freeform.setValuePrese(conceptId);
 					freeform.setLang(null);
 					freeform.setComplexity(Complexity.DETAIL);

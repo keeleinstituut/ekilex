@@ -314,7 +314,7 @@ public class TermMeaningDbService implements ActivityFunct, GlobalConstant, Free
 
 		Field<JSON> cidf = DSL
 				.select(DSL
-						.jsonArrayAgg(ff.VALUE_TEXT)
+						.jsonArrayAgg(ff.VALUE)
 						.orderBy(ff.ORDER_BY))
 				.from(ff, mff)
 				.where(

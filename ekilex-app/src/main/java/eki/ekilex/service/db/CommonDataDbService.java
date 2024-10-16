@@ -660,7 +660,7 @@ public class CommonDataDbService extends AbstractDataDbService {
 		return create
 				.select(
 						FREEFORM.ID,
-						FREEFORM.VALUE_TEXT,
+						FREEFORM.VALUE,
 						FREEFORM.VALUE_PRESE,
 						FREEFORM.LANG,
 						FREEFORM.COMPLEXITY,
@@ -705,9 +705,8 @@ public class CommonDataDbService extends AbstractDataDbService {
 						f.ID,
 						f.FREEFORM_TYPE_CODE,
 						DSL.coalesce(ftl.VALUE, f.FREEFORM_TYPE_CODE).as("freeform_type_value"),
-						f.VALUE_TEXT,
+						f.VALUE,
 						f.VALUE_PRESE,
-						f.VALUE_DATE,
 						f.LANG,
 						f.COMPLEXITY,
 						f.ORDER_BY,
@@ -775,9 +774,8 @@ public class CommonDataDbService extends AbstractDataDbService {
 						f.ID,
 						f.FREEFORM_TYPE_CODE,
 						DSL.coalesce(ftl.VALUE, f.FREEFORM_TYPE_CODE).as("freeform_type_value"),
-						f.VALUE_TEXT,
+						f.VALUE,
 						f.VALUE_PRESE,
-						f.VALUE_DATE,
 						f.LANG,
 						f.COMPLEXITY,
 						f.ORDER_BY,
@@ -806,7 +804,7 @@ public class CommonDataDbService extends AbstractDataDbService {
 		return create
 				.select(
 						FREEFORM.ID,
-						FREEFORM.VALUE_TEXT,
+						FREEFORM.VALUE,
 						FREEFORM.VALUE_PRESE,
 						FREEFORM.LANG,
 						FREEFORM.COMPLEXITY)
@@ -905,7 +903,7 @@ public class CommonDataDbService extends AbstractDataDbService {
 		return create
 				.select(
 						ff.ID,
-						ff.VALUE_TEXT.as("sourceUrl"),
+						ff.VALUE.as("sourceUrl"),
 						ff.COMPLEXITY)
 				.from(ff, mff)
 				.where(
@@ -1353,9 +1351,8 @@ public class CommonDataDbService extends AbstractDataDbService {
 						f.ID,
 						f.FREEFORM_TYPE_CODE,
 						DSL.coalesce(ftl.VALUE, f.FREEFORM_TYPE_CODE).as("freeform_type_value"),
-						f.VALUE_TEXT,
+						f.VALUE,
 						f.VALUE_PRESE,
-						f.VALUE_DATE,
 						f.LANG,
 						f.COMPLEXITY,
 						f.ORDER_BY,
@@ -1397,7 +1394,7 @@ public class CommonDataDbService extends AbstractDataDbService {
 		return create
 				.select(
 						FREEFORM.ID,
-						FREEFORM.VALUE_TEXT,
+						FREEFORM.VALUE,
 						FREEFORM.VALUE_PRESE,
 						FREEFORM.LANG,
 						FREEFORM.COMPLEXITY,
@@ -1418,7 +1415,7 @@ public class CommonDataDbService extends AbstractDataDbService {
 		return create
 				.select(
 						g.ID,
-						g.VALUE_TEXT.as("value"),
+						g.VALUE,
 						g.COMPLEXITY,
 						g.ORDER_BY)
 				.from(glff

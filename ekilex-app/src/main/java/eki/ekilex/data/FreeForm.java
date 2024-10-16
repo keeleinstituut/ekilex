@@ -1,6 +1,5 @@
 package eki.ekilex.data;
 
-import java.sql.Timestamp;
 import java.util.List;
 
 import eki.common.constant.Complexity;
@@ -17,11 +16,9 @@ public class FreeForm extends AbstractCreateUpdateEntity {
 
 	private String freeformTypeValue;
 
-	private String valueText;
+	private String value;
 
 	private String valuePrese;
-
-	private Timestamp valueDate;
 
 	private String lang;
 
@@ -63,12 +60,12 @@ public class FreeForm extends AbstractCreateUpdateEntity {
 		this.freeformTypeValue = freeformTypeValue;
 	}
 
-	public String getValueText() {
-		return valueText;
+	public String getValue() {
+		return value;
 	}
 
-	public void setValueText(String valueText) {
-		this.valueText = valueText;
+	public void setValue(String value) {
+		this.value = value;
 	}
 
 	public String getValuePrese() {
@@ -77,14 +74,6 @@ public class FreeForm extends AbstractCreateUpdateEntity {
 
 	public void setValuePrese(String valuePrese) {
 		this.valuePrese = valuePrese;
-	}
-
-	public Timestamp getValueDate() {
-		return valueDate;
-	}
-
-	public void setValueDate(Timestamp valueDate) {
-		this.valueDate = valueDate;
 	}
 
 	public String getLang() {

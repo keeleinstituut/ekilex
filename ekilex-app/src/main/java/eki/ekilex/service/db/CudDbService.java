@@ -91,7 +91,7 @@ public class CudDbService extends AbstractDataDbService {
 		Timestamp timestamp = new Timestamp(System.currentTimeMillis());
 
 		Map<Field<?>, Object> fieldAndValueMap = new HashMap<>();
-		fieldAndValueMap.put(FREEFORM.VALUE_TEXT, freeform.getValueText());
+		fieldAndValueMap.put(FREEFORM.VALUE, freeform.getValue());
 		fieldAndValueMap.put(FREEFORM.VALUE_PRESE, freeform.getValuePrese());
 		fieldAndValueMap.put(FREEFORM.MODIFIED_BY, userName);
 		fieldAndValueMap.put(FREEFORM.MODIFIED_ON, timestamp);
@@ -1601,7 +1601,7 @@ public class CudDbService extends AbstractDataDbService {
 		FreeformRecord freeformRecord = create.newRecord(FREEFORM);
 		freeformRecord.setParentId(freeform.getParentId());
 		freeformRecord.setFreeformTypeCode(freeform.getFreeformTypeCode());
-		freeformRecord.setValueText(freeform.getValueText());
+		freeformRecord.setValue(freeform.getValue());
 		freeformRecord.setValuePrese(freeform.getValuePrese());
 		freeformRecord.setLang(freeform.getLang());
 		freeformRecord.setComplexity(complexity);

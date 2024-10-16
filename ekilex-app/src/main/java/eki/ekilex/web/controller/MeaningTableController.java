@@ -27,6 +27,7 @@ import eki.ekilex.service.MeaningTableService;
 import eki.ekilex.web.bean.SessionBean;
 import eki.ekilex.web.util.SearchHelper;
 
+// TODO outdated!!
 @ConditionalOnWebApplication
 @Controller
 public class MeaningTableController extends AbstractPrivateSearchController {

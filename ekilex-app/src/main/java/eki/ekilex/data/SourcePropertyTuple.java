@@ -1,7 +1,5 @@
 package eki.ekilex.data;
 
-import java.sql.Timestamp;
-
 import eki.common.constant.SourceType;
 import eki.common.data.AbstractDataObject;
 
@@ -29,9 +27,7 @@ public class SourcePropertyTuple extends AbstractDataObject {
 
 	private String sourcePropertyTypeCode;
 
-	private String sourcePropertyValueText;
-
-	private Timestamp sourcePropertyValueDate;
+	private String sourcePropertyValue;
 
 	private boolean sourcePropertyMatch;
 
@@ -115,20 +111,12 @@ public class SourcePropertyTuple extends AbstractDataObject {
 		this.sourcePropertyTypeCode = sourcePropertyTypeCode;
 	}
 
-	public String getSourcePropertyValueText() {
-		return sourcePropertyValueText;
+	public String getSourcePropertyValue() {
+		return sourcePropertyValue;
 	}
 
-	public void setSourcePropertyValueText(String sourcePropertyValueText) {
-		this.sourcePropertyValueText = sourcePropertyValueText;
-	}
-
-	public Timestamp getSourcePropertyValueDate() {
-		return sourcePropertyValueDate;
-	}
-
-	public void setSourcePropertyValueDate(Timestamp sourcePropertyValueDate) {
-		this.sourcePropertyValueDate = sourcePropertyValueDate;
+	public void setSourcePropertyValue(String sourcePropertyValue) {
+		this.sourcePropertyValue = sourcePropertyValue;
 	}
 
 	public boolean isSourcePropertyMatch() {

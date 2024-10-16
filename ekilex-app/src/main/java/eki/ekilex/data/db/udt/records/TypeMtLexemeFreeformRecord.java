@@ -65,16 +65,16 @@ public class TypeMtLexemeFreeformRecord extends UDTRecordImpl<TypeMtLexemeFreefo
     }
 
     /**
-     * Setter for <code>public.type_mt_lexeme_freeform.value_text</code>.
+     * Setter for <code>public.type_mt_lexeme_freeform.value</code>.
      */
-    public void setValueText(String value) {
+    public void setValue(String value) {
         set(3, value);
     }
 
     /**
-     * Getter for <code>public.type_mt_lexeme_freeform.value_text</code>.
+     * Getter for <code>public.type_mt_lexeme_freeform.value</code>.
      */
-    public String getValueText() {
+    public String getValue() {
         return (String) get(3);
     }
 
@@ -221,7 +221,7 @@ public class TypeMtLexemeFreeformRecord extends UDTRecordImpl<TypeMtLexemeFreefo
 
     @Override
     public Field<String> field4() {
-        return TypeMtLexemeFreeform.VALUE_TEXT;
+        return TypeMtLexemeFreeform.VALUE;
     }
 
     @Override
@@ -281,7 +281,7 @@ public class TypeMtLexemeFreeformRecord extends UDTRecordImpl<TypeMtLexemeFreefo
 
     @Override
     public String component4() {
-        return getValueText();
+        return getValue();
     }
 
     @Override
@@ -341,7 +341,7 @@ public class TypeMtLexemeFreeformRecord extends UDTRecordImpl<TypeMtLexemeFreefo
 
     @Override
     public String value4() {
-        return getValueText();
+        return getValue();
     }
 
     @Override
@@ -404,7 +404,7 @@ public class TypeMtLexemeFreeformRecord extends UDTRecordImpl<TypeMtLexemeFreefo
 
     @Override
     public TypeMtLexemeFreeformRecord value4(String value) {
-        setValueText(value);
+        setValue(value);
         return this;
     }
 
@@ -487,13 +487,13 @@ public class TypeMtLexemeFreeformRecord extends UDTRecordImpl<TypeMtLexemeFreefo
     /**
      * Create a detached, initialised TypeMtLexemeFreeformRecord
      */
-    public TypeMtLexemeFreeformRecord(Long lexemeId, Long freeformId, String freeformTypeCode, String valueText, String valuePrese, String lang, String complexity, Boolean isPublic, String createdBy, Timestamp createdOn, String modifiedBy, Timestamp modifiedOn) {
+    public TypeMtLexemeFreeformRecord(Long lexemeId, Long freeformId, String freeformTypeCode, String value, String valuePrese, String lang, String complexity, Boolean isPublic, String createdBy, Timestamp createdOn, String modifiedBy, Timestamp modifiedOn) {
         super(TypeMtLexemeFreeform.TYPE_MT_LEXEME_FREEFORM);
 
         setLexemeId(lexemeId);
         setFreeformId(freeformId);
         setFreeformTypeCode(freeformTypeCode);
-        setValueText(valueText);
+        setValue(value);
         setValuePrese(valuePrese);
         setLang(lang);
         setComplexity(complexity);

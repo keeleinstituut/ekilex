@@ -1,7 +1,5 @@
 package eki.ekilex.data;
 
-import java.sql.Timestamp;
-
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import eki.common.data.AbstractDataObject;
@@ -17,9 +15,7 @@ public class SourceProperty extends AbstractDataObject {
 
 	private String typeCode;
 
-	private String valueText;
-
-	private Timestamp valueDate;
+	private String value;
 
 	private boolean valueMatch;
 
@@ -47,20 +43,12 @@ public class SourceProperty extends AbstractDataObject {
 		this.typeCode = typeCode;
 	}
 
-	public String getValueText() {
-		return valueText;
+	public String getValue() {
+		return value;
 	}
 
-	public void setValueText(String valueText) {
-		this.valueText = valueText;
-	}
-
-	public Timestamp getValueDate() {
-		return valueDate;
-	}
-
-	public void setValueDate(Timestamp valueDate) {
-		this.valueDate = valueDate;
+	public void setValue(String value) {
+		this.value = value;
 	}
 
 	public boolean isValueMatch() {

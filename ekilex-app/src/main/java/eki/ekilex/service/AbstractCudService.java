@@ -240,10 +240,10 @@ public abstract class AbstractCudService extends AbstractService {
 		note.setValuePrese(valuePrese);
 	}
 
-	protected void setFreeformValueTextAndValuePrese(FreeForm freeform, String valuePrese) {
+	protected void setFreeformValueAndPrese(FreeForm freeform, String valuePrese) {
 
 		String value = textDecorationService.removeEkiElementMarkup(valuePrese);
-		freeform.setValueText(value);
+		freeform.setValue(value);
 		freeform.setValuePrese(valuePrese);
 	}
 

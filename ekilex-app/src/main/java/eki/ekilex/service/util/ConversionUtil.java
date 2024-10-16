@@ -777,14 +777,12 @@ public class ConversionUtil implements GlobalConstant {
 
 			Long sourcePropertyId = tuple.getSourcePropertyId();
 			String sourcePropertyTypeCode = tuple.getSourcePropertyTypeCode();
-			String sourcePropertyValueText = tuple.getSourcePropertyValueText();
-			Timestamp sourcePropertyValueDate = tuple.getSourcePropertyValueDate();
+			String sourcePropertyValue = tuple.getSourcePropertyValue();
 
 			SourceProperty sourceProperty = new SourceProperty();
 			sourceProperty.setId(sourcePropertyId);
 			sourceProperty.setTypeCode(sourcePropertyTypeCode);
-			sourceProperty.setValueText(sourcePropertyValueText);
-			sourceProperty.setValueDate(sourcePropertyValueDate);
+			sourceProperty.setValue(sourcePropertyValue);
 			sourceProperties.add(sourceProperty);
 		}
 		source.setSourceProperties(sourceProperties);
@@ -801,8 +799,7 @@ public class ConversionUtil implements GlobalConstant {
 			Long sourceId = tuple.getSourceId();
 			Long sourcePropertyId = tuple.getSourcePropertyId();
 			String sourcePropertyTypeCode = tuple.getSourcePropertyTypeCode();
-			String sourcePropertyValueText = tuple.getSourcePropertyValueText();
-			Timestamp sourcePropertyValueDate = tuple.getSourcePropertyValueDate();
+			String sourcePropertyValue = tuple.getSourcePropertyValue();
 			boolean sourcePropertyMatch = tuple.isSourcePropertyMatch();
 
 			Source source = sourceMap.get(sourceId);
@@ -824,8 +821,7 @@ public class ConversionUtil implements GlobalConstant {
 			SourceProperty sourceProperty = new SourceProperty();
 			sourceProperty.setId(sourcePropertyId);
 			sourceProperty.setTypeCode(sourcePropertyTypeCode);
-			sourceProperty.setValueText(sourcePropertyValueText);
-			sourceProperty.setValueDate(sourcePropertyValueDate);
+			sourceProperty.setValue(sourcePropertyValue);
 			sourceProperty.setValueMatch(sourcePropertyMatch);
 			source.getSourceProperties().add(sourceProperty);
 		}

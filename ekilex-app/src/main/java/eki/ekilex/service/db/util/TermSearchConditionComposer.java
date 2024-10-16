@@ -452,7 +452,7 @@ public class TermSearchConditionComposer implements GlobalConstant, ActivityFunc
 
 		// meaning ff select
 		where1 = ff1.FREEFORM_TYPE_CODE.in(CLUELESS_SEARCH_MEANING_FF_TYPE_CODES).and(mff1.FREEFORM_ID.eq(ff1.ID)).and(mff1.MEANING_ID.eq(l1.MEANING_ID));
-		where1 = searchFilterHelper.applyValueFilters(SearchKey.VALUE, filteredCriteria, ff1.VALUE_TEXT, where1, true);
+		where1 = searchFilterHelper.applyValueFilters(SearchKey.VALUE, filteredCriteria, ff1.VALUE, where1, true);
 		where1 = searchFilterHelper.applyDatasetRestrictions(l1, searchDatasetsRestriction, where1);
 		SelectHavingStep<Record1<Long>> selectMeaningFreeform = DSL.select(l1.MEANING_ID).from(l1, mff1, ff1).where(where1).groupBy(l1.MEANING_ID);
 
@@ -464,7 +464,7 @@ public class TermSearchConditionComposer implements GlobalConstant, ActivityFunc
 
 		// lexeme ff select
 		where1 = ff1.FREEFORM_TYPE_CODE.in(CLUELESS_SEARCH_LEXEME_FF_TYPE_CODES).and(lff1.FREEFORM_ID.eq(ff1.ID)).and(lff1.LEXEME_ID.eq(l1.ID));
-		where1 = searchFilterHelper.applyValueFilters(SearchKey.VALUE, filteredCriteria, ff1.VALUE_TEXT, where1, true);
+		where1 = searchFilterHelper.applyValueFilters(SearchKey.VALUE, filteredCriteria, ff1.VALUE, where1, true);
 		where1 = searchFilterHelper.applyDatasetRestrictions(l1, searchDatasetsRestriction, where1);
 		SelectHavingStep<Record1<Long>> selectLexemeFreeform = DSL.select(l1.MEANING_ID).from(l1, lff1, ff1).where(where1).groupBy(l1.MEANING_ID);
 

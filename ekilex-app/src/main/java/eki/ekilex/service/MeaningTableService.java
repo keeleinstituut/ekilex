@@ -138,6 +138,7 @@ public class MeaningTableService extends AbstractSearchService {
 		permCalculator.applyCrud(user, usages);
 	}
 
+	@Deprecated
 	@Transactional
 	public void updateTermMeaningTableMeaning(MeaningTableRow meaning, EkiUser user, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
 

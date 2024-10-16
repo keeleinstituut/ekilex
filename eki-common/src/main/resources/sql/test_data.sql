@@ -214,8 +214,8 @@ insert into lex_relation (id, lexeme1_id, lexeme2_id, lex_rel_type_code) values 
 insert into lex_relation (id, lexeme1_id, lexeme2_id, lex_rel_type_code) values (1008, 4003, 4024, 'comp');
 insert into lex_relation (id, lexeme1_id, lexeme2_id, lex_rel_type_code) values (1009, 4003, 4025, 'comp');
 
-insert into freeform (id, parent_id, freeform_type_code, value_text, lang, complexity) values (1001, null, 'CONCEPT_ID', '123456', null, 'DETAIL');
-insert into freeform (id, parent_id, freeform_type_code, value_text, lang, complexity) values (1002, null, 'GOVERNMENT', 'keda mida', 'est', 'DETAIL');
+insert into freeform (id, parent_id, freeform_type_code, value, lang, complexity) values (1001, null, 'CONCEPT_ID', '123456', null, 'DETAIL');
+insert into freeform (id, parent_id, freeform_type_code, value, lang, complexity) values (1002, null, 'GOVERNMENT', 'keda mida', 'est', 'DETAIL');
 
 insert into meaning_freeform (id, meaning_id, freeform_id) values (1001, 2024, 1001);
 insert into lexeme_freeform (id, lexeme_id, freeform_id) values (1001, 4001, 1002);
