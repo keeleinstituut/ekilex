@@ -4,9 +4,10 @@ import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import { Paths } from "../enums/paths.enum";
 import { CookieKeys } from "../enums/cookie-keys.enum";
+import { ApiEndpoints } from "../enums/api-endpoints.enum";
 
 export async function login(formData: unknown): Promise<void> {
-  await fetch(`${process.env.API_URL}/dologin`, {
+  await fetch(`${process.env.API_URL}${ApiEndpoints.LOGIN}`, {
     method: "POST",
     body: new URLSearchParams(formData as URLSearchParams),
     // Spring will redirect you upon login by default,
@@ -31,4 +32,9 @@ export async function login(formData: unknown): Promise<void> {
       }
     }
   });
+}
+
+export async function logout(): Promise<void> {
+  cookies().delete(CookieKeys.JSESSIONID);
+  redirect(Paths.INDEX);
 }

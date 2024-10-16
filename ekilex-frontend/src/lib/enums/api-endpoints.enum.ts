@@ -1,0 +1,15 @@
+export enum ApiEndpoints {
+  LOGIN = '/dologin',
+  PERMISSIONS = '/proto/permissions/init',
+  PERMISSIONS_SEARCH = '/proto/permissions/search',
+  PERMISSIONS_ENABLE_ACCOUNT = "/proto/permissions/enable",
+  PERMISSIONS_DISABLE_ACCOUNT = "/proto/permissions/disable",
+  PERMISSIONS_SET_API_CRUD = "/proto/permissions/setapicrud",
+  PERMISSIONS_REMOVE_API_CRUD = "/proto/permissions/remapicrud",
+  PERMISSIONS_SET_ADMIN = "/proto/permissions/setadmin",
+  PERMISSIONS_REMOVE_ADMIN = "/proto/permissions/remadmin",
+  PERMISSIONS_SET_MASTER = "/proto/permissions/setmaster",
+  PERMISSIONS_REMOVE_MASTER = "/proto/permissions/remmaster",
+  PERMISSIONS_ADD_DATASET_PERM = "/proto/permissions/adddatasetperm",
+  PERMISSIONS_DELETE_DATASET_PERM = "/proto/permissions/deletedatasetperm",
+}

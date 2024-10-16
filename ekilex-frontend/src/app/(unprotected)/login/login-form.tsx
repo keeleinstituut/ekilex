@@ -1,5 +1,6 @@
 "use client";
-import { login } from "@/lib/actions/login";
+import { Loader } from "@/components/loader/loader";
+import { login } from "@/lib/actions/session";
 import { useTransition } from "react";
 
 export default function LoginForm() {
@@ -11,7 +12,7 @@ export default function LoginForm() {
     });
   };
   if (isPending) {
-    return <div>Laadib...</div>;
+    return <Loader/>;
   }
   return (
     <form action={onSubmit} className="p-5 gap-y-3 grid grid-cols-[144px_auto]">
