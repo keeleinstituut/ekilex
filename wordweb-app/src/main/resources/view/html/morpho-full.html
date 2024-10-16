@@ -44,17 +44,17 @@
   </th:block>
   <!-- morpho-form-row(paradigm, morphCode, prefix, tilde) -->
   <th:block th:fragment="morpho-form-row(morphCode)" th:with="prefix=${prefix} ?: '', tilde=${tilde} ?: false">
-    <th:block th:each="form, formIter : ${viewUtil.getForms(paradigm, morphCode)}">
+    <th:block th:each="form, formIter : ${@viewUtil.getForms(paradigm, morphCode)}">
       <th:block th:replace=" :: morpho-form-value(form=${form}, prefix=${prefix}, tilde=${tilde or not formIter.first})"></th:block>
     </th:block>
   </th:block>
   <!-- morpho-form-row-first(paradigm, morphCode, prefix) -->
   <th:block th:fragment="morpho-form-row-first(morphCode)" th:with="prefix=${prefix} ?: '', tilde=${tilde} ?: false">
-    <th:block th:replace=" :: morpho-form-value(form=${viewUtil.getForms(paradigm, morphCode)[0]}, prefix=${prefix}, tilde=${tilde})"></th:block>
+    <th:block th:replace=" :: morpho-form-value(form=${@viewUtil.getForms(paradigm, morphCode)[0]}, prefix=${prefix}, tilde=${tilde})"></th:block>
   </th:block>
   <!-- morpho-form-row-tilde-if(paradigm, morphCode, prefix, ifCode) -->
   <th:block th:fragment="morpho-form-row-tilde-if(morphCode, ifCode)" th:with="prefix=${prefix} ?: ''">
-    <th:block th:each="ifform, ifformIter : ${viewUtil.getForms(paradigm, ifCode)}" th:if="${ifformIter.index} == 0">
+    <th:block th:each="ifform, ifformIter : ${@viewUtil.getForms(paradigm, ifCode)}" th:if="${ifformIter.index} == 0">
       <th:block th:replace=" :: morpho-form-row(morphCode=${morphCode}, prefix=${prefix}, tilde=true)"></th:block>
     </th:block>
   </th:block>
@@ -829,13 +829,13 @@
                       <span class="highlight">mitmuse 1. isik</span>
                     </td>
                     <td>
-                      <th:block th:each="form, formIter : ${viewUtil.getForms(paradigm, 'ImpPrPl1')}" th:if="${formIter.index == 0 && form.morphExists && !#strings.isEmpty(form.value)}">
+                      <th:block th:each="form, formIter : ${@viewUtil.getForms(paradigm, 'ImpPrPl1')}" th:if="${formIter.index == 0 && form.morphExists && !#strings.isEmpty(form.value)}">
                         <th:block th:replace=" :: morpho-form-row(morphCode='ImpPrPl1')"></th:block>
                         <th:block th:replace=" :: morpho-form-row-tilde-if(morphCode='IndPrPl1', ifCode='ImpPrPl1')"></th:block>
                       </th:block>
                     </td>
                     <td>
-                      <th:block th:each="form, formIter : ${viewUtil.getForms(paradigm, 'ImpPrPl1')}" th:if="${formIter.index == 0 && form.morphExists && !#strings.isEmpty(form.value)}">
+                      <th:block th:each="form, formIter : ${@viewUtil.getForms(paradigm, 'ImpPrPl1')}" th:if="${formIter.index == 0 && form.morphExists && !#strings.isEmpty(form.value)}">
                         <th:block th:replace=" :: morpho-form-row-first(morphCode='ImpPrPl1', prefix='ärgem')"></th:block>
                         <th:block th:replace=" :: morpho-form-row-tilde-if(morphCode='IndPrPl1', ifCode='ImpPrPl1', prefix='ärme')"></th:block>
                         <th:block th:replace=" :: morpho-form-row-tilde-if(morphCode='IndPrPs_', ifCode='IndPrPl1', prefix='ärme')"></th:block>
@@ -1849,7 +1849,7 @@
                       <th:block th:replace=" :: morpho-form-row(morphCode='plur,loct')"></th:block>
                     </td>
                   </tr>
-                  <th:block th:each="form, formIter : ${viewUtil.getForms(paradigm, 'sing,gen2')}">
+                  <th:block th:each="form, formIter : ${@viewUtil.getForms(paradigm, 'sing,gen2')}">
                     <th:block th:if="${formIter.index==0}">
                       <tr>
                         <td>
@@ -1864,7 +1864,7 @@
                       </tr>
                     </th:block>
                   </th:block>
-                  <th:block th:each="form, formIter : ${viewUtil.getForms(paradigm, 'sing,loc2')}">
+                  <th:block th:each="form, formIter : ${@viewUtil.getForms(paradigm, 'sing,loc2')}">
                     <th:block th:if="${formIter.index==0}">
                       <tr>
                         <td>

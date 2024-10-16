@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import eki.common.constant.Complexity;
 import eki.common.constant.DatasetType;
 import eki.common.constant.FreeformConstant;
+import eki.common.constant.FreeformOwner;
 import eki.common.constant.GlobalConstant;
 import eki.common.constant.SourceType;
 import eki.common.constant.TagType;
@@ -155,6 +156,39 @@ public abstract class AbstractAuthActionController implements WebConstant, Syste
 	@ModelAttribute("availableFreeformTypes")
 	public List<Classifier> getAvailableFreeformTypes() {
 		return commonDataService.getAvailableFreeformTypes();
+	}
+
+	@ModelAttribute("userRoleWordFreeformTypes")
+	public List<Classifier> getUserRoleWordFreeformTypes() {
+		EkiUser user = userContext.getUser();
+		DatasetPermission userRole = user.getRecentRole();
+		if (userRole == null) {
+			return Collections.emptyList();
+		}
+		String datasetCode = userRole.getDatasetCode();
+		return commonDataService.getFreeformTypes(datasetCode, FreeformOwner.WORD);
+	}
+
+	@ModelAttribute("userRoleLexemeFreeformTypes")
+	public List<Classifier> getUserRoleLexemeFreeformTypes() {
+		EkiUser user = userContext.getUser();
+		DatasetPermission userRole = user.getRecentRole();
+		if (userRole == null) {
+			return Collections.emptyList();
+		}
+		String datasetCode = userRole.getDatasetCode();
+		return commonDataService.getFreeformTypes(datasetCode, FreeformOwner.LEXEME);
+	}
+
+	@ModelAttribute("userRoleMeaningFreeformTypes")
+	public List<Classifier> getUserRoleMeaningFreeformTypes() {
+		EkiUser user = userContext.getUser();
+		DatasetPermission userRole = user.getRecentRole();
+		if (userRole == null) {
+			return Collections.emptyList();
+		}
+		String datasetCode = userRole.getDatasetCode();
+		return commonDataService.getFreeformTypes(datasetCode, FreeformOwner.MEANING);
 	}
 
 	@ModelAttribute("languages")

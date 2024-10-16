@@ -169,19 +169,11 @@ public class DefinitionNote extends TableImpl<DefinitionNoteRecord> {
 
     @Override
     public List<ForeignKey<DefinitionNoteRecord, ?>> getReferences() {
-        return Arrays.<ForeignKey<DefinitionNoteRecord, ?>>asList(Keys.DEFINITION_NOTE__DEFINITION_NOTE_ORIGINAL_FREEFORM_ID_FKEY, Keys.DEFINITION_NOTE__DEFINITION_NOTE_DEFINITION_ID_FKEY, Keys.DEFINITION_NOTE__DEFINITION_NOTE_LANG_FKEY);
+        return Arrays.<ForeignKey<DefinitionNoteRecord, ?>>asList(Keys.DEFINITION_NOTE__DEFINITION_NOTE_DEFINITION_ID_FKEY, Keys.DEFINITION_NOTE__DEFINITION_NOTE_LANG_FKEY);
     }
 
-    private transient Freeform _freeform;
     private transient Definition _definition;
     private transient Language _language;
-
-    public Freeform freeform() {
-        if (_freeform == null)
-            _freeform = new Freeform(this, Keys.DEFINITION_NOTE__DEFINITION_NOTE_ORIGINAL_FREEFORM_ID_FKEY);
-
-        return _freeform;
-    }
 
     public Definition definition() {
         if (_definition == null)

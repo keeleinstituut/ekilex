@@ -155,7 +155,10 @@ public class TermSearchController extends AbstractPrivateSearchController {
 	}
 
 	@GetMapping(TERM_MEANING_DETAILS_URI + "/{meaningId}")
-	public String meaningDetails(@PathVariable("meaningId") Long meaningId, @ModelAttribute(name = SESSION_BEAN) SessionBean sessionBean, Model model) throws Exception {
+	public String meaningDetails(
+			@PathVariable("meaningId") Long meaningId,
+			@ModelAttribute(name = SESSION_BEAN) SessionBean sessionBean,
+			Model model) throws Exception {
 
 		List<ClassifierSelect> languagesOrder = sessionBean.getLanguagesOrder();
 		EkiUser user = userContext.getUser();

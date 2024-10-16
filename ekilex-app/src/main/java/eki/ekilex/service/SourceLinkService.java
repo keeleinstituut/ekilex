@@ -14,30 +14,32 @@ import eki.ekilex.data.Source;
 import eki.ekilex.data.SourceLink;
 
 @Component
-public class SourceLinkService extends AbstractSourceService {
+public class SourceLinkService extends AbstractSourceService implements ContentKey {
 
 	@Transactional
 	public SourceLink getSourceLink(String sourceLinkContentKey, Long sourceLinkId) {
 
 		SourceLink sourceLink = null;
 
-		if (StringUtils.equals(ContentKey.DEFINITION_SOURCE_LINK, sourceLinkContentKey)) {
+		if (StringUtils.equals(DEFINITION_SOURCE_LINK, sourceLinkContentKey)) {
 			sourceLink = sourceLinkDbService.getDefinitionSourceLink(sourceLinkId);
-		} else if (StringUtils.equals(ContentKey.DEFINITION_NOTE_SOURCE_LINK, sourceLinkContentKey)) {
+		} else if (StringUtils.equals(DEFINITION_NOTE_SOURCE_LINK, sourceLinkContentKey)) {
 			sourceLink = sourceLinkDbService.getDefinitionNoteSourceLink(sourceLinkId);
-		} else if (StringUtils.equals(ContentKey.LEXEME_SOURCE_LINK, sourceLinkContentKey)) {
+		} else if (StringUtils.equals(LEXEME_SOURCE_LINK, sourceLinkContentKey)) {
 			sourceLink = sourceLinkDbService.getLexemeSourceLink(sourceLinkId);
-		} else if (StringUtils.equals(ContentKey.LEXEME_FREEFORM_SOURCE_LINK, sourceLinkContentKey)) {
+		} else if (StringUtils.equals(LEXEME_FREEFORM_SOURCE_LINK, sourceLinkContentKey)) {
 			sourceLink = sourceLinkDbService.getFreeformSourceLink(sourceLinkId);
-		} else if (StringUtils.equals(ContentKey.LEXEME_NOTE_SOURCE_LINK, sourceLinkContentKey)) {
+		} else if (StringUtils.equals(LEXEME_NOTE_SOURCE_LINK, sourceLinkContentKey)) {
 			sourceLink = sourceLinkDbService.getLexemeNoteSourceLink(sourceLinkId);
-		} else if (StringUtils.equals(ContentKey.USAGE_SOURCE_LINK, sourceLinkContentKey)) {
+		} else if (StringUtils.equals(USAGE_SOURCE_LINK, sourceLinkContentKey)) {
 			sourceLink = sourceLinkDbService.getUsageSourceLink(sourceLinkId);
-		} else if (StringUtils.equals(ContentKey.MEANING_IMAGE_SOURCE_LINK, sourceLinkContentKey)) {
+		} else if (StringUtils.equals(WORD_FREEFORM_SOURCE_LINK, sourceLinkContentKey)) {
+			sourceLink = sourceLinkDbService.getFreeformSourceLink(sourceLinkId);
+		} else if (StringUtils.equals(MEANING_IMAGE_SOURCE_LINK, sourceLinkContentKey)) {
 			sourceLink = sourceLinkDbService.getMeaningImageSourceLink(sourceLinkId);
-		} else if (StringUtils.equals(ContentKey.MEANING_NOTE_SOURCE_LINK, sourceLinkContentKey)) {
+		} else if (StringUtils.equals(MEANING_NOTE_SOURCE_LINK, sourceLinkContentKey)) {
 			sourceLink = sourceLinkDbService.getMeaningNoteSourceLink(sourceLinkId);
-		} else if (StringUtils.equals(ContentKey.MEANING_FREEFORM_SOURCE_LINK, sourceLinkContentKey)) {
+		} else if (StringUtils.equals(MEANING_FREEFORM_SOURCE_LINK, sourceLinkContentKey)) {
 			sourceLink = sourceLinkDbService.getFreeformSourceLink(sourceLinkId);
 		}
 		if (sourceLink != null) {
@@ -59,23 +61,25 @@ public class SourceLinkService extends AbstractSourceService {
 		ReferenceType refType = ReferenceType.ANY;
 		String sourceLinkName = null;
 
-		if (ContentKey.DEFINITION_SOURCE_LINK.equals(sourceLinkContentKey)) {
+		if (DEFINITION_SOURCE_LINK.equals(sourceLinkContentKey)) {
 			createDefinitionSourceLink(sourceLinkOwnerId, sourceId, refType, sourceLinkName, roleDatasetCode, isManualEventOnUpdateEnabled);
-		} else if (ContentKey.DEFINITION_NOTE_SOURCE_LINK.equals(sourceLinkContentKey)) {
+		} else if (DEFINITION_NOTE_SOURCE_LINK.equals(sourceLinkContentKey)) {
 			createDefinitionNoteSourceLink(sourceLinkOwnerId, sourceId, refType, sourceLinkName, roleDatasetCode, isManualEventOnUpdateEnabled);
-		} else if (ContentKey.LEXEME_SOURCE_LINK.equals(sourceLinkContentKey)) {
+		} else if (LEXEME_SOURCE_LINK.equals(sourceLinkContentKey)) {
 			createLexemeSourceLink(sourceLinkOwnerId, sourceId, refType, sourceLinkName, roleDatasetCode, isManualEventOnUpdateEnabled);
-		} else if (ContentKey.LEXEME_FREEFORM_SOURCE_LINK.equals(sourceLinkContentKey)) {
+		} else if (LEXEME_FREEFORM_SOURCE_LINK.equals(sourceLinkContentKey)) {
 			createLexemeFreeformSourceLink(sourceLinkOwnerId, sourceId, refType, sourceLinkName, roleDatasetCode, isManualEventOnUpdateEnabled);
-		} else if (ContentKey.LEXEME_NOTE_SOURCE_LINK.equals(sourceLinkContentKey)) {
+		} else if (LEXEME_NOTE_SOURCE_LINK.equals(sourceLinkContentKey)) {
 			createLexemeNoteSourceLink(sourceLinkOwnerId, sourceId, refType, sourceLinkName, roleDatasetCode, isManualEventOnUpdateEnabled);
-		} else if (ContentKey.USAGE_SOURCE_LINK.equals(sourceLinkContentKey)) {
+		} else if (USAGE_SOURCE_LINK.equals(sourceLinkContentKey)) {
 			createUsageSourceLink(sourceLinkOwnerId, sourceId, refType, sourceLinkName, roleDatasetCode, isManualEventOnUpdateEnabled);
-		} else if (ContentKey.MEANING_IMAGE_SOURCE_LINK.equals(sourceLinkContentKey)) {
+		} else if (WORD_FREEFORM_SOURCE_LINK.equals(sourceLinkContentKey)) {
+			createWordFreeformSourceLink(sourceLinkOwnerId, sourceId, refType, sourceLinkName, roleDatasetCode, isManualEventOnUpdateEnabled);
+		} else if (MEANING_IMAGE_SOURCE_LINK.equals(sourceLinkContentKey)) {
 			createMeaningImageSourceLink(sourceLinkOwnerId, sourceId, refType, sourceLinkName, roleDatasetCode, isManualEventOnUpdateEnabled);
-		} else if (ContentKey.MEANING_NOTE_SOURCE_LINK.equals(sourceLinkContentKey)) {
+		} else if (MEANING_NOTE_SOURCE_LINK.equals(sourceLinkContentKey)) {
 			createMeaningNoteSourceLink(sourceLinkOwnerId, sourceId, refType, sourceLinkName, roleDatasetCode, isManualEventOnUpdateEnabled);
-		} else if (ContentKey.MEANING_FREEFORM_SOURCE_LINK.equals(sourceLinkContentKey)) {
+		} else if (MEANING_FREEFORM_SOURCE_LINK.equals(sourceLinkContentKey)) {
 			createMeaningFreeformSourceLink(sourceLinkOwnerId, sourceId, refType, sourceLinkName, roleDatasetCode, isManualEventOnUpdateEnabled);
 		}
 	}
@@ -432,5 +436,39 @@ public class SourceLinkService extends AbstractSourceService {
 		ActivityLogData activityLog = activityLogService.prepareActivityLog("deleteMeaningNoteSourceLink", meaningId, ActivityOwner.MEANING, roleDatasetCode, isManualEventOnUpdateEnabled);
 		sourceLinkDbService.deleteMeaningNoteSourceLink(sourceLinkId);
 		activityLogService.createActivityLog(activityLog, sourceLinkId, ActivityEntity.MEANING_NOTE_SOURCE_LINK);
+	}
+
+	@Transactional
+	public Long createWordFreeformSourceLink(Long freeformId, Long sourceId, ReferenceType type, String name, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
+
+		SourceLink sourceLink = new SourceLink();
+		sourceLink.setType(type);
+		sourceLink.setName(name);
+		sourceLink.setSourceId(sourceId);
+
+		Long wordId = activityLogService.getOwnerId(freeformId, ActivityEntity.FREEFORM);
+		ActivityLogData activityLog = activityLogService.prepareActivityLog("createWordFreeformSourceLink", wordId, ActivityOwner.WORD, roleDatasetCode, isManualEventOnUpdateEnabled);
+		Long sourceLinkId = sourceLinkDbService.createFreeformSourceLink(freeformId, sourceLink);
+		activityLogService.createActivityLog(activityLog, sourceLinkId, ActivityEntity.FREEFORM_SOURCE_LINK);
+
+		return sourceLinkId;
+	}
+
+	@Transactional
+	public void updateWordFreeformSourceLink(Long sourceLinkId, String sourceLinkName, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
+
+		Long wordId = activityLogService.getOwnerId(sourceLinkId, ActivityEntity.FREEFORM_SOURCE_LINK);
+		ActivityLogData activityLog = activityLogService.prepareActivityLog("updateWordFreeformSourceLink", wordId, ActivityOwner.WORD, roleDatasetCode, isManualEventOnUpdateEnabled);
+		sourceLinkDbService.updateFreeformSourceLink(sourceLinkId, sourceLinkName);
+		activityLogService.createActivityLog(activityLog, sourceLinkId, ActivityEntity.FREEFORM_SOURCE_LINK);
+	}
+
+	@Transactional
+	public void deleteWordFreeformSourceLink(Long sourceLinkId, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
+
+		Long wordId = activityLogService.getOwnerId(sourceLinkId, ActivityEntity.FREEFORM_SOURCE_LINK);
+		ActivityLogData activityLog = activityLogService.prepareActivityLog("deleteWordFreeformSourceLink", wordId, ActivityOwner.WORD, roleDatasetCode, isManualEventOnUpdateEnabled);
+		sourceLinkDbService.deleteFreeformSourceLink(sourceLinkId);
+		activityLogService.createActivityLog(activityLog, sourceLinkId, ActivityEntity.FREEFORM_SOURCE_LINK);
 	}
 }

@@ -54,7 +54,7 @@ $.fn.enableSubmitInexactSynMeaningBtnPlugin = function() {
 	return this.each(function() {
 		const radioBtn = $(this);
 		radioBtn.on('click', function() {
-			$(document).find('button[name="submitInexactMeaningBtn"]').removeAttr("disabled");
+			$(document).find('button[name="submitInexactMeaningBtn"]').prop("disabled", false);
 		});
 	});
 }
@@ -96,7 +96,7 @@ $.fn.enableSubmitWordBtnPlugin = function() {
 				}
 			}
 			if (isWordSelectionSubmitEnabled) {
-				$('button[name="submitInexactMeaningBtn"]').removeAttr("disabled");
+				$('button[name="submitInexactMeaningBtn"]').prop("disabled", false);
 			}
 
 			buttonIcon.attr('data-success', 'true');
@@ -158,7 +158,7 @@ $.fn.relationSelectPlugin = function() {
 	return this.each(function() {
 		const select = $(this);
 		select.on('change', function() {
-			$(document).find('button[name="submitRelationSelectBtn"]').removeAttr("disabled");
+			$(document).find('button[name="submitRelationSelectBtn"]').prop("disabled", false);
 			handleRelationSelect(select);
 		});
 	});

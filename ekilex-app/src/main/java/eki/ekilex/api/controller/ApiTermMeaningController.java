@@ -1,10 +1,13 @@
 package eki.ekilex.api.controller;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
 import org.springframework.core.annotation.Order;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -36,9 +39,13 @@ public class ApiTermMeaningController extends AbstractApiController {
 	public TermMeaning getTermMeaning(
 			@RequestParam("crudRoleDataset") String crudRoleDataset,
 			@PathVariable("meaningId") Long meaningId,
-			@PathVariable("datasetCode") String datasetCode) {
+			@PathVariable("datasetCode") String datasetCode,
+			Authentication authentication,
+			HttpServletRequest request) {
 
-		return termMeaningService.getTermMeaning(meaningId, datasetCode);
+		TermMeaning termMeaning = termMeaningService.getTermMeaning(meaningId, datasetCode);
+		addRequestStat(authentication, request);
+		return termMeaning;
 	}
 
 	@Order(851)
@@ -49,16 +56,18 @@ public class ApiTermMeaningController extends AbstractApiController {
 	@ResponseBody
 	public ApiResponse saveTermMeaning(
 			@RequestParam("crudRoleDataset") String crudRoleDataset,
-			@RequestBody TermMeaning termMeaning) {
+			@RequestBody TermMeaning termMeaning,
+			Authentication authentication,
+			HttpServletRequest request) {
 
 		try {
 			if (CollectionUtils.isEmpty(termMeaning.getWords())) {
-				return getOpFailResponse("Missing words");
+				return getOpFailResponse(authentication, request, "Missing words");
 			}
 			Long meaningId = termMeaningService.saveTermMeaning(termMeaning, crudRoleDataset);
-			return getOpSuccessResponse(meaningId);
+			return getOpSuccessResponse(authentication, request, meaningId);
 		} catch (Exception e) {
-			return getOpFailResponse(e);
+			return getOpFailResponse(authentication, request, e);
 		}
 	}
 
@@ -70,13 +79,16 @@ public class ApiTermMeaningController extends AbstractApiController {
 	@ResponseBody
 	public ApiResponse deleteTermMeaning(
 			@RequestParam("crudRoleDataset") String crudRoleDataset,
-			@RequestParam("meaningId") Long meaningId) {
+			@RequestParam("meaningId") Long meaningId,
+			Authentication authentication,
+			HttpServletRequest request) {
 
 		try {
 			cudService.deleteMeaningAndLexemes(meaningId, crudRoleDataset, MANUAL_EVENT_ON_UPDATE_DISABLED);
-			return getOpSuccessResponse();
+			return getOpSuccessResponse(authentication, request);
 		} catch (Exception e) {
-			return getOpFailResponse(e);
+			return getOpFailResponse(authentication, request, e);
 		}
 	}
+
 }

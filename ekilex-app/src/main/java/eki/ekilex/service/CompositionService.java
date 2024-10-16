@@ -71,12 +71,12 @@ public class CompositionService extends AbstractService implements PermConstant 
 
 		Map<Long, Long> lexemeIdAndDuplicateLexemeIdMap = new HashMap<>();
 		boolean publicDataOnly = false;
-		LexemeRecord lexeme = compositionDbService.getLexeme(lexemeId);
+		LexemeRecord lexeme = lookupDbService.getLexemeRecord(lexemeId);
 		String datasetCode = lexeme.getDatasetCode();
 		Long meaningId = lexeme.getMeaningId();
 		Long duplicateMeaningId = duplicateMeaningData(meaningId, publicDataOnly, roleDatasetCode, isManualEventOnUpdateEnabled);
 
-		List<LexemeRecord> meaningLexemes = compositionDbService.getMeaningLexemes(meaningId, datasetCode);
+		List<LexemeRecord> meaningLexemes = lookupDbService.getLexemeRecordsByMeaning(meaningId, datasetCode);
 		for (LexemeRecord meaningLexeme : meaningLexemes) {
 			Long meaningLexemeId = meaningLexeme.getId();
 			Long duplicateLexemeId = duplicateLexemeData(meaningLexemeId, duplicateMeaningId, null, publicDataOnly, roleDatasetCode, isManualEventOnUpdateEnabled);
@@ -100,7 +100,7 @@ public class CompositionService extends AbstractService implements PermConstant 
 	@Transactional
 	public void duplicateLexemeAndWord(Long lexemeId, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
 
-		LexemeRecord lexeme = compositionDbService.getLexeme(lexemeId);
+		LexemeRecord lexeme = lookupDbService.getLexemeRecord(lexemeId);
 		Long wordId = lexeme.getWordId();
 		Long duplicateWordId = duplicateWordData(wordId, roleDatasetCode, isManualEventOnUpdateEnabled);
 		duplicateLexemeData(lexemeId, null, duplicateWordId, false, roleDatasetCode, isManualEventOnUpdateEnabled);
@@ -139,7 +139,7 @@ public class CompositionService extends AbstractService implements PermConstant 
 				.prepareActivityLog("updateLexemeWordValue", lexemeId, ActivityOwner.LEXEME, roleDatasetCode, isManualEventOnUpdateEnabled);
 		String wordValue = textDecorationService.removeEkiElementMarkup(wordValuePrese);
 		Long originalWordId = lookupDbService.getLexemeWordId(lexemeId);
-		WordRecord originalWord = compositionDbService.getWord(originalWordId);
+		WordRecord originalWord = lookupDbService.getWordRecord(originalWordId);
 		String originalWordValue = originalWord.getValue();
 		String originalWordLang = originalWord.getLang();
 		List<Long> originalWordDatasetCodes = lookupDbService.getWordDatasetCodes(originalWordId);
@@ -199,7 +199,7 @@ public class CompositionService extends AbstractService implements PermConstant 
 		Map<Long, Long> lexemeIdAndDuplicateLexemeIdMap = new HashMap<>();
 		boolean publicDataOnly = false;
 		Long duplicateMeaningId = duplicateMeaningData(meaningId, publicDataOnly, roleDatasetCode, isManualEventOnUpdateEnabled);
-		List<LexemeRecord> meaningLexemes = compositionDbService.getMeaningLexemes(meaningId);
+		List<LexemeRecord> meaningLexemes = lookupDbService.getLexemeRecordsByMeaning(meaningId);
 		for (LexemeRecord meaningLexeme : meaningLexemes) {
 			Long lexemeId = meaningLexeme.getId();
 			Long duplicateLexemeId = duplicateLexemeData(lexemeId, duplicateMeaningId, null, publicDataOnly, roleDatasetCode, isManualEventOnUpdateEnabled);
@@ -254,7 +254,7 @@ public class CompositionService extends AbstractService implements PermConstant 
 
 	private void duplicateMeaningDefinitions(Long meaningId, Long duplicateMeaningId, boolean publicDataOnly) {
 
-		List<Long> meaningDefinitionIds = compositionDbService.getMeaningDefinitionIds(meaningId, publicDataOnly);
+		List<Long> meaningDefinitionIds = lookupDbService.getMeaningDefinitionIds(meaningId, publicDataOnly);
 		for (Long meaningDefinitionId : meaningDefinitionIds) {
 			Long duplicateDefinintionId = compositionDbService.cloneMeaningDefinition(meaningDefinitionId, duplicateMeaningId);
 			compositionDbService.cloneDefinitionFreeforms(meaningDefinitionId, duplicateDefinintionId);
@@ -271,7 +271,7 @@ public class CompositionService extends AbstractService implements PermConstant 
 			Long duplicateLexemeId = lexemeIdAndDuplicateLexemeId.getValue();
 			ActivityLogData activityLog;
 
-			List<LexRelationRecord> existingLexemeRelations = compositionDbService.getLexemeRelations(existingLexemeId);
+			List<LexRelationRecord> existingLexemeRelations = lookupDbService.getLexRelationRecords(existingLexemeId);
 			for (LexRelationRecord existingLexemeRelation : existingLexemeRelations) {
 
 				Long existingLexeme1Id = existingLexemeRelation.getLexeme1Id();
@@ -325,15 +325,15 @@ public class CompositionService extends AbstractService implements PermConstant 
 
 	@Transactional
 	public void joinLexemes(Long targetLexemeId, List<Long> sourceLexemeIds, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
-		for (Long sourceLexemeId: sourceLexemeIds) {
+		for (Long sourceLexemeId : sourceLexemeIds) {
 			joinLexemes(targetLexemeId, sourceLexemeId, roleDatasetCode, isManualEventOnUpdateEnabled);
 		}
 	}
 
 	private void joinLexemes(Long targetLexemeId, Long sourceLexemeId, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
 
-		LexemeRecord targetLexeme = compositionDbService.getLexeme(targetLexemeId);
-		LexemeRecord sourceLexeme = compositionDbService.getLexeme(sourceLexemeId);
+		LexemeRecord targetLexeme = lookupDbService.getLexemeRecord(targetLexemeId);
+		LexemeRecord sourceLexeme = lookupDbService.getLexemeRecord(sourceLexemeId);
 		if (sourceLexeme == null) {
 			return;
 		}
@@ -399,12 +399,12 @@ public class CompositionService extends AbstractService implements PermConstant 
 
 	private void joinLexemeData(Long targetWordId, Long sourceWordId) {
 
-		List<LexemeRecord> sourceWordLexemes = compositionDbService.getWordLexemes(sourceWordId);
+		List<LexemeRecord> sourceWordLexemes = lookupDbService.getLexemeRecordsByWord(sourceWordId);
 		for (LexemeRecord sourceWordLexeme : sourceWordLexemes) {
 			Long sourceWordLexemeId = sourceWordLexeme.getId();
 			Long sourceWordLexemeMeaningId = sourceWordLexeme.getMeaningId();
 			String sourceWordLexemeDatasetCode = sourceWordLexeme.getDatasetCode();
-			LexemeRecord targetWordLexeme = compositionDbService.getLexeme(targetWordId, sourceWordLexemeMeaningId, sourceWordLexemeDatasetCode);
+			LexemeRecord targetWordLexeme = lookupDbService.getLexemeRecord(targetWordId, sourceWordLexemeMeaningId, sourceWordLexemeDatasetCode);
 			boolean targetLexemeExists = targetWordLexeme != null;
 			if (targetLexemeExists) {
 				Long targetWordLexemeId = targetWordLexeme.getId();
@@ -431,7 +431,7 @@ public class CompositionService extends AbstractService implements PermConstant 
 		}
 		boolean sourceWordHasForms = lookupDbService.wordHasForms(sourceWordId);
 		if (sourceWordHasForms) {
-			compositionDbService.joinParadigms(targetWordId, sourceWordId);
+			compositionDbService.moveParadigms(targetWordId, sourceWordId);
 		}
 	}
 
@@ -450,17 +450,17 @@ public class CompositionService extends AbstractService implements PermConstant 
 
 	private void updateLexemeLevelsAfterDuplication(Long duplicateLexemeId) {
 
-		LexemeRecord duplicatedLexeme = compositionDbService.getLexeme(duplicateLexemeId);
+		LexemeRecord duplicatedLexeme = lookupDbService.getLexemeRecord(duplicateLexemeId);
 		Integer level1 = duplicatedLexeme.getLevel1();
 		Integer level2 = duplicatedLexeme.getLevel2();
 		Long wordId = duplicatedLexeme.getWordId();
 		String datasetCode = duplicatedLexeme.getDatasetCode();
 
-		Integer level2MinValue = compositionDbService.getLevel2MinimumValue(wordId, datasetCode, level1);
+		Integer level2MinValue = lookupDbService.getLevel2MinimumValue(wordId, datasetCode, level1);
 		boolean isLevel1Increase = Objects.equals(level2, level2MinValue);
 
 		if (isLevel1Increase) {
-			List<LexemeRecord> lexemesWithLargerLevel1 = compositionDbService.getLexemesWithHigherLevel1(wordId, datasetCode, level1);
+			List<LexemeRecord> lexemesWithLargerLevel1 = lookupDbService.getLexemeRecordsWithHigherLevel1(wordId, datasetCode, level1);
 			int increasedDuplicatedLexemeLevel1 = level1 + 1;
 			cudDbService.updateLexemeLevel1(duplicateLexemeId, increasedDuplicatedLexemeLevel1);
 			for (LexemeRecord lexeme : lexemesWithLargerLevel1) {
@@ -469,7 +469,7 @@ public class CompositionService extends AbstractService implements PermConstant 
 				cudDbService.updateLexemeLevel1(lexemeId, increasedLevel1);
 			}
 		} else {
-			List<LexemeRecord> lexemesWithLargerLevel2 = compositionDbService.getLexemesWithHigherLevel2(wordId, datasetCode, level1, level2);
+			List<LexemeRecord> lexemesWithLargerLevel2 = lookupDbService.getLexemeRecordsWithHigherLevel2(wordId, datasetCode, level1, level2);
 			int increasedDuplicatedLexemeLevel2 = level2 + 1;
 			cudDbService.updateLexemeLevel2(duplicateLexemeId, increasedDuplicatedLexemeLevel2);
 			for (LexemeRecord lexeme : lexemesWithLargerLevel2) {
@@ -498,7 +498,7 @@ public class CompositionService extends AbstractService implements PermConstant 
 
 	private void joinMeaningsCommonWordsLexemes(Long targetMeaningId, Long sourceMeaningId) {
 
-		List<IdPair> meaningsCommonWordsLexemeIdPairs = compositionDbService.getMeaningsCommonWordsLexemeIdPairs(targetMeaningId, sourceMeaningId);
+		List<IdPair> meaningsCommonWordsLexemeIdPairs = lookupDbService.getMeaningsCommonWordsLexemeIdPairs(targetMeaningId, sourceMeaningId);
 		boolean meaningsShareCommonWord = CollectionUtils.isNotEmpty(meaningsCommonWordsLexemeIdPairs);
 		if (meaningsShareCommonWord) {
 			for (IdPair lexemeIdPair : meaningsCommonWordsLexemeIdPairs) {

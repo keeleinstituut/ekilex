@@ -94,7 +94,7 @@
                       data-plugin="langCollapsePlugin">
                 <i th:class="${lexemeLangGroup.selected ? 'fa fa-caret-down' : 'fa fa-caret-right'}" aria-hidden="true"></i>
               </button>
-              <span th:text="${viewUtil.getLangIso2(lexemeLangGroup.lang)}" class="ml-2"></span>
+              <span th:text="${@viewUtil.getLangIso2(lexemeLangGroup.lang)}" class="ml-2"></span>
             </div>
             <div class="orderable" data-op-code="lexeme">
               <div th:each="lexeme,itemIter : ${lexemeLangGroup.lexemes}"

@@ -26,7 +26,7 @@
           </span>
           <div class="mr-auto pl-0 d-flex flex-row flex-nowrap align-items-center">
             <p class="py-2 pr-1 m-0 list-item-value" th:inline="text">
-              <span th:utext="${viewUtil.getWordValueMarkup(synRelation)}"></span>
+              <span th:utext="${@viewUtil.getWordValueMarkup(synRelation)}"></span>
               <sup th:if="${synRelation.homonymsExist}" th:title="#{syn.homonym.num}" th:text="${synRelation.wordHomonymNr}">1</sup>
             </p>
           </div>
@@ -102,7 +102,7 @@
              th:data-navigate-selected="${markedSynMeaningId != null && markedSynMeaningId == meaning.meaningId}?'true'"
              th:data-active-panel="${markedSynMeaningId != null}?'true'"
              th:classappend="${markedSynMeaningId != null && markedSynMeaningId == meaning.meaningId ? 'navigate-marked' : ''}">
-          <div data-toggle="tooltip" data-html="true" th:title="${viewUtil.getLexRegisterTooltipHtml(meaning.lexRegisterCodes)}">
+          <div data-toggle="tooltip" data-html="true" th:title="${@viewUtil.getLexRegisterTooltipHtml(meaning.lexRegisterCodes)}">
             <span class="px-2 handle drag-handle border-right border-light text-muted" title="Lohista siit">
               <i class="fa fa-ellipsis-v text-muted" aria-hidden="true"></i>
             </span>
@@ -132,7 +132,7 @@
        class="orderable border-top">
     <div class="orderable d-flex flex-row" th:each="synonymLangGroup : ${lexeme.synonymLangGroups}" >
       <span th:if="${lexeme.wordLang == synonymLangGroup.lang}" class="mr-2" th:text="#{syn.abbreviation}"></span>
-      <span th:unless="${lexeme.wordLang == synonymLangGroup.lang}" th:text="${viewUtil.getLangIso2(synonymLangGroup.lang)}" class="mr-2"></span>
+      <span th:unless="${lexeme.wordLang == synonymLangGroup.lang}" th:text="${@viewUtil.getLangIso2(synonymLangGroup.lang)}" class="mr-2"></span>
       <div data-plugin="sorter" data-sorter:type="syn" data-sorter:handle=".syn-handle">
         <span th:each="syn,synIter : ${synonymLangGroup.synonyms}"
               class="hidden-buttons draggable-syn-rel droppable-syn-rel do-refresh mw-100"
@@ -147,11 +147,11 @@
             <th:block th:each="synWord, synWordIter : ${syn.words}">
               <input type="hidden" class="relation-meaning-id" th:value="${syn.meaningId}"/>
               <input type="hidden" name="synword-lexeme-id" th:value="${synWord.lexemeId}"/>
-                <a th:href="@{'/lexsearch?id=' + ${synWord.wordId}}" th:utext="${viewUtil.getWordValueMarkup(synWord)}" th:styleappend="${isMeaningRelSyn ? 'color: #00874F' : 'color: #005aa9'}" target="_blank" rel="noopener noreferrer"></a>
+                <a th:href="@{'/lexsearch?id=' + ${synWord.wordId}}" th:utext="${@viewUtil.getWordValueMarkup(synWord)}" th:styleappend="${isMeaningRelSyn ? 'color: #00874F' : 'color: #005aa9'}" target="_blank" rel="noopener noreferrer"></a>
                 <small class="font-weight-bold" th:text="${synWord.lexemeLevels}" th:if="${not #strings.isEmpty(synWord.lexemeLevels)}"></small>
                 <sup th:if="${synWord.homonymsExist}" th:text="${synWord.homonymNr}"></sup>
                 <small th:each="registerCode,regIter : ${synWord.lexemeRegisterCodes}" th:text="${registerCode + (regIter.last ? '' : ', ')}"></small>
-                <small th:if="${synWordIter.last}" th:text="${'[' + viewUtil.getFormattedWeight(syn.weight) + ']'}"></small>
+                <small th:if="${synWordIter.last}" th:text="${'[' + @viewUtil.getFormattedWeight(syn.weight) + ']'}"></small>
                 <th:block th:if="${not isMeaningRelSyn}">
                   <span class="syn-handle handle drag-handle text-muted p-0">
                     <i class="fa fa-arrows text-muted" aria-hidden="true"></i>
@@ -205,9 +205,9 @@
             <tr th:each="word : ${wordsFoundBySearch}" th:with="wordExists = ${existingIds != null && #lists.contains(existingIds, word.wordId)}">
               <td class="p-0" style="line-height: 0.6rem;">
                 <div class="btn btn-custom pt-0">
-                  <span th:utext="${viewUtil.getWordValueMarkup(word)}" class="ttl">vorm 1</span>
+                  <span th:utext="${@viewUtil.getWordValueMarkup(word)}" class="ttl">vorm 1</span>
                   <span th:text="${word.homonymNr}" th:if="${word.homonymNr > 0}"></span>
-                  <span th:text="${'(' + viewUtil.getLangIso2(word.lang) + ')'}"></span>
+                  <span th:text="${'(' + @viewUtil.getLangIso2(word.lang) + ')'}"></span>
                 </div>
                 <input name="ids" type="checkbox" class="float-right mt-2 mr-2"
                        th:value="${word.wordId}"

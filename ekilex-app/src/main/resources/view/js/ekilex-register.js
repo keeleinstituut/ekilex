@@ -7,7 +7,7 @@ $.fn.registerClickPlugin = function() {
 			const action = `${applicationUrl}register/${code}`;
 			if (checkRequiredFields(registerForm)) {
 				registerForm.attr("action", action);
-				registerForm.submit();
+				registerForm.trigger('submit');
 			}
 		});
 	});

@@ -7,8 +7,8 @@
         <th:block th:if="${lexeme.correctMeaningWord != null}">
           <div>
             <span th:text="#{label.word.incorrect}"></span>
-            <a th:href="@{${viewUtil.getSearchUri(sessionBean, searchMode, lexeme.correctMeaningWord.word, lexeme.correctMeaningWord.homonymNr, lexeme.correctMeaningWord.lang)}}" class="synonym">
-              <span th:utext="${viewUtil.getWordValueMarkup(lexeme.correctMeaningWord)}">tee</span>
+            <a th:href="@{${@viewUtil.getSearchUri(sessionBean, searchMode, lexeme.correctMeaningWord.word, lexeme.correctMeaningWord.homonymNr, lexeme.correctMeaningWord.lang)}}" class="synonym">
+              <span th:utext="${@viewUtil.getWordValueMarkup(lexeme.correctMeaningWord)}">tee</span>
             </a>
           </div>
           <div class="row" th:if="${not #maps.isEmpty(lexeme.lexemeNotesByLang)}">
@@ -18,7 +18,7 @@
             <div class="col-12">
               <div class="d-flex flex-row" th:each="noteEntry : ${lexeme.lexemeNotesByLang}">
                 <span class="lang-code lang-code-sm mr-2 align-self-start"
-                      th:with="langData=${viewUtil.getLangData(noteEntry.key)}"
+                      th:with="langData=${@viewUtil.getLangData(noteEntry.key)}"
                       th:text="${langData.codeIso2}" th:title="${langData.label}" data-toggle="tooltip"></span>
                 <div><p class="mb-1" th:each="note, noteIter : ${noteEntry.value}" th:utext="${note.valuePrese}"></p></div>
               </div>
@@ -45,7 +45,7 @@
                   <th:block th:if="${not #maps.isEmpty(lexeme.definitionsByLang)}">
                     <div class="mb-0 d-flex flex-row" th:each="definitionEntry : ${lexeme.definitionsByLang}">
                       <span class="additional-meta lang-code lang-code-sm mr-2 align-self-start"
-                            th:with="langData=${viewUtil.getLangData(definitionEntry.key)}"
+                            th:with="langData=${@viewUtil.getLangData(definitionEntry.key)}"
                             th:text="${langData.codeIso2}" th:title="${langData.label}" data-toggle="tooltip"></span>
                       <span class="additional-meta lang-code lang-code-sm mr-2 align-self-start"
                             th:if="${lexeme.proficiencyLevelCode != null}"
@@ -157,15 +157,15 @@
                                 isCollapsable=${synIter.count > T(eki.wordweb.constant.WebConstant).SYN_WORDS_DISPLAY_LIMIT},
                                 isLimit=${synIter.count == T(eki.wordweb.constant.WebConstant).SYN_WORDS_DISPLAY_LIMIT}">
                         <span class="text-nowrap mr-1" th:classappend="${isCollapsable ? 'collapse collapse-target' : ''}" >
-                          <a th:href="@{${viewUtil.getSearchUri(sessionBean, searchMode, syn.word, syn.homonymNr, syn.lang)}}" class="synonym">
+                          <a th:href="@{${@viewUtil.getSearchUri(sessionBean, searchMode, syn.word, syn.homonymNr, syn.lang)}}" class="synonym">
                             <span
                               data-toggle="tooltip" th:title="#{label.tooltip.synonym.full}"
                               th:if="${syn.mwLexWeight == 1}"
-                              th:utext="${viewUtil.getWordValueMarkup(syn)}"
+                              th:utext="${@viewUtil.getWordValueMarkup(syn)}"
                               class="font-weight-bold">tee</span>
                             <span
                               th:if="${syn.mwLexWeight != 1}"
-                              th:utext="${viewUtil.getWordValueMarkup(syn)}">tee</span>
+                              th:utext="${@viewUtil.getWordValueMarkup(syn)}">tee</span>
                           </a>
                           <span th:if="${syn.additionalDataExists}" class="synonym-additional-meta text-small">
                             <span th:if="${(syn.mwLexValueState != null)}" th:text="${syn.mwLexValueState.value}"></span>
@@ -212,7 +212,7 @@
                               th:with="destinLangSyns=${synEntry.value}">
                       <div th:id="${'matches-show-more-panel-' + lexeme.lexemeId + '-' + synEntry.key}" class="d-flex flex-wrap">
                         <span class="lang-code lang-code-sm mr-2 align-self-start"
-                              th:with="langData=${viewUtil.getLangData(synEntry.key)}"
+                              th:with="langData=${@viewUtil.getLangData(synEntry.key)}"
                               th:text="${langData.codeIso2}" th:title="${langData.label}" data-toggle="tooltip">
                         </span>
                         <th:block th:each="syn,synIter : ${destinLangSyns}"
@@ -221,9 +221,9 @@
                                   isLimit=${synIter.count == T(eki.wordweb.constant.WebConstant).SYN_WORDS_DISPLAY_LIMIT},
                                   isInexactSyn=${syn.type == T(eki.common.constant.SynonymType).INEXACT_SYN_MEANING_REL}">
                           <span class="mr-1" th:classappend="${isCollapsable ? 'collapse collapse-target':''}">
-                            <a th:href="@{${viewUtil.getSearchUri(sessionBean, searchMode, syn.word, syn.homonymNr, syn.lang)}}" class="matching-word "
+                            <a th:href="@{${@viewUtil.getSearchUri(sessionBean, searchMode, syn.word, syn.homonymNr, syn.lang)}}" class="matching-word "
                                th:classappend="${syn.wordId == wordId ? 'match' : ''}">
-                              <span th:utext="${viewUtil.getWordValueMarkup(syn)}">tee</span>
+                              <span th:utext="${@viewUtil.getWordValueMarkup(syn)}">tee</span>
                             </a>
                             <span th:if="${syn.additionalDataExists}" class="text-small">
                               <span th:if="${(syn.mwLexValueState != null)}" th:text="${syn.mwLexValueState.value}"></span>
@@ -278,8 +278,8 @@
                   <div th:each="relationType, relationTypeIter : ${lexeme.relatedLexemesByType.keySet()}">
                     <span th:text="${relationType.value}" class="font-weight-bold text-gray-350 text-medium"></span>
                     <th:block th:each="relation, relationIter : ${lexeme.relatedLexemesByType.get(relationType)}">
-                      <a th:href="@{${viewUtil.getSearchUri(sessionBean, searchMode, relation.word, relation.homonymNr, relation.lang)}}"
-                         th:utext="${viewUtil.getWordValueMarkup(relation) + (relationIter.last ? '' : ',')}"></a>
+                      <a th:href="@{${@viewUtil.getSearchUri(sessionBean, searchMode, relation.word, relation.homonymNr, relation.lang)}}"
+                         th:utext="${@viewUtil.getWordValueMarkup(relation) + (relationIter.last ? '' : ',')}"></a>
                     </th:block>
                   </div>
                 </div>
@@ -288,8 +288,8 @@
                     <span class="mr-2" th:text="${relationType.value}"></span>
                     <th:block th:each="relation, relationIter : ${lexeme.relatedMeaningsByType.get(relationType)}">
                       <div class="relation-item mr-1">
-                        <a th:href="@{${viewUtil.getSearchUri(sessionBean, searchMode, relation.word, relation.homonymNr, relation.lang)}}">
-                          <span th:utext="${viewUtil.getWordValueMarkup(relation)}">tee</span>
+                        <a th:href="@{${@viewUtil.getSearchUri(sessionBean, searchMode, relation.word, relation.homonymNr, relation.lang)}}">
+                          <span th:utext="${@viewUtil.getWordValueMarkup(relation)}">tee</span>
                         </a>
                         <th:block th:if="${not #lists.isEmpty(relation.wordTypes)}">
                           <th:block th:each="wordType,wtIter : ${relation.wordTypes}">
@@ -334,7 +334,7 @@
                     <th:block th:if="${not #maps.isEmpty(lexeme.lexemeNotesByLang)}">
                       <div class="d-flex flex-row" th:each="noteEntry : ${lexeme.lexemeNotesByLang}">
                         <span class="lang-code lang-code-sm mr-2 align-self-start"
-                              th:with="langData=${viewUtil.getLangData(noteEntry.key)}"
+                              th:with="langData=${@viewUtil.getLangData(noteEntry.key)}"
                               th:text="${langData.codeIso2}" th:title="${langData.label}" data-toggle="tooltip"></span>
                         <div><p  class="mb-1" th:each="note, noteIter : ${noteEntry.value}" th:utext="${note.valuePrese}"></p></div>
                       </div>
@@ -342,7 +342,7 @@
                     <th:block th:if="${not #maps.isEmpty(lexeme.meaningNotesByLang)}">
                       <div class="d-flex flex-row" th:each="noteEntry : ${lexeme.meaningNotesByLang}">
                         <span class="lang-code lang-code-sm mr-2 align-self-start"
-                              th:with="langData=${viewUtil.getLangData(noteEntry.key)}"
+                              th:with="langData=${@viewUtil.getLangData(noteEntry.key)}"
                               th:text="${langData.codeIso2}" th:title="${langData.label}" data-toggle="tooltip">
                         </span>
                         <div class="d-flex flex-column good-to-know-info">
@@ -381,7 +381,7 @@
                   <span class="tag mb-1 d-inline-block" data-toggle="tooltip"
                         th:each="government : ${lexeme.governments}"
                         th:text="${government.value}"
-                        th:title="${viewUtil.getGovernmentTooltipText(government, lexeme.posCodes)}"></span>
+                        th:title="${@viewUtil.getGovernmentTooltipText(government, lexeme.posCodes)}"></span>
                 </div>
                 <div class="dependence-group" th:if="${not #lists.isEmpty(lexeme.usages)}">
                   <b class="text-medium text-gray-350" th:text="#{button.label.usages}">Näited</b>
@@ -404,7 +404,7 @@
                         </th:block>
                         <th:block th:if="${not #lists.isEmpty(usage.usageTranslations)}">
                           <span th:each="usageTranslation : ${usage.usageTranslations}" class="example-text">
-                            <span class="example-text-value" th:utext="${viewUtil.wrapDecorations(usageTranslation)}"></span>
+                            <span class="example-text-value" th:utext="${@viewUtil.wrapDecorations(usageTranslation)}"></span>
                           </span>
                         </th:block>
                         <th:block th:if="${not #lists.isEmpty(usage.usageDefinitions)}">
@@ -435,7 +435,7 @@
                             </th:block>
                             <th:block th:if="${not #lists.isEmpty(usage.usageTranslations)}">
                               <span th:each="usageTranslation : ${usage.usageTranslations}" class="example-text">
-                                <span class="example-text-value" th:utext="${viewUtil.wrapDecorations(usageTranslation)}"></span>
+                                <span class="example-text-value" th:utext="${@viewUtil.wrapDecorations(usageTranslation)}"></span>
                               </span>
                             </th:block>
                             <th:block th:if="${not #lists.isEmpty(usage.usageDefinitions)}">
@@ -508,7 +508,7 @@
                               <span class="colloc-member" th:each="displayColloc,displayCollocIter : ${collocRelGr.displayCollocs}">
                                 <span th:if="${displayCollocIter.first}">
                                   <span th:each="collocMemGr : ${displayColloc.memberGroupOrder}">
-                                    <span th:if="${viewUtil.enumEquals(collocMemGr, T(eki.wordweb.constant.CollocMemberGroup).HEADWORD)}">
+                                    <span th:if="${@viewUtil.enumEquals(collocMemGr, T(eki.wordweb.constant.CollocMemberGroup).HEADWORD)}">
                                       <span th:if="${displayColloc.headwordMember.conjunct != null && displayColloc.headwordMember.preConjunct}" class="value"
                                             th:text="${displayColloc.headwordMember.conjunct}">
                                       </span>
@@ -517,19 +517,19 @@
                                             th:text="${displayColloc.headwordMember.conjunct}">
                                       </span>
                                     </span>
-                                    <span th:if="${viewUtil.enumEquals(collocMemGr, T(eki.wordweb.constant.CollocMemberGroup).PRIMARY)}">
+                                    <span th:if="${@viewUtil.enumEquals(collocMemGr, T(eki.wordweb.constant.CollocMemberGroup).PRIMARY)}">
                                       <span th:each="collocMem,collocMemIter : ${displayColloc.primaryMembers}">
                                         <span th:if="${collocMem.conjunct != null && collocMem.preConjunct}" class="value" th:text="${collocMem.conjunct}"></span>
-                                        <a th:href="@{${viewUtil.getSearchUri(sessionBean, searchMode, collocMem.word, collocMem.homonymNr, collocMem.lang)}}">
+                                        <a th:href="@{${@viewUtil.getSearchUri(sessionBean, searchMode, collocMem.word, collocMem.homonymNr, collocMem.lang)}}">
                                           <span th:text="${collocMem.form}" class="value"></span>
                                         </a>
                                         <span th:if="${collocMem.conjunct != null && collocMem.postConjunct}" class="value" th:text="${collocMem.conjunct}"></span>
                                       </span>
                                     </span>
-                                    <span th:if="${viewUtil.enumEquals(collocMemGr, T(eki.wordweb.constant.CollocMemberGroup).CONTEXT)}">
+                                    <span th:if="${@viewUtil.enumEquals(collocMemGr, T(eki.wordweb.constant.CollocMemberGroup).CONTEXT)}">
                                       <span th:each="collocMem,collocMemIter : ${displayColloc.contextMembers}">
                                         <span th:if="${collocMem.conjunct != null}" class="value" th:text="${collocMem.conjunct}"></span>
-                                        <a th:href="@{${viewUtil.getSearchUri(sessionBean, searchMode, collocMem.word, collocMem.homonymNr, collocMem.lang)}}">
+                                        <a th:href="@{${@viewUtil.getSearchUri(sessionBean, searchMode, collocMem.word, collocMem.homonymNr, collocMem.lang)}}">
                                           <i>
                                             <span th:text="${collocMem.form + (collocMemIter.last ? '' : ',')}" class="value"></span>
                                           </i>
@@ -538,9 +538,9 @@
                                     </span>
                                   </span>
                                 </span>
-                                <span th:if="${!displayCollocIter.first}" data-toggle="tooltip" data-placement="top" data-html="true" th:title="${viewUtil.getTooltipHtml(displayColloc)}">
+                                <span th:if="${!displayCollocIter.first}" data-toggle="tooltip" data-placement="top" data-html="true" th:title="${@viewUtil.getTooltipHtml(displayColloc)}">
                                   <span th:each="collocMem,collocMemIter : ${displayColloc.primaryMembers}">
-                                    <a th:href="@{${viewUtil.getSearchUri(sessionBean, searchMode, collocMem.word, collocMem.homonymNr, collocMem.lang)}}">
+                                    <a th:href="@{${@viewUtil.getSearchUri(sessionBean, searchMode, collocMem.word, collocMem.homonymNr, collocMem.lang)}}">
                                       <span th:text="${collocMem.form}" class="value"></span>
                                     </a>
                                     <span th:unless="${collocMemIter.last}">&nbsp;</span>
@@ -594,26 +594,26 @@
                           <span class="colloc-member" th:each="displayColloc,displayCollocIter : ${lexeme.limitedPrimaryDisplayCollocs}">
                             <span th:if="${displayCollocIter.first}">
                               <span th:each="collocMemGr : ${displayColloc.memberGroupOrder}">
-                                <span th:if="${viewUtil.enumEquals(collocMemGr, T(eki.wordweb.constant.CollocMemberGroup).HEADWORD)}">
+                                <span th:if="${@viewUtil.enumEquals(collocMemGr, T(eki.wordweb.constant.CollocMemberGroup).HEADWORD)}">
                                   <span th:if="${displayColloc.headwordMember.conjunct != null && displayColloc.headwordMember.preConjunct}" class="value"
                                         th:text="${displayColloc.headwordMember.conjunct}"></span>
                                   <span class="font-weight-bold" th:text="${displayColloc.headwordMember.form}"></span>
                                   <span th:if="${displayColloc.headwordMember.conjunct != null && displayColloc.headwordMember.postConjunct}" class="value"
                                         th:text="${displayColloc.headwordMember.conjunct}"></span>
                                 </span>
-                                <span th:if="${viewUtil.enumEquals(collocMemGr, T(eki.wordweb.constant.CollocMemberGroup).PRIMARY)}">
+                                <span th:if="${@viewUtil.enumEquals(collocMemGr, T(eki.wordweb.constant.CollocMemberGroup).PRIMARY)}">
                                   <span th:each="collocMem,collocMemIter : ${displayColloc.primaryMembers}">
                                     <span th:if="${collocMem.conjunct != null && collocMem.preConjunct}" class="value" th:text="${collocMem.conjunct}"></span>
-                                    <a th:href="@{${viewUtil.getSearchUri(sessionBean, searchMode, collocMem.word, collocMem.homonymNr, collocMem.lang)}}">
+                                    <a th:href="@{${@viewUtil.getSearchUri(sessionBean, searchMode, collocMem.word, collocMem.homonymNr, collocMem.lang)}}">
                                       <span th:text="${collocMem.form}" class="value"></span>
                                     </a>
                                     <span th:if="${collocMem.conjunct != null && collocMem.postConjunct}" class="value" th:text="${collocMem.conjunct}"></span>
                                   </span>
                                 </span>
-                                <span th:if="${viewUtil.enumEquals(collocMemGr, T(eki.wordweb.constant.CollocMemberGroup).CONTEXT)}">
+                                <span th:if="${@viewUtil.enumEquals(collocMemGr, T(eki.wordweb.constant.CollocMemberGroup).CONTEXT)}">
                                   <span th:each="collocMem,collocMemIter : ${displayColloc.contextMembers}">
                                     <span th:if="${collocMem.conjunct != null}" class="value" th:text="${collocMem.conjunct}"></span>
-                                    <a th:href="@{${viewUtil.getSearchUri(sessionBean, searchMode, collocMem.word, collocMem.homonymNr, collocMem.lang)}}">
+                                    <a th:href="@{${@viewUtil.getSearchUri(sessionBean, searchMode, collocMem.word, collocMem.homonymNr, collocMem.lang)}}">
                                       <i>
                                         <span th:text="${collocMem.form + (collocMemIter.last ? '' : ',')}" class="value"></span>
                                       </i>
@@ -622,9 +622,9 @@
                                 </span>
                               </span>
                             </span>
-                            <span th:if="${!displayCollocIter.first}" data-toggle="tooltip" data-placement="top" data-html="true" th:title="${viewUtil.getTooltipHtml(displayColloc)}">
+                            <span th:if="${!displayCollocIter.first}" data-toggle="tooltip" data-placement="top" data-html="true" th:title="${@viewUtil.getTooltipHtml(displayColloc)}">
                               <span th:each="collocMem,collocMemIter : ${displayColloc.primaryMembers}">
-                                <a th:href="@{${viewUtil.getSearchUri(sessionBean, searchMode, collocMem.word, collocMem.homonymNr, collocMem.lang)}}">
+                                <a th:href="@{${@viewUtil.getSearchUri(sessionBean, searchMode, collocMem.word, collocMem.homonymNr, collocMem.lang)}}">
                                   <span th:text="${collocMem.form}" class="value"></span>
                                 </a>
                                 <span th:unless="${collocMemIter.last}">&nbsp;</span>

@@ -252,6 +252,7 @@ public class TermSearchService extends AbstractSearchService {
 
 			Lexeme lexeme = composeLexeme(user, lexemeId);
 			Long wordId = lexeme.getWordId();
+			List<FreeForm> wordFreeforms = commonDataDbService.getWordFreeforms(wordId, EXCLUDED_WORD_ATTRIBUTE_FF_TYPE_CODES, CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
 			List<Classifier> wordTypes = commonDataDbService.getWordTypes(wordId, CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
 			List<WordForum> wordForums = commonDataDbService.getWordForums(wordId);
 			permCalculator.applyCrud(user, wordForums);
@@ -267,6 +268,7 @@ public class TermSearchService extends AbstractSearchService {
 			List<String> lexemeTags = commonDataDbService.getLexemeTags(lexemeId);
 
 			Word word = lexeme.getWord();
+			word.setFreeforms(wordFreeforms);
 			word.setForums(wordForums);
 			word.setOdWordRecommendations(odWordRecommendations);
 			permCalculator.applyCrud(user, word);

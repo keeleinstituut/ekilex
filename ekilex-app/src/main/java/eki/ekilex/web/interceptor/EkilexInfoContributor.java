@@ -12,22 +12,35 @@ import eki.ekilex.data.RequestTimeInfo;
 @Component
 public class EkilexInfoContributor implements InfoContributor {
 
-	private RequestTimeInfo requestTimeInfo;
+	private RequestTimeInfo uiRequestTimeInfo;
+
+	private RequestTimeInfo apiRequestTimeInfo;
 
 	public EkilexInfoContributor() {
-		requestTimeInfo = new RequestTimeInfo();
+		uiRequestTimeInfo = new RequestTimeInfo();
+		apiRequestTimeInfo = new RequestTimeInfo();
 	}
 
 	@Override
 	public void contribute(Builder builder) {
 
 		Map<String, Object> statData = new HashMap<>();
-		statData.put("requestCount", requestTimeInfo.getRequestCount());
-		statData.put("requestTimeAvg", requestTimeInfo.getRequestTimeAvg());
+		statData.put("uiRequestCount", uiRequestTimeInfo.getRequestCount());
+		statData.put("uiRuestTimeAvg", uiRequestTimeInfo.getRequestTimeAvg());
+		statData.put("apiRequestCount", apiRequestTimeInfo.getRequestCount());
+		statData.put("apiRuestTimeAvg", apiRequestTimeInfo.getRequestTimeAvg());
 		builder.withDetail("statData", statData);
 	}
 
-	public synchronized void appendRequestTime(long requestTime) {
+	public synchronized void appendUiRequestTime(long requestTime) {
+		appendUiRequestTime(uiRequestTimeInfo, requestTime);
+	}
+
+	public synchronized void appendApiRequestTime(long requestTime) {
+		appendUiRequestTime(apiRequestTimeInfo, requestTime);
+	}
+
+	private synchronized void appendUiRequestTime(RequestTimeInfo requestTimeInfo, long requestTime) {
 
 		long requestCount = requestTimeInfo.getRequestCount();
 		long requestTimeSum = requestTimeInfo.getRequestTimeSum();

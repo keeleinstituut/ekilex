@@ -17,8 +17,8 @@
           <button type="button" class="search-result-btn btn btn-block p-2 text-left position-relative rounded-0" th:data-id="${word.wordId}" name="synDetailsBtn">
             <span class="d-flex align-items-center">
               <span class="badge badge-light mr-2" th:text="${word.homonymNr}" th:if="${word.homonymNr > 0}"></span>
-              <span th:utext="${viewUtil.getWordValueMarkup(word)}">vorm 1</span>
-              <span th:text="${'(' + viewUtil.getLangIso2(word.lang) + ')'}"></span>
+              <span th:utext="${@viewUtil.getWordValueMarkup(word)}">vorm 1</span>
+              <span th:text="${'(' + @viewUtil.getLangIso2(word.lang) + ')'}"></span>
             </span>
             <span class="d-flex align-items-start">
               <small>

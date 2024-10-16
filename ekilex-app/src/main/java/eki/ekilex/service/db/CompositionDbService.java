@@ -1,6 +1,7 @@
 package eki.ekilex.service.db;
 
 import static eki.ekilex.data.db.Tables.COLLOCATION;
+import static eki.ekilex.data.db.Tables.COLLOCATION_MEMBER;
 import static eki.ekilex.data.db.Tables.DEFINITION;
 import static eki.ekilex.data.db.Tables.DEFINITION_DATASET;
 import static eki.ekilex.data.db.Tables.DEFINITION_FREEFORM;
@@ -11,6 +12,7 @@ import static eki.ekilex.data.db.Tables.LEXEME;
 import static eki.ekilex.data.db.Tables.LEXEME_ACTIVITY_LOG;
 import static eki.ekilex.data.db.Tables.LEXEME_DERIV;
 import static eki.ekilex.data.db.Tables.LEXEME_FREEFORM;
+import static eki.ekilex.data.db.Tables.LEXEME_NOTE;
 import static eki.ekilex.data.db.Tables.LEXEME_POS;
 import static eki.ekilex.data.db.Tables.LEXEME_REGION;
 import static eki.ekilex.data.db.Tables.LEXEME_REGISTER;
@@ -24,10 +26,12 @@ import static eki.ekilex.data.db.Tables.MEANING;
 import static eki.ekilex.data.db.Tables.MEANING_ACTIVITY_LOG;
 import static eki.ekilex.data.db.Tables.MEANING_DOMAIN;
 import static eki.ekilex.data.db.Tables.MEANING_FREEFORM;
+import static eki.ekilex.data.db.Tables.MEANING_NOTE;
 import static eki.ekilex.data.db.Tables.MEANING_RELATION;
 import static eki.ekilex.data.db.Tables.MEANING_SEMANTIC_TYPE;
 import static eki.ekilex.data.db.Tables.PARADIGM;
 import static eki.ekilex.data.db.Tables.PARADIGM_FORM;
+import static eki.ekilex.data.db.Tables.USAGE;
 import static eki.ekilex.data.db.Tables.WORD;
 import static eki.ekilex.data.db.Tables.WORD_ACTIVITY_LOG;
 import static eki.ekilex.data.db.Tables.WORD_ETYMOLOGY;
@@ -47,32 +51,31 @@ import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
 import org.jooq.Condition;
-import org.jooq.Record1;
 import org.jooq.Result;
-import org.jooq.SelectConditionStep;
 import org.jooq.impl.DSL;
 import org.springframework.stereotype.Component;
 
 import eki.common.constant.Complexity;
 import eki.common.constant.GlobalConstant;
-import eki.ekilex.data.IdPair;
 import eki.ekilex.data.LexCollocationGroupTuple;
 import eki.ekilex.data.LexCollocationTuple;
 import eki.ekilex.data.SimpleWord;
 import eki.ekilex.data.db.tables.Collocation;
+import eki.ekilex.data.db.tables.CollocationMember;
 import eki.ekilex.data.db.tables.Definition;
 import eki.ekilex.data.db.tables.LexColloc;
 import eki.ekilex.data.db.tables.LexCollocPosGroup;
 import eki.ekilex.data.db.tables.LexCollocRelGroup;
 import eki.ekilex.data.db.tables.LexRelation;
-import eki.ekilex.data.db.tables.Lexeme;
 import eki.ekilex.data.db.tables.LexemeActivityLog;
+import eki.ekilex.data.db.tables.LexemeNote;
 import eki.ekilex.data.db.tables.LexemeSourceLink;
 import eki.ekilex.data.db.tables.LexemeTag;
-import eki.ekilex.data.db.tables.Meaning;
 import eki.ekilex.data.db.tables.MeaningActivityLog;
+import eki.ekilex.data.db.tables.MeaningNote;
 import eki.ekilex.data.db.tables.MeaningRelation;
 import eki.ekilex.data.db.tables.MeaningSemanticType;
+import eki.ekilex.data.db.tables.Usage;
 import eki.ekilex.data.db.tables.Word;
 import eki.ekilex.data.db.tables.WordActivityLog;
 import eki.ekilex.data.db.tables.WordEtymology;
@@ -87,7 +90,6 @@ import eki.ekilex.data.db.tables.records.DefinitionSourceLinkRecord;
 import eki.ekilex.data.db.tables.records.FormRecord;
 import eki.ekilex.data.db.tables.records.FreeformRecord;
 import eki.ekilex.data.db.tables.records.LexCollocRecord;
-import eki.ekilex.data.db.tables.records.LexRelationRecord;
 import eki.ekilex.data.db.tables.records.LexemeDerivRecord;
 import eki.ekilex.data.db.tables.records.LexemeFreeformRecord;
 import eki.ekilex.data.db.tables.records.LexemePosRecord;
@@ -112,165 +114,84 @@ import eki.ekilex.data.db.tables.records.WordWordTypeRecord;
 @Component
 public class CompositionDbService extends AbstractDataDbService implements GlobalConstant {
 
-	public WordRecord getWord(Long wordId) {
-		return create.selectFrom(WORD).where(WORD.ID.eq(wordId)).fetchOne();
-	}
-
-	public LexemeRecord getLexeme(Long lexemeId) {
-		return create.selectFrom(LEXEME).where(LEXEME.ID.eq(lexemeId)).fetchOne();
-	}
-
-	public LexemeRecord getLexeme(Long wordId, Long meaningId, String datasetCode) {
-		return create
-				.selectFrom(LEXEME)
-				.where(
-						LEXEME.WORD_ID.eq(wordId)
-								.and(LEXEME.MEANING_ID.eq(meaningId))
-								.and(LEXEME.DATASET_CODE.eq(datasetCode)))
-				.fetchOne();
-	}
-
-	public List<LexemeRecord> getLexemesWithHigherLevel1(Long wordId, String datasetCode, Integer level1) {
-		return create
-				.selectFrom(LEXEME)
-				.where(LEXEME.WORD_ID.eq(wordId)
-						.and(LEXEME.DATASET_CODE.eq(datasetCode))
-						.and(LEXEME.LEVEL1.gt(level1)))
-				.fetch();
-	}
-
-	public List<LexemeRecord> getLexemesWithHigherLevel2(Long wordId, String datasetCode, Integer level1, Integer level2) {
-		return create
-				.selectFrom(LEXEME)
-				.where(LEXEME.WORD_ID.eq(wordId)
-						.and(LEXEME.DATASET_CODE.eq(datasetCode))
-						.and(LEXEME.LEVEL1.eq(level1))
-						.and(LEXEME.LEVEL2.gt(level2)))
-				.fetch();
-	}
-
-	public Integer getLevel2MinimumValue(Long wordId, String datasetCode, Integer level1) {
-		return create
-				.select(DSL.min(LEXEME.LEVEL2))
-				.from(LEXEME)
-				.where(LEXEME.WORD_ID.eq(wordId)
-						.and(LEXEME.DATASET_CODE.eq(datasetCode))
-						.and(LEXEME.LEVEL1.eq(level1)))
-				.fetchOneInto(Integer.class);
-	}
-
-	public List<LexemeRecord> getWordLexemes(Long wordId) {
-		return create
-				.selectFrom(LEXEME)
-				.where(LEXEME.WORD_ID.eq(wordId))
-				.orderBy(LEXEME.ORDER_BY)
-				.fetch();
-	}
-
-	public List<LexemeRecord> getMeaningLexemes(Long meaningId) {
-		return create
-				.selectFrom(LEXEME)
-				.where(LEXEME.MEANING_ID.eq(meaningId))
-				.orderBy(LEXEME.ORDER_BY)
-				.fetch();
-	}
-
-	public List<LexemeRecord> getMeaningLexemes(Long meaningId, String datasetCode) {
-		return create
-				.selectFrom(LEXEME)
-				.where(LEXEME.MEANING_ID.eq(meaningId)
-						.and(LEXEME.DATASET_CODE.eq(datasetCode)))
-				.orderBy(LEXEME.ORDER_BY)
-				.fetch();
-	}
-
-	public List<Long> getMeaningDefinitionIds(Long meaningId, boolean publicDataOnly) {
-
-		Condition where = DEFINITION.MEANING_ID.eq(meaningId);
-		if (publicDataOnly) {
-			where = where.and(DEFINITION.IS_PUBLIC.isTrue());
-		}
-		return create.select(DEFINITION.ID).from(DEFINITION).where(where).orderBy(DEFINITION.ORDER_BY).fetchInto(Long.class);
-	}
-
-	public List<IdPair> getMeaningsCommonWordsLexemeIdPairs(Long meaningId, Long sourceMeaningId) {
-
-		Lexeme l1 = LEXEME.as("l1");
-		Lexeme l2 = LEXEME.as("l2");
-		Meaning m1 = MEANING.as("m1");
-		Meaning m2 = MEANING.as("m2");
-
-		SelectConditionStep<Record1<Long>> wordIds = DSL.selectDistinct(l1.WORD_ID)
-				.from(l1, m1)
-				.where(l1.MEANING_ID.eq(meaningId)
-						.and(l1.MEANING_ID.eq(m1.ID))
-						.andExists(DSL
-								.select(l2.ID)
-								.from(l2, m2)
-								.where(m2.ID.eq(sourceMeaningId)
-										.and(l2.MEANING_ID.eq(m2.ID))
-										.and(l2.WORD_ID.eq(l1.WORD_ID)))));
-
-		return create
-				.select(l1.ID.as("id1"), l2.ID.as("id2"))
-				.from(l1, l2)
-				.where(l1.WORD_ID.in(wordIds)
-						.and(l1.DATASET_CODE.eq(l2.DATASET_CODE))
-						.and(l1.MEANING_ID.eq(meaningId))
-						.and(l2.MEANING_ID.eq(sourceMeaningId))
-						.and(l2.WORD_ID.eq(l1.WORD_ID)))
-				.fetchInto(IdPair.class);
-	}
-
-	public List<LexRelationRecord> getLexemeRelations(Long lexemeId) {
-
-		return create
-				.selectFrom(LEX_RELATION)
-				.where(LEX_RELATION.LEXEME1_ID.eq(lexemeId).or(LEX_RELATION.LEXEME2_ID.eq(lexemeId)))
-				.orderBy(LEX_RELATION.ORDER_BY)
-				.fetch();
-	}
-
 	public void joinMeanings(Long targetMeaningId, Long sourceMeaningId) {
 
-		create.update(LEXEME).set(LEXEME.MEANING_ID, targetMeaningId).where(LEXEME.MEANING_ID.eq(sourceMeaningId)).execute();
-		joinMeaningDefinitions(targetMeaningId, sourceMeaningId);
-		joinMeaningDomains(targetMeaningId, sourceMeaningId);
-		joinMeaningFreeforms(targetMeaningId, sourceMeaningId);
-		joinMeaningRelations(targetMeaningId, sourceMeaningId);
-		joinMeaningSemanticTypes(targetMeaningId, sourceMeaningId);
+		moveLexemes(targetMeaningId, sourceMeaningId);
+		moveMeaningDefinitions(targetMeaningId, sourceMeaningId);
+		moveMeaningDomains(targetMeaningId, sourceMeaningId);
+		moveMeaningFreeforms(targetMeaningId, sourceMeaningId);
+		moveMeaningRelations(targetMeaningId, sourceMeaningId);
+		moveMeaningSemanticTypes(targetMeaningId, sourceMeaningId);
+		moveMeaningActivityLogs(targetMeaningId, sourceMeaningId);
+		moveMeaningNotes(targetMeaningId, sourceMeaningId);
 
-		MeaningActivityLog mals = MEANING_ACTIVITY_LOG.as("mals");
-		MeaningActivityLog malt = MEANING_ACTIVITY_LOG.as("malt");
 		create
-				.update(mals)
-				.set(mals.MEANING_ID, targetMeaningId)
-				.where(
-						mals.MEANING_ID.eq(sourceMeaningId)
-								.andNotExists(DSL
-										.select(malt.ID)
-										.from(malt)
-										.where(
-												malt.MEANING_ID.eq(targetMeaningId)
-														.and(malt.ACTIVITY_LOG_ID.eq(mals.ACTIVITY_LOG_ID)))))
+				.delete(MEANING)
+				.where(MEANING.ID.eq(sourceMeaningId))
 				.execute();
-
-		create.delete(MEANING).where(MEANING.ID.eq(sourceMeaningId)).execute();
 	}
 
 	public void joinLexemes(Long targetLexemeId, Long sourceLexemeId) {
 
-		joinLexemeCollocations(targetLexemeId, sourceLexemeId);
-		joinLexemeSourceLinks(targetLexemeId, sourceLexemeId);
-		joinLexemeRegisters(targetLexemeId, sourceLexemeId);
-		joinLexemePos(targetLexemeId, sourceLexemeId);
-		joinLexemeFreeforms(targetLexemeId, sourceLexemeId);
-		joinLexemeDerivs(targetLexemeId, sourceLexemeId);
-		joinLexemeRegions(targetLexemeId, sourceLexemeId);
-		joinLexemeRelations(targetLexemeId, sourceLexemeId);
-		joinLexemePublicity(targetLexemeId, sourceLexemeId);
-		joinLexemeComplexity(targetLexemeId, sourceLexemeId);
-		joinLexemeTags(targetLexemeId, sourceLexemeId);
+		moveLexemeCollocations(targetLexemeId, sourceLexemeId);
+		moveLexemeSourceLinks(targetLexemeId, sourceLexemeId);
+		moveLexemeRegisters(targetLexemeId, sourceLexemeId);
+		moveLexemePos(targetLexemeId, sourceLexemeId);
+		moveLexemeFreeforms(targetLexemeId, sourceLexemeId);
+		moveLexemeDerivs(targetLexemeId, sourceLexemeId);
+		moveLexemeRegions(targetLexemeId, sourceLexemeId);
+		moveLexemeRelations(targetLexemeId, sourceLexemeId);
+		moveLexemeTags(targetLexemeId, sourceLexemeId);
+		moveLexemeNotes(targetLexemeId, sourceLexemeId);
+		moveLexemeUsages(targetLexemeId, sourceLexemeId);
+		moveCollocationMembers(targetLexemeId, sourceLexemeId);
+		moveLexemeActivityLog(targetLexemeId, sourceLexemeId);
+		mergeLexemePublicity(targetLexemeId, sourceLexemeId);
+		mergeLexemeComplexity(targetLexemeId, sourceLexemeId);
+
+		create
+				.delete(LEXEME)
+				.where(LEXEME.ID.eq(sourceLexemeId))
+				.execute();
+	}
+
+	public void joinWordData(Long targetWordId, Long sourceWordId) {
+
+		mergeWordFields(targetWordId, sourceWordId);
+		moveWordFreeforms(targetWordId, sourceWordId);
+		moveWordRelations(targetWordId, sourceWordId);
+		moveWordTypeCodes(targetWordId, sourceWordId);
+		moveWordGroupMembers(targetWordId, sourceWordId);
+		moveWordEtymologyAndEtymologyRelations(targetWordId, sourceWordId);
+		moveWordActivityLogs(targetWordId, sourceWordId);
+	}
+
+	private void mergeLexemePublicity(Long targetLexemeId, Long sourceLexemeId) {
+
+		boolean targetLexemePublicity = create.select(LEXEME.IS_PUBLIC).from(LEXEME).where(LEXEME.ID.eq(targetLexemeId)).fetchOneInto(boolean.class);
+		if (PUBLICITY_PUBLIC == targetLexemePublicity) {
+			return;
+		}
+
+		boolean sourceLexemePublicity = create.select(LEXEME.IS_PUBLIC).from(LEXEME).where(LEXEME.ID.eq(sourceLexemeId)).fetchOneInto(boolean.class);
+		if (PUBLICITY_PUBLIC == sourceLexemePublicity) {
+			create.update(LEXEME).set(LEXEME.IS_PUBLIC, PUBLICITY_PUBLIC).where(LEXEME.ID.eq(targetLexemeId)).execute();
+		}
+	}
+
+	private void mergeLexemeComplexity(Long targetLexemeId, Long sourceLexemeId) {
+
+		Complexity targetLexemeComplexity = create.select(LEXEME.COMPLEXITY).from(LEXEME).where(LEXEME.ID.eq(targetLexemeId)).fetchOneInto(Complexity.class);
+		if (Complexity.ANY == targetLexemeComplexity) {
+			return;
+		}
+		Complexity sourceLexemeComplexity = create.select(LEXEME.COMPLEXITY).from(LEXEME).where(LEXEME.ID.eq(sourceLexemeId)).fetchOneInto(Complexity.class);
+		if (targetLexemeComplexity != sourceLexemeComplexity) {
+			create.update(LEXEME).set(LEXEME.COMPLEXITY, Complexity.ANY.name()).where(LEXEME.ID.eq(targetLexemeId)).execute();
+		}
+	}
+
+	private void moveLexemeActivityLog(Long targetLexemeId, Long sourceLexemeId) {
 
 		LexemeActivityLog lals = LEXEME_ACTIVITY_LOG.as("lals");
 		LexemeActivityLog lalt = LEXEME_ACTIVITY_LOG.as("lalt");
@@ -286,296 +207,377 @@ public class CompositionDbService extends AbstractDataDbService implements Globa
 												lalt.LEXEME_ID.eq(targetLexemeId)
 														.and(lalt.ACTIVITY_LOG_ID.eq(lals.ACTIVITY_LOG_ID)))))
 				.execute();
-
-		create.delete(LEXEME).where(LEXEME.ID.eq(sourceLexemeId)).execute();
 	}
 
-	private void joinLexemeTags(Long lexemeId, Long sourceLexemeId) {
+	private void moveLexemeTags(Long targetLexemeId, Long sourceLexemeId) {
 
 		LexemeTag lt1 = LEXEME_TAG.as("lt1");
 		LexemeTag lt2 = LEXEME_TAG.as("lt2");
 		create
 				.update(lt1)
-				.set(lt1.LEXEME_ID, lexemeId)
+				.set(lt1.LEXEME_ID, targetLexemeId)
 				.where(lt1.LEXEME_ID.eq(sourceLexemeId))
 				.andNotExists(DSL
 						.select(lt2.ID)
 						.from(lt2)
-						.where(lt2.LEXEME_ID.eq(lexemeId)
+						.where(lt2.LEXEME_ID.eq(targetLexemeId)
 								.and(lt2.TAG_NAME.eq(lt1.TAG_NAME))))
 				.execute();
 	}
 
-	private void joinLexemePublicity(Long targetLexemeId, Long sourceLexemeId) {
-
-		boolean targetLexemePublicity = create.select(LEXEME.IS_PUBLIC).from(LEXEME).where(LEXEME.ID.eq(targetLexemeId)).fetchOneInto(boolean.class);
-		if (PUBLICITY_PUBLIC == targetLexemePublicity) {
-			return;
-		}
-
-		boolean sourceLexemePublicity = create.select(LEXEME.IS_PUBLIC).from(LEXEME).where(LEXEME.ID.eq(sourceLexemeId)).fetchOneInto(boolean.class);
-		if (PUBLICITY_PUBLIC == sourceLexemePublicity) {
-			create.update(LEXEME).set(LEXEME.IS_PUBLIC, PUBLICITY_PUBLIC).where(LEXEME.ID.eq(targetLexemeId)).execute();
-		}
-	}
-
-	private void joinLexemeComplexity(Long targetLexemeId, Long sourceLexemeId) {
-
-		Complexity targetLexemeComplexity = create.select(LEXEME.COMPLEXITY).from(LEXEME).where(LEXEME.ID.eq(targetLexemeId)).fetchOneInto(Complexity.class);
-		if (Complexity.ANY == targetLexemeComplexity) {
-			return;
-		}
-		Complexity sourceLexemeComplexity = create.select(LEXEME.COMPLEXITY).from(LEXEME).where(LEXEME.ID.eq(sourceLexemeId)).fetchOneInto(Complexity.class);
-		if (targetLexemeComplexity != sourceLexemeComplexity) {
-			create.update(LEXEME).set(LEXEME.COMPLEXITY, Complexity.ANY.name()).where(LEXEME.ID.eq(targetLexemeId)).execute();
-		}
-	}
-
-	private void joinLexemeCollocations(Long lexemeId, Long sourceLexemeId) {
+	private void moveLexemeCollocations(Long targetLexemeId, Long sourceLexemeId) {
 
 		LexColloc lc1 = LEX_COLLOC.as("lc1");
 		LexColloc lc2 = LEX_COLLOC.as("lc2");
-		create.update(lc1)
-				.set(lc1.LEXEME_ID, lexemeId)
+		create
+				.update(lc1)
+				.set(lc1.LEXEME_ID, targetLexemeId)
 				.where(lc1.LEXEME_ID.eq(sourceLexemeId))
 				.andNotExists(DSL
 						.select(lc2.ID)
 						.from(lc2)
-						.where(lc2.LEXEME_ID.eq(lexemeId)
+						.where(lc2.LEXEME_ID.eq(targetLexemeId)
 								.and(lc2.COLLOCATION_ID.eq(lc1.COLLOCATION_ID))))
 				.execute();
 
-		create.update(LEX_COLLOC_POS_GROUP).set(LEX_COLLOC_POS_GROUP.LEXEME_ID, lexemeId).where(LEX_COLLOC_POS_GROUP.LEXEME_ID.eq(sourceLexemeId)).execute();
-	}
-
-	private void joinLexemeRegions(Long lexemeId, Long sourceLexemeId) {
-
-		create.update(LEXEME_REGION)
-				.set(LEXEME_REGION.LEXEME_ID, lexemeId)
-				.where(LEXEME_REGION.LEXEME_ID.eq(sourceLexemeId)
-						.and(LEXEME_REGION.REGION_CODE.notIn(
-								DSL.select(LEXEME_REGION.REGION_CODE).from(LEXEME_REGION).where(LEXEME_REGION.LEXEME_ID.eq(lexemeId)))))
+		create
+				.update(LEX_COLLOC_POS_GROUP)
+				.set(LEX_COLLOC_POS_GROUP.LEXEME_ID, targetLexemeId)
+				.where(LEX_COLLOC_POS_GROUP.LEXEME_ID.eq(sourceLexemeId))
 				.execute();
 	}
 
-	private void joinLexemeRelations(Long lexemeId, Long sourceLexemeId) {
+	private void moveLexemeUsages(Long targetLexemeId, Long sourceLexemeId) {
+
+		Usage u = USAGE.as("u");
+		create
+				.update(u)
+				.set(u.LEXEME_ID, targetLexemeId)
+				.where(u.LEXEME_ID.eq(sourceLexemeId))
+				.execute();
+	}
+
+	private void moveLexemeNotes(Long targetLexemeId, Long sourceLexemeId) {
+
+		LexemeNote n = LEXEME_NOTE.as("n");
+		create
+				.update(n)
+				.set(n.LEXEME_ID, targetLexemeId)
+				.where(n.LEXEME_ID.eq(sourceLexemeId))
+				.execute();
+	}
+
+	private void moveCollocationMembers(Long targetLexemeId, Long sourceLexemeId) {
+
+		CollocationMember cm = COLLOCATION_MEMBER.as("cm");
+
+		create
+				.update(cm)
+				.set(cm.MEMBER_LEXEME_ID, targetLexemeId)
+				.where(cm.MEMBER_LEXEME_ID.eq(sourceLexemeId))
+				.execute();
+
+		create
+				.update(cm)
+				.set(cm.COLLOC_LEXEME_ID, targetLexemeId)
+				.where(cm.COLLOC_LEXEME_ID.eq(sourceLexemeId))
+				.execute();
+	}
+
+	private void moveLexemeRegions(Long targetLexemeId, Long sourceLexemeId) {
+
+		create
+				.update(LEXEME_REGION)
+				.set(LEXEME_REGION.LEXEME_ID, targetLexemeId)
+				.where(
+						LEXEME_REGION.LEXEME_ID.eq(sourceLexemeId)
+								.and(LEXEME_REGION.REGION_CODE.notIn(
+										DSL.select(LEXEME_REGION.REGION_CODE).from(LEXEME_REGION).where(LEXEME_REGION.LEXEME_ID.eq(targetLexemeId)))))
+				.execute();
+	}
+
+	private void moveLexemeRelations(Long targetLexemeId, Long sourceLexemeId) {
 
 		LexRelation lr1 = LEX_RELATION.as("lr1");
 		LexRelation lr2 = LEX_RELATION.as("lr2");
 
-		create.update(lr1)
-				.set(lr1.LEXEME1_ID, lexemeId)
+		create
+				.update(lr1)
+				.set(lr1.LEXEME1_ID, targetLexemeId)
 				.where(
 						lr1.LEXEME1_ID.eq(sourceLexemeId)
-								.and(lr1.LEXEME2_ID.ne(lexemeId)))
+								.and(lr1.LEXEME2_ID.ne(targetLexemeId)))
 				.andNotExists(DSL
 						.select(lr2.ID)
 						.from(lr2)
 						.where(
-								lr2.LEXEME1_ID.eq(lexemeId)
+								lr2.LEXEME1_ID.eq(targetLexemeId)
 										.and(lr2.LEXEME2_ID.eq(lr1.LEXEME2_ID))
 										.and(lr2.LEX_REL_TYPE_CODE.eq(lr1.LEX_REL_TYPE_CODE))))
 				.execute();
 
-		create.update(lr1)
-				.set(lr1.LEXEME2_ID, lexemeId)
+		create
+				.update(lr1)
+				.set(lr1.LEXEME2_ID, targetLexemeId)
 				.where(
 						lr1.LEXEME2_ID.eq(sourceLexemeId)
-								.and(lr1.LEXEME1_ID.ne(lexemeId)))
+								.and(lr1.LEXEME1_ID.ne(targetLexemeId)))
 				.andNotExists(DSL
 						.select(lr2.ID)
 						.from(lr2)
 						.where(
-								lr2.LEXEME2_ID.eq(lexemeId)
+								lr2.LEXEME2_ID.eq(targetLexemeId)
 										.and(lr2.LEXEME1_ID.eq(lr1.LEXEME1_ID))
 										.and(lr2.LEX_REL_TYPE_CODE.eq(lr1.LEX_REL_TYPE_CODE))))
 				.execute();
 	}
 
-	private void joinLexemeDerivs(Long lexemeId, Long sourceLexemeId) {
+	private void moveLexemeDerivs(Long targetLexemeId, Long sourceLexemeId) {
 
-		create.update(LEXEME_DERIV)
-				.set(LEXEME_DERIV.LEXEME_ID, lexemeId)
+		create
+				.update(LEXEME_DERIV)
+				.set(LEXEME_DERIV.LEXEME_ID, targetLexemeId)
 				.where(LEXEME_DERIV.LEXEME_ID.eq(sourceLexemeId)
 						.and(LEXEME_DERIV.DERIV_CODE.notIn(
-								DSL.select(LEXEME_DERIV.DERIV_CODE).from(LEXEME_DERIV).where(LEXEME_DERIV.LEXEME_ID.eq(lexemeId)))))
+								DSL.select(LEXEME_DERIV.DERIV_CODE).from(LEXEME_DERIV).where(LEXEME_DERIV.LEXEME_ID.eq(targetLexemeId)))))
 				.execute();
 	}
 
-	private void joinLexemeFreeforms(Long lexemeId, Long sourceLexemeId) {
+	private void moveLexemeFreeforms(Long targetLexemeId, Long sourceLexemeId) {
 
-		Result<FreeformRecord> lexemeFreeforms = create.selectFrom(FREEFORM)
-				.where(FREEFORM.ID.in(DSL.select(LEXEME_FREEFORM.FREEFORM_ID).from(LEXEME_FREEFORM).where(LEXEME_FREEFORM.LEXEME_ID.eq(lexemeId))))
+		Result<FreeformRecord> lexemeFreeforms = create
+				.selectFrom(FREEFORM)
+				.where(FREEFORM.ID.in(DSL.select(LEXEME_FREEFORM.FREEFORM_ID).from(LEXEME_FREEFORM).where(LEXEME_FREEFORM.LEXEME_ID.eq(targetLexemeId))))
 				.fetch();
-		Result<FreeformRecord> sourceLexemeFreeforms = create.selectFrom(FREEFORM)
+		Result<FreeformRecord> sourceLexemeFreeforms = create
+				.selectFrom(FREEFORM)
 				.where(FREEFORM.ID.in(DSL.select(LEXEME_FREEFORM.FREEFORM_ID).from(LEXEME_FREEFORM).where(LEXEME_FREEFORM.LEXEME_ID.eq(sourceLexemeId))))
 				.fetch();
 
 		List<Long> nonDublicateFreeformIds = getNonDuplicateFreeformIds(lexemeFreeforms, sourceLexemeFreeforms);
 
-		create.update(LEXEME_FREEFORM)
-				.set(LEXEME_FREEFORM.LEXEME_ID, lexemeId)
+		create
+				.update(LEXEME_FREEFORM)
+				.set(LEXEME_FREEFORM.LEXEME_ID, targetLexemeId)
 				.where(LEXEME_FREEFORM.LEXEME_ID.eq(sourceLexemeId)
 						.and(LEXEME_FREEFORM.FREEFORM_ID.in(nonDublicateFreeformIds)))
 				.execute();
 
-		create.delete(FREEFORM)
+		create
+				.delete(FREEFORM)
 				.where(FREEFORM.ID.in(DSL
 						.select(LEXEME_FREEFORM.FREEFORM_ID)
 						.from(LEXEME_FREEFORM)
 						.where(LEXEME_FREEFORM.LEXEME_ID.eq(sourceLexemeId))))
 				.execute();
 
-		create.delete(LEXEME_FREEFORM).where(LEXEME_FREEFORM.LEXEME_ID.eq(sourceLexemeId)).execute();
+		create
+				.delete(LEXEME_FREEFORM)
+				.where(LEXEME_FREEFORM.LEXEME_ID.eq(sourceLexemeId))
+				.execute();
 	}
 
-	private void joinLexemePos(Long lexemeId, Long sourceLexemeId) {
+	private void moveLexemePos(Long targetLexemeId, Long sourceLexemeId) {
 
-		create.update(LEXEME_POS)
-				.set(LEXEME_POS.LEXEME_ID, lexemeId)
+		create
+				.update(LEXEME_POS)
+				.set(LEXEME_POS.LEXEME_ID, targetLexemeId)
 				.where(LEXEME_POS.LEXEME_ID.eq(sourceLexemeId)
 						.and(LEXEME_POS.POS_CODE.notIn(DSL
 								.select(LEXEME_POS.POS_CODE)
 								.from(LEXEME_POS)
-								.where(LEXEME_POS.LEXEME_ID.eq(lexemeId)))))
+								.where(LEXEME_POS.LEXEME_ID.eq(targetLexemeId)))))
 				.execute();
 	}
 
-	private void joinLexemeRegisters(Long lexemeId, Long sourceLexemeId) {
+	private void moveLexemeRegisters(Long targetLexemeId, Long sourceLexemeId) {
 
-		create.update(LEXEME_REGISTER)
-				.set(LEXEME_REGISTER.LEXEME_ID, lexemeId)
+		create
+				.update(LEXEME_REGISTER)
+				.set(LEXEME_REGISTER.LEXEME_ID, targetLexemeId)
 				.where(LEXEME_REGISTER.LEXEME_ID.eq(sourceLexemeId)
 						.and(LEXEME_REGISTER.REGISTER_CODE.notIn(
-								DSL.select(LEXEME_REGISTER.REGISTER_CODE).from(LEXEME_REGISTER).where(LEXEME_REGISTER.LEXEME_ID.eq(lexemeId)))))
+								DSL.select(LEXEME_REGISTER.REGISTER_CODE).from(LEXEME_REGISTER).where(LEXEME_REGISTER.LEXEME_ID.eq(targetLexemeId)))))
 				.execute();
 	}
 
-	private void joinLexemeSourceLinks(Long lexemeId, Long sourceLexemeId) {
+	private void moveLexemeSourceLinks(Long targetLexemeId, Long sourceLexemeId) {
 
 		LexemeSourceLink lsl1 = LEXEME_SOURCE_LINK.as("lsl1");
 		LexemeSourceLink lsl2 = LEXEME_SOURCE_LINK.as("lsl2");
 		create
 				.update(lsl1)
-				.set(lsl1.LEXEME_ID, lexemeId)
+				.set(lsl1.LEXEME_ID, targetLexemeId)
 				.where(lsl1.LEXEME_ID.eq(sourceLexemeId))
 				.andNotExists(DSL
 						.select(lsl2.ID)
 						.from(lsl2)
-						.where(lsl2.LEXEME_ID.eq(lexemeId)
+						.where(lsl2.LEXEME_ID.eq(targetLexemeId)
 								.and(lsl2.TYPE.eq(lsl1.TYPE))
 								.and(lsl2.SOURCE_ID.eq(lsl1.SOURCE_ID))))
 				.execute();
 	}
 
-	private void joinMeaningSemanticTypes(Long meaningId, Long sourceMeaningId) {
+	private void moveLexemes(Long targetMeaningId, Long sourceMeaningId) {
+		create
+				.update(LEXEME)
+				.set(LEXEME.MEANING_ID, targetMeaningId)
+				.where(LEXEME.MEANING_ID.eq(sourceMeaningId))
+				.execute();
+	}
+
+	private void moveMeaningSemanticTypes(Long targetMeaningId, Long sourceMeaningId) {
 
 		MeaningSemanticType mst1 = MEANING_SEMANTIC_TYPE.as("mst1");
 		MeaningSemanticType mst2 = MEANING_SEMANTIC_TYPE.as("mst2");
 
-		create.update(mst1)
-				.set(mst1.MEANING_ID, meaningId)
+		create
+				.update(mst1)
+				.set(mst1.MEANING_ID, targetMeaningId)
 				.where(mst1.MEANING_ID.eq(sourceMeaningId))
 				.andNotExists(DSL
 						.select(mst2.ID)
 						.from(mst2)
 						.where(
-								mst2.MEANING_ID.eq(meaningId)
+								mst2.MEANING_ID.eq(targetMeaningId)
 										.and(mst2.SEMANTIC_TYPE_CODE.eq(mst1.SEMANTIC_TYPE_CODE))))
 				.execute();
 	}
 
-	private void joinMeaningRelations(Long meaningId, Long sourceMeaningId) {
+	private void moveMeaningRelations(Long targetMeaningId, Long sourceMeaningId) {
 
 		MeaningRelation mr1 = MEANING_RELATION.as("mr1");
 		MeaningRelation mr2 = MEANING_RELATION.as("mr2");
 
-		create.update(mr1)
-				.set(mr1.MEANING1_ID, meaningId)
+		create
+				.update(mr1)
+				.set(mr1.MEANING1_ID, targetMeaningId)
 				.where(
 						mr1.MEANING1_ID.eq(sourceMeaningId)
-								.and(mr1.MEANING2_ID.ne(meaningId)))
+								.and(mr1.MEANING2_ID.ne(targetMeaningId)))
 				.andNotExists(DSL
 						.select(mr2.ID)
 						.from(mr2)
 						.where(
-								mr2.MEANING1_ID.eq(meaningId)
+								mr2.MEANING1_ID.eq(targetMeaningId)
 										.and(mr2.MEANING2_ID.eq(mr1.MEANING2_ID))
 										.and(mr2.MEANING_REL_TYPE_CODE.eq(mr1.MEANING_REL_TYPE_CODE))))
 				.execute();
 
-		create.update(mr1)
-				.set(mr1.MEANING2_ID, meaningId)
+		create
+				.update(mr1)
+				.set(mr1.MEANING2_ID, targetMeaningId)
 				.where(
 						mr1.MEANING2_ID.eq(sourceMeaningId)
-								.and(mr1.MEANING1_ID.ne(meaningId)))
+								.and(mr1.MEANING1_ID.ne(targetMeaningId)))
 				.andNotExists(DSL
 						.select(mr2.ID)
 						.from(mr2)
 						.where(
-								mr2.MEANING2_ID.eq(meaningId)
+								mr2.MEANING2_ID.eq(targetMeaningId)
 										.and(mr2.MEANING1_ID.eq(mr1.MEANING1_ID))
 										.and(mr2.MEANING_REL_TYPE_CODE.eq(mr1.MEANING_REL_TYPE_CODE))))
 				.execute();
 	}
 
-	private void joinMeaningFreeforms(Long meaningId, Long sourceMeaningId) {
+	private void moveMeaningFreeforms(Long targetMeaningId, Long sourceMeaningId) {
 
 		Result<FreeformRecord> meaningFreeforms = create
 				.selectFrom(FREEFORM)
-				.where(FREEFORM.ID.in(DSL.select(MEANING_FREEFORM.FREEFORM_ID).from(MEANING_FREEFORM).where(MEANING_FREEFORM.MEANING_ID.eq(meaningId))))
+				.where(FREEFORM.ID.in(DSL.select(MEANING_FREEFORM.FREEFORM_ID).from(MEANING_FREEFORM).where(MEANING_FREEFORM.MEANING_ID.eq(targetMeaningId))))
 				.fetch();
-		Result<FreeformRecord> sourceMeaningFreeforms = create.selectFrom(FREEFORM)
+		Result<FreeformRecord> sourceMeaningFreeforms = create
+				.selectFrom(FREEFORM)
 				.where(FREEFORM.ID.in(DSL.select(MEANING_FREEFORM.FREEFORM_ID).from(MEANING_FREEFORM).where(MEANING_FREEFORM.MEANING_ID.eq(sourceMeaningId))))
 				.fetch();
 
 		List<Long> nonDublicateFreeformIds = getNonDuplicateFreeformIds(meaningFreeforms, sourceMeaningFreeforms);
 
-		create.update(MEANING_FREEFORM)
-				.set(MEANING_FREEFORM.MEANING_ID, meaningId)
+		create
+				.update(MEANING_FREEFORM)
+				.set(MEANING_FREEFORM.MEANING_ID, targetMeaningId)
 				.where(MEANING_FREEFORM.MEANING_ID.eq(sourceMeaningId)
 						.and(MEANING_FREEFORM.FREEFORM_ID.in(nonDublicateFreeformIds)))
 				.execute();
 
-		create.delete(FREEFORM)
+		create
+				.delete(FREEFORM)
 				.where(FREEFORM.ID.in(DSL
 						.select(MEANING_FREEFORM.FREEFORM_ID)
 						.from(MEANING_FREEFORM)
 						.where(MEANING_FREEFORM.MEANING_ID.eq(sourceMeaningId))))
 				.execute();
 
-		create.delete(MEANING_FREEFORM).where(MEANING_FREEFORM.MEANING_ID.eq(sourceMeaningId)).execute();
-	}
-
-	private void joinMeaningDomains(Long meaningId, Long sourceMeaningId) {
-		create.update(MEANING_DOMAIN).set(MEANING_DOMAIN.MEANING_ID, meaningId)
-				.where(
-						MEANING_DOMAIN.MEANING_ID.eq(sourceMeaningId)
-								.and(DSL.row(MEANING_DOMAIN.DOMAIN_CODE, MEANING_DOMAIN.DOMAIN_ORIGIN).notIn(
-										DSL.select(MEANING_DOMAIN.DOMAIN_CODE, MEANING_DOMAIN.DOMAIN_ORIGIN).from(MEANING_DOMAIN).where(MEANING_DOMAIN.MEANING_ID.eq(meaningId)))))
+		create
+				.delete(MEANING_FREEFORM)
+				.where(MEANING_FREEFORM.MEANING_ID.eq(sourceMeaningId))
 				.execute();
 	}
 
-	private void joinMeaningDefinitions(Long meaningId, Long sourceMeaningId) {
+	private void moveMeaningDomains(Long targetMeaningId, Long sourceMeaningId) {
+		create
+				.update(MEANING_DOMAIN)
+				.set(MEANING_DOMAIN.MEANING_ID, targetMeaningId)
+				.where(
+						MEANING_DOMAIN.MEANING_ID.eq(sourceMeaningId)
+								.and(DSL.row(MEANING_DOMAIN.DOMAIN_CODE, MEANING_DOMAIN.DOMAIN_ORIGIN).notIn(
+										DSL.select(MEANING_DOMAIN.DOMAIN_CODE, MEANING_DOMAIN.DOMAIN_ORIGIN).from(MEANING_DOMAIN).where(MEANING_DOMAIN.MEANING_ID.eq(targetMeaningId)))))
+				.execute();
+	}
+
+	private void moveMeaningDefinitions(Long targetMeaningId, Long sourceMeaningId) {
 
 		Definition def1 = DEFINITION.as("def1");
 		Definition def2 = DEFINITION.as("def2");
 
-		create.update(def1)
-				.set(def1.MEANING_ID, meaningId)
+		create
+				.update(def1)
+				.set(def1.MEANING_ID, targetMeaningId)
 				.where(def1.MEANING_ID.eq(sourceMeaningId))
 				.andNotExists(DSL
 						.select(def2.ID)
 						.from(def2)
-						.where(def2.MEANING_ID.eq(meaningId)
+						.where(def2.MEANING_ID.eq(targetMeaningId)
 								.and(def2.VALUE.eq(def1.VALUE))
 								.and(def2.COMPLEXITY.eq(def1.COMPLEXITY))))
 				.execute();
 	}
 
+	private void moveMeaningNotes(Long targetMeaningId, Long sourceMeaningId) {
+
+		MeaningNote n = MEANING_NOTE.as("n");
+		create
+				.update(n)
+				.set(n.MEANING_ID, targetMeaningId)
+				.where(n.MEANING_ID.eq(sourceMeaningId))
+				.execute();
+	}
+
+	private void moveMeaningActivityLogs(Long targetMeaningId, Long sourceMeaningId) {
+
+		MeaningActivityLog mals = MEANING_ACTIVITY_LOG.as("mals");
+		MeaningActivityLog malt = MEANING_ACTIVITY_LOG.as("malt");
+
+		create
+				.update(mals)
+				.set(mals.MEANING_ID, targetMeaningId)
+				.where(
+						mals.MEANING_ID.eq(sourceMeaningId)
+								.andNotExists(DSL
+										.select(malt.ID)
+										.from(malt)
+										.where(
+												malt.MEANING_ID.eq(targetMeaningId)
+														.and(malt.ACTIVITY_LOG_ID.eq(mals.ACTIVITY_LOG_ID)))))
+				.execute();
+	}
+
 	public Long cloneLexeme(Long lexemeId, Long meaningId, Long wordId) {
 
-		LexemeRecord lexeme = create.selectFrom(LEXEME).where(LEXEME.ID.eq(lexemeId)).fetchOne();
+		LexemeRecord lexeme = create
+				.selectFrom(LEXEME)
+				.where(LEXEME.ID.eq(lexemeId))
+				.fetchOne();
 		LexemeRecord clonedLexeme = lexeme.copy();
 		if (meaningId != null) {
 			clonedLexeme.setMeaningId(meaningId);
@@ -601,7 +603,8 @@ public class CompositionDbService extends AbstractDataDbService implements Globa
 
 	public void cloneLexemeDerivs(Long lexemeId, Long clonedLexemeId) {
 
-		Result<LexemeDerivRecord> lexemeDerivatives = create.selectFrom(LEXEME_DERIV)
+		Result<LexemeDerivRecord> lexemeDerivatives = create
+				.selectFrom(LEXEME_DERIV)
 				.where(LEXEME_DERIV.LEXEME_ID.eq(lexemeId))
 				.orderBy(LEXEME_DERIV.ID)
 				.fetch();
@@ -617,7 +620,12 @@ public class CompositionDbService extends AbstractDataDbService implements Globa
 		if (publicDataOnly) {
 			where = where.and(FREEFORM.IS_PUBLIC.isTrue());
 		}
-		List<Long> lexemeFreeformIds = create.select(FREEFORM.ID).from(FREEFORM, LEXEME_FREEFORM).where(where).orderBy(LEXEME_FREEFORM.ID).fetchInto(Long.class);
+		List<Long> lexemeFreeformIds = create
+				.select(FREEFORM.ID)
+				.from(FREEFORM, LEXEME_FREEFORM)
+				.where(where)
+				.orderBy(LEXEME_FREEFORM.ID)
+				.fetchInto(Long.class);
 		lexemeFreeformIds.forEach(lexemeFreeformId -> {
 			Long clonedFreeformId = cloneFreeform(lexemeFreeformId, null);
 			LexemeFreeformRecord clonedLexemeFreeform = create.newRecord(LEXEME_FREEFORM);
@@ -629,7 +637,8 @@ public class CompositionDbService extends AbstractDataDbService implements Globa
 
 	public void cloneLexemePoses(Long lexemeId, Long clonedLexemeId) {
 
-		Result<LexemePosRecord> lexemePoses = create.selectFrom(LEXEME_POS)
+		Result<LexemePosRecord> lexemePoses = create
+				.selectFrom(LEXEME_POS)
 				.where(LEXEME_POS.LEXEME_ID.eq(lexemeId))
 				.orderBy(LEXEME_POS.ORDER_BY)
 				.fetch();
@@ -642,7 +651,8 @@ public class CompositionDbService extends AbstractDataDbService implements Globa
 
 	public void cloneLexemeRegisters(Long lexemeId, Long clonedLexemeId) {
 
-		Result<LexemeRegisterRecord> lexemeRegisters = create.selectFrom(LEXEME_REGISTER)
+		Result<LexemeRegisterRecord> lexemeRegisters = create
+				.selectFrom(LEXEME_REGISTER)
 				.where(LEXEME_REGISTER.LEXEME_ID.eq(lexemeId))
 				.orderBy(LEXEME_REGISTER.ORDER_BY)
 				.fetch();
@@ -655,7 +665,8 @@ public class CompositionDbService extends AbstractDataDbService implements Globa
 
 	public void cloneLexemeSoureLinks(Long lexemeId, Long clonedLexemeId) {
 
-		Result<LexemeSourceLinkRecord> lexemeSourceLinks = create.selectFrom(LEXEME_SOURCE_LINK)
+		Result<LexemeSourceLinkRecord> lexemeSourceLinks = create
+				.selectFrom(LEXEME_SOURCE_LINK)
 				.where(LEXEME_SOURCE_LINK.LEXEME_ID.eq(lexemeId))
 				.orderBy(LEXEME_SOURCE_LINK.ORDER_BY)
 				.fetch();
@@ -848,7 +859,10 @@ public class CompositionDbService extends AbstractDataDbService implements Globa
 
 	public Long cloneMeaning(Long meaningId) {
 
-		MeaningRecord meaning = create.selectFrom(MEANING).where(MEANING.ID.eq(meaningId)).fetchOne();
+		MeaningRecord meaning = create
+				.selectFrom(MEANING)
+				.where(MEANING.ID.eq(meaningId))
+				.fetchOne();
 		MeaningRecord clonedMeaning;
 		if (meaning.fields().length == 1) {
 			clonedMeaning = create.insertInto(MEANING).defaultValues().returning(MEANING.ID).fetchOne();
@@ -862,7 +876,8 @@ public class CompositionDbService extends AbstractDataDbService implements Globa
 
 	public void cloneMeaningDomains(Long meaningId, Long clonedMeaningId) {
 
-		Result<MeaningDomainRecord> meaningDomains = create.selectFrom(MEANING_DOMAIN)
+		Result<MeaningDomainRecord> meaningDomains = create
+				.selectFrom(MEANING_DOMAIN)
 				.where(MEANING_DOMAIN.MEANING_ID.eq(meaningId))
 				.orderBy(MEANING_DOMAIN.ORDER_BY)
 				.fetch();
@@ -875,7 +890,8 @@ public class CompositionDbService extends AbstractDataDbService implements Globa
 
 	public void cloneMeaningRelations(Long meaningId, Long clonedMeaningId) {
 
-		Result<MeaningRelationRecord> meaningRelations = create.selectFrom(MEANING_RELATION)
+		Result<MeaningRelationRecord> meaningRelations = create
+				.selectFrom(MEANING_RELATION)
 				.where(MEANING_RELATION.MEANING1_ID.eq(meaningId).or(MEANING_RELATION.MEANING2_ID.eq(meaningId)))
 				.orderBy(MEANING_RELATION.ORDER_BY)
 				.fetch();
@@ -908,7 +924,10 @@ public class CompositionDbService extends AbstractDataDbService implements Globa
 
 	public Long cloneMeaningDefinition(Long definitionId, Long meaningId) {
 
-		DefinitionRecord definition = create.selectFrom(DEFINITION).where(DEFINITION.ID.eq(definitionId)).fetchOne();
+		DefinitionRecord definition = create
+				.selectFrom(DEFINITION)
+				.where(DEFINITION.ID.eq(definitionId))
+				.fetchOne();
 		DefinitionRecord clonedDefinition = definition.copy();
 		clonedDefinition.setMeaningId(meaningId);
 		clonedDefinition.changed(DEFINITION.ORDER_BY, false);
@@ -918,7 +937,8 @@ public class CompositionDbService extends AbstractDataDbService implements Globa
 
 	public void cloneDefinitionFreeforms(Long definitionId, Long clonedDefinitionId) {
 
-		Result<DefinitionFreeformRecord> definitionFreeforms = create.selectFrom(DEFINITION_FREEFORM)
+		Result<DefinitionFreeformRecord> definitionFreeforms = create
+				.selectFrom(DEFINITION_FREEFORM)
 				.where(DEFINITION_FREEFORM.DEFINITION_ID.eq(definitionId))
 				.orderBy(DEFINITION_FREEFORM.ID)
 				.fetch();
@@ -946,7 +966,8 @@ public class CompositionDbService extends AbstractDataDbService implements Globa
 
 	public void cloneDefinitionSourceLinks(Long definitionId, Long clonedDefinintionId) {
 
-		Result<DefinitionSourceLinkRecord> definitionSourceLinks = create.selectFrom(DEFINITION_SOURCE_LINK)
+		Result<DefinitionSourceLinkRecord> definitionSourceLinks = create
+				.selectFrom(DEFINITION_SOURCE_LINK)
 				.where(DEFINITION_SOURCE_LINK.DEFINITION_ID.eq(definitionId))
 				.orderBy(DEFINITION_SOURCE_LINK.ORDER_BY)
 				.fetch();
@@ -959,12 +980,16 @@ public class CompositionDbService extends AbstractDataDbService implements Globa
 
 	private Long cloneFreeform(Long freeformId, Long parentFreeformId) {
 
-		FreeformRecord freeform = create.selectFrom(FREEFORM).where(FREEFORM.ID.eq(freeformId)).fetchOne();
+		FreeformRecord freeform = create
+				.selectFrom(FREEFORM)
+				.where(FREEFORM.ID.eq(freeformId))
+				.fetchOne();
 		FreeformRecord clonedFreeform = freeform.copy();
 		clonedFreeform.setParentId(parentFreeformId);
 		clonedFreeform.changed(FREEFORM.ORDER_BY, false);
 		clonedFreeform.store();
-		List<FreeformRecord> childFreeforms = create.selectFrom(FREEFORM)
+		List<FreeformRecord> childFreeforms = create
+				.selectFrom(FREEFORM)
 				.where(FREEFORM.PARENT_ID.eq(freeformId))
 				.orderBy(FREEFORM.ORDER_BY)
 				.fetch();
@@ -1000,7 +1025,10 @@ public class CompositionDbService extends AbstractDataDbService implements Globa
 
 	public void cloneWordParadigmsAndForms(Long wordId, Long clonedWordId) {
 
-		Result<ParadigmRecord> paradigms = create.selectFrom(PARADIGM).where(PARADIGM.WORD_ID.eq(wordId)).fetch();
+		Result<ParadigmRecord> paradigms = create
+				.selectFrom(PARADIGM)
+				.where(PARADIGM.WORD_ID.eq(wordId))
+				.fetch();
 		paradigms.forEach(paradigm -> {
 			ParadigmRecord clonedParadigm = paradigm.copy();
 			clonedParadigm.setWordId(clonedWordId);
@@ -1129,18 +1157,7 @@ public class CompositionDbService extends AbstractDataDbService implements Globa
 		});
 	}
 
-	public void joinWordData(Long targetWordId, Long sourceWordId) {
-
-		joinWordAttributes(targetWordId, sourceWordId);
-		joinWordFreeforms(targetWordId, sourceWordId);
-		joinWordRelations(targetWordId, sourceWordId);
-		joinWordTypeCodes(targetWordId, sourceWordId);
-		joinWordGroupMembers(targetWordId, sourceWordId);
-		joinWordEtymologyAndEtymologyRelations(targetWordId, sourceWordId);
-		joinWordActivityLogs(targetWordId, sourceWordId);
-	}
-
-	private void joinWordAttributes(Long targetWordId, Long sourceWordId) {
+	private void mergeWordFields(Long targetWordId, Long sourceWordId) {
 
 		Word w = WORD.as("w");
 		WordRecord targetWord = create.selectFrom(w).where(w.ID.eq(targetWordId)).fetchOne();
@@ -1185,12 +1202,13 @@ public class CompositionDbService extends AbstractDataDbService implements Globa
 		}
 	}
 
-	private void joinWordActivityLogs(Long targetWordId, Long sourceWordId) {
+	private void moveWordActivityLogs(Long targetWordId, Long sourceWordId) {
 
 		WordActivityLog wals = WORD_ACTIVITY_LOG.as("wals");
 		WordActivityLog walt = WORD_ACTIVITY_LOG.as("walt");
 
-		create.update(wals)
+		create
+				.update(wals)
 				.set(wals.WORD_ID, targetWordId)
 				.where(wals.WORD_ID.eq(sourceWordId)
 						.andNotExists(DSL
@@ -1202,18 +1220,20 @@ public class CompositionDbService extends AbstractDataDbService implements Globa
 				.execute();
 	}
 
-	private void joinWordEtymologyAndEtymologyRelations(Long targetWordId, Long sourceWordId) {
+	private void moveWordEtymologyAndEtymologyRelations(Long targetWordId, Long sourceWordId) {
 
 		WordEtymology we = WORD_ETYMOLOGY.as("we");
 		WordEtymologyRelation wer1 = WORD_ETYMOLOGY_RELATION.as("wer1");
 		WordEtymologyRelation wer2 = WORD_ETYMOLOGY_RELATION.as("wer2");
 
-		create.update(we)
+		create
+				.update(we)
 				.set(we.WORD_ID, targetWordId)
 				.where(we.WORD_ID.eq(sourceWordId))
 				.execute();
 
-		create.update(wer1)
+		create
+				.update(wer1)
 				.set(wer1.RELATED_WORD_ID, targetWordId)
 				.where(wer1.RELATED_WORD_ID.eq(sourceWordId))
 				.andNotExists(DSL
@@ -1225,12 +1245,13 @@ public class CompositionDbService extends AbstractDataDbService implements Globa
 				.execute();
 	}
 
-	private void joinWordGroupMembers(Long targetWordId, Long sourceWordId) {
+	private void moveWordGroupMembers(Long targetWordId, Long sourceWordId) {
 
 		WordGroupMember wgm1 = WORD_GROUP_MEMBER.as("wgm1");
 		WordGroupMember wgm2 = WORD_GROUP_MEMBER.as("wgm2");
 
-		create.update(wgm1)
+		create
+				.update(wgm1)
 				.set(wgm1.WORD_ID, targetWordId)
 				.where(wgm1.WORD_ID.eq(sourceWordId))
 				.andNotExists(DSL
@@ -1242,7 +1263,7 @@ public class CompositionDbService extends AbstractDataDbService implements Globa
 				.execute();
 	}
 
-	private void joinWordFreeforms(Long targetWordId, Long sourceWordId) {
+	private void moveWordFreeforms(Long targetWordId, Long sourceWordId) {
 
 		Result<FreeformRecord> wordFreeforms = create
 				.selectFrom(FREEFORM)
@@ -1255,28 +1276,34 @@ public class CompositionDbService extends AbstractDataDbService implements Globa
 
 		List<Long> nonDublicateFreeformIds = getNonDuplicateFreeformIds(wordFreeforms, sourceWordFreeforms);
 
-		create.update(WORD_FREEFORM)
+		create
+				.update(WORD_FREEFORM)
 				.set(WORD_FREEFORM.WORD_ID, targetWordId)
 				.where(WORD_FREEFORM.WORD_ID.eq(sourceWordId)
 						.and(WORD_FREEFORM.FREEFORM_ID.in(nonDublicateFreeformIds)))
 				.execute();
 
-		create.delete(FREEFORM)
+		create
+				.delete(FREEFORM)
 				.where(FREEFORM.ID.in(DSL
 						.select(WORD_FREEFORM.FREEFORM_ID)
 						.from(WORD_FREEFORM)
 						.where(WORD_FREEFORM.WORD_ID.eq(sourceWordId))))
 				.execute();
 
-		create.delete(WORD_FREEFORM).where(WORD_FREEFORM.WORD_ID.eq(sourceWordId)).execute();
+		create
+				.delete(WORD_FREEFORM)
+				.where(WORD_FREEFORM.WORD_ID.eq(sourceWordId))
+				.execute();
 	}
 
-	private void joinWordRelations(Long targetWordId, Long sourceWordId) {
+	private void moveWordRelations(Long targetWordId, Long sourceWordId) {
 
 		WordRelation wr1 = WORD_RELATION.as("wr1");
 		WordRelation wr2 = WORD_RELATION.as("wr2");
 
-		create.update(wr1)
+		create
+				.update(wr1)
 				.set(wr1.WORD1_ID, targetWordId)
 				.where(
 						wr1.WORD1_ID.eq(sourceWordId)
@@ -1290,7 +1317,8 @@ public class CompositionDbService extends AbstractDataDbService implements Globa
 										.and(wr2.WORD_REL_TYPE_CODE.eq(wr1.WORD_REL_TYPE_CODE))))
 				.execute();
 
-		create.update(wr1)
+		create
+				.update(wr1)
 				.set(wr1.WORD2_ID, targetWordId)
 				.where(
 						wr1.WORD2_ID.eq(sourceWordId)
@@ -1305,12 +1333,13 @@ public class CompositionDbService extends AbstractDataDbService implements Globa
 				.execute();
 	}
 
-	private void joinWordTypeCodes(Long targetWordId, Long sourceWordId) {
+	private void moveWordTypeCodes(Long targetWordId, Long sourceWordId) {
 
 		WordWordType wwt1 = WORD_WORD_TYPE.as("wwt1");
 		WordWordType wwt2 = WORD_WORD_TYPE.as("wwt2");
 
-		create.update(wwt1)
+		create
+				.update(wwt1)
 				.set(wwt1.WORD_ID, targetWordId)
 				.where(wwt1.WORD_ID.eq(sourceWordId))
 				.andNotExists(DSL
@@ -1329,6 +1358,20 @@ public class CompositionDbService extends AbstractDataDbService implements Globa
 				.fetchOneInto(Integer.class);
 	}
 
+	public void moveParadigms(Long targetWordId, Long sourceWordId) {
+
+		create
+				.delete(PARADIGM)
+				.where(PARADIGM.WORD_ID.eq(targetWordId))
+				.execute();
+
+		create
+				.update(PARADIGM)
+				.set(PARADIGM.WORD_ID, targetWordId)
+				.where(PARADIGM.WORD_ID.eq(sourceWordId))
+				.execute();
+	}
+
 	private List<Long> getNonDuplicateFreeformIds(List<FreeformRecord> targetFreeforms, List<FreeformRecord> sourceFreeforms) {
 
 		return sourceFreeforms.stream()
@@ -1344,23 +1387,12 @@ public class CompositionDbService extends AbstractDataDbService implements Globa
 
 	public void updateLexemeWordIdAndLevels(Long lexemeId, Long wordId, int level1, int level2) {
 
-		create.update(LEXEME)
+		create
+				.update(LEXEME)
 				.set(LEXEME.WORD_ID, wordId)
 				.set(LEXEME.LEVEL1, level1)
 				.set(LEXEME.LEVEL2, level2)
 				.where(LEXEME.ID.eq(lexemeId))
-				.execute();
-	}
-
-	public void joinParadigms(Long wordId, Long sourceWordId) {
-
-		create.delete(PARADIGM)
-				.where(PARADIGM.WORD_ID.eq(wordId))
-				.execute();
-
-		create.update(PARADIGM)
-				.set(PARADIGM.WORD_ID, wordId)
-				.where(PARADIGM.WORD_ID.eq(sourceWordId))
 				.execute();
 	}
 

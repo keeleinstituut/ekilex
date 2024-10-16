@@ -38,8 +38,8 @@
               name="details-btn">
               <span class="d-flex align-items-center">
                 <span class="badge badge-light mr-2" th:text="${word.homonymNr}" th:if="${word.homonymNr > 0}"></span>
-                <span th:utext="${viewUtil.getWordValueMarkup(word)}">vorm 1</span>
-                <span th:text="${'(' + viewUtil.getLangIso2(word.lang) + ')'}" class="ml-1"></span>
+                <span th:utext="${@viewUtil.getWordValueMarkup(word)}">vorm 1</span>
+                <span th:text="${'(' + @viewUtil.getLangIso2(word.lang) + ')'}" class="ml-1"></span>
               </span>
               <small class="d-flex">
                 <span th:text="${#strings.listJoin(word.datasetCodes, ', ')}"></span>
@@ -89,7 +89,7 @@
                 data-op-code="lexeme_tag"
                 th:data-id="${lexeme.lexemeId}"
                 th:data-value="${tag}"
-                th:data-callback="${viewUtil.composeFunction('loadFullLexemeDetails', lexeme.lexemeId, lexeme.levels)}"
+                th:data-callback="${@viewUtil.composeFunction('loadFullLexemeDetails', lexeme.lexemeId, lexeme.levels)}"
                 data-toggle="delete-confirm"
                 data-placement="right"
                 sec:authorize="#vars.lexeme.crudGrant">
@@ -140,7 +140,7 @@
       <button type="button" class="btn badge badge-warning"
               data-op-code="lexeme_value_state"
               th:data-id="${lexeme.lexemeId}"
-              th:data-callback="${viewUtil.composeFunction('loadFullLexemeDetails', lexeme.lexemeId, lexeme.levels)}"
+              th:data-callback="${@viewUtil.composeFunction('loadFullLexemeDetails', lexeme.lexemeId, lexeme.levels)}"
               data-toggle="delete-confirm"
               data-placement="right"
               sec:authorize="#vars.lexeme.crudGrant">
@@ -164,7 +164,7 @@
       <button type="button" class="btn badge badge-warning"
               data-op-code="lexeme_proficiency_level"
               th:data-id="${lexeme.lexemeId}"
-              th:data-callback="${viewUtil.composeFunction('loadFullLexemeDetails', lexeme.lexemeId, lexeme.levels)}"
+              th:data-callback="${@viewUtil.composeFunction('loadFullLexemeDetails', lexeme.lexemeId, lexeme.levels)}"
               data-toggle="delete-confirm"
               data-placement="right"
               sec:authorize="#vars.lexeme.crudGrant">
@@ -198,7 +198,7 @@
         <button type="button" class="btn badge badge-warning"
                 data-op-code="lexeme_grammar"
                 th:data-id="${grammar.id}"
-                th:data-callback="${viewUtil.composeFunction('loadFullLexemeDetails', lexeme.lexemeId, lexeme.levels)}"
+                th:data-callback="${@viewUtil.composeFunction('loadFullLexemeDetails', lexeme.lexemeId, lexeme.levels)}"
                 data-toggle="delete-confirm"
                 data-placement="right"
                 sec:authorize="#vars.lexeme.crudGrant">
@@ -213,7 +213,7 @@
       <span class="lbl" th:text="#{lex.lexeme.weight}">Ilmiku kaal</span>
     </div>
     <div class="col pl-0">
-      <span th:text="${viewUtil.getFormattedWeight(lexeme.weight)}"></span>
+      <span th:text="${@viewUtil.getFormattedWeight(lexeme.weight)}"></span>
       <button type="button" class="btn badge badge-primary"
               th:title="#{common.edit}"
               data-toggle="modal"
@@ -253,7 +253,7 @@
                 data-op-code="lexeme_pos"
                 th:data-id="${lexeme.lexemeId}"
                 th:data-value="${classif.code}"
-                th:data-callback="${viewUtil.composeFunction('loadFullLexemeDetails', lexeme.lexemeId, lexeme.levels)}"
+                th:data-callback="${@viewUtil.composeFunction('loadFullLexemeDetails', lexeme.lexemeId, lexeme.levels)}"
                 data-toggle="delete-confirm"
                 data-placement="right"
                 sec:authorize="#vars.lexeme.crudGrant">
@@ -293,7 +293,7 @@
                 data-op-code="lexeme_deriv"
                 th:data-id="${lexeme.lexemeId}"
                 th:data-value="${classif.code}"
-                th:data-callback="${viewUtil.composeFunction('loadFullLexemeDetails', lexeme.lexemeId, lexeme.levels)}"
+                th:data-callback="${@viewUtil.composeFunction('loadFullLexemeDetails', lexeme.lexemeId, lexeme.levels)}"
                 data-toggle="delete-confirm"
                 data-placement="right"
                 sec:authorize="#vars.lexeme.crudGrant">
@@ -333,7 +333,7 @@
                 data-op-code="lexeme_register"
                 th:data-id="${lexeme.lexemeId}"
                 th:data-value="${classif.code}"
-                th:data-callback="${viewUtil.composeFunction('loadFullLexemeDetails', lexeme.lexemeId, lexeme.levels)}"
+                th:data-callback="${@viewUtil.composeFunction('loadFullLexemeDetails', lexeme.lexemeId, lexeme.levels)}"
                 data-toggle="delete-confirm"
                 data-placement="right"
                 sec:authorize="#vars.lexeme.crudGrant">
@@ -377,7 +377,7 @@
                       data-op-code="meaning_domain"
                       th:data-id="${lexeme.meaningId}"
                       th:data-value="${classif.toIdString()}"
-                      th:data-callback="${viewUtil.composeFunction('loadFullLexemeDetails', lexeme.lexemeId, lexeme.levels)}"
+                      th:data-callback="${@viewUtil.composeFunction('loadFullLexemeDetails', lexeme.lexemeId, lexeme.levels)}"
                       data-toggle="delete-confirm"
                       data-placement="right"
                       sec:authorize="#vars.lexeme.meaning.crudGrant">
@@ -419,7 +419,7 @@
                 data-op-code="meaning_semantic_type"
                 th:data-id="${lexeme.meaningId}"
                 th:data-value="${classif.code}"
-                th:data-callback="${viewUtil.composeFunction('loadFullLexemeDetails', lexeme.lexemeId, lexeme.levels)}"
+                th:data-callback="${@viewUtil.composeFunction('loadFullLexemeDetails', lexeme.lexemeId, lexeme.levels)}"
                 data-toggle="delete-confirm"
                 data-placement="right"
                 sec:authorize="${#vars.lexeme.meaning.crudGrant}">
@@ -443,7 +443,7 @@
     <th:block th:unless="${#strings.isEmpty(details.word.lang)}">
       <div class="hover-actions-container hover-actions-container-outline">
         <span data-toggle="tooltip" data-boundary="window" data-placement="top"
-              th:text="${viewUtil.getClassifierValue(details.word.lang, languages)}"
+              th:text="${@viewUtil.getClassifierValue(details.word.lang, languages)}"
               th:title="#{lex.word.language}"></span>
         <div class="hover-actions">
           <div class="btn-group">
@@ -582,7 +582,7 @@
     <th:block th:unless="${details.word.genderCode == null}">
       <div class="hover-actions-container hover-actions-container-outline">
         <span data-toggle="tooltip" data-boundary="window" data-placement="top"
-              th:text="${viewUtil.getClassifierValue(details.word.genderCode, wordGenders)}"
+              th:text="${@viewUtil.getClassifierValue(details.word.genderCode, wordGenders)}"
               th:title="#{lex.word.gender}"></span>
         <div class="hover-actions hover-actions-bottom-right">
           <div class="btn-group">
@@ -607,7 +607,7 @@
     </th:block>
   </div>
   <div class="mr-1" th:fragment="word_type">
-    <th:block th:if="${#lists.isEmpty(details.wordTypes)}">
+    <th:block th:if="${#lists.isEmpty(details.word.wordTypes)}">
       <button type="button" class="btn btn-secondary btn-compact btn-sm"
               data-toggle="modal"
               th:data-target="${'#addWordTypeDlg_' + wordId}"
@@ -616,8 +616,8 @@
         <span th:text="#{lex.word.type}">Keelendi tüüp</span>
       </button>
     </th:block>
-    <th:block th:unless="${#lists.isEmpty(details.wordTypes)}">
-      <div th:each="classif,classifIter : ${details.wordTypes}"
+    <th:block th:unless="${#lists.isEmpty(details.word.wordTypes)}">
+      <div th:each="classif,classifIter : ${details.word.wordTypes}"
            th:title="#{lex.word.type}"
            data-toggle="tooltip" data-boundary="window" data-placement="top"
            class="hover-actions-container hover-actions-container-outline">
@@ -670,7 +670,7 @@
     <th:block th:unless="${details.word.aspectCode == null}">
       <div class="hover-actions-container hover-actions-container-outline">
         <span data-toggle="tooltip" data-boundary="window" data-placement="top"
-              th:text="${viewUtil.getClassifierValue(details.word.aspectCode, wordAspects)}"
+              th:text="${@viewUtil.getClassifierValue(details.word.aspectCode, wordAspects)}"
               th:title="#{lex.word.aspect}"></span>
         <div class="hover-actions">
           <div class="btn-group">
@@ -709,9 +709,9 @@
     <div class="col pl-0">
       <th:block th:each="definitionLangGroup : ${lexeme.meaning.definitionLangGroups}">
         <div>
-          <span th:text="${viewUtil.getLangIso2(definitionLangGroup.lang)}" class="mr-2"></span>
+          <span th:text="${@viewUtil.getLangIso2(definitionLangGroup.lang)}" class="mr-2"></span>
           <button name="lang-collapse-btn" type="button" class="btn badge badge-secondary btn-toggle"
-                  th:data-callback="${viewUtil.composeFunction('loadFullLexemeDetails', lexeme.lexemeId, lexeme.levels)}"
+                  th:data-callback="${@viewUtil.composeFunction('loadFullLexemeDetails', lexeme.lexemeId, lexeme.levels)}"
                   th:data-lang="${definitionLangGroup.lang}"
                   th:title="${definitionLangGroup.selected} ? #{common.hide.lang.group} : #{common.show.lang.group}"
                   data-plugin="langCollapsePlugin">
@@ -763,7 +763,7 @@
                 <button type="button" class="btn badge badge-warning"
                         data-op-code="definition"
                         th:data-id="${definition.id}"
-                        th:data-callback="${viewUtil.composeFunction('loadFullLexemeDetails', lexeme.lexemeId, lexeme.levels)}"
+                        th:data-callback="${@viewUtil.composeFunction('loadFullLexemeDetails', lexeme.lexemeId, lexeme.levels)}"
                         data-toggle="delete-confirm"
                         data-placement="right"
                         sec:authorize="#vars.definition.crudGrant">
@@ -788,7 +788,7 @@
                   <button type="button" class="btn badge badge-warning"
                           data-op-code="definition_source_link"
                           th:data-id="${sourceLink.id}"
-                          th:data-callback="${viewUtil.composeFunction('loadFullLexemeDetails', lexeme.lexemeId, lexeme.levels)}"
+                          th:data-callback="${@viewUtil.composeFunction('loadFullLexemeDetails', lexeme.lexemeId, lexeme.levels)}"
                           data-toggle="delete-confirm"
                           data-placement="right"
                           sec:authorize="#vars.definition.crudGrant">
@@ -838,7 +838,7 @@
                     <button type="button" class="btn badge badge-warning"
                             th:data-id="${note.id}"
                             data-op-code="definition_note"
-                            th:data-callback="${viewUtil.composeFunction('loadFullLexemeDetails', lexeme.lexemeId, lexeme.levels)}"
+                            th:data-callback="${@viewUtil.composeFunction('loadFullLexemeDetails', lexeme.lexemeId, lexeme.levels)}"
                             data-toggle="delete-confirm"
                             data-placement="right"
                             sec:authorize="#vars.definition.crudGrant">
@@ -865,7 +865,7 @@
                       <button type="button" class="btn badge badge-warning"
                               th:data-id="${sourceLink.id}"
                               data-op-code="definition_note_source_link"
-                              th:data-callback="${viewUtil.composeFunction('loadFullLexemeDetails', lexeme.lexemeId, lexeme.levels)}"
+                              th:data-callback="${@viewUtil.composeFunction('loadFullLexemeDetails', lexeme.lexemeId, lexeme.levels)}"
                               data-toggle="delete-confirm"
                               data-placement="right"
                               sec:authorize="#vars.definition.crudGrant">
@@ -920,7 +920,7 @@
           <button type="button" class="btn badge badge-warning"
                   data-op-code="lexeme_source_link"
                   th:data-id="${sourceLink.id}"
-                  th:data-callback="${viewUtil.composeFunction('loadFullLexemeDetails', lexeme.lexemeId, lexeme.levels)}"
+                  th:data-callback="${@viewUtil.composeFunction('loadFullLexemeDetails', lexeme.lexemeId, lexeme.levels)}"
                   data-toggle="delete-confirm"
                   data-placement="right"
                   sec:authorize="#vars.lexeme.crudGrant">
@@ -962,7 +962,7 @@
                 <button type="button" class="btn badge badge-warning"
                         data-op-code="learner_comment"
                         th:data-id="${learnerComment.id}"
-                        th:data-callback="${viewUtil.composeFunction('loadFullLexemeDetails', lexeme.lexemeId, lexeme.levels)}"
+                        th:data-callback="${@viewUtil.composeFunction('loadFullLexemeDetails', lexeme.lexemeId, lexeme.levels)}"
                         data-toggle="delete-confirm"
                         data-placement="right"
                         sec:authorize="#vars.lexeme.meaning.crudGrant">
@@ -1004,7 +1004,7 @@
                   th:title="#{lex.delete.image}"
                   data-op-code="meaning_image"
                   th:data-id="${image.id}"
-                  th:data-callback="${viewUtil.composeFunction('loadFullLexemeDetails', lexeme.lexemeId, lexeme.levels)}"
+                  th:data-callback="${@viewUtil.composeFunction('loadFullLexemeDetails', lexeme.lexemeId, lexeme.levels)}"
                   data-toggle="delete-confirm"
                   sec:authorize="#vars.lexeme.meaning.crudGrant">
             <i class="fa fa-remove" aria-hidden="true"></i>
@@ -1037,7 +1037,7 @@
             <button type="button" class="btn badge badge-warning"
                     data-op-code="meaning_image_source_link"
                     th:data-id="${sourceLink.id}"
-                    th:data-callback="${viewUtil.composeFunction('loadFullLexemeDetails', lexeme.lexemeId, lexeme.levels)}"
+                    th:data-callback="${@viewUtil.composeFunction('loadFullLexemeDetails', lexeme.lexemeId, lexeme.levels)}"
                     data-toggle="delete-confirm"
                     data-placement="right"
                     sec:authorize="#vars.lexeme.meaning.crudGrant">
@@ -1064,7 +1064,7 @@
               <button type="button" class="btn badge badge-warning"
                       data-op-code="image_title"
                       th:data-id="${image.id}"
-                      th:data-callback="${viewUtil.composeFunction('loadFullLexemeDetails', lexeme.lexemeId, lexeme.levels)}"
+                      th:data-callback="${@viewUtil.composeFunction('loadFullLexemeDetails', lexeme.lexemeId, lexeme.levels)}"
                       data-toggle="delete-confirm"
                       data-placement="right"
                       sec:authorize="#vars.lexeme.meaning.crudGrant">
@@ -1091,7 +1091,7 @@
                 <button type="button" class="btn badge badge-warning"
                         data-op-code="meaning_image_source_link"
                         th:data-id="${sourceLink.id}"
-                        th:data-callback="${viewUtil.composeFunction('loadFullLexemeDetails', lexeme.lexemeId, lexeme.levels)}"
+                        th:data-callback="${@viewUtil.composeFunction('loadFullLexemeDetails', lexeme.lexemeId, lexeme.levels)}"
                         data-toggle="delete-confirm"
                         data-placement="right"
                         sec:authorize="#vars.lexeme.meaning.crudGrant">
@@ -1141,7 +1141,7 @@
                   th:title="#{lex.delete.media}"
                   data-op-code="meaning_media"
                   th:data-id="${media.id}"
-                  th:data-callback="${viewUtil.composeFunction('loadFullLexemeDetails', lexeme.lexemeId, lexeme.levels)}"
+                  th:data-callback="${@viewUtil.composeFunction('loadFullLexemeDetails', lexeme.lexemeId, lexeme.levels)}"
                   data-toggle="delete-confirm"
                   sec:authorize="#vars.lexeme.meaning.crudGrant">
             <i class="fa fa-remove" aria-hidden="true"></i>
@@ -1150,27 +1150,6 @@
       </th:block>
     </div>
   </div>
-  <!-- 
-  <div class="row" th:if="${not #lists.isEmpty(lexeme.meaning.freeforms)}" th:fragment="meaning_freeform">
-    <hr/>
-    <div class="col pr-0 col-w13rem">
-      <span class="lbl" th:text="#{lex.meaning.freeforms}">Tähenduse atribuudid</span>
-    </div>
-    <div class="col pl-0">
-      <table>
-        <tr th:each="freeform : ${lexeme.meaning.freeforms}">
-          <td class="align-text-top pr-3">
-            <span th:text="${freeform.freeformTypeCode}"></span>
-          </td>
-          <td>
-            <span th:utext="${freeform.valueText}" th:if="${freeform.valueText != null}"></span>
-            <span th:text="${#dates.format(freeform.valueDate, 'dd.MM.yyyy HH:mm')}" th:if="${freeform.valueDate != null}"></span>
-          </td>
-        </tr>
-      </table>
-    </div>
-  </div>
-   -->
   <div class="row" th:if="${not #lists.isEmpty(lexeme.meaning.freeforms)}" th:fragment="meaning_freeform">
     <hr/>
     <div class="col pr-0 col-w13rem">
@@ -1208,7 +1187,7 @@
               </button>
               ]
             </span>
-            <div class="action-buttons-3">
+            <div class="action-buttons-2">
               <button type="button" class="btn badge badge-primary"
                       th:title="#{common.edit}"
                       data-toggle="modal"
@@ -1219,7 +1198,7 @@
               <button type="button" class="btn badge badge-warning"
                       data-op-code="meaning_freeform"
                       th:data-id="${freeform.id}"
-                      th:data-callback="${viewUtil.composeFunction('loadFullLexemeDetails', lexeme.lexemeId, lexeme.levels)}"
+                      th:data-callback="${@viewUtil.composeFunction('loadFullLexemeDetails', lexeme.lexemeId, lexeme.levels)}"
                       data-toggle="delete-confirm"
                       data-placement="right"
                       sec:authorize="#vars.lexeme.meaning.crudGrant">
@@ -1244,7 +1223,7 @@
                 <button type="button" class="btn badge badge-warning"
                         data-op-code="meaning_freeform_source_link"
                         th:data-id="${sourceLink.id}"
-                        th:data-callback="${viewUtil.composeFunction('loadFullLexemeDetails', lexeme.lexemeId, lexeme.levels)}"
+                        th:data-callback="${@viewUtil.composeFunction('loadFullLexemeDetails', lexeme.lexemeId, lexeme.levels)}"
                         data-toggle="delete-confirm"
                         data-placement="right"
                         sec:authorize="#vars.lexeme.meaning.crudGrant">
@@ -1260,9 +1239,6 @@
                     sec:authorize="#vars.lexeme.meaning.crudGrant">
               <i class="fa fa-external-link" aria-hidden="true"></i>
             </button>
-          </div>
-          <div class="w-50" th:unless="${freeformIter.last}">
-            <hr/>
           </div>
         </div>
       </div>
@@ -1296,8 +1272,8 @@
                 data-behaviour="replace"
                 data-plugin="contextmenu, loadDetailsPlugin"
                 data-contextmenu:compare="Ava uues paneelis">
-                <span th:utext="${viewUtil.getWordValueMarkup(relation)}"></span>
-                <span th:text="${'(' + viewUtil.getLangIso2(relation.wordLang) + ')'}"></span>
+                <span th:utext="${@viewUtil.getWordValueMarkup(relation)}"></span>
+                <span th:text="${'(' + @viewUtil.getLangIso2(relation.wordLang) + ')'}"></span>
                 <th:block th:each="datasetCode, dsIter : ${relation.datasetCodes}">
                   <span th:if="${dsIter.first}">[</span>
                   <span th:text="${datasetCode}"></span>
@@ -1337,7 +1313,7 @@
                     data-placement="right"
                     data-op-code="meaning_relation"
                     th:data-id="${relSample.id}"
-                    th:data-callback="${viewUtil.composeFunction('loadFullLexemeDetails', lexeme.lexemeId, lexeme.levels)}"
+                    th:data-callback="${@viewUtil.composeFunction('loadFullLexemeDetails', lexeme.lexemeId, lexeme.levels)}"
                     data-toggle="delete-confirm"
                     sec:authorize="#vars.lexeme.meaning.crudGrant">
               <i class="fa fa-remove" aria-hidden="true"></i>
@@ -1384,7 +1360,7 @@
                   <button type="button" class="btn badge badge-warning"
                           data-op-code="government"
                           th:data-id="${government.id}"
-                          th:data-callback="${viewUtil.composeFunction('loadFullLexemeDetails', lexeme.lexemeId, lexeme.levels)}"
+                          th:data-callback="${@viewUtil.composeFunction('loadFullLexemeDetails', lexeme.lexemeId, lexeme.levels)}"
                           data-toggle="delete-confirm"
                           data-placement="right"
                           sec:authorize="#vars.lexeme.crudGrant">
@@ -1448,7 +1424,7 @@
                 <button type="button" class="btn badge badge-warning"
                         data-op-code="usage"
                         th:data-id="${usage.id}"
-                        th:data-callback="${viewUtil.composeFunction('loadFullLexemeDetails', lexeme.lexemeId, lexeme.levels)}"
+                        th:data-callback="${@viewUtil.composeFunction('loadFullLexemeDetails', lexeme.lexemeId, lexeme.levels)}"
                         data-toggle="delete-confirm"
                         data-placement="right"
                         sec:authorize="#vars.usage.crudGrant">
@@ -1480,7 +1456,7 @@
                   <button type="button" class="btn badge badge-warning"
                           data-op-code="usage_source_link"
                           th:data-id="${sourceLink.id}"
-                          th:data-callback="${viewUtil.composeFunction('loadFullLexemeDetails', lexeme.lexemeId, lexeme.levels)}"
+                          th:data-callback="${@viewUtil.composeFunction('loadFullLexemeDetails', lexeme.lexemeId, lexeme.levels)}"
                           data-toggle="delete-confirm"
                           data-placement="right"
                           sec:authorize="#vars.usage.crudGrant">
@@ -1507,7 +1483,7 @@
                   <!-- intentional generic lexeme perm on translations -->
                   <div class="action-buttons-anchor">
                     <span th:utext="${usageTranslation.valuePrese}"></span>
-                    <span th:text="|(${viewUtil.getLangIso2(usageTranslation.lang)})|"></span>
+                    <span th:text="|(${@viewUtil.getLangIso2(usageTranslation.lang)})|"></span>
                     <div class="action-buttons-3">
                       <button type="button" class="btn badge badge-primary"
                               th:title="#{common.edit}"
@@ -1519,7 +1495,7 @@
                       <button type="button" class="btn badge badge-warning"
                               data-op-code="usage_translation"
                               th:data-id="${usageTranslation.id}"
-                              th:data-callback="${viewUtil.composeFunction('loadFullLexemeDetails', lexeme.lexemeId, lexeme.levels)}"
+                              th:data-callback="${@viewUtil.composeFunction('loadFullLexemeDetails', lexeme.lexemeId, lexeme.levels)}"
                               data-toggle="delete-confirm"
                               data-placement="right"
                               sec:authorize="#vars.lexeme.crudGrant">
@@ -1557,7 +1533,7 @@
                       <button type="button" class="btn badge badge-warning"
                               data-op-code="usage_definition"
                               th:data-id="${usageDefinition.id}"
-                              th:data-callback="${viewUtil.composeFunction('loadFullLexemeDetails', lexeme.lexemeId, lexeme.levels)}"
+                              th:data-callback="${@viewUtil.composeFunction('loadFullLexemeDetails', lexeme.lexemeId, lexeme.levels)}"
                               data-toggle="delete-confirm"
                               data-placement="right"
                               sec:authorize="#vars.usage.crudGrant">
@@ -1598,9 +1574,9 @@
     <div class="col pl-0">
       <th:block th:each="noteLangGroup : ${lexeme.lexemeNoteLangGroups}">
         <div>
-          <span th:text="${viewUtil.getLangIso2(noteLangGroup.lang)}" class="mr-2"></span>
+          <span th:text="${@viewUtil.getLangIso2(noteLangGroup.lang)}" class="mr-2"></span>
           <button name="lang-collapse-btn" type="button" class="btn badge badge-secondary btn-toggle"
-                  th:data-callback="${viewUtil.composeFunction('loadFullLexemeDetails', lexeme.lexemeId, lexeme.levels)}"
+                  th:data-callback="${@viewUtil.composeFunction('loadFullLexemeDetails', lexeme.lexemeId, lexeme.levels)}"
                   th:data-lang="${noteLangGroup.lang}"
                   th:title="${noteLangGroup.selected} ? #{common.hide.lang.group} : #{common.show.lang.group}"
                   data-plugin="langCollapsePlugin">
@@ -1631,7 +1607,7 @@
                 <button type="button" class="btn badge badge-warning"
                         data-op-code="lexeme_note"
                         th:data-id="${note.id}"
-                        th:data-callback="${viewUtil.composeFunction('loadFullLexemeDetails', lexeme.lexemeId, lexeme.levels)}"
+                        th:data-callback="${@viewUtil.composeFunction('loadFullLexemeDetails', lexeme.lexemeId, lexeme.levels)}"
                         data-toggle="delete-confirm"
                         data-placement="right"
                         sec:authorize="#vars.lexeme.crudGrant">
@@ -1659,9 +1635,9 @@
     <div class="col pl-0">
       <th:block th:each="noteLangGroup : ${lexeme.meaning.noteLangGroups}">
         <div>
-          <span th:text="${viewUtil.getLangIso2(noteLangGroup.lang)}" class="mr-2"></span>
+          <span th:text="${@viewUtil.getLangIso2(noteLangGroup.lang)}" class="mr-2"></span>
           <button name="lang-collapse-btn" type="button" class="btn badge badge-secondary btn-toggle"
-                  th:data-callback="${viewUtil.composeFunction('loadFullLexemeDetails', lexeme.lexemeId, lexeme.levels)}"
+                  th:data-callback="${@viewUtil.composeFunction('loadFullLexemeDetails', lexeme.lexemeId, lexeme.levels)}"
                   th:data-lang="${noteLangGroup.lang}"
                   th:title="${noteLangGroup.selected} ? #{common.hide.lang.group} : #{common.show.lang.group}"
                   data-plugin="langCollapsePlugin">
@@ -1692,7 +1668,7 @@
                 <button type="button" class="btn badge badge-warning"
                         data-op-code="meaning_note"
                         th:data-id="${note.id}"
-                        th:data-callback="${viewUtil.composeFunction('loadFullLexemeDetails', lexeme.lexemeId, lexeme.levels)}"
+                        th:data-callback="${@viewUtil.composeFunction('loadFullLexemeDetails', lexeme.lexemeId, lexeme.levels)}"
                         data-toggle="delete-confirm"
                         data-placement="right"
                         sec:authorize="#vars.lexeme.meaning.crudGrant">
@@ -1753,7 +1729,7 @@
               <button type="button" class="btn badge badge-warning"
                       data-op-code="lexeme_freeform"
                       th:data-id="${freeform.id}"
-                      th:data-callback="${viewUtil.composeFunction('loadFullLexemeDetails', lexeme.lexemeId, lexeme.levels)}"
+                      th:data-callback="${@viewUtil.composeFunction('loadFullLexemeDetails', lexeme.lexemeId, lexeme.levels)}"
                       data-toggle="delete-confirm"
                       data-placement="right"
                       sec:authorize="#vars.lexeme.crudGrant">
@@ -1778,7 +1754,7 @@
                 <button type="button" class="btn badge badge-warning"
                         data-op-code="lexeme_freeform_source_link"
                         th:data-id="${sourceLink.id}"
-                        th:data-callback="${viewUtil.composeFunction('loadFullLexemeDetails', lexeme.lexemeId, lexeme.levels)}"
+                        th:data-callback="${@viewUtil.composeFunction('loadFullLexemeDetails', lexeme.lexemeId, lexeme.levels)}"
                         data-toggle="delete-confirm"
                         data-placement="right"
                         sec:authorize="#vars.lexeme.crudGrant">
@@ -1829,12 +1805,12 @@
               data-plugin="contextmenu, loadDetailsPlugin"
               data-contextmenu:compare="Ava uues paneelis"
               data-behaviour="replace">
-              <span th:utext="${viewUtil.getWordValueMarkup(relation) + ' (' + viewUtil.getLangIso2(relation.wordLang) + ')'}"></span>
+              <span th:utext="${@viewUtil.getWordValueMarkup(relation) + ' (' + @viewUtil.getLangIso2(relation.wordLang) + ')'}"></span>
             </button>
             <button type="button" class="btn badge badge-warning"
                     data-op-code="lexeme_relation"
                     th:data-id="${relation.id}"
-                    th:data-callback="${viewUtil.composeFunction('loadFullLexemeDetails', lexeme.lexemeId, lexeme.levels)}"
+                    th:data-callback="${@viewUtil.composeFunction('loadFullLexemeDetails', lexeme.lexemeId, lexeme.levels)}"
                     data-toggle="delete-confirm"
                     data-placement="left"
                     sec:authorize="#vars.lexeme.crudGrant">

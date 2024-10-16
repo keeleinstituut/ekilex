@@ -9,10 +9,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
 import org.springframework.core.annotation.AnnotationUtils;
 import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.HttpSessionRequiredException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -23,7 +23,7 @@ import eki.common.util.CodeGenerator;
 import eki.common.web.AppDataHolder;
 import eki.ekilex.constant.ApiConstant;
 import eki.ekilex.constant.WebConstant;
-import eki.ekilex.data.api.ApiResponse;
+import eki.ekilex.service.api.ApiStatService;
 
 @ConditionalOnWebApplication
 @ControllerAdvice
@@ -34,14 +34,24 @@ public class ExceptionHandlerController implements WebConstant, ApiConstant {
 	@Autowired
 	private AppDataHolder appDataHolder;
 
-	@ExceptionHandler(Exception.class)
-	public ModelAndView genericException(HttpServletRequest request, Exception exception) throws Exception {
+	@Autowired
+	private ApiStatService apiStatService;
 
-		if (StringUtils.startsWith(request.getServletPath(), API_SERVICES_URI)) {
+	@ExceptionHandler(Exception.class)
+	public ModelAndView genericException(Authentication authentication, HttpServletRequest request, Exception exception) throws Exception {
+
+		String authName = authentication.getName();
+		String exceptionMessage = exception.getMessage();
+		String servletPath = request.getServletPath();
+
+		if (StringUtils.startsWith(servletPath, API_SERVICES_URI)) {
+			logger.warn("API error \"{}\" when requesting \"{}\"", exceptionMessage, servletPath);
+			apiStatService.addError(authName, servletPath, exceptionMessage);
 			throw new ApiException(exception);
 		}
 
-		ModelAndView modelAndView = new ModelAndView();
+		ModelAndView modelAndView;
+
 		if (exception instanceof HttpSessionRequiredException) {
 			modelAndView = new ModelAndView();
 			modelAndView.setViewName(REDIRECT_PREF + INDEX_URI);
@@ -61,7 +71,7 @@ public class ExceptionHandlerController implements WebConstant, ApiConstant {
 		String errorId = "ERR-ID: " + CodeGenerator.generateUniqueId();
 
 		if (exception instanceof AccessDeniedException) {
-			logger.error(errorId + " ({})", exception.getMessage());
+			logger.error(errorId + " ({})", exceptionMessage);
 		} else {
 			logger.error(errorId, exception);
 		}
@@ -69,18 +79,12 @@ public class ExceptionHandlerController implements WebConstant, ApiConstant {
 		AppData appData = appDataHolder.getAppData();
 
 		modelAndView = new ModelAndView();
-		modelAndView.addObject("errorName", exception.getMessage());
+		modelAndView.addObject("errorName", exceptionMessage);
 		modelAndView.addObject("errorId", errorId);
 		modelAndView.addObject("errorDescription", exception.toString());
 		modelAndView.addObject(APP_DATA_MODEL_KEY, appData);
 		modelAndView.setViewName(ERROR_PAGE);
+
 		return modelAndView;
-	}
-
-	@ResponseBody
-	@ExceptionHandler(ApiException.class)
-	public ApiResponse apiException(ApiException exception) {
-
-		return new ApiResponse(false, exception.toString());
 	}
 }

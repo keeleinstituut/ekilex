@@ -28,6 +28,7 @@
                   <option value="addLexemeRelationDlg" sec:authorize="#vars.lexeme.crudGrant" th:text="#{term.lexeme.relation}">Ilmiku seos</option>
                   <option value="addLexemeNoteDlg" sec:authorize="#vars.lexeme.crudGrant" th:text="#{term.lexeme.note}">Ilmiku märkus</option>
                   <option value="addLexemeTagDlg" sec:authorize="#vars.lexeme.crudGrant" th:text="#{term.lexeme.tag}">Ilmiku silt</option>
+                  <option value="addLexemeFreeformDlg" sec:authorize="#vars.lexeme.crudGrant" th:text="#{term.lexeme.freeform}">Ilmiku atribuut</option>
                   <option value="lexeme_reliability" sec:authorize="#vars.lexeme.crudGrant" th:text="#{term.lexeme.reliability}">Ilmiku usaldusväärsus</option>
                   <option value="word_gender" sec:authorize="#vars.lexeme.word.subGrant" th:text="#{term.word.gender}">Sugu</option>
                   <option value="word_type" sec:authorize="#vars.lexeme.word.subGrant" th:text="#{term.word.type}">Keelendi tüüp</option>
@@ -137,6 +138,7 @@
                   <option value="addMeaningNoteDlg" sec:authorize="#vars.meaning.crudGrant" th:text="#{term.meaning.note}">Märkus</option>
                   <option value="addMeaningRelationDlg" sec:authorize="#vars.meaning.crudGrant" th:text="#{term.meaning.relation}">Tähenduse seos</option>
                   <option value="addMeaningTagDlg" sec:authorize="#vars.meaning.crudGrant" th:text="#{term.meaning.tag}">Tähenduse silt</option>
+                  <option value="addMeaningFreeformDlg" sec:authorize="#vars.meaning.crudGrant" th:text="#{term.meaning.freeform}">Tähenduse atribuut</option>
                   <option value="meaning_semantic_type" sec:authorize="#vars.meaning.crudGrant" th:text="#{term.meaning.semantic.type}">Semantiline tüüp</option>
                   <option value="addMeaningImageDlg" sec:authorize="#vars.isMeaningLexemeCrudGranted" th:text="#{term.meaning.image}">Pilt</option>
                   <option value="addMeaningMediaDlg" sec:authorize="#vars.isMeaningLexemeCrudGranted" th:text="#{term.meaning.media}">Videod ja muu meedia</option>
@@ -484,6 +486,280 @@
       </div>
     </div>
   </div>
+  <div th:id="${'addMeaningFreeformDlg_' + meaningId}"
+       class="modal" role="dialog" th:fragment="add_meaning_freeform_dlg" data-plugin="initGenericTextAddDlgAndFocusPlugin">
+    <div class="modal-dialog modal-lg" role="document">
+      <div class="modal-content">
+        <form th:action="@{/create_item}" method="post">
+          <div class="modal-header">
+            <h5 class="modal-title" th:text="#{term.add.freeform}">Lisa atribuut</h5>
+            <button type="button" class="close" aria-label="Close" data-role="close" data-dismiss="modal">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <input type="hidden" name="id" th:value="${meaningId}">
+            <input type="hidden" name="opCode" value="meaning_freeform">
+            <div class="form-group row">
+              <div class="col-md-4">
+                <select required class="form-control classifier-select required-field" data-live-search="true" name="itemType">
+                  <option value="" disabled selected th:text="#{common.select}">Vali</option>
+                  <option th:each="freeformType : ${userRoleMeaningFreeformTypes}"
+                          th:value="${freeformType.code}"
+                          th:text="${freeformType.value}">atribuut
+                  </option>
+                </select>
+              </div>
+            </div>
+            <div class="form-group row">
+              <div class="col-md-12">
+                <textarea class="form-control required-field" rows="4" name="value"></textarea>
+              </div>
+            </div>
+            <div class="formItem">
+              <div class="formItem__element">
+                <div class="radioTabs">
+                  <label class="radioTabs__item">
+                    <input type="radio" name="public" value="true" checked />
+                    <span th:text="#{boolean.public.true}">avalik</span>
+                  </label>
+                  <label class="radioTabs__item">
+                    <input type="radio" name="public" value="false" />
+                    <span th:text="#{boolean.public.false}">mitteavalik</span>
+                  </label>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="submit" class="btn btn-primary" th:text="#{common.add}">Lisa</button>
+            <button type="button" class="btn btn-default" data-dismiss="modal" th:text="#{common.cancel}">Katkesta</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+  <div th:id="${'editMeaningFreeformDlg_' + meaningId + '_' + freeform.id}"
+       class="modal" role="dialog" th:fragment="edit_meaning_freeform_dlg" data-plugin="initGenericTextEditDlgAndFocusPlugin">
+    <div class="modal-dialog modal-lg" role="document">
+      <div class="modal-content">
+        <form th:action="@{/update_item}" method="post">
+          <div class="modal-header">
+            <h5 class="modal-title" th:text="#{term.edit.freeform}">Muuda atribuuti</h5>
+            <button type="button" class="close" aria-label="Close" data-role="close" data-dismiss="modal">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <input type="hidden" name="id" th:value="${freeform.id}">
+            <input type="hidden" name="opCode" value="meaning_freeform">
+            <div class="form-group row">
+              <div class="col-md-4">
+                <span th:text="${freeform.freeformTypeValue}"></span>
+              </div>
+            </div>
+            <div class="form-group row">
+              <div class="col-md-12">
+                <textarea class="form-control" rows="4" name="value" th:text="${freeform.valueText}"></textarea>
+              </div>
+            </div>
+            <div class="formItem">
+              <div class="formItem__element">
+                <div class="radioTabs">
+                  <label class="radioTabs__item">
+                    <input type="radio" name="public" value="true" th:checked="${freeform.public}" />
+                    <span th:text="#{boolean.public.true}">avalik</span>
+                  </label>
+                  <label class="radioTabs__item">
+                    <input type="radio" name="public" value="false" th:checked="${!freeform.public}" />
+                    <span th:text="#{boolean.public.false}">mitteavalik</span>
+                  </label>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="submit" class="btn btn-primary" th:text="#{common.save}">Salvesta</button>
+            <button type="button" class="btn btn-default" data-dismiss="modal" th:text="#{common.cancel}">Katkesta</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+  <div th:id="${'addMeaningFreeformSourceLinkDlg_' + meaningId + '_' + freeform.id}"
+       class="modal" role="dialog" th:fragment="add_meaning_freeform_source_link_dlg"
+       data-plugin="initAddSourceLinkWithAutocompletePlugin">
+    <div class="modal-dialog" role="document" style="max-width: 1000px;">
+      <div class="modal-content">
+        <div class="modal-body">
+          <form th:replace="components :: source_search_form"></form>
+        </div>
+        <form name="sourceLinkForm" th:action="@{/create_item}" method="post">
+          <input type="hidden" name="id" th:value="${freeform.id}">
+          <input type="hidden" name="opCode" value="meaning_freeform_source_link">
+          <input type="hidden" name="id2">
+          <input type="hidden" name="value">
+          <div class="modal-body" data-name="sourceLinkDlgContent"></div>
+        </form>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal" th:text="#{common.cancel}">Katkesta</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div th:id="${'editMeaningFreeformSourceLinkDlg_' + sourceLink.id}"
+       class="modal" role="dialog" th:fragment="edit_meaning_freeform_source_link_dlg" data-plugin="initEditSourceLinkDlgPlugin">
+    <div class="modal-dialog modal-lg" role="document">
+      <div class="modal-content">
+        <form name="sourceLinkForm" th:action="@{/update_item}" method="post">
+          <input type="hidden" name="id" th:value="${sourceLink.id}">
+          <input type="hidden" name="opCode" value="meaning_freeform_source_link">
+          <div class="modal-body" data-name="sourceLinkDlgContent"></div>
+          <div class="modal-footer">
+            <button type="submit" class="btn btn-primary" data-plugin="updateSourceLink">Muuda</button>
+            <button type="button" class="btn btn-default" data-dismiss="modal" th:text="#{common.cancel}">Katkesta</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+  <div th:id="${'addLexemeFreeformDlg_' + lexeme.lexemeId}"
+       class="modal" role="dialog" th:fragment="add_lexeme_freeform_dlg" data-plugin="initGenericTextAddDlgAndFocusPlugin">
+    <div class="modal-dialog modal-lg" role="document">
+      <div class="modal-content">
+        <form th:action="@{/create_item}" method="post">
+          <div class="modal-header">
+            <h5 class="modal-title" th:text="#{term.add.freeform}">Lisa atribuut</h5>
+            <button type="button" class="close" aria-label="Close" data-role="close" data-dismiss="modal">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <input type="hidden" name="id" th:value="${lexeme.lexemeId}">
+            <input type="hidden" name="opCode" value="lexeme_freeform">
+            <div class="form-group row">
+              <div class="col-md-4">
+                <select required class="form-control classifier-select required-field" data-live-search="true" name="itemType">
+                  <option value="" disabled selected th:text="#{common.select}">Vali</option>
+                  <option th:each="freeformType : ${userRoleLexemeFreeformTypes}"
+                          th:value="${freeformType.code}"
+                          th:text="${freeformType.value}">atribuut
+                  </option>
+                </select>
+              </div>
+            </div>
+            <div class="form-group row">
+              <div class="col-md-12">
+                <textarea class="form-control required-field" rows="4" name="value"></textarea>
+              </div>
+            </div>
+            <div class="formItem">
+              <div class="formItem__element">
+                <div class="radioTabs">
+                  <label class="radioTabs__item">
+                    <input type="radio" name="public" value="true" checked />
+                    <span th:text="#{boolean.public.true}">avalik</span>
+                  </label>
+                  <label class="radioTabs__item">
+                    <input type="radio" name="public" value="false" />
+                    <span th:text="#{boolean.public.false}">mitteavalik</span>
+                  </label>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="submit" class="btn btn-primary" th:text="#{common.add}">Lisa</button>
+            <button type="button" class="btn btn-default" data-dismiss="modal" th:text="#{common.cancel}">Katkesta</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+  <div th:id="${'editLexemeFreeformDlg_' + lexeme.lexemeId + '_' + freeform.id}"
+       class="modal" role="dialog" th:fragment="edit_lexeme_freeform_dlg" data-plugin="initGenericTextEditDlgAndFocusPlugin">
+    <div class="modal-dialog modal-lg" role="document">
+      <div class="modal-content">
+        <form th:action="@{/update_item}" method="post">
+          <div class="modal-header">
+            <h5 class="modal-title" th:text="#{term.edit.freeform}">Muuda atribuuti</h5>
+            <button type="button" class="close" aria-label="Close" data-role="close" data-dismiss="modal">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <input type="hidden" name="id" th:value="${freeform.id}">
+            <input type="hidden" name="opCode" value="lexeme_freeform">
+            <div class="form-group row">
+              <div class="col-md-4">
+                <span th:text="${freeform.freeformTypeValue}"></span>
+              </div>
+            </div>
+            <div class="form-group row">
+              <div class="col-md-12">
+                <textarea class="form-control" rows="4" name="value" th:text="${freeform.valueText}"></textarea>
+              </div>
+            </div>
+            <div class="formItem">
+              <div class="formItem__element">
+                <div class="radioTabs">
+                  <label class="radioTabs__item">
+                    <input type="radio" name="public" value="true" th:checked="${freeform.public}" />
+                    <span th:text="#{boolean.public.true}">avalik</span>
+                  </label>
+                  <label class="radioTabs__item">
+                    <input type="radio" name="public" value="false" th:checked="${!freeform.public}" />
+                    <span th:text="#{boolean.public.false}">mitteavalik</span>
+                  </label>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="submit" class="btn btn-primary" th:text="#{common.save}">Salvesta</button>
+            <button type="button" class="btn btn-default" data-dismiss="modal" th:text="#{common.cancel}">Katkesta</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+  <div th:id="${'addLexemeFreeformSourceLinkDlg_' + lexeme.lexemeId + '_' + freeform.id}"
+       class="modal" role="dialog" th:fragment="add_lexeme_freeform_source_link_dlg"
+       data-plugin="initAddSourceLinkWithAutocompletePlugin">
+    <div class="modal-dialog" role="document" style="max-width: 1000px;">
+      <div class="modal-content">
+        <div class="modal-body">
+          <form th:replace="components :: source_search_form"></form>
+        </div>
+        <form name="sourceLinkForm" th:action="@{/create_item}" method="post">
+          <input type="hidden" name="id" th:value="${freeform.id}">
+          <input type="hidden" name="opCode" value="lexeme_freeform_source_link">
+          <input type="hidden" name="id2">
+          <input type="hidden" name="value">
+          <div class="modal-body" data-name="sourceLinkDlgContent"></div>
+        </form>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal" th:text="#{common.cancel}">Katkesta</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div th:id="${'editLexemeFreeformSourceLinkDlg_' + sourceLink.id}"
+       class="modal" role="dialog" th:fragment="edit_lexeme_freeform_source_link_dlg" data-plugin="initEditSourceLinkDlgPlugin">
+    <div class="modal-dialog modal-lg" role="document">
+      <div class="modal-content">
+        <form name="sourceLinkForm" th:action="@{/update_item}" method="post">
+          <input type="hidden" name="id" th:value="${sourceLink.id}">
+          <input type="hidden" name="opCode" value="lexeme_freeform_source_link">
+          <div class="modal-body" data-name="sourceLinkDlgContent"></div>
+          <div class="modal-footer">
+            <button type="submit" class="btn btn-primary" data-plugin="updateSourceLink">Muuda</button>
+            <button type="button" class="btn btn-default" data-dismiss="modal" th:text="#{common.cancel}">Katkesta</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
   <div th:id="${'addLexemeSourceLinkDlg_' + lexeme.lexemeId}" class="modal"
         role="dialog"
         th:fragment="add_lexeme_source_link_dlg"
@@ -567,7 +843,7 @@
           <div class="modal-body">
             <input type="hidden" name="id" th:value="${usage.id}">
             <input type="hidden" name="opCode" value="usage">
-            <input type="hidden" name="value" th:value="${usage.value}">
+            <input type="hidden" name="value" th:value="${usage.valuePrese}">
             <input type="hidden" name="complexity" th:value="${usage.complexity}">
             <div th:replace="components :: eki_editor_elem"></div>
             <div class="form-group form-check">
@@ -844,6 +1120,143 @@
           </div>
           <div class="modal-footer">
             <button type="submit" class="btn btn-primary" th:text="#{common.save}">Salvesta</button>
+            <button type="button" class="btn btn-default" data-dismiss="modal" th:text="#{common.cancel}">Katkesta</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+  <div th:id="${'addWordFreeformDlg_' + lexeme.lexemeId}"
+       class="modal" role="dialog" th:fragment="add_word_freeform_dlg" data-plugin="initGenericTextAddDlgAndFocusPlugin">
+    <div class="modal-dialog modal-lg" role="document">
+      <div class="modal-content">
+        <form th:action="@{/create_item}" method="post">
+          <div class="modal-header">
+            <h5 class="modal-title" th:text="#{lex.add.freeform}">Lisa atribuut</h5>
+            <button type="button" class="close" aria-label="Close" data-role="close" data-dismiss="modal">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <input type="hidden" name="id" th:value="${lexeme.wordId}">
+            <input type="hidden" name="opCode" value="word_freeform">
+            <div class="form-group row">
+              <div class="col-md-4">
+                <select required class="form-control classifier-select required-field" data-live-search="true" name="itemType">
+                  <option value="" disabled selected th:text="#{common.select}">Vali</option>
+                  <option th:each="freeformType : ${userRoleWordFreeformTypes}"
+                          th:value="${freeformType.code}"
+                          th:text="${freeformType.value}">atribuut
+                  </option>
+                </select>
+              </div>
+            </div>
+            <div class="form-group row">
+              <div class="col-md-12">
+                <textarea class="form-control required-field" rows="4" name="value"></textarea>
+              </div>
+            </div>
+            <div class="formItem">
+              <div class="formItem__element">
+                <div class="radioTabs">
+                  <label class="radioTabs__item">
+                    <input type="radio" name="public" value="true" checked />
+                    <span th:text="#{boolean.public.true}">avalik</span>
+                  </label>
+                  <label class="radioTabs__item">
+                    <input type="radio" name="public" value="false" />
+                    <span th:text="#{boolean.public.false}">mitteavalik</span>
+                  </label>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="submit" class="btn btn-primary" th:text="#{common.add}">Lisa</button>
+            <button type="button" class="btn btn-default" data-dismiss="modal" th:text="#{common.cancel}">Katkesta</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+  <div th:id="${'editWordFreeformDlg_' + lexeme.lexemeId + '_' + freeform.id}"
+       class="modal" role="dialog" th:fragment="edit_word_freeform_dlg" data-plugin="initGenericTextEditDlgAndFocusPlugin">
+    <div class="modal-dialog modal-lg" role="document">
+      <div class="modal-content">
+        <form th:action="@{/update_item}" method="post">
+          <div class="modal-header">
+            <h5 class="modal-title" th:text="#{lex.edit.freeform}">Muuda atribuuti</h5>
+            <button type="button" class="close" aria-label="Close" data-role="close" data-dismiss="modal">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <input type="hidden" name="id" th:value="${freeform.id}">
+            <input type="hidden" name="opCode" value="word_freeform">
+            <div class="form-group row">
+              <div class="col-md-4">
+                <span th:text="${freeform.freeformTypeValue}"></span>
+              </div>
+            </div>
+            <div class="form-group row">
+              <div class="col-md-12">
+                <textarea class="form-control" rows="4" name="value" th:text="${freeform.valueText}"></textarea>
+              </div>
+            </div>
+            <div class="formItem">
+              <div class="formItem__element">
+                <div class="radioTabs">
+                  <label class="radioTabs__item">
+                    <input type="radio" name="public" value="true" th:checked="${freeform.public}" />
+                    <span th:text="#{boolean.public.true}">avalik</span>
+                  </label>
+                  <label class="radioTabs__item">
+                    <input type="radio" name="public" value="false" th:checked="${!freeform.public}" />
+                    <span th:text="#{boolean.public.false}">mitteavalik</span>
+                  </label>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="submit" class="btn btn-primary" th:text="#{common.save}">Salvesta</button>
+            <button type="button" class="btn btn-default" data-dismiss="modal" th:text="#{common.cancel}">Katkesta</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+  <div th:id="${'addWordFreeformSourceLinkDlg_' + lexeme.lexemeId + '_' + freeform.id}"
+       class="modal" role="dialog" th:fragment="add_word_freeform_source_link_dlg"
+       data-plugin="initAddSourceLinkWithAutocompletePlugin">
+    <div class="modal-dialog" role="document" style="max-width: 1000px;">
+      <div class="modal-content">
+        <div class="modal-body">
+          <form th:replace="components :: source_search_form"></form>
+        </div>
+        <form name="sourceLinkForm" th:action="@{/create_item}" method="post">
+          <input type="hidden" name="id" th:value="${freeform.id}">
+          <input type="hidden" name="opCode" value="word_freeform_source_link">
+          <input type="hidden" name="id2">
+          <input type="hidden" name="value">
+          <div class="modal-body" data-name="sourceLinkDlgContent"></div>
+        </form>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal" th:text="#{common.cancel}">Katkesta</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div th:id="${'editWordFreeformSourceLinkDlg_' + sourceLink.id}"
+       class="modal" role="dialog" th:fragment="edit_word_freeform_source_link_dlg" data-plugin="initEditSourceLinkDlgPlugin">
+    <div class="modal-dialog modal-lg" role="document">
+      <div class="modal-content">
+        <form name="sourceLinkForm" th:action="@{/update_item}" method="post">
+          <input type="hidden" name="id" th:value="${sourceLink.id}">
+          <input type="hidden" name="opCode" value="word_freeform_source_link">
+          <div class="modal-body" data-name="sourceLinkDlgContent"></div>
+          <div class="modal-footer">
+            <button type="submit" class="btn btn-primary" data-plugin="updateSourceLink">Muuda</button>
             <button type="button" class="btn btn-default" data-dismiss="modal" th:text="#{common.cancel}">Katkesta</button>
           </div>
         </form>
@@ -1226,7 +1639,7 @@
           <div class="modal-body">
             <input type="hidden" name="id" th:value="${definition.id}">
             <input type="hidden" name="opCode" value="definition">
-            <input type="hidden" name="value" th:value="${definition.value}">
+            <input type="hidden" name="value" th:value="${definition.valuePrese}">
             <input type="hidden" name="complexity" th:value="${definition.complexity}">
             <div th:replace="components :: eki_editor_elem"></div>
             <div class="form-group row">

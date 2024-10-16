@@ -46,7 +46,7 @@ $.fn.workloadReportSearchPlugin = function() {
 		const form = main.closest('form');
 		if (checkRequiredFields(form)) {
 			openWaitDlg();
-			form.submit();
+			form.trigger('submit');
 		}
 	});
 }

@@ -303,11 +303,12 @@ public class LookupService extends AbstractWordSearchService {
 		lexemeLevelPreseUtil.combineLevels(lexemes);
 		String firstDefinitionValue = getFirstDefinitionValue(lexemes);
 
+		word.setWordTypes(wordTypes);
+		word.setEtymology(wordEtymology);
+
 		WordDetails wordDetails = new WordDetails();
 		wordDetails.setWord(word);
-		wordDetails.setWordTypes(wordTypes);
 		wordDetails.setLexemes(lexemes);
-		wordDetails.setWordEtymology(wordEtymology);
 		wordDetails.setFirstDefinitionValue(firstDefinitionValue);
 
 		return wordDetails;
@@ -315,17 +316,21 @@ public class LookupService extends AbstractWordSearchService {
 
 	@Transactional
 	public List<WordLexeme> getWordLexemesOfJoinCandidates(
-			EkiUser user, List<String> userPrefDatasetCodes, String searchWord, Integer wordHomonymNumber, Long excludedMeaningId,
-			List<String> tagNames, String targetLexemeDatasetCode) throws Exception {
+			EkiUser user, List<String> userPrefDatasetCodes, String wordSearchFilter, Integer wordHomonymNumber, Long excludedMeaningId,
+			List<String> tagNames, String preferredDatasetCode) throws Exception {
 
 		SearchDatasetsRestriction searchDatasetsRestriction = composeDatasetsRestriction(userPrefDatasetCodes);
 		List<WordLexeme> lexemes = new ArrayList<>();
-		if (isNotBlank(searchWord)) {
-			String cleanedUpFilter = searchWord.replace(SEARCH_MASK_CHARS, "").replace(SEARCH_MASK_CHAR, "").replace("%", "").replace("_", "");
-			WordsResult words = getWords(cleanedUpFilter, userPrefDatasetCodes, tagNames, user, DEFAULT_OFFSET, DEFAULT_MAX_RESULTS_LIMIT, true);
-			if (CollectionUtils.isNotEmpty(words.getWords())) {
+		if (isNotBlank(wordSearchFilter)) {
+			String cleanWordSearchFilter = StringUtils.trim(wordSearchFilter);
+			cleanWordSearchFilter = StringUtils.remove(cleanWordSearchFilter, SEARCH_MASK_CHARS);
+			cleanWordSearchFilter = StringUtils.remove(cleanWordSearchFilter, SEARCH_MASK_CHAR);
+			cleanWordSearchFilter = StringUtils.remove(cleanWordSearchFilter, '%');
+			cleanWordSearchFilter = StringUtils.remove(cleanWordSearchFilter, '_');
+			WordsResult wordsResult = getWords(cleanWordSearchFilter, userPrefDatasetCodes, tagNames, user, DEFAULT_OFFSET, DEFAULT_MAX_RESULTS_LIMIT, true);
+			if (CollectionUtils.isNotEmpty(wordsResult.getWords())) {
 				Map<String, String> datasetNameMap = commonDataDbService.getDatasetNameMap();
-				for (Word word : words.getWords()) {
+				for (Word word : wordsResult.getWords()) {
 					if ((wordHomonymNumber != null) && !word.getHomonymNr().equals(wordHomonymNumber)) {
 						continue;
 					}
@@ -359,7 +364,7 @@ public class LookupService extends AbstractWordSearchService {
 				}
 			}
 		}
-		lexemes.sort(Comparator.comparing(lexeme -> !StringUtils.equals(lexeme.getDatasetCode(), targetLexemeDatasetCode)));
+		lexemes.sort(Comparator.comparing(lexeme -> !StringUtils.equals(lexeme.getDatasetCode(), preferredDatasetCode)));
 		return lexemes;
 	}
 

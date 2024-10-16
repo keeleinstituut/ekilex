@@ -14,7 +14,7 @@
             <select name="type" class="form-control required-field classifier-select">
               <option value=""></option>
               <option th:each="newsArticleType : ${T(eki.common.constant.NewsArticleType).values()}" th:value="${newsArticleType.name()}" th:text="#{|enum.newsarticletype.${newsArticleType.name()}|}"
-                th:selected="${viewUtil.enumEquals(newsArticle.type, newsArticleType)}"></option>
+                th:selected="${@viewUtil.enumEquals(newsArticle.type, newsArticleType)}"></option>
             </select>
           </div>
         </div>

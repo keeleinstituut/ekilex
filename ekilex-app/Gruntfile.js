@@ -60,7 +60,7 @@ module.exports = function (grunt) {
 				},
 				src: [
 					'src/main/resources/view/js/*.js',
-					'!src/main/resources/view/js/_jquery-3.2.1.js',
+					'!src/main/resources/view/js/jquery-3.7.1.min.js',
 					'!src/main/resources/view/js/main.js',
 					
 				],

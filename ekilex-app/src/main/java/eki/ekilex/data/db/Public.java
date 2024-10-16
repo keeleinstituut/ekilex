@@ -5,6 +5,8 @@ package eki.ekilex.data.db;
 
 
 import eki.ekilex.data.db.tables.ActivityLog;
+import eki.ekilex.data.db.tables.ApiErrorCount;
+import eki.ekilex.data.db.tables.ApiRequestCount;
 import eki.ekilex.data.db.tables.Aspect;
 import eki.ekilex.data.db.tables.AspectLabel;
 import eki.ekilex.data.db.tables.Collocation;
@@ -206,6 +208,16 @@ public class Public extends SchemaImpl {
      * The table <code>public.activity_log</code>.
      */
     public final ActivityLog ACTIVITY_LOG = ActivityLog.ACTIVITY_LOG;
+
+    /**
+     * The table <code>public.api_error_count</code>.
+     */
+    public final ApiErrorCount API_ERROR_COUNT = ApiErrorCount.API_ERROR_COUNT;
+
+    /**
+     * The table <code>public.api_request_count</code>.
+     */
+    public final ApiRequestCount API_REQUEST_COUNT = ApiRequestCount.API_REQUEST_COUNT;
 
     /**
      * The table <code>public.aspect</code>.
@@ -964,6 +976,8 @@ public class Public extends SchemaImpl {
     public final List<Sequence<?>> getSequences() {
         return Arrays.<Sequence<?>>asList(
             Sequences.ACTIVITY_LOG_ID_SEQ,
+            Sequences.API_ERROR_COUNT_ID_SEQ,
+            Sequences.API_REQUEST_COUNT_ID_SEQ,
             Sequences.ASPECT_ORDER_BY_SEQ,
             Sequences.COLLOCATION_ID_SEQ,
             Sequences.COLLOCATION_MEMBER_ID_SEQ,
@@ -1114,6 +1128,8 @@ public class Public extends SchemaImpl {
     public final List<Table<?>> getTables() {
         return Arrays.<Table<?>>asList(
             ActivityLog.ACTIVITY_LOG,
+            ApiErrorCount.API_ERROR_COUNT,
+            ApiRequestCount.API_REQUEST_COUNT,
             Aspect.ASPECT,
             AspectLabel.ASPECT_LABEL,
             Collocation.COLLOCATION,

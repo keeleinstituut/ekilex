@@ -236,6 +236,22 @@ public class CudDbService extends AbstractDataDbService {
 				.execute();
 	}
 
+	public void updateMeaningNoteOrderby(ListData item) {
+		create
+				.update(MEANING_NOTE)
+				.set(MEANING_NOTE.ORDER_BY, item.getOrderby())
+				.where(MEANING_NOTE.ID.eq(item.getId()))
+				.execute();
+	}
+
+	public void updateLexemeNoteOrderby(ListData item) {
+		create
+				.update(LEXEME_NOTE)
+				.set(LEXEME_NOTE.ORDER_BY, item.getOrderby())
+				.where(LEXEME_NOTE.ID.eq(item.getId()))
+				.execute();
+	}
+
 	public void updateLexemeRelationOrderby(ListData item) {
 		create
 				.update(LEX_RELATION)
@@ -273,6 +289,14 @@ public class CudDbService extends AbstractDataDbService {
 				.update(LEXEME)
 				.set(LEXEME.ORDER_BY, item.getOrderby())
 				.where(LEXEME.ID.eq(item.getId()))
+				.execute();
+	}
+
+	public void updateUsageOrderby(ListData item) {
+		create
+				.update(USAGE)
+				.set(USAGE.ORDER_BY, item.getOrderby())
+				.where(USAGE.ID.eq(item.getId()))
 				.execute();
 	}
 

@@ -29,7 +29,6 @@ import eki.ekilex.data.Word;
 import eki.ekilex.data.WordLexemeMeaningIdTuple;
 import eki.ekilex.data.WordRelation;
 import eki.ekilex.data.db.tables.records.LexemeRecord;
-import eki.ekilex.service.db.CompositionDbService;
 import eki.ekilex.service.db.SynSearchDbService;
 
 @Component
@@ -44,9 +43,6 @@ public class SynCudService extends AbstractCudService implements SystemConstant 
 
 	@Autowired
 	private SynSearchDbService synSearchDbService;
-
-	@Autowired
-	private CompositionDbService compositionDbService;
 
 	@Transactional
 	public void createSynMeaningRelation(Long targetMeaningId, Long sourceMeaningId, Long wordRelationId, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
@@ -121,7 +117,7 @@ public class SynCudService extends AbstractCudService implements SystemConstant 
 
 		updateWordRelationStatus("createSynMeaningWordWithCandidateData", wordRelationId, RelationStatus.PROCESSED.name(), roleDatasetCode, isManualEventOnUpdateEnabled);
 
-		List<LexemeRecord> sourceWordLexemes = compositionDbService.getWordLexemes(sourceWordId);
+		List<LexemeRecord> sourceWordLexemes = lookupDbService.getLexemeRecordsByWord(sourceWordId);
 		if (sourceWordLexemes.size() != 1) {
 			throw new OperationDeniedException();
 		}

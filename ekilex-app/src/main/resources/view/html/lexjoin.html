@@ -34,13 +34,14 @@
       </div>
       <th:block th:if="${#lists.isEmpty(validationMessages)}">
         <div class="card-body">
-          <form th:action="@{'/lexjoin/' + ${targetLexeme.lexemeId}}" method="post">
+          <form th:action="@{/lexjoinsearch}" method="post">
+            <input type="hidden" name="targetLexemeId" th:value="${targetLexeme.lexemeId}">
             <div class="form-row" name="searchFilter">
               <div class="col-12">
                 <div class="form-group row">
                   <label class="col-auto col-form-label" th:text="#{lexjoin.search.meaning}">Otsi ühendatavat tähendust</label>
                   <div class="col-5">
-                    <input type="text" class="form-control" name="searchFilter" th:value="${searchFilter}" th:placeholder="#{lexjoin.search.placeholder}">
+                    <input type="text" class="form-control" name="searchFilter" th:value="${searchFilter}" th:placeholder="#{lexjoin.search.placeholder}" autocomplete="off">
                   </div>
                   <div class="col-2">
                     <button type="submit" class="btn btn-primary" th:text="#{common.search}">Otsi</button>
@@ -77,19 +78,19 @@
         <input name="sourceLexemeIds" type="checkbox" class="mt-2"
           th:value="${lexeme.lexemeId}"
           th:if="${lexeme.meaningId != targetLexeme.meaningId && lexeme.datasetCode == targetLexeme.datasetCode}"
-          sec:authorize="#vars.permDataUtil.isSourceMeaningCrudGranted(#vars.lexeme.meaningId, #vars.targetLexeme.meaningId)"/>
+          sec:authorize="@permDataUtil.isSourceMeaningCrudGranted(#vars.lexeme.meaningId, #vars.targetLexeme.meaningId)"/>
         <input type="checkbox" class="mt-2" th:if="${lexeme.meaningId == targetLexeme.meaningId}" checked="checked" th:disabled="true" />
       </div>
       <div class="col">
         <span>
-          <span th:utext="${viewUtil.getWordValueMarkup(lexeme)}" class="ttl"></span>
+          <span th:utext="${@viewUtil.getWordValueMarkup(lexeme)}" class="ttl"></span>
           &nbsp;
         </span>
         <span th:each="meaningWord,meaningWordIter : ${lexeme.meaningWords}">
           <span class="pt-0">
-            <span th:utext="${viewUtil.getWordValueMarkup(meaningWord)}"></span>
+            <span th:utext="${@viewUtil.getWordValueMarkup(meaningWord)}"></span>
             <span th:text="${meaningWord.homonymNr}"></span>
-            <span th:text="${'( ' + viewUtil.getLangIso2(meaningWord.lang) + ' )'}"></span>
+            <span th:text="${'( ' + @viewUtil.getLangIso2(meaningWord.lang) + ' )'}"></span>
           </span>
           <span th:unless="${meaningWordIter.last}">|</span>
         </span>

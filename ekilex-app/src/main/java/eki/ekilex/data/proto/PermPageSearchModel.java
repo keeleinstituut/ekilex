@@ -6,7 +6,7 @@ import eki.common.constant.OrderingField;
 import eki.common.data.AbstractDataObject;
 import eki.ekilex.data.EkiUserPermData;
 
-public class PermPageModel extends AbstractDataObject {
+public class PermPageSearchModel extends AbstractDataObject {
 
 	private static final long serialVersionUID = 1L;
 

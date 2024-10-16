@@ -185,7 +185,7 @@ $(function() {
 								} else if (response.status === "MULTIPLE") {
 									const action = editWordForm.attr('action') + "/init/select";
 									editWordForm.attr("action", action);
-									editWordForm.submit();
+									editWordForm.trigger('submit');
 								} else {
 									openAlertDlg(messages["common.error"]);
 								}

@@ -5,8 +5,8 @@
   <div class="card-body px-2 pt-1 pb-2 d-flex flex-column h-100"
        th:fragment="term_search_result"
        th:with="
-         isWordResultMode=${viewUtil.enumEquals(sessionBean.termSearchResultMode, T(eki.ekilex.constant.SearchResultMode).WORD)},
-         isMeaningResultMode=${viewUtil.enumEquals(sessionBean.termSearchResultMode, T(eki.ekilex.constant.SearchResultMode).MEANING)}">
+         isWordResultMode=${@viewUtil.enumEquals(sessionBean.termSearchResultMode, T(eki.ekilex.constant.SearchResultMode).WORD)},
+         isMeaningResultMode=${@viewUtil.enumEquals(sessionBean.termSearchResultMode, T(eki.ekilex.constant.SearchResultMode).MEANING)}">
     <div class="row no-gutters">
       <div class="col-auto">
         <div class="btn-group btn-group-toggle btn-tabs" data-toggle="buttons">
@@ -265,8 +265,8 @@
                       <span th:if="${meaningWord.leastPreferred}" class="badge badge-pill badge-danger">&nbsp;</span>
                       <span th:unless="${meaningWord.mostPreferred or meaningWord.leastPreferred}" class="badge badge-pill badge-light">&nbsp;</span>
                     </span>
-                    <span th:utext="${viewUtil.getWordValueMarkup(meaningWord)}" th:class="${meaningWord.matchingWord ? 'font-weight-bold' : ''}"></span>
-                    <span th:text="${'(' + viewUtil.getLangIso2(meaningWord.lang) + ')'}"></span>
+                    <span th:utext="${@viewUtil.getWordValueMarkup(meaningWord)}" th:class="${meaningWord.matchingWord ? 'font-weight-bold' : ''}"></span>
+                    <span th:text="${'(' + @viewUtil.getLangIso2(meaningWord.lang) + ')'}"></span>
                     <span class="ctxt mt-2">
                       <span th:each="datasetCode,itemIter : ${meaningWord.datasetCodes}">
                         <span th:text="${datasetCode}"></span>
@@ -402,7 +402,7 @@
     <div class="col pl-0">
       <th:block th:each="definitionLangGroup : ${meaning.definitionLangGroups}">
         <div>
-          <span th:text="${viewUtil.getLangIso2(definitionLangGroup.lang)}" class="mr-2"></span>
+          <span th:text="${@viewUtil.getLangIso2(definitionLangGroup.lang)}" class="mr-2"></span>
           <button name="lang-collapse-btn" type="button" class="btn badge badge-secondary btn-toggle"
                   th:data-lang="${definitionLangGroup.lang}"
                   th:title="${definitionLangGroup.selected} ? #{common.hide.lang.group} : #{common.show.lang.group}"
@@ -425,7 +425,7 @@
             <div class="invisible-buttons action-buttons-anchor mw-80">
               <span th:utext="${definition.valuePrese}"></span>
               <span class="font-italic text-info" th:text="${definition.typeValue}"></span>
-              <span class="ctxt" th:text="'(' + #{'boolean.public.' + ${definition.public}} + ')'" th:if="${definition.crudGrant}"></span>
+              <span th:text="'(' + #{'boolean.public.' + ${definition.public}} + ')'" class="ctxt" th:if="${definition.crudGrant}"></span>
               <span th:if="${#lists.isEmpty(definition.sourceLinks)}" class="show-on-mouseover" th:unless="${definition.editDisabled}">
                 [
                 <button type="button" class="btn badge badge-secondary"
@@ -601,7 +601,7 @@
     <div class="col pl-0">
       <th:block th:each="noteLangGroup : ${meaning.noteLangGroups}">
         <div>
-          <span th:text="${viewUtil.getLangIso2(noteLangGroup.lang)}" class="mr-2"></span>
+          <span th:text="${@viewUtil.getLangIso2(noteLangGroup.lang)}" class="mr-2"></span>
           <button name="lang-collapse-btn" type="button" class="btn badge badge-secondary btn-toggle"
                   th:data-lang="${noteLangGroup.lang}"
                   th:title="${noteLangGroup.selected} ? #{common.hide.lang.group} : #{common.show.lang.group}"
@@ -707,7 +707,7 @@
     <div class="col pl-0">
       <th:block th:each="noteLangGroup : ${meaning.noteLangGroups}">
         <div>
-          <span th:text="${viewUtil.getLangIso2(noteLangGroup.lang)}" class="mr-2"></span>
+          <span th:text="${@viewUtil.getLangIso2(noteLangGroup.lang)}" class="mr-2"></span>
           <button name="lang-collapse-btn" type="button" class="btn badge badge-secondary btn-toggle"
                   th:data-lang="${noteLangGroup.lang}"
                   th:title="${noteLangGroup.selected} ? #{common.hide.lang.group} : #{common.show.lang.group}"
@@ -983,19 +983,94 @@
     <hr/>
     <div class="col pr-0 col-w13rem">
       <span class="lbl" th:text="#{term.meaning.freeforms}">Tähenduse atribuudid</span>
+      <button type="button" class="btn badge badge-success float-right mr-4"
+              th:title="#{common.add.new}"
+              data-toggle="modal"
+              th:data-target="${'#addMeaningFreeformDlg_' + meaningId}"
+              sec:authorize="#vars.meaning.crudGrant">
+        <i class="fa fa-plus" aria-hidden="true"></i>
+      </button>
     </div>
     <div class="col pl-0">
-      <table>
-        <tr th:each="freeform : ${meaning.freeforms}">
-          <td style="vertical-align: text-top; padding-right: 1em">
-            <span th:text="${freeform.freeformTypeCode}"></span>
-          </td>
-          <td>
-            <span th:utext="${freeform.valueText}" th:if="${freeform.valueText != null}"></span>
-            <span th:text="${#dates.format(freeform.valueDate, 'dd.MM.yyyy HH:mm')}" th:if="${freeform.valueDate != null}"></span>
-          </td>
-        </tr>
-      </table>
+      <div class="orderable" data-op-code="meaning_freeform">
+        <div class="ml-4" style="position: relative"
+             th:each="freeform,freeformIter : ${meaning.freeforms}"
+             th:data-id="${freeform.id}"
+             th:data-orderby="${freeform.orderBy}">
+          <div th:replace="termdialog :: edit_meaning_freeform_dlg"></div>
+          <div th:replace="termdialog :: add_meaning_freeform_source_link_dlg"></div>
+          <div style="display: list-item; position: absolute"></div>
+          <div class="action-column">
+            <th:block th:replace="common :: ordering_buttons(${freeformIter})" sec:authorize="#vars.meaning.crudGrant"></th:block>
+          </div>
+          <div class="invisible-buttons action-buttons-anchor mw-80">
+            <span th:text="${freeform.freeformTypeValue}" class="text-monospace mr-2"></span>
+            <span th:utext="${freeform.valuePrese}"></span>
+            <span th:text="'(' + #{'boolean.public.' + ${freeform.public}} + ')'" class="ctxt"></span>
+            <span th:if="${#lists.isEmpty(freeform.sourceLinks)}" class="show-on-mouseover">
+              [
+              <button type="button" class="btn badge badge-secondary"
+                      th:title="#{common.add.source.link}"
+                      data-toggle="modal"
+                      th:data-target="${'#addMeaningFreeformSourceLinkDlg_' + meaningId + '_' + freeform.id}"
+                      sec:authorize="#vars.meaning.crudGrant">
+                <i class="fa fa-external-link" aria-hidden="true"></i>
+              </button>
+              ]
+            </span>
+            <div class="action-buttons-2">
+              <button type="button" class="btn badge badge-primary"
+                      th:title="#{common.edit}"
+                      data-toggle="modal"
+                      th:data-target="${'#editMeaningFreeformDlg_' + meaningId + '_' + freeform.id}"
+                      sec:authorize="#vars.meaning.crudGrant">
+                <i class="fa fa-edit" aria-hidden="true"></i>
+              </button>
+              <button type="button" class="btn badge badge-warning"
+                      data-op-code="meaning_freeform"
+                      th:data-id="${freeform.id}"
+                      data-toggle="delete-confirm"
+                      data-placement="right"
+                      sec:authorize="#vars.meaning.crudGrant">
+                <i class="fa fa-remove" aria-hidden="true"></i>
+              </button>
+            </div>
+          </div>
+          <div class="hidden-buttons">
+            <th:block th:each="sourceLink : ${freeform.sourceLinks}" th:if="${not #lists.isEmpty(freeform.sourceLinks)}">
+              <div th:replace="termdialog :: edit_meaning_freeform_source_link_dlg"></div>
+              <span>
+                [
+                <a th:href="@{'/meaning_freeform_source_link:' + ${sourceLink.id}}" th:text="${sourceLink.sourceName}"></a>
+                <span th:text="${sourceLink.name}" th:if="${sourceLink.name != null}"></span>
+                <button type="button" class="btn badge badge-primary"
+                        th:title="#{common.edit}"
+                        data-toggle="modal"
+                        th:data-target="${'#editMeaningFreeformSourceLinkDlg_' + sourceLink.id}"
+                        sec:authorize="#vars.meaning.crudGrant">
+                  <i class="fa fa-edit" aria-hidden="true"></i>
+                </button>
+                <button type="button" class="btn badge badge-warning"
+                        data-op-code="meaning_freeform_source_link"
+                        th:data-id="${sourceLink.id}"
+                        data-toggle="delete-confirm"
+                        data-placement="right"
+                        sec:authorize="#vars.meaning.crudGrant">
+                  <i class="fa fa-remove" aria-hidden="true"></i>
+                </button>
+                ]
+              </span>
+            </th:block>
+            <button type="button" class="btn badge badge-success hidden"
+                    th:title="#{common.add.source.link}"
+                    data-toggle="modal"
+                    th:data-target="${'#addMeaningFreeformSourceLinkDlg_' + meaningId + '_' + freeform.id}"
+                    sec:authorize="#vars.meaning.crudGrant">
+              <i class="fa fa-external-link" aria-hidden="true"></i>
+            </button>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
   <div class="row no-gutters" th:if="${not #lists.isEmpty(meaning.viewRelations)}" th:fragment="meaning_relation">
@@ -1021,8 +1096,8 @@
               <button type="button" class="btn btn-link p-0" th:data-id="${relation.meaningId}" name="details-btn"
                     data-behaviour="replace"
                     data-plugin="loadDetailsPlugin">
-                <span th:utext="${viewUtil.getWordValueMarkup(relation)}"></span>
-                <span th:text="${'(' + viewUtil.getLangIso2(relation.wordLang) + ')'}"></span>
+                <span th:utext="${@viewUtil.getWordValueMarkup(relation)}"></span>
+                <span th:text="${'(' + @viewUtil.getLangIso2(relation.wordLang) + ')'}"></span>
                 <th:block th:each="datasetCode, dsIter : ${relation.datasetCodes}">
                   <span th:if="${dsIter.first}">[</span>
                   <span th:text="${datasetCode}"></span>
@@ -1077,7 +1152,7 @@
         <span class="ttl word-value"
               th:data-id="${lexeme.wordId}"
               th:id="${'word-value-' + lexeme.wordId}"
-              th:utext="${viewUtil.getWordValueMarkup(lexeme.word)}"></span>
+              th:utext="${@viewUtil.getWordValueMarkup(lexeme.word)}"></span>
         <button type="button" class="btn badge badge-primary"
                 th:title="#{common.edit}"
                 data-toggle="modal"
@@ -1439,15 +1514,74 @@
       </button>
     </div>
     <div class="col pl-0">
-      <div th:each="usage : ${lexeme.usages}">
-        <div th:replace="termdialog :: edit_usage_dlg"></div>
-        <div th:replace="termdialog :: add_usage_source_link_dlg"></div>
-        <div class="invisible-buttons action-buttons-anchor mw-80 ml-3">
+      <div class="orderable" data-op-code="usage">
+        <div class="ml-4" style="position: relative"
+             th:each="usage,usageIter : ${lexeme.usages}"
+             th:data-id="${usage.id}"
+             th:data-orderby="${usage.orderBy}">
+          <div th:replace="termdialog :: edit_usage_dlg"></div>
+          <div th:replace="termdialog :: add_usage_source_link_dlg"></div>
           <div style="display: list-item; position: absolute"></div>
-          <span th:utext="${usage.valuePrese}"></span>
-          <div class="d-inline-block ctxt" th:text="'(' + #{'boolean.public.' + ${usage.public}} + ')'" th:if="${usage.crudGrant}"></div>
-          <span class="show-on-mouseover" th:if="${#lists.isEmpty(usage.sourceLinks)}">
-            [
+          <div class="action-column">
+            <th:block th:replace="common :: ordering_buttons(${usageIter})" sec:authorize="#vars.usage.crudGrant"></th:block>
+          </div>
+          <div class="invisible-buttons action-buttons-anchor mw-80">
+            <span th:utext="${usage.valuePrese}"></span>
+            <div class="d-inline-block ctxt" th:text="'(' + #{'boolean.public.' + ${usage.public}} + ')'" th:if="${usage.crudGrant}"></div>
+            <span class="show-on-mouseover" th:if="${#lists.isEmpty(usage.sourceLinks)}">
+              [
+              <button type="button" class="btn badge badge-secondary"
+                      th:title="#{common.add.source.link}"
+                      data-toggle="modal"
+                      th:data-target="${'#addUsageSourceLinkDlg_' + usage.id}"
+                      sec:authorize="#vars.usage.crudGrant">
+                <i class="fa fa-external-link" aria-hidden="true"></i>
+              </button>
+              ]
+            </span>
+            <div class="action-buttons-2">
+              <button type="button" class="btn badge badge-primary"
+                      th:title="#{common.edit}"
+                      data-toggle="modal"
+                      th:data-target="${'#editUsageDlg_' + lexeme.lexemeId + '_' + usage.id}"
+                      sec:authorize="#vars.usage.crudGrant">
+                <i class="fa fa-edit" aria-hidden="true"></i>
+              </button>
+              <button type="button" class="btn badge badge-warning"
+                      th:data-id="${usage.id}"
+                      data-op-code="usage"
+                      data-toggle="delete-confirm"
+                      data-placement="right"
+                      sec:authorize="#vars.usage.crudGrant">
+                <i class="fa fa-remove" aria-hidden="true"></i>
+              </button>
+            </div>
+          </div>
+          <div class="hidden-buttons" th:if="${not #lists.isEmpty(usage.sourceLinks)}">
+            <th:block th:each="sourceLink : ${usage.sourceLinks}">
+              <div th:replace="termdialog :: edit_usage_source_link_dlg"></div>
+              <span>
+                [
+                <a th:href="@{'/usage_source_link:' + ${sourceLink.id}}" th:text="${sourceLink.sourceName}"></a>
+                <span th:text="${sourceLink.name}" th:if="${sourceLink.name != null}"></span>
+                <button type="button" class="btn badge badge-primary"
+                        th:title="#{common.edit}"
+                        data-toggle="modal"
+                        th:data-target="${'#editUsageSourceLinkDlg_' + sourceLink.id}"
+                        sec:authorize="#vars.usage.crudGrant">
+                  <i class="fa fa-edit" aria-hidden="true"></i>
+                </button>
+                <button type="button" class="btn badge badge-warning"
+                        th:data-id="${sourceLink.id}"
+                        data-op-code="usage_source_link"
+                        data-toggle="delete-confirm"
+                        data-placement="right"
+                        sec:authorize="#vars.usage.crudGrant">
+                  <i class="fa fa-remove" aria-hidden="true"></i>
+                </button>
+                ]
+              </span>
+            </th:block>
             <button type="button" class="btn badge badge-secondary"
                     th:title="#{common.add.source.link}"
                     data-toggle="modal"
@@ -1455,58 +1589,7 @@
                     sec:authorize="#vars.usage.crudGrant">
               <i class="fa fa-external-link" aria-hidden="true"></i>
             </button>
-            ]
-          </span>
-          <div class="action-buttons-2">
-            <button type="button" class="btn badge badge-primary"
-                    th:title="#{common.edit}"
-                    data-toggle="modal"
-                    th:data-target="${'#editUsageDlg_' + lexeme.lexemeId + '_' + usage.id}"
-                    sec:authorize="#vars.usage.crudGrant">
-              <i class="fa fa-edit" aria-hidden="true"></i>
-            </button>
-            <button type="button" class="btn badge badge-warning"
-                    th:data-id="${usage.id}"
-                    data-op-code="usage"
-                    data-toggle="delete-confirm"
-                    data-placement="right"
-                    sec:authorize="#vars.usage.crudGrant">
-              <i class="fa fa-remove" aria-hidden="true"></i>
-            </button>
           </div>
-        </div>
-        <div class="hidden-buttons" th:if="${not #lists.isEmpty(usage.sourceLinks)}">
-          <th:block th:each="sourceLink : ${usage.sourceLinks}">
-            <div th:replace="termdialog :: edit_usage_source_link_dlg"></div>
-            <span>
-              [
-              <a th:href="@{'/usage_source_link:' + ${sourceLink.id}}" th:text="${sourceLink.sourceName}"></a>
-              <span th:text="${sourceLink.name}" th:if="${sourceLink.name != null}"></span>
-              <button type="button" class="btn badge badge-primary"
-                      th:title="#{common.edit}"
-                      data-toggle="modal"
-                      th:data-target="${'#editUsageSourceLinkDlg_' + sourceLink.id}"
-                      sec:authorize="#vars.usage.crudGrant">
-                <i class="fa fa-edit" aria-hidden="true"></i>
-              </button>
-              <button type="button" class="btn badge badge-warning"
-                      th:data-id="${sourceLink.id}"
-                      data-op-code="usage_source_link"
-                      data-toggle="delete-confirm"
-                      data-placement="right"
-                      sec:authorize="#vars.usage.crudGrant">
-                <i class="fa fa-remove" aria-hidden="true"></i>
-              </button>
-              ]
-            </span>
-          </th:block>
-          <button type="button" class="btn badge badge-secondary"
-                  th:title="#{common.add.source.link}"
-                  data-toggle="modal"
-                  th:data-target="${'#addUsageSourceLinkDlg_' + usage.id}"
-                  sec:authorize="#vars.usage.crudGrant">
-            <i class="fa fa-external-link" aria-hidden="true"></i>
-          </button>
         </div>
       </div>
     </div>
@@ -1533,7 +1616,7 @@
             <button type="button" class="btn btn-link btn-xs" th:data-id="${relation.meaningId}" name="details-btn"
                   data-behaviour="replace"
                   data-plugin="loadDetailsPlugin">
-              <span th:utext="${viewUtil.getWordValueMarkup(relation) + ' (' + viewUtil.getLangIso2(relation.wordLang) + ')'}"></span>
+              <span th:utext="${@viewUtil.getWordValueMarkup(relation) + ' (' + @viewUtil.getLangIso2(relation.wordLang) + ')'}"></span>
             </button>
             <button type="button" class="btn badge badge-warning"
                     th:data-id="${relation.id}"
@@ -1568,7 +1651,7 @@
     <div class="col pl-0">
       <th:block th:each="noteLangGroup : ${lexeme.noteLangGroups}">
         <div>
-          <span th:text="${viewUtil.getLangIso2(noteLangGroup.lang)}" class="mr-2"></span>
+          <span th:text="${@viewUtil.getLangIso2(noteLangGroup.lang)}" class="mr-2"></span>
           <button name="lang-collapse-btn" type="button" class="btn badge badge-secondary btn-toggle"
                   th:data-lang="${noteLangGroup.lang}"
                   th:title="${noteLangGroup.selected} ? #{common.hide.lang.group} : #{common.show.lang.group}"
@@ -1659,23 +1742,98 @@
       </th:block>
     </div>
   </div>
-  <div th:if="${not #lists.isEmpty(lexeme.freeforms)}" class="row no-gutters" th:fragment="lexeme_freeform">
+  <div class="row no-gutters" th:if="${not #lists.isEmpty(lexeme.freeforms)}" th:fragment="lexeme_freeform">
     <hr/>
     <div class="col pr-0 col-w13rem">
       <span class="lbl" th:text="#{term.lexeme.freeforms}">Ilmiku atribuudid</span>
+      <button type="button" class="btn badge badge-secondary float-right mr-4"
+              th:title="#{common.add.new}"
+              data-toggle="modal"
+              th:data-target="${'#addLexemeFreeformDlg_' + lexeme.lexemeId}"
+              sec:authorize="#vars.lexeme.crudGrant">
+        <i class="fa fa-plus" aria-hidden="true"></i>
+      </button>
     </div>
     <div class="col pl-0">
-      <table>
-        <tr th:each="freeform : ${lexeme.freeforms}">
-          <td style="vertical-align: text-top; padding-right: 1em">
-            <span th:text="${freeform.freeformTypeCode}"></span>
-          </td>
-          <td>
-            <span th:utext="${freeform.valueText}" th:if="${freeform.valueText != null}"></span>
-            <span th:text="${#dates.format(freeform.valueDate, 'dd.MM.yyyy HH:mm')}" th:if="${freeform.valueDate != null}"></span>
-          </td>
-        </tr>
-      </table>
+      <div class="orderable" data-op-code="lexeme_freeform">
+        <div class="ml-4" style="position: relative"
+             th:each="freeform,freeformIter : ${lexeme.freeforms}"
+             th:data-id="${freeform.id}"
+             th:data-orderby="${freeform.orderBy}">
+          <div th:replace="termdialog :: edit_lexeme_freeform_dlg"></div>
+          <div th:replace="termdialog :: add_lexeme_freeform_source_link_dlg"></div>
+          <div style="display: list-item; position: absolute"></div>
+          <div class="action-column">
+            <th:block th:replace="common :: ordering_buttons(${freeformIter})" sec:authorize="#vars.lexeme.crudGrant"></th:block>
+          </div>
+          <div class="invisible-buttons action-buttons-anchor mw-80">
+            <span th:text="${freeform.freeformTypeValue}" class="text-monospace mr-2"></span>
+            <span th:utext="${freeform.valuePrese}"></span>
+            <span class="ctxt" th:text="'(' + #{'boolean.public.' + ${freeform.public}} + ')'"></span>
+            <span th:if="${#lists.isEmpty(freeform.sourceLinks)}" class="show-on-mouseover">
+              [
+              <button type="button" class="btn badge badge-success hidden"
+                      th:title="#{common.add.source.link}"
+                      data-toggle="modal"
+                      th:data-target="${'#addLexemeFreeformSourceLinkDlg_' + lexeme.lexemeId + '_' + freeform.id}"
+                      sec:authorize="#vars.lexeme.crudGrant">
+                <i class="fa fa-external-link" aria-hidden="true"></i>
+              </button>
+              ]
+            </span>
+            <div class="action-buttons-2">
+              <button type="button" class="btn badge badge-primary"
+                      th:title="#{common.edit}"
+                      data-toggle="modal"
+                      th:data-target="${'#editLexemeFreeformDlg_' + lexeme.lexemeId + '_' + freeform.id}"
+                      sec:authorize="#vars.lexeme.crudGrant">
+                <i class="fa fa-edit" aria-hidden="true"></i>
+              </button>
+              <button type="button" class="btn badge badge-warning"
+                      data-op-code="lexeme_freeform"
+                      th:data-id="${freeform.id}"
+                      data-toggle="delete-confirm"
+                      data-placement="right"
+                      sec:authorize="#vars.lexeme.crudGrant">
+                <i class="fa fa-remove" aria-hidden="true"></i>
+              </button>
+            </div>
+          </div>
+          <div class="hidden-buttons">
+            <th:block th:each="sourceLink : ${freeform.sourceLinks}" th:if="${not #lists.isEmpty(freeform.sourceLinks)}">
+              <div th:replace="termdialog :: edit_lexeme_freeform_source_link_dlg"></div>
+              <span>
+                [
+                <a th:href="@{'/lexeme_freeform_source_link:' + ${sourceLink.id}}" th:text="${sourceLink.sourceName}"></a>
+                <span th:text="${sourceLink.name}" th:if="${sourceLink.name != null}"></span>
+                <button type="button" class="btn badge badge-primary"
+                        th:title="#{common.edit}"
+                        data-toggle="modal"
+                        th:data-target="${'#editLexemeFreeformSourceLinkDlg_' + sourceLink.id}"
+                        sec:authorize="#vars.lexeme.crudGrant">
+                  <i class="fa fa-edit" aria-hidden="true"></i>
+                </button>
+                <button type="button" class="btn badge badge-warning"
+                        data-op-code="lexeme_freeform_source_link"
+                        th:data-id="${sourceLink.id}"
+                        data-toggle="delete-confirm"
+                        data-placement="right"
+                        sec:authorize="#vars.lexeme.crudGrant">
+                  <i class="fa fa-remove" aria-hidden="true"></i>
+                </button>
+                ]
+              </span>
+            </th:block>
+            <button type="button" class="btn badge badge-success hidden"
+                    th:title="#{common.add.source.link}"
+                    data-toggle="modal"
+                    th:data-target="${'#addLexemeFreeformSourceLinkDlg_' + lexeme.lexemeId + '_' + freeform.id}"
+                    sec:authorize="#vars.lexeme.crudGrant">
+              <i class="fa fa-external-link" aria-hidden="true"></i>
+            </button>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
   <div class="row mr-0 hidden-buttons no-gutters" th:if="${lexeme.word.genderCode != null}" th:fragment="word_gender">
@@ -1683,7 +1841,7 @@
       <span class="lbl" th:text="#{term.word.gender}">Sugu</span>
     </div>
     <div class="col pl-0">
-      <span th:text="${viewUtil.getClassifierValue(lexeme.word.genderCode, wordGenders)}"></span>
+      <span th:text="${@viewUtil.getClassifierValue(lexeme.word.genderCode, wordGenders)}"></span>
       <button type="button" class="btn badge badge-primary" th:title="#{common.edit}"
               data-toggle="modal"
               th:data-target="${'#editWordGenderDlg_' + lexeme.lexemeId + '_' + lexeme.wordId}">
@@ -1770,6 +1928,95 @@
                 <i class="fa fa-remove" aria-hidden="true"></i>
               </button>
             </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="border-top px-0 w-100 ekiAccordion__instance" th:fragment="word_freeform">
+    <div class="ekiAccordion__title">
+      <span class="badge badge-data-exists" th:unless="${#lists.isEmpty(lexeme.word.freeforms)}">•</span>
+      <span th:text="#{term.word.freeforms}">Keelendi atribuudid</span>
+      <button type="button" class="ekiAccordion__add"
+              th:title="#{common.add.new}"
+              data-toggle="modal"
+              th:data-target="${'#addWordFreeformDlg_' + lexeme.lexemeId}"
+              sec:authorize="#vars.lexeme.word.crudGrant">
+        <i class="fa fa-plus" aria-hidden="true"></i>
+      </button>
+    </div>
+    <div class="ekiAccordion__content overflow-auto">
+      <div th:if="${#lists.isEmpty(lexeme.word.freeforms)}" th:text="#{common.no.content}">Sisu puudub...</div>
+      <div th:each="freeform,freeformIter : ${lexeme.word.freeforms}" 
+        th:data-id="${freeform.id}" 
+        th:data-orderby="${freeform.orderBy}">
+        <div th:replace="termdialog :: edit_word_freeform_dlg"></div>
+        <div th:replace="termdialog :: add_word_freeform_source_link_dlg"></div>
+        <div class="col hidden-buttons pr-5">
+          <div class="invisible-buttons action-buttons-anchor">
+            <span th:text="${freeform.freeformTypeValue}" class="text-monospace mr-2"></span>
+            <span th:utext="${freeform.valuePrese}"></span>
+            <span class="ctxt" th:text="'(' + #{'boolean.public.' + ${freeform.public}} + ')'"></span>
+            <span th:if="${#lists.isEmpty(freeform.sourceLinks)}" class="show-on-mouseover">
+              [
+              <button type="button" class="btn badge badge-success hidden" data-toggle="modal" 
+                th:title="#{common.add.source.link}" 
+                th:data-target="${'#addWordFreeformSourceLinkDlg_' + lexeme.lexemeId + '_' + freeform.id}" 
+                sec:authorize="#vars.lexeme.word.crudGrant">
+                <i class="fa fa-external-link" aria-hidden="true"></i>
+              </button>
+              ]
+            </span>
+            <div class="action-buttons-2">
+              <button type="button" class="btn badge badge-primary" data-toggle="modal" 
+                th:title="#{common.edit}" 
+                th:data-target="${'#editWordFreeformDlg_' + lexeme.lexemeId + '_' + freeform.id}"
+                sec:authorize="#vars.lexeme.word.crudGrant">
+                <i class="fa fa-edit" aria-hidden="true"></i>
+              </button>
+              <button type="button" class="btn badge badge-warning" 
+                th:data-id="${freeform.id}" 
+                data-op-code="word_freeform" 
+                data-toggle="delete-confirm" 
+                data-placement="right"
+                sec:authorize="#vars.lexeme.word.crudGrant">
+                <i class="fa fa-remove" aria-hidden="true"></i>
+              </button>
+            </div>
+          </div>
+          <div class="hidden-buttons" th:if="${not #lists.isEmpty(freeform.sourceLinks)}">
+            <th:block th:each="sourceLink : ${freeform.sourceLinks}">
+              <div th:replace="termdialog :: edit_word_freeform_source_link_dlg"></div>
+              <span>
+                [
+                <a th:href="@{'/word_freeform_source_link:' + ${sourceLink.id}}" th:text="${sourceLink.sourceName}"></a>
+                <span th:text="${sourceLink.name}" th:if="${sourceLink.name != null}"></span>
+                <button type="button" class="btn badge badge-primary" data-toggle="modal" 
+                  th:title="#{common.edit}" 
+                  th:data-target="${'#editWordFreeformSourceLinkDlg_' + sourceLink.id}"
+                  sec:authorize="#vars.lexeme.word.crudGrant">
+                  <i class="fa fa-edit" aria-hidden="true"></i>
+                </button>
+                <button type="button" class="btn badge badge-warning" 
+                  data-op-code="word_freeform_source_link" 
+                  th:data-id="${sourceLink.id}" 
+                  data-toggle="delete-confirm" 
+                  data-placement="right"
+                  sec:authorize="#vars.lexeme.word.crudGrant">
+                  <i class="fa fa-remove" aria-hidden="true"></i>
+                </button>
+                ]
+              </span>
+            </th:block>
+            <button type="button" class="btn badge badge-success hidden" data-toggle="modal"
+              th:title="#{common.add.source.link}" 
+              th:data-target="${'#addWordFreeformSourceLinkDlg_' + lexeme.lexemeId + '_' + freeform.id}" 
+              sec:authorize="#vars.lexeme.word.crudGrant">
+              <i class="fa fa-external-link" aria-hidden="true"></i>
+            </button>
+          </div>
+          <div th:unless="${freeformIter.last}">
+            <hr/>
           </div>
         </div>
       </div>

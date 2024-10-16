@@ -13,6 +13,6 @@ $.fn.enableSelectUpdateWordBtnPlugin = function() {
 
 function enableSelectWordForUpdateBtn() {
 	if ($('input[name="wordId"]:checked').length === 1) {
-		$("#selectWordBtn").removeAttr("disabled");
+		$("#selectWordBtn").prop("disabled", false);
 	}
 }

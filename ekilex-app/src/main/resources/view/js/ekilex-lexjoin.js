@@ -9,7 +9,7 @@ function initializeLexJoin() {
 
 function joinLexemes() {
 	const joinForm = $(this).closest('form');
-	const validateJoinUrl = applicationUrl + "validatelexjoin";
+	const lexjoinvalidateUrl = applicationUrl + "lexjoinvalidate";
 	const failMessage = messages["lexjoin.fail"];
-	validateAndSubmitJoinForm(validateJoinUrl, joinForm, failMessage);
+	validateAndSubmitJoinForm(lexjoinvalidateUrl, joinForm, failMessage);
 };

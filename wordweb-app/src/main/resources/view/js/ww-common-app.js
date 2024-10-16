@@ -2,13 +2,13 @@ var sessionTimeoutBufferSec = 60;
 
 $(document).ready(function() {
 
-	$('[autofocus]:not(:focus)').eq(0).focus();
-	$('.home-page #search').focus();
+	$('[autofocus]:not(:focus)').eq(0).trigger('focus');
+	$('.home-page #search').trigger('focus');
 
 	// Focus trap sidebar
 	$('.header-links .menu-item:last-of-type').on('focus', function(e) {
 		if ($("#uiLangMenuButton").val() == "") {
-			$("#uiLangMenuButton").focus();
+			$("#uiLangMenuButton").trigger('focus');
 		}
 	});
 
@@ -101,7 +101,7 @@ $(document).on('show.bs.modal', '#feedbackModal', function() {
 	fbModal.find('#responseDiv').addClass('d-none');
 	fbModal.modal('toggle');
 	fbModal.off('shown.bs.modal').on('shown.bs.modal', function() {
-		fbModal.find('.close').focus()
+		fbModal.find('.close').trigger('focus')
 	});
 });
 
@@ -276,7 +276,7 @@ function handleVirtualKeyboard() {
 		calview(widthOfAllBtnWithoutVirtualKeyboard, widthOfAllBtn, keyBoardpView, noKeyBoardView);
 	});
 
-	$(window).resize(function() {
+	$(window).on('resize', function() {
 		calview(widthOfAllBtnWithoutVirtualKeyboard, widthOfAllBtn, keyBoardpView, noKeyBoardView);
 	});
 

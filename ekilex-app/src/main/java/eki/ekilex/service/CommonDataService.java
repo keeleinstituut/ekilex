@@ -10,6 +10,7 @@ import java.util.stream.Collectors;
 
 import javax.transaction.Transactional;
 
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.InitializingBean;
@@ -18,6 +19,7 @@ import org.springframework.stereotype.Component;
 
 import eki.common.constant.ClassifierName;
 import eki.common.constant.FreeformConstant;
+import eki.common.constant.FreeformOwner;
 import eki.common.constant.GlobalConstant;
 import eki.common.constant.TagType;
 import eki.ekilex.constant.SystemConstant;
@@ -60,6 +62,16 @@ public class CommonDataService implements InitializingBean, SystemConstant, Glob
 	@Transactional
 	public List<Classifier> getAvailableFreeformTypes() {
 		List<Classifier> freeformTypes = commonDataDbService.getFreeformTypes(CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
+		freeformTypes.removeIf(classifier -> technicalFreeformTypesCodes.contains(classifier.getCode()));
+		return freeformTypes;
+	}
+
+	@Transactional
+	public List<Classifier> getFreeformTypes(String datasetCode, FreeformOwner freeformOwner) {
+		List<Classifier> freeformTypes = commonDataDbService.getFreeformTypes(datasetCode, freeformOwner, CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
+		if (CollectionUtils.isEmpty(freeformTypes)) {
+			return freeformTypes;
+		}
 		freeformTypes.removeIf(classifier -> technicalFreeformTypesCodes.contains(classifier.getCode()));
 		return freeformTypes;
 	}

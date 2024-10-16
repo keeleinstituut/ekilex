@@ -199,6 +199,18 @@ public class CudService extends AbstractCudService implements PermConstant, Acti
 	}
 
 	@Transactional
+	public void updateWordFreeform(Long freeformId, String value, boolean isPublic, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
+
+		FreeForm freeform = new FreeForm();
+		freeform.setId(freeformId);
+		freeform.setPublic(isPublic);
+		setFreeformValueTextAndValuePrese(freeform, value);
+		applyUpdate(freeform);
+
+		updateFreeform(ActivityOwner.WORD, ActivityEntity.FREEFORM, freeform, roleDatasetCode, isManualEventOnUpdateEnabled);
+	}
+
+	@Transactional
 	public void updateWordMorphComment(Long wordId, String value, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
 
 		ActivityLogData activityLog = activityLogService.prepareActivityLog("updateWordMorphComment", wordId, ActivityOwner.WORD, roleDatasetCode, isManualEventOnUpdateEnabled);
@@ -313,7 +325,7 @@ public class CudService extends AbstractCudService implements PermConstant, Acti
 			Long usageId = item.getId();
 			Long lexemeId = activityLogService.getOwnerId(usageId, ActivityEntity.USAGE);
 			ActivityLogData activityLog = activityLogService.prepareActivityLog("updateUsageOrdering", lexemeId, ActivityOwner.LEXEME, roleDatasetCode, isManualEventOnUpdateEnabled);
-			cudDbService.updateFreeformOrderby(item);
+			cudDbService.updateUsageOrderby(item);
 			activityLogService.createActivityLog(activityLog, usageId, ActivityEntity.USAGE);
 		}
 	}
@@ -349,7 +361,7 @@ public class CudService extends AbstractCudService implements PermConstant, Acti
 			Long lexemeNoteId = item.getId();
 			Long lexemeId = activityLogService.getOwnerId(lexemeNoteId, ActivityEntity.LEXEME_NOTE);
 			ActivityLogData activityLog = activityLogService.prepareActivityLog("updateLexemeNoteOrdering", lexemeId, ActivityOwner.LEXEME, roleDatasetCode, isManualEventOnUpdateEnabled);
-			cudDbService.updateFreeformOrderby(item);
+			cudDbService.updateLexemeNoteOrderby(item);
 			activityLogService.createActivityLog(activityLog, lexemeNoteId, ActivityEntity.LEXEME_NOTE);
 		}
 	}
@@ -361,7 +373,7 @@ public class CudService extends AbstractCudService implements PermConstant, Acti
 			Long meaningNoteId = item.getId();
 			Long meaningId = activityLogService.getOwnerId(meaningNoteId, ActivityEntity.MEANING_NOTE);
 			ActivityLogData activityLog = activityLogService.prepareActivityLog("updateMeaningNoteOrdering", meaningId, ActivityOwner.MEANING, roleDatasetCode, isManualEventOnUpdateEnabled);
-			cudDbService.updateFreeformOrderby(item);
+			cudDbService.updateMeaningNoteOrderby(item);
 			activityLogService.createActivityLog(activityLog, meaningNoteId, ActivityEntity.MEANING_NOTE);
 		}
 	}
@@ -876,6 +888,19 @@ public class CudService extends AbstractCudService implements PermConstant, Acti
 	}
 
 	@Transactional
+	public void createWordFreeform(Long wordId, String valuePrese, String freeformTypeCode, boolean isPublic, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
+
+		FreeForm freeform = new FreeForm();
+		freeform.setFreeformTypeCode(freeformTypeCode);
+		freeform.setComplexity(Complexity.DETAIL);
+		freeform.setPublic(isPublic);
+		setFreeformValueTextAndValuePrese(freeform, valuePrese);
+		applyCreateUpdate(freeform);
+
+		createWordFreeform(ActivityEntity.FREEFORM, wordId, freeform, roleDatasetCode, isManualEventOnUpdateEnabled);
+	}
+
+	@Transactional
 	public void createUsageTranslation(Long usageId, String valuePrese, String lang, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
 
 		UsageTranslation usageTranslation = new UsageTranslation();
@@ -1205,6 +1230,15 @@ public class CudService extends AbstractCudService implements PermConstant, Acti
 	public void deleteWordForum(Long wordForumId) {
 
 		cudDbService.deleteWordForum(wordForumId);
+	}
+
+	@Transactional
+	public void deleteWordFreeform(Long freeformId, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
+
+		Long wordId = activityLogService.getOwnerId(freeformId, ActivityEntity.FREEFORM);
+		ActivityLogData activityLog = activityLogService.prepareActivityLog("deleteWordFreeform", wordId, ActivityOwner.WORD, roleDatasetCode, isManualEventOnUpdateEnabled);
+		cudDbService.deleteFreeform(freeformId);
+		activityLogService.createActivityLog(activityLog, freeformId, ActivityEntity.FREEFORM);
 	}
 
 	@Transactional

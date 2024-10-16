@@ -101,7 +101,7 @@ function searchWordAutocomplete() {
 		select: function(event, ui) {
 			if (ui.item) {
 				$("input[name='searchWord']").val(ui.item.value);
-				$("#search-btn").click();
+				$("#search-btn").trigger('click');
 			}
 			return false;
 		},
@@ -243,7 +243,7 @@ function setSelectedWordHomonymNrAndLang() {
 function clickSearchIfInputExists() {
 	var tempSearchWord = $("input[name='searchWord']").val();
 	if (tempSearchWord) {
-		$("#search-btn").click();
+		$("#search-btn").trigger('click');
 	}
 }
 

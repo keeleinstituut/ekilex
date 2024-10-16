@@ -1,10 +1,13 @@
 package eki.ekilex.api.controller;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
 import org.springframework.core.annotation.Order;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -30,19 +33,28 @@ public class ApiSourceController extends AbstractApiController {
 	@Order(201)
 	@GetMapping(API_SERVICES_URI + SOURCE_URI + SEARCH_URI + "/{searchFilter}")
 	@ResponseBody
-	public SourceSearchResult sourceSearch(@PathVariable("searchFilter") String searchFilter) {
+	public SourceSearchResult sourceSearch(
+			@PathVariable("searchFilter") String searchFilter,
+			Authentication authentication,
+			HttpServletRequest request) {
 
 		EkiUser user = userContext.getUser();
 		SourceSearchResult sourceSearchResult = sourceService.getSourceSearchResult(searchFilter, user, DEFAULT_OFFSET, DEFAULT_MAX_RESULTS_LIMIT);
+		addRequestStat(authentication, request);
 		return sourceSearchResult;
 	}
 
 	@Order(202)
 	@GetMapping(API_SERVICES_URI + SOURCE_URI + DETAILS_URI + "/{sourceId}")
 	@ResponseBody
-	public Source getSource(@PathVariable("sourceId") Long sourceId) {
+	public Source getSource(
+			@PathVariable("sourceId") Long sourceId,
+			Authentication authentication,
+			HttpServletRequest request) {
 
-		return sourceService.getSource(sourceId);
+		Source source = sourceService.getSource(sourceId);
+		addRequestStat(authentication, request);
+		return source;
 	}
 
 	@Order(203)
@@ -51,19 +63,21 @@ public class ApiSourceController extends AbstractApiController {
 	@ResponseBody
 	public ApiResponse createSource(
 			@RequestParam("crudRoleDataset") String crudRoleDataset,
-			@RequestBody Source source) {
+			@RequestBody Source source,
+			Authentication authentication,
+			HttpServletRequest request) {
 
 		if (StringUtils.isBlank(source.getName())) {
-			return getOpFailResponse("Source has no name");
+			return getOpFailResponse(authentication, request, "Source has no name");
 		}
 
 		cleanupSource(source);
 
 		try {
 			Long sourceId = sourceService.createSource(source, crudRoleDataset, MANUAL_EVENT_ON_UPDATE_DISABLED);
-			return getOpSuccessResponse(sourceId);
+			return getOpSuccessResponse(authentication, request, sourceId);
 		} catch (Exception e) {
-			return getOpFailResponse(e);
+			return getOpFailResponse(authentication, request, e);
 		}
 	}
 
@@ -75,15 +89,17 @@ public class ApiSourceController extends AbstractApiController {
 	@ResponseBody
 	public ApiResponse updateSource(
 			@RequestParam("crudRoleDataset") String crudRoleDataset,
-			@RequestBody Source source) {
+			@RequestBody Source source,
+			Authentication authentication,
+			HttpServletRequest request) {
 
 		cleanupSource(source);
 
 		try {
 			sourceService.updateSource(source, crudRoleDataset);
-			return getOpSuccessResponse();
+			return getOpSuccessResponse(authentication, request);
 		} catch (Exception e) {
-			return getOpFailResponse(e);
+			return getOpFailResponse(authentication, request, e);
 		}
 	}
 
@@ -100,17 +116,19 @@ public class ApiSourceController extends AbstractApiController {
 	@ResponseBody
 	public ApiResponse deleteSource(
 			@RequestParam("crudRoleDataset") String crudRoleDataset,
-			@RequestParam("sourceId") Long sourceId) {
+			@RequestParam("sourceId") Long sourceId,
+			Authentication authentication,
+			HttpServletRequest request) {
 
 		try {
 			boolean isValidForDeletion = sourceService.validateSourceDelete(sourceId);
 			if (!isValidForDeletion) {
-				return getOpFailResponse("Cannot delete, source in use");
+				return getOpFailResponse(authentication, request, "Cannot delete, source in use");
 			}
 			sourceService.deleteSource(sourceId, crudRoleDataset);
-			return getOpSuccessResponse();
+			return getOpSuccessResponse(authentication, request);
 		} catch (Exception e) {
-			return getOpFailResponse(e);
+			return getOpFailResponse(authentication, request, e);
 		}
 	}
 
@@ -121,13 +139,15 @@ public class ApiSourceController extends AbstractApiController {
 	public ApiResponse joinSources(
 			@RequestParam("crudRoleDataset") String crudRoleDataset,
 			@RequestParam("sourceId1") Long sourceId1,
-			@RequestParam("sourceId2") Long sourceId2) {
+			@RequestParam("sourceId2") Long sourceId2,
+			Authentication authentication,
+			HttpServletRequest request) {
 
 		try {
 			sourceService.joinSources(sourceId1, sourceId2, crudRoleDataset);
-			return getOpSuccessResponse();
+			return getOpSuccessResponse(authentication, request);
 		} catch (Exception e) {
-			return getOpFailResponse(e);
+			return getOpFailResponse(authentication, request, e);
 		}
 	}
 }

@@ -159,19 +159,11 @@ public class UsageTranslation extends TableImpl<UsageTranslationRecord> {
 
     @Override
     public List<ForeignKey<UsageTranslationRecord, ?>> getReferences() {
-        return Arrays.<ForeignKey<UsageTranslationRecord, ?>>asList(Keys.USAGE_TRANSLATION__USAGE_TRANSLATION_ORIGINAL_FREEFORM_ID_FKEY, Keys.USAGE_TRANSLATION__USAGE_TRANSLATION_USAGE_ID_FKEY, Keys.USAGE_TRANSLATION__USAGE_TRANSLATION_LANG_FKEY);
+        return Arrays.<ForeignKey<UsageTranslationRecord, ?>>asList(Keys.USAGE_TRANSLATION__USAGE_TRANSLATION_USAGE_ID_FKEY, Keys.USAGE_TRANSLATION__USAGE_TRANSLATION_LANG_FKEY);
     }
 
-    private transient Freeform _freeform;
     private transient Usage _usage;
     private transient Language _language;
-
-    public Freeform freeform() {
-        if (_freeform == null)
-            _freeform = new Freeform(this, Keys.USAGE_TRANSLATION__USAGE_TRANSLATION_ORIGINAL_FREEFORM_ID_FKEY);
-
-        return _freeform;
-    }
 
     public Usage usage() {
         if (_usage == null)

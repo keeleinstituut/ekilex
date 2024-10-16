@@ -1,9 +1,12 @@
 package eki.ekilex.api.controller;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
 import org.springframework.core.annotation.Order;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -30,9 +33,13 @@ public class ApiLexWordController extends AbstractApiController {
 	public LexWord getLexWord(
 			@RequestParam("crudRoleDataset") String crudRoleDataset,
 			@PathVariable("wordId") Long wordId,
-			@PathVariable("datasetCode") String datasetCode) {
+			@PathVariable("datasetCode") String datasetCode,
+			Authentication authentication,
+			HttpServletRequest request) {
 
-		return lexWordService.getLexWord(wordId, datasetCode);
+		LexWord lexWord = lexWordService.getLexWord(wordId, datasetCode);
+		addRequestStat(authentication, request);
+		return lexWord;
 	}
 
 	@Order(861)
@@ -43,13 +50,15 @@ public class ApiLexWordController extends AbstractApiController {
 	@ResponseBody
 	public ApiResponse saveLexWord(
 			@RequestParam("crudRoleDataset") String crudRoleDataset,
-			@RequestBody LexWord lexWord) {
+			@RequestBody LexWord lexWord,
+			Authentication authentication,
+			HttpServletRequest request) {
 
 		try {
 			Long wordId = lexWordService.saveLexWord(lexWord, crudRoleDataset);
-			return getOpSuccessResponse(wordId);
+			return getOpSuccessResponse(authentication, request, wordId);
 		} catch (Exception e) {
-			return getOpFailResponse(e);
+			return getOpFailResponse(authentication, request, e);
 		}
 	}
 

@@ -1329,6 +1329,25 @@ create table feedback_log_comment (
 );
 alter sequence feedback_log_comment_id_seq restart with 10000;
 
+create table api_request_count (
+	id bigserial primary key,
+	auth_name text not null,
+	generic_path text not null,
+	count bigint not null default 0,
+	unique (auth_name, generic_path)
+);
+alter sequence api_request_count_id_seq restart with 10000;
+
+create table api_error_count (
+	id bigserial primary key,
+	auth_name text not null,
+	generic_path text not null,
+	message text not null,
+	count bigint not null default 0,
+	unique (auth_name, generic_path, message)
+);
+alter sequence api_error_count_id_seq restart with 10000;
+
 create table temp_ds_import_pk_map (
   id bigserial primary key, 
   import_code varchar(100) not null, 

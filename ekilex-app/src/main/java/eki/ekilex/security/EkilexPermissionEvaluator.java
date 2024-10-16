@@ -50,6 +50,21 @@ public class EkilexPermissionEvaluator implements PermissionEvaluator, PermConst
 
 	// page perm
 
+	public boolean isDatasetOwnerOrAdmin(Authentication authentication, String datasetCode) {
+
+		EkiUser user = (EkiUser) authentication.getPrincipal();
+		if (!Boolean.TRUE.equals(user.getEnabled())) {
+			return false;
+		}
+		if (user.isAdmin()) {
+			return true;
+		}
+		List<DatasetPermission> datasetPermissions = user.getDatasetPermissions();
+		boolean isDatasetCrudPermExists = datasetPermissions.stream()
+				.anyMatch(perm -> AUTH_OPS_CRUD.contains(perm.getAuthOperation().name()) && StringUtils.equals(perm.getDatasetCode(), datasetCode));
+		return isDatasetCrudPermExists;
+	}
+
 	@Transactional
 	public boolean isMutableDataPageAccessPermitted(Authentication authentication) {
 

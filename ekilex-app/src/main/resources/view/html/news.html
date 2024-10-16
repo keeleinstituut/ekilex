@@ -36,7 +36,7 @@
                 <td class="m-0 p-1 col-md-2">
                   <div>
                     <span th:text="#{|enum.newsarticletype.${newsArticle.type.name()}|}"></span>
-                    <span th:text="|(${viewUtil.getLangIso2(newsArticle.lang)})|"></span>
+                    <span th:text="|(${@viewUtil.getLangIso2(newsArticle.lang)})|"></span>
                   </div>
                   <div>
                     <small th:text="${#temporals.format(newsArticle.created, 'dd.MM.yyyy HH:mm')}"></small>
@@ -88,7 +88,7 @@
                                   </div>
                                   <div>
                                     <span th:text="#{|enum.newsarticletype.${newsArticle.type.name()}|}"></span>
-                                    <span th:text="|(${viewUtil.getLangIso2(newsArticle.lang)})|"></span>
+                                    <span th:text="|(${@viewUtil.getLangIso2(newsArticle.lang)})|"></span>
                                   </div>
                                 </td>
                                 <td class="m-0 p-1 col-md-8">

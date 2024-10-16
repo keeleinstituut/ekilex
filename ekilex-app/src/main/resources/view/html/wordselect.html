@@ -35,9 +35,9 @@
       <div class="card-body" th:if="${meaningWordCandidates.wordCandidatesExist}">
         <div style="width: 95%" class="border rounded p-2 mb-2" th:each="wordCandidate : ${meaningWordCandidates.wordCandidates}">
           <div>
-            <span th:utext="${viewUtil.getWordValueMarkup(wordCandidate.word)}" class="ttl"></span>
+            <span th:utext="${@viewUtil.getWordValueMarkup(wordCandidate.word)}" class="ttl"></span>
             <span th:text="${wordCandidate.word.homonymNr}" class="ttl"></span>
-            <span th:text="${'(' + viewUtil.getLangIso2(wordCandidate.word.lang) + ')'}"></span>
+            <span th:text="${'(' + @viewUtil.getLangIso2(wordCandidate.word.lang) + ')'}"></span>
             <a class="btn btn-primary"
                th:href="@{'/wordselect/' + ${wordDetails.dataset} + '/' + ${wordCandidate.word.wordId} + '/' + ${wordDetails.meaningId}}"
                th:text="#{common.select}">Vali</a>
@@ -49,9 +49,9 @@
           <div>
             <span th:each="lexeme, lexemeIter : ${wordCandidate.lexemes}">
               <span th:each="meaningWord,meaningWordIter : ${lexeme.meaningWords}">
-                <span th:utext="${viewUtil.getWordValueMarkup(meaningWord)}"></span>
+                <span th:utext="${@viewUtil.getWordValueMarkup(meaningWord)}"></span>
                 <span th:text="${meaningWord.homonymNr}"></span>
-                <span th:text="${'(' + viewUtil.getLangIso2(meaningWord.lang) + ')'}"></span>
+                <span th:text="${'(' + @viewUtil.getLangIso2(meaningWord.lang) + ')'}"></span>
                 <span th:unless="${meaningWordIter.last}">,</span>
               </span>
             </span>

@@ -8,7 +8,7 @@ class WordGame {
       images: `${viewPath}/images`,
     }
   
-    this.languages = ['et', 'ru', 'uk'];
+    this.languages = ['et', 'ru', 'uk', 'en'];
     this.languagesWithSound = ['et'];
     this.languageNames = {};
     this.images = []
@@ -1284,7 +1284,7 @@ class WordGame {
         }
       }
 
-      $(searchClearBtn).click(() => {
+      $(searchClearBtn).on('click', () => {
         searchElem.value = "";
         searchContainer.classList.remove('open');
         searchClearBtn.classList.add('wordgame-hidden');
@@ -1442,7 +1442,7 @@ class WordGame {
         }
       });
 
-      $(searchEnterBtn).click((e) => {
+      $(searchEnterBtn).on('click', () => {
         directSearchHandler();
       });
 
@@ -1460,7 +1460,7 @@ class WordGame {
         handleClosingAutocomplete(e.target.className, true);
       });
 
-      $(document).click((e) => {
+      $(document).on('click', (e) => {
         handleClosingAutocomplete(e.target.className);
       });
     }

@@ -43,7 +43,7 @@ public class CorpusController implements WebConstant, SystemConstant {
 		List<String> uiSections = sessionBean.getUiSections();
 		List<CorpusSentence> sentences = new ArrayList<>();
 		if (StringUtils.equals(wordLang, DESTIN_LANG_EST)) {
-			sentences = corpusEstService.getSentences(wordValue, searchMode);
+			sentences = corpusEstService.getCorpusSentences(wordValue, searchMode);
 		}
 
 		model.addAttribute("sentences", sentences);
@@ -62,7 +62,7 @@ public class CorpusController implements WebConstant, SystemConstant {
 			Model model) {
 
 		List<String> uiSections = sessionBean.getUiSections();
-		List<CorpusTranslation> translations = corpusTranslationService.getTranslations(wordId, wordValue, wordLang);
+		List<CorpusTranslation> translations = corpusTranslationService.getCorpusTranslations(wordId, wordValue, wordLang);
 
 		model.addAttribute("translations", translations);
 		model.addAttribute("uiSections", uiSections);
