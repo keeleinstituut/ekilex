@@ -9,8 +9,12 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        'eki-blue': '#215da5',
-        'eki-warning': '#ffc107'
+        "eki-blue": "#215da5",
+        "eki-warning": "#ffc107",
+        "eki-success": "#00892e",
+        "eki-gray-100": "#ecf0f2",
+        "eki-gray-200": "#ccd9e0",
+        "eki-gray-400": "#5d606e",
       },
     },
   },

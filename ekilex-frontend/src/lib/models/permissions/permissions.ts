@@ -1,3 +1,15 @@
+interface DatasetPermission {
+  id: number;
+  userId: number;
+  datasetCode: string;
+  datasetName: string;
+  authOperation: AuthorityOperations;
+  authItem: "DATASET";
+  authLang: string | null;
+  authLangValue: string | null;
+  superiorDataset: boolean;
+}
+
 interface UserPermission {
   id: number;
   name: string;
@@ -11,7 +23,7 @@ interface UserPermission {
   createdOn: string;
   enablePending: boolean;
   applications: unknown[];
-  datasetPermissions: unknown[];
+  datasetPermissions: DatasetPermission[];
 }
 
 export interface UserFilter {
@@ -31,17 +43,7 @@ export interface UserDataset {
 }
 
 export interface UserRoleData {
-  userRole: {
-    id: number;
-    userId: number;
-    datasetCode: string;
-    datasetName: string;
-    authOperation: string;
-    authItem: string;
-    authLang: null | string;
-    authLangValue: null | string;
-    superiorDataset: boolean;
-  };
+  userRole: DatasetPermission;
   admin: boolean;
   master: boolean;
   roleSelected: boolean;
@@ -52,9 +54,30 @@ export interface UserRoleData {
   lexemeActiveTagChangeEnabled: boolean;
 }
 
+export type AuthorityOperations = "OWN" | "CRUD" | "READ";
+
+export const authorityOperations: AuthorityOperations[] = [
+  "OWN",
+  "CRUD",
+  "READ",
+];
+
+export interface Language {
+  name: "LANGUAGE";
+  code: string;
+  value: string;
+}
+
 export interface UserPermissionsInit {
   userRoleData: UserRoleData;
   userOwnedDatasets: UserDataset[];
+  authorityOperations: AuthorityOperations[];
+  languages: Language[];
 }
 
-export type UserPermissionType = "crud" | "admin" | "master" | "enabled";
+export enum UserPermissionType {
+  CRUD = "crud",
+  ADMIN = "admin",
+  MASTER = "master",
+  ENABLED = "enabled",
+}

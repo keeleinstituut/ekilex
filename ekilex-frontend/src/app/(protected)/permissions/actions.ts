@@ -79,22 +79,22 @@ export async function setPermission(
   }
   let endpoint: string;
   switch (type) {
-    case "admin":
+    case UserPermissionType.ADMIN:
       endpoint = newValue
         ? ApiEndpoints.PERMISSIONS_SET_ADMIN
         : ApiEndpoints.PERMISSIONS_REMOVE_ADMIN;
       break;
-    case "crud":
+    case UserPermissionType.CRUD:
       endpoint = newValue
         ? ApiEndpoints.PERMISSIONS_SET_API_CRUD
         : ApiEndpoints.PERMISSIONS_REMOVE_API_CRUD;
       break;
-    case "master":
+    case UserPermissionType.MASTER:
       endpoint = newValue
         ? ApiEndpoints.PERMISSIONS_SET_MASTER
         : ApiEndpoints.PERMISSIONS_REMOVE_MASTER;
       break;
-    case "enabled":
+    case UserPermissionType.ENABLED:
       endpoint = newValue
         ? ApiEndpoints.PERMISSIONS_ENABLE_ACCOUNT
         : ApiEndpoints.PERMISSIONS_DISABLE_ACCOUNT;
@@ -123,5 +123,64 @@ export async function setPermission(
       console.error(`
         Failed to set permission ${type} for ${userId}, error: ${e}`);
       return !newValue;
+    });
+}
+
+export async function addDataset(
+  userId: number,
+  formData: unknown
+): Promise<boolean> {
+  const sessionCookie = cookies().get(CookieKeys.JSESSIONID);
+  if (!sessionCookie) {
+    logout();
+    return false;
+  }
+  const body = new URLSearchParams(formData as URLSearchParams);
+  body.append("userId", `${userId}`);
+  return await fetch(
+    `${process.env.API_URL}${ApiEndpoints.PERMISSIONS_ADD_DATASET_PERM}`,
+    {
+      method: "POST",
+      headers: {
+        cookie: `${CookieKeys.JSESSIONID}=${sessionCookie?.value}`,
+      },
+      body,
+      redirect: "error",
+    }
+  )
+    .then(() => true)
+    .catch((e) => {
+      console.error(`
+        Failed to add dataset for ${userId}, error: ${e}`);
+      return false;
+    });
+}
+
+export async function deleteDataset(
+  datasetPermissionId: number
+): Promise<boolean> {
+  const sessionCookie = cookies().get(CookieKeys.JSESSIONID);
+  if (!sessionCookie) {
+    logout();
+    return false;
+  }
+  return await fetch(
+    `${process.env.API_URL}${ApiEndpoints.PERMISSIONS_DELETE_DATASET_PERM}`,
+    {
+      method: "POST",
+      headers: {
+        cookie: `${CookieKeys.JSESSIONID}=${sessionCookie?.value}`,
+      },
+      body: new URLSearchParams([
+        ["datasetPermissionId", `${datasetPermissionId}`],
+      ]),
+      redirect: "error",
+    }
+  )
+    .then(() => true)
+    .catch((e) => {
+      console.error(`
+        Failed to delete dataset ${datasetPermissionId}, error: ${e}`);
+      return false;
     });
 }

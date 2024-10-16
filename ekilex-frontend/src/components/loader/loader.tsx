@@ -6,7 +6,7 @@ interface LoaderProps {
 export const Loader = ({ size = "default" }: LoaderProps) => {
   const svgSize = size === "default" ? 8 : 4;
   return (
-    <div role="status">
+    <div role="status" className={`w-${svgSize} h-${svgSize}`}>
       <svg
         aria-hidden="true"
         className={`w-${svgSize} h-${svgSize} text-gray-200 animate-spin dark:text-gray-600 fill-blue-600`}
