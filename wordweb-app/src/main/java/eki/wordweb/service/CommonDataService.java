@@ -9,6 +9,7 @@ import java.util.stream.Collectors;
 
 import javax.transaction.Transactional;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Component;
@@ -112,7 +113,11 @@ public class CommonDataService implements SystemConstant {
 	@Transactional
 	public NewsArticle getLatestWordwebNewsArticle() {
 		String displayLang = languageContext.getDisplayLang();
-		return commonDataDbService.getLatestWordwebNewsArticle(displayLang);
+		NewsArticle newsArticle = commonDataDbService.getLatestWordwebNewsArticle(displayLang);
+		String content = newsArticle.getContent();
+		String contentCut = StringUtils.substringBefore(content, '.');
+		newsArticle.setContentCut(contentCut);
+		return newsArticle;
 	}
 
 	@Transactional

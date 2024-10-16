@@ -16,6 +16,8 @@ public class NewsArticle extends AbstractDataObject {
 
 	private String content;
 
+	private String contentCut;
+
 	public Long getNewsArticleId() {
 		return newsArticleId;
 	}
@@ -46,6 +48,14 @@ public class NewsArticle extends AbstractDataObject {
 
 	public void setContent(String content) {
 		this.content = content;
+	}
+
+	public String getContentCut() {
+		return contentCut;
+	}
+
+	public void setContentCut(String contentCut) {
+		this.contentCut = contentCut;
 	}
 
 }
