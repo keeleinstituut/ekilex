@@ -73,6 +73,7 @@
     <!--/* script type="text/javascript" th:src="@{/view/js/nps-survey.js}"></script */-->
     <script type="text/javascript" th:src="@{/view/js/kiosk-board/src/kioskboard-custom.js}"></script>
     <script type="text/javascript" th:src="@{/view/js/kioskboard-run.js}"></script>
+    <script type="text/javascript" th:src="@{/view/js/eki-components/eki-components.js}" defer></script>
     <script th:inline="javascript">
 		const viewPathWordweb = /*[[@{/view}]]*/'/view';
 	</script>
@@ -196,36 +197,27 @@
   </th:block>
   <th:block th:fragment="latest-ww-news-article">
     <th:block th:if="${latestWordwebNewsArticle}">
-      <div id="latest-ww-news-article-modal" class="modal fade" tabindex="-1" role="dialog">
-        <div class="modal-dialog" role="document">
-          <div class="modal-content">
-            <div class="modal-header">
-              <h5 class="modal-title">
-                <span th:text="${latestWordwebNewsArticle.title}"></span>
-                <small th:text="${#temporals.format(latestWordwebNewsArticle.created, 'dd.MM.yyyy')}"></small>
-              </h5>
-              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                <span aria-hidden="true">&times;</span>
-              </button>
-            </div>
-            <div class="modal-body">
-              <span th:text="${latestWordwebNewsArticle.content}" style="white-space: pre-line"></span>
-            </div>
-            <div class="modal-footer">
-              <button type="button" class="btn btn-secondary" data-dismiss="modal" th:text="#{menu.close}">Close</button>
-            </div>
-          </div>
-        </div>
-      </div>
+      <eki-toast
+        id="latest-ww-news-toast-container">
+      </eki-toast>
       <script th:inline="javascript">
-  		$(document).ready(function() {
-  			$("#latest-ww-news-article-modal").modal('show');
-  		});
-  		$('#latest-ww-news-article-modal').on('hide.bs.modal', function(e) {
-			if (newsAcceptUrl) {
-				$.post(newsAcceptUrl).done(function(response) {});
-			}
-  		});
+        $(document).ready(function() {
+          const toastContainer = $("#latest-ww-news-toast-container").get(0);
+          // The following comment syntax is for thymeleaf to embed variables
+          toastContainer.addToast({
+            title:/*[[${latestWordwebNewsArticle.title} + ' ' + ${#temporals.format(latestWordwebNewsArticle.created, 'dd.MM.yyyy')}]]*/ "",
+            body:/*[[${latestWordwebNewsArticle.contentCut}]]*/ "",
+            closeLabel:/*[[#{menu.close}]]*/ "",
+            readMoreText:'Loe lähemalt',
+            readMoreUrl:'/news',
+            id: 'news-toast'
+          });
+        });
+        $('#latest-ww-news-toast-container').on('eki-toast-closed', function(e) {
+          if (newsAcceptUrl && e?.originalEvent?.detail?.id === 'news-toast') {
+            $.post(newsAcceptUrl).done(function(response) {});
+          }
+        });
   	  </script>
     </th:block>
   </th:block>
