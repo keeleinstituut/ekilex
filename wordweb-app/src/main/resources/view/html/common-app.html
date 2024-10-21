@@ -208,8 +208,8 @@
             title:/*[[${latestWordwebNewsArticle.title} + ' ' + ${#temporals.format(latestWordwebNewsArticle.created, 'dd.MM.yyyy')}]]*/ "",
             body:/*[[${latestWordwebNewsArticle.contentCut}]]*/ "",
             closeLabel:/*[[#{menu.close}]]*/ "",
-            readMoreText:'Loe lähemalt',
-            readMoreUrl:'/news',
+            readMoreText: "Loe lähemalt",
+            readMoreUrl: /*[[@{/news}]]*/ "",
             id: 'news-toast'
           });
         });
