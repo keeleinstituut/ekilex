@@ -1,7 +1,7 @@
 package eki.ekilex.service.db;
 
-import static eki.ekilex.data.db.Tables.FEEDBACK_LOG;
-import static eki.ekilex.data.db.Tables.FEEDBACK_LOG_COMMENT;
+import static eki.ekilex.data.db.main.Tables.FEEDBACK_LOG;
+import static eki.ekilex.data.db.main.Tables.FEEDBACK_LOG_COMMENT;
 
 import java.util.List;
 
@@ -14,35 +14,35 @@ import org.springframework.stereotype.Component;
 
 import eki.ekilex.data.FeedbackComment;
 import eki.ekilex.data.FeedbackLog;
-import eki.ekilex.data.db.tables.records.FeedbackLogCommentRecord;
-import eki.ekilex.data.db.tables.records.FeedbackLogRecord;
+import eki.ekilex.data.db.main.tables.records.FeedbackLogCommentRecord;
+import eki.ekilex.data.db.main.tables.records.FeedbackLogRecord;
 
 @Component
 public class FeedbackDbService {
 
 	@Autowired
-	private DSLContext create;
+	private DSLContext mainDb;
 
 	public void createFeedbackLog(FeedbackLog feedbackLog) {
-		FeedbackLogRecord feedbackLogRecord = create.newRecord(FEEDBACK_LOG);
+		FeedbackLogRecord feedbackLogRecord = mainDb.newRecord(FEEDBACK_LOG);
 		feedbackLogRecord.from(feedbackLog);
 		feedbackLogRecord.insert();
 	}
 
 	public void deleteFeedbackLog(Long feedbackLogId) {
-		create.delete(FEEDBACK_LOG)
+		mainDb.delete(FEEDBACK_LOG)
 				.where(FEEDBACK_LOG.ID.eq(feedbackLogId))
 				.execute();
 	}
 
 	public long getFeedbackLogCount(String searchFilter, Boolean notCommentedFilter) {
 		Condition where = getFeedbackLogCond(searchFilter, notCommentedFilter);
-		return create.selectCount().from(FEEDBACK_LOG).where(where).fetchOneInto(Long.class);
+		return mainDb.selectCount().from(FEEDBACK_LOG).where(where).fetchOneInto(Long.class);
 	}
 
 	public List<FeedbackLog> getFeedbackLogs(String searchFilter, Boolean notCommentedFilter, int offset, int limit) {
 		Condition where = getFeedbackLogCond(searchFilter, notCommentedFilter);
-		return create
+		return mainDb
 				.selectFrom(FEEDBACK_LOG)
 				.where(where)
 				.orderBy(FEEDBACK_LOG.CREATED_ON.desc())
@@ -83,7 +83,7 @@ public class FeedbackDbService {
 	}
 
 	public Long createFeedbackLogComment(Long feedbackLogId, String comment, String userName) {
-		FeedbackLogCommentRecord feedbackComment = create.newRecord(FEEDBACK_LOG_COMMENT);
+		FeedbackLogCommentRecord feedbackComment = mainDb.newRecord(FEEDBACK_LOG_COMMENT);
 		feedbackComment.setFeedbackLogId(feedbackLogId);
 		feedbackComment.setComment(comment);
 		feedbackComment.setUserName(userName);
@@ -92,14 +92,14 @@ public class FeedbackDbService {
 	}
 
 	public List<FeedbackComment> getFeedbackLogComments() {
-		return create
+		return mainDb
 				.selectFrom(FEEDBACK_LOG_COMMENT)
 				.orderBy(FEEDBACK_LOG_COMMENT.FEEDBACK_LOG_ID, FEEDBACK_LOG_COMMENT.CREATED_ON.desc())
 				.fetchInto(FeedbackComment.class);
 	}
 
 	public List<FeedbackComment> getFeedbackLogComments(Long feedbackLogId) {
-		return create
+		return mainDb
 				.selectFrom(FEEDBACK_LOG_COMMENT)
 				.where(FEEDBACK_LOG_COMMENT.FEEDBACK_LOG_ID.eq(feedbackLogId))
 				.orderBy(FEEDBACK_LOG_COMMENT.CREATED_ON.desc())

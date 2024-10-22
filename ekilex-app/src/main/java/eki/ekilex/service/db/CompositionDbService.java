@@ -1,46 +1,46 @@
 package eki.ekilex.service.db;
 
-import static eki.ekilex.data.db.Tables.COLLOCATION;
-import static eki.ekilex.data.db.Tables.COLLOCATION_MEMBER;
-import static eki.ekilex.data.db.Tables.DEFINITION;
-import static eki.ekilex.data.db.Tables.DEFINITION_DATASET;
-import static eki.ekilex.data.db.Tables.DEFINITION_FREEFORM;
-import static eki.ekilex.data.db.Tables.DEFINITION_SOURCE_LINK;
-import static eki.ekilex.data.db.Tables.FORM;
-import static eki.ekilex.data.db.Tables.FREEFORM;
-import static eki.ekilex.data.db.Tables.LEXEME;
-import static eki.ekilex.data.db.Tables.LEXEME_ACTIVITY_LOG;
-import static eki.ekilex.data.db.Tables.LEXEME_DERIV;
-import static eki.ekilex.data.db.Tables.LEXEME_FREEFORM;
-import static eki.ekilex.data.db.Tables.LEXEME_NOTE;
-import static eki.ekilex.data.db.Tables.LEXEME_POS;
-import static eki.ekilex.data.db.Tables.LEXEME_REGION;
-import static eki.ekilex.data.db.Tables.LEXEME_REGISTER;
-import static eki.ekilex.data.db.Tables.LEXEME_SOURCE_LINK;
-import static eki.ekilex.data.db.Tables.LEXEME_TAG;
-import static eki.ekilex.data.db.Tables.LEX_COLLOC;
-import static eki.ekilex.data.db.Tables.LEX_COLLOC_POS_GROUP;
-import static eki.ekilex.data.db.Tables.LEX_COLLOC_REL_GROUP;
-import static eki.ekilex.data.db.Tables.LEX_RELATION;
-import static eki.ekilex.data.db.Tables.MEANING;
-import static eki.ekilex.data.db.Tables.MEANING_ACTIVITY_LOG;
-import static eki.ekilex.data.db.Tables.MEANING_DOMAIN;
-import static eki.ekilex.data.db.Tables.MEANING_FREEFORM;
-import static eki.ekilex.data.db.Tables.MEANING_NOTE;
-import static eki.ekilex.data.db.Tables.MEANING_RELATION;
-import static eki.ekilex.data.db.Tables.MEANING_SEMANTIC_TYPE;
-import static eki.ekilex.data.db.Tables.PARADIGM;
-import static eki.ekilex.data.db.Tables.PARADIGM_FORM;
-import static eki.ekilex.data.db.Tables.USAGE;
-import static eki.ekilex.data.db.Tables.WORD;
-import static eki.ekilex.data.db.Tables.WORD_ACTIVITY_LOG;
-import static eki.ekilex.data.db.Tables.WORD_ETYMOLOGY;
-import static eki.ekilex.data.db.Tables.WORD_ETYMOLOGY_RELATION;
-import static eki.ekilex.data.db.Tables.WORD_ETYMOLOGY_SOURCE_LINK;
-import static eki.ekilex.data.db.Tables.WORD_FREEFORM;
-import static eki.ekilex.data.db.Tables.WORD_GROUP_MEMBER;
-import static eki.ekilex.data.db.Tables.WORD_RELATION;
-import static eki.ekilex.data.db.Tables.WORD_WORD_TYPE;
+import static eki.ekilex.data.db.main.Tables.COLLOCATION;
+import static eki.ekilex.data.db.main.Tables.COLLOCATION_MEMBER;
+import static eki.ekilex.data.db.main.Tables.DEFINITION;
+import static eki.ekilex.data.db.main.Tables.DEFINITION_DATASET;
+import static eki.ekilex.data.db.main.Tables.DEFINITION_FREEFORM;
+import static eki.ekilex.data.db.main.Tables.DEFINITION_SOURCE_LINK;
+import static eki.ekilex.data.db.main.Tables.FORM;
+import static eki.ekilex.data.db.main.Tables.FREEFORM;
+import static eki.ekilex.data.db.main.Tables.LEXEME;
+import static eki.ekilex.data.db.main.Tables.LEXEME_ACTIVITY_LOG;
+import static eki.ekilex.data.db.main.Tables.LEXEME_DERIV;
+import static eki.ekilex.data.db.main.Tables.LEXEME_FREEFORM;
+import static eki.ekilex.data.db.main.Tables.LEXEME_NOTE;
+import static eki.ekilex.data.db.main.Tables.LEXEME_POS;
+import static eki.ekilex.data.db.main.Tables.LEXEME_REGION;
+import static eki.ekilex.data.db.main.Tables.LEXEME_REGISTER;
+import static eki.ekilex.data.db.main.Tables.LEXEME_SOURCE_LINK;
+import static eki.ekilex.data.db.main.Tables.LEXEME_TAG;
+import static eki.ekilex.data.db.main.Tables.LEX_COLLOC;
+import static eki.ekilex.data.db.main.Tables.LEX_COLLOC_POS_GROUP;
+import static eki.ekilex.data.db.main.Tables.LEX_COLLOC_REL_GROUP;
+import static eki.ekilex.data.db.main.Tables.LEX_RELATION;
+import static eki.ekilex.data.db.main.Tables.MEANING;
+import static eki.ekilex.data.db.main.Tables.MEANING_ACTIVITY_LOG;
+import static eki.ekilex.data.db.main.Tables.MEANING_DOMAIN;
+import static eki.ekilex.data.db.main.Tables.MEANING_FREEFORM;
+import static eki.ekilex.data.db.main.Tables.MEANING_NOTE;
+import static eki.ekilex.data.db.main.Tables.MEANING_RELATION;
+import static eki.ekilex.data.db.main.Tables.MEANING_SEMANTIC_TYPE;
+import static eki.ekilex.data.db.main.Tables.PARADIGM;
+import static eki.ekilex.data.db.main.Tables.PARADIGM_FORM;
+import static eki.ekilex.data.db.main.Tables.USAGE;
+import static eki.ekilex.data.db.main.Tables.WORD;
+import static eki.ekilex.data.db.main.Tables.WORD_ACTIVITY_LOG;
+import static eki.ekilex.data.db.main.Tables.WORD_ETYMOLOGY;
+import static eki.ekilex.data.db.main.Tables.WORD_ETYMOLOGY_RELATION;
+import static eki.ekilex.data.db.main.Tables.WORD_ETYMOLOGY_SOURCE_LINK;
+import static eki.ekilex.data.db.main.Tables.WORD_FREEFORM;
+import static eki.ekilex.data.db.main.Tables.WORD_GROUP_MEMBER;
+import static eki.ekilex.data.db.main.Tables.WORD_RELATION;
+import static eki.ekilex.data.db.main.Tables.WORD_WORD_TYPE;
 
 import java.math.BigDecimal;
 import java.util.HashMap;
@@ -60,56 +60,56 @@ import eki.common.constant.GlobalConstant;
 import eki.ekilex.data.LexCollocationGroupTuple;
 import eki.ekilex.data.LexCollocationTuple;
 import eki.ekilex.data.SimpleWord;
-import eki.ekilex.data.db.tables.Collocation;
-import eki.ekilex.data.db.tables.CollocationMember;
-import eki.ekilex.data.db.tables.Definition;
-import eki.ekilex.data.db.tables.LexColloc;
-import eki.ekilex.data.db.tables.LexCollocPosGroup;
-import eki.ekilex.data.db.tables.LexCollocRelGroup;
-import eki.ekilex.data.db.tables.LexRelation;
-import eki.ekilex.data.db.tables.LexemeActivityLog;
-import eki.ekilex.data.db.tables.LexemeNote;
-import eki.ekilex.data.db.tables.LexemeSourceLink;
-import eki.ekilex.data.db.tables.LexemeTag;
-import eki.ekilex.data.db.tables.MeaningActivityLog;
-import eki.ekilex.data.db.tables.MeaningNote;
-import eki.ekilex.data.db.tables.MeaningRelation;
-import eki.ekilex.data.db.tables.MeaningSemanticType;
-import eki.ekilex.data.db.tables.Usage;
-import eki.ekilex.data.db.tables.Word;
-import eki.ekilex.data.db.tables.WordActivityLog;
-import eki.ekilex.data.db.tables.WordEtymology;
-import eki.ekilex.data.db.tables.WordEtymologyRelation;
-import eki.ekilex.data.db.tables.WordGroupMember;
-import eki.ekilex.data.db.tables.WordRelation;
-import eki.ekilex.data.db.tables.WordWordType;
-import eki.ekilex.data.db.tables.records.DefinitionDatasetRecord;
-import eki.ekilex.data.db.tables.records.DefinitionFreeformRecord;
-import eki.ekilex.data.db.tables.records.DefinitionRecord;
-import eki.ekilex.data.db.tables.records.DefinitionSourceLinkRecord;
-import eki.ekilex.data.db.tables.records.FormRecord;
-import eki.ekilex.data.db.tables.records.FreeformRecord;
-import eki.ekilex.data.db.tables.records.LexCollocRecord;
-import eki.ekilex.data.db.tables.records.LexemeDerivRecord;
-import eki.ekilex.data.db.tables.records.LexemeFreeformRecord;
-import eki.ekilex.data.db.tables.records.LexemePosRecord;
-import eki.ekilex.data.db.tables.records.LexemeRecord;
-import eki.ekilex.data.db.tables.records.LexemeRegisterRecord;
-import eki.ekilex.data.db.tables.records.LexemeSourceLinkRecord;
-import eki.ekilex.data.db.tables.records.MeaningDomainRecord;
-import eki.ekilex.data.db.tables.records.MeaningFreeformRecord;
-import eki.ekilex.data.db.tables.records.MeaningRecord;
-import eki.ekilex.data.db.tables.records.MeaningRelationRecord;
-import eki.ekilex.data.db.tables.records.ParadigmFormRecord;
-import eki.ekilex.data.db.tables.records.ParadigmRecord;
-import eki.ekilex.data.db.tables.records.WordEtymologyRecord;
-import eki.ekilex.data.db.tables.records.WordEtymologyRelationRecord;
-import eki.ekilex.data.db.tables.records.WordEtymologySourceLinkRecord;
-import eki.ekilex.data.db.tables.records.WordFreeformRecord;
-import eki.ekilex.data.db.tables.records.WordGroupMemberRecord;
-import eki.ekilex.data.db.tables.records.WordRecord;
-import eki.ekilex.data.db.tables.records.WordRelationRecord;
-import eki.ekilex.data.db.tables.records.WordWordTypeRecord;
+import eki.ekilex.data.db.main.tables.Collocation;
+import eki.ekilex.data.db.main.tables.CollocationMember;
+import eki.ekilex.data.db.main.tables.Definition;
+import eki.ekilex.data.db.main.tables.LexColloc;
+import eki.ekilex.data.db.main.tables.LexCollocPosGroup;
+import eki.ekilex.data.db.main.tables.LexCollocRelGroup;
+import eki.ekilex.data.db.main.tables.LexRelation;
+import eki.ekilex.data.db.main.tables.LexemeActivityLog;
+import eki.ekilex.data.db.main.tables.LexemeNote;
+import eki.ekilex.data.db.main.tables.LexemeSourceLink;
+import eki.ekilex.data.db.main.tables.LexemeTag;
+import eki.ekilex.data.db.main.tables.MeaningActivityLog;
+import eki.ekilex.data.db.main.tables.MeaningNote;
+import eki.ekilex.data.db.main.tables.MeaningRelation;
+import eki.ekilex.data.db.main.tables.MeaningSemanticType;
+import eki.ekilex.data.db.main.tables.Usage;
+import eki.ekilex.data.db.main.tables.Word;
+import eki.ekilex.data.db.main.tables.WordActivityLog;
+import eki.ekilex.data.db.main.tables.WordEtymology;
+import eki.ekilex.data.db.main.tables.WordEtymologyRelation;
+import eki.ekilex.data.db.main.tables.WordGroupMember;
+import eki.ekilex.data.db.main.tables.WordRelation;
+import eki.ekilex.data.db.main.tables.WordWordType;
+import eki.ekilex.data.db.main.tables.records.DefinitionDatasetRecord;
+import eki.ekilex.data.db.main.tables.records.DefinitionFreeformRecord;
+import eki.ekilex.data.db.main.tables.records.DefinitionRecord;
+import eki.ekilex.data.db.main.tables.records.DefinitionSourceLinkRecord;
+import eki.ekilex.data.db.main.tables.records.FormRecord;
+import eki.ekilex.data.db.main.tables.records.FreeformRecord;
+import eki.ekilex.data.db.main.tables.records.LexCollocRecord;
+import eki.ekilex.data.db.main.tables.records.LexemeDerivRecord;
+import eki.ekilex.data.db.main.tables.records.LexemeFreeformRecord;
+import eki.ekilex.data.db.main.tables.records.LexemePosRecord;
+import eki.ekilex.data.db.main.tables.records.LexemeRecord;
+import eki.ekilex.data.db.main.tables.records.LexemeRegisterRecord;
+import eki.ekilex.data.db.main.tables.records.LexemeSourceLinkRecord;
+import eki.ekilex.data.db.main.tables.records.MeaningDomainRecord;
+import eki.ekilex.data.db.main.tables.records.MeaningFreeformRecord;
+import eki.ekilex.data.db.main.tables.records.MeaningRecord;
+import eki.ekilex.data.db.main.tables.records.MeaningRelationRecord;
+import eki.ekilex.data.db.main.tables.records.ParadigmFormRecord;
+import eki.ekilex.data.db.main.tables.records.ParadigmRecord;
+import eki.ekilex.data.db.main.tables.records.WordEtymologyRecord;
+import eki.ekilex.data.db.main.tables.records.WordEtymologyRelationRecord;
+import eki.ekilex.data.db.main.tables.records.WordEtymologySourceLinkRecord;
+import eki.ekilex.data.db.main.tables.records.WordFreeformRecord;
+import eki.ekilex.data.db.main.tables.records.WordGroupMemberRecord;
+import eki.ekilex.data.db.main.tables.records.WordRecord;
+import eki.ekilex.data.db.main.tables.records.WordRelationRecord;
+import eki.ekilex.data.db.main.tables.records.WordWordTypeRecord;
 
 @Component
 public class CompositionDbService extends AbstractDataDbService implements GlobalConstant {
@@ -125,7 +125,7 @@ public class CompositionDbService extends AbstractDataDbService implements Globa
 		moveMeaningActivityLogs(targetMeaningId, sourceMeaningId);
 		moveMeaningNotes(targetMeaningId, sourceMeaningId);
 
-		create
+		mainDb
 				.delete(MEANING)
 				.where(MEANING.ID.eq(sourceMeaningId))
 				.execute();
@@ -149,7 +149,7 @@ public class CompositionDbService extends AbstractDataDbService implements Globa
 		mergeLexemePublicity(targetLexemeId, sourceLexemeId);
 		mergeLexemeComplexity(targetLexemeId, sourceLexemeId);
 
-		create
+		mainDb
 				.delete(LEXEME)
 				.where(LEXEME.ID.eq(sourceLexemeId))
 				.execute();
@@ -168,26 +168,26 @@ public class CompositionDbService extends AbstractDataDbService implements Globa
 
 	private void mergeLexemePublicity(Long targetLexemeId, Long sourceLexemeId) {
 
-		boolean targetLexemePublicity = create.select(LEXEME.IS_PUBLIC).from(LEXEME).where(LEXEME.ID.eq(targetLexemeId)).fetchOneInto(boolean.class);
+		boolean targetLexemePublicity = mainDb.select(LEXEME.IS_PUBLIC).from(LEXEME).where(LEXEME.ID.eq(targetLexemeId)).fetchOneInto(boolean.class);
 		if (PUBLICITY_PUBLIC == targetLexemePublicity) {
 			return;
 		}
 
-		boolean sourceLexemePublicity = create.select(LEXEME.IS_PUBLIC).from(LEXEME).where(LEXEME.ID.eq(sourceLexemeId)).fetchOneInto(boolean.class);
+		boolean sourceLexemePublicity = mainDb.select(LEXEME.IS_PUBLIC).from(LEXEME).where(LEXEME.ID.eq(sourceLexemeId)).fetchOneInto(boolean.class);
 		if (PUBLICITY_PUBLIC == sourceLexemePublicity) {
-			create.update(LEXEME).set(LEXEME.IS_PUBLIC, PUBLICITY_PUBLIC).where(LEXEME.ID.eq(targetLexemeId)).execute();
+			mainDb.update(LEXEME).set(LEXEME.IS_PUBLIC, PUBLICITY_PUBLIC).where(LEXEME.ID.eq(targetLexemeId)).execute();
 		}
 	}
 
 	private void mergeLexemeComplexity(Long targetLexemeId, Long sourceLexemeId) {
 
-		Complexity targetLexemeComplexity = create.select(LEXEME.COMPLEXITY).from(LEXEME).where(LEXEME.ID.eq(targetLexemeId)).fetchOneInto(Complexity.class);
+		Complexity targetLexemeComplexity = mainDb.select(LEXEME.COMPLEXITY).from(LEXEME).where(LEXEME.ID.eq(targetLexemeId)).fetchOneInto(Complexity.class);
 		if (Complexity.ANY == targetLexemeComplexity) {
 			return;
 		}
-		Complexity sourceLexemeComplexity = create.select(LEXEME.COMPLEXITY).from(LEXEME).where(LEXEME.ID.eq(sourceLexemeId)).fetchOneInto(Complexity.class);
+		Complexity sourceLexemeComplexity = mainDb.select(LEXEME.COMPLEXITY).from(LEXEME).where(LEXEME.ID.eq(sourceLexemeId)).fetchOneInto(Complexity.class);
 		if (targetLexemeComplexity != sourceLexemeComplexity) {
-			create.update(LEXEME).set(LEXEME.COMPLEXITY, Complexity.ANY.name()).where(LEXEME.ID.eq(targetLexemeId)).execute();
+			mainDb.update(LEXEME).set(LEXEME.COMPLEXITY, Complexity.ANY.name()).where(LEXEME.ID.eq(targetLexemeId)).execute();
 		}
 	}
 
@@ -195,7 +195,7 @@ public class CompositionDbService extends AbstractDataDbService implements Globa
 
 		LexemeActivityLog lals = LEXEME_ACTIVITY_LOG.as("lals");
 		LexemeActivityLog lalt = LEXEME_ACTIVITY_LOG.as("lalt");
-		create
+		mainDb
 				.update(lals)
 				.set(lals.LEXEME_ID, targetLexemeId)
 				.where(
@@ -213,7 +213,7 @@ public class CompositionDbService extends AbstractDataDbService implements Globa
 
 		LexemeTag lt1 = LEXEME_TAG.as("lt1");
 		LexemeTag lt2 = LEXEME_TAG.as("lt2");
-		create
+		mainDb
 				.update(lt1)
 				.set(lt1.LEXEME_ID, targetLexemeId)
 				.where(lt1.LEXEME_ID.eq(sourceLexemeId))
@@ -229,7 +229,7 @@ public class CompositionDbService extends AbstractDataDbService implements Globa
 
 		LexColloc lc1 = LEX_COLLOC.as("lc1");
 		LexColloc lc2 = LEX_COLLOC.as("lc2");
-		create
+		mainDb
 				.update(lc1)
 				.set(lc1.LEXEME_ID, targetLexemeId)
 				.where(lc1.LEXEME_ID.eq(sourceLexemeId))
@@ -240,7 +240,7 @@ public class CompositionDbService extends AbstractDataDbService implements Globa
 								.and(lc2.COLLOCATION_ID.eq(lc1.COLLOCATION_ID))))
 				.execute();
 
-		create
+		mainDb
 				.update(LEX_COLLOC_POS_GROUP)
 				.set(LEX_COLLOC_POS_GROUP.LEXEME_ID, targetLexemeId)
 				.where(LEX_COLLOC_POS_GROUP.LEXEME_ID.eq(sourceLexemeId))
@@ -250,7 +250,7 @@ public class CompositionDbService extends AbstractDataDbService implements Globa
 	private void moveLexemeUsages(Long targetLexemeId, Long sourceLexemeId) {
 
 		Usage u = USAGE.as("u");
-		create
+		mainDb
 				.update(u)
 				.set(u.LEXEME_ID, targetLexemeId)
 				.where(u.LEXEME_ID.eq(sourceLexemeId))
@@ -260,7 +260,7 @@ public class CompositionDbService extends AbstractDataDbService implements Globa
 	private void moveLexemeNotes(Long targetLexemeId, Long sourceLexemeId) {
 
 		LexemeNote n = LEXEME_NOTE.as("n");
-		create
+		mainDb
 				.update(n)
 				.set(n.LEXEME_ID, targetLexemeId)
 				.where(n.LEXEME_ID.eq(sourceLexemeId))
@@ -271,13 +271,13 @@ public class CompositionDbService extends AbstractDataDbService implements Globa
 
 		CollocationMember cm = COLLOCATION_MEMBER.as("cm");
 
-		create
+		mainDb
 				.update(cm)
 				.set(cm.MEMBER_LEXEME_ID, targetLexemeId)
 				.where(cm.MEMBER_LEXEME_ID.eq(sourceLexemeId))
 				.execute();
 
-		create
+		mainDb
 				.update(cm)
 				.set(cm.COLLOC_LEXEME_ID, targetLexemeId)
 				.where(cm.COLLOC_LEXEME_ID.eq(sourceLexemeId))
@@ -286,7 +286,7 @@ public class CompositionDbService extends AbstractDataDbService implements Globa
 
 	private void moveLexemeRegions(Long targetLexemeId, Long sourceLexemeId) {
 
-		create
+		mainDb
 				.update(LEXEME_REGION)
 				.set(LEXEME_REGION.LEXEME_ID, targetLexemeId)
 				.where(
@@ -301,7 +301,7 @@ public class CompositionDbService extends AbstractDataDbService implements Globa
 		LexRelation lr1 = LEX_RELATION.as("lr1");
 		LexRelation lr2 = LEX_RELATION.as("lr2");
 
-		create
+		mainDb
 				.update(lr1)
 				.set(lr1.LEXEME1_ID, targetLexemeId)
 				.where(
@@ -316,7 +316,7 @@ public class CompositionDbService extends AbstractDataDbService implements Globa
 										.and(lr2.LEX_REL_TYPE_CODE.eq(lr1.LEX_REL_TYPE_CODE))))
 				.execute();
 
-		create
+		mainDb
 				.update(lr1)
 				.set(lr1.LEXEME2_ID, targetLexemeId)
 				.where(
@@ -334,7 +334,7 @@ public class CompositionDbService extends AbstractDataDbService implements Globa
 
 	private void moveLexemeDerivs(Long targetLexemeId, Long sourceLexemeId) {
 
-		create
+		mainDb
 				.update(LEXEME_DERIV)
 				.set(LEXEME_DERIV.LEXEME_ID, targetLexemeId)
 				.where(LEXEME_DERIV.LEXEME_ID.eq(sourceLexemeId)
@@ -345,25 +345,25 @@ public class CompositionDbService extends AbstractDataDbService implements Globa
 
 	private void moveLexemeFreeforms(Long targetLexemeId, Long sourceLexemeId) {
 
-		Result<FreeformRecord> lexemeFreeforms = create
+		Result<FreeformRecord> lexemeFreeforms = mainDb
 				.selectFrom(FREEFORM)
 				.where(FREEFORM.ID.in(DSL.select(LEXEME_FREEFORM.FREEFORM_ID).from(LEXEME_FREEFORM).where(LEXEME_FREEFORM.LEXEME_ID.eq(targetLexemeId))))
 				.fetch();
-		Result<FreeformRecord> sourceLexemeFreeforms = create
+		Result<FreeformRecord> sourceLexemeFreeforms = mainDb
 				.selectFrom(FREEFORM)
 				.where(FREEFORM.ID.in(DSL.select(LEXEME_FREEFORM.FREEFORM_ID).from(LEXEME_FREEFORM).where(LEXEME_FREEFORM.LEXEME_ID.eq(sourceLexemeId))))
 				.fetch();
 
 		List<Long> nonDublicateFreeformIds = getNonDuplicateFreeformIds(lexemeFreeforms, sourceLexemeFreeforms);
 
-		create
+		mainDb
 				.update(LEXEME_FREEFORM)
 				.set(LEXEME_FREEFORM.LEXEME_ID, targetLexemeId)
 				.where(LEXEME_FREEFORM.LEXEME_ID.eq(sourceLexemeId)
 						.and(LEXEME_FREEFORM.FREEFORM_ID.in(nonDublicateFreeformIds)))
 				.execute();
 
-		create
+		mainDb
 				.delete(FREEFORM)
 				.where(FREEFORM.ID.in(DSL
 						.select(LEXEME_FREEFORM.FREEFORM_ID)
@@ -371,7 +371,7 @@ public class CompositionDbService extends AbstractDataDbService implements Globa
 						.where(LEXEME_FREEFORM.LEXEME_ID.eq(sourceLexemeId))))
 				.execute();
 
-		create
+		mainDb
 				.delete(LEXEME_FREEFORM)
 				.where(LEXEME_FREEFORM.LEXEME_ID.eq(sourceLexemeId))
 				.execute();
@@ -379,7 +379,7 @@ public class CompositionDbService extends AbstractDataDbService implements Globa
 
 	private void moveLexemePos(Long targetLexemeId, Long sourceLexemeId) {
 
-		create
+		mainDb
 				.update(LEXEME_POS)
 				.set(LEXEME_POS.LEXEME_ID, targetLexemeId)
 				.where(LEXEME_POS.LEXEME_ID.eq(sourceLexemeId)
@@ -392,7 +392,7 @@ public class CompositionDbService extends AbstractDataDbService implements Globa
 
 	private void moveLexemeRegisters(Long targetLexemeId, Long sourceLexemeId) {
 
-		create
+		mainDb
 				.update(LEXEME_REGISTER)
 				.set(LEXEME_REGISTER.LEXEME_ID, targetLexemeId)
 				.where(LEXEME_REGISTER.LEXEME_ID.eq(sourceLexemeId)
@@ -405,7 +405,7 @@ public class CompositionDbService extends AbstractDataDbService implements Globa
 
 		LexemeSourceLink lsl1 = LEXEME_SOURCE_LINK.as("lsl1");
 		LexemeSourceLink lsl2 = LEXEME_SOURCE_LINK.as("lsl2");
-		create
+		mainDb
 				.update(lsl1)
 				.set(lsl1.LEXEME_ID, targetLexemeId)
 				.where(lsl1.LEXEME_ID.eq(sourceLexemeId))
@@ -419,7 +419,7 @@ public class CompositionDbService extends AbstractDataDbService implements Globa
 	}
 
 	private void moveLexemes(Long targetMeaningId, Long sourceMeaningId) {
-		create
+		mainDb
 				.update(LEXEME)
 				.set(LEXEME.MEANING_ID, targetMeaningId)
 				.where(LEXEME.MEANING_ID.eq(sourceMeaningId))
@@ -431,7 +431,7 @@ public class CompositionDbService extends AbstractDataDbService implements Globa
 		MeaningSemanticType mst1 = MEANING_SEMANTIC_TYPE.as("mst1");
 		MeaningSemanticType mst2 = MEANING_SEMANTIC_TYPE.as("mst2");
 
-		create
+		mainDb
 				.update(mst1)
 				.set(mst1.MEANING_ID, targetMeaningId)
 				.where(mst1.MEANING_ID.eq(sourceMeaningId))
@@ -449,7 +449,7 @@ public class CompositionDbService extends AbstractDataDbService implements Globa
 		MeaningRelation mr1 = MEANING_RELATION.as("mr1");
 		MeaningRelation mr2 = MEANING_RELATION.as("mr2");
 
-		create
+		mainDb
 				.update(mr1)
 				.set(mr1.MEANING1_ID, targetMeaningId)
 				.where(
@@ -464,7 +464,7 @@ public class CompositionDbService extends AbstractDataDbService implements Globa
 										.and(mr2.MEANING_REL_TYPE_CODE.eq(mr1.MEANING_REL_TYPE_CODE))))
 				.execute();
 
-		create
+		mainDb
 				.update(mr1)
 				.set(mr1.MEANING2_ID, targetMeaningId)
 				.where(
@@ -482,25 +482,25 @@ public class CompositionDbService extends AbstractDataDbService implements Globa
 
 	private void moveMeaningFreeforms(Long targetMeaningId, Long sourceMeaningId) {
 
-		Result<FreeformRecord> meaningFreeforms = create
+		Result<FreeformRecord> meaningFreeforms = mainDb
 				.selectFrom(FREEFORM)
 				.where(FREEFORM.ID.in(DSL.select(MEANING_FREEFORM.FREEFORM_ID).from(MEANING_FREEFORM).where(MEANING_FREEFORM.MEANING_ID.eq(targetMeaningId))))
 				.fetch();
-		Result<FreeformRecord> sourceMeaningFreeforms = create
+		Result<FreeformRecord> sourceMeaningFreeforms = mainDb
 				.selectFrom(FREEFORM)
 				.where(FREEFORM.ID.in(DSL.select(MEANING_FREEFORM.FREEFORM_ID).from(MEANING_FREEFORM).where(MEANING_FREEFORM.MEANING_ID.eq(sourceMeaningId))))
 				.fetch();
 
 		List<Long> nonDublicateFreeformIds = getNonDuplicateFreeformIds(meaningFreeforms, sourceMeaningFreeforms);
 
-		create
+		mainDb
 				.update(MEANING_FREEFORM)
 				.set(MEANING_FREEFORM.MEANING_ID, targetMeaningId)
 				.where(MEANING_FREEFORM.MEANING_ID.eq(sourceMeaningId)
 						.and(MEANING_FREEFORM.FREEFORM_ID.in(nonDublicateFreeformIds)))
 				.execute();
 
-		create
+		mainDb
 				.delete(FREEFORM)
 				.where(FREEFORM.ID.in(DSL
 						.select(MEANING_FREEFORM.FREEFORM_ID)
@@ -508,14 +508,14 @@ public class CompositionDbService extends AbstractDataDbService implements Globa
 						.where(MEANING_FREEFORM.MEANING_ID.eq(sourceMeaningId))))
 				.execute();
 
-		create
+		mainDb
 				.delete(MEANING_FREEFORM)
 				.where(MEANING_FREEFORM.MEANING_ID.eq(sourceMeaningId))
 				.execute();
 	}
 
 	private void moveMeaningDomains(Long targetMeaningId, Long sourceMeaningId) {
-		create
+		mainDb
 				.update(MEANING_DOMAIN)
 				.set(MEANING_DOMAIN.MEANING_ID, targetMeaningId)
 				.where(
@@ -530,7 +530,7 @@ public class CompositionDbService extends AbstractDataDbService implements Globa
 		Definition def1 = DEFINITION.as("def1");
 		Definition def2 = DEFINITION.as("def2");
 
-		create
+		mainDb
 				.update(def1)
 				.set(def1.MEANING_ID, targetMeaningId)
 				.where(def1.MEANING_ID.eq(sourceMeaningId))
@@ -546,7 +546,7 @@ public class CompositionDbService extends AbstractDataDbService implements Globa
 	private void moveMeaningNotes(Long targetMeaningId, Long sourceMeaningId) {
 
 		MeaningNote n = MEANING_NOTE.as("n");
-		create
+		mainDb
 				.update(n)
 				.set(n.MEANING_ID, targetMeaningId)
 				.where(n.MEANING_ID.eq(sourceMeaningId))
@@ -558,7 +558,7 @@ public class CompositionDbService extends AbstractDataDbService implements Globa
 		MeaningActivityLog mals = MEANING_ACTIVITY_LOG.as("mals");
 		MeaningActivityLog malt = MEANING_ACTIVITY_LOG.as("malt");
 
-		create
+		mainDb
 				.update(mals)
 				.set(mals.MEANING_ID, targetMeaningId)
 				.where(
@@ -574,7 +574,7 @@ public class CompositionDbService extends AbstractDataDbService implements Globa
 
 	public Long cloneLexeme(Long lexemeId, Long meaningId, Long wordId) {
 
-		LexemeRecord lexeme = create
+		LexemeRecord lexeme = mainDb
 				.selectFrom(LEXEME)
 				.where(LEXEME.ID.eq(lexemeId))
 				.fetchOne();
@@ -592,7 +592,7 @@ public class CompositionDbService extends AbstractDataDbService implements Globa
 
 	public Long cloneEmptyLexeme(Long lexemeId, Long meaningId) {
 
-		LexemeRecord lexeme = create.selectFrom(LEXEME).where(LEXEME.ID.eq(lexemeId)).fetchOne();
+		LexemeRecord lexeme = mainDb.selectFrom(LEXEME).where(LEXEME.ID.eq(lexemeId)).fetchOne();
 		LexemeRecord clonedLexeme = lexeme.copy();
 		clonedLexeme.setMeaningId(meaningId);
 		clonedLexeme.changed(LEXEME.ORDER_BY, false);
@@ -603,7 +603,7 @@ public class CompositionDbService extends AbstractDataDbService implements Globa
 
 	public void cloneLexemeDerivs(Long lexemeId, Long clonedLexemeId) {
 
-		Result<LexemeDerivRecord> lexemeDerivatives = create
+		Result<LexemeDerivRecord> lexemeDerivatives = mainDb
 				.selectFrom(LEXEME_DERIV)
 				.where(LEXEME_DERIV.LEXEME_ID.eq(lexemeId))
 				.orderBy(LEXEME_DERIV.ID)
@@ -620,7 +620,7 @@ public class CompositionDbService extends AbstractDataDbService implements Globa
 		if (publicDataOnly) {
 			where = where.and(FREEFORM.IS_PUBLIC.isTrue());
 		}
-		List<Long> lexemeFreeformIds = create
+		List<Long> lexemeFreeformIds = mainDb
 				.select(FREEFORM.ID)
 				.from(FREEFORM, LEXEME_FREEFORM)
 				.where(where)
@@ -628,7 +628,7 @@ public class CompositionDbService extends AbstractDataDbService implements Globa
 				.fetchInto(Long.class);
 		lexemeFreeformIds.forEach(lexemeFreeformId -> {
 			Long clonedFreeformId = cloneFreeform(lexemeFreeformId, null);
-			LexemeFreeformRecord clonedLexemeFreeform = create.newRecord(LEXEME_FREEFORM);
+			LexemeFreeformRecord clonedLexemeFreeform = mainDb.newRecord(LEXEME_FREEFORM);
 			clonedLexemeFreeform.setLexemeId(clonedLexemeId);
 			clonedLexemeFreeform.setFreeformId(clonedFreeformId);
 			clonedLexemeFreeform.store();
@@ -637,7 +637,7 @@ public class CompositionDbService extends AbstractDataDbService implements Globa
 
 	public void cloneLexemePoses(Long lexemeId, Long clonedLexemeId) {
 
-		Result<LexemePosRecord> lexemePoses = create
+		Result<LexemePosRecord> lexemePoses = mainDb
 				.selectFrom(LEXEME_POS)
 				.where(LEXEME_POS.LEXEME_ID.eq(lexemeId))
 				.orderBy(LEXEME_POS.ORDER_BY)
@@ -651,7 +651,7 @@ public class CompositionDbService extends AbstractDataDbService implements Globa
 
 	public void cloneLexemeRegisters(Long lexemeId, Long clonedLexemeId) {
 
-		Result<LexemeRegisterRecord> lexemeRegisters = create
+		Result<LexemeRegisterRecord> lexemeRegisters = mainDb
 				.selectFrom(LEXEME_REGISTER)
 				.where(LEXEME_REGISTER.LEXEME_ID.eq(lexemeId))
 				.orderBy(LEXEME_REGISTER.ORDER_BY)
@@ -665,7 +665,7 @@ public class CompositionDbService extends AbstractDataDbService implements Globa
 
 	public void cloneLexemeSoureLinks(Long lexemeId, Long clonedLexemeId) {
 
-		Result<LexemeSourceLinkRecord> lexemeSourceLinks = create
+		Result<LexemeSourceLinkRecord> lexemeSourceLinks = mainDb
 				.selectFrom(LEXEME_SOURCE_LINK)
 				.where(LEXEME_SOURCE_LINK.LEXEME_ID.eq(lexemeId))
 				.orderBy(LEXEME_SOURCE_LINK.ORDER_BY)
@@ -697,7 +697,7 @@ public class CompositionDbService extends AbstractDataDbService implements Globa
 				clonedCollocId = createCollocation(lexCollocationTuple);
 				collocIdMap.put(collocId, clonedCollocId);
 
-				Result<LexCollocRecord> relatedLexCollocs = create.selectFrom(LEX_COLLOC).where(LEX_COLLOC.COLLOCATION_ID.eq(collocId).and(LEX_COLLOC.ID.ne(lexCollocId))).fetch();
+				Result<LexCollocRecord> relatedLexCollocs = mainDb.selectFrom(LEX_COLLOC).where(LEX_COLLOC.COLLOCATION_ID.eq(collocId).and(LEX_COLLOC.ID.ne(lexCollocId))).fetch();
 				for (LexCollocRecord relatedLexColloc : relatedLexCollocs) {
 					LexCollocRecord clonedRelatedLexColloc = relatedLexColloc.copy();
 					clonedRelatedLexColloc.setCollocationId(clonedCollocId);
@@ -730,7 +730,7 @@ public class CompositionDbService extends AbstractDataDbService implements Globa
 		LexColloc lc = LEX_COLLOC.as("lc");
 		Collocation c = COLLOCATION.as("c");
 
-		return create
+		return mainDb
 				.select(
 						lc.ID.as("lex_colloc_id"),
 						lc.REL_GROUP_ID.as("rel_group_id"),
@@ -757,7 +757,7 @@ public class CompositionDbService extends AbstractDataDbService implements Globa
 		LexCollocRelGroup lcrg = LEX_COLLOC_REL_GROUP.as("lcrg");
 		LexCollocPosGroup lcpg = LEX_COLLOC_POS_GROUP.as("lcpg");
 
-		return create
+		return mainDb
 				.select(
 						lcpg.ID.as("pos_group_id"),
 						lcpg.POS_GROUP_CODE.as("pos_group_code"),
@@ -783,7 +783,7 @@ public class CompositionDbService extends AbstractDataDbService implements Globa
 		String[] usages = lexCollocationTuple.getCollocUsages() == null ? null : lexCollocationTuple.getCollocUsages().toArray(new String[0]);
 		String complexity = lexCollocationTuple.getCollocComplexity();
 
-		return create
+		return mainDb
 				.insertInto(COLLOCATION,
 						COLLOCATION.VALUE,
 						COLLOCATION.DEFINITION,
@@ -802,7 +802,7 @@ public class CompositionDbService extends AbstractDataDbService implements Globa
 		String posGroupCode = lexCollocationGroupTuple.getPosGroupCode();
 		Long orderBy = lexCollocationGroupTuple.getPosGroupOrderBy();
 
-		return create
+		return mainDb
 				.insertInto(LEX_COLLOC_POS_GROUP,
 						LEX_COLLOC_POS_GROUP.LEXEME_ID,
 						LEX_COLLOC_POS_GROUP.POS_GROUP_CODE,
@@ -820,7 +820,7 @@ public class CompositionDbService extends AbstractDataDbService implements Globa
 		BigDecimal score = lexCollocationGroupTuple.getRelGroupScore() == null ? null : BigDecimal.valueOf(lexCollocationGroupTuple.getRelGroupScore());
 		Long orderBy = lexCollocationGroupTuple.getRelGroupOrderBy();
 
-		return create
+		return mainDb
 				.insertInto(LEX_COLLOC_REL_GROUP,
 						LEX_COLLOC_REL_GROUP.POS_GROUP_ID,
 						LEX_COLLOC_REL_GROUP.NAME,
@@ -841,7 +841,7 @@ public class CompositionDbService extends AbstractDataDbService implements Globa
 		Integer memberOrder = lexCollocationTuple.getMemberOrder();
 		Integer groupOrder = lexCollocationTuple.getGroupOrder();
 
-		return create
+		return mainDb
 				.insertInto(LEX_COLLOC,
 						LEX_COLLOC.LEXEME_ID,
 						LEX_COLLOC.REL_GROUP_ID,
@@ -859,13 +859,13 @@ public class CompositionDbService extends AbstractDataDbService implements Globa
 
 	public Long cloneMeaning(Long meaningId) {
 
-		MeaningRecord meaning = create
+		MeaningRecord meaning = mainDb
 				.selectFrom(MEANING)
 				.where(MEANING.ID.eq(meaningId))
 				.fetchOne();
 		MeaningRecord clonedMeaning;
 		if (meaning.fields().length == 1) {
-			clonedMeaning = create.insertInto(MEANING).defaultValues().returning(MEANING.ID).fetchOne();
+			clonedMeaning = mainDb.insertInto(MEANING).defaultValues().returning(MEANING.ID).fetchOne();
 		} else {
 			clonedMeaning = meaning.copy();
 			clonedMeaning.store();
@@ -876,7 +876,7 @@ public class CompositionDbService extends AbstractDataDbService implements Globa
 
 	public void cloneMeaningDomains(Long meaningId, Long clonedMeaningId) {
 
-		Result<MeaningDomainRecord> meaningDomains = create
+		Result<MeaningDomainRecord> meaningDomains = mainDb
 				.selectFrom(MEANING_DOMAIN)
 				.where(MEANING_DOMAIN.MEANING_ID.eq(meaningId))
 				.orderBy(MEANING_DOMAIN.ORDER_BY)
@@ -890,7 +890,7 @@ public class CompositionDbService extends AbstractDataDbService implements Globa
 
 	public void cloneMeaningRelations(Long meaningId, Long clonedMeaningId) {
 
-		Result<MeaningRelationRecord> meaningRelations = create
+		Result<MeaningRelationRecord> meaningRelations = mainDb
 				.selectFrom(MEANING_RELATION)
 				.where(MEANING_RELATION.MEANING1_ID.eq(meaningId).or(MEANING_RELATION.MEANING2_ID.eq(meaningId)))
 				.orderBy(MEANING_RELATION.ORDER_BY)
@@ -912,10 +912,10 @@ public class CompositionDbService extends AbstractDataDbService implements Globa
 		if (publicDataOnly) {
 			where = where.and(FREEFORM.IS_PUBLIC.isTrue());
 		}
-		List<Long> meaningFreeformIds = create.select(FREEFORM.ID).from(FREEFORM, MEANING_FREEFORM).where(where).orderBy(MEANING_FREEFORM.ID).fetchInto(Long.class);
+		List<Long> meaningFreeformIds = mainDb.select(FREEFORM.ID).from(FREEFORM, MEANING_FREEFORM).where(where).orderBy(MEANING_FREEFORM.ID).fetchInto(Long.class);
 		for (Long meaningFreeformId : meaningFreeformIds) {
 			Long clonedFreeformId = cloneFreeform(meaningFreeformId, null);
-			MeaningFreeformRecord clonedMeaningFreeform = create.newRecord(MEANING_FREEFORM);
+			MeaningFreeformRecord clonedMeaningFreeform = mainDb.newRecord(MEANING_FREEFORM);
 			clonedMeaningFreeform.setMeaningId(clonedMeaningId);
 			clonedMeaningFreeform.setFreeformId(clonedFreeformId);
 			clonedMeaningFreeform.store();
@@ -924,7 +924,7 @@ public class CompositionDbService extends AbstractDataDbService implements Globa
 
 	public Long cloneMeaningDefinition(Long definitionId, Long meaningId) {
 
-		DefinitionRecord definition = create
+		DefinitionRecord definition = mainDb
 				.selectFrom(DEFINITION)
 				.where(DEFINITION.ID.eq(definitionId))
 				.fetchOne();
@@ -937,14 +937,14 @@ public class CompositionDbService extends AbstractDataDbService implements Globa
 
 	public void cloneDefinitionFreeforms(Long definitionId, Long clonedDefinitionId) {
 
-		Result<DefinitionFreeformRecord> definitionFreeforms = create
+		Result<DefinitionFreeformRecord> definitionFreeforms = mainDb
 				.selectFrom(DEFINITION_FREEFORM)
 				.where(DEFINITION_FREEFORM.DEFINITION_ID.eq(definitionId))
 				.orderBy(DEFINITION_FREEFORM.ID)
 				.fetch();
 		for (DefinitionFreeformRecord definitionFreeform : definitionFreeforms) {
 			Long clonedFreeformId = cloneFreeform(definitionFreeform.getFreeformId(), null);
-			DefinitionFreeformRecord clonedDefinitionFreeform = create.newRecord(DEFINITION_FREEFORM);
+			DefinitionFreeformRecord clonedDefinitionFreeform = mainDb.newRecord(DEFINITION_FREEFORM);
 			clonedDefinitionFreeform.setDefinitionId(clonedDefinitionId);
 			clonedDefinitionFreeform.setFreeformId(clonedFreeformId);
 			clonedDefinitionFreeform.store();
@@ -953,7 +953,7 @@ public class CompositionDbService extends AbstractDataDbService implements Globa
 
 	public void cloneDefinitionDatasets(Long definitionId, Long clonedDefinintionId) {
 
-		Result<DefinitionDatasetRecord> definitionDatasets = create
+		Result<DefinitionDatasetRecord> definitionDatasets = mainDb
 				.selectFrom(DEFINITION_DATASET)
 				.where(DEFINITION_DATASET.DEFINITION_ID.eq(definitionId)).fetch();
 		for (DefinitionDatasetRecord definitionDataset : definitionDatasets) {
@@ -966,7 +966,7 @@ public class CompositionDbService extends AbstractDataDbService implements Globa
 
 	public void cloneDefinitionSourceLinks(Long definitionId, Long clonedDefinintionId) {
 
-		Result<DefinitionSourceLinkRecord> definitionSourceLinks = create
+		Result<DefinitionSourceLinkRecord> definitionSourceLinks = mainDb
 				.selectFrom(DEFINITION_SOURCE_LINK)
 				.where(DEFINITION_SOURCE_LINK.DEFINITION_ID.eq(definitionId))
 				.orderBy(DEFINITION_SOURCE_LINK.ORDER_BY)
@@ -980,7 +980,7 @@ public class CompositionDbService extends AbstractDataDbService implements Globa
 
 	private Long cloneFreeform(Long freeformId, Long parentFreeformId) {
 
-		FreeformRecord freeform = create
+		FreeformRecord freeform = mainDb
 				.selectFrom(FREEFORM)
 				.where(FREEFORM.ID.eq(freeformId))
 				.fetchOne();
@@ -988,7 +988,7 @@ public class CompositionDbService extends AbstractDataDbService implements Globa
 		clonedFreeform.setParentId(parentFreeformId);
 		clonedFreeform.changed(FREEFORM.ORDER_BY, false);
 		clonedFreeform.store();
-		List<FreeformRecord> childFreeforms = create
+		List<FreeformRecord> childFreeforms = mainDb
 				.selectFrom(FREEFORM)
 				.where(FREEFORM.PARENT_ID.eq(freeformId))
 				.orderBy(FREEFORM.ORDER_BY)
@@ -1005,7 +1005,7 @@ public class CompositionDbService extends AbstractDataDbService implements Globa
 		String wordValue = simpleWord.getWordValue();
 		String lang = simpleWord.getLang();
 
-		Integer currentHomonymNumber = create
+		Integer currentHomonymNumber = mainDb
 				.select(DSL.max(WORD.HOMONYM_NR))
 				.from(WORD)
 				.where(
@@ -1016,7 +1016,7 @@ public class CompositionDbService extends AbstractDataDbService implements Globa
 
 		int homonymNumber = currentHomonymNumber + 1;
 
-		WordRecord word = create.selectFrom(WORD).where(WORD.ID.eq(wordId)).fetchOne();
+		WordRecord word = mainDb.selectFrom(WORD).where(WORD.ID.eq(wordId)).fetchOne();
 		WordRecord clonedWord = word.copy();
 		clonedWord.setHomonymNr(homonymNumber);
 		clonedWord.store();
@@ -1025,7 +1025,7 @@ public class CompositionDbService extends AbstractDataDbService implements Globa
 
 	public void cloneWordParadigmsAndForms(Long wordId, Long clonedWordId) {
 
-		Result<ParadigmRecord> paradigms = create
+		Result<ParadigmRecord> paradigms = mainDb
 				.selectFrom(PARADIGM)
 				.where(PARADIGM.WORD_ID.eq(wordId))
 				.fetch();
@@ -1037,10 +1037,10 @@ public class CompositionDbService extends AbstractDataDbService implements Globa
 			Long paradigmId = paradigm.getId();
 			Long clonedParadigmId = clonedParadigm.getId();
 
-			Result<ParadigmFormRecord> paradigmForms = create.selectFrom(PARADIGM_FORM).where(PARADIGM_FORM.PARADIGM_ID.eq(paradigmId)).orderBy(PARADIGM_FORM.ORDER_BY).fetch();
+			Result<ParadigmFormRecord> paradigmForms = mainDb.selectFrom(PARADIGM_FORM).where(PARADIGM_FORM.PARADIGM_ID.eq(paradigmId)).orderBy(PARADIGM_FORM.ORDER_BY).fetch();
 			paradigmForms.stream().map(ParadigmFormRecord::copy).forEach(clonedParadigmForm -> {
 				Long formId = clonedParadigmForm.getFormId();
-				FormRecord form = create.selectFrom(FORM).where(FORM.ID.eq(formId)).fetchOne();
+				FormRecord form = mainDb.selectFrom(FORM).where(FORM.ID.eq(formId)).fetchOne();
 
 				FormRecord clonedForm = form.copy();
 				clonedForm.store();
@@ -1056,7 +1056,7 @@ public class CompositionDbService extends AbstractDataDbService implements Globa
 
 	public void cloneWordTypes(Long wordId, Long clonedWordId) {
 
-		Result<WordWordTypeRecord> wordTypes = create
+		Result<WordWordTypeRecord> wordTypes = mainDb
 				.selectFrom(WORD_WORD_TYPE)
 				.where(WORD_WORD_TYPE.WORD_ID.eq(wordId))
 				.orderBy(WORD_WORD_TYPE.ORDER_BY)
@@ -1070,7 +1070,7 @@ public class CompositionDbService extends AbstractDataDbService implements Globa
 
 	public void cloneWordRelations(Long wordId, Long clonedWordId) {
 
-		Result<WordRelationRecord> wordRelations = create
+		Result<WordRelationRecord> wordRelations = mainDb
 				.selectFrom(WORD_RELATION)
 				.where(WORD_RELATION.WORD1_ID.eq(wordId).or(WORD_RELATION.WORD2_ID.eq(wordId)))
 				.orderBy(WORD_RELATION.ORDER_BY)
@@ -1088,14 +1088,14 @@ public class CompositionDbService extends AbstractDataDbService implements Globa
 
 	public void cloneWordFreeforms(Long wordId, Long clonedWordId) {
 
-		Result<WordFreeformRecord> wordFreeforms = create
+		Result<WordFreeformRecord> wordFreeforms = mainDb
 				.selectFrom(WORD_FREEFORM)
 				.where(WORD_FREEFORM.WORD_ID.eq(wordId))
 				.orderBy(WORD_FREEFORM.ID)
 				.fetch();
 		for (WordFreeformRecord wordFreeform : wordFreeforms) {
 			Long clonedFreeformId = cloneFreeform(wordFreeform.getFreeformId(), null);
-			WordFreeformRecord clonedWordFreeform = create.newRecord(WORD_FREEFORM);
+			WordFreeformRecord clonedWordFreeform = mainDb.newRecord(WORD_FREEFORM);
 			clonedWordFreeform.setWordId(clonedWordId);
 			clonedWordFreeform.setFreeformId(clonedFreeformId);
 			clonedWordFreeform.store();
@@ -1104,7 +1104,7 @@ public class CompositionDbService extends AbstractDataDbService implements Globa
 
 	public void cloneWordGroupMembers(Long wordId, Long clonedWordId) {
 
-		Result<WordGroupMemberRecord> wordGroupMembers = create
+		Result<WordGroupMemberRecord> wordGroupMembers = mainDb
 				.selectFrom(WORD_GROUP_MEMBER)
 				.where(WORD_GROUP_MEMBER.WORD_ID.eq(wordId))
 				.orderBy(WORD_GROUP_MEMBER.ORDER_BY)
@@ -1118,7 +1118,7 @@ public class CompositionDbService extends AbstractDataDbService implements Globa
 
 	public void cloneWordEtymology(Long wordId, Long clonedWordId) {
 
-		Result<WordEtymologyRecord> etyms = create
+		Result<WordEtymologyRecord> etyms = mainDb
 				.selectFrom(WORD_ETYMOLOGY)
 				.where(WORD_ETYMOLOGY.WORD_ID.eq(wordId))
 				.orderBy(WORD_ETYMOLOGY.ORDER_BY)
@@ -1133,7 +1133,7 @@ public class CompositionDbService extends AbstractDataDbService implements Globa
 			Long etymId = etym.getId();
 			Long clonedEtymId = clonedEtym.getId();
 
-			Result<WordEtymologyRelationRecord> etymRelations = create
+			Result<WordEtymologyRelationRecord> etymRelations = mainDb
 					.selectFrom(WORD_ETYMOLOGY_RELATION)
 					.where(WORD_ETYMOLOGY_RELATION.WORD_ETYM_ID.eq(etymId))
 					.orderBy(WORD_ETYMOLOGY_RELATION.ORDER_BY)
@@ -1144,7 +1144,7 @@ public class CompositionDbService extends AbstractDataDbService implements Globa
 				clonedEtymRel.store();
 			});
 
-			Result<WordEtymologySourceLinkRecord> etymSourceLinks = create
+			Result<WordEtymologySourceLinkRecord> etymSourceLinks = mainDb
 					.selectFrom(WORD_ETYMOLOGY_SOURCE_LINK)
 					.where(WORD_ETYMOLOGY_SOURCE_LINK.WORD_ETYM_ID.eq(etymId))
 					.orderBy(WORD_ETYMOLOGY_SOURCE_LINK.ORDER_BY)
@@ -1160,8 +1160,8 @@ public class CompositionDbService extends AbstractDataDbService implements Globa
 	private void mergeWordFields(Long targetWordId, Long sourceWordId) {
 
 		Word w = WORD.as("w");
-		WordRecord targetWord = create.selectFrom(w).where(w.ID.eq(targetWordId)).fetchOne();
-		WordRecord sourceWord = create.selectFrom(w).where(w.ID.eq(sourceWordId)).fetchOne();
+		WordRecord targetWord = mainDb.selectFrom(w).where(w.ID.eq(targetWordId)).fetchOne();
+		WordRecord sourceWord = mainDb.selectFrom(w).where(w.ID.eq(sourceWordId)).fetchOne();
 
 		String targetWordAspectCode = targetWord.getAspectCode();
 		String targetWordDisplayMorphCode = targetWord.getDisplayMorphCode();
@@ -1207,7 +1207,7 @@ public class CompositionDbService extends AbstractDataDbService implements Globa
 		WordActivityLog wals = WORD_ACTIVITY_LOG.as("wals");
 		WordActivityLog walt = WORD_ACTIVITY_LOG.as("walt");
 
-		create
+		mainDb
 				.update(wals)
 				.set(wals.WORD_ID, targetWordId)
 				.where(wals.WORD_ID.eq(sourceWordId)
@@ -1226,13 +1226,13 @@ public class CompositionDbService extends AbstractDataDbService implements Globa
 		WordEtymologyRelation wer1 = WORD_ETYMOLOGY_RELATION.as("wer1");
 		WordEtymologyRelation wer2 = WORD_ETYMOLOGY_RELATION.as("wer2");
 
-		create
+		mainDb
 				.update(we)
 				.set(we.WORD_ID, targetWordId)
 				.where(we.WORD_ID.eq(sourceWordId))
 				.execute();
 
-		create
+		mainDb
 				.update(wer1)
 				.set(wer1.RELATED_WORD_ID, targetWordId)
 				.where(wer1.RELATED_WORD_ID.eq(sourceWordId))
@@ -1250,7 +1250,7 @@ public class CompositionDbService extends AbstractDataDbService implements Globa
 		WordGroupMember wgm1 = WORD_GROUP_MEMBER.as("wgm1");
 		WordGroupMember wgm2 = WORD_GROUP_MEMBER.as("wgm2");
 
-		create
+		mainDb
 				.update(wgm1)
 				.set(wgm1.WORD_ID, targetWordId)
 				.where(wgm1.WORD_ID.eq(sourceWordId))
@@ -1265,25 +1265,25 @@ public class CompositionDbService extends AbstractDataDbService implements Globa
 
 	private void moveWordFreeforms(Long targetWordId, Long sourceWordId) {
 
-		Result<FreeformRecord> wordFreeforms = create
+		Result<FreeformRecord> wordFreeforms = mainDb
 				.selectFrom(FREEFORM)
 				.where(FREEFORM.ID.in(DSL.select(WORD_FREEFORM.FREEFORM_ID).from(WORD_FREEFORM).where(WORD_FREEFORM.WORD_ID.eq(targetWordId))))
 				.fetch();
-		Result<FreeformRecord> sourceWordFreeforms = create
+		Result<FreeformRecord> sourceWordFreeforms = mainDb
 				.selectFrom(FREEFORM)
 				.where(FREEFORM.ID.in(DSL.select(WORD_FREEFORM.FREEFORM_ID).from(WORD_FREEFORM).where(WORD_FREEFORM.WORD_ID.eq(sourceWordId))))
 				.fetch();
 
 		List<Long> nonDublicateFreeformIds = getNonDuplicateFreeformIds(wordFreeforms, sourceWordFreeforms);
 
-		create
+		mainDb
 				.update(WORD_FREEFORM)
 				.set(WORD_FREEFORM.WORD_ID, targetWordId)
 				.where(WORD_FREEFORM.WORD_ID.eq(sourceWordId)
 						.and(WORD_FREEFORM.FREEFORM_ID.in(nonDublicateFreeformIds)))
 				.execute();
 
-		create
+		mainDb
 				.delete(FREEFORM)
 				.where(FREEFORM.ID.in(DSL
 						.select(WORD_FREEFORM.FREEFORM_ID)
@@ -1291,7 +1291,7 @@ public class CompositionDbService extends AbstractDataDbService implements Globa
 						.where(WORD_FREEFORM.WORD_ID.eq(sourceWordId))))
 				.execute();
 
-		create
+		mainDb
 				.delete(WORD_FREEFORM)
 				.where(WORD_FREEFORM.WORD_ID.eq(sourceWordId))
 				.execute();
@@ -1302,7 +1302,7 @@ public class CompositionDbService extends AbstractDataDbService implements Globa
 		WordRelation wr1 = WORD_RELATION.as("wr1");
 		WordRelation wr2 = WORD_RELATION.as("wr2");
 
-		create
+		mainDb
 				.update(wr1)
 				.set(wr1.WORD1_ID, targetWordId)
 				.where(
@@ -1317,7 +1317,7 @@ public class CompositionDbService extends AbstractDataDbService implements Globa
 										.and(wr2.WORD_REL_TYPE_CODE.eq(wr1.WORD_REL_TYPE_CODE))))
 				.execute();
 
-		create
+		mainDb
 				.update(wr1)
 				.set(wr1.WORD2_ID, targetWordId)
 				.where(
@@ -1338,7 +1338,7 @@ public class CompositionDbService extends AbstractDataDbService implements Globa
 		WordWordType wwt1 = WORD_WORD_TYPE.as("wwt1");
 		WordWordType wwt2 = WORD_WORD_TYPE.as("wwt2");
 
-		create
+		mainDb
 				.update(wwt1)
 				.set(wwt1.WORD_ID, targetWordId)
 				.where(wwt1.WORD_ID.eq(sourceWordId))
@@ -1352,7 +1352,7 @@ public class CompositionDbService extends AbstractDataDbService implements Globa
 
 	public Integer getWordHomonymNum(Long wordId) {
 
-		return create.select(WORD.HOMONYM_NR)
+		return mainDb.select(WORD.HOMONYM_NR)
 				.from(WORD)
 				.where(WORD.ID.eq(wordId))
 				.fetchOneInto(Integer.class);
@@ -1360,12 +1360,12 @@ public class CompositionDbService extends AbstractDataDbService implements Globa
 
 	public void moveParadigms(Long targetWordId, Long sourceWordId) {
 
-		create
+		mainDb
 				.delete(PARADIGM)
 				.where(PARADIGM.WORD_ID.eq(targetWordId))
 				.execute();
 
-		create
+		mainDb
 				.update(PARADIGM)
 				.set(PARADIGM.WORD_ID, targetWordId)
 				.where(PARADIGM.WORD_ID.eq(sourceWordId))
@@ -1385,7 +1385,7 @@ public class CompositionDbService extends AbstractDataDbService implements Globa
 
 	public void updateLexemeWordIdAndLevels(Long lexemeId, Long wordId, int level1, int level2) {
 
-		create
+		mainDb
 				.update(LEXEME)
 				.set(LEXEME.WORD_ID, wordId)
 				.set(LEXEME.LEVEL1, level1)

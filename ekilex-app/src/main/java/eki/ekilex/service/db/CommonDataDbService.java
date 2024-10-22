@@ -1,88 +1,88 @@
 package eki.ekilex.service.db;
 
-import static eki.ekilex.data.db.Tables.ASPECT;
-import static eki.ekilex.data.db.Tables.ASPECT_LABEL;
-import static eki.ekilex.data.db.Tables.DATASET;
-import static eki.ekilex.data.db.Tables.DATASET_FREEFORM_TYPE;
-import static eki.ekilex.data.db.Tables.DATASET_PERMISSION;
-import static eki.ekilex.data.db.Tables.DEFINITION;
-import static eki.ekilex.data.db.Tables.DEFINITION_DATASET;
-import static eki.ekilex.data.db.Tables.DEFINITION_NOTE;
-import static eki.ekilex.data.db.Tables.DEFINITION_NOTE_SOURCE_LINK;
-import static eki.ekilex.data.db.Tables.DEFINITION_SOURCE_LINK;
-import static eki.ekilex.data.db.Tables.DEFINITION_TYPE;
-import static eki.ekilex.data.db.Tables.DEFINITION_TYPE_LABEL;
-import static eki.ekilex.data.db.Tables.DERIV;
-import static eki.ekilex.data.db.Tables.DERIV_LABEL;
-import static eki.ekilex.data.db.Tables.DISPLAY_MORPH;
-import static eki.ekilex.data.db.Tables.DISPLAY_MORPH_LABEL;
-import static eki.ekilex.data.db.Tables.DOMAIN;
-import static eki.ekilex.data.db.Tables.DOMAIN_LABEL;
-import static eki.ekilex.data.db.Tables.ETYMOLOGY_TYPE;
-import static eki.ekilex.data.db.Tables.FREEFORM;
-import static eki.ekilex.data.db.Tables.FREEFORM_SOURCE_LINK;
-import static eki.ekilex.data.db.Tables.FREEFORM_TYPE;
-import static eki.ekilex.data.db.Tables.FREEFORM_TYPE_LABEL;
-import static eki.ekilex.data.db.Tables.GENDER;
-import static eki.ekilex.data.db.Tables.GENDER_LABEL;
-import static eki.ekilex.data.db.Tables.GOVERNMENT_TYPE;
-import static eki.ekilex.data.db.Tables.GOVERNMENT_TYPE_LABEL;
-import static eki.ekilex.data.db.Tables.LANGUAGE;
-import static eki.ekilex.data.db.Tables.LANGUAGE_LABEL;
-import static eki.ekilex.data.db.Tables.LEXEME;
-import static eki.ekilex.data.db.Tables.LEXEME_FREEFORM;
-import static eki.ekilex.data.db.Tables.LEXEME_NOTE;
-import static eki.ekilex.data.db.Tables.LEXEME_NOTE_SOURCE_LINK;
-import static eki.ekilex.data.db.Tables.LEXEME_REGISTER;
-import static eki.ekilex.data.db.Tables.LEXEME_SOURCE_LINK;
-import static eki.ekilex.data.db.Tables.LEXEME_TAG;
-import static eki.ekilex.data.db.Tables.LEX_RELATION;
-import static eki.ekilex.data.db.Tables.LEX_REL_TYPE;
-import static eki.ekilex.data.db.Tables.LEX_REL_TYPE_LABEL;
-import static eki.ekilex.data.db.Tables.MEANING;
-import static eki.ekilex.data.db.Tables.MEANING_DOMAIN;
-import static eki.ekilex.data.db.Tables.MEANING_FORUM;
-import static eki.ekilex.data.db.Tables.MEANING_FREEFORM;
-import static eki.ekilex.data.db.Tables.MEANING_IMAGE;
-import static eki.ekilex.data.db.Tables.MEANING_IMAGE_SOURCE_LINK;
-import static eki.ekilex.data.db.Tables.MEANING_NOTE;
-import static eki.ekilex.data.db.Tables.MEANING_NOTE_SOURCE_LINK;
-import static eki.ekilex.data.db.Tables.MEANING_RELATION;
-import static eki.ekilex.data.db.Tables.MEANING_REL_TYPE;
-import static eki.ekilex.data.db.Tables.MEANING_REL_TYPE_LABEL;
-import static eki.ekilex.data.db.Tables.MEANING_SEMANTIC_TYPE;
-import static eki.ekilex.data.db.Tables.MEANING_TAG;
-import static eki.ekilex.data.db.Tables.MORPH;
-import static eki.ekilex.data.db.Tables.MORPH_LABEL;
-import static eki.ekilex.data.db.Tables.POS;
-import static eki.ekilex.data.db.Tables.POS_GROUP;
-import static eki.ekilex.data.db.Tables.POS_GROUP_LABEL;
-import static eki.ekilex.data.db.Tables.POS_LABEL;
-import static eki.ekilex.data.db.Tables.PROFICIENCY_LEVEL;
-import static eki.ekilex.data.db.Tables.PROFICIENCY_LEVEL_LABEL;
-import static eki.ekilex.data.db.Tables.REGION;
-import static eki.ekilex.data.db.Tables.REGISTER;
-import static eki.ekilex.data.db.Tables.REGISTER_LABEL;
-import static eki.ekilex.data.db.Tables.SEMANTIC_TYPE;
-import static eki.ekilex.data.db.Tables.SEMANTIC_TYPE_LABEL;
-import static eki.ekilex.data.db.Tables.SOURCE;
-import static eki.ekilex.data.db.Tables.TAG;
-import static eki.ekilex.data.db.Tables.USAGE;
-import static eki.ekilex.data.db.Tables.USAGE_DEFINITION;
-import static eki.ekilex.data.db.Tables.USAGE_SOURCE_LINK;
-import static eki.ekilex.data.db.Tables.USAGE_TRANSLATION;
-import static eki.ekilex.data.db.Tables.USAGE_TYPE;
-import static eki.ekilex.data.db.Tables.USAGE_TYPE_LABEL;
-import static eki.ekilex.data.db.Tables.VALUE_STATE;
-import static eki.ekilex.data.db.Tables.VALUE_STATE_LABEL;
-import static eki.ekilex.data.db.Tables.WORD;
-import static eki.ekilex.data.db.Tables.WORD_FORUM;
-import static eki.ekilex.data.db.Tables.WORD_FREEFORM;
-import static eki.ekilex.data.db.Tables.WORD_REL_TYPE;
-import static eki.ekilex.data.db.Tables.WORD_REL_TYPE_LABEL;
-import static eki.ekilex.data.db.Tables.WORD_TYPE;
-import static eki.ekilex.data.db.Tables.WORD_TYPE_LABEL;
-import static eki.ekilex.data.db.Tables.WORD_WORD_TYPE;
+import static eki.ekilex.data.db.main.Tables.ASPECT;
+import static eki.ekilex.data.db.main.Tables.ASPECT_LABEL;
+import static eki.ekilex.data.db.main.Tables.DATASET;
+import static eki.ekilex.data.db.main.Tables.DATASET_FREEFORM_TYPE;
+import static eki.ekilex.data.db.main.Tables.DATASET_PERMISSION;
+import static eki.ekilex.data.db.main.Tables.DEFINITION;
+import static eki.ekilex.data.db.main.Tables.DEFINITION_DATASET;
+import static eki.ekilex.data.db.main.Tables.DEFINITION_NOTE;
+import static eki.ekilex.data.db.main.Tables.DEFINITION_NOTE_SOURCE_LINK;
+import static eki.ekilex.data.db.main.Tables.DEFINITION_SOURCE_LINK;
+import static eki.ekilex.data.db.main.Tables.DEFINITION_TYPE;
+import static eki.ekilex.data.db.main.Tables.DEFINITION_TYPE_LABEL;
+import static eki.ekilex.data.db.main.Tables.DERIV;
+import static eki.ekilex.data.db.main.Tables.DERIV_LABEL;
+import static eki.ekilex.data.db.main.Tables.DISPLAY_MORPH;
+import static eki.ekilex.data.db.main.Tables.DISPLAY_MORPH_LABEL;
+import static eki.ekilex.data.db.main.Tables.DOMAIN;
+import static eki.ekilex.data.db.main.Tables.DOMAIN_LABEL;
+import static eki.ekilex.data.db.main.Tables.ETYMOLOGY_TYPE;
+import static eki.ekilex.data.db.main.Tables.FREEFORM;
+import static eki.ekilex.data.db.main.Tables.FREEFORM_SOURCE_LINK;
+import static eki.ekilex.data.db.main.Tables.FREEFORM_TYPE;
+import static eki.ekilex.data.db.main.Tables.FREEFORM_TYPE_LABEL;
+import static eki.ekilex.data.db.main.Tables.GENDER;
+import static eki.ekilex.data.db.main.Tables.GENDER_LABEL;
+import static eki.ekilex.data.db.main.Tables.GOVERNMENT_TYPE;
+import static eki.ekilex.data.db.main.Tables.GOVERNMENT_TYPE_LABEL;
+import static eki.ekilex.data.db.main.Tables.LANGUAGE;
+import static eki.ekilex.data.db.main.Tables.LANGUAGE_LABEL;
+import static eki.ekilex.data.db.main.Tables.LEXEME;
+import static eki.ekilex.data.db.main.Tables.LEXEME_FREEFORM;
+import static eki.ekilex.data.db.main.Tables.LEXEME_NOTE;
+import static eki.ekilex.data.db.main.Tables.LEXEME_NOTE_SOURCE_LINK;
+import static eki.ekilex.data.db.main.Tables.LEXEME_REGISTER;
+import static eki.ekilex.data.db.main.Tables.LEXEME_SOURCE_LINK;
+import static eki.ekilex.data.db.main.Tables.LEXEME_TAG;
+import static eki.ekilex.data.db.main.Tables.LEX_RELATION;
+import static eki.ekilex.data.db.main.Tables.LEX_REL_TYPE;
+import static eki.ekilex.data.db.main.Tables.LEX_REL_TYPE_LABEL;
+import static eki.ekilex.data.db.main.Tables.MEANING;
+import static eki.ekilex.data.db.main.Tables.MEANING_DOMAIN;
+import static eki.ekilex.data.db.main.Tables.MEANING_FORUM;
+import static eki.ekilex.data.db.main.Tables.MEANING_FREEFORM;
+import static eki.ekilex.data.db.main.Tables.MEANING_IMAGE;
+import static eki.ekilex.data.db.main.Tables.MEANING_IMAGE_SOURCE_LINK;
+import static eki.ekilex.data.db.main.Tables.MEANING_NOTE;
+import static eki.ekilex.data.db.main.Tables.MEANING_NOTE_SOURCE_LINK;
+import static eki.ekilex.data.db.main.Tables.MEANING_RELATION;
+import static eki.ekilex.data.db.main.Tables.MEANING_REL_TYPE;
+import static eki.ekilex.data.db.main.Tables.MEANING_REL_TYPE_LABEL;
+import static eki.ekilex.data.db.main.Tables.MEANING_SEMANTIC_TYPE;
+import static eki.ekilex.data.db.main.Tables.MEANING_TAG;
+import static eki.ekilex.data.db.main.Tables.MORPH;
+import static eki.ekilex.data.db.main.Tables.MORPH_LABEL;
+import static eki.ekilex.data.db.main.Tables.POS;
+import static eki.ekilex.data.db.main.Tables.POS_GROUP;
+import static eki.ekilex.data.db.main.Tables.POS_GROUP_LABEL;
+import static eki.ekilex.data.db.main.Tables.POS_LABEL;
+import static eki.ekilex.data.db.main.Tables.PROFICIENCY_LEVEL;
+import static eki.ekilex.data.db.main.Tables.PROFICIENCY_LEVEL_LABEL;
+import static eki.ekilex.data.db.main.Tables.REGION;
+import static eki.ekilex.data.db.main.Tables.REGISTER;
+import static eki.ekilex.data.db.main.Tables.REGISTER_LABEL;
+import static eki.ekilex.data.db.main.Tables.SEMANTIC_TYPE;
+import static eki.ekilex.data.db.main.Tables.SEMANTIC_TYPE_LABEL;
+import static eki.ekilex.data.db.main.Tables.SOURCE;
+import static eki.ekilex.data.db.main.Tables.TAG;
+import static eki.ekilex.data.db.main.Tables.USAGE;
+import static eki.ekilex.data.db.main.Tables.USAGE_DEFINITION;
+import static eki.ekilex.data.db.main.Tables.USAGE_SOURCE_LINK;
+import static eki.ekilex.data.db.main.Tables.USAGE_TRANSLATION;
+import static eki.ekilex.data.db.main.Tables.USAGE_TYPE;
+import static eki.ekilex.data.db.main.Tables.USAGE_TYPE_LABEL;
+import static eki.ekilex.data.db.main.Tables.VALUE_STATE;
+import static eki.ekilex.data.db.main.Tables.VALUE_STATE_LABEL;
+import static eki.ekilex.data.db.main.Tables.WORD;
+import static eki.ekilex.data.db.main.Tables.WORD_FORUM;
+import static eki.ekilex.data.db.main.Tables.WORD_FREEFORM;
+import static eki.ekilex.data.db.main.Tables.WORD_REL_TYPE;
+import static eki.ekilex.data.db.main.Tables.WORD_REL_TYPE_LABEL;
+import static eki.ekilex.data.db.main.Tables.WORD_TYPE;
+import static eki.ekilex.data.db.main.Tables.WORD_TYPE_LABEL;
+import static eki.ekilex.data.db.main.Tables.WORD_WORD_TYPE;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -117,63 +117,63 @@ import eki.ekilex.data.Origin;
 import eki.ekilex.data.SearchLangsRestriction;
 import eki.ekilex.data.SourceLink;
 import eki.ekilex.data.WordForum;
-import eki.ekilex.data.db.tables.DatasetFreeformType;
-import eki.ekilex.data.db.tables.Definition;
-import eki.ekilex.data.db.tables.DefinitionDataset;
-import eki.ekilex.data.db.tables.DefinitionNote;
-import eki.ekilex.data.db.tables.DefinitionNoteSourceLink;
-import eki.ekilex.data.db.tables.DefinitionSourceLink;
-import eki.ekilex.data.db.tables.DefinitionTypeLabel;
-import eki.ekilex.data.db.tables.Domain;
-import eki.ekilex.data.db.tables.DomainLabel;
-import eki.ekilex.data.db.tables.Freeform;
-import eki.ekilex.data.db.tables.FreeformSourceLink;
-import eki.ekilex.data.db.tables.FreeformType;
-import eki.ekilex.data.db.tables.FreeformTypeLabel;
-import eki.ekilex.data.db.tables.Language;
-import eki.ekilex.data.db.tables.LexRelTypeLabel;
-import eki.ekilex.data.db.tables.LexRelation;
-import eki.ekilex.data.db.tables.Lexeme;
-import eki.ekilex.data.db.tables.LexemeFreeform;
-import eki.ekilex.data.db.tables.LexemeNote;
-import eki.ekilex.data.db.tables.LexemeNoteSourceLink;
-import eki.ekilex.data.db.tables.LexemeRegister;
-import eki.ekilex.data.db.tables.Meaning;
-import eki.ekilex.data.db.tables.MeaningFreeform;
-import eki.ekilex.data.db.tables.MeaningImage;
-import eki.ekilex.data.db.tables.MeaningImageSourceLink;
-import eki.ekilex.data.db.tables.MeaningNote;
-import eki.ekilex.data.db.tables.MeaningNoteSourceLink;
-import eki.ekilex.data.db.tables.MeaningRelTypeLabel;
-import eki.ekilex.data.db.tables.MeaningRelation;
-import eki.ekilex.data.db.tables.Source;
-import eki.ekilex.data.db.tables.Usage;
-import eki.ekilex.data.db.tables.UsageDefinition;
-import eki.ekilex.data.db.tables.UsageSourceLink;
-import eki.ekilex.data.db.tables.UsageTranslation;
-import eki.ekilex.data.db.tables.Word;
-import eki.ekilex.data.db.tables.WordFreeform;
+import eki.ekilex.data.db.main.tables.DatasetFreeformType;
+import eki.ekilex.data.db.main.tables.Definition;
+import eki.ekilex.data.db.main.tables.DefinitionDataset;
+import eki.ekilex.data.db.main.tables.DefinitionNote;
+import eki.ekilex.data.db.main.tables.DefinitionNoteSourceLink;
+import eki.ekilex.data.db.main.tables.DefinitionSourceLink;
+import eki.ekilex.data.db.main.tables.DefinitionTypeLabel;
+import eki.ekilex.data.db.main.tables.Domain;
+import eki.ekilex.data.db.main.tables.DomainLabel;
+import eki.ekilex.data.db.main.tables.Freeform;
+import eki.ekilex.data.db.main.tables.FreeformSourceLink;
+import eki.ekilex.data.db.main.tables.FreeformType;
+import eki.ekilex.data.db.main.tables.FreeformTypeLabel;
+import eki.ekilex.data.db.main.tables.Language;
+import eki.ekilex.data.db.main.tables.LexRelTypeLabel;
+import eki.ekilex.data.db.main.tables.LexRelation;
+import eki.ekilex.data.db.main.tables.Lexeme;
+import eki.ekilex.data.db.main.tables.LexemeFreeform;
+import eki.ekilex.data.db.main.tables.LexemeNote;
+import eki.ekilex.data.db.main.tables.LexemeNoteSourceLink;
+import eki.ekilex.data.db.main.tables.LexemeRegister;
+import eki.ekilex.data.db.main.tables.Meaning;
+import eki.ekilex.data.db.main.tables.MeaningFreeform;
+import eki.ekilex.data.db.main.tables.MeaningImage;
+import eki.ekilex.data.db.main.tables.MeaningImageSourceLink;
+import eki.ekilex.data.db.main.tables.MeaningNote;
+import eki.ekilex.data.db.main.tables.MeaningNoteSourceLink;
+import eki.ekilex.data.db.main.tables.MeaningRelTypeLabel;
+import eki.ekilex.data.db.main.tables.MeaningRelation;
+import eki.ekilex.data.db.main.tables.Source;
+import eki.ekilex.data.db.main.tables.Usage;
+import eki.ekilex.data.db.main.tables.UsageDefinition;
+import eki.ekilex.data.db.main.tables.UsageSourceLink;
+import eki.ekilex.data.db.main.tables.UsageTranslation;
+import eki.ekilex.data.db.main.tables.Word;
+import eki.ekilex.data.db.main.tables.WordFreeform;
 
 //only common use data reading!
 @Component
 public class CommonDataDbService extends AbstractDataDbService {
 
 	public Map<String, String> getDatasetNameMap() {
-		return create.select().from(DATASET).fetchMap(DATASET.CODE, DATASET.NAME);
+		return mainDb.select().from(DATASET).fetchMap(DATASET.CODE, DATASET.NAME);
 	}
 
 	public List<Dataset> getAllDatasets() {
-		return create.selectFrom(DATASET).orderBy(DATASET.NAME).fetchInto(Dataset.class);
+		return mainDb.selectFrom(DATASET).orderBy(DATASET.NAME).fetchInto(Dataset.class);
 	}
 
 	@Cacheable(value = CACHE_KEY_DATASET, key = "#root.methodName")
 	public List<Dataset> getVisibleDatasets() {
-		return create.select(DATASET.CODE, DATASET.NAME).from(DATASET).where(DATASET.IS_VISIBLE.isTrue()).orderBy(DATASET.NAME).fetchInto(Dataset.class);
+		return mainDb.select(DATASET.CODE, DATASET.NAME).from(DATASET).where(DATASET.IS_VISIBLE.isTrue()).orderBy(DATASET.NAME).fetchInto(Dataset.class);
 	}
 
 	@Cacheable(value = CACHE_KEY_DATASET, key = "#root.methodName")
 	public List<Dataset> getVisibleDatasetsWithOwner() {
-		return create
+		return mainDb
 				.select(DATASET.CODE, DATASET.NAME)
 				.from(DATASET)
 				.where(DATASET.IS_VISIBLE.isTrue()
@@ -189,17 +189,17 @@ public class CommonDataDbService extends AbstractDataDbService {
 
 	@Cacheable(value = CACHE_KEY_TAG, key = "#root.methodName")
 	public List<String> getTags() {
-		return create.select(TAG.NAME).from(TAG).orderBy(TAG.ORDER_BY).fetchInto(String.class);
+		return mainDb.select(TAG.NAME).from(TAG).orderBy(TAG.ORDER_BY).fetchInto(String.class);
 	}
 
 	@Cacheable(value = CACHE_KEY_TAG, key = "{#root.methodName, #tagType}")
 	public List<String> getTags(String tagType) {
-		return create.select(TAG.NAME).from(TAG).where(TAG.TYPE.eq(tagType)).orderBy(TAG.ORDER_BY).fetchInto(String.class);
+		return mainDb.select(TAG.NAME).from(TAG).where(TAG.TYPE.eq(tagType)).orderBy(TAG.ORDER_BY).fetchInto(String.class);
 	}
 
 	@Cacheable(value = CACHE_KEY_CLASSIF, key = "{#root.methodName, #classifierLabelLang, #classifierLabelTypeCode}")
 	public List<Classifier> getLanguages(String classifierLabelLang, String classifierLabelTypeCode) {
-		return create
+		return mainDb
 				.select(
 						getClassifierNameField(ClassifierName.LANGUAGE),
 						LANGUAGE_LABEL.CODE,
@@ -211,7 +211,7 @@ public class CommonDataDbService extends AbstractDataDbService {
 
 	@Cacheable(value = CACHE_KEY_CLASSIF, key = "{#root.methodName, #classifierLabelLang, #classifierLabelTypeCode}")
 	public List<Classifier> getFreeformTypes(String classifierLabelLang, String classifierLabelTypeCode) {
-		return create
+		return mainDb
 				.select(
 						DSL.field(DSL.value(ClassifierName.FREEFORM_TYPE.name())).as("name"),
 						FREEFORM_TYPE.CODE,
@@ -231,7 +231,7 @@ public class CommonDataDbService extends AbstractDataDbService {
 		FreeformTypeLabel ftl = FREEFORM_TYPE_LABEL.as("ftl");
 		DatasetFreeformType dsft = DATASET_FREEFORM_TYPE.as("dsft");
 
-		return create
+		return mainDb
 				.select(
 						DSL.field(DSL.value(ClassifierName.FREEFORM_TYPE.name())).as("name"),
 						ft.CODE,
@@ -256,7 +256,7 @@ public class CommonDataDbService extends AbstractDataDbService {
 
 	@Cacheable(value = CACHE_KEY_CLASSIF, key = "{#root.methodName, #classifierLabelLang, #classifierLabelTypeCode}")
 	public List<Classifier> getPoses(String classifierLabelLang, String classifierLabelTypeCode) {
-		return create
+		return mainDb
 				.select(
 						DSL.field(DSL.value(ClassifierName.POS.name())).as("name"),
 						POS_LABEL.CODE,
@@ -272,7 +272,7 @@ public class CommonDataDbService extends AbstractDataDbService {
 
 	@Cacheable(value = CACHE_KEY_CLASSIF, key = "{#root.methodName, #classifierLabelLang, #classifierLabelTypeCode}")
 	public List<Classifier> getRegisters(String classifierLabelLang, String classifierLabelTypeCode) {
-		return create
+		return mainDb
 				.select(
 						getClassifierNameField(ClassifierName.REGISTER),
 						REGISTER_LABEL.CODE,
@@ -288,7 +288,7 @@ public class CommonDataDbService extends AbstractDataDbService {
 
 	@Cacheable(value = CACHE_KEY_CLASSIF, key = "#root.methodName")
 	public List<Classifier> getRegions() {
-		return create
+		return mainDb
 				.select(
 						getClassifierNameField(ClassifierName.REGION),
 						REGION.CODE,
@@ -300,7 +300,7 @@ public class CommonDataDbService extends AbstractDataDbService {
 
 	@Cacheable(value = CACHE_KEY_CLASSIF, key = "{#root.methodName, #classifierLabelLang, #classifierLabelTypeCode}")
 	public List<Classifier> getDerivs(String classifierLabelLang, String classifierLabelTypeCode) {
-		return create
+		return mainDb
 				.select(
 						getClassifierNameField(ClassifierName.DERIV),
 						DERIV_LABEL.CODE,
@@ -316,7 +316,7 @@ public class CommonDataDbService extends AbstractDataDbService {
 
 	@Cacheable(value = CACHE_KEY_CLASSIF, key = "{#root.methodName, #classifierLabelLang, #classifierLabelTypeCode}")
 	public List<Classifier> getGenders(String classifierLabelLang, String classifierLabelTypeCode) {
-		return create
+		return mainDb
 				.select(
 						getClassifierNameField(ClassifierName.GENDER),
 						GENDER_LABEL.CODE,
@@ -332,7 +332,7 @@ public class CommonDataDbService extends AbstractDataDbService {
 
 	@Cacheable(value = CACHE_KEY_CLASSIF, key = "{#root.methodName, #classifierLabelLang, #classifierLabelTypeCode}")
 	public List<Classifier> getAspects(String classifierLabelLang, String classifierLabelTypeCode) {
-		return create
+		return mainDb
 				.select(
 						getClassifierNameField(ClassifierName.ASPECT),
 						ASPECT_LABEL.CODE,
@@ -348,7 +348,7 @@ public class CommonDataDbService extends AbstractDataDbService {
 
 	@Cacheable(value = CACHE_KEY_CLASSIF, key = "{#root.methodName, #classifierLabelLang, #classifierLabelTypeCode}")
 	public List<Classifier> getDomainsInUse(String classifierLabelLang, String classifierLabelTypeCode) {
-		return create
+		return mainDb
 				.select(
 						getClassifierNameField(ClassifierName.DOMAIN),
 						DOMAIN_LABEL.ORIGIN,
@@ -368,7 +368,7 @@ public class CommonDataDbService extends AbstractDataDbService {
 
 	@Cacheable(value = CACHE_KEY_CLASSIF, key = "{#root.methodName, #classifierLabelLang, #classifierLabelTypeCode}")
 	public List<Classifier> getWordTypes(String classifierLabelLang, String classifierLabelTypeCode) {
-		return create
+		return mainDb
 				.select(
 						getClassifierNameField(ClassifierName.WORD_TYPE),
 						WORD_TYPE_LABEL.CODE,
@@ -384,7 +384,7 @@ public class CommonDataDbService extends AbstractDataDbService {
 
 	@Cacheable(value = CACHE_KEY_CLASSIF, key = "{#root.methodName, #classifierLabelLang, #classifierLabelTypeCode}")
 	public List<Classifier> getWordRelationTypes(String classifierLabelLang, String classifierLabelTypeCode) {
-		return create
+		return mainDb
 				.select(
 						getClassifierNameField(ClassifierName.WORD_REL_TYPE),
 						WORD_REL_TYPE_LABEL.CODE,
@@ -400,7 +400,7 @@ public class CommonDataDbService extends AbstractDataDbService {
 
 	@Cacheable(value = CACHE_KEY_CLASSIF, key = "{#root.methodName, #classifierLabelLang, #classifierLabelTypeCode}")
 	public List<Classifier> getLexemeRelationTypes(String classifierLabelLang, String classifierLabelType) {
-		return create
+		return mainDb
 				.select(
 						getClassifierNameField(ClassifierName.LEX_REL_TYPE),
 						LEX_REL_TYPE_LABEL.CODE,
@@ -416,7 +416,7 @@ public class CommonDataDbService extends AbstractDataDbService {
 
 	@Cacheable(value = CACHE_KEY_CLASSIF, key = "{#root.methodName, #classifierLabelLang, #classifierLabelTypeCode}")
 	public List<Classifier> getMeaningRelationTypes(String classifierLabelLang, String classifierLabelType) {
-		return create
+		return mainDb
 				.select(
 						getClassifierNameField(ClassifierName.MEANING_REL_TYPE),
 						MEANING_REL_TYPE_LABEL.CODE,
@@ -432,7 +432,7 @@ public class CommonDataDbService extends AbstractDataDbService {
 
 	@Cacheable(value = CACHE_KEY_CLASSIF, key = "{#root.methodName, #classifierLabelLang, #classifierLabelTypeCode}")
 	public List<Classifier> getDefinitionTypes(String classifierLabelLang, String classifierLabelType) {
-		return create
+		return mainDb
 				.select(
 						getClassifierNameField(ClassifierName.DEFINITION_TYPE),
 						DEFINITION_TYPE_LABEL.CODE,
@@ -448,7 +448,7 @@ public class CommonDataDbService extends AbstractDataDbService {
 
 	@Cacheable(value = CACHE_KEY_CLASSIF, key = "{#root.methodName, #classifierLabelLang, #classifierLabelTypeCode}")
 	public List<Classifier> getMorphs(String classifierLabelLang, String classifierLabelTypeCode) {
-		return create
+		return mainDb
 				.select(
 						getClassifierNameField(ClassifierName.MORPH),
 						MORPH_LABEL.CODE,
@@ -464,7 +464,7 @@ public class CommonDataDbService extends AbstractDataDbService {
 
 	@Cacheable(value = CACHE_KEY_CLASSIF, key = "{#root.methodName, #classifierLabelLang, #classifierLabelTypeCode}")
 	public List<Classifier> getValueStates(String classifierLabelLang, String classifierLabelType) {
-		return create
+		return mainDb
 				.select(
 						getClassifierNameField(ClassifierName.VALUE_STATE),
 						VALUE_STATE_LABEL.CODE,
@@ -480,7 +480,7 @@ public class CommonDataDbService extends AbstractDataDbService {
 
 	@Cacheable(value = CACHE_KEY_CLASSIF, key = "{#root.methodName, #classifierLabelLang, #classifierLabelTypeCode}")
 	public List<Classifier> getProficiencyLevels(String classifierLabelLang, String classifierLabelType) {
-		return create
+		return mainDb
 				.select(
 						getClassifierNameField(ClassifierName.PROFICIENCY_LEVEL),
 						PROFICIENCY_LEVEL_LABEL.CODE,
@@ -496,7 +496,7 @@ public class CommonDataDbService extends AbstractDataDbService {
 
 	@Cacheable(value = CACHE_KEY_CLASSIF, key = "{#root.methodName}")
 	public List<Origin> getDomainOrigins() {
-		return create
+		return mainDb
 				.selectDistinct(DOMAIN.ORIGIN.as("code"), DATASET.NAME.as("label"))
 				.from(DOMAIN)
 				.leftJoin(DATASET).on(DOMAIN.ORIGIN.eq(DATASET.CODE))
@@ -522,7 +522,7 @@ public class CommonDataDbService extends AbstractDataDbService {
 				.groupBy(dll.ORIGIN, dll.CODE)
 				.asTable("dl");
 
-		return create
+		return mainDb
 				.select(getClassifierNameField(ClassifierName.DOMAIN),
 						d.PARENT_ORIGIN,
 						d.PARENT_CODE,
@@ -539,7 +539,7 @@ public class CommonDataDbService extends AbstractDataDbService {
 
 	@Cacheable(value = CACHE_KEY_CLASSIF, key = "{#root.methodName, #classifierLabelLang, #classifierLabelTypeCode}")
 	public List<Classifier> getSemanticTypes(String classifierLabelLang, String classifierLabelType) {
-		return create
+		return mainDb
 				.select(
 						getClassifierNameField(ClassifierName.SEMANTIC_TYPE),
 						SEMANTIC_TYPE_LABEL.CODE,
@@ -555,7 +555,7 @@ public class CommonDataDbService extends AbstractDataDbService {
 
 	@Cacheable(value = CACHE_KEY_CLASSIF, key = "{#root.methodName, #classifierLabelLang, #classifierLabelTypeCode}")
 	public List<Classifier> getDisplayMorphs(String classifierLabelLang, String classifierLabelType) {
-		return create
+		return mainDb
 				.select(
 						getClassifierNameField(ClassifierName.DISPLAY_MORPH),
 						DISPLAY_MORPH_LABEL.CODE,
@@ -571,7 +571,7 @@ public class CommonDataDbService extends AbstractDataDbService {
 
 	@Cacheable(value = CACHE_KEY_CLASSIF, key = "{#root.methodName, #classifierLabelLang, #classifierLabelTypeCode}")
 	public List<Classifier> getGovernmentTypes(String classifierLabelLang, String classifierLabelType) {
-		return create
+		return mainDb
 				.select(
 						getClassifierNameField(ClassifierName.GOVERNMENT_TYPE),
 						GOVERNMENT_TYPE_LABEL.CODE,
@@ -587,7 +587,7 @@ public class CommonDataDbService extends AbstractDataDbService {
 
 	@Cacheable(value = CACHE_KEY_CLASSIF, key = "#root.methodName")
 	public List<Classifier> getEtymologyTypes() {
-		return create
+		return mainDb
 				.select(
 						getClassifierNameField(ClassifierName.ETYMOLOGY_TYPE),
 						ETYMOLOGY_TYPE.CODE,
@@ -599,7 +599,7 @@ public class CommonDataDbService extends AbstractDataDbService {
 
 	@Cacheable(value = CACHE_KEY_CLASSIF, key = "{#root.methodName, #classifierLabelLang, #classifierLabelTypeCode}")
 	public List<Classifier> getPosGroups(String classifierLabelLang, String classifierLabelType) {
-		return create
+		return mainDb
 				.select(
 						getClassifierNameField(ClassifierName.POS_GROUP),
 						POS_GROUP_LABEL.CODE,
@@ -615,7 +615,7 @@ public class CommonDataDbService extends AbstractDataDbService {
 
 	@Cacheable(value = CACHE_KEY_CLASSIF, key = "{#root.methodName, #classifierLabelLang, #classifierLabelTypeCode}")
 	public List<Classifier> getUsageTypes(String classifierLabelLang, String classifierLabelType) {
-		return create
+		return mainDb
 				.select(
 						getClassifierNameField(ClassifierName.USAGE_TYPE),
 						USAGE_TYPE_LABEL.CODE,
@@ -631,7 +631,7 @@ public class CommonDataDbService extends AbstractDataDbService {
 
 	public List<Classifier> getWordTypes(Long wordId, String classifierLabelLang, String classifierLabelTypeCode) {
 
-		return create
+		return mainDb
 				.select(
 						getClassifierNameField(ClassifierName.WORD_TYPE),
 						WORD_TYPE_LABEL.CODE,
@@ -648,7 +648,7 @@ public class CommonDataDbService extends AbstractDataDbService {
 
 	public List<WordForum> getWordForums(Long wordId) {
 
-		return create
+		return mainDb
 				.selectFrom(WORD_FORUM)
 				.where(WORD_FORUM.WORD_ID.eq(wordId))
 				.orderBy(WORD_FORUM.ORDER_BY.desc())
@@ -657,7 +657,7 @@ public class CommonDataDbService extends AbstractDataDbService {
 
 	public List<FreeForm> getOdWordRecommendations(Long wordId) {
 
-		return create
+		return mainDb
 				.select(
 						FREEFORM.ID,
 						FREEFORM.VALUE,
@@ -700,7 +700,7 @@ public class CommonDataDbService extends AbstractDataDbService {
 								.and(fsl.SOURCE_ID.eq(s.ID)))
 				.asField();
 
-		return create
+		return mainDb
 				.select(
 						f.ID,
 						f.FREEFORM_TYPE_CODE,
@@ -731,7 +731,7 @@ public class CommonDataDbService extends AbstractDataDbService {
 	}
 
 	public eki.ekilex.data.Meaning getMeaning(Long meaningId) {
-		return create
+		return mainDb
 				.select(
 						MEANING.ID.as("meaning_id"),
 						MEANING.MANUAL_EVENT_ON,
@@ -769,7 +769,7 @@ public class CommonDataDbService extends AbstractDataDbService {
 								.and(fsl.SOURCE_ID.eq(s.ID)))
 				.asField();
 
-		return create
+		return mainDb
 				.select(
 						f.ID,
 						f.FREEFORM_TYPE_CODE,
@@ -801,7 +801,7 @@ public class CommonDataDbService extends AbstractDataDbService {
 
 	public List<FreeForm> getMeaningLearnerComments(Long meaningId) {
 
-		return create
+		return mainDb
 				.select(
 						FREEFORM.ID,
 						FREEFORM.VALUE,
@@ -839,7 +839,7 @@ public class CommonDataDbService extends AbstractDataDbService {
 								.and(mnsl.SOURCE_ID.eq(s.ID)))
 				.asField();
 
-		return create
+		return mainDb
 				.select(
 						mn.ID,
 						mn.MEANING_ID,
@@ -882,7 +882,7 @@ public class CommonDataDbService extends AbstractDataDbService {
 								.and(misl.SOURCE_ID.eq(s.ID)))
 				.asField();
 
-		return create
+		return mainDb
 				.select(
 						mi.ID,
 						mi.URL.as("source_url"),
@@ -900,7 +900,7 @@ public class CommonDataDbService extends AbstractDataDbService {
 		Freeform ff = FREEFORM.as("ff");
 		MeaningFreeform mff = MEANING_FREEFORM.as("mff");
 
-		return create
+		return mainDb
 				.select(
 						ff.ID,
 						ff.VALUE.as("sourceUrl"),
@@ -915,7 +915,7 @@ public class CommonDataDbService extends AbstractDataDbService {
 
 	public List<OrderedClassifier> getMeaningDomains(Long meaningId, String classifierLabelLang, String classifierLabelTypeCode) {
 
-		return create
+		return mainDb
 				.select(
 						getClassifierNameField(ClassifierName.DOMAIN),
 						DOMAIN_LABEL.CODE,
@@ -1018,7 +1018,7 @@ public class CommonDataDbService extends AbstractDataDbService {
 								.and(dsl.SOURCE_ID.eq(s.ID)))
 				.asField();
 
-		return create
+		return mainDb
 				.select(
 						d.ID,
 						d.VALUE,
@@ -1093,7 +1093,7 @@ public class CommonDataDbService extends AbstractDataDbService {
 			where = where.and(w2.LANG.in(filteringLangs));
 		}
 
-		return create
+		return mainDb
 				.select(
 						w2.ID.as("word_id"),
 						w2.VALUE.as("word_value"),
@@ -1171,7 +1171,7 @@ public class CommonDataDbService extends AbstractDataDbService {
 				.groupBy(wh.VALUE)
 				.asField();
 
-		return create
+		return mainDb
 				.select(
 						mrel.field("id"),
 						mrel.field("meaning_id"),
@@ -1263,7 +1263,7 @@ public class CommonDataDbService extends AbstractDataDbService {
 		Field<Boolean> wtsf = getWordIsSuffixoidField(w2.ID);
 		Field<Boolean> wtz = getWordIsForeignField(w2.ID);
 
-		return create
+		return mainDb
 				.select(
 						mr.ID.as("id"),
 						m2.ID.as("meaning_id"),
@@ -1298,7 +1298,7 @@ public class CommonDataDbService extends AbstractDataDbService {
 
 	public List<Classifier> getMeaningSemanticTypes(Long meaningId, String classifierLabelLang, String classifierLabelTypeCode) {
 
-		return create
+		return mainDb
 				.select(
 						getClassifierNameField(ClassifierName.SEMANTIC_TYPE),
 						SEMANTIC_TYPE_LABEL.CODE,
@@ -1315,7 +1315,7 @@ public class CommonDataDbService extends AbstractDataDbService {
 
 	public List<MeaningForum> getMeaningForums(Long meaningId) {
 
-		return create
+		return mainDb
 				.selectFrom(MEANING_FORUM)
 				.where(MEANING_FORUM.MEANING_ID.eq(meaningId))
 				.orderBy(MEANING_FORUM.ORDER_BY.desc())
@@ -1346,7 +1346,7 @@ public class CommonDataDbService extends AbstractDataDbService {
 								.and(fsl.SOURCE_ID.eq(s.ID)))
 				.asField();
 
-		return create
+		return mainDb
 				.select(
 						f.ID,
 						f.FREEFORM_TYPE_CODE,
@@ -1377,7 +1377,7 @@ public class CommonDataDbService extends AbstractDataDbService {
 	}
 
 	public List<SourceLink> getLexemeSourceLinks(Long lexemeId) {
-		return create
+		return mainDb
 				.select(
 						LEXEME_SOURCE_LINK.ID,
 						LEXEME_SOURCE_LINK.TYPE,
@@ -1391,7 +1391,7 @@ public class CommonDataDbService extends AbstractDataDbService {
 	}
 
 	public List<FreeForm> getLexemeGrammars(Long lexemeId) {
-		return create
+		return mainDb
 				.select(
 						FREEFORM.ID,
 						FREEFORM.VALUE,
@@ -1412,7 +1412,7 @@ public class CommonDataDbService extends AbstractDataDbService {
 		LexemeFreeform glff = LEXEME_FREEFORM.as("glff");
 		Freeform g = FREEFORM.as("g");
 
-		return create
+		return mainDb
 				.select(
 						g.ID,
 						g.VALUE,
@@ -1487,7 +1487,7 @@ public class CommonDataDbService extends AbstractDataDbService {
 								.and(usl.SOURCE_ID.eq(s.ID)))
 				.asField();
 
-		return create
+		return mainDb
 				.select(
 						u.ID,
 						u.VALUE,
@@ -1531,7 +1531,7 @@ public class CommonDataDbService extends AbstractDataDbService {
 								.and(lnsl.SOURCE_ID.eq(s.ID)))
 				.asField();
 
-		return create
+		return mainDb
 				.select(
 						ln.ID,
 						ln.LEXEME_ID,
@@ -1564,7 +1564,7 @@ public class CommonDataDbService extends AbstractDataDbService {
 		Field<Boolean> wtsf = getWordIsSuffixoidField(w2.ID);
 		Field<Boolean> wtz = getWordIsForeignField(w2.ID);
 
-		return create
+		return mainDb
 				.select(
 						r.ID,
 						l2.ID.as("lexeme_id"),
@@ -1595,7 +1595,7 @@ public class CommonDataDbService extends AbstractDataDbService {
 
 	public List<String> getLexemeTags(Long lexemeId) {
 
-		return create
+		return mainDb
 				.select(LEXEME_TAG.TAG_NAME)
 				.from(LEXEME_TAG)
 				.where(LEXEME_TAG.LEXEME_ID.eq(lexemeId))
@@ -1605,7 +1605,7 @@ public class CommonDataDbService extends AbstractDataDbService {
 
 	public List<String> getMeaningTags(Long meaningId) {
 
-		return create
+		return mainDb
 				.select(MEANING_TAG.TAG_NAME)
 				.from(MEANING_TAG)
 				.where(MEANING_TAG.MEANING_ID.eq(meaningId))
@@ -1620,7 +1620,7 @@ public class CommonDataDbService extends AbstractDataDbService {
 	public List<Classifier> getDatasetClassifiers(ClassifierName classifierName, String datasetCode, String classifierLabelLang, String classifierLabelTypeCode) {
 		String[] datasetCodes = {datasetCode};
 		if (ClassifierName.LANGUAGE.equals(classifierName)) {
-			return create.select(getClassifierNameField(ClassifierName.LANGUAGE), LANGUAGE.CODE, LANGUAGE_LABEL.VALUE, LANGUAGE.ORDER_BY)
+			return mainDb.select(getClassifierNameField(ClassifierName.LANGUAGE), LANGUAGE.CODE, LANGUAGE_LABEL.VALUE, LANGUAGE.ORDER_BY)
 					.from(LANGUAGE, LANGUAGE_LABEL)
 					.where(
 							LANGUAGE.CODE.eq(LANGUAGE_LABEL.CODE)
@@ -1629,7 +1629,7 @@ public class CommonDataDbService extends AbstractDataDbService {
 									.and(LANGUAGE.DATASETS.contains(datasetCodes)))
 					.fetchInto(Classifier.class);
 		} else if (ClassifierName.DOMAIN.equals(classifierName)) {
-			return create.select(
+			return mainDb.select(
 					getClassifierNameField(ClassifierName.DOMAIN),
 					DOMAIN.ORIGIN,
 					DOMAIN.CODE,
@@ -1650,7 +1650,7 @@ public class CommonDataDbService extends AbstractDataDbService {
 
 	public List<Classifier> getDatasetDomains(String datasetCode) {
 		String[] datasetCodes = {datasetCode};
-		return create
+		return mainDb
 				.select(getClassifierNameField(ClassifierName.DOMAIN),
 						DOMAIN.PARENT_ORIGIN,
 						DOMAIN.PARENT_CODE,
@@ -1666,7 +1666,7 @@ public class CommonDataDbService extends AbstractDataDbService {
 	}
 
 	public List<Classifier> getDatasetFreeformTypes(String datasetCode, FreeformOwner freeformOwner, String classifierLabelLang, String classifierLabelTypeCode) {
-		return create
+		return mainDb
 				.select(
 						DSL.field(DSL.value(ClassifierName.FREEFORM_TYPE.name())).as("name"),
 						FREEFORM_TYPE.CODE,

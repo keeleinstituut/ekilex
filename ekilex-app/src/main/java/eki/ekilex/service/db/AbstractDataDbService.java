@@ -1,23 +1,23 @@
 package eki.ekilex.service.db;
 
-import static eki.ekilex.data.db.Tables.ACTIVITY_LOG;
-import static eki.ekilex.data.db.Tables.DERIV_LABEL;
-import static eki.ekilex.data.db.Tables.DOMAIN_LABEL;
-import static eki.ekilex.data.db.Tables.LEXEME;
-import static eki.ekilex.data.db.Tables.LEXEME_DERIV;
-import static eki.ekilex.data.db.Tables.LEXEME_POS;
-import static eki.ekilex.data.db.Tables.LEXEME_REGION;
-import static eki.ekilex.data.db.Tables.LEXEME_REGISTER;
-import static eki.ekilex.data.db.Tables.MEANING_DOMAIN;
-import static eki.ekilex.data.db.Tables.MEANING_LAST_ACTIVITY_LOG;
-import static eki.ekilex.data.db.Tables.POS_LABEL;
-import static eki.ekilex.data.db.Tables.PROFICIENCY_LEVEL_LABEL;
-import static eki.ekilex.data.db.Tables.REGION;
-import static eki.ekilex.data.db.Tables.REGISTER_LABEL;
-import static eki.ekilex.data.db.Tables.VALUE_STATE_LABEL;
-import static eki.ekilex.data.db.Tables.WORD;
-import static eki.ekilex.data.db.Tables.WORD_LAST_ACTIVITY_LOG;
-import static eki.ekilex.data.db.Tables.WORD_WORD_TYPE;
+import static eki.ekilex.data.db.main.Tables.ACTIVITY_LOG;
+import static eki.ekilex.data.db.main.Tables.DERIV_LABEL;
+import static eki.ekilex.data.db.main.Tables.DOMAIN_LABEL;
+import static eki.ekilex.data.db.main.Tables.LEXEME;
+import static eki.ekilex.data.db.main.Tables.LEXEME_DERIV;
+import static eki.ekilex.data.db.main.Tables.LEXEME_POS;
+import static eki.ekilex.data.db.main.Tables.LEXEME_REGION;
+import static eki.ekilex.data.db.main.Tables.LEXEME_REGISTER;
+import static eki.ekilex.data.db.main.Tables.MEANING_DOMAIN;
+import static eki.ekilex.data.db.main.Tables.MEANING_LAST_ACTIVITY_LOG;
+import static eki.ekilex.data.db.main.Tables.POS_LABEL;
+import static eki.ekilex.data.db.main.Tables.PROFICIENCY_LEVEL_LABEL;
+import static eki.ekilex.data.db.main.Tables.REGION;
+import static eki.ekilex.data.db.main.Tables.REGISTER_LABEL;
+import static eki.ekilex.data.db.main.Tables.VALUE_STATE_LABEL;
+import static eki.ekilex.data.db.main.Tables.WORD;
+import static eki.ekilex.data.db.main.Tables.WORD_LAST_ACTIVITY_LOG;
+import static eki.ekilex.data.db.main.Tables.WORD_WORD_TYPE;
 
 import java.sql.Timestamp;
 import java.util.List;
@@ -35,20 +35,20 @@ import eki.common.constant.GlobalConstant;
 import eki.common.constant.LastActivityType;
 import eki.ekilex.constant.SystemConstant;
 import eki.ekilex.data.SimpleWord;
-import eki.ekilex.data.db.tables.ActivityLog;
-import eki.ekilex.data.db.tables.Lexeme;
-import eki.ekilex.data.db.tables.MeaningLastActivityLog;
-import eki.ekilex.data.db.tables.Word;
-import eki.ekilex.data.db.tables.WordLastActivityLog;
+import eki.ekilex.data.db.main.tables.ActivityLog;
+import eki.ekilex.data.db.main.tables.Lexeme;
+import eki.ekilex.data.db.main.tables.MeaningLastActivityLog;
+import eki.ekilex.data.db.main.tables.Word;
+import eki.ekilex.data.db.main.tables.WordLastActivityLog;
 
 public abstract class AbstractDataDbService implements SystemConstant, GlobalConstant, FreeformConstant {
 
 	@Autowired
-	protected DSLContext create;
+	protected DSLContext mainDb;
 
 	public SimpleWord getSimpleWord(Long wordId) {
 		Word w = WORD.as("w");
-		return create
+		return mainDb
 				.select(
 						w.ID.as("word_id"),
 						w.VALUE.as("word_value"),
@@ -61,7 +61,7 @@ public abstract class AbstractDataDbService implements SystemConstant, GlobalCon
 	public SimpleWord getLexemeSimpleWord(Long lexemeId) {
 		Word w = WORD.as("w");
 		Lexeme l = LEXEME.as("l");
-		return create
+		return mainDb
 				.select(
 						w.ID.as("word_id"),
 						w.VALUE.as("word_value"),
@@ -72,7 +72,7 @@ public abstract class AbstractDataDbService implements SystemConstant, GlobalCon
 	}
 
 	public List<String> getWordsValues(List<Long> wordIds) {
-		return create
+		return mainDb
 				.select(WORD.VALUE)
 				.from(WORD)
 				.where(WORD.ID.in(wordIds))
@@ -80,7 +80,7 @@ public abstract class AbstractDataDbService implements SystemConstant, GlobalCon
 	}
 
 	public List<String> getLexemesWordValues(List<Long> lexemeIds) {
-		return create
+		return mainDb
 				.select(WORD.VALUE)
 				.from(LEXEME, WORD)
 				.where(LEXEME.ID.in(lexemeIds).and(LEXEME.WORD_ID.eq(WORD.ID)))
@@ -88,7 +88,7 @@ public abstract class AbstractDataDbService implements SystemConstant, GlobalCon
 	}
 
 	public List<String> getMeaningWordValues(Long meaningId, String... langs) {
-		return create
+		return mainDb
 				.select(WORD.VALUE)
 				.from(LEXEME, WORD)
 				.where(LEXEME.MEANING_ID.eq(meaningId).and(LEXEME.WORD_ID.eq(WORD.ID)).and(WORD.LANG.in(langs)))
@@ -97,7 +97,7 @@ public abstract class AbstractDataDbService implements SystemConstant, GlobalCon
 
 	public int getWordNextHomonymNr(String wordValue, String wordLang) {
 
-		Integer currentHomonymNr = create
+		Integer currentHomonymNr = mainDb
 				.select(DSL.max(WORD.HOMONYM_NR))
 				.from(WORD)
 				.where(
@@ -338,7 +338,7 @@ public abstract class AbstractDataDbService implements SystemConstant, GlobalCon
 
 	@Cacheable(value = CACHE_KEY_CLASSIF, key = "#root.methodName")
 	protected boolean fiCollationExists() {
-		Integer fiCollationCnt = create
+		Integer fiCollationCnt = mainDb
 				.selectCount()
 				.from("pg_collation where lower(collcollate) = 'fi_fi.utf8'")
 				.fetchSingleInto(Integer.class);

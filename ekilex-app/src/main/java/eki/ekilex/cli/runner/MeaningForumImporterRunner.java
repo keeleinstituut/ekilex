@@ -12,8 +12,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import eki.common.service.AbstractLoaderCommons;
 import eki.ekilex.constant.SystemConstant;
+import eki.ekilex.service.AbstractLoaderCommons;
 import eki.ekilex.service.db.CudDbService;
 import eki.ekilex.service.util.ConversionUtil;
 

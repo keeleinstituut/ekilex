@@ -1,11 +1,11 @@
 package eki.ekilex.service.db;
 
-import static eki.ekilex.data.db.Tables.DATASET;
-import static eki.ekilex.data.db.Tables.LANGUAGE;
-import static eki.ekilex.data.db.Tables.LEXEME;
-import static eki.ekilex.data.db.Tables.MEANING;
-import static eki.ekilex.data.db.Tables.WORD;
-import static eki.ekilex.data.db.Tables.WORD_WORD_TYPE;
+import static eki.ekilex.data.db.main.Tables.DATASET;
+import static eki.ekilex.data.db.main.Tables.LANGUAGE;
+import static eki.ekilex.data.db.main.Tables.LEXEME;
+import static eki.ekilex.data.db.main.Tables.MEANING;
+import static eki.ekilex.data.db.main.Tables.WORD;
+import static eki.ekilex.data.db.main.Tables.WORD_WORD_TYPE;
 
 import java.sql.Timestamp;
 import java.util.Arrays;
@@ -31,13 +31,13 @@ import eki.ekilex.data.SearchDatasetsRestriction;
 import eki.ekilex.data.SearchFilter;
 import eki.ekilex.data.TermMeaning;
 import eki.ekilex.data.TermSearchResult;
-import eki.ekilex.data.db.tables.Dataset;
-import eki.ekilex.data.db.tables.Language;
-import eki.ekilex.data.db.tables.Lexeme;
-import eki.ekilex.data.db.tables.Meaning;
-import eki.ekilex.data.db.tables.Word;
-import eki.ekilex.data.db.tables.WordWordType;
-import eki.ekilex.data.db.udt.records.TypeTermMeaningWordRecord;
+import eki.ekilex.data.db.main.tables.Dataset;
+import eki.ekilex.data.db.main.tables.Language;
+import eki.ekilex.data.db.main.tables.Lexeme;
+import eki.ekilex.data.db.main.tables.Meaning;
+import eki.ekilex.data.db.main.tables.Word;
+import eki.ekilex.data.db.main.tables.WordWordType;
+import eki.ekilex.data.db.main.udt.records.TypeTermMeaningWordRecord;
 import eki.ekilex.service.db.util.SearchFilterHelper;
 import eki.ekilex.service.db.util.TermSearchConditionComposer;
 
@@ -184,7 +184,7 @@ public class TermSearchDbService extends AbstractDataDbService {
 		 * meaning words of same homonym and same meaning for different datasets are repeating
 		 * which is cleaned programmatically at ui conversion
 		 */
-		return create
+		return mainDb
 				.select(
 						mm.field("meaning_id", Long.class),
 						mdf.as("meaning_domains"),
@@ -201,7 +201,7 @@ public class TermSearchDbService extends AbstractDataDbService {
 	}
 
 	private int executeCountMeaningsMeaningMode(Table<Record3<Long, Long, Long[]>> m) {
-		return create.fetchCount(DSL.selectDistinct(m.field("meaning_id")).from(m));
+		return mainDb.fetchCount(DSL.selectDistinct(m.field("meaning_id")).from(m));
 	}
 
 	private int executeCountWordsMeaningMode(Table<Record3<Long, Long, Long[]>> m, SearchDatasetsRestriction searchDatasetsRestriction, String resultLang) {
@@ -216,7 +216,7 @@ public class TermSearchDbService extends AbstractDataDbService {
 
 		Condition wherelods = searchFilterHelper.applyDatasetRestrictions(lo, searchDatasetsRestriction, null);
 
-		return create
+		return mainDb
 				.fetchCount(DSL
 						.selectDistinct(wo.ID)
 						.from(m
@@ -356,7 +356,7 @@ public class TermSearchDbService extends AbstractDataDbService {
 			wvobf = wmm.field("word_value");
 		}
 
-		return create
+		return mainDb
 				.select(
 						wmm.field("meaning_id", Long.class),
 						mdf.as("meaning_domains"),
@@ -374,7 +374,7 @@ public class TermSearchDbService extends AbstractDataDbService {
 	}
 
 	private int executeCountMeaningsWordMode(Table<Record3<Long, Long, Long[]>> wm) {
-		return create.fetchCount(DSL.selectDistinct(wm.field("meaning_id")).from(wm));
+		return mainDb.fetchCount(DSL.selectDistinct(wm.field("meaning_id")).from(wm));
 	}
 
 	private int executeCountWordsWordMode(Table<Record3<Long, Long, Long[]>> wmid, String resultLang) {
@@ -386,7 +386,7 @@ public class TermSearchDbService extends AbstractDataDbService {
 			wherewm = wherewm.and(wm.LANG.eq(resultLang));
 		}
 
-		return create.fetchCount(DSL.selectDistinct(wm.ID).from(wmid.innerJoin(wm).on(wherewm)));
+		return mainDb.fetchCount(DSL.selectDistinct(wm.ID).from(wmid.innerJoin(wm).on(wherewm)));
 	}
 
 	private TermSearchResult composeResult(
@@ -427,7 +427,7 @@ public class TermSearchDbService extends AbstractDataDbService {
 		Field<Timestamp> mlacteof = getMeaningLastActivityEventOnField(m.ID, LastActivityType.EDIT);
 		Field<Timestamp> mlappeof = getMeaningLastActivityEventOnField(m.ID, LastActivityType.APPROVE);
 
-		return create
+		return mainDb
 				.select(
 						m.ID.as("meaning_id"),
 						m.MANUAL_EVENT_ON,
@@ -462,7 +462,7 @@ public class TermSearchDbService extends AbstractDataDbService {
 		Field<JSON> lvalstf = getLexemeValueStateField(l.ID, classifierLabelLang, classifierLabelTypeCode);
 		Field<JSON> lproflf = getLexemeProficiencyLevelField(l.ID, classifierLabelLang, classifierLabelTypeCode);
 
-		return create
+		return mainDb
 				.select(
 						l.ID.as("lexeme_id"),
 						l.MEANING_ID,
@@ -503,7 +503,7 @@ public class TermSearchDbService extends AbstractDataDbService {
 
 		Condition dsWhere = searchFilterHelper.applyDatasetRestrictions(LEXEME, searchDatasetsRestriction, null);
 
-		return create
+		return mainDb
 				.select(WORD.VALUE)
 				.from(WORD, LEXEME)
 				.where(
@@ -520,7 +520,7 @@ public class TermSearchDbService extends AbstractDataDbService {
 
 		Condition dsWhere = searchFilterHelper.applyDatasetRestrictions(LEXEME, searchDatasetsRestriction, null);
 
-		return create
+		return mainDb
 				.select(WORD.VALUE)
 				.from(WORD, LEXEME, LANGUAGE)
 				.where(

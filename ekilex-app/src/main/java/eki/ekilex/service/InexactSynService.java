@@ -29,7 +29,7 @@ import eki.ekilex.data.Word;
 import eki.ekilex.data.WordDescript;
 import eki.ekilex.data.WordLexeme;
 import eki.ekilex.data.WordLexemeMeaningIdTuple;
-import eki.ekilex.data.db.tables.records.LexemeRecord;
+import eki.ekilex.data.db.main.tables.records.LexemeRecord;
 import eki.ekilex.service.db.CudDbService;
 
 @Component

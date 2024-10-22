@@ -7,16 +7,15 @@ import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 
 import org.apache.commons.io.IOUtils;
+import org.jooq.DSLContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-
-import eki.common.service.db.BasicDbService;
 
 @Component
 public class TestEnvInitialiser {
 
 	@Autowired
-	private BasicDbService basicDbService;
+	private DSLContext mainDb;
 
 	public void initDatabase() throws Exception {
 
@@ -24,16 +23,18 @@ public class TestEnvInitialiser {
 		executeSqlScriptFile("sql/test_data.sql");
 	}
 
-	//FIXME restore create views
 	public void initDatabaseWithoutTestData() throws Exception {
 
 		final String[] scriptFilePaths = new String[] {
-				"sql/drop_all.sql",
-				"sql/create_types.sql",
-				"sql/create_tables.sql",
-				"sql/create_indexes.sql",
-				//"sql/create_views.sql",
-				"sql/create_functions.sql",
+				"sql/main_drop_all.sql",
+				"sql/arch_drop_all.sql",
+				"sql/main_create_types.sql",
+				"sql/main_create_tables.sql",
+				"sql/main_create_indexes.sql",
+				"sql/main_create_views.sql",
+				"sql/main_create_functions.sql",
+				"sql/arch_create_tables.sql",
+				"sql/arch_create_indexes.sql",
 				"sql/classifier-manual.sql",
 				"sql/classifier-main.sql",
 				"sql/classifier-domain.sql"
@@ -70,7 +71,7 @@ public class TestEnvInitialiser {
 	private void executeSqlScriptFile(String sqlScriptFilePath) throws Exception {
 
 		String scriptFileContent = getSqlScriptFromClasspath(sqlScriptFilePath);
-		basicDbService.executeScript(scriptFileContent);
+		mainDb.execute(scriptFileContent);
 	}
 
 }

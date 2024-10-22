@@ -42,6 +42,12 @@
 			</properties>
 		</profile>
 		<profile>
+			<id>jooq</id>
+			<properties>
+				<spring.boot.mainclass>eki.ekilex.cli.JooqGenerator</spring.boot.mainclass>
+			</properties>
+		</profile>
+		<profile>
 			<id>dsimp</id>
 			<properties>
 				<spring.boot.mainclass>eki.ekilex.cli.DatasetImporter</spring.boot.mainclass>
@@ -129,6 +135,7 @@
 					</execution>
 				</executions>
 			</plugin>
+			<!--
 			<plugin>
 				<groupId>org.jooq</groupId>
 				<artifactId>jooq-codegen-maven</artifactId>
@@ -175,6 +182,7 @@
 					</dependency>
 				</dependencies>
 			</plugin>
+			-->
 		</plugins>
 	</build>
 
@@ -183,6 +191,10 @@
 		<dependency>
 			<groupId>eki.common</groupId>
 			<artifactId>eki-common</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-configuration-processor</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
@@ -228,6 +240,14 @@
 		<dependency>
 			<groupId>com.atlassian.commonmark</groupId>
 			<artifactId>commonmark</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.jooq</groupId>
+			<artifactId>jooq-meta</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.jooq</groupId>
+			<artifactId>jooq-codegen</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>org.postgresql</groupId>

@@ -1,16 +1,16 @@
 package eki.ekilex.service.db;
 
-import static eki.ekilex.data.db.Tables.DATASET;
-import static eki.ekilex.data.db.Tables.DATASET_FREEFORM_TYPE;
-import static eki.ekilex.data.db.Tables.DOMAIN;
-import static eki.ekilex.data.db.Tables.EKI_USER_PROFILE;
-import static eki.ekilex.data.db.Tables.FREEFORM_TYPE;
-import static eki.ekilex.data.db.Tables.LANGUAGE;
-import static eki.ekilex.data.db.Tables.LEXEME;
-import static eki.ekilex.data.db.Tables.MEANING;
-import static eki.ekilex.data.db.Tables.MEANING_NR;
-import static eki.ekilex.data.db.Tables.WORD;
-import static eki.ekilex.data.db.Tables.WORD_GUID;
+import static eki.ekilex.data.db.main.Tables.DATASET;
+import static eki.ekilex.data.db.main.Tables.DATASET_FREEFORM_TYPE;
+import static eki.ekilex.data.db.main.Tables.DOMAIN;
+import static eki.ekilex.data.db.main.Tables.EKI_USER_PROFILE;
+import static eki.ekilex.data.db.main.Tables.FREEFORM_TYPE;
+import static eki.ekilex.data.db.main.Tables.LANGUAGE;
+import static eki.ekilex.data.db.main.Tables.LEXEME;
+import static eki.ekilex.data.db.main.Tables.MEANING;
+import static eki.ekilex.data.db.main.Tables.MEANING_NR;
+import static eki.ekilex.data.db.main.Tables.WORD;
+import static eki.ekilex.data.db.main.Tables.WORD_GUID;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -33,14 +33,14 @@ import eki.ekilex.service.db.util.DatasetDbServiceHelper;
 public class DatasetDbService {
 
 	@Autowired
-	private DSLContext create;
+	private DSLContext mainDb;
 
 	@Autowired
 	private DatasetDbServiceHelper helper;
 
 	public boolean datasetExists(String code) {
 
-		return create
+		return mainDb
 				.fetchExists(DSL
 						.select(DATASET.CODE)
 						.from(DATASET)
@@ -49,7 +49,7 @@ public class DatasetDbService {
 
 	public Dataset getDataset(String code) {
 
-		return create
+		return mainDb
 				.select(DATASET.CODE,
 						DATASET.NAME,
 						DATASET.TYPE,
@@ -68,7 +68,7 @@ public class DatasetDbService {
 
 	public List<Dataset> getDatasets() {
 
-		List<Dataset> datasets = create
+		List<Dataset> datasets = mainDb
 				.select(DATASET.CODE,
 						DATASET.NAME,
 						DATASET.TYPE,
@@ -89,7 +89,7 @@ public class DatasetDbService {
 
 	public void createDataset(Dataset dataset) {
 
-		create
+		mainDb
 				.insertInto(DATASET,
 						DATASET.CODE,
 						DATASET.NAME,
@@ -113,7 +113,7 @@ public class DatasetDbService {
 
 	public void updateDataset(Dataset dataset) {
 
-		create
+		mainDb
 				.update(DATASET)
 				.set(DATASET.NAME, dataset.getName())
 				.set(DATASET.TYPE, (dataset.getType() != null ? dataset.getType().name() : null))
@@ -129,7 +129,7 @@ public class DatasetDbService {
 
 	public void setFedTermCollectionId(String datasetCode, String fedTermCollectionId) {
 
-		create
+		mainDb
 				.update(DATASET)
 				.set(DATASET.FED_TERM_COLLECTION_ID, fedTermCollectionId)
 				.where(DATASET.CODE.eq(datasetCode))
@@ -140,51 +140,51 @@ public class DatasetDbService {
 	public void deleteDataset(String datasetCode) {
 
 		// collect word ids
-		List<Long> wordIds = helper.getWordIds(datasetCode, create);
+		List<Long> wordIds = helper.getWordIds(datasetCode, mainDb);
 
 		// collect meaning ids
-		List<Long> meaningIds = helper.getMeaningIds(datasetCode, create);
+		List<Long> meaningIds = helper.getMeaningIds(datasetCode, mainDb);
 
 		// delete definition freeforms
-		helper.deleteDefinitionFreeforms(datasetCode, create);
+		helper.deleteDefinitionFreeforms(datasetCode, mainDb);
 
 		// delete meaning freeforms
-		helper.deleteMeaningFreeforms(datasetCode, create);
+		helper.deleteMeaningFreeforms(datasetCode, mainDb);
 
 		// delete lexeme freeforms
-		helper.deleteLexemeFreeforms(datasetCode, create);
+		helper.deleteLexemeFreeforms(datasetCode, mainDb);
 
 		// delete word freeforms
-		helper.deleteWordFreeforms(datasetCode, create);
+		helper.deleteWordFreeforms(datasetCode, mainDb);
 
 		// delete definitions
-		helper.deleteDefinitions(datasetCode, create);
+		helper.deleteDefinitions(datasetCode, mainDb);
 
 		// delete collocations
-		helper.deleteCollocations(datasetCode, create);
+		helper.deleteCollocations(datasetCode, mainDb);
 
 		// delete lexemes, guids, mnrs
-		create.deleteFrom(LEXEME).where(LEXEME.DATASET_CODE.eq(datasetCode)).execute();
-		create.deleteFrom(WORD_GUID).where(WORD_GUID.DATASET_CODE.eq(datasetCode)).execute();
-		create.deleteFrom(MEANING_NR).where(MEANING_NR.DATASET_CODE.eq(datasetCode)).execute();
+		mainDb.deleteFrom(LEXEME).where(LEXEME.DATASET_CODE.eq(datasetCode)).execute();
+		mainDb.deleteFrom(WORD_GUID).where(WORD_GUID.DATASET_CODE.eq(datasetCode)).execute();
+		mainDb.deleteFrom(MEANING_NR).where(MEANING_NR.DATASET_CODE.eq(datasetCode)).execute();
 
 		// delete words
 		if (CollectionUtils.isNotEmpty(wordIds)) {
-			create.deleteFrom(WORD).where(WORD.ID.in(wordIds)).execute();
+			mainDb.deleteFrom(WORD).where(WORD.ID.in(wordIds)).execute();
 		}
 
 		// delete meanings
 		if (CollectionUtils.isNotEmpty(meaningIds)) {
-			create.deleteFrom(MEANING).where(MEANING.ID.in(meaningIds)).execute();
+			mainDb.deleteFrom(MEANING).where(MEANING.ID.in(meaningIds)).execute();
 		}
 
 		// delete dataset
-		create.delete(DATASET).where(DATASET.CODE.eq(datasetCode)).execute();
+		mainDb.delete(DATASET).where(DATASET.CODE.eq(datasetCode)).execute();
 	}
 
 	public boolean datasetCodeExists(String datasetCode) {
-		return create.fetchExists(
-				create
+		return mainDb.fetchExists(
+				mainDb
 						.select()
 						.from(DATASET)
 						.where(DATASET.CODE.equalIgnoreCase(datasetCode)));
@@ -201,7 +201,7 @@ public class DatasetDbService {
 
 				List<String> codes = classifiers.stream().map(Classifier::getCode).collect(Collectors.toList());
 
-				create
+				mainDb
 						.update(FREEFORM_TYPE)
 						.set(FREEFORM_TYPE.DATASETS, DSL.field(PostgresDSL.arrayAppend(FREEFORM_TYPE.DATASETS, datasetCode)))
 						.where(FREEFORM_TYPE.CODE.in(codes))
@@ -224,7 +224,7 @@ public class DatasetDbService {
 
 				List<String> codes = classifiers.stream().map(Classifier::getCode).collect(Collectors.toList());
 
-				create
+				mainDb
 						.update(LANGUAGE)
 						.set(LANGUAGE.DATASETS, DSL.field(PostgresDSL.arrayAppend(LANGUAGE.DATASETS, datasetCode)))
 						.where(
@@ -236,7 +236,7 @@ public class DatasetDbService {
 
 				List<String> codes = classifiers.stream().map(Classifier::getCode).collect(Collectors.toList());
 
-				create
+				mainDb
 						.update(FREEFORM_TYPE)
 						.set(FREEFORM_TYPE.DATASETS, DSL.field(PostgresDSL.arrayAppend(FREEFORM_TYPE.DATASETS, datasetCode)))
 						.where(
@@ -246,7 +246,7 @@ public class DatasetDbService {
 
 				for (Classifier classifier : classifiers) {
 
-					create
+					mainDb
 							.insertInto(
 									DATASET_FREEFORM_TYPE,
 									DATASET_FREEFORM_TYPE.DATASET_CODE,
@@ -264,7 +264,7 @@ public class DatasetDbService {
 				List<Row2<String, String>> codeOriginTuples = classifiers.stream()
 						.map(classif -> DSL.row(DSL.val(classif.getCode()), DSL.val(classif.getOrigin())))
 						.collect(Collectors.toList());
-				create
+				mainDb
 						.update(DOMAIN)
 						.set(DOMAIN.DATASETS, DSL.field(PostgresDSL.arrayAppend(DOMAIN.DATASETS, datasetCode)))
 						.where(DSL.row(DOMAIN.CODE, DOMAIN.ORIGIN).in(codeOriginTuples))
@@ -280,7 +280,7 @@ public class DatasetDbService {
 
 		if (ClassifierName.LANGUAGE.equals(classifierName)) {
 
-			create
+			mainDb
 					.update(LANGUAGE)
 					.set(LANGUAGE.DATASETS, DSL.field(PostgresDSL.arrayRemove(LANGUAGE.DATASETS, datasetCode)))
 					.where(DSL.val(datasetCode).eq(DSL.any(LANGUAGE.DATASETS)))
@@ -288,20 +288,20 @@ public class DatasetDbService {
 
 		} else if (ClassifierName.FREEFORM_TYPE.equals(classifierName)) {
 
-			create
+			mainDb
 					.update(FREEFORM_TYPE)
 					.set(FREEFORM_TYPE.DATASETS, DSL.field(PostgresDSL.arrayRemove(FREEFORM_TYPE.DATASETS, datasetCode)))
 					.where(DSL.val(datasetCode).eq(DSL.any(FREEFORM_TYPE.DATASETS)))
 					.execute();
 
-			create
+			mainDb
 					.deleteFrom(DATASET_FREEFORM_TYPE)
 					.where(DATASET_FREEFORM_TYPE.DATASET_CODE.eq(datasetCode))
 					.execute();
 
 		} else if (ClassifierName.DOMAIN.equals(classifierName)) {
 
-			create
+			mainDb
 					.update(DOMAIN)
 					.set(DOMAIN.DATASETS, DSL.field(PostgresDSL.arrayRemove(DOMAIN.DATASETS, datasetCode)))
 					.where(DSL.val(datasetCode).eq(DSL.any(DOMAIN.DATASETS)))
@@ -313,7 +313,7 @@ public class DatasetDbService {
 
 	public void removeDatasetFromUserProfile(String datasetCode) {
 
-		create
+		mainDb
 				.update(EKI_USER_PROFILE)
 				.set(EKI_USER_PROFILE.PREFERRED_DATASETS, DSL.field(PostgresDSL.arrayRemove(EKI_USER_PROFILE.PREFERRED_DATASETS, datasetCode)))
 				.where(DSL.val(datasetCode).eq(DSL.any(EKI_USER_PROFILE.PREFERRED_DATASETS)))

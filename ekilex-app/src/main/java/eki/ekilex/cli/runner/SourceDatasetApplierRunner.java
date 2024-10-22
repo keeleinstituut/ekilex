@@ -14,11 +14,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import eki.common.data.Count;
-import eki.common.service.AbstractLoaderCommons;
 import eki.ekilex.constant.SystemConstant;
 import eki.ekilex.data.Source;
 import eki.ekilex.data.migra.MigraSourceLink;
 import eki.ekilex.data.migra.SourceLinkOwner;
+import eki.ekilex.service.AbstractLoaderCommons;
 import eki.ekilex.service.db.MigrationDbService;
 import eki.ekilex.service.db.SourceDbService;
 

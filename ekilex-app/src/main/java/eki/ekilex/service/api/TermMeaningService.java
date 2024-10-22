@@ -32,7 +32,7 @@ import eki.ekilex.data.api.Definition;
 import eki.ekilex.data.api.Forum;
 import eki.ekilex.data.api.TermMeaning;
 import eki.ekilex.data.api.TermWord;
-import eki.ekilex.data.db.tables.records.LexemeRecord;
+import eki.ekilex.data.db.main.tables.records.LexemeRecord;
 import eki.ekilex.service.db.api.TermMeaningDbService;
 
 @Component

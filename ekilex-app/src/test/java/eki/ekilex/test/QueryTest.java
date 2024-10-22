@@ -1,6 +1,6 @@
 package eki.ekilex.test;
 
-import static eki.ekilex.data.db.Tables.LEXEME;
+import static eki.ekilex.data.db.main.Tables.LEXEME;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -26,9 +26,9 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import eki.common.service.db.BasicDbService;
 import eki.common.test.TestEnvInitialiser;
 import eki.ekilex.app.EkilexApplication;
+import eki.ekilex.service.db.BasicDbService;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
@@ -44,7 +44,7 @@ public class QueryTest {
 	private BasicDbService basicDbService;
 
 	@Autowired
-	private DSLContext create;
+	private DSLContext mainDb;
 
 	@Before
 	public void beforeTest() throws Exception {
@@ -55,7 +55,12 @@ public class QueryTest {
 	@Test
 	public void testJooqQueryResultParsing() throws Exception {
 
-		Long lexemeId = create.select(LEXEME.ID).from(LEXEME).where(LEXEME.DATASET_CODE.eq("qq2")).limit(1).fetchOneInto(Long.class);
+		Long lexemeId = mainDb
+				.select(LEXEME.ID)
+				.from(LEXEME)
+				.where(LEXEME.DATASET_CODE.eq("qq2"))
+				.limit(1)
+				.fetchOneInto(Long.class);
 
 		assertNotNull("Incorrect query result", lexemeId);
 	}

@@ -1,27 +1,27 @@
 package eki.ekilex.service.db;
 
-import static eki.ekilex.data.db.Tables.ACTIVITY_LOG;
-import static eki.ekilex.data.db.Tables.DATASET;
-import static eki.ekilex.data.db.Tables.DEFINITION;
-import static eki.ekilex.data.db.Tables.DEFINITION_NOTE;
-import static eki.ekilex.data.db.Tables.DEFINITION_NOTE_SOURCE_LINK;
-import static eki.ekilex.data.db.Tables.DEFINITION_SOURCE_LINK;
-import static eki.ekilex.data.db.Tables.FREEFORM;
-import static eki.ekilex.data.db.Tables.FREEFORM_SOURCE_LINK;
-import static eki.ekilex.data.db.Tables.LEXEME;
-import static eki.ekilex.data.db.Tables.LEXEME_NOTE;
-import static eki.ekilex.data.db.Tables.LEXEME_NOTE_SOURCE_LINK;
-import static eki.ekilex.data.db.Tables.LEXEME_SOURCE_LINK;
-import static eki.ekilex.data.db.Tables.MEANING_IMAGE;
-import static eki.ekilex.data.db.Tables.MEANING_IMAGE_SOURCE_LINK;
-import static eki.ekilex.data.db.Tables.MEANING_NOTE;
-import static eki.ekilex.data.db.Tables.MEANING_NOTE_SOURCE_LINK;
-import static eki.ekilex.data.db.Tables.SOURCE;
-import static eki.ekilex.data.db.Tables.SOURCE_ACTIVITY_LOG;
-import static eki.ekilex.data.db.Tables.SOURCE_FREEFORM;
-import static eki.ekilex.data.db.Tables.USAGE;
-import static eki.ekilex.data.db.Tables.USAGE_SOURCE_LINK;
-import static eki.ekilex.data.db.Tables.WORD_ETYMOLOGY_SOURCE_LINK;
+import static eki.ekilex.data.db.main.Tables.ACTIVITY_LOG;
+import static eki.ekilex.data.db.main.Tables.DATASET;
+import static eki.ekilex.data.db.main.Tables.DEFINITION;
+import static eki.ekilex.data.db.main.Tables.DEFINITION_NOTE;
+import static eki.ekilex.data.db.main.Tables.DEFINITION_NOTE_SOURCE_LINK;
+import static eki.ekilex.data.db.main.Tables.DEFINITION_SOURCE_LINK;
+import static eki.ekilex.data.db.main.Tables.FREEFORM;
+import static eki.ekilex.data.db.main.Tables.FREEFORM_SOURCE_LINK;
+import static eki.ekilex.data.db.main.Tables.LEXEME;
+import static eki.ekilex.data.db.main.Tables.LEXEME_NOTE;
+import static eki.ekilex.data.db.main.Tables.LEXEME_NOTE_SOURCE_LINK;
+import static eki.ekilex.data.db.main.Tables.LEXEME_SOURCE_LINK;
+import static eki.ekilex.data.db.main.Tables.MEANING_IMAGE;
+import static eki.ekilex.data.db.main.Tables.MEANING_IMAGE_SOURCE_LINK;
+import static eki.ekilex.data.db.main.Tables.MEANING_NOTE;
+import static eki.ekilex.data.db.main.Tables.MEANING_NOTE_SOURCE_LINK;
+import static eki.ekilex.data.db.main.Tables.SOURCE;
+import static eki.ekilex.data.db.main.Tables.SOURCE_ACTIVITY_LOG;
+import static eki.ekilex.data.db.main.Tables.SOURCE_FREEFORM;
+import static eki.ekilex.data.db.main.Tables.USAGE;
+import static eki.ekilex.data.db.main.Tables.USAGE_SOURCE_LINK;
+import static eki.ekilex.data.db.main.Tables.WORD_ETYMOLOGY_SOURCE_LINK;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -55,26 +55,26 @@ import eki.ekilex.data.SearchDatasetsRestriction;
 import eki.ekilex.data.SearchFilter;
 import eki.ekilex.data.SourcePropertyTuple;
 import eki.ekilex.data.SourceSearchResult;
-import eki.ekilex.data.db.tables.ActivityLog;
-import eki.ekilex.data.db.tables.Definition;
-import eki.ekilex.data.db.tables.DefinitionNote;
-import eki.ekilex.data.db.tables.DefinitionNoteSourceLink;
-import eki.ekilex.data.db.tables.DefinitionSourceLink;
-import eki.ekilex.data.db.tables.Freeform;
-import eki.ekilex.data.db.tables.Lexeme;
-import eki.ekilex.data.db.tables.LexemeNote;
-import eki.ekilex.data.db.tables.LexemeNoteSourceLink;
-import eki.ekilex.data.db.tables.LexemeSourceLink;
-import eki.ekilex.data.db.tables.MeaningImage;
-import eki.ekilex.data.db.tables.MeaningImageSourceLink;
-import eki.ekilex.data.db.tables.MeaningNote;
-import eki.ekilex.data.db.tables.MeaningNoteSourceLink;
-import eki.ekilex.data.db.tables.Source;
-import eki.ekilex.data.db.tables.SourceActivityLog;
-import eki.ekilex.data.db.tables.SourceFreeform;
-import eki.ekilex.data.db.tables.Usage;
-import eki.ekilex.data.db.tables.UsageSourceLink;
-import eki.ekilex.data.db.tables.records.FreeformRecord;
+import eki.ekilex.data.db.main.tables.ActivityLog;
+import eki.ekilex.data.db.main.tables.Definition;
+import eki.ekilex.data.db.main.tables.DefinitionNote;
+import eki.ekilex.data.db.main.tables.DefinitionNoteSourceLink;
+import eki.ekilex.data.db.main.tables.DefinitionSourceLink;
+import eki.ekilex.data.db.main.tables.Freeform;
+import eki.ekilex.data.db.main.tables.Lexeme;
+import eki.ekilex.data.db.main.tables.LexemeNote;
+import eki.ekilex.data.db.main.tables.LexemeNoteSourceLink;
+import eki.ekilex.data.db.main.tables.LexemeSourceLink;
+import eki.ekilex.data.db.main.tables.MeaningImage;
+import eki.ekilex.data.db.main.tables.MeaningImageSourceLink;
+import eki.ekilex.data.db.main.tables.MeaningNote;
+import eki.ekilex.data.db.main.tables.MeaningNoteSourceLink;
+import eki.ekilex.data.db.main.tables.Source;
+import eki.ekilex.data.db.main.tables.SourceActivityLog;
+import eki.ekilex.data.db.main.tables.SourceFreeform;
+import eki.ekilex.data.db.main.tables.Usage;
+import eki.ekilex.data.db.main.tables.UsageSourceLink;
+import eki.ekilex.data.db.main.tables.records.FreeformRecord;
 import eki.ekilex.service.db.util.SearchFilterHelper;
 
 @Component
@@ -84,12 +84,12 @@ public class SourceDbService implements GlobalConstant, SystemConstant, Activity
 	private SearchFilterHelper searchFilterHelper;
 
 	@Autowired
-	private DSLContext create;
+	private DSLContext mainDb;
 
 	public eki.ekilex.data.Source getSource(Long sourceId) {
 
 		Source s = SOURCE.as("s");
-		return create
+		return mainDb
 				.select(
 						s.ID,
 						s.DATASET_CODE,
@@ -209,7 +209,7 @@ public class SourceDbService implements GlobalConstant, SystemConstant, Activity
 
 		Field<Boolean> sptnf = DSL.field(sp.FREEFORM_TYPE_CODE.eq(SOURCE_NAME_CODE));
 
-		return create
+		return mainDb
 				.select(
 						s.ID.as("source_id"),
 						s.DATASET_CODE.as("source_dataset_code"),
@@ -416,7 +416,7 @@ public class SourceDbService implements GlobalConstant, SystemConstant, Activity
 
 		String maskedSearchFilter = searchFilter.replace(SEARCH_MASK_CHARS, "%").replace(SEARCH_MASK_CHAR, "_");
 		Field<String> filterField = DSL.lower(maskedSearchFilter);
-		return create
+		return mainDb
 				.selectDistinct(SOURCE.NAME)
 				.from(SOURCE)
 				.where(DSL.lower(SOURCE.NAME).like(filterField))
@@ -427,7 +427,7 @@ public class SourceDbService implements GlobalConstant, SystemConstant, Activity
 
 	public Long createSource(eki.ekilex.data.Source source) {
 
-		Long sourceId = create
+		Long sourceId = mainDb
 				.insertInto(
 						SOURCE,
 						SOURCE.DATASET_CODE,
@@ -454,7 +454,7 @@ public class SourceDbService implements GlobalConstant, SystemConstant, Activity
 
 	public void updateSource(eki.ekilex.data.Source source) {
 
-		create
+		mainDb
 				.update(SOURCE)
 				.set(SOURCE.TYPE, source.getType().name())
 				.set(SOURCE.NAME, source.getName())
@@ -468,20 +468,20 @@ public class SourceDbService implements GlobalConstant, SystemConstant, Activity
 
 	public void deleteSource(Long sourceId) {
 
-		List<Long> freeformIds = create
+		List<Long> freeformIds = mainDb
 				.select(SOURCE_FREEFORM.FREEFORM_ID)
 				.from(SOURCE_FREEFORM)
 				.where(SOURCE_FREEFORM.SOURCE_ID.eq(sourceId))
 				.fetchInto(Long.class);
 
 		for (Long freeformId : freeformIds) {
-			create
+			mainDb
 					.delete(FREEFORM)
 					.where(FREEFORM.ID.eq(freeformId))
 					.execute();
 		}
 
-		create
+		mainDb
 				.delete(SOURCE)
 				.where(SOURCE.ID.eq(sourceId))
 				.execute();
@@ -502,7 +502,7 @@ public class SourceDbService implements GlobalConstant, SystemConstant, Activity
 
 		for (Long freeformId : uniqueFreeformsIds) {
 
-			create
+			mainDb
 					.update(SOURCE_FREEFORM)
 					.set(SOURCE_FREEFORM.SOURCE_ID, targetSourceId)
 					.where(
@@ -511,62 +511,62 @@ public class SourceDbService implements GlobalConstant, SystemConstant, Activity
 					.execute();
 		}
 
-		create
+		mainDb
 				.update(LEXEME_SOURCE_LINK)
 				.set(LEXEME_SOURCE_LINK.SOURCE_ID, targetSourceId)
 				.where(LEXEME_SOURCE_LINK.SOURCE_ID.eq(originSourceId))
 				.execute();
 
-		create
+		mainDb
 				.update(LEXEME_NOTE_SOURCE_LINK)
 				.set(LEXEME_NOTE_SOURCE_LINK.SOURCE_ID, targetSourceId)
 				.where(LEXEME_NOTE_SOURCE_LINK.SOURCE_ID.eq(originSourceId))
 				.execute();
 
-		create
+		mainDb
 				.update(USAGE_SOURCE_LINK)
 				.set(USAGE_SOURCE_LINK.SOURCE_ID, targetSourceId)
 				.where(USAGE_SOURCE_LINK.SOURCE_ID.eq(originSourceId))
 				.execute();
 
-		create
+		mainDb
 				.update(DEFINITION_SOURCE_LINK)
 				.set(DEFINITION_SOURCE_LINK.SOURCE_ID, targetSourceId)
 				.where(DEFINITION_SOURCE_LINK.SOURCE_ID.eq(originSourceId))
 				.execute();
 
-		create
+		mainDb
 				.update(DEFINITION_NOTE_SOURCE_LINK)
 				.set(DEFINITION_NOTE_SOURCE_LINK.SOURCE_ID, targetSourceId)
 				.where(DEFINITION_NOTE_SOURCE_LINK.SOURCE_ID.eq(originSourceId))
 				.execute();
 
-		create
+		mainDb
 				.update(MEANING_IMAGE_SOURCE_LINK)
 				.set(MEANING_IMAGE_SOURCE_LINK.SOURCE_ID, targetSourceId)
 				.where(MEANING_IMAGE_SOURCE_LINK.SOURCE_ID.eq(originSourceId))
 				.execute();
 
-		create
+		mainDb
 				.update(MEANING_NOTE_SOURCE_LINK)
 				.set(MEANING_NOTE_SOURCE_LINK.SOURCE_ID, targetSourceId)
 				.where(MEANING_NOTE_SOURCE_LINK.SOURCE_ID.eq(originSourceId))
 				.execute();
 
 		// TODO should be removed later
-		create
+		mainDb
 				.update(FREEFORM_SOURCE_LINK)
 				.set(FREEFORM_SOURCE_LINK.SOURCE_ID, targetSourceId)
 				.where(FREEFORM_SOURCE_LINK.SOURCE_ID.eq(originSourceId))
 				.execute();
 
-		create
+		mainDb
 				.update(WORD_ETYMOLOGY_SOURCE_LINK)
 				.set(WORD_ETYMOLOGY_SOURCE_LINK.SOURCE_ID, targetSourceId)
 				.where(WORD_ETYMOLOGY_SOURCE_LINK.SOURCE_ID.eq(originSourceId))
 				.execute();
 
-		create
+		mainDb
 				.update(SOURCE_ACTIVITY_LOG)
 				.set(SOURCE_ACTIVITY_LOG.SOURCE_ID, targetSourceId)
 				.where(SOURCE_ACTIVITY_LOG.SOURCE_ID.eq(originSourceId))
@@ -577,7 +577,7 @@ public class SourceDbService implements GlobalConstant, SystemConstant, Activity
 
 	public boolean validateSourceDelete(Long sourceId) {
 
-		return create
+		return mainDb
 				.select(DSL.field(DSL.count(SOURCE.ID).gt(0)).as("is_unbinded"))
 				.from(SOURCE)
 				.where(
@@ -619,7 +619,7 @@ public class SourceDbService implements GlobalConstant, SystemConstant, Activity
 
 	private Result<FreeformRecord> getSourceFreeformRecords(Long sourceId) {
 
-		return create
+		return mainDb
 				.selectFrom(FREEFORM)
 				.where(
 						FREEFORM.ID.in(DSL.select(SOURCE_FREEFORM.FREEFORM_ID)
@@ -644,7 +644,7 @@ public class SourceDbService implements GlobalConstant, SystemConstant, Activity
 		}
 		orderByFields.add(s.ID);
 
-		return create
+		return mainDb
 				.select(
 						s.ID,
 						s.DATASET_CODE,
@@ -665,7 +665,7 @@ public class SourceDbService implements GlobalConstant, SystemConstant, Activity
 
 	private int getSourceCount(Source s, Condition where) {
 
-		return create
+		return mainDb
 				.select(DSL.count(s.ID))
 				.from(s)
 				.where(where)

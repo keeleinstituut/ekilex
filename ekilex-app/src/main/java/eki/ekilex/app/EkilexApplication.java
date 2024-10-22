@@ -8,6 +8,7 @@ import org.apache.coyote.ajp.AbstractAjpProtocol;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.autoconfigure.orm.jpa.HibernateJpaAutoConfiguration;
 import org.springframework.boot.web.embedded.tomcat.TomcatServletWebServerFactory;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.MessageSource;
@@ -25,7 +26,7 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 		"eki.ekilex.service",
 		"eki.ekilex.worker",
 		"eki.ekilex.security",
-		"eki.ekilex.data"})
+		"eki.ekilex.data"}, exclude = {HibernateJpaAutoConfiguration.class})
 @EnableCaching
 @EnableTransactionManagement
 @EnableScheduling
@@ -47,7 +48,7 @@ public class EkilexApplication {
 	}
 
 	@Bean
-	public MessageSource messageSource() {
+	MessageSource messageSource() {
 		ReloadableResourceBundleMessageSource source = new ReloadableResourceBundleMessageSource();
 		source.setBasenames("classpath:/messages/messages");
 		source.setDefaultEncoding(StandardCharsets.UTF_8.name());
@@ -57,7 +58,7 @@ public class EkilexApplication {
 	}
 
 	@Bean
-	public TomcatServletWebServerFactory servletContainer() {
+	TomcatServletWebServerFactory servletContainer() {
 		TomcatServletWebServerFactory tomcat = new TomcatServletWebServerFactory();
 		tomcat.getSession().setTimeout(sessionTimeout);
 		if (ajpEnabled) {

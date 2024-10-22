@@ -1,35 +1,35 @@
 package eki.ekilex.service.db;
 
-import static eki.ekilex.data.db.Tables.DEFINITION;
-import static eki.ekilex.data.db.Tables.FORM;
-import static eki.ekilex.data.db.Tables.FREEFORM;
-import static eki.ekilex.data.db.Tables.LEXEME;
-import static eki.ekilex.data.db.Tables.LEXEME_DERIV;
-import static eki.ekilex.data.db.Tables.LEXEME_POS;
-import static eki.ekilex.data.db.Tables.LEXEME_REGION;
-import static eki.ekilex.data.db.Tables.LEXEME_REGISTER;
-import static eki.ekilex.data.db.Tables.LEXEME_TAG;
-import static eki.ekilex.data.db.Tables.LEX_RELATION;
-import static eki.ekilex.data.db.Tables.LEX_REL_MAPPING;
-import static eki.ekilex.data.db.Tables.LEX_REL_TYPE_LABEL;
-import static eki.ekilex.data.db.Tables.MEANING;
-import static eki.ekilex.data.db.Tables.MEANING_DOMAIN;
-import static eki.ekilex.data.db.Tables.MEANING_FREEFORM;
-import static eki.ekilex.data.db.Tables.MEANING_RELATION;
-import static eki.ekilex.data.db.Tables.MEANING_REL_MAPPING;
-import static eki.ekilex.data.db.Tables.MEANING_REL_TYPE_LABEL;
-import static eki.ekilex.data.db.Tables.MEANING_SEMANTIC_TYPE;
-import static eki.ekilex.data.db.Tables.MEANING_TAG;
-import static eki.ekilex.data.db.Tables.PARADIGM;
-import static eki.ekilex.data.db.Tables.PARADIGM_FORM;
-import static eki.ekilex.data.db.Tables.WORD;
-import static eki.ekilex.data.db.Tables.WORD_FREEFORM;
-import static eki.ekilex.data.db.Tables.WORD_GROUP;
-import static eki.ekilex.data.db.Tables.WORD_GROUP_MEMBER;
-import static eki.ekilex.data.db.Tables.WORD_RELATION;
-import static eki.ekilex.data.db.Tables.WORD_REL_MAPPING;
-import static eki.ekilex.data.db.Tables.WORD_REL_TYPE_LABEL;
-import static eki.ekilex.data.db.Tables.WORD_WORD_TYPE;
+import static eki.ekilex.data.db.main.Tables.DEFINITION;
+import static eki.ekilex.data.db.main.Tables.FORM;
+import static eki.ekilex.data.db.main.Tables.FREEFORM;
+import static eki.ekilex.data.db.main.Tables.LEXEME;
+import static eki.ekilex.data.db.main.Tables.LEXEME_DERIV;
+import static eki.ekilex.data.db.main.Tables.LEXEME_POS;
+import static eki.ekilex.data.db.main.Tables.LEXEME_REGION;
+import static eki.ekilex.data.db.main.Tables.LEXEME_REGISTER;
+import static eki.ekilex.data.db.main.Tables.LEXEME_TAG;
+import static eki.ekilex.data.db.main.Tables.LEX_RELATION;
+import static eki.ekilex.data.db.main.Tables.LEX_REL_MAPPING;
+import static eki.ekilex.data.db.main.Tables.LEX_REL_TYPE_LABEL;
+import static eki.ekilex.data.db.main.Tables.MEANING;
+import static eki.ekilex.data.db.main.Tables.MEANING_DOMAIN;
+import static eki.ekilex.data.db.main.Tables.MEANING_FREEFORM;
+import static eki.ekilex.data.db.main.Tables.MEANING_RELATION;
+import static eki.ekilex.data.db.main.Tables.MEANING_REL_MAPPING;
+import static eki.ekilex.data.db.main.Tables.MEANING_REL_TYPE_LABEL;
+import static eki.ekilex.data.db.main.Tables.MEANING_SEMANTIC_TYPE;
+import static eki.ekilex.data.db.main.Tables.MEANING_TAG;
+import static eki.ekilex.data.db.main.Tables.PARADIGM;
+import static eki.ekilex.data.db.main.Tables.PARADIGM_FORM;
+import static eki.ekilex.data.db.main.Tables.WORD;
+import static eki.ekilex.data.db.main.Tables.WORD_FREEFORM;
+import static eki.ekilex.data.db.main.Tables.WORD_GROUP;
+import static eki.ekilex.data.db.main.Tables.WORD_GROUP_MEMBER;
+import static eki.ekilex.data.db.main.Tables.WORD_RELATION;
+import static eki.ekilex.data.db.main.Tables.WORD_REL_MAPPING;
+import static eki.ekilex.data.db.main.Tables.WORD_REL_TYPE_LABEL;
+import static eki.ekilex.data.db.main.Tables.WORD_WORD_TYPE;
 import static org.jooq.impl.DSL.field;
 
 import java.util.List;
@@ -57,24 +57,24 @@ import eki.ekilex.data.SearchDatasetsRestriction;
 import eki.ekilex.data.WordLexeme;
 import eki.ekilex.data.WordLexemeMeaningIdTuple;
 import eki.ekilex.data.WordRelation;
-import eki.ekilex.data.db.tables.Definition;
-import eki.ekilex.data.db.tables.Lexeme;
-import eki.ekilex.data.db.tables.Meaning;
-import eki.ekilex.data.db.tables.MeaningRelMapping;
-import eki.ekilex.data.db.tables.MeaningRelation;
-import eki.ekilex.data.db.tables.Word;
-import eki.ekilex.data.db.tables.records.LexRelationRecord;
-import eki.ekilex.data.db.tables.records.LexemeDerivRecord;
-import eki.ekilex.data.db.tables.records.LexemePosRecord;
-import eki.ekilex.data.db.tables.records.LexemeRecord;
-import eki.ekilex.data.db.tables.records.LexemeRegionRecord;
-import eki.ekilex.data.db.tables.records.LexemeRegisterRecord;
-import eki.ekilex.data.db.tables.records.LexemeTagRecord;
-import eki.ekilex.data.db.tables.records.MeaningDomainRecord;
-import eki.ekilex.data.db.tables.records.MeaningSemanticTypeRecord;
-import eki.ekilex.data.db.tables.records.MeaningTagRecord;
-import eki.ekilex.data.db.tables.records.WordRecord;
-import eki.ekilex.data.db.tables.records.WordWordTypeRecord;
+import eki.ekilex.data.db.main.tables.Definition;
+import eki.ekilex.data.db.main.tables.Lexeme;
+import eki.ekilex.data.db.main.tables.Meaning;
+import eki.ekilex.data.db.main.tables.MeaningRelMapping;
+import eki.ekilex.data.db.main.tables.MeaningRelation;
+import eki.ekilex.data.db.main.tables.Word;
+import eki.ekilex.data.db.main.tables.records.LexRelationRecord;
+import eki.ekilex.data.db.main.tables.records.LexemeDerivRecord;
+import eki.ekilex.data.db.main.tables.records.LexemePosRecord;
+import eki.ekilex.data.db.main.tables.records.LexemeRecord;
+import eki.ekilex.data.db.main.tables.records.LexemeRegionRecord;
+import eki.ekilex.data.db.main.tables.records.LexemeRegisterRecord;
+import eki.ekilex.data.db.main.tables.records.LexemeTagRecord;
+import eki.ekilex.data.db.main.tables.records.MeaningDomainRecord;
+import eki.ekilex.data.db.main.tables.records.MeaningSemanticTypeRecord;
+import eki.ekilex.data.db.main.tables.records.MeaningTagRecord;
+import eki.ekilex.data.db.main.tables.records.WordRecord;
+import eki.ekilex.data.db.main.tables.records.WordWordTypeRecord;
 import eki.ekilex.service.db.util.SearchFilterHelper;
 
 //associated data lookup for complex business functions
@@ -85,22 +85,22 @@ public class LookupDbService extends AbstractDataDbService {
 	private SearchFilterHelper searchFilterHelper;
 
 	public String getWordValuePrese(Long wordId) {
-		return create.select(WORD.VALUE_PRESE).from(WORD).where(WORD.ID.eq(wordId)).fetchOptionalInto(String.class).orElse(null);
+		return mainDb.select(WORD.VALUE_PRESE).from(WORD).where(WORD.ID.eq(wordId)).fetchOptionalInto(String.class).orElse(null);
 	}
 
 	public String getWordLang(Long wordId) {
-		return create.select(WORD.LANG).from(WORD).where(WORD.ID.eq(wordId)).fetchOptionalInto(String.class).orElse(null);
+		return mainDb.select(WORD.LANG).from(WORD).where(WORD.ID.eq(wordId)).fetchOptionalInto(String.class).orElse(null);
 	}
 
 	public Long getWordWordTypeId(Long wordId, String typeCode) {
-		WordWordTypeRecord wordWordTypeRecord = create.fetchOne(WORD_WORD_TYPE, WORD_WORD_TYPE.WORD_ID.eq(wordId).and(WORD_WORD_TYPE.WORD_TYPE_CODE.eq(typeCode)));
+		WordWordTypeRecord wordWordTypeRecord = mainDb.fetchOne(WORD_WORD_TYPE, WORD_WORD_TYPE.WORD_ID.eq(wordId).and(WORD_WORD_TYPE.WORD_TYPE_CODE.eq(typeCode)));
 		return wordWordTypeRecord.getId();
 	}
 
 	public List<WordLexeme> getWordLexemes(Long lexemeId) {
 		Lexeme l1 = LEXEME.as("l1");
 		Lexeme l2 = LEXEME.as("l2");
-		return create
+		return mainDb
 				.select(
 						l2.ID.as("lexeme_id"),
 						l2.LEVEL1,
@@ -115,7 +115,7 @@ public class LookupDbService extends AbstractDataDbService {
 	}
 
 	public Long getWordRelationGroupId(String groupType, Long wordId) {
-		Long id = create
+		Long id = mainDb
 				.select(WORD_GROUP.ID)
 				.from(WORD_GROUP.join(WORD_GROUP_MEMBER).on(WORD_GROUP_MEMBER.WORD_GROUP_ID.eq(WORD_GROUP.ID)))
 				.where(WORD_GROUP.WORD_REL_TYPE_CODE.eq(groupType).and(WORD_GROUP_MEMBER.WORD_ID.eq(wordId)))
@@ -124,7 +124,7 @@ public class LookupDbService extends AbstractDataDbService {
 	}
 
 	public Long getWordRelationGroupId(Long relationId) {
-		Long id = create.select(WORD_GROUP.ID)
+		Long id = mainDb.select(WORD_GROUP.ID)
 				.from(WORD_GROUP.join(WORD_GROUP_MEMBER).on(WORD_GROUP_MEMBER.WORD_GROUP_ID.eq(WORD_GROUP.ID)))
 				.where(WORD_GROUP_MEMBER.ID.eq(relationId))
 				.fetchOneInto(Long.class);
@@ -132,7 +132,7 @@ public class LookupDbService extends AbstractDataDbService {
 	}
 
 	public Long getWordId(Long freeformId) {
-		Long wordId = create.select(WORD_FREEFORM.WORD_ID)
+		Long wordId = mainDb.select(WORD_FREEFORM.WORD_ID)
 				.from(WORD_FREEFORM)
 				.where(WORD_FREEFORM.FREEFORM_ID.eq(freeformId))
 				.fetchOneInto(Long.class);
@@ -140,7 +140,7 @@ public class LookupDbService extends AbstractDataDbService {
 	}
 
 	public List<Map<String, Object>> getWordRelationGroupMembers(Long groupId) {
-		return create
+		return mainDb
 				.selectDistinct(
 						WORD_GROUP_MEMBER.ID,
 						WORD_GROUP_MEMBER.WORD_ID,
@@ -202,7 +202,7 @@ public class LookupDbService extends AbstractDataDbService {
 				.where(whereCondition)
 				.asTable("wl");
 
-		return create
+		return mainDb
 				.selectDistinct(wl.field("word_id"))
 				.from(wl)
 				.where(wl.field("is_public", boolean.class).eq(PUBLICITY_PUBLIC)
@@ -215,7 +215,7 @@ public class LookupDbService extends AbstractDataDbService {
 		Word w = WORD.as("w");
 		Lexeme l = LEXEME.as("l");
 
-		return create
+		return mainDb
 				.select(
 						w.ID.as("word_id"),
 						w.VALUE.as("word_value"),
@@ -239,7 +239,7 @@ public class LookupDbService extends AbstractDataDbService {
 
 	public List<Long> getWordDatasetCodes(Long wordId) {
 
-		return create
+		return mainDb
 				.selectDistinct(LEXEME.DATASET_CODE)
 				.from(LEXEME)
 				.where(LEXEME.WORD_ID.eq(wordId))
@@ -248,7 +248,7 @@ public class LookupDbService extends AbstractDataDbService {
 
 	public List<String> getWordTypeCodes(Long wordId) {
 
-		return create
+		return mainDb
 				.select(WORD_WORD_TYPE.WORD_TYPE_CODE)
 				.from(WORD_WORD_TYPE)
 				.where(WORD_WORD_TYPE.WORD_ID.eq(wordId))
@@ -257,7 +257,7 @@ public class LookupDbService extends AbstractDataDbService {
 	}
 
 	public List<WordRelation> getWordRelations(Long wordId, String relTypeCode) {
-		return create.select(WORD_RELATION.ID, WORD_RELATION.ORDER_BY)
+		return mainDb.select(WORD_RELATION.ID, WORD_RELATION.ORDER_BY)
 				.from(WORD_RELATION)
 				.where(WORD_RELATION.WORD1_ID.eq(wordId))
 				.and(WORD_RELATION.WORD_REL_TYPE_CODE.eq(relTypeCode))
@@ -267,7 +267,7 @@ public class LookupDbService extends AbstractDataDbService {
 
 	public int getWordLexemesMaxLevel1(Long wordId, String datasetCode) {
 
-		return create
+		return mainDb
 				.select(DSL.max(LEXEME.LEVEL1))
 				.from(LEXEME)
 				.where(
@@ -280,7 +280,7 @@ public class LookupDbService extends AbstractDataDbService {
 	public List<WordLexeme> getWordLexemesLevels(Long wordId) {
 
 		Lexeme l = LEXEME.as("l");
-		return create
+		return mainDb
 				.select(l.ID.as("lexeme_id"), l.DATASET_CODE, l.LEVEL1, l.LEVEL2)
 				.from(l)
 				.where(l.WORD_ID.eq(wordId))
@@ -290,7 +290,7 @@ public class LookupDbService extends AbstractDataDbService {
 
 	public String getLexemeDatasetCode(Long lexemeId) {
 
-		return create
+		return mainDb
 				.select(LEXEME.DATASET_CODE)
 				.from(LEXEME)
 				.where(LEXEME.ID.eq(lexemeId))
@@ -299,7 +299,7 @@ public class LookupDbService extends AbstractDataDbService {
 
 	public Long getLexemeId(Long wordId, Long meaningId) {
 
-		return create
+		return mainDb
 				.select(LEXEME.ID)
 				.from(LEXEME)
 				.where(LEXEME.WORD_ID.eq(wordId).and(LEXEME.MEANING_ID.eq(meaningId)))
@@ -308,7 +308,7 @@ public class LookupDbService extends AbstractDataDbService {
 
 	public Long getLexemeMeaningId(Long lexemeId) {
 
-		return create
+		return mainDb
 				.select(LEXEME.MEANING_ID)
 				.from(LEXEME)
 				.where(LEXEME.ID.eq(lexemeId))
@@ -317,7 +317,7 @@ public class LookupDbService extends AbstractDataDbService {
 
 	public Long getLexemeWordId(Long lexemeId) {
 
-		return create
+		return mainDb
 				.select(LEXEME.WORD_ID)
 				.from(LEXEME)
 				.where(LEXEME.ID.eq(lexemeId))
@@ -325,39 +325,39 @@ public class LookupDbService extends AbstractDataDbService {
 	}
 
 	public Long getLexemePosId(Long lexemeId, String posCode) {
-		LexemePosRecord lexemePosRecord = create.fetchOne(LEXEME_POS, LEXEME_POS.LEXEME_ID.eq(lexemeId).and(LEXEME_POS.POS_CODE.eq(posCode)));
+		LexemePosRecord lexemePosRecord = mainDb.fetchOne(LEXEME_POS, LEXEME_POS.LEXEME_ID.eq(lexemeId).and(LEXEME_POS.POS_CODE.eq(posCode)));
 		return lexemePosRecord.getId();
 	}
 
 	public Long getLexemeTagId(Long lexemeId, String tagName) {
-		LexemeTagRecord lexemeTagRecord = create.fetchOne(LEXEME_TAG, LEXEME_TAG.LEXEME_ID.eq(lexemeId).and(LEXEME_TAG.TAG_NAME.eq(tagName)));
+		LexemeTagRecord lexemeTagRecord = mainDb.fetchOne(LEXEME_TAG, LEXEME_TAG.LEXEME_ID.eq(lexemeId).and(LEXEME_TAG.TAG_NAME.eq(tagName)));
 		return lexemeTagRecord.getId();
 	}
 
 	public Long getMeaningTagId(Long meaningId, String tagName) {
-		MeaningTagRecord meaningTagRecord = create.fetchOne(MEANING_TAG, MEANING_TAG.MEANING_ID.eq(meaningId).and(MEANING_TAG.TAG_NAME.eq(tagName)));
+		MeaningTagRecord meaningTagRecord = mainDb.fetchOne(MEANING_TAG, MEANING_TAG.MEANING_ID.eq(meaningId).and(MEANING_TAG.TAG_NAME.eq(tagName)));
 		return meaningTagRecord.getId();
 	}
 
 	public Long getLexemeDerivId(Long lexemeId, String derivCode) {
-		LexemeDerivRecord lexemeDerivRecord = create.fetchOne(LEXEME_DERIV, LEXEME_DERIV.LEXEME_ID.eq(lexemeId).and(LEXEME_DERIV.DERIV_CODE.eq(derivCode)));
+		LexemeDerivRecord lexemeDerivRecord = mainDb.fetchOne(LEXEME_DERIV, LEXEME_DERIV.LEXEME_ID.eq(lexemeId).and(LEXEME_DERIV.DERIV_CODE.eq(derivCode)));
 		return lexemeDerivRecord.getId();
 	}
 
 	public Long getLexemeRegisterId(Long lexemeId, String registerCode) {
-		LexemeRegisterRecord lexemeRegisterRecord = create.fetchOne(LEXEME_REGISTER,
+		LexemeRegisterRecord lexemeRegisterRecord = mainDb.fetchOne(LEXEME_REGISTER,
 				LEXEME_REGISTER.LEXEME_ID.eq(lexemeId).and(LEXEME_REGISTER.REGISTER_CODE.eq(registerCode)));
 		return lexemeRegisterRecord.getId();
 	}
 
 	public Long getLexemeRegionId(Long lexemeId, String regionCode) {
-		LexemeRegionRecord lexemeRegionRecord = create.fetchOne(LEXEME_REGION,
+		LexemeRegionRecord lexemeRegionRecord = mainDb.fetchOne(LEXEME_REGION,
 				LEXEME_REGION.LEXEME_ID.eq(lexemeId).and(LEXEME_REGION.REGION_CODE.eq(regionCode)));
 		return lexemeRegionRecord.getId();
 	}
 
 	public Long getMeaningDomainId(Long meaningId, Classifier domain) {
-		MeaningDomainRecord meaningDomainRecord = create.fetchOne(MEANING_DOMAIN,
+		MeaningDomainRecord meaningDomainRecord = mainDb.fetchOne(MEANING_DOMAIN,
 				MEANING_DOMAIN.MEANING_ID.eq(meaningId)
 						.and(MEANING_DOMAIN.DOMAIN_ORIGIN.eq(domain.getOrigin()))
 						.and(MEANING_DOMAIN.DOMAIN_CODE.eq(domain.getCode())));
@@ -365,14 +365,14 @@ public class LookupDbService extends AbstractDataDbService {
 	}
 
 	public Long getMeaningSemanticTypeId(Long meaningId, String semanticTypeCode) {
-		MeaningSemanticTypeRecord meaningSemanticTypeRecord = create
+		MeaningSemanticTypeRecord meaningSemanticTypeRecord = mainDb
 				.fetchOne(MEANING_SEMANTIC_TYPE, MEANING_SEMANTIC_TYPE.MEANING_ID.eq(meaningId).and(MEANING_SEMANTIC_TYPE.SEMANTIC_TYPE_CODE.eq(semanticTypeCode)));
 		return meaningSemanticTypeRecord.getId();
 	}
 
 	public List<Long> getMeaningLexemeIds(Long meaningId, String lang, String datasetCode) {
 
-		return create
+		return mainDb
 				.select(LEXEME.ID)
 				.from(LEXEME, WORD)
 				.where(
@@ -390,7 +390,7 @@ public class LookupDbService extends AbstractDataDbService {
 		MeaningRelation mr2 = MEANING_RELATION.as("mr2");
 		MeaningRelMapping mrm = MEANING_REL_MAPPING.as("mrm");
 
-		return create
+		return mainDb
 				.select(mr2.ID)
 				.from(mr1, mr2, mrm)
 				.where(
@@ -418,7 +418,7 @@ public class LookupDbService extends AbstractDataDbService {
 				.groupBy(WORD.VALUE)
 				.asTable("wv");
 
-		return create
+		return mainDb
 				.selectFrom(wv)
 				.where(PostgresDSL.arrayLength(wv.field(homonymNumbers)).gt(1))
 				.fetchMap(wordValue, homonymNumbers);
@@ -426,7 +426,7 @@ public class LookupDbService extends AbstractDataDbService {
 
 	public String getMeaningFirstDatasetCode(Long meaningId) {
 
-		return create
+		return mainDb
 				.select(LEXEME.DATASET_CODE)
 				.from(LEXEME)
 				.where(LEXEME.MEANING_ID.eq(meaningId))
@@ -436,7 +436,7 @@ public class LookupDbService extends AbstractDataDbService {
 
 	public WordLexemeMeaningIdTuple getWordLexemeMeaningIdByLexeme(Long lexemeId) {
 
-		return create
+		return mainDb
 				.select(
 						LEXEME.WORD_ID,
 						LEXEME.MEANING_ID,
@@ -448,7 +448,7 @@ public class LookupDbService extends AbstractDataDbService {
 
 	public List<WordLexemeMeaningIdTuple> getWordLexemeMeaningIdsByMeaning(Long meaningId) {
 
-		return create
+		return mainDb
 				.select(
 						LEXEME.WORD_ID,
 						LEXEME.MEANING_ID,
@@ -460,7 +460,7 @@ public class LookupDbService extends AbstractDataDbService {
 
 	public List<WordLexemeMeaningIdTuple> getWordLexemeMeaningIdsByMeaning(Long meaningId, String datasetCode) {
 
-		return create
+		return mainDb
 				.select(
 						LEXEME.WORD_ID,
 						LEXEME.MEANING_ID,
@@ -474,7 +474,7 @@ public class LookupDbService extends AbstractDataDbService {
 
 	public List<WordLexemeMeaningIdTuple> getWordLexemeMeaningIdsByWord(Long wordId, String datasetCode) {
 
-		return create
+		return mainDb
 				.select(
 						LEXEME.WORD_ID,
 						LEXEME.MEANING_ID,
@@ -487,15 +487,15 @@ public class LookupDbService extends AbstractDataDbService {
 	}
 
 	public WordRecord getWordRecord(Long wordId) {
-		return create.selectFrom(WORD).where(WORD.ID.eq(wordId)).fetchOne();
+		return mainDb.selectFrom(WORD).where(WORD.ID.eq(wordId)).fetchOne();
 	}
 
 	public LexemeRecord getLexemeRecord(Long lexemeId) {
-		return create.selectFrom(LEXEME).where(LEXEME.ID.eq(lexemeId)).fetchOne();
+		return mainDb.selectFrom(LEXEME).where(LEXEME.ID.eq(lexemeId)).fetchOne();
 	}
 
 	public LexemeRecord getLexemeRecord(Long wordId, Long meaningId, String datasetCode) {
-		return create
+		return mainDb
 				.selectFrom(LEXEME)
 				.where(
 						LEXEME.WORD_ID.eq(wordId)
@@ -505,7 +505,7 @@ public class LookupDbService extends AbstractDataDbService {
 	}
 
 	public List<LexemeRecord> getLexemeRecordsWithHigherLevel1(Long wordId, String datasetCode, Integer level1) {
-		return create
+		return mainDb
 				.selectFrom(LEXEME)
 				.where(LEXEME.WORD_ID.eq(wordId)
 						.and(LEXEME.DATASET_CODE.eq(datasetCode))
@@ -514,7 +514,7 @@ public class LookupDbService extends AbstractDataDbService {
 	}
 
 	public List<LexemeRecord> getLexemeRecordsWithHigherLevel2(Long wordId, String datasetCode, Integer level1, Integer level2) {
-		return create
+		return mainDb
 				.selectFrom(LEXEME)
 				.where(LEXEME.WORD_ID.eq(wordId)
 						.and(LEXEME.DATASET_CODE.eq(datasetCode))
@@ -524,7 +524,7 @@ public class LookupDbService extends AbstractDataDbService {
 	}
 
 	public Integer getLevel2MinimumValue(Long wordId, String datasetCode, Integer level1) {
-		return create
+		return mainDb
 				.select(DSL.min(LEXEME.LEVEL2))
 				.from(LEXEME)
 				.where(LEXEME.WORD_ID.eq(wordId)
@@ -534,7 +534,7 @@ public class LookupDbService extends AbstractDataDbService {
 	}
 
 	public List<LexemeRecord> getLexemeRecordsByWord(Long wordId) {
-		return create
+		return mainDb
 				.selectFrom(LEXEME)
 				.where(LEXEME.WORD_ID.eq(wordId))
 				.orderBy(LEXEME.ORDER_BY)
@@ -542,7 +542,7 @@ public class LookupDbService extends AbstractDataDbService {
 	}
 
 	public List<LexemeRecord> getLexemeRecordsByMeaning(Long meaningId) {
-		return create
+		return mainDb
 				.selectFrom(LEXEME)
 				.where(LEXEME.MEANING_ID.eq(meaningId))
 				.orderBy(LEXEME.ORDER_BY)
@@ -550,7 +550,7 @@ public class LookupDbService extends AbstractDataDbService {
 	}
 
 	public List<LexemeRecord> getLexemeRecordsByMeaning(Long meaningId, String datasetCode) {
-		return create
+		return mainDb
 				.selectFrom(LEXEME)
 				.where(LEXEME.MEANING_ID.eq(meaningId)
 						.and(LEXEME.DATASET_CODE.eq(datasetCode)))
@@ -564,7 +564,7 @@ public class LookupDbService extends AbstractDataDbService {
 		if (publicDataOnly) {
 			where = where.and(DEFINITION.IS_PUBLIC.isTrue());
 		}
-		return create.select(DEFINITION.ID).from(DEFINITION).where(where).orderBy(DEFINITION.ORDER_BY).fetchInto(Long.class);
+		return mainDb.select(DEFINITION.ID).from(DEFINITION).where(where).orderBy(DEFINITION.ORDER_BY).fetchInto(Long.class);
 	}
 
 	public List<IdPair> getMeaningsCommonWordsLexemeIdPairs(Long meaningId, Long sourceMeaningId) {
@@ -585,7 +585,7 @@ public class LookupDbService extends AbstractDataDbService {
 										.and(l2.MEANING_ID.eq(m2.ID))
 										.and(l2.WORD_ID.eq(l1.WORD_ID)))));
 
-		return create
+		return mainDb
 				.select(l1.ID.as("id1"), l2.ID.as("id2"))
 				.from(l1, l2)
 				.where(l1.WORD_ID.in(wordIds)
@@ -598,7 +598,7 @@ public class LookupDbService extends AbstractDataDbService {
 
 	public List<LexRelationRecord> getLexRelationRecords(Long lexemeId) {
 
-		return create
+		return mainDb
 				.selectFrom(LEX_RELATION)
 				.where(
 						LEX_RELATION.LEXEME1_ID.eq(lexemeId)
@@ -643,7 +643,7 @@ public class LookupDbService extends AbstractDataDbService {
 								.and(whereExcludeMeaningId))
 				.asTable("mid");
 
-		return create
+		return mainDb
 				.select(
 						MEANING.ID.as("meaning_id"),
 						DSL.arrayAggDistinct(LEXEME.ID).orderBy(LEXEME.ID).as("lexeme_ids"),
@@ -663,7 +663,7 @@ public class LookupDbService extends AbstractDataDbService {
 		Lexeme l = LEXEME.as("l");
 		Word w = WORD.as("w");
 
-		return create
+		return mainDb
 				.select(l.MEANING_ID)
 				.from(l, w)
 				.where(
@@ -688,7 +688,7 @@ public class LookupDbService extends AbstractDataDbService {
 			where = where.and(w.LANG.eq(wordLang));
 		}
 
-		return create
+		return mainDb
 				.select(
 						l.WORD_ID,
 						l.MEANING_ID,
@@ -739,7 +739,7 @@ public class LookupDbService extends AbstractDataDbService {
 				.orderBy(mr.ORDER_BY)
 				.asTable("syn");
 
-		return create
+		return mainDb
 				.select(
 						syn.field("translation_lang_word_value", String.class),
 						syn.field("translation_lang_word_id", Long.class),
@@ -758,7 +758,7 @@ public class LookupDbService extends AbstractDataDbService {
 
 	public List<Classifier> getLexemeOppositeRelations(String relationTypeCode, String classifLabelLang, String classifLabelType) {
 
-		return create
+		return mainDb
 				.select(LEX_REL_TYPE_LABEL.CODE, LEX_REL_TYPE_LABEL.VALUE)
 				.from(LEX_REL_MAPPING, LEX_REL_TYPE_LABEL)
 				.where(
@@ -771,7 +771,7 @@ public class LookupDbService extends AbstractDataDbService {
 
 	public List<Classifier> getWordOppositeRelations(String relationTypeCode, String classifLabelLang, String classifLabelType) {
 
-		return create
+		return mainDb
 				.select(WORD_REL_TYPE_LABEL.CODE, WORD_REL_TYPE_LABEL.VALUE)
 				.from(WORD_REL_MAPPING, WORD_REL_TYPE_LABEL)
 				.where(
@@ -784,7 +784,7 @@ public class LookupDbService extends AbstractDataDbService {
 
 	public List<Classifier> getMeaningOppositeRelations(String relationTypeCode, String classifLabelLang, String classifLabelType) {
 
-		return create
+		return mainDb
 				.select(MEANING_REL_TYPE_LABEL.CODE, MEANING_REL_TYPE_LABEL.VALUE)
 				.from(MEANING_REL_MAPPING, MEANING_REL_TYPE_LABEL)
 				.where(
@@ -813,7 +813,7 @@ public class LookupDbService extends AbstractDataDbService {
 		Field<Long> meaningIdField = rmds.field("rel_meaning_id", Long.class);
 		Field<String> datasetCodeField = rmds.field("dataset_code", String.class);
 
-		return create
+		return mainDb
 				.select(meaningIdField, DSL.arrayAggDistinct(datasetCodeField))
 				.from(rmds)
 				.groupBy(meaningIdField)
@@ -822,7 +822,7 @@ public class LookupDbService extends AbstractDataDbService {
 
 	public boolean meaningDomainExists(Long meaningId, String domainCode, String domainOrigin) {
 
-		return create
+		return mainDb
 				.select(DSL.field(DSL.count(MEANING_DOMAIN.ID).gt(0)).as("meaning_domain_exists"))
 				.from(MEANING_DOMAIN)
 				.where(MEANING_DOMAIN.MEANING_ID.eq(meaningId)
@@ -833,7 +833,7 @@ public class LookupDbService extends AbstractDataDbService {
 
 	public boolean meaningFreeformExists(Long meaningId, String freeformValue, String freeformTypeCode) {
 
-		return create
+		return mainDb
 				.select(DSL.field(DSL.count(FREEFORM.ID).gt(0)).as("meaning_freeform_exists"))
 				.from(MEANING_FREEFORM, FREEFORM)
 				.where(MEANING_FREEFORM.MEANING_ID.eq(meaningId)
@@ -845,7 +845,7 @@ public class LookupDbService extends AbstractDataDbService {
 
 	public boolean meaningPublicLexemeExists(Long meaningId, String datasetCode) {
 
-		return create
+		return mainDb
 				.select(DSL.field(DSL.count(LEXEME.ID).gt(0)).as("public_lexeme_exists"))
 				.from(LEXEME)
 				.where(
@@ -857,7 +857,7 @@ public class LookupDbService extends AbstractDataDbService {
 
 	public boolean wordPublicLexemeExists(Long wordId, String datasetCode) {
 
-		return create
+		return mainDb
 				.select(DSL.field(DSL.count(LEXEME.ID).gt(0)).as("public_lexeme_exists"))
 				.from(LEXEME)
 				.where(
@@ -869,7 +869,7 @@ public class LookupDbService extends AbstractDataDbService {
 
 	public boolean meaningHasWord(Long meaningId, String wordValue, String language) {
 
-		return create
+		return mainDb
 				.select(DSL.field(DSL.count(WORD.ID).gt(0)).as("word_exists"))
 				.from(LEXEME, WORD)
 				.where(
@@ -883,7 +883,7 @@ public class LookupDbService extends AbstractDataDbService {
 
 	public boolean meaningHasWord(Long meaningId, String datasetCode, String wordValue, String language) {
 
-		return create
+		return mainDb
 				.select(DSL.field(DSL.count(WORD.ID).gt(0)).as("word_exists"))
 				.from(LEXEME, WORD)
 				.where(
@@ -898,7 +898,7 @@ public class LookupDbService extends AbstractDataDbService {
 
 	public boolean lexemeTagExists(Long lexemeId, String tagName) {
 
-		return create
+		return mainDb
 				.select(field(DSL.count(LEXEME_TAG.ID).gt(0)).as("lexeme_tag_exists"))
 				.from(LEXEME_TAG)
 				.where(
@@ -909,7 +909,7 @@ public class LookupDbService extends AbstractDataDbService {
 
 	public boolean meaningTagExists(Long meaningId, String tagName) {
 
-		return create
+		return mainDb
 				.select(field(DSL.count(MEANING_TAG.ID).gt(0)).as("meaning_tag_exists"))
 				.from(MEANING_TAG)
 				.where(
@@ -920,7 +920,7 @@ public class LookupDbService extends AbstractDataDbService {
 
 	public boolean meaningRelationExists(Long meaningId1, Long meaningId2, String relationType) {
 
-		return create
+		return mainDb
 				.select(field(DSL.count(MEANING_RELATION.ID).eq(1)).as("relation_exists"))
 				.from(MEANING_RELATION)
 				.where(
@@ -932,7 +932,7 @@ public class LookupDbService extends AbstractDataDbService {
 
 	public boolean lexemeRelationExists(Long lexemeId1, Long lexemeId2, String relationType) {
 
-		return create
+		return mainDb
 				.select(field(DSL.count(LEX_RELATION.ID).eq(1)).as("relation_exists"))
 				.from(LEX_RELATION)
 				.where(
@@ -944,7 +944,7 @@ public class LookupDbService extends AbstractDataDbService {
 
 	public boolean wordRelationExists(Long wordId1, Long wordId2, String relationType) {
 
-		return create
+		return mainDb
 				.select(field(DSL.count(WORD_RELATION.ID).eq(1)).as("relation_exists"))
 				.from(WORD_RELATION)
 				.where(
@@ -956,7 +956,7 @@ public class LookupDbService extends AbstractDataDbService {
 
 	public boolean wordHasForms(Long wordId) {
 
-		return create
+		return mainDb
 				.select(field(DSL.count(FORM.ID).gt(0)).as("forms_exist"))
 				.from(PARADIGM, PARADIGM_FORM, FORM)
 				.where(
@@ -968,7 +968,7 @@ public class LookupDbService extends AbstractDataDbService {
 
 	public boolean wordLexemeExists(Long wordId, String datasetCode) {
 
-		return create
+		return mainDb
 				.select(field(DSL.count(WORD.ID).gt(0)).as("word_lexeme_exists"))
 				.from(WORD)
 				.where(
@@ -985,7 +985,7 @@ public class LookupDbService extends AbstractDataDbService {
 
 		Word w = WORD.as("w");
 
-		return create
+		return mainDb
 				.select(field(DSL.count(w.ID).gt(0)).as("word_exists"))
 				.from(w)
 				.where(
@@ -999,7 +999,7 @@ public class LookupDbService extends AbstractDataDbService {
 
 		Lexeme l1 = LEXEME.as("l1");
 		Lexeme l2 = LEXEME.as("l2");
-		int count = create
+		int count = mainDb
 				.fetchCount(DSL
 						.select(l2.ID)
 						.from(l1, l2)
@@ -1014,7 +1014,7 @@ public class LookupDbService extends AbstractDataDbService {
 
 		Lexeme l1 = LEXEME.as("l1");
 		Lexeme l2 = LEXEME.as("l2");
-		int count = create
+		int count = mainDb
 				.fetchCount(DSL
 						.select(l2.ID)
 						.from(l1, l2)
@@ -1029,7 +1029,7 @@ public class LookupDbService extends AbstractDataDbService {
 
 		Lexeme l1 = LEXEME.as("l1");
 		Lexeme l2 = LEXEME.as("l2");
-		int count = create
+		int count = mainDb
 				.fetchCount(DSL
 						.select(l2.ID)
 						.from(l1, l2)
@@ -1042,7 +1042,7 @@ public class LookupDbService extends AbstractDataDbService {
 
 	public boolean isOnlyLexemesForMeaning(Long meaningId, String datasetCode) {
 
-		boolean noOtherDatasetsExist = create
+		boolean noOtherDatasetsExist = mainDb
 				.select(DSL.field(DSL.count(LEXEME.ID).eq(0)).as("no_other_datasets_exist"))
 				.from(LEXEME)
 				.where(LEXEME.MEANING_ID.eq(meaningId).and(LEXEME.DATASET_CODE.ne(datasetCode)))
@@ -1052,7 +1052,7 @@ public class LookupDbService extends AbstractDataDbService {
 	}
 
 	public boolean isMemberOfWordRelationGroup(Long groupId, Long wordId) {
-		Long id = create.select(WORD_GROUP.ID)
+		Long id = mainDb.select(WORD_GROUP.ID)
 				.from(WORD_GROUP.join(WORD_GROUP_MEMBER).on(WORD_GROUP_MEMBER.WORD_GROUP_ID.eq(WORD_GROUP.ID)))
 				.where(WORD_GROUP.ID.eq(groupId).and(WORD_GROUP_MEMBER.WORD_ID.eq(wordId)))
 				.fetchOneInto(Long.class);
@@ -1062,7 +1062,7 @@ public class LookupDbService extends AbstractDataDbService {
 
 	public boolean isOnlyValuePreseUpdate(Long wordId, String wordValue, String wordValuePrese) {
 
-		return create
+		return mainDb
 				.select(field(DSL.count(WORD.ID).eq(1)).as("is_only_value_prese_update"))
 				.from(WORD)
 				.where(

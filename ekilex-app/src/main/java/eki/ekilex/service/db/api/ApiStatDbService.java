@@ -1,7 +1,7 @@
 package eki.ekilex.service.db.api;
 
-import static eki.ekilex.data.db.Tables.API_ERROR_COUNT;
-import static eki.ekilex.data.db.Tables.API_REQUEST_COUNT;
+import static eki.ekilex.data.db.main.Tables.API_ERROR_COUNT;
+import static eki.ekilex.data.db.main.Tables.API_REQUEST_COUNT;
 
 import org.jooq.DSLContext;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,11 +11,11 @@ import org.springframework.stereotype.Component;
 public class ApiStatDbService {
 
 	@Autowired
-	private DSLContext create;
+	private DSLContext mainDb;
 
 	public void createOrUpdateRequestCount(String authName, String genericPath) {
 
-		int updateCount = create
+		int updateCount = mainDb
 				.update(API_REQUEST_COUNT)
 				.set(API_REQUEST_COUNT.COUNT, API_REQUEST_COUNT.COUNT.plus(1))
 				.where(
@@ -25,7 +25,7 @@ public class ApiStatDbService {
 
 		if (updateCount == 0) {
 
-			create
+			mainDb
 					.insertInto(
 							API_REQUEST_COUNT,
 							API_REQUEST_COUNT.AUTH_NAME,
@@ -41,7 +41,7 @@ public class ApiStatDbService {
 
 	public void createOrUpdateErrorCount(String authName, String genericPath, String message) {
 
-		int updateCount = create
+		int updateCount = mainDb
 				.update(API_ERROR_COUNT)
 				.set(API_ERROR_COUNT.COUNT, API_ERROR_COUNT.COUNT.plus(1))
 				.where(
@@ -52,7 +52,7 @@ public class ApiStatDbService {
 
 		if (updateCount == 0) {
 
-			create
+			mainDb
 					.insertInto(
 							API_ERROR_COUNT,
 							API_ERROR_COUNT.AUTH_NAME,

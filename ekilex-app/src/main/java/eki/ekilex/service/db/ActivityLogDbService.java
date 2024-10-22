@@ -1,45 +1,46 @@
 package eki.ekilex.service.db;
 
-import static eki.ekilex.data.db.Tables.ACTIVITY_LOG;
-import static eki.ekilex.data.db.Tables.DEFINITION;
-import static eki.ekilex.data.db.Tables.DEFINITION_FREEFORM;
-import static eki.ekilex.data.db.Tables.DEFINITION_NOTE;
-import static eki.ekilex.data.db.Tables.DEFINITION_NOTE_SOURCE_LINK;
-import static eki.ekilex.data.db.Tables.DEFINITION_SOURCE_LINK;
-import static eki.ekilex.data.db.Tables.FREEFORM;
-import static eki.ekilex.data.db.Tables.FREEFORM_SOURCE_LINK;
-import static eki.ekilex.data.db.Tables.LEXEME;
-import static eki.ekilex.data.db.Tables.LEXEME_ACTIVITY_LOG;
-import static eki.ekilex.data.db.Tables.LEXEME_FREEFORM;
-import static eki.ekilex.data.db.Tables.LEXEME_NOTE;
-import static eki.ekilex.data.db.Tables.LEXEME_NOTE_SOURCE_LINK;
-import static eki.ekilex.data.db.Tables.LEXEME_SOURCE_LINK;
-import static eki.ekilex.data.db.Tables.LEX_RELATION;
-import static eki.ekilex.data.db.Tables.MEANING;
-import static eki.ekilex.data.db.Tables.MEANING_ACTIVITY_LOG;
-import static eki.ekilex.data.db.Tables.MEANING_DOMAIN;
-import static eki.ekilex.data.db.Tables.MEANING_FREEFORM;
-import static eki.ekilex.data.db.Tables.MEANING_IMAGE;
-import static eki.ekilex.data.db.Tables.MEANING_IMAGE_SOURCE_LINK;
-import static eki.ekilex.data.db.Tables.MEANING_LAST_ACTIVITY_LOG;
-import static eki.ekilex.data.db.Tables.MEANING_NOTE;
-import static eki.ekilex.data.db.Tables.MEANING_NOTE_SOURCE_LINK;
-import static eki.ekilex.data.db.Tables.MEANING_RELATION;
-import static eki.ekilex.data.db.Tables.PARADIGM;
-import static eki.ekilex.data.db.Tables.SOURCE;
-import static eki.ekilex.data.db.Tables.SOURCE_ACTIVITY_LOG;
-import static eki.ekilex.data.db.Tables.SOURCE_FREEFORM;
-import static eki.ekilex.data.db.Tables.USAGE;
-import static eki.ekilex.data.db.Tables.USAGE_DEFINITION;
-import static eki.ekilex.data.db.Tables.USAGE_SOURCE_LINK;
-import static eki.ekilex.data.db.Tables.USAGE_TRANSLATION;
-import static eki.ekilex.data.db.Tables.WORD;
-import static eki.ekilex.data.db.Tables.WORD_ACTIVITY_LOG;
-import static eki.ekilex.data.db.Tables.WORD_ETYMOLOGY;
-import static eki.ekilex.data.db.Tables.WORD_FREEFORM;
-import static eki.ekilex.data.db.Tables.WORD_LAST_ACTIVITY_LOG;
-import static eki.ekilex.data.db.Tables.WORD_RELATION;
-import static eki.ekilex.data.db.Tables.WORD_WORD_TYPE;
+import static eki.ekilex.data.db.arch.Tables.ACTIVITY_LOG_BULK;
+import static eki.ekilex.data.db.main.Tables.ACTIVITY_LOG;
+import static eki.ekilex.data.db.main.Tables.DEFINITION;
+import static eki.ekilex.data.db.main.Tables.DEFINITION_FREEFORM;
+import static eki.ekilex.data.db.main.Tables.DEFINITION_NOTE;
+import static eki.ekilex.data.db.main.Tables.DEFINITION_NOTE_SOURCE_LINK;
+import static eki.ekilex.data.db.main.Tables.DEFINITION_SOURCE_LINK;
+import static eki.ekilex.data.db.main.Tables.FREEFORM;
+import static eki.ekilex.data.db.main.Tables.FREEFORM_SOURCE_LINK;
+import static eki.ekilex.data.db.main.Tables.LEXEME;
+import static eki.ekilex.data.db.main.Tables.LEXEME_ACTIVITY_LOG;
+import static eki.ekilex.data.db.main.Tables.LEXEME_FREEFORM;
+import static eki.ekilex.data.db.main.Tables.LEXEME_NOTE;
+import static eki.ekilex.data.db.main.Tables.LEXEME_NOTE_SOURCE_LINK;
+import static eki.ekilex.data.db.main.Tables.LEXEME_SOURCE_LINK;
+import static eki.ekilex.data.db.main.Tables.LEX_RELATION;
+import static eki.ekilex.data.db.main.Tables.MEANING;
+import static eki.ekilex.data.db.main.Tables.MEANING_ACTIVITY_LOG;
+import static eki.ekilex.data.db.main.Tables.MEANING_DOMAIN;
+import static eki.ekilex.data.db.main.Tables.MEANING_FREEFORM;
+import static eki.ekilex.data.db.main.Tables.MEANING_IMAGE;
+import static eki.ekilex.data.db.main.Tables.MEANING_IMAGE_SOURCE_LINK;
+import static eki.ekilex.data.db.main.Tables.MEANING_LAST_ACTIVITY_LOG;
+import static eki.ekilex.data.db.main.Tables.MEANING_NOTE;
+import static eki.ekilex.data.db.main.Tables.MEANING_NOTE_SOURCE_LINK;
+import static eki.ekilex.data.db.main.Tables.MEANING_RELATION;
+import static eki.ekilex.data.db.main.Tables.PARADIGM;
+import static eki.ekilex.data.db.main.Tables.SOURCE;
+import static eki.ekilex.data.db.main.Tables.SOURCE_ACTIVITY_LOG;
+import static eki.ekilex.data.db.main.Tables.SOURCE_FREEFORM;
+import static eki.ekilex.data.db.main.Tables.USAGE;
+import static eki.ekilex.data.db.main.Tables.USAGE_DEFINITION;
+import static eki.ekilex.data.db.main.Tables.USAGE_SOURCE_LINK;
+import static eki.ekilex.data.db.main.Tables.USAGE_TRANSLATION;
+import static eki.ekilex.data.db.main.Tables.WORD;
+import static eki.ekilex.data.db.main.Tables.WORD_ACTIVITY_LOG;
+import static eki.ekilex.data.db.main.Tables.WORD_ETYMOLOGY;
+import static eki.ekilex.data.db.main.Tables.WORD_FREEFORM;
+import static eki.ekilex.data.db.main.Tables.WORD_LAST_ACTIVITY_LOG;
+import static eki.ekilex.data.db.main.Tables.WORD_RELATION;
+import static eki.ekilex.data.db.main.Tables.WORD_WORD_TYPE;
 
 import java.sql.Timestamp;
 import java.util.List;
@@ -65,29 +66,32 @@ import eki.common.constant.GlobalConstant;
 import eki.common.constant.LastActivityType;
 import eki.ekilex.data.TypeActivityLogDiff;
 import eki.ekilex.data.WordLexemeMeaningIds;
-import eki.ekilex.data.db.tables.ActivityLog;
-import eki.ekilex.data.db.tables.Definition;
-import eki.ekilex.data.db.tables.DefinitionFreeform;
-import eki.ekilex.data.db.tables.Freeform;
-import eki.ekilex.data.db.tables.Lexeme;
-import eki.ekilex.data.db.tables.LexemeFreeform;
-import eki.ekilex.data.db.tables.Meaning;
-import eki.ekilex.data.db.tables.MeaningActivityLog;
-import eki.ekilex.data.db.tables.MeaningFreeform;
-import eki.ekilex.data.db.tables.MeaningLastActivityLog;
-import eki.ekilex.data.db.tables.SourceActivityLog;
-import eki.ekilex.data.db.tables.SourceFreeform;
-import eki.ekilex.data.db.tables.Word;
-import eki.ekilex.data.db.tables.WordActivityLog;
-import eki.ekilex.data.db.tables.WordFreeform;
-import eki.ekilex.data.db.tables.WordLastActivityLog;
-import eki.ekilex.data.db.udt.records.TypeActivityLogDiffRecord;
+import eki.ekilex.data.db.main.tables.ActivityLog;
+import eki.ekilex.data.db.main.tables.Definition;
+import eki.ekilex.data.db.main.tables.DefinitionFreeform;
+import eki.ekilex.data.db.main.tables.Freeform;
+import eki.ekilex.data.db.main.tables.Lexeme;
+import eki.ekilex.data.db.main.tables.LexemeFreeform;
+import eki.ekilex.data.db.main.tables.Meaning;
+import eki.ekilex.data.db.main.tables.MeaningActivityLog;
+import eki.ekilex.data.db.main.tables.MeaningFreeform;
+import eki.ekilex.data.db.main.tables.MeaningLastActivityLog;
+import eki.ekilex.data.db.main.tables.SourceActivityLog;
+import eki.ekilex.data.db.main.tables.SourceFreeform;
+import eki.ekilex.data.db.main.tables.Word;
+import eki.ekilex.data.db.main.tables.WordActivityLog;
+import eki.ekilex.data.db.main.tables.WordFreeform;
+import eki.ekilex.data.db.main.tables.WordLastActivityLog;
+import eki.ekilex.data.db.main.udt.records.TypeActivityLogDiffRecord;
 
 @Component
 public class ActivityLogDbService implements GlobalConstant, ActivityFunct {
 
 	@Autowired
-	private DSLContext create;
+	private DSLContext mainDb;
+
+	@Autowired
+	private DSLContext archDb;
 
 	public List<eki.ekilex.data.ActivityLog> getActivityLog(
 			Long ownerId, ActivityOwner owner, ActivityEntity entity, String functName) {
@@ -104,7 +108,7 @@ public class ActivityLogDbService implements GlobalConstant, ActivityFunct {
 			where = where.and(al.FUNCT_NAME.eq(functName));
 		}
 
-		return create
+		return mainDb
 				.selectFrom(al)
 				.where(where)
 				.orderBy(al.ID)
@@ -117,7 +121,7 @@ public class ActivityLogDbService implements GlobalConstant, ActivityFunct {
 		WordActivityLog wal = WORD_ACTIVITY_LOG.as("wal");
 		Field<String> wvf = getWordValueField(al);
 
-		return create
+		return mainDb
 				.select(
 						al.ID,
 						al.EVENT_BY,
@@ -144,7 +148,7 @@ public class ActivityLogDbService implements GlobalConstant, ActivityFunct {
 		MeaningActivityLog mal = MEANING_ACTIVITY_LOG.as("mal");
 		Field<String> wvf = getWordValueField(al);
 
-		return create
+		return mainDb
 				.select(
 						al.ID,
 						al.EVENT_BY,
@@ -190,7 +194,7 @@ public class ActivityLogDbService implements GlobalConstant, ActivityFunct {
 		ActivityLog al = ACTIVITY_LOG.as("al");
 		SourceActivityLog sal = SOURCE_ACTIVITY_LOG.as("sal");
 
-		return create
+		return mainDb
 				.select(
 						al.ID,
 						al.EVENT_BY,
@@ -214,7 +218,7 @@ public class ActivityLogDbService implements GlobalConstant, ActivityFunct {
 
 		ActivityLog al = ACTIVITY_LOG.as("al");
 
-		return create
+		return mainDb
 				.select(al.EVENT_ON)
 				.from(al)
 				.where(al.ID.eq(activityLogId))
@@ -223,7 +227,7 @@ public class ActivityLogDbService implements GlobalConstant, ActivityFunct {
 
 	public Long create(eki.ekilex.data.ActivityLog activityLog) {
 
-		return create
+		Long activityLogId = mainDb
 				.insertInto(
 						ACTIVITY_LOG,
 						ACTIVITY_LOG.EVENT_BY,
@@ -233,8 +237,6 @@ public class ActivityLogDbService implements GlobalConstant, ActivityFunct {
 						ACTIVITY_LOG.OWNER_NAME,
 						ACTIVITY_LOG.ENTITY_ID,
 						ACTIVITY_LOG.ENTITY_NAME,
-						ACTIVITY_LOG.PREV_DATA,
-						ACTIVITY_LOG.CURR_DATA,
 						ACTIVITY_LOG.PREV_DIFFS,
 						ACTIVITY_LOG.CURR_DIFFS)
 				.values(
@@ -245,19 +247,39 @@ public class ActivityLogDbService implements GlobalConstant, ActivityFunct {
 						activityLog.getOwnerName().name(),
 						activityLog.getEntityId(),
 						activityLog.getEntityName().name(),
-						JSONB.valueOf(activityLog.getPrevData()),
-						JSONB.valueOf(activityLog.getCurrData()),
 						convert(activityLog.getPrevDiffs()),
 						convert(activityLog.getCurrDiffs()))
 				.returning(ACTIVITY_LOG.ID)
 				.fetchOne()
 				.getId();
+
+		archDb
+				.insertInto(
+						ACTIVITY_LOG_BULK,
+						ACTIVITY_LOG_BULK.ACTIVITY_LOG_ID,
+						ACTIVITY_LOG_BULK.OWNER_ID,
+						ACTIVITY_LOG_BULK.OWNER_NAME,
+						ACTIVITY_LOG_BULK.ENTITY_ID,
+						ACTIVITY_LOG_BULK.ENTITY_NAME,
+						ACTIVITY_LOG_BULK.PREV_DATA,
+						ACTIVITY_LOG_BULK.CURR_DATA)
+				.values(
+						activityLogId,
+						activityLog.getOwnerId(),
+						activityLog.getOwnerName().name(),
+						activityLog.getEntityId(),
+						activityLog.getEntityName().name(),
+						JSONB.valueOf(activityLog.getPrevData()),
+						JSONB.valueOf(activityLog.getCurrData()))
+				.execute();
+
+		return activityLogId;
 	}
 
 	public void createLexemesActivityLogs(Long activityLogId, Long... lexemeIds) {
 
 		for (Long lexemeId : lexemeIds) {
-			create
+			mainDb
 					.insertInto(
 							LEXEME_ACTIVITY_LOG,
 							LEXEME_ACTIVITY_LOG.LEXEME_ID,
@@ -272,7 +294,7 @@ public class ActivityLogDbService implements GlobalConstant, ActivityFunct {
 	public void createWordsActivityLogs(Long activityLogId, Long... wordIds) {
 
 		for (Long wordId : wordIds) {
-			create
+			mainDb
 					.insertInto(
 							WORD_ACTIVITY_LOG,
 							WORD_ACTIVITY_LOG.WORD_ID,
@@ -287,7 +309,7 @@ public class ActivityLogDbService implements GlobalConstant, ActivityFunct {
 	public void createMeaningsActivityLogs(Long activityLogId, Long... meaningIds) {
 
 		for (Long meaningId : meaningIds) {
-			create
+			mainDb
 					.insertInto(
 							MEANING_ACTIVITY_LOG,
 							MEANING_ACTIVITY_LOG.MEANING_ID,
@@ -305,7 +327,7 @@ public class ActivityLogDbService implements GlobalConstant, ActivityFunct {
 		WordLastActivityLog wlal = WORD_LAST_ACTIVITY_LOG.as("wlal");
 		ActivityLog al = ACTIVITY_LOG.as("al");
 
-		Long activityLogId = create
+		Long activityLogId = mainDb
 				.select(al.ID)
 				.from(wal, al)
 				.where(
@@ -320,13 +342,13 @@ public class ActivityLogDbService implements GlobalConstant, ActivityFunct {
 			return null;
 		}
 
-		create
+		mainDb
 				.update(wlal)
 				.set(wlal.ACTIVITY_LOG_ID, activityLogId)
 				.where(wlal.WORD_ID.eq(wordId))
 				.execute();
 
-		create
+		mainDb
 				.insertInto(wlal, wlal.WORD_ID, wlal.ACTIVITY_LOG_ID)
 				.select(DSL
 						.select(DSL.val(wordId), DSL.val(activityLogId))
@@ -374,7 +396,7 @@ public class ActivityLogDbService implements GlobalConstant, ActivityFunct {
 							.limit(1))
 					.asTable("lmlwal");
 
-			activityLogId = create
+			activityLogId = mainDb
 					.select(lmlwal.field("id", Long.class))
 					.from(lmlwal)
 					.orderBy(lmlwal.field("event_on").desc())
@@ -383,7 +405,7 @@ public class ActivityLogDbService implements GlobalConstant, ActivityFunct {
 
 			// fallback compensation
 			if (activityLogId == null) {
-				activityLogId = create
+				activityLogId = mainDb
 						.select(al.ID)
 						.from(mal, al)
 						.where(
@@ -396,7 +418,7 @@ public class ActivityLogDbService implements GlobalConstant, ActivityFunct {
 
 		} else if (LastActivityType.APPROVE.equals(lastActivityType)) {
 
-			activityLogId = create
+			activityLogId = mainDb
 					.select(al.ID)
 					.from(mal, al)
 					.where(
@@ -412,13 +434,13 @@ public class ActivityLogDbService implements GlobalConstant, ActivityFunct {
 			return;
 		}
 
-		create
+		mainDb
 				.update(mlal)
 				.set(mlal.ACTIVITY_LOG_ID, activityLogId)
 				.where(mlal.MEANING_ID.eq(meaningId).and(mlal.TYPE.eq(lastActivityType.name())))
 				.execute();
 
-		create
+		mainDb
 				.insertInto(mlal, mlal.MEANING_ID, mlal.ACTIVITY_LOG_ID, mlal.TYPE)
 				.select(DSL
 						.select(DSL.val(meaningId), DSL.val(activityLogId), DSL.val(lastActivityType.name()))
@@ -431,8 +453,11 @@ public class ActivityLogDbService implements GlobalConstant, ActivityFunct {
 
 	public void createSourceActivityLog(Long activityLogId, Long sourceId) {
 
-		create
-				.insertInto(SOURCE_ACTIVITY_LOG, SOURCE_ACTIVITY_LOG.SOURCE_ID, SOURCE_ACTIVITY_LOG.ACTIVITY_LOG_ID)
+		mainDb
+				.insertInto(
+						SOURCE_ACTIVITY_LOG,
+						SOURCE_ACTIVITY_LOG.SOURCE_ID,
+						SOURCE_ACTIVITY_LOG.ACTIVITY_LOG_ID)
 				.select(DSL
 						.select(DSL.val(sourceId), DSL.val(activityLogId))
 						.whereExists(DSL.select(SOURCE.ID).from(SOURCE).where(SOURCE.ID.eq(sourceId))))
@@ -441,7 +466,7 @@ public class ActivityLogDbService implements GlobalConstant, ActivityFunct {
 
 	public void updateWordManualEventOn(Long wordId, Timestamp eventOn) {
 
-		create
+		mainDb
 				.update(WORD)
 				.set(WORD.MANUAL_EVENT_ON, eventOn)
 				.where(WORD.ID.eq(wordId))
@@ -450,7 +475,7 @@ public class ActivityLogDbService implements GlobalConstant, ActivityFunct {
 
 	public void updateMeaningManualEventOn(Long meaningId, Timestamp eventOn) {
 
-		create
+		mainDb
 				.update(MEANING)
 				.set(MEANING.MANUAL_EVENT_ON, eventOn)
 				.where(MEANING.ID.eq(meaningId))
@@ -474,7 +499,7 @@ public class ActivityLogDbService implements GlobalConstant, ActivityFunct {
 				.limit(1)
 				.asTable("alt");
 
-		create
+		mainDb
 				.update(al1)
 				.set(al1.EVENT_ON, eventOn)
 				.set(al1.EVENT_BY, eventBy)
@@ -523,7 +548,7 @@ public class ActivityLogDbService implements GlobalConstant, ActivityFunct {
 		Lexeme l = LEXEME.as("l");
 		Meaning m = MEANING.as("m");
 
-		return create
+		return mainDb
 				.select(
 						DSL.arrayAggDistinct(l.ID).as("lexeme_ids"),
 						DSL.arrayAggDistinct(w.ID).as("word_ids"),
@@ -548,7 +573,7 @@ public class ActivityLogDbService implements GlobalConstant, ActivityFunct {
 		Definition d = DEFINITION.as("d");
 		Freeform ff = FREEFORM.as("ff");
 
-		return create
+		return mainDb
 				.select(
 						ff.FREEFORM_TYPE_CODE,
 						lff.LEXEME_ID,
@@ -579,7 +604,7 @@ public class ActivityLogDbService implements GlobalConstant, ActivityFunct {
 		Definition d = DEFINITION.as("d");
 		Freeform ff = FREEFORM.as("ff");
 
-		return create
+		return mainDb
 				.select(
 						ff.FREEFORM_TYPE_CODE,
 						lff.LEXEME_ID,
@@ -601,7 +626,7 @@ public class ActivityLogDbService implements GlobalConstant, ActivityFunct {
 	}
 
 	public Long getFreeformSourceLinkOwnerId(Long sourceLinkId) {
-		return create
+		return mainDb
 				.select(FREEFORM_SOURCE_LINK.FREEFORM_ID)
 				.from(FREEFORM_SOURCE_LINK)
 				.where(FREEFORM_SOURCE_LINK.ID.eq(sourceLinkId))
@@ -610,7 +635,7 @@ public class ActivityLogDbService implements GlobalConstant, ActivityFunct {
 	}
 
 	public Long getWordRelationOwnerId(Long wordRelationId) {
-		return create
+		return mainDb
 				.select(WORD_RELATION.WORD1_ID)
 				.from(WORD_RELATION)
 				.where(WORD_RELATION.ID.eq(wordRelationId))
@@ -619,7 +644,7 @@ public class ActivityLogDbService implements GlobalConstant, ActivityFunct {
 	}
 
 	public Long getWordTypeOwnerId(Long wordTypeId) {
-		return create
+		return mainDb
 				.select(WORD_WORD_TYPE.WORD_ID)
 				.from(WORD_WORD_TYPE)
 				.where(WORD_WORD_TYPE.ID.eq(wordTypeId))
@@ -628,7 +653,7 @@ public class ActivityLogDbService implements GlobalConstant, ActivityFunct {
 	}
 
 	public Long getWordEtymologyOwnerId(Long entityId) {
-		return create
+		return mainDb
 				.select(WORD_ETYMOLOGY.WORD_ID)
 				.from(WORD_ETYMOLOGY)
 				.where(WORD_ETYMOLOGY.ID.eq(entityId))
@@ -637,7 +662,7 @@ public class ActivityLogDbService implements GlobalConstant, ActivityFunct {
 	}
 
 	public Long getMeaningDomainOwnerId(Long meaningDomainId) {
-		return create
+		return mainDb
 				.select(MEANING_DOMAIN.MEANING_ID)
 				.from(MEANING_DOMAIN)
 				.where(MEANING_DOMAIN.ID.eq(meaningDomainId))
@@ -646,7 +671,7 @@ public class ActivityLogDbService implements GlobalConstant, ActivityFunct {
 	}
 
 	public Long getMeaningImageOwnerId(Long meaningImageId) {
-		return create
+		return mainDb
 				.select(MEANING_IMAGE.MEANING_ID)
 				.from(MEANING_IMAGE)
 				.where(MEANING_IMAGE.ID.eq(meaningImageId))
@@ -655,7 +680,7 @@ public class ActivityLogDbService implements GlobalConstant, ActivityFunct {
 	}
 
 	public Long getMeaningImageSourceLinkOwnerId(Long sourceLinkId) {
-		return create
+		return mainDb
 				.select(MEANING_IMAGE.MEANING_ID)
 				.from(MEANING_IMAGE, MEANING_IMAGE_SOURCE_LINK)
 				.where(
@@ -666,7 +691,7 @@ public class ActivityLogDbService implements GlobalConstant, ActivityFunct {
 	}
 
 	public Long getMeaningNoteOwnerId(Long noteId) {
-		return create
+		return mainDb
 				.select(MEANING_NOTE.MEANING_ID)
 				.from(MEANING_NOTE)
 				.where(MEANING_NOTE.ID.eq(noteId))
@@ -675,7 +700,7 @@ public class ActivityLogDbService implements GlobalConstant, ActivityFunct {
 	}
 
 	public Long getMeaningNoteSourceLinkOwnerId(Long sourceLinkId) {
-		return create
+		return mainDb
 				.select(MEANING_NOTE.MEANING_ID)
 				.from(MEANING_NOTE, MEANING_NOTE_SOURCE_LINK)
 				.where(
@@ -686,7 +711,7 @@ public class ActivityLogDbService implements GlobalConstant, ActivityFunct {
 	}
 
 	public Long getDefinitionOwnerId(Long definitionId) {
-		return create
+		return mainDb
 				.select(DEFINITION.MEANING_ID)
 				.from(DEFINITION)
 				.where(DEFINITION.ID.eq(definitionId))
@@ -695,7 +720,7 @@ public class ActivityLogDbService implements GlobalConstant, ActivityFunct {
 	}
 
 	public Long getDefinitionNoteOwnerId(Long noteId) {
-		return create
+		return mainDb
 				.select(DEFINITION.MEANING_ID)
 				.from(DEFINITION, DEFINITION_NOTE)
 				.where(
@@ -706,7 +731,7 @@ public class ActivityLogDbService implements GlobalConstant, ActivityFunct {
 	}
 
 	public Long getDefinitionNoteSourceLinkOwnerId(Long sourceLinkId) {
-		return create
+		return mainDb
 				.select(DEFINITION.MEANING_ID)
 				.from(DEFINITION, DEFINITION_NOTE, DEFINITION_NOTE_SOURCE_LINK)
 				.where(
@@ -718,7 +743,7 @@ public class ActivityLogDbService implements GlobalConstant, ActivityFunct {
 	}
 
 	public Long getLexemeRelationOwnerId(Long lexemeRelationId) {
-		return create
+		return mainDb
 				.select(LEX_RELATION.LEXEME1_ID)
 				.from(LEX_RELATION)
 				.where(LEX_RELATION.ID.eq(lexemeRelationId))
@@ -727,7 +752,7 @@ public class ActivityLogDbService implements GlobalConstant, ActivityFunct {
 	}
 
 	public Long getMeaningRelationOwnerId(Long meaningRelationId) {
-		return create
+		return mainDb
 				.select(MEANING_RELATION.MEANING1_ID)
 				.from(MEANING_RELATION)
 				.where(MEANING_RELATION.ID.eq(meaningRelationId))
@@ -736,7 +761,7 @@ public class ActivityLogDbService implements GlobalConstant, ActivityFunct {
 	}
 
 	public Long getLexemeSourceLinkOwnerId(Long sourceLinkId) {
-		return create
+		return mainDb
 				.select(LEXEME_SOURCE_LINK.LEXEME_ID)
 				.from(LEXEME_SOURCE_LINK)
 				.where(LEXEME_SOURCE_LINK.ID.eq(sourceLinkId))
@@ -745,7 +770,7 @@ public class ActivityLogDbService implements GlobalConstant, ActivityFunct {
 	}
 
 	public Long getLexemeNoteOwnerId(Long noteId) {
-		return create
+		return mainDb
 				.select(LEXEME_NOTE.LEXEME_ID)
 				.from(LEXEME_NOTE)
 				.where(LEXEME_NOTE.ID.eq(noteId))
@@ -754,7 +779,7 @@ public class ActivityLogDbService implements GlobalConstant, ActivityFunct {
 	}
 
 	public Long getLexemeNoteSourceLinkOwnerId(Long sourceLinkId) {
-		return create
+		return mainDb
 				.select(LEXEME_NOTE.LEXEME_ID)
 				.from(LEXEME_NOTE, LEXEME_NOTE_SOURCE_LINK)
 				.where(
@@ -765,7 +790,7 @@ public class ActivityLogDbService implements GlobalConstant, ActivityFunct {
 	}
 
 	public Long getUsageOwnerId(Long usageId) {
-		return create
+		return mainDb
 				.select(USAGE.LEXEME_ID)
 				.from(USAGE)
 				.where(USAGE.ID.eq(usageId))
@@ -774,7 +799,7 @@ public class ActivityLogDbService implements GlobalConstant, ActivityFunct {
 	}
 
 	public Long getUsageTranslationOwnerId(Long usageTranslationId) {
-		return create
+		return mainDb
 				.select(USAGE.LEXEME_ID)
 				.from(USAGE, USAGE_TRANSLATION)
 				.where(
@@ -785,7 +810,7 @@ public class ActivityLogDbService implements GlobalConstant, ActivityFunct {
 	}
 
 	public Long getUsageDefinitionOwnerId(Long usageDefinitionId) {
-		return create
+		return mainDb
 				.select(USAGE.LEXEME_ID)
 				.from(USAGE, USAGE_DEFINITION)
 				.where(
@@ -796,7 +821,7 @@ public class ActivityLogDbService implements GlobalConstant, ActivityFunct {
 	}
 
 	public Long getUsageSourceLinkOwnerId(Long sourceLinkId) {
-		return create
+		return mainDb
 				.select(USAGE.LEXEME_ID)
 				.from(USAGE, USAGE_SOURCE_LINK)
 				.where(
@@ -807,7 +832,7 @@ public class ActivityLogDbService implements GlobalConstant, ActivityFunct {
 	}
 
 	public Long getDefinitionSourceLinkOwnerId(Long sourceLinkId) {
-		return create
+		return mainDb
 				.select(DEFINITION.MEANING_ID)
 				.from(DEFINITION, DEFINITION_SOURCE_LINK)
 				.where(
@@ -818,7 +843,7 @@ public class ActivityLogDbService implements GlobalConstant, ActivityFunct {
 	}
 
 	public Long getParadigmOwnerId(Long paradigmId) {
-		return create
+		return mainDb
 				.select(PARADIGM.WORD_ID)
 				.from(PARADIGM)
 				.where(PARADIGM.ID.eq(paradigmId))
@@ -827,7 +852,7 @@ public class ActivityLogDbService implements GlobalConstant, ActivityFunct {
 	}
 
 	public Timestamp getMeaningLastActivityLog(Long meaningId, LastActivityType lastActivityType) {
-		return create
+		return mainDb
 				.select(ACTIVITY_LOG.EVENT_ON)
 				.from(MEANING_LAST_ACTIVITY_LOG, ACTIVITY_LOG)
 				.where(
@@ -839,7 +864,7 @@ public class ActivityLogDbService implements GlobalConstant, ActivityFunct {
 	}
 
 	public void deleteMeaningLastActivityLog(Long meaningId, LastActivityType lastActivityType) {
-		create
+		mainDb
 				.deleteFrom(MEANING_LAST_ACTIVITY_LOG)
 				.where(
 						MEANING_LAST_ACTIVITY_LOG.MEANING_ID.eq(meaningId)
@@ -848,7 +873,7 @@ public class ActivityLogDbService implements GlobalConstant, ActivityFunct {
 	}
 
 	public void moveMeaningLastActivityLog(Long targetMeaningId, Long sourceMeaningId, LastActivityType lastActivityType) {
-		create
+		mainDb
 				.update(MEANING_LAST_ACTIVITY_LOG)
 				.set(MEANING_LAST_ACTIVITY_LOG.MEANING_ID, targetMeaningId)
 				.where(

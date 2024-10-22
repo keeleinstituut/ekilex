@@ -1,8 +1,8 @@
 package eki.ekilex.service.db;
 
-import static eki.ekilex.data.db.Tables.ACTIVITY_LOG;
-import static eki.ekilex.data.db.Tables.LEXEME;
-import static eki.ekilex.data.db.Tables.WORD;
+import static eki.ekilex.data.db.main.Tables.ACTIVITY_LOG;
+import static eki.ekilex.data.db.main.Tables.LEXEME;
+import static eki.ekilex.data.db.main.Tables.WORD;
 
 import java.sql.Timestamp;
 import java.time.LocalDate;
@@ -21,16 +21,15 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Component;
 
 import eki.common.constant.ActivityOwner;
-import eki.common.service.db.AbstractDbService;
 import eki.ekilex.constant.CrudType;
 import eki.ekilex.constant.SystemConstant;
 import eki.ekilex.data.WorkloadReportCount;
-import eki.ekilex.data.db.tables.ActivityLog;
-import eki.ekilex.data.db.tables.Lexeme;
-import eki.ekilex.data.db.tables.Word;
+import eki.ekilex.data.db.main.tables.ActivityLog;
+import eki.ekilex.data.db.main.tables.Lexeme;
+import eki.ekilex.data.db.main.tables.Word;
 
 @Component
-public class WorkloadReportDbService extends AbstractDbService implements SystemConstant {
+public class WorkloadReportDbService implements SystemConstant {
 
 	private static final String[] CREATE_FUNCT_NAMES = new String[] {
 			"createWord", "createLexeme", "createWordAndSynRelation", "createSynMeaningWord", "duplicateEmptyLexemeAndMeaning", "duplicateLexemeData", "duplicateMeaningData"};
@@ -39,7 +38,7 @@ public class WorkloadReportDbService extends AbstractDbService implements System
 			"deleteLexeme", "deleteMeaning", "deleteWord"};
 
 	@Autowired
-	private DSLContext create;
+	private DSLContext mainDb;
 
 	public List<WorkloadReportCount> getWorkloadReportUserCounts(
 			LocalDate dateFrom, LocalDate dateUntil, List<String> datasetCodes, boolean includeUnspecifiedDatasets, List<String> userNames) {
@@ -69,7 +68,7 @@ public class WorkloadReportDbService extends AbstractDbService implements System
 				.where(where)
 				.asTable("wl");
 
-		return create
+		return mainDb
 				.select(
 						wl.field("activity_owner"),
 						wl.field("activity_type"),
@@ -107,7 +106,7 @@ public class WorkloadReportDbService extends AbstractDbService implements System
 				.where(where)
 				.asTable("wl");
 
-		return create
+		return mainDb
 				.select(
 						wl.field("activity_owner"),
 						wl.field("activity_type"),
@@ -145,7 +144,7 @@ public class WorkloadReportDbService extends AbstractDbService implements System
 		where = addActivityTypeCondition(where, al, activityType);
 
 		if (ActivityOwner.LEXEME.equals(activityOwner)) {
-			return create
+			return mainDb
 					.select(
 							al.FUNCT_NAME,
 							al.OWNER_NAME.as("activity_owner"),
@@ -164,7 +163,7 @@ public class WorkloadReportDbService extends AbstractDbService implements System
 					.fetchInto(WorkloadReportCount.class);
 
 		} else if (ActivityOwner.WORD.equals(activityOwner)) {
-			return create
+			return mainDb
 					.select(
 							al.FUNCT_NAME,
 							al.OWNER_NAME.as("activity_owner"),
@@ -179,7 +178,7 @@ public class WorkloadReportDbService extends AbstractDbService implements System
 					.groupBy(al.FUNCT_NAME, al.OWNER_NAME, al.ENTITY_NAME, al.EVENT_BY)
 					.fetchInto(WorkloadReportCount.class);
 		} else {
-			return create
+			return mainDb
 					.select(
 							al.FUNCT_NAME,
 							al.OWNER_NAME.as("activity_owner"),
@@ -202,7 +201,7 @@ public class WorkloadReportDbService extends AbstractDbService implements System
 		Condition where = al.OWNER_NAME.eq(activityOwner.name());
 		where = addActivityTypeCondition(where, al, activityType);
 
-		return create
+		return mainDb
 				.select(al.FUNCT_NAME)
 				.from(al)
 				.where(where)

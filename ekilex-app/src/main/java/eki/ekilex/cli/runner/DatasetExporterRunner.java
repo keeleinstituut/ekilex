@@ -38,8 +38,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import eki.common.data.Count;
 import eki.common.data.transport.ForeignKey;
 import eki.common.data.transport.TableColumn;
-import eki.common.service.AbstractLoaderCommons;
-import eki.common.service.TransportService;
+import eki.ekilex.service.AbstractLoaderCommons;
+import eki.ekilex.service.TransportService;
 
 // TODO update data structures
 @Component
@@ -369,7 +369,7 @@ public class DatasetExporterRunner extends AbstractLoaderCommons implements Init
 		paramMap.put("datasetCode", datasetCode);
 		if (isOnlyPublic) {
 			sql = StringUtils.remove(sql, "--");
-			paramMap.put("publicity", PUBLICITY_PUBLIC);			
+			paramMap.put("publicity", PUBLICITY_PUBLIC);
 		}
 		List<Map<String, Object>> tableRows = basicDbService.queryList(sql, paramMap);
 		return tableRows;

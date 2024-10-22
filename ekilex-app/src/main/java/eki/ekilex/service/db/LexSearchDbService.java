@@ -1,32 +1,32 @@
 package eki.ekilex.service.db;
 
-import static eki.ekilex.data.db.Tables.COLLOCATION;
-import static eki.ekilex.data.db.Tables.DATASET;
-import static eki.ekilex.data.db.Tables.FORM;
-import static eki.ekilex.data.db.Tables.FORM_FREQ;
-import static eki.ekilex.data.db.Tables.FREQ_CORP;
-import static eki.ekilex.data.db.Tables.LANGUAGE;
-import static eki.ekilex.data.db.Tables.LEXEME;
-import static eki.ekilex.data.db.Tables.LEXEME_TAG;
-import static eki.ekilex.data.db.Tables.LEX_COLLOC;
-import static eki.ekilex.data.db.Tables.LEX_COLLOC_POS_GROUP;
-import static eki.ekilex.data.db.Tables.LEX_COLLOC_REL_GROUP;
-import static eki.ekilex.data.db.Tables.MEANING;
-import static eki.ekilex.data.db.Tables.MORPH_FREQ;
-import static eki.ekilex.data.db.Tables.MORPH_LABEL;
-import static eki.ekilex.data.db.Tables.PARADIGM;
-import static eki.ekilex.data.db.Tables.PARADIGM_FORM;
-import static eki.ekilex.data.db.Tables.SOURCE;
-import static eki.ekilex.data.db.Tables.VALUE_STATE_LABEL;
-import static eki.ekilex.data.db.Tables.WORD;
-import static eki.ekilex.data.db.Tables.WORD_ETYMOLOGY;
-import static eki.ekilex.data.db.Tables.WORD_ETYMOLOGY_RELATION;
-import static eki.ekilex.data.db.Tables.WORD_ETYMOLOGY_SOURCE_LINK;
-import static eki.ekilex.data.db.Tables.WORD_FREQ;
-import static eki.ekilex.data.db.Tables.WORD_GROUP;
-import static eki.ekilex.data.db.Tables.WORD_GROUP_MEMBER;
-import static eki.ekilex.data.db.Tables.WORD_RELATION;
-import static eki.ekilex.data.db.Tables.WORD_REL_TYPE_LABEL;
+import static eki.ekilex.data.db.main.Tables.COLLOCATION;
+import static eki.ekilex.data.db.main.Tables.DATASET;
+import static eki.ekilex.data.db.main.Tables.FORM;
+import static eki.ekilex.data.db.main.Tables.FORM_FREQ;
+import static eki.ekilex.data.db.main.Tables.FREQ_CORP;
+import static eki.ekilex.data.db.main.Tables.LANGUAGE;
+import static eki.ekilex.data.db.main.Tables.LEXEME;
+import static eki.ekilex.data.db.main.Tables.LEXEME_TAG;
+import static eki.ekilex.data.db.main.Tables.LEX_COLLOC;
+import static eki.ekilex.data.db.main.Tables.LEX_COLLOC_POS_GROUP;
+import static eki.ekilex.data.db.main.Tables.LEX_COLLOC_REL_GROUP;
+import static eki.ekilex.data.db.main.Tables.MEANING;
+import static eki.ekilex.data.db.main.Tables.MORPH_FREQ;
+import static eki.ekilex.data.db.main.Tables.MORPH_LABEL;
+import static eki.ekilex.data.db.main.Tables.PARADIGM;
+import static eki.ekilex.data.db.main.Tables.PARADIGM_FORM;
+import static eki.ekilex.data.db.main.Tables.SOURCE;
+import static eki.ekilex.data.db.main.Tables.VALUE_STATE_LABEL;
+import static eki.ekilex.data.db.main.Tables.WORD;
+import static eki.ekilex.data.db.main.Tables.WORD_ETYMOLOGY;
+import static eki.ekilex.data.db.main.Tables.WORD_ETYMOLOGY_RELATION;
+import static eki.ekilex.data.db.main.Tables.WORD_ETYMOLOGY_SOURCE_LINK;
+import static eki.ekilex.data.db.main.Tables.WORD_FREQ;
+import static eki.ekilex.data.db.main.Tables.WORD_GROUP;
+import static eki.ekilex.data.db.main.Tables.WORD_GROUP_MEMBER;
+import static eki.ekilex.data.db.main.Tables.WORD_RELATION;
+import static eki.ekilex.data.db.main.Tables.WORD_REL_TYPE_LABEL;
 
 import java.sql.Timestamp;
 import java.util.List;
@@ -51,32 +51,32 @@ import eki.ekilex.data.SearchDatasetsRestriction;
 import eki.ekilex.data.SearchFilter;
 import eki.ekilex.data.WordEtymTuple;
 import eki.ekilex.data.WordLexeme;
-import eki.ekilex.data.db.tables.Collocation;
-import eki.ekilex.data.db.tables.Dataset;
-import eki.ekilex.data.db.tables.Form;
-import eki.ekilex.data.db.tables.FormFreq;
-import eki.ekilex.data.db.tables.FreqCorp;
-import eki.ekilex.data.db.tables.Language;
-import eki.ekilex.data.db.tables.LexColloc;
-import eki.ekilex.data.db.tables.LexCollocPosGroup;
-import eki.ekilex.data.db.tables.LexCollocRelGroup;
-import eki.ekilex.data.db.tables.Lexeme;
-import eki.ekilex.data.db.tables.LexemeTag;
-import eki.ekilex.data.db.tables.Meaning;
-import eki.ekilex.data.db.tables.MorphFreq;
-import eki.ekilex.data.db.tables.MorphLabel;
-import eki.ekilex.data.db.tables.Paradigm;
-import eki.ekilex.data.db.tables.ParadigmForm;
-import eki.ekilex.data.db.tables.Source;
-import eki.ekilex.data.db.tables.Word;
-import eki.ekilex.data.db.tables.WordEtymology;
-import eki.ekilex.data.db.tables.WordEtymologyRelation;
-import eki.ekilex.data.db.tables.WordEtymologySourceLink;
-import eki.ekilex.data.db.tables.WordFreq;
-import eki.ekilex.data.db.tables.WordGroup;
-import eki.ekilex.data.db.tables.WordGroupMember;
-import eki.ekilex.data.db.tables.WordRelTypeLabel;
-import eki.ekilex.data.db.tables.WordRelation;
+import eki.ekilex.data.db.main.tables.Collocation;
+import eki.ekilex.data.db.main.tables.Dataset;
+import eki.ekilex.data.db.main.tables.Form;
+import eki.ekilex.data.db.main.tables.FormFreq;
+import eki.ekilex.data.db.main.tables.FreqCorp;
+import eki.ekilex.data.db.main.tables.Language;
+import eki.ekilex.data.db.main.tables.LexColloc;
+import eki.ekilex.data.db.main.tables.LexCollocPosGroup;
+import eki.ekilex.data.db.main.tables.LexCollocRelGroup;
+import eki.ekilex.data.db.main.tables.Lexeme;
+import eki.ekilex.data.db.main.tables.LexemeTag;
+import eki.ekilex.data.db.main.tables.Meaning;
+import eki.ekilex.data.db.main.tables.MorphFreq;
+import eki.ekilex.data.db.main.tables.MorphLabel;
+import eki.ekilex.data.db.main.tables.Paradigm;
+import eki.ekilex.data.db.main.tables.ParadigmForm;
+import eki.ekilex.data.db.main.tables.Source;
+import eki.ekilex.data.db.main.tables.Word;
+import eki.ekilex.data.db.main.tables.WordEtymology;
+import eki.ekilex.data.db.main.tables.WordEtymologyRelation;
+import eki.ekilex.data.db.main.tables.WordEtymologySourceLink;
+import eki.ekilex.data.db.main.tables.WordFreq;
+import eki.ekilex.data.db.main.tables.WordGroup;
+import eki.ekilex.data.db.main.tables.WordGroupMember;
+import eki.ekilex.data.db.main.tables.WordRelTypeLabel;
+import eki.ekilex.data.db.main.tables.WordRelation;
 import eki.ekilex.service.db.util.LexSearchConditionComposer;
 import eki.ekilex.service.db.util.SearchFilterHelper;
 
@@ -128,14 +128,14 @@ public class LexSearchDbService extends AbstractDataDbService {
 
 	private int count(Word word, Condition where) {
 
-		Table<?> w = create
+		Table<?> w = mainDb
 				.select(word.ID.as("word_id"))
 				.from(word)
 				.where(where)
 				//.groupBy(word.ID)
 				.asTable("w");
 
-		return create.fetchCount(w);
+		return mainDb.fetchCount(w);
 	}
 
 	public List<ParadigmFormTuple> getParadigmFormTuples(Long wordId, String classifierLabelLang, String classifierLabelTypeCode) {
@@ -185,7 +185,7 @@ public class LexSearchDbService extends AbstractDataDbService {
 										.limit(1))))
 				.asField();
 
-		return create
+		return mainDb
 				.select(
 						p.ID.as("paradigm_id"),
 						p.COMMENT.as("paradigm_comment"),
@@ -233,7 +233,7 @@ public class LexSearchDbService extends AbstractDataDbService {
 
 		Condition dsWhere = searchFilterHelper.applyDatasetRestrictions(l, searchDatasetsRestriction, null);
 
-		return create
+		return mainDb
 				.select(
 						w.ID.as("word_id"),
 						w.VALUE.as("word_value"),
@@ -293,7 +293,7 @@ public class LexSearchDbService extends AbstractDataDbService {
 		Field<JSON> lvalstf = getLexemeValueStateField(l.ID, classifierLabelLang, classifierLabelTypeCode);
 		Field<JSON> lproflf = getLexemeProficiencyLevelField(l.ID, classifierLabelLang, classifierLabelTypeCode);
 
-		return create
+		return mainDb
 				.select(
 						w.ID.as("word_id"),
 						w.VALUE.as("word_value"),
@@ -373,7 +373,7 @@ public class LexSearchDbService extends AbstractDataDbService {
 				.groupBy(w.ID));
 		Field<Timestamp> wlaeof = getWordLastActivityEventOnField(w.ID);
 
-		return create
+		return mainDb
 				.select(
 						w.ID.as("word_id"),
 						w.VALUE.as("word_value"),
@@ -418,7 +418,7 @@ public class LexSearchDbService extends AbstractDataDbService {
 		Field<Boolean> wtsf = getWordIsSuffixoidField(w2.ID);
 		Field<Boolean> wtz = getWordIsForeignField(w2.ID);
 
-		return create
+		return mainDb
 				.selectDistinct(
 						wgrm2.ID,
 						wgr.ID.as("group_id"),
@@ -460,7 +460,7 @@ public class LexSearchDbService extends AbstractDataDbService {
 		Field<Boolean> wtsf = getWordIsSuffixoidField(w2.ID);
 		Field<Boolean> wtz = getWordIsForeignField(w2.ID);
 
-		return create
+		return mainDb
 				.selectDistinct(
 						r.ID.as("id"),
 						w2.ID.as("word_id"),
@@ -496,7 +496,7 @@ public class LexSearchDbService extends AbstractDataDbService {
 		Word w2 = WORD.as("w2");
 		Source s = SOURCE.as("s");
 
-		return create
+		return mainDb
 				.select(
 						we.ID.as("word_etym_id"),
 						we.ETYMOLOGY_TYPE_CODE,
@@ -534,7 +534,7 @@ public class LexSearchDbService extends AbstractDataDbService {
 		Lexeme l2 = LEXEME.as("l2");
 		Word w2 = WORD.as("w2");
 
-		return create
+		return mainDb
 				.select(
 						pgr1.ID.as("pos_group_id"),
 						pgr1.POS_GROUP_CODE.as("pos_group_code"),
@@ -574,7 +574,7 @@ public class LexSearchDbService extends AbstractDataDbService {
 		Lexeme l2 = LEXEME.as("l2");
 		Word w2 = WORD.as("w2");
 
-		return create
+		return mainDb
 				.select(
 						c.ID.as("colloc_id"),
 						c.VALUE.as("colloc_value"),
@@ -717,9 +717,9 @@ public class LexSearchDbService extends AbstractDataDbService {
 				.asTable("ww");
 
 		if (noLimit) {
-			return create.selectFrom(ww).fetchInto(eki.ekilex.data.Word.class);
+			return mainDb.selectFrom(ww).fetchInto(eki.ekilex.data.Word.class);
 		} else {
-			return create.selectFrom(ww).limit(maxResultsLimit).offset(offset).fetchInto(eki.ekilex.data.Word.class);
+			return mainDb.selectFrom(ww).limit(maxResultsLimit).offset(offset).fetchInto(eki.ekilex.data.Word.class);
 		}
 	}
 }

@@ -1,17 +1,17 @@
 package eki.ekilex.service.db.util;
 
-import static eki.ekilex.data.db.Tables.COLLOCATION;
-import static eki.ekilex.data.db.Tables.DEFINITION;
-import static eki.ekilex.data.db.Tables.DEFINITION_DATASET;
-import static eki.ekilex.data.db.Tables.DEFINITION_FREEFORM;
-import static eki.ekilex.data.db.Tables.FREEFORM;
-import static eki.ekilex.data.db.Tables.LEXEME;
-import static eki.ekilex.data.db.Tables.LEXEME_FREEFORM;
-import static eki.ekilex.data.db.Tables.LEX_COLLOC;
-import static eki.ekilex.data.db.Tables.MEANING;
-import static eki.ekilex.data.db.Tables.MEANING_FREEFORM;
-import static eki.ekilex.data.db.Tables.WORD;
-import static eki.ekilex.data.db.Tables.WORD_FREEFORM;
+import static eki.ekilex.data.db.main.Tables.COLLOCATION;
+import static eki.ekilex.data.db.main.Tables.DEFINITION;
+import static eki.ekilex.data.db.main.Tables.DEFINITION_DATASET;
+import static eki.ekilex.data.db.main.Tables.DEFINITION_FREEFORM;
+import static eki.ekilex.data.db.main.Tables.FREEFORM;
+import static eki.ekilex.data.db.main.Tables.LEXEME;
+import static eki.ekilex.data.db.main.Tables.LEXEME_FREEFORM;
+import static eki.ekilex.data.db.main.Tables.LEX_COLLOC;
+import static eki.ekilex.data.db.main.Tables.MEANING;
+import static eki.ekilex.data.db.main.Tables.MEANING_FREEFORM;
+import static eki.ekilex.data.db.main.Tables.WORD;
+import static eki.ekilex.data.db.main.Tables.WORD_FREEFORM;
 
 import java.util.List;
 
@@ -19,30 +19,30 @@ import org.jooq.DSLContext;
 import org.jooq.impl.DSL;
 import org.springframework.stereotype.Component;
 
-import eki.ekilex.data.db.tables.Collocation;
-import eki.ekilex.data.db.tables.Definition;
-import eki.ekilex.data.db.tables.DefinitionDataset;
-import eki.ekilex.data.db.tables.DefinitionFreeform;
-import eki.ekilex.data.db.tables.Freeform;
-import eki.ekilex.data.db.tables.LexColloc;
-import eki.ekilex.data.db.tables.Lexeme;
-import eki.ekilex.data.db.tables.LexemeFreeform;
-import eki.ekilex.data.db.tables.Meaning;
-import eki.ekilex.data.db.tables.MeaningFreeform;
-import eki.ekilex.data.db.tables.Word;
-import eki.ekilex.data.db.tables.WordFreeform;
+import eki.ekilex.data.db.main.tables.Collocation;
+import eki.ekilex.data.db.main.tables.Definition;
+import eki.ekilex.data.db.main.tables.DefinitionDataset;
+import eki.ekilex.data.db.main.tables.DefinitionFreeform;
+import eki.ekilex.data.db.main.tables.Freeform;
+import eki.ekilex.data.db.main.tables.LexColloc;
+import eki.ekilex.data.db.main.tables.Lexeme;
+import eki.ekilex.data.db.main.tables.LexemeFreeform;
+import eki.ekilex.data.db.main.tables.Meaning;
+import eki.ekilex.data.db.main.tables.MeaningFreeform;
+import eki.ekilex.data.db.main.tables.Word;
+import eki.ekilex.data.db.main.tables.WordFreeform;
 
 @Component
 public class DatasetDbServiceHelper {
 
-	public List<Long> getWordIds(String datasetCode, DSLContext create) {
+	public List<Long> getWordIds(String datasetCode, DSLContext db) {
 
 		Word w = WORD.as("w");
 		Lexeme l1 = LEXEME.as("l1");
 		Lexeme l2 = LEXEME.as("l2");
 
 		// collect word ids
-		List<Long> wordIds = create
+		List<Long> wordIds = db
 				.select(w.ID)
 				.from(w)
 				.whereExists(DSL
@@ -58,13 +58,13 @@ public class DatasetDbServiceHelper {
 		return wordIds;
 	}
 
-	public List<Long> getMeaningIds(String datasetCode, DSLContext create) {
+	public List<Long> getMeaningIds(String datasetCode, DSLContext db) {
 
 		Meaning m = MEANING.as("m");
 		Lexeme l1 = LEXEME.as("l1");
 		Lexeme l2 = LEXEME.as("l2");
 
-		List<Long> meaningIds = create
+		List<Long> meaningIds = db
 				.select(m.ID)
 				.from(m)
 				.whereExists(DSL
@@ -80,14 +80,14 @@ public class DatasetDbServiceHelper {
 		return meaningIds;
 	}
 
-	public void deleteDefinitionFreeforms(String datasetCode, DSLContext create) {
+	public void deleteDefinitionFreeforms(String datasetCode, DSLContext db) {
 
 		Freeform ff = FREEFORM.as("ff");
 		DefinitionFreeform dff = DEFINITION_FREEFORM.as("dff");
 		DefinitionDataset dd1 = DEFINITION_DATASET.as("dd1");
 		DefinitionDataset dd2 = DEFINITION_DATASET.as("dd2");
 
-		create
+		db
 				.deleteFrom(ff)
 				.where(ff.ID.in(DSL
 						.select(dff.FREEFORM_ID)
@@ -103,14 +103,14 @@ public class DatasetDbServiceHelper {
 				.execute();
 	}
 
-	public void deleteMeaningFreeforms(String datasetCode, DSLContext create) {
+	public void deleteMeaningFreeforms(String datasetCode, DSLContext db) {
 
 		Lexeme l1 = LEXEME.as("l1");
 		Lexeme l2 = LEXEME.as("l2");
 		Freeform ff = FREEFORM.as("ff");
 		MeaningFreeform mff = MEANING_FREEFORM.as("mff");
 
-		create
+		db
 				.deleteFrom(ff)
 				.where(ff.ID.in(DSL
 						.select(mff.FREEFORM_ID)
@@ -126,14 +126,14 @@ public class DatasetDbServiceHelper {
 				.execute();
 	}
 
-	public void deleteLexemeFreeforms(String datasetCode, DSLContext create) {
+	public void deleteLexemeFreeforms(String datasetCode, DSLContext db) {
 
 		Lexeme l1 = LEXEME.as("l1");
 		Lexeme l2 = LEXEME.as("l2");
 		Freeform ff = FREEFORM.as("ff");
 		LexemeFreeform lff = LEXEME_FREEFORM.as("lff");
 
-		create
+		db
 				.deleteFrom(ff)
 				.where(ff.ID.in(DSL
 						.select(lff.FREEFORM_ID)
@@ -149,14 +149,14 @@ public class DatasetDbServiceHelper {
 				.execute();
 	}
 
-	public void deleteWordFreeforms(String datasetCode, DSLContext create) {
+	public void deleteWordFreeforms(String datasetCode, DSLContext db) {
 
 		Lexeme l1 = LEXEME.as("l1");
 		Lexeme l2 = LEXEME.as("l2");
 		Freeform ff = FREEFORM.as("ff");
 		WordFreeform wff = WORD_FREEFORM.as("wff");
 
-		create
+		db
 				.deleteFrom(ff)
 				.where(ff.ID.in(DSL
 						.select(wff.FREEFORM_ID)
@@ -174,13 +174,13 @@ public class DatasetDbServiceHelper {
 				.execute();
 	}
 
-	public void deleteDefinitions(String datasetCode, DSLContext create) {
+	public void deleteDefinitions(String datasetCode, DSLContext db) {
 
 		Definition d = DEFINITION.as("d");
 		DefinitionDataset dd1 = DEFINITION_DATASET.as("dd1");
 		DefinitionDataset dd2 = DEFINITION_DATASET.as("dd2");
 
-		create
+		db
 				.deleteFrom(d)
 				.whereExists(DSL
 						.select(dd1.DEFINITION_ID)
@@ -193,14 +193,14 @@ public class DatasetDbServiceHelper {
 				.execute();
 	}
 
-	public void deleteCollocations(String datasetCode, DSLContext create) {
+	public void deleteCollocations(String datasetCode, DSLContext db) {
 
 		Lexeme l1 = LEXEME.as("l1");
 		Lexeme l2 = LEXEME.as("l2");
 		Collocation c = COLLOCATION.as("c");
 		LexColloc lc = LEX_COLLOC.as("lc");
 
-		create
+		db
 				.deleteFrom(c)
 				.where(c.ID.in(DSL
 						.select(lc.COLLOCATION_ID)

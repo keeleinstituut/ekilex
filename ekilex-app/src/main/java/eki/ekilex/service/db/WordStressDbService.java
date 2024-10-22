@@ -1,7 +1,7 @@
 package eki.ekilex.service.db;
 
-import static eki.ekilex.data.db.Tables.LEXEME;
-import static eki.ekilex.data.db.Tables.WORD;
+import static eki.ekilex.data.db.main.Tables.LEXEME;
+import static eki.ekilex.data.db.main.Tables.WORD;
 
 import java.util.List;
 
@@ -26,7 +26,7 @@ public class WordStressDbService implements GlobalConstant {
 	private static final String RUS_VOCALS_REGEX = "[аеёиоуыэюяАЕЁИОУЫЭЮЯ]";
 
 	@Autowired
-	private DSLContext create;
+	private DSLContext mainDb;
 
 	public List<Word> getWordsWithMissingValuePreseStress() {
 
@@ -42,7 +42,7 @@ public class WordStressDbService implements GlobalConstant {
 		// more than one vocal
 		Condition multipleVocalsCond = WORD.MORPHOPHONO_FORM.likeRegex(RUS_VOCALS_REGEX + ".*" + RUS_VOCALS_REGEX);
 
-		return create
+		return mainDb
 				.select(
 						WORD.ID.as("word_id"),
 						WORD.VALUE.as("word_value"),
@@ -77,7 +77,7 @@ public class WordStressDbService implements GlobalConstant {
 		// morphophono form does not contain apostrophe (stress symbol)
 		Condition vocalStressCond = WORD.MORPHOPHONO_FORM.notLike("%" + APOSTROPHE + "%");
 
-		return create
+		return mainDb
 				.select(
 						WORD.ID.as("word_id"),
 						WORD.VALUE.as("word_value"),

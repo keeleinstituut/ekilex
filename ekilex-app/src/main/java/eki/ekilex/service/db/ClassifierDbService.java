@@ -1,7 +1,7 @@
 package eki.ekilex.service.db;
 
-import static eki.ekilex.data.db.Tables.DOMAIN;
-import static eki.ekilex.data.db.Tables.DOMAIN_LABEL;
+import static eki.ekilex.data.db.main.Tables.DOMAIN;
+import static eki.ekilex.data.db.main.Tables.DOMAIN_LABEL;
 
 import java.util.List;
 
@@ -36,7 +36,7 @@ public class ClassifierDbService extends AbstractDataDbService {
 
 	public List<String> getClassifierCodes(String classifierName) {
 
-		return create
+		return mainDb
 				.select(CODE_FIELD)
 				.from(classifierName)
 				.orderBy(ORDER_BY_FIELD)
@@ -47,7 +47,7 @@ public class ClassifierDbService extends AbstractDataDbService {
 
 		String labelTableName = getLabelTableName(classifierName);
 
-		return create
+		return mainDb
 				.select(CODE_FIELD, TYPE_FIELD, LANG_FIELD, VALUE_FIELD)
 				.from(labelTableName)
 				.where(CODE_FIELD.eq(classifierCode))
@@ -56,7 +56,7 @@ public class ClassifierDbService extends AbstractDataDbService {
 
 	public List<String> getDomainCodes(String domainOrigin) {
 
-		return create
+		return mainDb
 				.select(DOMAIN.CODE)
 				.from(DOMAIN)
 				.where(DOMAIN.ORIGIN.eq(domainOrigin))
@@ -66,7 +66,7 @@ public class ClassifierDbService extends AbstractDataDbService {
 
 	public List<ClassifierLabel> getDomainLabels(String domainOrigin, String domainCode, String labelTypeCode) {
 
-		return create
+		return mainDb
 				.select(DOMAIN_LABEL.CODE, DOMAIN_LABEL.TYPE, DOMAIN_LABEL.LANG, DOMAIN_LABEL.VALUE)
 				.from(DOMAIN_LABEL)
 				.where(
@@ -78,7 +78,7 @@ public class ClassifierDbService extends AbstractDataDbService {
 
 	public Long getClassifierOrderBy(String classifierName, String classifierCode) {
 
-		return create
+		return mainDb
 				.select(ORDER_BY_FIELD)
 				.from(classifierName)
 				.where(CODE_FIELD.eq(classifierCode))
@@ -87,7 +87,7 @@ public class ClassifierDbService extends AbstractDataDbService {
 
 	public Long getDomainOrderBy(String domainOrigin, String domainCode) {
 
-		return create
+		return mainDb
 				.select(DOMAIN.ORDER_BY)
 				.from(DOMAIN)
 				.where(DOMAIN.ORIGIN.eq(domainOrigin).and(DOMAIN.CODE.eq(domainCode)))
@@ -101,14 +101,14 @@ public class ClassifierDbService extends AbstractDataDbService {
 				.from(classifierName)
 				.asTable("rn");
 
-		Long orderBy = create
+		Long orderBy = mainDb
 				.select(ORDER_BY_FIELD)
 				.from(rn)
 				.where(ROW_NUM_FIELD.eq(order))
 				.fetchOneInto(Long.class);
 
 		if (orderBy == null) {
-			orderBy = create
+			orderBy = mainDb
 					.select(DSL.max(ORDER_BY_FIELD))
 					.from(classifierName)
 					.fetchOneInto(Long.class);
@@ -125,14 +125,14 @@ public class ClassifierDbService extends AbstractDataDbService {
 				.where(DOMAIN.ORIGIN.eq(domainOrigin))
 				.asTable("rn");
 
-		Long orderBy = create
+		Long orderBy = mainDb
 				.select(ORDER_BY_FIELD)
 				.from(rn)
 				.where(ROW_NUM_FIELD.eq(domainOrder))
 				.fetchOneInto(Long.class);
 
 		if (orderBy == null) {
-			orderBy = create
+			orderBy = mainDb
 					.select(DSL.max(ORDER_BY_FIELD))
 					.from(DOMAIN)
 					.where(DOMAIN.ORIGIN.eq(domainOrigin))
@@ -144,7 +144,7 @@ public class ClassifierDbService extends AbstractDataDbService {
 
 	public List<Long> getClassifierOrderByIntervalList(String classifierName, Long orderByMin, Long orderByMax) {
 
-		return create
+		return mainDb
 				.select(ORDER_BY_FIELD)
 				.from(classifierName)
 				.where(
@@ -156,7 +156,7 @@ public class ClassifierDbService extends AbstractDataDbService {
 
 	public List<Long> getDomainOrderByIntervalList(String domainOrigin, Long orderByMin, Long orderByMax) {
 
-		return create
+		return mainDb
 				.select(ORDER_BY_FIELD)
 				.from(DOMAIN)
 				.where(
@@ -170,7 +170,7 @@ public class ClassifierDbService extends AbstractDataDbService {
 	public void createClassifier(String classifierName, String classifierCode) {
 
 		String[] emptyArray = new String[0];
-		create
+		mainDb
 				.insertInto(DSL.table(classifierName))
 				.columns(CODE_FIELD, DATASETS_FIELD)
 				.values(classifierCode, emptyArray)
@@ -180,7 +180,7 @@ public class ClassifierDbService extends AbstractDataDbService {
 	public void createDomain(String domainOrigin, String domainCode) {
 
 		String[] emptyArray = new String[0];
-		create
+		mainDb
 				.insertInto(DOMAIN)
 				.columns(DOMAIN.ORIGIN, DOMAIN.CODE, DOMAIN.DATASETS)
 				.values(domainOrigin, domainCode, emptyArray)
@@ -199,7 +199,7 @@ public class ClassifierDbService extends AbstractDataDbService {
 		String labelTableName = getLabelTableName(classifierName);
 
 		if (StringUtils.isNotBlank(origin)) {
-			create
+			mainDb
 					.insertInto(DSL.table(labelTableName))
 					.columns(CODE_FIELD, TYPE_FIELD, LANG_FIELD, VALUE_FIELD, ORIGIN_FIELD)
 					.values(code, type, lang, value, origin)
@@ -210,7 +210,7 @@ public class ClassifierDbService extends AbstractDataDbService {
 			return;
 		}
 
-		create
+		mainDb
 				.insertInto(DSL.table(labelTableName))
 				.columns(CODE_FIELD, TYPE_FIELD, LANG_FIELD, VALUE_FIELD)
 				.values(code, type, lang, value)
@@ -222,7 +222,7 @@ public class ClassifierDbService extends AbstractDataDbService {
 
 	public void updateClassifierOrderBy(String classifierName, String classifierCode, Long orderBy) {
 
-		create
+		mainDb
 				.update(DSL.table(classifierName))
 				.set(ORDER_BY_FIELD, orderBy)
 				.where(CODE_FIELD.eq(classifierCode))
@@ -231,7 +231,7 @@ public class ClassifierDbService extends AbstractDataDbService {
 
 	public void updateDomainOrderBy(String domainOrigin, String domainCode, Long orderBy) {
 
-		create
+		mainDb
 				.update(DOMAIN)
 				.set(ORDER_BY_FIELD, orderBy)
 				.where(
@@ -242,7 +242,7 @@ public class ClassifierDbService extends AbstractDataDbService {
 
 	public void increaseClassifierOrderBys(String classifierName, List<Long> orderByList) {
 
-		create
+		mainDb
 				.update(DSL.table(classifierName))
 				.set(ORDER_BY_FIELD, ORDER_BY_FIELD.plus(1))
 				.where(ORDER_BY_FIELD.in(orderByList))
@@ -251,7 +251,7 @@ public class ClassifierDbService extends AbstractDataDbService {
 
 	public void increaseDomainOrderBys(String domainOrigin, List<Long> orderByList) {
 
-		create
+		mainDb
 				.update(DOMAIN)
 				.set(ORDER_BY_FIELD, ORDER_BY_FIELD.plus(1))
 				.where(
@@ -262,7 +262,7 @@ public class ClassifierDbService extends AbstractDataDbService {
 
 	public void reduceClassifierOrderBys(String classifierName, List<Long> orderByList) {
 
-		create
+		mainDb
 				.update(DSL.table(classifierName))
 				.set(ORDER_BY_FIELD, ORDER_BY_FIELD.minus(1))
 				.where(ORDER_BY_FIELD.in(orderByList))
@@ -271,7 +271,7 @@ public class ClassifierDbService extends AbstractDataDbService {
 
 	public void reduceDomainOrderBys(String domainOrigin, List<Long> orderByList) {
 
-		create
+		mainDb
 				.update(DOMAIN)
 				.set(ORDER_BY_FIELD, ORDER_BY_FIELD.minus(1))
 				.where(
@@ -298,7 +298,7 @@ public class ClassifierDbService extends AbstractDataDbService {
 			deleteWhere = deleteWhere.and(ORIGIN_FIELD.eq(origin));
 		}
 
-		create
+		mainDb
 				.delete(DSL.table(labelTableName))
 				.where(deleteWhere)
 				.execute();
@@ -306,7 +306,7 @@ public class ClassifierDbService extends AbstractDataDbService {
 
 	public void deleteClassifier(String classifierName, String classifierCode) {
 
-		create
+		mainDb
 				.delete(DSL.table(classifierName))
 				.where(CODE_FIELD.eq(classifierCode))
 				.execute();
@@ -314,12 +314,12 @@ public class ClassifierDbService extends AbstractDataDbService {
 
 	public void deleteDomain(String domainOrigin, String classifierCode) {
 
-		create
+		mainDb
 				.delete(DOMAIN_LABEL)
 				.where(DOMAIN_LABEL.ORIGIN.eq(domainOrigin).and(DOMAIN_LABEL.CODE.eq(classifierCode)))
 				.execute();
 
-		create
+		mainDb
 				.delete(DOMAIN)
 				.where(DOMAIN.ORIGIN.eq(domainOrigin).and(DOMAIN.CODE.eq(classifierCode)))
 				.execute();
@@ -327,7 +327,7 @@ public class ClassifierDbService extends AbstractDataDbService {
 
 	public boolean classifierExists(String classifierName, String classifierCode) {
 
-		return create
+		return mainDb
 				.fetchExists(DSL
 						.select(CODE_FIELD)
 						.from(classifierName)
@@ -336,7 +336,7 @@ public class ClassifierDbService extends AbstractDataDbService {
 
 	public boolean domainExists(String domainOrigin, String classifierCode) {
 
-		return create
+		return mainDb
 				.fetchExists(DSL
 						.select(DOMAIN.CODE)
 						.from(DOMAIN)

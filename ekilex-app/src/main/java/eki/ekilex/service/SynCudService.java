@@ -28,7 +28,7 @@ import eki.ekilex.data.TypeWordRelParam;
 import eki.ekilex.data.Word;
 import eki.ekilex.data.WordLexemeMeaningIdTuple;
 import eki.ekilex.data.WordRelation;
-import eki.ekilex.data.db.tables.records.LexemeRecord;
+import eki.ekilex.data.db.main.tables.records.LexemeRecord;
 import eki.ekilex.service.db.SynSearchDbService;
 
 @Component

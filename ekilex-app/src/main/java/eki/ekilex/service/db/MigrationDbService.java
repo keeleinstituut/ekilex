@@ -1,26 +1,26 @@
 package eki.ekilex.service.db;
 
-import static eki.ekilex.data.db.Tables.COLLOCATION;
-import static eki.ekilex.data.db.Tables.COLLOCATION_MEMBER;
-import static eki.ekilex.data.db.Tables.DEFINITION_DATASET;
-import static eki.ekilex.data.db.Tables.DEFINITION_FREEFORM;
-import static eki.ekilex.data.db.Tables.DEFINITION_SOURCE_LINK;
-import static eki.ekilex.data.db.Tables.FORM;
-import static eki.ekilex.data.db.Tables.FREEFORM_SOURCE_LINK;
-import static eki.ekilex.data.db.Tables.LEXEME;
-import static eki.ekilex.data.db.Tables.LEXEME_FREEFORM;
-import static eki.ekilex.data.db.Tables.LEXEME_SOURCE_LINK;
-import static eki.ekilex.data.db.Tables.LEX_COLLOC;
-import static eki.ekilex.data.db.Tables.LEX_COLLOC_POS_GROUP;
-import static eki.ekilex.data.db.Tables.LEX_COLLOC_REL_GROUP;
-import static eki.ekilex.data.db.Tables.MEANING;
-import static eki.ekilex.data.db.Tables.MEANING_FREEFORM;
-import static eki.ekilex.data.db.Tables.PARADIGM;
-import static eki.ekilex.data.db.Tables.PARADIGM_FORM;
-import static eki.ekilex.data.db.Tables.SOURCE;
-import static eki.ekilex.data.db.Tables.SOURCE_ACTIVITY_LOG;
-import static eki.ekilex.data.db.Tables.WORD;
-import static eki.ekilex.data.db.Tables.WORD_ETYMOLOGY_SOURCE_LINK;
+import static eki.ekilex.data.db.main.Tables.COLLOCATION;
+import static eki.ekilex.data.db.main.Tables.COLLOCATION_MEMBER;
+import static eki.ekilex.data.db.main.Tables.DEFINITION_DATASET;
+import static eki.ekilex.data.db.main.Tables.DEFINITION_FREEFORM;
+import static eki.ekilex.data.db.main.Tables.DEFINITION_SOURCE_LINK;
+import static eki.ekilex.data.db.main.Tables.FORM;
+import static eki.ekilex.data.db.main.Tables.FREEFORM_SOURCE_LINK;
+import static eki.ekilex.data.db.main.Tables.LEXEME;
+import static eki.ekilex.data.db.main.Tables.LEXEME_FREEFORM;
+import static eki.ekilex.data.db.main.Tables.LEXEME_SOURCE_LINK;
+import static eki.ekilex.data.db.main.Tables.LEX_COLLOC;
+import static eki.ekilex.data.db.main.Tables.LEX_COLLOC_POS_GROUP;
+import static eki.ekilex.data.db.main.Tables.LEX_COLLOC_REL_GROUP;
+import static eki.ekilex.data.db.main.Tables.MEANING;
+import static eki.ekilex.data.db.main.Tables.MEANING_FREEFORM;
+import static eki.ekilex.data.db.main.Tables.PARADIGM;
+import static eki.ekilex.data.db.main.Tables.PARADIGM_FORM;
+import static eki.ekilex.data.db.main.Tables.SOURCE;
+import static eki.ekilex.data.db.main.Tables.SOURCE_ACTIVITY_LOG;
+import static eki.ekilex.data.db.main.Tables.WORD;
+import static eki.ekilex.data.db.main.Tables.WORD_ETYMOLOGY_SOURCE_LINK;
 
 import java.util.List;
 
@@ -37,25 +37,25 @@ import org.springframework.stereotype.Component;
 import eki.common.constant.Complexity;
 import eki.ekilex.data.CollocationTuple;
 import eki.ekilex.data.WordLexemeMeaningIdTuple;
-import eki.ekilex.data.db.tables.Collocation;
-import eki.ekilex.data.db.tables.DefinitionDataset;
-import eki.ekilex.data.db.tables.DefinitionFreeform;
-import eki.ekilex.data.db.tables.DefinitionSourceLink;
-import eki.ekilex.data.db.tables.Form;
-import eki.ekilex.data.db.tables.FreeformSourceLink;
-import eki.ekilex.data.db.tables.LexColloc;
-import eki.ekilex.data.db.tables.LexCollocPosGroup;
-import eki.ekilex.data.db.tables.LexCollocRelGroup;
-import eki.ekilex.data.db.tables.Lexeme;
-import eki.ekilex.data.db.tables.LexemeFreeform;
-import eki.ekilex.data.db.tables.LexemeSourceLink;
-import eki.ekilex.data.db.tables.MeaningFreeform;
-import eki.ekilex.data.db.tables.Paradigm;
-import eki.ekilex.data.db.tables.ParadigmForm;
-import eki.ekilex.data.db.tables.Source;
-import eki.ekilex.data.db.tables.SourceActivityLog;
-import eki.ekilex.data.db.tables.Word;
-import eki.ekilex.data.db.tables.WordEtymologySourceLink;
+import eki.ekilex.data.db.main.tables.Collocation;
+import eki.ekilex.data.db.main.tables.DefinitionDataset;
+import eki.ekilex.data.db.main.tables.DefinitionFreeform;
+import eki.ekilex.data.db.main.tables.DefinitionSourceLink;
+import eki.ekilex.data.db.main.tables.Form;
+import eki.ekilex.data.db.main.tables.FreeformSourceLink;
+import eki.ekilex.data.db.main.tables.LexColloc;
+import eki.ekilex.data.db.main.tables.LexCollocPosGroup;
+import eki.ekilex.data.db.main.tables.LexCollocRelGroup;
+import eki.ekilex.data.db.main.tables.Lexeme;
+import eki.ekilex.data.db.main.tables.LexemeFreeform;
+import eki.ekilex.data.db.main.tables.LexemeSourceLink;
+import eki.ekilex.data.db.main.tables.MeaningFreeform;
+import eki.ekilex.data.db.main.tables.Paradigm;
+import eki.ekilex.data.db.main.tables.ParadigmForm;
+import eki.ekilex.data.db.main.tables.Source;
+import eki.ekilex.data.db.main.tables.SourceActivityLog;
+import eki.ekilex.data.db.main.tables.Word;
+import eki.ekilex.data.db.main.tables.WordEtymologySourceLink;
 import eki.ekilex.data.migra.CollocationMember;
 import eki.ekilex.data.migra.MigraForm;
 import eki.ekilex.data.migra.MigraSourceLink;
@@ -67,13 +67,13 @@ import eki.ekilex.data.migra.SourceLinkOwner;
 public class MigrationDbService extends AbstractDataDbService {
 
 	@Autowired
-	private DSLContext create;
+	private DSLContext mainDb;
 
 	public boolean wordExists(String value) {
 
 		Word w = WORD.as("w");
 
-		return create
+		return mainDb
 				.fetchExists(DSL.select(w.ID).from(w).where(w.VALUE.eq(value)));
 	}
 
@@ -85,7 +85,7 @@ public class MigrationDbService extends AbstractDataDbService {
 		Field<Long[]> elif = DSL.select(DSL.arrayAgg(l.ID)).from(l).where(l.WORD_ID.eq(w.ID).and(l.DATASET_CODE.eq(DATASET_EKI))).asField();
 		Field<String[]> dsf = DSL.select(DSL.arrayAggDistinct(l.DATASET_CODE)).from(l).where(l.WORD_ID.eq(w.ID)).asField();
 
-		return create
+		return mainDb
 				.select(
 						w.ID,
 						w.VALUE,
@@ -99,7 +99,7 @@ public class MigrationDbService extends AbstractDataDbService {
 
 	public void setWordIsCollocation(Long wordId) {
 
-		create
+		mainDb
 				.update(WORD)
 				.set(WORD.IS_COLLOCATION, Boolean.TRUE)
 				.where(WORD.ID.eq(wordId))
@@ -110,7 +110,7 @@ public class MigrationDbService extends AbstractDataDbService {
 
 		Collocation c = COLLOCATION.as("c");
 
-		return create
+		return mainDb
 				.select(c.VALUE)
 				.from(c)
 				.groupBy(c.VALUE)
@@ -121,7 +121,7 @@ public class MigrationDbService extends AbstractDataDbService {
 
 		Collocation c = COLLOCATION.as("c");
 
-		return create
+		return mainDb
 				.select(c.ID)
 				.from(c)
 				.orderBy(c.ID)
@@ -147,7 +147,7 @@ public class MigrationDbService extends AbstractDataDbService {
 				.where(rgr.POS_GROUP_ID.eq(pgr.ID))
 				.asTable("lcprg");
 
-		return create
+		return mainDb
 				.select(
 						c.ID.as("colloc_id"),
 						c.VALUE.as("colloc_value"),
@@ -183,7 +183,7 @@ public class MigrationDbService extends AbstractDataDbService {
 
 		Collocation c = COLLOCATION.as("c");
 
-		return create
+		return mainDb
 				.selectFrom(c)
 				.where(c.ID.eq(id))
 				.fetchOptionalInto(eki.ekilex.data.Collocation.class)
@@ -209,7 +209,7 @@ public class MigrationDbService extends AbstractDataDbService {
 				.where(rgr.POS_GROUP_ID.eq(pgr.ID))
 				.asTable("lcprg");
 
-		return create
+		return mainDb
 				.select(
 						c.ID.as("colloc_id"),
 						c.VALUE.as("colloc_value"),
@@ -258,7 +258,7 @@ public class MigrationDbService extends AbstractDataDbService {
 			where = where.and(f.MORPH_CODE.eq(morphCode));
 		}
 
-		return create
+		return mainDb
 				.selectDistinct(
 						pf.FORM_ID,
 						f.VALUE,
@@ -270,21 +270,21 @@ public class MigrationDbService extends AbstractDataDbService {
 
 	public Long createFormWithBlankParadigm(Long wordId, String formValue, String morphCode) {
 
-		Long paradigmId = create
+		Long paradigmId = mainDb
 				.insertInto(PARADIGM, PARADIGM.WORD_ID)
 				.values(wordId)
 				.returning(PARADIGM.ID)
 				.fetchOne()
 				.getId();
 
-		Long formId = create
+		Long formId = mainDb
 				.insertInto(FORM, FORM.VALUE, FORM.VALUE_PRESE, FORM.MORPH_CODE)
 				.values(formValue, formValue, morphCode)
 				.returning(FORM.ID)
 				.fetchOne()
 				.getId();
 
-		create
+		mainDb
 				.insertInto(PARADIGM_FORM, PARADIGM_FORM.PARADIGM_ID, PARADIGM_FORM.FORM_ID)
 				.values(paradigmId, formId)
 				.execute();
@@ -301,7 +301,7 @@ public class MigrationDbService extends AbstractDataDbService {
 
 		int homonymNr = getWordNextHomonymNr(wordValue, languageCode);
 
-		Long wordId = create
+		Long wordId = mainDb
 				.insertInto(
 						WORD,
 						WORD.VALUE,
@@ -321,9 +321,9 @@ public class MigrationDbService extends AbstractDataDbService {
 				.fetchOne()
 				.getId();
 
-		Long meaningId = create.insertInto(MEANING).defaultValues().returning(MEANING.ID).fetchOne().getId();
+		Long meaningId = mainDb.insertInto(MEANING).defaultValues().returning(MEANING.ID).fetchOne().getId();
 
-		Long lexemeId = create
+		Long lexemeId = mainDb
 				.insertInto(
 						LEXEME,
 						LEXEME.MEANING_ID,
@@ -359,9 +359,9 @@ public class MigrationDbService extends AbstractDataDbService {
 			Complexity complexity,
 			boolean isPublic) {
 
-		Long meaningId = create.insertInto(MEANING).defaultValues().returning(MEANING.ID).fetchOne().getId();
+		Long meaningId = mainDb.insertInto(MEANING).defaultValues().returning(MEANING.ID).fetchOne().getId();
 
-		Long lexemeId = create
+		Long lexemeId = mainDb
 				.insertInto(
 						LEXEME,
 						LEXEME.MEANING_ID,
@@ -393,7 +393,7 @@ public class MigrationDbService extends AbstractDataDbService {
 
 	public Long createCollocationMember(CollocationMember collocationMember) {
 
-		return create
+		return mainDb
 				.insertInto(
 						COLLOCATION_MEMBER,
 						COLLOCATION_MEMBER.COLLOC_LEXEME_ID,
@@ -423,7 +423,7 @@ public class MigrationDbService extends AbstractDataDbService {
 	public List<eki.ekilex.data.Source> getSources() {
 
 		Source s = SOURCE.as("s");
-		return create
+		return mainDb
 				.selectFrom(s)
 				.orderBy(s.ID)
 				.fetchInto(eki.ekilex.data.Source.class);
@@ -444,7 +444,7 @@ public class MigrationDbService extends AbstractDataDbService {
 
 		if (SourceLinkOwner.MEANING_FREEFORM_SOURCE_LINK.equals(sourceLinkOwner)) {
 
-			return create
+			return mainDb
 					.selectDistinct(
 							fsl.SOURCE_ID,
 							fsl.ID.as("source_link_id"),
@@ -461,7 +461,7 @@ public class MigrationDbService extends AbstractDataDbService {
 
 		} else if (SourceLinkOwner.DEFINITION_FREEFORM_SOURCE_LINK.equals(sourceLinkOwner)) {
 
-			return create
+			return mainDb
 					.selectDistinct(
 							fsl.SOURCE_ID,
 							fsl.ID.as("source_link_id"),
@@ -478,7 +478,7 @@ public class MigrationDbService extends AbstractDataDbService {
 
 		} else if (SourceLinkOwner.DEFINITION_SOURCE_LINK.equals(sourceLinkOwner)) {
 
-			return create
+			return mainDb
 					.selectDistinct(
 							dsl.SOURCE_ID,
 							dsl.ID.as("source_link_id"),
@@ -494,7 +494,7 @@ public class MigrationDbService extends AbstractDataDbService {
 
 		} else if (SourceLinkOwner.LEXEME_FREEFORM_SOURCE_LINK.equals(sourceLinkOwner)) {
 
-			return create
+			return mainDb
 					.selectDistinct(
 							fsl.SOURCE_ID,
 							fsl.ID.as("source_link_id"),
@@ -511,7 +511,7 @@ public class MigrationDbService extends AbstractDataDbService {
 
 		} else if (SourceLinkOwner.LEXEME_SOURCE_LINK.equals(sourceLinkOwner)) {
 
-			return create
+			return mainDb
 					.selectDistinct(
 							lsl.SOURCE_ID,
 							lsl.ID.as("source_link_id"),
@@ -527,7 +527,7 @@ public class MigrationDbService extends AbstractDataDbService {
 
 		} else if (SourceLinkOwner.WORD_ETYM_SOURCE_LINK.equals(sourceLinkOwner)) {
 
-			return create
+			return mainDb
 					.selectDistinct(
 							wesl.SOURCE_ID,
 							wesl.ID.as("source_link_id"),
@@ -550,7 +550,7 @@ public class MigrationDbService extends AbstractDataDbService {
 
 		if (SourceLinkOwner.MEANING_FREEFORM_SOURCE_LINK.equals(sourceLinkOwner)) {
 
-			create
+			mainDb
 					.update(FREEFORM_SOURCE_LINK)
 					.set(FREEFORM_SOURCE_LINK.SOURCE_ID, sourceId)
 					.where(FREEFORM_SOURCE_LINK.ID.eq(sourceLinkId))
@@ -558,7 +558,7 @@ public class MigrationDbService extends AbstractDataDbService {
 
 		} else if (SourceLinkOwner.DEFINITION_FREEFORM_SOURCE_LINK.equals(sourceLinkOwner)) {
 
-			create
+			mainDb
 					.update(FREEFORM_SOURCE_LINK)
 					.set(FREEFORM_SOURCE_LINK.SOURCE_ID, sourceId)
 					.where(FREEFORM_SOURCE_LINK.ID.eq(sourceLinkId))
@@ -566,7 +566,7 @@ public class MigrationDbService extends AbstractDataDbService {
 
 		} else if (SourceLinkOwner.DEFINITION_SOURCE_LINK.equals(sourceLinkOwner)) {
 
-			create
+			mainDb
 					.update(DEFINITION_SOURCE_LINK)
 					.set(DEFINITION_SOURCE_LINK.SOURCE_ID, sourceId)
 					.where(DEFINITION_SOURCE_LINK.ID.eq(sourceLinkId))
@@ -574,7 +574,7 @@ public class MigrationDbService extends AbstractDataDbService {
 
 		} else if (SourceLinkOwner.LEXEME_FREEFORM_SOURCE_LINK.equals(sourceLinkOwner)) {
 
-			create
+			mainDb
 					.update(FREEFORM_SOURCE_LINK)
 					.set(FREEFORM_SOURCE_LINK.SOURCE_ID, sourceId)
 					.where(FREEFORM_SOURCE_LINK.ID.eq(sourceLinkId))
@@ -582,7 +582,7 @@ public class MigrationDbService extends AbstractDataDbService {
 
 		} else if (SourceLinkOwner.LEXEME_SOURCE_LINK.equals(sourceLinkOwner)) {
 
-			create
+			mainDb
 					.update(LEXEME_SOURCE_LINK)
 					.set(LEXEME_SOURCE_LINK.SOURCE_ID, sourceId)
 					.where(LEXEME_SOURCE_LINK.ID.eq(sourceLinkId))
@@ -590,7 +590,7 @@ public class MigrationDbService extends AbstractDataDbService {
 
 		} else if (SourceLinkOwner.WORD_ETYM_SOURCE_LINK.equals(sourceLinkOwner)) {
 
-			create
+			mainDb
 					.update(WORD_ETYMOLOGY_SOURCE_LINK)
 					.set(WORD_ETYMOLOGY_SOURCE_LINK.SOURCE_ID, sourceId)
 					.where(WORD_ETYMOLOGY_SOURCE_LINK.ID.eq(sourceLinkId))
@@ -602,7 +602,7 @@ public class MigrationDbService extends AbstractDataDbService {
 
 		SourceActivityLog sal = SOURCE_ACTIVITY_LOG.as("sal");
 
-		create
+		mainDb
 				.insertInto(
 						SOURCE_ACTIVITY_LOG,
 						SOURCE_ACTIVITY_LOG.ACTIVITY_LOG_ID,
@@ -621,7 +621,7 @@ public class MigrationDbService extends AbstractDataDbService {
 
 	public void setSourceDataset(Long sourceId, String datasetCode) {
 
-		create
+		mainDb
 				.update(SOURCE)
 				.set(SOURCE.DATASET_CODE, datasetCode)
 				.where(SOURCE.ID.eq(sourceId))

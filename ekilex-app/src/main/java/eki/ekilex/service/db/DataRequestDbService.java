@@ -1,6 +1,6 @@
 package eki.ekilex.service.db;
 
-import static eki.ekilex.data.db.Tables.DATA_REQUEST;
+import static eki.ekilex.data.db.main.Tables.DATA_REQUEST;
 
 import org.jooq.DSLContext;
 import org.jooq.impl.DSL;
@@ -11,18 +11,18 @@ import org.springframework.stereotype.Component;
 public class DataRequestDbService {
 
 	@Autowired
-	protected DSLContext create;
+	protected DSLContext mainDb;
 
 	public void createDataRequest(Long userId, String requestKey, String content) {
 
-		create
+		mainDb
 				.insertInto(DATA_REQUEST, DATA_REQUEST.USER_ID, DATA_REQUEST.REQUEST_KEY, DATA_REQUEST.CONTENT)
 				.values(userId, requestKey, content)
 				.execute();
 	}
 
 	public String getDataRequestContent(String requestKey) {
-		return create
+		return mainDb
 				.select(DATA_REQUEST.CONTENT)
 				.from(DATA_REQUEST)
 				.where(DATA_REQUEST.REQUEST_KEY.eq(requestKey))
@@ -30,7 +30,7 @@ public class DataRequestDbService {
 	}
 
 	public void accessRequestContent(String requestKey) {
-		create
+		mainDb
 				.update(DATA_REQUEST)
 				.set(DATA_REQUEST.ACCESSED, DSL.currentTimestamp())
 				.where(DATA_REQUEST.REQUEST_KEY.eq(requestKey))

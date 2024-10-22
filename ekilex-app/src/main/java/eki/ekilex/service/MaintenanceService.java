@@ -20,7 +20,7 @@ import eki.common.data.Count;
 import eki.common.service.TextDecorationService;
 import eki.ekilex.constant.SystemConstant;
 import eki.ekilex.data.SourceTargetIdTuple;
-import eki.ekilex.data.db.tables.records.WordRecord;
+import eki.ekilex.data.db.main.tables.records.WordRecord;
 import eki.ekilex.service.db.MaintenanceDbService;
 
 @Component

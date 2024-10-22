@@ -1,3 +1,5 @@
 Märkused ver 1.39.0 tarne kohta:
 
-
+uus andmebaas "archive"
+lisa laiendus "dblink"
+kas ühine delivery skript või per andmebaas?
