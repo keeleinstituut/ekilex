@@ -14,7 +14,7 @@ public class DataRequestService {
 	@Autowired
 	private DataRequestDbService dataRequestDbService;
 
-	@Transactional
+	@Transactional(rollbackOn = Exception.class)
 	public void createDataRequest(Long userId, String requestKey, String content) {
 		dataRequestDbService.createDataRequest(userId, requestKey, content);
 	}

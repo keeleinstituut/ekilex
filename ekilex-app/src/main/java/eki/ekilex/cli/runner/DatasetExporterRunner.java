@@ -171,7 +171,7 @@ public class DatasetExporterRunner extends AbstractLoaderCommons implements Init
 		sqlSelectMeaningsForDataset = getContent(resourceFileInputStream);
 	}
 
-	@Transactional
+	@Transactional(rollbackOn = Exception.class)
 	public void execute(String datasetCode, boolean isOnlyPublic, String exportFolder) throws Exception {
 
 		logger.info("Starting dataset \"{}\" export...", datasetCode);

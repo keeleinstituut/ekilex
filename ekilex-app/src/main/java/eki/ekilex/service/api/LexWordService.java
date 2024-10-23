@@ -61,7 +61,7 @@ public class LexWordService extends AbstractApiCudService {
 		return wordDbService.getLexWord(wordId, datasetCode);
 	}
 
-	@Transactional
+	@Transactional(rollbackOn = Exception.class)
 	public Long saveLexWord(LexWord word, String roleDatasetCode) throws Exception {
 
 		final String updateFunctName = "updateLexWord";

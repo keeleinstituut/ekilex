@@ -99,7 +99,7 @@ public class DatasetService implements SystemConstant, GlobalConstant {
 		return domains;
 	}
 
-	@Transactional
+	@Transactional(rollbackOn = Exception.class)
 	public void createDataset(Dataset dataset) {
 
 		datasetDbService.createDataset(dataset);
@@ -107,7 +107,7 @@ public class DatasetService implements SystemConstant, GlobalConstant {
 		maintenanceService.clearDatasetCache();
 	}
 
-	@Transactional
+	@Transactional(rollbackOn = Exception.class)
 	public void updateDataset(Dataset dataset) {
 
 		datasetDbService.updateDataset(dataset);
@@ -116,7 +116,7 @@ public class DatasetService implements SystemConstant, GlobalConstant {
 		maintenanceService.clearDatasetCache();
 	}
 
-	@Transactional
+	@Transactional(rollbackOn = Exception.class)
 	public void deleteDataset(String datasetCode) {
 
 		removeDatasetFromAllClassifiers(datasetCode);

@@ -158,7 +158,7 @@ public class ClassifierService implements GlobalConstant, SystemConstant {
 		}
 	}
 
-	@Transactional
+	@Transactional(rollbackOn = Exception.class)
 	public boolean createClassifier(ClassifierFull classifier) {
 
 		String classifierName = classifier.getName();
@@ -209,7 +209,7 @@ public class ClassifierService implements GlobalConstant, SystemConstant {
 
 	}
 
-	@Transactional
+	@Transactional(rollbackOn = Exception.class)
 	public void updateClassifier(ClassifierFull classifier) {
 
 		String classifierName = classifier.getName();
@@ -284,7 +284,7 @@ public class ClassifierService implements GlobalConstant, SystemConstant {
 		}
 	}
 
-	@Transactional
+	@Transactional(rollbackOn = Exception.class)
 	public boolean deleteClassifier(ClassifierFull classifier) {
 
 		String classifierName = classifier.getName();

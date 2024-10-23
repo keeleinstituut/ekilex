@@ -20,7 +20,7 @@ public class ApiStatService {
 	@Autowired
 	private ApiStatDbService apiStatDbService;
 
-	@Transactional
+	@Transactional(rollbackOn = Exception.class)
 	public void addRequest(String authName, String servletPath) {
 
 		String genericPath = extractGenericPath(servletPath);
@@ -28,7 +28,7 @@ public class ApiStatService {
 		apiStatDbService.createOrUpdateRequestCount(authName, genericPath);
 	}
 
-	@Transactional
+	@Transactional(rollbackOn = Exception.class)
 	public void addError(String authName, String servletPath, String message) {
 
 		String genericPath = extractGenericPath(servletPath);

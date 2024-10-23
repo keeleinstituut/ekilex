@@ -40,7 +40,7 @@ public class SynCandidateService extends AbstractCudService {
 	@Autowired
 	private SynSearchDbService synSearchDbService;
 
-	@Transactional
+	@Transactional(rollbackOn = Exception.class)
 	public void createFullSynCandidacy(SynCandidacy synCandidacy, String roleDatasetCode) throws Exception {
 
 		String headwordValue = synCandidacy.getHeadwordValue();
@@ -66,7 +66,7 @@ public class SynCandidateService extends AbstractCudService {
 		}
 	}
 
-	@Transactional
+	@Transactional(rollbackOn = Exception.class)
 	public Response createFullSynCandidate(Long headwordId, String synCandidateWordValue, String synCandidateWordLang, String synCandidateDatasetCode, String roleDatasetCode) throws Exception {
 
 		Locale locale = LocaleContextHolder.getLocale();

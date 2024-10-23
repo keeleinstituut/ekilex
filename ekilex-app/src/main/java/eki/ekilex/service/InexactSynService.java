@@ -230,7 +230,7 @@ public class InexactSynService extends AbstractSynSearchService {
 		return inexactSynMeaningRequest;
 	}
 
-	@Transactional
+	@Transactional(rollbackOn = Exception.class)
 	public Response saveInexactSynMeaningAndRelation(InexactSynMeaningRequest inexactSynMeaningRequest, String roleDatasetCode) throws Exception {
 
 		Locale locale = LocaleContextHolder.getLocale();

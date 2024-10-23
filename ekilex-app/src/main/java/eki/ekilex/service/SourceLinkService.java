@@ -48,7 +48,7 @@ public class SourceLinkService extends AbstractSourceService implements ContentK
 		return sourceLink;
 	}
 
-	@Transactional
+	@Transactional(rollbackOn = Exception.class)
 	public void createSourceAndSourceLink(
 			Source source,
 			Long sourceLinkOwnerId,
@@ -84,7 +84,7 @@ public class SourceLinkService extends AbstractSourceService implements ContentK
 		}
 	}
 
-	@Transactional
+	@Transactional(rollbackOn = Exception.class)
 	public Long createLexemeSourceLink(
 			Long lexemeId, Long sourceId, ReferenceType type, String name, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
 
@@ -96,7 +96,7 @@ public class SourceLinkService extends AbstractSourceService implements ContentK
 		return createLexemeSourceLink(lexemeId, sourceLink, roleDatasetCode, isManualEventOnUpdateEnabled);
 	}
 
-	@Transactional
+	@Transactional(rollbackOn = Exception.class)
 	public Long createLexemeSourceLink(
 			Long lexemeId, SourceLink sourceLink, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
 
@@ -106,7 +106,7 @@ public class SourceLinkService extends AbstractSourceService implements ContentK
 		return sourceLinkId;
 	}
 
-	@Transactional
+	@Transactional(rollbackOn = Exception.class)
 	public void updateLexemeSourceLink(Long sourceLinkId, String name, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
 
 		Long lexemeId = activityLogService.getOwnerId(sourceLinkId, ActivityEntity.LEXEME_SOURCE_LINK);
@@ -115,7 +115,7 @@ public class SourceLinkService extends AbstractSourceService implements ContentK
 		activityLogService.createActivityLog(activityLog, sourceLinkId, ActivityEntity.LEXEME_SOURCE_LINK);
 	}
 
-	@Transactional
+	@Transactional(rollbackOn = Exception.class)
 	public void deleteLexemeSourceLink(Long sourceLinkId, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
 
 		Long lexemeId = activityLogService.getOwnerId(sourceLinkId, ActivityEntity.LEXEME_SOURCE_LINK);
@@ -124,7 +124,7 @@ public class SourceLinkService extends AbstractSourceService implements ContentK
 		activityLogService.createActivityLog(activityLog, sourceLinkId, ActivityEntity.LEXEME_SOURCE_LINK);
 	}
 
-	@Transactional
+	@Transactional(rollbackOn = Exception.class)
 	public Long createUsageSourceLink(Long usageId, Long sourceId, ReferenceType type, String name, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
 
 		SourceLink sourceLink = new SourceLink();
@@ -135,7 +135,7 @@ public class SourceLinkService extends AbstractSourceService implements ContentK
 		return createUsageSourceLink(usageId, sourceLink, roleDatasetCode, isManualEventOnUpdateEnabled);
 	}
 
-	@Transactional
+	@Transactional(rollbackOn = Exception.class)
 	public Long createUsageSourceLink(Long usageId, SourceLink sourceLink, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
 
 		Long lexemeId = activityLogService.getOwnerId(usageId, ActivityEntity.USAGE);
@@ -146,7 +146,7 @@ public class SourceLinkService extends AbstractSourceService implements ContentK
 		return sourceLinkId;
 	}
 
-	@Transactional
+	@Transactional(rollbackOn = Exception.class)
 	public void updateUsageSourceLink(Long sourceLinkId, String name, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
 
 		Long lexemeId = activityLogService.getOwnerId(sourceLinkId, ActivityEntity.USAGE_SOURCE_LINK);
@@ -155,7 +155,7 @@ public class SourceLinkService extends AbstractSourceService implements ContentK
 		activityLogService.createActivityLog(activityLog, sourceLinkId, ActivityEntity.USAGE_SOURCE_LINK);
 	}
 
-	@Transactional
+	@Transactional(rollbackOn = Exception.class)
 	public void deleteUsageSourceLink(Long sourceLinkId, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
 
 		Long lexemeId = activityLogService.getOwnerId(sourceLinkId, ActivityEntity.USAGE_SOURCE_LINK);
@@ -164,7 +164,7 @@ public class SourceLinkService extends AbstractSourceService implements ContentK
 		activityLogService.createActivityLog(activityLog, sourceLinkId, ActivityEntity.USAGE_SOURCE_LINK);
 	}
 
-	@Transactional
+	@Transactional(rollbackOn = Exception.class)
 	public Long createLexemeFreeformSourceLink(Long freeformId, Long sourceId, ReferenceType type, String name, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
 
 		SourceLink sourceLink = new SourceLink();
@@ -180,7 +180,7 @@ public class SourceLinkService extends AbstractSourceService implements ContentK
 		return sourceLinkId;
 	}
 
-	@Transactional
+	@Transactional(rollbackOn = Exception.class)
 	public void updateLexemeFreeformSourceLink(Long sourceLinkId, String sourceLinkName, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
 
 		Long lexemeId = activityLogService.getOwnerId(sourceLinkId, ActivityEntity.FREEFORM_SOURCE_LINK);
@@ -189,7 +189,7 @@ public class SourceLinkService extends AbstractSourceService implements ContentK
 		activityLogService.createActivityLog(activityLog, sourceLinkId, ActivityEntity.FREEFORM_SOURCE_LINK);
 	}
 
-	@Transactional
+	@Transactional(rollbackOn = Exception.class)
 	public void deleteLexemeFreeformSourceLink(Long sourceLinkId, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
 
 		Long lexemeId = activityLogService.getOwnerId(sourceLinkId, ActivityEntity.FREEFORM_SOURCE_LINK);
@@ -198,7 +198,7 @@ public class SourceLinkService extends AbstractSourceService implements ContentK
 		activityLogService.createActivityLog(activityLog, sourceLinkId, ActivityEntity.FREEFORM_SOURCE_LINK);
 	}
 
-	@Transactional
+	@Transactional(rollbackOn = Exception.class)
 	public Long createLexemeNoteSourceLink(Long lexemeNoteId, Long sourceId, ReferenceType type, String name, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
 
 		SourceLink sourceLink = new SourceLink();
@@ -209,7 +209,7 @@ public class SourceLinkService extends AbstractSourceService implements ContentK
 		return createLexemeNoteSourceLink(lexemeNoteId, sourceLink, roleDatasetCode, isManualEventOnUpdateEnabled);
 	}
 
-	@Transactional
+	@Transactional(rollbackOn = Exception.class)
 	public Long createLexemeNoteSourceLink(Long lexemeNoteId, SourceLink sourceLink, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
 
 		Long lexemeId = activityLogService.getOwnerId(lexemeNoteId, ActivityEntity.LEXEME_NOTE);
@@ -220,7 +220,7 @@ public class SourceLinkService extends AbstractSourceService implements ContentK
 		return sourceLinkId;
 	}
 
-	@Transactional
+	@Transactional(rollbackOn = Exception.class)
 	public void updateLexemeNoteSourceLink(Long sourceLinkId, String sourceLinkName, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
 
 		Long lexemeId = activityLogService.getOwnerId(sourceLinkId, ActivityEntity.LEXEME_NOTE_SOURCE_LINK);
@@ -229,7 +229,7 @@ public class SourceLinkService extends AbstractSourceService implements ContentK
 		activityLogService.createActivityLog(activityLog, sourceLinkId, ActivityEntity.LEXEME_NOTE_SOURCE_LINK);
 	}
 
-	@Transactional
+	@Transactional(rollbackOn = Exception.class)
 	public void deleteLexemeNoteSourceLink(Long sourceLinkId, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
 
 		Long lexemeId = activityLogService.getOwnerId(sourceLinkId, ActivityEntity.LEXEME_NOTE_SOURCE_LINK);
@@ -238,7 +238,7 @@ public class SourceLinkService extends AbstractSourceService implements ContentK
 		activityLogService.createActivityLog(activityLog, sourceLinkId, ActivityEntity.LEXEME_NOTE_SOURCE_LINK);
 	}
 
-	@Transactional
+	@Transactional(rollbackOn = Exception.class)
 	public Long createDefinitionSourceLink(
 			Long definitionId, Long sourceId, ReferenceType type, String name, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
 
@@ -250,7 +250,7 @@ public class SourceLinkService extends AbstractSourceService implements ContentK
 		return createDefinitionSourceLink(definitionId, sourceLink, roleDatasetCode, isManualEventOnUpdateEnabled);
 	}
 
-	@Transactional
+	@Transactional(rollbackOn = Exception.class)
 	public Long createDefinitionSourceLink(
 			Long definitionId, SourceLink sourceLink, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
 
@@ -262,7 +262,7 @@ public class SourceLinkService extends AbstractSourceService implements ContentK
 		return sourceLinkId;
 	}
 
-	@Transactional
+	@Transactional(rollbackOn = Exception.class)
 	public void updateDefinitionSourceLink(Long sourceLinkId, String sourceLinkName, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
 
 		Long meaningId = activityLogService.getOwnerId(sourceLinkId, ActivityEntity.DEFINITION_SOURCE_LINK);
@@ -271,7 +271,7 @@ public class SourceLinkService extends AbstractSourceService implements ContentK
 		activityLogService.createActivityLog(activityLog, sourceLinkId, ActivityEntity.DEFINITION_SOURCE_LINK);
 	}
 
-	@Transactional
+	@Transactional(rollbackOn = Exception.class)
 	public void deleteDefinitionSourceLink(Long sourceLinkId, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
 
 		Long meaningId = activityLogService.getOwnerId(sourceLinkId, ActivityEntity.DEFINITION_SOURCE_LINK);
@@ -280,7 +280,7 @@ public class SourceLinkService extends AbstractSourceService implements ContentK
 		activityLogService.createActivityLog(activityLog, sourceLinkId, ActivityEntity.DEFINITION_SOURCE_LINK);
 	}
 
-	@Transactional
+	@Transactional(rollbackOn = Exception.class)
 	public Long createDefinitionNoteSourceLink(Long definitionNoteId, Long sourceId, ReferenceType type, String name, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
 
 		SourceLink sourceLink = new SourceLink();
@@ -291,7 +291,7 @@ public class SourceLinkService extends AbstractSourceService implements ContentK
 		return createDefinitionNoteSourceLink(definitionNoteId, sourceLink, roleDatasetCode, isManualEventOnUpdateEnabled);
 	}
 
-	@Transactional
+	@Transactional(rollbackOn = Exception.class)
 	public Long createDefinitionNoteSourceLink(Long definitionNoteId, SourceLink sourceLink, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
 
 		Long meaningId = activityLogService.getOwnerId(definitionNoteId, ActivityEntity.DEFINITION_NOTE);
@@ -302,7 +302,7 @@ public class SourceLinkService extends AbstractSourceService implements ContentK
 		return sourceLinkId;
 	}
 
-	@Transactional
+	@Transactional(rollbackOn = Exception.class)
 	public void updateDefinitionNoteSourceLink(Long sourceLinkId, String sourceLinkName, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
 
 		Long meaningId = activityLogService.getOwnerId(sourceLinkId, ActivityEntity.DEFINITION_NOTE_SOURCE_LINK);
@@ -311,7 +311,7 @@ public class SourceLinkService extends AbstractSourceService implements ContentK
 		activityLogService.createActivityLog(activityLog, sourceLinkId, ActivityEntity.DEFINITION_NOTE_SOURCE_LINK);
 	}
 
-	@Transactional
+	@Transactional(rollbackOn = Exception.class)
 	public void deleteDefinitionNoteSourceLink(Long sourceLinkId, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
 
 		Long meaningId = activityLogService.getOwnerId(sourceLinkId, ActivityEntity.DEFINITION_NOTE_SOURCE_LINK);
@@ -320,7 +320,7 @@ public class SourceLinkService extends AbstractSourceService implements ContentK
 		activityLogService.createActivityLog(activityLog, sourceLinkId, ActivityEntity.DEFINITION_NOTE_SOURCE_LINK);
 	}
 
-	@Transactional
+	@Transactional(rollbackOn = Exception.class)
 	public Long createMeaningImageSourceLink(
 			Long meaningImageId, Long sourceId, ReferenceType type, String name, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
 
@@ -332,7 +332,7 @@ public class SourceLinkService extends AbstractSourceService implements ContentK
 		return createMeaningImageSourceLink(meaningImageId, sourceLink, roleDatasetCode, isManualEventOnUpdateEnabled);
 	}
 
-	@Transactional
+	@Transactional(rollbackOn = Exception.class)
 	public Long createMeaningImageSourceLink(
 			Long meaningImageId, SourceLink sourceLink, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
 
@@ -344,7 +344,7 @@ public class SourceLinkService extends AbstractSourceService implements ContentK
 		return sourceLinkId;
 	}
 
-	@Transactional
+	@Transactional(rollbackOn = Exception.class)
 	public void updateMeaningImageSourceLink(Long sourceLinkId, String sourceLinkName, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
 
 		Long meaningId = activityLogService.getOwnerId(sourceLinkId, ActivityEntity.MEANING_IMAGE_SOURCE_LINK);
@@ -353,7 +353,7 @@ public class SourceLinkService extends AbstractSourceService implements ContentK
 		activityLogService.createActivityLog(activityLog, sourceLinkId, ActivityEntity.MEANING_IMAGE_SOURCE_LINK);
 	}
 
-	@Transactional
+	@Transactional(rollbackOn = Exception.class)
 	public void deleteMeaningImageSourceLink(Long sourceLinkId, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
 
 		Long meaningId = activityLogService.getOwnerId(sourceLinkId, ActivityEntity.MEANING_IMAGE_SOURCE_LINK);
@@ -362,7 +362,7 @@ public class SourceLinkService extends AbstractSourceService implements ContentK
 		activityLogService.createActivityLog(activityLog, sourceLinkId, ActivityEntity.MEANING_IMAGE_SOURCE_LINK);
 	}
 
-	@Transactional
+	@Transactional(rollbackOn = Exception.class)
 	public Long createMeaningFreeformSourceLink(Long freeformId, Long sourceId, ReferenceType type, String name, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
 
 		SourceLink sourceLink = new SourceLink();
@@ -378,7 +378,7 @@ public class SourceLinkService extends AbstractSourceService implements ContentK
 		return sourceLinkId;
 	}
 
-	@Transactional
+	@Transactional(rollbackOn = Exception.class)
 	public void updateMeaningFreeformSourceLink(Long sourceLinkId, String sourceLinkName, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
 
 		Long meaningId = activityLogService.getOwnerId(sourceLinkId, ActivityEntity.FREEFORM_SOURCE_LINK);
@@ -387,7 +387,7 @@ public class SourceLinkService extends AbstractSourceService implements ContentK
 		activityLogService.createActivityLog(activityLog, sourceLinkId, ActivityEntity.FREEFORM_SOURCE_LINK);
 	}
 
-	@Transactional
+	@Transactional(rollbackOn = Exception.class)
 	public void deleteMeaningFreeformSourceLink(Long sourceLinkId, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
 
 		Long meaningId = activityLogService.getOwnerId(sourceLinkId, ActivityEntity.FREEFORM_SOURCE_LINK);
@@ -396,7 +396,7 @@ public class SourceLinkService extends AbstractSourceService implements ContentK
 		activityLogService.createActivityLog(activityLog, sourceLinkId, ActivityEntity.FREEFORM_SOURCE_LINK);
 	}
 
-	@Transactional
+	@Transactional(rollbackOn = Exception.class)
 	public Long createMeaningNoteSourceLink(
 			Long meaningNoteId, Long sourceId, ReferenceType type, String name, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
 
@@ -408,7 +408,7 @@ public class SourceLinkService extends AbstractSourceService implements ContentK
 		return createMeaningNoteSourceLink(meaningNoteId, sourceLink, roleDatasetCode, isManualEventOnUpdateEnabled);
 	}
 
-	@Transactional
+	@Transactional(rollbackOn = Exception.class)
 	public Long createMeaningNoteSourceLink(
 			Long meaningNoteId, SourceLink sourceLink, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
 
@@ -420,7 +420,7 @@ public class SourceLinkService extends AbstractSourceService implements ContentK
 		return sourceLinkId;
 	}
 
-	@Transactional
+	@Transactional(rollbackOn = Exception.class)
 	public void updateMeaningNoteSourceLink(Long sourceLinkId, String sourceLinkName, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
 
 		Long meaningId = activityLogService.getOwnerId(sourceLinkId, ActivityEntity.MEANING_NOTE_SOURCE_LINK);
@@ -429,7 +429,7 @@ public class SourceLinkService extends AbstractSourceService implements ContentK
 		activityLogService.createActivityLog(activityLog, sourceLinkId, ActivityEntity.MEANING_IMAGE_SOURCE_LINK);
 	}
 
-	@Transactional
+	@Transactional(rollbackOn = Exception.class)
 	public void deleteMeaningNoteSourceLink(Long sourceLinkId, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
 
 		Long meaningId = activityLogService.getOwnerId(sourceLinkId, ActivityEntity.MEANING_NOTE_SOURCE_LINK);
@@ -438,7 +438,7 @@ public class SourceLinkService extends AbstractSourceService implements ContentK
 		activityLogService.createActivityLog(activityLog, sourceLinkId, ActivityEntity.MEANING_NOTE_SOURCE_LINK);
 	}
 
-	@Transactional
+	@Transactional(rollbackOn = Exception.class)
 	public Long createWordFreeformSourceLink(Long freeformId, Long sourceId, ReferenceType type, String name, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
 
 		SourceLink sourceLink = new SourceLink();
@@ -454,7 +454,7 @@ public class SourceLinkService extends AbstractSourceService implements ContentK
 		return sourceLinkId;
 	}
 
-	@Transactional
+	@Transactional(rollbackOn = Exception.class)
 	public void updateWordFreeformSourceLink(Long sourceLinkId, String sourceLinkName, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
 
 		Long wordId = activityLogService.getOwnerId(sourceLinkId, ActivityEntity.FREEFORM_SOURCE_LINK);
@@ -463,7 +463,7 @@ public class SourceLinkService extends AbstractSourceService implements ContentK
 		activityLogService.createActivityLog(activityLog, sourceLinkId, ActivityEntity.FREEFORM_SOURCE_LINK);
 	}
 
-	@Transactional
+	@Transactional(rollbackOn = Exception.class)
 	public void deleteWordFreeformSourceLink(Long sourceLinkId, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
 
 		Long wordId = activityLogService.getOwnerId(sourceLinkId, ActivityEntity.FREEFORM_SOURCE_LINK);

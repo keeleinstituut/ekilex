@@ -74,7 +74,7 @@ public class TermMeaningService extends AbstractApiCudService implements Activit
 		return termMeaning;
 	}
 
-	@Transactional
+	@Transactional(rollbackOn = Exception.class)
 	public Long saveTermMeaning(TermMeaning termMeaning, String roleDatasetCode) throws Exception {
 
 		final String updateFunctName = "updateTermMeaning";

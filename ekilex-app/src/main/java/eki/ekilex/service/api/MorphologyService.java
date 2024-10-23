@@ -44,7 +44,7 @@ public class MorphologyService {
 		return paradigms;
 	}
 
-	@Transactional
+	@Transactional(rollbackOn = Exception.class)
 	public void save(ParadigmWrapper paradigmWrapper) throws Exception {
 
 		if (paradigmWrapper == null) {

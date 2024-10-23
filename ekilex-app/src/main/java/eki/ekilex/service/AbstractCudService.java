@@ -49,7 +49,7 @@ public abstract class AbstractCudService extends AbstractService {
 	@Autowired
 	protected TagDbService tagDbService;
 
-	@Transactional
+	@Transactional(rollbackOn = Exception.class)
 	public Long createDefinition(
 			Long meaningId, String valuePrese, String languageCode, String datasetCode, Complexity complexity, String typeCode, boolean isPublic,
 			String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
@@ -62,7 +62,7 @@ public abstract class AbstractCudService extends AbstractService {
 		return definitionId;
 	}
 
-	@Transactional
+	@Transactional(rollbackOn = Exception.class)
 	public WordLexemeMeaningIdTuple createLexeme(Long wordId, String datasetCode, Long meaningId, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
 
 		int currentLexemesMaxLevel1 = lookupDbService.getWordLexemesMaxLevel1(wordId, datasetCode);
@@ -79,7 +79,7 @@ public abstract class AbstractCudService extends AbstractService {
 		return wordLexemeMeaningId;
 	}
 
-	@Transactional
+	@Transactional(rollbackOn = Exception.class)
 	public void createLexemePos(Long lexemeId, String posCode, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
 
 		ActivityLogData activityLog = activityLogService.prepareActivityLog("createLexemePos", lexemeId, ActivityOwner.LEXEME, roleDatasetCode, isManualEventOnUpdateEnabled);
@@ -87,7 +87,7 @@ public abstract class AbstractCudService extends AbstractService {
 		activityLogService.createActivityLog(activityLog, lexemePosId, ActivityEntity.POS);
 	}
 
-	@Transactional
+	@Transactional(rollbackOn = Exception.class)
 	public Long createUsage(Long lexemeId, String valuePrese, String lang, Complexity complexity, boolean isPublic, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
 
 		Usage usage = new Usage();
@@ -99,7 +99,7 @@ public abstract class AbstractCudService extends AbstractService {
 		return createUsage(lexemeId, usage, roleDatasetCode, isManualEventOnUpdateEnabled);
 	}
 
-	@Transactional
+	@Transactional(rollbackOn = Exception.class)
 	public Long createUsage(Long lexemeId, Usage usage, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
 
 		setValueAndPrese(usage);
@@ -110,7 +110,7 @@ public abstract class AbstractCudService extends AbstractService {
 		return usageId;
 	}
 
-	@Transactional
+	@Transactional(rollbackOn = Exception.class)
 	public void createWordRelation(Long wordId, Long targetWordId, String relationTypeCode, String oppositeRelationTypeCode, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
 
 		ActivityLogData activityLog;

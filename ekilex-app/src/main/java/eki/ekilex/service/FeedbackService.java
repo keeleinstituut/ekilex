@@ -59,7 +59,7 @@ public class FeedbackService implements SystemConstant {
 		return feedbackDbService.getFeedbackLogComments(feedbackLogId);
 	}
 
-	@Transactional
+	@Transactional(rollbackOn = Exception.class)
 	public void createFeedbackLogComment(Long feedbackId, String comment, String userName) {
 		feedbackDbService.createFeedbackLogComment(feedbackId, comment, userName);
 	}
@@ -83,7 +83,7 @@ public class FeedbackService implements SystemConstant {
 		return isValid;
 	}
 
-	@Transactional
+	@Transactional(rollbackOn = Exception.class)
 	public String createFeedbackLog(FeedbackLog feedbackLog) {
 		String retMessage = "ok";
 		try {
@@ -95,7 +95,7 @@ public class FeedbackService implements SystemConstant {
 		return retMessage;
 	}
 
-	@Transactional
+	@Transactional(rollbackOn = Exception.class)
 	public void deleteFeedbackLog(Long feedbackLogId) {
 		feedbackDbService.deleteFeedbackLog(feedbackLogId);
 	}

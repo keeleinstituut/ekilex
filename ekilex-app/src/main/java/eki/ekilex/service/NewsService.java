@@ -43,7 +43,7 @@ public class NewsService {
 		return newsArticles;
 	}
 
-	@Transactional
+	@Transactional(rollbackOn = Exception.class)
 	public void saveNewsArticle(NewsArticle newsArticle) {
 
 		Long newsArticleId = newsArticle.getId();
@@ -54,7 +54,7 @@ public class NewsService {
 		}
 	}
 
-	@Transactional
+	@Transactional(rollbackOn = Exception.class)
 	public void deleteNewsArticle(Long id) {
 		newsDbService.deleteNewsArticle(id);
 	}

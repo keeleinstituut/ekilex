@@ -106,7 +106,7 @@ public class PermissionService implements SystemConstant, GlobalConstant {
 		return permissionDbService.getUserDatasetLanguages(userId, datasetCode, CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
 	}
 
-	@Transactional
+	@Transactional(rollbackOn = Exception.class)
 	public void createDatasetPermission(
 			EkiUser permittedUser, EkiUser permittingUser, String datasetCode, AuthorityItem authItem, AuthorityOperation authOp, String authLang) {
 
@@ -129,7 +129,7 @@ public class PermissionService implements SystemConstant, GlobalConstant {
 		logger.info("User \"{}\" created dataset \"{}\" \"{}\" permission with id {} for user \"{}\"", permittingUserName, datasetCode, authOp.name(), permissionId, permittedUserName);
 	}
 
-	@Transactional
+	@Transactional(rollbackOn = Exception.class)
 	public void deleteDatasetPermission(Long permissionId, EkiUser user) {
 
 		String userName = user.getName();
@@ -145,7 +145,7 @@ public class PermissionService implements SystemConstant, GlobalConstant {
 
 	}
 
-	@Transactional
+	@Transactional(rollbackOn = Exception.class)
 	public void sendPermissionsEmail(String userEmail, EkiUser sender) {
 
 		EkiUser receiver = userDbService.getUserByEmail(userEmail);
@@ -161,14 +161,14 @@ public class PermissionService implements SystemConstant, GlobalConstant {
 		return permissionDbService.getDatasetPermissions(userId);
 	}
 
-	@Transactional
+	@Transactional(rollbackOn = Exception.class)
 	public void approveApplication(Long userApplicationId, EkiUser approver) {
 
 		boolean isApprove = true;
 		approveOrRejectApplication(userApplicationId, approver, isApprove);
 	}
 
-	@Transactional
+	@Transactional(rollbackOn = Exception.class)
 	public void rejectApplication(Long userApplicationId, EkiUser rejecter) {
 
 		boolean isApprove = false;
