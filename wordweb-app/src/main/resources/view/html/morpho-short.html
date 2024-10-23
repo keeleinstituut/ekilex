@@ -24,16 +24,93 @@
       <th:block th:replace=" :: morpho-forms(${paradigm}, ${morphCodeRight})"></th:block>
     </tr>
   </th:block>
+  
+  <th:block th:fragment="printurl(url)">
+    <a aria-label="Vaata muuttüübi kirjeldust, avab uues aknas" th:href="${url}" target="paradigm">
+      <span th:text="${paradigm.inflectionType}">33i</span>
+      <i class="fas fa-external-link-alt" aria-hidden="true"></i>
+    </a>
+  </th:block>
   <th:block th:fragment="morpho-paradigm-header(paradigm)">
     <th:block th:if="${paradigm.inflectionTypeNr} and ${paradigm.inflectionTypeNr} != 41 and ${paradigm.inflectionTypeNr} != 0">
       <p class="btn-bold mt-3">
         <span th:text="#{label.morpho.inflectiontype}">Muuttüüp</span>
-        <a aria-label="Vaata muuttüübi kirjeldust, avab uues aknas"
-           th:href="${'https://www.eki.ee/dict/qs/muuttyybid.html#' + paradigm.inflectionType}"
-           target="paradigm">
-          <span th:text="${paradigm.inflectionType}">33i</span>
-          <i class="fas fa-external-link-alt" aria-hidden="true"></i>
-        </a>
+        <th:block th:switch="${paradigm.inflectionType}">
+          <th:block th:case="'1'"   ><th:block th:replace=" :: printurl ('https://eki.ee/teatmik/kaandsona-tuup-1-ohutu-veski/#1.-ohutu')"></th:block></th:block>
+          <th:block th:case="'1e'"  ><th:block th:replace=" :: printurl ('https://eki.ee/teatmik/kaandsona-tuup-1-ohutu-veski/#1e.-veski')"></th:block></th:block>
+          <th:block th:case="'01'"  ><th:block th:replace=" :: printurl ('https://eki.ee/teatmik/kaandsona-tuup-1-ohutu-veski/#1.-ohutu')"></th:block></th:block>
+          <th:block th:case="'01e'" ><th:block th:replace=" :: printurl ('https://eki.ee/teatmik/kaandsona-tuup-1-ohutu-veski/#1e.-veski')"></th:block></th:block>
+          <th:block th:case="'2'"   ><th:block th:replace=" :: printurl ('https://eki.ee/teatmik/kaandsona-tuup-2-opik-minut-akvaarium/#2.-opik')"></th:block></th:block>
+          <th:block th:case="'2e'"  ><th:block th:replace=" :: printurl ('https://eki.ee/teatmik/kaandsona-tuup-2-opik-minut-akvaarium/#2e.-minut')"></th:block></th:block>
+          <th:block th:case="'02'"  ><th:block th:replace=" :: printurl ('https://eki.ee/teatmik/kaandsona-tuup-2-opik-minut-akvaarium/#2.-opik')"></th:block></th:block>
+          <th:block th:case="'02e'" ><th:block th:replace=" :: printurl ('https://eki.ee/teatmik/kaandsona-tuup-2-opik-minut-akvaarium/#2e.-minut')"></th:block></th:block>
+          <th:block th:case="'3'"   ><th:block th:replace=" :: printurl ('https://eki.ee/teatmik/kaandsona-tuup-3-vaher-armas-tanner/#3.-vaher')"></th:block></th:block>
+          <th:block th:case="'3e'"  ><th:block th:replace=" :: printurl ('https://eki.ee/teatmik/kaandsona-tuup-3-vaher-armas-tanner/#3e.-tanner')"></th:block></th:block>
+          <th:block th:case="'03'"  ><th:block th:replace=" :: printurl ('https://eki.ee/teatmik/kaandsona-tuup-3-vaher-armas-tanner/#3.-vaher')"></th:block></th:block>
+          <th:block th:case="'03e'" ><th:block th:replace=" :: printurl ('https://eki.ee/teatmik/kaandsona-tuup-3-vaher-armas-tanner/#3e.-tanner')"></th:block></th:block>
+          <th:block th:case="'4'"   ><th:block th:replace=" :: printurl ('https://eki.ee/teatmik/kaandsona-tuup-4-ase/')"></th:block></th:block>
+          <th:block th:case="'04'"  ><th:block th:replace=" :: printurl ('https://eki.ee/teatmik/kaandsona-tuup-4-ase/')"></th:block></th:block>
+          <th:block th:case="'5'"   ><th:block th:replace=" :: printurl ('https://eki.ee/teatmik/kaandsona-tuup-5-liige-armas-kallis/#5.-liige')"></th:block></th:block>
+          <th:block th:case="'5e'"  ><th:block th:replace=" :: printurl ('https://eki.ee/teatmik/kaandsona-tuup-5-liige-armas-kallis/#5e-ja-7e.-kallis')"></th:block></th:block>
+          <th:block th:case="'05'"  ><th:block th:replace=" :: printurl ('https://eki.ee/teatmik/kaandsona-tuup-5-liige-armas-kallis/#5.-liige')"></th:block></th:block>
+          <th:block th:case="'05e'" ><th:block th:replace=" :: printurl ('https://eki.ee/teatmik/kaandsona-tuup-5-liige-armas-kallis/#5e-ja-7e.-kallis')"></th:block></th:block>
+          <th:block th:case="'6'"   ><th:block th:replace=" :: printurl ('https://eki.ee/teatmik/kaandsona-tuup-6-mote/')"></th:block></th:block>
+          <th:block th:case="'06'"  ><th:block th:replace=" :: printurl ('https://eki.ee/teatmik/kaandsona-tuup-6-mote/')"></th:block></th:block>
+          <th:block th:case="'7'"   ><th:block th:replace=" :: printurl ('https://eki.ee/teatmik/kaandsona-tuup-7-kallas-rukis-kallis/#7.-kallas')"></th:block></th:block>
+          <th:block th:case="'7e'"  ><th:block th:replace=" :: printurl ('https://eki.ee/teatmik/kaandsona-tuup-7-kallas-rukis-kallis/#7.-rukis')"></th:block></th:block>
+          <th:block th:case="'07'"  ><th:block th:replace=" :: printurl ('https://eki.ee/teatmik/kaandsona-tuup-7-kallas-rukis-kallis/#7.-kallas')"></th:block></th:block>
+          <th:block th:case="'07e'" ><th:block th:replace=" :: printurl ('https://eki.ee/teatmik/kaandsona-tuup-7-kallas-rukis-kallis/#7.-rukis')"></th:block></th:block>
+          <th:block th:case="'8'"   ><th:block th:replace=" :: printurl ('https://eki.ee/teatmik/kaandsona-tuup-8-kuunal/')"></th:block></th:block>
+          <th:block th:case="'08'"  ><th:block th:replace=" :: printurl ('https://eki.ee/teatmik/kaandsona-tuup-8-kuunal/')"></th:block></th:block>
+          <th:block th:case="'9'"   ><th:block th:replace=" :: printurl ('https://eki.ee/teatmik/kaandsona-tuup-9-katus-raskus/')"></th:block></th:block>
+          <th:block th:case="'09'"  ><th:block th:replace=" :: printurl ('https://eki.ee/teatmik/kaandsona-tuup-9-katus-raskus/')"></th:block></th:block>
+          <th:block th:case="'10'"  ><th:block th:replace=" :: printurl ('https://eki.ee/teatmik/kaandsona-tuup-10-soolane-uldine/')"></th:block></th:block>
+          <th:block th:case="'11'"  ><th:block th:replace=" :: printurl ('https://eki.ee/teatmik/kaandsona-tuup-11-harjutus-raskus-moistetavus/')"></th:block></th:block>
+          <th:block th:case="'12'"  ><th:block th:replace=" :: printurl ('https://eki.ee/teatmik/kaandsona-tuup-12-oluline-uldine-eestlane/')"></th:block></th:block>
+          <th:block th:case="'13'"  ><th:block th:replace=" :: printurl ('https://eki.ee/teatmik/kaandsona-tuup-13-suur/')"></th:block></th:block>
+          <th:block th:case="'14'"  ><th:block th:replace=" :: printurl ('https://eki.ee/teatmik/kaandsona-tuup-14-uus-kaas/')"></th:block></th:block>
+          <th:block th:case="'15'"  ><th:block th:replace=" :: printurl ('https://eki.ee/teatmik/kaandsona-tuup-15-kasi/')"></th:block></th:block>
+          <th:block th:case="'16'"  ><th:block th:replace=" :: printurl ('https://eki.ee/teatmik/kaandsona-tuup-16-pere-logo/')"></th:block></th:block>
+          <th:block th:case="'17'"  ><th:block th:replace=" :: printurl ('https://eki.ee/teatmik/kaandsona-tuup-17-elu-logo-kivi-pesa-saba/#17.-elu')"></th:block></th:block>
+          <th:block th:case="'17e'" ><th:block th:replace=" :: printurl ('https://eki.ee/teatmik/kaandsona-tuup-17-elu-logo-kivi-pesa-saba/#17e.-kivi')"></th:block></th:block>
+          <th:block th:case="'17i'" ><th:block th:replace=" :: printurl ('https://eki.ee/teatmik/kaandsona-tuup-17-elu-logo-kivi-pesa-saba/#17i.-pesa')"></th:block></th:block>
+          <th:block th:case="'17u'" ><th:block th:replace=" :: printurl ('https://eki.ee/teatmik/kaandsona-tuup-17-elu-logo-kivi-pesa-saba/#17u.-saba')"></th:block></th:block>
+          <th:block th:case="'18'"  ><th:block th:replace=" :: printurl ('https://eki.ee/teatmik/kaandsona-tuup-18-nagu-tuba-soda-sada/')"></th:block></th:block>
+          <th:block th:case="'18e'" ><th:block th:replace=" :: printurl ('https://eki.ee/teatmik/kaandsona-tuup-18-nagu-tuba-soda-sada/#18e.-tuba')"></th:block></th:block>
+          <th:block th:case="'18u'" ><th:block th:replace=" :: printurl ('https://eki.ee/teatmik/kaandsona-tuup-18-nagu-tuba-soda-sada/#18u.-sõda,-sada')"></th:block></th:block>
+          <th:block th:case="'19'"  ><th:block th:replace=" :: printurl ('https://eki.ee/teatmik/kaandsona-tuup-19-seminar-akvaarium/')"></th:block></th:block>
+          <th:block th:case="'20'"  ><th:block th:replace=" :: printurl ('https://eki.ee/teatmik/kaandsona-tuup-20-suli-meri/')"></th:block></th:block>
+          <th:block th:case="'21'"  ><th:block th:replace=" :: printurl ('https://eki.ee/teatmik/kaandsona-tuup-21-jogi/')"></th:block></th:block>
+          <th:block th:case="'22'"  ><th:block th:replace=" :: printurl ('https://eki.ee/teatmik/kaandsona-tuup-22-pou-riik-kulm-leib/')"></th:block></th:block>
+          <th:block th:case="'22e'" ><th:block th:replace=" :: printurl ('https://eki.ee/teatmik/kaandsona-tuup-22-pou-riik-kulm-leib/#22e.-riik')"></th:block></th:block>
+          <th:block th:case="'22i'" ><th:block th:replace=" :: printurl ('https://eki.ee/teatmik/kaandsona-tuup-22-pou-riik-kulm-leib/#22i.-kulm')"></th:block></th:block>
+          <th:block th:case="'22u'" ><th:block th:replace=" :: printurl ('https://eki.ee/teatmik/kaandsona-tuup-22-pou-riik-kulm-leib/#22u.-leib')"></th:block></th:block>
+          <th:block th:case="'23e'" ><th:block th:replace=" :: printurl ('https://eki.ee/teatmik/kaandsona-tuup-23-poiss-koer-hein-puks-oks-vits/#23e-(ja-22e)')"></th:block></th:block>
+          <th:block th:case="'23i'" ><th:block th:replace=" :: printurl ('https://eki.ee/teatmik/kaandsona-tuup-23-poiss-koer-hein-puks-oks-vits/#23i-(ja-22i)')"></th:block></th:block>
+          <th:block th:case="'23u'" ><th:block th:replace=" :: printurl ('https://eki.ee/teatmik/kaandsona-tuup-23-poiss-koer-hein-puks-oks-vits/#23u-(ja-22u)')"></th:block></th:block>
+          <th:block th:case="'24'"  ><th:block th:replace=" :: printurl ('https://eki.ee/teatmik/kaandsona-tuup-24-puri-tuhi-oder-padi/#24.-puri')"></th:block></th:block>
+          <th:block th:case="'24e'" ><th:block th:replace=" :: printurl ('https://eki.ee/teatmik/kaandsona-tuup-24-puri-tuhi-oder-padi/#24e.-tühi')"></th:block></th:block>
+          <th:block th:case="'24i'" ><th:block th:replace=" :: printurl ('https://eki.ee/teatmik/kaandsona-tuup-24-puri-tuhi-oder-padi/#24i.-oder')"></th:block></th:block>
+          <th:block th:case="'24u'" ><th:block th:replace=" :: printurl ('https://eki.ee/teatmik/kaandsona-tuup-24-puri-tuhi-oder-padi/#24u.-padi')"></th:block></th:block>
+          <th:block th:case="'25'"  ><th:block th:replace=" :: printurl ('https://eki.ee/teatmik/kaandsona-tuup-25-onnelik/')"></th:block></th:block>
+          <th:block th:case="'26'"  ><th:block th:replace=" :: printurl ('https://eki.ee/teatmik/kaandsona-tuup-26-koi-idee-luu/')"></th:block></th:block>
+          <th:block th:case="'26i'" ><th:block th:replace=" :: printurl ('https://eki.ee/teatmik/kaandsona-tuup-26-koi-idee-luu/#26i.-idee,-luu')"></th:block></th:block>
+          <th:block th:case="'27'"  ><th:block th:replace=" :: printurl ('https://eki.ee/teatmik/poordsona-tuup-27-elama/')"></th:block></th:block>
+          <th:block th:case="'28'"  ><th:block th:replace=" :: printurl ('https://eki.ee/teatmik/poordsona-tuup-28-oppima-sulgema/')"></th:block></th:block>
+          <th:block th:case="'29'"  ><th:block th:replace=" :: printurl ('https://eki.ee/teatmik/poordsona-tuup-29-huppama-laastama/')"></th:block></th:block>
+          <th:block th:case="'30'"  ><th:block th:replace=" :: printurl ('https://eki.ee/teatmik/poordsona-tuup-30-vaidlema-rabelema/')"></th:block></th:block>
+          <th:block th:case="'31'"  ><th:block th:replace=" :: printurl ('https://eki.ee/teatmik/poordsona-tuup-31-rabelema/')"></th:block></th:block>
+          <th:block th:case="'32'"  ><th:block th:replace=" :: printurl ('https://eki.ee/teatmik/poordsona-tuup-32-seisma/')"></th:block></th:block>
+          <th:block th:case="'33'"  ><th:block th:replace=" :: printurl ('https://eki.ee/teatmik/poordsona-tuup-33-naerma/')"></th:block></th:block>
+          <th:block th:case="'34'"  ><th:block th:replace=" :: printurl ('https://eki.ee/teatmik/poordsona-tuup-34-saatma-leidma/')"></th:block></th:block>
+          <th:block th:case="'35'"  ><th:block th:replace=" :: printurl ('https://eki.ee/teatmik/poordsona-tuup-35-petma-jatma/')"></th:block></th:block>
+          <th:block th:case="'36'"  ><th:block th:replace=" :: printurl ('https://eki.ee/teatmik/poordsona-tuup-36-tulema/')"></th:block></th:block>
+          <th:block th:case="'37'"  ><th:block th:replace=" :: printurl ('https://eki.ee/teatmik/poordsona-tuup-37-voima-saama/')"></th:block></th:block>
+          <th:block th:case="'37i'" ><th:block th:replace=" :: printurl ('https://eki.ee/teatmik/poordsona-tuup-37-voima-saama/#37i.-saama')"></th:block></th:block>
+          <th:block th:case="'38'"  ><th:block th:replace=" :: printurl ('https://eki.ee/teatmik/poordsona-tuup-38-kaima-sooma/')"></th:block></th:block>
+          <th:block th:case="'38i'" ><th:block th:replace=" :: printurl ('https://eki.ee/teatmik/poordsona-tuup-38-kaima-sooma/#38i.-sööma')"></th:block></th:block>
+          <th:block th:case="'*'"   ><th:block th:replace=" :: printurl ('https://eki.ee/teatmik/kaanamine-pooramine/')"></th:block></th:block>
+        </th:block>
       </p>
     </th:block>
     <th:block th:if="${paradigm.inflectionTypeNr} and ${paradigm.inflectionTypeNr} == 41">
