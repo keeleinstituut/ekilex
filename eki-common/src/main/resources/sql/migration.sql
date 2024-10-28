@@ -94,6 +94,104 @@ create index lexeme_is_collocation_idx on lexeme(is_collocation);
 alter table word drop column is_word cascade;
 alter table word drop column is_collocation cascade;
 
+-- peremeheta vormiviidete asendamine kollokatsioonide liikmetes
+
+update
+	collocation_member cm
+set
+	member_form_id = cmfa.suggested_form_id
+from
+	(
+	select
+		cm.id colloc_member_id,
+		f1.id floating_form_id,
+		fa.form_id suggested_form_id,
+		fa.form_value,
+		fa.word_value
+	from
+		form f1
+	inner join collocation_member cm on
+		cm.member_form_id = f1.id
+	inner join 
+	(
+		select
+			f.id form_id,
+			f.value form_value,
+			f.value_prese form_value_prese,
+			f.morph_code,
+			w.value word_value
+		from
+			form f,
+			paradigm_form pf,
+			paradigm p,
+			word w
+		where
+			pf.form_id = f.id
+			and pf.paradigm_id = p.id
+			and p.word_id = w.id
+	) fa on
+		fa.form_value = f1.value
+		and fa.morph_code = f1.morph_code
+		and fa.form_id != f1.id
+	where
+		not exists (
+		select
+			1
+		from
+			paradigm_form pf1
+		where
+			pf1.form_id = f1.id
+	)
+	order by
+		f1.value
+) cmfa
+where
+	cm.id = cmfa.colloc_member_id
+;
+
+-- peremeheta asendamatute vormiviidetega kollokatsioonide liikmete kustutamine
+
+delete
+from
+	collocation_member cm
+where
+	cm.id in (
+		select
+			cm.id
+		from
+			collocation_member cm
+		where
+			exists (
+				select
+					1
+				from
+					form f1
+				where
+					f1.id = cm.member_form_id
+					and not exists (
+						select
+							1
+						from
+							paradigm_form pf1
+						where
+							pf1.form_id = f1.id
+					)
+					and not exists (
+						select
+							1
+						from
+							form f2,
+							paradigm_form pf2
+						where
+							pf2.form_id = f2.id
+							and f2.value = f1.value
+							and f2.morph_code = f1.morph_code
+							and f2.id != f1.id
+				)
+			)
+	);
+
+
 -- tegevuslogide osaline kolimine teise baasi
 
 -- ======================================================
