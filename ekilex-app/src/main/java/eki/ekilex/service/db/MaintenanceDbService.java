@@ -69,15 +69,16 @@ public class MaintenanceDbService extends AbstractDataDbService {
 				.where(
 						w1.LANG.in(includedLangs)
 								.and(w1.IS_PUBLIC.isTrue())
-								.and(w1.IS_WORD.isTrue())
 								.and(l1.WORD_ID.eq(w1.ID))
 								.and(l1.DATASET_CODE.notIn(DATASET_EKI, DATASET_ETY))
+								.and(l1.IS_WORD.isTrue())
 								.andNotExists(DSL
 										.select(l2.ID)
 										.from(l2)
 										.where(
 												l2.WORD_ID.eq(w1.ID)
-														.and(l2.DATASET_CODE.eq(DATASET_EKI)))))
+														.and(l2.DATASET_CODE.eq(DATASET_EKI))
+														.and(l2.IS_WORD.isTrue()))))
 				.asTable("w_hom");
 
 		Table<Record7<Long, String, String, Boolean, Boolean, Boolean, Boolean>> wEki = mainDb
@@ -93,21 +94,20 @@ public class MaintenanceDbService extends AbstractDataDbService {
 				.where(
 						w1.LANG.in(includedLangs)
 								.and(w1.IS_PUBLIC.isTrue())
-								.and(w1.IS_WORD.isTrue())
 								.andExists(DSL
 										.select(l1.ID)
 										.from(l1)
 										.where(
 												l1.WORD_ID.eq(w1.ID)
 														.and(l1.DATASET_CODE.eq(DATASET_EKI))
-														.and(l1.IS_PUBLIC.isTrue())))
+														.and(l1.IS_PUBLIC.isTrue())
+														.and(l1.IS_WORD.isTrue())))
 								.andNotExists(DSL
 										.select(w2.ID)
 										.from(w2)
 										.where(
 												w2.VALUE.eq(w1.VALUE)
 														.and(w2.IS_PUBLIC.isTrue())
-														.and(w2.IS_WORD.isTrue())
 														.and(w2.LANG.eq(w1.LANG))
 														.and(w2.ID.ne(w1.ID))
 														.andExists(DSL
@@ -116,7 +116,8 @@ public class MaintenanceDbService extends AbstractDataDbService {
 																.where(
 																		l2.WORD_ID.eq(w2.ID)
 																				.and(l2.DATASET_CODE.eq(DATASET_EKI))
-																				.and(l2.IS_PUBLIC.isTrue()))))))
+																				.and(l2.IS_PUBLIC.isTrue())
+																				.and(l2.IS_WORD.isTrue()))))))
 				.asTable("w_eki");
 
 		return mainDb
@@ -218,7 +219,7 @@ public class MaintenanceDbService extends AbstractDataDbService {
 				.delete(dr)
 				.where(
 						dr.ACCESSED.isNotNull()
-						.and(DSL.condition("(current_timestamp - dr.accessed) >= (interval '" + hours + " hour')")))
+								.and(DSL.condition("(current_timestamp - dr.accessed) >= (interval '" + hours + " hour')")))
 				.execute();
 	}
 }

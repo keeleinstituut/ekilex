@@ -64,13 +64,13 @@ public class WordDbService extends AbstractDataDbService {
 				.from(w)
 				.where(
 						w.IS_PUBLIC.isTrue()
-								.and(w.IS_WORD.isTrue())
 								.andExists(DSL
 										.select(l.ID)
 										.from(l, ds)
 										.where(
 												l.WORD_ID.eq(w.ID)
 														.and(l.DATASET_CODE.eq(datasetCode))
+														.and(l.IS_PUBLIC.isTrue())
 														.and(l.IS_PUBLIC.isTrue())
 														.and(l.DATASET_CODE.eq(ds.CODE))
 														.and(ds.IS_PUBLIC.isTrue()))))
@@ -90,9 +90,9 @@ public class WordDbService extends AbstractDataDbService {
 						w.VALUE.eq(wordValue)
 								.and(w.LANG.eq(lang))
 								.and(w.IS_PUBLIC.isTrue())
-								.and(w.IS_WORD.isTrue())
 								.and(w.ID.eq(l.WORD_ID))
-								.and(l.DATASET_CODE.eq(datasetCode)))
+								.and(l.DATASET_CODE.eq(datasetCode))
+								.and(l.IS_WORD.isTrue()))
 				.groupBy(w.ID)
 				.fetchInto(Long.class);
 	}
@@ -283,8 +283,6 @@ public class WordDbService extends AbstractDataDbService {
 		wordRecord.setAspectCode(word.getAspectCode());
 		wordRecord.setVocalForm(word.getVocalForm());
 		wordRecord.setMorphophonoForm(word.getMorphophonoForm());
-		wordRecord.setIsWord(Boolean.TRUE);
-		wordRecord.setIsCollocation(Boolean.FALSE);
 		if (homonymNr != null) {
 			wordRecord.setHomonymNr(homonymNr);
 		}

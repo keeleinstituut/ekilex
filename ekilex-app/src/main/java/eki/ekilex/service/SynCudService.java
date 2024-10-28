@@ -169,7 +169,7 @@ public class SynCudService extends AbstractCudService implements SystemConstant 
 
 		int currentSynWordLexemesMaxLevel1 = lookupDbService.getWordLexemesMaxLevel1(synWordId, roleDatasetCode);
 		int synLexemeLevel1 = currentSynWordLexemesMaxLevel1 + 1;
-		cudDbService.createLexeme(synWordId, roleDatasetCode, targetMeaningId, synLexemeLevel1, null, PUBLICITY_PUBLIC);
+		cudDbService.createLexemeWithCreateOrSelectMeaning(synWordId, roleDatasetCode, targetMeaningId, synLexemeLevel1, null, PUBLICITY_PUBLIC);
 
 		activityLogService.createActivityLog(activityLog, targetMeaningId, ActivityEntity.MEANING_WORD);
 	}

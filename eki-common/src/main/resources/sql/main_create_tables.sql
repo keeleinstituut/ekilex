@@ -552,8 +552,6 @@ create table word (
   morphophono_form text null, 
   morph_comment text null,
   manual_event_on timestamp null, 
-  is_word boolean not null, 
-  is_collocation boolean not null, 
   is_public boolean not null default true
 );
 alter sequence word_id_seq restart with 10000;
@@ -940,6 +938,8 @@ create table lexeme (
   level2 integer default 0 not null, 
   value_state_code varchar(100) references value_state(code) null, 
   proficiency_level_code varchar(100) references proficiency_level(code) null, 
+  is_word boolean not null, 
+  is_collocation boolean not null, 
   is_public boolean not null default true, 
   complexity varchar(100) not null, 
   weight numeric(5, 4) default 1, 

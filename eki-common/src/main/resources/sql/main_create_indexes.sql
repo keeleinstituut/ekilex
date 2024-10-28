@@ -29,8 +29,6 @@ create index word_value_as_word_lower_prefix_idx on word(lower(value_as_word) te
 create index word_manual_event_on_idx on word(manual_event_on);
 create index word_morphophono_form_idx on word(morphophono_form);
 create index word_morphophono_form_lower_idx on word(lower(morphophono_form));
-create index word_is_word_idx on word(is_word);
-create index word_is_collocation_idx on word(is_collocation);
 create index word_is_public_idx on word(is_public);
 create index word_etym_word_id_idx on word_etymology(word_id);
 create index word_etym_etym_type_code_idx on word_etymology(etymology_type_code);
@@ -52,6 +50,8 @@ create index lexeme_meaning_id_idx on lexeme(meaning_id);
 create index lexeme_dataset_code_idx on lexeme(dataset_code);
 create index lexeme_value_state_code_idx on lexeme(value_state_code);
 create index lexeme_proficiency_level_code_idx on lexeme(proficiency_level_code);
+create index lexeme_is_word_idx on lexeme(is_word);
+create index lexeme_is_collocation_idx on lexeme(is_collocation);
 create index lexeme_is_public_idx on lexeme(is_public);
 create index lexeme_complexity_idx on lexeme(complexity);
 create index lexeme_tag_lexeme_id_idx on lexeme_tag(lexeme_id);

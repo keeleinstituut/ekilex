@@ -337,7 +337,7 @@ public class InexactSynService extends AbstractSynSearchService {
 				.prepareActivityLog("createLexeme", translationLangWordId, ActivityOwner.WORD, roleDatasetCode, isManualEventOnUpdateEnabled);
 		int currentWordLexemesMaxLevel1 = lookupDbService.getWordLexemesMaxLevel1(translationLangWordId, roleDatasetCode);
 		int lexemeLevel1 = currentWordLexemesMaxLevel1 + 1;
-		WordLexemeMeaningIdTuple wordLexemeMeaningId = cudDbService.createLexeme(translationLangWordId, roleDatasetCode, inexactSynMeaningId, lexemeLevel1, null, PUBLICITY_PUBLIC);
+		WordLexemeMeaningIdTuple wordLexemeMeaningId = cudDbService.createLexemeWithCreateOrSelectMeaning(translationLangWordId, roleDatasetCode, inexactSynMeaningId, lexemeLevel1, null, PUBLICITY_PUBLIC);
 		Long lexemeId = wordLexemeMeaningId.getLexemeId();
 		activityLogService.createActivityLog(activityLog, lexemeId, ActivityEntity.LEXEME);
 		return lexemeId;

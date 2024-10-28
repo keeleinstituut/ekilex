@@ -63,6 +63,39 @@ create type type_mt_lexeme_freeform as (
 delete from freeform where value is null;
 alter table freeform alter column value set not null;
 
+-- keelendi abstraktsiooni tunnuste kolimine
+
+alter table lexeme add column is_word boolean;
+alter table lexeme add column is_collocation boolean;
+
+update lexeme l
+set is_word = true,
+	is_collocation = false 
+where l.dataset_code != 'eki';
+
+update lexeme l
+set is_word = w.is_word,
+	is_collocation = w.is_collocation
+from
+(select
+	id,
+	is_word,
+	is_collocation
+from
+	word) w
+where
+	l.word_id = w.id
+	and l.dataset_code = 'eki';
+
+alter table lexeme alter column is_word set not null;
+alter table lexeme alter column is_collocation set not null;
+create index lexeme_is_word_idx on lexeme(is_word);
+create index lexeme_is_collocation_idx on lexeme(is_collocation);
+alter table word drop column is_word cascade;
+alter table word drop column is_collocation cascade;
+
+-- tegevuslogide osaline kolimine teise baasi
+
 -- ======================================================
 -- ============== uus andmebaas !!!!!!! =================
 -- ======================================================
@@ -112,3 +145,5 @@ analyze activity_log_bulk;
 alter table activity_log drop column prev_data cascade;
 alter table activity_log drop column curr_data cascade;
 analyze activity_log;
+
+

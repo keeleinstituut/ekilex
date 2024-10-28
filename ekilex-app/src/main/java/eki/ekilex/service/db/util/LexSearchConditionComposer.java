@@ -84,9 +84,8 @@ public class LexSearchConditionComposer implements GlobalConstant, ActivityFunct
 
 		String maskedSearchFilter = searchWordCrit.replace(SEARCH_MASK_CHARS, "%").replace(SEARCH_MASK_CHAR, "_");
 		Field<String> filterField = DSL.lower(maskedSearchFilter);
+		Condition where = composeInitialWordRestrictionsCondition(word, searchDatasetsRestriction);
 
-		Condition where = composeWordDatasetsCondition(word, searchDatasetsRestriction);
-		where = where.and(word.IS_WORD.isTrue());
 		if (StringUtils.containsAny(maskedSearchFilter, '%', '_')) {
 			where = where.and(DSL.or(DSL.lower(word.VALUE).like(filterField), DSL.lower(word.VALUE_AS_WORD).like(filterField)));
 		} else {
@@ -97,8 +96,7 @@ public class LexSearchConditionComposer implements GlobalConstant, ActivityFunct
 
 	public Condition createSearchCondition(Word w1, List<SearchCriterionGroup> searchCriteriaGroups, SearchDatasetsRestriction searchDatasetsRestriction) throws Exception {
 
-		Condition where = composeWordDatasetsCondition(w1, searchDatasetsRestriction);
-		where = where.and(w1.IS_WORD.isTrue());
+		Condition where = composeInitialWordRestrictionsCondition(w1, searchDatasetsRestriction);
 
 		for (SearchCriterionGroup searchCriterionGroup : searchCriteriaGroups) {
 
@@ -167,9 +165,9 @@ public class LexSearchConditionComposer implements GlobalConstant, ActivityFunct
 							.and(mr.MEANING2_ID.eq(l2.MEANING_ID))
 							.and(mr.MEANING_REL_TYPE_CODE.eq(MEANING_REL_TYPE_CODE_SIMILAR))
 							.and(l2.WORD_ID.eq(w2.ID))
+							.and(l2.IS_WORD.isTrue())
 							.and(w2.LANG.eq(w1.LANG))
-							.and(w2.IS_PUBLIC.isTrue())
-							.and(w2.IS_WORD.isTrue());
+							.and(w2.IS_PUBLIC.isTrue());
 
 					where1 = searchFilterHelper.applyDatasetRestrictions(l1, searchDatasetsRestriction, where1);
 					where1 = searchFilterHelper.applyDatasetRestrictions(l2, searchDatasetsRestriction, where1);
@@ -209,8 +207,8 @@ public class LexSearchConditionComposer implements GlobalConstant, ActivityFunct
 				Condition where1 = l1.WORD_ID.eq(w1.ID)
 						.and(l1.MEANING_ID.eq(l2.MEANING_ID))
 						.and(l2.WORD_ID.eq(w2.ID))
+						.and(l2.IS_WORD.isTrue())						
 						.and(w2.IS_PUBLIC.isTrue())
-						.and(w2.IS_WORD.isTrue())
 						.and(l1.ID.ne(l2.ID));
 				where1 = searchFilterHelper.applyDatasetRestrictions(l1, searchDatasetsRestriction, where1);
 				where1 = searchFilterHelper.applyDatasetRestrictions(l2, searchDatasetsRestriction, where1);
@@ -462,10 +460,11 @@ public class LexSearchConditionComposer implements GlobalConstant, ActivityFunct
 		return where;
 	}
 
-	private Condition composeWordDatasetsCondition(Word word, SearchDatasetsRestriction searchDatasetsRestriction) {
+	private Condition composeInitialWordRestrictionsCondition(Word word, SearchDatasetsRestriction searchDatasetsRestriction) {
 
 		Lexeme lfd = LEXEME.as("lfd");
 		Condition dsFiltWhere = searchFilterHelper.applyDatasetRestrictions(lfd, searchDatasetsRestriction, null);
+		dsFiltWhere = dsFiltWhere.and(lfd.IS_WORD.isTrue());
 		Condition where = DSL.exists(DSL.select(lfd.ID).from(lfd).where(lfd.WORD_ID.eq(word.ID).and(dsFiltWhere)));
 		return where;
 	}

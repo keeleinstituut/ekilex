@@ -140,7 +140,7 @@ public class LexWordService extends AbstractApiCudService {
 
 		if (CollectionUtils.isEmpty(meanings)) {
 			if (existingMeaningIds.isEmpty()) {
-				WordLexemeMeaningIdTuple wordLexemeMeaningId = cudDbService.createLexeme(wordId, datasetCode, null, 1, null, PUBLICITY_PUBLIC);
+				WordLexemeMeaningIdTuple wordLexemeMeaningId = cudDbService.createLexemeWithCreateOrSelectMeaning(wordId, datasetCode, null, 1, null, PUBLICITY_PUBLIC);
 				Long lexemeId = wordLexemeMeaningId.getLexemeId();
 				Long meaningId = wordLexemeMeaningId.getMeaningId();
 				tagDbService.createLexemeAutomaticTags(lexemeId);
@@ -160,7 +160,7 @@ public class LexWordService extends AbstractApiCudService {
 			int newLexemeLevel1 = currentLexemesMaxLevel1 + 1;
 
 			if (meaningId == null) {
-				WordLexemeMeaningIdTuple wordLexemeMeaningId = cudDbService.createLexeme(wordId, datasetCode, null, newLexemeLevel1, null, PUBLICITY_PUBLIC);
+				WordLexemeMeaningIdTuple wordLexemeMeaningId = cudDbService.createLexemeWithCreateOrSelectMeaning(wordId, datasetCode, null, newLexemeLevel1, null, PUBLICITY_PUBLIC);
 				lexemeId = wordLexemeMeaningId.getLexemeId();
 				meaningId = wordLexemeMeaningId.getMeaningId();
 				tagDbService.createLexemeAutomaticTags(lexemeId);
@@ -170,7 +170,7 @@ public class LexWordService extends AbstractApiCudService {
 				if (existingMeaningIds.contains(meaningId)) {
 					lexemeId = lookupDbService.getLexemeId(wordId, meaningId);
 				} else {
-					WordLexemeMeaningIdTuple wordLexemeMeaningId = cudDbService.createLexeme(wordId, datasetCode, meaningId, newLexemeLevel1, null, PUBLICITY_PUBLIC);
+					WordLexemeMeaningIdTuple wordLexemeMeaningId = cudDbService.createLexemeWithCreateOrSelectMeaning(wordId, datasetCode, meaningId, newLexemeLevel1, null, PUBLICITY_PUBLIC);
 					lexemeId = wordLexemeMeaningId.getLexemeId();
 					tagDbService.createLexemeAutomaticTags(lexemeId);
 					activityLogService.createActivityLog(createFunctName, lexemeId, ActivityOwner.LEXEME, roleDatasetCode, MANUAL_EVENT_ON_UPDATE_ENABLED);

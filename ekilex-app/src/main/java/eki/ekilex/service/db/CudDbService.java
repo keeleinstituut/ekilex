@@ -800,8 +800,6 @@ public class CudDbService extends AbstractDataDbService {
 						WORD.MORPHOPHONO_FORM,
 						WORD.HOMONYM_NR,
 						WORD.LANG,
-						WORD.IS_WORD,
-						WORD.IS_COLLOCATION,
 						WORD.IS_PUBLIC)
 				.values(
 						value,
@@ -810,23 +808,20 @@ public class CudDbService extends AbstractDataDbService {
 						morphophonoForm,
 						homonymNr,
 						lang,
-						Boolean.TRUE,
-						Boolean.FALSE,
 						isPublic)
 				.returning(WORD.ID)
 				.fetchOne()
 				.getId();
 
-		Long meaningId = mainDb.insertInto(MEANING).defaultValues().returning(MEANING.ID).fetchOne().getId();
-
-		Long lexemeId = mainDb
-				.insertInto(
-						LEXEME, LEXEME.MEANING_ID, LEXEME.WORD_ID, LEXEME.DATASET_CODE,
-						LEXEME.LEVEL1, LEXEME.LEVEL2, LEXEME.IS_PUBLIC, LEXEME.COMPLEXITY)
-				.values(meaningId, wordId, datasetCode, 1, 1, isPublic, COMPLEXITY_DETAIL)
-				.returning(LEXEME.ID)
+		Long meaningId = mainDb
+				.insertInto(MEANING)
+				.defaultValues()
+				.returning(MEANING.ID)
 				.fetchOne()
 				.getId();
+
+		Long lexemeId = createLexeme(meaningId, wordId, datasetCode, 1, null, isPublic);
+		;
 
 		wordLexemeMeaningId.setWordId(wordId);
 		wordLexemeMeaningId.setLexemeId(lexemeId);
@@ -856,34 +851,28 @@ public class CudDbService extends AbstractDataDbService {
 						WORD.VALUE_AS_WORD,
 						WORD.MORPHOPHONO_FORM,
 						WORD.HOMONYM_NR,
-						WORD.LANG,
-						WORD.IS_WORD,
-						WORD.IS_COLLOCATION)
+						WORD.LANG)
 				.values(
 						value,
 						valuePrese,
 						valueAsWord,
 						morphophonoForm,
 						homonymNr,
-						lang,
-						Boolean.TRUE,
-						Boolean.FALSE)
+						lang)
 				.returning(WORD.ID)
 				.fetchOne()
 				.getId();
 
 		if (meaningId == null) {
-			meaningId = mainDb.insertInto(MEANING).defaultValues().returning(MEANING.ID).fetchOne().getId();
+			meaningId = mainDb
+					.insertInto(MEANING)
+					.defaultValues()
+					.returning(MEANING.ID)
+					.fetchOne()
+					.getId();
 		}
 
-		Long lexemeId = mainDb
-				.insertInto(
-						LEXEME, LEXEME.MEANING_ID, LEXEME.WORD_ID, LEXEME.DATASET_CODE,
-						LEXEME.LEVEL1, LEXEME.LEVEL2, LEXEME.IS_PUBLIC, LEXEME.COMPLEXITY)
-				.values(meaningId, wordId, datasetCode, 1, 1, isPublic, COMPLEXITY_DETAIL)
-				.returning(LEXEME.ID)
-				.fetchOne()
-				.getId();
+		Long lexemeId = createLexeme(meaningId, wordId, datasetCode, 1, null, isPublic);
 
 		wordLexemeMeaningId.setWordId(wordId);
 		wordLexemeMeaningId.setLexemeId(lexemeId);
@@ -902,18 +891,14 @@ public class CudDbService extends AbstractDataDbService {
 						WORD.VALUE_AS_WORD,
 						WORD.MORPHOPHONO_FORM,
 						WORD.HOMONYM_NR,
-						WORD.LANG,
-						WORD.IS_WORD,
-						WORD.IS_COLLOCATION)
+						WORD.LANG)
 				.values(
 						wordValue,
 						valuePrese,
 						valueAsWord,
 						wordValue,
 						homNr,
-						lang,
-						Boolean.TRUE,
-						Boolean.FALSE)
+						lang)
 				.returning(WORD.ID)
 				.fetchOne()
 				.getId();
@@ -1298,12 +1283,49 @@ public class CudDbService extends AbstractDataDbService {
 		return meaningSemanticTypeCodeId;
 	}
 
-	public WordLexemeMeaningIdTuple createLexeme(
+	private Long createLexeme(Long meaningId, Long wordId, String datasetCode, int lexemeLevel1, String valueStateCode, boolean isPublic) {
+
+		Long lexemeId = mainDb
+				.insertInto(
+						LEXEME,
+						LEXEME.MEANING_ID,
+						LEXEME.WORD_ID,
+						LEXEME.DATASET_CODE,
+						LEXEME.LEVEL1,
+						LEXEME.LEVEL2,
+						LEXEME.VALUE_STATE_CODE,
+						LEXEME.IS_WORD,
+						LEXEME.IS_COLLOCATION,
+						LEXEME.IS_PUBLIC,
+						LEXEME.COMPLEXITY)
+				.values(
+						meaningId,
+						wordId,
+						datasetCode,
+						lexemeLevel1,
+						1,
+						valueStateCode,
+						Boolean.TRUE,
+						Boolean.FALSE,
+						isPublic,
+						COMPLEXITY_DETAIL)
+				.returning(LEXEME.ID)
+				.fetchOne()
+				.getId();
+		return lexemeId;
+	}
+
+	public WordLexemeMeaningIdTuple createLexemeWithCreateOrSelectMeaning(
 			Long wordId, String datasetCode, Long meaningId, int lexemeLevel1, String valueStateCode, boolean isPublic) throws Exception {
 
 		WordLexemeMeaningIdTuple wordLexemeMeaningId = new WordLexemeMeaningIdTuple();
 		if (meaningId == null) {
-			meaningId = mainDb.insertInto(MEANING).defaultValues().returning(MEANING.ID).fetchOne().getId();
+			meaningId = mainDb
+					.insertInto(MEANING)
+					.defaultValues()
+					.returning(MEANING.ID)
+					.fetchOne()
+					.getId();
 		} else {
 			Long existingLexemeId = mainDb
 					.select(LEXEME.ID)
@@ -1318,29 +1340,7 @@ public class CudDbService extends AbstractDataDbService {
 				return wordLexemeMeaningId;
 			}
 		}
-		Long lexemeId = mainDb
-				.insertInto(
-						LEXEME,
-						LEXEME.MEANING_ID,
-						LEXEME.WORD_ID,
-						LEXEME.DATASET_CODE,
-						LEXEME.LEVEL1,
-						LEXEME.LEVEL2,
-						LEXEME.VALUE_STATE_CODE,
-						LEXEME.IS_PUBLIC,
-						LEXEME.COMPLEXITY)
-				.values(
-						meaningId,
-						wordId,
-						datasetCode,
-						lexemeLevel1,
-						1,
-						valueStateCode,
-						isPublic,
-						COMPLEXITY_DETAIL)
-				.returning(LEXEME.ID)
-				.fetchOne()
-				.getId();
+		Long lexemeId = createLexeme(meaningId, wordId, datasetCode, lexemeLevel1, valueStateCode, isPublic);
 
 		wordLexemeMeaningId.setWordId(wordId);
 		wordLexemeMeaningId.setLexemeId(lexemeId);

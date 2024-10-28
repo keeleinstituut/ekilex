@@ -140,7 +140,7 @@ public class TermMeaningService extends AbstractApiCudService implements Activit
 							lexeme = termMeaningDbService.getLexeme(wordId, meaningId, datasetCode);
 							lexemeId = lexeme.getId();
 						} else {
-							WordLexemeMeaningIdTuple idTuple = cudDbService.createLexeme(wordId, datasetCode, meaningId, 1, lexemeValueStateCode, isPublic);
+							WordLexemeMeaningIdTuple idTuple = cudDbService.createLexemeWithCreateOrSelectMeaning(wordId, datasetCode, meaningId, 1, lexemeValueStateCode, isPublic);
 							lexemeId = idTuple.getLexemeId();
 							activityLogService.createActivityLog(createFunctName, lexemeId, ActivityOwner.LEXEME, roleDatasetCode, MANUAL_EVENT_ON_UPDATE_ENABLED);
 						}
@@ -153,7 +153,7 @@ public class TermMeaningService extends AbstractApiCudService implements Activit
 					if (wordId == null) {
 						int synWordHomNr = cudDbService.getWordNextHomonymNr(wordValue, wordLang);
 						wordId = cudDbService.createWord(wordValue, wordValuePrese, valueAsWord, wordLang, synWordHomNr);
-						WordLexemeMeaningIdTuple idTuple = cudDbService.createLexeme(wordId, datasetCode, meaningId, 1, lexemeValueStateCode, isPublic);
+						WordLexemeMeaningIdTuple idTuple = cudDbService.createLexemeWithCreateOrSelectMeaning(wordId, datasetCode, meaningId, 1, lexemeValueStateCode, isPublic);
 						lexemeId = idTuple.getLexemeId();
 						activityLogService.createActivityLog(createFunctName, wordId, ActivityOwner.WORD, roleDatasetCode, MANUAL_EVENT_ON_UPDATE_ENABLED);
 						activityLogService.createActivityLog(createFunctName, lexemeId, ActivityOwner.LEXEME, roleDatasetCode, MANUAL_EVENT_ON_UPDATE_ENABLED);
@@ -162,7 +162,7 @@ public class TermMeaningService extends AbstractApiCudService implements Activit
 							lexeme = termMeaningDbService.getLexeme(wordId, meaningId, datasetCode);
 							lexemeId = lexeme.getId();
 						} else {
-							WordLexemeMeaningIdTuple idTuple = cudDbService.createLexeme(wordId, datasetCode, meaningId, 1, lexemeValueStateCode, isPublic);
+							WordLexemeMeaningIdTuple idTuple = cudDbService.createLexemeWithCreateOrSelectMeaning(wordId, datasetCode, meaningId, 1, lexemeValueStateCode, isPublic);
 							lexemeId = idTuple.getLexemeId();
 							activityLogService.createActivityLog(createFunctName, lexemeId, ActivityOwner.LEXEME, roleDatasetCode, MANUAL_EVENT_ON_UPDATE_ENABLED);
 						}

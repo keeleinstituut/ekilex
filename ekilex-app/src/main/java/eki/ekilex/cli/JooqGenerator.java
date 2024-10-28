@@ -52,6 +52,7 @@ public class JooqGenerator implements CommandLineRunner {
 	@Autowired
 	private ConfigurableApplicationContext context;
 
+	//mvn spring-boot:run -P jooq -D spring-boot.run.profiles=dev
 	public static void main(String[] args) {
 		logger.info("Application starting up");
 		System.setProperty("org.jooq.no-logo", "true");

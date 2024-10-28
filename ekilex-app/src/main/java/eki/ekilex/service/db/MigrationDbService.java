@@ -97,15 +97,6 @@ public class MigrationDbService extends AbstractDataDbService {
 				.fetchInto(MigraWord.class);
 	}
 
-	public void setWordIsCollocation(Long wordId) {
-
-		mainDb
-				.update(WORD)
-				.set(WORD.IS_COLLOCATION, Boolean.TRUE)
-				.where(WORD.ID.eq(wordId))
-				.execute();
-	}
-
 	public List<String> getCollocationValues() {
 
 		Collocation c = COLLOCATION.as("c");
@@ -307,21 +298,22 @@ public class MigrationDbService extends AbstractDataDbService {
 						WORD.VALUE,
 						WORD.VALUE_PRESE,
 						WORD.HOMONYM_NR,
-						WORD.LANG,
-						WORD.IS_WORD,
-						WORD.IS_COLLOCATION)
+						WORD.LANG)
 				.values(
 						wordValue,
 						wordValue,
 						homonymNr,
-						languageCode,
-						Boolean.FALSE,
-						Boolean.TRUE)
+						languageCode)
 				.returning(WORD.ID)
 				.fetchOne()
 				.getId();
 
-		Long meaningId = mainDb.insertInto(MEANING).defaultValues().returning(MEANING.ID).fetchOne().getId();
+		Long meaningId = mainDb
+				.insertInto(MEANING)
+				.defaultValues()
+				.returning(MEANING.ID)
+				.fetchOne()
+				.getId();
 
 		Long lexemeId = mainDb
 				.insertInto(
@@ -331,6 +323,8 @@ public class MigrationDbService extends AbstractDataDbService {
 						LEXEME.DATASET_CODE,
 						LEXEME.LEVEL1,
 						LEXEME.LEVEL2,
+						LEXEME.IS_WORD,
+						LEXEME.IS_COLLOCATION,
 						LEXEME.IS_PUBLIC,
 						LEXEME.COMPLEXITY)
 				.values(
@@ -339,6 +333,8 @@ public class MigrationDbService extends AbstractDataDbService {
 						datasetCode,
 						1,
 						1,
+						Boolean.TRUE,
+						Boolean.FALSE,
 						isPublic,
 						complexity.name())
 				.returning(LEXEME.ID)
@@ -359,7 +355,12 @@ public class MigrationDbService extends AbstractDataDbService {
 			Complexity complexity,
 			boolean isPublic) {
 
-		Long meaningId = mainDb.insertInto(MEANING).defaultValues().returning(MEANING.ID).fetchOne().getId();
+		Long meaningId = mainDb
+				.insertInto(MEANING)
+				.defaultValues()
+				.returning(MEANING.ID)
+				.fetchOne()
+				.getId();
 
 		Long lexemeId = mainDb
 				.insertInto(
@@ -369,6 +370,8 @@ public class MigrationDbService extends AbstractDataDbService {
 						LEXEME.DATASET_CODE,
 						LEXEME.LEVEL1,
 						LEXEME.LEVEL2,
+						LEXEME.IS_WORD,
+						LEXEME.IS_COLLOCATION,
 						LEXEME.IS_PUBLIC,
 						LEXEME.COMPLEXITY)
 				.values(
@@ -377,6 +380,8 @@ public class MigrationDbService extends AbstractDataDbService {
 						datasetCode,
 						1,
 						1,
+						Boolean.TRUE,
+						Boolean.FALSE,
 						isPublic,
 						complexity.name())
 				.returning(LEXEME.ID)

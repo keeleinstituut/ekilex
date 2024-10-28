@@ -181,9 +181,9 @@ from (select left (w.value, 1) first_letter,
            dataset ds
       where w.value != ''
       and   w.is_public = true
-      and   w.is_word = true
       and   l.word_id = w.id
       and   l.is_public = true
+      and   l.is_word = true
       and   l.dataset_code = ds.code
       and   ds.is_public = true
       and   ds.code not in ('ety', 'eki')) w
@@ -215,7 +215,6 @@ from (
               language wl
          where w.lang = wl.code
            and w.is_public = true
-           and w.is_word = true
            and not exists
              (select wwt.id
               from word_word_type wwt
@@ -227,6 +226,7 @@ from (
                    dataset ds
               where l.word_id = w.id
                 and l.is_public = true
+                and l.is_word = true
                 and ds.code = l.dataset_code
                 and ds.is_public = true)
          group by w.value)
@@ -246,7 +246,6 @@ from (
          where w.lang = wl.code
            and w.value_as_word is not null
            and w.is_public = true
-           and w.is_word = true
            and not exists
              (select wwt.id
               from word_word_type wwt
@@ -258,6 +257,7 @@ from (
                    dataset ds
               where l.word_id = w.id
                 and l.is_public = true
+                and l.is_word = true
                 and ds.code = l.dataset_code
                 and ds.is_public = true)
          group by w.value,
@@ -283,7 +283,6 @@ from (
            and p.word_id = w.id
            and w.lang = wl.code
            and w.is_public = true
-           and w.is_word = true
            and f.morph_code != '??'
            and f.value != w.value
            and f.value != '-'
@@ -294,6 +293,7 @@ from (
                    dataset ds
               where l.word_id = w.id
                 and l.is_public = true
+                and l.is_word = true
                 and ds.code = l.dataset_code
                 and ds.is_public = true)
          group by w.value,
@@ -339,11 +339,11 @@ from (
                  freeform ff,
                  dataset ds
             where l.is_public = true
-              and ds.code = l.dataset_code
-              and ds.is_public = true
+              and l.is_word = true
               and l.word_id = w.id
+              and l.dataset_code = ds.code
               and w.is_public = true
-              and w.is_word = true
+              and ds.is_public = true
               and lff.lexeme_id = l.id
               and lff.freeform_id = ff.id
               and ff.is_public = true
@@ -360,11 +360,11 @@ from (
                  lexeme_note ln,
                  dataset ds
             where l.is_public = true
-              and ds.code = l.dataset_code
-              and ds.is_public = true
+              and l.is_word = true
               and l.word_id = w.id
+              and l.dataset_code = ds.code
               and w.is_public = true
-              and w.is_word = true
+              and ds.is_public = true
               and ln.lexeme_id = l.id
               and ln.is_public = true)
          union all
@@ -379,10 +379,10 @@ from (
                  usage u,
                  dataset ds
             where l.is_public = true
+              and l.is_word = true
               and l.word_id = w.id
+              and l.dataset_code = ds.code
               and w.is_public = true
-              and w.is_word = true
-              and ds.code = l.dataset_code
               and ds.is_public = true
               and u.lexeme_id = l.id
               and u.is_public = true)
@@ -399,10 +399,10 @@ from (
                  usage_translation ut,
                  dataset ds
             where l.is_public = true
+              and l.is_word = true
               and l.word_id = w.id
+              and l.dataset_code = ds.code
               and w.is_public = true
-              and w.is_word = true
-              and ds.code = l.dataset_code
               and ds.is_public = true
               and u.lexeme_id = l.id
               and u.is_public = true
@@ -419,10 +419,10 @@ from (
                  definition d,
                  dataset ds
             where l.is_public = true
+              and l.is_word = true
               and l.word_id = w.id
+              and l.dataset_code = ds.code
               and w.is_public = true
-              and w.is_word = true
-              and ds.code = l.dataset_code
               and ds.is_public = true
               and l.meaning_id = d.meaning_id
               and d.is_public = true)) lc
@@ -503,12 +503,12 @@ from (select w.id as word_id,
               and wt.word_type_code = 'pf') word_type_order_by
       from word as w
       where w.is_public = true
-      		and w.is_word = true
         and exists (select l.id
                     from lexeme as l,
                          dataset ds
                     where l.word_id = w.id
                     and   l.is_public = true
+                    and   l.is_word = true
                     and   ds.code = l.dataset_code
                     and   ds.is_public = true)
       group by w.id) as w
@@ -565,20 +565,21 @@ from (select w.id as word_id,
                          from lexeme l1
                            inner join dataset l1ds
                                    on l1ds.code = l1.dataset_code
+                                  and l1ds.is_public = true
                            inner join lexeme l2
                                    on l2.meaning_id = l1.meaning_id
                                   and l2.word_id != l1.word_id
+                                  and l2.is_public = true
+                                  and l2.is_word = true
+                                  and coalesce (l2.value_state_code, 'anything') != 'vigane'
                            inner join dataset l2ds
                                    on l2ds.code = l2.dataset_code
+                                  and l2ds.is_public = true
                            inner join word w2
                                    on w2.id = l2.word_id
                                   and w2.is_public = true
-                                  and w2.is_word = true
                          where l1.is_public = true
-                         and   l1ds.is_public = true
-                         and   l2.is_public = true
-                         and   l2ds.is_public = true
-                         and   coalesce (l2.value_state_code, 'anything') != 'vigane') mw
+                         and   l1.is_word = true) mw
                    group by mw.word_id) mw
                on mw.word_id = w.word_id
   inner join (select lc.word_id,
@@ -599,20 +600,21 @@ from (select w.id as word_id,
                      from lexeme l1
                        inner join dataset l1ds
                                on l1ds.code = l1.dataset_code
+                              and l1ds.is_public = true
                        inner join lexeme l2
                                on l2.meaning_id = l1.meaning_id
                               and l2.dataset_code = l1.dataset_code
                               and l2.word_id != l1.word_id
+                              and l2.is_public = true
+                              and l2.is_word = true
                        inner join dataset l2ds
                                on l2ds.code = l2.dataset_code
+                              and l2ds.is_public = true
                        inner join word w2
                                on w2.id = l2.word_id
                               and w2.is_public = true
-                              and w2.is_word = true
                      where l1.is_public = true
-                     and   l1ds.is_public = true
-                     and   l2.is_public = true
-                     and   l2ds.is_public = true)
+                     and   l1.is_word = true)
                      union all
                      (select l.word_id,
                             coalesce(ff.lang, w.lang) lang,
@@ -625,11 +627,11 @@ from (select w.id as word_id,
                           freeform ff,
                           dataset ds
                      where l.is_public = true
+                     and   l.is_word = true
                      and   ds.code = l.dataset_code
                      and   ds.is_public = true
                      and   l.word_id = w.id
                      and   w.is_public = true
-                     and   w.is_word = true
                      and   lff.lexeme_id = l.id
                      and   lff.freeform_id = ff.id
                      and   ff.is_public = true
@@ -645,11 +647,11 @@ from (select w.id as word_id,
                           lexeme_note ln,
                           dataset ds
                      where l.is_public = true
+                     and   l.is_word = true
                      and   ds.code = l.dataset_code
                      and   ds.is_public = true
                      and   l.word_id = w.id
                      and   w.is_public = true
-                     and   w.is_word = true
                      and   ln.lexeme_id = l.id
                      and   ln.is_public = true)
                      union all
@@ -662,6 +664,7 @@ from (select w.id as word_id,
                           usage u,
                           dataset ds
                      where l.is_public = true
+                     and   l.is_word = true
                      and   ds.code = l.dataset_code
                      and   ds.is_public = true
                      and   u.lexeme_id = l.id
@@ -677,6 +680,7 @@ from (select w.id as word_id,
                           usage_translation ut,
                           dataset ds
                      where l.is_public = true
+                     and   l.is_word = true
                      and   ds.code = l.dataset_code
                      and   ds.is_public = true
                      and   u.lexeme_id = l.id
@@ -706,11 +710,11 @@ from (select w.id as word_id,
                           word w1,
                           dataset l1ds
                      where l1.is_public = true
+                     and   l1.is_word = true
                      and   l1ds.code = l1.dataset_code
                      and   l1ds.is_public = true
                      and   w1.id = l1.word_id
                      and   w1.is_public = true
-                     and   w1.is_word = true
                      and   not exists (select l2.id
                                        from lexeme l2,
                                             dataset l2ds
@@ -862,12 +866,12 @@ from word w
                                                                                                    and fcc.is_public = true
                                                                                                    and mff.morph_code = f.morph_code)
 where w.is_public = true
-      and w.is_word = true
   and exists (select l.id
               from lexeme as l,
                    dataset ds
               where l.word_id = w.id
               and   l.is_public = true
+              and   l.is_word = true
               and   ds.code = l.dataset_code
               and   ds.is_public = true)
 order by w.id,
@@ -1129,7 +1133,7 @@ select l.id lexeme_id,
        usg.usages,
        lsl.source_links
 from lexeme l
-  inner join dataset ds on ds.code = l.dataset_code
+  inner join dataset ds on ds.code = l.dataset_code and ds.is_public = true
   left outer join (select l_reg.lexeme_id, array_agg(l_reg.register_code order by l_reg.order_by) register_codes from lexeme_register l_reg group by l_reg.lexeme_id) l_reg on l_reg.lexeme_id = l.id
   left outer join (select l_pos.lexeme_id, array_agg(l_pos.pos_code order by l_pos.order_by) pos_codes from lexeme_pos l_pos group by l_pos.lexeme_id) l_pos on l_pos.lexeme_id = l.id
   left outer join (select l_rgn.lexeme_id, array_agg(l_rgn.region_code order by l_rgn.order_by) region_codes from lexeme_region l_rgn group by l_rgn.lexeme_id) l_rgn on l_rgn.lexeme_id = l.id
@@ -1143,48 +1147,48 @@ from lexeme l
                    group by lf.lexeme_id) anote on anote.lexeme_id = l.id
   left outer join (select ln.lexeme_id,
                           json_agg(row (
-                          	ln.lexeme_note_id,
-                          	ln.value,
-                          	ln.value_prese,
-                          	ln.lang,
-                          	ln.complexity,
-                          	ln.created_by,
-                            ln.created_on,
-                            ln.modified_by,
-                            ln.modified_on,
-                          	ln.source_links)::type_note order by ln.order_by) notes
+                              ln.lexeme_note_id,
+                              ln.value,
+                              ln.value_prese,
+                              ln.lang,
+                              ln.complexity,
+                              ln.created_by,
+                              ln.created_on,
+                              ln.modified_by,
+                              ln.modified_on,
+                              ln.source_links)::type_note order by ln.order_by) notes
                    from (select ln.lexeme_id,
-                   				ln.id lexeme_note_id,
-                   				ln.value,
-	                          	ln.value_prese,
-	                          	ln.lang,
-	                          	ln.complexity,
-	                          	ln.created_by,
-	                            ln.created_on,
-	                            ln.modified_by,
-	                            ln.modified_on,
-	                            ln.order_by,
-	                            lnsl.source_links
-                   		from lexeme_note ln
-                   		left outer join (select lnsl.lexeme_note_id,
-												json_agg(row (
-														   lnsl.id,
-														   lnsl.type,
-														   lnsl.name,
-														   lnsl.order_by,
-														   s.id,
-														   s.name,
-														   s.value,
-														   s.value_prese,
-														   s.is_public
-														   )::type_source_link
-														 order by
-														   lnsl.lexeme_note_id,
-														   lnsl.order_by) source_links
-										 from lexeme_note_source_link lnsl, source s
-										 where lnsl.source_id = s.id
-										 group by lnsl.lexeme_note_id) lnsl on lnsl.lexeme_note_id = ln.id
-                   		where ln.is_public = true) ln
+                                   ln.id lexeme_note_id,
+                                   ln.value,
+                                  ln.value_prese,
+                                  ln.lang,
+                                  ln.complexity,
+                                  ln.created_by,
+                                ln.created_on,
+                                ln.modified_by,
+                                ln.modified_on,
+                                ln.order_by,
+                                lnsl.source_links
+                           from lexeme_note ln
+                           left outer join (select lnsl.lexeme_note_id,
+                                                json_agg(row (
+                                                           lnsl.id,
+                                                           lnsl.type,
+                                                           lnsl.name,
+                                                           lnsl.order_by,
+                                                           s.id,
+                                                           s.name,
+                                                           s.value,
+                                                           s.value_prese,
+                                                           s.is_public
+                                                           )::type_source_link
+                                                         order by
+                                                           lnsl.lexeme_note_id,
+                                                           lnsl.order_by) source_links
+                                         from lexeme_note_source_link lnsl, source s
+                                         where lnsl.source_id = s.id
+                                         group by lnsl.lexeme_note_id) lnsl on lnsl.lexeme_note_id = ln.id
+                           where ln.is_public = true) ln
                    group by ln.lexeme_id) pnote on pnote.lexeme_id = l.id
   left outer join (select lf.lexeme_id,
                           json_agg(row (ff.id, ff.freeform_type_code, ff.value_prese, ff.lang, ff.complexity, null, null, null, null)::type_freeform order by ff.order_by) grammars
@@ -1261,10 +1265,10 @@ from lexeme l
                            inner join dataset l2ds on l2ds.code = l2.dataset_code
                            inner join word w2 on w2.id = l2.word_id
                          where l1.is_public = true
+                         and   l1.is_word = true
                          and   l1ds.is_public = true
                          and   l2.is_public = true
                          and   w2.is_public = true
-                         and   w2.is_word = true
                          and   l2ds.is_public = true
                          and   coalesce(l2.value_state_code, 'anything') != 'vigane') mw
                    group by mw.lexeme_id) mw on mw.lexeme_id = l.id
@@ -1290,56 +1294,56 @@ from lexeme l
                                 ud.usage_definitions,
                                 usl.source_links
                          from usage u
-	                     left outer join (select usl.usage_id,
-												 json_agg(row (
-													   usl.id,
-													   usl.type,
-													   usl.name,
-													   usl.order_by,
-													   s.id,
-													   s.name,
-													   s.value,
-													   s.value_prese,
-													   s.is_public
-													   )::type_source_link
-													 order by
-													   usl.usage_id,
-													   usl.order_by) source_links
-										  from usage_source_link usl, source s
-										  where usl.source_id = s.id
-										  group by usl.usage_id) usl on usl.usage_id = u.id
-	                     left outer join (select ut.usage_id,
-	                                             array_agg(ut.value_prese order by ut.order_by) usage_translations
-	                                      from usage_translation ut
-	                                      where ut.lang = 'rus'
-	                                      group by ut.usage_id) ut on ut.usage_id = u.id
-	                     left outer join (select ud.usage_id,
-	                                             array_agg(ud.value_prese order by ud.order_by) usage_definitions
-	                                      from usage_definition ud
-	                                      group by ud.usage_id) ud on ud.usage_id = u.id
-	                     where u.is_public = true) u
+                         left outer join (select usl.usage_id,
+                                                 json_agg(row (
+                                                       usl.id,
+                                                       usl.type,
+                                                       usl.name,
+                                                       usl.order_by,
+                                                       s.id,
+                                                       s.name,
+                                                       s.value,
+                                                       s.value_prese,
+                                                       s.is_public
+                                                       )::type_source_link
+                                                     order by
+                                                       usl.usage_id,
+                                                       usl.order_by) source_links
+                                          from usage_source_link usl, source s
+                                          where usl.source_id = s.id
+                                          group by usl.usage_id) usl on usl.usage_id = u.id
+                         left outer join (select ut.usage_id,
+                                                 array_agg(ut.value_prese order by ut.order_by) usage_translations
+                                          from usage_translation ut
+                                          where ut.lang = 'rus'
+                                          group by ut.usage_id) ut on ut.usage_id = u.id
+                         left outer join (select ud.usage_id,
+                                                 array_agg(ud.value_prese order by ud.order_by) usage_definitions
+                                          from usage_definition ud
+                                          group by ud.usage_id) ud on ud.usage_id = u.id
+                         where u.is_public = true) u
                    group by u.lexeme_id) usg on usg.lexeme_id = l.id
   left outer join (select lsl.lexeme_id,
-						  json_agg(row (
-								   lsl.id,
-								   lsl.type,
-								   lsl.name,
-								   lsl.order_by,
-								   s.id,
-								   s.name,
-								   s.value,
-								   s.value_prese,
-								   s.is_public
-								   )::type_source_link
-								 order by
-								   lsl.lexeme_id,
-								   lsl.order_by) source_links
-				   from lexeme_source_link lsl, source s
-				   where lsl.source_id = s.id
-				   group by lsl.lexeme_id) lsl on lsl.lexeme_id = l.id
+                          json_agg(row (
+                                   lsl.id,
+                                   lsl.type,
+                                   lsl.name,
+                                   lsl.order_by,
+                                   s.id,
+                                   s.name,
+                                   s.value,
+                                   s.value_prese,
+                                   s.is_public
+                                   )::type_source_link
+                                 order by
+                                   lsl.lexeme_id,
+                                   lsl.order_by) source_links
+                   from lexeme_source_link lsl, source s
+                   where lsl.source_id = s.id
+                   group by lsl.lexeme_id) lsl on lsl.lexeme_id = l.id
   left outer join (select lc.id,
                           array_agg(distinct row (
-                                 case 
+                                 case
                                    when (lc.lang in ('est', 'rus', 'eng', 'ukr', 'fra')) then lc.lang
                                    else 'other'
                                  end,
@@ -1352,17 +1356,21 @@ from lexeme l
                                  l1.complexity lex_complexity,
                                  l2.complexity data_complexity
                           from lexeme l1
-                            inner join dataset l1ds on l1ds.code = l1.dataset_code
+                            inner join dataset l1ds
+                                    on l1ds.code = l1.dataset_code
+                                   and l1ds.is_public = true
                             inner join lexeme l2
                                     on l2.meaning_id = l1.meaning_id
                                    and l2.dataset_code = l1.dataset_code
+                                   and l2.is_public = true
+                                   and l2.is_word = true
                                    and l2.word_id != l1.word_id
-                            inner join dataset l2ds on l2ds.code = l2.dataset_code
+                            inner join dataset l2ds
+                                    on l2ds.code = l2.dataset_code
+                                   and l2ds.is_public = true
                             inner join word w2 on w2.id = l2.word_id
                           where l1.is_public = true
-                          and   l1ds.is_public = true
-                          and   l2.is_public = true
-                          and   l2ds.is_public = true)
+                          and   l1.is_word = true)
                           union all
                           (select l.id,
                                  coalesce(ff.lang, w.lang) lang,
@@ -1375,11 +1383,11 @@ from lexeme l
                                freeform ff,
                                dataset ds
                           where l.is_public = true
-                          and   ds.code = l.dataset_code
-                          and   ds.is_public = true
+                          and   l.is_word = true
                           and   l.word_id = w.id
+                          and   l.dataset_code = ds.code
+                          and   ds.is_public = true
                           and   w.is_public = true
-                          and   w.is_word = true
                           and   lff.lexeme_id = l.id
                           and   lff.freeform_id = ff.id
                           and   ff.freeform_type_code in ('GRAMMAR', 'GOVERNMENT'))
@@ -1394,11 +1402,11 @@ from lexeme l
                                lexeme_note ln,
                                dataset ds
                           where l.is_public = true
-                          and   ds.code = l.dataset_code
-                          and   ds.is_public = true
+                          and   l.is_word = true
                           and   l.word_id = w.id
+                          and   l.dataset_code = ds.code
+                          and   ds.is_public = true
                           and   w.is_public = true
-                          and   w.is_word = true
                           and   ln.lexeme_id = l.id
                           and   ln.is_public = true)
                           union all
@@ -1412,11 +1420,9 @@ from lexeme l
                                usage u,
                                dataset ds
                           where l.is_public = true
-                          and   ds.code = l.dataset_code
+                          and   l.is_word = true
+                          and   l.dataset_code = ds.code
                           and   ds.is_public = true
-                          and   l.word_id = w.id
-                          and   w.is_public = true
-                          and   w.is_word = true
                           and   u.lexeme_id = l.id
                           and   u.is_public = true)
                           union all
@@ -1430,7 +1436,8 @@ from lexeme l
                                usage_translation ut,
                                dataset ds
                           where l.is_public = true
-                          and   ds.code = l.dataset_code
+                          and   l.is_word = true
+                          and   l.dataset_code = ds.code
                           and   ds.is_public = true
                           and   u.lexeme_id = l.id
                           and   u.is_public = true
@@ -1462,17 +1469,18 @@ from lexeme l
                                dataset l1ds,
                                dataset l2ds
                           where l1.is_public = true
+                          and   l1.is_word = true
                           and   l1ds.code = l1.dataset_code
                           and   l1ds.is_public = true
                           and   r.lexeme1_id = l1.id
                           and   r.lexeme2_id = l2.id
                           and   l2.dataset_code = l1.dataset_code
                           and   l2.is_public = true
+                          and   l2.is_word = true
                           and   l2ds.code = l2.dataset_code
                           and   l2ds.is_public = true
                           and   w2.id = l2.word_id
-                          and   w2.is_public = true
-                          and   w2.is_word = true)
+                          and   w2.is_public = true)
                           union all
                           (select l1.id,
                                  w1.lang,
@@ -1483,32 +1491,33 @@ from lexeme l
                                word w1,
                                dataset l1ds
                           where l1.is_public = true
+                          and   l1.is_word = true
                           and   l1ds.code = l1.dataset_code
                           and   l1ds.is_public = true
                           and   w1.id = l1.word_id
                           and   w1.is_public = true
-                          and   w1.is_word = true
                           and   not exists (select l2.id
-	                                        from lexeme l2,
-	                                             dataset l2ds
-	                                        where l2.meaning_id = l1.meaning_id
-	                                        and   l2.dataset_code = l1.dataset_code
-	                                        and   l2.id != l1.id
-	                                        and   l2.is_public = true
-	                                        and   l2ds.code = l2.dataset_code
-	                                        and   l2ds.is_public = true)
-		                  and   not exists (select d.id from definition d where d.meaning_id = l1.meaning_id and d.is_public = true)
-		                  and   not exists (select ln.id from lexeme_note ln where ln.lexeme_id = l1.id and ln.is_public = true)
-		                  and   not exists (select u.id from usage u where u.lexeme_id = l1.id and u.is_public = true)
-		                  and   not exists (select ff.id
-	                                        from lexeme_freeform lff,
-	                                        	 freeform ff
-	                                        where lff.lexeme_id = l1.id
-	                                        and   lff.freeform_id = ff.id
-	                                        and   ff.freeform_type_code in ('GRAMMAR', 'GOVERNMENT')))) lc
+                                            from lexeme l2,
+                                                 dataset l2ds
+                                            where l2.meaning_id = l1.meaning_id
+                                            and   l2.dataset_code = l1.dataset_code
+                                            and   l2.id != l1.id
+                                            and   l2.is_public = true
+                                            and   l2.is_word = true
+                                            and   l2ds.code = l2.dataset_code
+                                            and   l2ds.is_public = true)
+                          and   not exists (select d.id from definition d where d.meaning_id = l1.meaning_id and d.is_public = true)
+                          and   not exists (select ln.id from lexeme_note ln where ln.lexeme_id = l1.id and ln.is_public = true)
+                          and   not exists (select u.id from usage u where u.lexeme_id = l1.id and u.is_public = true)
+                          and   not exists (select ff.id
+                                            from lexeme_freeform lff,
+                                                 freeform ff
+                                            where lff.lexeme_id = l1.id
+                                            and   lff.freeform_id = ff.id
+                                            and   ff.freeform_type_code in ('GRAMMAR', 'GOVERNMENT')))) lc
                    group by lc.id) l_lc on l_lc.id = l.id
 where l.is_public = true
-and   ds.is_public = true
+and   l.is_word = true
 order by l.id;
 
 create view view_ww_collocation
@@ -1548,6 +1557,7 @@ from collocation as c
   inner join lexeme as l1
           on l1.id = lc1.lexeme_id
          and l1.is_public = true
+         and l1.is_word = true
   inner join dataset l1ds
           on l1ds.code = l1.dataset_code
          and l1ds.is_public = true
@@ -1560,11 +1570,11 @@ from collocation as c
                    word as w2,
                    dataset as l2ds
               where l2.is_public = true
+              and   l2.is_word = true
               and   l2ds.code = l2.dataset_code
               and   l2ds.is_public = true
               and   l2.word_id = w2.id
-              and   w2.is_public = true
-              and   w2.is_word = true) lw2
+              and   w2.is_public = true) lw2
           on lw2.lexeme_id = lc2.lexeme_id
   inner join lex_colloc_rel_group as rgr1
           on lc1.rel_group_id = rgr1.id
@@ -1871,13 +1881,13 @@ from word w
                          and   wgm2.word_id = w2.id) wg
                    group by wg.word_id) wg on wg.word_id = w.id
 where w.is_public = true
-      and w.is_word = true
 and   (wr.related_words is not null or wg.word_group_members is not null)
 and   exists (select l.id
               from lexeme l,
                    dataset ds
               where l.word_id = w.id
               and l.is_public = true
+              and l.is_word = true
               and ds.code = l.dataset_code
               and ds.is_public = true);
 
@@ -2004,8 +2014,8 @@ from (select mr.meaning1_id m1_id,
              mr.order_by
       from meaning_relation mr
            join meaning m on m.id = mr.meaning2_id
-           join lexeme l on l.meaning_id = m.id and l.is_public = true
-           join word w on w.id = l.word_id and w.is_public = true and w.is_word = true
+           join lexeme l on l.meaning_id = m.id and l.is_public = true and l.is_word = true
+           join word w on w.id = l.word_id and w.is_public = true
            join dataset l_ds on l_ds.code = l.dataset_code and l_ds.is_public = true
            left outer join definition inexact_syn_def on inexact_syn_def.meaning_id = m.id and inexact_syn_def.definition_type_code = 'kitsam/laiem tähendus teises keeles'
       where mr.meaning_rel_type_code != 'duplikaadikandidaat'
@@ -2038,12 +2048,12 @@ from ((select w.word,
                            and   l.complexity = 'SIMPLE'
                            and   l.dataset_code = 'eki'
                            and   l.is_public = true
+                           and   l.is_word = true
                            and   ds.code = l.dataset_code
                            and   ds.is_public = true)
              and   w.value not like '% %'
              and   length(w.value) > 2
-             and   w.is_public = true
-             and   w.is_word = true) w
+             and   w.is_public = true) w
        order by random())
        union all
        (select nw.word,

@@ -17,7 +17,7 @@ import org.jooq.ForeignKey;
 import org.jooq.Identity;
 import org.jooq.Name;
 import org.jooq.Record;
-import org.jooq.Row13;
+import org.jooq.Row15;
 import org.jooq.Schema;
 import org.jooq.Table;
 import org.jooq.TableField;
@@ -113,6 +113,16 @@ public class Lexeme extends TableImpl<LexemeRecord> {
      * The column <code>public.lexeme.proficiency_level_code</code>.
      */
     public final TableField<LexemeRecord, String> PROFICIENCY_LEVEL_CODE = createField(DSL.name("proficiency_level_code"), SQLDataType.VARCHAR(100), this, "");
+
+    /**
+     * The column <code>public.lexeme.is_word</code>.
+     */
+    public final TableField<LexemeRecord, Boolean> IS_WORD = createField(DSL.name("is_word"), SQLDataType.BOOLEAN.nullable(false), this, "");
+
+    /**
+     * The column <code>public.lexeme.is_collocation</code>.
+     */
+    public final TableField<LexemeRecord, Boolean> IS_COLLOCATION = createField(DSL.name("is_collocation"), SQLDataType.BOOLEAN.nullable(false), this, "");
 
     private Lexeme(Name alias, Table<LexemeRecord> aliased) {
         this(alias, aliased, null);
@@ -240,11 +250,11 @@ public class Lexeme extends TableImpl<LexemeRecord> {
     }
 
     // -------------------------------------------------------------------------
-    // Row13 type methods
+    // Row15 type methods
     // -------------------------------------------------------------------------
 
     @Override
-    public Row13<Long, Long, Long, String, Integer, Integer, String, String, Long, BigDecimal, Boolean, Integer, String> fieldsRow() {
-        return (Row13) super.fieldsRow();
+    public Row15<Long, Long, Long, String, Integer, Integer, String, String, Long, BigDecimal, Boolean, Integer, String, Boolean, Boolean> fieldsRow() {
+        return (Row15) super.fieldsRow();
     }
 }
