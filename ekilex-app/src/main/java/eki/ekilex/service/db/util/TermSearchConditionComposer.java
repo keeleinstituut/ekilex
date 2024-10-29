@@ -121,19 +121,19 @@ public class TermSearchConditionComposer implements GlobalConstant, ActivityFunc
 					wherew = wherew.and(DSL.or(wherew1, wherew2));
 				}
 
-				containsSearchKeys = searchFilterHelper.containsSearchKeys(searchCriteria, SearchKey.LANGUAGE);
+				containsSearchKeys = searchFilterHelper.containsSearchKeys(searchCriteria, SearchKey.LANGUAGE_INDIRECT);
 				if (containsSearchKeys) {
-					List<SearchCriterion> equalsValueCriteria = searchFilterHelper.filterCriteriaBySearchKeyAndOperands(searchCriteria, SearchKey.LANGUAGE, SearchOperand.EQUALS);
-					List<SearchCriterion> notContainsValueCriteria = searchFilterHelper.filterCriteriaBySearchKeyAndOperands(searchCriteria, SearchKey.LANGUAGE, SearchOperand.NOT_CONTAINS);
+					List<SearchCriterion> equalsValueCriteria = searchFilterHelper.filterCriteriaBySearchKeyAndOperands(searchCriteria, SearchKey.LANGUAGE_INDIRECT, SearchOperand.EQUALS);
+					List<SearchCriterion> notContainsValueCriteria = searchFilterHelper.filterCriteriaBySearchKeyAndOperands(searchCriteria, SearchKey.LANGUAGE_INDIRECT, SearchOperand.NOT_CONTAINS);
 
 					if (CollectionUtils.isNotEmpty(equalsValueCriteria)) {
-						wherew = searchFilterHelper.applyValueFilters(SearchKey.LANGUAGE, equalsValueCriteria, w1.LANG, wherew, false);
+						wherew = searchFilterHelper.applyValueFilters(SearchKey.LANGUAGE_INDIRECT, equalsValueCriteria, w1.LANG, wherew, false);
 					}
 					if (CollectionUtils.isNotEmpty(notContainsValueCriteria)) {
 						Lexeme l2 = LEXEME.as("l2");
 						Word w2 = WORD.as("w2");
 						Condition wherew2 = l2.WORD_ID.eq(w2.ID).and(l2.MEANING_ID.eq(m1.ID));
-						wherew2 = searchFilterHelper.applyValueFilters(SearchKey.LANGUAGE, notContainsValueCriteria, w2.LANG, wherew2, false);
+						wherew2 = searchFilterHelper.applyValueFilters(SearchKey.LANGUAGE_INDIRECT, notContainsValueCriteria, w2.LANG, wherew2, false);
 						wherem = wherem.andNotExists(DSL.select(w2.ID).from(w2, l2).where(wherew2));
 					}
 				}
@@ -193,17 +193,17 @@ public class TermSearchConditionComposer implements GlobalConstant, ActivityFunc
 					wherem = wherem.andExists(DSL.select(d1.ID).from(d1).where(whered1));
 				}
 
-				boolean containsSearchKeys = searchFilterHelper.containsSearchKeys(searchCriteria, SearchKey.LANGUAGE);
+				boolean containsSearchKeys = searchFilterHelper.containsSearchKeys(searchCriteria, SearchKey.LANGUAGE_INDIRECT);
 				if (containsSearchKeys) {
-					List<SearchCriterion> equalsValueCriteria = searchFilterHelper.filterCriteriaBySearchKeyAndOperands(searchCriteria, SearchKey.LANGUAGE, SearchOperand.EQUALS);
-					List<SearchCriterion> notContainsValueCriteria = searchFilterHelper.filterCriteriaBySearchKeyAndOperands(searchCriteria, SearchKey.LANGUAGE, SearchOperand.NOT_CONTAINS);
+					List<SearchCriterion> equalsValueCriteria = searchFilterHelper.filterCriteriaBySearchKeyAndOperands(searchCriteria, SearchKey.LANGUAGE_INDIRECT, SearchOperand.EQUALS);
+					List<SearchCriterion> notContainsValueCriteria = searchFilterHelper.filterCriteriaBySearchKeyAndOperands(searchCriteria, SearchKey.LANGUAGE_INDIRECT, SearchOperand.NOT_CONTAINS);
 
 					if (CollectionUtils.isNotEmpty(equalsValueCriteria)) {
-						whered1 = searchFilterHelper.applyValueFilters(SearchKey.LANGUAGE, equalsValueCriteria, d1.LANG, whered2, false);
+						whered1 = searchFilterHelper.applyValueFilters(SearchKey.LANGUAGE_INDIRECT, equalsValueCriteria, d1.LANG, whered2, false);
 						wherem = wherem.andExists(DSL.select(d1.ID).from(d1).where(whered1));
 					}
 					if (CollectionUtils.isNotEmpty(notContainsValueCriteria)) {
-						whered1 = searchFilterHelper.applyValueFilters(SearchKey.LANGUAGE, notContainsValueCriteria, d1.LANG, whered2, false);
+						whered1 = searchFilterHelper.applyValueFilters(SearchKey.LANGUAGE_INDIRECT, notContainsValueCriteria, d1.LANG, whered2, false);
 						wherem = wherem.andNotExists(DSL.select(d1.ID).from(d1).where(whered1));
 					}
 				}
@@ -226,17 +226,17 @@ public class TermSearchConditionComposer implements GlobalConstant, ActivityFunc
 					wherel = wherel.andExists(DSL.select(u1.ID).from(u1).where(whereff1));
 				}
 
-				boolean containsSearchKeys = searchFilterHelper.containsSearchKeys(searchCriteria, SearchKey.LANGUAGE);
+				boolean containsSearchKeys = searchFilterHelper.containsSearchKeys(searchCriteria, SearchKey.LANGUAGE_INDIRECT);
 				if (containsSearchKeys) {
-					List<SearchCriterion> equalsValueCriteria = searchFilterHelper.filterCriteriaBySearchKeyAndOperands(searchCriteria, SearchKey.LANGUAGE, SearchOperand.EQUALS);
-					List<SearchCriterion> notContainsValueCriteria = searchFilterHelper.filterCriteriaBySearchKeyAndOperands(searchCriteria, SearchKey.LANGUAGE, SearchOperand.NOT_CONTAINS);
+					List<SearchCriterion> equalsValueCriteria = searchFilterHelper.filterCriteriaBySearchKeyAndOperands(searchCriteria, SearchKey.LANGUAGE_INDIRECT, SearchOperand.EQUALS);
+					List<SearchCriterion> notContainsValueCriteria = searchFilterHelper.filterCriteriaBySearchKeyAndOperands(searchCriteria, SearchKey.LANGUAGE_INDIRECT, SearchOperand.NOT_CONTAINS);
 
 					if (CollectionUtils.isNotEmpty(equalsValueCriteria)) {
-						whereff1 = searchFilterHelper.applyValueFilters(SearchKey.LANGUAGE, equalsValueCriteria, u1.LANG, whereff2, false);
+						whereff1 = searchFilterHelper.applyValueFilters(SearchKey.LANGUAGE_INDIRECT, equalsValueCriteria, u1.LANG, whereff2, false);
 						wherel = wherel.andExists(DSL.select(u1.ID).from(u1).where(whereff1));
 					}
 					if (CollectionUtils.isNotEmpty(notContainsValueCriteria)) {
-						whereff1 = searchFilterHelper.applyValueFilters(SearchKey.LANGUAGE, notContainsValueCriteria, u1.LANG, whereff2, false);
+						whereff1 = searchFilterHelper.applyValueFilters(SearchKey.LANGUAGE_INDIRECT, notContainsValueCriteria, u1.LANG, whereff2, false);
 						wherel = wherel.andNotExists(DSL.select(u1.ID).from(u1).where(whereff1));
 					}
 				}

@@ -104,7 +104,7 @@
                             th:text="#{|enum.search.operand.${operand.name()}|}">searchOperand</option>
                   </select>
                 </div>
-                <div class="value-input-container col-auto flex-grow-1 flex-shrink-1" th:if="${criteria.searchKey.name() == 'LANGUAGE'}">
+                <div class="value-input-container col-auto flex-grow-1 flex-shrink-1" th:if="${(criteria.searchKey.name() == 'LANGUAGE_DIRECT') || (criteria.searchKey.name() == 'LANGUAGE_INDIRECT')}">
                   <select class="form-control" th:name="'criteriaGroups[' + ${critGroupStat.index} + '].searchCriteria[' + ${critStat.index} + '].searchValue'" data-live-search="true" data-style="btn-outline-secondary">
                     <option value="" th:text="#{common.all.languages}">Kõik keeled</option>
                     <option th:each="language : ${languages}"
@@ -642,7 +642,13 @@
             <div name="COMMA_SEPARATED_IDS" class="value-input-container col-auto flex-grow-1 flex-shrink-1">
               <input type="text" class="form-control" autocomplete="off">
             </div>
-            <div name="LANGUAGE" class="value-input-container col-auto flex-grow-1 flex-shrink-1">
+            <div name="LANGUAGE_DIRECT" class="value-input-container col-auto flex-grow-1 flex-shrink-1">
+              <select class="form-control" data-live-search="true" data-style="btn-outline-secondary">
+                <option value="" selected th:text="#{common.all.languages}">Kõik keeled</option>
+                <option th:each="language : ${languages}" th:value="${language.code}" th:text="${language.value}">language</option>
+              </select>
+            </div>
+            <div name="LANGUAGE_INDIRECT" class="value-input-container col-auto flex-grow-1 flex-shrink-1">
               <select class="form-control" data-live-search="true" data-style="btn-outline-secondary">
                 <option value="" selected th:text="#{common.all.languages}">Kõik keeled</option>
                 <option th:each="language : ${languages}" th:value="${language.code}" th:text="${language.value}">language</option>

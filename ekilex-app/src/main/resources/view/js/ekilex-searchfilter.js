@@ -400,15 +400,9 @@ function handleEntityChange(entity) {
 
 function handleSearchKeyChange(searchKey) {
 	const detailConditionElement = searchKey.closest('[name="detailCondition"]');
-	const pageName = detailConditionElement.attr("data-page");
 	const searchKeyValue = searchKey.val();
-	const searchEntity = searchKey.closest('[name="detailGroup"]').find('[name$="entity"]').val();
 	const searchOperandElement = detailConditionElement.find('[name$="searchOperand"]');
 	const operandTemplate = $('#searchOperandTemplates').find(`[name="${searchKeyValue}"]`);
-	// NOT_CONTAINS is not implemented everywhere
-	if (pageName == 'lex_search' && searchEntity == 'HEADWORD' && searchKeyValue == 'LANGUAGE') {
-		operandTemplate.find('option[value="NOT_CONTAINS"]').remove();
-	}
 	searchOperandElement.find('option').remove();
 	searchOperandElement.append(operandTemplate.html());
 	searchOperandElement.val(searchOperandElement.find('option').first().val());
