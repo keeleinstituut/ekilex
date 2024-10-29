@@ -141,13 +141,15 @@ public class LookupService extends AbstractWordSearchService {
 		WordsResult words = getWords(wordValue, Collections.emptyList(), tagNames, user, DEFAULT_OFFSET, DEFAULT_MAX_RESULTS_LIMIT, true);
 		List<WordDescript> wordCandidates = new ArrayList<>();
 		for (Word word : words.getWords()) {
-			List<WordLexeme> lexemes = lexSearchDbService.getWordLexemes(word.getWordId(), searchDatasetsRestriction, CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
-			boolean lexemeAlreadyExists = false;
-			if (sourceMeaningId != null) {
-				lexemeAlreadyExists = lexemes.stream().anyMatch(lexeme -> lexeme.getMeaningId().equals(sourceMeaningId));
-			}
-			if (lexemeAlreadyExists) {
+			if (!StringUtils.equals(language, word.getLang())) {
 				continue;
+			}
+			List<WordLexeme> lexemes = lexSearchDbService.getWordLexemes(word.getWordId(), searchDatasetsRestriction, CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
+			if (sourceMeaningId != null) {
+				boolean lexemeAlreadyExists = lexemes.stream().anyMatch(lexeme -> sourceMeaningId.equals(lexeme.getMeaningId()));
+				if (lexemeAlreadyExists) {
+					continue;
+				}
 			}
 			List<String> allDefinitionValues = new ArrayList<>();
 			lexemes.forEach(lexeme -> {
