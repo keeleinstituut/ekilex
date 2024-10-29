@@ -93,6 +93,7 @@ create index lexeme_is_word_idx on lexeme(is_word);
 create index lexeme_is_collocation_idx on lexeme(is_collocation);
 alter table word drop column is_word cascade;
 alter table word drop column is_collocation cascade;
+analyze lexeme;
 
 -- peremeheta vormiviidete asendamine kollokatsioonide liikmetes
 
