@@ -182,3 +182,15 @@
   }
 
 }
+
+// Hide search button by default
+#clear-search-btn {
+  display: none;
+}
+
+// Show search button when search is not showing a placeholder AKA has a value
+.main-search:has(#search:not(:placeholder-shown)) {
+  #clear-search-btn {
+    display: block;
+  }
+}

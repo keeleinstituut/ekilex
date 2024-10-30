@@ -4,7 +4,16 @@ $(document).ready(function() {
 	selectedHomonymItem.addClass("animation-target");
 	setSelectedHomonymValueForMobile(getSelectedHomonym().html());
 	searchWordAutocomplete();
+	focusSearchInput();
 });
+
+function focusSearchInput() {
+	const searchInput = document.getElementById('search');
+	searchInput.focus();
+	const textLength = searchInput.value?.length ?? 0;
+	// Set text cursor to end, goes to beginning by default
+	searchInput.setSelectionRange(textLength, textLength);
+}
 
 // virtual keyboard autocomplete height fix
 function searchWordAutocompleteHeight() {
@@ -127,7 +136,9 @@ function searchWordAutocomplete() {
 };
 
 $(document).on("click", "#clear-search-btn", function(e) {
-	$("input[name='searchWord']").val('').trigger('change');
+	const searchInput = $("input[name='searchWord']");
+	searchInput.val('').trigger('change');
+	searchInput.trigger('focus');
 });
 
 $(document).on("click", "eki-link", function(e) {
@@ -162,14 +173,6 @@ $(document).on('click', 'ext-link', function() {
 		}
 	} else {
 		openAlertDlg(messages["common.broken.link"]);
-	}
-});
-
-$(document).on("keyup change", "input[name='searchWord']", function(e) {
-	if ($(this).val()) {
-		$("#clear-search-btn").show();
-	} else {
-		$("#clear-search-btn").hide(1000); //hack to avoid disabling the button
 	}
 });
 
