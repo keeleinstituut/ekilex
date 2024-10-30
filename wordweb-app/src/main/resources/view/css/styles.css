@@ -18232,6 +18232,22 @@ body {
   min-width: auto;
 }
 
+#clear-search-btn {
+  display: none;
+}
+
+.main-search:has(#search:not(:-moz-placeholder-shown)) #clear-search-btn {
+  display: block;
+}
+
+.main-search:has(#search:not(:-ms-input-placeholder)) #clear-search-btn {
+  display: block;
+}
+
+.main-search:has(#search:not(:placeholder-shown)) #clear-search-btn {
+  display: block;
+}
+
 .btn-icon {
   color: #fff;
   background-color: transparent;
