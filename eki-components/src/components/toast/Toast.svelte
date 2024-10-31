@@ -8,10 +8,10 @@
 <div class="absolute top-14 right-4 overflow-hidden z-10 flex flex-col gap-2">
   {#each toasts as toast}
     <div
-      class="bg-eki-white border border-eki-light-blue text-eki-dark-blue-text rounded-lg pl-7 pr-2 py-4 grid grid-cols-[1fr_24px] gap-2 w-[335px] left-0"
+      class="bg-eki-white border border-eki-light-blue text-eki-dark-blue-text rounded-lg pl-6 pr-[10px] pb-5 pt-3 grid grid-cols-[1fr_24px] gap-2 w-[335px] left-0"
       transition:fly={{ x: 100 }}
     >
-      <div class="flex gap-1 flex-col">
+      <div class="flex gap-1 flex-col mt-2">
         <span class="text-sm font-medium">{toast.title}</span>
         <p class="text-xs">
           <span>
@@ -19,7 +19,7 @@
           </span>
           {#if toast.readMoreText}
             <a
-              class="underline"
+              class="underline hover:no-underline"
               href={toast.readMoreUrl}
               target={toast.readMoreIsExternal ? "_blank" : undefined}
               rel={toast.readMoreIsExternal ? "noreferrer" : undefined}
