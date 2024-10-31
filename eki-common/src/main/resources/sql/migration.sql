@@ -192,6 +192,48 @@ where
 			)
 	);
 
+-- sõnaveebi tagasiside lihtsustamine
+
+alter table feedback_log alter column sender_name drop not null;
+alter table feedback_log alter column sender_email drop not null;
+
+update
+	feedback_log
+set
+	description = "comments"
+where
+	description is null
+	and "comments" is not null;
+
+alter table feedback_log drop column "comments";
+
+update
+	feedback_log
+set
+	feedback_type = 'väline'
+where
+	feedback_type = 'comment';
+
+update
+	feedback_log
+set
+	feedback_type = 'sõnaveeb'
+where
+	feedback_type = 'new_word';
+
+update
+	feedback_log
+set
+	feedback_type = 'sõnaveeb'
+where
+	feedback_type = 'complete';
+
+update
+	feedback_log
+set
+	feedback_type = 'sõnaveeb'
+where
+	feedback_type = 'simple';
 
 -- tegevuslogide osaline kolimine teise baasi
 

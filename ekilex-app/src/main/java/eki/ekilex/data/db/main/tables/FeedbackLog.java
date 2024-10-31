@@ -17,7 +17,7 @@ import org.jooq.ForeignKey;
 import org.jooq.Identity;
 import org.jooq.Name;
 import org.jooq.Record;
-import org.jooq.Row16;
+import org.jooq.Row15;
 import org.jooq.Schema;
 import org.jooq.Table;
 import org.jooq.TableField;
@@ -57,17 +57,17 @@ public class FeedbackLog extends TableImpl<FeedbackLogRecord> {
     /**
      * The column <code>public.feedback_log.feedback_type</code>.
      */
-    public final TableField<FeedbackLogRecord, String> FEEDBACK_TYPE = createField(DSL.name("feedback_type"), SQLDataType.VARCHAR(100).nullable(false), this, "");
+    public final TableField<FeedbackLogRecord, String> FEEDBACK_TYPE = createField(DSL.name("feedback_type"), SQLDataType.VARCHAR(100), this, "");
 
     /**
      * The column <code>public.feedback_log.sender_name</code>.
      */
-    public final TableField<FeedbackLogRecord, String> SENDER_NAME = createField(DSL.name("sender_name"), SQLDataType.CLOB.nullable(false), this, "");
+    public final TableField<FeedbackLogRecord, String> SENDER_NAME = createField(DSL.name("sender_name"), SQLDataType.CLOB, this, "");
 
     /**
      * The column <code>public.feedback_log.sender_email</code>.
      */
-    public final TableField<FeedbackLogRecord, String> SENDER_EMAIL = createField(DSL.name("sender_email"), SQLDataType.CLOB.nullable(false), this, "");
+    public final TableField<FeedbackLogRecord, String> SENDER_EMAIL = createField(DSL.name("sender_email"), SQLDataType.CLOB, this, "");
 
     /**
      * The column <code>public.feedback_log.created_on</code>.
@@ -83,11 +83,6 @@ public class FeedbackLog extends TableImpl<FeedbackLogRecord> {
      * The column <code>public.feedback_log.definition</code>.
      */
     public final TableField<FeedbackLogRecord, String> DEFINITION = createField(DSL.name("definition"), SQLDataType.CLOB, this, "");
-
-    /**
-     * The column <code>public.feedback_log.comments</code>.
-     */
-    public final TableField<FeedbackLogRecord, String> COMMENTS = createField(DSL.name("comments"), SQLDataType.CLOB, this, "");
 
     /**
      * The column <code>public.feedback_log.usage</code>.
@@ -209,11 +204,11 @@ public class FeedbackLog extends TableImpl<FeedbackLogRecord> {
     }
 
     // -------------------------------------------------------------------------
-    // Row16 type methods
+    // Row15 type methods
     // -------------------------------------------------------------------------
 
     @Override
-    public Row16<Long, String, String, String, Timestamp, String, String, String, String, String, String, String, String, String, String, String> fieldsRow() {
-        return (Row16) super.fieldsRow();
+    public Row15<Long, String, String, String, Timestamp, String, String, String, String, String, String, String, String, String, String> fieldsRow() {
+        return (Row15) super.fieldsRow();
     }
 }

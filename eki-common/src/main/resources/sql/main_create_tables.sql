@@ -1298,10 +1298,10 @@ create table game_nonword (
 
 create table feedback_log (
   id bigserial primary key, 
-  feedback_type varchar(100) not null, 
-  sender_name text not null, 
-  sender_email text not null, 
   created_on timestamp not null default statement_timestamp(), 
+  feedback_type varchar(100) null, 
+  sender_name text null, 
+  sender_email text null, 
   description text null, 
   word text null, 
   definition text null, 
@@ -1319,9 +1319,9 @@ alter sequence feedback_log_id_seq restart with 10000;
 create table feedback_log_comment (
   id bigserial primary key, 
   feedback_log_id bigint references feedback_log(id) on delete cascade not null, 
+  created_on timestamp not null default statement_timestamp(),
   comment text, 
-  user_name text not null, 
-  created_on timestamp not null default statement_timestamp()
+  user_name text not null
 );
 alter sequence feedback_log_comment_id_seq restart with 10000;
 
