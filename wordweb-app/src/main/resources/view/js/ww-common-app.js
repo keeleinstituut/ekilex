@@ -30,7 +30,7 @@ $(document).on("click", "button[name='feedbackSendBtn']", function(event) {
 
 	if (feedbackServiceUrl === null) {
 		console.debug('Feedback service configuration is missing.');
-		alert(messages.fb_service_error);
+		alert(messages.feedback_missing_service);
 		return;
 	}
 	var feedbackForm = $(this).closest('form');
@@ -44,9 +44,9 @@ $(document).on("click", "button[name='feedbackSendBtn']", function(event) {
 
 	var dataDiv = $('#feedbackModal').find('#dataDiv');
 	var responseDiv = $('#feedbackModal').find('#responseDiv');
-	var okMessageElement = responseDiv.find('#feedbackSuccessMsg');
-	var errorMessageElement = responseDiv.find('#feedbackFailMsg');
-	var okMessage = feedbackForm.find('[name=ok_message]').text();
+	var successMessageElem = responseDiv.find('#feedbackSuccessMessageElem');
+	var errorMessageElem = responseDiv.find('#feedbackErrorMessageElem');
+	var successMessage = feedbackForm.find('[name=success_message]').text();
 	var acceptPrivacyStatement = feedbackForm.find('.modal-check');
 	$.ajax({
 		url: feedbackServiceUrl,
@@ -58,17 +58,17 @@ $(document).on("click", "button[name='feedbackSendBtn']", function(event) {
 		if (data.status === 'ok') {
 			dataDiv.addClass('d-none');
 			responseDiv.removeClass('d-none');
-			okMessageElement.text(okMessage);
-			okMessageElement.removeClass('d-none');
+			successMessageElem.text(successMessage);
+			successMessageElem.removeClass('d-none');
 			acceptPrivacyStatement.trigger('click');
 		} else {
-			errorMessageElement.removeClass('d-none');
+			errorMessageElem.removeClass('d-none');
 		}
 	}).fail(function(data) {
 		console.log("TOTAL FAIL");
 		dataDiv.addClass('d-none');
 		responseDiv.removeClass('d-none');
-		errorMessageElement.removeClass('d-none');
+		errorMessageElem.removeClass('d-none');
 		acceptPrivacyStatement.trigger('click');
 	});
 });
@@ -81,18 +81,6 @@ function clearMessages(modalDlg) {
 	modalDlg.find('form').removeClass('was-validated');
 	modalDlg.find('[name=error_message]').attr('hidden', true);
 }
-
-$(document).on("click", "#feedbackSimpleRadio", function() {
-	$('#feedWord').addClass('show-section');
-	$('#feedComment').removeClass('show-section');
-	clearMessages($(this).closest('.modal-dialog'));
-});
-
-$(document).on("click", "#feedbackCompleteRadio", function() {
-	$('#feedWord').removeClass('show-section');
-	$('#feedComment').addClass('show-section');
-	clearMessages($(this).closest('.modal-dialog'));
-});
 
 $(document).on('show.bs.modal', '#feedbackModal', function() {
 	var fbModal = $(this);

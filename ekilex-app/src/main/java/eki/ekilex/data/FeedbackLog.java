@@ -11,10 +11,11 @@ public class FeedbackLog extends AbstractDataObject {
 
 	private Long id;
 
-	private String feedbackType;
-
 	private Timestamp createdOn;
 
+	private String feedbackType;
+
+	@Deprecated
 	private String senderName;
 
 	private String senderEmail;
@@ -25,23 +26,25 @@ public class FeedbackLog extends AbstractDataObject {
 
 	private String definition;
 
+	@Deprecated
 	private String definitionSource;
 
+	@Deprecated
 	private String domain;
-
-	private String comments; // teacher-tools only
 
 	private String usage;
 
+	@Deprecated
 	private String usageSource;
 
 	private String otherInfo;
 
+	@Deprecated
 	private String company;
 
 	private String lastSearch;
 
-	private List<FeedbackComment> feedbackComments;
+	private List<FeedbackLogComment> feedbackLogComments;
 
 	public Long getId() {
 		return id;
@@ -51,20 +54,20 @@ public class FeedbackLog extends AbstractDataObject {
 		this.id = id;
 	}
 
-	public String getFeedbackType() {
-		return feedbackType;
-	}
-
-	public void setFeedbackType(String feedbackType) {
-		this.feedbackType = feedbackType;
-	}
-
 	public Timestamp getCreatedOn() {
 		return createdOn;
 	}
 
 	public void setCreatedOn(Timestamp createdOn) {
 		this.createdOn = createdOn;
+	}
+
+	public String getFeedbackType() {
+		return feedbackType;
+	}
+
+	public void setFeedbackType(String feedbackType) {
+		this.feedbackType = feedbackType;
 	}
 
 	public String getSenderName() {
@@ -123,14 +126,6 @@ public class FeedbackLog extends AbstractDataObject {
 		this.domain = domain;
 	}
 
-	public String getComments() {
-		return comments;
-	}
-
-	public void setComments(String comments) {
-		this.comments = comments;
-	}
-
 	public String getUsage() {
 		return usage;
 	}
@@ -171,11 +166,12 @@ public class FeedbackLog extends AbstractDataObject {
 		this.lastSearch = lastSearch;
 	}
 
-	public List<FeedbackComment> getFeedbackComments() {
-		return feedbackComments;
+	public List<FeedbackLogComment> getFeedbackLogComments() {
+		return feedbackLogComments;
 	}
 
-	public void setFeedbackComments(List<FeedbackComment> feedbackComments) {
-		this.feedbackComments = feedbackComments;
+	public void setFeedbackLogComments(List<FeedbackLogComment> feedbackLogComments) {
+		this.feedbackLogComments = feedbackLogComments;
 	}
+
 }

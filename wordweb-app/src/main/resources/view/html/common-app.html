@@ -25,7 +25,7 @@
 		'this_is_form' : /*[[#{label.word.is.form.of}]]*/'see on ka vorm sõnadest',
 		'audio_generation_failure' : /*[[#{label.audio.generation.failure}]]*/'Heli genereerimise teenus hetkel ei toimi, proovige hiljem uuesti.',
 		'search_failure' : /*[[#{label.detail.search.failure}]]*/'Detailide päring ebaõnnestus, proovige hiljem uuesti.',
-		'fb_service_error' : /*[[#{label.fb.missing.service}]]*/'Tagasiside teenus ei ole seadistatud.'
+		'feedback_missing_service' : /*[[#{label.feedback.missing.service}]]*/'Tagasiside teenus ei ole seadistatud.'
 	}
 </script>
 <!-- Google tag (gtag.js) -->
@@ -197,9 +197,7 @@
   </th:block>
   <th:block th:fragment="latest-ww-news-article">
     <th:block th:if="${latestWordwebNewsArticle}">
-      <eki-toast
-        id="latest-ww-news-toast-container">
-      </eki-toast>
+      <eki-toast id="latest-ww-news-toast-container"></eki-toast>
       <script th:inline="javascript">
         $(document).ready(function() {
           const toastContainer = $("#latest-ww-news-toast-container").get(0);
@@ -276,46 +274,89 @@
             </a>
           </div>
           <div id="dataDiv" class="modal-body">
-            <div class="mb-3 ml-1 row" id="feedbackMaterial">
-              <div class="custom-control custom-radio col-12 col-md-6">
-                <div>
-                  <input type="radio" id="feedbackSimpleRadio" checked name="feedbackRadio" class="custom-control-input">
-                  <label class="custom-control-label" for="feedbackSimpleRadio" th:text="#{label.fb.simple}">Lihtne vorm</label>
+            <small th:text="#{label.feedback.required.fields}">* Tärniga tähistatud väljad on kohustuslikud</small>
+            <div>
+              <form id="commentForm" class="needs-validation" novalidate>
+                <div class="form-row">
+                  <div class="form-group col-12">
+                    <label class="positive-feedback" hidden name="success_message" th:text="#{label.feedback.success}">Aitäh, oleme tagasiside kätte saanud. Tegeleme sellega esimesel võimalusel</label>
+                    <label class="negative-feedback" hidden name="error_message" th:text="#{label.feedback.invalid.form}">Saadetud andemd on vigased. Kontrollige palun andmeid ning proovige uuesti.</label>
+                    <input type="hidden" name="feedbackType" value="sõnaveeb">
+                    <input type="hidden" name="lastSearch" th:value="${sessionBean == null ? '' : sessionBean.searchWord}">
+                  </div>
                 </div>
-                <div>
-                  <small th:text="#{label.fb.simple.descrip}">Üldkeele puhul võib täita lihtsa vormi.</small>
+                <div class="form-row">
+                  <div class="form-group col-12">
+                    <label for="descriptionInput2" class="col-form-label" th:text="#{label.feedback.description}">Probleemi lühikirjeldus</label>
+                    <span>*</span>
+                    <input id="descriptionInput2" type="text" class="form-control" name="description" required>
+                    <div class="invalid-feedback" th:text="#{label.feedback.required.field}">Väli on kohustuslik</div>
+                  </div>
                 </div>
-              </div>
-              <div class="custom-control custom-radio col-12 col-md-6">
-                <div>
-                  <input type="radio" id="feedbackCompleteRadio" name="feedbackRadio" class="custom-control-input">
-                  <label class="custom-control-label" for="feedbackCompleteRadio" th:text="#{label.fb.complete}">Täielik vorm</label>
+                <div class="form-row">
+                  <div class="form-group col-12">
+                    <label for="wordInput2" class="col-form-label" th:text="#{label.feedback.word}">Sõna või väljend</label>
+                    <input id="wordInput2" type="text" class="form-control" name="word" required="required">
+                  </div>
                 </div>
-                <div>
-                  <small th:text="#{label.fb.complete.descrip}">Oleme tänulikud, kui terminiküsimuse puhul täidate täieliku vormi.</small>
+                <div class="form-row">
+                  <div class="form-group col-12">
+                    <label for="definitionInput2" class="col-form-label" th:text="#{label.feedback.definition}">Definitsioon</label>
+                    <input id="definitionInput2" type="text" class="form-control" name="definition">
+                  </div>
                 </div>
-              </div>
-            </div>
-            <small th:text="#{label.fb.required.fields}">* Tärniga tähistatud väljad on kohustuslikud</small>
-            <div id="feedWord" class="formarea show-section">
-              <th:block th:insert="common-app :: feedback_simple"></th:block>
-            </div>
-            <div id="feedComment" class="formarea">
-              <th:block th:insert="common-app :: feedback_complete"></th:block>
+                <div class="form-row">
+                  <div class="form-group col-12">
+                    <label for="usageInput2" class="col-form-label" th:text="#{label.feedback.usage}">Näitelause</label>
+                    <input id="usageInput2" type="text" class="form-control" name="usage">
+                  </div>
+                </div>
+                <div class="form-row">
+                  <div class="form-group col-12">
+                    <label for="otherInfoInput2" class="col-form-label" th:text="#{label.feedback.otherinfo}">Muu info</label>
+                    <input id="otherInfoInput2" type="text" class="form-control" name="otherInfo">
+                  </div>
+                </div>
+                <div class="form-row">
+                  <h5 th:text="#{label.feedback.message.heading}">Kui soovid vastust oma probleemile</h5>
+                  <div class="form-group col-12">
+                    <span th:text="#{label.feedback.message.content}">Kui sul on küsimus....</span>
+                  </div>
+                </div>
+                <div class="form-row">
+                  <div class="form-group col-12">
+                    <label for="emailInput2" class="col-form-label" th:text="#{label.feedback.email}">E-post</label>
+                    <input id="emailInput2" type="email" class="form-control form-email" name="senderEmail">
+                  </div>
+                </div>
+                <div class="form-row">
+                  <div class="form-group col-12">
+                    <div class="custom-control custom-checkbox mt-2">
+                      <input type="checkbox" class="custom-control-input modal-check" id="modalCheck2" required>
+                      <label class="custom-control-label" for="modalCheck2">
+                        <span th:text="#{label.feedback.iagree}">Nõustun</span>
+                        <a role="link" th:href="@{/regulations}" data-item-name="regulations" th:text="#{label.feedback.withterms}">kasutus- ja privaatsustingimustega</a>
+                        <span>&nbsp;&ast;</span>
+                      </label>
+                      <div class="invalid-feedback" th:text="#{label.feedback.required}">Väli on kohustuslik</div>
+                    </div>
+                  </div>
+                </div>
+                <div class="form-group">
+                  <div class="col-12 p-0 mt-2">
+                    <div class="text-right">
+                      <button type="button" class="btn btn-success" name="feedbackSendBtn" th:text="#{button.send}" disabled>Saada</button>
+                    </div>
+                  </div>
+                </div>
+              </form>
             </div>
           </div>
           <div id="responseDiv" class="modal-body d-none">
             <div class="form-row">
               <div class="form-group col-12">
-                <div id="feedbackFailMsg" class="alert alert-danger d-none" th:text="#{label.fb.technical.error}">Tagasiside saatmine ebaõnnestus, proovige hiljem uuesti.</div>
-                <div id="feedbackSuccessMsg" class="alert alert-success d-none" th:text="#{label.fb.success}">Aitähh saime tagasiside kätte</div>
-              </div>
-            </div>
-            <div class="form-group">
-              <div class="col-12 p-0 mt-2">
-                <div class="text-right">
-                  <button type="button" class="mr-3 btn btn-outline-success" data-dismiss="modal" th:text="#{button.fb.close}">Sulge</button>
-                </div>
+                <div id="feedbackErrorMessageElem" class="alert alert-danger d-none" th:text="#{label.feedback.technical.error}">Tagasiside saatmine ebaõnnestus, proovige hiljem uuesti.</div>
+                <div id="feedbackSuccessMessageElem" class="alert alert-success d-none" th:text="#{label.feedback.success}">Aitähh saime tagasiside kätte</div>
               </div>
             </div>
           </div>
@@ -399,194 +440,6 @@
         </div>
       </div>
     </footer>
-  </th:block>
-  <th:block th:fragment="feedback_simple">
-    <form id="newWordForm" class="needs-validation" novalidate>
-      <div class="form-row">
-        <div class="form-group col-12">
-          <label class="positive-feedback" hidden name="ok_message" th:text="#{label.fb.success}">Aitäh, oleme tagasiside kätte saanud. Tegeleme sellega esimesel võimalusel</label>
-          <label class="negative-feedback" hidden name="error_message" th:text="#{label.fb.error}">Saadetud andmed on vigased. Kontrollige palun andmeid ning proovige uuesti.</label>
-          <input type="hidden" name="feedbackType" value="simple">
-          <input type="hidden" name="lastSearch" th:value="${sessionBean == null ? '' : sessionBean.searchWord}">
-        </div>
-      </div>
-      <div class="form-row">
-        <div class="form-group col-12">
-          <label for="descriptionInput" class="col-form-label" th:text="#{label.fb.description}">Probleemi lühikirjeldus</label>
-          <span>*</span>
-          <input id="descriptionInput" type="text" class="form-control" name="description" required>
-          <div class="invalid-feedback" th:text="#{label.fb.required}">Väli on kohustuslik</div>
-        </div>
-      </div>
-      <div class="form-row">
-        <div class="form-group col-12">
-          <label for="wordInput" class="col-form-label" th:text="#{label.fb.simple.word}">Sõna või väljend</label>
-          <input id="wordInput" type="text" class="form-control" name="word">
-        </div>
-      </div>
-      <div class="form-row">
-        <div class="form-group col-12">
-          <label for="definitionInput" class="col-form-label" th:text="#{label.fb.simple.definition}">Tähendus</label>
-          <input id="definitionInput" type="text" class="form-control" name="definition">
-        </div>
-      </div>
-      <div class="form-row">
-        <div class="form-group col-12">
-          <label for="usageInput" class="col-form-label" th:text="#{label.fb.simple.usage}">Näitelause või tekstilõik, kus termin esineb</label>
-          <input id="usageInput" type="text" class="form-control" name="usage">
-        </div>
-      </div>
-      <div class="form-row">
-        <div class="form-group col-12">
-          <label for="otherInfoInput" class="col-form-label" th:text="#{label.fb.other.info}">Muu info</label>
-          <input id="otherInfoInput" type="text" class="form-control" name="otherInfo">
-        </div>
-      </div>
-      <div class="form-row">
-        <div class="form-group col-12 col-md-6">
-          <label for="nameInput" class="col-form-label" th:text="#{label.fb.name}">Ees- ja perekonnanimi</label>
-          <span>*</span>
-          <input id="nameInput" type="text" class="form-control" name="senderName" required>
-          <div class="invalid-feedback" th:text="#{label.fb.required}">Väli on kohustuslik</div>
-        </div>
-        <div class="form-group col-12 col-md-6">
-          <label for="emailInput" class="col-form-label" th:text="#{label.fb.email}">E-post</label>
-          <span>*</span>
-          <input id="emailInput" type="email" class="form-control form-email" name="senderEmail" required>
-          <div class="invalid-feedback" th:text="#{label.fb.required}">Väli on kohustuslik</div>
-        </div>
-      </div>
-      <div class="form-row">
-        <div class="form-group col-12">
-          <label for="companyInput" class="col-form-label" th:text="#{label.fb.company}">Asutus</label>
-          <input id="companyInput" type="text" class="form-control" name="company">
-        </div>
-      </div>
-      <div class="form-row">
-        <div class="form-group col-12">
-          <div class="custom-control custom-checkbox mt-2">
-            <input type="checkbox" class="custom-control-input modal-check" id="modalCheck" required>
-            <label class="custom-control-label" for="modalCheck">
-              <span th:text="#{label.fb.acknowledge}">Lisades uue sõna või kommentaari nõustud</span>
-              <a role="link" th:href="@{/regulations}" data-item-name="regulations" th:text="#{label.fb.privacy}">kasutus- ja privaatsustingimustega</a>
-              <span>&nbsp;&ast;</span>
-            </label>
-            <div class="invalid-feedback" th:text="#{label.fb.required}">Väli on kohustuslik</div>
-          </div>
-        </div>
-      </div>
-      <div class="form-group">
-        <div class="col-12 p-0 mt-2">
-          <div class="text-right">
-            <button type="button" class="btn btn-outline-success mr-3" data-dismiss="modal" th:text="#{button.fb.cancel}">Tühistan</button>
-            <button type="button" class="btn btn-success" name="feedbackSendBtn" th:text="#{button.fb.send.feedback}" disabled>Lisan</button>
-          </div>
-        </div>
-      </div>
-    </form>
-  </th:block>
-  <th:block th:fragment="feedback_complete">
-    <form id="commentForm" class="needs-validation" novalidate>
-      <div class="form-row">
-        <div class="form-group col-12">
-          <label class="positive-feedback" hidden name="ok_message" th:text="#{label.fb.success}">Aitäh, oleme tagasiside kätte saanud. Tegeleme sellega esimesel võimalusel</label>
-          <label class="negative-feedback" hidden name="error_message" th:text="#{label.fb.error}">Saadetud andemd on vigased. Kontrollige palun andmeid ning proovige uuesti.</label>
-          <input type="hidden" name="feedbackType" value="complete">
-          <input type="hidden" name="lastSearch" th:value="${sessionBean == null ? '' : sessionBean.searchWord}">
-        </div>
-      </div>
-      <div class="form-row">
-        <div class="form-group col-12">
-          <label for="descriptionInput2" class="col-form-label" th:text="#{label.fb.description}">Probleemi lühikirjeldus</label>
-          <span>*</span>
-          <input id="descriptionInput2" type="text" class="form-control" name="description" required>
-          <div class="invalid-feedback" th:text="#{label.fb.required}">Väli on kohustuslik</div>
-        </div>
-      </div>
-      <div class="form-row">
-        <div class="form-group col-12">
-          <label for="wordInput2" class="col-form-label" th:text="#{label.fb.complete.word}">Termin</label>
-          <input id="wordInput2" type="text" class="form-control" name="word">
-        </div>
-      </div>
-      <div class="form-row">
-        <div class="form-group col-12">
-          <label for="domainInput" class="col-form-label" th:text="#{label.fb.domain}">Valdkond</label>
-          <input id="domainInput" type="text" class="form-control" name="domain">
-        </div>
-      </div>
-      <div class="form-row">
-        <div class="form-group col-12">
-          <label for="usageInput2" class="col-form-label" th:text="#{label.fb.complete.usage}">Näitelause või tekstilõik, kus termin esineb</label>
-          <input id="usageInput2" type="text" class="form-control" name="usage">
-        </div>
-      </div>
-      <div class="form-row">
-        <div class="form-group col-12">
-          <label for="usageSourceInput" class="col-form-label" th:text="#{label.fb.complete.usage.source}">Näitelause või tekstilõigu allikas</label>
-          <input id="usageSourceInput" type="text" class="form-control" name="usageSource">
-        </div>
-      </div>
-      <div class="form-row">
-        <div class="form-group col-12">
-          <label for="definitionInput2" class="col-form-label" th:text="#{label.fb.complete.definition}">Definitsioon</label>
-          <input id="definitionInput2" type="text" class="form-control" name="definition">
-        </div>
-      </div>
-      <div class="form-row">
-        <div class="form-group col-12">
-          <label for="definitionSourceInput" class="col-form-label" th:text="#{label.fb.complete.definition.source}">Definitsiooni allikas</label>
-          <input id="definitionSourceInput" type="text" class="form-control" name="definitionSource">
-        </div>
-      </div>
-      <div class="form-row">
-        <div class="form-group col-12">
-          <label for="otherInfoInput2" class="col-form-label" th:text="#{label.fb.other.info}">Muu info</label>
-          <input id="otherInfoInput2" type="text" class="form-control" name="otherInfo">
-        </div>
-      </div>
-      <div class="form-row">
-        <div class="form-group col-12 col-md-6">
-          <label for="nameInput2" class="col-form-label" th:text="#{label.fb.name}">Ees- ja perekonnanimi</label>
-          <span>*</span>
-          <input id="nameInput2" type="text" class="form-control" name="senderName" required>
-          <div class="invalid-feedback" th:text="#{label.fb.required}">Väli on kohustuslik</div>
-        </div>
-        <div class="form-group col-12 col-md-6">
-          <label for="emailInput2" class="col-form-label" th:text="#{label.fb.email}">E-post</label>
-          <span>*</span>
-          <input id="emailInput2" type="email" class="form-control form-email" name="senderEmail" required>
-          <div class="invalid-feedback" th:text="#{label.fb.required}">Väli on kohustuslik</div>
-        </div>
-      </div>
-      <div class="form-row">
-        <div class="form-group col-12">
-          <label for="companyInput2" class="col-form-label" th:text="#{label.fb.company}">Asutus</label>
-          <input id="companyInput2" type="text" class="form-control" name="company">
-        </div>
-      </div>
-      <div class="form-row">
-        <div class="form-group col-12">
-          <div class="custom-control custom-checkbox mt-2">
-            <input type="checkbox" class="custom-control-input modal-check" id="modalCheck2" required>
-            <label class="custom-control-label" for="modalCheck2">
-              <span th:text="#{label.fb.acknowledge}">Lisades uue sõna või kommentaari nõustud</span>
-              <a role="link" th:href="@{/regulations}" data-item-name="regulations" th:text="#{label.fb.privacy}">kasutus- ja privaatsustingimustega</a>
-              <span>&nbsp;&ast;</span>
-            </label>
-            <div class="invalid-feedback" th:text="#{label.fb.required}">Väli on kohustuslik</div>
-          </div>
-        </div>
-      </div>
-      <div class="form-group">
-        <div class="col-12 p-0 mt-2">
-          <div class="text-right">
-            <button type="button" class="btn btn-outline-success mr-3" data-dismiss="modal" th:text="#{button.fb.cancel}">Tühistan</button>
-            <button type="button" class="btn btn-success" name="feedbackSendBtn" th:text="#{button.fb.send.feedback}" disabled>Lisan</button>
-          </div>
-        </div>
-      </div>
-    </form>
   </th:block>
   <!-- Scroll content top -->
   <th:block th:fragment="content-top">

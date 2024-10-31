@@ -21,8 +21,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.SessionAttributes;
 
 import eki.ekilex.constant.WebConstant;
-import eki.ekilex.data.FeedbackComment;
 import eki.ekilex.data.FeedbackLog;
+import eki.ekilex.data.FeedbackLogComment;
 import eki.ekilex.data.FeedbackLogResult;
 import eki.ekilex.service.FeedbackService;
 import eki.ekilex.web.bean.WwFeedbackSearchBean;
@@ -51,15 +51,6 @@ public class WordwebFeedbackController extends AbstractPublicPageController {
 			statusMessage = "error";
 		}
 		return "{\"status\": \"" + statusMessage + "\"}";
-	}
-
-	private WwFeedbackSearchBean getWwFeedbackSearchBean(Model model) {
-		WwFeedbackSearchBean wwFeedbackSearchBean = (WwFeedbackSearchBean) model.asMap().get(WW_FEEDBACK_SEARCH_BEAN);
-		if (wwFeedbackSearchBean == null) {
-			wwFeedbackSearchBean = new WwFeedbackSearchBean();
-			model.addAttribute(WW_FEEDBACK_SEARCH_BEAN, wwFeedbackSearchBean);
-		}
-		return wwFeedbackSearchBean;
 	}
 
 	@PreAuthorize("principal.datasetCrudPermissionsExist")
@@ -122,10 +113,10 @@ public class WordwebFeedbackController extends AbstractPublicPageController {
 
 		feedbackService.createFeedbackLogComment(feedbackLogId, comment, userName);
 
-		List<FeedbackComment> comments = feedbackService.getFeedbackLogComments(feedbackLogId);
+		List<FeedbackLogComment> comments = feedbackService.getFeedbackLogComments(feedbackLogId);
 		FeedbackLog feedbackLog = new FeedbackLog();
 		feedbackLog.setId(feedbackLogId);
-		feedbackLog.setFeedbackComments(comments);
+		feedbackLog.setFeedbackLogComments(comments);
 
 		model.addAttribute("feedbackLog", feedbackLog);
 
@@ -134,7 +125,7 @@ public class WordwebFeedbackController extends AbstractPublicPageController {
 
 	@PreAuthorize("principal.datasetCrudPermissionsExist")
 	@GetMapping(WW_FEEDBACK_URI + "/deletefeedback")
-	public String deleteDatasetPerm(@RequestParam("feedbackId") Long feedbackId, Model model) {
+	public String deleteFeedback(@RequestParam("feedbackId") Long feedbackId, Model model) {
 
 		feedbackService.deleteFeedbackLog(feedbackId);
 
@@ -152,5 +143,14 @@ public class WordwebFeedbackController extends AbstractPublicPageController {
 
 		FeedbackLogResult feedbackLogResult = feedbackService.getFeedbackLog(searchFilter, notCommentedFilter, pageNum);
 		model.addAttribute("feedbackLogResult", feedbackLogResult);
+	}
+
+	private WwFeedbackSearchBean getWwFeedbackSearchBean(Model model) {
+		WwFeedbackSearchBean wwFeedbackSearchBean = (WwFeedbackSearchBean) model.asMap().get(WW_FEEDBACK_SEARCH_BEAN);
+		if (wwFeedbackSearchBean == null) {
+			wwFeedbackSearchBean = new WwFeedbackSearchBean();
+			model.addAttribute(WW_FEEDBACK_SEARCH_BEAN, wwFeedbackSearchBean);
+		}
+		return wwFeedbackSearchBean;
 	}
 }

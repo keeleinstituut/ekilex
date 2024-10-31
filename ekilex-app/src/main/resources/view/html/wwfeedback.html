@@ -3,9 +3,13 @@
 <head th:replace="common :: common_header(~{::title},~{::links})">
 <title th:text="#{feedback.title}">Sõnaveebi tagasiside</title>
 <th:block th:fragment="links">
-	<style>
-		.breakWords {overflow-wrap: break-word; word-break:break-word; word-wrap: break-word}
-	</style>
+  <style>
+.breakWords {
+	overflow-wrap: break-word;
+	word-break: break-word;
+	word-wrap: break-word
+}
+</style>
 </th:block>
 </head>
 <body class="body-with-navbar">
@@ -41,12 +45,12 @@
             <i class="fa fa-2x fa-angle-left" aria-hidden="true"></i>
           </a>
           <span class="mt-1" th:text="${feedbackLogResult.pageNum + ' / ' + feedbackLogResult.pageCount}"></span>
-          <a th:href="@{'/wwfeedback/page/' + ${feedbackLogResult.pageNum + 1}}" th:hidden="${feedbackLogResult.pageNum == feedbackLogResult.pageCount}" th:title="#{common.next.page}" class="btn badge ml-2">
+          <a th:href="@{'/wwfeedback/page/' + ${feedbackLogResult.pageNum + 1}}" th:hidden="${feedbackLogResult.pageNum == feedbackLogResult.pageCount}" th:title="#{common.next.page}"
+            class="btn badge ml-2">
             <i class="fa fa-2x fa-angle-right" aria-hidden="true"></i>
           </a>
         </div>
-        <table class="table table-striped table-condensed table-hover"
-               th:with="isDatasetCrudOwnerOrAdmin=${userRoleData.datasetCrudOwnerOrAdmin}">
+        <table class="table table-striped table-condensed table-hover" th:with="isDatasetCrudOwnerOrAdmin=${userRoleData.datasetCrudOwnerOrAdmin}">
           <thead class="thead-light">
             <tr>
               <th th:text="#{feedback.created.on}">Saadetud</th>
@@ -62,7 +66,7 @@
             <tr th:each="feedbackLog : ${feedbackLogResult.feedbackLogs}">
               <td>
                 <span class="text-nowrap font-weight-light" th:text="${#dates.format(feedbackLog.createdOn, 'dd.MM.yyyy HH:mm')}"></span>
-                <span class="badge badge-info" th:text="#{'feedback.type.' + ${feedbackLog.feedbackType}}"></span>
+                <span class="badge badge-info" th:text="${feedbackLog.feedbackType}"></span>
               </td>
               <td>
                 <div class="text-primary" th:text="${feedbackLog.senderEmail}"></div>
@@ -101,10 +105,6 @@
                   <span class="lbl pr-2" th:text="#{feedback.usage.source}">Kasutusnäite allikas</span>
                   <span th:text="${feedbackLog.usageSource}"></span>
                 </div>
-                <div class="row ml-1" th:unless="${#strings.isEmpty(feedbackLog.comments)}">
-                  <span class="lbl pr-2" th:text="#{feedback.comment}">Kommentaar</span>
-                  <span th:text="${feedbackLog.comments}"></span>
-                </div>
                 <div class="row ml-1" th:unless="${#strings.isEmpty(feedbackLog.otherInfo)}">
                   <span class="lbl pr-2" th:text="#{feedback.other.info}">Muu info</span>
                   <span th:text="${feedbackLog.otherInfo}"></span>
@@ -116,34 +116,30 @@
               </td>
               <td>
                 <div th:replace="wwfeedbackdialog :: add_feedback_comment_dlg"></div>
-                <button type="button" class="btn badge badge-success"
-                        th:title="#{common.add.new}"
-                        data-toggle="modal"
-                        th:data-target="${'#addFeedbackCommentDlg_' + feedbackLog.id}"
-                        sec:authorize="${#vars.isDatasetCrudOwnerOrAdmin}">
+                <button type="button" class="btn badge badge-success" th:title="#{common.add.new}" data-toggle="modal" th:data-target="${'#addFeedbackCommentDlg_' + feedbackLog.id}"
+                  sec:authorize="${#vars.isDatasetCrudOwnerOrAdmin}">
                   <i class="fa fa-plus" aria-hidden="true"></i>
                 </button>
               </td>
               <td>
-                <table th:id="${'ekiCommentsArea_' + feedbackLog.id}" th:fragment="eki_comments">
-                  <tr th:each="ekiComment : ${feedbackLog.feedbackComments}">
-                    <td class="text-nowrap">
-                      <div class="font-weight-light" th:text="${#dates.format(ekiComment.createdOn, 'dd.MM.yyyy HH:mm')}"></div>
-                      <div>
-                        <em th:text="${ekiComment.userName}"></em>
-                      </div>
-                    </td>
-                    <td th:utext="${ekiComment.comment}" class="breakWords"></td>
-                  </tr>
-                </table>
+                <th:block th:if="${feedbackLog.feedbackLogComments}">
+                  <table th:id="${'ekiCommentsArea_' + feedbackLog.id}" th:fragment="eki_comments">
+                    <tr th:each="feedbackLogComment : ${feedbackLog.feedbackLogComments}">
+                      <td class="text-nowrap">
+                        <div class="font-weight-light" th:text="${#dates.format(feedbackLogComment.createdOn, 'dd.MM.yyyy HH:mm')}"></div>
+                        <div>
+                          <em th:text="${feedbackLogComment.userName}"></em>
+                        </div>
+                      </td>
+                      <td th:utext="${feedbackLogComment.comment}" class="breakWords"></td>
+                    </tr>
+                  </table>
+                </th:block>
               </td>
               <td>
                 <form th:action="@{/wwfeedback/deletefeedback}">
-                  <input type="hidden" name="feedbackId" th:value="${feedbackLog.id}"/>
-                  <button type="button" class="btn badge badge-warning"
-                          data-toggle="delete-confirm"
-                          data-placement="left"
-                          sec:authorize="${#vars.isDatasetCrudOwnerOrAdmin}">
+                  <input type="hidden" name="feedbackId" th:value="${feedbackLog.id}" />
+                  <button type="button" class="btn badge badge-warning" data-toggle="delete-confirm" data-placement="left" sec:authorize="${#vars.isDatasetCrudOwnerOrAdmin}">
                     <i class="fa fa-remove" aria-hidden="true"></i>
                   </button>
                 </form>
@@ -157,7 +153,8 @@
             <i class="fa fa-2x fa-angle-left" aria-hidden="true"></i>
           </a>
           <span class="mt-1" th:text="${feedbackLogResult.pageNum + ' / ' + feedbackLogResult.pageCount}"></span>
-          <a th:href="@{'/wwfeedback/page/' + ${feedbackLogResult.pageNum + 1}}" th:hidden="${feedbackLogResult.pageNum == feedbackLogResult.pageCount}" th:title="#{common.next.page}" class="btn badge ml-2">
+          <a th:href="@{'/wwfeedback/page/' + ${feedbackLogResult.pageNum + 1}}" th:hidden="${feedbackLogResult.pageNum == feedbackLogResult.pageCount}" th:title="#{common.next.page}"
+            class="btn badge ml-2">
             <i class="fa fa-2x fa-angle-right" aria-hidden="true"></i>
           </a>
         </div>
@@ -167,14 +164,14 @@
   <div th:replace="common :: #alertDlg"></div>
   <div th:replace="common :: #alertSmall"></div>
   <script type="text/javascript">
-  	$('[data-toggle=delete-confirm]').confirmation({
-      btnOkLabel : /*[[#{common.yes}]]*/'Jah',
-      btnCancelLabel : /*[[#{common.no}]]*/'Ei',
-      title : /*[[#{common.confirm.delete}]]*/'Kinnita kustutamine',
-  		onConfirm : function() {
-  			$(this).closest('form').submit();
-  		}
-  	});
-  </script>
+			$('[data-toggle=delete-confirm]').confirmation({
+				btnOkLabel : /*[[#{common.yes}]]*/'Jah',
+				btnCancelLabel : /*[[#{common.no}]]*/'Ei',
+				title : /*[[#{common.confirm.delete}]]*/'Kinnita kustutamine',
+				onConfirm : function() {
+					$(this).closest('form').submit();
+				}
+			});
+		</script>
 </body>
 </html>

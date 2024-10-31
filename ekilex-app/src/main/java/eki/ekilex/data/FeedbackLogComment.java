@@ -4,7 +4,7 @@ import java.sql.Timestamp;
 
 import eki.common.data.AbstractDataObject;
 
-public class FeedbackComment extends AbstractDataObject {
+public class FeedbackLogComment extends AbstractDataObject {
 
 	private static final long serialVersionUID = 1L;
 
