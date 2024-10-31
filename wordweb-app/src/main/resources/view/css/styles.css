@@ -17393,6 +17393,7 @@ body {
 .news-page__item h2,
 .news-page__item p {
   margin: 0;
+  color: var(--color-dark-blue);
 }
 
 .news-page__item h2,
@@ -17404,6 +17405,7 @@ body {
   font-size: 1rem;
   line-height: 19.36px;
   letter-spacing: 0.0015em;
+  margin-bottom: 8px;
 }
 
 .news-page__item p {
@@ -17419,6 +17421,7 @@ body {
   line-height: 14.52px;
   letter-spacing: 0.004em;
   color: var(--color-dark-blue-75);
+  margin-top: 8px;
 }
 
 .header-container {

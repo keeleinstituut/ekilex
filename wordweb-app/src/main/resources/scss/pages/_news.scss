@@ -73,6 +73,7 @@
     & h2,
     & p {
       margin: 0;
+      color: var(--color-dark-blue);
     }
 
     & h2,
@@ -84,6 +85,7 @@
       font-size: 1rem;
       line-height: 19.36px;
       letter-spacing: 0.0015em;
+      margin-bottom: 8px;
     }
 
     & p {
@@ -99,6 +101,7 @@
       line-height: 14.52px;
       letter-spacing: 0.004em;
       color: var(--color-dark-blue-75);
+      margin-top: 8px;
     }
   }
 }
