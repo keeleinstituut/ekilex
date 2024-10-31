@@ -14,8 +14,8 @@ Hello world
 <button
   on:click={() =>
     toastContainer.addToast({
-      title: "Versioon 1.37",
-      body: "Värsked täiendused ootavad sind.",
+      title: "Sõnaveebi versiooni 1.38 täiendused 09.10.2024",
+      body: "- Parandatud viga, mis põhjustas kasutusnäite muutmisel selle märgenduse kadumise",
       closeLabel: "Sulge",
       readMoreText: "Loe lähemalt",
       readMoreUrl: "https://google.com",
