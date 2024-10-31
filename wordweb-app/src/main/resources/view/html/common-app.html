@@ -289,32 +289,32 @@
                   <div class="form-group col-12">
                     <label for="descriptionInput2" class="col-form-label" th:text="#{label.feedback.description}">Probleemi lühikirjeldus</label>
                     <span>*</span>
-                    <input id="descriptionInput2" type="text" class="form-control" name="description" required>
+                    <input id="descriptionInput2" type="text" class="form-control" name="description" required="required" autocomplete="off">
                     <div class="invalid-feedback" th:text="#{label.feedback.required.field}">Väli on kohustuslik</div>
                   </div>
                 </div>
                 <div class="form-row">
                   <div class="form-group col-12">
                     <label for="wordInput2" class="col-form-label" th:text="#{label.feedback.word}">Sõna või väljend</label>
-                    <input id="wordInput2" type="text" class="form-control" name="word" required="required">
+                    <input id="wordInput2" type="text" class="form-control" name="word" autocomplete="off">
                   </div>
                 </div>
                 <div class="form-row">
                   <div class="form-group col-12">
                     <label for="definitionInput2" class="col-form-label" th:text="#{label.feedback.definition}">Definitsioon</label>
-                    <input id="definitionInput2" type="text" class="form-control" name="definition">
+                    <input id="definitionInput2" type="text" class="form-control" name="definition" autocomplete="off">
                   </div>
                 </div>
                 <div class="form-row">
                   <div class="form-group col-12">
                     <label for="usageInput2" class="col-form-label" th:text="#{label.feedback.usage}">Näitelause</label>
-                    <input id="usageInput2" type="text" class="form-control" name="usage">
+                    <input id="usageInput2" type="text" class="form-control" name="usage" autocomplete="off">
                   </div>
                 </div>
                 <div class="form-row">
                   <div class="form-group col-12">
                     <label for="otherInfoInput2" class="col-form-label" th:text="#{label.feedback.otherinfo}">Muu info</label>
-                    <input id="otherInfoInput2" type="text" class="form-control" name="otherInfo">
+                    <input id="otherInfoInput2" type="text" class="form-control" name="otherInfo" autocomplete="off">
                   </div>
                 </div>
                 <div class="form-row">
@@ -326,7 +326,7 @@
                 <div class="form-row">
                   <div class="form-group col-12">
                     <label for="emailInput2" class="col-form-label" th:text="#{label.feedback.email}">E-post</label>
-                    <input id="emailInput2" type="email" class="form-control form-email" name="senderEmail">
+                    <input id="emailInput2" type="email" class="form-control form-email" name="senderEmail" autocomplete="off">
                   </div>
                 </div>
                 <div class="form-row">

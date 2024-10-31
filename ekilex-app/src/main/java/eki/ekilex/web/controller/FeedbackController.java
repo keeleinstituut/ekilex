@@ -30,9 +30,9 @@ import eki.ekilex.web.bean.WwFeedbackSearchBean;
 @ConditionalOnWebApplication
 @Controller
 @SessionAttributes({WebConstant.SESSION_BEAN, WebConstant.WW_FEEDBACK_SEARCH_BEAN})
-public class WordwebFeedbackController extends AbstractPublicPageController {
+public class FeedbackController extends AbstractPublicPageController {
 
-	private static final Logger logger = LoggerFactory.getLogger(WordwebFeedbackController.class);
+	private static final Logger logger = LoggerFactory.getLogger(FeedbackController.class);
 
 	@Autowired
 	private FeedbackService feedbackService;
@@ -130,8 +130,11 @@ public class WordwebFeedbackController extends AbstractPublicPageController {
 		feedbackService.deleteFeedbackLog(feedbackId);
 
 		populateModel(model);
+		
+		WwFeedbackSearchBean wwFeedbackSearchBean = getWwFeedbackSearchBean(model);
+		int pageNum = wwFeedbackSearchBean.getPageNum();
 
-		return WW_FEEDBACK_PAGE;
+		return REDIRECT_PREF + WW_FEEDBACK_URI + "/page/" + pageNum;
 	}
 
 	private void populateModel(Model model) {
