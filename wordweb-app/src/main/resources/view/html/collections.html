@@ -94,7 +94,11 @@
           </p>
           <h5 class="highlighted">Oskussõnastikud ja terminibaasid</h5>
           <th:block th:each="dataset : ${termDatasets}">
-            <h6 class="highlighted" th:id="${'dataset-' + dataset.code}" th:text="${dataset.name}">Terminibaas</h6>
+            <h6 class="highlighted" th:id="${'dataset-' + dataset.code}">
+              <a th:href="|@{/ds}/${dataset.code}|">
+                <span th:text="${dataset.name}">Terminibaas</span>
+              </a>
+            </h6>
             <p style="white-space: pre-wrap;" th:text="${dataset.description}">(info lisandub)</p>
           </th:block>
           <h5 id="wordweb" class="highlighted">Sõnaveeb 2021</h5>
