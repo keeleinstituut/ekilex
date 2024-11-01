@@ -263,13 +263,13 @@ public class ViewUtil implements WebConstant, SystemConstant, GlobalConstant {
 		return null;
 	}
 
-	public String getDetailSearchUri(String word) {
-		String uri = webUtil.composeDetailSearchUri(DESTIN_LANG_ALL, DATASET_ALL, word, null, null);
+	public String getDetailSearchUri(String wordValue) {
+		String uri = webUtil.composeDetailSearchUri(DESTIN_LANG_ALL, DATASET_ALL, wordValue, null, null);
 		return uri;
 	}
 
-	public String getSimpleSearchUri(String word) {
-		String uri = webUtil.composeSimpleSearchUri(DESTIN_LANG_ALL, word, null, null);
+	public String getSimpleSearchUri(String wordValue) {
+		String uri = webUtil.composeSimpleSearchUri(DESTIN_LANG_ALL, wordValue, null, null);
 		return uri;
 	}
 
@@ -287,8 +287,24 @@ public class ViewUtil implements WebConstant, SystemConstant, GlobalConstant {
 		return webUtil.composeEkilexLimTermDetailsUrl(meaningId);
 	}
 
-	public String getRusCorpWordUrl(String word) {
-		return webUtil.composeRusCorpWordUrl(word);
+	public String getIateSearchUrl(String wordValue, String langIso3) {
+		Map<String, LanguageData> langDataMap = commonDataService.getLangDataMap();
+		LanguageData langData = langDataMap.get(langIso3);
+		String langIso2;
+		if (langData == null) {
+			langIso2 = LANGUAGE_CODE_EST;
+		} else {
+			langIso2 = langData.getCodeIso2();
+		}
+		return webUtil.composeIateSearchUrl(wordValue, langIso2);
+	}
+
+	public String getEkiOldskoolRusDictUrl(String wordValue) {
+		return webUtil.composeEkiOldskoolRusDictUrl(wordValue);
+	}
+
+	public String getRusCorpWordUrl(String wordValue) {
+		return webUtil.composeRusCorpWordUrl(wordValue);
 	}
 
 	public boolean enumEquals(Enum<?> enum1, Enum<?> enum2) {

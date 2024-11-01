@@ -173,10 +173,8 @@
             <th:block th:replace="common-search-sidebar :: paradigms"></th:block>
             <th:block th:replace="common-search-sidebar :: od-word-recommendations"></th:block>
             <th:block th:replace="common-search-sidebar :: word-relations"></th:block>
-            <th:block th:replace="common-search-sidebar :: etymology_new"></th:block>
-            <th:block th:if="${wordData.estHeadword || wordData.rusHeadword}">
-              <th:block th:replace="common-search-sidebar :: keelenou"></th:block>
-            </th:block>
+            <th:block th:replace="common-search-sidebar :: etymology"></th:block>
+            <th:block th:replace="common-search-sidebar :: keelenou"></th:block>
             <th:block th:if="${wordData.estHeadword}">
               <div id="corp" th:text="#{label.corp.search}">Otsin veebilauseid ...</div>
             </th:block>

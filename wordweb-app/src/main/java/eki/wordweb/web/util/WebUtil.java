@@ -15,15 +15,23 @@ import eki.wordweb.constant.WebConstant;
 @Component
 public class WebUtil implements WebConstant, SystemConstant, GlobalConstant {
 
-	private static final String MEANING_ID_URL_PLACEHOLDER = "{meaningId}";
+	private static final String URL_PLACEHOLDER_MEANING_ID = "{meaningId}";
 
-	private static final String WORD_URL_PLACEHOLDER = "{word}";
+	private static final String URL_PLACEHOLDER_WORD = "{word}";
+
+	private static final String URL_PLACEHOLDER_LANG = "{lang}";
 
 	@Value("${ekilex.limterm.details.url}")
 	private String ekilexLimTermDetailsUrl;
 
+	@Value("${eki.oldskool.rus.dict.url}")
+	private String ekiOldskoolRusDictUrl;
+
 	@Value("${corpus.service.rus.url}")
 	private String corpusServiceRusUrl;
+
+	@Value("${iate.service.url}")
+	private String iateServiceUrl;
 
 	public boolean isMaskedSearchCrit(String searchWord) {
 		if (StringUtils.containsAny(searchWord, SEARCH_MASK_CHARS, SEARCH_MASK_CHAR)) {
@@ -65,17 +73,33 @@ public class WebUtil implements WebConstant, SystemConstant, GlobalConstant {
 	}
 
 	public String composeEkilexLimTermDetailsUrl(Long meaningId) {
-		String limTermDetailsUrl = StringUtils.replace(ekilexLimTermDetailsUrl, MEANING_ID_URL_PLACEHOLDER, String.valueOf(meaningId));
+		String limTermDetailsUrl = new String(ekilexLimTermDetailsUrl);
+		limTermDetailsUrl = StringUtils.replace(limTermDetailsUrl, URL_PLACEHOLDER_MEANING_ID, String.valueOf(meaningId));
 		return limTermDetailsUrl;
 	}
 
 	public String getEkilexLimTermSearchUrl() {
-		String limTermSearchUrl = StringUtils.substringBefore(ekilexLimTermDetailsUrl, "?");
+		String limTermSearchUrl = new String(ekilexLimTermDetailsUrl);
+		limTermSearchUrl = StringUtils.substringBefore(limTermSearchUrl, "?");
 		return limTermSearchUrl;
 	}
 
-	public String composeRusCorpWordUrl(String word) {
-		String rusCorpWordUrl = StringUtils.replace(corpusServiceRusUrl, WORD_URL_PLACEHOLDER, word);
+	public String composeIateSearchUrl(String wordValue, String langIso2) {
+		String iateSearchdUrl = new String(iateServiceUrl);
+		iateSearchdUrl = StringUtils.replace(iateSearchdUrl, URL_PLACEHOLDER_WORD, wordValue);
+		iateSearchdUrl = StringUtils.replace(iateSearchdUrl, URL_PLACEHOLDER_LANG, langIso2);
+		return iateSearchdUrl;
+	}
+
+	public String composeEkiOldskoolRusDictUrl(String wordValue) {
+		String ekiDictSearchUrl = new String(ekiOldskoolRusDictUrl);
+		ekiDictSearchUrl = StringUtils.replace(ekiDictSearchUrl, URL_PLACEHOLDER_WORD, wordValue);
+		return ekiDictSearchUrl;
+	}
+
+	public String composeRusCorpWordUrl(String wordValue) {
+		String rusCorpWordUrl = new String(corpusServiceRusUrl);
+		rusCorpWordUrl = StringUtils.replace(rusCorpWordUrl, URL_PLACEHOLDER_WORD, wordValue);
 		return rusCorpWordUrl;
 	}
 

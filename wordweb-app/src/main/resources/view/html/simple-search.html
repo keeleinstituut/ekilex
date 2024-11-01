@@ -93,9 +93,7 @@
           <div class="col-md-5 col-lg-4 more-data sidebar">
             <th:block th:replace="common-search-sidebar :: paradigms"></th:block>
             <th:block th:replace="common-search-sidebar :: word-relations"></th:block>
-            <th:block th:if="${wordData.estHeadword || wordData.rusHeadword}">
-              <th:block th:replace="common-search-sidebar :: keelenou"></th:block>
-            </th:block>
+            <th:block th:replace="common-search-sidebar :: keelenou"></th:block>
             <th:block th:if="${wordData.estHeadword}">
               <div id="corp" th:text="#{label.corp.search}">Otsin veebilauseid ...</div>
             </th:block>

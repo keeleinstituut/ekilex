@@ -33,11 +33,14 @@ public abstract class AbstractController implements WebConstant, SystemConstant,
 	@Autowired
 	protected CommonDataService commonDataService;
 
+	@Value("${eki.keeleinfo.url}")
+	protected String ekiKeeleinfoUrl;
+
 	@Value("${speech.recognition.service.url:}")
-	protected String speechRecognitionServiceUrl;
+	private String speechRecognitionServiceUrl;
 
 	@Value("${wordweb.feedback.service.url:}")
-	protected String feedbackServiceUrl;
+	private String feedbackServiceUrl;
 
 	@Autowired
 	protected TextDecorationService textDecorationService;
@@ -89,6 +92,7 @@ public abstract class AbstractController implements WebConstant, SystemConstant,
 			sessionBean = getSessionBean(model);
 		}
 		String ekilexLimTermSearchUrl = webUtil.getEkilexLimTermSearchUrl();
+		model.addAttribute("ekiKeeleinfoUrl", ekiKeeleinfoUrl);
 		model.addAttribute("speechRecognitionServiceUrl", speechRecognitionServiceUrl);
 		model.addAttribute("feedbackServiceUrl", feedbackServiceUrl);
 		model.addAttribute("ekilexLimTermSearchUrl", ekilexLimTermSearchUrl);

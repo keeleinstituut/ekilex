@@ -18,9 +18,7 @@
       </div>
       <div class="news-page__content">
         <th:block th:unless="${newsArticles}">
-          <div th:text="#{label.news.missing.data}">
-            Hetkel andmed puuduvad....
-          </div>
+          <div th:text="#{label.news.missing.data}">Hetkel andmed puuduvad....</div>
         </th:block>
         <th:block th:if="${newsArticles}">
           <th:block th:each="newsArticle, newsArticleIter : ${newsArticles}">
@@ -29,9 +27,7 @@
               <th:block th:each="content: ${newsArticle.content.split('\R')}">
                 <p th:if="${content.length > 0}" th:utext="${content}"></p>
               </th:block>
-              <small
-                th:text="${#temporals.format(newsArticle.created, 'dd.MM.yyyy')}"
-              ></small>
+              <small th:text="${#temporals.format(newsArticle.created, 'dd.MM.yyyy')}"></small>
             </div>
           </th:block>
         </th:block>

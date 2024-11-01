@@ -114,6 +114,9 @@ public class CommonDataService implements SystemConstant {
 	public NewsArticle getLatestWordwebNewsArticle() {
 		String displayLang = languageContext.getDisplayLang();
 		NewsArticle newsArticle = commonDataDbService.getLatestWordwebNewsArticle(displayLang);
+		if (newsArticle == null) {
+			return null;
+		}
 		String content = newsArticle.getContent();
 		String contentCut = StringUtils.substringBefore(content, '.');
 		newsArticle.setContentCut(contentCut);
