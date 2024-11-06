@@ -40,7 +40,7 @@
         </div>
       </form>
     </div>
-    <div class="card mt-4 mb-4 shadow" th:if="${not #lists.isEmpty(classifiers)}">
+    <div class="card mt-4 mb-4 shadow" th:unless="${#lists.isEmpty(classifiers)}">
       <div class="card-header">
         <h5 class="card-title d-inline-block">
           <span th:text="#{|classifier.${classifierName}|}"></span>
@@ -48,60 +48,63 @@
         </h5>
       </div>
       <div class="card-body">
-        <table class="table table-striped m-0 p-0 table-hover" th:unless="${hasLabel}">
+        <table class="table table-sm table-striped table-hover" th:unless="${hasLabel}">
           <tr>
-            <th class="m-1 p-1" th:text="#{classifiers.code}">kood</th>
+            <th th:text="#{classifiers.code}">kood</th>
           </tr>
           <tr th:each="classifier : ${classifiers}">
-            <td class="m-1 p-1">
+            <td>
               <span th:text="${classifier.code}"></span>
             </td>
         </table>
-        <table class="table table-striped m-0 p-0 table-hover" th:if="${hasLabel}">
+        <table class="table table-sm table-striped table-hover" th:if="${hasLabel}">
           <th:block th:each="classifier,classifierIter : ${classifiers}">
             <tr th:if="${classifierIter.first}">
-              <th class="m-1 p-1" style="width: 5%" th:text="#{classifiers.order}">järjekord</th>
-              <th class="m-1 p-1" th:text="#{classifiers.code}">kood</th>
-              <th class="m-1 p-1" th:text="#{classifiers.lang}">keel</th>
-              <th class="m-1 p-1"
-                  th:each="label : ${classifier.labels}"
+              <th style="width: 5%" th:text="#{classifiers.order}">järjekord</th>
+              <th th:text="#{classifiers.code}">kood</th>
+              <th th:text="#{classifiers.lang}">keel</th>
+              <th th:each="label : ${classifier.labels}"
                   th:text="${label.type}">
               </th>
-              <th class="m-1 p-1"></th>
+              <th></th>
             </tr>
             <tr th:name="${classifier.code}">
-              <td class="m-1 p-1">
-                <input type="text" class="form-control" disabled
+              <td>
+                <input type="text" class="form-control form-control-sm"
                        name="classifierOrder"
-                       th:value="${classifier.order}">
+                       th:value="${classifier.order}"
+                       disabled="disabled">
               </td>
-              <td class="m-1 p-1">
-                <span th:text="${classifier.code}"></span>
+              <td>
+                <span class="form-control-sm" th:text="${classifier.code}"></span>
               </td>
-              <td class="m-1 p-1">
-                <div class="col-form-label" th:text="#{classifiers.lang.est}">est</div>
-                <div class="col-form-label" th:text="#{classifiers.lang.eng}">eng</div>
-                <div class="col-form-label" th:text="#{classifiers.lang.rus}">rus</div>
+              <td>
+                <div class="form-control-sm col-md-10" th:text="#{classifiers.lang.est}">est</div>
+                <div class="form-control-sm col-md-10" th:text="#{classifiers.lang.eng}">eng</div>
+                <div class="form-control-sm col-md-10" th:text="#{classifiers.lang.rus}">rus</div>
               </td>
-              <td class="m-1 p-1" th:each="label : ${classifier.labels}">
-                <input type="text" class="form-control" disabled
+              <td th:each="label : ${classifier.labels}">
+                <input type="text" class="form-control form-control-sm"
                        name="labelValue"
                        data-label-lang="est"
                        th:value="${label.labelEst}"
-                       th:data-label-type="${label.type}">
-                <input type="text" class="form-control" disabled
+                       th:data-label-type="${label.type}"
+                       disabled="disabled">
+                <input type="text" class="form-control form-control-sm"
                        name="labelValue"
                        data-label-lang="eng"
                        th:value="${label.labelEng}"
-                       th:data-label-type="${label.type}">
-                <input type="text" class="form-control" disabled
+                       th:data-label-type="${label.type}"
+                       disabled="disabled">
+                <input type="text" class="form-control form-control-sm"
                        name="labelValue"
                        data-label-lang="rus"
                        th:value="${label.labelRus}"
-                       th:data-label-type="${label.type}">
-              <td class="m-1 p-1">
-                <div>
-                  <button type="button" class="btn btn-secondary btn-compact" th:title="#{classifiers.add.before}"
+                       th:data-label-type="${label.type}"
+                       disabled="disabled">
+              <td>
+                <div class="form-control-sm col-md-12">
+                  <button type="button" class="btn btn-sm btn-secondary btn-compact" th:title="#{classifiers.add.before}"
                           name="addCodeBtn"
                           data-toggle="modal"
                           th:data-target="${'#addClassifierCodeDlg'}"
@@ -109,13 +112,13 @@
                           th:text="#{classifiers.add.code.before}">Lisa uus kood ette
                   </button>
                 </div>
-                <div>
-                  <button type="button" class="btn btn-primary btn-compact mt-2" th:title="#{common.edit}"
+                <div class="form-control-sm col-md-12">
+                  <button type="button" class="btn btn-sm btn-primary btn-compact" th:title="#{common.edit}"
                           name="editClassifBtn"
                           data-plugin="editClassifierPlugin"
                           th:text="#{common.edit}">Muuda
                   </button>
-                  <button type="button" class="btn btn-warning btn-compact mt-2"
+                  <button type="button" class="btn btn-sm btn-warning btn-compact"
                           name="deleteClassifBtn"
                           th:data-classif-code="${classifier.code}"
                           th:data-classif-name="${classifierName}"
@@ -124,32 +127,29 @@
                           th:text="#{common.delete}">Kustuta
                   </button>
                 </div>
-                <div>
-                  <button type="button" class="btn btn-secondary btn-compact" th:title="#{classifiers.add.after}"
+                <div class="form-control-sm col-md-12">
+                  <button type="button" class="btn btn-sm btn-secondary btn-compact" th:title="#{classifiers.add.after}"
                           name="addCodeBtn"
                           data-toggle="modal"
                           th:data-target="${'#addClassifierCodeDlg'}"
                           th:data-classif-order="${classifier.order + 1}"
                           th:text="#{classifiers.add.code.after}">Lisa uus kood järele
                   </button>
-                </div>
-                <div>
-                  <button type="button" class="btn btn-primary btn-compact" title="Salvesta" style="display: none"
+                  <button type="button" class="btn btn-sm btn-primary btn-compact" title="Salvesta"
                           name="saveRowBtn"
                           th:data-classif-code="${classifier.code}"
                           th:data-classif-name="${classifierName}"
                           th:data-domain-origin="${domainOriginCode}"
                           data-plugin="saveClassifierChangesPlugin"
-                          th:text="#{common.save}">Salvesta
+                          th:text="#{common.save}"
+                          style="display: none">Salvesta
                   </button>
-                </div>
-                <div>
-                  <button type="button" class="btn btn-secondary btn-compact mt-2"
+                  <button type="button" class="btn btn-sm btn-secondary btn-compact"
                           th:title="#{common.cancel}"
-                          style="display: none"
                           name="cancelBtn"
                           data-plugin="cancelClassifierEditPlugin"
-                          th:text="#{common.cancel}">Katkesta
+                          th:text="#{common.cancel}"
+                          style="display: none">Katkesta
                   </button>
                 </div>
               </td>

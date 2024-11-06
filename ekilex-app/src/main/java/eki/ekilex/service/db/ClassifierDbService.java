@@ -1,79 +1,124 @@
 package eki.ekilex.service.db;
 
+import static eki.ekilex.data.db.main.Public.PUBLIC;
 import static eki.ekilex.data.db.main.Tables.DOMAIN;
 import static eki.ekilex.data.db.main.Tables.DOMAIN_LABEL;
 
+import java.util.Arrays;
 import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
 import org.jooq.Condition;
 import org.jooq.Field;
+import org.jooq.JSON;
 import org.jooq.Record2;
 import org.jooq.Table;
 import org.jooq.impl.DSL;
 import org.springframework.stereotype.Component;
 
+import eki.common.constant.ClassifierName;
+import eki.ekilex.data.ClassifierFull;
 import eki.ekilex.data.ClassifierLabel;
 
 @Component
 public class ClassifierDbService extends AbstractDataDbService {
 
-	private static final Field<Object> CODE_FIELD = DSL.field("code");
+	private static final Field<String> CODE_FIELD = DSL.field("code", String.class);
 
-	private static final Field<Object> TYPE_FIELD = DSL.field("type");
+	private static final Field<String> TYPE_FIELD = DSL.field("type", String.class);
 
-	private static final Field<Object> LANG_FIELD = DSL.field("lang");
+	private static final Field<String> LANG_FIELD = DSL.field("lang", String.class);
 
-	private static final Field<Object> VALUE_FIELD = DSL.field("value");
+	private static final Field<String> VALUE_FIELD = DSL.field("value", String.class);
 
-	private static final Field<Object> ROW_NUM_FIELD = DSL.field("row_num");
+	private static final Field<Integer> ROW_NUM_FIELD = DSL.field("row_num", Integer.class);
 
-	private static final Field<Object> ORIGIN_FIELD = DSL.field("origin");
+	private static final Field<String> ORIGIN_FIELD = DSL.field("origin", String.class);
 
 	private static final Field<Object> DATASETS_FIELD = DSL.field("datasets");
 
 	private static final Field<Long> ORDER_BY_FIELD = DSL.field("order_by", Long.class);
 
-	public List<String> getClassifierCodes(String classifierName) {
+	public List<ClassifierFull> getClassifierFulls(ClassifierName classifierName, String origin, List<String> labelTypes) {
 
-		return mainDb
-				.select(CODE_FIELD)
-				.from(classifierName)
-				.orderBy(ORDER_BY_FIELD)
-				.fetchInto(String.class);
-	}
+		String classifierTableName = getTableName(classifierName);
+		String classifierLabelTableName = getLabelTableName(classifierName);
+		Table<?> cl = PUBLIC.getTable(classifierTableName).as("cl");
+		Table<?> cll = PUBLIC.getTable(classifierLabelTableName).as("cll");
 
-	public List<ClassifierLabel> getClassifierLabels(String classifierName, String classifierCode) {
-
-		String labelTableName = getLabelTableName(classifierName);
-
-		return mainDb
-				.select(CODE_FIELD, TYPE_FIELD, LANG_FIELD, VALUE_FIELD)
-				.from(labelTableName)
-				.where(CODE_FIELD.eq(classifierCode))
-				.fetchInto(ClassifierLabel.class);
-	}
-
-	public List<String> getDomainCodes(String domainOrigin) {
-
-		return mainDb
-				.select(DOMAIN.CODE)
-				.from(DOMAIN)
-				.where(DOMAIN.ORIGIN.eq(domainOrigin))
-				.orderBy(DOMAIN.ORDER_BY)
-				.fetchInto(String.class);
-	}
-
-	public List<ClassifierLabel> getDomainLabels(String domainOrigin, String domainCode, String labelTypeCode) {
-
-		return mainDb
-				.select(DOMAIN_LABEL.CODE, DOMAIN_LABEL.TYPE, DOMAIN_LABEL.LANG, DOMAIN_LABEL.VALUE)
-				.from(DOMAIN_LABEL)
+		Field<JSON> cllrf = DSL
+				.select(DSL
+						.jsonArrayAgg(DSL
+								.jsonObject(
+										DSL.key("code").value(cll.field("code", String.class)),
+										DSL.key("origin").value(cll.field("origin", String.class)),
+										DSL.key("value").value(cll.field("value", String.class)),
+										DSL.key("lang").value(cll.field("lang", String.class)),
+										DSL.key("type").value(cll.field("type", String.class)))))
+				.from(cll)
 				.where(
-						DOMAIN_LABEL.CODE.eq(domainCode)
-								.and(DOMAIN_LABEL.ORIGIN.eq(domainOrigin))
-								.and(DOMAIN_LABEL.TYPE.eq(labelTypeCode)))
-				.fetchInto(ClassifierLabel.class);
+						cll.field("code", String.class).eq(cl.field("code", String.class))
+								.and(cll.field("origin", String.class).eq(cl.field("origin", String.class)))
+								.and(cll.field("type", String.class).in(labelTypes)))
+				.asField();
+
+		return mainDb
+				.select(
+						DSL.val(classifierName.name()).as("name"),
+						DSL.val(origin).as("origin"),
+						cl.field("code", String.class),
+						cllrf.as("labels"),
+						DSL.rowNumber().over(DSL.orderBy(cl.field("order_by"))).as("order"))
+				.from(cl)
+				.where(cl.field("origin", String.class).eq(origin))
+				.orderBy(cl.field("order_by"))
+				.fetchInto(ClassifierFull.class);
+	}
+
+	public List<ClassifierFull> getClassifierFulls(ClassifierName classifierName, List<String> labelTypes) {
+
+		boolean hasLabel = classifierName.hasLabel();
+		String classifierTableName = getTableName(classifierName);
+		Table<?> cl = PUBLIC.getTable(classifierTableName).as("cl");
+		List<Field<?>> fields;
+
+		if (hasLabel) {
+
+			String classifierLabelTableName = getLabelTableName(classifierName);
+			Table<?> cll = PUBLIC.getTable(classifierLabelTableName).as("cll");
+			Field<JSON> cllrf = DSL
+					.select(DSL
+							.jsonArrayAgg(DSL
+									.jsonObject(
+											DSL.key("code").value(cll.field("code", String.class)),
+											DSL.key("value").value(cll.field("value", String.class)),
+											DSL.key("lang").value(cll.field("lang", String.class)),
+											DSL.key("type").value(cll.field("type", String.class)))))
+					.from(cll)
+					.where(
+							cll.field("code", String.class).eq(cl.field("code", String.class))
+									.and(cll.field("type", String.class).in(labelTypes)))
+					.asField();
+
+			fields = Arrays.asList(
+					DSL.val(classifierName.name()).as("name"),
+					cl.field("code", String.class),
+					cllrf.as("labels"),
+					DSL.rowNumber().over(DSL.orderBy(cl.field("order_by"))).as("order"));
+
+		} else {
+
+			fields = Arrays.asList(
+					DSL.val(classifierName.name()).as("name"),
+					cl.field("code", String.class),
+					DSL.rowNumber().over(DSL.orderBy(cl.field("order_by"))).as("order"));
+		}
+
+		return mainDb
+				.select(fields)
+				.from(cl)
+				.orderBy(cl.field("order_by"))
+				.fetchInto(ClassifierFull.class);
 	}
 
 	public Long getClassifierOrderBy(String classifierName, String classifierCode) {
@@ -189,13 +234,12 @@ public class ClassifierDbService extends AbstractDataDbService {
 
 	public void createOrUpdateClassifierLabel(ClassifierLabel classifierLabel) {
 
-		String classifierName = classifierLabel.getClassifierName().name();
+		ClassifierName classifierName = classifierLabel.getClassifierName();
 		String code = classifierLabel.getCode();
 		String type = classifierLabel.getType();
 		String lang = classifierLabel.getLang();
 		String value = classifierLabel.getValue();
 		String origin = classifierLabel.getOrigin();
-
 		String labelTableName = getLabelTableName(classifierName);
 
 		if (StringUtils.isNotBlank(origin)) {
@@ -282,12 +326,11 @@ public class ClassifierDbService extends AbstractDataDbService {
 
 	public void deleteClassifierLabel(ClassifierLabel classifierLabel) {
 
-		String classifierName = classifierLabel.getClassifierName().name();
+		ClassifierName classifierName = classifierLabel.getClassifierName();
 		String code = classifierLabel.getCode();
 		String type = classifierLabel.getType();
 		String lang = classifierLabel.getLang();
 		String origin = classifierLabel.getOrigin();
-
 		String labelTableName = getLabelTableName(classifierName);
 
 		Condition deleteWhere = CODE_FIELD.eq(code)
@@ -343,8 +386,12 @@ public class ClassifierDbService extends AbstractDataDbService {
 						.where(DOMAIN.ORIGIN.eq(domainOrigin).and(DOMAIN.CODE.eq(classifierCode))));
 	}
 
-	private String getLabelTableName(String classifierName) {
-		return classifierName + "_label";
+	private String getTableName(ClassifierName classifierName) {
+		return classifierName.name().toLowerCase();
+	}
+
+	private String getLabelTableName(ClassifierName classifierName) {
+		return getTableName(classifierName) + "_label";
 	}
 
 }

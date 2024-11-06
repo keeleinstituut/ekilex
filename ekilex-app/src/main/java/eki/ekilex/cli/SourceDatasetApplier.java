@@ -18,6 +18,7 @@ import eki.ekilex.cli.runner.SourceDatasetApplierRunner;
 		"eki.ekilex.cli.config",
 		"eki.ekilex.cli.runner",
 		"eki.ekilex.service.core",
+		"eki.ekilex.service.cli",
 		"eki.ekilex.service.db",
 		"eki.ekilex.service.util",
 		"eki.ekilex.data"})

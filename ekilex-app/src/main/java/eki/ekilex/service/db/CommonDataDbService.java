@@ -94,7 +94,6 @@ import org.jooq.Condition;
 import org.jooq.Field;
 import org.jooq.JSON;
 import org.jooq.Record11;
-import org.jooq.Record3;
 import org.jooq.Table;
 import org.jooq.impl.DSL;
 import org.springframework.cache.annotation.Cacheable;
@@ -130,7 +129,6 @@ import eki.ekilex.data.db.main.tables.Freeform;
 import eki.ekilex.data.db.main.tables.FreeformSourceLink;
 import eki.ekilex.data.db.main.tables.FreeformType;
 import eki.ekilex.data.db.main.tables.FreeformTypeLabel;
-import eki.ekilex.data.db.main.tables.Language;
 import eki.ekilex.data.db.main.tables.LexRelTypeLabel;
 import eki.ekilex.data.db.main.tables.LexRelation;
 import eki.ekilex.data.db.main.tables.Lexeme;
@@ -139,6 +137,7 @@ import eki.ekilex.data.db.main.tables.LexemeNote;
 import eki.ekilex.data.db.main.tables.LexemeNoteSourceLink;
 import eki.ekilex.data.db.main.tables.LexemeRegister;
 import eki.ekilex.data.db.main.tables.Meaning;
+import eki.ekilex.data.db.main.tables.MeaningDomain;
 import eki.ekilex.data.db.main.tables.MeaningFreeform;
 import eki.ekilex.data.db.main.tables.MeaningImage;
 import eki.ekilex.data.db.main.tables.MeaningImageSourceLink;
@@ -346,23 +345,53 @@ public class CommonDataDbService extends AbstractDataDbService {
 				.fetchInto(Classifier.class);
 	}
 
-	@Cacheable(value = CACHE_KEY_CLASSIF, key = "{#root.methodName, #classifierLabelLang, #classifierLabelTypeCode}")
-	public List<Classifier> getDomainsInUse(String classifierLabelLang, String classifierLabelTypeCode) {
+	@Cacheable(value = CACHE_KEY_CLASSIF, key = "{#root.methodName, #classifierLabelLang, #classifierLabelTypeCode, #classifierCommentTypeCode}")
+	public List<Classifier> getDomainsInUse(String classifierLabelLang, String classifierLabelTypeCode, String classifierCommentTypeCode) {
+
+		Domain d = DOMAIN.as("d");
+		DomainLabel dl = DOMAIN_LABEL.as("dl");
+		DomainLabel dc = DOMAIN_LABEL.as("dc");
+		MeaningDomain md = MEANING_DOMAIN.as("md");
+
+		Field<String> dlvf = DSL
+				.select(dl.VALUE)
+				.from(dl)
+				.where(
+						dl.CODE.eq(d.CODE)
+								.and(dl.ORIGIN.eq(d.ORIGIN))
+								.and(dl.LANG.eq(classifierLabelLang))
+								.and(dl.TYPE.eq(classifierLabelTypeCode)))
+				.limit(1)
+				.asField();
+
+		Field<String> dcvf = DSL
+				.select(dc.VALUE)
+				.from(dc)
+				.where(
+						dc.CODE.eq(d.CODE)
+								.and(dc.ORIGIN.eq(d.ORIGIN))
+								.and(dc.LANG.eq(classifierLabelLang))
+								.and(dc.TYPE.eq(classifierCommentTypeCode)))
+				.limit(1)
+				.asField();
+
 		return mainDb
 				.select(
 						getClassifierNameField(ClassifierName.DOMAIN),
-						DOMAIN_LABEL.ORIGIN,
-						DOMAIN_LABEL.CODE,
-						DOMAIN_LABEL.VALUE)
-				.from(DOMAIN_LABEL)
+						d.PARENT_ORIGIN,
+						d.PARENT_CODE,
+						d.ORIGIN,
+						d.CODE,
+						dlvf.as("value"),
+						dcvf.as("comment"))
+				.from(d)
 				.whereExists(DSL
-						.select(MEANING_DOMAIN.DOMAIN_ORIGIN, MEANING_DOMAIN.DOMAIN_CODE)
-						.from(MEANING_DOMAIN)
-						.where(MEANING_DOMAIN.DOMAIN_ORIGIN.eq(DOMAIN_LABEL.ORIGIN)
-								.and(MEANING_DOMAIN.DOMAIN_CODE.eq(DOMAIN_LABEL.CODE))
-								.and(DOMAIN_LABEL.LANG.eq(classifierLabelLang))
-								.and(DOMAIN_LABEL.TYPE.eq(classifierLabelTypeCode))))
-				.orderBy(DOMAIN_LABEL.ORIGIN, DOMAIN_LABEL.CODE, DOMAIN_LABEL.LANG.desc())
+						.select(md.ID)
+						.from(md)
+						.where(
+								md.DOMAIN_ORIGIN.eq(d.ORIGIN)
+										.and(md.DOMAIN_CODE.eq(d.CODE))))
+				.orderBy(d.ORIGIN, d.ORDER_BY)
 				.fetchInto(Classifier.class);
 	}
 
@@ -504,35 +533,46 @@ public class CommonDataDbService extends AbstractDataDbService {
 				.fetchInto(Origin.class);
 	}
 
-	@Cacheable(value = CACHE_KEY_CLASSIF, key = "{#root.methodName, #origin, #classifierLabelTypeCode}")
-	public List<Classifier> getDomains(String origin, String classifierLabelTypeCode) {
+	@Cacheable(value = CACHE_KEY_CLASSIF, key = "{#root.methodName, #origin, #classifierLabelLang, #classifierLabelTypeCode, #classifierCommentTypeCode}")
+	public List<Classifier> getDomains(String origin, String classifierLabelLang, String classifierLabelTypeCode, String classifierCommentTypeCode) {
 
 		Domain d = DOMAIN.as("d");
-		DomainLabel dll = DOMAIN_LABEL.as("dl");
-		Language l = LANGUAGE.as("l");
+		DomainLabel dl = DOMAIN_LABEL.as("dl");
+		DomainLabel dc = DOMAIN_LABEL.as("dc");
 
-		Table<Record3<String, String, String>> dl = DSL.select(
-				dll.ORIGIN,
-				dll.CODE,
-				DSL.field("(array_agg(dl.value order by l.order_by)) [1]", String.class).as("value"))
-				.from(dll, l)
+		Field<String> dlvf = DSL
+				.select(dl.VALUE)
+				.from(dl)
 				.where(
-						dll.LANG.eq(l.CODE)
-								.and(dll.TYPE.eq(classifierLabelTypeCode)))
-				.groupBy(dll.ORIGIN, dll.CODE)
-				.asTable("dl");
+						dl.CODE.eq(d.CODE)
+								.and(dl.ORIGIN.eq(d.ORIGIN))
+								.and(dl.LANG.eq(classifierLabelLang))
+								.and(dl.TYPE.eq(classifierLabelTypeCode)))
+				.limit(1)
+				.asField();
+
+		Field<String> dcvf = DSL
+				.select(dc.VALUE)
+				.from(dc)
+				.where(
+						dc.CODE.eq(d.CODE)
+								.and(dc.ORIGIN.eq(d.ORIGIN))
+								.and(dc.LANG.eq(classifierLabelLang))
+								.and(dc.TYPE.eq(classifierCommentTypeCode)))
+				.limit(1)
+				.asField();
 
 		return mainDb
-				.select(getClassifierNameField(ClassifierName.DOMAIN),
+				.select(
+						getClassifierNameField(ClassifierName.DOMAIN),
 						d.PARENT_ORIGIN,
 						d.PARENT_CODE,
 						d.ORIGIN,
 						d.CODE,
-						dl.field("value", String.class))
-				.from(d, dl)
-				.where(d.ORIGIN.eq(origin)
-						.and(dl.field("origin", String.class).eq(d.ORIGIN))
-						.and(dl.field("code", String.class).eq(d.CODE)))
+						dlvf.as("value"),
+						dcvf.as("comment"))
+				.from(d)
+				.where(d.ORIGIN.eq(origin))
 				.orderBy(d.ORDER_BY)
 				.fetchInto(Classifier.class);
 	}
@@ -913,24 +953,52 @@ public class CommonDataDbService extends AbstractDataDbService {
 				.fetchInto(Media.class);
 	}
 
-	public List<OrderedClassifier> getMeaningDomains(Long meaningId, String classifierLabelLang, String classifierLabelTypeCode) {
+	public List<OrderedClassifier> getMeaningDomains(Long meaningId, String classifierLabelLang, String classifierLabelTypeCode, String classifierCommentTypeCode) {
+
+		Domain d = DOMAIN.as("d");
+		DomainLabel dl = DOMAIN_LABEL.as("dl");
+		DomainLabel dc = DOMAIN_LABEL.as("dc");
+		MeaningDomain md = MEANING_DOMAIN.as("md");
+
+		Field<String> dlvf = DSL
+				.select(dl.VALUE)
+				.from(dl)
+				.where(
+						dl.CODE.eq(d.CODE)
+								.and(dl.ORIGIN.eq(d.ORIGIN))
+								.and(dl.LANG.eq(classifierLabelLang))
+								.and(dl.TYPE.eq(classifierLabelTypeCode)))
+				.limit(1)
+				.asField();
+
+		Field<String> dcvf = DSL
+				.select(dc.VALUE)
+				.from(dc)
+				.where(
+						dc.CODE.eq(d.CODE)
+								.and(dc.ORIGIN.eq(d.ORIGIN))
+								.and(dc.LANG.eq(classifierLabelLang))
+								.and(dc.TYPE.eq(classifierCommentTypeCode)))
+				.limit(1)
+				.asField();
 
 		return mainDb
 				.select(
 						getClassifierNameField(ClassifierName.DOMAIN),
-						DOMAIN_LABEL.CODE,
-						DOMAIN_LABEL.ORIGIN,
-						DOMAIN_LABEL.VALUE,
-						MEANING_DOMAIN.ID,
-						MEANING_DOMAIN.ORDER_BY)
-				.from(
-						MEANING_DOMAIN.leftOuterJoin(DOMAIN_LABEL).on(
-								MEANING_DOMAIN.DOMAIN_CODE.eq(DOMAIN_LABEL.CODE)
-										.and(MEANING_DOMAIN.DOMAIN_ORIGIN.eq(DOMAIN_LABEL.ORIGIN))
-										.and(DOMAIN_LABEL.LANG.eq(classifierLabelLang))
-										.and(DOMAIN_LABEL.TYPE.eq(classifierLabelTypeCode))))
-				.where(MEANING_DOMAIN.MEANING_ID.eq(meaningId))
-				.orderBy(MEANING_DOMAIN.ORDER_BY, DOMAIN_LABEL.LANG.desc())
+						d.PARENT_ORIGIN,
+						d.PARENT_CODE,
+						d.ORIGIN,
+						d.CODE,
+						dlvf.as("value"),
+						dcvf.as("comment"),
+						md.ID,
+						md.ORDER_BY)
+				.from(d, md)
+				.where(
+						md.DOMAIN_ORIGIN.eq(d.ORIGIN)
+								.and(md.DOMAIN_CODE.eq(d.CODE))
+								.and(md.MEANING_ID.eq(meaningId)))
+				.orderBy(md.ORDER_BY, d.ORIGIN, d.ORDER_BY)
 				.fetchInto(OrderedClassifier.class);
 	}
 
@@ -1613,56 +1681,76 @@ public class CommonDataDbService extends AbstractDataDbService {
 				.fetchInto(String.class);
 	}
 
-	private Field<String> getClassifierNameField(ClassifierName classifierName) {
-		return DSL.field(DSL.value(classifierName.name())).as("name");
-	}
+	public List<Classifier> getDatasetClassifiers(
+			ClassifierName classifierName,
+			String datasetCode,
+			String classifierLabelLang,
+			String classifierLabelTypeCode,
+			String classifierCommentTypeCode) {
 
-	public List<Classifier> getDatasetClassifiers(ClassifierName classifierName, String datasetCode, String classifierLabelLang, String classifierLabelTypeCode) {
 		String[] datasetCodes = {datasetCode};
 		if (ClassifierName.LANGUAGE.equals(classifierName)) {
-			return mainDb.select(getClassifierNameField(ClassifierName.LANGUAGE), LANGUAGE.CODE, LANGUAGE_LABEL.VALUE, LANGUAGE.ORDER_BY)
-					.from(LANGUAGE, LANGUAGE_LABEL)
+
+			return mainDb
+					.select(
+							getClassifierNameField(ClassifierName.LANGUAGE),
+							LANGUAGE.CODE,
+							LANGUAGE_LABEL.VALUE,
+							LANGUAGE.ORDER_BY)
+					.from(
+							LANGUAGE,
+							LANGUAGE_LABEL)
 					.where(
 							LANGUAGE.CODE.eq(LANGUAGE_LABEL.CODE)
 									.and(LANGUAGE_LABEL.TYPE.eq(classifierLabelTypeCode))
 									.and(LANGUAGE_LABEL.LANG.eq(classifierLabelLang))
 									.and(LANGUAGE.DATASETS.contains(datasetCodes)))
 					.fetchInto(Classifier.class);
+
 		} else if (ClassifierName.DOMAIN.equals(classifierName)) {
-			return mainDb.select(
-					getClassifierNameField(ClassifierName.DOMAIN),
-					DOMAIN.ORIGIN,
-					DOMAIN.CODE,
-					DOMAIN_LABEL.VALUE)
-					.from(DOMAIN.leftJoin(DOMAIN_LABEL).on(DOMAIN.CODE.eq(DOMAIN_LABEL.CODE).and(DOMAIN.ORIGIN.eq(DOMAIN_LABEL.ORIGIN))))
+
+			Domain d = DOMAIN.as("d");
+			DomainLabel dl = DOMAIN_LABEL.as("dl");
+			DomainLabel dc = DOMAIN_LABEL.as("dc");
+
+			Field<String> dlvf = DSL
+					.select(dl.VALUE)
+					.from(dl)
 					.where(
-							DOMAIN.CODE.eq(DOMAIN_LABEL.CODE)
-									.and(DOMAIN.ORIGIN.eq(DOMAIN_LABEL.ORIGIN))
-									.and(DOMAIN.DATASETS.contains(datasetCodes))
-									.and(DOMAIN_LABEL.TYPE.eq(classifierLabelTypeCode))
-									.and(DOMAIN_LABEL.LANG.eq(classifierLabelLang)))
-					.orderBy(DOMAIN.CODE, DOMAIN_LABEL.LANG.desc())
+							dl.CODE.eq(d.CODE)
+									.and(dl.ORIGIN.eq(d.ORIGIN))
+									.and(dl.LANG.eq(classifierLabelLang))
+									.and(dl.TYPE.eq(classifierLabelTypeCode)))
+					.limit(1)
+					.asField();
+
+			Field<String> dcvf = DSL
+					.select(dc.VALUE)
+					.from(dc)
+					.where(
+							dc.CODE.eq(d.CODE)
+									.and(dc.ORIGIN.eq(d.ORIGIN))
+									.and(dc.LANG.eq(classifierLabelLang))
+									.and(dc.TYPE.eq(classifierCommentTypeCode)))
+					.limit(1)
+					.asField();
+
+			return mainDb
+					.select(
+							getClassifierNameField(ClassifierName.DOMAIN),
+							d.PARENT_ORIGIN,
+							d.PARENT_CODE,
+							d.ORIGIN,
+							d.CODE,
+							dlvf.as("value"),
+							dcvf.as("comment"))
+					.from(d)
+					.where(d.DATASETS.contains(datasetCodes))
+					.orderBy(d.ORIGIN, d.ORDER_BY)
 					.fetchInto(Classifier.class);
 		}
 
 		throw new UnsupportedOperationException();
-	}
-
-	public List<Classifier> getDatasetDomains(String datasetCode) {
-		String[] datasetCodes = {datasetCode};
-		return mainDb
-				.select(getClassifierNameField(ClassifierName.DOMAIN),
-						DOMAIN.PARENT_ORIGIN,
-						DOMAIN.PARENT_CODE,
-						DOMAIN.ORIGIN,
-						DOMAIN.CODE,
-						DOMAIN_LABEL.VALUE)
-				.distinctOn(DOMAIN.CODE)
-				.from(DOMAIN)
-				.leftJoin(DOMAIN_LABEL)
-				.on(DOMAIN.CODE.eq(DOMAIN_LABEL.CODE).and(DOMAIN.ORIGIN.eq(DOMAIN_LABEL.ORIGIN)))
-				.where(DOMAIN.DATASETS.contains(datasetCodes))
-				.fetchInto(Classifier.class);
 	}
 
 	public List<Classifier> getDatasetFreeformTypes(String datasetCode, FreeformOwner freeformOwner, String classifierLabelLang, String classifierLabelTypeCode) {
@@ -1683,5 +1771,9 @@ public class CommonDataDbService extends AbstractDataDbService {
 								.and(DATASET_FREEFORM_TYPE.FREEFORM_OWNER.eq(freeformOwner.name())))
 				.orderBy(FREEFORM_TYPE.ORDER_BY)
 				.fetchInto(Classifier.class);
+	}
+
+	private Field<String> getClassifierNameField(ClassifierName classifierName) {
+		return DSL.field(DSL.value(classifierName.name())).as("name");
 	}
 }
