@@ -49,7 +49,8 @@ public abstract class AbstractSearchController extends AbstractAuthActionControl
 		if (userRole == null) {
 			return Collections.emptyMap();
 		}
-		return commonDataService.getDatasetDomainsByOrigin(userRole.getDatasetCode());
+		String datasetCode = userRole.getDatasetCode();
+		return commonDataService.getDatasetDomainsByOrigin(datasetCode);
 	}
 
 	@ModelAttribute("wordMorphCodes")

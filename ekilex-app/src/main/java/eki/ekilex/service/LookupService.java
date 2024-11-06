@@ -221,8 +221,8 @@ public class LookupService extends AbstractWordSearchService {
 		Map<String, String> datasetNameMap = commonDataDbService.getDatasetNameMap();
 		String datasetCode = lookupDbService.getMeaningFirstDatasetCode(meaningId);
 		String meaningdatasetname = datasetNameMap.get(datasetCode);
-		List<Classifier> datasetLanguages = commonDataDbService.getDatasetClassifiers(ClassifierName.LANGUAGE, datasetCode, CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
-		List<OrderedClassifier> meaningDomains = commonDataDbService.getMeaningDomains(meaningId, CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
+		List<Classifier> datasetLanguages = commonDataDbService.getDatasetClassifiers(ClassifierName.LANGUAGE, datasetCode, CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP, null);
+		List<OrderedClassifier> meaningDomains = commonDataDbService.getMeaningDomains(meaningId, CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP, CLASSIF_LABEL_TYPE_COMMENT);
 		List<Definition> meaningDefinitions = commonDataDbService.getMeaningDefinitions(meaningId, datasetCode, CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
 		permCalculator.filterVisibility(user, meaningDefinitions);
 
@@ -258,7 +258,7 @@ public class LookupService extends AbstractWordSearchService {
 		Map<String, String> datasetNameMap = commonDataDbService.getDatasetNameMap();
 		String datasetCode = lookupDbService.getMeaningFirstDatasetCode(meaningId);
 		String meaningdatasetname = datasetNameMap.get(datasetCode);
-		List<OrderedClassifier> meaningDomains = commonDataDbService.getMeaningDomains(meaningId, CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
+		List<OrderedClassifier> meaningDomains = commonDataDbService.getMeaningDomains(meaningId, CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP, CLASSIF_LABEL_TYPE_COMMENT);
 		List<Definition> meaningDefinitions = commonDataDbService.getMeaningDefinitions(meaningId, datasetCode, CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
 		permCalculator.filterVisibility(user, meaningDefinitions);
 
@@ -437,7 +437,7 @@ public class LookupService extends AbstractWordSearchService {
 		List<Definition> definitions = commonDataDbService.getMeaningDefinitions(meaningId, CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
 		permCalculator.filterVisibility(user, definitions);
 		List<DefinitionLangGroup> definitionLangGroups = conversionUtil.composeMeaningDefinitionLangGroups(definitions, languagesOrder);
-		List<OrderedClassifier> domains = commonDataDbService.getMeaningDomains(meaningId, CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
+		List<OrderedClassifier> domains = commonDataDbService.getMeaningDomains(meaningId, CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP, CLASSIF_LABEL_TYPE_COMMENT);
 		List<FreeForm> meaningFreeforms = commonDataDbService.getMeaningFreeforms(meaningId, EXCLUDED_MEANING_ATTRIBUTE_FF_TYPE_CODES_MIN, CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
 
 		List<Long> lexemeIds = meaning.getLexemeIds();

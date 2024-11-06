@@ -39,7 +39,7 @@ import eki.common.data.Count;
 import eki.common.data.transport.ForeignKey;
 import eki.common.data.transport.TableColumn;
 import eki.ekilex.service.AbstractLoaderCommons;
-import eki.ekilex.service.TransportService;
+import eki.ekilex.service.cli.TransportService;
 
 // TODO update data structures
 @Component

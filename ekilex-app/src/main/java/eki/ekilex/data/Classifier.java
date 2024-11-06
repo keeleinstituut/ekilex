@@ -26,6 +26,8 @@ public class Classifier extends AbstractDataObject {
 
 	private String value;
 
+	private String comment;
+
 	private String[] datasets;
 
 	private String jsonStr;
@@ -76,6 +78,14 @@ public class Classifier extends AbstractDataObject {
 
 	public void setValue(String value) {
 		this.value = value;
+	}
+
+	public String getComment() {
+		return comment;
+	}
+
+	public void setComment(String comment) {
+		this.comment = comment;
 	}
 
 	public String[] getDatasets() {

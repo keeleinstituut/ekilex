@@ -197,7 +197,7 @@ public class LexSearchService extends AbstractWordSearchService {
 		List<MeaningWord> synMeaningWords = commonDataDbService.getMeaningWords(lexemeId, meaningWordLangsRestriction);
 		List<InexactSynonym> inexactSynonyms = lookupDbService.getMeaningInexactSynonyms(meaningId, wordLang, datasetCode);
 		List<SynonymLangGroup> synonymLangGroups = conversionUtil.composeSynonymLangGroups(synMeaningRelations, synMeaningWords, inexactSynonyms, userProfile, wordLang, languagesOrder);
-		List<OrderedClassifier> meaningDomains = commonDataDbService.getMeaningDomains(meaningId, CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
+		List<OrderedClassifier> meaningDomains = commonDataDbService.getMeaningDomains(meaningId, CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP, CLASSIF_LABEL_TYPE_COMMENT);
 		List<Definition> definitions = commonDataDbService.getMeaningDefinitions(meaningId, datasetCode, CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
 		permCalculator.applyCrud(user, definitions);
 		permCalculator.filterVisibility(user, definitions);

@@ -89,6 +89,12 @@
 				<spring.boot.mainclass>eki.ekilex.cli.SourceDatasetApplier</spring.boot.mainclass>
 			</properties>
 		</profile>
+		<profile>
+			<id>domf</id>
+			<properties>
+				<spring.boot.mainclass>eki.ekilex.cli.DomainFixer</spring.boot.mainclass>
+			</properties>
+		</profile>
 	</profiles>
 
 	<build>

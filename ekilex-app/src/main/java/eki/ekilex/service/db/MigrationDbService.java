@@ -5,6 +5,7 @@ import static eki.ekilex.data.db.main.Tables.COLLOCATION_MEMBER;
 import static eki.ekilex.data.db.main.Tables.DEFINITION_DATASET;
 import static eki.ekilex.data.db.main.Tables.DEFINITION_FREEFORM;
 import static eki.ekilex.data.db.main.Tables.DEFINITION_SOURCE_LINK;
+import static eki.ekilex.data.db.main.Tables.DOMAIN_LABEL;
 import static eki.ekilex.data.db.main.Tables.FORM;
 import static eki.ekilex.data.db.main.Tables.FREEFORM_SOURCE_LINK;
 import static eki.ekilex.data.db.main.Tables.LEXEME;
@@ -26,15 +27,15 @@ import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
 import org.jooq.Condition;
-import org.jooq.DSLContext;
 import org.jooq.Field;
 import org.jooq.Record4;
 import org.jooq.Table;
 import org.jooq.impl.DSL;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import eki.common.constant.ClassifierName;
 import eki.common.constant.Complexity;
+import eki.common.data.Classifier;
 import eki.ekilex.data.CollocationTuple;
 import eki.ekilex.data.WordLexemeMeaningIdTuple;
 import eki.ekilex.data.db.main.tables.Collocation;
@@ -66,8 +67,66 @@ import eki.ekilex.data.migra.SourceLinkOwner;
 @Component
 public class MigrationDbService extends AbstractDataDbService {
 
-	@Autowired
-	private DSLContext mainDb;
+	public List<Classifier> getDomains(String origin, String type) {
+
+		return mainDb
+				.select(
+						DSL.val(ClassifierName.DOMAIN.name()).as("name"),
+						DOMAIN_LABEL.ORIGIN,
+						DOMAIN_LABEL.CODE,
+						DOMAIN_LABEL.VALUE,
+						DOMAIN_LABEL.LANG)
+				.from(DOMAIN_LABEL)
+				.where(
+						DOMAIN_LABEL.ORIGIN.eq(origin)
+								.and(DOMAIN_LABEL.TYPE.eq(type)))
+				.orderBy(
+						DOMAIN_LABEL.CODE,
+						DOMAIN_LABEL.LANG)
+				.fetchInto(Classifier.class);
+	}
+
+	public void updateDomainLabelValue(String code, String origin, String value, String lang, String type) {
+
+		mainDb
+				.update(DOMAIN_LABEL)
+				.set(DOMAIN_LABEL.VALUE, value)
+				.where(
+						DOMAIN_LABEL.CODE.eq(code)
+								.and(DOMAIN_LABEL.ORIGIN.eq(origin))
+								.and(DOMAIN_LABEL.LANG.eq(lang))
+								.and(DOMAIN_LABEL.TYPE.eq(type)))
+				.execute();
+	}
+
+	public boolean createDomainLabel(String code, String origin, String value, String lang, String type) {
+
+		int resultCount = mainDb
+				.insertInto(
+						DOMAIN_LABEL,
+						DOMAIN_LABEL.CODE,
+						DOMAIN_LABEL.ORIGIN,
+						DOMAIN_LABEL.VALUE,
+						DOMAIN_LABEL.LANG,
+						DOMAIN_LABEL.TYPE)
+				.select(
+						DSL.select(
+								DSL.val(code),
+								DSL.val(origin),
+								DSL.val(value),
+								DSL.val(lang),
+								DSL.val(type))
+								.whereNotExists(DSL
+										.selectOne()
+										.from(DOMAIN_LABEL)
+										.where(
+												DOMAIN_LABEL.CODE.eq(code)
+														.and(DOMAIN_LABEL.ORIGIN.eq(origin))
+														.and(DOMAIN_LABEL.LANG.eq(lang))
+														.and(DOMAIN_LABEL.TYPE.eq(type)))))
+				.execute();
+		return resultCount > 0;
+	}
 
 	public boolean wordExists(String value) {
 

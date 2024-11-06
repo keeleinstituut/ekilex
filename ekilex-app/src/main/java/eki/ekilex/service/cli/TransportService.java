@@ -1,4 +1,4 @@
-package eki.ekilex.service;
+package eki.ekilex.service.cli;
 
 import java.io.InputStream;
 import java.sql.Timestamp;
@@ -24,6 +24,7 @@ import eki.common.data.transport.ForeignKey;
 import eki.common.data.transport.TableColumn;
 import eki.common.data.util.ForeignKeyRowMapper;
 import eki.common.data.util.TableColumnRowMapper;
+import eki.ekilex.service.AbstractLoaderCommons;
 
 @Component
 public class TransportService extends AbstractLoaderCommons implements InitializingBean {

@@ -234,6 +234,10 @@ set
 	feedback_type = 'sõnaveeb'
 where
 	feedback_type = 'simple';
+	
+-- uus klassifikaatori väärtuse liik
+
+insert into label_type (code, value) values ('comment', 'comment');
 
 -- tegevuslogide osaline kolimine teise baasi
 

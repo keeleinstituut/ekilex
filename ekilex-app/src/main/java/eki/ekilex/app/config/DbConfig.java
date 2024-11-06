@@ -21,38 +21,38 @@ public class DbConfig {
 
 	@Bean("mainDataSourceProperties")
 	@ConfigurationProperties("spring.datasource.main")
-	DataSourceProperties mainDataSourceProperties() {
+	protected DataSourceProperties mainDataSourceProperties() {
 		return new DataSourceProperties();
 	}
 
 	@Bean("archDataSourceProperties")
 	@ConfigurationProperties("spring.datasource.arch")
-	DataSourceProperties archDataSourceProperties() {
+	protected DataSourceProperties archDataSourceProperties() {
 		return new DataSourceProperties();
 	}
 
 	@Bean("mainDataSource")
 	@Primary
-	DataSource mainDataSource() {
+	protected DataSource mainDataSource() {
 		return mainDataSourceProperties()
 				.initializeDataSourceBuilder()
 				.build();
 	}
 
 	@Bean("mainNamedParameterJdbcTemplate")
-	NamedParameterJdbcTemplate mainNamedParameterJdbcTemplate(@Qualifier("mainDataSource") DataSource mainDataSource) {
+	protected NamedParameterJdbcTemplate mainNamedParameterJdbcTemplate(@Qualifier("mainDataSource") DataSource mainDataSource) {
 		return new NamedParameterJdbcTemplate(mainDataSource);
 	}
 
 	@Bean("archDataSource")
-	DataSource archDataSource() {
+	protected DataSource archDataSource() {
 		return archDataSourceProperties()
 				.initializeDataSourceBuilder()
 				.build();
 	}
 
 	@Bean("mainDb")
-	DSLContext mainDslContext(@Qualifier("mainDataSource") DataSource mainDataSource) {
+	protected DSLContext mainDslContext(@Qualifier("mainDataSource") DataSource mainDataSource) {
 
 		DSLContext context = DSL.using(mainDataSource, SQLDialect.POSTGRES);
 
@@ -68,7 +68,7 @@ public class DbConfig {
 	}
 
 	@Bean("archDb")
-	DSLContext archDslContext(@Qualifier("archDataSource") DataSource archDataSource) {
+	protected DSLContext archDslContext(@Qualifier("archDataSource") DataSource archDataSource) {
 
 		DSLContext context = DSL.using(archDataSource, SQLDialect.POSTGRES);
 

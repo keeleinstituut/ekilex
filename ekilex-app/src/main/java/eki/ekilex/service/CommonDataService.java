@@ -115,21 +115,21 @@ public class CommonDataService implements InitializingBean, SystemConstant, Glob
 
 	@Transactional
 	public Map<String, List<Classifier>> getDomainsInUseByOrigin() {
-		List<Classifier> domains = commonDataDbService.getDomainsInUse(CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
+		List<Classifier> domains = commonDataDbService.getDomainsInUse(CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP, CLASSIF_LABEL_TYPE_COMMENT);
 		return domains.stream().collect(groupingBy(Classifier::getOrigin));
 	}
 
 	@Transactional
 	public Map<String, List<Classifier>> getDatasetDomainsByOrigin(String datasetCode) {
 		List<Classifier> domains = commonDataDbService.getDatasetClassifiers(
-				ClassifierName.DOMAIN, datasetCode, CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
+				ClassifierName.DOMAIN, datasetCode, CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP, CLASSIF_LABEL_TYPE_COMMENT);
 		Map<String, List<Classifier>> datasetDomainsByOrigin = domains.stream().collect(groupingBy(Classifier::getOrigin));
 		return datasetDomainsByOrigin;
 	}
 
 	@Transactional
 	public List<Classifier> getDomains(String origin) {
-		List<Classifier> domains = commonDataDbService.getDomains(origin, CLASSIF_LABEL_TYPE_DESCRIP);
+		List<Classifier> domains = commonDataDbService.getDomains(origin, CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP, CLASSIF_LABEL_TYPE_COMMENT);
 		return domains;
 	}
 
@@ -306,7 +306,7 @@ public class CommonDataService implements InitializingBean, SystemConstant, Glob
 
 	@Transactional
 	public List<Classifier> getDatasetLanguages(String datasetCode) {
-		return commonDataDbService.getDatasetClassifiers(ClassifierName.LANGUAGE, datasetCode, CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
+		return commonDataDbService.getDatasetClassifiers(ClassifierName.LANGUAGE, datasetCode, CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP, null);
 	}
 
 	@Transactional
