@@ -10,6 +10,7 @@
   --color-gray-900: #3f3f3f;
   --color-gray-1000: #0e1013;
   --color-light-gray: #C4D2DD;
+  --color-bluish-gray: #E4ECEF;
   --color-white: #fff;
   --color-blue-100: #a0dcf8;
   --color-blue-200: #5aabe0;
@@ -17315,6 +17316,47 @@ body {
   width: 100%;
 }
 
+.sticky-scroll-panel {
+  display: none;
+}
+
+@media (max-width: 767.98px) {
+  .sticky-scroll-panel {
+    position: sticky;
+    top: 80px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+    margin-bottom: 14px;
+    z-index: 1;
+  }
+}
+
+.sticky-scroll-panel__tag {
+  background-color: var(--color-white);
+  border: 1px solid var(--color-bluish-gray);
+  border-radius: 100px;
+  color: var(--color-gray-900);
+  font-weight: 700;
+  font-size: .75rem;
+  padding: 6px 10px;
+}
+
+.sticky-scroll-panel__tag--active, .sticky-scroll-panel__tag:active {
+  background-color: var(--color-dark-blue);
+  color: var(--color-white);
+}
+
+.sticky-scroll-panel__tag--active:hover, .sticky-scroll-panel__tag:active:hover {
+  color: var(--color-white);
+  border-color: var(--color-light-blue);
+}
+
+.sticky-scroll-panel__tag:hover {
+  border-color: var(--color-black);
+  text-decoration: none;
+}
+
 .news-page {
   background-color: var(--color-white);
 }
@@ -18420,6 +18462,7 @@ body {
   --color-gray-900: #3f3f3f;
   --color-gray-1000: #0e1013;
   --color-light-gray: #C4D2DD;
+  --color-bluish-gray: #E4ECEF;
   --color-white: #fff;
   --color-blue-100: #a0dcf8;
   --color-blue-200: #5aabe0;

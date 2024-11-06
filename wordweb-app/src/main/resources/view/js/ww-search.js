@@ -148,3 +148,73 @@ $(document).on("click", ".word-grouper-wrapper .btn-collapse", function() {
 		middle.addClass('limit-collapsed');
 	}
 });
+
+
+$(window).on('load', function() {
+	let count = 0;
+  const interval = setInterval(() => {
+		// Wait for loading to complete before init
+    if (!document.querySelector(".loading-indicator").checkVisibility()) {
+      initStickyScrollPanel();
+      clearInterval(interval);
+    }
+		// Clear interval anyway if something went wrong and we've been checking for a while
+    if (count === 100) {
+      clearInterval(interval);
+    }
+    count++;
+  }, 150);
+})
+
+
+
+
+function initStickyScrollPanel() {
+	const panel = document.querySelector(".sticky-scroll-panel");
+  if (!panel) {
+    return;
+  }
+  const links = [...panel.children];
+  const options = {
+    threshold: [0, 1],
+  };
+  const activeClass = "sticky-scroll-panel__tag--active";
+
+	// Create a callback for the intersection observer
+  const intersectionCallback = (entries) => {
+    entries.forEach((entry) => {
+      links.forEach((link) => {
+        const linkHref = link.href.split("#")?.[1];
+        if (linkHref === entry.target.id) {
+          if (entry.intersectionRatio === 1) {
+            link.classList.add(activeClass);
+          } else {
+            link.classList.remove(activeClass);
+          }
+        }
+      });
+    });
+  };
+
+  const observer = new IntersectionObserver(intersectionCallback, options);
+  links.forEach((link) => {
+		const targetElement = document.getElementById(link.href.split("#")?.[1]);
+		// Observe link targets
+    if (targetElement) {
+			observer.observe(targetElement);
+    }
+		// Manually change link to active on click, as they scroll to their target
+		link.addEventListener('click', (e) => {
+			// Delay changes to override intersection observer
+			setTimeout(() => {
+				links.forEach((link) => {
+					if (link === e.target) {
+						link.classList.add(activeClass);
+					} else {
+						link.classList.remove(activeClass);
+					}
+				});
+			}, 15);
+		})
+  });
+}
