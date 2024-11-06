@@ -18,7 +18,7 @@
   <th:block th:replace="common-app :: latest-ww-news-article"></th:block>
   <th:block th:replace="common-app :: ie-user"></th:block>
   <div th:replace="common-app :: menu-with-back-btn"></div>
-  <div class="container-fluid homonym-page mt-3 mb-5">
+  <div class="container-fluid homonym-page mb-5">
     <div class="search-results-header px-0">
       <div class="d-flex flex-row flex-wrap align-items-center pb-3">
         <th:block th:replace="common-search :: form-match"></th:block>
@@ -53,6 +53,11 @@
         <button name="feedback-btn" value="feedback" class="feedback-btn ml-auto btn btn-success py-0 show-with-details" role="button" type="button" data-toggle="modal" data-target="#feedbackModal"
           data-item-name="feedback" th:text="#{feedback.title}">Tagasiside</button>
       </div>
+    </div>
+    <div class="sticky-scroll-panel">
+      <a href="#word-morphology-results" class="sticky-scroll-panel__tag" th:text="#{label.word.forms}">Sõnavormid</a>
+      <a href="#word-relation-results" class="sticky-scroll-panel__tag" th:text="#{label.word.relations.union}">Ühendid</a>
+      <a href="#word-etymology-results" class="sticky-scroll-panel__tag" th:text="#{label.word.etymology}">Päritolu</a>
     </div>
     <main id="mainContentArea" role="main" class="content-panel px-3 loading">
       <div th:if="${wordsData.resultsExist}" class="loading-indicator">
@@ -129,7 +134,7 @@
             </div>
             <div class="level-2-panel">
               <th:block th:if="${wordData.lexemesExist}">
-                <th:block th:if="${not #lists.isEmpty(wordData.lexLexemes)}">
+                <div th:if="${not #lists.isEmpty(wordData.lexLexemes)}" id="lexeme-results">
                   <h5 class="meaning-sub-heading">
                     <i class="fa fa-book mr-1 text-muted"></i>
                     <span th:text="#{lexdata.title}">EKI ühendsõnastik 2020</span>
@@ -143,8 +148,8 @@
                       <div th:replace="lex-details :: lexeme-data"></div>
                     </section>
                   </th:block>
-                </th:block>
-                <th:block th:if="${not #lists.isEmpty(wordData.termLexemes)}">
+                </div>
+                <div th:if="${not #lists.isEmpty(wordData.termLexemes)}" id="term-lexeme-results">
                   <h5 class="meaning-sub-heading">
                     <a data-toggle="collapse" href="#term-section-collapse">
                       <i class="fa fa-book mr-1 text-muted"></i>
@@ -158,7 +163,7 @@
                       </section>
                     </th:block>
                   </div>
-                </th:block>
+                </div>
                 <!-- /Removed termsearch -->
                 <th:block th:if="${not #lists.isEmpty(wordData.limTermLexemes)}">
                   <section class="level-3-panel meaning-panel d-block" th:each="lexeme : ${wordData.limTermLexemes}">
