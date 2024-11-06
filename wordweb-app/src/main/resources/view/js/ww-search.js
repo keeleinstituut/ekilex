@@ -148,3 +148,50 @@ $(document).on("click", ".word-grouper-wrapper .btn-collapse", function() {
 		middle.addClass('limit-collapsed');
 	}
 });
+
+
+$(window).on('load', function() {
+	initStickyScrollPanel();
+})
+
+
+
+function initStickyScrollPanel() {
+	const panel = document.querySelector(".sticky-scroll-panel");
+  if (!panel) {
+		return;
+  }
+	let stickyScrollTimeout;
+  const links = [...panel.children];
+	const linkTargetCache = {};
+
+  const activeClass = "sticky-scroll-panel__tag--active";
+	document.addEventListener("scroll", () => {
+    // Debounce scroll events
+    clearTimeout(stickyScrollTimeout);
+    stickyScrollTimeout = setTimeout(() => {
+      const latest = [];
+      links.forEach((link) => {
+        let target = linkTargetCache[link.href];
+        if (!target) {
+          const block = document.getElementById(link.href.split("#")?.[1]);
+          if (block) {
+            linkTargetCache[link.href] = block;
+            target = block;
+          }
+        }
+        link.classList.remove(activeClass);
+        // Check if element is in viewport
+        const targetTop = target.getBoundingClientRect().top - 250;
+        // Get the closest element to the top of viewport
+        if (targetTop <= 0 && (latest[0] < targetTop || latest[0] === undefined)) {
+          latest[0] = targetTop;
+          latest[1] = link;
+        }
+      });
+      if (latest[1]) {
+        latest[1].classList.add(activeClass);
+      }
+    }, 50);
+  });
+}

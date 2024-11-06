@@ -2,7 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <body>
   <th:block th:fragment="paradigms">
-    <section class="level-3-panel row">
+    <section class="level-3-panel row" id="word-morphology-results">
       <div class="col-12 morphology-panel" th:if="${wordData.morphologyExists}">
         <h5 class="font-weight-bold mb-0 d-flex align-items-center text-dark">
           <span th:text="#{label.word.forms}">Sõnavormid</span>
@@ -106,7 +106,7 @@
     </section>
     <th:block th:if="${not #lists.isEmpty(wordData.word.primaryRelatedWordTypeGroups)}">
       <th:block th:each="relationTypeGroup,relGroupIter : ${wordData.word.primaryRelatedWordTypeGroups}">
-        <section class="level-3-panel row">
+        <section class="level-3-panel row" th:id="${relationTypeGroup.wordRelType.code.equals('ühend') ? 'word-relation-results' : null}">
           <div class="col-12 word-relations">
             <h5 class="font-weight-bold d-flex align-items-center text-dark">
               <th:block th:if="${relationTypeGroup.collapsible}">
@@ -211,7 +211,7 @@
     </th:block>
   </th:block>
   <th:block th:fragment="etymology">
-    <section class="level-3-panel row">
+    <section class="level-3-panel row" id="word-etymology-results">
       <div class="col">
         <h5 class="font-weight-bold d-flex align-items-center text-dark">
           <span th:text="#{label.word.etymology}">Päritolu</span>
