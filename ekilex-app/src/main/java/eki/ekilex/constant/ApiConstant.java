@@ -24,6 +24,8 @@ public interface ApiConstant {
 
 	String PARADIGM_URI = "/paradigm";
 
+	String FORM_URI = "/form";
+
 	String TERM_MEANING_URI = "/term-meaning";
 
 	String LEX_WORD_URI = "/lex-word";

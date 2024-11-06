@@ -1,9 +1,10 @@
 package eki.ekilex.service.db;
 
+import static eki.ekilex.data.db.main.Tables.COLLOCATION_MEMBER;
 import static eki.ekilex.data.db.main.Tables.FORM;
 import static eki.ekilex.data.db.main.Tables.PARADIGM;
 import static eki.ekilex.data.db.main.Tables.PARADIGM_FORM;
-import static eki.ekilex.data.db.main.Tables.COLLOCATION_MEMBER;
+import static eki.ekilex.data.db.main.Tables.WORD;
 
 import java.util.List;
 
@@ -12,10 +13,12 @@ import org.jooq.impl.DSL;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import eki.ekilex.data.api.FormWord;
 import eki.ekilex.data.db.main.tables.CollocationMember;
 import eki.ekilex.data.db.main.tables.Form;
 import eki.ekilex.data.db.main.tables.Paradigm;
 import eki.ekilex.data.db.main.tables.ParadigmForm;
+import eki.ekilex.data.db.main.tables.Word;
 
 @Component
 public class MorphologyDbService {
@@ -58,6 +61,32 @@ public class MorphologyDbService {
 								.and(pf.FORM_ID.eq(f.ID)))
 				.orderBy(pf.ORDER_BY)
 				.fetchInto(eki.ekilex.data.api.ParadigmForm.class);
+	}
+
+	public List<FormWord> getFormWords(String formValue) {
+
+		Word w = WORD.as("w");
+		Paradigm p = PARADIGM.as("p");
+		ParadigmForm pf = PARADIGM_FORM.as("pf");
+		Form f = FORM.as("f");
+
+		return mainDb
+				.select(
+						w.ID.as("word_id"),
+						w.VALUE.as("word_value"),
+						w.LANG,
+						w.HOMONYM_NR)
+				.from(w)
+				.whereExists(DSL
+						.select(f.ID)
+						.from(p, pf, f)
+						.where(
+								p.WORD_ID.eq(w.ID)
+										.and(pf.PARADIGM_ID.eq(p.ID))
+										.and(pf.FORM_ID.eq(f.ID))
+										.and(f.VALUE.eq(formValue))))
+				.orderBy(w.VALUE, w.LANG, w.HOMONYM_NR)
+				.fetchInto(FormWord.class);
 	}
 
 	public List<eki.ekilex.data.api.Form> getForms(Long wordId) {
