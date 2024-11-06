@@ -151,70 +151,47 @@ $(document).on("click", ".word-grouper-wrapper .btn-collapse", function() {
 
 
 $(window).on('load', function() {
-	let count = 0;
-  const interval = setInterval(() => {
-		// Wait for loading to complete before init
-    if (!document.querySelector(".loading-indicator").checkVisibility()) {
-      initStickyScrollPanel();
-      clearInterval(interval);
-    }
-		// Clear interval anyway if something went wrong and we've been checking for a while
-    if (count === 100) {
-      clearInterval(interval);
-    }
-    count++;
-  }, 150);
+	initStickyScrollPanel();
 })
-
 
 
 
 function initStickyScrollPanel() {
 	const panel = document.querySelector(".sticky-scroll-panel");
   if (!panel) {
-    return;
+		return;
   }
+	let stickyScrollTimeout;
   const links = [...panel.children];
-  const options = {
-    threshold: [0, 1],
-  };
-  const activeClass = "sticky-scroll-panel__tag--active";
+	const linkTargetCache = {};
 
-	// Create a callback for the intersection observer
-  const intersectionCallback = (entries) => {
-    entries.forEach((entry) => {
+  const activeClass = "sticky-scroll-panel__tag--active";
+	document.addEventListener("scroll", () => {
+    // Debounce scroll events
+    clearTimeout(stickyScrollTimeout);
+    stickyScrollTimeout = setTimeout(() => {
+      const latest = [];
       links.forEach((link) => {
-        const linkHref = link.href.split("#")?.[1];
-        if (linkHref === entry.target.id) {
-          if (entry.intersectionRatio === 1) {
-            link.classList.add(activeClass);
-          } else {
-            link.classList.remove(activeClass);
+        let target = linkTargetCache[link.href];
+        if (!target) {
+          const block = document.getElementById(link.href.split("#")?.[1]);
+          if (block) {
+            linkTargetCache[link.href] = block;
+            target = block;
           }
         }
+        link.classList.remove(activeClass);
+        // Check if element is in viewport
+        const targetTop = target.getBoundingClientRect().top - 250;
+        // Get the closest element to the top of viewport
+        if (targetTop <= 0 && (latest[0] < targetTop || latest[0] === undefined)) {
+          latest[0] = targetTop;
+          latest[1] = link;
+        }
       });
-    });
-  };
-
-  const observer = new IntersectionObserver(intersectionCallback, options);
-  links.forEach((link) => {
-		const targetElement = document.getElementById(link.href.split("#")?.[1]);
-		// Observe link targets
-    if (targetElement) {
-			observer.observe(targetElement);
-    }
-		// Manually change link to active on click, as they scroll to their target
-		link.addEventListener('click', (e) => {
-			// Delay changes to override intersection observer
-			setTimeout(() => {
-				links.forEach((link) => {
-					if (link === e.target) {
-						link.classList.add(activeClass);
-					} else {
-						link.classList.remove(activeClass);
-					}
-				});
-			}, 15);
-		})
+      if (latest[1]) {
+        latest[1].classList.add(activeClass);
+      }
+    }, 50);
   });
 }

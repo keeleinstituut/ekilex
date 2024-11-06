@@ -17313,23 +17313,11 @@ body {
 
 .homonym-page .search-results-header,
 .homonym-page .content-panel {
-  width: 100%;
+  width: var(--search-results-header-width, 100%);
 }
 
 .sticky-scroll-panel {
   display: none;
-}
-
-@media (max-width: 767.98px) {
-  .sticky-scroll-panel {
-    position: sticky;
-    top: 80px;
-    display: flex;
-    flex-wrap: wrap;
-    gap: 4px;
-    margin-bottom: 14px;
-    z-index: 1;
-  }
 }
 
 .sticky-scroll-panel__tag {
@@ -17355,6 +17343,32 @@ body {
 .sticky-scroll-panel__tag:hover {
   border-color: var(--color-black);
   text-decoration: none;
+}
+
+@media (max-width: 767.98px) {
+  .search-results-header,
+  .sticky-scroll-panel {
+    position: sticky;
+    background-color: var(--color-gray-010);
+    z-index: 2;
+  }
+  .search-results-header {
+    top: 64px;
+    margin: 0 -15px;
+    padding-top: 16px;
+    --search-results-header-width: auto;
+  }
+  .search-results-header > div {
+    padding: 0 15px;
+  }
+  .sticky-scroll-panel {
+    top: 133px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+    padding-top: 1px;
+    padding-bottom: 14px;
+  }
 }
 
 .news-page {
