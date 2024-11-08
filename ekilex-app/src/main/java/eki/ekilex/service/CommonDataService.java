@@ -62,7 +62,17 @@ public class CommonDataService implements InitializingBean, SystemConstant, Glob
 	@Transactional
 	public List<Classifier> getAvailableFreeformTypes() {
 		List<Classifier> freeformTypes = commonDataDbService.getFreeformTypes(CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
-		freeformTypes.removeIf(classifier -> technicalFreeformTypesCodes.contains(classifier.getCode()));
+		freeformTypes = removeTechnicalFreeformTypes(freeformTypes);
+		return freeformTypes;
+	}
+
+	@Transactional
+	public List<Classifier> getFreeformTypes(FreeformOwner freeformOwner) {
+		List<Classifier> freeformTypes = commonDataDbService.getFreeformTypes(freeformOwner, CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
+		if (CollectionUtils.isEmpty(freeformTypes)) {
+			return freeformTypes;
+		}
+		freeformTypes = removeTechnicalFreeformTypes(freeformTypes);
 		return freeformTypes;
 	}
 
@@ -72,6 +82,11 @@ public class CommonDataService implements InitializingBean, SystemConstant, Glob
 		if (CollectionUtils.isEmpty(freeformTypes)) {
 			return freeformTypes;
 		}
+		freeformTypes = removeTechnicalFreeformTypes(freeformTypes);
+		return freeformTypes;
+	}
+
+	private List<Classifier> removeTechnicalFreeformTypes(List<Classifier> freeformTypes) {
 		freeformTypes.removeIf(classifier -> technicalFreeformTypesCodes.contains(classifier.getCode()));
 		return freeformTypes;
 	}

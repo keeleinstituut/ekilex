@@ -530,15 +530,59 @@
                             th:text="${proficiencyLevel.value}">proficiency level</option>
                   </select>
                 </div>
-                <div class="value-input-container col-auto flex-grow-1 flex-shrink-1" th:if="${criteria.searchKey.name() == 'ATTRIBUTE_NAME'}">
+                <div class="value-input-container col-auto flex-grow-1 flex-shrink-1" th:if="${criteria.searchKey.name() == 'WORD_ATTRIBUTE_NAME'}">
                   <select class="form-control"
                           th:name="'criteriaGroups[' + ${critGroupStat.index} + '].searchCriteria[' + ${critStat.index} + '].searchValue'"
                           data-live-search="true"
                           data-style="btn-outline-secondary">
-                    <option th:each="meaningAttribute : ${meaningAttributes}"
-                            th:value="${meaningAttribute}"
-                            th:selected="${criteria.searchValue == meaningAttribute}"
-                            th:text="${meaningAttribute}">attribute name</option>
+                    <option th:each="freeformType : ${wordFreeformTypes}"
+                            th:value="${freeformType.code}"
+                            th:selected="${criteria.searchValue == freeformType.code}"
+                            th:text="${freeformType.value}">attribute name</option>
+                  </select>
+                </div>
+                <div class="value-input-container col-auto flex-grow-1 flex-shrink-1" th:if="${criteria.searchKey.name() == 'TERM_ATTRIBUTE_NAME'}">
+                  <select class="form-control"
+                          th:name="'criteriaGroups[' + ${critGroupStat.index} + '].searchCriteria[' + ${critStat.index} + '].searchValue'"
+                          data-live-search="true"
+                          data-style="btn-outline-secondary">
+                    <option th:each="freeformType : ${wordFreeformTypes}"
+                            th:value="${freeformType.code}"
+                            th:selected="${criteria.searchValue == freeformType.code}"
+                            th:text="${freeformType.value}">attribute name</option>
+                  </select>
+                </div>
+                <div class="value-input-container col-auto flex-grow-1 flex-shrink-1" th:if="${criteria.searchKey.name() == 'LEXEME_ATTRIBUTE_NAME'}">
+                  <select class="form-control"
+                          th:name="'criteriaGroups[' + ${critGroupStat.index} + '].searchCriteria[' + ${critStat.index} + '].searchValue'"
+                          data-live-search="true"
+                          data-style="btn-outline-secondary">
+                    <option th:each="freeformType : ${lexemeFreeformTypes}"
+                            th:value="${freeformType.code}"
+                            th:selected="${criteria.searchValue == freeformType.code}"
+                            th:text="${freeformType.value}">attribute name</option>
+                  </select>
+                </div>
+                <div class="value-input-container col-auto flex-grow-1 flex-shrink-1" th:if="${criteria.searchKey.name() == 'MEANING_ATTRIBUTE_NAME'}">
+                  <select class="form-control"
+                          th:name="'criteriaGroups[' + ${critGroupStat.index} + '].searchCriteria[' + ${critStat.index} + '].searchValue'"
+                          data-live-search="true"
+                          data-style="btn-outline-secondary">
+                    <option th:each="freeformType : ${meaningFreeformTypes}"
+                            th:value="${freeformType.code}"
+                            th:selected="${criteria.searchValue == freeformType.code}"
+                            th:text="${freeformType.value}">attribute name</option>
+                  </select>
+                </div>
+                <div class="value-input-container col-auto flex-grow-1 flex-shrink-1" th:if="${criteria.searchKey.name() == 'CONCEPT_ATTRIBUTE_NAME'}">
+                  <select class="form-control"
+                          th:name="'criteriaGroups[' + ${critGroupStat.index} + '].searchCriteria[' + ${critStat.index} + '].searchValue'"
+                          data-live-search="true"
+                          data-style="btn-outline-secondary">
+                    <option th:each="freeformType : ${meaningFreeformTypes}"
+                            th:value="${freeformType.code}"
+                            th:selected="${criteria.searchValue == freeformType.code}"
+                            th:text="${freeformType.value}">attribute name</option>
                   </select>
                 </div>
                 <div class="value-input-container col-auto flex-grow-1 flex-shrink-1" th:if="${criteria.searchKey.name() == 'WORD_FORUM'}">
@@ -840,9 +884,29 @@
                 <option th:each="proficiencyLevel : ${lexemeProficiencyLevels}" th:value="${proficiencyLevel.code}" th:text="${proficiencyLevel.value}">proficiency level</option>
               </select>
             </div>
-            <div name="ATTRIBUTE_NAME" class="value-input-container col-auto flex-grow-1 flex-shrink-1">
+            <div name="WORD_ATTRIBUTE_NAME" class="value-input-container col-auto flex-grow-1 flex-shrink-1">
               <select class="form-control" data-live-search="true" data-style="btn-outline-secondary">
-                <option th:each="meaningAttribute : ${meaningAttributes}" th:value="${meaningAttribute}" th:text="${meaningAttribute}">attribute name</option>
+                <option th:each="freeformType : ${wordFreeformTypes}" th:value="${freeformType.code}" th:text="${freeformType.value}">attribute name</option>
+              </select>
+            </div>
+            <div name="TERM_ATTRIBUTE_NAME" class="value-input-container col-auto flex-grow-1 flex-shrink-1">
+              <select class="form-control" data-live-search="true" data-style="btn-outline-secondary">
+                <option th:each="freeformType : ${wordFreeformTypes}" th:value="${freeformType.code}" th:text="${freeformType.value}">attribute name</option>
+              </select>
+            </div>
+            <div name="LEXEME_ATTRIBUTE_NAME" class="value-input-container col-auto flex-grow-1 flex-shrink-1">
+              <select class="form-control" data-live-search="true" data-style="btn-outline-secondary">
+                <option th:each="freeformType : ${lexemeFreeformTypes}" th:value="${freeformType.code}" th:text="${freeformType.value}">attribute name</option>
+              </select>
+            </div>
+            <div name="MEANING_ATTRIBUTE_NAME" class="value-input-container col-auto flex-grow-1 flex-shrink-1">
+              <select class="form-control" data-live-search="true" data-style="btn-outline-secondary">
+                <option th:each="freeformType : ${meaningFreeformTypes}" th:value="${freeformType.code}" th:text="${freeformType.value}">attribute name</option>
+              </select>
+            </div>
+            <div name="CONCEPT_ATTRIBUTE_NAME" class="value-input-container col-auto flex-grow-1 flex-shrink-1">
+              <select class="form-control" data-live-search="true" data-style="btn-outline-secondary">
+                <option th:each="freeformType : ${meaningFreeformTypes}" th:value="${freeformType.code}" th:text="${freeformType.value}">attribute name</option>
               </select>
             </div>
             <div name="WORD_FORUM" class="value-input-container col-auto flex-grow-1 flex-shrink-1">

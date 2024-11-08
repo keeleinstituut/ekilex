@@ -158,6 +158,11 @@ public abstract class AbstractAuthActionController implements WebConstant, Syste
 		return commonDataService.getAvailableFreeformTypes();
 	}
 
+	@ModelAttribute("wordFreeformTypes")
+	public List<Classifier> getWordFreeformTypes() {
+		return commonDataService.getFreeformTypes(FreeformOwner.WORD);
+	}
+
 	@ModelAttribute("userRoleWordFreeformTypes")
 	public List<Classifier> getUserRoleWordFreeformTypes() {
 		EkiUser user = userContext.getUser();
@@ -169,6 +174,11 @@ public abstract class AbstractAuthActionController implements WebConstant, Syste
 		return commonDataService.getFreeformTypes(datasetCode, FreeformOwner.WORD);
 	}
 
+	@ModelAttribute("lexemeFreeformTypes")
+	public List<Classifier> getLexemeFreeformTypes() {
+		return commonDataService.getFreeformTypes(FreeformOwner.LEXEME);
+	}
+
 	@ModelAttribute("userRoleLexemeFreeformTypes")
 	public List<Classifier> getUserRoleLexemeFreeformTypes() {
 		EkiUser user = userContext.getUser();
@@ -178,6 +188,11 @@ public abstract class AbstractAuthActionController implements WebConstant, Syste
 		}
 		String datasetCode = userRole.getDatasetCode();
 		return commonDataService.getFreeformTypes(datasetCode, FreeformOwner.LEXEME);
+	}
+
+	@ModelAttribute("meaningFreeformTypes")
+	public List<Classifier> getMeaningFreeformTypes() {
+		return commonDataService.getFreeformTypes(FreeformOwner.MEANING);
 	}
 
 	@ModelAttribute("userRoleMeaningFreeformTypes")

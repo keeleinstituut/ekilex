@@ -45,7 +45,6 @@ import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
@@ -1617,50 +1616,96 @@ public class SearchFilterHelper implements GlobalConstant, ActivityFunct, Freefo
 		return where;
 	}
 
-	public Condition applyMeaningAttributeFilters(List<SearchCriterion> searchCriteria, Field<Long> meaningIdField, Condition where) throws Exception {
+	public Condition applyWordFreeformFilters(List<SearchCriterion> searchCriteria, Field<Long> wordIdField, Condition where) throws Exception {
 
-		List<SearchCriterion> filteredValueCriteria = searchCriteria.stream()
-				.filter(c -> c.getSearchKey().equals(SearchKey.ATTRIBUTE_VALUE))
-				.collect(toList());
-
-		if (CollectionUtils.isEmpty(filteredValueCriteria)) {
+		if (containsSearchKeys(
+				searchCriteria,
+				SearchKey.LEXEME_ATTRIBUTE_NAME,
+				SearchKey.MEANING_ATTRIBUTE_NAME,
+				SearchKey.CONCEPT_ATTRIBUTE_NAME)) {
 			return where;
 		}
 
-		List<SearchCriterion> filteredNameCriteria = searchCriteria.stream()
-				.filter(c -> c.getSearchKey().equals(SearchKey.ATTRIBUTE_NAME))
-				.collect(toList());
+		List<SearchCriterion> filteredCriteria = filterCriteriaBySearchKeys(searchCriteria, SearchKey.WORD_ATTRIBUTE_NAME, SearchKey.TERM_ATTRIBUTE_NAME, SearchKey.ATTRIBUTE_VALUE);
 
-		List<String> meaningAttributeCodes = new ArrayList<>();
-		if (CollectionUtils.isNotEmpty(filteredNameCriteria)) {
-			for (SearchCriterion criterion : filteredNameCriteria) {
-				String searchValueStr = criterion.getSearchValue().toString();
-				meaningAttributeCodes.add(searchValueStr);
-			}
-		} else {
-			meaningAttributeCodes = Arrays.asList(MEANING_ATTRIBUTE_FF_TYPE_CODES);
+		if (CollectionUtils.isEmpty(filteredCriteria)) {
+			return where;
+		}
+
+		WordFreeform wff = WORD_FREEFORM.as("wff");
+		Freeform ff = FREEFORM.as("ff");
+		Condition where1 = wff.WORD_ID.eq(wordIdField).and(wff.FREEFORM_ID.eq(ff.ID));
+		where1 = applyFreeformFilters(filteredCriteria, "word", ff, where1);
+		where = where.and(DSL.exists(DSL.select(wff.ID).from(wff, ff).where(where1)));
+		return where;
+	}
+
+	public Condition applyLexemeFreeformFilters(List<SearchCriterion> searchCriteria, Field<Long> lexemeIdField, Condition where) throws Exception {
+
+		if (containsSearchKeys(
+				searchCriteria,
+				SearchKey.WORD_ATTRIBUTE_NAME,
+				SearchKey.TERM_ATTRIBUTE_NAME,
+				SearchKey.MEANING_ATTRIBUTE_NAME,
+				SearchKey.CONCEPT_ATTRIBUTE_NAME)) {
+			return where;
+		}
+
+		List<SearchCriterion> filteredCriteria = filterCriteriaBySearchKeys(searchCriteria, SearchKey.LEXEME_ATTRIBUTE_NAME, SearchKey.ATTRIBUTE_VALUE);
+
+		if (CollectionUtils.isEmpty(filteredCriteria)) {
+			return where;
+		}
+
+		LexemeFreeform lff = LEXEME_FREEFORM.as("lff");
+		Freeform ff = FREEFORM.as("ff");
+		Condition where1 = lff.LEXEME_ID.eq(lexemeIdField).and(lff.FREEFORM_ID.eq(ff.ID));
+		where1 = applyFreeformFilters(filteredCriteria, "lexeme", ff, where1);
+		where = where.and(DSL.exists(DSL.select(lff.ID).from(lff, ff).where(where1)));
+		return where;
+	}
+
+	public Condition applyMeaningFreeformFilters(List<SearchCriterion> searchCriteria, Field<Long> meaningIdField, Condition where) throws Exception {
+
+		if (containsSearchKeys(
+				searchCriteria,
+				SearchKey.WORD_ATTRIBUTE_NAME,
+				SearchKey.TERM_ATTRIBUTE_NAME,
+				SearchKey.LEXEME_ATTRIBUTE_NAME)) {
+			return where;
+		}
+
+		List<SearchCriterion> filteredCriteria = filterCriteriaBySearchKeys(searchCriteria, SearchKey.MEANING_ATTRIBUTE_NAME, SearchKey.CONCEPT_ATTRIBUTE_NAME, SearchKey.ATTRIBUTE_VALUE);
+
+		if (CollectionUtils.isEmpty(filteredCriteria)) {
+			return where;
 		}
 
 		MeaningFreeform mff = MEANING_FREEFORM.as("mff");
 		Freeform ff = FREEFORM.as("ff");
+		Condition where1 = mff.MEANING_ID.eq(meaningIdField).and(mff.FREEFORM_ID.eq(ff.ID));
+		where1 = applyFreeformFilters(filteredCriteria, "meaning", ff, where1);
+		where = where.and(DSL.exists(DSL.select(mff.ID).from(mff, ff).where(where1)));
+		return where;
+	}
 
-		Condition meaningFreeformCondition = mff.MEANING_ID.eq(meaningIdField)
-				.and(mff.FREEFORM_ID.eq(ff.ID))
-				.and(ff.FREEFORM_TYPE_CODE.in(meaningAttributeCodes));
+	private Condition applyFreeformFilters(List<SearchCriterion> filteredCriteria, String context, Freeform ff, Condition where1) throws Exception {
 
-		boolean isNotExistsSearch = isNotExistsSearch(SearchKey.ATTRIBUTE_VALUE, filteredValueCriteria);
-		if (isNotExistsSearch) {
-			where = where.and(DSL.notExists(DSL.select(mff.ID).from(mff, ff).where(meaningFreeformCondition)));
-		} else {
-			for (SearchCriterion criterion : filteredValueCriteria) {
-				if (criterion.getSearchValue() != null) {
-					String searchValueStr = criterion.getSearchValue().toString();
-					meaningFreeformCondition = applyValueFilter(searchValueStr, criterion.isNot(), criterion.getSearchOperand(), ff.VALUE, meaningFreeformCondition, true);
+		for (SearchCriterion criterion : filteredCriteria) {
+			SearchKey searchKey = criterion.getSearchKey();
+			String searchValueStr = criterion.getSearchValue().toString();
+			boolean isNot = criterion.isNot();
+			if (isAttributeNameSearchKey(searchKey)) {
+				where1 = where1.and(ff.FREEFORM_TYPE_CODE.eq(searchValueStr));
+			} else if (SearchKey.ATTRIBUTE_VALUE.equals(searchKey)) {
+				if (isNot) {
+					where1 = DSL.not(applyValueFilter(searchValueStr, isNot, criterion.getSearchOperand(), ff.VALUE, where1, true));
+				} else {
+					where1 = applyValueFilter(searchValueStr, isNot, criterion.getSearchOperand(), ff.VALUE, where1, true);
 				}
 			}
-			where = where.and(DSL.exists(DSL.select(mff.ID).from(mff, ff).where(meaningFreeformCondition)));
 		}
-		return where;
+		return where1;
 	}
 
 	public Condition applyMeaningRelationValueFilters(List<SearchCriterion> searchCriteria, Field<Long> meaningIdField, Condition where) {
@@ -2137,7 +2182,7 @@ public class SearchFilterHelper implements GlobalConstant, ActivityFunct, Freefo
 
 	public List<SearchCriterion> filterCriteriaBySearchKeys(List<SearchCriterion> searchCriteria, SearchKey... searchKeys) {
 		List<SearchCriterion> filteredCriteria = searchCriteria.stream()
-				.filter(crit -> crit.getSearchValue() != null && isNotBlank(crit.getSearchValue().toString()))
+				.filter(crit -> (crit.getSearchValue() != null) && isNotBlank(crit.getSearchValue().toString()))
 				.filter(crit -> ArrayUtils.contains(searchKeys, crit.getSearchKey()))
 				.collect(toList());
 		return filteredCriteria;
@@ -2174,6 +2219,17 @@ public class SearchFilterHelper implements GlobalConstant, ActivityFunct, Freefo
 						&& crit.getSearchOperand().equals(SearchOperand.EXISTS)
 						&& crit.getSearchValue() == null
 						&& crit.isNot());
+	}
+
+	private boolean isAttributeNameSearchKey(SearchKey searchKey) {
+		return Arrays
+				.asList(
+						SearchKey.WORD_ATTRIBUTE_NAME,
+						SearchKey.TERM_ATTRIBUTE_NAME,
+						SearchKey.LEXEME_ATTRIBUTE_NAME,
+						SearchKey.MEANING_ATTRIBUTE_NAME,
+						SearchKey.CONCEPT_ATTRIBUTE_NAME)
+				.contains(searchKey);
 	}
 
 	private Condition createCountCondition(SearchOperand searchOperand, Table<Record1<Integer>> idAndCount, String countFieldName) {

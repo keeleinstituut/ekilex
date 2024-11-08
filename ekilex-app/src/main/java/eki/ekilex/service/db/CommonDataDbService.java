@@ -224,11 +224,21 @@ public class CommonDataDbService extends AbstractDataDbService {
 				.fetchInto(Classifier.class);
 	}
 
+	public List<Classifier> getFreeformTypes(FreeformOwner freeformOwner, String classifierLabelLang, String classifierLabelTypeCode) {
+		return getFreeformTypes(null, freeformOwner, classifierLabelLang, classifierLabelTypeCode);
+	}
+
 	public List<Classifier> getFreeformTypes(String datasetCode, FreeformOwner freeformOwner, String classifierLabelLang, String classifierLabelTypeCode) {
 
 		FreeformType ft = FREEFORM_TYPE.as("ft");
 		FreeformTypeLabel ftl = FREEFORM_TYPE_LABEL.as("ftl");
 		DatasetFreeformType dsft = DATASET_FREEFORM_TYPE.as("dsft");
+
+		Condition where1 = dsft.FREEFORM_OWNER.eq(freeformOwner.name())
+				.and(dsft.FREEFORM_TYPE_CODE.eq(ft.CODE));
+		if (StringUtils.isNotBlank(datasetCode)) {
+			where1 = where1.and(dsft.DATASET_CODE.eq(datasetCode));
+		}
 
 		return mainDb
 				.select(
@@ -243,10 +253,7 @@ public class CommonDataDbService extends AbstractDataDbService {
 				.whereExists(DSL
 						.select(dsft.ID)
 						.from(dsft)
-						.where(
-								dsft.DATASET_CODE.eq(datasetCode)
-										.and(dsft.FREEFORM_OWNER.eq(freeformOwner.name()))
-										.and(dsft.FREEFORM_TYPE_CODE.eq(ft.CODE)))
+						.where(where1)
 
 				)
 				.orderBy(ft.ORDER_BY)

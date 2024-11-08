@@ -31,6 +31,7 @@ public class ApiMorphController extends AbstractApiController {
 
 	@Order(401)
 	@GetMapping(API_SERVICES_URI + PARADIGM_URI + DETAILS_URI + "/{wordId}")
+	@ResponseBody
 	public List<Paradigm> getParadigms(
 			@PathVariable("wordId") Long wordId,
 			Authentication authentication,
