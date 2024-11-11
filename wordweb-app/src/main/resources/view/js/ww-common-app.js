@@ -18,13 +18,33 @@ $(document).ready(function() {
 	handleVirtualKeyboard();
 });
 
-$(document).on("click", ".menu-btn", function(e) {
-	$(".header-container").toggleClass("show-header");
+$(document).on("click", ".menu-btn", function() {
+	const headerContainer = document.querySelector('.header-container');
+	if (headerContainer.classList.contains('show-header')) {
+		document.body.classList.remove('overflow-hidden');
+		headerContainer.classList.remove('show-header');
+	} else {
+		document.body.classList.add('overflow-hidden');
+		headerContainer.classList.add('show-header');
+	}
 });
 
 function setActiveMenuItem(itemName) {
 	$('.menu-item[data-item-name=' + itemName + ']').addClass('selected');
 }
+
+$(document).on('keyup', '#emailInput2', function(event) {
+	const targetGroup = document.getElementById('feedback-modal-checkbox-group');
+	const checkbox = document.getElementById('modalCheck2');
+	// Toggle the need of checkbox based on whether email has a value
+	if (event.target.value) {
+		targetGroup.classList.remove('d-none');
+		checkbox.required = true;
+	} else {
+		targetGroup.classList.add('d-none');
+		checkbox.required = false;
+	}
+})
 
 $(document).on("click", "button[name='feedbackSendBtn']", function(event) {
 
@@ -65,16 +85,10 @@ $(document).on("click", "button[name='feedbackSendBtn']", function(event) {
 			errorMessageElem.removeClass('d-none');
 		}
 	}).fail(function(data) {
-		console.log("TOTAL FAIL");
 		dataDiv.addClass('d-none');
 		responseDiv.removeClass('d-none');
 		errorMessageElem.removeClass('d-none');
-		acceptPrivacyStatement.trigger('click');
 	});
-});
-
-$(document).on("click", ".modal-check", function() {
-	$(this).closest('form').find("button[name='feedbackSendBtn']").prop('disabled', !$(this).prop('checked'));
 });
 
 function clearMessages(modalDlg) {
