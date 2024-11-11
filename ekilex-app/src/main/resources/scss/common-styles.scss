@@ -282,3 +282,13 @@ select:invalid {
 .list-item-value {
 	font-size: 14px;
 }
+
+
+.bordered-paragraph {
+	margin: 0;
+	// Add a border and margin if there's multiple in a row and they're not empty
+	& + &:not(:empty) {
+		border-top: 1px solid var(--color-gray-200);
+		margin-top: 4px;
+	}
+}
