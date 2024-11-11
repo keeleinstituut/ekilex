@@ -19000,6 +19000,15 @@ body {
   letter-spacing: 0.0025em;
 }
 
+.feedback-modal__want-response a {
+  color: inherit;
+  text-decoration: underline;
+}
+
+.feedback-modal__want-response a:hover {
+  text-decoration: none;
+}
+
 .feedback-modal__button {
   height: 48px;
   padding: 4px 24px;

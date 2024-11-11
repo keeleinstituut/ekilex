@@ -471,6 +471,14 @@
       line-height: 20px;
       letter-spacing: 0.0025em;
     }
+
+    & a {
+      color: inherit;
+      text-decoration: underline;
+      &:hover {
+        text-decoration: none;
+      }
+    }
   }
 
   &__button {

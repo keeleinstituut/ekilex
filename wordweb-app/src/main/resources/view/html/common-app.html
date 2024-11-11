@@ -277,7 +277,7 @@
           </div>
           <div id="dataDiv" class="modal-body">
             <div>
-              <span class="feedback-modal__required-text">*&nbsp;</span>
+              <span class="feedback-modal__required-text">&ast;&nbsp;</span>
               <small th:text="#{label.feedback.required.fields}">
                 Tärniga tähistatud väljad on kohustuslikud
               </small>
@@ -292,7 +292,7 @@
                 </div>
                 <div class="feedback-modal__group">
                   <label for="descriptionInput2" class="col-form-label" th:text="#{label.feedback.description}">Probleemi lühikirjeldus</label>
-                  <span class="feedback-modal__required-text">*</span>
+                  <span class="feedback-modal__required-text">&ast;</span>
                   <input id="descriptionInput2" type="text" class="form-control" name="description" required="true" autocomplete="off" th:placeholder="#{label.feedback.placeholder.description}">
                   <div class="invalid-feedback" th:text="#{label.feedback.required.field}">Väli on kohustuslik</div>
                 </div>
@@ -325,9 +325,9 @@
                       <label class="custom-control-label" for="modalCheck2">
                         <span th:text="#{label.feedback.iagree}">Nõustun</span>
                         <a role="link" th:href="@{/regulations}" data-item-name="regulations" th:text="#{label.feedback.withterms}">kasutus- ja privaatsustingimustega</a>
-                        <span class="feedback-modal__required-text">&nbsp;&ast;</span>
+                        <span>&nbsp;&ast;</span>
                       </label>
-                      <div class="invalid-feedback" th:text="#{label.feedback.required}">Väli on kohustuslik</div>
+                      <div class="invalid-feedback" th:text="#{label.feedback.required.field}">Väli on kohustuslik</div>
                     </div>
                   </div>
                   <button type="button" class="feedback-modal__button" name="feedbackSendBtn" th:text="#{button.send}">Saada</button>
