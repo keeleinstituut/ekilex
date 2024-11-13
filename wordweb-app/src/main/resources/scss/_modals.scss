@@ -411,3 +411,128 @@
     }
   }
 }
+
+
+.feedback-modal {
+  border-radius: 16px;
+  box-shadow: none;
+  border: none;
+  overflow: hidden;
+  color: var(--color-dark-blue);
+
+  &__header {
+    border: none;
+    padding: 28px;
+  }
+  &__close {
+    background: transparent;
+    border: 1px solid transparent;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 0;
+    width: 24px;
+    height: 24px;
+    font-size: 1.5rem;
+
+    &:hover {
+      border-color: black;
+    }
+  }
+
+  &__required-text {
+    color: var(--color-orange);
+  }
+
+  &__want-response {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    padding: 24px 28px;
+    background-color: var(--color-light-blue);
+    margin: 0 -28px -24px;
+
+    --feedback-modal-group-margin-bottom: 0;
+
+    & h2,
+    & p {
+      margin: 0;
+    }
+
+    & h2 {
+      font-size: 1.5rem;
+      font-weight: 400;
+      line-height: 29px;
+    }
+
+    & p {
+      font-size: .875rem;
+      font-weight: 500;
+      line-height: 20px;
+      letter-spacing: 0.0025em;
+    }
+
+    & a {
+      color: inherit;
+      text-decoration: underline;
+      &:hover {
+        text-decoration: none;
+      }
+    }
+  }
+
+  &__button {
+    height: 48px;
+    padding: 4px 24px;
+    border-radius: 100px;
+    background-color: var(--color-dark-blue);
+    color: var(--color-white);
+    width: max-content;
+    margin-left: auto;
+    &:hover {
+      background-color: var(--color-dark-blue-75);
+    }
+
+    &:focus {
+      outline: 1px solid black;
+      outline-offset: 1px;
+    }
+  }
+
+  &__group {
+    margin-bottom: var(--feedback-modal-group-margin-bottom, 16px);
+
+    &--last {
+      margin-bottom: 28px;
+    }
+  }
+
+  & .modal-body {
+    padding: 4px 28px 24px;
+  }
+
+  
+  & .form-control {
+    padding: 10px 16px;
+    border-radius: 8px;
+    border-color: var(--color-dark-blue-75);
+    height: 40px;
+  }
+
+  & .col-form-label {
+    padding: 0 0 6px 0;
+    font-size: .75rem;
+    line-height: 15px;
+    letter-spacing: 0.004em;
+  }
+
+  & .modal-title {
+    font-size: 1.5rem;
+    font-weight: 400;
+    line-height: 29px;
+  }
+
+  & input::placeholder {
+    color: var(--color-dark-blue-75);
+  }
+}

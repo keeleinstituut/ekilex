@@ -152,7 +152,8 @@
                   <optgroup th:each="origin : ${datasetDomains}" th:label="${origin.getKey()}">
                     <option th:each="domain : ${origin.getValue()}" th:value="${domain.toIdString()}"
                             th:text="${#strings.abbreviate(domain.origin + ' - ' + domain.code + ' - ' + domain.value, 100)}"
-                            th:title="${domain.origin + ' - ' + domain.code + ' - ' + domain.value}">domain
+                            th:title="${domain.origin + ' - ' + domain.code + ' - ' + domain.value}"
+                            th:data-tooltip="|${domain.comment}|">domain
                     </option>
                   </optgroup>
                 </select>
@@ -430,7 +431,8 @@
                         th:value="${domain.toIdString()}"
                         th:text="${#strings.abbreviate(domain.origin + ' - ' + domain.code + ' - ' + domain.value, 100)}"
                         th:title="${domain.origin + ' - ' + domain.code + ' - ' + domain.value}"
-                        th:selected="${domain.toIdString() == classif.toIdString()}">domain
+                        th:selected="${domain.toIdString() == classif.toIdString()}"
+                        th:data-tooltip="|${domain.comment}|">domain
                 </option>
               </optgroup>
             </select>

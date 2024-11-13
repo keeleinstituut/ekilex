@@ -57,7 +57,7 @@
               <span th:text="${classifier.code}"></span>
             </td>
         </table>
-        <table class="table table-sm table-striped table-hover" th:if="${hasLabel}">
+        <table class="table table-sm table-striped table-hover h-100" th:if="${hasLabel}">
           <th:block th:each="classifier,classifierIter : ${classifiers}">
             <tr th:if="${classifierIter.first}">
               <th style="width: 5%" th:text="#{classifiers.order}">järjekord</th>
@@ -79,29 +79,36 @@
                 <span class="form-control-sm" th:text="${classifier.code}"></span>
               </td>
               <td>
-                <div class="form-control-sm col-md-10" th:text="#{classifiers.lang.est}">est</div>
-                <div class="form-control-sm col-md-10" th:text="#{classifiers.lang.eng}">eng</div>
-                <div class="form-control-sm col-md-10" th:text="#{classifiers.lang.rus}">rus</div>
+                <div class="d-flex flex-column justify-content-between h-100">
+                  <div th:text="#{classifiers.lang.est}">est</div>
+                  <div th:text="#{classifiers.lang.eng}">eng</div>
+                  <div th:text="#{classifiers.lang.rus}">rus</div>
+                </div>
               </td>
               <td th:each="label : ${classifier.labels}">
-                <input type="text" class="form-control form-control-sm"
-                       name="labelValue"
-                       data-label-lang="est"
-                       th:value="${label.labelEst}"
-                       th:data-label-type="${label.type}"
-                       disabled="disabled">
-                <input type="text" class="form-control form-control-sm"
-                       name="labelValue"
-                       data-label-lang="eng"
-                       th:value="${label.labelEng}"
-                       th:data-label-type="${label.type}"
-                       disabled="disabled">
-                <input type="text" class="form-control form-control-sm"
-                       name="labelValue"
-                       data-label-lang="rus"
-                       th:value="${label.labelRus}"
-                       th:data-label-type="${label.type}"
-                       disabled="disabled">
+                <div class="d-flex flex-column h-100 justify-content-between">
+                  <input
+                    class="form-control form-control-sm d-none mb-1"
+                    name="labelValue"
+                    data-label-lang="est"
+                    th:value="${label.labelEst}"
+                    th:data-label-type="${label.type}">
+                  <input
+                    class="form-control form-control-sm d-none mb-1"
+                    name="labelValue"
+                    data-label-lang="eng"
+                    th:value="${label.labelEng}"
+                    th:data-label-type="${label.type}">
+                  <input
+                    class="form-control form-control-sm d-none"
+                    name="labelValue"
+                    data-label-lang="rus"
+                    th:value="${label.labelRus}"
+                    th:data-label-type="${label.type}">
+                  <p class="bordered-paragraph" th:text="${label.labelEst != null ? label.labelEst : '-'}"></p>
+                  <p class="bordered-paragraph" th:text="${label.labelEng != null ? label.labelEng : '-'}"></p>
+                  <p class="bordered-paragraph" th:text="${label.labelRus != null ? label.labelRus : '-'}"></p>
+                </div>
               <td>
                 <div class="form-control-sm col-md-12">
                   <button type="button" class="btn btn-sm btn-secondary btn-compact" th:title="#{classifiers.add.before}"
@@ -147,7 +154,7 @@
                   <button type="button" class="btn btn-sm btn-secondary btn-compact"
                           th:title="#{common.cancel}"
                           name="cancelBtn"
-                          data-plugin="cancelClassifierEditPlugin"
+                          data-plugin="editClassifierPlugin"
                           th:text="#{common.cancel}"
                           style="display: none">Katkesta
                   </button>
