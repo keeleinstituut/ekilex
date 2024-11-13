@@ -24,7 +24,7 @@ import eki.ekilex.data.ActivityLogData;
 import eki.ekilex.data.Classifier;
 import eki.ekilex.data.DatasetPermission;
 import eki.ekilex.data.EkiUser;
-import eki.ekilex.data.FreeForm;
+import eki.ekilex.data.Freeform;
 import eki.ekilex.data.ListData;
 import eki.ekilex.data.MeaningImage;
 import eki.ekilex.data.Note;
@@ -199,12 +199,13 @@ public class CudService extends AbstractCudService implements PermConstant, Acti
 	}
 
 	@Transactional(rollbackOn = Exception.class)
-	public void updateWordFreeform(Long freeformId, String value, boolean isPublic, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
+	public void updateWordFreeform(Long freeformId, String valuePrese, boolean isPublic, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
 
-		FreeForm freeform = new FreeForm();
+		Freeform freeform = new Freeform();
 		freeform.setId(freeformId);
+		freeform.setValuePrese(valuePrese);
 		freeform.setPublic(isPublic);
-		setFreeformValueAndPrese(freeform, value);
+		setValueAndPrese(freeform);
 		applyUpdate(freeform);
 
 		updateFreeform(ActivityOwner.WORD, ActivityEntity.FREEFORM, freeform, roleDatasetCode, isManualEventOnUpdateEnabled);
@@ -506,12 +507,13 @@ public class CudService extends AbstractCudService implements PermConstant, Acti
 	}
 
 	@Transactional(rollbackOn = Exception.class)
-	public void updateLexemeGovernment(Long lexemeGovernmentId, String value, Complexity complexity, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
+	public void updateLexemeGovernment(Long lexemeGovernmentId, String valuePrese, Complexity complexity, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
 
-		FreeForm freeform = new FreeForm();
+		Freeform freeform = new Freeform();
 		freeform.setId(lexemeGovernmentId);
+		freeform.setValuePrese(valuePrese);
 		freeform.setComplexity(complexity);
-		setFreeformValueAndPrese(freeform, value);
+		setValueAndPrese(freeform);
 		applyUpdate(freeform);
 
 		updateFreeform(ActivityOwner.LEXEME, ActivityEntity.GOVERNMENT, freeform, roleDatasetCode, isManualEventOnUpdateEnabled);
@@ -520,10 +522,11 @@ public class CudService extends AbstractCudService implements PermConstant, Acti
 	@Transactional(rollbackOn = Exception.class)
 	public void updateLexemeGrammar(Long lexemeGrammarId, String valuePrese, Complexity complexity, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
 
-		FreeForm freeform = new FreeForm();
+		Freeform freeform = new Freeform();
 		freeform.setId(lexemeGrammarId);
+		freeform.setValuePrese(valuePrese);
 		freeform.setComplexity(complexity);
-		setFreeformValueAndPrese(freeform, valuePrese);
+		setValueAndPrese(freeform);
 		applyUpdate(freeform);
 
 		updateFreeform(ActivityOwner.LEXEME, ActivityEntity.GRAMMAR, freeform, roleDatasetCode, isManualEventOnUpdateEnabled);
@@ -570,12 +573,13 @@ public class CudService extends AbstractCudService implements PermConstant, Acti
 	}
 
 	@Transactional(rollbackOn = Exception.class)
-	public void updateLexemeFreeform(Long freeformId, String value, boolean isPublic, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
+	public void updateLexemeFreeform(Long freeformId, String valuePrese, boolean isPublic, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
 
-		FreeForm freeform = new FreeForm();
+		Freeform freeform = new Freeform();
 		freeform.setId(freeformId);
+		freeform.setValuePrese(valuePrese);
 		freeform.setPublic(isPublic);
-		setFreeformValueAndPrese(freeform, value);
+		setValueAndPrese(freeform);
 		applyUpdate(freeform);
 
 		updateFreeform(ActivityOwner.LEXEME, ActivityEntity.FREEFORM, freeform, roleDatasetCode, isManualEventOnUpdateEnabled);
@@ -700,9 +704,10 @@ public class CudService extends AbstractCudService implements PermConstant, Acti
 	@Transactional(rollbackOn = Exception.class)
 	public void updateMeaningLearnerComment(Long learnerCommentId, String valuePrese, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
 
-		FreeForm freeform = new FreeForm();
+		Freeform freeform = new Freeform();
 		freeform.setId(learnerCommentId);
-		setFreeformValueAndPrese(freeform, valuePrese);
+		freeform.setValuePrese(valuePrese);
+		setValueAndPrese(freeform);
 		applyUpdate(freeform);
 
 		updateFreeform(ActivityOwner.MEANING, ActivityEntity.LEARNER_COMMENT, freeform, roleDatasetCode, isManualEventOnUpdateEnabled);
@@ -756,22 +761,24 @@ public class CudService extends AbstractCudService implements PermConstant, Acti
 	@Transactional(rollbackOn = Exception.class)
 	public void updateMeaningMedia(Long mediaId, String valuePrese, Complexity complexity, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
 
-		FreeForm freeform = new FreeForm();
+		Freeform freeform = new Freeform();
 		freeform.setId(mediaId);
+		freeform.setValuePrese(valuePrese);
 		freeform.setComplexity(complexity);
-		setFreeformValueAndPrese(freeform, valuePrese);
+		setValueAndPrese(freeform);
 		applyUpdate(freeform);
 
 		updateFreeform(ActivityOwner.MEANING, ActivityEntity.MEDIA_FILE, freeform, roleDatasetCode, isManualEventOnUpdateEnabled);
 	}
 
 	@Transactional(rollbackOn = Exception.class)
-	public void updateMeaningFreeform(Long freeformId, String value, boolean isPublic, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
+	public void updateMeaningFreeform(Long freeformId, String valuePrese, boolean isPublic, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
 
-		FreeForm freeform = new FreeForm();
+		Freeform freeform = new Freeform();
 		freeform.setId(freeformId);
+		freeform.setValuePrese(valuePrese);
 		freeform.setPublic(isPublic);
-		setFreeformValueAndPrese(freeform, value);
+		setValueAndPrese(freeform);
 		applyUpdate(freeform);
 
 		updateFreeform(ActivityOwner.MEANING, ActivityEntity.FREEFORM, freeform, roleDatasetCode, isManualEventOnUpdateEnabled);
@@ -780,9 +787,10 @@ public class CudService extends AbstractCudService implements PermConstant, Acti
 	@Transactional(rollbackOn = Exception.class)
 	public void updateOdWordRecommendation(Long freeformId, String valuePrese, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
 
-		FreeForm freeform = new FreeForm();
+		Freeform freeform = new Freeform();
 		freeform.setId(freeformId);
-		setFreeformValueAndPrese(freeform, valuePrese);
+		freeform.setValuePrese(valuePrese);
+		setValueAndPrese(freeform);
 		applyUpdate(freeform);
 
 		updateFreeform(ActivityOwner.WORD, ActivityEntity.OD_WORD_RECOMMENDATION, freeform, roleDatasetCode, isManualEventOnUpdateEnabled);
@@ -812,7 +820,7 @@ public class CudService extends AbstractCudService implements PermConstant, Acti
 		updateLexemeWeight(lexemeId, lexemeWeight, roleDatasetCode, isManualEventOnUpdateEnabled);
 	}
 
-	private void updateFreeform(ActivityOwner logOwner, ActivityEntity activityEntity, FreeForm freeform, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
+	private void updateFreeform(ActivityOwner logOwner, ActivityEntity activityEntity, Freeform freeform, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
 
 		String userName = userContext.getUserName();
 		Long freeformId = freeform.getId();
@@ -890,11 +898,12 @@ public class CudService extends AbstractCudService implements PermConstant, Acti
 	@Transactional(rollbackOn = Exception.class)
 	public void createWordFreeform(Long wordId, String valuePrese, String freeformTypeCode, boolean isPublic, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
 
-		FreeForm freeform = new FreeForm();
+		Freeform freeform = new Freeform();
 		freeform.setFreeformTypeCode(freeformTypeCode);
+		freeform.setValuePrese(valuePrese);
 		freeform.setComplexity(Complexity.DETAIL);
 		freeform.setPublic(isPublic);
-		setFreeformValueAndPrese(freeform, valuePrese);
+		setValueAndPrese(freeform);
 		applyCreateUpdate(freeform);
 
 		createWordFreeform(ActivityEntity.FREEFORM, wordId, freeform, roleDatasetCode, isManualEventOnUpdateEnabled);
@@ -971,12 +980,13 @@ public class CudService extends AbstractCudService implements PermConstant, Acti
 	}
 
 	@Transactional(rollbackOn = Exception.class)
-	public void createLexemeGovernment(Long lexemeId, String government, Complexity complexity, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
+	public void createLexemeGovernment(Long lexemeId, String valuePrese, Complexity complexity, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
 
-		FreeForm freeform = new FreeForm();
+		Freeform freeform = new Freeform();
 		freeform.setFreeformTypeCode(GOVERNMENT_CODE);
+		freeform.setValuePrese(valuePrese);
 		freeform.setComplexity(complexity);
-		setFreeformValueAndPrese(freeform, government);
+		setValueAndPrese(freeform);
 		applyCreateUpdate(freeform);
 
 		createLexemeFreeform(ActivityEntity.GOVERNMENT, lexemeId, freeform, roleDatasetCode, isManualEventOnUpdateEnabled);
@@ -985,10 +995,11 @@ public class CudService extends AbstractCudService implements PermConstant, Acti
 	@Transactional(rollbackOn = Exception.class)
 	public void createLexemeGrammar(Long lexemeId, String valuePrese, Complexity complexity, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
 
-		FreeForm freeform = new FreeForm();
+		Freeform freeform = new Freeform();
 		freeform.setFreeformTypeCode(GRAMMAR_CODE);
+		freeform.setValuePrese(valuePrese);
 		freeform.setComplexity(complexity);
-		setFreeformValueAndPrese(freeform, valuePrese);
+		setValueAndPrese(freeform);
 		applyCreateUpdate(freeform);
 
 		createLexemeFreeform(ActivityEntity.GRAMMAR, lexemeId, freeform, roleDatasetCode, isManualEventOnUpdateEnabled);
@@ -1007,11 +1018,12 @@ public class CudService extends AbstractCudService implements PermConstant, Acti
 	@Transactional(rollbackOn = Exception.class)
 	public void createLexemeFreeform(Long lexemeId, String valuePrese, String freeformTypeCode, boolean isPublic, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
 
-		FreeForm freeform = new FreeForm();
+		Freeform freeform = new Freeform();
 		freeform.setFreeformTypeCode(freeformTypeCode);
+		freeform.setValuePrese(valuePrese);
 		freeform.setComplexity(Complexity.DETAIL);
 		freeform.setPublic(isPublic);
-		setFreeformValueAndPrese(freeform, valuePrese);
+		setValueAndPrese(freeform);
 		applyCreateUpdate(freeform);
 
 		createLexemeFreeform(ActivityEntity.FREEFORM, lexemeId, freeform, roleDatasetCode, isManualEventOnUpdateEnabled);
@@ -1064,11 +1076,12 @@ public class CudService extends AbstractCudService implements PermConstant, Acti
 	@Transactional(rollbackOn = Exception.class)
 	public void createMeaningLearnerComment(Long meaningId, String valuePrese, String lang, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
 
-		FreeForm freeform = new FreeForm();
+		Freeform freeform = new Freeform();
 		freeform.setFreeformTypeCode(LEARNER_COMMENT_CODE);
+		freeform.setValuePrese(valuePrese);
 		freeform.setLang(lang);
 		freeform.setComplexity(Complexity.SIMPLE);
-		setFreeformValueAndPrese(freeform, valuePrese);
+		setValueAndPrese(freeform);
 		applyCreateUpdate(freeform);
 
 		createMeaningFreeform(ActivityEntity.LEARNER_COMMENT, meaningId, freeform, roleDatasetCode, isManualEventOnUpdateEnabled);
@@ -1131,10 +1144,11 @@ public class CudService extends AbstractCudService implements PermConstant, Acti
 	@Transactional(rollbackOn = Exception.class)
 	public void createMeaningMedia(Long meaningId, String valuePrese, Complexity complexity, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
 
-		FreeForm freeform = new FreeForm();
+		Freeform freeform = new Freeform();
 		freeform.setFreeformTypeCode(MEDIA_FILE_CODE);
+		freeform.setValuePrese(valuePrese);
 		freeform.setComplexity(complexity);
-		setFreeformValueAndPrese(freeform, valuePrese);
+		setValueAndPrese(freeform);
 		applyCreateUpdate(freeform);
 
 		createMeaningFreeform(ActivityEntity.MEDIA_FILE, meaningId, freeform, roleDatasetCode, isManualEventOnUpdateEnabled);
@@ -1143,11 +1157,12 @@ public class CudService extends AbstractCudService implements PermConstant, Acti
 	@Transactional(rollbackOn = Exception.class)
 	public void createMeaningFreeform(Long meaningId, String valuePrese, String freeformTypeCode, boolean isPublic, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
 
-		FreeForm freeform = new FreeForm();
+		Freeform freeform = new Freeform();
 		freeform.setFreeformTypeCode(freeformTypeCode);
+		freeform.setValuePrese(valuePrese);
 		freeform.setComplexity(Complexity.DETAIL);
 		freeform.setPublic(isPublic);
-		setFreeformValueAndPrese(freeform, valuePrese);
+		setValueAndPrese(freeform);
 		applyCreateUpdate(freeform);
 
 		createMeaningFreeform(ActivityEntity.FREEFORM, meaningId, freeform, roleDatasetCode, isManualEventOnUpdateEnabled);
@@ -1156,15 +1171,16 @@ public class CudService extends AbstractCudService implements PermConstant, Acti
 	@Transactional(rollbackOn = Exception.class)
 	public void createOdWordRecommendation(Long wordId, String valuePrese, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
 
-		FreeForm freeform = new FreeForm();
+		Freeform freeform = new Freeform();
 		freeform.setFreeformTypeCode(OD_WORD_RECOMMENDATION_CODE);
+		freeform.setValuePrese(valuePrese);
 		freeform.setComplexity(Complexity.DETAIL);
 		freeform.setPublic(true);
-		setFreeformValueAndPrese(freeform, valuePrese);
+		setValueAndPrese(freeform);
 		createWordFreeform(ActivityEntity.OD_WORD_RECOMMENDATION, wordId, freeform, roleDatasetCode, isManualEventOnUpdateEnabled);
 	}
 
-	private void createWordFreeform(ActivityEntity activityEntity, Long wordId, FreeForm freeform, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
+	private void createWordFreeform(ActivityEntity activityEntity, Long wordId, Freeform freeform, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
 
 		String userName = userContext.getUserName();
 		ActivityLogData activityLog = activityLogService.prepareActivityLog("createWordFreeform", wordId, ActivityOwner.WORD, roleDatasetCode, isManualEventOnUpdateEnabled);
@@ -1172,7 +1188,7 @@ public class CudService extends AbstractCudService implements PermConstant, Acti
 		activityLogService.createActivityLog(activityLog, wordFreeformId, activityEntity);
 	}
 
-	private void createMeaningFreeform(ActivityEntity activityEntity, Long meaningId, FreeForm freeform, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
+	private void createMeaningFreeform(ActivityEntity activityEntity, Long meaningId, Freeform freeform, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
 
 		String userName = userContext.getUserName();
 		ActivityLogData activityLog = activityLogService.prepareActivityLog("createMeaningFreeform", meaningId, ActivityOwner.MEANING, roleDatasetCode, isManualEventOnUpdateEnabled);

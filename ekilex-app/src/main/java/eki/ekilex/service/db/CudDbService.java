@@ -55,7 +55,7 @@ import org.springframework.stereotype.Component;
 
 import eki.common.constant.Complexity;
 import eki.ekilex.data.Classifier;
-import eki.ekilex.data.FreeForm;
+import eki.ekilex.data.Freeform;
 import eki.ekilex.data.ListData;
 import eki.ekilex.data.MeaningImage;
 import eki.ekilex.data.Note;
@@ -86,7 +86,7 @@ import eki.ekilex.data.db.main.tables.records.WordRelationRecord;
 @Component
 public class CudDbService extends AbstractDataDbService {
 
-	public void updateFreeform(FreeForm freeform, String userName) {
+	public void updateFreeform(Freeform freeform, String userName) {
 
 		Timestamp timestamp = new Timestamp(System.currentTimeMillis());
 
@@ -905,7 +905,7 @@ public class CudDbService extends AbstractDataDbService {
 		return wordId;
 	}
 
-	public Long createWordFreeform(Long wordId, FreeForm freeform, String userName) {
+	public Long createWordFreeform(Long wordId, Freeform freeform, String userName) {
 
 		Long freeformId = createFreeform(freeform, userName);
 
@@ -1205,7 +1205,7 @@ public class CudDbService extends AbstractDataDbService {
 				.getId();
 	}
 
-	public Long createMeaningFreeform(Long meaningId, FreeForm freeform, String userName) {
+	public Long createMeaningFreeform(Long meaningId, Freeform freeform, String userName) {
 
 		Long freeformId = createFreeform(freeform, userName);
 
@@ -1380,7 +1380,7 @@ public class CudDbService extends AbstractDataDbService {
 				.getId();
 	}
 
-	public Long createLexemeFreeform(Long lexemeId, FreeForm freeform, String userName) {
+	public Long createLexemeFreeform(Long lexemeId, Freeform freeform, String userName) {
 
 		Long freeformId = createFreeform(freeform, userName);
 
@@ -1587,13 +1587,13 @@ public class CudDbService extends AbstractDataDbService {
 				.getId();
 	}
 
-	public Long createChildFreeform(FreeForm freeform, String userName) {
+	public Long createChildFreeform(Freeform freeform, String userName) {
 
 		Long freeformId = createFreeform(freeform, userName);
 		return freeformId;
 	}
 
-	private Long createFreeform(FreeForm freeform, String userName) {
+	private Long createFreeform(Freeform freeform, String userName) {
 
 		Timestamp timestamp = new Timestamp(System.currentTimeMillis());
 		String complexity = freeform.getComplexity() == null ? null : freeform.getComplexity().name();

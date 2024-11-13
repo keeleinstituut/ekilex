@@ -10,17 +10,13 @@ public interface ContentKey {
 
 	String LEXEME_NOTE_SOURCE_LINK = "lexeme_note_source_link";
 
-	String LEXEME_FREEFORM_SOURCE_LINK = "lexeme_freeform_source_link";
-
 	String USAGE_SOURCE_LINK = "usage_source_link";
-
-	String WORD_FREEFORM_SOURCE_LINK = "word_freeform_source_link";
 
 	String MEANING_IMAGE_SOURCE_LINK = "meaning_image_source_link";
 
 	String MEANING_NOTE_SOURCE_LINK = "meaning_note_source_link";
 
-	String MEANING_FREEFORM_SOURCE_LINK = "meaning_freeform_source_link";
+	String FREEFORM_SOURCE_LINK = "freeform_source_link";
 
 	String MEANING_LINK = "meaning";
 

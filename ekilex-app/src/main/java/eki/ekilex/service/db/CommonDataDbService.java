@@ -105,7 +105,6 @@ import eki.common.constant.ClassifierName;
 import eki.common.constant.FreeformOwner;
 import eki.ekilex.data.Classifier;
 import eki.ekilex.data.Dataset;
-import eki.ekilex.data.FreeForm;
 import eki.ekilex.data.Government;
 import eki.ekilex.data.LexemeRelation;
 import eki.ekilex.data.MeaningForum;
@@ -702,7 +701,7 @@ public class CommonDataDbService extends AbstractDataDbService {
 				.fetchInto(WordForum.class);
 	}
 
-	public List<FreeForm> getOdWordRecommendations(Long wordId) {
+	public List<eki.ekilex.data.Freeform> getOdWordRecommendations(Long wordId) {
 
 		return mainDb
 				.select(
@@ -720,10 +719,10 @@ public class CommonDataDbService extends AbstractDataDbService {
 								.and(FREEFORM.ID.eq(WORD_FREEFORM.FREEFORM_ID))
 								.and(FREEFORM.FREEFORM_TYPE_CODE.eq(OD_WORD_RECOMMENDATION_CODE)))
 				.orderBy(FREEFORM.ORDER_BY)
-				.fetchInto(FreeForm.class);
+				.fetchInto(eki.ekilex.data.Freeform.class);
 	}
 
-	public List<FreeForm> getWordFreeforms(Long wordId, String[] excludedFreeformTypeCodes, String classifierLabelLang, String classifierLabelTypeCode) {
+	public List<eki.ekilex.data.Freeform> getWordFreeforms(Long wordId, String[] excludedFreeformTypeCodes, String classifierLabelLang, String classifierLabelTypeCode) {
 
 		Freeform f = FREEFORM.as("f");
 		WordFreeform wf = WORD_FREEFORM.as("wf");
@@ -774,7 +773,7 @@ public class CommonDataDbService extends AbstractDataDbService {
 												.and(ftl.LANG.eq(classifierLabelLang))))
 				.where(wf.WORD_ID.eq(wordId))
 				.orderBy(f.ORDER_BY)
-				.fetchInto(FreeForm.class);
+				.fetchInto(eki.ekilex.data.Freeform.class);
 	}
 
 	public eki.ekilex.data.Meaning getMeaning(Long meaningId) {
@@ -792,7 +791,56 @@ public class CommonDataDbService extends AbstractDataDbService {
 				.orElse(null);
 	}
 
-	public List<FreeForm> getMeaningFreeforms(Long meaningId, String[] excludedFreeformTypeCodes, String classifierLabelLang, String classifierLabelTypeCode) {
+	public eki.ekilex.data.Freeform getFreeform(Long id, String classifierLabelLang, String classifierLabelTypeCode) {
+
+		Freeform f = FREEFORM.as("f");
+		FreeformTypeLabel ftl = FREEFORM_TYPE_LABEL.as("ftl");
+		FreeformSourceLink fsl = FREEFORM_SOURCE_LINK.as("fsl");
+		Source s = SOURCE.as("s");
+
+		Field<JSON> fslf = DSL
+				.select(DSL
+						.jsonArrayAgg(DSL
+								.jsonObject(
+										DSL.key("id").value(fsl.ID),
+										DSL.key("type").value(fsl.TYPE),
+										DSL.key("name").value(fsl.NAME),
+										DSL.key("sourceId").value(fsl.SOURCE_ID),
+										DSL.key("sourceName").value(s.NAME)))
+						.orderBy(fsl.ORDER_BY))
+				.from(fsl, s)
+				.where(
+						fsl.FREEFORM_ID.eq(f.ID)
+								.and(fsl.SOURCE_ID.eq(s.ID)))
+				.asField();
+
+		return mainDb
+				.select(
+						f.ID,
+						f.FREEFORM_TYPE_CODE,
+						DSL.coalesce(ftl.VALUE, f.FREEFORM_TYPE_CODE).as("freeform_type_value"),
+						f.VALUE,
+						f.VALUE_PRESE,
+						f.LANG,
+						f.COMPLEXITY,
+						f.ORDER_BY,
+						f.IS_PUBLIC,
+						f.CREATED_BY,
+						f.CREATED_ON,
+						f.MODIFIED_BY,
+						f.MODIFIED_ON,
+						fslf.as("source_links"))
+				.from(
+						f.leftOuterJoin(ftl).on(
+								ftl.CODE.eq(f.FREEFORM_TYPE_CODE)
+										.and(ftl.TYPE.eq(classifierLabelTypeCode))
+										.and(ftl.LANG.eq(classifierLabelLang))))
+				.where(f.ID.eq(id))
+				.fetchOptionalInto(eki.ekilex.data.Freeform.class)
+				.orElse(null);
+	}
+
+	public List<eki.ekilex.data.Freeform> getMeaningFreeforms(Long meaningId, String[] excludedFreeformTypeCodes, String classifierLabelLang, String classifierLabelTypeCode) {
 
 		Freeform f = FREEFORM.as("f");
 		MeaningFreeform mf = MEANING_FREEFORM.as("mf");
@@ -843,10 +891,10 @@ public class CommonDataDbService extends AbstractDataDbService {
 												.and(ftl.LANG.eq(classifierLabelLang))))
 				.where(mf.MEANING_ID.eq(meaningId))
 				.orderBy(f.ORDER_BY)
-				.fetchInto(FreeForm.class);
+				.fetchInto(eki.ekilex.data.Freeform.class);
 	}
 
-	public List<FreeForm> getMeaningLearnerComments(Long meaningId) {
+	public List<eki.ekilex.data.Freeform> getMeaningLearnerComments(Long meaningId) {
 
 		return mainDb
 				.select(
@@ -861,7 +909,7 @@ public class CommonDataDbService extends AbstractDataDbService {
 								.and(FREEFORM.ID.eq(MEANING_FREEFORM.FREEFORM_ID))
 								.and(FREEFORM.FREEFORM_TYPE_CODE.eq(LEARNER_COMMENT_CODE)))
 				.orderBy(FREEFORM.ORDER_BY)
-				.fetchInto(FreeForm.class);
+				.fetchInto(eki.ekilex.data.Freeform.class);
 	}
 
 	public List<eki.ekilex.data.MeaningNote> getMeaningNotes(Long meaningId) {
@@ -1397,7 +1445,7 @@ public class CommonDataDbService extends AbstractDataDbService {
 				.fetchInto(MeaningForum.class);
 	}
 
-	public List<FreeForm> getLexemeFreeforms(Long lexemeId, String[] excludedFreeformTypeCodes, String classifierLabelLang, String classifierLabelTypeCode) {
+	public List<eki.ekilex.data.Freeform> getLexemeFreeforms(Long lexemeId, String[] excludedFreeformTypeCodes, String classifierLabelLang, String classifierLabelTypeCode) {
 
 		Freeform f = FREEFORM.as("f");
 		LexemeFreeform lf = LEXEME_FREEFORM.as("lf");
@@ -1448,7 +1496,7 @@ public class CommonDataDbService extends AbstractDataDbService {
 												.and(ftl.LANG.eq(classifierLabelLang))))
 				.where(lf.LEXEME_ID.eq(lexemeId))
 				.orderBy(f.ORDER_BY)
-				.fetchInto(FreeForm.class);
+				.fetchInto(eki.ekilex.data.Freeform.class);
 	}
 
 	public List<SourceLink> getLexemeSourceLinks(Long lexemeId) {
@@ -1465,7 +1513,7 @@ public class CommonDataDbService extends AbstractDataDbService {
 				.fetchInto(SourceLink.class);
 	}
 
-	public List<FreeForm> getLexemeGrammars(Long lexemeId) {
+	public List<eki.ekilex.data.Freeform> getLexemeGrammars(Long lexemeId) {
 		return mainDb
 				.select(
 						FREEFORM.ID,
@@ -1479,7 +1527,7 @@ public class CommonDataDbService extends AbstractDataDbService {
 						.and(FREEFORM.ID.eq(LEXEME_FREEFORM.FREEFORM_ID))
 						.and(FREEFORM.FREEFORM_TYPE_CODE.eq(GRAMMAR_CODE)))
 				.orderBy(FREEFORM.ORDER_BY)
-				.fetchInto(FreeForm.class);
+				.fetchInto(eki.ekilex.data.Freeform.class);
 	}
 
 	public List<Government> getLexemeGovernments(Long lexemeId) {

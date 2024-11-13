@@ -20,7 +20,7 @@ import eki.common.constant.FreeformConstant;
 import eki.common.exception.OperationDeniedException;
 import eki.ekilex.data.ActivityLog;
 import eki.ekilex.data.ActivityLogData;
-import eki.ekilex.data.FreeForm;
+import eki.ekilex.data.Freeform;
 import eki.ekilex.data.LexemeNote;
 import eki.ekilex.data.MeaningNote;
 import eki.ekilex.data.SourceLink;
@@ -368,7 +368,7 @@ public class TermMeaningService extends AbstractApiCudService implements Activit
 			for (String conceptId : conceptIds) {
 				boolean meaningConceptIdExists = lookupDbService.meaningFreeformExists(meaningId, conceptId, CONCEPT_ID_CODE);
 				if (!meaningConceptIdExists) {
-					FreeForm freeform = new FreeForm();
+					Freeform freeform = new Freeform();
 					freeform.setFreeformTypeCode(CONCEPT_ID_CODE);
 					freeform.setValue(conceptId);
 					freeform.setValuePrese(conceptId);

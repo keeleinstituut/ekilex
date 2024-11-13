@@ -4,7 +4,7 @@ import java.util.List;
 
 import eki.common.constant.Complexity;
 
-public class FreeForm extends AbstractCreateUpdateEntity {
+public class Freeform extends AbstractCreateUpdateEntity implements ValueAndPrese {
 
 	private static final long serialVersionUID = 1L;
 

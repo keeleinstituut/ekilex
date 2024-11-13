@@ -14,6 +14,8 @@ public class ApiResponse extends AbstractDataObject {
 
 	private String message;
 
+	private String tableName;
+
 	private Long id;
 
 	public ApiResponse() {
@@ -24,9 +26,10 @@ public class ApiResponse extends AbstractDataObject {
 		this.message = message;
 	}
 
-	public ApiResponse(boolean success, String message, Long id) {
+	public ApiResponse(boolean success, String message, String tableName, Long id) {
 		this.success = success;
 		this.message = message;
+		this.tableName = tableName;
 		this.id = id;
 	}
 
@@ -34,24 +37,16 @@ public class ApiResponse extends AbstractDataObject {
 		return success;
 	}
 
-	public void setSuccess(boolean success) {
-		this.success = success;
-	}
-
 	public String getMessage() {
 		return message;
 	}
 
-	public void setMessage(String message) {
-		this.message = message;
+	public String getTableName() {
+		return tableName;
 	}
 
 	public Long getId() {
 		return id;
-	}
-
-	public void setId(Long id) {
-		this.id = id;
 	}
 
 }

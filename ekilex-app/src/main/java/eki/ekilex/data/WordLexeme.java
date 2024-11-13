@@ -75,11 +75,11 @@ public class WordLexeme extends AbstractCrudEntity implements LexemeLevel, Decor
 
 	private List<Government> governments;
 
-	private List<FreeForm> grammars;
+	private List<Freeform> grammars;
 
 	private List<Usage> usages;
 
-	private List<FreeForm> lexemeFreeforms;
+	private List<Freeform> lexemeFreeforms;
 
 	private List<NoteLangGroup> lexemeNoteLangGroups;
 
@@ -382,11 +382,11 @@ public class WordLexeme extends AbstractCrudEntity implements LexemeLevel, Decor
 		this.governments = governments;
 	}
 
-	public List<FreeForm> getGrammars() {
+	public List<Freeform> getGrammars() {
 		return grammars;
 	}
 
-	public void setGrammars(List<FreeForm> grammars) {
+	public void setGrammars(List<Freeform> grammars) {
 		this.grammars = grammars;
 	}
 
@@ -398,11 +398,11 @@ public class WordLexeme extends AbstractCrudEntity implements LexemeLevel, Decor
 		this.usages = usages;
 	}
 
-	public List<FreeForm> getLexemeFreeforms() {
+	public List<Freeform> getLexemeFreeforms() {
 		return lexemeFreeforms;
 	}
 
-	public void setLexemeFreeforms(List<FreeForm> lexemeFreeforms) {
+	public void setLexemeFreeforms(List<Freeform> lexemeFreeforms) {
 		this.lexemeFreeforms = lexemeFreeforms;
 	}
 

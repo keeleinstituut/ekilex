@@ -39,10 +39,10 @@ public abstract class AbstractApiController implements SystemConstant, ApiConsta
 		return new ApiResponse(true, message);
 	}
 
-	protected ApiResponse getOpSuccessResponse(Authentication authentication, HttpServletRequest request, Long id) {
+	protected ApiResponse getOpSuccessResponse(Authentication authentication, HttpServletRequest request, String tableName, Long id) {
 		addRequestStat(authentication, request);
 		String positiveQuote = messageUtil.getPositiveQuote();
-		return new ApiResponse(true, positiveQuote, id);
+		return new ApiResponse(true, positiveQuote, tableName, id);
 	}
 
 	protected void addRequestStat(Authentication authentication, HttpServletRequest request) {

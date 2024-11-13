@@ -158,6 +158,13 @@ public class SourceLinkDbService {
 		return getOwner(sourceLinkId, sl, sl.MEANING_NOTE_ID);
 	}
 
+	public SourceLinkOwner getFreeformSourceLinkOwner(Long sourceLinkId) {
+
+		FreeformSourceLink sl = FREEFORM_SOURCE_LINK.as("sl");
+
+		return getOwner(sourceLinkId, sl, sl.FREEFORM_ID);
+	}
+
 	private SourceLinkOwner getOwner(Long sourceLinkId, Table<?> sl, Field<Long> parentIdField) {
 
 		return mainDb

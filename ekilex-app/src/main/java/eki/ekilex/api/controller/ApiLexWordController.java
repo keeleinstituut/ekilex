@@ -56,7 +56,7 @@ public class ApiLexWordController extends AbstractApiController {
 
 		try {
 			Long wordId = lexWordService.saveLexWord(lexWord, crudRoleDataset);
-			return getOpSuccessResponse(authentication, request, wordId);
+			return getOpSuccessResponse(authentication, request, "WORD", wordId);
 		} catch (Exception e) {
 			return getOpFailResponse(authentication, request, e);
 		}

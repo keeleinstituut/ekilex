@@ -2,6 +2,7 @@ package eki.ekilex.security;
 
 import java.io.Serializable;
 import java.util.List;
+import java.util.Map;
 
 import javax.transaction.Transactional;
 
@@ -21,6 +22,7 @@ import eki.ekilex.data.DatasetPermission;
 import eki.ekilex.data.DefinitionNoteSourceLink;
 import eki.ekilex.data.DefinitionSourceLink;
 import eki.ekilex.data.EkiUser;
+import eki.ekilex.data.FreeformSourceLink;
 import eki.ekilex.data.LexemeNoteSourceLink;
 import eki.ekilex.data.LexemeSourceLink;
 import eki.ekilex.data.MeaningImageSourceLink;
@@ -29,7 +31,6 @@ import eki.ekilex.data.SourceLink;
 import eki.ekilex.data.SourceLinkOwner;
 import eki.ekilex.data.UsageSourceLink;
 import eki.ekilex.service.db.ActivityLogDbService;
-import eki.ekilex.service.db.LookupDbService;
 import eki.ekilex.service.db.PermissionDbService;
 import eki.ekilex.service.db.SourceLinkDbService;
 
@@ -41,9 +42,6 @@ public class EkilexPermissionEvaluator implements PermissionEvaluator, PermConst
 
 	@Autowired
 	private SourceLinkDbService sourceLinkDbService;
-
-	@Autowired
-	private LookupDbService lookupDbService;
 
 	@Autowired
 	private ActivityLogDbService activityLogDbService;
@@ -249,6 +247,10 @@ public class EkilexPermissionEvaluator implements PermissionEvaluator, PermConst
 			Long meaningNoteId = meaningNoteSourceLink.getMeaningNoteId();
 			Long meaningId = activityLogDbService.getMeaningNoteOwnerId(meaningNoteId);
 			return permissionDbService.isGrantedForMeaning(userId, crudRole, meaningId, AUTH_ITEM_DATASET, AUTH_OPS_CRUD);
+		} else if (StringUtils.equals(FREEFORM_SOURCE_LINK, sourceContentKey)) {
+			FreeformSourceLink freeformSourceLink = (FreeformSourceLink) sourceLink;
+			Long freeformId = freeformSourceLink.getFreeformId();
+			return isFreeformCrudGranted(authentication, crudRoleDataset, freeformId);
 		}
 		return false;
 	}
@@ -331,18 +333,20 @@ public class EkilexPermissionEvaluator implements PermissionEvaluator, PermConst
 			}
 			Long meaningId = activityLogDbService.getMeaningNoteOwnerId(meaningNoteId);
 			return permissionDbService.isGrantedForMeaning(userId, crudRole, meaningId, AUTH_ITEM_DATASET, AUTH_OPS_CRUD);
+		} else if (StringUtils.equals(FREEFORM_SOURCE_LINK, sourceContentKey)) {
+			SourceLinkOwner sourceLinkOwner = sourceLinkDbService.getFreeformSourceLinkOwner(sourceLinkId);
+			Long freeformId = sourceLinkOwner.getOwnerId();
+			Long sourceId = sourceLinkOwner.getSourceId();
+			boolean isSourceCrudGranted = isSourceCrudGranted(authentication, crudRoleDataset, sourceId);
+			if (!isSourceCrudGranted) {
+				return false;
+			}
+			return isFreeformCrudGranted(authentication, crudRoleDataset, freeformId);
 		}
 		return false;
 	}
 
 	// word crud
-
-	@Transactional
-	public boolean isWordFreeformCrudGranted(Authentication authentication, String crudRoleDataset, Long freeformId) {
-
-		Long wordId = lookupDbService.getWordId(freeformId);
-		return isWordCrudGranted(authentication, crudRoleDataset, wordId);
-	}
 
 	@Transactional
 	public boolean isWordRelationCrudGranted(Authentication authentication, String crudRoleDataset, Long relationId) {
@@ -445,6 +449,42 @@ public class EkilexPermissionEvaluator implements PermissionEvaluator, PermConst
 		}
 		boolean isGranted = permissionDbService.isGrantedForMeaning(userId, crudRole, meaningId, AUTH_ITEM_DATASET, AUTH_OPS_CRUD);
 		return isGranted;
+	}
+
+	@Transactional
+	public boolean isFreeformCrudGranted(Authentication authentication, String crudRoleDataset, Long freeformId) {
+
+		EkiUser user = (EkiUser) authentication.getPrincipal();
+		if (freeformId == null) {
+			return true;
+		}
+		if (user.isMaster()) {
+			return true;
+		}
+		Long userId = user.getId();
+		DatasetPermission crudRole = getCrudRole(userId, crudRoleDataset);
+		if (crudRole == null) {
+			return false;
+		}
+		return resolveFreeformOwner(authentication, crudRoleDataset, freeformId);
+	}
+
+	private boolean resolveFreeformOwner(Authentication authentication, String crudRoleDataset, Long freeformId) {
+
+		Map<String, Object> freeformOwnerDataMap = activityLogDbService.getFirstDepthFreeformOwnerDataMap(freeformId);
+		Long lexemeId = (Long) freeformOwnerDataMap.get("lexeme_id");
+		if (lexemeId != null) {
+			return isLexemeCrudGranted(authentication, crudRoleDataset, lexemeId);
+		}
+		Long wordId = (Long) freeformOwnerDataMap.get("word_id");
+		if (wordId != null) {
+			return isWordCrudGranted(authentication, crudRoleDataset, wordId);
+		}
+		Long meaningId = (Long) freeformOwnerDataMap.get("meaning_id");
+		if (meaningId != null) {
+			return isMeaningCrudGranted(authentication, crudRoleDataset, meaningId);
+		}
+		return false;
 	}
 
 	private DatasetPermission getCrudRole(Long userId, String crudRoleDataset) {

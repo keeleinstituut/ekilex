@@ -231,14 +231,8 @@ public class EditController extends AbstractMutableDataPageController {
 		case ContentKey.LEXEME_NOTE_SOURCE_LINK:
 			sourceLinkService.createLexemeNoteSourceLink(id, id2, ReferenceType.ANY, value, roleDatasetCode, isManualEventOnUpdateEnabled);
 			break;
-		case ContentKey.LEXEME_FREEFORM_SOURCE_LINK:
-			sourceLinkService.createLexemeFreeformSourceLink(id, id2, ReferenceType.ANY, value, roleDatasetCode, isManualEventOnUpdateEnabled);
-			break;
 		case ContentKey.USAGE_SOURCE_LINK:
 			sourceLinkService.createUsageSourceLink(id, id2, ReferenceType.ANY, value, roleDatasetCode, isManualEventOnUpdateEnabled);
-			break;
-		case ContentKey.WORD_FREEFORM_SOURCE_LINK:
-			sourceLinkService.createWordFreeformSourceLink(id, id2, ReferenceType.ANY, value, roleDatasetCode, isManualEventOnUpdateEnabled);
 			break;
 		case ContentKey.MEANING_IMAGE_SOURCE_LINK:
 			sourceLinkService.createMeaningImageSourceLink(id, id2, ReferenceType.ANY, value, roleDatasetCode, isManualEventOnUpdateEnabled);
@@ -246,8 +240,8 @@ public class EditController extends AbstractMutableDataPageController {
 		case ContentKey.MEANING_NOTE_SOURCE_LINK:
 			sourceLinkService.createMeaningNoteSourceLink(id, id2, ReferenceType.ANY, value, roleDatasetCode, isManualEventOnUpdateEnabled);
 			break;
-		case ContentKey.MEANING_FREEFORM_SOURCE_LINK:
-			sourceLinkService.createMeaningFreeformSourceLink(id, id2, ReferenceType.ANY, value, roleDatasetCode, isManualEventOnUpdateEnabled);
+		case ContentKey.FREEFORM_SOURCE_LINK:
+			sourceLinkService.createFreeformSourceLink(id, id2, ReferenceType.ANY, value, roleDatasetCode, isManualEventOnUpdateEnabled);
 			break;
 		}
 
@@ -432,17 +426,11 @@ public class EditController extends AbstractMutableDataPageController {
 		case ContentKey.LEXEME_SOURCE_LINK:
 			sourceLinkService.updateLexemeSourceLink(id, value, roleDatasetCode, isManualEventOnUpdateEnabled);
 			break;
-		case ContentKey.LEXEME_FREEFORM_SOURCE_LINK:
-			sourceLinkService.updateLexemeFreeformSourceLink(id, value, roleDatasetCode, isManualEventOnUpdateEnabled);
-			break;
 		case ContentKey.LEXEME_NOTE_SOURCE_LINK:
 			sourceLinkService.updateLexemeNoteSourceLink(id, value, roleDatasetCode, isManualEventOnUpdateEnabled);
 			break;
 		case ContentKey.USAGE_SOURCE_LINK:
 			sourceLinkService.updateUsageSourceLink(id, value, roleDatasetCode, isManualEventOnUpdateEnabled);
-			break;
-		case ContentKey.WORD_FREEFORM_SOURCE_LINK:
-			sourceLinkService.updateWordFreeformSourceLink(id, value, roleDatasetCode, isManualEventOnUpdateEnabled);
 			break;
 		case ContentKey.MEANING_IMAGE_SOURCE_LINK:
 			sourceLinkService.updateMeaningImageSourceLink(id, value, roleDatasetCode, isManualEventOnUpdateEnabled);
@@ -450,8 +438,8 @@ public class EditController extends AbstractMutableDataPageController {
 		case ContentKey.MEANING_NOTE_SOURCE_LINK:
 			sourceLinkService.updateMeaningNoteSourceLink(id, value, roleDatasetCode, isManualEventOnUpdateEnabled);
 			break;
-		case ContentKey.MEANING_FREEFORM_SOURCE_LINK:
-			sourceLinkService.updateMeaningFreeformSourceLink(id, value, roleDatasetCode, isManualEventOnUpdateEnabled);
+		case ContentKey.FREEFORM_SOURCE_LINK:
+			sourceLinkService.updateFreeformSourceLink(id, value, roleDatasetCode, isManualEventOnUpdateEnabled);
 			break;
 		}
 		return response;
@@ -686,17 +674,11 @@ public class EditController extends AbstractMutableDataPageController {
 		case ContentKey.LEXEME_SOURCE_LINK:
 			sourceLinkService.deleteLexemeSourceLink(id, roleDatasetCode, isManualEventOnUpdateEnabled);
 			break;
-		case ContentKey.LEXEME_FREEFORM_SOURCE_LINK:
-			sourceLinkService.deleteLexemeFreeformSourceLink(id, roleDatasetCode, isManualEventOnUpdateEnabled);
-			break;
 		case ContentKey.LEXEME_NOTE_SOURCE_LINK:
 			sourceLinkService.deleteLexemeNoteSourceLink(id, roleDatasetCode, isManualEventOnUpdateEnabled);
 			break;
 		case ContentKey.USAGE_SOURCE_LINK:
 			sourceLinkService.deleteUsageSourceLink(id, roleDatasetCode, isManualEventOnUpdateEnabled);
-			break;
-		case ContentKey.WORD_FREEFORM_SOURCE_LINK:
-			sourceLinkService.deleteWordFreeformSourceLink(id, roleDatasetCode, isManualEventOnUpdateEnabled);
 			break;
 		case ContentKey.MEANING_IMAGE_SOURCE_LINK:
 			sourceLinkService.deleteMeaningImageSourceLink(id, roleDatasetCode, isManualEventOnUpdateEnabled);
@@ -704,8 +686,8 @@ public class EditController extends AbstractMutableDataPageController {
 		case ContentKey.MEANING_NOTE_SOURCE_LINK:
 			sourceLinkService.deleteMeaningNoteSourceLink(id, roleDatasetCode, isManualEventOnUpdateEnabled);
 			break;
-		case ContentKey.MEANING_FREEFORM_SOURCE_LINK:
-			sourceLinkService.deleteMeaningFreeformSourceLink(id, roleDatasetCode, isManualEventOnUpdateEnabled);
+		case ContentKey.FREEFORM_SOURCE_LINK:
+			sourceLinkService.deleteFreeformSourceLink(id, roleDatasetCode, isManualEventOnUpdateEnabled);
 			break;
 		}
 		return response;

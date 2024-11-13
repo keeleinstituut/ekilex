@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 import eki.common.constant.ContentKey;
 import eki.ekilex.data.DefinitionNoteSourceLink;
 import eki.ekilex.data.DefinitionSourceLink;
+import eki.ekilex.data.FreeformSourceLink;
 import eki.ekilex.data.LexemeNoteSourceLink;
 import eki.ekilex.data.LexemeSourceLink;
 import eki.ekilex.data.MeaningImageSourceLink;
@@ -50,7 +51,7 @@ public class ApiSourceLinkController extends AbstractApiController implements Co
 			if (sourceLinkId == null) {
 				return getOpFailResponse(authentication, request, "Invalid or unsupported source link composition");
 			}
-			return getOpSuccessResponse(authentication, request, sourceLinkId);
+			return getOpSuccessResponse(authentication, request, "DEFINITION_SOURCE_LINK", sourceLinkId);
 		} catch (Exception e) {
 			return getOpFailResponse(authentication, request, e);
 		}
@@ -91,7 +92,7 @@ public class ApiSourceLinkController extends AbstractApiController implements Co
 			if (sourceLinkId == null) {
 				return getOpFailResponse(authentication, request, "Invalid or unsupported source link composition");
 			}
-			return getOpSuccessResponse(authentication, request, sourceLinkId);
+			return getOpSuccessResponse(authentication, request, "DEFINITION_NOTE_SOURCE_LINK", sourceLinkId);
 		} catch (Exception e) {
 			return getOpFailResponse(authentication, request, e);
 		}
@@ -132,7 +133,7 @@ public class ApiSourceLinkController extends AbstractApiController implements Co
 			if (sourceLinkId == null) {
 				return getOpFailResponse(authentication, request, "Invalid or unsupported source link composition");
 			}
-			return getOpSuccessResponse(authentication, request, sourceLinkId);
+			return getOpSuccessResponse(authentication, request, "LEXEME_SOURCE_LINK", sourceLinkId);
 		} catch (Exception e) {
 			return getOpFailResponse(authentication, request, e);
 		}
@@ -173,7 +174,7 @@ public class ApiSourceLinkController extends AbstractApiController implements Co
 			if (sourceLinkId == null) {
 				return getOpFailResponse(authentication, request, "Invalid or unsupported source link composition");
 			}
-			return getOpSuccessResponse(authentication, request, sourceLinkId);
+			return getOpSuccessResponse(authentication, request, "LEXEME_NOTE_SOURCE_LINK", sourceLinkId);
 		} catch (Exception e) {
 			return getOpFailResponse(authentication, request, e);
 		}
@@ -214,7 +215,7 @@ public class ApiSourceLinkController extends AbstractApiController implements Co
 			if (sourceLinkId == null) {
 				return getOpFailResponse(authentication, request, "Invalid or unsupported source link composition");
 			}
-			return getOpSuccessResponse(authentication, request, sourceLinkId);
+			return getOpSuccessResponse(authentication, request, "USAGE_SOURCE_LINK", sourceLinkId);
 		} catch (Exception e) {
 			return getOpFailResponse(authentication, request, e);
 		}
@@ -255,7 +256,7 @@ public class ApiSourceLinkController extends AbstractApiController implements Co
 			if (sourceLinkId == null) {
 				return getOpFailResponse(authentication, request, "Invalid or unsupported source link composition");
 			}
-			return getOpSuccessResponse(authentication, request, sourceLinkId);
+			return getOpSuccessResponse(authentication, request, "MEANING_IMAGE_SOURCE_LINK", sourceLinkId);
 		} catch (Exception e) {
 			return getOpFailResponse(authentication, request, e);
 		}
@@ -296,7 +297,7 @@ public class ApiSourceLinkController extends AbstractApiController implements Co
 			if (sourceLinkId == null) {
 				return getOpFailResponse(authentication, request, "Invalid or unsupported source link composition");
 			}
-			return getOpSuccessResponse(authentication, request, sourceLinkId);
+			return getOpSuccessResponse(authentication, request, "MEANING_NOTE_SOURCE_LINK", sourceLinkId);
 		} catch (Exception e) {
 			return getOpFailResponse(authentication, request, e);
 		}
@@ -314,6 +315,47 @@ public class ApiSourceLinkController extends AbstractApiController implements Co
 
 		try {
 			sourceLinkService.deleteMeaningNoteSourceLink(sourceLinkId, crudRoleDataset, MANUAL_EVENT_ON_UPDATE_ENABLED);
+			return getOpSuccessResponse(authentication, request);
+		} catch (Exception e) {
+			return getOpFailResponse(authentication, request, e);
+		}
+	}
+
+	@Order(315)
+	@PreAuthorize("principal.apiCrud && @permEval.isSourceLinkCrudGranted(authentication, #crudRoleDataset, '" + FREEFORM_SOURCE_LINK + "', #sourceLink)")
+	@PostMapping(API_SERVICES_URI + FREEFORM_SOURCE_LINK_URI + CREATE_URI)
+	@ResponseBody
+	public ApiResponse createFreeformSourceLink(
+			@RequestParam("crudRoleDataset") String crudRoleDataset,
+			@RequestBody FreeformSourceLink sourceLink,
+			Authentication authentication,
+			HttpServletRequest request) {
+
+		try {
+			cleanSourceLinkName(sourceLink);
+			Long freeformId = sourceLink.getFreeformId();
+			Long sourceLinkId = sourceLinkService.createFreeformSourceLink(freeformId, sourceLink, crudRoleDataset, MANUAL_EVENT_ON_UPDATE_ENABLED);
+			if (sourceLinkId == null) {
+				return getOpFailResponse(authentication, request, "Invalid or unsupported source link composition");
+			}
+			return getOpSuccessResponse(authentication, request, "FREEFORM_SOURCE_LINK", sourceLinkId);
+		} catch (Exception e) {
+			return getOpFailResponse(authentication, request, e);
+		}
+	}
+
+	@Order(316)
+	@PreAuthorize("principal.apiCrud && @permEval.isSourceLinkCrudGranted(authentication, #crudRoleDataset, '" + FREEFORM_SOURCE_LINK + "', #sourceLinkId)")
+	@DeleteMapping(API_SERVICES_URI + FREEFORM_SOURCE_LINK_URI + DELETE_URI)
+	@ResponseBody
+	public ApiResponse deleteFreeformSourceLink(
+			@RequestParam("crudRoleDataset") String crudRoleDataset,
+			@RequestParam("sourceLinkId") Long sourceLinkId,
+			Authentication authentication,
+			HttpServletRequest request) {
+
+		try {
+			sourceLinkService.deleteFreeformSourceLink(sourceLinkId, crudRoleDataset, MANUAL_EVENT_ON_UPDATE_ENABLED);
 			return getOpSuccessResponse(authentication, request);
 		} catch (Exception e) {
 			return getOpFailResponse(authentication, request, e);

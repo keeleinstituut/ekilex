@@ -23,7 +23,6 @@ import static eki.ekilex.data.db.main.Tables.MEANING_TAG;
 import static eki.ekilex.data.db.main.Tables.PARADIGM;
 import static eki.ekilex.data.db.main.Tables.PARADIGM_FORM;
 import static eki.ekilex.data.db.main.Tables.WORD;
-import static eki.ekilex.data.db.main.Tables.WORD_FREEFORM;
 import static eki.ekilex.data.db.main.Tables.WORD_GROUP;
 import static eki.ekilex.data.db.main.Tables.WORD_GROUP_MEMBER;
 import static eki.ekilex.data.db.main.Tables.WORD_RELATION;
@@ -129,14 +128,6 @@ public class LookupDbService extends AbstractDataDbService {
 				.where(WORD_GROUP_MEMBER.ID.eq(relationId))
 				.fetchOneInto(Long.class);
 		return id;
-	}
-
-	public Long getWordId(Long freeformId) {
-		Long wordId = mainDb.select(WORD_FREEFORM.WORD_ID)
-				.from(WORD_FREEFORM)
-				.where(WORD_FREEFORM.FREEFORM_ID.eq(freeformId))
-				.fetchOneInto(Long.class);
-		return wordId;
 	}
 
 	public List<Map<String, Object>> getWordRelationGroupMembers(Long groupId) {

@@ -1,6 +1,5 @@
 package eki.ekilex.service;
 
-import java.sql.Timestamp;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -16,13 +15,11 @@ import eki.common.constant.Complexity;
 import eki.common.constant.ReferenceType;
 import eki.common.constant.WordRelationGroupType;
 import eki.common.service.TextDecorationService;
-import eki.ekilex.data.AbstractCreateUpdateEntity;
 import eki.ekilex.data.ActivityLogData;
-import eki.ekilex.data.FreeForm;
+import eki.ekilex.data.Freeform;
 import eki.ekilex.data.Note;
 import eki.ekilex.data.SourceLink;
 import eki.ekilex.data.Usage;
-import eki.ekilex.data.ValueAndPrese;
 import eki.ekilex.data.WordLexemeMeaningIdTuple;
 import eki.ekilex.data.WordRelation;
 import eki.ekilex.service.db.CudDbService;
@@ -208,46 +205,12 @@ public abstract class AbstractCudService extends AbstractService {
 		note.setLang(lang);
 		note.setComplexity(complexity);
 		note.setPublic(isPublic);
-
 		setValueAndPrese(note);
 
 		return note;
 	}
 
-	protected void applyCreateUpdate(AbstractCreateUpdateEntity entity) {
-
-		String userName = userContext.getUserName();
-		Timestamp now = new Timestamp(System.currentTimeMillis());
-		entity.setCreatedBy(userName);
-		entity.setCreatedOn(now);
-		entity.setModifiedBy(userName);
-		entity.setModifiedOn(now);
-	}
-
-	protected void applyUpdate(AbstractCreateUpdateEntity entity) {
-
-		String userName = userContext.getUserName();
-		Timestamp now = new Timestamp(System.currentTimeMillis());
-		entity.setModifiedBy(userName);
-		entity.setModifiedOn(now);
-	}
-
-	public void setValueAndPrese(ValueAndPrese note) {
-
-		String valuePrese = StringUtils.trim(note.getValuePrese());
-		String value = textDecorationService.removeEkiElementMarkup(valuePrese);
-		note.setValue(value);
-		note.setValuePrese(valuePrese);
-	}
-
-	protected void setFreeformValueAndPrese(FreeForm freeform, String valuePrese) {
-
-		String value = textDecorationService.removeEkiElementMarkup(valuePrese);
-		freeform.setValue(value);
-		freeform.setValuePrese(valuePrese);
-	}
-
-	protected Long createLexemeFreeform(ActivityEntity activityEntity, Long lexemeId, FreeForm freeform, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
+	protected Long createLexemeFreeform(ActivityEntity activityEntity, Long lexemeId, Freeform freeform, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
 
 		String userName = userContext.getUserName();
 		ActivityLogData activityLog = activityLogService.prepareActivityLog("createLexemeFreeform", lexemeId, ActivityOwner.LEXEME, roleDatasetCode, isManualEventOnUpdateEnabled);

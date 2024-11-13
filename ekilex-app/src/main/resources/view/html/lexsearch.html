@@ -575,7 +575,7 @@
                               <div th:replace="lexdialog :: edit_word_freeform_source_link_dlg"></div>
                               <span>
                                 [
-                                <a th:href="@{'/word_freeform_source_link:' + ${sourceLink.id}}" th:text="${sourceLink.sourceName}"></a>
+                                <a th:href="@{'/freeform_source_link:' + ${sourceLink.id}}" th:text="${sourceLink.sourceName}"></a>
                                 <span th:text="${sourceLink.name}" th:if="${sourceLink.name != null}"></span>
                                 <button type="button" class="btn badge badge-primary"
                                         th:title="#{common.edit}"
@@ -585,7 +585,7 @@
                                   <i class="fa fa-edit" aria-hidden="true"></i>
                                 </button>
                                 <button type="button" class="btn badge badge-warning"
-                                        data-op-code="word_freeform_source_link"
+                                        data-op-code="freeform_source_link"
                                         th:data-id="${sourceLink.id}"
                                         data-toggle="delete-confirm"
                                         data-placement="right"

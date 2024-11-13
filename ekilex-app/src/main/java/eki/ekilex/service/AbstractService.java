@@ -1,5 +1,8 @@
 package eki.ekilex.service;
 
+import java.sql.Timestamp;
+
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 
@@ -7,6 +10,8 @@ import eki.common.constant.FreeformConstant;
 import eki.common.constant.GlobalConstant;
 import eki.common.service.TextDecorationService;
 import eki.ekilex.constant.SystemConstant;
+import eki.ekilex.data.AbstractCreateUpdateEntity;
+import eki.ekilex.data.ValueAndPrese;
 import eki.ekilex.service.core.ActivityLogService;
 import eki.ekilex.service.core.UserContext;
 import eki.ekilex.service.db.ActivityLogDbService;
@@ -31,4 +36,30 @@ public abstract class AbstractService implements GlobalConstant, SystemConstant,
 
 	@Autowired
 	protected TextDecorationService textDecorationService;
+
+	protected void applyCreateUpdate(AbstractCreateUpdateEntity entity) {
+
+		String userName = userContext.getUserName();
+		Timestamp now = new Timestamp(System.currentTimeMillis());
+		entity.setCreatedBy(userName);
+		entity.setCreatedOn(now);
+		entity.setModifiedBy(userName);
+		entity.setModifiedOn(now);
+	}
+
+	protected void applyUpdate(AbstractCreateUpdateEntity entity) {
+
+		String userName = userContext.getUserName();
+		Timestamp now = new Timestamp(System.currentTimeMillis());
+		entity.setModifiedBy(userName);
+		entity.setModifiedOn(now);
+	}
+
+	public void setValueAndPrese(ValueAndPrese entity) {
+
+		String valuePrese = StringUtils.trim(entity.getValuePrese());
+		String value = textDecorationService.removeEkiElementMarkup(valuePrese);
+		entity.setValue(value);
+		entity.setValuePrese(valuePrese);
+	}
 }
