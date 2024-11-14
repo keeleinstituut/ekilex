@@ -17314,11 +17314,13 @@ body {
 
 .homonym-page .search-results-header,
 .homonym-page .content-panel {
-  width: var(--search-results-header-width, 100%);
+  width: 100%;
 }
 
-.sticky-scroll-panel {
+.sticky-scroll-panel__tags {
   display: none;
+  flex-wrap: wrap;
+  gap: 4px;
 }
 
 .sticky-scroll-panel__tag {
@@ -17347,28 +17349,16 @@ body {
 }
 
 @media (max-width: 767.98px) {
-  .search-results-header,
   .sticky-scroll-panel {
     position: sticky;
     background-color: var(--color-gray-010);
     z-index: 2;
-  }
-  .search-results-header {
     top: 64px;
     margin: 0 -15px;
-    padding-top: 16px;
-    --search-results-header-width: auto;
-  }
-  .search-results-header > div {
-    padding: 0 15px;
-  }
-  .sticky-scroll-panel {
-    top: 133px;
-    display: flex;
-    flex-wrap: wrap;
-    gap: 4px;
-    margin: 0 -15px;
     padding: 1px 15px 14px;
+  }
+  .sticky-scroll-panel__tags {
+    display: flex;
   }
 }
 
