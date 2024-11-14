@@ -41,8 +41,8 @@ where
 alter table freeform drop column value_date;
 alter table freeform drop column value_number;
 alter table freeform rename column value_text to value;
-alter index public.freeform_value_text_idx rename to freeform_value_idx;
-alter index public.freeform_value_text_lower_idx rename to freeform_value_lower_idx;
+alter index freeform_value_text_idx rename to freeform_value_idx;
+alter index freeform_value_text_lower_idx rename to freeform_value_lower_idx;
 
 drop type type_mt_lexeme_freeform;
 create type type_mt_lexeme_freeform as (

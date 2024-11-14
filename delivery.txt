@@ -1,5 +1,109 @@
 Märkused ver 1.39.0 tarne kohta:
 
-uus andmebaas "archive"
-lisa laiendus "dblink"
-kas ühine delivery skript või per andmebaas?
+1) Võta githubist värske tarkvara versioon, mille viite arendaja annab
+
+2) Ekilexi rakendusele lisandub täiendav andmebaas. Kuna andmebaas ei sisalda Ekilexi suhtes uusi andmeid, võib uus andmebaas asuda füüsiliselt samas kohas.
+   Tinglikult on baasid tähistatud kui "main" ja "arch" ("archive"). Vastavalt muutuvad ekilexi andmebaasiühenduse parameetrid ja määrangud application*.properties failides
+   
+   1. Loo uus andmebaas "archive"
+   2. Anna andmebaasi kasutajale "ekilex" loodud "archive" andmebaasile juurdepääs
+   3. Lisa "archive" andmebaasile laiendus (extension) "dblink"
+   4. Muuda ekilexi rakenduse kohaliku keskkonna määrangute failis application-<env>.properties andmebaasi(de) juurdepääsu parameetrid järgmise näite järgi:
+   
+   spring.datasource.main.url=jdbc:postgresql://localhost:5432/ekilex
+   spring.datasource.main.username=ekilex
+   spring.datasource.main.password=<****>
+   spring.datasource.arch.url=jdbc:postgresql://localhost:5432/archive
+   spring.datasource.arch.username=ekilex
+   spring.datasource.arch.password=<****>
+
+   NB! antud näites on andmebaasidel "ekilex" ja "archive" sama kasutaja
+
+3) Andmebaaside muudatuste laadimine
+
+   1. Käivita "ekilex" andmebaasis muudatuste skript:
+  
+      ../ekilex/eki-common/src/main/resources/sql/main-delivery-1.sql
+
+   2. Käivita "archive" andmebaasis muudatuste skript:
+
+      ../ekilex/eki-common/src/main/resources/sql/arch-delivery-1.sql
+   
+      NB! Muuda skriptis dblink parameetreid vastavalt keskkonnale!
+      NB! Skript loob andmetabelid ja teeb väga mahuka laadimise neisse "ekilex" andmebaasist. See võib võtta tunni!
+
+   3. Käivita "ekilex" andmebaasis muudatuste skript:
+  
+      ../ekilex/eki-common/src/main/resources/sql/main-delivery-2.sql
+
+4) Ehita tarkvara tarkvaraprojekti juurikast
+  
+   ../ekilex>mvn clean install -D skipTests
+  
+   Ekilex rakenduse pake asub
+  
+   ../ekilex/ekilex-app/target/ekilex-app.jar
+  
+   Sõnaveebi rakenduse pake asub
+  
+   ../ekilex/wordweb-app/target/wordweb-app.jar
+
+5) Valdkonna klassifikaatorite parandamine ja täiendamine utiliitrakendusega.
+  
+   1. loo rakenduse "dev"-profiili määrangute fail:
+     
+	  ../ekilex/ekilex-app/src/main/resources/application-dev.properties
+  
+   2. sisusta fail ainult selles kontekstis oluliste rakenduse määrangutega:
+
+      server.port=1234
+	  spring.datasource.main.url=jdbc:postgresql://localhost:5432/ekilex
+      spring.datasource.main.username=ekilex
+      spring.datasource.main.password=<****>
+      spring.datasource.arch.url=jdbc:postgresql://localhost:5432/archive
+      spring.datasource.arch.username=ekilex
+      spring.datasource.arch.password=<****>
+	  
+	  logging.level.root=warn
+	  logging.level.eki.ekilex=debug
+	  logging.level.eki.common=info
+	  logging.level.org.jooq=warn
+	   
+	  NB!
+	  Andmebaasi ühenduse parameetrid peavad olema reaalsed selle keskkonna parameetrid.
+	  Kuna erinevad ekilexi rakendused käivitavad ka veebikonteksti siis on oluline, et nende veebi pordid ei konkureeriks.
+	  Seepärast määra "server.port"-le mingi ajutine fiktiivne väärtus
+
+   3. kopeeri valdkonna klassifikaatorite fail "domains.tsv" kohalikku failisüsteemi utiliitrakendusele juurdepääsetavasse kohta
+
+   4. käivita rakendus:
+     
+      ../ekilex/ekilex-app>mvn spring-boot:run -P domf -D spring-boot.run.profiles=dev -D spring-boot.run.arguments="impfile="/path/to/domains.tsv""
+	   
+	  NB! Sisusta parameeter "impfile" korrektse viitega failile!
+	  NB! Märka topelt jutumärke!
+	   
+	  Spring profiil "dev" tähendab automaatselt seda, et rakenduse logi jookseb otse terminali mitte logifaili.
+	  See on antud juhul kasulik kiireks tagassideks rakenduselt.
+	  Rakendus lõpetab kiiresti.
+	  Logi lõppeb infoga "BUILD SUCCESS".
+	  Kui logi sisaldab midagi muud, informeeri arendajat.
+
+6) Sõnaveebi andmebaasi agregeerimine.
+
+   1. kustuta ja taasloo Ekilex andmebaasis senised Sõnaveebiga seotud vaated ja andmetüübid skriptiga:
+
+      ../ekilex/eki-common/src/main/resources/sql/main_create_views.sql
+
+   2. kustuta ja loo Sõnaveebi andmebaasis materjaliseeritud vaated ja andmetüübid skriptiga:
+
+      ../ekilex/wordweb-app/fileresources/sql/create_mviews.sql
+
+      NB! Muuda skriptis dblink parameetreid vastavalt keskkonnale!
+      NB! Ühtegi veateadet ei tohi olla!
+
+      Skript jookseb umbes pool tundi.
+
+7) Seo ekilex-app.jar ja wordweb-app.jar rakenduste teenustega nagu seni ja käivita. Kontrolli peale käivitamist kummagi rakenduse logifailidest kas käivitamisega kaasnesid veateated, neid ei tohiks olla ühtegi.
+
+<märkmete lõpp>

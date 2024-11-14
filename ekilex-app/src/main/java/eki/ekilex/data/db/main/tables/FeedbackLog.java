@@ -57,7 +57,7 @@ public class FeedbackLog extends TableImpl<FeedbackLogRecord> {
     /**
      * The column <code>public.feedback_log.feedback_type</code>.
      */
-    public final TableField<FeedbackLogRecord, String> FEEDBACK_TYPE = createField(DSL.name("feedback_type"), SQLDataType.VARCHAR(100), this, "");
+    public final TableField<FeedbackLogRecord, String> FEEDBACK_TYPE = createField(DSL.name("feedback_type"), SQLDataType.VARCHAR(100).nullable(false), this, "");
 
     /**
      * The column <code>public.feedback_log.sender_name</code>.
