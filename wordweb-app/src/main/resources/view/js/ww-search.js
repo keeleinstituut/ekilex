@@ -199,6 +199,9 @@ function initStickyScrollPanel() {
           }
         }
         link.classList.remove(activeClass);
+				if (!target) {
+					return;
+				}
         // Check if element is in viewport
         const targetTop = target.getBoundingClientRect().top;
         // Get the closest element to the top of viewport

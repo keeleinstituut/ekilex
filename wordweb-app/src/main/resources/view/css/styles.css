@@ -17453,6 +17453,7 @@ body {
   line-height: 19.36px;
   letter-spacing: 0.0015em;
   margin-bottom: 8px;
+  font-weight: 700;
 }
 
 .news-page__item p {
@@ -17920,27 +17921,6 @@ body {
   border-radius: 1rem;
 }
 
-.top-button {
-  position: fixed;
-  right: calc(5%);
-  bottom: 2rem;
-  z-index: 10;
-  width: 2rem;
-  height: 2rem;
-  background: rgba(255, 255, 255, 0.7);
-  border-radius: 3.125rem;
-  transform: rotate(90deg);
-}
-
-.top-button:hover {
-  text-decoration: none;
-  background: white;
-}
-
-.top-button .icon {
-  font-size: 2rem;
-}
-
 .alert-danger-ie {
   position: fixed;
   right: 0;
@@ -18400,7 +18380,13 @@ body {
 }
 
 .survey-active .top-button {
-  bottom: 80px;
+  position: fixed;
+  bottom: 160px;
+  right: 20px;
+  height: 42px;
+  width: 42px;
+  background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 width=%2742%27 height=%2742%27 fill=%27none%27%3E%3Cpath fill=%27%23173148%27 fill-rule=%27evenodd%27 d=%27M21 42c11.598 0 21-9.402 21-21S32.598 0 21 0 0 9.402 0 21s9.402 21 21 21Z%27 clip-rule=%27evenodd%27/%3E%3Cpath fill=%27%23fff%27 fill-rule=%27evenodd%27 d=%27M21.41 16c.108 0 .212.043.29.118l9 8.853c.159.156.158.41-.002.565a.416.416 0 0 1-.579-.002l-8.71-8.634-8.71 8.635a.416.416 0 0 1-.578.001.394.394 0 0 1-.002-.566l9-8.852a.414.414 0 0 1 .29-.118Z%27 clip-rule=%27evenodd%27/%3E%3C/svg%3E");
+  border-radius: 100px;
 }
 
 .btn-collapse.show .collapse-icon {
