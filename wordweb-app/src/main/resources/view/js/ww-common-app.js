@@ -13,7 +13,7 @@ $(document).ready(function() {
 	});
 
 	$('[data-toggle="tooltip"]').tooltip();
-
+	Feedback.init(feedbackServiceUrl);
 	closeSurveyBanner();
 	handleVirtualKeyboard();
 });
@@ -33,79 +33,163 @@ function setActiveMenuItem(itemName) {
 	$('.menu-item[data-item-name=' + itemName + ']').addClass('selected');
 }
 
-$(document).on('keyup', '#emailInput2', function(event) {
-	const targetGroup = document.getElementById('feedback-modal-checkbox-group');
-	const checkbox = document.getElementById('modalCheck2');
-	// Toggle the need of checkbox based on whether email has a value
-	if (event.target.value) {
-		targetGroup.classList.remove('d-none');
-		checkbox.required = true;
-	} else {
-		targetGroup.classList.add('d-none');
-		checkbox.required = false;
-	}
-})
+class Feedback {
+  static serviceUrl = "";
+  static elementIds = [
+    ["modal", "feedback-modal"],
+    ["form", "feedback-form"],
+    ["checkboxGroup", "feedback-modal-checkbox-group"],
+    ["checkbox", "feedback-email-checkbox"],
+    ["submitButton", "feedback-submit"],
+    ["repeatButton", "feedback-repeat"],
+    ["emailInput", "feedback-modal-email"],
+    ["data", "feedback-data"],
+    ["response", "feedback-response"],
+    ["successMessage", "feedback-success-message"],
+    ["errorMessage", "feedback-error-message"],
+    ["title", "feedback-modal-title"],
+    ["successTitle", "feedback-modal-success-title"],
+  ];
 
-$(document).on("click", "button[name='feedbackSendBtn']", function(event) {
+  static modalElements = {};
 
-	if (feedbackServiceUrl === null) {
-		console.debug('Feedback service configuration is missing.');
-		alert(messages.feedback_missing_service);
-		return;
-	}
-	var feedbackForm = $(this).closest('form');
+  static init(serviceUrl) {
+    this.serviceUrl = serviceUrl;
+    this.initElements();
+    if (!this.modalElements.modal) {
+      return;
+    }
+    this.initListeners();
+  }
 
-	feedbackForm.addClass('was-validated');
-	if (feedbackForm[0].checkValidity() === false) {
-		event.preventDefault();
-		event.stopPropagation();
-		return;
-	}
+  static initElements() {
+    // Get all elements by their ids and combine into one object
+    this.modalElements = this.elementIds.reduce((acc, [key, val]) => {
+      if (acc.modal) {
+        acc[key] = acc.modal.querySelector(`#${val}`);
+      } else {
+        acc[key] = document.getElementById(val);
+      }
+      return acc;
+    }, {});
+  }
 
-	var dataDiv = $('#feedbackModal').find('#dataDiv');
-	var responseDiv = $('#feedbackModal').find('#responseDiv');
-	var successMessageElem = responseDiv.find('#feedbackSuccessMessageElem');
-	var errorMessageElem = responseDiv.find('#feedbackErrorMessageElem');
-	var successMessage = feedbackForm.find('[name=success_message]').text();
-	var acceptPrivacyStatement = feedbackForm.find('.modal-check');
-	$.ajax({
-		url: feedbackServiceUrl,
-		data: JSON.stringify(feedbackForm.serializeJSON()),
-		method: 'POST',
-		dataType: 'json',
-		contentType: 'application/json'
-	}).done(function(data) {
-		if (data.status === 'ok') {
-			dataDiv.addClass('d-none');
-			responseDiv.removeClass('d-none');
-			successMessageElem.text(successMessage);
-			successMessageElem.removeClass('d-none');
-			acceptPrivacyStatement.trigger('click');
-		} else {
-			errorMessageElem.removeClass('d-none');
-		}
-	}).fail(function(data) {
-		dataDiv.addClass('d-none');
-		responseDiv.removeClass('d-none');
-		errorMessageElem.removeClass('d-none');
-	});
-});
+  static initListeners() {
+    this.modalElements.emailInput.addEventListener(
+      "keyup",
+      this.handleEmailInput.bind(this)
+    );
 
-function clearMessages(modalDlg) {
-	modalDlg.find('form').removeClass('was-validated');
-	modalDlg.find('[name=error_message]').attr('hidden', true);
+    $(this.modalElements.modal).on(
+      "show.bs.modal",
+      this.handleModalOpen.bind(this)
+    );
+    $(this.modalElements.modal).on(
+      "hide.bs.modal",
+      this.handleModalClose.bind(this)
+    );
+
+    this.modalElements.submitButton.addEventListener(
+      "click",
+      this.handleSubmit.bind(this)
+    );
+    this.modalElements.repeatButton.addEventListener("click", () => {
+      this.handleModalClose();
+      this.handleModalOpen(true);
+    });
+  }
+
+  static handleEmailInput(event) {
+    // Toggle the need of checkbox based on whether email has a value
+    if (event.target.value) {
+      this.modalElements.checkboxGroup.classList.remove("d-none");
+      this.modalElements.checkbox.required = true;
+    } else {
+      this.modalElements.checkboxGroup.classList.add("d-none");
+      this.modalElements.checkbox.required = false;
+    }
+  }
+
+  static handleModalOpen(skipToggle) {
+    this.clearMessages(this.modalElements.modal);
+    this.modalElements.data.classList.remove("d-none");
+    this.modalElements.response.classList.add("d-none");
+    if (!skipToggle) {
+      $(this.modalElements.modal).modal("toggle");
+    }
+  }
+
+  static handleModalClose() {
+    if (!this) {
+      return;
+    }
+    this.clearMessages();
+    const inputs = this.modalElements.form.querySelectorAll?.(
+      "input:not([type='hidden'])"
+    );
+    // Reset form state on close
+    this.modalElements.checkboxGroup.classList.add("d-none");
+    this.modalElements.checkbox.required = false;
+    [...inputs].forEach((input) => {
+      input.value = "";
+    });
+    this.modalElements.successMessage.classList.add("d-none");
+    this.modalElements.successTitle.classList.add("d-none");
+    this.modalElements.title.classList.remove("d-none");
+    this.modalElements.errorMessage.classList.add("d-none");
+  }
+
+  static handleSubmit(event) {
+    if (this.serviceUrl === null) {
+      console.debug("Feedback service configuration is missing.");
+      alert(messages.feedback_missing_service);
+      return;
+    }
+
+    this.modalElements.form.classList.add("was-validated");
+    if (this.modalElements.form[0].checkValidity() === false) {
+      event.preventDefault();
+      event.stopPropagation();
+      return;
+    }
+
+    $.ajax({
+      url: feedbackServiceUrl,
+      data: JSON.stringify($(this.modalElements.form).serializeJSON()),
+      method: "POST",
+      dataType: "json",
+      contentType: "application/json",
+    })
+      .done((data) => {
+        // Switch to showing response
+        this.modalElements.data.classList.add("d-none");
+        this.modalElements.response.classList.remove("d-none");
+        if (data.status === "ok") {
+          this.modalElements.successMessage.classList.remove("d-none");
+          this.modalElements.title.classList.add("d-none");
+          this.modalElements.successTitle.classList.remove("d-none");
+        } else {
+          this.modalElements.errorMessage.classList.remove("d-none");
+        }
+      })
+      .fail(() => {
+        this.modalElements.data.classList.add("d-none");
+        this.modalElements.response.classList.remove("d-none");
+        this.modalElements.errorMessage.classList.remove("d-none");
+      });
+  }
+
+  static clearMessages() {
+    // Clear out any form errors
+    this.modalElements.form.classList.remove("was-validated");
+    const messages = this.modalElements.modal.querySelectorAll(
+      "[name=error_message]"
+    );
+    [...messages].forEach((message) => {
+      message.hidden = true;
+    });
+  }
 }
-
-$(document).on('show.bs.modal', '#feedbackModal', function() {
-	var fbModal = $(this);
-	clearMessages(fbModal);
-	fbModal.find('#dataDiv').removeClass('d-none');
-	fbModal.find('#responseDiv').addClass('d-none');
-	fbModal.modal('toggle');
-	fbModal.off('shown.bs.modal').on('shown.bs.modal', function() {
-		fbModal.find('.close').trigger('focus')
-	});
-});
 
 $(document).on('show.bs.modal', '#inflections-modal', function() {
 	$('.scrollable-table').trigger('scrollableTable:update');

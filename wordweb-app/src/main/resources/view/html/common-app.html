@@ -20,7 +20,7 @@
 <script th:inline="javascript">
 	var applicationUrl = /*[[@{/}]]*/'/';
 	var sessionTimeoutSec = /*[[${appData == null ? 3600 : appData.sessionTimeoutSec}]]*/3600;
-	var feedbackServiceUrl = /*[[${feedbackServiceUrl}]]*/'http://localhost/blah';
+	const feedbackServiceUrl = /*[[${feedbackServiceUrl}]]*/'http://localhost/blah';
 	var messages = {
 		'this_is_form' : /*[[#{label.word.is.form.of}]]*/'see on ka vorm sõnadest',
 		'audio_generation_failure' : /*[[#{label.audio.generation.failure}]]*/'Heli genereerimise teenus hetkel ei toimi, proovige hiljem uuesti.',
@@ -195,7 +195,7 @@
           <a th:href="@{/contact}" class="nav-link menu-item" data-item-name="contact">
             <span th:text="#{menu.contact}">Kontakt</span>
           </a>
-          <a th:href="@{/#}" role="button" data-toggle="modal" data-target="#feedbackModal" class="nav-link menu-item" data-item-name="feedback">
+          <a th:href="@{/#}" role="button" data-toggle="modal" data-target="#feedback-modal" class="nav-link menu-item" data-item-name="feedback">
             <span th:text="#{menu.feedback}">Tagasiside</span>
           </a>
           <a class="menu-item" href="#">
@@ -274,16 +274,17 @@
   </th:block>
   <!-- Feedback dialog -->
   <th:block th:fragment="feedback-form">
-    <div class="modal fade" id="feedbackModal" tabindex="-1" aria-model="true" role="dialog" aria-labelledby="feedbackModal" aria-hidden="false" aria-describedby="feedback-modal-title">
+    <div class="modal fade" id="feedback-modal" tabindex="-1" aria-model="true" role="dialog" aria-hidden="false" aria-describedby="feedback-modal-title">
       <div class="modal-dialog" role="document">
         <div class="modal-content feedback-modal">
           <div class="modal-header feedback-modal__header">
             <h1 class="modal-title" th:text="#{feedback.title}" id="feedback-modal-title">Tagasiside</h1>
+            <h1 class="modal-title d-none" th:text="#{feedback.success.title}" id="feedback-modal-success-title">Aitäh</h1>
             <button type="button" class="feedback-modal__close" data-dismiss="modal" tabindex="0" th:attr="aria-label=#{common.close}">
               <span class="fa fa-times" aria-hidden="true"></span>
             </button>
           </div>
-          <div id="dataDiv" class="modal-body">
+          <div id="feedback-data" class="modal-body">
             <div>
               <span class="feedback-modal__required-text">&ast;&nbsp;</span>
               <small th:text="#{label.feedback.required.fields}">
@@ -291,13 +292,9 @@
               </small>
             </div>
             <div>
-              <form id="commentForm" novalidate>
-                <div class="feedback-modal__group">
-                  <label class="positive-feedback" hidden name="success_message" th:text="#{label.feedback.success}">Aitäh, oleme tagasiside kätte saanud. Tegeleme sellega esimesel võimalusel</label>
-                  <label class="negative-feedback" hidden name="error_message" th:text="#{label.feedback.invalid.form}">Saadetud andmed on vigased. Kontrollige palun andmeid ning proovige uuesti.</label>
-                  <input type="hidden" name="feedbackType" value="sõnaveeb">
-                  <input type="hidden" name="lastSearch" th:value="${sessionBean == null ? '' : sessionBean.searchWord}">
-                </div>
+              <form id="feedback-form" novalidate>
+                <input type="hidden" name="feedbackType" value="sõnaveeb">
+                <input type="hidden" name="lastSearch" th:value="${sessionBean == null ? '' : sessionBean.searchWord}">
                 <div class="feedback-modal__group">
                   <label for="descriptionInput2" class="col-form-label" th:text="#{label.feedback.description}">Probleemi lühikirjeldus</label>
                   <span class="feedback-modal__required-text">&ast;</span>
@@ -324,31 +321,37 @@
                   <h2 th:text="#{label.feedback.message.heading}">Kui soovid vastust oma probleemile</h2>
                   <p th:text="#{label.feedback.message.content}">Kui sul on küsimus....</p>
                   <div class="feedback-modal__group">
-                    <label for="emailInput2" class="col-form-label" th:text="#{label.feedback.email}">E-post</label>
-                    <input id="emailInput2" type="email" class="form-control form-email" name="senderEmail" autocomplete="email" th:placeholder="#{label.feedback.placeholder.email}">
+                    <label for="feedback-modal-email" class="col-form-label" th:text="#{label.feedback.email}">E-post</label>
+                    <input id="feedback-modal-email" type="email" class="form-control form-email" name="senderEmail" autocomplete="email" th:placeholder="#{label.feedback.placeholder.email}">
                   </div>
                   <div class="feedback-modal__group d-none" id="feedback-modal-checkbox-group">
                     <div class="custom-control custom-checkbox">
-                      <input type="checkbox" class="custom-control-input modal-check" id="modalCheck2">
-                      <label class="custom-control-label" for="modalCheck2">
+                      <input type="checkbox" class="custom-control-input modal-check" id="feedback-email-checkbox">
+                      <label class="custom-control-label" for="feedback-email-checkbox">
                         <span th:text="#{label.feedback.iagree}">Nõustun</span>
-                        <a role="link" th:href="@{/regulations}" data-item-name="regulations" th:text="#{label.feedback.withterms}">kasutus- ja privaatsustingimustega</a>
-                        <span>&nbsp;&ast;</span>
+                        <a
+                          target="_blank"
+                          rel="noreferrer"
+                          th:href="@{/regulations}"
+                          data-item-name="regulations"
+                          th:text="#{label.feedback.withterms}">
+                          kasutus- ja privaatsustingimustega
+                        </a>
+                        <span class="feedback-modal__required-text">&ast;</span>
                       </label>
                       <div class="invalid-feedback" th:text="#{label.feedback.required.field}">Väli on kohustuslik</div>
                     </div>
                   </div>
-                  <button type="button" class="feedback-modal__button" name="feedbackSendBtn" th:text="#{button.send}">Saada</button>
+                  <button id="feedback-submit" type="button" class="feedback-modal__button" name="feedbackSendBtn" th:text="#{button.send}">Saada</button>
                 </div>
               </form>
             </div>
           </div>
-          <div id="responseDiv" class="modal-body d-none">
-            <div class="form-row">
-              <div class="form-group col-12">
-                <div id="feedbackErrorMessageElem" class="alert alert-danger d-none" th:text="#{label.feedback.technical.error}">Tagasiside saatmine ebaõnnestus, proovige hiljem uuesti.</div>
-                <div id="feedbackSuccessMessageElem" class="alert alert-success d-none" th:text="#{label.feedback.success}">Aitähh saime tagasiside kätte</div>
-              </div>
+          <div id="feedback-response" class="modal-body d-none">
+            <div class="d-flex flex-column">
+              <div id="feedback-error-message" class="alert alert-danger d-none" th:text="#{label.feedback.technical.error}">Tagasiside saatmine ebaõnnestus, proovige hiljem uuesti.</div>
+              <p id="feedback-success-message" class="d-none" th:text="#{label.feedback.success}">Aitähh saime tagasiside kätte</p>
+              <button id="feedback-repeat" type="button" class="feedback-modal__button" name="feedbackRepeatBtn" th:text="#{label.feedback.repeat}">Saada uus tagasiside</button>
             </div>
           </div>
         </div>

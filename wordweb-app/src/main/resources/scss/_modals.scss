@@ -475,9 +475,6 @@
     & a {
       color: inherit;
       text-decoration: underline;
-      &:hover {
-        text-decoration: none;
-      }
     }
   }
 
@@ -489,6 +486,7 @@
     color: var(--color-white);
     width: max-content;
     margin-left: auto;
+    border: 0;
     &:hover {
       background-color: var(--color-dark-blue-75);
     }
