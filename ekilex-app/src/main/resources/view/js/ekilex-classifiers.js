@@ -83,10 +83,10 @@ $.fn.editClassifierPlugin = function() {
 	return this.each(function() {
 		const btn = $(this);
 		btn.on('click', function() {
-			const allEditBtns = $(document).find('button[name="editClassifBtn"]');
-			const allDeleteBtns = $(document).find('button[name="deleteClassifBtn"]');
-			const allCodeBtns = $(document).find('button[name="addCodeBtn"]');
 			const activeRow = btn.closest('tr');
+			const allEditBtns = activeRow.find('#classifier-edit-wrapper');
+			const allDeleteBtns = activeRow.find('button[name="deleteClassifBtn"]');
+			const allCodeBtns = activeRow.find('button[name="addCodeBtn"]');
 			const activeRowInputs = activeRow.find('input:not([name="classifierOrder"])');
 			const activeRowTexts = activeRow.find('p');
 			const saveRowBtn = activeRow.find('button[name="saveRowBtn"]');
@@ -95,7 +95,8 @@ $.fn.editClassifierPlugin = function() {
 				activeRowTexts.addClass('d-none');
 				activeRowInputs.removeClass('d-none');
 				
-				allEditBtns.hide();
+				allEditBtns.addClass('d-none');
+				allEditBtns.removeClass('d-flex');
 				allDeleteBtns.hide();
 				allCodeBtns.hide();
 				saveRowBtn.show();
@@ -104,7 +105,8 @@ $.fn.editClassifierPlugin = function() {
 				activeRowTexts.removeClass('d-none');
 				activeRowInputs.addClass('d-none');
 				
-				allEditBtns.show();
+				allEditBtns.addClass('d-flex');
+				allEditBtns.removeClass('d-none');
 				allDeleteBtns.show();
 				allCodeBtns.show();
 				saveRowBtn.hide();

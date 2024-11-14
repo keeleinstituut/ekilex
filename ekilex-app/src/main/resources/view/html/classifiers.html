@@ -110,31 +110,29 @@
                   <p class="bordered-paragraph" th:text="${label.labelRus != null ? label.labelRus : '-'}"></p>
                 </div>
               <td>
-                <div class="form-control-sm col-md-12">
-                  <button type="button" class="btn btn-sm btn-secondary btn-compact" th:title="#{classifiers.add.before}"
+                <div class="d-flex flex-column justify-content-between h-100">
+                  <button type="button" class="btn btn-sm btn-secondary btn-compact mb-3" th:title="#{classifiers.add.before}"
                           name="addCodeBtn"
                           data-toggle="modal"
                           th:data-target="${'#addClassifierCodeDlg'}"
                           th:data-classif-order="${classifier.order}"
                           th:text="#{classifiers.add.code.before}">Lisa uus kood ette
                   </button>
-                </div>
-                <div class="form-control-sm col-md-12">
-                  <button type="button" class="btn btn-sm btn-primary btn-compact" th:title="#{common.edit}"
-                          name="editClassifBtn"
-                          data-plugin="editClassifierPlugin"
-                          th:text="#{common.edit}">Muuda
-                  </button>
-                  <button type="button" class="btn btn-sm btn-warning btn-compact"
-                          name="deleteClassifBtn"
-                          th:data-classif-code="${classifier.code}"
-                          th:data-classif-name="${classifierName}"
-                          th:data-domain-origin="${domainOriginCode}"
-                          data-plugin="deleteClassifierPlugin"
-                          th:text="#{common.delete}">Kustuta
-                  </button>
-                </div>
-                <div class="form-control-sm col-md-12">
+                  <div class="d-flex mb-3" id="classifier-edit-wrapper">
+                    <button type="button" class="btn btn-sm btn-primary btn-compact mr-1" th:title="#{common.edit}"
+                            name="editClassifBtn"
+                            data-plugin="editClassifierPlugin"
+                            th:text="#{common.edit}">Muuda
+                    </button>
+                    <button type="button" class="btn btn-sm btn-warning btn-compact"
+                            name="deleteClassifBtn"
+                            th:data-classif-code="${classifier.code}"
+                            th:data-classif-name="${classifierName}"
+                            th:data-domain-origin="${domainOriginCode}"
+                            data-plugin="deleteClassifierPlugin"
+                            th:text="#{common.delete}">Kustuta
+                    </button>
+                  </div>
                   <button type="button" class="btn btn-sm btn-secondary btn-compact" th:title="#{classifiers.add.after}"
                           name="addCodeBtn"
                           data-toggle="modal"
@@ -142,7 +140,7 @@
                           th:data-classif-order="${classifier.order + 1}"
                           th:text="#{classifiers.add.code.after}">Lisa uus kood järele
                   </button>
-                  <button type="button" class="btn btn-sm btn-primary btn-compact" title="Salvesta"
+                  <button type="button" class="btn btn-sm btn-primary mb-3" title="Salvesta"
                           name="saveRowBtn"
                           th:data-classif-code="${classifier.code}"
                           th:data-classif-name="${classifierName}"
@@ -151,7 +149,7 @@
                           th:text="#{common.save}"
                           style="display: none">Salvesta
                   </button>
-                  <button type="button" class="btn btn-sm btn-secondary btn-compact"
+                  <button type="button" class="btn btn-sm btn-secondary"
                           th:title="#{common.cancel}"
                           name="cancelBtn"
                           data-plugin="editClassifierPlugin"

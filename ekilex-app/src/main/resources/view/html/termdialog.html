@@ -151,7 +151,7 @@
                   <option value="" hidden disabled selected th:text="#{common.select.value}">vali väärtus...</option>
                   <optgroup th:each="origin : ${datasetDomains}" th:label="${origin.getKey()}">
                     <option th:each="domain : ${origin.getValue()}" th:value="${domain.toIdString()}"
-                            th:text="${#strings.abbreviate(domain.origin + ' - ' + domain.code + ' - ' + domain.value, 100)}"
+                            th:text="${#strings.abbreviate(domain.origin + ' - ' + domain.code + ' - ' + domain.value, 100) + (domain.comment != null ? ' *' : '')}"
                             th:title="${domain.origin + ' - ' + domain.code + ' - ' + domain.value}"
                             th:data-tooltip="|${domain.comment}|">domain
                     </option>
@@ -429,7 +429,7 @@
               <optgroup th:each="origin : ${datasetDomains}" th:label="${origin.getKey()}">
                 <option th:each="domain : ${origin.getValue()}"
                         th:value="${domain.toIdString()}"
-                        th:text="${#strings.abbreviate(domain.origin + ' - ' + domain.code + ' - ' + domain.value, 100)}"
+                        th:text="${#strings.abbreviate(domain.origin + ' - ' + domain.code + ' - ' + domain.value, 100) + (domain.comment != null ? ' *' : '')}"
                         th:title="${domain.origin + ' - ' + domain.code + ' - ' + domain.value}"
                         th:selected="${domain.toIdString() == classif.toIdString()}"
                         th:data-tooltip="|${domain.comment}|">domain
