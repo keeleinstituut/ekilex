@@ -1278,6 +1278,7 @@ public class SearchFilterHelper implements GlobalConstant, ActivityFunct, Freefo
 		return where;
 	}
 
+	// TODO should be removed after entity move
 	public Condition applyLexemeFreeformFilters(
 			SearchKey searchKey,
 			String freeformTypeCode,
@@ -1634,7 +1635,9 @@ public class SearchFilterHelper implements GlobalConstant, ActivityFunct, Freefo
 
 		WordFreeform wff = WORD_FREEFORM.as("wff");
 		Freeform ff = FREEFORM.as("ff");
-		Condition where1 = wff.WORD_ID.eq(wordIdField).and(wff.FREEFORM_ID.eq(ff.ID));
+		Condition where1 = wff.WORD_ID.eq(wordIdField)
+				.and(wff.FREEFORM_ID.eq(ff.ID))
+				.and(ff.FREEFORM_TYPE_CODE.notIn(EXCLUDED_WORD_ATTRIBUTE_FF_TYPE_CODES));
 		where1 = applyFreeformFilters(filteredCriteria, "word", ff, where1);
 		where = where.and(DSL.exists(DSL.select(wff.ID).from(wff, ff).where(where1)));
 		return where;
@@ -1659,7 +1662,9 @@ public class SearchFilterHelper implements GlobalConstant, ActivityFunct, Freefo
 
 		LexemeFreeform lff = LEXEME_FREEFORM.as("lff");
 		Freeform ff = FREEFORM.as("ff");
-		Condition where1 = lff.LEXEME_ID.eq(lexemeIdField).and(lff.FREEFORM_ID.eq(ff.ID));
+		Condition where1 = lff.LEXEME_ID.eq(lexemeIdField)
+				.and(lff.FREEFORM_ID.eq(ff.ID))
+				.and(ff.FREEFORM_TYPE_CODE.notIn(EXCLUDED_LEXEME_ATTRIBUTE_FF_TYPE_CODES));
 		where1 = applyFreeformFilters(filteredCriteria, "lexeme", ff, where1);
 		where = where.and(DSL.exists(DSL.select(lff.ID).from(lff, ff).where(where1)));
 		return where;
@@ -1683,7 +1688,9 @@ public class SearchFilterHelper implements GlobalConstant, ActivityFunct, Freefo
 
 		MeaningFreeform mff = MEANING_FREEFORM.as("mff");
 		Freeform ff = FREEFORM.as("ff");
-		Condition where1 = mff.MEANING_ID.eq(meaningIdField).and(mff.FREEFORM_ID.eq(ff.ID));
+		Condition where1 = mff.MEANING_ID.eq(meaningIdField)
+				.and(mff.FREEFORM_ID.eq(ff.ID))
+				.and(ff.FREEFORM_TYPE_CODE.notIn(EXCLUDED_MEANING_ATTRIBUTE_FF_TYPE_CODES));
 		where1 = applyFreeformFilters(filteredCriteria, "meaning", ff, where1);
 		where = where.and(DSL.exists(DSL.select(mff.ID).from(mff, ff).where(where1)));
 		return where;
@@ -1696,13 +1703,9 @@ public class SearchFilterHelper implements GlobalConstant, ActivityFunct, Freefo
 			String searchValueStr = criterion.getSearchValue().toString();
 			boolean isNot = criterion.isNot();
 			if (isAttributeNameSearchKey(searchKey)) {
-				where1 = where1.and(ff.FREEFORM_TYPE_CODE.eq(searchValueStr));
+				where1 = applyValueFilter(searchValueStr, isNot, criterion.getSearchOperand(), ff.FREEFORM_TYPE_CODE, where1, true);
 			} else if (SearchKey.ATTRIBUTE_VALUE.equals(searchKey)) {
-				if (isNot) {
-					where1 = DSL.not(applyValueFilter(searchValueStr, isNot, criterion.getSearchOperand(), ff.VALUE, where1, true));
-				} else {
-					where1 = applyValueFilter(searchValueStr, isNot, criterion.getSearchOperand(), ff.VALUE, where1, true);
-				}
+				where1 = applyValueFilter(searchValueStr, isNot, criterion.getSearchOperand(), ff.VALUE, where1, true);
 			}
 		}
 		return where1;

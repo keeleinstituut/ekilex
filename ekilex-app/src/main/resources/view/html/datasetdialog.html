@@ -108,17 +108,6 @@
                 </select>
               </div>
             </div>
-            <div class="form-group row">
-              <label class="col-md-auto col-form-label" th:text="#{datasets.dataset.definition.freeforms}">Definitsiooni vabavormid</label>
-              <div class="col-md-12">
-                <select name="definitionFreeformTypes" class="classifier-select" multiple data-live-search="true" data-actions-box="true" th:data-select-all-text="#{common.select.all}"
-                        th:data-deselect-all-text="#{common.unselect.all}" th:title="#{datasets.dataset.select.freeform.types}">
-                  <th:block th:each="freeformType : ${availableFreeformTypes}">
-                    <option th:value="${@classifierUtil.toJson(freeformType)}" th:text="${freeformType.value}" />
-                  </th:block>
-                </select>
-              </div>
-            </div>
             <div class="form-check mt-1">
               <label class="form-check-label">
                 <input class="form-check-input" type="checkbox" name="visible" checked="checked"/>
@@ -234,17 +223,6 @@
               <label class="col-md-auto col-form-label" th:text="#{datasets.dataset.meaning.freeforms}">Tähenduse vabavormid</label>
               <div class="col-md-12">
                 <select name="meaningFreeformTypes" class="classifier-select" multiple data-live-search="true" data-actions-box="true" th:data-select-all-text="#{common.select.all}"
-                        th:data-deselect-all-text="#{common.unselect.all}" th:title="#{datasets.dataset.select.freeform.types}">
-                  <th:block th:each="freeformType : ${availableFreeformTypes}">
-                    <option th:value="${@classifierUtil.toJson(freeformType)}" th:text="${freeformType.value}" />
-                  </th:block>
-                </select>
-              </div>
-            </div>
-            <div class="form-group row">
-              <label class="col-md-auto col-form-label" th:text="#{datasets.dataset.definition.freeforms}">Definitsiooni vabavormid</label>
-              <div class="col-md-12">
-                <select name="definitionFreeformTypes" class="classifier-select" multiple data-live-search="true" data-actions-box="true" th:data-select-all-text="#{common.select.all}"
                         th:data-deselect-all-text="#{common.unselect.all}" th:title="#{datasets.dataset.select.freeform.types}">
                   <th:block th:each="freeformType : ${availableFreeformTypes}">
                     <option th:value="${@classifierUtil.toJson(freeformType)}" th:text="${freeformType.value}" />
