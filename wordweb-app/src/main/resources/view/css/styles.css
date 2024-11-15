@@ -19010,10 +19010,6 @@ body {
   margin-bottom: 28px;
 }
 
-.feedback-modal__group textarea {
-  min-height: 50px;
-}
-
 .feedback-modal .modal-body {
   padding: 4px 28px 24px;
 }
@@ -19023,6 +19019,10 @@ body {
   border-radius: 8px;
   border-color: var(--color-dark-blue-75);
   height: 40px;
+}
+
+.feedback-modal textarea.form-control {
+  min-height: 100px;
 }
 
 .feedback-modal .col-form-label {
