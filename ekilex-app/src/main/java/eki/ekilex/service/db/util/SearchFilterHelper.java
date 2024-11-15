@@ -1699,13 +1699,15 @@ public class SearchFilterHelper implements GlobalConstant, ActivityFunct, Freefo
 	private Condition applyFreeformFilters(List<SearchCriterion> filteredCriteria, String context, Freeform ff, Condition where1) throws Exception {
 
 		for (SearchCriterion criterion : filteredCriteria) {
+
 			SearchKey searchKey = criterion.getSearchKey();
+			SearchOperand searchOperand = criterion.getSearchOperand();
 			String searchValueStr = criterion.getSearchValue().toString();
 			boolean isNot = criterion.isNot();
 			if (isAttributeNameSearchKey(searchKey)) {
-				where1 = applyValueFilter(searchValueStr, isNot, criterion.getSearchOperand(), ff.FREEFORM_TYPE_CODE, where1, true);
+				where1 = applyValueFilter(searchValueStr, isNot, searchOperand, ff.FREEFORM_TYPE_CODE, where1, true);
 			} else if (SearchKey.ATTRIBUTE_VALUE.equals(searchKey)) {
-				where1 = applyValueFilter(searchValueStr, isNot, criterion.getSearchOperand(), ff.VALUE, where1, true);
+				where1 = applyValueFilter(searchValueStr, isNot, searchOperand, ff.VALUE, where1, true);
 			}
 		}
 		return where1;
