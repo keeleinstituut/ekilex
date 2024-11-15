@@ -1,1 +1,1 @@
--- upgrade from ver 1.38.* to 1.39.0
+-- upgrade from ver 1.39.* to 1.40.0
