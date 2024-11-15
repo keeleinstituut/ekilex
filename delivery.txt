@@ -19,7 +19,8 @@ Märkused ver 1.39.0 tarne kohta:
 
    NB! antud näites on andmebaasidel "ekilex" ja "archive" sama kasutaja
 
-3) Andmebaaside muudatuste laadimine
+3) Andmebaaside muudatuste laadimine.
+   NB! Skriptid käivitada täpselt sellises järjekorras ja mitte samaaegselt!!
 
    1. Käivita "ekilex" andmebaasis muudatuste skript:
   
