@@ -19010,6 +19010,10 @@ body {
   margin-bottom: 28px;
 }
 
+.feedback-modal__group textarea {
+  min-height: 50px;
+}
+
 .feedback-modal .modal-body {
   padding: 4px 28px 24px;
 }

@@ -517,6 +517,10 @@
     height: 40px;
   }
 
+  & textarea.form-control {
+    min-height: 50px;
+  }
+
   & .col-form-label {
     padding: 0 0 6px 0;
     font-size: .75rem;
