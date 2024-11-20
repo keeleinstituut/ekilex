@@ -94,7 +94,8 @@ public class TermMeaningDbService implements ActivityFunct, GlobalConstant, Free
 										DSL.key("type").value(lsl.TYPE),
 										DSL.key("name").value(lsl.NAME),
 										DSL.key("sourceId").value(lsl.SOURCE_ID),
-										DSL.key("sourceName").value(s.NAME)))
+										DSL.key("sourceName").value(s.NAME),
+										DSL.key("orderBy").value(lsl.ORDER_BY)))
 						.orderBy(lsl.ORDER_BY))
 				.from(lsl, s)
 				.where(
@@ -110,7 +111,8 @@ public class TermMeaningDbService implements ActivityFunct, GlobalConstant, Free
 										DSL.key("type").value(dsl.TYPE),
 										DSL.key("name").value(dsl.NAME),
 										DSL.key("sourceId").value(dsl.SOURCE_ID),
-										DSL.key("sourceName").value(s.NAME)))
+										DSL.key("sourceName").value(s.NAME),
+										DSL.key("orderBy").value(dsl.ORDER_BY)))
 						.orderBy(dsl.ORDER_BY))
 				.from(dsl, s)
 				.where(
@@ -148,7 +150,8 @@ public class TermMeaningDbService implements ActivityFunct, GlobalConstant, Free
 										DSL.key("type").value(lnsl.TYPE),
 										DSL.key("name").value(lnsl.NAME),
 										DSL.key("sourceId").value(lnsl.SOURCE_ID),
-										DSL.key("sourceName").value(s.NAME)))
+										DSL.key("sourceName").value(s.NAME),
+										DSL.key("orderBy").value(lnsl.ORDER_BY)))
 						.orderBy(lnsl.ORDER_BY))
 				.from(lnsl, s)
 				.where(
@@ -185,7 +188,8 @@ public class TermMeaningDbService implements ActivityFunct, GlobalConstant, Free
 										DSL.key("type").value(usl.TYPE),
 										DSL.key("name").value(usl.NAME),
 										DSL.key("sourceId").value(usl.SOURCE_ID),
-										DSL.key("sourceName").value(s.NAME)))
+										DSL.key("sourceName").value(s.NAME),
+										DSL.key("orderBy").value(usl.ORDER_BY)))
 						.orderBy(usl.ORDER_BY))
 				.from(usl, s)
 				.where(
@@ -272,7 +276,8 @@ public class TermMeaningDbService implements ActivityFunct, GlobalConstant, Free
 										DSL.key("type").value(mnsl.TYPE),
 										DSL.key("name").value(mnsl.NAME),
 										DSL.key("sourceId").value(mnsl.SOURCE_ID),
-										DSL.key("sourceName").value(s.NAME)))
+										DSL.key("sourceName").value(s.NAME),
+										DSL.key("orderBy").value(mnsl.ORDER_BY)))
 						.orderBy(mnsl.ORDER_BY))
 				.from(mnsl, s)
 				.where(

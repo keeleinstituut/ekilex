@@ -135,6 +135,7 @@ import eki.ekilex.data.db.main.tables.LexemeFreeform;
 import eki.ekilex.data.db.main.tables.LexemeNote;
 import eki.ekilex.data.db.main.tables.LexemeNoteSourceLink;
 import eki.ekilex.data.db.main.tables.LexemeRegister;
+import eki.ekilex.data.db.main.tables.LexemeSourceLink;
 import eki.ekilex.data.db.main.tables.Meaning;
 import eki.ekilex.data.db.main.tables.MeaningDomain;
 import eki.ekilex.data.db.main.tables.MeaningFreeform;
@@ -738,7 +739,8 @@ public class CommonDataDbService extends AbstractDataDbService {
 										DSL.key("type").value(fsl.TYPE),
 										DSL.key("name").value(fsl.NAME),
 										DSL.key("sourceId").value(fsl.SOURCE_ID),
-										DSL.key("sourceName").value(s.NAME)))
+										DSL.key("sourceName").value(s.NAME),
+										DSL.key("orderBy").value(fsl.ORDER_BY)))
 						.orderBy(fsl.ORDER_BY))
 				.from(fsl, s)
 				.where(
@@ -806,7 +808,8 @@ public class CommonDataDbService extends AbstractDataDbService {
 										DSL.key("type").value(fsl.TYPE),
 										DSL.key("name").value(fsl.NAME),
 										DSL.key("sourceId").value(fsl.SOURCE_ID),
-										DSL.key("sourceName").value(s.NAME)))
+										DSL.key("sourceName").value(s.NAME),
+										DSL.key("orderBy").value(fsl.ORDER_BY)))
 						.orderBy(fsl.ORDER_BY))
 				.from(fsl, s)
 				.where(
@@ -856,7 +859,8 @@ public class CommonDataDbService extends AbstractDataDbService {
 										DSL.key("type").value(fsl.TYPE),
 										DSL.key("name").value(fsl.NAME),
 										DSL.key("sourceId").value(fsl.SOURCE_ID),
-										DSL.key("sourceName").value(s.NAME)))
+										DSL.key("sourceName").value(s.NAME),
+										DSL.key("orderBy").value(fsl.ORDER_BY)))
 						.orderBy(fsl.ORDER_BY))
 				.from(fsl, s)
 				.where(
@@ -926,7 +930,8 @@ public class CommonDataDbService extends AbstractDataDbService {
 										DSL.key("type").value(mnsl.TYPE),
 										DSL.key("name").value(mnsl.NAME),
 										DSL.key("sourceId").value(mnsl.SOURCE_ID),
-										DSL.key("sourceName").value(s.NAME)))
+										DSL.key("sourceName").value(s.NAME),
+										DSL.key("orderBy").value(mnsl.ORDER_BY)))
 						.orderBy(mnsl.ORDER_BY))
 				.from(mnsl, s)
 				.where(
@@ -969,7 +974,8 @@ public class CommonDataDbService extends AbstractDataDbService {
 										DSL.key("type").value(misl.TYPE),
 										DSL.key("name").value(misl.NAME),
 										DSL.key("sourceId").value(misl.SOURCE_ID),
-										DSL.key("sourceName").value(s.NAME)))
+										DSL.key("sourceName").value(s.NAME),
+										DSL.key("orderBy").value(misl.ORDER_BY)))
 						.orderBy(misl.ORDER_BY))
 				.from(misl, s)
 				.where(
@@ -1095,7 +1101,8 @@ public class CommonDataDbService extends AbstractDataDbService {
 										DSL.key("type").value(dnsl.TYPE),
 										DSL.key("name").value(dnsl.NAME),
 										DSL.key("sourceId").value(dnsl.SOURCE_ID),
-										DSL.key("sourceName").value(s.NAME)))
+										DSL.key("sourceName").value(s.NAME),
+										DSL.key("orderBy").value(dnsl.ORDER_BY)))
 						.orderBy(dnsl.ORDER_BY))
 				.from(dnsl, s)
 				.where(
@@ -1133,7 +1140,8 @@ public class CommonDataDbService extends AbstractDataDbService {
 										DSL.key("type").value(dsl.TYPE),
 										DSL.key("name").value(dsl.NAME),
 										DSL.key("sourceId").value(dsl.SOURCE_ID),
-										DSL.key("sourceName").value(s.NAME)))
+										DSL.key("sourceName").value(s.NAME),
+										DSL.key("orderBy").value(dsl.ORDER_BY)))
 						.orderBy(dsl.ORDER_BY))
 				.from(dsl, s)
 				.where(
@@ -1461,7 +1469,8 @@ public class CommonDataDbService extends AbstractDataDbService {
 										DSL.key("type").value(fsl.TYPE),
 										DSL.key("name").value(fsl.NAME),
 										DSL.key("sourceId").value(fsl.SOURCE_ID),
-										DSL.key("sourceName").value(s.NAME)))
+										DSL.key("sourceName").value(s.NAME),
+										DSL.key("orderBy").value(fsl.ORDER_BY)))
 						.orderBy(fsl.ORDER_BY))
 				.from(fsl, s)
 				.where(
@@ -1500,16 +1509,23 @@ public class CommonDataDbService extends AbstractDataDbService {
 	}
 
 	public List<SourceLink> getLexemeSourceLinks(Long lexemeId) {
+
+		LexemeSourceLink lsl = LEXEME_SOURCE_LINK.as("lsl");
+		Source s = SOURCE.as("s");
+
 		return mainDb
 				.select(
-						LEXEME_SOURCE_LINK.ID,
-						LEXEME_SOURCE_LINK.TYPE,
-						LEXEME_SOURCE_LINK.NAME,
-						LEXEME_SOURCE_LINK.SOURCE_ID,
-						SOURCE.NAME.as("source_name"))
-				.from(LEXEME_SOURCE_LINK, SOURCE)
-				.where(LEXEME_SOURCE_LINK.LEXEME_ID.eq(lexemeId).and(LEXEME_SOURCE_LINK.SOURCE_ID.eq(SOURCE.ID)))
-				.orderBy(LEXEME_SOURCE_LINK.ORDER_BY)
+						lsl.ID,
+						lsl.TYPE,
+						lsl.NAME,
+						lsl.SOURCE_ID,
+						s.NAME.as("source_name"),
+						lsl.ORDER_BY)
+				.from(lsl, s)
+				.where(
+						lsl.LEXEME_ID.eq(lexemeId)
+								.and(lsl.SOURCE_ID.eq(s.ID)))
+				.orderBy(lsl.ORDER_BY)
 				.fetchInto(SourceLink.class);
 	}
 
@@ -1602,7 +1618,8 @@ public class CommonDataDbService extends AbstractDataDbService {
 										DSL.key("type").value(usl.TYPE),
 										DSL.key("name").value(usl.NAME),
 										DSL.key("sourceId").value(usl.SOURCE_ID),
-										DSL.key("sourceName").value(s.NAME)))
+										DSL.key("sourceName").value(s.NAME),
+										DSL.key("orderBy").value(usl.ORDER_BY)))
 						.orderBy(usl.ORDER_BY))
 				.from(usl, s)
 				.where(
@@ -1646,7 +1663,8 @@ public class CommonDataDbService extends AbstractDataDbService {
 										DSL.key("type").value(lnsl.TYPE),
 										DSL.key("name").value(lnsl.NAME),
 										DSL.key("sourceId").value(lnsl.SOURCE_ID),
-										DSL.key("sourceName").value(s.NAME)))
+										DSL.key("sourceName").value(s.NAME),
+										DSL.key("orderBy").value(lnsl.ORDER_BY)))
 						.orderBy(lnsl.ORDER_BY))
 				.from(lnsl, s)
 				.where(

@@ -120,7 +120,8 @@ public class WordDbService extends AbstractDataDbService {
 										DSL.key("type").value(dsl.TYPE),
 										DSL.key("name").value(dsl.NAME),
 										DSL.key("sourceId").value(s.ID),
-										DSL.key("sourceName").value(s.NAME)))
+										DSL.key("sourceName").value(s.NAME),
+										DSL.key("orderBy").value(dsl.ORDER_BY)))
 						.orderBy(dsl.ORDER_BY))
 				.from(dsl, s)
 				.where(
@@ -189,7 +190,8 @@ public class WordDbService extends AbstractDataDbService {
 										DSL.key("type").value(usl.TYPE),
 										DSL.key("name").value(usl.NAME),
 										DSL.key("sourceId").value(s.ID),
-										DSL.key("sourceName").value(s.NAME)))
+										DSL.key("sourceName").value(s.NAME),
+										DSL.key("orderBy").value(usl.ORDER_BY)))
 						.orderBy(usl.ORDER_BY))
 				.from(usl, s)
 				.where(

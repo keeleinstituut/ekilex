@@ -19,6 +19,8 @@ public class SourceLink extends AbstractDataObject {
 
 	private String sourceName;
 
+	private Long orderBy;
+
 	public String getContentKey() {
 		return contentKey;
 	}
@@ -66,4 +68,14 @@ public class SourceLink extends AbstractDataObject {
 	public void setSourceName(String sourceName) {
 		this.sourceName = sourceName;
 	}
+
+	public Long getOrderBy() {
+		return orderBy;
+	}
+
+	public void setOrderBy(Long orderBy) {
+		this.orderBy = orderBy;
+	}
+
+	
 }

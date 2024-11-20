@@ -17,6 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import eki.common.constant.ReferenceType;
+import eki.ekilex.data.ListData;
 import eki.ekilex.data.SourceLink;
 import eki.ekilex.data.SourceLinkOwner;
 import eki.ekilex.data.db.main.tables.DefinitionNoteSourceLink;
@@ -203,6 +204,14 @@ public class SourceLinkDbService {
 				.execute();
 	}
 
+	public void updateFreeformSourceLinkOrderby(ListData item) {
+		mainDb
+				.update(FREEFORM_SOURCE_LINK)
+				.set(FREEFORM_SOURCE_LINK.ORDER_BY, item.getOrderby())
+				.where(FREEFORM_SOURCE_LINK.ID.eq(item.getId()))
+				.execute();
+	}
+
 	public void deleteFreeformSourceLink(Long freeformSourceLinkId) {
 		mainDb
 				.deleteFrom(FREEFORM_SOURCE_LINK)
@@ -254,8 +263,17 @@ public class SourceLinkDbService {
 				.execute();
 	}
 
+	public void updateLexemeSourceLinkOrderby(ListData item) {
+		mainDb
+				.update(LEXEME_SOURCE_LINK)
+				.set(LEXEME_SOURCE_LINK.ORDER_BY, item.getOrderby())
+				.where(LEXEME_SOURCE_LINK.ID.eq(item.getId()))
+				.execute();
+	}
+
 	public void deleteLexemeSourceLink(Long sourceLinkId) {
-		mainDb.delete(LEXEME_SOURCE_LINK)
+		mainDb
+				.delete(LEXEME_SOURCE_LINK)
 				.where(LEXEME_SOURCE_LINK.ID.eq(sourceLinkId))
 				.execute();
 	}
@@ -283,6 +301,14 @@ public class SourceLinkDbService {
 				.update(LEXEME_NOTE_SOURCE_LINK)
 				.set(LEXEME_NOTE_SOURCE_LINK.NAME, name)
 				.where(LEXEME_NOTE_SOURCE_LINK.ID.eq(lexemeNoteSourceLinkId))
+				.execute();
+	}
+
+	public void updateLexemeNoteSourceLinkOrderby(ListData item) {
+		mainDb
+				.update(LEXEME_NOTE_SOURCE_LINK)
+				.set(LEXEME_NOTE_SOURCE_LINK.ORDER_BY, item.getOrderby())
+				.where(LEXEME_NOTE_SOURCE_LINK.ID.eq(item.getId()))
 				.execute();
 	}
 
@@ -319,6 +345,14 @@ public class SourceLinkDbService {
 				.execute();
 	}
 
+	public void updateUsageSourceLinkOrderby(ListData item) {
+		mainDb
+				.update(USAGE_SOURCE_LINK)
+				.set(USAGE_SOURCE_LINK.ORDER_BY, item.getOrderby())
+				.where(USAGE_SOURCE_LINK.ID.eq(item.getId()))
+				.execute();
+	}
+
 	public void deleteUsageSourceLink(Long usageSourceLinkId) {
 		mainDb
 				.deleteFrom(USAGE_SOURCE_LINK)
@@ -349,6 +383,14 @@ public class SourceLinkDbService {
 				.update(MEANING_NOTE_SOURCE_LINK)
 				.set(MEANING_NOTE_SOURCE_LINK.NAME, name)
 				.where(MEANING_NOTE_SOURCE_LINK.ID.eq(meaningNoteSourceLinkId))
+				.execute();
+	}
+
+	public void updateMeaningNoteSourceLinkOrderby(ListData item) {
+		mainDb
+				.update(MEANING_NOTE_SOURCE_LINK)
+				.set(MEANING_NOTE_SOURCE_LINK.ORDER_BY, item.getOrderby())
+				.where(MEANING_NOTE_SOURCE_LINK.ID.eq(item.getId()))
 				.execute();
 	}
 
@@ -385,6 +427,14 @@ public class SourceLinkDbService {
 				.execute();
 	}
 
+	public void updateMeaningImageSourceLinkOrderby(ListData item) {
+		mainDb
+				.update(MEANING_IMAGE_SOURCE_LINK)
+				.set(MEANING_IMAGE_SOURCE_LINK.ORDER_BY, item.getOrderby())
+				.where(MEANING_IMAGE_SOURCE_LINK.ID.eq(item.getId()))
+				.execute();
+	}
+
 	public void deleteMeaningImageSourceLink(Long meaningImageSourceLinkId) {
 		mainDb
 				.deleteFrom(MEANING_IMAGE_SOURCE_LINK)
@@ -418,6 +468,14 @@ public class SourceLinkDbService {
 				.execute();
 	}
 
+	public void updateDefinitionSourceLinkOrderby(ListData item) {
+		mainDb
+				.update(DEFINITION_SOURCE_LINK)
+				.set(DEFINITION_SOURCE_LINK.ORDER_BY, item.getOrderby())
+				.where(DEFINITION_SOURCE_LINK.ID.eq(item.getId()))
+				.execute();
+	}
+
 	public void deleteDefinitionSourceLink(Long sourceLinkId) {
 		mainDb.delete(DEFINITION_SOURCE_LINK)
 				.where(DEFINITION_SOURCE_LINK.ID.eq(sourceLinkId))
@@ -447,6 +505,14 @@ public class SourceLinkDbService {
 				.update(DEFINITION_NOTE_SOURCE_LINK)
 				.set(DEFINITION_NOTE_SOURCE_LINK.NAME, name)
 				.where(DEFINITION_NOTE_SOURCE_LINK.ID.eq(definitionNoteSourceLinkId))
+				.execute();
+	}
+
+	public void updateDefinitionNoteSourceLinkOrderby(ListData item) {
+		mainDb
+				.update(DEFINITION_NOTE_SOURCE_LINK)
+				.set(DEFINITION_NOTE_SOURCE_LINK.ORDER_BY, item.getOrderby())
+				.where(DEFINITION_NOTE_SOURCE_LINK.ID.eq(item.getId()))
 				.execute();
 	}
 
