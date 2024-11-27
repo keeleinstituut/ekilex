@@ -30,11 +30,6 @@ import eki.common.constant.GlobalConstant;
 import eki.common.constant.SynonymType;
 import eki.ekilex.data.Classifier;
 import eki.ekilex.data.ClassifierSelect;
-import eki.ekilex.data.CollocMember;
-import eki.ekilex.data.Collocation;
-import eki.ekilex.data.CollocationPosGroup;
-import eki.ekilex.data.CollocationRelGroup;
-import eki.ekilex.data.CollocationTuple;
 import eki.ekilex.data.DatasetPermission;
 import eki.ekilex.data.Definition;
 import eki.ekilex.data.DefinitionLangGroup;
@@ -167,6 +162,19 @@ public class ConversionUtil implements GlobalConstant {
 
 	public Lexeme composeLexeme(LexemeWordTuple lexemeWordTuple) {
 
+		Word word = new Word();
+		word.setWordId(lexemeWordTuple.getWordId());
+		word.setWordValue(lexemeWordTuple.getWordValue());
+		word.setWordValuePrese(lexemeWordTuple.getWordValuePrese());
+		word.setHomonymNr(lexemeWordTuple.getHomonymNr());
+		word.setLang(lexemeWordTuple.getWordLang());
+		word.setGenderCode(lexemeWordTuple.getWordGenderCode());
+		word.setDisplayMorphCode(lexemeWordTuple.getWordDisplayMorphCode());
+		word.setWordTypeCodes(lexemeWordTuple.getWordTypeCodes());
+		word.setPrefixoid(lexemeWordTuple.isPrefixoid());
+		word.setSuffixoid(lexemeWordTuple.isSuffixoid());
+		word.setForeign(lexemeWordTuple.isForeign());
+
 		Lexeme lexeme = new Lexeme();
 		lexeme.setLexemeId(lexemeWordTuple.getLexemeId());
 		lexeme.setWordId(lexemeWordTuple.getWordId());
@@ -186,20 +194,8 @@ public class ConversionUtil implements GlobalConstant {
 		lexeme.setDerivs(lexemeWordTuple.getDerivs());
 		lexeme.setRegisters(lexemeWordTuple.getRegisters());
 		lexeme.setRegions(lexemeWordTuple.getRegions());
-
-		Word word = new Word();
-		word.setWordId(lexemeWordTuple.getWordId());
-		word.setWordValue(lexemeWordTuple.getWordValue());
-		word.setWordValuePrese(lexemeWordTuple.getWordValuePrese());
-		word.setHomonymNr(lexemeWordTuple.getHomonymNr());
-		word.setLang(lexemeWordTuple.getWordLang());
-		word.setGenderCode(lexemeWordTuple.getWordGenderCode());
-		word.setDisplayMorphCode(lexemeWordTuple.getWordDisplayMorphCode());
-		word.setWordTypeCodes(lexemeWordTuple.getWordTypeCodes());
-		word.setPrefixoid(lexemeWordTuple.isPrefixoid());
-		word.setSuffixoid(lexemeWordTuple.isSuffixoid());
-		word.setForeign(lexemeWordTuple.isForeign());
 		lexeme.setWord(word);
+
 		return lexeme;
 	}
 
@@ -499,54 +495,6 @@ public class ConversionUtil implements GlobalConstant {
 		return wordEtyms;
 	}
 
-	public List<CollocationPosGroup> composeCollocPosGroups(List<CollocationTuple> collocTuples) {
-
-		List<CollocationPosGroup> collocationPosGroups = new ArrayList<>();
-		Map<Long, CollocationPosGroup> collocPosGroupMap = new HashMap<>();
-		Map<Long, CollocationRelGroup> collocRelGroupMap = new HashMap<>();
-		Map<Long, Collocation> collocMap = new HashMap<>();
-
-		for (CollocationTuple collocTuple : collocTuples) {
-
-			Long collocPosGroupId = collocTuple.getPosGroupId();
-			Long collocRelGroupId = collocTuple.getRelGroupId();
-			CollocationPosGroup collocPosGroup = collocPosGroupMap.get(collocPosGroupId);
-			if (collocPosGroup == null) {
-				collocPosGroup = new CollocationPosGroup();
-				collocPosGroup.setCode(collocTuple.getPosGroupCode());
-				collocPosGroup.setRelationGroups(new ArrayList<>());
-				collocPosGroupMap.put(collocPosGroupId, collocPosGroup);
-				collocationPosGroups.add(collocPosGroup);
-			}
-			CollocationRelGroup collocRelGroup = collocRelGroupMap.get(collocRelGroupId);
-			if (collocRelGroup == null) {
-				collocRelGroup = new CollocationRelGroup();
-				collocRelGroup.setName(collocTuple.getRelGroupName());
-				collocRelGroup.setFrequency(collocTuple.getRelGroupFrequency());
-				collocRelGroup.setScore(collocTuple.getRelGroupScore());
-				collocRelGroup.setCollocations(new ArrayList<>());
-				collocRelGroupMap.put(collocRelGroupId, collocRelGroup);
-				collocPosGroup.getRelationGroups().add(collocRelGroup);
-			}
-			Collocation collocation = addCollocation(collocMap, collocTuple, collocRelGroup.getCollocations());
-			addCollocMember(collocTuple, collocation);
-		}
-		return collocationPosGroups;
-	}
-
-	public List<Collocation> composeCollocations(List<CollocationTuple> collocTuples) {
-
-		List<Collocation> collocations = new ArrayList<>();
-		Map<Long, Collocation> collocMap = new HashMap<>();
-
-		for (CollocationTuple collocTuple : collocTuples) {
-
-			Collocation collocation = addCollocation(collocMap, collocTuple, collocations);
-			addCollocMember(collocTuple, collocation);
-		}
-		return collocations;
-	}
-
 	public List<SynonymLangGroup> composeSynonymLangGroups(
 			List<MeaningRelation> synMeaningRelations, List<MeaningWord> meaningWords, List<InexactSynonym> inexactSynonyms, EkiUserProfile userProfile,
 			String wordLang, List<ClassifierSelect> languagesOrder) {
@@ -827,33 +775,6 @@ public class ConversionUtil implements GlobalConstant {
 		}
 
 		return sources;
-	}
-
-	private Collocation addCollocation(Map<Long, Collocation> collocMap, CollocationTuple collocTuple, List<Collocation> collocations) {
-
-		Long collocId = collocTuple.getCollocId();
-		Collocation collocation = collocMap.get(collocId);
-		if (collocation == null) {
-			collocation = new Collocation();
-			collocation.setValue(collocTuple.getCollocValue());
-			collocation.setDefinition(collocTuple.getCollocDefinition());
-			collocation.setFrequency(collocTuple.getCollocFrequency());
-			collocation.setScore(collocTuple.getCollocScore());
-			collocation.setCollocUsages(collocTuple.getCollocUsages());
-			collocation.setCollocMembers(new ArrayList<>());
-			collocMap.put(collocId, collocation);
-			collocations.add(collocation);
-		}
-		return collocation;
-	}
-
-	private void addCollocMember(CollocationTuple collocTuple, Collocation collocation) {
-
-		CollocMember collocMember = new CollocMember();
-		collocMember.setWordId(collocTuple.getCollocMemberWordId());
-		collocMember.setWord(collocTuple.getCollocMemberWordValue());
-		collocMember.setWeight(collocTuple.getCollocMemberWeight());
-		collocation.getCollocMembers().add(collocMember);
 	}
 
 	public boolean isLexemesActiveTagComplete(DatasetPermission userRole, List<? extends LexemeTag> lexemes, Tag activeTag) {

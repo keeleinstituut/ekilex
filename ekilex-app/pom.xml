@@ -60,36 +60,6 @@
 			</properties>
 		</profile>
 		<profile>
-			<id>plimp</id>
-			<properties>
-				<spring.boot.mainclass>eki.ekilex.cli.LexemeProficiencyLevelImporter</spring.boot.mainclass>
-			</properties>
-		</profile>
-		<profile>
-			<id>mfimp</id>
-			<properties>
-				<spring.boot.mainclass>eki.ekilex.cli.MeaningForumImporter</spring.boot.mainclass>
-			</properties>
-		</profile>
-		<profile>
-			<id>wscor</id>
-			<properties>
-				<spring.boot.mainclass>eki.ekilex.cli.WordStressCorrector</spring.boot.mainclass>
-			</properties>
-		</profile>
-		<profile>
-			<id>cmov</id>
-			<properties>
-				<spring.boot.mainclass>eki.ekilex.cli.CollocationMover</spring.boot.mainclass>
-			</properties>
-		</profile>
-		<profile>
-			<id>sdsa</id>
-			<properties>
-				<spring.boot.mainclass>eki.ekilex.cli.SourceDatasetApplier</spring.boot.mainclass>
-			</properties>
-		</profile>
-		<profile>
 			<id>domf</id>
 			<properties>
 				<spring.boot.mainclass>eki.ekilex.cli.DomainFixer</spring.boot.mainclass>

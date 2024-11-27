@@ -45,15 +45,15 @@ public class SourceEditController extends AbstractMutableDataPageController {
 
 	@GetMapping(SOURCE_NAME_SEARCH_URI + "/{nameSearchFilter}")
 	@ResponseBody
-	public List<String> sourceNameSearch(@PathVariable("nameSearchFilter") String nameSearchFilter) {
+	public List<String> sourceNameSearch(@PathVariable("nameSearchFilter") String searchFilter) {
 
-		List<String> sourceNames = sourceService.getSourceNames(nameSearchFilter, AUTOCOMPLETE_MAX_RESULTS_LIMIT);
+		List<String> sourceNames = sourceService.getSourceNames(searchFilter, AUTOCOMPLETE_MAX_RESULTS_LIMIT);
 
 		return sourceNames;
 	}
 
 	@GetMapping(SOURCE_QUICK_SEARCH_URI)
-	public String sourceSearch(@RequestParam String searchFilter, Model model) {
+	public String sourceQuickSearch(@RequestParam String searchFilter, Model model) {
 
 		EkiUser user = userContext.getUser();
 		searchFilter = valueUtil.trimAndCleanAndRemoveHtmlAndLimit(searchFilter);

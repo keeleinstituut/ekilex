@@ -32,9 +32,8 @@ import eki.ekilex.data.ActivityLog;
 import eki.ekilex.data.ActivityLogData;
 import eki.ekilex.data.ActivityLogOwnerEntityDescr;
 import eki.ekilex.data.Classifier;
+import eki.ekilex.data.CollocPosGroup;
 import eki.ekilex.data.Collocation;
-import eki.ekilex.data.CollocationPosGroup;
-import eki.ekilex.data.CollocationTuple;
 import eki.ekilex.data.DatasetPermission;
 import eki.ekilex.data.Definition;
 import eki.ekilex.data.DefinitionLangGroup;
@@ -66,6 +65,7 @@ import eki.ekilex.data.WordLexemeMeaningIds;
 import eki.ekilex.data.WordRelation;
 import eki.ekilex.service.db.ActivityLogDbService;
 import eki.ekilex.service.db.CommonDataDbService;
+import eki.ekilex.service.db.LexDataDbService;
 import eki.ekilex.service.db.LexSearchDbService;
 import eki.ekilex.service.db.LookupDbService;
 import eki.ekilex.service.db.SourceDbService;
@@ -126,6 +126,9 @@ public class ActivityLogService implements SystemConstant, GlobalConstant, Freef
 
 	@Autowired
 	private LexSearchDbService lexSearchDbService;
+
+	@Autowired
+	private LexDataDbService lexDataDbService;
 
 	@Autowired
 	private SourceDbService sourceDbService;
@@ -570,10 +573,9 @@ public class ActivityLogService implements SystemConstant, GlobalConstant, Freef
 		List<NoteLangGroup> lexemeNoteLangGroups = conversionUtil.composeNoteLangGroups(lexemeNotes, null);
 		List<LexemeRelation> lexemeRelations = commonDataDbService.getLexemeRelations(lexemeId, CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
 		List<SourceLink> lexemeSourceLinks = commonDataDbService.getLexemeSourceLinks(lexemeId);
-		List<CollocationTuple> primaryCollocTuples = lexSearchDbService.getPrimaryCollocationTuples(lexemeId);
-		List<CollocationPosGroup> collocationPosGroups = conversionUtil.composeCollocPosGroups(primaryCollocTuples);
-		List<CollocationTuple> secondaryCollocTuples = lexSearchDbService.getSecondaryCollocationTuples(lexemeId);
-		List<Collocation> secondaryCollocations = conversionUtil.composeCollocations(secondaryCollocTuples);
+		List<CollocPosGroup> primaryCollocations = lexDataDbService.getPrimaryCollocations(lexemeId, CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
+		List<Collocation> secondaryCollocations = lexDataDbService.getSecondaryCollocations(lexemeId);
+		boolean isCollocationsExist = lexDataDbService.isCollocationsExist(lexemeId);
 
 		lexeme.setMeaningWords(meaningWords);
 		lexeme.setTags(lexemeTags);
@@ -584,8 +586,9 @@ public class ActivityLogService implements SystemConstant, GlobalConstant, Freef
 		lexeme.setLexemeNoteLangGroups(lexemeNoteLangGroups);
 		lexeme.setLexemeRelations(lexemeRelations);
 		lexeme.setSourceLinks(lexemeSourceLinks);
-		lexeme.setCollocationPosGroups(collocationPosGroups);
+		lexeme.setPrimaryCollocations(primaryCollocations);
 		lexeme.setSecondaryCollocations(secondaryCollocations);
+		lexeme.setCollocationsExist(isCollocationsExist);
 
 		ObjectMapper objectMapper = new ObjectMapper();
 		String lexemeJson = objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(lexeme);
@@ -601,10 +604,10 @@ public class ActivityLogService implements SystemConstant, GlobalConstant, Freef
 		}
 		List<Freeform> wordFreeforms = commonDataDbService.getWordFreeforms(wordId, EXCLUDED_WORD_ATTRIBUTE_FF_TYPE_CODES, CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
 		List<Classifier> wordTypes = commonDataDbService.getWordTypes(wordId, CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
-		List<WordRelation> wordRelations = lexSearchDbService.getWordRelations(wordId, CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
-		List<WordRelation> wordGroupMembers = lexSearchDbService.getWordGroupMembers(wordId, CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
+		List<WordRelation> wordRelations = lexDataDbService.getWordRelations(wordId, CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
+		List<WordRelation> wordGroupMembers = lexDataDbService.getWordGroupMembers(wordId, CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
 		List<WordGroup> wordGroups = conversionUtil.composeWordGroups(wordGroupMembers, null);
-		List<WordEtymTuple> wordEtymTuples = lexSearchDbService.getWordEtymology(wordId);
+		List<WordEtymTuple> wordEtymTuples = lexDataDbService.getWordEtymology(wordId);
 		List<WordEtym> wordEtymology = conversionUtil.composeWordEtymology(wordEtymTuples);
 		List<Freeform> odWordRecommendations = commonDataDbService.getOdWordRecommendations(wordId);
 		List<Paradigm> paradigms = null;

@@ -1,7 +1,9 @@
 function initSourceNameAutocomplete(dlg) {
 
 	let searchWordAutocompleteConfig = {
+
 		source: function(request, response) {
+
 			let searchFilter = request.term;
 			let searchUrl = applicationUrl + 'sourcenamesearch/' + searchFilter;
 
@@ -26,7 +28,7 @@ function initSourceNameAutocomplete(dlg) {
 				}
 			});
 		},
-		minLength: 2,
+		minLength: 3,
 		create: function() {
 			return false;
 		},
@@ -46,5 +48,8 @@ function initSourceNameAutocomplete(dlg) {
 		}
 	};
 
-	dlg.find("input[name='searchFilter']").autocomplete(searchWordAutocompleteConfig).autocomplete("instance");
+	dlg
+		.find("input[name='searchFilter']")
+		.autocomplete(searchWordAutocompleteConfig)
+		.autocomplete("instance");
 };

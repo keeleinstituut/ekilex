@@ -1,6 +1,5 @@
 package eki.ekilex.service.db;
 
-import static eki.ekilex.data.db.main.Tables.COLLOCATION;
 import static eki.ekilex.data.db.main.Tables.COLLOCATION_MEMBER;
 import static eki.ekilex.data.db.main.Tables.DEFINITION_DATASET;
 import static eki.ekilex.data.db.main.Tables.DEFINITION_FREEFORM;
@@ -11,9 +10,6 @@ import static eki.ekilex.data.db.main.Tables.FREEFORM_SOURCE_LINK;
 import static eki.ekilex.data.db.main.Tables.LEXEME;
 import static eki.ekilex.data.db.main.Tables.LEXEME_FREEFORM;
 import static eki.ekilex.data.db.main.Tables.LEXEME_SOURCE_LINK;
-import static eki.ekilex.data.db.main.Tables.LEX_COLLOC;
-import static eki.ekilex.data.db.main.Tables.LEX_COLLOC_POS_GROUP;
-import static eki.ekilex.data.db.main.Tables.LEX_COLLOC_REL_GROUP;
 import static eki.ekilex.data.db.main.Tables.MEANING;
 import static eki.ekilex.data.db.main.Tables.MEANING_FREEFORM;
 import static eki.ekilex.data.db.main.Tables.PARADIGM;
@@ -28,25 +24,18 @@ import java.util.List;
 import org.apache.commons.lang3.StringUtils;
 import org.jooq.Condition;
 import org.jooq.Field;
-import org.jooq.Record4;
-import org.jooq.Table;
 import org.jooq.impl.DSL;
 import org.springframework.stereotype.Component;
 
 import eki.common.constant.ClassifierName;
 import eki.common.constant.Complexity;
 import eki.common.data.Classifier;
-import eki.ekilex.data.CollocationTuple;
 import eki.ekilex.data.WordLexemeMeaningIdTuple;
-import eki.ekilex.data.db.main.tables.Collocation;
 import eki.ekilex.data.db.main.tables.DefinitionDataset;
 import eki.ekilex.data.db.main.tables.DefinitionFreeform;
 import eki.ekilex.data.db.main.tables.DefinitionSourceLink;
 import eki.ekilex.data.db.main.tables.Form;
 import eki.ekilex.data.db.main.tables.FreeformSourceLink;
-import eki.ekilex.data.db.main.tables.LexColloc;
-import eki.ekilex.data.db.main.tables.LexCollocPosGroup;
-import eki.ekilex.data.db.main.tables.LexCollocRelGroup;
 import eki.ekilex.data.db.main.tables.Lexeme;
 import eki.ekilex.data.db.main.tables.LexemeFreeform;
 import eki.ekilex.data.db.main.tables.LexemeSourceLink;
@@ -154,141 +143,6 @@ public class MigrationDbService extends AbstractDataDbService {
 				.from(w)
 				.where(w.VALUE.eq(value).and(w.LANG.eq(languageCode)))
 				.fetchInto(MigraWord.class);
-	}
-
-	public List<String> getCollocationValues() {
-
-		Collocation c = COLLOCATION.as("c");
-
-		return mainDb
-				.select(c.VALUE)
-				.from(c)
-				.groupBy(c.VALUE)
-				.fetchInto(String.class);
-	}
-
-	public List<Long> getCollocationIds() {
-
-		Collocation c = COLLOCATION.as("c");
-
-		return mainDb
-				.select(c.ID)
-				.from(c)
-				.orderBy(c.ID)
-				.fetchInto(Long.class);
-	}
-
-	public List<CollocationTuple> getCollocationsAndMembers(String collocationValue) {
-
-		LexCollocPosGroup pgr = LEX_COLLOC_POS_GROUP.as("pgr");
-		LexCollocRelGroup rgr = LEX_COLLOC_REL_GROUP.as("rgr");
-		LexColloc lc = LEX_COLLOC.as("lc");
-		Collocation c = COLLOCATION.as("c");
-		Lexeme l = LEXEME.as("l");
-		Word w = WORD.as("w");
-
-		Table<Record4<Long, String, Long, String>> lcprg = DSL
-				.select(
-						pgr.LEXEME_ID,
-						pgr.POS_GROUP_CODE,
-						rgr.ID.as("rel_group_id"),
-						rgr.NAME.as("rel_group_name"))
-				.from(pgr, rgr)
-				.where(rgr.POS_GROUP_ID.eq(pgr.ID))
-				.asTable("lcprg");
-
-		return mainDb
-				.select(
-						c.ID.as("colloc_id"),
-						c.VALUE.as("colloc_value"),
-						c.DEFINITION.as("colloc_definition"),
-						c.USAGES.as("colloc_usages"),
-						c.FREQUENCY.as("colloc_frequency"),
-						c.SCORE.as("colloc_score"),
-						c.COMPLEXITY,
-						lcprg.field("pos_group_code"),
-						lcprg.field("rel_group_name"),
-						l.ID.as("colloc_member_lexeme_id"),
-						w.ID.as("colloc_member_word_id"),
-						w.VALUE.as("colloc_member_word_value"),
-						lc.MEMBER_FORM.as("colloc_member_form_value"),
-						lc.CONJUNCT.as("colloc_member_conjunct"),
-						lc.WEIGHT.as("colloc_member_weight"),
-						lc.GROUP_ORDER.as("colloc_group_order"),
-						lc.MEMBER_ORDER.as("colloc_member_order"))
-				.from(c
-						.innerJoin(lc).on(lc.COLLOCATION_ID.eq(c.ID))
-						.innerJoin(l).on(l.ID.eq(lc.LEXEME_ID))
-						.innerJoin(w).on(w.ID.eq(l.WORD_ID))
-						.leftOuterJoin(lcprg).on(
-								lcprg.field("lexeme_id", Long.class).eq(l.ID)
-										.and(lc.REL_GROUP_ID.eq(lcprg.field("rel_group_id", Long.class)))))
-				.where(
-						c.VALUE.eq(collocationValue))
-				.orderBy(c.ID, lc.MEMBER_ORDER)
-				.fetchInto(CollocationTuple.class);
-	}
-
-	public eki.ekilex.data.Collocation getCollocation(Long id) {
-
-		Collocation c = COLLOCATION.as("c");
-
-		return mainDb
-				.selectFrom(c)
-				.where(c.ID.eq(id))
-				.fetchOptionalInto(eki.ekilex.data.Collocation.class)
-				.orElse(null);
-	}
-
-	public List<CollocationTuple> getCollocationAndMembers(Long collocationId) {
-
-		LexCollocPosGroup pgr = LEX_COLLOC_POS_GROUP.as("pgr");
-		LexCollocRelGroup rgr = LEX_COLLOC_REL_GROUP.as("rgr");
-		LexColloc lc = LEX_COLLOC.as("lc");
-		Collocation c = COLLOCATION.as("c");
-		Lexeme l = LEXEME.as("l");
-		Word w = WORD.as("w");
-
-		Table<Record4<Long, String, Long, String>> lcprg = DSL
-				.select(
-						pgr.LEXEME_ID,
-						pgr.POS_GROUP_CODE,
-						rgr.ID.as("rel_group_id"),
-						rgr.NAME.as("rel_group_name"))
-				.from(pgr, rgr)
-				.where(rgr.POS_GROUP_ID.eq(pgr.ID))
-				.asTable("lcprg");
-
-		return mainDb
-				.select(
-						c.ID.as("colloc_id"),
-						c.VALUE.as("colloc_value"),
-						c.DEFINITION.as("colloc_definition"),
-						c.USAGES.as("colloc_usages"),
-						c.FREQUENCY.as("colloc_frequency"),
-						c.SCORE.as("colloc_score"),
-						c.COMPLEXITY,
-						lcprg.field("pos_group_code"),
-						lcprg.field("rel_group_name"),
-						l.ID.as("colloc_member_lexeme_id"),
-						w.ID.as("colloc_member_word_id"),
-						w.VALUE.as("colloc_member_word_value"),
-						lc.MEMBER_FORM.as("colloc_member_form_value"),
-						lc.CONJUNCT.as("colloc_member_conjunct"),
-						lc.WEIGHT.as("colloc_member_weight"),
-						lc.GROUP_ORDER.as("colloc_group_order"),
-						lc.MEMBER_ORDER.as("colloc_member_order"))
-				.from(c
-						.innerJoin(lc).on(lc.COLLOCATION_ID.eq(c.ID))
-						.innerJoin(l).on(l.ID.eq(lc.LEXEME_ID))
-						.innerJoin(w).on(w.ID.eq(l.WORD_ID))
-						.leftOuterJoin(lcprg).on(
-								lcprg.field("lexeme_id", Long.class).eq(l.ID)
-										.and(lc.REL_GROUP_ID.eq(lcprg.field("rel_group_id", Long.class)))))
-				.where(
-						c.ID.eq(collocationId))
-				.orderBy(lc.MEMBER_ORDER)
-				.fetchInto(CollocationTuple.class);
 	}
 
 	public List<MigraForm> getForms(Long wordId, String formValue, String morphCode) {

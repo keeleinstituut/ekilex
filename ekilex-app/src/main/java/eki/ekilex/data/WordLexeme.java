@@ -85,7 +85,7 @@ public class WordLexeme extends AbstractCrudEntity implements LexemeLevel, Decor
 
 	private List<LexemeRelation> lexemeRelations;
 
-	private List<CollocationPosGroup> collocationPosGroups;
+	private List<CollocPosGroup> primaryCollocations;
 
 	private List<Collocation> secondaryCollocations;
 
@@ -96,6 +96,8 @@ public class WordLexeme extends AbstractCrudEntity implements LexemeLevel, Decor
 	private List<MeaningWord> meaningWords;
 
 	private List<SynonymLangGroup> synonymLangGroups;
+
+	private boolean collocationsExist;
 
 	private boolean lexemeOrMeaningClassifiersExist;
 
@@ -422,12 +424,12 @@ public class WordLexeme extends AbstractCrudEntity implements LexemeLevel, Decor
 		this.lexemeRelations = lexemeRelations;
 	}
 
-	public List<CollocationPosGroup> getCollocationPosGroups() {
-		return collocationPosGroups;
+	public List<CollocPosGroup> getPrimaryCollocations() {
+		return primaryCollocations;
 	}
 
-	public void setCollocationPosGroups(List<CollocationPosGroup> collocationPosGroups) {
-		this.collocationPosGroups = collocationPosGroups;
+	public void setPrimaryCollocations(List<CollocPosGroup> primaryCollocations) {
+		this.primaryCollocations = primaryCollocations;
 	}
 
 	public List<Collocation> getSecondaryCollocations() {
@@ -468,6 +470,14 @@ public class WordLexeme extends AbstractCrudEntity implements LexemeLevel, Decor
 
 	public void setSynonymLangGroups(List<SynonymLangGroup> synonymLangGroups) {
 		this.synonymLangGroups = synonymLangGroups;
+	}
+
+	public boolean isCollocationsExist() {
+		return collocationsExist;
+	}
+
+	public void setCollocationsExist(boolean collocationsExist) {
+		this.collocationsExist = collocationsExist;
 	}
 
 	public boolean isLexemeOrMeaningClassifiersExist() {

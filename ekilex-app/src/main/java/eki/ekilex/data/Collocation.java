@@ -2,81 +2,70 @@ package eki.ekilex.data;
 
 import java.util.List;
 
-import eki.common.constant.Complexity;
 import eki.common.data.AbstractDataObject;
 
 public class Collocation extends AbstractDataObject {
 
 	private static final long serialVersionUID = 1L;
 
-	private String value;
+	private Long lexemeId;
 
-	private String definition;
+	private Long wordId;
 
-	private Float frequency;
+	private String wordValue;
 
-	private Float score;
+	private List<Usage> usages;
 
-	private List<String> collocUsages;
+	private List<CollocMember> members;
 
-	private List<CollocMember> collocMembers;
+	private Long groupOrder;
 
-	private Complexity complexity;
-
-	public String getValue() {
-		return value;
+	public Long getLexemeId() {
+		return lexemeId;
 	}
 
-	public void setValue(String value) {
-		this.value = value;
+	public void setLexemeId(Long lexemeId) {
+		this.lexemeId = lexemeId;
 	}
 
-	public String getDefinition() {
-		return definition;
+	public Long getWordId() {
+		return wordId;
 	}
 
-	public void setDefinition(String definition) {
-		this.definition = definition;
+	public void setWordId(Long wordId) {
+		this.wordId = wordId;
 	}
 
-	public Float getFrequency() {
-		return frequency;
+	public String getWordValue() {
+		return wordValue;
 	}
 
-	public void setFrequency(Float frequency) {
-		this.frequency = frequency;
+	public void setWordValue(String wordValue) {
+		this.wordValue = wordValue;
 	}
 
-	public Float getScore() {
-		return score;
+	public List<Usage> getUsages() {
+		return usages;
 	}
 
-	public void setScore(Float score) {
-		this.score = score;
+	public void setUsages(List<Usage> usages) {
+		this.usages = usages;
 	}
 
-	public List<String> getCollocUsages() {
-		return collocUsages;
+	public List<CollocMember> getMembers() {
+		return members;
 	}
 
-	public void setCollocUsages(List<String> collocUsages) {
-		this.collocUsages = collocUsages;
+	public void setMembers(List<CollocMember> members) {
+		this.members = members;
 	}
 
-	public List<CollocMember> getCollocMembers() {
-		return collocMembers;
+	public Long getGroupOrder() {
+		return groupOrder;
 	}
 
-	public void setCollocMembers(List<CollocMember> collocMembers) {
-		this.collocMembers = collocMembers;
-	}
-
-	public Complexity getComplexity() {
-		return complexity;
-	}
-
-	public void setComplexity(Complexity complexity) {
-		this.complexity = complexity;
+	public void setGroupOrder(Long groupOrder) {
+		this.groupOrder = groupOrder;
 	}
 
 }

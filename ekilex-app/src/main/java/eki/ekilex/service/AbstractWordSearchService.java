@@ -30,6 +30,7 @@ import eki.ekilex.data.Word;
 import eki.ekilex.data.WordDescript;
 import eki.ekilex.data.WordLexeme;
 import eki.ekilex.data.WordsResult;
+import eki.ekilex.service.db.LexDataDbService;
 import eki.ekilex.service.db.LexSearchDbService;
 import eki.ekilex.service.db.LookupDbService;
 import eki.ekilex.service.util.PermCalculator;
@@ -39,6 +40,9 @@ public abstract class AbstractWordSearchService extends AbstractSearchService {
 
 	@Autowired
 	protected LexSearchDbService lexSearchDbService;
+
+	@Autowired
+	protected LexDataDbService lexDataDbService;
 
 	@Autowired
 	protected LookupDbService lookupDbService;

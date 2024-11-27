@@ -414,7 +414,9 @@ public class SourceDbService implements GlobalConstant, SystemConstant, Activity
 
 	public List<String> getSourceNames(String searchFilter, int limit) {
 
-		String maskedSearchFilter = searchFilter.replace(SEARCH_MASK_CHARS, "%").replace(SEARCH_MASK_CHAR, "_");
+		String maskedSearchFilter = new String(searchFilter);
+		maskedSearchFilter = StringUtils.replace(maskedSearchFilter, SEARCH_MASK_CHARS, "%");
+		maskedSearchFilter = StringUtils.replace(maskedSearchFilter, SEARCH_MASK_CHAR, "_");
 		Field<String> filterField = DSL.lower(maskedSearchFilter);
 		return mainDb
 				.selectDistinct(SOURCE.NAME)
