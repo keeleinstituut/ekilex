@@ -57,6 +57,8 @@ import static eki.ekilex.data.db.main.Tables.MORPH_LABEL;
 import static eki.ekilex.data.db.main.Tables.POS;
 import static eki.ekilex.data.db.main.Tables.POS_GROUP;
 import static eki.ekilex.data.db.main.Tables.POS_GROUP_LABEL;
+import static eki.ekilex.data.db.main.Tables.REL_GROUP;
+import static eki.ekilex.data.db.main.Tables.REL_GROUP_LABEL;
 import static eki.ekilex.data.db.main.Tables.POS_LABEL;
 import static eki.ekilex.data.db.main.Tables.PROFICIENCY_LEVEL;
 import static eki.ekilex.data.db.main.Tables.PROFICIENCY_LEVEL_LABEL;
@@ -657,6 +659,22 @@ public class CommonDataDbService extends AbstractDataDbService {
 								.and(POS_GROUP_LABEL.TYPE.eq(classifierLabelType))
 								.and(POS_GROUP_LABEL.CODE.eq(POS_GROUP.CODE)))
 				.orderBy(POS_GROUP.ORDER_BY)
+				.fetchInto(Classifier.class);
+	}
+
+	@Cacheable(value = CACHE_KEY_CLASSIF, key = "{#root.methodName, #classifierLabelLang, #classifierLabelTypeCode}")
+	public List<Classifier> getRelGroups(String classifierLabelLang, String classifierLabelType) {
+		return mainDb
+				.select(
+						getClassifierNameField(ClassifierName.REL_GROUP),
+						REL_GROUP_LABEL.CODE,
+						REL_GROUP_LABEL.VALUE)
+				.from(REL_GROUP_LABEL, REL_GROUP)
+				.where(
+						REL_GROUP_LABEL.LANG.eq(classifierLabelLang)
+								.and(REL_GROUP_LABEL.TYPE.eq(classifierLabelType))
+								.and(REL_GROUP_LABEL.CODE.eq(REL_GROUP.CODE)))
+				.orderBy(REL_GROUP.ORDER_BY)
 				.fetchInto(Classifier.class);
 	}
 

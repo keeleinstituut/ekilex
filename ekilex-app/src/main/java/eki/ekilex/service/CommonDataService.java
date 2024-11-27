@@ -244,6 +244,11 @@ public class CommonDataService implements InitializingBean, SystemConstant, Glob
 	}
 
 	@Transactional
+	public List<Classifier> getRelGroups() {
+		return commonDataDbService.getRelGroups(CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
+	}
+
+	@Transactional
 	public List<Classifier> getUsageTypes() {
 		return commonDataDbService.getUsageTypes(CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
 	}
@@ -312,6 +317,9 @@ public class CommonDataService implements InitializingBean, SystemConstant, Glob
 		}
 		if (ClassifierName.POS_GROUP.equals(classifierName)) {
 			return getPosGroups();
+		}
+		if (ClassifierName.REL_GROUP.equals(classifierName)) {
+			return getRelGroups();
 		}
 		if (ClassifierName.USAGE_TYPE.equals(classifierName)) {
 			return getUsageTypes();
