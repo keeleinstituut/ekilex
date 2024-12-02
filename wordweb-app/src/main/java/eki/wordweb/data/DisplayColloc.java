@@ -4,7 +4,6 @@ import java.util.List;
 
 import eki.common.data.AbstractDataObject;
 import eki.wordweb.constant.CollocMemberGroup;
-import eki.wordweb.data.type.TypeCollocMember;
 
 public class DisplayColloc extends AbstractDataObject {
 
@@ -12,13 +11,13 @@ public class DisplayColloc extends AbstractDataObject {
 
 	private List<CollocMemberGroup> memberGroupOrder;
 
-	private TypeCollocMember headwordMember;
+	private CollocMember headwordMember;
 
-	private List<TypeCollocMember> primaryMembers;
+	private List<CollocMember> primaryMembers;
 
-	private List<TypeCollocMember> contextMembers;
+	private List<CollocMember> contextMembers;
 
-	private List<String> collocMemberForms;
+	private List<String> collocMemberFormValues;
 
 	public List<CollocMemberGroup> getMemberGroupOrder() {
 		return memberGroupOrder;
@@ -28,36 +27,36 @@ public class DisplayColloc extends AbstractDataObject {
 		this.memberGroupOrder = memberGroupOrder;
 	}
 
-	public TypeCollocMember getHeadwordMember() {
+	public CollocMember getHeadwordMember() {
 		return headwordMember;
 	}
 
-	public void setHeadwordMember(TypeCollocMember headwordMember) {
+	public void setHeadwordMember(CollocMember headwordMember) {
 		this.headwordMember = headwordMember;
 	}
 
-	public List<TypeCollocMember> getPrimaryMembers() {
+	public List<CollocMember> getPrimaryMembers() {
 		return primaryMembers;
 	}
 
-	public void setPrimaryMembers(List<TypeCollocMember> primaryMembers) {
+	public void setPrimaryMembers(List<CollocMember> primaryMembers) {
 		this.primaryMembers = primaryMembers;
 	}
 
-	public List<TypeCollocMember> getContextMembers() {
+	public List<CollocMember> getContextMembers() {
 		return contextMembers;
 	}
 
-	public void setContextMembers(List<TypeCollocMember> contextMembers) {
+	public void setContextMembers(List<CollocMember> contextMembers) {
 		this.contextMembers = contextMembers;
 	}
 
-	public List<String> getCollocMemberForms() {
-		return collocMemberForms;
+	public List<String> getCollocMemberFormValues() {
+		return collocMemberFormValues;
 	}
 
-	public void setCollocMemberForms(List<String> collocMemberForms) {
-		this.collocMemberForms = collocMemberForms;
+	public void setCollocMemberFormValues(List<String> collocMemberFormValues) {
+		this.collocMemberFormValues = collocMemberFormValues;
 	}
 
 }

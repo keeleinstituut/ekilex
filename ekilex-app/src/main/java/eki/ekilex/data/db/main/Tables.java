@@ -120,7 +120,7 @@ import eki.ekilex.data.db.main.tables.UsageTypeLabel;
 import eki.ekilex.data.db.main.tables.ValueState;
 import eki.ekilex.data.db.main.tables.ValueStateLabel;
 import eki.ekilex.data.db.main.tables.ViewWwClassifier;
-import eki.ekilex.data.db.main.tables.ViewWwCollocation;
+import eki.ekilex.data.db.main.tables.ViewWwCollocPosGroup;
 import eki.ekilex.data.db.main.tables.ViewWwDataset;
 import eki.ekilex.data.db.main.tables.ViewWwDatasetWordMenu;
 import eki.ekilex.data.db.main.tables.ViewWwForm;
@@ -744,9 +744,9 @@ public class Tables {
     public static final ViewWwClassifier VIEW_WW_CLASSIFIER = ViewWwClassifier.VIEW_WW_CLASSIFIER;
 
     /**
-     * The table <code>public.view_ww_collocation</code>.
+     * The table <code>public.view_ww_colloc_pos_group</code>.
      */
-    public static final ViewWwCollocation VIEW_WW_COLLOCATION = ViewWwCollocation.VIEW_WW_COLLOCATION;
+    public static final ViewWwCollocPosGroup VIEW_WW_COLLOC_POS_GROUP = ViewWwCollocPosGroup.VIEW_WW_COLLOC_POS_GROUP;
 
     /**
      * The table <code>public.view_ww_dataset</code>.

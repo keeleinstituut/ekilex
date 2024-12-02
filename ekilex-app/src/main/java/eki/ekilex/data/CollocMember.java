@@ -16,6 +16,10 @@ public class CollocMember extends AbstractDataObject {
 
 	private String wordValue;
 
+	private Integer homonymNr;
+
+	private String lang;
+
 	private Long formId;
 
 	private String formValue;
@@ -56,6 +60,22 @@ public class CollocMember extends AbstractDataObject {
 
 	public void setWordValue(String wordValue) {
 		this.wordValue = wordValue;
+	}
+
+	public Integer getHomonymNr() {
+		return homonymNr;
+	}
+
+	public void setHomonymNr(Integer homonymNr) {
+		this.homonymNr = homonymNr;
+	}
+
+	public String getLang() {
+		return lang;
+	}
+
+	public void setLang(String lang) {
+		this.lang = lang;
 	}
 
 	public Long getFormId() {

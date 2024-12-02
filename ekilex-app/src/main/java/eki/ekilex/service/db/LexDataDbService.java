@@ -221,6 +221,8 @@ public class LexDataDbService extends AbstractDataDbService {
 										DSL.key("lexemeId").value(ml.ID),
 										DSL.key("wordId").value(mw.ID),
 										DSL.key("wordValue").value(mw.VALUE),
+										DSL.key("homonymNr").value(mw.HOMONYM_NR),
+										DSL.key("lang").value(mw.LANG),
 										DSL.key("formId").value(mf.ID),
 										DSL.key("formValue").value(mf.VALUE),
 										DSL.key("morphCode").value(mf.MORPH_CODE),
@@ -300,7 +302,7 @@ public class LexDataDbService extends AbstractDataDbService {
 
 	}
 
-	public List<eki.ekilex.data.Collocation> getSecondaryCollocations(Long lexemeId) {
+	public List<eki.ekilex.data.Colloc> getSecondaryCollocations(Long lexemeId) {
 
 		CollocationMember cm1 = COLLOCATION_MEMBER.as("cm1");
 		CollocationMember cm2 = COLLOCATION_MEMBER.as("cm2");
@@ -362,6 +364,6 @@ public class LexDataDbService extends AbstractDataDbService {
 								.and(cm1.COLLOC_LEXEME_ID.eq(cl.ID))
 								.and(cl.WORD_ID.eq(cw.ID)))
 				.orderBy(cw.VALUE)
-				.fetchInto(eki.ekilex.data.Collocation.class);
+				.fetchInto(eki.ekilex.data.Colloc.class);
 	}
 }

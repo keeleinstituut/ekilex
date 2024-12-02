@@ -15,7 +15,6 @@ import org.springframework.stereotype.Component;
 import eki.common.constant.Complexity;
 import eki.common.constant.ContentKey;
 import eki.common.constant.DatasetType;
-import eki.wordweb.data.CollocationTuple;
 import eki.wordweb.data.Form;
 import eki.wordweb.data.LanguagesDatasets;
 import eki.wordweb.data.LexemeWord;
@@ -25,6 +24,7 @@ import eki.wordweb.data.Paradigm;
 import eki.wordweb.data.SearchContext;
 import eki.wordweb.data.SearchFilter;
 import eki.wordweb.data.Word;
+import eki.wordweb.data.WordCollocPosGroups;
 import eki.wordweb.data.WordData;
 import eki.wordweb.data.WordEtymTuple;
 import eki.wordweb.data.WordRelationsTuple;
@@ -103,9 +103,8 @@ public class UnifSearchService extends AbstractSearchService {
 
 		// lex conv
 		if (CollectionUtils.isNotEmpty(lexLexemes)) {
-			List<CollocationTuple> collocTuples = searchDbService.getCollocations(wordId);
-			compensateNullWords(wordId, collocTuples);
-			collocConversionUtil.compose(wordId, lexLexemes, collocTuples, searchContext, displayLang);
+			List<WordCollocPosGroups> wordCollocPosGroups = searchDbService.getWordCollocPosGroups(wordId);
+			collocConversionUtil.composeDisplay(wordId, lexLexemes, wordCollocPosGroups, searchContext, displayLang);
 			lexemeConversionUtil.flagEmptyLexemes(lexLexemes);
 			lexLexemes = lexLexemes.stream().filter(lexeme -> !lexeme.isEmptyLexeme()).collect(Collectors.toList());
 			lexemeConversionUtil.sortLexLexemes(lexLexemes);

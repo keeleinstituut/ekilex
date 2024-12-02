@@ -7,7 +7,7 @@ package eki.wordweb.data.db;
 import eki.wordweb.data.db.tables.LexicalDecisionData;
 import eki.wordweb.data.db.tables.LexicalDecisionResult;
 import eki.wordweb.data.db.tables.MviewWwClassifier;
-import eki.wordweb.data.db.tables.MviewWwCollocation;
+import eki.wordweb.data.db.tables.MviewWwCollocPosGroup;
 import eki.wordweb.data.db.tables.MviewWwCounts;
 import eki.wordweb.data.db.tables.MviewWwDataset;
 import eki.wordweb.data.db.tables.MviewWwDatasetWordMenu;
@@ -64,9 +64,9 @@ public class Public extends SchemaImpl {
     public final MviewWwClassifier MVIEW_WW_CLASSIFIER = MviewWwClassifier.MVIEW_WW_CLASSIFIER;
 
     /**
-     * The table <code>public.mview_ww_collocation</code>.
+     * The table <code>public.mview_ww_colloc_pos_group</code>.
      */
-    public final MviewWwCollocation MVIEW_WW_COLLOCATION = MviewWwCollocation.MVIEW_WW_COLLOCATION;
+    public final MviewWwCollocPosGroup MVIEW_WW_COLLOC_POS_GROUP = MviewWwCollocPosGroup.MVIEW_WW_COLLOC_POS_GROUP;
 
     /**
      * The table <code>public.mview_ww_counts</code>.
@@ -171,7 +171,7 @@ public class Public extends SchemaImpl {
             LexicalDecisionData.LEXICAL_DECISION_DATA,
             LexicalDecisionResult.LEXICAL_DECISION_RESULT,
             MviewWwClassifier.MVIEW_WW_CLASSIFIER,
-            MviewWwCollocation.MVIEW_WW_COLLOCATION,
+            MviewWwCollocPosGroup.MVIEW_WW_COLLOC_POS_GROUP,
             MviewWwCounts.MVIEW_WW_COUNTS,
             MviewWwDataset.MVIEW_WW_DATASET,
             MviewWwDatasetWordMenu.MVIEW_WW_DATASET_WORD_MENU,

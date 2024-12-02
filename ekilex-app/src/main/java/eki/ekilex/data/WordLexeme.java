@@ -87,7 +87,7 @@ public class WordLexeme extends AbstractCrudEntity implements LexemeLevel, Decor
 
 	private List<CollocPosGroup> primaryCollocations;
 
-	private List<Collocation> secondaryCollocations;
+	private List<Colloc> secondaryCollocations;
 
 	private List<SourceLink> sourceLinks;
 
@@ -432,11 +432,11 @@ public class WordLexeme extends AbstractCrudEntity implements LexemeLevel, Decor
 		this.primaryCollocations = primaryCollocations;
 	}
 
-	public List<Collocation> getSecondaryCollocations() {
+	public List<Colloc> getSecondaryCollocations() {
 		return secondaryCollocations;
 	}
 
-	public void setSecondaryCollocations(List<Collocation> secondaryCollocations) {
+	public void setSecondaryCollocations(List<Colloc> secondaryCollocations) {
 		this.secondaryCollocations = secondaryCollocations;
 	}
 

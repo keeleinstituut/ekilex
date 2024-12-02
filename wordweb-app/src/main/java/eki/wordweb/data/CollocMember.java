@@ -1,30 +1,34 @@
-package eki.wordweb.data.type;
+package eki.wordweb.data;
 
-import com.fasterxml.jackson.databind.PropertyNamingStrategies;
-import com.fasterxml.jackson.databind.annotation.JsonNaming;
+import java.math.BigDecimal;
 
 import eki.common.data.AbstractDataObject;
 
-@JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
-public class TypeCollocMember extends AbstractDataObject {
+public class CollocMember extends AbstractDataObject {
 
 	private static final long serialVersionUID = 1L;
+
+	private String conjunct;
 
 	private Long lexemeId;
 
 	private Long wordId;
 
-	private String word;
-
-	private String form;
+	private String wordValue;
 
 	private Integer homonymNr;
 
 	private String lang;
 
-	private String conjunct;
+	private Long formId;
 
-	private Float weight;
+	private String formValue;
+
+	private String morphCode;
+
+	private BigDecimal weight;
+
+	private Long memberOrder;
 
 	private boolean headword;
 
@@ -35,6 +39,14 @@ public class TypeCollocMember extends AbstractDataObject {
 	private boolean preConjunct;
 
 	private boolean postConjunct;
+
+	public String getConjunct() {
+		return conjunct;
+	}
+
+	public void setConjunct(String conjunct) {
+		this.conjunct = conjunct;
+	}
 
 	public Long getLexemeId() {
 		return lexemeId;
@@ -52,20 +64,12 @@ public class TypeCollocMember extends AbstractDataObject {
 		this.wordId = wordId;
 	}
 
-	public String getWord() {
-		return word;
+	public String getWordValue() {
+		return wordValue;
 	}
 
-	public void setWord(String word) {
-		this.word = word;
-	}
-
-	public String getForm() {
-		return form;
-	}
-
-	public void setForm(String form) {
-		this.form = form;
+	public void setWordValue(String wordValue) {
+		this.wordValue = wordValue;
 	}
 
 	public Integer getHomonymNr() {
@@ -84,20 +88,44 @@ public class TypeCollocMember extends AbstractDataObject {
 		this.lang = lang;
 	}
 
-	public String getConjunct() {
-		return conjunct;
+	public Long getFormId() {
+		return formId;
 	}
 
-	public void setConjunct(String conjunct) {
-		this.conjunct = conjunct;
+	public void setFormId(Long formId) {
+		this.formId = formId;
 	}
 
-	public Float getWeight() {
+	public String getFormValue() {
+		return formValue;
+	}
+
+	public void setFormValue(String formValue) {
+		this.formValue = formValue;
+	}
+
+	public String getMorphCode() {
+		return morphCode;
+	}
+
+	public void setMorphCode(String morphCode) {
+		this.morphCode = morphCode;
+	}
+
+	public BigDecimal getWeight() {
 		return weight;
 	}
 
-	public void setWeight(Float weight) {
+	public void setWeight(BigDecimal weight) {
 		this.weight = weight;
+	}
+
+	public Long getMemberOrder() {
+		return memberOrder;
+	}
+
+	public void setMemberOrder(Long memberOrder) {
+		this.memberOrder = memberOrder;
 	}
 
 	public boolean isHeadword() {

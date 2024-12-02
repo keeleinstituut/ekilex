@@ -4,7 +4,8 @@ drop view if exists view_ww_word;
 drop view if exists view_ww_form;
 drop view if exists view_ww_meaning;
 drop view if exists view_ww_lexeme;
-drop view if exists view_ww_collocation;
+drop view if exists view_ww_collocation; -- to be removed later
+drop view if exists view_ww_colloc_pos_group;
 drop view if exists view_ww_word_etymology;
 drop view if exists view_ww_word_relation;
 drop view if exists view_ww_lexeme_relation;
@@ -1513,77 +1514,129 @@ and   l.is_word = true
 and   ds.is_public = true
 order by l.id;
 
-create view view_ww_collocation
+create view view_ww_colloc_pos_group
 as
-select l1.id as lexeme_id,
-       l1.word_id,
-       pgr1.id as pos_group_id,
-       pgr1.pos_group_code,
-       pgr1.order_by as pos_group_order_by,
-       rgr1.id as rel_group_id,
-       rgr1.name as rel_group_name,
-       rgr1.order_by as rel_group_order_by,
-       lc1.group_order as colloc_group_order,
-       c.id as colloc_id,
-       c.value as colloc_value,
-       c.definition as colloc_definition,
-       c.usages as colloc_usages,
-       json_agg(row (
-             lw2.lexeme_id,
-             lw2.word_id,
-             lw2.word,
-             lc2.member_form,
-             lw2.homonym_nr,
-             lw2.lang,
-             lc2.conjunct,
-             lc2.weight
-             )::type_colloc_member
-             order by
-             lc2.member_order
-       ) as colloc_members,
-       c.complexity
-from collocation as c
-  inner join lex_colloc as lc1
-          on lc1.collocation_id = c.id
-  inner join lex_colloc as lc2
-          on lc2.collocation_id = c.id
-  inner join lexeme as l1
-          on l1.id = lc1.lexeme_id
-         and l1.is_public = true
-         and l1.is_word = true
-  inner join dataset l1ds
-          on l1ds.code = l1.dataset_code
-         and l1ds.is_public = true
-  inner join (select distinct l2.id lexeme_id,
-                     l2.word_id,
-                     w2.value word,
-                     w2.homonym_nr,
-                     w2.lang
-              from lexeme as l2,
-                   word as w2,
-                   dataset as l2ds
-              where l2.is_public = true
-              and   l2.is_word = true
-              and   l2ds.code = l2.dataset_code
-              and   l2ds.is_public = true
-              and   l2.word_id = w2.id
-              and   w2.is_public = true) lw2
-          on lw2.lexeme_id = lc2.lexeme_id
-  inner join lex_colloc_rel_group as rgr1
-          on lc1.rel_group_id = rgr1.id
-  inner join lex_colloc_pos_group as pgr1
-          on pgr1.id = rgr1.pos_group_id
-group by l1.id,
-         c.id,
-         pgr1.id,
-         rgr1.id,
-         lc1.id
-order by l1.level1,
-         l1.level2,
-         pgr1.order_by,
-         rgr1.order_by,
-         lc1.group_order,
-         c.id;
+select
+	l.id lexeme_id,
+	w.id word_id,
+	(select
+		json_agg(
+			json_build_object(
+				'posGroupCode', pg.code,
+				'relGroups', (
+					select
+						json_agg(
+							json_build_object(
+								'relGroupCode', rg.code,
+								'collocations', (
+									select
+										json_agg(
+											json_build_object(
+												'lexemeId', cl.id,
+												'wordId', cw.id,
+												'wordValue', cw.value,
+												'usages', (
+													select
+														json_agg(
+															json_build_object(
+																'id', u.id,
+																'value', u.value,
+																'valuePrese', u.value_prese,
+																'lang', u.lang,
+																'complexity', u.complexity,
+																'orderBy', u.order_by
+															)
+															order by u.order_by
+														)
+													from
+														"usage" u 
+													where
+														u.lexeme_id = cl.id
+												),
+												'members', (
+													select
+														json_agg(
+															json_build_object(
+																'conjunct', cm2.conjunct,
+																'lexemeId', ml.id,
+																'wordId', mw.id,
+																'wordValue', mw.value,
+																'homonymNr', mw.homonym_nr,
+																'lang', mw.lang,
+																'formId', mf.id,
+																'formValue', mf.value,
+																'morphCode', mf.morph_code,
+																'weight', cm2.weight,
+																'memberOrder', cm2.member_order
+															)
+															order by cm2.member_order
+														)
+													from
+														form mf,
+														word mw,
+														lexeme ml,
+														collocation_member cm2
+													where
+														cm2.colloc_lexeme_id = cl.id
+														and cm2.member_lexeme_id = ml.id
+														and ml.word_id = mw.id
+														and cm2.member_form_id = mf.id
+												),
+												'groupOrder', cm1.group_order
+											)
+											order by cm1.group_order
+										)
+									from
+										word cw,
+										lexeme cl,
+										collocation_member cm1
+									where
+										cm1.member_lexeme_id = l.id
+										and cm1.pos_group_code = pg.code
+										and cm1.rel_group_code = rg.code
+										and cm1.colloc_lexeme_id = cl.id
+										and cl.word_id = cw.id
+								)
+							)
+							order by rg.order_by
+						)
+					from
+						rel_group rg 
+					where
+						exists (
+							select
+								cm.id
+							from
+								collocation_member cm
+							where
+								cm.member_lexeme_id = l.id
+								and cm.pos_group_code = pg.code
+								and cm.rel_group_code = rg.code
+						)
+					)
+				)
+				order by pg.order_by
+			)
+		from pos_group pg
+	) pos_groups
+from 
+	word w,
+	lexeme l
+where
+	l.word_id = w.id
+	and exists (
+		select 
+			cm.id
+		from
+			collocation_member cm
+		where 
+			cm.member_lexeme_id = l.id
+			and cm.pos_group_code is not null
+	)
+order by
+	w.id,
+	l.id
+;
 
 create view view_ww_word_etymology
 as
@@ -2325,6 +2378,22 @@ create view view_ww_classifier
 	from 
 		pos_group c,
 		pos_group_label cl
+	where 
+		c.code = cl.code
+		and cl.type = 'wordweb'
+	order by c.order_by, cl.lang, cl.type)
+	union all
+	(select
+		'REL_GROUP' as name,
+		null as origin,
+		c.code,
+		cl.value,
+		cl.lang,
+		cl.type,
+		c.order_by
+	from 
+		rel_group c,
+		rel_group_label cl
 	where 
 		c.code = cl.code
 		and cl.type = 'wordweb'

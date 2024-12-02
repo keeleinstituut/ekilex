@@ -1,10 +1,10 @@
-package eki.ekilex.data;
+package eki.wordweb.data;
 
 import java.util.List;
 
 import eki.common.data.AbstractDataObject;
 
-public class Collocation extends AbstractDataObject {
+public class Colloc extends AbstractDataObject {
 
 	private static final long serialVersionUID = 1L;
 

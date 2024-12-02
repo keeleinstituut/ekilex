@@ -677,6 +677,7 @@ public class CompositionDbService extends AbstractDataDbService implements Globa
 		});
 	}
 
+	// TODO outdated
 	public void cloneLexemeCollocations(Long lexemeId, Long clonedLexemeId) {
 
 		Map<Long, Long> collocIdMap = new HashMap<>();
@@ -725,6 +726,7 @@ public class CompositionDbService extends AbstractDataDbService implements Globa
 		}
 	}
 
+	// TODO outdated
 	private List<LexCollocationTuple> getLexCollocationTuples(Long lexemeId) {
 
 		LexColloc lc = LEX_COLLOC.as("lc");
@@ -752,6 +754,7 @@ public class CompositionDbService extends AbstractDataDbService implements Globa
 				.fetchInto(LexCollocationTuple.class);
 	}
 
+	// TODO outdated
 	private List<LexCollocationGroupTuple> getLexCollocationGroupTuples(Long lexemeId) {
 
 		LexCollocRelGroup lcrg = LEX_COLLOC_REL_GROUP.as("lcrg");
@@ -774,6 +777,7 @@ public class CompositionDbService extends AbstractDataDbService implements Globa
 				.fetchInto(LexCollocationGroupTuple.class);
 	}
 
+	// TODO outdated
 	private Long createCollocation(LexCollocationTuple lexCollocationTuple) {
 
 		String value = lexCollocationTuple.getCollocValue();
@@ -797,6 +801,7 @@ public class CompositionDbService extends AbstractDataDbService implements Globa
 				.getId();
 	}
 
+	// TODO outdated
 	private Long createPosGroup(LexCollocationGroupTuple lexCollocationGroupTuple, Long lexemeId) {
 
 		String posGroupCode = lexCollocationGroupTuple.getPosGroupCode();
@@ -813,6 +818,7 @@ public class CompositionDbService extends AbstractDataDbService implements Globa
 				.getId();
 	}
 
+	// TODO outdated
 	private Long createRelGroup(LexCollocationGroupTuple lexCollocationGroupTuple, Long posGroupId) {
 
 		String name = lexCollocationGroupTuple.getRelGroupName();
@@ -833,6 +839,7 @@ public class CompositionDbService extends AbstractDataDbService implements Globa
 				.getId();
 	}
 
+	// TODO outdated
 	private Long createLexColloc(LexCollocationTuple lexCollocationTuple, Long lexemeId, Long relGroupId, Long collocationId) {
 
 		String memberForm = lexCollocationTuple.getMemberForm();

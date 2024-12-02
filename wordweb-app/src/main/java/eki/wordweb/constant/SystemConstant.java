@@ -1,5 +1,7 @@
 package eki.wordweb.constant;
 
+import java.math.BigDecimal;
+
 import eki.common.constant.GlobalConstant;
 
 public interface SystemConstant {
@@ -55,6 +57,8 @@ public interface SystemConstant {
 	String CACHE_KEY_CORPUS = "corpus";
 
 	Float COLLOC_MEMBER_CONTEXT_WEIGHT = 0.5F;
+
+	BigDecimal COLLOC_MEMBER_CONTEXT_WEIGHT_TRESHOLD = new BigDecimal(0.5F);
 
 	String DEFAULT_CLASSIF_VALUE_LANG = "est";
 

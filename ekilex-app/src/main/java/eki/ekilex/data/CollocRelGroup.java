@@ -12,7 +12,7 @@ public class CollocRelGroup extends AbstractDataObject {
 
 	private String relGroupValue;
 
-	private List<Collocation> collocations;
+	private List<Colloc> collocations;
 
 	public String getRelGroupCode() {
 		return relGroupCode;
@@ -30,11 +30,11 @@ public class CollocRelGroup extends AbstractDataObject {
 		this.relGroupValue = relGroupValue;
 	}
 
-	public List<Collocation> getCollocations() {
+	public List<Colloc> getCollocations() {
 		return collocations;
 	}
 
-	public void setCollocations(List<Collocation> collocations) {
+	public void setCollocations(List<Colloc> collocations) {
 		this.collocations = collocations;
 	}
 

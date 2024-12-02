@@ -1,11 +1,11 @@
 package eki.wordweb.service.util;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.apache.commons.collections4.CollectionUtils;
@@ -14,16 +14,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.thymeleaf.util.MapUtils;
 
-import eki.common.constant.Complexity;
 import eki.wordweb.constant.CollocMemberGroup;
-import eki.wordweb.data.Collocation;
-import eki.wordweb.data.CollocationPosGroup;
-import eki.wordweb.data.CollocationRelGroup;
-import eki.wordweb.data.CollocationTuple;
+import eki.wordweb.data.Colloc;
 import eki.wordweb.data.DisplayColloc;
+import eki.wordweb.data.CollocMember;
+import eki.wordweb.data.CollocPosGroup;
+import eki.wordweb.data.CollocRelGroup;
 import eki.wordweb.data.LexemeWord;
 import eki.wordweb.data.SearchContext;
-import eki.wordweb.data.type.TypeCollocMember;
+import eki.wordweb.data.Usage;
+import eki.wordweb.data.WordCollocPosGroups;
 
 @Component
 public class CollocConversionUtil extends AbstractConversionUtil {
@@ -31,162 +31,87 @@ public class CollocConversionUtil extends AbstractConversionUtil {
 	@Autowired
 	private ClassifierUtil classifierUtil;
 
-	public void compose(Long wordId, List<LexemeWord> lexemeWords, List<CollocationTuple> collocTuples, SearchContext searchContext, String displayLang) {
+	public void composeDisplay(Long wordId, List<LexemeWord> lexemeWords, List<WordCollocPosGroups> wordCollocPosGroups, SearchContext searchContext, String displayLang) {
 
 		if (CollectionUtils.isEmpty(lexemeWords)) {
 			return;
 		}
-		if (CollectionUtils.isEmpty(collocTuples)) {
+		if (CollectionUtils.isEmpty(wordCollocPosGroups)) {
 			return;
 		}
 
-		Map<Long, LexemeWord> lexemeMap = new HashMap<>();
+		Map<Long, WordCollocPosGroups> lexemeCollocPosGroupsMap = wordCollocPosGroups.stream()
+				.collect(Collectors.toMap(WordCollocPosGroups::getLexemeId, row -> row));
+
 		for (LexemeWord lexemeWord : lexemeWords) {
+
 			Long lexemeId = lexemeWord.getLexemeId();
-			if (lexemeMap.containsKey(lexemeId)) {
+			WordCollocPosGroups lexemeCollocPosGroups = lexemeCollocPosGroupsMap.get(lexemeId);
+			if (lexemeCollocPosGroups == null) {
 				continue;
 			}
-			lexemeMap.put(lexemeId, lexemeWord);
-		}
-
-		Complexity lexComplexity = searchContext.getLexComplexity();
-		collocTuples = filter(collocTuples, lexComplexity);
-		collocTuples = filterCollocsByMostMembers(collocTuples);
-
-		Map<Long, CollocationPosGroup> collocPosGroupMap = new HashMap<>();
-		Map<Long, CollocationRelGroup> collocRelGroupMap = new HashMap<>();
-
-		for (CollocationTuple tuple : collocTuples) {
-
-			Long lexemeId = tuple.getLexemeId();
-			LexemeWord lexemeWord = lexemeMap.get(lexemeId);
-			if (lexemeWord == null) {
-				continue;
-			}
-
-			CollocationPosGroup collocPosGroup = populateCollocPosGroup(lexemeWord, tuple, collocPosGroupMap, displayLang);
-			CollocationRelGroup collocRelGroup = populateCollocRelGroup(collocPosGroup, tuple, collocRelGroupMap);
-			Collocation collocation = populateCollocation(tuple);
-
-			if (collocPosGroup != null) {
-				collocRelGroup.getCollocations().add(collocation);
-			}
-		}
-
-		for (LexemeWord lexemeWord : lexemeWords) {
-			if (CollectionUtils.isEmpty(lexemeWord.getCollocationPosGroups())) {
-				continue;
-			}
-			divideCollocationRelGroupsByCollocMemberForms(wordId, lexemeWord);
-			transformCollocationPosGroupsForDisplay(wordId, lexemeWord);
+			List<CollocPosGroup> collocPosGroups = lexemeCollocPosGroups.getPosGroups();
+			collocPosGroups = collocPosGroups.stream()
+					.filter(collocPosGroup -> CollectionUtils.isNotEmpty(collocPosGroup.getRelGroups()))
+					.collect(Collectors.toList());
+			lexemeWord.setCollocPosGroups(collocPosGroups);
+			classifierUtil.applyClassifiers(collocPosGroups, displayLang);
+			divideCollocRelGroupsByCollocMemberForms(wordId, lexemeWord);
+			transformCollocPosGroupsForDisplay(wordId, lexemeWord);
 		}
 	}
 
-	private List<CollocationTuple> filterCollocsByMostMembers(List<CollocationTuple> collocTuples) {
-		Map<Long, Map<String, Optional<Integer>>> collocRelGroupCollocMostMemSizeMap = collocTuples.stream()
-				.collect(Collectors
-						.groupingBy(CollocationTuple::getRelGroupId, Collectors
-								.groupingBy(CollocationTuple::getCollocValue, Collectors
-										.mapping(tuple -> tuple.getCollocMembers().size(), Collectors.maxBy(Integer::compare)))));
+	private void divideCollocRelGroupsByCollocMemberForms(Long wordId, LexemeWord lexemeWord) {
 
-		collocTuples = collocTuples.stream()
-				.filter(tuple -> {
-					Map<String, Optional<Integer>> collocRelGroupMap = collocRelGroupCollocMostMemSizeMap.get(tuple.getRelGroupId());
-					Integer collocMostMemSize = collocRelGroupMap.get(tuple.getCollocValue()).get();
-					boolean isCollocMostMemSize = collocMostMemSize == tuple.getCollocMembers().size();
-					return isCollocMostMemSize;
-				}).collect(Collectors.toList());
-		return collocTuples;
-	}
+		List<CollocPosGroup> collocPosGroups = lexemeWord.getCollocPosGroups();
+		for (CollocPosGroup collocPosGroup : collocPosGroups) {
 
-	public CollocationPosGroup populateCollocPosGroup(LexemeWord lexemeWord, CollocationTuple tuple, Map<Long, CollocationPosGroup> collocPosGroupMap, String displayLang) {
-		CollocationPosGroup collocPosGroup = null;
-		Long posGroupId = tuple.getPosGroupId();
-		if (posGroupId != null) {
-			collocPosGroup = collocPosGroupMap.get(posGroupId);
-			if (collocPosGroup == null) {
-				collocPosGroup = new CollocationPosGroup();
-				collocPosGroup.setPosGroupId(posGroupId);
-				collocPosGroup.setRelationGroups(new ArrayList<>());
-				classifierUtil.applyClassifiers(tuple, collocPosGroup, displayLang);
-				collocPosGroupMap.put(posGroupId, collocPosGroup);
-				lexemeWord.getCollocationPosGroups().add(collocPosGroup);
-			}
-		}
-		return collocPosGroup;
-	}
+			List<CollocRelGroup> collocRelGroups = collocPosGroup.getRelGroups();
+			List<CollocRelGroup> dividedCollocRelGroups = new ArrayList<>();
 
-	public CollocationRelGroup populateCollocRelGroup(CollocationPosGroup collocPosGroup, CollocationTuple tuple, Map<Long, CollocationRelGroup> collocRelGroupMap) {
-		CollocationRelGroup collocRelGroup = null;
-		Long relGroupId = tuple.getRelGroupId();
-		if (relGroupId != null) {
-			collocRelGroup = collocRelGroupMap.get(relGroupId);
-			if (collocRelGroup == null) {
-				collocRelGroup = new CollocationRelGroup();
-				collocRelGroup.setRelGroupId(relGroupId);
-				collocRelGroup.setName(tuple.getRelGroupName());
-				collocRelGroup.setCollocations(new ArrayList<>());
-				collocRelGroupMap.put(relGroupId, collocRelGroup);
-				collocPosGroup.getRelationGroups().add(collocRelGroup);
-			}
-		}
-		return collocRelGroup;
-	}
+			for (CollocRelGroup collocRelGroup : collocRelGroups) {
 
-	public Collocation populateCollocation(CollocationTuple tuple) {
-		Collocation collocation = new Collocation();
-		collocation.setValue(tuple.getCollocValue());
-		collocation.setDefinition(tuple.getCollocDefinition());
-		collocation.setCollocUsages(tuple.getCollocUsages());
-		collocation.setCollocMembers(tuple.getCollocMembers());
-		return collocation;
-	}
-
-	public void divideCollocationRelGroupsByCollocMemberForms(Long wordId, LexemeWord lexemeWord) {
-
-		List<CollocationPosGroup> collocationPosGroups = lexemeWord.getCollocationPosGroups();
-		for (CollocationPosGroup collocPosGroup : collocationPosGroups) {
-			List<CollocationRelGroup> collocRelGroups = collocPosGroup.getRelationGroups();
-			List<CollocationRelGroup> dividedCollocRelGroups = new ArrayList<>();
-			for (CollocationRelGroup collocRelGroup : collocRelGroups) {
-				List<Collocation> collocs = collocRelGroup.getCollocations();
-				Map<String, List<Collocation>> collocRelGroupDivisionMap = collocs.stream()
-						.collect(Collectors.groupingBy(col -> col.getCollocMembers().stream()
+				List<Colloc> collocs = collocRelGroup.getCollocations();
+				Map<String, List<Colloc>> collocRelGroupDivisionMap = collocs.stream()
+						.collect(Collectors.groupingBy(col -> col.getMembers().stream()
 								.filter(colm -> colm.getWordId().equals(wordId))
-								.map(TypeCollocMember::getForm).findFirst().orElse("-")));
+								.map(CollocMember::getFormValue)
+								.findFirst()
+								.orElse("-")));
+
 				if (MapUtils.size(collocRelGroupDivisionMap) == 1) {
 					dividedCollocRelGroups.add(collocRelGroup);
 				} else {
-					for (List<Collocation> dividedCollocs : collocRelGroupDivisionMap.values()) {
-						CollocationRelGroup dividedCollocRelGroup = new CollocationRelGroup();
-						dividedCollocRelGroup.setRelGroupId(collocRelGroup.getRelGroupId());
-						dividedCollocRelGroup.setName(collocRelGroup.getName());
+					for (List<Colloc> dividedCollocs : collocRelGroupDivisionMap.values()) {
+
+						CollocRelGroup dividedCollocRelGroup = new CollocRelGroup();
+						dividedCollocRelGroup.setRelGroupCode(collocRelGroup.getRelGroupCode());
 						dividedCollocRelGroup.setCollocations(dividedCollocs);
 						dividedCollocRelGroups.add(dividedCollocRelGroup);
 					}
 				}
 			}
-			collocPosGroup.setRelationGroups(dividedCollocRelGroups);
+			collocPosGroup.setRelGroups(dividedCollocRelGroups);
 		}
 	}
 
-	public void transformCollocationPosGroupsForDisplay(Long wordId, LexemeWord lexemeWord) {
+	private void transformCollocPosGroupsForDisplay(Long wordId, LexemeWord lexemeWord) {
 
-		List<Collocation> collocations;
 		List<DisplayColloc> displayCollocs;
 		List<DisplayColloc> limitedPrimaryDisplayCollocs = new ArrayList<>();
-		List<CollocationPosGroup> collocationPosGroups = lexemeWord.getCollocationPosGroups();
+		List<CollocPosGroup> collocPosGroups = lexemeWord.getCollocPosGroups();
 		List<String> existingCollocationValues = new ArrayList<>();
-		for (CollocationPosGroup collocationPosGroup : collocationPosGroups) {
-			List<CollocationRelGroup> collocationRelGroups = collocationPosGroup.getRelationGroups();
-			for (CollocationRelGroup collocationRelGroup : collocationRelGroups) {
+		List<String> allUsageValues;
+		for (CollocPosGroup collocationPosGroup : collocPosGroups) {
+
+			List<CollocRelGroup> collocationRelGroups = collocationPosGroup.getRelGroups();
+			for (CollocRelGroup collocationRelGroup : collocationRelGroups) {
+
 				displayCollocs = new ArrayList<>();
+				allUsageValues = new ArrayList<>();
 				collocationRelGroup.setDisplayCollocs(displayCollocs);
-				List<String> allUsages = new ArrayList<>();
-				collocationRelGroup.setAllUsages(allUsages);
-				collocations = collocationRelGroup.getCollocations();
-				collocationRelGroup.setCollocations(collocations);
-				transformCollocationsForDisplay(wordId, collocations, displayCollocs, allUsages, existingCollocationValues);
+				collocationRelGroup.setAllUsageValues(allUsageValues);
+				transformCollocsForDisplay(wordId, collocationRelGroup, existingCollocationValues);
 				if (limitedPrimaryDisplayCollocs.size() < TYPICAL_COLLECTIONS_DISPLAY_LIMIT) {
 					limitedPrimaryDisplayCollocs.addAll(displayCollocs);
 				}
@@ -199,30 +124,41 @@ public class CollocConversionUtil extends AbstractConversionUtil {
 		lexemeWord.setLimitedPrimaryDisplayCollocs(limitedPrimaryDisplayCollocs);
 	}
 
-	private void transformCollocationsForDisplay(
+	private void transformCollocsForDisplay(
 			Long wordId,
-			List<Collocation> collocations,
-			List<DisplayColloc> displayCollocs,
-			List<String> allUsages,
-			List<String> existingCollocationValues) {
+			CollocRelGroup collocRelGroup,
+			List<String> existingCollocValues) {
 
-		List<TypeCollocMember> collocMembers;
+		List<Colloc> collocations = collocRelGroup.getCollocations();
+		List<DisplayColloc> displayCollocs = collocRelGroup.getDisplayCollocs();
+		List<String> allUsageValues = collocRelGroup.getAllUsageValues();
+
+		List<Usage> usages;
+		List<CollocMember> collocMembers;
 		List<CollocMemberGroup> existingMemberGroupOrder;
-		List<String> collocMemberForms;
+		List<String> collocMemberFormValues;
 		DisplayColloc displayColloc;
 		Map<String, DisplayColloc> collocMemberGroupMap = new HashMap<>();
 
-		for (Collocation colloc : collocations) {
-			String collocValue = colloc.getValue();
-			if (existingCollocationValues.contains(collocValue)) {
+		for (Colloc colloc : collocations) {
+
+			String collocValue = colloc.getWordValue();
+			usages = colloc.getUsages();
+			collocMembers = colloc.getMembers();
+
+			if (existingCollocValues.contains(collocValue)) {
 				continue;
 			}
-			existingCollocationValues.add(collocValue);
-			if ((allUsages != null) && CollectionUtils.isNotEmpty(colloc.getCollocUsages())) {
-				colloc.getCollocUsages().removeAll(allUsages);
-				allUsages.addAll(colloc.getCollocUsages());
+			existingCollocValues.add(collocValue);
+
+			if (CollectionUtils.isNotEmpty(usages)) {
+				List<String> usageValues = usages.stream()
+						.map(Usage::getValue)
+						.collect(Collectors.toList());
+				usageValues.removeAll(allUsageValues);
+				allUsageValues.addAll(usageValues);
 			}
-			collocMembers = colloc.getCollocMembers();
+
 			String collocMemberGroupKey = composeCollocMemberGroupKey(collocMembers);
 			displayColloc = collocMemberGroupMap.get(collocMemberGroupKey);
 			if (displayColloc == null) {
@@ -230,20 +166,22 @@ public class CollocConversionUtil extends AbstractConversionUtil {
 				displayColloc.setMemberGroupOrder(new ArrayList<>());
 				displayColloc.setPrimaryMembers(new ArrayList<>());
 				displayColloc.setContextMembers(new ArrayList<>());
-				displayColloc.setCollocMemberForms(new ArrayList<>());
-				collocMemberGroupMap.put(collocMemberGroupKey, displayColloc);
+				displayColloc.setCollocMemberFormValues(new ArrayList<>());
 				displayCollocs.add(displayColloc);
+				collocMemberGroupMap.put(collocMemberGroupKey, displayColloc);
 			}
 			CollocMemberGroup recentCollocMemberGroup;
 			CollocMemberGroup currentCollocMemberGroup;
 			boolean headwordOrPrimaryMemberOccurred = false;
 			List<CollocMemberGroup> currentMemberGroupOrder = new ArrayList<>();
-			for (TypeCollocMember collocMember : collocMembers) {
+
+			for (CollocMember collocMember : collocMembers) {
+
 				String conjunct = collocMember.getConjunct();
-				Float weight = collocMember.getWeight();
+				BigDecimal weight = collocMember.getWeight();
 				boolean isHeadword = collocMember.getWordId().equals(wordId);
-				boolean isPrimary = !isHeadword && weight.compareTo(COLLOC_MEMBER_CONTEXT_WEIGHT) > 0;
-				boolean isContext = weight.compareTo(COLLOC_MEMBER_CONTEXT_WEIGHT) == 0;
+				boolean isPrimary = !isHeadword && weight.compareTo(COLLOC_MEMBER_CONTEXT_WEIGHT_TRESHOLD) > 0;
+				boolean isContext = weight.compareTo(COLLOC_MEMBER_CONTEXT_WEIGHT_TRESHOLD) == 0;
 				if (StringUtils.isNotBlank(conjunct)) {
 					if (headwordOrPrimaryMemberOccurred) {
 						collocMember.setPreConjunct(true);
@@ -261,7 +199,7 @@ public class CollocConversionUtil extends AbstractConversionUtil {
 				} else if (isContext) {
 					currentCollocMemberGroup = CollocMemberGroup.CONTEXT;
 				}
-				collocMemberForms = displayColloc.getCollocMemberForms();
+				collocMemberFormValues = displayColloc.getCollocMemberFormValues();
 				if (CollectionUtils.isEmpty(currentMemberGroupOrder)) {
 					recentCollocMemberGroup = currentCollocMemberGroup;
 					currentMemberGroupOrder.add(currentCollocMemberGroup);
@@ -276,17 +214,17 @@ public class CollocConversionUtil extends AbstractConversionUtil {
 				if (CollocMemberGroup.HEADWORD.equals(currentCollocMemberGroup)) {
 					if (displayColloc.getHeadwordMember() == null) {
 						displayColloc.setHeadwordMember(collocMember);
-						collocMemberForms.add(collocMember.getForm());
+						collocMemberFormValues.add(collocMember.getFormValue());
 					}
 				} else if (CollocMemberGroup.PRIMARY.equals(currentCollocMemberGroup)) {
-					if (!collocMemberForms.contains(collocMember.getForm())) {
+					if (!collocMemberFormValues.contains(collocMember.getFormValue())) {
 						displayColloc.getPrimaryMembers().add(collocMember);
-						collocMemberForms.add(collocMember.getForm());
+						collocMemberFormValues.add(collocMember.getFormValue());
 					}
 				} else if (CollocMemberGroup.CONTEXT.equals(currentCollocMemberGroup)) {
-					if (!collocMemberForms.contains(collocMember.getForm())) {
+					if (!collocMemberFormValues.contains(collocMember.getFormValue())) {
 						displayColloc.getContextMembers().add(collocMember);
-						collocMemberForms.add(collocMember.getForm());
+						collocMemberFormValues.add(collocMember.getFormValue());
 					}
 				}
 			}
@@ -302,19 +240,20 @@ public class CollocConversionUtil extends AbstractConversionUtil {
 		}
 	}
 
-	private String composeCollocMemberGroupKey(List<TypeCollocMember> collocMembers) {
+	private String composeCollocMemberGroupKey(List<CollocMember> collocMembers) {
 		List<String> headwordAndPrimaryMemberForms = collocMembers.stream()
-				.filter(collocMember -> collocMember.getWeight().compareTo(COLLOC_MEMBER_CONTEXT_WEIGHT) > 0)
+				.filter(collocMember -> collocMember.getWeight().compareTo(COLLOC_MEMBER_CONTEXT_WEIGHT_TRESHOLD) > 0)
 				.map(collocMember -> {
 					String memberKey = "";
 					if (StringUtils.isNotBlank(collocMember.getConjunct())) {
 						memberKey = collocMember.getConjunct() + "|";
 					}
-					memberKey += collocMember.getForm();
+					memberKey += collocMember.getFormValue();
 					return memberKey;
 				})
 				.collect(Collectors.toList());
 		String collocMemberGroupKey = StringUtils.join(headwordAndPrimaryMemberForms, '-');
 		return collocMemberGroupKey;
 	}
+
 }

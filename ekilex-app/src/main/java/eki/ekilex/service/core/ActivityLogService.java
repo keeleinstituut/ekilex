@@ -33,7 +33,7 @@ import eki.ekilex.data.ActivityLogData;
 import eki.ekilex.data.ActivityLogOwnerEntityDescr;
 import eki.ekilex.data.Classifier;
 import eki.ekilex.data.CollocPosGroup;
-import eki.ekilex.data.Collocation;
+import eki.ekilex.data.Colloc;
 import eki.ekilex.data.DatasetPermission;
 import eki.ekilex.data.Definition;
 import eki.ekilex.data.DefinitionLangGroup;
@@ -574,7 +574,7 @@ public class ActivityLogService implements SystemConstant, GlobalConstant, Freef
 		List<LexemeRelation> lexemeRelations = commonDataDbService.getLexemeRelations(lexemeId, CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
 		List<SourceLink> lexemeSourceLinks = commonDataDbService.getLexemeSourceLinks(lexemeId);
 		List<CollocPosGroup> primaryCollocations = lexDataDbService.getPrimaryCollocations(lexemeId, CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
-		List<Collocation> secondaryCollocations = lexDataDbService.getSecondaryCollocations(lexemeId);
+		List<Colloc> secondaryCollocations = lexDataDbService.getSecondaryCollocations(lexemeId);
 		boolean isCollocationsExist = lexDataDbService.isCollocationsExist(lexemeId);
 
 		lexeme.setMeaningWords(meaningWords);
