@@ -61,7 +61,7 @@
         <a href="#word-etymology-results" class="sticky-scroll-panel__tag" th:text="#{label.word.etymology}">Päritolu</a>
       </div>
     </div>
-    <main id="mainContentArea" role="main" class="content-panel px-3 loading">
+    <main id="mainContentArea" role="main" class="content-panel loading">
       <div th:if="${wordsData.resultsExist}" class="loading-indicator">
         <div class="spinner-border text-primary " role="status">
           <span class="sr-only">Loading...</span>
@@ -120,15 +120,17 @@
         </th:block>
       </div>
     </main>
-    <div class="row word-details" th:fragment="worddetails" th:if="${wordData.word != null}">
+    <div th:fragment="worddetails" th:if="${wordData.word != null}">
       <input id="selected-word-homonym-nr" type="hidden" th:value="${wordData.word.homonymNr}">
       <input id="selected-word-lang" type="hidden" th:value="${wordData.word.lang}">
-      <div class="col-12 pt-2 ml-2" th:unless="${wordData.relevantDataExists}">
-        <div class="row">
-          <h5 th:text="#{label.lexeme.not.found}">Soovitud keeltes tulemusi ei leidu</h5>
+      <div class="py-2" th:text="#{label.lexeme.not.found}" th:unless="${wordData.relevantDataExists}">Soovitud keeltes tulemusi ei leidu</div>
+      <div class="word-results">
+        <div>
+          <th:block th:replace="common-search :: word-data"></th:block>
+
         </div>
       </div>
-      <div class="col-12 d-md-block d-md-block d-flex flex-column" th:if="${wordData.relevantDataExists}">
+      <!-- <div class="col-12 d-md-block d-md-block d-flex flex-column" th:if="${wordData.relevantDataExists}">
         <div class="row h-100 flex-grow-1 flex-shrink-1">
           <div class="col-md-7 col-lg-8 main-data">
             <div class="row">
@@ -166,7 +168,7 @@
                     </th:block>
                   </div>
                 </div>
-                <!-- /Removed termsearch -->
+                /Removed termsearch
                 <th:block th:if="${not #lists.isEmpty(wordData.limTermLexemes)}">
                   <section class="level-3-panel meaning-panel d-block" th:each="lexeme : ${wordData.limTermLexemes}">
                     <div th:replace="term-details :: meaning-data"></div>
@@ -196,7 +198,7 @@
             <th:block th:replace="common-search-sidebar :: od-word-recommendations"></th:block>
           </div>
         </div>
-      </div>
+      </div> -->
       <script th:inline="javascript">
   		var currentWord = /*[[${wordData.word.word}]]*/'';
   		var currentWordId = /*[[${wordData.word.wordId}]]*/'';

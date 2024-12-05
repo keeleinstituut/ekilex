@@ -11,6 +11,8 @@
   --color-gray-1000: #0e1013;
   --color-light-gray: #C4D2DD;
   --color-bluish-gray: #E4ECEF;
+  --color-grayish-white: #FAFAFA;
+  --color-dark-gray: #98A7B4;
   --color-white: #fff;
   --color-blue-100: #a0dcf8;
   --color-blue-200: #5aabe0;
@@ -16869,10 +16871,13 @@ body.hidden-scroll {
 }
 
 .btn-speaker {
-  padding: 0 5px;
+  padding: 0;
   line-height: 1.2;
-  color: #8a98a5;
+  color: var(--color-dark-blue);
   background: transparent;
+  margin-right: 8px;
+  width: 24px;
+  height: 24px;
 }
 
 .btn-speaker .icon {
@@ -17157,19 +17162,7 @@ body {
 
 @media (min-width: 768px) {
   .content-panel {
-    background-color: #fff;
-    box-shadow: 0 4px 12px -4px rgba(0, 0, 0, 0.25);
     border-radius: 0.6875rem;
-  }
-}
-
-.content-panel .word-details {
-  flex: 1 1 auto;
-}
-
-@media (max-width: 991.98px) {
-  .content-panel .word-details .sidebar {
-    border-top: 1px solid #ccd9e0;
   }
 }
 
@@ -17251,14 +17244,6 @@ body {
   }
 }
 
-@media (max-width: 767.98px) {
-  .word-details {
-    background: #fff;
-    border-radius: 10px;
-    box-shadow: 0 4px 12px -4px rgba(0, 0, 0, 0.25);
-  }
-}
-
 .matching-word.match {
   border-bottom: 2px dashed #ccd9e0;
 }
@@ -17297,12 +17282,6 @@ body {
 .level-3-panel .collocations-section:not(.expand) .colloc-samples {
   display: block;
   opacity: 1;
-}
-
-@media (min-width: 768px) {
-  .main-data {
-    border-right: 1px #ccd9e0 solid;
-  }
 }
 
 .homonym-page {
@@ -17360,6 +17339,46 @@ body {
   .sticky-scroll-panel__tags {
     display: flex;
   }
+}
+
+.word-panel__toggle {
+  display: flex;
+  background-color: var(--color-white);
+  border: 0;
+  border-bottom: 1px solid var(--color-bluish-gray);
+  padding: 10px;
+  border-radius: 8px 8px 0 0;
+  width: 100%;
+  gap: 8px;
+}
+
+.word-panel__toggle-icon {
+  font-size: 1.5rem;
+}
+
+.word-panel__toggle[aria-expanded="true"] .word-panel__toggle-icon {
+  transform: rotateZ(180deg);
+}
+
+.word-results {
+  display: grid;
+  grid-template-columns: 70% 30%;
+  gap: 16px;
+  flex-grow: 1;
+}
+
+.search-tag {
+  background-color: var(--color-grayish-white);
+  color: var(--color-dark-gray);
+  font-size: .75rem;
+  font-weight: 500;
+  line-height: 14.5px;
+  border-radius: 4px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 0 8px;
+  height: 16px;
 }
 
 .news-page {
@@ -18454,6 +18473,8 @@ body {
   --color-gray-1000: #0e1013;
   --color-light-gray: #C4D2DD;
   --color-bluish-gray: #E4ECEF;
+  --color-grayish-white: #FAFAFA;
+  --color-dark-gray: #98A7B4;
   --color-white: #fff;
   --color-blue-100: #a0dcf8;
   --color-blue-200: #5aabe0;

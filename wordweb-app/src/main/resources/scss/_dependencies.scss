@@ -53,10 +53,13 @@
 
 
 .btn-speaker {
-  padding: 0 5px;
+  padding: 0;
   line-height: 1.2;
-  color: $gray-300;
+  color: var(--color-dark-blue);
   background: transparent;
+  margin-right: 8px;
+  width: 24px;
+  height: 24px;
   .icon{
     padding: 0;
   }
