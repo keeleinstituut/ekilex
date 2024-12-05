@@ -149,18 +149,51 @@
   </th:block>
   <th:block th:fragment="word-data-accordion">
     <section class="word-panel">
-      <button class="word-panel__toggle" th:aria-label="#{aria.menu.collapsed}" data-toggle="collapse" th:data-target="${'#' + panelId}">
+      <button class="word-panel__toggle" data-toggle="collapse" th:data-target="${'#' + panelId}" aria-expanded="true">
         <i class="fa fa-chevron-down word-panel__toggle-icon"></i> 
-        <span th:text="#{lexdata.title}">EKI ühendsõnastik 2020</span>
-        <div class="" th:if="${not #lists.isEmpty(wordData.lexLexemes)}">
-          <span th:text="#{label.tooltip.last_modified}"></span>
-          <span th:text="${#dates.format(wordData.word.manualEventOn, 'dd.MM.yyyy')}"></span>
+        <span th:text="${panelTitle}">EKI ühendsõnastik 2020</span>
+        <div class="word-panel__modified" th:if="${lastModified != null}">
+          <span class="word-panel__modified-prefix" th:text="#{label.tooltip.last_modified}"></span>
+          <span th:text="${lastModified}"></span>
         </div>
       </button>
-      <div class="word-panel__content collapse" th:id="${panelId}">
-        here
+      <div
+        class="word-panel__content collapse show"
+        th:classappend="|${collapseName != null ? 'user-preferences' : ''} ${
+          padContent != null ? 'word-panel__content--padded' : ''}|"
+        th:data-name="${collapseName}"
+        th:id="${panelId}">
+        <th:block th:replace="${panelContent}"></th:block>
       </div>
     </section>
   </th:block>
+
+  <th:block th:fragment="lex-detail-view">
+    <th:block th:if="${wordData.lexemesExist}">
+      <div th:if="${not #lists.isEmpty(wordData.lexLexemes)}">
+        <div th:if="${wordData.rusHeadword}" class="alert bg-warning text-black px-3 py-1 d-flex align-items-center update-alert flex-nowrap" role="alert">
+          <i class="fa fa-exclamation-triangle small mr-2 mt-1" aria-hidden="true"></i>
+          <span th:text="#{warning.eki.rus}">See ei ole valmis sõnastik.</span>
+        </div>
+        <th:block th:each="lexeme : ${wordData.lexLexemes}">
+          <section class="level-3-panel meaning-panel d-flex flex-row">
+            <div th:replace="lex-details :: lexeme-data"></div>
+          </section>
+        </th:block>
+      </div>
+    </th:block>
+  </th:block>
+
+  <th:block th:fragment="term-detail-view">
+    <th:block th:each="lexeme : ${wordData.termLexemes}">
+      <div th:replace="term-details :: meaning-data"></div>
+    </th:block>
+  </th:block>
+  <!-- lim term search currently removed
+  <th:block th:fragment="lim-term-detail-view">
+    <th:block th:each="lexeme : ${wordData.limTermLexemes}">
+      <div th:replace="term-details :: meaning-data"></div>
+    </th:block>
+  </th:block> -->
 </body>
 </html>
