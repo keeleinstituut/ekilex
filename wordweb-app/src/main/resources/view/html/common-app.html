@@ -216,7 +216,7 @@
             title:/*[[${latestWordwebNewsArticle.title} + ' ' + ${#temporals.format(latestWordwebNewsArticle.created, 'dd.MM.yyyy')}]]*/ "",
             body:/*[[${latestWordwebNewsArticle.contentCut}]]*/ "",
             closeLabel:/*[[#{menu.close}]]*/ "",
-            readMoreText: "Loe lähemalt",
+            readMoreText: /*[[#{button.read.more}]]*/ "",
             readMoreUrl: /*[[@{/news}]]*/ "",
             id: 'news-toast'
           });
