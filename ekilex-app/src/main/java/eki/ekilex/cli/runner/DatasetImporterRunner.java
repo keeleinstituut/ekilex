@@ -44,11 +44,11 @@ import eki.common.data.Count;
 import eki.common.data.PgVarcharArray;
 import eki.common.data.transport.TableColumn;
 import eki.common.exception.DataLoadingException;
-import eki.common.service.AbstractLoaderCommons;
-import eki.common.service.TransportService;
 import eki.common.util.CodeGenerator;
 import eki.ekilex.data.DatasetPermission;
 import eki.ekilex.data.EkiUser;
+import eki.ekilex.service.AbstractLoaderCommons;
+import eki.ekilex.service.cli.TransportService;
 import eki.ekilex.service.core.ActivityLogService;
 
 @Component

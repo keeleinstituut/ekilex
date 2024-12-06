@@ -1,11 +1,11 @@
 package eki.ekilex.service.db;
 
-import static eki.ekilex.data.db.Tables.DATASET;
-import static eki.ekilex.data.db.Tables.DATASET_PERMISSION;
-import static eki.ekilex.data.db.Tables.EKI_USER;
-import static eki.ekilex.data.db.Tables.EKI_USER_APPLICATION;
-import static eki.ekilex.data.db.Tables.LANGUAGE_LABEL;
-import static eki.ekilex.data.db.Tables.TERMS_OF_USE;
+import static eki.ekilex.data.db.main.Tables.DATASET;
+import static eki.ekilex.data.db.main.Tables.DATASET_PERMISSION;
+import static eki.ekilex.data.db.main.Tables.EKI_USER;
+import static eki.ekilex.data.db.main.Tables.EKI_USER_APPLICATION;
+import static eki.ekilex.data.db.main.Tables.LANGUAGE_LABEL;
+import static eki.ekilex.data.db.main.Tables.TERMS_OF_USE;
 
 import java.util.List;
 import java.util.Optional;
@@ -19,21 +19,20 @@ import org.springframework.stereotype.Component;
 
 import eki.common.constant.AuthorityItem;
 import eki.common.constant.AuthorityOperation;
-import eki.common.service.db.AbstractDbService;
 import eki.ekilex.constant.ApplicationStatus;
 import eki.ekilex.constant.SystemConstant;
 import eki.ekilex.data.EkiUser;
 import eki.ekilex.data.EkiUserApplication;
-import eki.ekilex.data.db.tables.records.EkiUserRecord;
+import eki.ekilex.data.db.main.tables.records.EkiUserRecord;
 
 @Component
-public class UserDbService extends AbstractDbService implements SystemConstant {
+public class UserDbService implements SystemConstant {
 
 	@Autowired
-	private DSLContext create;
+	private DSLContext mainDb;
 
 	public Long createUser(String email, String name, String password, String activationKey, String termsVer) {
-		EkiUserRecord ekiUser = create.newRecord(EKI_USER);
+		EkiUserRecord ekiUser = mainDb.newRecord(EKI_USER);
 		ekiUser.setEmail(email);
 		ekiUser.setName(name);
 		ekiUser.setPassword(password);
@@ -69,7 +68,7 @@ public class UserDbService extends AbstractDbService implements SystemConstant {
 				.where(TERMS_OF_USE.VERSION.eq(EKI_USER.TERMS_VER).and(TERMS_OF_USE.IS_ACTIVE.isTrue()))
 				.asField();
 
-		return create
+		return mainDb
 				.select(
 						EKI_USER.ID,
 						EKI_USER.NAME,
@@ -91,7 +90,7 @@ public class UserDbService extends AbstractDbService implements SystemConstant {
 
 	public Long getUserIdByEmail(String email) {
 
-		return create
+		return mainDb
 				.select(EKI_USER.ID)
 				.from(EKI_USER)
 				.where(EKI_USER.EMAIL.eq(email))
@@ -101,7 +100,7 @@ public class UserDbService extends AbstractDbService implements SystemConstant {
 
 	public String getUserEmailByRecoveryKey(String recoveryKey) {
 
-		return create
+		return mainDb
 				.select(EKI_USER.EMAIL)
 				.from(EKI_USER)
 				.where(EKI_USER.RECOVERY_KEY.eq(recoveryKey))
@@ -111,7 +110,7 @@ public class UserDbService extends AbstractDbService implements SystemConstant {
 
 	public List<EkiUser> getUsersWithAnyDatasetPermission(List<String> requiredAuthOps) {
 
-		return create
+		return mainDb
 				.select(
 						EKI_USER.ID,
 						EKI_USER.NAME,
@@ -130,7 +129,7 @@ public class UserDbService extends AbstractDbService implements SystemConstant {
 
 	public List<EkiUser> getUsersByDatasetPermission(List<String> datasetCodes, List<String> requiredAuthOps) {
 
-		return create
+		return mainDb
 				.select(
 						EKI_USER.ID,
 						EKI_USER.NAME,
@@ -148,7 +147,7 @@ public class UserDbService extends AbstractDbService implements SystemConstant {
 
 	public String getActiveTermsValue() {
 
-		return create
+		return mainDb
 				.select(TERMS_OF_USE.VALUE)
 				.from(TERMS_OF_USE)
 				.where(TERMS_OF_USE.IS_ACTIVE.isTrue())
@@ -157,7 +156,7 @@ public class UserDbService extends AbstractDbService implements SystemConstant {
 
 	public String getActiveTermsVersion() {
 
-		return create
+		return mainDb
 				.select(TERMS_OF_USE.VERSION)
 				.from(TERMS_OF_USE)
 				.where(TERMS_OF_USE.IS_ACTIVE.isTrue())
@@ -166,7 +165,7 @@ public class UserDbService extends AbstractDbService implements SystemConstant {
 
 	public void agreeActiveTerms(Long userId) {
 
-		create
+		mainDb
 				.update(EKI_USER)
 				.set(EKI_USER.TERMS_VER, TERMS_OF_USE.VERSION)
 				.from(TERMS_OF_USE)
@@ -178,7 +177,7 @@ public class UserDbService extends AbstractDbService implements SystemConstant {
 
 	public void setUserRecoveryKey(Long userId, String recoveryKey) {
 
-		create
+		mainDb
 				.update(EKI_USER)
 				.set(EKI_USER.RECOVERY_KEY, recoveryKey)
 				.where(EKI_USER.ID.eq(userId)).execute();
@@ -186,14 +185,14 @@ public class UserDbService extends AbstractDbService implements SystemConstant {
 
 	public void setUserPassword(String email, String encodedPassword) {
 
-		EkiUserRecord ekiUser = create.selectFrom(EKI_USER).where(EKI_USER.EMAIL.eq(email)).fetchOne();
+		EkiUserRecord ekiUser = mainDb.selectFrom(EKI_USER).where(EKI_USER.EMAIL.eq(email)).fetchOne();
 		ekiUser.setRecoveryKey(null);
 		ekiUser.setPassword(encodedPassword);
 		ekiUser.store();
 	}
 
 	public EkiUser activateUser(String activationKey) {
-		Optional<EkiUserRecord> ekiUser = create.selectFrom(EKI_USER).where(EKI_USER.ACTIVATION_KEY.eq(activationKey)).fetchOptional();
+		Optional<EkiUserRecord> ekiUser = mainDb.selectFrom(EKI_USER).where(EKI_USER.ACTIVATION_KEY.eq(activationKey)).fetchOptional();
 		if (ekiUser.isPresent()) {
 			ekiUser.get().setActivationKey(null);
 			ekiUser.get().store();
@@ -203,28 +202,28 @@ public class UserDbService extends AbstractDbService implements SystemConstant {
 	}
 
 	public void enableUser(Long userId, boolean enable) {
-		create.update(EKI_USER).set(EKI_USER.IS_ENABLED, enable).where(EKI_USER.ID.eq(userId)).execute();
+		mainDb.update(EKI_USER).set(EKI_USER.IS_ENABLED, enable).where(EKI_USER.ID.eq(userId)).execute();
 	}
 
 	public void setApiCrud(Long userId, boolean isApiCrud) {
-		create.update(EKI_USER).set(EKI_USER.IS_API_CRUD, isApiCrud).where(EKI_USER.ID.eq(userId)).execute();
+		mainDb.update(EKI_USER).set(EKI_USER.IS_API_CRUD, isApiCrud).where(EKI_USER.ID.eq(userId)).execute();
 	}
 
 	public void setAdmin(Long userId, boolean isAdmin) {
-		create.update(EKI_USER).set(EKI_USER.IS_ADMIN, isAdmin).where(EKI_USER.ID.eq(userId)).execute();
+		mainDb.update(EKI_USER).set(EKI_USER.IS_ADMIN, isAdmin).where(EKI_USER.ID.eq(userId)).execute();
 	}
 
 	public void setMaster(Long userId, boolean isMaster) {
-		create.update(EKI_USER).set(EKI_USER.IS_MASTER, isMaster).where(EKI_USER.ID.eq(userId)).execute();
+		mainDb.update(EKI_USER).set(EKI_USER.IS_MASTER, isMaster).where(EKI_USER.ID.eq(userId)).execute();
 	}
 
 	public void updateReviewComment(Long userId, String reviewComment) {
-		create.update(EKI_USER).set(EKI_USER.REVIEW_COMMENT, reviewComment).where(EKI_USER.ID.eq(userId)).execute();
+		mainDb.update(EKI_USER).set(EKI_USER.REVIEW_COMMENT, reviewComment).where(EKI_USER.ID.eq(userId)).execute();
 	}
 
 	public List<String> getAdminEmails() {
 
-		return create
+		return mainDb
 				.select(EKI_USER.EMAIL)
 				.from(EKI_USER)
 				.where(EKI_USER.IS_ADMIN.isTrue())
@@ -233,7 +232,7 @@ public class UserDbService extends AbstractDbService implements SystemConstant {
 
 	public List<String> getDatasetOwnerEmails(String datasetCode) {
 
-		return create
+		return mainDb
 				.select(EKI_USER.EMAIL)
 				.from(EKI_USER, DATASET_PERMISSION)
 				.where(
@@ -246,7 +245,7 @@ public class UserDbService extends AbstractDbService implements SystemConstant {
 
 	public void createUserApplication(Long userId, String datasetCode, AuthorityOperation authOp, String lang, String comment, ApplicationStatus status) {
 
-		create
+		mainDb
 				.insertInto(
 						EKI_USER_APPLICATION,
 						EKI_USER_APPLICATION.USER_ID,
@@ -261,7 +260,7 @@ public class UserDbService extends AbstractDbService implements SystemConstant {
 
 	public List<EkiUserApplication> getUserApplications(Long userId) {
 
-		return create
+		return mainDb
 				.select(
 						EKI_USER_APPLICATION.ID,
 						EKI_USER_APPLICATION.USER_ID,
@@ -285,7 +284,7 @@ public class UserDbService extends AbstractDbService implements SystemConstant {
 
 	public EkiUserApplication getUserApplication(Long userApplicationId) {
 
-		return create
+		return mainDb
 				.select(
 						EKI_USER_APPLICATION.ID,
 						EKI_USER_APPLICATION.USER_ID,
@@ -304,12 +303,12 @@ public class UserDbService extends AbstractDbService implements SystemConstant {
 
 	public void updateApiKey(Long userId, String apiKey, boolean isApiCrud) {
 
-		create.update(EKI_USER).set(EKI_USER.API_KEY, apiKey).set(EKI_USER.IS_API_CRUD, isApiCrud).where(EKI_USER.ID.eq(userId)).execute();
+		mainDb.update(EKI_USER).set(EKI_USER.API_KEY, apiKey).set(EKI_USER.IS_API_CRUD, isApiCrud).where(EKI_USER.ID.eq(userId)).execute();
 	}
 
 	public void updateApplicationStatus(Long userApplicationId, ApplicationStatus status) {
 
-		create
+		mainDb
 				.update(EKI_USER_APPLICATION)
 				.set(EKI_USER_APPLICATION.STATUS, status.name())
 				.where(EKI_USER_APPLICATION.ID.eq(userApplicationId))

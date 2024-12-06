@@ -138,7 +138,8 @@ public class MeaningTableService extends AbstractSearchService {
 		permCalculator.applyCrud(user, usages);
 	}
 
-	@Transactional
+	@Deprecated
+	@Transactional(rollbackOn = Exception.class)
 	public void updateTermMeaningTableMeaning(MeaningTableRow meaning, EkiUser user, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
 
 		String userName = user.getName();
@@ -189,7 +190,7 @@ public class MeaningTableService extends AbstractSearchService {
 		}
 	}
 
-	@Transactional
+	@Transactional(rollbackOn = Exception.class)
 	public void updateDefinitionsPublicity(List<Long> definitionIds, boolean isPublic, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
 
 		if (CollectionUtils.isEmpty(definitionIds)) {
@@ -205,7 +206,7 @@ public class MeaningTableService extends AbstractSearchService {
 		}
 	}
 
-	@Transactional
+	@Transactional(rollbackOn = Exception.class)
 	public void updateLexemesPublicity(List<Long> lexemeIds, boolean isPublic, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
 
 		if (CollectionUtils.isEmpty(lexemeIds)) {
@@ -220,7 +221,7 @@ public class MeaningTableService extends AbstractSearchService {
 		}
 	}
 
-	@Transactional
+	@Transactional(rollbackOn = Exception.class)
 	public void updateUsagesPublicity(List<Long> usageIds, boolean isPublic, EkiUser user, boolean isManualEventOnUpdateEnabled) throws Exception {
 
 		if (CollectionUtils.isEmpty(usageIds)) {

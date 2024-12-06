@@ -1,23 +1,23 @@
 package eki.ekilex.service.db;
 
-import static eki.ekilex.data.db.Tables.DATASET;
-import static eki.ekilex.data.db.Tables.DATASET_PERMISSION;
-import static eki.ekilex.data.db.Tables.DEFINITION;
-import static eki.ekilex.data.db.Tables.DEFINITION_DATASET;
-import static eki.ekilex.data.db.Tables.DEFINITION_NOTE;
-import static eki.ekilex.data.db.Tables.EKI_USER;
-import static eki.ekilex.data.db.Tables.EKI_USER_APPLICATION;
-import static eki.ekilex.data.db.Tables.EKI_USER_PROFILE;
-import static eki.ekilex.data.db.Tables.LANGUAGE;
-import static eki.ekilex.data.db.Tables.LANGUAGE_LABEL;
-import static eki.ekilex.data.db.Tables.LEXEME;
-import static eki.ekilex.data.db.Tables.LEXEME_NOTE;
-import static eki.ekilex.data.db.Tables.MEANING;
-import static eki.ekilex.data.db.Tables.MEANING_FORUM;
-import static eki.ekilex.data.db.Tables.SOURCE;
-import static eki.ekilex.data.db.Tables.USAGE;
-import static eki.ekilex.data.db.Tables.WORD;
-import static eki.ekilex.data.db.Tables.WORD_FORUM;
+import static eki.ekilex.data.db.main.Tables.DATASET;
+import static eki.ekilex.data.db.main.Tables.DATASET_PERMISSION;
+import static eki.ekilex.data.db.main.Tables.DEFINITION;
+import static eki.ekilex.data.db.main.Tables.DEFINITION_DATASET;
+import static eki.ekilex.data.db.main.Tables.DEFINITION_NOTE;
+import static eki.ekilex.data.db.main.Tables.EKI_USER;
+import static eki.ekilex.data.db.main.Tables.EKI_USER_APPLICATION;
+import static eki.ekilex.data.db.main.Tables.EKI_USER_PROFILE;
+import static eki.ekilex.data.db.main.Tables.LANGUAGE;
+import static eki.ekilex.data.db.main.Tables.LANGUAGE_LABEL;
+import static eki.ekilex.data.db.main.Tables.LEXEME;
+import static eki.ekilex.data.db.main.Tables.LEXEME_NOTE;
+import static eki.ekilex.data.db.main.Tables.MEANING;
+import static eki.ekilex.data.db.main.Tables.MEANING_FORUM;
+import static eki.ekilex.data.db.main.Tables.SOURCE;
+import static eki.ekilex.data.db.main.Tables.USAGE;
+import static eki.ekilex.data.db.main.Tables.WORD;
+import static eki.ekilex.data.db.main.Tables.WORD_FORUM;
 import static org.jooq.impl.DSL.field;
 
 import java.util.List;
@@ -47,17 +47,17 @@ import eki.ekilex.constant.SystemConstant;
 import eki.ekilex.data.Classifier;
 import eki.ekilex.data.Dataset;
 import eki.ekilex.data.EkiUserPermData;
-import eki.ekilex.data.db.tables.DatasetPermission;
-import eki.ekilex.data.db.tables.EkiUser;
-import eki.ekilex.data.db.tables.EkiUserApplication;
-import eki.ekilex.data.db.tables.EkiUserProfile;
-import eki.ekilex.data.db.tables.records.DatasetPermissionRecord;
+import eki.ekilex.data.db.main.tables.DatasetPermission;
+import eki.ekilex.data.db.main.tables.EkiUser;
+import eki.ekilex.data.db.main.tables.EkiUserApplication;
+import eki.ekilex.data.db.main.tables.EkiUserProfile;
+import eki.ekilex.data.db.main.tables.records.DatasetPermissionRecord;
 
 @Component
 public class PermissionDbService implements SystemConstant, GlobalConstant, PermConstant {
 
 	@Autowired
-	private DSLContext create;
+	private DSLContext mainDb;
 
 	public List<EkiUserPermData> getUsers(
 			String userNameFilter, String userPermDatasetCodeFilter, Boolean userEnablePendingFilter, OrderingField orderBy) {
@@ -111,7 +111,7 @@ public class PermissionDbService implements SystemConstant, GlobalConstant, Perm
 		Field<Boolean> epf = field(enablePendingCond);
 		Field<Boolean> akef = field(eu.API_KEY.isNotNull());
 
-		return create
+		return mainDb
 				.select(
 						eu.ID,
 						eu.NAME,
@@ -132,7 +132,7 @@ public class PermissionDbService implements SystemConstant, GlobalConstant, Perm
 
 	public List<eki.ekilex.data.DatasetPermission> getDatasetPermissions(Long userId) {
 
-		return create
+		return mainDb
 				.select(
 						DATASET_PERMISSION.ID,
 						DATASET_PERMISSION.USER_ID,
@@ -159,7 +159,7 @@ public class PermissionDbService implements SystemConstant, GlobalConstant, Perm
 
 	public eki.ekilex.data.DatasetPermission getDatasetPermission(Long id) {
 
-		return create
+		return mainDb
 				.select(
 						DATASET_PERMISSION.ID,
 						DATASET_PERMISSION.USER_ID,
@@ -192,7 +192,7 @@ public class PermissionDbService implements SystemConstant, GlobalConstant, Perm
 						.select(DATASET_PERMISSION.ID)
 						.from(DATASET_PERMISSION)
 						.where(DATASET_PERMISSION.DATASET_CODE.eq(DATASET.CODE).and(DATASET_PERMISSION.USER_ID.eq(userId))));
-		return create
+		return mainDb
 				.select(DATASET.CODE, DATASET.NAME)
 				.from(DATASET)
 				.where(DSL.or(DATASET.IS_VISIBLE.isTrue(), userIsAdminCond, userIsMasterCond, datasetPermCond))
@@ -216,7 +216,7 @@ public class PermissionDbService implements SystemConstant, GlobalConstant, Perm
 						.select(DATASET_PERMISSION.ID)
 						.from(DATASET_PERMISSION)
 						.where(DATASET_PERMISSION.DATASET_CODE.eq(DATASET.CODE).and(DATASET_PERMISSION.USER_ID.eq(userId))));
-		return create
+		return mainDb
 				.select(DATASET.CODE, DATASET.NAME, DATASET.IS_PUBLIC)
 				.from(DATASET)
 				.where(
@@ -242,7 +242,7 @@ public class PermissionDbService implements SystemConstant, GlobalConstant, Perm
 						.select(DATASET_PERMISSION.ID)
 						.from(DATASET_PERMISSION)
 						.where(DATASET_PERMISSION.DATASET_CODE.eq(DATASET.CODE).and(DATASET_PERMISSION.USER_ID.eq(userId))));
-		return create
+		return mainDb
 				.select(DATASET.CODE, DATASET.NAME)
 				.from(DATASET)
 				.where(DSL.or(userIsAdminCond, userIsMasterCond, datasetPermCond))
@@ -264,7 +264,7 @@ public class PermissionDbService implements SystemConstant, GlobalConstant, Perm
 								DATASET_PERMISSION.DATASET_CODE.eq(DATASET.CODE)
 										.and(DATASET_PERMISSION.USER_ID.eq(userId))
 										.and(DATASET_PERMISSION.AUTH_OPERATION.eq(AuthorityOperation.OWN.name()))));
-		return create
+		return mainDb
 				.select(DATASET.CODE, DATASET.NAME)
 				.from(DATASET)
 				.where(DSL.or(userIsAdminCond, datasetPermCond))
@@ -288,7 +288,7 @@ public class PermissionDbService implements SystemConstant, GlobalConstant, Perm
 										.and(DATASET_PERMISSION.DATASET_CODE.eq(datasetCode))
 										.and(DSL.or(DATASET_PERMISSION.AUTH_LANG.isNull(), DATASET_PERMISSION.AUTH_LANG.eq(LANGUAGE.CODE)))));
 
-		return create
+		return mainDb
 				.select(
 						field(DSL.value(ClassifierName.LANGUAGE.name())).as("name"),
 						LANGUAGE_LABEL.CODE,
@@ -320,7 +320,7 @@ public class PermissionDbService implements SystemConstant, GlobalConstant, Perm
 			authLangCond = edp.AUTH_LANG.eq(authLang);
 		}
 
-		Optional<DatasetPermissionRecord> optionalDatasetPermission = create
+		Optional<DatasetPermissionRecord> optionalDatasetPermission = mainDb
 				.insertInto(
 						DATASET_PERMISSION,
 						DATASET_PERMISSION.USER_ID,
@@ -354,7 +354,7 @@ public class PermissionDbService implements SystemConstant, GlobalConstant, Perm
 
 		EkiUserProfile up = EKI_USER_PROFILE.as("up");
 		DatasetPermission dp = DATASET_PERMISSION.as("dp");
-		create
+		mainDb
 				.update(up)
 				.set(up.RECENT_DATASET_PERMISSION_ID, (Long) null)
 				.whereExists(DSL
@@ -363,18 +363,18 @@ public class PermissionDbService implements SystemConstant, GlobalConstant, Perm
 						.where(dp.ID.eq(up.RECENT_DATASET_PERMISSION_ID).and(dp.DATASET_CODE.eq(datasetCode))))
 				.execute();
 
-		create.deleteFrom(DATASET_PERMISSION).where(DATASET_PERMISSION.DATASET_CODE.eq(datasetCode)).execute();
+		mainDb.deleteFrom(DATASET_PERMISSION).where(DATASET_PERMISSION.DATASET_CODE.eq(datasetCode)).execute();
 	}
 
 	public void deleteDatasetPermission(Long datasetPermissionId) {
 
-		create
+		mainDb
 				.update(EKI_USER_PROFILE)
 				.set(EKI_USER_PROFILE.RECENT_DATASET_PERMISSION_ID, (Long) null)
 				.where(EKI_USER_PROFILE.RECENT_DATASET_PERMISSION_ID.eq(datasetPermissionId))
 				.execute();
 
-		create.deleteFrom(DATASET_PERMISSION).where(DATASET_PERMISSION.ID.eq(datasetPermissionId)).execute();
+		mainDb.deleteFrom(DATASET_PERMISSION).where(DATASET_PERMISSION.ID.eq(datasetPermissionId)).execute();
 	}
 
 	public boolean isGrantedForWord(Long userId, eki.ekilex.data.DatasetPermission userRole, Long wordId, String requiredAuthItem, List<String> requiredAuthOps) {
@@ -437,7 +437,7 @@ public class PermissionDbService implements SystemConstant, GlobalConstant, Perm
 				.groupBy(LEXEME.WORD_ID)
 				.asTable("lac");
 
-		return create
+		return mainDb
 				.select(field(DSL.or(
 						lsc.field("sup_lex_count", Integer.class).gt(0),
 						lpc.field("perm_lex_count", Integer.class).eq(lac.field("all_lex_count", Integer.class)))).as("is_granted"))
@@ -457,7 +457,7 @@ public class PermissionDbService implements SystemConstant, GlobalConstant, Perm
 
 		Condition providedRequiredAuthCond = DSL.val(providedAuthItem).eq(requiredAuthItem).and(DSL.val(providedAuthOp).in(requiredAuthOps));
 
-		return create
+		return mainDb
 				.select(field(DSL.count(LEXEME.ID).gt(0)).as("is_granted"))
 				.from(WORD.leftOuterJoin(LEXEME).on(
 						LEXEME.WORD_ID.eq(WORD.ID)
@@ -493,7 +493,7 @@ public class PermissionDbService implements SystemConstant, GlobalConstant, Perm
 
 		Condition providedRequiredAuthCond = DSL.val(providedAuthItem).eq(requiredAuthItem).and(DSL.val(providedAuthOp).in(requiredAuthOps));
 
-		return create
+		return mainDb
 				.select(field(DSL.count(LEXEME.ID).gt(0)).as("is_granted"))
 				.from(WORD.leftOuterJoin(LEXEME).on(
 						LEXEME.WORD_ID.eq(WORD.ID)
@@ -571,7 +571,7 @@ public class PermissionDbService implements SystemConstant, GlobalConstant, Perm
 				.groupBy(LEXEME.MEANING_ID)
 				.asTable("la");
 
-		return create
+		return mainDb
 				.select(field(DSL.or(
 						lsc.field("sup_lex_count", Integer.class).gt(0),
 						lpc.field("perm_lex_count", Integer.class).eq(la.field("all_lex_count", Integer.class)))).as("is_granted"))
@@ -591,7 +591,7 @@ public class PermissionDbService implements SystemConstant, GlobalConstant, Perm
 
 		Condition providedRequiredAuthCond = DSL.val(providedAuthItem).eq(requiredAuthItem).and(DSL.val(providedAuthOp).in(requiredAuthOps));
 
-		return create
+		return mainDb
 				.select(field(DSL.count(LEXEME.ID).gt(0)).as("is_granted"))
 				.from(MEANING.leftOuterJoin(LEXEME).on(
 						LEXEME.MEANING_ID.eq(MEANING.ID)
@@ -616,7 +616,7 @@ public class PermissionDbService implements SystemConstant, GlobalConstant, Perm
 
 	public boolean isGrantedForMeaningByAnyLexeme(Long userId, Long meaningId, String requiredAuthItem, List<String> requiredAuthOps) {
 
-		return create
+		return mainDb
 				.select(field(DSL.count(LEXEME.ID).gt(0)).as("is_granted"))
 				.from(MEANING.leftOuterJoin(LEXEME).on(
 						LEXEME.MEANING_ID.eq(MEANING.ID)
@@ -644,7 +644,7 @@ public class PermissionDbService implements SystemConstant, GlobalConstant, Perm
 
 		Condition providedRequiredAuthCond = DSL.val(providedAuthItem).eq(requiredAuthItem).and(DSL.val(providedAuthOp).in(requiredAuthOps));
 
-		return create
+		return mainDb
 				.select(field(DSL.count(LEXEME.ID).gt(0)).as("is_granted"))
 				.from(MEANING.leftOuterJoin(LEXEME).on(
 						LEXEME.MEANING_ID.eq(MEANING.ID)
@@ -674,7 +674,7 @@ public class PermissionDbService implements SystemConstant, GlobalConstant, Perm
 
 		Condition providedRequiredAuthCond = DSL.val(providedAuthItem).eq(requiredAuthItem).and(DSL.val(providedAuthOp).in(requiredAuthOps));
 
-		return create
+		return mainDb
 				.select(field(DSL.count(LEXEME.ID).gt(0)).as("is_granted"))
 				.from(LEXEME)
 				.where(LEXEME.ID.eq(lexemeId)
@@ -711,7 +711,7 @@ public class PermissionDbService implements SystemConstant, GlobalConstant, Perm
 
 		Condition providedRequiredAuthCond = DSL.val(providedAuthItem).eq(requiredAuthItem).and(DSL.val(providedAuthOp).in(requiredAuthOps));
 
-		return create
+		return mainDb
 				.select(field(DSL.count(LEXEME_NOTE.ID).gt(0)).as("is_granted"))
 				.from(LEXEME_NOTE)
 				.where(LEXEME_NOTE.ID.eq(lexemeNoteId)
@@ -755,7 +755,7 @@ public class PermissionDbService implements SystemConstant, GlobalConstant, Perm
 
 		Condition providedRequiredAuthCond = DSL.val(providedAuthItem).eq(requiredAuthItem).and(DSL.val(providedAuthOp).in(requiredAuthOps));
 
-		return create
+		return mainDb
 				.select(field(DSL.count(USAGE.ID).gt(0)).as("is_granted"))
 				.from(USAGE)
 				.where(USAGE.ID.eq(usageId)
@@ -799,7 +799,7 @@ public class PermissionDbService implements SystemConstant, GlobalConstant, Perm
 
 		Condition providedRequiredAuthCond = DSL.val(providedAuthItem).eq(requiredAuthItem).and(DSL.val(providedAuthOp).in(requiredAuthOps));
 
-		return create
+		return mainDb
 				.select(field(DSL.count(DEFINITION.ID).gt(0)).as("is_granted"))
 				.from(DEFINITION)
 				.where(DEFINITION.ID.eq(definitionId)
@@ -843,7 +843,7 @@ public class PermissionDbService implements SystemConstant, GlobalConstant, Perm
 
 		Condition providedRequiredAuthCond = DSL.val(providedAuthItem).eq(requiredAuthItem).and(DSL.val(providedAuthOp).in(requiredAuthOps));
 
-		return create
+		return mainDb
 				.select(field(DSL.count(DEFINITION_NOTE.ID).gt(0)).as("is_granted"))
 				.from(DEFINITION_NOTE)
 				.where(DEFINITION_NOTE.ID.eq(definitionNoteId)
@@ -884,7 +884,7 @@ public class PermissionDbService implements SystemConstant, GlobalConstant, Perm
 			return false;
 		}
 
-		return create
+		return mainDb
 				.fetchExists(DSL
 						.select(DATASET_PERMISSION.ID)
 						.from(DATASET_PERMISSION, SOURCE)
@@ -899,7 +899,7 @@ public class PermissionDbService implements SystemConstant, GlobalConstant, Perm
 
 	public boolean isGrantedForWordForum(Long userId, Long wordForumId) {
 
-		return create
+		return mainDb
 				.select(field(DSL.count(WORD_FORUM.ID).eq(1)).as("is_granted"))
 				.from(WORD_FORUM)
 				.where(WORD_FORUM.ID.eq(wordForumId).and(WORD_FORUM.CREATOR_ID.eq(userId)))
@@ -909,7 +909,7 @@ public class PermissionDbService implements SystemConstant, GlobalConstant, Perm
 
 	public boolean isGrantedForMeaningForum(Long userId, Long meaningForumId) {
 
-		return create
+		return mainDb
 				.select(field(DSL.count(MEANING_FORUM.ID).eq(1)).as("is_granted"))
 				.from(MEANING_FORUM)
 				.where(MEANING_FORUM.ID.eq(meaningForumId).and(MEANING_FORUM.CREATOR_ID.eq(userId)))

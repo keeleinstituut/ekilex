@@ -1,26 +1,26 @@
 package eki.ekilex.service.db;
 
-import static eki.ekilex.data.db.Tables.ACTIVITY_LOG;
-import static eki.ekilex.data.db.Tables.API_ERROR_COUNT;
-import static eki.ekilex.data.db.Tables.API_REQUEST_COUNT;
-import static eki.ekilex.data.db.Tables.ASPECT;
-import static eki.ekilex.data.db.Tables.COLLOCATION;
-import static eki.ekilex.data.db.Tables.DATASET;
-import static eki.ekilex.data.db.Tables.DEFINITION;
-import static eki.ekilex.data.db.Tables.DERIV;
-import static eki.ekilex.data.db.Tables.DOMAIN;
-import static eki.ekilex.data.db.Tables.FORM;
-import static eki.ekilex.data.db.Tables.FREEFORM;
-import static eki.ekilex.data.db.Tables.GENDER;
-import static eki.ekilex.data.db.Tables.LANGUAGE;
-import static eki.ekilex.data.db.Tables.LEXEME;
-import static eki.ekilex.data.db.Tables.MEANING;
-import static eki.ekilex.data.db.Tables.MORPH;
-import static eki.ekilex.data.db.Tables.PARADIGM;
-import static eki.ekilex.data.db.Tables.POS;
-import static eki.ekilex.data.db.Tables.REGISTER;
-import static eki.ekilex.data.db.Tables.SOURCE;
-import static eki.ekilex.data.db.Tables.WORD;
+import static eki.ekilex.data.db.main.Tables.ACTIVITY_LOG;
+import static eki.ekilex.data.db.main.Tables.API_ERROR_COUNT;
+import static eki.ekilex.data.db.main.Tables.API_REQUEST_COUNT;
+import static eki.ekilex.data.db.main.Tables.ASPECT;
+import static eki.ekilex.data.db.main.Tables.COLLOCATION;
+import static eki.ekilex.data.db.main.Tables.DATASET;
+import static eki.ekilex.data.db.main.Tables.DEFINITION;
+import static eki.ekilex.data.db.main.Tables.DERIV;
+import static eki.ekilex.data.db.main.Tables.DOMAIN;
+import static eki.ekilex.data.db.main.Tables.FORM;
+import static eki.ekilex.data.db.main.Tables.FREEFORM;
+import static eki.ekilex.data.db.main.Tables.GENDER;
+import static eki.ekilex.data.db.main.Tables.LANGUAGE;
+import static eki.ekilex.data.db.main.Tables.LEXEME;
+import static eki.ekilex.data.db.main.Tables.MEANING;
+import static eki.ekilex.data.db.main.Tables.MORPH;
+import static eki.ekilex.data.db.main.Tables.PARADIGM;
+import static eki.ekilex.data.db.main.Tables.POS;
+import static eki.ekilex.data.db.main.Tables.REGISTER;
+import static eki.ekilex.data.db.main.Tables.SOURCE;
+import static eki.ekilex.data.db.main.Tables.WORD;
 
 import java.sql.Timestamp;
 import java.util.List;
@@ -38,11 +38,11 @@ import eki.ekilex.data.StatDataRow;
 public class StatDataDbService implements GlobalConstant {
 
 	@Autowired
-	private DSLContext create;
+	private DSLContext mainDb;
 
 	public StatData getMainEntityStatData() {
 
-		return create
+		return mainDb
 				.select(
 						DSL.field(IGNORE_QUERY_LOG),
 						DSL.select(DSL.count(WORD.ID)).from(WORD).asField("word_count"),
@@ -67,7 +67,7 @@ public class StatDataDbService implements GlobalConstant {
 
 	public List<StatDataRow> getFreeformStatData() {
 
-		return create
+		return mainDb
 				.select(
 						DSL.val(IGNORE_QUERY_LOG),
 						FREEFORM.FREEFORM_TYPE_CODE.as("name"),
@@ -80,7 +80,7 @@ public class StatDataDbService implements GlobalConstant {
 
 	public List<StatDataRow> getLexemeDatasetStatData() {
 
-		return create
+		return mainDb
 				.select(
 						DSL.val(IGNORE_QUERY_LOG),
 						LEXEME.DATASET_CODE.as("name"),
@@ -93,7 +93,7 @@ public class StatDataDbService implements GlobalConstant {
 
 	public List<StatDataRow> getActivityStatData(Timestamp from) {
 
-		return create
+		return mainDb
 				.select(
 						DSL.val(IGNORE_QUERY_LOG),
 						ACTIVITY_LOG.EVENT_BY.as("name"),
@@ -107,7 +107,7 @@ public class StatDataDbService implements GlobalConstant {
 
 	public List<StatDataRow> getApiRequestStat() {
 
-		return create
+		return mainDb
 				.select(
 						DSL.val(IGNORE_QUERY_LOG),
 						API_REQUEST_COUNT.AUTH_NAME.as("name"),
@@ -120,7 +120,7 @@ public class StatDataDbService implements GlobalConstant {
 
 	public List<StatDataRow> getApiErrorStat() {
 
-		return create
+		return mainDb
 				.select(
 						DSL.val(IGNORE_QUERY_LOG),
 						API_ERROR_COUNT.AUTH_NAME.as("name"),

@@ -1,6 +1,5 @@
 package eki.ekilex.service;
 
-import java.sql.Timestamp;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -16,13 +15,11 @@ import eki.common.constant.Complexity;
 import eki.common.constant.ReferenceType;
 import eki.common.constant.WordRelationGroupType;
 import eki.common.service.TextDecorationService;
-import eki.ekilex.data.AbstractCreateUpdateEntity;
 import eki.ekilex.data.ActivityLogData;
-import eki.ekilex.data.FreeForm;
+import eki.ekilex.data.Freeform;
 import eki.ekilex.data.Note;
 import eki.ekilex.data.SourceLink;
 import eki.ekilex.data.Usage;
-import eki.ekilex.data.ValueAndPrese;
 import eki.ekilex.data.WordLexemeMeaningIdTuple;
 import eki.ekilex.data.WordRelation;
 import eki.ekilex.service.db.CudDbService;
@@ -49,7 +46,7 @@ public abstract class AbstractCudService extends AbstractService {
 	@Autowired
 	protected TagDbService tagDbService;
 
-	@Transactional
+	@Transactional(rollbackOn = Exception.class)
 	public Long createDefinition(
 			Long meaningId, String valuePrese, String languageCode, String datasetCode, Complexity complexity, String typeCode, boolean isPublic,
 			String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
@@ -62,13 +59,13 @@ public abstract class AbstractCudService extends AbstractService {
 		return definitionId;
 	}
 
-	@Transactional
+	@Transactional(rollbackOn = Exception.class)
 	public WordLexemeMeaningIdTuple createLexeme(Long wordId, String datasetCode, Long meaningId, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
 
 		int currentLexemesMaxLevel1 = lookupDbService.getWordLexemesMaxLevel1(wordId, datasetCode);
 		int lexemeLevel1 = currentLexemesMaxLevel1 + 1;
 		ActivityLogData activityLog = activityLogService.prepareActivityLog("createLexeme", wordId, ActivityOwner.WORD, roleDatasetCode, isManualEventOnUpdateEnabled);
-		WordLexemeMeaningIdTuple wordLexemeMeaningId = cudDbService.createLexeme(wordId, datasetCode, meaningId, lexemeLevel1, null, PUBLICITY_PUBLIC);
+		WordLexemeMeaningIdTuple wordLexemeMeaningId = cudDbService.createLexemeWithCreateOrSelectMeaning(wordId, datasetCode, meaningId, lexemeLevel1, null, PUBLICITY_PUBLIC);
 		Long lexemeId = wordLexemeMeaningId.getLexemeId();
 		if (lexemeId == null) {
 			return wordLexemeMeaningId;
@@ -79,7 +76,7 @@ public abstract class AbstractCudService extends AbstractService {
 		return wordLexemeMeaningId;
 	}
 
-	@Transactional
+	@Transactional(rollbackOn = Exception.class)
 	public void createLexemePos(Long lexemeId, String posCode, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
 
 		ActivityLogData activityLog = activityLogService.prepareActivityLog("createLexemePos", lexemeId, ActivityOwner.LEXEME, roleDatasetCode, isManualEventOnUpdateEnabled);
@@ -87,7 +84,7 @@ public abstract class AbstractCudService extends AbstractService {
 		activityLogService.createActivityLog(activityLog, lexemePosId, ActivityEntity.POS);
 	}
 
-	@Transactional
+	@Transactional(rollbackOn = Exception.class)
 	public Long createUsage(Long lexemeId, String valuePrese, String lang, Complexity complexity, boolean isPublic, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
 
 		Usage usage = new Usage();
@@ -99,7 +96,7 @@ public abstract class AbstractCudService extends AbstractService {
 		return createUsage(lexemeId, usage, roleDatasetCode, isManualEventOnUpdateEnabled);
 	}
 
-	@Transactional
+	@Transactional(rollbackOn = Exception.class)
 	public Long createUsage(Long lexemeId, Usage usage, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
 
 		setValueAndPrese(usage);
@@ -110,7 +107,7 @@ public abstract class AbstractCudService extends AbstractService {
 		return usageId;
 	}
 
-	@Transactional
+	@Transactional(rollbackOn = Exception.class)
 	public void createWordRelation(Long wordId, Long targetWordId, String relationTypeCode, String oppositeRelationTypeCode, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
 
 		ActivityLogData activityLog;
@@ -208,46 +205,12 @@ public abstract class AbstractCudService extends AbstractService {
 		note.setLang(lang);
 		note.setComplexity(complexity);
 		note.setPublic(isPublic);
-
 		setValueAndPrese(note);
 
 		return note;
 	}
 
-	protected void applyCreateUpdate(AbstractCreateUpdateEntity entity) {
-
-		String userName = userContext.getUserName();
-		Timestamp now = new Timestamp(System.currentTimeMillis());
-		entity.setCreatedBy(userName);
-		entity.setCreatedOn(now);
-		entity.setModifiedBy(userName);
-		entity.setModifiedOn(now);
-	}
-
-	protected void applyUpdate(AbstractCreateUpdateEntity entity) {
-
-		String userName = userContext.getUserName();
-		Timestamp now = new Timestamp(System.currentTimeMillis());
-		entity.setModifiedBy(userName);
-		entity.setModifiedOn(now);
-	}
-
-	public void setValueAndPrese(ValueAndPrese note) {
-
-		String valuePrese = StringUtils.trim(note.getValuePrese());
-		String value = textDecorationService.removeEkiElementMarkup(valuePrese);
-		note.setValue(value);
-		note.setValuePrese(valuePrese);
-	}
-
-	protected void setFreeformValueTextAndValuePrese(FreeForm freeform, String valuePrese) {
-
-		String value = textDecorationService.removeEkiElementMarkup(valuePrese);
-		freeform.setValueText(value);
-		freeform.setValuePrese(valuePrese);
-	}
-
-	protected Long createLexemeFreeform(ActivityEntity activityEntity, Long lexemeId, FreeForm freeform, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
+	protected Long createLexemeFreeform(ActivityEntity activityEntity, Long lexemeId, Freeform freeform, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
 
 		String userName = userContext.getUserName();
 		ActivityLogData activityLog = activityLogService.prepareActivityLog("createLexemeFreeform", lexemeId, ActivityOwner.LEXEME, roleDatasetCode, isManualEventOnUpdateEnabled);

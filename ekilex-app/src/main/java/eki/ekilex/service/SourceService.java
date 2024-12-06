@@ -194,7 +194,7 @@ public class SourceService extends AbstractSourceService {
 		return sourceDbService.getSourceNames(nameSearchFilter, limit);
 	}
 
-	@Transactional
+	@Transactional(rollbackOn = Exception.class)
 	public void updateSource(Source source, String roleDatasetCode) throws Exception {
 
 		Long sourceId = source.getId();
@@ -212,14 +212,14 @@ public class SourceService extends AbstractSourceService {
 		return sourceDbService.validateSourceDelete(sourceId);
 	}
 
-	@Transactional
+	@Transactional(rollbackOn = Exception.class)
 	public void deleteSource(Long sourceId, String roleDatasetCode) throws Exception {
 
 		activityLogService.createActivityLog("deleteSource", sourceId, ActivityOwner.SOURCE, roleDatasetCode, MANUAL_EVENT_ON_UPDATE_DISABLED);
 		sourceDbService.deleteSource(sourceId);
 	}
 
-	@Transactional
+	@Transactional(rollbackOn = Exception.class)
 	public void joinSources(Long targetSourceId, Long originSourceId, String roleDatasetCode) throws Exception {
 
 		// TODO remove this functionality after removing source properties?

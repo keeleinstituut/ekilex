@@ -426,16 +426,14 @@
               <span th:utext="${definition.valuePrese}"></span>
               <span class="font-italic text-info" th:text="${definition.typeValue}"></span>
               <span th:text="'(' + #{'boolean.public.' + ${definition.public}} + ')'" class="ctxt" th:if="${definition.crudGrant}"></span>
-              <span th:if="${#lists.isEmpty(definition.sourceLinks)}" class="show-on-mouseover" th:unless="${definition.editDisabled}">
-                [
-                <button type="button" class="btn badge badge-secondary"
+              <span class="show-on-mouseover" th:unless="${definition.editDisabled}">
+                <button type="button" class="btn badge badge-success"
                         th:title="#{common.add.source.link}"
                         data-toggle="modal"
                         th:data-target="${'#addDefinitionSourceLinkDlg_' + definition.id}"
                         sec:authorize="#vars.definition.crudGrant">
                   <i class="fa fa-external-link" aria-hidden="true"></i>
                 </button>
-                ]
               </span>
               <div class="action-buttons-3" th:unless="${definition.editDisabled}">
                 <button type="button" class="btn badge badge-primary"
@@ -445,7 +443,7 @@
                         sec:authorize="#vars.definition.crudGrant">
                   <i class="fa fa-edit" aria-hidden="true"></i>
                 </button>
-                <button type="button" class="btn badge badge-secondary"
+                <button type="button" class="btn badge badge-success"
                         th:title="#{term.add.definition.note}"
                         data-toggle="modal"
                         th:data-target="${'#addDefinitionNoteDlg_' + definition.id}"
@@ -463,37 +461,41 @@
               </div>
             </div>
             <div class="hidden-buttons">
-              <th:block th:each="sourceLink : ${definition.sourceLinks}" th:if="${not #lists.isEmpty(definition.sourceLinks)}">
-                <div th:replace="termdialog :: edit_definition_source_link_dlg"></div>
-                <span>
-                  [
-                  <a th:href="@{'/definition_source_link:' + ${sourceLink.id}}" th:text="${sourceLink.sourceName}"></a>
-                  <span th:if="${sourceLink.name != null}" th:text="${sourceLink.name}"></span>
-                  <button type="button" class="btn badge badge-primary"
-                          th:title="#{common.edit}"
-                          data-toggle="modal"
-                          th:data-target="${'#editDefinitionSourceLinkDlg_' + sourceLink.id}"
-                          sec:authorize="#vars.definition.crudGrant">
-                    <i class="fa fa-edit" aria-hidden="true"></i>
-                  </button>
-                  <button type="button" class="btn badge badge-warning"
-                          data-op-code="definition_source_link"
-                          th:data-id="${sourceLink.id}"
-                          data-toggle="delete-confirm"
-                          data-placement="right"
-                          sec:authorize="#vars.definition.crudGrant">
-                    <i class="fa fa-remove" aria-hidden="true"></i>
-                  </button>
-                  ]
-                </span>
+              <th:block th:unless="${#lists.isEmpty(definition.sourceLinks)}">
+                <div class="orderable" data-op-code="definition_source_link">
+                  <div th:each="sourceLink,sourceLinkIter : ${definition.sourceLinks}"
+                       th:data-id="${sourceLink.id}"
+                       th:data-orderby="${sourceLink.orderBy}"
+                       class="ml-4" style="position: relative;">
+                    <div th:replace="termdialog :: edit_definition_source_link_dlg"></div>
+                    <div style="position: absolute; display: list-item;"></div>
+                    <div class="action-column">
+                      <th:block th:replace="common :: ordering_buttons(${sourceLinkIter})" sec:authorize="#vars.definition.crudGrant"></th:block>
+                    </div>
+                    <div class="invisible-buttons action-buttons-anchor mw-80">
+                      <span>
+                        <a th:href="@{'/definition_source_link:' + ${sourceLink.id}}" th:text="${sourceLink.sourceName}"></a>
+                        <span th:if="${sourceLink.name != null}" th:text="${sourceLink.name}"></span>
+                        <button type="button" class="btn badge badge-primary"
+                                th:title="#{common.edit}"
+                                data-toggle="modal"
+                                th:data-target="${'#editDefinitionSourceLinkDlg_' + sourceLink.id}"
+                                sec:authorize="#vars.definition.crudGrant">
+                          <i class="fa fa-edit" aria-hidden="true"></i>
+                        </button>
+                        <button type="button" class="btn badge badge-warning"
+                                data-op-code="definition_source_link"
+                                th:data-id="${sourceLink.id}"
+                                data-toggle="delete-confirm"
+                                data-placement="right"
+                                sec:authorize="#vars.definition.crudGrant">
+                          <i class="fa fa-remove" aria-hidden="true"></i>
+                        </button>
+                      </span>
+                    </div>
+                  </div>
+                </div>
               </th:block>
-              <button type="button" class="btn badge badge-secondary"
-                      th:title="#{common.add.source.link}"
-                      data-toggle="modal"
-                      th:data-target="${'#addDefinitionSourceLinkDlg_' + definition.id}"
-                      sec:authorize="#vars.definition.crudGrant">
-                <i class="fa fa-external-link" aria-hidden="true"></i>
-              </button>
             </div>
             <div th:if="${not #lists.isEmpty(definition.notes)}" class="col pl-0">
               <div>
@@ -509,27 +511,23 @@
                   <div class="action-column">
                     <th:block th:replace="common :: ordering_buttons(${noteIter})" sec:authorize="#vars.definition.crudGrant"></th:block>
                   </div>
-                  <div class="small invisible-buttons action-buttons-anchor mw-80 ml-4">
+                  <div class="invisible-buttons action-buttons-anchor mw-80 ml-4">
                     <span th:utext="${note.valuePrese}"></span>
                     <span class="ctxt" th:text="'(' + #{'boolean.public.' + ${note.public}} + ')'" th:if="${definition.crudGrant}"></span>
-                    <span class="show-on-mouseover" th:if="${#lists.isEmpty(note.sourceLinks)}">
-                      [
-                      <button type="button" class="btn badge badge-secondary"
-                              th:title="#{common.add.source.link}"
-                              data-toggle="modal"
-                              th:data-target="${'#addDefinitionNoteSourceLinkDlg_' + definition.id + '_' + note.id}"
-                              sec:authorize="#vars.definition.crudGrant">
-                        <i class="fa fa-external-link" aria-hidden="true"></i>
-                      </button>
-                      ]
-                    </span>
-                    <div class="action-buttons-2">
+                    <div class="action-buttons-3">
                       <button type="button" class="btn badge badge-primary"
                               th:title="#{common.edit}"
                               data-toggle="modal"
                               th:data-target="${'#editDefinitionNoteDlg_' + definition.id + '_' + note.id}"
                               sec:authorize="#vars.definition.crudGrant">
                         <i class="fa fa-edit" aria-hidden="true"></i>
+                      </button>
+                      <button type="button" class="btn badge badge-success"
+                              th:title="#{common.add.source.link}"
+                              data-toggle="modal"
+                              th:data-target="${'#addDefinitionNoteSourceLinkDlg_' + definition.id + '_' + note.id}"
+                              sec:authorize="#vars.definition.crudGrant">
+                        <i class="fa fa-external-link" aria-hidden="true"></i>
                       </button>
                       <button type="button" class="btn badge badge-warning"
                               th:data-id="${note.id}"
@@ -541,40 +539,42 @@
                       </button>
                     </div>
                   </div>
-                  <div class="small hidden-buttons ml-4">
-                    <th:block th:each="sourceLink : ${note.sourceLinks}">
-                      <div th:replace="termdialog :: edit_definition_note_source_link_dlg"></div>
-                      <span>
-                        [
-                        <a th:href="@{'/definition_note_source_link:' + ${sourceLink.id}}" th:text="${sourceLink.sourceName}"></a>
-                        <span th:if="${sourceLink.name != null}">
-                          <span th:text="${sourceLink.name}"></span>
-                        </span>
-                        <button type="button" class="btn badge badge-primary"
-                                th:title="#{common.edit}"
-                                data-toggle="modal"
-                                th:data-target="${'#editDefinitionNoteSourceLinkDlg_' + sourceLink.id}"
-                                sec:authorize="#vars.definition.crudGrant">
-                          <i class="fa fa-edit" aria-hidden="true"></i>
-                        </button>
-                        <button type="button" class="btn badge badge-warning"
-                                th:data-id="${sourceLink.id}"
-                                data-op-code="definition_note_source_link"
-                                data-toggle="delete-confirm"
-                                data-placement="right"
-                                sec:authorize="#vars.definition.crudGrant">
-                          <i class="fa fa-remove" aria-hidden="true"></i>
-                        </button>
-                        ]
-                      </span>
+                  <div class="hidden-buttons ml-4">
+                    <th:block th:unless="${#lists.isEmpty(note.sourceLinks)}">
+                      <div class="orderable" data-op-code="definition_note_source_link">
+                        <div th:each="sourceLink,sourceLinkIter : ${note.sourceLinks}"
+                             th:data-id="${sourceLink.id}"
+                             th:data-orderby="${sourceLink.orderBy}"
+                             class="ml-4" style="position: relative;">
+                          <div th:replace="termdialog :: edit_definition_note_source_link_dlg"></div>
+                          <div style="position: absolute; display: list-item;"></div>
+                          <div class="action-column">
+                            <th:block th:replace="common :: ordering_buttons(${sourceLinkIter})" sec:authorize="#vars.definition.crudGrant"></th:block>
+                          </div>
+                          <div class="invisible-buttons action-buttons-anchor mw-80">
+                            <span>
+                              <a th:href="@{'/definition_note_source_link:' + ${sourceLink.id}}" th:text="${sourceLink.sourceName}"></a>
+                              <span th:if="${sourceLink.name != null}" th:text="${sourceLink.name}"></span>
+                              <button type="button" class="btn badge badge-primary"
+                                      th:title="#{common.edit}"
+                                      data-toggle="modal"
+                                      th:data-target="${'#editDefinitionNoteSourceLinkDlg_' + sourceLink.id}"
+                                      sec:authorize="#vars.definition.crudGrant">
+                                <i class="fa fa-edit" aria-hidden="true"></i>
+                              </button>
+                              <button type="button" class="btn badge badge-warning"
+                                      data-op-code="definition_note_source_link"
+                                      th:data-id="${sourceLink.id}"
+                                      data-toggle="delete-confirm"
+                                      data-placement="right"
+                                      sec:authorize="#vars.definition.crudGrant">
+                                <i class="fa fa-remove" aria-hidden="true"></i>
+                              </button>
+                            </span>
+                          </div>
+                        </div>
+                      </div>
                     </th:block>
-                    <button type="button" class="btn badge badge-secondary"
-                            th:title="#{common.add.source.link}"
-                            data-toggle="modal"
-                            th:data-target="${'#addDefinitionNoteSourceLinkDlg_' + definition.id + '_' + note.id}"
-                            sec:authorize="#vars.definition.crudGrant">
-                      <i class="fa fa-external-link" aria-hidden="true"></i>
-                    </button>
                   </div>
                 </div>
               </div>
@@ -610,36 +610,32 @@
           </button>
         </div>
         <div th:if="${noteLangGroup.selected}" class="orderable" data-op-code="meaning_note">
-          <div class="ml-4" style="position: relative" th:each="note, itemIter: ${noteLangGroup.notes}"
+          <div th:each="note, itemIter: ${noteLangGroup.notes}"
                th:data-id="${note.id}"
-               th:data-orderby="${note.orderBy}">
+               th:data-orderby="${note.orderBy}"
+			   class="ml-4" style="position: relative">
             <div th:replace="termdialog :: edit_meaning_note_dlg"></div>
             <div th:replace="termdialog :: add_meaning_note_source_link_dlg"></div>
-            <div style="display: list-item; position: absolute"></div>
             <div class="action-column">
               <th:block th:replace="common :: ordering_buttons(${itemIter})" sec:authorize="#vars.meaning.crudGrant"></th:block>
             </div>
             <div class="invisible-buttons action-buttons-anchor mw-80">
               <span th:utext="${note.valuePrese}"></span>
               <span class="ctxt" th:text="'(' + #{'boolean.public.' + ${note.public}} + ')'" th:if="${meaning.crudGrant}"></span>
-              <span class="show-on-mouseover" th:if="${#lists.isEmpty(note.sourceLinks)}">
-                [
-                <button type="button" class="btn badge badge-secondary"
-                        th:title="#{common.add.source.link}"
-                        data-toggle="modal"
-                        th:data-target="${'#addMeaningNoteSourceLinkDlg_' + meaningId + '_' + note.id}"
-                        sec:authorize="#vars.meaning.crudGrant">
-                  <i class="fa fa-external-link" aria-hidden="true"></i>
-                </button>
-                ]
-              </span>
-              <div class="action-buttons-2">
+              <div class="action-buttons-3">
                 <button type="button" class="btn badge badge-primary"
                         th:title="#{common.edit}"
                         data-toggle="modal"
                         th:data-target="${'#editMeaningNoteDlg_' + meaningId + '_' + note.id}"
                         sec:authorize="#vars.meaning.crudGrant">
                   <i class="fa fa-edit" aria-hidden="true"></i>
+                </button>
+                <button type="button" class="btn badge badge-success"
+                        th:title="#{common.add.source.link}"
+                        data-toggle="modal"
+                        th:data-target="${'#addMeaningNoteSourceLinkDlg_' + meaningId + '_' + note.id}"
+                        sec:authorize="#vars.meaning.crudGrant">
+                  <i class="fa fa-external-link" aria-hidden="true"></i>
                 </button>
                 <button type="button" class="btn badge badge-warning"
                         th:data-id="${note.id}"
@@ -652,39 +648,41 @@
               </div>
             </div>
             <div class="hidden-buttons">
-              <th:block th:each="sourceLink : ${note.sourceLinks}">
-                <div th:replace="termdialog :: edit_meaning_note_source_link_dlg"></div>
-                <span>
-                  [
-                  <a th:href="@{'/meaning_note_source_link:' + ${sourceLink.id}}" th:text="${sourceLink.sourceName}"></a>
-                  <span th:if="${sourceLink.name != null}">
-                    <span th:text="${sourceLink.name}"></span>
-                  </span>
-                  <button type="button" class="btn badge badge-primary"
-                          th:title="#{common.edit}"
-                          data-toggle="modal"
-                          th:data-target="${'#editMeaningNoteSourceLinkDlg_' + sourceLink.id}"
-                          sec:authorize="#vars.meaning.crudGrant">
-                    <i class="fa fa-edit" aria-hidden="true"></i>
-                  </button>
-                  <button type="button" class="btn badge badge-warning"
-                          th:data-id="${sourceLink.id}"
-                          data-op-code="meaning_note_source_link"
-                          data-toggle="delete-confirm"
-                          data-placement="right"
-                          sec:authorize="#vars.meaning.crudGrant">
-                    <i class="fa fa-remove" aria-hidden="true"></i>
-                  </button>
-                  ]
-                </span>
+              <th:block th:unless="${#lists.isEmpty(note.sourceLinks)}">
+                <div class="orderable" data-op-code="meaning_note_source_link">
+                  <div th:each="sourceLink,sourceLinkIter : ${note.sourceLinks}"
+                       th:data-id="${sourceLink.id}"
+                       th:data-orderby="${sourceLink.orderBy}"
+                       class="ml-4" style="position: relative;">
+                    <div th:replace="termdialog :: edit_meaning_note_source_link_dlg"></div>
+                    <div style="position: absolute; display: list-item;"></div>
+                    <div class="action-column">
+                      <th:block th:replace="common :: ordering_buttons(${sourceLinkIter})" sec:authorize="#vars.meaning.crudGrant"></th:block>
+                    </div>
+                    <div class="invisible-buttons action-buttons-anchor mw-80">
+                      <span>
+                        <a th:href="@{'/meaning_note_source_link:' + ${sourceLink.id}}" th:text="${sourceLink.sourceName}"></a>
+                        <span th:if="${sourceLink.name != null}" th:text="${sourceLink.name}"></span>
+                        <button type="button" class="btn badge badge-primary"
+                                th:title="#{common.edit}"
+                                data-toggle="modal"
+                                th:data-target="${'#editMeaningNoteSourceLinkDlg_' + sourceLink.id}"
+                                sec:authorize="#vars.meaning.crudGrant">
+                          <i class="fa fa-edit" aria-hidden="true"></i>
+                        </button>
+                        <button type="button" class="btn badge badge-warning"
+                                data-op-code="meaning_note_source_link"
+                                th:data-id="${sourceLink.id}"
+                                data-toggle="delete-confirm"
+                                data-placement="right"
+                                sec:authorize="#vars.meaning.crudGrant">
+                          <i class="fa fa-remove" aria-hidden="true"></i>
+                        </button>
+                      </span>
+                    </div>
+                  </div>
+                </div>
               </th:block>
-              <button type="button" class="btn badge badge-secondary"
-                      th:title="#{common.add.source.link}"
-                      data-toggle="modal"
-                      th:data-target="${'#addMeaningNoteSourceLinkDlg_' + meaningId + '_' + note.id}"
-                      sec:authorize="#vars.meaning.crudGrant">
-                <i class="fa fa-external-link" aria-hidden="true"></i>
-              </button>
             </div>
           </div>
         </div>
@@ -807,11 +805,12 @@
       </button>
     </div>
     <div class="col pl-0">
-      <th:block th:each="image : ${meaning.images}">
+      <th:block th:each="image,imageIter : ${meaning.images}">
         <div th:replace="termdialog :: edit_meaning_image_dlg"></div>
         <div th:replace="termdialog :: add_meaning_image_source_link_dlg"></div>
+        <div th:if="${imageIter.index > 0}" class="mt-3"></div>
         <div class="invisible-buttons action-buttons-anchor w-100">
-          <img class="w-25" th:src="${image.sourceUrl}">
+          <img class="w-50" th:src="${image.sourceUrl}">
           <span class="invisible-buttons">
             <button type="button" class="btn badge badge-primary align-bottom"
                     th:title="#{common.edit}"
@@ -819,6 +818,13 @@
                     th:data-target="${'#editMeaningImageDlg_' + image.id}"
                     sec:authorize="#vars.meaning.crudGrant">
               <i class="fa fa-edit" aria-hidden="true"></i>
+            </button>
+            <button type="button" class="btn badge badge-success align-bottom"
+                    th:title="#{common.add.source.link}"
+                    data-toggle="modal"
+                    th:data-target="${'#addMeaningImageSourceLinkDlg_' + image.id}"
+                    sec:authorize="#vars.meaning.crudGrant">
+              <i class="fa fa-external-link" aria-hidden="true"></i>
             </button>
             <button type="button" class="btn badge badge-warning align-bottom"
                     th:title="#{term.delete.image}"
@@ -829,112 +835,46 @@
               <i class="fa fa-remove" aria-hidden="true"></i>
             </button>
           </span>
-          <span th:if="${#strings.isEmpty(image.title)}">
-            <button type="button" class="btn badge badge-secondary align-bottom"
-                    th:title="#{common.add.source.link}"
-                    data-toggle="modal"
-                    th:data-target="${'#addMeaningImageSourceLinkDlg_' + image.id}"
-                    sec:authorize="#vars.meaning.crudGrant">
-              <i class="fa fa-external-link" aria-hidden="true"></i>
-            </button>
-          </span>
-        </div>
-        <div class="col pl-0 hidden-buttons" th:if="${#strings.isEmpty(image.title)}">
-          <th:block th:each="sourceLink : ${image.sourceLinks}">
-            <div th:replace="termdialog :: edit_meaning_image_source_link_dlg"></div>
-            <span>
-              [
-              <a th:href="@{'/meaning_image_source_link:' + ${sourceLink.id}}" th:text="${sourceLink.sourceName}"></a>
-              <span th:if="${sourceLink.name != null}">
-                <span th:text="${sourceLink.name}"></span>
-              </span>
-              <button type="button" class="btn badge badge-primary"
-                      th:title="#{common.edit}"
-                      data-toggle="modal"
-                      th:data-target="${'#editMeaningImageSourceLinkDlg_' + sourceLink.id}"
-                      sec:authorize="#vars.meaning.crudGrant">
-                <i class="fa fa-edit" aria-hidden="true"></i>
-              </button>
-              <button type="button" class="btn badge badge-warning"
-                      th:data-id="${sourceLink.id}"
-                      data-op-code="meaning_image_source_link"
-                      data-toggle="delete-confirm"
-                      data-placement="right"
-                      sec:authorize="#vars.meaning.crudGrant">
-                <i class="fa fa-remove" aria-hidden="true"></i>
-              </button>
-              ]
-            </span>
-          </th:block>
         </div>
         <div th:unless="${#strings.isEmpty(image.title)}">
-          <div class="invisible-buttons action-buttons-anchor mw-80">
-            <span th:text="${image.title}"></span>
-            <span class="show-on-mouseover" th:if="${#lists.isEmpty(image.sourceLinks)}">
-              [
-              <button type="button" class="btn badge badge-secondary"
-                      th:title="#{common.add.source.link}"
-                      data-toggle="modal"
-                      th:data-target="${'#addMeaningImageSourceLinkDlg_' + image.id}"
-                      sec:authorize="#vars.meaning.crudGrant">
-                <i class="fa fa-external-link" aria-hidden="true"></i>
-              </button>
-              ]
-            </span>
-            <div class="action-buttons-2">
-              <button type="button" class="btn badge badge-primary"
-                      th:title="#{common.edit}"
-                      data-toggle="modal"
-                      th:data-target="${'#editMeaningImageTitleDlg_' + image.id}"
-                      sec:authorize="#vars.meaning.crudGrant">
-                <i class="fa fa-edit" aria-hidden="true"></i>
-              </button>
-              <button type="button" class="btn badge badge-warning"
-                      th:data-id="${image.id}"
-                      data-op-code="image_title"
-                      data-toggle="delete-confirm"
-                      data-placement="right"
-                      sec:authorize="#vars.meaning.crudGrant">
-                <i class="fa fa-remove" aria-hidden="true"></i>
-              </button>
+          <span th:text="${image.title}"></span>
+        </div>
+        <div class="hidden-buttons">
+          <th:block th:unless="${#lists.isEmpty(image.sourceLinks)}">
+            <div class="orderable" data-op-code="meaning_image_source_link">
+              <div th:each="sourceLink,sourceLinkIter : ${image.sourceLinks}"
+                   th:data-id="${sourceLink.id}"
+                   th:data-orderby="${sourceLink.orderBy}"
+                   class="ml-4" style="position: relative;">
+                <div th:replace="termdialog :: edit_meaning_image_source_link_dlg"></div>
+                <div style="position: absolute; display: list-item;"></div>
+                <div class="action-column">
+                  <th:block th:replace="common :: ordering_buttons(${sourceLinkIter})" sec:authorize="#vars.meaning.crudGrant"></th:block>
+                </div>
+                <div class="invisible-buttons action-buttons-anchor mw-80">
+                  <span>
+                    <a th:href="@{'/meaning_image_source_link:' + ${sourceLink.id}}" th:text="${sourceLink.sourceName}"></a>
+                    <span th:if="${sourceLink.name != null}" th:text="${sourceLink.name}"></span>
+                    <button type="button" class="btn badge badge-primary"
+                            th:title="#{common.edit}"
+                            data-toggle="modal"
+                            th:data-target="${'#editMeaningImageSourceLinkDlg_' + sourceLink.id}"
+                            sec:authorize="#vars.meaning.crudGrant">
+                      <i class="fa fa-edit" aria-hidden="true"></i>
+                    </button>
+                    <button type="button" class="btn badge badge-warning"
+                            data-op-code="meaning_image_source_link"
+                            th:data-id="${sourceLink.id}"
+                            data-toggle="delete-confirm"
+                            data-placement="right"
+                            sec:authorize="#vars.meaning.crudGrant">
+                      <i class="fa fa-remove" aria-hidden="true"></i>
+                    </button>
+                  </span>
+                </div>
+              </div>
             </div>
-          </div>
-          <div class="hidden-buttons">
-            <th:block th:each="sourceLink : ${image.sourceLinks}">
-              <div th:replace="termdialog :: edit_meaning_image_source_link_dlg"></div>
-              <span>
-                [
-                <a th:href="@{'/meaning_image_source_link:' + ${sourceLink.id}}" th:text="${sourceLink.sourceName}"></a>
-                <span th:if="${sourceLink.name != null}">
-                  <span th:text="${sourceLink.name}"></span>
-                </span>
-                <button type="button" class="btn badge badge-primary"
-                        th:title="#{common.edit}"
-                        data-toggle="modal"
-                        th:data-target="${'#editMeaningImageSourceLinkDlg_' + sourceLink.id}"
-                        sec:authorize="#vars.meaning.crudGrant">
-                  <i class="fa fa-edit" aria-hidden="true"></i>
-                </button>
-                <button type="button" class="btn badge badge-warning"
-                        th:data-id="${sourceLink.id}"
-                        data-op-code="meaning_image_source_link"
-                        data-toggle="delete-confirm"
-                        data-placement="right"
-                        sec:authorize="#vars.meaning.crudGrant">
-                  <i class="fa fa-remove" aria-hidden="true"></i>
-                </button>
-                ]
-              </span>
-            </th:block>
-            <button type="button" class="btn badge badge-secondary"
-                    th:title="#{common.add.source.link}"
-                    data-toggle="modal"
-                    th:data-target="${'#addMeaningImageSourceLinkDlg_' + image.id}"
-                    sec:authorize="#vars.meaning.crudGrant">
-              <i class="fa fa-external-link" aria-hidden="true"></i>
-            </button>
-          </div>
-          <hr>
+          </th:block>
         </div>
       </th:block>
     </div>
@@ -993,38 +933,33 @@
     </div>
     <div class="col pl-0">
       <div class="orderable" data-op-code="meaning_freeform">
-        <div class="ml-4" style="position: relative"
-             th:each="freeform,freeformIter : ${meaning.freeforms}"
+        <div th:each="freeform,freeformIter : ${meaning.freeforms}"
              th:data-id="${freeform.id}"
-             th:data-orderby="${freeform.orderBy}">
+             th:data-orderby="${freeform.orderBy}"
+			 class="ml-4" style="position: relative">
           <div th:replace="termdialog :: edit_meaning_freeform_dlg"></div>
           <div th:replace="termdialog :: add_meaning_freeform_source_link_dlg"></div>
-          <div style="display: list-item; position: absolute"></div>
           <div class="action-column">
             <th:block th:replace="common :: ordering_buttons(${freeformIter})" sec:authorize="#vars.meaning.crudGrant"></th:block>
           </div>
           <div class="invisible-buttons action-buttons-anchor mw-80">
-            <span th:text="${freeform.freeformTypeValue}" class="text-monospace mr-2"></span>
+            <span th:text="${freeform.freeformTypeValue}" class="text-monospace mr-3"></span>
             <span th:utext="${freeform.valuePrese}"></span>
             <span th:text="'(' + #{'boolean.public.' + ${freeform.public}} + ')'" class="ctxt"></span>
-            <span th:if="${#lists.isEmpty(freeform.sourceLinks)}" class="show-on-mouseover">
-              [
-              <button type="button" class="btn badge badge-secondary"
-                      th:title="#{common.add.source.link}"
-                      data-toggle="modal"
-                      th:data-target="${'#addMeaningFreeformSourceLinkDlg_' + meaningId + '_' + freeform.id}"
-                      sec:authorize="#vars.meaning.crudGrant">
-                <i class="fa fa-external-link" aria-hidden="true"></i>
-              </button>
-              ]
-            </span>
-            <div class="action-buttons-2">
+            <div class="action-buttons-3">
               <button type="button" class="btn badge badge-primary"
                       th:title="#{common.edit}"
                       data-toggle="modal"
                       th:data-target="${'#editMeaningFreeformDlg_' + meaningId + '_' + freeform.id}"
                       sec:authorize="#vars.meaning.crudGrant">
                 <i class="fa fa-edit" aria-hidden="true"></i>
+              </button>
+              <button type="button" class="btn badge badge-success"
+                      th:title="#{common.add.source.link}"
+                      data-toggle="modal"
+                      th:data-target="${'#addMeaningFreeformSourceLinkDlg_' + meaningId + '_' + freeform.id}"
+                      sec:authorize="#vars.meaning.crudGrant">
+                <i class="fa fa-external-link" aria-hidden="true"></i>
               </button>
               <button type="button" class="btn badge badge-warning"
                       data-op-code="meaning_freeform"
@@ -1037,37 +972,41 @@
             </div>
           </div>
           <div class="hidden-buttons">
-            <th:block th:each="sourceLink : ${freeform.sourceLinks}" th:if="${not #lists.isEmpty(freeform.sourceLinks)}">
-              <div th:replace="termdialog :: edit_meaning_freeform_source_link_dlg"></div>
-              <span>
-                [
-                <a th:href="@{'/meaning_freeform_source_link:' + ${sourceLink.id}}" th:text="${sourceLink.sourceName}"></a>
-                <span th:text="${sourceLink.name}" th:if="${sourceLink.name != null}"></span>
-                <button type="button" class="btn badge badge-primary"
-                        th:title="#{common.edit}"
-                        data-toggle="modal"
-                        th:data-target="${'#editMeaningFreeformSourceLinkDlg_' + sourceLink.id}"
-                        sec:authorize="#vars.meaning.crudGrant">
-                  <i class="fa fa-edit" aria-hidden="true"></i>
-                </button>
-                <button type="button" class="btn badge badge-warning"
-                        data-op-code="meaning_freeform_source_link"
-                        th:data-id="${sourceLink.id}"
-                        data-toggle="delete-confirm"
-                        data-placement="right"
-                        sec:authorize="#vars.meaning.crudGrant">
-                  <i class="fa fa-remove" aria-hidden="true"></i>
-                </button>
-                ]
-              </span>
+            <th:block th:unless="${#lists.isEmpty(freeform.sourceLinks)}">
+              <div class="orderable" data-op-code="freeform_source_link">
+                <div th:each="sourceLink,sourceLinkIter : ${freeform.sourceLinks}"
+                     th:data-id="${sourceLink.id}"
+                     th:data-orderby="${sourceLink.orderBy}"
+                     class="ml-4" style="position: relative;">
+                  <div th:replace="termdialog :: edit_meaning_freeform_source_link_dlg"></div>
+                  <div style="position: absolute; display: list-item;"></div>
+                  <div class="action-column">
+                    <th:block th:replace="common :: ordering_buttons(${sourceLinkIter})" sec:authorize="#vars.meaning.crudGrant"></th:block>
+                  </div>
+                  <div class="invisible-buttons action-buttons-anchor mw-80">
+                    <span>
+                      <a th:href="@{'/freeform_source_link:' + ${sourceLink.id}}" th:text="${sourceLink.sourceName}"></a>
+                      <span th:if="${sourceLink.name != null}" th:text="${sourceLink.name}"></span>
+                      <button type="button" class="btn badge badge-primary"
+                              th:title="#{common.edit}"
+                              data-toggle="modal"
+                              th:data-target="${'#editMeaningFreeformSourceLinkDlg_' + sourceLink.id}"
+                              sec:authorize="#vars.meaning.crudGrant">
+                        <i class="fa fa-edit" aria-hidden="true"></i>
+                      </button>
+                      <button type="button" class="btn badge badge-warning"
+                              data-op-code="freeform_source_link"
+                              th:data-id="${sourceLink.id}"
+                              data-toggle="delete-confirm"
+                              data-placement="right"
+                              sec:authorize="#vars.meaning.crudGrant">
+                        <i class="fa fa-remove" aria-hidden="true"></i>
+                      </button>
+                    </span>
+                  </div>
+                </div>
+              </div>
             </th:block>
-            <button type="button" class="btn badge badge-success hidden"
-                    th:title="#{common.add.source.link}"
-                    data-toggle="modal"
-                    th:data-target="${'#addMeaningFreeformSourceLinkDlg_' + meaningId + '_' + freeform.id}"
-                    sec:authorize="#vars.meaning.crudGrant">
-              <i class="fa fa-external-link" aria-hidden="true"></i>
-            </button>
           </div>
         </div>
       </div>
@@ -1460,52 +1399,63 @@
       </button>
     </div>
   </div>
-  <div class="row mt-2 no-gutters" th:if="${not #lists.isEmpty(lexeme.sourceLinks)}" th:fragment="lexeme_source_link">
-    <hr/>
-    <div class="col pr-0 col-w13rem">
-      <span class="lbl" th:text="#{term.source.link}">Allikaviide</span>
-      <button type="button" class="btn badge badge-secondary float-right mr-4"
-              th:title="#{common.add.source.link}"
-              data-toggle="modal"
-              th:data-target="${'#addLexemeSourceLinkDlg_' + lexeme.lexemeId}"
-              sec:authorize="#vars.lexeme.crudGrant">
-        <i class="fa fa-external-link" aria-hidden="true"></i>
-      </button>
-    </div>
-    <div class="col pl-0 hidden-buttons">
-      <th:block th:each="sourceLink : ${lexeme.sourceLinks}">
-        <div th:replace="termdialog :: edit_lexeme_source_link_dlg"></div>
-        <span>
-          [
-          <a th:href="@{'/lexeme_source_link:' + ${sourceLink.id}}" th:text="${sourceLink.sourceName}"></a>
-          <span th:if="${sourceLink.name != null}">
-            <span th:text="${sourceLink.name}"></span>
-          </span>
-          <button type="button" class="btn badge badge-primary"
-                  th:title="#{common.edit}"
-                  data-toggle="modal"
-                  th:data-target="${'#editLexemeSourceLinkDlg_' + sourceLink.id}"
-                  sec:authorize="#vars.lexeme.crudGrant">
-            <i class="fa fa-edit" aria-hidden="true"></i>
-          </button>
-          <button type="button" class="btn badge badge-warning"
-                  data-placement="right"
-                  th:data-id="${sourceLink.id}"
-                  data-op-code="lexeme_source_link"
-                  data-toggle="delete-confirm"
-                  sec:authorize="#vars.lexeme.crudGrant">
-            <i class="fa fa-remove" aria-hidden="true"></i>
-          </button>
-          ]
-        </span>
-      </th:block>
+  <div th:fragment="lexeme_source_link">
+    <div class="row mt-2 no-gutters" th:if="${not #lists.isEmpty(lexeme.sourceLinks)}">
+      <hr/>
+      <div class="col pr-0 col-w13rem">
+        <span class="lbl" th:text="#{term.source.link}">Allikaviide</span>
+        <button type="button" class="btn badge badge-success float-right mr-4"
+                th:title="#{common.add.source.link}"
+                data-toggle="modal"
+                th:data-target="${'#addLexemeSourceLinkDlg_' + lexeme.lexemeId}"
+                sec:authorize="#vars.lexeme.crudGrant">
+          <i class="fa fa-external-link" aria-hidden="true"></i>
+        </button>
+      </div>
+      <div class="col pl-0 hidden-buttons">
+        <th:block th:unless="${#lists.isEmpty(lexeme.sourceLinks)}">
+          <div class="orderable" data-op-code="lexeme_source_link">
+            <div th:each="sourceLink,sourceLinkIter : ${lexeme.sourceLinks}"
+                 th:data-id="${sourceLink.id}"
+                 th:data-orderby="${sourceLink.orderBy}"
+                 class="ml-4" style="position: relative;">
+              <div th:replace="termdialog :: edit_lexeme_source_link_dlg"></div>
+              <div style="position: absolute; display: list-item;"></div>
+              <div class="action-column">
+                <th:block th:replace="common :: ordering_buttons(${sourceLinkIter})" sec:authorize="#vars.lexeme.crudGrant"></th:block>
+              </div>
+              <div class="invisible-buttons action-buttons-anchor mw-80">
+                <span>
+                  <a th:href="@{'/lexeme_source_link:' + ${sourceLink.id}}" th:text="${sourceLink.sourceName}"></a>
+                  <span th:if="${sourceLink.name != null}" th:text="${sourceLink.name}"></span>
+                  <button type="button" class="btn badge badge-primary"
+                          th:title="#{common.edit}"
+                          data-toggle="modal"
+                          th:data-target="${'#editLexemeSourceLinkDlg_' + sourceLink.id}"
+                          sec:authorize="#vars.lexeme.crudGrant">
+                    <i class="fa fa-edit" aria-hidden="true"></i>
+                  </button>
+                  <button type="button" class="btn badge badge-warning"
+                          data-op-code="lexeme_source_link"
+                          th:data-id="${sourceLink.id}"
+                          data-toggle="delete-confirm"
+                          data-placement="right"
+                          sec:authorize="#vars.lexeme.crudGrant">
+                    <i class="fa fa-remove" aria-hidden="true"></i>
+                  </button>
+                </span>
+              </div>
+            </div>
+          </div>
+        </th:block>
+      </div>
     </div>
   </div>
   <div class="row no-gutters" th:if="${not #lists.isEmpty(lexeme.usages)}" th:fragment="lexeme_usage">
     <hr/>
     <div class="col pr-0 col-w13rem">
       <span class="lbl" th:text="#{term.usage}">Kasutusnäide</span>
-      <button type="button" class="btn badge badge-secondary float-right mr-4"
+      <button type="button" class="btn badge badge-success float-right mr-4"
               th:title="#{common.add.new}"
               data-toggle="modal"
               th:data-target="${'#addUsageDlg_' + lexeme.lexemeId}"
@@ -1528,24 +1478,20 @@
           <div class="invisible-buttons action-buttons-anchor mw-80">
             <span th:utext="${usage.valuePrese}"></span>
             <div class="d-inline-block ctxt" th:text="'(' + #{'boolean.public.' + ${usage.public}} + ')'" th:if="${usage.crudGrant}"></div>
-            <span class="show-on-mouseover" th:if="${#lists.isEmpty(usage.sourceLinks)}">
-              [
-              <button type="button" class="btn badge badge-secondary"
-                      th:title="#{common.add.source.link}"
-                      data-toggle="modal"
-                      th:data-target="${'#addUsageSourceLinkDlg_' + usage.id}"
-                      sec:authorize="#vars.usage.crudGrant">
-                <i class="fa fa-external-link" aria-hidden="true"></i>
-              </button>
-              ]
-            </span>
-            <div class="action-buttons-2">
+            <div class="action-buttons-3">
               <button type="button" class="btn badge badge-primary"
                       th:title="#{common.edit}"
                       data-toggle="modal"
                       th:data-target="${'#editUsageDlg_' + lexeme.lexemeId + '_' + usage.id}"
                       sec:authorize="#vars.usage.crudGrant">
                 <i class="fa fa-edit" aria-hidden="true"></i>
+              </button>
+              <button type="button" class="btn badge badge-success"
+                      th:title="#{common.add.source.link}"
+                      data-toggle="modal"
+                      th:data-target="${'#addUsageSourceLinkDlg_' + usage.id}"
+                      sec:authorize="#vars.usage.crudGrant">
+                <i class="fa fa-external-link" aria-hidden="true"></i>
               </button>
               <button type="button" class="btn badge badge-warning"
                       th:data-id="${usage.id}"
@@ -1557,38 +1503,42 @@
               </button>
             </div>
           </div>
-          <div class="hidden-buttons" th:if="${not #lists.isEmpty(usage.sourceLinks)}">
-            <th:block th:each="sourceLink : ${usage.sourceLinks}">
-              <div th:replace="termdialog :: edit_usage_source_link_dlg"></div>
-              <span>
-                [
-                <a th:href="@{'/usage_source_link:' + ${sourceLink.id}}" th:text="${sourceLink.sourceName}"></a>
-                <span th:text="${sourceLink.name}" th:if="${sourceLink.name != null}"></span>
-                <button type="button" class="btn badge badge-primary"
-                        th:title="#{common.edit}"
-                        data-toggle="modal"
-                        th:data-target="${'#editUsageSourceLinkDlg_' + sourceLink.id}"
-                        sec:authorize="#vars.usage.crudGrant">
-                  <i class="fa fa-edit" aria-hidden="true"></i>
-                </button>
-                <button type="button" class="btn badge badge-warning"
-                        th:data-id="${sourceLink.id}"
-                        data-op-code="usage_source_link"
-                        data-toggle="delete-confirm"
-                        data-placement="right"
-                        sec:authorize="#vars.usage.crudGrant">
-                  <i class="fa fa-remove" aria-hidden="true"></i>
-                </button>
-                ]
-              </span>
+          <div class="hidden-buttons">
+            <th:block th:unless="${#lists.isEmpty(usage.sourceLinks)}">
+              <div class="orderable" data-op-code="usage_source_link">
+                <div th:each="sourceLink,sourceLinkIter : ${usage.sourceLinks}"
+                     th:data-id="${sourceLink.id}"
+                     th:data-orderby="${sourceLink.orderBy}"
+                     class="ml-4" style="position: relative;">
+                  <div th:replace="termdialog :: edit_usage_source_link_dlg"></div>
+                  <div style="position: absolute; display: list-item;"></div>
+                  <div class="action-column">
+                    <th:block th:replace="common :: ordering_buttons(${sourceLinkIter})" sec:authorize="#vars.usage.crudGrant"></th:block>
+                  </div>
+                  <div class="invisible-buttons action-buttons-anchor mw-80">
+                    <span>
+                      <a th:href="@{'/usage_source_link:' + ${sourceLink.id}}" th:text="${sourceLink.sourceName}"></a>
+                      <span th:if="${sourceLink.name != null}" th:text="${sourceLink.name}"></span>
+                      <button type="button" class="btn badge badge-primary"
+                              th:title="#{common.edit}"
+                              data-toggle="modal"
+                              th:data-target="${'#editUsageSourceLinkDlg_' + sourceLink.id}"
+                              sec:authorize="#vars.usage.crudGrant">
+                        <i class="fa fa-edit" aria-hidden="true"></i>
+                      </button>
+                      <button type="button" class="btn badge badge-warning"
+                              data-op-code="usage_source_link"
+                              th:data-id="${sourceLink.id}"
+                              data-toggle="delete-confirm"
+                              data-placement="right"
+                              sec:authorize="#vars.usage.crudGrant">
+                        <i class="fa fa-remove" aria-hidden="true"></i>
+                      </button>
+                    </span>
+                  </div>
+                </div>
+              </div>
             </th:block>
-            <button type="button" class="btn badge badge-secondary"
-                    th:title="#{common.add.source.link}"
-                    data-toggle="modal"
-                    th:data-target="${'#addUsageSourceLinkDlg_' + usage.id}"
-                    sec:authorize="#vars.usage.crudGrant">
-              <i class="fa fa-external-link" aria-hidden="true"></i>
-            </button>
           </div>
         </div>
       </div>
@@ -1598,7 +1548,7 @@
     <hr/>
     <div class="col pr-0 col-w13rem">
       <span class="lbl" th:text="#{term.lexeme.relation}">Ilmiku seos</span>
-      <button type="button" class="btn badge badge-secondary float-right mr-4"
+      <button type="button" class="btn badge badge-success float-right mr-4"
               th:title="#{term.add.relation}"
               data-toggle="modal"
               th:data-target="${'#addLexemeRelationDlg_' + lexeme.lexemeId}"
@@ -1637,16 +1587,14 @@
   <div class="row no-gutters" th:if="${not #lists.isEmpty(lexeme.noteLangGroups)}" th:fragment="lexeme_note">
     <hr/>
     <div class="col pr-0 col-w13rem">
-      <span class="lbl">
-        <span th:text="#{term.lexeme.note}"></span>
-        <button type="button" class="btn badge badge-secondary float-right mr-4"
-                th:title="#{common.add.new}"
-                data-toggle="modal"
-                th:data-target="${'#addLexemeNoteDlg_' + lexeme.lexemeId}"
-                sec:authorize="#vars.lexeme.crudGrant">
-          <i class="fa fa-plus" aria-hidden="true"></i>
-        </button>
-      </span>
+      <span th:text="#{term.lexeme.note}" class="lbl"></span>
+      <button type="button" class="btn badge badge-success float-right mr-4"
+              th:title="#{common.add.new}"
+              data-toggle="modal"
+              th:data-target="${'#addLexemeNoteDlg_' + lexeme.lexemeId}"
+              sec:authorize="#vars.lexeme.crudGrant">
+        <i class="fa fa-plus" aria-hidden="true"></i>
+      </button>
     </div>
     <div class="col pl-0">
       <th:block th:each="noteLangGroup : ${lexeme.noteLangGroups}">
@@ -1660,10 +1608,10 @@
           </button>
         </div>
         <div th:if="${noteLangGroup.selected}" class="orderable" data-op-code="lexeme_note">
-          <div class="ml-4" style="position: relative"
-               th:each="note, itemIter: ${noteLangGroup.notes}"
+          <div th:each="note, itemIter: ${noteLangGroup.notes}"
                th:data-id="${note.id}"
-               th:data-orderby="${note.orderBy}">
+               th:data-orderby="${note.orderBy}"
+               class="ml-4" style="position: relative">
             <div th:replace="termdialog :: edit_lexeme_note_dlg"></div>
             <div th:replace="termdialog :: add_lexeme_note_source_link_dlg"></div>
             <div style="display: list-item; position: absolute"></div>
@@ -1673,24 +1621,20 @@
             <div class="invisible-buttons action-buttons-anchor mw-80">
               <span th:utext="${note.valuePrese}"></span>
               <span class="ctxt" th:text="'(' + #{'boolean.public.' + ${note.public}} + ')'" th:if="${lexeme.crudGrant}"></span>
-              <span class="show-on-mouseover" th:if="${#lists.isEmpty(note.sourceLinks)}">
-                [
-                <button type="button" class="btn badge badge-secondary"
-                        th:title="#{common.add.source.link}"
-                        data-toggle="modal"
-                        th:data-target="${'#addLexemeNoteSourceLinkDlg_' + lexeme.lexemeId + '_' + note.id}"
-                        sec:authorize="#vars.lexeme.crudGrant">
-                  <i class="fa fa-external-link" aria-hidden="true"></i>
-                </button>
-                ]
-              </span>
-              <div class="action-buttons-2">
+              <div class="action-buttons-3">
                 <button type="button" class="btn badge badge-primary"
                         th:title="#{common.edit}"
                         data-toggle="modal"
                         th:data-target="${'#editLexemeNoteDlg_' + lexeme.lexemeId + '_' + note.id}"
                         sec:authorize="#vars.lexeme.crudGrant">
                   <i class="fa fa-edit" aria-hidden="true"></i>
+                </button>
+                <button type="button" class="btn badge badge-success"
+                        th:title="#{common.add.source.link}"
+                        data-toggle="modal"
+                        th:data-target="${'#addLexemeNoteSourceLinkDlg_' + lexeme.lexemeId + '_' + note.id}"
+                        sec:authorize="#vars.lexeme.crudGrant">
+                  <i class="fa fa-external-link" aria-hidden="true"></i>
                 </button>
                 <button type="button" class="btn badge badge-warning"
                         th:data-id="${note.id}"
@@ -1703,39 +1647,41 @@
               </div>
             </div>
             <div class="hidden-buttons">
-              <th:block th:each="sourceLink : ${note.sourceLinks}">
-                <div th:replace="termdialog :: edit_lexeme_note_source_link_dlg"></div>
-                <span>
-                  [
-                  <a th:href="@{'/lexeme_note_source_link:' + ${sourceLink.id}}" th:text="${sourceLink.sourceName}"></a>
-                  <span th:if="${sourceLink.name != null}">
-                    <span th:text="${sourceLink.name}"></span>
-                  </span>
-                  <button type="button" class="btn badge badge-primary"
-                          th:title="#{common.edit}"
-                          data-toggle="modal"
-                          th:data-target="${'#editLexemeNoteSourceLinkDlg_' + sourceLink.id}"
-                          sec:authorize="#vars.lexeme.crudGrant">
-                    <i class="fa fa-edit" aria-hidden="true"></i>
-                  </button>
-                  <button type="button" class="btn badge badge-warning"
-                          th:data-id="${sourceLink.id}"
-                          data-op-code="lexeme_note_source_link"
-                          data-toggle="delete-confirm"
-                          data-placement="right"
-                          sec:authorize="#vars.lexeme.crudGrant">
-                    <i class="fa fa-remove" aria-hidden="true"></i>
-                  </button>
-                  ]
-                </span>
+              <th:block th:unless="${#lists.isEmpty(note.sourceLinks)}">
+                <div class="orderable" data-op-code="lexeme_note_source_link">
+                  <div th:each="sourceLink,sourceLinkIter : ${note.sourceLinks}"
+                       th:data-id="${sourceLink.id}"
+                       th:data-orderby="${sourceLink.orderBy}"
+                       class="ml-4" style="position: relative;">
+                    <div th:replace="termdialog :: edit_lexeme_note_source_link_dlg"></div>
+                    <div style="position: absolute; display: list-item;"></div>
+                    <div class="action-column">
+                      <th:block th:replace="common :: ordering_buttons(${sourceLinkIter})" sec:authorize="#vars.lexeme.crudGrant"></th:block>
+                    </div>
+                    <div class="invisible-buttons action-buttons-anchor mw-80">
+                      <span>
+                        <a th:href="@{'/lexeme_note_source_link:' + ${sourceLink.id}}" th:text="${sourceLink.sourceName}"></a>
+                        <span th:if="${sourceLink.name != null}" th:text="${sourceLink.name}"></span>
+                        <button type="button" class="btn badge badge-primary"
+                                th:title="#{common.edit}"
+                                data-toggle="modal"
+                                th:data-target="${'#editLexemeNoteSourceLinkDlg_' + sourceLink.id}"
+                                sec:authorize="#vars.lexeme.crudGrant">
+                          <i class="fa fa-edit" aria-hidden="true"></i>
+                        </button>
+                        <button type="button" class="btn badge badge-warning"
+                                data-op-code="lexeme_note_source_link"
+                                th:data-id="${sourceLink.id}"
+                                data-toggle="delete-confirm"
+                                data-placement="right"
+                                sec:authorize="#vars.lexeme.crudGrant">
+                          <i class="fa fa-remove" aria-hidden="true"></i>
+                        </button>
+                      </span>
+                    </div>
+                  </div>
+                </div>
               </th:block>
-              <button type="button" class="btn badge badge-secondary"
-                      th:title="#{common.add.source.link}"
-                      data-toggle="modal"
-                      th:data-target="${'#addLexemeNoteSourceLinkDlg_' + lexeme.lexemeId + '_' + note.id}"
-                      sec:authorize="#vars.lexeme.crudGrant">
-                <i class="fa fa-external-link" aria-hidden="true"></i>
-              </button>
             </div>
           </div>
         </div>
@@ -1746,7 +1692,7 @@
     <hr/>
     <div class="col pr-0 col-w13rem">
       <span class="lbl" th:text="#{term.lexeme.freeforms}">Ilmiku atribuudid</span>
-      <button type="button" class="btn badge badge-secondary float-right mr-4"
+      <button type="button" class="btn badge badge-success float-right mr-4"
               th:title="#{common.add.new}"
               data-toggle="modal"
               th:data-target="${'#addLexemeFreeformDlg_' + lexeme.lexemeId}"
@@ -1756,13 +1702,12 @@
     </div>
     <div class="col pl-0">
       <div class="orderable" data-op-code="lexeme_freeform">
-        <div class="ml-4" style="position: relative"
-             th:each="freeform,freeformIter : ${lexeme.freeforms}"
+        <div th:each="freeform,freeformIter : ${lexeme.freeforms}"
              th:data-id="${freeform.id}"
-             th:data-orderby="${freeform.orderBy}">
+             th:data-orderby="${freeform.orderBy}"
+             class="ml-4" style="position: relative">
           <div th:replace="termdialog :: edit_lexeme_freeform_dlg"></div>
           <div th:replace="termdialog :: add_lexeme_freeform_source_link_dlg"></div>
-          <div style="display: list-item; position: absolute"></div>
           <div class="action-column">
             <th:block th:replace="common :: ordering_buttons(${freeformIter})" sec:authorize="#vars.lexeme.crudGrant"></th:block>
           </div>
@@ -1770,24 +1715,20 @@
             <span th:text="${freeform.freeformTypeValue}" class="text-monospace mr-2"></span>
             <span th:utext="${freeform.valuePrese}"></span>
             <span class="ctxt" th:text="'(' + #{'boolean.public.' + ${freeform.public}} + ')'"></span>
-            <span th:if="${#lists.isEmpty(freeform.sourceLinks)}" class="show-on-mouseover">
-              [
-              <button type="button" class="btn badge badge-success hidden"
-                      th:title="#{common.add.source.link}"
-                      data-toggle="modal"
-                      th:data-target="${'#addLexemeFreeformSourceLinkDlg_' + lexeme.lexemeId + '_' + freeform.id}"
-                      sec:authorize="#vars.lexeme.crudGrant">
-                <i class="fa fa-external-link" aria-hidden="true"></i>
-              </button>
-              ]
-            </span>
-            <div class="action-buttons-2">
+            <div class="action-buttons-3">
               <button type="button" class="btn badge badge-primary"
                       th:title="#{common.edit}"
                       data-toggle="modal"
                       th:data-target="${'#editLexemeFreeformDlg_' + lexeme.lexemeId + '_' + freeform.id}"
                       sec:authorize="#vars.lexeme.crudGrant">
                 <i class="fa fa-edit" aria-hidden="true"></i>
+              </button>
+              <button type="button" class="btn badge badge-success hidden"
+                      th:title="#{common.add.source.link}"
+                      data-toggle="modal"
+                      th:data-target="${'#addLexemeFreeformSourceLinkDlg_' + lexeme.lexemeId + '_' + freeform.id}"
+                      sec:authorize="#vars.lexeme.crudGrant">
+                <i class="fa fa-external-link" aria-hidden="true"></i>
               </button>
               <button type="button" class="btn badge badge-warning"
                       data-op-code="lexeme_freeform"
@@ -1800,37 +1741,41 @@
             </div>
           </div>
           <div class="hidden-buttons">
-            <th:block th:each="sourceLink : ${freeform.sourceLinks}" th:if="${not #lists.isEmpty(freeform.sourceLinks)}">
-              <div th:replace="termdialog :: edit_lexeme_freeform_source_link_dlg"></div>
-              <span>
-                [
-                <a th:href="@{'/lexeme_freeform_source_link:' + ${sourceLink.id}}" th:text="${sourceLink.sourceName}"></a>
-                <span th:text="${sourceLink.name}" th:if="${sourceLink.name != null}"></span>
-                <button type="button" class="btn badge badge-primary"
-                        th:title="#{common.edit}"
-                        data-toggle="modal"
-                        th:data-target="${'#editLexemeFreeformSourceLinkDlg_' + sourceLink.id}"
-                        sec:authorize="#vars.lexeme.crudGrant">
-                  <i class="fa fa-edit" aria-hidden="true"></i>
-                </button>
-                <button type="button" class="btn badge badge-warning"
-                        data-op-code="lexeme_freeform_source_link"
-                        th:data-id="${sourceLink.id}"
-                        data-toggle="delete-confirm"
-                        data-placement="right"
-                        sec:authorize="#vars.lexeme.crudGrant">
-                  <i class="fa fa-remove" aria-hidden="true"></i>
-                </button>
-                ]
-              </span>
+            <th:block th:unless="${#lists.isEmpty(freeform.sourceLinks)}">
+              <div class="orderable" data-op-code="freeform_source_link">
+                <div th:each="sourceLink,sourceLinkIter : ${freeform.sourceLinks}"
+                     th:data-id="${sourceLink.id}"
+                     th:data-orderby="${sourceLink.orderBy}"
+                     class="ml-4" style="position: relative;">
+                  <div th:replace="termdialog :: edit_lexeme_freeform_source_link_dlg"></div>
+                  <div style="position: absolute; display: list-item;"></div>
+                  <div class="action-column">
+                    <th:block th:replace="common :: ordering_buttons(${sourceLinkIter})" sec:authorize="#vars.lexeme.crudGrant"></th:block>
+                  </div>
+                  <div class="invisible-buttons action-buttons-anchor mw-80">
+                    <span>
+                      <a th:href="@{'/freeform_source_link:' + ${sourceLink.id}}" th:text="${sourceLink.sourceName}"></a>
+                      <span th:if="${sourceLink.name != null}" th:text="${sourceLink.name}"></span>
+                      <button type="button" class="btn badge badge-primary"
+                              th:title="#{common.edit}"
+                              data-toggle="modal"
+                              th:data-target="${'#editLexemeFreeformSourceLinkDlg_' + sourceLink.id}"
+                              sec:authorize="#vars.lexeme.crudGrant">
+                        <i class="fa fa-edit" aria-hidden="true"></i>
+                      </button>
+                      <button type="button" class="btn badge badge-warning"
+                              data-op-code="freeform_source_link"
+                              th:data-id="${sourceLink.id}"
+                              data-toggle="delete-confirm"
+                              data-placement="right"
+                              sec:authorize="#vars.lexeme.crudGrant">
+                        <i class="fa fa-remove" aria-hidden="true"></i>
+                      </button>
+                    </span>
+                  </div>
+                </div>
+              </div>
             </th:block>
-            <button type="button" class="btn badge badge-success hidden"
-                    th:title="#{common.add.source.link}"
-                    data-toggle="modal"
-                    th:data-target="${'#addLexemeFreeformSourceLinkDlg_' + lexeme.lexemeId + '_' + freeform.id}"
-                    sec:authorize="#vars.lexeme.crudGrant">
-              <i class="fa fa-external-link" aria-hidden="true"></i>
-            </button>
           </div>
         </div>
       </div>
@@ -1948,8 +1893,8 @@
     <div class="ekiAccordion__content overflow-auto">
       <div th:if="${#lists.isEmpty(lexeme.word.freeforms)}" th:text="#{common.no.content}">Sisu puudub...</div>
       <div th:each="freeform,freeformIter : ${lexeme.word.freeforms}" 
-        th:data-id="${freeform.id}" 
-        th:data-orderby="${freeform.orderBy}">
+           th:data-id="${freeform.id}" 
+           th:data-orderby="${freeform.orderBy}">
         <div th:replace="termdialog :: edit_word_freeform_dlg"></div>
         <div th:replace="termdialog :: add_word_freeform_source_link_dlg"></div>
         <div class="col hidden-buttons pr-5">
@@ -1957,22 +1902,18 @@
             <span th:text="${freeform.freeformTypeValue}" class="text-monospace mr-2"></span>
             <span th:utext="${freeform.valuePrese}"></span>
             <span class="ctxt" th:text="'(' + #{'boolean.public.' + ${freeform.public}} + ')'"></span>
-            <span th:if="${#lists.isEmpty(freeform.sourceLinks)}" class="show-on-mouseover">
-              [
-              <button type="button" class="btn badge badge-success hidden" data-toggle="modal" 
-                th:title="#{common.add.source.link}" 
-                th:data-target="${'#addWordFreeformSourceLinkDlg_' + lexeme.lexemeId + '_' + freeform.id}" 
-                sec:authorize="#vars.lexeme.word.crudGrant">
-                <i class="fa fa-external-link" aria-hidden="true"></i>
-              </button>
-              ]
-            </span>
-            <div class="action-buttons-2">
+            <div class="action-buttons-3">
               <button type="button" class="btn badge badge-primary" data-toggle="modal" 
                 th:title="#{common.edit}" 
                 th:data-target="${'#editWordFreeformDlg_' + lexeme.lexemeId + '_' + freeform.id}"
                 sec:authorize="#vars.lexeme.word.crudGrant">
                 <i class="fa fa-edit" aria-hidden="true"></i>
+              </button>
+              <button type="button" class="btn badge badge-success hidden" data-toggle="modal" 
+                th:title="#{common.add.source.link}" 
+                th:data-target="${'#addWordFreeformSourceLinkDlg_' + lexeme.lexemeId + '_' + freeform.id}" 
+                sec:authorize="#vars.lexeme.word.crudGrant">
+                <i class="fa fa-external-link" aria-hidden="true"></i>
               </button>
               <button type="button" class="btn badge badge-warning" 
                 th:data-id="${freeform.id}" 
@@ -1984,39 +1925,42 @@
               </button>
             </div>
           </div>
-          <div class="hidden-buttons" th:if="${not #lists.isEmpty(freeform.sourceLinks)}">
-            <th:block th:each="sourceLink : ${freeform.sourceLinks}">
-              <div th:replace="termdialog :: edit_word_freeform_source_link_dlg"></div>
-              <span>
-                [
-                <a th:href="@{'/word_freeform_source_link:' + ${sourceLink.id}}" th:text="${sourceLink.sourceName}"></a>
-                <span th:text="${sourceLink.name}" th:if="${sourceLink.name != null}"></span>
-                <button type="button" class="btn badge badge-primary" data-toggle="modal" 
-                  th:title="#{common.edit}" 
-                  th:data-target="${'#editWordFreeformSourceLinkDlg_' + sourceLink.id}"
-                  sec:authorize="#vars.lexeme.word.crudGrant">
-                  <i class="fa fa-edit" aria-hidden="true"></i>
-                </button>
-                <button type="button" class="btn badge badge-warning" 
-                  data-op-code="word_freeform_source_link" 
-                  th:data-id="${sourceLink.id}" 
-                  data-toggle="delete-confirm" 
-                  data-placement="right"
-                  sec:authorize="#vars.lexeme.word.crudGrant">
-                  <i class="fa fa-remove" aria-hidden="true"></i>
-                </button>
-                ]
-              </span>
+          <div class="hidden-buttons">
+            <th:block th:unless="${#lists.isEmpty(freeform.sourceLinks)}">
+              <div class="orderable" data-op-code="freeform_source_link">
+                <div th:each="sourceLink,sourceLinkIter : ${freeform.sourceLinks}"
+                     th:data-id="${sourceLink.id}"
+                     th:data-orderby="${sourceLink.orderBy}"
+                     class="ml-4" style="position: relative;">
+                  <div th:replace="termdialog :: edit_word_freeform_source_link_dlg"></div>
+                  <div style="position: absolute; display: list-item;"></div>
+                  <div class="action-column">
+                    <th:block th:replace="common :: ordering_buttons(${sourceLinkIter})" sec:authorize="#vars.lexeme.word.crudGrant"></th:block>
+                  </div>
+                  <div class="invisible-buttons action-buttons-anchor mw-80">
+                    <span>
+                      <a th:href="@{'/freeform_source_link:' + ${sourceLink.id}}" th:text="${sourceLink.sourceName}"></a>
+                      <span th:if="${sourceLink.name != null}" th:text="${sourceLink.name}"></span>
+                      <button type="button" class="btn badge badge-primary"
+                              th:title="#{common.edit}"
+                              data-toggle="modal"
+                              th:data-target="${'#editWordFreeformSourceLinkDlg_' + sourceLink.id}"
+                              sec:authorize="#vars.lexeme.word.crudGrant">
+                        <i class="fa fa-edit" aria-hidden="true"></i>
+                      </button>
+                      <button type="button" class="btn badge badge-warning"
+                              data-op-code="freeform_source_link"
+                              th:data-id="${sourceLink.id}"
+                              data-toggle="delete-confirm"
+                              data-placement="right"
+                              sec:authorize="#vars.lexeme.word.crudGrant">
+                        <i class="fa fa-remove" aria-hidden="true"></i>
+                      </button>
+                    </span>
+                  </div>
+                </div>
+              </div>
             </th:block>
-            <button type="button" class="btn badge badge-success hidden" data-toggle="modal"
-              th:title="#{common.add.source.link}" 
-              th:data-target="${'#addWordFreeformSourceLinkDlg_' + lexeme.lexemeId + '_' + freeform.id}" 
-              sec:authorize="#vars.lexeme.word.crudGrant">
-              <i class="fa fa-external-link" aria-hidden="true"></i>
-            </button>
-          </div>
-          <div th:unless="${freeformIter.last}">
-            <hr/>
           </div>
         </div>
       </div>

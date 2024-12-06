@@ -18,40 +18,47 @@
   <th:block th:replace="common-app :: latest-ww-news-article"></th:block>
   <th:block th:replace="common-app :: ie-user"></th:block>
   <div th:replace="common-app :: menu-with-back-btn"></div>
-  <div class="container-fluid homonym-page mt-3 mb-5">
-    <div class="search-results-header px-0">
-      <div class="d-flex flex-row flex-wrap align-items-center pb-3">
-        <th:block th:replace="common-search :: form-match"></th:block>
-        <div class="d-flex align-items-center">
-          <th:block th:replace="common-search :: lang-filter"></th:block>
-          <div class="mr-auto mr-md-2 pl-2 d-flex align-items-center flex-wrap">
-            <label class="mr-2 my-0 p-0" th:text="#{label.filter.dataset}">Sõnakogud</label>
-            <div class="dropdown">
-              <button class="btn btn-link dropdown-toggle p-0" type="button" id="datasetMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                <span id="selected-datasets" th:text="${selectedDatasetsStr}"></span>
-              </button>
-              <div class="dropdown-menu py-0" aria-labelledby="datasetMenuButton">
-                <div class="dropdown-menu-scroll px-2 py-1">
-                  <th:block th:each="filterElem : ${datasetFilter}">
-                    <a href="#" th:id="${'dataset-' + filterElem.code}" th:data-filter-code="${filterElem.code}" th:text="${filterElem.value}"
-                      class="dropdown-item dropdown-item-multiselect px-2 text-wrap py-1" th:classappend="${filterElem.selected ? 'active' : ''}">Sõnakogu</a>
-                    <th:block th:if="${filterElem.addSeparator}">
-                      <div class="dropdown-divider"></div>
-                      <div class="text-muted font-italic pl-1" th:text="#{label.pick.some}">vali üks või mitu</div>
+  <div class="container-fluid homonym-page mb-5">
+    <div class="sticky-scroll-panel">
+      <div class="search-results-header px-0">
+        <div class="d-flex flex-row flex-wrap align-items-center pb-3">
+          <th:block th:replace="common-search :: form-match"></th:block>
+          <div class="d-flex align-items-center">
+            <th:block th:replace="common-search :: lang-filter"></th:block>
+            <div class="mr-auto mr-md-2 pl-2 d-flex align-items-center flex-wrap">
+              <label class="mr-2 my-0 p-0" th:text="#{label.filter.dataset}">Sõnakogud</label>
+              <div class="dropdown">
+                <button class="btn btn-link dropdown-toggle p-0" type="button" id="datasetMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                  <span id="selected-datasets" th:text="${selectedDatasetsStr}"></span>
+                </button>
+                <div class="dropdown-menu py-0" aria-labelledby="datasetMenuButton">
+                  <div class="dropdown-menu-scroll px-2 py-1">
+                    <th:block th:each="filterElem : ${datasetFilter}">
+                      <a href="#" th:id="${'dataset-' + filterElem.code}" th:data-filter-code="${filterElem.code}" th:text="${filterElem.value}"
+                        class="dropdown-item dropdown-item-multiselect px-2 text-wrap py-1" th:classappend="${filterElem.selected ? 'active' : ''}">Sõnakogu</a>
+                      <th:block th:if="${filterElem.addSeparator}">
+                        <div class="dropdown-divider"></div>
+                        <div class="text-muted font-italic pl-1" th:text="#{label.pick.some}">vali üks või mitu</div>
+                      </th:block>
                     </th:block>
-                  </th:block>
+                  </div>
                 </div>
               </div>
-            </div>
-            <div>
-              <a th:href="@{/feelinglucky}" class="link ml-3 d-none d-md-block">
-                <span th:text="#{button.label.feelinglucky}">Ehk mul veab</span>
-              </a>
+              <div>
+                <a th:href="@{/feelinglucky}" class="link ml-3 d-none d-md-block">
+                  <span th:text="#{button.label.feelinglucky}">Ehk mul veab</span>
+                </a>
+              </div>
             </div>
           </div>
+          <button name="feedback-btn" value="feedback" class="feedback-btn ml-auto btn btn-success py-0 show-with-details" role="button" type="button" data-toggle="modal" data-target="#feedback-modal"
+            data-item-name="feedback" th:text="#{feedback.title}">Tagasiside</button>
         </div>
-        <button name="feedback-btn" value="feedback" class="feedback-btn ml-auto btn btn-success py-0 show-with-details" role="button" type="button" data-toggle="modal" data-target="#feedbackModal"
-          data-item-name="feedback" th:text="#{feedback.title}">Tagasiside</button>
+      </div>
+      <div class="sticky-scroll-panel__tags">
+        <a href="#word-morphology-results" class="sticky-scroll-panel__tag" th:text="#{label.word.forms}">Sõnavormid</a>
+        <a href="#word-relation-results" class="sticky-scroll-panel__tag" th:text="#{label.word.relations.union}">Ühendid</a>
+        <a href="#word-etymology-results" class="sticky-scroll-panel__tag" th:text="#{label.word.etymology}">Päritolu</a>
       </div>
     </div>
     <main id="mainContentArea" role="main" class="content-panel px-3 loading">
@@ -129,7 +136,7 @@
             </div>
             <div class="level-2-panel">
               <th:block th:if="${wordData.lexemesExist}">
-                <th:block th:if="${not #lists.isEmpty(wordData.lexLexemes)}">
+                <div th:if="${not #lists.isEmpty(wordData.lexLexemes)}" id="lexeme-results">
                   <h5 class="meaning-sub-heading">
                     <i class="fa fa-book mr-1 text-muted"></i>
                     <span th:text="#{lexdata.title}">EKI ühendsõnastik 2020</span>
@@ -143,8 +150,8 @@
                       <div th:replace="lex-details :: lexeme-data"></div>
                     </section>
                   </th:block>
-                </th:block>
-                <th:block th:if="${not #lists.isEmpty(wordData.termLexemes)}">
+                </div>
+                <div th:if="${not #lists.isEmpty(wordData.termLexemes)}" id="term-lexeme-results">
                   <h5 class="meaning-sub-heading">
                     <a data-toggle="collapse" href="#term-section-collapse">
                       <i class="fa fa-book mr-1 text-muted"></i>
@@ -158,7 +165,7 @@
                       </section>
                     </th:block>
                   </div>
-                </th:block>
+                </div>
                 <!-- /Removed termsearch -->
                 <th:block th:if="${not #lists.isEmpty(wordData.limTermLexemes)}">
                   <section class="level-3-panel meaning-panel d-block" th:each="lexeme : ${wordData.limTermLexemes}">
@@ -173,10 +180,8 @@
             <th:block th:replace="common-search-sidebar :: paradigms"></th:block>
             <th:block th:replace="common-search-sidebar :: od-word-recommendations"></th:block>
             <th:block th:replace="common-search-sidebar :: word-relations"></th:block>
-            <th:block th:replace="common-search-sidebar :: etymology_new"></th:block>
-            <th:block th:if="${wordData.estHeadword || wordData.rusHeadword}">
-              <th:block th:replace="common-search-sidebar :: keelenou"></th:block>
-            </th:block>
+            <th:block th:replace="common-search-sidebar :: etymology"></th:block>
+            <th:block th:replace="common-search-sidebar :: keelenou"></th:block>
             <th:block th:if="${wordData.estHeadword}">
               <div id="corp" th:text="#{label.corp.search}">Otsin veebilauseid ...</div>
             </th:block>

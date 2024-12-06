@@ -56,7 +56,7 @@ public class StatDataService implements InitializingBean, SystemConstant, Global
 	}
 
 	@Scheduled(fixedDelay = UPDATE_STAT_DATA_DELAY, initialDelay = 60000)
-	@Transactional
+	@Transactional(rollbackOn = Exception.class)
 	public void updateStatData() {
 
 		if (!isSchedulingEnabled) {

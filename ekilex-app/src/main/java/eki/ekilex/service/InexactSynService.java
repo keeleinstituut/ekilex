@@ -29,7 +29,7 @@ import eki.ekilex.data.Word;
 import eki.ekilex.data.WordDescript;
 import eki.ekilex.data.WordLexeme;
 import eki.ekilex.data.WordLexemeMeaningIdTuple;
-import eki.ekilex.data.db.tables.records.LexemeRecord;
+import eki.ekilex.data.db.main.tables.records.LexemeRecord;
 import eki.ekilex.service.db.CudDbService;
 
 @Component
@@ -230,7 +230,7 @@ public class InexactSynService extends AbstractSynSearchService {
 		return inexactSynMeaningRequest;
 	}
 
-	@Transactional
+	@Transactional(rollbackOn = Exception.class)
 	public Response saveInexactSynMeaningAndRelation(InexactSynMeaningRequest inexactSynMeaningRequest, String roleDatasetCode) throws Exception {
 
 		Locale locale = LocaleContextHolder.getLocale();
@@ -337,7 +337,7 @@ public class InexactSynService extends AbstractSynSearchService {
 				.prepareActivityLog("createLexeme", translationLangWordId, ActivityOwner.WORD, roleDatasetCode, isManualEventOnUpdateEnabled);
 		int currentWordLexemesMaxLevel1 = lookupDbService.getWordLexemesMaxLevel1(translationLangWordId, roleDatasetCode);
 		int lexemeLevel1 = currentWordLexemesMaxLevel1 + 1;
-		WordLexemeMeaningIdTuple wordLexemeMeaningId = cudDbService.createLexeme(translationLangWordId, roleDatasetCode, inexactSynMeaningId, lexemeLevel1, null, PUBLICITY_PUBLIC);
+		WordLexemeMeaningIdTuple wordLexemeMeaningId = cudDbService.createLexemeWithCreateOrSelectMeaning(translationLangWordId, roleDatasetCode, inexactSynMeaningId, lexemeLevel1, null, PUBLICITY_PUBLIC);
 		Long lexemeId = wordLexemeMeaningId.getLexemeId();
 		activityLogService.createActivityLog(activityLog, lexemeId, ActivityEntity.LEXEME);
 		return lexemeId;

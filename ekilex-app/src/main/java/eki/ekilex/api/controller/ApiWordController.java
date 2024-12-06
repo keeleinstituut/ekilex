@@ -190,7 +190,7 @@ public class ApiWordController extends AbstractApiController {
 	}
 
 	@Order(611)
-	@PreAuthorize("principal.apiCrud && @permEval.isWordFreeformCrudGranted(authentication, #crudRoleDataset, #odWordRecommendation.freeformId)")
+	@PreAuthorize("principal.apiCrud && @permEval.isFreeformCrudGranted(authentication, #crudRoleDataset, #odWordRecommendation.freeformId)")
 	@PostMapping(API_SERVICES_URI + OD_WORD_RECOMMENDATION + UPDATE_URI)
 	@ResponseBody
 	public ApiResponse updateOdWordRecommendation(
@@ -211,7 +211,7 @@ public class ApiWordController extends AbstractApiController {
 	}
 
 	@Order(612)
-	@PreAuthorize("principal.apiCrud && @permEval.isWordFreeformCrudGranted(authentication, #crudRoleDataset, #odWordRecommendationId)")
+	@PreAuthorize("principal.apiCrud && @permEval.isFreeformCrudGranted(authentication, #crudRoleDataset, #odWordRecommendationId)")
 	@DeleteMapping(API_SERVICES_URI + OD_WORD_RECOMMENDATION + DELETE_URI)
 	@ResponseBody
 	public ApiResponse deleteOdWordRecommendation(

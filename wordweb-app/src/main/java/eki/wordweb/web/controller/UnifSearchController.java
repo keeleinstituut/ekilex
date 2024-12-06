@@ -207,6 +207,7 @@ public class UnifSearchController extends AbstractSearchController {
 		model.addAttribute("wordData", wordData);
 		model.addAttribute("searchMode", SEARCH_MODE_DETAIL);
 		model.addAttribute("ekilexLimTermSearchUrl", ekilexLimTermSearchUrl);
+		model.addAttribute("ekiKeeleinfoUrl", ekiKeeleinfoUrl);
 
 		return UNIF_SEARCH_PAGE + " :: worddetails";
 	}

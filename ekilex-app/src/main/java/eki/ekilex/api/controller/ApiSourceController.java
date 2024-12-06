@@ -75,7 +75,7 @@ public class ApiSourceController extends AbstractApiController {
 
 		try {
 			Long sourceId = sourceService.createSource(source, crudRoleDataset, MANUAL_EVENT_ON_UPDATE_DISABLED);
-			return getOpSuccessResponse(authentication, request, sourceId);
+			return getOpSuccessResponse(authentication, request, "SOURCE", sourceId);
 		} catch (Exception e) {
 			return getOpFailResponse(authentication, request, e);
 		}

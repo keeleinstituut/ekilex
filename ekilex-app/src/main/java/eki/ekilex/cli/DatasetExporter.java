@@ -13,9 +13,9 @@ import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
-import eki.common.service.TransportService;
 import eki.common.util.ConsolePromptUtil;
 import eki.ekilex.cli.runner.DatasetExporterRunner;
+import eki.ekilex.service.cli.TransportService;
 
 @SpringBootApplication
 @ComponentScan(basePackages = {
@@ -23,6 +23,7 @@ import eki.ekilex.cli.runner.DatasetExporterRunner;
 		"eki.ekilex.cli.config",
 		"eki.ekilex.cli.runner",
 		"eki.ekilex.service.core",
+		"eki.ekilex.service.cli",
 		"eki.ekilex.service.db",
 		"eki.ekilex.service.util",
 		"eki.ekilex.data"})

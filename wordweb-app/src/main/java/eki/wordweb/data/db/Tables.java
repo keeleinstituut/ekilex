@@ -7,7 +7,7 @@ package eki.wordweb.data.db;
 import eki.wordweb.data.db.tables.LexicalDecisionData;
 import eki.wordweb.data.db.tables.LexicalDecisionResult;
 import eki.wordweb.data.db.tables.MviewWwClassifier;
-import eki.wordweb.data.db.tables.MviewWwCollocation;
+import eki.wordweb.data.db.tables.MviewWwCollocPosGroup;
 import eki.wordweb.data.db.tables.MviewWwCounts;
 import eki.wordweb.data.db.tables.MviewWwDataset;
 import eki.wordweb.data.db.tables.MviewWwDatasetWordMenu;
@@ -47,9 +47,9 @@ public class Tables {
     public static final MviewWwClassifier MVIEW_WW_CLASSIFIER = MviewWwClassifier.MVIEW_WW_CLASSIFIER;
 
     /**
-     * The table <code>public.mview_ww_collocation</code>.
+     * The table <code>public.mview_ww_colloc_pos_group</code>.
      */
-    public static final MviewWwCollocation MVIEW_WW_COLLOCATION = MviewWwCollocation.MVIEW_WW_COLLOCATION;
+    public static final MviewWwCollocPosGroup MVIEW_WW_COLLOC_POS_GROUP = MviewWwCollocPosGroup.MVIEW_WW_COLLOC_POS_GROUP;
 
     /**
      * The table <code>public.mview_ww_counts</code>.

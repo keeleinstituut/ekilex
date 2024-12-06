@@ -151,8 +151,9 @@
                   <option value="" hidden disabled selected th:text="#{common.select.value}">vali väärtus...</option>
                   <optgroup th:each="origin : ${datasetDomains}" th:label="${origin.getKey()}">
                     <option th:each="domain : ${origin.getValue()}" th:value="${domain.toIdString()}"
-                            th:text="${#strings.abbreviate(domain.origin + ' - ' + domain.code + ' - ' + domain.value, 100)}"
-                            th:title="${domain.origin + ' - ' + domain.code + ' - ' + domain.value}">domain
+                            th:text="${#strings.abbreviate(domain.origin + ' - ' + domain.code + ' - ' + domain.value, 100) + (domain.comment != null ? ' *' : '')}"
+                            th:title="${domain.origin + ' - ' + domain.code + ' - ' + domain.value}"
+                            th:data-tooltip="|${domain.comment}|">domain
                     </option>
                   </optgroup>
                 </select>
@@ -398,8 +399,9 @@
                 <option value="" hidden disabled selected th:text="#{common.select.value}">vali väärtus...</option>
                 <optgroup th:each="origin : ${datasetDomains}" th:label="${origin.getKey()}">
                   <option th:each="domain : ${origin.getValue()}" th:value="${domain.toIdString()}"
-                          th:text="${#strings.abbreviate(domain.origin + ' - ' + domain.code + ' - ' + domain.value, 100)}"
-                          th:title="${domain.origin + ' - ' + domain.code + ' - ' + domain.value}">domain
+                          th:text="${#strings.abbreviate(domain.origin + ' - ' + domain.code + ' - ' + domain.value, 100) + (domain.comment != null ? ' *' : '')}"
+                          th:title="${domain.origin + ' - ' + domain.code + ' - ' + domain.value}"
+                          th:data-tooltip="|${domain.comment}|">domain
                   </option>
                 </optgroup>
               </select>
@@ -428,9 +430,10 @@
               <optgroup th:each="origin : ${datasetDomains}" th:label="${origin.getKey()}">
                 <option th:each="domain : ${origin.getValue()}"
                         th:value="${domain.toIdString()}"
-                        th:text="${#strings.abbreviate(domain.origin + ' - ' + domain.code + ' - ' + domain.value, 100)}"
+                        th:text="${#strings.abbreviate(domain.origin + ' - ' + domain.code + ' - ' + domain.value, 100) + (domain.comment != null ? ' *' : '')}"
                         th:title="${domain.origin + ' - ' + domain.code + ' - ' + domain.value}"
-                        th:selected="${domain.toIdString() == classif.toIdString()}">domain
+                        th:selected="${domain.toIdString() == classif.toIdString()}"
+                        th:data-tooltip="|${domain.comment}|">domain
                 </option>
               </optgroup>
             </select>
@@ -560,7 +563,7 @@
             </div>
             <div class="form-group row">
               <div class="col-md-12">
-                <textarea class="form-control" rows="4" name="value" th:text="${freeform.valueText}"></textarea>
+                <textarea class="form-control" rows="4" name="value" th:text="${freeform.value}"></textarea>
               </div>
             </div>
             <div class="formItem">
@@ -596,7 +599,7 @@
         </div>
         <form name="sourceLinkForm" th:action="@{/create_item}" method="post">
           <input type="hidden" name="id" th:value="${freeform.id}">
-          <input type="hidden" name="opCode" value="meaning_freeform_source_link">
+          <input type="hidden" name="opCode" value="freeform_source_link">
           <input type="hidden" name="id2">
           <input type="hidden" name="value">
           <div class="modal-body" data-name="sourceLinkDlgContent"></div>
@@ -613,7 +616,7 @@
       <div class="modal-content">
         <form name="sourceLinkForm" th:action="@{/update_item}" method="post">
           <input type="hidden" name="id" th:value="${sourceLink.id}">
-          <input type="hidden" name="opCode" value="meaning_freeform_source_link">
+          <input type="hidden" name="opCode" value="freeform_source_link">
           <div class="modal-body" data-name="sourceLinkDlgContent"></div>
           <div class="modal-footer">
             <button type="submit" class="btn btn-primary" data-plugin="updateSourceLink">Muuda</button>
@@ -697,7 +700,7 @@
             </div>
             <div class="form-group row">
               <div class="col-md-12">
-                <textarea class="form-control" rows="4" name="value" th:text="${freeform.valueText}"></textarea>
+                <textarea class="form-control" rows="4" name="value" th:text="${freeform.value}"></textarea>
               </div>
             </div>
             <div class="formItem">
@@ -733,7 +736,7 @@
         </div>
         <form name="sourceLinkForm" th:action="@{/create_item}" method="post">
           <input type="hidden" name="id" th:value="${freeform.id}">
-          <input type="hidden" name="opCode" value="lexeme_freeform_source_link">
+          <input type="hidden" name="opCode" value="freeform_source_link">
           <input type="hidden" name="id2">
           <input type="hidden" name="value">
           <div class="modal-body" data-name="sourceLinkDlgContent"></div>
@@ -750,7 +753,7 @@
       <div class="modal-content">
         <form name="sourceLinkForm" th:action="@{/update_item}" method="post">
           <input type="hidden" name="id" th:value="${sourceLink.id}">
-          <input type="hidden" name="opCode" value="lexeme_freeform_source_link">
+          <input type="hidden" name="opCode" value="freeform_source_link">
           <div class="modal-body" data-name="sourceLinkDlgContent"></div>
           <div class="modal-footer">
             <button type="submit" class="btn btn-primary" data-plugin="updateSourceLink">Muuda</button>
@@ -1200,7 +1203,7 @@
             </div>
             <div class="form-group row">
               <div class="col-md-12">
-                <textarea class="form-control" rows="4" name="value" th:text="${freeform.valueText}"></textarea>
+                <textarea class="form-control" rows="4" name="value" th:text="${freeform.value}"></textarea>
               </div>
             </div>
             <div class="formItem">
@@ -1236,7 +1239,7 @@
         </div>
         <form name="sourceLinkForm" th:action="@{/create_item}" method="post">
           <input type="hidden" name="id" th:value="${freeform.id}">
-          <input type="hidden" name="opCode" value="word_freeform_source_link">
+          <input type="hidden" name="opCode" value="freeform_source_link">
           <input type="hidden" name="id2">
           <input type="hidden" name="value">
           <div class="modal-body" data-name="sourceLinkDlgContent"></div>
@@ -1253,7 +1256,7 @@
       <div class="modal-content">
         <form name="sourceLinkForm" th:action="@{/update_item}" method="post">
           <input type="hidden" name="id" th:value="${sourceLink.id}">
-          <input type="hidden" name="opCode" value="word_freeform_source_link">
+          <input type="hidden" name="opCode" value="freeform_source_link">
           <div class="modal-body" data-name="sourceLinkDlgContent"></div>
           <div class="modal-footer">
             <button type="submit" class="btn btn-primary" data-plugin="updateSourceLink">Muuda</button>

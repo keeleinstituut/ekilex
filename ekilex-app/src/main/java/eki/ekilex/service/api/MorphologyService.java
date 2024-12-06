@@ -20,6 +20,7 @@ import eki.common.exception.ApiException;
 import eki.common.exception.OperationDeniedException;
 import eki.ekilex.data.api.Form;
 import eki.ekilex.data.api.FormUnit;
+import eki.ekilex.data.api.FormWord;
 import eki.ekilex.data.api.Paradigm;
 import eki.ekilex.data.api.ParadigmForm;
 import eki.ekilex.data.api.ParadigmWrapper;
@@ -45,6 +46,13 @@ public class MorphologyService {
 	}
 
 	@Transactional
+	public List<FormWord> getFormWords(String formValue) {
+
+		List<FormWord> formWords = morphologyDbService.getFormWords(formValue);
+		return formWords;
+	}
+
+	@Transactional(rollbackOn = Exception.class)
 	public void save(ParadigmWrapper paradigmWrapper) throws Exception {
 
 		if (paradigmWrapper == null) {

@@ -128,7 +128,7 @@ public class LexemeWord extends WordTypeData implements LexemeLevel, ComplexityT
 
 	private Map<Classifier, List<TypeMeaningRelation>> relatedMeaningsByType;
 
-	private List<CollocationPosGroup> collocationPosGroups;
+	private List<CollocPosGroup> collocPosGroups;
 
 	private List<DisplayColloc> limitedPrimaryDisplayCollocs;
 
@@ -576,12 +576,12 @@ public class LexemeWord extends WordTypeData implements LexemeLevel, ComplexityT
 		this.relatedMeaningsByType = relatedMeaningsByType;
 	}
 
-	public List<CollocationPosGroup> getCollocationPosGroups() {
-		return collocationPosGroups;
+	public List<CollocPosGroup> getCollocPosGroups() {
+		return collocPosGroups;
 	}
 
-	public void setCollocationPosGroups(List<CollocationPosGroup> collocationPosGroups) {
-		this.collocationPosGroups = collocationPosGroups;
+	public void setCollocPosGroups(List<CollocPosGroup> collocPosGroups) {
+		this.collocPosGroups = collocPosGroups;
 	}
 
 	public List<DisplayColloc> getLimitedPrimaryDisplayCollocs() {

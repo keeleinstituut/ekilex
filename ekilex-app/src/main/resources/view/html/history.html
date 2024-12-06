@@ -30,7 +30,7 @@
                 <th th:text="#{history.event}" class="text-nowrap">Tegevus</th>
                 <th th:text="#{history.entity.id}" class="text-nowrap">Olemi ID</th>
                 <th th:if="${historyType == 'meaning'}" th:text="#{history.lexeme.ids}" class="text-nowrap">Ilmikute ID-d</th>
-                <th th:text="#{history.word.values}" class="text-nowrap">Keelendite väärtused</th>
+                <th th:if="${historyType == 'word'}" th:text="#{history.word.values}" class="text-nowrap">Keelendite väärtused</th>
                 <th th:if="${historyType == 'meaning'}" th:text="#{history.definition.values}" class="text-nowrap">Definitsioonide väärtused</th>
               </tr>
               <th:block th:each="logRow : ${activityLogHistory}">
@@ -52,7 +52,7 @@
                       <div th:each="lexemeId : ${logRow.lexemeIds}" th:text="${lexemeId}"></div>
                     </th:block>
                   </td>
-                  <td class="text-nowrap">
+                  <td th:if="${historyType == 'word'}" class="text-nowrap">
                     <th:block th:if="${logRow.wordValues}">
                       <div th:each="wordValue : ${logRow.wordValues}">
                         <i th:text="${wordValue}"></i>

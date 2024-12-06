@@ -75,19 +75,19 @@ public class WordLexeme extends AbstractCrudEntity implements LexemeLevel, Decor
 
 	private List<Government> governments;
 
-	private List<FreeForm> grammars;
+	private List<Freeform> grammars;
 
 	private List<Usage> usages;
 
-	private List<FreeForm> lexemeFreeforms;
+	private List<Freeform> lexemeFreeforms;
 
 	private List<NoteLangGroup> lexemeNoteLangGroups;
 
 	private List<LexemeRelation> lexemeRelations;
 
-	private List<CollocationPosGroup> collocationPosGroups;
+	private List<CollocPosGroup> primaryCollocations;
 
-	private List<Collocation> secondaryCollocations;
+	private List<Colloc> secondaryCollocations;
 
 	private List<SourceLink> sourceLinks;
 
@@ -96,6 +96,8 @@ public class WordLexeme extends AbstractCrudEntity implements LexemeLevel, Decor
 	private List<MeaningWord> meaningWords;
 
 	private List<SynonymLangGroup> synonymLangGroups;
+
+	private boolean collocationsExist;
 
 	private boolean lexemeOrMeaningClassifiersExist;
 
@@ -382,11 +384,11 @@ public class WordLexeme extends AbstractCrudEntity implements LexemeLevel, Decor
 		this.governments = governments;
 	}
 
-	public List<FreeForm> getGrammars() {
+	public List<Freeform> getGrammars() {
 		return grammars;
 	}
 
-	public void setGrammars(List<FreeForm> grammars) {
+	public void setGrammars(List<Freeform> grammars) {
 		this.grammars = grammars;
 	}
 
@@ -398,11 +400,11 @@ public class WordLexeme extends AbstractCrudEntity implements LexemeLevel, Decor
 		this.usages = usages;
 	}
 
-	public List<FreeForm> getLexemeFreeforms() {
+	public List<Freeform> getLexemeFreeforms() {
 		return lexemeFreeforms;
 	}
 
-	public void setLexemeFreeforms(List<FreeForm> lexemeFreeforms) {
+	public void setLexemeFreeforms(List<Freeform> lexemeFreeforms) {
 		this.lexemeFreeforms = lexemeFreeforms;
 	}
 
@@ -422,19 +424,19 @@ public class WordLexeme extends AbstractCrudEntity implements LexemeLevel, Decor
 		this.lexemeRelations = lexemeRelations;
 	}
 
-	public List<CollocationPosGroup> getCollocationPosGroups() {
-		return collocationPosGroups;
+	public List<CollocPosGroup> getPrimaryCollocations() {
+		return primaryCollocations;
 	}
 
-	public void setCollocationPosGroups(List<CollocationPosGroup> collocationPosGroups) {
-		this.collocationPosGroups = collocationPosGroups;
+	public void setPrimaryCollocations(List<CollocPosGroup> primaryCollocations) {
+		this.primaryCollocations = primaryCollocations;
 	}
 
-	public List<Collocation> getSecondaryCollocations() {
+	public List<Colloc> getSecondaryCollocations() {
 		return secondaryCollocations;
 	}
 
-	public void setSecondaryCollocations(List<Collocation> secondaryCollocations) {
+	public void setSecondaryCollocations(List<Colloc> secondaryCollocations) {
 		this.secondaryCollocations = secondaryCollocations;
 	}
 
@@ -468,6 +470,14 @@ public class WordLexeme extends AbstractCrudEntity implements LexemeLevel, Decor
 
 	public void setSynonymLangGroups(List<SynonymLangGroup> synonymLangGroups) {
 		this.synonymLangGroups = synonymLangGroups;
+	}
+
+	public boolean isCollocationsExist() {
+		return collocationsExist;
+	}
+
+	public void setCollocationsExist(boolean collocationsExist) {
+		this.collocationsExist = collocationsExist;
 	}
 
 	public boolean isLexemeOrMeaningClassifiersExist() {

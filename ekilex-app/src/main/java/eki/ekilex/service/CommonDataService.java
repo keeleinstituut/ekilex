@@ -62,7 +62,17 @@ public class CommonDataService implements InitializingBean, SystemConstant, Glob
 	@Transactional
 	public List<Classifier> getAvailableFreeformTypes() {
 		List<Classifier> freeformTypes = commonDataDbService.getFreeformTypes(CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
-		freeformTypes.removeIf(classifier -> technicalFreeformTypesCodes.contains(classifier.getCode()));
+		freeformTypes = removeTechnicalFreeformTypes(freeformTypes);
+		return freeformTypes;
+	}
+
+	@Transactional
+	public List<Classifier> getFreeformTypes(FreeformOwner freeformOwner) {
+		List<Classifier> freeformTypes = commonDataDbService.getFreeformTypes(freeformOwner, CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
+		if (CollectionUtils.isEmpty(freeformTypes)) {
+			return freeformTypes;
+		}
+		freeformTypes = removeTechnicalFreeformTypes(freeformTypes);
 		return freeformTypes;
 	}
 
@@ -72,6 +82,11 @@ public class CommonDataService implements InitializingBean, SystemConstant, Glob
 		if (CollectionUtils.isEmpty(freeformTypes)) {
 			return freeformTypes;
 		}
+		freeformTypes = removeTechnicalFreeformTypes(freeformTypes);
+		return freeformTypes;
+	}
+
+	private List<Classifier> removeTechnicalFreeformTypes(List<Classifier> freeformTypes) {
 		freeformTypes.removeIf(classifier -> technicalFreeformTypesCodes.contains(classifier.getCode()));
 		return freeformTypes;
 	}
@@ -115,21 +130,21 @@ public class CommonDataService implements InitializingBean, SystemConstant, Glob
 
 	@Transactional
 	public Map<String, List<Classifier>> getDomainsInUseByOrigin() {
-		List<Classifier> domains = commonDataDbService.getDomainsInUse(CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
+		List<Classifier> domains = commonDataDbService.getDomainsInUse(CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP, CLASSIF_LABEL_TYPE_COMMENT);
 		return domains.stream().collect(groupingBy(Classifier::getOrigin));
 	}
 
 	@Transactional
 	public Map<String, List<Classifier>> getDatasetDomainsByOrigin(String datasetCode) {
 		List<Classifier> domains = commonDataDbService.getDatasetClassifiers(
-				ClassifierName.DOMAIN, datasetCode, CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
+				ClassifierName.DOMAIN, datasetCode, CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP, CLASSIF_LABEL_TYPE_COMMENT);
 		Map<String, List<Classifier>> datasetDomainsByOrigin = domains.stream().collect(groupingBy(Classifier::getOrigin));
 		return datasetDomainsByOrigin;
 	}
 
 	@Transactional
 	public List<Classifier> getDomains(String origin) {
-		List<Classifier> domains = commonDataDbService.getDomains(origin, CLASSIF_LABEL_TYPE_DESCRIP);
+		List<Classifier> domains = commonDataDbService.getDomains(origin, CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP, CLASSIF_LABEL_TYPE_COMMENT);
 		return domains;
 	}
 
@@ -229,6 +244,11 @@ public class CommonDataService implements InitializingBean, SystemConstant, Glob
 	}
 
 	@Transactional
+	public List<Classifier> getRelGroups() {
+		return commonDataDbService.getRelGroups(CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
+	}
+
+	@Transactional
 	public List<Classifier> getUsageTypes() {
 		return commonDataDbService.getUsageTypes(CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
 	}
@@ -298,6 +318,9 @@ public class CommonDataService implements InitializingBean, SystemConstant, Glob
 		if (ClassifierName.POS_GROUP.equals(classifierName)) {
 			return getPosGroups();
 		}
+		if (ClassifierName.REL_GROUP.equals(classifierName)) {
+			return getRelGroups();
+		}
 		if (ClassifierName.USAGE_TYPE.equals(classifierName)) {
 			return getUsageTypes();
 		}
@@ -306,7 +329,7 @@ public class CommonDataService implements InitializingBean, SystemConstant, Glob
 
 	@Transactional
 	public List<Classifier> getDatasetLanguages(String datasetCode) {
-		return commonDataDbService.getDatasetClassifiers(ClassifierName.LANGUAGE, datasetCode, CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
+		return commonDataDbService.getDatasetClassifiers(ClassifierName.LANGUAGE, datasetCode, CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP, null);
 	}
 
 	@Transactional

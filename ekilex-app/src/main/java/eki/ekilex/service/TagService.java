@@ -31,7 +31,7 @@ public class TagService {
 		return tagDbService.getTags();
 	}
 
-	@Transactional
+	@Transactional(rollbackOn = Exception.class)
 	public boolean createTag(String tagName, TagType tagType, boolean setAutomatically, boolean removeToComplete) {
 
 		boolean tagExists = tagDbService.tagExists(tagName);
@@ -44,7 +44,7 @@ public class TagService {
 		return true;
 	}
 
-	@Transactional
+	@Transactional(rollbackOn = Exception.class)
 	public boolean updateTag(String currentTagName, String tagName, Long tagOrder, boolean setAutomatically, boolean removeToComplete) {
 
 		Long currentOrderBy = tagDbService.getTagOrderBy(currentTagName);
@@ -71,7 +71,7 @@ public class TagService {
 	}
 
 
-	@Transactional
+	@Transactional(rollbackOn = Exception.class)
 	public void deleteTag(String tagName) {
 		tagDbService.deleteTag(tagName);
 		maintenanceService.clearTagCache();

@@ -20,7 +20,7 @@ import eki.common.constant.FreeformConstant;
 import eki.common.exception.OperationDeniedException;
 import eki.ekilex.data.ActivityLog;
 import eki.ekilex.data.ActivityLogData;
-import eki.ekilex.data.FreeForm;
+import eki.ekilex.data.Freeform;
 import eki.ekilex.data.LexemeNote;
 import eki.ekilex.data.MeaningNote;
 import eki.ekilex.data.SourceLink;
@@ -32,7 +32,7 @@ import eki.ekilex.data.api.Definition;
 import eki.ekilex.data.api.Forum;
 import eki.ekilex.data.api.TermMeaning;
 import eki.ekilex.data.api.TermWord;
-import eki.ekilex.data.db.tables.records.LexemeRecord;
+import eki.ekilex.data.db.main.tables.records.LexemeRecord;
 import eki.ekilex.service.db.api.TermMeaningDbService;
 
 @Component
@@ -74,7 +74,7 @@ public class TermMeaningService extends AbstractApiCudService implements Activit
 		return termMeaning;
 	}
 
-	@Transactional
+	@Transactional(rollbackOn = Exception.class)
 	public Long saveTermMeaning(TermMeaning termMeaning, String roleDatasetCode) throws Exception {
 
 		final String updateFunctName = "updateTermMeaning";
@@ -140,7 +140,7 @@ public class TermMeaningService extends AbstractApiCudService implements Activit
 							lexeme = termMeaningDbService.getLexeme(wordId, meaningId, datasetCode);
 							lexemeId = lexeme.getId();
 						} else {
-							WordLexemeMeaningIdTuple idTuple = cudDbService.createLexeme(wordId, datasetCode, meaningId, 1, lexemeValueStateCode, isPublic);
+							WordLexemeMeaningIdTuple idTuple = cudDbService.createLexemeWithCreateOrSelectMeaning(wordId, datasetCode, meaningId, 1, lexemeValueStateCode, isPublic);
 							lexemeId = idTuple.getLexemeId();
 							activityLogService.createActivityLog(createFunctName, lexemeId, ActivityOwner.LEXEME, roleDatasetCode, MANUAL_EVENT_ON_UPDATE_ENABLED);
 						}
@@ -153,7 +153,7 @@ public class TermMeaningService extends AbstractApiCudService implements Activit
 					if (wordId == null) {
 						int synWordHomNr = cudDbService.getWordNextHomonymNr(wordValue, wordLang);
 						wordId = cudDbService.createWord(wordValue, wordValuePrese, valueAsWord, wordLang, synWordHomNr);
-						WordLexemeMeaningIdTuple idTuple = cudDbService.createLexeme(wordId, datasetCode, meaningId, 1, lexemeValueStateCode, isPublic);
+						WordLexemeMeaningIdTuple idTuple = cudDbService.createLexemeWithCreateOrSelectMeaning(wordId, datasetCode, meaningId, 1, lexemeValueStateCode, isPublic);
 						lexemeId = idTuple.getLexemeId();
 						activityLogService.createActivityLog(createFunctName, wordId, ActivityOwner.WORD, roleDatasetCode, MANUAL_EVENT_ON_UPDATE_ENABLED);
 						activityLogService.createActivityLog(createFunctName, lexemeId, ActivityOwner.LEXEME, roleDatasetCode, MANUAL_EVENT_ON_UPDATE_ENABLED);
@@ -162,7 +162,7 @@ public class TermMeaningService extends AbstractApiCudService implements Activit
 							lexeme = termMeaningDbService.getLexeme(wordId, meaningId, datasetCode);
 							lexemeId = lexeme.getId();
 						} else {
-							WordLexemeMeaningIdTuple idTuple = cudDbService.createLexeme(wordId, datasetCode, meaningId, 1, lexemeValueStateCode, isPublic);
+							WordLexemeMeaningIdTuple idTuple = cudDbService.createLexemeWithCreateOrSelectMeaning(wordId, datasetCode, meaningId, 1, lexemeValueStateCode, isPublic);
 							lexemeId = idTuple.getLexemeId();
 							activityLogService.createActivityLog(createFunctName, lexemeId, ActivityOwner.LEXEME, roleDatasetCode, MANUAL_EVENT_ON_UPDATE_ENABLED);
 						}
@@ -368,9 +368,9 @@ public class TermMeaningService extends AbstractApiCudService implements Activit
 			for (String conceptId : conceptIds) {
 				boolean meaningConceptIdExists = lookupDbService.meaningFreeformExists(meaningId, conceptId, CONCEPT_ID_CODE);
 				if (!meaningConceptIdExists) {
-					FreeForm freeform = new FreeForm();
+					Freeform freeform = new Freeform();
 					freeform.setFreeformTypeCode(CONCEPT_ID_CODE);
-					freeform.setValueText(conceptId);
+					freeform.setValue(conceptId);
 					freeform.setValuePrese(conceptId);
 					freeform.setLang(null);
 					freeform.setComplexity(Complexity.DETAIL);

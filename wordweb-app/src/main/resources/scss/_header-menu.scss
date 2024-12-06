@@ -1,5 +1,5 @@
 .header-container.show-header .header-links {
-  display: block;
+  display: flex;
 }
 
 .header-links {
@@ -10,8 +10,9 @@
   display: none;
   width: 20rem;
   height: 100%;
-  padding: 24px 24px 0;
+  padding: 24px 0;
   background-color: $gray-1000;
+  flex-direction: column;
 
   &::before {
     position: fixed;
@@ -27,7 +28,6 @@
 
   .menu-item {
     padding: 8px 24px;
-    margin: 0 -24px;
     font-size: $h4-font-size;
 
     &:hover{

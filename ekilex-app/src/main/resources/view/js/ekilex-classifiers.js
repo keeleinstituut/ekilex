@@ -83,29 +83,35 @@ $.fn.editClassifierPlugin = function() {
 	return this.each(function() {
 		const btn = $(this);
 		btn.on('click', function() {
-			const allEditBtns = $(document).find('button[name="editClassifBtn"]');
-			const allDeleteBtns = $(document).find('button[name="deleteClassifBtn"]');
-			const allCodeBtns = $(document).find('button[name="addCodeBtn"]');
 			const activeRow = btn.closest('tr');
-			const activeRowInputs = activeRow.find('input');
+			const allEditBtns = activeRow.find('#classifier-edit-wrapper');
+			const allDeleteBtns = activeRow.find('button[name="deleteClassifBtn"]');
+			const allCodeBtns = activeRow.find('button[name="addCodeBtn"]');
+			const activeRowInputs = activeRow.find('input:not([name="classifierOrder"])');
+			const activeRowTexts = activeRow.find('p');
 			const saveRowBtn = activeRow.find('button[name="saveRowBtn"]');
 			const cancelBtn = activeRow.find('button[name="cancelBtn"]');
-
-			activeRowInputs.attr("disabled", false);
-			allEditBtns.hide();
-			allDeleteBtns.hide();
-			allCodeBtns.hide();
-			saveRowBtn.show();
-			cancelBtn.show();
-		});
-	});
-}
-
-$.fn.cancelClassifierEditPlugin = function() {
-	return this.each(function() {
-		const obj = $(this);
-		obj.on('click', function() {
-			location.reload();
+			if (btn.prop('name') === 'editClassifBtn') {
+				activeRowTexts.addClass('d-none');
+				activeRowInputs.removeClass('d-none');
+				
+				allEditBtns.addClass('d-none');
+				allEditBtns.removeClass('d-flex');
+				allDeleteBtns.hide();
+				allCodeBtns.hide();
+				saveRowBtn.show();
+				cancelBtn.show();
+			} else {
+				activeRowTexts.removeClass('d-none');
+				activeRowInputs.addClass('d-none');
+				
+				allEditBtns.addClass('d-flex');
+				allEditBtns.removeClass('d-none');
+				allDeleteBtns.show();
+				allCodeBtns.show();
+				saveRowBtn.hide();
+				cancelBtn.hide();
+			}
 		});
 	});
 }

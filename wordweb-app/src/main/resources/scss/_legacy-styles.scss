@@ -317,28 +317,6 @@
   border-radius: 1rem;
 }
 
-.top-button {
-  position: fixed;
-  right: calc(5%);
-  bottom: 2rem;
-  z-index: 10;
-  width: 2rem;
-  height: 2rem;
-  background: rgba(255, 255, 255, .7);
-  border-radius: 3.125rem;
-  -webkit-transform: rotate(90deg);
-  transform: rotate(90deg);
-}
-
-.top-button:hover {
-  text-decoration: none;
-  background: rgba(255, 255, 255, 1);
-}
-
-.top-button .icon {
-  font-size: 2rem;
-}
-
 .alert-danger-ie {
   position: fixed;
   right: 0;

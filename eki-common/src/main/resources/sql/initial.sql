@@ -82,11 +82,11 @@ values
 insert into eki_user_profile (user_id) (select eki_user.id from eki_user);
 
 insert into meaning_semantic_type (meaning_id, semantic_type_code)
-(select distinct on (ff.value_text, meaning_id) mff.meaning_id, ff.value_text
+(select distinct on (ff.value, meaning_id) mff.meaning_id, ff.value
 from meaning_freeform mff, freeform ff
 where mff.freeform_id = ff.id
   and ff.type = 'SEMANTIC_TYPE'
-  and ff.value_text != '');
+  and ff.value != '');
 
 insert into word_rel_mapping (code1, code2) values ('posit', 'komp');
 insert into word_rel_mapping (code1, code2) values ('posit', 'superl');

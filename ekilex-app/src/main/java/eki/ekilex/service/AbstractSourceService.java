@@ -17,7 +17,7 @@ public abstract class AbstractSourceService extends AbstractService {
 	@Autowired
 	protected SourceLinkDbService sourceLinkDbService;
 
-	@Transactional
+	@Transactional(rollbackOn = Exception.class)
 	public Long createSource(
 			Source source,
 			String roleDatasetCode,

@@ -2,7 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <body>
   <th:block th:fragment="paradigms">
-    <section class="level-3-panel row">
+    <section class="level-3-panel row" id="word-morphology-results">
       <div class="col-12 morphology-panel" th:if="${wordData.morphologyExists}">
         <h5 class="font-weight-bold mb-0 d-flex align-items-center text-dark">
           <span th:text="#{label.word.forms}">Sõnavormid</span>
@@ -11,7 +11,7 @@
           </button>
         </h5>
         <div th:if="${wordData.word.morphComment}">
-          <span th:text="${wordData.word.morphComment}"></span>
+          <span th:utext="${wordData.word.morphComment}"></span>
         </div>
         <th:block th:each="paradigm,paradigmIter : ${wordData.paradigms}">
           <div class="morphology-paradigm"
@@ -40,7 +40,7 @@
         <div class="col-12">
           <h5 class="recommended-usage-label">
             <i class="fa fa-book mr-1"></i>
-            <span th:text="#{label.od.recommend}" class="label-text">ÕS soovitab</span>
+            <span th:text="#{label.od.recommend}" class="label-text">ÕS selgitab</span>
           </h5>
           <div class="recommendation-additional-info">
             <i class="fas fa-info-circle"></i>
@@ -106,7 +106,7 @@
     </section>
     <th:block th:if="${not #lists.isEmpty(wordData.word.primaryRelatedWordTypeGroups)}">
       <th:block th:each="relationTypeGroup,relGroupIter : ${wordData.word.primaryRelatedWordTypeGroups}">
-        <section class="level-3-panel row">
+        <section class="level-3-panel row" th:id="${relationTypeGroup.wordRelType.code.equals('ühend') ? 'word-relation-results' : null}">
           <div class="col-12 word-relations">
             <h5 class="font-weight-bold d-flex align-items-center text-dark">
               <th:block th:if="${relationTypeGroup.collapsible}">
@@ -210,37 +210,8 @@
       </th:block>
     </th:block>
   </th:block>
-  <th:block th:fragment="etymology_old">
-    <section class="level-3-panel row">
-      <div class="col">
-        <h5 class="font-weight-bold d-flex align-items-center text-dark">
-          <span th:text="#{label.word.etymology}">Päritolu</span>
-          <button type="button" th:aria-label="#{label.word.etymology.info}" class="btn btn-icon btn-sm" data-toggle="tooltip" data-placement="top" th:title="#{label.word.etymology.info}">
-            <i class="fas fa-info-circle"></i>
-          </button>
-          <span class="tag" th:if="${(wordData.word.wordEtymology != null) and (wordData.word.wordEtymology.etymWrapup != null)}" th:utext="${wordData.word.wordEtymology.etymWrapup}"></span>
-        </h5>
-        <div th:if="${wordData.word.wordEtymology == null}">
-          <span th:text="#{label.no.data}">Andmed puuduvad</span>
-        </div>
-        <div th:if="${wordData.word.wordEtymology != null}">
-          <div th:if="${not #lists.isEmpty(wordData.word.wordEtymology.etymLevelsWrapup)}">
-            <ul class="list-unstyled etymology-tree">
-              <li class="d-flex align-items-start mb-2" th:each="wordEtym : ${wordData.word.wordEtymology.etymLevelsWrapup}">
-                <span class="bg-light rounded px-2 mr-1">
-                  <i class="fas fa-angle-left"></i>
-                </span>
-                <span th:utext="${wordEtym}"></span>
-              </li>
-            </ul>
-          </div>
-          <div th:if="${wordData.word.wordEtymology.comment != null}" th:utext="${wordData.word.wordEtymology.comment}"></div>
-        </div>
-      </div>
-    </section>
-  </th:block>
-  <th:block th:fragment="etymology_new">
-    <section class="level-3-panel row">
+  <th:block th:fragment="etymology">
+    <section class="level-3-panel row" id="word-etymology-results">
       <div class="col">
         <h5 class="font-weight-bold d-flex align-items-center text-dark">
           <span th:text="#{label.word.etymology}">Päritolu</span>
@@ -292,18 +263,31 @@
     </li>
   </th:block>
   <th:block th:fragment="keelenou">
+    <section class="level-3-panel row" th:if="${wordData.estHeadword || wordData.rusHeadword}">
+      <div class="col-12 corp-panel">
+        <div class="mb-0">
+          <h5 class="font-weight-bold mb-0">
+            <span th:text="#{label.same.word}"></span>
+            <a th:if="${wordData.estHeadword}" th:aria-label="|#{aria.search.from.keelenou} ${wordData.word.word}, #{aria.new.window}|" th:href="${ekiKeeleinfoUrl}" target="_blank">
+              <span th:text="#{label.same.word.eki}">EKI teistes sõnastikes</span>
+              <i class="fas fa-external-link-alt" aria-hidden="true"></i>
+            </a>
+            <a th:if="${wordData.rusHeadword}" th:aria-label="|#{aria.search.from.eki.rus.est} ${wordData.word.word}, #{aria.new.window}|"
+              th:href="${@viewUtil.getEkiOldskoolRusDictUrl(wordData.word.word)}" target="_blank">
+              <span th:text="#{label.same.word.rusest}">vene-eesti sõnaraamatus</span>
+              <i class="fas fa-external-link-alt" aria-hidden="true"></i>
+            </a>
+          </h5>
+        </div>
+      </div>
+    </section>
     <section class="level-3-panel row">
       <div class="col-12 corp-panel">
         <div class="mb-0">
           <h5 class="font-weight-bold mb-0">
-            <span th:text="#{sentence.same.as}"></span>
-            <a th:if="${wordData.estHeadword}" th:aria-label="|#{aria.search.from.keelenou} ${wordData.word.word}, #{aria.new.window}|" th:href="|https://eki.ee/keeleinfo/sonastikud/|" target="_blank">
-              EKI teistes sõnastikes
-              <i class="fas fa-external-link-alt" aria-hidden="true"></i>
-            </a>
-            <a th:if="${wordData.rusHeadword}" th:aria-label="|#{aria.search.from.eki.rus.est} ${wordData.word.word}, #{aria.new.window}|"
-              th:href="|https://www.eki.ee/dict/ves/index.cgi?Q=${wordData.word.word}|" target="_blank">
-              vene-eesti sõnaraamatus
+            <span th:text="#{label.same.word}"></span>
+            <a th:aria-label="|#{label.same.word.iate} ${wordData.word.word}, #{aria.new.window}|" th:href="${@viewUtil.getIateSearchUrl(wordData.word.word, wordData.word.lang)}" target="_blank">
+              <span th:text="#{label.same.word.iate}">IATE terminibaasis</span>
               <i class="fas fa-external-link-alt" aria-hidden="true"></i>
             </a>
           </h5>
@@ -349,8 +333,8 @@
       </div>
     </div>
     <script th:inline="javascript">
-					$('.corp-panel [data-toggle="tooltip"]').tooltip();
-				</script>
+		$('.corp-panel [data-toggle="tooltip"]').tooltip();
+	</script>
   </section>
   <section class="level-3-panel" th:fragment="corp_trans">
     <div class="corp-panel">

@@ -27,9 +27,9 @@ public class Meaning extends AbstractCrudEntity {
 
 	private List<Classifier> semanticTypes;
 
-	private List<FreeForm> freeforms;
+	private List<Freeform> freeforms;
 
-	private List<FreeForm> learnerComments;
+	private List<Freeform> learnerComments;
 
 	private List<Media> images;
 
@@ -135,19 +135,19 @@ public class Meaning extends AbstractCrudEntity {
 		this.semanticTypes = semanticTypes;
 	}
 
-	public List<FreeForm> getFreeforms() {
+	public List<Freeform> getFreeforms() {
 		return freeforms;
 	}
 
-	public void setFreeforms(List<FreeForm> freeforms) {
+	public void setFreeforms(List<Freeform> freeforms) {
 		this.freeforms = freeforms;
 	}
 
-	public List<FreeForm> getLearnerComments() {
+	public List<Freeform> getLearnerComments() {
 		return learnerComments;
 	}
 
-	public void setLearnerComments(List<FreeForm> learnerComments) {
+	public void setLearnerComments(List<Freeform> learnerComments) {
 		this.learnerComments = learnerComments;
 	}
 

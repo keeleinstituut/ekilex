@@ -1,43 +1,43 @@
 package eki.ekilex.service.db.util;
 
-import static eki.ekilex.data.db.Tables.ACTIVITY_LOG;
-import static eki.ekilex.data.db.Tables.DATASET;
-import static eki.ekilex.data.db.Tables.DEFINITION_NOTE;
-import static eki.ekilex.data.db.Tables.DEFINITION_NOTE_SOURCE_LINK;
-import static eki.ekilex.data.db.Tables.DEFINITION_SOURCE_LINK;
-import static eki.ekilex.data.db.Tables.DOMAIN;
-import static eki.ekilex.data.db.Tables.FORM_FREQ;
-import static eki.ekilex.data.db.Tables.FREEFORM;
-import static eki.ekilex.data.db.Tables.FREQ_CORP;
-import static eki.ekilex.data.db.Tables.LEXEME;
-import static eki.ekilex.data.db.Tables.LEXEME_ACTIVITY_LOG;
-import static eki.ekilex.data.db.Tables.LEXEME_DERIV;
-import static eki.ekilex.data.db.Tables.LEXEME_FREEFORM;
-import static eki.ekilex.data.db.Tables.LEXEME_NOTE;
-import static eki.ekilex.data.db.Tables.LEXEME_NOTE_SOURCE_LINK;
-import static eki.ekilex.data.db.Tables.LEXEME_POS;
-import static eki.ekilex.data.db.Tables.LEXEME_REGISTER;
-import static eki.ekilex.data.db.Tables.LEXEME_SOURCE_LINK;
-import static eki.ekilex.data.db.Tables.LEXEME_TAG;
-import static eki.ekilex.data.db.Tables.LEX_RELATION;
-import static eki.ekilex.data.db.Tables.MEANING_DOMAIN;
-import static eki.ekilex.data.db.Tables.MEANING_FORUM;
-import static eki.ekilex.data.db.Tables.MEANING_FREEFORM;
-import static eki.ekilex.data.db.Tables.MEANING_NOTE;
-import static eki.ekilex.data.db.Tables.MEANING_NOTE_SOURCE_LINK;
-import static eki.ekilex.data.db.Tables.MEANING_RELATION;
-import static eki.ekilex.data.db.Tables.MEANING_SEMANTIC_TYPE;
-import static eki.ekilex.data.db.Tables.MEANING_TAG;
-import static eki.ekilex.data.db.Tables.USAGE_SOURCE_LINK;
-import static eki.ekilex.data.db.Tables.WORD_ACTIVITY_LOG;
-import static eki.ekilex.data.db.Tables.WORD_FORUM;
-import static eki.ekilex.data.db.Tables.WORD_FREEFORM;
-import static eki.ekilex.data.db.Tables.WORD_FREQ;
-import static eki.ekilex.data.db.Tables.WORD_GROUP;
-import static eki.ekilex.data.db.Tables.WORD_GROUP_MEMBER;
-import static eki.ekilex.data.db.Tables.WORD_LAST_ACTIVITY_LOG;
-import static eki.ekilex.data.db.Tables.WORD_RELATION;
-import static eki.ekilex.data.db.Tables.WORD_WORD_TYPE;
+import static eki.ekilex.data.db.main.Tables.ACTIVITY_LOG;
+import static eki.ekilex.data.db.main.Tables.DATASET;
+import static eki.ekilex.data.db.main.Tables.DEFINITION_NOTE;
+import static eki.ekilex.data.db.main.Tables.DEFINITION_NOTE_SOURCE_LINK;
+import static eki.ekilex.data.db.main.Tables.DEFINITION_SOURCE_LINK;
+import static eki.ekilex.data.db.main.Tables.DOMAIN;
+import static eki.ekilex.data.db.main.Tables.FORM_FREQ;
+import static eki.ekilex.data.db.main.Tables.FREEFORM;
+import static eki.ekilex.data.db.main.Tables.FREQ_CORP;
+import static eki.ekilex.data.db.main.Tables.LEXEME;
+import static eki.ekilex.data.db.main.Tables.LEXEME_ACTIVITY_LOG;
+import static eki.ekilex.data.db.main.Tables.LEXEME_DERIV;
+import static eki.ekilex.data.db.main.Tables.LEXEME_FREEFORM;
+import static eki.ekilex.data.db.main.Tables.LEXEME_NOTE;
+import static eki.ekilex.data.db.main.Tables.LEXEME_NOTE_SOURCE_LINK;
+import static eki.ekilex.data.db.main.Tables.LEXEME_POS;
+import static eki.ekilex.data.db.main.Tables.LEXEME_REGISTER;
+import static eki.ekilex.data.db.main.Tables.LEXEME_SOURCE_LINK;
+import static eki.ekilex.data.db.main.Tables.LEXEME_TAG;
+import static eki.ekilex.data.db.main.Tables.LEX_RELATION;
+import static eki.ekilex.data.db.main.Tables.MEANING_DOMAIN;
+import static eki.ekilex.data.db.main.Tables.MEANING_FORUM;
+import static eki.ekilex.data.db.main.Tables.MEANING_FREEFORM;
+import static eki.ekilex.data.db.main.Tables.MEANING_NOTE;
+import static eki.ekilex.data.db.main.Tables.MEANING_NOTE_SOURCE_LINK;
+import static eki.ekilex.data.db.main.Tables.MEANING_RELATION;
+import static eki.ekilex.data.db.main.Tables.MEANING_SEMANTIC_TYPE;
+import static eki.ekilex.data.db.main.Tables.MEANING_TAG;
+import static eki.ekilex.data.db.main.Tables.USAGE_SOURCE_LINK;
+import static eki.ekilex.data.db.main.Tables.WORD_ACTIVITY_LOG;
+import static eki.ekilex.data.db.main.Tables.WORD_FORUM;
+import static eki.ekilex.data.db.main.Tables.WORD_FREEFORM;
+import static eki.ekilex.data.db.main.Tables.WORD_FREQ;
+import static eki.ekilex.data.db.main.Tables.WORD_GROUP;
+import static eki.ekilex.data.db.main.Tables.WORD_GROUP_MEMBER;
+import static eki.ekilex.data.db.main.Tables.WORD_LAST_ACTIVITY_LOG;
+import static eki.ekilex.data.db.main.Tables.WORD_RELATION;
+import static eki.ekilex.data.db.main.Tables.WORD_WORD_TYPE;
 import static java.util.stream.Collectors.toList;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
@@ -45,7 +45,6 @@ import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
@@ -79,46 +78,46 @@ import eki.ekilex.constant.SearchOperand;
 import eki.ekilex.data.Classifier;
 import eki.ekilex.data.SearchCriterion;
 import eki.ekilex.data.SearchDatasetsRestriction;
-import eki.ekilex.data.db.tables.ActivityLog;
-import eki.ekilex.data.db.tables.DefinitionNote;
-import eki.ekilex.data.db.tables.DefinitionNoteSourceLink;
-import eki.ekilex.data.db.tables.DefinitionSourceLink;
-import eki.ekilex.data.db.tables.Domain;
-import eki.ekilex.data.db.tables.FormFreq;
-import eki.ekilex.data.db.tables.Freeform;
-import eki.ekilex.data.db.tables.FreqCorp;
-import eki.ekilex.data.db.tables.LexRelation;
-import eki.ekilex.data.db.tables.Lexeme;
-import eki.ekilex.data.db.tables.LexemeActivityLog;
-import eki.ekilex.data.db.tables.LexemeDeriv;
-import eki.ekilex.data.db.tables.LexemeFreeform;
-import eki.ekilex.data.db.tables.LexemeNote;
-import eki.ekilex.data.db.tables.LexemeNoteSourceLink;
-import eki.ekilex.data.db.tables.LexemePos;
-import eki.ekilex.data.db.tables.LexemeRegister;
-import eki.ekilex.data.db.tables.LexemeSourceLink;
-import eki.ekilex.data.db.tables.LexemeTag;
-import eki.ekilex.data.db.tables.Meaning;
-import eki.ekilex.data.db.tables.MeaningDomain;
-import eki.ekilex.data.db.tables.MeaningForum;
-import eki.ekilex.data.db.tables.MeaningFreeform;
-import eki.ekilex.data.db.tables.MeaningNote;
-import eki.ekilex.data.db.tables.MeaningNoteSourceLink;
-import eki.ekilex.data.db.tables.MeaningRelation;
-import eki.ekilex.data.db.tables.MeaningSemanticType;
-import eki.ekilex.data.db.tables.MeaningTag;
-import eki.ekilex.data.db.tables.Source;
-import eki.ekilex.data.db.tables.UsageSourceLink;
-import eki.ekilex.data.db.tables.Word;
-import eki.ekilex.data.db.tables.WordActivityLog;
-import eki.ekilex.data.db.tables.WordForum;
-import eki.ekilex.data.db.tables.WordFreeform;
-import eki.ekilex.data.db.tables.WordFreq;
-import eki.ekilex.data.db.tables.WordGroup;
-import eki.ekilex.data.db.tables.WordGroupMember;
-import eki.ekilex.data.db.tables.WordLastActivityLog;
-import eki.ekilex.data.db.tables.WordRelation;
-import eki.ekilex.data.db.tables.WordWordType;
+import eki.ekilex.data.db.main.tables.ActivityLog;
+import eki.ekilex.data.db.main.tables.DefinitionNote;
+import eki.ekilex.data.db.main.tables.DefinitionNoteSourceLink;
+import eki.ekilex.data.db.main.tables.DefinitionSourceLink;
+import eki.ekilex.data.db.main.tables.Domain;
+import eki.ekilex.data.db.main.tables.FormFreq;
+import eki.ekilex.data.db.main.tables.Freeform;
+import eki.ekilex.data.db.main.tables.FreqCorp;
+import eki.ekilex.data.db.main.tables.LexRelation;
+import eki.ekilex.data.db.main.tables.Lexeme;
+import eki.ekilex.data.db.main.tables.LexemeActivityLog;
+import eki.ekilex.data.db.main.tables.LexemeDeriv;
+import eki.ekilex.data.db.main.tables.LexemeFreeform;
+import eki.ekilex.data.db.main.tables.LexemeNote;
+import eki.ekilex.data.db.main.tables.LexemeNoteSourceLink;
+import eki.ekilex.data.db.main.tables.LexemePos;
+import eki.ekilex.data.db.main.tables.LexemeRegister;
+import eki.ekilex.data.db.main.tables.LexemeSourceLink;
+import eki.ekilex.data.db.main.tables.LexemeTag;
+import eki.ekilex.data.db.main.tables.Meaning;
+import eki.ekilex.data.db.main.tables.MeaningDomain;
+import eki.ekilex.data.db.main.tables.MeaningForum;
+import eki.ekilex.data.db.main.tables.MeaningFreeform;
+import eki.ekilex.data.db.main.tables.MeaningNote;
+import eki.ekilex.data.db.main.tables.MeaningNoteSourceLink;
+import eki.ekilex.data.db.main.tables.MeaningRelation;
+import eki.ekilex.data.db.main.tables.MeaningSemanticType;
+import eki.ekilex.data.db.main.tables.MeaningTag;
+import eki.ekilex.data.db.main.tables.Source;
+import eki.ekilex.data.db.main.tables.UsageSourceLink;
+import eki.ekilex.data.db.main.tables.Word;
+import eki.ekilex.data.db.main.tables.WordActivityLog;
+import eki.ekilex.data.db.main.tables.WordForum;
+import eki.ekilex.data.db.main.tables.WordFreeform;
+import eki.ekilex.data.db.main.tables.WordFreq;
+import eki.ekilex.data.db.main.tables.WordGroup;
+import eki.ekilex.data.db.main.tables.WordGroupMember;
+import eki.ekilex.data.db.main.tables.WordLastActivityLog;
+import eki.ekilex.data.db.main.tables.WordRelation;
+import eki.ekilex.data.db.main.tables.WordWordType;
 
 @Component
 public class SearchFilterHelper implements GlobalConstant, ActivityFunct, FreeformConstant {
@@ -555,7 +554,7 @@ public class SearchFilterHelper implements GlobalConstant, ActivityFunct, Freefo
 			for (SearchCriterion criterion : filteredCriteria) {
 				if (criterion.getSearchValue() != null) {
 					String searchValueStr = criterion.getSearchValue().toString();
-					wordFreeformCondition = applyValueFilter(searchValueStr, criterion.isNot(), criterion.getSearchOperand(), ff.VALUE_TEXT, wordFreeformCondition, true);
+					wordFreeformCondition = applyValueFilter(searchValueStr, criterion.isNot(), criterion.getSearchOperand(), ff.VALUE, wordFreeformCondition, true);
 				}
 			}
 			where = where.andExists(DSL.select(wff.WORD_ID).from(wff, ff).where(wordFreeformCondition));
@@ -1279,6 +1278,7 @@ public class SearchFilterHelper implements GlobalConstant, ActivityFunct, Freefo
 		return where;
 	}
 
+	// TODO should be removed after entity move
 	public Condition applyLexemeFreeformFilters(
 			SearchKey searchKey,
 			String freeformTypeCode,
@@ -1306,7 +1306,7 @@ public class SearchFilterHelper implements GlobalConstant, ActivityFunct, Freefo
 			for (SearchCriterion criterion : filteredCriteria) {
 				if (criterion.getSearchValue() != null) {
 					String searchValueStr = criterion.getSearchValue().toString();
-					where1 = applyValueFilter(searchValueStr, criterion.isNot(), criterion.getSearchOperand(), ff.VALUE_TEXT, where1, true);
+					where1 = applyValueFilter(searchValueStr, criterion.isNot(), criterion.getSearchOperand(), ff.VALUE, where1, true);
 				}
 			}
 			where = where.and(DSL.exists(DSL.select(lff.ID).from(lff, ff).where(where1)));
@@ -1617,50 +1617,100 @@ public class SearchFilterHelper implements GlobalConstant, ActivityFunct, Freefo
 		return where;
 	}
 
-	public Condition applyMeaningAttributeFilters(List<SearchCriterion> searchCriteria, Field<Long> meaningIdField, Condition where) throws Exception {
+	public Condition applyWordFreeformFilters(List<SearchCriterion> searchCriteria, Field<Long> wordIdField, Condition where) throws Exception {
 
-		List<SearchCriterion> filteredValueCriteria = searchCriteria.stream()
-				.filter(c -> c.getSearchKey().equals(SearchKey.ATTRIBUTE_VALUE))
-				.collect(toList());
-
-		if (CollectionUtils.isEmpty(filteredValueCriteria)) {
+		if (containsSearchKeys(
+				searchCriteria,
+				SearchKey.LEXEME_ATTRIBUTE_NAME,
+				SearchKey.MEANING_ATTRIBUTE_NAME,
+				SearchKey.CONCEPT_ATTRIBUTE_NAME)) {
 			return where;
 		}
 
-		List<SearchCriterion> filteredNameCriteria = searchCriteria.stream()
-				.filter(c -> c.getSearchKey().equals(SearchKey.ATTRIBUTE_NAME))
-				.collect(toList());
+		List<SearchCriterion> filteredCriteria = filterCriteriaBySearchKeys(searchCriteria, SearchKey.WORD_ATTRIBUTE_NAME, SearchKey.TERM_ATTRIBUTE_NAME, SearchKey.ATTRIBUTE_VALUE);
 
-		List<String> meaningAttributeCodes = new ArrayList<>();
-		if (CollectionUtils.isNotEmpty(filteredNameCriteria)) {
-			for (SearchCriterion criterion : filteredNameCriteria) {
-				String searchValueStr = criterion.getSearchValue().toString();
-				meaningAttributeCodes.add(searchValueStr);
-			}
-		} else {
-			meaningAttributeCodes = Arrays.asList(MEANING_ATTRIBUTE_FF_TYPE_CODES);
+		if (CollectionUtils.isEmpty(filteredCriteria)) {
+			return where;
+		}
+
+		WordFreeform wff = WORD_FREEFORM.as("wff");
+		Freeform ff = FREEFORM.as("ff");
+		Condition where1 = wff.WORD_ID.eq(wordIdField)
+				.and(wff.FREEFORM_ID.eq(ff.ID))
+				.and(ff.FREEFORM_TYPE_CODE.notIn(EXCLUDED_WORD_ATTRIBUTE_FF_TYPE_CODES));
+		where1 = applyFreeformFilters(filteredCriteria, "word", ff, where1);
+		where = where.and(DSL.exists(DSL.select(wff.ID).from(wff, ff).where(where1)));
+		return where;
+	}
+
+	public Condition applyLexemeFreeformFilters(List<SearchCriterion> searchCriteria, Field<Long> lexemeIdField, Condition where) throws Exception {
+
+		if (containsSearchKeys(
+				searchCriteria,
+				SearchKey.WORD_ATTRIBUTE_NAME,
+				SearchKey.TERM_ATTRIBUTE_NAME,
+				SearchKey.MEANING_ATTRIBUTE_NAME,
+				SearchKey.CONCEPT_ATTRIBUTE_NAME)) {
+			return where;
+		}
+
+		List<SearchCriterion> filteredCriteria = filterCriteriaBySearchKeys(searchCriteria, SearchKey.LEXEME_ATTRIBUTE_NAME, SearchKey.ATTRIBUTE_VALUE);
+
+		if (CollectionUtils.isEmpty(filteredCriteria)) {
+			return where;
+		}
+
+		LexemeFreeform lff = LEXEME_FREEFORM.as("lff");
+		Freeform ff = FREEFORM.as("ff");
+		Condition where1 = lff.LEXEME_ID.eq(lexemeIdField)
+				.and(lff.FREEFORM_ID.eq(ff.ID))
+				.and(ff.FREEFORM_TYPE_CODE.notIn(EXCLUDED_LEXEME_ATTRIBUTE_FF_TYPE_CODES));
+		where1 = applyFreeformFilters(filteredCriteria, "lexeme", ff, where1);
+		where = where.and(DSL.exists(DSL.select(lff.ID).from(lff, ff).where(where1)));
+		return where;
+	}
+
+	public Condition applyMeaningFreeformFilters(List<SearchCriterion> searchCriteria, Field<Long> meaningIdField, Condition where) throws Exception {
+
+		if (containsSearchKeys(
+				searchCriteria,
+				SearchKey.WORD_ATTRIBUTE_NAME,
+				SearchKey.TERM_ATTRIBUTE_NAME,
+				SearchKey.LEXEME_ATTRIBUTE_NAME)) {
+			return where;
+		}
+
+		List<SearchCriterion> filteredCriteria = filterCriteriaBySearchKeys(searchCriteria, SearchKey.MEANING_ATTRIBUTE_NAME, SearchKey.CONCEPT_ATTRIBUTE_NAME, SearchKey.ATTRIBUTE_VALUE);
+
+		if (CollectionUtils.isEmpty(filteredCriteria)) {
+			return where;
 		}
 
 		MeaningFreeform mff = MEANING_FREEFORM.as("mff");
 		Freeform ff = FREEFORM.as("ff");
-
-		Condition meaningFreeformCondition = mff.MEANING_ID.eq(meaningIdField)
+		Condition where1 = mff.MEANING_ID.eq(meaningIdField)
 				.and(mff.FREEFORM_ID.eq(ff.ID))
-				.and(ff.FREEFORM_TYPE_CODE.in(meaningAttributeCodes));
-
-		boolean isNotExistsSearch = isNotExistsSearch(SearchKey.ATTRIBUTE_VALUE, filteredValueCriteria);
-		if (isNotExistsSearch) {
-			where = where.and(DSL.notExists(DSL.select(mff.ID).from(mff, ff).where(meaningFreeformCondition)));
-		} else {
-			for (SearchCriterion criterion : filteredValueCriteria) {
-				if (criterion.getSearchValue() != null) {
-					String searchValueStr = criterion.getSearchValue().toString();
-					meaningFreeformCondition = applyValueFilter(searchValueStr, criterion.isNot(), criterion.getSearchOperand(), ff.VALUE_TEXT, meaningFreeformCondition, true);
-				}
-			}
-			where = where.and(DSL.exists(DSL.select(mff.ID).from(mff, ff).where(meaningFreeformCondition)));
-		}
+				.and(ff.FREEFORM_TYPE_CODE.notIn(EXCLUDED_MEANING_ATTRIBUTE_FF_TYPE_CODES));
+		where1 = applyFreeformFilters(filteredCriteria, "meaning", ff, where1);
+		where = where.and(DSL.exists(DSL.select(mff.ID).from(mff, ff).where(where1)));
 		return where;
+	}
+
+	private Condition applyFreeformFilters(List<SearchCriterion> filteredCriteria, String context, Freeform ff, Condition where1) throws Exception {
+
+		for (SearchCriterion criterion : filteredCriteria) {
+
+			SearchKey searchKey = criterion.getSearchKey();
+			SearchOperand searchOperand = criterion.getSearchOperand();
+			String searchValueStr = criterion.getSearchValue().toString();
+			boolean isNot = criterion.isNot();
+			if (isAttributeNameSearchKey(searchKey)) {
+				where1 = applyValueFilter(searchValueStr, isNot, searchOperand, ff.FREEFORM_TYPE_CODE, where1, true);
+			} else if (SearchKey.ATTRIBUTE_VALUE.equals(searchKey)) {
+				where1 = applyValueFilter(searchValueStr, isNot, searchOperand, ff.VALUE, where1, true);
+			}
+		}
+		return where1;
 	}
 
 	public Condition applyMeaningRelationValueFilters(List<SearchCriterion> searchCriteria, Field<Long> meaningIdField, Condition where) {
@@ -2137,7 +2187,7 @@ public class SearchFilterHelper implements GlobalConstant, ActivityFunct, Freefo
 
 	public List<SearchCriterion> filterCriteriaBySearchKeys(List<SearchCriterion> searchCriteria, SearchKey... searchKeys) {
 		List<SearchCriterion> filteredCriteria = searchCriteria.stream()
-				.filter(crit -> crit.getSearchValue() != null && isNotBlank(crit.getSearchValue().toString()))
+				.filter(crit -> (crit.getSearchValue() != null) && isNotBlank(crit.getSearchValue().toString()))
 				.filter(crit -> ArrayUtils.contains(searchKeys, crit.getSearchKey()))
 				.collect(toList());
 		return filteredCriteria;
@@ -2174,6 +2224,17 @@ public class SearchFilterHelper implements GlobalConstant, ActivityFunct, Freefo
 						&& crit.getSearchOperand().equals(SearchOperand.EXISTS)
 						&& crit.getSearchValue() == null
 						&& crit.isNot());
+	}
+
+	private boolean isAttributeNameSearchKey(SearchKey searchKey) {
+		return Arrays
+				.asList(
+						SearchKey.WORD_ATTRIBUTE_NAME,
+						SearchKey.TERM_ATTRIBUTE_NAME,
+						SearchKey.LEXEME_ATTRIBUTE_NAME,
+						SearchKey.MEANING_ATTRIBUTE_NAME,
+						SearchKey.CONCEPT_ATTRIBUTE_NAME)
+				.contains(searchKey);
 	}
 
 	private Condition createCountCondition(SearchOperand searchOperand, Table<Record1<Integer>> idAndCount, String countFieldName) {

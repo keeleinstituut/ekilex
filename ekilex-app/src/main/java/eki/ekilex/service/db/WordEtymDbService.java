@@ -1,11 +1,11 @@
 package eki.ekilex.service.db;
 
-import static eki.ekilex.data.db.Tables.LEXEME;
-import static eki.ekilex.data.db.Tables.MEANING;
-import static eki.ekilex.data.db.Tables.WORD;
-import static eki.ekilex.data.db.Tables.WORD_ETYMOLOGY;
-import static eki.ekilex.data.db.Tables.WORD_ETYMOLOGY_RELATION;
-import static eki.ekilex.data.db.Tables.WORD_ETYMOLOGY_SOURCE_LINK;
+import static eki.ekilex.data.db.main.Tables.LEXEME;
+import static eki.ekilex.data.db.main.Tables.MEANING;
+import static eki.ekilex.data.db.main.Tables.WORD;
+import static eki.ekilex.data.db.main.Tables.WORD_ETYMOLOGY;
+import static eki.ekilex.data.db.main.Tables.WORD_ETYMOLOGY_RELATION;
+import static eki.ekilex.data.db.main.Tables.WORD_ETYMOLOGY_SOURCE_LINK;
 
 import java.util.List;
 
@@ -18,12 +18,12 @@ import org.jooq.util.postgres.PostgresDSL;
 import org.springframework.stereotype.Component;
 
 import eki.ekilex.data.WordEtymNodeTuple;
-import eki.ekilex.data.db.tables.Lexeme;
-import eki.ekilex.data.db.tables.Meaning;
-import eki.ekilex.data.db.tables.Word;
-import eki.ekilex.data.db.tables.WordEtymology;
-import eki.ekilex.data.db.tables.WordEtymologyRelation;
-import eki.ekilex.data.db.tables.WordEtymologySourceLink;
+import eki.ekilex.data.db.main.tables.Lexeme;
+import eki.ekilex.data.db.main.tables.Meaning;
+import eki.ekilex.data.db.main.tables.Word;
+import eki.ekilex.data.db.main.tables.WordEtymology;
+import eki.ekilex.data.db.main.tables.WordEtymologyRelation;
+import eki.ekilex.data.db.main.tables.WordEtymologySourceLink;
 
 @Component
 public class WordEtymDbService extends AbstractDataDbService {
@@ -121,7 +121,7 @@ public class WordEtymDbService extends AbstractDataDbService {
 				.groupBy(l1.WORD_ID)
 				.asField();
 
-		List<WordEtymNodeTuple> tuples = create
+		List<WordEtymNodeTuple> tuples = mainDb
 				.withRecursive(werec)
 				.select(
 						werec.field("word_id", Long.class),

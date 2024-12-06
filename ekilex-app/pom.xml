@@ -6,12 +6,12 @@
 	<parent>
 		<groupId>eki.ekilex</groupId>
 		<artifactId>eki-root</artifactId>
-		<version>1.39-SNAPSHOT</version>
+		<version>1.40-SNAPSHOT</version>
 	</parent>
 
 	<groupId>eki.ekilex</groupId>
 	<artifactId>ekilex-app</artifactId>
-	<version>1.39-SNAPSHOT</version>
+	<version>1.40-SNAPSHOT</version>
 	<packaging>jar</packaging>
 
 	<name>Ekilex App</name>
@@ -42,6 +42,12 @@
 			</properties>
 		</profile>
 		<profile>
+			<id>jooq</id>
+			<properties>
+				<spring.boot.mainclass>eki.ekilex.cli.JooqGenerator</spring.boot.mainclass>
+			</properties>
+		</profile>
+		<profile>
 			<id>dsimp</id>
 			<properties>
 				<spring.boot.mainclass>eki.ekilex.cli.DatasetImporter</spring.boot.mainclass>
@@ -54,33 +60,9 @@
 			</properties>
 		</profile>
 		<profile>
-			<id>plimp</id>
+			<id>domf</id>
 			<properties>
-				<spring.boot.mainclass>eki.ekilex.cli.LexemeProficiencyLevelImporter</spring.boot.mainclass>
-			</properties>
-		</profile>
-		<profile>
-			<id>mfimp</id>
-			<properties>
-				<spring.boot.mainclass>eki.ekilex.cli.MeaningForumImporter</spring.boot.mainclass>
-			</properties>
-		</profile>
-		<profile>
-			<id>wscor</id>
-			<properties>
-				<spring.boot.mainclass>eki.ekilex.cli.WordStressCorrector</spring.boot.mainclass>
-			</properties>
-		</profile>
-		<profile>
-			<id>cmov</id>
-			<properties>
-				<spring.boot.mainclass>eki.ekilex.cli.CollocationMover</spring.boot.mainclass>
-			</properties>
-		</profile>
-		<profile>
-			<id>sdsa</id>
-			<properties>
-				<spring.boot.mainclass>eki.ekilex.cli.SourceDatasetApplier</spring.boot.mainclass>
+				<spring.boot.mainclass>eki.ekilex.cli.DomainFixer</spring.boot.mainclass>
 			</properties>
 		</profile>
 	</profiles>
@@ -129,6 +111,7 @@
 					</execution>
 				</executions>
 			</plugin>
+			<!--
 			<plugin>
 				<groupId>org.jooq</groupId>
 				<artifactId>jooq-codegen-maven</artifactId>
@@ -175,6 +158,7 @@
 					</dependency>
 				</dependencies>
 			</plugin>
+			-->
 		</plugins>
 	</build>
 
@@ -183,6 +167,10 @@
 		<dependency>
 			<groupId>eki.common</groupId>
 			<artifactId>eki-common</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-configuration-processor</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
@@ -228,6 +216,14 @@
 		<dependency>
 			<groupId>com.atlassian.commonmark</groupId>
 			<artifactId>commonmark</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.jooq</groupId>
+			<artifactId>jooq-meta</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.jooq</groupId>
+			<artifactId>jooq-codegen</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>org.postgresql</groupId>

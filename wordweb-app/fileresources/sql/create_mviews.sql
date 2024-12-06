@@ -5,16 +5,12 @@ drop materialized view if exists mview_ww_word;
 drop materialized view if exists mview_ww_form;
 drop materialized view if exists mview_ww_meaning;
 drop materialized view if exists mview_ww_lexeme;
-drop materialized view if exists mview_ww_collocation;
+drop materialized view if exists mview_ww_collocation; -- to be removed later
+drop materialized view if exists mview_ww_colloc_pos_group;
 drop materialized view if exists mview_ww_word_etymology;
-drop materialized view if exists mview_ww_word_etym_source_link; -- to be removed later
 drop materialized view if exists mview_ww_word_relation;
 drop materialized view if exists mview_ww_lexeme_relation;
 drop materialized view if exists mview_ww_meaning_relation;
-drop materialized view if exists mview_ww_lexeme_source_link; -- to be removed later
-drop materialized view if exists mview_ww_lexeme_freeform_source_link; -- to be removed later
-drop materialized view if exists mview_ww_meaning_freeform_source_link; -- to be removed later
-drop materialized view if exists mview_ww_definition_source_link; -- to be removed later
 drop materialized view if exists mview_ww_classifier;
 drop materialized view if exists mview_ww_dataset;
 drop materialized view if exists mview_ww_news_article;
@@ -175,26 +171,14 @@ dblink(
 	source_links json
 );
 
-create materialized view mview_ww_collocation as
+create materialized view mview_ww_colloc_pos_group as
 select * from 
 dblink(
 	'host=localhost user=ekilex password=3kil3x dbname=ekilex',
-	'select * from view_ww_collocation') as collocation(
+	'select * from view_ww_colloc_pos_group') as colloc_pos_group(
 	lexeme_id bigint,
 	word_id bigint,
-	pos_group_id bigint,
-	pos_group_code varchar(100),
-	pos_group_order_by bigint,
-	rel_group_id bigint,
-	rel_group_name text,
-	rel_group_order_by bigint,
-	colloc_group_order integer,
-	colloc_id bigint,
-	colloc_value text,
-	colloc_definition text,
-	colloc_usages text array,
-	colloc_members json,
-	complexity varchar(100)
+	pos_groups json
 );
 
 create materialized view mview_ww_word_etymology as
@@ -345,9 +329,8 @@ create index mview_ww_lexeme_meaning_id_idx on mview_ww_lexeme (meaning_id);
 create index mview_ww_lexeme_dataset_type_idx on mview_ww_lexeme (dataset_type);
 create index mview_ww_lexeme_dataset_code_idx on mview_ww_lexeme (dataset_code);
 create index mview_ww_lexeme_complexity_idx on mview_ww_lexeme (complexity);
-create index mview_ww_collocation_lexeme_id_idx on mview_ww_collocation (lexeme_id);
-create index mview_ww_collocation_word_id_idx on mview_ww_collocation (word_id);
-create index mview_ww_collocation_complexity_idx on mview_ww_collocation (complexity);
+create index mview_ww_colloc_pos_group_lexeme_id_idx on mview_ww_colloc_pos_group (lexeme_id);
+create index mview_ww_colloc_pos_group_word_id_idx on mview_ww_colloc_pos_group (word_id);
 create index mview_ww_word_etymology_word_id_idx on mview_ww_word_etymology (word_id);
 create index mview_ww_word_relation_word_id_idx on mview_ww_word_relation (word_id);
 create index mview_ww_lexeme_relation_lexeme_id_idx on mview_ww_lexeme_relation (lexeme_id);

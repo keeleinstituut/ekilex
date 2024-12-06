@@ -1,18 +1,18 @@
 package eki.ekilex.service.db;
 
-import static eki.ekilex.data.db.Tables.DATASET;
-import static eki.ekilex.data.db.Tables.DEFINITION;
-import static eki.ekilex.data.db.Tables.DEFINITION_DATASET;
-import static eki.ekilex.data.db.Tables.DEFINITION_SOURCE_LINK;
-import static eki.ekilex.data.db.Tables.LEXEME;
-import static eki.ekilex.data.db.Tables.LEXEME_POS;
-import static eki.ekilex.data.db.Tables.LEXEME_REGISTER;
-import static eki.ekilex.data.db.Tables.MEANING_RELATION;
-import static eki.ekilex.data.db.Tables.USAGE;
-import static eki.ekilex.data.db.Tables.USAGE_SOURCE_LINK;
-import static eki.ekilex.data.db.Tables.WORD;
-import static eki.ekilex.data.db.Tables.WORD_RELATION;
-import static eki.ekilex.data.db.Tables.WORD_RELATION_PARAM;
+import static eki.ekilex.data.db.main.Tables.DATASET;
+import static eki.ekilex.data.db.main.Tables.DEFINITION;
+import static eki.ekilex.data.db.main.Tables.DEFINITION_DATASET;
+import static eki.ekilex.data.db.main.Tables.DEFINITION_SOURCE_LINK;
+import static eki.ekilex.data.db.main.Tables.LEXEME;
+import static eki.ekilex.data.db.main.Tables.LEXEME_POS;
+import static eki.ekilex.data.db.main.Tables.LEXEME_REGISTER;
+import static eki.ekilex.data.db.main.Tables.MEANING_RELATION;
+import static eki.ekilex.data.db.main.Tables.USAGE;
+import static eki.ekilex.data.db.main.Tables.USAGE_SOURCE_LINK;
+import static eki.ekilex.data.db.main.Tables.WORD;
+import static eki.ekilex.data.db.main.Tables.WORD_RELATION;
+import static eki.ekilex.data.db.main.Tables.WORD_RELATION_PARAM;
 import static org.jooq.impl.DSL.field;
 
 import java.math.BigDecimal;
@@ -35,27 +35,27 @@ import eki.ekilex.data.SearchDatasetsRestriction;
 import eki.ekilex.data.SynRelation;
 import eki.ekilex.data.TypeWordRelParam;
 import eki.ekilex.data.WordLexeme;
-import eki.ekilex.data.db.Routines;
-import eki.ekilex.data.db.tables.Dataset;
-import eki.ekilex.data.db.tables.Definition;
-import eki.ekilex.data.db.tables.DefinitionSourceLink;
-import eki.ekilex.data.db.tables.Lexeme;
-import eki.ekilex.data.db.tables.LexemePos;
-import eki.ekilex.data.db.tables.LexemeRegister;
-import eki.ekilex.data.db.tables.Usage;
-import eki.ekilex.data.db.tables.UsageSourceLink;
-import eki.ekilex.data.db.tables.Word;
-import eki.ekilex.data.db.tables.WordRelation;
-import eki.ekilex.data.db.tables.WordRelationParam;
-import eki.ekilex.data.db.tables.records.DefinitionRecord;
-import eki.ekilex.data.db.tables.records.DefinitionSourceLinkRecord;
-import eki.ekilex.data.db.tables.records.LexemePosRecord;
-import eki.ekilex.data.db.tables.records.LexemeRecord;
-import eki.ekilex.data.db.tables.records.UsageRecord;
-import eki.ekilex.data.db.tables.records.UsageSourceLinkRecord;
-import eki.ekilex.data.db.tables.records.WordRecord;
-import eki.ekilex.data.db.udt.records.TypeWordRelMeaningRecord;
-import eki.ekilex.data.db.udt.records.TypeWordRelParamRecord;
+import eki.ekilex.data.db.main.Routines;
+import eki.ekilex.data.db.main.tables.Dataset;
+import eki.ekilex.data.db.main.tables.Definition;
+import eki.ekilex.data.db.main.tables.DefinitionSourceLink;
+import eki.ekilex.data.db.main.tables.Lexeme;
+import eki.ekilex.data.db.main.tables.LexemePos;
+import eki.ekilex.data.db.main.tables.LexemeRegister;
+import eki.ekilex.data.db.main.tables.Usage;
+import eki.ekilex.data.db.main.tables.UsageSourceLink;
+import eki.ekilex.data.db.main.tables.Word;
+import eki.ekilex.data.db.main.tables.WordRelation;
+import eki.ekilex.data.db.main.tables.WordRelationParam;
+import eki.ekilex.data.db.main.tables.records.DefinitionRecord;
+import eki.ekilex.data.db.main.tables.records.DefinitionSourceLinkRecord;
+import eki.ekilex.data.db.main.tables.records.LexemePosRecord;
+import eki.ekilex.data.db.main.tables.records.LexemeRecord;
+import eki.ekilex.data.db.main.tables.records.UsageRecord;
+import eki.ekilex.data.db.main.tables.records.UsageSourceLinkRecord;
+import eki.ekilex.data.db.main.tables.records.WordRecord;
+import eki.ekilex.data.db.main.udt.records.TypeWordRelMeaningRecord;
+import eki.ekilex.data.db.main.udt.records.TypeWordRelParamRecord;
 import eki.ekilex.service.db.util.JooqBugCompensator;
 import eki.ekilex.service.db.util.SearchFilterHelper;
 
@@ -176,7 +176,7 @@ public class SynSearchDbService extends AbstractDataDbService {
 				.groupBy(wh.VALUE)
 				.asField();
 
-		return create
+		return mainDb
 				.select(
 						rr.field("id"),
 						rr.field("relation_status"),
@@ -210,7 +210,7 @@ public class SynSearchDbService extends AbstractDataDbService {
 		Word w2 = WORD.as("w2");
 		Lexeme l2 = LEXEME.as("l2");
 
-		return create
+		return mainDb
 				.select(field(DSL.count(wr.ID).gt(0)).as("relation_exists"))
 				.from(wr, w2, l2)
 				.where(
@@ -312,7 +312,7 @@ public class SynSearchDbService extends AbstractDataDbService {
 				.groupBy(wh.VALUE)
 				.asField();
 
-		return create
+		return mainDb
 				.select(
 						rr.field("id"),
 						rr.field("relation_status"),
@@ -346,7 +346,7 @@ public class SynSearchDbService extends AbstractDataDbService {
 		Field<JSON> lposf = getLexemePosField(l.ID, classifierLabelLang, classifierLabelTypeCode);
 		Field<JSON> lregf = getLexemeRegistersField(l.ID, classifierLabelLang, classifierLabelTypeCode);
 
-		return create
+		return mainDb
 				.select(
 						l.MEANING_ID,
 						l.WORD_ID,
@@ -375,7 +375,7 @@ public class SynSearchDbService extends AbstractDataDbService {
 		Field<Boolean> wtsf = getWordIsSuffixoidField(w.ID);
 		Field<Boolean> wtz = getWordIsForeignField(w.ID);
 
-		return create
+		return mainDb
 				.select(
 						w.ID.as("word_id"),
 						w.VALUE.as("word_value"),
@@ -397,7 +397,7 @@ public class SynSearchDbService extends AbstractDataDbService {
 	public List<eki.ekilex.data.WordRelation> getExistingFollowingRelationsForWord(Long relationId, String relTypeCode) {
 		WordRelation wr2 = WORD_RELATION.as("wr2");
 
-		return create.select(WORD_RELATION.ID, WORD_RELATION.ORDER_BY)
+		return mainDb.select(WORD_RELATION.ID, WORD_RELATION.ORDER_BY)
 				.from(WORD_RELATION, wr2)
 				.where(
 						WORD_RELATION.WORD1_ID.eq(wr2.WORD1_ID)
@@ -410,7 +410,7 @@ public class SynSearchDbService extends AbstractDataDbService {
 
 	public eki.ekilex.data.Word getSynCandidateWord(Long wordRelationId) {
 
-		return create
+		return mainDb
 				.select(
 						WORD.ID.as("word_id"),
 						WORD.VALUE.as("word_value"),
@@ -425,7 +425,7 @@ public class SynSearchDbService extends AbstractDataDbService {
 
 	public Long getMeaningFirstWordLexemeId(Long meaningId, String datasetCode, String wordValue, String language) {
 
-		return create
+		return mainDb
 				.select(LEXEME.ID)
 				.from(LEXEME, WORD)
 				.where(
@@ -442,7 +442,7 @@ public class SynSearchDbService extends AbstractDataDbService {
 
 	public BigDecimal getWordRelationParamValue(Long wordRelationId, String paramName) {
 
-		return create
+		return mainDb
 				.select(WORD_RELATION_PARAM.VALUE)
 				.from(WORD_RELATION_PARAM)
 				.where(
@@ -453,7 +453,7 @@ public class SynSearchDbService extends AbstractDataDbService {
 
 	public List<TypeWordRelParam> getWordRelationParams(Long wordRelationId) {
 
-		return create
+		return mainDb
 				.select(WORD_RELATION_PARAM.NAME, WORD_RELATION_PARAM.VALUE)
 				.from(WORD_RELATION_PARAM)
 				.where(WORD_RELATION_PARAM.WORD_RELATION_ID.eq(wordRelationId))
@@ -468,7 +468,7 @@ public class SynSearchDbService extends AbstractDataDbService {
 
 		Condition whereInexact = DEFINITION.DEFINITION_TYPE_CODE.eq(DEFINITION_TYPE_CODE_INEXACT_SYN);
 
-		return create
+		return mainDb
 				.select(
 						DEFINITION.VALUE_PRESE.as("value"),
 						DEFINITION.LANG,
@@ -483,7 +483,7 @@ public class SynSearchDbService extends AbstractDataDbService {
 
 	public boolean meaningInexactSynRelationExists(Long meaningId1, Long meaningId2) {
 
-		return create
+		return mainDb
 				.select(field(DSL.count(MEANING_RELATION.ID).gt(0)).as("relation_exists"))
 				.from(MEANING_RELATION)
 				.where(
@@ -495,7 +495,7 @@ public class SynSearchDbService extends AbstractDataDbService {
 
 	public eki.ekilex.data.Definition getMeaningDefinition(Long meaningId, String definitionTypeCode) {
 
-		return create
+		return mainDb
 				.select(
 						DEFINITION.ID,
 						DEFINITION.VALUE_PRESE.as("value"),
@@ -580,7 +580,7 @@ public class SynSearchDbService extends AbstractDataDbService {
 	}
 
 	public void updateRelationStatus(Long id, String status) {
-		create.update(WORD_RELATION)
+		mainDb.update(WORD_RELATION)
 				.set(WORD_RELATION.RELATION_STATUS, status)
 				.where(WORD_RELATION.ID.eq(id))
 				.execute();
@@ -588,7 +588,7 @@ public class SynSearchDbService extends AbstractDataDbService {
 
 	public Long createSynWord(Long sourceWordId, int wordHomNr) {
 
-		WordRecord word = create.selectFrom(WORD).where(WORD.ID.eq(sourceWordId)).fetchOne();
+		WordRecord word = mainDb.selectFrom(WORD).where(WORD.ID.eq(sourceWordId)).fetchOne();
 		WordRecord synWord = word.copy();
 		synWord.setHomonymNr(wordHomNr);
 		synWord.setIsPublic(PUBLICITY_PUBLIC);
@@ -599,7 +599,7 @@ public class SynSearchDbService extends AbstractDataDbService {
 
 	public void createSynLexeme(Long sourceLexemeId, Long wordId, int synLexemeLevel1, Long meaningId, String datasetCode, BigDecimal weight) {
 
-		LexemeRecord sourceLexeme = create.selectFrom(LEXEME).where(LEXEME.ID.eq(sourceLexemeId)).fetchOne();
+		LexemeRecord sourceLexeme = mainDb.selectFrom(LEXEME).where(LEXEME.ID.eq(sourceLexemeId)).fetchOne();
 		LexemeRecord synLexeme = sourceLexeme.copy();
 		synLexeme.setMeaningId(meaningId);
 		synLexeme.setWordId(wordId);
@@ -624,7 +624,7 @@ public class SynSearchDbService extends AbstractDataDbService {
 		Usage tgtu = USAGE.as("tgtu");
 		UsageSourceLink usl = USAGE_SOURCE_LINK.as("usl");
 
-		Result<LexemePosRecord> sourceLexemePoses = create
+		Result<LexemePosRecord> sourceLexemePoses = mainDb
 				.selectFrom(srcpos)
 				.where(
 						srcpos.LEXEME_ID.eq(sourceLexemeId)
@@ -645,7 +645,7 @@ public class SynSearchDbService extends AbstractDataDbService {
 			targetLexemePos.store();
 		}
 
-		Result<UsageRecord> sourceUsages = create
+		Result<UsageRecord> sourceUsages = mainDb
 				.select(srcu.fields())
 				.from(srcu)
 				.where(
@@ -669,7 +669,7 @@ public class SynSearchDbService extends AbstractDataDbService {
 			targetUsage.store();
 			Long targetUsageId = targetUsage.getId();
 
-			Result<UsageSourceLinkRecord> sourceUsageSourceLinks = create
+			Result<UsageSourceLinkRecord> sourceUsageSourceLinks = mainDb
 					.selectFrom(usl)
 					.where(usl.USAGE_ID.eq(sourceUsageId))
 					.orderBy(usl.ORDER_BY)
@@ -691,7 +691,7 @@ public class SynSearchDbService extends AbstractDataDbService {
 		Definition srcdef = DEFINITION.as("srcdef");
 		DefinitionSourceLink defsl = DEFINITION_SOURCE_LINK.as("defsl");
 
-		Result<DefinitionRecord> sourceDefinitions = create
+		Result<DefinitionRecord> sourceDefinitions = mainDb
 				.selectFrom(srcdef)
 				.where(
 						srcdef.MEANING_ID.eq(sourceMeaningId)
@@ -715,12 +715,12 @@ public class SynSearchDbService extends AbstractDataDbService {
 			synDefinition.store();
 			Long synDefinitionId = synDefinition.getId();
 
-			create
+			mainDb
 					.insertInto(DEFINITION_DATASET, DEFINITION_DATASET.DEFINITION_ID, DEFINITION_DATASET.DATASET_CODE)
 					.values(synDefinitionId, datasetCode)
 					.execute();
 
-			Result<DefinitionSourceLinkRecord> sourceDefinitionSourceLinks = create
+			Result<DefinitionSourceLinkRecord> sourceDefinitionSourceLinks = mainDb
 					.selectFrom(defsl)
 					.where(defsl.DEFINITION_ID.eq(sourceDefinitionId))
 					.orderBy(defsl.ORDER_BY)

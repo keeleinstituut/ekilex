@@ -49,7 +49,8 @@ public abstract class AbstractSearchController extends AbstractAuthActionControl
 		if (userRole == null) {
 			return Collections.emptyMap();
 		}
-		return commonDataService.getDatasetDomainsByOrigin(userRole.getDatasetCode());
+		String datasetCode = userRole.getDatasetCode();
+		return commonDataService.getDatasetDomainsByOrigin(datasetCode);
 	}
 
 	@ModelAttribute("wordMorphCodes")
@@ -70,7 +71,9 @@ public abstract class AbstractSearchController extends AbstractAuthActionControl
 	@ModelAttribute("enabledDefinitionTypes")
 	public List<Classifier> getEnabledDefinitionTypes() {
 		List<Classifier> definitionTypes = commonDataService.getDefinitionTypes();
-		definitionTypes = definitionTypes.stream().filter(type -> !StringUtils.equals(type.getCode(), DEFINITION_TYPE_CODE_INEXACT_SYN)).collect(Collectors.toList());
+		definitionTypes = definitionTypes.stream()
+				.filter(type -> !StringUtils.equals(type.getCode(), DEFINITION_TYPE_CODE_INEXACT_SYN))
+				.collect(Collectors.toList());
 		return definitionTypes;
 	}
 
@@ -112,11 +115,6 @@ public abstract class AbstractSearchController extends AbstractAuthActionControl
 	@ModelAttribute("defaultDefinitionTypeCode")
 	public String getDefaultDefinitionTypeCode() {
 		return DEFINITION_TYPE_CODE_UNDEFINED;
-	}
-
-	@ModelAttribute("meaningAttributes")
-	public String[] getMeaningAttributes() {
-		return MEANING_ATTRIBUTE_FF_TYPE_CODES;
 	}
 
 	protected void initSearchForms(String searchPage, Model model) {

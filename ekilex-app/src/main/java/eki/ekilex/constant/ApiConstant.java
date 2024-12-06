@@ -24,6 +24,16 @@ public interface ApiConstant {
 
 	String PARADIGM_URI = "/paradigm";
 
+	String FORM_URI = "/form";
+
+	String FREEFORM_URI = "/freeform";
+
+	String WORD_FREEFORM_URI = "/word_freeform";
+
+	String LEXEME_FREEFORM_URI = "/lexeme_freeform";
+
+	String MEANING_FREEFORM_URI = "/meaning_freeform";
+
 	String TERM_MEANING_URI = "/term-meaning";
 
 	String LEX_WORD_URI = "/lex-word";
@@ -63,6 +73,8 @@ public interface ApiConstant {
 	String MEANING_IMAGE_SOURCE_LINK_URI = "/meaning_image_source_link";
 
 	String MEANING_NOTE_SOURCE_LINK_URI = "/meaning_note_source_link";
+
+	String FREEFORM_SOURCE_LINK_URI = "/freeform_source_link";
 
 	String LEXEME_TAG_URI = "/lexeme_tag";
 

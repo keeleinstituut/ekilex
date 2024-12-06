@@ -1,7 +1,6 @@
 package eki.wordweb.service;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -19,7 +18,6 @@ import eki.common.service.TextDecorationService;
 import eki.common.service.util.LexemeLevelPreseUtil;
 import eki.wordweb.constant.SystemConstant;
 import eki.wordweb.constant.WebConstant;
-import eki.wordweb.data.CollocationTuple;
 import eki.wordweb.data.Form;
 import eki.wordweb.data.LanguagesDatasets;
 import eki.wordweb.data.LexemeWord;
@@ -28,11 +26,9 @@ import eki.wordweb.data.SearchContext;
 import eki.wordweb.data.SearchFilter;
 import eki.wordweb.data.Word;
 import eki.wordweb.data.WordData;
-import eki.wordweb.data.WordForm;
 import eki.wordweb.data.WordSearchElement;
 import eki.wordweb.data.WordsData;
 import eki.wordweb.data.WordsMatch;
-import eki.wordweb.data.type.TypeCollocMember;
 import eki.wordweb.service.db.CommonDataDbService;
 import eki.wordweb.service.db.SearchDbService;
 import eki.wordweb.service.util.ClassifierUtil;
@@ -184,27 +180,6 @@ public abstract class AbstractSearchService implements SystemConstant, WebConsta
 		classifierUtil.applyClassifiers(availableLanguagesDatasets, displayLang);
 
 		return new WordsData(availableLanguagesDatasets);
-	}
-
-	protected void compensateNullWords(Long wordId, List<CollocationTuple> collocTuples) {
-
-		for (CollocationTuple tuple : collocTuples) {
-			List<TypeCollocMember> collocMembers = tuple.getCollocMembers();
-			for (TypeCollocMember collocMem : collocMembers) {
-				if (StringUtils.isBlank(collocMem.getWord())) {
-					String collocValue = tuple.getCollocValue();
-					List<String> collocTokens = Arrays.asList(StringUtils.split(collocValue));
-					List<WordForm> wordFormCandidates = searchDbService.getWordFormCandidates(wordId, collocTokens);
-					if (CollectionUtils.isEmpty(wordFormCandidates)) {
-						tuple.setInvalid(true);
-						break;
-					}
-					WordForm firstAvailableReplacement = wordFormCandidates.get(0);
-					collocMem.setWord(firstAvailableReplacement.getWord());
-					collocMem.setForm(firstAvailableReplacement.getForm());
-				}
-			}
-		}
 	}
 
 	protected WordData composeWordData(

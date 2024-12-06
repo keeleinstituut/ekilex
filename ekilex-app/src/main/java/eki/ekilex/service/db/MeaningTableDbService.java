@@ -1,12 +1,12 @@
 package eki.ekilex.service.db;
 
-import static eki.ekilex.data.db.Tables.DEFINITION;
-import static eki.ekilex.data.db.Tables.FREEFORM;
-import static eki.ekilex.data.db.Tables.LANGUAGE;
-import static eki.ekilex.data.db.Tables.LEXEME;
-import static eki.ekilex.data.db.Tables.LEXEME_FREEFORM;
-import static eki.ekilex.data.db.Tables.MEANING;
-import static eki.ekilex.data.db.Tables.WORD;
+import static eki.ekilex.data.db.main.Tables.DEFINITION;
+import static eki.ekilex.data.db.main.Tables.FREEFORM;
+import static eki.ekilex.data.db.main.Tables.LANGUAGE;
+import static eki.ekilex.data.db.main.Tables.LEXEME;
+import static eki.ekilex.data.db.main.Tables.LEXEME_FREEFORM;
+import static eki.ekilex.data.db.main.Tables.MEANING;
+import static eki.ekilex.data.db.main.Tables.WORD;
 
 import java.sql.Timestamp;
 import java.util.List;
@@ -28,18 +28,18 @@ import eki.ekilex.data.MeaningTableRow;
 import eki.ekilex.data.MeaningTableSearchResult;
 import eki.ekilex.data.SearchDatasetsRestriction;
 import eki.ekilex.data.SearchFilter;
-import eki.ekilex.data.db.Routines;
-import eki.ekilex.data.db.tables.Definition;
-import eki.ekilex.data.db.tables.Freeform;
-import eki.ekilex.data.db.tables.Language;
-import eki.ekilex.data.db.tables.Lexeme;
-import eki.ekilex.data.db.tables.LexemeFreeform;
-import eki.ekilex.data.db.tables.Meaning;
-import eki.ekilex.data.db.tables.Word;
-import eki.ekilex.data.db.udt.records.TypeMtDefinitionRecord;
-import eki.ekilex.data.db.udt.records.TypeMtLexemeFreeformRecord;
-import eki.ekilex.data.db.udt.records.TypeMtLexemeRecord;
-import eki.ekilex.data.db.udt.records.TypeMtWordRecord;
+import eki.ekilex.data.db.main.Routines;
+import eki.ekilex.data.db.main.tables.Definition;
+import eki.ekilex.data.db.main.tables.Freeform;
+import eki.ekilex.data.db.main.tables.Language;
+import eki.ekilex.data.db.main.tables.Lexeme;
+import eki.ekilex.data.db.main.tables.LexemeFreeform;
+import eki.ekilex.data.db.main.tables.Meaning;
+import eki.ekilex.data.db.main.tables.Word;
+import eki.ekilex.data.db.main.udt.records.TypeMtDefinitionRecord;
+import eki.ekilex.data.db.main.udt.records.TypeMtLexemeFreeformRecord;
+import eki.ekilex.data.db.main.udt.records.TypeMtLexemeRecord;
+import eki.ekilex.data.db.main.udt.records.TypeMtWordRecord;
 import eki.ekilex.service.db.util.SearchFilterHelper;
 import eki.ekilex.service.db.util.TermSearchConditionComposer;
 
@@ -48,7 +48,7 @@ import eki.ekilex.service.db.util.TermSearchConditionComposer;
 public class MeaningTableDbService implements GlobalConstant, SystemConstant, FreeformConstant {
 
 	@Autowired
-	protected DSLContext create;
+	protected DSLContext mainDb;
 
 	@Autowired
 	private SearchFilterHelper searchFilterHelper;
@@ -95,7 +95,7 @@ public class MeaningTableDbService implements GlobalConstant, SystemConstant, Fr
 		Field<TypeMtWordRecord[]> wf = gerWordRowField(cll, l, w, wherel);
 		Field<TypeMtLexemeFreeformRecord[]> uf = getUsageRowField(l, lff, ff, wherel);
 
-		return create
+		return mainDb
 				.select(
 						m.ID.as("meaning_id"),
 						df.as("definitions"),
@@ -154,7 +154,7 @@ public class MeaningTableDbService implements GlobalConstant, SystemConstant, Fr
 			limit = Integer.MAX_VALUE;
 		}
 
-		return create
+		return mainDb
 				.select(
 						meaningIdField.as("meaning_id"),
 						df.as("definitions"),
@@ -177,7 +177,7 @@ public class MeaningTableDbService implements GlobalConstant, SystemConstant, Fr
 						l.ID,
 						ff.ID,
 						ff.FREEFORM_TYPE_CODE,
-						Routines.encodeText(ff.VALUE_TEXT),
+						Routines.encodeText(ff.VALUE),
 						Routines.encodeText(ff.VALUE_PRESE),
 						ff.LANG,
 						ff.COMPLEXITY,
@@ -272,12 +272,12 @@ public class MeaningTableDbService implements GlobalConstant, SystemConstant, Fr
 	}
 
 	private int executeCountMeaningsMeaningMode(Table<Record3<Long, Long, Long[]>> m) {
-		return create.fetchCount(DSL.selectDistinct(m.field("meaning_id")).from(m));
+		return mainDb.fetchCount(DSL.selectDistinct(m.field("meaning_id")).from(m));
 	}
 
 	public boolean isDefinitionUpdate(Long definitionId, String valuePrese, boolean isPublic) {
 
-		return create
+		return mainDb
 				.select(DSL.field(DSL.count(DEFINITION.ID).eq(0)).as("is_definition_update"))
 				.from(DEFINITION)
 				.where(
@@ -289,7 +289,7 @@ public class MeaningTableDbService implements GlobalConstant, SystemConstant, Fr
 
 	public boolean isLexemeUpdate(Long lexemeId, boolean isPublic) {
 
-		return create
+		return mainDb
 				.select(DSL.field(DSL.count(LEXEME.ID).eq(0)).as("is_lexeme_update"))
 				.from(LEXEME)
 				.where(
@@ -300,7 +300,7 @@ public class MeaningTableDbService implements GlobalConstant, SystemConstant, Fr
 
 	public boolean isUsageUpdate(Long usageId, String valuePrese, boolean isPublic) {
 
-		return create
+		return mainDb
 				.select(DSL.field(DSL.count(FREEFORM.ID).eq(0)).as("is_usage_update"))
 				.from(FREEFORM)
 				.where(
@@ -312,7 +312,7 @@ public class MeaningTableDbService implements GlobalConstant, SystemConstant, Fr
 
 	public void updateDefinition(Long definitionId, String value, String valuePrese, boolean isPublic) {
 
-		create.update(DEFINITION)
+		mainDb.update(DEFINITION)
 				.set(DEFINITION.VALUE, value)
 				.set(DEFINITION.VALUE_PRESE, valuePrese)
 				.set(DEFINITION.IS_PUBLIC, isPublic)
@@ -322,17 +322,18 @@ public class MeaningTableDbService implements GlobalConstant, SystemConstant, Fr
 
 	public void updateLexeme(Long lexemeId, boolean isPublic) {
 
-		create.update(LEXEME)
+		mainDb.update(LEXEME)
 				.set(LEXEME.IS_PUBLIC, isPublic)
 				.where(LEXEME.ID.eq(lexemeId))
 				.execute();
 	}
 
+	@Deprecated
 	public void updateUsage(Long usageId, String value, String valuePrese, boolean isPublic, String userName) {
 
 		Timestamp timestamp = new Timestamp(System.currentTimeMillis());
-		create.update(FREEFORM)
-				.set(FREEFORM.VALUE_TEXT, value)
+		mainDb.update(FREEFORM)
+				.set(FREEFORM.VALUE, value)
 				.set(FREEFORM.VALUE_PRESE, valuePrese)
 				.set(FREEFORM.IS_PUBLIC, isPublic)
 				.set(FREEFORM.MODIFIED_BY, userName)
@@ -343,7 +344,7 @@ public class MeaningTableDbService implements GlobalConstant, SystemConstant, Fr
 
 	public void updateDefinitionPublicity(Long definitionId, boolean isPublic) {
 
-		create.update(DEFINITION)
+		mainDb.update(DEFINITION)
 				.set(DEFINITION.IS_PUBLIC, isPublic)
 				.where(DEFINITION.ID.eq(definitionId))
 				.execute();
@@ -351,16 +352,17 @@ public class MeaningTableDbService implements GlobalConstant, SystemConstant, Fr
 
 	public void updateLexemePublicity(Long lexemeId, boolean isPublic) {
 
-		create.update(LEXEME)
+		mainDb.update(LEXEME)
 				.set(LEXEME.IS_PUBLIC, isPublic)
 				.where(LEXEME.ID.eq(lexemeId))
 				.execute();
 	}
 
+	@Deprecated
 	public void updateUsagePublicity(Long usageId, boolean isPublic, String userName) {
 
 		Timestamp timestamp = new Timestamp(System.currentTimeMillis());
-		create.update(FREEFORM)
+		mainDb.update(FREEFORM)
 				.set(FREEFORM.IS_PUBLIC, isPublic)
 				.set(FREEFORM.MODIFIED_BY, userName)
 				.set(FREEFORM.MODIFIED_ON, timestamp)

@@ -1,26 +1,26 @@
 package eki.ekilex.service.db.api;
 
-import static eki.ekilex.data.db.Tables.DEFINITION;
-import static eki.ekilex.data.db.Tables.DEFINITION_DATASET;
-import static eki.ekilex.data.db.Tables.DEFINITION_SOURCE_LINK;
-import static eki.ekilex.data.db.Tables.FREEFORM;
-import static eki.ekilex.data.db.Tables.LEXEME;
-import static eki.ekilex.data.db.Tables.LEXEME_NOTE;
-import static eki.ekilex.data.db.Tables.LEXEME_NOTE_SOURCE_LINK;
-import static eki.ekilex.data.db.Tables.LEXEME_SOURCE_LINK;
-import static eki.ekilex.data.db.Tables.LEXEME_TAG;
-import static eki.ekilex.data.db.Tables.MEANING;
-import static eki.ekilex.data.db.Tables.MEANING_DOMAIN;
-import static eki.ekilex.data.db.Tables.MEANING_FORUM;
-import static eki.ekilex.data.db.Tables.MEANING_FREEFORM;
-import static eki.ekilex.data.db.Tables.MEANING_NOTE;
-import static eki.ekilex.data.db.Tables.MEANING_NOTE_SOURCE_LINK;
-import static eki.ekilex.data.db.Tables.MEANING_TAG;
-import static eki.ekilex.data.db.Tables.SOURCE;
-import static eki.ekilex.data.db.Tables.USAGE;
-import static eki.ekilex.data.db.Tables.USAGE_SOURCE_LINK;
-import static eki.ekilex.data.db.Tables.WORD;
-import static eki.ekilex.data.db.Tables.WORD_WORD_TYPE;
+import static eki.ekilex.data.db.main.Tables.DEFINITION;
+import static eki.ekilex.data.db.main.Tables.DEFINITION_DATASET;
+import static eki.ekilex.data.db.main.Tables.DEFINITION_SOURCE_LINK;
+import static eki.ekilex.data.db.main.Tables.FREEFORM;
+import static eki.ekilex.data.db.main.Tables.LEXEME;
+import static eki.ekilex.data.db.main.Tables.LEXEME_NOTE;
+import static eki.ekilex.data.db.main.Tables.LEXEME_NOTE_SOURCE_LINK;
+import static eki.ekilex.data.db.main.Tables.LEXEME_SOURCE_LINK;
+import static eki.ekilex.data.db.main.Tables.LEXEME_TAG;
+import static eki.ekilex.data.db.main.Tables.MEANING;
+import static eki.ekilex.data.db.main.Tables.MEANING_DOMAIN;
+import static eki.ekilex.data.db.main.Tables.MEANING_FORUM;
+import static eki.ekilex.data.db.main.Tables.MEANING_FREEFORM;
+import static eki.ekilex.data.db.main.Tables.MEANING_NOTE;
+import static eki.ekilex.data.db.main.Tables.MEANING_NOTE_SOURCE_LINK;
+import static eki.ekilex.data.db.main.Tables.MEANING_TAG;
+import static eki.ekilex.data.db.main.Tables.SOURCE;
+import static eki.ekilex.data.db.main.Tables.USAGE;
+import static eki.ekilex.data.db.main.Tables.USAGE_SOURCE_LINK;
+import static eki.ekilex.data.db.main.Tables.WORD;
+import static eki.ekilex.data.db.main.Tables.WORD_WORD_TYPE;
 
 import org.jooq.DSLContext;
 import org.jooq.Field;
@@ -33,34 +33,34 @@ import eki.common.constant.ActivityFunct;
 import eki.common.constant.FreeformConstant;
 import eki.common.constant.GlobalConstant;
 import eki.ekilex.data.api.TermMeaning;
-import eki.ekilex.data.db.tables.Definition;
-import eki.ekilex.data.db.tables.DefinitionDataset;
-import eki.ekilex.data.db.tables.DefinitionSourceLink;
-import eki.ekilex.data.db.tables.Freeform;
-import eki.ekilex.data.db.tables.Lexeme;
-import eki.ekilex.data.db.tables.LexemeNote;
-import eki.ekilex.data.db.tables.LexemeNoteSourceLink;
-import eki.ekilex.data.db.tables.LexemeSourceLink;
-import eki.ekilex.data.db.tables.LexemeTag;
-import eki.ekilex.data.db.tables.Meaning;
-import eki.ekilex.data.db.tables.MeaningDomain;
-import eki.ekilex.data.db.tables.MeaningForum;
-import eki.ekilex.data.db.tables.MeaningFreeform;
-import eki.ekilex.data.db.tables.MeaningNote;
-import eki.ekilex.data.db.tables.MeaningNoteSourceLink;
-import eki.ekilex.data.db.tables.MeaningTag;
-import eki.ekilex.data.db.tables.Source;
-import eki.ekilex.data.db.tables.Usage;
-import eki.ekilex.data.db.tables.UsageSourceLink;
-import eki.ekilex.data.db.tables.Word;
-import eki.ekilex.data.db.tables.WordWordType;
-import eki.ekilex.data.db.tables.records.LexemeRecord;
+import eki.ekilex.data.db.main.tables.Definition;
+import eki.ekilex.data.db.main.tables.DefinitionDataset;
+import eki.ekilex.data.db.main.tables.DefinitionSourceLink;
+import eki.ekilex.data.db.main.tables.Freeform;
+import eki.ekilex.data.db.main.tables.Lexeme;
+import eki.ekilex.data.db.main.tables.LexemeNote;
+import eki.ekilex.data.db.main.tables.LexemeNoteSourceLink;
+import eki.ekilex.data.db.main.tables.LexemeSourceLink;
+import eki.ekilex.data.db.main.tables.LexemeTag;
+import eki.ekilex.data.db.main.tables.Meaning;
+import eki.ekilex.data.db.main.tables.MeaningDomain;
+import eki.ekilex.data.db.main.tables.MeaningForum;
+import eki.ekilex.data.db.main.tables.MeaningFreeform;
+import eki.ekilex.data.db.main.tables.MeaningNote;
+import eki.ekilex.data.db.main.tables.MeaningNoteSourceLink;
+import eki.ekilex.data.db.main.tables.MeaningTag;
+import eki.ekilex.data.db.main.tables.Source;
+import eki.ekilex.data.db.main.tables.Usage;
+import eki.ekilex.data.db.main.tables.UsageSourceLink;
+import eki.ekilex.data.db.main.tables.Word;
+import eki.ekilex.data.db.main.tables.WordWordType;
+import eki.ekilex.data.db.main.tables.records.LexemeRecord;
 
 @Component
 public class TermMeaningDbService implements ActivityFunct, GlobalConstant, FreeformConstant {
 
 	@Autowired
-	private DSLContext create;
+	private DSLContext mainDb;
 
 	public TermMeaning getTermMeaning(Long meaningId, String datasetCode) {
 
@@ -94,7 +94,8 @@ public class TermMeaningDbService implements ActivityFunct, GlobalConstant, Free
 										DSL.key("type").value(lsl.TYPE),
 										DSL.key("name").value(lsl.NAME),
 										DSL.key("sourceId").value(lsl.SOURCE_ID),
-										DSL.key("sourceName").value(s.NAME)))
+										DSL.key("sourceName").value(s.NAME),
+										DSL.key("orderBy").value(lsl.ORDER_BY)))
 						.orderBy(lsl.ORDER_BY))
 				.from(lsl, s)
 				.where(
@@ -110,7 +111,8 @@ public class TermMeaningDbService implements ActivityFunct, GlobalConstant, Free
 										DSL.key("type").value(dsl.TYPE),
 										DSL.key("name").value(dsl.NAME),
 										DSL.key("sourceId").value(dsl.SOURCE_ID),
-										DSL.key("sourceName").value(s.NAME)))
+										DSL.key("sourceName").value(s.NAME),
+										DSL.key("orderBy").value(dsl.ORDER_BY)))
 						.orderBy(dsl.ORDER_BY))
 				.from(dsl, s)
 				.where(
@@ -148,7 +150,8 @@ public class TermMeaningDbService implements ActivityFunct, GlobalConstant, Free
 										DSL.key("type").value(lnsl.TYPE),
 										DSL.key("name").value(lnsl.NAME),
 										DSL.key("sourceId").value(lnsl.SOURCE_ID),
-										DSL.key("sourceName").value(s.NAME)))
+										DSL.key("sourceName").value(s.NAME),
+										DSL.key("orderBy").value(lnsl.ORDER_BY)))
 						.orderBy(lnsl.ORDER_BY))
 				.from(lnsl, s)
 				.where(
@@ -185,7 +188,8 @@ public class TermMeaningDbService implements ActivityFunct, GlobalConstant, Free
 										DSL.key("type").value(usl.TYPE),
 										DSL.key("name").value(usl.NAME),
 										DSL.key("sourceId").value(usl.SOURCE_ID),
-										DSL.key("sourceName").value(s.NAME)))
+										DSL.key("sourceName").value(s.NAME),
+										DSL.key("orderBy").value(usl.ORDER_BY)))
 						.orderBy(usl.ORDER_BY))
 				.from(usl, s)
 				.where(
@@ -272,7 +276,8 @@ public class TermMeaningDbService implements ActivityFunct, GlobalConstant, Free
 										DSL.key("type").value(mnsl.TYPE),
 										DSL.key("name").value(mnsl.NAME),
 										DSL.key("sourceId").value(mnsl.SOURCE_ID),
-										DSL.key("sourceName").value(s.NAME)))
+										DSL.key("sourceName").value(s.NAME),
+										DSL.key("orderBy").value(mnsl.ORDER_BY)))
 						.orderBy(mnsl.ORDER_BY))
 				.from(mnsl, s)
 				.where(
@@ -314,7 +319,7 @@ public class TermMeaningDbService implements ActivityFunct, GlobalConstant, Free
 
 		Field<JSON> cidf = DSL
 				.select(DSL
-						.jsonArrayAgg(ff.VALUE_TEXT)
+						.jsonArrayAgg(ff.VALUE)
 						.orderBy(ff.ORDER_BY))
 				.from(ff, mff)
 				.where(
@@ -331,7 +336,7 @@ public class TermMeaningDbService implements ActivityFunct, GlobalConstant, Free
 				.where(mt.MEANING_ID.eq(m.ID))
 				.asField();
 
-		return create
+		return mainDb
 				.select(
 						m.ID.as("meaning_id"),
 						m.MANUAL_EVENT_ON.as("manual_event_on"),
@@ -350,7 +355,7 @@ public class TermMeaningDbService implements ActivityFunct, GlobalConstant, Free
 	}
 
 	public LexemeRecord getLexeme(Long wordId, Long meaningId, String datasetCode) {
-		return create
+		return mainDb
 				.selectFrom(LEXEME)
 				.where(
 						LEXEME.WORD_ID.eq(wordId)

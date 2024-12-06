@@ -8,22 +8,17 @@ import org.apache.coyote.ajp.AbstractAjpProtocol;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.autoconfigure.orm.jpa.HibernateJpaAutoConfiguration;
 import org.springframework.boot.web.embedded.tomcat.TomcatServletWebServerFactory;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.ComponentScan;
-import org.springframework.context.annotation.ComponentScan.Filter;
-import org.springframework.context.annotation.FilterType;
 import org.springframework.context.support.ReloadableResourceBundleMessageSource;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
-import eki.common.service.TransportService;
-
-@SpringBootApplication
-@ComponentScan(basePackages = {"eki.common", "eki.wordweb"}, excludeFilters = @Filter(type = FilterType.ASSIGNABLE_TYPE, value = {TransportService.class}))
+@SpringBootApplication(scanBasePackages = {"eki.common", "eki.wordweb"}, exclude = {HibernateJpaAutoConfiguration.class})
 @EnableCaching
 @EnableTransactionManagement
 @EnableScheduling

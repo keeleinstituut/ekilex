@@ -12,8 +12,8 @@ import org.springframework.stereotype.Component;
 
 import eki.common.constant.ClassifierName;
 import eki.common.data.Classifier;
-import eki.wordweb.data.CollocationPosGroup;
-import eki.wordweb.data.CollocationTuple;
+import eki.wordweb.data.CollocPosGroup;
+import eki.wordweb.data.CollocRelGroup;
 import eki.wordweb.data.Dataset;
 import eki.wordweb.data.Form;
 import eki.wordweb.data.LanguagesDatasets;
@@ -180,10 +180,20 @@ public class ClassifierUtil {
 		tuple.setEtymologyType(classifier);
 	}
 
-	public void applyClassifiers(CollocationTuple tuple, CollocationPosGroup collocPosGroup, String displayLang) {
-		String classifierCode = tuple.getPosGroupCode();
-		Classifier classifier = getClassifier(ClassifierName.POS_GROUP, classifierCode, displayLang);
-		collocPosGroup.setPosGroup(classifier);
+	public void applyClassifiers(List<CollocPosGroup> collocPosGroups, String displayLang) {
+		String classifierCode;
+		Classifier classifier;
+		for (CollocPosGroup collocPosGroup : collocPosGroups) {
+			classifierCode = collocPosGroup.getPosGroupCode();
+			classifier = getClassifier(ClassifierName.POS_GROUP, classifierCode, displayLang);
+			collocPosGroup.setPosGroup(classifier);
+			List<CollocRelGroup> relGroups = collocPosGroup.getRelGroups();
+			for (CollocRelGroup collocRelGroup : relGroups) {
+				classifierCode = collocRelGroup.getRelGroupCode();
+				classifier = getClassifier(ClassifierName.REL_GROUP, classifierCode, displayLang);
+				collocRelGroup.setRelGroup(classifier);
+			}
+		}
 	}
 
 	private Classifier getClassifier(ClassifierName name, String code, String lang) {

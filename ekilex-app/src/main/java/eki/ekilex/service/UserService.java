@@ -226,7 +226,7 @@ public class UserService implements WebConstant, GlobalConstant {
 		return user == null;
 	}
 
-	@Transactional
+	@Transactional(rollbackOn = Exception.class)
 	public String createUser(String email, String name, String password) {
 
 		email = email.toLowerCase();
@@ -242,36 +242,36 @@ public class UserService implements WebConstant, GlobalConstant {
 		return activationLink;
 	}
 
-	@Transactional
+	@Transactional(rollbackOn = Exception.class)
 	public EkiUser activateUser(String activationKey) {
 		EkiUser user = userDbService.activateUser(activationKey);
 		return user;
 	}
 
 	@PreAuthorize("principal.admin")
-	@Transactional
+	@Transactional(rollbackOn = Exception.class)
 	public void setApiCrud(Long userId, boolean isApiCrud) {
 		userDbService.setApiCrud(userId, isApiCrud);
 	}
 
 	@PreAuthorize("principal.admin")
-	@Transactional
+	@Transactional(rollbackOn = Exception.class)
 	public void setAdmin(Long userId, boolean isAdmin) {
 		userDbService.setAdmin(userId, isAdmin);
 	}
 
 	@PreAuthorize("principal.admin")
-	@Transactional
+	@Transactional(rollbackOn = Exception.class)
 	public void setMaster(Long userId, boolean isMaster) {
 		userDbService.setMaster(userId, isMaster);
 	}
 
-	@Transactional
+	@Transactional(rollbackOn = Exception.class)
 	public void enableUser(Long userId, boolean enable) {
 		userDbService.enableUser(userId, enable);
 	}
 
-	@Transactional
+	@Transactional(rollbackOn = Exception.class)
 	public void enableUserWithTestAndLimitedDatasetPerm(Long userId) {
 		userDbService.enableUser(userId, true);
 		Long permissionId = permissionDbService.createDatasetPermission(userId, DATASET_TEST, AuthorityItem.DATASET, AuthorityOperation.CRUD, null);
@@ -280,7 +280,7 @@ public class UserService implements WebConstant, GlobalConstant {
 		updateUserSecurityContext();
 	}
 
-	@Transactional
+	@Transactional(rollbackOn = Exception.class)
 	public void enableLimitedUser(Long userId) {
 		userDbService.enableUser(userId, true);
 		permissionDbService.createDatasetPermission(userId, DATASET_LIMITED, AuthorityItem.DATASET, AuthorityOperation.CRUD, null);
@@ -290,7 +290,7 @@ public class UserService implements WebConstant, GlobalConstant {
 		updateUserSecurityContext();
 	}
 
-	@Transactional
+	@Transactional(rollbackOn = Exception.class)
 	public void updateReviewComment(Long userId, String reviewComment) {
 		userDbService.updateReviewComment(userId, reviewComment);
 	}
@@ -312,19 +312,19 @@ public class UserService implements WebConstant, GlobalConstant {
 		return userDbService.getActiveTermsValue();
 	}
 
-	@Transactional
+	@Transactional(rollbackOn = Exception.class)
 	public void agreeActiveTerms(Long userId) {
 		userDbService.agreeActiveTerms(userId);
 		updateUserSecurityContext();
 	}
 
-	@Transactional
+	@Transactional(rollbackOn = Exception.class)
 	public void refuseTerms(EkiUser user) {
 		List<String> adminEmails = userDbService.getAdminEmails();
 		emailService.sendTermsRefuseEmail(user, adminEmails);
 	}
 
-	@Transactional
+	@Transactional(rollbackOn = Exception.class)
 	public void submitUserApplication(EkiUser user, String datasetCode, AuthorityOperation authOp, String lang, String comment) {
 
 		createUserApplication(user, datasetCode, authOp, lang, comment);
@@ -354,7 +354,7 @@ public class UserService implements WebConstant, GlobalConstant {
 		return userApplications;
 	}
 
-	@Transactional
+	@Transactional(rollbackOn = Exception.class)
 	public String handleUserPasswordRecovery(Long userId, String email) {
 
 		String recoveryKey = generateUniqueKey();
@@ -364,13 +364,13 @@ public class UserService implements WebConstant, GlobalConstant {
 		return passwordRecoveryLink;
 	}
 
-	@Transactional
+	@Transactional(rollbackOn = Exception.class)
 	public void setUserPassword(String email, String password) {
 		String encodedPassword = passwordEncoder.encode(password);
 		userDbService.setUserPassword(email, encodedPassword);
 	}
 
-	@Transactional
+	@Transactional(rollbackOn = Exception.class)
 	public String generateApiKey(EkiUser user) {
 		Long userId = user.getId();
 		boolean isApiCrud = user.isAdmin();

@@ -32,14 +32,13 @@ import eki.ekilex.data.ActivityLog;
 import eki.ekilex.data.ActivityLogData;
 import eki.ekilex.data.ActivityLogOwnerEntityDescr;
 import eki.ekilex.data.Classifier;
-import eki.ekilex.data.Collocation;
-import eki.ekilex.data.CollocationPosGroup;
-import eki.ekilex.data.CollocationTuple;
+import eki.ekilex.data.CollocPosGroup;
+import eki.ekilex.data.Colloc;
 import eki.ekilex.data.DatasetPermission;
 import eki.ekilex.data.Definition;
 import eki.ekilex.data.DefinitionLangGroup;
 import eki.ekilex.data.EkiUser;
-import eki.ekilex.data.FreeForm;
+import eki.ekilex.data.Freeform;
 import eki.ekilex.data.Government;
 import eki.ekilex.data.LexemeNote;
 import eki.ekilex.data.LexemeRelation;
@@ -66,6 +65,7 @@ import eki.ekilex.data.WordLexemeMeaningIds;
 import eki.ekilex.data.WordRelation;
 import eki.ekilex.service.db.ActivityLogDbService;
 import eki.ekilex.service.db.CommonDataDbService;
+import eki.ekilex.service.db.LexDataDbService;
 import eki.ekilex.service.db.LexSearchDbService;
 import eki.ekilex.service.db.LookupDbService;
 import eki.ekilex.service.db.SourceDbService;
@@ -128,6 +128,9 @@ public class ActivityLogService implements SystemConstant, GlobalConstant, Freef
 	private LexSearchDbService lexSearchDbService;
 
 	@Autowired
+	private LexDataDbService lexDataDbService;
+
+	@Autowired
 	private SourceDbService sourceDbService;
 
 	@Autowired
@@ -154,9 +157,9 @@ public class ActivityLogService implements SystemConstant, GlobalConstant, Freef
 		return activityLogDbService.getSourceActivityLog(sourceId);
 	}
 
-	public ActivityLogOwnerEntityDescr getFreeformOwnerDescr(Long freeformId) throws Exception {
-		Map<String, Object> freeformOwnerDataMap = activityLogDbService.getFirstDepthFreeformOwnerDataMap(freeformId);
-		return resolveOwnerDescr(freeformOwnerDataMap);
+	public ActivityLogOwnerEntityDescr getFreeformSourceLinkOwnerDescr(Long sourceLinkId) throws Exception {
+		Long freeformId = activityLogDbService.getFreeformSourceLinkOwnerId(sourceLinkId);
+		return getFreeformOwnerDescr(freeformId);
 	}
 
 	public Long getOwnerId(Long entityId, ActivityEntity entity) throws Exception {
@@ -169,8 +172,7 @@ public class ActivityLogService implements SystemConstant, GlobalConstant, Freef
 			ActivityLogOwnerEntityDescr freeformOwnerDescr = resolveOwnerDescr(freeformOwnerDataMap);
 			return freeformOwnerDescr.getOwnerId();
 		} else if (ActivityEntity.FREEFORM_SOURCE_LINK.equals(entity)) {
-			Long freeformId = activityLogDbService.getFreeformSourceLinkOwnerId(entityId);
-			ActivityLogOwnerEntityDescr freeformOwnerDescr = getFreeformOwnerDescr(freeformId);
+			ActivityLogOwnerEntityDescr freeformOwnerDescr = getFreeformSourceLinkOwnerDescr(entityId);
 			return freeformOwnerDescr.getOwnerId();
 		} else if (ActivityEntity.LEXEME_SOURCE_LINK.equals(entity)) {
 			return activityLogDbService.getLexemeSourceLinkOwnerId(entityId);
@@ -219,6 +221,11 @@ public class ActivityLogService implements SystemConstant, GlobalConstant, Freef
 		} else {
 			throw new IllegalParamException("Missing activity entity owner mapping for " + entity);
 		}
+	}
+
+	public ActivityLogOwnerEntityDescr getFreeformOwnerDescr(Long freeformId) throws Exception {
+		Map<String, Object> freeformOwnerDataMap = activityLogDbService.getFirstDepthFreeformOwnerDataMap(freeformId);
+		return resolveOwnerDescr(freeformOwnerDataMap);
 	}
 
 	private ActivityLogOwnerEntityDescr resolveOwnerDescr(Map<String, Object> freeformOwnerDataMap) throws Exception {
@@ -559,17 +566,16 @@ public class ActivityLogService implements SystemConstant, GlobalConstant, Freef
 		List<MeaningWord> meaningWords = commonDataDbService.getMeaningWords(lexemeId);
 		List<String> lexemeTags = commonDataDbService.getLexemeTags(lexemeId);
 		List<Government> governments = commonDataDbService.getLexemeGovernments(lexemeId);
-		List<FreeForm> grammars = commonDataDbService.getLexemeGrammars(lexemeId);
+		List<Freeform> grammars = commonDataDbService.getLexemeGrammars(lexemeId);
 		List<Usage> usages = commonDataDbService.getUsages(lexemeId);
-		List<FreeForm> lexemeFreeforms = commonDataDbService.getLexemeFreeforms(lexemeId, EXCLUDED_LEXEME_ATTRIBUTE_FF_TYPE_CODES, CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
+		List<Freeform> lexemeFreeforms = commonDataDbService.getLexemeFreeforms(lexemeId, EXCLUDED_LEXEME_ATTRIBUTE_FF_TYPE_CODES, CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
 		List<LexemeNote> lexemeNotes = commonDataDbService.getLexemeNotes(lexemeId);
 		List<NoteLangGroup> lexemeNoteLangGroups = conversionUtil.composeNoteLangGroups(lexemeNotes, null);
 		List<LexemeRelation> lexemeRelations = commonDataDbService.getLexemeRelations(lexemeId, CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
 		List<SourceLink> lexemeSourceLinks = commonDataDbService.getLexemeSourceLinks(lexemeId);
-		List<CollocationTuple> primaryCollocTuples = lexSearchDbService.getPrimaryCollocationTuples(lexemeId);
-		List<CollocationPosGroup> collocationPosGroups = conversionUtil.composeCollocPosGroups(primaryCollocTuples);
-		List<CollocationTuple> secondaryCollocTuples = lexSearchDbService.getSecondaryCollocationTuples(lexemeId);
-		List<Collocation> secondaryCollocations = conversionUtil.composeCollocations(secondaryCollocTuples);
+		List<CollocPosGroup> primaryCollocations = lexDataDbService.getPrimaryCollocations(lexemeId, CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
+		List<Colloc> secondaryCollocations = lexDataDbService.getSecondaryCollocations(lexemeId);
+		boolean isCollocationsExist = lexDataDbService.isCollocationsExist(lexemeId);
 
 		lexeme.setMeaningWords(meaningWords);
 		lexeme.setTags(lexemeTags);
@@ -580,8 +586,9 @@ public class ActivityLogService implements SystemConstant, GlobalConstant, Freef
 		lexeme.setLexemeNoteLangGroups(lexemeNoteLangGroups);
 		lexeme.setLexemeRelations(lexemeRelations);
 		lexeme.setSourceLinks(lexemeSourceLinks);
-		lexeme.setCollocationPosGroups(collocationPosGroups);
+		lexeme.setPrimaryCollocations(primaryCollocations);
 		lexeme.setSecondaryCollocations(secondaryCollocations);
+		lexeme.setCollocationsExist(isCollocationsExist);
 
 		ObjectMapper objectMapper = new ObjectMapper();
 		String lexemeJson = objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(lexeme);
@@ -595,14 +602,14 @@ public class ActivityLogService implements SystemConstant, GlobalConstant, Freef
 		if (word == null) {
 			return EMPTY_CONTENT_JSON;
 		}
-		List<FreeForm> wordFreeforms = commonDataDbService.getWordFreeforms(wordId, EXCLUDED_WORD_ATTRIBUTE_FF_TYPE_CODES, CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
+		List<Freeform> wordFreeforms = commonDataDbService.getWordFreeforms(wordId, EXCLUDED_WORD_ATTRIBUTE_FF_TYPE_CODES, CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
 		List<Classifier> wordTypes = commonDataDbService.getWordTypes(wordId, CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
-		List<WordRelation> wordRelations = lexSearchDbService.getWordRelations(wordId, CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
-		List<WordRelation> wordGroupMembers = lexSearchDbService.getWordGroupMembers(wordId, CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
+		List<WordRelation> wordRelations = lexDataDbService.getWordRelations(wordId, CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
+		List<WordRelation> wordGroupMembers = lexDataDbService.getWordGroupMembers(wordId, CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
 		List<WordGroup> wordGroups = conversionUtil.composeWordGroups(wordGroupMembers, null);
-		List<WordEtymTuple> wordEtymTuples = lexSearchDbService.getWordEtymology(wordId);
+		List<WordEtymTuple> wordEtymTuples = lexDataDbService.getWordEtymology(wordId);
 		List<WordEtym> wordEtymology = conversionUtil.composeWordEtymology(wordEtymTuples);
-		List<FreeForm> odWordRecommendations = commonDataDbService.getOdWordRecommendations(wordId);
+		List<Freeform> odWordRecommendations = commonDataDbService.getOdWordRecommendations(wordId);
 		List<Paradigm> paradigms = null;
 		if (StringUtils.equals(FUNCT_NAME_DELETE_PARADIGM, functName)) {
 			List<ParadigmFormTuple> paradigmFormTuples = lexSearchDbService.getParadigmFormTuples(wordId, CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
@@ -630,11 +637,11 @@ public class ActivityLogService implements SystemConstant, GlobalConstant, Freef
 			return EMPTY_CONTENT_JSON;
 		}
 
-		List<OrderedClassifier> meaningDomains = commonDataDbService.getMeaningDomains(meaningId, CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
+		List<OrderedClassifier> meaningDomains = commonDataDbService.getMeaningDomains(meaningId, CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP, CLASSIF_LABEL_TYPE_COMMENT);
 		List<String> meaningTags = commonDataDbService.getMeaningTags(meaningId);
 		List<Definition> definitions = commonDataDbService.getMeaningDefinitions(meaningId, CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
-		List<FreeForm> meaningFreeforms = commonDataDbService.getMeaningFreeforms(meaningId, EXCLUDED_MEANING_ATTRIBUTE_FF_TYPE_CODES, CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
-		List<FreeForm> meaningLearnerComments = commonDataDbService.getMeaningLearnerComments(meaningId);
+		List<Freeform> meaningFreeforms = commonDataDbService.getMeaningFreeforms(meaningId, EXCLUDED_MEANING_ATTRIBUTE_FF_TYPE_CODES, CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
+		List<Freeform> meaningLearnerComments = commonDataDbService.getMeaningLearnerComments(meaningId);
 		List<Media> meaningImages = commonDataDbService.getMeaningImagesAsMedia(meaningId);
 		List<Media> meaningMedias = commonDataDbService.getMeaningMediaFiles(meaningId);
 		List<MeaningNote> meaningNotes = commonDataDbService.getMeaningNotes(meaningId);

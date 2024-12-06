@@ -1,18 +1,18 @@
 package eki.ekilex.service.db;
 
-import static eki.ekilex.data.db.Tables.DATA_REQUEST;
-import static eki.ekilex.data.db.Tables.DEFINITION;
-import static eki.ekilex.data.db.Tables.DEFINITION_FREEFORM;
-import static eki.ekilex.data.db.Tables.FORM;
-import static eki.ekilex.data.db.Tables.FREEFORM;
-import static eki.ekilex.data.db.Tables.LEXEME;
-import static eki.ekilex.data.db.Tables.LEXEME_FREEFORM;
-import static eki.ekilex.data.db.Tables.MEANING;
-import static eki.ekilex.data.db.Tables.MEANING_FREEFORM;
-import static eki.ekilex.data.db.Tables.PARADIGM_FORM;
-import static eki.ekilex.data.db.Tables.SOURCE_FREEFORM;
-import static eki.ekilex.data.db.Tables.WORD;
-import static eki.ekilex.data.db.Tables.WORD_FREEFORM;
+import static eki.ekilex.data.db.main.Tables.DATA_REQUEST;
+import static eki.ekilex.data.db.main.Tables.DEFINITION;
+import static eki.ekilex.data.db.main.Tables.DEFINITION_FREEFORM;
+import static eki.ekilex.data.db.main.Tables.FORM;
+import static eki.ekilex.data.db.main.Tables.FREEFORM;
+import static eki.ekilex.data.db.main.Tables.LEXEME;
+import static eki.ekilex.data.db.main.Tables.LEXEME_FREEFORM;
+import static eki.ekilex.data.db.main.Tables.MEANING;
+import static eki.ekilex.data.db.main.Tables.MEANING_FREEFORM;
+import static eki.ekilex.data.db.main.Tables.PARADIGM_FORM;
+import static eki.ekilex.data.db.main.Tables.SOURCE_FREEFORM;
+import static eki.ekilex.data.db.main.Tables.WORD;
+import static eki.ekilex.data.db.main.Tables.WORD_FREEFORM;
 
 import java.util.List;
 
@@ -25,20 +25,20 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import eki.ekilex.data.SourceTargetIdTuple;
-import eki.ekilex.data.db.Routines;
-import eki.ekilex.data.db.tables.DataRequest;
-import eki.ekilex.data.db.tables.Lexeme;
-import eki.ekilex.data.db.tables.Word;
-import eki.ekilex.data.db.tables.records.WordRecord;
+import eki.ekilex.data.db.main.Routines;
+import eki.ekilex.data.db.main.tables.DataRequest;
+import eki.ekilex.data.db.main.tables.Lexeme;
+import eki.ekilex.data.db.main.tables.Word;
+import eki.ekilex.data.db.main.tables.records.WordRecord;
 
 @Component
 public class MaintenanceDbService extends AbstractDataDbService {
 
 	@Autowired
-	private DSLContext create;
+	private DSLContext mainDb;
 
 	public List<WordRecord> getWordRecords() {
-		return create
+		return mainDb
 				.selectFrom(WORD)
 				.where(WORD.IS_PUBLIC.isTrue())
 				.fetchInto(WordRecord.class);
@@ -56,7 +56,7 @@ public class MaintenanceDbService extends AbstractDataDbService {
 		Field<Boolean> isSymbol = getWordTypeExists(w1.ID, WORD_TYPE_CODE_SYMBOL);
 		Field<Boolean> isAbbreviation = getWordTypeExists(w1.ID, WORD_TYPE_CODE_ABBREVIATION);
 
-		Table<Record7<Long, String, String, Boolean, Boolean, Boolean, Boolean>> wHom = create
+		Table<Record7<Long, String, String, Boolean, Boolean, Boolean, Boolean>> wHom = mainDb
 				.select(
 						w1.ID.as("word_id"),
 						w1.VALUE.as("word_value"),
@@ -69,18 +69,19 @@ public class MaintenanceDbService extends AbstractDataDbService {
 				.where(
 						w1.LANG.in(includedLangs)
 								.and(w1.IS_PUBLIC.isTrue())
-								.and(w1.IS_WORD.isTrue())
 								.and(l1.WORD_ID.eq(w1.ID))
 								.and(l1.DATASET_CODE.notIn(DATASET_EKI, DATASET_ETY))
+								.and(l1.IS_WORD.isTrue())
 								.andNotExists(DSL
 										.select(l2.ID)
 										.from(l2)
 										.where(
 												l2.WORD_ID.eq(w1.ID)
-														.and(l2.DATASET_CODE.eq(DATASET_EKI)))))
+														.and(l2.DATASET_CODE.eq(DATASET_EKI))
+														.and(l2.IS_WORD.isTrue()))))
 				.asTable("w_hom");
 
-		Table<Record7<Long, String, String, Boolean, Boolean, Boolean, Boolean>> wEki = create
+		Table<Record7<Long, String, String, Boolean, Boolean, Boolean, Boolean>> wEki = mainDb
 				.select(
 						w1.ID.as("word_id"),
 						w1.VALUE.as("word_value"),
@@ -93,21 +94,20 @@ public class MaintenanceDbService extends AbstractDataDbService {
 				.where(
 						w1.LANG.in(includedLangs)
 								.and(w1.IS_PUBLIC.isTrue())
-								.and(w1.IS_WORD.isTrue())
 								.andExists(DSL
 										.select(l1.ID)
 										.from(l1)
 										.where(
 												l1.WORD_ID.eq(w1.ID)
 														.and(l1.DATASET_CODE.eq(DATASET_EKI))
-														.and(l1.IS_PUBLIC.isTrue())))
+														.and(l1.IS_PUBLIC.isTrue())
+														.and(l1.IS_WORD.isTrue())))
 								.andNotExists(DSL
 										.select(w2.ID)
 										.from(w2)
 										.where(
 												w2.VALUE.eq(w1.VALUE)
 														.and(w2.IS_PUBLIC.isTrue())
-														.and(w2.IS_WORD.isTrue())
 														.and(w2.LANG.eq(w1.LANG))
 														.and(w2.ID.ne(w1.ID))
 														.andExists(DSL
@@ -116,10 +116,11 @@ public class MaintenanceDbService extends AbstractDataDbService {
 																.where(
 																		l2.WORD_ID.eq(w2.ID)
 																				.and(l2.DATASET_CODE.eq(DATASET_EKI))
-																				.and(l2.IS_PUBLIC.isTrue()))))))
+																				.and(l2.IS_PUBLIC.isTrue())
+																				.and(l2.IS_WORD.isTrue()))))))
 				.asTable("w_eki");
 
-		return create
+		return mainDb
 				.select(
 						wHom.field("word_id", Long.class).as("source_id"),
 						wEki.field("word_id", Long.class).as("target_id"))
@@ -139,12 +140,12 @@ public class MaintenanceDbService extends AbstractDataDbService {
 
 	public void adjustHomonymNrs() {
 
-		Routines.adjustHomonymNrs(create.configuration());
+		Routines.adjustHomonymNrs(mainDb.configuration());
 	}
 
 	public int deleteFloatingFreeforms() {
 
-		return create
+		return mainDb
 				.delete(FREEFORM)
 				.where(FREEFORM.PARENT_ID.isNull())
 				.andNotExists(DSL
@@ -173,7 +174,7 @@ public class MaintenanceDbService extends AbstractDataDbService {
 
 	public int deleteFloatingMeanings() {
 
-		return create
+		return mainDb
 				.delete(MEANING)
 				.whereNotExists(DSL
 						.select(LEXEME.ID)
@@ -189,7 +190,7 @@ public class MaintenanceDbService extends AbstractDataDbService {
 
 	public int deleteFloatingWords() {
 
-		return create
+		return mainDb
 				.delete(WORD)
 				.whereNotExists(DSL
 						.select(LEXEME.ID)
@@ -201,7 +202,7 @@ public class MaintenanceDbService extends AbstractDataDbService {
 
 	public int deleteFloatingForms() {
 
-		return create
+		return mainDb
 				.delete(FORM)
 				.whereNotExists(DSL
 						.select(PARADIGM_FORM.ID)
@@ -214,11 +215,11 @@ public class MaintenanceDbService extends AbstractDataDbService {
 	public int deleteAccessedDataRequests(int hours) {
 
 		DataRequest dr = DATA_REQUEST.as("dr");
-		return create
+		return mainDb
 				.delete(dr)
 				.where(
 						dr.ACCESSED.isNotNull()
-						.and(DSL.condition("(current_timestamp - dr.accessed) >= (interval '" + hours + " hour')")))
+								.and(DSL.condition("(current_timestamp - dr.accessed) >= (interval '" + hours + " hour')")))
 				.execute();
 	}
 }

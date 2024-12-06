@@ -14,7 +14,7 @@ public class TypeMtLexemeFreeform extends AbstractCrudEntity {
 
 	private String freeformTypeCode;
 
-	private String valueText;
+	private String value;
 
 	private String valuePrese;
 
@@ -58,12 +58,12 @@ public class TypeMtLexemeFreeform extends AbstractCrudEntity {
 		this.freeformTypeCode = freeformTypeCode;
 	}
 
-	public String getValueText() {
-		return valueText;
+	public String getValue() {
+		return value;
 	}
 
-	public void setValueText(String valueText) {
-		this.valueText = valueText;
+	public void setValue(String value) {
+		this.value = value;
 	}
 
 	public String getValuePrese() {

@@ -1,32 +1,20 @@
 package eki.ekilex.service.db;
 
-import static eki.ekilex.data.db.Tables.COLLOCATION;
-import static eki.ekilex.data.db.Tables.DATASET;
-import static eki.ekilex.data.db.Tables.FORM;
-import static eki.ekilex.data.db.Tables.FORM_FREQ;
-import static eki.ekilex.data.db.Tables.FREQ_CORP;
-import static eki.ekilex.data.db.Tables.LANGUAGE;
-import static eki.ekilex.data.db.Tables.LEXEME;
-import static eki.ekilex.data.db.Tables.LEXEME_TAG;
-import static eki.ekilex.data.db.Tables.LEX_COLLOC;
-import static eki.ekilex.data.db.Tables.LEX_COLLOC_POS_GROUP;
-import static eki.ekilex.data.db.Tables.LEX_COLLOC_REL_GROUP;
-import static eki.ekilex.data.db.Tables.MEANING;
-import static eki.ekilex.data.db.Tables.MORPH_FREQ;
-import static eki.ekilex.data.db.Tables.MORPH_LABEL;
-import static eki.ekilex.data.db.Tables.PARADIGM;
-import static eki.ekilex.data.db.Tables.PARADIGM_FORM;
-import static eki.ekilex.data.db.Tables.SOURCE;
-import static eki.ekilex.data.db.Tables.VALUE_STATE_LABEL;
-import static eki.ekilex.data.db.Tables.WORD;
-import static eki.ekilex.data.db.Tables.WORD_ETYMOLOGY;
-import static eki.ekilex.data.db.Tables.WORD_ETYMOLOGY_RELATION;
-import static eki.ekilex.data.db.Tables.WORD_ETYMOLOGY_SOURCE_LINK;
-import static eki.ekilex.data.db.Tables.WORD_FREQ;
-import static eki.ekilex.data.db.Tables.WORD_GROUP;
-import static eki.ekilex.data.db.Tables.WORD_GROUP_MEMBER;
-import static eki.ekilex.data.db.Tables.WORD_RELATION;
-import static eki.ekilex.data.db.Tables.WORD_REL_TYPE_LABEL;
+import static eki.ekilex.data.db.main.Tables.DATASET;
+import static eki.ekilex.data.db.main.Tables.FORM;
+import static eki.ekilex.data.db.main.Tables.FORM_FREQ;
+import static eki.ekilex.data.db.main.Tables.FREQ_CORP;
+import static eki.ekilex.data.db.main.Tables.LANGUAGE;
+import static eki.ekilex.data.db.main.Tables.LEXEME;
+import static eki.ekilex.data.db.main.Tables.LEXEME_TAG;
+import static eki.ekilex.data.db.main.Tables.MEANING;
+import static eki.ekilex.data.db.main.Tables.MORPH_FREQ;
+import static eki.ekilex.data.db.main.Tables.MORPH_LABEL;
+import static eki.ekilex.data.db.main.Tables.PARADIGM;
+import static eki.ekilex.data.db.main.Tables.PARADIGM_FORM;
+import static eki.ekilex.data.db.main.Tables.VALUE_STATE_LABEL;
+import static eki.ekilex.data.db.main.Tables.WORD;
+import static eki.ekilex.data.db.main.Tables.WORD_FREQ;
 
 import java.sql.Timestamp;
 import java.util.List;
@@ -44,39 +32,25 @@ import org.jooq.impl.DSL;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import eki.ekilex.data.CollocationTuple;
 import eki.ekilex.data.ParadigmFormTuple;
 import eki.ekilex.data.SearchCriterionGroup;
 import eki.ekilex.data.SearchDatasetsRestriction;
 import eki.ekilex.data.SearchFilter;
-import eki.ekilex.data.WordEtymTuple;
 import eki.ekilex.data.WordLexeme;
-import eki.ekilex.data.db.tables.Collocation;
-import eki.ekilex.data.db.tables.Dataset;
-import eki.ekilex.data.db.tables.Form;
-import eki.ekilex.data.db.tables.FormFreq;
-import eki.ekilex.data.db.tables.FreqCorp;
-import eki.ekilex.data.db.tables.Language;
-import eki.ekilex.data.db.tables.LexColloc;
-import eki.ekilex.data.db.tables.LexCollocPosGroup;
-import eki.ekilex.data.db.tables.LexCollocRelGroup;
-import eki.ekilex.data.db.tables.Lexeme;
-import eki.ekilex.data.db.tables.LexemeTag;
-import eki.ekilex.data.db.tables.Meaning;
-import eki.ekilex.data.db.tables.MorphFreq;
-import eki.ekilex.data.db.tables.MorphLabel;
-import eki.ekilex.data.db.tables.Paradigm;
-import eki.ekilex.data.db.tables.ParadigmForm;
-import eki.ekilex.data.db.tables.Source;
-import eki.ekilex.data.db.tables.Word;
-import eki.ekilex.data.db.tables.WordEtymology;
-import eki.ekilex.data.db.tables.WordEtymologyRelation;
-import eki.ekilex.data.db.tables.WordEtymologySourceLink;
-import eki.ekilex.data.db.tables.WordFreq;
-import eki.ekilex.data.db.tables.WordGroup;
-import eki.ekilex.data.db.tables.WordGroupMember;
-import eki.ekilex.data.db.tables.WordRelTypeLabel;
-import eki.ekilex.data.db.tables.WordRelation;
+import eki.ekilex.data.db.main.tables.Dataset;
+import eki.ekilex.data.db.main.tables.Form;
+import eki.ekilex.data.db.main.tables.FormFreq;
+import eki.ekilex.data.db.main.tables.FreqCorp;
+import eki.ekilex.data.db.main.tables.Language;
+import eki.ekilex.data.db.main.tables.Lexeme;
+import eki.ekilex.data.db.main.tables.LexemeTag;
+import eki.ekilex.data.db.main.tables.Meaning;
+import eki.ekilex.data.db.main.tables.MorphFreq;
+import eki.ekilex.data.db.main.tables.MorphLabel;
+import eki.ekilex.data.db.main.tables.Paradigm;
+import eki.ekilex.data.db.main.tables.ParadigmForm;
+import eki.ekilex.data.db.main.tables.Word;
+import eki.ekilex.data.db.main.tables.WordFreq;
 import eki.ekilex.service.db.util.LexSearchConditionComposer;
 import eki.ekilex.service.db.util.SearchFilterHelper;
 
@@ -128,14 +102,14 @@ public class LexSearchDbService extends AbstractDataDbService {
 
 	private int count(Word word, Condition where) {
 
-		Table<?> w = create
+		Table<?> w = mainDb
 				.select(word.ID.as("word_id"))
 				.from(word)
 				.where(where)
 				//.groupBy(word.ID)
 				.asTable("w");
 
-		return create.fetchCount(w);
+		return mainDb.fetchCount(w);
 	}
 
 	public List<ParadigmFormTuple> getParadigmFormTuples(Long wordId, String classifierLabelLang, String classifierLabelTypeCode) {
@@ -185,7 +159,7 @@ public class LexSearchDbService extends AbstractDataDbService {
 										.limit(1))))
 				.asField();
 
-		return create
+		return mainDb
 				.select(
 						p.ID.as("paradigm_id"),
 						p.COMMENT.as("paradigm_comment"),
@@ -233,7 +207,7 @@ public class LexSearchDbService extends AbstractDataDbService {
 
 		Condition dsWhere = searchFilterHelper.applyDatasetRestrictions(l, searchDatasetsRestriction, null);
 
-		return create
+		return mainDb
 				.select(
 						w.ID.as("word_id"),
 						w.VALUE.as("word_value"),
@@ -293,7 +267,7 @@ public class LexSearchDbService extends AbstractDataDbService {
 		Field<JSON> lvalstf = getLexemeValueStateField(l.ID, classifierLabelLang, classifierLabelTypeCode);
 		Field<JSON> lproflf = getLexemeProficiencyLevelField(l.ID, classifierLabelLang, classifierLabelTypeCode);
 
-		return create
+		return mainDb
 				.select(
 						w.ID.as("word_id"),
 						w.VALUE.as("word_value"),
@@ -373,7 +347,7 @@ public class LexSearchDbService extends AbstractDataDbService {
 				.groupBy(w.ID));
 		Field<Timestamp> wlaeof = getWordLastActivityEventOnField(w.ID);
 
-		return create
+		return mainDb
 				.select(
 						w.ID.as("word_id"),
 						w.VALUE.as("word_value"),
@@ -403,199 +377,6 @@ public class LexSearchDbService extends AbstractDataDbService {
 								.where(l.WORD_ID.eq(w.ID))))
 				.fetchOptionalInto(eki.ekilex.data.Word.class)
 				.orElse(null);
-	}
-
-	public List<eki.ekilex.data.WordRelation> getWordGroupMembers(Long wordId, String classifierLabelLang, String classifierLabelTypeCode) {
-
-		WordGroupMember wgrm1 = WORD_GROUP_MEMBER.as("wgrm1");
-		WordGroupMember wgrm2 = WORD_GROUP_MEMBER.as("wgrm2");
-		WordGroup wgr = WORD_GROUP.as("wgr");
-		Word w2 = WORD.as("w2");
-		WordRelTypeLabel wrtl = WORD_REL_TYPE_LABEL.as("wrtl");
-
-		Field<String[]> wtf = getWordTypesField(w2.ID);
-		Field<Boolean> wtpf = getWordIsPrefixoidField(w2.ID);
-		Field<Boolean> wtsf = getWordIsSuffixoidField(w2.ID);
-		Field<Boolean> wtz = getWordIsForeignField(w2.ID);
-
-		return create
-				.selectDistinct(
-						wgrm2.ID,
-						wgr.ID.as("group_id"),
-						wgr.WORD_REL_TYPE_CODE.as("group_word_rel_type_code"),
-						w2.ID.as("word_id"),
-						w2.VALUE.as("word_value"),
-						w2.VALUE_PRESE.as("word_value_prese"),
-						w2.LANG.as("word_lang"),
-						w2.ASPECT_CODE.as("word_aspect_code"),
-						wtf.as("word_type_codes"),
-						wtpf.as("prefixoid"),
-						wtsf.as("suffixoid"),
-						wtz.as("foreign"),
-						wrtl.VALUE.as("rel_type_label"),
-						wgrm2.ORDER_BY)
-				.from(
-						wgr
-								.innerJoin(wgrm1).on(wgrm1.WORD_GROUP_ID.eq(wgr.ID))
-								.innerJoin(wgrm2).on(wgrm2.WORD_GROUP_ID.eq(wgr.ID))
-								.innerJoin(w2).on(w2.ID.eq(wgrm2.WORD_ID))
-								.leftOuterJoin(wrtl).on(
-										wgr.WORD_REL_TYPE_CODE.eq(wrtl.CODE)
-												.and(wrtl.LANG.eq(classifierLabelLang))
-												.and(wrtl.TYPE.eq(classifierLabelTypeCode))))
-				.where(wgrm1.WORD_ID.eq(wordId))
-				.orderBy(wgrm2.ORDER_BY)
-				.fetchInto(eki.ekilex.data.WordRelation.class);
-	}
-
-	public List<eki.ekilex.data.WordRelation> getWordRelations(Long wordId, String classifierLabelLang, String classifierLabelTypeCode) {
-
-		WordRelation r = WORD_RELATION.as("r");
-		Lexeme l2 = LEXEME.as("l2");
-		Word w2 = WORD.as("w2");
-		WordRelTypeLabel rtl = WORD_REL_TYPE_LABEL.as("rtl");
-
-		Field<String[]> wtf = getWordTypesField(w2.ID);
-		Field<Boolean> wtpf = getWordIsPrefixoidField(w2.ID);
-		Field<Boolean> wtsf = getWordIsSuffixoidField(w2.ID);
-		Field<Boolean> wtz = getWordIsForeignField(w2.ID);
-
-		return create
-				.selectDistinct(
-						r.ID.as("id"),
-						w2.ID.as("word_id"),
-						w2.VALUE.as("word_value"),
-						w2.VALUE_PRESE.as("word_value_prese"),
-						w2.LANG.as("word_lang"),
-						wtf.as("word_type_codes"),
-						wtpf.as("prefixoid"),
-						wtsf.as("suffixoid"),
-						wtz.as("foreign"),
-						r.WORD_REL_TYPE_CODE.as("rel_type_code"),
-						rtl.VALUE.as("rel_type_label"),
-						r.RELATION_STATUS,
-						r.ORDER_BY)
-				.from(
-						r
-								.innerJoin(w2).on(w2.ID.eq(r.WORD2_ID).andExists(DSL.select(l2.ID).from(l2).where(l2.WORD_ID.eq(w2.ID))))
-								.leftOuterJoin(rtl).on(
-										r.WORD_REL_TYPE_CODE.eq(rtl.CODE)
-												.and(rtl.LANG.eq(classifierLabelLang))
-												.and(rtl.TYPE.eq(classifierLabelTypeCode))))
-				.where(r.WORD1_ID.eq(wordId))
-				.orderBy(r.ORDER_BY)
-				.fetchInto(eki.ekilex.data.WordRelation.class);
-	}
-
-	@Deprecated
-	public List<WordEtymTuple> getWordEtymology(Long wordId) {
-
-		WordEtymology we = WORD_ETYMOLOGY.as("we");
-		WordEtymologySourceLink wesl = WORD_ETYMOLOGY_SOURCE_LINK.as("wesl");
-		WordEtymologyRelation wer = WORD_ETYMOLOGY_RELATION.as("wer");
-		Word w2 = WORD.as("w2");
-		Source s = SOURCE.as("s");
-
-		return create
-				.select(
-						we.ID.as("word_etym_id"),
-						we.ETYMOLOGY_TYPE_CODE,
-						we.ETYMOLOGY_YEAR,
-						we.COMMENT_PRESE.as("word_etym_comment"),
-						we.IS_QUESTIONABLE.as("word_etym_questionable"),
-						wesl.ID.as("word_etym_source_link_id"),
-						wesl.TYPE.as("word_etym_source_link_type"),
-						s.ID.as("word_etym_source_id"),
-						s.NAME.as("word_etym_source_name"),
-						wer.ID.as("word_etym_rel_id"),
-						wer.COMMENT_PRESE.as("word_etym_rel_comment"),
-						wer.IS_QUESTIONABLE.as("word_etym_rel_questionable"),
-						wer.IS_COMPOUND.as("word_etym_rel_compound"),
-						w2.ID.as("related_word_id"),
-						w2.VALUE.as("related_word"),
-						w2.LANG.as("related_word_lang"))
-				.from(we
-						.leftOuterJoin(wesl).on(wesl.WORD_ETYM_ID.eq(we.ID))
-						.leftOuterJoin(s).on(wesl.SOURCE_ID.eq(s.ID))
-						.leftOuterJoin(wer).on(wer.WORD_ETYM_ID.eq(we.ID))
-						.leftOuterJoin(w2).on(w2.ID.eq(wer.RELATED_WORD_ID)))
-				.where(we.WORD_ID.eq(wordId))
-				.orderBy(we.ORDER_BY, wesl.ORDER_BY, wer.ORDER_BY)
-				.fetchInto(WordEtymTuple.class);
-	}
-
-	public List<CollocationTuple> getPrimaryCollocationTuples(Long lexemeId) {
-
-		LexCollocPosGroup pgr1 = LEX_COLLOC_POS_GROUP.as("pgr1");
-		LexCollocRelGroup rgr1 = LEX_COLLOC_REL_GROUP.as("rgr1");
-		LexColloc lc1 = LEX_COLLOC.as("lc1");
-		LexColloc lc2 = LEX_COLLOC.as("lc2");
-		Collocation c = COLLOCATION.as("c");
-		Lexeme l2 = LEXEME.as("l2");
-		Word w2 = WORD.as("w2");
-
-		return create
-				.select(
-						pgr1.ID.as("pos_group_id"),
-						pgr1.POS_GROUP_CODE.as("pos_group_code"),
-						rgr1.ID.as("rel_group_id"),
-						rgr1.NAME.as("rel_group_name"),
-						rgr1.FREQUENCY.as("rel_group_frequency"),
-						rgr1.SCORE.as("rel_group_score"),
-						c.ID.as("colloc_id"),
-						c.VALUE.as("colloc_value"),
-						c.DEFINITION.as("colloc_definition"),
-						c.FREQUENCY.as("colloc_frequency"),
-						c.SCORE.as("colloc_score"),
-						c.USAGES.as("colloc_usages"),
-						l2.WORD_ID.as("colloc_member_word_id"),
-						w2.VALUE.as("colloc_member_word_value"),
-						lc2.WEIGHT.as("colloc_member_weight"))
-				.from(pgr1, rgr1, lc1, lc2, c, l2, w2)
-				.where(
-						pgr1.LEXEME_ID.eq(lexemeId)
-								.and(rgr1.POS_GROUP_ID.eq(pgr1.ID))
-								.and(lc1.REL_GROUP_ID.eq(rgr1.ID))
-								.and(lc1.COLLOCATION_ID.eq(c.ID))
-								.and(lc2.COLLOCATION_ID.eq(c.ID))
-								.and(lc2.LEXEME_ID.eq(l2.ID))
-								.and(lc2.LEXEME_ID.ne(lc1.LEXEME_ID))
-								.and(l2.WORD_ID.eq(w2.ID)))
-				.groupBy(c.ID, pgr1.ID, rgr1.ID, lc1.ID, lc2.ID, l2.ID, w2.ID)
-				.orderBy(pgr1.ORDER_BY, rgr1.ORDER_BY, lc1.GROUP_ORDER, c.ID, lc2.MEMBER_ORDER)
-				.fetchInto(CollocationTuple.class);
-	}
-
-	public List<CollocationTuple> getSecondaryCollocationTuples(Long lexemeId) {
-
-		LexColloc lc1 = LEX_COLLOC.as("lc1");
-		LexColloc lc2 = LEX_COLLOC.as("lc2");
-		Collocation c = COLLOCATION.as("c");
-		Lexeme l2 = LEXEME.as("l2");
-		Word w2 = WORD.as("w2");
-
-		return create
-				.select(
-						c.ID.as("colloc_id"),
-						c.VALUE.as("colloc_value"),
-						c.DEFINITION.as("colloc_definition"),
-						c.FREQUENCY.as("colloc_frequency"),
-						c.SCORE.as("colloc_score"),
-						c.USAGES.as("colloc_usages"),
-						l2.WORD_ID.as("colloc_member_word_id"),
-						w2.VALUE.as("colloc_member_word_value"),
-						lc2.WEIGHT.as("colloc_member_weight"))
-				.from(lc1, lc2, c, l2, w2)
-				.where(
-						lc1.LEXEME_ID.eq(lexemeId)
-								.and(lc1.REL_GROUP_ID.isNull())
-								.and(lc1.COLLOCATION_ID.eq(c.ID))
-								.and(lc2.COLLOCATION_ID.eq(c.ID))
-								.and(lc2.LEXEME_ID.eq(l2.ID))
-								.and(lc2.LEXEME_ID.ne(lc1.LEXEME_ID))
-								.and(l2.WORD_ID.eq(w2.ID)))
-				.orderBy(c.ID, lc2.MEMBER_ORDER)
-				.fetchInto(CollocationTuple.class);
 	}
 
 	private List<eki.ekilex.data.Word> execute(
@@ -717,9 +498,9 @@ public class LexSearchDbService extends AbstractDataDbService {
 				.asTable("ww");
 
 		if (noLimit) {
-			return create.selectFrom(ww).fetchInto(eki.ekilex.data.Word.class);
+			return mainDb.selectFrom(ww).fetchInto(eki.ekilex.data.Word.class);
 		} else {
-			return create.selectFrom(ww).limit(maxResultsLimit).offset(offset).fetchInto(eki.ekilex.data.Word.class);
+			return mainDb.selectFrom(ww).limit(maxResultsLimit).offset(offset).fetchInto(eki.ekilex.data.Word.class);
 		}
 	}
 }

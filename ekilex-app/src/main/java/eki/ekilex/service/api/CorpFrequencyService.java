@@ -25,31 +25,31 @@ public class CorpFrequencyService {
 		return corpFrequencyDbService.getFreqCorps();
 	}
 
-	@Transactional
+	@Transactional(rollbackOn = Exception.class)
 	public Long createFreqCorp(FreqCorp freqCorp) {
 		return corpFrequencyDbService.createCorpFreq(freqCorp);
 	}
 
-	@Transactional
+	@Transactional(rollbackOn = Exception.class)
 	public void updateFreqCorp(FreqCorpId freqCorp) {
 		corpFrequencyDbService.updateFreqCorp(freqCorp);
 	}
 
-	@Transactional
+	@Transactional(rollbackOn = Exception.class)
 	public void createFormFreqs(List<FormFreq> formFreqs) {
 		for (FormFreq formFreq : formFreqs) {
 			corpFrequencyDbService.createFormFreqs(formFreq);
 		}
 	}
 
-	@Transactional
+	@Transactional(rollbackOn = Exception.class)
 	public void createMorphFreqs(List<MorphFreq> morphFreqs) {
 		for (MorphFreq morphFreq : morphFreqs) {
 			corpFrequencyDbService.createMorphFreq(morphFreq);
 		}
 	}
 
-	@Transactional
+	@Transactional(rollbackOn = Exception.class)
 	public void createWordFreqs(List<WordFreq> wordFreqs) {
 		for (WordFreq wordFreq : wordFreqs) {
 			corpFrequencyDbService.createWordFreq(wordFreq);

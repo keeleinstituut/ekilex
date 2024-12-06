@@ -27,10 +27,9 @@ $(function(){
 
 function deleteFeedback(feedbackId) {
 	const deleteFeedbackUrl = `${applicationUrl}wwfeedback/deletefeedback/${feedbackId}`;
-	$.get(deleteFeedbackUrl).done(function(data) {
-		const ekiCommentsArea = $("#ekiCommentsArea_" + feedbackId);
-		ekiCommentsArea.replaceWith(data);
-	}).fail(function(data) {
+	$.get(deleteFeedbackUrl)
+	.done(function(data) {})
+	.fail(function(data) {
 		console.log(data);
 		alert('Viga!');
 	});

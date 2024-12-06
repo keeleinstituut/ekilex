@@ -1,6 +1,6 @@
 package eki.wordweb.service.db;
 
-import static eki.wordweb.data.db.Tables.MVIEW_WW_COLLOCATION;
+import static eki.wordweb.data.db.Tables.MVIEW_WW_COLLOC_POS_GROUP;
 import static eki.wordweb.data.db.Tables.MVIEW_WW_COUNTS;
 import static eki.wordweb.data.db.Tables.MVIEW_WW_FORM;
 import static eki.wordweb.data.db.Tables.MVIEW_WW_LEXEME;
@@ -41,7 +41,6 @@ import eki.common.constant.Complexity;
 import eki.common.constant.DatasetType;
 import eki.common.constant.GlobalConstant;
 import eki.wordweb.constant.SystemConstant;
-import eki.wordweb.data.CollocationTuple;
 import eki.wordweb.data.Form;
 import eki.wordweb.data.LanguagesDatasets;
 import eki.wordweb.data.LexemeWord;
@@ -49,13 +48,14 @@ import eki.wordweb.data.LinkedWordSearchElement;
 import eki.wordweb.data.Meaning;
 import eki.wordweb.data.SearchContext;
 import eki.wordweb.data.Word;
+import eki.wordweb.data.WordCollocPosGroups;
 import eki.wordweb.data.WordEtymTuple;
 import eki.wordweb.data.WordForm;
 import eki.wordweb.data.WordRelationsTuple;
 import eki.wordweb.data.WordSearchElement;
 import eki.wordweb.data.WordsMatch;
 import eki.wordweb.data.db.Routines;
-import eki.wordweb.data.db.tables.MviewWwCollocation;
+import eki.wordweb.data.db.tables.MviewWwCollocPosGroup;
 import eki.wordweb.data.db.tables.MviewWwCounts;
 import eki.wordweb.data.db.tables.MviewWwForm;
 import eki.wordweb.data.db.tables.MviewWwLexeme;
@@ -770,34 +770,18 @@ public class SearchDbService implements GlobalConstant, SystemConstant {
 				.fetchInto(WordEtymTuple.class);
 	}
 
-	public List<CollocationTuple> getCollocations(Long wordId) {
+	public List<WordCollocPosGroups> getWordCollocPosGroups(Long wordId) {
 
-		MviewWwCollocation c = MVIEW_WW_COLLOCATION.as("c");
-
-		Condition where = c.WORD_ID.eq(wordId);
+		MviewWwCollocPosGroup cpg = MVIEW_WW_COLLOC_POS_GROUP.as("cpg");
 
 		return create
 				.select(
-						c.LEXEME_ID,
-						c.WORD_ID,
-						c.POS_GROUP_ID,
-						c.POS_GROUP_CODE,
-						c.REL_GROUP_ID,
-						c.REL_GROUP_NAME,
-						c.COLLOC_ID,
-						c.COLLOC_VALUE,
-						c.COLLOC_DEFINITION,
-						c.COLLOC_USAGES,
-						c.COLLOC_MEMBERS,
-						c.COMPLEXITY)
-				.from(c)
-				.where(where)
-				.orderBy(
-						c.POS_GROUP_ORDER_BY,
-						c.REL_GROUP_ORDER_BY,
-						c.COLLOC_GROUP_ORDER,
-						c.COLLOC_ID)
-				.fetchInto(CollocationTuple.class);
+						cpg.LEXEME_ID,
+						cpg.WORD_ID,
+						cpg.POS_GROUPS)
+				.from(cpg)
+				.where(cpg.WORD_ID.eq(wordId))
+				.fetchInto(WordCollocPosGroups.class);
 	}
 
 	private String toSqlArray(List<String> values) {

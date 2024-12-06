@@ -64,8 +64,7 @@
                 <div class="mb-1">
                   <span th:text="#{|source.property.${sourceProperty.typeCode}|}"></span>
                   -
-                  <span th:text="${sourceProperty.valueText}" th:if="${sourceProperty.valueText != null}" th:style="${sourceProperty.valueMatch ? 'background-color: #eaffea' : ''}"></span>
-                  <span th:text="${#dates.format(sourceProperty.valueDate, 'dd.MM.yyyy HH:mm')}" th:if="${sourceProperty.valueDate != null}"></span>
+                  <span th:text="${sourceProperty.value}" th:style="${sourceProperty.valueMatch ? 'background-color: #eaffea' : ''}"></span>
                 </div>
               </div>
             </th:block>
@@ -144,8 +143,7 @@
               <div class="mb-1">
                 <span th:text="#{|source.property.${sourceProperty.typeCode}|}"></span>
                 -
-                <span th:text="${sourceProperty.valueText}" th:if="${sourceProperty.valueText != null}" th:style="${sourceProperty.valueMatch ? 'background-color: #eaffea' : ''}"></span>
-                <span th:text="${#dates.format(sourceProperty.valueDate, 'dd.MM.yyyy HH:mm')}" th:if="${sourceProperty.valueDate != null}"></span>
+                <span th:text="${sourceProperty.value}" th:style="${sourceProperty.valueMatch ? 'background-color: #eaffea' : ''}"></span>
               </div>
             </div>
           </th:block>
@@ -159,7 +157,7 @@
               <div class="form-group row">
                 <label class="col-auto col-form-label" th:text="#{source.link.name}">Siseviide</label>
                 <div class="col-8">
-                  <input type="text" class="form-control" name="value" th:value="${sourceLink.name}">
+                  <input type="text" class="form-control" name="value" th:value="${sourceLink.name}" autocomplete="off">
                 </div>
               </div>
             </div>
@@ -259,8 +257,7 @@
                   <div style="display: list-item; position: absolute"></div>
                   <span th:text="#{|source.property.${sourceProperty.typeCode}|}"></span>
                   -
-                  <span th:text="${sourceProperty.valueText}" th:if="${sourceProperty.valueText != null}" th:style="${sourceProperty.valueMatch ? 'background-color: #eaffea' : ''}"></span>
-                  <span th:text="${#dates.format(sourceProperty.valueDate, 'dd.MM.yyyy HH:mm')}" th:if="${sourceProperty.valueDate != null}"></span>
+                  <span th:text="${sourceProperty.value}" th:style="${sourceProperty.valueMatch ? 'background-color: #eaffea' : ''}"></span>
                 </div>
               </div>
             </th:block>
@@ -308,8 +305,7 @@
                 <div style="display: list-item; position: absolute"></div>
                 <span th:text="#{|source.property.${sourceProperty.typeCode}|}"></span>
                 -
-                <span th:text="${sourceProperty.valueText}" th:if="${sourceProperty.valueText != null}" th:style="${sourceProperty.valueMatch ? 'background-color: #eaffea' : ''}"></span>
-                <span th:text="${#dates.format(sourceProperty.valueDate, 'dd.MM.yyyy HH:mm')}" th:if="${sourceProperty.valueDate != null}"></span>
+                <span th:text="${sourceProperty.value}" th:style="${sourceProperty.valueMatch ? 'background-color: #eaffea' : ''}"></span>
               </div>
             </div>
           </th:block>
@@ -376,8 +372,7 @@
                   <div style="display: list-item; position: absolute"></div>
                   <span th:text="#{|source.property.${sourceProperty.typeCode}|}"></span>
                   -
-                  <span th:text="${sourceProperty.valueText}" th:if="${sourceProperty.valueText != null}"></span>
-                  <span th:text="${#dates.format(sourceProperty.valueDate, 'dd.MM.yyyy HH:mm')}" th:if="${sourceProperty.valueDate != null}"></span>
+                  <span th:text="${sourceProperty.value}"></span>
                 </div>
               </div>
             </th:block>

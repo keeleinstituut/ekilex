@@ -20,7 +20,7 @@ import eki.common.data.Count;
 import eki.common.service.TextDecorationService;
 import eki.ekilex.constant.SystemConstant;
 import eki.ekilex.data.SourceTargetIdTuple;
-import eki.ekilex.data.db.tables.records.WordRecord;
+import eki.ekilex.data.db.main.tables.records.WordRecord;
 import eki.ekilex.service.db.MaintenanceDbService;
 
 @Component
@@ -90,7 +90,7 @@ public class MaintenanceService implements SystemConstant, GlobalConstant {
 	}
 
 	@Scheduled(cron = MERGE_HOMONYMS_TIME_3_AM)
-	@Transactional
+	@Transactional(rollbackOn = Exception.class)
 	public void mergeHomonyms() throws Exception {
 
 		logger.info("Starting homonyms merge...");
@@ -109,14 +109,14 @@ public class MaintenanceService implements SystemConstant, GlobalConstant {
 	}
 
 	@Scheduled(cron = ADJUST_HOMONYM_NRS_TIME_3_30_AM)
-	@Transactional
+	@Transactional(rollbackOn = Exception.class)
 	public void adjustHomonymNrs() {
 
 		logger.info("Starting homonym numbers adjust procedure...");
 		maintenanceDbService.adjustHomonymNrs();
 	}
 
-	@Transactional
+	@Transactional(rollbackOn = Exception.class)
 	public Map<String, Count> unifyApostrophesAndRecalcAccents() {
 
 		logger.info("Unifying apostrophes and updating accents...");
@@ -169,7 +169,7 @@ public class MaintenanceService implements SystemConstant, GlobalConstant {
 	}
 
 	@Scheduled(cron = DELETE_FLOATING_DATA_TIME_4_AM)
-	@Transactional
+	@Transactional(rollbackOn = Exception.class)
 	public void deleteFloatingData() {
 
 		logger.info("Deleting floating data...");
@@ -195,7 +195,7 @@ public class MaintenanceService implements SystemConstant, GlobalConstant {
 	}
 
 	@Scheduled(cron = DELETE_OUTDATED_DATA_REQUESTS_TIME_5_AM)
-	@Transactional
+	@Transactional(rollbackOn = Exception.class)
 	public void deleteOutdatedDataRequests() {
 
 		int deletedDataRequestCount = maintenanceDbService.deleteAccessedDataRequests(DELETE_OUTDATED_DATA_AFTER_ACCESS_HOURS);

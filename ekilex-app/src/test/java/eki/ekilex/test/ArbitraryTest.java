@@ -9,7 +9,6 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.StringTokenizer;
 
 import javax.transaction.Transactional;
 
@@ -28,11 +27,11 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import eki.common.constant.GlobalConstant;
 import eki.common.data.PgVarcharArray;
-import eki.common.service.db.BasicDbService;
 import eki.ekilex.app.EkilexApplication;
 import eki.ekilex.data.api.Paradigm;
 import eki.ekilex.data.api.ParadigmForm;
 import eki.ekilex.data.api.ParadigmWrapper;
+import eki.ekilex.service.db.BasicDbService;
 import eki.ekilex.web.util.ValueUtil;
 
 @RunWith(SpringRunner.class)

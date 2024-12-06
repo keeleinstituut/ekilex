@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import eki.ekilex.data.api.ApiResponse;
+import eki.ekilex.data.api.FormWord;
 import eki.ekilex.data.api.Paradigm;
 import eki.ekilex.data.api.ParadigmWrapper;
 import eki.ekilex.service.api.MorphologyService;
@@ -30,6 +31,7 @@ public class ApiMorphController extends AbstractApiController {
 
 	@Order(401)
 	@GetMapping(API_SERVICES_URI + PARADIGM_URI + DETAILS_URI + "/{wordId}")
+	@ResponseBody
 	public List<Paradigm> getParadigms(
 			@PathVariable("wordId") Long wordId,
 			Authentication authentication,
@@ -41,6 +43,19 @@ public class ApiMorphController extends AbstractApiController {
 	}
 
 	@Order(402)
+	@GetMapping(API_SERVICES_URI + FORM_URI + SEARCH_URI + "/{form}")
+	@ResponseBody
+	public List<FormWord> formSearch(
+			@PathVariable("form") String formValue,
+			Authentication authentication,
+			HttpServletRequest request) throws Exception {
+
+		List<FormWord> formWords = morphologyService.getFormWords(formValue);
+		addRequestStat(authentication, request);
+		return formWords;
+	}
+
+	@Order(403)
 	@PreAuthorize("principal.admin")
 	@PostMapping(API_SERVICES_URI + PARADIGM_URI + SAVE_URI)
 	@ResponseBody

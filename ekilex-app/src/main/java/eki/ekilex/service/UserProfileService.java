@@ -60,12 +60,12 @@ public class UserProfileService implements GlobalConstant, SystemConstant {
 		return userProfile;
 	}
 
-	@Transactional
+	@Transactional(rollbackOn = Exception.class)
 	public void updateUserPreferredDatasets(List<String> selectedDatasets, Long userId) {
 		userProfileDbService.updatePreferredDatasets(selectedDatasets, userId);
 	}
 
-	@Transactional
+	@Transactional(rollbackOn = Exception.class)
 	public void setRecentDatasetPermission(Long permissionId, Long userId) {
 
 		if (permissionId == null) {
@@ -80,13 +80,13 @@ public class UserProfileService implements GlobalConstant, SystemConstant {
 		}
 	}
 
-	@Transactional
+	@Transactional(rollbackOn = Exception.class)
 	public void updateApproveMeaningEnabled(Long userId, boolean approveMeaningEnabled) {
 
 		userProfileDbService.updateApproveMeaningEnabled(userId, approveMeaningEnabled);
 	}
 
-	@Transactional
+	@Transactional(rollbackOn = Exception.class)
 	public void updateUserProfile(EkiUserProfile userProfile) {
 		userProfileDbService.updateUserProfile(userProfile);
 	}

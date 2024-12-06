@@ -58,11 +58,11 @@ public class Lexeme extends AbstractCrudEntity implements LexemeTag {
 
 	private List<Media> images;
 
-	private List<FreeForm> freeforms;
+	private List<Freeform> freeforms;
 
 	private List<NoteLangGroup> noteLangGroups;
 
-	private List<FreeForm> grammars;
+	private List<Freeform> grammars;
 
 	private List<SourceLink> sourceLinks;
 
@@ -272,11 +272,11 @@ public class Lexeme extends AbstractCrudEntity implements LexemeTag {
 		this.images = images;
 	}
 
-	public List<FreeForm> getFreeforms() {
+	public List<Freeform> getFreeforms() {
 		return freeforms;
 	}
 
-	public void setFreeforms(List<FreeForm> freeforms) {
+	public void setFreeforms(List<Freeform> freeforms) {
 		this.freeforms = freeforms;
 	}
 
@@ -288,11 +288,11 @@ public class Lexeme extends AbstractCrudEntity implements LexemeTag {
 		this.noteLangGroups = noteLangGroups;
 	}
 
-	public List<FreeForm> getGrammars() {
+	public List<Freeform> getGrammars() {
 		return grammars;
 	}
 
-	public void setGrammars(List<FreeForm> grammars) {
+	public void setGrammars(List<Freeform> grammars) {
 		this.grammars = grammars;
 	}
 

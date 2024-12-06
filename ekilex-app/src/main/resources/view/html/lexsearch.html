@@ -271,7 +271,7 @@
                     <div class="ekiAccordion__content">
                       <div class="col hidden-buttons pr-5 pb-2">
                         <div class="action-buttons-anchor">
-                          <span th:text="${details.word.morphComment}" th:if="${details.word.morphComment}"></span>
+                          <span th:utext="${details.word.morphComment}" th:if="${details.word.morphComment}"></span>
                           <small th:unless="${details.word.morphComment}">
                             <i th:text="#{lex.add.word.morph.comment}" class="text-muted"></i>
                           </small>
@@ -516,100 +516,7 @@
                       </th:block>
                     </div>
                   </div>
-                  <div class="ekiAccordion__instance">
-                    <div class="ekiAccordion__title">
-                      <span class="badge badge-data-exists" th:unless="${#lists.isEmpty(details.word.freeforms)}">•</span>
-                      <span th:text="#{lex.word.freeforms}">Atribuutid</span>
-                      <button type="button" class="ekiAccordion__add"
-                              th:title="#{common.add.new}" data-toggle="modal"
-                              th:data-target="${'#addWordFreeformDlg_' + wordId}"
-                              sec:authorize="#vars.details.word.crudGrant">
-                        <i class="fa fa-plus" aria-hidden="true"></i>
-                      </button>
-                    </div>
-                    <div class="ekiAccordion__content">
-                      <div th:if="${#lists.isEmpty(details.word.freeforms)}" th:text="#{common.no.content}">
-                        Sisu puudub...
-                      </div>
-					  <div th:each="freeform,freeformIter : ${details.word.freeforms}"
-                           th:data-id="${freeform.id}"
-                           th:data-orderby="${freeform.orderBy}">
-                        <div th:replace="lexdialog :: edit_word_freeform_dlg"></div>
-                        <div th:replace="lexdialog :: add_word_freeform_source_link_dlg"></div>
-						<div class="col hidden-buttons pr-5">
-						  <div class="invisible-buttons action-buttons-anchor">
-						    <span th:text="${freeform.freeformTypeValue}" class="text-monospace mr-3"></span>
-                            <span th:utext="${freeform.valuePrese}"></span>
-                            <span class="ctxt" th:text="'(' + #{'boolean.public.' + ${freeform.public}} + ')'" data-plugin="complexityAndPublicity"></span>
-                            <span th:if="${#lists.isEmpty(freeform.sourceLinks)}" class="show-on-mouseover">
-                              [
-                              <button type="button" class="btn badge badge-success hidden"
-                                      th:title="#{common.add.source.link}"
-                                      data-toggle="modal"
-                                      th:data-target="${'#addWordFreeformSourceLinkDlg_' + wordId + '_' + freeform.id}"
-                                      sec:authorize="#vars.details.word.crudGrant">
-                                <i class="fa fa-external-link" aria-hidden="true"></i>
-                              </button>
-                              ]
-                            </span>
-							<div class="action-buttons-2">
-                              <button type="button" class="btn badge badge-primary"
-                                      th:title="#{common.edit}"
-                                      data-toggle="modal"
-                                      th:data-target="${'#editWordFreeformDlg_' + wordId + '_' + freeform.id}"
-                                      sec:authorize="#vars.details.word.crudGrant">
-                                <i class="fa fa-edit" aria-hidden="true"></i>
-                              </button>
-                              <button type="button" class="btn badge badge-warning"
-                                      th:data-id="${freeform.id}"
-                                      data-op-code="word_freeform"
-                                      data-toggle="delete-confirm"
-                                      data-placement="right"
-                                      sec:authorize="#vars.details.word.crudGrant">
-                                <i class="fa fa-remove" aria-hidden="true"></i>
-                              </button>
-                            </div>
-						  </div>
-                          <div class="hidden-buttons" th:if="${not #lists.isEmpty(freeform.sourceLinks)}">
-                            <th:block th:each="sourceLink : ${freeform.sourceLinks}">
-                              <div th:replace="lexdialog :: edit_word_freeform_source_link_dlg"></div>
-                              <span>
-                                [
-                                <a th:href="@{'/word_freeform_source_link:' + ${sourceLink.id}}" th:text="${sourceLink.sourceName}"></a>
-                                <span th:text="${sourceLink.name}" th:if="${sourceLink.name != null}"></span>
-                                <button type="button" class="btn badge badge-primary"
-                                        th:title="#{common.edit}"
-                                        data-toggle="modal"
-                                        th:data-target="${'#editWordFreeformSourceLinkDlg_' + sourceLink.id}"
-                                        sec:authorize="#vars.details.word.crudGrant">
-                                  <i class="fa fa-edit" aria-hidden="true"></i>
-                                </button>
-                                <button type="button" class="btn badge badge-warning"
-                                        data-op-code="word_freeform_source_link"
-                                        th:data-id="${sourceLink.id}"
-                                        data-toggle="delete-confirm"
-                                        data-placement="right"
-                                        sec:authorize="#vars.details.word.crudGrant">
-                                  <i class="fa fa-remove" aria-hidden="true"></i>
-                                </button>
-                                ]
-                              </span>
-                            </th:block>
-                            <button type="button" class="btn badge badge-success hidden"
-                                    th:title="#{common.add.source.link}"
-                                    data-toggle="modal"
-                                    th:data-target="${'#addWordFreeformSourceLinkDlg_' + wordId + '_' + freeform.id}"
-                                    sec:authorize="#vars.details.word.crudGrant">
-                              <i class="fa fa-external-link" aria-hidden="true"></i>
-                            </button>
-                          </div>
-                          <div th:unless="${freeformIter.last}">
-                            <hr/>
-                          </div>
-						</div>
-					  </div>
-                    </div>
-                  </div>
+                  <div th:replace="lexcomp :: word_freeform"></div>
                 </div>
               </div>
             </div>

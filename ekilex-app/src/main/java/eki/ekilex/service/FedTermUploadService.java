@@ -123,7 +123,7 @@ public class FedTermUploadService implements InitializingBean {
 		return fedTermClient.isFedTermAccessEnabled();
 	}
 
-	@Transactional
+	@Transactional(rollbackOn = Exception.class)
 	public List<QueueItem> composeFedTermUploadQueueSteps(EkiUser user, String datasetCode) {
 
 		if (!isFedTermAccessEnabled()) {
@@ -157,7 +157,7 @@ public class FedTermUploadService implements InitializingBean {
 		return fedTermUploadQueueSteps;
 	}
 
-	@Transactional
+	@Transactional(rollbackOn = Exception.class)
 	public String getOrCreateFedTermCollectionId(String datasetCode) throws Exception {
 
 		Dataset dataset = datasetDbService.getDataset(datasetCode);
@@ -173,7 +173,7 @@ public class FedTermUploadService implements InitializingBean {
 		return fedTermCollectionId;
 	}
 
-	@Transactional
+	@Transactional(rollbackOn = Exception.class)
 	public void deleteFedTermCollection(String datasetCode) throws Exception {
 
 		Dataset dataset = datasetDbService.getDataset(datasetCode);
@@ -182,7 +182,7 @@ public class FedTermUploadService implements InitializingBean {
 		fedTermClient.deleteFedTermCollection(datasetCode, fedTermCollectionId);
 	}
 
-	@Transactional
+	@Transactional(rollbackOn = Exception.class)
 	public void uploadFedTermConceptEntries(String fedTermCollectionId, FedTermUploadQueueContent content) throws Exception {
 
 		if (StringUtils.isBlank(fedTermCollectionId)) {

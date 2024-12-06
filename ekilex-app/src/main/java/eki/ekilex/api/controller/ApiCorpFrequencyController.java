@@ -49,7 +49,7 @@ public class ApiCorpFrequencyController extends AbstractApiController {
 			HttpServletRequest request) {
 		try {
 			Long freqCorpId = corpFrequencyService.createFreqCorp(freqCorp);
-			return getOpSuccessResponse(authentication, request, freqCorpId);
+			return getOpSuccessResponse(authentication, request, "FREQ_CORP", freqCorpId);
 		} catch (Exception e) {
 			return getOpFailResponse(authentication, request, e);
 		}

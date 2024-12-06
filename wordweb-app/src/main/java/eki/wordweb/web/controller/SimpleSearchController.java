@@ -183,6 +183,7 @@ public class SimpleSearchController extends AbstractSearchController {
 		populateRecent(sessionBean, wordData);
 		model.addAttribute("wordData", wordData);
 		model.addAttribute("searchMode", SEARCH_MODE_SIMPLE);
+		model.addAttribute("ekiKeeleinfoUrl", ekiKeeleinfoUrl);
 
 		return LITE_SEARCH_PAGE + " :: worddetails";
 	}

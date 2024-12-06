@@ -146,7 +146,7 @@ public class LexemeConversionUtil extends AbstractConversionUtil {
 				&& CollectionUtils.isEmpty(lexemeWord.getDestinLangSynonyms())
 				&& CollectionUtils.isEmpty(lexemeWord.getRelatedLexemes())
 				&& CollectionUtils.isEmpty(lexemeWord.getDomains())
-				&& CollectionUtils.isEmpty(lexemeWord.getCollocationPosGroups());
+				&& CollectionUtils.isEmpty(lexemeWord.getCollocPosGroups());
 		//not much of a content?
 		//&& CollectionUtils.isEmpty(lexeme.getRegisters())
 		//&& CollectionUtils.isEmpty(lexeme.getGovernments())
@@ -226,7 +226,7 @@ public class LexemeConversionUtil extends AbstractConversionUtil {
 
 		lexemeWord.setSourceLangSynonyms(new ArrayList<>());
 		lexemeWord.setDestinLangSynonyms(new ArrayList<>());
-		lexemeWord.setCollocationPosGroups(new ArrayList<>());
+		lexemeWord.setCollocPosGroups(new ArrayList<>());
 
 		List<TypeSourceLink> lexemeSourceLinks = lexemeWord.getLexemeSourceLinks();
 		List<TypeFreeform> grammars = lexemeWord.getGrammars();

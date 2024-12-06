@@ -65,7 +65,7 @@ public class ApiTermMeaningController extends AbstractApiController {
 				return getOpFailResponse(authentication, request, "Missing words");
 			}
 			Long meaningId = termMeaningService.saveTermMeaning(termMeaning, crudRoleDataset);
-			return getOpSuccessResponse(authentication, request, meaningId);
+			return getOpSuccessResponse(authentication, request, "MEANING", meaningId);
 		} catch (Exception e) {
 			return getOpFailResponse(authentication, request, e);
 		}

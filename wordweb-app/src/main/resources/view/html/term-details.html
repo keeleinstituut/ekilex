@@ -6,7 +6,7 @@
             isLimTerm = ${@viewUtil.isLimTermData(lexeme)}">
     <div th:id="|lexeme-section-${lexeme.lexemeId}|">
       <h6 class="font-weight-bold">
-        <a th:href="@{'/ds/' + ${lexeme.datasetCode}}" th:text="${lexeme.datasetName}">Aianduse terminibaas</a>
+        <a th:href="|@{/ds}/${lexeme.datasetCode}|" th:text="${lexeme.datasetName}">Aianduse terminibaas</a>
       </h6>
       <div>
         <div class="meaning">

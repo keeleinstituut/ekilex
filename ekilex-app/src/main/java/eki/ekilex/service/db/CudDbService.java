@@ -1,41 +1,41 @@
 package eki.ekilex.service.db;
 
-import static eki.ekilex.data.db.Tables.DEFINITION;
-import static eki.ekilex.data.db.Tables.DEFINITION_DATASET;
-import static eki.ekilex.data.db.Tables.DEFINITION_FREEFORM;
-import static eki.ekilex.data.db.Tables.DEFINITION_NOTE;
-import static eki.ekilex.data.db.Tables.FREEFORM;
-import static eki.ekilex.data.db.Tables.LEXEME;
-import static eki.ekilex.data.db.Tables.LEXEME_DERIV;
-import static eki.ekilex.data.db.Tables.LEXEME_FREEFORM;
-import static eki.ekilex.data.db.Tables.LEXEME_NOTE;
-import static eki.ekilex.data.db.Tables.LEXEME_POS;
-import static eki.ekilex.data.db.Tables.LEXEME_REGION;
-import static eki.ekilex.data.db.Tables.LEXEME_REGISTER;
-import static eki.ekilex.data.db.Tables.LEXEME_TAG;
-import static eki.ekilex.data.db.Tables.LEX_RELATION;
-import static eki.ekilex.data.db.Tables.MEANING;
-import static eki.ekilex.data.db.Tables.MEANING_DOMAIN;
-import static eki.ekilex.data.db.Tables.MEANING_FORUM;
-import static eki.ekilex.data.db.Tables.MEANING_FREEFORM;
-import static eki.ekilex.data.db.Tables.MEANING_IMAGE;
-import static eki.ekilex.data.db.Tables.MEANING_NOTE;
-import static eki.ekilex.data.db.Tables.MEANING_RELATION;
-import static eki.ekilex.data.db.Tables.MEANING_SEMANTIC_TYPE;
-import static eki.ekilex.data.db.Tables.MEANING_TAG;
-import static eki.ekilex.data.db.Tables.PARADIGM;
-import static eki.ekilex.data.db.Tables.USAGE;
-import static eki.ekilex.data.db.Tables.USAGE_DEFINITION;
-import static eki.ekilex.data.db.Tables.USAGE_TRANSLATION;
-import static eki.ekilex.data.db.Tables.WORD;
-import static eki.ekilex.data.db.Tables.WORD_ETYMOLOGY;
-import static eki.ekilex.data.db.Tables.WORD_FORUM;
-import static eki.ekilex.data.db.Tables.WORD_FREEFORM;
-import static eki.ekilex.data.db.Tables.WORD_GROUP;
-import static eki.ekilex.data.db.Tables.WORD_GROUP_MEMBER;
-import static eki.ekilex.data.db.Tables.WORD_RELATION;
-import static eki.ekilex.data.db.Tables.WORD_RELATION_PARAM;
-import static eki.ekilex.data.db.Tables.WORD_WORD_TYPE;
+import static eki.ekilex.data.db.main.Tables.DEFINITION;
+import static eki.ekilex.data.db.main.Tables.DEFINITION_DATASET;
+import static eki.ekilex.data.db.main.Tables.DEFINITION_FREEFORM;
+import static eki.ekilex.data.db.main.Tables.DEFINITION_NOTE;
+import static eki.ekilex.data.db.main.Tables.FREEFORM;
+import static eki.ekilex.data.db.main.Tables.LEXEME;
+import static eki.ekilex.data.db.main.Tables.LEXEME_DERIV;
+import static eki.ekilex.data.db.main.Tables.LEXEME_FREEFORM;
+import static eki.ekilex.data.db.main.Tables.LEXEME_NOTE;
+import static eki.ekilex.data.db.main.Tables.LEXEME_POS;
+import static eki.ekilex.data.db.main.Tables.LEXEME_REGION;
+import static eki.ekilex.data.db.main.Tables.LEXEME_REGISTER;
+import static eki.ekilex.data.db.main.Tables.LEXEME_TAG;
+import static eki.ekilex.data.db.main.Tables.LEX_RELATION;
+import static eki.ekilex.data.db.main.Tables.MEANING;
+import static eki.ekilex.data.db.main.Tables.MEANING_DOMAIN;
+import static eki.ekilex.data.db.main.Tables.MEANING_FORUM;
+import static eki.ekilex.data.db.main.Tables.MEANING_FREEFORM;
+import static eki.ekilex.data.db.main.Tables.MEANING_IMAGE;
+import static eki.ekilex.data.db.main.Tables.MEANING_NOTE;
+import static eki.ekilex.data.db.main.Tables.MEANING_RELATION;
+import static eki.ekilex.data.db.main.Tables.MEANING_SEMANTIC_TYPE;
+import static eki.ekilex.data.db.main.Tables.MEANING_TAG;
+import static eki.ekilex.data.db.main.Tables.PARADIGM;
+import static eki.ekilex.data.db.main.Tables.USAGE;
+import static eki.ekilex.data.db.main.Tables.USAGE_DEFINITION;
+import static eki.ekilex.data.db.main.Tables.USAGE_TRANSLATION;
+import static eki.ekilex.data.db.main.Tables.WORD;
+import static eki.ekilex.data.db.main.Tables.WORD_ETYMOLOGY;
+import static eki.ekilex.data.db.main.Tables.WORD_FORUM;
+import static eki.ekilex.data.db.main.Tables.WORD_FREEFORM;
+import static eki.ekilex.data.db.main.Tables.WORD_GROUP;
+import static eki.ekilex.data.db.main.Tables.WORD_GROUP_MEMBER;
+import static eki.ekilex.data.db.main.Tables.WORD_RELATION;
+import static eki.ekilex.data.db.main.Tables.WORD_RELATION_PARAM;
+import static eki.ekilex.data.db.main.Tables.WORD_WORD_TYPE;
 
 import java.math.BigDecimal;
 import java.sql.Timestamp;
@@ -55,7 +55,7 @@ import org.springframework.stereotype.Component;
 
 import eki.common.constant.Complexity;
 import eki.ekilex.data.Classifier;
-import eki.ekilex.data.FreeForm;
+import eki.ekilex.data.Freeform;
 import eki.ekilex.data.ListData;
 import eki.ekilex.data.MeaningImage;
 import eki.ekilex.data.Note;
@@ -64,34 +64,34 @@ import eki.ekilex.data.Usage;
 import eki.ekilex.data.UsageDefinition;
 import eki.ekilex.data.UsageTranslation;
 import eki.ekilex.data.WordLexemeMeaningIdTuple;
-import eki.ekilex.data.db.tables.LexRelation;
-import eki.ekilex.data.db.tables.Lexeme;
-import eki.ekilex.data.db.tables.LexemeTag;
-import eki.ekilex.data.db.tables.Word;
-import eki.ekilex.data.db.tables.WordWordType;
-import eki.ekilex.data.db.tables.records.FreeformRecord;
-import eki.ekilex.data.db.tables.records.LexRelationRecord;
-import eki.ekilex.data.db.tables.records.LexemeFreeformRecord;
-import eki.ekilex.data.db.tables.records.LexemeTagRecord;
-import eki.ekilex.data.db.tables.records.MeaningForumRecord;
-import eki.ekilex.data.db.tables.records.MeaningFreeformRecord;
-import eki.ekilex.data.db.tables.records.MeaningRecord;
-import eki.ekilex.data.db.tables.records.MeaningRelationRecord;
-import eki.ekilex.data.db.tables.records.WordForumRecord;
-import eki.ekilex.data.db.tables.records.WordFreeformRecord;
-import eki.ekilex.data.db.tables.records.WordGroupMemberRecord;
-import eki.ekilex.data.db.tables.records.WordGroupRecord;
-import eki.ekilex.data.db.tables.records.WordRelationRecord;
+import eki.ekilex.data.db.main.tables.LexRelation;
+import eki.ekilex.data.db.main.tables.Lexeme;
+import eki.ekilex.data.db.main.tables.LexemeTag;
+import eki.ekilex.data.db.main.tables.Word;
+import eki.ekilex.data.db.main.tables.WordWordType;
+import eki.ekilex.data.db.main.tables.records.FreeformRecord;
+import eki.ekilex.data.db.main.tables.records.LexRelationRecord;
+import eki.ekilex.data.db.main.tables.records.LexemeFreeformRecord;
+import eki.ekilex.data.db.main.tables.records.LexemeTagRecord;
+import eki.ekilex.data.db.main.tables.records.MeaningForumRecord;
+import eki.ekilex.data.db.main.tables.records.MeaningFreeformRecord;
+import eki.ekilex.data.db.main.tables.records.MeaningRecord;
+import eki.ekilex.data.db.main.tables.records.MeaningRelationRecord;
+import eki.ekilex.data.db.main.tables.records.WordForumRecord;
+import eki.ekilex.data.db.main.tables.records.WordFreeformRecord;
+import eki.ekilex.data.db.main.tables.records.WordGroupMemberRecord;
+import eki.ekilex.data.db.main.tables.records.WordGroupRecord;
+import eki.ekilex.data.db.main.tables.records.WordRelationRecord;
 
 @Component
 public class CudDbService extends AbstractDataDbService {
 
-	public void updateFreeform(FreeForm freeform, String userName) {
+	public void updateFreeform(Freeform freeform, String userName) {
 
 		Timestamp timestamp = new Timestamp(System.currentTimeMillis());
 
 		Map<Field<?>, Object> fieldAndValueMap = new HashMap<>();
-		fieldAndValueMap.put(FREEFORM.VALUE_TEXT, freeform.getValueText());
+		fieldAndValueMap.put(FREEFORM.VALUE, freeform.getValue());
 		fieldAndValueMap.put(FREEFORM.VALUE_PRESE, freeform.getValuePrese());
 		fieldAndValueMap.put(FREEFORM.MODIFIED_BY, userName);
 		fieldAndValueMap.put(FREEFORM.MODIFIED_ON, timestamp);
@@ -103,7 +103,7 @@ public class CudDbService extends AbstractDataDbService {
 			fieldAndValueMap.put(FREEFORM.COMPLEXITY, freeform.getComplexity().name());
 		}
 
-		create
+		mainDb
 				.update(FREEFORM)
 				.set(fieldAndValueMap)
 				.where(FREEFORM.ID.eq(freeform.getId()))
@@ -125,7 +125,7 @@ public class CudDbService extends AbstractDataDbService {
 			fieldAndValueMap.put(USAGE.COMPLEXITY, usage.getComplexity().name());
 		}
 
-		create
+		mainDb
 				.update(USAGE)
 				.set(fieldAndValueMap)
 				.where(USAGE.ID.eq(usage.getId()))
@@ -143,7 +143,7 @@ public class CudDbService extends AbstractDataDbService {
 			fieldAndValueMap.put(USAGE_TRANSLATION.LANG, usageTranslation.getLang());
 		}
 
-		create
+		mainDb
 				.update(USAGE_TRANSLATION)
 				.set(fieldAndValueMap)
 				.where(USAGE_TRANSLATION.ID.eq(usageTranslation.getId()))
@@ -161,7 +161,7 @@ public class CudDbService extends AbstractDataDbService {
 			fieldAndValueMap.put(USAGE_DEFINITION.LANG, usageDefinition.getLang());
 		}
 
-		create
+		mainDb
 				.update(USAGE_DEFINITION)
 				.set(fieldAndValueMap)
 				.where(USAGE_DEFINITION.ID.eq(usageDefinition.getId()))
@@ -182,7 +182,7 @@ public class CudDbService extends AbstractDataDbService {
 			fieldAndValueMap.put(DEFINITION.IS_PUBLIC, isPublic);
 		}
 
-		create
+		mainDb
 				.update(DEFINITION)
 				.set(fieldAndValueMap)
 				.where(DEFINITION.ID.eq(id))
@@ -190,7 +190,7 @@ public class CudDbService extends AbstractDataDbService {
 	}
 
 	public void updateDefinitionValue(Long id, String value, String valuePrese) {
-		create
+		mainDb
 				.update(DEFINITION)
 				.set(DEFINITION.VALUE, value)
 				.set(DEFINITION.VALUE_PRESE, valuePrese)
@@ -199,7 +199,7 @@ public class CudDbService extends AbstractDataDbService {
 	}
 
 	public void updateDefinitionOrderby(ListData item) {
-		create
+		mainDb
 				.update(DEFINITION)
 				.set(DEFINITION.ORDER_BY, item.getOrderby())
 				.where(DEFINITION.ID.eq(item.getId()))
@@ -221,7 +221,7 @@ public class CudDbService extends AbstractDataDbService {
 			fieldAndValueMap.put(DEFINITION_NOTE.COMPLEXITY, note.getComplexity().name());
 		}
 
-		create
+		mainDb
 				.update(DEFINITION_NOTE)
 				.set(fieldAndValueMap)
 				.where(DEFINITION_NOTE.ID.eq(definitionNoteId))
@@ -229,7 +229,7 @@ public class CudDbService extends AbstractDataDbService {
 	}
 
 	public void updateDefinitionNoteOrderby(ListData item) {
-		create
+		mainDb
 				.update(DEFINITION_NOTE)
 				.set(DEFINITION_NOTE.ORDER_BY, item.getOrderby())
 				.where(DEFINITION_NOTE.ID.eq(item.getId()))
@@ -237,7 +237,7 @@ public class CudDbService extends AbstractDataDbService {
 	}
 
 	public void updateMeaningNoteOrderby(ListData item) {
-		create
+		mainDb
 				.update(MEANING_NOTE)
 				.set(MEANING_NOTE.ORDER_BY, item.getOrderby())
 				.where(MEANING_NOTE.ID.eq(item.getId()))
@@ -245,7 +245,7 @@ public class CudDbService extends AbstractDataDbService {
 	}
 
 	public void updateLexemeNoteOrderby(ListData item) {
-		create
+		mainDb
 				.update(LEXEME_NOTE)
 				.set(LEXEME_NOTE.ORDER_BY, item.getOrderby())
 				.where(LEXEME_NOTE.ID.eq(item.getId()))
@@ -253,7 +253,7 @@ public class CudDbService extends AbstractDataDbService {
 	}
 
 	public void updateLexemeRelationOrderby(ListData item) {
-		create
+		mainDb
 				.update(LEX_RELATION)
 				.set(LEX_RELATION.ORDER_BY, item.getOrderby())
 				.where(LEX_RELATION.ID.eq(item.getId()))
@@ -261,7 +261,7 @@ public class CudDbService extends AbstractDataDbService {
 	}
 
 	public void updateMeaningRelationOrderby(ListData item) {
-		create
+		mainDb
 				.update(MEANING_RELATION)
 				.set(MEANING_RELATION.ORDER_BY, item.getOrderby())
 				.where(MEANING_RELATION.ID.eq(item.getId()))
@@ -269,7 +269,7 @@ public class CudDbService extends AbstractDataDbService {
 	}
 
 	public void updateWordRelationOrderby(ListData item) {
-		create
+		mainDb
 				.update(WORD_RELATION)
 				.set(WORD_RELATION.ORDER_BY, item.getOrderby())
 				.where(WORD_RELATION.ID.eq(item.getId()))
@@ -277,7 +277,7 @@ public class CudDbService extends AbstractDataDbService {
 	}
 
 	public void updateWordEtymologyOrderby(ListData item) {
-		create
+		mainDb
 				.update(WORD_ETYMOLOGY)
 				.set(WORD_ETYMOLOGY.ORDER_BY, item.getOrderby())
 				.where(WORD_ETYMOLOGY.ID.eq(item.getId()))
@@ -285,7 +285,7 @@ public class CudDbService extends AbstractDataDbService {
 	}
 
 	public void updateLexemeOrderby(ListData item) {
-		create
+		mainDb
 				.update(LEXEME)
 				.set(LEXEME.ORDER_BY, item.getOrderby())
 				.where(LEXEME.ID.eq(item.getId()))
@@ -293,7 +293,7 @@ public class CudDbService extends AbstractDataDbService {
 	}
 
 	public void updateUsageOrderby(ListData item) {
-		create
+		mainDb
 				.update(USAGE)
 				.set(USAGE.ORDER_BY, item.getOrderby())
 				.where(USAGE.ID.eq(item.getId()))
@@ -301,7 +301,7 @@ public class CudDbService extends AbstractDataDbService {
 	}
 
 	public void updateMeaningDomainOrderby(ListData item) {
-		create
+		mainDb
 				.update(MEANING_DOMAIN)
 				.set(MEANING_DOMAIN.ORDER_BY, item.getOrderby())
 				.where(MEANING_DOMAIN.ID.eq(item.getId()))
@@ -309,7 +309,7 @@ public class CudDbService extends AbstractDataDbService {
 	}
 
 	public void updateFreeformOrderby(ListData item) {
-		create
+		mainDb
 				.update(FREEFORM)
 				.set(FREEFORM.ORDER_BY, item.getOrderby())
 				.where(FREEFORM.ID.eq(item.getId()))
@@ -317,7 +317,7 @@ public class CudDbService extends AbstractDataDbService {
 	}
 
 	public void updateMeaningRelationWeight(Long meaningRelationId, BigDecimal relationWeight) {
-		create
+		mainDb
 				.update(MEANING_RELATION)
 				.set(MEANING_RELATION.WEIGHT, relationWeight)
 				.where(MEANING_RELATION.ID.eq(meaningRelationId))
@@ -339,7 +339,7 @@ public class CudDbService extends AbstractDataDbService {
 			fieldAndValueMap.put(LEXEME_NOTE.COMPLEXITY, note.getComplexity().name());
 		}
 
-		create
+		mainDb
 				.update(LEXEME_NOTE)
 				.set(fieldAndValueMap)
 				.where(LEXEME_NOTE.ID.eq(lexemeNoteId))
@@ -347,7 +347,7 @@ public class CudDbService extends AbstractDataDbService {
 	}
 
 	public void updateLexemeReliability(Long lexemeId, Integer reliability) {
-		create
+		mainDb
 				.update(LEXEME)
 				.set(LEXEME.RELIABILITY, reliability)
 				.where(LEXEME.ID.eq(lexemeId))
@@ -355,7 +355,7 @@ public class CudDbService extends AbstractDataDbService {
 	}
 
 	public void updateLexemeWeight(Long lexemeId, BigDecimal lexemeWeight) {
-		create
+		mainDb
 				.update(LEXEME)
 				.set(LEXEME.WEIGHT, lexemeWeight)
 				.where(LEXEME.ID.eq(lexemeId))
@@ -363,7 +363,7 @@ public class CudDbService extends AbstractDataDbService {
 	}
 
 	public void updateLexemeLevels(Long lexemeId, Integer level1, Integer level2) {
-		create
+		mainDb
 				.update(LEXEME)
 				.set(LEXEME.LEVEL1, level1)
 				.set(LEXEME.LEVEL2, level2)
@@ -372,7 +372,7 @@ public class CudDbService extends AbstractDataDbService {
 	}
 
 	public void updateLexemeLevel1(Long lexemeId, Integer level1) {
-		create
+		mainDb
 				.update(LEXEME)
 				.set(LEXEME.LEVEL1, level1)
 				.where(LEXEME.ID.eq(lexemeId))
@@ -380,7 +380,7 @@ public class CudDbService extends AbstractDataDbService {
 	}
 
 	public void updateLexemeLevel2(Long lexemeId, Integer level2) {
-		create
+		mainDb
 				.update(LEXEME)
 				.set(LEXEME.LEVEL2, level2)
 				.where(LEXEME.ID.eq(lexemeId))
@@ -388,7 +388,7 @@ public class CudDbService extends AbstractDataDbService {
 	}
 
 	public void updateLexemePublicity(Long lexemeId, boolean isPublic) {
-		create
+		mainDb
 				.update(LEXEME)
 				.set(LEXEME.IS_PUBLIC, isPublic)
 				.where(LEXEME.ID.eq(lexemeId))
@@ -396,7 +396,7 @@ public class CudDbService extends AbstractDataDbService {
 	}
 
 	public void updateLexemeValueState(Long lexemeId, String valueStateCode) {
-		create
+		mainDb
 				.update(LEXEME)
 				.set(LEXEME.VALUE_STATE_CODE, valueStateCode)
 				.where(LEXEME.ID.eq(lexemeId))
@@ -404,7 +404,7 @@ public class CudDbService extends AbstractDataDbService {
 	}
 
 	public void updateLexemeProficiencyLevel(Long lexemeId, String proficiencyLevelCode) {
-		create
+		mainDb
 				.update(LEXEME)
 				.set(LEXEME.PROFICIENCY_LEVEL_CODE, proficiencyLevelCode)
 				.where(LEXEME.ID.eq(lexemeId))
@@ -412,7 +412,7 @@ public class CudDbService extends AbstractDataDbService {
 	}
 
 	public void updateLexemeComplexity(Long lexemeId, String complexity) {
-		create
+		mainDb
 				.update(LEXEME)
 				.set(LEXEME.COMPLEXITY, complexity)
 				.where(LEXEME.ID.eq(lexemeId))
@@ -420,7 +420,7 @@ public class CudDbService extends AbstractDataDbService {
 	}
 
 	public Long updateLexemePos(Long lexemeId, String currentPos, String newPos) {
-		Long lexemePosId = create
+		Long lexemePosId = mainDb
 				.update(LEXEME_POS)
 				.set(LEXEME_POS.POS_CODE, newPos)
 				.where(LEXEME_POS.LEXEME_ID.eq(lexemeId).and(LEXEME_POS.POS_CODE.eq(currentPos)))
@@ -431,7 +431,7 @@ public class CudDbService extends AbstractDataDbService {
 	}
 
 	public Long updateLexemeDeriv(Long lexemeId, String currentDeriv, String newDeriv) {
-		Long lexemeDerivId = create
+		Long lexemeDerivId = mainDb
 				.update(LEXEME_DERIV)
 				.set(LEXEME_DERIV.DERIV_CODE, newDeriv)
 				.where(LEXEME_DERIV.LEXEME_ID.eq(lexemeId).and(LEXEME_DERIV.DERIV_CODE.eq(currentDeriv)))
@@ -442,7 +442,7 @@ public class CudDbService extends AbstractDataDbService {
 	}
 
 	public Long updateLexemeRegister(Long lexemeId, String currentRegister, String newRegister) {
-		Long lexemeRegisterId = create
+		Long lexemeRegisterId = mainDb
 				.update(LEXEME_REGISTER)
 				.set(LEXEME_REGISTER.REGISTER_CODE, newRegister)
 				.where(LEXEME_REGISTER.LEXEME_ID.eq(lexemeId).and(LEXEME_REGISTER.REGISTER_CODE.eq(currentRegister)))
@@ -453,7 +453,7 @@ public class CudDbService extends AbstractDataDbService {
 	}
 
 	public Long updateLexemeRegion(Long lexemeId, String currentRegion, String newRegion) {
-		Long lexemeRegionId = create
+		Long lexemeRegionId = mainDb
 				.update(LEXEME_REGION)
 				.set(LEXEME_REGION.REGION_CODE, newRegion)
 				.where(LEXEME_REGION.LEXEME_ID.eq(lexemeId).and(LEXEME_REGION.REGION_CODE.eq(currentRegion)))
@@ -464,7 +464,7 @@ public class CudDbService extends AbstractDataDbService {
 	}
 
 	public void updateWordValue(Long wordId, String value, String valuePrese) {
-		create
+		mainDb
 				.update(WORD)
 				.set(WORD.VALUE, value)
 				.set(WORD.VALUE_PRESE, valuePrese)
@@ -473,7 +473,7 @@ public class CudDbService extends AbstractDataDbService {
 	}
 
 	public void updateWordValuePrese(Long wordId, String valuePrese) {
-		create
+		mainDb
 				.update(WORD)
 				.set(WORD.VALUE_PRESE, valuePrese)
 				.where(WORD.ID.eq(wordId))
@@ -481,7 +481,7 @@ public class CudDbService extends AbstractDataDbService {
 	}
 
 	public void updateWordLang(Long wordId, String langCode) {
-		create
+		mainDb
 				.update(WORD)
 				.set(WORD.LANG, langCode)
 				.where(WORD.ID.eq(wordId))
@@ -489,7 +489,7 @@ public class CudDbService extends AbstractDataDbService {
 	}
 
 	public void updateWordValueAndLang(Long wordId, String value, String valuePrese, String lang) {
-		create
+		mainDb
 				.update(WORD)
 				.set(WORD.VALUE, value)
 				.set(WORD.VALUE_PRESE, valuePrese)
@@ -499,7 +499,7 @@ public class CudDbService extends AbstractDataDbService {
 	}
 
 	public void updateWordValueAndAsWordAndLang(Long wordId, String value, String valuePrese, String valueAsWord, String lang) {
-		create
+		mainDb
 				.update(WORD)
 				.set(WORD.VALUE, value)
 				.set(WORD.VALUE_PRESE, valuePrese)
@@ -510,7 +510,7 @@ public class CudDbService extends AbstractDataDbService {
 	}
 
 	public void updateAsWordValue(Long wordId, String valueAsWord) {
-		create
+		mainDb
 				.update(WORD)
 				.set(WORD.VALUE_AS_WORD, valueAsWord)
 				.where(WORD.ID.eq(wordId))
@@ -518,7 +518,7 @@ public class CudDbService extends AbstractDataDbService {
 	}
 
 	public void updateWordVocalForm(Long wordId, String vocalForm) {
-		create
+		mainDb
 				.update(WORD)
 				.set(WORD.VOCAL_FORM, vocalForm)
 				.where(WORD.ID.eq(wordId))
@@ -526,7 +526,7 @@ public class CudDbService extends AbstractDataDbService {
 	}
 
 	public void updateWordMorphophonoForm(Long wordId, String morphophonoForm) {
-		create
+		mainDb
 				.update(WORD)
 				.set(WORD.MORPHOPHONO_FORM, morphophonoForm)
 				.where(WORD.ID.eq(wordId))
@@ -534,7 +534,7 @@ public class CudDbService extends AbstractDataDbService {
 	}
 
 	public void updateWordGender(Long wordId, String genderCode) {
-		create
+		mainDb
 				.update(WORD)
 				.set(WORD.GENDER_CODE, genderCode)
 				.where(WORD.ID.eq(wordId))
@@ -542,7 +542,7 @@ public class CudDbService extends AbstractDataDbService {
 	}
 
 	public Long updateWordType(Long wordId, String currentTypeCode, String newTypeCode) {
-		Long wordWordTypeId = create
+		Long wordWordTypeId = mainDb
 				.update(WORD_WORD_TYPE)
 				.set(WORD_WORD_TYPE.WORD_TYPE_CODE, newTypeCode)
 				.where(WORD_WORD_TYPE.WORD_ID.eq(wordId).and(WORD_WORD_TYPE.WORD_TYPE_CODE.eq(currentTypeCode)))
@@ -553,7 +553,7 @@ public class CudDbService extends AbstractDataDbService {
 	}
 
 	public void updateWordAspect(Long wordId, String aspectCode) {
-		create
+		mainDb
 				.update(WORD)
 				.set(WORD.ASPECT_CODE, aspectCode)
 				.where(WORD.ID.eq(wordId))
@@ -561,7 +561,7 @@ public class CudDbService extends AbstractDataDbService {
 	}
 
 	public void updateWordDisplayMorph(Long wordId, String displayMorphCode) {
-		create
+		mainDb
 				.update(WORD)
 				.set(WORD.DISPLAY_MORPH_CODE, displayMorphCode)
 				.where(WORD.ID.eq(wordId))
@@ -569,7 +569,7 @@ public class CudDbService extends AbstractDataDbService {
 	}
 
 	public void updateWordMorphComment(Long wordId, String value) {
-		create
+		mainDb
 				.update(WORD)
 				.set(WORD.MORPH_COMMENT, value)
 				.where(WORD.ID.eq(wordId))
@@ -591,7 +591,7 @@ public class CudDbService extends AbstractDataDbService {
 			fieldAndValueMap.put(MEANING_NOTE.COMPLEXITY, note.getComplexity().name());
 		}
 
-		create
+		mainDb
 				.update(MEANING_NOTE)
 				.set(fieldAndValueMap)
 				.where(MEANING_NOTE.ID.eq(meaningNoteId))
@@ -610,7 +610,7 @@ public class CudDbService extends AbstractDataDbService {
 			fieldAndValueMap.put(MEANING_IMAGE.COMPLEXITY, meaningImage.getComplexity().name());
 		}
 
-		create
+		mainDb
 				.update(MEANING_IMAGE)
 				.set(fieldAndValueMap)
 				.where(MEANING_IMAGE.ID.eq(meaningImageId))
@@ -618,7 +618,7 @@ public class CudDbService extends AbstractDataDbService {
 	}
 
 	public Long updateMeaningDomain(Long meaningId, Classifier currentDomain, Classifier newDomain) {
-		Long meaningDomainId = create
+		Long meaningDomainId = mainDb
 				.update(MEANING_DOMAIN)
 				.set(MEANING_DOMAIN.DOMAIN_CODE, newDomain.getCode())
 				.set(MEANING_DOMAIN.DOMAIN_ORIGIN, newDomain.getOrigin())
@@ -633,7 +633,7 @@ public class CudDbService extends AbstractDataDbService {
 	}
 
 	public Long updateMeaningSemanticType(Long meaningId, String currentSemanticType, String newSemanticType) {
-		Long meaningSemanticTypeId = create
+		Long meaningSemanticTypeId = mainDb
 				.update(MEANING_SEMANTIC_TYPE)
 				.set(MEANING_SEMANTIC_TYPE.SEMANTIC_TYPE_CODE, newSemanticType)
 				.where(MEANING_SEMANTIC_TYPE.MEANING_ID.eq(meaningId).and(MEANING_SEMANTIC_TYPE.SEMANTIC_TYPE_CODE.eq(currentSemanticType)))
@@ -644,7 +644,7 @@ public class CudDbService extends AbstractDataDbService {
 	}
 
 	public void updateWordRelationOrderBy(Long relationId, Long orderBy) {
-		create
+		mainDb
 				.update(WORD_RELATION)
 				.set(WORD_RELATION.ORDER_BY, orderBy)
 				.where(WORD_RELATION.ID.eq(relationId))
@@ -652,7 +652,7 @@ public class CudDbService extends AbstractDataDbService {
 	}
 
 	public void updateMeaningLexemesPublicity(Long meaningId, String datasetCode, boolean isPublic) {
-		create
+		mainDb
 				.update(LEXEME)
 				.set(LEXEME.IS_PUBLIC, isPublic)
 				.where(
@@ -666,7 +666,7 @@ public class CudDbService extends AbstractDataDbService {
 
 		Timestamp timestamp = new Timestamp(System.currentTimeMillis());
 
-		create
+		mainDb
 				.update(MEANING_FORUM)
 				.set(MEANING_FORUM.VALUE, value)
 				.set(MEANING_FORUM.VALUE_PRESE, valuePrese)
@@ -677,7 +677,7 @@ public class CudDbService extends AbstractDataDbService {
 	}
 
 	public void updateWordLexemesPublicity(Long wordId, String datasetCode, boolean isPublic) {
-		create
+		mainDb
 				.update(LEXEME)
 				.set(LEXEME.IS_PUBLIC, isPublic)
 				.where(
@@ -688,7 +688,7 @@ public class CudDbService extends AbstractDataDbService {
 	}
 
 	public void updateWordLexemesWordId(Long currentWordId, Long newWordId, String datasetCode) {
-		create
+		mainDb
 				.update(LEXEME)
 				.set(LEXEME.WORD_ID, newWordId)
 				.where(
@@ -701,7 +701,7 @@ public class CudDbService extends AbstractDataDbService {
 
 		Timestamp timestamp = new Timestamp(System.currentTimeMillis());
 
-		create
+		mainDb
 				.update(WORD_FORUM)
 				.set(WORD_FORUM.VALUE, value)
 				.set(WORD_FORUM.VALUE_PRESE, valuePrese)
@@ -753,7 +753,7 @@ public class CudDbService extends AbstractDataDbService {
 										.where(l.WORD_ID.eq(w.ID))))
 				.asTable("w");
 
-		Result<Record2<Long, Integer>> homonyms = create
+		Result<Record2<Long, Integer>> homonyms = mainDb
 				.select(
 						ww.field("id", Long.class),
 						ww.field("homonym_nr", Integer.class))
@@ -771,7 +771,7 @@ public class CudDbService extends AbstractDataDbService {
 				Long adjWordId = homonym.get("id", Long.class);
 				Integer adjHomonymNr = homonym.get("homonym_nr", Integer.class);
 				if (adjHomonymNr != homonymNrIter) {
-					create.update(WORD).set(WORD.HOMONYM_NR, homonymNrIter).where(WORD.ID.eq(adjWordId)).execute();
+					mainDb.update(WORD).set(WORD.HOMONYM_NR, homonymNrIter).where(WORD.ID.eq(adjWordId)).execute();
 				}
 				homonymNrIter++;
 			}
@@ -791,7 +791,7 @@ public class CudDbService extends AbstractDataDbService {
 		int homonymNr = 0;
 		boolean isPublic = false;
 
-		Long wordId = create
+		Long wordId = mainDb
 				.insertInto(
 						WORD,
 						WORD.VALUE,
@@ -800,8 +800,6 @@ public class CudDbService extends AbstractDataDbService {
 						WORD.MORPHOPHONO_FORM,
 						WORD.HOMONYM_NR,
 						WORD.LANG,
-						WORD.IS_WORD,
-						WORD.IS_COLLOCATION,
 						WORD.IS_PUBLIC)
 				.values(
 						value,
@@ -810,23 +808,20 @@ public class CudDbService extends AbstractDataDbService {
 						morphophonoForm,
 						homonymNr,
 						lang,
-						Boolean.TRUE,
-						Boolean.FALSE,
 						isPublic)
 				.returning(WORD.ID)
 				.fetchOne()
 				.getId();
 
-		Long meaningId = create.insertInto(MEANING).defaultValues().returning(MEANING.ID).fetchOne().getId();
-
-		Long lexemeId = create
-				.insertInto(
-						LEXEME, LEXEME.MEANING_ID, LEXEME.WORD_ID, LEXEME.DATASET_CODE,
-						LEXEME.LEVEL1, LEXEME.LEVEL2, LEXEME.IS_PUBLIC, LEXEME.COMPLEXITY)
-				.values(meaningId, wordId, datasetCode, 1, 1, isPublic, COMPLEXITY_DETAIL)
-				.returning(LEXEME.ID)
+		Long meaningId = mainDb
+				.insertInto(MEANING)
+				.defaultValues()
+				.returning(MEANING.ID)
 				.fetchOne()
 				.getId();
+
+		Long lexemeId = createLexeme(meaningId, wordId, datasetCode, 1, null, isPublic);
+		;
 
 		wordLexemeMeaningId.setWordId(wordId);
 		wordLexemeMeaningId.setLexemeId(lexemeId);
@@ -848,7 +843,7 @@ public class CudDbService extends AbstractDataDbService {
 		WordLexemeMeaningIdTuple wordLexemeMeaningId = new WordLexemeMeaningIdTuple();
 		int homonymNr = getWordNextHomonymNr(value, lang);
 
-		Long wordId = create
+		Long wordId = mainDb
 				.insertInto(
 						WORD,
 						WORD.VALUE,
@@ -856,34 +851,28 @@ public class CudDbService extends AbstractDataDbService {
 						WORD.VALUE_AS_WORD,
 						WORD.MORPHOPHONO_FORM,
 						WORD.HOMONYM_NR,
-						WORD.LANG,
-						WORD.IS_WORD,
-						WORD.IS_COLLOCATION)
+						WORD.LANG)
 				.values(
 						value,
 						valuePrese,
 						valueAsWord,
 						morphophonoForm,
 						homonymNr,
-						lang,
-						Boolean.TRUE,
-						Boolean.FALSE)
+						lang)
 				.returning(WORD.ID)
 				.fetchOne()
 				.getId();
 
 		if (meaningId == null) {
-			meaningId = create.insertInto(MEANING).defaultValues().returning(MEANING.ID).fetchOne().getId();
+			meaningId = mainDb
+					.insertInto(MEANING)
+					.defaultValues()
+					.returning(MEANING.ID)
+					.fetchOne()
+					.getId();
 		}
 
-		Long lexemeId = create
-				.insertInto(
-						LEXEME, LEXEME.MEANING_ID, LEXEME.WORD_ID, LEXEME.DATASET_CODE,
-						LEXEME.LEVEL1, LEXEME.LEVEL2, LEXEME.IS_PUBLIC, LEXEME.COMPLEXITY)
-				.values(meaningId, wordId, datasetCode, 1, 1, isPublic, COMPLEXITY_DETAIL)
-				.returning(LEXEME.ID)
-				.fetchOne()
-				.getId();
+		Long lexemeId = createLexeme(meaningId, wordId, datasetCode, 1, null, isPublic);
 
 		wordLexemeMeaningId.setWordId(wordId);
 		wordLexemeMeaningId.setLexemeId(lexemeId);
@@ -894,7 +883,7 @@ public class CudDbService extends AbstractDataDbService {
 
 	public Long createWord(String wordValue, String valuePrese, String valueAsWord, String lang, int homNr) {
 
-		Long wordId = create
+		Long wordId = mainDb
 				.insertInto(
 						WORD,
 						WORD.VALUE,
@@ -902,29 +891,25 @@ public class CudDbService extends AbstractDataDbService {
 						WORD.VALUE_AS_WORD,
 						WORD.MORPHOPHONO_FORM,
 						WORD.HOMONYM_NR,
-						WORD.LANG,
-						WORD.IS_WORD,
-						WORD.IS_COLLOCATION)
+						WORD.LANG)
 				.values(
 						wordValue,
 						valuePrese,
 						valueAsWord,
 						wordValue,
 						homNr,
-						lang,
-						Boolean.TRUE,
-						Boolean.FALSE)
+						lang)
 				.returning(WORD.ID)
 				.fetchOne()
 				.getId();
 		return wordId;
 	}
 
-	public Long createWordFreeform(Long wordId, FreeForm freeform, String userName) {
+	public Long createWordFreeform(Long wordId, Freeform freeform, String userName) {
 
 		Long freeformId = createFreeform(freeform, userName);
 
-		WordFreeformRecord wordFreeform = create.newRecord(WORD_FREEFORM);
+		WordFreeformRecord wordFreeform = mainDb.newRecord(WORD_FREEFORM);
 		wordFreeform.setWordId(wordId);
 		wordFreeform.setFreeformId(freeformId);
 		wordFreeform.store();
@@ -936,7 +921,7 @@ public class CudDbService extends AbstractDataDbService {
 
 		Timestamp timestamp = new Timestamp(System.currentTimeMillis());
 
-		WordForumRecord wordForumRecord = create.newRecord(WORD_FORUM);
+		WordForumRecord wordForumRecord = mainDb.newRecord(WORD_FORUM);
 		wordForumRecord.setWordId(wordId);
 		wordForumRecord.setValue(value);
 		wordForumRecord.setValuePrese(valuePrese);
@@ -949,7 +934,7 @@ public class CudDbService extends AbstractDataDbService {
 	}
 
 	public Long createWordType(Long wordId, String typeCode) {
-		Long wordWordTypeId = create
+		Long wordWordTypeId = mainDb
 				.select(WORD_WORD_TYPE.ID)
 				.from(WORD_WORD_TYPE)
 				.where(WORD_WORD_TYPE.WORD_ID.eq(wordId)
@@ -957,7 +942,7 @@ public class CudDbService extends AbstractDataDbService {
 				.limit(1)
 				.fetchOneInto(Long.class);
 		if (wordWordTypeId == null) {
-			wordWordTypeId = create
+			wordWordTypeId = mainDb
 					.insertInto(WORD_WORD_TYPE, WORD_WORD_TYPE.WORD_ID, WORD_WORD_TYPE.WORD_TYPE_CODE)
 					.values(wordId, typeCode)
 					.returning(WORD_WORD_TYPE.ID)
@@ -969,7 +954,7 @@ public class CudDbService extends AbstractDataDbService {
 
 	public Long createWordRelation(Long wordId, Long targetWordId, String wordRelationCode, String relationStatus) {
 
-		Long wordRelationId = create
+		Long wordRelationId = mainDb
 				.select(WORD_RELATION.ID)
 				.from(WORD_RELATION)
 				.where(
@@ -979,7 +964,7 @@ public class CudDbService extends AbstractDataDbService {
 				.limit(1)
 				.fetchOneInto(Long.class);
 		if (wordRelationId == null) {
-			WordRelationRecord newRelation = create.newRecord(WORD_RELATION);
+			WordRelationRecord newRelation = mainDb.newRecord(WORD_RELATION);
 			newRelation.setWord1Id(wordId);
 			newRelation.setWord2Id(targetWordId);
 			newRelation.setWordRelTypeCode(wordRelationCode);
@@ -991,14 +976,14 @@ public class CudDbService extends AbstractDataDbService {
 	}
 
 	public Long createWordRelationGroup(String groupType) {
-		WordGroupRecord wordGroupRecord = create.newRecord(WORD_GROUP);
+		WordGroupRecord wordGroupRecord = mainDb.newRecord(WORD_GROUP);
 		wordGroupRecord.setWordRelTypeCode(groupType);
 		wordGroupRecord.store();
 		return wordGroupRecord.getId();
 	}
 
 	public Long createWordRelationGroupMember(Long groupId, Long wordId) {
-		WordGroupMemberRecord wordGroupMember = create.newRecord(WORD_GROUP_MEMBER);
+		WordGroupMemberRecord wordGroupMember = mainDb.newRecord(WORD_GROUP_MEMBER);
 		wordGroupMember.setWordGroupId(groupId);
 		wordGroupMember.setWordId(wordId);
 		wordGroupMember.store();
@@ -1007,7 +992,7 @@ public class CudDbService extends AbstractDataDbService {
 
 	public void createWordRelationParam(Long wordRelationId, String paramName, BigDecimal paramValue) {
 
-		create
+		mainDb
 				.insertInto(WORD_RELATION_PARAM, WORD_RELATION_PARAM.WORD_RELATION_ID, WORD_RELATION_PARAM.NAME, WORD_RELATION_PARAM.VALUE)
 				.values(wordRelationId, paramName, paramValue)
 				.execute();
@@ -1018,7 +1003,7 @@ public class CudDbService extends AbstractDataDbService {
 		Lexeme l = LEXEME.as("l");
 		LexemeTag lt = LEXEME_TAG.as("lt");
 
-		List<Long> lexemeIds = create
+		List<Long> lexemeIds = mainDb
 				.insertInto(LEXEME_TAG, LEXEME_TAG.TAG_NAME, LEXEME_TAG.LEXEME_ID)
 				.select(DSL
 						.select(DSL.val(tagName), l.ID)
@@ -1042,7 +1027,7 @@ public class CudDbService extends AbstractDataDbService {
 		Lexeme l = LEXEME.as("l");
 		LexemeTag lt = LEXEME_TAG.as("lt");
 
-		List<Long> lexemeIds = create
+		List<Long> lexemeIds = mainDb
 				.insertInto(LEXEME_TAG, LEXEME_TAG.TAG_NAME, LEXEME_TAG.LEXEME_ID)
 				.select(DSL
 						.select(DSL.val(tagName), l.ID)
@@ -1062,7 +1047,7 @@ public class CudDbService extends AbstractDataDbService {
 	}
 
 	public Long createDefinition(Long meaningId, String value, String valuePrese, String languageCode, String definitionTypeCode, Complexity complexity, boolean isPublic) {
-		return create
+		return mainDb
 				.insertInto(
 						DEFINITION,
 						DEFINITION.MEANING_ID,
@@ -1086,14 +1071,14 @@ public class CudDbService extends AbstractDataDbService {
 	}
 
 	public void createDefinitionDataset(Long definitionId, String datasetCode) {
-		create.insertInto(DEFINITION_DATASET, DEFINITION_DATASET.DEFINITION_ID, DEFINITION_DATASET.DATASET_CODE)
+		mainDb.insertInto(DEFINITION_DATASET, DEFINITION_DATASET.DEFINITION_ID, DEFINITION_DATASET.DATASET_CODE)
 				.values(definitionId, datasetCode)
 				.execute();
 	}
 
 	public Long createDefinitionNote(Long definitionId, Note note) {
 
-		return create
+		return mainDb
 				.insertInto(
 						DEFINITION_NOTE,
 						DEFINITION_NOTE.DEFINITION_ID,
@@ -1125,7 +1110,7 @@ public class CudDbService extends AbstractDataDbService {
 
 	public Long createLexemeRelation(Long lexemeId1, Long lexemeId2, String relationType) {
 		LexRelation lr = LEX_RELATION.as("lr");
-		LexRelationRecord lexRelationRecord = create
+		LexRelationRecord lexRelationRecord = mainDb
 				.insertInto(lr, lr.LEXEME1_ID, lr.LEXEME2_ID, lr.LEX_REL_TYPE_CODE)
 				.select(DSL
 						.select(DSL.val(lexemeId1), DSL.val(lexemeId2), DSL.val(relationType))
@@ -1140,7 +1125,7 @@ public class CudDbService extends AbstractDataDbService {
 	}
 
 	public Long createMeaning() {
-		MeaningRecord meaning = create.insertInto(MEANING).defaultValues().returning(MEANING.ID).fetchOne();
+		MeaningRecord meaning = mainDb.insertInto(MEANING).defaultValues().returning(MEANING.ID).fetchOne();
 		return meaning.getId();
 	}
 
@@ -1149,7 +1134,7 @@ public class CudDbService extends AbstractDataDbService {
 	}
 
 	public Long createMeaningRelation(Long meaningId1, Long meaningId2, String relationType, Float relationWeight) {
-		MeaningRelationRecord meaningRelation = create.newRecord(MEANING_RELATION);
+		MeaningRelationRecord meaningRelation = mainDb.newRecord(MEANING_RELATION);
 		meaningRelation.setMeaning1Id(meaningId1);
 		meaningRelation.setMeaning2Id(meaningId2);
 		meaningRelation.setMeaningRelTypeCode(relationType);
@@ -1162,7 +1147,7 @@ public class CudDbService extends AbstractDataDbService {
 
 	public Long createMeaningNote(Long meaningId, Note note) {
 
-		return create
+		return mainDb
 				.insertInto(
 						MEANING_NOTE,
 						MEANING_NOTE.MEANING_ID,
@@ -1193,7 +1178,7 @@ public class CudDbService extends AbstractDataDbService {
 
 	public Long createMeaningImage(Long meaningId, MeaningImage meaningImage) {
 
-		return create
+		return mainDb
 				.insertInto(
 						MEANING_IMAGE,
 						MEANING_IMAGE.MEANING_ID,
@@ -1220,11 +1205,11 @@ public class CudDbService extends AbstractDataDbService {
 				.getId();
 	}
 
-	public Long createMeaningFreeform(Long meaningId, FreeForm freeform, String userName) {
+	public Long createMeaningFreeform(Long meaningId, Freeform freeform, String userName) {
 
 		Long freeformId = createFreeform(freeform, userName);
 
-		MeaningFreeformRecord meaningFreeformRecord = create.newRecord(MEANING_FREEFORM);
+		MeaningFreeformRecord meaningFreeformRecord = mainDb.newRecord(MEANING_FREEFORM);
 		meaningFreeformRecord.setMeaningId(meaningId);
 		meaningFreeformRecord.setFreeformId(freeformId);
 		meaningFreeformRecord.store();
@@ -1236,7 +1221,7 @@ public class CudDbService extends AbstractDataDbService {
 
 		Timestamp timestamp = new Timestamp(System.currentTimeMillis());
 
-		MeaningForumRecord meaningForumRecord = create.newRecord(MEANING_FORUM);
+		MeaningForumRecord meaningForumRecord = mainDb.newRecord(MEANING_FORUM);
 		meaningForumRecord.setMeaningId(meaningId);
 		meaningForumRecord.setValue(value);
 		meaningForumRecord.setValuePrese(valuePrese);
@@ -1250,7 +1235,7 @@ public class CudDbService extends AbstractDataDbService {
 
 	public void createMeaningForum(Long meaningId, String value, Timestamp createdOn, String createdBy) {
 
-		MeaningForumRecord meaningForumRecord = create.newRecord(MEANING_FORUM);
+		MeaningForumRecord meaningForumRecord = mainDb.newRecord(MEANING_FORUM);
 		meaningForumRecord.setMeaningId(meaningId);
 		meaningForumRecord.setValue(value);
 		meaningForumRecord.setValuePrese(value);
@@ -1262,7 +1247,7 @@ public class CudDbService extends AbstractDataDbService {
 	}
 
 	public Long createMeaningDomain(Long meaningId, Classifier domain) {
-		Long meaningDomainId = create
+		Long meaningDomainId = mainDb
 				.select(MEANING_DOMAIN.ID).from(MEANING_DOMAIN)
 				.where(MEANING_DOMAIN.MEANING_ID.eq(meaningId)
 						.and(MEANING_DOMAIN.DOMAIN_CODE.eq(domain.getCode()))
@@ -1270,7 +1255,7 @@ public class CudDbService extends AbstractDataDbService {
 				.limit(1)
 				.fetchOneInto(Long.class);
 		if (meaningDomainId == null) {
-			meaningDomainId = create
+			meaningDomainId = mainDb
 					.insertInto(MEANING_DOMAIN, MEANING_DOMAIN.MEANING_ID, MEANING_DOMAIN.DOMAIN_ORIGIN, MEANING_DOMAIN.DOMAIN_CODE)
 					.values(meaningId, domain.getOrigin(), domain.getCode())
 					.returning(MEANING_DOMAIN.ID)
@@ -1281,14 +1266,14 @@ public class CudDbService extends AbstractDataDbService {
 	}
 
 	public Long createMeaningSemanticType(Long meaningId, String semanticTypeCode) {
-		Long meaningSemanticTypeCodeId = create
+		Long meaningSemanticTypeCodeId = mainDb
 				.select(MEANING_SEMANTIC_TYPE.ID).from(MEANING_SEMANTIC_TYPE)
 				.where(MEANING_SEMANTIC_TYPE.MEANING_ID.eq(meaningId)
 						.and(MEANING_SEMANTIC_TYPE.SEMANTIC_TYPE_CODE.eq(semanticTypeCode)))
 				.limit(1)
 				.fetchOneInto(Long.class);
 		if (meaningSemanticTypeCodeId == null) {
-			meaningSemanticTypeCodeId = create
+			meaningSemanticTypeCodeId = mainDb
 					.insertInto(MEANING_SEMANTIC_TYPE, MEANING_SEMANTIC_TYPE.MEANING_ID, MEANING_SEMANTIC_TYPE.SEMANTIC_TYPE_CODE)
 					.values(meaningId, semanticTypeCode)
 					.returning(MEANING_SEMANTIC_TYPE.ID)
@@ -1298,14 +1283,51 @@ public class CudDbService extends AbstractDataDbService {
 		return meaningSemanticTypeCodeId;
 	}
 
-	public WordLexemeMeaningIdTuple createLexeme(
+	private Long createLexeme(Long meaningId, Long wordId, String datasetCode, int lexemeLevel1, String valueStateCode, boolean isPublic) {
+
+		Long lexemeId = mainDb
+				.insertInto(
+						LEXEME,
+						LEXEME.MEANING_ID,
+						LEXEME.WORD_ID,
+						LEXEME.DATASET_CODE,
+						LEXEME.LEVEL1,
+						LEXEME.LEVEL2,
+						LEXEME.VALUE_STATE_CODE,
+						LEXEME.IS_WORD,
+						LEXEME.IS_COLLOCATION,
+						LEXEME.IS_PUBLIC,
+						LEXEME.COMPLEXITY)
+				.values(
+						meaningId,
+						wordId,
+						datasetCode,
+						lexemeLevel1,
+						1,
+						valueStateCode,
+						Boolean.TRUE,
+						Boolean.FALSE,
+						isPublic,
+						COMPLEXITY_DETAIL)
+				.returning(LEXEME.ID)
+				.fetchOne()
+				.getId();
+		return lexemeId;
+	}
+
+	public WordLexemeMeaningIdTuple createLexemeWithCreateOrSelectMeaning(
 			Long wordId, String datasetCode, Long meaningId, int lexemeLevel1, String valueStateCode, boolean isPublic) throws Exception {
 
 		WordLexemeMeaningIdTuple wordLexemeMeaningId = new WordLexemeMeaningIdTuple();
 		if (meaningId == null) {
-			meaningId = create.insertInto(MEANING).defaultValues().returning(MEANING.ID).fetchOne().getId();
+			meaningId = mainDb
+					.insertInto(MEANING)
+					.defaultValues()
+					.returning(MEANING.ID)
+					.fetchOne()
+					.getId();
 		} else {
-			Long existingLexemeId = create
+			Long existingLexemeId = mainDb
 					.select(LEXEME.ID)
 					.from(LEXEME)
 					.where(
@@ -1318,29 +1340,7 @@ public class CudDbService extends AbstractDataDbService {
 				return wordLexemeMeaningId;
 			}
 		}
-		Long lexemeId = create
-				.insertInto(
-						LEXEME,
-						LEXEME.MEANING_ID,
-						LEXEME.WORD_ID,
-						LEXEME.DATASET_CODE,
-						LEXEME.LEVEL1,
-						LEXEME.LEVEL2,
-						LEXEME.VALUE_STATE_CODE,
-						LEXEME.IS_PUBLIC,
-						LEXEME.COMPLEXITY)
-				.values(
-						meaningId,
-						wordId,
-						datasetCode,
-						lexemeLevel1,
-						1,
-						valueStateCode,
-						isPublic,
-						COMPLEXITY_DETAIL)
-				.returning(LEXEME.ID)
-				.fetchOne()
-				.getId();
+		Long lexemeId = createLexeme(meaningId, wordId, datasetCode, lexemeLevel1, valueStateCode, isPublic);
 
 		wordLexemeMeaningId.setWordId(wordId);
 		wordLexemeMeaningId.setLexemeId(lexemeId);
@@ -1351,7 +1351,7 @@ public class CudDbService extends AbstractDataDbService {
 
 	public Long createLexemeNote(Long lexemeId, Note note) {
 
-		return create
+		return mainDb
 				.insertInto(
 						LEXEME_NOTE,
 						LEXEME_NOTE.LEXEME_ID,
@@ -1380,11 +1380,11 @@ public class CudDbService extends AbstractDataDbService {
 				.getId();
 	}
 
-	public Long createLexemeFreeform(Long lexemeId, FreeForm freeform, String userName) {
+	public Long createLexemeFreeform(Long lexemeId, Freeform freeform, String userName) {
 
 		Long freeformId = createFreeform(freeform, userName);
 
-		LexemeFreeformRecord lexemeFreeformRecord = create.newRecord(LEXEME_FREEFORM);
+		LexemeFreeformRecord lexemeFreeformRecord = mainDb.newRecord(LEXEME_FREEFORM);
 		lexemeFreeformRecord.setLexemeId(lexemeId);
 		lexemeFreeformRecord.setFreeformId(freeformId);
 		lexemeFreeformRecord.store();
@@ -1393,14 +1393,14 @@ public class CudDbService extends AbstractDataDbService {
 	}
 
 	public Long createLexemePos(Long lexemeId, String posCode) {
-		Long lexemePosId = create
+		Long lexemePosId = mainDb
 				.select(LEXEME_POS.ID).from(LEXEME_POS)
 				.where(LEXEME_POS.LEXEME_ID.eq(lexemeId)
 						.and(LEXEME_POS.POS_CODE.eq(posCode)))
 				.limit(1)
 				.fetchOneInto(Long.class);
 		if (lexemePosId == null) {
-			lexemePosId = create
+			lexemePosId = mainDb
 					.insertInto(LEXEME_POS, LEXEME_POS.LEXEME_ID, LEXEME_POS.POS_CODE)
 					.values(lexemeId, posCode)
 					.returning(LEXEME_POS.ID)
@@ -1411,7 +1411,7 @@ public class CudDbService extends AbstractDataDbService {
 	}
 
 	public Long createLexemeTag(Long lexemeId, String tagName) {
-		Long lexemeTagId = create
+		Long lexemeTagId = mainDb
 				.select(LEXEME_TAG.ID)
 				.from(LEXEME_TAG)
 				.where(LEXEME_TAG.LEXEME_ID.eq(lexemeId)
@@ -1419,7 +1419,7 @@ public class CudDbService extends AbstractDataDbService {
 				.limit(1)
 				.fetchOneInto(Long.class);
 		if (lexemeTagId == null) {
-			lexemeTagId = create
+			lexemeTagId = mainDb
 					.insertInto(LEXEME_TAG, LEXEME_TAG.LEXEME_ID, LEXEME_TAG.TAG_NAME)
 					.values(lexemeId, tagName)
 					.returning(LEXEME_TAG.ID)
@@ -1430,7 +1430,7 @@ public class CudDbService extends AbstractDataDbService {
 	}
 
 	public Long createMeaningTag(Long meaningId, String tagName) {
-		Long meaningTagId = create
+		Long meaningTagId = mainDb
 				.select(MEANING_TAG.ID)
 				.from(MEANING_TAG)
 				.where(MEANING_TAG.MEANING_ID.eq(meaningId)
@@ -1438,7 +1438,7 @@ public class CudDbService extends AbstractDataDbService {
 				.limit(1)
 				.fetchOneInto(Long.class);
 		if (meaningTagId == null) {
-			meaningTagId = create
+			meaningTagId = mainDb
 					.insertInto(MEANING_TAG, MEANING_TAG.MEANING_ID, MEANING_TAG.TAG_NAME)
 					.values(meaningId, tagName)
 					.returning(MEANING_TAG.ID)
@@ -1449,14 +1449,14 @@ public class CudDbService extends AbstractDataDbService {
 	}
 
 	public Long createLexemeDeriv(Long lexemeId, String derivCode) {
-		Long lexemeDerivId = create
+		Long lexemeDerivId = mainDb
 				.select(LEXEME_DERIV.ID).from(LEXEME_DERIV)
 				.where(LEXEME_DERIV.LEXEME_ID.eq(lexemeId)
 						.and(LEXEME_DERIV.DERIV_CODE.eq(derivCode)))
 				.limit(1)
 				.fetchOneInto(Long.class);
 		if (lexemeDerivId == null) {
-			lexemeDerivId = create
+			lexemeDerivId = mainDb
 					.insertInto(LEXEME_DERIV, LEXEME_DERIV.LEXEME_ID, LEXEME_DERIV.DERIV_CODE)
 					.values(lexemeId, derivCode)
 					.returning(LEXEME_DERIV.ID)
@@ -1467,14 +1467,14 @@ public class CudDbService extends AbstractDataDbService {
 	}
 
 	public Long createLexemeRegister(Long lexemeId, String registerCode) {
-		Long lexemeRegisterId = create
+		Long lexemeRegisterId = mainDb
 				.select(LEXEME_REGISTER.ID).from(LEXEME_REGISTER)
 				.where(LEXEME_REGISTER.LEXEME_ID.eq(lexemeId)
 						.and(LEXEME_REGISTER.REGISTER_CODE.eq(registerCode)))
 				.limit(1)
 				.fetchOneInto(Long.class);
 		if (lexemeRegisterId == null) {
-			lexemeRegisterId = create
+			lexemeRegisterId = mainDb
 					.insertInto(LEXEME_REGISTER, LEXEME_REGISTER.LEXEME_ID, LEXEME_REGISTER.REGISTER_CODE)
 					.values(lexemeId, registerCode)
 					.returning(LEXEME_REGISTER.ID)
@@ -1485,14 +1485,14 @@ public class CudDbService extends AbstractDataDbService {
 	}
 
 	public Long createLexemeRegion(Long lexemeId, String regionCode) {
-		Long lexemeRegionId = create
+		Long lexemeRegionId = mainDb
 				.select(LEXEME_REGION.ID).from(LEXEME_REGION)
 				.where(LEXEME_REGION.LEXEME_ID.eq(lexemeId)
 						.and(LEXEME_REGION.REGION_CODE.eq(regionCode)))
 				.limit(1)
 				.fetchOneInto(Long.class);
 		if (lexemeRegionId == null) {
-			lexemeRegionId = create
+			lexemeRegionId = mainDb
 					.insertInto(LEXEME_REGION, LEXEME_REGION.LEXEME_ID, LEXEME_REGION.REGION_CODE)
 					.values(lexemeId, regionCode)
 					.returning(LEXEME_REGION.ID)
@@ -1504,7 +1504,7 @@ public class CudDbService extends AbstractDataDbService {
 
 	public Long createUsage(Long lexemeId, Usage usage) {
 
-		return create
+		return mainDb
 				.insertInto(
 						USAGE,
 						USAGE.LEXEME_ID,
@@ -1535,7 +1535,7 @@ public class CudDbService extends AbstractDataDbService {
 
 	public Long createUsageTranslation(Long usageId, UsageTranslation usageTranslation) {
 
-		return create
+		return mainDb
 				.insertInto(
 						USAGE_TRANSLATION,
 						USAGE_TRANSLATION.USAGE_ID,
@@ -1562,7 +1562,7 @@ public class CudDbService extends AbstractDataDbService {
 
 	public Long createUsageDefinition(Long usageId, UsageDefinition usageDefinition) {
 
-		return create
+		return mainDb
 				.insertInto(
 						USAGE_TRANSLATION,
 						USAGE_TRANSLATION.USAGE_ID,
@@ -1587,21 +1587,21 @@ public class CudDbService extends AbstractDataDbService {
 				.getId();
 	}
 
-	public Long createChildFreeform(FreeForm freeform, String userName) {
+	public Long createChildFreeform(Freeform freeform, String userName) {
 
 		Long freeformId = createFreeform(freeform, userName);
 		return freeformId;
 	}
 
-	private Long createFreeform(FreeForm freeform, String userName) {
+	private Long createFreeform(Freeform freeform, String userName) {
 
 		Timestamp timestamp = new Timestamp(System.currentTimeMillis());
 		String complexity = freeform.getComplexity() == null ? null : freeform.getComplexity().name();
 
-		FreeformRecord freeformRecord = create.newRecord(FREEFORM);
+		FreeformRecord freeformRecord = mainDb.newRecord(FREEFORM);
 		freeformRecord.setParentId(freeform.getParentId());
 		freeformRecord.setFreeformTypeCode(freeform.getFreeformTypeCode());
-		freeformRecord.setValueText(freeform.getValueText());
+		freeformRecord.setValue(freeform.getValue());
 		freeformRecord.setValuePrese(freeform.getValuePrese());
 		freeformRecord.setLang(freeform.getLang());
 		freeformRecord.setComplexity(complexity);
@@ -1617,13 +1617,13 @@ public class CudDbService extends AbstractDataDbService {
 
 	public void deleteWord(SimpleWord word) {
 		Long wordId = word.getWordId();
-		create.delete(FREEFORM)
+		mainDb.delete(FREEFORM)
 				.where(FREEFORM.ID.in(DSL
 						.select(WORD_FREEFORM.FREEFORM_ID)
 						.from(WORD_FREEFORM)
 						.where(WORD_FREEFORM.WORD_ID.eq(wordId))))
 				.execute();
-		create.delete(WORD)
+		mainDb.delete(WORD)
 				.where(WORD.ID.eq(wordId))
 				.execute();
 		adjustWordHomonymNrs(word);
@@ -1631,7 +1631,7 @@ public class CudDbService extends AbstractDataDbService {
 
 	public void deleteFloatingWord(Long wordId) {
 
-		create
+		mainDb
 				.delete(WORD)
 				.where(
 						WORD.ID.eq(wordId)
@@ -1643,32 +1643,32 @@ public class CudDbService extends AbstractDataDbService {
 	}
 
 	public void deleteWordWordType(Long wordWordTypeId) {
-		create.delete(WORD_WORD_TYPE)
+		mainDb.delete(WORD_WORD_TYPE)
 				.where(WORD_WORD_TYPE.ID.eq(wordWordTypeId))
 				.execute();
 	}
 
 	public void deleteWordRelation(Long relationId) {
-		create.delete(WORD_RELATION)
+		mainDb.delete(WORD_RELATION)
 				.where(WORD_RELATION.ID.eq(relationId))
 				.execute();
 	}
 
 	public void deleteWordRelationGroupMember(Long relationId) {
-		create.delete(WORD_GROUP_MEMBER)
+		mainDb.delete(WORD_GROUP_MEMBER)
 				.where(WORD_GROUP_MEMBER.ID.eq(relationId))
 				.execute();
 	}
 
 	public void deleteWordRelationGroup(Long groupId) {
-		create.delete(WORD_GROUP)
+		mainDb.delete(WORD_GROUP)
 				.where(WORD_GROUP.ID.eq(groupId))
 				.execute();
 	}
 
 	public List<Long> deleteWordLexemesTag(Long wordId, String datasetCode, String tagName) {
 
-		List<Long> lexemeIds = create
+		List<Long> lexemeIds = mainDb
 				.delete(LEXEME_TAG)
 				.using(LEXEME)
 				.where(
@@ -1684,7 +1684,7 @@ public class CudDbService extends AbstractDataDbService {
 	}
 
 	public void deleteWordForum(Long wordForumId) {
-		create
+		mainDb
 				.delete(WORD_FORUM)
 				.where(WORD_FORUM.ID.eq(wordForumId))
 				.execute();
@@ -1692,7 +1692,7 @@ public class CudDbService extends AbstractDataDbService {
 
 	public List<Long> deleteMeaningLexemesTag(Long meaningId, String datasetCode, String tagName) {
 
-		List<Long> lexemeIds = create
+		List<Long> lexemeIds = mainDb
 				.delete(LEXEME_TAG)
 				.using(LEXEME)
 				.where(
@@ -1708,112 +1708,112 @@ public class CudDbService extends AbstractDataDbService {
 	}
 
 	public void deleteLexeme(Long lexemeId) {
-		create
+		mainDb
 				.delete(FREEFORM)
 				.where(FREEFORM.ID.in(DSL
 						.select(LEXEME_FREEFORM.FREEFORM_ID)
 						.from(LEXEME_FREEFORM)
 						.where(LEXEME_FREEFORM.LEXEME_ID.eq(lexemeId))))
 				.execute();
-		create
+		mainDb
 				.delete(LEXEME)
 				.where(LEXEME.ID.eq(lexemeId))
 				.execute();
 	}
 
 	public void deleteLexemeNote(Long lexemeNoteId) {
-		create
+		mainDb
 				.deleteFrom(LEXEME_NOTE)
 				.where(LEXEME_NOTE.ID.eq(lexemeNoteId))
 				.execute();
 	}
 
 	public void deleteUsage(Long usageId) {
-		create
+		mainDb
 				.deleteFrom(USAGE)
 				.where(USAGE.ID.eq(usageId))
 				.execute();
 	}
 
 	public void deleteUsageTranslation(Long usageTranslationId) {
-		create
+		mainDb
 				.deleteFrom(USAGE_TRANSLATION)
 				.where(USAGE_TRANSLATION.ID.eq(usageTranslationId))
 				.execute();
 	}
 
 	public void deleteUsageDefinition(Long usageDefinitionId) {
-		create
+		mainDb
 				.deleteFrom(USAGE_DEFINITION)
 				.where(USAGE_DEFINITION.ID.eq(usageDefinitionId))
 				.execute();
 	}
 
 	public void deleteLexemePos(Long lexemePosId) {
-		create
+		mainDb
 				.delete(LEXEME_POS)
 				.where(LEXEME_POS.ID.eq(lexemePosId))
 				.execute();
 	}
 
 	public void deleteLexemeTag(Long lexemeTagId) {
-		create
+		mainDb
 				.delete(LEXEME_TAG)
 				.where(LEXEME_TAG.ID.eq(lexemeTagId))
 				.execute();
 	}
 
 	public void deleteMeaningTag(Long meaningTagId) {
-		create
+		mainDb
 				.delete(MEANING_TAG)
 				.where(MEANING_TAG.ID.eq(meaningTagId))
 				.execute();
 	}
 
 	public void deleteLexemeDeriv(Long lexemeDerivId) {
-		create
+		mainDb
 				.delete(LEXEME_DERIV)
 				.where(LEXEME_DERIV.ID.eq(lexemeDerivId))
 				.execute();
 	}
 
 	public void deleteLexemeRegister(Long lexemeRegisterId) {
-		create
+		mainDb
 				.delete(LEXEME_REGISTER)
 				.where(LEXEME_REGISTER.ID.eq(lexemeRegisterId))
 				.execute();
 	}
 
 	public void deleteLexemeRegion(Long lexemeRegionId) {
-		create
+		mainDb
 				.delete(LEXEME_REGION)
 				.where(LEXEME_REGION.ID.eq(lexemeRegionId))
 				.execute();
 	}
 
 	public void deleteLexemeRelation(Long relationId) {
-		create
+		mainDb
 				.delete(LEX_RELATION)
 				.where(LEX_RELATION.ID.eq(relationId))
 				.execute();
 	}
 
 	public void deleteDefinition(Long id) {
-		create
+		mainDb
 				.delete(DEFINITION)
 				.where(DEFINITION.ID.eq(id))
 				.execute();
 	}
 
 	public void deleteDefinitionNote(Long id) {
-		create
+		mainDb
 				.delete(DEFINITION_NOTE)
 				.where(DEFINITION_NOTE.ID.eq(id))
 				.execute();
 	}
 
 	public void deleteFreeform(Long id) {
-		create
+		mainDb
 				.delete(FREEFORM)
 				.where(FREEFORM.ID.eq(id))
 				.execute();
@@ -1826,62 +1826,62 @@ public class CudDbService extends AbstractDataDbService {
 			deleteDefinition(definitionId);
 		}
 		deleteMeaningFreeforms(meaningId);
-		create
+		mainDb
 				.delete(MEANING)
 				.where(MEANING.ID.eq(meaningId))
 				.execute();
 	}
 
 	public void deleteMeaningNote(Long meaningNoteId) {
-		create
+		mainDb
 				.deleteFrom(MEANING_NOTE)
 				.where(MEANING_NOTE.ID.eq(meaningNoteId))
 				.execute();
 	}
 
 	public void deleteMeaningRelation(Long relationId) {
-		create
+		mainDb
 				.delete(MEANING_RELATION)
 				.where(MEANING_RELATION.ID.eq(relationId))
 				.execute();
 	}
 
 	public void deleteMeaningDomain(Long meaningDomainId) {
-		create
+		mainDb
 				.delete(MEANING_DOMAIN)
 				.where(MEANING_DOMAIN.ID.eq(meaningDomainId))
 				.execute();
 	}
 
 	public void deleteMeaningImage(Long meaningImageId) {
-		create
+		mainDb
 				.deleteFrom(MEANING_IMAGE)
 				.where(MEANING_IMAGE.ID.eq(meaningImageId))
 				.execute();
 	}
 
 	public void deleteMeaningSemanticType(Long meaningSemanticTypeId) {
-		create
+		mainDb
 				.delete(MEANING_SEMANTIC_TYPE)
 				.where(MEANING_SEMANTIC_TYPE.ID.eq(meaningSemanticTypeId))
 				.execute();
 	}
 
 	public void deleteMeaningForum(Long meaningForumId) {
-		create
+		mainDb
 				.delete(MEANING_FORUM)
 				.where(MEANING_FORUM.ID.eq(meaningForumId))
 				.execute();
 	}
 
 	public void deleteParadigm(Long paradigmId) {
-		create.delete(PARADIGM)
+		mainDb.delete(PARADIGM)
 				.where(PARADIGM.ID.eq(paradigmId))
 				.execute();
 	}
 
 	private List<Long> getMeaningDefinitionIds(Long meaningId) {
-		return create
+		return mainDb
 				.select(DEFINITION.ID)
 				.from(DEFINITION)
 				.where(DEFINITION.MEANING_ID.eq(meaningId))
@@ -1889,7 +1889,7 @@ public class CudDbService extends AbstractDataDbService {
 	}
 
 	private void deleteDefinitionFreeforms(Long definitionId) {
-		create
+		mainDb
 				.delete(FREEFORM)
 				.where(
 						FREEFORM.ID.in(DSL.select(DEFINITION_FREEFORM.FREEFORM_ID)
@@ -1899,7 +1899,7 @@ public class CudDbService extends AbstractDataDbService {
 	}
 
 	private void deleteMeaningFreeforms(Long meaningId) {
-		create
+		mainDb
 				.delete(FREEFORM)
 				.where(
 						FREEFORM.ID.in(DSL.select(MEANING_FREEFORM.FREEFORM_ID)

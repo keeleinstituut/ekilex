@@ -1,6 +1,7 @@
 package eki.ekilex.service;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.EnumSet;
 import java.util.List;
 import java.util.Map;
@@ -8,6 +9,7 @@ import java.util.stream.Collectors;
 
 import javax.transaction.Transactional;
 
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.jooq.exception.DataAccessException;
@@ -26,9 +28,7 @@ import eki.ekilex.service.db.CommonDataDbService;
 @Component
 public class ClassifierService implements GlobalConstant, SystemConstant {
 
-	private static final ClassifierName[] nonEditableClassifNames = new ClassifierName[] {ClassifierName.LABEL_TYPE};
-
-	private static final String[] editableLabelTypes = new String[] {CLASSIF_LABEL_TYPE_DESCRIP, CLASSIF_LABEL_TYPE_WORDWEB};
+	private static final ClassifierName[] NON_EDITABLE_CLASSIFIER_NAMES = new ClassifierName[] {ClassifierName.LABEL_TYPE};
 
 	@Autowired
 	private ClassifierDbService classifierDbService;
@@ -43,7 +43,7 @@ public class ClassifierService implements GlobalConstant, SystemConstant {
 
 		EnumSet<ClassifierName> allClassifierNames = EnumSet.allOf(ClassifierName.class);
 		List<String> editableClassifierNames = allClassifierNames.stream()
-				.filter(classifName -> !ArrayUtils.contains(nonEditableClassifNames, classifName))
+				.filter(classifName -> !ArrayUtils.contains(NON_EDITABLE_CLASSIFIER_NAMES, classifName))
 				.map(ClassifierName::name)
 				.collect(Collectors.toList());
 
@@ -61,104 +61,70 @@ public class ClassifierService implements GlobalConstant, SystemConstant {
 	@Transactional
 	public List<ClassifierFull> getClassifiers(ClassifierName classifierName, String domainOrigin) {
 
-		List<ClassifierFull> classifiers = new ArrayList<>();
-		int order = 1;
+		boolean hasLabel = classifierName.hasLabel();
+		List<ClassifierFull> classifiers;
 
 		if (ClassifierName.DOMAIN.equals(classifierName) && StringUtils.isNotBlank(domainOrigin)) {
-			List<String> domainCodes = classifierDbService.getDomainCodes(domainOrigin);
-			for (String domainCode : domainCodes) {
-				ClassifierFull classifier = getDomainClassifier(domainOrigin, domainCode);
-				classifier.setOrder(order++);
-				classifiers.add(classifier);
-			}
-			return classifiers;
-		}
 
-		List<String> classifierCodes = classifierDbService.getClassifierCodes(classifierName.name());
-		for (String classifierCode : classifierCodes) {
-			ClassifierFull classifier = getClassifier(classifierName, classifierCode);
-			classifier.setOrder(order++);
-			classifiers.add(classifier);
+			List<String> labelTypes = Arrays.asList(CLASSIF_LABEL_TYPE_DESCRIP, CLASSIF_LABEL_TYPE_COMMENT);
+			classifiers = classifierDbService.getClassifierFulls(classifierName, domainOrigin, labelTypes);
+			transformLabels(labelTypes, classifierName, domainOrigin, classifiers);
+
+		} else {
+
+			List<String> labelTypes = Arrays.asList(CLASSIF_LABEL_TYPE_DESCRIP, CLASSIF_LABEL_TYPE_WORDWEB);
+			classifiers = classifierDbService.getClassifierFulls(classifierName, labelTypes);
+			if (hasLabel) {
+				transformLabels(labelTypes, classifierName, domainOrigin, classifiers);
+			}
+
 		}
 		return classifiers;
 	}
 
-	private ClassifierFull getClassifier(ClassifierName classifierName, String classifierCode) {
+	private void transformLabels(List<String> labelTypes, ClassifierName classifierName, String domainOrigin, List<ClassifierFull> classifiers) {
 
 		boolean hasLabel = classifierName.hasLabel();
-		String name = classifierName.name();
 
-		ClassifierFull classifier = new ClassifierFull();
-		classifier.setName(name);
-		classifier.setCode(classifierCode);
-		classifier.setHasLabel(hasLabel);
+		for (ClassifierFull classifier : classifiers) {
 
-		if (!hasLabel) {
-			return classifier;
-		}
+			String code = classifier.getCode();
+			List<ClassifierLabel> allLabels = classifier.getLabels();
+			List<ClassifierLabel> typeLabels = new ArrayList<>();
 
-		List<ClassifierLabel> labels = classifierDbService.getClassifierLabels(name, classifierCode);
-		List<ClassifierLabel> labelRows = new ArrayList<>();
+			Map<String, List<ClassifierLabel>> labelTypeMap = null;
+			if (CollectionUtils.isNotEmpty(allLabels)) {
+				labelTypeMap = allLabels.stream().collect(Collectors.groupingBy(ClassifierLabel::getType));
+			}
 
-		for (String labelType : editableLabelTypes) {
+			for (String type : labelTypes) {
 
-			ClassifierLabel labelRow = new ClassifierLabel();
-			labelRow.setCode(classifierCode);
-			labelRow.setType(labelType);
+				ClassifierLabel typeLabel = new ClassifierLabel();
+				List<ClassifierLabel> labelsOfType = null;
+				if (labelTypeMap != null) {
+					labelsOfType = labelTypeMap.get(type);
+				}
+				if (labelsOfType != null) {
+					Map<String, String> labelValueLangMap = labelsOfType.stream()
+							.collect(Collectors.toMap(ClassifierLabel::getLang, classifierLabel -> classifierLabel.getValue()));
 
-			Map<String, ClassifierLabel> typeLabelsByLang = labels.stream()
-					.filter(label -> labelType.equals(label.getType()))
-					.collect(Collectors.toMap(ClassifierLabel::getLang, classifierLabel -> classifierLabel));
+					typeLabel.setLabelEst(labelValueLangMap.get(LANGUAGE_CODE_EST));
+					typeLabel.setLabelEng(labelValueLangMap.get(LANGUAGE_CODE_ENG));
+					typeLabel.setLabelRus(labelValueLangMap.get(LANGUAGE_CODE_RUS));
+				}
+				typeLabel.setClassifierName(classifierName);
+				typeLabel.setOrigin(domainOrigin);
+				typeLabel.setCode(code);
+				typeLabel.setType(type);
+				typeLabels.add(typeLabel);
+			}
 
-			setLabelLangValues(labelRow, typeLabelsByLang);
-			labelRows.add(labelRow);
-		}
-
-		classifier.setLabels(labelRows);
-		return classifier;
-	}
-
-	private ClassifierFull getDomainClassifier(String domainOrigin, String domainCode) {
-
-		ClassifierFull classifier = new ClassifierFull();
-		classifier.setName(ClassifierName.DOMAIN.name());
-		classifier.setOrigin(domainOrigin);
-		classifier.setCode(domainCode);
-
-		List<ClassifierLabel> labels = classifierDbService.getDomainLabels(domainOrigin, domainCode, CLASSIF_LABEL_TYPE_DESCRIP);
-		List<ClassifierLabel> labelRows = new ArrayList<>();
-
-		ClassifierLabel labelRow = new ClassifierLabel();
-		labelRow.setCode(domainCode);
-		labelRow.setType(CLASSIF_LABEL_TYPE_DESCRIP);
-
-		Map<String, ClassifierLabel> typeLabelsByLang = labels.stream().collect(Collectors.toMap(ClassifierLabel::getLang, classifierLabel -> classifierLabel));
-
-		setLabelLangValues(labelRow, typeLabelsByLang);
-		labelRows.add(labelRow);
-		classifier.setLabels(labelRows);
-		return classifier;
-	}
-
-	private void setLabelLangValues(ClassifierLabel labelRow, Map<String, ClassifierLabel> typeLabelsByLang) {
-
-		ClassifierLabel labelEst = typeLabelsByLang.get(LANGUAGE_CODE_EST);
-		if (labelEst != null) {
-			labelRow.setLabelEst(labelEst.getValue());
-		}
-
-		ClassifierLabel labelEng = typeLabelsByLang.get(LANGUAGE_CODE_ENG);
-		if (labelEng != null) {
-			labelRow.setLabelEng(labelEng.getValue());
-		}
-
-		ClassifierLabel labelRus = typeLabelsByLang.get(LANGUAGE_CODE_RUS);
-		if (labelRus != null) {
-			labelRow.setLabelRus(labelRus.getValue());
+			classifier.setLabels(typeLabels);
+			classifier.setHasLabel(hasLabel);
 		}
 	}
 
-	@Transactional
+	@Transactional(rollbackOn = Exception.class)
 	public boolean createClassifier(ClassifierFull classifier) {
 
 		String classifierName = classifier.getName();
@@ -209,7 +175,7 @@ public class ClassifierService implements GlobalConstant, SystemConstant {
 
 	}
 
-	@Transactional
+	@Transactional(rollbackOn = Exception.class)
 	public void updateClassifier(ClassifierFull classifier) {
 
 		String classifierName = classifier.getName();
@@ -284,7 +250,7 @@ public class ClassifierService implements GlobalConstant, SystemConstant {
 		}
 	}
 
-	@Transactional
+	@Transactional(rollbackOn = Exception.class)
 	public boolean deleteClassifier(ClassifierFull classifier) {
 
 		String classifierName = classifier.getName();

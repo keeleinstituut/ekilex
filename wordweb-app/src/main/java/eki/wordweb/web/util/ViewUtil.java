@@ -21,13 +21,13 @@ import eki.common.data.Classifier;
 import eki.wordweb.constant.CollocMemberGroup;
 import eki.wordweb.constant.SystemConstant;
 import eki.wordweb.constant.WebConstant;
+import eki.wordweb.data.CollocMember;
 import eki.wordweb.data.DecoratedWordType;
 import eki.wordweb.data.DisplayColloc;
 import eki.wordweb.data.Form;
 import eki.wordweb.data.LanguageData;
 import eki.wordweb.data.LexemeWord;
 import eki.wordweb.data.Paradigm;
-import eki.wordweb.data.type.TypeCollocMember;
 import eki.wordweb.data.type.TypeFreeform;
 import eki.wordweb.service.CommonDataService;
 import eki.wordweb.service.util.LanguageContext;
@@ -109,38 +109,38 @@ public class ViewUtil implements WebConstant, SystemConstant, GlobalConstant {
 		return htmlBuf.toString();
 	}
 
-	public String getTooltipHtml(DisplayColloc colloc) {
+	public String getTooltipHtml(DisplayColloc displayColloc) {
 
-		List<CollocMemberGroup> memberGroupOrder = colloc.getMemberGroupOrder();
-		List<TypeCollocMember> collocMembers;
+		List<CollocMemberGroup> memberGroupOrder = displayColloc.getMemberGroupOrder();
+		List<CollocMember> collocMembers;
 		StringBuilder htmlBuf = new StringBuilder();
 		htmlBuf.append("<span style='white-space:nowrap;'>");
 		for (CollocMemberGroup collocMemGr : memberGroupOrder) {
 			if (CollocMemberGroup.HEADWORD.equals(collocMemGr)) {
-				TypeCollocMember collocMember = colloc.getHeadwordMember();
+				CollocMember collocMember = displayColloc.getHeadwordMember();
 				String conjunct = collocMember.getConjunct();
 				if (StringUtils.isNotBlank(conjunct) && collocMember.isPreConjunct()) {
 					htmlBuf.append(conjunct);
 					htmlBuf.append("&nbsp;");
 				}
 				htmlBuf.append("<span class='text-green'>");
-				htmlBuf.append(collocMember.getForm());
+				htmlBuf.append(collocMember.getFormValue());
 				htmlBuf.append("</span>");
 				if (StringUtils.isNotBlank(conjunct) && collocMember.isPostConjunct()) {
 					htmlBuf.append("&nbsp;");
 					htmlBuf.append(conjunct);
 				}
 			} else if (CollocMemberGroup.PRIMARY.equals(collocMemGr)) {
-				collocMembers = colloc.getPrimaryMembers();
+				collocMembers = displayColloc.getPrimaryMembers();
 				int collocMemberCount = collocMembers.size();
 				int collocMemberIndex = 0;
-				for (TypeCollocMember collocMember : collocMembers) {
+				for (CollocMember collocMember : collocMembers) {
 					String conjunct = collocMember.getConjunct();
 					if (StringUtils.isNotBlank(conjunct) && collocMember.isPreConjunct()) {
 						htmlBuf.append(conjunct);
 						htmlBuf.append("&nbsp;");
 					}
-					htmlBuf.append(collocMember.getForm());
+					htmlBuf.append(collocMember.getFormValue());
 					if (StringUtils.isNotBlank(conjunct) && collocMember.isPostConjunct()) {
 						htmlBuf.append("&nbsp;");
 						htmlBuf.append(conjunct);
@@ -151,12 +151,12 @@ public class ViewUtil implements WebConstant, SystemConstant, GlobalConstant {
 					collocMemberIndex++;
 				}
 			} else if (CollocMemberGroup.CONTEXT.equals(collocMemGr)) {
-				collocMembers = colloc.getContextMembers();
+				collocMembers = displayColloc.getContextMembers();
 				int collocMemberCount = collocMembers.size();
 				int collocMemberIndex = 0;
-				for (TypeCollocMember collocMember : collocMembers) {
+				for (CollocMember collocMember : collocMembers) {
 					htmlBuf.append("<i>");
-					htmlBuf.append(collocMember.getForm());
+					htmlBuf.append(collocMember.getFormValue());
 					if (collocMemberIndex < collocMemberCount - 1) {
 						htmlBuf.append(", ");
 					}
@@ -263,13 +263,13 @@ public class ViewUtil implements WebConstant, SystemConstant, GlobalConstant {
 		return null;
 	}
 
-	public String getDetailSearchUri(String word) {
-		String uri = webUtil.composeDetailSearchUri(DESTIN_LANG_ALL, DATASET_ALL, word, null, null);
+	public String getDetailSearchUri(String wordValue) {
+		String uri = webUtil.composeDetailSearchUri(DESTIN_LANG_ALL, DATASET_ALL, wordValue, null, null);
 		return uri;
 	}
 
-	public String getSimpleSearchUri(String word) {
-		String uri = webUtil.composeSimpleSearchUri(DESTIN_LANG_ALL, word, null, null);
+	public String getSimpleSearchUri(String wordValue) {
+		String uri = webUtil.composeSimpleSearchUri(DESTIN_LANG_ALL, wordValue, null, null);
 		return uri;
 	}
 
@@ -287,8 +287,24 @@ public class ViewUtil implements WebConstant, SystemConstant, GlobalConstant {
 		return webUtil.composeEkilexLimTermDetailsUrl(meaningId);
 	}
 
-	public String getRusCorpWordUrl(String word) {
-		return webUtil.composeRusCorpWordUrl(word);
+	public String getIateSearchUrl(String wordValue, String langIso3) {
+		Map<String, LanguageData> langDataMap = commonDataService.getLangDataMap();
+		LanguageData langData = langDataMap.get(langIso3);
+		String langIso2;
+		if (langData == null) {
+			langIso2 = LANGUAGE_CODE_EST;
+		} else {
+			langIso2 = langData.getCodeIso2();
+		}
+		return webUtil.composeIateSearchUrl(wordValue, langIso2);
+	}
+
+	public String getEkiOldskoolRusDictUrl(String wordValue) {
+		return webUtil.composeEkiOldskoolRusDictUrl(wordValue);
+	}
+
+	public String getRusCorpWordUrl(String wordValue) {
+		return webUtil.composeRusCorpWordUrl(wordValue);
 	}
 
 	public boolean enumEquals(Enum<?> enum1, Enum<?> enum2) {

@@ -1,19 +1,19 @@
 package eki.ekilex.service.db.api;
 
-import static eki.ekilex.data.db.Tables.DATASET;
-import static eki.ekilex.data.db.Tables.DEFINITION;
-import static eki.ekilex.data.db.Tables.DEFINITION_DATASET;
-import static eki.ekilex.data.db.Tables.DEFINITION_SOURCE_LINK;
-import static eki.ekilex.data.db.Tables.LEXEME;
-import static eki.ekilex.data.db.Tables.MEANING;
-import static eki.ekilex.data.db.Tables.PARADIGM;
-import static eki.ekilex.data.db.Tables.SOURCE;
-import static eki.ekilex.data.db.Tables.USAGE;
-import static eki.ekilex.data.db.Tables.USAGE_SOURCE_LINK;
-import static eki.ekilex.data.db.Tables.WORD;
-import static eki.ekilex.data.db.Tables.WORD_FORUM;
-import static eki.ekilex.data.db.Tables.WORD_RELATION;
-import static eki.ekilex.data.db.Tables.WORD_WORD_TYPE;
+import static eki.ekilex.data.db.main.Tables.DATASET;
+import static eki.ekilex.data.db.main.Tables.DEFINITION;
+import static eki.ekilex.data.db.main.Tables.DEFINITION_DATASET;
+import static eki.ekilex.data.db.main.Tables.DEFINITION_SOURCE_LINK;
+import static eki.ekilex.data.db.main.Tables.LEXEME;
+import static eki.ekilex.data.db.main.Tables.MEANING;
+import static eki.ekilex.data.db.main.Tables.PARADIGM;
+import static eki.ekilex.data.db.main.Tables.SOURCE;
+import static eki.ekilex.data.db.main.Tables.USAGE;
+import static eki.ekilex.data.db.main.Tables.USAGE_SOURCE_LINK;
+import static eki.ekilex.data.db.main.Tables.WORD;
+import static eki.ekilex.data.db.main.Tables.WORD_FORUM;
+import static eki.ekilex.data.db.main.Tables.WORD_RELATION;
+import static eki.ekilex.data.db.main.Tables.WORD_WORD_TYPE;
 
 import java.util.List;
 
@@ -23,21 +23,21 @@ import org.jooq.impl.DSL;
 import org.springframework.stereotype.Component;
 
 import eki.ekilex.data.api.LexWord;
-import eki.ekilex.data.db.tables.Dataset;
-import eki.ekilex.data.db.tables.Definition;
-import eki.ekilex.data.db.tables.DefinitionDataset;
-import eki.ekilex.data.db.tables.DefinitionSourceLink;
-import eki.ekilex.data.db.tables.Lexeme;
-import eki.ekilex.data.db.tables.Meaning;
-import eki.ekilex.data.db.tables.Paradigm;
-import eki.ekilex.data.db.tables.Source;
-import eki.ekilex.data.db.tables.Usage;
-import eki.ekilex.data.db.tables.UsageSourceLink;
-import eki.ekilex.data.db.tables.Word;
-import eki.ekilex.data.db.tables.WordForum;
-import eki.ekilex.data.db.tables.WordRelation;
-import eki.ekilex.data.db.tables.WordWordType;
-import eki.ekilex.data.db.tables.records.WordRecord;
+import eki.ekilex.data.db.main.tables.Dataset;
+import eki.ekilex.data.db.main.tables.Definition;
+import eki.ekilex.data.db.main.tables.DefinitionDataset;
+import eki.ekilex.data.db.main.tables.DefinitionSourceLink;
+import eki.ekilex.data.db.main.tables.Lexeme;
+import eki.ekilex.data.db.main.tables.Meaning;
+import eki.ekilex.data.db.main.tables.Paradigm;
+import eki.ekilex.data.db.main.tables.Source;
+import eki.ekilex.data.db.main.tables.Usage;
+import eki.ekilex.data.db.main.tables.UsageSourceLink;
+import eki.ekilex.data.db.main.tables.Word;
+import eki.ekilex.data.db.main.tables.WordForum;
+import eki.ekilex.data.db.main.tables.WordRelation;
+import eki.ekilex.data.db.main.tables.WordWordType;
+import eki.ekilex.data.db.main.tables.records.WordRecord;
 import eki.ekilex.service.db.AbstractDataDbService;
 
 @Component
@@ -55,7 +55,7 @@ public class WordDbService extends AbstractDataDbService {
 				.from(p)
 				.where(p.WORD_ID.eq(w.ID).and(p.WORD_CLASS.isNotNull())));
 
-		return create
+		return mainDb
 				.select(
 						w.ID.as("word_id"),
 						w.VALUE,
@@ -64,13 +64,13 @@ public class WordDbService extends AbstractDataDbService {
 				.from(w)
 				.where(
 						w.IS_PUBLIC.isTrue()
-								.and(w.IS_WORD.isTrue())
 								.andExists(DSL
 										.select(l.ID)
 										.from(l, ds)
 										.where(
 												l.WORD_ID.eq(w.ID)
 														.and(l.DATASET_CODE.eq(datasetCode))
+														.and(l.IS_PUBLIC.isTrue())
 														.and(l.IS_PUBLIC.isTrue())
 														.and(l.DATASET_CODE.eq(ds.CODE))
 														.and(ds.IS_PUBLIC.isTrue()))))
@@ -83,16 +83,16 @@ public class WordDbService extends AbstractDataDbService {
 		Word w = WORD.as("w");
 		Lexeme l = LEXEME.as("l");
 
-		return create
+		return mainDb
 				.select(w.ID)
 				.from(w, l)
 				.where(
 						w.VALUE.eq(wordValue)
 								.and(w.LANG.eq(lang))
 								.and(w.IS_PUBLIC.isTrue())
-								.and(w.IS_WORD.isTrue())
 								.and(w.ID.eq(l.WORD_ID))
-								.and(l.DATASET_CODE.eq(datasetCode)))
+								.and(l.DATASET_CODE.eq(datasetCode))
+								.and(l.IS_WORD.isTrue()))
 				.groupBy(w.ID)
 				.fetchInto(Long.class);
 	}
@@ -120,7 +120,8 @@ public class WordDbService extends AbstractDataDbService {
 										DSL.key("type").value(dsl.TYPE),
 										DSL.key("name").value(dsl.NAME),
 										DSL.key("sourceId").value(s.ID),
-										DSL.key("sourceName").value(s.NAME)))
+										DSL.key("sourceName").value(s.NAME),
+										DSL.key("orderBy").value(dsl.ORDER_BY)))
 						.orderBy(dsl.ORDER_BY))
 				.from(dsl, s)
 				.where(
@@ -189,7 +190,8 @@ public class WordDbService extends AbstractDataDbService {
 										DSL.key("type").value(usl.TYPE),
 										DSL.key("name").value(usl.NAME),
 										DSL.key("sourceId").value(s.ID),
-										DSL.key("sourceName").value(s.NAME)))
+										DSL.key("sourceName").value(s.NAME),
+										DSL.key("orderBy").value(usl.ORDER_BY)))
 						.orderBy(usl.ORDER_BY))
 				.from(usl, s)
 				.where(
@@ -229,7 +231,7 @@ public class WordDbService extends AbstractDataDbService {
 								.and(l.DATASET_CODE.eq(datasetCode)))
 				.asField();
 
-		return create
+		return mainDb
 				.select(
 						w.ID.as("word_id"),
 						DSL.val(datasetCode).as("dataset_code"),
@@ -257,7 +259,7 @@ public class WordDbService extends AbstractDataDbService {
 		String lang = word.getLang();
 		int homonymNr = getWordNextHomonymNr(value, lang);
 
-		WordRecord wordRecord = create.newRecord(WORD);
+		WordRecord wordRecord = mainDb.newRecord(WORD);
 		updateWordRecord(wordRecord, word, valueAsWord, homonymNr);
 		wordRecord.store();
 
@@ -267,7 +269,7 @@ public class WordDbService extends AbstractDataDbService {
 	public void updateWord(LexWord word, String valueAsWord) {
 
 		Long wordId = word.getWordId();
-		WordRecord wordRecord = create.fetchOne(WORD, WORD.ID.eq(wordId));
+		WordRecord wordRecord = mainDb.fetchOne(WORD, WORD.ID.eq(wordId));
 		updateWordRecord(wordRecord, word, valueAsWord, null);
 		wordRecord.store();
 	}
@@ -283,8 +285,6 @@ public class WordDbService extends AbstractDataDbService {
 		wordRecord.setAspectCode(word.getAspectCode());
 		wordRecord.setVocalForm(word.getVocalForm());
 		wordRecord.setMorphophonoForm(word.getMorphophonoForm());
-		wordRecord.setIsWord(Boolean.TRUE);
-		wordRecord.setIsCollocation(Boolean.FALSE);
 		if (homonymNr != null) {
 			wordRecord.setHomonymNr(homonymNr);
 		}
