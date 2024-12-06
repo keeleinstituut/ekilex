@@ -27,7 +27,7 @@ export async function login(formData: unknown): Promise<void> {
         );
       if (value) {
         // Set the cookie for the user
-        cookies().set(CookieKeys.JSESSIONID, value, { path, httpOnly: true });
+        cookies().set(CookieKeys.JSESSIONID, value, { path: process.env.NEXT_PUBLIC_BASE_PATH ?? path, httpOnly: true });
         redirect(Paths.INDEX);
       }
     }
