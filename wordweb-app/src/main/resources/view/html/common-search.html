@@ -149,7 +149,7 @@
   </th:block>
   <th:block th:fragment="word-data-accordion">
     <section class="word-panel">
-      <button class="word-panel__toggle" data-toggle="collapse" th:data-target="${'#' + panelId}" aria-expanded="true">
+      <button class="word-panel__toggle" data-toggle="collapse" th:data-target="${'#' + panelId}" aria-expanded="true" th:aria-controls="${panelId}">
         <i class="fa fa-chevron-down word-panel__toggle-icon"></i> 
         <span th:text="${panelTitle}">EKI ühendsõnastik 2020</span>
         <div class="word-panel__modified" th:if="${lastModified != null}">
