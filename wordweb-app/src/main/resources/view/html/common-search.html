@@ -175,13 +175,23 @@
           <i class="fa fa-exclamation-triangle small mr-2 mt-1" aria-hidden="true"></i>
           <span th:text="#{warning.eki.rus}">See ei ole valmis sõnastik.</span>
         </div>
-        <th:block th:each="lexeme : ${wordData.lexLexemes}">
-          <section class="level-3-panel meaning-panel d-flex flex-row">
-            <div th:replace="lex-details :: lexeme-data"></div>
-          </section>
-        </th:block>
+        <section class="level-3-panel meaning-panel d-flex flex-row" th:each="lexeme : ${wordData.lexLexemes}">
+          <div th:replace="lex-details :: lexeme-data"></div>
+        </section>
       </div>
     </th:block>
+    <div th:replace="common-search :: no-lexemes-exist"></div>
+  </th:block>
+
+  <th:block th:fragment="lex-detail-view-simple">
+    <th:block th:if="${wordData.lexemesExist}">
+      <div th:if="${not #lists.isEmpty(wordData.lexLexemes)}">
+        <section class="level-3-panel meaning-panel d-flex flex-row" th:each="lexeme : ${wordData.lexLexemes}">
+          <div th:replace="lex-details :: lexeme-data"></div>
+        </section>
+      </div>
+    </th:block>
+    <div th:replace="common-search :: no-lexemes-exist"></div>
   </th:block>
 
   <th:block th:fragment="term-detail-view">

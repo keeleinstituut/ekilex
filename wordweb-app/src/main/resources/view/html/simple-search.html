@@ -30,7 +30,7 @@
                 data-item-name="feedback" th:text="#{feedback.title}">Tagasiside</button>
       </div>
     </div>
-    <main id="mainContentArea" role="main" class="content-panel px-3 loading">
+    <main id="mainContentArea" role="main" class="content-panel loading">
       <div th:if="${wordsData.resultsExist}" class="loading-indicator">
         <div class="spinner-border text-primary " role="status">
           <span class="sr-only">Loading...</span>
@@ -65,44 +65,35 @@
         </div>
       </div>
     </main>
-    <div class="row word-details" th:fragment="worddetails" th:if="${wordData.word != null}">
+    <div th:fragment="worddetails" th:if="${wordData.word != null}">
       <input id="selected-word-homonym-nr" type="hidden" th:value="${wordData.word.homonymNr}">
       <input id="selected-word-lang" type="hidden" th:value="${wordData.word.lang}">
-      <div class="col-12 pt-2 ml-2" th:unless="${wordData.relevantDataExists}">
-        <div class="row">
-          <h5 th:text="#{label.lexeme.not.found}">Soovitud keeltes tulemusi ei leidu</h5>
+      <div class="py-2" th:text="#{label.lexeme.not.found}" th:unless="${wordData.relevantDataExists}">Soovitud keeltes tulemusi ei leidu</div>
+      <div class="word-results" th:if="${wordData.relevantDataExists}">
+        <div>
+          <th:block th:replace="common-search :: word-data"></th:block>
+          <th:block th:if="${wordData.lexemesExist}">
+            <th:block
+              th:if="${not #lists.isEmpty(wordData.lexLexemes)}"
+              th:replace="common-search :: word-data-accordion(
+                panelTitle=#{lexdata.title},
+                panelId='lexeme-results',
+                panelContent=~{common-search :: lex-detail-view-simple})">
+            </th:block>
+          </th:block>
         </div>
-      </div>
-      <div class="col-12  d-md-block d-md-block d-flex flex-column" th:if="${wordData.relevantDataExists}">
-        <div class="row h-100 flex-grow-1 flex-shrink-1">
-          <div class="col-md-7 col-lg-8 main-data">
-            <div class="row">
-              <th:block th:replace="common-search :: word-data"></th:block>
-            </div>
-            <div class="level-2-panel">
-              <th:block th:if="${wordData.lexemesExist}">
-                <th:block th:if="${not #lists.isEmpty(wordData.lexLexemes)}">
-                  <section class="level-3-panel meaning-panel d-flex flex-row" th:each="lexeme : ${wordData.lexLexemes}">
-                    <div th:replace="lex-details :: lexeme-data"></div>
-                  </section>
-                </th:block>
-              </th:block>
-              <div th:replace="common-search :: no-lexemes-exist"></div>
-            </div>
+        <div>
+          <th:block th:replace="common-search-sidebar :: paradigms"></th:block>
+          <th:block th:replace="common-search-sidebar :: word-relations"></th:block>
+          <th:block th:replace="common-search-sidebar :: keelenou"></th:block>
+          <div class="word-sidebar-block" th:if="${wordData.estHeadword}">
+            <div id="corp" th:text="#{label.corp.search}">Otsin veebilauseid ...</div>
           </div>
-          <div class="col-md-5 col-lg-4 more-data sidebar">
-            <th:block th:replace="common-search-sidebar :: paradigms"></th:block>
-            <th:block th:replace="common-search-sidebar :: word-relations"></th:block>
-            <th:block th:replace="common-search-sidebar :: keelenou"></th:block>
-            <th:block th:if="${wordData.estHeadword}">
-              <div id="corp" th:text="#{label.corp.search}">Otsin veebilauseid ...</div>
-            </th:block>
-            <th:block th:if="${wordData.estHeadword && wordData.rusContent}">
-              <div id="corpTrans" th:text="#{label.corp.translations.search}">Otsin tõlgitud näiteid ...</div>
-            </th:block>
-            <th:block th:if="${wordData.rusHeadword}">
-              <section th:replace="common-search-sidebar :: corp_rus"></section>
-            </th:block>
+          <div class="word-sidebar-block" th:if="${wordData.estHeadword && wordData.rusContent}">
+            <div id="corpTrans" th:text="#{label.corp.translations.search}">Otsin tõlgitud näiteid ...</div>
+          </div>
+          <div class="word-sidebar-block" th:if="${wordData.rusHeadword}">
+            <section th:replace="common-search-sidebar :: corp_rus"></section>
           </div>
         </div>
       </div>

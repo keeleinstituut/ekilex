@@ -124,7 +124,7 @@
       <input id="selected-word-homonym-nr" type="hidden" th:value="${wordData.word.homonymNr}">
       <input id="selected-word-lang" type="hidden" th:value="${wordData.word.lang}">
       <div class="py-2" th:text="#{label.lexeme.not.found}" th:unless="${wordData.relevantDataExists}">Soovitud keeltes tulemusi ei leidu</div>
-      <div class="word-results">
+      <div class="word-results" th:if="${wordData.relevantDataExists}">
         <div>
           <th:block th:replace="common-search :: word-data"></th:block>
           <th:block th:if="${wordData.lexemesExist}">
@@ -170,75 +170,6 @@
           <th:block th:replace="common-search-sidebar :: od-word-recommendations" th:if="${wordData.word.incorrectWordForm}"></th:block>
         </div>
       </div>
-      <!-- <div class="col-12 d-md-block d-md-block d-flex flex-column" th:if="${wordData.relevantDataExists}">
-        <div class="row h-100 flex-grow-1 flex-shrink-1">
-          <div class="col-md-7 col-lg-8 main-data">
-            <div class="row">
-              <th:block th:replace="common-search :: word-data"></th:block>
-            </div>
-            <div class="level-2-panel">
-              <th:block th:if="${wordData.lexemesExist}">
-                <div th:if="${not #lists.isEmpty(wordData.lexLexemes)}" id="lexeme-results">
-                  <h5 class="meaning-sub-heading">
-                    <i class="fa fa-book mr-1 text-muted"></i>
-                    <span th:text="#{lexdata.title}">EKI ühendsõnastik 2020</span>
-                  </h5>
-                  <div th:if="${wordData.rusHeadword}" class="alert bg-warning text-black px-3 py-1 d-flex align-items-center update-alert flex-nowrap" role="alert">
-                    <i class="fa fa-exclamation-triangle small mr-2 mt-1" aria-hidden="true"></i>
-                    <span th:text="#{warning.eki.rus}">See ei ole valmis sõnastik.</span>
-                  </div>
-                  <th:block th:each="lexeme : ${wordData.lexLexemes}">
-                    <section class="level-3-panel meaning-panel d-flex flex-row">
-                      <div th:replace="lex-details :: lexeme-data"></div>
-                    </section>
-                  </th:block>
-                </div>
-                <div th:if="${not #lists.isEmpty(wordData.termLexemes)}" id="term-lexeme-results">
-                  <h5 class="meaning-sub-heading">
-                    <a data-toggle="collapse" href="#term-section-collapse">
-                      <i class="fa fa-book mr-1 text-muted"></i>
-                      <span th:text="#{termdata.title}">Oskussõnastikes</span>
-                    </a>
-                  </h5>
-                  <div id="term-section-collapse" data-name="term-section" class="collapse user-preference show">
-                    <th:block th:each="lexeme : ${wordData.termLexemes}">
-                      <section class="level-3-panel meaning-panel d-block">
-                        <div th:replace="term-details :: meaning-data"></div>
-                      </section>
-                    </th:block>
-                  </div>
-                </div>
-                /Removed termsearch
-                <th:block th:if="${not #lists.isEmpty(wordData.limTermLexemes)}">
-                  <section class="level-3-panel meaning-panel d-block" th:each="lexeme : ${wordData.limTermLexemes}">
-                    <div th:replace="term-details :: meaning-data"></div>
-                  </section>
-                </th:block>
-              </th:block>
-              <div th:replace="common-search :: no-lexemes-exist"></div>
-            </div>
-          </div>
-          <div class="col-md-5 col-lg-4 more-data sidebar" th:unless="${wordData.word.incorrectWordForm}">
-            <th:block th:replace="common-search-sidebar :: paradigms"></th:block>
-            <th:block th:replace="common-search-sidebar :: od-word-recommendations"></th:block>
-            <th:block th:replace="common-search-sidebar :: word-relations"></th:block>
-            <th:block th:replace="common-search-sidebar :: etymology"></th:block>
-            <th:block th:replace="common-search-sidebar :: keelenou"></th:block>
-            <th:block th:if="${wordData.estHeadword}">
-              <div id="corp" th:text="#{label.corp.search}">Otsin veebilauseid ...</div>
-            </th:block>
-            <th:block th:if="${wordData.estHeadword && wordData.rusContent}">
-              <div id="corpTrans" th:text="#{label.corp.translations.search}">Otsin tõlgitud näiteid ...</div>
-            </th:block>
-            <th:block th:if="${wordData.rusHeadword}">
-              <section th:replace="common-search-sidebar :: corp_rus"></section>
-            </th:block>
-          </div>
-          <div class="col-md-5 col-lg-4 more-data sidebar" th:if="${wordData.word.incorrectWordForm}">
-            <th:block th:replace="common-search-sidebar :: od-word-recommendations"></th:block>
-          </div>
-        </div>
-      </div> -->
       <script th:inline="javascript">
   		var currentWord = /*[[${wordData.word.word}]]*/'';
   		var currentWordId = /*[[${wordData.word.wordId}]]*/'';
