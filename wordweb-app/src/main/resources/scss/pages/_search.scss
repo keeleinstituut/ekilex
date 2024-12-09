@@ -283,3 +283,16 @@
   padding: 0 8px;
   height: 16px;
 }
+
+.meaning-data {
+  &__modified {
+    font-size: .625rem;
+    font-weight: 500;
+    line-height: 12.1px;
+    color: var(--color-darker-gray);
+  }
+
+  &__date {
+    color: var(--color-dark-blue);
+  }
+}

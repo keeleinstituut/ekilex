@@ -17428,8 +17428,8 @@ body {
 }
 
 .search-tag {
-  background-color: var(--color-grayish-white);
-  color: var(--color-dark-blue);
+  background-color: var(--color-white);
+  color: var(--color-darker-gray);
   font-size: .75rem;
   font-weight: 500;
   line-height: 14.52px;
@@ -17439,6 +17439,17 @@ body {
   align-items: center;
   padding: 0 8px;
   height: 16px;
+}
+
+.meaning-data__modified {
+  font-size: .625rem;
+  font-weight: 500;
+  line-height: 12.1px;
+  color: var(--color-darker-gray);
+}
+
+.meaning-data__date {
+  color: var(--color-dark-blue);
 }
 
 .news-page {

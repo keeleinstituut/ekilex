@@ -5,27 +5,21 @@
             isProTerm = ${@viewUtil.isProTermData(lexeme)},
             isLimTerm = ${@viewUtil.isLimTermData(lexeme)}">
     <div th:id="|lexeme-section-${lexeme.lexemeId}|">
-      <h6 class="font-weight-bold">
-        <a th:href="|@{/ds}/${lexeme.datasetCode}|" th:text="${lexeme.datasetName}">Aianduse terminibaas</a>
-      </h6>
+      <div class="d-flex justify-content-between">
+        <h6 class="font-weight-bold">
+          <a th:href="|@{/ds}/${lexeme.datasetCode}|" th:text="${lexeme.datasetName}">Aianduse terminibaas</a>
+        </h6>
+        <div class="meaning-data__modified">
+          <span>ID</span>
+          <a th:href="${@viewUtil.getEkilexLimTermMeaningDetailsUrl(lexeme.meaningId)}" th:text="${lexeme.meaningId}" th:if="${isLimTerm}"></a>
+          <span th:text="${lexeme.meaningId}" th:if="${isProTerm}"></span>
+          <span th:text="#{label.tooltip.last_modified}"></span>
+          <span class="meaning-data__date" th:text="${#dates.format(lexeme.meaningManualEventOn, 'dd.MM.yyyy')}"></span>
+        </div>
+      </div>
       <div>
         <div class="meaning">
           <div class="definition-row">
-            <div class="mb-1">
-              <span>ID:</span>
-              <th:block th:if="${isLimTerm}">
-                <a th:href="${@viewUtil.getEkilexLimTermMeaningDetailsUrl(lexeme.meaningId)}">
-                  <span class="mr-2" th:aria-label="${wordData.word.word}" th:text="${lexeme.meaningId}"></span>
-                </a>
-              </th:block>
-              <th:block th:if="${isProTerm}">
-                <span class="mr-2" th:aria-label="${wordData.word.word}" th:text="${lexeme.meaningId}"></span>
-              </th:block>
-              <span th:title="#{label.tooltip.last_modified}" class="ml-auto content-title-date" data-toggle="tooltip" >
-                <i class="fa fa-edit"></i>
-                <span th:text="${#dates.format(lexeme.meaningManualEventOn, 'dd.MM.yyyy')}"></span>
-              </span>
-            </div>
             <th:block th:if="${not #lists.isEmpty(lexeme.domains)}">
               <div class="mb-2">
                 <span class="domain mr-1" th:each="domain,domainIter : ${lexeme.domains}" th:text="${domain.value + (domainIter.last ? '' : ', ')}"></span>
