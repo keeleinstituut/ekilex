@@ -150,6 +150,25 @@
           </th:block>
           <th:block th:replace="common-search :: no-lexemes-exist"></th:block>
         </div>
+        <div>
+          <th:block th:unless="${wordData.word.incorrectWordForm}">
+            <th:block th:replace="common-search-sidebar :: paradigms"></th:block>
+            <th:block th:replace="common-search-sidebar :: od-word-recommendations"></th:block>
+            <th:block th:replace="common-search-sidebar :: word-relations"></th:block>
+            <th:block th:replace="common-search-sidebar :: etymology"></th:block>
+            <th:block th:replace="common-search-sidebar :: keelenou"></th:block>
+            <div class="word-sidebar-block" th:if="${wordData.estHeadword}">
+              <div id="corp" th:text="#{label.corp.search}">Otsin veebilauseid ...</div>
+            </div>
+            <div class="word-sidebar-block" th:if="${wordData.estHeadword && wordData.rusContent}">
+              <div id="corpTrans" th:text="#{label.corp.translations.search}">Otsin tõlgitud näiteid ...</div>
+            </div>
+            <div class="word-sidebar-block" th:if="${wordData.rusHeadword}">
+              <th:block th:replace="common-search-sidebar :: corp_rus"></th:block>
+            </div>
+          </th:block>
+          <th:block th:replace="common-search-sidebar :: od-word-recommendations" th:if="${wordData.word.incorrectWordForm}"></th:block>
+        </div>
       </div>
       <!-- <div class="col-12 d-md-block d-md-block d-flex flex-column" th:if="${wordData.relevantDataExists}">
         <div class="row h-100 flex-grow-1 flex-shrink-1">

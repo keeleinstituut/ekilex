@@ -391,7 +391,7 @@
                       <div class="example-sentence-wrap">
                         <span class="example-text example-text-w-audio">
                           <span class="example-text-value" th:utext="${usage.valuePrese}"></span>
-                          <button class="btn btn-speaker" th:aria-label="|#{aria.listen} - ${usage.value}|" th:if="${usage.putOnSpeaker}"
+                          <button class="btn btn-speaker btn-speaker--inactive" th:aria-label="|#{aria.listen} - ${usage.value}|" th:if="${usage.putOnSpeaker}"
                                   th:data-words="${usage.value}"
                                   th:attr="onclick=${usage.putOnSpeaker ? 'generateAudioAndPlay(this)' : ''}">
                             <span class="icon icon-speaker"></span>
@@ -423,7 +423,7 @@
                           <div class="example-sentence-wrap">
                             <span class="example-text example-text-w-audio">
                               <span class="example-text-value" th:utext="${usage.valuePrese}"></span>
-                              <button class="btn btn-speaker" th:aria-label="|#{aria.listen} - ${usage.value}|" th:if="${usage.putOnSpeaker}" th:data-words="${usage.value}"
+                              <button class="btn btn-speaker btn-speaker--inactive" th:aria-label="|#{aria.listen} - ${usage.value}|" th:if="${usage.putOnSpeaker}" th:data-words="${usage.value}"
                                       th:attr="onclick=${usage.putOnSpeaker ? 'generateAudioAndPlay(this)' : ''}">
                                 <span class="icon icon-speaker"></span>
                               </button>
@@ -564,7 +564,7 @@
                                  th:if="${not #lists.isEmpty(collocRelGr.allUsageValues)}" class="pb-1 pl-2 pl-md-4 collapse">
                               <div th:each="collocUsage : ${collocRelGr.allUsageValues}" class="colloc-usage-row examle-text-wrap">
                                 <span class="font-italic" th:text="${collocUsage}"></span>
-                                <button th:aria-label="|#{aria.listen} - ${collocUsage}|" class="btn btn-speaker" th:data-words="${collocUsage}" onclick="generateAudioAndPlay(this)">
+                                <button th:aria-label="|#{aria.listen} - ${collocUsage}|" class="btn btn-speaker btn-speaker--inactive" th:data-words="${collocUsage}" onclick="generateAudioAndPlay(this)">
                                   <span class="icon icon-speaker"></span>
                                 </button>
                               </div>

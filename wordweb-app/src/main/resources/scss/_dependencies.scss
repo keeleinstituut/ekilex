@@ -63,6 +63,14 @@
   .icon{
     padding: 0;
   }
+
+  &--inactive {
+    color: var(--color-gray-300);
+
+    &:hover {
+      color: var(--color-dark-blue);
+    }
+  }
 }
 .dependencies{
   padding-bottom: 4px;

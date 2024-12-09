@@ -336,7 +336,7 @@
                                 <div class="example-sentence-wrap">
                                   <span class="example-text example-text-w-audio">
                                     <span class="example-text-value" th:utext="${usage.valuePrese}"></span>
-                                    <button class="btn btn-speaker" th:aria-label="|#{aria.listen} - ${usage.value}|" th:if="${usage.putOnSpeaker}"
+                                    <button class="btn btn-speaker btn-speaker--inactive" th:aria-label="|#{aria.listen} - ${usage.value}|" th:if="${usage.putOnSpeaker}"
                                             th:data-words="${usage.value}"
                                             th:attr="onclick=${usage.putOnSpeaker ? 'generateAudioAndPlay(this)' : ''}">
                                       <span class="icon icon-speaker"></span>
@@ -360,7 +360,7 @@
                                     <div class="example-sentence-wrap">
                                       <span class="example-text example-text-w-audio">
                                         <span class="example-text-value" th:utext="${usage.valuePrese}"></span>
-                                        <button class="btn btn-speaker" th:aria-label="|#{aria.listen} - ${usage.value}|" th:if="${usage.putOnSpeaker}" th:data-words="${usage.value}"
+                                        <button class="btn btn-speaker btn-speaker--inactive" th:aria-label="|#{aria.listen} - ${usage.value}|" th:if="${usage.putOnSpeaker}" th:data-words="${usage.value}"
                                                 th:attr="onclick=${usage.putOnSpeaker ? 'generateAudioAndPlay(this)' : ''}">
                                           <span class="icon icon-speaker"></span>
                                         </button>
