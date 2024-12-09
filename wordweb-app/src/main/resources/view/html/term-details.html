@@ -5,7 +5,7 @@
             isProTerm = ${@viewUtil.isProTermData(lexeme)},
             isLimTerm = ${@viewUtil.isLimTermData(lexeme)}">
     <div th:id="|lexeme-section-${lexeme.lexemeId}|">
-      <div class="d-flex justify-content-between">
+      <div class="d-flex justify-content-between align-items-center">
         <h6 class="font-weight-bold">
           <a th:href="|@{/ds}/${lexeme.datasetCode}|" th:text="${lexeme.datasetName}">Aianduse terminibaas</a>
         </h6>
@@ -22,7 +22,8 @@
           <div class="definition-row">
             <th:block th:if="${not #lists.isEmpty(lexeme.domains)}">
               <div class="mb-2">
-                <span class="domain mr-1" th:each="domain,domainIter : ${lexeme.domains}" th:text="${domain.value + (domainIter.last ? '' : ', ')}"></span>
+                <span class="meaning-data__domain" th:text="#{label.meaning.domain}"></span>
+                <span class="meaning-data__domain-tag" th:each="domain : ${lexeme.domains}" th:text="${domain.value}"></span>
               </div>
             </th:block>
             <th:block th:if="${not #maps.isEmpty(lexeme.definitionsByLang)}">

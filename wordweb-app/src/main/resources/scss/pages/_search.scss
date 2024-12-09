@@ -295,4 +295,25 @@
   &__date {
     color: var(--color-dark-blue);
   }
+
+  &__domain {
+    font-size: .625rem;
+    font-weight: 400;
+    line-height: 12.1px;
+    color: var(--color-darker-gray);
+  }
+
+  &__domain-tag {
+    background-color: var(--color-gray-010);
+    color: var(--color-darker-gray);
+    font-size: .625rem;
+    font-weight: 500;
+    line-height: 12.1px;
+    border-radius: 8px;
+    height: 16px;
+    padding: 4px 8px;
+    margin-left: 4px;
+    display: inline-flex;
+    align-items: center;
+  }
 }
