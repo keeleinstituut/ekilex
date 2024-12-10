@@ -129,7 +129,9 @@
           <th:block th:replace="common-search :: word-data"></th:block>
           <th:block th:if="${wordData.lexemesExist}">
             <th:block
-              th:if="${not #lists.isEmpty(wordData.lexLexemes)}"
+            th:if="${not #lists.isEmpty(wordData.lexLexemes)}"
+            >
+              <th:block
               th:replace="common-search :: word-data-accordion(
                 panelTitle=#{lexdata.title},
                 panelId='lexeme-results',
@@ -137,15 +139,19 @@
                 lastModified=${wordData.word.manualEventOn == null
                   ? null
                   : #dates.format(wordData.word.manualEventOn, 'dd.MM.yyyy')})">
+                </th:block>
             </th:block>
             <th:block
-              th:if="${not #lists.isEmpty(wordData.termLexemes)}"
-              th:replace="common-search :: word-data-accordion(
-                panelTitle=#{termdata.title},
-                panelId='term-lexeme-results',
-                panelContent=~{common-search :: term-detail-view},
-                collapseName='term-section',
-                padContent=true)">
+            th:if="${not #lists.isEmpty(wordData.termLexemes)}"
+            >
+              <th:block
+                th:replace="common-search :: word-data-accordion(
+                  panelTitle=#{termdata.title},
+                  panelId='term-lexeme-results',
+                  panelContent=~{common-search :: term-detail-view},
+                  collapseName='term-section',
+                  padContent=true)">
+              </th:block>
             </th:block>
           </th:block>
           <th:block th:replace="common-search :: no-lexemes-exist"></th:block>

@@ -73,12 +73,13 @@
         <div>
           <th:block th:replace="common-search :: word-data"></th:block>
           <th:block th:if="${wordData.lexemesExist}">
-            <th:block
-              th:if="${not #lists.isEmpty(wordData.lexLexemes)}"
-              th:replace="common-search :: word-data-accordion(
-                panelTitle=#{lexdata.title},
-                panelId='lexeme-results',
-                panelContent=~{common-search :: lex-detail-view-simple})">
+            <th:block th:if="${not #lists.isEmpty(wordData.lexLexemes)}">
+              <th:block
+                th:replace="common-search :: word-data-accordion(
+                  panelTitle=#{lexdata.title},
+                  panelId='lexeme-results',
+                  panelContent=~{common-search :: lex-detail-view-simple})">
+              </th:block>
             </th:block>
           </th:block>
         </div>
