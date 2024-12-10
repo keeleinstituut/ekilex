@@ -272,11 +272,27 @@
                     <div th:each="meaningLexeme,meaninglexemeIter : ${meaningLangLexemes}" th:classappend="${meaninglexemeIter.last ? '' : 'mb-1'}">
                       <div class="row">
                         <div class="col-12">
-                          <a th:href="@{${@viewUtil.getSearchUri(sessionBean, searchMode, meaningLexeme.word, meaningLexeme.homonymNr, meaningLexeme.lang)}}" class="matching-word "
-                             th:classappend="${meaningLexeme.wordId == wordId ? 'match' : ''}">
-                            <span th:utext="${@viewUtil.getWordValueMarkup(meaningLexeme)}">tee</span>
+                          <a th:href="@{${@viewUtil.getSearchUri(sessionBean, searchMode, meaningLexeme.word, meaningLexeme.homonymNr, meaningLexeme.lang)}}"
+                             th:classappend="${meaningLexeme.wordId == wordId ? 'word-matches-search' : ''}"
+                             th:utext="${@viewUtil.getWordValueMarkup(meaningLexeme)}">
+                              tee
                           </a>
-                          <span class="text-small" th:if="${meaningLexeme.valueState != null}" th:text="${meaningLexeme.valueState.value}"></span>
+                          <span
+                            class="meaning-reliability"
+                            th:if="${meaningLexeme.valueState != null}"
+                            th:classappend="
+                            ${meaningLexeme.valueState.code == 'eelistatud' ? 'meaning-reliability--green' : ''}
+                            + ${(meaningLexeme.valueState.code == 'väldi' or meaningLexeme.valueState.code == 'endine') ? 'meaning-reliability--red' : ''}
+                            "
+                            >
+                            <i class="fa" aria-hidden="true"
+                            th:if="${#lists.contains({'eelistatud', 'väldi', 'endine'}, meaningLexeme.valueState.code)}"
+                            th:classappend="
+                            ${meaningLexeme.valueState.code == 'eelistatud' ? 'fa-check' : ''}
+                            + ${(meaningLexeme.valueState.code == 'väldi' or meaningLexeme.valueState.code == 'endine') ? 'fa-ban' : ''}
+                            "></i>
+                            <span th:text="${meaningLexeme.valueState.value}"></span>
+                          </span>
                           <th:block th:if="${meaningLexeme.showWordDataAsHidden}">
                             <button type="button" class="btn btn-icon btn-sm" data-toggle="tooltip" data-html="true"
                                     th:title="${@viewUtil.getPosesAndGenderTooltipHtml(meaningLexeme.poses, meaningLexeme.gender)}">

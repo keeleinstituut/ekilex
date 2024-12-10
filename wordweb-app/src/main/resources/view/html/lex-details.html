@@ -221,9 +221,10 @@
                                   isLimit=${synIter.count == T(eki.wordweb.constant.WebConstant).SYN_WORDS_DISPLAY_LIMIT},
                                   isInexactSyn=${syn.type == T(eki.common.constant.SynonymType).INEXACT_SYN_MEANING_REL}">
                           <span class="mr-1" th:classappend="${isCollapsable ? 'collapse collapse-target':''}">
-                            <a th:href="@{${@viewUtil.getSearchUri(sessionBean, searchMode, syn.word, syn.homonymNr, syn.lang)}}" class="matching-word "
-                               th:classappend="${syn.wordId == wordId ? 'match' : ''}">
-                              <span th:utext="${@viewUtil.getWordValueMarkup(syn)}">tee</span>
+                            <a th:href="@{${@viewUtil.getSearchUri(sessionBean, searchMode, syn.word, syn.homonymNr, syn.lang)}}"
+                               th:classappend="${syn.wordId == wordId ? 'word-matches-search' : ''}"
+                               th:utext="${@viewUtil.getWordValueMarkup(syn)}">
+                               tee
                             </a>
                             <span th:if="${syn.additionalDataExists}" class="text-small">
                               <span th:if="${(syn.mwLexValueState != null)}" th:text="${syn.mwLexValueState.value}"></span>

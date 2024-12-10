@@ -15,6 +15,7 @@
   --color-lighter-gray: #AFBFCD;
   --color-dark-gray: #98A7B4;
   --color-darker-gray: #6A788A;
+  --color-even-darker-gray: #5A656F;
   --color-white: #fff;
   --color-blue-100: #a0dcf8;
   --color-blue-200: #5aabe0;
@@ -23,13 +24,16 @@
   --color-blue-400: #005aa9;
   --color-blue-900: #00377a;
   --color-light-blue: #D7E5F2;
+  --color-light-blue-alternate: #DCE8F5;
   --color-dark-blue: #173148;
   --color-dark-blue-75: #173148BF;
   --color-red-100: #ffb9b9;
   --color-red-400: #ec0138;
+  --color-error-red: #B25C5C;
   --color-green-100: #a9eeb4;
   --color-green-400: #00892e;
   --color-green-700: #007025;
+  --color-success-green: #4D8069;
   --color-yellow-100: #ffffe8;
   --color-purple-100: #db8dff;
   --color-orange: #DE6837;
@@ -17287,8 +17291,8 @@ body {
   }
 }
 
-.matching-word.match {
-  border-bottom: 2px dashed #ccd9e0;
+.word-matches-search {
+  background-color: var(--color-light-blue-alternate);
 }
 
 .rections {
@@ -17544,6 +17548,24 @@ body {
   list-style: none;
   margin: 0 0 10px;
   padding: 0;
+}
+
+.meaning-reliability {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: .625rem;
+  font-weight: 500;
+  height: 20px;
+  color: var(--color-even-darker-gray);
+}
+
+.meaning-reliability--green {
+  color: var(--color-success-green);
+}
+
+.meaning-reliability--red {
+  color: var(--color-error-red);
 }
 
 .news-page {
@@ -18687,6 +18709,7 @@ body {
   --color-lighter-gray: #AFBFCD;
   --color-dark-gray: #98A7B4;
   --color-darker-gray: #6A788A;
+  --color-even-darker-gray: #5A656F;
   --color-white: #fff;
   --color-blue-100: #a0dcf8;
   --color-blue-200: #5aabe0;
@@ -18695,13 +18718,16 @@ body {
   --color-blue-400: #005aa9;
   --color-blue-900: #00377a;
   --color-light-blue: #D7E5F2;
+  --color-light-blue-alternate: #DCE8F5;
   --color-dark-blue: #173148;
   --color-dark-blue-75: #173148BF;
   --color-red-100: #ffb9b9;
   --color-red-400: #ec0138;
+  --color-error-red: #B25C5C;
   --color-green-100: #a9eeb4;
   --color-green-400: #00892e;
   --color-green-700: #007025;
+  --color-success-green: #4D8069;
   --color-yellow-100: #ffffe8;
   --color-purple-100: #db8dff;
   --color-orange: #DE6837;

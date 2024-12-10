@@ -92,10 +92,8 @@
   }
 }
 
-.matching-word {
-  &.match {
-    border-bottom: 2px dashed $border-color;
-  }
+.word-matches-search {
+  background-color: var(--color-light-blue-alternate);
 }
 
 .rections {
@@ -361,5 +359,23 @@
     list-style: none;
     margin: 0 0 10px;
     padding: 0;
+  }
+}
+
+.meaning-reliability {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: .625rem;
+  font-weight: 500;
+  height: 20px;
+  color: var(--color-even-darker-gray);
+
+  &--green {
+    color: var(--color-success-green);
+  }
+
+  &--red {
+    color: var(--color-error-red);
   }
 }
