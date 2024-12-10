@@ -23,7 +23,7 @@
             <th:block th:if="${not #lists.isEmpty(lexeme.domains)}">
               <div class="mb-2">
                 <span class="meaning-data__domain" th:text="#{label.meaning.domain}"></span>
-                <span class="meaning-data__domain-tag" th:each="domain : ${lexeme.domains}" th:text="${domain.value}"></span>
+                <span class="search-tag--alternate" th:each="domain : ${lexeme.domains}" th:text="${domain.value}"></span>
               </div>
             </th:block>
             <th:block th:if="${not #maps.isEmpty(lexeme.definitionsByLang)}">
@@ -103,10 +103,9 @@
                                 class="definition-value mb-2 mr-1 text-weight-medium text-dark"
                                 th:utext="${definition.valuePrese}"></span>
                           <th:block th:if="${not #lists.isEmpty(definition.sourceLinks)}">
-                            <span class="definition-sources ">
+                            <span class="definition-sources">
                               <th:block th:each="sourceLink,sourceLinkIter : ${definition.sourceLinks}">
                                 <th:block th:replace="common-app :: source-link"></th:block>
-                                <span th:unless="${sourceLinkIter.last}">, </span>
                               </th:block>
                             </span>
                           </th:block>
@@ -123,7 +122,6 @@
                                   <span class="definition-sources">
                                     <th:block th:each="sourceLink,sourceLinkIter : ${note.sourceLinks}">
                                       <th:block th:replace="common-app :: source-link"></th:block>
-                                      <span th:unless="${sourceLinkIter.last}">, </span>
                                     </th:block>
                                   </span>
                                 </div>
@@ -302,7 +300,6 @@
                           <span class="definition-sources">
                             <th:block th:each="sourceLink,sourceLinkIter : ${meaningLexeme.lexemeSourceLinks}">
                               <th:block th:replace="common-app :: source-link"></th:block>
-                              <span th:unless="${sourceLinkIter.last}">,</span>
                             </th:block>
                           </span>
                         </div>
@@ -459,7 +456,6 @@
                                       <span class="definition-sources">
                                         <th:block th:each="sourceLink,sourceLinkIter : ${note.sourceLinks}">
                                           <th:block th:replace="common-app :: source-link"></th:block>
-                                          <span th:unless="${sourceLinkIter.last}">, </span>
                                         </th:block>
                                       </span>
                                     </th:block>
