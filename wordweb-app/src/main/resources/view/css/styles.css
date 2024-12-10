@@ -16322,7 +16322,6 @@ body.hidden-scroll {
 @media (min-width: 768px) {
   .homonym-list {
     display: flex;
-    margin-bottom: -15px;
     overflow: hidden;
     overflow-x: scroll;
     white-space: nowrap;
@@ -17454,7 +17453,7 @@ body {
 
 .word-results {
   display: grid;
-  grid-template-columns: 70% 30%;
+  grid-template-columns: 1fr 30%;
   gap: 16px;
   flex-grow: 1;
 }
@@ -17510,6 +17509,17 @@ body {
   font-weight: 400;
   line-height: 12.1px;
   color: var(--color-darker-gray);
+}
+
+.meaning-data__word-info {
+  font-size: .625rem;
+  font-weight: 500;
+  line-height: 12.1px;
+  color: var(--color-even-darker-gray);
+}
+
+.meaning-data__word-info + .meaning-data__word-info {
+  margin-left: 4px;
 }
 
 .word-notes__toggle {
@@ -21506,7 +21516,8 @@ eki-shy {
 }
 
 .morphology-paradigm table {
-  min-width: 100%;
+  table-layout: fixed;
+  width: 100%;
 }
 
 .morphology-paradigm table td {
@@ -21514,6 +21525,7 @@ eki-shy {
   max-width: 60%;
   white-space: normal;
   line-height: 1.4;
+  text-overflow: ellipsis;
 }
 
 .morphology-paradigm table td div {

@@ -299,7 +299,16 @@
                               <i class="fas fa-info-circle"></i>
                             </button>
                           </th:block>
-                        </div>
+                          <th:block th:if="${not #lists.isEmpty(meaningLexeme.registers)}">
+                            <span class="meaning-data__word-info" th:each="register,registerIter : ${meaningLexeme.registers}" th:text="${register.value + (registerIter.last ? '' : ', ')}"></span>
+                          </th:block>
+                          <th:block th:if="${not #lists.isEmpty(meaningLexeme.registers) and not #lists.isEmpty(meaningLexeme.wordTypes)}">
+                            <span class="meaning-data__word-info">, </span>
+                          </th:block>
+                          <th:block th:if="${not #lists.isEmpty(meaningLexeme.wordTypes)}">
+                            <span class="meaning-data__word-info" th:each="wordType,wordTypeIter : ${meaningLexeme.wordTypes}" th:utext="${wordType.value + (wordTypeIter.last ? '' : ', ')}"></span>
+                          </th:block>
+                      </div>
                       </div>
                       <div class="row text-small" th:if="${meaningLexeme.reliability != null}">
                         <div class="col">
@@ -340,18 +349,6 @@
                       <div class="row" th:if="${not #lists.isEmpty(meaningLexeme.poses) && meaningLexeme.showPoses && !meaningLexeme.showWordDataAsHidden}">
                         <div class="col">
                           <span class="tag" th:each="pos : ${meaningLexeme.poses}" th:text="${pos.value}"></span>
-                        </div>
-                      </div>
-                      <div class="row" th:if="${not #lists.isEmpty(meaningLexeme.registers)}">
-                        <div class="col">
-                          <span class="domain register mr-1 mb-1" th:each="register,registerIter : ${meaningLexeme.registers}" th:text="${register.value + (registerIter.last ? '' : ', ')}"></span>
-                        </div>
-                      </div>
-                      <div class="row" th:if="${not #lists.isEmpty(meaningLexeme.wordTypes)}">
-                        <div class="col">
-                          <span class="tag my-1">
-                            <span th:each="wordType,wordTypeIter : ${meaningLexeme.wordTypes}" th:utext="${wordType.value + (wordTypeIter.last ? '' : ', ')}"></span>
-                          </span>
                         </div>
                       </div>
                       <th:block th:if="${not #lists.isEmpty(meaningLexeme.usages)}">
