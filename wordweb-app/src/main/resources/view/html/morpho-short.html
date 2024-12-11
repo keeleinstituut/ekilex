@@ -10,7 +10,7 @@
           <span th:utext="${form.valuePrese}" th:title="${form.morph.value + ' - ' + form.displayForm}"
                 data-toggle="tooltip" class="form-value-field" th:classappend="${form.questionable ? 'text-muted ml-n1' : ''}">
           </span>
-          <button type="button" aria-label="Kuula hääldust - lugemas" class="btn btn-speaker" th:if="${(form.audioFile != null)}"
+          <button type="button" aria-label="Kuula hääldust - lugemas" class="btn btn-speaker btn-speaker--inactive" th:if="${(form.audioFile != null)}"
                   th:data-url-to-audio="@{'/files/audio/' + ${form.audioFile}}" onclick="generateAudioAndPlay(this)">
             <span class="icon icon-speaker"></span>
           </button>
@@ -123,10 +123,10 @@
         <span th:text="#{label.morpho.exceptional}">Erandlik</span>
       </p>
     </th:block>
-    <p th:utext="${paradigm.paradigmComment}" class="paradigm-comment"></p>
+    <p th:utext="${paradigm.paradigmComment}" th:if="${paradigm.paradigmComment}"></p>
   </th:block>
   <th:block th:fragment="morpho-paradigm-header_rus(paradigm)">
-    <p th:utext="${paradigm.paradigmComment}" class="paradigm-comment"></p>
+    <p th:utext="${paradigm.paradigmComment}" th:if="${paradigm.paradigmComment}"></p>
   </th:block>
   <th:block th:fragment="morpho-paradigm-footer(paradigm)">
     <div class="modal-button">
@@ -143,48 +143,48 @@
   </th:block>
   <th:block th:fragment="morpho-verb_est">
     <th:block th:replace=" :: morpho-paradigm-header(${paradigm})"></th:block>
-    <div class="overflow-auto">
+    <div>
       <table>
         <th:block th:replace=" :: morpho-row(${paradigm}, 'Sup', 'IndIpfSg3')"></th:block>
         <th:block th:replace=" :: morpho-row(${paradigm}, 'Inf', 'PtsPtPs')"></th:block>
         <th:block th:replace=" :: morpho-row(${paradigm}, 'IndPrSg3', 'ImpPrSg2')"></th:block>
         <th:block th:replace=" :: morpho-row(${paradigm}, 'PtsPtIps', 'IndPrIps')"></th:block>
       </table>
-    </div><!--/overflow-auto-->
+    </div>
     <th:block th:replace=" :: morpho-paradigm-footer(${paradigm})"></th:block>
   </th:block>
   <th:block th:fragment="morpho-noomen_est">
     <th:block th:replace=" :: morpho-paradigm-header(${paradigm})"></th:block>
-    <div class="overflow-auto">
+    <div>
       <table>
         <th:block th:replace=" :: morpho-row(${paradigm}, 'SgN', 'PlN')"></th:block>
         <th:block th:replace=" :: morpho-row(${paradigm}, 'SgG', 'PlG')"></th:block>
         <th:block th:replace=" :: morpho-row(${paradigm}, 'SgP', 'PlP')"></th:block>
       </table>
-    </div><!--/overflow-auto-->
+    </div>
     <th:block th:replace=" :: morpho-paradigm-footer(${paradigm})"></th:block>
   </th:block>
   <th:block th:fragment="morpho-muutumatu_est">
     <th:block th:replace=" :: morpho-paradigm-header(${paradigm})"></th:block>
-    <div class="overflow-auto">
+    <div>
       <table>
         <th:block th:replace=" :: morpho-row(${paradigm}, 'ID', '')"></th:block>
       </table>
-    </div><!--/overflow-auto-->
+    </div>
     <th:block th:replace=" :: morpho-paradigm-footer(${paradigm})"></th:block>
   </th:block>
   <th:block th:fragment="morpho-noun_rus">
     <th:block th:replace=" :: morpho-paradigm-header_rus(${paradigm})"></th:block>
-    <div class="overflow-auto">
+    <div>
       <table>
         <th:block th:replace=" :: morpho-row(${paradigm}, 'sing,nomn', 'plur,nomn')"></th:block>
       </table>
-    </div><!--/overflow-auto-->
+    </div>
     <th:block th:replace=" :: morpho-paradigm-footer(${paradigm})"></th:block>
   </th:block>
   <th:block th:fragment="morpho-verb_rus">
     <th:block th:replace=" :: morpho-paradigm-header_rus(${paradigm})"></th:block>
-    <div class="overflow-auto">
+    <div>
       <table>
         <th:block th:replace=" :: morpho-row(${paradigm}, 'INFN', '')"></th:block>
         <th:block th:replace=" :: morpho-row(${paradigm}, 'masc,sing,3per,past,indc', 'sing,1per,pres,indc')"></th:block>
@@ -196,7 +196,7 @@
   </th:block>
   <th:block th:fragment="morpho-participle_rus">
     <th:block th:replace=" :: morpho-paradigm-header_rus(${paradigm})"></th:block>
-    <div class="overflow-auto">
+    <div>
       <table>
         <th:block th:replace=" :: morpho-row(${paradigm}, 'masc,sing,nomn', '')"></th:block>
         <th:block th:replace=" :: morpho-row(${paradigm}, 'femn,sing,nomn', '')"></th:block>
@@ -208,7 +208,7 @@
   </th:block>
   <th:block th:fragment="morpho-adjective_rus">
     <th:block th:replace=" :: morpho-paradigm-header_rus(${paradigm})"></th:block>
-    <div class="overflow-auto">
+    <div>
 
       <table>
         <th:block th:replace=" :: morpho-row(${paradigm}, 'masc,sing,nomn', '')"></th:block>
@@ -216,12 +216,12 @@
         <th:block th:replace=" :: morpho-row(${paradigm}, 'neut,sing,nomn', '')"></th:block>
         <th:block th:replace=" :: morpho-row(${paradigm}, 'plur,nomn', '')"></th:block>
       </table>
-    </div><!--/overflow-auto-->
+    </div>
     <th:block th:replace=" :: morpho-paradigm-footer(${paradigm})"></th:block>
   </th:block>
   <th:block th:fragment="morpho-adjective1_rus">
     <th:block th:replace=" :: morpho-paradigm-header_rus(${paradigm})"></th:block>
-    <div class="overflow-auto">
+    <div>
 
       <table>
         <th:block th:replace=" :: morpho-row(${paradigm}, 'masc,sing,nomn', '')"></th:block>
@@ -229,12 +229,12 @@
         <th:block th:replace=" :: morpho-row(${paradigm}, 'neut,sing,nomn', '')"></th:block>
         <th:block th:replace=" :: morpho-row(${paradigm}, 'plur,nomn', '')"></th:block>
       </table>
-    </div><!--/overflow-auto-->
+    </div>
     <th:block th:replace=" :: morpho-paradigm-footer(${paradigm})"></th:block>
   </th:block>
   <th:block th:fragment="morpho-adjective2_rus">
     <th:block th:replace=" :: morpho-paradigm-header_rus(${paradigm})"></th:block>
-    <div class="overflow-auto">
+    <div>
 
       <table>
         <th:block th:replace=" :: morpho-row(${paradigm}, 'masc,sing,nomn', '')"></th:block>
@@ -242,12 +242,12 @@
         <th:block th:replace=" :: morpho-row(${paradigm}, 'neut,sing,nomn', '')"></th:block>
         <th:block th:replace=" :: morpho-row(${paradigm}, 'plur,nomn', '')"></th:block>
       </table>
-    </div><!--/overflow-auto-->
+    </div>
     <th:block th:replace=" :: morpho-paradigm-footer(${paradigm})"></th:block>
   </th:block>
   <th:block th:fragment="morpho-numeral_rus">
     <th:block th:replace=" :: morpho-paradigm-header_rus(${paradigm})"></th:block>
-    <div class="overflow-auto">
+    <div>
 
       <table>
         <th:block th:replace=" :: morpho-row(${paradigm}, 'nomn', 'accs,anim')"></th:block>
@@ -255,16 +255,16 @@
         <th:block th:replace=" :: morpho-row(${paradigm}, 'datv', 'ablt')"></th:block>
         <th:block th:replace=" :: morpho-row(${paradigm}, '', 'loct')"></th:block>
       </table>
-    </div><!--/overflow-auto-->
+    </div>
     <th:block th:replace=" :: morpho-paradigm-footer(${paradigm})"></th:block>
   </th:block>
   <th:block th:fragment="morpho-indeclinable_rus">
     <th:block th:replace=" :: morpho-paradigm-header_rus(${paradigm})"></th:block>
-    <div class="overflow-auto">
+    <div>
       <table>
         <th:block th:replace=" :: morpho-row(${paradigm}, 'ID', '')"></th:block>
       </table>
-    </div><!--/overflow-auto-->
+    </div>
     <th:block th:replace=" :: morpho-paradigm-footer(${paradigm})"></th:block>
   </th:block>
 </body>

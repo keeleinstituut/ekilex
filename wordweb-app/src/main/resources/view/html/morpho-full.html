@@ -35,7 +35,7 @@
         <span th:text="${prefix}" th:if="${!#strings.isEmpty(prefix) && !#strings.equals(form.value, '-')}"></span>
         <span th:utext="${form.displayForm}" class="form-display-form-field" style="display: none;"></span>
         <span th:utext="${form.valuePrese}" class="form-value-field" th:classappend="${form.questionable ? 'text-muted ml-n1' : ''}"></span>
-        <button type="button" aria-label="Kuula hääldust - lugemas" class="btn btn-speaker" th:if="${(form.audioFile != null) && #strings.isEmpty(prefix)}"
+        <button type="button" aria-label="Kuula hääldust - lugemas" class="btn btn-speaker btn-speaker--inactive" th:if="${(form.audioFile != null) && #strings.isEmpty(prefix)}"
           th:data-url-to-audio="@{'/files/audio/' + ${form.audioFile}}" onclick="generateAudioAndPlay(this)">
           <span class="icon icon-speaker"></span>
         </button>

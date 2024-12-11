@@ -1,34 +1,16 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <body class="survey-active">
-  <th:block th:fragment="meaning-data" th:with="
-            isProTerm = ${@viewUtil.isProTermData(lexeme)},
-            isLimTerm = ${@viewUtil.isLimTermData(lexeme)}">
-    <div th:id="|lexeme-section-${lexeme.lexemeId}|">
-      <h6 class="font-weight-bold">
-        <a th:href="|@{/ds}/${lexeme.datasetCode}|" th:text="${lexeme.datasetName}">Aianduse terminibaas</a>
-      </h6>
+  <th:block th:fragment="meaning-data">
+    <div>
       <div>
+        <a th:href="${@viewUtil.getEkilexLimTermMeaningDetailsUrl(lexeme.meaningId)}" th:text="${lexeme.meaningId}" th:if="${isLimTerm}"></a>
         <div class="meaning">
           <div class="definition-row">
-            <div class="mb-1">
-              <span>ID:</span>
-              <th:block th:if="${isLimTerm}">
-                <a th:href="${@viewUtil.getEkilexLimTermMeaningDetailsUrl(lexeme.meaningId)}">
-                  <span class="mr-2" th:aria-label="${wordData.word.word}" th:text="${lexeme.meaningId}"></span>
-                </a>
-              </th:block>
-              <th:block th:if="${isProTerm}">
-                <span class="mr-2" th:aria-label="${wordData.word.word}" th:text="${lexeme.meaningId}"></span>
-              </th:block>
-              <span th:title="#{label.tooltip.last_modified}" class="ml-auto content-title-date" data-toggle="tooltip" >
-                <i class="fa fa-edit"></i>
-                <span th:text="${#dates.format(lexeme.meaningManualEventOn, 'dd.MM.yyyy')}"></span>
-              </span>
-            </div>
             <th:block th:if="${not #lists.isEmpty(lexeme.domains)}">
               <div class="mb-2">
-                <span class="domain mr-1" th:each="domain,domainIter : ${lexeme.domains}" th:text="${domain.value + (domainIter.last ? '' : ', ')}"></span>
+                <span class="meaning-data__domain" th:text="#{label.meaning.domain}"></span>
+                <span class="search-tag--alternate" th:each="domain : ${lexeme.domains}" th:text="${domain.value}"></span>
               </div>
             </th:block>
             <th:block th:if="${not #maps.isEmpty(lexeme.definitionsByLang)}">
@@ -37,7 +19,7 @@
                       th:with="langData=${@viewUtil.getLangData(definitionEntry.key)}"
                       th:text="${langData.codeIso2}" th:title="${langData.label}" data-toggle="tooltip"></span>
                 <div class="flex-shrink-1" style="font-weight: 500;">
-                  <ul th:class="${definitionEntry.value.size() &lt;= 1}  ? 'list-unstyled m-0' : 'ul-list-style' ">
+                  <ul class="list-unstyled m-0">
                     <li th:each="definition,definitionIter : ${definitionEntry.value}"
                         th:with="isCollapsable=${not #strings.isEmpty(definition.valuePreseCut)}">
                       <th:block th:if="${!definition.subDataExists}">
@@ -77,7 +59,7 @@
                       <th:block th:if="${definition.subDataExists}"> 
                         <div th:id="${'definition-entry-' + definition.definitionId}">
                           <th:block th:if="${isCollapsable}">
-                            <div class="definition-value mb-2 text-weight-medium text-dark collapse-text">
+                            <div class="definition-value mb-2 text-weight-medium text-dark collapse-text" th:id="${'#definition-entry-' + definition.definitionId + '-collapse-text'}">
                               <span class="small-text-addition" th:utext="${definition.valuePreseCut}"></span>
                             </div>
                             <div class="small-text-container get-height d-none">
@@ -93,7 +75,8 @@
                                   data-toggle="collapse-text"
                                   th:data-target="${'#definition-entry-' + definition.definitionId + ' .collapse-text'}"
                                   aria-expanded="false"
-                                  th:aria-controls="${'#definition-entry-' + definition.definitionId + ' .collapse-text'}">
+                                  th:aria-controls="${'#definition-entry-' + definition.definitionId + '-collapse-text'}"
+                                  >
                               <span class="btn-content see-more-content" data-tooltip="tooltip" th:title="#{button.see.more}">
                                 <i class="fa fa-ellipsis-h" aria-hidden="true"></i>
                               </span>
@@ -107,23 +90,28 @@
                                 class="definition-value mb-2 mr-1 text-weight-medium text-dark"
                                 th:utext="${definition.valuePrese}"></span>
                           <th:block th:if="${not #lists.isEmpty(definition.sourceLinks)}">
-                            <span class="definition-sources ">
+                            <span class="definition-sources">
                               <th:block th:each="sourceLink,sourceLinkIter : ${definition.sourceLinks}">
                                 <th:block th:replace="common-app :: source-link"></th:block>
-                                <span th:unless="${sourceLinkIter.last}">, </span>
                               </th:block>
                             </span>
                           </th:block>
                           <th:block th:if="${not #lists.isEmpty(definition.notes)}">
-                            <ul class="ul-list-style m-0">
-                              <li th:each="note : ${definition.notes}">
-                                <span class="additional-meta mb-2" th:utext="${note.valuePrese}"></span>
-                                <span class="definition-sources">
-                                  <th:block th:each="sourceLink,sourceLinkIter : ${note.sourceLinks}">
-                                    <th:block th:replace="common-app :: source-link"></th:block>
-                                    <span th:unless="${sourceLinkIter.last}">, </span>
-                                  </th:block>
-                                </span>
+                            <button class="word-notes__toggle word-notes__toggle--top-margin" data-toggle="collapse" th:data-target="${'#definition-notes-' + definition.definitionId}" aria-expanded="true" th:aria-controls="${'definition-notes-' + definition.definitionId}">
+                              <i class="fa fa-chevron-down word-notes__toggle-icon" aria-hidden="true"></i>
+                              <span th:text="#{label.definition.note}"></span>
+                            </button>
+                            <ul class="word-notes__list collapse show" th:id="${'definition-notes-' + definition.definitionId}">
+                              <li class="d-flex" th:each="note : ${definition.notes}">
+                                <i class="fas fa-info-circle mr-2 word-notes__info-icon" aria-hidden="true"></i>
+                                <div>
+                                  <span th:utext="${note.valuePrese}"></span>
+                                  <span class="definition-sources">
+                                    <th:block th:each="sourceLink,sourceLinkIter : ${note.sourceLinks}">
+                                      <th:block th:replace="common-app :: source-link"></th:block>
+                                    </th:block>
+                                  </span>
+                                </div>
                               </li>
                             </ul>
                           </th:block>
@@ -147,9 +135,21 @@
                         th:with="langData=${@viewUtil.getLangData(noteEntry.key)}"
                         th:text="${langData.codeIso2}" th:title="${langData.label}" data-toggle="tooltip"></span>
                     <div class="flex-shrink-1">
-                      <ul th:class="${noteEntry.value.size() &lt;= 1}  ? 'list-unstyled m-0' : 'ul-list-style' ">
-                        <li th:each="note : ${noteEntry.value}"
+                      <button
+                        class="word-notes__toggle"
+                        data-toggle="collapse"
+                        th:data-target="${'#lexeme-note-entry-' + lexeme.lexemeId + '-' + noteEntry.key}"
+                        aria-expanded="true"
+                        th:aria-controls="${'lexeme-note-entry-' + lexeme.lexemeId + '-' + noteEntry.key}">
+                        <i class="fa fa-chevron-down word-notes__toggle-icon"></i>
+                        <span th:text="#{label.definition.note}"></span>
+                      </button>
+                      <ul
+                        class="word-notes__list collapse show"
+                        th:id="${'lexeme-note-entry-' + lexeme.lexemeId + '-' + noteEntry.key}">
+                        <li class="d-flex" th:each="note : ${noteEntry.value}"
                             th:with="isCollapsable=${not #strings.isEmpty(note.valuePreseCut)}">
+                          <i class="fas fa-info-circle mr-2 mt-1 word-notes__info-icon" aria-hidden="true"></i>
                           <div th:id="${'note-entry-text-' + note.noteId}">
                             <th:block th:if="${isCollapsable}">
                               <div class="note-value collapse-text">
@@ -259,18 +259,47 @@
                     <div th:each="meaningLexeme,meaninglexemeIter : ${meaningLangLexemes}" th:classappend="${meaninglexemeIter.last ? '' : 'mb-1'}">
                       <div class="row">
                         <div class="col-12">
-                          <a th:href="@{${@viewUtil.getSearchUri(sessionBean, searchMode, meaningLexeme.word, meaningLexeme.homonymNr, meaningLexeme.lang)}}" class="matching-word "
-                             th:classappend="${meaningLexeme.wordId == wordId ? 'match' : ''}">
-                            <span th:utext="${@viewUtil.getWordValueMarkup(meaningLexeme)}">tee</span>
+                          <a th:href="@{${@viewUtil.getSearchUri(sessionBean, searchMode, meaningLexeme.word, meaningLexeme.homonymNr, meaningLexeme.lang)}}"
+                             th:classappend="${meaningLexeme.wordId == wordId ? 'word-matches-search' : ''}"
+                             th:utext="${@viewUtil.getWordValueMarkup(meaningLexeme)}">
+                              tee
                           </a>
-                          <span class="text-small" th:if="${meaningLexeme.valueState != null}" th:text="${meaningLexeme.valueState.value}"></span>
+                          <span
+                            class="meaning-reliability"
+                            th:if="${meaningLexeme.valueState != null}"
+                            th:classappend="
+                            ${meaningLexeme.valueState.code == 'eelistatud' ? 'meaning-reliability--green' : ''}
+                            + ${(meaningLexeme.valueState.code == 'väldi' or meaningLexeme.valueState.code == 'endine') ? 'meaning-reliability--red' : ''}
+                            "
+                            >
+                            <i class="fa" aria-hidden="true"
+                            th:if="${#lists.contains({'eelistatud', 'väldi', 'endine'}, meaningLexeme.valueState.code)}"
+                            th:classappend="
+                            ${meaningLexeme.valueState.code == 'eelistatud' ? 'fa-check' : ''}
+                            + ${(meaningLexeme.valueState.code == 'väldi' or meaningLexeme.valueState.code == 'endine') ? 'fa-ban' : ''}
+                            "></i>
+                            <span th:text="${meaningLexeme.valueState.value}"></span>
+                          </span>
                           <th:block th:if="${meaningLexeme.showWordDataAsHidden}">
-                            <button type="button" class="btn btn-icon btn-sm" data-toggle="tooltip" data-html="true"
-                                    th:title="${@viewUtil.getPosesAndGenderTooltipHtml(meaningLexeme.poses, meaningLexeme.gender)}">
-                              <i class="fas fa-info-circle"></i>
+                            <button type="button" class="meaning-data__popover-trigger" data-toggle="popover" data-html="true"
+                                th:title="#{label.meaning.grammar.contents}"
+                                th:aria-label="#{label.meaning.grammar.contents}"
+                                th:data-content="${@viewUtil.getPosesAndGenderTooltipHtml(meaningLexeme.poses, meaningLexeme.gender)}">
+                                <span aria-hidden="true">
+                                  &#x2022;&#x2022;&#x2022;
+                                </span>
                             </button>
                           </th:block>
-                        </div>
+                          <th:block th:if="${not #lists.isEmpty(meaningLexeme.registers)}">
+                            <span class="meaning-data__word-info" th:each="register,registerIter : ${meaningLexeme.registers}" th:text="${register.value + (registerIter.last ? '' : ', ')}"></span>
+                          </th:block>
+                          <th:block th:if="${not #lists.isEmpty(meaningLexeme.registers) and not #lists.isEmpty(meaningLexeme.wordTypes)}">
+                            <span class="meaning-data__word-info">, </span>
+                          </th:block>
+                          <th:block th:if="${not #lists.isEmpty(meaningLexeme.wordTypes)}">
+                            <span class="meaning-data__word-info" th:each="wordType,wordTypeIter : ${meaningLexeme.wordTypes}" th:utext="${wordType.value + (wordTypeIter.last ? '' : ', ')}"></span>
+                          </th:block>
+                      </div>
                       </div>
                       <div class="row text-small" th:if="${meaningLexeme.reliability != null}">
                         <div class="col">
@@ -287,7 +316,6 @@
                           <span class="definition-sources">
                             <th:block th:each="sourceLink,sourceLinkIter : ${meaningLexeme.lexemeSourceLinks}">
                               <th:block th:replace="common-app :: source-link"></th:block>
-                              <span th:unless="${sourceLinkIter.last}">,</span>
                             </th:block>
                           </span>
                         </div>
@@ -309,23 +337,6 @@
                           <span th:text="${meaningLexeme.gender.value}"></span>
                         </div>
                       </div>
-                      <div class="row" th:if="${not #lists.isEmpty(meaningLexeme.poses) && meaningLexeme.showPoses && !meaningLexeme.showWordDataAsHidden}">
-                        <div class="col">
-                          <span class="tag" th:each="pos : ${meaningLexeme.poses}" th:text="${pos.value}"></span>
-                        </div>
-                      </div>
-                      <div class="row" th:if="${not #lists.isEmpty(meaningLexeme.registers)}">
-                        <div class="col">
-                          <span class="domain register mr-1 mb-1" th:each="register,registerIter : ${meaningLexeme.registers}" th:text="${register.value + (registerIter.last ? '' : ', ')}"></span>
-                        </div>
-                      </div>
-                      <div class="row" th:if="${not #lists.isEmpty(meaningLexeme.wordTypes)}">
-                        <div class="col">
-                          <span class="tag my-1">
-                            <span th:each="wordType,wordTypeIter : ${meaningLexeme.wordTypes}" th:utext="${wordType.value + (wordTypeIter.last ? '' : ', ')}"></span>
-                          </span>
-                        </div>
-                      </div>
                       <th:block th:if="${not #lists.isEmpty(meaningLexeme.usages)}">
                         <div class="dependencies mt-2">
                           <div class="dependence-group">
@@ -336,7 +347,7 @@
                                 <div class="example-sentence-wrap">
                                   <span class="example-text example-text-w-audio">
                                     <span class="example-text-value" th:utext="${usage.valuePrese}"></span>
-                                    <button class="btn btn-speaker" th:aria-label="|#{aria.listen} - ${usage.value}|" th:if="${usage.putOnSpeaker}"
+                                    <button class="btn btn-speaker btn-speaker--inactive" th:aria-label="|#{aria.listen} - ${usage.value}|" th:if="${usage.putOnSpeaker}"
                                             th:data-words="${usage.value}"
                                             th:attr="onclick=${usage.putOnSpeaker ? 'generateAudioAndPlay(this)' : ''}">
                                       <span class="icon icon-speaker"></span>
@@ -360,7 +371,7 @@
                                     <div class="example-sentence-wrap">
                                       <span class="example-text example-text-w-audio">
                                         <span class="example-text-value" th:utext="${usage.valuePrese}"></span>
-                                        <button class="btn btn-speaker" th:aria-label="|#{aria.listen} - ${usage.value}|" th:if="${usage.putOnSpeaker}" th:data-words="${usage.value}"
+                                        <button class="btn btn-speaker btn-speaker--inactive" th:aria-label="|#{aria.listen} - ${usage.value}|" th:if="${usage.putOnSpeaker}" th:data-words="${usage.value}"
                                                 th:attr="onclick=${usage.putOnSpeaker ? 'generateAudioAndPlay(this)' : ''}">
                                           <span class="icon icon-speaker"></span>
                                         </button>
@@ -444,7 +455,6 @@
                                       <span class="definition-sources">
                                         <th:block th:each="sourceLink,sourceLinkIter : ${note.sourceLinks}">
                                           <th:block th:replace="common-app :: source-link"></th:block>
-                                          <span th:unless="${sourceLinkIter.last}">, </span>
                                         </th:block>
                                       </span>
                                     </th:block>

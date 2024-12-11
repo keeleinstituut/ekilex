@@ -154,9 +154,8 @@
   }
   @include media-breakpoint-up(md) {
     display: flex;
-    margin-bottom: -15px;
-    overflow: hidden;
-    overflow-x: scroll;
+    overflow-y: clip;
+    overflow-x: auto;
     white-space: nowrap;
     background: none;
   }

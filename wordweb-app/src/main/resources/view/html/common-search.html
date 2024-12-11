@@ -87,7 +87,7 @@
     </div>
   </th:block>
   <th:block th:fragment="homonyms">
-    <div th:if="${(wordsData.resultsExist)}" class="row overflow-hidden homonym-panel" th:class="${wordsData.singleResult ? 'd-none border-0' : 'row overflow-hidden homonym-panel'}">
+    <div th:if="${wordsData.resultsExist}" th:class="${wordsData.singleResult ? 'd-none' : 'overflow-hidden homonym-panel'}">
       <button type="button" class="homonym-list-toggle d-flex d-md-none" id="homonymListToggleButton">Nupu sisu</button>
       <ul class="homonym-list list-unstyled w-100">
         <li class="homonym-list-item" th:each="word : ${wordsData.wordMatchWords}">
@@ -114,12 +114,12 @@
     </div>
   </th:block>
   <th:block th:fragment="word-data">
-    <div class="col-12 content-title d-flex align-items-center flex-wrap position-relative">
-      <h1 class="mb-0 font-weight-bold d-flex align-items-start align-items-lg-center">
-        <span class="additional-meta lang-code lang-code-sm mt-2 mt-lg-0" th:with="langData=${@viewUtil.getLangData(wordData.word.lang)}" th:text="${langData.codeIso2}" th:title="${langData.label}" data-toggle="tooltip"></span>
-        <span class="homonym-name" th:utext="${@viewUtil.getWordValueMarkup(wordData.word)}">tee</span>
+    <div class="d-flex align-items-center flex-wrap">
+      <span class="search-tag mr-2" th:with="langData=${@viewUtil.getLangData(wordData.word.lang)}" th:text="${langData.codeIso2}" th:title="${langData.label}" data-toggle="tooltip"></span>
+      <h1 class="mb-0 font-weight-bold d-flex align-items-start align-items-lg-center mr-2" th:utext="${@viewUtil.getWordValueMarkup(wordData.word)}">
+        tee
       </h1>
-      <span class="word-details-homonym-nr d-none" th:aria-label="|#{aria.homonym} ${wordData.word.homonymNr}|" th:text="${wordData.word.homonymNr}">1</span>
+      <span class="word-details-homonym-nr d-none mr-2" th:aria-label="|#{aria.homonym} ${wordData.word.homonymNr}|" th:text="${wordData.word.homonymNr}">1</span>
       <button th:aria-label="|#{aria.listen} - ${wordData.word.word}|" class="btn btn-speaker"
               th:if="${wordData.firstAvailableAudioFile != null}"
               th:data-url-to-audio="@{'/files/audio/' + ${wordData.firstAvailableAudioFile}}" onclick="generateAudioAndPlay(this)">
@@ -127,17 +127,13 @@
       </button>
       <span id="spellingLine" class="mr-2" th:if="${wordData.word.vocalForm != null}" th:text="${wordData.word.vocalForm}"></span>
       <th:block th:each="wordType : ${wordData.word.wordTypes}" th:if="${not #lists.isEmpty(wordData.word.wordTypes)}">
-        <span class="tag my-1" th:text="${wordType.value}"></span>
+        <span class="search-tag mr-2" th:text="${wordType.value}"></span>
       </th:block>
-      <span class="tag my-1" th:text="${wordData.word.displayMorph.value}" th:if="${wordData.word.displayMorph != null}">lühend</span>
-      <span class="tag my-1" th:text="${wordData.word.gender.value}" th:if="${wordData.word.gender != null}">sugu</span>
+      <span class="search-tag mr-2" th:text="${wordData.word.displayMorph.value}" th:if="${wordData.word.displayMorph != null}">lühend</span>
+      <span class="search-tag mr-2" th:text="${wordData.word.gender.value}" th:if="${wordData.word.gender != null}">sugu</span>
       <th:block th:each="summarisedPos : ${wordData.word.summarisedPoses}" th:if="${not #lists.isEmpty(wordData.word.summarisedPoses)}">
-        <span class="tag my-1" th:text="${summarisedPos.value}"></span>
+        <span class="search-tag mr-2" th:text="${summarisedPos.value}"></span>
       </th:block>
-      <div th:title="#{label.tooltip.last_modified}" class="ml-auto content-title-date d-none d-md-block" data-toggle="tooltip" th:if="${not #lists.isEmpty(wordData.lexLexemes)}">
-        <i class="fa fa-edit"></i>
-        <span th:text="${#dates.format(wordData.word.manualEventOn, 'dd.MM.yyyy')}"></span>
-      </div>
     </div>
   </th:block>
   <th:block th:fragment="no-lexemes-exist">
@@ -151,5 +147,82 @@
       </div>
     </div>
   </th:block>
+  <th:block th:fragment="word-data-accordion">
+    <section class="word-panel">
+      <button class="word-panel__toggle" data-toggle="collapse" th:data-target="${'#' + panelId}" aria-expanded="true" th:aria-controls="${panelId}">
+        <div class="word-panel__toggle-text">
+          <i class="fa fa-chevron-down word-panel__toggle-icon"></i> 
+          <span th:text="${panelTitle}">EKI ühendsõnastik 2020</span>
+        </div>
+        <div class="word-panel__modified" th:if="${lastModified != null}">
+          <span class="word-panel__modified-prefix" th:text="#{label.tooltip.last_modified}"></span>
+          <span th:text="${lastModified}"></span>
+        </div>
+      </button>
+      <div
+        class="word-panel__content collapse show"
+        th:classappend="|${collapseName != null ? 'user-preferences' : ''}|"
+        th:data-name="${collapseName}"
+        th:id="${panelId}">
+        <th:block th:replace="${panelContent}"></th:block>
+      </div>
+    </section>
+  </th:block>
+
+  <th:block th:fragment="lex-detail-view">
+    <div th:if="${wordData.rusHeadword}" class="alert bg-warning text-black px-3 py-1 d-flex align-items-center update-alert flex-nowrap" role="alert">
+      <i class="fa fa-exclamation-triangle small mr-2 mt-1" aria-hidden="true"></i>
+      <span th:text="#{warning.eki.rus}">See ei ole valmis sõnastik.</span>
+    </div>
+    <section class="level-3-panel meaning-panel d-flex flex-row" th:each="lexeme : ${wordData.lexLexemes}">
+      <div th:replace="lex-details :: lexeme-data"></div>
+    </section>
+    <div th:replace="common-search :: no-lexemes-exist"></div>
+  </th:block>
+
+  <th:block th:fragment="lex-detail-view-simple">
+    <th:block th:if="${wordData.lexemesExist}">
+      <div th:if="${not #lists.isEmpty(wordData.lexLexemes)}">
+        <section class="level-3-panel meaning-panel d-flex flex-row" th:each="lexeme : ${wordData.lexLexemes}">
+          <div th:replace="lex-details :: lexeme-data"></div>
+        </section>
+      </div>
+    </th:block>
+    <div th:replace="common-search :: no-lexemes-exist"></div>
+  </th:block>
+
+  <th:block th:fragment="term-detail-view">
+    <th:block th:each="lexeme : ${wordData.termLexemes}" th:with="
+    isProTerm = ${@viewUtil.isProTermData(lexeme)},
+    isLimTerm = ${@viewUtil.isLimTermData(lexeme)}">
+    <div class="word-panel__toggle-wrapper">
+      <button class="word-panel__toggle word-panel__toggle--nested" data-toggle="collapse"
+        th:data-target="|#term-lexeme-panel-${lexeme.meaningId}" aria-expanded="true"
+        th:aria-controls="|term-lexeme-panel-${lexeme.meaningId}|">
+        <div class="word-panel__toggle-text">
+          <i class="fa fa-chevron-down word-panel__toggle-icon"></i>
+          <span th:text="${lexeme.datasetName}">EKI ühendsõnastik 2020</span>
+        </div>
+        <div class="meaning-data__modified">
+          <span>ID</span>
+          <span th:text="${lexeme.meaningId}" th:if="${isProTerm}"></span>
+          <span th:text="#{label.tooltip.last_modified}"></span>
+          <span class="meaning-data__date" th:text="${#dates.format(lexeme.meaningManualEventOn, 'dd.MM.yyyy')}"></span>
+        </div>
+      </button>
+      <a class="meaning-data__link" th:href="|@{/ds}/${lexeme.datasetCode}|" th:text="${lexeme.datasetName}">Aianduse terminibaas</a>
+    </div>
+    <div class="word-panel__content word-panel__content--padded collapse show"
+      th:id="|term-lexeme-panel-${lexeme.meaningId}|">
+      <th:block th:replace="term-details :: meaning-data"></th:block>
+    </div>
+</th:block>
+  </th:block>
+  <!-- lim term search currently removed
+  <th:block th:fragment="lim-term-detail-view">
+    <th:block th:each="lexeme : ${wordData.limTermLexemes}">
+      <div th:replace="term-details :: meaning-data"></div>
+    </th:block>
+  </th:block> -->
 </body>
 </html>

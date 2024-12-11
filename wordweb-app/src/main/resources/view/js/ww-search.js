@@ -158,7 +158,7 @@ $(window).on('load', function() {
 
 function initStickyScrollPanel() {
 	const panel = document.querySelector(".sticky-scroll-panel");
-	const tags = panel.querySelector(".sticky-scroll-panel__tags");
+	const tags = panel?.querySelector(".sticky-scroll-panel__tags");
   if (!tags) {
 		return;
   }
