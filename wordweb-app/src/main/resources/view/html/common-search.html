@@ -161,8 +161,7 @@
       </button>
       <div
         class="word-panel__content collapse show"
-        th:classappend="|${collapseName != null ? 'user-preferences' : ''} ${
-          padContent != null ? 'word-panel__content--padded' : ''}|"
+        th:classappend="|${collapseName != null ? 'user-preferences' : ''}|"
         th:data-name="${collapseName}"
         th:id="${panelId}">
         <th:block th:replace="${panelContent}"></th:block>
@@ -193,9 +192,31 @@
   </th:block>
 
   <th:block th:fragment="term-detail-view">
-    <th:block th:each="lexeme : ${wordData.termLexemes}">
-      <div th:replace="term-details :: meaning-data"></div>
-    </th:block>
+    <th:block th:each="lexeme : ${wordData.termLexemes}" th:with="
+    isProTerm = ${@viewUtil.isProTermData(lexeme)},
+    isLimTerm = ${@viewUtil.isLimTermData(lexeme)}">
+    <div class="word-panel__toggle-wrapper">
+      <button class="word-panel__toggle word-panel__toggle--nested" data-toggle="collapse"
+        th:data-target="|#term-lexeme-panel-${lexeme.meaningId}" aria-expanded="true"
+        th:aria-controls="|term-lexeme-panel-${lexeme.meaningId}|">
+        <div class="word-panel__toggle-text">
+          <i class="fa fa-chevron-down word-panel__toggle-icon"></i>
+          <span th:text="${lexeme.datasetName}">EKI ühendsõnastik 2020</span>
+        </div>
+        <div class="meaning-data__modified">
+          <span>ID</span>
+          <span th:text="${lexeme.meaningId}" th:if="${isProTerm}"></span>
+          <span th:text="#{label.tooltip.last_modified}"></span>
+          <span class="meaning-data__date" th:text="${#dates.format(lexeme.meaningManualEventOn, 'dd.MM.yyyy')}"></span>
+        </div>
+      </button>
+      <a class="meaning-data__link" th:href="|@{/ds}/${lexeme.datasetCode}|" th:text="${lexeme.datasetName}">Aianduse terminibaas</a>
+    </div>
+    <div class="word-panel__content word-panel__content--padded collapse show"
+      th:id="|term-lexeme-panel-${lexeme.meaningId}|">
+      <th:block th:replace="term-details :: meaning-data"></th:block>
+    </div>
+</th:block>
   </th:block>
   <!-- lim term search currently removed
   <th:block th:fragment="lim-term-detail-view">

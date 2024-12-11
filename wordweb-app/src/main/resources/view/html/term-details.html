@@ -1,23 +1,10 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <body class="survey-active">
-  <th:block th:fragment="meaning-data" th:with="
-            isProTerm = ${@viewUtil.isProTermData(lexeme)},
-            isLimTerm = ${@viewUtil.isLimTermData(lexeme)}">
-    <div th:id="|lexeme-section-${lexeme.lexemeId}|">
-      <div class="d-flex justify-content-between align-items-center">
-        <h6 class="font-weight-bold">
-          <a th:href="|@{/ds}/${lexeme.datasetCode}|" th:text="${lexeme.datasetName}">Aianduse terminibaas</a>
-        </h6>
-        <div class="meaning-data__modified">
-          <span>ID</span>
-          <a th:href="${@viewUtil.getEkilexLimTermMeaningDetailsUrl(lexeme.meaningId)}" th:text="${lexeme.meaningId}" th:if="${isLimTerm}"></a>
-          <span th:text="${lexeme.meaningId}" th:if="${isProTerm}"></span>
-          <span th:text="#{label.tooltip.last_modified}"></span>
-          <span class="meaning-data__date" th:text="${#dates.format(lexeme.meaningManualEventOn, 'dd.MM.yyyy')}"></span>
-        </div>
-      </div>
+  <th:block th:fragment="meaning-data">
+    <div>
       <div>
+        <a th:href="${@viewUtil.getEkilexLimTermMeaningDetailsUrl(lexeme.meaningId)}" th:text="${lexeme.meaningId}" th:if="${isLimTerm}"></a>
         <div class="meaning">
           <div class="definition-row">
             <th:block th:if="${not #lists.isEmpty(lexeme.domains)}">

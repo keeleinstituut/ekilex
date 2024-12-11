@@ -205,14 +205,20 @@
     flex-wrap: wrap;
     background-color: var(--color-white);
     border: 0;
-    border-bottom: 1px solid var(--color-bluish-gray);
-    padding: 16px;
-    border-radius: 8px 8px 0 0;
-    width: 100%;
+    padding: 16px 8px 16px 16px;
+    width: auto;
     gap: 8px;
     color: var(--color-dark-blue);
     font-weight: 700;
     line-height: 19px;
+    flex-grow: 1;
+    
+    &:not(&--nested) {
+      border-bottom: 1px solid var(--color-bluish-gray);
+      border-radius: 8px 8px 0 0;
+      padding: 16px;
+      width: 100%;
+    }
 
     &-icon {
       font-size: 1rem;
@@ -228,6 +234,12 @@
       gap: 8px;
       align-items: center;
     }
+
+    &-wrapper {
+      display: flex;
+      align-items: center;
+      padding-right: 16px;
+    }
   }
 
   &__modified {
@@ -240,7 +252,10 @@
 
     &-prefix {
       color: var(--color-darker-gray);
-      @include media-breakpoint-down(sm) {
+    }
+    @include media-breakpoint-down(sm) {
+      font-size: .875rem;
+      &-prefix {
         display: none;
       }
     }
@@ -251,7 +266,7 @@
     border-radius: 0 0 8px 8px;
 
     &--padded {
-      padding: 16px;
+      padding: 4px 36px 16px;
     }
 
     & .level-3-panel:last-child {
@@ -339,6 +354,13 @@
     & + & {
       margin-left: 4px;
     }
+  }
+
+  &__link {
+    font-size: .625rem;
+    font-weight: 500;
+    line-height: 12.1px;
+    color: var(--color-blue-300);
   }
 }
 
