@@ -17398,7 +17398,7 @@ body {
   flex-wrap: wrap;
   background-color: var(--color-white);
   border: 0;
-  padding: 16px 8px 16px 16px;
+  padding: 16px 4px 16px 16px;
   width: auto;
   gap: 8px;
   color: var(--color-dark-blue);
@@ -17433,6 +17433,8 @@ body {
   display: flex;
   align-items: center;
   padding-right: 16px;
+  gap: 4px;
+  background-color: var(--color-white);
 }
 
 .word-panel__modified {
@@ -17556,6 +17558,7 @@ body {
   font-weight: 500;
   line-height: 12.1px;
   color: var(--color-blue-300);
+  text-align: right;
 }
 
 .meaning-data__popover-trigger {
