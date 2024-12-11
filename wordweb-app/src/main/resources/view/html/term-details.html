@@ -281,9 +281,13 @@
                             <span th:text="${meaningLexeme.valueState.value}"></span>
                           </span>
                           <th:block th:if="${meaningLexeme.showWordDataAsHidden}">
-                            <button type="button" class="btn btn-icon btn-sm" data-toggle="tooltip" data-html="true"
-                                    th:title="${@viewUtil.getPosesAndGenderTooltipHtml(meaningLexeme.poses, meaningLexeme.gender)}">
-                              <i class="fas fa-info-circle"></i>
+                            <button type="button" class="meaning-data__popover-trigger" data-toggle="popover" data-html="true"
+                                th:title="#{label.meaning.grammar.contents}"
+                                th:aria-label="#{label.meaning.grammar.contents}"
+                                th:data-content="${@viewUtil.getPosesAndGenderTooltipHtml(meaningLexeme.poses, meaningLexeme.gender)}">
+                                <span aria-hidden="true">
+                                  &#x2022;&#x2022;&#x2022;
+                                </span>
                             </button>
                           </th:block>
                           <th:block th:if="${not #lists.isEmpty(meaningLexeme.registers)}">
@@ -331,11 +335,6 @@
                       <div class="row" th:if="${meaningLexeme.gender != null && !meaningLexeme.showWordDataAsHidden}">
                         <div class="col">
                           <span th:text="${meaningLexeme.gender.value}"></span>
-                        </div>
-                      </div>
-                      <div class="row" th:if="${not #lists.isEmpty(meaningLexeme.poses) && meaningLexeme.showPoses && !meaningLexeme.showWordDataAsHidden}">
-                        <div class="col">
-                          <span class="tag" th:each="pos : ${meaningLexeme.poses}" th:text="${pos.value}"></span>
                         </div>
                       </div>
                       <th:block th:if="${not #lists.isEmpty(meaningLexeme.usages)}">

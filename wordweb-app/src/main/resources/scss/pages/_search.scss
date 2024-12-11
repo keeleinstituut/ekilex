@@ -362,6 +362,18 @@
     line-height: 12.1px;
     color: var(--color-blue-300);
   }
+
+  &__popover-trigger {
+    background-color: var(--color-gray-010);
+    border-radius: 100px;
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    color: var(--color-darker-gray);
+    border: 0;
+    padding: 0 4px;
+    font-size: 0.75rem;
+  }
 }
 
 .word-notes {

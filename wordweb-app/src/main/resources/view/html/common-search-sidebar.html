@@ -293,7 +293,7 @@
       </div>
     </section>
   </th:block>
-  <section class="level-3-panel" th:fragment="corp">
+  <th:block th:fragment="corp">
     <div class="corp-panel">
       <div class="heading-wrapper">
         <h5 class="font-weight-bold mb-0 d-flex align-items-center text-dark">
@@ -333,8 +333,8 @@
     <script th:inline="javascript">
 		$('.corp-panel [data-toggle="tooltip"]').tooltip();
 	</script>
-  </section>
-  <section class="level-3-panel" th:fragment="corp_trans">
+  </th:block>
+  <th:block th:fragment="corp_trans">
     <div class="corp-panel">
       <div class="heading-wrapper">
         <h5 class="font-weight-bold mb-0 d-flex align-items-center text-dark">
@@ -369,7 +369,7 @@
     <script th:inline="javascript">
 		$('.corp-panel [data-toggle="tooltip"]').tooltip();
 	</script>
-  </section>
+  </th:block>
   <th:block th:fragment="corp_rus">
     <div class="corp-panel">
       <div class="heading-wrapper">
