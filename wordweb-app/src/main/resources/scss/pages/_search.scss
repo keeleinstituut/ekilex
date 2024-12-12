@@ -429,12 +429,31 @@
   font-weight: 500;
   height: 20px;
   color: var(--color-even-darker-gray);
-
+  margin-left: 8px;
   &--green {
     color: var(--color-success-green);
   }
 
   &--red {
     color: var(--color-error-red);
+  }
+}
+
+
+.search-filter {
+  &__menu {
+    grid-template-columns: repeat(3, minmax(150px, 1fr));
+    max-width: 997px;
+    overflow-y: auto;
+    overflow-x: clip;
+    max-height: 350px;
+    padding: 20px;
+    &.show {
+      display: grid;
+    }
+  }
+
+  &__item {
+    height: max-content;
   }
 }

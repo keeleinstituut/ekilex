@@ -64,6 +64,46 @@
       <button class="btn btn-link px-0 ml-1 word-form" th:each="word,wordIter : ${wordsData.suggestedWordValues}" th:text="${word} + ${wordIter.last ? '' : ','}" th:data-word="${word}"></button>
     </div>
   </th:block>
+  <th:block th:fragment="dataset-filter">
+    <div class="dropdown">
+      <button class="dropdown-toggle search-filter__toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" id="dataset-filters-popover">
+        <span class="search-filter__toggle-label" th:text="#{label.filter.dataset}">Sõnakogud</span>
+        <span class="search-filter__toggle-count"></span>
+      </button>
+      <div class="dropdown-menu search-filter__menu" aria-labelledby="dataset-filters-popover">
+        <th:block th:each="filterElem : ${datasetFilter}">
+          <div class="search-filter__item">
+            <input type="checkbox" th:id="${filterElem.code}" th:data-filter-code="${filterElem.code}" th:name="${filterElem.value}" th:checked="${filterElem.selected}" />
+            <label th:for="${filterElem.code}" th:text="${filterElem.value}">value</label>
+          </div>
+          <!-- <a href="#" th:id="${'dataset-' + filterElem.code}" th:data-filter-code="${filterElem.code}" th:text="${filterElem.value}"
+            class="dropdown-item dropdown-item-multiselect px-2 text-wrap py-1" th:classappend="${filterElem.selected ? 'active' : ''}">Sõnakogu</a>
+          <th:block th:if="${filterElem.addSeparator}">
+            <div class="dropdown-divider"></div>
+            <div class="text-muted font-italic pl-1" th:text="#{label.pick.some}">vali üks või mitu</div>
+          </th:block> -->
+        </th:block>
+      </div>
+    </div>
+    <!-- <label class="mr-2 my-0 p-0" th:text="#{label.filter.dataset}">Sõnakogud</label>
+    <div class="dropdown">
+      <button class="btn btn-link dropdown-toggle p-0" type="button" id="datasetMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+        <span id="selected-datasets" th:text="${selectedDatasetsStr}"></span>
+      </button>
+      <div class="dropdown-menu py-0" aria-labelledby="datasetMenuButton">
+        <div class="dropdown-menu-scroll px-2 py-1">
+          <th:block th:each="filterElem : ${datasetFilter}">
+            <a href="#" th:id="${'dataset-' + filterElem.code}" th:data-filter-code="${filterElem.code}" th:text="${filterElem.value}"
+              class="dropdown-item dropdown-item-multiselect px-2 text-wrap py-1" th:classappend="${filterElem.selected ? 'active' : ''}">Sõnakogu</a>
+            <th:block th:if="${filterElem.addSeparator}">
+              <div class="dropdown-divider"></div>
+              <div class="text-muted font-italic pl-1" th:text="#{label.pick.some}">vali üks või mitu</div>
+            </th:block>
+          </th:block>
+        </div>
+      </div>
+    </div> -->
+  </th:block>
   <th:block th:fragment="lang-filter">
     <div class="mr-auto mr-md-2 d-flex align-items-center flex-wrap">
       <label class="mr-2 my-0 p-0" th:text="#{label.filter.lang}">Keel</label>
@@ -210,7 +250,10 @@
           <span class="meaning-data__date" th:text="${#dates.format(lexeme.meaningManualEventOn, 'dd.MM.yyyy')}"></span>
         </div>
       </button>
-      <a class="meaning-data__link" th:href="|@{/ds}/${lexeme.datasetCode}|" th:text="${lexeme.datasetName}">Aianduse terminibaas</a>
+      <a
+        class="meaning-data__link"
+        th:href="|@{/ds}/${lexeme.datasetCode}|"
+        th:text="#{label.view.dataset}">Vaata sõnakogu</a>
     </div>
     <div class="word-panel__content word-panel__content--padded collapse show"
       th:id="|term-lexeme-panel-${lexeme.meaningId}|">
