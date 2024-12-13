@@ -65,17 +65,18 @@
     </div>
   </th:block>
   <th:block th:fragment="dataset-filter">
-    <div class="dropdown">
+    <div class="dropdown search-filter__wrapper">
       <button class="dropdown-toggle search-filter__toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" id="dataset-filters-popover">
         <span class="search-filter__toggle-label" th:text="#{label.filter.dataset}">Sõnakogud</span>
         <span class="search-filter__toggle-count"></span>
       </button>
       <div class="dropdown-menu search-filter__menu" aria-labelledby="dataset-filters-popover">
         <th:block th:each="filterElem : ${datasetFilter}">
-          <div class="search-filter__item">
+          <div class="search-filter__item" th:classappend="${filterElem.addSeparator ? 'search-filter__item--full-row' : ''}">
             <input type="checkbox" th:id="${filterElem.code}" th:data-filter-code="${filterElem.code}" th:name="${filterElem.value}" th:checked="${filterElem.selected}" />
             <label th:for="${filterElem.code}" th:text="${filterElem.value}">value</label>
           </div>
+          <div class="search-filter__divider" th:if="${filterElem.addSeparator}"></div>
           <!-- <a href="#" th:id="${'dataset-' + filterElem.code}" th:data-filter-code="${filterElem.code}" th:text="${filterElem.value}"
             class="dropdown-item dropdown-item-multiselect px-2 text-wrap py-1" th:classappend="${filterElem.selected ? 'active' : ''}">Sõnakogu</a>
           <th:block th:if="${filterElem.addSeparator}">

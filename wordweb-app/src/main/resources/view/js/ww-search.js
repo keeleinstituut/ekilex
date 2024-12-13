@@ -152,6 +152,7 @@ $(document).on("click", ".word-grouper-wrapper .btn-collapse", function() {
 
 $(window).on('load', function() {
 	initStickyScrollPanel();
+	initDatasetDropdown();
 })
 
 
@@ -218,4 +219,12 @@ function initStickyScrollPanel() {
       }
     }, 50);
   });
+}
+
+
+function initDatasetDropdown() {
+	// Prevent checkbox label from closing menu
+	$(document).on('click', '.search-filter__menu label', function(e) {
+		e.stopPropagation();
+	});
 }
