@@ -17395,7 +17395,6 @@ body {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  flex-wrap: wrap;
   background-color: var(--color-white);
   border: 0;
   padding: 16px 4px 16px 16px;
@@ -17427,6 +17426,7 @@ body {
   display: flex;
   gap: 8px;
   align-items: center;
+  hyphens: auto;
 }
 
 .word-panel__toggle-wrapper {
@@ -17619,7 +17619,7 @@ body {
   font-weight: 500;
   height: 20px;
   color: var(--color-even-darker-gray);
-  margin-left: 8px;
+  margin-left: 16px;
 }
 
 .meaning-reliability--green {
@@ -17749,6 +17749,10 @@ body {
 .search-filter__tag i {
   font-size: 1rem;
   color: var(--color-light-gray);
+}
+
+.capitalize-first::first-letter {
+  text-transform: capitalize;
 }
 
 .news-page {

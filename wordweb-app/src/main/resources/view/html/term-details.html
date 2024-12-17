@@ -99,7 +99,7 @@
                           <th:block th:if="${not #lists.isEmpty(definition.notes)}">
                             <button class="word-notes__toggle word-notes__toggle--top-margin" data-toggle="collapse" th:data-target="${'#definition-notes-' + definition.definitionId}" aria-expanded="true" th:aria-controls="${'definition-notes-' + definition.definitionId}">
                               <i class="fa fa-chevron-down word-notes__toggle-icon" aria-hidden="true"></i>
-                              <span th:text="#{label.definition.note}"></span>
+                              <span th:text="#{label.public.note}"></span>
                             </button>
                             <ul class="word-notes__list collapse show" th:id="${'definition-notes-' + definition.definitionId}">
                               <li class="d-flex" th:each="note : ${definition.notes}">
@@ -125,8 +125,7 @@
           </div>
           <th:block th:if="${not #maps.isEmpty(lexeme.meaningNotesByLang)}">
             <div class="row">
-              <div class="col-6 mb-1">
-                <b th:unless="${isLimTerm}" th:text="#{label.public.note}" class="text-gray-350 text-medium">Hea teada</b>
+              <div class="col-6 mb-1" th:if="${isLimTerm}">
                 <b th:if="${isLimTerm}" th:text="#{label.limterm.note}">Arutelu</b>
               </div>
               <div class="col-12">
@@ -142,7 +141,7 @@
                         aria-expanded="true"
                         th:aria-controls="${'lexeme-note-entry-' + lexeme.lexemeId + '-' + noteEntry.key}">
                         <i class="fa fa-chevron-down word-notes__toggle-icon"></i>
-                        <span th:text="#{label.definition.note}"></span>
+                        <span th:text="#{label.public.note}"></span>
                       </button>
                       <ul
                         class="word-notes__list collapse show"
@@ -225,7 +224,7 @@
           <th:block th:if="${not #lists.isEmpty(lexeme.relatedMeanings)}">
             <div class="related-meanings mb-2">
               <div class="relation-list d-flex flex-row flex-wrap" th:each="relationType, relationTypeIter : ${lexeme.relatedMeaningsByType.keySet()}">
-                <span class="mr-2" th:text="${relationType.value}"></span>
+                <span class="mr-2 capitalize-first" th:text="${relationType.value}"></span>
                 <th:block th:each="relation, relationIter : ${lexeme.relatedMeaningsByType.get(relationType)}">
                   <div class="relation-item mr-1">
                     <a th:href="@{${@viewUtil.getSearchUri(sessionBean, searchMode, relation.word, relation.homonymNr, relation.lang)}}">
@@ -282,7 +281,6 @@
                           </span>
                           <th:block th:if="${meaningLexeme.showWordDataAsHidden}">
                             <button type="button" class="meaning-data__popover-trigger" data-toggle="popover" data-html="true"
-                                th:title="#{label.meaning.grammar.contents}"
                                 th:aria-label="#{label.meaning.grammar.contents}"
                                 th:data-content="${@viewUtil.getPosesAndGenderTooltipHtml(meaningLexeme.poses, meaningLexeme.gender)}">
                                 <span aria-hidden="true">
