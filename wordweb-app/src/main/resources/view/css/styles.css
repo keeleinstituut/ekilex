@@ -17667,12 +17667,14 @@ body {
 
 .search-filter__item label {
   margin: 0;
+  hyphens: auto;
 }
 
 .search-filter__item input {
   border-color: var(--color-dark-blue);
   width: 18px;
   height: 18px;
+  min-width: 18px;
 }
 
 .search-filter__item--full-row {
@@ -17691,6 +17693,33 @@ body {
   background-color: var(--color-bluish-gray);
   margin: 0 -20px;
   grid-column: 1 / -1;
+}
+
+.search-filter__toggle {
+  background: white;
+  border-radius: 8px;
+  padding: 4px 8px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 4px;
+}
+
+.search-filter__toggle::after {
+  margin-left: auto;
+}
+
+.search-filter__toggle-count {
+  background-color: var(--color-light-blue);
+  width: 16px;
+  height: 16px;
+  border-radius: 100px;
+  font-size: .75rem;
+  color: var(--color-dark-blue);
+}
+
+.search-filter__toggle-count:empty {
+  display: none;
 }
 
 .news-page {

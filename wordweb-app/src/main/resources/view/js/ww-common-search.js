@@ -3,6 +3,7 @@ $(document).ready(function() {
 	selectedHomonymItem.delay(500).queue(function() { }).trigger('click');
 	selectedHomonymItem.addClass("animation-target");
 	setSelectedHomonymValueForMobile(getSelectedHomonym().html());
+	initDatasetDropdown()
 	searchWordAutocomplete();
 	focusSearchInput();
 });
@@ -205,40 +206,9 @@ $(document).on("click", "a[id^='destin-lang-']", function(e) {
 	clickSearchIfInputExists();
 });
 
-$(document).on("click", "a[id^='dataset-']", function(e) {
-	var datasetCodeAll = "dsall";
-	var datasetCode = $(this).attr("data-filter-code");
-	if (datasetCode == datasetCodeAll) {
-		$("a[id^='dataset-']").removeClass("active");
-		$(this).addClass("active");
-	} else {
-		if ($(this).hasClass("active")) {
-			$(this).removeClass("active");
-			if ($("a[id^='dataset-']").hasClass("active") == false) {
-				$("a[id^='dataset-" + datasetCodeAll + "']").addClass("active");
-			}
-		} else {
-			$("a[id^='dataset-" + datasetCodeAll + "']").removeClass("active");
-			$(this).addClass("active");
-		}
-	}
-	var datasetCodesStr = $("a[id^='dataset-'].active").map(function(idx, element) {
-		return $(element).attr("data-filter-code");
-	}).get();
-	var selectedDatasetsStr = $("a[id^='dataset-'].active").text();
-	var selectedDatasetCount = $("a[id^='dataset-'].active").length;
-	if (selectedDatasetCount > 1) {
-		selectedDatasetsStr = selectedDatasetCount;
-	}
-	$("input[name='datasetCodesStr']").val(datasetCodesStr);
-	$("#selected-datasets").text(selectedDatasetsStr);
-	setSelectedWordHomonymNrAndLang();
-	clickSearchIfInputExists();
-});
-
 function setSelectedWordHomonymNrAndLang() {
-	var selectedWordHomonymNr = $("#selected-word-homonym-nr").val();
-	var selectedWordLang = $("#selected-word-lang").val();
+	const selectedWordHomonymNr = $("#selected-word-homonym-nr").val();
+	const selectedWordLang = $("#selected-word-lang").val();
 	$("input[name='selectedWordHomonymNr']").val(selectedWordHomonymNr);
 	$("input[name='selectedWordLang']").val(selectedWordLang);
 }
@@ -357,4 +327,82 @@ $.fn.tableTogglers = function() {
 		$(this).toggleClass('active');
 		checkStates();
 	});
+}
+
+
+const datasetAllCode = 'dsall'
+
+function getActiveDatasetCodes(container) {
+	if (!container) {
+		return [];
+	}
+	const activeCheckboxes = container?.querySelectorAll("input:checked");
+  if (!activeCheckboxes.length) {
+    return [];
+  }
+	// Join all dataset codes with a comma
+  const dataCodes = Array.from(activeCheckboxes).reduce((acc, checkbox, i) => {
+    acc += `${i > 0 ? "," : ""}${checkbox.dataset?.filterCode}`;
+    return acc;
+  }, "");
+  return [dataCodes, activeCheckboxes.length];
+}
+
+function updateDatasetFilterCount(codes, count) {
+	const element = document?.getElementById('dataset-filter-count');
+	if (element) {
+		element.innerText = codes !== datasetAllCode ? count : '';
+	}
+}
+
+
+function initDatasetDropdown() {
+	// Prevent checkbox label from closing menu
+	$(document).on('click', '.search-filter__menu', function(e) {
+		e.stopPropagation();
+	});
+
+	let menuContainer = document.getElementById('dataset-filters-popover')?.nextElementSibling
+	$(document).on("change", ".search-filter__menu input", function (e) {
+    e.stopPropagation();
+    if (!menuContainer) {
+      menuContainer = document.getElementById(
+        "dataset-filters-popover"
+      )?.nextElementSibling;
+    }
+    if (e.target?.dataset?.filterCode === datasetAllCode) {
+			// Clear all other inputs if the "All" choice is selected
+      const inputs = menuContainer.getElementsByTagName("input");
+      Array.from(inputs).forEach((input) => {
+        if (input?.dataset?.filterCode !== datasetAllCode) {
+          input.checked = false;
+        }
+      });
+    } else {
+			const inputAll = menuContainer.querySelector("#dataset-input-dsall");
+			// Make sure the "All" checkbox is unchecked if any other choice is selected
+      if (inputAll) {
+        inputAll.checked = false;
+      }
+    }
+  });
+
+
+	let [dataCodes, datasetCount] = getActiveDatasetCodes(menuContainer);
+	updateDatasetFilterCount(dataCodes, datasetCount);
+	$(document).on("hide.bs.dropdown", "#dataset-filter-wrapper", function () {
+    const [newCodes, newCount] = getActiveDatasetCodes(menuContainer);
+    if (newCodes !== dataCodes) {
+			// Push new search to another tick, otherwise the dropdown event keeps repeating
+      requestAnimationFrame(() => {
+				// Keep track of active codes so we don't search again if nothing changed
+				dataCodes = newCodes
+				datasetCount = newCount
+				updateDatasetFilterCount(dataCodes, datasetCount)
+        $("input[name='datasetCodesStr']").val(dataCodes);
+        setSelectedWordHomonymNrAndLang();
+        clickSearchIfInputExists();
+      });
+    }
+  });
 }
