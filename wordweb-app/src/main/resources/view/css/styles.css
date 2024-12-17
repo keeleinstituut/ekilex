@@ -17703,6 +17703,7 @@ body {
   align-items: center;
   justify-content: space-between;
   gap: 4px;
+  height: 28px;
 }
 
 .search-filter__toggle::after {
@@ -17720,6 +17721,34 @@ body {
 
 .search-filter__toggle-count:empty {
   display: none;
+}
+
+.search-filter__tags {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-left: 8px;
+}
+
+.search-filter__tag {
+  background-color: var(--color-white);
+  padding: 4px 8px;
+  border-radius: 100px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+  color: var(--color-dark-blue);
+  font-size: .875rem;
+  font-weight: 500;
+  border: 1px solid var(--color-bluish-gray);
+  height: 28px;
+  box-shadow: 0px 1px 2px 0px #15151514;
+}
+
+.search-filter__tag i {
+  font-size: 1rem;
+  color: var(--color-light-gray);
 }
 
 .news-page {

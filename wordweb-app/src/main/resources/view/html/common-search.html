@@ -82,26 +82,22 @@
     </div>
   </th:block>
   <th:block th:fragment="lang-filter">
-    <div class="mr-auto mr-md-2 d-flex align-items-center flex-wrap">
-      <label class="mr-2 my-0 p-0" th:text="#{label.filter.lang}">Keel</label>
-      <div class="dropdown">
-        <button class="btn btn-link dropdown-toggle p-0" type="button" id="destinLangMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-          <span id="selected-langs" th:text="${selectedLangsStr}"></span>
-        </button>
-        <div class="dropdown-menu px-3" aria-labelledby="destinLangMenuButton">
-          <th:block th:each="filterElem : ${langFilter}">
-            <a href="#" th:id="|destin-lang-${filterElem.code}|" class="dropdown-item px-2 py-1 dropdown-item-multiselect"
-               th:data-filter-code="${filterElem.code}" 
-               th:text="${filterElem.value}" 
-               th:classappend="${filterElem.selected ? 'active' : ''}">Keel</a>
-            <th:block th:if="${filterElem.addSeparator}">
-              <div class="dropdown-divider"></div>
-              <div class="text-muted font-italic pl-1" th:text="#{label.pick.some}">vali üks või mitu</div>
-            </th:block>
-          </th:block>
-        </div>
+    <div class="dropdown search-filter__wrapper" id="lang-filter-wrapper">
+      <button class="dropdown-toggle search-filter__toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" id="lang-filters-popover">
+        <span class="search-filter__toggle-label" th:text="#{label.filter.lang}">Keel</span>
+        <span class="search-filter__toggle-count" id="lang-filter-count"></span>
+      </button>
+      <div class="dropdown-menu search-filter__menu" aria-labelledby="lang-filters-popover">
+        <th:block th:each="filterElem : ${langFilter}">
+          <div class="search-filter__item" th:classappend="${filterElem.addSeparator ? 'search-filter__item--full-row' : ''}">
+            <input type="checkbox" th:id="|lang-input-${filterElem.code}|" th:data-filter-code="${filterElem.code}" th:name="${filterElem.value}" th:checked="${filterElem.selected}" />
+            <label th:for="|lang-input-${filterElem.code}|" th:text="${filterElem.value}">value</label>
+          </div>
+          <div class="search-filter__divider" th:if="${filterElem.addSeparator}"></div>
+        </th:block>
       </div>
     </div>
+    <div class="search-filter__tags" id="lang-filter-tags"></div>
   </th:block>
   <th:block th:fragment="homonyms">
     <div th:if="${wordsData.resultsExist}" th:class="${wordsData.singleResult ? 'd-none' : 'overflow-hidden homonym-panel'}">
