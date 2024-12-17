@@ -3,6 +3,8 @@ $(document).ready(function() {
 	selectedHomonymItem.delay(500).queue(function() { }).trigger('click');
 	selectedHomonymItem.addClass("animation-target");
 	setSelectedHomonymValueForMobile(getSelectedHomonym().html());
+	initDatasetDropdown();
+	initLangDropdown();
 	searchWordAutocomplete();
 	focusSearchInput();
 });
@@ -176,69 +178,9 @@ $(document).on('click', 'ext-link', function() {
 	}
 });
 
-$(document).on("click", "a[id^='destin-lang-']", function(e) {
-	var destinLangAll = "dlall";
-	var destinLang = $(this).attr("data-filter-code");
-	if (destinLang == destinLangAll) {
-		$("a[id^='destin-lang-']").removeClass("active");
-		$(this).addClass("active");
-	} else {
-		if ($(this).hasClass("active")) {
-			$(this).removeClass("active");
-			if ($("a[id^='destin-lang-']").hasClass("active") == false) {
-				$("a[id^='destin-lang-" + destinLangAll + "']").addClass("active");
-			}
-		} else {
-			$("a[id^='destin-lang-" + destinLangAll + "']").removeClass("active");
-			$(this).addClass("active");
-		}
-	}
-	var destinLangsStr = $("a[id^='destin-lang-'].active").map(function(idx, element) {
-		return $(element).attr("data-filter-code");
-	}).get();
-	var selectedLangs = $("a[id^='destin-lang-'].active").map(function(idx, element) {
-		return $(element).text();
-	}).get();
-	$("input[name='destinLangsStr']").val(destinLangsStr);
-	$("#selected-langs").text(selectedLangs);
-	setSelectedWordHomonymNrAndLang();
-	clickSearchIfInputExists();
-});
-
-$(document).on("click", "a[id^='dataset-']", function(e) {
-	var datasetCodeAll = "dsall";
-	var datasetCode = $(this).attr("data-filter-code");
-	if (datasetCode == datasetCodeAll) {
-		$("a[id^='dataset-']").removeClass("active");
-		$(this).addClass("active");
-	} else {
-		if ($(this).hasClass("active")) {
-			$(this).removeClass("active");
-			if ($("a[id^='dataset-']").hasClass("active") == false) {
-				$("a[id^='dataset-" + datasetCodeAll + "']").addClass("active");
-			}
-		} else {
-			$("a[id^='dataset-" + datasetCodeAll + "']").removeClass("active");
-			$(this).addClass("active");
-		}
-	}
-	var datasetCodesStr = $("a[id^='dataset-'].active").map(function(idx, element) {
-		return $(element).attr("data-filter-code");
-	}).get();
-	var selectedDatasetsStr = $("a[id^='dataset-'].active").text();
-	var selectedDatasetCount = $("a[id^='dataset-'].active").length;
-	if (selectedDatasetCount > 1) {
-		selectedDatasetsStr = selectedDatasetCount;
-	}
-	$("input[name='datasetCodesStr']").val(datasetCodesStr);
-	$("#selected-datasets").text(selectedDatasetsStr);
-	setSelectedWordHomonymNrAndLang();
-	clickSearchIfInputExists();
-});
-
 function setSelectedWordHomonymNrAndLang() {
-	var selectedWordHomonymNr = $("#selected-word-homonym-nr").val();
-	var selectedWordLang = $("#selected-word-lang").val();
+	const selectedWordHomonymNr = $("#selected-word-homonym-nr").val();
+	const selectedWordLang = $("#selected-word-lang").val();
 	$("input[name='selectedWordHomonymNr']").val(selectedWordHomonymNr);
 	$("input[name='selectedWordLang']").val(selectedWordLang);
 }
@@ -357,4 +299,199 @@ $.fn.tableTogglers = function() {
 		$(this).toggleClass('active');
 		checkStates();
 	});
+}
+
+
+const datasetAllCode = 'dsall'
+
+function getActiveDatasetCodes(container) {
+	if (!container) {
+		return [datasetAllCode];
+	}
+	const activeCheckboxes = container?.querySelectorAll("input:checked");
+  if (!activeCheckboxes.length) {
+    return [datasetAllCode];
+  }
+	// Join all dataset codes with a comma
+  const dataCodes = Array.from(activeCheckboxes).reduce((acc, checkbox, i) => {
+    acc += `${i > 0 ? "," : ""}${checkbox.dataset?.filterCode}`;
+    return acc;
+  }, "");
+  return [dataCodes, activeCheckboxes.length];
+}
+
+function updateDatasetFilterCount(codes, count) {
+	const element = document?.getElementById('dataset-filter-count');
+	if (element) {
+		element.innerText = codes !== datasetAllCode ? count : '';
+	}
+}
+
+
+function initDatasetDropdown() {
+	// Prevent checkbox label from closing menu
+	$(document).on('click', '#dataset-filter-wrapper .search-filter__menu', function(e) {
+		e.stopPropagation();
+	});
+
+	let menuContainer = document.getElementById('dataset-filters-popover')?.nextElementSibling
+	$(document).on("change", "#dataset-filter-wrapper .search-filter__menu input", function (e) {
+    e.stopPropagation();
+    if (!menuContainer) {
+      menuContainer = document.getElementById(
+        "dataset-filters-popover"
+      )?.nextElementSibling;
+    }
+    if (e.target?.dataset?.filterCode === datasetAllCode) {
+			// Clear all other inputs if the "All" choice is selected
+      const inputs = menuContainer.getElementsByTagName("input");
+      Array.from(inputs).forEach((input) => {
+        if (input?.dataset?.filterCode !== datasetAllCode) {
+          input.checked = false;
+        }
+      });
+    } else {
+			const inputAll = menuContainer.querySelector("#dataset-input-dsall");
+			// Make sure the "All" checkbox is unchecked if any other choice is selected
+      if (inputAll) {
+        inputAll.checked = false;
+      }
+    }
+  });
+
+
+	let [dataCodes, datasetCount] = getActiveDatasetCodes(menuContainer);
+	updateDatasetFilterCount(dataCodes, datasetCount);
+	$(document).on("hide.bs.dropdown", "#dataset-filter-wrapper", function () {
+    const [newCodes, newCount] = getActiveDatasetCodes(menuContainer);
+    if (newCodes !== dataCodes) {
+			// Push new search to another tick, otherwise the dropdown event keeps repeating
+      requestAnimationFrame(() => {
+				// Keep track of active codes so we don't search again if nothing changed
+				dataCodes = newCodes
+				datasetCount = newCount
+				updateDatasetFilterCount(dataCodes, datasetCount)
+        $("input[name='datasetCodesStr']").val(dataCodes);
+        setSelectedWordHomonymNrAndLang();
+        clickSearchIfInputExists();
+      });
+    }
+  });
+}
+
+
+const langAllCode = 'dlall'
+
+function getActiveLangCodes(container) {
+	if (!container) {
+		return [langAllCode];
+	}
+	const foundCheckboxes = container?.querySelectorAll("input:checked");
+  if (!foundCheckboxes.length) {
+    return [langAllCode];
+  }
+	const activeCheckboxes = Array.from(foundCheckboxes);
+	// Join all dataset codes with a comma
+  const dataCodes = activeCheckboxes.reduce((acc, checkbox, i) => {
+    acc += `${i > 0 ? "," : ""}${checkbox.dataset?.filterCode}`;
+    return acc;
+  }, "");
+  return [dataCodes, activeCheckboxes];
+}
+
+function updateLangFilterStates(codes, checkboxes) {
+	const countElement = document?.getElementById('lang-filter-count');
+	if (countElement) {
+		countElement.innerText = codes !== langAllCode ? checkboxes.length : '';
+	}
+
+	const tagsElement = document?.getElementById('lang-filter-tags');
+	if (tagsElement) {
+		if (codes === langAllCode) {
+			// Delete tag elements if the "All" choice is selected
+			tagsElement.replaceChildren();
+		} else {
+			const fragment = document.createDocumentFragment();
+			// Create tags for each active checkbox
+			checkboxes.forEach(checkbox => {
+				const langButton = document.createElement('button')
+				langButton.classList.add('search-filter__tag');
+				langButton.dataset.filterCode = checkbox.dataset?.filterCode
+				langButton.innerHTML = `<span>${checkbox.name}</span><i class="fa fa-times"></i>`;
+				fragment.appendChild(langButton)
+			})
+			tagsElement.replaceChildren(fragment)
+		}
+	}
+}
+
+function initLangDropdown() {
+	// Prevent checkbox label from closing menu
+	$(document).on('click', '#lang-filter-wrapper .search-filter__menu', function(e) {
+		e.stopPropagation();
+	});
+	let menuContainer = document.getElementById('lang-filters-popover')?.nextElementSibling
+	$(document).on("change", "#lang-filter-wrapper .search-filter__menu input", function (e) {
+    e.stopPropagation();
+    if (!menuContainer) {
+			menuContainer = document.getElementById(
+				"lang-filters-popover"
+      )?.nextElementSibling;
+    }
+    if (e.target?.dataset?.filterCode === langAllCode) {
+			// Clear all other inputs if the "All" choice is selected
+      const inputs = menuContainer.getElementsByTagName("input");
+      Array.from(inputs).forEach((input) => {
+        if (input?.dataset?.filterCode !== langAllCode) {
+          input.checked = false;
+        }
+      });
+    } else {
+			const inputAll = menuContainer.querySelector("#lang-input-dlall");
+			// Make sure the "All" checkbox is unchecked if any other choice is selected
+      if (inputAll) {
+        inputAll.checked = false;
+      }
+    }
+  });
+
+
+	let [langCodes, langCheckboxes] = getActiveLangCodes(menuContainer);
+	updateLangFilterStates(langCodes, langCheckboxes);
+	$(document).on("hide.bs.dropdown", "#lang-filter-wrapper", function () {
+    const [newCodes, newLangCheckboxes] = getActiveLangCodes(menuContainer);
+    if (newCodes !== langCodes) {
+			// Push new search to another tick, otherwise the dropdown event keeps repeating
+      requestAnimationFrame(() => {
+				// Keep track of active codes so we don't search again if nothing changed
+				langCodes = newCodes
+				langCheckboxes = newLangCheckboxes
+				updateLangFilterStates(langCodes, langCheckboxes)
+        $("input[name='destinLangsStr']").val(langCodes);
+        setSelectedWordHomonymNrAndLang();
+        clickSearchIfInputExists();
+      });
+    }
+  });
+
+	$(document).on('click', '#lang-filter-tags button', function(e) {
+		const targetCheckbox = menuContainer.querySelector(`input[data-filter-code=${e.currentTarget.dataset?.filterCode}]`)
+		// Handle button as if the checkbox with the same value was pressed instead
+		if (targetCheckbox) {
+			targetCheckbox.checked = false;
+			const [newCodes, newLangCheckboxes] = getActiveLangCodes(menuContainer);
+			langCodes = newCodes
+			langCheckboxes = newLangCheckboxes
+			if (!langCheckboxes?.length) {
+				const inputAll = menuContainer.querySelector("#lang-input-dlall");
+				if (inputAll) {
+					inputAll.checked = true;
+				}
+			}
+			updateLangFilterStates(langCodes, langCheckboxes)
+			$("input[name='destinLangsStr']").val(langCodes);
+			setSelectedWordHomonymNrAndLang();
+			clickSearchIfInputExists();
+		}
+	})
 }
