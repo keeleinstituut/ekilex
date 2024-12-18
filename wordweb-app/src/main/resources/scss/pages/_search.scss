@@ -213,7 +213,6 @@
     flex-grow: 1;
     
     &:not(&--nested) {
-      border-bottom: 1px solid var(--color-bluish-gray);
       border-radius: 8px 8px 0 0;
       padding: 16px;
       width: 100%;
