@@ -58,12 +58,6 @@
       </form>
     </div>
   </th:block>
-  <th:block th:fragment="form-match">
-    <div class="mr-4 homonym-innerwrap show-with-details d-flex align-items-center" id="form-words" th:if="${wordsData.formResultsExist}">
-      <span th:text="#{label.suggest.form}">see on ka vorm sõnast</span>
-      <button class="btn btn-link px-0 ml-1 word-form" th:each="word,wordIter : ${wordsData.suggestedWordValues}" th:text="${word} + ${wordIter.last ? '' : ','}" th:data-word="${word}"></button>
-    </div>
-  </th:block>
   <th:block th:fragment="dataset-filter">
     <div class="dropdown search-filter__wrapper" id="dataset-filter-wrapper">
       <button class="dropdown-toggle search-filter__toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" id="dataset-filters-popover">

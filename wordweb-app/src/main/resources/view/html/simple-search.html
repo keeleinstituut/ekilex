@@ -21,7 +21,6 @@
   <div class="container-fluid homonym-page mt-3 mb-5">
     <div class="search-results-header px-0">
       <div class="d-flex flex-row flex-wrap align-items-center pb-3">
-        <th:block th:replace="common-search :: form-match"></th:block>
         <div class="d-flex align-items-center">
           <th:block th:replace="common-search :: lang-filter"></th:block>
         </div>
@@ -38,29 +37,34 @@
       </div>
       <th:block th:replace="common-search :: homonyms"></th:block>
       <div class="word-details">
-        <div class="message-wrap" th:unless="${wordsData.resultsExist}">
+        <div class="no-results__wrapper" th:unless="${wordsData.resultsExist}">
+          <h1
+            class="no-results__title"
+            th:text="${#strings.replace(#messages.msg('label.search.word.not.found'), '%word%', searchWord)}"></h1>
           <th:block th:if="${wordsData.availableLanguagesDatasets.availableFiltersExist}">
-            <div class="h3 mt-4 ml-3 d-inline-block">
-              <span th:text="#{label.search.filter.suggestion.simple}">Otsing annab tulemusi teistes keeltes kui sinu valitud filtris.</span>
+            <div th:text="#{label.search.filter.suggestion.simple}">
+              Otsing annab tulemusi teistes keeltes või sõnakogudes kui sinu valitud filtris.
             </div>
-            <div class="row mt-4 ml-3">
-              <div class="col-md-2">
-                <th:block th:each="language : ${wordsData.availableLanguagesDatasets.languages}">
-                  <h6 th:text="${language.value}" class="font-wight-bold"></h6>
-                </th:block>
+            <div class="no-results__columns no-results__columns--single"
+              th:with="hasLanguages = ${not #lists.isEmpty(wordsData.availableLanguagesDatasets.languages)}"
+                >
+              <div th:if="${hasLanguages}">
+                <div
+                  th:each="language : ${wordsData.availableLanguagesDatasets.languages}"
+                  th:text="${language.value}"></div>
               </div>
             </div>
-            <div class="mt-4 ml-3">
-              <a th:href="@{${@viewUtil.getSimpleSearchUri(searchWord)}}">
-                <span th:text="#{label.search.filter.clear}">Otsi uuesti ilma piiranguteta</span>
+            <div>
+              <a th:href="@{${@viewUtil.getSimpleSearchUri(searchWord)}}" th:text="#{label.search.filter.clear}">
+                Otsi uuesti ilma piiranguteta
               </a>
             </div>
           </th:block>
           <th:block th:unless="${wordsData.availableLanguagesDatasets.availableFiltersExist}">
-            <div class="mt-4 ml-3 d-inline-block">
-              <span th:text="#{label.word.not.found.simple}" class="h1">Ei leidnud midagi</span>
-              <a th:href="@{${@viewUtil.getDetailSearchUri(searchWord)}}" class="h1 text-break" th:text="${searchWord}"></a>
+            <div th:utext="#{label.word.not.found.simple}">
+              Ei leidnud midagi
             </div>
+            <a th:href="@{${@viewUtil.getDetailSearchUri(searchWord)}}" class="text-break" th:text="${searchWord}"></a>
           </th:block>
         </div>
       </div>
