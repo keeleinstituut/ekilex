@@ -16,10 +16,10 @@ import org.thymeleaf.util.MapUtils;
 
 import eki.wordweb.constant.CollocMemberGroup;
 import eki.wordweb.data.Colloc;
-import eki.wordweb.data.DisplayColloc;
 import eki.wordweb.data.CollocMember;
 import eki.wordweb.data.CollocPosGroup;
 import eki.wordweb.data.CollocRelGroup;
+import eki.wordweb.data.DisplayColloc;
 import eki.wordweb.data.LexemeWord;
 import eki.wordweb.data.SearchContext;
 import eki.wordweb.data.Usage;
@@ -50,15 +50,61 @@ public class CollocConversionUtil extends AbstractConversionUtil {
 			if (lexemeCollocPosGroups == null) {
 				continue;
 			}
-			List<CollocPosGroup> collocPosGroups = lexemeCollocPosGroups.getPosGroups();
-			collocPosGroups = collocPosGroups.stream()
-					.filter(collocPosGroup -> CollectionUtils.isNotEmpty(collocPosGroup.getRelGroups()))
-					.collect(Collectors.toList());
-			lexemeWord.setCollocPosGroups(collocPosGroups);
+			List<CollocPosGroup> collocPosGroups = compensateDataQualityIssues(lexemeWord, lexemeCollocPosGroups);
 			classifierUtil.applyClassifiers(collocPosGroups, displayLang);
+			lexemeWord.setCollocPosGroups(collocPosGroups);
 			divideCollocRelGroupsByCollocMemberForms(wordId, lexemeWord);
 			transformCollocPosGroupsForDisplay(wordId, lexemeWord);
 		}
+	}
+
+	private List<CollocPosGroup> compensateDataQualityIssues(LexemeWord lexemeWord, WordCollocPosGroups lexemeCollocPosGroups) {
+
+		List<CollocPosGroup> collocPosGroups = lexemeCollocPosGroups.getPosGroups();
+		List<CollocPosGroup> cleanCollocPosGroups = new ArrayList<>();
+
+		for (CollocPosGroup collocPosGroup : collocPosGroups) {
+
+			List<CollocRelGroup> collocRelGroups = collocPosGroup.getRelGroups();
+			if (CollectionUtils.isEmpty(collocRelGroups)) {
+				continue;
+			}
+			for (CollocRelGroup collocRelGroup : collocRelGroups) {
+
+				List<Colloc> collocations = collocRelGroup.getCollocations();
+				List<String> collocValues = collocations.stream()
+						.map(Colloc::getWordValue)
+						.distinct()
+						.collect(Collectors.toList());
+				Map<String, List<Colloc>> collocVersionMap = collocations.stream()
+						.collect(Collectors.groupingBy(Colloc::getWordValue));
+				List<Colloc> cleanCollocations = new ArrayList<>();
+
+				for (String collocValue : collocValues) {
+
+					List<Colloc> collocVersions = collocVersionMap.get(collocValue);
+					Colloc preferredColloc = null;
+					if (collocVersions.size() == 1) {
+						preferredColloc = collocVersions.get(0);
+					} else {
+						for (Colloc collocVersion : collocVersions) {
+							if (preferredColloc == null) {
+								preferredColloc = collocVersion;
+							} else {
+								if (collocVersion.getMembers().size() > preferredColloc.getMembers().size()) {
+									preferredColloc = collocVersion;
+								}
+							}
+						}
+					}
+					cleanCollocations.add(preferredColloc);
+				}
+				collocRelGroup.setCollocations(cleanCollocations);
+			}
+			cleanCollocPosGroups.add(collocPosGroup);
+		}
+
+		return cleanCollocPosGroups;
 	}
 
 	private void divideCollocRelGroupsByCollocMemberForms(Long wordId, LexemeWord lexemeWord) {
@@ -72,6 +118,7 @@ public class CollocConversionUtil extends AbstractConversionUtil {
 			for (CollocRelGroup collocRelGroup : collocRelGroups) {
 
 				List<Colloc> collocs = collocRelGroup.getCollocations();
+
 				Map<String, List<Colloc>> collocRelGroupDivisionMap = collocs.stream()
 						.collect(Collectors.groupingBy(col -> col.getMembers().stream()
 								.filter(colm -> colm.getWordId().equals(wordId))
