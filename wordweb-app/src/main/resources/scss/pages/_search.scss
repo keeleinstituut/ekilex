@@ -325,6 +325,10 @@
     align-items: center;
     border: 0;
   }
+
+  &--underlined {
+    text-decoration: underline;
+  }
 }
 
 .meaning-data {
