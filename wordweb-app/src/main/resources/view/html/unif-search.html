@@ -103,7 +103,7 @@
         </div>
       </div>
     </main>
-    <div th:fragment="worddetails" th:if="${wordData.word != null}">
+    <div class="word-details" th:fragment="worddetails" th:if="${wordData.word != null}">
       <input id="selected-word-homonym-nr" type="hidden" th:value="${wordData.word.homonymNr}">
       <input id="selected-word-lang" type="hidden" th:value="${wordData.word.lang}">
       <div class="py-2" th:text="#{label.lexeme.not.found}" th:unless="${wordData.relevantDataExists}">Soovitud keeltes tulemusi ei leidu</div>

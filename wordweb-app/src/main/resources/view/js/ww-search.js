@@ -27,9 +27,13 @@ $(document).on("click", ".btn-ellipsis", function(e) {
 });
 
 function fetchDetails(wordId, wordSelectUrl) {
-	var wordDetailsUrlWithParams = wordDetailsUrl + "/" + wordId;
+	const wordDetailsUrlWithParams = wordDetailsUrl + "/" + wordId;
 	$.get(wordDetailsUrlWithParams).done(function(data) {
-		$('.word-details').replaceWith(data);
+		const wordDetailsWrapper = $('.word-details');
+		if (!wordDetailsWrapper.length) {
+			console.error("Unable to find word details wrapper with class 'word-details'")
+		}
+		wordDetailsWrapper.replaceWith(data);
 		fetchCorpSentences();
 		fetchCorpTranslations();
 		updateBrowserHistory(wordSelectUrl);
@@ -38,7 +42,7 @@ function fetchDetails(wordId, wordSelectUrl) {
 		$('[data-toggle="popover"]').popover({
 			placement: 'top'
 		});
-		var lightbox = new SimpleLightbox('.gallery-image', {
+		const lightbox = new SimpleLightbox('.gallery-image', {
 			history: false,
 			captionPosition: 'outside',
 			navText: ['<i class="fas fa-arrow-left"></i>', '<i class="fas fa-arrow-right"></i>'],
@@ -109,9 +113,9 @@ $(document).on("click", "button[name='expand-btn']", function() {
 });
 
 $(document).on("click", "a[id^='word-details-link']", function() {
-	var wordWrapperForm = $(this).closest("form");
-	var wordId = wordWrapperForm.children("[name='word-id']").val();
-	var wordSelectUrl = wordWrapperForm.children("[name='word-select-url']").val();
+	const wordWrapperForm = $(this).closest("form");
+	const wordId = wordWrapperForm.children("[name='word-id']").val();
+	const wordSelectUrl = wordWrapperForm.children("[name='word-select-url']").val();
 	fetchDetails(wordId, wordSelectUrl);
 });
 

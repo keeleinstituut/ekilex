@@ -321,7 +321,7 @@ function getActiveDatasetCodes(container) {
 }
 
 function updateDatasetFilterCount(codes, count) {
-	const element = document?.getElementById('dataset-filter-count');
+	const element = document.getElementById('dataset-filter-count');
 	if (element) {
 		element.innerText = codes !== datasetAllCode ? count : '';
 	}
@@ -351,7 +351,7 @@ function initDatasetDropdown() {
         }
       });
     } else {
-			const inputAll = menuContainer.querySelector("#dataset-input-dsall");
+			const inputAll = document.getElementById("dataset-input-dsall");
 			// Make sure the "All" checkbox is unchecked if any other choice is selected
       if (inputAll) {
         inputAll.checked = false;
@@ -400,12 +400,12 @@ function getActiveLangCodes(container) {
 }
 
 function updateLangFilterStates(codes, checkboxes) {
-	const countElement = document?.getElementById('lang-filter-count');
+	const countElement = document.getElementById('lang-filter-count');
 	if (countElement) {
 		countElement.innerText = codes !== langAllCode ? checkboxes.length : '';
 	}
 
-	const tagsElement = document?.getElementById('lang-filter-tags');
+	const tagsElement = document.getElementById('lang-filter-tags');
 	if (tagsElement) {
 		if (codes === langAllCode) {
 			// Delete tag elements if the "All" choice is selected
@@ -447,7 +447,7 @@ function initLangDropdown() {
         }
       });
     } else {
-			const inputAll = menuContainer.querySelector("#lang-input-dlall");
+			const inputAll = document.getElementById("lang-input-dlall");
 			// Make sure the "All" checkbox is unchecked if any other choice is selected
       if (inputAll) {
         inputAll.checked = false;
@@ -483,7 +483,7 @@ function initLangDropdown() {
 			langCodes = newCodes
 			langCheckboxes = newLangCheckboxes
 			if (!langCheckboxes?.length) {
-				const inputAll = menuContainer.querySelector("#lang-input-dlall");
+				const inputAll = document.getElementById("lang-input-dlall");
 				if (inputAll) {
 					inputAll.checked = true;
 				}

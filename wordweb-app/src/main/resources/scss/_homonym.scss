@@ -47,10 +47,6 @@
 .homonym-panel {
   @include media-breakpoint-up(md) {
     overflow: hidden;
-    & + .word-details{
-      margin-top: -1px;
-      border-top: 1px solid $border-color;
-    }
     &.overflow{
       position: relative;
 

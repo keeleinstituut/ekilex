@@ -16183,10 +16183,6 @@ body.hidden-scroll {
   .homonym-panel {
     overflow: hidden;
   }
-  .homonym-panel + .word-details {
-    margin-top: -1px;
-    border-top: 1px solid #ccd9e0;
-  }
   .homonym-panel.overflow {
     position: relative;
   }
@@ -17490,6 +17486,10 @@ body {
   display: inline-flex;
   align-items: center;
   border: 0;
+}
+
+.search-tag--underlined {
+  text-decoration: underline;
 }
 
 .meaning-data__modified {
