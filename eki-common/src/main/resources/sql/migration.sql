@@ -28,25 +28,38 @@ select
 from
 	(
 	select
-		c.id colloc_id,
-		c.value colloc_value,
-		unnest(c.usages) usage_value,
-		(
-		select
-			array_agg(l.id order by l.id)
-		from
-			lex_colloc lc,
-			lexeme l
-		where
-			lc.collocation_id = c.id
-			and lc.lexeme_id = l.id) member_lexeme_ids,
+		c.colloc_value,
+		c.usage_value,
+		c.member_lexeme_ids,
 		c.complexity
 	from
-		collocation c
-	where
-		c.usages is not null
-	order by
-		c.id
+		(
+		select
+			c.id colloc_id,
+			c.value colloc_value,
+			unnest(c.usages) usage_value,
+			(
+			select
+				array_agg(l.id order by l.id)
+			from
+				lex_colloc lc,
+				lexeme l
+			where
+				lc.collocation_id = c.id
+				and lc.lexeme_id = l.id) member_lexeme_ids,
+			c.complexity
+		from
+			collocation c
+		where
+			c.usages is not null
+		order by
+			c.id
+		) c
+	group by
+		c.colloc_value,
+		c.usage_value,
+		c.member_lexeme_ids,
+		c.complexity
 ) oc
 inner join (
 	select
