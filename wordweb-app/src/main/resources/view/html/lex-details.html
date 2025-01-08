@@ -289,7 +289,7 @@
                     <span class="mr-2" th:text="${relationType.value}"></span>
                     <th:block th:each="relation, relationIter : ${lexeme.relatedMeaningsByType.get(relationType)}">
                       <div class="relation-item mr-1">
-                        <a th:href="@{${@viewUtil.getSearchUri(sessionBean, searchMode, relation.word, relation.homonymNr, relation.lang)}}">
+                        <a class="font-weight-bold" th:href="@{${@viewUtil.getSearchUri(sessionBean, searchMode, relation.word, relation.homonymNr, relation.lang)}}">
                           <span th:utext="${@viewUtil.getWordValueMarkup(relation)}">tee</span>
                         </a>
                         <th:block th:if="${not #lists.isEmpty(relation.wordTypes)}">
