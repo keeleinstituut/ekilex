@@ -15,9 +15,8 @@
             </th:block>
             <th:block th:if="${not #maps.isEmpty(lexeme.definitionsByLang)}">
               <div
-                class="d-flex flex-row"
-                th:each="definitionEntry, definitionEntryIter : ${lexeme.definitionsByLang}"
-                th:classappend="|${definitionEntryIter.last ? '' : 'lang-code__border'}|">
+                class="d-flex flex-row lang-code__border"
+                th:each="definitionEntry, definitionEntryIter : ${lexeme.definitionsByLang}">
                 <span class="lang-code lang-code-sm mr-2 align-self-start"
                       th:with="langData=${@viewUtil.getLangData(definitionEntry.key)}"
                       th:text="${langData.codeIso2}" th:title="${langData.label}" data-toggle="tooltip"></span>
@@ -75,9 +74,8 @@
               </div>
               <div class="col-12">
                 <div
-                  class="mb-0 d-flex flex-row"
+                  class="mb-0 d-flex flex-row lang-code__border"
                   th:each="noteEntry, noteEntryIter : ${lexeme.meaningNotesByLang}"
-                  th:classappend="${noteEntryIter.last ? '' : 'lang-code__border'}"
                   >
                   <span class="lang-code lang-code-sm mr-2 align-self-start"
                         th:with="langData=${@viewUtil.getLangData(noteEntry.key)}"
@@ -167,9 +165,8 @@
           <th:block th:if="${not #maps.isEmpty(lexeme.meaningLexemesByLang)}">
             <div>
               <div class="additional-meta">
-                <div class="d-flex flex-row" th:each="meaninglexemeEntry,meaninglexemeEntryIter : ${lexeme.meaningLexemesByLang}"
-                     th:with="meaningLangLexemes=${meaninglexemeEntry.value}"
-                     th:classappend="${meaninglexemeEntryIter.last ? '' : 'lang-code__border'}">
+                <div class="d-flex flex-row lang-code__border" th:each="meaninglexemeEntry,meaninglexemeEntryIter : ${lexeme.meaningLexemesByLang}"
+                     th:with="meaningLangLexemes=${meaninglexemeEntry.value}">
                   <span class="lang-code lang-code-sm mr-2 align-self-start"
                         th:with="langData=${@viewUtil.getLangData(meaninglexemeEntry.key)}"
                         th:text="${langData.codeIso2}" th:title="${langData.label}" data-toggle="tooltip">
