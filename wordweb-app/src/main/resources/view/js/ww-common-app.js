@@ -316,39 +316,6 @@ function calculateMaxHeightCollapseText(element, targetTextBox) {
 }
 
 
-$(document).on('click', '[data-toggle="collapse-text"]', function() {
-	const btn = $(this);
-	const targetTextBox = $(btn.attr('data-target'));
-	const largeData = targetTextBox.siblings('.large-text-container');
-	const smallData = targetTextBox.siblings('.small-text-container');
-	if (targetTextBox.length && smallData.length && largeData.length) {
-		calculateMaxHeightCollapseText(smallData, targetTextBox);
-		calculateMaxHeightCollapseText(largeData, targetTextBox);
-
-		let smallDataBoxHeight = smallData.attr("data-max-height") ?? '';
-		let largeDataBoxHeight = largeData.attr("data-max-height") ?? '';
-
-		if (smallDataBoxHeight.length && largeDataBoxHeight.length) {
-			let dataTextBox;
-			if (btn.attr('aria-expanded') === 'true') {
-				dataTextBox = smallData.html();
-				targetTextBox.html(dataTextBox);
-				targetTextBox.height(largeDataBoxHeight).animate({
-					height: smallDataBoxHeight
-				});
-				btn.attr('aria-expanded', false);
-			} else {
-				dataTextBox = largeData.html();
-				targetTextBox.html(dataTextBox);
-				targetTextBox.height(smallDataBoxHeight).animate({
-					height: largeDataBoxHeight
-				});
-				btn.attr('aria-expanded', true);
-			}
-		}
-	}
-});
-
 function handleVirtualKeyboard() {
 
 	const allBtns = $(".main-search-btns");

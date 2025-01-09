@@ -14,79 +14,24 @@
               </div>
             </th:block>
             <th:block th:if="${not #maps.isEmpty(lexeme.definitionsByLang)}">
-              <div class="mb-0 d-flex flex-row" th:each="definitionEntry : ${lexeme.definitionsByLang}">
-                <span class="additional-meta lang-code lang-code-sm mr-2 align-self-start"
+              <div
+                class="d-flex flex-row"
+                th:each="definitionEntry, definitionEntryIter : ${lexeme.definitionsByLang}"
+                th:classappend="|${definitionEntryIter.last ? '' : 'lang-code__border'}|">
+                <span class="lang-code lang-code-sm mr-2 align-self-start"
                       th:with="langData=${@viewUtil.getLangData(definitionEntry.key)}"
                       th:text="${langData.codeIso2}" th:title="${langData.label}" data-toggle="tooltip"></span>
                 <div class="flex-shrink-1" style="font-weight: 500;">
                   <ul class="list-unstyled m-0">
-                    <li th:each="definition,definitionIter : ${definitionEntry.value}"
-                        th:with="isCollapsable=${not #strings.isEmpty(definition.valuePreseCut)}">
+                    <li th:each="definition,definitionIter : ${definitionEntry.value}">
                       <th:block th:if="${!definition.subDataExists}">
                         <div th:id="${'definition-entry-' + definition.definitionId}">
-                          <th:block th:if="${isCollapsable}">
-                            <div class="definition-value mb-2 text-weight-medium text-dark collapse-text">
-                              <span class="small-text-addition" th:utext="${definition.valuePreseCut}"></span>
-                            </div>
-                            <div class="small-text-container get-height d-none">
-                              <span class="small-text-addition" th:utext="${definition.valuePreseCut}"></span>
-                            </div>
-                            <div class="large-text-container get-height d-none">
-                              <span class="large-text-addition" th:utext="${definition.valuePrese}"></span>
-                            </div>
-                            <button
-                                  th:id="${'definition-show-more-btn-' + definition.definitionId}"
-                                  class="btn btn-link-muted btn-sm btn-collapse text-nowrap d-inline-flex align-items-end pb-0 ml-n2"
-                                  type="button"
-                                  data-toggle="collapse-text"
-                                  th:data-target="${'#definition-entry-' + definition.definitionId + ' .collapse-text'}"
-                                  aria-expanded="false"
-                                  th:aria-controls="${'#definition-entry-' + definition.definitionId + ' .collapse-text'}">
-                              <span class="btn-content see-more-content" data-tooltip="tooltip" th:title="#{button.see.more}">
-                                <i class="fa fa-ellipsis-h" aria-hidden="true"></i>
-                              </span>
-                              <span class="btn-content see-less-content">
-                                <i class="fa fa-angle-up" aria-hidden="true"></i>
-                                <span class="btn-txt" th:text="#{button.see.less}"></span>
-                              </span>
-                            </button>
-                          </th:block>
-                          <th:block th:unless="${isCollapsable}">
-                            <span class="definition-value mb-2 mr-1 text-weight-medium text-dark" th:utext="${definition.valuePrese}"></span>
-                          </th:block>
+                          <span class="definition-value mb-2 mr-1 text-weight-medium text-dark" th:utext="${definition.valuePrese}"></span>
                         </div>
                       </th:block>
                       <th:block th:if="${definition.subDataExists}"> 
                         <div th:id="${'definition-entry-' + definition.definitionId}">
-                          <th:block th:if="${isCollapsable}">
-                            <div class="definition-value mb-2 text-weight-medium text-dark collapse-text" th:id="${'#definition-entry-' + definition.definitionId + '-collapse-text'}">
-                              <span class="small-text-addition" th:utext="${definition.valuePreseCut}"></span>
-                            </div>
-                            <div class="small-text-container get-height d-none">
-                              <span class="small-text-addition" th:utext="${definition.valuePreseCut}"></span>
-                            </div>
-                            <div class="large-text-container get-height d-none">
-                              <span class="large-text-addition" th:utext="${definition.valuePrese}"></span>
-                            </div>
-                            <button
-                                  th:id="${'definition-show-more-btn-' + definition.definitionId}"
-                                  class="btn btn-link-muted btn-sm btn-collapse text-nowrap d-inline-flex align-items-end pb-0 ml-n2"
-                                  type="button"
-                                  data-toggle="collapse-text"
-                                  th:data-target="${'#definition-entry-' + definition.definitionId + ' .collapse-text'}"
-                                  aria-expanded="false"
-                                  th:aria-controls="${'#definition-entry-' + definition.definitionId + '-collapse-text'}"
-                                  >
-                              <span class="btn-content see-more-content" data-tooltip="tooltip" th:title="#{button.see.more}">
-                                <i class="fa fa-ellipsis-h" aria-hidden="true"></i>
-                              </span>
-                              <span class="btn-content see-less-content">
-                                <i class="fa fa-angle-up" aria-hidden="true"></i>
-                                <span class="btn-txt" th:text="#{button.see.less}"></span>
-                              </span>
-                            </button>
-                          </th:block>
-                          <span th:unless="${isCollapsable}"
+                          <span
                                 class="definition-value mb-2 mr-1 text-weight-medium text-dark"
                                 th:utext="${definition.valuePrese}"></span>
                           <th:block th:if="${not #lists.isEmpty(definition.sourceLinks)}">
@@ -129,7 +74,11 @@
                 <b th:if="${isLimTerm}" th:text="#{label.limterm.note}">Arutelu</b>
               </div>
               <div class="col-12">
-                <div class="mb-0 d-flex flex-row" th:each="noteEntry : ${lexeme.meaningNotesByLang}">
+                <div
+                  class="mb-0 d-flex flex-row"
+                  th:each="noteEntry, noteEntryIter : ${lexeme.meaningNotesByLang}"
+                  th:classappend="${noteEntryIter.last ? '' : 'lang-code__border'}"
+                  >
                   <span class="lang-code lang-code-sm mr-2 align-self-start"
                         th:with="langData=${@viewUtil.getLangData(noteEntry.key)}"
                         th:text="${langData.codeIso2}" th:title="${langData.label}" data-toggle="tooltip"></span>
@@ -146,39 +95,10 @@
                       <ul
                         class="word-notes__list collapse show"
                         th:id="${'lexeme-note-entry-' + lexeme.lexemeId + '-' + noteEntry.key}">
-                        <li class="d-flex" th:each="note : ${noteEntry.value}"
-                            th:with="isCollapsable=${not #strings.isEmpty(note.valuePreseCut)}">
+                        <li class="d-flex" th:each="note : ${noteEntry.value}">
                           <i class="fas fa-info-circle mr-2 mt-1 word-notes__info-icon" aria-hidden="true"></i>
                           <div th:id="${'note-entry-text-' + note.noteId}">
-                            <th:block th:if="${isCollapsable}">
-                              <div class="note-value collapse-text">
-                                <span class="small-text-addition" th:utext="${note.valuePreseCut}"></span>
-                              </div>
-                              <div class="small-text-container get-height d-none">
-                                <span class="small-text-addition" th:utext="${note.valuePreseCut}"></span>
-                              </div>
-                              <div class="large-text-container get-height d-none">
-                                <span class="large-text-addition" th:utext="${note.valuePrese}"></span>
-                              </div>
-                              <button
-                                    th:id="${'note-entry-show-more-btn-' + note.noteId}"
-                                    class="btn btn-link-muted btn-sm btn-collapse text-nowrap d-inline-flex align-items-end pb-0 ml-n2"
-                                    type="button"
-                                    data-toggle="collapse-text"
-                                    data-dynamic-text="true"
-                                    th:data-target="${'#note-entry-text-' + note.noteId + ' .collapse-text'}"
-                                    aria-expanded="false"
-                                    th:aria-controls="${'#note-entry-text-' + note.noteId + ' .collapse-text'}">
-                                <span class="btn-content see-more-content" data-tooltip="tooltip" th:title="#{button.see.more}">
-                                  <i class="fa fa-ellipsis-h" aria-hidden="true"></i>
-                                </span>
-                                <span class="btn-content see-less-content">
-                                  <i class="fa fa-angle-up" aria-hidden="true"></i>
-                                  <span class="btn-txt" th:text="#{button.see.less}"></span>
-                                </span>
-                              </button>
-                            </th:block>
-                            <span th:unless="${isCollapsable}" th:utext="${note.valuePrese}"></span>
+                            <span th:utext="${note.valuePrese}"></span>
                             <span th:if="${isLimTerm}" th:utext="${'[' + note.createdBy + ']'}" class="text-muted text-small"></span>
                             <th:block th:if="${not #lists.isEmpty(note.sourceLinks)}">
                               <span class="definition-sources">
@@ -201,7 +121,7 @@
                 <div class="col-12 col-md-4 mb-3 d-flex flex-column">
                   <a th:href="${meaningImage.sourceUrl}" class="gallery-image my-auto">
                     <img class="homonym-image m-0 p-0" th:src="${meaningImage.sourceUrl}" th:title="${meaningImage.title}">
-                    <span class="additional-meta text-muted text-small py-1 d-block" th:utext="${meaningImage.title}"></span>
+                    <span class="text-muted text-small py-1 d-block" th:utext="${meaningImage.title}"></span>
                   </a>
                   <th:block th:if="${not #lists.isEmpty(meaningImage.sourceLinks)}">
                     <div th:each="sourceLink : ${meaningImage.sourceLinks}">
@@ -249,7 +169,7 @@
               <div class="additional-meta">
                 <div class="d-flex flex-row" th:each="meaninglexemeEntry,meaninglexemeEntryIter : ${lexeme.meaningLexemesByLang}"
                      th:with="meaningLangLexemes=${meaninglexemeEntry.value}"
-                     th:classappend="${meaninglexemeEntryIter.last ? '' : 'mb-2'}">
+                     th:classappend="${meaninglexemeEntryIter.last ? '' : 'lang-code__border'}">
                   <span class="lang-code lang-code-sm mr-2 align-self-start"
                         th:with="langData=${@viewUtil.getLangData(meaninglexemeEntry.key)}"
                         th:text="${langData.codeIso2}" th:title="${langData.label}" data-toggle="tooltip">
@@ -283,8 +203,8 @@
                             <button type="button" class="meaning-data__popover-trigger" data-toggle="popover" data-html="true"
                                 th:aria-label="#{label.meaning.grammar.contents}"
                                 th:data-content="${@viewUtil.getPosesAndGenderTooltipHtml(meaningLexeme.poses, meaningLexeme.gender)}">
-                                <span aria-hidden="true">
-                                  &#x2022;&#x2022;&#x2022;
+                                <span class="material-symbols-outlined" aria-hidden="true">
+                                  info
                                 </span>
                             </button>
                           </th:block>
@@ -429,52 +349,19 @@
                             <b th:if="${isLimTerm}" th:text="#{label.limterm.note}">Arutelu</b>
                           </button>
                           <div class="collapse show" th:id="|lexeme-notes-by-lang-${meaningLexeme.lexemeId}|">
-                            <div class="d-flex" th:each="noteEntry : ${meaningLexeme.lexemeNotesByLang}">
-                              <span class="lang-code lang-code-sm mr-2 align-self-start"
-                                    th:with="langData=${@viewUtil.getLangData(noteEntry.key)}"
-                                    th:text="${langData.codeIso2}" th:title="${langData.label}" data-toggle="tooltip"></span>
-                              <div class="d-flex flex-column good-to-know-info">
-                                <th:block th:each="note : ${noteEntry.value}"
-                                          th:with="isCollapsable=${not #strings.isEmpty(note.valuePreseCut)}">
-                                  <div th:id="|note-entry-text-${note.noteId}|">
-                                    <th:block th:if="${isCollapsable}">
-                                      <div class="note-value collapse-text">
-                                        <span class="small-text-addition" th:utext="${note.valuePreseCut}"></span>
-                                      </div>
-                                      <div class="small-text-container get-height d-none">
-                                        <span class="small-text-addition" th:utext="${note.valuePreseCut}"></span>
-                                      </div>
-                                      <div class="large-text-container get-height d-none">
-                                        <span class="large-text-addition" th:utext="${note.valuePrese}"></span>
-                                      </div>
-                                      <button
-                                          th:id="|note-entry-show-more-btn-${note.noteId}|"
-                                          class="btn btn-link-muted btn-sm btn-collapse text-nowrap d-inline-flex align-items-end pb-0 ml-n2"
-                                          type="button"
-                                          data-toggle="collapse-text"
-                                          th:data-target="|#note-entry-text-${note.noteId} .collapse-text|"
-                                          aria-expanded="false"
-                                          th:aria-controls="|#note-entry-text-${note.noteId} .collapse-text|">
-                                        <span class="btn-content see-more-content" data-tooltip="tooltip" th:title="#{button.see.more}">
-                                          <i class="fa fa-ellipsis-h" aria-hidden="true"></i>
-                                        </span>
-                                        <span class="btn-content see-less-content">
-                                          <i class="fa fa-angle-up" aria-hidden="true"></i>
-                                          <span class="btn-txt" th:text="#{button.see.less}"></span>
-                                        </span>
-                                      </button>
-                                    </th:block>
-                                    <span th:unless="${isCollapsable}" th:utext="${note.valuePrese}"></span>
-                                    <th:block th:if="${not #lists.isEmpty(note.sourceLinks)}">
-                                      <span class="definition-sources">
-                                        <th:block th:each="sourceLink,sourceLinkIter : ${note.sourceLinks}">
-                                          <th:block th:replace="common-app :: source-link"></th:block>
-                                        </th:block>
-                                      </span>
-                                    </th:block>
-                                  </div>
-                                </th:block>
-                              </div>
+                            <div class="d-flex flex-column good-to-know-info" th:each="noteEntry : ${meaningLexeme.lexemeNotesByLang}">
+                              <th:block th:each="note : ${noteEntry.value}">
+                                <div th:id="|note-entry-text-${note.noteId}|">
+                                  <span th:utext="${note.valuePrese}"></span>
+                                  <th:block th:if="${not #lists.isEmpty(note.sourceLinks)}">
+                                    <span class="definition-sources">
+                                      <th:block th:each="sourceLink,sourceLinkIter : ${note.sourceLinks}">
+                                        <th:block th:replace="common-app :: source-link"></th:block>
+                                      </th:block>
+                                    </span>
+                                  </th:block>
+                                </div>
+                              </th:block>
                             </div>
                           </div>
                         </div>

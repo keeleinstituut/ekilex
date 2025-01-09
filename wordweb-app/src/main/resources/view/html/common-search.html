@@ -64,10 +64,19 @@
         <span class="search-filter__toggle-label" th:text="#{label.filter.dataset}">Sõnakogud</span>
         <span class="search-filter__toggle-count" id="dataset-filter-count"></span>
       </button>
-      <div class="dropdown-menu search-filter__menu" aria-labelledby="dataset-filters-popover">
+      <div
+        class="dropdown-menu search-filter__menu"
+        aria-labelledby="dataset-filters-popover"
+        th:style="|--search-filter-rows: ${#lists.size(datasetFilter) / 3 + 3}|"
+        >
         <th:block th:each="filterElem : ${datasetFilter}">
           <div class="search-filter__item" th:classappend="${filterElem.addSeparator ? 'search-filter__item--full-row' : ''}">
-            <input type="checkbox" th:id="|dataset-input-${filterElem.code}|" th:data-filter-code="${filterElem.code}" th:name="${filterElem.value}" th:checked="${filterElem.selected}" />
+            <input
+              type="checkbox"
+              th:id="|dataset-input-${filterElem.code}|"
+              th:data-filter-code="${filterElem.code}"
+              th:name="${filterElem.value}"
+              th:checked="${filterElem.selected or datasetFilter[0].selected}" />
             <label th:for="|dataset-input-${filterElem.code}|" th:text="${filterElem.value}">value</label>
           </div>
           <div class="search-filter__divider" th:if="${filterElem.addSeparator}"></div>
@@ -81,10 +90,19 @@
         <span class="search-filter__toggle-label" th:text="#{label.filter.lang}">Keel</span>
         <span class="search-filter__toggle-count" id="lang-filter-count"></span>
       </button>
-      <div class="dropdown-menu search-filter__menu" aria-labelledby="lang-filters-popover">
+      <div
+        class="dropdown-menu search-filter__menu"
+        aria-labelledby="lang-filters-popover"
+        th:style="|--search-filter-rows: ${#lists.size(langFilter) + 1}|"
+        >
         <th:block th:each="filterElem : ${langFilter}">
           <div class="search-filter__item" th:classappend="${filterElem.addSeparator ? 'search-filter__item--full-row' : ''}">
-            <input type="checkbox" th:id="|lang-input-${filterElem.code}|" th:data-filter-code="${filterElem.code}" th:name="${filterElem.value}" th:checked="${filterElem.selected}" />
+            <input
+              type="checkbox"
+              th:id="|lang-input-${filterElem.code}|"
+              th:data-filter-code="${filterElem.code}"
+              th:name="${filterElem.value}"
+              th:checked="${filterElem.selected or langFilter[0].selected}" />
             <label th:for="|lang-input-${filterElem.code}|" th:text="${filterElem.value}">value</label>
           </div>
           <div class="search-filter__divider" th:if="${filterElem.addSeparator}"></div>

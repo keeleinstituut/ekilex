@@ -323,7 +323,7 @@ function getActiveDatasetCodes(container) {
 function updateDatasetFilterCount(codes, count) {
 	const element = document.getElementById('dataset-filter-count');
 	if (element) {
-		element.innerText = codes !== datasetAllCode ? count : '';
+		element.innerText = !codes.startsWith(datasetAllCode) ? count : '';
 	}
 }
 
@@ -342,20 +342,13 @@ function initDatasetDropdown() {
         "dataset-filters-popover"
       )?.nextElementSibling;
     }
-    if (e.target?.dataset?.filterCode === datasetAllCode) {
-			// Clear all other inputs if the "All" choice is selected
+
+		if (e.target?.dataset?.filterCode === datasetAllCode) {
+			// Set all other inputs if the "All" choice is selected
       const inputs = menuContainer.getElementsByTagName("input");
       Array.from(inputs).forEach((input) => {
-        if (input?.dataset?.filterCode !== datasetAllCode) {
-          input.checked = false;
-        }
+				input.checked = e.target?.checked;
       });
-    } else {
-			const inputAll = document.getElementById("dataset-input-dsall");
-			// Make sure the "All" checkbox is unchecked if any other choice is selected
-      if (inputAll) {
-        inputAll.checked = false;
-      }
     }
   });
 
@@ -402,12 +395,12 @@ function getActiveLangCodes(container) {
 function updateLangFilterStates(codes, checkboxes) {
 	const countElement = document.getElementById('lang-filter-count');
 	if (countElement) {
-		countElement.innerText = codes !== langAllCode ? checkboxes.length : '';
+		countElement.innerText = !codes.startsWith(langAllCode) ? checkboxes.length : '';
 	}
 
 	const tagsElement = document.getElementById('lang-filter-tags');
 	if (tagsElement) {
-		if (codes === langAllCode) {
+		if (codes.startsWith(langAllCode)) {
 			// Delete tag elements if the "All" choice is selected
 			tagsElement.replaceChildren();
 		} else {
@@ -439,19 +432,11 @@ function initLangDropdown() {
       )?.nextElementSibling;
     }
     if (e.target?.dataset?.filterCode === langAllCode) {
-			// Clear all other inputs if the "All" choice is selected
+			// Set all other inputs if the "All" choice is selected
       const inputs = menuContainer.getElementsByTagName("input");
       Array.from(inputs).forEach((input) => {
-        if (input?.dataset?.filterCode !== langAllCode) {
-          input.checked = false;
-        }
+				input.checked = e.target?.checked;
       });
-    } else {
-			const inputAll = document.getElementById("lang-input-dlall");
-			// Make sure the "All" checkbox is unchecked if any other choice is selected
-      if (inputAll) {
-        inputAll.checked = false;
-      }
     }
   });
 
