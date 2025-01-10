@@ -16,6 +16,7 @@
   --color-dark-gray: #98A7B4;
   --color-darker-gray: #6A788A;
   --color-even-darker-gray: #5A656F;
+  --color-notes-gray: #595959;
   --color-white: #fff;
   --color-blue-100: #a0dcf8;
   --color-blue-200: #5aabe0;
@@ -33,7 +34,7 @@
   --color-green-100: #a9eeb4;
   --color-green-400: #00892e;
   --color-green-700: #007025;
-  --color-success-green: #4D8069;
+  --color-success-green: #2E7D32;
   --color-yellow-100: #ffffe8;
   --color-purple-100: #db8dff;
   --color-orange: #DE6837;
@@ -17524,7 +17525,7 @@ body {
 }
 
 .meaning-data__modified {
-  font-size: .625rem;
+  font-size: .75rem;
   font-weight: 500;
   line-height: 12.1px;
   color: var(--color-darker-gray);
@@ -17553,7 +17554,7 @@ body {
 }
 
 .meaning-data__link {
-  font-size: .625rem;
+  font-size: .75rem;
   font-weight: 500;
   line-height: 12.1px;
   color: var(--color-blue-300);
@@ -17584,7 +17585,7 @@ body {
   line-height: 19px;
   color: black;
   padding: 0 4px;
-  margin: 0 0 10px -4px;
+  margin: 0 0 10px 0;
   min-height: 28px;
 }
 
@@ -17608,8 +17609,30 @@ body {
 
 .word-notes__list {
   list-style: none;
-  margin: 0 0 10px;
+  margin: 0 0 10px var(--word-notes-left-margin, 10px);
   padding: 0;
+  --word-notes-left-margin: 0;
+}
+
+.word-notes__list .definition-value {
+  font-size: .875rem;
+  color: black;
+  font-weight: 500;
+}
+
+.word-notes__wrapper {
+  margin-left: 10px;
+  --word-notes-left-margin: 0;
+  --icon-size: 16px;
+}
+
+.word-notes__list-icon {
+  margin-right: 8px;
+}
+
+.word-notes__note {
+  color: var(--color-notes-gray);
+  font-size: .625rem;
 }
 
 .meaning-reliability {
@@ -17804,7 +17827,7 @@ body {
 }
 
 span.material-symbols-outlined {
-  font-size: inherit;
+  font-size: var(--icon-size, inherit);
 }
 
 .news-page {
@@ -18949,6 +18972,7 @@ span.material-symbols-outlined {
   --color-dark-gray: #98A7B4;
   --color-darker-gray: #6A788A;
   --color-even-darker-gray: #5A656F;
+  --color-notes-gray: #595959;
   --color-white: #fff;
   --color-blue-100: #a0dcf8;
   --color-blue-200: #5aabe0;
@@ -18966,7 +18990,7 @@ span.material-symbols-outlined {
   --color-green-100: #a9eeb4;
   --color-green-400: #00892e;
   --color-green-700: #007025;
-  --color-success-green: #4D8069;
+  --color-success-green: #2E7D32;
   --color-yellow-100: #ffffe8;
   --color-purple-100: #db8dff;
   --color-orange: #DE6837;
@@ -19546,10 +19570,6 @@ span.material-symbols-outlined {
 .get-height {
   position: absolute;
   visibility: hidden;
-}
-
-.good-to-know-info div:not(:first-of-type) {
-  margin-top: .5rem;
 }
 
 /* stylelint-disable */
