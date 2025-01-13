@@ -211,7 +211,7 @@
     font-weight: 700;
     line-height: 19px;
     flex-grow: 1;
-    
+
     &:not(&--nested) {
       border-radius: 8px 8px 0 0;
       padding: 16px;
@@ -254,8 +254,10 @@
     &-prefix {
       color: var(--color-darker-gray);
     }
+
     @include media-breakpoint-down(sm) {
       font-size: .875rem;
+
       &-prefix {
         display: none;
       }
@@ -356,7 +358,7 @@
     line-height: 12.1px;
     color: var(--color-even-darker-gray);
 
-    & + & {
+    &+& {
       margin-left: 4px;
     }
   }
@@ -396,7 +398,7 @@
     color: black;
     padding: 0 4px;
     // Use slight left margin to line up arrow while still keeping padding
-    margin: 0 0 10px 0;
+    margin: 0 0 8px 0;
     // Prevent weird outline while icon is rotating 
     min-height: 28px;
 
@@ -413,7 +415,7 @@
     }
 
     &--top-margin {
-      margin-top: 10px;
+      margin-top: 8px;
     }
   }
 
@@ -423,9 +425,17 @@
 
   &__list {
     list-style: none;
-    margin: 0 0 10px var(--word-notes-left-margin, 10px);
+    margin: 0 0 0 var(--word-notes-left-margin, 8px);
     padding: 0;
     --word-notes-left-margin: 0;
+
+    &--with-marker {
+      list-style: disc;
+
+      &>li {
+        margin-left: 20px;
+      }
+    }
 
     & .definition-value {
       font-size: .875rem;
@@ -435,18 +445,16 @@
   }
 
   &__wrapper {
-    margin-left: 10px;
+    margin-bottom: 8px;
     --word-notes-left-margin: 0;
-    --icon-size: 16px;
-  }
-
-  &__list-icon {
-    margin-right: 8px;
+    display: flex;
+    flex-direction: column;
   }
 
   &__note {
     color: var(--color-notes-gray);
-    font-size: .625rem;
+    font-size: .75rem;
+    margin-bottom: 8px;
   }
 }
 
@@ -459,6 +467,7 @@
   height: 20px;
   color: var(--color-even-darker-gray);
   margin-left: 16px;
+
   &--green {
     color: var(--color-success-green);
   }
@@ -473,6 +482,7 @@
   &__wrapper {
     position: relative;
   }
+
   &__menu {
     grid-template-columns: repeat(3, minmax(150px, 1fr));
     grid-template-rows: repeat(var(--search-filter-rows), minmax(max-content, 1fr));
@@ -491,6 +501,7 @@
       grid-template-columns: 1fr;
       width: auto;
     }
+
     &.show {
       display: grid;
     }
@@ -540,6 +551,7 @@
     justify-content: space-between;
     gap: 4px;
     height: 28px;
+
     &::after {
       margin-left: auto;
     }
@@ -579,6 +591,7 @@
     border: 1px solid var(--color-bluish-gray);
     height: 28px;
     box-shadow: 0px 1px 2px 0px #15151514;
+
     & i {
       font-size: 1rem;
       color: var(--color-light-gray);
@@ -624,6 +637,7 @@
     display: grid;
     grid-template-columns: 0.4fr 0.8fr;
     gap: 8px;
+
     &--single {
       grid-template-columns: 1fr;
     }
@@ -639,7 +653,7 @@
 }
 
 .additional-meta {
-  margin-top: 10px;
+  margin-top: 8px;
 }
 
 

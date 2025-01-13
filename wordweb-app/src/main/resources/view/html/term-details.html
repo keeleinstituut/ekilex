@@ -44,17 +44,11 @@
                           <th:block th:if="${not #lists.isEmpty(definition.notes)}">
                             <div class="mt-2">
                               <div class="d-flex">
-                                <span class="material-symbols-outlined word-notes__list-icon" aria-hidden="true">
-                                  description
-                                </span>
                                 <span class="word-notes__note" th:text="#{label.public.note}"></span>
                               </div>
-                              <ul class="word-notes__list">
+                              <ul class="word-notes__list word-notes__list--with-marker">
                                 <li class="word-notes__note" th:each="note : ${definition.notes}">
                                   <div class="d-flex">
-                                    <span class="material-symbols-outlined word-notes__list-icon" aria-hidden="true">
-                                      description
-                                    </span>
                                     <span>
                                       <span th:utext="${note.valuePrese}"></span>
                                       <span class="definition-sources">
@@ -82,19 +76,11 @@
                     th:with="langData=${@viewUtil.getLangData(noteEntry.key)}"
                     th:text="${langData.codeIso2}" th:title="${langData.label}" data-toggle="tooltip"></span>
               <div class="word-notes__wrapper" th:id="|lexeme-meaning-notes-by-lang-${lexeme.meaningId}-${noteEntry.key}-${noteEntryIter.index}|">
-                <div class="d-flex">
-                  <span class="material-symbols-outlined word-notes__list-icon" aria-hidden="true">
-                    description
-                  </span>
-                  <span class="word-notes__note" th:text="#{label.public.note}"></span>
-                </div>
+                <span class="word-notes__note" th:text="#{label.public.note}"></span>
                 <ul
-                  class="word-notes__list">
+                  class="word-notes__list word-notes__list--with-marker">
                   <li class="word-notes__note" th:each="note : ${noteEntry.value}">
                     <div class="d-flex" th:id="${'note-entry-text-' + note.noteId}">
-                      <span class="material-symbols-outlined word-notes__list-icon" aria-hidden="true">
-                        description
-                      </span>
                       <div>
                         <span th:utext="${note.valuePrese}"></span>
                         <span th:if="${isLimTerm}" th:utext="${'[' + note.createdBy + ']'}" class="text-muted text-small"></span>
@@ -250,18 +236,12 @@
                     <div class="dependencies mt-2">
                       <div class="dependence-group">
                         <div class="d-flex">
-                          <span class="material-symbols-outlined word-notes__list-icon" aria-hidden="true">
-                            description
-                          </span>
                           <span class="word-notes__note" th:text="#{button.label.usages}"></span>
                         </div>
-                        <ul class="word-notes__list" th:id="|lexeme-usages-${meaningLexeme.lexemeId}|">
+                        <ul class="word-notes__list word-notes__list--with-marker" th:id="|lexeme-usages-${meaningLexeme.lexemeId}|">
                           <li class="word-notes__note" th:each="usage,usageIter : ${meaningLexeme.usages}"
                                     th:with="isCollapsable=${usageIter.count > T(eki.wordweb.constant.WebConstant).TYPICAL_COLLECTIONS_DISPLAY_LIMIT}">
                             <div class="d-flex" th:if="${!isCollapsable}">
-                              <span class="material-symbols-outlined word-notes__list-icon" aria-hidden="true">
-                                description
-                              </span>
                               <div>
                                 <span class="example-text example-text-w-audio">
                                   <span class="example-text-value" th:utext="${usage.valuePrese}"></span>
@@ -330,18 +310,12 @@
                   <th:block th:if="${not #maps.isEmpty(meaningLexeme.lexemeNotesByLang)}">
                     <div>
                       <div class="d-flex">
-                        <span class="material-symbols-outlined word-notes__list-icon" aria-hidden="true">
-                          description
-                        </span>
                         <span class="word-notes__note" th:text="${isLimTerm ? #messages.msg('label.limterm.note') : #messages.msg('label.public.note')}">Hea teada</span>
                       </div>
-                      <ul class="word-notes__list">
+                      <ul class="word-notes__list word-notes__list--with-marker">
                         <li class="word-notes__note" th:each="noteEntry : ${meaningLexeme.lexemeNotesByLang}">
                           <th:block th:each="note : ${noteEntry.value}">
                             <div class="d-flex" th:id="|note-entry-text-${note.noteId}|">
-                              <span class="material-symbols-outlined word-notes__list-icon" aria-hidden="true">
-                                description
-                              </span>
                               <div>
                                 <span th:utext="${note.valuePrese}"></span>
                                 <th:block th:if="${not #lists.isEmpty(note.sourceLinks)}">
