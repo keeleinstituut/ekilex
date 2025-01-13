@@ -94,3 +94,26 @@ where
 			and u.value = oc.usage_value
 	);
 
+-- allikaviidete parandus
+
+update
+	definition_source_link
+set
+	source_id = 19483,
+	"name" = null
+where
+	source_id = 15800
+	and "name" = 'Online'
+;
+
+update
+	lexeme_source_link
+set
+	source_id = 19483,
+	"name" = null
+where
+	source_id = 15800
+	and "name" = 'Online'
+;
+
+
