@@ -400,6 +400,8 @@
     // Prevent weird outline while icon is rotating 
     min-height: 28px;
 
+    width: 100%;
+
     &-icon {
       color: var(--color-dark-blue);
       font-size: 1.125rem;
