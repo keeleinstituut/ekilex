@@ -39,7 +39,7 @@ import eki.ekilex.data.UserContextData;
 import eki.ekilex.data.UserMessage;
 import eki.ekilex.data.Word;
 import eki.ekilex.data.WordDetails;
-import eki.ekilex.data.WordLexeme;
+import eki.ekilex.data.Lexeme;
 import eki.ekilex.data.WordLexemeMeaningDetails;
 import eki.ekilex.data.WordLexemeMeaningIdTuple;
 import eki.ekilex.service.CompositionService;
@@ -84,17 +84,12 @@ public class LexEditController extends AbstractPrivatePageController {
 		List<String> tagNames = userContextData.getTagNames();
 		List<String> datasetCodes = userContextData.getPreferredDatasetCodes();
 		EkiUserProfile userProfile = userProfileService.getUserProfile(userId);
-		WordLexeme targetLexeme = lexSearchService.getWordLexeme(targetLexemeId, languagesOrder, userProfile, user, true);
-		Long sourceLexemeMeaningId = targetLexeme.getMeaningId();
-		String targetLexemeWord = targetLexeme.getWordValue();
-		String targetLexemeDatasetCode = targetLexeme.getDatasetCode();
-		Integer wordHomonymNumber = targetLexeme.getWordHomonymNr();
-
-		List<WordLexeme> sourceLexemes = lookupService
-				.getWordLexemesOfJoinCandidates(user, datasetCodes, targetLexemeWord, wordHomonymNumber, sourceLexemeMeaningId, tagNames, targetLexemeDatasetCode);
+		Lexeme targetLexeme = lexSearchService.getWordLexeme(targetLexemeId, languagesOrder, userProfile, user, true);
+		List<Lexeme> sourceLexemes = lookupService.getWordLexemesOfJoinCandidates(user, datasetCodes, targetLexeme, tagNames, null);
+		String searchFilter = targetLexeme.getLexemeWord().getWordValue();
 
 		model.addAttribute("targetLexeme", targetLexeme);
-		model.addAttribute("searchFilter", targetLexemeWord);
+		model.addAttribute("searchFilter", searchFilter);
 		model.addAttribute("sourceLexemes", sourceLexemes);
 
 		return LEX_JOIN_PAGE;
@@ -114,17 +109,8 @@ public class LexEditController extends AbstractPrivatePageController {
 		List<String> tagNames = userContextData.getTagNames();
 		List<String> datasetCodes = userContextData.getPreferredDatasetCodes();
 		EkiUserProfile userProfile = userProfileService.getUserProfile(userId);
-		WordLexeme targetLexeme = lexSearchService.getWordLexeme(targetLexemeId, languagesOrder, userProfile, user, true);
-		Long sourceLexemeMeaningId = targetLexeme.getMeaningId();
-		String targetLexemeWord = targetLexeme.getWordValue();
-		String targetLexemeDatasetCode = targetLexeme.getDatasetCode();
-		Integer wordHomonymNumber = null;
-		if (StringUtils.equals(searchFilter, targetLexemeWord)) {
-			wordHomonymNumber = targetLexeme.getWordHomonymNr();
-		}
-
-		List<WordLexeme> sourceLexemes = lookupService
-				.getWordLexemesOfJoinCandidates(user, datasetCodes, searchFilter, wordHomonymNumber, sourceLexemeMeaningId, tagNames, targetLexemeDatasetCode);
+		Lexeme targetLexeme = lexSearchService.getWordLexeme(targetLexemeId, languagesOrder, userProfile, user, true);
+		List<Lexeme> sourceLexemes = lookupService.getWordLexemesOfJoinCandidates(user, datasetCodes, targetLexeme, tagNames, searchFilter);
 
 		model.addAttribute("targetLexeme", targetLexeme);
 		model.addAttribute("searchFilter", searchFilter);

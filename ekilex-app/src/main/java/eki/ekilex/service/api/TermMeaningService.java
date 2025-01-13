@@ -25,7 +25,7 @@ import eki.ekilex.data.LexemeNote;
 import eki.ekilex.data.MeaningNote;
 import eki.ekilex.data.SourceLink;
 import eki.ekilex.data.Usage;
-import eki.ekilex.data.WordLexeme;
+import eki.ekilex.data.Lexeme;
 import eki.ekilex.data.WordLexemeMeaningIdTuple;
 import eki.ekilex.data.api.Classifier;
 import eki.ekilex.data.api.Definition;
@@ -112,8 +112,8 @@ public class TermMeaningService extends AbstractApiCudService implements Activit
 
 		if (CollectionUtils.isNotEmpty(words)) {
 
-			List<WordLexeme> meaningWords = lookupDbService.getMeaningWords(meaningId, datasetCode, null);
-			List<Long> existingWordIds = meaningWords.stream().map(WordLexeme::getWordId).collect(Collectors.toList());
+			List<Lexeme> meaningWords = lookupDbService.getMeaningWords(meaningId, datasetCode, null);
+			List<Long> existingWordIds = meaningWords.stream().map(Lexeme::getWordId).collect(Collectors.toList());
 
 			for (TermWord word : words) {
 

@@ -34,7 +34,7 @@ import eki.ekilex.data.Tag;
 import eki.ekilex.data.Usage;
 import eki.ekilex.data.UsageDefinition;
 import eki.ekilex.data.UsageTranslation;
-import eki.ekilex.data.WordLexeme;
+import eki.ekilex.data.Lexeme;
 import eki.ekilex.data.WordLexemeMeaningDetails;
 import eki.ekilex.data.WordLexemeMeaningIdTuple;
 import eki.ekilex.security.EkilexPermissionEvaluator;
@@ -479,9 +479,9 @@ public class CudService extends AbstractCudService implements PermConstant, Acti
 			return;
 		}
 
-		List<WordLexeme> lexemes = lookupDbService.getWordLexemes(lexemeId);
+		List<Lexeme> lexemes = lookupDbService.getWordLexemes(lexemeId);
 		lexemeLevelCalcUtil.recalculateLevels(lexemeId, lexemes, action);
-		for (WordLexeme lexeme : lexemes) {
+		for (Lexeme lexeme : lexemes) {
 			Long otherLexemeId = lexeme.getLexemeId();
 			ActivityLogData activityLog = activityLogService.prepareActivityLog("updateLexemeLevels", otherLexemeId, ActivityOwner.LEXEME, roleDatasetCode, isManualEventOnUpdateEnabled);
 			cudDbService.updateLexemeLevels(otherLexemeId, lexeme.getLevel1(), lexeme.getLevel2());
@@ -496,9 +496,9 @@ public class CudService extends AbstractCudService implements PermConstant, Acti
 			return;
 		}
 
-		List<WordLexeme> lexemes = lookupDbService.getWordLexemes(lexemeId);
+		List<Lexeme> lexemes = lookupDbService.getWordLexemes(lexemeId);
 		lexemeLevelCalcUtil.recalculateLevels(lexemeId, lexemes, lexemePosition);
-		for (WordLexeme lexeme : lexemes) {
+		for (Lexeme lexeme : lexemes) {
 			Long otherLexemeId = lexeme.getLexemeId();
 			ActivityLogData activityLog = activityLogService.prepareActivityLog("updateLexemeLevels", otherLexemeId, ActivityOwner.LEXEME, roleDatasetCode, isManualEventOnUpdateEnabled);
 			cudDbService.updateLexemeLevels(otherLexemeId, lexeme.getLevel1(), lexeme.getLevel2());
@@ -616,6 +616,22 @@ public class CudService extends AbstractCudService implements PermConstant, Acti
 
 		ActivityLogData activityLog = activityLogService.prepareActivityLog("updateLexemePublicity", lexemeId, ActivityOwner.LEXEME, roleDatasetCode, isManualEventOnUpdateEnabled);
 		cudDbService.updateLexemePublicity(lexemeId, isPublic);
+		activityLogService.createActivityLog(activityLog, lexemeId, ActivityEntity.LEXEME);
+	}
+
+	@Transactional(rollbackOn = Exception.class)
+	public void updateLexemeIsWord(Long lexemeId, boolean isWord, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
+
+		ActivityLogData activityLog = activityLogService.prepareActivityLog("updateLexemeIsWord", lexemeId, ActivityOwner.LEXEME, roleDatasetCode, isManualEventOnUpdateEnabled);
+		cudDbService.updateLexemeIsWord(lexemeId, isWord);
+		activityLogService.createActivityLog(activityLog, lexemeId, ActivityEntity.LEXEME);
+	}
+
+	@Transactional(rollbackOn = Exception.class)
+	public void updateLexemeIsCollocation(Long lexemeId, boolean isCollocation, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
+
+		ActivityLogData activityLog = activityLogService.prepareActivityLog("updateLexemeIsWord", lexemeId, ActivityOwner.LEXEME, roleDatasetCode, isManualEventOnUpdateEnabled);
+		cudDbService.updateLexemeIsCollocation(lexemeId, isCollocation);
 		activityLogService.createActivityLog(activityLog, lexemeId, ActivityEntity.LEXEME);
 	}
 

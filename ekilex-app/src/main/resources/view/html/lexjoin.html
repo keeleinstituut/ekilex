@@ -97,7 +97,7 @@
         <span th:if="${lexeme.levels != null}">
           <small th:text="${'[ ' + lexeme.levels + ' ]'}"></small>
         </span>
-        <span th:if="${lexeme.wordDisplayMorphCode != null}" th:text="${lexeme.wordDisplayMorphCode}"></span>
+        <span th:if="${lexeme.lexemeWord.displayMorphCode != null}" th:text="${lexeme.lexemeWord.displayMorphCode}"></span>
         <b th:text="${lexeme.datasetName}" class="float-right"></b>
       </div>
     </div>

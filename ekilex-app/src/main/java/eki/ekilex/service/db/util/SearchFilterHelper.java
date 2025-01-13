@@ -73,6 +73,7 @@ import eki.common.constant.ActivityFunct;
 import eki.common.constant.ActivityOwner;
 import eki.common.constant.FreeformConstant;
 import eki.common.constant.GlobalConstant;
+import eki.common.constant.WordStatus;
 import eki.ekilex.constant.SearchKey;
 import eki.ekilex.constant.SearchOperand;
 import eki.ekilex.data.Classifier;
@@ -309,6 +310,44 @@ public class SearchFilterHelper implements GlobalConstant, ActivityFunct, Freefo
 			}
 			where = where.and(critWhere);
 		}
+		return where;
+	}
+
+	public Condition applyWordStatusFilters(List<SearchCriterion> searchCriteria, Lexeme l, Condition where) {
+
+		List<SearchCriterion> filteredCriteria = filterCriteriaBySearchKey(searchCriteria, SearchKey.WORD_STATUS);
+
+		if (CollectionUtils.isEmpty(filteredCriteria)) {
+			return where;
+		}
+
+		Condition where1 = DSL.noCondition();
+
+		for (SearchCriterion criterion : filteredCriteria) {
+
+			SearchOperand searchOperand = criterion.getSearchOperand();
+			String searchValueStr = criterion.getSearchValue().toString();
+			WordStatus wordStatus = WordStatus.valueOf(searchValueStr);
+			boolean isNot = criterion.isNot();
+
+			if (SearchOperand.IS.equals(searchOperand)) {
+				if (WordStatus.WORD.equals(wordStatus)) {
+					where1 = where1.and(l.IS_WORD.isTrue());
+				} else if (WordStatus.COLLOCATION.equals(wordStatus)) {
+					where1 = where1.and(l.IS_COLLOCATION.isTrue());
+				}
+			} else if (SearchOperand.IS_NOT.equals(searchOperand)) {
+				if (WordStatus.WORD.equals(wordStatus)) {
+					where1 = where1.and(l.IS_WORD.isFalse());
+				} else if (WordStatus.COLLOCATION.equals(wordStatus)) {
+					where1 = where1.and(l.IS_COLLOCATION.isFalse());
+				}
+			}
+			if (isNot) {
+				where1 = DSL.not(where1);
+			}
+		}
+		where = where.and(where1);
 		return where;
 	}
 

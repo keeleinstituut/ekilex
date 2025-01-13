@@ -53,7 +53,6 @@ import eki.ekilex.data.Classifier;
 import eki.ekilex.data.IdPair;
 import eki.ekilex.data.InexactSynonym;
 import eki.ekilex.data.SearchDatasetsRestriction;
-import eki.ekilex.data.WordLexeme;
 import eki.ekilex.data.WordLexemeMeaningIdTuple;
 import eki.ekilex.data.WordRelation;
 import eki.ekilex.data.db.main.tables.Definition;
@@ -96,7 +95,7 @@ public class LookupDbService extends AbstractDataDbService {
 		return wordWordTypeRecord.getId();
 	}
 
-	public List<WordLexeme> getWordLexemes(Long lexemeId) {
+	public List<eki.ekilex.data.Lexeme> getWordLexemes(Long lexemeId) {
 		Lexeme l1 = LEXEME.as("l1");
 		Lexeme l2 = LEXEME.as("l2");
 		return mainDb
@@ -110,7 +109,7 @@ public class LookupDbService extends AbstractDataDbService {
 								.and(l1.WORD_ID.eq(l2.WORD_ID))
 								.and(l1.DATASET_CODE.eq(l2.DATASET_CODE)))
 				.orderBy(l2.LEVEL1, l2.LEVEL2)
-				.fetchInto(WordLexeme.class);
+				.fetchInto(eki.ekilex.data.Lexeme.class);
 	}
 
 	public Long getWordRelationGroupId(String groupType, Long wordId) {
@@ -205,26 +204,19 @@ public class LookupDbService extends AbstractDataDbService {
 
 		Word w = WORD.as("w");
 		Lexeme l = LEXEME.as("l");
+		List<Field<?>> wordFields = queryHelper.getWordFields(w);
 
 		return mainDb
-				.select(
-						w.ID.as("word_id"),
-						w.VALUE.as("word_value"),
-						w.VALUE_PRESE.as("word_value_prese"),
-						w.LANG.as("word_lang"),
-						w.HOMONYM_NR,
-						DSL.field(DSL
-								.select(DSL.arrayAggDistinct(l.DATASET_CODE))
-								.from(l)
-								.where(l.WORD_ID.eq(w.ID)))
-								.as("dataset_codes"))
-				.from(w, l)
+				.select(wordFields)
+				.from(w)
 				.where(
 						w.VALUE.eq(wordValue)
 								.and(w.IS_PUBLIC.isTrue())
 								.and(w.LANG.eq(wordLang))
-								.and(l.WORD_ID.eq(w.ID)))
-				.groupBy(w.ID)
+								.andExists(DSL
+										.select(l.ID)
+										.from(l)
+										.where(l.WORD_ID.eq(w.ID))))
 				.fetchInto(eki.ekilex.data.Word.class);
 	}
 
@@ -268,15 +260,22 @@ public class LookupDbService extends AbstractDataDbService {
 				.orElse(0);
 	}
 
-	public List<WordLexeme> getWordLexemesLevels(Long wordId) {
+	public List<eki.ekilex.data.Lexeme> getWordLexemesLevels(Long wordId) {
 
 		Lexeme l = LEXEME.as("l");
 		return mainDb
-				.select(l.ID.as("lexeme_id"), l.DATASET_CODE, l.LEVEL1, l.LEVEL2)
+				.select(
+						l.ID.as("lexeme_id"),
+						l.DATASET_CODE,
+						l.LEVEL1,
+						l.LEVEL2)
 				.from(l)
 				.where(l.WORD_ID.eq(wordId))
-				.orderBy(l.DATASET_CODE, l.LEVEL1, l.LEVEL2)
-				.fetchInto(WordLexeme.class);
+				.orderBy(
+						l.DATASET_CODE,
+						l.LEVEL1,
+						l.LEVEL2)
+				.fetchInto(eki.ekilex.data.Lexeme.class);
 	}
 
 	public String getLexemeDatasetCode(Long lexemeId) {
@@ -666,7 +665,8 @@ public class LookupDbService extends AbstractDataDbService {
 				.fetchInto(Long.class);
 	}
 
-	public List<WordLexeme> getMeaningWords(Long meaningId, String datasetCode, String wordLang) {
+	// TODO apply word
+	public List<eki.ekilex.data.Lexeme> getMeaningWords(Long meaningId, String datasetCode, String wordLang) {
 
 		Lexeme l = LEXEME.as("l");
 		Word w = WORD.as("w");
@@ -691,7 +691,7 @@ public class LookupDbService extends AbstractDataDbService {
 				.from(l, w)
 				.where(where)
 				.orderBy(l.ORDER_BY)
-				.fetchInto(WordLexeme.class);
+				.fetchInto(eki.ekilex.data.Lexeme.class);
 	}
 
 	public List<InexactSynonym> getMeaningInexactSynonyms(Long meaningId, String targetLang, String datasetCode) {

@@ -24,7 +24,7 @@ import eki.ekilex.data.EkiUser;
 import eki.ekilex.data.IdPair;
 import eki.ekilex.data.SimpleWord;
 import eki.ekilex.data.Word;
-import eki.ekilex.data.WordLexeme;
+import eki.ekilex.data.Lexeme;
 import eki.ekilex.data.db.main.tables.records.LexRelationRecord;
 import eki.ekilex.data.db.main.tables.records.LexemeRecord;
 import eki.ekilex.data.db.main.tables.records.WordRecord;
@@ -441,9 +441,9 @@ public class CompositionService extends AbstractService implements PermConstant 
 			return;
 		}
 
-		List<WordLexeme> lexemes = lookupDbService.getWordLexemes(lexemeId);
+		List<Lexeme> lexemes = lookupDbService.getWordLexemes(lexemeId);
 		lexemeLevelCalcUtil.recalculateLevels(lexemeId, lexemes, action);
-		for (WordLexeme lexeme : lexemes) {
+		for (Lexeme lexeme : lexemes) {
 			cudDbService.updateLexemeLevels(lexeme.getLexemeId(), lexeme.getLevel1(), lexeme.getLevel2());
 		}
 	}

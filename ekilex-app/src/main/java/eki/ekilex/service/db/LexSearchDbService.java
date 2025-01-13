@@ -7,14 +7,12 @@ import static eki.ekilex.data.db.main.Tables.FREQ_CORP;
 import static eki.ekilex.data.db.main.Tables.LANGUAGE;
 import static eki.ekilex.data.db.main.Tables.LEXEME;
 import static eki.ekilex.data.db.main.Tables.LEXEME_TAG;
-import static eki.ekilex.data.db.main.Tables.MEANING;
 import static eki.ekilex.data.db.main.Tables.MORPH_FREQ;
 import static eki.ekilex.data.db.main.Tables.MORPH_LABEL;
 import static eki.ekilex.data.db.main.Tables.PARADIGM;
 import static eki.ekilex.data.db.main.Tables.PARADIGM_FORM;
 import static eki.ekilex.data.db.main.Tables.VALUE_STATE_LABEL;
 import static eki.ekilex.data.db.main.Tables.WORD;
-import static eki.ekilex.data.db.main.Tables.WORD_FREQ;
 
 import java.sql.Timestamp;
 import java.util.List;
@@ -23,7 +21,6 @@ import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.jooq.Condition;
 import org.jooq.Field;
-import org.jooq.JSON;
 import org.jooq.Param;
 import org.jooq.Record18;
 import org.jooq.Record9;
@@ -36,7 +33,6 @@ import eki.ekilex.data.ParadigmFormTuple;
 import eki.ekilex.data.SearchCriterionGroup;
 import eki.ekilex.data.SearchDatasetsRestriction;
 import eki.ekilex.data.SearchFilter;
-import eki.ekilex.data.WordLexeme;
 import eki.ekilex.data.db.main.tables.Dataset;
 import eki.ekilex.data.db.main.tables.Form;
 import eki.ekilex.data.db.main.tables.FormFreq;
@@ -44,13 +40,11 @@ import eki.ekilex.data.db.main.tables.FreqCorp;
 import eki.ekilex.data.db.main.tables.Language;
 import eki.ekilex.data.db.main.tables.Lexeme;
 import eki.ekilex.data.db.main.tables.LexemeTag;
-import eki.ekilex.data.db.main.tables.Meaning;
 import eki.ekilex.data.db.main.tables.MorphFreq;
 import eki.ekilex.data.db.main.tables.MorphLabel;
 import eki.ekilex.data.db.main.tables.Paradigm;
 import eki.ekilex.data.db.main.tables.ParadigmForm;
 import eki.ekilex.data.db.main.tables.Word;
-import eki.ekilex.data.db.main.tables.WordFreq;
 import eki.ekilex.service.db.util.LexSearchConditionComposer;
 import eki.ekilex.service.db.util.SearchFilterHelper;
 
@@ -67,8 +61,8 @@ public class LexSearchDbService extends AbstractDataDbService {
 			SearchFilter searchFilter, SearchDatasetsRestriction searchDatasetsRestriction, String userRoleDatasetCode,
 			List<String> tagNames, int offset, int maxResultsLimit, boolean noLimit) throws Exception {
 
-		List<SearchCriterionGroup> searchCriteriaGroups = searchFilter.getCriteriaGroups();
 		Word w1 = WORD.as("w1");
+		List<SearchCriterionGroup> searchCriteriaGroups = searchFilter.getCriteriaGroups();
 		Condition wordCondition = lexSearchConditionComposer.createSearchCondition(w1, searchCriteriaGroups, searchDatasetsRestriction);
 
 		return execute(w1, wordCondition, searchDatasetsRestriction, userRoleDatasetCode, tagNames, offset, maxResultsLimit, noLimit);
@@ -77,7 +71,8 @@ public class LexSearchDbService extends AbstractDataDbService {
 	public int countWords(SearchFilter searchFilter, SearchDatasetsRestriction searchDatasetsRestriction) throws Exception {
 
 		Word w1 = WORD.as("w");
-		Condition wordCondition = lexSearchConditionComposer.createSearchCondition(w1, searchFilter.getCriteriaGroups(), searchDatasetsRestriction);
+		List<SearchCriterionGroup> searchCriteriaGroups = searchFilter.getCriteriaGroups();
+		Condition wordCondition = lexSearchConditionComposer.createSearchCondition(w1, searchCriteriaGroups, searchDatasetsRestriction);
 
 		return count(w1, wordCondition);
 	}
@@ -187,196 +182,22 @@ public class LexSearchDbService extends AbstractDataDbService {
 				.fetchInto(ParadigmFormTuple.class);
 	}
 
-	public List<WordLexeme> getWordLexemes(Long wordId, SearchDatasetsRestriction searchDatasetsRestriction, String classifierLabelLang, String classifierLabelTypeCode) {
+	public List<eki.ekilex.data.Lexeme> getWordLexemes(Long wordId, SearchDatasetsRestriction searchDatasetsRestriction, String classifierLabelLang, String classifierLabelTypeCode) {
 
-		Word w = WORD.as("w");
-		Meaning m = MEANING.as("m");
 		Lexeme l = LEXEME.as("l");
 		Dataset ds = DATASET.as("ds");
-
-		Field<String[]> wtf = getWordTypesField(w.ID);
-		Field<Boolean> wtpf = getWordIsPrefixoidField(w.ID);
-		Field<Boolean> wtsf = getWordIsSuffixoidField(w.ID);
-		Field<Boolean> wtz = getWordIsForeignField(w.ID);
-
-		Field<JSON> lposf = getLexemePosField(l.ID, classifierLabelLang, classifierLabelTypeCode);
-		Field<JSON> lderf = getLexemeDerivsField(l.ID, classifierLabelLang, classifierLabelTypeCode);
-		Field<JSON> lregf = getLexemeRegistersField(l.ID, classifierLabelLang, classifierLabelTypeCode);
-		Field<JSON> lvalstf = getLexemeValueStateField(l.ID, classifierLabelLang, classifierLabelTypeCode);
-		Field<JSON> lproflf = getLexemeProficiencyLevelField(l.ID, classifierLabelLang, classifierLabelTypeCode);
-
+		List<Field<?>> lexemeFields = queryHelper.getLexemeFields(l, ds, classifierLabelLang, classifierLabelTypeCode);
 		Condition dsWhere = searchFilterHelper.applyDatasetRestrictions(l, searchDatasetsRestriction, null);
 
 		return mainDb
-				.select(
-						w.ID.as("word_id"),
-						w.VALUE.as("word_value"),
-						w.VALUE_PRESE.as("word_value_prese"),
-						w.LANG.as("word_lang"),
-						w.HOMONYM_NR.as("word_homonym_nr"),
-						w.GENDER_CODE.as("word_gender_code"),
-						w.ASPECT_CODE.as("word_aspect_code"),
-						w.DISPLAY_MORPH_CODE.as("word_display_morph_code"),
-						wtf.as("word_type_codes"),
-						wtpf.as("prefixoid"),
-						wtsf.as("suffixoid"),
-						wtz.as("foreign"),
-						l.ID.as("lexeme_id"),
-						l.MEANING_ID,
-						ds.NAME.as("dataset_name"),
-						l.DATASET_CODE,
-						l.LEVEL1,
-						l.LEVEL2,
-						l.VALUE_STATE_CODE.as("lexeme_value_state_code"),
-						lvalstf.as("lexeme_value_state"),
-						l.PROFICIENCY_LEVEL_CODE.as("lexeme_proficiency_level_code"),
-						lproflf.as("lexeme_proficiency_level"),
-						l.IS_PUBLIC,
-						l.COMPLEXITY,
-						l.WEIGHT,
-						lposf.as("pos"),
-						lderf.as("derivs"),
-						lregf.as("registers"))
-				.from(w, l, m, ds)
+				.select(lexemeFields)
+				.from(l, ds)
 				.where(
-						w.ID.eq(wordId)
-								.and(l.WORD_ID.eq(w.ID))
-								.and(l.MEANING_ID.eq(m.ID))
+						l.WORD_ID.eq(wordId)
 								.and(l.DATASET_CODE.eq(ds.CODE))
 								.and(dsWhere))
-				.groupBy(w.ID, l.ID, m.ID, ds.CODE)
-				.orderBy(w.ID, ds.ORDER_BY, l.LEVEL1, l.LEVEL2)
-				.fetchInto(WordLexeme.class);
-	}
-
-	public WordLexeme getLexeme(Long lexemeId, String classifierLabelLang, String classifierLabelTypeCode) {
-
-		Word w = WORD.as("w");
-		Meaning m = MEANING.as("m");
-		Lexeme l = LEXEME.as("l");
-		Dataset ds = DATASET.as("ds");
-
-		Field<String[]> wtf = getWordTypesField(w.ID);
-		Field<Boolean> wtpf = getWordIsPrefixoidField(w.ID);
-		Field<Boolean> wtsf = getWordIsSuffixoidField(w.ID);
-		Field<Boolean> wtz = getWordIsForeignField(w.ID);
-
-		Field<JSON> lposf = getLexemePosField(l.ID, classifierLabelLang, classifierLabelTypeCode);
-		Field<JSON> lderf = getLexemeDerivsField(l.ID, classifierLabelLang, classifierLabelTypeCode);
-		Field<JSON> lregf = getLexemeRegistersField(l.ID, classifierLabelLang, classifierLabelTypeCode);
-		Field<JSON> lvalstf = getLexemeValueStateField(l.ID, classifierLabelLang, classifierLabelTypeCode);
-		Field<JSON> lproflf = getLexemeProficiencyLevelField(l.ID, classifierLabelLang, classifierLabelTypeCode);
-
-		return mainDb
-				.select(
-						w.ID.as("word_id"),
-						w.VALUE.as("word_value"),
-						w.VALUE_PRESE.as("word_value_prese"),
-						w.LANG.as("word_lang"),
-						w.HOMONYM_NR.as("word_homonym_nr"),
-						w.GENDER_CODE.as("word_gender_code"),
-						w.ASPECT_CODE.as("word_aspect_code"),
-						w.DISPLAY_MORPH_CODE.as("word_display_morph_code"),
-						wtf.as("word_type_codes"),
-						wtpf.as("prefixoid"),
-						wtsf.as("suffixoid"),
-						wtz.as("foreign"),
-						l.ID.as("lexeme_id"),
-						l.MEANING_ID,
-						ds.NAME.as("dataset_name"),
-						l.DATASET_CODE,
-						l.LEVEL1,
-						l.LEVEL2,
-						l.VALUE_STATE_CODE.as("lexeme_value_state_code"),
-						lvalstf.as("lexeme_value_state"),
-						l.PROFICIENCY_LEVEL_CODE.as("lexeme_proficiency_level_code"),
-						lproflf.as("lexeme_proficiency_level"),
-						l.RELIABILITY,
-						l.IS_PUBLIC,
-						l.COMPLEXITY,
-						l.WEIGHT,
-						lposf.as("pos"),
-						lderf.as("derivs"),
-						lregf.as("registers"))
-				.from(w, l, m, ds)
-				.where(
-						l.ID.eq(lexemeId)
-								.and(l.WORD_ID.eq(w.ID))
-								.and(l.MEANING_ID.eq(m.ID))
-								.and(l.DATASET_CODE.eq(ds.CODE)))
-				.groupBy(w.ID, l.ID, m.ID, ds.CODE)
-				.fetchOptionalInto(WordLexeme.class)
-				.orElse(null);
-	}
-
-	public eki.ekilex.data.Word getWord(Long wordId) {
-
-		Word w = WORD.as("w");
-		FreqCorp fc = FREQ_CORP.as("fc");
-		FreqCorp fca = FREQ_CORP.as("fca");
-		WordFreq wf = WORD_FREQ.as("wf");
-		WordFreq wfa = WORD_FREQ.as("wfa");
-		Lexeme l = LEXEME.as("l");
-		LexemeTag lt = LEXEME_TAG.as("lt");
-
-		final Param<String> freqFieldSep = DSL.val(" - ");
-		Field<String> wff = DSL
-				.select(DSL.concat(fc.NAME, freqFieldSep, wf.RANK, freqFieldSep, wf.VALUE))
-				.from(fc, wf)
-				.where(
-						wf.WORD_ID.eq(w.ID)
-								.and(wf.FREQ_CORP_ID.eq(fc.ID))
-								.and(fc.ID.eq(DSL
-										.select(fca.ID)
-										.from(fca, wfa)
-										.where(
-												wfa.WORD_ID.eq(wf.WORD_ID)
-														.and(wfa.FREQ_CORP_ID.eq(fca.ID)))
-										.orderBy(fca.CORP_DATE.desc())
-										.limit(1))))
-				.asField();
-
-		Field<String[]> wtf = getWordTypesField(w.ID);
-		Field<Boolean> wtpf = getWordIsPrefixoidField(w.ID);
-		Field<Boolean> wtsf = getWordIsSuffixoidField(w.ID);
-		Field<Boolean> wtz = getWordIsForeignField(w.ID);
-		Field<String[]> lxtnf = DSL.field(DSL
-				.select(DSL.arrayAggDistinct(DSL.coalesce(lt.TAG_NAME, "!")))
-				.from(l.leftOuterJoin(lt).on(lt.LEXEME_ID.eq(l.ID)))
-				.where(l.WORD_ID.eq(w.ID))
-				.groupBy(w.ID));
-		Field<Timestamp> wlaeof = getWordLastActivityEventOnField(w.ID);
-
-		return mainDb
-				.select(
-						w.ID.as("word_id"),
-						w.VALUE.as("word_value"),
-						w.VALUE_PRESE.as("word_value_prese"),
-						w.LANG,
-						w.HOMONYM_NR,
-						w.DISPLAY_MORPH_CODE,
-						w.GENDER_CODE,
-						w.ASPECT_CODE,
-						w.VOCAL_FORM,
-						w.MORPHOPHONO_FORM,
-						w.MORPH_COMMENT,
-						w.MANUAL_EVENT_ON,
-						w.IS_PUBLIC.as("is_word_public"),
-						wff.as("word_frequency"),
-						wtf.as("word_type_codes"),
-						wtpf.as("prefixoid"),
-						wtsf.as("suffixoid"),
-						wtz.as("foreign"),
-						lxtnf.as("lexemes_tag_names"),
-						wlaeof.as("last_activity_event_on"))
-				.from(w)
-				.where(w.ID.eq(wordId)
-						.andExists(DSL
-								.select(l.ID)
-								.from(l)
-								.where(l.WORD_ID.eq(w.ID))))
-				.fetchOptionalInto(eki.ekilex.data.Word.class)
-				.orElse(null);
+				.orderBy(l.WORD_ID, ds.ORDER_BY, l.LEVEL1, l.LEVEL2)
+				.fetchInto(eki.ekilex.data.Lexeme.class);
 	}
 
 	private List<eki.ekilex.data.Word> execute(
@@ -410,11 +231,11 @@ public class LexSearchDbService extends AbstractDataDbService {
 				.where(where)
 				.asTable("w");
 
-		Field<String[]> wtf = getWordTypesField(w.field("word_id", Long.class));
-		Field<Boolean> wtpf = getWordIsPrefixoidField(w.field("word_id", Long.class));
-		Field<Boolean> wtsf = getWordIsSuffixoidField(w.field("word_id", Long.class));
-		Field<Boolean> wtz = getWordIsForeignField(w.field("word_id", Long.class));
-		Field<Timestamp> wlaeof = getWordLastActivityEventOnField(w.field("word_id", Long.class));
+		Field<String[]> wtf = queryHelper.getWordTypeCodesField(w.field("word_id", Long.class));
+		Field<Boolean> wtpf = queryHelper.getWordIsPrefixoidField(w.field("word_id", Long.class));
+		Field<Boolean> wtsf = queryHelper.getWordIsSuffixoidField(w.field("word_id", Long.class));
+		Field<Boolean> wtz = queryHelper.getWordIsForeignField(w.field("word_id", Long.class));
+		Field<Timestamp> wlaeof = queryHelper.getWordLastActivityEventOnField(w.field("word_id", Long.class));
 
 		Field<String[]> lxvslvf;
 		Field<Boolean> lxpsf;

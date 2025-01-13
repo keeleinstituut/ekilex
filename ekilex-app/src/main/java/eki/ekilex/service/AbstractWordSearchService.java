@@ -28,7 +28,7 @@ import eki.ekilex.data.SearchDatasetsRestriction;
 import eki.ekilex.data.SearchFilter;
 import eki.ekilex.data.Word;
 import eki.ekilex.data.WordDescript;
-import eki.ekilex.data.WordLexeme;
+import eki.ekilex.data.Lexeme;
 import eki.ekilex.data.WordsResult;
 import eki.ekilex.service.db.LexDataDbService;
 import eki.ekilex.service.db.LexSearchDbService;
@@ -144,7 +144,7 @@ public abstract class AbstractWordSearchService extends AbstractSearchService {
 
 	public void appendLexemeLevels(List<MeaningRelation> synMeaningRelations) {
 
-		Map<Long, List<WordLexeme>> wordLexemesMap = new HashMap<>();
+		Map<Long, List<Lexeme>> wordLexemesMap = new HashMap<>();
 
 		List<Long> repetitiveWordIds = synMeaningRelations.stream()
 				.collect(groupingBy(MeaningRelation::getWordId, Collectors.counting()))
@@ -157,7 +157,7 @@ public abstract class AbstractWordSearchService extends AbstractSearchService {
 			Long relWordId = relation.getWordId();
 			Long relLexemeId = relation.getLexemeId();
 			if (repetitiveWordIds.contains(relWordId)) {
-				List<WordLexeme> wordLexemes = wordLexemesMap.get(relWordId);
+				List<Lexeme> wordLexemes = wordLexemesMap.get(relWordId);
 				if (wordLexemes == null) {
 					wordLexemes = lookupDbService.getWordLexemesLevels(relWordId);
 					lexemeLevelPreseUtil.combineLevels(wordLexemes);
@@ -176,8 +176,9 @@ public abstract class AbstractWordSearchService extends AbstractSearchService {
 		List<Word> words = lookupDbService.getWords(wordValue, language);
 
 		for (Word word : words) {
+
 			Long wordId = word.getWordId();
-			List<WordLexeme> wordLexemes = lexSearchDbService.getWordLexemes(wordId, searchDatasetsRestriction, CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
+			List<Lexeme> wordLexemes = lexSearchDbService.getWordLexemes(wordId, searchDatasetsRestriction, CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
 
 			wordLexemes.forEach(lexeme -> {
 				Long meaningId = lexeme.getMeaningId();
@@ -188,14 +189,15 @@ public abstract class AbstractWordSearchService extends AbstractSearchService {
 				meaning.setMeaningId(meaningId);
 				meaning.setDefinitions(definitions);
 				lexeme.setMeaning(meaning);
+				lexeme.setLexemeWord(word);
 			});
 
-			List<WordLexeme> mainDatasetLexemes = wordLexemes.stream()
+			List<Lexeme> mainDatasetLexemes = wordLexemes.stream()
 					.filter(lexeme -> StringUtils.equalsAny(lexeme.getDatasetCode(), datasetCode, DATASET_EKI))
 					.sorted(Comparator.comparing(lexeme -> !StringUtils.equals(lexeme.getDatasetCode(), datasetCode)))
 					.collect(Collectors.toList());
 
-			List<WordLexeme> secondaryDatasetLexemes = wordLexemes.stream()
+			List<Lexeme> secondaryDatasetLexemes = wordLexemes.stream()
 					.filter(lexeme -> !StringUtils.equalsAny(lexeme.getDatasetCode(), datasetCode, DATASET_EKI))
 					.collect(Collectors.toList());
 

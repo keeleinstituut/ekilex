@@ -51,10 +51,10 @@ public class MaintenanceDbService extends AbstractDataDbService {
 		Lexeme l1 = LEXEME.as("l1");
 		Lexeme l2 = LEXEME.as("l2");
 
-		Field<Boolean> isPrefixoid = getWordTypeExists(w1.ID, WORD_TYPE_CODE_PREFIXOID);
-		Field<Boolean> isSuffixoid = getWordTypeExists(w1.ID, WORD_TYPE_CODE_SUFFIXOID);
-		Field<Boolean> isSymbol = getWordTypeExists(w1.ID, WORD_TYPE_CODE_SYMBOL);
-		Field<Boolean> isAbbreviation = getWordTypeExists(w1.ID, WORD_TYPE_CODE_ABBREVIATION);
+		Field<Boolean> isPrefixoid = queryHelper.getWordTypeExists(w1.ID, WORD_TYPE_CODE_PREFIXOID);
+		Field<Boolean> isSuffixoid = queryHelper.getWordTypeExists(w1.ID, WORD_TYPE_CODE_SUFFIXOID);
+		Field<Boolean> isSymbol = queryHelper.getWordTypeExists(w1.ID, WORD_TYPE_CODE_SYMBOL);
+		Field<Boolean> isAbbreviation = queryHelper.getWordTypeExists(w1.ID, WORD_TYPE_CODE_ABBREVIATION);
 
 		Table<Record7<Long, String, String, Boolean, Boolean, Boolean, Boolean>> wHom = mainDb
 				.select(

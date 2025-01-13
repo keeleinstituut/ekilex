@@ -24,13 +24,13 @@ public class InexactSynMeaning extends AbstractDataObject {
 
 	private List<WordDescript> translationLangWordCandidates;
 
-	private List<WordLexeme> translationLangWords;
+	private List<Lexeme> translationLangWords;
 
 	private String targetLangWordValue;
 
 	private List<WordDescript> targetLangWordCandidates;
 
-	private List<WordLexeme> targetLangWords;
+	private List<Lexeme> targetLangWords;
 
 	private boolean isComplete;
 
@@ -100,11 +100,11 @@ public class InexactSynMeaning extends AbstractDataObject {
 		this.translationLangWordCandidates = translationLangWordCandidates;
 	}
 
-	public List<WordLexeme> getTranslationLangWords() {
+	public List<Lexeme> getTranslationLangWords() {
 		return translationLangWords;
 	}
 
-	public void setTranslationLangWords(List<WordLexeme> translationLangWords) {
+	public void setTranslationLangWords(List<Lexeme> translationLangWords) {
 		this.translationLangWords = translationLangWords;
 	}
 
@@ -124,11 +124,11 @@ public class InexactSynMeaning extends AbstractDataObject {
 		this.targetLangWordCandidates = targetLangWordCandidates;
 	}
 
-	public List<WordLexeme> getTargetLangWords() {
+	public List<Lexeme> getTargetLangWords() {
 		return targetLangWords;
 	}
 
-	public void setTargetLangWords(List<WordLexeme> targetLangWords) {
+	public void setTargetLangWords(List<Lexeme> targetLangWords) {
 		this.targetLangWords = targetLangWords;
 	}
 

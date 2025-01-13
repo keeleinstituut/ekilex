@@ -104,9 +104,38 @@
       <span class="lbl" th:text="#{lex.data.ids}">Identifikaatorid</span>
     </div>
     <div class="col pl-0">
-      <span class="pr-1" th:text="'W' + ${lexeme.wordId}"></span>
-      <span class="pr-1" th:text="'L' + ${lexeme.lexemeId}"></span>
-      <span class="pr-1" th:classappend="${lexeme.meaningId == selectedMeaningId ? 'text-warning' : ''}" th:text="'M' + ${lexeme.meaningId}"></span>
+      <span class="pr-1" th:text="|W${lexeme.wordId}|"></span>
+      <span class="pr-1" th:text="|L${lexeme.lexemeId}|"></span>
+      <span class="pr-1" th:text="|M${lexeme.meaningId}|" th:classappend="${lexeme.meaningId == selectedMeaningId ? 'text-warning' : ''}"></span>
+    </div>
+  </div>
+  <div class="hidden-buttons row" th:fragment="word_status">
+    <div class="col pr-0 col-w13rem">
+      <span class="lbl" th:text="#{lex.word.status.wordis}">Keelend on</span>
+    </div>
+    <div class="col-8 pl-0">
+      <span>
+        <span th:text="#{|boolean.is.${lexeme.word}|}"></span>
+        <button type="button" class="btn badge badge-primary"
+                th:title="#{common.edit}"
+                data-toggle="modal"
+                th:data-target="${'#editLexemeIsWordDlg_' + lexeme.lexemeId}"
+                sec:authorize="#vars.lexeme.crudGrant">
+          <i class="fa fa-caret-down" aria-hidden="true"></i>
+        </button>
+        <span th:text="#{lex.word.status.isword}">sõna</span>
+      </span>
+      <span class="ml-3">
+        <span th:text="#{|boolean.is.${lexeme.collocation}|}"></span>
+        <button type="button" class="btn badge badge-primary"
+                th:title="#{common.edit}"
+                data-toggle="modal"
+                th:data-target="${'#editLexemeIsCollocDlg_' + lexeme.lexemeId}"
+                sec:authorize="#vars.lexeme.crudGrant">
+          <i class="fa fa-caret-down" aria-hidden="true"></i>
+        </button>
+        <span th:text="#{lex.word.status.iscollocation}">kollokatsioon</span>
+      </span>
     </div>
   </div>
   <div class="hidden-buttons row" th:if="${lexeme.complexity != null}" th:fragment="lexeme_complexity">
@@ -1621,7 +1650,7 @@
       </th:block>
     </div>
   </div>
-  <div class="row" th:if="${not #lists.isEmpty(lexeme.lexemeNoteLangGroups)}" th:fragment="lexeme_note">
+  <div class="row" th:if="${not #lists.isEmpty(lexeme.noteLangGroups)}" th:fragment="lexeme_note">
     <hr/>
     <div class="col pr-0 col-w13rem">
       <span class="lbl" th:text="#{lex.lexeme.note}">Ilmiku märkus</span>
@@ -1634,7 +1663,7 @@
       </button>
     </div>
     <div class="col pl-0">
-      <th:block th:each="noteLangGroup : ${lexeme.lexemeNoteLangGroups}">
+      <th:block th:each="noteLangGroup : ${lexeme.noteLangGroups}">
         <div>
           <span th:text="${@viewUtil.getLangIso2(noteLangGroup.lang)}" class="mr-2"></span>
           <button name="lang-collapse-btn" type="button" class="btn badge badge-secondary btn-toggle"
@@ -1744,7 +1773,7 @@
       </th:block>
     </div>
   </div>
-  <div class="row" th:if="${not #lists.isEmpty(lexeme.lexemeFreeforms)}" th:fragment="lexeme_freeform">
+  <div class="row" th:if="${not #lists.isEmpty(lexeme.freeforms)}" th:fragment="lexeme_freeform">
     <hr/>
     <div class="col pr-0 col-w13rem">
       <span class="lbl" th:text="#{lex.lexeme.freeforms}">Ilmiku atribuudid</span>
@@ -1758,7 +1787,7 @@
     </div>
     <div class="col pl-0">
       <div class="orderable" data-op-code="lexeme_freeform">
-        <div th:each="freeform,freeformIter : ${lexeme.lexemeFreeforms}"
+        <div th:each="freeform,freeformIter : ${lexeme.freeforms}"
              th:data-id="${freeform.id}"
              th:data-orderby="${freeform.orderBy}"
              class="ml-4" style="position: relative">
@@ -1943,6 +1972,31 @@
         </div>
       </td>
     </tr>
+  </th:block>
+  <th:block th:fragment="colloc_members">
+    <div class="row" th:if="${not #lists.isEmpty(lexeme.collocationMembers)}">
+      <hr/>
+      <div class="col pr-0 col-w13rem">
+        <span class="lbl" th:text="#{lex.collocation.members}">Kollokatsiooni liikmed</span>
+      </div>
+      <div class="col pl-0">
+        <th:block th:each="collocMember : ${lexeme.collocationMembers}">
+          <div class="p-0">
+            <button
+              type="button"
+              class="btn btn-link p-0"
+              th:data-id="${collocMember.wordId}"
+              name="details-btn"
+              data-plugin="contextmenu, loadDetailsPlugin"
+              data-contextmenu:compare="Ava uues paneelis"
+              data-behaviour="replace">
+              <span th:text="${collocMember.wordValue}"></span>
+            </button>
+            <span th:text="${collocMember.weight}" class="small text-muted ml-2 mt-2"></span>
+          </div>
+        </th:block>
+      </div>
+    </div>
   </th:block>
   <div class="border-top px-0 w-100 ekiAccordion__instance" th:fragment="meaning_forum">
     <div class="ekiAccordion__title">

@@ -34,7 +34,6 @@ import org.springframework.stereotype.Component;
 import eki.ekilex.data.SearchDatasetsRestriction;
 import eki.ekilex.data.SynRelation;
 import eki.ekilex.data.TypeWordRelParam;
-import eki.ekilex.data.WordLexeme;
 import eki.ekilex.data.db.main.Routines;
 import eki.ekilex.data.db.main.tables.Dataset;
 import eki.ekilex.data.db.main.tables.Definition;
@@ -116,10 +115,10 @@ public class SynSearchDbService extends AbstractDataDbService {
 								.and(lp.LEXEME_ID.eq(l2.ID)))
 				.asField();
 
-		Field<String[]> wtf = getWordTypesField(w2.ID);
-		Field<Boolean> wtpf = getWordIsPrefixoidField(w2.ID);
-		Field<Boolean> wtsf = getWordIsSuffixoidField(w2.ID);
-		Field<Boolean> wtz = getWordIsForeignField(w2.ID);
+		Field<String[]> wtf = queryHelper.getWordTypeCodesField(w2.ID);
+		Field<Boolean> wtpf = queryHelper.getWordIsPrefixoidField(w2.ID);
+		Field<Boolean> wtsf = queryHelper.getWordIsSuffixoidField(w2.ID);
+		Field<Boolean> wtz = queryHelper.getWordIsForeignField(w2.ID);
 
 		Table<Record16<Long, String, String, TypeWordRelParamRecord[], Long, Long, String, String, Integer, String, String[], Boolean, Boolean, Boolean, TypeWordRelMeaningRecord[], String[]>> rr = DSL
 				.select(
@@ -253,10 +252,10 @@ public class SynSearchDbService extends AbstractDataDbService {
 				.from(relmt)
 				.asField("relm");
 
-		Field<String[]> wtf = getWordTypesField(w2.ID);
-		Field<Boolean> wtpf = getWordIsPrefixoidField(w2.ID);
-		Field<Boolean> wtsf = getWordIsSuffixoidField(w2.ID);
-		Field<Boolean> wtz = getWordIsForeignField(w2.ID);
+		Field<String[]> wtf = queryHelper.getWordTypeCodesField(w2.ID);
+		Field<Boolean> wtpf = queryHelper.getWordIsPrefixoidField(w2.ID);
+		Field<Boolean> wtsf = queryHelper.getWordIsSuffixoidField(w2.ID);
+		Field<Boolean> wtz = queryHelper.getWordIsForeignField(w2.ID);
 
 		Table<Record14<Long, String, String, TypeWordRelParamRecord[], Long, Long, String, String, String, String[], Boolean, Boolean, Boolean, TypeWordRelMeaningRecord[]>> rr = DSL
 				.select(
@@ -335,7 +334,7 @@ public class SynSearchDbService extends AbstractDataDbService {
 				.fetchInto(SynRelation.class);
 	}
 
-	public List<WordLexeme> getWordPrimarySynonymLexemes(
+	public List<eki.ekilex.data.Lexeme> getWordPrimarySynonymLexemes(
 			Long wordId, SearchDatasetsRestriction searchDatasetsRestriction, String classifierLabelLang, String classifierLabelTypeCode) {
 
 		Lexeme l = LEXEME.as("l");
@@ -343,8 +342,8 @@ public class SynSearchDbService extends AbstractDataDbService {
 
 		Condition dsWhere = searchFilterHelper.applyDatasetRestrictions(l, searchDatasetsRestriction, null);
 
-		Field<JSON> lposf = getLexemePosField(l.ID, classifierLabelLang, classifierLabelTypeCode);
-		Field<JSON> lregf = getLexemeRegistersField(l.ID, classifierLabelLang, classifierLabelTypeCode);
+		Field<JSON> lposf = queryHelper.getLexemePosField(l.ID, classifierLabelLang, classifierLabelTypeCode);
+		Field<JSON> lregf = queryHelper.getLexemeRegistersField(l.ID, classifierLabelLang, classifierLabelTypeCode);
 
 		return mainDb
 				.select(
@@ -362,7 +361,7 @@ public class SynSearchDbService extends AbstractDataDbService {
 				.from(l.innerJoin(ds).on(ds.CODE.eq(l.DATASET_CODE)))
 				.where(l.WORD_ID.eq(wordId).and(dsWhere))
 				.orderBy(ds.ORDER_BY, l.LEVEL1, l.LEVEL2)
-				.fetchInto(WordLexeme.class);
+				.fetchInto(eki.ekilex.data.Lexeme.class);
 	}
 
 	public eki.ekilex.data.Word getWord(Long wordId) {
@@ -370,10 +369,10 @@ public class SynSearchDbService extends AbstractDataDbService {
 		Word w = WORD.as("w");
 		Lexeme l = LEXEME.as("l");
 
-		Field<String[]> wtf = getWordTypesField(w.ID);
-		Field<Boolean> wtpf = getWordIsPrefixoidField(w.ID);
-		Field<Boolean> wtsf = getWordIsSuffixoidField(w.ID);
-		Field<Boolean> wtz = getWordIsForeignField(w.ID);
+		Field<String[]> wtf = queryHelper.getWordTypeCodesField(w.ID);
+		Field<Boolean> wtpf = queryHelper.getWordIsPrefixoidField(w.ID);
+		Field<Boolean> wtsf = queryHelper.getWordIsSuffixoidField(w.ID);
+		Field<Boolean> wtz = queryHelper.getWordIsForeignField(w.ID);
 
 		return mainDb
 				.select(

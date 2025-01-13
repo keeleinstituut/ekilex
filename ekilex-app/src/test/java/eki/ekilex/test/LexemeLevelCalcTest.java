@@ -17,7 +17,7 @@ import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import eki.ekilex.app.EkilexApplication;
-import eki.ekilex.data.WordLexeme;
+import eki.ekilex.data.Lexeme;
 import eki.ekilex.service.util.LexemeLevelCalcUtil;
 
 @RunWith(SpringRunner.class)
@@ -37,7 +37,7 @@ public class LexemeLevelCalcTest extends AbstractTest {
 
 	@Test
 	public void changeLevels_level1Up() {
-		List<WordLexeme> lexemes = new ArrayList<>();
+		List<Lexeme> lexemes = new ArrayList<>();
 		lexemes.add(createLexeme(1L, 1, 1));
 		lexemes.add(createLexeme(2L, 1, 2));
 		lexemes.add(createLexeme(3L, 2, 1));
@@ -53,7 +53,7 @@ public class LexemeLevelCalcTest extends AbstractTest {
 
 	@Test
 	public void changeLevels_level2Up() {
-		List<WordLexeme> lexemes = new ArrayList<>();
+		List<Lexeme> lexemes = new ArrayList<>();
 		lexemes.add(createLexeme(1L, 1, 1));
 		lexemes.add(createLexeme(2L, 1, 2));
 
@@ -81,7 +81,7 @@ public class LexemeLevelCalcTest extends AbstractTest {
 
 	@Test
 	public void changeLevels_level1Down() {
-		List<WordLexeme> lexemes = new ArrayList<>();
+		List<Lexeme> lexemes = new ArrayList<>();
 		lexemes.add(createLexeme(1L, 1, 1));
 		lexemes.add(createLexeme(2L, 2, 1));
 		lexemes.add(createLexeme(3L, 2, 2));
@@ -108,7 +108,7 @@ public class LexemeLevelCalcTest extends AbstractTest {
 
 	@Test
 	public void changeLevels_levelDown_noChange() {
-		List<WordLexeme> lexemes = new ArrayList<>();
+		List<Lexeme> lexemes = new ArrayList<>();
 		lexemes.add(createLexeme(1L, 1, 1));
 		lexemes.add(createLexeme(2L, 1, 2));
 		lexemes.add(createLexeme(3L, 2, 1));
@@ -122,7 +122,7 @@ public class LexemeLevelCalcTest extends AbstractTest {
 
 	@Test
 	public void changeLevels_level1Pop_noChanges() {
-		List<WordLexeme> lexemes = new ArrayList<>();
+		List<Lexeme> lexemes = new ArrayList<>();
 		lexemes.add(createLexeme(1L, 1, 1));
 		lexemes.add(createLexeme(2L, 2, 1));
 		lexemes.add(createLexeme(2L, 2, 2));
@@ -154,7 +154,7 @@ public class LexemeLevelCalcTest extends AbstractTest {
 
 	@Test
 	public void changeLevels_level1Push() {
-		List<WordLexeme> lexemes = new ArrayList<>();
+		List<Lexeme> lexemes = new ArrayList<>();
 		lexemes.add(createLexeme(1L, 1, 1));
 		lexemes.add(createLexeme(2L, 2, 1));
 		lexemes.add(createLexeme(3L, 3, 1));
@@ -186,8 +186,8 @@ public class LexemeLevelCalcTest extends AbstractTest {
 	// 	assertThat(lexemes.get(3).getLevel2()).isEqualTo(2);
 	// }
 
-	private WordLexeme createLexeme(Long id, Integer level1, Integer level2) {
-		WordLexeme wordLexeme = new WordLexeme();
+	private Lexeme createLexeme(Long id, Integer level1, Integer level2) {
+		Lexeme wordLexeme = new Lexeme();
 		wordLexeme.setLexemeId(id);
 		wordLexeme.setLevel1(level1);
 		wordLexeme.setLevel2(level2);

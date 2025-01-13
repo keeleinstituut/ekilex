@@ -11,13 +11,14 @@ import eki.ekilex.data.Definition;
 import eki.ekilex.data.EkiUser;
 import eki.ekilex.data.EkiUserProfile;
 import eki.ekilex.data.InexactSynonym;
+import eki.ekilex.data.Lexeme;
 import eki.ekilex.data.Meaning;
 import eki.ekilex.data.MeaningRelation;
 import eki.ekilex.data.MeaningWord;
 import eki.ekilex.data.SearchLangsRestriction;
 import eki.ekilex.data.SynonymLangGroup;
 import eki.ekilex.data.Usage;
-import eki.ekilex.data.WordLexeme;
+import eki.ekilex.data.Word;
 import eki.ekilex.service.db.SynSearchDbService;
 import eki.ekilex.service.util.PermCalculator;
 
@@ -31,9 +32,9 @@ public abstract class AbstractSynSearchService extends AbstractWordSearchService
 	protected PermCalculator permCalculator;
 
 	protected void populateLexeme(
-			WordLexeme lexeme,
+			Lexeme lexeme,
+			Word word,
 			List<ClassifierSelect> languagesOrder,
-			String headwordLanguage,
 			List<String> meaningWordLangs,
 			EkiUser user,
 			EkiUserProfile userProfile) {
@@ -41,31 +42,29 @@ public abstract class AbstractSynSearchService extends AbstractWordSearchService
 		Long lexemeId = lexeme.getLexemeId();
 		Long meaningId = lexeme.getMeaningId();
 		String datasetCode = lexeme.getDatasetCode();
+		String headwordLanguage = word.getLang();
 		SearchLangsRestriction meaningWordLangsRestriction = composeLangsRestriction(meaningWordLangs);
 
 		permCalculator.applyCrud(user, lexeme);
+		permCalculator.applyCrud(user, word);
 
 		List<MeaningRelation> synMeaningRelations = commonDataDbService.getSynMeaningRelations(meaningId, datasetCode);
 		appendLexemeLevels(synMeaningRelations);
 		List<MeaningWord> meaningWords = commonDataDbService.getMeaningWords(lexemeId, meaningWordLangsRestriction);
 		List<InexactSynonym> inexactSynonyms = lookupDbService.getMeaningInexactSynonyms(meaningId, headwordLanguage, datasetCode);
 		List<SynonymLangGroup> synonymLangGroups = conversionUtil.composeSynonymLangGroups(synMeaningRelations, meaningWords, inexactSynonyms, userProfile, headwordLanguage, languagesOrder);
-
 		List<Definition> definitions = commonDataDbService.getMeaningDefinitions(meaningId, datasetCode, CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
 		permCalculator.filterVisibility(user, definitions);
-
-		List<Usage> usages = commonDataDbService.getUsages(lexemeId);
+		List<Usage> usages = lexeme.getUsages();
 		usages = usages.stream().filter(Usage::isPublic).collect(Collectors.toList());
 
-		List<String> lexemeTags = commonDataDbService.getLexemeTags(lexemeId);
-
-		lexeme.setWordLang(headwordLanguage);
-		lexeme.setSynonymLangGroups(synonymLangGroups);
-		lexeme.setUsages(usages);
-		lexeme.setTags(lexemeTags);
 		Meaning meaning = new Meaning();
 		meaning.setMeaningId(meaningId);
 		meaning.setDefinitions(definitions);
+
+		lexeme.setLexemeWord(word);
+		lexeme.setSynonymLangGroups(synonymLangGroups);
+		lexeme.setUsages(usages);
 		lexeme.setMeaning(meaning);
 	}
 }

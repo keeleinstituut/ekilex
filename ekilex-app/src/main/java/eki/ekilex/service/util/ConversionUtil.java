@@ -39,7 +39,6 @@ import eki.ekilex.data.InexactSynonym;
 import eki.ekilex.data.Lexeme;
 import eki.ekilex.data.LexemeLangGroup;
 import eki.ekilex.data.LexemeTag;
-import eki.ekilex.data.LexemeWordTuple;
 import eki.ekilex.data.MeaningRelation;
 import eki.ekilex.data.MeaningWord;
 import eki.ekilex.data.Note;
@@ -61,7 +60,6 @@ import eki.ekilex.data.WordEtym;
 import eki.ekilex.data.WordEtymRel;
 import eki.ekilex.data.WordEtymTuple;
 import eki.ekilex.data.WordGroup;
-import eki.ekilex.data.WordLexeme;
 import eki.ekilex.data.WordRelation;
 import eki.ekilex.data.WordRelationDetails;
 
@@ -160,62 +158,32 @@ public class ConversionUtil implements GlobalConstant {
 		}
 	}
 
-	public Lexeme composeLexeme(LexemeWordTuple lexemeWordTuple) {
-
-		Word word = new Word();
-		word.setWordId(lexemeWordTuple.getWordId());
-		word.setWordValue(lexemeWordTuple.getWordValue());
-		word.setWordValuePrese(lexemeWordTuple.getWordValuePrese());
-		word.setHomonymNr(lexemeWordTuple.getHomonymNr());
-		word.setLang(lexemeWordTuple.getWordLang());
-		word.setGenderCode(lexemeWordTuple.getWordGenderCode());
-		word.setDisplayMorphCode(lexemeWordTuple.getWordDisplayMorphCode());
-		word.setWordTypeCodes(lexemeWordTuple.getWordTypeCodes());
-		word.setPrefixoid(lexemeWordTuple.isPrefixoid());
-		word.setSuffixoid(lexemeWordTuple.isSuffixoid());
-		word.setForeign(lexemeWordTuple.isForeign());
-
-		Lexeme lexeme = new Lexeme();
-		lexeme.setLexemeId(lexemeWordTuple.getLexemeId());
-		lexeme.setWordId(lexemeWordTuple.getWordId());
-		lexeme.setMeaningId(lexemeWordTuple.getMeaningId());
-		lexeme.setDatasetCode(lexemeWordTuple.getDatasetCode());
-		lexeme.setLevel1(lexemeWordTuple.getLevel1());
-		lexeme.setLevel2(lexemeWordTuple.getLevel2());
-		lexeme.setLexemeValueStateCode(lexemeWordTuple.getLexemeValueStateCode());
-		lexeme.setLexemeValueState(lexemeWordTuple.getLexemeValueState());
-		lexeme.setLexemeProficiencyLevelCode(lexemeWordTuple.getLexemeProficiencyLevelCode());
-		lexeme.setLexemeProficiencyLevel(lexemeWordTuple.getLexemeProficiencyLevel());
-		lexeme.setReliability(lexemeWordTuple.getReliability());
-		lexeme.setPublic(lexemeWordTuple.isPublic());
-		lexeme.setComplexity(lexemeWordTuple.getComplexity());
-		lexeme.setOrderBy(lexemeWordTuple.getOrderBy());
-		lexeme.setPos(lexemeWordTuple.getPos());
-		lexeme.setDerivs(lexemeWordTuple.getDerivs());
-		lexeme.setRegisters(lexemeWordTuple.getRegisters());
-		lexeme.setRegions(lexemeWordTuple.getRegions());
-		lexeme.setWord(word);
-
-		return lexeme;
-	}
-
 	public List<LexemeLangGroup> composeLexemeLangGroups(List<Lexeme> lexemes, List<ClassifierSelect> languagesOrder) {
 
 		List<String> langCodeOrder;
 		List<String> selectedLangCodes;
 		if (CollectionUtils.isEmpty(languagesOrder)) {
-			langCodeOrder = lexemes.stream().map(lexeme -> lexeme.getWord().getLang()).distinct().collect(Collectors.toList());
+			langCodeOrder = lexemes.stream()
+					.map(lexeme -> lexeme.getLexemeWord().getLang())
+					.distinct()
+					.collect(Collectors.toList());
 			selectedLangCodes = new ArrayList<>();
 		} else {
-			langCodeOrder = languagesOrder.stream().map(Classifier::getCode).collect(Collectors.toList());
-			selectedLangCodes = languagesOrder.stream().filter(ClassifierSelect::isSelected).map(ClassifierSelect::getCode).collect(Collectors.toList());
+			langCodeOrder = languagesOrder.stream()
+					.map(Classifier::getCode)
+					.collect(Collectors.toList());
+			selectedLangCodes = languagesOrder.stream()
+					.filter(ClassifierSelect::isSelected)
+					.map(ClassifierSelect::getCode)
+					.collect(Collectors.toList());
 		}
 		List<LexemeLangGroup> lexemeLangGroups = new ArrayList<>();
 		Map<String, LexemeLangGroup> lexemeLangGroupMap = new HashMap<>();
 		List<Lexeme> lexemesOrderBy = lexemes.stream().sorted(Comparator.comparing(Lexeme::getOrderBy)).collect(Collectors.toList());
 
 		for (Lexeme lexeme : lexemesOrderBy) {
-			Word word = lexeme.getWord();
+
+			Word word = lexeme.getLexemeWord();
 			String lang = word.getLang();
 			LexemeLangGroup lexemeLangGroup = lexemeLangGroupMap.get(lang);
 			if (lexemeLangGroup == null) {
@@ -242,6 +210,10 @@ public class ConversionUtil implements GlobalConstant {
 	}
 
 	public List<NoteLangGroup> composeNoteLangGroups(List<? extends Note> notes, List<ClassifierSelect> languagesOrder) {
+
+		if (CollectionUtils.isEmpty(notes)) {
+			return Collections.emptyList();
+		}
 
 		List<String> langCodeOrder;
 		List<String> selectedLangCodes;
@@ -784,9 +756,9 @@ public class ConversionUtil implements GlobalConstant {
 		}
 		String roleDatasetCode = userRole.getDatasetCode();
 
-		List<WordLexeme> roleDatasetWordLexemes = lexemes.stream()
-				.filter(lexeme -> lexeme instanceof WordLexeme)
-				.map(lexeme -> (WordLexeme) lexeme)
+		List<Lexeme> roleDatasetWordLexemes = lexemes.stream()
+				.filter(lexeme -> lexeme instanceof Lexeme)
+				.map(lexeme -> (Lexeme) lexeme)
 				.filter(lexeme -> lexeme.getDatasetCode().equals(roleDatasetCode))
 				.collect(Collectors.toList());
 		if (CollectionUtils.isNotEmpty(roleDatasetWordLexemes)) {

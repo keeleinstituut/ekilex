@@ -88,8 +88,8 @@
     <th:block th:each="lexemeLangGroup : ${meaning.lexemeLangGroups}">
       <div class="border rounded mb-2 p-2" th:each="lexeme : ${lexemeLangGroup.lexemes}">
         <div>
-          <span th:utext="${@viewUtil.getWordValueMarkup(lexeme.word)}" class="font-weight-bold"></span>
-          <span th:text="${'(' + @viewUtil.getLangIso2(lexeme.word.lang) + ')'}" class="ml-2"></span>
+          <span th:utext="${@viewUtil.getWordValueMarkup(lexeme.lexemeWord)}" class="font-weight-bold"></span>
+          <span th:text="${'(' + @viewUtil.getLangIso2(lexeme.lexemeWord.lang) + ')'}" class="ml-2"></span>
           <b class="float-right" th:text="${lexeme.datasetCode}"></b>
         </div>
         <div class="row">
@@ -119,12 +119,12 @@
             <span th:text="${lexeme.lexemeValueStateCode}"></span>
           </div>
         </div>
-        <div class="row" th:if="${not #lists.isEmpty(lexeme.wordTypes)}">
+        <div class="row" th:if="${not #lists.isEmpty(lexeme.lexemeWord.wordTypes)}">
           <div class="col-1 pr-0">
             <span class="lbl" th:text="#{term.word.type}">Keelendi tüüp</span>
           </div>
           <div class="col pl-0">
-            <span th:each="classif,classifIter : ${lexeme.wordTypes}">
+            <span th:each="classif,classifIter : ${lexeme.lexemeWord.wordTypes}">
               <span th:text="${classif.code}"></span>
               <th:block th:unless="${classif.code == classif.value}">
                 -

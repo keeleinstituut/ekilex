@@ -32,7 +32,7 @@ import eki.ekilex.data.SearchUriData;
 import eki.ekilex.data.Tag;
 import eki.ekilex.data.UserContextData;
 import eki.ekilex.data.WordDetails;
-import eki.ekilex.data.WordLexeme;
+import eki.ekilex.data.Lexeme;
 import eki.ekilex.data.WordsResult;
 import eki.ekilex.service.LexSearchService;
 import eki.ekilex.web.bean.SessionBean;
@@ -232,7 +232,7 @@ public class LexSearchController extends AbstractPrivateSearchController {
 		Long userId = user.getId();
 		EkiUserProfile userProfile = userProfileService.getUserProfile(userId);
 		boolean isFullData = StringUtils.equals(composition, "full");
-		WordLexeme lexeme = lexSearchService.getWordLexeme(lexemeId, languagesOrder, userProfile, user, isFullData);
+		Lexeme lexeme = lexSearchService.getWordLexeme(lexemeId, languagesOrder, userProfile, user, isFullData);
 		lexeme.setLevels(levels);
 		model.addAttribute("lexeme", lexeme);
 

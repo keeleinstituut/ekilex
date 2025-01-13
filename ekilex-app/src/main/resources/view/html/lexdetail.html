@@ -22,8 +22,8 @@
           </button>
           <div>
             <div class="d-flex flex-row" th:each="synonymLangGroup : ${lexeme.synonymLangGroups}">
-              <span th:if="${lexeme.wordLang == synonymLangGroup.lang}" class="mr-2" th:text="#{syn.abbreviation}"></span>
-              <span th:unless="${lexeme.wordLang == synonymLangGroup.lang}" th:text="${@viewUtil.getLangIso2(synonymLangGroup.lang)}" class="mr-2"></span>
+              <span th:if="${lexeme.lexemeWord.lang == synonymLangGroup.lang}" class="mr-2" th:text="#{syn.abbreviation}"></span>
+              <span th:unless="${lexeme.lexemeWord.lang == synonymLangGroup.lang}" th:text="${@viewUtil.getLangIso2(synonymLangGroup.lang)}" class="mr-2"></span>
               <div class="sorter-wrapper">
                 <div class="sorter-more" data-plugin="readMore">
                   <div data-plugin="sorter" data-sorter:type="syn">
@@ -118,11 +118,14 @@
       <div th:replace="lexdialog :: add_meaning_media_dlg"></div>
       <div th:replace="lexdialog :: add_meaning_forum_dlg"></div>
       <div th:replace="lexdialog :: add_meaning_freeform_dlg"></div>
+      <div th:replace="lexdialog :: edit_lexeme_complexity_dlg"></div>
       <div th:replace="lexdialog :: edit_lexeme_publicity_dlg"></div>
+      <div th:replace="lexdialog :: edit_lexeme_is_word_dlg"></div>
+      <div th:replace="lexdialog :: edit_lexeme_is_colloc_dlg"></div>
       <div th:replace="lexdialog :: edit_lexeme_value_state_dlg"></div>
       <div th:replace="lexdialog :: edit_lexeme_proficiency_level_dlg"></div>
       <div th:replace="lexdialog :: edit_lexeme_levels_dlg"></div>
-      <div th:replace="lexdialog :: edit_lexeme_complexity_dlg"></div>
+      <div th:replace="lexdialog :: edit_lexeme_is_word_dlg"></div>
       <div th:replace="lexdialog :: edit_lexeme_weight_dlg"></div>
       <button th:data-id="${lexeme.lexemeId}" th:data-lex-levels="${lexeme.levels}"
             style="display: none;"
@@ -144,7 +147,7 @@
                     th:text="${lexeme.levels}">
               </span>
             </span>
-            <span class="pl-1 pr-1" th:if="${!lexeme.crudGrant}">
+            <span class="pl-1 pr-1" th:unless="${lexeme.crudGrant}">
               <span class="px-2 py-0 rounded font-weight-bold mr-2"
                     th:classappend="${selectedMeaningId == lexeme.meaningId ? 'bg-warning text-white' : 'bg-light'}"
                     th:text="${lexeme.levels}">
@@ -160,7 +163,7 @@
             <div class="d-flex w-100 mt-1 mr-2 flex-column">
               <th:block th:each="synonymLangGroup : ${lexeme.synonymLangGroups}">
                 <div class="orderable d-flex flex-row mr-2 w-100">
-                  <span th:if="${lexeme.wordLang == synonymLangGroup.lang}" class="mr-2 flex-shrink-0" style="width: 55px; white-space: nowrap;">
+                  <span th:if="${lexeme.lexemeWord.lang == synonymLangGroup.lang}" class="mr-2 flex-shrink-0" style="width: 55px; white-space: nowrap;">
                     <span th:text="#{syn.abbreviation}"></span>
                     <button type="button" class="btn btn-secondary btn-compact btn-sm position-relative"
                             style="margin-left: 5px;"
@@ -171,7 +174,7 @@
                       <i class="fa fa-plus action-icon" aria-hidden="true"></i>
                     </button>
                   </span>
-                  <span th:unless="${lexeme.wordLang == synonymLangGroup.lang}" th:text="${@viewUtil.getLangIso2(synonymLangGroup.lang)}" class="mr-2 flex-shrink-0" style="width: 30px;"></span>
+                  <span th:unless="${lexeme.lexemeWord.lang == synonymLangGroup.lang}" th:text="${@viewUtil.getLangIso2(synonymLangGroup.lang)}" class="mr-2 flex-shrink-0" style="width: 30px;"></span>
                   <div data-plugin="sorter" data-sorter:type="syn" class="w-100" data-sorter:handle=".sort-handle">
                     <div th:each="syn,synIter : ${synonymLangGroup.synonyms}"
                          class="draggable-syn-rel do-refresh"
@@ -353,6 +356,7 @@
           <div class="row w-100 no-gutters">
             <div class="card-body pb-4 col-12">
               <th:block th:replace="lexcomp :: data_ids"></th:block>
+              <th:block th:replace="lexcomp :: word_status"></th:block>
               <th:block th:replace="lexcomp :: lexeme_tags"></th:block>
               <th:block th:replace="lexcomp :: lexeme_complexity"></th:block>
               <th:block th:replace="lexcomp :: lexeme_proficiency_level"></th:block>
@@ -382,6 +386,7 @@
         <th:block th:replace="lexcomp :: lexeme_relation"></th:block>
         <th:block th:replace="lexcomp :: primary_colloc"></th:block>
         <th:block th:replace="lexcomp :: secondary_colloc"></th:block>
+        <th:block th:replace="lexcomp :: colloc_members"></th:block>
       </div>
       <script th:replace="common :: confirmations"></script>
       <script th:inline="javascript">

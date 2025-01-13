@@ -30,9 +30,9 @@
                   <option value="addLexemeTagDlg" sec:authorize="#vars.lexeme.crudGrant" th:text="#{term.lexeme.tag}">Ilmiku silt</option>
                   <option value="addLexemeFreeformDlg" sec:authorize="#vars.lexeme.crudGrant" th:text="#{term.lexeme.freeform}">Ilmiku atribuut</option>
                   <option value="lexeme_reliability" sec:authorize="#vars.lexeme.crudGrant" th:text="#{term.lexeme.reliability}">Ilmiku usaldusväärsus</option>
-                  <option value="word_gender" sec:authorize="#vars.lexeme.word.subGrant" th:text="#{term.word.gender}">Sugu</option>
-                  <option value="word_type" sec:authorize="#vars.lexeme.word.subGrant" th:text="#{term.word.type}">Keelendi tüüp</option>
-                  <option value="word_display_morph" sec:authorize="#vars.lexeme.word.subGrant" th:text="#{term.word.display.morph}">Vormikood</option>
+                  <option value="word_gender" sec:authorize="#vars.lexeme.lexemeWord.subGrant" th:text="#{term.word.gender}">Sugu</option>
+                  <option value="word_type" sec:authorize="#vars.lexeme.lexemeWord.subGrant" th:text="#{term.word.type}">Keelendi tüüp</option>
+                  <option value="word_display_morph" sec:authorize="#vars.lexeme.lexemeWord.subGrant" th:text="#{term.word.display.morph}">Vormikood</option>
                 </select>
               </div>
             </div>
@@ -253,6 +253,46 @@
       </div>
     </div>
   </div>
+  <div th:id="${'editLexemeIsWordDlg_' + lexeme.lexemeId}"
+       class="modal select-dlg" role="dialog"
+       th:fragment="edit_lexeme_is_word_dlg"
+       data-plugin="initSelectDlgPlugin">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <form th:action="@{/update_item}" method="post">
+          <div class="modal-body">
+            <input type="hidden" name="id" th:value="${lexeme.lexemeId}">
+            <input type="hidden" name="opCode" value="lexeme_is_word">
+            <input type="hidden" name="value" th:value="${lexeme.word}">
+            <select class="form-control" name="value">
+              <option value="true" th:selected="${lexeme.word}" th:text="#{boolean.is.true}">on</option>
+              <option value="false" th:selected="${not lexeme.word}" th:text="#{boolean.is.false}">ei ole</option>
+            </select>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+  <div th:id="${'editLexemeIsCollocDlg_' + lexeme.lexemeId}"
+       class="modal select-dlg" role="dialog"
+       th:fragment="edit_lexeme_is_colloc_dlg"
+       data-plugin="initSelectDlgPlugin">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <form th:action="@{/update_item}" method="post">
+          <div class="modal-body">
+            <input type="hidden" name="id" th:value="${lexeme.lexemeId}">
+            <input type="hidden" name="opCode" value="lexeme_is_colloc">
+            <input type="hidden" name="value" th:value="${lexeme.collocation}">
+            <select class="form-control" name="value">
+              <option value="true" th:selected="${lexeme.collocation}" th:text="#{boolean.is.true}">on</option>
+              <option value="false" th:selected="${not lexeme.collocation}" th:text="#{boolean.is.false}">ei ole</option>
+            </select>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
   <div th:id="${'editLexemeValueStateCodeDlg_' + lexeme.lexemeId}" class="modal select-dlg"
         role="dialog"
         th:fragment="edit_lexeme_value_state_dlg"
@@ -376,7 +416,7 @@
             <input type="hidden" name="id" th:value="${lexeme.wordId}">
             <input type="hidden" name="opCode" value="word_gender">
             <select required class="form-control" name="value">
-              <option th:each="item : ${wordGenders}" th:value="${item.code}" th:text="${item.value}" th:selected="${item.code == lexeme.word.genderCode}">value</option>
+              <option th:each="item : ${wordGenders}" th:value="${item.code}" th:text="${item.value}" th:selected="${item.code == lexeme.lexemeWord.genderCode}">value</option>
             </select>
           </div>
         </form>
@@ -816,7 +856,7 @@
         <form th:action="@{/create_item}" method="post">
           <div class="modal-body">
             <input type="hidden" name="id" th:value="${lexeme.lexemeId}">
-            <input type="hidden" name="language" th:value="${lexeme.word.lang}">
+            <input type="hidden" name="language" th:value="${lexeme.lexemeWord.lang}">
             <input type="hidden" name="opCode" value="usage">
             <input type="hidden" name="value">
             <input type="hidden" name="complexity" th:value="${T(eki.common.constant.Complexity).DETAIL}">
@@ -1015,7 +1055,7 @@
                 <select required class="form-control classifier-select required-field" data-live-search="true" name="language">
                   <option th:each="language : ${userRoleLanguages}"
                           th:value="${language.code}"
-                          th:selected="${language.code == lexeme.word.lang}"
+                          th:selected="${language.code == lexeme.lexemeWord.lang}"
                           th:text="${language.value}">language
                   </option>
                 </select>
@@ -1879,7 +1919,7 @@
             <input type="hidden" name="id" th:value="${lexeme.wordId}">
             <input type="hidden" name="opCode" value="word_display_morph">
             <select required class="form-control" name="value">
-              <option th:each="item : ${wordDisplayMorphs}" th:value="${item.code}" th:text="${item.value}" th:selected="${item.code == lexeme.word.displayMorphCode}">value</option>
+              <option th:each="item : ${wordDisplayMorphs}" th:value="${item.code}" th:text="${item.value}" th:selected="${item.code == lexeme.lexemeWord.displayMorphCode}">value</option>
             </select>
           </div>
         </form>
@@ -1896,7 +1936,7 @@
           <div class="modal-body">
             <input type="hidden" name="backUri">
             <input type="hidden" name="lexemeId" th:value="${lexeme.lexemeId}">
-            <input type="hidden" name="wordValuePrese" th:value="${lexeme.word.wordValuePrese}">
+            <input type="hidden" name="wordValuePrese" th:value="${lexeme.lexemeWord.wordValuePrese}">
             <div th:replace="components :: eki_editor_elem"></div>
             <div class="formItem">
               <div class="formItem__title" th:text="#{lex.select.language}">Vali keel</div>
@@ -1904,7 +1944,7 @@
                 <select class="form-control value-select required-field" data-live-search="true" name="language" required>
                   <option th:each="language : ${userRoleLanguages}"
                           th:value="${language.code}"
-                          th:selected="${language.code == lexeme.word.lang}"
+                          th:selected="${language.code == lexeme.lexemeWord.lang}"
                           th:text="${language.value}">language
                   </option>
                 </select>

@@ -13,13 +13,13 @@ import eki.ekilex.data.ClassifierSelect;
 import eki.ekilex.data.DatasetPermission;
 import eki.ekilex.data.EkiUser;
 import eki.ekilex.data.EkiUserProfile;
+import eki.ekilex.data.Lexeme;
 import eki.ekilex.data.SearchDatasetsRestriction;
 import eki.ekilex.data.SynRelation;
 import eki.ekilex.data.Tag;
 import eki.ekilex.data.Word;
 import eki.ekilex.data.WordDetails;
 import eki.ekilex.data.WordForum;
-import eki.ekilex.data.WordLexeme;
 import eki.ekilex.data.WordRelationDetails;
 
 @Component
@@ -40,10 +40,9 @@ public class PartSynSearchService extends AbstractSynSearchService {
 		permCalculator.applyCrud(user, word);
 		List<WordForum> wordForums = commonDataDbService.getWordForums(wordId);
 		permCalculator.applyCrud(user, wordForums);
-		String wordLang = word.getLang();
 
-		List<WordLexeme> synLexemes = synSearchDbService.getWordPrimarySynonymLexemes(wordId, searchDatasetsRestriction, CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
-		synLexemes.forEach(lexeme -> populateLexeme(lexeme, languagesOrder, wordLang, synMeaningWordLangCodes, user, userProfile));
+		List<Lexeme> synLexemes = synSearchDbService.getWordPrimarySynonymLexemes(wordId, searchDatasetsRestriction, CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
+		synLexemes.forEach(lexeme -> populateLexeme(lexeme, word, languagesOrder, synMeaningWordLangCodes, user, userProfile));
 		lexemeLevelPreseUtil.combineLevels(synLexemes);
 		boolean isActiveTagComplete = conversionUtil.isLexemesActiveTagComplete(synLexemes, activeTag);
 

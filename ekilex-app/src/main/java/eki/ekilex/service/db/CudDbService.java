@@ -395,6 +395,22 @@ public class CudDbService extends AbstractDataDbService {
 				.execute();
 	}
 
+	public void updateLexemeIsWord(Long lexemeId, boolean isWord) {
+		mainDb
+				.update(LEXEME)
+				.set(LEXEME.IS_WORD, isWord)
+				.where(LEXEME.ID.eq(lexemeId))
+				.execute();
+	}
+
+	public void updateLexemeIsCollocation(Long lexemeId, boolean isCollocation) {
+		mainDb
+				.update(LEXEME)
+				.set(LEXEME.IS_COLLOCATION, isCollocation)
+				.where(LEXEME.ID.eq(lexemeId))
+				.execute();
+	}
+
 	public void updateLexemeValueState(Long lexemeId, String valueStateCode) {
 		mainDb
 				.update(LEXEME)

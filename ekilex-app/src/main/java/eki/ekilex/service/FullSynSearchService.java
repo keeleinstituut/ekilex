@@ -27,7 +27,7 @@ import eki.ekilex.data.Word;
 import eki.ekilex.data.WordDescript;
 import eki.ekilex.data.WordDetails;
 import eki.ekilex.data.WordForum;
-import eki.ekilex.data.WordLexeme;
+import eki.ekilex.data.Lexeme;
 import eki.ekilex.data.WordRelationDetails;
 
 @Component
@@ -47,14 +47,14 @@ public class FullSynSearchService extends AbstractSynSearchService {
 		permCalculator.applyCrud(user, word);
 		List<WordForum> wordForums = commonDataDbService.getWordForums(wordId);
 		permCalculator.applyCrud(user, wordForums);
-		String wordLang = word.getLang();
 
-		List<WordLexeme> synLexemes = synSearchDbService.getWordPrimarySynonymLexemes(wordId, searchDatasetsRestriction, CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
+		List<Lexeme> synLexemes = synSearchDbService.getWordPrimarySynonymLexemes(wordId, searchDatasetsRestriction, CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
 		synLexemes.forEach(lexeme -> {
+			lexeme.setLexemeWord(word);
 			List<ClassifierSelect> sortedLanguagesOrder = languagesOrder.stream()
 					.sorted(Comparator.comparing(orderLang -> !StringUtils.equals(orderLang.getCode(), synCandidateLangCode)))
 					.collect(Collectors.toList());
-			populateLexeme(lexeme, sortedLanguagesOrder, wordLang, synMeaningWordLangCodes, user, userProfile);
+			populateLexeme(lexeme, word, sortedLanguagesOrder, synMeaningWordLangCodes, user, userProfile);
 			reorderFullSynLangGroups(lexeme, synCandidateLangCode);
 		});
 		lexemeLevelPreseUtil.combineLevels(synLexemes);
@@ -80,7 +80,7 @@ public class FullSynSearchService extends AbstractSynSearchService {
 		return wordDetails;
 	}
 
-	private void reorderFullSynLangGroups(WordLexeme lexeme, String synCandidateLangCode) {
+	private void reorderFullSynLangGroups(Lexeme lexeme, String synCandidateLangCode) {
 
 		List<SynonymLangGroup> synonymLangGroups = lexeme.getSynonymLangGroups();
 		SynonymLangGroup emptySynonymLangGroup = new SynonymLangGroup();
@@ -136,8 +136,9 @@ public class FullSynSearchService extends AbstractSynSearchService {
 		List<Word> words = lookupDbService.getWords(sourceWordValue, sourceWordLang);
 
 		for (Word word : words) {
+
 			Long wordId = word.getWordId();
-			List<WordLexeme> wordLexemes = lexSearchDbService.getWordLexemes(wordId, searchDatasetsRestriction, CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
+			List<Lexeme> wordLexemes = lexSearchDbService.getWordLexemes(wordId, searchDatasetsRestriction, CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
 
 			wordLexemes.forEach(lexeme -> {
 				Long meaningId = lexeme.getMeaningId();
@@ -148,6 +149,7 @@ public class FullSynSearchService extends AbstractSynSearchService {
 				meaning.setMeaningId(meaningId);
 				meaning.setDefinitions(definitions);
 				lexeme.setMeaning(meaning);
+				lexeme.setLexemeWord(word);
 			});
 
 			WordDescript wordCandidate = new WordDescript();

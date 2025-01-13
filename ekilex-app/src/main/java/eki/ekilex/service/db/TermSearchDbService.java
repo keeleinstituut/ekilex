@@ -26,7 +26,6 @@ import org.springframework.stereotype.Component;
 
 import eki.common.constant.LastActivityType;
 import eki.ekilex.constant.SearchResultMode;
-import eki.ekilex.data.LexemeWordTuple;
 import eki.ekilex.data.SearchDatasetsRestriction;
 import eki.ekilex.data.SearchFilter;
 import eki.ekilex.data.TermMeaning;
@@ -86,10 +85,10 @@ public class TermSearchDbService extends AbstractDataDbService {
 		Dataset ds = DATASET.as("ds");
 		Language wol = LANGUAGE.as("wol");
 
-		Field<String[]> wtf = getWordTypesField(wo.ID);
-		Field<Boolean> wtpf = getWordIsPrefixoidField(wo.ID);
-		Field<Boolean> wtsf = getWordIsSuffixoidField(wo.ID);
-		Field<Boolean> wtzf = getWordIsForeignField(wo.ID);
+		Field<String[]> wtf = queryHelper.getWordTypeCodesField(wo.ID);
+		Field<Boolean> wtpf = queryHelper.getWordIsPrefixoidField(wo.ID);
+		Field<Boolean> wtsf = queryHelper.getWordIsSuffixoidField(wo.ID);
+		Field<Boolean> wtzf = queryHelper.getWordIsForeignField(wo.ID);
 		Field<Boolean> imwf = DSL.field(wo.ID.eq(DSL.any(m.field("match_word_ids", Long[].class))));
 
 		Field<Boolean> lvsmpf = DSL.field(lo.VALUE_STATE_CODE.eq(VALUE_STATE_MOST_PREFERRED));
@@ -144,7 +143,7 @@ public class TermSearchDbService extends AbstractDataDbService {
 						.innerJoin(wol).on(wol.CODE.eq(wo.LANG)))
 				.asTable("m");
 
-		Field<JSON> mdf = getMeaningDomainsField(mm.field("meaning_id", Long.class), CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
+		Field<JSON> mdf = queryHelper.getMeaningDomainsField(mm.field("meaning_id", Long.class), CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
 
 		Field<TypeTermMeaningWordRecord[]> mw = DSL
 				.field("array_agg(row ("
@@ -175,7 +174,7 @@ public class TermSearchDbService extends AbstractDataDbService {
 		boolean fiCollationExists = fiCollationExists();
 		Field<?> wvobf;
 		if (fiCollationExists) {
-			wvobf = mm.field("order_by_word").collate("fi_FI");			
+			wvobf = mm.field("order_by_word").collate("fi_FI");
 		} else {
 			wvobf = mm.field("order_by_word");
 		}
@@ -236,32 +235,32 @@ public class TermSearchDbService extends AbstractDataDbService {
 		Language ln = LANGUAGE.as("ln");
 		WordWordType wt = WORD_WORD_TYPE.as("wt");
 
-		Field<String[]> wtf = getWordTypesField(wmid.field("word_id", Long.class));
-		Field<Boolean> wtpf = getWordIsPrefixoidField(wmid.field("word_id", Long.class));
-		Field<Boolean> wtsf = getWordIsSuffixoidField(wmid.field("word_id", Long.class));
-		Field<Boolean> wtz = getWordIsForeignField(wmid.field("word_id", Long.class));
+		Field<String[]> wtf = queryHelper.getWordTypeCodesField(wmid.field("word_id", Long.class));
+		Field<Boolean> wtpf = queryHelper.getWordIsPrefixoidField(wmid.field("word_id", Long.class));
+		Field<Boolean> wtsf = queryHelper.getWordIsSuffixoidField(wmid.field("word_id", Long.class));
+		Field<Boolean> wtz = queryHelper.getWordIsForeignField(wmid.field("word_id", Long.class));
 
 		Field<Boolean> lvsmpf = DSL.field(DSL.exists(DSL
 				.select(lvs.ID)
 				.from(lvs)
 				.where(
 						lvs.WORD_ID.eq(wmid.field("word_id", Long.class))
-						.and(lvs.MEANING_ID.eq(wmid.field("meaning_id", Long.class)))
-						.and(lvs.VALUE_STATE_CODE.eq(VALUE_STATE_MOST_PREFERRED)))));
+								.and(lvs.MEANING_ID.eq(wmid.field("meaning_id", Long.class)))
+								.and(lvs.VALUE_STATE_CODE.eq(VALUE_STATE_MOST_PREFERRED)))));
 		Field<Boolean> lvslpf = DSL.field(DSL.exists(DSL
 				.select(lvs.ID)
 				.from(lvs)
 				.where(
 						lvs.WORD_ID.eq(wmid.field("word_id", Long.class))
-						.and(lvs.MEANING_ID.eq(wmid.field("meaning_id", Long.class)))
-						.and(lvs.VALUE_STATE_CODE.eq(VALUE_STATE_LEAST_PREFERRED)))));
+								.and(lvs.MEANING_ID.eq(wmid.field("meaning_id", Long.class)))
+								.and(lvs.VALUE_STATE_CODE.eq(VALUE_STATE_LEAST_PREFERRED)))));
 		Field<Boolean> lpf = DSL.field(DSL.exists(DSL
 				.select(lvs.ID)
 				.from(lvs)
 				.where(
 						lvs.WORD_ID.eq(wmid.field("word_id", Long.class))
-						.and(lvs.MEANING_ID.eq(wmid.field("meaning_id", Long.class)))
-						.and(lvs.IS_PUBLIC.isTrue()))));
+								.and(lvs.MEANING_ID.eq(wmid.field("meaning_id", Long.class)))
+								.and(lvs.IS_PUBLIC.isTrue()))));
 
 		Field<Long> wmdsobf = DSL
 				.select(DSL.min(ds.ORDER_BY))
@@ -323,7 +322,7 @@ public class TermSearchDbService extends AbstractDataDbService {
 						wm.ID)
 				.asTable("wm");
 
-		Field<JSON> mdf = getMeaningDomainsField(wmm.field("meaning_id", Long.class), CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
+		Field<JSON> mdf = queryHelper.getMeaningDomainsField(wmm.field("meaning_id", Long.class), CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
 
 		Field<TypeTermMeaningWordRecord[]> mw = DSL
 				.field("array(select row ("
@@ -351,7 +350,7 @@ public class TermSearchDbService extends AbstractDataDbService {
 		boolean fiCollationExists = fiCollationExists();
 		Field<?> wvobf;
 		if (fiCollationExists) {
-			wvobf = wmm.field("word_value").collate("fi_FI");			
+			wvobf = wmm.field("word_value").collate("fi_FI");
 		} else {
 			wvobf = wmm.field("word_value");
 		}
@@ -424,8 +423,8 @@ public class TermSearchDbService extends AbstractDataDbService {
 		Lexeme l = LEXEME.as("l");
 
 		Condition dsWhere = searchFilterHelper.applyDatasetRestrictions(l, searchDatasetsRestriction, null);
-		Field<Timestamp> mlacteof = getMeaningLastActivityEventOnField(m.ID, LastActivityType.EDIT);
-		Field<Timestamp> mlappeof = getMeaningLastActivityEventOnField(m.ID, LastActivityType.APPROVE);
+		Field<Timestamp> mlacteof = queryHelper.getMeaningLastActivityEventOnField(m.ID, LastActivityType.EDIT);
+		Field<Timestamp> mlappeof = queryHelper.getMeaningLastActivityEventOnField(m.ID, LastActivityType.APPROVE);
 
 		return mainDb
 				.select(
@@ -443,60 +442,6 @@ public class TermSearchDbService extends AbstractDataDbService {
 				.groupBy(m.ID)
 				.fetchOptionalInto(eki.ekilex.data.Meaning.class)
 				.orElse(null);
-	}
-
-	public LexemeWordTuple getLexemeWordTuple(Long lexemeId, String classifierLabelLang, String classifierLabelTypeCode) {
-
-		Lexeme l = LEXEME.as("l");
-		Word w = WORD.as("w");
-
-		Field<String[]> wtf = getWordTypesField(w.ID);
-		Field<Boolean> wtpf = getWordIsPrefixoidField(w.ID);
-		Field<Boolean> wtsf = getWordIsSuffixoidField(w.ID);
-		Field<Boolean> wtz = getWordIsForeignField(w.ID);
-
-		Field<JSON> lposf = getLexemePosField(l.ID, classifierLabelLang, classifierLabelTypeCode);
-		Field<JSON> lderf = getLexemeDerivsField(l.ID, classifierLabelLang, classifierLabelTypeCode);
-		Field<JSON> lregf = getLexemeRegistersField(l.ID, classifierLabelLang, classifierLabelTypeCode);
-		Field<JSON> lrgnf = getLexemeRegionsField(l.ID);
-		Field<JSON> lvalstf = getLexemeValueStateField(l.ID, classifierLabelLang, classifierLabelTypeCode);
-		Field<JSON> lproflf = getLexemeProficiencyLevelField(l.ID, classifierLabelLang, classifierLabelTypeCode);
-
-		return mainDb
-				.select(
-						l.ID.as("lexeme_id"),
-						l.MEANING_ID,
-						l.DATASET_CODE,
-						l.LEVEL1,
-						l.LEVEL2,
-						l.VALUE_STATE_CODE.as("lexeme_value_state_code"),
-						lvalstf.as("lexeme_value_state"),
-						l.PROFICIENCY_LEVEL_CODE.as("lexeme_proficiency_level_code"),
-						lproflf.as("lexeme_proficiency_level"),
-						l.RELIABILITY,
-						l.IS_PUBLIC,
-						l.COMPLEXITY,
-						l.ORDER_BY,
-						lposf.as("pos"),
-						lderf.as("derivs"),
-						lregf.as("registers"),
-						lrgnf.as("regions"),
-						l.WORD_ID,
-						w.VALUE.as("word_value"),
-						w.VALUE_PRESE.as("word_value_prese"),
-						w.HOMONYM_NR,
-						w.LANG.as("word_lang"),
-						w.GENDER_CODE.as("word_gender_code"),
-						w.DISPLAY_MORPH_CODE.as("word_display_morph_code"),
-						wtf.as("word_type_codes"),
-						wtpf.as("prefixoid"),
-						wtsf.as("suffixoid"),
-						wtz.as("foreign"))
-				.from(w, l)
-				.where(l.ID.eq(lexemeId).and(l.WORD_ID.eq(w.ID)))
-				.groupBy(l.ID, w.ID)
-				.orderBy(w.ID, l.DATASET_CODE, l.LEVEL1, l.LEVEL2)
-				.fetchSingleInto(LexemeWordTuple.class);
 	}
 
 	public String getMeaningFirstWordValue(Long meaningId, SearchDatasetsRestriction searchDatasetsRestriction) {

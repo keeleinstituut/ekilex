@@ -3,10 +3,15 @@ package eki.ekilex.data;
 import java.util.List;
 
 import eki.common.constant.Complexity;
+import eki.common.data.LexemeLevel;
 
-public class Lexeme extends AbstractCrudEntity implements LexemeTag {
+public class Lexeme extends AbstractCrudEntity implements LexemeLevel, LexemeTag {
 
 	private static final long serialVersionUID = 1L;
+
+	private Word lexemeWord;
+
+	private Meaning meaning;
 
 	private Long lexemeId;
 
@@ -34,17 +39,19 @@ public class Lexeme extends AbstractCrudEntity implements LexemeTag {
 
 	private Integer reliability;
 
-	private List<String> tags;
-
-	private boolean isPublic;
-
-	private Complexity complexity;
+	private Float weight;
 
 	private Long orderBy;
 
-	private Word word;
+	private Complexity complexity;
 
-	private List<Classifier> wordTypes;
+	private boolean isPublic;
+
+	private boolean isWord;
+
+	private boolean isCollocation;
+
+	private List<String> tags;
 
 	private List<Classifier> pos;
 
@@ -54,21 +61,55 @@ public class Lexeme extends AbstractCrudEntity implements LexemeTag {
 
 	private List<Classifier> regions;
 
-	private List<Usage> usages;
-
-	private List<Media> images;
-
-	private List<Freeform> freeforms;
-
-	private List<NoteLangGroup> noteLangGroups;
+	private List<Government> governments;
 
 	private List<Freeform> grammars;
 
-	private List<SourceLink> sourceLinks;
+	private List<Usage> usages;
+
+	private List<Freeform> freeforms;
+
+	private List<LexemeNote> notes;
+
+	private List<NoteLangGroup> noteLangGroups;
 
 	private List<LexemeRelation> lexemeRelations;
 
+	private List<CollocPosGroup> primaryCollocations;
+
+	private List<Colloc> secondaryCollocations;
+
+	private List<CollocMember> collocationMembers;
+
+	private List<SourceLink> sourceLinks;
+
+	private List<MeaningWord> meaningWords;
+
+	private List<SynonymLangGroup> synonymLangGroups;
+
+	private List<Media> images;
+
+	private boolean collocationsExist;
+
+	private boolean lexemeOrMeaningClassifiersExist;
+
 	private boolean classifiersExist;
+
+	public Word getLexemeWord() {
+		return lexemeWord;
+	}
+
+	public void setLexemeWord(Word lexemeWord) {
+		this.lexemeWord = lexemeWord;
+	}
+
+	public Meaning getMeaning() {
+		return meaning;
+	}
+
+	public void setMeaning(Meaning meaning) {
+		this.meaning = meaning;
+	}
 
 	public Long getLexemeId() {
 		return lexemeId;
@@ -94,6 +135,7 @@ public class Lexeme extends AbstractCrudEntity implements LexemeTag {
 		this.meaningId = meaningId;
 	}
 
+	@Override
 	public String getDatasetCode() {
 		return datasetCode;
 	}
@@ -110,6 +152,7 @@ public class Lexeme extends AbstractCrudEntity implements LexemeTag {
 		this.datasetName = datasetName;
 	}
 
+	@Override
 	public Integer getLevel1() {
 		return level1;
 	}
@@ -118,6 +161,7 @@ public class Lexeme extends AbstractCrudEntity implements LexemeTag {
 		this.level1 = level1;
 	}
 
+	@Override
 	public Integer getLevel2() {
 		return level2;
 	}
@@ -126,10 +170,12 @@ public class Lexeme extends AbstractCrudEntity implements LexemeTag {
 		this.level2 = level2;
 	}
 
+	@Override
 	public String getLevels() {
 		return levels;
 	}
 
+	@Override
 	public void setLevels(String levels) {
 		this.levels = levels;
 	}
@@ -174,30 +220,12 @@ public class Lexeme extends AbstractCrudEntity implements LexemeTag {
 		this.reliability = reliability;
 	}
 
-	@Override
-	public List<String> getTags() {
-		return tags;
+	public Float getWeight() {
+		return weight;
 	}
 
-	@Override
-	public void setTags(List<String> tags) {
-		this.tags = tags;
-	}
-
-	public boolean isPublic() {
-		return isPublic;
-	}
-
-	public void setPublic(boolean isPublic) {
-		this.isPublic = isPublic;
-	}
-
-	public Complexity getComplexity() {
-		return complexity;
-	}
-
-	public void setComplexity(Complexity complexity) {
-		this.complexity = complexity;
+	public void setWeight(Float weight) {
+		this.weight = weight;
 	}
 
 	public Long getOrderBy() {
@@ -208,20 +236,46 @@ public class Lexeme extends AbstractCrudEntity implements LexemeTag {
 		this.orderBy = orderBy;
 	}
 
-	public Word getWord() {
-		return word;
+	public Complexity getComplexity() {
+		return complexity;
 	}
 
-	public void setWord(Word word) {
-		this.word = word;
+	public void setComplexity(Complexity complexity) {
+		this.complexity = complexity;
 	}
 
-	public List<Classifier> getWordTypes() {
-		return wordTypes;
+	public boolean isPublic() {
+		return isPublic;
 	}
 
-	public void setWordTypes(List<Classifier> wordTypes) {
-		this.wordTypes = wordTypes;
+	public void setPublic(boolean isPublic) {
+		this.isPublic = isPublic;
+	}
+
+	public boolean isWord() {
+		return isWord;
+	}
+
+	public void setWord(boolean isWord) {
+		this.isWord = isWord;
+	}
+
+	public boolean isCollocation() {
+		return isCollocation;
+	}
+
+	public void setCollocation(boolean isCollocation) {
+		this.isCollocation = isCollocation;
+	}
+
+	@Override
+	public List<String> getTags() {
+		return tags;
+	}
+
+	@Override
+	public void setTags(List<String> tags) {
+		this.tags = tags;
 	}
 
 	public List<Classifier> getPos() {
@@ -256,36 +310,12 @@ public class Lexeme extends AbstractCrudEntity implements LexemeTag {
 		this.regions = regions;
 	}
 
-	public List<Usage> getUsages() {
-		return usages;
+	public List<Government> getGovernments() {
+		return governments;
 	}
 
-	public void setUsages(List<Usage> usages) {
-		this.usages = usages;
-	}
-
-	public List<Media> getImages() {
-		return images;
-	}
-
-	public void setImages(List<Media> images) {
-		this.images = images;
-	}
-
-	public List<Freeform> getFreeforms() {
-		return freeforms;
-	}
-
-	public void setFreeforms(List<Freeform> freeforms) {
-		this.freeforms = freeforms;
-	}
-
-	public List<NoteLangGroup> getNoteLangGroups() {
-		return noteLangGroups;
-	}
-
-	public void setNoteLangGroups(List<NoteLangGroup> noteLangGroups) {
-		this.noteLangGroups = noteLangGroups;
+	public void setGovernments(List<Government> governments) {
+		this.governments = governments;
 	}
 
 	public List<Freeform> getGrammars() {
@@ -296,12 +326,36 @@ public class Lexeme extends AbstractCrudEntity implements LexemeTag {
 		this.grammars = grammars;
 	}
 
-	public List<SourceLink> getSourceLinks() {
-		return sourceLinks;
+	public List<Usage> getUsages() {
+		return usages;
 	}
 
-	public void setSourceLinks(List<SourceLink> sourceLinks) {
-		this.sourceLinks = sourceLinks;
+	public void setUsages(List<Usage> usages) {
+		this.usages = usages;
+	}
+
+	public List<Freeform> getFreeforms() {
+		return freeforms;
+	}
+
+	public void setFreeforms(List<Freeform> freeforms) {
+		this.freeforms = freeforms;
+	}
+
+	public List<LexemeNote> getNotes() {
+		return notes;
+	}
+
+	public void setNotes(List<LexemeNote> notes) {
+		this.notes = notes;
+	}
+
+	public List<NoteLangGroup> getNoteLangGroups() {
+		return noteLangGroups;
+	}
+
+	public void setNoteLangGroups(List<NoteLangGroup> noteLangGroups) {
+		this.noteLangGroups = noteLangGroups;
 	}
 
 	public List<LexemeRelation> getLexemeRelations() {
@@ -310,6 +364,78 @@ public class Lexeme extends AbstractCrudEntity implements LexemeTag {
 
 	public void setLexemeRelations(List<LexemeRelation> lexemeRelations) {
 		this.lexemeRelations = lexemeRelations;
+	}
+
+	public List<CollocPosGroup> getPrimaryCollocations() {
+		return primaryCollocations;
+	}
+
+	public void setPrimaryCollocations(List<CollocPosGroup> primaryCollocations) {
+		this.primaryCollocations = primaryCollocations;
+	}
+
+	public List<Colloc> getSecondaryCollocations() {
+		return secondaryCollocations;
+	}
+
+	public void setSecondaryCollocations(List<Colloc> secondaryCollocations) {
+		this.secondaryCollocations = secondaryCollocations;
+	}
+
+	public List<CollocMember> getCollocationMembers() {
+		return collocationMembers;
+	}
+
+	public void setCollocationMembers(List<CollocMember> collocationMembers) {
+		this.collocationMembers = collocationMembers;
+	}
+
+	public List<SourceLink> getSourceLinks() {
+		return sourceLinks;
+	}
+
+	public void setSourceLinks(List<SourceLink> sourceLinks) {
+		this.sourceLinks = sourceLinks;
+	}
+
+	public List<MeaningWord> getMeaningWords() {
+		return meaningWords;
+	}
+
+	public void setMeaningWords(List<MeaningWord> meaningWords) {
+		this.meaningWords = meaningWords;
+	}
+
+	public List<SynonymLangGroup> getSynonymLangGroups() {
+		return synonymLangGroups;
+	}
+
+	public void setSynonymLangGroups(List<SynonymLangGroup> synonymLangGroups) {
+		this.synonymLangGroups = synonymLangGroups;
+	}
+
+	public List<Media> getImages() {
+		return images;
+	}
+
+	public void setImages(List<Media> images) {
+		this.images = images;
+	}
+
+	public boolean isCollocationsExist() {
+		return collocationsExist;
+	}
+
+	public void setCollocationsExist(boolean collocationsExist) {
+		this.collocationsExist = collocationsExist;
+	}
+
+	public boolean isLexemeOrMeaningClassifiersExist() {
+		return lexemeOrMeaningClassifiersExist;
+	}
+
+	public void setLexemeOrMeaningClassifiersExist(boolean lexemeOrMeaningClassifiersExist) {
+		this.lexemeOrMeaningClassifiersExist = lexemeOrMeaningClassifiersExist;
 	}
 
 	public boolean isClassifiersExist() {

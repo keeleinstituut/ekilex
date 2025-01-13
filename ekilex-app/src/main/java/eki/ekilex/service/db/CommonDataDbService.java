@@ -2,6 +2,7 @@ package eki.ekilex.service.db;
 
 import static eki.ekilex.data.db.main.Tables.ASPECT;
 import static eki.ekilex.data.db.main.Tables.ASPECT_LABEL;
+import static eki.ekilex.data.db.main.Tables.COLLOCATION_MEMBER;
 import static eki.ekilex.data.db.main.Tables.DATASET;
 import static eki.ekilex.data.db.main.Tables.DATASET_FREEFORM_TYPE;
 import static eki.ekilex.data.db.main.Tables.DATASET_PERMISSION;
@@ -19,6 +20,7 @@ import static eki.ekilex.data.db.main.Tables.DISPLAY_MORPH_LABEL;
 import static eki.ekilex.data.db.main.Tables.DOMAIN;
 import static eki.ekilex.data.db.main.Tables.DOMAIN_LABEL;
 import static eki.ekilex.data.db.main.Tables.ETYMOLOGY_TYPE;
+import static eki.ekilex.data.db.main.Tables.FORM;
 import static eki.ekilex.data.db.main.Tables.FREEFORM;
 import static eki.ekilex.data.db.main.Tables.FREEFORM_SOURCE_LINK;
 import static eki.ekilex.data.db.main.Tables.FREEFORM_TYPE;
@@ -31,11 +33,7 @@ import static eki.ekilex.data.db.main.Tables.LANGUAGE;
 import static eki.ekilex.data.db.main.Tables.LANGUAGE_LABEL;
 import static eki.ekilex.data.db.main.Tables.LEXEME;
 import static eki.ekilex.data.db.main.Tables.LEXEME_FREEFORM;
-import static eki.ekilex.data.db.main.Tables.LEXEME_NOTE;
-import static eki.ekilex.data.db.main.Tables.LEXEME_NOTE_SOURCE_LINK;
 import static eki.ekilex.data.db.main.Tables.LEXEME_REGISTER;
-import static eki.ekilex.data.db.main.Tables.LEXEME_SOURCE_LINK;
-import static eki.ekilex.data.db.main.Tables.LEXEME_TAG;
 import static eki.ekilex.data.db.main.Tables.LEX_RELATION;
 import static eki.ekilex.data.db.main.Tables.LEX_REL_TYPE;
 import static eki.ekilex.data.db.main.Tables.LEX_REL_TYPE_LABEL;
@@ -57,14 +55,14 @@ import static eki.ekilex.data.db.main.Tables.MORPH_LABEL;
 import static eki.ekilex.data.db.main.Tables.POS;
 import static eki.ekilex.data.db.main.Tables.POS_GROUP;
 import static eki.ekilex.data.db.main.Tables.POS_GROUP_LABEL;
-import static eki.ekilex.data.db.main.Tables.REL_GROUP;
-import static eki.ekilex.data.db.main.Tables.REL_GROUP_LABEL;
 import static eki.ekilex.data.db.main.Tables.POS_LABEL;
 import static eki.ekilex.data.db.main.Tables.PROFICIENCY_LEVEL;
 import static eki.ekilex.data.db.main.Tables.PROFICIENCY_LEVEL_LABEL;
 import static eki.ekilex.data.db.main.Tables.REGION;
 import static eki.ekilex.data.db.main.Tables.REGISTER;
 import static eki.ekilex.data.db.main.Tables.REGISTER_LABEL;
+import static eki.ekilex.data.db.main.Tables.REL_GROUP;
+import static eki.ekilex.data.db.main.Tables.REL_GROUP_LABEL;
 import static eki.ekilex.data.db.main.Tables.SEMANTIC_TYPE;
 import static eki.ekilex.data.db.main.Tables.SEMANTIC_TYPE_LABEL;
 import static eki.ekilex.data.db.main.Tables.SOURCE;
@@ -106,6 +104,7 @@ import eki.common.constant.AuthorityOperation;
 import eki.common.constant.ClassifierName;
 import eki.common.constant.FreeformOwner;
 import eki.ekilex.data.Classifier;
+import eki.ekilex.data.CollocMember;
 import eki.ekilex.data.Dataset;
 import eki.ekilex.data.Government;
 import eki.ekilex.data.LexemeRelation;
@@ -115,8 +114,8 @@ import eki.ekilex.data.Media;
 import eki.ekilex.data.OrderedClassifier;
 import eki.ekilex.data.Origin;
 import eki.ekilex.data.SearchLangsRestriction;
-import eki.ekilex.data.SourceLink;
 import eki.ekilex.data.WordForum;
+import eki.ekilex.data.db.main.tables.CollocationMember;
 import eki.ekilex.data.db.main.tables.DatasetFreeformType;
 import eki.ekilex.data.db.main.tables.Definition;
 import eki.ekilex.data.db.main.tables.DefinitionDataset;
@@ -126,6 +125,7 @@ import eki.ekilex.data.db.main.tables.DefinitionSourceLink;
 import eki.ekilex.data.db.main.tables.DefinitionTypeLabel;
 import eki.ekilex.data.db.main.tables.Domain;
 import eki.ekilex.data.db.main.tables.DomainLabel;
+import eki.ekilex.data.db.main.tables.Form;
 import eki.ekilex.data.db.main.tables.Freeform;
 import eki.ekilex.data.db.main.tables.FreeformSourceLink;
 import eki.ekilex.data.db.main.tables.FreeformType;
@@ -134,10 +134,7 @@ import eki.ekilex.data.db.main.tables.LexRelTypeLabel;
 import eki.ekilex.data.db.main.tables.LexRelation;
 import eki.ekilex.data.db.main.tables.Lexeme;
 import eki.ekilex.data.db.main.tables.LexemeFreeform;
-import eki.ekilex.data.db.main.tables.LexemeNote;
-import eki.ekilex.data.db.main.tables.LexemeNoteSourceLink;
 import eki.ekilex.data.db.main.tables.LexemeRegister;
-import eki.ekilex.data.db.main.tables.LexemeSourceLink;
 import eki.ekilex.data.db.main.tables.Meaning;
 import eki.ekilex.data.db.main.tables.MeaningDomain;
 import eki.ekilex.data.db.main.tables.MeaningFreeform;
@@ -1209,10 +1206,10 @@ public class CommonDataDbService extends AbstractDataDbService {
 		Word w2 = WORD.as("w2");
 		Word wh = WORD.as("wh");
 
-		Field<String[]> wtf = getWordTypesField(w2.ID);
-		Field<Boolean> wtpf = getWordIsPrefixoidField(w2.ID);
-		Field<Boolean> wtsf = getWordIsSuffixoidField(w2.ID);
-		Field<Boolean> wtz = getWordIsForeignField(w2.ID);
+		Field<String[]> wtf = queryHelper.getWordTypeCodesField(w2.ID);
+		Field<Boolean> wtpf = queryHelper.getWordIsPrefixoidField(w2.ID);
+		Field<Boolean> wtsf = queryHelper.getWordIsSuffixoidField(w2.ID);
+		Field<Boolean> wtz = queryHelper.getWordIsForeignField(w2.ID);
 		Field<String[]> lrc = DSL.field(DSL.select(DSL.arrayAgg(lreg.REGISTER_CODE)).from(lreg).where(lreg.LEXEME_ID.eq(l2.ID)));
 
 		Field<Boolean> whe = DSL
@@ -1407,10 +1404,10 @@ public class CommonDataDbService extends AbstractDataDbService {
 				.from(l2)
 				.where(orderByCond));
 
-		Field<String[]> wtf = getWordTypesField(w2.ID);
-		Field<Boolean> wtpf = getWordIsPrefixoidField(w2.ID);
-		Field<Boolean> wtsf = getWordIsSuffixoidField(w2.ID);
-		Field<Boolean> wtz = getWordIsForeignField(w2.ID);
+		Field<String[]> wtf = queryHelper.getWordTypeCodesField(w2.ID);
+		Field<Boolean> wtpf = queryHelper.getWordIsPrefixoidField(w2.ID);
+		Field<Boolean> wtsf = queryHelper.getWordIsSuffixoidField(w2.ID);
+		Field<Boolean> wtz = queryHelper.getWordIsForeignField(w2.ID);
 
 		return mainDb
 				.select(
@@ -1526,27 +1523,7 @@ public class CommonDataDbService extends AbstractDataDbService {
 				.fetchInto(eki.ekilex.data.Freeform.class);
 	}
 
-	public List<SourceLink> getLexemeSourceLinks(Long lexemeId) {
-
-		LexemeSourceLink lsl = LEXEME_SOURCE_LINK.as("lsl");
-		Source s = SOURCE.as("s");
-
-		return mainDb
-				.select(
-						lsl.ID,
-						lsl.TYPE,
-						lsl.NAME,
-						lsl.SOURCE_ID,
-						s.NAME.as("source_name"),
-						lsl.ORDER_BY)
-				.from(lsl, s)
-				.where(
-						lsl.LEXEME_ID.eq(lexemeId)
-								.and(lsl.SOURCE_ID.eq(s.ID)))
-				.orderBy(lsl.ORDER_BY)
-				.fetchInto(SourceLink.class);
-	}
-
+	// TODO should be moved out of freeforms
 	public List<eki.ekilex.data.Freeform> getLexemeGrammars(Long lexemeId) {
 		return mainDb
 				.select(
@@ -1564,6 +1541,7 @@ public class CommonDataDbService extends AbstractDataDbService {
 				.fetchInto(eki.ekilex.data.Freeform.class);
 	}
 
+	// TODO should be moved out of freeforms
 	public List<Government> getLexemeGovernments(Long lexemeId) {
 
 		LexemeFreeform glff = LEXEME_FREEFORM.as("glff");
@@ -1667,50 +1645,6 @@ public class CommonDataDbService extends AbstractDataDbService {
 				.fetchInto(eki.ekilex.data.Usage.class);
 	}
 
-	public List<eki.ekilex.data.LexemeNote> getLexemeNotes(Long lexemeId) {
-
-		LexemeNote ln = LEXEME_NOTE.as("ln");
-		LexemeNoteSourceLink lnsl = LEXEME_NOTE_SOURCE_LINK.as("lnsl");
-		Source s = SOURCE.as("s");
-
-		Field<JSON> mnslf = DSL
-				.select(DSL
-						.jsonArrayAgg(DSL
-								.jsonObject(
-										DSL.key("id").value(lnsl.ID),
-										DSL.key("type").value(lnsl.TYPE),
-										DSL.key("name").value(lnsl.NAME),
-										DSL.key("sourceId").value(lnsl.SOURCE_ID),
-										DSL.key("sourceName").value(s.NAME),
-										DSL.key("orderBy").value(lnsl.ORDER_BY)))
-						.orderBy(lnsl.ORDER_BY))
-				.from(lnsl, s)
-				.where(
-						lnsl.LEXEME_NOTE_ID.eq(ln.ID)
-								.and(lnsl.SOURCE_ID.eq(s.ID)))
-				.asField();
-
-		return mainDb
-				.select(
-						ln.ID,
-						ln.LEXEME_ID,
-						ln.VALUE,
-						ln.VALUE_PRESE,
-						ln.LANG,
-						ln.COMPLEXITY,
-						ln.IS_PUBLIC,
-						ln.CREATED_ON,
-						ln.CREATED_BY,
-						ln.MODIFIED_ON,
-						ln.MODIFIED_BY,
-						ln.ORDER_BY,
-						mnslf.as("source_links"))
-				.from(ln)
-				.where(ln.LEXEME_ID.eq(lexemeId))
-				.orderBy(ln.ORDER_BY)
-				.fetchInto(eki.ekilex.data.LexemeNote.class);
-	}
-
 	public List<LexemeRelation> getLexemeRelations(Long lexemeId, String classifierLabelLang, String classifierLabelTypeCode) {
 
 		LexRelation r = LEX_RELATION.as("r");
@@ -1718,10 +1652,10 @@ public class CommonDataDbService extends AbstractDataDbService {
 		Lexeme l2 = LEXEME.as("l2");
 		Word w2 = WORD.as("w2");
 
-		Field<String[]> wtf = getWordTypesField(w2.ID);
-		Field<Boolean> wtpf = getWordIsPrefixoidField(w2.ID);
-		Field<Boolean> wtsf = getWordIsSuffixoidField(w2.ID);
-		Field<Boolean> wtz = getWordIsForeignField(w2.ID);
+		Field<String[]> wtf = queryHelper.getWordTypeCodesField(w2.ID);
+		Field<Boolean> wtpf = queryHelper.getWordIsPrefixoidField(w2.ID);
+		Field<Boolean> wtsf = queryHelper.getWordIsSuffixoidField(w2.ID);
+		Field<Boolean> wtz = queryHelper.getWordIsForeignField(w2.ID);
 
 		return mainDb
 				.select(
@@ -1752,14 +1686,32 @@ public class CommonDataDbService extends AbstractDataDbService {
 				.fetchInto(LexemeRelation.class);
 	}
 
-	public List<String> getLexemeTags(Long lexemeId) {
+	public List<CollocMember> getCollocationMembers(Long lexemeId) {
+
+		CollocationMember cm = COLLOCATION_MEMBER.as("cm");
+		Word mw = WORD.as("mw");
+		Lexeme ml = LEXEME.as("ml");
+		Form mf = FORM.as("mf");
 
 		return mainDb
-				.select(LEXEME_TAG.TAG_NAME)
-				.from(LEXEME_TAG)
-				.where(LEXEME_TAG.LEXEME_ID.eq(lexemeId))
-				.orderBy(LEXEME_TAG.CREATED_ON)
-				.fetchInto(String.class);
+				.select(
+						cm.CONJUNCT,
+						ml.ID.as("lexeme_id"),
+						mw.ID.as("word_id"),
+						mw.VALUE.as("word_value"),
+						mf.ID.as("form_id"),
+						mf.VALUE.as("form_value"),
+						mf.MORPH_CODE,
+						cm.WEIGHT,
+						cm.MEMBER_ORDER)
+				.from(mf, mw, ml, cm)
+				.where(
+						cm.COLLOC_LEXEME_ID.eq(lexemeId)
+								.and(cm.MEMBER_LEXEME_ID.eq(ml.ID))
+								.and(cm.MEMBER_FORM_ID.eq(mf.ID))
+								.and(ml.WORD_ID.eq(mw.ID)))
+				.orderBy(cm.MEMBER_ORDER)
+				.fetchInto(CollocMember.class);
 	}
 
 	public List<String> getMeaningTags(Long meaningId) {

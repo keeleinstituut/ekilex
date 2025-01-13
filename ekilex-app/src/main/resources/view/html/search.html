@@ -113,6 +113,19 @@
                             th:text="${language.value}">language</option>
                   </select>
                 </div>
+                <div class="value-input-container col-auto flex-grow-1 flex-shrink-1" th:if="${criteria.searchKey.name() == 'WORD_STATUS'}">
+                  <select class="form-control"
+                          th:name="'criteriaGroups[' + ${critGroupStat.index} + '].searchCriteria[' + ${critStat.index} + '].searchValue'"
+                          data-live-search="true"
+                          data-style="btn-outline-secondary"
+                          th:hidden="${isExistsOperand}"
+                          th:disabled="${isExistsOperand}">
+                    <option th:each="wordStatus : ${T(eki.common.constant.WordStatus).values()}"
+                            th:value="${wordStatus}"
+                            th:selected="${criteria.searchValue == wordStatus.name()}"
+                            th:text="#{|enum.wordstatus.${wordStatus}|}">word status</option>
+                  </select>
+                </div>
                 <div class="value-input-container col-auto flex-grow-1 flex-shrink-1" th:if="${criteria.searchKey.name() == 'WORD_TYPE'}">
                   <select class="form-control"
                           th:name="'criteriaGroups[' + ${critGroupStat.index} + '].searchCriteria[' + ${critStat.index} + '].searchValue'"
@@ -222,7 +235,7 @@
                     <option th:each="complexity : ${complexities}"
                             th:value="${complexity}"
                             th:selected="${criteria.searchValue == complexity.name()}"
-                            th:text="#{'enum.complexity.' + ${complexity}}"></option>
+                            th:text="#{|enum.complexity.${complexity}|}"></option>
                   </select>
                 </div>
                 <div class="value-input-container col-auto flex-grow-1 flex-shrink-1" th:if="${criteria.searchKey.name() == 'FREQUENCY'}">
@@ -698,9 +711,14 @@
                 <option th:each="language : ${languages}" th:value="${language.code}" th:text="${language.value}">language</option>
               </select>
             </div>
+            <div name="WORD_STATUS" class="value-input-container col-auto flex-grow-1 flex-shrink-1">
+              <select class="form-control" data-live-search="true" data-style="btn-outline-secondary">
+                <option th:each="wordStatus : ${T(eki.common.constant.WordStatus).values()}" th:value="${wordStatus}" th:text="#{|enum.wordstatus.${wordStatus}|}">word status</option>
+              </select>
+            </div>
             <div name="WORD_TYPE" class="value-input-container col-auto flex-grow-1 flex-shrink-1">
               <select class="form-control" data-live-search="true" data-style="btn-outline-secondary">
-                <option th:each="wordType : ${wordTypes}" th:value="${wordType.code}" th:text="${wordType.value}">wordType</option>
+                <option th:each="wordType : ${wordTypes}" th:value="${wordType.code}" th:text="${wordType.value}">word type</option>
               </select>
             </div>
             <div name="DISPLAY_MORPH" class="value-input-container col-auto flex-grow-1 flex-shrink-1">

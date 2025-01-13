@@ -15,6 +15,7 @@ public enum SearchKey {
 	MANUAL_UPDATE_ON(SearchOperandSet.DATUM_OPERANDS),
 	LANGUAGE_DIRECT(SearchOperand.EQUALS),
 	LANGUAGE_INDIRECT(SearchOperand.EQUALS, SearchOperand.NOT_CONTAINS),
+	WORD_STATUS(SearchOperand.IS, SearchOperand.IS_NOT),
 	WORD_TYPE(SearchOperandSet.CLASSIFIER_AND_EXISTS_OPERANDS),
 	DISPLAY_MORPH(SearchOperand.EQUALS, SearchOperand.EXISTS),
 	ASPECT(SearchOperand.EQUALS, SearchOperand.EXISTS),

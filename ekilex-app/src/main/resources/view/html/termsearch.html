@@ -161,17 +161,20 @@
                 <div th:replace="termdialog :: add_word_freeform_dlg"></div>
                 <div th:replace="termdialog :: add_od_word_recommendation_dlg"></div>
                 <div th:replace="termdialog :: edit_lexeme_publicity_dlg"></div>
+                <div th:replace="termdialog :: edit_lexeme_is_word_dlg"></div>
+                <div th:replace="termdialog :: edit_lexeme_is_colloc_dlg"></div>
                 <div th:replace="termdialog :: edit_lexeme_value_state_dlg"></div>
                 <div th:replace="termdialog :: edit_lexeme_reliability_dlg"></div>
                 <div th:replace="termdialog :: edit_word_value_dlg"></div>
                 <div th:replace="termdialog :: edit_word_gender_dlg"></div>
                 <div th:replace="termdialog :: edit_word_display_morph_dlg"></div>
                 <div class="row w-100 no-gutters">
-                  <div class="card-body pb-4 col-8" th:data-toggle-name="${'lexBody_' + lexeme.lexemeId}">
+                  <div class="card-body pb-4 col-8" th:data-toggle-name="|lexBody_${lexeme.lexemeId}|">
                     <div th:replace="termcomp :: lexeme_header"></div>
                     <div>
                       <span th:unless="${lexeme.classifiersExist}">&nbsp;</span>
                       <div th:replace="termcomp :: data_ids"></div>
+                      <div th:replace="termcomp :: word_status"></div>
                       <div th:replace="termcomp :: lexeme_tags"></div>
                       <div th:replace="termcomp :: lexeme_value_state"></div>
                       <div th:replace="termcomp :: lexeme_reliability"></div>
@@ -185,6 +188,7 @@
                     </div>
                     <div th:replace="termcomp :: lexeme_source_link"></div>
                     <div th:replace="termcomp :: lexeme_usage"></div>
+                    <div th:replace="termcomp :: colloc_members"></div>
                     <div th:replace="termcomp :: lexeme_relation"></div>
                     <div th:replace="termcomp :: lexeme_note"></div>
                     <div th:replace="termcomp :: lexeme_freeform"></div>

@@ -4,7 +4,6 @@ import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 
 import javax.transaction.Transactional;
 
@@ -22,6 +21,7 @@ import eki.common.exception.OperationDeniedException;
 import eki.ekilex.constant.SearchResultMode;
 import eki.ekilex.data.Classifier;
 import eki.ekilex.data.ClassifierSelect;
+import eki.ekilex.data.CollocMember;
 import eki.ekilex.data.DatasetPermission;
 import eki.ekilex.data.Definition;
 import eki.ekilex.data.DefinitionLangGroup;
@@ -33,7 +33,6 @@ import eki.ekilex.data.Lexeme;
 import eki.ekilex.data.LexemeLangGroup;
 import eki.ekilex.data.LexemeNote;
 import eki.ekilex.data.LexemeRelation;
-import eki.ekilex.data.LexemeWordTuple;
 import eki.ekilex.data.Meaning;
 import eki.ekilex.data.MeaningForum;
 import eki.ekilex.data.MeaningNote;
@@ -43,7 +42,6 @@ import eki.ekilex.data.NoteLangGroup;
 import eki.ekilex.data.OrderedClassifier;
 import eki.ekilex.data.SearchDatasetsRestriction;
 import eki.ekilex.data.SearchFilter;
-import eki.ekilex.data.SourceLink;
 import eki.ekilex.data.Tag;
 import eki.ekilex.data.TermMeaning;
 import eki.ekilex.data.TermSearchResult;
@@ -216,7 +214,6 @@ public class TermSearchService extends AbstractSearchService {
 		Long userId = user.getId();
 		DatasetPermission userRole = user.getRecentRole();
 		SearchDatasetsRestriction searchDatasetsRestriction = composeDatasetsRestriction(selectedDatasetCodes, userId);
-		Map<String, String> datasetNameMap = commonDataDbService.getDatasetNameMap();
 
 		Meaning meaning = termSearchDbService.getMeaning(meaningId, searchDatasetsRestriction);
 		if (meaning == null) {
@@ -258,42 +255,35 @@ public class TermSearchService extends AbstractSearchService {
 			permCalculator.applyCrud(user, wordForums);
 			List<Freeform> odWordRecommendations = commonDataDbService.getOdWordRecommendations(wordId);
 			List<Freeform> lexemeFreeforms = commonDataDbService.getLexemeFreeforms(lexemeId, EXCLUDED_LEXEME_ATTRIBUTE_FF_TYPE_CODES, CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
-			List<Usage> usages = composeUsages(user, lexemeId);
-			List<LexemeNote> lexemeNotes = commonDataDbService.getLexemeNotes(lexemeId);
+			List<LexemeNote> lexemeNotes = lexeme.getNotes();
 			permCalculator.filterVisibility(user, lexemeNotes);
 			List<NoteLangGroup> lexemeNoteLangGroups = conversionUtil.composeNoteLangGroups(lexemeNotes, languagesOrder);
 			List<Freeform> lexemeGrammars = commonDataDbService.getLexemeGrammars(lexemeId);
-			List<SourceLink> lexemeSourceLinks = commonDataDbService.getLexemeSourceLinks(lexemeId);
 			List<LexemeRelation> lexemeRelations = commonDataDbService.getLexemeRelations(lexemeId, CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
-			List<String> lexemeTags = commonDataDbService.getLexemeTags(lexemeId);
+			List<Usage> usages = lexeme.getUsages();
+			permCalculator.applyCrud(user, usages);
+			permCalculator.filterVisibility(user, usages);
+			List<CollocMember> collocationMembers = commonDataDbService.getCollocationMembers(lexemeId);
 
-			Word word = lexeme.getWord();
+			Word word = lexeme.getLexemeWord();
+			word.setWordTypes(wordTypes);
 			word.setFreeforms(wordFreeforms);
 			word.setForums(wordForums);
 			word.setOdWordRecommendations(odWordRecommendations);
-			permCalculator.applyCrud(user, word);
 
 			boolean classifiersExist = StringUtils.isNotBlank(word.getGenderCode())
 					|| StringUtils.isNotBlank(lexeme.getLexemeValueStateCode())
-					|| CollectionUtils.isNotEmpty(wordTypes)
 					|| CollectionUtils.isNotEmpty(lexeme.getPos())
 					|| CollectionUtils.isNotEmpty(lexeme.getDerivs())
 					|| CollectionUtils.isNotEmpty(lexeme.getRegisters())
 					|| CollectionUtils.isNotEmpty(lexemeGrammars);
 
-			String datasetCode = lexeme.getDatasetCode();
-			String datasetName = datasetNameMap.get(datasetCode);
-
-			lexeme.setDatasetName(datasetName);
-			lexeme.setWordTypes(wordTypes);
 			lexeme.setFreeforms(lexemeFreeforms);
 			lexeme.setNoteLangGroups(lexemeNoteLangGroups);
-			lexeme.setUsages(usages);
 			lexeme.setGrammars(lexemeGrammars);
 			lexeme.setClassifiersExist(classifiersExist);
-			lexeme.setSourceLinks(lexemeSourceLinks);
 			lexeme.setLexemeRelations(lexemeRelations);
-			lexeme.setTags(lexemeTags);
+			lexeme.setCollocationMembers(collocationMembers);
 			lexemes.add(lexeme);
 		}
 
@@ -327,9 +317,12 @@ public class TermSearchService extends AbstractSearchService {
 
 	private Lexeme composeLexeme(EkiUser user, Long lexemeId) {
 
-		LexemeWordTuple lexemeWordTuple = termSearchDbService.getLexemeWordTuple(lexemeId, CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
-		Lexeme lexeme = conversionUtil.composeLexeme(lexemeWordTuple);
+		Lexeme lexeme = termSearchDbService.getLexeme(lexemeId, CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
+		Long wordId = lexeme.getWordId();
+		Word word = termSearchDbService.getWord(wordId);
+		lexeme.setLexemeWord(word);
 		permCalculator.applyCrud(user, lexeme);
+		permCalculator.applyCrud(user, word);
 		return lexeme;
 	}
 
@@ -344,14 +337,6 @@ public class TermSearchService extends AbstractSearchService {
 			}
 		});
 		return definitions;
-	}
-
-	private List<Usage> composeUsages(EkiUser user, Long lexemeId) {
-
-		List<Usage> usages = commonDataDbService.getUsages(lexemeId);
-		permCalculator.applyCrud(user, usages);
-		permCalculator.filterVisibility(user, usages);
-		return usages;
 	}
 
 }

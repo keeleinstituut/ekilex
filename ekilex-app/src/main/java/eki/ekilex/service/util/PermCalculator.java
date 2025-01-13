@@ -25,7 +25,6 @@ import eki.ekilex.data.TypeMtLexeme;
 import eki.ekilex.data.TypeMtLexemeFreeform;
 import eki.ekilex.data.Usage;
 import eki.ekilex.data.Word;
-import eki.ekilex.data.WordLexeme;
 import eki.ekilex.service.db.PermissionDbService;
 
 @Component
@@ -36,6 +35,9 @@ public class PermCalculator implements PermConstant {
 
 	public void applyCrud(EkiUser user, List<? extends AbstractCrudEntity> crudEntities) {
 
+		if (CollectionUtils.isEmpty(crudEntities)) {
+			return;
+		}
 		if (user == null) {
 			return;
 		}
@@ -131,10 +133,6 @@ public class PermCalculator implements PermConstant {
 			isSubGrant = permissionDbService.isGrantedForWordByLexeme(userId, userRole, wordId, AUTH_ITEM_DATASET, AUTH_OPS_CRUD);
 		} else if (crudEntity instanceof Lexeme) {
 			Lexeme lexeme = (Lexeme) crudEntity;
-			Long lexemeId = lexeme.getLexemeId();
-			isCrudGrant = permissionDbService.isGrantedForLexeme(userId, userRole, lexemeId, AUTH_ITEM_DATASET, AUTH_OPS_CRUD);
-		} else if (crudEntity instanceof WordLexeme) {
-			WordLexeme lexeme = (WordLexeme) crudEntity;
 			Long lexemeId = lexeme.getLexemeId();
 			isCrudGrant = permissionDbService.isGrantedForLexeme(userId, userRole, lexemeId, AUTH_ITEM_DATASET, AUTH_OPS_CRUD);
 		} else if (crudEntity instanceof Meaning) {

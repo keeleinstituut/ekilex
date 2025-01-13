@@ -25,6 +25,7 @@ import org.jooq.JSON;
 import org.jooq.impl.DSL;
 import org.springframework.stereotype.Component;
 
+import eki.ekilex.data.CollocMember;
 import eki.ekilex.data.WordEtymTuple;
 import eki.ekilex.data.db.main.tables.CollocationMember;
 import eki.ekilex.data.db.main.tables.Form;
@@ -55,10 +56,10 @@ public class LexDataDbService extends AbstractDataDbService {
 		Word w2 = WORD.as("w2");
 		WordRelTypeLabel wrtl = WORD_REL_TYPE_LABEL.as("wrtl");
 
-		Field<String[]> wtf = getWordTypesField(w2.ID);
-		Field<Boolean> wtpf = getWordIsPrefixoidField(w2.ID);
-		Field<Boolean> wtsf = getWordIsSuffixoidField(w2.ID);
-		Field<Boolean> wtz = getWordIsForeignField(w2.ID);
+		Field<String[]> wtf = queryHelper.getWordTypeCodesField(w2.ID);
+		Field<Boolean> wtpf = queryHelper.getWordIsPrefixoidField(w2.ID);
+		Field<Boolean> wtsf = queryHelper.getWordIsSuffixoidField(w2.ID);
+		Field<Boolean> wtz = queryHelper.getWordIsForeignField(w2.ID);
 
 		return mainDb
 				.selectDistinct(
@@ -97,10 +98,10 @@ public class LexDataDbService extends AbstractDataDbService {
 		Word w2 = WORD.as("w2");
 		WordRelTypeLabel rtl = WORD_REL_TYPE_LABEL.as("rtl");
 
-		Field<String[]> wtf = getWordTypesField(w2.ID);
-		Field<Boolean> wtpf = getWordIsPrefixoidField(w2.ID);
-		Field<Boolean> wtsf = getWordIsSuffixoidField(w2.ID);
-		Field<Boolean> wtz = getWordIsForeignField(w2.ID);
+		Field<String[]> wtf = queryHelper.getWordTypeCodesField(w2.ID);
+		Field<Boolean> wtpf = queryHelper.getWordIsPrefixoidField(w2.ID);
+		Field<Boolean> wtsf = queryHelper.getWordIsSuffixoidField(w2.ID);
+		Field<Boolean> wtz = queryHelper.getWordIsForeignField(w2.ID);
 
 		return mainDb
 				.selectDistinct(
@@ -366,4 +367,5 @@ public class LexDataDbService extends AbstractDataDbService {
 				.orderBy(cw.VALUE)
 				.fetchInto(eki.ekilex.data.Colloc.class);
 	}
+
 }

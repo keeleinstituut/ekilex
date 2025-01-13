@@ -1091,7 +1091,7 @@
         <span class="ttl word-value"
               th:data-id="${lexeme.wordId}"
               th:id="${'word-value-' + lexeme.wordId}"
-              th:utext="${@viewUtil.getWordValueMarkup(lexeme.word)}"></span>
+              th:utext="${@viewUtil.getWordValueMarkup(lexeme.lexemeWord)}"></span>
         <button type="button" class="btn badge badge-primary"
                 th:title="#{common.edit}"
                 data-toggle="modal"
@@ -1100,16 +1100,16 @@
           <i class="fa fa-edit" aria-hidden="true"></i>
         </button>
       </div>
-      <th:block th:if="${lexeme.word.displayMorphCode != null}">
+      <th:block th:if="${lexeme.lexemeWord.displayMorphCode != null}">
         <div class="hover-actions-container hover-actions-container-outline ml-2">
           <span data-toggle="tooltip" data-boundary="window" data-placement="top"
-                th:text="'[' + ${lexeme.word.displayMorphCode} + ']'"
+                th:text="'[' + ${lexeme.lexemeWord.displayMorphCode} + ']'"
                 th:title="#{term.word.display.morph}"></span>
           <div class="hover-actions">
             <div class="btn-group">
               <button type="button" class="btn btn-secondary btn-sm" th:title="#{common.edit}" data-toggle="modal"
                       th:data-target="${'#editWordDisplayMorphDlg_' + lexeme.wordId}"
-                      sec:authorize="#vars.lexeme.word.subGrant">
+                      sec:authorize="#vars.lexeme.lexemeWord.subGrant">
                 <i class="fa fa-caret-down action-icon" aria-hidden="true"></i>
               </button>
               <button type="button" class="btn btn-secondary btn-sm"
@@ -1117,7 +1117,7 @@
                       data-op-code="word_display_morph"
                       data-toggle="delete-confirm"
                       data-placement="right"
-                      sec:authorize="#vars.lexeme.word.subGrant">
+                      sec:authorize="#vars.lexeme.lexemeWord.subGrant">
                 <i class="fa fa-remove action-icon" aria-hidden="true"></i>
               </button>
             </div>
@@ -1164,6 +1164,35 @@
       <span class="pr-1" th:text="'W' + ${lexeme.wordId}"></span>
       <span class="pr-1" th:text="'L' + ${lexeme.lexemeId}"></span>
       <span class="pr-1" th:text="'M' + ${lexeme.meaningId}"></span>
+    </div>
+  </div>
+  <div class="hidden-buttons row" th:fragment="word_status">
+    <div class="col pr-0 col-w13rem">
+      <span class="lbl" th:text="#{lex.word.status.wordis}">Keelend on</span>
+    </div>
+    <div class="col-8 pl-0">
+      <span>
+        <span th:text="#{|boolean.is.${lexeme.word}|}"></span>
+        <button type="button" class="btn badge badge-primary"
+                th:title="#{common.edit}"
+                data-toggle="modal"
+                th:data-target="${'#editLexemeIsWordDlg_' + lexeme.lexemeId}"
+                sec:authorize="#vars.lexeme.crudGrant">
+          <i class="fa fa-caret-down" aria-hidden="true"></i>
+        </button>
+        <span th:text="#{lex.word.status.isword}">sõna</span>
+      </span>
+      <span class="ml-3">
+        <span th:text="#{|boolean.is.${lexeme.collocation}|}"></span>
+        <button type="button" class="btn badge badge-primary"
+                th:title="#{common.edit}"
+                data-toggle="modal"
+                th:data-target="${'#editLexemeIsCollocDlg_' + lexeme.lexemeId}"
+                sec:authorize="#vars.lexeme.crudGrant">
+          <i class="fa fa-caret-down" aria-hidden="true"></i>
+        </button>
+        <span th:text="#{lex.word.status.iscollocation}">kollokatsioon</span>
+      </span>
     </div>
   </div>
   <div class="row no-gutters" th:if="${not #lists.isEmpty(lexeme.tags)}" th:fragment="lexeme_tags">
@@ -1544,6 +1573,20 @@
       </div>
     </div>
   </div>
+  <div class="row" th:if="${not #lists.isEmpty(lexeme.collocationMembers)}" th:fragment="colloc_members">
+    <hr/>
+    <div class="col pr-0 col-w13rem">
+      <span class="lbl" th:text="#{lex.collocation.members}">Kollokatsiooni liikmed</span>
+    </div>
+    <div class="col pl-0">
+      <th:block th:each="collocMember : ${lexeme.collocationMembers}">
+        <div class="p-0">
+          <span th:text="${collocMember.wordValue}"></span>
+          <span th:text="${collocMember.weight}" class="small text-muted ml-2 mt-2"></span>
+        </div>
+      </th:block>
+    </div>
+  </div>
   <div class="row no-gutters" th:if="${not #lists.isEmpty(lexeme.lexemeRelations)}" th:fragment="lexeme_relation">
     <hr/>
     <div class="col pr-0 col-w13rem">
@@ -1781,12 +1824,12 @@
       </div>
     </div>
   </div>
-  <div class="row mr-0 hidden-buttons no-gutters" th:if="${lexeme.word.genderCode != null}" th:fragment="word_gender">
+  <div class="row mr-0 hidden-buttons no-gutters" th:if="${lexeme.lexemeWord.genderCode != null}" th:fragment="word_gender">
     <div class="col pr-0 col-w13rem">
       <span class="lbl" th:text="#{term.word.gender}">Sugu</span>
     </div>
     <div class="col pl-0">
-      <span th:text="${@viewUtil.getClassifierValue(lexeme.word.genderCode, wordGenders)}"></span>
+      <span th:text="${@viewUtil.getClassifierValue(lexeme.lexemeWord.genderCode, wordGenders)}"></span>
       <button type="button" class="btn badge badge-primary" th:title="#{common.edit}"
               data-toggle="modal"
               th:data-target="${'#editWordGenderDlg_' + lexeme.lexemeId + '_' + lexeme.wordId}">
@@ -1797,17 +1840,17 @@
               data-op-code="word_gender"
               data-toggle="delete-confirm"
               data-placement="right"
-              sec:authorize="${#vars.lexeme.word.subGrant}">
+              sec:authorize="${#vars.lexeme.lexemeWord.subGrant}">
         <i class="fa fa-remove" aria-hidden="true"></i>
       </button>
     </div>
   </div>
-  <div class="row mr-0 no-gutters" th:if="${not #lists.isEmpty(lexeme.wordTypes)}" th:fragment="word_type">
+  <div class="row mr-0 no-gutters" th:if="${not #lists.isEmpty(lexeme.lexemeWord.wordTypes)}" th:fragment="word_type">
     <div class="col pr-0 col-w13rem">
       <span class="lbl" th:text="#{term.word.type}">Keelendi tüüp</span>
     </div>
     <div class="col pl-0">
-      <span th:each="classif,classifIter : ${lexeme.wordTypes}" class="hidden-buttons">
+      <span th:each="classif,classifIter : ${lexeme.lexemeWord.wordTypes}" class="hidden-buttons">
         <span th:replace="termdialog :: edit_word_type_dlg"></span>
         <span th:text="${classif.code}"></span>
         <th:block th:unless="${classif.code == classif.value}">
@@ -1817,7 +1860,7 @@
         <button type="button" class="btn badge badge-primary" th:title="#{common.edit}"
                 data-toggle="modal"
                 th:data-target="${'#editWordTypeDlg_' + lexeme.lexemeId + '_' + lexeme.wordId + '_' + classifIter.index}"
-                sec:authorize="${#vars.lexeme.word.subGrant}">
+                sec:authorize="${#vars.lexeme.lexemeWord.subGrant}">
           <i class="fa fa-caret-down" aria-hidden="true"></i>
         </button>
         <button type="button" class="btn badge badge-warning"
@@ -1826,7 +1869,7 @@
                 th:data-value="${classif.code}"
                 data-toggle="delete-confirm"
                 data-placement="right"
-                sec:authorize="${#vars.lexeme.word.subGrant}">
+                sec:authorize="${#vars.lexeme.lexemeWord.subGrant}">
           <i class="fa fa-remove" aria-hidden="true"></i>
         </button>
         <span th:unless="${classifIter.last}">,</span>
@@ -1835,7 +1878,7 @@
   </div>
   <div class="border-top px-0 w-100 ekiAccordion__instance" th:fragment="word_forum">
     <div class="ekiAccordion__title">
-      <span class="badge badge-data-exists" th:unless="${#lists.isEmpty(lexeme.word.forums)}">•</span>
+      <span class="badge badge-data-exists" th:unless="${#lists.isEmpty(lexeme.lexemeWord.forums)}">•</span>
       <span th:text="#{term.word.forum}">Keelendi sisemärkus</span>
       <button type="button" class="ekiAccordion__add"
               th:title="#{common.add.new}"
@@ -1846,10 +1889,10 @@
       </button>
     </div>
     <div class="ekiAccordion__content overflow-auto">
-      <div th:if="${#lists.isEmpty(lexeme.word.forums)}" th:text="#{common.no.content}">
+      <div th:if="${#lists.isEmpty(lexeme.lexemeWord.forums)}" th:text="#{common.no.content}">
         Sisu puudub...
       </div>
-      <div th:each="forum,forumIter : ${lexeme.word.forums}">
+      <div th:each="forum,forumIter : ${lexeme.lexemeWord.forums}">
         <div th:replace="termdialog :: edit_word_forum_dlg"></div>
         <div class="col hidden-buttons pr-5" th:classappend="${forumIter.last ? '' : 'mb-3'}">
           <div class="action-buttons-anchor">
@@ -1880,19 +1923,19 @@
   </div>
   <div class="border-top px-0 w-100 ekiAccordion__instance" th:fragment="word_freeform">
     <div class="ekiAccordion__title">
-      <span class="badge badge-data-exists" th:unless="${#lists.isEmpty(lexeme.word.freeforms)}">•</span>
+      <span class="badge badge-data-exists" th:unless="${#lists.isEmpty(lexeme.lexemeWord.freeforms)}">•</span>
       <span th:text="#{term.word.freeforms}">Keelendi atribuudid</span>
       <button type="button" class="ekiAccordion__add"
               th:title="#{common.add.new}"
               data-toggle="modal"
               th:data-target="${'#addWordFreeformDlg_' + lexeme.lexemeId}"
-              sec:authorize="#vars.lexeme.word.crudGrant">
+              sec:authorize="#vars.lexeme.lexemeWord.crudGrant">
         <i class="fa fa-plus" aria-hidden="true"></i>
       </button>
     </div>
     <div class="ekiAccordion__content overflow-auto">
-      <div th:if="${#lists.isEmpty(lexeme.word.freeforms)}" th:text="#{common.no.content}">Sisu puudub...</div>
-      <div th:each="freeform,freeformIter : ${lexeme.word.freeforms}" 
+      <div th:if="${#lists.isEmpty(lexeme.lexemeWord.freeforms)}" th:text="#{common.no.content}">Sisu puudub...</div>
+      <div th:each="freeform,freeformIter : ${lexeme.lexemeWord.freeforms}" 
            th:data-id="${freeform.id}" 
            th:data-orderby="${freeform.orderBy}">
         <div th:replace="termdialog :: edit_word_freeform_dlg"></div>
@@ -1906,13 +1949,13 @@
               <button type="button" class="btn badge badge-primary" data-toggle="modal" 
                 th:title="#{common.edit}" 
                 th:data-target="${'#editWordFreeformDlg_' + lexeme.lexemeId + '_' + freeform.id}"
-                sec:authorize="#vars.lexeme.word.crudGrant">
+                sec:authorize="#vars.lexeme.lexemeWord.crudGrant">
                 <i class="fa fa-edit" aria-hidden="true"></i>
               </button>
               <button type="button" class="btn badge badge-success hidden" data-toggle="modal" 
                 th:title="#{common.add.source.link}" 
                 th:data-target="${'#addWordFreeformSourceLinkDlg_' + lexeme.lexemeId + '_' + freeform.id}" 
-                sec:authorize="#vars.lexeme.word.crudGrant">
+                sec:authorize="#vars.lexeme.lexemeWord.crudGrant">
                 <i class="fa fa-external-link" aria-hidden="true"></i>
               </button>
               <button type="button" class="btn badge badge-warning" 
@@ -1920,7 +1963,7 @@
                 data-op-code="word_freeform" 
                 data-toggle="delete-confirm" 
                 data-placement="right"
-                sec:authorize="#vars.lexeme.word.crudGrant">
+                sec:authorize="#vars.lexeme.lexemeWord.crudGrant">
                 <i class="fa fa-remove" aria-hidden="true"></i>
               </button>
             </div>
@@ -1935,7 +1978,7 @@
                   <div th:replace="termdialog :: edit_word_freeform_source_link_dlg"></div>
                   <div style="position: absolute; display: list-item;"></div>
                   <div class="action-column">
-                    <th:block th:replace="common :: ordering_buttons(${sourceLinkIter})" sec:authorize="#vars.lexeme.word.crudGrant"></th:block>
+                    <th:block th:replace="common :: ordering_buttons(${sourceLinkIter})" sec:authorize="#vars.lexeme.lexemeWord.crudGrant"></th:block>
                   </div>
                   <div class="invisible-buttons action-buttons-anchor mw-80">
                     <span>
@@ -1945,7 +1988,7 @@
                               th:title="#{common.edit}"
                               data-toggle="modal"
                               th:data-target="${'#editWordFreeformSourceLinkDlg_' + sourceLink.id}"
-                              sec:authorize="#vars.lexeme.word.crudGrant">
+                              sec:authorize="#vars.lexeme.lexemeWord.crudGrant">
                         <i class="fa fa-edit" aria-hidden="true"></i>
                       </button>
                       <button type="button" class="btn badge badge-warning"
@@ -1953,7 +1996,7 @@
                               th:data-id="${sourceLink.id}"
                               data-toggle="delete-confirm"
                               data-placement="right"
-                              sec:authorize="#vars.lexeme.word.crudGrant">
+                              sec:authorize="#vars.lexeme.lexemeWord.crudGrant">
                         <i class="fa fa-remove" aria-hidden="true"></i>
                       </button>
                     </span>
@@ -2013,21 +2056,21 @@
   </div>
   <div class="border-top px-0 w-100 ekiAccordion__instance" th:fragment="word_od_recommendation">
     <div class="ekiAccordion__title">
-      <span class="badge badge-data-exists" th:unless="${#lists.isEmpty(lexeme.word.odWordRecommendations)}">•</span>
+      <span class="badge badge-data-exists" th:unless="${#lists.isEmpty(lexeme.lexemeWord.odWordRecommendations)}">•</span>
       <span th:text="#{term.word.od.recommendation}">ÕS soovitab</span>
       <button type="button" class="ekiAccordion__add"
               th:title="#{common.add.new}"
               data-toggle="modal"
               th:data-target="${'#addOdWordRecommendationDlg_' + lexeme.lexemeId}"
-              sec:authorize="#vars.lexeme.word.subGrant">
+              sec:authorize="#vars.lexeme.lexemeWord.subGrant">
         <i class="fa fa-plus" aria-hidden="true"></i>
       </button>
     </div>
     <div class="ekiAccordion__content overflow-auto">
-      <div th:if="${#lists.isEmpty(lexeme.word.odWordRecommendations)}" th:text="#{common.no.content}">
+      <div th:if="${#lists.isEmpty(lexeme.lexemeWord.odWordRecommendations)}" th:text="#{common.no.content}">
         Sisu puudub...
       </div>
-      <div th:each="odWordRecommendation : ${lexeme.word.odWordRecommendations}">
+      <div th:each="odWordRecommendation : ${lexeme.lexemeWord.odWordRecommendations}">
         <div th:replace="termdialog :: edit_od_word_recommendation"></div>
         <div class="col hidden-buttons pr-5">
           <div class="action-buttons-anchor">
@@ -2040,7 +2083,7 @@
                       th:title="#{common.edit}"
                       data-toggle="modal"
                       th:data-target="${'#editOdWordRecommendationDlg_' + odWordRecommendation.id}"
-                      sec:authorize="#vars.lexeme.word.crudGrant">
+                      sec:authorize="#vars.lexeme.lexemeWord.crudGrant">
                 <i class="fa fa-edit" aria-hidden="true"></i>
               </button>
               <button type="button" class="btn badge badge-warning"
@@ -2048,7 +2091,7 @@
                       data-op-code="od_word_recommendation"
                       data-toggle="delete-confirm"
                       data-placement="right"
-                      sec:authorize="#vars.lexeme.word.crudGrant">
+                      sec:authorize="#vars.lexeme.lexemeWord.crudGrant">
                 <i class="fa fa-remove" aria-hidden="true"></i>
               </button>
             </div>

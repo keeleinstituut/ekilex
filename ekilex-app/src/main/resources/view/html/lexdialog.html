@@ -421,7 +421,7 @@
         <form th:action="@{/create_item}" method="post">
           <div class="modal-body">
             <input type="hidden" name="id" th:value="${lexeme.meaningId}">
-            <input type="hidden" name="language" th:value="${lexeme.wordLang}">
+            <input type="hidden" name="language" th:value="${lexeme.lexemeWord.lang}">
             <input type="hidden" name="opCode" value="learner_comment">
             <input type="hidden" name="value">
             <div th:replace="components :: eki_editor_elem"></div>
@@ -639,7 +639,7 @@
           </div>
           <div class="modal-body">
             <input type="hidden" name="id" th:value="${lexeme.lexemeId}">
-            <input type="hidden" name="language" th:value="${lexeme.wordLang}">
+            <input type="hidden" name="language" th:value="${lexeme.lexemeWord.lang}">
             <input type="hidden" name="opCode" value="usage">
             <input type="hidden" name="value">
             <div th:replace="components :: eki_editor_elem"></div>
@@ -861,7 +861,7 @@
                 <select required class="form-control classifier-select required-field" data-live-search="true" name="language">
                   <option th:each="language : ${userRoleLanguages}"
                           th:value="${language.code}"
-                          th:selected="${language.code == lexeme.wordLang}"
+                          th:selected="${language.code == lexeme.lexemeWord.lang}"
                           th:text="${language.value}">language
                   </option>
                 </select>
@@ -953,7 +953,7 @@
           </div>
           <div class="modal-body">
             <input type="hidden" name="id" th:value="${lexeme.lexemeId}">
-            <input type="hidden" name="language" th:value="${lexeme.wordLang}">
+            <input type="hidden" name="language" th:value="${lexeme.lexemeWord.lang}">
             <input type="hidden" name="opCode" value="lexeme_freeform">
             <div class="form-group row">
               <div class="col-md-4">
@@ -1095,7 +1095,7 @@
           </div>
           <div class="modal-body">
             <input type="hidden" name="id" th:value="${lexeme.meaningId}">
-            <input type="hidden" name="language" th:value="${lexeme.wordLang}">
+            <input type="hidden" name="language" th:value="${lexeme.lexemeWord.lang}">
             <input type="hidden" name="opCode" value="meaning_freeform">
             <div class="form-group row">
               <div class="col-md-4">
@@ -1846,6 +1846,68 @@
       </div>
     </div>
   </div>
+  <div th:id="${'editLexemeIsWordDlg_' + lexeme.lexemeId}"
+       th:data-callback="${@viewUtil.composeFunction('loadFullLexemeDetails', lexeme.lexemeId, lexeme.levels)}"
+       class="modal select-dlg" role="dialog" th:fragment="edit_lexeme_is_word_dlg"
+       data-plugin="initSelectDlgPlugin">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <form th:action="@{/update_item}" method="post">
+          <div class="modal-body">
+            <input type="hidden" name="id" th:value="${lexeme.lexemeId}">
+            <input type="hidden" name="opCode" value="lexeme_is_word">
+            <input type="hidden" name="value" th:value="${lexeme.word}">
+            <select class="form-control" name="value">
+              <option value="true" th:selected="${lexeme.word}" th:text="#{boolean.is.true}">on</option>
+              <option value="false" th:selected="${not lexeme.word}" th:text="#{boolean.is.false}">ei ole</option>
+            </select>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+  <div th:id="${'editLexemeIsCollocDlg_' + lexeme.lexemeId}"
+       th:data-callback="${@viewUtil.composeFunction('loadFullLexemeDetails', lexeme.lexemeId, lexeme.levels)}"
+       class="modal select-dlg" role="dialog" th:fragment="edit_lexeme_is_colloc_dlg"
+       data-plugin="initSelectDlgPlugin">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <form th:action="@{/update_item}" method="post">
+          <div class="modal-body">
+            <input type="hidden" name="id" th:value="${lexeme.lexemeId}">
+            <input type="hidden" name="opCode" value="lexeme_is_colloc">
+            <input type="hidden" name="value" th:value="${lexeme.collocation}">
+            <select class="form-control" name="value">
+              <option value="true" th:selected="${lexeme.collocation}" th:text="#{boolean.is.true}">on</option>
+              <option value="false" th:selected="${not lexeme.collocation}" th:text="#{boolean.is.false}">ei ole</option>
+            </select>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+  <div th:id="${'editLexemeComplexityDlg_' + lexeme.lexemeId}"
+       th:data-callback="${@viewUtil.composeFunction('loadFullLexemeDetails', lexeme.lexemeId, lexeme.levels)}"
+       class="modal select-dlg" role="dialog" th:fragment="edit_lexeme_complexity_dlg"
+       data-plugin="initSelectDlgPlugin">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <form th:action="@{/update_item}" method="post">
+          <div class="modal-body">
+            <input type="hidden" name="id" th:value="${lexeme.lexemeId}">
+            <input type="hidden" name="opCode" value="lexeme_complexity">
+            <input type="hidden" name="value" th:value="${lexeme.complexity}">
+            <select class="form-control" name="value">
+              <option th:each="complexity : ${complexities}"
+                      th:value="${complexity}"
+                      th:selected="${complexity == lexeme.complexity}"
+                      th:text="#{'enum.complexity.' + ${complexity}}"></option>
+            </select>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
   <div th:id="${'editLexemeValueStateCodeDlg_' + lexeme.lexemeId}"
        th:data-callback="${@viewUtil.composeFunction('loadFullLexemeDetails', lexeme.lexemeId, lexeme.levels)}"
        class="modal select-dlg" role="dialog" th:fragment="edit_lexeme_value_state_dlg" data-plugin="initSelectDlgPlugin">
@@ -2395,28 +2457,6 @@
               <button type="submit" class="btn btn-primary" th:text="#{common.save}">Salvesta</button>
               <button type="button" class="btn btn-default" data-dismiss="modal" th:text="#{common.cancel}">Katkesta</button>
             </div>
-          </div>
-        </form>
-      </div>
-    </div>
-  </div>
-  <div th:id="${'editLexemeComplexityDlg_' + lexeme.lexemeId}"
-       th:data-callback="${@viewUtil.composeFunction('loadFullLexemeDetails', lexeme.lexemeId, lexeme.levels)}"
-       class="modal select-dlg" role="dialog" th:fragment="edit_lexeme_complexity_dlg"
-       data-plugin="initSelectDlgPlugin">
-    <div class="modal-dialog" role="document">
-      <div class="modal-content">
-        <form th:action="@{/update_item}" method="post">
-          <div class="modal-body">
-            <input type="hidden" name="id" th:value="${lexeme.lexemeId}">
-            <input type="hidden" name="opCode" value="lexeme_complexity">
-            <input type="hidden" name="value" th:value="${lexeme.complexity}">
-            <select class="form-control" name="value">
-              <option th:each="complexity : ${complexities}"
-                      th:value="${complexity}"
-                      th:selected="${complexity == lexeme.complexity}"
-                      th:text="#{'enum.complexity.' + ${complexity}}"></option>
-            </select>
           </div>
         </form>
       </div>

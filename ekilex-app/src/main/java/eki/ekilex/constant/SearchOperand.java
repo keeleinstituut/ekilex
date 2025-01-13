@@ -2,6 +2,8 @@ package eki.ekilex.constant;
 
 public enum SearchOperand {
 
+	IS,
+	IS_NOT,
 	EQUALS,
 	STARTS_WITH,
 	ENDS_WITH,

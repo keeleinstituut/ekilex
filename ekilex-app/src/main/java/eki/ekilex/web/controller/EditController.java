@@ -301,6 +301,17 @@ public class EditController extends AbstractMutableDataPageController implements
 		case "usage_definition":
 			cudService.updateUsageDefinition(id, value, roleDatasetCode, isManualEventOnUpdateEnabled);
 			break;
+		case "lexeme_publicity":
+			cudService.updateLexemePublicity(id, isPublic, roleDatasetCode, isManualEventOnUpdateEnabled);
+			break;
+		case "lexeme_is_word":
+			boolean isWord = Boolean.valueOf(value);
+			cudService.updateLexemeIsWord(id, isWord, roleDatasetCode, isManualEventOnUpdateEnabled);
+			break;
+		case "lexeme_is_colloc":
+			boolean isCollocation = Boolean.valueOf(value);
+			cudService.updateLexemeIsCollocation(id, isCollocation, roleDatasetCode, isManualEventOnUpdateEnabled);
+			break;
 		case "lexeme_complexity":
 			cudService.updateLexemeComplexity(id, value, roleDatasetCode, isManualEventOnUpdateEnabled);
 			break;
@@ -327,9 +338,6 @@ public class EditController extends AbstractMutableDataPageController implements
 			break;
 		case "lexeme_weight":
 			cudService.updateLexemeWeight(id, numberValue, roleDatasetCode, isManualEventOnUpdateEnabled);
-			break;
-		case "lexeme_publicity":
-			cudService.updateLexemePublicity(id, isPublic, roleDatasetCode, isManualEventOnUpdateEnabled);
 			break;
 		case "lexeme_value_state":
 			cudService.updateLexemeValueState(id, value, roleDatasetCode, isManualEventOnUpdateEnabled);

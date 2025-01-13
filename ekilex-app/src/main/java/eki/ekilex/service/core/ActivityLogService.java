@@ -32,14 +32,15 @@ import eki.ekilex.data.ActivityLog;
 import eki.ekilex.data.ActivityLogData;
 import eki.ekilex.data.ActivityLogOwnerEntityDescr;
 import eki.ekilex.data.Classifier;
-import eki.ekilex.data.CollocPosGroup;
 import eki.ekilex.data.Colloc;
+import eki.ekilex.data.CollocPosGroup;
 import eki.ekilex.data.DatasetPermission;
 import eki.ekilex.data.Definition;
 import eki.ekilex.data.DefinitionLangGroup;
 import eki.ekilex.data.EkiUser;
 import eki.ekilex.data.Freeform;
 import eki.ekilex.data.Government;
+import eki.ekilex.data.Lexeme;
 import eki.ekilex.data.LexemeNote;
 import eki.ekilex.data.LexemeRelation;
 import eki.ekilex.data.Meaning;
@@ -52,15 +53,12 @@ import eki.ekilex.data.OrderedClassifier;
 import eki.ekilex.data.Paradigm;
 import eki.ekilex.data.ParadigmFormTuple;
 import eki.ekilex.data.Source;
-import eki.ekilex.data.SourceLink;
 import eki.ekilex.data.SourcePropertyTuple;
 import eki.ekilex.data.TypeActivityLogDiff;
-import eki.ekilex.data.Usage;
 import eki.ekilex.data.Word;
 import eki.ekilex.data.WordEtym;
 import eki.ekilex.data.WordEtymTuple;
 import eki.ekilex.data.WordGroup;
-import eki.ekilex.data.WordLexeme;
 import eki.ekilex.data.WordLexemeMeaningIds;
 import eki.ekilex.data.WordRelation;
 import eki.ekilex.service.db.ActivityLogDbService;
@@ -558,34 +556,30 @@ public class ActivityLogService implements SystemConstant, GlobalConstant, Freef
 
 	private String getLexemeDetailsJson(Long lexemeId) throws Exception {
 
-		WordLexeme lexeme = lexSearchDbService.getLexeme(lexemeId, CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
+		Lexeme lexeme = lexSearchDbService.getLexeme(lexemeId, CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
 		if (lexeme == null) {
 			return EMPTY_CONTENT_JSON;
 		}
-
+		Long wordId = lexeme.getWordId();
+		Word word = lexSearchDbService.getWord(wordId);
 		List<MeaningWord> meaningWords = commonDataDbService.getMeaningWords(lexemeId);
-		List<String> lexemeTags = commonDataDbService.getLexemeTags(lexemeId);
 		List<Government> governments = commonDataDbService.getLexemeGovernments(lexemeId);
 		List<Freeform> grammars = commonDataDbService.getLexemeGrammars(lexemeId);
-		List<Usage> usages = commonDataDbService.getUsages(lexemeId);
 		List<Freeform> lexemeFreeforms = commonDataDbService.getLexemeFreeforms(lexemeId, EXCLUDED_LEXEME_ATTRIBUTE_FF_TYPE_CODES, CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
-		List<LexemeNote> lexemeNotes = commonDataDbService.getLexemeNotes(lexemeId);
+		List<LexemeNote> lexemeNotes = lexeme.getNotes();
 		List<NoteLangGroup> lexemeNoteLangGroups = conversionUtil.composeNoteLangGroups(lexemeNotes, null);
 		List<LexemeRelation> lexemeRelations = commonDataDbService.getLexemeRelations(lexemeId, CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
-		List<SourceLink> lexemeSourceLinks = commonDataDbService.getLexemeSourceLinks(lexemeId);
 		List<CollocPosGroup> primaryCollocations = lexDataDbService.getPrimaryCollocations(lexemeId, CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
 		List<Colloc> secondaryCollocations = lexDataDbService.getSecondaryCollocations(lexemeId);
 		boolean isCollocationsExist = lexDataDbService.isCollocationsExist(lexemeId);
 
+		lexeme.setLexemeWord(word);
 		lexeme.setMeaningWords(meaningWords);
-		lexeme.setTags(lexemeTags);
 		lexeme.setGovernments(governments);
 		lexeme.setGrammars(grammars);
-		lexeme.setUsages(usages);
-		lexeme.setLexemeFreeforms(lexemeFreeforms);
-		lexeme.setLexemeNoteLangGroups(lexemeNoteLangGroups);
+		lexeme.setFreeforms(lexemeFreeforms);
+		lexeme.setNoteLangGroups(lexemeNoteLangGroups);
 		lexeme.setLexemeRelations(lexemeRelations);
-		lexeme.setSourceLinks(lexemeSourceLinks);
 		lexeme.setPrimaryCollocations(primaryCollocations);
 		lexeme.setSecondaryCollocations(secondaryCollocations);
 		lexeme.setCollocationsExist(isCollocationsExist);

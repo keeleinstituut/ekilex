@@ -27,7 +27,7 @@ import eki.ekilex.data.InexactSynMeaningRequest;
 import eki.ekilex.data.Response;
 import eki.ekilex.data.Word;
 import eki.ekilex.data.WordDescript;
-import eki.ekilex.data.WordLexeme;
+import eki.ekilex.data.Lexeme;
 import eki.ekilex.data.WordLexemeMeaningIdTuple;
 import eki.ekilex.data.db.main.tables.records.LexemeRecord;
 import eki.ekilex.service.db.CudDbService;
@@ -64,8 +64,8 @@ public class InexactSynService extends AbstractSynSearchService {
 
 			Map<String, String> datasetNameMap = commonDataDbService.getDatasetNameMap();
 			String datasetName = datasetNameMap.get(datasetCode);
-			List<WordLexeme> translationLangWords = lookupDbService.getMeaningWords(meaningId, datasetCode, translationLang);
-			List<WordLexeme> targetLangWords = lookupDbService.getMeaningWords(meaningId, datasetCode, targetLang);
+			List<Lexeme> translationLangWords = lookupDbService.getMeaningWords(meaningId, datasetCode, translationLang);
+			List<Lexeme> targetLangWords = lookupDbService.getMeaningWords(meaningId, datasetCode, targetLang);
 			List<Definition> definitions = synSearchDbService.getInexactSynMeaningDefinitions(meaningId, translationLang, targetLang);
 			boolean inexactSynDefExists = definitions.stream().anyMatch(definition -> definition.getTypeCode().equals(DEFINITION_TYPE_CODE_INEXACT_SYN));
 

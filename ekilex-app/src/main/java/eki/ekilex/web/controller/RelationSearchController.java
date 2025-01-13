@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.SessionAttributes;
 import eki.ekilex.constant.WebConstant;
 import eki.ekilex.data.EkiUser;
 import eki.ekilex.data.UserContextData;
-import eki.ekilex.data.WordLexeme;
+import eki.ekilex.data.Lexeme;
 import eki.ekilex.service.LexSearchService;
 import eki.ekilex.web.bean.SessionBean;
 
@@ -50,7 +50,7 @@ public class RelationSearchController extends AbstractMutableDataPageController 
 		List<String> tagNames = userContextData.getTagNames();
 		List<String> datasetCodes = Arrays.asList(lexemeDatasetCode);
 
-		List<WordLexeme> lexemes = lexSearchService.getWordLexemesWithDefinitionsData(searchFilter, datasetCodes, tagNames, user);
+		List<Lexeme> lexemes = lexSearchService.getWordLexemesWithDefinitionsData(searchFilter, datasetCodes, tagNames, user);
 
 		model.addAttribute("lexemesFoundBySearch", lexemes);
 
@@ -72,11 +72,11 @@ public class RelationSearchController extends AbstractMutableDataPageController 
 		List<String> tagNames = userContextData.getTagNames();
 		List<String> datasetCodes = userContextData.getPreferredDatasetCodes();
 
-		List<WordLexeme> lexemes = lexSearchService.getWordLexemesWithDefinitionsData(searchFilter, datasetCodes, tagNames, user);
+		List<Lexeme> lexemes = lexSearchService.getWordLexemesWithDefinitionsData(searchFilter, datasetCodes, tagNames, user);
 
-		List<WordLexeme> lexemesFilteredByMeaning = new ArrayList<>();
+		List<Lexeme> lexemesFilteredByMeaning = new ArrayList<>();
 		List<Long> distinctMeanings = new ArrayList<>();
-		for (WordLexeme lexeme : lexemes) {
+		for (Lexeme lexeme : lexemes) {
 			Long lexemeMeaningId = lexeme.getMeaningId();
 			boolean isMeaningExcluded = Objects.equals(meaningId, lexemeMeaningId);
 			if (!distinctMeanings.contains(lexemeMeaningId) && !isMeaningExcluded) {
