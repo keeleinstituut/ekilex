@@ -83,7 +83,7 @@
       </div>
       <div class="col">
         <span>
-          <span th:utext="${@viewUtil.getWordValueMarkup(lexeme)}" class="ttl"></span>
+          <span th:utext="${@viewUtil.getWordValueMarkup(lexeme.lexemeWord)}" class="ttl"></span>
           &nbsp;
         </span>
         <span th:each="meaningWord,meaningWordIter : ${lexeme.meaningWords}">

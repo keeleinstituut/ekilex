@@ -41,7 +41,7 @@
             <tr th:each="lexeme : ${lexemesFoundBySearch}">
               <td class="p-0">
                 <div>
-                  <span th:utext="${@viewUtil.getWordValueMarkup(lexeme)}" class="ttl"></span>
+                  <span th:utext="${@viewUtil.getWordValueMarkup(lexeme.lexemeWord)}" class="ttl"></span>
                   <th:block th:each="meaningWord,meaningWordIter : ${lexeme.meaningWords}">
                     <span class="pt-0">
                       <span th:utext="${@viewUtil.getWordValueMarkup(meaningWord)}"></span>
@@ -75,7 +75,7 @@
             <tr th:each="lexeme : ${lexemesFoundBySearch}">
               <td class="p-0">
                 <div>
-                  <span th:utext="${@viewUtil.getWordValueMarkup(lexeme)}" class="ttl"></span>
+                  <span th:utext="${@viewUtil.getWordValueMarkup(lexeme.lexemeWord)}" class="ttl"></span>
                   <small class="ml-1">
                     <span th:text="${lexeme.datasetCode}"></span>
                   </small>
