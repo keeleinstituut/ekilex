@@ -108,7 +108,11 @@ public abstract class AbstractDataDbService implements SystemConstant, GlobalCon
 				.where(
 						l.ID.eq(lexemeId)
 								.and(l.DATASET_CODE.eq(ds.CODE)))
-				.fetchOptionalInto(eki.ekilex.data.Lexeme.class)
+				.fetchOptional(record -> {
+					eki.ekilex.data.Lexeme pojo = record.into(eki.ekilex.data.Lexeme.class);
+					queryHelper.replaceNullCollections(pojo);
+					return pojo;
+				})
 				.orElse(null);
 	}
 

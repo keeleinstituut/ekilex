@@ -31,6 +31,7 @@ import static eki.ekilex.data.db.main.Tables.WORD_WORD_TYPE;
 
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import org.jooq.Field;
@@ -580,5 +581,21 @@ public class QueryHelper implements GlobalConstant {
 								.and(mlal.ACTIVITY_LOG_ID.eq(al.ID)))
 				.limit(1));
 		return wlaeof;
+	}
+
+	public void replaceNullCollections(eki.ekilex.data.Lexeme pojo) {
+
+		if (pojo.getTags() == null) {
+			pojo.setTags(Collections.emptyList());
+		}
+		if (pojo.getNotes() == null) {
+			pojo.setNotes(Collections.emptyList());
+		}
+		if (pojo.getUsages() == null) {
+			pojo.setUsages(Collections.emptyList());
+		}
+		if (pojo.getSourceLinks() == null) {
+			pojo.setSourceLinks(Collections.emptyList());
+		}
 	}
 }

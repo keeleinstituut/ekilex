@@ -197,7 +197,11 @@ public class LexSearchDbService extends AbstractDataDbService {
 								.and(l.DATASET_CODE.eq(ds.CODE))
 								.and(dsWhere))
 				.orderBy(l.WORD_ID, ds.ORDER_BY, l.LEVEL1, l.LEVEL2)
-				.fetchInto(eki.ekilex.data.Lexeme.class);
+				.fetch(record -> {
+					eki.ekilex.data.Lexeme pojo = record.into(eki.ekilex.data.Lexeme.class);
+					queryHelper.replaceNullCollections(pojo);
+					return pojo;
+				});
 	}
 
 	private List<eki.ekilex.data.Word> execute(
