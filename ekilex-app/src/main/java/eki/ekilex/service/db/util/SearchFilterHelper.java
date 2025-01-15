@@ -872,22 +872,32 @@ public class SearchFilterHelper implements GlobalConstant, ActivityFunct, Freefo
 		LexemeTag lt = LEXEME_TAG.as("lt");
 		MeaningTag mt = MEANING_TAG.as("mt");
 
-		Condition where1 = l1.WORD_ID.eq(w1.ID).and(lt.LEXEME_ID.eq(l1.ID));
-		where1 = applyDatasetRestrictions(l1, searchDatasetsRestriction, where1);
-		Condition where2 = l2.WORD_ID.eq(w1.ID).and(l2.MEANING_ID.eq(mt.MEANING_ID));
-		where2 = applyDatasetRestrictions(l2, searchDatasetsRestriction, where2);
-
 		if (CollectionUtils.isNotEmpty(tagNameEqualsCrit)) {
+
+			Condition where1 = l1.WORD_ID.eq(w1.ID);
+			where1 = applyDatasetRestrictions(l1, searchDatasetsRestriction, where1);
+			Condition whereVal1 = DSL.noCondition();
+			Condition whereVal2 = DSL.noCondition();
+
 			for (SearchCriterion criterion : tagNameEqualsCrit) {
 				String searchValueStr = criterion.getSearchValue().toString();
-				where1 = applyValueFilter(searchValueStr, criterion.isNot(), criterion.getSearchOperand(), lt.TAG_NAME, where1, true);
-				where2 = applyValueFilter(searchValueStr, criterion.isNot(), criterion.getSearchOperand(), mt.TAG_NAME, where2, true);
+				whereVal1 = applyValueFilter(searchValueStr, criterion.isNot(), criterion.getSearchOperand(), lt.TAG_NAME, whereVal1, true);
+				whereVal2 = applyValueFilter(searchValueStr, criterion.isNot(), criterion.getSearchOperand(), mt.TAG_NAME, whereVal2, true);
 			}
-			where = where.and(DSL
-					.exists(DSL.select(lt.ID).from(l1, lt).where(where1))
-					.orExists(DSL.select(mt.ID).from(l2, mt).where(where2)));
+			where = where.andExists(DSL
+					.select(l1.ID)
+					.from(l1
+							.leftOuterJoin(lt).on(lt.LEXEME_ID.eq(l1.ID))
+							.leftOuterJoin(mt).on(mt.MEANING_ID.eq(l1.MEANING_ID)))
+					.where(where1.and(DSL.or(whereVal1, whereVal2))));
 		}
 		if (CollectionUtils.isNotEmpty(tagNameNotEqualsCrit)) {
+
+			Condition where1 = l1.WORD_ID.eq(w1.ID).and(lt.LEXEME_ID.eq(l1.ID));
+			where1 = applyDatasetRestrictions(l1, searchDatasetsRestriction, where1);
+			Condition where2 = l2.WORD_ID.eq(w1.ID).and(l2.MEANING_ID.eq(mt.MEANING_ID));
+			where2 = applyDatasetRestrictions(l2, searchDatasetsRestriction, where2);
+
 			for (SearchCriterion criterion : tagNameNotEqualsCrit) {
 				String searchValueStr = criterion.getSearchValue().toString();
 				where1 = applyValueFilter(searchValueStr, criterion.isNot(), criterion.getSearchOperand(), lt.TAG_NAME, where1, true);
@@ -914,21 +924,31 @@ public class SearchFilterHelper implements GlobalConstant, ActivityFunct, Freefo
 		LexemeTag lt = LEXEME_TAG.as("lt");
 		MeaningTag mt = MEANING_TAG.as("mt");
 
-		Condition where1 = l1.MEANING_ID.eq(m1.ID).and(lt.LEXEME_ID.eq(l1.ID));
-		where1 = applyDatasetRestrictions(l1, searchDatasetsRestriction, where1);
-		Condition where2 = mt.MEANING_ID.eq(m1.ID);
-
 		if (CollectionUtils.isNotEmpty(tagNameEqualsCrit)) {
+
+			Condition where1 = l1.MEANING_ID.eq(m1.ID);
+			where1 = applyDatasetRestrictions(l1, searchDatasetsRestriction, where1);
+			Condition whereVal1 = DSL.noCondition();
+			Condition whereVal2 = DSL.noCondition();
+
 			for (SearchCriterion criterion : tagNameEqualsCrit) {
 				String searchValueStr = criterion.getSearchValue().toString();
-				where1 = applyValueFilter(searchValueStr, criterion.isNot(), criterion.getSearchOperand(), lt.TAG_NAME, where1, true);
-				where2 = applyValueFilter(searchValueStr, criterion.isNot(), criterion.getSearchOperand(), mt.TAG_NAME, where2, true);
+				whereVal1 = applyValueFilter(searchValueStr, criterion.isNot(), criterion.getSearchOperand(), lt.TAG_NAME, whereVal1, true);
+				whereVal2 = applyValueFilter(searchValueStr, criterion.isNot(), criterion.getSearchOperand(), mt.TAG_NAME, whereVal2, true);
 			}
-			where = where.and(DSL
-					.exists(DSL.select(lt.ID).from(l1, lt).where(where1))
-					.orExists(DSL.select(mt.ID).from(mt).where(where2)));
+			where = where.andExists(DSL
+					.select(l1.ID)
+					.from(l1
+							.leftOuterJoin(lt).on(lt.LEXEME_ID.eq(l1.ID))
+							.leftOuterJoin(mt).on(mt.MEANING_ID.eq(l1.MEANING_ID)))
+					.where(where1.and(DSL.or(whereVal1, whereVal2))));
 		}
 		if (CollectionUtils.isNotEmpty(tagNameNotEqualsCrit)) {
+
+			Condition where1 = l1.MEANING_ID.eq(m1.ID).and(lt.LEXEME_ID.eq(l1.ID));
+			where1 = applyDatasetRestrictions(l1, searchDatasetsRestriction, where1);
+			Condition where2 = mt.MEANING_ID.eq(m1.ID);
+
 			for (SearchCriterion criterion : tagNameNotEqualsCrit) {
 				String searchValueStr = criterion.getSearchValue().toString();
 				where1 = applyValueFilter(searchValueStr, criterion.isNot(), criterion.getSearchOperand(), lt.TAG_NAME, where1, true);

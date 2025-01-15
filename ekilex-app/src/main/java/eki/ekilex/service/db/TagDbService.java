@@ -1,5 +1,6 @@
 package eki.ekilex.service.db;
 
+import static eki.ekilex.data.db.main.Tables.LEXEME;
 import static eki.ekilex.data.db.main.Tables.LEXEME_TAG;
 import static eki.ekilex.data.db.main.Tables.MEANING_TAG;
 import static eki.ekilex.data.db.main.Tables.TAG;
@@ -7,13 +8,16 @@ import static eki.ekilex.data.db.main.Tables.TAG;
 import java.util.List;
 
 import org.jooq.Field;
+import org.jooq.Record1;
 import org.jooq.Record2;
 import org.jooq.Table;
 import org.jooq.impl.DSL;
 import org.springframework.stereotype.Component;
 
 import eki.common.constant.TagType;
+import eki.ekilex.data.db.main.tables.Lexeme;
 import eki.ekilex.data.db.main.tables.LexemeTag;
+import eki.ekilex.data.db.main.tables.MeaningTag;
 import eki.ekilex.data.db.main.tables.Tag;
 import eki.ekilex.data.db.main.tables.records.LexemeTagRecord;
 
@@ -36,28 +40,56 @@ public class TagDbService extends AbstractDataDbService {
 
 	public List<eki.ekilex.data.Tag> getTags() {
 
-		Field<Boolean> isUsed = DSL.field(DSL
-				.exists(DSL
-						.select(LEXEME_TAG.ID)
-						.from(LEXEME_TAG)
-						.where(LEXEME_TAG.TAG_NAME.eq(TAG.NAME)))
-				.orExists(DSL
-						.select(MEANING_TAG.ID)
-						.from(MEANING_TAG)
-						.where(MEANING_TAG.TAG_NAME.eq(TAG.NAME))));
+		Lexeme l = LEXEME.as("l");
+		LexemeTag lt = LEXEME_TAG.as("lt");
+		MeaningTag mt = MEANING_TAG.as("mt");
+		Tag t = TAG.as("t");
 
-		Field<Integer> rnf = DSL.field(DSL.rowNumber().over(DSL.orderBy(TAG.ORDER_BY)));
+		Field<Integer> rnf = DSL.field(DSL.rowNumber().over(DSL.orderBy(t.ORDER_BY)));
+
+		Field<Boolean> uf = DSL.field(DSL
+				.exists(DSL
+						.select(lt.ID)
+						.from(lt)
+						.where(lt.TAG_NAME.eq(t.NAME)))
+				.orExists(DSL
+						.select(mt.ID)
+						.from(mt)
+						.where(mt.TAG_NAME.eq(t.NAME))));
+
+		Table<Record1<String>> tds = DSL
+				.select(l.DATASET_CODE)
+				.from(l, mt)
+				.where(
+						mt.MEANING_ID.eq(l.MEANING_ID)
+								.and(mt.TAG_NAME.eq(t.NAME)))
+				.groupBy(l.DATASET_CODE)
+				.unionAll(
+						DSL
+								.select(l.DATASET_CODE)
+								.from(l, lt)
+								.where(
+										lt.LEXEME_ID.eq(l.ID)
+												.and(lt.TAG_NAME.eq(t.NAME)))
+								.groupBy(l.DATASET_CODE))
+				.asTable("tds");
+
+		Field<String[]> dsf = DSL
+				.select(DSL.arrayAggDistinct(tds.field("dataset_code", String.class)))
+				.from(tds)
+				.asField();
 
 		return mainDb
 				.select(
 						rnf.as("order"),
-						TAG.NAME,
-						TAG.TYPE,
-						TAG.SET_AUTOMATICALLY,
-						TAG.REMOVE_TO_COMPLETE,
-						isUsed.as("used"))
-				.from(TAG)
-				.orderBy(TAG.ORDER_BY)
+						t.NAME,
+						t.TYPE,
+						t.SET_AUTOMATICALLY,
+						t.REMOVE_TO_COMPLETE,
+						uf.as("used"),
+						dsf.as("dataset_codes"))
+				.from(t)
+				.orderBy(t.ORDER_BY)
 				.fetchInto(eki.ekilex.data.Tag.class);
 	}
 

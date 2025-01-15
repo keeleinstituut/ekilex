@@ -10,15 +10,19 @@
   <div class="container-fluid">
     <div class="card mt-4 shadow">
       <div class="card-header">
-        <h5 class="card-title" th:text="#{datasets.title}">Sõnakogude haldus</h5>
-        <div class="ml-auto pull-right">
-          <button class="btn btn-primary" th:title="#{datasets.add.new.dataset}" data-toggle="modal" data-target="#addDatasetDlg" th:text="#{common.add.new}"></button>
+        <div class="row">
+          <div class="col">
+            <h5 class="card-title" th:text="#{datasets.title}">Sõnakogude haldus</h5>
+          </div>
+          <div class="ml-auto">
+            <button class="btn btn-primary" th:title="#{datasets.add.new.dataset}" data-toggle="modal" data-target="#addDatasetDlg" th:text="#{common.add.new}"></button>
+          </div>
         </div>
       </div>
       <div class="card-body">
-        <div class="float-left mt-3 w-100">
+        <div class="w-100">
           <div id="datasetsArea" th:with="isAdmin=${#vars.userRoleData.admin}">
-            <table class="table table-striped m-0 p-0 table-hover">
+            <table class="table table-sm table-striped m-0 p-0 table-hover">
               <tr>
                 <th class="m-1 p-1" style="width: 5%" th:text="#{datasets.dataset.code}">Kood</th>
                 <th class="m-1 p-1" style="width: 20%" th:text="#{datasets.dataset.name}">Nimi</th>

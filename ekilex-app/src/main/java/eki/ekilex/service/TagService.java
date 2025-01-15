@@ -27,7 +27,6 @@ public class TagService {
 
 	@Transactional
 	public List<Tag> getTags() {
-
 		return tagDbService.getTags();
 	}
 
@@ -41,6 +40,7 @@ public class TagService {
 
 		tagDbService.createTag(tagName, tagType, setAutomatically, removeToComplete);
 		maintenanceService.clearTagCache();
+
 		return true;
 	}
 
@@ -67,9 +67,9 @@ public class TagService {
 
 		tagDbService.updateTag(currentTagName, tagName, setAutomatically, removeToComplete, newOrderBy);
 		maintenanceService.clearTagCache();
+
 		return true;
 	}
-
 
 	@Transactional(rollbackOn = Exception.class)
 	public void deleteTag(String tagName) {

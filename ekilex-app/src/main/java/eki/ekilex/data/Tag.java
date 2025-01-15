@@ -1,10 +1,14 @@
 package eki.ekilex.data;
 
+import java.util.List;
+
 import eki.common.data.AbstractDataObject;
 
 public class Tag extends AbstractDataObject {
 
 	private static final long serialVersionUID = 1L;
+
+	private Long order;
 
 	private String name;
 
@@ -16,7 +20,17 @@ public class Tag extends AbstractDataObject {
 
 	private boolean used;
 
-	private Long order;
+	private List<String> datasetCodes;
+
+	private String detailSearchUri;
+
+	public Long getOrder() {
+		return order;
+	}
+
+	public void setOrder(Long order) {
+		this.order = order;
+	}
 
 	public String getName() {
 		return name;
@@ -58,12 +72,20 @@ public class Tag extends AbstractDataObject {
 		this.used = used;
 	}
 
-	public Long getOrder() {
-		return order;
+	public List<String> getDatasetCodes() {
+		return datasetCodes;
 	}
 
-	public void setOrder(Long order) {
-		this.order = order;
+	public void setDatasetCodes(List<String> datasetCodes) {
+		this.datasetCodes = datasetCodes;
+	}
+
+	public String getDetailSearchUri() {
+		return detailSearchUri;
+	}
+
+	public void setDetailSearchUri(String detailSearchUri) {
+		this.detailSearchUri = detailSearchUri;
 	}
 
 }

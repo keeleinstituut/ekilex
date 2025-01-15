@@ -78,7 +78,7 @@ public class SearchHelper implements WebConstant, GlobalConstant {
 	}
 
 	public String composeSearchUri(
-			String searchMode, 
+			String searchMode,
 			List<String> selectedDatasets,
 			String simpleSearchFilter,
 			SearchFilter detailSearchFilter,
@@ -421,6 +421,25 @@ public class SearchHelper implements WebConstant, GlobalConstant {
 		return detailSearch;
 	}
 
+	public SearchFilter createTagDetailSearchFilter(String tagName) {
+
+		SearchEntity searchEntity = SearchEntity.TAG;
+		SearchKey searchKey = SearchKey.TAG_NAME;
+		SearchOperand searchOperand = SearchOperand.EQUALS;
+
+		SearchFilter detailSearchFilter = new SearchFilter();
+		SearchCriterion criterion = new SearchCriterion();
+		criterion.setSearchKey(searchKey);
+		criterion.setSearchOperand(searchOperand);
+		criterion.setSearchValue(tagName);
+		SearchCriterionGroup searchGroup = new SearchCriterionGroup();
+		searchGroup.setEntity(searchEntity);
+		searchGroup.setSearchCriteria(asList(criterion));
+		detailSearchFilter.setCriteriaGroups(asList(searchGroup));
+
+		return detailSearchFilter;
+	}
+
 	public SearchFilter createSourceDetailSearchFilter(Long sourceId) {
 
 		SearchEntity searchEntity = SearchEntity.CLUELESS;
@@ -436,6 +455,7 @@ public class SearchHelper implements WebConstant, GlobalConstant {
 		searchGroup.setEntity(searchEntity);
 		searchGroup.setSearchCriteria(asList(criterion));
 		detailSearchFilter.setCriteriaGroups(asList(searchGroup));
+
 		return detailSearchFilter;
 	}
 
@@ -453,6 +473,7 @@ public class SearchHelper implements WebConstant, GlobalConstant {
 		searchGroup.setEntity(searchEntity);
 		searchGroup.setSearchCriteria(asList(criterion));
 		detailSearchFilter.setCriteriaGroups(asList(searchGroup));
+
 		return detailSearchFilter;
 	}
 

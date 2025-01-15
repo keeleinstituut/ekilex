@@ -10,14 +10,18 @@
   <div class="container-fluid">
     <div class="card mt-4 shadow">
       <div class="card-header">
-        <h5 class="card-title" th:text="#{tag.title}">Siltide haldus</h5>
-        <div class="ml-auto pull-right">
-          <button class="btn btn-primary" data-toggle="modal" data-target="#addTagDlg" th:text="#{tag.add}">Lisa uus silt</button>
+        <div class="row">
+          <div class="col">
+            <h5 class="card-title" th:text="#{tag.title}">Siltide haldus</h5>
+          </div>
+          <div class="ml-auto">
+            <button class="btn btn-primary" data-toggle="modal" data-target="#addTagDlg" th:text="#{tag.add}">Lisa uus silt</button>
+          </div>
         </div>
       </div>
       <div class="card-body">
-        <div class="float-left mt-3 w-100">
-          <table class="table table-striped m-0 p-0 table-hover">
+        <div class="w-100">
+          <table class="table table-sm table-striped table-hover m-0 p-0">
             <tr>
               <th class="m-1 p-1" style="width: 5%" th:text="#{tag.order}"></th>
               <th class="m-1 p-1" style="width: 35%" th:text="#{tag.name}"></th>
@@ -49,25 +53,30 @@
                   </span>
                 </td>
                 <td class="m-1 p-1 text-center">
-                  <span class="text-secondary fa" th:classappend="${tag.used ? 'fa-check-square-o' : 'fa-square-o'}"
-                        th:title="|#{tag.used}: | + (${tag.used} ? #{common.yes} : #{common.no})">
-                  </span>
+                  <div class="dropdown" th:if="${tag.used}">
+                    <button class="btn btn-sm btn-secondary py-0 px-1" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" th:text="#{tag.used.where}">Leia</button>
+                    <div class="dropdown-menu p-0">
+                      <a class="dropdown-item btn btn-sm btn-secondary font-weight-bold" th:href="@{|/lexsearch${tag.detailSearchUri}|}" th:text="#{source.lex.search}">Leks otsing</a>
+                      <a class="dropdown-item btn btn-sm btn-secondary font-weight-bold" th:href="@{|/termsearch${tag.detailSearchUri}|}" th:text="#{source.term.search}">Term otsing</a>
+                    </div>
+                  </div>
                 </td>
-                <td class="m-1 p-1">
+                <td class="m-1 p-1 text-nowrap">
                   <button type="button" class="btn badge badge-primary" title="Muuda" data-plugin="editTag"
                           th:data-tag-name="${tag.name}"
                           th:data-tag-type="#{|enum.tag.type.${tag.type}|}"
                           th:data-tag-order="${tag.order}"
                           th:data-tag-set-automatically="${tag.setAutomatically}"
-                          th:data-tag-remove-to-complete="${tag.removeToComplete}">
+                          th:data-tag-remove-to-complete="${tag.removeToComplete}"
+                          th:disabled="${tag.used}">
                     <i class="fa fa-edit" aria-hidden="true"></i>
                   </button>
                   <button type="button"
                           data-plugin="tagDeleteConfirm"
-                          class="btn badge delete-dataset-confirm"
-                          th:classappend="${tag.used ? 'badge-danger' : 'badge-warning'}"
+                          class="btn badge badge-warning delete-dataset-confirm"
                           th:data-tag-used="${tag.used}"
-                          th:data-tag-name="${tag.name}">
+                          th:data-tag-name="${tag.name}"
+                          th:disabled="${tag.used}">
                     <i class="fa fa-remove" aria-hidden="true"></i>
                   </button>
                 </td>
