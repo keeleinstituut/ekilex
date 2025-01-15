@@ -751,7 +751,6 @@ public class CommonDataDbService extends AbstractDataDbService {
 						.jsonArrayAgg(DSL
 								.jsonObject(
 										DSL.key("id").value(fsl.ID),
-										DSL.key("type").value(fsl.TYPE),
 										DSL.key("name").value(fsl.NAME),
 										DSL.key("sourceId").value(fsl.SOURCE_ID),
 										DSL.key("sourceName").value(s.NAME),
@@ -820,7 +819,6 @@ public class CommonDataDbService extends AbstractDataDbService {
 						.jsonArrayAgg(DSL
 								.jsonObject(
 										DSL.key("id").value(fsl.ID),
-										DSL.key("type").value(fsl.TYPE),
 										DSL.key("name").value(fsl.NAME),
 										DSL.key("sourceId").value(fsl.SOURCE_ID),
 										DSL.key("sourceName").value(s.NAME),
@@ -871,7 +869,6 @@ public class CommonDataDbService extends AbstractDataDbService {
 						.jsonArrayAgg(DSL
 								.jsonObject(
 										DSL.key("id").value(fsl.ID),
-										DSL.key("type").value(fsl.TYPE),
 										DSL.key("name").value(fsl.NAME),
 										DSL.key("sourceId").value(fsl.SOURCE_ID),
 										DSL.key("sourceName").value(s.NAME),
@@ -942,7 +939,6 @@ public class CommonDataDbService extends AbstractDataDbService {
 						.jsonArrayAgg(DSL
 								.jsonObject(
 										DSL.key("id").value(mnsl.ID),
-										DSL.key("type").value(mnsl.TYPE),
 										DSL.key("name").value(mnsl.NAME),
 										DSL.key("sourceId").value(mnsl.SOURCE_ID),
 										DSL.key("sourceName").value(s.NAME),
@@ -986,7 +982,6 @@ public class CommonDataDbService extends AbstractDataDbService {
 						.jsonArrayAgg(DSL
 								.jsonObject(
 										DSL.key("id").value(misl.ID),
-										DSL.key("type").value(misl.TYPE),
 										DSL.key("name").value(misl.NAME),
 										DSL.key("sourceId").value(misl.SOURCE_ID),
 										DSL.key("sourceName").value(s.NAME),
@@ -1113,7 +1108,6 @@ public class CommonDataDbService extends AbstractDataDbService {
 						.jsonArrayAgg(DSL
 								.jsonObject(
 										DSL.key("id").value(dnsl.ID),
-										DSL.key("type").value(dnsl.TYPE),
 										DSL.key("name").value(dnsl.NAME),
 										DSL.key("sourceId").value(dnsl.SOURCE_ID),
 										DSL.key("sourceName").value(s.NAME),
@@ -1152,7 +1146,6 @@ public class CommonDataDbService extends AbstractDataDbService {
 						.jsonArrayAgg(DSL
 								.jsonObject(
 										DSL.key("id").value(dsl.ID),
-										DSL.key("type").value(dsl.TYPE),
 										DSL.key("name").value(dsl.NAME),
 										DSL.key("sourceId").value(dsl.SOURCE_ID),
 										DSL.key("sourceName").value(s.NAME),
@@ -1481,7 +1474,6 @@ public class CommonDataDbService extends AbstractDataDbService {
 						.jsonArrayAgg(DSL
 								.jsonObject(
 										DSL.key("id").value(fsl.ID),
-										DSL.key("type").value(fsl.TYPE),
 										DSL.key("name").value(fsl.NAME),
 										DSL.key("sourceId").value(fsl.SOURCE_ID),
 										DSL.key("sourceName").value(s.NAME),
@@ -1611,7 +1603,6 @@ public class CommonDataDbService extends AbstractDataDbService {
 						.jsonArrayAgg(DSL
 								.jsonObject(
 										DSL.key("id").value(usl.ID),
-										DSL.key("type").value(usl.TYPE),
 										DSL.key("name").value(usl.NAME),
 										DSL.key("sourceId").value(usl.SOURCE_ID),
 										DSL.key("sourceName").value(s.NAME),

@@ -522,7 +522,6 @@ create table freeform_source_link (
   id bigserial primary key, 
   freeform_id bigint references freeform(id) on delete cascade not null, 
   source_id bigint references source(id) on delete cascade not null, 
-  type varchar(100) not null, 
   name text null, 
   value text null, 
   order_by bigserial
@@ -629,7 +628,6 @@ create table word_etymology_source_link (
   id bigserial primary key, 
   word_etym_id bigint references word_etymology(id) on delete cascade not null, 
   source_id bigint references source(id) on delete cascade not null, 
-  type varchar(100) not null, 
   name text null, 
   value text null, 
   order_by bigserial
@@ -738,7 +736,6 @@ create table meaning_note_source_link (
 	id bigserial primary key, 
 	meaning_note_id bigint references meaning_note(id) on delete cascade not null, 
 	source_id bigint references source(id) on delete cascade not null, 
-	type varchar(100) not null, 
 	name text null, 
 	order_by bigserial
 );
@@ -764,7 +761,6 @@ create table meaning_image_source_link (
 	id bigserial primary key, 
 	meaning_image_id bigint references meaning_image(id) on delete cascade not null, 
 	source_id bigint references source(id) on delete cascade not null, 
-	type varchar(100) not null, 
 	name text null, 
 	order_by bigserial
 );
@@ -866,7 +862,6 @@ create table definition_source_link (
   id bigserial primary key, 
   definition_id bigint references definition(id) on delete cascade not null, 
   source_id bigint references source(id) on delete cascade not null, 
-  type varchar(100) not null, 
   name text null, 
   value text null, 
   order_by bigserial
@@ -894,7 +889,6 @@ create table definition_note_source_link (
 	id bigserial primary key, 
 	definition_note_id bigint references definition_note(id) on delete cascade not null, 
 	source_id bigint references source(id) on delete cascade not null, 
-	type varchar(100) not null, 
 	name text null, 
 	order_by bigserial
 );
@@ -955,7 +949,6 @@ create table lexeme_source_link (
   id bigserial primary key, 
   lexeme_id bigint references lexeme(id) on delete cascade not null, 
   source_id bigint references source(id) on delete cascade not null, 
-  type varchar(100) not null, 
   name text null, 
   value text null, 
   order_by bigserial
@@ -983,7 +976,6 @@ create table usage_source_link (
 	id bigserial primary key, 
 	usage_id bigint references usage(id) on delete cascade not null, 
 	source_id bigint references source(id) on delete cascade not null, 
-	type varchar(100) not null, 
 	name text null, 
 	order_by bigserial
 );
@@ -1040,7 +1032,6 @@ create table lexeme_note_source_link (
 	id bigserial primary key, 
 	lexeme_note_id bigint references lexeme_note(id) on delete cascade not null, 
 	source_id bigint references source(id) on delete cascade not null, 
-	type varchar(100) not null, 
 	name text null, 
 	order_by bigserial
 );

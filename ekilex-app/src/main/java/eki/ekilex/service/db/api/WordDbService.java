@@ -117,7 +117,6 @@ public class WordDbService extends AbstractDataDbService {
 						.jsonArrayAgg(DSL
 								.jsonObject(
 										DSL.key("id").value(dsl.ID),
-										DSL.key("type").value(dsl.TYPE),
 										DSL.key("name").value(dsl.NAME),
 										DSL.key("sourceId").value(s.ID),
 										DSL.key("sourceName").value(s.NAME),
@@ -187,7 +186,6 @@ public class WordDbService extends AbstractDataDbService {
 						.jsonArrayAgg(DSL
 								.jsonObject(
 										DSL.key("id").value(usl.ID),
-										DSL.key("type").value(usl.TYPE),
 										DSL.key("name").value(usl.NAME),
 										DSL.key("sourceId").value(s.ID),
 										DSL.key("sourceName").value(s.NAME),

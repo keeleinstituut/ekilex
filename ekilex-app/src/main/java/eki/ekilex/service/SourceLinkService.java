@@ -10,7 +10,6 @@ import org.springframework.stereotype.Component;
 import eki.common.constant.ActivityEntity;
 import eki.common.constant.ActivityOwner;
 import eki.common.constant.ContentKey;
-import eki.common.constant.ReferenceType;
 import eki.ekilex.data.ActivityLogData;
 import eki.ekilex.data.ActivityLogOwnerEntityDescr;
 import eki.ekilex.data.ListData;
@@ -58,34 +57,32 @@ public class SourceLinkService extends AbstractSourceService implements ContentK
 
 		Long sourceId = createSource(source, roleDatasetCode, MANUAL_EVENT_ON_UPDATE_DISABLED);
 
-		ReferenceType refType = ReferenceType.ANY;
 		String sourceLinkName = null;
 
 		if (DEFINITION_SOURCE_LINK.equals(sourceLinkContentKey)) {
-			createDefinitionSourceLink(sourceLinkOwnerId, sourceId, refType, sourceLinkName, roleDatasetCode, isManualEventOnUpdateEnabled);
+			createDefinitionSourceLink(sourceLinkOwnerId, sourceId, sourceLinkName, roleDatasetCode, isManualEventOnUpdateEnabled);
 		} else if (DEFINITION_NOTE_SOURCE_LINK.equals(sourceLinkContentKey)) {
-			createDefinitionNoteSourceLink(sourceLinkOwnerId, sourceId, refType, sourceLinkName, roleDatasetCode, isManualEventOnUpdateEnabled);
+			createDefinitionNoteSourceLink(sourceLinkOwnerId, sourceId, sourceLinkName, roleDatasetCode, isManualEventOnUpdateEnabled);
 		} else if (LEXEME_SOURCE_LINK.equals(sourceLinkContentKey)) {
-			createLexemeSourceLink(sourceLinkOwnerId, sourceId, refType, sourceLinkName, roleDatasetCode, isManualEventOnUpdateEnabled);
+			createLexemeSourceLink(sourceLinkOwnerId, sourceId, sourceLinkName, roleDatasetCode, isManualEventOnUpdateEnabled);
 		} else if (LEXEME_NOTE_SOURCE_LINK.equals(sourceLinkContentKey)) {
-			createLexemeNoteSourceLink(sourceLinkOwnerId, sourceId, refType, sourceLinkName, roleDatasetCode, isManualEventOnUpdateEnabled);
+			createLexemeNoteSourceLink(sourceLinkOwnerId, sourceId, sourceLinkName, roleDatasetCode, isManualEventOnUpdateEnabled);
 		} else if (USAGE_SOURCE_LINK.equals(sourceLinkContentKey)) {
-			createUsageSourceLink(sourceLinkOwnerId, sourceId, refType, sourceLinkName, roleDatasetCode, isManualEventOnUpdateEnabled);
+			createUsageSourceLink(sourceLinkOwnerId, sourceId, sourceLinkName, roleDatasetCode, isManualEventOnUpdateEnabled);
 		} else if (MEANING_IMAGE_SOURCE_LINK.equals(sourceLinkContentKey)) {
-			createMeaningImageSourceLink(sourceLinkOwnerId, sourceId, refType, sourceLinkName, roleDatasetCode, isManualEventOnUpdateEnabled);
+			createMeaningImageSourceLink(sourceLinkOwnerId, sourceId, sourceLinkName, roleDatasetCode, isManualEventOnUpdateEnabled);
 		} else if (MEANING_NOTE_SOURCE_LINK.equals(sourceLinkContentKey)) {
-			createMeaningNoteSourceLink(sourceLinkOwnerId, sourceId, refType, sourceLinkName, roleDatasetCode, isManualEventOnUpdateEnabled);
+			createMeaningNoteSourceLink(sourceLinkOwnerId, sourceId, sourceLinkName, roleDatasetCode, isManualEventOnUpdateEnabled);
 		} else if (FREEFORM_SOURCE_LINK.equals(sourceLinkContentKey)) {
-			createFreeformSourceLink(sourceLinkOwnerId, sourceId, refType, sourceLinkName, roleDatasetCode, isManualEventOnUpdateEnabled);
+			createFreeformSourceLink(sourceLinkOwnerId, sourceId, sourceLinkName, roleDatasetCode, isManualEventOnUpdateEnabled);
 		}
 	}
 
 	@Transactional(rollbackOn = Exception.class)
 	public Long createLexemeSourceLink(
-			Long lexemeId, Long sourceId, ReferenceType type, String name, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
+			Long lexemeId, Long sourceId, String name, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
 
 		SourceLink sourceLink = new SourceLink();
-		sourceLink.setType(type);
 		sourceLink.setName(name);
 		sourceLink.setSourceId(sourceId);
 
@@ -133,10 +130,9 @@ public class SourceLinkService extends AbstractSourceService implements ContentK
 	}
 
 	@Transactional(rollbackOn = Exception.class)
-	public Long createUsageSourceLink(Long usageId, Long sourceId, ReferenceType type, String name, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
+	public Long createUsageSourceLink(Long usageId, Long sourceId, String name, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
 
 		SourceLink sourceLink = new SourceLink();
-		sourceLink.setType(type);
 		sourceLink.setName(name);
 		sourceLink.setSourceId(sourceId);
 
@@ -185,10 +181,9 @@ public class SourceLinkService extends AbstractSourceService implements ContentK
 	}
 
 	@Transactional(rollbackOn = Exception.class)
-	public Long createLexemeNoteSourceLink(Long lexemeNoteId, Long sourceId, ReferenceType type, String name, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
+	public Long createLexemeNoteSourceLink(Long lexemeNoteId, Long sourceId, String name, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
 
 		SourceLink sourceLink = new SourceLink();
-		sourceLink.setType(type);
 		sourceLink.setName(name);
 		sourceLink.setSourceId(sourceId);
 
@@ -238,10 +233,9 @@ public class SourceLinkService extends AbstractSourceService implements ContentK
 
 	@Transactional(rollbackOn = Exception.class)
 	public Long createDefinitionSourceLink(
-			Long definitionId, Long sourceId, ReferenceType type, String name, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
+			Long definitionId, Long sourceId, String name, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
 
 		SourceLink sourceLink = new SourceLink();
-		sourceLink.setType(type);
 		sourceLink.setName(name);
 		sourceLink.setSourceId(sourceId);
 
@@ -291,10 +285,9 @@ public class SourceLinkService extends AbstractSourceService implements ContentK
 	}
 
 	@Transactional(rollbackOn = Exception.class)
-	public Long createDefinitionNoteSourceLink(Long definitionNoteId, Long sourceId, ReferenceType type, String name, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
+	public Long createDefinitionNoteSourceLink(Long definitionNoteId, Long sourceId, String name, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
 
 		SourceLink sourceLink = new SourceLink();
-		sourceLink.setType(type);
 		sourceLink.setName(name);
 		sourceLink.setSourceId(sourceId);
 
@@ -344,10 +337,9 @@ public class SourceLinkService extends AbstractSourceService implements ContentK
 
 	@Transactional(rollbackOn = Exception.class)
 	public Long createMeaningImageSourceLink(
-			Long meaningImageId, Long sourceId, ReferenceType type, String name, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
+			Long meaningImageId, Long sourceId, String name, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
 
 		SourceLink sourceLink = new SourceLink();
-		sourceLink.setType(type);
 		sourceLink.setName(name);
 		sourceLink.setSourceId(sourceId);
 
@@ -398,10 +390,9 @@ public class SourceLinkService extends AbstractSourceService implements ContentK
 
 	@Transactional(rollbackOn = Exception.class)
 	public Long createMeaningNoteSourceLink(
-			Long meaningNoteId, Long sourceId, ReferenceType type, String name, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
+			Long meaningNoteId, Long sourceId, String name, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
 
 		SourceLink sourceLink = new SourceLink();
-		sourceLink.setType(type);
 		sourceLink.setName(name);
 		sourceLink.setSourceId(sourceId);
 
@@ -451,10 +442,9 @@ public class SourceLinkService extends AbstractSourceService implements ContentK
 	}
 
 	@Transactional(rollbackOn = Exception.class)
-	public Long createFreeformSourceLink(Long freeformId, Long sourceId, ReferenceType type, String name, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
+	public Long createFreeformSourceLink(Long freeformId, Long sourceId, String name, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
 
 		SourceLink sourceLink = new SourceLink();
-		sourceLink.setType(type);
 		sourceLink.setName(name);
 		sourceLink.setSourceId(sourceId);
 

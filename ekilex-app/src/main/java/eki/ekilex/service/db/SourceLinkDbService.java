@@ -16,7 +16,6 @@ import org.jooq.Table;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import eki.common.constant.ReferenceType;
 import eki.ekilex.data.ListData;
 import eki.ekilex.data.SourceLink;
 import eki.ekilex.data.SourceLinkOwner;
@@ -184,12 +183,10 @@ public class SourceLinkDbService {
 						FREEFORM_SOURCE_LINK,
 						FREEFORM_SOURCE_LINK.FREEFORM_ID,
 						FREEFORM_SOURCE_LINK.SOURCE_ID,
-						FREEFORM_SOURCE_LINK.TYPE,
 						FREEFORM_SOURCE_LINK.NAME)
 				.values(
 						freeformId,
 						sourceLink.getSourceId(),
-						sourceLink.getType().name(),
 						sourceLink.getName())
 				.returning(FREEFORM_SOURCE_LINK.ID)
 				.fetchOne()
@@ -219,18 +216,16 @@ public class SourceLinkDbService {
 				.execute();
 	}
 
-	public Long createLexemeSourceLink(Long lexemeId, Long sourceId, ReferenceType refType, String sourceLinkName) {
+	public Long createLexemeSourceLink(Long lexemeId, Long sourceId, String sourceLinkName) {
 		return mainDb
 				.insertInto(
 						LEXEME_SOURCE_LINK,
 						LEXEME_SOURCE_LINK.LEXEME_ID,
 						LEXEME_SOURCE_LINK.SOURCE_ID,
-						LEXEME_SOURCE_LINK.TYPE,
 						LEXEME_SOURCE_LINK.NAME)
 				.values(
 						lexemeId,
 						sourceId,
-						refType.name(),
 						sourceLinkName)
 				.returning(LEXEME_SOURCE_LINK.ID)
 				.fetchOne()
@@ -243,12 +238,10 @@ public class SourceLinkDbService {
 						LEXEME_SOURCE_LINK,
 						LEXEME_SOURCE_LINK.LEXEME_ID,
 						LEXEME_SOURCE_LINK.SOURCE_ID,
-						LEXEME_SOURCE_LINK.TYPE,
 						LEXEME_SOURCE_LINK.NAME)
 				.values(
 						lexemeId,
 						sourceLink.getSourceId(),
-						sourceLink.getType().name(),
 						sourceLink.getName())
 				.returning(LEXEME_SOURCE_LINK.ID)
 				.fetchOne()
@@ -284,12 +277,10 @@ public class SourceLinkDbService {
 						LEXEME_NOTE_SOURCE_LINK,
 						LEXEME_NOTE_SOURCE_LINK.LEXEME_NOTE_ID,
 						LEXEME_NOTE_SOURCE_LINK.SOURCE_ID,
-						LEXEME_NOTE_SOURCE_LINK.TYPE,
 						LEXEME_NOTE_SOURCE_LINK.NAME)
 				.values(
 						lexemeNoteId,
 						sourceLink.getSourceId(),
-						sourceLink.getType().name(),
 						sourceLink.getName())
 				.returning(LEXEME_NOTE_SOURCE_LINK.ID)
 				.fetchOne()
@@ -325,12 +316,10 @@ public class SourceLinkDbService {
 						USAGE_SOURCE_LINK,
 						USAGE_SOURCE_LINK.USAGE_ID,
 						USAGE_SOURCE_LINK.SOURCE_ID,
-						USAGE_SOURCE_LINK.TYPE,
 						USAGE_SOURCE_LINK.NAME)
 				.values(
 						usageId,
 						sourceLink.getSourceId(),
-						sourceLink.getType().name(),
 						sourceLink.getName())
 				.returning(USAGE_SOURCE_LINK.ID)
 				.fetchOne()
@@ -366,12 +355,10 @@ public class SourceLinkDbService {
 						MEANING_NOTE_SOURCE_LINK,
 						MEANING_NOTE_SOURCE_LINK.MEANING_NOTE_ID,
 						MEANING_NOTE_SOURCE_LINK.SOURCE_ID,
-						MEANING_NOTE_SOURCE_LINK.TYPE,
 						MEANING_NOTE_SOURCE_LINK.NAME)
 				.values(
 						meaningNoteId,
 						sourceLink.getSourceId(),
-						sourceLink.getType().name(),
 						sourceLink.getName())
 				.returning(MEANING_NOTE_SOURCE_LINK.ID)
 				.fetchOne()
@@ -407,12 +394,10 @@ public class SourceLinkDbService {
 						MEANING_IMAGE_SOURCE_LINK,
 						MEANING_IMAGE_SOURCE_LINK.MEANING_IMAGE_ID,
 						MEANING_IMAGE_SOURCE_LINK.SOURCE_ID,
-						MEANING_IMAGE_SOURCE_LINK.TYPE,
 						MEANING_IMAGE_SOURCE_LINK.NAME)
 				.values(
 						meaningImageId,
 						sourceLink.getSourceId(),
-						sourceLink.getType().name(),
 						sourceLink.getName())
 				.returning(MEANING_IMAGE_SOURCE_LINK.ID)
 				.fetchOne()
@@ -448,12 +433,10 @@ public class SourceLinkDbService {
 						DEFINITION_SOURCE_LINK,
 						DEFINITION_SOURCE_LINK.DEFINITION_ID,
 						DEFINITION_SOURCE_LINK.SOURCE_ID,
-						DEFINITION_SOURCE_LINK.TYPE,
 						DEFINITION_SOURCE_LINK.NAME)
 				.values(
 						definitionId,
 						sourceLink.getSourceId(),
-						sourceLink.getType().name(),
 						sourceLink.getName())
 				.returning(DEFINITION_SOURCE_LINK.ID)
 				.fetchOne()
@@ -488,12 +471,10 @@ public class SourceLinkDbService {
 						DEFINITION_NOTE_SOURCE_LINK,
 						DEFINITION_NOTE_SOURCE_LINK.DEFINITION_NOTE_ID,
 						DEFINITION_NOTE_SOURCE_LINK.SOURCE_ID,
-						DEFINITION_NOTE_SOURCE_LINK.TYPE,
 						DEFINITION_NOTE_SOURCE_LINK.NAME)
 				.values(
 						definitionNoteId,
 						sourceLink.getSourceId(),
-						sourceLink.getType().name(),
 						sourceLink.getName())
 				.returning(DEFINITION_NOTE_SOURCE_LINK.ID)
 				.fetchOne()

@@ -413,7 +413,6 @@ public class CompositionDbService extends AbstractDataDbService implements Globa
 						.select(lsl2.ID)
 						.from(lsl2)
 						.where(lsl2.LEXEME_ID.eq(targetLexemeId)
-								.and(lsl2.TYPE.eq(lsl1.TYPE))
 								.and(lsl2.SOURCE_ID.eq(lsl1.SOURCE_ID))))
 				.execute();
 	}

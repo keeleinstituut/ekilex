@@ -1,6 +1,5 @@
 package eki.ekilex.data;
 
-import eki.common.constant.ReferenceType;
 import eki.common.data.AbstractDataObject;
 
 // should be replaced and removed at some point
@@ -20,8 +19,6 @@ public class WordEtymTuple extends AbstractDataObject {
 	private boolean wordEtymQuestionable;
 
 	private Long wordEtymSourceLinkId;
-
-	private ReferenceType wordEtymSourceLinkType;
 
 	private Long wordEtymSourceId;
 
@@ -87,14 +84,6 @@ public class WordEtymTuple extends AbstractDataObject {
 
 	public void setWordEtymSourceLinkId(Long wordEtymSourceLinkId) {
 		this.wordEtymSourceLinkId = wordEtymSourceLinkId;
-	}
-
-	public ReferenceType getWordEtymSourceLinkType() {
-		return wordEtymSourceLinkType;
-	}
-
-	public void setWordEtymSourceLinkType(ReferenceType wordEtymSourceLinkType) {
-		this.wordEtymSourceLinkType = wordEtymSourceLinkType;
 	}
 
 	public Long getWordEtymSourceId() {

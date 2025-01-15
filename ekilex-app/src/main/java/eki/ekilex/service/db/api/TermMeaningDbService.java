@@ -91,7 +91,6 @@ public class TermMeaningDbService implements ActivityFunct, GlobalConstant, Free
 						.jsonArrayAgg(DSL
 								.jsonObject(
 										DSL.key("id").value(lsl.ID),
-										DSL.key("type").value(lsl.TYPE),
 										DSL.key("name").value(lsl.NAME),
 										DSL.key("sourceId").value(lsl.SOURCE_ID),
 										DSL.key("sourceName").value(s.NAME),
@@ -108,7 +107,6 @@ public class TermMeaningDbService implements ActivityFunct, GlobalConstant, Free
 						.jsonArrayAgg(DSL
 								.jsonObject(
 										DSL.key("id").value(dsl.ID),
-										DSL.key("type").value(dsl.TYPE),
 										DSL.key("name").value(dsl.NAME),
 										DSL.key("sourceId").value(dsl.SOURCE_ID),
 										DSL.key("sourceName").value(s.NAME),
@@ -147,7 +145,6 @@ public class TermMeaningDbService implements ActivityFunct, GlobalConstant, Free
 						.jsonArrayAgg(DSL
 								.jsonObject(
 										DSL.key("id").value(lnsl.ID),
-										DSL.key("type").value(lnsl.TYPE),
 										DSL.key("name").value(lnsl.NAME),
 										DSL.key("sourceId").value(lnsl.SOURCE_ID),
 										DSL.key("sourceName").value(s.NAME),
@@ -185,7 +182,6 @@ public class TermMeaningDbService implements ActivityFunct, GlobalConstant, Free
 						.jsonArrayAgg(DSL
 								.jsonObject(
 										DSL.key("id").value(usl.ID),
-										DSL.key("type").value(usl.TYPE),
 										DSL.key("name").value(usl.NAME),
 										DSL.key("sourceId").value(usl.SOURCE_ID),
 										DSL.key("sourceName").value(s.NAME),
@@ -273,7 +269,6 @@ public class TermMeaningDbService implements ActivityFunct, GlobalConstant, Free
 						.jsonArrayAgg(DSL
 								.jsonObject(
 										DSL.key("id").value(mnsl.ID),
-										DSL.key("type").value(mnsl.TYPE),
 										DSL.key("name").value(mnsl.NAME),
 										DSL.key("sourceId").value(mnsl.SOURCE_ID),
 										DSL.key("sourceName").value(s.NAME),

@@ -408,7 +408,7 @@ public class TermMeaningService extends AbstractApiCudService implements Activit
 	private void createLexemeSourceLink(Long lexemeId, Long sourceId, String sourceLinkName, String roleDatasetCode) throws Exception {
 
 		ActivityLogData activityLog = activityLogService.prepareActivityLog("createLexemeSourceLink", lexemeId, ActivityOwner.LEXEME, roleDatasetCode, MANUAL_EVENT_ON_UPDATE_ENABLED);
-		Long sourceLinkId = sourceLinkDbService.createLexemeSourceLink(lexemeId, sourceId, DEFAULT_SOURCE_LINK_REF_TYPE, sourceLinkName);
+		Long sourceLinkId = sourceLinkDbService.createLexemeSourceLink(lexemeId, sourceId, sourceLinkName);
 		activityLogService.createActivityLog(activityLog, sourceLinkId, ActivityEntity.LEXEME_SOURCE_LINK);
 	}
 

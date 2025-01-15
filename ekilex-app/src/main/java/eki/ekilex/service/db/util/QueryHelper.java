@@ -387,7 +387,6 @@ public class QueryHelper implements GlobalConstant {
 						.jsonArrayAgg(DSL
 								.jsonObject(
 										DSL.key("id").value(lsl.ID),
-										DSL.key("type").value(lsl.TYPE),
 										DSL.key("name").value(lsl.NAME),
 										DSL.key("sourceId").value(lsl.SOURCE_ID),
 										DSL.key("sourceName").value(s.NAME),
@@ -451,7 +450,6 @@ public class QueryHelper implements GlobalConstant {
 						.jsonArrayAgg(DSL
 								.jsonObject(
 										DSL.key("id").value(usl.ID),
-										DSL.key("type").value(usl.TYPE),
 										DSL.key("name").value(usl.NAME),
 										DSL.key("sourceId").value(usl.SOURCE_ID),
 										DSL.key("sourceName").value(s.NAME),
@@ -498,7 +496,6 @@ public class QueryHelper implements GlobalConstant {
 						.jsonArrayAgg(DSL
 								.jsonObject(
 										DSL.key("id").value(lnsl.ID),
-										DSL.key("type").value(lnsl.TYPE),
 										DSL.key("name").value(lnsl.NAME),
 										DSL.key("sourceId").value(lnsl.SOURCE_ID),
 										DSL.key("sourceName").value(s.NAME),

@@ -12,7 +12,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import eki.common.constant.ActivityEntity;
 import eki.common.constant.ActivityOwner;
 import eki.common.constant.Complexity;
-import eki.common.constant.ReferenceType;
 import eki.common.constant.WordRelationGroupType;
 import eki.common.service.TextDecorationService;
 import eki.ekilex.data.ActivityLogData;
@@ -28,8 +27,6 @@ import eki.ekilex.service.db.SourceLinkDbService;
 import eki.ekilex.service.db.TagDbService;
 
 public abstract class AbstractCudService extends AbstractService {
-
-	protected static final ReferenceType DEFAULT_SOURCE_LINK_REF_TYPE = ReferenceType.ANY;
 
 	@Autowired
 	protected TextDecorationService textDecorationService;

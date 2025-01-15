@@ -25,7 +25,6 @@ import org.jooq.JSON;
 import org.jooq.impl.DSL;
 import org.springframework.stereotype.Component;
 
-import eki.ekilex.data.CollocMember;
 import eki.ekilex.data.WordEtymTuple;
 import eki.ekilex.data.db.main.tables.CollocationMember;
 import eki.ekilex.data.db.main.tables.Form;
@@ -152,7 +151,6 @@ public class LexDataDbService extends AbstractDataDbService {
 						we.COMMENT_PRESE.as("word_etym_comment"),
 						we.IS_QUESTIONABLE.as("word_etym_questionable"),
 						wesl.ID.as("word_etym_source_link_id"),
-						wesl.TYPE.as("word_etym_source_link_type"),
 						s.ID.as("word_etym_source_id"),
 						s.NAME.as("word_etym_source_name"),
 						wer.ID.as("word_etym_rel_id"),

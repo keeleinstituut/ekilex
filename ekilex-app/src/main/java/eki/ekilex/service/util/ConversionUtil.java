@@ -443,7 +443,6 @@ public class ConversionUtil implements GlobalConstant {
 				if (!wordEtymSourceLinkIds.contains(wordEtymSourceLinkId)) {
 					SourceLink sourceLink = new SourceLink();
 					sourceLink.setId(wordEtymSourceLinkId);
-					sourceLink.setType(tuple.getWordEtymSourceLinkType());
 					sourceLink.setSourceId(tuple.getWordEtymSourceId());
 					//sourceLink.setSourceName(tuple.getWordEtymSourceName());
 					wordEtym.getWordEtymSourceLinks().add(sourceLink);

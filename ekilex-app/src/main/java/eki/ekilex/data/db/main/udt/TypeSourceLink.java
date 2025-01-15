@@ -42,11 +42,6 @@ public class TypeSourceLink extends UDTImpl<TypeSourceLinkRecord> {
     public static final UDTField<TypeSourceLinkRecord, Long> SOURCE_LINK_ID = createField(DSL.name("source_link_id"), SQLDataType.BIGINT, TYPE_SOURCE_LINK, "");
 
     /**
-     * The attribute <code>public.type_source_link.source_link_type</code>.
-     */
-    public static final UDTField<TypeSourceLinkRecord, String> SOURCE_LINK_TYPE = createField(DSL.name("source_link_type"), SQLDataType.VARCHAR(100), TYPE_SOURCE_LINK, "");
-
-    /**
      * The attribute <code>public.type_source_link.source_link_name</code>.
      */
     public static final UDTField<TypeSourceLinkRecord, String> SOURCE_LINK_NAME = createField(DSL.name("source_link_name"), SQLDataType.CLOB, TYPE_SOURCE_LINK, "");

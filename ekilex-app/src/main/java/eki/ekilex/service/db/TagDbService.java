@@ -37,24 +37,25 @@ public class TagDbService extends AbstractDataDbService {
 	public List<eki.ekilex.data.Tag> getTags() {
 
 		Field<Boolean> isUsed = DSL.field(DSL
-						.exists(DSL
-								.select(LEXEME_TAG.ID)
-								.from(LEXEME_TAG)
-								.where(LEXEME_TAG.TAG_NAME.eq(TAG.NAME)))
-						.orExists(DSL
-								.select(MEANING_TAG.ID)
-								.from(MEANING_TAG)
-								.where(MEANING_TAG.TAG_NAME.eq(TAG.NAME))));
+				.exists(DSL
+						.select(LEXEME_TAG.ID)
+						.from(LEXEME_TAG)
+						.where(LEXEME_TAG.TAG_NAME.eq(TAG.NAME)))
+				.orExists(DSL
+						.select(MEANING_TAG.ID)
+						.from(MEANING_TAG)
+						.where(MEANING_TAG.TAG_NAME.eq(TAG.NAME))));
+
+		Field<Integer> rnf = DSL.field(DSL.rowNumber().over(DSL.orderBy(TAG.ORDER_BY)));
 
 		return mainDb
 				.select(
-						DSL.rowNumber().over(DSL.orderBy(TAG.ORDER_BY)).as("order"),
+						rnf.as("order"),
 						TAG.NAME,
 						TAG.TYPE,
 						TAG.SET_AUTOMATICALLY,
 						TAG.REMOVE_TO_COMPLETE,
-						isUsed.as("used")
-				)
+						isUsed.as("used"))
 				.from(TAG)
 				.orderBy(TAG.ORDER_BY)
 				.fetchInto(eki.ekilex.data.Tag.class);
@@ -71,10 +72,12 @@ public class TagDbService extends AbstractDataDbService {
 
 	public Long getTagOrderByOrMaxOrderBy(Long tagOrder) {
 
+		Field<Integer> rnf = DSL.field(DSL.rowNumber().over(DSL.orderBy(TAG.ORDER_BY)));
+
 		Table<Record2<Long, Integer>> rn = DSL
 				.select(
 						TAG.ORDER_BY,
-						DSL.rowNumber().over(DSL.orderBy(TAG.ORDER_BY)).as("row_num"))
+						rnf.as("row_num"))
 				.from(TAG)
 				.asTable("rn");
 

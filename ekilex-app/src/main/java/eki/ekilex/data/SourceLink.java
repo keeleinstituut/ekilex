@@ -1,6 +1,5 @@
 package eki.ekilex.data;
 
-import eki.common.constant.ReferenceType;
 import eki.common.data.AbstractDataObject;
 
 public class SourceLink extends AbstractDataObject {
@@ -10,8 +9,6 @@ public class SourceLink extends AbstractDataObject {
 	private String contentKey;
 
 	private Long id;
-
-	private ReferenceType type;
 
 	private String name;
 
@@ -35,14 +32,6 @@ public class SourceLink extends AbstractDataObject {
 
 	public void setId(Long id) {
 		this.id = id;
-	}
-
-	public ReferenceType getType() {
-		return type;
-	}
-
-	public void setType(ReferenceType type) {
-		this.type = type;
 	}
 
 	public String getName() {
@@ -77,5 +66,4 @@ public class SourceLink extends AbstractDataObject {
 		this.orderBy = orderBy;
 	}
 
-	
 }

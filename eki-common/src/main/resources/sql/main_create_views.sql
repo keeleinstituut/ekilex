@@ -54,7 +54,6 @@ create type type_media_file as (
 				source_links json);
 create type type_source_link as (
 				source_link_id bigint,
-				source_link_type varchar(100),
         		source_link_name text,
 				order_by bigint,
 				source_id bigint,
@@ -937,7 +936,6 @@ from (select m.id,
                                               dn.value_prese,
                                               json_agg(row (
                                                          dnsl.source_link_id,
-                                                         dnsl.type,
                                                          dnsl.name,
                                                          dnsl.order_by,
                                                          dnsl.source_id,
@@ -951,7 +949,6 @@ from (select m.id,
                                        from definition_note dn
                                               left outer join (select dnsl.definition_note_id,
                                                                       dnsl.id source_link_id,
-                                                                      dnsl.type,
                                                                       dnsl.name,
                                                                       dnsl.order_by,
                                                                       s.id source_id,
@@ -968,7 +965,6 @@ from (select m.id,
                          left outer join (select dsl.definition_id,
                                                  json_agg(row (
                                                            dsl.id,
-                                                           dsl.type,
                                                            dsl.name,
                                                            dsl.order_by,
                                                            s.id,
@@ -1000,7 +996,6 @@ from (select m.id,
                    left outer join (select misl.meaning_image_id,
 										   json_agg(row (
 													   misl.id,
-													   misl.type,
 													   misl.name,
 													   misl.order_by,
 													   s.id,
@@ -1080,7 +1075,6 @@ from (select m.id,
                    		 left outer join (select mnsl.meaning_note_id,
 												json_agg(row (
 														   mnsl.id,
-														   mnsl.type,
 														   mnsl.name,
 														   mnsl.order_by,
 														   s.id,
@@ -1169,7 +1163,6 @@ from lexeme l
                    		left outer join (select lnsl.lexeme_note_id,
 												json_agg(row (
 														   lnsl.id,
-														   lnsl.type,
 														   lnsl.name,
 														   lnsl.order_by,
 														   s.id,
@@ -1294,7 +1287,6 @@ from lexeme l
 	                     left outer join (select usl.usage_id,
 												 json_agg(row (
 													   usl.id,
-													   usl.type,
 													   usl.name,
 													   usl.order_by,
 													   s.id,
@@ -1323,7 +1315,6 @@ from lexeme l
   left outer join (select lsl.lexeme_id,
 						  json_agg(row (
 								   lsl.id,
-								   lsl.type,
 								   lsl.name,
 								   lsl.order_by,
 								   s.id,
@@ -1733,7 +1724,6 @@ from
   left outer join (select wesl.word_etym_id,
 						  jsonb_agg(row (
 								   wesl.id,
-								   wesl.type,
 								   wesl.name,
 								   wesl.order_by,
 								   s.id,

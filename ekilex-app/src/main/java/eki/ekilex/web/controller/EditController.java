@@ -23,7 +23,6 @@ import org.springframework.web.bind.annotation.SessionAttributes;
 
 import eki.common.constant.Complexity;
 import eki.common.constant.ContentKey;
-import eki.common.constant.ReferenceType;
 import eki.ekilex.constant.ResponseStatus;
 import eki.ekilex.constant.WebConstant;
 import eki.ekilex.data.Classifier;
@@ -220,28 +219,28 @@ public class EditController extends AbstractMutableDataPageController implements
 			cudService.createMeaningDomain(id2, meaningDomain, roleDatasetCode, isManualEventOnUpdateEnabled);
 			break;
 		case DEFINITION_SOURCE_LINK:
-			sourceLinkService.createDefinitionSourceLink(id, id2, ReferenceType.ANY, value, roleDatasetCode, isManualEventOnUpdateEnabled);
+			sourceLinkService.createDefinitionSourceLink(id, id2, value, roleDatasetCode, isManualEventOnUpdateEnabled);
 			break;
 		case DEFINITION_NOTE_SOURCE_LINK:
-			sourceLinkService.createDefinitionNoteSourceLink(id, id2, ReferenceType.ANY, value, roleDatasetCode, isManualEventOnUpdateEnabled);
+			sourceLinkService.createDefinitionNoteSourceLink(id, id2, value, roleDatasetCode, isManualEventOnUpdateEnabled);
 			break;
 		case LEXEME_SOURCE_LINK:
-			sourceLinkService.createLexemeSourceLink(id, id2, ReferenceType.ANY, value, roleDatasetCode, isManualEventOnUpdateEnabled);
+			sourceLinkService.createLexemeSourceLink(id, id2, value, roleDatasetCode, isManualEventOnUpdateEnabled);
 			break;
 		case LEXEME_NOTE_SOURCE_LINK:
-			sourceLinkService.createLexemeNoteSourceLink(id, id2, ReferenceType.ANY, value, roleDatasetCode, isManualEventOnUpdateEnabled);
+			sourceLinkService.createLexemeNoteSourceLink(id, id2, value, roleDatasetCode, isManualEventOnUpdateEnabled);
 			break;
 		case USAGE_SOURCE_LINK:
-			sourceLinkService.createUsageSourceLink(id, id2, ReferenceType.ANY, value, roleDatasetCode, isManualEventOnUpdateEnabled);
+			sourceLinkService.createUsageSourceLink(id, id2, value, roleDatasetCode, isManualEventOnUpdateEnabled);
 			break;
 		case MEANING_IMAGE_SOURCE_LINK:
-			sourceLinkService.createMeaningImageSourceLink(id, id2, ReferenceType.ANY, value, roleDatasetCode, isManualEventOnUpdateEnabled);
+			sourceLinkService.createMeaningImageSourceLink(id, id2, value, roleDatasetCode, isManualEventOnUpdateEnabled);
 			break;
 		case MEANING_NOTE_SOURCE_LINK:
-			sourceLinkService.createMeaningNoteSourceLink(id, id2, ReferenceType.ANY, value, roleDatasetCode, isManualEventOnUpdateEnabled);
+			sourceLinkService.createMeaningNoteSourceLink(id, id2, value, roleDatasetCode, isManualEventOnUpdateEnabled);
 			break;
 		case FREEFORM_SOURCE_LINK:
-			sourceLinkService.createFreeformSourceLink(id, id2, ReferenceType.ANY, value, roleDatasetCode, isManualEventOnUpdateEnabled);
+			sourceLinkService.createFreeformSourceLink(id, id2, value, roleDatasetCode, isManualEventOnUpdateEnabled);
 			break;
 		}
 

@@ -116,4 +116,17 @@ where
 	and "name" = 'Online'
 ;
 
+-- obsoliitse allikaviidete tüübi likvideerimine
+
+alter table freeform_source_link drop column "type" cascade;
+alter table word_etymology_source_link drop column "type" cascade;
+alter table meaning_note_source_link drop column "type" cascade;
+alter table meaning_image_source_link drop column "type" cascade;
+alter table definition_source_link drop column "type" cascade;
+alter table definition_note_source_link drop column "type" cascade;
+alter table lexeme_source_link drop column "type" cascade;
+alter table usage_source_link drop column "type" cascade;
+alter table lexeme_note_source_link drop column "type" cascade;
+
+
 
