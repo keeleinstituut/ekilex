@@ -342,14 +342,18 @@ function initDatasetDropdown() {
         "dataset-filters-popover"
       )?.nextElementSibling;
     }
-
+		
+		const inputs = Array.from(menuContainer.getElementsByTagName("input"));
 		if (e.target?.dataset?.filterCode === datasetAllCode) {
 			// Set all other inputs if the "All" choice is selected
-      const inputs = menuContainer.getElementsByTagName("input");
-      Array.from(inputs).forEach((input) => {
+      inputs.forEach((input) => {
 				input.checked = e.target?.checked;
       });
-    }
+    } else {
+			const inputAll = document.getElementById("dataset-input-dsall");
+			// Set input all to checked if all other checkboxes are checked
+			inputAll.checked = inputs.every(input => input === inputAll || input.checked);
+		}
   });
 
 
@@ -431,13 +435,16 @@ function initLangDropdown() {
 				"lang-filters-popover"
       )?.nextElementSibling;
     }
+		const inputs = Array.from(menuContainer.getElementsByTagName("input"));
     if (e.target?.dataset?.filterCode === langAllCode) {
 			// Set all other inputs if the "All" choice is selected
-      const inputs = menuContainer.getElementsByTagName("input");
-      Array.from(inputs).forEach((input) => {
+      inputs.forEach((input) => {
 				input.checked = e.target?.checked;
       });
-    }
+    } else {
+			const inputAll = document.getElementById("lang-input-dlall");
+			inputAll.checked = inputs.every(input => input === inputAll || input.checked);
+		}
   });
 
 
