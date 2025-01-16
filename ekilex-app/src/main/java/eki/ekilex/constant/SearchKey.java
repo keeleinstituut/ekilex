@@ -52,10 +52,11 @@ public enum SearchKey {
 	DEFINITION_NOTE(SearchOperandSet.VALUE_AND_EXISTS_OPERANDS),
 	COMMA_SEPARATED_IDS(SearchOperand.EQUALS),
 	DATASET_USAGE(SearchOperand.EQUALS),
+	SOURCE_ID(SearchOperand.EQUALS),
 	SOURCE_REF(SearchOperand.EXISTS),
 	SOURCE_NAME(SearchOperand.EQUALS, SearchOperand.STARTS_WITH, SearchOperand.ENDS_WITH, SearchOperand.CONTAINS),
 	SOURCE_VALUE(SearchOperand.EQUALS, SearchOperand.STARTS_WITH, SearchOperand.ENDS_WITH, SearchOperand.CONTAINS),
-	SOURCE_ID(SearchOperand.EQUALS),
+	SOURCE_COMMENT(SearchOperand.EQUALS, SearchOperand.STARTS_WITH, SearchOperand.ENDS_WITH, SearchOperand.CONTAINS)
 	;
 
 	private SearchOperand[] operands;
