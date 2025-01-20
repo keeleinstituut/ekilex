@@ -180,7 +180,8 @@ public class UserDbService implements SystemConstant {
 		mainDb
 				.update(EKI_USER)
 				.set(EKI_USER.RECOVERY_KEY, recoveryKey)
-				.where(EKI_USER.ID.eq(userId)).execute();
+				.where(EKI_USER.ID.eq(userId))
+				.execute();
 	}
 
 	public void setUserPassword(String email, String encodedPassword) {
@@ -189,6 +190,15 @@ public class UserDbService implements SystemConstant {
 		ekiUser.setRecoveryKey(null);
 		ekiUser.setPassword(encodedPassword);
 		ekiUser.store();
+	}
+
+	public void updateUserEmail(Long userId, String email) {
+
+		mainDb
+				.update(EKI_USER)
+				.set(EKI_USER.EMAIL, email)
+				.where(EKI_USER.ID.eq(userId))
+				.execute();
 	}
 
 	public EkiUser activateUser(String activationKey) {

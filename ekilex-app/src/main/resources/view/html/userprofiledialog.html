@@ -3,6 +3,32 @@
 <head>
 </head>
 <body>
+  <div id="updateEmailDlg" class="modal" role="dialog">
+    <div class="modal-dialog modal-lg" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" th:text="#{userprofile.update.email}">Muuda e-posti aadress</h5>
+          <button type="button" class="close" aria-label="Close" data-role="close" data-dismiss="modal">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <form th:action="@{/update_email}" method="post">
+          <div class="modal-body">
+            <div class="form-group row">
+              <div class="col-1"></div>
+              <div class="col-10">
+                <input type="text" class="form-control" name="email" th:value="${user.email}" autocomplete="off" required="required">
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="submit" class="btn btn-primary" th:text="#{common.save}">Salvesta</button>
+            <button type="button" class="btn btn-default" data-dismiss="modal" th:text="#{common.cancel}">Katkesta</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
   <div id="addApplicationDlg" class="modal" role="dialog">
     <div class="modal-dialog modal-lg" role="document">
       <div class="modal-content">

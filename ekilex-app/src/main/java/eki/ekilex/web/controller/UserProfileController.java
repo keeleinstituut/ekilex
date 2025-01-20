@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.SessionAttributes;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import eki.common.constant.AuthorityOperation;
 import eki.ekilex.constant.WebConstant;
@@ -18,6 +19,7 @@ import eki.ekilex.data.EkiUser;
 import eki.ekilex.data.EkiUserApplication;
 import eki.ekilex.data.EkiUserProfile;
 import eki.ekilex.service.UserService;
+import eki.ekilex.service.util.UserValidator;
 
 @ConditionalOnWebApplication
 @Controller
@@ -25,19 +27,47 @@ import eki.ekilex.service.UserService;
 public class UserProfileController extends AbstractPrivatePageController {
 
 	@Autowired
+	private UserValidator userValidator;
+
+	@Autowired
 	private UserService userService;
 
 	@GetMapping(USER_PROFILE_URI)
 	public String userProfile(Model model) {
 
-		Long userId = userContext.getUserId();
+		EkiUser user = userContext.getUser();
+		Long userId = user.getId();
 		List<EkiUserApplication> userApplications = userService.getUserApplications(userId);
 		EkiUserProfile userProfile = userProfileService.getUserProfile(userId);
 
+		model.addAttribute("user", user);
 		model.addAttribute("userProfile", userProfile);
 		model.addAttribute("userApplications", userApplications);
 
 		return USER_PROFILE_PAGE;
+	}
+
+	@PostMapping(UPDATE_EMAIL_URI)
+	public String updateUser(
+			@RequestParam("email") String providedEmail,
+			RedirectAttributes redirectAttributes) {
+
+		EkiUser user = userContext.getUser();
+		String currentEmail = user.getEmail();
+		providedEmail = StringUtils.lowerCase(providedEmail);
+
+		if (StringUtils.equals(providedEmail, currentEmail)) {
+			// nothing
+		} else if (userService.userExists(providedEmail)) {
+			addRedirectWarningMessage(redirectAttributes, "userprofile.update.email.warning.duplicate");
+		} else if (!userValidator.isValidEmail(providedEmail)) {
+			addRedirectWarningMessage(redirectAttributes, "userprofile.update.email.warning.format");
+		} else {
+			userService.updateUserEmail(providedEmail);
+			addRedirectSuccessMessage(redirectAttributes, "userprofile.update.email.success");
+		}
+
+		return REDIRECT_PREF + USER_PROFILE_URI;
 	}
 
 	@PostMapping(REAPPLY_URI)

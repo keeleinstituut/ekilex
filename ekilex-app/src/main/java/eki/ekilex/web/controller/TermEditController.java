@@ -38,7 +38,6 @@ import eki.ekilex.data.TermCreateWordAndMeaningDetails;
 import eki.ekilex.data.TermCreateWordAndMeaningRequest;
 import eki.ekilex.data.TermUpdateWordDetails;
 import eki.ekilex.data.UserContextData;
-import eki.ekilex.data.UserMessage;
 import eki.ekilex.data.Word;
 import eki.ekilex.data.WordLexemeMeaningDetails;
 import eki.ekilex.data.WordLexemeMeaningIdTuple;
@@ -435,20 +434,6 @@ public class TermEditController extends AbstractMutableDataPageController {
 		compositionService.approveMeaning(meaningId, roleDatasetCode, isManualEventOnUpdateEnabled);
 
 		return RESPONSE_OK_VER2;
-	}
-
-	private void addRedirectSuccessMessage(RedirectAttributes redirectAttributes, String successMessageKey) {
-
-		UserMessage userMessage = new UserMessage();
-		userMessage.setSuccessMessageKey(successMessageKey);
-		redirectAttributes.addFlashAttribute("userMessage", userMessage);
-	}
-
-	private void addRedirectWarningMessage(RedirectAttributes redirectAttributes, String warningMessageKey) {
-
-		UserMessage userMessage = new UserMessage();
-		userMessage.setWarningMessageKey(warningMessageKey);
-		redirectAttributes.addFlashAttribute("userMessage", userMessage);
 	}
 
 	private String composeRedirectToMeaning(Long meaningId, String backUri) {

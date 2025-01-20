@@ -10,8 +10,8 @@
         <h5 class="card-title" th:text="#{login.title}">Tere</h5>
       </div>
       <div class="card-body">
-        <div class="alert alert-info" role="alert" th:if="${success_message}">
-          <span th:text="${success_message}"></span>
+        <div class="alert alert-info" role="alert" th:if="${successMessage}">
+          <span th:text="${successMessage}"></span>
         </div>
         <div class="alert alert-warning" role="alert" th:if="${loginerror}">
           <span th:text="${loginerror}"></span>

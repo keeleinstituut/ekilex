@@ -266,6 +266,12 @@
       <div id="warningMessage" th:text="#{${userMessage.warningMessageKey}}" th:if="${userMessage.warningMessageKey}"></div>
     </div>
   </th:block>
+  <th:block th:fragment="op_message">
+    <div th:if="${userMessage}" class="mt-4">
+      <div th:text="#{${userMessage.successMessageKey}}" th:if="${userMessage.successMessageKey}" class="alert alert-success"></div>
+      <div th:text="#{${userMessage.warningMessageKey}}" th:if="${userMessage.warningMessageKey}" class="alert alert-warning"></div>
+    </div>
+  </th:block>
   <th:block th:fragment="ordering_buttons(itemIter)">
     <button type="button" th:hidden="${itemIter.first}" class="btn badge badge-secondary order-up float-left" th:title="#{common.update.ordering}" data-plugin="changeItemOrderingPlugin">
       <i class="fa fa-arrow-up" aria-hidden="true"></i>

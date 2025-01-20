@@ -18,6 +18,14 @@ public interface WebConstant {
 
 	String HOME_URI = "/home";
 
+	String VIEW_RESOURCES_URI = "/view";
+
+	String COMPONENTS_PAGE = "components";
+
+	String COMMON_PAGE = "common";
+
+	String ERROR_PAGE = "error";
+
 	String APPLY_PAGE = "apply";
 
 	String APPLY_URI = "/apply";
@@ -42,7 +50,7 @@ public interface WebConstant {
 
 	String MAINTENANCE_URI = "/maintenance";
 
-	String VIEW_RESOURCES_URI = "/view";
+	String ACTIVITYLOGVIEW_PAGE = "activitylogview";
 
 	String LEX_SEARCH_PAGE = "lexsearch";
 
@@ -187,14 +195,6 @@ public interface WebConstant {
 	String PASSWORD_SET_PAGE_URI = "/passwordset";
 
 	String PASSWORD_SET_PAGE = "passwordset";
-
-	String COMPONENTS_PAGE = "components";
-
-	String COMMON_PAGE = "common";
-
-	String ACTIVITYLOGVIEW_PAGE = "activitylogview";
-
-	String ERROR_PAGE = "error";
 
 	String SELECT_URI = "/select";
 
@@ -381,6 +381,8 @@ public interface WebConstant {
 	String USER_PROFILE_PAGE = "userprofile";
 
 	String USER_PROFILE_URI = "/userprofile";
+
+	String UPDATE_EMAIL_URI = "update_email";
 
 	String WORD_BACK_URI = "/wordback";
 

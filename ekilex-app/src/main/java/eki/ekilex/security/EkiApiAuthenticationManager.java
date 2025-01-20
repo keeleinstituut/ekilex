@@ -16,14 +16,18 @@ import org.springframework.security.web.authentication.preauth.PreAuthenticatedA
 import eki.ekilex.constant.ApiConstant;
 import eki.ekilex.data.EkiUser;
 import eki.ekilex.service.UserService;
+import eki.ekilex.service.util.UserValidator;
 
 public class EkiApiAuthenticationManager implements AuthenticationManager, ApiConstant {
 
 	private static Logger logger = LoggerFactory.getLogger(EkiApiAuthenticationManager.class);
 
+	private UserValidator userValidator;
+
 	private UserService userService;
 
-	public EkiApiAuthenticationManager(UserService userService) {
+	public EkiApiAuthenticationManager(UserValidator userValidator, UserService userService) {
+		this.userValidator = userValidator;
 		this.userService = userService;
 	}
 
@@ -45,11 +49,11 @@ public class EkiApiAuthenticationManager implements AuthenticationManager, ApiCo
 			logger.info("No such api key exists: \"{}\"", providedApiKey);
 			throw new BadCredentialsException("Bad api key");
 		}
-		if (!userService.isActiveUser(user)) {
+		if (!userValidator.isActiveUser(user)) {
 			logger.info("User not activated: \"{}\"", providedApiKey);
 			throw new BadCredentialsException("User not activated");
 		}
-		if (!userService.isEnabledUser(user)) {
+		if (!userValidator.isEnabledUser(user)) {
 			logger.info("User not enabled: \"{}\"", providedApiKey);
 			throw new BadCredentialsException("User not enabled");
 		}
