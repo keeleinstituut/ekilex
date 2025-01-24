@@ -14,9 +14,12 @@ import static eki.ekilex.data.db.main.Tables.WORD;
 import static eki.ekilex.data.db.main.Tables.WORD_FORUM;
 import static eki.ekilex.data.db.main.Tables.WORD_RELATION;
 import static eki.ekilex.data.db.main.Tables.WORD_WORD_TYPE;
+import static eki.ekilex.data.db.main.Tables.WORD_TAG;
 
 import java.util.List;
 
+import org.apache.commons.lang3.StringUtils;
+import org.jooq.Condition;
 import org.jooq.Field;
 import org.jooq.JSON;
 import org.jooq.impl.DSL;
@@ -36,6 +39,7 @@ import eki.ekilex.data.db.main.tables.UsageSourceLink;
 import eki.ekilex.data.db.main.tables.Word;
 import eki.ekilex.data.db.main.tables.WordForum;
 import eki.ekilex.data.db.main.tables.WordRelation;
+import eki.ekilex.data.db.main.tables.WordTag;
 import eki.ekilex.data.db.main.tables.WordWordType;
 import eki.ekilex.data.db.main.tables.records.WordRecord;
 import eki.ekilex.service.db.AbstractDataDbService;
@@ -43,12 +47,13 @@ import eki.ekilex.service.db.AbstractDataDbService;
 @Component
 public class WordDbService extends AbstractDataDbService {
 
-	public List<eki.ekilex.data.api.Word> getPublicWords(String datasetCode) {
+	public List<eki.ekilex.data.api.Word> getPublicWords(String datasetCode, String tagName) {
 
 		Word w = WORD.as("w");
 		Lexeme l = LEXEME.as("l");
 		Dataset ds = DATASET.as("ds");
 		Paradigm p = PARADIGM.as("p");
+		WordTag wt = WORD_TAG.as("wt");
 
 		Field<String[]> wtf = queryHelper.getWordTagsField(w.ID);
 
@@ -59,6 +64,27 @@ public class WordDbService extends AbstractDataDbService {
 						.where(
 								p.WORD_ID.eq(w.ID)
 										.and(p.WORD_CLASS.isNotNull()))));
+
+		Condition where = w.IS_PUBLIC.isTrue()
+				.andExists(DSL
+						.select(l.ID)
+						.from(l, ds)
+						.where(
+								l.WORD_ID.eq(w.ID)
+										.and(l.DATASET_CODE.eq(datasetCode))
+										.and(l.IS_PUBLIC.isTrue())
+										.and(l.IS_WORD.isTrue())
+										.and(l.DATASET_CODE.eq(ds.CODE))
+										.and(ds.IS_PUBLIC.isTrue())));
+
+		if (StringUtils.isNotBlank(tagName)) {
+			where = where.andExists(DSL
+					.select(wt.ID)
+					.from(wt)
+					.where(
+							wt.WORD_ID.eq(w.ID)
+									.and(wt.TAG_NAME.eq(tagName))));
+		}
 
 		return mainDb
 				.select(
@@ -75,18 +101,7 @@ public class WordDbService extends AbstractDataDbService {
 						wtf.as("tags"),
 						mef.as("morph_exists"))
 				.from(w)
-				.where(
-						w.IS_PUBLIC.isTrue()
-								.andExists(DSL
-										.select(l.ID)
-										.from(l, ds)
-										.where(
-												l.WORD_ID.eq(w.ID)
-														.and(l.DATASET_CODE.eq(datasetCode))
-														.and(l.IS_PUBLIC.isTrue())
-														.and(l.IS_WORD.isTrue())
-														.and(l.DATASET_CODE.eq(ds.CODE))
-														.and(ds.IS_PUBLIC.isTrue()))))
+				.where(where)
 				.orderBy(
 						w.VALUE,
 						w.HOMONYM_NR)

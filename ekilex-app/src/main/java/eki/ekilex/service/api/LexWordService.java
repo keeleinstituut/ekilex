@@ -40,8 +40,8 @@ public class LexWordService extends AbstractApiCudService {
 	private WordDbService wordDbService;
 
 	@Transactional
-	public List<Word> getPublicWords(String datasetCode) {
-		return wordDbService.getPublicWords(datasetCode);
+	public List<Word> getPublicWords(String datasetCode, String tagName) {
+		return wordDbService.getPublicWords(datasetCode, tagName);
 	}
 
 	@Transactional

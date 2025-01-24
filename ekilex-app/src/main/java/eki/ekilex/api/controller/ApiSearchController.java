@@ -238,14 +238,18 @@ public class ApiSearchController extends AbstractApiController {
 	}
 
 	@Order(106)
-	@GetMapping(API_SERVICES_URI + PUBLIC_WORD_URI + "/{datasetCode}")
+	@GetMapping({
+			API_SERVICES_URI + PUBLIC_WORD_URI + "/{datasetCode}",
+			API_SERVICES_URI + PUBLIC_WORD_URI + "/{datasetCode}/{tagName}"
+	})
 	@ResponseBody
 	public List<Word> getPublicWords(
 			@PathVariable("datasetCode") String datasetCode,
+			@PathVariable(value = "tagName", required = false) String tagName,
 			Authentication authentication,
 			HttpServletRequest request) {
 
-		List<Word> publicWords = lexWordService.getPublicWords(datasetCode);
+		List<Word> publicWords = lexWordService.getPublicWords(datasetCode, tagName);
 		addRequestStat(authentication, request);
 		return publicWords;
 	}

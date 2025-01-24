@@ -149,4 +149,22 @@ create index word_tag_word_id_idx on word_tag(word_id);
 create index word_tag_tag_name_idx on word_tag(tag_name);
 create index word_tag_tag_name_lower_idx on word_tag(lower(tag_name));
 
+-- ilma paradigmadeta vormidega kollokatsiooniliikmete kustutamine
+
+delete
+from 
+	collocation_member cm
+where 
+	not exists (
+		select
+			1
+		from
+			form f,
+			paradigm_form pf
+		where
+			f.id = cm.member_form_id 
+			and f.id = pf.form_id
+	)
+;
+
 
