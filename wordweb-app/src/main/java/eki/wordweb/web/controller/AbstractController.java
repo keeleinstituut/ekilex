@@ -1,5 +1,6 @@
 package eki.wordweb.web.controller;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -91,11 +92,13 @@ public abstract class AbstractController implements WebConstant, SystemConstant,
 		} else {
 			sessionBean = getSessionBean(model);
 		}
+		Integer yearToday = LocalDate.now().getYear();
 		String ekilexLimTermSearchUrl = webUtil.getEkilexLimTermSearchUrl();
 		model.addAttribute("ekiKeeleinfoUrl", ekiKeeleinfoUrl);
 		model.addAttribute("speechRecognitionServiceUrl", speechRecognitionServiceUrl);
 		model.addAttribute("feedbackServiceUrl", feedbackServiceUrl);
 		model.addAttribute("ekilexLimTermSearchUrl", ekilexLimTermSearchUrl);
+		model.addAttribute("yearToday", yearToday);
 		return sessionBean;
 	}
 

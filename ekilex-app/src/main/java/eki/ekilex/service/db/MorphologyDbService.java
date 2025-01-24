@@ -213,7 +213,10 @@ public class MorphologyDbService {
 
 	public void deleteParadigmsForWord(Long wordId) {
 
-		mainDb.deleteFrom(PARADIGM).where(PARADIGM.WORD_ID.eq(wordId)).execute();
+		mainDb
+			.deleteFrom(PARADIGM)
+			.where(PARADIGM.WORD_ID.eq(wordId))
+			.execute();
 	}
 
 }

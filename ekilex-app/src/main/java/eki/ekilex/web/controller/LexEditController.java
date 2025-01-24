@@ -31,15 +31,14 @@ import eki.ekilex.constant.WebConstant;
 import eki.ekilex.data.ClassifierSelect;
 import eki.ekilex.data.EkiUser;
 import eki.ekilex.data.EkiUserProfile;
+import eki.ekilex.data.Lexeme;
 import eki.ekilex.data.MeaningWordCandidates;
 import eki.ekilex.data.Response;
 import eki.ekilex.data.SimpleWord;
 import eki.ekilex.data.Tag;
 import eki.ekilex.data.UserContextData;
-import eki.ekilex.data.UserMessage;
 import eki.ekilex.data.Word;
 import eki.ekilex.data.WordDetails;
-import eki.ekilex.data.Lexeme;
 import eki.ekilex.data.WordLexemeMeaningDetails;
 import eki.ekilex.data.WordLexemeMeaningIdTuple;
 import eki.ekilex.service.CompositionService;
@@ -391,13 +390,6 @@ public class LexEditController extends AbstractPrivatePageController {
 		cudService.updateWordLexemesTagComplete(wordId, userRoleDatasetCode, activeTag, isManualEventOnUpdateEnabled);
 
 		return RESPONSE_OK_VER2;
-	}
-
-	private void addRedirectSuccessMessage(RedirectAttributes redirectAttributes, String successMessageKey) {
-
-		UserMessage userMessage = new UserMessage();
-		userMessage.setSuccessMessageKey(successMessageKey);
-		redirectAttributes.addFlashAttribute("userMessage", userMessage);
 	}
 
 }

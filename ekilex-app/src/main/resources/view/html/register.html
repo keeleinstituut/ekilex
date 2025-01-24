@@ -12,8 +12,8 @@
         <h5 class="card-title" th:text="#{register.title}">Kasutajaks registreerumine</h5>
       </div>
       <div class="card-body">
-        <div class="alert alert-danger" role="alert" th:if="${error_message}">
-          <span th:text="${error_message}"></span>
+        <div class="alert alert-danger" role="alert" th:if="${errorMessage}">
+          <span th:text="${errorMessage}"></span>
         </div>
         <div class="row">
           <div class="col-8">

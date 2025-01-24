@@ -7,7 +7,6 @@ import java.util.Map;
 import javax.transaction.Transactional;
 
 import org.apache.commons.collections4.CollectionUtils;
-import org.apache.commons.lang3.RegExUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -37,10 +36,6 @@ import eki.ekilex.service.db.UserProfileDbService;
 public class UserService implements WebConstant, GlobalConstant {
 
 	private static Logger logger = LoggerFactory.getLogger(UserService.class);
-
-	private static final int MIN_PASSWORD_LENGTH = 8;
-
-	private static final int MIN_NAME_LENGTH = 4;
 
 	private static final int ACCESS_TYPE_USER = 1;
 
@@ -80,13 +75,25 @@ public class UserService implements WebConstant, GlobalConstant {
 		}
 	}
 
+	@Transactional(rollbackOn = Exception.class)
+	public void updateUserEmail(String email) {
+
+		EkiUser user = userContext.getUser();
+		Long userId = user.getId();
+		email = StringUtils.lowerCase(email);
+		userDbService.updateUserEmail(userId, email);
+		user = userDbService.getUserByEmail(email);
+		applyPermissions(user, ACCESS_TYPE_USER);
+		userContext.updateUserSecurityContext(user);
+	}
+
 	@Transactional
 	public EkiUser getUserByEmail(String email) {
 
 		if (StringUtils.isEmpty(email)) {
 			return null;
 		}
-		email = email.toLowerCase();
+		email = StringUtils.lowerCase(email);
 		EkiUser user = userDbService.getUserByEmail(email);
 		applyPermissions(user, ACCESS_TYPE_USER);
 		return user;
@@ -190,46 +197,38 @@ public class UserService implements WebConstant, GlobalConstant {
 
 	@Transactional
 	public Long getUserIdByEmail(String email) {
-		email = email.toLowerCase();
+
+		email = StringUtils.lowerCase(email);
 		Long userId = userDbService.getUserIdByEmail(email);
 		return userId;
 	}
 
-	public boolean isValidName(String name) {
-		if (StringUtils.isBlank(name)) {
-			return false;
-		}
-		name = StringUtils.trim(name);
-		if (!StringUtils.contains(name, " ")) {
-			return false;
-		}
-		if (StringUtils.contains(name, "  ")) {
-			return false;
-		}
-		name = RegExUtils.replaceAll(name, "\\s", "");
-		if (StringUtils.length(name) < MIN_NAME_LENGTH ) {
-			return false;
-		}
-		if (StringUtils.isAllUpperCase(name)) {
-			return false;
-		}
-		return true;
-	}
-
 	@Transactional
 	public boolean isValidUser(String email) {
+
 		if (StringUtils.isBlank(email)) {
 			return false;
 		}
-		email = email.toLowerCase();
+		email = StringUtils.lowerCase(email);
 		EkiUser user = userDbService.getUserByEmail(email);
 		return user == null;
+	}
+
+	@Transactional
+	public boolean userExists(String email) {
+
+		if (StringUtils.isBlank(email)) {
+			return false;
+		}
+		email = StringUtils.lowerCase(email);
+		EkiUser user = userDbService.getUserByEmail(email);
+		return user != null;
 	}
 
 	@Transactional(rollbackOn = Exception.class)
 	public String createUser(String email, String name, String password) {
 
-		email = email.toLowerCase();
+		email = StringUtils.lowerCase(email);
 		String activationKey = generateUniqueKey();
 		String activationLink = ekilexAppUrl + REGISTER_PAGE_URI + ACTIVATE_PAGE_URI + "/" + activationKey;
 		String encodedPassword = passwordEncoder.encode(password);
@@ -273,6 +272,7 @@ public class UserService implements WebConstant, GlobalConstant {
 
 	@Transactional(rollbackOn = Exception.class)
 	public void enableUserWithTestAndLimitedDatasetPerm(Long userId) {
+
 		userDbService.enableUser(userId, true);
 		Long permissionId = permissionDbService.createDatasetPermission(userId, DATASET_TEST, AuthorityItem.DATASET, AuthorityOperation.CRUD, null);
 		userProfileDbService.setRecentDatasetPermission(userId, permissionId);
@@ -282,6 +282,7 @@ public class UserService implements WebConstant, GlobalConstant {
 
 	@Transactional(rollbackOn = Exception.class)
 	public void enableLimitedUser(Long userId) {
+
 		userDbService.enableUser(userId, true);
 		permissionDbService.createDatasetPermission(userId, DATASET_LIMITED, AuthorityItem.DATASET, AuthorityOperation.CRUD, null);
 		EkiUserProfile userProfile = userProfileDbService.getUserProfile(userId);
@@ -293,18 +294,6 @@ public class UserService implements WebConstant, GlobalConstant {
 	@Transactional(rollbackOn = Exception.class)
 	public void updateReviewComment(Long userId, String reviewComment) {
 		userDbService.updateReviewComment(userId, reviewComment);
-	}
-
-	public boolean isActiveUser(EkiUser user) {
-		return user != null && StringUtils.isBlank(user.getActivationKey());
-	}
-
-	public boolean isEnabledUser(EkiUser user) {
-		return user != null && Boolean.TRUE.equals(user.getEnabled());
-	}
-
-	public boolean isValidPassword(String password, String password2) {
-		return StringUtils.length(password) >= MIN_PASSWORD_LENGTH && StringUtils.equals(password, password2);
 	}
 
 	@Transactional
@@ -372,6 +361,7 @@ public class UserService implements WebConstant, GlobalConstant {
 
 	@Transactional(rollbackOn = Exception.class)
 	public String generateApiKey(EkiUser user) {
+
 		Long userId = user.getId();
 		boolean isApiCrud = user.isAdmin();
 		String apiKey = generateUniqueKey();

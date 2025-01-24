@@ -155,20 +155,22 @@ public class SourceDbService implements GlobalConstant, SystemConstant, Activity
 
 			SearchEntity searchEntity = searchCriterionGroup.getEntity();
 			if (SearchEntity.SOURCE.equals(searchEntity)) {
-				boolean containsSearchKeys = searchFilterHelper.containsSearchKeys(searchCriteria, SearchKey.SOURCE_NAME, SearchKey.SOURCE_VALUE);
 
-				if (containsSearchKeys) {
-					List<SearchCriterion> filteredByNameCriteria = searchFilterHelper.filterCriteriaBySearchKey(searchCriteria, SearchKey.SOURCE_NAME);
-					List<SearchCriterion> filteredByValueCriteria = searchFilterHelper.filterCriteriaBySearchKey(searchCriteria, SearchKey.SOURCE_VALUE);
+				for (SearchCriterion criterion : searchCriteria) {
 
-					for (SearchCriterion criterion : filteredByNameCriteria) {
-						String searchValueStr = criterion.getSearchValue().toString();
-						where = searchFilterHelper.applyValueFilter(searchValueStr, criterion.isNot(), criterion.getSearchOperand(), s.NAME, where, true);
+					SearchKey searchKey = criterion.getSearchKey();
+					SearchOperand searchOperand = criterion.getSearchOperand();
+					String searchValueStr = criterion.getSearchValue().toString();
+					boolean isNot = criterion.isNot();
+
+					if (SearchKey.SOURCE_NAME.equals(searchKey)) {
+						where = searchFilterHelper.applyValueFilter(searchValueStr, isNot, searchOperand, s.NAME, where, true);
+					} else if (SearchKey.SOURCE_VALUE.equals(searchKey)) {
+						where = searchFilterHelper.applyValueFilter(searchValueStr, isNot, searchOperand, s.VALUE, where, true);
+					} else if (SearchKey.SOURCE_COMMENT.equals(searchKey)) {
+						where = searchFilterHelper.applyValueFilter(searchValueStr, isNot, searchOperand, s.COMMENT, where, true);
 					}
-					for (SearchCriterion criterion : filteredByValueCriteria) {
-						String searchValueStr = criterion.getSearchValue().toString();
-						where = searchFilterHelper.applyValueFilter(searchValueStr, criterion.isNot(), criterion.getSearchOperand(), s.VALUE, where, true);
-					}
+
 				}
 
 				where = applySourceLinkDatasetFilters(searchCriteria, s.ID, where);

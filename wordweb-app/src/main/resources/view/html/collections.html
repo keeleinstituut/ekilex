@@ -18,7 +18,7 @@
           <div>
             <ul class="mt-4 list-unstyled">
               <li>
-                <a href="#dataset-eki">EKI ühendsõnastik AASTAARV</a>
+                <a href="#dataset-eki">EKI ühendsõnastik <span th:text="${yearToday}">AASTAARV</span></a>
               </li>
               <th:block th:each="dataset : ${termDatasets}">
                 <li>
@@ -26,10 +26,10 @@
                 </li>
               </th:block>
               <li>
-                <a href="#wordweb">Sõnaveeb AASTAARV</a>
+                <a href="#wordweb">Sõnaveeb <span th:text="${yearToday}">AASTAARV</span></a>
               </li>
               <li>
-                <a href="#ekilex">Ekilex AASTAARV</a>
+                <a href="#ekilex">Ekilex <span th:text="${yearToday}">AASTAARV</span></a>
               </li>
             </ul>
           </div>
@@ -44,10 +44,10 @@
             <strong>Bibliograafiline kirje (veebisõnaraamat Sõnaveebis):</strong>
           </p>
           <p>
-            <b>EKI ühendsõnastik AASTAARV.</b> [The EKI Combined Dictionary, CombiDic]<br>
+            <b>EKI ühendsõnastik <span th:text="${yearToday}">AASTAARV</span>.</b> [The EKI Combined Dictionary, CombiDic]<br>
             Koostajad ja toimetajad Indrek Hein, Jelena Kallas, Olga Kiisla, Kristina Koppel, Margit Langemets, Tiina Leemets, Maia Melts, 
             Sirje Mäearu, Tiina Paet, Peeter Päll, Maire Raadik, Mai Tiits, Katrin Tsepelina, Maria Tuulik, Udo Uibo, Tiia Valdre, Ülle Viks.<br>
-            Eesti Keele Instituut. Sõnaveeb AASTAARV. https://sonaveeb.ee (PP.KK.AAAA)<br>
+            Eesti Keele Instituut. Sõnaveeb <span th:text="${yearToday}">AASTAARV</span>. https://sonaveeb.ee (PP.KK.AAAA)<br>
           </p>
           <p>
             “EKI ühendsõnastik” sisaldab järgmiste varem ilmunud üldkeele sõnastike infot:<br>
@@ -101,16 +101,16 @@
             </h6>
             <p style="white-space: pre-wrap;" th:text="${dataset.description}">(info lisandub)</p>
           </th:block>
-          <h5 id="wordweb" class="highlighted">Sõnaveeb AASTAARV</h5>
+          <h5 id="wordweb" class="highlighted">Sõnaveeb <span th:text="${yearToday}">AASTAARV</span></h5>
           <p>
             Sõnaveeb on Eesti Keele Instituudi keeleportaal, mis kuvab andmeid Eesti Keele Instituudi sõnastiku- ja 
             terminibaasisüsteemist Ekilex. Sõnaveebi versioon luuakse kord aastas (versiooni näitab aastaarv) ning see 
             registreeritakse METASHARE’is ja arhiveeritakse Eesti Keeleressursside Keskuses.</p>
           <p>
-            <strong>Bibliograafiline kirje (EKI keeleportaal Sõnaveeb 2021):</strong>
+            <strong>Bibliograafiline kirje (EKI keeleportaal Sõnaveeb):</strong>
           </p>
           <p>
-            <b>Sõnaveeb AASTAARV.</b> [The WordWeb YEAR.] Eesti Keele Instituut. https://sonaveeb.ee (PP.KK.AAAA)<br>
+            <b>Sõnaveeb <span th:text="${yearToday}">AASTAARV</span>.</b> [The WordWeb] Eesti Keele Instituut. https://sonaveeb.ee (PP.KK.AAAA)<br>
             Arendanud ja toimetanud Arvi Tavast, Indrek Hein, Jelena Kallas, Kristina Koppel, Margit Langemets, Kaur Männiko, 
             Tõnis Nurk, Merily Plado, Mari Vaus, Ülle Viks.<br>
             Arendaja OÜ TripleDev: Martin Laubre, Yogesh Sharma, Hardi Niilo, Henri Kokk.<br>
@@ -121,17 +121,17 @@
             pakkumise arendamise meetme</a> projektist <a href="http://portaal.eki.ee/keeleteaduse-ja-tehnoloogia-osakond/2981-eki-ria-teavitus.html">"Sõnastiku- 
             ja terminibaasisüsteemi Ekilex väliskasu tajaliidesed ja API"</a> (2014–2020).<br>
           </p>
-          <h5 id="ekilex" class="highlighted">Ekilex AASTAARV</h5>
+          <h5 id="ekilex" class="highlighted">Ekilex <span th:text="${yearToday}">AASTAARV</span></h5>
           <p>
             Ekilex on Eesti Keele Instituudi sõnastiku- ja terminibaasisüsteem, mille andmeid kuvatakse keeleportaalis Sõnaveeb. 
             Ekilexi versioon luuakse kord aastas (versiooni näitab aastaarv) ning see registreeritakse METASHARE’is ja 
             arhiveeritakse Eesti Keeleressursside Keskuses.
           </p>
           <p>
-            <strong>Bibliograafiline kirje (EKI sõnastiku- ja terminibaasisüsteem Ekilex AASTAARV):</strong>
+            <strong>Bibliograafiline kirje (EKI sõnastiku- ja terminibaasisüsteem Ekilex <span th:text="${yearToday}">AASTAARV</span>):</strong>
           </p>
           <p>
-            <b>Ekilex AASTAARV.</b> [Ekilex YEAR.] Eesti Keele Instituut. https://ekilex.eki.ee (PP.KK.AAAA)<br>
+            <b>Ekilex <span th:text="${yearToday}">AASTAARV</span>.</b> [The Ekilex] Eesti Keele Instituut. https://ekilex.eki.ee (PP.KK.AAAA)<br>
             Arendaja Eesti Keele Instituut: Arvi Tavast, Indrek Hein, Kaur Männiko.<br>
             Arendaja OÜ TripleDev: Martin Laubre, Yogesh Sharma, Hardi Niilo, Henri Kokk.
           </p>

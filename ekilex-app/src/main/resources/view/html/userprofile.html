@@ -8,9 +8,24 @@
 <body class="body-with-navbar">
   <th:block th:replace="common :: nav_bar(activeItem = 'userprofile')"></th:block>
   <div class="container-fluid">
+    <th:block th:replace="common :: op_message"></th:block>
     <div class="card mt-4 shadow">
       <div class="card-header">
-        <h5 class="card-title" th:text="#{userprofile.heading}">Seaded</h5>
+        <h5 class="card-title" th:text="#{userprofile.user}">Kasutaja</h5>
+      </div>
+      <div class="card-body">
+        <div>
+          <span th:text="${user.name}"></span>
+        </div>
+        <div class="mt-3">
+          <span th:text="${user.email}"></span>
+          <button type="button" class="btn btn-secondary btn-compact ml-3" th:text="#{userprofile.update}" data-toggle="modal" data-target="#updateEmailDlg">Muuda</button>
+        </div>
+      </div>
+    </div>
+    <div class="card mt-4 shadow">
+      <div class="card-header">
+        <h5 class="card-title" th:text="#{userprofile.preferences}">Seaded</h5>
       </div>
       <div class="card-body">
         <div>
@@ -33,7 +48,7 @@
     </div>
     <div class="card mt-4 shadow">
       <div class="card-header">
-        <h5 class="card-title" th:text="#{userprofile.user.permissions}">Olemasolevad õigused</h5>
+        <h5 class="card-title" th:text="#{userprofile.permissions}">Olemasolevad õigused</h5>
       </div>
       <div class="card-body" th:if="${#lists.isEmpty(userDatasetPermissions)}">
         <span th:text="#{userprofile.no.permissions}">Õiguseid pole</span>
@@ -68,7 +83,7 @@
     <div class="card mt-4 mb-4 shadow">
       <div class="card-header">
         <h5 class="card-title">
-          <span th:text="#{userprofile.user.applications}">Esitatud õiguste taotlused</span>
+          <span th:text="#{userprofile.applications}">Esitatud õiguste taotlused</span>
           <button class="btn btn-primary pull-right" data-toggle="modal" data-target="#addApplicationDlg" th:text="#{userprofile.add.application}">Esita uus taotlus</button>
         </h5>
       </div>
@@ -129,6 +144,7 @@
       </div>
     </div>
   </div>
+  <div th:replace="userprofiledialog :: #updateEmailDlg"></div>
   <div th:replace="userprofiledialog :: #addApplicationDlg"></div>
   <div th:replace="userprofiledialog :: #selectMeaningRelationPrefsDlg"></div>
   <div th:replace="userprofiledialog :: #selectTagPrefsDlg"></div>

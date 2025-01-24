@@ -22,7 +22,6 @@ import eki.ekilex.data.MeaningTableRow;
 import eki.ekilex.data.MeaningTableSearchResult;
 import eki.ekilex.data.SearchFilter;
 import eki.ekilex.data.SearchUriData;
-import eki.ekilex.data.UserMessage;
 import eki.ekilex.service.MeaningTableService;
 import eki.ekilex.web.bean.SessionBean;
 import eki.ekilex.web.util.SearchHelper;
@@ -154,17 +153,4 @@ public class MeaningTableController extends AbstractPrivateSearchController {
 		return REDIRECT_PREF + TERM_MEANING_TABLE_URI + searchUri;
 	}
 
-	private void addRedirectSuccessMessage(RedirectAttributes redirectAttributes, String successMessageKey) {
-
-		UserMessage userMessage = new UserMessage();
-		userMessage.setSuccessMessageKey(successMessageKey);
-		redirectAttributes.addFlashAttribute("userMessage", userMessage);
-	}
-
-	private void addRedirectWarningMessage(RedirectAttributes redirectAttributes, String warningMessageKey) {
-
-		UserMessage userMessage = new UserMessage();
-		userMessage.setWarningMessageKey(warningMessageKey);
-		redirectAttributes.addFlashAttribute("userMessage", userMessage);
-	}
 }

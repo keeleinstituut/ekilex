@@ -13,6 +13,7 @@ import org.springframework.context.MessageSource;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import eki.common.constant.Complexity;
 import eki.common.constant.DatasetType;
@@ -33,6 +34,7 @@ import eki.ekilex.data.EkiUserProfile;
 import eki.ekilex.data.Origin;
 import eki.ekilex.data.Tag;
 import eki.ekilex.data.UserContextData;
+import eki.ekilex.data.UserMessage;
 import eki.ekilex.service.CommonDataService;
 import eki.ekilex.service.LookupService;
 import eki.ekilex.service.PermissionService;
@@ -333,4 +335,19 @@ public abstract class AbstractAuthActionController implements WebConstant, Syste
 				.filter(meaningRelType -> !StringUtils.equals(meaningRelType.getCode(), MEANING_REL_TYPE_CODE_SIMILAR))
 				.collect(Collectors.toList());
 	}
+
+	protected void addRedirectSuccessMessage(RedirectAttributes redirectAttributes, String successMessageKey) {
+
+		UserMessage userMessage = new UserMessage();
+		userMessage.setSuccessMessageKey(successMessageKey);
+		redirectAttributes.addFlashAttribute("userMessage", userMessage);
+	}
+
+	protected void addRedirectWarningMessage(RedirectAttributes redirectAttributes, String warningMessageKey) {
+
+		UserMessage userMessage = new UserMessage();
+		userMessage.setWarningMessageKey(warningMessageKey);
+		redirectAttributes.addFlashAttribute("userMessage", userMessage);
+	}
+
 }

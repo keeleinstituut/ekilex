@@ -20,6 +20,7 @@ import eki.ekilex.security.EkiApiAuthenticationManager;
 import eki.ekilex.security.EkiUserAuthenticationManager;
 import eki.ekilex.security.EkilexPasswordEncoder;
 import eki.ekilex.service.UserService;
+import eki.ekilex.service.util.UserValidator;
 
 @ConditionalOnWebApplication
 @Configuration
@@ -29,6 +30,9 @@ public class SecurityConfig {
 	@Configuration
 	@Order(1)
 	public static class ApiSecurityConfiguration extends WebSecurityConfigurerAdapter implements ApiConstant {
+
+		@Autowired
+		private UserValidator userValidator;
 
 		@Autowired
 		private UserService userService;
@@ -47,7 +51,7 @@ public class SecurityConfig {
 		}
 
 		private ApiKeyAuthFilter createApiKeyAuthFilter() {
-			EkiApiAuthenticationManager authenticationManager = new EkiApiAuthenticationManager(userService);
+			EkiApiAuthenticationManager authenticationManager = new EkiApiAuthenticationManager(userValidator, userService);
 			ApiKeyAuthFilter apiKeyAuthFilter = new ApiKeyAuthFilter(API_KEY_HEADER_NAME);
 			apiKeyAuthFilter.setAuthenticationManager(authenticationManager);
 			return apiKeyAuthFilter;
@@ -57,6 +61,9 @@ public class SecurityConfig {
 	@Configuration
 	@Order(2)
 	public static class HtmlSecurityConfiguration extends WebSecurityConfigurerAdapter implements WebConstant {
+
+		@Autowired
+		private UserValidator userValidator;
 
 		@Autowired
 		private UserService userService;
@@ -110,7 +117,7 @@ public class SecurityConfig {
 		@Bean
 		@Override
 		public AuthenticationManager authenticationManager() throws Exception {
-			return new EkiUserAuthenticationManager(userService, passwordEncoder);
+			return new EkiUserAuthenticationManager(userValidator, userService, passwordEncoder);
 		}
 	}
 

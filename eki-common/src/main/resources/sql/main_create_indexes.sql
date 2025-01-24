@@ -93,6 +93,9 @@ create index source_name_lower_prefix_idx on source(lower(name) text_pattern_ops
 create index source_value_idx on source(value);
 create index source_value_lower_idx on source(lower(value));
 create index source_value_lower_prefix_idx on source(lower(value) text_pattern_ops);
+create index source_comment_idx on source(comment);
+create index source_comment_lower_idx on source(lower(comment));
+create index source_comment_lower_prefix_idx on source(lower(comment) text_pattern_ops);
 create index source_freeform_source_id_idx on source_freeform(source_id);
 create index source_freeform_freeform_id_idx on source_freeform(freeform_id);
 create index meaning_freeform_meaning_id_idx on meaning_freeform(meaning_id);

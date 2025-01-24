@@ -21,6 +21,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import eki.common.util.CodeGenerator;
 import eki.ekilex.data.EkiUser;
 import eki.ekilex.service.EmailService;
+import eki.ekilex.service.util.UserValidator;
 
 @ConditionalOnWebApplication
 @Controller
@@ -29,6 +30,9 @@ public class RegisterController extends AbstractPublicPageController {
 	private static final Logger logger = LoggerFactory.getLogger(RegisterController.class);
 
 	private static final String BOT_PROTECTION_CODE = "botProtectionCode";
+
+	@Autowired
+	private UserValidator userValidator;
 
 	@Autowired
 	private EmailService emailService;
@@ -70,41 +74,51 @@ public class RegisterController extends AbstractPublicPageController {
 			String message = messageSource.getMessage("register.no.agreement", new Object[0], locale);
 			model.addAttribute("userName", name);
 			model.addAttribute("userEmail", email);
-			model.addAttribute("error_message", message);
+			model.addAttribute("errorMessage", message);
 			return REGISTER_PAGE;
 		}
 
-		if (!userService.isValidName(name)) {
+		if (!userValidator.isValidName(name)) {
 			String message = messageSource.getMessage("register.invalid.name", new Object[0], locale);
 			model.addAttribute("userName", name);
 			model.addAttribute("userEmail", email);
-			model.addAttribute("error_message", message);
+			model.addAttribute("errorMessage", message);
 			return REGISTER_PAGE;
 		}
 
-		if (!userService.isValidPassword(password, password2)) {
+		if (!userValidator.isValidPassword(password, password2)) {
 			String message = messageSource.getMessage("register.invalid.password", new Object[0], locale);
 			model.addAttribute("userName", name);
 			model.addAttribute("userEmail", email);
-			model.addAttribute("error_message", message);
+			model.addAttribute("errorMessage", message);
 			return REGISTER_PAGE;
 		}
 
-		if (userService.isValidUser(email)) {
-			String activationLink = userService.createUser(email, name, password);
-			if (emailService.isEnabled()) {
-				String message = messageSource.getMessage("register.activation.link.sent", new Object[0], locale);
-				attributes.addFlashAttribute("success_message", message + " " + email);
-			} else {
-				String message = messageSource.getMessage("register.activation.link", new Object[0], locale);
-				attributes.addFlashAttribute("success_message", message + " " + activationLink);
-			}
-			return REDIRECT_PREF + LOGIN_PAGE_URI;
-		} else {
+		if (userService.userExists(email)) {
 			String message = messageSource.getMessage("register.user.exists", new Object[0], locale);
-			model.addAttribute("error_message", message);
+			model.addAttribute("userName", name);
+			model.addAttribute("userEmail", email);
+			model.addAttribute("errorMessage", message);
 			return REGISTER_PAGE;
 		}
+
+		if (!userValidator.isValidEmail(email)) {
+			String message = messageSource.getMessage("register.invalid.email", new Object[0], locale);
+			model.addAttribute("userName", name);
+			model.addAttribute("userEmail", email);
+			model.addAttribute("errorMessage", message);
+			return REGISTER_PAGE;
+		}
+
+		String activationLink = userService.createUser(email, name, password);
+		if (emailService.isEnabled()) {
+			String message = messageSource.getMessage("register.activation.link.sent", new Object[0], locale);
+			attributes.addFlashAttribute("successMessage", message + " " + email);
+		} else {
+			String message = messageSource.getMessage("register.activation.link", new Object[0], locale);
+			attributes.addFlashAttribute("successMessage", message + " " + activationLink);
+		}
+		return REDIRECT_PREF + LOGIN_PAGE_URI;
 	}
 
 	@PostMapping(FAKE_REGISTER_AND_PASSWORD_RECOVERY_URI)
@@ -125,11 +139,11 @@ public class RegisterController extends AbstractPublicPageController {
 			String activeTerms = userService.getActiveTermsValue();
 			String message = messageSource.getMessage("register.unknown.activation.key", new Object[0], locale);
 			model.addAttribute("activeTerms", activeTerms);
-			model.addAttribute("error_message", message);
+			model.addAttribute("errorMessage", message);
 			return REGISTER_PAGE;
 		} else {
 			String message = messageSource.getMessage("register.activation.success", new Object[0], locale);
-			attributes.addFlashAttribute("success_message", message);
+			attributes.addFlashAttribute("successMessage", message);
 			attributes.addFlashAttribute("userEmail", ekiUser.getEmail());
 			return REDIRECT_PREF + LOGIN_PAGE_URI;
 		}
@@ -207,7 +221,7 @@ public class RegisterController extends AbstractPublicPageController {
 			RedirectAttributes attributes) {
 
 		Locale locale = LocaleContextHolder.getLocale();
-		if (!userService.isValidPassword(password, password2)) {
+		if (!userValidator.isValidPassword(password, password2)) {
 			String message = messageSource.getMessage("register.invalid.password", new Object[0], locale);
 			model.addAttribute("error", message);
 			model.addAttribute("recoveryKey", recoveryKey);
@@ -222,7 +236,7 @@ public class RegisterController extends AbstractPublicPageController {
 		}
 		userService.setUserPassword(userEmail, password);
 		String message = messageSource.getMessage("register.recovery.success", new Object[0], locale);
-		attributes.addFlashAttribute("success_message", message);
+		attributes.addFlashAttribute("successMessage", message);
 		attributes.addFlashAttribute("userEmail", userEmail);
 		return REDIRECT_PREF + LOGIN_PAGE_URI;
 	}

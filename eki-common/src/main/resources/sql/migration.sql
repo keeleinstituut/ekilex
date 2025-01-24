@@ -128,5 +128,10 @@ alter table lexeme_source_link drop column "type" cascade;
 alter table usage_source_link drop column "type" cascade;
 alter table lexeme_note_source_link drop column "type" cascade;
 
+-- allika kommentaari otsing
+
+create index source_comment_idx on source(comment);
+create index source_comment_lower_idx on source(lower(comment));
+create index source_comment_lower_prefix_idx on source(lower(comment) text_pattern_ops);
 
 

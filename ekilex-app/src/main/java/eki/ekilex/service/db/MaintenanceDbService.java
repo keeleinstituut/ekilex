@@ -149,7 +149,7 @@ public class MaintenanceDbService extends AbstractDataDbService {
 				.delete(FREEFORM)
 				.where(FREEFORM.PARENT_ID.isNull())
 				.andNotExists(DSL
-						.select(SOURCE_FREEFORM.ID)
+						.select(SOURCE_FREEFORM.ID, DSL.value(IGNORE_QUERY_LOG))
 						.from(SOURCE_FREEFORM)
 						.where(SOURCE_FREEFORM.FREEFORM_ID.eq(FREEFORM.ID)))
 				.andNotExists(DSL
@@ -168,7 +168,6 @@ public class MaintenanceDbService extends AbstractDataDbService {
 						.select(WORD_FREEFORM.ID)
 						.from(WORD_FREEFORM)
 						.where(WORD_FREEFORM.FREEFORM_ID.eq(FREEFORM.ID)))
-				.andExists(DSL.select(DSL.field(IGNORE_QUERY_LOG)))
 				.execute();
 	}
 
@@ -177,14 +176,13 @@ public class MaintenanceDbService extends AbstractDataDbService {
 		return mainDb
 				.delete(MEANING)
 				.whereNotExists(DSL
-						.select(LEXEME.ID)
+						.select(LEXEME.ID, DSL.value(IGNORE_QUERY_LOG))
 						.from(LEXEME)
 						.where(LEXEME.MEANING_ID.eq(MEANING.ID)))
 				.andNotExists(DSL
 						.select(DEFINITION.ID)
 						.from(DEFINITION)
 						.where(DEFINITION.MEANING_ID.eq(MEANING.ID)))
-				.andExists(DSL.select(DSL.field(IGNORE_QUERY_LOG)))
 				.execute();
 	}
 
@@ -193,10 +191,9 @@ public class MaintenanceDbService extends AbstractDataDbService {
 		return mainDb
 				.delete(WORD)
 				.whereNotExists(DSL
-						.select(LEXEME.ID)
+						.select(LEXEME.ID, DSL.value(IGNORE_QUERY_LOG))
 						.from(LEXEME)
 						.where(LEXEME.WORD_ID.eq(WORD.ID)))
-				.andExists(DSL.select(DSL.field(IGNORE_QUERY_LOG)))
 				.execute();
 	}
 
@@ -205,10 +202,9 @@ public class MaintenanceDbService extends AbstractDataDbService {
 		return mainDb
 				.delete(FORM)
 				.whereNotExists(DSL
-						.select(PARADIGM_FORM.ID)
+						.select(PARADIGM_FORM.ID, DSL.value(IGNORE_QUERY_LOG))
 						.from(PARADIGM_FORM)
 						.where(PARADIGM_FORM.FORM_ID.eq(FORM.ID)))
-				.andExists(DSL.select(DSL.field(IGNORE_QUERY_LOG)))
 				.execute();
 	}
 
