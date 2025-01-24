@@ -313,22 +313,24 @@
                         <span class="word-notes__note" th:text="${isLimTerm ? #messages.msg('label.limterm.note') : #messages.msg('label.public.note')}">Hea teada</span>
                       </div>
                       <ul class="word-notes__list word-notes__list--with-marker">
-                        <li class="word-notes__note" th:each="noteEntry : ${meaningLexeme.lexemeNotesByLang}">
+                        <th:block th:each="noteEntry : ${meaningLexeme.lexemeNotesByLang}">
                           <th:block th:each="note : ${noteEntry.value}">
-                            <div class="d-flex" th:id="|note-entry-text-${note.noteId}|">
-                              <div>
-                                <span th:utext="${note.valuePrese}"></span>
-                                <th:block th:if="${not #lists.isEmpty(note.sourceLinks)}">
-                                  <span class="definition-sources">
-                                    <th:block th:each="sourceLink,sourceLinkIter : ${note.sourceLinks}">
-                                      <th:block th:replace="common-app :: source-link"></th:block>
-                                    </th:block>
-                                  </span>
-                                </th:block>
+                            <li class="word-notes__note">
+                              <div class="d-flex" th:id="|note-entry-text-${note.noteId}|">
+                                <div>
+                                  <span th:utext="${note.valuePrese}"></span>
+                                  <th:block th:if="${not #lists.isEmpty(note.sourceLinks)}">
+                                    <span class="definition-sources">
+                                      <th:block th:each="sourceLink,sourceLinkIter : ${note.sourceLinks}">
+                                        <th:block th:replace="common-app :: source-link"></th:block>
+                                      </th:block>
+                                    </span>
+                                  </th:block>
+                                </div>
                               </div>
-                            </div>
+                            </li>
                           </th:block>
-                        </li>
+                        </th:block>
                       </ul>
                     </div>
                   </th:block>
