@@ -44,7 +44,7 @@ public class MaintenanceDbService extends AbstractDataDbService {
 				.fetchInto(WordRecord.class);
 	}
 
-	public List<SourceTargetIdTuple> getHomonymsToMerge(String[] includedLangs) {
+	public List<SourceTargetIdTuple> getHomonymsToJoin(String[] includedLangs) {
 
 		Word w1 = WORD.as("w1");
 		Word w2 = WORD.as("w2");
@@ -71,14 +71,12 @@ public class MaintenanceDbService extends AbstractDataDbService {
 								.and(w1.IS_PUBLIC.isTrue())
 								.and(l1.WORD_ID.eq(w1.ID))
 								.and(l1.DATASET_CODE.notIn(DATASET_EKI, DATASET_ETY))
-								.and(l1.IS_WORD.isTrue())
 								.andNotExists(DSL
 										.select(l2.ID)
 										.from(l2)
 										.where(
 												l2.WORD_ID.eq(w1.ID)
-														.and(l2.DATASET_CODE.eq(DATASET_EKI))
-														.and(l2.IS_WORD.isTrue()))))
+														.and(l2.DATASET_CODE.eq(DATASET_EKI)))))
 				.asTable("w_hom");
 
 		Table<Record7<Long, String, String, Boolean, Boolean, Boolean, Boolean>> wEki = mainDb
@@ -95,13 +93,12 @@ public class MaintenanceDbService extends AbstractDataDbService {
 						w1.LANG.in(includedLangs)
 								.and(w1.IS_PUBLIC.isTrue())
 								.andExists(DSL
-										.select(l1.ID)
+										.select(l1.ID, DSL.val(IGNORE_QUERY_LOG))
 										.from(l1)
 										.where(
 												l1.WORD_ID.eq(w1.ID)
 														.and(l1.DATASET_CODE.eq(DATASET_EKI))
-														.and(l1.IS_PUBLIC.isTrue())
-														.and(l1.IS_WORD.isTrue())))
+														.and(l1.IS_PUBLIC.isTrue())))
 								.andNotExists(DSL
 										.select(w2.ID)
 										.from(w2)
@@ -116,8 +113,7 @@ public class MaintenanceDbService extends AbstractDataDbService {
 																.where(
 																		l2.WORD_ID.eq(w2.ID)
 																				.and(l2.DATASET_CODE.eq(DATASET_EKI))
-																				.and(l2.IS_PUBLIC.isTrue())
-																				.and(l2.IS_WORD.isTrue()))))))
+																				.and(l2.IS_PUBLIC.isTrue()))))))
 				.asTable("w_eki");
 
 		return mainDb

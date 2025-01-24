@@ -29,6 +29,8 @@ import static eki.ekilex.data.db.main.Tables.WORD_RELATION;
 import static eki.ekilex.data.db.main.Tables.WORD_REL_MAPPING;
 import static eki.ekilex.data.db.main.Tables.WORD_REL_TYPE_LABEL;
 import static eki.ekilex.data.db.main.Tables.WORD_WORD_TYPE;
+import static eki.ekilex.data.db.main.Tables.WORD_TAG;
+import static eki.ekilex.data.db.main.Tables.COLLOCATION_MEMBER;
 import static org.jooq.impl.DSL.field;
 
 import java.util.List;
@@ -55,6 +57,7 @@ import eki.ekilex.data.InexactSynonym;
 import eki.ekilex.data.SearchDatasetsRestriction;
 import eki.ekilex.data.WordLexemeMeaningIdTuple;
 import eki.ekilex.data.WordRelation;
+import eki.ekilex.data.db.main.tables.CollocationMember;
 import eki.ekilex.data.db.main.tables.Definition;
 import eki.ekilex.data.db.main.tables.Lexeme;
 import eki.ekilex.data.db.main.tables.Meaning;
@@ -91,8 +94,22 @@ public class LookupDbService extends AbstractDataDbService {
 	}
 
 	public Long getWordWordTypeId(Long wordId, String typeCode) {
-		WordWordTypeRecord wordWordTypeRecord = mainDb.fetchOne(WORD_WORD_TYPE, WORD_WORD_TYPE.WORD_ID.eq(wordId).and(WORD_WORD_TYPE.WORD_TYPE_CODE.eq(typeCode)));
+		WordWordTypeRecord wordWordTypeRecord = mainDb.fetchOne(
+				WORD_WORD_TYPE,
+				WORD_WORD_TYPE.WORD_ID.eq(wordId)
+						.and(WORD_WORD_TYPE.WORD_TYPE_CODE.eq(typeCode)));
 		return wordWordTypeRecord.getId();
+	}
+
+	public Long getWordTagId(Long wordId, String tagName) {
+		return mainDb
+				.select(WORD_TAG.ID)
+				.from(WORD_TAG)
+				.where(
+						WORD_TAG.WORD_ID.eq(wordId)
+								.and(WORD_TAG.TAG_NAME.eq(tagName)))
+				.fetchOptionalInto(Long.class)
+				.orElse(null);
 	}
 
 	public List<eki.ekilex.data.Lexeme> getWordLexemes(Long lexemeId) {
@@ -248,6 +265,19 @@ public class LookupDbService extends AbstractDataDbService {
 				.fetchInto(WordRelation.class);
 	}
 
+	public List<Classifier> getWordOppositeRelations(String relationTypeCode, String classifLabelLang, String classifLabelType) {
+
+		return mainDb
+				.select(WORD_REL_TYPE_LABEL.CODE, WORD_REL_TYPE_LABEL.VALUE)
+				.from(WORD_REL_MAPPING, WORD_REL_TYPE_LABEL)
+				.where(
+						WORD_REL_MAPPING.CODE1.eq(relationTypeCode)
+								.and(WORD_REL_TYPE_LABEL.CODE.eq(WORD_REL_MAPPING.CODE2))
+								.and(WORD_REL_TYPE_LABEL.LANG.eq(classifLabelLang))
+								.and(WORD_REL_TYPE_LABEL.TYPE.eq(classifLabelType)))
+				.fetchInto(Classifier.class);
+	}
+
 	public int getWordLexemesMaxLevel1(Long wordId, String datasetCode) {
 
 		return mainDb
@@ -276,152 +306,6 @@ public class LookupDbService extends AbstractDataDbService {
 						l.LEVEL1,
 						l.LEVEL2)
 				.fetchInto(eki.ekilex.data.Lexeme.class);
-	}
-
-	public String getLexemeDatasetCode(Long lexemeId) {
-
-		return mainDb
-				.select(LEXEME.DATASET_CODE)
-				.from(LEXEME)
-				.where(LEXEME.ID.eq(lexemeId))
-				.fetchOneInto(String.class);
-	}
-
-	public Long getLexemeId(Long wordId, Long meaningId) {
-
-		return mainDb
-				.select(LEXEME.ID)
-				.from(LEXEME)
-				.where(LEXEME.WORD_ID.eq(wordId).and(LEXEME.MEANING_ID.eq(meaningId)))
-				.fetchSingleInto(Long.class);
-	}
-
-	public Long getLexemeMeaningId(Long lexemeId) {
-
-		return mainDb
-				.select(LEXEME.MEANING_ID)
-				.from(LEXEME)
-				.where(LEXEME.ID.eq(lexemeId))
-				.fetchSingleInto(Long.class);
-	}
-
-	public Long getLexemeWordId(Long lexemeId) {
-
-		return mainDb
-				.select(LEXEME.WORD_ID)
-				.from(LEXEME)
-				.where(LEXEME.ID.eq(lexemeId))
-				.fetchSingleInto(Long.class);
-	}
-
-	public Long getLexemePosId(Long lexemeId, String posCode) {
-		LexemePosRecord lexemePosRecord = mainDb.fetchOne(LEXEME_POS, LEXEME_POS.LEXEME_ID.eq(lexemeId).and(LEXEME_POS.POS_CODE.eq(posCode)));
-		return lexemePosRecord.getId();
-	}
-
-	public Long getLexemeTagId(Long lexemeId, String tagName) {
-		LexemeTagRecord lexemeTagRecord = mainDb.fetchOne(LEXEME_TAG, LEXEME_TAG.LEXEME_ID.eq(lexemeId).and(LEXEME_TAG.TAG_NAME.eq(tagName)));
-		return lexemeTagRecord.getId();
-	}
-
-	public Long getMeaningTagId(Long meaningId, String tagName) {
-		MeaningTagRecord meaningTagRecord = mainDb.fetchOne(MEANING_TAG, MEANING_TAG.MEANING_ID.eq(meaningId).and(MEANING_TAG.TAG_NAME.eq(tagName)));
-		return meaningTagRecord.getId();
-	}
-
-	public Long getLexemeDerivId(Long lexemeId, String derivCode) {
-		LexemeDerivRecord lexemeDerivRecord = mainDb.fetchOne(LEXEME_DERIV, LEXEME_DERIV.LEXEME_ID.eq(lexemeId).and(LEXEME_DERIV.DERIV_CODE.eq(derivCode)));
-		return lexemeDerivRecord.getId();
-	}
-
-	public Long getLexemeRegisterId(Long lexemeId, String registerCode) {
-		LexemeRegisterRecord lexemeRegisterRecord = mainDb.fetchOne(LEXEME_REGISTER,
-				LEXEME_REGISTER.LEXEME_ID.eq(lexemeId).and(LEXEME_REGISTER.REGISTER_CODE.eq(registerCode)));
-		return lexemeRegisterRecord.getId();
-	}
-
-	public Long getLexemeRegionId(Long lexemeId, String regionCode) {
-		LexemeRegionRecord lexemeRegionRecord = mainDb.fetchOne(LEXEME_REGION,
-				LEXEME_REGION.LEXEME_ID.eq(lexemeId).and(LEXEME_REGION.REGION_CODE.eq(regionCode)));
-		return lexemeRegionRecord.getId();
-	}
-
-	public Long getMeaningDomainId(Long meaningId, Classifier domain) {
-		MeaningDomainRecord meaningDomainRecord = mainDb.fetchOne(MEANING_DOMAIN,
-				MEANING_DOMAIN.MEANING_ID.eq(meaningId)
-						.and(MEANING_DOMAIN.DOMAIN_ORIGIN.eq(domain.getOrigin()))
-						.and(MEANING_DOMAIN.DOMAIN_CODE.eq(domain.getCode())));
-		return meaningDomainRecord.getId();
-	}
-
-	public Long getMeaningSemanticTypeId(Long meaningId, String semanticTypeCode) {
-		MeaningSemanticTypeRecord meaningSemanticTypeRecord = mainDb
-				.fetchOne(MEANING_SEMANTIC_TYPE, MEANING_SEMANTIC_TYPE.MEANING_ID.eq(meaningId).and(MEANING_SEMANTIC_TYPE.SEMANTIC_TYPE_CODE.eq(semanticTypeCode)));
-		return meaningSemanticTypeRecord.getId();
-	}
-
-	public List<Long> getMeaningLexemeIds(Long meaningId, String lang, String datasetCode) {
-
-		return mainDb
-				.select(LEXEME.ID)
-				.from(LEXEME, WORD)
-				.where(
-						LEXEME.MEANING_ID.eq(meaningId)
-								.and(LEXEME.DATASET_CODE.eq(datasetCode))
-								.and(WORD.ID.eq(LEXEME.WORD_ID))
-								.and(WORD.LANG.eq(lang))
-								.and(WORD.IS_PUBLIC.isTrue()))
-				.fetchInto(Long.class);
-	}
-
-	public List<Long> getMeaningRelationOppositeRelationIds(Long relationId) {
-
-		MeaningRelation mr1 = MEANING_RELATION.as("mr1");
-		MeaningRelation mr2 = MEANING_RELATION.as("mr2");
-		MeaningRelMapping mrm = MEANING_REL_MAPPING.as("mrm");
-
-		return mainDb
-				.select(mr2.ID)
-				.from(mr1, mr2, mrm)
-				.where(
-						mr1.ID.eq(relationId)
-								.and(mr1.MEANING1_ID.eq(mr2.MEANING2_ID))
-								.and(mr1.MEANING2_ID.eq(mr2.MEANING1_ID))
-								.and(mr1.MEANING_REL_TYPE_CODE.eq(mrm.CODE1))
-								.and(mr2.MEANING_REL_TYPE_CODE.eq(mrm.CODE2))
-								.and(mr2.ID.ne(mr1.ID)))
-				.fetchInto(Long.class);
-	}
-
-	public Map<String, Integer[]> getMeaningsWordsWithMultipleHomonymNumbers(List<Long> meaningIds) {
-
-		Field<String> wordValue = WORD.VALUE.as("word_value");
-		Field<Integer[]> homonymNumbers = DSL.arrayAggDistinct(WORD.HOMONYM_NR).as("homonym_numbers");
-
-		Table<Record2<String, Integer[]>> wv = DSL
-				.select(wordValue, homonymNumbers)
-				.from(LEXEME, WORD)
-				.where(
-						LEXEME.MEANING_ID.in(meaningIds)
-								.and(WORD.ID.eq(LEXEME.WORD_ID))
-								.and(WORD.IS_PUBLIC.isTrue()))
-				.groupBy(WORD.VALUE)
-				.asTable("wv");
-
-		return mainDb
-				.selectFrom(wv)
-				.where(PostgresDSL.arrayLength(wv.field(homonymNumbers)).gt(1))
-				.fetchMap(wordValue, homonymNumbers);
-	}
-
-	public String getMeaningFirstDatasetCode(Long meaningId) {
-
-		return mainDb
-				.select(LEXEME.DATASET_CODE)
-				.from(LEXEME)
-				.where(LEXEME.MEANING_ID.eq(meaningId))
-				.limit(1)
-				.fetchSingleInto(String.class);
 	}
 
 	public WordLexemeMeaningIdTuple getWordLexemeMeaningIdByLexeme(Long lexemeId) {
@@ -480,6 +364,123 @@ public class LookupDbService extends AbstractDataDbService {
 		return mainDb.selectFrom(WORD).where(WORD.ID.eq(wordId)).fetchOne();
 	}
 
+	public String getLexemeDatasetCode(Long lexemeId) {
+
+		return mainDb
+				.select(LEXEME.DATASET_CODE)
+				.from(LEXEME)
+				.where(LEXEME.ID.eq(lexemeId))
+				.fetchOneInto(String.class);
+	}
+
+	public Long getLexemeId(Long wordId, Long meaningId) {
+
+		return mainDb
+				.select(LEXEME.ID)
+				.from(LEXEME)
+				.where(LEXEME.WORD_ID.eq(wordId).and(LEXEME.MEANING_ID.eq(meaningId)))
+				.fetchSingleInto(Long.class);
+	}
+
+	public Long getLexemeMeaningId(Long lexemeId) {
+
+		return mainDb
+				.select(LEXEME.MEANING_ID)
+				.from(LEXEME)
+				.where(LEXEME.ID.eq(lexemeId))
+				.fetchSingleInto(Long.class);
+	}
+
+	public Long getLexemeWordId(Long lexemeId) {
+
+		return mainDb
+				.select(LEXEME.WORD_ID)
+				.from(LEXEME)
+				.where(LEXEME.ID.eq(lexemeId))
+				.fetchSingleInto(Long.class);
+	}
+
+	public Integer getLexemeLevel2MinimumValue(Long wordId, String datasetCode, Integer level1) {
+		return mainDb
+				.select(DSL.min(LEXEME.LEVEL2))
+				.from(LEXEME)
+				.where(LEXEME.WORD_ID.eq(wordId)
+						.and(LEXEME.DATASET_CODE.eq(datasetCode))
+						.and(LEXEME.LEVEL1.eq(level1)))
+				.fetchOneInto(Integer.class);
+	}
+
+	public Long getLexemePosId(Long lexemeId, String posCode) {
+		LexemePosRecord lexemePosRecord = mainDb.fetchOne(LEXEME_POS, LEXEME_POS.LEXEME_ID.eq(lexemeId).and(LEXEME_POS.POS_CODE.eq(posCode)));
+		return lexemePosRecord.getId();
+	}
+
+	public Long getLexemeTagId(Long lexemeId, String tagName) {
+		LexemeTagRecord lexemeTagRecord = mainDb.fetchOne(LEXEME_TAG, LEXEME_TAG.LEXEME_ID.eq(lexemeId).and(LEXEME_TAG.TAG_NAME.eq(tagName)));
+		return lexemeTagRecord.getId();
+	}
+
+	public Long getMeaningTagId(Long meaningId, String tagName) {
+		MeaningTagRecord meaningTagRecord = mainDb.fetchOne(MEANING_TAG, MEANING_TAG.MEANING_ID.eq(meaningId).and(MEANING_TAG.TAG_NAME.eq(tagName)));
+		return meaningTagRecord.getId();
+	}
+
+	public Long getLexemeDerivId(Long lexemeId, String derivCode) {
+		LexemeDerivRecord lexemeDerivRecord = mainDb.fetchOne(LEXEME_DERIV, LEXEME_DERIV.LEXEME_ID.eq(lexemeId).and(LEXEME_DERIV.DERIV_CODE.eq(derivCode)));
+		return lexemeDerivRecord.getId();
+	}
+
+	public Long getLexemeRegisterId(Long lexemeId, String registerCode) {
+		LexemeRegisterRecord lexemeRegisterRecord = mainDb.fetchOne(LEXEME_REGISTER,
+				LEXEME_REGISTER.LEXEME_ID.eq(lexemeId).and(LEXEME_REGISTER.REGISTER_CODE.eq(registerCode)));
+		return lexemeRegisterRecord.getId();
+	}
+
+	public Long getLexemeRegionId(Long lexemeId, String regionCode) {
+		LexemeRegionRecord lexemeRegionRecord = mainDb.fetchOne(LEXEME_REGION,
+				LEXEME_REGION.LEXEME_ID.eq(lexemeId).and(LEXEME_REGION.REGION_CODE.eq(regionCode)));
+		return lexemeRegionRecord.getId();
+	}
+
+	public List<Classifier> getLexemeOppositeRelationTypes(String relationTypeCode, String classifLabelLang, String classifLabelType) {
+
+		return mainDb
+				.select(
+						LEX_REL_TYPE_LABEL.CODE,
+						LEX_REL_TYPE_LABEL.VALUE)
+				.from(
+						LEX_REL_MAPPING,
+						LEX_REL_TYPE_LABEL)
+				.where(
+						LEX_REL_MAPPING.CODE1.eq(relationTypeCode)
+								.and(LEX_REL_TYPE_LABEL.CODE.eq(LEX_REL_MAPPING.CODE2))
+								.and(LEX_REL_TYPE_LABEL.LANG.eq(classifLabelLang))
+								.and(LEX_REL_TYPE_LABEL.TYPE.eq(classifLabelType)))
+				.fetchInto(Classifier.class);
+	}
+
+	public List<String> getLexemeCollocValuesByMembership(Long lexemeId) {
+
+		Word cw = WORD.as("cw");
+		Lexeme cl = LEXEME.as("cl");
+		CollocationMember cm = COLLOCATION_MEMBER.as("cm");
+
+		return mainDb
+				.select(cw.VALUE)
+				.from(cw, cl)
+				.where(
+						cl.WORD_ID.eq(cw.ID)
+								.andExists(DSL
+										.select(cm.ID)
+										.from(cm)
+										.where(
+												cm.COLLOC_LEXEME_ID.eq(cl.ID)
+														.and(cm.MEMBER_LEXEME_ID.eq(lexemeId)))))
+				.groupBy(cw.VALUE)
+				.orderBy(cw.VALUE)
+				.fetchInto(String.class);
+	}
+
 	public LexemeRecord getLexemeRecord(Long lexemeId) {
 		return mainDb.selectFrom(LEXEME).where(LEXEME.ID.eq(lexemeId)).fetchOne();
 	}
@@ -513,16 +514,6 @@ public class LookupDbService extends AbstractDataDbService {
 				.fetch();
 	}
 
-	public Integer getLevel2MinimumValue(Long wordId, String datasetCode, Integer level1) {
-		return mainDb
-				.select(DSL.min(LEXEME.LEVEL2))
-				.from(LEXEME)
-				.where(LEXEME.WORD_ID.eq(wordId)
-						.and(LEXEME.DATASET_CODE.eq(datasetCode))
-						.and(LEXEME.LEVEL1.eq(level1)))
-				.fetchOneInto(Integer.class);
-	}
-
 	public List<LexemeRecord> getLexemeRecordsByWord(Long wordId) {
 		return mainDb
 				.selectFrom(LEXEME)
@@ -546,44 +537,6 @@ public class LookupDbService extends AbstractDataDbService {
 						.and(LEXEME.DATASET_CODE.eq(datasetCode)))
 				.orderBy(LEXEME.ORDER_BY)
 				.fetch();
-	}
-
-	public List<Long> getMeaningDefinitionIds(Long meaningId, boolean publicDataOnly) {
-
-		Condition where = DEFINITION.MEANING_ID.eq(meaningId);
-		if (publicDataOnly) {
-			where = where.and(DEFINITION.IS_PUBLIC.isTrue());
-		}
-		return mainDb.select(DEFINITION.ID).from(DEFINITION).where(where).orderBy(DEFINITION.ORDER_BY).fetchInto(Long.class);
-	}
-
-	public List<IdPair> getMeaningsCommonWordsLexemeIdPairs(Long meaningId, Long sourceMeaningId) {
-
-		Lexeme l1 = LEXEME.as("l1");
-		Lexeme l2 = LEXEME.as("l2");
-		Meaning m1 = MEANING.as("m1");
-		Meaning m2 = MEANING.as("m2");
-
-		SelectConditionStep<Record1<Long>> wordIds = DSL.selectDistinct(l1.WORD_ID)
-				.from(l1, m1)
-				.where(l1.MEANING_ID.eq(meaningId)
-						.and(l1.MEANING_ID.eq(m1.ID))
-						.andExists(DSL
-								.select(l2.ID)
-								.from(l2, m2)
-								.where(m2.ID.eq(sourceMeaningId)
-										.and(l2.MEANING_ID.eq(m2.ID))
-										.and(l2.WORD_ID.eq(l1.WORD_ID)))));
-
-		return mainDb
-				.select(l1.ID.as("id1"), l2.ID.as("id2"))
-				.from(l1, l2)
-				.where(l1.WORD_ID.in(wordIds)
-						.and(l1.DATASET_CODE.eq(l2.DATASET_CODE))
-						.and(l1.MEANING_ID.eq(meaningId))
-						.and(l2.MEANING_ID.eq(sourceMeaningId))
-						.and(l2.WORD_ID.eq(l1.WORD_ID)))
-				.fetchInto(IdPair.class);
 	}
 
 	public List<LexRelationRecord> getLexRelationRecords(Long lexemeId) {
@@ -665,8 +618,7 @@ public class LookupDbService extends AbstractDataDbService {
 				.fetchInto(Long.class);
 	}
 
-	// TODO apply word
-	public List<eki.ekilex.data.Lexeme> getMeaningWords(Long meaningId, String datasetCode, String wordLang) {
+	public List<eki.ekilex.data.Lexeme> getMeaningLexemes(Long meaningId, String datasetCode, String wordLang) {
 
 		Lexeme l = LEXEME.as("l");
 		Word w = WORD.as("w");
@@ -683,15 +635,165 @@ public class LookupDbService extends AbstractDataDbService {
 				.select(
 						l.WORD_ID,
 						l.MEANING_ID,
-						l.ID.as("lexeme_id"),
-						w.VALUE.as("word_value"),
-						w.VALUE_PRESE.as("word_value_prese"),
-						w.LANG.as("word_lang"),
-						w.HOMONYM_NR.as("word_homonym_nr"))
+						l.ID.as("lexeme_id"))
 				.from(l, w)
 				.where(where)
 				.orderBy(l.ORDER_BY)
 				.fetchInto(eki.ekilex.data.Lexeme.class);
+	}
+
+	public List<IdPair> getMeaningsCommonWordsLexemeIdPairs(Long meaningId, Long sourceMeaningId) {
+
+		Lexeme l1 = LEXEME.as("l1");
+		Lexeme l2 = LEXEME.as("l2");
+		Meaning m1 = MEANING.as("m1");
+		Meaning m2 = MEANING.as("m2");
+
+		SelectConditionStep<Record1<Long>> wordIds = DSL.selectDistinct(l1.WORD_ID)
+				.from(l1, m1)
+				.where(l1.MEANING_ID.eq(meaningId)
+						.and(l1.MEANING_ID.eq(m1.ID))
+						.andExists(DSL
+								.select(l2.ID)
+								.from(l2, m2)
+								.where(m2.ID.eq(sourceMeaningId)
+										.and(l2.MEANING_ID.eq(m2.ID))
+										.and(l2.WORD_ID.eq(l1.WORD_ID)))));
+
+		return mainDb
+				.select(l1.ID.as("id1"), l2.ID.as("id2"))
+				.from(l1, l2)
+				.where(l1.WORD_ID.in(wordIds)
+						.and(l1.DATASET_CODE.eq(l2.DATASET_CODE))
+						.and(l1.MEANING_ID.eq(meaningId))
+						.and(l2.MEANING_ID.eq(sourceMeaningId))
+						.and(l2.WORD_ID.eq(l1.WORD_ID)))
+				.fetchInto(IdPair.class);
+	}
+
+	public List<Long> getMeaningDefinitionIds(Long meaningId, boolean publicDataOnly) {
+
+		Condition where = DEFINITION.MEANING_ID.eq(meaningId);
+		if (publicDataOnly) {
+			where = where.and(DEFINITION.IS_PUBLIC.isTrue());
+		}
+		return mainDb.select(DEFINITION.ID).from(DEFINITION).where(where).orderBy(DEFINITION.ORDER_BY).fetchInto(Long.class);
+	}
+
+	public Long getMeaningDomainId(Long meaningId, Classifier domain) {
+		MeaningDomainRecord meaningDomainRecord = mainDb.fetchOne(MEANING_DOMAIN,
+				MEANING_DOMAIN.MEANING_ID.eq(meaningId)
+						.and(MEANING_DOMAIN.DOMAIN_ORIGIN.eq(domain.getOrigin()))
+						.and(MEANING_DOMAIN.DOMAIN_CODE.eq(domain.getCode())));
+		return meaningDomainRecord.getId();
+	}
+
+	public Long getMeaningSemanticTypeId(Long meaningId, String semanticTypeCode) {
+		MeaningSemanticTypeRecord meaningSemanticTypeRecord = mainDb
+				.fetchOne(MEANING_SEMANTIC_TYPE, MEANING_SEMANTIC_TYPE.MEANING_ID.eq(meaningId).and(MEANING_SEMANTIC_TYPE.SEMANTIC_TYPE_CODE.eq(semanticTypeCode)));
+		return meaningSemanticTypeRecord.getId();
+	}
+
+	public List<Long> getMeaningLexemeIds(Long meaningId, String lang, String datasetCode) {
+
+		return mainDb
+				.select(LEXEME.ID)
+				.from(LEXEME, WORD)
+				.where(
+						LEXEME.MEANING_ID.eq(meaningId)
+								.and(LEXEME.DATASET_CODE.eq(datasetCode))
+								.and(WORD.ID.eq(LEXEME.WORD_ID))
+								.and(WORD.LANG.eq(lang))
+								.and(WORD.IS_PUBLIC.isTrue()))
+				.fetchInto(Long.class);
+	}
+
+	public List<Long> getMeaningRelationOppositeRelationIds(Long relationId) {
+
+		MeaningRelation mr1 = MEANING_RELATION.as("mr1");
+		MeaningRelation mr2 = MEANING_RELATION.as("mr2");
+		MeaningRelMapping mrm = MEANING_REL_MAPPING.as("mrm");
+
+		return mainDb
+				.select(mr2.ID)
+				.from(mr1, mr2, mrm)
+				.where(
+						mr1.ID.eq(relationId)
+								.and(mr1.MEANING1_ID.eq(mr2.MEANING2_ID))
+								.and(mr1.MEANING2_ID.eq(mr2.MEANING1_ID))
+								.and(mr1.MEANING_REL_TYPE_CODE.eq(mrm.CODE1))
+								.and(mr2.MEANING_REL_TYPE_CODE.eq(mrm.CODE2))
+								.and(mr2.ID.ne(mr1.ID)))
+				.fetchInto(Long.class);
+	}
+
+	public Map<String, Integer[]> getMeaningsWordsWithMultipleHomonymNumbers(List<Long> meaningIds) {
+
+		Field<String> wordValue = WORD.VALUE.as("word_value");
+		Field<Integer[]> homonymNumbers = DSL.arrayAggDistinct(WORD.HOMONYM_NR).as("homonym_numbers");
+
+		Table<Record2<String, Integer[]>> wv = DSL
+				.select(wordValue, homonymNumbers)
+				.from(LEXEME, WORD)
+				.where(
+						LEXEME.MEANING_ID.in(meaningIds)
+								.and(WORD.ID.eq(LEXEME.WORD_ID))
+								.and(WORD.IS_PUBLIC.isTrue()))
+				.groupBy(WORD.VALUE)
+				.asTable("wv");
+
+		return mainDb
+				.selectFrom(wv)
+				.where(PostgresDSL.arrayLength(wv.field(homonymNumbers)).gt(1))
+				.fetchMap(wordValue, homonymNumbers);
+	}
+
+	public String getMeaningFirstDatasetCode(Long meaningId) {
+
+		return mainDb
+				.select(LEXEME.DATASET_CODE)
+				.from(LEXEME)
+				.where(LEXEME.MEANING_ID.eq(meaningId))
+				.limit(1)
+				.fetchSingleInto(String.class);
+	}
+
+	public Map<Long, String[]> getMeaningRelationDatasetCodes(Long meaningId) {
+
+		MeaningRelation mr = MEANING_RELATION.as("mr");
+		Lexeme l = LEXEME.as("l");
+
+		Table<Record2<Long, String>> rmds = DSL
+				.select(mr.MEANING2_ID.as("rel_meaning_id"), l.DATASET_CODE)
+				.from(mr, l)
+				.where(mr.MEANING1_ID.eq(meaningId)).and(l.MEANING_ID.eq(mr.MEANING2_ID))
+				.unionAll(DSL
+						.select(mr.MEANING1_ID.as("rel_meaning_id"), l.DATASET_CODE)
+						.from(mr, l)
+						.where(mr.MEANING2_ID.eq(meaningId)).and(l.MEANING_ID.eq(mr.MEANING1_ID)))
+				.asTable("rmds");
+
+		Field<Long> meaningIdField = rmds.field("rel_meaning_id", Long.class);
+		Field<String> datasetCodeField = rmds.field("dataset_code", String.class);
+
+		return mainDb
+				.select(meaningIdField, DSL.arrayAggDistinct(datasetCodeField))
+				.from(rmds)
+				.groupBy(meaningIdField)
+				.fetchMap(meaningIdField, DSL.arrayAggDistinct(datasetCodeField));
+	}
+
+	public List<Classifier> getMeaningOppositeRelations(String relationTypeCode, String classifLabelLang, String classifLabelType) {
+
+		return mainDb
+				.select(MEANING_REL_TYPE_LABEL.CODE, MEANING_REL_TYPE_LABEL.VALUE)
+				.from(MEANING_REL_MAPPING, MEANING_REL_TYPE_LABEL)
+				.where(
+						MEANING_REL_MAPPING.CODE1.eq(relationTypeCode)
+								.and(MEANING_REL_TYPE_LABEL.CODE.eq(MEANING_REL_MAPPING.CODE2))
+								.and(MEANING_REL_TYPE_LABEL.LANG.eq(classifLabelLang))
+								.and(MEANING_REL_TYPE_LABEL.TYPE.eq(classifLabelType)))
+				.fetchInto(Classifier.class);
 	}
 
 	public List<InexactSynonym> getMeaningInexactSynonyms(Long meaningId, String targetLang, String datasetCode) {
@@ -745,70 +847,6 @@ public class LookupDbService extends AbstractDataDbService {
 						def.MEANING_ID.eq(syn.field("meaning_id", Long.class))
 								.and(def.DEFINITION_TYPE_CODE.eq(DEFINITION_TYPE_CODE_INEXACT_SYN))))
 				.fetchInto(InexactSynonym.class);
-	}
-
-	public List<Classifier> getLexemeOppositeRelations(String relationTypeCode, String classifLabelLang, String classifLabelType) {
-
-		return mainDb
-				.select(LEX_REL_TYPE_LABEL.CODE, LEX_REL_TYPE_LABEL.VALUE)
-				.from(LEX_REL_MAPPING, LEX_REL_TYPE_LABEL)
-				.where(
-						LEX_REL_MAPPING.CODE1.eq(relationTypeCode)
-								.and(LEX_REL_TYPE_LABEL.CODE.eq(LEX_REL_MAPPING.CODE2))
-								.and(LEX_REL_TYPE_LABEL.LANG.eq(classifLabelLang))
-								.and(LEX_REL_TYPE_LABEL.TYPE.eq(classifLabelType)))
-				.fetchInto(Classifier.class);
-	}
-
-	public List<Classifier> getWordOppositeRelations(String relationTypeCode, String classifLabelLang, String classifLabelType) {
-
-		return mainDb
-				.select(WORD_REL_TYPE_LABEL.CODE, WORD_REL_TYPE_LABEL.VALUE)
-				.from(WORD_REL_MAPPING, WORD_REL_TYPE_LABEL)
-				.where(
-						WORD_REL_MAPPING.CODE1.eq(relationTypeCode)
-								.and(WORD_REL_TYPE_LABEL.CODE.eq(WORD_REL_MAPPING.CODE2))
-								.and(WORD_REL_TYPE_LABEL.LANG.eq(classifLabelLang))
-								.and(WORD_REL_TYPE_LABEL.TYPE.eq(classifLabelType)))
-				.fetchInto(Classifier.class);
-	}
-
-	public List<Classifier> getMeaningOppositeRelations(String relationTypeCode, String classifLabelLang, String classifLabelType) {
-
-		return mainDb
-				.select(MEANING_REL_TYPE_LABEL.CODE, MEANING_REL_TYPE_LABEL.VALUE)
-				.from(MEANING_REL_MAPPING, MEANING_REL_TYPE_LABEL)
-				.where(
-						MEANING_REL_MAPPING.CODE1.eq(relationTypeCode)
-								.and(MEANING_REL_TYPE_LABEL.CODE.eq(MEANING_REL_MAPPING.CODE2))
-								.and(MEANING_REL_TYPE_LABEL.LANG.eq(classifLabelLang))
-								.and(MEANING_REL_TYPE_LABEL.TYPE.eq(classifLabelType)))
-				.fetchInto(Classifier.class);
-	}
-
-	public Map<Long, String[]> getMeaningRelationDatasetCodes(Long meaningId) {
-
-		MeaningRelation mr = MEANING_RELATION.as("mr");
-		Lexeme l = LEXEME.as("l");
-
-		Table<Record2<Long, String>> rmds = DSL
-				.select(mr.MEANING2_ID.as("rel_meaning_id"), l.DATASET_CODE)
-				.from(mr, l)
-				.where(mr.MEANING1_ID.eq(meaningId)).and(l.MEANING_ID.eq(mr.MEANING2_ID))
-				.unionAll(DSL
-						.select(mr.MEANING1_ID.as("rel_meaning_id"), l.DATASET_CODE)
-						.from(mr, l)
-						.where(mr.MEANING2_ID.eq(meaningId)).and(l.MEANING_ID.eq(mr.MEANING1_ID)))
-				.asTable("rmds");
-
-		Field<Long> meaningIdField = rmds.field("rel_meaning_id", Long.class);
-		Field<String> datasetCodeField = rmds.field("dataset_code", String.class);
-
-		return mainDb
-				.select(meaningIdField, DSL.arrayAggDistinct(datasetCodeField))
-				.from(rmds)
-				.groupBy(meaningIdField)
-				.fetchMap(meaningIdField, DSL.arrayAggDistinct(datasetCodeField));
 	}
 
 	public boolean meaningDomainExists(Long meaningId, String domainCode, String domainOrigin) {
@@ -1033,17 +1071,20 @@ public class LookupDbService extends AbstractDataDbService {
 
 	public boolean isOnlyLexemesForMeaning(Long meaningId, String datasetCode) {
 
-		boolean noOtherDatasetsExist = mainDb
-				.select(DSL.field(DSL.count(LEXEME.ID).eq(0)).as("no_other_datasets_exist"))
-				.from(LEXEME)
-				.where(LEXEME.MEANING_ID.eq(meaningId).and(LEXEME.DATASET_CODE.ne(datasetCode)))
-				.fetchSingleInto(Boolean.class);
-
-		return noOtherDatasetsExist;
+		boolean otherDatasetLexemesExist = mainDb
+				.fetchExists(DSL
+						.select(LEXEME.ID)
+						.from(LEXEME)
+						.where(
+								LEXEME.MEANING_ID.eq(meaningId)
+										.and(LEXEME.DATASET_CODE.ne(datasetCode))));
+		boolean noOtherDatasetLexemesExist = !otherDatasetLexemesExist;
+		return noOtherDatasetLexemesExist;
 	}
 
 	public boolean isMemberOfWordRelationGroup(Long groupId, Long wordId) {
-		Long id = mainDb.select(WORD_GROUP.ID)
+		Long id = mainDb
+				.select(WORD_GROUP.ID)
 				.from(WORD_GROUP.join(WORD_GROUP_MEMBER).on(WORD_GROUP_MEMBER.WORD_GROUP_ID.eq(WORD_GROUP.ID)))
 				.where(WORD_GROUP.ID.eq(groupId).and(WORD_GROUP_MEMBER.WORD_ID.eq(wordId)))
 				.fetchOneInto(Long.class);

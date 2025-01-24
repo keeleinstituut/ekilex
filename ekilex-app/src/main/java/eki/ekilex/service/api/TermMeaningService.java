@@ -112,8 +112,8 @@ public class TermMeaningService extends AbstractApiCudService implements Activit
 
 		if (CollectionUtils.isNotEmpty(words)) {
 
-			List<Lexeme> meaningWords = lookupDbService.getMeaningWords(meaningId, datasetCode, null);
-			List<Long> existingWordIds = meaningWords.stream().map(Lexeme::getWordId).collect(Collectors.toList());
+			List<Lexeme> meaningLexemes = lookupDbService.getMeaningLexemes(meaningId, datasetCode, null);
+			List<Long> existingWordIds = meaningLexemes.stream().map(Lexeme::getWordId).collect(Collectors.toList());
 
 			for (TermWord word : words) {
 

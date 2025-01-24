@@ -6,6 +6,7 @@ import java.util.Map;
 
 import javax.transaction.Transactional;
 
+import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -46,6 +47,14 @@ public class ComplexOpService implements GlobalConstant {
 		boolean isOnlyLexemeForWord = lookupDbService.isOnlyLexemeForWord(lexemeId);
 		if (isOnlyLexemeForWord) {
 			deleteConfirmation.setWordDelete(true);
+			deleteConfirmation.setShowConfirmation(true);
+		}
+
+		List<String> lexemeCollocValues = lookupDbService.getLexemeCollocValuesByMembership(lexemeId);
+		boolean isCollocMemberDelete = CollectionUtils.isNotEmpty(lexemeCollocValues);
+		if (isCollocMemberDelete) {
+			deleteConfirmation.setLexemeCollocValues(lexemeCollocValues);
+			deleteConfirmation.setCollocMemberDelete(true);
 			deleteConfirmation.setShowConfirmation(true);
 		}
 

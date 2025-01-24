@@ -25,6 +25,7 @@ import eki.ekilex.data.Classifier;
 import eki.ekilex.data.DatasetPermission;
 import eki.ekilex.data.EkiUser;
 import eki.ekilex.data.Freeform;
+import eki.ekilex.data.Lexeme;
 import eki.ekilex.data.ListData;
 import eki.ekilex.data.MeaningImage;
 import eki.ekilex.data.Note;
@@ -34,7 +35,6 @@ import eki.ekilex.data.Tag;
 import eki.ekilex.data.Usage;
 import eki.ekilex.data.UsageDefinition;
 import eki.ekilex.data.UsageTranslation;
-import eki.ekilex.data.Lexeme;
 import eki.ekilex.data.WordLexemeMeaningDetails;
 import eki.ekilex.data.WordLexemeMeaningIdTuple;
 import eki.ekilex.security.EkilexPermissionEvaluator;
@@ -902,6 +902,14 @@ public class CudService extends AbstractCudService implements PermConstant, Acti
 	}
 
 	@Transactional(rollbackOn = Exception.class)
+	public void createWordTag(Long wordId, String tagName, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
+
+		ActivityLogData activityLog = activityLogService.prepareActivityLog("createWordTag", wordId, ActivityOwner.WORD, roleDatasetCode, isManualEventOnUpdateEnabled);
+		Long wordTagId = cudDbService.createWordTag(wordId, tagName);
+		activityLogService.createActivityLog(activityLog, wordTagId, ActivityEntity.WORD_TAG);
+	}
+
+	@Transactional(rollbackOn = Exception.class)
 	public void createWordForum(Long wordId, String valuePrese, EkiUser user) {
 
 		String value = textDecorationService.removeEkiElementMarkup(valuePrese);
@@ -1241,6 +1249,17 @@ public class CudService extends AbstractCudService implements PermConstant, Acti
 	}
 
 	@Transactional(rollbackOn = Exception.class)
+	public void deleteWordTag(Long wordId, String tagName, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
+
+		if (StringUtils.isNotBlank(tagName)) {
+			Long wordTagId = lookupDbService.getWordTagId(wordId, tagName);
+			ActivityLogData activityLog = activityLogService.prepareActivityLog("deleteWordTag", wordId, ActivityOwner.WORD, roleDatasetCode, isManualEventOnUpdateEnabled);
+			cudDbService.deleteWordWordTag(wordTagId);
+			activityLogService.createActivityLog(activityLog, wordTagId, ActivityEntity.WORD_TAG);
+		}
+	}
+
+	@Transactional(rollbackOn = Exception.class)
 	public void deleteWordRelation(Long relationId, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
 
 		Long wordId = activityLogService.getOwnerId(relationId, ActivityEntity.WORD_RELATION);
@@ -1307,6 +1326,7 @@ public class CudService extends AbstractCudService implements PermConstant, Acti
 			activityLogService.createActivityLog("deleteWord", wordId, ActivityOwner.WORD, roleDatasetCode, isManualEventOnUpdateEnabled);
 		}
 		activityLogService.createActivityLog("deleteLexeme", lexemeId, ActivityOwner.LEXEME, roleDatasetCode, isManualEventOnUpdateEnabled);
+		cudDbService.deleteLexemeCollocMember(lexemeId);
 		cudDbService.deleteLexeme(lexemeId);
 		if (isOnlyLexemeForMeaning) {
 			cudDbService.deleteMeaning(meaningId);
@@ -1586,6 +1606,7 @@ public class CudService extends AbstractCudService implements PermConstant, Acti
 		activityLogService.createActivityLog(activityLog, freeformId, ActivityEntity.OD_WORD_RECOMMENDATION);
 	}
 
+	// TODO what about forms linked to colloc membs?
 	@Transactional(rollbackOn = Exception.class)
 	public void deleteParadigm(Long paradigmId, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
 

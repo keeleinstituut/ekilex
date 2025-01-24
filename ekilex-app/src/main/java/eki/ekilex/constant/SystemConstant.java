@@ -16,7 +16,7 @@ public interface SystemConstant {
 
 	long CACHE_EVICT_DELAY_60MIN = 60 * 60 * 1000;
 
-	String MERGE_HOMONYMS_TIME_3_AM = "0 0 3 * * *";
+	String JOIN_HOMONYMS_TIME_3_AM = "0 0 3 * * *";
 
 	String ADJUST_HOMONYM_NRS_TIME_3_30_AM = "0 30 3 * * *";
 

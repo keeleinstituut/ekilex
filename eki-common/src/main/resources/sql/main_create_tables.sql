@@ -573,6 +573,15 @@ create table word_guid (
 );
 alter sequence word_guid_id_seq restart with 10000;
 
+create table word_tag (
+  id bigserial primary key, 
+  word_id bigint references word(id) on delete cascade not null, 
+  tag_name varchar(100) references tag(name) on delete cascade not null, 
+  created_on timestamp not null default statement_timestamp(), 
+  unique(word_id, tag_name)
+);
+alter sequence word_tag_id_seq restart with 10000;
+
 -- keelendi seos
 create table word_relation (
   id bigserial primary key, 

@@ -67,4 +67,15 @@ public abstract class AbstractSynSearchService extends AbstractWordSearchService
 		lexeme.setUsages(usages);
 		lexeme.setMeaning(meaning);
 	}
+
+	protected void populateWithWord(List<Lexeme> lexemes) {
+
+		for (Lexeme lexeme : lexemes) {
+			Long wordId = lexeme.getWordId();
+			Word word = commonDataDbService.getWord(wordId);
+			EkiUser user = userContext.getUser();
+			permCalculator.applyCrud(user, word);
+			lexeme.setLexemeWord(word);
+		}
+	}
 }

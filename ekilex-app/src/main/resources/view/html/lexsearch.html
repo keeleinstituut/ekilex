@@ -128,6 +128,7 @@
               <div th:replace="lexcomp :: word_gender"></div>
               <div th:replace="lexcomp :: word_type"></div>
               <div th:replace="lexcomp :: word_aspect"></div>
+              <div th:replace="lexcomp :: word_tag"></div>
             </div>
           </div>
           <div class="row no-gutters h-100 overflow-hidden">
@@ -160,6 +161,7 @@
               <div th:replace="lexdialog :: add_word_gender_dlg"></div>
               <div th:replace="lexdialog :: add_word_type_dlg"></div>
               <div th:replace="lexdialog :: add_word_aspect_dlg"></div>
+              <div th:replace="lexdialog :: add_word_tag_dlg"></div>
               <div th:replace="lexdialog :: add_word_display_morph_dlg"></div>
               <div th:replace="lexdialog :: add_word_vocal_form_dlg"></div>
               <div th:replace="lexdialog :: add_word_morphophono_form_dlg"></div>
@@ -300,17 +302,9 @@
                       </div>
                       <div class="pb-3" th:unless="${#lists.isEmpty(details.word.paradigms)}">
                         <div th:each="paradigm,paradigmIter : ${details.word.paradigms}" th:if="${paradigm.formsExist}">
-                          <div class="text-secondary ml-1 invisible-buttons">
+                          <div class="text-secondary ml-1">
                             <span th:if="${paradigm.inflectionType != null}" th:utext="${paradigm.inflectionType}"></span>
                             <span th:if="${paradigm.wordClass}" th:text="${paradigm.wordClass}"></span>
-                            <button type="button" class="btn badge badge-warning"
-                                    th:data-id="${paradigm.paradigmId}"
-                                    data-op-code="paradigm"
-                                    data-toggle="delete-confirm"
-                                    data-placement="left"
-                                    sec:authorize="#vars.details.word.crudGrant">
-                              <i class="fa fa-remove" aria-hidden="true"></i>
-                            </button>
                           </div>
                           <div th:if="${paradigm.comment != null}">
                             <span th:utext="${paradigm.comment}"></span>

@@ -258,6 +258,11 @@ public abstract class AbstractAuthActionController implements WebConstant, Syste
 		return commonDataService.getMeaningTags();
 	}
 
+	@ModelAttribute("wordTags")
+	public List<String> getWordTags() {
+		return commonDataService.getWordTags();
+	}
+
 	@ModelAttribute("tagTypes")
 	public List<TagType> getTagTypes() {
 		return Arrays.asList(TagType.class.getEnumConstants());

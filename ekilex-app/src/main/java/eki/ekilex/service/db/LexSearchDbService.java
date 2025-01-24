@@ -22,7 +22,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.jooq.Condition;
 import org.jooq.Field;
 import org.jooq.Param;
-import org.jooq.Record18;
+import org.jooq.Record19;
 import org.jooq.Record9;
 import org.jooq.Table;
 import org.jooq.impl.DSL;
@@ -182,6 +182,7 @@ public class LexSearchDbService extends AbstractDataDbService {
 				.fetchInto(ParadigmFormTuple.class);
 	}
 
+	// TODO apply word?
 	public List<eki.ekilex.data.Lexeme> getWordLexemes(Long wordId, SearchDatasetsRestriction searchDatasetsRestriction, String classifierLabelLang, String classifierLabelTypeCode) {
 
 		Lexeme l = LEXEME.as("l");
@@ -235,7 +236,8 @@ public class LexSearchDbService extends AbstractDataDbService {
 				.where(where)
 				.asTable("w");
 
-		Field<String[]> wtf = queryHelper.getWordTypeCodesField(w.field("word_id", Long.class));
+		Field<String[]> wtf = queryHelper.getWordTagsField(w.field("word_id", Long.class));
+		Field<String[]> wwtf = queryHelper.getWordTypeCodesField(w.field("word_id", Long.class));
 		Field<Boolean> wtpf = queryHelper.getWordIsPrefixoidField(w.field("word_id", Long.class));
 		Field<Boolean> wtsf = queryHelper.getWordIsSuffixoidField(w.field("word_id", Long.class));
 		Field<Boolean> wtz = queryHelper.getWordIsForeignField(w.field("word_id", Long.class));
@@ -294,7 +296,7 @@ public class LexSearchDbService extends AbstractDataDbService {
 		} else {
 			wvobf = w.field("word_value");
 		}
-		Table<Record18<Long, String, String, Integer, String, String, String, String, String, String[], Boolean, Boolean, Boolean, Boolean, String[], String[], String[], Timestamp>> ww = DSL
+		Table<Record19<Long, String, String, Integer, String, String, String, String, String, String[], String[], Boolean, Boolean, Boolean, Boolean, String[], String[], String[], Timestamp>> ww = DSL
 				.select(
 						w.field("word_id", Long.class),
 						w.field("word_value", String.class),
@@ -305,7 +307,8 @@ public class LexSearchDbService extends AbstractDataDbService {
 						w.field("gender_code", String.class),
 						w.field("aspect_code", String.class),
 						w.field("is_word_public", String.class),
-						wtf.as("word_type_codes"),
+						wtf.as("tags"),
+						wwtf.as("word_type_codes"),
 						wtpf.as("prefixoid"),
 						wtsf.as("suffixoid"),
 						wtz.as("foreign"),
@@ -323,9 +326,15 @@ public class LexSearchDbService extends AbstractDataDbService {
 				.asTable("ww");
 
 		if (noLimit) {
-			return mainDb.selectFrom(ww).fetchInto(eki.ekilex.data.Word.class);
+			return mainDb
+					.selectFrom(ww)
+					.fetchInto(eki.ekilex.data.Word.class);
 		} else {
-			return mainDb.selectFrom(ww).limit(maxResultsLimit).offset(offset).fetchInto(eki.ekilex.data.Word.class);
+			return mainDb
+					.selectFrom(ww)
+					.limit(maxResultsLimit)
+					.offset(offset)
+					.fetchInto(eki.ekilex.data.Word.class);
 		}
 	}
 }

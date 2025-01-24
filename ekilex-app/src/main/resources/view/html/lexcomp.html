@@ -723,6 +723,45 @@
       </div>
     </th:block>
   </div>
+  <div class="mr-1" th:fragment="word_tag">
+    <th:block th:if="${#lists.isEmpty(details.word.tags)}">
+      <button type="button" class="btn btn-secondary btn-compact btn-sm"
+              data-toggle="modal"
+              th:data-target="${'#addWordTagDlg_' + wordId}"
+              sec:authorize="#vars.details.word.crudGrant">
+        <i class="fa fa-plus action-icon mr-1" aria-hidden="true"></i>
+        <span th:text="#{lex.word.tag}">Silt</span>
+      </button>
+    </th:block>
+    <th:block th:unless="${#lists.isEmpty(details.word.tags)}">
+      <span th:each="tag,tagIter : ${details.word.tags}"
+            th:title="#{lex.word.tag}"
+            data-toggle="tooltip" data-boundary="window" data-placement="top"
+            class="hover-actions-container hover-actions-container-outline">
+        <span th:text="${tag}"></span>
+        <span class="hover-actions hover-actions-bottom-right">
+          <span class="btn-group">
+            <button type="button" class="btn btn-secondary btn-sm"
+                    data-toggle="modal"
+                    th:data-target="${'#addWordTagDlg_' + wordId}"
+                    sec:authorize="#vars.details.word.crudGrant">
+              <i class="fa fa-plus action-icon" aria-hidden="true"></i>
+            </button>
+            <button type="button" class="btn btn-secondary btn-sm"
+                    th:data-id="${wordId}"
+                    data-op-code="word_tag"
+                    th:data-value="${tag}"
+                    data-toggle="delete-confirm"
+                    data-placement="right"
+                    sec:authorize="#vars.details.word.crudGrant">
+              <i class="fa fa-remove action-icon" aria-hidden="true"></i>
+            </button>
+          </span>
+        </span>
+        <span th:unless="${tagIter.last}" class="ml-n1">,</span>
+      </span>
+    </th:block>
+  </div>
   <div class="ekiAccordion__instance" th:fragment="word_freeform">
     <div class="ekiAccordion__title">
       <span class="badge badge-data-exists" th:unless="${#lists.isEmpty(details.word.freeforms)}">•</span>

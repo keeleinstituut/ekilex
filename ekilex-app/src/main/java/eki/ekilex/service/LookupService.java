@@ -435,7 +435,7 @@ public class LookupService extends AbstractWordSearchService {
 		if (ActivityOwner.WORD.equals(owner)) {
 			oppositeRelations = lookupDbService.getWordOppositeRelations(relationTypeCode, CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
 		} else if (ActivityOwner.LEXEME.equals(owner)) {
-			oppositeRelations = lookupDbService.getLexemeOppositeRelations(relationTypeCode, CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
+			oppositeRelations = lookupDbService.getLexemeOppositeRelationTypes(relationTypeCode, CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
 		} else if (ActivityOwner.MEANING.equals(owner)) {
 			oppositeRelations = lookupDbService.getMeaningOppositeRelations(relationTypeCode, CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
 		}

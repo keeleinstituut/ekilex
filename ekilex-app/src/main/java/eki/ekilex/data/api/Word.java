@@ -1,5 +1,7 @@
 package eki.ekilex.data.api;
 
+import java.util.List;
+
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 
@@ -33,6 +35,8 @@ public class Word extends AbstractDataObject {
 	private String vocalForm;
 
 	private String morphophonoForm;
+
+	private List<String> tags;
 
 	private boolean morphExists;
 
@@ -130,6 +134,14 @@ public class Word extends AbstractDataObject {
 
 	public void setMorphophonoForm(String morphophonoForm) {
 		this.morphophonoForm = morphophonoForm;
+	}
+
+	public List<String> getTags() {
+		return tags;
+	}
+
+	public void setTags(List<String> tags) {
+		this.tags = tags;
 	}
 
 	public boolean isMorphExists() {

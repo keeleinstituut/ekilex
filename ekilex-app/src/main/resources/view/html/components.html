@@ -359,13 +359,21 @@
           </th:block>
           <ul th:if="${lexemeDeleteConfirmation.userRoleExist}">
             <li th:if="${lexemeDeleteConfirmation.meaningDelete}"
-                th:text="#{delete.lexeme.related.meanings}">Ilmiku(te) kustutamisega kaasneb ka tähenduse kustutamine. Palun kinnita tähenduse kustutamine.</li>
+                th:text="#{delete.lexeme.related.meanings}">Ilmiku(te) kustutamisega kaasneb ka tähenduse kustutamine. Palun kinnita kustutamine.</li>
             <li th:if="${lexemeDeleteConfirmation.wordDelete}"
-                th:text="#{delete.lexeme.related.words}">Ilmiku(te) kustutamisega kaasneb ka keelendi(te) kustutamine. Palun kinnita keelendi(te) kustutamine.</li>
+                th:text="#{delete.lexeme.related.words}">Ilmiku(te) kustutamisega kaasneb ka keelendi(te) kustutamine. Palun kinnita kustutamine.</li>
             <th:block th:if="${not #lists.isEmpty(lexemeDeleteConfirmation.lexemesWordValues)}">
-              <li th:text="#{delete.lexeme.lexemes.to.delete}">Kustuvad järgmised ilmikud:</li>
+              <li th:text="#{delete.lexeme.words.to.delete}">Kustuvad järgmised keelendid:</li>
               <ul>
                 <li th:each="wordValue : ${lexemeDeleteConfirmation.lexemesWordValues}" th:text="${wordValue}"></li>
+              </ul>
+            </th:block>
+            <li th:if="${lexemeDeleteConfirmation.collocMemberDelete}"
+                th:text="#{delete.lexeme.related.collocmem}">Ilmiku(te) kustutamisega kaasneb ka kollokatsiooni(de) liikme(te) kustutamine. Palun kinnita kustutamine.</li>
+            <th:block th:if="${not #lists.isEmpty(lexemeDeleteConfirmation.lexemeCollocValues)}">
+              <li th:text="#{delete.lexeme.collocmem.to.delete}">Liige kustub järgmistes kollokatsioonides:</li>
+              <ul>
+                <li th:each="collocValue : ${lexemeDeleteConfirmation.lexemeCollocValues}" th:text="${collocValue}"></li>
               </ul>
             </th:block>
           </ul>

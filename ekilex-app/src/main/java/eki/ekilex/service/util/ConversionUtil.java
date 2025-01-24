@@ -38,7 +38,6 @@ import eki.ekilex.data.Form;
 import eki.ekilex.data.InexactSynonym;
 import eki.ekilex.data.Lexeme;
 import eki.ekilex.data.LexemeLangGroup;
-import eki.ekilex.data.LexemeTag;
 import eki.ekilex.data.MeaningRelation;
 import eki.ekilex.data.MeaningWord;
 import eki.ekilex.data.Note;
@@ -748,7 +747,7 @@ public class ConversionUtil implements GlobalConstant {
 		return sources;
 	}
 
-	public boolean isLexemesActiveTagComplete(DatasetPermission userRole, List<? extends LexemeTag> lexemes, Tag activeTag) {
+	public boolean isLexemesActiveTagComplete(DatasetPermission userRole, List<Lexeme> lexemes, Tag activeTag) {
 
 		if (userRole == null) {
 			return false;
@@ -776,7 +775,7 @@ public class ConversionUtil implements GlobalConstant {
 		return false;
 	}
 
-	public boolean isLexemesActiveTagComplete(List<? extends LexemeTag> lexemes, Tag activeTag) {
+	public boolean isLexemesActiveTagComplete(List<Lexeme> lexemes, Tag activeTag) {
 
 		if (activeTag == null) {
 			return false;

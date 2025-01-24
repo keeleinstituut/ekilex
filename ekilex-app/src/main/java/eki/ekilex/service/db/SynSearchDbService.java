@@ -364,35 +364,6 @@ public class SynSearchDbService extends AbstractDataDbService {
 				.fetchInto(eki.ekilex.data.Lexeme.class);
 	}
 
-	public eki.ekilex.data.Word getWord(Long wordId) {
-
-		Word w = WORD.as("w");
-		Lexeme l = LEXEME.as("l");
-
-		Field<String[]> wtf = queryHelper.getWordTypeCodesField(w.ID);
-		Field<Boolean> wtpf = queryHelper.getWordIsPrefixoidField(w.ID);
-		Field<Boolean> wtsf = queryHelper.getWordIsSuffixoidField(w.ID);
-		Field<Boolean> wtz = queryHelper.getWordIsForeignField(w.ID);
-
-		return mainDb
-				.select(
-						w.ID.as("word_id"),
-						w.VALUE.as("word_value"),
-						w.VALUE_PRESE.as("word_value_prese"),
-						w.LANG,
-						wtf.as("word_type_codes"),
-						wtpf.as("prefixoid"),
-						wtsf.as("suffixoid"),
-						wtz.as("foreign"))
-				.from(w)
-				.where(w.ID.eq(wordId)
-						.andExists(DSL
-								.select(l.ID)
-								.from(l)
-								.where(l.WORD_ID.eq(w.ID))))
-				.fetchOneInto(eki.ekilex.data.Word.class);
-	}
-
 	public List<eki.ekilex.data.WordRelation> getExistingFollowingRelationsForWord(Long relationId, String relTypeCode) {
 		WordRelation wr2 = WORD_RELATION.as("wr2");
 

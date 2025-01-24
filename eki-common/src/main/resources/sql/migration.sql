@@ -134,4 +134,19 @@ create index source_comment_idx on source(comment);
 create index source_comment_lower_idx on source(lower(comment));
 create index source_comment_lower_prefix_idx on source(lower(comment) text_pattern_ops);
 
+-- keelendi sildid
+
+create table word_tag (
+  id bigserial primary key, 
+  word_id bigint references word(id) on delete cascade not null, 
+  tag_name varchar(100) references tag(name) on delete cascade not null, 
+  created_on timestamp not null default statement_timestamp(), 
+  unique(word_id, tag_name)
+);
+alter sequence word_tag_id_seq restart with 10000;
+
+create index word_tag_word_id_idx on word_tag(word_id);
+create index word_tag_tag_name_idx on word_tag(tag_name);
+create index word_tag_tag_name_lower_idx on word_tag(lower(tag_name));
+
 

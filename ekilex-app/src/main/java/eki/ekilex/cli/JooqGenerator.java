@@ -67,7 +67,7 @@ public class JooqGenerator implements CommandLineRunner {
 
 		try {
 			runGenerator(mainDataSourceDriver, mainDataSourceUrl, mainDataSourceUsername, mainDataSourcePassword, "eki.ekilex.data.db.main");
-			runGenerator(archDataSourceDriver, archDataSourceUrl, archDataSourceUsername, archDataSourcePassword, "eki.ekilex.data.db.arch");
+			//runGenerator(archDataSourceDriver, archDataSourceUrl, archDataSourceUsername, archDataSourcePassword, "eki.ekilex.data.db.arch");
 		} catch (Exception e) {
 			logger.error("Fatal error", e);
 		} finally {

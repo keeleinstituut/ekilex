@@ -153,9 +153,17 @@ public class TagDbService extends AbstractDataDbService {
 	public void createTag(String tagName, TagType tagType, boolean setAutomatically, boolean removeToComplete) {
 
 		mainDb
-				.insertInto(TAG)
-				.columns(TAG.NAME, TAG.TYPE, TAG.SET_AUTOMATICALLY, TAG.REMOVE_TO_COMPLETE)
-				.values(tagName, tagType.name(), setAutomatically, removeToComplete)
+				.insertInto(
+						TAG,
+						TAG.NAME,
+						TAG.TYPE,
+						TAG.SET_AUTOMATICALLY,
+						TAG.REMOVE_TO_COMPLETE)
+				.values(
+						tagName,
+						tagType.name(),
+						setAutomatically,
+						removeToComplete)
 				.execute();
 	}
 

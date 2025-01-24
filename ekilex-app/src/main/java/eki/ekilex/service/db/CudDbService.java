@@ -1,5 +1,6 @@
 package eki.ekilex.service.db;
 
+import static eki.ekilex.data.db.main.Tables.COLLOCATION_MEMBER;
 import static eki.ekilex.data.db.main.Tables.DEFINITION;
 import static eki.ekilex.data.db.main.Tables.DEFINITION_DATASET;
 import static eki.ekilex.data.db.main.Tables.DEFINITION_FREEFORM;
@@ -35,6 +36,7 @@ import static eki.ekilex.data.db.main.Tables.WORD_GROUP;
 import static eki.ekilex.data.db.main.Tables.WORD_GROUP_MEMBER;
 import static eki.ekilex.data.db.main.Tables.WORD_RELATION;
 import static eki.ekilex.data.db.main.Tables.WORD_RELATION_PARAM;
+import static eki.ekilex.data.db.main.Tables.WORD_TAG;
 import static eki.ekilex.data.db.main.Tables.WORD_WORD_TYPE;
 
 import java.math.BigDecimal;
@@ -968,6 +970,28 @@ public class CudDbService extends AbstractDataDbService {
 		return wordWordTypeId;
 	}
 
+	public Long createWordTag(Long wordId, String tagName) {
+		Long wordTagId = mainDb
+				.select(WORD_TAG.ID)
+				.from(WORD_TAG)
+				.where(WORD_TAG.WORD_ID.eq(wordId)
+						.and(WORD_TAG.TAG_NAME.eq(tagName)))
+				.limit(1)
+				.fetchOneInto(Long.class);
+		if (wordTagId == null) {
+			wordTagId = mainDb
+					.insertInto(
+							WORD_TAG,
+							WORD_TAG.WORD_ID,
+							WORD_TAG.TAG_NAME)
+					.values(wordId, tagName)
+					.returning(WORD_TAG.ID)
+					.fetchOne()
+					.getId();
+		}
+		return wordTagId;
+	}
+
 	public Long createWordRelation(Long wordId, Long targetWordId, String wordRelationCode, String relationStatus) {
 
 		Long wordRelationId = mainDb
@@ -1659,25 +1683,36 @@ public class CudDbService extends AbstractDataDbService {
 	}
 
 	public void deleteWordWordType(Long wordWordTypeId) {
-		mainDb.delete(WORD_WORD_TYPE)
+		mainDb
+				.delete(WORD_WORD_TYPE)
 				.where(WORD_WORD_TYPE.ID.eq(wordWordTypeId))
 				.execute();
 	}
 
+	public void deleteWordWordTag(Long wordTagId) {
+		mainDb
+				.delete(WORD_TAG)
+				.where(WORD_TAG.ID.eq(wordTagId))
+				.execute();
+	}
+
 	public void deleteWordRelation(Long relationId) {
-		mainDb.delete(WORD_RELATION)
+		mainDb
+				.delete(WORD_RELATION)
 				.where(WORD_RELATION.ID.eq(relationId))
 				.execute();
 	}
 
 	public void deleteWordRelationGroupMember(Long relationId) {
-		mainDb.delete(WORD_GROUP_MEMBER)
+		mainDb
+				.delete(WORD_GROUP_MEMBER)
 				.where(WORD_GROUP_MEMBER.ID.eq(relationId))
 				.execute();
 	}
 
 	public void deleteWordRelationGroup(Long groupId) {
-		mainDb.delete(WORD_GROUP)
+		mainDb
+				.delete(WORD_GROUP)
 				.where(WORD_GROUP.ID.eq(groupId))
 				.execute();
 	}
@@ -1807,6 +1842,13 @@ public class CudDbService extends AbstractDataDbService {
 				.execute();
 	}
 
+	public void deleteLexemeCollocMember(Long lexemeId) {
+		mainDb
+				.delete(COLLOCATION_MEMBER)
+				.where(COLLOCATION_MEMBER.MEMBER_LEXEME_ID.eq(lexemeId))
+				.execute();
+	}
+
 	public void deleteLexemeRelation(Long relationId) {
 		mainDb
 				.delete(LEX_RELATION)
@@ -1891,7 +1933,8 @@ public class CudDbService extends AbstractDataDbService {
 	}
 
 	public void deleteParadigm(Long paradigmId) {
-		mainDb.delete(PARADIGM)
+		mainDb
+				.delete(PARADIGM)
 				.where(PARADIGM.ID.eq(paradigmId))
 				.execute();
 	}

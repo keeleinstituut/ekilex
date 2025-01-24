@@ -40,6 +40,7 @@ public class PartSynSearchService extends AbstractSynSearchService {
 		permCalculator.applyCrud(user, word);
 		List<WordForum> wordForums = commonDataDbService.getWordForums(wordId);
 		permCalculator.applyCrud(user, wordForums);
+		word.setForums(wordForums);
 
 		List<Lexeme> synLexemes = synSearchDbService.getWordPrimarySynonymLexemes(wordId, searchDatasetsRestriction, CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
 		synLexemes.forEach(lexeme -> populateLexeme(lexeme, word, languagesOrder, synMeaningWordLangCodes, user, userProfile));
@@ -57,7 +58,6 @@ public class PartSynSearchService extends AbstractSynSearchService {
 		wordDetails.setWord(word);
 		wordDetails.setLexemes(synLexemes);
 		wordDetails.setWordRelationDetails(wordRelationDetails);
-		word.setForums(wordForums);
 		wordDetails.setActiveTagComplete(isActiveTagComplete);
 
 		return wordDetails;

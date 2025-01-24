@@ -146,8 +146,7 @@ public class CompositionDbService extends AbstractDataDbService implements Globa
 		moveLexemeUsages(targetLexemeId, sourceLexemeId);
 		moveCollocationMembers(targetLexemeId, sourceLexemeId);
 		moveLexemeActivityLog(targetLexemeId, sourceLexemeId);
-		mergeLexemePublicity(targetLexemeId, sourceLexemeId);
-		mergeLexemeComplexity(targetLexemeId, sourceLexemeId);
+		mergeLexemeFields(targetLexemeId, sourceLexemeId);
 
 		mainDb
 				.delete(LEXEME)
@@ -166,29 +165,30 @@ public class CompositionDbService extends AbstractDataDbService implements Globa
 		moveWordActivityLogs(targetWordId, sourceWordId);
 	}
 
-	private void mergeLexemePublicity(Long targetLexemeId, Long sourceLexemeId) {
+	private void mergeLexemeFields(Long targetLexemeId, Long sourceLexemeId) {
 
-		boolean targetLexemePublicity = mainDb.select(LEXEME.IS_PUBLIC).from(LEXEME).where(LEXEME.ID.eq(targetLexemeId)).fetchOneInto(boolean.class);
-		if (PUBLICITY_PUBLIC == targetLexemePublicity) {
-			return;
-		}
+		LexemeRecord sourceLexeme = mainDb
+				.selectFrom(LEXEME)
+				.where(LEXEME.ID.eq(sourceLexemeId))
+				.fetchOne();
 
-		boolean sourceLexemePublicity = mainDb.select(LEXEME.IS_PUBLIC).from(LEXEME).where(LEXEME.ID.eq(sourceLexemeId)).fetchOneInto(boolean.class);
-		if (PUBLICITY_PUBLIC == sourceLexemePublicity) {
-			mainDb.update(LEXEME).set(LEXEME.IS_PUBLIC, PUBLICITY_PUBLIC).where(LEXEME.ID.eq(targetLexemeId)).execute();
-		}
-	}
+		LexemeRecord targetLexeme = mainDb
+				.selectFrom(LEXEME)
+				.where(LEXEME.ID.eq(targetLexemeId))
+				.fetchOne();
 
-	private void mergeLexemeComplexity(Long targetLexemeId, Long sourceLexemeId) {
-
-		Complexity targetLexemeComplexity = mainDb.select(LEXEME.COMPLEXITY).from(LEXEME).where(LEXEME.ID.eq(targetLexemeId)).fetchOneInto(Complexity.class);
-		if (Complexity.ANY == targetLexemeComplexity) {
-			return;
-		}
-		Complexity sourceLexemeComplexity = mainDb.select(LEXEME.COMPLEXITY).from(LEXEME).where(LEXEME.ID.eq(sourceLexemeId)).fetchOneInto(Complexity.class);
-		if (targetLexemeComplexity != sourceLexemeComplexity) {
-			mainDb.update(LEXEME).set(LEXEME.COMPLEXITY, Complexity.ANY.name()).where(LEXEME.ID.eq(targetLexemeId)).execute();
-		}
+		boolean isPublic = sourceLexeme.getIsPublic() || targetLexeme.getIsPublic();
+		boolean isWord = sourceLexeme.getIsWord() || targetLexeme.getIsWord();
+		boolean isCollocation = sourceLexeme.getIsCollocation() || targetLexeme.getIsCollocation();
+		Complexity complexity = Complexity.ANY;
+		mainDb
+				.update(LEXEME)
+				.set(LEXEME.IS_PUBLIC, isPublic)
+				.set(LEXEME.IS_WORD, isWord)
+				.set(LEXEME.IS_COLLOCATION, isCollocation)
+				.set(LEXEME.COMPLEXITY, complexity.name())
+				.where(LEXEME.ID.eq(targetLexemeId))
+				.execute();
 	}
 
 	private void moveLexemeActivityLog(Long targetLexemeId, Long sourceLexemeId) {

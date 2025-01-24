@@ -1801,6 +1801,24 @@
       </div>
     </div>
   </div>
+  <div th:id="${'addWordTagDlg_' + wordId}" class="modal select-dlg"
+        role="dialog"
+        th:fragment="add_word_tag_dlg"
+        data-plugin="initSelectDlgPlugin">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <form th:action="@{/create_item}" method="post">
+          <div class="modal-body">
+            <input type="hidden" name="id3" th:value="${wordId}">
+            <input type="hidden" name="opCode" value="word_tag">
+            <select class="form-control" name="value">
+              <option th:each="item : ${wordTags}" th:value="${item}" th:text="${item}">value</option>
+            </select>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
   <div th:id="${'editWordMorphCommentDlg_' + wordId}" class="modal"
         role="dialog"
         th:fragment="edit_word_morph_comment_dlg"

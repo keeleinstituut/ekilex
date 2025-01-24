@@ -367,4 +367,9 @@ public class CommonDataService implements InitializingBean, SystemConstant, Glob
 	public List<String> getMeaningTags() {
 		return commonDataDbService.getTags(TagType.MEANING.name());
 	}
+
+	@Transactional
+	public List<String> getWordTags() {
+		return commonDataDbService.getTags(TagType.WORD.name());
+	}
 }

@@ -37,6 +37,9 @@ create index word_etym_rel_rel_word_id_idx on word_etymology_relation(related_wo
 create index word_guid_word_id_idx on word_guid(word_id);
 create index word_guid_dataset_code_idx on word_guid(dataset_code);
 create index word_guid_guid_idx on word_guid(guid);
+create index word_tag_word_id_idx on word_tag(word_id);
+create index word_tag_tag_name_idx on word_tag(tag_name);
+create index word_tag_tag_name_lower_idx on word_tag(lower(tag_name));
 create index word_group_member_group_id_idx on word_group_member(word_group_id);
 create index word_group_member_word_id_idx on word_group_member(word_id);
 create index word_word_type_word_id_idx on word_word_type(word_id);

@@ -50,17 +50,30 @@ public class WordDbService extends AbstractDataDbService {
 		Dataset ds = DATASET.as("ds");
 		Paradigm p = PARADIGM.as("p");
 
-		Field<Boolean> me = DSL.field(DSL
-				.select(DSL.field(DSL.count(p.ID).gt(0)))
-				.from(p)
-				.where(p.WORD_ID.eq(w.ID).and(p.WORD_CLASS.isNotNull())));
+		Field<String[]> wtf = queryHelper.getWordTagsField(w.ID);
+
+		Field<Boolean> mef = DSL.field(DSL
+				.exists(DSL
+						.select(p.ID)
+						.from(p)
+						.where(
+								p.WORD_ID.eq(w.ID)
+										.and(p.WORD_CLASS.isNotNull()))));
 
 		return mainDb
 				.select(
 						w.ID.as("word_id"),
 						w.VALUE,
+						w.VALUE_PRESE,
 						w.LANG,
-						me.as("morph_exists"))
+						w.HOMONYM_NR,
+						w.DISPLAY_MORPH_CODE,
+						w.GENDER_CODE,
+						w.ASPECT_CODE,
+						w.VOCAL_FORM,
+						w.MORPHOPHONO_FORM,
+						wtf.as("tags"),
+						mef.as("morph_exists"))
 				.from(w)
 				.where(
 						w.IS_PUBLIC.isTrue()
@@ -71,10 +84,12 @@ public class WordDbService extends AbstractDataDbService {
 												l.WORD_ID.eq(w.ID)
 														.and(l.DATASET_CODE.eq(datasetCode))
 														.and(l.IS_PUBLIC.isTrue())
-														.and(l.IS_PUBLIC.isTrue())
+														.and(l.IS_WORD.isTrue())
 														.and(l.DATASET_CODE.eq(ds.CODE))
 														.and(ds.IS_PUBLIC.isTrue()))))
-				.orderBy(w.VALUE, w.HOMONYM_NR)
+				.orderBy(
+						w.VALUE,
+						w.HOMONYM_NR)
 				.fetchInto(eki.ekilex.data.api.Word.class);
 	}
 

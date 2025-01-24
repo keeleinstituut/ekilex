@@ -159,6 +159,9 @@ public class EditController extends AbstractMutableDataPageController implements
 		case "word_aspect":
 			cudService.updateWordAspect(id3, value, roleDatasetCode, isManualEventOnUpdateEnabled);
 			break;
+		case "word_tag":
+			cudService.createWordTag(id3, value, roleDatasetCode, isManualEventOnUpdateEnabled);
+			break;
 		case "word_display_morph":
 			cudService.updateWordDisplayMorph(id3, value, roleDatasetCode, isManualEventOnUpdateEnabled);
 			break;
@@ -675,6 +678,9 @@ public class EditController extends AbstractMutableDataPageController implements
 		case "word_aspect":
 			cudService.updateWordAspect(id, null, roleDatasetCode, isManualEventOnUpdateEnabled);
 			break;
+		case "word_tag":
+			cudService.deleteWordTag(id, valueToDelete, roleDatasetCode, isManualEventOnUpdateEnabled);
+			break;
 		case "word_relation":
 			cudService.deleteWordRelation(id, roleDatasetCode, isManualEventOnUpdateEnabled);
 			break;
@@ -692,9 +698,6 @@ public class EditController extends AbstractMutableDataPageController implements
 			break;
 		case "od_word_recommendation":
 			cudService.deleteOdWordRecommendation(id, roleDatasetCode, isManualEventOnUpdateEnabled);
-			break;
-		case "paradigm":
-			cudService.deleteParadigm(id, roleDatasetCode, isManualEventOnUpdateEnabled);
 			break;
 		case DEFINITION_SOURCE_LINK:
 			sourceLinkService.deleteDefinitionSourceLink(id, roleDatasetCode, isManualEventOnUpdateEnabled);

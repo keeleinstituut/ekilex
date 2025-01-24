@@ -16,7 +16,11 @@ public class LexemeDeleteConfirmation extends AbstractDataObject {
 
 	private boolean isMeaningDelete;
 
+	private boolean isCollocMemberDelete;
+
 	private List<String> lexemesWordValues;
+
+	private List<String> lexemeCollocValues;
 
 	public boolean isUserRoleExist() {
 		return userRoleExist;
@@ -38,16 +42,24 @@ public class LexemeDeleteConfirmation extends AbstractDataObject {
 		return isWordDelete;
 	}
 
-	public void setWordDelete(boolean wordDelete) {
-		isWordDelete = wordDelete;
+	public void setWordDelete(boolean isWordDelete) {
+		this.isWordDelete = isWordDelete;
 	}
 
 	public boolean isMeaningDelete() {
 		return isMeaningDelete;
 	}
 
-	public void setMeaningDelete(boolean meaningDelete) {
-		isMeaningDelete = meaningDelete;
+	public void setMeaningDelete(boolean isMeaningDelete) {
+		this.isMeaningDelete = isMeaningDelete;
+	}
+
+	public boolean isCollocMemberDelete() {
+		return isCollocMemberDelete;
+	}
+
+	public void setCollocMemberDelete(boolean isCollocMemberDelete) {
+		this.isCollocMemberDelete = isCollocMemberDelete;
 	}
 
 	public List<String> getLexemesWordValues() {
@@ -57,4 +69,13 @@ public class LexemeDeleteConfirmation extends AbstractDataObject {
 	public void setLexemesWordValues(List<String> lexemesWordValues) {
 		this.lexemesWordValues = lexemesWordValues;
 	}
+
+	public List<String> getLexemeCollocValues() {
+		return lexemeCollocValues;
+	}
+
+	public void setLexemeCollocValues(List<String> lexemeCollocValues) {
+		this.lexemeCollocValues = lexemeCollocValues;
+	}
+
 }

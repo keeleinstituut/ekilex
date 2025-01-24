@@ -152,6 +152,7 @@ import eki.ekilex.data.db.main.tables.WordRelType;
 import eki.ekilex.data.db.main.tables.WordRelTypeLabel;
 import eki.ekilex.data.db.main.tables.WordRelation;
 import eki.ekilex.data.db.main.tables.WordRelationParam;
+import eki.ekilex.data.db.main.tables.WordTag;
 import eki.ekilex.data.db.main.tables.WordType;
 import eki.ekilex.data.db.main.tables.WordTypeLabel;
 import eki.ekilex.data.db.main.tables.WordWordType;
@@ -945,6 +946,11 @@ public class Public extends SchemaImpl {
     public final WordRelationParam WORD_RELATION_PARAM = WordRelationParam.WORD_RELATION_PARAM;
 
     /**
+     * The table <code>public.word_tag</code>.
+     */
+    public final WordTag WORD_TAG = WordTag.WORD_TAG;
+
+    /**
      * The table <code>public.word_type</code>.
      */
     public final WordType WORD_TYPE = WordType.WORD_TYPE;
@@ -1119,6 +1125,7 @@ public class Public extends SchemaImpl {
             Sequences.WORD_RELATION_ID_SEQ,
             Sequences.WORD_RELATION_ORDER_BY_SEQ,
             Sequences.WORD_RELATION_PARAM_ID_SEQ,
+            Sequences.WORD_TAG_ID_SEQ,
             Sequences.WORD_TYPE_ORDER_BY_SEQ,
             Sequences.WORD_WORD_TYPE_ID_SEQ,
             Sequences.WORD_WORD_TYPE_ORDER_BY_SEQ);
@@ -1275,6 +1282,7 @@ public class Public extends SchemaImpl {
             WordRelTypeLabel.WORD_REL_TYPE_LABEL,
             WordRelation.WORD_RELATION,
             WordRelationParam.WORD_RELATION_PARAM,
+            WordTag.WORD_TAG,
             WordType.WORD_TYPE,
             WordTypeLabel.WORD_TYPE_LABEL,
             WordWordType.WORD_WORD_TYPE);

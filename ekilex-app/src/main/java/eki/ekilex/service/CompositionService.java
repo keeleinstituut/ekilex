@@ -11,6 +11,8 @@ import javax.transaction.Transactional;
 
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -37,6 +39,8 @@ import eki.ekilex.service.util.LexemeLevelCalcUtil;
 
 @Component
 public class CompositionService extends AbstractService implements PermConstant {
+
+	private static final Logger logger = LoggerFactory.getLogger(CompositionService.class);
 
 	private static final int DEFAULT_LEXEME_LEVEL = 1;
 
@@ -112,7 +116,7 @@ public class CompositionService extends AbstractService implements PermConstant 
 		ActivityLogData lexemeActivityLog = activityLogService
 				.prepareActivityLog("updateLexemeWordId", lexemeId, ActivityOwner.LEXEME, roleDatasetCode, isManualEventOnUpdateEnabled);
 		Long lexemeWordId = lookupDbService.getLexemeWordId(lexemeId);
-		connectLexemeToAnotherWord(wordId, lexemeId);
+		moveLexemeToAnotherWord(wordId, lexemeId);
 		cudDbService.deleteFloatingWord(lexemeWordId);
 		activityLogService.createActivityLog(lexemeActivityLog, lexemeId, ActivityEntity.LEXEME);
 	}
@@ -157,14 +161,14 @@ public class CompositionService extends AbstractService implements PermConstant 
 				ActivityLogData wordActivityLog = activityLogService
 						.prepareActivityLog("updateLexemeWordValue", duplicateWordId, ActivityOwner.WORD, roleDatasetCode, isManualEventOnUpdateEnabled);
 				updateWordValue(duplicateWordId, wordValue, wordValuePrese, wordLang, originalWordValue, originalWordLang);
-				connectLexemeToAnotherWord(duplicateWordId, lexemeId);
+				moveLexemeToAnotherWord(duplicateWordId, lexemeId);
 				activityLogService.createActivityLog(wordActivityLog, duplicateWordId, ActivityEntity.WORD);
 			}
 		}
 
 		if (existingSameValueWords.size() == 1) {
 			Long existingWordId = existingSameValueWords.get(0).getWordId();
-			connectLexemeToAnotherWord(existingWordId, lexemeId);
+			moveLexemeToAnotherWord(existingWordId, lexemeId);
 		}
 
 		if (existingSameValueWords.size() > 1) {
@@ -370,6 +374,7 @@ public class CompositionService extends AbstractService implements PermConstant 
 		ActivityLogData activityLog2 = activityLogService.prepareActivityLog("joinWords", targetWordId, ActivityOwner.WORD, roleDatasetCode, isManualEventOnUpdateEnabled);
 
 		SimpleWord sourceWord = lookupDbService.getSimpleWord(sourceWordId);
+		logger.debug("Joining homonyms for value \"{}\"", sourceWord.getWordValue());
 		compositionDbService.joinWordData(targetWordId, sourceWordId);
 		joinWordStressAndMarkupData(targetWordId, sourceWordId);
 		joinLexemeData(targetWordId, sourceWordId);
@@ -400,7 +405,9 @@ public class CompositionService extends AbstractService implements PermConstant 
 	private void joinLexemeData(Long targetWordId, Long sourceWordId) {
 
 		List<LexemeRecord> sourceWordLexemes = lookupDbService.getLexemeRecordsByWord(sourceWordId);
+
 		for (LexemeRecord sourceWordLexeme : sourceWordLexemes) {
+
 			Long sourceWordLexemeId = sourceWordLexeme.getId();
 			Long sourceWordLexemeMeaningId = sourceWordLexeme.getMeaningId();
 			String sourceWordLexemeDatasetCode = sourceWordLexeme.getDatasetCode();
@@ -410,12 +417,12 @@ public class CompositionService extends AbstractService implements PermConstant 
 				Long targetWordLexemeId = targetWordLexeme.getId();
 				compositionDbService.joinLexemes(targetWordLexemeId, sourceWordLexemeId);
 			} else {
-				connectLexemeToAnotherWord(targetWordId, sourceWordLexemeId);
+				moveLexemeToAnotherWord(targetWordId, sourceWordLexemeId);
 			}
 		}
 	}
 
-	private void connectLexemeToAnotherWord(Long targetWordId, Long sourceWordLexemeId) {
+	private void moveLexemeToAnotherWord(Long targetWordId, Long sourceWordLexemeId) {
 
 		String datasetCode = lookupDbService.getLexemeDatasetCode(sourceWordLexemeId);
 		Integer currentTargetWordLexemesMaxLevel1 = lookupDbService.getWordLexemesMaxLevel1(targetWordId, datasetCode);
@@ -456,7 +463,7 @@ public class CompositionService extends AbstractService implements PermConstant 
 		Long wordId = duplicatedLexeme.getWordId();
 		String datasetCode = duplicatedLexeme.getDatasetCode();
 
-		Integer level2MinValue = lookupDbService.getLevel2MinimumValue(wordId, datasetCode, level1);
+		Integer level2MinValue = lookupDbService.getLexemeLevel2MinimumValue(wordId, datasetCode, level1);
 		boolean isLevel1Increase = Objects.equals(level2, level2MinValue);
 
 		if (isLevel1Increase) {

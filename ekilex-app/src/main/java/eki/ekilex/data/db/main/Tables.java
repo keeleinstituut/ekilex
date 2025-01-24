@@ -152,6 +152,7 @@ import eki.ekilex.data.db.main.tables.WordRelType;
 import eki.ekilex.data.db.main.tables.WordRelTypeLabel;
 import eki.ekilex.data.db.main.tables.WordRelation;
 import eki.ekilex.data.db.main.tables.WordRelationParam;
+import eki.ekilex.data.db.main.tables.WordTag;
 import eki.ekilex.data.db.main.tables.WordType;
 import eki.ekilex.data.db.main.tables.WordTypeLabel;
 import eki.ekilex.data.db.main.tables.WordWordType;
@@ -902,6 +903,11 @@ public class Tables {
      * The table <code>public.word_relation_param</code>.
      */
     public static final WordRelationParam WORD_RELATION_PARAM = WordRelationParam.WORD_RELATION_PARAM;
+
+    /**
+     * The table <code>public.word_tag</code>.
+     */
+    public static final WordTag WORD_TAG = WordTag.WORD_TAG;
 
     /**
      * The table <code>public.word_type</code>.

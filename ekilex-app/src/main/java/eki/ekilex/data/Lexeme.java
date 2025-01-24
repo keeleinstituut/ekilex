@@ -5,7 +5,7 @@ import java.util.List;
 import eki.common.constant.Complexity;
 import eki.common.data.LexemeLevel;
 
-public class Lexeme extends AbstractCrudEntity implements LexemeLevel, LexemeTag {
+public class Lexeme extends AbstractCrudEntity implements LexemeLevel {
 
 	private static final long serialVersionUID = 1L;
 
@@ -268,12 +268,10 @@ public class Lexeme extends AbstractCrudEntity implements LexemeLevel, LexemeTag
 		this.isCollocation = isCollocation;
 	}
 
-	@Override
 	public List<String> getTags() {
 		return tags;
 	}
 
-	@Override
 	public void setTags(List<String> tags) {
 		this.tags = tags;
 	}

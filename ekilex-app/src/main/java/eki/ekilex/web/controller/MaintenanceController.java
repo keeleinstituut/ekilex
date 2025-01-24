@@ -34,7 +34,7 @@ public class MaintenanceController implements WebConstant {
 	@GetMapping(MAINTENANCE_URI + "/mergehomonyms")
 	public String mergeHomonyms() throws Exception {
 
-		maintenanceService.mergeHomonyms();
+		maintenanceService.joinHomonyms();
 
 		return RESPONSE_OK_VER1;
 	}

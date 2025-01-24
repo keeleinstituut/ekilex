@@ -28,6 +28,7 @@ import static eki.ekilex.data.db.main.Tables.VALUE_STATE_LABEL;
 import static eki.ekilex.data.db.main.Tables.WORD_FREQ;
 import static eki.ekilex.data.db.main.Tables.WORD_LAST_ACTIVITY_LOG;
 import static eki.ekilex.data.db.main.Tables.WORD_WORD_TYPE;
+import static eki.ekilex.data.db.main.Tables.WORD_TAG;
 
 import java.sql.Timestamp;
 import java.util.ArrayList;
@@ -149,10 +150,11 @@ public class QueryHelper implements GlobalConstant {
 										.limit(1))))
 				.asField();
 
-		Field<String[]> wtf = getWordTypeCodesField(w.ID);
+		Field<String[]> wtf = getWordTagsField(w.ID);
+		Field<String[]> wwtf = getWordTypeCodesField(w.ID);
 		Field<Boolean> wtpf = getWordIsPrefixoidField(w.ID);
 		Field<Boolean> wtsf = getWordIsSuffixoidField(w.ID);
-		Field<Boolean> wtz = getWordIsForeignField(w.ID);
+		Field<Boolean> wtzf = getWordIsForeignField(w.ID);
 		Field<String[]> lxtnf = DSL.field(DSL
 				.select(DSL.arrayAggDistinct(DSL.coalesce(lt.TAG_NAME, "!")))
 				.from(l.leftOuterJoin(lt).on(lt.LEXEME_ID.eq(l.ID)))
@@ -177,25 +179,35 @@ public class QueryHelper implements GlobalConstant {
 		fields.add(w.MORPH_COMMENT);
 		fields.add(w.MANUAL_EVENT_ON);
 		fields.add(w.IS_PUBLIC.as("is_word_public"));
+		fields.add(wtf.as("tags"));
 		fields.add(dsf.as("dataset_codes"));
 		fields.add(wff.as("word_frequency"));
-		fields.add(wtf.as("word_type_codes"));
+		fields.add(wwtf.as("word_type_codes"));
 		fields.add(wtpf.as("prefixoid"));
 		fields.add(wtsf.as("suffixoid"));
-		fields.add(wtz.as("foreign"));
+		fields.add(wtzf.as("foreign"));
 		fields.add(lxtnf.as("lexemes_tag_names"));
 		fields.add(wlaeof.as("last_activity_event_on"));
 
 		return fields;
 	}
 
-	public Field<String[]> getWordTypeCodesField(Field<Long> wordIdField) {
+	public Field<String[]> getWordTagsField(Field<Long> wordIdField) {
 		Field<String[]> wtf = DSL.field(DSL
+				.select(DSL.arrayAgg(WORD_TAG.TAG_NAME))
+				.from(WORD_TAG)
+				.where(WORD_TAG.WORD_ID.eq(wordIdField))
+				.groupBy(wordIdField));
+		return wtf;
+	}
+
+	public Field<String[]> getWordTypeCodesField(Field<Long> wordIdField) {
+		Field<String[]> wwtf = DSL.field(DSL
 				.select(DSL.arrayAgg(WORD_WORD_TYPE.WORD_TYPE_CODE))
 				.from(WORD_WORD_TYPE)
 				.where(WORD_WORD_TYPE.WORD_ID.eq(wordIdField))
 				.groupBy(wordIdField));
-		return wtf;
+		return wwtf;
 	}
 
 	public Field<Boolean> getWordTypeExists(Field<Long> wordIdField, String wordType) {
@@ -595,6 +607,13 @@ public class QueryHelper implements GlobalConstant {
 		}
 		if (pojo.getSourceLinks() == null) {
 			pojo.setSourceLinks(Collections.emptyList());
+		}
+	}
+
+	public void replaceNullCollections(eki.ekilex.data.Word pojo) {
+
+		if (pojo.getTags() == null) {
+			pojo.setTags(Collections.emptyList());
 		}
 	}
 }

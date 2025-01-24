@@ -64,8 +64,10 @@ public class InexactSynService extends AbstractSynSearchService {
 
 			Map<String, String> datasetNameMap = commonDataDbService.getDatasetNameMap();
 			String datasetName = datasetNameMap.get(datasetCode);
-			List<Lexeme> translationLangWords = lookupDbService.getMeaningWords(meaningId, datasetCode, translationLang);
-			List<Lexeme> targetLangWords = lookupDbService.getMeaningWords(meaningId, datasetCode, targetLang);
+			List<Lexeme> translationLangLexemes = lookupDbService.getMeaningLexemes(meaningId, datasetCode, translationLang);
+			populateWithWord(translationLangLexemes);
+			List<Lexeme> targetLangLexemes = lookupDbService.getMeaningLexemes(meaningId, datasetCode, targetLang);
+			populateWithWord(targetLangLexemes);
 			List<Definition> definitions = synSearchDbService.getInexactSynMeaningDefinitions(meaningId, translationLang, targetLang);
 			boolean inexactSynDefExists = definitions.stream().anyMatch(definition -> definition.getTypeCode().equals(DEFINITION_TYPE_CODE_INEXACT_SYN));
 
@@ -73,8 +75,8 @@ public class InexactSynService extends AbstractSynSearchService {
 			inexactSynMeaningCandidate.setMeaningId(meaningId);
 			inexactSynMeaningCandidate.setDatasetCode(datasetCode);
 			inexactSynMeaningCandidate.setDatasetName(datasetName);
-			inexactSynMeaningCandidate.setTranslationLangWords(translationLangWords);
-			inexactSynMeaningCandidate.setTargetLangWords(targetLangWords);
+			inexactSynMeaningCandidate.setTranslationLangWords(translationLangLexemes);
+			inexactSynMeaningCandidate.setTargetLangWords(targetLangLexemes);
 			inexactSynMeaningCandidate.setDefinitions(definitions);
 			if (includeTargetLangWord && inexactSynDefExists) {
 				inexactSynMeaningCandidate.setDisabled(true);

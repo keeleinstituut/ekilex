@@ -15,6 +15,7 @@ public enum ActivityEntity {
 	DOMAIN,
 	DATASET,
 	WORD_TYPE,
+	WORD_TAG,
 	SEMANTIC_TYPE,
 	TAG,
 	USAGE,

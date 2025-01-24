@@ -89,14 +89,14 @@ public class MaintenanceService implements SystemConstant, GlobalConstant {
 	public void workloadreportCacheEvict() {
 	}
 
-	@Scheduled(cron = MERGE_HOMONYMS_TIME_3_AM)
+	@Scheduled(cron = JOIN_HOMONYMS_TIME_3_AM)
 	@Transactional(rollbackOn = Exception.class)
-	public void mergeHomonyms() throws Exception {
+	public void joinHomonyms() throws Exception {
 
-		logger.info("Starting homonyms merge...");
+		logger.info("Starting joining homonyms ...");
 		String[] includedLangs = new String[] {LANGUAGE_CODE_EST, LANGUAGE_CODE_LAT, LANGUAGE_CODE_RUS};
 		boolean isManualEventOnUpdateEnabled = false;
-		List<SourceTargetIdTuple> homonyms = maintenanceDbService.getHomonymsToMerge(includedLangs);
+		List<SourceTargetIdTuple> homonyms = maintenanceDbService.getHomonymsToJoin(includedLangs);
 		logger.info("Found {} homonyms to merge", homonyms.size());
 
 		for (SourceTargetIdTuple homonym : homonyms) {
@@ -105,7 +105,7 @@ public class MaintenanceService implements SystemConstant, GlobalConstant {
 			compositionService.joinWords(targetWordId, sourceWordId, null, isManualEventOnUpdateEnabled);
 		}
 
-		logger.info("Homonyms merge finished");
+		logger.info("Joining homonyms finished");
 	}
 
 	@Scheduled(cron = ADJUST_HOMONYM_NRS_TIME_3_30_AM)
