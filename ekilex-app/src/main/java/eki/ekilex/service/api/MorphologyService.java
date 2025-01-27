@@ -16,23 +16,41 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import eki.common.constant.ActivityEntity;
+import eki.common.constant.ActivityOwner;
+import eki.common.constant.GlobalConstant;
 import eki.common.exception.ApiException;
 import eki.common.exception.OperationDeniedException;
+import eki.ekilex.data.ActivityLogData;
 import eki.ekilex.data.api.Form;
 import eki.ekilex.data.api.FormUnit;
 import eki.ekilex.data.api.FormWord;
 import eki.ekilex.data.api.Paradigm;
 import eki.ekilex.data.api.ParadigmForm;
 import eki.ekilex.data.api.ParadigmWrapper;
+import eki.ekilex.service.core.ActivityLogService;
+import eki.ekilex.service.db.CudDbService;
+import eki.ekilex.service.db.LookupDbService;
 import eki.ekilex.service.db.MorphologyDbService;
 
 @Component
-public class MorphologyService {
+public class MorphologyService implements GlobalConstant {
 
 	private static final Logger logger = LoggerFactory.getLogger(MorphologyService.class);
 
+	private static final String ACTIVITY_LOG_DATASET_CODE_PLACEHOLDER = "[admin]";
+
 	@Autowired
 	private MorphologyDbService morphologyDbService;
+
+	@Autowired
+	private LookupDbService lookupDbService;
+
+	@Autowired
+	private CudDbService cudDbService;
+
+	@Autowired
+	private ActivityLogService activityLogService;
 
 	@Transactional
 	public List<Paradigm> getParadigms(Long wordId) {
@@ -123,6 +141,7 @@ public class MorphologyService {
 
 				Long paradigmId = morphologyDbService.createParadigm(wordId, providedWordParadigm);
 				List<ParadigmForm> providedParadigmForms = providedWordParadigm.getParadigmForms();
+				List<String> removeTagNames = providedWordParadigm.getRemoveTagNames();
 
 				for (ParadigmForm providedParadigmForm : providedParadigmForms) {
 
@@ -132,6 +151,13 @@ public class MorphologyService {
 					Long formId = formIdMap.get(formUnit);
 
 					morphologyDbService.createParadigmForm(paradigmId, formId, providedParadigmForm);
+				}
+
+				if (CollectionUtils.isNotEmpty(removeTagNames)) {
+
+					for (String removeTagName : removeTagNames) {
+						deleteWordTag(wordId, removeTagName, ACTIVITY_LOG_DATASET_CODE_PLACEHOLDER, MANUAL_EVENT_ON_UPDATE_DISABLED);
+					}
 				}
 			}
 		}
@@ -166,4 +192,11 @@ public class MorphologyService {
 		return null;
 	}
 
+	private void deleteWordTag(Long wordId, String tagName, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
+
+		Long wordTagId = lookupDbService.getWordTagId(wordId, tagName);
+		ActivityLogData activityLog = activityLogService.prepareActivityLog("deleteWordTag", wordId, ActivityOwner.WORD, roleDatasetCode, isManualEventOnUpdateEnabled);
+		cudDbService.deleteWordTag(wordTagId);
+		activityLogService.createActivityLog(activityLog, wordTagId, ActivityEntity.WORD_TAG);
+	}
 }

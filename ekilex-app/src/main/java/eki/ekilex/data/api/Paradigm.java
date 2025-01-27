@@ -24,6 +24,8 @@ public class Paradigm extends AbstractDataObject {
 
 	private List<ParadigmForm> paradigmForms;
 
+	private List<String> removeTagNames;
+
 	public Long getId() {
 		return id;
 	}
@@ -86,6 +88,14 @@ public class Paradigm extends AbstractDataObject {
 
 	public void setParadigmForms(List<ParadigmForm> paradigmForms) {
 		this.paradigmForms = paradigmForms;
+	}
+
+	public List<String> getRemoveTagNames() {
+		return removeTagNames;
+	}
+
+	public void setRemoveTagNames(List<String> removeTagNames) {
+		this.removeTagNames = removeTagNames;
 	}
 
 }

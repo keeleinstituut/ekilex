@@ -1689,10 +1689,17 @@ public class CudDbService extends AbstractDataDbService {
 				.execute();
 	}
 
-	public void deleteWordWordTag(Long wordTagId) {
+	public void deleteWordTag(Long wordTagId) {
 		mainDb
 				.delete(WORD_TAG)
 				.where(WORD_TAG.ID.eq(wordTagId))
+				.execute();
+	}
+
+	public void deleteWordTag(String tagName) {
+		mainDb
+				.delete(WORD_TAG)
+				.where(WORD_TAG.TAG_NAME.eq(tagName))
 				.execute();
 	}
 
@@ -1739,23 +1746,6 @@ public class CudDbService extends AbstractDataDbService {
 				.delete(WORD_FORUM)
 				.where(WORD_FORUM.ID.eq(wordForumId))
 				.execute();
-	}
-
-	public List<Long> deleteMeaningLexemesTag(Long meaningId, String datasetCode, String tagName) {
-
-		List<Long> lexemeIds = mainDb
-				.delete(LEXEME_TAG)
-				.using(LEXEME)
-				.where(
-						LEXEME_TAG.TAG_NAME.eq(tagName)
-								.and(LEXEME_TAG.LEXEME_ID.eq(LEXEME.ID))
-								.and(LEXEME.MEANING_ID.eq(meaningId))
-								.and(LEXEME.DATASET_CODE.eq(datasetCode)))
-				.returning(LEXEME_TAG.LEXEME_ID)
-				.fetch()
-				.map(LexemeTagRecord::getLexemeId);
-
-		return lexemeIds;
 	}
 
 	public void deleteLexeme(Long lexemeId) {
@@ -1811,13 +1801,6 @@ public class CudDbService extends AbstractDataDbService {
 		mainDb
 				.delete(LEXEME_TAG)
 				.where(LEXEME_TAG.ID.eq(lexemeTagId))
-				.execute();
-	}
-
-	public void deleteMeaningTag(Long meaningTagId) {
-		mainDb
-				.delete(MEANING_TAG)
-				.where(MEANING_TAG.ID.eq(meaningTagId))
 				.execute();
 	}
 
@@ -1877,6 +1860,23 @@ public class CudDbService extends AbstractDataDbService {
 				.execute();
 	}
 
+	public List<Long> deleteMeaningLexemesTag(Long meaningId, String datasetCode, String tagName) {
+
+		List<Long> lexemeIds = mainDb
+				.delete(LEXEME_TAG)
+				.using(LEXEME)
+				.where(
+						LEXEME_TAG.TAG_NAME.eq(tagName)
+								.and(LEXEME_TAG.LEXEME_ID.eq(LEXEME.ID))
+								.and(LEXEME.MEANING_ID.eq(meaningId))
+								.and(LEXEME.DATASET_CODE.eq(datasetCode)))
+				.returning(LEXEME_TAG.LEXEME_ID)
+				.fetch()
+				.map(LexemeTagRecord::getLexemeId);
+
+		return lexemeIds;
+	}
+
 	public void deleteMeaning(Long meaningId) {
 		List<Long> definitionIds = getMeaningDefinitionIds(meaningId);
 		for (Long definitionId : definitionIds) {
@@ -1887,6 +1887,13 @@ public class CudDbService extends AbstractDataDbService {
 		mainDb
 				.delete(MEANING)
 				.where(MEANING.ID.eq(meaningId))
+				.execute();
+	}
+
+	public void deleteMeaningTag(Long meaningTagId) {
+		mainDb
+				.delete(MEANING_TAG)
+				.where(MEANING_TAG.ID.eq(meaningTagId))
 				.execute();
 	}
 

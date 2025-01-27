@@ -57,7 +57,7 @@ public class TagService {
 			if (isIncrease) {
 				orderByList = tagDbService.getTagOrderByIntervalList(currentOrderBy, newOrderBy);
 				orderByList.remove(0);
-				tagDbService.reduceTagOrderBys(orderByList);
+				tagDbService.decreaseTagOrderBys(orderByList);
 			} else {
 				orderByList = tagDbService.getTagOrderByIntervalList(newOrderBy, currentOrderBy);
 				orderByList.remove(orderByList.size() - 1);

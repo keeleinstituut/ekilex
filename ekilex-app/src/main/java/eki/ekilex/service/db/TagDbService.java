@@ -204,7 +204,7 @@ public class TagDbService extends AbstractDataDbService {
 
 	}
 
-	public void reduceTagOrderBys(List<Long> orderByList) {
+	public void decreaseTagOrderBys(List<Long> orderByList) {
 
 		mainDb
 				.update(TAG)

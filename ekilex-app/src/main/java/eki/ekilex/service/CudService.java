@@ -1254,7 +1254,7 @@ public class CudService extends AbstractCudService implements PermConstant, Acti
 		if (StringUtils.isNotBlank(tagName)) {
 			Long wordTagId = lookupDbService.getWordTagId(wordId, tagName);
 			ActivityLogData activityLog = activityLogService.prepareActivityLog("deleteWordTag", wordId, ActivityOwner.WORD, roleDatasetCode, isManualEventOnUpdateEnabled);
-			cudDbService.deleteWordWordTag(wordTagId);
+			cudDbService.deleteWordTag(wordTagId);
 			activityLogService.createActivityLog(activityLog, wordTagId, ActivityEntity.WORD_TAG);
 		}
 	}
