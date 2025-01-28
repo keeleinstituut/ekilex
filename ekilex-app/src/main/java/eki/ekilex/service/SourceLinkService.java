@@ -331,7 +331,7 @@ public class SourceLinkService extends AbstractSourceService implements ContentK
 
 		Long meaningId = activityLogService.getOwnerId(sourceLinkId, ActivityEntity.DEFINITION_NOTE_SOURCE_LINK);
 		ActivityLogData activityLog = activityLogService.prepareActivityLog("deleteDefinitionNoteSourceLink", meaningId, ActivityOwner.MEANING, roleDatasetCode, isManualEventOnUpdateEnabled);
-		sourceLinkDbService.deleteDefinitionSourceLink(sourceLinkId);
+		sourceLinkDbService.deleteDefinitionNoteSourceLink(sourceLinkId);
 		activityLogService.createActivityLog(activityLog, sourceLinkId, ActivityEntity.DEFINITION_NOTE_SOURCE_LINK);
 	}
 
