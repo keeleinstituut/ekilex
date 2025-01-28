@@ -2,6 +2,7 @@ package eki.ekilex.service;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -59,15 +60,12 @@ public class ClassifierService implements GlobalConstant, SystemConstant {
 	@Transactional
 	public List<ClassifierFull> getClassifiers(ClassifierName classifierName, String domainOrigin) {
 
-		List<String> labelTypes = new ArrayList<>();
+		List<String> labelTypes;
 		boolean hasLabel = classifierName.hasLabel();
 		if (hasLabel) {
-			labelTypes.add(CLASSIF_LABEL_TYPE_DESCRIP);
-			labelTypes.add(CLASSIF_LABEL_TYPE_WORDWEB);
-			boolean classifierHasLabelTypeComment = classifierDbService.classifierHasLabelType(classifierName, CLASSIF_LABEL_TYPE_COMMENT);
-			if (classifierHasLabelTypeComment) {
-				labelTypes.add(CLASSIF_LABEL_TYPE_COMMENT);
-			}
+			labelTypes = Arrays.asList(CLASSIF_LABEL_TYPE_DESCRIP, CLASSIF_LABEL_TYPE_WORDWEB, CLASSIF_LABEL_TYPE_COMMENT);
+		} else {
+			labelTypes = Collections.emptyList();
 		}
 		List<ClassifierFull> classifiers;
 		if (ClassifierName.DOMAIN.equals(classifierName) && StringUtils.isNotBlank(domainOrigin)) {
