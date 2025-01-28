@@ -59,12 +59,12 @@ public class DatasetService implements SystemConstant, GlobalConstant {
 
 		Dataset dataset = datasetDbService.getDataset(datasetCode);
 
-		List<Classifier> domains = commonDataDbService.getDatasetClassifiers(ClassifierName.DOMAIN, datasetCode, CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP, CLASSIF_LABEL_TYPE_COMMENT);
-		List<Classifier> languages = commonDataDbService.getDatasetClassifiers(ClassifierName.LANGUAGE, datasetCode, CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP, null);
-		List<Classifier> wordFreeformTypes = commonDataDbService.getDatasetFreeformTypes(datasetCode, FreeformOwner.WORD, CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
-		List<Classifier> lexemeFreeformTypes = commonDataDbService.getDatasetFreeformTypes(datasetCode, FreeformOwner.LEXEME, CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
-		List<Classifier> meaningFreeformTypes = commonDataDbService.getDatasetFreeformTypes(datasetCode, FreeformOwner.MEANING, CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
-		List<Classifier> definitionFreeformTypes = commonDataDbService.getDatasetFreeformTypes(datasetCode, FreeformOwner.DEFINITION, CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
+		List<Classifier> domains = commonDataDbService.getDatasetClassifiers(ClassifierName.DOMAIN, datasetCode, CLASSIF_LABEL_LANG_EST);
+		List<Classifier> languages = commonDataDbService.getDatasetClassifiers(ClassifierName.LANGUAGE, datasetCode, CLASSIF_LABEL_LANG_EST);
+		List<Classifier> wordFreeformTypes = commonDataDbService.getFreeformTypes(datasetCode, FreeformOwner.WORD, CLASSIF_LABEL_LANG_EST);
+		List<Classifier> lexemeFreeformTypes = commonDataDbService.getFreeformTypes(datasetCode, FreeformOwner.LEXEME, CLASSIF_LABEL_LANG_EST);
+		List<Classifier> meaningFreeformTypes = commonDataDbService.getFreeformTypes(datasetCode, FreeformOwner.MEANING, CLASSIF_LABEL_LANG_EST);
+		List<Classifier> definitionFreeformTypes = commonDataDbService.getFreeformTypes(datasetCode, FreeformOwner.DEFINITION, CLASSIF_LABEL_LANG_EST);
 
 		List<String> origins = null;
 		if (CollectionUtils.isNotEmpty(domains)) {
@@ -93,7 +93,7 @@ public class DatasetService implements SystemConstant, GlobalConstant {
 	@Transactional
 	public List<Classifier> getDomains(String originCode) {
 
-		List<Classifier> domains = commonDataDbService.getDomains(originCode, CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP, CLASSIF_LABEL_TYPE_COMMENT);
+		List<Classifier> domains = commonDataDbService.getDomains(originCode, CLASSIF_LABEL_LANG_EST);
 		classifierUtil.populateClassifierJson(domains);
 		return domains;
 	}

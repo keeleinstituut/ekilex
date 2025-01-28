@@ -13,6 +13,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import eki.common.constant.ClassifierName;
 import eki.ekilex.data.Classifier;
 import eki.ekilex.data.ClassifierSelect;
 import eki.ekilex.data.Colloc;
@@ -78,15 +79,15 @@ public class LexSearchService extends AbstractWordSearchService {
 		}
 		permCalculator.applyCrud(user, word);
 		String wordLang = word.getLang();
-		List<Lexeme> lexemes = lexSearchDbService.getWordLexemes(wordId, searchDatasetsRestriction, CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
-		List<Freeform> wordFreeforms = commonDataDbService.getWordFreeforms(wordId, EXCLUDED_WORD_ATTRIBUTE_FF_TYPE_CODES, CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
-		List<Classifier> wordTypes = commonDataDbService.getWordTypes(wordId, CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
-		List<ParadigmFormTuple> paradigmFormTuples = lexSearchDbService.getParadigmFormTuples(wordId, CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
+		List<Lexeme> lexemes = lexSearchDbService.getWordLexemes(wordId, searchDatasetsRestriction, CLASSIF_LABEL_LANG_EST);
+		List<Freeform> wordFreeforms = commonDataDbService.getWordFreeforms(wordId, EXCLUDED_WORD_ATTRIBUTE_FF_TYPE_CODES, CLASSIF_LABEL_LANG_EST);
+		List<Classifier> wordTypes = commonDataDbService.getWordTypes(wordId, CLASSIF_LABEL_LANG_EST);
+		List<ParadigmFormTuple> paradigmFormTuples = lexSearchDbService.getParadigmFormTuples(wordId, CLASSIF_LABEL_LANG_EST);
 		List<Paradigm> paradigms = conversionUtil.composeParadigms(paradigmFormTuples);
-		List<WordRelation> wordRelations = lexDataDbService.getWordRelations(wordId, CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
-		List<Classifier> allWordRelationTypes = commonDataDbService.getWordRelationTypes(CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
-		List<Classifier> allAspects = commonDataDbService.getAspects(CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
-		List<WordRelation> wordGroupMembers = lexDataDbService.getWordGroupMembers(wordId, CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
+		List<WordRelation> wordRelations = lexDataDbService.getWordRelations(wordId, CLASSIF_LABEL_LANG_EST);
+		List<Classifier> allWordRelationTypes = commonDataDbService.getDefaultClassifiers(ClassifierName.WORD_REL_TYPE, CLASSIF_LABEL_LANG_EST);
+		List<Classifier> allAspects = commonDataDbService.getDefaultClassifiers(ClassifierName.ASPECT, CLASSIF_LABEL_LANG_EST);
+		List<WordRelation> wordGroupMembers = lexDataDbService.getWordGroupMembers(wordId, CLASSIF_LABEL_LANG_EST);
 		List<WordGroup> wordGroups = conversionUtil.composeWordGroups(wordGroupMembers, allAspects);
 		WordRelationDetails wordRelationDetails = conversionUtil.composeWordRelationDetails(wordRelations, wordGroups, wordLang, allWordRelationTypes);
 		List<WordEtymTuple> wordEtymTuples = lexDataDbService.getWordEtymology(wordId);
@@ -129,7 +130,7 @@ public class LexSearchService extends AbstractWordSearchService {
 	public Lexeme getWordLexeme(
 			Long lexemeId, List<ClassifierSelect> languagesOrder, EkiUserProfile userProfile, EkiUser user, boolean isFullData) throws Exception {
 
-		Lexeme lexeme = lexSearchDbService.getLexeme(lexemeId, CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
+		Lexeme lexeme = lexSearchDbService.getLexeme(lexemeId, CLASSIF_LABEL_LANG_EST);
 		if (lexeme != null) {
 			Long wordId = lexeme.getWordId();
 			Word word = lexSearchDbService.getWord(wordId);
@@ -149,14 +150,14 @@ public class LexSearchService extends AbstractWordSearchService {
 			if (CollectionUtils.isNotEmpty(words.getWords())) {
 				for (Word word : words.getWords()) {
 
-					List<Lexeme> wordLexemes = lexSearchDbService.getWordLexemes(word.getWordId(), searchDatasetsRestriction, CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
+					List<Lexeme> wordLexemes = lexSearchDbService.getWordLexemes(word.getWordId(), searchDatasetsRestriction, CLASSIF_LABEL_LANG_EST);
 					wordLexemes.forEach(lexeme -> {
 
 						Long lexemeId = lexeme.getLexemeId();
 						Long meaningId = lexeme.getMeaningId();
 						String datasetCode = lexeme.getDatasetCode();
 						List<MeaningWord> meaningWords = commonDataDbService.getMeaningWords(lexemeId);
-						List<Definition> definitions = commonDataDbService.getMeaningDefinitions(meaningId, datasetCode, CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
+						List<Definition> definitions = commonDataDbService.getMeaningDefinitions(meaningId, datasetCode, CLASSIF_LABEL_LANG_EST);
 						permCalculator.filterVisibility(user, definitions);
 						lexeme.setMeaningWords(meaningWords);
 						Meaning meaning = new Meaning();
@@ -197,8 +198,8 @@ public class LexSearchService extends AbstractWordSearchService {
 		List<MeaningWord> synMeaningWords = commonDataDbService.getMeaningWords(lexemeId, meaningWordLangsRestriction);
 		List<InexactSynonym> inexactSynonyms = lookupDbService.getMeaningInexactSynonyms(meaningId, wordLang, datasetCode);
 		List<SynonymLangGroup> synonymLangGroups = conversionUtil.composeSynonymLangGroups(synMeaningRelations, synMeaningWords, inexactSynonyms, userProfile, wordLang, languagesOrder);
-		List<OrderedClassifier> meaningDomains = commonDataDbService.getMeaningDomains(meaningId, CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP, CLASSIF_LABEL_TYPE_COMMENT);
-		List<Definition> definitions = commonDataDbService.getMeaningDefinitions(meaningId, datasetCode, CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
+		List<OrderedClassifier> meaningDomains = commonDataDbService.getMeaningDomains(meaningId, CLASSIF_LABEL_LANG_EST);
+		List<Definition> definitions = commonDataDbService.getMeaningDefinitions(meaningId, datasetCode, CLASSIF_LABEL_LANG_EST);
 		permCalculator.applyCrud(user, definitions);
 		permCalculator.filterVisibility(user, definitions);
 		List<MeaningForum> meaningForums = commonDataDbService.getMeaningForums(meaningId);
@@ -227,22 +228,22 @@ public class LexSearchService extends AbstractWordSearchService {
 			permCalculator.filterVisibility(user, usages);
 			List<LexemeNote> lexemeNotes = lexeme.getNotes();
 			permCalculator.filterVisibility(user, lexemeNotes);
-			List<Freeform> lexemeFreeforms = commonDataDbService.getLexemeFreeforms(lexemeId, EXCLUDED_LEXEME_ATTRIBUTE_FF_TYPE_CODES, CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
+			List<Freeform> lexemeFreeforms = commonDataDbService.getLexemeFreeforms(lexemeId, EXCLUDED_LEXEME_ATTRIBUTE_FF_TYPE_CODES, CLASSIF_LABEL_LANG_EST);
 			List<NoteLangGroup> lexemeNoteLangGroups = conversionUtil.composeNoteLangGroups(lexemeNotes, languagesOrder);
-			List<LexemeRelation> lexemeRelations = commonDataDbService.getLexemeRelations(lexemeId, CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
-			List<CollocPosGroup> primaryCollocations = lexDataDbService.getPrimaryCollocations(lexemeId, CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
+			List<LexemeRelation> lexemeRelations = commonDataDbService.getLexemeRelations(lexemeId, CLASSIF_LABEL_LANG_EST);
+			List<CollocPosGroup> primaryCollocations = lexDataDbService.getPrimaryCollocations(lexemeId, CLASSIF_LABEL_LANG_EST);
 			List<Colloc> secondaryCollocations = lexDataDbService.getSecondaryCollocations(lexemeId);
 			List<CollocMember> collocationMembers = commonDataDbService.getCollocationMembers(lexemeId);
-			List<Freeform> meaningFreeforms = commonDataDbService.getMeaningFreeforms(meaningId, EXCLUDED_MEANING_ATTRIBUTE_FF_TYPE_CODES, CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
+			List<Freeform> meaningFreeforms = commonDataDbService.getMeaningFreeforms(meaningId, EXCLUDED_MEANING_ATTRIBUTE_FF_TYPE_CODES, CLASSIF_LABEL_LANG_EST);
 			List<Freeform> meaningLearnerComments = commonDataDbService.getMeaningLearnerComments(meaningId);
 			List<Media> meaningImages = commonDataDbService.getMeaningImagesAsMedia(meaningId);
 			List<Media> meaningMedias = commonDataDbService.getMeaningMediaFiles(meaningId);
 			List<MeaningNote> meaningNotes = commonDataDbService.getMeaningNotes(meaningId);
 			permCalculator.filterVisibility(user, meaningNotes);
 			List<NoteLangGroup> meaningNoteLangGroups = conversionUtil.composeNoteLangGroups(meaningNotes, languagesOrder);
-			List<Classifier> meaningSemanticTypes = commonDataDbService.getMeaningSemanticTypes(meaningId, CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
+			List<Classifier> meaningSemanticTypes = commonDataDbService.getMeaningSemanticTypes(meaningId, CLASSIF_LABEL_LANG_EST);
 			List<String> meaningWordPreferredOrderDatasetCodes = Arrays.asList(datasetCode);
-			List<MeaningRelation> meaningRelations = commonDataDbService.getMeaningRelations(meaningId, meaningWordPreferredOrderDatasetCodes, CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
+			List<MeaningRelation> meaningRelations = commonDataDbService.getMeaningRelations(meaningId, meaningWordPreferredOrderDatasetCodes, CLASSIF_LABEL_LANG_EST);
 			List<List<MeaningRelation>> viewMeaningRelations = conversionUtil.composeViewMeaningRelations(meaningRelations, userProfile, wordLang, languagesOrder);
 			List<DefinitionLangGroup> definitionLangGroups = conversionUtil.composeMeaningDefinitionLangGroups(definitions, languagesOrder);
 			boolean isCollocationsExist = lexDataDbService.isCollocationsExist(lexemeId);

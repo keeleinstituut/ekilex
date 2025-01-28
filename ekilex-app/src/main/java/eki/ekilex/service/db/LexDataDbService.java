@@ -47,7 +47,7 @@ import eki.ekilex.data.db.main.tables.WordRelation;
 @Component
 public class LexDataDbService extends AbstractDataDbService {
 
-	public List<eki.ekilex.data.WordRelation> getWordGroupMembers(Long wordId, String classifierLabelLang, String classifierLabelTypeCode) {
+	public List<eki.ekilex.data.WordRelation> getWordGroupMembers(Long wordId, String classifierLabelLang) {
 
 		WordGroupMember wgrm1 = WORD_GROUP_MEMBER.as("wgrm1");
 		WordGroupMember wgrm2 = WORD_GROUP_MEMBER.as("wgrm2");
@@ -84,13 +84,13 @@ public class LexDataDbService extends AbstractDataDbService {
 								.leftOuterJoin(wrtl).on(
 										wgr.WORD_REL_TYPE_CODE.eq(wrtl.CODE)
 												.and(wrtl.LANG.eq(classifierLabelLang))
-												.and(wrtl.TYPE.eq(classifierLabelTypeCode))))
+												.and(wrtl.TYPE.eq(CLASSIF_LABEL_TYPE_DESCRIP))))
 				.where(wgrm1.WORD_ID.eq(wordId))
 				.orderBy(wgrm2.ORDER_BY)
 				.fetchInto(eki.ekilex.data.WordRelation.class);
 	}
 
-	public List<eki.ekilex.data.WordRelation> getWordRelations(Long wordId, String classifierLabelLang, String classifierLabelTypeCode) {
+	public List<eki.ekilex.data.WordRelation> getWordRelations(Long wordId, String classifierLabelLang) {
 
 		WordRelation r = WORD_RELATION.as("r");
 		Lexeme l2 = LEXEME.as("l2");
@@ -128,7 +128,7 @@ public class LexDataDbService extends AbstractDataDbService {
 								.leftOuterJoin(rtl).on(
 										r.WORD_REL_TYPE_CODE.eq(rtl.CODE)
 												.and(rtl.LANG.eq(classifierLabelLang))
-												.and(rtl.TYPE.eq(classifierLabelTypeCode))))
+												.and(rtl.TYPE.eq(CLASSIF_LABEL_TYPE_DESCRIP))))
 				.where(r.WORD1_ID.eq(wordId))
 				.orderBy(r.ORDER_BY)
 				.fetchInto(eki.ekilex.data.WordRelation.class);
@@ -181,7 +181,7 @@ public class LexDataDbService extends AbstractDataDbService {
 						.where(cm.MEMBER_LEXEME_ID.eq(lexemeId)));
 	}
 
-	public List<eki.ekilex.data.CollocPosGroup> getPrimaryCollocations(Long lexemeId, String classifierLabelLang, String classifierLabelTypeCode) {
+	public List<eki.ekilex.data.CollocPosGroup> getPrimaryCollocations(Long lexemeId, String classifierLabelLang) {
 
 		PosGroup pg = POS_GROUP.as("pg");
 		PosGroupLabel pgl = POS_GROUP_LABEL.as("pgl");
@@ -268,7 +268,7 @@ public class LexDataDbService extends AbstractDataDbService {
 						.leftOuterJoin(rgl).on(
 								rgl.CODE.eq(rg.CODE)
 										.and(rgl.LANG.eq(classifierLabelLang))
-										.and(rgl.TYPE.eq(classifierLabelTypeCode))))
+										.and(rgl.TYPE.eq(CLASSIF_LABEL_TYPE_DESCRIP))))
 				.whereExists(
 						DSL
 								.select(cm.ID)
@@ -288,7 +288,7 @@ public class LexDataDbService extends AbstractDataDbService {
 						.leftOuterJoin(pgl).on(
 								pgl.CODE.eq(pg.CODE)
 										.and(pgl.LANG.eq(classifierLabelLang))
-										.and(pgl.TYPE.eq(classifierLabelTypeCode))))
+										.and(pgl.TYPE.eq(CLASSIF_LABEL_TYPE_DESCRIP))))
 				.whereExists(
 						DSL
 								.select(cm.ID)

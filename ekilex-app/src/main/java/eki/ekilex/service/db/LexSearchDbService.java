@@ -107,7 +107,7 @@ public class LexSearchDbService extends AbstractDataDbService {
 		return mainDb.fetchCount(w);
 	}
 
-	public List<ParadigmFormTuple> getParadigmFormTuples(Long wordId, String classifierLabelLang, String classifierLabelTypeCode) {
+	public List<ParadigmFormTuple> getParadigmFormTuples(Long wordId, String classifierLabelLang) {
 
 		Paradigm p = PARADIGM.as("p");
 		ParadigmForm pf = PARADIGM_FORM.as("pf");
@@ -177,17 +177,17 @@ public class LexSearchDbService extends AbstractDataDbService {
 								.and(pf.FORM_ID.eq(f.ID))
 								.and(ml.CODE.eq(f.MORPH_CODE))
 								.and(ml.LANG.eq(classifierLabelLang))
-								.and(ml.TYPE.eq(classifierLabelTypeCode)))
+								.and(ml.TYPE.eq(CLASSIF_LABEL_TYPE_DESCRIP)))
 				.orderBy(p.ID, pf.ORDER_BY)
 				.fetchInto(ParadigmFormTuple.class);
 	}
 
 	// TODO apply word?
-	public List<eki.ekilex.data.Lexeme> getWordLexemes(Long wordId, SearchDatasetsRestriction searchDatasetsRestriction, String classifierLabelLang, String classifierLabelTypeCode) {
+	public List<eki.ekilex.data.Lexeme> getWordLexemes(Long wordId, SearchDatasetsRestriction searchDatasetsRestriction, String classifierLabelLang) {
 
 		Lexeme l = LEXEME.as("l");
 		Dataset ds = DATASET.as("ds");
-		List<Field<?>> lexemeFields = queryHelper.getLexemeFields(l, ds, classifierLabelLang, classifierLabelTypeCode);
+		List<Field<?>> lexemeFields = queryHelper.getLexemeFields(l, ds, classifierLabelLang, CLASSIF_LABEL_TYPE_DESCRIP);
 		Condition dsWhere = searchFilterHelper.applyDatasetRestrictions(l, searchDatasetsRestriction, null);
 
 		return mainDb

@@ -265,7 +265,7 @@ public class LookupDbService extends AbstractDataDbService {
 				.fetchInto(WordRelation.class);
 	}
 
-	public List<Classifier> getWordOppositeRelations(String relationTypeCode, String classifLabelLang, String classifLabelType) {
+	public List<Classifier> getWordOppositeRelations(String relationTypeCode, String classifLabelLang) {
 
 		return mainDb
 				.select(WORD_REL_TYPE_LABEL.CODE, WORD_REL_TYPE_LABEL.VALUE)
@@ -274,7 +274,7 @@ public class LookupDbService extends AbstractDataDbService {
 						WORD_REL_MAPPING.CODE1.eq(relationTypeCode)
 								.and(WORD_REL_TYPE_LABEL.CODE.eq(WORD_REL_MAPPING.CODE2))
 								.and(WORD_REL_TYPE_LABEL.LANG.eq(classifLabelLang))
-								.and(WORD_REL_TYPE_LABEL.TYPE.eq(classifLabelType)))
+								.and(WORD_REL_TYPE_LABEL.TYPE.eq(CLASSIF_LABEL_TYPE_DESCRIP)))
 				.fetchInto(Classifier.class);
 	}
 
@@ -442,7 +442,7 @@ public class LookupDbService extends AbstractDataDbService {
 		return lexemeRegionRecord.getId();
 	}
 
-	public List<Classifier> getLexemeOppositeRelationTypes(String relationTypeCode, String classifLabelLang, String classifLabelType) {
+	public List<Classifier> getLexemeOppositeRelationTypes(String relationTypeCode, String classifLabelLang) {
 
 		return mainDb
 				.select(
@@ -455,7 +455,7 @@ public class LookupDbService extends AbstractDataDbService {
 						LEX_REL_MAPPING.CODE1.eq(relationTypeCode)
 								.and(LEX_REL_TYPE_LABEL.CODE.eq(LEX_REL_MAPPING.CODE2))
 								.and(LEX_REL_TYPE_LABEL.LANG.eq(classifLabelLang))
-								.and(LEX_REL_TYPE_LABEL.TYPE.eq(classifLabelType)))
+								.and(LEX_REL_TYPE_LABEL.TYPE.eq(CLASSIF_LABEL_TYPE_DESCRIP)))
 				.fetchInto(Classifier.class);
 	}
 
@@ -783,7 +783,7 @@ public class LookupDbService extends AbstractDataDbService {
 				.fetchMap(meaningIdField, DSL.arrayAggDistinct(datasetCodeField));
 	}
 
-	public List<Classifier> getMeaningOppositeRelations(String relationTypeCode, String classifLabelLang, String classifLabelType) {
+	public List<Classifier> getMeaningOppositeRelations(String relationTypeCode, String classifLabelLang) {
 
 		return mainDb
 				.select(MEANING_REL_TYPE_LABEL.CODE, MEANING_REL_TYPE_LABEL.VALUE)
@@ -792,7 +792,7 @@ public class LookupDbService extends AbstractDataDbService {
 						MEANING_REL_MAPPING.CODE1.eq(relationTypeCode)
 								.and(MEANING_REL_TYPE_LABEL.CODE.eq(MEANING_REL_MAPPING.CODE2))
 								.and(MEANING_REL_TYPE_LABEL.LANG.eq(classifLabelLang))
-								.and(MEANING_REL_TYPE_LABEL.TYPE.eq(classifLabelType)))
+								.and(MEANING_REL_TYPE_LABEL.TYPE.eq(CLASSIF_LABEL_TYPE_DESCRIP)))
 				.fetchInto(Classifier.class);
 	}
 

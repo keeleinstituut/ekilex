@@ -212,6 +212,18 @@ public class ClassifierDbService extends AbstractDataDbService {
 				.fetchInto(Long.class);
 	}
 
+	public boolean classifierHasLabelType(ClassifierName classifierName, String labelType) {
+
+		String classifierLabelTableName = getLabelTableName(classifierName);
+		Table<?> cll = PUBLIC.getTable(classifierLabelTableName).as("cll");
+
+		return mainDb
+				.fetchExists(DSL
+						.select(CODE_FIELD)
+						.from(cll)
+						.where(TYPE_FIELD.eq(labelType)));
+	}
+
 	public void createClassifier(String classifierName, String classifierCode) {
 
 		String[] emptyArray = new String[0];

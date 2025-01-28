@@ -61,14 +61,14 @@ public class CommonDataService implements InitializingBean, SystemConstant, Glob
 
 	@Transactional
 	public List<Classifier> getAvailableFreeformTypes() {
-		List<Classifier> freeformTypes = commonDataDbService.getFreeformTypes(CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
+		List<Classifier> freeformTypes = commonDataDbService.getDefaultClassifiers(ClassifierName.FREEFORM_TYPE, CLASSIF_LABEL_LANG_EST);
 		freeformTypes = removeTechnicalFreeformTypes(freeformTypes);
 		return freeformTypes;
 	}
 
 	@Transactional
 	public List<Classifier> getFreeformTypes(FreeformOwner freeformOwner) {
-		List<Classifier> freeformTypes = commonDataDbService.getFreeformTypes(freeformOwner, CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
+		List<Classifier> freeformTypes = commonDataDbService.getFreeformTypes(freeformOwner, CLASSIF_LABEL_LANG_EST);
 		if (CollectionUtils.isEmpty(freeformTypes)) {
 			return freeformTypes;
 		}
@@ -78,7 +78,7 @@ public class CommonDataService implements InitializingBean, SystemConstant, Glob
 
 	@Transactional
 	public List<Classifier> getFreeformTypes(String datasetCode, FreeformOwner freeformOwner) {
-		List<Classifier> freeformTypes = commonDataDbService.getFreeformTypes(datasetCode, freeformOwner, CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
+		List<Classifier> freeformTypes = commonDataDbService.getFreeformTypes(datasetCode, freeformOwner, CLASSIF_LABEL_LANG_EST);
 		if (CollectionUtils.isEmpty(freeformTypes)) {
 			return freeformTypes;
 		}
@@ -117,140 +117,139 @@ public class CommonDataService implements InitializingBean, SystemConstant, Glob
 	}
 
 	@Transactional
-	public List<Classifier> getLanguages() {
-		return commonDataDbService.getLanguages(CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
-	}
-
-	@Transactional
 	public Map<String, String> getLanguageIso2Map() {
-		List<Classifier> languages = commonDataDbService.getLanguages(CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_ISO2);
+		List<Classifier> languages = commonDataDbService.getClassifiers(ClassifierName.LANGUAGE, CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_ISO2);
 		return languages.stream()
 				.collect(Collectors.toMap(Classifier::getCode, classifier -> StringUtils.isNotBlank(classifier.getValue()) ? classifier.getValue() : classifier.getCode()));
 	}
 
 	@Transactional
 	public Map<String, List<Classifier>> getDomainsInUseByOrigin() {
-		List<Classifier> domains = commonDataDbService.getDomainsInUse(CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP, CLASSIF_LABEL_TYPE_COMMENT);
+		List<Classifier> domains = commonDataDbService.getDomainsInUse(CLASSIF_LABEL_LANG_EST);
 		return domains.stream().collect(groupingBy(Classifier::getOrigin));
 	}
 
 	@Transactional
 	public Map<String, List<Classifier>> getDatasetDomainsByOrigin(String datasetCode) {
-		List<Classifier> domains = commonDataDbService.getDatasetClassifiers(
-				ClassifierName.DOMAIN, datasetCode, CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP, CLASSIF_LABEL_TYPE_COMMENT);
+		List<Classifier> domains = commonDataDbService.getDatasetClassifiers(ClassifierName.DOMAIN, datasetCode, CLASSIF_LABEL_LANG_EST);
 		Map<String, List<Classifier>> datasetDomainsByOrigin = domains.stream().collect(groupingBy(Classifier::getOrigin));
 		return datasetDomainsByOrigin;
 	}
 
 	@Transactional
 	public List<Classifier> getDomains(String origin) {
-		List<Classifier> domains = commonDataDbService.getDomains(origin, CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP, CLASSIF_LABEL_TYPE_COMMENT);
+		List<Classifier> domains = commonDataDbService.getDomains(origin, CLASSIF_LABEL_LANG_EST);
 		return domains;
 	}
 
 	@Transactional
+	public List<Classifier> getLanguages() {
+		return commonDataDbService.getDefaultClassifiers(ClassifierName.LANGUAGE, CLASSIF_LABEL_LANG_EST);
+	}
+
+	@Transactional
 	public List<Classifier> getMorphs() {
-		return commonDataDbService.getMorphs(CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
+		return commonDataDbService.getDefaultClassifiers(ClassifierName.MORPH, CLASSIF_LABEL_LANG_EST);
 	}
 
 	@Transactional
 	public List<Classifier> getGenders() {
-		return commonDataDbService.getGenders(CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
+		return commonDataDbService.getDefaultClassifiers(ClassifierName.GENDER, CLASSIF_LABEL_LANG_EST);
 	}
 
 	@Transactional
 	public List<Classifier> getWordTypes() {
-		return commonDataDbService.getWordTypes(CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
+		return commonDataDbService.getDefaultClassifiers(ClassifierName.WORD_TYPE, CLASSIF_LABEL_LANG_EST);
 	}
 
 	@Transactional
 	public List<Classifier> getAspects() {
-		return commonDataDbService.getAspects(CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
+		return commonDataDbService.getDefaultClassifiers(ClassifierName.ASPECT, CLASSIF_LABEL_LANG_EST);
 	}
 
 	@Transactional
 	public List<Classifier> getWordRelationTypes() {
-		return commonDataDbService.getWordRelationTypes(CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
+		return commonDataDbService.getDefaultClassifiers(ClassifierName.WORD_REL_TYPE, CLASSIF_LABEL_LANG_EST);
 	}
 
 	@Transactional
 	public List<Classifier> getLexemeRelationTypes() {
-		return commonDataDbService.getLexemeRelationTypes(CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
+		return commonDataDbService.getDefaultClassifiers(ClassifierName.LEX_REL_TYPE, CLASSIF_LABEL_LANG_EST);
 	}
 
 	@Transactional
 	public List<Classifier> getMeaningRelationTypes() {
-		return commonDataDbService.getMeaningRelationTypes(CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
+		return commonDataDbService.getDefaultClassifiers(ClassifierName.MEANING_REL_TYPE, CLASSIF_LABEL_LANG_EST);
 	}
 
 	@Transactional
 	public List<Classifier> getDefinitionTypes() {
-		return commonDataDbService.getDefinitionTypes(CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
+		return commonDataDbService.getDefaultClassifiers(ClassifierName.DEFINITION_TYPE, CLASSIF_LABEL_LANG_EST);
 	}
 
 	@Transactional
 	public List<Classifier> getPoses() {
-		return commonDataDbService.getPoses(CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
+		return commonDataDbService.getDefaultClassifiers(ClassifierName.POS, CLASSIF_LABEL_LANG_EST);
 	}
 
 	@Transactional
 	public List<Classifier> getRegisters() {
-		return commonDataDbService.getRegisters(CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
+		return commonDataDbService.getDefaultClassifiers(ClassifierName.REGISTER, CLASSIF_LABEL_LANG_EST);
 	}
 
 	@Transactional
 	public List<Classifier> getRegions() {
-		return commonDataDbService.getRegions();
+		return commonDataDbService.getDefaultClassifiers(ClassifierName.REGION, CLASSIF_LABEL_LANG_EST);
 	}
 
 	@Transactional
 	public List<Classifier> getDerivs() {
-		return commonDataDbService.getDerivs(CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
+		return commonDataDbService.getDefaultClassifiers(ClassifierName.DERIV, CLASSIF_LABEL_LANG_EST);
 	}
 
 	@Transactional
 	public List<Classifier> getValueStates() {
-		return commonDataDbService.getValueStates(CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
+		return commonDataDbService.getDefaultClassifiers(ClassifierName.VALUE_STATE, CLASSIF_LABEL_LANG_EST);
 	}
 
 	@Transactional
 	public List<Classifier> getProficiencyLevels() {
-		return commonDataDbService.getProficiencyLevels(CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
+		return commonDataDbService.getDefaultClassifiers(ClassifierName.PROFICIENCY_LEVEL, CLASSIF_LABEL_LANG_EST);
 	}
 
 	@Transactional
 	public List<Classifier> getSemanticTypes() {
-		return commonDataDbService.getSemanticTypes(CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
+		return commonDataDbService.getDefaultClassifiers(ClassifierName.SEMANTIC_TYPE, CLASSIF_LABEL_LANG_EST);
 	}
 
 	@Transactional
 	public List<Classifier> getDisplayMorphs() {
-		return commonDataDbService.getDisplayMorphs(CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
+		return commonDataDbService.getDefaultClassifiers(ClassifierName.DISPLAY_MORPH, CLASSIF_LABEL_LANG_EST);
 	}
 
 	@Transactional
 	public List<Classifier> getGovernmentTypes() {
-		return commonDataDbService.getGovernmentTypes(CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
+		return commonDataDbService.getDefaultClassifiers(ClassifierName.GOVERNMENT_TYPE, CLASSIF_LABEL_LANG_EST);
 	}
 
 	@Transactional
 	public List<Classifier> getEtymologyTypes() {
-		return commonDataDbService.getEtymologyTypes();
+		return commonDataDbService.getDefaultClassifiers(ClassifierName.ETYMOLOGY_TYPE, CLASSIF_LABEL_LANG_EST);
 	}
 
 	@Transactional
 	public List<Classifier> getPosGroups() {
-		return commonDataDbService.getPosGroups(CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
+		return commonDataDbService.getDefaultClassifiers(ClassifierName.POS_GROUP, CLASSIF_LABEL_LANG_EST);
 	}
 
 	@Transactional
 	public List<Classifier> getRelGroups() {
-		return commonDataDbService.getRelGroups(CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
+		return commonDataDbService.getDefaultClassifiers(ClassifierName.REL_GROUP, CLASSIF_LABEL_LANG_EST);
 	}
 
 	@Transactional
 	public List<Classifier> getUsageTypes() {
-		return commonDataDbService.getUsageTypes(CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
+		return commonDataDbService.getDefaultClassifiers(ClassifierName.USAGE_TYPE, CLASSIF_LABEL_LANG_EST);
 	}
 
 	@Transactional
@@ -258,78 +257,12 @@ public class CommonDataService implements InitializingBean, SystemConstant, Glob
 		if (classifierName == null) {
 			return null;
 		}
-		if (ClassifierName.LANGUAGE.equals(classifierName)) {
-			return getLanguages();
-		}
-		if (ClassifierName.MORPH.equals(classifierName)) {
-			return getMorphs();
-		}
-		if (ClassifierName.GENDER.equals(classifierName)) {
-			return getGenders();
-		}
-		if (ClassifierName.WORD_TYPE.equals(classifierName)) {
-			return getWordTypes();
-		}
-		if (ClassifierName.ASPECT.equals(classifierName)) {
-			return getAspects();
-		}
-		if (ClassifierName.WORD_REL_TYPE.equals(classifierName)) {
-			return getWordRelationTypes();
-		}
-		if (ClassifierName.LEX_REL_TYPE.equals(classifierName)) {
-			return getLexemeRelationTypes();
-		}
-		if (ClassifierName.MEANING_REL_TYPE.equals(classifierName)) {
-			return getMeaningRelationTypes();
-		}
-		if (ClassifierName.DEFINITION_TYPE.equals(classifierName)) {
-			return getDefinitionTypes();
-		}
-		if (ClassifierName.POS.equals(classifierName)) {
-			return getPoses();
-		}
-		if (ClassifierName.REGISTER.equals(classifierName)) {
-			return getRegisters();
-		}
-		if (ClassifierName.REGION.equals(classifierName)) {
-			return getRegions();
-		}
-		if (ClassifierName.DERIV.equals(classifierName)) {
-			return getDerivs();
-		}
-		if (ClassifierName.VALUE_STATE.equals(classifierName)) {
-			return getValueStates();
-		}
-		if (ClassifierName.PROFICIENCY_LEVEL.equals(classifierName)) {
-			return getProficiencyLevels();
-		}
-		if (ClassifierName.SEMANTIC_TYPE.equals(classifierName)) {
-			return getSemanticTypes();
-		}
-		if (ClassifierName.DISPLAY_MORPH.equals(classifierName)) {
-			return getDisplayMorphs();
-		}
-		if (ClassifierName.GOVERNMENT_TYPE.equals(classifierName)) {
-			return getGovernmentTypes();
-		}
-		if (ClassifierName.ETYMOLOGY_TYPE.equals(classifierName)) {
-			return getEtymologyTypes();
-		}
-		if (ClassifierName.POS_GROUP.equals(classifierName)) {
-			return getPosGroups();
-		}
-		if (ClassifierName.REL_GROUP.equals(classifierName)) {
-			return getRelGroups();
-		}
-		if (ClassifierName.USAGE_TYPE.equals(classifierName)) {
-			return getUsageTypes();
-		}
-		return null;
+		return commonDataDbService.getDefaultClassifiers(classifierName, CLASSIF_LABEL_LANG_EST);
 	}
 
 	@Transactional
 	public List<Classifier> getDatasetLanguages(String datasetCode) {
-		return commonDataDbService.getDatasetClassifiers(ClassifierName.LANGUAGE, datasetCode, CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP, null);
+		return commonDataDbService.getDatasetClassifiers(ClassifierName.LANGUAGE, datasetCode, CLASSIF_LABEL_LANG_EST);
 	}
 
 	@Transactional

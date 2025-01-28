@@ -96,11 +96,11 @@ public abstract class AbstractDataDbService implements SystemConstant, GlobalCon
 		return homonymNr;
 	}
 
-	public eki.ekilex.data.Lexeme getLexeme(Long lexemeId, String classifierLabelLang, String classifierLabelTypeCode) {
+	public eki.ekilex.data.Lexeme getLexeme(Long lexemeId, String classifierLabelLang) {
 
 		Lexeme l = LEXEME.as("l");
 		Dataset ds = DATASET.as("ds");
-		List<Field<?>> lexemeFields = queryHelper.getLexemeFields(l, ds, classifierLabelLang, classifierLabelTypeCode);
+		List<Field<?>> lexemeFields = queryHelper.getLexemeFields(l, ds, classifierLabelLang, CLASSIF_LABEL_TYPE_DESCRIP);
 
 		return mainDb
 				.select(lexemeFields)

@@ -9,6 +9,7 @@ import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import eki.common.constant.ClassifierName;
 import eki.common.constant.PermConstant;
 import eki.ekilex.data.Classifier;
 import eki.ekilex.data.Dataset;
@@ -95,7 +96,7 @@ public abstract class AbstractSearchService extends AbstractService implements P
 	protected SearchLangsRestriction composeLangsRestriction(List<String> preferredLangs) {
 
 		SearchLangsRestriction searchLangsRestriction = new SearchLangsRestriction();
-		List<Classifier> allLangs = commonDataDbService.getLanguages(CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
+		List<Classifier> allLangs = commonDataDbService.getDefaultClassifiers(ClassifierName.LANGUAGE, CLASSIF_LABEL_LANG_EST);
 		int allLangsCount = allLangs.size();
 		int preferredLangsCount = preferredLangs.size();
 		boolean noLangsFiltering = preferredLangs.isEmpty() || preferredLangsCount == allLangsCount;

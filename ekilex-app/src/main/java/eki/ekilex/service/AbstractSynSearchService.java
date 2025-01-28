@@ -53,7 +53,7 @@ public abstract class AbstractSynSearchService extends AbstractWordSearchService
 		List<MeaningWord> meaningWords = commonDataDbService.getMeaningWords(lexemeId, meaningWordLangsRestriction);
 		List<InexactSynonym> inexactSynonyms = lookupDbService.getMeaningInexactSynonyms(meaningId, headwordLanguage, datasetCode);
 		List<SynonymLangGroup> synonymLangGroups = conversionUtil.composeSynonymLangGroups(synMeaningRelations, meaningWords, inexactSynonyms, userProfile, headwordLanguage, languagesOrder);
-		List<Definition> definitions = commonDataDbService.getMeaningDefinitions(meaningId, datasetCode, CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
+		List<Definition> definitions = commonDataDbService.getMeaningDefinitions(meaningId, datasetCode, CLASSIF_LABEL_LANG_EST);
 		permCalculator.filterVisibility(user, definitions);
 		List<Usage> usages = lexeme.getUsages();
 		usages = usages.stream().filter(Usage::isPublic).collect(Collectors.toList());

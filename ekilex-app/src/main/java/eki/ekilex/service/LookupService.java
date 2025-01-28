@@ -143,7 +143,7 @@ public class LookupService extends AbstractWordSearchService {
 			if (!StringUtils.equals(language, word.getLang())) {
 				continue;
 			}
-			List<Lexeme> lexemes = lexSearchDbService.getWordLexemes(word.getWordId(), searchDatasetsRestriction, CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
+			List<Lexeme> lexemes = lexSearchDbService.getWordLexemes(word.getWordId(), searchDatasetsRestriction, CLASSIF_LABEL_LANG_EST);
 			if (sourceMeaningId != null) {
 				boolean lexemeAlreadyExists = lexemes.stream().anyMatch(lexeme -> sourceMeaningId.equals(lexeme.getMeaningId()));
 				if (lexemeAlreadyExists) {
@@ -158,7 +158,7 @@ public class LookupService extends AbstractWordSearchService {
 				List<MeaningWord> meaningWords = commonDataDbService.getMeaningWords(lexemeId);
 				lexeme.setMeaningWords(meaningWords);
 				lexeme.setLexemeWord(word);
-				List<Definition> definitions = commonDataDbService.getMeaningDefinitions(meaningId, datasetCode, CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
+				List<Definition> definitions = commonDataDbService.getMeaningDefinitions(meaningId, datasetCode, CLASSIF_LABEL_LANG_EST);
 				permCalculator.filterVisibility(user, definitions);
 				List<String> lexemeDefinitionValues = definitions.stream().map(def -> def.getValue()).collect(Collectors.toList());
 				allDefinitionValues.addAll(lexemeDefinitionValues);
@@ -221,9 +221,9 @@ public class LookupService extends AbstractWordSearchService {
 		Map<String, String> datasetNameMap = commonDataDbService.getDatasetNameMap();
 		String datasetCode = lookupDbService.getMeaningFirstDatasetCode(meaningId);
 		String meaningdatasetname = datasetNameMap.get(datasetCode);
-		List<Classifier> datasetLanguages = commonDataDbService.getDatasetClassifiers(ClassifierName.LANGUAGE, datasetCode, CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP, null);
-		List<OrderedClassifier> meaningDomains = commonDataDbService.getMeaningDomains(meaningId, CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP, CLASSIF_LABEL_TYPE_COMMENT);
-		List<Definition> meaningDefinitions = commonDataDbService.getMeaningDefinitions(meaningId, datasetCode, CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
+		List<Classifier> datasetLanguages = commonDataDbService.getDatasetClassifiers(ClassifierName.LANGUAGE, datasetCode, CLASSIF_LABEL_LANG_EST);
+		List<OrderedClassifier> meaningDomains = commonDataDbService.getMeaningDomains(meaningId, CLASSIF_LABEL_LANG_EST);
+		List<Definition> meaningDefinitions = commonDataDbService.getMeaningDefinitions(meaningId, datasetCode, CLASSIF_LABEL_LANG_EST);
 		permCalculator.filterVisibility(user, meaningDefinitions);
 
 		List<WordDescript> wordCandidates;
@@ -258,8 +258,8 @@ public class LookupService extends AbstractWordSearchService {
 		Map<String, String> datasetNameMap = commonDataDbService.getDatasetNameMap();
 		String datasetCode = lookupDbService.getMeaningFirstDatasetCode(meaningId);
 		String meaningdatasetname = datasetNameMap.get(datasetCode);
-		List<OrderedClassifier> meaningDomains = commonDataDbService.getMeaningDomains(meaningId, CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP, CLASSIF_LABEL_TYPE_COMMENT);
-		List<Definition> meaningDefinitions = commonDataDbService.getMeaningDefinitions(meaningId, datasetCode, CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
+		List<OrderedClassifier> meaningDomains = commonDataDbService.getMeaningDomains(meaningId, CLASSIF_LABEL_LANG_EST);
+		List<Definition> meaningDefinitions = commonDataDbService.getMeaningDefinitions(meaningId, datasetCode, CLASSIF_LABEL_LANG_EST);
 		permCalculator.filterVisibility(user, meaningDefinitions);
 
 		List<WordDescript> wordCandidates = getWordCandidates(wordValue, language, datasetCode, user);
@@ -296,8 +296,8 @@ public class LookupService extends AbstractWordSearchService {
 
 		SearchDatasetsRestriction searchDatasetsRestriction = composeDatasetsRestriction(Collections.emptyList());
 		Word word = lexSearchDbService.getWord(wordId);
-		List<Classifier> wordTypes = commonDataDbService.getWordTypes(wordId, CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
-		List<Lexeme> lexemes = lexSearchDbService.getWordLexemes(wordId, searchDatasetsRestriction, CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
+		List<Classifier> wordTypes = commonDataDbService.getWordTypes(wordId, CLASSIF_LABEL_LANG_EST);
+		List<Lexeme> lexemes = lexSearchDbService.getWordLexemes(wordId, searchDatasetsRestriction, CLASSIF_LABEL_LANG_EST);
 		List<WordEtymTuple> wordEtymTuples = lexDataDbService.getWordEtymology(wordId);
 		List<WordEtym> wordEtymology = conversionUtil.composeWordEtymology(wordEtymTuples);
 
@@ -350,7 +350,7 @@ public class LookupService extends AbstractWordSearchService {
 						continue;
 					}
 
-					List<Lexeme> wordLexemes = lexSearchDbService.getWordLexemes(wordId, searchDatasetsRestriction, CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
+					List<Lexeme> wordLexemes = lexSearchDbService.getWordLexemes(wordId, searchDatasetsRestriction, CLASSIF_LABEL_LANG_EST);
 					wordLexemes.removeIf(lex -> lex.getMeaningId().equals(excludedMeaningId));
 					wordLexemes.forEach(lexeme -> {
 
@@ -358,7 +358,7 @@ public class LookupService extends AbstractWordSearchService {
 						Long meaningId = lexeme.getMeaningId();
 						String datasetCode = lexeme.getDatasetCode();
 						List<MeaningWord> meaningWords = commonDataDbService.getMeaningWords(lexemeId);
-						List<Definition> definitions = commonDataDbService.getMeaningDefinitions(meaningId, datasetCode, CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
+						List<Definition> definitions = commonDataDbService.getMeaningDefinitions(meaningId, datasetCode, CLASSIF_LABEL_LANG_EST);
 						List<Government> governments = commonDataDbService.getLexemeGovernments(lexemeId);
 						List<Usage> usages = lexeme.getUsages();
 						permCalculator.filterVisibility(user, definitions);
@@ -433,11 +433,11 @@ public class LookupService extends AbstractWordSearchService {
 
 		List<Classifier> oppositeRelations = new ArrayList<>();
 		if (ActivityOwner.WORD.equals(owner)) {
-			oppositeRelations = lookupDbService.getWordOppositeRelations(relationTypeCode, CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
+			oppositeRelations = lookupDbService.getWordOppositeRelations(relationTypeCode, CLASSIF_LABEL_LANG_EST);
 		} else if (ActivityOwner.LEXEME.equals(owner)) {
-			oppositeRelations = lookupDbService.getLexemeOppositeRelationTypes(relationTypeCode, CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
+			oppositeRelations = lookupDbService.getLexemeOppositeRelationTypes(relationTypeCode, CLASSIF_LABEL_LANG_EST);
 		} else if (ActivityOwner.MEANING.equals(owner)) {
-			oppositeRelations = lookupDbService.getMeaningOppositeRelations(relationTypeCode, CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
+			oppositeRelations = lookupDbService.getMeaningOppositeRelations(relationTypeCode, CLASSIF_LABEL_LANG_EST);
 		}
 		return oppositeRelations;
 	}
@@ -446,18 +446,18 @@ public class LookupService extends AbstractWordSearchService {
 
 		Long meaningId = meaning.getMeaningId();
 
-		List<Definition> definitions = commonDataDbService.getMeaningDefinitions(meaningId, CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
+		List<Definition> definitions = commonDataDbService.getMeaningDefinitions(meaningId, CLASSIF_LABEL_LANG_EST);
 		permCalculator.filterVisibility(user, definitions);
 		List<DefinitionLangGroup> definitionLangGroups = conversionUtil.composeMeaningDefinitionLangGroups(definitions, languagesOrder);
-		List<OrderedClassifier> domains = commonDataDbService.getMeaningDomains(meaningId, CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP, CLASSIF_LABEL_TYPE_COMMENT);
-		List<Freeform> meaningFreeforms = commonDataDbService.getMeaningFreeforms(meaningId, EXCLUDED_MEANING_ATTRIBUTE_FF_TYPE_CODES_MIN, CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
+		List<OrderedClassifier> domains = commonDataDbService.getMeaningDomains(meaningId, CLASSIF_LABEL_LANG_EST);
+		List<Freeform> meaningFreeforms = commonDataDbService.getMeaningFreeforms(meaningId, EXCLUDED_MEANING_ATTRIBUTE_FF_TYPE_CODES_MIN, CLASSIF_LABEL_LANG_EST);
 
 		List<Long> lexemeIds = meaning.getLexemeIds();
 		List<Lexeme> lexemes = new ArrayList<>();
 
 		for (Long lexemeId : lexemeIds) {
 
-			Lexeme lexeme = termSearchDbService.getLexeme(lexemeId, CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
+			Lexeme lexeme = termSearchDbService.getLexeme(lexemeId, CLASSIF_LABEL_LANG_EST);
 			Long wordId = lexeme.getWordId();
 			Word word = termSearchDbService.getWord(wordId);
 			lexeme.setLexemeWord(word);
@@ -481,7 +481,7 @@ public class LookupService extends AbstractWordSearchService {
 		String datasetCode = lexeme.getDatasetCode();
 		Word word = lexSearchDbService.getWord(wordId);
 		List<MeaningWord> meaningWords = commonDataDbService.getMeaningWords(lexemeId);
-		List<Definition> definitions = commonDataDbService.getMeaningDefinitions(meaningId, datasetCode, CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
+		List<Definition> definitions = commonDataDbService.getMeaningDefinitions(meaningId, datasetCode, CLASSIF_LABEL_LANG_EST);
 		Meaning meaning = new Meaning();
 		meaning.setDefinitions(definitions);
 		permCalculator.filterVisibility(user, definitions);

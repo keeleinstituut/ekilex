@@ -2,7 +2,6 @@ package eki.ekilex.service;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.EnumSet;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -41,8 +40,7 @@ public class ClassifierService implements GlobalConstant, SystemConstant {
 
 	public List<String> getEditableClassifierNames() {
 
-		EnumSet<ClassifierName> allClassifierNames = EnumSet.allOf(ClassifierName.class);
-		List<String> editableClassifierNames = allClassifierNames.stream()
+		List<String> editableClassifierNames = Arrays.stream(ClassifierName.values())
 				.filter(classifName -> !ArrayUtils.contains(NON_EDITABLE_CLASSIFIER_NAMES, classifName))
 				.map(ClassifierName::name)
 				.collect(Collectors.toList());
@@ -61,23 +59,24 @@ public class ClassifierService implements GlobalConstant, SystemConstant {
 	@Transactional
 	public List<ClassifierFull> getClassifiers(ClassifierName classifierName, String domainOrigin) {
 
+		List<String> labelTypes = new ArrayList<>();
 		boolean hasLabel = classifierName.hasLabel();
-		List<ClassifierFull> classifiers;
-
-		if (ClassifierName.DOMAIN.equals(classifierName) && StringUtils.isNotBlank(domainOrigin)) {
-
-			List<String> labelTypes = Arrays.asList(CLASSIF_LABEL_TYPE_DESCRIP, CLASSIF_LABEL_TYPE_COMMENT);
-			classifiers = classifierDbService.getClassifierFulls(classifierName, domainOrigin, labelTypes);
-			transformLabels(labelTypes, classifierName, domainOrigin, classifiers);
-
-		} else {
-
-			List<String> labelTypes = Arrays.asList(CLASSIF_LABEL_TYPE_DESCRIP, CLASSIF_LABEL_TYPE_WORDWEB);
-			classifiers = classifierDbService.getClassifierFulls(classifierName, labelTypes);
-			if (hasLabel) {
-				transformLabels(labelTypes, classifierName, domainOrigin, classifiers);
+		if (hasLabel) {
+			labelTypes.add(CLASSIF_LABEL_TYPE_DESCRIP);
+			labelTypes.add(CLASSIF_LABEL_TYPE_WORDWEB);
+			boolean classifierHasLabelTypeComment = classifierDbService.classifierHasLabelType(classifierName, CLASSIF_LABEL_TYPE_COMMENT);
+			if (classifierHasLabelTypeComment) {
+				labelTypes.add(CLASSIF_LABEL_TYPE_COMMENT);
 			}
-
+		}
+		List<ClassifierFull> classifiers;
+		if (ClassifierName.DOMAIN.equals(classifierName) && StringUtils.isNotBlank(domainOrigin)) {
+			classifiers = classifierDbService.getClassifierFulls(classifierName, domainOrigin, labelTypes);
+		} else {
+			classifiers = classifierDbService.getClassifierFulls(classifierName, labelTypes);
+		}
+		if (hasLabel && CollectionUtils.isNotEmpty(classifiers)) {
+			transformLabels(labelTypes, classifierName, domainOrigin, classifiers);
 		}
 		return classifiers;
 	}

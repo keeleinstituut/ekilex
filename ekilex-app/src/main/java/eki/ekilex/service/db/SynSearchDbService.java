@@ -335,15 +335,15 @@ public class SynSearchDbService extends AbstractDataDbService {
 	}
 
 	public List<eki.ekilex.data.Lexeme> getWordPrimarySynonymLexemes(
-			Long wordId, SearchDatasetsRestriction searchDatasetsRestriction, String classifierLabelLang, String classifierLabelTypeCode) {
+			Long wordId, SearchDatasetsRestriction searchDatasetsRestriction, String classifierLabelLang) {
 
 		Lexeme l = LEXEME.as("l");
 		Dataset ds = DATASET.as("ds");
 
 		Condition dsWhere = searchFilterHelper.applyDatasetRestrictions(l, searchDatasetsRestriction, null);
 
-		Field<JSON> lposf = queryHelper.getLexemePosField(l.ID, classifierLabelLang, classifierLabelTypeCode);
-		Field<JSON> lregf = queryHelper.getLexemeRegistersField(l.ID, classifierLabelLang, classifierLabelTypeCode);
+		Field<JSON> lposf = queryHelper.getLexemePosField(l.ID, classifierLabelLang, CLASSIF_LABEL_TYPE_DESCRIP);
+		Field<JSON> lregf = queryHelper.getLexemeRegistersField(l.ID, classifierLabelLang, CLASSIF_LABEL_TYPE_DESCRIP);
 
 		return mainDb
 				.select(
@@ -365,16 +365,23 @@ public class SynSearchDbService extends AbstractDataDbService {
 	}
 
 	public List<eki.ekilex.data.WordRelation> getExistingFollowingRelationsForWord(Long relationId, String relTypeCode) {
+
+		WordRelation wr1 = WORD_RELATION.as("wr1");
 		WordRelation wr2 = WORD_RELATION.as("wr2");
 
-		return mainDb.select(WORD_RELATION.ID, WORD_RELATION.ORDER_BY)
-				.from(WORD_RELATION, wr2)
+		return mainDb
+				.select(
+						wr1.ID,
+						wr1.ORDER_BY)
+				.from(
+						wr1,
+						wr2)
 				.where(
-						WORD_RELATION.WORD1_ID.eq(wr2.WORD1_ID)
+						wr1.WORD1_ID.eq(wr2.WORD1_ID)
 								.and(wr2.ID.eq(relationId))
-								.and(WORD_RELATION.ORDER_BY.ge(wr2.ORDER_BY))
-								.and(WORD_RELATION.WORD_REL_TYPE_CODE.eq(relTypeCode)))
-				.orderBy(WORD_RELATION.ORDER_BY)
+								.and(wr1.ORDER_BY.ge(wr2.ORDER_BY))
+								.and(wr1.WORD_REL_TYPE_CODE.eq(relTypeCode)))
+				.orderBy(wr1.ORDER_BY)
 				.fetchInto(eki.ekilex.data.WordRelation.class);
 	}
 

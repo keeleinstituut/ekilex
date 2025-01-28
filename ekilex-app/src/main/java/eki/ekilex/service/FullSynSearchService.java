@@ -47,13 +47,13 @@ public class FullSynSearchService extends AbstractSynSearchService {
 		permCalculator.applyCrud(user, word);
 		List<WordForum> wordForums = commonDataDbService.getWordForums(wordId);
 		permCalculator.applyCrud(user, wordForums);
+		word.setForums(wordForums);
 
-		List<Lexeme> synLexemes = synSearchDbService.getWordPrimarySynonymLexemes(wordId, searchDatasetsRestriction, CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
+		List<ClassifierSelect> sortedLanguagesOrder = languagesOrder.stream()
+				.sorted(Comparator.comparing(orderLang -> !StringUtils.equals(orderLang.getCode(), synCandidateLangCode)))
+				.collect(Collectors.toList());
+		List<Lexeme> synLexemes = synSearchDbService.getWordPrimarySynonymLexemes(wordId, searchDatasetsRestriction, CLASSIF_LABEL_LANG_EST);
 		synLexemes.forEach(lexeme -> {
-			lexeme.setLexemeWord(word);
-			List<ClassifierSelect> sortedLanguagesOrder = languagesOrder.stream()
-					.sorted(Comparator.comparing(orderLang -> !StringUtils.equals(orderLang.getCode(), synCandidateLangCode)))
-					.collect(Collectors.toList());
 			populateLexeme(lexeme, word, sortedLanguagesOrder, synMeaningWordLangCodes, user, userProfile);
 			reorderFullSynLangGroups(lexeme, synCandidateLangCode);
 		});
@@ -74,7 +74,6 @@ public class FullSynSearchService extends AbstractSynSearchService {
 		wordDetails.setWord(word);
 		wordDetails.setLexemes(synLexemes);
 		wordDetails.setWordRelationDetails(wordRelationDetails);
-		word.setForums(wordForums);
 		wordDetails.setActiveTagComplete(isActiveTagComplete);
 
 		return wordDetails;
@@ -104,7 +103,7 @@ public class FullSynSearchService extends AbstractSynSearchService {
 			Long meaningId = wordMeaning.getMeaningId();
 
 			List<Usage> usages = commonDataDbService.getUsages(lexemeId);
-			List<Definition> definitions = commonDataDbService.getMeaningDefinitions(meaningId, CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
+			List<Definition> definitions = commonDataDbService.getMeaningDefinitions(meaningId, CLASSIF_LABEL_LANG_EST);
 
 			wordMeaning.setUsages(usages);
 			wordMeaning.setDefinitions(definitions);
@@ -138,12 +137,12 @@ public class FullSynSearchService extends AbstractSynSearchService {
 		for (Word word : words) {
 
 			Long wordId = word.getWordId();
-			List<Lexeme> wordLexemes = lexSearchDbService.getWordLexemes(wordId, searchDatasetsRestriction, CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
+			List<Lexeme> wordLexemes = lexSearchDbService.getWordLexemes(wordId, searchDatasetsRestriction, CLASSIF_LABEL_LANG_EST);
 
 			wordLexemes.forEach(lexeme -> {
 				Long meaningId = lexeme.getMeaningId();
 				String lexemeDatasetCode = lexeme.getDatasetCode();
-				List<Definition> definitions = commonDataDbService.getMeaningDefinitions(meaningId, lexemeDatasetCode, CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
+				List<Definition> definitions = commonDataDbService.getMeaningDefinitions(meaningId, lexemeDatasetCode, CLASSIF_LABEL_LANG_EST);
 				permCalculator.filterVisibility(user, definitions);
 				Meaning meaning = new Meaning();
 				meaning.setMeaningId(meaningId);

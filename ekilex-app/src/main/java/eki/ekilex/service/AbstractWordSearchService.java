@@ -178,12 +178,12 @@ public abstract class AbstractWordSearchService extends AbstractSearchService {
 		for (Word word : words) {
 
 			Long wordId = word.getWordId();
-			List<Lexeme> wordLexemes = lexSearchDbService.getWordLexemes(wordId, searchDatasetsRestriction, CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
+			List<Lexeme> wordLexemes = lexSearchDbService.getWordLexemes(wordId, searchDatasetsRestriction, CLASSIF_LABEL_LANG_EST);
 
 			wordLexemes.forEach(lexeme -> {
 				Long meaningId = lexeme.getMeaningId();
 				String lexemeDatasetCode = lexeme.getDatasetCode();
-				List<Definition> definitions = commonDataDbService.getMeaningDefinitions(meaningId, lexemeDatasetCode, CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
+				List<Definition> definitions = commonDataDbService.getMeaningDefinitions(meaningId, lexemeDatasetCode, CLASSIF_LABEL_LANG_EST);
 				permCalculator.filterVisibility(user, definitions);
 				Meaning meaning = new Meaning();
 				meaning.setMeaningId(meaningId);

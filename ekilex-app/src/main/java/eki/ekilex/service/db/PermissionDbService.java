@@ -272,7 +272,7 @@ public class PermissionDbService implements SystemConstant, GlobalConstant, Perm
 				.fetchInto(Dataset.class);
 	}
 
-	public List<Classifier> getUserDatasetLanguages(Long userId, String datasetCode, String classifierLabelLang, String classifierLabelTypeCode) {
+	public List<Classifier> getUserDatasetLanguages(Long userId, String datasetCode, String classifierLabelLang) {
 
 		Condition userIsAdminCond = DSL
 				.exists(DSL
@@ -297,7 +297,7 @@ public class PermissionDbService implements SystemConstant, GlobalConstant, Perm
 				.where(
 						LANGUAGE.CODE.eq(LANGUAGE_LABEL.CODE)
 								.and(LANGUAGE_LABEL.LANG.eq(classifierLabelLang))
-								.and(LANGUAGE_LABEL.TYPE.eq(classifierLabelTypeCode))
+								.and(LANGUAGE_LABEL.TYPE.eq(CLASSIF_LABEL_TYPE_DESCRIP))
 								.and(DSL.or(userIsAdminCond, DSL.and(datasetPermCond))))
 				.orderBy(LANGUAGE.ORDER_BY)
 				.fetchInto(Classifier.class);

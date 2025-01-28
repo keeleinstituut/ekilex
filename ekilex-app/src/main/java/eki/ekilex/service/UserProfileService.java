@@ -10,6 +10,7 @@ import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import eki.common.constant.ClassifierName;
 import eki.common.constant.GlobalConstant;
 import eki.ekilex.constant.SystemConstant;
 import eki.ekilex.data.Classifier;
@@ -40,7 +41,7 @@ public class UserProfileService implements GlobalConstant, SystemConstant {
 			List<String> partSynCandidateLangs = userProfile.getPreferredPartSynCandidateLangs();
 			List<String> synLexMeaningWordLangs = userProfile.getPreferredSynLexMeaningWordLangs();
 			List<String> meaningRelationWordLangs = userProfile.getPreferredMeaningRelationWordLangs();
-			List<Classifier> allLangs = commonDataDbService.getLanguages(CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
+			List<Classifier> allLangs = commonDataDbService.getDefaultClassifiers(ClassifierName.LANGUAGE, CLASSIF_LABEL_LANG_EST);
 			List<String> allLangCodes = allLangs.stream().map(Classifier::getCode).collect(Collectors.toList());
 
 			if (CollectionUtils.isEmpty(partSynCandidateLangs)) {

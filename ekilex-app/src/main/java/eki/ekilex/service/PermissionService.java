@@ -103,7 +103,7 @@ public class PermissionService implements SystemConstant, GlobalConstant {
 
 	@Transactional
 	public List<Classifier> getUserDatasetLanguages(Long userId, String datasetCode) {
-		return permissionDbService.getUserDatasetLanguages(userId, datasetCode, CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
+		return permissionDbService.getUserDatasetLanguages(userId, datasetCode, CLASSIF_LABEL_LANG_EST);
 	}
 
 	@Transactional(rollbackOn = Exception.class)

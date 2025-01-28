@@ -556,7 +556,7 @@ public class ActivityLogService implements SystemConstant, GlobalConstant, Freef
 
 	private String getLexemeDetailsJson(Long lexemeId) throws Exception {
 
-		Lexeme lexeme = lexSearchDbService.getLexeme(lexemeId, CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
+		Lexeme lexeme = lexSearchDbService.getLexeme(lexemeId, CLASSIF_LABEL_LANG_EST);
 		if (lexeme == null) {
 			return EMPTY_CONTENT_JSON;
 		}
@@ -565,11 +565,11 @@ public class ActivityLogService implements SystemConstant, GlobalConstant, Freef
 		List<MeaningWord> meaningWords = commonDataDbService.getMeaningWords(lexemeId);
 		List<Government> governments = commonDataDbService.getLexemeGovernments(lexemeId);
 		List<Freeform> grammars = commonDataDbService.getLexemeGrammars(lexemeId);
-		List<Freeform> lexemeFreeforms = commonDataDbService.getLexemeFreeforms(lexemeId, EXCLUDED_LEXEME_ATTRIBUTE_FF_TYPE_CODES, CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
+		List<Freeform> lexemeFreeforms = commonDataDbService.getLexemeFreeforms(lexemeId, EXCLUDED_LEXEME_ATTRIBUTE_FF_TYPE_CODES, CLASSIF_LABEL_LANG_EST);
 		List<LexemeNote> lexemeNotes = lexeme.getNotes();
 		List<NoteLangGroup> lexemeNoteLangGroups = conversionUtil.composeNoteLangGroups(lexemeNotes, null);
-		List<LexemeRelation> lexemeRelations = commonDataDbService.getLexemeRelations(lexemeId, CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
-		List<CollocPosGroup> primaryCollocations = lexDataDbService.getPrimaryCollocations(lexemeId, CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
+		List<LexemeRelation> lexemeRelations = commonDataDbService.getLexemeRelations(lexemeId, CLASSIF_LABEL_LANG_EST);
+		List<CollocPosGroup> primaryCollocations = lexDataDbService.getPrimaryCollocations(lexemeId, CLASSIF_LABEL_LANG_EST);
 		List<Colloc> secondaryCollocations = lexDataDbService.getSecondaryCollocations(lexemeId);
 		boolean isCollocationsExist = lexDataDbService.isCollocationsExist(lexemeId);
 
@@ -596,17 +596,17 @@ public class ActivityLogService implements SystemConstant, GlobalConstant, Freef
 		if (word == null) {
 			return EMPTY_CONTENT_JSON;
 		}
-		List<Freeform> wordFreeforms = commonDataDbService.getWordFreeforms(wordId, EXCLUDED_WORD_ATTRIBUTE_FF_TYPE_CODES, CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
-		List<Classifier> wordTypes = commonDataDbService.getWordTypes(wordId, CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
-		List<WordRelation> wordRelations = lexDataDbService.getWordRelations(wordId, CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
-		List<WordRelation> wordGroupMembers = lexDataDbService.getWordGroupMembers(wordId, CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
+		List<Freeform> wordFreeforms = commonDataDbService.getWordFreeforms(wordId, EXCLUDED_WORD_ATTRIBUTE_FF_TYPE_CODES, CLASSIF_LABEL_LANG_EST);
+		List<Classifier> wordTypes = commonDataDbService.getWordTypes(wordId, CLASSIF_LABEL_LANG_EST);
+		List<WordRelation> wordRelations = lexDataDbService.getWordRelations(wordId, CLASSIF_LABEL_LANG_EST);
+		List<WordRelation> wordGroupMembers = lexDataDbService.getWordGroupMembers(wordId, CLASSIF_LABEL_LANG_EST);
 		List<WordGroup> wordGroups = conversionUtil.composeWordGroups(wordGroupMembers, null);
 		List<WordEtymTuple> wordEtymTuples = lexDataDbService.getWordEtymology(wordId);
 		List<WordEtym> wordEtymology = conversionUtil.composeWordEtymology(wordEtymTuples);
 		List<Freeform> odWordRecommendations = commonDataDbService.getOdWordRecommendations(wordId);
 		List<Paradigm> paradigms = null;
 		if (StringUtils.equals(FUNCT_NAME_DELETE_PARADIGM, functName)) {
-			List<ParadigmFormTuple> paradigmFormTuples = lexSearchDbService.getParadigmFormTuples(wordId, CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
+			List<ParadigmFormTuple> paradigmFormTuples = lexSearchDbService.getParadigmFormTuples(wordId, CLASSIF_LABEL_LANG_EST);
 			paradigms = conversionUtil.composeParadigms(paradigmFormTuples);
 		}
 
@@ -631,17 +631,17 @@ public class ActivityLogService implements SystemConstant, GlobalConstant, Freef
 			return EMPTY_CONTENT_JSON;
 		}
 
-		List<OrderedClassifier> meaningDomains = commonDataDbService.getMeaningDomains(meaningId, CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP, CLASSIF_LABEL_TYPE_COMMENT);
+		List<OrderedClassifier> meaningDomains = commonDataDbService.getMeaningDomains(meaningId, CLASSIF_LABEL_LANG_EST);
 		List<String> meaningTags = commonDataDbService.getMeaningTags(meaningId);
-		List<Definition> definitions = commonDataDbService.getMeaningDefinitions(meaningId, CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
-		List<Freeform> meaningFreeforms = commonDataDbService.getMeaningFreeforms(meaningId, EXCLUDED_MEANING_ATTRIBUTE_FF_TYPE_CODES, CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
+		List<Definition> definitions = commonDataDbService.getMeaningDefinitions(meaningId, CLASSIF_LABEL_LANG_EST);
+		List<Freeform> meaningFreeforms = commonDataDbService.getMeaningFreeforms(meaningId, EXCLUDED_MEANING_ATTRIBUTE_FF_TYPE_CODES, CLASSIF_LABEL_LANG_EST);
 		List<Freeform> meaningLearnerComments = commonDataDbService.getMeaningLearnerComments(meaningId);
 		List<Media> meaningImages = commonDataDbService.getMeaningImagesAsMedia(meaningId);
 		List<Media> meaningMedias = commonDataDbService.getMeaningMediaFiles(meaningId);
 		List<MeaningNote> meaningNotes = commonDataDbService.getMeaningNotes(meaningId);
 		List<NoteLangGroup> meaningNoteLangGroups = conversionUtil.composeNoteLangGroups(meaningNotes, null);
-		List<Classifier> meaningSemanticTypes = commonDataDbService.getMeaningSemanticTypes(meaningId, CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
-		List<MeaningRelation> meaningRelations = commonDataDbService.getMeaningRelations(meaningId, null, CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
+		List<Classifier> meaningSemanticTypes = commonDataDbService.getMeaningSemanticTypes(meaningId, CLASSIF_LABEL_LANG_EST);
+		List<MeaningRelation> meaningRelations = commonDataDbService.getMeaningRelations(meaningId, null, CLASSIF_LABEL_LANG_EST);
 		List<DefinitionLangGroup> definitionLangGroups = conversionUtil.composeMeaningDefinitionLangGroups(definitions, null);
 
 		meaning.setMeaningId(meaningId);
