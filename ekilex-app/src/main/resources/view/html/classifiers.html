@@ -88,23 +88,29 @@
               <td th:each="label : ${classifier.labels}">
                 <div class="d-flex flex-column h-100 justify-content-between">
                   <input
-                    class="form-control form-control-sm d-none mb-1"
+                    type="text"
                     name="labelValue"
                     data-label-lang="est"
                     th:value="${label.labelEst}"
-                    th:data-label-type="${label.type}">
+                    th:data-label-type="${label.type}"
+                    autocomplete="off"
+                    class="form-control form-control-sm d-none mb-1">
                   <input
-                    class="form-control form-control-sm d-none mb-1"
+                    type="text"
                     name="labelValue"
                     data-label-lang="eng"
                     th:value="${label.labelEng}"
-                    th:data-label-type="${label.type}">
+                    th:data-label-type="${label.type}"
+                    autocomplete="off"
+                    class="form-control form-control-sm d-none mb-1">
                   <input
-                    class="form-control form-control-sm d-none"
+                    type="text"
                     name="labelValue"
                     data-label-lang="rus"
                     th:value="${label.labelRus}"
-                    th:data-label-type="${label.type}">
+                    th:data-label-type="${label.type}"
+                    autocomplete="off"
+                    class="form-control form-control-sm d-none">
                   <p class="bordered-paragraph" th:text="${label.labelEst != null ? label.labelEst : '-'}"></p>
                   <p class="bordered-paragraph" th:text="${label.labelEng != null ? label.labelEng : '-'}"></p>
                   <p class="bordered-paragraph" th:text="${label.labelRus != null ? label.labelRus : '-'}"></p>
