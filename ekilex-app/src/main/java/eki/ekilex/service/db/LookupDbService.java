@@ -1,5 +1,6 @@
 package eki.ekilex.service.db;
 
+import static eki.ekilex.data.db.main.Tables.COLLOCATION_MEMBER;
 import static eki.ekilex.data.db.main.Tables.DEFINITION;
 import static eki.ekilex.data.db.main.Tables.FORM;
 import static eki.ekilex.data.db.main.Tables.FREEFORM;
@@ -28,9 +29,8 @@ import static eki.ekilex.data.db.main.Tables.WORD_GROUP_MEMBER;
 import static eki.ekilex.data.db.main.Tables.WORD_RELATION;
 import static eki.ekilex.data.db.main.Tables.WORD_REL_MAPPING;
 import static eki.ekilex.data.db.main.Tables.WORD_REL_TYPE_LABEL;
-import static eki.ekilex.data.db.main.Tables.WORD_WORD_TYPE;
 import static eki.ekilex.data.db.main.Tables.WORD_TAG;
-import static eki.ekilex.data.db.main.Tables.COLLOCATION_MEMBER;
+import static eki.ekilex.data.db.main.Tables.WORD_WORD_TYPE;
 import static org.jooq.impl.DSL.field;
 
 import java.util.List;
@@ -945,6 +945,17 @@ public class LookupDbService extends AbstractDataDbService {
 						MEANING_TAG.MEANING_ID.eq(meaningId)
 								.and(MEANING_TAG.TAG_NAME.eq(tagName)))
 				.fetchSingleInto(Boolean.class);
+	}
+
+	public boolean wordTagExists(Long wordId, String tagName) {
+
+		return mainDb
+				.fetchExists(DSL
+						.select(WORD_TAG.ID)
+						.from(WORD_TAG)
+						.where(
+								WORD_TAG.WORD_ID.eq(wordId)
+										.and(WORD_TAG.TAG_NAME.eq(tagName))));
 	}
 
 	public boolean meaningRelationExists(Long meaningId1, Long meaningId2, String relationType) {

@@ -194,6 +194,10 @@ public class MorphologyService implements GlobalConstant {
 
 	private void deleteWordTag(Long wordId, String tagName, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
 
+		boolean wordTagExists = lookupDbService.wordTagExists(wordId, tagName);
+		if (!wordTagExists) {
+			return;
+		}
 		Long wordTagId = lookupDbService.getWordTagId(wordId, tagName);
 		ActivityLogData activityLog = activityLogService.prepareActivityLog("deleteWordTag", wordId, ActivityOwner.WORD, roleDatasetCode, isManualEventOnUpdateEnabled);
 		cudDbService.deleteWordTag(wordTagId);
