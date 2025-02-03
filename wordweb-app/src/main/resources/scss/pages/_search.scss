@@ -469,7 +469,6 @@
     margin: 0 0 0 var(--word-notes-left-margin, 8px);
     padding: 0;
     --word-notes-left-margin: 0;
-    --word-notes-note-font-size: .875rem;
 
     &--with-marker {
       list-style: disc;
@@ -495,10 +494,11 @@
 
   &__note {
     color: var(--color-dark-blue);
-    font-size: var(--word-notes-note-font-size, .75rem);
+    font-size: .875rem;
     margin-bottom: 8px;
 
-    &--gray {
+    &--title {
+      font-size: .75rem;
       color: var(--color-darker-gray);
     }
   }

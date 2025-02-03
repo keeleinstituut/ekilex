@@ -44,7 +44,7 @@
                           <th:block th:if="${not #lists.isEmpty(definition.notes)}">
                             <div class="mt-2">
                               <div class="d-flex">
-                                <span class="word-notes__note word-notes__note--gray" th:text="#{label.public.note}"></span>
+                                <span class="word-notes__note word-notes__note--title" th:text="#{label.public.note}"></span>
                               </div>
                               <ul class="word-notes__list word-notes__list--with-marker">
                                 <li class="word-notes__note" th:each="note : ${definition.notes}">
@@ -76,7 +76,7 @@
                     th:with="langData=${@viewUtil.getLangData(noteEntry.key)}"
                     th:text="${langData.codeIso2}" th:title="${langData.label}" data-toggle="tooltip"></span>
               <div class="word-notes__wrapper" th:id="|lexeme-meaning-notes-by-lang-${lexeme.meaningId}-${noteEntry.key}-${noteEntryIter.index}|">
-                <span class="word-notes__note word-notes__note--gray" th:text="#{label.public.note}"></span>
+                <span class="word-notes__note word-notes__note--title" th:text="#{label.public.note}"></span>
                 <ul
                   class="word-notes__list word-notes__list--with-marker">
                   <li class="word-notes__note" th:each="note : ${noteEntry.value}">
@@ -227,7 +227,7 @@
                     <div class="dependencies mt-2">
                       <div class="dependence-group">
                         <div class="d-flex">
-                          <span class="word-notes__note word-notes__note--gray" th:text="#{button.label.usages}"></span>
+                          <span class="word-notes__note word-notes__note--title" th:text="#{button.label.usages}"></span>
                         </div>
                         <ul class="word-notes__list word-notes__list--with-marker" th:id="|lexeme-usages-${meaningLexeme.lexemeId}|">
                           <li class="word-notes__note" th:each="usage,usageIter : ${meaningLexeme.usages}"
@@ -301,7 +301,7 @@
                   <th:block th:if="${not #maps.isEmpty(meaningLexeme.lexemeNotesByLang)}">
                     <div>
                       <div class="d-flex">
-                        <span class="word-notes__note word-notes__note--gray" th:text="${isLimTerm ? #messages.msg('label.limterm.note') : #messages.msg('label.public.note')}">Hea teada</span>
+                        <span class="word-notes__note word-notes__note--title" th:text="${isLimTerm ? #messages.msg('label.limterm.note') : #messages.msg('label.public.note')}">Hea teada</span>
                       </div>
                       <ul class="word-notes__list word-notes__list--with-marker">
                         <th:block th:each="noteEntry : ${meaningLexeme.lexemeNotesByLang}">
