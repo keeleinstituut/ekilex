@@ -197,7 +197,7 @@
 
 .word-panel {
   margin-top: 16px;
-
+  box-shadow: 0px 2px 8px 0px #0000001A;
   &__toggle {
     display: flex;
     justify-content: space-between;
@@ -240,6 +240,14 @@
       padding-right: 16px;
       gap: 4px;
       background-color: var(--color-white);
+      border-radius: 8px 8px 0 0;
+      overflow: hidden;
+
+      box-shadow: 0px 2px 8px 0px #0000001A;
+
+      &:not(:first-child) {
+        margin-top: 16px;
+      }
     }
   }
 
@@ -278,13 +286,24 @@
   }
 }
 
-.word-sidebar-block {
-  background-color: var(--color-white);
-  border-radius: 8px;
-  padding: 16px;
+.search {
+  &__term-title {
+    font-size: 1.25rem;
+    font-weight: 700;
+    line-height: 24px;
+    margin: 24px 0 16px;
+    color: var(--color-dark-blue);
+  }
 
-  &+& {
-    margin-top: 16px;
+  &__sidebar-block {
+    background-color: var(--color-white);
+    border-radius: 8px;
+    padding: 16px;
+    box-shadow: 0px 2px 8px 0px #0000001A;
+
+    &+& {
+      margin-top: 16px;
+    }
   }
 }
 
@@ -664,3 +683,5 @@
 span.material-symbols-outlined {
   font-size: var(--icon-size, inherit);
 }
+
+

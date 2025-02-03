@@ -17349,6 +17349,7 @@ body {
 
 .word-panel {
   margin-top: 16px;
+  box-shadow: 0px 2px 8px 0px #0000001A;
 }
 
 .word-panel__toggle {
@@ -17396,6 +17397,13 @@ body {
   padding-right: 16px;
   gap: 4px;
   background-color: var(--color-white);
+  border-radius: 8px 8px 0 0;
+  overflow: hidden;
+  box-shadow: 0px 2px 8px 0px #0000001A;
+}
+
+.word-panel__toggle-wrapper:not(:first-child) {
+  margin-top: 16px;
 }
 
 .word-panel__modified {
@@ -17433,13 +17441,22 @@ body {
   border: none;
 }
 
-.word-sidebar-block {
+.search__term-title {
+  font-size: 1.25rem;
+  font-weight: 700;
+  line-height: 24px;
+  margin: 24px 0 16px;
+  color: var(--color-dark-blue);
+}
+
+.search__sidebar-block {
   background-color: var(--color-white);
   border-radius: 8px;
   padding: 16px;
+  box-shadow: 0px 2px 8px 0px #0000001A;
 }
 
-.word-sidebar-block + .word-sidebar-block {
+.search__sidebar-block + .search__sidebar-block {
   margin-top: 16px;
 }
 

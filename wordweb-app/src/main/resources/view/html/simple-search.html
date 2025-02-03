@@ -91,13 +91,13 @@
           <th:block th:replace="common-search-sidebar :: paradigms"></th:block>
           <th:block th:replace="common-search-sidebar :: word-relations"></th:block>
           <th:block th:replace="common-search-sidebar :: keelenou"></th:block>
-          <div class="word-sidebar-block" th:if="${wordData.estHeadword}">
+          <div class="search__sidebar-block" th:if="${wordData.estHeadword}">
             <div id="corp" th:text="#{label.corp.search}">Otsin veebilauseid ...</div>
           </div>
-          <div class="word-sidebar-block" th:if="${wordData.estHeadword && wordData.rusContent}">
+          <div class="search__sidebar-block" th:if="${wordData.estHeadword && wordData.rusContent}">
             <div id="corpTrans" th:text="#{label.corp.translations.search}">Otsin tõlgitud näiteid ...</div>
           </div>
-          <div class="word-sidebar-block" th:if="${wordData.rusHeadword}">
+          <div class="search__sidebar-block" th:if="${wordData.rusHeadword}">
             <section th:replace="common-search-sidebar :: corp_rus"></section>
           </div>
         </div>

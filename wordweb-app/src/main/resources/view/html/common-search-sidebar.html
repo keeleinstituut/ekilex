@@ -1,7 +1,7 @@
 <!DOCTYPE HTML>
 <html xmlns:th="http://www.thymeleaf.org">
 <body>
-    <section class="word-sidebar-block" id="word-morphology-results" th:fragment="paradigms">
+    <section class="search__sidebar-block" id="word-morphology-results" th:fragment="paradigms">
       <th:block th:if="${wordData.morphologyExists}">
         <h5 class="font-weight-bold mb-0 d-flex align-items-center text-dark">
           <span th:text="#{label.word.forms}">Sõnavormid</span>
@@ -33,7 +33,7 @@
       </th:block>
     </section>
   <th:block th:fragment="od-word-recommendations">
-    <section class="word-sidebar-block" th:if="${not #lists.isEmpty(wordData.word.odWordRecommendations)}">
+    <section class="search__sidebar-block" th:if="${not #lists.isEmpty(wordData.word.odWordRecommendations)}">
       <th:block th:each="odWordRecommendation : ${wordData.word.odWordRecommendations}">
         <div>
           <h5 class="recommended-usage-label">
@@ -51,7 +51,7 @@
     </section>
   </th:block>
   <th:block th:fragment="word-relations">
-    <section class="word-sidebar-block">
+    <section class="search__sidebar-block">
       <div class="word-relations">
         <h5 class="font-weight-bold d-flex align-items-center text-dark">
           <span th:text="#{label.word.relations}">Sõna seosed</span>
@@ -104,7 +104,7 @@
     </section>
     <th:block th:if="${not #lists.isEmpty(wordData.word.primaryRelatedWordTypeGroups)}">
       <th:block th:each="relationTypeGroup,relGroupIter : ${wordData.word.primaryRelatedWordTypeGroups}">
-        <section class="word-sidebar-block" th:id="${relationTypeGroup.wordRelType.code.equals('ühend') ? 'word-relation-results' : null}">
+        <section class="search__sidebar-block" th:id="${relationTypeGroup.wordRelType.code.equals('ühend') ? 'word-relation-results' : null}">
           <div class="word-relations">
             <h5 class="font-weight-bold d-flex align-items-center text-dark">
               <th:block th:if="${relationTypeGroup.collapsible}">
@@ -209,7 +209,7 @@
     </th:block>
   </th:block>
   <th:block th:fragment="etymology">
-    <section class="word-sidebar-block" id="word-etymology-results">
+    <section class="search__sidebar-block" id="word-etymology-results">
       <div>
         <h5 class="font-weight-bold d-flex align-items-center text-dark">
           <span th:text="#{label.word.etymology}">Päritolu</span>
@@ -261,7 +261,7 @@
     </li>
   </th:block>
   <th:block th:fragment="keelenou">
-    <section class="word-sidebar-block" th:if="${wordData.estHeadword || wordData.rusHeadword}">
+    <section class="search__sidebar-block" th:if="${wordData.estHeadword || wordData.rusHeadword}">
       <div class="corp-panel">
         <div class="mb-0">
           <h5 class="font-weight-bold mb-0">
@@ -279,7 +279,7 @@
         </div>
       </div>
     </section>
-    <section class="word-sidebar-block">
+    <section class="search__sidebar-block">
       <div class="corp-panel">
         <div class="mb-0">
           <h5 class="font-weight-bold mb-0">
