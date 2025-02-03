@@ -44,7 +44,7 @@
                           <th:block th:if="${not #lists.isEmpty(definition.notes)}">
                             <div class="mt-2">
                               <div class="d-flex">
-                                <span class="word-notes__note" th:text="#{label.public.note}"></span>
+                                <span class="word-notes__note word-notes__note--gray" th:text="#{label.public.note}"></span>
                               </div>
                               <ul class="word-notes__list word-notes__list--with-marker">
                                 <li class="word-notes__note" th:each="note : ${definition.notes}">
@@ -76,7 +76,7 @@
                     th:with="langData=${@viewUtil.getLangData(noteEntry.key)}"
                     th:text="${langData.codeIso2}" th:title="${langData.label}" data-toggle="tooltip"></span>
               <div class="word-notes__wrapper" th:id="|lexeme-meaning-notes-by-lang-${lexeme.meaningId}-${noteEntry.key}-${noteEntryIter.index}|">
-                <span class="word-notes__note" th:text="#{label.public.note}"></span>
+                <span class="word-notes__note word-notes__note--gray" th:text="#{label.public.note}"></span>
                 <ul
                   class="word-notes__list word-notes__list--with-marker">
                   <li class="word-notes__note" th:each="note : ${noteEntry.value}">
@@ -148,21 +148,12 @@
             </div>
           </th:block>
           <th:block th:if="${not #maps.isEmpty(lexeme.meaningLexemesByLang)}">
-            <div class="lang-code__border" th:each="meaninglexemeEntry,meaninglexemeEntryIter : ${lexeme.meaningLexemesByLang}">
-              <button
-                class="word-notes__toggle"
-                data-toggle="collapse"
-                th:data-target="|#lexeme-meanings-by-lang-${lexeme.meaningId}-${meaninglexemeEntry.key}-${meaninglexemeEntryIter.index}|"
-                aria-expanded="true"
-                th:aria-controls="|lexeme-meanings-by-lang-${lexeme.meaningId}-${meaninglexemeEntry.key}-${meaninglexemeEntryIter.index}|">
-                  <i class="fa fa-chevron-down word-notes__toggle-icon" aria-hidden="true"></i>
-                  <span class="lang-code lang-code-sm"
+            <div class="d-flex lang-code__border" th:each="meaninglexemeEntry,meaninglexemeEntryIter : ${lexeme.meaningLexemesByLang}">
+              <span class="lang-code lang-code-sm mr-2"
                       th:with="langData=${@viewUtil.getLangData(meaninglexemeEntry.key)}"
                       th:text="${langData.codeIso2}" th:title="${langData.label}" data-toggle="tooltip">
                 </span>
-              </button>
-              <div class="word-notes__wrapper collapse show"
-                    th:id="|lexeme-meanings-by-lang-${lexeme.meaningId}-${meaninglexemeEntry.key}-${meaninglexemeEntryIter.index}|"
+              <div class="word-notes__wrapper"
                     th:with="meaningLangLexemes=${meaninglexemeEntry.value}">
                 <div th:each="meaningLexeme,meaninglexemeIter : ${meaningLangLexemes}" th:classappend="${meaninglexemeIter.last ? '' : 'mb-1'}">
                   <div>
@@ -171,6 +162,15 @@
                           th:utext="${@viewUtil.getWordValueMarkup(meaningLexeme)}">
                           tee
                       </a>
+                      <th:block th:if="${meaningLexeme.showWordDataAsHidden}">
+                        <button type="button" class="meaning-data__popover-trigger" data-toggle="popover" data-html="true"
+                            th:aria-label="#{label.meaning.grammar.contents}"
+                            th:data-content="${@viewUtil.getPosesAndGenderTooltipHtml(meaningLexeme.poses, meaningLexeme.gender)}">
+                            <span class="material-symbols-outlined" aria-hidden="true">
+                              info
+                            </span>
+                        </button>
+                      </th:block>
                       <span
                         class="meaning-reliability"
                         th:if="${meaningLexeme.valueState != null}"
@@ -187,15 +187,6 @@
                         "></i>
                         <span th:text="${meaningLexeme.valueState.value}"></span>
                       </span>
-                      <th:block th:if="${meaningLexeme.showWordDataAsHidden}">
-                        <button type="button" class="meaning-data__popover-trigger" data-toggle="popover" data-html="true"
-                            th:aria-label="#{label.meaning.grammar.contents}"
-                            th:data-content="${@viewUtil.getPosesAndGenderTooltipHtml(meaningLexeme.poses, meaningLexeme.gender)}">
-                            <span class="material-symbols-outlined" aria-hidden="true">
-                              info
-                            </span>
-                        </button>
-                      </th:block>
                       <th:block th:if="${not #lists.isEmpty(meaningLexeme.registers)}">
                         <span class="meaning-data__word-info" th:each="register,registerIter : ${meaningLexeme.registers}" th:text="${register.value + (registerIter.last ? '' : ', ')}"></span>
                       </th:block>
@@ -236,7 +227,7 @@
                     <div class="dependencies mt-2">
                       <div class="dependence-group">
                         <div class="d-flex">
-                          <span class="word-notes__note" th:text="#{button.label.usages}"></span>
+                          <span class="word-notes__note word-notes__note--gray" th:text="#{button.label.usages}"></span>
                         </div>
                         <ul class="word-notes__list word-notes__list--with-marker" th:id="|lexeme-usages-${meaningLexeme.lexemeId}|">
                           <li class="word-notes__note" th:each="usage,usageIter : ${meaningLexeme.usages}"
@@ -310,7 +301,7 @@
                   <th:block th:if="${not #maps.isEmpty(meaningLexeme.lexemeNotesByLang)}">
                     <div>
                       <div class="d-flex">
-                        <span class="word-notes__note" th:text="${isLimTerm ? #messages.msg('label.limterm.note') : #messages.msg('label.public.note')}">Hea teada</span>
+                        <span class="word-notes__note word-notes__note--gray" th:text="${isLimTerm ? #messages.msg('label.limterm.note') : #messages.msg('label.public.note')}">Hea teada</span>
                       </div>
                       <ul class="word-notes__list word-notes__list--with-marker">
                         <th:block th:each="noteEntry : ${meaningLexeme.lexemeNotesByLang}">

@@ -16965,13 +16965,6 @@ body.hidden-scroll {
   margin-right: 5px;
 }
 
-@media (min-width: 768px) {
-  .meaning-panel {
-    padding: 5px;
-    overflow: auto;
-  }
-}
-
 .meaning-sub-heading {
   padding: 10px 16px;
   margin-bottom: 0;
@@ -17209,14 +17202,7 @@ body {
 
 .level-3-panel {
   position: relative;
-  padding: 1rem;
   border-bottom: 1px solid #ccd9e0;
-}
-
-@media (min-width: 768px) {
-  .level-3-panel {
-    padding-right: 2.5rem;
-  }
 }
 
 .level-3-panel .dependencies .expand .dependence {
@@ -17300,6 +17286,56 @@ body {
 .homonym-page .search-results-header,
 .homonym-page .content-panel {
   width: 100%;
+}
+
+.search__term-title {
+  font-size: 1.25rem;
+  font-weight: 700;
+  line-height: 24px;
+  margin: 24px 0 16px;
+  color: var(--color-dark-blue);
+}
+
+.search__sidebar-block + .search__sidebar-block {
+  margin-top: 16px;
+}
+
+.search__block {
+  background-color: var(--color-white);
+  border-radius: 8px;
+  padding: 16px;
+  box-shadow: 0px 2px 8px 0px #0000001A;
+  margin-top: 16px;
+  overflow: hidden;
+}
+
+.search__block a {
+  font-size: .875rem;
+}
+
+.search__block-title {
+  margin-right: auto;
+  font-size: 1rem;
+  font-weight: 700;
+  line-height: 19px;
+  margin-bottom: 16px;
+  margin: var(--search-block-title-margin, 0 auto 16px 0);
+}
+
+.search__block-modified {
+  font-size: .75rem;
+  line-height: 15px;
+  color: var(--color-darker-gray);
+}
+
+.search__block-header {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 4px;
+  flex-grow: 1;
+  margin: 0 0 16px;
+  --search-block-title-margin: 0 auto 0 0;
 }
 
 .sticky-scroll-panel__tags {
@@ -17394,16 +17430,9 @@ body {
 .word-panel__toggle-wrapper {
   display: flex;
   align-items: center;
-  padding-right: 16px;
+  padding: 0 16px 0 0;
   gap: 4px;
-  background-color: var(--color-white);
   border-radius: 8px 8px 0 0;
-  overflow: hidden;
-  box-shadow: 0px 2px 8px 0px #0000001A;
-}
-
-.word-panel__toggle-wrapper:not(:first-child) {
-  margin-top: 16px;
 }
 
 .word-panel__modified {
@@ -17441,25 +17470,6 @@ body {
   border: none;
 }
 
-.search__term-title {
-  font-size: 1.25rem;
-  font-weight: 700;
-  line-height: 24px;
-  margin: 24px 0 16px;
-  color: var(--color-dark-blue);
-}
-
-.search__sidebar-block {
-  background-color: var(--color-white);
-  border-radius: 8px;
-  padding: 16px;
-  box-shadow: 0px 2px 8px 0px #0000001A;
-}
-
-.search__sidebar-block + .search__sidebar-block {
-  margin-top: 16px;
-}
-
 .word-results {
   display: grid;
   grid-template-columns: 1fr 30%;
@@ -17490,9 +17500,9 @@ body {
 .search-tag--alternate {
   background-color: var(--color-gray-010);
   color: var(--color-darker-gray);
-  font-size: .625rem;
+  font-size: .75rem;
   font-weight: 500;
-  line-height: 12.1px;
+  line-height: 15px;
   border-radius: 8px;
   height: 16px;
   padding: 4px 8px;
@@ -17518,9 +17528,9 @@ body {
 }
 
 .meaning-data__domain {
-  font-size: .625rem;
+  font-size: .75rem;
   font-weight: 400;
-  line-height: 12.1px;
+  line-height: 15px;
   color: var(--color-darker-gray);
 }
 
@@ -17538,9 +17548,9 @@ body {
 .meaning-data__link {
   font-size: .75rem;
   font-weight: 500;
-  line-height: 12.1px;
   color: var(--color-blue-300);
   text-align: right;
+  margin-left: 4px;
 }
 
 .meaning-data__popover-trigger {
@@ -17596,6 +17606,7 @@ body {
   margin: 0 0 0 var(--word-notes-left-margin, 8px);
   padding: 0;
   --word-notes-left-margin: 0;
+  --word-notes-note-font-size: .875rem;
 }
 
 .word-notes__list--with-marker {
@@ -17608,7 +17619,7 @@ body {
 
 .word-notes__list .definition-value {
   font-size: .875rem;
-  color: black;
+  color: var(--color-dark-blue);
   font-weight: 500;
 }
 
@@ -17620,9 +17631,13 @@ body {
 }
 
 .word-notes__note {
-  color: var(--color-notes-gray);
-  font-size: .75rem;
+  color: var(--color-dark-blue);
+  font-size: var(--word-notes-note-font-size, 0.75rem);
   margin-bottom: 8px;
+}
+
+.word-notes__note--gray {
+  color: var(--color-darker-gray);
 }
 
 .meaning-reliability {
@@ -17633,7 +17648,7 @@ body {
   font-weight: 500;
   height: 20px;
   color: var(--color-even-darker-gray);
-  margin-left: 16px;
+  margin-left: 4px;
 }
 
 .meaning-reliability--green {
@@ -17827,6 +17842,17 @@ body {
 
 span.material-symbols-outlined {
   font-size: var(--icon-size, inherit);
+}
+
+.relation-list {
+  font-size: .75rem;
+  line-height: 15px;
+  font-weight: 500;
+  color: var(--color-dark-blue);
+}
+
+.relation-list .relation-item {
+  color: var(--color-blue-300);
 }
 
 .news-page {

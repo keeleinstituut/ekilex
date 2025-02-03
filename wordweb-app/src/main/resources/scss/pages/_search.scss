@@ -50,12 +50,7 @@
 
 .level-3-panel {
   position: relative;
-  padding: 1rem;
   border-bottom: 1px solid $gray-200;
-
-  @include media-breakpoint-up(md) {
-    padding-right: 2.5rem;
-  }
 
   .dependencies {
     .expand .dependence {
@@ -145,6 +140,61 @@
 
 }
 
+
+.search {
+  &__term-title {
+    font-size: 1.25rem;
+    font-weight: 700;
+    line-height: 24px;
+    margin: 24px 0 16px;
+    color: var(--color-dark-blue);
+  }
+
+  &__sidebar-block {
+    &+& {
+      margin-top: 16px;
+    }
+  }
+
+  &__block {
+    background-color: var(--color-white);
+    border-radius: 8px;
+    padding: 16px;
+    box-shadow: 0px 2px 8px 0px #0000001A;
+    margin-top: 16px;
+    overflow: hidden;
+
+    & a {
+      font-size: .875rem;
+    }
+  }
+
+  &__block-title {
+    margin-right: auto;
+    font-size: 1rem;
+    font-weight: 700;
+    line-height: 19px;
+    margin-bottom: 16px;
+    margin: var(--search-block-title-margin, 0 auto 16px 0);
+  }
+
+  &__block-modified {
+    font-size: .75rem;
+    line-height: 15px;
+    color: var(--color-darker-gray);
+  }
+
+  &__block-header {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 4px;
+    flex-grow: 1;
+    margin: 0 0 16px;
+    --search-block-title-margin: 0 auto 0 0;
+  }
+}
+
 .sticky-scroll-panel {
   &__tags {
     display: none;
@@ -198,6 +248,7 @@
 .word-panel {
   margin-top: 16px;
   box-shadow: 0px 2px 8px 0px #0000001A;
+
   &__toggle {
     display: flex;
     justify-content: space-between;
@@ -237,17 +288,9 @@
     &-wrapper {
       display: flex;
       align-items: center;
-      padding-right: 16px;
+      padding: 0 16px 0 0;
       gap: 4px;
-      background-color: var(--color-white);
       border-radius: 8px 8px 0 0;
-      overflow: hidden;
-
-      box-shadow: 0px 2px 8px 0px #0000001A;
-
-      &:not(:first-child) {
-        margin-top: 16px;
-      }
     }
   }
 
@@ -286,27 +329,6 @@
   }
 }
 
-.search {
-  &__term-title {
-    font-size: 1.25rem;
-    font-weight: 700;
-    line-height: 24px;
-    margin: 24px 0 16px;
-    color: var(--color-dark-blue);
-  }
-
-  &__sidebar-block {
-    background-color: var(--color-white);
-    border-radius: 8px;
-    padding: 16px;
-    box-shadow: 0px 2px 8px 0px #0000001A;
-
-    &+& {
-      margin-top: 16px;
-    }
-  }
-}
-
 
 .word-results {
   display: grid;
@@ -335,9 +357,9 @@
   &--alternate {
     background-color: var(--color-gray-010);
     color: var(--color-darker-gray);
-    font-size: .625rem;
+    font-size: .75rem;
     font-weight: 500;
-    line-height: 12.1px;
+    line-height: 15px;
     border-radius: 8px;
     height: 16px;
     padding: 4px 8px;
@@ -365,9 +387,9 @@
   }
 
   &__domain {
-    font-size: .625rem;
+    font-size: .75rem;
     font-weight: 400;
-    line-height: 12.1px;
+    line-height: 15px;
     color: var(--color-darker-gray);
   }
 
@@ -385,9 +407,9 @@
   &__link {
     font-size: .75rem;
     font-weight: 500;
-    line-height: 12.1px;
     color: var(--color-blue-300);
     text-align: right;
+    margin-left: 4px;
   }
 
   &__popover-trigger {
@@ -447,6 +469,7 @@
     margin: 0 0 0 var(--word-notes-left-margin, 8px);
     padding: 0;
     --word-notes-left-margin: 0;
+    --word-notes-note-font-size: .875rem;
 
     &--with-marker {
       list-style: disc;
@@ -458,7 +481,7 @@
 
     & .definition-value {
       font-size: .875rem;
-      color: black;
+      color: var(--color-dark-blue);
       font-weight: 500;
     }
   }
@@ -471,9 +494,13 @@
   }
 
   &__note {
-    color: var(--color-notes-gray);
-    font-size: .75rem;
+    color: var(--color-dark-blue);
+    font-size: var(--word-notes-note-font-size, .75rem);
     margin-bottom: 8px;
+
+    &--gray {
+      color: var(--color-darker-gray);
+    }
   }
 }
 
@@ -485,7 +512,7 @@
   font-weight: 500;
   height: 20px;
   color: var(--color-even-darker-gray);
-  margin-left: 16px;
+  margin-left: 4px;
 
   &--green {
     color: var(--color-success-green);
@@ -684,4 +711,13 @@ span.material-symbols-outlined {
   font-size: var(--icon-size, inherit);
 }
 
+.relation-list {
+  font-size: .75rem;
+  line-height: 15px;
+  font-weight: 500;
+  color: var(--color-dark-blue);
 
+  & .relation-item {
+    color: var(--color-blue-300);
+  }
+}
