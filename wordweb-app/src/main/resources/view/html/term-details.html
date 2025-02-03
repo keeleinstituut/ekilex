@@ -14,7 +14,7 @@
               </div>
             </th:block>
             <th:block th:if="${not #maps.isEmpty(lexeme.definitionsByLang)}">
-              <section class="d-flex" th:each="definitionEntry, definitionEntryIter : ${lexeme.definitionsByLang}">
+              <section class="d-flex lang-code__border" th:each="definitionEntry, definitionEntryIter : ${lexeme.definitionsByLang}">
                 <span class="lang-code lang-code-sm mr-2"
                       th:with="langData=${@viewUtil.getLangData(definitionEntry.key)}"
                       th:text="${langData.codeIso2}" th:title="${langData.label}" data-toggle="tooltip"></span>
@@ -71,7 +71,7 @@
             </th:block>
           </div>
           <th:block th:if="${not #maps.isEmpty(lexeme.meaningNotesByLang)}">
-            <section class="d-flex" th:each="noteEntry, noteEntryIter : ${lexeme.meaningNotesByLang}">
+            <section class="d-flex lang-code__border" th:each="noteEntry, noteEntryIter : ${lexeme.meaningNotesByLang}">
               <span class="lang-code lang-code-sm mr-2"
                     th:with="langData=${@viewUtil.getLangData(noteEntry.key)}"
                     th:text="${langData.codeIso2}" th:title="${langData.label}" data-toggle="tooltip"></span>
