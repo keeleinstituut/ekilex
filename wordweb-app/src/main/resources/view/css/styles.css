@@ -16829,10 +16829,6 @@ body.hidden-scroll {
   line-height: 1.2;
 }
 
-.definition-area {
-  padding-bottom: 0;
-}
-
 .definition-area .domain {
   text-transform: uppercase;
 }
@@ -16957,6 +16953,7 @@ body.hidden-scroll {
   display: flex;
   flex-wrap: nowrap;
   padding: 2px 5px;
+  font-size: .875rem;
 }
 
 .colloc-member::after {
@@ -17328,8 +17325,8 @@ body {
   color: var(--color-dark-blue);
 }
 
-.search__sidebar-block + .search__sidebar-block {
-  margin-top: 16px;
+.search__sidebar-block:first-child {
+  margin-top: 0;
 }
 
 .search__block {

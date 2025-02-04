@@ -26,8 +26,9 @@
           </div>
         </th:block>
         <th:block th:if="${lexeme.correctMeaningWord == null}">
-          <div class="d-flex flex-row">
-            <th:block th:if="${wordData.multipleLexLexemesExist}">
+          <div class="d-flex flex-row" th:with="hasMultipleLexLexemes=${wordData.multipleLexLexemesExist}"
+          th:classappend="${hasMultipleLexLexemes ? 'mt-2' : ''}">
+            <th:block th:if="${hasMultipleLexLexemes}">
               <strong class="lexeme-level mr-2 definition-value font-weight-bold" th:aria-label="${wordData.word.word}" th:text="${lexeme.levels}"></strong>
             </th:block>
             <div class="w-100">
@@ -224,7 +225,7 @@
                 </div>
                 <div class="related-meanings mb-3" th:if="${not #lists.isEmpty(lexeme.relatedMeanings)}">
                   <div class="relation-list d-flex flex-row flex-wrap" th:each="relationType, relationTypeIter : ${lexeme.relatedMeaningsByType.keySet()}">
-                    <span class="mr-2" th:text="${relationType.value}"></span>
+                    <span class="mr-2 font-weight-bold text-gray-350 text-medium" th:text="${relationType.value}"></span>
                     <th:block th:each="relation, relationIter : ${lexeme.relatedMeaningsByType.get(relationType)}">
                       <div class="relation-item mr-1">
                         <a class="font-weight-bold" th:href="@{${@viewUtil.getSearchUri(sessionBean, searchMode, relation.word, relation.homonymNr, relation.lang)}}">
