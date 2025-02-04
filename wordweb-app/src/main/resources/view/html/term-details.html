@@ -6,14 +6,17 @@
       <div>
         <a th:href="${@viewUtil.getEkilexLimTermMeaningDetailsUrl(lexeme.meaningId)}" th:text="${lexeme.meaningId}" th:if="${isLimTerm}"></a>
         <div class="meaning">
-          <div class="definition-row">
-            <th:block th:if="${not #lists.isEmpty(lexeme.domains)}">
+          <div class="definition-row" 
+              th:with="hasDomains=${not #lists.isEmpty(lexeme.domains)},
+              hasDefinitionsByLang=${not #maps.isEmpty(lexeme.definitionsByLang)}"
+              th:if="${hasDomains} OR ${hasDefinitionsByLang}">
+            <th:block th:if="${hasDomains}">
               <div class="mb-2">
                 <span class="meaning-data__domain" th:text="#{label.meaning.domain}"></span>
                 <span class="search-tag--alternate" th:each="domain : ${lexeme.domains}" th:text="${domain.value}"></span>
               </div>
             </th:block>
-            <th:block th:if="${not #maps.isEmpty(lexeme.definitionsByLang)}">
+            <th:block th:if="${hasDefinitionsByLang}">
               <section class="d-flex" th:each="definitionEntry, definitionEntryIter : ${lexeme.definitionsByLang}">
                 <span class="lang-code lang-code-sm mr-2"
                       th:with="langData=${@viewUtil.getLangData(definitionEntry.key)}"

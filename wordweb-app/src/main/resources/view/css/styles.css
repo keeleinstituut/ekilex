@@ -17235,7 +17235,6 @@ body {
 
 .level-3-panel {
   position: relative;
-  border-bottom: 1px solid #ccd9e0;
 }
 
 .level-3-panel .dependencies .expand .dependence {
@@ -17342,16 +17341,13 @@ body {
   overflow: hidden;
 }
 
-.search__block a {
+.search__block:not(.search__sidebar-block) a {
   font-size: .875rem;
 }
 
 .search__block-title {
-  margin-right: auto;
   font-size: 1rem;
   font-weight: 700;
-  line-height: 19px;
-  margin-bottom: 16px;
   margin: var(--search-block-title-margin, 0 auto 16px 0);
 }
 
@@ -17550,7 +17546,6 @@ body {
 .meaning-data__modified {
   font-size: .75rem;
   font-weight: 500;
-  line-height: 12.1px;
   color: var(--color-darker-gray);
 }
 
@@ -17582,6 +17577,7 @@ body {
   color: var(--color-blue-300);
   text-align: right;
   margin-left: 4px;
+  line-height: 24px;
 }
 
 .meaning-data__popover-trigger {
@@ -17859,6 +17855,11 @@ body {
   border-top: 1px solid #ccd9e0;
   margin-top: 8px;
   padding-top: 8px;
+}
+
+.meaning > .lang-code__border:first-of-type {
+  border-top: 0;
+  padding-top: 0;
 }
 
 .additional-meta {
