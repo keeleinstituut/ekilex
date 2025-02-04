@@ -165,7 +165,7 @@
                       <th:block th:if="${meaningLexeme.showWordDataAsHidden}">
                         <button type="button" class="meaning-data__popover-trigger" data-toggle="popover" data-html="true"
                             th:aria-label="#{label.meaning.grammar.contents}"
-                            th:data-content="${@viewUtil.getPosesAndGenderTooltipHtml(meaningLexeme.poses, meaningLexeme.gender)}">
+                            th:data-content="${@viewUtil.getWordDataTooltipHtml(meaningLexeme)}">
                             <span class="material-symbols-outlined" aria-hidden="true">
                               info
                             </span>
@@ -214,11 +214,6 @@
                   </div>
                   <div th:if="${not #lists.isEmpty(meaningLexeme.regions)}">
                     <span class="domain register mr-1 mb-1" th:each="region,regionIter : ${meaningLexeme.regions}" th:text="${region.value + (regionIter.last ? '' : ', ')}"></span>                          
-                  </div>
-                  <div th:if="${not #lists.isEmpty(meaningLexeme.grammars)}">
-                    <span class="lexeme grammars tag">
-                      <span th:each="grammar,grammarIter : ${meaningLexeme.grammars}" th:utext="${grammar.value + (grammarIter.last ? '' : ', ')}"></span>
-                    </span>
                   </div>
                   <div th:if="${meaningLexeme.gender != null && !meaningLexeme.showWordDataAsHidden}">
                     <span th:text="${meaningLexeme.gender.value}"></span>
