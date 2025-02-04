@@ -5,10 +5,9 @@
     <div>
       <div>
         <a th:href="${@viewUtil.getEkilexLimTermMeaningDetailsUrl(lexeme.meaningId)}" th:text="${lexeme.meaningId}" th:if="${isLimTerm}"></a>
-        <div class="meaning">
+        <div class="meaning" th:with="hasDomains=${not #lists.isEmpty(lexeme.domains)},
+              hasDefinitionsByLang=${not #maps.isEmpty(lexeme.definitionsByLang)}">
           <div class="definition-row" 
-              th:with="hasDomains=${not #lists.isEmpty(lexeme.domains)},
-              hasDefinitionsByLang=${not #maps.isEmpty(lexeme.definitionsByLang)}"
               th:if="${hasDomains} OR ${hasDefinitionsByLang}">
             <th:block th:if="${hasDomains}">
               <div class="mb-2">
