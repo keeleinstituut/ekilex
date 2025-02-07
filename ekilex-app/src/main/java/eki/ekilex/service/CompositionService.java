@@ -4,7 +4,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Optional;
 
 import javax.transaction.Transactional;
 
@@ -66,8 +65,20 @@ public class CompositionService extends AbstractService implements PermConstant 
 	private EkilexPermissionEvaluator ekilexPermissionEvaluator;
 
 	@Transactional(rollbackOn = Exception.class)
-	public Optional<Long> optionalDuplicateMeaningWithLexemes(Long meaningId, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
-		return Optional.of(cloneMeaningWithLexemes(meaningId, roleDatasetCode, isManualEventOnUpdateEnabled));
+	public Long cloneMeaningWithLexemes(Long sourceMeaningId, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
+
+		Map<Long, Long> sourceTargetLexemeIdMap = new HashMap<>();
+		boolean publicDataOnly = false;
+		Long targetMeaningId = cloneMeaningAndData(sourceMeaningId, publicDataOnly, roleDatasetCode, isManualEventOnUpdateEnabled);
+		List<LexemeRecord> sourceLexemes = lookupDbService.getLexemeRecordsByMeaning(sourceMeaningId);
+		for (LexemeRecord sourceLexeme : sourceLexemes) {
+			Long sourceLexemeId = sourceLexeme.getId();
+			Long targetLexemeId = cloneLexemeAndData(sourceLexemeId, targetMeaningId, null, publicDataOnly, roleDatasetCode, isManualEventOnUpdateEnabled);
+			sourceTargetLexemeIdMap.put(sourceLexemeId, targetLexemeId);
+		}
+		cloneLexemeRelations(sourceTargetLexemeIdMap, roleDatasetCode, isManualEventOnUpdateEnabled);
+
+		return targetMeaningId;
 	}
 
 	@Transactional(rollbackOn = Exception.class)
@@ -196,22 +207,6 @@ public class CompositionService extends AbstractService implements PermConstant 
 
 		cudDbService.adjustWordHomonymNrs(originalSimpleWord);
 		cudDbService.adjustWordHomonymNrs(updatedSimpleWord);
-	}
-
-	private Long cloneMeaningWithLexemes(Long sourceMeaningId, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
-
-		Map<Long, Long> sourceTargetLexemeIdMap = new HashMap<>();
-		boolean publicDataOnly = false;
-		Long targetMeaningId = cloneMeaningAndData(sourceMeaningId, publicDataOnly, roleDatasetCode, isManualEventOnUpdateEnabled);
-		List<LexemeRecord> sourceLexemes = lookupDbService.getLexemeRecordsByMeaning(sourceMeaningId);
-		for (LexemeRecord sourceLexeme : sourceLexemes) {
-			Long sourceLexemeId = sourceLexeme.getId();
-			Long targetLexemeId = cloneLexemeAndData(sourceLexemeId, targetMeaningId, null, publicDataOnly, roleDatasetCode, isManualEventOnUpdateEnabled);
-			sourceTargetLexemeIdMap.put(sourceLexemeId, targetLexemeId);
-		}
-		cloneLexemeRelations(sourceTargetLexemeIdMap, roleDatasetCode, isManualEventOnUpdateEnabled);
-
-		return targetMeaningId;
 	}
 
 	private Long cloneLexemeAndData(Long sourceLexemeId, Long targetMeaningId, Long targetWordId, boolean isPublicDataOnly, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
