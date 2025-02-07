@@ -1,0 +1,21 @@
+@layer base, component;
+
+@layer base {
+  .text-body-two {
+    color: var(--color-dark-blue);
+    font-family: Inter;
+    font-size: .875rem;
+    font-weight: 400;
+    line-height: normal;
+  }
+
+  .text-caption {
+    color: var(--color-dark-blue);
+    font-family: Inter;
+    font-size: .75rem;
+    font-style: normal;
+    font-weight: 400;
+    line-height: normal;
+    letter-spacing: 0.048px;
+  }
+}

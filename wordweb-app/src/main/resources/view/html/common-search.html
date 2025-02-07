@@ -120,18 +120,18 @@
             <input type="hidden" name="word-id" th:value="${word.wordId}" />
             <input type="hidden" name="word-selected" th:value="${word.selected}" />
             <input type="hidden" name="word-select-url" th:value="@{${@viewUtil.getSearchUri(sessionBean, searchMode, word.word, word.homonymNr, word.lang)}}" />
-            <a href="#" role="button" tabindex="0" th:id="${'word-details-link-' + word.wordId}" class="homonym-item">
-              <span class="homonym-item-wrap">
-                <span class="homonym-header d-flex align-items-center">
-                  <span class="text-muted mr-1 lang-code lang-code-sm" th:with="langData=${@viewUtil.getLangData(word.lang)}" th:text="${langData.codeIso2}" th:title="${langData.label}" data-toggle="tooltip">1</span>
-                  <span class="homonym-name-container">
-                    <span class="homonym-name" th:utext="${@viewUtil.getWordValueMarkup(word)}">tee</span>
-                  </span>
+            <a href="#" role="button" tabindex="0" th:id="${'word-details-link-' + word.wordId}" class="homonym-item homonym__item">
+              <span class="lang-code text-caption" th:with="langData=${@viewUtil.getLangData(word.lang)}" th:text="${langData.codeIso2}" th:title="${langData.label}" data-toggle="tooltip">1</span>
+              <div class="homonym__body">
+                <div class="text-body-two">
+                  <span th:utext="${@viewUtil.getWordValueMarkup(word)}">tee</span>
                   <span class="homonym-nr d-none" th:text="${word.homonymNr}">1</span>
-                </span>
-                <span class="homonym-matches" th:utext="${word.meaningWordsWrapup}"></span>
-                <span class="homonym-intro d-block" th:utext="${word.definitionsWrapup}"></span>
-              </span>
+                </div>
+                <div class="text-caption homonym__text">
+                  <span class="homonym__matches" th:utext="${word.meaningWordsWrapup}"></span>
+                  <p th:utext="${word.definitionsWrapup}"></p>
+                </div>
+              </div>
             </a>
           </form>
         </li>
@@ -140,7 +140,7 @@
   </th:block>
   <th:block th:fragment="word-data">
     <div class="d-flex align-items-center flex-wrap">
-      <span class="search-tag mr-2" th:with="langData=${@viewUtil.getLangData(wordData.word.lang)}" th:text="${langData.codeIso2}" th:title="${langData.label}" data-toggle="tooltip"></span>
+      <span class="lang-code mr-2" th:with="langData=${@viewUtil.getLangData(wordData.word.lang)}" th:text="${langData.codeIso2}" th:title="${langData.label}" data-toggle="tooltip"></span>
       <h1 class="mb-0 font-weight-bold d-flex align-items-start align-items-lg-center mr-2" th:utext="${@viewUtil.getWordValueMarkup(wordData.word)}">
         tee
       </h1>
@@ -195,17 +195,37 @@
   </th:block>
 
   <th:block th:fragment="lex-detail-view">
+    <div class="d-flex">
+      <span class="search__block-title" th:text="#{lexdata.title}"></span>
+      <div class="search__block-modified">
+        <span th:text="#{label.tooltip.last_modified}"></span>
+        <span class="meaning-data__date" th:text="${
+          wordData.word.manualEventOn == null
+          ? null
+          : #dates.format(wordData.word.manualEventOn, 'dd.MM.yyyy')}"></span>
+      </div>
+    </div>
     <div th:if="${wordData.rusHeadword}" class="alert bg-warning text-black px-3 py-1 d-flex align-items-center update-alert flex-nowrap" role="alert">
       <i class="fa fa-exclamation-triangle small mr-2 mt-1" aria-hidden="true"></i>
       <span th:text="#{warning.eki.rus}">See ei ole valmis sõnastik.</span>
     </div>
-    <section class="level-3-panel meaning-panel d-flex flex-row" th:each="lexeme : ${wordData.lexLexemes}">
+    <section class="level-3-panel meaning-panel d-flex flex-row text-body-two" th:each="lexeme : ${wordData.lexLexemes}">
       <div th:replace="lex-details :: lexeme-data"></div>
     </section>
     <div th:replace="common-search :: no-lexemes-exist"></div>
   </th:block>
 
   <th:block th:fragment="lex-detail-view-simple">
+    <div class="d-flex">
+      <span class="search__block-title" th:text="#{lexdata.title}"></span>
+      <div class="search__block-modified">
+        <span th:text="#{label.tooltip.last_modified}"></span>
+        <span class="meaning-data__date" th:text="${
+          wordData.word.manualEventOn == null
+          ? null
+          : #dates.format(wordData.word.manualEventOn, 'dd.MM.yyyy')}"></span>
+      </div>
+    </div>
     <th:block th:if="${wordData.lexemesExist}">
       <div th:if="${not #lists.isEmpty(wordData.lexLexemes)}">
         <section class="level-3-panel meaning-panel d-flex flex-row" th:each="lexeme : ${wordData.lexLexemes}">
@@ -220,33 +240,27 @@
     <th:block th:each="lexeme : ${wordData.termLexemes}" th:with="
     isProTerm = ${@viewUtil.isProTermData(lexeme)},
     isLimTerm = ${@viewUtil.isLimTermData(lexeme)}">
-    <div class="word-panel__toggle-wrapper">
-      <button class="word-panel__toggle word-panel__toggle--nested" data-toggle="collapse"
-        th:data-target="|#term-lexeme-panel-${lexeme.meaningId}" aria-expanded="true"
-        th:aria-controls="|term-lexeme-panel-${lexeme.meaningId}|">
-        <div class="word-panel__toggle-text">
-          <i class="fa fa-chevron-down word-panel__toggle-icon"></i>
-          <span th:text="${lexeme.datasetName}">EKI ühendsõnastik 2020</span>
+      <div class="search__block">
+        <div class="d-flex">
+          <div class="search__block-header">
+              <span class="search__block-title" th:text="${lexeme.datasetName}">EKI ühendsõnastik 2020</span>
+            <div class="meaning-data__modified">
+              <span>ID</span>
+              <span th:text="${lexeme.meaningId}" th:if="${isProTerm}"></span>
+              <span th:text="#{label.tooltip.last_modified}"></span>
+              <span class="meaning-data__date" th:text="${#dates.format(lexeme.meaningManualEventOn, 'dd.MM.yyyy')}"></span>
+            </div>
+          </div>
+          <a
+          class="meaning-data__link"
+          th:href="|@{/ds}/${lexeme.datasetCode}|"
+          target="_blank"
+          rel="noreferrer"
+          th:text="#{label.view.dataset}">Vaata sõnakogu</a>
         </div>
-        <div class="meaning-data__modified">
-          <span>ID</span>
-          <span th:text="${lexeme.meaningId}" th:if="${isProTerm}"></span>
-          <span th:text="#{label.tooltip.last_modified}"></span>
-          <span class="meaning-data__date" th:text="${#dates.format(lexeme.meaningManualEventOn, 'dd.MM.yyyy')}"></span>
-        </div>
-      </button>
-      <a
-        class="meaning-data__link"
-        th:href="|@{/ds}/${lexeme.datasetCode}|"
-        target="_blank"
-        rel="noreferrer"
-        th:text="#{label.view.dataset}">Vaata sõnakogu</a>
-    </div>
-    <div class="word-panel__content word-panel__content--padded collapse show"
-      th:id="|term-lexeme-panel-${lexeme.meaningId}|">
-      <th:block th:replace="term-details :: meaning-data"></th:block>
-    </div>
-</th:block>
+        <th:block th:replace="term-details :: meaning-data"></th:block>
+      </div>
+    </th:block>
   </th:block>
   <!-- lim term search currently removed
   <th:block th:fragment="lim-term-detail-view">

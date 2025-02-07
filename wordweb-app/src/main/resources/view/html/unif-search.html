@@ -114,25 +114,16 @@
             <th:block
             th:if="${not #lists.isEmpty(wordData.lexLexemes)}"
             >
-              <th:block
-              th:replace="common-search :: word-data-accordion(
-                panelTitle=#{lexdata.title},
-                panelId='lexeme-results',
-                panelContent=~{common-search :: lex-detail-view},
-                lastModified=${wordData.word.manualEventOn == null
-                  ? null
-                  : #dates.format(wordData.word.manualEventOn, 'dd.MM.yyyy')})">
-                </th:block>
+              <div class="search__block">
+                <th:block th:replace="common-search :: lex-detail-view"></th:block>
+              </div>
             </th:block>
             <th:block
             th:if="${not #lists.isEmpty(wordData.termLexemes)}"
             >
+              <h2 class="search__term-title" th:text="#{termdata.title}">Oskussõnastikud</h2>
               <th:block
-                th:replace="common-search :: word-data-accordion(
-                  panelTitle=#{termdata.title},
-                  panelId='term-lexeme-results',
-                  panelContent=~{common-search :: term-detail-view},
-                  collapseName='term-section')">
+                th:replace="common-search :: term-detail-view">
               </th:block>
             </th:block>
           </th:block>
@@ -142,16 +133,16 @@
           <th:block th:unless="${wordData.word.incorrectWordForm}">
             <th:block th:replace="common-search-sidebar :: paradigms"></th:block>
             <th:block th:replace="common-search-sidebar :: od-word-recommendations"></th:block>
-            <th:block th:replace="common-search-sidebar :: word-relations"></th:block>
             <th:block th:replace="common-search-sidebar :: etymology"></th:block>
+            <th:block th:replace="common-search-sidebar :: word-relations"></th:block>
             <th:block th:replace="common-search-sidebar :: keelenou"></th:block>
-            <div class="word-sidebar-block" th:if="${wordData.estHeadword}">
+            <div class="search__sidebar-block search__block" th:if="${wordData.estHeadword}">
               <div id="corp" th:text="#{label.corp.search}">Otsin veebilauseid ...</div>
             </div>
-            <div class="word-sidebar-block" th:if="${wordData.estHeadword && wordData.rusContent}">
+            <div class="search__sidebar-block search__block" th:if="${wordData.estHeadword && wordData.rusContent}">
               <div id="corpTrans" th:text="#{label.corp.translations.search}">Otsin tõlgitud näiteid ...</div>
             </div>
-            <div class="word-sidebar-block" th:if="${wordData.rusHeadword}">
+            <div class="search__sidebar-block search__block" th:if="${wordData.rusHeadword}">
               <th:block th:replace="common-search-sidebar :: corp_rus"></th:block>
             </div>
           </th:block>
