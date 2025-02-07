@@ -6,7 +6,6 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
-import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.collections4.MapUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
@@ -185,15 +184,16 @@ public class LexEditController extends AbstractPrivatePageController {
 		Locale locale = LocaleContextHolder.getLocale();
 		boolean isManualEventOnUpdateEnabled = sessionBean.isManualEventOnUpdateEnabled();
 		String roleDatasetCode = getDatasetCodeFromRole();
-		List<Long> clonedLexemeIds = new ArrayList<>();
+		boolean success;
 		try {
-			clonedLexemeIds = compositionService.duplicateLexemeAndMeaningWithSameDatasetLexemes(lexemeId, roleDatasetCode, isManualEventOnUpdateEnabled);
-		} catch (Exception ignore) {
-			logger.error("", ignore);
+			success = compositionService.cloneLexemeMeaningAndLexemes(lexemeId, roleDatasetCode, isManualEventOnUpdateEnabled);
+		} catch (Exception e) {
+			logger.warn("Cloning lexeme meaning failed", e);
+			success = false;
 		}
 
 		Response response = new Response();
-		if (CollectionUtils.isNotEmpty(clonedLexemeIds)) {
+		if (success) {
 			String message = messageSource.getMessage("lex.duplicate.lexeme.success", new Object[0], locale);
 			response.setStatus(ResponseStatus.OK);
 			response.setMessage(message);
@@ -212,7 +212,7 @@ public class LexEditController extends AbstractPrivatePageController {
 		Locale locale = LocaleContextHolder.getLocale();
 		boolean isManualEventOnUpdateEnabled = sessionBean.isManualEventOnUpdateEnabled();
 		String roleDatasetCode = getDatasetCodeFromRole();
-		compositionService.duplicateEmptyLexemeAndMeaning(lexemeId, roleDatasetCode, isManualEventOnUpdateEnabled);
+		compositionService.cloneEmptyLexemeAndMeaning(lexemeId, roleDatasetCode, isManualEventOnUpdateEnabled);
 
 		String message = messageSource.getMessage("lex.duplicate.meaning", new Object[0], locale);
 		Response response = new Response();
@@ -227,7 +227,7 @@ public class LexEditController extends AbstractPrivatePageController {
 
 		boolean isManualEventOnUpdateEnabled = sessionBean.isManualEventOnUpdateEnabled();
 		String roleDatasetCode = getDatasetCodeFromRole();
-		compositionService.duplicateLexemeAndWord(lexemeId, roleDatasetCode, isManualEventOnUpdateEnabled);
+		compositionService.cloneLexemeAndWord(lexemeId, roleDatasetCode, isManualEventOnUpdateEnabled);
 		return RESPONSE_OK_VER1;
 	}
 

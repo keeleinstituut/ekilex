@@ -5,14 +5,17 @@ import static eki.ekilex.data.db.main.Tables.COLLOCATION_MEMBER;
 import static eki.ekilex.data.db.main.Tables.DEFINITION;
 import static eki.ekilex.data.db.main.Tables.DEFINITION_DATASET;
 import static eki.ekilex.data.db.main.Tables.DEFINITION_FREEFORM;
+import static eki.ekilex.data.db.main.Tables.DEFINITION_NOTE;
+import static eki.ekilex.data.db.main.Tables.DEFINITION_NOTE_SOURCE_LINK;
 import static eki.ekilex.data.db.main.Tables.DEFINITION_SOURCE_LINK;
-import static eki.ekilex.data.db.main.Tables.FORM;
 import static eki.ekilex.data.db.main.Tables.FREEFORM;
+import static eki.ekilex.data.db.main.Tables.FREEFORM_SOURCE_LINK;
 import static eki.ekilex.data.db.main.Tables.LEXEME;
 import static eki.ekilex.data.db.main.Tables.LEXEME_ACTIVITY_LOG;
 import static eki.ekilex.data.db.main.Tables.LEXEME_DERIV;
 import static eki.ekilex.data.db.main.Tables.LEXEME_FREEFORM;
 import static eki.ekilex.data.db.main.Tables.LEXEME_NOTE;
+import static eki.ekilex.data.db.main.Tables.LEXEME_NOTE_SOURCE_LINK;
 import static eki.ekilex.data.db.main.Tables.LEXEME_POS;
 import static eki.ekilex.data.db.main.Tables.LEXEME_REGION;
 import static eki.ekilex.data.db.main.Tables.LEXEME_REGISTER;
@@ -25,21 +28,31 @@ import static eki.ekilex.data.db.main.Tables.LEX_RELATION;
 import static eki.ekilex.data.db.main.Tables.MEANING;
 import static eki.ekilex.data.db.main.Tables.MEANING_ACTIVITY_LOG;
 import static eki.ekilex.data.db.main.Tables.MEANING_DOMAIN;
+import static eki.ekilex.data.db.main.Tables.MEANING_FORUM;
 import static eki.ekilex.data.db.main.Tables.MEANING_FREEFORM;
+import static eki.ekilex.data.db.main.Tables.MEANING_IMAGE;
+import static eki.ekilex.data.db.main.Tables.MEANING_IMAGE_SOURCE_LINK;
 import static eki.ekilex.data.db.main.Tables.MEANING_NOTE;
+import static eki.ekilex.data.db.main.Tables.MEANING_NOTE_SOURCE_LINK;
 import static eki.ekilex.data.db.main.Tables.MEANING_RELATION;
 import static eki.ekilex.data.db.main.Tables.MEANING_SEMANTIC_TYPE;
+import static eki.ekilex.data.db.main.Tables.MEANING_TAG;
 import static eki.ekilex.data.db.main.Tables.PARADIGM;
 import static eki.ekilex.data.db.main.Tables.PARADIGM_FORM;
 import static eki.ekilex.data.db.main.Tables.USAGE;
+import static eki.ekilex.data.db.main.Tables.USAGE_DEFINITION;
+import static eki.ekilex.data.db.main.Tables.USAGE_SOURCE_LINK;
+import static eki.ekilex.data.db.main.Tables.USAGE_TRANSLATION;
 import static eki.ekilex.data.db.main.Tables.WORD;
 import static eki.ekilex.data.db.main.Tables.WORD_ACTIVITY_LOG;
 import static eki.ekilex.data.db.main.Tables.WORD_ETYMOLOGY;
 import static eki.ekilex.data.db.main.Tables.WORD_ETYMOLOGY_RELATION;
 import static eki.ekilex.data.db.main.Tables.WORD_ETYMOLOGY_SOURCE_LINK;
+import static eki.ekilex.data.db.main.Tables.WORD_FORUM;
 import static eki.ekilex.data.db.main.Tables.WORD_FREEFORM;
 import static eki.ekilex.data.db.main.Tables.WORD_GROUP_MEMBER;
 import static eki.ekilex.data.db.main.Tables.WORD_RELATION;
+import static eki.ekilex.data.db.main.Tables.WORD_TAG;
 import static eki.ekilex.data.db.main.Tables.WORD_WORD_TYPE;
 
 import java.math.BigDecimal;
@@ -85,30 +98,49 @@ import eki.ekilex.data.db.main.tables.WordRelation;
 import eki.ekilex.data.db.main.tables.WordWordType;
 import eki.ekilex.data.db.main.tables.records.DefinitionDatasetRecord;
 import eki.ekilex.data.db.main.tables.records.DefinitionFreeformRecord;
+import eki.ekilex.data.db.main.tables.records.DefinitionNoteRecord;
+import eki.ekilex.data.db.main.tables.records.DefinitionNoteSourceLinkRecord;
 import eki.ekilex.data.db.main.tables.records.DefinitionRecord;
 import eki.ekilex.data.db.main.tables.records.DefinitionSourceLinkRecord;
-import eki.ekilex.data.db.main.tables.records.FormRecord;
 import eki.ekilex.data.db.main.tables.records.FreeformRecord;
+import eki.ekilex.data.db.main.tables.records.FreeformSourceLinkRecord;
 import eki.ekilex.data.db.main.tables.records.LexCollocRecord;
 import eki.ekilex.data.db.main.tables.records.LexemeDerivRecord;
 import eki.ekilex.data.db.main.tables.records.LexemeFreeformRecord;
+import eki.ekilex.data.db.main.tables.records.LexemeNoteRecord;
+import eki.ekilex.data.db.main.tables.records.LexemeNoteSourceLinkRecord;
 import eki.ekilex.data.db.main.tables.records.LexemePosRecord;
 import eki.ekilex.data.db.main.tables.records.LexemeRecord;
+import eki.ekilex.data.db.main.tables.records.LexemeRegionRecord;
 import eki.ekilex.data.db.main.tables.records.LexemeRegisterRecord;
 import eki.ekilex.data.db.main.tables.records.LexemeSourceLinkRecord;
+import eki.ekilex.data.db.main.tables.records.LexemeTagRecord;
 import eki.ekilex.data.db.main.tables.records.MeaningDomainRecord;
+import eki.ekilex.data.db.main.tables.records.MeaningForumRecord;
 import eki.ekilex.data.db.main.tables.records.MeaningFreeformRecord;
+import eki.ekilex.data.db.main.tables.records.MeaningImageRecord;
+import eki.ekilex.data.db.main.tables.records.MeaningImageSourceLinkRecord;
+import eki.ekilex.data.db.main.tables.records.MeaningNoteRecord;
+import eki.ekilex.data.db.main.tables.records.MeaningNoteSourceLinkRecord;
 import eki.ekilex.data.db.main.tables.records.MeaningRecord;
 import eki.ekilex.data.db.main.tables.records.MeaningRelationRecord;
+import eki.ekilex.data.db.main.tables.records.MeaningSemanticTypeRecord;
+import eki.ekilex.data.db.main.tables.records.MeaningTagRecord;
 import eki.ekilex.data.db.main.tables.records.ParadigmFormRecord;
 import eki.ekilex.data.db.main.tables.records.ParadigmRecord;
+import eki.ekilex.data.db.main.tables.records.UsageDefinitionRecord;
+import eki.ekilex.data.db.main.tables.records.UsageRecord;
+import eki.ekilex.data.db.main.tables.records.UsageSourceLinkRecord;
+import eki.ekilex.data.db.main.tables.records.UsageTranslationRecord;
 import eki.ekilex.data.db.main.tables.records.WordEtymologyRecord;
 import eki.ekilex.data.db.main.tables.records.WordEtymologyRelationRecord;
 import eki.ekilex.data.db.main.tables.records.WordEtymologySourceLinkRecord;
+import eki.ekilex.data.db.main.tables.records.WordForumRecord;
 import eki.ekilex.data.db.main.tables.records.WordFreeformRecord;
 import eki.ekilex.data.db.main.tables.records.WordGroupMemberRecord;
 import eki.ekilex.data.db.main.tables.records.WordRecord;
 import eki.ekilex.data.db.main.tables.records.WordRelationRecord;
+import eki.ekilex.data.db.main.tables.records.WordTagRecord;
 import eki.ekilex.data.db.main.tables.records.WordWordTypeRecord;
 
 @Component
@@ -571,112 +603,263 @@ public class CompositionDbService extends AbstractDataDbService implements Globa
 				.execute();
 	}
 
-	public Long cloneLexeme(Long lexemeId, Long meaningId, Long wordId) {
+	public Long cloneLexeme(Long sourceLexemeId, Long targetMeaningId, Long targetWordId) {
 
-		LexemeRecord lexeme = mainDb
+		LexemeRecord sourceLexeme = mainDb
 				.selectFrom(LEXEME)
-				.where(LEXEME.ID.eq(lexemeId))
+				.where(LEXEME.ID.eq(sourceLexemeId))
 				.fetchOne();
-		LexemeRecord clonedLexeme = lexeme.copy();
-		if (meaningId != null) {
-			clonedLexeme.setMeaningId(meaningId);
+		LexemeRecord targetLexeme = sourceLexeme.copy();
+		if (targetMeaningId != null) {
+			targetLexeme.setMeaningId(targetMeaningId);
 		}
-		if (wordId != null) {
-			clonedLexeme.setWordId(wordId);
+		if (targetWordId != null) {
+			targetLexeme.setWordId(targetWordId);
 		}
-		clonedLexeme.changed(LEXEME.ORDER_BY, false);
-		clonedLexeme.store();
-		return clonedLexeme.getId();
+		targetLexeme.changed(LEXEME.ORDER_BY, false);
+		targetLexeme.store();
+		return targetLexeme.getId();
 	}
 
-	public Long cloneEmptyLexeme(Long lexemeId, Long meaningId) {
+	public Long cloneEmptyLexeme(Long sourceLexemeId, Long targetMeaningId) {
 
-		LexemeRecord lexeme = mainDb.selectFrom(LEXEME).where(LEXEME.ID.eq(lexemeId)).fetchOne();
-		LexemeRecord clonedLexeme = lexeme.copy();
-		clonedLexeme.setMeaningId(meaningId);
-		clonedLexeme.changed(LEXEME.ORDER_BY, false);
-		clonedLexeme.setIsPublic(PUBLICITY_PUBLIC);
-		clonedLexeme.store();
-		return clonedLexeme.getId();
+		LexemeRecord sourceLexeme = mainDb
+				.selectFrom(LEXEME)
+				.where(LEXEME.ID.eq(sourceLexemeId))
+				.fetchOne();
+		LexemeRecord targetLexeme = sourceLexeme.copy();
+		targetLexeme.setMeaningId(targetMeaningId);
+		targetLexeme.changed(LEXEME.ORDER_BY, false);
+		targetLexeme.setIsPublic(PUBLICITY_PUBLIC);
+		targetLexeme.store();
+		return targetLexeme.getId();
 	}
 
-	public void cloneLexemeDerivs(Long lexemeId, Long clonedLexemeId) {
+	// TODO working on lexemes
 
-		Result<LexemeDerivRecord> lexemeDerivatives = mainDb
-				.selectFrom(LEXEME_DERIV)
-				.where(LEXEME_DERIV.LEXEME_ID.eq(lexemeId))
-				.orderBy(LEXEME_DERIV.ID)
+	public void cloneLexemeUsages(Long sourceLexemeId, Long targetLexemeId) {
+
+		Result<UsageRecord> sourceUsages = mainDb
+				.selectFrom(USAGE)
+				.where(USAGE.LEXEME_ID.eq(sourceLexemeId))
+				.orderBy(USAGE.ORDER_BY)
 				.fetch();
-		lexemeDerivatives.stream().map(LexemeDerivRecord::copy).forEach(clonedLexemeDeriv -> {
-			clonedLexemeDeriv.setLexemeId(clonedLexemeId);
-			clonedLexemeDeriv.store();
+
+		sourceUsages.forEach(sourceUsage -> {
+
+			UsageRecord targetUsage = sourceUsage.copy();
+			targetUsage.setLexemeId(targetLexemeId);
+			targetUsage.changed(USAGE.ORDER_BY, false);
+			targetUsage.store();
+			Long targetUsageId = targetUsage.getId();
+			Long sourceUsageId = sourceUsage.getId();
+
+			Result<UsageSourceLinkRecord> sourceUsageSourceLinks = mainDb
+					.selectFrom(USAGE_SOURCE_LINK)
+					.where(USAGE_SOURCE_LINK.USAGE_ID.eq(sourceUsageId))
+					.orderBy(USAGE_SOURCE_LINK.ORDER_BY)
+					.fetch();
+
+			sourceUsageSourceLinks.stream()
+					.map(UsageSourceLinkRecord::copy)
+					.forEach(targetUsageSourceLink -> {
+						targetUsageSourceLink.setUsageId(targetUsageId);
+						targetUsageSourceLink.changed(USAGE_SOURCE_LINK.ORDER_BY, false);
+						targetUsageSourceLink.store();
+					});
+
+			Result<UsageDefinitionRecord> sourceUsageDefinitions = mainDb
+					.selectFrom(USAGE_DEFINITION)
+					.where(USAGE_DEFINITION.USAGE_ID.eq(sourceUsageId))
+					.orderBy(USAGE_DEFINITION.ORDER_BY)
+					.fetch();
+
+			sourceUsageDefinitions.stream()
+					.map(UsageDefinitionRecord::copy)
+					.forEach(targetUsageDefinition -> {
+						targetUsageDefinition.setUsageId(targetUsageId);
+						targetUsageDefinition.store();
+					});
+
+			Result<UsageTranslationRecord> sourceUsageTranslations = mainDb
+					.selectFrom(USAGE_TRANSLATION)
+					.where(USAGE_TRANSLATION.USAGE_ID.eq(sourceUsageId))
+					.orderBy(USAGE_TRANSLATION.ORDER_BY)
+					.fetch();
+
+			sourceUsageTranslations.stream()
+					.map(UsageTranslationRecord::copy)
+					.forEach(targetUsageTranslation -> {
+						targetUsageTranslation.setUsageId(targetUsageId);
+						targetUsageTranslation.store();
+					});
 		});
 	}
 
-	public void cloneLexemeFreeforms(Long lexemeId, Long clonedLexemeId, boolean publicDataOnly) {
+	public void cloneLexemeNotes(Long sourceLexemeId, Long targetLexemeId) {
 
-		Condition where = LEXEME_FREEFORM.LEXEME_ID.eq(lexemeId).and(LEXEME_FREEFORM.FREEFORM_ID.eq(FREEFORM.ID));
-		if (publicDataOnly) {
+		Result<LexemeNoteRecord> sourceLexemeNotes = mainDb
+				.selectFrom(LEXEME_NOTE)
+				.where(LEXEME_NOTE.LEXEME_ID.eq(sourceLexemeId))
+				.orderBy(LEXEME_NOTE.ORDER_BY)
+				.fetch();
+
+		sourceLexemeNotes.forEach(sourceLexemeNote -> {
+
+			LexemeNoteRecord targetLexemeNote = sourceLexemeNote.copy();
+			targetLexemeNote.setLexemeId(targetLexemeId);
+			targetLexemeNote.changed(LEXEME_NOTE.ORDER_BY, false);
+			targetLexemeNote.store();
+			Long targetLexemeNoteId = targetLexemeNote.getId();
+			Long sourceLexemeNoteId = sourceLexemeNote.getId();
+
+			Result<LexemeNoteSourceLinkRecord> sourceLexemeNoteSourceLinks = mainDb
+					.selectFrom(LEXEME_NOTE_SOURCE_LINK)
+					.where(LEXEME_NOTE_SOURCE_LINK.LEXEME_NOTE_ID.eq(sourceLexemeNoteId))
+					.orderBy(LEXEME_NOTE_SOURCE_LINK.ORDER_BY)
+					.fetch();
+
+			sourceLexemeNoteSourceLinks.stream()
+					.map(LexemeNoteSourceLinkRecord::copy)
+					.forEach(targetLexemeNoteSourceLink -> {
+						targetLexemeNoteSourceLink.setLexemeNoteId(targetLexemeNoteId);
+						targetLexemeNoteSourceLink.changed(LEXEME_NOTE_SOURCE_LINK.ORDER_BY, false);
+						targetLexemeNoteSourceLink.store();
+					});
+		});
+	}
+
+	public void cloneLexemeTags(Long sourceLexemeId, Long targetLexemeId) {
+
+		Result<LexemeTagRecord> sourceLexemeTags = mainDb
+				.selectFrom(LEXEME_TAG)
+				.where(LEXEME_TAG.LEXEME_ID.eq(sourceLexemeId))
+				.orderBy(LEXEME_TAG.ID)
+				.fetch();
+		sourceLexemeTags.stream()
+				.map(LexemeTagRecord::copy)
+				.forEach(targetLexemeTag -> {
+					targetLexemeTag.setLexemeId(targetLexemeId);
+					targetLexemeTag.store();
+				});
+	}
+
+	public void cloneLexemeDerivs(Long sourceLexemeId, Long targetLexemeId) {
+
+		Result<LexemeDerivRecord> sourceLexemeDerivs = mainDb
+				.selectFrom(LEXEME_DERIV)
+				.where(LEXEME_DERIV.LEXEME_ID.eq(sourceLexemeId))
+				.orderBy(LEXEME_DERIV.ORDER_BY)
+				.fetch();
+		sourceLexemeDerivs.stream()
+				.map(LexemeDerivRecord::copy)
+				.forEach(targetLexemeDeriv -> {
+					targetLexemeDeriv.setLexemeId(targetLexemeId);
+					targetLexemeDeriv.changed(LEXEME_DERIV.ORDER_BY, false);
+					targetLexemeDeriv.store();
+				});
+	}
+
+	public void cloneLexemeRegions(Long sourceLexemeId, Long targetLexemeId) {
+
+		Result<LexemeRegionRecord> sourceLexemeRegions = mainDb
+				.selectFrom(LEXEME_REGION)
+				.where(LEXEME_REGION.LEXEME_ID.eq(sourceLexemeId))
+				.orderBy(LEXEME_REGION.ORDER_BY)
+				.fetch();
+		sourceLexemeRegions.stream()
+				.map(LexemeRegionRecord::copy)
+				.forEach(targetLexemeRegion -> {
+					targetLexemeRegion.setLexemeId(targetLexemeId);
+					targetLexemeRegion.changed(LEXEME_REGION.ORDER_BY, false);
+					targetLexemeRegion.store();
+				});
+	}
+
+	public void cloneLexemeFreeforms(Long sourceLexemeId, Long targetLexemeId, boolean isPublicDataOnly) {
+
+		Condition where = LEXEME_FREEFORM.LEXEME_ID.eq(sourceLexemeId)
+				.and(LEXEME_FREEFORM.FREEFORM_ID.eq(FREEFORM.ID));
+		if (isPublicDataOnly) {
 			where = where.and(FREEFORM.IS_PUBLIC.isTrue());
 		}
-		List<Long> lexemeFreeformIds = mainDb
-				.select(FREEFORM.ID)
+
+		Result<FreeformRecord> sourceFreeforms = mainDb
+				.select(FREEFORM.fields())
 				.from(FREEFORM, LEXEME_FREEFORM)
 				.where(where)
-				.orderBy(LEXEME_FREEFORM.ID)
-				.fetchInto(Long.class);
-		lexemeFreeformIds.forEach(lexemeFreeformId -> {
-			Long clonedFreeformId = cloneFreeform(lexemeFreeformId, null);
-			LexemeFreeformRecord clonedLexemeFreeform = mainDb.newRecord(LEXEME_FREEFORM);
-			clonedLexemeFreeform.setLexemeId(clonedLexemeId);
-			clonedLexemeFreeform.setFreeformId(clonedFreeformId);
-			clonedLexemeFreeform.store();
+				.orderBy(LEXEME_FREEFORM.ORDER_BY)
+				.fetchInto(FREEFORM);
+
+		sourceFreeforms.forEach(sourceFreeform -> {
+
+			FreeformRecord targetFreeform = sourceFreeform.copy();
+			targetFreeform.setParentId(null);
+			targetFreeform.changed(FREEFORM.ORDER_BY, false);
+			targetFreeform.store();
+			Long targetFreeformId = targetFreeform.getId();
+			Long sourceFreeformId = sourceFreeform.getId();
+
+			LexemeFreeformRecord targetLexemeFreeform = mainDb.newRecord(LEXEME_FREEFORM);
+			targetLexemeFreeform.setLexemeId(targetLexemeId);
+			targetLexemeFreeform.setFreeformId(targetFreeformId);
+			targetLexemeFreeform.store();
+
+			cloneFreeformChildren(sourceFreeformId, targetFreeformId);
+			cloneFreeformSourceLinks(sourceFreeformId, targetFreeformId);
 		});
 	}
 
-	public void cloneLexemePoses(Long lexemeId, Long clonedLexemeId) {
+	public void cloneLexemePoses(Long sourceLexemeId, Long targetLexemeId) {
 
-		Result<LexemePosRecord> lexemePoses = mainDb
+		Result<LexemePosRecord> sourceLexemePoses = mainDb
 				.selectFrom(LEXEME_POS)
-				.where(LEXEME_POS.LEXEME_ID.eq(lexemeId))
+				.where(LEXEME_POS.LEXEME_ID.eq(sourceLexemeId))
 				.orderBy(LEXEME_POS.ORDER_BY)
 				.fetch();
-		lexemePoses.stream().map(LexemePosRecord::copy).forEach(clonedLexemePos -> {
-			clonedLexemePos.setLexemeId(clonedLexemeId);
-			clonedLexemePos.changed(LEXEME_POS.ORDER_BY, false);
-			clonedLexemePos.store();
-		});
+		sourceLexemePoses.stream()
+				.map(LexemePosRecord::copy)
+				.forEach(targetLexemePos -> {
+					targetLexemePos.setLexemeId(targetLexemeId);
+					targetLexemePos.changed(LEXEME_POS.ORDER_BY, false);
+					targetLexemePos.store();
+				});
 	}
 
-	public void cloneLexemeRegisters(Long lexemeId, Long clonedLexemeId) {
+	public void cloneLexemeRegisters(Long sourceLexemeId, Long targetLexemeId) {
 
-		Result<LexemeRegisterRecord> lexemeRegisters = mainDb
+		Result<LexemeRegisterRecord> sourceLexemeRegisters = mainDb
 				.selectFrom(LEXEME_REGISTER)
-				.where(LEXEME_REGISTER.LEXEME_ID.eq(lexemeId))
+				.where(LEXEME_REGISTER.LEXEME_ID.eq(sourceLexemeId))
 				.orderBy(LEXEME_REGISTER.ORDER_BY)
 				.fetch();
-		lexemeRegisters.stream().map(LexemeRegisterRecord::copy).forEach(clonedLexemeRegister -> {
-			clonedLexemeRegister.setLexemeId(clonedLexemeId);
-			clonedLexemeRegister.changed(LEXEME_REGISTER.ORDER_BY, false);
-			clonedLexemeRegister.store();
-		});
+		sourceLexemeRegisters.stream()
+				.map(LexemeRegisterRecord::copy)
+				.forEach(targetLexemeRegister -> {
+					targetLexemeRegister.setLexemeId(targetLexemeId);
+					targetLexemeRegister.changed(LEXEME_REGISTER.ORDER_BY, false);
+					targetLexemeRegister.store();
+				});
 	}
 
-	public void cloneLexemeSoureLinks(Long lexemeId, Long clonedLexemeId) {
+	public void cloneLexemeSoureLinks(Long sourceLexemeId, Long targetLexemeId) {
 
-		Result<LexemeSourceLinkRecord> lexemeSourceLinks = mainDb
+		Result<LexemeSourceLinkRecord> sourceLexemeSourceLinks = mainDb
 				.selectFrom(LEXEME_SOURCE_LINK)
-				.where(LEXEME_SOURCE_LINK.LEXEME_ID.eq(lexemeId))
+				.where(LEXEME_SOURCE_LINK.LEXEME_ID.eq(sourceLexemeId))
 				.orderBy(LEXEME_SOURCE_LINK.ORDER_BY)
 				.fetch();
-		lexemeSourceLinks.stream().map(LexemeSourceLinkRecord::copy).forEach(clonedLexemeSourceLink -> {
-			clonedLexemeSourceLink.setLexemeId(clonedLexemeId);
-			clonedLexemeSourceLink.changed(LEXEME_SOURCE_LINK.ORDER_BY, false);
-			clonedLexemeSourceLink.store();
-		});
+		sourceLexemeSourceLinks.stream()
+				.map(LexemeSourceLinkRecord::copy)
+				.forEach(targetLexemeSourceLink -> {
+					targetLexemeSourceLink.setLexemeId(targetLexemeId);
+					targetLexemeSourceLink.changed(LEXEME_SOURCE_LINK.ORDER_BY, false);
+					targetLexemeSourceLink.store();
+				});
 	}
 
 	// TODO outdated
+	@Deprecated
 	public void cloneLexemeCollocations(Long lexemeId, Long clonedLexemeId) {
 
 		Map<Long, Long> collocIdMap = new HashMap<>();
@@ -726,6 +909,7 @@ public class CompositionDbService extends AbstractDataDbService implements Globa
 	}
 
 	// TODO outdated
+	@Deprecated
 	private List<LexCollocationTuple> getLexCollocationTuples(Long lexemeId) {
 
 		LexColloc lc = LEX_COLLOC.as("lc");
@@ -754,6 +938,7 @@ public class CompositionDbService extends AbstractDataDbService implements Globa
 	}
 
 	// TODO outdated
+	@Deprecated
 	private List<LexCollocationGroupTuple> getLexCollocationGroupTuples(Long lexemeId) {
 
 		LexCollocRelGroup lcrg = LEX_COLLOC_REL_GROUP.as("lcrg");
@@ -777,6 +962,7 @@ public class CompositionDbService extends AbstractDataDbService implements Globa
 	}
 
 	// TODO outdated
+	@Deprecated
 	private Long createCollocation(LexCollocationTuple lexCollocationTuple) {
 
 		String value = lexCollocationTuple.getCollocValue();
@@ -801,6 +987,7 @@ public class CompositionDbService extends AbstractDataDbService implements Globa
 	}
 
 	// TODO outdated
+	@Deprecated
 	private Long createPosGroup(LexCollocationGroupTuple lexCollocationGroupTuple, Long lexemeId) {
 
 		String posGroupCode = lexCollocationGroupTuple.getPosGroupCode();
@@ -818,6 +1005,7 @@ public class CompositionDbService extends AbstractDataDbService implements Globa
 	}
 
 	// TODO outdated
+	@Deprecated
 	private Long createRelGroup(LexCollocationGroupTuple lexCollocationGroupTuple, Long posGroupId) {
 
 		String name = lexCollocationGroupTuple.getRelGroupName();
@@ -839,6 +1027,7 @@ public class CompositionDbService extends AbstractDataDbService implements Globa
 	}
 
 	// TODO outdated
+	@Deprecated
 	private Long createLexColloc(LexCollocationTuple lexCollocationTuple, Long lexemeId, Long relGroupId, Long collocationId) {
 
 		String memberForm = lexCollocationTuple.getMemberForm();
@@ -865,144 +1054,373 @@ public class CompositionDbService extends AbstractDataDbService implements Globa
 
 	public Long cloneMeaning(Long meaningId) {
 
-		MeaningRecord meaning = mainDb
+		MeaningRecord sourceMeaning = mainDb
 				.selectFrom(MEANING)
 				.where(MEANING.ID.eq(meaningId))
 				.fetchOne();
-		MeaningRecord clonedMeaning;
-		if (meaning.fields().length == 1) {
-			clonedMeaning = mainDb.insertInto(MEANING).defaultValues().returning(MEANING.ID).fetchOne();
+		MeaningRecord targetMeaning;
+		if (sourceMeaning.fields().length == 1) {
+			targetMeaning = mainDb
+					.insertInto(MEANING)
+					.defaultValues()
+					.returning(MEANING.ID)
+					.fetchOne();
 		} else {
-			clonedMeaning = meaning.copy();
-			clonedMeaning.store();
+			targetMeaning = sourceMeaning.copy();
+			targetMeaning.store();
 		}
-		Long clonedMeaningId = clonedMeaning.getId();
-		return clonedMeaningId;
+		Long targetMeaningId = targetMeaning.getId();
+		return targetMeaningId;
 	}
 
-	public void cloneMeaningDomains(Long meaningId, Long clonedMeaningId) {
+	public void cloneMeaningDomains(Long sourceMeaningId, Long targetMeaningId) {
 
-		Result<MeaningDomainRecord> meaningDomains = mainDb
+		Result<MeaningDomainRecord> sourceMeaningDomains = mainDb
 				.selectFrom(MEANING_DOMAIN)
-				.where(MEANING_DOMAIN.MEANING_ID.eq(meaningId))
+				.where(MEANING_DOMAIN.MEANING_ID.eq(sourceMeaningId))
 				.orderBy(MEANING_DOMAIN.ORDER_BY)
 				.fetch();
-		meaningDomains.stream().map(MeaningDomainRecord::copy).forEach(clonedDomain -> {
-			clonedDomain.setMeaningId(clonedMeaningId);
-			clonedDomain.changed(MEANING_DOMAIN.ORDER_BY, false);
-			clonedDomain.store();
+		sourceMeaningDomains.stream()
+				.map(MeaningDomainRecord::copy)
+				.forEach(targetMeaningDomain -> {
+					targetMeaningDomain.setMeaningId(targetMeaningId);
+					targetMeaningDomain.changed(MEANING_DOMAIN.ORDER_BY, false);
+					targetMeaningDomain.store();
+				});
+	}
+
+	public void cloneMeaningSemanticType(Long sourceMeaningId, Long targetMeaningId) {
+
+		Result<MeaningSemanticTypeRecord> sourceMeaningSemanticTypes = mainDb
+				.selectFrom(MEANING_SEMANTIC_TYPE)
+				.where(MEANING_SEMANTIC_TYPE.MEANING_ID.eq(sourceMeaningId))
+				.orderBy(MEANING_SEMANTIC_TYPE.ORDER_BY)
+				.fetch();
+
+		sourceMeaningSemanticTypes.stream()
+				.map(MeaningSemanticTypeRecord::copy)
+				.forEach(targetMeaningSemanticType -> {
+					targetMeaningSemanticType.setMeaningId(targetMeaningId);
+					targetMeaningSemanticType.changed(MEANING_SEMANTIC_TYPE.ORDER_BY, false);
+					targetMeaningSemanticType.store();
+				});
+	}
+
+	public void cloneMeaningTags(Long sourceMeaningId, Long targetMeaningId) {
+
+		Result<MeaningTagRecord> sourceMeaningTags = mainDb
+				.selectFrom(MEANING_TAG)
+				.where(MEANING_TAG.MEANING_ID.eq(sourceMeaningId))
+				.orderBy(MEANING_TAG.ID)
+				.fetch();
+		sourceMeaningTags.stream()
+				.map(MeaningTagRecord::copy)
+				.forEach(targetMeaningTag -> {
+					targetMeaningTag.setMeaningId(targetMeaningId);
+					targetMeaningTag.store();
+				});
+	}
+
+	public void cloneMeaningForums(Long sourceMeaningId, Long targetMeaningId) {
+
+		Result<MeaningForumRecord> sourceMeaningForums = mainDb
+				.selectFrom(MEANING_FORUM)
+				.where(MEANING_FORUM.MEANING_ID.eq(sourceMeaningId))
+				.orderBy(MEANING_FORUM.ORDER_BY)
+				.fetch();
+		sourceMeaningForums.stream()
+				.map(MeaningForumRecord::copy)
+				.forEach(targetMeaningForum -> {
+					targetMeaningForum.setMeaningId(targetMeaningId);
+					targetMeaningForum.changed(MEANING_FORUM.ORDER_BY, false);
+					targetMeaningForum.store();
+				});
+	}
+
+	public void cloneMeaningNotes(Long sourceMeaningId, Long targetMeaningId) {
+
+		Result<MeaningNoteRecord> sourceMeaningNotes = mainDb
+				.selectFrom(MEANING_NOTE)
+				.where(MEANING_NOTE.MEANING_ID.eq(sourceMeaningId))
+				.orderBy(MEANING_NOTE.ORDER_BY)
+				.fetch();
+
+		sourceMeaningNotes.forEach(sourceMeaningNote -> {
+
+			MeaningNoteRecord targetMeaningNote = sourceMeaningNote.copy();
+			targetMeaningNote.setMeaningId(targetMeaningId);
+			targetMeaningNote.changed(MEANING_NOTE.ORDER_BY, false);
+			targetMeaningNote.store();
+			Long targetMeaningNoteId = targetMeaningNote.getId();
+			Long sourceMeaningNoteId = sourceMeaningNote.getId();
+
+			Result<MeaningNoteSourceLinkRecord> sourceMeaningNoteSourceLinks = mainDb
+					.selectFrom(MEANING_NOTE_SOURCE_LINK)
+					.where(MEANING_NOTE_SOURCE_LINK.MEANING_NOTE_ID.eq(sourceMeaningNoteId))
+					.orderBy(MEANING_NOTE_SOURCE_LINK.ORDER_BY)
+					.fetch();
+
+			sourceMeaningNoteSourceLinks.stream()
+					.map(MeaningNoteSourceLinkRecord::copy)
+					.forEach(targetMeaningNoteSourceLink -> {
+						targetMeaningNoteSourceLink.setMeaningNoteId(targetMeaningNoteId);
+						targetMeaningNoteSourceLink.changed(MEANING_NOTE_SOURCE_LINK.ORDER_BY, false);
+						targetMeaningNoteSourceLink.store();
+					});
 		});
 	}
 
-	public void cloneMeaningRelations(Long meaningId, Long clonedMeaningId) {
+	public void cloneMeaningImages(Long sourceMeaningId, Long targetMeaningId) {
 
-		Result<MeaningRelationRecord> meaningRelations = mainDb
+		Result<MeaningImageRecord> sourceMeaningImages = mainDb
+				.selectFrom(MEANING_IMAGE)
+				.where(MEANING_IMAGE.MEANING_ID.eq(sourceMeaningId))
+				.orderBy(MEANING_IMAGE.ORDER_BY)
+				.fetch();
+
+		sourceMeaningImages.forEach(sourceMeaningImage -> {
+
+			MeaningImageRecord targetMeaningImage = sourceMeaningImage.copy();
+			targetMeaningImage.setMeaningId(targetMeaningId);
+			targetMeaningImage.changed(MEANING_IMAGE.ORDER_BY, false);
+			targetMeaningImage.store();
+			Long targetMeaningImageId = targetMeaningImage.getId();
+			Long sourceMeaningImageId = sourceMeaningImage.getId();
+
+			Result<MeaningImageSourceLinkRecord> sourceMeaningImageSourceLinks = mainDb
+					.selectFrom(MEANING_IMAGE_SOURCE_LINK)
+					.where(MEANING_IMAGE_SOURCE_LINK.MEANING_IMAGE_ID.eq(sourceMeaningImageId))
+					.orderBy(MEANING_IMAGE_SOURCE_LINK.ORDER_BY)
+					.fetch();
+
+			sourceMeaningImageSourceLinks.stream()
+					.map(MeaningImageSourceLinkRecord::copy)
+					.forEach(targetMeaningImageSourceLink -> {
+						targetMeaningImageSourceLink.setMeaningImageId(targetMeaningImageId);
+						targetMeaningImageSourceLink.changed(MEANING_IMAGE_SOURCE_LINK.ORDER_BY, false);
+						targetMeaningImageSourceLink.store();
+					});
+		});
+
+	}
+
+	public void cloneMeaningRelations(Long sourceMeaningId, Long targetMeaningId) {
+
+		Result<MeaningRelationRecord> sourceMeaningRelations;
+		sourceMeaningRelations = mainDb
 				.selectFrom(MEANING_RELATION)
-				.where(MEANING_RELATION.MEANING1_ID.eq(meaningId).or(MEANING_RELATION.MEANING2_ID.eq(meaningId)))
+				.where(MEANING_RELATION.MEANING1_ID.eq(sourceMeaningId))
 				.orderBy(MEANING_RELATION.ORDER_BY)
 				.fetch();
-		meaningRelations.stream().map(MeaningRelationRecord::copy).forEach(clonedRelation -> {
-			if (clonedRelation.getMeaning1Id().equals(meaningId)) {
-				clonedRelation.setMeaning1Id(clonedMeaningId);
-			} else {
-				clonedRelation.setMeaning2Id(clonedMeaningId);
-			}
-			clonedRelation.changed(MEANING_RELATION.ORDER_BY, false);
-			clonedRelation.store();
+		sourceMeaningRelations.stream()
+				.map(MeaningRelationRecord::copy)
+				.forEach(targetMeaningRelation -> {
+					targetMeaningRelation.setMeaning1Id(targetMeaningId);
+					targetMeaningRelation.changed(MEANING_RELATION.ORDER_BY, false);
+					targetMeaningRelation.store();
+				});
+
+		sourceMeaningRelations = mainDb
+				.selectFrom(MEANING_RELATION)
+				.where(MEANING_RELATION.MEANING2_ID.eq(sourceMeaningId))
+				.orderBy(MEANING_RELATION.ORDER_BY)
+				.fetch();
+		sourceMeaningRelations.stream()
+				.map(MeaningRelationRecord::copy)
+				.forEach(targetMeaningRelation -> {
+					targetMeaningRelation.setMeaning2Id(targetMeaningId);
+					targetMeaningRelation.changed(MEANING_RELATION.ORDER_BY, false);
+					targetMeaningRelation.store();
+				});
+	}
+
+	public void cloneMeaningFreeforms(Long sourceMeaningId, Long targetMeaningId, boolean isPublicDataOnly) {
+
+		Condition where = MEANING_FREEFORM.MEANING_ID.eq(sourceMeaningId)
+				.and(MEANING_FREEFORM.FREEFORM_ID.eq(FREEFORM.ID));
+		if (isPublicDataOnly) {
+			where = where.and(FREEFORM.IS_PUBLIC.isTrue());
+		}
+
+		Result<FreeformRecord> sourceFreeforms = mainDb
+				.select(FREEFORM.fields())
+				.from(FREEFORM, MEANING_FREEFORM)
+				.where(where)
+				.orderBy(MEANING_FREEFORM.ID)
+				.fetchInto(FREEFORM);
+
+		sourceFreeforms.forEach(sourceFreeform -> {
+
+			FreeformRecord targetFreeform = sourceFreeform.copy();
+			targetFreeform.setParentId(null);
+			targetFreeform.store();
+			Long targetFreeformId = targetFreeform.getId();
+			Long sourceFreeformId = sourceFreeform.getId();
+
+			MeaningFreeformRecord targetMeaningFreeform = mainDb.newRecord(MEANING_FREEFORM);
+			targetMeaningFreeform.setMeaningId(targetMeaningId);
+			targetMeaningFreeform.setFreeformId(targetFreeformId);
+			targetMeaningFreeform.store();
+
+			cloneFreeformChildren(sourceFreeformId, targetFreeformId);
+			cloneFreeformSourceLinks(sourceFreeformId, targetFreeformId);
 		});
 	}
 
-	public void cloneMeaningFreeforms(Long meaningId, Long clonedMeaningId, boolean publicDataOnly) {
+	public void cloneMeaningDefinitions(Long sourceMeaningId, Long targetMeaningId, boolean isPublicDataOnly) {
 
-		Condition where = MEANING_FREEFORM.MEANING_ID.eq(meaningId).and(MEANING_FREEFORM.FREEFORM_ID.eq(FREEFORM.ID));
-		if (publicDataOnly) {
+		Condition where = DEFINITION.MEANING_ID.eq(sourceMeaningId);
+		if (isPublicDataOnly) {
+			where = where.and(DEFINITION.IS_PUBLIC.isTrue());
+		}
+		Result<DefinitionRecord> sourceDefinitions = mainDb
+				.selectFrom(DEFINITION)
+				.where(where)
+				.orderBy(DEFINITION.ORDER_BY)
+				.fetch();
+
+		sourceDefinitions.forEach(sourceDefinition -> {
+
+			DefinitionRecord targetDefinition = sourceDefinition.copy();
+			targetDefinition.setMeaningId(targetMeaningId);
+			targetDefinition.changed(DEFINITION.ORDER_BY, false);
+			targetDefinition.store();
+			Long targetDefinitionId = targetDefinition.getId();
+			Long sourceDefinitionId = sourceDefinition.getId();
+
+			cloneDefinitionDatasets(sourceDefinitionId, targetDefinitionId);
+			cloneDefinitionNotes(sourceDefinitionId, targetDefinitionId);
+			cloneDefinitionFreeforms(sourceDefinitionId, targetDefinitionId, isPublicDataOnly);
+			cloneDefinitionSourceLinks(sourceDefinitionId, targetDefinitionId);
+		});
+	}
+
+	private void cloneDefinitionDatasets(Long sourceDefinitionId, Long targetDefinintionId) {
+
+		Result<DefinitionDatasetRecord> sourceDefinitionDatasets = mainDb
+				.selectFrom(DEFINITION_DATASET)
+				.where(DEFINITION_DATASET.DEFINITION_ID.eq(sourceDefinitionId))
+				.fetch();
+		sourceDefinitionDatasets.forEach(sourceDefinitionDataset -> {
+			DefinitionDatasetRecord targetDefinitionDataset = sourceDefinitionDataset.copy();
+			targetDefinitionDataset.setDefinitionId(targetDefinintionId);
+			targetDefinitionDataset.setDatasetCode(sourceDefinitionDataset.getDatasetCode());
+			targetDefinitionDataset.store();
+		});
+	}
+
+	private void cloneDefinitionNotes(Long sourceDefinitionId, Long targetDefinintionId) {
+
+		Result<DefinitionNoteRecord> sourceDefinitionNotes = mainDb
+				.selectFrom(DEFINITION_NOTE)
+				.where(DEFINITION_NOTE.DEFINITION_ID.eq(sourceDefinitionId))
+				.orderBy(DEFINITION_NOTE.ORDER_BY)
+				.fetch();
+
+		sourceDefinitionNotes.forEach(sourceDefinitionNote -> {
+
+			DefinitionNoteRecord targetDefinitionNote = sourceDefinitionNote.copy();
+			targetDefinitionNote.setDefinitionId(targetDefinintionId);
+			targetDefinitionNote.changed(DEFINITION_NOTE.ORDER_BY, false);
+			targetDefinitionNote.store();
+			Long targetDefinitionNoteId = targetDefinitionNote.getId();
+			Long sourceDefinitionNoteId = sourceDefinitionNote.getId();
+
+			Result<DefinitionNoteSourceLinkRecord> sourceDefinitionNoteSourceLinks = mainDb
+					.selectFrom(DEFINITION_NOTE_SOURCE_LINK)
+					.where(DEFINITION_NOTE_SOURCE_LINK.DEFINITION_NOTE_ID.eq(sourceDefinitionNoteId))
+					.orderBy(DEFINITION_NOTE_SOURCE_LINK.ORDER_BY)
+					.fetch();
+
+			sourceDefinitionNoteSourceLinks.stream()
+					.map(DefinitionNoteSourceLinkRecord::copy)
+					.forEach(targetDefinitionNoteSourceLink -> {
+						targetDefinitionNoteSourceLink.setDefinitionNoteId(targetDefinitionNoteId);
+						targetDefinitionNoteSourceLink.changed(DEFINITION_NOTE_SOURCE_LINK.ORDER_BY, false);
+						targetDefinitionNoteSourceLink.store();
+					});
+		});
+	}
+
+	private void cloneDefinitionFreeforms(Long sourceDefinitionId, Long targetDefinintionId, boolean isPublicDataOnly) {
+
+		Condition where = DEFINITION_FREEFORM.DEFINITION_ID.eq(sourceDefinitionId)
+				.and(DEFINITION_FREEFORM.FREEFORM_ID.eq(FREEFORM.ID));
+		if (isPublicDataOnly) {
 			where = where.and(FREEFORM.IS_PUBLIC.isTrue());
 		}
-		List<Long> meaningFreeformIds = mainDb.select(FREEFORM.ID).from(FREEFORM, MEANING_FREEFORM).where(where).orderBy(MEANING_FREEFORM.ID).fetchInto(Long.class);
-		for (Long meaningFreeformId : meaningFreeformIds) {
-			Long clonedFreeformId = cloneFreeform(meaningFreeformId, null);
-			MeaningFreeformRecord clonedMeaningFreeform = mainDb.newRecord(MEANING_FREEFORM);
-			clonedMeaningFreeform.setMeaningId(clonedMeaningId);
-			clonedMeaningFreeform.setFreeformId(clonedFreeformId);
-			clonedMeaningFreeform.store();
-		}
-	}
 
-	public Long cloneMeaningDefinition(Long definitionId, Long meaningId) {
-
-		DefinitionRecord definition = mainDb
-				.selectFrom(DEFINITION)
-				.where(DEFINITION.ID.eq(definitionId))
-				.fetchOne();
-		DefinitionRecord clonedDefinition = definition.copy();
-		clonedDefinition.setMeaningId(meaningId);
-		clonedDefinition.changed(DEFINITION.ORDER_BY, false);
-		clonedDefinition.store();
-		return clonedDefinition.getId();
-	}
-
-	public void cloneDefinitionFreeforms(Long definitionId, Long clonedDefinitionId) {
-
-		Result<DefinitionFreeformRecord> definitionFreeforms = mainDb
-				.selectFrom(DEFINITION_FREEFORM)
-				.where(DEFINITION_FREEFORM.DEFINITION_ID.eq(definitionId))
+		Result<FreeformRecord> sourceFreeforms = mainDb
+				.select(FREEFORM.fields())
+				.from(FREEFORM, DEFINITION_FREEFORM)
+				.where(where)
 				.orderBy(DEFINITION_FREEFORM.ID)
-				.fetch();
-		for (DefinitionFreeformRecord definitionFreeform : definitionFreeforms) {
-			Long clonedFreeformId = cloneFreeform(definitionFreeform.getFreeformId(), null);
-			DefinitionFreeformRecord clonedDefinitionFreeform = mainDb.newRecord(DEFINITION_FREEFORM);
-			clonedDefinitionFreeform.setDefinitionId(clonedDefinitionId);
-			clonedDefinitionFreeform.setFreeformId(clonedFreeformId);
-			clonedDefinitionFreeform.store();
-		}
+				.fetchInto(FREEFORM);
+
+		sourceFreeforms.forEach(sourceFreeform -> {
+
+			FreeformRecord targetFreeform = sourceFreeform.copy();
+			targetFreeform.setParentId(null);
+			targetFreeform.store();
+			Long targetFreeformId = targetFreeform.getId();
+			Long sourceFreeformId = sourceFreeform.getId();
+
+			DefinitionFreeformRecord targetDefinitionFreeform = mainDb.newRecord(DEFINITION_FREEFORM);
+			targetDefinitionFreeform.setDefinitionId(targetDefinintionId);
+			targetDefinitionFreeform.setFreeformId(targetFreeformId);
+			targetDefinitionFreeform.store();
+
+			cloneFreeformChildren(sourceFreeformId, targetFreeformId);
+			cloneFreeformSourceLinks(sourceFreeformId, targetFreeformId);
+		});
 	}
 
-	public void cloneDefinitionDatasets(Long definitionId, Long clonedDefinintionId) {
-
-		Result<DefinitionDatasetRecord> definitionDatasets = mainDb
-				.selectFrom(DEFINITION_DATASET)
-				.where(DEFINITION_DATASET.DEFINITION_ID.eq(definitionId)).fetch();
-		for (DefinitionDatasetRecord definitionDataset : definitionDatasets) {
-			DefinitionDatasetRecord clonedDefinitionDataset = definitionDataset.copy();
-			clonedDefinitionDataset.setDefinitionId(clonedDefinintionId);
-			clonedDefinitionDataset.setDatasetCode(definitionDataset.getDatasetCode());
-			clonedDefinitionDataset.store();
-		}
-	}
-
-	public void cloneDefinitionSourceLinks(Long definitionId, Long clonedDefinintionId) {
+	private void cloneDefinitionSourceLinks(Long sourceDefinitionId, Long targetDefinintionId) {
 
 		Result<DefinitionSourceLinkRecord> definitionSourceLinks = mainDb
 				.selectFrom(DEFINITION_SOURCE_LINK)
-				.where(DEFINITION_SOURCE_LINK.DEFINITION_ID.eq(definitionId))
+				.where(DEFINITION_SOURCE_LINK.DEFINITION_ID.eq(sourceDefinitionId))
 				.orderBy(DEFINITION_SOURCE_LINK.ORDER_BY)
 				.fetch();
-		definitionSourceLinks.stream().map(DefinitionSourceLinkRecord::copy).forEach(clonedDefinitionSourceLink -> {
-			clonedDefinitionSourceLink.setDefinitionId(clonedDefinintionId);
-			clonedDefinitionSourceLink.changed(DEFINITION_SOURCE_LINK.ORDER_BY, false);
-			clonedDefinitionSourceLink.store();
-		});
+		definitionSourceLinks.stream()
+				.map(DefinitionSourceLinkRecord::copy)
+				.forEach(targetDefinitionSourceLink -> {
+					targetDefinitionSourceLink.setDefinitionId(targetDefinintionId);
+					targetDefinitionSourceLink.changed(DEFINITION_SOURCE_LINK.ORDER_BY, false);
+					targetDefinitionSourceLink.store();
+				});
 	}
 
-	private Long cloneFreeform(Long freeformId, Long parentFreeformId) {
+	private void cloneFreeformChildren(Long sourceFreeformId, Long targetFreeformId) {
 
-		FreeformRecord freeform = mainDb
+		Result<FreeformRecord> sourceChildren = mainDb
 				.selectFrom(FREEFORM)
-				.where(FREEFORM.ID.eq(freeformId))
-				.fetchOne();
-		FreeformRecord clonedFreeform = freeform.copy();
-		clonedFreeform.setParentId(parentFreeformId);
-		clonedFreeform.changed(FREEFORM.ORDER_BY, false);
-		clonedFreeform.store();
-		List<FreeformRecord> childFreeforms = mainDb
-				.selectFrom(FREEFORM)
-				.where(FREEFORM.PARENT_ID.eq(freeformId))
+				.where(FREEFORM.PARENT_ID.eq(sourceFreeformId))
 				.orderBy(FREEFORM.ORDER_BY)
 				.fetch();
-		childFreeforms.forEach(f -> {
-			cloneFreeform(f.getId(), clonedFreeform.getId());
-		});
-		return clonedFreeform.getId();
+		sourceChildren.stream()
+				.map(FreeformRecord::copy)
+				.forEach(targetChild -> {
+					targetChild.setParentId(targetFreeformId);
+					targetChild.changed(FREEFORM.ORDER_BY, false);
+					targetChild.store();
+				});
+	}
+
+	private void cloneFreeformSourceLinks(Long sourceFreeformId, Long targetFreeformId) {
+
+		Result<FreeformSourceLinkRecord> sourceFreeformSourceLinks = mainDb
+				.selectFrom(FREEFORM_SOURCE_LINK)
+				.where(FREEFORM_SOURCE_LINK.FREEFORM_ID.eq(sourceFreeformId))
+				.orderBy(FREEFORM_SOURCE_LINK.ORDER_BY)
+				.fetch();
+		sourceFreeformSourceLinks.stream()
+				.map(FreeformSourceLinkRecord::copy)
+				.forEach(targetFreeformSourceLink -> {
+					targetFreeformSourceLink.setFreeformId(targetFreeformId);
+					targetFreeformSourceLink.changed(FREEFORM_SOURCE_LINK.ORDER_BY, false);
+					targetFreeformSourceLink.store();
+				});
 	}
 
 	public Long cloneWord(SimpleWord simpleWord) {
@@ -1029,137 +1447,194 @@ public class CompositionDbService extends AbstractDataDbService implements Globa
 		return clonedWord.getId();
 	}
 
-	public void cloneWordParadigmsAndForms(Long wordId, Long clonedWordId) {
+	public void cloneWordParadigmsAndForms(Long sourceWordId, Long targetWordId) {
 
-		Result<ParadigmRecord> paradigms = mainDb
+		Result<ParadigmRecord> sourceParadigms = mainDb
 				.selectFrom(PARADIGM)
-				.where(PARADIGM.WORD_ID.eq(wordId))
+				.where(PARADIGM.WORD_ID.eq(sourceWordId))
 				.fetch();
-		paradigms.forEach(paradigm -> {
-			ParadigmRecord clonedParadigm = paradigm.copy();
-			clonedParadigm.setWordId(clonedWordId);
-			clonedParadigm.store();
 
-			Long paradigmId = paradigm.getId();
-			Long clonedParadigmId = clonedParadigm.getId();
+		sourceParadigms.forEach(sourceParadigm -> {
 
-			Result<ParadigmFormRecord> paradigmForms = mainDb.selectFrom(PARADIGM_FORM).where(PARADIGM_FORM.PARADIGM_ID.eq(paradigmId)).orderBy(PARADIGM_FORM.ORDER_BY).fetch();
-			paradigmForms.stream().map(ParadigmFormRecord::copy).forEach(clonedParadigmForm -> {
-				Long formId = clonedParadigmForm.getFormId();
-				FormRecord form = mainDb.selectFrom(FORM).where(FORM.ID.eq(formId)).fetchOne();
+			ParadigmRecord targetParadigm = sourceParadigm.copy();
+			targetParadigm.setWordId(targetWordId);
+			targetParadigm.store();
 
-				FormRecord clonedForm = form.copy();
-				clonedForm.store();
-				Long clonedFormId = clonedForm.getId();
+			Long sourceParadigmId = sourceParadigm.getId();
+			Long targetParadigmId = targetParadigm.getId();
 
-				clonedParadigmForm.setParadigmId(clonedParadigmId);
-				clonedParadigmForm.setFormId(clonedFormId);
-				clonedParadigmForm.changed(PARADIGM_FORM.ORDER_BY, false);
-				clonedParadigmForm.store();
-			});
+			Result<ParadigmFormRecord> sourceParadigmForms = mainDb
+					.selectFrom(PARADIGM_FORM)
+					.where(PARADIGM_FORM.PARADIGM_ID.eq(sourceParadigmId))
+					.orderBy(PARADIGM_FORM.ORDER_BY)
+					.fetch();
+
+			sourceParadigmForms.stream()
+					.map(ParadigmFormRecord::copy)
+					.forEach(targetParadigmForm -> {
+						targetParadigmForm.setParadigmId(targetParadigmId);
+						targetParadigmForm.changed(PARADIGM_FORM.ORDER_BY, false);
+						targetParadigmForm.store();
+					});
 		});
 	}
 
-	public void cloneWordTypes(Long wordId, Long clonedWordId) {
+	public void cloneWordTypes(Long sourceWordId, Long targetWordId) {
 
-		Result<WordWordTypeRecord> wordTypes = mainDb
+		Result<WordWordTypeRecord> sourceWordWordTypes = mainDb
 				.selectFrom(WORD_WORD_TYPE)
-				.where(WORD_WORD_TYPE.WORD_ID.eq(wordId))
+				.where(WORD_WORD_TYPE.WORD_ID.eq(sourceWordId))
 				.orderBy(WORD_WORD_TYPE.ORDER_BY)
 				.fetch();
-		wordTypes.stream().map(WordWordTypeRecord::copy).forEach(clonedWordType -> {
-			clonedWordType.setWordId(clonedWordId);
-			clonedWordType.changed(WORD_WORD_TYPE.ORDER_BY, false);
-			clonedWordType.store();
-		});
+		sourceWordWordTypes.stream()
+				.map(WordWordTypeRecord::copy)
+				.forEach(targetWordWordType -> {
+					targetWordWordType.setWordId(targetWordId);
+					targetWordWordType.changed(WORD_WORD_TYPE.ORDER_BY, false);
+					targetWordWordType.store();
+				});
 	}
 
-	public void cloneWordRelations(Long wordId, Long clonedWordId) {
+	public void cloneWordTags(Long sourceWordId, Long targetWordId) {
 
-		Result<WordRelationRecord> wordRelations = mainDb
+		Result<WordTagRecord> sourceWordTags = mainDb
+				.selectFrom(WORD_TAG)
+				.where(WORD_TAG.WORD_ID.eq(sourceWordId))
+				.orderBy(WORD_TAG.ID)
+				.fetch();
+		sourceWordTags.stream()
+				.map(WordTagRecord::copy)
+				.forEach(targetWordTag -> {
+					targetWordTag.setWordId(targetWordId);
+					targetWordTag.store();
+				});
+	}
+
+	public void cloneWordForums(Long sourceWordId, Long targetWordId) {
+
+		Result<WordForumRecord> sourceWordForums = mainDb
+				.selectFrom(WORD_FORUM)
+				.where(WORD_FORUM.WORD_ID.eq(sourceWordId))
+				.orderBy(WORD_FORUM.ID)
+				.fetch();
+		sourceWordForums.stream()
+				.map(WordForumRecord::copy)
+				.forEach(targetWordForum -> {
+					targetWordForum.setWordId(targetWordId);
+					targetWordForum.store();
+				});
+	}
+
+	public void cloneWordRelations(Long sourceWordId, Long targetWordId) {
+
+		Result<WordRelationRecord> sourceWordRelations = mainDb
 				.selectFrom(WORD_RELATION)
-				.where(WORD_RELATION.WORD1_ID.eq(wordId).or(WORD_RELATION.WORD2_ID.eq(wordId)))
+				.where(
+						WORD_RELATION.WORD1_ID.eq(sourceWordId)
+								.or(WORD_RELATION.WORD2_ID.eq(sourceWordId)))
 				.orderBy(WORD_RELATION.ORDER_BY)
 				.fetch();
-		wordRelations.stream().map(WordRelationRecord::copy).forEach(clonedRelation -> {
-			if (clonedRelation.getWord1Id().equals(wordId)) {
-				clonedRelation.setWord1Id(clonedWordId);
-			} else {
-				clonedRelation.setWord2Id(clonedWordId);
-			}
-			clonedRelation.changed(WORD_RELATION.ORDER_BY, false);
-			clonedRelation.store();
+		sourceWordRelations.stream()
+				.map(WordRelationRecord::copy)
+				.forEach(targetWordRelation -> {
+					if (targetWordRelation.getWord1Id().equals(sourceWordId)) {
+						targetWordRelation.setWord1Id(targetWordId);
+					} else {
+						targetWordRelation.setWord2Id(targetWordId);
+					}
+					targetWordRelation.changed(WORD_RELATION.ORDER_BY, false);
+					targetWordRelation.store();
+				});
+	}
+
+	public void cloneWordFreeforms(Long sourceWordId, Long targetWordId) {
+
+		Result<FreeformRecord> sourceFreeforms = mainDb
+				.select(FREEFORM.fields())
+				.from(FREEFORM, WORD_FREEFORM)
+				.where(WORD_FREEFORM.WORD_ID.eq(sourceWordId)
+						.and(WORD_FREEFORM.FREEFORM_ID.eq(FREEFORM.ID)))
+				.orderBy(WORD_FREEFORM.ORDER_BY)
+				.fetchInto(FREEFORM);
+
+		sourceFreeforms.forEach(sourceFreeform -> {
+
+			FreeformRecord targetFreeform = sourceFreeform.copy();
+			targetFreeform.setParentId(null);
+			targetFreeform.store();
+			Long targetFreeformId = targetFreeform.getId();
+			Long sourceFreeformId = sourceFreeform.getId();
+
+			WordFreeformRecord targetWordFreeform = mainDb.newRecord(WORD_FREEFORM);
+			targetWordFreeform.setWordId(targetWordId);
+			targetWordFreeform.setFreeformId(targetFreeformId);
+			targetWordFreeform.changed(WORD_FREEFORM.ORDER_BY, false);
+			targetWordFreeform.store();
+
+			cloneFreeformChildren(sourceFreeformId, targetFreeformId);
+			cloneFreeformSourceLinks(sourceFreeformId, targetFreeformId);
 		});
 	}
 
-	public void cloneWordFreeforms(Long wordId, Long clonedWordId) {
+	public void cloneWordGroupMembers(Long sourceWordId, Long targetWordId) {
 
-		Result<WordFreeformRecord> wordFreeforms = mainDb
-				.selectFrom(WORD_FREEFORM)
-				.where(WORD_FREEFORM.WORD_ID.eq(wordId))
-				.orderBy(WORD_FREEFORM.ID)
-				.fetch();
-		for (WordFreeformRecord wordFreeform : wordFreeforms) {
-			Long clonedFreeformId = cloneFreeform(wordFreeform.getFreeformId(), null);
-			WordFreeformRecord clonedWordFreeform = mainDb.newRecord(WORD_FREEFORM);
-			clonedWordFreeform.setWordId(clonedWordId);
-			clonedWordFreeform.setFreeformId(clonedFreeformId);
-			clonedWordFreeform.store();
-		}
-	}
-
-	public void cloneWordGroupMembers(Long wordId, Long clonedWordId) {
-
-		Result<WordGroupMemberRecord> wordGroupMembers = mainDb
+		Result<WordGroupMemberRecord> sourceWordGroupMembers = mainDb
 				.selectFrom(WORD_GROUP_MEMBER)
-				.where(WORD_GROUP_MEMBER.WORD_ID.eq(wordId))
+				.where(WORD_GROUP_MEMBER.WORD_ID.eq(sourceWordId))
 				.orderBy(WORD_GROUP_MEMBER.ORDER_BY)
 				.fetch();
-		wordGroupMembers.stream().map(WordGroupMemberRecord::copy).forEach(clonedWordGroupMember -> {
-			clonedWordGroupMember.setWordId(clonedWordId);
-			clonedWordGroupMember.changed(WORD_GROUP_MEMBER.ORDER_BY, false);
-			clonedWordGroupMember.store();
-		});
+		sourceWordGroupMembers.stream()
+				.map(WordGroupMemberRecord::copy)
+				.forEach(targetWordGroupMember -> {
+					targetWordGroupMember.setWordId(targetWordId);
+					targetWordGroupMember.changed(WORD_GROUP_MEMBER.ORDER_BY, false);
+					targetWordGroupMember.store();
+				});
 	}
 
-	public void cloneWordEtymology(Long wordId, Long clonedWordId) {
+	public void cloneWordEtymology(Long sourceWordId, Long targetWordId) {
 
-		Result<WordEtymologyRecord> etyms = mainDb
+		Result<WordEtymologyRecord> sourceWordEtyms = mainDb
 				.selectFrom(WORD_ETYMOLOGY)
-				.where(WORD_ETYMOLOGY.WORD_ID.eq(wordId))
+				.where(WORD_ETYMOLOGY.WORD_ID.eq(sourceWordId))
 				.orderBy(WORD_ETYMOLOGY.ORDER_BY)
 				.fetch();
 
-		etyms.forEach(etym -> {
-			WordEtymologyRecord clonedEtym = etym.copy();
-			clonedEtym.setWordId(clonedWordId);
-			clonedEtym.changed(WORD_ETYMOLOGY.ORDER_BY, false);
-			clonedEtym.store();
+		sourceWordEtyms.forEach(sourceWordEtym -> {
 
-			Long etymId = etym.getId();
-			Long clonedEtymId = clonedEtym.getId();
+			WordEtymologyRecord targetWordEtym = sourceWordEtym.copy();
+			targetWordEtym.setWordId(targetWordId);
+			targetWordEtym.changed(WORD_ETYMOLOGY.ORDER_BY, false);
+			targetWordEtym.store();
 
-			Result<WordEtymologyRelationRecord> etymRelations = mainDb
+			Long sourceWordEtymId = sourceWordEtym.getId();
+			Long targetWordEtymId = targetWordEtym.getId();
+
+			Result<WordEtymologyRelationRecord> sourceWordEtymRelations = mainDb
 					.selectFrom(WORD_ETYMOLOGY_RELATION)
-					.where(WORD_ETYMOLOGY_RELATION.WORD_ETYM_ID.eq(etymId))
+					.where(WORD_ETYMOLOGY_RELATION.WORD_ETYM_ID.eq(sourceWordEtymId))
 					.orderBy(WORD_ETYMOLOGY_RELATION.ORDER_BY)
 					.fetch();
-			etymRelations.stream().map(WordEtymologyRelationRecord::copy).forEach(clonedEtymRel -> {
-				clonedEtymRel.setWordEtymId(clonedEtymId);
-				clonedEtymRel.changed(WORD_ETYMOLOGY_RELATION.ORDER_BY, false);
-				clonedEtymRel.store();
-			});
+			sourceWordEtymRelations.stream()
+					.map(WordEtymologyRelationRecord::copy)
+					.forEach(targetWordEtymRelation -> {
+						targetWordEtymRelation.setWordEtymId(targetWordEtymId);
+						targetWordEtymRelation.changed(WORD_ETYMOLOGY_RELATION.ORDER_BY, false);
+						targetWordEtymRelation.store();
+					});
 
-			Result<WordEtymologySourceLinkRecord> etymSourceLinks = mainDb
+			Result<WordEtymologySourceLinkRecord> sourceWordEtymSourceLinks = mainDb
 					.selectFrom(WORD_ETYMOLOGY_SOURCE_LINK)
-					.where(WORD_ETYMOLOGY_SOURCE_LINK.WORD_ETYM_ID.eq(etymId))
+					.where(WORD_ETYMOLOGY_SOURCE_LINK.WORD_ETYM_ID.eq(sourceWordEtymId))
 					.orderBy(WORD_ETYMOLOGY_SOURCE_LINK.ORDER_BY)
 					.fetch();
-			etymSourceLinks.stream().map(WordEtymologySourceLinkRecord::copy).forEach(clonedEtymSourceLink -> {
-				clonedEtymSourceLink.setWordEtymId(clonedEtymId);
-				clonedEtymSourceLink.changed(WORD_ETYMOLOGY_SOURCE_LINK.ORDER_BY, false);
-				clonedEtymSourceLink.store();
-			});
+			sourceWordEtymSourceLinks.stream()
+					.map(WordEtymologySourceLinkRecord::copy)
+					.forEach(targetWordEtymSourceLink -> {
+						targetWordEtymSourceLink.setWordEtymId(targetWordEtymId);
+						targetWordEtymSourceLink.changed(WORD_ETYMOLOGY_SOURCE_LINK.ORDER_BY, false);
+						targetWordEtymSourceLink.store();
+					});
 		});
 	}
 

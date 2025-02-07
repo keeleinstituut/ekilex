@@ -1,6 +1,5 @@
 package eki.ekilex.service;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -10,6 +9,7 @@ import java.util.Optional;
 import javax.transaction.Transactional;
 
 import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.collections4.MapUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,9 +24,9 @@ import eki.ekilex.data.ActivityLogData;
 import eki.ekilex.data.DatasetPermission;
 import eki.ekilex.data.EkiUser;
 import eki.ekilex.data.IdPair;
+import eki.ekilex.data.Lexeme;
 import eki.ekilex.data.SimpleWord;
 import eki.ekilex.data.Word;
-import eki.ekilex.data.Lexeme;
 import eki.ekilex.data.db.main.tables.records.LexRelationRecord;
 import eki.ekilex.data.db.main.tables.records.LexemeRecord;
 import eki.ekilex.data.db.main.tables.records.WordRecord;
@@ -67,54 +67,54 @@ public class CompositionService extends AbstractService implements PermConstant 
 
 	@Transactional(rollbackOn = Exception.class)
 	public Optional<Long> optionalDuplicateMeaningWithLexemes(Long meaningId, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
-		return Optional.of(duplicateMeaningWithLexemes(meaningId, roleDatasetCode, isManualEventOnUpdateEnabled));
+		return Optional.of(cloneMeaningWithLexemes(meaningId, roleDatasetCode, isManualEventOnUpdateEnabled));
 	}
 
 	@Transactional(rollbackOn = Exception.class)
-	public List<Long> duplicateLexemeAndMeaningWithSameDatasetLexemes(Long lexemeId, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
+	public boolean cloneLexemeMeaningAndLexemes(Long lexemeId, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
 
-		Map<Long, Long> lexemeIdAndDuplicateLexemeIdMap = new HashMap<>();
-		boolean publicDataOnly = false;
+		Map<Long, Long> sourceTargetLexemeIdMap = new HashMap<>();
+		boolean isPublicDataOnly = false;
 		LexemeRecord lexeme = lookupDbService.getLexemeRecord(lexemeId);
 		String datasetCode = lexeme.getDatasetCode();
-		Long meaningId = lexeme.getMeaningId();
-		Long duplicateMeaningId = duplicateMeaningData(meaningId, publicDataOnly, roleDatasetCode, isManualEventOnUpdateEnabled);
+		Long sourceMeaningId = lexeme.getMeaningId();
+		Long targetMeaningId = cloneMeaningAndData(sourceMeaningId, isPublicDataOnly, roleDatasetCode, isManualEventOnUpdateEnabled);
 
-		List<LexemeRecord> meaningLexemes = lookupDbService.getLexemeRecordsByMeaning(meaningId, datasetCode);
-		for (LexemeRecord meaningLexeme : meaningLexemes) {
-			Long meaningLexemeId = meaningLexeme.getId();
-			Long duplicateLexemeId = duplicateLexemeData(meaningLexemeId, duplicateMeaningId, null, publicDataOnly, roleDatasetCode, isManualEventOnUpdateEnabled);
-			lexemeIdAndDuplicateLexemeIdMap.put(meaningLexemeId, duplicateLexemeId);
+		List<LexemeRecord> sourceLexemes = lookupDbService.getLexemeRecordsByMeaning(sourceMeaningId, datasetCode);
+		for (LexemeRecord sourceLexeme : sourceLexemes) {
+			Long sourceLexemeId = sourceLexeme.getId();
+			Long targetLexemeId = cloneLexemeAndData(sourceLexemeId, targetMeaningId, null, isPublicDataOnly, roleDatasetCode, isManualEventOnUpdateEnabled);
+			sourceTargetLexemeIdMap.put(sourceLexemeId, targetLexemeId);
 		}
-		duplicateLexemeRelations(lexemeIdAndDuplicateLexemeIdMap, roleDatasetCode, isManualEventOnUpdateEnabled);
-		List<Long> duplicateLexemeIds = new ArrayList<>(lexemeIdAndDuplicateLexemeIdMap.values());
-		return duplicateLexemeIds;
+		cloneLexemeRelations(sourceTargetLexemeIdMap, roleDatasetCode, isManualEventOnUpdateEnabled);
+		boolean success = MapUtils.isNotEmpty(sourceTargetLexemeIdMap);
+		return success;
 	}
 
 	@Transactional(rollbackOn = Exception.class)
-	public Long duplicateEmptyLexemeAndMeaning(Long lexemeId, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
-		Long duplicateMeaningId = cudDbService.createMeaning();
-		activityLogService.createActivityLog("duplicateEmptyLexemeAndMeaning", duplicateMeaningId, ActivityOwner.MEANING, roleDatasetCode, isManualEventOnUpdateEnabled);
-		Long duplicateLexemeId = compositionDbService.cloneEmptyLexeme(lexemeId, duplicateMeaningId);
-		updateLexemeLevelsAfterDuplication(duplicateLexemeId);
-		activityLogService.createActivityLog("duplicateEmptyLexemeAndMeaning", duplicateLexemeId, ActivityOwner.LEXEME, roleDatasetCode, isManualEventOnUpdateEnabled);
-		return duplicateLexemeId;
+	public Long cloneEmptyLexemeAndMeaning(Long sourceLexemeId, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
+
+		Long targetMeaningId = cudDbService.createMeaning();
+		activityLogService.createActivityLog("cloneEmptyLexemeAndMeaning", targetMeaningId, ActivityOwner.MEANING, roleDatasetCode, isManualEventOnUpdateEnabled);
+		Long targetLexemeId = compositionDbService.cloneEmptyLexeme(sourceLexemeId, targetMeaningId);
+		updateLexemeLevelsAfterDuplication(targetLexemeId);
+		activityLogService.createActivityLog("cloneEmptyLexemeAndMeaning", targetLexemeId, ActivityOwner.LEXEME, roleDatasetCode, isManualEventOnUpdateEnabled);
+		return targetLexemeId;
 	}
 
 	@Transactional(rollbackOn = Exception.class)
-	public void duplicateLexemeAndWord(Long lexemeId, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
+	public void cloneLexemeAndWord(Long sourceLexemeId, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
 
-		LexemeRecord lexeme = lookupDbService.getLexemeRecord(lexemeId);
-		Long wordId = lexeme.getWordId();
-		Long duplicateWordId = duplicateWordData(wordId, roleDatasetCode, isManualEventOnUpdateEnabled);
-		duplicateLexemeData(lexemeId, null, duplicateWordId, false, roleDatasetCode, isManualEventOnUpdateEnabled);
+		LexemeRecord sourceLexeme = lookupDbService.getLexemeRecord(sourceLexemeId);
+		Long sourceWordId = sourceLexeme.getWordId();
+		Long targetWordId = cloneWordAndData(sourceWordId, roleDatasetCode, isManualEventOnUpdateEnabled);
+		cloneLexemeAndData(sourceLexemeId, null, targetWordId, false, roleDatasetCode, isManualEventOnUpdateEnabled);
 	}
 
 	@Transactional(rollbackOn = Exception.class)
 	public void updateLexemeWordId(Long lexemeId, Long wordId, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
 
-		ActivityLogData lexemeActivityLog = activityLogService
-				.prepareActivityLog("updateLexemeWordId", lexemeId, ActivityOwner.LEXEME, roleDatasetCode, isManualEventOnUpdateEnabled);
+		ActivityLogData lexemeActivityLog = activityLogService.prepareActivityLog("updateLexemeWordId", lexemeId, ActivityOwner.LEXEME, roleDatasetCode, isManualEventOnUpdateEnabled);
 		Long lexemeWordId = lookupDbService.getLexemeWordId(lexemeId);
 		moveLexemeToAnotherWord(wordId, lexemeId);
 		cudDbService.deleteFloatingWord(lexemeWordId);
@@ -157,7 +157,7 @@ public class CompositionService extends AbstractService implements PermConstant 
 				updateWordValue(originalWordId, wordValue, wordValuePrese, wordLang, originalWordValue, originalWordLang);
 				activityLogService.createActivityLog(wordActivityLog, originalWordId, ActivityEntity.WORD);
 			} else {
-				Long duplicateWordId = duplicateWordData(originalWordId, roleDatasetCode, isManualEventOnUpdateEnabled);
+				Long duplicateWordId = cloneWordAndData(originalWordId, roleDatasetCode, isManualEventOnUpdateEnabled);
 				ActivityLogData wordActivityLog = activityLogService
 						.prepareActivityLog("updateLexemeWordValue", duplicateWordId, ActivityOwner.WORD, roleDatasetCode, isManualEventOnUpdateEnabled);
 				updateWordValue(duplicateWordId, wordValue, wordValuePrese, wordLang, originalWordValue, originalWordLang);
@@ -198,105 +198,109 @@ public class CompositionService extends AbstractService implements PermConstant 
 		cudDbService.adjustWordHomonymNrs(updatedSimpleWord);
 	}
 
-	private Long duplicateMeaningWithLexemes(Long meaningId, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
+	private Long cloneMeaningWithLexemes(Long sourceMeaningId, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
 
-		Map<Long, Long> lexemeIdAndDuplicateLexemeIdMap = new HashMap<>();
+		Map<Long, Long> sourceTargetLexemeIdMap = new HashMap<>();
 		boolean publicDataOnly = false;
-		Long duplicateMeaningId = duplicateMeaningData(meaningId, publicDataOnly, roleDatasetCode, isManualEventOnUpdateEnabled);
-		List<LexemeRecord> meaningLexemes = lookupDbService.getLexemeRecordsByMeaning(meaningId);
-		for (LexemeRecord meaningLexeme : meaningLexemes) {
-			Long lexemeId = meaningLexeme.getId();
-			Long duplicateLexemeId = duplicateLexemeData(lexemeId, duplicateMeaningId, null, publicDataOnly, roleDatasetCode, isManualEventOnUpdateEnabled);
-			lexemeIdAndDuplicateLexemeIdMap.put(lexemeId, duplicateLexemeId);
+		Long targetMeaningId = cloneMeaningAndData(sourceMeaningId, publicDataOnly, roleDatasetCode, isManualEventOnUpdateEnabled);
+		List<LexemeRecord> sourceLexemes = lookupDbService.getLexemeRecordsByMeaning(sourceMeaningId);
+		for (LexemeRecord sourceLexeme : sourceLexemes) {
+			Long sourceLexemeId = sourceLexeme.getId();
+			Long targetLexemeId = cloneLexemeAndData(sourceLexemeId, targetMeaningId, null, publicDataOnly, roleDatasetCode, isManualEventOnUpdateEnabled);
+			sourceTargetLexemeIdMap.put(sourceLexemeId, targetLexemeId);
 		}
-		duplicateLexemeRelations(lexemeIdAndDuplicateLexemeIdMap, roleDatasetCode, isManualEventOnUpdateEnabled);
+		cloneLexemeRelations(sourceTargetLexemeIdMap, roleDatasetCode, isManualEventOnUpdateEnabled);
 
-		return duplicateMeaningId;
+		return targetMeaningId;
 	}
 
-	private Long duplicateLexemeData(Long lexemeId, Long meaningId, Long wordId, boolean publicDataOnly, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
+	private Long cloneLexemeAndData(Long sourceLexemeId, Long targetMeaningId, Long targetWordId, boolean isPublicDataOnly, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
 
-		Long duplicateLexemeId = compositionDbService.cloneLexeme(lexemeId, meaningId, wordId);
-		updateLexemeLevelsAfterDuplication(duplicateLexemeId);
-		compositionDbService.cloneLexemeDerivs(lexemeId, duplicateLexemeId);
-		compositionDbService.cloneLexemeFreeforms(lexemeId, duplicateLexemeId, publicDataOnly);
-		compositionDbService.cloneLexemePoses(lexemeId, duplicateLexemeId);
-		compositionDbService.cloneLexemeRegisters(lexemeId, duplicateLexemeId);
-		compositionDbService.cloneLexemeSoureLinks(lexemeId, duplicateLexemeId);
-		compositionDbService.cloneLexemeCollocations(lexemeId, duplicateLexemeId);
-		activityLogService.createActivityLog("duplicateLexemeData", duplicateLexemeId, ActivityOwner.LEXEME, roleDatasetCode, isManualEventOnUpdateEnabled);
+		Long targetLexemeId = compositionDbService.cloneLexeme(sourceLexemeId, targetMeaningId, targetWordId);
+		updateLexemeLevelsAfterDuplication(targetLexemeId);
 
-		return duplicateLexemeId;
+		compositionDbService.cloneLexemeUsages(sourceLexemeId, targetLexemeId);
+		compositionDbService.cloneLexemeNotes(sourceLexemeId, targetLexemeId);
+		compositionDbService.cloneLexemeTags(sourceLexemeId, targetLexemeId);
+		compositionDbService.cloneLexemeDerivs(sourceLexemeId, targetLexemeId);
+		compositionDbService.cloneLexemeRegions(sourceLexemeId, targetLexemeId);
+		compositionDbService.cloneLexemePoses(sourceLexemeId, targetLexemeId);
+		compositionDbService.cloneLexemeRegisters(sourceLexemeId, targetLexemeId);
+		compositionDbService.cloneLexemeFreeforms(sourceLexemeId, targetLexemeId, isPublicDataOnly);
+		compositionDbService.cloneLexemeSoureLinks(sourceLexemeId, targetLexemeId);
+		// cloning of lexeme relations are in separate flow after all lexemes have been cloned
+
+		activityLogService.createActivityLog("cloneLexemeAndData", targetLexemeId, ActivityOwner.LEXEME, roleDatasetCode, isManualEventOnUpdateEnabled);
+
+		return targetLexemeId;
 	}
 
-	private Long duplicateWordData(Long wordId, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
+	private Long cloneWordAndData(Long sourceWordId, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
 
-		SimpleWord simpleWord = compositionDbService.getSimpleWord(wordId);
-		Long duplicateWordId = compositionDbService.cloneWord(simpleWord);
-		compositionDbService.cloneWordParadigmsAndForms(wordId, duplicateWordId);
-		compositionDbService.cloneWordTypes(wordId, duplicateWordId);
-		compositionDbService.cloneWordRelations(wordId, duplicateWordId);
-		compositionDbService.cloneWordGroupMembers(wordId, duplicateWordId);
-		compositionDbService.cloneWordFreeforms(wordId, duplicateWordId);
-		compositionDbService.cloneWordEtymology(wordId, duplicateWordId);
-		activityLogService.createActivityLog("duplicateWordData", duplicateWordId, ActivityOwner.WORD, roleDatasetCode, isManualEventOnUpdateEnabled);
+		SimpleWord sourceWord = compositionDbService.getSimpleWord(sourceWordId);
+		Long targetWordId = compositionDbService.cloneWord(sourceWord);
+		compositionDbService.cloneWordParadigmsAndForms(sourceWordId, targetWordId);
+		compositionDbService.cloneWordTypes(sourceWordId, targetWordId);
+		compositionDbService.cloneWordTags(sourceWordId, targetWordId);
+		compositionDbService.cloneWordForums(sourceWordId, targetWordId);
+		compositionDbService.cloneWordRelations(sourceWordId, targetWordId);
+		compositionDbService.cloneWordGroupMembers(sourceWordId, targetWordId);
+		compositionDbService.cloneWordFreeforms(sourceWordId, targetWordId);
+		compositionDbService.cloneWordEtymology(sourceWordId, targetWordId);
 
-		return duplicateWordId;
+		activityLogService.createActivityLog("cloneWordAndData", targetWordId, ActivityOwner.WORD, roleDatasetCode, isManualEventOnUpdateEnabled);
+
+		return targetWordId;
 	}
 
-	private Long duplicateMeaningData(Long meaningId, boolean publicDataOnly, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
+	private Long cloneMeaningAndData(Long sourceMeaningId, boolean isPublicDataOnly, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
 
-		Long duplicateMeaningId = compositionDbService.cloneMeaning(meaningId);
-		compositionDbService.cloneMeaningDomains(meaningId, duplicateMeaningId);
-		compositionDbService.cloneMeaningRelations(meaningId, duplicateMeaningId);
-		compositionDbService.cloneMeaningFreeforms(meaningId, duplicateMeaningId, publicDataOnly);
-		duplicateMeaningDefinitions(meaningId, duplicateMeaningId, publicDataOnly);
-		activityLogService.createActivityLog("duplicateMeaningData", duplicateMeaningId, ActivityOwner.MEANING, roleDatasetCode, isManualEventOnUpdateEnabled);
+		Long targetMeaningId = compositionDbService.cloneMeaning(sourceMeaningId);
+		compositionDbService.cloneMeaningSemanticType(sourceMeaningId, targetMeaningId);
+		compositionDbService.cloneMeaningTags(sourceMeaningId, targetMeaningId);
+		compositionDbService.cloneMeaningForums(sourceMeaningId, targetMeaningId);
+		compositionDbService.cloneMeaningDomains(sourceMeaningId, targetMeaningId);
+		compositionDbService.cloneMeaningNotes(sourceMeaningId, targetMeaningId);
+		compositionDbService.cloneMeaningImages(sourceMeaningId, targetMeaningId);
+		compositionDbService.cloneMeaningRelations(sourceMeaningId, targetMeaningId);
+		compositionDbService.cloneMeaningFreeforms(sourceMeaningId, targetMeaningId, isPublicDataOnly);
+		compositionDbService.cloneMeaningDefinitions(sourceMeaningId, targetMeaningId, isPublicDataOnly);
 
-		return duplicateMeaningId;
+		activityLogService.createActivityLog("cloneMeaningAndData", targetMeaningId, ActivityOwner.MEANING, roleDatasetCode, isManualEventOnUpdateEnabled);
+
+		return targetMeaningId;
 	}
 
-	private void duplicateMeaningDefinitions(Long meaningId, Long duplicateMeaningId, boolean publicDataOnly) {
+	private void cloneLexemeRelations(Map<Long, Long> sourceTargetLexemeIdMap, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
 
-		List<Long> meaningDefinitionIds = lookupDbService.getMeaningDefinitionIds(meaningId, publicDataOnly);
-		for (Long meaningDefinitionId : meaningDefinitionIds) {
-			Long duplicateDefinintionId = compositionDbService.cloneMeaningDefinition(meaningDefinitionId, duplicateMeaningId);
-			compositionDbService.cloneDefinitionFreeforms(meaningDefinitionId, duplicateDefinintionId);
-			compositionDbService.cloneDefinitionDatasets(meaningDefinitionId, duplicateDefinintionId);
-			compositionDbService.cloneDefinitionSourceLinks(meaningDefinitionId, duplicateDefinintionId);
-		}
-	}
+		for (Map.Entry<Long, Long> sourceTargetLexemeIdEntry : sourceTargetLexemeIdMap.entrySet()) {
 
-	private void duplicateLexemeRelations(Map<Long, Long> existingLexemeIdAndDuplicateLexemeIdMap, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
-
-		for (Map.Entry<Long, Long> lexemeIdAndDuplicateLexemeId : existingLexemeIdAndDuplicateLexemeIdMap.entrySet()) {
-
-			Long existingLexemeId = lexemeIdAndDuplicateLexemeId.getKey();
-			Long duplicateLexemeId = lexemeIdAndDuplicateLexemeId.getValue();
+			Long sourceLexemeId = sourceTargetLexemeIdEntry.getKey();
+			Long targetLexemeId = sourceTargetLexemeIdEntry.getValue();
 			ActivityLogData activityLog;
 
-			List<LexRelationRecord> existingLexemeRelations = lookupDbService.getLexRelationRecords(existingLexemeId);
-			for (LexRelationRecord existingLexemeRelation : existingLexemeRelations) {
+			List<LexRelationRecord> sourceLexemeRelations = lookupDbService.getLexRelationRecords(sourceLexemeId);
+			for (LexRelationRecord sourceLexemeRelation : sourceLexemeRelations) {
 
-				Long existingLexeme1Id = existingLexemeRelation.getLexeme1Id();
-				Long existingLexeme2Id = existingLexemeRelation.getLexeme2Id();
-				String lexRelTypeCode = existingLexemeRelation.getLexRelTypeCode();
+				Long relationSourceLexeme1Id = sourceLexemeRelation.getLexeme1Id();
+				Long relationSourceLexeme2Id = sourceLexemeRelation.getLexeme2Id();
+				String lexRelTypeCode = sourceLexemeRelation.getLexRelTypeCode();
 				Long lexemeRelationId;
 
-				activityLog = activityLogService.prepareActivityLog("duplicateLexemeRelations", duplicateLexemeId, ActivityOwner.LEXEME, roleDatasetCode, isManualEventOnUpdateEnabled);
-				if (existingLexeme1Id.equals(existingLexemeId)) {
-					if (existingLexemeIdAndDuplicateLexemeIdMap.containsKey(existingLexeme2Id)) {
-						Long duplicateLexeme2Id = existingLexemeIdAndDuplicateLexemeIdMap.get(existingLexeme2Id);
-						lexemeRelationId = cudDbService.createLexemeRelation(duplicateLexemeId, duplicateLexeme2Id, lexRelTypeCode);
+				activityLog = activityLogService.prepareActivityLog("cloneLexemeRelations", targetLexemeId, ActivityOwner.LEXEME, roleDatasetCode, isManualEventOnUpdateEnabled);
+				if (relationSourceLexeme1Id.equals(sourceLexemeId)) {
+					if (sourceTargetLexemeIdMap.containsKey(relationSourceLexeme2Id)) {
+						Long targetLexeme2Id = sourceTargetLexemeIdMap.get(relationSourceLexeme2Id);
+						lexemeRelationId = cudDbService.createLexemeRelation(targetLexemeId, targetLexeme2Id, lexRelTypeCode);
 					} else {
-						lexemeRelationId = cudDbService.createLexemeRelation(duplicateLexemeId, existingLexeme2Id, lexRelTypeCode);
+						lexemeRelationId = cudDbService.createLexemeRelation(targetLexemeId, relationSourceLexeme2Id, lexRelTypeCode);
 					}
 				} else {
-					if (existingLexemeIdAndDuplicateLexemeIdMap.containsKey(existingLexeme1Id)) {
-						Long duplicateLexeme1Id = existingLexemeIdAndDuplicateLexemeIdMap.get(existingLexeme1Id);
-						lexemeRelationId = cudDbService.createLexemeRelation(duplicateLexeme1Id, duplicateLexemeId, lexRelTypeCode);
+					if (sourceTargetLexemeIdMap.containsKey(relationSourceLexeme1Id)) {
+						Long targetLexeme1Id = sourceTargetLexemeIdMap.get(relationSourceLexeme1Id);
+						lexemeRelationId = cudDbService.createLexemeRelation(targetLexeme1Id, targetLexemeId, lexRelTypeCode);
 					} else {
-						lexemeRelationId = cudDbService.createLexemeRelation(existingLexeme1Id, duplicateLexemeId, lexRelTypeCode);
+						lexemeRelationId = cudDbService.createLexemeRelation(relationSourceLexeme1Id, targetLexemeId, lexRelTypeCode);
 					}
 				}
 				if (lexemeRelationId != null) {
