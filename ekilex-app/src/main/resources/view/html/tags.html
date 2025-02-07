@@ -68,7 +68,7 @@
                           th:data-tag-order="${tag.order}"
                           th:data-tag-set-automatically="${tag.setAutomatically}"
                           th:data-tag-remove-to-complete="${tag.removeToComplete}"
-                          th:disabled="${tag.used}">
+                          th:unless="${tag.used}">
                     <i class="fa fa-edit" aria-hidden="true"></i>
                   </button>
                   <button type="button"
@@ -76,7 +76,7 @@
                           class="btn badge badge-warning delete-dataset-confirm"
                           th:data-tag-used="${tag.used}"
                           th:data-tag-name="${tag.name}"
-                          th:disabled="${tag.used}">
+                          th:unless="${tag.used}">
                     <i class="fa fa-remove" aria-hidden="true"></i>
                   </button>
                 </td>

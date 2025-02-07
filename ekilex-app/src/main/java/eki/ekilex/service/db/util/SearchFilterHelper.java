@@ -37,6 +37,7 @@ import static eki.ekilex.data.db.main.Tables.WORD_GROUP;
 import static eki.ekilex.data.db.main.Tables.WORD_GROUP_MEMBER;
 import static eki.ekilex.data.db.main.Tables.WORD_LAST_ACTIVITY_LOG;
 import static eki.ekilex.data.db.main.Tables.WORD_RELATION;
+import static eki.ekilex.data.db.main.Tables.WORD_TAG;
 import static eki.ekilex.data.db.main.Tables.WORD_WORD_TYPE;
 import static java.util.stream.Collectors.toList;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
@@ -118,6 +119,7 @@ import eki.ekilex.data.db.main.tables.WordGroup;
 import eki.ekilex.data.db.main.tables.WordGroupMember;
 import eki.ekilex.data.db.main.tables.WordLastActivityLog;
 import eki.ekilex.data.db.main.tables.WordRelation;
+import eki.ekilex.data.db.main.tables.WordTag;
 import eki.ekilex.data.db.main.tables.WordWordType;
 
 @Component
@@ -871,6 +873,7 @@ public class SearchFilterHelper implements GlobalConstant, ActivityFunct, Freefo
 		Lexeme l2 = LEXEME.as("l2");
 		LexemeTag lt = LEXEME_TAG.as("lt");
 		MeaningTag mt = MEANING_TAG.as("mt");
+		WordTag wt = WORD_TAG.as("wt");
 
 		if (CollectionUtils.isNotEmpty(tagNameEqualsCrit)) {
 
@@ -878,18 +881,21 @@ public class SearchFilterHelper implements GlobalConstant, ActivityFunct, Freefo
 			where1 = applyDatasetRestrictions(l1, searchDatasetsRestriction, where1);
 			Condition whereVal1 = DSL.noCondition();
 			Condition whereVal2 = DSL.noCondition();
+			Condition whereVal3 = DSL.noCondition();
 
 			for (SearchCriterion criterion : tagNameEqualsCrit) {
 				String searchValueStr = criterion.getSearchValue().toString();
 				whereVal1 = applyValueFilter(searchValueStr, criterion.isNot(), criterion.getSearchOperand(), lt.TAG_NAME, whereVal1, true);
 				whereVal2 = applyValueFilter(searchValueStr, criterion.isNot(), criterion.getSearchOperand(), mt.TAG_NAME, whereVal2, true);
+				whereVal3 = applyValueFilter(searchValueStr, criterion.isNot(), criterion.getSearchOperand(), wt.TAG_NAME, whereVal3, true);
 			}
 			where = where.andExists(DSL
 					.select(l1.ID)
 					.from(l1
 							.leftOuterJoin(lt).on(lt.LEXEME_ID.eq(l1.ID))
-							.leftOuterJoin(mt).on(mt.MEANING_ID.eq(l1.MEANING_ID)))
-					.where(where1.and(DSL.or(whereVal1, whereVal2))));
+							.leftOuterJoin(mt).on(mt.MEANING_ID.eq(l1.MEANING_ID))
+							.leftOuterJoin(wt).on(wt.WORD_ID.eq(l1.WORD_ID)))
+					.where(where1.and(DSL.or(whereVal1, whereVal2, whereVal3))));
 		}
 		if (CollectionUtils.isNotEmpty(tagNameNotEqualsCrit)) {
 
@@ -897,15 +903,18 @@ public class SearchFilterHelper implements GlobalConstant, ActivityFunct, Freefo
 			where1 = applyDatasetRestrictions(l1, searchDatasetsRestriction, where1);
 			Condition where2 = l2.WORD_ID.eq(w1.ID).and(l2.MEANING_ID.eq(mt.MEANING_ID));
 			where2 = applyDatasetRestrictions(l2, searchDatasetsRestriction, where2);
+			Condition where3 = wt.WORD_ID.eq(w1.ID);
 
 			for (SearchCriterion criterion : tagNameNotEqualsCrit) {
 				String searchValueStr = criterion.getSearchValue().toString();
 				where1 = applyValueFilter(searchValueStr, criterion.isNot(), criterion.getSearchOperand(), lt.TAG_NAME, where1, true);
 				where2 = applyValueFilter(searchValueStr, criterion.isNot(), criterion.getSearchOperand(), mt.TAG_NAME, where2, true);
+				where3 = applyValueFilter(searchValueStr, criterion.isNot(), criterion.getSearchOperand(), wt.TAG_NAME, where3, true);
 			}
 			where = where.and(DSL
 					.notExists(DSL.select(lt.ID).from(l1, lt).where(where1))
-					.andNotExists(DSL.select(mt.ID).from(l2, mt).where(where2)));
+					.andNotExists(DSL.select(mt.ID).from(l2, mt).where(where2))
+					.andNotExists(DSL.select(wt.ID).from(wt).where(where3)));
 		}
 
 		return where;
@@ -923,6 +932,7 @@ public class SearchFilterHelper implements GlobalConstant, ActivityFunct, Freefo
 		Lexeme l1 = LEXEME.as("l1");
 		LexemeTag lt = LEXEME_TAG.as("lt");
 		MeaningTag mt = MEANING_TAG.as("mt");
+		WordTag wt = WORD_TAG.as("wt");
 
 		if (CollectionUtils.isNotEmpty(tagNameEqualsCrit)) {
 
@@ -930,33 +940,40 @@ public class SearchFilterHelper implements GlobalConstant, ActivityFunct, Freefo
 			where1 = applyDatasetRestrictions(l1, searchDatasetsRestriction, where1);
 			Condition whereVal1 = DSL.noCondition();
 			Condition whereVal2 = DSL.noCondition();
+			Condition whereVal3 = DSL.noCondition();
 
 			for (SearchCriterion criterion : tagNameEqualsCrit) {
 				String searchValueStr = criterion.getSearchValue().toString();
 				whereVal1 = applyValueFilter(searchValueStr, criterion.isNot(), criterion.getSearchOperand(), lt.TAG_NAME, whereVal1, true);
 				whereVal2 = applyValueFilter(searchValueStr, criterion.isNot(), criterion.getSearchOperand(), mt.TAG_NAME, whereVal2, true);
+				whereVal3 = applyValueFilter(searchValueStr, criterion.isNot(), criterion.getSearchOperand(), wt.TAG_NAME, whereVal3, true);
 			}
 			where = where.andExists(DSL
 					.select(l1.ID)
 					.from(l1
 							.leftOuterJoin(lt).on(lt.LEXEME_ID.eq(l1.ID))
-							.leftOuterJoin(mt).on(mt.MEANING_ID.eq(l1.MEANING_ID)))
-					.where(where1.and(DSL.or(whereVal1, whereVal2))));
+							.leftOuterJoin(mt).on(mt.MEANING_ID.eq(l1.MEANING_ID))
+							.leftOuterJoin(wt).on(wt.WORD_ID.eq(l1.WORD_ID)))
+					.where(where1.and(DSL.or(whereVal1, whereVal2, whereVal3))));
 		}
 		if (CollectionUtils.isNotEmpty(tagNameNotEqualsCrit)) {
 
 			Condition where1 = l1.MEANING_ID.eq(m1.ID).and(lt.LEXEME_ID.eq(l1.ID));
 			where1 = applyDatasetRestrictions(l1, searchDatasetsRestriction, where1);
 			Condition where2 = mt.MEANING_ID.eq(m1.ID);
+			Condition where3 = l1.MEANING_ID.eq(m1.ID).and(wt.WORD_ID.eq(l1.WORD_ID));
+			where3 = applyDatasetRestrictions(l1, searchDatasetsRestriction, where3);
 
 			for (SearchCriterion criterion : tagNameNotEqualsCrit) {
 				String searchValueStr = criterion.getSearchValue().toString();
 				where1 = applyValueFilter(searchValueStr, criterion.isNot(), criterion.getSearchOperand(), lt.TAG_NAME, where1, true);
 				where2 = applyValueFilter(searchValueStr, criterion.isNot(), criterion.getSearchOperand(), mt.TAG_NAME, where2, true);
+				where3 = applyValueFilter(searchValueStr, criterion.isNot(), criterion.getSearchOperand(), wt.TAG_NAME, where3, true);
 			}
 			where = where.and(DSL
 					.notExists(DSL.select(lt.ID).from(l1, lt).where(where1))
-					.andNotExists(DSL.select(mt.ID).from(mt).where(where2)));
+					.andNotExists(DSL.select(mt.ID).from(mt).where(where2)))
+					.andNotExists(DSL.select(wt.ID).from(l1, wt).where(where3));
 		}
 
 		return where;
