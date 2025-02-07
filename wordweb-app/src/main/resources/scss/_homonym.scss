@@ -96,7 +96,10 @@
   background: $white;
   border: 3px solid $gray-300;
   height: 100%;
-  
+  gap: 4px;
+  --homonym-body-align-items: center;
+  --homonym-body-max-width: calc(100% - 44px);
+
   @include border-radius(10px);
 
   &::after{
@@ -154,16 +157,8 @@
     overflow-x: auto;
     white-space: nowrap;
     background: none;
+    gap: 8px;
   }
-  .homonym-list-item:first-child .homonym-item{
-    @include border-top-left-radius(10px);
-  }
-  .homonym-list-item:last-child .homonym-item {
-    @include media-breakpoint-down(sm){
-      border-bottom: 0;
-    }
-  }
-
 }
 
 .homonym-list-item {
@@ -181,8 +176,7 @@
   &.selected {
     .homonym-item {
       @include media-breakpoint-up(md) {
-        background: $white;
-        border-bottom-color: $white;
+        background: var(--color-light-blue);
       }
     }
   }
@@ -195,70 +189,58 @@
   }
 }
 
-.homonym-item {
-  position: relative;
-  display: block;
-  padding: 1.25rem;
-  padding-right: 3.75rem;
-  overflow: hidden;
-  border-bottom: 1px solid $border-color;
-
-  @include media-breakpoint-up(md) {
-    position: relative;
+.homonym {
+  &__item {
     display: flex;
-    height: 100%;
-    padding: 0 0 15px;
-    background: $gray-100;
-    border-right: 1px solid $gray-200;
-  }
-
-  &:hover {
-    text-decoration: none;
-  }
-
-  .homonym-name-container {
+    gap: 8px;
+    padding: 16px;
+    border-radius: 8px;
+    border: 1px solid var(--color-dark-blue);
+    background: var(--color-white);
+    box-shadow: 0px 2px 8px 0px rgba(0, 0, 0, 0.10);
+    
     @include media-breakpoint-up(md) {
-      position: relative;
-      display: inline-block;
-      max-width: calc(100% - 24px);
-      padding-right: .375rem;
-    }
-    .homonym-name{
-      padding-left: 4px;
+      width: 200px;
+      height: 92px;
     }
   }
 
-  .homonym-nr {
+  &__body {
+    display: flex;
+    gap: 8px;
+    align-items: var(--homonym-body-align-items, center);
+    overflow: hidden;
+    // Subtract down arrow width
+    max-width: var(--homonym-body-max-width);
     @include media-breakpoint-up(md) {
-      display: inline-block;
-      color: $white;
-    }
-  }
-
-  .homonym-item-wrap {
-    @include media-breakpoint-up(md) {
-      display: flex;
       flex-direction: column;
-      width: 15rem !important;
-      padding: 12px 16px;
-      margin-bottom: 0;
-      color: #001124;
+      align-items: var(--homonym-body-align-items, baseline);
+    }
+  }
+
+  &__matches {
+    font-weight: 700;
+    @include media-breakpoint-up(md) {
+      overflow: hidden;
       text-overflow: ellipsis;
-      transition: 0ms !important;
     }
   }
 
-  .homonym-header {
-    @include media-breakpoint-up(md) {
-      font-size: 1.25rem;
-    }
-  }
+  &__text {
+    white-space: nowrap;
+    max-width: 100%;
+    display: flex;
+    gap: 4px;
 
-  * {
     @include media-breakpoint-up(md) {
-      @include text-truncate();
+      flex-direction: column;
     }
 
+    & p {
+      margin: 0;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
   }
 }
 
@@ -280,52 +262,6 @@
 
 }
 
-
-.homonym-intro {
-  @include media-breakpoint-up(md) {
-
-    max-height: 1.5rem;
-    margin-top: auto;
-  }
-}
-
-.homonym-matches {
-  @include media-breakpoint-up(md) {
-    margin-bottom: auto;
-  }
-
-}
-
-
-@media (max-width: 767px) {
-
-  .homonym-item *:not(.homonym-nr) {
-    display: flex;
-    align-items: center;
-    float: left;
-    white-space: nowrap;
-  }
-  .homonym-item-wrap {
-    max-width: 100%;
-  }
-  .homonym-matches,
-  .homonym-intro {
-    max-width: 100%;
-    @include text-truncate();
-  }
-  .homonym-nr {
-    top: -.0625rem;
-    padding-top: .125rem;
-    margin: 0 .625rem;
-  }
-  .homonym-matches {
-    flex-shrink: 0;
-    margin-right: .125rem;
-    font-size: 1rem;
-    font-weight: $font-weight-bold;
-  }
-
-}
 
 .is-homonym sup{
   left: -5px;

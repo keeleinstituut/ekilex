@@ -130,7 +130,7 @@ $(document).on("click", ".homonym-item", function() {
 	var homonymList = $('.homonym-list');
 	if ($(window).width() >= windowWidthTreshold) {
 		homonymList.animate({
-			scrollLeft: $('.homonym-list-item.selected .homonym-item-wrap').parent().position().left - $('.search-panel').offset().left + homonymList.scrollLeft()
+			scrollLeft: $('.homonym-list-item.selected .homonym__body').parent().position().left - $('.search-panel').offset().left + homonymList.scrollLeft()
 		}, 200);
 	}
 	setSelectedHomonymValueForMobile($(this).html());

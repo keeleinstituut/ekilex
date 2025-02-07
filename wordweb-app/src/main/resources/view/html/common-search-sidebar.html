@@ -179,7 +179,7 @@
     <th:block th:if="${relationTypeGroup.asMap}">
       <th:block th:each="relationEntry,relEntryIter : ${relationTypeGroup.relatedWordsByLang}" th:with="relatedWords=${relationEntry.value}">
         <div th:id="${'word-rel-map-collapse-panel-' + wordRelType.code + '-' + relEntryIter.index}" class="collapse-panel d-flex flex-wrap">
-          <span class="lang-code lang-code-sm mr-2 align-self-start" th:with="langData=${@viewUtil.getLangData(relationEntry.key)}" th:text="${langData.codeIso2}" th:title="${langData.label}"
+          <span class="lang-code text-caption mr-2 align-self-start" th:with="langData=${@viewUtil.getLangData(relationEntry.key)}" th:text="${langData.codeIso2}" th:title="${langData.label}"
             data-toggle="tooltip"> </span>
           <th:block th:each="relation, relationIter : ${relatedWords}"
             th:with="
@@ -235,7 +235,7 @@
   <th:block th:fragment="etymology_level">
     <li class="align-items-start">
       <div>
-        <span class="lang-code lang-code-sm mr-2 align-self-start" th:with="langData=${@viewUtil.getLangData(etymLevel.lang)}" th:text="${langData.codeIso2}" th:title="${langData.label}"
+        <span class="lang-code text-caption mr-2 align-self-start" th:with="langData=${@viewUtil.getLangData(etymLevel.lang)}" th:text="${langData.codeIso2}" th:title="${langData.label}"
           data-toggle="tooltip"> </span>
         <span>
           <span th:if="${etymLevel.compound}">+</span>

@@ -120,18 +120,18 @@
             <input type="hidden" name="word-id" th:value="${word.wordId}" />
             <input type="hidden" name="word-selected" th:value="${word.selected}" />
             <input type="hidden" name="word-select-url" th:value="@{${@viewUtil.getSearchUri(sessionBean, searchMode, word.word, word.homonymNr, word.lang)}}" />
-            <a href="#" role="button" tabindex="0" th:id="${'word-details-link-' + word.wordId}" class="homonym-item">
-              <span class="homonym-item-wrap">
-                <span class="homonym-header d-flex align-items-center">
-                  <span class="text-muted mr-1 lang-code lang-code-sm" th:with="langData=${@viewUtil.getLangData(word.lang)}" th:text="${langData.codeIso2}" th:title="${langData.label}" data-toggle="tooltip">1</span>
-                  <span class="homonym-name-container">
-                    <span class="homonym-name" th:utext="${@viewUtil.getWordValueMarkup(word)}">tee</span>
-                  </span>
+            <a href="#" role="button" tabindex="0" th:id="${'word-details-link-' + word.wordId}" class="homonym-item homonym__item">
+              <span class="lang-code text-caption" th:with="langData=${@viewUtil.getLangData(word.lang)}" th:text="${langData.codeIso2}" th:title="${langData.label}" data-toggle="tooltip">1</span>
+              <div class="homonym__body">
+                <div class="text-body-two">
+                  <span th:utext="${@viewUtil.getWordValueMarkup(word)}">tee</span>
                   <span class="homonym-nr d-none" th:text="${word.homonymNr}">1</span>
-                </span>
-                <span class="homonym-matches" th:utext="${word.meaningWordsWrapup}"></span>
-                <span class="homonym-intro d-block" th:utext="${word.definitionsWrapup}"></span>
-              </span>
+                </div>
+                <div class="text-caption homonym__text">
+                  <span class="homonym__matches" th:utext="${word.meaningWordsWrapup}"></span>
+                  <p th:utext="${word.definitionsWrapup}"></p>
+                </div>
+              </div>
             </a>
           </form>
         </li>
@@ -140,7 +140,7 @@
   </th:block>
   <th:block th:fragment="word-data">
     <div class="d-flex align-items-center flex-wrap">
-      <span class="search-tag mr-2" th:with="langData=${@viewUtil.getLangData(wordData.word.lang)}" th:text="${langData.codeIso2}" th:title="${langData.label}" data-toggle="tooltip"></span>
+      <span class="lang-code mr-2" th:with="langData=${@viewUtil.getLangData(wordData.word.lang)}" th:text="${langData.codeIso2}" th:title="${langData.label}" data-toggle="tooltip"></span>
       <h1 class="mb-0 font-weight-bold d-flex align-items-start align-items-lg-center mr-2" th:utext="${@viewUtil.getWordValueMarkup(wordData.word)}">
         tee
       </h1>
@@ -209,7 +209,7 @@
       <i class="fa fa-exclamation-triangle small mr-2 mt-1" aria-hidden="true"></i>
       <span th:text="#{warning.eki.rus}">See ei ole valmis sõnastik.</span>
     </div>
-    <section class="level-3-panel meaning-panel d-flex flex-row" th:each="lexeme : ${wordData.lexLexemes}">
+    <section class="level-3-panel meaning-panel d-flex flex-row text-body-two" th:each="lexeme : ${wordData.lexLexemes}">
       <div th:replace="lex-details :: lexeme-data"></div>
     </section>
     <div th:replace="common-search :: no-lexemes-exist"></div>
