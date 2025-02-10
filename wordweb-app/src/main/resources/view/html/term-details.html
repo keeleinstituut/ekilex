@@ -12,7 +12,7 @@
             <th:block th:if="${hasDomains}">
               <div class="mb-2">
                 <span class="meaning-data__domain" th:text="#{label.meaning.domain}"></span>
-                <span class="search-tag--alternate" th:each="domain : ${lexeme.domains}" th:text="${domain.value}"></span>
+                <span class="search__tag" th:each="domain : ${lexeme.domains}" th:text="${domain.value}"></span>
               </div>
             </th:block>
             <th:block th:if="${hasDefinitionsByLang}">

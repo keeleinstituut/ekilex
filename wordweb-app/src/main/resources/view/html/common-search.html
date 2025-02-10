@@ -120,7 +120,7 @@
             <input type="hidden" name="word-id" th:value="${word.wordId}" />
             <input type="hidden" name="word-selected" th:value="${word.selected}" />
             <input type="hidden" name="word-select-url" th:value="@{${@viewUtil.getSearchUri(sessionBean, searchMode, word.word, word.homonymNr, word.lang)}}" />
-            <a href="#" role="button" tabindex="0" th:id="${'word-details-link-' + word.wordId}" class="homonym-item homonym__item">
+            <button type="button" th:id="${'word-details-link-' + word.wordId}" class="homonym-item homonym__item">
               <span class="lang-code text-caption" th:with="langData=${@viewUtil.getLangData(word.lang)}" th:text="${langData.codeIso2}" th:title="${langData.label}" data-toggle="tooltip">1</span>
               <div class="homonym__body">
                 <div class="text-body-two">
@@ -132,7 +132,7 @@
                   <p th:utext="${word.definitionsWrapup}"></p>
                 </div>
               </div>
-            </a>
+            </button>
           </form>
         </li>
       </ul>
@@ -140,8 +140,8 @@
   </th:block>
   <th:block th:fragment="word-data">
     <div class="d-flex align-items-center flex-wrap">
-      <span class="lang-code mr-2" th:with="langData=${@viewUtil.getLangData(wordData.word.lang)}" th:text="${langData.codeIso2}" th:title="${langData.label}" data-toggle="tooltip"></span>
-      <h1 class="mb-0 font-weight-bold d-flex align-items-start align-items-lg-center mr-2" th:utext="${@viewUtil.getWordValueMarkup(wordData.word)}">
+      <span class="lang-code text-caption mr-2" th:with="langData=${@viewUtil.getLangData(wordData.word.lang)}" th:text="${langData.codeIso2}" th:title="${langData.label}" data-toggle="tooltip"></span>
+      <h1 class="search__lex-title" th:utext="${@viewUtil.getWordValueMarkup(wordData.word)}">
         tee
       </h1>
       <span class="word-details-homonym-nr d-none mr-2" th:aria-label="|#{aria.homonym} ${wordData.word.homonymNr}|" th:text="${wordData.word.homonymNr}">1</span>
@@ -152,12 +152,12 @@
       </button>
       <span id="spellingLine" class="mr-2" th:if="${wordData.word.vocalForm != null}" th:text="${wordData.word.vocalForm}"></span>
       <th:block th:each="wordType : ${wordData.word.wordTypes}" th:if="${not #lists.isEmpty(wordData.word.wordTypes)}">
-        <span class="search-tag mr-2" th:text="${wordType.value}"></span>
+        <span class="lang-code text-caption lang-code--unrestricted mr-2" th:text="${wordType.value}"></span>
       </th:block>
-      <span class="search-tag mr-2" th:text="${wordData.word.displayMorph.value}" th:if="${wordData.word.displayMorph != null}">lühend</span>
-      <span class="search-tag mr-2" th:text="${wordData.word.gender.value}" th:if="${wordData.word.gender != null}">sugu</span>
+      <span class="lang-code text-caption lang-code--unrestricted mr-2" th:text="${wordData.word.displayMorph.value}" th:if="${wordData.word.displayMorph != null}">lühend</span>
+      <span class="lang-code text-caption lang-code--unrestricted mr-2" th:text="${wordData.word.gender.value}" th:if="${wordData.word.gender != null}">sugu</span>
       <th:block th:each="summarisedPos : ${wordData.word.summarisedPoses}" th:if="${not #lists.isEmpty(wordData.word.summarisedPoses)}">
-        <span class="search-tag mr-2" th:text="${summarisedPos.value}"></span>
+        <span class="lang-code text-caption lang-code--unrestricted mr-2" th:text="${summarisedPos.value}"></span>
       </th:block>
     </div>
   </th:block>

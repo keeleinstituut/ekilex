@@ -10,4 +10,8 @@
   padding: 4px;
   height: 20px;
   color: var(--color-dark-blue);
+
+  &--unrestricted {
+    width: auto;
+  }
 }

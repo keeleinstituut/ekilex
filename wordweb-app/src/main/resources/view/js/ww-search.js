@@ -112,7 +112,7 @@ $(document).on("click", "button[name='expand-btn']", function() {
 	$(this).parent().find(".collapsable[data-collapse='true']").fadeToggle("slow", "linear");
 });
 
-$(document).on("click", "a[id^='word-details-link']", function() {
+$(document).on("click", "button[id^='word-details-link']", function() {
 	const wordWrapperForm = $(this).closest("form");
 	const wordId = wordWrapperForm.children("[name='word-id']").val();
 	const wordSelectUrl = wordWrapperForm.children("[name='word-select-url']").val();

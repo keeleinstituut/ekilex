@@ -454,7 +454,7 @@
   <th:block th:fragment="source-link" th:with="dataContent=${sourceLink.isSourcePublic} ? ${sourceLink.sourceValuePrese} : #{label.source.value.not.public}">
     <button
       type="button"
-      class="search-tag--alternate search-tag--underlined"
+      class="search__tag search__tag--underlined"
       data-toggle="popover"
       data-html="true"
       th:title="#{label.source}"

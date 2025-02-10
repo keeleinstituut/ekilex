@@ -78,7 +78,7 @@
           <th:block th:replace="common-search :: word-data"></th:block>
           <th:block th:if="${wordData.lexemesExist}">
             <th:block th:if="${not #lists.isEmpty(wordData.lexLexemes)}">
-              <div class="search__block">
+              <div class="search__block search__block--unified">
                 <th:block th:replace="common-search :: lex-detail-view-simple"></th:block>
               </div>
             </th:block>

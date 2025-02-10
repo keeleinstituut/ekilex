@@ -177,13 +177,7 @@
     .homonym-item {
       @include media-breakpoint-up(md) {
         background: var(--color-light-blue);
-      }
-    }
-  }
-  &:not(.selected){
-    @include media-breakpoint-up(md){
-      .lang-code{
-        background: $white;
+        border: 1px solid var(--color-dark-blue);
       }
     }
   }
@@ -195,9 +189,13 @@
     gap: 8px;
     padding: 16px;
     border-radius: 8px;
-    border: 1px solid var(--color-dark-blue);
     background: var(--color-white);
-    box-shadow: 0px 2px 8px 0px rgba(0, 0, 0, 0.10);
+    box-shadow: 0px 2px 8px 0px #0000001a;
+    border: none;
+    &:hover {
+      text-decoration: none;
+      background: var(--color-light-blue);
+    }
     
     @include media-breakpoint-up(md) {
       width: 200px;
