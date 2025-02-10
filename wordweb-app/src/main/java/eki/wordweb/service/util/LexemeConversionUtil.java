@@ -142,7 +142,8 @@ public class LexemeConversionUtil extends AbstractConversionUtil {
 	private boolean isEmptyLexeme(LexemeWord lexemeWord) {
 		return CollectionUtils.isEmpty(lexemeWord.getDefinitions())
 				&& CollectionUtils.isEmpty(lexemeWord.getUsages())
-				&& CollectionUtils.isEmpty(lexemeWord.getSourceLangSynonyms())
+				&& CollectionUtils.isEmpty(lexemeWord.getSourceLangFullSynonyms())
+				&& CollectionUtils.isEmpty(lexemeWord.getSourceLangPartSynonyms())
 				&& CollectionUtils.isEmpty(lexemeWord.getDestinLangSynonyms())
 				&& CollectionUtils.isEmpty(lexemeWord.getRelatedLexemes())
 				&& CollectionUtils.isEmpty(lexemeWord.getDomains())
@@ -224,7 +225,8 @@ public class LexemeConversionUtil extends AbstractConversionUtil {
 			Complexity lexComplexity,
 			String displayLang) {
 
-		lexemeWord.setSourceLangSynonyms(new ArrayList<>());
+		lexemeWord.setSourceLangFullSynonyms(new ArrayList<>());
+		lexemeWord.setSourceLangPartSynonyms(new ArrayList<>());
 		lexemeWord.setDestinLangSynonyms(new ArrayList<>());
 		lexemeWord.setCollocPosGroups(new ArrayList<>());
 
@@ -317,7 +319,7 @@ public class LexemeConversionUtil extends AbstractConversionUtil {
 		lexemeWord.setUsages(usages);
 
 		usages.forEach(usage -> {
-			// TODO based on reasonable expectation that all translations are in fact in rus
+			// based on reasonable expectation that all translations are in fact in rus
 			if (!isDestinLangAlsoRus(destinLangs)) {
 				usage.setUsageTranslations(null);
 			}
@@ -372,6 +374,7 @@ public class LexemeConversionUtil extends AbstractConversionUtil {
 		lexemeWord.setMeaningLexemesByLang(meaningLexemesByLangOrdered);
 	}
 
+	// TODO separate full/part synonyms
 	private void populateMeaningWordsAndSynonyms(
 			LexemeWord lexemeWord,
 			String wordLang,
@@ -384,7 +387,9 @@ public class LexemeConversionUtil extends AbstractConversionUtil {
 		List<TypeMeaningWord> meaningWords = lexemeWord.getMeaningWords();
 		if (CollectionUtils.isNotEmpty(meaningWords)) {
 			if (DatasetType.LEX.equals(lexemeWord.getDatasetType())) {
-				meaningWords = meaningWords.stream().filter(meaningWord -> !meaningWord.getWordId().equals(lexemeWord.getWordId())).collect(Collectors.toList());
+				meaningWords = meaningWords.stream()
+						.filter(meaningWord -> !meaningWord.getWordId().equals(lexemeWord.getWordId()))
+						.collect(Collectors.toList());
 			}
 			meaningWords = filter(meaningWords, wordLang, destinLangs);
 			meaningWords = filter(meaningWords, lexComplexity);
@@ -402,7 +407,7 @@ public class LexemeConversionUtil extends AbstractConversionUtil {
 				meaningWord.setAdditionalDataExists(additionalDataExists);
 
 				if (DatasetType.LEX.equals(lexemeWord.getDatasetType()) && StringUtils.equals(wordLang, meaningWord.getLang())) {
-					lexemeWord.getSourceLangSynonyms().add(meaningWord);
+					lexemeWord.getSourceLangFullSynonyms().add(meaningWord);
 				} else {
 					lexemeWord.getDestinLangSynonyms().add(meaningWord);
 				}
@@ -481,7 +486,7 @@ public class LexemeConversionUtil extends AbstractConversionUtil {
 
 			for (TypeMeaningWord meaningRelSyn : synMeaningRelsMap.values()) {
 				if (DatasetType.LEX.equals(lexemeWord.getDatasetType()) && StringUtils.equals(wordLang, meaningRelSyn.getLang())) {
-					lexemeWord.getSourceLangSynonyms().add(meaningRelSyn);
+					lexemeWord.getSourceLangPartSynonyms().add(meaningRelSyn);
 				}
 			}
 		}

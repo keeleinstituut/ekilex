@@ -1,7 +1,6 @@
 <!DOCTYPE HTML>
 <html xmlns:th="http://www.thymeleaf.org">
 <body>
-  <!-- search -->
   <th:block th:fragment="search" th:with="pageContext=${pageContext}?:''">
     <div class="main-search" th:classappend="${pageContext == 'search' ? 'compact' : ''}">
       <form th:action="@{${searchUri}}" th:method="post" name="searchForm">
@@ -67,8 +66,7 @@
       <div
         class="dropdown-menu search-filter__menu"
         aria-labelledby="dataset-filters-popover"
-        th:style="|--search-filter-rows: ${#lists.size(datasetFilter) / 3 + 3}|"
-        >
+        th:style="|--search-filter-rows: ${#lists.size(datasetFilter) / 3 + 3}|">
         <th:block th:each="filterElem : ${datasetFilter}">
           <div class="search-filter__item" th:classappend="${filterElem.addSeparator ? 'search-filter__item--full-row' : ''}">
             <input
@@ -93,8 +91,7 @@
       <div
         class="dropdown-menu search-filter__menu"
         aria-labelledby="lang-filters-popover"
-        th:style="|--search-filter-rows: ${#lists.size(langFilter) + 1}|"
-        >
+        th:style="|--search-filter-rows: ${#lists.size(langFilter) + 1}|">
         <th:block th:each="filterElem : ${langFilter}">
           <div class="search-filter__item" th:classappend="${filterElem.addSeparator ? 'search-filter__item--full-row' : ''}">
             <input
@@ -193,7 +190,6 @@
       </div>
     </section>
   </th:block>
-
   <th:block th:fragment="lex-detail-view">
     <div class="d-flex">
       <span class="search__block-title" th:text="#{lexdata.title}"></span>
@@ -214,7 +210,6 @@
     </section>
     <div th:replace="common-search :: no-lexemes-exist"></div>
   </th:block>
-
   <th:block th:fragment="lex-detail-view-simple">
     <div class="d-flex">
       <span class="search__block-title" th:text="#{lexdata.title}"></span>
@@ -235,7 +230,6 @@
     </th:block>
     <div th:replace="common-search :: no-lexemes-exist"></div>
   </th:block>
-
   <th:block th:fragment="term-detail-view">
     <th:block th:each="lexeme : ${wordData.termLexemes}" th:with="
     isProTerm = ${@viewUtil.isProTermData(lexeme)},
@@ -262,11 +256,5 @@
       </div>
     </th:block>
   </th:block>
-  <!-- lim term search currently removed
-  <th:block th:fragment="lim-term-detail-view">
-    <th:block th:each="lexeme : ${wordData.limTermLexemes}">
-      <div th:replace="term-details :: meaning-data"></div>
-    </th:block>
-  </th:block> -->
 </body>
 </html>

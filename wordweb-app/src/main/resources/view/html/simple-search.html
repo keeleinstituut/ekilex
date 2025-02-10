@@ -24,9 +24,8 @@
         <div class="d-flex align-items-center">
           <th:block th:replace="common-search :: lang-filter"></th:block>
         </div>
-        <button name="feedback-btn" value="feedback" class="feedback-btn ml-auto btn btn-success py-0 show-with-details" role="button" type="button"
-                data-toggle="modal" data-target="#feedback-modal"
-                data-item-name="feedback" th:text="#{feedback.title}">Tagasiside</button>
+        <button type="button" name="feedback-btn" value="feedback" role="button" data-toggle="modal" data-target="#feedback-modal"
+          data-item-name="feedback" th:text="#{feedback.title}" class="feedback-btn ml-auto btn btn-success py-0 show-with-details">Tagasiside</button>
       </div>
     </div>
     <main id="mainContentArea" role="main" class="content-panel loading">
@@ -38,32 +37,20 @@
       <th:block th:replace="common-search :: homonyms"></th:block>
       <div class="word-details">
         <div class="no-results__wrapper" th:unless="${wordsData.resultsExist}">
-          <h1
-            class="no-results__title"
-            th:text="${#strings.replace(#messages.msg('label.search.word.not.found'), '%word%', searchWord)}"></h1>
+          <h1 class="no-results__title" th:text="${#strings.replace(#messages.msg('label.search.word.not.found'), '%word%', searchWord)}"></h1>
           <th:block th:if="${wordsData.availableLanguagesDatasets.availableFiltersExist}">
-            <div th:text="#{label.search.filter.suggestion.simple}">
-              Otsing annab tulemusi teistes keeltes või sõnakogudes kui sinu valitud filtris.
-            </div>
-            <div class="no-results__columns no-results__columns--single"
-              th:with="hasLanguages = ${not #lists.isEmpty(wordsData.availableLanguagesDatasets.languages)}"
-                >
+            <div th:text="#{label.search.filter.suggestion.simple}">Otsing annab tulemusi teistes keeltes või sõnakogudes kui sinu valitud filtris.</div>
+            <div class="no-results__columns no-results__columns--single" th:with="hasLanguages = ${not #lists.isEmpty(wordsData.availableLanguagesDatasets.languages)}">
               <div th:if="${hasLanguages}">
-                <div
-                  th:each="language : ${wordsData.availableLanguagesDatasets.languages}"
-                  th:text="${language.value}"></div>
+                <div th:each="language : ${wordsData.availableLanguagesDatasets.languages}" th:text="${language.value}"></div>
               </div>
             </div>
             <div>
-              <a th:href="@{${@viewUtil.getSimpleSearchUri(searchWord)}}" th:text="#{label.search.filter.clear}">
-                Otsi uuesti ilma piiranguteta
-              </a>
+              <a th:href="@{${@viewUtil.getSimpleSearchUri(searchWord)}}" th:text="#{label.search.filter.clear}"> Otsi uuesti ilma piiranguteta </a>
             </div>
           </th:block>
           <th:block th:unless="${wordsData.availableLanguagesDatasets.availableFiltersExist}">
-            <div th:utext="#{label.word.not.found.simple}">
-              Ei leidnud midagi
-            </div>
+            <div th:utext="#{label.word.not.found.simple}">Ei leidnud midagi</div>
             <a th:href="@{${@viewUtil.getDetailSearchUri(searchWord)}}" class="text-break" th:text="${searchWord}"></a>
           </th:block>
         </div>
@@ -100,10 +87,10 @@
         </div>
       </div>
       <script th:inline="javascript">
-        var currentWord = /*[[${wordData.word.word}]]*/'';
-        var currentWordId = /*[[${wordData.word.wordId}]]*/'';
-        var currentWordLang = /*[[${wordData.word.lang}]]*/'';
-      </script>
+		var currentWord = /*[[${wordData.word.word}]]*/'';
+		var currentWordId = /*[[${wordData.word.wordId}]]*/'';
+		var currentWordLang = /*[[${wordData.word.lang}]]*/'';
+	  </script>
     </div>
   </div>
   <div th:replace="common-app :: footer-content(pageContext = 'simpleSearch')"></div>

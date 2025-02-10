@@ -26,9 +26,9 @@
             <th:block th:replace="common-search :: dataset-filter"></th:block>
             <div class="mr-auto mr-md-2 pl-2 d-flex align-items-center flex-wrap">
               <th:block th:replace="common-search :: lang-filter"></th:block>
-                <a th:href="@{/feelinglucky}" class="link ml-3 d-none d-md-block">
-                  <span th:text="#{button.label.feelinglucky}">Ehk mul veab</span>
-                </a>
+              <a th:href="@{/feelinglucky}" class="link ml-3 d-none d-md-block">
+                <span th:text="#{button.label.feelinglucky}">Ehk mul veab</span>
+              </a>
             </div>
           </div>
           <button name="feedback-btn" value="feedback" class="feedback-btn ml-auto btn btn-success py-0 show-with-details" role="button" type="button" data-toggle="modal" data-target="#feedback-modal"
@@ -50,40 +50,27 @@
       <th:block th:replace="common-search :: homonyms"></th:block>
       <div class="word-details">
         <div class="no-results__wrapper" th:unless="${wordsData.resultsExist}" th:with="isFiltered = ${isLangFiltered || isDatasetFiltered}">
-          <h1
-            class="no-results__title"
-            th:text="${#strings.replace(#messages.msg('label.search.word.not.found'), '%word%', searchWord)}"></h1>
+          <h1 class="no-results__title" th:text="${#strings.replace(#messages.msg('label.search.word.not.found'), '%word%', searchWord)}"></h1>
           <th:block th:unless="${wordsData.suggestionsExist}">
             <th:block th:if="${wordsData.availableLanguagesDatasets.availableFiltersExist}">
-              <div th:text="#{label.search.filter.suggestion.detail}">
-                Otsing annab tulemusi teistes keeltes või sõnakogudes kui sinu valitud filtris.
-              </div>
-              <div class="no-results__columns"
-                th:with="hasLanguages = ${not #lists.isEmpty(wordsData.availableLanguagesDatasets.languages)},
+              <div th:text="#{label.search.filter.suggestion.detail}">Otsing annab tulemusi teistes keeltes või sõnakogudes kui sinu valitud filtris.</div>
+              <div th:with="
+                    hasLanguages = ${not #lists.isEmpty(wordsData.availableLanguagesDatasets.languages)},
                     hasDatasets = ${not #lists.isEmpty(wordsData.availableLanguagesDatasets.datasets)}"
-                  th:classappend="${!hasLanguages || !hasDatasets ? 'no-results__columns--single' : ''}"
-                  >
+                    class="no-results__columns" th:classappend="${!hasLanguages || !hasDatasets ? 'no-results__columns--single' : ''}">
                 <div th:if="${hasLanguages}">
-                  <div
-                    th:each="language : ${wordsData.availableLanguagesDatasets.languages}"
-                    th:text="${language.value}"></div>
+                  <div th:each="language : ${wordsData.availableLanguagesDatasets.languages}" th:text="${language.value}"></div>
                 </div>
                 <div th:if="${hasDatasets}">
-                    <div 
-                      th:each="dataset : ${wordsData.availableLanguagesDatasets.datasets}"
-                      th:text="${dataset.name}"></div>
+                  <div th:each="dataset : ${wordsData.availableLanguagesDatasets.datasets}" th:text="${dataset.name}"></div>
                 </div>
               </div>
               <div>
-                <a th:href="@{${@viewUtil.getDetailSearchUri(searchWord)}}" th:text="#{label.search.filter.clear}">
-                  Otsi uuesti ilma piiranguteta
-                </a>
+                <a th:href="@{${@viewUtil.getDetailSearchUri(searchWord)}}" th:text="#{label.search.filter.clear}"> Otsi uuesti ilma piiranguteta </a>
               </div>
             </th:block>
             <th:block th:unless="${wordsData.availableLanguagesDatasets.availableFiltersExist}">
-              <div th:utext="#{|label.word.not.found.detail.filtered.${isFiltered}|}">
-                Ei leidnud midagi
-              </div>
+              <div th:utext="#{|label.word.not.found.detail.filtered.${isFiltered}|}">Ei leidnud midagi</div>
             </th:block>
           </th:block>
           <th:block th:if="${wordsData.formResultsExist}">
@@ -111,19 +98,14 @@
         <div>
           <th:block th:replace="common-search :: word-data"></th:block>
           <th:block th:if="${wordData.lexemesExist}">
-            <th:block
-            th:if="${not #lists.isEmpty(wordData.lexLexemes)}"
-            >
+            <th:block th:if="${not #lists.isEmpty(wordData.lexLexemes)}">
               <div class="search__block search__block--unified">
                 <th:block th:replace="common-search :: lex-detail-view"></th:block>
               </div>
             </th:block>
-            <th:block
-            th:if="${not #lists.isEmpty(wordData.termLexemes)}"
-            >
+            <th:block th:if="${not #lists.isEmpty(wordData.termLexemes)}">
               <h2 class="search__term-title" th:text="#{termdata.title}">Oskussõnastikud</h2>
-              <th:block
-                th:replace="common-search :: term-detail-view">
+              <th:block th:replace="common-search :: term-detail-view">
               </th:block>
             </th:block>
           </th:block>
@@ -150,12 +132,12 @@
         </div>
       </div>
       <script th:inline="javascript">
-  		var currentWord = /*[[${wordData.word.word}]]*/'';
-  		var currentWordId = /*[[${wordData.word.wordId}]]*/'';
-  		var currentWordLang = /*[[${wordData.word.lang}]]*/'';
-  		var currentLinkedLexemeId = /*[[${wordData.linkedLexemeId}]]*/'';
-  		scrollToLexeme(currentLinkedLexemeId);
-  	  </script>
+		var currentWord = /*[[${wordData.word.word}]]*/'';
+		var currentWordId = /*[[${wordData.word.wordId}]]*/'';
+		var currentWordLang = /*[[${wordData.word.lang}]]*/'';
+		var currentLinkedLexemeId = /*[[${wordData.linkedLexemeId}]]*/'';
+		scrollToLexeme(currentLinkedLexemeId);
+	  </script>
     </div>
   </div>
   <div th:replace="common-app :: footer-content"></div>

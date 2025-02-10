@@ -26,8 +26,7 @@
           </div>
         </th:block>
         <th:block th:if="${lexeme.correctMeaningWord == null}">
-          <div class="d-flex flex-row" th:with="hasMultipleLexLexemes=${wordData.multipleLexLexemesExist}"
-          th:classappend="${hasMultipleLexLexemes ? 'mt-2' : ''}">
+          <div class="d-flex flex-row" th:with="hasMultipleLexLexemes=${wordData.multipleLexLexemesExist}" th:classappend="${hasMultipleLexLexemes ? 'mt-2' : ''}">
             <th:block th:if="${hasMultipleLexLexemes}">
               <strong class="lexeme-level mr-2 definition-value font-weight-bold" th:aria-label="${wordData.word.word}" th:text="${lexeme.levels}"></strong>
             </th:block>
@@ -38,7 +37,7 @@
                     <th:block th:if="${lexeme.showPoses}">
                       <span class="tag" th:each="pos : ${lexeme.poses}" th:text="${pos.value}"></span>
                     </th:block>
-                    <span class="lexeme grammars tag" th:if="${not #lists.isEmpty(lexeme.grammars)}">
+                    <span class="lexeme grammars tag" th:unless="${#lists.isEmpty(lexeme.grammars)}">
                       <span th:each="grammar,grammarIter : ${lexeme.grammars}" th:utext="${grammar.value + (grammarIter.last ? '' : ', ')}"></span>
                     </span>
                     <span class="lexeme tag" th:if="${lexeme.valueState != null}" th:text="${lexeme.valueState.value}"></span>
@@ -61,7 +60,7 @@
                           <th:block th:if="${definition.subDataExists}">
                             <div th:id="${'definition-entry-' + definition.definitionId}">
                               <span class="definition-value mb-2 mr-1 text-weight-medium" th:utext="${definition.valuePrese}"></span>
-                              <th:block th:if="${not #lists.isEmpty(definition.sourceLinks)}">
+                              <th:block th:unless="${#lists.isEmpty(definition.sourceLinks)}">
                                 <span class="definition-sources">
                                   <th:block th:each="sourceLink,sourceLinkIter : ${definition.sourceLinks}">
                                     <th:block th:replace="common-app :: source-link"></th:block>
@@ -69,7 +68,7 @@
                                   </th:block>
                                 </span>
                               </th:block>
-                              <th:block th:if="${not #lists.isEmpty(definition.notes)}">
+                              <th:block th:unless="${#lists.isEmpty(definition.notes)}">
                                 <span th:each="note : ${definition.notes}">
                                   <span class="additional-meta mb-2" th:utext="${note.valuePrese}"></span>
                                   <span class="definition-sources">
@@ -87,11 +86,11 @@
                     </div>
                   </th:block>
                 </div>
-                <div class="meaning-meta" th:if="${not #lists.isEmpty(lexeme.sourceLangSynonyms)}">
-                  <div class="synonyms">
-                    <div th:id="${'synonym-collapse-panel-' + lexeme.lexemeId}" class="additional-meta d-flex flex-wrap align-items-center">
-                      <span th:text="#{label.same.as}" class="mr-2 font-weight-bold search__helper-text text-caption">sama mis</span>
-                      <th:block th:each="syn,synIter : ${lexeme.sourceLangSynonyms}"
+                <div class="meaning-meta">
+                  <div class="synonyms" th:unless="${#lists.isEmpty(lexeme.sourceLangFullSynonyms)}">
+                    <div th:id="${'full-synonym-collapse-panel-' + lexeme.lexemeId}" class="additional-meta d-flex flex-wrap align-items-center">
+                      <span th:text="#{label.syno.full}" class="mr-2 search__helper-text text-caption">sama mis</span>
+                      <th:block th:each="syn,synIter : ${lexeme.sourceLangFullSynonyms}"
                                 th:with="
                                 isCollapsable=${synIter.count > T(eki.wordweb.constant.WebConstant).SYN_WORDS_DISPLAY_LIMIT},
                                 isLimit=${synIter.count == T(eki.wordweb.constant.WebConstant).SYN_WORDS_DISPLAY_LIMIT}">
@@ -100,19 +99,18 @@
                             th:href="@{${@viewUtil.getSearchUri(sessionBean, searchMode, syn.word, syn.homonymNr, syn.lang)}}"
                             class="synonym"
                             th:attr="data-toggle=${syn.mwLexWeight == 1} ? 'tooltip' : null, title=${syn.mwLexWeight == 1} ? #{label.tooltip.synonym.full} : null"
-                            th:utext="${@viewUtil.getWordValueMarkup(syn)}"
-                            >
+                            th:utext="${@viewUtil.getWordValueMarkup(syn)}">
                             tee
                           </a>
                           <span th:if="${syn.additionalDataExists}" class="synonym-additional-meta text-small">
                             <span th:if="${(syn.mwLexValueState != null)}" th:text="${syn.mwLexValueState.value}"></span>
-                            <th:block th:if="${not #lists.isEmpty(syn.wordTypes)}">
+                            <th:block th:unless="${#lists.isEmpty(syn.wordTypes)}">
                               <th:block th:each="wordType,wtIter : ${syn.wordTypes}">
                                 <span th:text="${wordType.value}" class="type-two text-uppercase"></span>
                                 <span th:unless="${wtIter.last}" class="ml-n1">,</span>
                               </th:block>
                             </th:block>
-                            <th:block th:if="${not #lists.isEmpty(syn.mwLexRegisters)}">
+                            <th:block th:unless="${#lists.isEmpty(syn.mwLexRegisters)}">
                               <th:block th:each="register, rIter : ${syn.mwLexRegisters}">
                                 <span th:text="${register.value}" class="type-two text-uppercase"></span>
                                 <span th:unless="${rIter.last}" class="ml-n1">,</span>
@@ -123,15 +121,68 @@
                         </span>
                       </th:block>
                       <button
-                            th:id="${'synonym-show-more-btn-' + lexeme.lexemeId}"
+                            th:id="${'full-synonym-show-more-btn-' + lexeme.lexemeId}"
                             class="btn btn-collapse btn-link-muted btn-sm text-nowrap d-inline-flex align-items-end pb-0 ml-n2"
                             type="button"
                             data-toggle="collapse"
                             data-dynamic-text="true"
-                            th:data-target="${'#synonym-collapse-panel-' + lexeme.lexemeId +' .collapse-target'}"
+                            th:data-target="${'#full-synonym-collapse-panel-' + lexeme.lexemeId + ' .collapse-target'}"
                             aria-expanded="false"
-                            th:aria-controls="${'#synonym-collapse-panel-' + lexeme.lexemeId}"
-                            th:if="${#lists.size(lexeme.sourceLangSynonyms) > T(eki.wordweb.constant.WebConstant).SYN_WORDS_DISPLAY_LIMIT}">
+                            th:aria-controls="${'#full-synonym-collapse-panel-' + lexeme.lexemeId}"
+                            th:if="${#lists.size(lexeme.sourceLangFullSynonyms) > T(eki.wordweb.constant.WebConstant).SYN_WORDS_DISPLAY_LIMIT}">
+                        <span class="btn-content see-more-content" data-tooltip="tooltip" th:title="#{button.see.more}">
+                          <i class="fa fa-ellipsis-h" aria-hidden="true"></i>
+                        </span>
+                        <span class="btn-content see-less-content">
+                          <i class="fa fa-angle-up" aria-hidden="true"></i>
+                          <span class="btn-txt" th:text="#{button.see.less}"></span>
+                        </span>
+                      </button>
+                    </div>
+                  </div>
+                  <div class="synonyms" th:unless="${#lists.isEmpty(lexeme.sourceLangPartSynonyms)}">
+                    <div th:id="${'part-synonym-collapse-panel-' + lexeme.lexemeId}" class="additional-meta d-flex flex-wrap align-items-center">
+                      <span th:text="#{label.syno.part}" class="mr-2 search__helper-text text-caption">sama mis</span>
+                      <th:block th:each="syn,synIter : ${lexeme.sourceLangPartSynonyms}"
+                                th:with="
+                                isCollapsable=${synIter.count > T(eki.wordweb.constant.WebConstant).SYN_WORDS_DISPLAY_LIMIT},
+                                isLimit=${synIter.count == T(eki.wordweb.constant.WebConstant).SYN_WORDS_DISPLAY_LIMIT}">
+                        <span class="text-nowrap mr-1" th:classappend="${isCollapsable ? 'collapse collapse-target' : ''}" >
+                          <a
+                            th:href="@{${@viewUtil.getSearchUri(sessionBean, searchMode, syn.word, syn.homonymNr, syn.lang)}}"
+                            class="synonym"
+                            th:attr="data-toggle=${syn.mwLexWeight == 1} ? 'tooltip' : null, title=${syn.mwLexWeight == 1} ? #{label.tooltip.synonym.full} : null"
+                            th:utext="${@viewUtil.getWordValueMarkup(syn)}">
+                            tee
+                          </a>
+                          <span th:if="${syn.additionalDataExists}" class="synonym-additional-meta text-small">
+                            <span th:if="${(syn.mwLexValueState != null)}" th:text="${syn.mwLexValueState.value}"></span>
+                            <th:block th:unless="${#lists.isEmpty(syn.wordTypes)}">
+                              <th:block th:each="wordType,wtIter : ${syn.wordTypes}">
+                                <span th:text="${wordType.value}" class="type-two text-uppercase"></span>
+                                <span th:unless="${wtIter.last}" class="ml-n1">,</span>
+                              </th:block>
+                            </th:block>
+                            <th:block th:unless="${#lists.isEmpty(syn.mwLexRegisters)}">
+                              <th:block th:each="register, rIter : ${syn.mwLexRegisters}">
+                                <span th:text="${register.value}" class="type-two text-uppercase"></span>
+                                <span th:unless="${rIter.last}" class="ml-n1">,</span>
+                              </th:block>
+                            </th:block>
+                          </span>
+                          <span th:unless="${synIter.last}" class="ml-n1" th:classappend="${isLimit ? 'collapse-target collapse' : ''}">,</span>
+                        </span>
+                      </th:block>
+                      <button
+                            th:id="${'part-synonym-show-more-btn-' + lexeme.lexemeId}"
+                            class="btn btn-collapse btn-link-muted btn-sm text-nowrap d-inline-flex align-items-end pb-0 ml-n2"
+                            type="button"
+                            data-toggle="collapse"
+                            data-dynamic-text="true"
+                            th:data-target="${'#part-synonym-collapse-panel-' + lexeme.lexemeId + ' .collapse-target'}"
+                            aria-expanded="false"
+                            th:aria-controls="${'#part-synonym-collapse-panel-' + lexeme.lexemeId}"
+                            th:if="${#lists.size(lexeme.sourceLangPartSynonyms) > T(eki.wordweb.constant.WebConstant).SYN_WORDS_DISPLAY_LIMIT}">
                         <span class="btn-content see-more-content" data-tooltip="tooltip" th:title="#{button.see.more}">
                           <i class="fa fa-ellipsis-h" aria-hidden="true"></i>
                         </span>
@@ -143,7 +194,7 @@
                     </div>
                   </div>
                 </div>
-                <div class="matches" th:if="${not #maps.isEmpty(lexeme.destinLangSynonymsByLang)}">
+                <div class="matches" th:unless="${#maps.isEmpty(lexeme.destinLangSynonymsByLang)}">
                   <div class="additional-meta">
                     <th:block th:each="synEntry : ${lexeme.destinLangSynonymsByLang}"
                               th:with="destinLangSyns=${synEntry.value}">
@@ -165,13 +216,13 @@
                             </a>
                             <span th:if="${syn.additionalDataExists}" class="text-small">
                               <span th:if="${(syn.mwLexValueState != null)}" th:text="${syn.mwLexValueState.value}"></span>
-                              <th:block th:if="${not #lists.isEmpty(syn.wordTypes)}">
+                              <th:block th:unless="${#lists.isEmpty(syn.wordTypes)}">
                                 <th:block th:each="wordType,wtIter : ${syn.wordTypes}">
                                   <span th:text="${wordType.value}" class="type-two text-uppercase"></span>
                                   <span th:unless="${wtIter.last}" class="ml-n1">,</span>
                                 </th:block>
                               </th:block>
-                              <th:block th:if="${not #lists.isEmpty(syn.mwLexRegisters)}">
+                              <th:block th:unless="${#lists.isEmpty(syn.mwLexRegisters)}">
                                 <th:block th:each="register, rIter : ${syn.mwLexRegisters}">
                                   <span th:text="${register.value}" class="type-two text-uppercase"></span>
                                   <span th:unless="${rIter.last}" class="ml-n1">,</span>
@@ -212,7 +263,7 @@
                 </div>
               </div>
               <div class="additional-meta mb-2" th:if="${lexeme.showSection2}">
-                <div class="d-flex related-lexemes flex-column" th:if="${not #lists.isEmpty(lexeme.relatedLexemes)}">
+                <div class="d-flex related-lexemes flex-column" th:unless="${#lists.isEmpty(lexeme.relatedLexemes)}">
                   <div th:each="relationType, relationTypeIter : ${lexeme.relatedLexemesByType.keySet()}">
                     <span th:text="${relationType.value}" class="font-weight-bold search__helper-text text-caption"></span>
                     <th:block th:each="relation, relationIter : ${lexeme.relatedLexemesByType.get(relationType)}">
@@ -221,7 +272,7 @@
                     </th:block>
                   </div>
                 </div>
-                <div class="related-meanings mb-3" th:if="${not #lists.isEmpty(lexeme.relatedMeanings)}">
+                <div class="related-meanings mb-3" th:unless="${#lists.isEmpty(lexeme.relatedMeanings)}">
                   <div class="relation-list d-flex flex-row flex-wrap" th:each="relationType, relationTypeIter : ${lexeme.relatedMeaningsByType.keySet()}">
                     <span class="mr-2 font-weight-bold search__helper-text text-caption" th:text="${relationType.value}"></span>
                     <th:block th:each="relation, relationIter : ${lexeme.relatedMeaningsByType.get(relationType)}">
@@ -229,13 +280,13 @@
                         <a class="font-weight-bold" th:href="@{${@viewUtil.getSearchUri(sessionBean, searchMode, relation.word, relation.homonymNr, relation.lang)}}">
                           <span th:utext="${@viewUtil.getWordValueMarkup(relation)}">tee</span>
                         </a>
-                        <th:block th:if="${not #lists.isEmpty(relation.wordTypes)}">
+                        <th:block th:unless="${#lists.isEmpty(relation.wordTypes)}">
                           <th:block th:each="wordType,wtIter : ${relation.wordTypes}">
                             <span th:text="${wordType.value}" class="text-small text-uppercase"></span>
                             <span th:unless="${wtIter.last}" class="ml-n1">,</span>
                           </th:block>
                         </th:block>
-                        <th:block th:if="${not #lists.isEmpty(relation.lexRegisters)}">
+                        <th:block th:unless="${#lists.isEmpty(relation.lexRegisters)}">
                           <th:block th:each="register, rIter : ${relation.lexRegisters}">
                             <span class="rections register">
                               <span th:text="${register.value}" class="text-uppercase text-small"></span>
@@ -248,7 +299,7 @@
                     </th:block>
                   </div>
                 </div>
-                <div class="row" th:if="${not #lists.isEmpty(lexeme.adviceNotes)}">
+                <div class="row" th:unless="${#lists.isEmpty(lexeme.adviceNotes)}">
                   <div class="col-3">
                     <b th:text="#{label.advice.note}">Keelenõu</b>
                   </div>
@@ -256,7 +307,7 @@
                     <div th:each="note : ${lexeme.adviceNotes}" th:text="${note}"></div>
                   </div>
                 </div>
-                <div class="row" th:if="${not #lists.isEmpty(lexeme.learnerComments)}">
+                <div class="row" th:unless="${#lists.isEmpty(lexeme.learnerComments)}">
                   <div class="col-6">
                     <b th:text="#{label.learner.comment}" class="search__helper-text text-caption">Õppekommentaar</b>
                   </div>
@@ -286,7 +337,7 @@
                         <div class="d-flex flex-column good-to-know-info">
                           <div th:each="note : ${noteEntry.value}">
                             <span th:utext="${note.valuePrese}"></span>
-                            <th:block th:if="${not #lists.isEmpty(note.sourceLinks)}">
+                            <th:block th:unless="${#lists.isEmpty(note.sourceLinks)}">
                               <span class="definition-sources">
                                 <span th:each="sourceLink : ${note.sourceLinks}">
                                   <th:block th:replace="common-app :: source-link"></th:block>
@@ -299,7 +350,7 @@
                     </th:block>
                   </div>
                 </div>
-                <div class="row" th:if="${not #lists.isEmpty(lexeme.lexemeSourceLinks)}">
+                <div class="row" th:unless="${#lists.isEmpty(lexeme.lexemeSourceLinks)}">
                   <div class="col-6">
                     <b></b>
                   </div>
@@ -314,14 +365,14 @@
                 </div>
               </div>
               <div class="dependencies" th:if="${lexeme.showSection3}">
-                <div th:if="${not #lists.isEmpty(lexeme.governments)}" class="rekts-est d-flex flex-row align-items-baseline flex-wrap">
+                <div th:unless="${#lists.isEmpty(lexeme.governments)}" class="rekts-est d-flex flex-row align-items-baseline flex-wrap">
                   <b class="search__helper-text text-caption" th:text="#{label.government}">Rektsioon</b>
                   <span class="tag mb-1 d-inline-block" data-toggle="tooltip"
                         th:each="government : ${lexeme.governments}"
                         th:text="${government.value}"
                         th:title="${@viewUtil.getGovernmentTooltipText(government, lexeme.posCodes)}"></span>
                 </div>
-                <div class="dependence-group" th:if="${not #lists.isEmpty(lexeme.usages)}">
+                <div class="dependence-group" th:unless="${#lists.isEmpty(lexeme.usages)}">
                   <b class="search__helper-text text-caption" th:text="#{button.label.usages}">Näited</b>
                   <th:block th:each="usage,usageIter : ${lexeme.usages}"
                             th:with="isCollapsable=${usageIter.count > T(eki.wordweb.constant.WebConstant).TYPICAL_COLLECTIONS_DISPLAY_LIMIT}">
@@ -335,17 +386,17 @@
                             <span class="icon icon-speaker"></span>
                           </button>
                         </span>
-                        <th:block th:if="${not #lists.isEmpty(usage.sourceLinks)}">
+                        <th:block th:unless="${#lists.isEmpty(usage.sourceLinks)}">
                           <span class="example-text" th:each="sourceLink : ${usage.sourceLinks}">
                             <th:block th:replace="common-app :: source-link"></th:block>
                           </span>
                         </th:block>
-                        <th:block th:if="${not #lists.isEmpty(usage.usageTranslations)}">
+                        <th:block th:unless="${#lists.isEmpty(usage.usageTranslations)}">
                           <span th:each="usageTranslation : ${usage.usageTranslations}" class="example-text">
                             <span class="example-text-value" th:utext="${@viewUtil.wrapDecorations(usageTranslation)}"></span>
                           </span>
                         </th:block>
-                        <th:block th:if="${not #lists.isEmpty(usage.usageDefinitions)}">
+                        <th:block th:unless="${#lists.isEmpty(usage.usageDefinitions)}">
                           <span th:each="usageDefinition : ${usage.usageDefinitions}" class="example-text" >
                             <span class="example-text-value" th:utext="${usageDefinition}"></span>
                           </span>
@@ -366,17 +417,17 @@
                                 <span class="icon icon-speaker"></span>
                               </button>
                             </span>
-                            <th:block th:if="${not #lists.isEmpty(usage.sourceLinks)}">
+                            <th:block th:unless="${#lists.isEmpty(usage.sourceLinks)}">
                               <span class="example-text" th:each="sourceLink : ${usage.sourceLinks}">
                                 <th:block th:replace="common-app :: source-link"></th:block>
                               </span>
                             </th:block>
-                            <th:block th:if="${not #lists.isEmpty(usage.usageTranslations)}">
+                            <th:block th:unless="${#lists.isEmpty(usage.usageTranslations)}">
                               <span th:each="usageTranslation : ${usage.usageTranslations}" class="example-text">
                                 <span class="example-text-value" th:utext="${@viewUtil.wrapDecorations(usageTranslation)}"></span>
                               </span>
                             </th:block>
-                            <th:block th:if="${not #lists.isEmpty(usage.usageDefinitions)}">
+                            <th:block th:unless="${#lists.isEmpty(usage.usageDefinitions)}">
                               <span th:each="usageDefinition : ${usage.usageDefinitions}" class="example-text" >
                                 <span class="example-text-value" th:utext="${usageDefinition}"></span>
                               </span>
@@ -406,14 +457,14 @@
                     </span>
                   </button>
                 </div>
-                <div class="mt-3 d-flex flex-wrap row" th:if="${not #lists.isEmpty(lexeme.meaningImages)}">
+                <div class="mt-3 d-flex flex-wrap row" th:unless="${#lists.isEmpty(lexeme.meaningImages)}">
                   <th:block th:each="meaningImage : ${lexeme.meaningImages}">
                     <div class="col-12 col-md-4 mb-3 d-flex flex-column">
                       <a th:href="${meaningImage.sourceUrl}" class="gallery-image my-auto">
                         <img class="homonym-image m-0 p-0" th:src="${meaningImage.sourceUrl}" th:title="${meaningImage.title}">
                         <span class="text-muted text-small py-1 d-block" th:utext="${meaningImage.title}"></span>
                       </a>
-                      <th:block th:if="${not #lists.isEmpty(meaningImage.sourceLinks)}">
+                      <th:block th:unless="${#lists.isEmpty(meaningImage.sourceLinks)}">
                         <div th:each="sourceLink : ${meaningImage.sourceLinks}">
                           <th:block th:replace="common-app :: source-link"></th:block>
                         </div>
@@ -421,7 +472,7 @@
                     </div>
                   </th:block>
                 </div>
-                <div class="mt-3 d-flex flex-wrap row" th:if="${not #lists.isEmpty(lexeme.mediaFiles)}">
+                <div class="mt-3 d-flex flex-wrap row" th:unless="${#lists.isEmpty(lexeme.mediaFiles)}">
                   <th:block th:each="mediaFile : ${lexeme.mediaFiles}">
                     <div class="col-12 col-md-4 mb-3 d-flex flex-column">
                       <iframe th:src="${mediaFile.sourceUrl}" allowfullscreen></iframe>
@@ -429,10 +480,10 @@
                   </th:block>
                 </div>
               </div>
-              <div class="collocations-section" th:if="${not #lists.isEmpty(lexeme.collocPosGroups)}">
+              <div class="collocations-section" th:unless="${#lists.isEmpty(lexeme.collocPosGroups)}">
                 <div th:id="|collocs-area-${lexeme.lexemeId}|">
                   <div th:id="|colloc-fulldata-${lexeme.lexemeId}|" class="collapse">
-                    <th:block th:if="${not #lists.isEmpty(lexeme.collocPosGroups)}">
+                    <th:block th:unless="${#lists.isEmpty(lexeme.collocPosGroups)}">
                       <div class="colloc-heading">
                         <span th:text="#{label.collocations}" class="pr-2 font-weight-bold">Naabersõnad</span>
                       </div>
@@ -494,19 +545,19 @@
                                       aria-expanded="false"
                                       th:aria-controls="|#colloc-usages-area-${lexeme.lexemeId}-${collocPosGrIter.index}-${collocRelGrIter.index}|"
                                       th:data-target="|#colloc-usages-area-${lexeme.lexemeId}-${collocPosGrIter.index}-${collocRelGrIter.index}, #colloc-toggle-btn-${lexeme.lexemeId}-${collocPosGrIter.index}-${collocRelGrIter.index}|"
-                                      th:if="${not #lists.isEmpty(collocRelGr.allUsageValues)}">
+                                      th:unless="${#lists.isEmpty(collocRelGr.allUsageValues)}">
                                 <i class="collapse-icon fa fa-ellipsis-h" aria-hidden="true"></i>
                               </button>
                             </div>
                             <div th:id="|colloc-usages-area-${lexeme.lexemeId}-${collocPosGrIter.index}-${collocRelGrIter.index}|" 
-                                 th:if="${not #lists.isEmpty(collocRelGr.allUsageValues)}" class="pb-1 pl-2 pl-md-4 collapse">
+                                 th:unless="${#lists.isEmpty(collocRelGr.allUsageValues)}" class="pb-1 pl-2 pl-md-4 collapse">
                               <div th:each="collocUsage : ${collocRelGr.allUsageValues}" class="colloc-usage-row examle-text-wrap">
                                 <span class="font-italic" th:text="${collocUsage}"></span>
                                 <button th:aria-label="|#{aria.listen} - ${collocUsage}|" class="btn btn-speaker btn-speaker--inactive" th:data-words="${collocUsage}" onclick="generateAudioAndPlay(this)">
                                   <span class="icon icon-speaker"></span>
                                 </button>
                               </div>
-                              <button th:if="${not #lists.isEmpty(collocRelGr.allUsageValues)}" class=" btn btn-link-muted btn-sm text-nowrap ml-n3" data-toggle="collapse" aria-expanded="true"
+                              <button th:unless="${#lists.isEmpty(collocRelGr.allUsageValues)}" class=" btn btn-link-muted btn-sm text-nowrap ml-n3" data-toggle="collapse" aria-expanded="true"
                                       th:aria-controls="|#colloc-usages-area-${lexeme.lexemeId}-${collocPosGrIter.index}-${collocRelGrIter.index}|"
                                       th:data-target="|#colloc-usages-area-${lexeme.lexemeId}-${collocPosGrIter.index}-${collocRelGrIter.index}, #colloc-toggle-btn-${lexeme.lexemeId}-${collocPosGrIter.index}-${collocRelGrIter.index}|">
                                 <i class="collapse-icon fa fa-angle-up" aria-hidden="true"></i>
@@ -526,7 +577,7 @@
                     <div class="colloc-heading">
                       <span th:text="#{label.collocations}" class="font-weight-bold pr-2">Naabersõnad</span>
                     </div>
-                    <div class="colloc-section" th:if="${not #lists.isEmpty(lexeme.collocPosGroups)}">
+                    <div class="colloc-section" th:unless="${#lists.isEmpty(lexeme.collocPosGroups)}">
                       <div class="colloc-inner-section">
                         <div class="colloc-row">
                           <span th:each="displayColloc,displayCollocIter : ${lexeme.limitedPrimaryDisplayCollocs}" class="colloc-member">
