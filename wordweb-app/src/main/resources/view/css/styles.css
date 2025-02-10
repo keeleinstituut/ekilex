@@ -16325,6 +16325,7 @@ body.hidden-scroll {
     margin-top: -24px;
     border: 3px solid #8a98a5;
     border-radius: 10px;
+    overflow: hidden;
   }
   .homonym-list.expand {
     display: block;
@@ -16371,10 +16372,11 @@ body.hidden-scroll {
   display: flex;
   gap: 8px;
   padding: 16px;
-  border-radius: 8px;
   background: var(--color-white);
   box-shadow: 0px 2px 8px 0px #0000001a;
   border: none;
+  width: 100%;
+  text-align: left;
 }
 
 .homonym__item:hover {
@@ -16386,6 +16388,7 @@ body.hidden-scroll {
   .homonym__item {
     width: 200px;
     height: 92px;
+    border-radius: 8px;
   }
 }
 
@@ -17321,6 +17324,7 @@ body {
 .search__block--unified .search__helper-text {
   color: var(--color-darker-gray);
   line-height: inherit;
+  font-weight: 700;
 }
 
 .search__block-title {
