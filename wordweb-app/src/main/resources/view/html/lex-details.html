@@ -90,7 +90,7 @@
                 <div class="meaning-meta" th:if="${not #lists.isEmpty(lexeme.sourceLangSynonyms)}">
                   <div class="synonyms">
                     <div th:id="${'synonym-collapse-panel-' + lexeme.lexemeId}" class="additional-meta d-flex flex-wrap align-items-center">
-                      <span th:text="#{label.same.as}" class="mr-2 font-weight-bold search__helper-text text-caption">sama mis</span>
+                      <span th:text="#{label.same.as}" class="mr-2 search__helper-text text-caption">sama mis</span>
                       <th:block th:each="syn,synIter : ${lexeme.sourceLangSynonyms}"
                                 th:with="
                                 isCollapsable=${synIter.count > T(eki.wordweb.constant.WebConstant).SYN_WORDS_DISPLAY_LIMIT},
@@ -214,7 +214,7 @@
               <div class="additional-meta mb-2" th:if="${lexeme.showSection2}">
                 <div class="d-flex related-lexemes flex-column" th:if="${not #lists.isEmpty(lexeme.relatedLexemes)}">
                   <div th:each="relationType, relationTypeIter : ${lexeme.relatedLexemesByType.keySet()}">
-                    <span th:text="${relationType.value}" class="font-weight-bold search__helper-text text-caption"></span>
+                    <span th:text="${relationType.value}" class="search__helper-text text-caption"></span>
                     <th:block th:each="relation, relationIter : ${lexeme.relatedLexemesByType.get(relationType)}">
                       <a th:href="@{${@viewUtil.getSearchUri(sessionBean, searchMode, relation.word, relation.homonymNr, relation.lang)}}"
                          th:utext="${@viewUtil.getWordValueMarkup(relation) + (relationIter.last ? '' : ',')}"></a>
@@ -223,7 +223,7 @@
                 </div>
                 <div class="related-meanings mb-3" th:if="${not #lists.isEmpty(lexeme.relatedMeanings)}">
                   <div class="relation-list d-flex flex-row flex-wrap" th:each="relationType, relationTypeIter : ${lexeme.relatedMeaningsByType.keySet()}">
-                    <span class="mr-2 font-weight-bold search__helper-text text-caption" th:text="${relationType.value}"></span>
+                    <span class="mr-2 search__helper-text text-caption" th:text="${relationType.value}"></span>
                     <th:block th:each="relation, relationIter : ${lexeme.relatedMeaningsByType.get(relationType)}">
                       <div class="relation-item mr-1">
                         <a class="font-weight-bold" th:href="@{${@viewUtil.getSearchUri(sessionBean, searchMode, relation.word, relation.homonymNr, relation.lang)}}">
@@ -434,7 +434,7 @@
                   <div th:id="|colloc-fulldata-${lexeme.lexemeId}|" class="collapse">
                     <th:block th:if="${not #lists.isEmpty(lexeme.collocPosGroups)}">
                       <div class="colloc-heading">
-                        <span th:text="#{label.collocations}" class="pr-2 font-weight-bold">Naabersõnad</span>
+                        <span th:text="#{label.collocations}" class="search__helper-text text-caption">Naabersõnad</span>
                       </div>
                       <div class="w-100">
                         <div th:each="collocPosGr,collocPosGrIter : ${lexeme.collocPosGroups}" class="colloc-section w-100">
@@ -524,7 +524,7 @@
                   </div>
                   <div th:id="|colloc-samples-${lexeme.lexemeId}|" class="w-100 collapse show">
                     <div class="colloc-heading">
-                      <span th:text="#{label.collocations}" class="font-weight-bold pr-2">Naabersõnad</span>
+                      <span th:text="#{label.collocations}" class="search__helper-text text-caption">Naabersõnad</span>
                     </div>
                     <div class="colloc-section" th:if="${not #lists.isEmpty(lexeme.collocPosGroups)}">
                       <div class="colloc-inner-section">

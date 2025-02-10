@@ -138,6 +138,7 @@
     margin-top: -24px;
     border: 3px solid $gray-300;
     @include border-radius(10px);
+    overflow: hidden;
     &.expand {
       display: block;
     }
@@ -188,10 +189,11 @@
     display: flex;
     gap: 8px;
     padding: 16px;
-    border-radius: 8px;
     background: var(--color-white);
     box-shadow: 0px 2px 8px 0px #0000001a;
     border: none;
+    width: 100%;
+    text-align: left;
     &:hover {
       text-decoration: none;
       background: var(--color-light-blue);
@@ -200,6 +202,7 @@
     @include media-breakpoint-up(md) {
       width: 200px;
       height: 92px;
+      border-radius: 8px;
     }
   }
 
