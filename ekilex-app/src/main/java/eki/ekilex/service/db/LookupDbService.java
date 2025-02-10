@@ -671,15 +671,6 @@ public class LookupDbService extends AbstractDataDbService {
 				.fetchInto(IdPair.class);
 	}
 
-	public List<Long> getMeaningDefinitionIds(Long meaningId, boolean publicDataOnly) {
-
-		Condition where = DEFINITION.MEANING_ID.eq(meaningId);
-		if (publicDataOnly) {
-			where = where.and(DEFINITION.IS_PUBLIC.isTrue());
-		}
-		return mainDb.select(DEFINITION.ID).from(DEFINITION).where(where).orderBy(DEFINITION.ORDER_BY).fetchInto(Long.class);
-	}
-
 	public Long getMeaningDomainId(Long meaningId, Classifier domain) {
 		MeaningDomainRecord meaningDomainRecord = mainDb.fetchOne(MEANING_DOMAIN,
 				MEANING_DOMAIN.MEANING_ID.eq(meaningId)

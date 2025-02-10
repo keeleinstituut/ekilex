@@ -5,7 +5,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import java.util.Optional;
 
 import org.apache.commons.collections4.MapUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -155,24 +154,24 @@ public class TermEditController extends AbstractMutableDataPageController {
 		Locale locale = LocaleContextHolder.getLocale();
 		boolean isManualEventOnUpdateEnabled = sessionBean.isManualEventOnUpdateEnabled();
 		String roleDatasetCode = getDatasetCodeFromRole();
-		Optional<Long> clonedMeaning = Optional.empty();
+		Long newMeaningId;
 		try {
-			clonedMeaning = compositionService.optionalDuplicateMeaningWithLexemes(meaningId, roleDatasetCode, isManualEventOnUpdateEnabled);
-		} catch (Exception ignore) {
-			logger.error("", ignore);
+			newMeaningId = compositionService.cloneMeaningWithLexemes(meaningId, roleDatasetCode, isManualEventOnUpdateEnabled);
+		} catch (Exception e) {
+			logger.warn("Cloning of meaning failed", e);
+			newMeaningId = null;
 		}
 
 		Response response = new Response();
-		if (clonedMeaning.isPresent()) {
-			String message = messageSource.getMessage("term.duplicate.meaning.success", new Object[0], locale);
-			Long duplicateMeaningId = clonedMeaning.get();
-			response.setStatus(ResponseStatus.OK);
-			response.setMessage(message);
-			response.setId(duplicateMeaningId);
-		} else {
+		if (newMeaningId == null) {
 			String message = messageSource.getMessage("term.duplicate.meaning.fail", new Object[0], locale);
 			response.setStatus(ResponseStatus.ERROR);
 			response.setMessage(message);
+		} else {
+			String message = messageSource.getMessage("term.duplicate.meaning.success", new Object[0], locale);
+			response.setStatus(ResponseStatus.OK);
+			response.setMessage(message);
+			response.setId(newMeaningId);
 		}
 		return response;
 	}
