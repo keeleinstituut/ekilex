@@ -155,15 +155,9 @@
                       </button>
                     </th:block>
                     <span class="meaning-reliability" th:if="${meaningLexeme.valueState != null}"
-                      th:classappend="
-                        ${meaningLexeme.valueState.code == 'eelistatud' ? 'meaning-reliability--green' : ''}
-                        + ${(meaningLexeme.valueState.code == 'väldi' or meaningLexeme.valueState.code == 'endine') ? 'meaning-reliability--red' : ''}
-                        ">
-                      <i class="fa" aria-hidden="true" th:if="${#lists.contains({'eelistatud', 'väldi', 'endine'}, meaningLexeme.valueState.code)}"
-                        th:classappend="
-                        ${meaningLexeme.valueState.code == 'eelistatud' ? 'fa-check' : ''}
-                        + ${(meaningLexeme.valueState.code == 'väldi' or meaningLexeme.valueState.code == 'endine') ? 'fa-ban' : ''}
-                        "></i>
+                      th:classappend="|${meaningLexeme.valueStatePreferred ? 'meaning-reliability--green' : ''}${meaningLexeme.valueStateWarning ? 'meaning-reliability--red' : ''}|">
+                      <i class="fa" aria-hidden="true" th:if="${meaningLexeme.valueStatePriority}"
+                        th:classappend="|${meaningLexeme.valueStatePreferred ? 'fa-check' : ''}${meaningLexeme.valueStateWarning ? 'fa-ban' : ''}|"></i>
                       <span th:text="${meaningLexeme.valueState.value}"></span>
                     </span>
                     <th:block th:if="${not #lists.isEmpty(meaningLexeme.registers)}">

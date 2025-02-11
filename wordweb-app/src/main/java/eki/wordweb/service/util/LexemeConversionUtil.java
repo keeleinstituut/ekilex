@@ -368,13 +368,13 @@ public class LexemeConversionUtil extends AbstractConversionUtil {
 			meaningLexemes = filter(meaningLexemes, wordLang, destinLangs);
 			lexemeWord.setMeaningLexemes(meaningLexemes);
 			sortTermLexemesDefault(meaningLexemes);
+			setValueStateFlags(meaningLexemes, wordLang);
 			Map<String, List<LexemeWord>> meaningLexemesByLangUnordered = meaningLexemes.stream().collect(Collectors.groupingBy(LexemeWord::getLang));
 			meaningLexemesByLangOrdered = composeOrderedMap(meaningLexemesByLangUnordered, langOrderByMap);
 		}
 		lexemeWord.setMeaningLexemesByLang(meaningLexemesByLangOrdered);
 	}
 
-	// TODO separate full/part synonyms
 	private void populateMeaningWordsAndSynonyms(
 			LexemeWord lexemeWord,
 			String wordLang,
@@ -395,8 +395,6 @@ public class LexemeConversionUtil extends AbstractConversionUtil {
 			meaningWords = filter(meaningWords, lexComplexity);
 
 			for (TypeMeaningWord meaningWord : meaningWords) {
-
-				// TODO test "data-toggle=${syn.mwLexWeight == 1} ? 'tooltip' : null, title=${syn.mwLexWeight == 1} ? #{label.tooltip.synonym.full} : null"
 
 				meaningWord.setType(SynonymType.MEANING_WORD);
 				classifierUtil.applyClassifiers(meaningWord, displayLang);
@@ -703,6 +701,15 @@ public class LexemeConversionUtil extends AbstractConversionUtil {
 		lexemeWord.setMeaningWords(meaningWords);
 	}
 
+	private void setValueStateFlags(List<LexemeWord> lexemeWords, String wordLang) {
+		if (CollectionUtils.isEmpty(lexemeWords)) {
+			return;
+		}
+		for (LexemeWord lexemeWord : lexemeWords) {
+			setValueStateFlags(lexemeWord, wordLang);
+		}
+	}
+
 	private void setValueStateFlags(LexemeWord lexemeWord, String wordLang) {
 
 		String valueStateCode = lexemeWord.getValueStateCode();
@@ -721,6 +728,13 @@ public class LexemeConversionUtil extends AbstractConversionUtil {
 				lexemeWord.setPreferredTermMeaningWord(preferredTermMeaningWord);
 			}
 		}
+
+		boolean valueStatePreferred = StringUtils.equals(valueStateCode, VALUE_STATE_MOST_PREFERRED);
+		boolean valueStateWarning = StringUtils.equalsAny(valueStateCode, VALUE_STATE_LEAST_PREFERRED, VALUE_STATE_FORMER);
+		boolean valueStatePriority = StringUtils.equalsAny(valueStateCode, VALUE_STATE_MOST_PREFERRED, VALUE_STATE_LEAST_PREFERRED, VALUE_STATE_FORMER);
+		lexemeWord.setValueStatePreferred(valueStatePreferred);
+		lexemeWord.setValueStateWarning(valueStateWarning);
+		lexemeWord.setValueStatePriority(valueStatePriority);
 	}
 
 	private String getOversizeValuePreseCut(String valuePrese, int oversizeLimit) {

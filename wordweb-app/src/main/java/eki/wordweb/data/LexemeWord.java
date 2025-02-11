@@ -144,6 +144,12 @@ public class LexemeWord extends WordTypeData implements LexemeLevel, ComplexityT
 
 	private boolean emptyLexeme;
 
+	private boolean valueStatePreferred;
+
+	private boolean valueStateWarning;
+
+	private boolean valueStatePriority;
+
 	private boolean showSection1;
 
 	private boolean showSection2;
@@ -640,6 +646,30 @@ public class LexemeWord extends WordTypeData implements LexemeLevel, ComplexityT
 
 	public void setEmptyLexeme(boolean emptyLexeme) {
 		this.emptyLexeme = emptyLexeme;
+	}
+
+	public boolean isValueStatePreferred() {
+		return valueStatePreferred;
+	}
+
+	public void setValueStatePreferred(boolean valueStatePreferred) {
+		this.valueStatePreferred = valueStatePreferred;
+	}
+
+	public boolean isValueStateWarning() {
+		return valueStateWarning;
+	}
+
+	public void setValueStateWarning(boolean valueStateWarning) {
+		this.valueStateWarning = valueStateWarning;
+	}
+
+	public boolean isValueStatePriority() {
+		return valueStatePriority;
+	}
+
+	public void setValueStatePriority(boolean valueStatePriority) {
+		this.valueStatePriority = valueStatePriority;
 	}
 
 	public boolean isShowSection1() {

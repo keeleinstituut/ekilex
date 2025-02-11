@@ -38,6 +38,8 @@ public interface GlobalConstant {
 
 	String VALUE_STATE_INCORRECT = "vigane";
 
+	String VALUE_STATE_FORMER = "endine";
+
 	String DEFINITION_TYPE_CODE_UNDEFINED = "määramata";
 
 	String DEFINITION_TYPE_CODE_INEXACT_SYN = "kitsam/laiem tähendus teises keeles";
