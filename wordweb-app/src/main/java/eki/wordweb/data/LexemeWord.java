@@ -116,7 +116,7 @@ public class LexemeWord extends WordTypeData implements LexemeLevel, ComplexityT
 
 	private List<TypeMeaningWord> sourceLangFullSynonyms;
 
-	private List<TypeMeaningWord> sourceLangPartSynonyms;
+	private List<TypeMeaningWord> sourceLangNearSynonyms;
 
 	private List<TypeMeaningWord> destinLangSynonyms;
 
@@ -530,12 +530,12 @@ public class LexemeWord extends WordTypeData implements LexemeLevel, ComplexityT
 		this.sourceLangFullSynonyms = sourceLangFullSynonyms;
 	}
 
-	public List<TypeMeaningWord> getSourceLangPartSynonyms() {
-		return sourceLangPartSynonyms;
+	public List<TypeMeaningWord> getSourceLangNearSynonyms() {
+		return sourceLangNearSynonyms;
 	}
 
-	public void setSourceLangPartSynonyms(List<TypeMeaningWord> sourceLangPartSynonyms) {
-		this.sourceLangPartSynonyms = sourceLangPartSynonyms;
+	public void setSourceLangNearSynonyms(List<TypeMeaningWord> sourceLangNearSynonyms) {
+		this.sourceLangNearSynonyms = sourceLangNearSynonyms;
 	}
 
 	public List<TypeMeaningWord> getDestinLangSynonyms() {

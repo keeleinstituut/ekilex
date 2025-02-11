@@ -88,7 +88,7 @@
                 </div>
                 <div class="meaning-meta">
                   <div class="synonyms" th:unless="${#lists.isEmpty(lexeme.sourceLangFullSynonyms)}">
-                    <div th:id="${'full-synonym-collapse-panel-' + lexeme.lexemeId}" class="additional-meta d-flex flex-wrap align-items-center">
+                    <div th:id="${'full-synonym-collapse-panel-' + lexeme.lexemeId}" class="d-flex flex-wrap align-items-center">
                       <span th:text="#{label.syno.full}" class="mr-2 search__helper-text text-caption">sama mis</span>
                       <th:block th:each="syn,synIter : ${lexeme.sourceLangFullSynonyms}"
                                 th:with="
@@ -140,10 +140,10 @@
                       </button>
                     </div>
                   </div>
-                  <div class="synonyms" th:unless="${#lists.isEmpty(lexeme.sourceLangPartSynonyms)}">
-                    <div th:id="${'part-synonym-collapse-panel-' + lexeme.lexemeId}" class="additional-meta d-flex flex-wrap align-items-center">
-                      <span th:text="#{label.syno.part}" class="mr-2 search__helper-text text-caption">sama mis</span>
-                      <th:block th:each="syn,synIter : ${lexeme.sourceLangPartSynonyms}"
+                  <div class="synonyms" th:unless="${#lists.isEmpty(lexeme.sourceLangNearSynonyms)}">
+                    <div th:id="${'near-synonym-collapse-panel-' + lexeme.lexemeId}" class="d-flex flex-wrap align-items-center">
+                      <span th:text="#{label.syno.near}" class="mr-2 search__helper-text text-caption">sama mis</span>
+                      <th:block th:each="syn,synIter : ${lexeme.sourceLangNearSynonyms}"
                                 th:with="
                                 isCollapsable=${synIter.count > T(eki.wordweb.constant.WebConstant).SYN_WORDS_DISPLAY_LIMIT},
                                 isLimit=${synIter.count == T(eki.wordweb.constant.WebConstant).SYN_WORDS_DISPLAY_LIMIT}">
@@ -174,15 +174,15 @@
                         </span>
                       </th:block>
                       <button
-                            th:id="${'part-synonym-show-more-btn-' + lexeme.lexemeId}"
+                            th:id="${'near-synonym-show-more-btn-' + lexeme.lexemeId}"
                             class="btn btn-collapse btn-link-muted btn-sm text-nowrap d-inline-flex align-items-end pb-0 ml-n2"
                             type="button"
                             data-toggle="collapse"
                             data-dynamic-text="true"
-                            th:data-target="${'#part-synonym-collapse-panel-' + lexeme.lexemeId + ' .collapse-target'}"
+                            th:data-target="${'#near-synonym-collapse-panel-' + lexeme.lexemeId + ' .collapse-target'}"
                             aria-expanded="false"
-                            th:aria-controls="${'#part-synonym-collapse-panel-' + lexeme.lexemeId}"
-                            th:if="${#lists.size(lexeme.sourceLangPartSynonyms) > T(eki.wordweb.constant.WebConstant).SYN_WORDS_DISPLAY_LIMIT}">
+                            th:aria-controls="${'#near-synonym-collapse-panel-' + lexeme.lexemeId}"
+                            th:if="${#lists.size(lexeme.sourceLangNearSynonyms) > T(eki.wordweb.constant.WebConstant).SYN_WORDS_DISPLAY_LIMIT}">
                         <span class="btn-content see-more-content" data-tooltip="tooltip" th:title="#{button.see.more}">
                           <i class="fa fa-ellipsis-h" aria-hidden="true"></i>
                         </span>

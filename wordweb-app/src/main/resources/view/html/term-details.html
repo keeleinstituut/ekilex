@@ -142,7 +142,7 @@
           <th:block th:if="${not #maps.isEmpty(lexeme.meaningLexemesByLang)}">
             <div class="d-flex lang-code__border" th:each="meaninglexemeEntry,meaninglexemeEntryIter : ${lexeme.meaningLexemesByLang}">
               <span class="lang-code text-caption mr-2" th:with="langData=${@viewUtil.getLangData(meaninglexemeEntry.key)}" th:text="${langData.codeIso2}" th:title="${langData.label}"
-                data-toggle="tooltip"> </span>
+                data-toggle="tooltip"></span>
               <div class="word-notes__wrapper" th:with="meaningLangLexemes=${meaninglexemeEntry.value}">
                 <div th:each="meaningLexeme,meaninglexemeIter : ${meaningLangLexemes}" th:classappend="${meaninglexemeIter.last ? '' : 'mb-1'}">
                   <div>

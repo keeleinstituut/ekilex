@@ -143,7 +143,7 @@ public class LexemeConversionUtil extends AbstractConversionUtil {
 		return CollectionUtils.isEmpty(lexemeWord.getDefinitions())
 				&& CollectionUtils.isEmpty(lexemeWord.getUsages())
 				&& CollectionUtils.isEmpty(lexemeWord.getSourceLangFullSynonyms())
-				&& CollectionUtils.isEmpty(lexemeWord.getSourceLangPartSynonyms())
+				&& CollectionUtils.isEmpty(lexemeWord.getSourceLangNearSynonyms())
 				&& CollectionUtils.isEmpty(lexemeWord.getDestinLangSynonyms())
 				&& CollectionUtils.isEmpty(lexemeWord.getRelatedLexemes())
 				&& CollectionUtils.isEmpty(lexemeWord.getDomains())
@@ -226,7 +226,7 @@ public class LexemeConversionUtil extends AbstractConversionUtil {
 			String displayLang) {
 
 		lexemeWord.setSourceLangFullSynonyms(new ArrayList<>());
-		lexemeWord.setSourceLangPartSynonyms(new ArrayList<>());
+		lexemeWord.setSourceLangNearSynonyms(new ArrayList<>());
 		lexemeWord.setDestinLangSynonyms(new ArrayList<>());
 		lexemeWord.setCollocPosGroups(new ArrayList<>());
 
@@ -396,6 +396,8 @@ public class LexemeConversionUtil extends AbstractConversionUtil {
 
 			for (TypeMeaningWord meaningWord : meaningWords) {
 
+				// TODO test "data-toggle=${syn.mwLexWeight == 1} ? 'tooltip' : null, title=${syn.mwLexWeight == 1} ? #{label.tooltip.synonym.full} : null"
+
 				meaningWord.setType(SynonymType.MEANING_WORD);
 				classifierUtil.applyClassifiers(meaningWord, displayLang);
 				setWordTypeFlags(meaningWord);
@@ -486,7 +488,7 @@ public class LexemeConversionUtil extends AbstractConversionUtil {
 
 			for (TypeMeaningWord meaningRelSyn : synMeaningRelsMap.values()) {
 				if (DatasetType.LEX.equals(lexemeWord.getDatasetType()) && StringUtils.equals(wordLang, meaningRelSyn.getLang())) {
-					lexemeWord.getSourceLangPartSynonyms().add(meaningRelSyn);
+					lexemeWord.getSourceLangNearSynonyms().add(meaningRelSyn);
 				}
 			}
 		}
