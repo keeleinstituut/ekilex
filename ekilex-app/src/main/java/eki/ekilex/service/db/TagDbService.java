@@ -4,6 +4,7 @@ import static eki.ekilex.data.db.main.Tables.LEXEME;
 import static eki.ekilex.data.db.main.Tables.LEXEME_TAG;
 import static eki.ekilex.data.db.main.Tables.MEANING_TAG;
 import static eki.ekilex.data.db.main.Tables.TAG;
+import static eki.ekilex.data.db.main.Tables.WORD_TAG;
 
 import java.util.List;
 
@@ -19,6 +20,7 @@ import eki.ekilex.data.db.main.tables.Lexeme;
 import eki.ekilex.data.db.main.tables.LexemeTag;
 import eki.ekilex.data.db.main.tables.MeaningTag;
 import eki.ekilex.data.db.main.tables.Tag;
+import eki.ekilex.data.db.main.tables.WordTag;
 import eki.ekilex.data.db.main.tables.records.LexemeTagRecord;
 
 @Component
@@ -43,6 +45,8 @@ public class TagDbService extends AbstractDataDbService {
 		Lexeme l = LEXEME.as("l");
 		LexemeTag lt = LEXEME_TAG.as("lt");
 		MeaningTag mt = MEANING_TAG.as("mt");
+		WordTag wt = WORD_TAG.as("wt");
+
 		Tag t = TAG.as("t");
 
 		Field<Integer> rnf = DSL.field(DSL.rowNumber().over(DSL.orderBy(t.ORDER_BY)));
@@ -55,7 +59,11 @@ public class TagDbService extends AbstractDataDbService {
 				.orExists(DSL
 						.select(mt.ID)
 						.from(mt)
-						.where(mt.TAG_NAME.eq(t.NAME))));
+						.where(mt.TAG_NAME.eq(t.NAME)))
+				.orExists(DSL
+						.select(wt.ID)
+						.from(wt)
+						.where(wt.TAG_NAME.eq(t.NAME))));
 
 		Table<Record1<String>> tds = DSL
 				.select(l.DATASET_CODE)
@@ -64,6 +72,14 @@ public class TagDbService extends AbstractDataDbService {
 						mt.MEANING_ID.eq(l.MEANING_ID)
 								.and(mt.TAG_NAME.eq(t.NAME)))
 				.groupBy(l.DATASET_CODE)
+				.unionAll(
+						DSL
+								.select(l.DATASET_CODE)
+								.from(l, wt)
+								.where(
+										wt.WORD_ID.eq(l.WORD_ID)
+												.and(wt.TAG_NAME.eq(t.NAME)))
+								.groupBy(l.DATASET_CODE))
 				.unionAll(
 						DSL
 								.select(l.DATASET_CODE)

@@ -1642,7 +1642,7 @@ with recursive word_etym_recursion (word_id, word_etym_word_id, word_etym_id, re
       array[we.word_id] as related_word_ids
     from
       word_etymology we
-      left outer join word_etymology_relation wer on wer.word_etym_id = we.id
+      left outer join word_etymology_relation wer on wer.word_etym_id = we.id and wer.related_word_id != we.word_id
     where exists(select l.id
                  from lexeme l,
                       dataset ds
@@ -1667,7 +1667,7 @@ with recursive word_etym_recursion (word_id, word_etym_word_id, word_etym_id, re
       from
         word_etym_recursion rec
         inner join word_etymology we on we.word_id = rec.related_word_id
-        left outer join word_etymology_relation wer on wer.word_etym_id = we.id
+        left outer join word_etymology_relation wer on wer.word_etym_id = we.id and wer.related_word_id != we.word_id
       where
         rec.related_word_id != any(rec.related_word_ids)
       order by

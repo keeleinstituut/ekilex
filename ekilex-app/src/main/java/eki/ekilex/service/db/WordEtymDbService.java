@@ -54,7 +54,7 @@ public class WordEtymDbService extends AbstractDataDbService {
 								we.ID.as("word_etym_id"),
 								wer.RELATED_WORD_ID,
 								DSL.array(we.WORD_ID).as("related_word_ids"))
-						.from(we.leftOuterJoin(wer).on(wer.WORD_ETYM_ID.eq(we.ID)))
+						.from(we.leftOuterJoin(wer).on(wer.WORD_ETYM_ID.eq(we.ID).and(wer.RELATED_WORD_ID.ne(we.WORD_ID))))
 						.where(we.WORD_ID.eq(wordId))
 						.orderBy(we.ORDER_BY, wer.ORDER_BY)
 						.unionAll(DSL
@@ -67,7 +67,7 @@ public class WordEtymDbService extends AbstractDataDbService {
 								.from(
 										DSL.table("werec")
 												.innerJoin(we).on(we.WORD_ID.eq(DSL.field("werec.related_word_id", Long.class)))
-												.leftOuterJoin(wer).on(wer.WORD_ETYM_ID.eq(we.ID)))
+												.leftOuterJoin(wer).on(wer.WORD_ETYM_ID.eq(we.ID).and(wer.RELATED_WORD_ID.ne(we.WORD_ID))))
 								.where(DSL.field("werec.related_word_id", Long.class).ne(DSL.all(DSL.field("werec.related_word_ids", Long[].class))))
 								.orderBy(we.ORDER_BY, wer.ORDER_BY)));
 
