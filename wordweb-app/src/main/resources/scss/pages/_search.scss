@@ -277,7 +277,7 @@
     margin: 0 -15px;
     padding: 1px 15px 14px;
 
-    &__tags {
+    &__tags:not(.sticky-scroll-panel__tags--empty) {
       display: flex;
     }
   }
