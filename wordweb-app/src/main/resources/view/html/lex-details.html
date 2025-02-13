@@ -325,7 +325,7 @@
                         <span class="lang-code text-caption mr-2 align-self-start"
                               th:with="langData=${@viewUtil.getLangData(noteEntry.key)}"
                               th:text="${langData.codeIso2}" th:title="${langData.label}" data-toggle="tooltip"></span>
-                        <div><p  class="mb-1" th:each="note, noteIter : ${noteEntry.value}" th:utext="${note.valuePrese}"></p></div>
+                        <div><p  class="mb-1 text-body-two text-weight-medium" th:each="note, noteIter : ${noteEntry.value}" th:utext="${note.valuePrese}"></p></div>
                       </div>
                     </th:block>
                     <th:block th:if="${not #maps.isEmpty(lexeme.meaningNotesByLang)}">
@@ -379,7 +379,7 @@
                     <div class="usage-item" th:if="${!isCollapsable}">
                       <div class="example-sentence-wrap">
                         <span class="example-text example-text-w-audio">
-                          <span class="example-text-value" th:utext="${usage.valuePrese}"></span>
+                          <span class="text-body-two text-weight-medium" th:utext="${usage.valuePrese}"></span>
                           <button class="btn btn-speaker btn-speaker--inactive" th:aria-label="|#{aria.listen} - ${usage.value}|" th:if="${usage.putOnSpeaker}"
                                   th:data-words="${usage.value}"
                                   th:attr="onclick=${usage.putOnSpeaker ? 'generateAudioAndPlay(this)' : ''}">
