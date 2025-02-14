@@ -17,6 +17,9 @@
     line-height: normal;
     letter-spacing: 0.048px;
   }
+  .text-weight-medium {
+    font-weight: 500;
+  }
 }
 
 :root {
@@ -17307,8 +17310,10 @@ body {
   overflow: hidden;
 }
 
-.search__block:not(.search__sidebar-block) a {
-  font-size: .875rem;
+@layer base {
+  .search__block a {
+    font-size: .875rem;
+  }
 }
 
 .search__block--unified {
@@ -17319,12 +17324,6 @@ body {
 .search__block--unified a {
   color: var(--color-blue-300);
   line-height: inherit;
-}
-
-.search__block--unified .search__helper-text {
-  color: var(--color-darker-gray);
-  line-height: inherit;
-  font-weight: 700;
 }
 
 .search__block-title {
@@ -17368,6 +17367,12 @@ body {
   text-decoration: underline;
 }
 
+.search__helper-text {
+  color: var(--color-darker-gray);
+  line-height: inherit;
+  font-weight: 400;
+}
+
 .sticky-scroll-panel__tags {
   display: none;
   flex-wrap: wrap;
@@ -17408,7 +17413,7 @@ body {
     margin: 0 -15px;
     padding: 1px 15px 14px;
   }
-  .sticky-scroll-panel__tags {
+  .sticky-scroll-panel__tags:not(.sticky-scroll-panel__tags--empty) {
     display: flex;
   }
 }
@@ -17521,13 +17526,6 @@ body {
   color: var(--color-dark-blue);
 }
 
-.meaning-data__domain {
-  font-size: .75rem;
-  font-weight: 400;
-  line-height: 15px;
-  color: var(--color-darker-gray);
-}
-
 .meaning-data__word-info {
   font-size: .625rem;
   font-weight: 500;
@@ -17599,6 +17597,7 @@ body {
   list-style: none;
   margin: 0 0 0 var(--word-notes-left-margin, 8px);
   padding: 0;
+  line-height: 20px;
   --word-notes-left-margin: 0;
 }
 
@@ -17610,9 +17609,7 @@ body {
   margin-left: 20px;
 }
 
-.word-notes__list .definition-value {
-  font-size: .875rem;
-  color: var(--color-dark-blue);
+.word-notes__list .text-body-two {
   font-weight: 500;
 }
 
@@ -17623,15 +17620,10 @@ body {
   flex-direction: column;
 }
 
-.word-notes__note {
+.word-notes__note:not(.search__helper-text) {
   color: var(--color-dark-blue);
   font-size: .875rem;
   margin-bottom: 8px;
-}
-
-.word-notes__note--title {
-  font-size: .75rem;
-  color: var(--color-darker-gray);
 }
 
 .meaning-reliability {

@@ -35,7 +35,8 @@
             data-item-name="feedback" th:text="#{feedback.title}">Tagasiside</button>
         </div>
       </div>
-      <div class="sticky-scroll-panel__tags">
+      <div class="sticky-scroll-panel__tags"
+        th:classappend="${wordsData.resultsExist} ? '' : 'sticky-scroll-panel__tags--empty'">
         <a href="#word-morphology-results" class="sticky-scroll-panel__tag" th:text="#{label.word.forms}">Sõnavormid</a>
         <a href="#word-relation-results" class="sticky-scroll-panel__tag" th:text="#{label.word.relations.union}">Ühendid</a>
         <a href="#word-etymology-results" class="sticky-scroll-panel__tag" th:text="#{label.word.etymology}">Päritolu</a>
@@ -128,7 +129,6 @@
               <th:block th:replace="common-search-sidebar :: corp_rus"></th:block>
             </div>
           </th:block>
-          <th:block th:replace="common-search-sidebar :: od-word-recommendations" th:if="${wordData.word.incorrectWordForm}"></th:block>
         </div>
       </div>
       <script th:inline="javascript">
