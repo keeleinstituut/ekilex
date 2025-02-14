@@ -3,7 +3,6 @@ package eki.ekilex.client;
 import static eki.common.constant.StatType.WW_SEARCH;
 
 import java.util.Collections;
-import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
@@ -16,9 +15,13 @@ import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import eki.common.constant.GlobalConstant;
+import eki.common.data.StatSearchFilter;
+import eki.common.data.StatSearchResult;
 
 @Component
 public class EkistatClient implements GlobalConstant {
+
+	private static final String STAT_SEARCH_URI = "/search";
 
 	@Value("${ekistat.service.url}")
 	private String serviceUrl;
@@ -26,8 +29,9 @@ public class EkistatClient implements GlobalConstant {
 	@Value("${ekistat.service.key}")
 	private String serviceKey;
 
-	public Map<String, Integer> getSearchStat(String datasetCode, String lang, String searchMode, String resultsFrom, String resultsUntil) {
+	public StatSearchResult getStatSearchResult(StatSearchFilter searchFilter) {
 
+		String statSearchUrl = serviceUrl + STAT_SEARCH_URI;
 		HttpHeaders headers = new HttpHeaders();
 		headers.setContentType(MediaType.APPLICATION_JSON);
 		headers.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
@@ -35,17 +39,21 @@ public class EkistatClient implements GlobalConstant {
 		HttpEntity<String> entity = new HttpEntity<>(headers);
 
 		String serviceUriWithParameters = UriComponentsBuilder
-				.fromUriString(serviceUrl)
+				.fromUriString(statSearchUrl)
 				.queryParam("statType", WW_SEARCH)
-				.queryParam("searchMode", searchMode)
-				.queryParam("datasetCode", datasetCode)
-				.queryParam("lang", lang)
-				.queryParam("resultsFrom", resultsFrom)
-				.queryParam("resultsUntil", resultsUntil)
+				.queryParam("searchMode", searchFilter.getSearchMode())
+				.queryParam("datasetCode", searchFilter.getDatasetCode())
+				.queryParam("searchLang", searchFilter.getSearchLang())
+				.queryParam("dateFrom", searchFilter.getDateFrom())
+				.queryParam("dateUntil", searchFilter.getDateUntil())
+				.queryParam("trustworthyOnly", searchFilter.isTrustworthyOnly())
 				.toUriString();
 
 		RestTemplate restTemplate = new RestTemplate();
-		ResponseEntity<Map> response = restTemplate.exchange(serviceUriWithParameters, HttpMethod.GET, entity, Map.class);
-		return response.getBody();
+
+		ResponseEntity<StatSearchResult> response = restTemplate.exchange(serviceUriWithParameters, HttpMethod.GET, entity, StatSearchResult.class);
+		StatSearchResult searchResult = response.getBody();
+
+		return searchResult;
 	}
 }

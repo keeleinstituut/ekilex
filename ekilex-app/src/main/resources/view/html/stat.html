@@ -14,65 +14,92 @@
           <span th:text="#{stat.ww.header}">Sõnaveebi otsingute statistika (top 100)</span>
         </div>
         <div class="card-body">
-          <div class="form-group row">
-            <label class="col-md-1 col-form-label" th:text="#{stat.dataset}">Sõnakogu</label>
-            <div class="col-md-2">
-              <select class="form-control value-select" name="datasetCode">
-                <option value="" th:text="#{stat.all.datasets}">Kõik sõnakogud</option>
-                <option th:each="dataset : ${userVisibleDatasets}"
-                        th:value="${dataset.code}"
-                        th:text="${dataset.name}">dataset</option>
-                </option>
-              </select>
-            </div>
-          </div>
-          <div class="form-group row">
-            <label class="col-md-1 col-form-label" th:text="#{stat.language}">Keel</label>
-            <div class="col-md-2">
-              <select class="form-control value-select" name="searchLang">
-                <option value="" th:text="#{stat.all.languages}">Kõik keeled</option>
-                <option th:each="lang : ${languages}"
-                        th:value="${lang.code}"
-                        th:text="${lang.value}">lang</option>
-                </option>
-              </select>
-            </div>
-          </div>
-          <div class="form-group row">
-            <label class="col-md-1 col-form-label" th:text="#{stat.search.type}">Otsingu tüüp</label>
-            <div class="col-md-2">
-              <select class="form-control value-select" name="searchMode">
-                <option value="" th:text="#{stat.search.type.all}">Kõik tüübid</option>
-                <option value="detail" th:text="#{stat.search.type.detail}">Tavaotsing</option>
-                <option value="simple" th:text="#{stat.search.type.simple}">Keeleõppija otsing</option>
-              </select>
-            </div>
-          </div>
-          <div class="form-group row">
-            <label class="col-md-1 col-form-label" th:text="#{stat.date.from}">Alates</label>
-            <div class="col-md-2 input-group date" data-provide="datepicker" data-date-language="et" data-date-autoclose="true">
-              <input type="text" class="form-control  bg-white" name="resultsFrom" readonly>
-              <div class="input-group-addon input-group-append">
-                <div class="input-group-text">
-                  <i class="fa fa-calendar fa-lg"></i>
+          <table>
+            <tr>
+              <td>
+                <span class="mr-3" th:text="#{stat.dataset}">Sõnakogu</span>
+              </td>
+              <td>
+                <select class="form-control value-select" name="datasetCode">
+                  <option value="" th:text="#{stat.any.datasets}">Määramata</option>
+                  <option value="dsall" th:text="#{stat.all.datasets}">Kõik sõnakogud</option>
+                  <option th:each="dataset : ${userVisibleDatasets}" th:value="${dataset.code}" th:text="${dataset.name}">dataset</option>
+                </select>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <span class="mr-3" th:text="#{stat.language}">Keel</span>
+              </td>
+              <td>
+                <select class="form-control value-select" name="searchLang">
+                  <option value="" th:text="#{stat.any.languages}">Määramata</option>
+                  <option value="dlall" th:text="#{stat.all.languages}">Kõik keeled</option>
+                  <option th:each="lang : ${wwLanguages}" th:value="${lang.code}" th:text="${lang.value}">lang</option>
+                  <option value="other" th:text="#{stat.other.languages}">Muud keeled</option>
+                </select>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <span class="mr-3" th:text="#{stat.search.type}">Otsingu tüüp</span>
+              </td>
+              <td>
+                <select class="form-control value-select" name="searchMode">
+                  <option value="" th:text="#{stat.search.type.any}">Kõik tüübid</option>
+                  <option value="detail" th:text="#{stat.search.type.detail}">Tavaotsing</option>
+                  <option value="simple" th:text="#{stat.search.type.simple}">Keeleõppija otsing</option>
+                </select>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <span class="mr-3" th:text="#{stat.date.from}">Alates</span>
+              </td>
+              <td>
+                <div class="input-group date" data-provide="datepicker" data-date-language="et" data-date-autoclose="true">
+                  <input type="text" class="form-control bg-white" name="resultsFrom" readonly>
+                  <div class="input-group-addon input-group-append">
+                    <div class="input-group-text">
+                      <i class="fa fa-calendar fa-lg"></i>
+                    </div>
+                  </div>
                 </div>
-              </div>
-            </div>
-          </div>
-          <div class="form-group row">
-            <label class="col-md-1 col-form-label" th:text="#{stat.date.until}">Kuni</label>
-            <div class="col-md-2 input-group date" data-provide="datepicker" data-date-language="et" data-date-autoclose="true">
-              <input type="text" class="form-control bg-white" name="resultsUntil" readonly>
-              <div class="input-group-addon input-group-append">
-                <div class="input-group-text">
-                  <i class="fa fa-calendar fa-lg"></i>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <span class="mr-3" th:text="#{stat.date.until}">Kuni</span>
+              </td>
+              <td>
+                <div class="input-group date" data-provide="datepicker" data-date-language="et" data-date-autoclose="true">
+                  <input type="text" class="form-control bg-white" name="resultsUntil" readonly>
+                  <div class="input-group-addon input-group-append">
+                    <div class="input-group-text">
+                      <i class="fa fa-calendar fa-lg"></i>
+                    </div>
+                  </div>
                 </div>
-              </div>
-            </div>
-            <div class="col-md-">
-              <button type="submit" class="btn btn-primary" th:text="#{stat.confirm}">Kinnita</button>
-            </div>
-          </div>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <span class="mr-3" th:text="#{stat.trustworthy.only}">Ainult usaldusväärsed</span>
+              </td>
+              <td>
+                <div class="row">
+                  <div class="col-10">
+                    <div class="form-check mt-2">
+                      <input class="form-check-input" type="checkbox" name="trustworthyOnly" />
+                    </div>
+                  </div>
+                  <div class="col-2">
+                    <button type="submit" class="btn btn-primary" th:text="#{stat.search}">Otsi</button>
+                  </div>
+                </div>
+              </td>
+            </tr>
+          </table>
         </div>
       </form>
     </div>
@@ -82,8 +109,8 @@
   <div th:replace="common :: #alertSmall"></div>
   <div th:replace="common :: #waitDlg"></div>
   <script th:inline="javascript">
-    // Currently unnecessary due to use of plugin
-	  // initializeStat();
-  </script>
+			// Currently unnecessary due to use of plugin
+			// initializeStat();
+		</script>
 </body>
 </html>

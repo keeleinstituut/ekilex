@@ -1,14 +1,18 @@
 package eki.stat.service;
 
-import java.util.Map;
+import java.util.List;
 
 import javax.transaction.Transactional;
 
+import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import eki.common.data.ExceptionStat;
+import eki.common.data.ValueCount;
 import eki.common.data.SearchStat;
+import eki.common.data.StatSearchFilter;
+import eki.common.data.StatSearchResult;
 import eki.stat.service.db.StatDbService;
 
 @Component
@@ -18,13 +22,18 @@ public class StatService {
 	private StatDbService statDbService;
 
 	@Transactional
-	public long getWwSearchStatCount() {
-		return statDbService.getWwSearchStatCount();
+	public Long getWwSearchCount() {
+		return statDbService.getWwSearchCount();
 	}
 
 	@Transactional
-	public Map<String, Integer> getWwSearchStat(String searchMode, String datasetCode, String lang, String resultsFrom, String resultsUntil) throws Exception {
-		return statDbService.getWwSearchStat(searchMode, datasetCode, lang, resultsFrom, resultsUntil);
+	public StatSearchResult searchWwSearchStat(StatSearchFilter statSearchFilter) throws Exception {
+		List<ValueCount> valueCounts = statDbService.searchWwSearchStat(statSearchFilter);
+		boolean resultsExist = CollectionUtils.isNotEmpty(valueCounts);
+		StatSearchResult statSearchResult = new StatSearchResult();
+		statSearchResult.setValueCounts(valueCounts);
+		statSearchResult.setResultsExist(resultsExist);
+		return statSearchResult;
 	}
 
 	@Transactional

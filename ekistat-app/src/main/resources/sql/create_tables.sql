@@ -30,3 +30,4 @@ alter sequence ww_exception_id_seq restart with 10000;
 create index ww_search_search_word_idx on ww_search(search_word);
 create index ww_search_search_mode_idx on ww_search(search_mode);
 create index ww_search_event_on_idx on ww_search(event_on);
+create index ww_search_request_origin_idx on ww_search(request_origin);

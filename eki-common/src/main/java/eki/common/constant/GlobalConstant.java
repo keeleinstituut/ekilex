@@ -12,6 +12,10 @@ public interface GlobalConstant {
 
 	String LANGUAGE_CODE_LAT = "lat";
 
+	String LANGUAGE_CODE_FRA = "fra";
+
+	String LANGUAGE_CODE_UKR = "ukr";
+
 	String DATASET_EKI = "eki";
 
 	String DATASET_ETY = "ety";

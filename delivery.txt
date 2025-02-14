@@ -1,1 +1,5 @@
 Märkused ver 1.40.0 tarne kohta:
+
+uuem stat server
+lisada indeks
+muutunud api rajad

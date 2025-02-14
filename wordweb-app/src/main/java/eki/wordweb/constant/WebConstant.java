@@ -106,8 +106,6 @@ public interface WebConstant {
 
 	String GAMES_FINISH_URI = "/finish";
 
-	String WW_STAT_COUNT_URI = "/wwstatcount";
-
 	String GAMES_LEXICDECIS_NAME = "lexicdecis";
 
 	String GAMES_SIMILJUDGE_NAME = "similjudge";

@@ -9,9 +9,15 @@ import eki.common.constant.GlobalConstant;
 
 public class ApiKeyAuthFilter extends AbstractPreAuthenticatedProcessingFilter implements GlobalConstant {
 
+	private String apiKeyHeaderName;
+
+	public ApiKeyAuthFilter(String apiKeyHeaderName) {
+		this.apiKeyHeaderName = apiKeyHeaderName;
+	}
+
 	@Override
 	protected Object getPreAuthenticatedPrincipal(HttpServletRequest request) {
-		String apiKey = request.getHeader(STAT_API_KEY_HEADER_NAME);
+		String apiKey = request.getHeader(apiKeyHeaderName);
 		if (StringUtils.isBlank(apiKey)) {
 			return EMPTY_API_KEY;
 		}

@@ -30,20 +30,24 @@ public class StatDataCollector implements GlobalConstant, WebConstant {
 
 	private static final int REQUEST_TIMEOUT_SECONDS = 5;
 
+	private static final String STAT_CREATE_URI = "/create";
+
+	private static final String STAT_COUNT_URI = "/count";
+
 	@Value("${ekistat.service.enabled:false}")
 	private boolean serviceEnabled;
 
 	@Value("${ekistat.service.url}")
-	private String serviceUrl;
+	private String ekistatServiceUrl;
 
 	@Value("${ekistat.service.key}")
-	private String serviceKey;
+	private String ekistatServiceKey;
 
 	public StatServiceStatus getStatServiceStatus() {
 
 		StatServiceStatus statServiceStatus = new StatServiceStatus();
 		statServiceStatus.setServiceEnabled(serviceEnabled);
-		statServiceStatus.setServiceUrl(serviceUrl);
+		statServiceStatus.setServiceUrl(ekistatServiceUrl);
 		if (serviceEnabled) {
 			try {
 				long wwSearchStatCount = getWwSearchStatCount();
@@ -68,10 +72,10 @@ public class StatDataCollector implements GlobalConstant, WebConstant {
 		String exceptionName = exception.getClass().getName();
 		String exceptionMessage = exception.getMessage();
 		ExceptionStat exceptionStat = new ExceptionStat(exceptionName, exceptionMessage);
-		String url = serviceUrl + "/" + StatType.WW_EXCEPTION.name();
+		String statCreateUrl = getStatCreateUri(StatType.WW_EXCEPTION);
 
 		try {
-			postStat(url, exceptionStat);
+			postRequest(statCreateUrl, exceptionStat);
 		} catch (Exception e) {
 			logger.error("Posting exception stat data failed.", e);
 		}
@@ -83,22 +87,22 @@ public class StatDataCollector implements GlobalConstant, WebConstant {
 		if (!serviceEnabled) {
 			return;
 		}
-		String url = serviceUrl + "/" + StatType.WW_SEARCH.name();
+		String statCreateUrl = getStatCreateUri(StatType.WW_SEARCH);
 		try {
-			postStat(url, searchStat);
+			postRequest(statCreateUrl, searchStat);
 		} catch (Exception e) {
 			logger.error("Posting search stat data failed.", e);
 		}
 	}
 
-	private void postStat(String url, Object statObject) throws Exception {
+	private void postRequest(String url, Object statObject) throws Exception {
 
 		ObjectMapper objectMapper = new ObjectMapper();
 		String requestBody = objectMapper.writeValueAsString(statObject);
 		HttpClient client = HttpClient.newBuilder().version(HttpClient.Version.HTTP_2).build();
 		HttpRequest request = HttpRequest.newBuilder()
 				.uri(URI.create(url))
-				.header(STAT_API_KEY_HEADER_NAME, serviceKey)
+				.header(STAT_API_KEY_HEADER_NAME, ekistatServiceKey)
 				.POST(HttpRequest.BodyPublishers.ofString(requestBody))
 				.timeout(Duration.ofSeconds(REQUEST_TIMEOUT_SECONDS))
 				.build();
@@ -112,10 +116,10 @@ public class StatDataCollector implements GlobalConstant, WebConstant {
 	private long getWwSearchStatCount() throws Exception {
 
 		HttpClient client = HttpClient.newBuilder().version(HttpClient.Version.HTTP_2).build();
-		String url = serviceUrl + WW_STAT_COUNT_URI;
+		String statCountUrl = ekistatServiceUrl + STAT_COUNT_URI;
 		HttpRequest request = HttpRequest.newBuilder()
-				.uri(URI.create(url))
-				.header(STAT_API_KEY_HEADER_NAME, serviceKey)
+				.uri(URI.create(statCountUrl))
+				.header(STAT_API_KEY_HEADER_NAME, ekistatServiceKey)
 				.GET()
 				.timeout(Duration.ofSeconds(REQUEST_TIMEOUT_SECONDS))
 				.build();
@@ -127,5 +131,9 @@ public class StatDataCollector implements GlobalConstant, WebConstant {
 		}
 		long wwSearchStatCount = Long.parseLong(response.body());
 		return wwSearchStatCount;
+	}
+
+	private String getStatCreateUri(StatType statType) {
+		return ekistatServiceUrl + STAT_CREATE_URI + "/" + statType.name();
 	}
 }

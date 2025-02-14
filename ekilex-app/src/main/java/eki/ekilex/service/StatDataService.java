@@ -4,7 +4,6 @@ import java.sql.Timestamp;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 
 import javax.transaction.Transactional;
 
@@ -15,6 +14,8 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import eki.common.constant.GlobalConstant;
+import eki.common.data.StatSearchFilter;
+import eki.common.data.StatSearchResult;
 import eki.ekilex.client.EkistatClient;
 import eki.ekilex.constant.SystemConstant;
 import eki.ekilex.data.StatData;
@@ -106,8 +107,8 @@ public class StatDataService implements InitializingBean, SystemConstant, Global
 		return apiErrorStatData;
 	}
 
-	public Map<String, Integer> getSearchStat(String datasetCode, String searchLang, String searchMode, String resultsFrom, String resultsUntil) {
-		return ekistatClient.getSearchStat(datasetCode, searchLang, searchMode, resultsFrom, resultsUntil);
+	public StatSearchResult getStatSearchResult(StatSearchFilter statSearchFilter) {
+		return ekistatClient.getStatSearchResult(statSearchFilter);
 	}
 
 }

@@ -7,7 +7,7 @@ import java.sql.Timestamp;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.Map;
+import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
 import org.jooq.Condition;
@@ -16,13 +16,18 @@ import org.jooq.impl.DSL;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import eki.common.constant.GlobalConstant;
+import eki.common.constant.RequestOrigin;
 import eki.common.data.ExceptionStat;
 import eki.common.data.SearchStat;
+import eki.common.data.StatSearchFilter;
+import eki.common.data.ValueCount;
+import eki.stat.data.db.tables.WwSearch;
 import eki.stat.data.db.tables.records.WwExceptionRecord;
 import eki.stat.data.db.tables.records.WwSearchRecord;
 
 @Component
-public class StatDbService {
+public class StatDbService implements GlobalConstant {
 
 	private final DateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy");
 
@@ -31,44 +36,61 @@ public class StatDbService {
 	@Autowired
 	private DSLContext create;
 
-	public long getWwSearchStatCount() {
-		return create.selectCount().from(WW_SEARCH).fetchOneInto(Long.class);
+	public Long getWwSearchCount() {
+		WwSearch wws = WW_SEARCH.as("wws");
+		return create
+				.select(DSL.count(wws.ID))
+				.from(wws)
+				.fetchOneInto(Long.class);
 	}
 
-	public Map<String, Integer> getWwSearchStat(String searchMode, String datasetCode, String lang, String resultsFrom, String resultsUntil) throws Exception {
+	public List<ValueCount> searchWwSearchStat(StatSearchFilter statSearchFilter) throws Exception {
+
+		String searchMode = statSearchFilter.getSearchMode();
+		String datasetCode = statSearchFilter.getDatasetCode();
+		String searchLang = statSearchFilter.getSearchLang();
+		String dateFrom = statSearchFilter.getDateFrom();
+		String dateUntil = statSearchFilter.getDateUntil();
+		boolean isTrustworthyOnly = statSearchFilter.isTrustworthyOnly();
 
 		Condition where = DSL.noCondition();
+		WwSearch wws = WW_SEARCH.as("wws");
 
 		if (StringUtils.isNotBlank(searchMode)) {
-			where = where.and(WW_SEARCH.SEARCH_MODE.eq(searchMode));
+			where = where.and(wws.SEARCH_MODE.eq(searchMode));
 		}
 		if (StringUtils.isNotBlank(datasetCode)) {
 			String[] datasetCodeArr = {datasetCode};
-			where = where.and(WW_SEARCH.DATASET_CODES.contains(datasetCodeArr));
+			where = where.and(wws.DATASET_CODES.contains(datasetCodeArr));
 		}
-		if (StringUtils.isNotBlank(lang)) {
-			String[] langArr = {lang};
-			where = where.and(WW_SEARCH.DESTIN_LANGS.contains(langArr));
+		if (StringUtils.isNotBlank(searchLang)) {
+			String[] langArr = {searchLang};
+			where = where.and(wws.DESTIN_LANGS.contains(langArr));
 		}
-		if (StringUtils.isNotBlank(resultsFrom)) {
-			Date date = dateFormat.parse(resultsFrom);
+		if (StringUtils.isNotBlank(dateFrom)) {
+			Date date = dateFormat.parse(dateFrom);
 			Timestamp timestamp = new Timestamp(date.getTime());
-			where = where.and(WW_SEARCH.EVENT_ON.greaterOrEqual(timestamp));
+			where = where.and(wws.EVENT_ON.ge(timestamp));
 		}
-		if (StringUtils.isNotBlank(resultsUntil)) {
-			Date date = dateFormat.parse(resultsUntil);
+		if (StringUtils.isNotBlank(dateUntil)) {
+			Date date = dateFormat.parse(dateUntil);
 			Timestamp timestamp = new Timestamp(date.getTime());
-			where = where.and(WW_SEARCH.EVENT_ON.lessOrEqual(timestamp));
+			where = where.and(wws.EVENT_ON.le(timestamp));
+		}
+		if (isTrustworthyOnly) {
+			where = where.and(wws.REQUEST_ORIGIN.ne(RequestOrigin.OUTSIDE_NAVIGATION.name()));
 		}
 
 		return create
-				.select(WW_SEARCH.SEARCH_WORD, DSL.count(WW_SEARCH.SEARCH_WORD))
-				.from(WW_SEARCH)
+				.select(
+						wws.SEARCH_WORD.as("value"),
+						DSL.count(wws.SEARCH_WORD).as("count"))
+				.from(wws)
 				.where(where)
-				.groupBy(WW_SEARCH.SEARCH_WORD)
-				.orderBy(DSL.count(WW_SEARCH.SEARCH_WORD).desc())
+				.groupBy(wws.SEARCH_WORD)
+				.orderBy(DSL.field("count").desc())
 				.limit(RESULT_LIMIT)
-				.fetchMap(WW_SEARCH.SEARCH_WORD, DSL.count(WW_SEARCH.SEARCH_WORD));
+				.fetchInto(ValueCount.class);
 	}
 
 	public void createWwSearchStat(SearchStat searchStat) {
