@@ -429,7 +429,7 @@ public class WordConversionUtil extends AbstractConversionUtil {
 			}
 			if (StringUtils.equals(WORD_REL_TYPE_CODE_RAW, wordRelType.getCode())) {
 				relatedWords = relatedWords.stream()
-						.filter(relatedWord -> sourceLangSynonymWordIds.contains(relatedWord.getWordId()))
+						.filter(relatedWord -> !sourceLangSynonymWordIds.contains(relatedWord.getWordId()))
 						.collect(Collectors.toList());
 				wordRelationGroup.setRelatedWords(relatedWords);
 			}
