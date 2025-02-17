@@ -281,7 +281,10 @@ public class WordConversionUtil extends AbstractConversionUtil {
 	}
 
 	private void appendRelatedWordTypeGroup(
-			WordRelationGroup wordRelationGroup, List<WordRelationGroup> wordRelationGroups, List<TypeWordRelation> relatedWordsOfType, Map<String, Long> langOrderByMap) {
+			WordRelationGroup wordRelationGroup,
+			List<WordRelationGroup> wordRelationGroups,
+			List<TypeWordRelation> relatedWordsOfType,
+			Map<String, Long> langOrderByMap) {
 
 		if (CollectionUtils.isEmpty(relatedWordsOfType)) {
 			wordRelationGroup.setEmpty(true);
@@ -400,5 +403,36 @@ public class WordConversionUtil extends AbstractConversionUtil {
 		}
 
 		word.setSummarisedPoses(summarisedPoses);
+	}
+
+	public void filterWordRelationsBySynonyms(Word word, List<LexemeWord> lexemeWords) {
+
+		if (CollectionUtils.isEmpty(lexemeWords)) {
+			return;
+		}
+		List<WordRelationGroup> primaryRelatedWordTypeGroups = word.getPrimaryRelatedWordTypeGroups();
+		if (CollectionUtils.isEmpty(primaryRelatedWordTypeGroups)) {
+			return;
+		}
+		List<Long> sourceLangSynonymWordIds = lexemeWords.stream()
+				.map(LexemeWord::getSourceLangSynonymWordIds)
+				.flatMap(List::stream)
+				.collect(Collectors.toList());
+		if (CollectionUtils.isEmpty(sourceLangSynonymWordIds)) {
+			return;
+		}
+		for (WordRelationGroup wordRelationGroup : primaryRelatedWordTypeGroups) {
+			Classifier wordRelType = wordRelationGroup.getWordRelType();
+			List<TypeWordRelation> relatedWords = wordRelationGroup.getRelatedWords();
+			if (CollectionUtils.isEmpty(relatedWords)) {
+				continue;
+			}
+			if (StringUtils.equals(WORD_REL_TYPE_CODE_RAW, wordRelType.getCode())) {
+				relatedWords = relatedWords.stream()
+						.filter(relatedWord -> sourceLangSynonymWordIds.contains(relatedWord.getWordId()))
+						.collect(Collectors.toList());
+				wordRelationGroup.setRelatedWords(relatedWords);
+			}
+		}
 	}
 }

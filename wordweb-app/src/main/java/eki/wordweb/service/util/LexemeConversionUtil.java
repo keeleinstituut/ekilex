@@ -191,7 +191,7 @@ public class LexemeConversionUtil extends AbstractConversionUtil {
 	public void composeMeanings(
 			String wordLang,
 			List<LexemeWord> lexemeWords,
-			Map<Long, Meaning> lexemeMeaningMap,
+			List<Meaning> meanings,
 			List<String> allRelatedWordValues,
 			Map<String, Long> langOrderByMap,
 			SearchContext searchContext,
@@ -200,6 +200,8 @@ public class LexemeConversionUtil extends AbstractConversionUtil {
 		if (CollectionUtils.isEmpty(lexemeWords)) {
 			return;
 		}
+
+		Map<Long, Meaning> lexemeMeaningMap = meanings.stream().collect(Collectors.toMap(Meaning::getLexemeId, meaning -> meaning));
 
 		List<String> destinLangs = searchContext.getDestinLangs();
 		Complexity lexComplexity = searchContext.getLexComplexity();
@@ -227,6 +229,7 @@ public class LexemeConversionUtil extends AbstractConversionUtil {
 
 		lexemeWord.setSourceLangFullSynonyms(new ArrayList<>());
 		lexemeWord.setSourceLangNearSynonyms(new ArrayList<>());
+		lexemeWord.setSourceLangSynonymWordIds(new ArrayList<>());
 		lexemeWord.setDestinLangSynonyms(new ArrayList<>());
 		lexemeWord.setCollocPosGroups(new ArrayList<>());
 
@@ -408,6 +411,7 @@ public class LexemeConversionUtil extends AbstractConversionUtil {
 
 				if (DatasetType.LEX.equals(lexemeWord.getDatasetType()) && StringUtils.equals(wordLang, meaningWord.getLang())) {
 					lexemeWord.getSourceLangFullSynonyms().add(meaningWord);
+					lexemeWord.getSourceLangSynonymWordIds().add(meaningWord.getWordId());
 				} else {
 					lexemeWord.getDestinLangSynonyms().add(meaningWord);
 				}
@@ -487,6 +491,7 @@ public class LexemeConversionUtil extends AbstractConversionUtil {
 			for (TypeMeaningWord meaningRelSyn : synMeaningRelsMap.values()) {
 				if (DatasetType.LEX.equals(lexemeWord.getDatasetType()) && StringUtils.equals(wordLang, meaningRelSyn.getLang())) {
 					lexemeWord.getSourceLangNearSynonyms().add(meaningRelSyn);
+					lexemeWord.getSourceLangSynonymWordIds().add(meaningRelSyn.getWordId());
 				}
 			}
 		}

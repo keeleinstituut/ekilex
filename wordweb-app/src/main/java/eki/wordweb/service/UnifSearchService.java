@@ -74,22 +74,24 @@ public class UnifSearchService extends AbstractSearchService {
 		Word word = searchDbService.getWord(wordId);
 		String wordLang = word.getLang();
 		classifierUtil.applyClassifiers(word, displayLang);
-		wordConversionUtil.setWordTypeFlags(word);
 		WordRelationsTuple wordRelationsTuple = searchDbService.getWordRelationsTuple(wordId);
-		wordConversionUtil.composeWordRelations(word, wordRelationsTuple, langOrderByMap, searchContext, displayLocale, displayLang);
 		List<WordEtymTuple> wordEtymTuples = searchDbService.getWordEtymologyTuples(wordId);
-		etymConversionUtil.composeWordEtymology(word, wordEtymTuples, displayLang);
 		List<Form> forms = searchDbService.getWordForms(wordId, searchContext);
 		List<Paradigm> paradigms = paradigmConversionUtil.composeParadigms(forms, displayLang);
 		List<String> allRelatedWords = wordConversionUtil.collectAllRelatedWords(word);
 
 		// lexeme data
 		List<LexemeWord> flatDepthLexemes = searchDbService.getMeaningsLexemes(wordId, searchContext);
-		lexemeConversionUtil.composeLexemes(wordLang, flatDepthLexemes, langOrderByMap, searchContext, displayLang);
 		List<LexemeWord> lexemeWords = lexemeConversionUtil.arrangeHierarchy(wordId, flatDepthLexemes);
 		List<Meaning> meanings = searchDbService.getMeanings(wordId);
-		Map<Long, Meaning> lexemeMeaningMap = meanings.stream().collect(Collectors.toMap(Meaning::getLexemeId, meaning -> meaning));
-		lexemeConversionUtil.composeMeanings(wordLang, lexemeWords, lexemeMeaningMap, allRelatedWords, langOrderByMap, searchContext, displayLang);
+
+		// data transformations
+		wordConversionUtil.setWordTypeFlags(word);
+		wordConversionUtil.composeWordRelations(word, wordRelationsTuple, langOrderByMap, searchContext, displayLocale, displayLang);
+		etymConversionUtil.composeWordEtymology(word, wordEtymTuples, displayLang);
+		lexemeConversionUtil.composeLexemes(wordLang, flatDepthLexemes, langOrderByMap, searchContext, displayLang);
+		lexemeConversionUtil.composeMeanings(wordLang, lexemeWords, meanings, allRelatedWords, langOrderByMap, searchContext, displayLang);
+		wordConversionUtil.filterWordRelationsBySynonyms(word, lexemeWords);
 
 		List<LexemeWord> lexLexemes = lexemeWords.stream()
 				.filter(lexeme -> DatasetType.LEX.equals(lexeme.getDatasetType()))

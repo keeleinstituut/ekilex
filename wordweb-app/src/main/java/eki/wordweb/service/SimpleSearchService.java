@@ -64,19 +64,21 @@ public class SimpleSearchService extends AbstractSearchService {
 		Word word = searchDbService.getWord(wordId);
 		String wordLang = word.getLang();
 		classifierUtil.applyClassifiers(word, displayLang);
-		wordConversionUtil.setWordTypeFlags(word);
 		WordRelationsTuple wordRelationsTuple = searchDbService.getWordRelationsTuple(wordId);
-		wordConversionUtil.composeWordRelations(word, wordRelationsTuple, langOrderByMap, searchContext, displayLocale, displayLang);
 		List<Form> forms = searchDbService.getWordForms(wordId, searchContext);
 		List<Paradigm> paradigms = paradigmConversionUtil.composeParadigms(forms, displayLang);
 		List<String> allRelatedWords = wordConversionUtil.collectAllRelatedWords(word);
 
 		// lexeme data
 		List<LexemeWord> lexemeWords = searchDbService.getWordLexemes(wordId, searchContext);
-		lexemeConversionUtil.composeLexemes(wordLang, lexemeWords, langOrderByMap, searchContext, displayLang);
 		List<Meaning> meanings = searchDbService.getMeanings(wordId);
-		Map<Long, Meaning> lexemeMeaningMap = meanings.stream().collect(Collectors.toMap(Meaning::getLexemeId, meaning -> meaning));
-		lexemeConversionUtil.composeMeanings(wordLang, lexemeWords, lexemeMeaningMap, allRelatedWords, langOrderByMap, searchContext, displayLang);
+
+		// data transformations
+		wordConversionUtil.setWordTypeFlags(word);
+		wordConversionUtil.composeWordRelations(word, wordRelationsTuple, langOrderByMap, searchContext, displayLocale, displayLang);
+		lexemeConversionUtil.composeLexemes(wordLang, lexemeWords, langOrderByMap, searchContext, displayLang);
+		lexemeConversionUtil.composeMeanings(wordLang, lexemeWords, meanings, allRelatedWords, langOrderByMap, searchContext, displayLang);
+		wordConversionUtil.filterWordRelationsBySynonyms(word, lexemeWords);
 
 		if (CollectionUtils.isNotEmpty(lexemeWords)) {
 			List<WordCollocPosGroups> wordCollocPosGroups = searchDbService.getWordCollocPosGroups(wordId);

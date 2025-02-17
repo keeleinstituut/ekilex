@@ -122,6 +122,8 @@ public class LexemeWord extends WordTypeData implements LexemeLevel, ComplexityT
 
 	private Map<String, List<TypeMeaningWord>> destinLangSynonymsByLang;
 
+	private List<Long> sourceLangSynonymWordIds;
+
 	private List<TypeLexemeRelation> relatedLexemes;
 
 	private Map<Classifier, List<TypeLexemeRelation>> relatedLexemesByType;
@@ -558,6 +560,14 @@ public class LexemeWord extends WordTypeData implements LexemeLevel, ComplexityT
 
 	public void setDestinLangSynonymsByLang(Map<String, List<TypeMeaningWord>> destinLangSynonymsByLang) {
 		this.destinLangSynonymsByLang = destinLangSynonymsByLang;
+	}
+
+	public List<Long> getSourceLangSynonymWordIds() {
+		return sourceLangSynonymWordIds;
+	}
+
+	public void setSourceLangSynonymWordIds(List<Long> sourceLangSynonymWordIds) {
+		this.sourceLangSynonymWordIds = sourceLangSynonymWordIds;
 	}
 
 	public List<TypeLexemeRelation> getRelatedLexemes() {
