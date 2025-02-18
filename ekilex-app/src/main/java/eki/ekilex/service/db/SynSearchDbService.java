@@ -20,7 +20,6 @@ import java.util.List;
 
 import org.jooq.Condition;
 import org.jooq.Field;
-import org.jooq.JSON;
 import org.jooq.Record14;
 import org.jooq.Record16;
 import org.jooq.Record3;
@@ -102,7 +101,13 @@ public class SynSearchDbService extends AbstractDataDbService {
 				.asTable("relmt");
 
 		Field<TypeWordRelMeaningRecord[]> relm = DSL
-				.select(DSL.field("array_agg(row(relmt.meaning_id, relmt.lexeme_id, relmt.definitions, relmt.usages, relmt.lex_register_codes, relmt.lex_pos_codes)::type_word_rel_meaning)", TypeWordRelMeaningRecord[].class))
+				.select(DSL.field("array_agg(row("
+						+ "relmt.meaning_id, "
+						+ "relmt.lexeme_id, "
+						+ "relmt.definitions, "
+						+ "relmt.usages, "
+						+ "relmt.lex_register_codes, "
+						+ "relmt.lex_pos_codes)::type_word_rel_meaning)", TypeWordRelMeaningRecord[].class))
 				.from(relmt)
 				.asField("relm");
 
@@ -186,14 +191,14 @@ public class SynSearchDbService extends AbstractDataDbService {
 						rr.field("word_value"),
 						rr.field("word_value_prese"),
 						rr.field("word_homonym_nr"),
-						rwhe.as("homonyms_exist"),
 						rr.field("word_lang"),
 						rr.field("word_type_codes"),
 						rr.field("prefixoid"),
 						rr.field("suffixoid"),
 						rr.field("foreign"),
 						rr.field("word_meanings"),
-						rr.field("word_lexemes_poses"))
+						rr.field("word_lexemes_poses"),
+						rwhe.as("homonyms_exist"))
 				.from(rr)
 				.orderBy(rr.field("order_by"))
 				.fetch(record -> {
@@ -248,7 +253,13 @@ public class SynSearchDbService extends AbstractDataDbService {
 				.asTable("relmt");
 
 		Field<TypeWordRelMeaningRecord[]> relm = DSL
-				.select(DSL.field("array_agg(row(relmt.meaning_id, relmt.lexeme_id, null, null, null, relmt.lex_pos_codes)::type_word_rel_meaning)", TypeWordRelMeaningRecord[].class))
+				.select(DSL.field("array_agg(row("
+						+ "relmt.meaning_id, "
+						+ "relmt.lexeme_id, "
+						+ "null, "
+						+ "null, "
+						+ "null, "
+						+ "relmt.lex_pos_codes)::type_word_rel_meaning)", TypeWordRelMeaningRecord[].class))
 				.from(relmt)
 				.asField("relm");
 
@@ -339,29 +350,22 @@ public class SynSearchDbService extends AbstractDataDbService {
 
 		Lexeme l = LEXEME.as("l");
 		Dataset ds = DATASET.as("ds");
-
+		List<Field<?>> lexemeFields = queryHelper.getLexemeFields(l, ds, classifierLabelLang, CLASSIF_LABEL_TYPE_DESCRIP);
 		Condition dsWhere = searchFilterHelper.applyDatasetRestrictions(l, searchDatasetsRestriction, null);
 
-		Field<JSON> lposf = queryHelper.getLexemePosField(l.ID, classifierLabelLang, CLASSIF_LABEL_TYPE_DESCRIP);
-		Field<JSON> lregf = queryHelper.getLexemeRegistersField(l.ID, classifierLabelLang, CLASSIF_LABEL_TYPE_DESCRIP);
-
 		return mainDb
-				.select(
-						l.MEANING_ID,
-						l.WORD_ID,
-						l.ID.as("lexeme_id"),
-						l.DATASET_CODE,
-						l.LEVEL1,
-						l.LEVEL2,
-						l.WEIGHT,
-						l.COMPLEXITY,
-						l.IS_PUBLIC,
-						lposf.as("pos"),
-						lregf.as("registers"))
-				.from(l.innerJoin(ds).on(ds.CODE.eq(l.DATASET_CODE)))
-				.where(l.WORD_ID.eq(wordId).and(dsWhere))
+				.select(lexemeFields)
+				.from(l, ds)
+				.where(
+						l.WORD_ID.eq(wordId)
+								.and(l.DATASET_CODE.eq(ds.CODE))
+								.and(dsWhere))
 				.orderBy(ds.ORDER_BY, l.LEVEL1, l.LEVEL2)
-				.fetchInto(eki.ekilex.data.Lexeme.class);
+				.fetch(record -> {
+					eki.ekilex.data.Lexeme pojo = record.into(eki.ekilex.data.Lexeme.class);
+					queryHelper.replaceNullCollections(pojo);
+					return pojo;
+				});
 	}
 
 	public List<eki.ekilex.data.WordRelation> getExistingFollowingRelationsForWord(Long relationId, String relTypeCode) {

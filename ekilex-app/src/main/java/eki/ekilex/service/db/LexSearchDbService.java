@@ -182,7 +182,6 @@ public class LexSearchDbService extends AbstractDataDbService {
 				.fetchInto(ParadigmFormTuple.class);
 	}
 
-	// TODO apply word?
 	public List<eki.ekilex.data.Lexeme> getWordLexemes(Long wordId, SearchDatasetsRestriction searchDatasetsRestriction, String classifierLabelLang) {
 
 		Lexeme l = LEXEME.as("l");
