@@ -17677,10 +17677,14 @@ body {
   box-shadow: 0px 2px 2px 0px #0000001A;
 }
 
+.search-filter__menu--small {
+  width: auto;
+}
+
 @media (max-width: 991.98px) {
   .search-filter__menu {
     grid-template-columns: 1fr;
-    width: auto;
+    grid-auto-flow: row;
   }
 }
 

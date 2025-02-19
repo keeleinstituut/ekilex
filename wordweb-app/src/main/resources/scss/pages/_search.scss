@@ -549,9 +549,13 @@
     border: 1px solid var(--color-bluish-gray);
     box-shadow: 0px 2px 2px 0px #0000001A;
 
+    &--small {
+      width: auto;
+    }
+
     @include media-breakpoint-down(md) {
       grid-template-columns: 1fr;
-      width: auto;
+      grid-auto-flow: row;
     }
 
     &.show {

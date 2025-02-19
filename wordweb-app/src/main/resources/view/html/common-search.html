@@ -89,7 +89,7 @@
         <span class="search-filter__toggle-count" id="lang-filter-count"></span>
       </button>
       <div
-        class="dropdown-menu search-filter__menu"
+        class="dropdown-menu search-filter__menu search-filter__menu--small"
         aria-labelledby="lang-filters-popover"
         th:style="|--search-filter-rows: ${#lists.size(langFilter) + 1}|">
         <th:block th:each="filterElem : ${langFilter}">
