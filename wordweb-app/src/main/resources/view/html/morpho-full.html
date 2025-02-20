@@ -38,7 +38,7 @@
         <th:block th:if="${form.audioFileExists}">
           <button type="button" aria-label="Kuula hääldust - lugemas" th:if="${#strings.isEmpty(prefix)}"
                   th:data-audio-url="@{'/files/audio/' + ${form.audioFile}}"
-                  onclick="generateAudioAndPlay(this)" class="btn btn-speaker btn-speaker--inactive" >
+                  onclick="getAndPlayAudio(this)" class="btn btn-speaker btn-speaker--inactive" >
             <span class="icon icon-speaker"></span>
           </button>
         </th:block>
@@ -46,7 +46,7 @@
           <button type="button" aria-label="Kuula hääldust - lugemas" th:if="${#strings.isEmpty(prefix)}"
                   th:data-text="${form.displayForm}"
                   data-service-id="morpho"
-                  onclick="generateAudioAndPlay(this)" class="btn btn-speaker btn-speaker--inactive">
+                  onclick="getAndPlayAudio(this)" class="btn btn-speaker btn-speaker--inactive">
             <span class="icon icon-speaker text-info"></span>
           </button>
         </th:block>
@@ -154,7 +154,12 @@
         <th:block th:replace=" :: table-header_est"></th:block>
         <div class="modal-body">
           <th:block th:replace=" :: table-checks_est"></th:block>
-          <p th:utext="${paradigm.vocalForm}" th:if="${paradigm.vocalForm}"></p>
+          <th:block th:if="${paradigm.vocalForm}">
+            <p>
+              <strong th:text="|#{label.morpho.vocalform}:|"></strong>
+              <span th:utext="${paradigm.vocalForm}"></span>
+            </p>
+          </th:block>
           <p th:utext="${paradigm.morphComment}" th:if="${paradigm.morphComment}"></p>
           <p th:utext="${paradigm.paradigmComment}" class="paradigm-text"></p>
           <div>
@@ -183,7 +188,12 @@
         <div class="modal-body">
           <th:block th:replace=" :: table-checks_est"></th:block>
           <div>
-            <p th:utext="${paradigm.vocalForm}" th:if="${paradigm.vocalForm}"></p>
+            <th:block th:if="${paradigm.vocalForm}">
+              <p>
+                <strong th:text="|#{label.morpho.vocalform}:|"></strong>
+                <span th:utext="${paradigm.vocalForm}"></span>
+              </p>
+            </th:block>
             <p th:utext="${paradigm.morphComment}" th:if="${paradigm.morphComment}"></p>
             <p th:utext="${paradigm.paradigmComment}" class="paradigm-text"></p>
             <p>
@@ -1101,7 +1111,12 @@
         <div class="modal-body">
           <th:block th:replace=" :: table-checks_est"></th:block>
           <div>
-            <p th:utext="${paradigm.vocalForm}" th:if="${paradigm.vocalForm}"></p>
+            <th:block th:if="${paradigm.vocalForm}">
+              <p>
+                <strong th:text="|#{label.morpho.vocalform}:|"></strong>
+                <span th:utext="${paradigm.vocalForm}"></span>
+              </p>
+            </th:block>
             <p th:utext="${paradigm.morphComment}" th:if="${paradigm.morphComment}"></p>
             <p th:utext="${paradigm.paradigmComment}" class="paradigm-text"></p>
             <p>
@@ -1340,7 +1355,12 @@
         </div>
         <div class="modal-body">
           <div>
-            <p th:utext="${paradigm.vocalForm}" th:if="${paradigm.vocalForm}"></p>
+            <th:block th:if="${paradigm.vocalForm}">
+              <p>
+                <strong th:text="|#{label.morpho.vocalform}:|"></strong>
+                <span th:utext="${paradigm.vocalForm}"></span>
+              </p>
+            </th:block>
             <p th:utext="${paradigm.morphComment}" th:if="${paradigm.morphComment}"></p>
             <p th:utext="${paradigm.paradigmComment}" class="paradigm-text"></p>
             <div class="scrollable-table">
@@ -1763,7 +1783,12 @@
         </div>
         <div class="modal-body">
           <div>
-            <p th:utext="${paradigm.vocalForm}" th:if="${paradigm.vocalForm}"></p>
+            <th:block th:if="${paradigm.vocalForm}">
+              <p>
+                <strong th:text="|#{label.morpho.vocalform}:|"></strong>
+                <span th:utext="${paradigm.vocalForm}"></span>
+              </p>
+            </th:block>
             <p th:utext="${paradigm.morphComment}" th:if="${paradigm.morphComment}"></p>
             <p th:utext="${paradigm.paradigmComment}" class="paradigm-text"></p>
             <div class="scrollable-table">
@@ -1917,7 +1942,12 @@
         </div>
         <div class="modal-body">
           <div>
-            <p th:utext="${paradigm.vocalForm}" th:if="${paradigm.vocalForm}"></p>
+            <th:block th:if="${paradigm.vocalForm}">
+              <p>
+                <strong th:text="|#{label.morpho.vocalform}:|"></strong>
+                <span th:utext="${paradigm.vocalForm}"></span>
+              </p>
+            </th:block>
             <p th:utext="${paradigm.morphComment}" th:if="${paradigm.morphComment}"></p>
             <p th:utext="${paradigm.paradigmComment}" class="paradigm-text"></p>
             <div class="scrollable-table">
@@ -2333,7 +2363,12 @@
         </div>
         <div class="modal-body">
           <div>
-            <p th:utext="${paradigm.vocalForm}" th:if="${paradigm.vocalForm}"></p>
+            <th:block th:if="${paradigm.vocalForm}">
+              <p>
+                <strong th:text="|#{label.morpho.vocalform}:|"></strong>
+                <span th:utext="${paradigm.vocalForm}"></span>
+              </p>
+            </th:block>
             <p th:utext="${paradigm.morphComment}" th:if="${paradigm.morphComment}"></p>
             <p th:utext="${paradigm.paradigmComment}" class="paradigm-text"></p>
             <th:block th:replace=" :: morpho-rus-adj-basetable(${paradigm})"></th:block>
@@ -2357,7 +2392,12 @@
         </div>
         <div class="modal-body">
           <div>
-            <p th:utext="${paradigm.vocalForm}" th:if="${paradigm.vocalForm}"></p>
+            <th:block th:if="${paradigm.vocalForm}">
+              <p>
+                <strong th:text="|#{label.morpho.vocalform}:|"></strong>
+                <span th:utext="${paradigm.vocalForm}"></span>
+              </p>
+            </th:block>
             <p th:utext="${paradigm.morphComment}" th:if="${paradigm.morphComment}"></p>
             <p th:utext="${paradigm.paradigmComment}" class="paradigm-text"></p>
             <h2>Прилагательное / Omadussõna</h2>
@@ -2434,7 +2474,12 @@
         </div>
         <div class="modal-body">
           <div>
-            <p th:utext="${paradigm.vocalForm}" th:if="${paradigm.vocalForm}"></p>
+            <th:block th:if="${paradigm.vocalForm}">
+              <p>
+                <strong th:text="|#{label.morpho.vocalform}:|"></strong>
+                <span th:utext="${paradigm.vocalForm}"></span>
+              </p>
+            </th:block>
             <p th:utext="${paradigm.morphComment}" th:if="${paradigm.morphComment}"></p>
             <p th:utext="${paradigm.paradigmComment}" class="paradigm-text"></p>
             <h2>Превосходная степень / Ülivõrre</h2>
@@ -2459,7 +2504,12 @@
         </div>
         <div class="modal-body">
           <div>
-            <p th:utext="${paradigm.vocalForm}" th:if="${paradigm.vocalForm}"></p>
+            <th:block th:if="${paradigm.vocalForm}">
+              <p>
+                <strong th:text="|#{label.morpho.vocalform}:|"></strong>
+                <span th:utext="${paradigm.vocalForm}"></span>
+              </p>
+            </th:block>
             <p th:utext="${paradigm.morphComment}" th:if="${paradigm.morphComment}"></p>
             <p th:utext="${paradigm.paradigmComment}" class="paradigm-text"></p>
             <h2>Причастие / Kesksõna</h2>
@@ -2536,7 +2586,12 @@
         </div>
         <div class="modal-body">
           <div>
-            <p th:utext="${paradigm.vocalForm}" th:if="${paradigm.vocalForm}"></p>
+            <th:block th:if="${paradigm.vocalForm}">
+              <p>
+                <strong th:text="|#{label.morpho.vocalform}:|"></strong>
+                <span th:utext="${paradigm.vocalForm}"></span>
+              </p>
+            </th:block>
             <p th:utext="${paradigm.morphComment}" th:if="${paradigm.morphComment}"></p>
             <p th:utext="${paradigm.paradigmComment}" class="paradigm-text"></p>
             <div class="scrollable-table">

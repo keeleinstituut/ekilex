@@ -144,7 +144,7 @@
       <span class="word-details-homonym-nr d-none mr-2" th:aria-label="|#{aria.homonym} ${wordData.word.homonymNr}|" th:text="${wordData.word.homonymNr}">1</span>
       <button th:aria-label="|#{aria.listen} - ${wordData.word.word}|" class="btn btn-speaker"
               th:if="${wordData.firstAvailableAudioFile != null}"
-              th:data-audio-url="@{'/files/audio/' + ${wordData.firstAvailableAudioFile}}" onclick="generateAudioAndPlay(this)">
+              th:data-audio-url="@{'/files/audio/' + ${wordData.firstAvailableAudioFile}}" onclick="getAndPlayAudio(this)">
         <span class="icon icon-speaker"></span>
       </button>
       <span id="spellingLine" class="mr-2" th:if="${wordData.word.vocalForm != null}" th:text="${wordData.word.vocalForm}"></span>

@@ -8,7 +8,7 @@ function playAudio(audioUrl, onEndedCallback) {
 	music.play();
 }
 
-function generateAudioAndPlay(e) {
+function getAndPlayAudio(e) {
 	var elem = $(e);
 	if (elem.data('is-playing') !== undefined) {
 		return;

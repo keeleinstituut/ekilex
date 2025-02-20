@@ -384,7 +384,7 @@
                           <button class="btn btn-speaker btn-speaker--inactive" th:aria-label="|#{aria.listen} - ${usage.value}|" th:if="${usage.putOnSpeaker}"
                                   th:data-text="${usage.value}"
                                   data-service-id="speech"
-                                  th:attr="onclick=${usage.putOnSpeaker ? 'generateAudioAndPlay(this)' : ''}">
+                                  th:attr="onclick=${usage.putOnSpeaker ? 'getAndPlayAudio(this)' : ''}">
                             <span class="icon icon-speaker"></span>
                           </button>
                         </span>
@@ -417,7 +417,7 @@
                               <button class="btn btn-speaker btn-speaker--inactive" th:aria-label="|#{aria.listen} - ${usage.value}|" th:if="${usage.putOnSpeaker}"
                                       th:data-text="${usage.value}"
                                       data-service-id="speech"
-                                      th:attr="onclick=${usage.putOnSpeaker ? 'generateAudioAndPlay(this)' : ''}">
+                                      th:attr="onclick=${usage.putOnSpeaker ? 'getAndPlayAudio(this)' : ''}">
                                 <span class="icon icon-speaker"></span>
                               </button>
                             </span>
@@ -560,7 +560,7 @@
                                 <button th:aria-label="|#{aria.listen} - ${collocUsage}|" class="btn btn-speaker btn-speaker--inactive"
                                         th:data-text="${collocUsage}"
                                         data-service-id="speech"
-                                        onclick="generateAudioAndPlay(this)">
+                                        onclick="getAndPlayAudio(this)">
                                   <span class="icon icon-speaker"></span>
                                 </button>
                               </div>

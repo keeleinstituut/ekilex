@@ -13,7 +13,7 @@
           <th:block th:if="${form.audioFileExists}">
             <button type="button" aria-label="Kuula hääldust - lugemas"
                     th:data-audio-url="@{'/files/audio/' + ${form.audioFile}}"
-                    onclick="generateAudioAndPlay(this)" class="btn btn-speaker btn-speaker--inactive" >
+                    onclick="getAndPlayAudio(this)" class="btn btn-speaker btn-speaker--inactive" >
               <span class="icon icon-speaker"></span>
             </button>
           </th:block>
@@ -21,7 +21,7 @@
             <button type="button" aria-label="Kuula hääldust - lugemas"
                     th:data-text="${form.displayForm}"
                     data-service-id="morpho"
-                    onclick="generateAudioAndPlay(this)" class="btn btn-speaker btn-speaker--inactive">
+                    onclick="getAndPlayAudio(this)" class="btn btn-speaker btn-speaker--inactive">
               <span class="icon icon-speaker text-info"></span>
             </button>
           </th:block>
