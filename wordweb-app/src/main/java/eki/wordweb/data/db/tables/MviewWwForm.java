@@ -49,11 +49,6 @@ public class MviewWwForm extends TableImpl<MviewWwFormRecord> {
     public final TableField<MviewWwFormRecord, Long> WORD_ID = createField(DSL.name("word_id"), SQLDataType.BIGINT, this, "");
 
     /**
-     * The column <code>public.mview_ww_form.word_class</code>.
-     */
-    public final TableField<MviewWwFormRecord, String> WORD_CLASS = createField(DSL.name("word_class"), SQLDataType.VARCHAR(100), this, "");
-
-    /**
      * The column <code>public.mview_ww_form.word</code>.
      */
     public final TableField<MviewWwFormRecord, String> WORD = createField(DSL.name("word"), SQLDataType.CLOB, this, "");
@@ -62,6 +57,11 @@ public class MviewWwForm extends TableImpl<MviewWwFormRecord> {
      * The column <code>public.mview_ww_form.lang</code>.
      */
     public final TableField<MviewWwFormRecord, String> LANG = createField(DSL.name("lang"), SQLDataType.CHAR(3), this, "");
+
+    /**
+     * The column <code>public.mview_ww_form.vocal_form</code>.
+     */
+    public final TableField<MviewWwFormRecord, String> VOCAL_FORM = createField(DSL.name("vocal_form"), SQLDataType.CLOB, this, "");
 
     /**
      * The column <code>public.mview_ww_form.morph_comment</code>.
@@ -87,6 +87,11 @@ public class MviewWwForm extends TableImpl<MviewWwFormRecord> {
      * The column <code>public.mview_ww_form.inflection_type_nr</code>.
      */
     public final TableField<MviewWwFormRecord, String> INFLECTION_TYPE_NR = createField(DSL.name("inflection_type_nr"), SQLDataType.VARCHAR(100), this, "");
+
+    /**
+     * The column <code>public.mview_ww_form.word_class</code>.
+     */
+    public final TableField<MviewWwFormRecord, String> WORD_CLASS = createField(DSL.name("word_class"), SQLDataType.VARCHAR(100), this, "");
 
     /**
      * The column <code>public.mview_ww_form.form_id</code>.

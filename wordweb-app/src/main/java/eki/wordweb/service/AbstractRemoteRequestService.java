@@ -24,14 +24,14 @@ public abstract class AbstractRemoteRequestService implements SystemConstant, Gl
 
 	private final int CONNECTION_TIMEOUT_SEC = 5;
 
-	protected Map<String, Object> request(URI corpusUrl) {
+	protected Map<String, Object> request(URI requestUrl) {
 
 		Map<String, Object> response = Collections.emptyMap();
-		if (isNotEnabled(corpusUrl)) {
+		if (requestUrl == null) {
 			return response;
 		}
 
-		String responseAsString = doGetRequest(corpusUrl);
+		String responseAsString = doGetRequest(requestUrl);
 		if (responseAsString != null) {
 			JsonParser jsonParser = JsonParserFactory.getJsonParser();
 			response = jsonParser.parseMap(responseAsString);
@@ -66,10 +66,6 @@ public abstract class AbstractRemoteRequestService implements SystemConstant, Gl
 			logger.error(e.getMessage());
 		}
 		return responseBody;
-	}
-
-	private boolean isNotEnabled(URI corpusUrl) {
-		return corpusUrl == null;
 	}
 
 }

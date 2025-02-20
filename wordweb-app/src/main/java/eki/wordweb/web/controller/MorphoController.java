@@ -30,6 +30,7 @@ public class MorphoController implements WebConstant, SystemConstant, GlobalCons
 
 		Integer maxDisplayLevel = SIMPLE_MORPHOLOGY_MAX_DISPLAY_LEVEL;
 		boolean excludeQuestionable = true;
+
 		return getMorpho(paradigmId, lang, maxDisplayLevel, excludeQuestionable, model);
 	}
 
@@ -41,15 +42,17 @@ public class MorphoController implements WebConstant, SystemConstant, GlobalCons
 
 		Integer maxDisplayLevel = DEFAULT_MORPHOLOGY_MAX_DISPLAY_LEVEL;
 		boolean excludeQuestionable = false;
+
 		return getMorpho(paradigmId, lang, maxDisplayLevel, excludeQuestionable, model);
 	}
 
 	private String getMorpho(Long paradigmId, String lang, Integer maxDisplayLevel, boolean excludeQuestionable, Model model) {
 
 		Paradigm paradigm = morphoService.getParadigm(paradigmId, maxDisplayLevel, excludeQuestionable);
-		model.addAttribute("paradigm", paradigm);
 		String wordClass = paradigm.getWordClass();
 		String viewFragment = "morpho-" + wordClass + '_' + lang;
+		model.addAttribute("paradigm", paradigm);
+
 		return MORPHO_FULL_PAGE + " :: " + viewFragment;
 	}
 

@@ -7,9 +7,9 @@ public class Form extends AbstractDataObject {
 
 	private static final long serialVersionUID = 1L;
 
-	private String wordClass;
-
 	private String lang;
+
+	private String vocalForm;
 
 	private String morphComment;
 
@@ -20,6 +20,8 @@ public class Form extends AbstractDataObject {
 	private String inflectionType;
 
 	private String inflectionTypeNr;
+
+	private String wordClass;
 
 	private Long formId;
 
@@ -71,20 +73,20 @@ public class Form extends AbstractDataObject {
 
 	private String displayFormsWrapup;
 
-	public String getWordClass() {
-		return wordClass;
-	}
-
-	public void setWordClass(String wordClass) {
-		this.wordClass = wordClass;
-	}
-
 	public String getLang() {
 		return lang;
 	}
 
 	public void setLang(String lang) {
 		this.lang = lang;
+	}
+
+	public String getVocalForm() {
+		return vocalForm;
+	}
+
+	public void setVocalForm(String vocalForm) {
+		this.vocalForm = vocalForm;
 	}
 
 	public String getMorphComment() {
@@ -125,6 +127,14 @@ public class Form extends AbstractDataObject {
 
 	public void setInflectionTypeNr(String inflectionTypeNr) {
 		this.inflectionTypeNr = inflectionTypeNr;
+	}
+
+	public String getWordClass() {
+		return wordClass;
+	}
+
+	public void setWordClass(String wordClass) {
+		this.wordClass = wordClass;
 	}
 
 	public Long getFormId() {

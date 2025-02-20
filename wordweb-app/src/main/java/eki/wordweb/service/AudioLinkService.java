@@ -44,8 +44,7 @@ public class AudioLinkService extends AbstractRemoteRequestService {
 	private String getAudioLinkFromService(String text, String serviceUrl) {
 
 		URI url = UriComponentsBuilder
-				.fromUriString(speechSynthesizerUrl)
-				.queryParam("haal", 15) // 14 <- female voice
+				.fromUriString(serviceUrl)
 				.queryParam("tekst", text)
 				.build()
 				.toUri();

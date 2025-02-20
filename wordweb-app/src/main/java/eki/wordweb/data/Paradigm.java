@@ -11,15 +11,17 @@ public class Paradigm extends AbstractDataObject {
 
 	private Long paradigmId;
 
-	private String wordClass;
+	private String vocalForm;
 
 	private String morphComment;
 
 	private String paradigmComment;
 
 	private String inflectionType;
-	
+
 	private String inflectionTypeNr;
+
+	private String wordClass;
 
 	private Map<String, List<Form>> formMorphCodeMap;
 
@@ -31,12 +33,12 @@ public class Paradigm extends AbstractDataObject {
 		this.paradigmId = paradigmId;
 	}
 
-	public String getWordClass() {
-		return wordClass;
+	public String getVocalForm() {
+		return vocalForm;
 	}
 
-	public void setWordClass(String wordClass) {
-		this.wordClass = wordClass;
+	public void setVocalForm(String vocalForm) {
+		this.vocalForm = vocalForm;
 	}
 
 	public String getMorphComment() {
@@ -69,6 +71,14 @@ public class Paradigm extends AbstractDataObject {
 
 	public void setInflectionTypeNr(String inflectionTypeNr) {
 		this.inflectionTypeNr = inflectionTypeNr;
+	}
+
+	public String getWordClass() {
+		return wordClass;
+	}
+
+	public void setWordClass(String wordClass) {
+		this.wordClass = wordClass;
 	}
 
 	public Map<String, List<Form>> getFormMorphCodeMap() {
