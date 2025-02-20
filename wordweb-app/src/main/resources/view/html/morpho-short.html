@@ -45,7 +45,7 @@
   <th:block th:fragment="morpho-paradigm-header(paradigm)">
     <th:block th:if="${paradigm.inflectionTypeNr} and ${paradigm.inflectionTypeNr} != 41 and ${paradigm.inflectionTypeNr} != 0">
       <p class="btn-bold mt-3">
-        <span th:text="#{label.morpho.inflectiontype}">Muuttüüp</span>
+        <span class="text-body-two" th:text="#{label.morpho.inflectiontype}">Muuttüüp</span>
         <th:block th:switch="${paradigm.inflectionType}">
           <th:block th:case="'1'"   ><th:block th:replace=" :: printurl ('https://eki.ee/teatmik/kaandsona-tuup-1-ohutu-veski/#1.-ohutu')"></th:block></th:block>
           <th:block th:case="'1e'"  ><th:block th:replace=" :: printurl ('https://eki.ee/teatmik/kaandsona-tuup-1-ohutu-veski/#1e.-veski')"></th:block></th:block>
@@ -141,8 +141,7 @@
   </th:block>
   <th:block th:fragment="morpho-paradigm-footer(paradigm)">
     <div class="modal-button">
-      <button type="button" class="btn btn-bold pl-0 pr-0" data-toggle="modal" th:data-target="${'#morpho-modal-' + paradigmIter.index}">
-        <i class="fa fa-expand-alt"></i>
+      <button type="button" class="btn btn-anchor" data-toggle="modal" th:data-target="${'#morpho-modal-' + paradigmIter.index}">
         <span th:text="#{button.morpho.show}">Näita tabelina</span>
       </button>
       <div class="modal wordmodal" tabindex="-1" role="dialog" aria-labelledby="Modaali pealkiri" aria-hidden="true"

@@ -1,14 +1,16 @@
 <!DOCTYPE HTML>
 <html xmlns:th="http://www.thymeleaf.org">
 <body>
-    <section class="search__sidebar-block search__block" id="word-morphology-results" th:fragment="paradigms">
+    <section class="search__sidebar-block search__block text-body-two" id="word-morphology-results" th:fragment="paradigms">
       <th:block th:if="${wordData.morphologyExists}">
-        <h5 class="font-weight-bold mb-0 d-flex align-items-center text-dark">
-          <span th:text="#{label.word.forms}">Sõnavormid</span>
+        <div class="d-flex align-items-center">
+          <h2 class="search__sidebar-block-title" th:text="#{label.word.forms}">
+            Sõnavormid
+          </h2>
           <button type="button" class="btn btn-icon btn-sm" th:aria-label="#{forms.dataset.title}" data-toggle="tooltip" th:title="#{forms.dataset.title}">
             <i class="fas fa-info-circle"></i>
           </button>
-        </h5>
+        </div>
         <div th:if="${wordData.word.morphComment}">
           <span th:utext="${wordData.word.morphComment}"></span>
         </div>
@@ -23,17 +25,19 @@
         </th:block>
       </th:block>
       <th:block th:unless="${wordData.morphologyExists}">
-        <h5 class="font-weight-bold mb-0 d-flex align-items-center text-dark">
-          <span th:text="#{label.word.forms}">Sõnavormid</span>
+        <div class="d-flex align-items-center">
+          <h2 class="search__sidebar-block-title" th:text="#{label.word.forms}">
+            Sõnavormid
+          </h2>
           <button type="button" class="btn btn-icon btn-sm" th:aria-label="#{forms.dataset.title}" data-toggle="tooltip" data-placement="bottom" th:title="#{forms.dataset.title}">
             <i class="fas fa-info-circle"></i>
           </button>
-        </h5>
+        </div>
         <span th:text="#{label.no.data}">Andmed puuduvad</span>
       </th:block>
     </section>
   <th:block th:fragment="od-word-recommendations">
-    <section class="search__sidebar-block search__block" th:if="${not #lists.isEmpty(wordData.word.odWordRecommendations)}">
+    <section class="search__sidebar-block search__block text-body-two" th:if="${not #lists.isEmpty(wordData.word.odWordRecommendations)}">
       <th:block th:each="odWordRecommendation : ${wordData.word.odWordRecommendations}">
         <div>
           <h5 class="recommended-usage-label">
@@ -51,14 +55,16 @@
     </section>
   </th:block>
   <th:block th:fragment="word-relations">
-    <section class="search__sidebar-block search__block">
+    <section class="search__sidebar-block search__block text-body-two">
       <div class="word-relations">
-        <h5 class="font-weight-bold d-flex align-items-center text-dark">
-          <span th:text="#{label.word.relations}">Sõna seosed</span>
+        <div class="d-flex align-items-center">
+          <h2 class="search__sidebar-block-title" th:text="#{label.word.relations}">
+            Sõna seosed
+          </h2>
           <button type="button" th:aria-label="#{label.word.relations.info}" class="btn btn-icon btn-sm" data-toggle="tooltip" data-placement="top" th:title="#{label.word.relations.info}">
             <i class="fas fa-info-circle"></i>
           </button>
-        </h5>
+        </div>
         <div th:unless="${wordData.word.wordRelationsExist}">
           <span th:text="#{label.no.data}">Andmed puuduvad</span>
         </div>
@@ -104,22 +110,25 @@
     </section>
     <th:block th:if="${not #lists.isEmpty(wordData.word.primaryRelatedWordTypeGroups)}">
       <th:block th:each="relationTypeGroup,relGroupIter : ${wordData.word.primaryRelatedWordTypeGroups}">
-        <section class="search__sidebar-block search__block" th:id="${relationTypeGroup.wordRelType.code.equals('ühend') ? 'word-relation-results' : null}">
+        <section class="search__sidebar-block search__block text-body-two" th:id="${relationTypeGroup.wordRelType.code.equals('ühend') ? 'word-relation-results' : null}">
           <div class="word-relations">
-            <h5 class="font-weight-bold d-flex align-items-center text-dark">
-              <th:block th:if="${relationTypeGroup.collapsible}">
-                <a data-toggle="collapse" th:href="|#word-rel-type-collapse-${relationTypeGroup.wordRelType.code}|">
+            <div class="d-flex align-items-center">
+              <h2 class="search__sidebar-block-title">
+                <th:block th:if="${relationTypeGroup.collapsible}">
+                  <a data-toggle="collapse" th:href="|#word-rel-type-collapse-${relationTypeGroup.wordRelType.code}|"
+                    th:text="${#strings.capitalize(relationTypeGroup.wordRelType.value)}">
+                    Sõna seose liik
+                  </a>
+                </th:block>
+                <th:block th:unless="${relationTypeGroup.collapsible}">
                   <span th:text="${#strings.capitalize(relationTypeGroup.wordRelType.value)}">Sõna seose liik</span>
-                </a>
-              </th:block>
-              <th:block th:unless="${relationTypeGroup.collapsible}">
-                <span th:text="${#strings.capitalize(relationTypeGroup.wordRelType.value)}">Sõna seose liik</span>
-              </th:block>
+                </th:block>
+              </h2>
               <button type="button" th:aria-label="#{label.word.primary.relations.info}" class="btn btn-icon btn-sm" data-toggle="tooltip" data-placement="top"
                 th:title="#{label.word.primary.relations.info}">
                 <i class="fas fa-info-circle"></i>
               </button>
-            </h5>
+            </div>
             <th:block th:if="${relationTypeGroup.collapsible}" th:with="collapseName=|word-rel-type-${relationTypeGroup.wordRelType.code}-panel|">
               <div th:id="|word-rel-type-collapse-${relationTypeGroup.wordRelType.code}|" th:data-name="${collapseName}" class="collapse user-preference"
                 th:classappend="${#lists.contains(uiSections, collapseName) ? 'show' : ''}">
@@ -209,10 +218,12 @@
     </th:block>
   </th:block>
   <th:block th:fragment="etymology">
-    <section class="search__sidebar-block search__block" id="word-etymology-results">
+    <section class="search__sidebar-block search__block text-body-two" id="word-etymology-results">
       <div>
-        <h5 class="font-weight-bold d-flex align-items-center text-dark">
-          <span th:text="#{label.word.etymology}">Päritolu</span>
+        <div class="d-flex align-items-center flex-wrap">
+          <h2 class="search__sidebar-block-title" th:text="#{label.word.etymology}">
+            Päritolu
+          </h2>
           <button type="button" th:aria-label="#{label.word.etymology.info}" class="btn btn-icon btn-sm" data-toggle="tooltip" data-placement="top" th:title="#{label.word.etymology.info}">
             <i class="fas fa-info-circle"></i>
           </button>
@@ -220,7 +231,7 @@
             <span class="tag" style='font-variant: small-caps;' th:if="${wordData.word.wordEtymologyTree.etymologyType != null}" th:text="${wordData.word.wordEtymologyTree.etymologyType.value}">
             </span>
           </th:block>
-        </h5>
+        </div>
         <div th:if="${wordData.word.wordEtymologyTree == null}">
           <span th:text="#{label.no.data}">Andmed puuduvad</span>
         </div>
@@ -261,34 +272,30 @@
     </li>
   </th:block>
   <th:block th:fragment="keelenou">
-    <section class="search__sidebar-block search__block" th:if="${wordData.estHeadword || wordData.rusHeadword}">
+    <section class="search__sidebar-block search__block text-body-two" th:if="${wordData.estHeadword || wordData.rusHeadword}">
       <div class="corp-panel">
-        <div class="mb-0">
-          <h5 class="font-weight-bold mb-0">
-            <span th:text="#{label.same.word}"></span>
-            <a th:if="${wordData.estHeadword}" th:aria-label="|#{aria.search.from.keelenou} ${wordData.word.word}, #{aria.new.window}|" th:href="${ekiKeeleinfoUrl}" target="_blank">
-              <span th:text="#{label.same.word.eki}">EKI teistes sõnastikes</span>
-              <i class="fas fa-external-link-alt" aria-hidden="true"></i>
-            </a>
-            <a th:if="${wordData.rusHeadword}" th:aria-label="|#{aria.search.from.eki.rus.est} ${wordData.word.word}, #{aria.new.window}|"
-              th:href="${@viewUtil.getEkiOldskoolRusDictUrl(wordData.word.word)}" target="_blank">
-              <span th:text="#{label.same.word.rusest}">vene-eesti sõnaraamatus</span>
-              <i class="fas fa-external-link-alt" aria-hidden="true"></i>
-            </a>
-          </h5>
+        <div class="mb-0 d-flex align-items-center">
+          <h2 class="search__sidebar-block-title" th:text="#{label.same.word}"></h2>
+          <a th:if="${wordData.estHeadword}" th:aria-label="|#{aria.search.from.keelenou} ${wordData.word.word}, #{aria.new.window}|" th:href="${ekiKeeleinfoUrl}" target="_blank">
+            <span th:text="#{label.same.word.eki}">EKI teistes sõnastikes</span>
+            <i class="fas fa-external-link-alt" aria-hidden="true"></i>
+          </a>
+          <a th:if="${wordData.rusHeadword}" th:aria-label="|#{aria.search.from.eki.rus.est} ${wordData.word.word}, #{aria.new.window}|"
+            th:href="${@viewUtil.getEkiOldskoolRusDictUrl(wordData.word.word)}" target="_blank">
+            <span th:text="#{label.same.word.rusest}">vene-eesti sõnaraamatus</span>
+            <i class="fas fa-external-link-alt" aria-hidden="true"></i>
+          </a>
         </div>
       </div>
     </section>
-    <section class="search__sidebar-block search__block">
+    <section class="search__sidebar-block search__block text-body-two">
       <div class="corp-panel">
-        <div class="mb-0">
-          <h5 class="font-weight-bold mb-0">
-            <span th:text="#{label.same.word}"></span>
-            <a th:aria-label="|#{label.same.word.iate} ${wordData.word.word}, #{aria.new.window}|" th:href="${@viewUtil.getIateSearchUrl(wordData.word.word, wordData.word.lang)}" target="_blank">
-              <span th:text="#{label.same.word.iate}">IATE terminibaasis</span>
-              <i class="fas fa-external-link-alt" aria-hidden="true"></i>
-            </a>
-          </h5>
+        <div class="mb-0 d-flex align-items-center">
+          <h2 class="search__sidebar-block-title" th:text="#{label.same.word}"></h2>
+          <a th:aria-label="|#{label.same.word.iate} ${wordData.word.word}, #{aria.new.window}|" th:href="${@viewUtil.getIateSearchUrl(wordData.word.word, wordData.word.lang)}" target="_blank">
+            <span th:text="#{label.same.word.iate}">IATE terminibaasis</span>
+            <i class="fas fa-external-link-alt" aria-hidden="true"></i>
+          </a>
         </div>
       </div>
     </section>

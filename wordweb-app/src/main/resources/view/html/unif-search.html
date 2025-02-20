@@ -38,8 +38,8 @@
       <div class="sticky-scroll-panel__tags"
         th:classappend="${wordsData.resultsExist} ? '' : 'sticky-scroll-panel__tags--empty'">
         <a href="#word-morphology-results" class="sticky-scroll-panel__tag" th:text="#{label.word.forms}">Sõnavormid</a>
-        <a href="#word-relation-results" class="sticky-scroll-panel__tag" th:text="#{label.word.relations.union}">Ühendid</a>
         <a href="#word-etymology-results" class="sticky-scroll-panel__tag" th:text="#{label.word.etymology}">Päritolu</a>
+        <a href="#word-relation-results" class="sticky-scroll-panel__tag" th:text="#{label.word.relations.union}">Ühendid</a>
       </div>
     </div>
     <main id="mainContentArea" role="main" class="content-panel loading">
@@ -119,13 +119,13 @@
             <th:block th:replace="common-search-sidebar :: etymology"></th:block>
             <th:block th:replace="common-search-sidebar :: word-relations"></th:block>
             <th:block th:replace="common-search-sidebar :: keelenou"></th:block>
-            <div class="search__sidebar-block search__block" th:if="${wordData.estHeadword}">
+            <div class="search__sidebar-block search__block text-body-two" th:if="${wordData.estHeadword}">
               <div id="corp" th:text="#{label.corp.search}">Otsin veebilauseid ...</div>
             </div>
-            <div class="search__sidebar-block search__block" th:if="${wordData.estHeadword && wordData.rusContent}">
+            <div class="search__sidebar-block search__block text-body-two" th:if="${wordData.estHeadword && wordData.rusContent}">
               <div id="corpTrans" th:text="#{label.corp.translations.search}">Otsin tõlgitud näiteid ...</div>
             </div>
-            <div class="search__sidebar-block search__block" th:if="${wordData.rusHeadword}">
+            <div class="search__sidebar-block search__block text-body-two" th:if="${wordData.rusHeadword}">
               <th:block th:replace="common-search-sidebar :: corp_rus"></th:block>
             </div>
           </th:block>

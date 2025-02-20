@@ -86,7 +86,8 @@
                     </div>
                   </th:block>
                 </div>
-                <div class="meaning-meta">
+              <div class="meaning-meta"
+                  th:unless="${#lists.isEmpty(lexeme.sourceLangFullSynonyms)} OR ${#lists.isEmpty(lexeme.sourceLangNearSynonyms)}">
                   <div class="synonyms" th:unless="${#lists.isEmpty(lexeme.sourceLangFullSynonyms)}">
                     <div th:id="${'full-synonym-collapse-panel-' + lexeme.lexemeId}" class="d-flex flex-wrap align-items-center">
                       <span th:text="#{label.syno.full}" class="mr-2 search__helper-text text-caption">sama mis</span>

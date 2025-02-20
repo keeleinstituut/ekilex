@@ -160,6 +160,19 @@
     &:first-child {
       margin-top: 0;
     }
+
+    & a {
+      font-weight: 500;
+      line-height: 20px;
+    }
+  }
+
+  &__sidebar-block-title {
+    font-weight: 700;
+    font-size: 1rem;
+    color: var(--color-dark-blue);
+    line-height: 19px;
+    margin: 0 8px 0 0;
   }
 
   &__block {
@@ -536,9 +549,13 @@
     border: 1px solid var(--color-bluish-gray);
     box-shadow: 0px 2px 2px 0px #0000001A;
 
+    &--small {
+      width: auto;
+    }
+
     @include media-breakpoint-down(md) {
       grid-template-columns: 1fr;
-      width: auto;
+      grid-auto-flow: row;
     }
 
     &.show {
@@ -702,6 +719,9 @@
 
 .additional-meta {
   margin-top: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
 }
 
 
