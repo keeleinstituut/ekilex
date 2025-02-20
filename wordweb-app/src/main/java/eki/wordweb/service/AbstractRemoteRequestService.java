@@ -18,9 +18,9 @@ import org.springframework.boot.json.JsonParserFactory;
 import eki.common.constant.GlobalConstant;
 import eki.wordweb.constant.SystemConstant;
 
-public abstract class AbstractCorpusService implements SystemConstant, GlobalConstant {
+public abstract class AbstractRemoteRequestService implements SystemConstant, GlobalConstant {
 
-	private static final Logger logger = LoggerFactory.getLogger(AbstractCorpusService.class);
+	private static final Logger logger = LoggerFactory.getLogger(AbstractRemoteRequestService.class);
 
 	private final int CONNECTION_TIMEOUT_SEC = 5;
 

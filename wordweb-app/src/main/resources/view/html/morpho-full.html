@@ -35,10 +35,21 @@
         <span th:text="${prefix}" th:if="${!#strings.isEmpty(prefix) && !#strings.equals(form.value, '-')}"></span>
         <span th:utext="${form.displayForm}" class="form-display-form-field" style="display: none;"></span>
         <span th:utext="${form.valuePrese}" class="form-value-field" th:classappend="${form.questionable ? 'text-muted ml-n1' : ''}"></span>
-        <button type="button" aria-label="Kuula hääldust - lugemas" class="btn btn-speaker btn-speaker--inactive" th:if="${(form.audioFile != null) && #strings.isEmpty(prefix)}"
-          th:data-url-to-audio="@{'/files/audio/' + ${form.audioFile}}" onclick="generateAudioAndPlay(this)">
-          <span class="icon icon-speaker"></span>
-        </button>
+        <th:block th:if="${form.audioFileExists}">
+          <button type="button" aria-label="Kuula hääldust - lugemas" th:if="${#strings.isEmpty(prefix)}"
+                  th:data-audio-url="@{'/files/audio/' + ${form.audioFile}}"
+                  onclick="generateAudioAndPlay(this)" class="btn btn-speaker btn-speaker--inactive" >
+            <span class="icon icon-speaker"></span>
+          </button>
+        </th:block>
+        <th:block th:unless="${form.audioFileExists}">
+          <button type="button" aria-label="Kuula hääldust - lugemas" th:if="${#strings.isEmpty(prefix)}"
+                  th:data-text="${form.displayForm}"
+                  data-service-id="morpho"
+                  onclick="generateAudioAndPlay(this)" class="btn btn-speaker btn-speaker--inactive">
+            <span class="icon icon-speaker text-info"></span>
+          </button>
+        </th:block>
       </div>
     </th:block>
   </th:block>

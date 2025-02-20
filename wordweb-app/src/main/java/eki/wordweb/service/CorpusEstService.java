@@ -20,7 +20,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 import eki.wordweb.data.CorpusSentence;
 
 @Component
-public class CorpusEstService extends AbstractCorpusService {
+public class CorpusEstService extends AbstractRemoteRequestService {
 
 	@Value("${corpus.service.est.url:}")
 	private String serviceUrl;

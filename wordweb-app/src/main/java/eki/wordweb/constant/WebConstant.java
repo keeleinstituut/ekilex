@@ -92,6 +92,8 @@ public interface WebConstant {
 
 	String FILES_URI = "/files";
 
+	String AUDIO_LINK_URI = "/audio-link";
+
 	String USER_PREF_URI = "/user-pref";
 
 	String PROTO_URI = "/proto";

@@ -27,7 +27,7 @@ import eki.common.web.AppDataHolder;
 import eki.wordweb.constant.SystemConstant;
 import eki.wordweb.constant.WebConstant;
 import eki.wordweb.service.FileService;
-import eki.wordweb.service.SpeechSynthesisService;
+import eki.wordweb.service.AudioLinkService;
 
 @ConditionalOnWebApplication
 @RestController
@@ -39,19 +39,21 @@ public class DataController implements WebConstant, SystemConstant {
 	private AppDataHolder appDataHolder;
 
 	@Autowired
-	private SpeechSynthesisService speechSynthesisService;
+	private AudioLinkService audioLinkService;
 
 	@Autowired
 	private FileService fileService;
 
-	@GetMapping(value="/data/app", produces = "application/json;charset=UTF-8")
+	@GetMapping(value = "/data/app", produces = "application/json;charset=UTF-8")
 	public AppData getAppData() {
 		return appDataHolder.getAppData();
 	}
 
-	@PostMapping("/generate_audio")
-	public String generateAudioFileUrl(@RequestParam String words) {
-		return speechSynthesisService.urlToAudioSource(words);
+	@PostMapping(AUDIO_LINK_URI)
+	public String getAudioLink(
+			@RequestParam String text,
+			@RequestParam String serviceId) {
+		return audioLinkService.getAudioLink(text, serviceId);
 	}
 
 	@GetMapping(FILES_URI + "/{fileId}")
@@ -83,6 +85,7 @@ public class DataController implements WebConstant, SystemConstant {
 	public ResponseEntity<Resource> serveAudioFile(@PathVariable String fileName) {
 
 		Resource resource = fileService.getAudioFileAsResource(fileName);
+
 		return ResponseEntity
 				.ok()
 				.header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + fileName + "\"")
@@ -94,6 +97,7 @@ public class DataController implements WebConstant, SystemConstant {
 	public ResponseEntity<Resource> serveImage(@PathVariable String fileName) {
 
 		Resource resource = fileService.getFileAsResource(fileName);
+
 		return ResponseEntity
 				.ok()
 				.header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + fileName + "\"")

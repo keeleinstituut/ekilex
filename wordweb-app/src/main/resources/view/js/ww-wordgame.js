@@ -738,7 +738,7 @@ class WordGame {
   }
 
   bindFlipcardAudioButtons(parent) {
-    parent.querySelectorAll('[audio-value],[data-words]').forEach((item) => {
+    parent.querySelectorAll('[audio-value],[data-words],[data-text]').forEach((item) => {
       const audioValue = item.getAttribute('audio-value');
       const audioType = item.getAttribute('audio-type');
 

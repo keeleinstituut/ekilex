@@ -8,6 +8,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -41,6 +42,7 @@ public class ParadigmConversionUtil implements WebConstant, SystemConstant {
 	}
 
 	public List<Paradigm> composeParadigms(List<Form> allForms, String displayLang) {
+
 		Map<Long, List<Form>> paradigmsMap = allForms.stream().collect(Collectors.groupingBy(Form::getParadigmId));
 		List<Long> paradigmIds = new ArrayList<>(paradigmsMap.keySet());
 		Collections.sort(paradigmIds);
@@ -63,6 +65,8 @@ public class ParadigmConversionUtil implements WebConstant, SystemConstant {
 
 		for (Form form : paradigmForms) {
 			classifierUtil.applyClassifiers(form, displayLang);
+			boolean audioFileExists = StringUtils.isNotBlank(form.getAudioFile());
+			form.setAudioFileExists(audioFileExists);
 		}
 
 		Form firstForm = paradigmForms.get(0);

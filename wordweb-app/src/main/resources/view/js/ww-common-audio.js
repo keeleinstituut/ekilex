@@ -1,9 +1,9 @@
-$(document).ready(function () {
+$(document).ready(function() {
 	initialiseRecording(speechRecognitionServiceUrl);
 });
 
-function playAudio(audioSource, onEndedCallback) {
-	var music = new Audio(audioSource);
+function playAudio(audioUrl, onEndedCallback) {
+	var music = new Audio(audioUrl);
 	music.onended = onEndedCallback;
 	music.play();
 }
@@ -21,29 +21,35 @@ function generateAudioAndPlay(e) {
 		content = buttonSpeaker.html();
 		buttonSpeaker.html('<i class="fa fa-spinner fa-spin"></i>');
 	}
-	var onEndCallback = function () {
+	var onEndCallback = function() {
 		elem.removeData('is-playing');
 		if (buttonSpeaker.length !== 0) {
 			buttonSpeaker.html(content);
 		}
 	};
 
-	var definedUrlToAudio = elem.data('url-to-audio');
-	if (definedUrlToAudio !== undefined) {
-		playAudio(definedUrlToAudio, onEndCallback);
+	var definedAudioUrl = elem.data('audio-url');
+	if (definedAudioUrl !== undefined) {
+		playAudio(definedAudioUrl, onEndCallback);
 		return;
 	}
 
 	var data = {
-		'words': elem.data('words')
+		'text': elem.data('text'),
+		'serviceId': elem.data('service-id')
 	};
-	$.post(applicationUrl + 'generate_audio', data).done(function (providedUrlToAudio) {
-		elem.data('url-to-audio', providedUrlToAudio);
-		playAudio(providedUrlToAudio, onEndCallback);
-	}).fail(function () {
-		onEndCallback();
-		alert(messages.audio_generation_failure);
-	})
+	$.post(applicationUrl + 'audio-link', data)
+		.done(function(providedAudioUrl) {
+			if (providedAudioUrl) {
+				elem.data('audio-url', providedAudioUrl);
+				playAudio(providedAudioUrl, onEndCallback);
+			} else {
+				onEndCallback();
+			}
+		}).fail(function() {
+			onEndCallback();
+			alert(messages.audio_generation_failure);
+		})
 }
 
 var audio_context;
@@ -76,7 +82,7 @@ function startRecording() {
 	// Access the Microphone using the navigator.getUserMedia method to obtain a stream
 	navigator.getUserMedia({
 		audio: true
-	}, function (stream) {
+	}, function(stream) {
 		// Expose the stream to be accessible globally
 		audio_stream = stream;
 		var input = audio_context.createMediaStreamSource(stream);
@@ -88,7 +94,7 @@ function startRecording() {
 		// Start recording !
 		recorder && recorder.record();
 		console.log('Recording...');
-	}, function (e) {
+	}, function(e) {
 		console.error('No live audio input: ' + e);
 	});
 }
@@ -98,7 +104,7 @@ function stopRecording(callback) {
 	recorder && recorder.stop();
 
 	try {
-	audio_stream.getAudioTracks()[0].stop();
+		audio_stream.getAudioTracks()[0].stop();
 	} catch (e) {
 		console.log('There is nothing to stop?');
 	}
@@ -108,7 +114,7 @@ function stopRecording(callback) {
 	// Use the Recorder Library to export the recorder Audio as a .mp3 file
 	// The callback providen in the stop recording method receives the blob
 	if (typeof (callback) == "function") {
-		recorder && recorder.exportWAV(function (blob) {
+		recorder && recorder.exportWAV(function(blob) {
 			callback(blob);
 			// Clear the Recorder to start again !
 			recorder.clear();
@@ -125,14 +131,14 @@ function sendToWebSocket(audioBlob) {
 		// Let us open a web socket
 		// ws = new WebSocket("ws://localhost:9090/client/ws/speech");
 		ws = new WebSocket(speechRecognitionServiceUrl);
-		ws.onopen = function () {
+		ws.onopen = function() {
 			// Web Socket is connected, send data using send()
 			ws.send(audioBlob);
 			ws.send("EOS");
 			console.log("Message is sent...");
 		};
 
-		ws.onmessage = function (evt) {
+		ws.onmessage = function(evt) {
 			var data = evt.data;
 			console.log("Message is received...", data);
 			var res = JSON.parse(data);
@@ -146,7 +152,7 @@ function sendToWebSocket(audioBlob) {
 			}
 		};
 
-		ws.onclose = function (e) {
+		ws.onclose = function(e) {
 			var code = e.code;
 			var reason = e.reason;
 			var wasClean = e.wasClean;
@@ -154,12 +160,12 @@ function sendToWebSocket(audioBlob) {
 			ws = null;
 		};
 
-		ws.onerror = function (e) {
+		ws.onerror = function(e) {
 			var data = e.data;
 			console.log("Error ", data);
 		};
 
-		window.onbeforeunload = function (event) {
+		window.onbeforeunload = function(event) {
 			socket.close();
 		};
 	} else {
@@ -167,18 +173,18 @@ function sendToWebSocket(audioBlob) {
 	}
 }
 
-$(document).on("click", "#start-rec-btn", function (e) {
+$(document).on("click", "#start-rec-btn", function(e) {
 	$('#start-rec-btn').prop('hidden', 'hidden');
 	$('#stop-rec-btn').prop('hidden', null);
 	$('.search-btn').prop('disabled', true);
 	startRecording();
 });
 
-$(document).on("click", "#stop-rec-btn", function (e) {
+$(document).on("click", "#stop-rec-btn", function(e) {
 	$('#stop-rec-btn').prop('hidden', 'hidden');
 	$('#start-rec-btn').prop('hidden', null);
 	$('.search-btn').prop('disabled', false);
-	stopRecording(function (audioBlob) {
+	stopRecording(function(audioBlob) {
 		sendToWebSocket(audioBlob);
 	});
 });

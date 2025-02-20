@@ -17,7 +17,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 import eki.wordweb.data.CorpusTranslation;
 
 @Component
-public class CorpusTranslationService extends AbstractCorpusService {
+public class CorpusTranslationService extends AbstractRemoteRequestService {
 
 	@Value("${corpus.service.trans.url:}")
 	private String serviceUrl;

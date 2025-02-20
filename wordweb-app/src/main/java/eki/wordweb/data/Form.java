@@ -43,6 +43,8 @@ public class Form extends AbstractDataObject {
 
 	private String audioFile;
 
+	private boolean audioFileExists;
+
 	private boolean morphExists;
 
 	private boolean isQuestionable;
@@ -211,6 +213,14 @@ public class Form extends AbstractDataObject {
 
 	public void setAudioFile(String audioFile) {
 		this.audioFile = audioFile;
+	}
+
+	public boolean isAudioFileExists() {
+		return audioFileExists;
+	}
+
+	public void setAudioFileExists(boolean audioFileExists) {
+		this.audioFileExists = audioFileExists;
 	}
 
 	public boolean isMorphExists() {
