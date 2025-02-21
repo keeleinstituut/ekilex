@@ -36,6 +36,8 @@ public class WordData extends AbstractDataObject {
 
 	private boolean rusContent;
 
+	private boolean skellCompatible;
+
 	public Word getWord() {
 		return word;
 	}
@@ -146,6 +148,14 @@ public class WordData extends AbstractDataObject {
 
 	public void setRusContent(boolean rusContent) {
 		this.rusContent = rusContent;
+	}
+
+	public boolean isSkellCompatible() {
+		return skellCompatible;
+	}
+
+	public void setSkellCompatible(boolean skellCompatible) {
+		this.skellCompatible = skellCompatible;
 	}
 
 }

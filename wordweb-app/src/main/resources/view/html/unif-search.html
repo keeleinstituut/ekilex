@@ -125,8 +125,8 @@
             <div class="search__sidebar-block search__block text-body-two" th:if="${wordData.estHeadword && wordData.rusContent}">
               <div id="corpTrans" th:text="#{label.corp.translations.search}">Otsin tõlgitud näiteid ...</div>
             </div>
-            <div class="search__sidebar-block search__block text-body-two" th:if="${wordData.rusHeadword}">
-              <th:block th:replace="common-search-sidebar :: corp_rus"></th:block>
+            <div class="search__sidebar-block search__block text-body-two" th:if="${wordData.skellCompatible}">
+              <th:block th:replace="common-search-sidebar :: skell-search-link"></th:block>
             </div>
           </th:block>
         </div>

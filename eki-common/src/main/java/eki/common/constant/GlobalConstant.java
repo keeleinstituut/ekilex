@@ -10,6 +10,8 @@ public interface GlobalConstant {
 
 	String LANGUAGE_CODE_ENG = "eng";
 
+	String LANGUAGE_CODE_DEU = "deu";
+
 	String LANGUAGE_CODE_LAT = "lat";
 
 	String LANGUAGE_CODE_FRA = "fra";

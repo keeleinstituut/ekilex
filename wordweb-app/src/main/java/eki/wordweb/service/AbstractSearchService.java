@@ -1,6 +1,7 @@
 package eki.wordweb.service;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -29,6 +30,7 @@ import eki.wordweb.data.WordData;
 import eki.wordweb.data.WordSearchElement;
 import eki.wordweb.data.WordsData;
 import eki.wordweb.data.WordsMatch;
+import eki.wordweb.data.type.TypeWordRelation;
 import eki.wordweb.service.db.CommonDataDbService;
 import eki.wordweb.service.db.SearchDbService;
 import eki.wordweb.service.util.ClassifierUtil;
@@ -191,19 +193,26 @@ public abstract class AbstractSearchService implements SystemConstant, WebConsta
 			List<LexemeWord> limTermLexemes,
 			SearchContext searchContext) {
 
+		List<String> skellCompatibleLangs = Arrays.asList(LANGUAGE_CODE_ENG, LANGUAGE_CODE_DEU, LANGUAGE_CODE_RUS);
+		String headwordValue = word.getWord();
+		String headwordLang = word.getLang();
+		List<TypeWordRelation> headwordRelatedWords = word.getRelatedWords();
 		List<String> destinLangs = searchContext.getDestinLangs();
+
 		boolean lexemesExist = CollectionUtils.isNotEmpty(lexLexemes) || CollectionUtils.isNotEmpty(termLexemes) || CollectionUtils.isNotEmpty(limTermLexemes);
-		boolean relevantDataExists = lexemesExist || CollectionUtils.isNotEmpty(word.getRelatedWords());
+		boolean relevantDataExists = lexemesExist || CollectionUtils.isNotEmpty(headwordRelatedWords);
 		boolean multipleLexLexemesExist = CollectionUtils.size(lexLexemes) > 1;
+		boolean estHeadword = StringUtils.equals(LANGUAGE_CODE_EST, headwordLang);
+		boolean rusHeadword = StringUtils.equals(LANGUAGE_CODE_RUS, headwordLang);
+		boolean rusContent = CollectionUtils.isEmpty(destinLangs) || destinLangs.contains(DESTIN_LANG_RUS);
+		boolean skellCompatible = skellCompatibleLangs.contains(headwordLang);
+
 		String firstAvailableAudioFile = null;
 		boolean morphologyExists = false;
-		boolean estHeadword = false;
-		boolean rusHeadword = false;
-		boolean rusContent = false;
 
 		if (CollectionUtils.isNotEmpty(forms)) {
 			Form firstAvailableWordForm = forms.stream()
-					.filter(form -> !form.isQuestionable() && StringUtils.equals(word.getWord(), form.getValue()))
+					.filter(form -> !form.isQuestionable() && StringUtils.equals(headwordValue, form.getValue()))
 					.findFirst().orElse(null);
 			if (firstAvailableWordForm != null) {
 				firstAvailableAudioFile = firstAvailableWordForm.getAudioFile();
@@ -212,9 +221,6 @@ public abstract class AbstractSearchService implements SystemConstant, WebConsta
 		if (CollectionUtils.isNotEmpty(paradigms)) {
 			morphologyExists = paradigms.stream().anyMatch(paradigm -> StringUtils.isNotBlank(paradigm.getWordClass()));
 		}
-		estHeadword = StringUtils.equals(LANGUAGE_CODE_EST, word.getLang());
-		rusHeadword = StringUtils.equals(LANGUAGE_CODE_RUS, word.getLang());
-		rusContent = CollectionUtils.isEmpty(destinLangs) || destinLangs.contains(DESTIN_LANG_RUS);
 
 		WordData wordData = new WordData();
 		wordData.setWord(word);
@@ -230,6 +236,7 @@ public abstract class AbstractSearchService implements SystemConstant, WebConsta
 		wordData.setEstHeadword(estHeadword);
 		wordData.setRusHeadword(rusHeadword);
 		wordData.setRusContent(rusContent);
+		wordData.setSkellCompatible(skellCompatible);
 
 		return wordData;
 	}

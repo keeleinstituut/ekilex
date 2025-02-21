@@ -27,8 +27,8 @@ public class WebUtil implements WebConstant, SystemConstant, GlobalConstant {
 	@Value("${eki.oldskool.rus.dict.url}")
 	private String ekiOldskoolRusDictUrl;
 
-	@Value("${corpus.service.rus.url}")
-	private String corpusServiceRusUrl;
+	@Value("${skell.service.url}")
+	private String skellServiceUrl;
 
 	@Value("${iate.service.url}")
 	private String iateServiceUrl;
@@ -97,10 +97,11 @@ public class WebUtil implements WebConstant, SystemConstant, GlobalConstant {
 		return ekiDictSearchUrl;
 	}
 
-	public String composeRusCorpWordUrl(String wordValue) {
-		String rusCorpWordUrl = new String(corpusServiceRusUrl);
-		rusCorpWordUrl = StringUtils.replace(rusCorpWordUrl, URL_PLACEHOLDER_WORD, wordValue);
-		return rusCorpWordUrl;
+	public String composeSkellSearchUrl(String wordValue, String langIso2) {
+		String skellServiceUrlWithParams = new String(skellServiceUrl);
+		skellServiceUrlWithParams = StringUtils.replace(skellServiceUrlWithParams, URL_PLACEHOLDER_WORD, wordValue);
+		skellServiceUrlWithParams = StringUtils.replace(skellServiceUrlWithParams, URL_PLACEHOLDER_LANG, langIso2);
+		return skellServiceUrlWithParams;
 	}
 
 	private String encodeSeparatedValuesStr(String separatedValuesStr) {

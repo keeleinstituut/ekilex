@@ -301,8 +301,9 @@ public class ViewUtil implements WebConstant, SystemConstant, GlobalConstant {
 		return webUtil.composeEkiOldskoolRusDictUrl(wordValue);
 	}
 
-	public String getRusCorpWordUrl(String wordValue) {
-		return webUtil.composeRusCorpWordUrl(wordValue);
+	public String getSkellSearchUrl(String wordValue, String langIso3) {
+		String langIso2 = StringUtils.left(langIso3, 2);
+		return webUtil.composeSkellSearchUrl(wordValue, langIso2);
 	}
 
 	public boolean enumEquals(Enum<?> enum1, Enum<?> enum2) {

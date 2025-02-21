@@ -377,7 +377,7 @@
 		$('.corp-panel [data-toggle="tooltip"]').tooltip();
 	</script>
   </th:block>
-  <th:block th:fragment="corp_rus">
+  <th:block th:fragment="skell-search-link">
     <div class="corp-panel">
       <div class="heading-wrapper">
         <h5 class="font-weight-bold mb-0 d-flex align-items-center text-dark">
@@ -393,7 +393,7 @@
         <span th:text="#{corpus.warning.rus}"></span>
       </div>
       <div class="col-6">
-        <a th:href="${@viewUtil.getRusCorpWordUrl(wordData.word.word)}" target="_blank">
+        <a th:href="${@viewUtil.getSkellSearchUrl(wordData.word.word, wordData.word.lang)}" target="_blank">
           <img th:src="@{'/view/images/skell-logo.jpg'}" alt="Skell logo" class="img-fluid">
         </a>
       </div>
