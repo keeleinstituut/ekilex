@@ -2,6 +2,7 @@ package eki.stat.api.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -32,6 +33,7 @@ public class ApiStatController implements ApiConstant {
 		return statService.getWwSearchCount();
 	}
 
+	@PreAuthorize("isAuthenticated()")
 	@GetMapping(API_SERVICES_URI + STAT_URI + SEARCH_URI)
 	@ResponseBody
 	public StatSearchResult searchWwSearchStat(StatSearchFilter statSearchFilter) throws Exception {
@@ -43,9 +45,12 @@ public class ApiStatController implements ApiConstant {
 		}
 	}
 
+	@PreAuthorize("isAuthenticated()")
 	@PostMapping(API_SERVICES_URI + STAT_URI + CREATE_URI + "/{statType}")
 	@ResponseBody
-	public String createStat(@RequestBody String statObjectJson, @PathVariable StatType statType) throws Exception {
+	public String createStat(
+			@RequestBody String statObjectJson,
+			@PathVariable StatType statType) throws Exception {
 
 		ObjectMapper objectMapper = new ObjectMapper();
 		if (StatType.WW_SEARCH.equals(statType)) {
