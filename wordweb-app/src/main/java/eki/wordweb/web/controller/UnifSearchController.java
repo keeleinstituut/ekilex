@@ -116,6 +116,7 @@ public class UnifSearchController extends AbstractSearchController {
 			RedirectAttributes redirectAttributes,
 			Model model) throws Exception {
 
+		String providedServletPath = request.getServletPath();
 		boolean isSessionBeanNotPresent = isSessionBeanNotPresent(model);
 		SessionBean sessionBean;
 		if (isSessionBeanNotPresent) {
@@ -141,12 +142,12 @@ public class UnifSearchController extends AbstractSearchController {
 		sessionBean.setDatasetCodes(searchValidation.getDatasetCodes());
 		sessionBean.setLinkedLexemeId(linkedLexemeId);
 
-		logger.info("--> noSession: {}; isValid: {}; isSearchForm: {}; request: {}",
-				isSessionBeanNotPresent, searchValidation.isValid(), isSearchForm, request.getServletPath());
+		logger.info("--> noSession: {}; isValid: {}; isSearchForm: {};\n\trequest: {}\n\trearch uri: {}",
+				isSessionBeanNotPresent, searchValidation.isValid(), isSearchForm, providedServletPath, searchValidation.getSearchUri());
 
 		if (isSessionBeanNotPresent) {
 			//to get rid of the sessionid in the url
-			return REDIRECT_PREF + searchValidation.getSearchUri();
+			//return REDIRECT_PREF + searchValidation.getSearchUri();
 		} else if (!searchValidation.isValid()) {
 			setSearchFormAttribute(redirectAttributes, isSearchForm);
 			return REDIRECT_PREF + searchValidation.getSearchUri();
