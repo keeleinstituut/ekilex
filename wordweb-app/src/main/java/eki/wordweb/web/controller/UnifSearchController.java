@@ -11,6 +11,8 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
 import org.springframework.stereotype.Controller;
@@ -42,6 +44,8 @@ import eki.wordweb.web.bean.SessionBean;
 @Controller
 @SessionAttributes(WebConstant.SESSION_BEAN)
 public class UnifSearchController extends AbstractSearchController {
+
+	private static Logger logger = LoggerFactory.getLogger(UnifSearchController.class);
 
 	@Autowired
 	private UnifSearchService unifSearchService;
@@ -136,6 +140,9 @@ public class UnifSearchController extends AbstractSearchController {
 		sessionBean.setDestinLangs(searchValidation.getDestinLangs());
 		sessionBean.setDatasetCodes(searchValidation.getDatasetCodes());
 		sessionBean.setLinkedLexemeId(linkedLexemeId);
+
+		logger.info("--> noSession: {}; isValid: {}; isSearchForm: {}; request: {}",
+				isSessionBeanNotPresent, searchValidation.isValid(), isSearchForm, request.getServletPath());
 
 		if (isSessionBeanNotPresent) {
 			//to get rid of the sessionid in the url
