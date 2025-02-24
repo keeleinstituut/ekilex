@@ -99,6 +99,7 @@ public class SimpleSearchController extends AbstractSearchController {
 			RedirectAttributes redirectAttributes,
 			Model model) throws Exception {
 
+		String providedServletPath = request.getServletPath();
 		boolean sessionBeanNotPresent = isSessionBeanNotPresent(model);
 		SessionBean sessionBean;
 		if (sessionBeanNotPresent) {
@@ -122,12 +123,15 @@ public class SimpleSearchController extends AbstractSearchController {
 		sessionBean.setDestinLangs(searchValidation.getDestinLangs());
 		sessionBean.setDatasetCodes(searchValidation.getDatasetCodes());
 
-		if (sessionBeanNotPresent) {
-			//to get rid of the sessionid in the url
-			return REDIRECT_PREF + searchValidation.getSearchUri();
-		} else if (!searchValidation.isValid()) {
-			setSearchFormAttribute(redirectAttributes, isSearchForm);
-			return REDIRECT_PREF + searchValidation.getSearchUri();
+		if (!searchValidation.isValid()) {
+			String validSearchUri = searchValidation.getSearchUri();
+			if (StringUtils.equals(providedServletPath, validSearchUri)) {
+				// unhandled condition that may cause infinite redirect
+				return REDIRECT_PREF + SEARCH_URI + LITE_URI;
+			} else {
+				setSearchFormAttribute(redirectAttributes, isSearchForm);
+				return REDIRECT_PREF + validSearchUri;
+			}
 		}
 
 		String pageName;

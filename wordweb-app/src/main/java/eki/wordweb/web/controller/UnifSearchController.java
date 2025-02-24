@@ -142,15 +142,16 @@ public class UnifSearchController extends AbstractSearchController {
 		sessionBean.setDatasetCodes(searchValidation.getDatasetCodes());
 		sessionBean.setLinkedLexemeId(linkedLexemeId);
 
-		logger.info("--> noSession: {}; isValid: {}; isSearchForm: {};\n\trequest: {}\n\trearch uri: {}",
-				isSessionBeanNotPresent, searchValidation.isValid(), isSearchForm, providedServletPath, searchValidation.getSearchUri());
-
-		if (isSessionBeanNotPresent) {
-			//to get rid of the sessionid in the url
-			//return REDIRECT_PREF + searchValidation.getSearchUri();
-		} else if (!searchValidation.isValid()) {
-			setSearchFormAttribute(redirectAttributes, isSearchForm);
-			return REDIRECT_PREF + searchValidation.getSearchUri();
+		if (!searchValidation.isValid()) {
+			String validSearchUri = searchValidation.getSearchUri();
+			if (StringUtils.equals(providedServletPath, validSearchUri)) {
+				// unhandled condition that may cause infinite redirect
+				logger.warn("Invalid request that isn't properly resolved: \"{}\"", providedServletPath);
+				return REDIRECT_PREF + SEARCH_URI + UNIF_URI;
+			} else {
+				setSearchFormAttribute(redirectAttributes, isSearchForm);
+				return REDIRECT_PREF + validSearchUri;
+			}
 		}
 
 		String pageName;
