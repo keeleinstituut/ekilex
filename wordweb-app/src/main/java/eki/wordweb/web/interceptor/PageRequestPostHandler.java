@@ -72,6 +72,7 @@ public class PageRequestPostHandler implements HandlerInterceptor, WebConstant, 
 
 	private void logRequestProcessTime(HttpServletRequest request) {
 
+		String requestMethod = request.getMethod();
 		String servletPath = request.getServletPath();
 		if (StringUtils.equals(servletPath, "/")) {
 			return;
@@ -81,6 +82,6 @@ public class PageRequestPostHandler implements HandlerInterceptor, WebConstant, 
 		long endTime = System.currentTimeMillis();
 		long requestTime = endTime - startTime;
 
-		logger.info("Request process time for \"{}\" - {} ms", servletPath, requestTime);
+		logger.info("Request process time for \"{} {}\" - {} ms", requestMethod, servletPath, requestTime);
 	}
 }
