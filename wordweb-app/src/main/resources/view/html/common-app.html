@@ -107,7 +107,7 @@
       <div class="row header-wrap">
         <div class="col-12 d-flex align-items-center px-xl-0">
           <div class="mr-auto">
-            <a th:href="@{/}" th:aria-label="#{aria.menu.logo}" role="link" class="logo logo-header" th:classappend="${pageContext == 'simpleSearch' ? 'logo-light' : ''}">
+            <a th:href="${pageContext == 'simpleSearch'} ? @{/lite} : @{/}" th:aria-label="#{aria.menu.logo}" role="link" class="logo logo-header" th:classappend="${pageContext == 'simpleSearch' ? 'logo-light' : ''}">
               <span class="sr-only">Sõnaveebi logo</span>
             </a>
           </div>
@@ -379,12 +379,12 @@
         <div class="row">
           <div class="col-12 col-md-4">
             <div class="d-flex justify-content-center justify-content-md-start mb-4">
-              <a th:href="@{/}">
+              <a href="https://eki.ee" target="_blank">
                 <th:block th:if="${pageContext != 'simpleSearch'}">
-                  <img th:src="@{'/view/images/eki-logo-white.svg'}" alt="Sõnaveeb Logo" class="logo">
+                  <img th:src="@{'/view/images/eki-logo-white.svg'}" th:alt="#{general.eki}" class="logo">
                 </th:block>
                 <th:block th:if="${pageContext == 'simpleSearch'}">
-                  <img th:src="@{'/view/images/eki-logo-white.svg'}" alt="Sõnaveeb Logo" class="logo">
+                  <img th:src="@{'/view/images/eki-logo-white.svg'}" th:alt="#{general.eki}" class="logo">
                 </th:block>
               </a>
             </div>
