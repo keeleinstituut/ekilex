@@ -49,6 +49,12 @@
               <a th:href="@{${@viewUtil.getSimpleSearchUri(searchWord)}}" th:text="#{label.search.filter.clear}"> Otsi uuesti ilma piiranguteta </a>
             </div>
           </th:block>
+          <th:block th:if="${wordsData.formResultsExist}">
+            <div>
+              <span th:text="#{label.suggest.form}">see on ka vorm sõnast</span>
+              <a href="#" class="word-form" th:each="word,wordIter : ${wordsData.suggestedWordValues}" th:text="${wordIter.last ? word : word + ',&nbsp;'}" th:data-word="${word}"> </a>
+            </div>
+          </th:block>
           <th:block th:unless="${wordsData.availableLanguagesDatasets.availableFiltersExist}">
             <div th:utext="#{label.word.not.found.simple}">Ei leidnud midagi</div>
             <a th:href="@{${@viewUtil.getDetailSearchUri(searchWord)}}" class="text-break" th:text="${searchWord}"></a>
