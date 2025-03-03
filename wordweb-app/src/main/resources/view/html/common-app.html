@@ -107,7 +107,7 @@
       <div class="row header-wrap">
         <div class="col-12 d-flex align-items-center px-xl-0">
           <div class="mr-auto">
-            <a th:href="@{/}" th:aria-label="#{aria.menu.logo}" role="link" class="logo logo-header" th:classappend="${pageContext == 'simpleSearch' ? 'logo-light' : ''}">
+            <a th:href="${pageContext == 'simpleSearch'} ? @{/lite} : @{/}" th:aria-label="#{aria.menu.logo}" role="link" class="logo logo-header" th:classappend="${pageContext == 'simpleSearch' ? 'logo-light' : ''}">
               <span class="sr-only">Sõnaveebi logo</span>
             </a>
           </div>
@@ -379,12 +379,12 @@
         <div class="row">
           <div class="col-12 col-md-4">
             <div class="d-flex justify-content-center justify-content-md-start mb-4">
-              <a th:href="@{/}">
+              <a href="https://eki.ee" target="_blank">
                 <th:block th:if="${pageContext != 'simpleSearch'}">
-                  <img th:src="@{'/view/images/eki-logo-white.svg'}" alt="Sõnaveeb Logo" class="logo">
+                  <img th:src="@{'/view/images/eki-logo-white.svg'}" th:alt="#{general.eki}" class="logo">
                 </th:block>
                 <th:block th:if="${pageContext == 'simpleSearch'}">
-                  <img th:src="@{'/view/images/eki-logo-white.svg'}" alt="Sõnaveeb Logo" class="logo">
+                  <img th:src="@{'/view/images/eki-logo-white.svg'}" th:alt="#{general.eki}" class="logo">
                 </th:block>
               </a>
             </div>
@@ -397,14 +397,18 @@
           </div>
           <div class="col-12 col-md-4">
             <div class="d-flex flex-column text-center text-md-left mb-4">
-              <span class="mb-1">
-                <i class="fa fa-phone"></i>
-                <span>617 7500</span>
-              </span>
-              <span>
-                <i class="fa fa-envelope"></i>
-                <a href="mailto:eki@eki.ee">eki@eki.ee</a>
-              </span>
+              <div class="d-flex align-items-center">
+                <span class="mr-2" th:text="#{label.contact.tip}"></span>
+                <a class="text-decoration-none" href="tel:6313731">631 3731</a>
+              </div>
+              <div class="d-flex align-items-center">
+                <span class="mr-2" th:text="#{label.contact.general}"></span>
+                <a class="text-decoration-none" href="tel:6177500">617 7500</a>
+              </div>
+              <div class="d-flex align-items-center">
+                <span class="mr-2" th:text="#{label.feedback.email}"></span>
+                <a class="text-decoration-none" href="mailto:eki@eki.ee">eki@eki.ee</a>
+              </div>
             </div>
           </div>
         </div>
@@ -454,15 +458,15 @@
   <th:block th:fragment="source-link" th:with="dataContent=${sourceLink.isSourcePublic} ? ${sourceLink.sourceValuePrese} : #{label.source.value.not.public}">
     <button
       type="button"
-      class="search__tag search__tag--underlined"
+      class="search__tag"
       data-toggle="popover"
       data-html="true"
       th:title="#{label.source}"
       th:data-content="${dataContent}"
       th:unless="${#strings.isEmpty(sourceLink.sourceName)}"
       >
-      <span th:utext="${sourceLink.sourceName}"></span>
-      <span th:utext="| - ${sourceLink.sourceLinkName}|" th:unless="${#strings.isEmpty(sourceLink.sourceLinkName)}"></span>
+      <span class="mr-1" th:utext="${sourceLink.sourceName}"></span>
+      <span th:utext="|${sourceLink.sourceLinkName}|" th:unless="${#strings.isEmpty(sourceLink.sourceLinkName)}"></span>
     </button>
   </th:block>
   <th:block th:fragment="survey-banner-large">

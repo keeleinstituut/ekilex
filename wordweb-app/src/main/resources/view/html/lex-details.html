@@ -35,12 +35,12 @@
                 <div class="definition-row definition-area">
                   <div class="mb-3" th:if="${lexeme.showSection1}">
                     <th:block th:if="${lexeme.showPoses}">
-                      <span class="tag" th:each="pos : ${lexeme.poses}" th:text="${pos.value}"></span>
+                      <span class="lang-code text-caption lang-code--unrestricted" th:each="pos : ${lexeme.poses}" th:text="${pos.value}"></span>
                     </th:block>
-                    <span class="lexeme grammars tag" th:unless="${#lists.isEmpty(lexeme.grammars)}">
+                    <span class="lexeme grammars lang-code text-caption lang-code--unrestricted" th:unless="${#lists.isEmpty(lexeme.grammars)}">
                       <span th:each="grammar,grammarIter : ${lexeme.grammars}" th:utext="${grammar.value + (grammarIter.last ? '' : ', ')}"></span>
                     </span>
-                    <span class="lexeme tag" th:if="${lexeme.valueState != null}" th:text="${lexeme.valueState.value}"></span>
+                    <span class="lexeme lang-code text-caption lang-code--unrestricted" th:if="${lexeme.valueState != null}" th:text="${lexeme.valueState.value}"></span>
                   </div>
                   <th:block th:if="${not #maps.isEmpty(lexeme.definitionsByLang)}">
                     <div class="mb-0 d-flex flex-row" th:each="definitionEntry : ${lexeme.definitionsByLang}">
@@ -368,7 +368,7 @@
               <div class="dependencies" th:if="${lexeme.showSection3}">
                 <div th:unless="${#lists.isEmpty(lexeme.governments)}" class="rekts-est d-flex flex-row align-items-baseline flex-wrap">
                   <b class="search__helper-text text-caption" th:text="#{label.government}">Rektsioon</b>
-                  <span class="tag mb-1 d-inline-block" data-toggle="tooltip"
+                  <span class="lang-code text-caption lang-code--unrestricted mb-1 d-inline-block" data-toggle="tooltip"
                         th:each="government : ${lexeme.governments}"
                         th:text="${government.value}"
                         th:title="${@viewUtil.getGovernmentTooltipText(government, lexeme.posCodes)}"></span>
