@@ -167,4 +167,21 @@ where
 	)
 ;
 
+-- keelenditite esitluskujus html asendamine märgendusega
+
+update
+	word
+set
+	value_prese = replace(value_prese, '<i>', '<eki-foreign>')
+where
+	value_prese like '%<i>%'
+;
+
+update
+	word
+set
+	value_prese = replace(value_prese, '</i>', '</eki-foreign>')
+where
+	value_prese like '%</i>%'
+;
 
