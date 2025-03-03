@@ -82,6 +82,7 @@ public class UnifSearchService extends AbstractSearchService {
 
 		// lexeme data
 		List<LexemeWord> flatDepthLexemes = searchDbService.getMeaningsLexemes(wordId, searchContext);
+		wordConversionUtil.setWordTypeFlags(flatDepthLexemes);
 		List<LexemeWord> lexemeWords = lexemeConversionUtil.arrangeHierarchy(wordId, flatDepthLexemes);
 		List<Meaning> meanings = searchDbService.getMeanings(wordId);
 

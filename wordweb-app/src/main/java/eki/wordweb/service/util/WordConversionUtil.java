@@ -25,7 +25,6 @@ import eki.wordweb.data.Word;
 import eki.wordweb.data.WordGroup;
 import eki.wordweb.data.WordRelationGroup;
 import eki.wordweb.data.WordRelationsTuple;
-import eki.wordweb.data.WordTypeData;
 import eki.wordweb.data.type.TypeDefinition;
 import eki.wordweb.data.type.TypeMeaningWord;
 import eki.wordweb.data.type.TypeWordRelation;
@@ -87,13 +86,6 @@ public class WordConversionUtil extends AbstractConversionUtil {
 					word.setMeaningWordsWrapup(meaningWordsWrapup);
 				}
 			}
-		}
-	}
-
-	public void setAffixoidFlags(List<? extends WordTypeData> words) {
-
-		for (WordTypeData word : words) {
-			setWordTypeFlags(word);
 		}
 	}
 

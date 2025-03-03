@@ -155,8 +155,12 @@ public class LexemeConversionUtil extends AbstractConversionUtil {
 
 	public List<LexemeWord> arrangeHierarchy(Long wordId, List<LexemeWord> allLexemes) {
 
-		List<LexemeWord> lexemeWords = allLexemes.stream().filter(lexeme -> lexeme.getWordId().equals(wordId)).collect(Collectors.toList());
-		Map<Long, List<LexemeWord>> lexemesByMeanings = allLexemes.stream().collect(Collectors.groupingBy(LexemeWord::getMeaningId));
+		List<LexemeWord> lexemeWords = allLexemes.stream()
+				.filter(lexeme -> lexeme.getWordId().equals(wordId))
+				.collect(Collectors.toList());
+		Map<Long, List<LexemeWord>> lexemesByMeanings = allLexemes.stream()
+				.collect(Collectors.groupingBy(LexemeWord::getMeaningId));
+
 		for (LexemeWord lexemeWord : lexemeWords) {
 			Long meaningId = lexemeWord.getMeaningId();
 			List<LexemeWord> meaningLexemes = lexemesByMeanings.get(meaningId);
@@ -215,8 +219,8 @@ public class LexemeConversionUtil extends AbstractConversionUtil {
 			populateMeaning(lexemeWord, wordLang, meaning, destinLangs, langOrderByMap, lexComplexity, displayLang);
 			populateRelatedMeanings(lexemeWord, wordLang, meaning, langOrderByMap, lexComplexity, displayLang);
 			setValueStateFlags(lexemeWord, wordLang);
-			populateMeaningLexemes(lexemeWord, wordLang, destinLangs, langOrderByMap);
 			setWordTypeFlags(lexemeWord);
+			populateMeaningLexemes(lexemeWord, wordLang, destinLangs, langOrderByMap);
 		}
 	}
 
@@ -496,68 +500,68 @@ public class LexemeConversionUtil extends AbstractConversionUtil {
 			}
 		}
 
-		List<TypeMeaningRelation> inexactSynMeaningRelations = new ArrayList<>();
+		List<TypeMeaningRelation> nearSynMeaningRelations = new ArrayList<>();
 		if (CollectionUtils.isNotEmpty(meaningRelations)) {
 
-			inexactSynMeaningRelations = meaningRelations.stream()
+			nearSynMeaningRelations = meaningRelations.stream()
 					.filter(relation -> StringUtils.equalsAny(relation.getMeaningRelTypeCode(), MEANING_REL_TYPE_CODE_NARROW, MEANING_REL_TYPE_CODE_WIDE))
 					.collect(Collectors.toList());
-			inexactSynMeaningRelations = filter(inexactSynMeaningRelations, wordLang, destinLangs);
-			inexactSynMeaningRelations = filter(inexactSynMeaningRelations, lexComplexity);
+			nearSynMeaningRelations = filter(nearSynMeaningRelations, wordLang, destinLangs);
+			nearSynMeaningRelations = filter(nearSynMeaningRelations, lexComplexity);
 		}
 
-		List<TypeMeaningWord> destinLangInexactSynonyms = new ArrayList<>();
-		if (CollectionUtils.isNotEmpty(inexactSynMeaningRelations)) {
+		List<TypeMeaningWord> destinLangNearSynonyms = new ArrayList<>();
+		if (CollectionUtils.isNotEmpty(nearSynMeaningRelations)) {
 
-			List<TypeMeaningRelation> destinLangInexactSynMeaningRels = inexactSynMeaningRelations.stream()
+			List<TypeMeaningRelation> destinLangNearSynMeaningRels = nearSynMeaningRelations.stream()
 					.filter(meaningRel -> !StringUtils.equals(wordLang, meaningRel.getLang()))
 					.collect(Collectors.toList());
 
-			Map<Long, List<TypeMeaningRelation>> sourceLangInexactSynMeaningRelsMap = inexactSynMeaningRelations.stream()
+			Map<Long, List<TypeMeaningRelation>> sourceLangNearSynMeaningRelsMap = nearSynMeaningRelations.stream()
 					.filter(meaningRel -> StringUtils.equals(wordLang, meaningRel.getLang()))
 					.collect(Collectors.groupingBy(TypeMeaningRelation::getMeaningId));
 
-			for (TypeMeaningRelation destinLangInexactSynMeaningRel : destinLangInexactSynMeaningRels) {
+			for (TypeMeaningRelation destinLangNearSynMeaningRel : destinLangNearSynMeaningRels) {
 
-				Long meaningId = destinLangInexactSynMeaningRel.getMeaningId();
+				Long meaningId = destinLangNearSynMeaningRel.getMeaningId();
 
-				TypeMeaningWord destinLangInexactSyn = new TypeMeaningWord();
-				destinLangInexactSyn.setType(SynonymType.INEXACT_SYN_MEANING_REL);
-				destinLangInexactSyn.setMeaningId(meaningId);
-				destinLangInexactSyn.setWordId(destinLangInexactSynMeaningRel.getWordId());
-				destinLangInexactSyn.setWord(destinLangInexactSynMeaningRel.getWord());
-				destinLangInexactSyn.setWordPrese(destinLangInexactSynMeaningRel.getWordPrese());
-				destinLangInexactSyn.setHomonymNr(destinLangInexactSynMeaningRel.getHomonymNr());
-				destinLangInexactSyn.setLang(destinLangInexactSynMeaningRel.getLang());
-				destinLangInexactSyn.setWordTypeCodes(destinLangInexactSynMeaningRel.getWordTypeCodes());
-				destinLangInexactSyn.setAspectCode(destinLangInexactSynMeaningRel.getAspectCode());
-				setWordTypeFlags(destinLangInexactSyn);
-				destinLangInexactSyn.setMwLexComplexity(destinLangInexactSynMeaningRel.getComplexity());
-				destinLangInexactSyn.setMwLexRegisterCodes(destinLangInexactSynMeaningRel.getLexRegisterCodes());
-				destinLangInexactSyn.setMwLexGovernmentValues(destinLangInexactSynMeaningRel.getLexGovernmentValues());
-				if (CollectionUtils.isNotEmpty(destinLangInexactSynMeaningRel.getLexValueStateCodes())) {
-					destinLangInexactSyn.setMwLexValueStateCode(destinLangInexactSynMeaningRel.getLexValueStateCodes().get(0));
+				TypeMeaningWord destinLangNearSyn = new TypeMeaningWord();
+				destinLangNearSyn.setType(SynonymType.INEXACT_SYN_MEANING_REL);
+				destinLangNearSyn.setMeaningId(meaningId);
+				destinLangNearSyn.setWordId(destinLangNearSynMeaningRel.getWordId());
+				destinLangNearSyn.setWord(destinLangNearSynMeaningRel.getWord());
+				destinLangNearSyn.setWordPrese(destinLangNearSynMeaningRel.getWordPrese());
+				destinLangNearSyn.setHomonymNr(destinLangNearSynMeaningRel.getHomonymNr());
+				destinLangNearSyn.setLang(destinLangNearSynMeaningRel.getLang());
+				destinLangNearSyn.setWordTypeCodes(destinLangNearSynMeaningRel.getWordTypeCodes());
+				destinLangNearSyn.setAspectCode(destinLangNearSynMeaningRel.getAspectCode());
+				destinLangNearSyn.setMwLexComplexity(destinLangNearSynMeaningRel.getComplexity());
+				destinLangNearSyn.setMwLexRegisterCodes(destinLangNearSynMeaningRel.getLexRegisterCodes());
+				destinLangNearSyn.setMwLexGovernmentValues(destinLangNearSynMeaningRel.getLexGovernmentValues());
+				setWordTypeFlags(destinLangNearSyn);
+				if (CollectionUtils.isNotEmpty(destinLangNearSynMeaningRel.getLexValueStateCodes())) {
+					destinLangNearSyn.setMwLexValueStateCode(destinLangNearSynMeaningRel.getLexValueStateCodes().get(0));
 				}
 
-				classifierUtil.applyClassifiers(destinLangInexactSyn, displayLang);
-				boolean additionalDataExists = (destinLangInexactSyn.getAspect() != null)
-						|| (destinLangInexactSyn.getMwLexValueState() != null)
-						|| CollectionUtils.isNotEmpty(destinLangInexactSyn.getWordTypes())
-						|| CollectionUtils.isNotEmpty(destinLangInexactSyn.getMwLexRegisters())
-						|| CollectionUtils.isNotEmpty(destinLangInexactSyn.getMwLexGovernments());
-				destinLangInexactSyn.setAdditionalDataExists(additionalDataExists);
+				classifierUtil.applyClassifiers(destinLangNearSyn, displayLang);
+				boolean additionalDataExists = (destinLangNearSyn.getAspect() != null)
+						|| (destinLangNearSyn.getMwLexValueState() != null)
+						|| CollectionUtils.isNotEmpty(destinLangNearSyn.getWordTypes())
+						|| CollectionUtils.isNotEmpty(destinLangNearSyn.getMwLexRegisters())
+						|| CollectionUtils.isNotEmpty(destinLangNearSyn.getMwLexGovernments());
+				destinLangNearSyn.setAdditionalDataExists(additionalDataExists);
 
-				List<TypeMeaningRelation> sourceLangInexactSynMeaningRels = sourceLangInexactSynMeaningRelsMap.get(meaningId);
-				if (CollectionUtils.isEmpty(sourceLangInexactSynMeaningRels)) {
-					destinLangInexactSyn.setInexactSynMeaningDefinition(destinLangInexactSynMeaningRel.getInexactSynDef());
+				List<TypeMeaningRelation> sourceLangNearSynMeaningRels = sourceLangNearSynMeaningRelsMap.get(meaningId);
+				if (CollectionUtils.isEmpty(sourceLangNearSynMeaningRels)) {
+					destinLangNearSyn.setInexactSynMeaningDefinition(destinLangNearSynMeaningRel.getInexactSynDef());
 				}
 
-				destinLangInexactSynonyms.add(destinLangInexactSyn);
+				destinLangNearSynonyms.add(destinLangNearSyn);
 			}
 
-			for (TypeMeaningWord destinLangInexactSynonym : destinLangInexactSynonyms) {
+			for (TypeMeaningWord destinLangNearSynonym : destinLangNearSynonyms) {
 				if (DatasetType.LEX.equals(lexemeWord.getDatasetType())) {
-					lexemeWord.getDestinLangSynonyms().add(destinLangInexactSynonym);
+					lexemeWord.getDestinLangSynonyms().add(destinLangNearSynonym);
 				}
 			}
 		}

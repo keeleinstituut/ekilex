@@ -144,7 +144,7 @@ public abstract class AbstractSearchService implements SystemConstant, WebConsta
 
 		SearchContext searchContext = getSearchContext(searchFilter);
 		List<Word> allWords = searchDbService.getWords(searchWord, searchContext, false);
-		wordConversionUtil.setAffixoidFlags(allWords);
+		wordConversionUtil.setWordTypeFlags(allWords);
 		wordConversionUtil.composeHomonymWrapups(allWords, searchContext);
 		wordConversionUtil.selectHomonymWithLang(allWords, homonymNr, lang);
 

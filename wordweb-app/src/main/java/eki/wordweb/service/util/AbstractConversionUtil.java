@@ -18,15 +18,20 @@ import eki.wordweb.constant.WebConstant;
 import eki.wordweb.data.ComplexityType;
 import eki.wordweb.data.LangType;
 import eki.wordweb.data.SourceLinkType;
-import eki.wordweb.data.Word;
 import eki.wordweb.data.WordTypeData;
-import eki.wordweb.data.type.TypeMeaningWord;
 import eki.wordweb.data.type.TypeSourceLink;
 
 public abstract class AbstractConversionUtil implements WebConstant, SystemConstant, GlobalConstant {
 
 	@Autowired
 	protected ClassifierUtil classifierUtil;
+
+	public void setWordTypeFlags(List<? extends WordTypeData> words) {
+
+		for (WordTypeData word : words) {
+			setWordTypeFlags(word);
+		}
+	}
 
 	public void setWordTypeFlags(WordTypeData wordTypeData) {
 
@@ -49,6 +54,10 @@ public abstract class AbstractConversionUtil implements WebConstant, SystemConst
 		wordTypeData.setForeignWord(isForeignWord);
 		wordTypeData.setIncorrectWordForm(isIncorrectWordForm);
 
+		/*
+		 * danger of infinite recursion
+		 * testing, removing later
+		 * 
 		if (wordTypeData instanceof Word) {
 			Word word = (Word) wordTypeData;
 			List<TypeMeaningWord> meaningWords = word.getMeaningWords();
@@ -58,6 +67,7 @@ public abstract class AbstractConversionUtil implements WebConstant, SystemConst
 				}
 			}
 		}
+		*/
 	}
 
 	protected <T> OrderedMap<String, List<T>> composeOrderedMap(Map<String, List<T>> langKeyUnorderedMap, Map<String, Long> langOrderByMap) {
