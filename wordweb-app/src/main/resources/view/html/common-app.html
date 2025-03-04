@@ -467,7 +467,7 @@
       th:data-content="${dataContent}"
       th:unless="${#strings.isEmpty(sourceLink.sourceName)}"
       >
-      <span class="mr-1" th:utext="${sourceLink.sourceName}"></span>
+      <span class="mr-1 text-underlined" th:utext="${sourceLink.sourceName}"></span>
       <span th:utext="|${sourceLink.sourceLinkName}|" th:unless="${#strings.isEmpty(sourceLink.sourceLinkName)}"></span>
     </button>
   </th:block>
