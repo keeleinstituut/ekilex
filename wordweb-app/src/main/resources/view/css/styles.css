@@ -17823,7 +17823,11 @@ body {
 }
 
 span.material-symbols-outlined {
-  font-size: var(--icon-size, inherit);
+  font-size: var(--icon-size, var(--fallback-icon-size, inherit));
+}
+
+span.material-symbols-outlined--default-size {
+  --fallback-icon-size: 1.5rem;
 }
 
 .relation-list {
@@ -19168,6 +19172,7 @@ span.material-symbols-outlined {
 .wordmodal .modal-body .btn-speaker {
   padding: 0;
   margin: -7px 0;
+  --icon-size: 1.3125rem;
 }
 
 .wordmodal .modal-body .btn-speaker .icon-speaker {

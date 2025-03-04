@@ -724,9 +724,11 @@
   gap: 8px;
 }
 
-
-span.material-symbols-outlined {
-  font-size: var(--icon-size, inherit);
+span.material-symbols-outlined  {
+  font-size: var(--icon-size, var(--fallback-icon-size, inherit));
+  &--default-size {
+    --fallback-icon-size: 1.5rem;
+  }
 }
 
 .relation-list {
