@@ -13,9 +13,6 @@ alter table ww_exception alter column exception_name set not null;
 create index ww_search_request_origin_idx on ww_search(request_origin);
 create index ww_search_result_exists_idx on ww_search(result_exists);
 
-drop table if exists ww_search_default_count cascade;
-drop table if exists ww_search_filtered_count cascade;
-
 create table ww_search_default_count (
 	id bigserial primary key,
 	search_word text not null,

@@ -90,10 +90,9 @@ public class StatDbService implements GlobalConstant, SystemConstant {
 				.fetchInto(ValueCount.class);
 
 		int totalResultCount = create
-				.select(DSL.count(sdc.SEARCH_WORD))
+				.select(DSL.countDistinct(sdc.SEARCH_WORD))
 				.from(sdc)
 				.where(where)
-				.groupBy(sdc.SEARCH_WORD)
 				.fetchSingleInto(int.class);
 
 		boolean resultsExist = totalResultCount > 0;
@@ -159,10 +158,9 @@ public class StatDbService implements GlobalConstant, SystemConstant {
 				.fetchInto(ValueCount.class);
 
 		int totalResultCount = create
-				.select(DSL.count(sfc.SEARCH_WORD))
+				.select(DSL.countDistinct(sfc.SEARCH_WORD))
 				.from(sfc)
 				.where(where)
-				.groupBy(sfc.SEARCH_WORD)
 				.fetchSingleInto(int.class);
 
 		boolean resultsExist = totalResultCount > 0;
