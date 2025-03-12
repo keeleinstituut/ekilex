@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="et" xmlns:th="http://www.thymeleaf.org">
 <head th:replace="common-app :: common_header(~{::title},~{::links}, simpleSearch)">
-<title>Otsing</title>
+<title th:text="#{search.title(${searchWord})}">Otsing</title>
 <th:block th:fragment="links">
   <script type="text/javascript" th:src="@{/view/js/recorder.js}"></script>
   <script type="text/javascript" th:src="@{/view/js/ww-common-audio.js}"></script>
@@ -37,7 +37,7 @@
       <th:block th:replace="common-search :: homonyms"></th:block>
       <div class="word-details">
         <div class="no-results__wrapper" th:unless="${wordsData.resultExists}">
-          <h1 class="no-results__title" th:text="${#strings.replace(#messages.msg('label.search.word.not.found'), '%word%', searchWord)}"></h1>
+          <h1 class="no-results__title" th:text="#{label.search.word.not.found(${searchWord})}"></h1>
           <th:block th:if="${wordsData.availableLanguagesDatasets.availableFiltersExist}">
             <div th:text="#{label.search.filter.suggestion.simple}">Otsing annab tulemusi teistes keeltes või sõnakogudes kui sinu valitud filtris.</div>
             <div class="no-results__columns no-results__columns--single" th:with="hasLanguages = ${not #lists.isEmpty(wordsData.availableLanguagesDatasets.languages)}">
