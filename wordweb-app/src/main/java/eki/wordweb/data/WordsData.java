@@ -11,11 +11,11 @@ public class WordsData extends AbstractSearchResult {
 
 	private final List<String> suggestedWordValues;
 
-	private final boolean formResultsExist;
+	private final boolean formResultExists;
 
-	private final boolean altResultsExist;
+	private final boolean altResultExists;
 
-	private final boolean suggestionsExist;
+	private final boolean suggestionExists;
 
 	private final LanguagesDatasets availableLanguagesDatasets;
 
@@ -23,29 +23,29 @@ public class WordsData extends AbstractSearchResult {
 		super(false, false, 0);
 		this.wordMatchWords = Collections.emptyList();
 		this.suggestedWordValues = Collections.emptyList();
-		this.formResultsExist = false;
-		this.altResultsExist = false;
-		this.suggestionsExist = false;
+		this.formResultExists = false;
+		this.altResultExists = false;
+		this.suggestionExists = false;
 		this.availableLanguagesDatasets = new LanguagesDatasets();
 	}
 
-	public WordsData(List<Word> wordMatchWords, boolean wordResultsExist, boolean wordSingleResult, int wordResultCount, List<String> suggestedWordValues, boolean formResultsExist) {
-		super(wordResultsExist, wordSingleResult, wordResultCount);
+	public WordsData(List<Word> wordMatchWords, boolean wordResultExists, boolean wordSingleResult, int wordResultCount, List<String> suggestedWordValues, boolean formResultExists) {
+		super(wordResultExists, wordSingleResult, wordResultCount);
 		this.wordMatchWords = wordMatchWords;
 		this.suggestedWordValues = suggestedWordValues;
-		this.formResultsExist = formResultsExist;
-		this.altResultsExist = false;
-		this.suggestionsExist = formResultsExist;
+		this.formResultExists = formResultExists;
+		this.altResultExists = false;
+		this.suggestionExists = formResultExists;
 		this.availableLanguagesDatasets = new LanguagesDatasets();
 	}
 
-	public WordsData(List<String> suggestedWordValues, boolean altResultsExist) {
+	public WordsData(List<String> suggestedWordValues, boolean altResultExists) {
 		super(false, false, 0);
 		this.wordMatchWords = Collections.emptyList();
 		this.suggestedWordValues = suggestedWordValues;
-		this.formResultsExist = false;
-		this.altResultsExist = altResultsExist;
-		this.suggestionsExist = altResultsExist;
+		this.formResultExists = false;
+		this.altResultExists = altResultExists;
+		this.suggestionExists = altResultExists;
 		this.availableLanguagesDatasets = new LanguagesDatasets();
 	}
 
@@ -53,9 +53,9 @@ public class WordsData extends AbstractSearchResult {
 		super(false, false, 0);
 		this.wordMatchWords = Collections.emptyList();
 		this.suggestedWordValues = Collections.emptyList();
-		this.formResultsExist = false;
-		this.altResultsExist = false;
-		this.suggestionsExist = false;
+		this.formResultExists = false;
+		this.altResultExists = false;
+		this.suggestionExists = false;
 		this.availableLanguagesDatasets = availableLanguagesDatasets;
 	}
 
@@ -67,16 +67,16 @@ public class WordsData extends AbstractSearchResult {
 		return suggestedWordValues;
 	}
 
-	public boolean isFormResultsExist() {
-		return formResultsExist;
+	public boolean isFormResultExists() {
+		return formResultExists;
 	}
 
-	public boolean isAltResultsExist() {
-		return altResultsExist;
+	public boolean isAltResultExists() {
+		return altResultExists;
 	}
 
-	public boolean isSuggestionsExist() {
-		return suggestionsExist;
+	public boolean isSuggestionExists() {
+		return suggestionExists;
 	}
 
 	public LanguagesDatasets getAvailableLanguagesDatasets() {

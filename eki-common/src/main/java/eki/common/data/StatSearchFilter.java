@@ -8,11 +8,11 @@ public class StatSearchFilter extends AbstractDataObject {
 
 	private StatType statType;
 
-	private String searchMode;
-
 	private String datasetCode;
 
 	private String searchLang;
+
+	private String searchMode;
 
 	private String dateFrom;
 
@@ -20,20 +20,16 @@ public class StatSearchFilter extends AbstractDataObject {
 
 	private boolean trustworthyOnly;
 
+	private boolean noResultsOnly;
+
+	private int pageNum;
+
 	public StatType getStatType() {
 		return statType;
 	}
 
 	public void setStatType(StatType statType) {
 		this.statType = statType;
-	}
-
-	public String getSearchMode() {
-		return searchMode;
-	}
-
-	public void setSearchMode(String searchMode) {
-		this.searchMode = searchMode;
 	}
 
 	public String getDatasetCode() {
@@ -50,6 +46,14 @@ public class StatSearchFilter extends AbstractDataObject {
 
 	public void setSearchLang(String searchLang) {
 		this.searchLang = searchLang;
+	}
+
+	public String getSearchMode() {
+		return searchMode;
+	}
+
+	public void setSearchMode(String searchMode) {
+		this.searchMode = searchMode;
 	}
 
 	public String getDateFrom() {
@@ -74,6 +78,22 @@ public class StatSearchFilter extends AbstractDataObject {
 
 	public void setTrustworthyOnly(boolean trustworthyOnly) {
 		this.trustworthyOnly = trustworthyOnly;
+	}
+
+	public boolean isNoResultsOnly() {
+		return noResultsOnly;
+	}
+
+	public void setNoResultsOnly(boolean noResultsOnly) {
+		this.noResultsOnly = noResultsOnly;
+	}
+
+	public int getPageNum() {
+		return pageNum;
+	}
+
+	public void setPageNum(int pageNum) {
+		this.pageNum = pageNum;
 	}
 
 }

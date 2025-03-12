@@ -6,14 +6,14 @@ public abstract class AbstractSearchResult extends AbstractDataObject {
 
 	private static final long serialVersionUID = 1L;
 
-	private boolean resultsExist;
+	private boolean resultExists;
 
 	private boolean singleResult;
 
 	private int resultCount;
 
-	public AbstractSearchResult(boolean resultsExist, boolean singleResult, int resultCount) {
-		this.resultsExist = resultsExist;
+	public AbstractSearchResult(boolean resultExists, boolean singleResult, int resultCount) {
+		this.resultExists = resultExists;
 		this.singleResult = singleResult;
 		this.resultCount = resultCount;
 	}
@@ -22,8 +22,8 @@ public abstract class AbstractSearchResult extends AbstractDataObject {
 		return resultCount;
 	}
 
-	public boolean isResultsExist() {
-		return resultsExist;
+	public boolean isResultExists() {
+		return resultExists;
 	}
 
 	public boolean isSingleResult() {

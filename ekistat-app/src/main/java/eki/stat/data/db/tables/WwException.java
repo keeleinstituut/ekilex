@@ -8,7 +8,7 @@ import eki.stat.data.db.Keys;
 import eki.stat.data.db.Public;
 import eki.stat.data.db.tables.records.WwExceptionRecord;
 
-import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
 
@@ -57,7 +57,7 @@ public class WwException extends TableImpl<WwExceptionRecord> {
     /**
      * The column <code>public.ww_exception.exception_name</code>.
      */
-    public final TableField<WwExceptionRecord, String> EXCEPTION_NAME = createField(DSL.name("exception_name"), SQLDataType.CLOB, this, "");
+    public final TableField<WwExceptionRecord, String> EXCEPTION_NAME = createField(DSL.name("exception_name"), SQLDataType.CLOB.nullable(false), this, "");
 
     /**
      * The column <code>public.ww_exception.exception_message</code>.
@@ -67,7 +67,7 @@ public class WwException extends TableImpl<WwExceptionRecord> {
     /**
      * The column <code>public.ww_exception.event_on</code>.
      */
-    public final TableField<WwExceptionRecord, Timestamp> EVENT_ON = createField(DSL.name("event_on"), SQLDataType.TIMESTAMP(6).nullable(false).defaultValue(DSL.field("statement_timestamp()", SQLDataType.TIMESTAMP)), this, "");
+    public final TableField<WwExceptionRecord, LocalDateTime> EVENT_ON = createField(DSL.name("event_on"), SQLDataType.LOCALDATETIME(6).nullable(false).defaultValue(DSL.field("statement_timestamp()", SQLDataType.LOCALDATETIME)), this, "");
 
     private WwException(Name alias, Table<WwExceptionRecord> aliased) {
         this(alias, aliased, null);
@@ -153,7 +153,7 @@ public class WwException extends TableImpl<WwExceptionRecord> {
     // -------------------------------------------------------------------------
 
     @Override
-    public Row4<Long, String, String, Timestamp> fieldsRow() {
+    public Row4<Long, String, String, LocalDateTime> fieldsRow() {
         return (Row4) super.fieldsRow();
     }
 }

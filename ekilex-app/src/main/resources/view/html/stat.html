@@ -9,9 +9,11 @@
   <th:block th:replace="common :: nav_bar(activeItem = 'stat')"></th:block>
   <div class="container-fluid">
     <div class="card mt-4 mb-4 shadow">
-      <form name="getStatForm" th:action="@{/ww_stat}" method="get" data-plugin="statisticsFormPlugin">
+      <form th:action="@{/stat}" method="post">
+        <input type="hidden" name="statType" th:value="${statSearchFilter.statType}">
+        <input type="hidden" name="pageNum" value="1">
         <div class="card-header">
-          <span th:text="#{stat.ww.header}">Sõnaveebi otsingute statistika (top 100)</span>
+          <span th:text="#{stat.ww.header}">Sõnaveebi otsingute statistika</span>
         </div>
         <div class="card-body">
           <table>
@@ -21,9 +23,8 @@
               </td>
               <td>
                 <select class="form-control value-select" name="datasetCode">
-                  <option value="" th:text="#{stat.any.datasets}">Määramata</option>
-                  <option value="dsall" th:text="#{stat.all.datasets}">Kõik sõnakogud</option>
-                  <option th:each="dataset : ${userVisibleDatasets}" th:value="${dataset.code}" th:text="${dataset.name}">dataset</option>
+                  <option value="dsall" th:text="#{stat.all.datasets}" th:selected="${statSearchFilter.datasetCode == 'dsall'}">Kõik sõnakogud</option>
+                  <option th:each="dataset : ${userVisibleDatasets}" th:value="${dataset.code}" th:text="${dataset.name}" th:selected="${statSearchFilter.datasetCode == dataset.code}">dataset</option>
                 </select>
               </td>
             </tr>
@@ -33,9 +34,8 @@
               </td>
               <td>
                 <select class="form-control value-select" name="searchLang">
-                  <option value="" th:text="#{stat.any.languages}">Määramata</option>
-                  <option value="dlall" th:text="#{stat.all.languages}">Kõik keeled</option>
-                  <option th:each="lang : ${wwLanguages}" th:value="${lang.code}" th:text="${lang.value}">lang</option>
+                  <option value="dlall" th:text="#{stat.all.languages}" th:selected="${statSearchFilter.searchLang == 'dlall'}">Kõik keeled</option>
+                  <option th:each="lang : ${wwLanguages}" th:value="${lang.code}" th:text="${lang.value}" th:selected="${statSearchFilter.searchLang == lang.code}">lang</option>
                   <option value="other" th:text="#{stat.other.languages}">Muud keeled</option>
                 </select>
               </td>
@@ -46,9 +46,8 @@
               </td>
               <td>
                 <select class="form-control value-select" name="searchMode">
-                  <option value="" th:text="#{stat.search.type.any}">Kõik tüübid</option>
-                  <option value="detail" th:text="#{stat.search.type.detail}">Tavaotsing</option>
-                  <option value="simple" th:text="#{stat.search.type.simple}">Keeleõppija otsing</option>
+                  <option value="detail" th:text="#{stat.search.type.detail}" th:selected="${statSearchFilter.searchMode == 'detail'}">Tavaotsing</option>
+                  <option value="simple" th:text="#{stat.search.type.simple}" th:selected="${statSearchFilter.searchMode == 'simple'}">Keeleõppija otsing</option>
                 </select>
               </td>
             </tr>
@@ -58,7 +57,7 @@
               </td>
               <td>
                 <div class="input-group date" data-provide="datepicker" data-date-language="et" data-date-autoclose="true" data-date-orientation="bottom">
-                  <input type="text" class="form-control bg-white" name="resultsFrom" readonly>
+                  <input type="text" class="form-control bg-white" name="dateFrom" th:value="${statSearchFilter.dateFrom}" readonly>
                   <div class="input-group-addon input-group-append">
                     <div class="input-group-text">
                       <i class="fa fa-calendar fa-lg"></i>
@@ -73,7 +72,7 @@
               </td>
               <td>
                 <div class="input-group date" data-provide="datepicker" data-date-language="et" data-date-autoclose="true" data-date-orientation="bottom">
-                  <input type="text" class="form-control bg-white" name="resultsUntil" readonly>
+                  <input type="text" class="form-control bg-white" name="dateUntil" th:value="${statSearchFilter.dateUntil}" readonly>
                   <div class="input-group-addon input-group-append">
                     <div class="input-group-text">
                       <i class="fa fa-calendar fa-lg"></i>
@@ -83,34 +82,41 @@
               </td>
             </tr>
             <tr>
+              <td></td>
               <td>
-                <span class="mr-3" th:text="#{stat.trustworthy.only}">Ainult usaldusväärsed</span>
-              </td>
-              <td>
-                <div class="row">
-                  <div class="col-10">
-                    <div class="form-check mt-2">
-                      <input class="form-check-input" type="checkbox" name="trustworthyOnly" />
-                    </div>
-                  </div>
-                  <div class="col-2">
-                    <button type="submit" class="btn btn-primary" th:text="#{stat.search}">Otsi</button>
-                  </div>
-                </div>
+                <table class="w-100">
+                  <tr>
+                    <td class="text-right">
+                      <span class="mr-2" th:text="#{stat.trustworthy.only}">Ainult usaldusväärsed</span>
+                    </td>
+                    <td>
+                      <div class="form-check mb-3">
+                        <input class="form-check-input" type="checkbox" name="trustworthyOnly" th:checked="${statSearchFilter.trustworthyOnly}" />
+                      </div>
+                    </td>
+                    <td class="text-right">
+                      <span class="mr-2" th:text="#{stat.noresults.only}">Ainult tulemusteta</span>
+                    </td>
+                    <td>
+                      <div class="form-check mb-3">
+                        <input class="form-check-input" type="checkbox" name="noResultsOnly" th:checked="${statSearchFilter.noResultsOnly}" />
+                      </div>
+                    </td>
+                    <td class="col-3 text-right p-0">
+                      <button type="button" data-plugin="wwStatSearchPlugin" class="btn btn-primary" th:text="#{stat.search}">Otsi</button>
+                    </td>
+                  </tr>
+                </table>
               </td>
             </tr>
           </table>
         </div>
       </form>
     </div>
-    <th:block th:replace="statcomp :: wwsearchstat"></th:block>
+    <th:block th:replace="statcomp :: wwStatSearchResult"></th:block>
   </div>
   <div th:replace="common :: #alertDlg"></div>
   <div th:replace="common :: #alertSmall"></div>
   <div th:replace="common :: #waitDlg"></div>
-  <script th:inline="javascript">
-			// Currently unnecessary due to use of plugin
-			// initializeStat();
-		</script>
 </body>
 </html>

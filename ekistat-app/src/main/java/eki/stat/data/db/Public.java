@@ -6,6 +6,8 @@ package eki.stat.data.db;
 
 import eki.stat.data.db.tables.WwException;
 import eki.stat.data.db.tables.WwSearch;
+import eki.stat.data.db.tables.WwSearchDefaultCount;
+import eki.stat.data.db.tables.WwSearchFilteredCount;
 
 import java.util.Arrays;
 import java.util.List;
@@ -40,6 +42,16 @@ public class Public extends SchemaImpl {
     public final WwSearch WW_SEARCH = WwSearch.WW_SEARCH;
 
     /**
+     * The table <code>public.ww_search_default_count</code>.
+     */
+    public final WwSearchDefaultCount WW_SEARCH_DEFAULT_COUNT = WwSearchDefaultCount.WW_SEARCH_DEFAULT_COUNT;
+
+    /**
+     * The table <code>public.ww_search_filtered_count</code>.
+     */
+    public final WwSearchFilteredCount WW_SEARCH_FILTERED_COUNT = WwSearchFilteredCount.WW_SEARCH_FILTERED_COUNT;
+
+    /**
      * No further instances allowed
      */
     private Public() {
@@ -56,6 +68,8 @@ public class Public extends SchemaImpl {
     public final List<Sequence<?>> getSequences() {
         return Arrays.<Sequence<?>>asList(
             Sequences.WW_EXCEPTION_ID_SEQ,
+            Sequences.WW_SEARCH_DEFAULT_COUNT_ID_SEQ,
+            Sequences.WW_SEARCH_FILTERED_COUNT_ID_SEQ,
             Sequences.WW_SEARCH_ID_SEQ);
     }
 
@@ -63,6 +77,8 @@ public class Public extends SchemaImpl {
     public final List<Table<?>> getTables() {
         return Arrays.<Table<?>>asList(
             WwException.WW_EXCEPTION,
-            WwSearch.WW_SEARCH);
+            WwSearch.WW_SEARCH,
+            WwSearchDefaultCount.WW_SEARCH_DEFAULT_COUNT,
+            WwSearchFilteredCount.WW_SEARCH_FILTERED_COUNT);
     }
 }

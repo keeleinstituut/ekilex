@@ -1,22 +1,10 @@
-// Currently non-functional as there's no backend
-$.fn.statisticsFormPlugin = function() {
+$.fn.wwStatSearchPlugin = function() {
 	return this.each(function() {
-		const form = $(this);
-		form.on('submit', function(e) {
-			e.preventDefault();
+		const btn = $(this);
+		btn.on('click', function() {
 			openWaitDlg();
-			$.ajax({
-				url: form.attr('action'),
-				data: form.serialize(),
-				method: 'GET',
-			}).done(function(statFragment) {
-				$('#wwSearchStat').replaceWith(statFragment);
-			}).fail(function(data) {
-				console.log(data);
-				openAlertDlg(messages["common.error"]);
-			}).always(function() {
-				closeWaitDlg();
-			});
+			const form = btn.closest('form');
+			form.trigger('submit');
 		});
 	});
 }

@@ -6,7 +6,11 @@ package eki.stat.data.db;
 
 import eki.stat.data.db.tables.WwException;
 import eki.stat.data.db.tables.WwSearch;
+import eki.stat.data.db.tables.WwSearchDefaultCount;
+import eki.stat.data.db.tables.WwSearchFilteredCount;
 import eki.stat.data.db.tables.records.WwExceptionRecord;
+import eki.stat.data.db.tables.records.WwSearchDefaultCountRecord;
+import eki.stat.data.db.tables.records.WwSearchFilteredCountRecord;
 import eki.stat.data.db.tables.records.WwSearchRecord;
 
 import org.jooq.TableField;
@@ -28,4 +32,8 @@ public class Keys {
 
     public static final UniqueKey<WwExceptionRecord> WW_EXCEPTION_PKEY = Internal.createUniqueKey(WwException.WW_EXCEPTION, DSL.name("ww_exception_pkey"), new TableField[] { WwException.WW_EXCEPTION.ID }, true);
     public static final UniqueKey<WwSearchRecord> WW_SEARCH_PKEY = Internal.createUniqueKey(WwSearch.WW_SEARCH, DSL.name("ww_search_pkey"), new TableField[] { WwSearch.WW_SEARCH.ID }, true);
+    public static final UniqueKey<WwSearchDefaultCountRecord> WW_SEARCH_DEFAULT_COUNT_PKEY = Internal.createUniqueKey(WwSearchDefaultCount.WW_SEARCH_DEFAULT_COUNT, DSL.name("ww_search_default_count_pkey"), new TableField[] { WwSearchDefaultCount.WW_SEARCH_DEFAULT_COUNT.ID }, true);
+    public static final UniqueKey<WwSearchDefaultCountRecord> WW_SEARCH_DEFAULT_COUNT_SEARCH_WORD_RESULT_EXISTS_REQUEST_O_KEY = Internal.createUniqueKey(WwSearchDefaultCount.WW_SEARCH_DEFAULT_COUNT, DSL.name("ww_search_default_count_search_word_result_exists_request_o_key"), new TableField[] { WwSearchDefaultCount.WW_SEARCH_DEFAULT_COUNT.SEARCH_WORD, WwSearchDefaultCount.WW_SEARCH_DEFAULT_COUNT.RESULT_EXISTS, WwSearchDefaultCount.WW_SEARCH_DEFAULT_COUNT.REQUEST_ORIGIN, WwSearchDefaultCount.WW_SEARCH_DEFAULT_COUNT.SEARCH_DATE }, true);
+    public static final UniqueKey<WwSearchFilteredCountRecord> WW_SEARCH_FILTERED_COUNT_PKEY = Internal.createUniqueKey(WwSearchFilteredCount.WW_SEARCH_FILTERED_COUNT, DSL.name("ww_search_filtered_count_pkey"), new TableField[] { WwSearchFilteredCount.WW_SEARCH_FILTERED_COUNT.ID }, true);
+    public static final UniqueKey<WwSearchFilteredCountRecord> WW_SEARCH_FILTERED_COUNT_SEARCH_WORD_SEARCH_MODE_DESTIN_LAN_KEY = Internal.createUniqueKey(WwSearchFilteredCount.WW_SEARCH_FILTERED_COUNT, DSL.name("ww_search_filtered_count_search_word_search_mode_destin_lan_key"), new TableField[] { WwSearchFilteredCount.WW_SEARCH_FILTERED_COUNT.SEARCH_WORD, WwSearchFilteredCount.WW_SEARCH_FILTERED_COUNT.SEARCH_MODE, WwSearchFilteredCount.WW_SEARCH_FILTERED_COUNT.DESTIN_LANGS, WwSearchFilteredCount.WW_SEARCH_FILTERED_COUNT.DATASET_CODES, WwSearchFilteredCount.WW_SEARCH_FILTERED_COUNT.RESULT_EXISTS, WwSearchFilteredCount.WW_SEARCH_FILTERED_COUNT.REQUEST_ORIGIN, WwSearchFilteredCount.WW_SEARCH_FILTERED_COUNT.SEARCH_DATE }, true);
 }

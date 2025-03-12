@@ -10,7 +10,7 @@
 
     <groupId>eki.stat</groupId>
     <artifactId>ekistat-app</artifactId>
-    <version>1.4</version>
+    <version>1.4.0</version>
     <packaging>jar</packaging>
 
     <name>Ekistat App</name>
@@ -86,7 +86,7 @@
                                     <inputSchema>public</inputSchema>
                                 </database>
                                 <generate>
-                                    <javaTimeTypes>false</javaTimeTypes>
+                                    <javaTimeTypes>true</javaTimeTypes>
                                 </generate>
                                 <target>
                                     <packageName>eki.stat.data.db</packageName>

@@ -29,14 +29,14 @@
       </div>
     </div>
     <main id="mainContentArea" role="main" class="content-panel loading">
-      <div th:if="${wordsData.resultsExist}" class="loading-indicator">
+      <div th:if="${wordsData.resultExists}" class="loading-indicator">
         <div class="spinner-border text-primary " role="status">
           <span class="sr-only">Loading...</span>
         </div>
       </div>
       <th:block th:replace="common-search :: homonyms"></th:block>
       <div class="word-details">
-        <div class="no-results__wrapper" th:unless="${wordsData.resultsExist}">
+        <div class="no-results__wrapper" th:unless="${wordsData.resultExists}">
           <h1 class="no-results__title" th:text="${#strings.replace(#messages.msg('label.search.word.not.found'), '%word%', searchWord)}"></h1>
           <th:block th:if="${wordsData.availableLanguagesDatasets.availableFiltersExist}">
             <div th:text="#{label.search.filter.suggestion.simple}">Otsing annab tulemusi teistes keeltes või sõnakogudes kui sinu valitud filtris.</div>
@@ -49,7 +49,7 @@
               <a th:href="@{${@viewUtil.getSimpleSearchUri(searchWord)}}" th:text="#{label.search.filter.clear}"> Otsi uuesti ilma piiranguteta </a>
             </div>
           </th:block>
-          <th:block th:if="${wordsData.formResultsExist}">
+          <th:block th:if="${wordsData.formResultExists}">
             <div>
               <span th:text="#{label.suggest.form}">see on ka vorm sõnast</span>
               <a href="#" class="word-form" th:each="word,wordIter : ${wordsData.suggestedWordValues}" th:text="${wordIter.last ? word : word + ',&nbsp;'}" th:data-word="${word}"> </a>

@@ -35,7 +35,7 @@ public class StatDataUtil {
 		String searchUri = searchValidation.getSearchUri();
 
 		int resultCount = searchResult.getResultCount();
-		boolean resultsExist = searchResult.isResultsExist();
+		boolean resultExists = searchResult.isResultExists();
 		boolean isSingleResult = searchResult.isSingleResult();
 
 		String referrerDomain = null;
@@ -60,7 +60,7 @@ public class StatDataUtil {
 		searchStat.setDatasetCodes(datasetCodes);
 		searchStat.setSearchUri(searchUri);
 		searchStat.setResultCount(resultCount);
-		searchStat.setResultsExist(resultsExist);
+		searchStat.setResultExists(resultExists);
 		searchStat.setSingleResult(isSingleResult);
 		searchStat.setSessionId(sessionId);
 		searchStat.setUserAgent(userAgent);

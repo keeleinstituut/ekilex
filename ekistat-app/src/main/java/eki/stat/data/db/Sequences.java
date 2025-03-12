@@ -21,6 +21,16 @@ public class Sequences {
     public static final Sequence<Long> WW_EXCEPTION_ID_SEQ = Internal.createSequence("ww_exception_id_seq", Public.PUBLIC, SQLDataType.BIGINT.nullable(false), null, null, null, null, false, null);
 
     /**
+     * The sequence <code>public.ww_search_default_count_id_seq</code>
+     */
+    public static final Sequence<Long> WW_SEARCH_DEFAULT_COUNT_ID_SEQ = Internal.createSequence("ww_search_default_count_id_seq", Public.PUBLIC, SQLDataType.BIGINT.nullable(false), null, null, null, null, false, null);
+
+    /**
+     * The sequence <code>public.ww_search_filtered_count_id_seq</code>
+     */
+    public static final Sequence<Long> WW_SEARCH_FILTERED_COUNT_ID_SEQ = Internal.createSequence("ww_search_filtered_count_id_seq", Public.PUBLIC, SQLDataType.BIGINT.nullable(false), null, null, null, null, false, null);
+
+    /**
      * The sequence <code>public.ww_search_id_seq</code>
      */
     public static final Sequence<Long> WW_SEARCH_ID_SEQ = Internal.createSequence("ww_search_id_seq", Public.PUBLIC, SQLDataType.BIGINT.nullable(false), null, null, null, null, false, null);

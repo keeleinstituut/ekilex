@@ -2,13 +2,13 @@
 <html lang="et" xmlns:th="http://www.thymeleaf.org">
 <head></head>
 <body>
-  <div id="wwSearchStat" th:fragment="wwsearchstat">
+  <div id="wwStatSearchResult" th:fragment="wwStatSearchResult">
     <div class="card mt-4 mb-4 shadow w-50">
       <th:block th:if="${statSearchResult}">
-        <th:block th:unless="${statSearchResult.resultsExist}">
+        <th:block th:unless="${statSearchResult.resultExists}">
           <div th:text="#{common.not.found}" class="card-body">Not found.</div>
         </th:block>
-        <th:block th:if="${statSearchResult.resultsExist}">
+        <th:block th:if="${statSearchResult.resultExists}">
           <table class="table table-sm table-striped mb-0">
             <tr>
               <th th:text="#{stat.order}">Järjekord</th>
@@ -17,7 +17,7 @@
             </tr>
             <tr th:each="valueCount,valueCountIter : ${statSearchResult.valueCounts}">
               <td>
-                <span th:text="${valueCountIter.count}"></span>
+                <span th:text="${((statSearchResult.pageNum - 1) * 50) + valueCountIter.count}"></span>
               </td>
               <td>
                 <span th:text="${valueCount.value}"></span>
@@ -27,6 +27,40 @@
               </td>
             </tr>
           </table>
+          <th:block th:if="${statSearchResult.resultExists}">
+            <hr />
+            <form th:action="@{/stat}" method="post">
+              <input type="hidden" name="statType" th:value="${statSearchFilter.statType}">
+              <input type="hidden" name="datasetCode" th:value="${statSearchFilter.datasetCode}">
+              <input type="hidden" name="searchLang" th:value="${statSearchFilter.searchLang}">
+              <input type="hidden" name="searchMode" th:value="${statSearchFilter.searchMode}">
+              <input type="hidden" name="dateFrom" th:value="${statSearchFilter.dateFrom}">
+              <input type="hidden" name="dateUntil" th:value="${statSearchFilter.dateUntil}">
+              <input type="hidden" name="trustworthyOnly" th:value="${statSearchFilter.trustworthyOnly}">
+              <div class="d-flex justify-content-start">
+                <button type="submit"
+                  name="pageNum"
+                  data-plugin="wwStatSearchPlugin"
+                  th:value="${statSearchResult.pageNum - 1}"
+                  th:title="#{common.previous.page}"
+                  th:if="${statSearchResult.prevPageExists}"
+                  class="btn badge ml-2 mr-2">
+                  <i class="fa fa-2x fa-angle-left" aria-hidden="true"></i>
+                </button>
+                <div class="mr-2 ml-4" th:unless="${statSearchResult.prevPageExists}"></div>
+                <span class="d-flex align-items-center" th:text="|${statSearchResult.pageNum} / ${statSearchResult.pageCount}|"></span>
+                <button type="submit" 
+                  name="pageNum"
+                  data-plugin="wwStatSearchPlugin"
+                  th:value="${statSearchResult.pageNum + 1}"
+                  th:title="#{common.next.page}"
+                  th:if="${statSearchResult.nextPageExists}"
+                  class="btn badge ml-2">
+                  <i class="fa fa-2x fa-angle-right" aria-hidden="true"></i>
+                </button>
+              </div>
+            </form>
+          </th:block>
         </th:block>
       </th:block>
     </div>

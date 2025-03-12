@@ -8,7 +8,17 @@ public class StatSearchResult extends AbstractDataObject {
 
 	private List<ValueCount> valueCounts;
 
-	private boolean resultsExist;
+	private int totalResultCount;
+
+	private int pageNum;
+
+	private int pageCount;
+
+	private boolean resultExists;
+
+	private boolean prevPageExists;
+
+	private boolean nextPageExists;
 
 	public List<ValueCount> getValueCounts() {
 		return valueCounts;
@@ -18,12 +28,52 @@ public class StatSearchResult extends AbstractDataObject {
 		this.valueCounts = valueCounts;
 	}
 
-	public boolean isResultsExist() {
-		return resultsExist;
+	public int getTotalResultCount() {
+		return totalResultCount;
 	}
 
-	public void setResultsExist(boolean resultsExist) {
-		this.resultsExist = resultsExist;
+	public void setTotalResultCount(int totalResultCount) {
+		this.totalResultCount = totalResultCount;
+	}
+
+	public int getPageNum() {
+		return pageNum;
+	}
+
+	public void setPageNum(int pageNum) {
+		this.pageNum = pageNum;
+	}
+
+	public int getPageCount() {
+		return pageCount;
+	}
+
+	public void setPageCount(int pageCount) {
+		this.pageCount = pageCount;
+	}
+
+	public boolean isResultExists() {
+		return resultExists;
+	}
+
+	public void setResultExists(boolean resultExists) {
+		this.resultExists = resultExists;
+	}
+
+	public boolean isPrevPageExists() {
+		return prevPageExists;
+	}
+
+	public void setPrevPageExists(boolean prevPageExists) {
+		this.prevPageExists = prevPageExists;
+	}
+
+	public boolean isNextPageExists() {
+		return nextPageExists;
+	}
+
+	public void setNextPageExists(boolean nextPageExists) {
+		this.nextPageExists = nextPageExists;
 	}
 
 }

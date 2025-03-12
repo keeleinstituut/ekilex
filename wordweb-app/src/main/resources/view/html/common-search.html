@@ -109,7 +109,7 @@
     <div class="search-filter__tags" id="lang-filter-tags"></div>
   </th:block>
   <th:block th:fragment="homonyms">
-    <div th:if="${wordsData.resultsExist}" th:class="${wordsData.singleResult ? 'd-none' : 'overflow-hidden homonym-panel'}">
+    <div th:if="${wordsData.resultExists}" th:class="${wordsData.singleResult ? 'd-none' : 'overflow-hidden homonym-panel'}">
       <button type="button" class="homonym-list-toggle d-flex d-md-none" id="homonymListToggleButton">Nupu sisu</button>
       <ul class="homonym-list list-unstyled w-100">
         <li class="homonym-list-item" th:each="word : ${wordsData.wordMatchWords}">

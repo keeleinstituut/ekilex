@@ -1,7 +1,5 @@
 package eki.ekilex.client;
 
-import static eki.common.constant.StatType.WW_SEARCH;
-
 import java.util.Collections;
 
 import org.springframework.beans.factory.annotation.Value;
@@ -40,17 +38,18 @@ public class EkistatClient implements GlobalConstant {
 
 		String serviceUriWithParameters = UriComponentsBuilder
 				.fromUriString(statSearchUrl)
-				.queryParam("statType", WW_SEARCH)
+				.queryParam("statType", searchFilter.getStatType())
 				.queryParam("searchMode", searchFilter.getSearchMode())
 				.queryParam("datasetCode", searchFilter.getDatasetCode())
 				.queryParam("searchLang", searchFilter.getSearchLang())
 				.queryParam("dateFrom", searchFilter.getDateFrom())
 				.queryParam("dateUntil", searchFilter.getDateUntil())
 				.queryParam("trustworthyOnly", searchFilter.isTrustworthyOnly())
+				.queryParam("noResultsOnly", searchFilter.isNoResultsOnly())
+				.queryParam("pageNum", searchFilter.getPageNum())
 				.toUriString();
 
 		RestTemplate restTemplate = new RestTemplate();
-
 		ResponseEntity<StatSearchResult> response = restTemplate.exchange(serviceUriWithParameters, HttpMethod.GET, entity, StatSearchResult.class);
 		StatSearchResult searchResult = response.getBody();
 

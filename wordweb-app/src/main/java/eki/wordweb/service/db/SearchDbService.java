@@ -278,10 +278,10 @@ public class SearchDbService implements GlobalConstant, SystemConstant {
 				.where(where)
 				.fetchSingleInto(int.class);
 
-		boolean resultsExist = resultCount > 0;
+		boolean resultExists = resultCount > 0;
 		boolean singleResult = resultCount == 1;
 
-		return new WordsMatch(wordValues, resultsExist, singleResult, resultCount);
+		return new WordsMatch(wordValues, resultExists, singleResult, resultCount);
 	}
 
 	public List<Word> getWords(String searchWord, SearchContext searchContext, boolean ignoreForms) {

@@ -51,10 +51,10 @@
     </div>
     <main role="main" class="content-panel">
       <div class="word-details" th:if="${wordsMatch != null}">
-        <div class="pt-2 search__block" th:unless="${wordsMatch.resultsExist}">
+        <div class="pt-2 search__block" th:unless="${wordsMatch.resultExists}">
           <h5 th:text="#{label.masked.search.no.results}">Tulemusi ei leidu</h5>
         </div>
-        <div class="d-md-block d-md-block d-flex flex-column search__block" th:if="${wordsMatch.resultsExist}">
+        <div class="d-md-block d-md-block d-flex flex-column search__block" th:if="${wordsMatch.resultExists}">
           <div class="row flex-grow-1 flex-shrink-1">
             <div class="col-md-12 col-lg-12 mt-2">
               <span th:text="#{label.result.count(${wordsMatch.resultCount})}"></span>

@@ -36,23 +36,23 @@
         </div>
       </div>
       <div class="sticky-scroll-panel__tags"
-        th:classappend="${wordsData.resultsExist} ? '' : 'sticky-scroll-panel__tags--empty'">
+        th:classappend="${wordsData.resultExists} ? '' : 'sticky-scroll-panel__tags--empty'">
         <a href="#word-morphology-results" class="sticky-scroll-panel__tag" th:text="#{label.word.forms}">Sõnavormid</a>
         <a href="#word-etymology-results" class="sticky-scroll-panel__tag" th:text="#{label.word.etymology}">Päritolu</a>
         <a href="#word-relation-results" class="sticky-scroll-panel__tag" th:text="#{label.word.relations.union}">Ühendid</a>
       </div>
     </div>
     <main id="mainContentArea" role="main" class="content-panel loading">
-      <div th:if="${wordsData.resultsExist}" class="loading-indicator">
+      <div th:if="${wordsData.resultExists}" class="loading-indicator">
         <div class="spinner-border text-primary " role="status">
           <span class="sr-only">Loading...</span>
         </div>
       </div>
       <th:block th:replace="common-search :: homonyms"></th:block>
       <div class="word-details">
-        <div class="no-results__wrapper" th:unless="${wordsData.resultsExist}" th:with="isFiltered = ${isLangFiltered || isDatasetFiltered}">
+        <div class="no-results__wrapper" th:unless="${wordsData.resultExists}" th:with="isFiltered = ${isLangFiltered || isDatasetFiltered}">
           <h1 class="no-results__title" th:text="${#strings.replace(#messages.msg('label.search.word.not.found'), '%word%', searchWord)}"></h1>
-          <th:block th:unless="${wordsData.suggestionsExist}">
+          <th:block th:unless="${wordsData.suggestionExists}">
             <th:block th:if="${wordsData.availableLanguagesDatasets.availableFiltersExist}">
               <div th:text="#{label.search.filter.suggestion.detail}">Otsing annab tulemusi teistes keeltes või sõnakogudes kui sinu valitud filtris.</div>
               <div th:with="
@@ -74,14 +74,14 @@
               <div th:utext="#{|label.word.not.found.detail.filtered.${isFiltered}|}">Ei leidnud midagi</div>
             </th:block>
           </th:block>
-          <th:block th:if="${wordsData.formResultsExist}">
+          <th:block th:if="${wordsData.formResultExists}">
             <div>
               <span th:text="#{label.suggest.form}">see on ka vorm sõnast</span>
               <a href="#" class="word-form" th:each="word,wordIter : ${wordsData.suggestedWordValues}" th:text="${wordIter.last ? word : word + ',&nbsp;'}" th:data-word="${word}"> </a>
             </div>
             <div th:utext="#{|label.form.found.detail.filtered.${isFiltered}|}">Ei leidnud midagi</div>
           </th:block>
-          <th:block th:if="${wordsData.altResultsExist}">
+          <th:block th:if="${wordsData.altResultExists}">
             <span th:text="#{label.suggest.alt}">mõned sarnased märksõnad</span>
             <div class="no-results__list">
               <a href="#" class="word-form" th:each="word,wordIter : ${wordsData.suggestedWordValues}" th:text="${word}" th:data-word="${word}"> </a>

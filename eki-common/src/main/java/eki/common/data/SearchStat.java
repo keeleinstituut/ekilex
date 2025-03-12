@@ -22,7 +22,7 @@ public class SearchStat extends AbstractDataObject {
 
 	private int resultCount;
 
-	private boolean resultsExist;
+	private boolean resultExists;
 
 	private boolean singleResult;
 
@@ -90,12 +90,12 @@ public class SearchStat extends AbstractDataObject {
 		this.resultCount = resultCount;
 	}
 
-	public boolean isResultsExist() {
-		return resultsExist;
+	public boolean isResultExists() {
+		return resultExists;
 	}
 
-	public void setResultsExist(boolean resultsExist) {
-		this.resultsExist = resultsExist;
+	public void setResultExists(boolean resultExists) {
+		this.resultExists = resultExists;
 	}
 
 	public boolean isSingleResult() {

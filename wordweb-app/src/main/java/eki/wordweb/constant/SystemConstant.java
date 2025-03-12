@@ -3,10 +3,9 @@ package eki.wordweb.constant;
 import java.math.BigDecimal;
 
 import eki.common.constant.GlobalConstant;
+import eki.common.constant.StatSearchConstant;
 
-public interface SystemConstant {
-
-	String DESTIN_LANG_ALL = "dlall";
+public interface SystemConstant extends StatSearchConstant {
 
 	String DESTIN_LANG_EST = "est";
 
@@ -19,8 +18,6 @@ public interface SystemConstant {
 	String DESTIN_LANG_UKR = "ukr";
 
 	String DESTIN_LANG_OTHER = "other";
-
-	String DATASET_ALL = "dsall";
 
 	String[] SUPPORTED_SIMPLE_DATASETS = new String[] {DATASET_ALL, GlobalConstant.DATASET_EKI};
 
@@ -35,10 +32,6 @@ public interface SystemConstant {
 	String DATASET_TYPE_LEX = "lex";
 
 	String DATASET_TYPE_TERM = "term";
-
-	String SEARCH_MODE_SIMPLE = "simple";
-
-	String SEARCH_MODE_DETAIL = "detail";
 
 	String GAME_DIFFICULTY_SIMPLE = "easy";
 

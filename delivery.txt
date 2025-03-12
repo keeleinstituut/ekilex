@@ -1,5 +1,8 @@
 Märkused ver 1.40.0 tarne kohta:
 
 uuem stat server
-lisada indeks
+delivery.sql
 muutunud api rajad
+
+corpus.service.rus.url kaob, asemele tuleb
+skell.service.url

@@ -2,7 +2,6 @@ package eki.stat.config;
 
 import org.jooq.DSLContext;
 import org.jooq.conf.Settings;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 
 import eki.common.util.QueryLoggerListener;
@@ -10,7 +9,6 @@ import eki.common.util.QueryLoggerListener;
 @Configuration
 public class JooqConfig {
 
-	@Autowired
 	public JooqConfig(DSLContext context) {
 
 		Settings settings = context.settings();

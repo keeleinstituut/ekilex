@@ -11,4 +11,5 @@ public interface ApiConstant {
 	String SEARCH_URI = "/search";
 
 	String CREATE_URI = "/create";
+
 }

@@ -8,7 +8,7 @@ import eki.stat.data.db.Keys;
 import eki.stat.data.db.Public;
 import eki.stat.data.db.tables.records.WwSearchRecord;
 
-import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
 
@@ -57,7 +57,7 @@ public class WwSearch extends TableImpl<WwSearchRecord> {
     /**
      * The column <code>public.ww_search.search_word</code>.
      */
-    public final TableField<WwSearchRecord, String> SEARCH_WORD = createField(DSL.name("search_word"), SQLDataType.CLOB, this, "");
+    public final TableField<WwSearchRecord, String> SEARCH_WORD = createField(DSL.name("search_word"), SQLDataType.CLOB.nullable(false), this, "");
 
     /**
      * The column <code>public.ww_search.homonym_nr</code>.
@@ -67,7 +67,7 @@ public class WwSearch extends TableImpl<WwSearchRecord> {
     /**
      * The column <code>public.ww_search.search_mode</code>.
      */
-    public final TableField<WwSearchRecord, String> SEARCH_MODE = createField(DSL.name("search_mode"), SQLDataType.CLOB, this, "");
+    public final TableField<WwSearchRecord, String> SEARCH_MODE = createField(DSL.name("search_mode"), SQLDataType.CLOB.nullable(false), this, "");
 
     /**
      * The column <code>public.ww_search.destin_langs</code>.
@@ -82,7 +82,7 @@ public class WwSearch extends TableImpl<WwSearchRecord> {
     /**
      * The column <code>public.ww_search.search_uri</code>.
      */
-    public final TableField<WwSearchRecord, String> SEARCH_URI = createField(DSL.name("search_uri"), SQLDataType.CLOB, this, "");
+    public final TableField<WwSearchRecord, String> SEARCH_URI = createField(DSL.name("search_uri"), SQLDataType.CLOB.nullable(false), this, "");
 
     /**
      * The column <code>public.ww_search.result_count</code>.
@@ -90,9 +90,9 @@ public class WwSearch extends TableImpl<WwSearchRecord> {
     public final TableField<WwSearchRecord, Integer> RESULT_COUNT = createField(DSL.name("result_count"), SQLDataType.INTEGER, this, "");
 
     /**
-     * The column <code>public.ww_search.results_exist</code>.
+     * The column <code>public.ww_search.result_exists</code>.
      */
-    public final TableField<WwSearchRecord, Boolean> RESULTS_EXIST = createField(DSL.name("results_exist"), SQLDataType.BOOLEAN, this, "");
+    public final TableField<WwSearchRecord, Boolean> RESULT_EXISTS = createField(DSL.name("result_exists"), SQLDataType.BOOLEAN, this, "");
 
     /**
      * The column <code>public.ww_search.single_result</code>.
@@ -112,17 +112,17 @@ public class WwSearch extends TableImpl<WwSearchRecord> {
     /**
      * The column <code>public.ww_search.session_id</code>.
      */
-    public final TableField<WwSearchRecord, String> SESSION_ID = createField(DSL.name("session_id"), SQLDataType.CLOB, this, "");
+    public final TableField<WwSearchRecord, String> SESSION_ID = createField(DSL.name("session_id"), SQLDataType.CLOB.nullable(false), this, "");
 
     /**
      * The column <code>public.ww_search.request_origin</code>.
      */
-    public final TableField<WwSearchRecord, String> REQUEST_ORIGIN = createField(DSL.name("request_origin"), SQLDataType.CLOB, this, "");
+    public final TableField<WwSearchRecord, String> REQUEST_ORIGIN = createField(DSL.name("request_origin"), SQLDataType.CLOB.nullable(false), this, "");
 
     /**
      * The column <code>public.ww_search.event_on</code>.
      */
-    public final TableField<WwSearchRecord, Timestamp> EVENT_ON = createField(DSL.name("event_on"), SQLDataType.TIMESTAMP(6).nullable(false).defaultValue(DSL.field("statement_timestamp()", SQLDataType.TIMESTAMP)), this, "");
+    public final TableField<WwSearchRecord, LocalDateTime> EVENT_ON = createField(DSL.name("event_on"), SQLDataType.LOCALDATETIME(6).nullable(false).defaultValue(DSL.field("statement_timestamp()", SQLDataType.LOCALDATETIME)), this, "");
 
     private WwSearch(Name alias, Table<WwSearchRecord> aliased) {
         this(alias, aliased, null);
@@ -208,7 +208,7 @@ public class WwSearch extends TableImpl<WwSearchRecord> {
     // -------------------------------------------------------------------------
 
     @Override
-    public Row15<Long, String, Integer, String, String[], String[], String, Integer, Boolean, Boolean, String, String, String, String, Timestamp> fieldsRow() {
+    public Row15<Long, String, Integer, String, String[], String[], String, Integer, Boolean, Boolean, String, String, String, String, LocalDateTime> fieldsRow() {
         return (Row15) super.fieldsRow();
     }
 }
