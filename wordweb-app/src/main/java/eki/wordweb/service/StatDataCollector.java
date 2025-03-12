@@ -77,7 +77,7 @@ public class StatDataCollector implements GlobalConstant, WebConstant {
 		try {
 			postRequest(statCreateUrl, exceptionStat);
 		} catch (Exception e) {
-			logger.error("Posting exception stat data failed.", e);
+			logger.error("Posting exception stat data failed.", e.getMessage());
 		}
 	}
 
@@ -91,7 +91,7 @@ public class StatDataCollector implements GlobalConstant, WebConstant {
 		try {
 			postRequest(statCreateUrl, searchStat);
 		} catch (Exception e) {
-			logger.error("Posting search stat data failed.", e);
+			logger.error("Posting search stat data failed.", e.getMessage());
 		}
 	}
 

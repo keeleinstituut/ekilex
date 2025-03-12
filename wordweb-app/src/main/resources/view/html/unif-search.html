@@ -50,7 +50,7 @@
       </div>
       <th:block th:replace="common-search :: homonyms"></th:block>
       <div class="word-details">
-        <div class="no-results__wrapper" th:unless="${wordsData.resultsExist}" th:with="isFiltered = ${isLangFiltered || isDatasetFiltered}">
+        <div class="no-results__wrapper" th:unless="${wordsData.resultExists}" th:with="isFiltered = ${isLangFiltered || isDatasetFiltered}">
           <h1 class="no-results__title" th:text="#{label.search.word.not.found(${searchWord})}"></h1>
           <th:block th:unless="${wordsData.suggestionExists}">
             <th:block th:if="${wordsData.availableLanguagesDatasets.availableFiltersExist}">
