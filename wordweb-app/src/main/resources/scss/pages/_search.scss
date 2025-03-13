@@ -148,11 +148,11 @@
     color: var(--color-dark-blue);
     margin: 0 8px 0 0;
   }
-  &__term-title {
+  &__pre-block-title {
     font-size: 1.25rem;
     font-weight: 700;
     line-height: 24px;
-    margin: 24px 0 16px;
+    margin: 24px auto 16px 0;
     color: var(--color-dark-blue);
   }
 
@@ -491,7 +491,7 @@
       }
     }
 
-    & .text-body-two {
+    & .text-body-two:not(.text-weight-semi-bold) {
       font-weight: 500;
     }
   }

@@ -20,8 +20,14 @@
   .text-weight-medium {
     font-weight: 500;
   }
+  .text-weight-semi-bold {
+    font-weight: 600;
+  }
   .text-underlined {
     text-decoration: underline;
+  }
+  .text-darker-gray {
+    color: var(--color-darker-gray);
   }
 }
 
@@ -16438,7 +16444,6 @@ body.hidden-scroll {
   border-radius: 4px;
   border: 1px solid var(--color-gray-010);
   background: #F9F9F9;
-  font-weight: bold;
   padding: 4px;
   height: 20px;
   color: var(--color-dark-blue);
@@ -17260,11 +17265,11 @@ body {
   margin: 0 8px 0 0;
 }
 
-.search__term-title {
+.search__pre-block-title {
   font-size: 1.25rem;
   font-weight: 700;
   line-height: 24px;
-  margin: 24px 0 16px;
+  margin: 24px auto 16px 0;
   color: var(--color-dark-blue);
 }
 
@@ -17596,7 +17601,7 @@ body {
   margin-left: 20px;
 }
 
-.word-notes__list .text-body-two {
+.word-notes__list .text-body-two:not(.text-weight-semi-bold) {
   font-weight: 500;
 }
 

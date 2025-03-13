@@ -33,15 +33,6 @@
             <div class="w-100">
               <div class="meaning">
                 <div class="definition-row definition-area">
-                  <div class="mb-3" th:if="${lexeme.showSection1}">
-                    <th:block th:if="${lexeme.showPoses}">
-                      <span class="lang-code text-caption lang-code--unrestricted" th:each="pos : ${lexeme.poses}" th:text="${pos.value}"></span>
-                    </th:block>
-                    <span class="lexeme grammars lang-code text-caption lang-code--unrestricted" th:unless="${#lists.isEmpty(lexeme.grammars)}">
-                      <span th:each="grammar,grammarIter : ${lexeme.grammars}" th:utext="${grammar.value + (grammarIter.last ? '' : ', ')}"></span>
-                    </span>
-                    <span class="lexeme lang-code text-caption lang-code--unrestricted" th:if="${lexeme.valueState != null}" th:text="${lexeme.valueState.value}"></span>
-                  </div>
                   <th:block th:if="${not #maps.isEmpty(lexeme.definitionsByLang)}">
                     <div class="mb-0 d-flex flex-row" th:each="definitionEntry : ${lexeme.definitionsByLang}">
                       <span class="lang-code text-caption mr-2 align-self-start"
@@ -50,16 +41,16 @@
                       <span class="lang-code text-caption mr-2 align-self-start"
                             th:if="${lexeme.proficiencyLevelCode != null}"
                             th:text="${lexeme.proficiencyLevelCode}" th:title="#{label.lexeme.proficiency.level}" data-toggle="tooltip"></span>
-                      <div class="flex-shrink-1" style="font-weight: 500;">
+                      <div class="flex-shrink-1">
                         <span class="domain register mr-1 mb-2" th:each="register,registerIter : ${lexeme.registers}" th:text="${register.value + (registerIter.last ? '' : ', ')}"></span>
                         <span class="domain mr-1 mb-2" th:each="domain,domainIter : ${lexeme.domains}" th:text="${domain.value + (domainIter.last ? '' : ', ')}"></span>
                         <th:block th:each="definition,definitionIter : ${definitionEntry.value}">
                           <th:block th:unless="${definition.subDataExists}">
-                            <span class="definition-value mb-2 mr-1 text-weight-medium" th:utext="${definition.valuePrese + (definitionIter.last ? '' : '; ')}"></span>
+                            <span class="definition-value mb-2 mr-1 text-weight-semi-bold" th:utext="${definition.valuePrese + (definitionIter.last ? '' : '; ')}"></span>
                           </th:block>
                           <th:block th:if="${definition.subDataExists}">
                             <div th:id="${'definition-entry-' + definition.definitionId}">
-                              <span class="definition-value mb-2 mr-1 text-weight-medium" th:utext="${definition.valuePrese}"></span>
+                              <span class="definition-value mb-2 mr-1 text-weight-semi-bold" th:utext="${definition.valuePrese}"></span>
                               <th:block th:unless="${#lists.isEmpty(definition.sourceLinks)}">
                                 <span class="definition-sources">
                                   <th:block th:each="sourceLink,sourceLinkIter : ${definition.sourceLinks}">
@@ -82,6 +73,15 @@
                             </div>
                           </th:block>
                         </th:block>
+                      </div>
+                      <div class="d-inline-block" th:if="${lexeme.showSection1}">
+                        <th:block th:if="${lexeme.showPoses}">
+                          <span class="lang-code text-caption lang-code--unrestricted" th:each="pos : ${lexeme.poses}" th:text="${pos.value}"></span>
+                        </th:block>
+                        <span class="lexeme grammars lang-code text-caption lang-code--unrestricted" th:unless="${#lists.isEmpty(lexeme.grammars)}">
+                          <span th:each="grammar,grammarIter : ${lexeme.grammars}" th:utext="${grammar.value + (grammarIter.last ? '' : ', ')}"></span>
+                        </span>
+                        <span class="lexeme lang-code text-caption lang-code--unrestricted" th:if="${lexeme.valueState != null}" th:text="${lexeme.valueState.value}"></span>
                       </div>
                     </div>
                   </th:block>

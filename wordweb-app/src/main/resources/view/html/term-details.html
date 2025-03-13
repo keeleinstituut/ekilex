@@ -23,12 +23,12 @@
                     <li th:each="definition,definitionIter : ${definitionEntry.value}">
                       <th:block th:if="${!definition.subDataExists}">
                         <div th:id="${'definition-entry-' + definition.definitionId}">
-                          <span class="definition-value text-body-two" th:utext="${definition.valuePrese}"></span>
+                          <span class="definition-value text-body-two text-weight-semi-bold" th:utext="${definition.valuePrese}"></span>
                         </div>
                       </th:block>
                       <th:block th:if="${definition.subDataExists}">
                         <div th:id="${'definition-entry-' + definition.definitionId}">
-                          <span class="definition-value text-body-two" th:utext="${definition.valuePrese}"> </span>
+                          <span class="definition-value text-body-two text-weight-semi-bold" th:utext="${definition.valuePrese}"> </span>
                           <th:block th:if="${not #lists.isEmpty(definition.sourceLinks)}">
                             <span class="definition-sources">
                               <th:block th:each="sourceLink,sourceLinkIter : ${definition.sourceLinks}">

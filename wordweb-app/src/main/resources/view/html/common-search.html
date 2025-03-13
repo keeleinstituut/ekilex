@@ -191,16 +191,6 @@
     </section>
   </th:block>
   <th:block th:fragment="lex-detail-view">
-    <div class="d-flex">
-      <span class="search__block-title" th:text="#{lexdata.title}"></span>
-      <div class="search__block-modified">
-        <span th:text="#{label.tooltip.last_modified}"></span>
-        <span class="meaning-data__date" th:text="${
-          wordData.word.manualEventOn == null
-          ? null
-          : #dates.format(wordData.word.manualEventOn, 'dd.MM.yyyy')}"></span>
-      </div>
-    </div>
     <div th:if="${wordData.rusHeadword}" class="alert bg-warning text-black px-3 py-1 d-flex align-items-center update-alert flex-nowrap" role="alert">
       <i class="fa fa-exclamation-triangle small mr-2 mt-1" aria-hidden="true"></i>
       <span th:text="#{warning.eki.rus}">See ei ole valmis sõnastik.</span>
@@ -211,16 +201,6 @@
     <div th:replace="common-search :: no-lexemes-exist"></div>
   </th:block>
   <th:block th:fragment="lex-detail-view-simple">
-    <div class="d-flex">
-      <span class="search__block-title" th:text="#{lexdata.title}"></span>
-      <div class="search__block-modified">
-        <span th:text="#{label.tooltip.last_modified}"></span>
-        <span class="meaning-data__date" th:text="${
-          wordData.word.manualEventOn == null
-          ? null
-          : #dates.format(wordData.word.manualEventOn, 'dd.MM.yyyy')}"></span>
-      </div>
-    </div>
     <th:block th:if="${wordData.lexemesExist}">
       <div th:if="${not #lists.isEmpty(wordData.lexLexemes)}">
         <section class="level-3-panel meaning-panel d-flex flex-row" th:each="lexeme : ${wordData.lexLexemes}">
