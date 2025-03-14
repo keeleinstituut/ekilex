@@ -188,6 +188,7 @@ public class SimpleSearchController extends AbstractSearchController {
 		model.addAttribute("wordData", wordData);
 		model.addAttribute("searchMode", SEARCH_MODE_SIMPLE);
 		model.addAttribute("ekiKeeleinfoUrl", ekiKeeleinfoUrl);
+		model.addAttribute("selectedLangs", destinLangs);
 
 		return LITE_SEARCH_PAGE + " :: worddetails";
 	}

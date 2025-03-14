@@ -16,8 +16,10 @@
             </th:block>
             <th:block th:if="${hasDefinitionsByLang}">
               <section class="d-flex" th:each="definitionEntry, definitionEntryIter : ${lexeme.definitionsByLang}">
-                <span th:with="langData=${@viewUtil.getLangData(definitionEntry.key)}" th:text="${langData.codeIso2}" th:title="${langData.label}" data-toggle="tooltip"
+                <th:block th:with="langData=${@viewUtil.getLangData(definitionEntry.key, selectedLangs)}">
+                  <span th:if="${langData != null}" th:text="${langData.codeIso2}" th:title="${langData.label}" data-toggle="tooltip"
                   class="lang-code text-caption mr-2"></span>
+                </th:block>
                 <div class="word-notes__wrapper" th:id="|lexeme-definitions-by-lang-${lexeme.meaningId}-${definitionEntry.key}-${definitionEntryIter.index}|">
                   <ul class="word-notes__list word-notes__list--with-marker">
                     <li th:each="definition,definitionIter : ${definitionEntry.value}">
@@ -67,7 +69,9 @@
           </div>
           <th:block th:if="${not #maps.isEmpty(lexeme.meaningNotesByLang)}">
             <section class="d-flex lang-code__border" th:each="noteEntry, noteEntryIter : ${lexeme.meaningNotesByLang}">
-              <span class="lang-code text-caption mr-2" th:with="langData=${@viewUtil.getLangData(noteEntry.key)}" th:text="${langData.codeIso2}" th:title="${langData.label}" data-toggle="tooltip"></span>
+              <th:block th:with="langData=${@viewUtil.getLangData(noteEntry.key, selectedLangs)}">
+                <span class="lang-code text-caption mr-2" th:if="${langData != null}" th:text="${langData.codeIso2}" th:title="${langData.label}" data-toggle="tooltip"></span>
+              </th:block>
               <div class="word-notes__wrapper" th:id="|lexeme-meaning-notes-by-lang-${lexeme.meaningId}-${noteEntry.key}-${noteEntryIter.index}|">
                 <span class="word-notes__note search__helper-text text-caption" th:text="#{label.public.note}"></span>
                 <ul class="word-notes__list word-notes__list--with-marker">
@@ -141,8 +145,10 @@
           </th:block>
           <th:block th:if="${not #maps.isEmpty(lexeme.meaningLexemesByLang)}">
             <div class="d-flex lang-code__border" th:each="meaninglexemeEntry,meaninglexemeEntryIter : ${lexeme.meaningLexemesByLang}">
-              <span class="lang-code text-caption mr-2" th:with="langData=${@viewUtil.getLangData(meaninglexemeEntry.key)}" th:text="${langData.codeIso2}" th:title="${langData.label}"
+              <th:block th:with="langData=${@viewUtil.getLangData(meaninglexemeEntry.key, selectedLangs)}">
+                <span class="lang-code text-caption mr-2" th:if="${langData != null}" th:text="${langData.codeIso2}" th:title="${langData.label}"
                 data-toggle="tooltip"></span>
+              </th:block>
               <div class="word-notes__wrapper" th:with="meaningLangLexemes=${meaninglexemeEntry.value}">
                 <div th:each="meaningLexeme,meaninglexemeIter : ${meaningLangLexemes}" th:classappend="${meaninglexemeIter.last ? '' : 'mb-1'}">
                   <div>
