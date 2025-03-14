@@ -36,13 +36,13 @@
               <div class="meaning">
                 <div class="definition-row definition-area">
                   <th:block th:if="${not #maps.isEmpty(lexeme.definitionsByLang)}">
-                    <div class="mb-0 d-flex flex-row" th:each="definitionEntry : ${lexeme.definitionsByLang}">
+                    <div class="mb-0 d-flex flex-wrap gap-2" th:each="definitionEntry : ${lexeme.definitionsByLang}">
                       <th:block th:with="langData=${@viewUtil.getLangData(definitionEntry.key, selectedLangs)}">
-                        <span class="lang-code text-caption mr-2 align-self-start"
+                        <span class="lang-code text-caption align-self-start"
                         th:if="${langData != null}"
                         th:text="${langData.codeIso2}" th:title="${langData.label}" data-toggle="tooltip"></span>
                       </th:block>
-                      <span class="lang-code text-caption mr-2 align-self-start"
+                      <span class="lang-code text-caption align-self-start"
                             th:if="${lexeme.proficiencyLevelCode != null}"
                             th:text="${lexeme.proficiencyLevelCode}" th:title="#{label.lexeme.proficiency.level}" data-toggle="tooltip"></span>
                       <div class="flex-shrink-1">
@@ -78,7 +78,7 @@
                           </th:block>
                         </th:block>
                       </div>
-                      <div class="d-flex flex-wrap gap-2" th:if="${lexeme.showSection1}">
+                      <th:block th:if="${lexeme.showSection1}">
                         <th:block th:if="${lexeme.showPoses}">
                           <span class="lang-code text-caption lang-code--unrestricted" th:each="pos : ${lexeme.poses}" th:text="${pos.value}"></span>
                         </th:block>
@@ -86,7 +86,7 @@
                           <span th:each="grammar,grammarIter : ${lexeme.grammars}" th:utext="${grammar.value + (grammarIter.last ? '' : ', ')}"></span>
                         </span>
                         <span class="lexeme lang-code text-caption lang-code--unrestricted" th:if="${lexeme.valueState != null}" th:text="${lexeme.valueState.value}"></span>
-                      </div>
+                      </th:block>
                     </div>
                   </th:block>
                 </div>
