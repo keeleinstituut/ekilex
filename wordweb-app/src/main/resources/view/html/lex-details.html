@@ -78,12 +78,12 @@
                           </th:block>
                         </th:block>
                       </div>
-                      <div class="d-inline-block" th:if="${lexeme.showSection1}">
+                      <div class="d-flex" th:if="${lexeme.showSection1}">
                         <th:block th:if="${lexeme.showPoses}">
-                          <span class="lang-code text-caption lang-code--unrestricted" th:each="pos : ${lexeme.poses}" th:text="${pos.value}"></span>
+                          <span class="lang-code text-caption lang-code--unrestricted mr-2" th:each="pos : ${lexeme.poses}" th:text="${pos.value}"></span>
                         </th:block>
                         <span class="lexeme grammars lang-code text-caption lang-code--unrestricted" th:unless="${#lists.isEmpty(lexeme.grammars)}">
-                          <span th:each="grammar,grammarIter : ${lexeme.grammars}" th:utext="${grammar.value + (grammarIter.last ? '' : ', ')}"></span>
+                          <span class="mr-2" th:each="grammar,grammarIter : ${lexeme.grammars}" th:utext="${grammar.value + (grammarIter.last ? '' : ', ')}"></span>
                         </span>
                         <span class="lexeme lang-code text-caption lang-code--unrestricted" th:if="${lexeme.valueState != null}" th:text="${lexeme.valueState.value}"></span>
                       </div>

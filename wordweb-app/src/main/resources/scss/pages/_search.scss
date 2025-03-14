@@ -153,6 +153,10 @@
     line-height: 24px;
     margin: 24px auto 16px 0;
     color: var(--color-dark-blue);
+
+    &--no-bottom-margin {
+      margin-bottom: 0;
+    }
   }
 
   &__sidebar-block {
