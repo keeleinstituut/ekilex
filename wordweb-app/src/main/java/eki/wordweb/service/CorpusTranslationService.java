@@ -42,16 +42,21 @@ public class CorpusTranslationService extends AbstractRemoteRequestService {
 			return null;
 		}
 
-		return UriComponentsBuilder
-				.fromUriString(serviceUrl)
-				.queryParam("corpus", corpNameEstRus)
-				.queryParam("wordId", wordId)
-				.queryParam("word", wordValue)
-				.queryParam("lang", wordLang)
-				.queryParam("limit", RESULTS_LIMIT)
-				.encode(StandardCharsets.UTF_8)
-				.build()
-				.toUri();
+		try {
+			return UriComponentsBuilder
+					.fromUriString(serviceUrl)
+					.queryParam("corpus", corpNameEstRus)
+					.queryParam("wordId", wordId)
+					.queryParam("word", wordValue)
+					.queryParam("lang", wordLang)
+					.queryParam("limit", RESULTS_LIMIT)
+					.encode(StandardCharsets.UTF_8)
+					.build()
+					.toUri();
+		} catch (Exception e) {
+			// probably some hacky input anyway
+			return null;
+		}
 	}
 
 	private List<CorpusTranslation> parseResponse(Map<String, Object> response) {

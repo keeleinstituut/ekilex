@@ -1,5 +1,7 @@
 package eki.wordweb.web.controller;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,7 +27,7 @@ public class ExceptionHandlerController implements WebConstant {
 	private StatDataCollector statDataCollector;
 
 	@ExceptionHandler(Exception.class)
-	public ModelAndView exception(Exception exception) throws Exception {
+	public ModelAndView exception(Exception exception, HttpServletRequest request) throws Exception {
 
 		ModelAndView modelAndView;
 		if (exception instanceof HttpSessionRequiredException) {
@@ -34,7 +36,8 @@ public class ExceptionHandlerController implements WebConstant {
 			return modelAndView;
 		}
 
-		statDataCollector.postExceptionStat(exception);
+		String remoteHost = request.getRemoteHost();
+		statDataCollector.postExceptionStat(exception, remoteHost);
 
 		if (AnnotationUtils.findAnnotation(exception.getClass(), ResponseStatus.class) != null) {
 			throw exception;

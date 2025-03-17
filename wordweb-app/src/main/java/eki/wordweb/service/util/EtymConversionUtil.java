@@ -73,6 +73,9 @@ public class EtymConversionUtil {
 				continue;
 			}
 			WordEtymTuple relWordEtymTuple = wordEtymTupleMap.get(relatedWordId);
+			if (relWordEtymTuple == null) {
+				continue;
+			}
 			WordEtymLevel relWordEtymLevel = composeEtymLevel(relWordEtymTuple, relation.isQuestionable(), relation.isCompound(), relation.getComment());
 			wordEtymLevel.getTree().add(relWordEtymLevel);
 			composeEtymTree(relWordEtymLevel, relWordEtymTuple.getWordEtymRelations(), wordEtymTupleMap);

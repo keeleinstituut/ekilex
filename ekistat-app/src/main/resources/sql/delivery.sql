@@ -8,10 +8,27 @@ alter table ww_search alter column dataset_codes set not null;
 alter table ww_search alter column search_uri set not null;
 alter table ww_search alter column session_id set not null;
 alter table ww_search alter column request_origin set not null;
+alter table ww_search add column server_domain text;
 alter table ww_exception alter column exception_name set not null;
+alter table ww_exception add column remote_host text;
 
 create index ww_search_request_origin_idx on ww_search(request_origin);
 create index ww_search_result_exists_idx on ww_search(result_exists);
+create index ww_search_referrer_domain_idx on ww_search(referrer_domain);
+create index ww_search_server_domain_idx on ww_search(server_domain);
+create index ww_exception_remote_host_idx on ww_exception(remote_host);
+
+analyse ww_search;
+
+update
+	ww_search
+set
+	server_domain = referrer_domain
+where
+	request_origin = 'SEARCH'
+	and referrer_domain similar to '%(sonaveeb|sõnaveeb|xn--snaveeb-10a|tripledev|localhost)%'
+	and referrer_domain similar to '%(.ee|localhost)'
+;
 
 create table ww_search_default_count (
 	id bigserial primary key,

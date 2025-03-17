@@ -72,13 +72,19 @@ public class CorpusEstService extends AbstractRemoteRequestService {
 
 		String queryString = composeQueryString(wordValue, queryParamKey, isPosQuery);
 
-		return UriComponentsBuilder.fromUriString(serviceUrl)
-				.queryParam("corpus", corpName)
-				.queryParam("cqp", queryString)
-				.queryParams(defaultQueryParamsMap)
-				.encode(StandardCharsets.UTF_8)
-				.build()
-				.toUri();
+		try {
+			return UriComponentsBuilder
+					.fromUriString(serviceUrl)
+					.queryParam("corpus", corpName)
+					.queryParam("cqp", queryString)
+					.queryParams(defaultQueryParamsMap)
+					.encode(StandardCharsets.UTF_8)
+					.build()
+					.toUri();
+		} catch (Exception e) {
+			// probably some hacky input anyway
+			return null;
+		}
 	}
 
 	private String composeQueryString(String wordValue, String queryParamKey, boolean isPosQuery) {

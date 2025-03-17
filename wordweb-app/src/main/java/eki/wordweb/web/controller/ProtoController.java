@@ -3,7 +3,6 @@ package eki.wordweb.web.controller;
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -13,7 +12,8 @@ import eki.wordweb.constant.WebConstant;
 import eki.wordweb.data.ProtoSearchResult;
 import eki.wordweb.service.ProtoService;
 
-@Controller
+// disabled until next POCs
+//@Controller
 public class ProtoController implements WebConstant {
 
 	private static final String SEARCHBYALGO_URI = "/searchbyalgo";

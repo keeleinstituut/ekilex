@@ -67,6 +67,8 @@ public interface SystemConstant extends StatSearchConstant {
 
 	String ILLEGAL_FORM_VALUE = "-";
 
+	int SEARCH_WORD_MAX_LENGTH = 250;
+
 	int MASKED_SEARCH_RESULT_LIMIT = 100;
 
 	int COOKIE_AGE_ONE_MONTH = 2629743;

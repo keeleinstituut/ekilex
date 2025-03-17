@@ -11,6 +11,8 @@ public class WordsData extends AbstractSearchResult {
 
 	private final List<String> suggestedWordValues;
 
+	private final boolean validSearch;
+
 	private final boolean formResultExists;
 
 	private final boolean altResultExists;
@@ -23,6 +25,7 @@ public class WordsData extends AbstractSearchResult {
 		super(false, false, 0);
 		this.wordMatchWords = Collections.emptyList();
 		this.suggestedWordValues = Collections.emptyList();
+		this.validSearch = false;
 		this.formResultExists = false;
 		this.altResultExists = false;
 		this.suggestionExists = false;
@@ -33,6 +36,7 @@ public class WordsData extends AbstractSearchResult {
 		super(wordResultExists, wordSingleResult, wordResultCount);
 		this.wordMatchWords = wordMatchWords;
 		this.suggestedWordValues = suggestedWordValues;
+		this.validSearch = true;
 		this.formResultExists = formResultExists;
 		this.altResultExists = false;
 		this.suggestionExists = formResultExists;
@@ -43,6 +47,7 @@ public class WordsData extends AbstractSearchResult {
 		super(false, false, 0);
 		this.wordMatchWords = Collections.emptyList();
 		this.suggestedWordValues = suggestedWordValues;
+		this.validSearch = true;
 		this.formResultExists = false;
 		this.altResultExists = altResultExists;
 		this.suggestionExists = altResultExists;
@@ -53,6 +58,7 @@ public class WordsData extends AbstractSearchResult {
 		super(false, false, 0);
 		this.wordMatchWords = Collections.emptyList();
 		this.suggestedWordValues = Collections.emptyList();
+		this.validSearch = true;
 		this.formResultExists = false;
 		this.altResultExists = false;
 		this.suggestionExists = false;
@@ -65,6 +71,10 @@ public class WordsData extends AbstractSearchResult {
 
 	public List<String> getSuggestedWordValues() {
 		return suggestedWordValues;
+	}
+
+	public boolean isValidSearch() {
+		return validSearch;
 	}
 
 	public boolean isFormResultExists() {

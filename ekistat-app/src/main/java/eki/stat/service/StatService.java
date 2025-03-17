@@ -78,10 +78,11 @@ public class StatService implements SystemConstant {
 		List<String> destinLangs = searchStat.getDestinLangs();
 		List<String> datasetCodes = searchStat.getDatasetCodes();
 		String referrerDomain = searchStat.getReferrerDomain();
+		String serverDomain = searchStat.getServerDomain();
 		boolean resultExists = searchStat.isResultExists();
 		RequestOrigin requestOrigin = searchStat.getRequestOrigin();
 
-		logger.info("{} - {} - {}", requestOrigin, referrerDomain, searchWord);
+		logger.info("{} ({}) - {} - {}", serverDomain, referrerDomain, requestOrigin, searchWord);
 
 		statDbService.createWwSearchStat(searchStat);
 
@@ -112,7 +113,13 @@ public class StatService implements SystemConstant {
 
 	@Transactional(rollbackOn = Exception.class)
 	public void createWwExceptionStat(ExceptionStat exceptionStat) {
-		logger.info(exceptionStat.getExceptionName());
+
+		String exceptionName = exceptionStat.getExceptionName();
+		String exceptionMessage = exceptionStat.getExceptionMessage();
+		exceptionMessage = StringUtils.left(exceptionMessage, 100);
+
+		logger.info("{} - {}", exceptionName, exceptionMessage);
+
 		statDbService.createWwExceptionStat(exceptionStat);
 	}
 }

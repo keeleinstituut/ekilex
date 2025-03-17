@@ -122,6 +122,21 @@ public abstract class AbstractSearchController extends AbstractController {
 		while (StringUtils.startsWith(value, "-")) {
 			value = StringUtils.removeStart(value, "-");
 		}
+		if (StringUtils.length(value) > SEARCH_WORD_MAX_LENGTH) {
+			value = StringUtils.left(value, SEARCH_WORD_MAX_LENGTH);
+		}
+		return value;
+	}
+
+	protected String cleanupBasic(String value) {
+
+		value = StringUtils.trim(value);
+		if (StringUtils.isBlank(value)) {
+			return value;
+		}
+		if (StringUtils.length(value) > SEARCH_WORD_MAX_LENGTH) {
+			value = StringUtils.left(value, SEARCH_WORD_MAX_LENGTH);
+		}
 		return value;
 	}
 

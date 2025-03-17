@@ -17,7 +17,7 @@ import org.jooq.ForeignKey;
 import org.jooq.Identity;
 import org.jooq.Name;
 import org.jooq.Record;
-import org.jooq.Row4;
+import org.jooq.Row5;
 import org.jooq.Schema;
 import org.jooq.Table;
 import org.jooq.TableField;
@@ -68,6 +68,11 @@ public class WwException extends TableImpl<WwExceptionRecord> {
      * The column <code>public.ww_exception.event_on</code>.
      */
     public final TableField<WwExceptionRecord, LocalDateTime> EVENT_ON = createField(DSL.name("event_on"), SQLDataType.LOCALDATETIME(6).nullable(false).defaultValue(DSL.field("statement_timestamp()", SQLDataType.LOCALDATETIME)), this, "");
+
+    /**
+     * The column <code>public.ww_exception.remote_host</code>.
+     */
+    public final TableField<WwExceptionRecord, String> REMOTE_HOST = createField(DSL.name("remote_host"), SQLDataType.CLOB, this, "");
 
     private WwException(Name alias, Table<WwExceptionRecord> aliased) {
         this(alias, aliased, null);
@@ -149,11 +154,11 @@ public class WwException extends TableImpl<WwExceptionRecord> {
     }
 
     // -------------------------------------------------------------------------
-    // Row4 type methods
+    // Row5 type methods
     // -------------------------------------------------------------------------
 
     @Override
-    public Row4<Long, String, String, LocalDateTime> fieldsRow() {
-        return (Row4) super.fieldsRow();
+    public Row5<Long, String, String, LocalDateTime, String> fieldsRow() {
+        return (Row5) super.fieldsRow();
     }
 }

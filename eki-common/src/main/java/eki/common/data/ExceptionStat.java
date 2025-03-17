@@ -8,12 +8,15 @@ public class ExceptionStat extends AbstractDataObject {
 
 	private String exceptionMessage;
 
+	private String remoteHost;
+
 	public ExceptionStat() {
 	}
 
-	public ExceptionStat(String exceptionName, String exceptionMessage) {
+	public ExceptionStat(String exceptionName, String exceptionMessage, String remoteHost) {
 		this.exceptionName = exceptionName;
 		this.exceptionMessage = exceptionMessage;
+		this.remoteHost = remoteHost;
 	}
 
 	public String getExceptionName() {
@@ -22,6 +25,10 @@ public class ExceptionStat extends AbstractDataObject {
 
 	public String getExceptionMessage() {
 		return exceptionMessage;
+	}
+
+	public String getRemoteHost() {
+		return remoteHost;
 	}
 
 }

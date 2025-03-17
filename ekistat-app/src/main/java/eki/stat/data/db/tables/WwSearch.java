@@ -17,7 +17,7 @@ import org.jooq.ForeignKey;
 import org.jooq.Identity;
 import org.jooq.Name;
 import org.jooq.Record;
-import org.jooq.Row15;
+import org.jooq.Row16;
 import org.jooq.Schema;
 import org.jooq.Table;
 import org.jooq.TableField;
@@ -124,6 +124,11 @@ public class WwSearch extends TableImpl<WwSearchRecord> {
      */
     public final TableField<WwSearchRecord, LocalDateTime> EVENT_ON = createField(DSL.name("event_on"), SQLDataType.LOCALDATETIME(6).nullable(false).defaultValue(DSL.field("statement_timestamp()", SQLDataType.LOCALDATETIME)), this, "");
 
+    /**
+     * The column <code>public.ww_search.server_domain</code>.
+     */
+    public final TableField<WwSearchRecord, String> SERVER_DOMAIN = createField(DSL.name("server_domain"), SQLDataType.CLOB, this, "");
+
     private WwSearch(Name alias, Table<WwSearchRecord> aliased) {
         this(alias, aliased, null);
     }
@@ -204,11 +209,11 @@ public class WwSearch extends TableImpl<WwSearchRecord> {
     }
 
     // -------------------------------------------------------------------------
-    // Row15 type methods
+    // Row16 type methods
     // -------------------------------------------------------------------------
 
     @Override
-    public Row15<Long, String, Integer, String, String[], String[], String, Integer, Boolean, Boolean, String, String, String, String, LocalDateTime> fieldsRow() {
-        return (Row15) super.fieldsRow();
+    public Row16<Long, String, Integer, String, String[], String[], String, Integer, Boolean, Boolean, String, String, String, String, LocalDateTime, String> fieldsRow() {
+        return (Row16) super.fieldsRow();
     }
 }

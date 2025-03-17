@@ -30,6 +30,8 @@ public class SearchStat extends AbstractDataObject {
 
 	private String referrerDomain;
 
+	private String serverDomain;
+
 	private String sessionId;
 
 	private RequestOrigin requestOrigin;
@@ -120,6 +122,14 @@ public class SearchStat extends AbstractDataObject {
 
 	public void setReferrerDomain(String referrerDomain) {
 		this.referrerDomain = referrerDomain;
+	}
+
+	public String getServerDomain() {
+		return serverDomain;
+	}
+
+	public void setServerDomain(String serverDomain) {
+		this.serverDomain = serverDomain;
 	}
 
 	public String getSessionId() {

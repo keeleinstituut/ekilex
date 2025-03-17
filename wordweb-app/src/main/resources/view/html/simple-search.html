@@ -37,27 +37,32 @@
       <th:block th:replace="common-search :: homonyms"></th:block>
       <div class="word-details">
         <div class="no-results__wrapper" th:unless="${wordsData.resultExists}">
-          <h1 class="no-results__title" th:text="#{label.search.word.not.found(${searchWord})}"></h1>
-          <th:block th:if="${wordsData.availableLanguagesDatasets.availableFiltersExist}">
-            <div th:text="#{label.search.filter.suggestion.simple}">Otsing annab tulemusi teistes keeltes või sõnakogudes kui sinu valitud filtris.</div>
-            <div class="no-results__columns no-results__columns--single" th:with="hasLanguages = ${not #lists.isEmpty(wordsData.availableLanguagesDatasets.languages)}">
-              <div th:if="${hasLanguages}">
-                <div th:each="language : ${wordsData.availableLanguagesDatasets.languages}" th:text="${language.value}"></div>
+          <th:block th:if="${wordsData.validSearch}">
+            <h1 class="no-results__title" th:text="#{label.search.word.not.found(${searchWord})}"></h1>
+            <th:block th:if="${wordsData.availableLanguagesDatasets.availableFiltersExist}">
+              <div th:text="#{label.search.filter.suggestion.simple}">Otsing annab tulemusi teistes keeltes või sõnakogudes kui sinu valitud filtris.</div>
+              <div class="no-results__columns no-results__columns--single" th:with="hasLanguages = ${not #lists.isEmpty(wordsData.availableLanguagesDatasets.languages)}">
+                <div th:if="${hasLanguages}">
+                  <div th:each="language : ${wordsData.availableLanguagesDatasets.languages}" th:text="${language.value}"></div>
+                </div>
               </div>
-            </div>
-            <div>
-              <a th:href="@{${@viewUtil.getSimpleSearchUri(searchWord)}}" th:text="#{label.search.filter.clear}"> Otsi uuesti ilma piiranguteta </a>
-            </div>
+              <div>
+                <a th:href="@{${@viewUtil.getSimpleSearchUri(searchWord)}}" th:text="#{label.search.filter.clear}"> Otsi uuesti ilma piiranguteta </a>
+              </div>
+            </th:block>
+            <th:block th:if="${wordsData.formResultExists}">
+              <div>
+                <span th:text="#{label.suggest.form}">see on ka vorm sõnast</span>
+                <a href="#" class="word-form" th:each="word,wordIter : ${wordsData.suggestedWordValues}" th:text="${wordIter.last ? word : word + ',&nbsp;'}" th:data-word="${word}"> </a>
+              </div>
+            </th:block>
+            <th:block th:unless="${wordsData.availableLanguagesDatasets.availableFiltersExist}">
+              <div th:utext="#{label.word.not.found.simple}">Ei leidnud midagi</div>
+              <a th:href="@{${@viewUtil.getDetailSearchUri(searchWord)}}" class="text-break" th:text="${searchWord}"></a>
+            </th:block>
           </th:block>
-          <th:block th:if="${wordsData.formResultExists}">
-            <div>
-              <span th:text="#{label.suggest.form}">see on ka vorm sõnast</span>
-              <a href="#" class="word-form" th:each="word,wordIter : ${wordsData.suggestedWordValues}" th:text="${wordIter.last ? word : word + ',&nbsp;'}" th:data-word="${word}"> </a>
-            </div>
-          </th:block>
-          <th:block th:unless="${wordsData.availableLanguagesDatasets.availableFiltersExist}">
-            <div th:utext="#{label.word.not.found.simple}">Ei leidnud midagi</div>
-            <a th:href="@{${@viewUtil.getDetailSearchUri(searchWord)}}" class="text-break" th:text="${searchWord}"></a>
+          <th:block th:unless="${wordsData.validSearch}">
+            <h1 class="no-results__title" th:text="#{label.search.word.invalid}"></h1>
           </th:block>
         </div>
       </div>

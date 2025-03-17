@@ -63,7 +63,7 @@ public class StatDataCollector implements GlobalConstant, WebConstant {
 	}
 
 	@Async
-	public void postExceptionStat(Throwable exception) {
+	public void postExceptionStat(Throwable exception, String remoteHost) {
 
 		if (!serviceEnabled || exception == null) {
 			return;
@@ -71,7 +71,7 @@ public class StatDataCollector implements GlobalConstant, WebConstant {
 
 		String exceptionName = exception.getClass().getName();
 		String exceptionMessage = exception.getMessage();
-		ExceptionStat exceptionStat = new ExceptionStat(exceptionName, exceptionMessage);
+		ExceptionStat exceptionStat = new ExceptionStat(exceptionName, exceptionMessage, remoteHost);
 		String statCreateUrl = getStatCreateUri(StatType.WW_EXCEPTION);
 
 		try {

@@ -187,6 +187,7 @@ public class StatDbService implements GlobalConstant, SystemConstant {
 		wwSearchRecord.setSingleResult(searchStat.isSingleResult());
 		wwSearchRecord.setUserAgent(searchStat.getUserAgent());
 		wwSearchRecord.setReferrerDomain(searchStat.getReferrerDomain());
+		wwSearchRecord.setServerDomain(searchStat.getServerDomain());
 		wwSearchRecord.setSessionId(searchStat.getSessionId());
 		wwSearchRecord.setRequestOrigin(searchStat.getRequestOrigin().name());
 		wwSearchRecord.store();
@@ -197,6 +198,7 @@ public class StatDbService implements GlobalConstant, SystemConstant {
 		WwExceptionRecord wwExceptionRecord = create.newRecord(WW_EXCEPTION);
 		wwExceptionRecord.setExceptionName(exceptionStat.getExceptionName());
 		wwExceptionRecord.setExceptionMessage(exceptionStat.getExceptionMessage());
+		wwExceptionRecord.setRemoteHost(exceptionStat.getRemoteHost());
 		wwExceptionRecord.store();
 	}
 

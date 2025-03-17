@@ -5,7 +5,7 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import eki.common.constant.RequestOrigin;
@@ -15,6 +15,9 @@ import eki.wordweb.data.SearchValidation;
 
 @Component
 public class StatDataUtil {
+
+	@Value("${wordweb.home.domains}")
+	private List<String> wwHomeDomains;
 
 	public SearchStat composeSearchStat(
 			HttpServletRequest request,
@@ -37,6 +40,7 @@ public class StatDataUtil {
 		int resultCount = searchResult.getResultCount();
 		boolean resultExists = searchResult.isResultExists();
 		boolean isSingleResult = searchResult.isSingleResult();
+		boolean isHomeDomain = wwHomeDomains.contains(serverDomain);
 
 		String referrerDomain = null;
 		if (referer != null) {
@@ -46,7 +50,7 @@ public class StatDataUtil {
 		RequestOrigin requestOrigin;
 		if (isSearchForm) {
 			requestOrigin = RequestOrigin.SEARCH;
-		} else if (StringUtils.equals(serverDomain, referrerDomain)) {
+		} else if (isHomeDomain) {
 			requestOrigin = RequestOrigin.INSIDE_NAVIGATION;
 		} else {
 			requestOrigin = RequestOrigin.OUTSIDE_NAVIGATION;
@@ -65,6 +69,7 @@ public class StatDataUtil {
 		searchStat.setSessionId(sessionId);
 		searchStat.setUserAgent(userAgent);
 		searchStat.setReferrerDomain(referrerDomain);
+		searchStat.setServerDomain(serverDomain);
 		searchStat.setRequestOrigin(requestOrigin);
 
 		return searchStat;

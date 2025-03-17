@@ -168,6 +168,7 @@ public abstract class AbstractController implements WebConstant, SystemConstant,
 
 		Map<String, String> cookieMap = Arrays.stream(cookies)
 				.filter(cookie -> StringUtils.startsWithIgnoreCase(cookie.getName(), COOKIE_NAME_PREFIX))
+				.distinct()
 				.collect(Collectors.toMap(Cookie::getName, Cookie::getValue));
 
 		return cookieMap;
