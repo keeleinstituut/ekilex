@@ -27,7 +27,7 @@ public class StatDataUtil {
 			AbstractSearchResult searchResult) throws Exception {
 
 		String sessionId = request.getSession().getId();
-		String userAgent = request.getHeader("User-Agent");
+		String userAgent = request.getHeader("user-agent");
 		String referer = request.getHeader("referer");
 		String serverDomain = request.getServerName();
 
@@ -40,17 +40,18 @@ public class StatDataUtil {
 		int resultCount = searchResult.getResultCount();
 		boolean resultExists = searchResult.isResultExists();
 		boolean isSingleResult = searchResult.isSingleResult();
-		boolean isHomeDomain = wwHomeDomains.contains(serverDomain);
+		boolean isHomeReferrer = false;
 
 		String referrerDomain = null;
 		if (referer != null) {
 			referrerDomain = new URI(referer).getHost();
+			isHomeReferrer = wwHomeDomains.contains(referrerDomain);
 		}
 
 		RequestOrigin requestOrigin;
 		if (isSearchForm) {
 			requestOrigin = RequestOrigin.SEARCH;
-		} else if (isHomeDomain) {
+		} else if (isHomeReferrer) {
 			requestOrigin = RequestOrigin.INSIDE_NAVIGATION;
 		} else {
 			requestOrigin = RequestOrigin.OUTSIDE_NAVIGATION;
