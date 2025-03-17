@@ -1,14 +1,16 @@
 select
 	stat.dataset_code,
 	stat.dataset_name,
-	stat.all_meaning_count, -- 1.1
-	stat.all_term_count, -- 1.2
+	stat.public_meaning_count, -- 1.1
+	stat.all_meaning_count, -- 10
+	stat.public_term_count, -- 1.2
+	stat.all_term_count, -- 11
 	stat.create_meaning_count, -- 1.3
 	stat.update_meaning_count, -- 1.4
 	stat.w_domain_meaning_count, -- 1.5
 	(case
-		when stat.all_meaning_count = 0 then 0
-		else cast(((stat.w_domain_meaning_count::decimal / stat.all_meaning_count::decimal) * 100.00) as decimal(8, 2))
+		when stat.public_meaning_count = 0 then 0
+		else cast(((stat.w_domain_meaning_count::decimal / stat.public_meaning_count::decimal) * 100.00) as decimal(8, 2))
 	end
 	) w_domain_meaning_percent, -- 1.6
 	stat.w_domain_update_meaning_count, -- 1.7
@@ -43,13 +45,15 @@ select
 	stat.init_1a_def_term_sample, -- 3.12
 	stat.w_source_link_def_count, -- 3.13
 	stat.w_source_link_def_meaning_update_def_count, -- 3.14
+	stat.all_def_count, -- 3.15
 	stat.w_usage_meaning_count, -- 4.1
 	stat.w_source_link_usage_count, -- 4.3
 	stat.w_source_link_usage_meaning_update_usage_count, -- 4.4
 	stat.wo_source_link_usage_count, -- 4.5
 	stat.wo_source_link_usage_meaning_update_usage_count, -- 4.6
 	stat.wo_source_link_usage_term_sample, -- 4.7
-	stat.wo_source_link_usage_meaning_update_term_sample -- 4.8
+	stat.wo_source_link_usage_meaning_update_term_sample, -- 4.8
+	stat.all_usage_count -- 4.9
 from
 	(
 	select
@@ -74,6 +78,22 @@ from
 				and l.is_public = true
 				and w.is_public = true
 			)
+		) public_meaning_count,
+		(
+		select
+			count(m.id)
+		from
+			meaning m
+		where exists (
+			select
+				1
+			from
+				lexeme l
+			where
+				l.meaning_id = m.id
+				and l.dataset_code = ds.code
+				and l.is_word = true
+			)
 		) all_meaning_count,
 		(
 		select
@@ -92,6 +112,23 @@ from
 					and l.dataset_code = ds.code
 					and l.is_word = true
 					and l.is_public = true
+				)
+		) public_term_count,
+		(
+		select
+			count(w.id)
+		from
+			word w
+		where 
+			exists (
+				select
+					1
+				from
+					lexeme l
+				where
+					l.word_id = w.id
+					and l.dataset_code = ds.code
+					and l.is_word = true
 				)
 		) all_term_count,
 		(
@@ -120,11 +157,15 @@ from
 				select
 					1
 				from
-					lexeme l 
+					lexeme l,
+					word w
 				where
 					l.meaning_id = m.id
-					and l.is_word = true
+					and l.word_id = w.id
 					and l.dataset_code = ds.code
+					and l.is_word = true
+					and l.is_public = true
+					and w.is_public = true
 				)
 			) m
 		where 
@@ -139,11 +180,15 @@ from
 				select
 					1
 				from
-					lexeme l 
+					lexeme l,
+					word w
 				where
 					l.meaning_id = m.id
-					and l.is_word = true
+					and l.word_id = w.id
 					and l.dataset_code = ds.code
+					and l.is_word = true
+					and l.is_public = true
+					and w.is_public = true
 			)
 			and exists (
 				select
@@ -424,7 +469,7 @@ from
 		from
 			word w
 		where
-			w.value similar to '%(/|\*|1|2|;|,)%'
+			w.value similar to '%(/|\*|\(|\)|;|,|  )%'
 			and w.is_public = true
 			and exists (
 				select
@@ -456,7 +501,7 @@ from
 				and l.is_word = true
 				and l.is_public = true
 				and w.is_public = true
-				and w.value similar to '%(/|\*|1|2|;|,)%'
+				and w.value similar to '%(/|\*|\(|\)|;|,|  )%'
 			group by m.id
 			order by random()
 			limit 3
@@ -1226,6 +1271,22 @@ from
 		) w_source_link_def_meaning_update_def_count,
 		(
 		select
+			count(d.id)
+		from
+			definition d 
+		where
+			exists (
+				select
+					1
+				from
+					definition_dataset dd 
+				where
+					dd.definition_id = d.id
+					and dd.dataset_code = ds.code
+			)
+		) all_def_count,
+		(
+		select
 			count(m.id)
 		from
 			meaning m 
@@ -1562,7 +1623,24 @@ from
 			order by random()
 			limit 3
 			) ms
-		) wo_source_link_usage_meaning_update_term_sample
+		) wo_source_link_usage_meaning_update_term_sample,
+		(
+		select
+			count(u.id)
+		from
+			usage u 
+		where 
+			exists (
+				select
+					1
+				from
+					lexeme l
+				where
+					l.id = u.lexeme_id
+					and l.is_word = true
+					and l.dataset_code = ds.code
+			)
+		) all_usage_count
 	from
 		dataset ds
 	where
