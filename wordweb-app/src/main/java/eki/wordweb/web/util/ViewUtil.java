@@ -73,6 +73,14 @@ public class ViewUtil implements WebConstant, SystemConstant, GlobalConstant {
 		return langData;
 	}
 
+	public LanguageData getLangData(String langIso3, List<String> selectedLangs) {
+		// Let the template know that the lang code should not be shown if only one lang is selected
+		if (selectedLangs != null && selectedLangs.size() == 1 && Objects.equals(selectedLangs.get(0), langIso3)) {
+			return null;
+		}
+		return getLangData(langIso3);
+	}
+
 	public String getWordValueMarkup(DecoratedWordType word) {
 
 		String wordPrese = new String(word.getWordPrese());

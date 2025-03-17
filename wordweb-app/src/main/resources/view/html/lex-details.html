@@ -17,9 +17,11 @@
             </div>
             <div class="col-12">
               <div class="d-flex flex-row" th:each="noteEntry : ${lexeme.lexemeNotesByLang}">
-                <span class="lang-code text-caption mr-2 align-self-start"
-                      th:with="langData=${@viewUtil.getLangData(noteEntry.key)}"
-                      th:text="${langData.codeIso2}" th:title="${langData.label}" data-toggle="tooltip"></span>
+                <th:block th:with="langData=${@viewUtil.getLangData(noteEntry.key, selectedLangs)}">
+                  <span class="lang-code text-caption mr-2 align-self-start"
+                  th:if="${langData != null}"
+                  th:text="${langData.codeIso2}" th:title="${langData.label}" data-toggle="tooltip"></span>
+                </th:block>
                 <div><p class="mb-1" th:each="note, noteIter : ${noteEntry.value}" th:utext="${note.valuePrese}"></p></div>
               </div>
             </div>
@@ -33,33 +35,26 @@
             <div class="w-100">
               <div class="meaning">
                 <div class="definition-row definition-area">
-                  <div class="mb-3" th:if="${lexeme.showSection1}">
-                    <th:block th:if="${lexeme.showPoses}">
-                      <span class="lang-code text-caption lang-code--unrestricted" th:each="pos : ${lexeme.poses}" th:text="${pos.value}"></span>
-                    </th:block>
-                    <span class="lexeme grammars lang-code text-caption lang-code--unrestricted" th:unless="${#lists.isEmpty(lexeme.grammars)}">
-                      <span th:each="grammar,grammarIter : ${lexeme.grammars}" th:utext="${grammar.value + (grammarIter.last ? '' : ', ')}"></span>
-                    </span>
-                    <span class="lexeme lang-code text-caption lang-code--unrestricted" th:if="${lexeme.valueState != null}" th:text="${lexeme.valueState.value}"></span>
-                  </div>
                   <th:block th:if="${not #maps.isEmpty(lexeme.definitionsByLang)}">
-                    <div class="mb-0 d-flex flex-row" th:each="definitionEntry : ${lexeme.definitionsByLang}">
-                      <span class="lang-code text-caption mr-2 align-self-start"
-                            th:with="langData=${@viewUtil.getLangData(definitionEntry.key)}"
-                            th:text="${langData.codeIso2}" th:title="${langData.label}" data-toggle="tooltip"></span>
-                      <span class="lang-code text-caption mr-2 align-self-start"
+                    <div class="mb-0 d-flex flex-wrap gap-2" th:each="definitionEntry : ${lexeme.definitionsByLang}">
+                      <th:block th:with="langData=${@viewUtil.getLangData(definitionEntry.key, selectedLangs)}">
+                        <span class="lang-code text-caption align-self-start"
+                        th:if="${langData != null}"
+                        th:text="${langData.codeIso2}" th:title="${langData.label}" data-toggle="tooltip"></span>
+                      </th:block>
+                      <span class="lang-code text-caption align-self-start"
                             th:if="${lexeme.proficiencyLevelCode != null}"
                             th:text="${lexeme.proficiencyLevelCode}" th:title="#{label.lexeme.proficiency.level}" data-toggle="tooltip"></span>
-                      <div class="flex-shrink-1" style="font-weight: 500;">
+                      <div class="flex-shrink-1">
                         <span class="domain register mr-1 mb-2" th:each="register,registerIter : ${lexeme.registers}" th:text="${register.value + (registerIter.last ? '' : ', ')}"></span>
                         <span class="domain mr-1 mb-2" th:each="domain,domainIter : ${lexeme.domains}" th:text="${domain.value + (domainIter.last ? '' : ', ')}"></span>
                         <th:block th:each="definition,definitionIter : ${definitionEntry.value}">
                           <th:block th:unless="${definition.subDataExists}">
-                            <span class="definition-value mb-2 mr-1 text-weight-medium" th:utext="${definition.valuePrese + (definitionIter.last ? '' : '; ')}"></span>
+                            <span class="definition-value mb-2 mr-1 text-weight-semi-bold" th:utext="${definition.valuePrese + (definitionIter.last ? '' : '; ')}"></span>
                           </th:block>
                           <th:block th:if="${definition.subDataExists}">
                             <div th:id="${'definition-entry-' + definition.definitionId}">
-                              <span class="definition-value mb-2 mr-1 text-weight-medium" th:utext="${definition.valuePrese}"></span>
+                              <span class="definition-value mb-2 mr-1 text-weight-semi-bold" th:utext="${definition.valuePrese}"></span>
                               <th:block th:unless="${#lists.isEmpty(definition.sourceLinks)}">
                                 <span class="definition-sources">
                                   <th:block th:each="sourceLink,sourceLinkIter : ${definition.sourceLinks}">
@@ -83,11 +78,20 @@
                           </th:block>
                         </th:block>
                       </div>
+                      <th:block th:if="${lexeme.showSection1}">
+                        <th:block th:if="${lexeme.showPoses}">
+                          <span class="lang-code text-caption lang-code--unrestricted" th:each="pos : ${lexeme.poses}" th:text="${pos.value}"></span>
+                        </th:block>
+                        <span class="lexeme grammars lang-code text-caption lang-code--unrestricted" th:unless="${#lists.isEmpty(lexeme.grammars)}">
+                          <span th:each="grammar,grammarIter : ${lexeme.grammars}" th:utext="${grammar.value + (grammarIter.last ? '' : ', ')}"></span>
+                        </span>
+                        <span class="lexeme lang-code text-caption lang-code--unrestricted" th:if="${lexeme.valueState != null}" th:text="${lexeme.valueState.value}"></span>
+                      </th:block>
                     </div>
                   </th:block>
                 </div>
               <div class="meaning-meta"
-                  th:unless="${#lists.isEmpty(lexeme.sourceLangFullSynonyms)} OR ${#lists.isEmpty(lexeme.sourceLangNearSynonyms)}">
+                  th:unless="${#lists.isEmpty(lexeme.sourceLangFullSynonyms)} AND ${#lists.isEmpty(lexeme.sourceLangNearSynonyms)}">
                   <div class="synonyms" th:unless="${#lists.isEmpty(lexeme.sourceLangFullSynonyms)}">
                     <div th:id="${'full-synonym-collapse-panel-' + lexeme.lexemeId}" class="d-flex flex-wrap align-items-center">
                       <span th:text="#{label.syno.full}" class="mr-2 search__helper-text text-caption">sama mis</span>
@@ -200,10 +204,12 @@
                     <th:block th:each="synEntry : ${lexeme.destinLangSynonymsByLang}"
                               th:with="destinLangSyns=${synEntry.value}">
                       <div th:id="${'matches-show-more-panel-' + lexeme.lexemeId + '-' + synEntry.key}" class="d-flex flex-wrap">
-                        <span class="lang-code text-caption mr-2 align-self-start"
-                              th:with="langData=${@viewUtil.getLangData(synEntry.key)}"
-                              th:text="${langData.codeIso2}" th:title="${langData.label}" data-toggle="tooltip">
-                        </span>
+                        <th:block th:with="langData=${@viewUtil.getLangData(synEntry.key, selectedLangs)}">
+                          <span class="lang-code text-caption mr-2 align-self-start"
+                            th:if="${langData != null}"
+                            th:text="${langData.codeIso2}" th:title="${langData.label}" data-toggle="tooltip">
+                          </span>
+                        </th:block>
                         <th:block th:each="syn,synIter : ${destinLangSyns}"
                                   th:with="
                                   isCollapsable=${synIter.count > T(eki.wordweb.constant.WebConstant).SYN_WORDS_DISPLAY_LIMIT},
@@ -323,18 +329,22 @@
                   <div class="col-12">
                     <th:block th:if="${not #maps.isEmpty(lexeme.lexemeNotesByLang)}">
                       <div class="d-flex flex-row" th:each="noteEntry : ${lexeme.lexemeNotesByLang}">
-                        <span class="lang-code text-caption mr-2 align-self-start"
-                              th:with="langData=${@viewUtil.getLangData(noteEntry.key)}"
-                              th:text="${langData.codeIso2}" th:title="${langData.label}" data-toggle="tooltip"></span>
+                        <th:block th:with="langData=${@viewUtil.getLangData(noteEntry.key, selectedLangs)}">
+                          <span class="lang-code text-caption mr-2 align-self-start"
+                            th:if="${langData != null}"
+                            th:text="${langData.codeIso2}" th:title="${langData.label}" data-toggle="tooltip"></span>
+                        </th:block>
                         <div><p  class="mb-1 text-body-two text-weight-medium" th:each="note, noteIter : ${noteEntry.value}" th:utext="${note.valuePrese}"></p></div>
                       </div>
                     </th:block>
                     <th:block th:if="${not #maps.isEmpty(lexeme.meaningNotesByLang)}">
                       <div class="d-flex flex-row" th:each="noteEntry : ${lexeme.meaningNotesByLang}">
-                        <span class="lang-code text-caption mr-2 align-self-start"
-                              th:with="langData=${@viewUtil.getLangData(noteEntry.key)}"
-                              th:text="${langData.codeIso2}" th:title="${langData.label}" data-toggle="tooltip">
-                        </span>
+                        <th:block th:with="langData=${@viewUtil.getLangData(noteEntry.key, selectedLangs)}">
+                          <span class="lang-code text-caption mr-2 align-self-start"
+                            th:if="${langData != null}"
+                            th:text="${langData.codeIso2}" th:title="${langData.label}" data-toggle="tooltip">
+                          </span>
+                        </th:block>
                         <div class="d-flex flex-column good-to-know-info">
                           <div th:each="note : ${noteEntry.value}">
                             <span th:utext="${note.valuePrese}"></span>

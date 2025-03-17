@@ -3,7 +3,13 @@ $(document).ready(function() {
 });
 
 function playAudio(audioUrl, onEndedCallback) {
-	var music = new Audio(audioUrl);
+	if (audioUrl === null) {
+		console.error('Attempted to play audio with no url');
+		return
+	}
+	// Replace hardcoded url with current host to avoid fetching sonaveeb.ee on sõnaveeb.ee for example
+	const urlWithCurrentHost = audioUrl.replace('sonaveeb.ee', window.location.host);
+	const music = new Audio(urlWithCurrentHost);
 	music.onended = onEndedCallback;
 	music.play();
 }

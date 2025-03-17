@@ -23,7 +23,15 @@
     font-weight: 500;
   }
 
+  .text-weight-semi-bold {
+    font-weight: 600;
+  }
+
   .text-underlined {
     text-decoration: underline;
+  }
+
+  .text-darker-gray {
+    color: var(--color-darker-gray);
   }
 }

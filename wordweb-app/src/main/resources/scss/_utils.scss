@@ -23,3 +23,20 @@
 .text-gray-350 {
   color: $gray-350;
 }
+
+@layer base {
+  .gap {
+    &-1 {
+      gap: 4px;
+    }
+    &-2 {
+      gap: 8px;
+    }
+    &-3 {
+      gap: 16px;
+    }
+    &-4 {
+      gap: 24px;
+    }
+  }
+}
