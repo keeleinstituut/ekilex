@@ -166,6 +166,8 @@ public interface WebConstant {
 
 	String WORD_JOIN_PAGE = "wordjoin";
 
+	String WORD_DUPLICATE_URI = "/wordduplicate";
+
 	String FAKE_REGISTER_AND_PASSWORD_RECOVERY_URI = "/submit";
 
 	String REGISTER_PAGE_URI = "/register";

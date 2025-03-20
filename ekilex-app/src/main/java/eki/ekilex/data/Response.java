@@ -13,7 +13,7 @@ public class Response extends AbstractDataObject {
 
 	private Long id;
 
-	private String uri;
+	private Long id2;
 
 	public ResponseStatus getStatus() {
 		return status;
@@ -39,11 +39,11 @@ public class Response extends AbstractDataObject {
 		this.id = id;
 	}
 
-	public String getUri() {
-		return uri;
+	public Long getId2() {
+		return id2;
 	}
 
-	public void setUri(String uri) {
-		this.uri = uri;
+	public void setId2(Long id2) {
+		this.id2 = id2;
 	}
 }

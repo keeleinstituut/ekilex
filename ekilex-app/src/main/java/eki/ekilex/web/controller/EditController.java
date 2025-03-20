@@ -82,7 +82,7 @@ public class EditController extends AbstractMutableDataPageController implements
 
 		Locale locale = LocaleContextHolder.getLocale();
 		EkiUser user = userContext.getUser();
-		String roleDatasetCode = getDatasetCodeFromRole();
+		String roleDatasetCode = getRoleDatasetCode();
 
 		Long id = itemData.getId();
 		Long id2 = itemData.getId2();
@@ -262,7 +262,7 @@ public class EditController extends AbstractMutableDataPageController implements
 		logger.debug("Update item: {}; auto update: {}", itemData, isManualEventOnUpdateEnabled);
 
 		EkiUser user = userContext.getUser();
-		String roleDatasetCode = getDatasetCodeFromRole();
+		String roleDatasetCode = getRoleDatasetCode();
 		Long id = itemData.getId();
 		Long id2 = itemData.getId2();
 		String value = itemData.getValue();
@@ -462,7 +462,7 @@ public class EditController extends AbstractMutableDataPageController implements
 		logger.debug("Update ordering {}", listData);
 
 		boolean isManualEventOnUpdateEnabled = sessionBean.isManualEventOnUpdateEnabled();
-		String roleDatasetCode = getDatasetCodeFromRole();
+		String roleDatasetCode = getRoleDatasetCode();
 		List<ListData> items = listData.getItems();
 
 		switch (listData.getOpCode()) {
@@ -736,7 +736,7 @@ public class EditController extends AbstractMutableDataPageController implements
 
 		logger.debug("Change lexeme levels for id {}, action {}", lexemeId, action);
 		boolean isManualEventOnUpdateEnabled = sessionBean.isManualEventOnUpdateEnabled();
-		String roleDatasetCode = getDatasetCodeFromRole();
+		String roleDatasetCode = getRoleDatasetCode();
 
 		cudService.updateLexemeLevels(lexemeId, action, roleDatasetCode, isManualEventOnUpdateEnabled);
 
@@ -750,7 +750,7 @@ public class EditController extends AbstractMutableDataPageController implements
 			@ModelAttribute(name = SESSION_BEAN) SessionBean sessionBean) throws Exception {
 
 		boolean isManualEventOnUpdateEnabled = sessionBean.isManualEventOnUpdateEnabled();
-		String roleDatasetCode = getDatasetCodeFromRole();
+		String roleDatasetCode = getRoleDatasetCode();
 		Long lexemeId = updateLexemeLevelsRequest.getLexemeId();
 		Integer position = updateLexemeLevelsRequest.getPosition();
 		logger.debug("Change lexeme levels for id {}, new position {}", lexemeId, position);
@@ -803,7 +803,7 @@ public class EditController extends AbstractMutableDataPageController implements
 			@ModelAttribute(name = SESSION_BEAN) SessionBean sessionBean) throws Exception {
 
 		boolean isManualEventOnUpdateEnabled = sessionBean.isManualEventOnUpdateEnabled();
-		String roleDatasetCode = getDatasetCodeFromRole();
+		String roleDatasetCode = getRoleDatasetCode();
 		for (Long id2 : ids) {
 			switch (opCode) {
 			case "meaning_relation":

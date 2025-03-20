@@ -159,7 +159,7 @@ public abstract class AbstractWordSearchService extends AbstractSearchService {
 			if (repetitiveWordIds.contains(relWordId)) {
 				List<Lexeme> wordLexemes = wordLexemesMap.get(relWordId);
 				if (wordLexemes == null) {
-					wordLexemes = lookupDbService.getWordLexemesLevels(relWordId);
+					wordLexemes = lookupDbService.getWordLexemeLevels(relWordId);
 					lexemeLevelPreseUtil.combineLevels(wordLexemes);
 					wordLexemesMap.put(relWordId, wordLexemes);
 				}

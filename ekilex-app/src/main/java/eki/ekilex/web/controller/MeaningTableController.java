@@ -80,7 +80,7 @@ public class MeaningTableController extends AbstractPrivateSearchController {
 
 		boolean isManualEventOnUpdateEnabled = sessionBean.isManualEventOnUpdateEnabled();
 		EkiUser user = userContext.getUser();
-		String roleDatasetCode = getDatasetCodeFromRole();
+		String roleDatasetCode = getRoleDatasetCode();
 		Long meaningId = meaning.getMeaningId();
 
 		meaningTableService.updateTermMeaningTableMeaning(meaning, user, roleDatasetCode, isManualEventOnUpdateEnabled);
@@ -99,7 +99,7 @@ public class MeaningTableController extends AbstractPrivateSearchController {
 			RedirectAttributes redirectAttributes) {
 
 		boolean isManualEventOnUpdateEnabled = sessionBean.isManualEventOnUpdateEnabled();
-		String roleDatasetCode = getDatasetCodeFromRole();
+		String roleDatasetCode = getRoleDatasetCode();
 		try {
 			meaningTableService.updateDefinitionsPublicity(definitionIds, isPublic, roleDatasetCode, isManualEventOnUpdateEnabled);
 			addRedirectSuccessMessage(redirectAttributes, "term.meaning.table.set.all.public.success");
@@ -120,7 +120,7 @@ public class MeaningTableController extends AbstractPrivateSearchController {
 			RedirectAttributes redirectAttributes) {
 
 		boolean isManualEventOnUpdateEnabled = sessionBean.isManualEventOnUpdateEnabled();
-		String roleDatasetCode = getDatasetCodeFromRole();
+		String roleDatasetCode = getRoleDatasetCode();
 		try {
 			meaningTableService.updateLexemesPublicity(lexemeIds, isPublic, roleDatasetCode, isManualEventOnUpdateEnabled);
 			addRedirectSuccessMessage(redirectAttributes, "term.meaning.table.set.all.public.success");

@@ -35,7 +35,7 @@ public class SynEditController extends AbstractPrivateSearchController {
 
 		logger.debug("Updating syn relation status id {}, new status {}", id, status);
 		boolean isManualEventOnUpdateEnabled = sessionBean.isManualEventOnUpdateEnabled();
-		String roleDatasetCode = getDatasetCodeFromRole();
+		String roleDatasetCode = getRoleDatasetCode();
 		synCudService.updateRelationStatus(id, status, roleDatasetCode, isManualEventOnUpdateEnabled);
 		return RESPONSE_OK_VER2;
 	}
@@ -51,7 +51,7 @@ public class SynEditController extends AbstractPrivateSearchController {
 
 		logger.debug("Updating word {} lang {} dataset {} syn relation status to \"DELETED\"", wordId, language, datasetCode);
 		boolean isManualEventOnUpdateEnabled = sessionBean.isManualEventOnUpdateEnabled();
-		String roleDatasetCode = getDatasetCodeFromRole();
+		String roleDatasetCode = getRoleDatasetCode();
 		synCudService.updateWordSynRelationsStatusDeleted(wordId, datasetCode, language, roleDatasetCode, isManualEventOnUpdateEnabled);
 		return RESPONSE_OK_VER2;
 	}
@@ -66,7 +66,7 @@ public class SynEditController extends AbstractPrivateSearchController {
 			@ModelAttribute(name = SESSION_BEAN) SessionBean sessionBean) throws Exception {
 
 		boolean isManualEventOnUpdateEnabled = sessionBean.isManualEventOnUpdateEnabled();
-		String roleDatasetCode = getDatasetCodeFromRole();
+		String roleDatasetCode = getRoleDatasetCode();
 		synCudService.createSynMeaningRelation(targetMeaningId, sourceMeaningId, wordRelationId, roleDatasetCode, isManualEventOnUpdateEnabled);
 		return RESPONSE_OK_VER2;
 	}

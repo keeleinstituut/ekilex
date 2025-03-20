@@ -44,7 +44,7 @@ public class InexactSynController extends AbstractPrivateSearchController {
 			@RequestParam("wordRelationId") Long wordRelationId,
 			Model model) throws Exception {
 
-		String datasetCode = getDatasetCodeFromRole();
+		String datasetCode = getRoleDatasetCode();
 		Word translationLangWord = inexactSynService.getSynCandidateWord(wordRelationId);
 		String translationLangWordValue = translationLangWord.getWordValue();
 		String translationLang = translationLangWord.getLang();
@@ -185,7 +185,7 @@ public class InexactSynController extends AbstractPrivateSearchController {
 	public Response createInexactSynMeaningAndRelation(InexactSynMeaningRequest requestData) throws Exception {
 
 		Locale locale = LocaleContextHolder.getLocale();
-		String roleDatasetCode = getDatasetCodeFromRole();
+		String roleDatasetCode = getRoleDatasetCode();
 		try {
 			Response response = inexactSynService.saveInexactSynMeaningAndRelation(requestData, roleDatasetCode);
 			return response;

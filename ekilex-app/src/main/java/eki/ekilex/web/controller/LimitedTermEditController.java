@@ -49,7 +49,7 @@ public class LimitedTermEditController extends AbstractMutableDataPageController
 	@PostMapping(LIM_TERM_CREATE_WORD_URI)
 	public String createWord(WordLexemeMeaningDetails wordDetails, @ModelAttribute(name = SESSION_BEAN) SessionBean sessionBean) throws Exception {
 
-		String roleDatasetCode = getDatasetCodeFromRole();
+		String roleDatasetCode = getRoleDatasetCode();
 		valueUtil.trimAndCleanAndRemoveHtml(wordDetails);
 
 		String wordValue = wordDetails.getWordValue();
@@ -97,7 +97,7 @@ public class LimitedTermEditController extends AbstractMutableDataPageController
 			@ModelAttribute(name = SESSION_BEAN) SessionBean sessionBean) throws Exception {
 
 		boolean isManualEventOnUpdateEnabled = sessionBean.isManualEventOnUpdateEnabled();
-		String roleDatasetCode = getDatasetCodeFromRole();
+		String roleDatasetCode = getRoleDatasetCode();
 		compositionService.joinMeanings(targetMeaningId, sourceMeaningIds, roleDatasetCode, isManualEventOnUpdateEnabled);
 
 		String wordValue = termSearchService.getMeaningFirstWordValue(targetMeaningId, limitedDatasets);

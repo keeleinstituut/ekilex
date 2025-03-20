@@ -69,7 +69,7 @@ public class SourceEditController extends AbstractMutableDataPageController {
 
 		Long sourceId = source.getId();
 		EkiUser user = userContext.getUser();
-		String roleDatasetCode = getDatasetCodeFromRole();
+		String roleDatasetCode = getRoleDatasetCode();
 		cleanupSource(source);
 		sourceService.updateSource(source, roleDatasetCode);
 		source = sourceService.getSource(sourceId, user);
@@ -82,7 +82,7 @@ public class SourceEditController extends AbstractMutableDataPageController {
 	@ResponseBody
 	public String createSource(@RequestBody Source source) throws Exception {
 
-		String roleDatasetCode = getDatasetCodeFromRole();
+		String roleDatasetCode = getRoleDatasetCode();
 		cleanupSource(source);
 		Long sourceId = sourceService.createSource(source, roleDatasetCode, MANUAL_EVENT_ON_UPDATE_DISABLED);
 
@@ -95,7 +95,7 @@ public class SourceEditController extends AbstractMutableDataPageController {
 
 		Long sourceLinkOwnerId = source.getSourceOwnerId();
 		String sourceLinkOwnerName = source.getSourceOwnerName();
-		String roleDatasetCode = getDatasetCodeFromRole();
+		String roleDatasetCode = getRoleDatasetCode();
 		boolean isManualEventOnUpdateEnabled = sessionBean.isManualEventOnUpdateEnabled();
 
 		cleanupSource(source);
@@ -125,7 +125,7 @@ public class SourceEditController extends AbstractMutableDataPageController {
 	@ResponseBody
 	public String deleteSource(@PathVariable("sourceId") Long sourceId) throws Exception {
 
-		String roleDatasetCode = getDatasetCodeFromRole();
+		String roleDatasetCode = getRoleDatasetCode();
 		sourceService.deleteSource(sourceId, roleDatasetCode);
 
 		return RESPONSE_OK_VER1;
@@ -168,7 +168,7 @@ public class SourceEditController extends AbstractMutableDataPageController {
 			@RequestParam("targetSourceId") Long targetSourceId,
 			@RequestParam("originSourceId") Long originSourceId) throws Exception {
 
-		String roleDatasetCode = getDatasetCodeFromRole();
+		String roleDatasetCode = getRoleDatasetCode();
 		sourceService.joinSources(targetSourceId, originSourceId, roleDatasetCode);
 
 		return REDIRECT_PREF + SOURCE_ID_SEARCH_URI + "/" + targetSourceId;

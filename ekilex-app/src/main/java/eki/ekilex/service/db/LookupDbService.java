@@ -290,7 +290,7 @@ public class LookupDbService extends AbstractDataDbService {
 				.orElse(0);
 	}
 
-	public List<eki.ekilex.data.Lexeme> getWordLexemesLevels(Long wordId) {
+	public List<eki.ekilex.data.Lexeme> getWordLexemeLevels(Long wordId) {
 
 		Lexeme l = LEXEME.as("l");
 		return mainDb
@@ -303,6 +303,25 @@ public class LookupDbService extends AbstractDataDbService {
 				.where(l.WORD_ID.eq(wordId))
 				.orderBy(
 						l.DATASET_CODE,
+						l.LEVEL1,
+						l.LEVEL2)
+				.fetchInto(eki.ekilex.data.Lexeme.class);
+	}
+
+	public List<eki.ekilex.data.Lexeme> getWordLexemeLevels(Long wordId, String datasetCode) {
+
+		Lexeme l = LEXEME.as("l");
+		return mainDb
+				.select(
+						l.ID.as("lexeme_id"),
+						l.DATASET_CODE,
+						l.LEVEL1,
+						l.LEVEL2)
+				.from(l)
+				.where(
+						l.WORD_ID.eq(wordId)
+								.and(l.DATASET_CODE.eq(datasetCode)))
+				.orderBy(
 						l.LEVEL1,
 						l.LEVEL2)
 				.fetchInto(eki.ekilex.data.Lexeme.class);
@@ -378,7 +397,9 @@ public class LookupDbService extends AbstractDataDbService {
 		return mainDb
 				.select(LEXEME.ID)
 				.from(LEXEME)
-				.where(LEXEME.WORD_ID.eq(wordId).and(LEXEME.MEANING_ID.eq(meaningId)))
+				.where(
+						LEXEME.WORD_ID.eq(wordId)
+								.and(LEXEME.MEANING_ID.eq(meaningId)))
 				.fetchSingleInto(Long.class);
 	}
 
@@ -398,16 +419,6 @@ public class LookupDbService extends AbstractDataDbService {
 				.from(LEXEME)
 				.where(LEXEME.ID.eq(lexemeId))
 				.fetchSingleInto(Long.class);
-	}
-
-	public Integer getLexemeLevel2MinimumValue(Long wordId, String datasetCode, Integer level1) {
-		return mainDb
-				.select(DSL.min(LEXEME.LEVEL2))
-				.from(LEXEME)
-				.where(LEXEME.WORD_ID.eq(wordId)
-						.and(LEXEME.DATASET_CODE.eq(datasetCode))
-						.and(LEXEME.LEVEL1.eq(level1)))
-				.fetchOneInto(Integer.class);
 	}
 
 	public Long getLexemePosId(Long lexemeId, String posCode) {
@@ -492,26 +503,9 @@ public class LookupDbService extends AbstractDataDbService {
 						LEXEME.WORD_ID.eq(wordId)
 								.and(LEXEME.MEANING_ID.eq(meaningId))
 								.and(LEXEME.DATASET_CODE.eq(datasetCode)))
-				.fetchOne();
-	}
-
-	public List<LexemeRecord> getLexemeRecordsWithHigherLevel1(Long wordId, String datasetCode, Integer level1) {
-		return mainDb
-				.selectFrom(LEXEME)
-				.where(LEXEME.WORD_ID.eq(wordId)
-						.and(LEXEME.DATASET_CODE.eq(datasetCode))
-						.and(LEXEME.LEVEL1.gt(level1)))
-				.fetch();
-	}
-
-	public List<LexemeRecord> getLexemeRecordsWithHigherLevel2(Long wordId, String datasetCode, Integer level1, Integer level2) {
-		return mainDb
-				.selectFrom(LEXEME)
-				.where(LEXEME.WORD_ID.eq(wordId)
-						.and(LEXEME.DATASET_CODE.eq(datasetCode))
-						.and(LEXEME.LEVEL1.eq(level1))
-						.and(LEXEME.LEVEL2.gt(level2)))
-				.fetch();
+				.limit(1)
+				.fetchOptional()
+				.orElse(null);
 	}
 
 	public List<LexemeRecord> getLexemeRecordsByWord(Long wordId) {

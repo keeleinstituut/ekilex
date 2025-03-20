@@ -71,7 +71,7 @@ public abstract class AbstractAuthActionController implements WebConstant, Syste
 	@Autowired
 	protected MessageSource messageSource;
 
-	protected String getDatasetCodeFromRole() {
+	protected String getRoleDatasetCode() {
 		EkiUser user = userContext.getUser();
 		DatasetPermission role = user.getRecentRole();
 		if (role == null) {

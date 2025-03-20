@@ -1864,15 +1864,4 @@ public class CompositionDbService extends AbstractDataDbService implements Globa
 				.collect(Collectors.toList());
 	}
 
-	public void updateLexemeWordIdAndLevels(Long lexemeId, Long wordId, int level1, int level2) {
-
-		mainDb
-				.update(LEXEME)
-				.set(LEXEME.WORD_ID, wordId)
-				.set(LEXEME.LEVEL1, level1)
-				.set(LEXEME.LEVEL2, level2)
-				.where(LEXEME.ID.eq(lexemeId))
-				.execute();
-	}
-
 }

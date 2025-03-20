@@ -57,7 +57,7 @@ public class SourceSearchController extends AbstractPrivateSearchController {
 			searchMode = SEARCH_MODE_SIMPLE;
 		}
 
-		String roleDatasetCode = getDatasetCodeFromRole();
+		String roleDatasetCode = getRoleDatasetCode();
 		List<String> roleDatasets = new ArrayList<>(Arrays.asList(roleDatasetCode));
 
 		String searchUri = searchHelper.composeSearchUri(searchMode, roleDatasets, simpleSearchFilter, detailSearchFilter, SearchResultMode.SOURCE, null);

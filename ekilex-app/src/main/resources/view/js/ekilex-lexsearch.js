@@ -92,6 +92,32 @@ $.fn.duplicateLexemePlugin = function() {
 	});
 }
 
+$.fn.duplicateWordAndMoveLexemePlugin = function() {
+	return this.each(function() {
+		const obj = $(this);
+		obj.on('click', function() {
+			const lexemeId = obj.data('lexeme-id');
+			const url = `${applicationUrl}wordduplicate/${lexemeId}`;
+			$.post(url).done(function(response) {
+				const sourceWordId = response.id;
+				const targetWordId = response.id2;
+				const currentPath = window.location.pathname;
+				openMessageDlg(response.message);
+				if (currentPath.includes("/lexsearch")) {
+					const searchtUrl = `${window.location.href.split('?')[0]}?id=${sourceWordId},${targetWordId}`;
+					window.location = searchtUrl;
+				} else {
+					loadDetails(targetWordId, 'compare');
+					refreshDetailsSearch(obj.parents('[data-rel="details-area"]').attr('data-id'));
+				}
+			}).fail(function(data) {
+				console.log(data);
+				openAlertDlg(messages["common.error"]);
+			});
+		});
+	});
+}
+
 $.fn.duplicateMeaningWordAndLexemePlugin = function() {
 	return this.each(function() {
 		const obj = $(this);

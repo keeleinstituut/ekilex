@@ -1,9 +1,11 @@
 package eki.ekilex.service;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
+import java.util.stream.Collectors;
 
 import javax.transaction.Transactional;
 
@@ -40,8 +42,6 @@ import eki.ekilex.service.util.LexemeLevelCalcUtil;
 public class CompositionService extends AbstractService implements PermConstant {
 
 	private static final Logger logger = LoggerFactory.getLogger(CompositionService.class);
-
-	private static final int DEFAULT_LEXEME_LEVEL = 1;
 
 	@Autowired
 	private CompositionDbService compositionDbService;
@@ -105,30 +105,58 @@ public class CompositionService extends AbstractService implements PermConstant 
 	@Transactional(rollbackOn = Exception.class)
 	public Long cloneEmptyLexemeAndMeaning(Long sourceLexemeId, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
 
+		LexemeRecord sourceLexemeRecord = lookupDbService.getLexemeRecord(sourceLexemeId);
+		Long sourceWordId = sourceLexemeRecord.getWordId();
+		String datasetCode = sourceLexemeRecord.getDatasetCode();
 		Long targetMeaningId = cudDbService.createMeaning();
 		activityLogService.createActivityLog("cloneEmptyLexemeAndMeaning", targetMeaningId, ActivityOwner.MEANING, roleDatasetCode, isManualEventOnUpdateEnabled);
 		Long targetLexemeId = compositionDbService.cloneEmptyLexeme(sourceLexemeId, targetMeaningId);
-		updateLexemeLevelsAfterDuplication(targetLexemeId);
+		recalculateAndUpdateAllLexemeLevels(sourceWordId, datasetCode);
 		activityLogService.createActivityLog("cloneEmptyLexemeAndMeaning", targetLexemeId, ActivityOwner.LEXEME, roleDatasetCode, isManualEventOnUpdateEnabled);
+
 		return targetLexemeId;
 	}
 
 	@Transactional(rollbackOn = Exception.class)
-	public void cloneLexemeAndWord(Long sourceLexemeId, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
+	public Long cloneLexemeAndWord(Long sourceLexemeId, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
 
-		LexemeRecord sourceLexeme = lookupDbService.getLexemeRecord(sourceLexemeId);
-		Long sourceWordId = sourceLexeme.getWordId();
+		LexemeRecord sourceLexemeRecord = lookupDbService.getLexemeRecord(sourceLexemeId);
+		Long sourceWordId = sourceLexemeRecord.getWordId();
+		String datasetCode = sourceLexemeRecord.getDatasetCode();
 		Long targetWordId = cloneWordAndData(sourceWordId, roleDatasetCode, isManualEventOnUpdateEnabled);
-		cloneLexemeAndData(sourceLexemeId, null, targetWordId, false, roleDatasetCode, isManualEventOnUpdateEnabled);
+		Long targetLexemeId = cloneLexemeAndData(sourceLexemeId, null, targetWordId, false, roleDatasetCode, isManualEventOnUpdateEnabled);
+		recalculateAndUpdateAllLexemeLevels(sourceWordId, datasetCode);
+
+		return targetLexemeId;
 	}
 
 	@Transactional(rollbackOn = Exception.class)
-	public void updateLexemeWordId(Long lexemeId, Long wordId, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
+	public IdPair cloneWordAndMoveLexeme(Long lexemeId, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
 
-		ActivityLogData lexemeActivityLog = activityLogService.prepareActivityLog("updateLexemeWordId", lexemeId, ActivityOwner.LEXEME, roleDatasetCode, isManualEventOnUpdateEnabled);
-		Long lexemeWordId = lookupDbService.getLexemeWordId(lexemeId);
-		moveLexemeToAnotherWord(wordId, lexemeId);
-		cudDbService.deleteFloatingWord(lexemeWordId);
+		LexemeRecord lexemeRecord = lookupDbService.getLexemeRecord(lexemeId);
+		Long sourceWordId = lexemeRecord.getWordId();
+		String datasetCode = lexemeRecord.getDatasetCode();
+		ActivityLogData lexemeActivityLog = activityLogService.prepareActivityLog("cloneWordAndMoveLexeme", lexemeId, ActivityOwner.LEXEME, roleDatasetCode, isManualEventOnUpdateEnabled);
+		Long targetWordId = cloneWordAndData(sourceWordId, roleDatasetCode, isManualEventOnUpdateEnabled);
+		cudDbService.updateLexemeWordId(lexemeId, targetWordId);
+		recalculateAndUpdateAllLexemeLevels(sourceWordId, datasetCode);
+		recalculateAndUpdateAllLexemeLevels(targetWordId, datasetCode);
+		activityLogService.createActivityLog(lexemeActivityLog, lexemeId, ActivityEntity.LEXEME);
+
+		return new IdPair(sourceWordId, targetWordId);
+	}
+
+	@Transactional(rollbackOn = Exception.class)
+	public void moveLexeme(Long lexemeId, Long targetWordId, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
+
+		LexemeRecord lexemeRecord = lookupDbService.getLexemeRecord(lexemeId);
+		Long sourceWordId = lexemeRecord.getWordId();
+		String datasetCode = lexemeRecord.getDatasetCode();
+		ActivityLogData lexemeActivityLog = activityLogService.prepareActivityLog("moveLexeme", lexemeId, ActivityOwner.LEXEME, roleDatasetCode, isManualEventOnUpdateEnabled);
+		cudDbService.updateLexemeWordId(lexemeId, targetWordId);
+		recalculateAndUpdateAllLexemeLevels(sourceWordId, datasetCode);
+		recalculateAndUpdateAllLexemeLevels(targetWordId, datasetCode);
+		cudDbService.deleteFloatingWord(sourceWordId);
 		activityLogService.createActivityLog(lexemeActivityLog, lexemeId, ActivityEntity.LEXEME);
 	}
 
@@ -139,8 +167,7 @@ public class CompositionService extends AbstractService implements PermConstant 
 		String datasetCode = userRole.getDatasetCode();
 		boolean isWordCrudGrant = ekilexPermissionEvaluator.isWordCrudGranted(user, datasetCode, wordId);
 		if (isWordCrudGrant) {
-			ActivityLogData activityLog = activityLogService
-					.prepareActivityLog("updateWordValuePrese", wordId, ActivityOwner.WORD, roleDatasetCode, isManualEventOnUpdateEnabled);
+			ActivityLogData activityLog = activityLogService.prepareActivityLog("updateWordValuePrese", wordId, ActivityOwner.WORD, roleDatasetCode, isManualEventOnUpdateEnabled);
 			cudDbService.updateWordValuePrese(wordId, wordValuePrese);
 			activityLogService.createActivityLog(activityLog, wordId, ActivityEntity.WORD);
 		}
@@ -150,43 +177,48 @@ public class CompositionService extends AbstractService implements PermConstant 
 	@Transactional(rollbackOn = Exception.class)
 	public void updateLexemeWordValue(Long lexemeId, String wordValuePrese, String wordLang, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
 
-		ActivityLogData lexemeActivityLog = activityLogService
-				.prepareActivityLog("updateLexemeWordValue", lexemeId, ActivityOwner.LEXEME, roleDatasetCode, isManualEventOnUpdateEnabled);
+		ActivityLogData lexemeActivityLog = activityLogService.prepareActivityLog("updateLexemeWordValue", lexemeId, ActivityOwner.LEXEME, roleDatasetCode, isManualEventOnUpdateEnabled);
 		String wordValue = textDecorationService.removeEkiElementMarkup(wordValuePrese);
-		Long originalWordId = lookupDbService.getLexemeWordId(lexemeId);
-		WordRecord originalWord = lookupDbService.getWordRecord(originalWordId);
-		String originalWordValue = originalWord.getValue();
-		String originalWordLang = originalWord.getLang();
-		List<Long> originalWordDatasetCodes = lookupDbService.getWordDatasetCodes(originalWordId);
-		boolean originalWordExistsOnlyInOneDataset = originalWordDatasetCodes.size() == 1;
+		LexemeRecord sourceLexemeRecord = lookupDbService.getLexemeRecord(lexemeId);
+		Long sourceWordId = sourceLexemeRecord.getWordId();
+		String datasetCode = sourceLexemeRecord.getDatasetCode();
+		WordRecord sourceWord = lookupDbService.getWordRecord(sourceWordId);
+		String sourceWordValue = sourceWord.getValue();
+		String sourceWordLang = sourceWord.getLang();
+		List<Long> sourceDatasetCodes = lookupDbService.getWordDatasetCodes(sourceWordId);
+		boolean sourceWordInSingleDataset = sourceDatasetCodes.size() == 1;
 		List<Word> existingSameValueWords = lookupDbService.getWords(wordValue, wordLang);
 
-		if (existingSameValueWords.size() == 0) {
-			if (originalWordExistsOnlyInOneDataset) {
-				ActivityLogData wordActivityLog = activityLogService
-						.prepareActivityLog("updateLexemeWordValue", originalWordId, ActivityOwner.WORD, roleDatasetCode, isManualEventOnUpdateEnabled);
-				updateWordValue(originalWordId, wordValue, wordValuePrese, wordLang, originalWordValue, originalWordLang);
-				activityLogService.createActivityLog(wordActivityLog, originalWordId, ActivityEntity.WORD);
+		if (CollectionUtils.isEmpty(existingSameValueWords)) {
+
+			if (sourceWordInSingleDataset) {
+
+				ActivityLogData wordActivityLog = activityLogService.prepareActivityLog("updateLexemeWordValue", sourceWordId, ActivityOwner.WORD, roleDatasetCode, isManualEventOnUpdateEnabled);
+				updateWordValue(sourceWordId, wordValue, wordValuePrese, wordLang, sourceWordValue, sourceWordLang);
+				activityLogService.createActivityLog(wordActivityLog, sourceWordId, ActivityEntity.WORD);
+
 			} else {
-				Long duplicateWordId = cloneWordAndData(originalWordId, roleDatasetCode, isManualEventOnUpdateEnabled);
-				ActivityLogData wordActivityLog = activityLogService
-						.prepareActivityLog("updateLexemeWordValue", duplicateWordId, ActivityOwner.WORD, roleDatasetCode, isManualEventOnUpdateEnabled);
-				updateWordValue(duplicateWordId, wordValue, wordValuePrese, wordLang, originalWordValue, originalWordLang);
-				moveLexemeToAnotherWord(duplicateWordId, lexemeId);
-				activityLogService.createActivityLog(wordActivityLog, duplicateWordId, ActivityEntity.WORD);
+
+				Long targetWordId = cloneWordAndData(sourceWordId, datasetCode, isManualEventOnUpdateEnabled);
+				ActivityLogData wordActivityLog = activityLogService.prepareActivityLog("updateLexemeWordValue", targetWordId, ActivityOwner.WORD, roleDatasetCode, isManualEventOnUpdateEnabled);
+				updateWordValue(targetWordId, wordValue, wordValuePrese, wordLang, sourceWordValue, sourceWordLang);
+				cudDbService.updateLexemeWordId(lexemeId, targetWordId);
+				recalculateAndUpdateAllLexemeLevels(targetWordId, datasetCode);
+				activityLogService.createActivityLog(wordActivityLog, targetWordId, ActivityEntity.WORD);
 			}
-		}
 
-		if (existingSameValueWords.size() == 1) {
-			Long existingWordId = existingSameValueWords.get(0).getWordId();
-			moveLexemeToAnotherWord(existingWordId, lexemeId);
-		}
+		} else if (existingSameValueWords.size() == 1) {
 
-		if (existingSameValueWords.size() > 1) {
+			Word existingSameValueWord = existingSameValueWords.get(0);
+			Long existingWordId = existingSameValueWord.getWordId();
+			cudDbService.updateLexemeWordId(lexemeId, existingWordId);
+			recalculateAndUpdateAllLexemeLevels(existingWordId, datasetCode);
+
+		} else if (existingSameValueWords.size() > 1) {
 			throw new UnsupportedOperationException();
 		}
 
-		cudDbService.deleteFloatingWord(originalWordId);
+		cudDbService.deleteFloatingWord(sourceWordId);
 		activityLogService.createActivityLog(lexemeActivityLog, lexemeId, ActivityEntity.LEXEME);
 	}
 
@@ -212,8 +244,6 @@ public class CompositionService extends AbstractService implements PermConstant 
 	private Long cloneLexemeAndData(Long sourceLexemeId, Long targetMeaningId, Long targetWordId, boolean isPublicDataOnly, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
 
 		Long targetLexemeId = compositionDbService.cloneLexeme(sourceLexemeId, targetMeaningId, targetWordId);
-		updateLexemeLevelsAfterDuplication(targetLexemeId);
-
 		compositionDbService.cloneLexemeUsages(sourceLexemeId, targetLexemeId);
 		compositionDbService.cloneLexemeNotes(sourceLexemeId, targetLexemeId);
 		compositionDbService.cloneLexemeTags(sourceLexemeId, targetLexemeId);
@@ -335,8 +365,8 @@ public class CompositionService extends AbstractService implements PermConstant 
 
 	private void joinLexemes(Long targetLexemeId, Long sourceLexemeId, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
 
-		LexemeRecord targetLexeme = lookupDbService.getLexemeRecord(targetLexemeId);
 		LexemeRecord sourceLexeme = lookupDbService.getLexemeRecord(sourceLexemeId);
+		LexemeRecord targetLexeme = lookupDbService.getLexemeRecord(targetLexemeId);
 		if (sourceLexeme == null) {
 			return;
 		}
@@ -403,30 +433,33 @@ public class CompositionService extends AbstractService implements PermConstant 
 
 	private void joinLexemeData(Long targetWordId, Long sourceWordId) {
 
-		List<LexemeRecord> sourceWordLexemes = lookupDbService.getLexemeRecordsByWord(sourceWordId);
+		List<LexemeRecord> sourceLexemes = lookupDbService.getLexemeRecordsByWord(sourceWordId);
 
-		for (LexemeRecord sourceWordLexeme : sourceWordLexemes) {
+		if (CollectionUtils.isEmpty(sourceLexemes)) {
+			return;
+		}
 
-			Long sourceWordLexemeId = sourceWordLexeme.getId();
-			Long sourceWordLexemeMeaningId = sourceWordLexeme.getMeaningId();
-			String sourceWordLexemeDatasetCode = sourceWordLexeme.getDatasetCode();
-			LexemeRecord targetWordLexeme = lookupDbService.getLexemeRecord(targetWordId, sourceWordLexemeMeaningId, sourceWordLexemeDatasetCode);
-			boolean targetLexemeExists = targetWordLexeme != null;
-			if (targetLexemeExists) {
-				Long targetWordLexemeId = targetWordLexeme.getId();
-				compositionDbService.joinLexemes(targetWordLexemeId, sourceWordLexemeId);
+		List<String> datasetCodes = sourceLexemes.stream().map(LexemeRecord::getDatasetCode).distinct().collect(Collectors.toList());
+
+		for (LexemeRecord sourceLexeme : sourceLexemes) {
+
+			Long sourceLexemeId = sourceLexeme.getId();
+			Long sourceMeaningId = sourceLexeme.getMeaningId();
+			String datasetCode = sourceLexeme.getDatasetCode();
+			LexemeRecord targetLexeme = lookupDbService.getLexemeRecord(targetWordId, sourceMeaningId, datasetCode);
+			if (targetLexeme == null) {
+				cudDbService.updateLexemeWordId(sourceLexemeId, targetWordId);
 			} else {
-				moveLexemeToAnotherWord(targetWordId, sourceWordLexemeId);
+				Long targetLexemeId = targetLexeme.getId();
+				compositionDbService.joinLexemes(targetLexemeId, sourceLexemeId);
 			}
 		}
-	}
 
-	private void moveLexemeToAnotherWord(Long targetWordId, Long sourceWordLexemeId) {
+		for (String datasetCode : datasetCodes) {
 
-		String datasetCode = lookupDbService.getLexemeDatasetCode(sourceWordLexemeId);
-		Integer currentTargetWordLexemesMaxLevel1 = lookupDbService.getWordLexemesMaxLevel1(targetWordId, datasetCode);
-		int level1 = currentTargetWordLexemesMaxLevel1 + 1;
-		compositionDbService.updateLexemeWordIdAndLevels(sourceWordLexemeId, targetWordId, level1, DEFAULT_LEXEME_LEVEL);
+			recalculateAndUpdateAllLexemeLevels(sourceWordId, datasetCode);
+			recalculateAndUpdateAllLexemeLevels(targetWordId, datasetCode);
+		}
 	}
 
 	private void joinParadigms(Long targetWordId, Long sourceWordId) {
@@ -454,34 +487,39 @@ public class CompositionService extends AbstractService implements PermConstant 
 		}
 	}
 
-	private void updateLexemeLevelsAfterDuplication(Long duplicateLexemeId) {
+	private void recalculateAndUpdateAllLexemeLevels(Long wordId, String datasetCode) {
 
-		LexemeRecord duplicatedLexeme = lookupDbService.getLexemeRecord(duplicateLexemeId);
-		Integer level1 = duplicatedLexeme.getLevel1();
-		Integer level2 = duplicatedLexeme.getLevel2();
-		Long wordId = duplicatedLexeme.getWordId();
-		String datasetCode = duplicatedLexeme.getDatasetCode();
+		List<Lexeme> lexemes = lookupDbService.getWordLexemeLevels(wordId, datasetCode);
 
-		Integer level2MinValue = lookupDbService.getLexemeLevel2MinimumValue(wordId, datasetCode, level1);
-		boolean isLevel1Increase = Objects.equals(level2, level2MinValue);
+		if (CollectionUtils.isEmpty(lexemes)) {
+			return;
+		}
 
-		if (isLevel1Increase) {
-			List<LexemeRecord> lexemesWithLargerLevel1 = lookupDbService.getLexemeRecordsWithHigherLevel1(wordId, datasetCode, level1);
-			int increasedDuplicatedLexemeLevel1 = level1 + 1;
-			cudDbService.updateLexemeLevel1(duplicateLexemeId, increasedDuplicatedLexemeLevel1);
-			for (LexemeRecord lexeme : lexemesWithLargerLevel1) {
-				Long lexemeId = lexeme.getId();
-				int increasedLevel1 = lexeme.getLevel1() + 1;
-				cudDbService.updateLexemeLevel1(lexemeId, increasedLevel1);
-			}
-		} else {
-			List<LexemeRecord> lexemesWithLargerLevel2 = lookupDbService.getLexemeRecordsWithHigherLevel2(wordId, datasetCode, level1, level2);
-			int increasedDuplicatedLexemeLevel2 = level2 + 1;
-			cudDbService.updateLexemeLevel2(duplicateLexemeId, increasedDuplicatedLexemeLevel2);
-			for (LexemeRecord lexeme : lexemesWithLargerLevel2) {
-				Long lexemeId = lexeme.getId();
-				int increasedLevel2 = lexeme.getLevel2() + 1;
-				cudDbService.updateLexemeLevel2(lexemeId, increasedLevel2);
+		Map<Integer, List<Lexeme>> lexemeLevel1Map = lexemes.stream().collect(Collectors.groupingBy(Lexeme::getLevel1));
+		List<Integer> existingLevel1s = new ArrayList<>(lexemeLevel1Map.keySet());
+		Collections.sort(existingLevel1s);
+		int level1Count = existingLevel1s.size();
+
+		for (int level1Index = 0; level1Index < level1Count; level1Index++) {
+
+			Integer recalcLevel1 = level1Index + 1;
+			Integer existingLevel1 = existingLevel1s.get(level1Index);
+			List<Lexeme> lexemesOfLevel1 = lexemeLevel1Map.get(existingLevel1);
+			int level2Count = lexemesOfLevel1.size();
+
+			for (int level2Index = 0; level2Index < level2Count; level2Index++) {
+
+				Integer recalcLevel2 = level2Index + 1;
+				Lexeme lexeme = lexemesOfLevel1.get(level2Index);
+				Long lexemeId = lexeme.getLexemeId();
+				Integer existingLevel2 = lexeme.getLevel2();
+
+				if (!recalcLevel1.equals(existingLevel1)) {
+					cudDbService.updateLexemeLevel1(lexemeId, recalcLevel1);
+				}
+				if (!recalcLevel2.equals(existingLevel2)) {
+					cudDbService.updateLexemeLevel2(lexemeId, recalcLevel2);
+				}
 			}
 		}
 	}
