@@ -11,7 +11,7 @@
             <th:block th:if="${hasDomains}">
               <div class="mb-2">
                 <span class="search__helper-text text-caption" th:text="#{label.meaning.domain}"></span>
-                <span class="search__tag" th:each="domain : ${lexeme.domains}" th:text="${domain.value}"></span>
+                <span class="lang-code text-caption lang-code--unrestricted mr-2" th:each="domain : ${lexeme.domains}" th:text="${domain.value}"></span>
               </div>
             </th:block>
             <th:block th:if="${hasDefinitionsByLang}">

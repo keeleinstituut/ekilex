@@ -1,6 +1,12 @@
 @charset "UTF-8";
 @layer base, component;
 @layer base {
+  .text-body {
+    font-family: Inter;
+    font-weight: 600;
+    font-size: 1rem;
+    line-height: 24px;
+  }
   .text-body-two {
     color: var(--color-dark-blue);
     font-family: Inter;
@@ -15809,58 +15815,16 @@ readers do not read off random characters that represent icons */
 /* stylelint-disable */
 @font-face {
   font-family: "Inter";
+  font-weight: 100 900;
   font-style: normal;
-  font-weight: 300;
-  font-display: swap;
-  src: url("../fonts/inter/Inter-Light.woff2?v=3.13") format("woff2"), url("../fonts/inter/Inter-Light.woff?v=3.13") format("woff");
+  src: url("../fonts/inter/Inter-variable.woff2") format("woff2");
 }
 
 @font-face {
   font-family: "Inter";
+  font-weight: 100 900;
   font-style: italic;
-  font-weight: 300;
-  font-display: swap;
-  src: url("../fonts/inter/Inter-LightItalic.woff2?v=3.13") format("woff2"), url("../fonts/inter/Inter-LightItalic.woff?v=3.13") format("woff");
-}
-
-@font-face {
-  font-family: "Inter";
-  font-style: normal;
-  font-weight: 400;
-  font-display: swap;
-  src: url("../fonts/inter/Inter-Regular.woff2?v=3.13") format("woff2"), url("../fonts/inter/Inter-Regular.woff?v=3.13") format("woff");
-}
-
-@font-face {
-  font-family: "Inter";
-  font-style: italic;
-  font-weight: 400;
-  font-display: swap;
-  src: url("../fonts/inter/Inter-Italic.woff2?v=3.13") format("woff2"), url("../fonts/inter/Inter-Italic.woff?v=3.13") format("woff");
-}
-
-@font-face {
-  font-family: "Inter";
-  font-style: normal;
-  font-weight: 500;
-  font-display: swap;
-  src: url("../fonts/inter/Inter-Medium.woff2?v=3.13") format("woff2"), url("../fonts/inter/Inter-Medium.woff?v=3.13") format("woff");
-}
-
-@font-face {
-  font-family: "Inter";
-  font-style: normal;
-  font-weight: 700;
-  font-display: swap;
-  src: url("../fonts/inter/Inter-Bold.woff2?v=3.13") format("woff2"), url("../fonts/inter/Inter-Bold.woff?v=3.13") format("woff");
-}
-
-@font-face {
-  font-family: "Inter";
-  font-style: italic;
-  font-weight: 700;
-  font-display: swap;
-  src: url("../fonts/inter/Inter-BoldItalic.woff2?v=3.13") format("woff2"), url("../fonts/inter/Inter-BoldItalic.woff?v=3.13") format("woff");
+  src: url("../fonts/inter/Inter-italic-variable.woff2") format("woff2");
 }
 
 /* open-sans-regular - latin */
@@ -16829,6 +16793,9 @@ body.hidden-scroll {
   font-size: .75rem;
   font-weight: 400;
   color: #6b7885;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
 }
 
 .definition-sources .source-link {
@@ -17385,25 +17352,6 @@ body {
   flex-grow: 1;
   margin: 0 0 16px;
   --search-block-title-margin: 0 auto 0 0;
-}
-
-.search__tag {
-  background-color: var(--color-gray-010);
-  color: var(--color-darker-gray);
-  font-size: .75rem;
-  font-weight: 500;
-  line-height: 15px;
-  border-radius: 8px;
-  height: 16px;
-  padding: 4px 8px;
-  margin-left: 4px;
-  display: inline-flex;
-  align-items: center;
-  border: 0;
-}
-
-.search__tag--underlined {
-  text-decoration: underline;
 }
 
 .search__helper-text {

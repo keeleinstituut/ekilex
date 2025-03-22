@@ -224,25 +224,6 @@
     --search-block-title-margin: 0 auto 0 0;
   }
 
-  &__tag {
-    background-color: var(--color-gray-010);
-    color: var(--color-darker-gray);
-    font-size: .75rem;
-    font-weight: 500;
-    line-height: 15px;
-    border-radius: 8px;
-    height: 16px;
-    padding: 4px 8px;
-    margin-left: 4px;
-    display: inline-flex;
-    align-items: center;
-    border: 0;
-    
-    &--underlined {
-      text-decoration: underline;
-    }
-  }
-
   &__helper-text {
     color: var(--color-darker-gray);
     line-height: inherit;

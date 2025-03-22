@@ -11,6 +11,9 @@
   font-size: .75rem;
   font-weight: 400;
   color: #6b7885;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
   .source-link{
     font-size: .75rem;
     color: #6b7885;

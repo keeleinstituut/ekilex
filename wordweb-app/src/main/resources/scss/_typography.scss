@@ -1,6 +1,13 @@
 @layer base, component;
 
 @layer base {
+  .text-body {
+    font-family: Inter;
+    font-weight: 600;
+    font-size: 1rem;
+    line-height: 24px;
+  }
+
   .text-body-two {
     color: var(--color-dark-blue);
     font-family: Inter;

@@ -455,14 +455,14 @@
   <th:block th:fragment="source-link" th:with="dataContent=${sourceLink.isSourcePublic} ? ${sourceLink.sourceValuePrese} : #{label.source.value.not.public}">
     <button
       type="button"
-      class="search__tag"
+      class="lang-code text-caption lang-code--unrestricted"
       data-toggle="popover"
       data-html="true"
       th:title="#{label.source}"
       th:data-content="${dataContent}"
       th:unless="${#strings.isEmpty(sourceLink.sourceName)}"
       >
-      <span class="mr-1 text-underlined" th:utext="${sourceLink.sourceName}"></span>
+      <span class="text-underlined" th:utext="${sourceLink.sourceName}"></span>
       <span th:utext="|${sourceLink.sourceLinkName}|" th:unless="${#strings.isEmpty(sourceLink.sourceLinkName)}"></span>
     </button>
   </th:block>

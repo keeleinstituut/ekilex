@@ -197,7 +197,7 @@
       <i class="fa fa-exclamation-triangle small mr-2 mt-1" aria-hidden="true"></i>
       <span th:text="#{warning.eki.rus}">See ei ole valmis sõnastik.</span>
     </div>
-    <section class="level-3-panel meaning-panel d-flex flex-row text-body-two" th:each="lexeme : ${wordData.lexLexemes}">
+    <section class="level-3-panel meaning-panel d-flex flex-row text-body-two mb-2" th:each="lexeme : ${wordData.lexLexemes}">
       <div th:replace="lex-details :: lexeme-data"></div>
     </section>
     <div th:replace="common-search :: no-lexemes-exist"></div>
@@ -205,7 +205,7 @@
   <th:block th:fragment="lex-detail-view-simple">
     <th:block th:if="${wordData.lexemesExist}">
       <div th:if="${not #lists.isEmpty(wordData.lexLexemes)}">
-        <section class="level-3-panel meaning-panel d-flex flex-row" th:each="lexeme : ${wordData.lexLexemes}">
+        <section class="level-3-panel meaning-panel d-flex flex-row mb-2" th:each="lexeme : ${wordData.lexLexemes}">
           <div th:replace="lex-details :: lexeme-data"></div>
         </section>
       </div>
