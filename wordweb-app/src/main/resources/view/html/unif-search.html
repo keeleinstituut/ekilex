@@ -106,7 +106,7 @@
           <th:block th:replace="common-search :: word-data"></th:block>
           <th:block th:if="${wordData.lexemesExist}">
             <th:block th:if="${not #lists.isEmpty(wordData.lexLexemes)}">
-              <div class="d-flex align-items-end">
+              <div class="d-flex align-items-end flex-wrap">
                 <span class="search__pre-block-title search__pre-block-title--no-bottom-margin" th:text="#{lexdata.title}"></span>
                 <div class="text-caption text-darker-gray">
                   <span th:text="#{label.tooltip.last_modified}"></span>

@@ -9,9 +9,9 @@
               hasDefinitionsByLang=${not #maps.isEmpty(lexeme.definitionsByLang)}">
           <div class="definition-row" th:if="${hasDomains} OR ${hasDefinitionsByLang}">
             <th:block th:if="${hasDomains}">
-              <div class="mb-2">
+              <div class="mb-2 d-flex flex-wrap gap-2">
                 <span class="search__helper-text text-caption" th:text="#{label.meaning.domain}"></span>
-                <span class="lang-code text-caption lang-code--unrestricted mr-2" th:each="domain : ${lexeme.domains}" th:text="${domain.value}"></span>
+                <span class="lang-code text-caption lang-code--unrestricted" th:each="domain : ${lexeme.domains}" th:text="${domain.value}"></span>
               </div>
             </th:block>
             <th:block th:if="${hasDefinitionsByLang}">
@@ -167,13 +167,13 @@
                       <span th:text="${meaningLexeme.valueState.value}"></span>
                     </span>
                     <th:block th:if="${not #lists.isEmpty(meaningLexeme.registers)}">
-                      <span class="meaning-data__word-info" th:each="register,registerIter : ${meaningLexeme.registers}" th:text="${register.value + (registerIter.last ? '' : ', ')}"></span>
+                      <span class="text-caption search__helper-text" th:each="register,registerIter : ${meaningLexeme.registers}" th:text="${register.value + (registerIter.last ? '' : ', ')}"></span>
                     </th:block>
                     <th:block th:if="${not #lists.isEmpty(meaningLexeme.registers) and not #lists.isEmpty(meaningLexeme.wordTypes)}">
-                      <span class="meaning-data__word-info">, </span>
+                      <span class="text-caption search__helper-text">, </span>
                     </th:block>
                     <th:block th:if="${not #lists.isEmpty(meaningLexeme.wordTypes)}">
-                      <span class="meaning-data__word-info" th:each="wordType,wordTypeIter : ${meaningLexeme.wordTypes}" th:utext="${wordType.value + (wordTypeIter.last ? '' : ', ')}"></span>
+                      <span class="text-caption search__helper-text" th:each="wordType,wordTypeIter : ${meaningLexeme.wordTypes}" th:utext="${wordType.value + (wordTypeIter.last ? '' : ', ')}"></span>
                     </th:block>
                   </div>
                   <div class="text-small" th:if="${meaningLexeme.reliability != null}">

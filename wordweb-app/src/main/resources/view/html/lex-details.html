@@ -47,7 +47,7 @@
                             th:text="${lexeme.proficiencyLevelCode}" th:title="#{label.lexeme.proficiency.level}" data-toggle="tooltip"></span>
                       <div class="flex-shrink-1">
                         <span class="domain mr-1 mb-2" th:each="domain,domainIter : ${lexeme.domains}" th:text="${domain.value + (domainIter.last ? '' : ', ')}"></span>
-                        <span class="domain register mr-1 mb-2" th:each="register,registerIter : ${lexeme.registers}" th:text="${register.value + (registerIter.last ? '' : ', ')}"></span>
+                        <span class="domain register text-caption search__helper-text mr-1 mb-2" th:each="register,registerIter : ${lexeme.registers}" th:text="${register.value + (registerIter.last ? '' : ', ')}"></span>
                         <th:block th:each="definition,definitionIter : ${definitionEntry.value}">
                           <th:block th:unless="${definition.subDataExists}">
                             <span class="definition-value mb-2 mr-1 text-weight-semi-bold text-body" th:utext="${definition.valuePrese + (definitionIter.last ? '' : '; ')}"></span>
@@ -111,13 +111,13 @@
                             <span th:if="${(syn.mwLexValueState != null)}" th:text="${syn.mwLexValueState.value}"></span>
                             <th:block th:unless="${#lists.isEmpty(syn.wordTypes)}">
                               <th:block th:each="wordType,wtIter : ${syn.wordTypes}">
-                                <span th:text="${wordType.value}" class="type-two text-uppercase"></span>
+                                <span th:text="${wordType.value}" class="type-two text-uppercase text-caption search__helper-text"></span>
                                 <span th:unless="${wtIter.last}" class="ml-n1">,</span>
                               </th:block>
                             </th:block>
                             <th:block th:unless="${#lists.isEmpty(syn.mwLexRegisters)}">
                               <th:block th:each="register, rIter : ${syn.mwLexRegisters}">
-                                <span th:text="${register.value}" class="type-two text-uppercase"></span>
+                                <span th:text="${register.value}" class="type-two text-uppercase text-caption search__helper-text"></span>
                                 <span th:unless="${rIter.last}" class="ml-n1">,</span>
                               </th:block>
                             </th:block>
@@ -164,13 +164,13 @@
                             <span th:if="${(syn.mwLexValueState != null)}" th:text="${syn.mwLexValueState.value}"></span>
                             <th:block th:unless="${#lists.isEmpty(syn.wordTypes)}">
                               <th:block th:each="wordType,wtIter : ${syn.wordTypes}">
-                                <span th:text="${wordType.value}" class="type-two text-uppercase"></span>
+                                <span th:text="${wordType.value}" class="type-two text-uppercase text-caption search__helper-text"></span>
                                 <span th:unless="${wtIter.last}" class="ml-n1">,</span>
                               </th:block>
                             </th:block>
                             <th:block th:unless="${#lists.isEmpty(syn.mwLexRegisters)}">
                               <th:block th:each="register, rIter : ${syn.mwLexRegisters}">
-                                <span th:text="${register.value}" class="type-two text-uppercase"></span>
+                                <span th:text="${register.value}" class="type-two text-uppercase text-caption search__helper-text"></span>
                                 <span th:unless="${rIter.last}" class="ml-n1">,</span>
                               </th:block>
                             </th:block>
@@ -225,7 +225,7 @@
                               <span th:if="${(syn.mwLexValueState != null)}" th:text="${syn.mwLexValueState.value}"></span>
                               <th:block th:unless="${#lists.isEmpty(syn.wordTypes)}">
                                 <th:block th:each="wordType,wtIter : ${syn.wordTypes}">
-                                  <span th:text="${wordType.value}" class="type-two text-uppercase"></span>
+                                  <span th:text="${wordType.value}" class="type-two text-uppercase text-caption search__helper-text"></span>
                                   <span th:unless="${wtIter.last}" class="ml-n1">,</span>
                                 </th:block>
                               </th:block>
