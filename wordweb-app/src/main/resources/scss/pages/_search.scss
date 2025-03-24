@@ -711,6 +711,10 @@ span.material-symbols-outlined  {
   }
 }
 
+.lexeme-level {
+  line-height: 24px;
+}
+
 .relation-list {
   font-size: .75rem;
   line-height: 15px;
@@ -719,5 +723,25 @@ span.material-symbols-outlined  {
 
   & .relation-item {
     color: var(--color-blue-300);
+  }
+}
+
+
+.show-more-btn {
+  // Using important due to bootstrap styles
+  display: inline-flex !important;
+  min-width: 16px;
+  height: 16px;
+  width: max-content;
+  border-radius: 4px;
+  border: 1px solid var(--color-gray-010);
+  padding: 0 4px;
+  background-color: #F9F9F9;
+  gap: 4px;
+  font-size: .875rem;
+  color: var(--color-dark-blue);
+  & i {
+    color: var(--color-icon-gray);
+    font-size: 1rem;
   }
 }

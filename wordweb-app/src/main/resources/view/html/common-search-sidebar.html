@@ -172,11 +172,11 @@
           </span>
         </th:block>
       </div>
-      <button class="btn btn-collapse btn-link-muted btn-sm ml-n2" type="button" aria-expanded="false" data-toggle="collapse" data-dynamic-text="true"
+      <button class="btn-collapse show-more-btn btn-ellipsis" type="button" aria-expanded="false" data-toggle="collapse" data-dynamic-text="true"
         th:data-toggle-container="${'#word-rel-group-collapse-panel-' + wordRelType.code + '-' + relGroupIter.index}"
         th:data-target="${'#word-rel-group-collapse-panel-' + wordRelType.code + '-' + relGroupIter.index + ' .collapse-target'}"
         th:if="${#lists.size(relationTypeGroup.relatedWords) > T(eki.wordweb.constant.WebConstant).WORD_RELATIONS_DISPLAY_LIMIT}">
-        <span class="btn-content see-more-content" data-tooltip="tooltip" th:title="#{button.see.more}">
+        <span class="btn-content see-more-content" th:title="#{button.see.more}">
           <i class="fa fa-ellipsis-h" aria-hidden="true"></i>
         </span>
         <span class="btn-content see-less-content">
@@ -202,11 +202,11 @@
             </span>
           </th:block>
         </div>
-        <button class="btn btn-collapse btn-link-muted btn-sm ml-n2" type="button" aria-expanded="false" data-toggle="collapse" data-dynamic-text="true"
+        <button class="btn-collapse show-more-btn btn-ellipsis" type="button" aria-expanded="false" data-toggle="collapse" data-dynamic-text="true"
           th:data-toggle-container="${'#word-rel-map-collapse-panel-' + wordRelType.code + '-' + relEntryIter.index}"
           th:data-target="${'#word-rel-map-collapse-panel-' + wordRelType.code + '-' + relEntryIter.index + ' .collapse-target'}"
           th:if="${#lists.size(relatedWords) > T(eki.wordweb.constant.WebConstant).WORD_RELATIONS_DISPLAY_LIMIT}">
-          <span class="btn-content see-more-content" data-tooltip="tooltip" th:title="#{button.see.more}">
+          <span class="btn-content see-more-content" th:title="#{button.see.more}">
             <i class="fa fa-ellipsis-h" aria-hidden="true"></i>
           </span>
           <span class="btn-content see-less-content">
@@ -324,9 +324,9 @@
               <p class="mb-2" th:utext="${sentence.getLeftPart() + '<b>' + sentence.getMiddlePart() + '</b>' + sentence.getRightPart()}"></p>
             </div>
           </th:block>
-          <button class="show-more btn btn-collapse btn-link-muted btn-sm ml-n2" type="button" aria-expanded="false" data-dynamic-text="true" data-toggle="collapse"
+          <button class="btn-collapse show-more-btn btn-ellipsis" type="button" aria-expanded="false" data-dynamic-text="true" data-toggle="collapse"
             data-target="#corp-panel-sentences .collapse-target" th:if="${#lists.size(sentences) > T(eki.wordweb.constant.WebConstant).CORPUS_SENTENCES_DISPLAY_LIMIT}">
-            <span class="btn-content see-more-content" data-toggle="tooltip" th:title="#{button.see.more}">
+            <span class="btn-content see-more-content" th:title="#{button.see.more}">
               <i class="fa fa-ellipsis-h" aria-hidden="true"></i>
             </span>
             <span class="btn-content see-less-content">
@@ -360,9 +360,9 @@
               <p class="mb-2" th:utext="${translation.sentence + ' - ' + translation.translatedSentence}"></p>
             </div>
           </th:block>
-          <button class="show-more btn btn-collapse btn-link-muted btn-sm ml-n2" type="button" aria-expanded="false" data-dynamic-text="true" data-toggle="collapse"
+          <button class="btn-collapse show-more-btn btn-ellipsis" type="button" aria-expanded="false" data-dynamic-text="true" data-toggle="collapse"
             data-target="#corp-trans-panel-sentences .collapse-target" th:if="${#lists.size(translations) > T(eki.wordweb.constant.WebConstant).CORPUS_SENTENCES_DISPLAY_LIMIT}">
-            <span class="btn-content see-more-content" data-toggle="tooltip" th:title="#{button.see.more}">
+            <span class="btn-content see-more-content" th:title="#{button.see.more}">
               <i class="fa fa-ellipsis-h" aria-hidden="true"></i>
             </span>
             <span class="btn-content see-less-content">

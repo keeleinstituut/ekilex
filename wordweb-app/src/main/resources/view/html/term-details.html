@@ -184,13 +184,13 @@
                     <span class="fa fa-star" th:classappend="${meaningLexeme.reliability >= 4} ? 'text-warning': ''"></span>
                     <span class="fa fa-star" th:classappend="${meaningLexeme.reliability >= 5} ? 'text-warning': ''"></span>
                   </div>
-                  <div th:if="${not #lists.isEmpty(meaningLexeme.lexemeSourceLinks)}">
+                  <th:block th:if="${not #lists.isEmpty(meaningLexeme.lexemeSourceLinks)}">
                     <span class="definition-sources">
                       <th:block th:each="sourceLink,sourceLinkIter : ${meaningLexeme.lexemeSourceLinks}">
                         <th:block th:replace="common-app :: source-link"></th:block>
                       </th:block>
                     </span>
-                  </div>
+                  </th:block>
                   <div th:if="${not #lists.isEmpty(meaningLexeme.regions)}">
                     <span class="domain register mr-1 mb-1" th:each="region,regionIter : ${meaningLexeme.regions}" th:text="${region.value + (regionIter.last ? '' : ', ')}"></span>
                   </div>
@@ -253,10 +253,10 @@
                             </th:block>
                           </div>
                           <button th:id="${'lexeme-usages-show-more-btn-' + meaningLexeme.lexemeId}"
-                            class="btn btn-collapse btn-link-muted btn-sm btn-ellipsis text-nowrap d-inline-flex align-items-end pb-0 ml-n2 align-self-start" th:title="#{button.see.more}"
-                            type="button" data-tooltip="tooltip" data-toggle="collapse" aria-expanded="false" th:aria-controls="${'#lexeme-usages-more-panel-' + meaningLexeme.lexemeId}"
+                            class="btn-collapse show-more-btn" th:title="#{button.see.more}"
+                            type="button" data-toggle="collapse" aria-expanded="false" th:aria-controls="${'#lexeme-usages-more-panel-' + meaningLexeme.lexemeId}"
                             th:data-target="|#lexeme-usages-more-panel-${meaningLexeme.lexemeId}|" th:if="${meaningLexeme.moreUsages}">
-                            <span class="btn-content see-more-content" data-tooltip="tooltip" th:title="#{button.see.more}">
+                            <span class="btn-content see-more-content" th:title="#{button.see.more}">
                               <i class="fa fa-ellipsis-h" aria-hidden="true"></i>
                             </span>
                             <span class="btn-content see-less-content">
