@@ -87,14 +87,13 @@ $.fn.editClassifierPlugin = function() {
 			const allEditBtns = activeRow.find('#classifier-edit-wrapper');
 			const allDeleteBtns = activeRow.find('button[name="deleteClassifBtn"]');
 			const allCodeBtns = activeRow.find('button[name="addCodeBtn"]');
-			const activeRowInputs = activeRow.find('input:not([name="classifierOrder"])');
+			const activeRowInputs = activeRow.find('input');
 			const activeRowTexts = activeRow.find('p');
 			const saveRowBtn = activeRow.find('button[name="saveRowBtn"]');
 			const cancelBtn = activeRow.find('button[name="cancelBtn"]');
 			if (btn.prop('name') === 'editClassifBtn') {
 				activeRowTexts.addClass('d-none');
 				activeRowInputs.removeClass('d-none');
-				
 				allEditBtns.addClass('d-none');
 				allEditBtns.removeClass('d-flex');
 				allDeleteBtns.hide();
@@ -104,7 +103,6 @@ $.fn.editClassifierPlugin = function() {
 			} else {
 				activeRowTexts.removeClass('d-none');
 				activeRowInputs.addClass('d-none');
-				
 				allEditBtns.addClass('d-flex');
 				allEditBtns.removeClass('d-none');
 				allDeleteBtns.show();

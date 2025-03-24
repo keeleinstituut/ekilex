@@ -70,10 +70,13 @@
             </tr>
             <tr th:name="${classifier.code}">
               <td>
-                <input type="text" class="form-control form-control-sm"
-                       name="classifierOrder"
-                       th:value="${classifier.order}"
-                       disabled="disabled">
+                <input
+                  type="text"
+                  name="classifierOrder"
+                  th:value="${classifier.order}"
+                  autocomplete="off"
+                  class="form-control form-control-sm d-none">
+                <p class="bordered-paragraph" th:text="${classifier.order}"></p>
               </td>
               <td>
                 <span class="form-control-sm" th:text="${classifier.code}"></span>
