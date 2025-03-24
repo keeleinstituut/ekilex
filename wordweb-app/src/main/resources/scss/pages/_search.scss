@@ -730,6 +730,7 @@ span.material-symbols-outlined  {
 .show-more-btn {
   // Using important due to bootstrap styles
   display: inline-flex !important;
+  align-items: center;
   min-width: 16px;
   height: 16px;
   width: max-content;
@@ -743,5 +744,11 @@ span.material-symbols-outlined  {
   & i {
     color: var(--color-icon-gray);
     font-size: 1rem;
+  }
+
+  &--unrestricted,
+  &:not(&--unrestricted)[aria-expanded="true"] {
+    height: auto;
+    align-items: baseline;
   }
 }

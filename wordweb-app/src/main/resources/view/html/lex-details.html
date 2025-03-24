@@ -572,7 +572,7 @@
                                   <span class="icon icon-speaker"></span>
                                 </button>
                               </div>
-                              <button th:unless="${#lists.isEmpty(collocRelGr.allUsageValues)}" class="show-more-btn" data-toggle="collapse" aria-expanded="true"
+                              <button th:unless="${#lists.isEmpty(collocRelGr.allUsageValues)}" class="show-more-btn show-more-btn--unrestricted" data-toggle="collapse" aria-expanded="true"
                                       th:aria-controls="|#colloc-usages-area-${lexeme.lexemeId}-${collocPosGrIter.index}-${collocRelGrIter.index}|"
                                       th:data-target="|#colloc-usages-area-${lexeme.lexemeId}-${collocPosGrIter.index}-${collocRelGrIter.index}, #colloc-toggle-btn-${lexeme.lexemeId}-${collocPosGrIter.index}-${collocRelGrIter.index}|">
                                 <i class="collapse-icon fa fa-angle-up" aria-hidden="true"></i>
@@ -583,7 +583,7 @@
                         </div>
                       </div>
                     </th:block>
-                    <button class="show-more-btn" data-toggle="collapse" th:data-target="${'#colloc-samples-' + lexeme.lexemeId + ', ' + '#colloc-fulldata-' + lexeme.lexemeId}" >
+                    <button class="show-more-btn show-more-btn--unrestricted" data-toggle="collapse" th:data-target="${'#colloc-samples-' + lexeme.lexemeId + ', ' + '#colloc-fulldata-' + lexeme.lexemeId}" >
                       <i class="fa fa-angle-up" aria-hidden="true"></i>
                       <span th:text="#{button.see.less}"></span>
                     </button>

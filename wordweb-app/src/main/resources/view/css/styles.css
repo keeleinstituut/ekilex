@@ -15374,6 +15374,7 @@ span.material-symbols-outlined--default-size {
 }
 .show-more-btn {
   display: inline-flex !important;
+  align-items: center;
   min-width: 16px;
   height: 16px;
   width: max-content;
@@ -15388,6 +15389,11 @@ span.material-symbols-outlined--default-size {
 .show-more-btn i {
   color: var(--color-icon-gray);
   font-size: 1rem;
+}
+.show-more-btn--unrestricted,
+.show-more-btn:not(.show-more-btn--unrestricted)[aria-expanded=true] {
+  height: auto;
+  align-items: baseline;
 }
 .news-page {
   background-color: var(--color-white);
