@@ -50,11 +50,11 @@
                         <span class="domain register text-caption search__helper-text mr-1 mb-2" th:each="register,registerIter : ${lexeme.registers}" th:text="${register.value + (registerIter.last ? '' : ', ')}"></span>
                         <th:block th:each="definition,definitionIter : ${definitionEntry.value}">
                           <th:block th:unless="${definition.subDataExists}">
-                            <span class="definition-value mb-2 mr-1 text-weight-semi-bold text-body" th:utext="${definition.valuePrese + (definitionIter.last ? '' : '; ')}"></span>
+                            <span class="definition-value mb-2 mr-1 text-weight-semi-bold text-body-regular" th:utext="${definition.valuePrese + (definitionIter.last ? '' : '; ')}"></span>
                           </th:block>
                           <th:block th:if="${definition.subDataExists}">
                             <div th:id="${'definition-entry-' + definition.definitionId}">
-                              <span class="definition-value mb-2 mr-1 text-weight-semi-bold text-body" th:utext="${definition.valuePrese}"></span>
+                              <span class="definition-value mb-2 mr-1 text-weight-semi-bold text-body-regular" th:utext="${definition.valuePrese}"></span>
                               <th:block th:unless="${#lists.isEmpty(definition.sourceLinks)}">
                                 <span class="definition-sources">
                                   <th:block th:each="sourceLink,sourceLinkIter : ${definition.sourceLinks}">
@@ -334,7 +334,7 @@
                             th:if="${langData != null}"
                             th:text="${langData.codeIso2}" th:title="${langData.label}" data-toggle="tooltip"></span>
                         </th:block>
-                        <div><p  class="mb-1 text-body text-weight-semi-bold" th:each="note, noteIter : ${noteEntry.value}" th:utext="${note.valuePrese}"></p></div>
+                        <div><p  class="mb-1 text-body-regular text-weight-semi-bold" th:each="note, noteIter : ${noteEntry.value}" th:utext="${note.valuePrese}"></p></div>
                       </div>
                     </th:block>
                     <th:block th:if="${not #maps.isEmpty(lexeme.meaningNotesByLang)}">

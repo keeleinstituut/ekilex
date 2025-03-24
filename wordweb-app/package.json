@@ -4,46 +4,19 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "clean-and-copy-assets": "npm-run-all clean-assets  copy-assets",
-    "clean-assets": "cleandir target/classes/view/",
-    "copy-assets": "ncp src/main/resources/view/ target/classes/view/",
-    "clean-and-copy-css": "npm-run-all clean-css  copy-css",
-    "clean-css": "cleandir target/classes/view/css",
-    "copy-css": "ncp src/main/resources/view/css target/classes/view/css ",
-    "clean-and-copy-html": "npm-run-all clean-html  copy-html",
-    "clean-html": "cleandir target/classes/view/html",
-    "copy-html": "ncp src/main/resources/view/html target/classes/view/html ",
-    "clean-and-copy-js": "npm-run-all clean-js  copy-js",
-    "clean-js": "cleandir target/classes/view/js",
-    "copy-js": "ncp src/main/resources/view/js target/classes/view/js ",
-    "css": "npm-run-all --continue-on-error css-lint-stylelint css-compile css-prefix clean-and-copy-css",
-    "css-compile": "node-sass --output-style expanded --source-map true --source-map-contents true --precision 6 src/main/resources/scss/styles.scss src/main/resources/view/css/styles.css",
-    "css-lint-stylelint": "stylelint \"src/main/resources/scss/*.scss\" --cache --cache-location .cache/.stylelintcache",
-    "css-prefix": "postcss --config build/postcss.config.js --replace \"src/main/resources/view/css/*.css\"",
-    "fix-scss": "stylelint \"src/main/resources/scss/**/*.scss\" --fix ",
-    "watch": "npm-run-all --parallel watch-css watch-html watch-js",
-    "watch-css": "nodemon --watch src/main/resources/scss/ --ext scss --exec \"npm run css\"",
-    "watch-html": "nodemon --watch src/main/resources/view/html/ --ext html --exec \"npm run clean-and-copy-html\"",
-    "watch-js": "nodemon --watch src/main/resources/view/js/ --ext js --exec \"npm run clean-and-copy-js\""
+    "build": "node build.mjs",
+    "watch": "nodemon --watch src/main/resources --ext html,scss,js --exec \"npm run build\""
   },
   "author": "TripleDev OÜ",
   "license": "",
   "dependencies": {
-    "@fortawesome/fontawesome-free": "^5.14.0",
-    "node-sass": "^8.0.0"
+    "@fortawesome/fontawesome-free": "^5.14.0"
   },
   "devDependencies": {
-    "autoprefixer": "^9.8.6",
     "bootstrap": "^4.4.1",
-    "clean-dir": "^1.0.3",
-    "install": "^0.13.0",
-    "ncp": "^2.0.0",
+    "esbuild": "0.25.1",
+    "esbuild-sass-plugin": "^3.3.1",
     "nodemon": "^2.0.4",
-    "npm": "^6.14.8",
-    "npm-run-all": "^4.1.5",
-    "postcss-cli": "^7.1.2",
-    "simplelightbox": "^2.2.2",
-    "stylelint": "^12.0.0",
-    "stylelint-config-twbs-bootstrap": "^1.1.0"
+    "simplelightbox": "^2.2.2"
   }
 }

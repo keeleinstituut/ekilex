@@ -261,8 +261,8 @@
   }
 }
 
-@include media-breakpoint-down(sm) {
-  & .sticky-scroll-panel {
+.sticky-scroll-panel {
+    @include media-breakpoint-down(sm) {
     position: sticky;
     background-color: var(--color-gray-010);
     z-index: 2;
