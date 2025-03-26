@@ -1,6 +1,5 @@
 package eki.wordweb.service;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
@@ -161,11 +160,13 @@ public class UnifSearchService extends AbstractSearchService {
 		Complexity lexComplexity = Complexity.DETAIL;
 		DatasetType datasetType = null;
 		Integer maxDisplayLevel = DEFAULT_MORPHOLOGY_MAX_DISPLAY_LEVEL;
-		List<String> destinLangsClean = new ArrayList<>(destinLangs);
-		destinLangsClean.add(lANGUAGE_CODE_MUL);
-		destinLangsClean = destinLangsClean.stream()
+		List<String> destinLangsClean = destinLangs.stream()
 				.filter(destinLang -> !StringUtils.equals(destinLang, DESTIN_LANG_ALL))
 				.collect(Collectors.toList());
+		;
+		if (CollectionUtils.isNotEmpty(destinLangsClean)) {
+			destinLangsClean.add(lANGUAGE_CODE_MUL);
+		}
 		List<String> datasetCodesClean = datasetCodes.stream()
 				.filter(datasetCode -> !StringUtils.equals(datasetCode, DATASET_ALL))
 				.collect(Collectors.toList());

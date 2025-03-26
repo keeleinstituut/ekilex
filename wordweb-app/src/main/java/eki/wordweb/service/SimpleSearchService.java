@@ -1,6 +1,5 @@
 package eki.wordweb.service;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -104,11 +103,12 @@ public class SimpleSearchService extends AbstractSearchService {
 		Complexity lexComplexity = Complexity.SIMPLE;
 		DatasetType datasetType = DatasetType.LEX;
 		Integer maxDisplayLevel = SIMPLE_MORPHOLOGY_MAX_DISPLAY_LEVEL;
-		List<String> destinLangsClean = new ArrayList<>(destinLangs);
-		destinLangsClean.add(lANGUAGE_CODE_MUL);
-		destinLangsClean = destinLangsClean.stream()
+		List<String> destinLangsClean = destinLangs.stream()
 				.filter(destinLang -> !StringUtils.equals(destinLang, DESTIN_LANG_ALL))
-				.collect(Collectors.toList());
+				.collect(Collectors.toList());;
+		if (CollectionUtils.isNotEmpty(destinLangsClean)) {
+			destinLangsClean.add(lANGUAGE_CODE_MUL);
+		}
 		boolean excludeQuestionable = true;
 		boolean fiCollationExists = commonDataDbService.fiCollationExists();
 		SearchContext searchContext = new SearchContext(
