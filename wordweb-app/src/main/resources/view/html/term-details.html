@@ -9,9 +9,9 @@
               hasDefinitionsByLang=${not #maps.isEmpty(lexeme.definitionsByLang)}">
           <div class="definition-row" th:if="${hasDomains} OR ${hasDefinitionsByLang}">
             <th:block th:if="${hasDomains}">
-              <div class="mb-2">
+              <div class="mb-2 d-flex flex-wrap gap-2">
                 <span class="search__helper-text text-caption" th:text="#{label.meaning.domain}"></span>
-                <span class="search__tag" th:each="domain : ${lexeme.domains}" th:text="${domain.value}"></span>
+                <span class="lang-code text-caption lang-code--unrestricted" th:each="domain : ${lexeme.domains}" th:text="${domain.value}"></span>
               </div>
             </th:block>
             <th:block th:if="${hasDefinitionsByLang}">
@@ -167,13 +167,13 @@
                       <span th:text="${meaningLexeme.valueState.value}"></span>
                     </span>
                     <th:block th:if="${not #lists.isEmpty(meaningLexeme.registers)}">
-                      <span class="meaning-data__word-info" th:each="register,registerIter : ${meaningLexeme.registers}" th:text="${register.value + (registerIter.last ? '' : ', ')}"></span>
+                      <span class="text-caption search__helper-text" th:each="register,registerIter : ${meaningLexeme.registers}" th:text="${register.value + (registerIter.last ? '' : ', ')}"></span>
                     </th:block>
                     <th:block th:if="${not #lists.isEmpty(meaningLexeme.registers) and not #lists.isEmpty(meaningLexeme.wordTypes)}">
-                      <span class="meaning-data__word-info">, </span>
+                      <span class="text-caption search__helper-text">, </span>
                     </th:block>
                     <th:block th:if="${not #lists.isEmpty(meaningLexeme.wordTypes)}">
-                      <span class="meaning-data__word-info" th:each="wordType,wordTypeIter : ${meaningLexeme.wordTypes}" th:utext="${wordType.value + (wordTypeIter.last ? '' : ', ')}"></span>
+                      <span class="text-caption search__helper-text" th:each="wordType,wordTypeIter : ${meaningLexeme.wordTypes}" th:utext="${wordType.value + (wordTypeIter.last ? '' : ', ')}"></span>
                     </th:block>
                   </div>
                   <div class="text-small" th:if="${meaningLexeme.reliability != null}">
@@ -184,13 +184,13 @@
                     <span class="fa fa-star" th:classappend="${meaningLexeme.reliability >= 4} ? 'text-warning': ''"></span>
                     <span class="fa fa-star" th:classappend="${meaningLexeme.reliability >= 5} ? 'text-warning': ''"></span>
                   </div>
-                  <div th:if="${not #lists.isEmpty(meaningLexeme.lexemeSourceLinks)}">
+                  <th:block th:if="${not #lists.isEmpty(meaningLexeme.lexemeSourceLinks)}">
                     <span class="definition-sources">
                       <th:block th:each="sourceLink,sourceLinkIter : ${meaningLexeme.lexemeSourceLinks}">
                         <th:block th:replace="common-app :: source-link"></th:block>
                       </th:block>
                     </span>
-                  </div>
+                  </th:block>
                   <div th:if="${not #lists.isEmpty(meaningLexeme.regions)}">
                     <span class="domain register mr-1 mb-1" th:each="region,regionIter : ${meaningLexeme.regions}" th:text="${region.value + (regionIter.last ? '' : ', ')}"></span>
                   </div>
@@ -253,10 +253,10 @@
                             </th:block>
                           </div>
                           <button th:id="${'lexeme-usages-show-more-btn-' + meaningLexeme.lexemeId}"
-                            class="btn btn-collapse btn-link-muted btn-sm btn-ellipsis text-nowrap d-inline-flex align-items-end pb-0 ml-n2 align-self-start" th:title="#{button.see.more}"
-                            type="button" data-tooltip="tooltip" data-toggle="collapse" aria-expanded="false" th:aria-controls="${'#lexeme-usages-more-panel-' + meaningLexeme.lexemeId}"
+                            class="btn-collapse show-more-btn" th:title="#{button.see.more}"
+                            type="button" data-toggle="collapse" aria-expanded="false" th:aria-controls="${'#lexeme-usages-more-panel-' + meaningLexeme.lexemeId}"
                             th:data-target="|#lexeme-usages-more-panel-${meaningLexeme.lexemeId}|" th:if="${meaningLexeme.moreUsages}">
-                            <span class="btn-content see-more-content" data-tooltip="tooltip" th:title="#{button.see.more}">
+                            <span class="btn-content see-more-content" th:title="#{button.see.more}">
                               <i class="fa fa-ellipsis-h" aria-hidden="true"></i>
                             </span>
                             <span class="btn-content see-less-content">

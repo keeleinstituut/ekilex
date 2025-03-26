@@ -1,6 +1,13 @@
 @layer base, component;
 
 @layer base {
+  .text-body-regular {
+    font-family: Inter;
+    font-weight: 600;
+    font-size: 1rem;
+    line-height: 24px;
+  }
+
   .text-body-two {
     color: var(--color-dark-blue);
     font-family: Inter;
@@ -17,6 +24,10 @@
     font-weight: 400;
     line-height: normal;
     letter-spacing: 0.048px;
+  }
+
+  .text-weight-regular {
+    font-weight: 400;
   }
 
   .text-weight-medium {

@@ -29,22 +29,17 @@
 	}
 </script>
 <!-- Google Tag Manager -->
-<script defer>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+<script defer type="text/javascript">(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
   new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
   j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
   'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
-  })(window,document,'script','dataLayer','GTM-KC9W3HXH');
-</script>
+  })(window,document,'script','dataLayer','GTM-TXK9BCXH');</script>
 <!-- End Google Tag Manager -->
 </head>
 <body class="survey-active">
   <!-- Google Tag Manager (noscript) -->
   <noscript>
-    <iframe
-      src="https://www.googletagmanager.com/ns.html?id=GTM-KC9W3HXH"
-      height="0"
-      width="0"
-      style="display:none;visibility:hidden">
+    <iframe src="https://www.googletagmanager.com/ns.html?id=GTM-TXK9BCXH" height="0" width="0" style="display:none;visibility:hidden">
     </iframe>
   </noscript>
   <!-- End Google Tag Manager (noscript) -->
@@ -460,14 +455,14 @@
   <th:block th:fragment="source-link" th:with="dataContent=${sourceLink.isSourcePublic} ? ${sourceLink.sourceValuePrese} : #{label.source.value.not.public}">
     <button
       type="button"
-      class="search__tag"
+      class="lang-code text-caption lang-code--unrestricted"
       data-toggle="popover"
       data-html="true"
       th:title="#{label.source}"
       th:data-content="${dataContent}"
       th:unless="${#strings.isEmpty(sourceLink.sourceName)}"
       >
-      <span class="mr-1 text-underlined" th:utext="${sourceLink.sourceName}"></span>
+      <span class="text-underlined mr-1" th:utext="${sourceLink.sourceName}"></span>
       <span th:utext="|${sourceLink.sourceLinkName}|" th:unless="${#strings.isEmpty(sourceLink.sourceLinkName)}"></span>
     </button>
   </th:block>
