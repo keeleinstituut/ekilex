@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -23,6 +24,7 @@ import eki.ekilex.service.ClassifierService;
 
 @ConditionalOnWebApplication
 @Controller
+@PreAuthorize("principal.admin")
 @SessionAttributes(WebConstant.SESSION_BEAN)
 public class ClassifierController extends AbstractPrivatePageController {
 

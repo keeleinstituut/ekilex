@@ -6,6 +6,7 @@ import java.util.stream.Collectors;
 import javax.transaction.Transactional;
 
 import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -140,7 +141,7 @@ public class DatasetService implements SystemConstant, GlobalConstant {
 	private void addDatasetToSelectedClassifiers(Dataset dataset) {
 
 		String datasetCode = dataset.getCode();
-
+		handleLanguageMul(dataset);
 		datasetDbService.addDatasetToClassifiers(ClassifierName.FREEFORM_TYPE, datasetCode, dataset.getWordFreeformTypes(), FreeformOwner.WORD);
 		datasetDbService.addDatasetToClassifiers(ClassifierName.FREEFORM_TYPE, datasetCode, dataset.getLexemeFreeformTypes(), FreeformOwner.LEXEME);
 		datasetDbService.addDatasetToClassifiers(ClassifierName.FREEFORM_TYPE, datasetCode, dataset.getMeaningFreeformTypes(), FreeformOwner.MEANING);
@@ -149,4 +150,17 @@ public class DatasetService implements SystemConstant, GlobalConstant {
 		datasetDbService.addDatasetToClassifiers(ClassifierName.DOMAIN, datasetCode, dataset.getDomains());
 	}
 
+	private void handleLanguageMul(Dataset dataset) {
+
+		List<Classifier> languages = dataset.getLanguages();
+		boolean isLanguageMulPresent = languages.stream()
+				.map(Classifier::getCode)
+				.anyMatch(langCode -> StringUtils.equals(langCode, lANGUAGE_CODE_MUL));
+		if (!isLanguageMulPresent) {
+			Classifier languageMul = new Classifier();
+			languageMul.setName(ClassifierName.LANGUAGE.name());
+			languageMul.setCode(lANGUAGE_CODE_MUL);
+			languages.add(languageMul);
+		}
+	}
 }

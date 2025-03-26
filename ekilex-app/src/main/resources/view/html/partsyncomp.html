@@ -239,7 +239,7 @@
           <div class="col-md-9 ml-2">
             <select required id="wordPermLanguageSelect" class="form-control required-field" name="language">
               <option value="" selected disabled th:text="#{common.select.language}">vali keel...</option>
-              <option th:each="language : ${userRoleLanguages}" th:value="${language.code}" th:text="${language.value}" th:selected="${language.code == selectedWordLanguage}"></option>
+              <option th:each="language : ${userRoleLanguagesExtended}" th:value="${language.code}" th:text="${language.value}" th:selected="${language.code == selectedWordLanguage}"></option>
             </select>
           </div>
         </div>

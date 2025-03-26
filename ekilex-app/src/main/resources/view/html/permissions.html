@@ -17,7 +17,7 @@
           <form th:action="@{/permissions/search}" method="post">
             <div class="form-group row">
               <div class="col-3">
-                <input type="text" class="form-control" name="userNameFilter" th:value="${permSearchBean.userNameFilter}" th:placeholder="#{permissions.placeholder.search}">
+                <input type="text" class="form-control" name="userNameFilter" th:value="${permSearchBean.userNameFilter}" th:placeholder="#{permissions.placeholder.search}" autocomplete="off">
               </div>
               <div class="col-3">
                 <select class="form-control" name="userPermDatasetCodeFilter">

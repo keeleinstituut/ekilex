@@ -18,6 +18,8 @@ public interface GlobalConstant {
 
 	String LANGUAGE_CODE_UKR = "ukr";
 
+	String lANGUAGE_CODE_MUL = "mul";
+
 	String DATASET_EKI = "eki";
 
 	String DATASET_ETY = "ety";
@@ -38,25 +40,19 @@ public interface GlobalConstant {
 
 	boolean MANUAL_EVENT_ON_UPDATE_ENABLED = true;
 
-	String VALUE_STATE_MOST_PREFERRED = "eelistatud";
+	String VALUE_STATE_CODE_MOST_PREFERRED = "eelistatud";
 
-	String VALUE_STATE_LEAST_PREFERRED = "väldi";
+	String VALUE_STATE_CODE_LEAST_PREFERRED = "väldi";
 
-	String VALUE_STATE_INCORRECT = "vigane";
+	String VALUE_STATE_CODE_INCORRECT = "vigane";
 
-	String VALUE_STATE_FORMER = "endine";
+	String VALUE_STATE_CODE_FORMER = "endine";
 
 	String DEFINITION_TYPE_CODE_UNDEFINED = "määramata";
 
 	String DEFINITION_TYPE_CODE_INEXACT_SYN = "kitsam/laiem tähendus teises keeles";
 
-	String COMPLEXITY_DETAIL = Complexity.DETAIL.name();
-
-	String COMPLEXITY_ANY = Complexity.ANY.name();
-
-	String UNDEFINED_RELATION_STATUS = RelationStatus.UNDEFINED.name();
-
-	String UNKNOWN_FORM_CODE = "??";
+	String MORPH_CODE_UNKNOWN = "??";
 
 	String WORD_TYPE_CODE_PREFIXOID = "pf";
 
@@ -95,6 +91,12 @@ public interface GlobalConstant {
 	String MEANING_REL_TYPE_CODE_WIDE = "laiem";
 
 	String WORD_RELATION_PARAM_NAME_SYN_CANDIDATE = "syn candidate";
+
+	String COMPLEXITY_DETAIL = Complexity.DETAIL.name();
+
+	String COMPLEXITY_ANY = Complexity.ANY.name();
+
+	String RELATION_STATUS_UNDEFINED = RelationStatus.UNDEFINED.name();
 
 	char DISPLAY_FORM_STRESS_SYMBOL = '"';
 

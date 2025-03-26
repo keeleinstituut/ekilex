@@ -137,7 +137,7 @@
                         th:title="#{userprofile.select.pref.meaning.word.langs}"
                         th:data-select-all-text="#{common.select.all}"
                         th:data-deselect-all-text="#{common.unselect.all}">
-                  <th:block th:each="language: ${userRoleLanguages}">
+                  <th:block th:each="language: ${userRoleLanguagesExtended}">
                     <option th:value="${language.code}" th:text="${language.value}" th:selected="${userProfile.preferredSynLexMeaningWordLangs != null && #lists.contains(userProfile.preferredSynLexMeaningWordLangs, language.code)}"/>
                   </th:block>
                 </select>
@@ -151,7 +151,7 @@
                         th:title="#{userprofile.select.pref.part.syn.candidate.langs}"
                         th:data-select-all-text="#{common.select.all}"
                         th:data-deselect-all-text="#{common.unselect.all}">
-                  <th:block th:each="language: ${userRoleLanguages}">
+                  <th:block th:each="language: ${userRoleLanguagesExtended}">
                     <option th:value="${language.code}" th:text="${language.value}" th:selected="${userProfile.preferredPartSynCandidateLangs != null && #lists.contains(userProfile.preferredPartSynCandidateLangs, language.code)}"/>
                   </th:block>
                 </select>

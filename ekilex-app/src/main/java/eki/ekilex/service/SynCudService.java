@@ -191,7 +191,7 @@ public class SynCudService extends AbstractCudService implements SystemConstant 
 
 		activityLogService.createActivityLog("createWordAndSynRelation", createdWordId, ActivityOwner.WORD, roleDatasetCode, isManualEventOnUpdateEnabled);
 		ActivityLogData activityLog = activityLogService.prepareActivityLog("createWordAndSynRelation", existingWordId, ActivityOwner.WORD, roleDatasetCode, isManualEventOnUpdateEnabled);
-		Long createdRelationId = cudDbService.createWordRelation(existingWordId, createdWordId, WORD_REL_TYPE_CODE_RAW, UNDEFINED_RELATION_STATUS);
+		Long createdRelationId = cudDbService.createWordRelation(existingWordId, createdWordId, WORD_REL_TYPE_CODE_RAW, RELATION_STATUS_UNDEFINED);
 		moveCreatedWordRelationToFirst(existingWordId, createdRelationId, WORD_REL_TYPE_CODE_RAW);
 		BigDecimal weight = new BigDecimal(weightStr);
 		cudDbService.createWordRelationParam(createdRelationId, USER_ADDED_WORD_RELATION_NAME, weight);
@@ -206,7 +206,7 @@ public class SynCudService extends AbstractCudService implements SystemConstant 
 			createLexeme(sourceWordId, roleDatasetCode, null, roleDatasetCode, isManualEventOnUpdateEnabled);
 		}
 		ActivityLogData activityLog = activityLogService.prepareActivityLog("createSynWordRelation", targetWordId, ActivityOwner.WORD, roleDatasetCode, isManualEventOnUpdateEnabled);
-		Long createdRelationId = cudDbService.createWordRelation(targetWordId, sourceWordId, WORD_REL_TYPE_CODE_RAW, UNDEFINED_RELATION_STATUS);
+		Long createdRelationId = cudDbService.createWordRelation(targetWordId, sourceWordId, WORD_REL_TYPE_CODE_RAW, RELATION_STATUS_UNDEFINED);
 		moveCreatedWordRelationToFirst(targetWordId, createdRelationId, WORD_REL_TYPE_CODE_RAW);
 		BigDecimal weight = new BigDecimal(weightStr);
 		cudDbService.createWordRelationParam(createdRelationId, USER_ADDED_WORD_RELATION_NAME, weight);

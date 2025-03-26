@@ -48,7 +48,7 @@
                 <div class="col-12">
                   <label th:text="#{term.language}">Keel</label>
                   <select required class="form-control required-field classifier-select" name="language" th:readonly="${!editEnabled}">
-                    <option th:each="language : ${userRoleLanguages}"
+                    <option th:each="language : ${userRoleLanguagesExtended}"
                             th:value="${language.code}"
                             th:selected="${language.code == sessionBean.recentLanguage}"
                             th:text="${language.value}">language

@@ -192,87 +192,88 @@ public class DatasetDbService {
 
 	public void addDatasetToClassifiers(ClassifierName classifierName, String datasetCode, List<Classifier> classifiers) {
 
-		if (CollectionUtils.isNotEmpty(classifiers)) {
-			if (ClassifierName.LANGUAGE.equals(classifierName)) {
+		if (CollectionUtils.isEmpty(classifiers)) {
+			return;
+		}
+		if (ClassifierName.LANGUAGE.equals(classifierName)) {
 
-				addDatasetToClassifiers(classifierName, datasetCode, classifiers, null);
+			addDatasetToClassifiers(classifierName, datasetCode, classifiers, null);
 
-			} else if (ClassifierName.FREEFORM_TYPE.equals(classifierName)) {
+		} else if (ClassifierName.FREEFORM_TYPE.equals(classifierName)) {
 
-				List<String> codes = classifiers.stream().map(Classifier::getCode).collect(Collectors.toList());
+			List<String> codes = classifiers.stream().map(Classifier::getCode).collect(Collectors.toList());
 
-				mainDb
-						.update(FREEFORM_TYPE)
-						.set(FREEFORM_TYPE.DATASETS, DSL.field(PostgresDSL.arrayAppend(FREEFORM_TYPE.DATASETS, datasetCode)))
-						.where(FREEFORM_TYPE.CODE.in(codes))
-						.execute();
+			mainDb
+					.update(FREEFORM_TYPE)
+					.set(FREEFORM_TYPE.DATASETS, DSL.field(PostgresDSL.arrayAppend(FREEFORM_TYPE.DATASETS, datasetCode)))
+					.where(FREEFORM_TYPE.CODE.in(codes))
+					.execute();
 
-			} else if (ClassifierName.DOMAIN.equals(classifierName)) {
+		} else if (ClassifierName.DOMAIN.equals(classifierName)) {
 
-				addDatasetToClassifiers(classifierName, datasetCode, classifiers, null);
+			addDatasetToClassifiers(classifierName, datasetCode, classifiers, null);
 
-			} else {
-				throw new UnsupportedOperationException();
-			}
+		} else {
+			throw new UnsupportedOperationException();
 		}
 	}
 
 	public void addDatasetToClassifiers(ClassifierName classifierName, String datasetCode, List<Classifier> classifiers, FreeformOwner freeformOwner) {
 
-		if (CollectionUtils.isNotEmpty(classifiers)) {
-			if (ClassifierName.LANGUAGE.equals(classifierName)) {
+		if (CollectionUtils.isEmpty(classifiers)) {
+			return;
+		}
 
-				List<String> codes = classifiers.stream().map(Classifier::getCode).collect(Collectors.toList());
+		List<String> classifierCodes = classifiers.stream().map(Classifier::getCode).collect(Collectors.toList());
+
+		if (ClassifierName.LANGUAGE.equals(classifierName)) {
+
+			mainDb
+					.update(LANGUAGE)
+					.set(LANGUAGE.DATASETS, DSL.field(PostgresDSL.arrayAppend(LANGUAGE.DATASETS, datasetCode)))
+					.where(
+							LANGUAGE.CODE.in(classifierCodes)
+									.and(DSL.val(datasetCode).ne(DSL.any(LANGUAGE.DATASETS))))
+					.execute();
+
+		} else if (ClassifierName.FREEFORM_TYPE.equals(classifierName)) {
+
+			mainDb
+					.update(FREEFORM_TYPE)
+					.set(FREEFORM_TYPE.DATASETS, DSL.field(PostgresDSL.arrayAppend(FREEFORM_TYPE.DATASETS, datasetCode)))
+					.where(
+							FREEFORM_TYPE.CODE.in(classifierCodes)
+									.and(DSL.val(datasetCode).ne(DSL.any(FREEFORM_TYPE.DATASETS))))
+					.execute();
+
+			for (String classifierCode : classifierCodes) {
 
 				mainDb
-						.update(LANGUAGE)
-						.set(LANGUAGE.DATASETS, DSL.field(PostgresDSL.arrayAppend(LANGUAGE.DATASETS, datasetCode)))
-						.where(
-								LANGUAGE.CODE.in(codes)
-										.and(DSL.val(datasetCode).ne(DSL.any(LANGUAGE.DATASETS))))
+						.insertInto(
+								DATASET_FREEFORM_TYPE,
+								DATASET_FREEFORM_TYPE.DATASET_CODE,
+								DATASET_FREEFORM_TYPE.FREEFORM_OWNER,
+								DATASET_FREEFORM_TYPE.FREEFORM_TYPE_CODE)
+						.values(
+								datasetCode,
+								freeformOwner.name(),
+								classifierCode)
 						.execute();
-
-			} else if (ClassifierName.FREEFORM_TYPE.equals(classifierName)) {
-
-				List<String> codes = classifiers.stream().map(Classifier::getCode).collect(Collectors.toList());
-
-				mainDb
-						.update(FREEFORM_TYPE)
-						.set(FREEFORM_TYPE.DATASETS, DSL.field(PostgresDSL.arrayAppend(FREEFORM_TYPE.DATASETS, datasetCode)))
-						.where(
-								FREEFORM_TYPE.CODE.in(codes)
-										.and(DSL.val(datasetCode).ne(DSL.any(FREEFORM_TYPE.DATASETS))))
-						.execute();
-
-				for (Classifier classifier : classifiers) {
-
-					mainDb
-							.insertInto(
-									DATASET_FREEFORM_TYPE,
-									DATASET_FREEFORM_TYPE.DATASET_CODE,
-									DATASET_FREEFORM_TYPE.FREEFORM_OWNER,
-									DATASET_FREEFORM_TYPE.FREEFORM_TYPE_CODE)
-							.values(
-									datasetCode,
-									freeformOwner.name(),
-									classifier.getCode())
-							.execute();
-				}
-
-			} else if (ClassifierName.DOMAIN.equals(classifierName)) {
-
-				List<Row2<String, String>> codeOriginTuples = classifiers.stream()
-						.map(classif -> DSL.row(DSL.val(classif.getCode()), DSL.val(classif.getOrigin())))
-						.collect(Collectors.toList());
-				mainDb
-						.update(DOMAIN)
-						.set(DOMAIN.DATASETS, DSL.field(PostgresDSL.arrayAppend(DOMAIN.DATASETS, datasetCode)))
-						.where(DSL.row(DOMAIN.CODE, DOMAIN.ORIGIN).in(codeOriginTuples))
-						.execute();
-
-			} else {
-				throw new UnsupportedOperationException();
 			}
+
+		} else if (ClassifierName.DOMAIN.equals(classifierName)) {
+
+			List<Row2<String, String>> codeOriginTuples = classifiers.stream()
+					.map(classif -> DSL.row(DSL.val(classif.getCode()), DSL.val(classif.getOrigin())))
+					.collect(Collectors.toList());
+			mainDb
+					.update(DOMAIN)
+					.set(DOMAIN.DATASETS, DSL.field(PostgresDSL.arrayAppend(DOMAIN.DATASETS, datasetCode)))
+					.where(DSL.row(DOMAIN.CODE, DOMAIN.ORIGIN).in(codeOriginTuples))
+					.execute();
+
+		} else {
+			throw new UnsupportedOperationException();
 		}
 	}
 

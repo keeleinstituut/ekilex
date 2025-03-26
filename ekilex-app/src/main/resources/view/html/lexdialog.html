@@ -164,7 +164,7 @@
                 <div class="formItem__element">
                   <select class="form-control value-select required-field"  data-live-search="true" name="language" required>
                     <option value="" hidden disabled th:selected="${#strings.isEmpty(sessionBean.recentLanguage)}" th:text="#{common.select.language}">vali keel...</option>
-                    <option th:each="language : ${userRoleLanguages}"
+                    <option th:each="language : ${userRoleLanguagesLimited}"
                             th:value="${language.code}"
                             th:selected="${language.code == sessionBean.recentLanguage}"
                             th:text="${language.value}">language
@@ -233,7 +233,7 @@
               <div class="formItem__title" th:text="#{lex.select.language}">Vali keel</div>
               <div class="formItem__element">
                 <select class="form-control value-select required-field"  data-live-search="true" name="language" required>
-                  <option th:each="language : ${userRoleLanguages}"
+                  <option th:each="language : ${userRoleLanguagesLimited}"
                           th:value="${language.code}"
                           th:selected="${language.code == definition.lang}"
                           th:text="${language.value}">language
@@ -311,7 +311,7 @@
             <div class="form-group row">
               <div class="col-md-4">
                 <select required class="form-control classifier-select required-field" data-live-search="true" name="language">
-                  <option th:each="language : ${userRoleLanguages}"
+                  <option th:each="language : ${userRoleLanguagesLimited}"
                           th:value="${language.code}"
                           th:selected="${language.code == definition.lang}"
                           th:text="${language.value}">language
@@ -348,7 +348,7 @@
             <div class="form-group row">
               <div class="col-md-4">
                 <select required class="form-control classifier-select required-field" data-live-search="true" name="language">
-                  <option th:each="language : ${userRoleLanguages}"
+                  <option th:each="language : ${userRoleLanguagesLimited}"
                           th:value="${language.code}"
                           th:selected="${language.code == note.lang}"
                           th:text="${language.value}">language
@@ -779,7 +779,7 @@
                 <div class="col-md-4">
                   <select required class="form-control classifier-select required-field" name="language" data-live-search="true">
                     <option value="" hidden disabled selected th:text="#{common.select.language}">vali keel...</option>
-                    <option th:each="language : ${userRoleLanguages}" th:value="${language.code}" th:text="${language.value}">language</option>
+                    <option th:each="language : ${userRoleLanguagesLimited}" th:value="${language.code}" th:text="${language.value}">language</option>
                   </select>
                 </div>
               </div>
@@ -808,7 +808,7 @@
             <div class="form-group row">
               <div class="col-md-4">
                 <select required class="form-control classifier-select required-field" data-live-search="true" name="language">
-                  <option th:each="language : ${userRoleLanguages}"
+                  <option th:each="language : ${userRoleLanguagesLimited}"
                           th:value="${language.code}"
                           th:selected="${language.code == usageTranslation.lang}"
                           th:text="${language.value}">language
@@ -859,7 +859,7 @@
             <div class="form-group row">
               <div class="col-md-4">
                 <select required class="form-control classifier-select required-field" data-live-search="true" name="language">
-                  <option th:each="language : ${userRoleLanguages}"
+                  <option th:each="language : ${userRoleLanguagesLimited}"
                           th:value="${language.code}"
                           th:selected="${language.code == lexeme.lexemeWord.lang}"
                           th:text="${language.value}">language
@@ -905,7 +905,7 @@
             <div class="form-group row">
               <div class="col-md-4">
                 <select required class="form-control classifier-select required-field" data-live-search="true" name="language">
-                  <option th:each="language : ${userRoleLanguages}"
+                  <option th:each="language : ${userRoleLanguagesLimited}"
                           th:value="${language.code}"
                           th:selected="${language.code == note.lang}"
                           th:text="${language.value}">language
@@ -1238,7 +1238,7 @@
               <div class="col-md-4">
                 <select required class="form-control classifier-select required-field" data-live-search="true" name="language">
                   <option value="" hidden disabled th:selected="${#strings.isEmpty(sessionBean.recentNoteLanguage)}" th:text="#{common.select.language}">vali keel...</option>
-                  <option th:each="language : ${userRoleLanguages}"
+                  <option th:each="language : ${userRoleLanguagesLimited}"
                           th:value="${language.code}"
                           th:selected="${language.code == sessionBean.recentNoteLanguage}"
                           th:text="${language.value}">language
@@ -1283,7 +1283,7 @@
             <div class="form-group row">
               <div class="col-md-4">
                 <select required class="form-control classifier-select required-field" data-live-search="true" name="language">
-                  <option th:each="language : ${userRoleLanguages}"
+                  <option th:each="language : ${userRoleLanguagesLimited}"
                           th:value="${language.code}"
                           th:selected="${language.code == note.lang}"
                           th:text="${language.value}">language
@@ -3005,7 +3005,7 @@
               <div class="col-md-8">
                 <select required id="wordPermLanguageSelect" class="form-control required-field classifier-select" data-live-search="true" name="language">
                   <option value="" disabled th:selected="${#strings.isEmpty(sessionBean.recentLanguage)}" th:text="#{common.select.language}">vali keel...</option>
-                  <option th:each="language : ${userRoleLanguages}"
+                  <option th:each="language : ${userRoleLanguagesExtended}"
                           th:value="${language.code}"
                           th:selected="${language.code == sessionBean.recentLanguage}"
                           th:text="${language.value}">language

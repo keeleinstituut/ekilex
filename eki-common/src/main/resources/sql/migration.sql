@@ -185,3 +185,46 @@ where
 	value_prese like '%</i>%'
 ;
 
+-- kõigi keelte klassifikaator
+
+insert into language (code, datasets) values ('mul', '{}');
+insert into language_label (code, value, lang, type) values ('mul', 'mitmekeelne', 'est', 'descrip');
+insert into language_label (code, value, lang, type) values ('mul', 'mitmekeelne', 'est', 'wordweb');
+insert into language_label (code, value, lang, type) values ('mul', 'multiple languages', 'eng', 'descrip');
+insert into language_label (code, value, lang, type) values ('mul', 'multiple languages', 'eng', 'wordweb');
+update language set order_by = order_by + 2 where order_by > 1 and code not in ('eng', 'mul');
+update language set order_by = 2 where code = 'eng';
+update language set order_by = 3 where code = 'mul';
+
+update
+	language l
+set
+	datasets = (
+		select
+			array_agg(ds.code)
+		from
+			dataset ds
+	)
+where
+	l.code = 'mul'
+;
+
+update
+	language l
+set
+	order_by = ll.row_num
+from
+	(
+	select
+		lll.code,
+		row_number() over (
+		order by order_by asc) row_num
+	from
+		language lll
+	order by
+		lll.order_by
+) ll
+where
+	l.code = ll.code
+;
+

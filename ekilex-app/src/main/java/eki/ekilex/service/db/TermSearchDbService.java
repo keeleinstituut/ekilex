@@ -91,8 +91,8 @@ public class TermSearchDbService extends AbstractDataDbService {
 		Field<Boolean> wtzf = queryHelper.getWordIsForeignField(wo.ID);
 		Field<Boolean> imwf = DSL.field(wo.ID.eq(DSL.any(m.field("match_word_ids", Long[].class))));
 
-		Field<Boolean> lvsmpf = DSL.field(lo.VALUE_STATE_CODE.eq(VALUE_STATE_MOST_PREFERRED));
-		Field<Boolean> lvslpf = DSL.field(lo.VALUE_STATE_CODE.eq(VALUE_STATE_LEAST_PREFERRED));
+		Field<Boolean> lvsmpf = DSL.field(lo.VALUE_STATE_CODE.eq(VALUE_STATE_CODE_MOST_PREFERRED));
+		Field<Boolean> lvslpf = DSL.field(lo.VALUE_STATE_CODE.eq(VALUE_STATE_CODE_LEAST_PREFERRED));
 
 		Table<Record3<Long, String, Long>> wdsf = DSL
 				.selectDistinct(lds.WORD_ID, lds.DATASET_CODE, ds.ORDER_BY)
@@ -246,14 +246,14 @@ public class TermSearchDbService extends AbstractDataDbService {
 				.where(
 						lvs.WORD_ID.eq(wmid.field("word_id", Long.class))
 								.and(lvs.MEANING_ID.eq(wmid.field("meaning_id", Long.class)))
-								.and(lvs.VALUE_STATE_CODE.eq(VALUE_STATE_MOST_PREFERRED)))));
+								.and(lvs.VALUE_STATE_CODE.eq(VALUE_STATE_CODE_MOST_PREFERRED)))));
 		Field<Boolean> lvslpf = DSL.field(DSL.exists(DSL
 				.select(lvs.ID)
 				.from(lvs)
 				.where(
 						lvs.WORD_ID.eq(wmid.field("word_id", Long.class))
 								.and(lvs.MEANING_ID.eq(wmid.field("meaning_id", Long.class)))
-								.and(lvs.VALUE_STATE_CODE.eq(VALUE_STATE_LEAST_PREFERRED)))));
+								.and(lvs.VALUE_STATE_CODE.eq(VALUE_STATE_CODE_LEAST_PREFERRED)))));
 		Field<Boolean> lpf = DSL.field(DSL.exists(DSL
 				.select(lvs.ID)
 				.from(lvs)

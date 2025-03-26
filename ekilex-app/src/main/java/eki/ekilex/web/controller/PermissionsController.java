@@ -299,12 +299,13 @@ public class PermissionsController extends AbstractPrivatePageController {
 
 	@ResponseBody
 	@GetMapping(PERMISSIONS_URI + "/dataset_languages/{datasetCode}")
-	public String getDataSetLanguages(@PathVariable String datasetCode) throws Exception {
+	public String getDatasetLanguages(@PathVariable String datasetCode) throws Exception {
 
-		List<Classifier> userLanguages = commonDataService.getDatasetLanguages(datasetCode);
+		List<Classifier> datasetLanguages = commonDataService.getDatasetLanguages(datasetCode);
 
 		ObjectMapper jsonMapper = new ObjectMapper();
-		return jsonMapper.writeValueAsString(userLanguages);
+		String json = jsonMapper.writeValueAsString(datasetLanguages);
+		return json;
 	}
 
 	private void populateUserPermDataModel(Model model) {
@@ -315,8 +316,7 @@ public class PermissionsController extends AbstractPrivatePageController {
 		Boolean userEnablePendingFilter = permSearchBean.getUserEnablePendingFilter();
 		OrderingField orderBy = permSearchBean.getOrderBy();
 
-		List<EkiUserPermData> ekiUserPermissions = permissionService.getEkiUserPermissions(
-				userNameFilter, userPermDatasetCodeFilter, userEnablePendingFilter, orderBy);
+		List<EkiUserPermData> ekiUserPermissions = permissionService.getEkiUserPermissions(userNameFilter, userPermDatasetCodeFilter, userEnablePendingFilter, orderBy);
 		model.addAttribute("ekiUserPermissions", ekiUserPermissions);
 	}
 

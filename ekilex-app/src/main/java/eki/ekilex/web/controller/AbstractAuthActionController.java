@@ -213,8 +213,8 @@ public abstract class AbstractAuthActionController implements WebConstant, Syste
 		return commonDataService.getLanguages();
 	}
 
-	@ModelAttribute("userRoleLanguages")
-	public List<Classifier> getUserRoleLanguages() {
+	@ModelAttribute("userRoleLanguagesExtended")
+	public List<Classifier> getUserRoleLanguagesExtended() {
 
 		EkiUser user = userContext.getUser();
 		if (user.isMaster()) {
@@ -224,18 +224,23 @@ public abstract class AbstractAuthActionController implements WebConstant, Syste
 		if (userRole == null) {
 			return Collections.emptyList();
 		}
-		Long userId = user.getId();
-		String datasetCode = userRole.getDatasetCode();
-		String authLang = userRole.getAuthLang();
+		List<Classifier> userRoleLanguages = userProfileService.getUserRoleLanguagesExtended(userRole);
+		return userRoleLanguages;
+	}
 
-		List<Classifier> userPermLanguages = permissionService.getUserDatasetLanguages(userId, datasetCode);
-		List<Classifier> datasetLanguages = commonDataService.getDatasetLanguages(datasetCode);
+	@ModelAttribute("userRoleLanguagesLimited")
+	public List<Classifier> getUserRoleLanguagesLimited() {
 
-		if (StringUtils.isNotBlank(authLang)) {
-			datasetLanguages.removeIf(classifier -> !StringUtils.equals(classifier.getCode(), authLang));
+		EkiUser user = userContext.getUser();
+		if (user.isMaster()) {
+			return commonDataService.getLanguages();
 		}
-		List<Classifier> accessibleLanguages = userPermLanguages.stream().filter(datasetLanguages::contains).collect(Collectors.toList());
-		return accessibleLanguages;
+		DatasetPermission userRole = user.getRecentRole();
+		if (userRole == null) {
+			return Collections.emptyList();
+		}
+		List<Classifier> userRoleLanguages = userProfileService.getUserRoleLanguagesLimited(userRole);
+		return userRoleLanguages;
 	}
 
 	@ModelAttribute("origins")

@@ -7,6 +7,7 @@ import java.util.stream.Collectors;
 import javax.transaction.Transactional;
 
 import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -61,6 +62,39 @@ public class UserProfileService implements GlobalConstant, SystemConstant {
 		return userProfile;
 	}
 
+	@Transactional
+	public List<Classifier> getUserRoleLanguagesExtended(DatasetPermission userRole) {
+
+		Long userId = userRole.getUserId();
+		String userRoleDatasetCode = userRole.getDatasetCode();
+		String userRoleAuthLang = userRole.getAuthLang();
+
+		List<Classifier> userPermLanguages = permissionDbService.getUserDatasetLanguages(userId, userRoleDatasetCode, CLASSIF_LABEL_LANG_EST);
+		List<Classifier> datasetLanguages = commonDataDbService.getDatasetClassifiers(ClassifierName.LANGUAGE, userRoleDatasetCode, CLASSIF_LABEL_LANG_EST);
+
+		if (StringUtils.isNotBlank(userRoleAuthLang)) {
+			datasetLanguages = datasetLanguages.stream()
+					.filter(classifier -> StringUtils.equals(classifier.getCode(), userRoleAuthLang))
+					.collect(Collectors.toList());
+		}
+		List<Classifier> userAvailableLanguages = userPermLanguages.stream()
+				.filter(datasetLanguages::contains)
+				.collect(Collectors.toList());
+
+		return userAvailableLanguages;
+	}
+
+	@Transactional
+	public List<Classifier> getUserRoleLanguagesLimited(DatasetPermission userRole) {
+
+		List<Classifier> userAvailableLanguages = getUserRoleLanguagesExtended(userRole);
+		userAvailableLanguages = userAvailableLanguages.stream()
+				.filter(classifier -> !StringUtils.equals(classifier.getCode(), lANGUAGE_CODE_MUL))
+				.collect(Collectors.toList());
+
+		return userAvailableLanguages;
+	}
+
 	@Transactional(rollbackOn = Exception.class)
 	public void updateUserPreferredDatasets(List<String> selectedDatasets, Long userId) {
 		userProfileDbService.updatePreferredDatasets(selectedDatasets, userId);
@@ -77,7 +111,7 @@ public class UserProfileService implements GlobalConstant, SystemConstant {
 				userProfileDbService.setRecentDatasetPermission(userId, null);
 			} else {
 				userProfileDbService.setRecentDatasetPermission(userId, permissionId);
-			}			
+			}
 		}
 	}
 
@@ -91,4 +125,5 @@ public class UserProfileService implements GlobalConstant, SystemConstant {
 	public void updateUserProfile(EkiUserProfile userProfile) {
 		userProfileDbService.updateUserProfile(userProfile);
 	}
+
 }

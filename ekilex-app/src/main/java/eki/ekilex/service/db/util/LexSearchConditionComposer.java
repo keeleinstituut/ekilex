@@ -307,7 +307,7 @@ public class LexSearchConditionComposer implements GlobalConstant, ActivityFunct
 						.and(pf1.FORM_ID.eq(f1.ID))
 						.and(pf1.MORPH_EXISTS.isTrue())
 						.and(pf1.IS_QUESTIONABLE.isFalse())
-						.and(f1.MORPH_CODE.ne(UNKNOWN_FORM_CODE));
+						.and(f1.MORPH_CODE.ne(MORPH_CODE_UNKNOWN));
 
 				where1 = searchFilterHelper.applyValueFilters(SearchKey.VALUE, searchCriteria, f1.VALUE, where1, true);
 				where1 = searchFilterHelper.applyFormFrequencyFilters(searchCriteria, f1.ID, where1);

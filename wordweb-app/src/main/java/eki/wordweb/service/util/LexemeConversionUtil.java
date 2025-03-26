@@ -104,11 +104,11 @@ public class LexemeConversionUtil extends AbstractConversionUtil {
 				List<TypeMeaningWord> meaningWords1 = lexemeWord1.getMeaningWords();
 				boolean isPreferred1 = meaningWords1.stream()
 						.anyMatch(mw -> StringUtils.equals(headwordValue, mw.getWord())
-								&& StringUtils.equals(VALUE_STATE_MOST_PREFERRED, mw.getMwLexValueStateCode()));
+								&& StringUtils.equals(VALUE_STATE_CODE_MOST_PREFERRED, mw.getMwLexValueStateCode()));
 				List<TypeMeaningWord> meaningWords2 = lexemeWord2.getMeaningWords();
 				boolean isPreferred2 = meaningWords2.stream()
 						.anyMatch(mw -> StringUtils.equals(headwordValue, mw.getWord())
-								&& StringUtils.equals(VALUE_STATE_MOST_PREFERRED, mw.getMwLexValueStateCode()));
+								&& StringUtils.equals(VALUE_STATE_CODE_MOST_PREFERRED, mw.getMwLexValueStateCode()));
 
 				if (isPreferred1 && isPreferred2) {
 					return 0;
@@ -725,22 +725,22 @@ public class LexemeConversionUtil extends AbstractConversionUtil {
 		List<TypeMeaningWord> meaningWords = lexemeWord.getMeaningWords();
 		DatasetType datasetType = lexemeWord.getDatasetType();
 
-		if (StringUtils.equals(valueStateCode, VALUE_STATE_INCORRECT) && CollectionUtils.isNotEmpty(meaningWords)) {
+		if (StringUtils.equals(valueStateCode, VALUE_STATE_CODE_INCORRECT) && CollectionUtils.isNotEmpty(meaningWords)) {
 			lexemeWord.setCorrectMeaningWord(meaningWords.get(0));
 		}
 
 		if (DatasetType.TERM.equals(datasetType)) {
-			if (StringUtils.equals(valueStateCode, VALUE_STATE_LEAST_PREFERRED)) {
+			if (StringUtils.equals(valueStateCode, VALUE_STATE_CODE_LEAST_PREFERRED)) {
 				TypeMeaningWord preferredTermMeaningWord = meaningWords.stream()
-						.filter(meaningWord -> StringUtils.equals(VALUE_STATE_MOST_PREFERRED, meaningWord.getMwLexValueStateCode()) && StringUtils.equals(wordLang, meaningWord.getLang()))
+						.filter(meaningWord -> StringUtils.equals(VALUE_STATE_CODE_MOST_PREFERRED, meaningWord.getMwLexValueStateCode()) && StringUtils.equals(wordLang, meaningWord.getLang()))
 						.findFirst().orElse(null);
 				lexemeWord.setPreferredTermMeaningWord(preferredTermMeaningWord);
 			}
 		}
 
-		boolean valueStatePreferred = StringUtils.equals(valueStateCode, VALUE_STATE_MOST_PREFERRED);
-		boolean valueStateWarning = StringUtils.equalsAny(valueStateCode, VALUE_STATE_LEAST_PREFERRED, VALUE_STATE_FORMER);
-		boolean valueStatePriority = StringUtils.equalsAny(valueStateCode, VALUE_STATE_MOST_PREFERRED, VALUE_STATE_LEAST_PREFERRED, VALUE_STATE_FORMER);
+		boolean valueStatePreferred = StringUtils.equals(valueStateCode, VALUE_STATE_CODE_MOST_PREFERRED);
+		boolean valueStateWarning = StringUtils.equalsAny(valueStateCode, VALUE_STATE_CODE_LEAST_PREFERRED, VALUE_STATE_CODE_FORMER);
+		boolean valueStatePriority = StringUtils.equalsAny(valueStateCode, VALUE_STATE_CODE_MOST_PREFERRED, VALUE_STATE_CODE_LEAST_PREFERRED, VALUE_STATE_CODE_FORMER);
 		lexemeWord.setValueStatePreferred(valueStatePreferred);
 		lexemeWord.setValueStateWarning(valueStateWarning);
 		lexemeWord.setValueStatePriority(valueStatePriority);

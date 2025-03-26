@@ -163,7 +163,7 @@ public class SynCandidateService extends AbstractCudService {
 
 	private void createSynCandidateWordRelation(Long headwordId, Long synCandidateWordId, BigDecimal weight) {
 
-		Long createdRelationId = cudDbService.createWordRelation(headwordId, synCandidateWordId, WORD_REL_TYPE_CODE_RAW, UNDEFINED_RELATION_STATUS);
+		Long createdRelationId = cudDbService.createWordRelation(headwordId, synCandidateWordId, WORD_REL_TYPE_CODE_RAW, RELATION_STATUS_UNDEFINED);
 		moveCreatedWordRelationToFirst(headwordId, createdRelationId, WORD_REL_TYPE_CODE_RAW);
 		cudDbService.createWordRelationParam(createdRelationId, WORD_RELATION_PARAM_NAME_SYN_CANDIDATE, weight);
 	}

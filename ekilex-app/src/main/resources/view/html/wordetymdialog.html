@@ -25,7 +25,7 @@
                 <label for="wordEtymLanguageSelect">Keel</label>
                 <select id="wordEtymLanguageSelect" required class="form-control value-select required-field" name="lang">
                   <option value="" hidden disabled selected th:text="#{lex.placeholder.select.language}">vali keel</option>
-                  <option th:each="language : ${userRoleLanguages}" th:value="${language.code}" th:text="${language.value}" th:selected="${language.code == selectedWordLanguage}"></option>
+                  <option th:each="language : ${userRoleLanguagesLimited}" th:value="${language.code}" th:text="${language.value}" th:selected="${language.code == selectedWordLanguage}"></option>
                 </select>
               </div>
             </div>

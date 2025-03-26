@@ -1,5 +1,6 @@
 package eki.wordweb.service;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -97,15 +98,21 @@ public class SimpleSearchService extends AbstractSearchService {
 
 	@Override
 	public SearchContext getSearchContext(SearchFilter searchFilter) {
+
 		List<String> destinLangs = searchFilter.getDestinLangs();
 		List<String> datasetCodes = Arrays.asList(DATASET_EKI);
 		Complexity lexComplexity = Complexity.SIMPLE;
 		DatasetType datasetType = DatasetType.LEX;
 		Integer maxDisplayLevel = SIMPLE_MORPHOLOGY_MAX_DISPLAY_LEVEL;
-		List<String> destinLangsClean = destinLangs.stream().filter(destinLang -> !StringUtils.equals(destinLang, DESTIN_LANG_ALL)).collect(Collectors.toList());
+		List<String> destinLangsClean = new ArrayList<>(destinLangs);
+		destinLangsClean.add(lANGUAGE_CODE_MUL);
+		destinLangsClean = destinLangsClean.stream()
+				.filter(destinLang -> !StringUtils.equals(destinLang, DESTIN_LANG_ALL))
+				.collect(Collectors.toList());
 		boolean excludeQuestionable = true;
 		boolean fiCollationExists = commonDataDbService.fiCollationExists();
-		SearchContext searchContext = new SearchContext(datasetType, destinLangsClean, datasetCodes, lexComplexity, maxDisplayLevel, excludeQuestionable, fiCollationExists);
+		SearchContext searchContext = new SearchContext(
+				datasetType, destinLangsClean, datasetCodes, lexComplexity, maxDisplayLevel, excludeQuestionable, fiCollationExists);
 		return searchContext;
 	}
 }

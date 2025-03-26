@@ -316,7 +316,7 @@ public class SearchDbService implements GlobalConstant, SystemConstant {
 			Condition whereForm = f.WORD_ID.eq(w.WORD_ID)
 					.and(DSL.lower(f.VALUE).eq(searchWordLowerField))
 					.and(f.VALUE.ne(f.WORD))
-					.and(f.MORPH_CODE.ne(UNKNOWN_FORM_CODE))
+					.and(f.MORPH_CODE.ne(MORPH_CODE_UNKNOWN))
 					.and(f.MORPH_EXISTS.isTrue());
 
 			if (excludeQuestionable) {

@@ -19,7 +19,6 @@ import eki.common.constant.GlobalConstant;
 import eki.common.constant.OrderingField;
 import eki.ekilex.constant.ApplicationStatus;
 import eki.ekilex.constant.SystemConstant;
-import eki.ekilex.data.Classifier;
 import eki.ekilex.data.Dataset;
 import eki.ekilex.data.DatasetPermission;
 import eki.ekilex.data.EkiUser;
@@ -99,11 +98,6 @@ public class PermissionService implements SystemConstant, GlobalConstant {
 		}
 		List<Dataset> datasets = permissionDbService.userVisibleNonPublicDatasets(userId);
 		return datasets;
-	}
-
-	@Transactional
-	public List<Classifier> getUserDatasetLanguages(Long userId, String datasetCode) {
-		return permissionDbService.getUserDatasetLanguages(userId, datasetCode, CLASSIF_LABEL_LANG_EST);
 	}
 
 	@Transactional(rollbackOn = Exception.class)
