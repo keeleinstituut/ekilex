@@ -17720,7 +17720,7 @@ body.has-wordgame .header-container {
 }
 .wordgame__card__name:hover {
   color: #fff;
-  cursor: url(../images/speaker-icon-light.png), auto;
+  cursor: url(../images/record-voice-over.png), auto;
   background-color: var(--primary);
 }
 .wordgame__card__name:hover img {
