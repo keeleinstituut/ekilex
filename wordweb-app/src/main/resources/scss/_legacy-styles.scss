@@ -38,8 +38,10 @@
 
 
 .icon {
-  padding-top: 10px;
-  font-size: 1.5rem;
+  @layer base {
+    padding-top: 10px;
+    font-size: 1.5rem;
+  }
 }
 
 .fade-target {
