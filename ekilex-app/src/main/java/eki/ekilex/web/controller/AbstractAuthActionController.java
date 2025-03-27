@@ -217,14 +217,7 @@ public abstract class AbstractAuthActionController implements WebConstant, Syste
 	public List<Classifier> getUserRoleLanguagesExtended() {
 
 		EkiUser user = userContext.getUser();
-		if (user.isMaster()) {
-			return commonDataService.getLanguages();
-		}
-		DatasetPermission userRole = user.getRecentRole();
-		if (userRole == null) {
-			return Collections.emptyList();
-		}
-		List<Classifier> userRoleLanguages = userProfileService.getUserRoleLanguagesExtended(userRole);
+		List<Classifier> userRoleLanguages = userProfileService.getUserRoleLanguagesExtended(user);
 		return userRoleLanguages;
 	}
 
@@ -232,14 +225,7 @@ public abstract class AbstractAuthActionController implements WebConstant, Syste
 	public List<Classifier> getUserRoleLanguagesLimited() {
 
 		EkiUser user = userContext.getUser();
-		if (user.isMaster()) {
-			return commonDataService.getLanguages();
-		}
-		DatasetPermission userRole = user.getRecentRole();
-		if (userRole == null) {
-			return Collections.emptyList();
-		}
-		List<Classifier> userRoleLanguages = userProfileService.getUserRoleLanguagesLimited(userRole);
+		List<Classifier> userRoleLanguages = userProfileService.getUserRoleLanguagesLimited(user);
 		return userRoleLanguages;
 	}
 

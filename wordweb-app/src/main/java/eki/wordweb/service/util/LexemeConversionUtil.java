@@ -57,8 +57,7 @@ public class LexemeConversionUtil extends AbstractConversionUtil {
 			return;
 		}
 
-		Collections.sort(lexemeWords, Comparator
-				.comparing(LexemeWord::getLexemeOrderBy));
+		Collections.sort(lexemeWords, Comparator.comparing(LexemeWord::getLexemeOrderBy));
 	}
 
 	public void sortTermLexemes(List<LexemeWord> lexemeWords, Word headword) {

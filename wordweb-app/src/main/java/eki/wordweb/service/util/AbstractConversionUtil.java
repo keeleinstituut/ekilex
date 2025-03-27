@@ -127,8 +127,11 @@ public abstract class AbstractConversionUtil implements WebConstant, SystemConst
 		if (destinLangs.contains(DESTIN_LANG_ALL)) {
 			return true;
 		}
-		// forced estonian content
+		// forcing estonian content
 		if (StringUtils.equals(DESTIN_LANG_EST, dataLang)) {
+			return true;
+		}
+		if (StringUtils.equals(lANGUAGE_CODE_MUL, dataLang)) {
 			return true;
 		}
 		if (StringUtils.equals(wordLang, dataLang)) {

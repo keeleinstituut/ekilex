@@ -16,6 +16,7 @@ import eki.common.constant.GlobalConstant;
 import eki.ekilex.constant.SystemConstant;
 import eki.ekilex.data.Classifier;
 import eki.ekilex.data.DatasetPermission;
+import eki.ekilex.data.EkiUser;
 import eki.ekilex.data.EkiUserProfile;
 import eki.ekilex.service.db.CommonDataDbService;
 import eki.ekilex.service.db.PermissionDbService;
@@ -63,9 +64,17 @@ public class UserProfileService implements GlobalConstant, SystemConstant {
 	}
 
 	@Transactional
-	public List<Classifier> getUserRoleLanguagesExtended(DatasetPermission userRole) {
+	public List<Classifier> getUserRoleLanguagesExtended(EkiUser user) {
 
-		Long userId = userRole.getUserId();
+		if (user.isMaster()) {
+			return commonDataDbService.getDefaultClassifiers(ClassifierName.LANGUAGE, CLASSIF_LABEL_LANG_EST);
+		}
+		DatasetPermission userRole = user.getRecentRole();
+		if (userRole == null) {
+			return Collections.emptyList();
+		}
+
+		Long userId = user.getId();
 		String userRoleDatasetCode = userRole.getDatasetCode();
 		String userRoleAuthLang = userRole.getAuthLang();
 
@@ -85,13 +94,14 @@ public class UserProfileService implements GlobalConstant, SystemConstant {
 	}
 
 	@Transactional
-	public List<Classifier> getUserRoleLanguagesLimited(DatasetPermission userRole) {
+	public List<Classifier> getUserRoleLanguagesLimited(EkiUser user) {
 
-		List<Classifier> userAvailableLanguages = getUserRoleLanguagesExtended(userRole);
-		userAvailableLanguages = userAvailableLanguages.stream()
-				.filter(classifier -> !StringUtils.equals(classifier.getCode(), lANGUAGE_CODE_MUL))
-				.collect(Collectors.toList());
-
+		List<Classifier> userAvailableLanguages = getUserRoleLanguagesExtended(user);
+		if (CollectionUtils.isNotEmpty(userAvailableLanguages)) {
+			userAvailableLanguages = userAvailableLanguages.stream()
+					.filter(classifier -> !StringUtils.equals(classifier.getCode(), lANGUAGE_CODE_MUL))
+					.collect(Collectors.toList());
+		}
 		return userAvailableLanguages;
 	}
 
