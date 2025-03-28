@@ -201,7 +201,7 @@ from (
                 lower(w.value) crit,
                 array_agg(
                 	case
-                      when (w.lang in ('est', 'rus', 'eng', 'ukr', 'fra')) then w.lang
+                      when (w.lang in ('est', 'rus', 'eng', 'ukr', 'fra', 'mul')) then w.lang
                       else 'other'
                     end
                 ) langs_filt,
@@ -231,7 +231,7 @@ from (
                 lower(w.value_as_word) crit,
                 array_agg(
                 	case
-                      when (w.lang in ('est', 'rus', 'eng', 'ukr', 'fra')) then w.lang
+                      when (w.lang in ('est', 'rus', 'eng', 'ukr', 'fra', 'mul')) then w.lang
                       else 'other'
                     end
                 ) langs_filt,
@@ -263,7 +263,7 @@ from (
                 lower(f.value) crit,
                 array_agg(
                 	case
-                      when (w.lang in ('est', 'rus', 'eng', 'ukr', 'fra')) then w.lang
+                      when (w.lang in ('est', 'rus', 'eng', 'ukr', 'fra', 'mul')) then w.lang
                       else 'other'
                     end
                 ) langs_filt,
@@ -296,7 +296,7 @@ from (
   (select lc.word,
           array_agg(distinct row (
                     case
-                      when (lc.lang in ('est', 'rus', 'eng', 'ukr', 'fra')) then lc.lang
+                      when (lc.lang in ('est', 'rus', 'eng', 'ukr', 'fra', 'mul')) then lc.lang
                       else 'other'
                     end,
                     lc.dataset_code,
@@ -435,7 +435,7 @@ select w.word_id,
        w.as_word,
        w.lang,
        case
-         when (w.lang in ('est', 'rus', 'eng', 'ukr', 'fra')) then w.lang
+         when (w.lang in ('est', 'rus', 'eng', 'ukr', 'fra', 'mul')) then w.lang
          else 'other'
        end lang_filt,
        w.lang_order_by,
@@ -580,7 +580,7 @@ from (select w.id as word_id,
   inner join (select lc.word_id,
                      array_agg(distinct row (
                             case
-                              when (lc.lang in ('est', 'rus', 'eng', 'ukr', 'fra')) then lc.lang
+                              when (lc.lang in ('est', 'rus', 'eng', 'ukr', 'fra', 'mul')) then lc.lang
                               else 'other'
                             end,
                             lc.dataset_code,
@@ -1333,7 +1333,7 @@ from lexeme l
   left outer join (select lc.id,
                           array_agg(distinct row (
                                  case 
-                                   when (lc.lang in ('est', 'rus', 'eng', 'ukr', 'fra')) then lc.lang
+                                   when (lc.lang in ('est', 'rus', 'eng', 'ukr', 'fra', 'mul')) then lc.lang
                                    else 'other'
                                  end,
                                  lc.dataset_code,
