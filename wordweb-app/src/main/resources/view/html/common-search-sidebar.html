@@ -115,9 +115,11 @@
             <div class="d-flex align-items-center">
               <h2 class="search__sidebar-block-title">
                 <th:block th:if="${relationTypeGroup.collapsible}">
-                  <a data-toggle="collapse" th:href="|#word-rel-type-collapse-${relationTypeGroup.wordRelType.code}|"
-                    th:text="${#strings.capitalize(relationTypeGroup.wordRelType.value)}">
-                    Sõna seose liik
+                  <a class="btn-collapse" th:aria-expanded="${#lists.contains(uiSections, 'word-rel-type-' + relationTypeGroup.wordRelType.code + '-panel')}" data-toggle="collapse" th:href="|#word-rel-type-collapse-${relationTypeGroup.wordRelType.code}|">
+                    <i class="fa fa-chevron-down collapse-icon" aria-hidden="true"></i>
+                    <span th:text="${#strings.capitalize(relationTypeGroup.wordRelType.value)}">
+                      Sõna seose liik
+                    </span>
                   </a>
                 </th:block>
                 <th:block th:unless="${relationTypeGroup.collapsible}">
@@ -304,7 +306,8 @@
     <div class="corp-panel">
       <div class="heading-wrapper">
         <h5 class="font-weight-bold mb-0 d-flex align-items-center text-dark">
-          <a data-toggle="collapse" href="#corp-panel-collapse">
+          <a class="btn-collapse" th:aria-expanded="${#lists.contains(uiSections, 'corp-panel')}" data-toggle="collapse" href="#corp-panel-collapse">
+            <i class="fa fa-chevron-down collapse-icon" aria-hidden="true"></i>
             <span th:text="#{label.corp.examples}">Veebilauseid</span>
           </a>
           <button type="button" class="btn btn-icon btn-sm" data-toggle="tooltip" data-placement="top" th:aria-label="#{|corpus.title.${searchMode}.${corpLang}|}"
@@ -345,7 +348,8 @@
     <div class="corp-panel">
       <div class="heading-wrapper">
         <h5 class="font-weight-bold mb-0 d-flex align-items-center text-dark">
-          <a data-toggle="collapse" href="#corp-trans-panel-collapse">
+          <a class="btn-collapse" th:aria-expanded="${#lists.contains(uiSections, 'corp-trans-panel')}" data-toggle="collapse" href="#corp-trans-panel-collapse">
+            <i class="fa fa-chevron-down collapse-icon" aria-hidden="true"></i>
             <span th:text="#{label.corp.translations}">Tõlgitud näited</span>
           </a>
           <button type="button" class="btn btn-icon btn-sm" data-toggle="tooltip" data-placement="top" th:aria-label="#{corpus.translations.title}" th:title="#{corpus.translations.title}">

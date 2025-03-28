@@ -104,6 +104,9 @@
   }
 
   &[aria-expanded=true] {
+    & .collapse-icon {
+      transform: rotate(180deg);
+    }
     & .see-more-content {
       display: none;
     }

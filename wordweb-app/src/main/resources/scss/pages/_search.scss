@@ -483,7 +483,7 @@
     flex-direction: column;
   }
 
-  &__note:not(.search__helper-text) {
+  &__note:not(.text-caption) {
     color: var(--color-dark-blue);
     font-size: .875rem;
     margin-bottom: 8px;
@@ -587,6 +587,7 @@
     justify-content: space-between;
     gap: 4px;
     height: 28px;
+    border: 1px solid var(--color-dark-blue);
 
     &::after {
       margin-left: auto;
@@ -750,5 +751,12 @@ span.material-symbols-outlined  {
   &:not(&--unrestricted)[aria-expanded="true"] {
     height: auto;
     align-items: baseline;
+  }
+}
+
+
+.icon {
+  &--small {
+    font-size: 1.3125rem;
   }
 }

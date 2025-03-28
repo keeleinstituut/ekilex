@@ -15172,7 +15172,7 @@ body {
   display: flex;
   flex-direction: column;
 }
-.word-notes__note:not(.search__helper-text) {
+.word-notes__note:not(.text-caption) {
   color: var(--color-dark-blue);
   font-size: 0.875rem;
   margin-bottom: 8px;
@@ -15261,6 +15261,7 @@ body {
   justify-content: space-between;
   gap: 4px;
   height: 28px;
+  border: 1px solid var(--color-dark-blue);
 }
 .search-filter__toggle::after {
   margin-left: auto;
@@ -15394,6 +15395,9 @@ span.material-symbols-outlined--default-size {
 .show-more-btn:not(.show-more-btn--unrestricted)[aria-expanded=true] {
   height: auto;
   align-items: baseline;
+}
+.icon--small {
+  font-size: 1.3125rem;
 }
 .news-page {
   background-color: var(--color-white);
@@ -15705,9 +15709,11 @@ span.material-symbols-outlined--default-size {
   margin-right: 0;
   margin-left: 0;
 }
-.icon {
-  padding-top: 10px;
-  font-size: 1.5rem;
+@layer base {
+  .icon {
+    padding-top: 10px;
+    font-size: 1.5rem;
+  }
 }
 .fade-target {
   animation: fade 750ms linear;
@@ -16480,6 +16486,9 @@ span.material-symbols-outlined--default-size {
 }
 .btn-collapse[aria-expanded=false] .see-less-content {
   display: none;
+}
+.btn-collapse[aria-expanded=true] .collapse-icon {
+  transform: rotate(180deg);
 }
 .btn-collapse[aria-expanded=true] .see-more-content {
   display: none;
@@ -17720,7 +17729,7 @@ body.has-wordgame .header-container {
 }
 .wordgame__card__name:hover {
   color: #fff;
-  cursor: url(../images/speaker-icon-light.png), auto;
+  cursor: url(../images/record-voice-over.png), auto;
   background-color: var(--primary);
 }
 .wordgame__card__name:hover img {

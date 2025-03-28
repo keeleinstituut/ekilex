@@ -10,7 +10,7 @@
           <div class="definition-row" th:if="${hasDomains} OR ${hasDefinitionsByLang}">
             <th:block th:if="${hasDomains}">
               <div class="mb-2 d-flex flex-wrap gap-2">
-                <span class="search__helper-text text-caption" th:text="#{label.meaning.domain}"></span>
+                <span class="text-caption" th:text="#{label.meaning.domain}"></span>
                 <span class="lang-code text-caption lang-code--unrestricted" th:each="domain : ${lexeme.domains}" th:text="${domain.value}"></span>
               </div>
             </th:block>
@@ -21,29 +21,31 @@
                   class="lang-code text-caption mr-2"></span>
                 </th:block>
                 <div class="word-notes__wrapper" th:id="|lexeme-definitions-by-lang-${lexeme.meaningId}-${definitionEntry.key}-${definitionEntryIter.index}|">
-                  <ul class="word-notes__list word-notes__list--with-marker">
+                  <ul class="word-notes__list">
                     <li th:each="definition,definitionIter : ${definitionEntry.value}">
                       <th:block th:if="${!definition.subDataExists}">
-                        <div th:id="${'definition-entry-' + definition.definitionId}">
-                          <span class="definition-value text-body-two text-weight-semi-bold" th:utext="${definition.valuePrese}"></span>
+                        <div class="d-flex gap-2 flex-wrap" th:id="${'definition-entry-' + definition.definitionId}">
+                          <span class="definition-value text-body-regular text-weight-semi-bold" th:utext="${definition.valuePrese}"></span>
                         </div>
                       </th:block>
                       <th:block th:if="${definition.subDataExists}">
-                        <div th:id="${'definition-entry-' + definition.definitionId}">
-                          <span class="definition-value text-body-two text-weight-semi-bold" th:utext="${definition.valuePrese}"> </span>
-                          <th:block th:if="${not #lists.isEmpty(definition.sourceLinks)}">
-                            <span class="definition-sources">
-                              <th:block th:each="sourceLink,sourceLinkIter : ${definition.sourceLinks}">
-                                <th:block th:replace="common-app :: source-link"></th:block>
-                              </th:block>
-                            </span>
-                          </th:block>
+                        <div class="d-flex gap-2 flex-wrap" th:id="${'definition-entry-' + definition.definitionId}">
+                          <span class="definition-value text-body-regular text-weight-semi-bold">
+                            <th:block th:utext="${definition.valuePrese}"></th:block>
+                            <th:block th:if="${not #lists.isEmpty(definition.sourceLinks)}">
+                              <span class="definition-sources">
+                                <th:block th:each="sourceLink,sourceLinkIter : ${definition.sourceLinks}">
+                                  <th:block th:replace="common-app :: source-link"></th:block>
+                                </th:block>
+                              </span>
+                            </th:block>
+                          </span>
                           <th:block th:if="${not #lists.isEmpty(definition.notes)}">
                             <div class="mt-2">
                               <div class="d-flex">
-                                <span class="word-notes__note search__helper-text text-caption" th:text="#{label.public.note}"></span>
+                                <span class="word-notes__note text-caption" th:text="#{label.public.note}"></span>
                               </div>
-                              <ul class="word-notes__list word-notes__list--with-marker">
+                              <ul class="word-notes__list">
                                 <li class="word-notes__note" th:each="note : ${definition.notes}">
                                   <div class="d-flex">
                                     <span>
@@ -73,8 +75,8 @@
                 <span class="lang-code text-caption mr-2" th:if="${langData != null}" th:text="${langData.codeIso2}" th:title="${langData.label}" data-toggle="tooltip"></span>
               </th:block>
               <div class="word-notes__wrapper" th:id="|lexeme-meaning-notes-by-lang-${lexeme.meaningId}-${noteEntry.key}-${noteEntryIter.index}|">
-                <span class="word-notes__note search__helper-text text-caption" th:text="#{label.public.note}"></span>
-                <ul class="word-notes__list word-notes__list--with-marker">
+                <span class="word-notes__note text-caption" th:text="#{label.public.note}"></span>
+                <ul class="word-notes__list">
                   <li class="word-notes__note" th:each="note : ${noteEntry.value}">
                     <div class="d-flex" th:id="${'note-entry-text-' + note.noteId}">
                       <div>
@@ -123,7 +125,7 @@
           <th:block th:if="${not #lists.isEmpty(lexeme.relatedMeanings)}">
             <div class="related-meanings mb-2">
               <div class="relation-list d-flex flex-row flex-wrap" th:each="relationType, relationTypeIter : ${lexeme.relatedMeaningsByType.keySet()}">
-                <span class="mr-2 search__helper-text text-caption" th:text="${relationType.value}"></span>
+                <span class="mr-2 text-caption" th:text="${relationType.value}"></span>
                 <th:block th:each="relation, relationIter : ${lexeme.relatedMeaningsByType.get(relationType)}">
                   <div class="relation-item mr-1">
                     <a th:href="@{${@viewUtil.getSearchUri(sessionBean, searchMode, relation.word, relation.homonymNr, relation.lang)}}">
@@ -151,31 +153,29 @@
               </th:block>
               <div class="word-notes__wrapper" th:with="meaningLangLexemes=${meaninglexemeEntry.value}">
                 <div th:each="meaningLexeme,meaninglexemeIter : ${meaningLangLexemes}" th:classappend="${meaninglexemeIter.last ? '' : 'mb-1'}">
-                  <div>
-                    <a th:href="@{${@viewUtil.getSearchUri(sessionBean, searchMode, meaningLexeme.word, meaningLexeme.homonymNr, meaningLexeme.lang)}}"
-                      th:classappend="${meaningLexeme.wordId == wordId ? 'word-matches-search' : ''}" th:utext="${@viewUtil.getWordValueMarkup(meaningLexeme)}"> tee </a>
-                    <th:block th:if="${meaningLexeme.showWordDataAsHidden}">
-                      <button type="button" class="meaning-data__popover-trigger" data-toggle="popover" data-html="true" th:aria-label="#{label.meaning.grammar.contents}"
-                        th:data-content="${@viewUtil.getWordDataTooltipHtml(meaningLexeme)}">
-                        <span class="material-symbols-outlined" aria-hidden="true"> info </span>
-                      </button>
-                    </th:block>
-                    <span class="meaning-reliability" th:if="${meaningLexeme.valueState != null}"
-                      th:classappend="|${meaningLexeme.valueStatePreferred ? 'meaning-reliability--green' : ''}${meaningLexeme.valueStateWarning ? 'meaning-reliability--red' : ''}|">
-                      <i class="fa" aria-hidden="true" th:if="${meaningLexeme.valueStatePriority}"
-                        th:classappend="|${meaningLexeme.valueStatePreferred ? 'fa-check' : ''}${meaningLexeme.valueStateWarning ? 'fa-ban' : ''}|"></i>
-                      <span th:text="${meaningLexeme.valueState.value}"></span>
-                    </span>
-                    <th:block th:if="${not #lists.isEmpty(meaningLexeme.registers)}">
-                      <span class="text-caption search__helper-text" th:each="register,registerIter : ${meaningLexeme.registers}" th:text="${register.value + (registerIter.last ? '' : ', ')}"></span>
-                    </th:block>
-                    <th:block th:if="${not #lists.isEmpty(meaningLexeme.registers) and not #lists.isEmpty(meaningLexeme.wordTypes)}">
-                      <span class="text-caption search__helper-text">, </span>
-                    </th:block>
-                    <th:block th:if="${not #lists.isEmpty(meaningLexeme.wordTypes)}">
-                      <span class="text-caption search__helper-text" th:each="wordType,wordTypeIter : ${meaningLexeme.wordTypes}" th:utext="${wordType.value + (wordTypeIter.last ? '' : ', ')}"></span>
-                    </th:block>
-                  </div>
+                  <a th:href="@{${@viewUtil.getSearchUri(sessionBean, searchMode, meaningLexeme.word, meaningLexeme.homonymNr, meaningLexeme.lang)}}"
+                    th:classappend="${meaningLexeme.wordId == wordId ? 'word-matches-search' : ''}" th:utext="${@viewUtil.getWordValueMarkup(meaningLexeme)}"> tee </a>
+                  <th:block th:if="${meaningLexeme.showWordDataAsHidden}">
+                    <button type="button" class="meaning-data__popover-trigger" data-toggle="popover" data-html="true" th:aria-label="#{label.meaning.grammar.contents}"
+                      th:data-content="${@viewUtil.getWordDataTooltipHtml(meaningLexeme)}">
+                      <span class="material-symbols-outlined" aria-hidden="true"> info </span>
+                    </button>
+                  </th:block>
+                  <span class="meaning-reliability" th:if="${meaningLexeme.valueState != null}"
+                    th:classappend="|${meaningLexeme.valueStatePreferred ? 'meaning-reliability--green' : ''}${meaningLexeme.valueStateWarning ? 'meaning-reliability--red' : ''}|">
+                    <i class="fa" aria-hidden="true" th:if="${meaningLexeme.valueStatePriority}"
+                      th:classappend="|${meaningLexeme.valueStatePreferred ? 'fa-check' : ''}${meaningLexeme.valueStateWarning ? 'fa-ban' : ''}|"></i>
+                    <span th:text="${meaningLexeme.valueState.value}"></span>
+                  </span>
+                  <th:block th:if="${not #lists.isEmpty(meaningLexeme.registers)}">
+                    <span class="text-caption search__helper-text" th:each="register,registerIter : ${meaningLexeme.registers}" th:text="${register.value + (registerIter.last ? '' : ', ')}"></span>
+                  </th:block>
+                  <th:block th:if="${not #lists.isEmpty(meaningLexeme.registers) and not #lists.isEmpty(meaningLexeme.wordTypes)}">
+                    <span class="text-caption search__helper-text">, </span>
+                  </th:block>
+                  <th:block th:if="${not #lists.isEmpty(meaningLexeme.wordTypes)}">
+                    <span class="text-caption search__helper-text" th:each="wordType,wordTypeIter : ${meaningLexeme.wordTypes}" th:utext="${wordType.value + (wordTypeIter.last ? '' : ', ')}"></span>
+                  </th:block>
                   <div class="text-small" th:if="${meaningLexeme.reliability != null}">
                     <span th:text="#{label.lexeme.reliability}">Usaldusväärsus</span>
                     <span class="fa fa-star" th:classappend="${meaningLexeme.reliability >= 1} ? 'text-warning': ''"></span>
@@ -201,9 +201,9 @@
                     <div class="dependencies mt-2">
                       <div class="dependence-group">
                         <div class="d-flex">
-                          <span class="word-notes__note search__helper-text text-caption" th:text="#{button.label.usages}"></span>
+                          <span class="word-notes__note text-caption" th:text="#{button.label.usages}"></span>
                         </div>
-                        <ul class="word-notes__list word-notes__list--with-marker" th:id="|lexeme-usages-${meaningLexeme.lexemeId}|">
+                        <ul class="word-notes__list" th:id="|lexeme-usages-${meaningLexeme.lexemeId}|">
                           <li class="word-notes__note" th:each="usage,usageIter : ${meaningLexeme.usages}"
                             th:with="isCollapsable=${usageIter.count > T(eki.wordweb.constant.WebConstant).TYPICAL_COLLECTIONS_DISPLAY_LIMIT}">
                             <div class="d-flex" th:if="${!isCollapsable}">
@@ -214,7 +214,7 @@
                                           th:data-text="${usage.value}"
                                           data-service-id="speech"
                                           th:attr="onclick=${usage.putOnSpeaker ? 'getAndPlayAudio(this)' : ''}">
-                                    <span class="icon icon-speaker"></span>
+                                    <span class="icon icon-speaker icon--small"></span>
                                   </button>
                                 </span>
                                 <th:block th:if="${not #lists.isEmpty(usage.sourceLinks)}">
@@ -240,7 +240,7 @@
                                             th:data-text="${usage.value}"
                                             data-service-id="speech"
                                             th:attr="onclick=${usage.putOnSpeaker ? 'getAndPlayAudio(this)' : ''}">
-                                      <span class="icon icon-speaker"></span>
+                                      <span class="icon icon-speaker icon--small"></span>
                                     </button>
                                   </span>
                                   <th:block th:if="${not #lists.isEmpty(usage.sourceLinks)}">
@@ -271,9 +271,9 @@
                   <th:block th:if="${not #maps.isEmpty(meaningLexeme.lexemeNotesByLang)}">
                     <div>
                       <div class="d-flex">
-                        <span class="word-notes__note search__helper-text text-caption" th:text="${isLimTerm ? #messages.msg('label.limterm.note') : #messages.msg('label.public.note')}">Hea teada</span>
+                        <span class="word-notes__note text-caption" th:text="${isLimTerm ? #messages.msg('label.limterm.note') : #messages.msg('label.public.note')}">Hea teada</span>
                       </div>
-                      <ul class="word-notes__list word-notes__list--with-marker">
+                      <ul class="word-notes__list">
                         <th:block th:each="noteEntry : ${meaningLexeme.lexemeNotesByLang}">
                           <th:block th:each="note : ${noteEntry.value}">
                             <li class="word-notes__note">
