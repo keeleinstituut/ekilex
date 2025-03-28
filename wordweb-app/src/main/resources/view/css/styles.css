@@ -14196,7 +14196,7 @@ body.hidden-scroll {
 }
 .lang-code {
   width: 26px;
-  display: flex;
+  display: inline-flex;
   justify-content: center;
   align-items: center;
   border-radius: 4px;
@@ -15360,6 +15360,9 @@ span.material-symbols-outlined {
 }
 span.material-symbols-outlined--default-size {
   --fallback-icon-size: 1.5rem;
+}
+span.material-symbols-outlined--small {
+  --fallback-icon-size: 1.3125rem;
 }
 .lexeme-level {
   line-height: 24px;

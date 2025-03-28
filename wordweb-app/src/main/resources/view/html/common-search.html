@@ -147,7 +147,7 @@
       <button th:aria-label="|#{aria.listen} - ${wordData.word.word}|" class="btn btn-speaker"
               th:if="${wordData.firstAvailableAudioFile != null}"
               th:data-audio-url="@{'/files/audio/' + ${wordData.firstAvailableAudioFile}}" onclick="getAndPlayAudio(this)">
-        <span class="material-symbols-outlined material-symbols-outlined--default-size">record_voice_over</span>
+        <span class="material-symbols-outlined material-symbols-outlined--small">record_voice_over</span>
       </button>
       <span id="spellingLine" class="mr-2" th:if="${wordData.word.vocalForm != null}" th:text="${wordData.word.vocalForm}"></span>
       <th:block th:each="wordType : ${wordData.word.wordTypes}" th:if="${not #lists.isEmpty(wordData.word.wordTypes)}">

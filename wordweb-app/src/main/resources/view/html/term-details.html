@@ -146,7 +146,7 @@
             </div>
           </th:block>
           <th:block th:if="${not #maps.isEmpty(lexeme.meaningLexemesByLang)}">
-            <div class="d-flex lang-code__border" th:each="meaninglexemeEntry,meaninglexemeEntryIter : ${lexeme.meaningLexemesByLang}">
+            <div class="d-flex" th:each="meaninglexemeEntry,meaninglexemeEntryIter : ${lexeme.meaningLexemesByLang}">
               <th:block th:with="langData=${@viewUtil.getLangData(meaninglexemeEntry.key, selectedLangs)}">
                 <span class="lang-code text-caption mr-2" th:if="${langData != null}" th:text="${langData.codeIso2}" th:title="${langData.label}"
                 data-toggle="tooltip"></span>
