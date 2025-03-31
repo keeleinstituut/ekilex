@@ -137,7 +137,7 @@
   </th:block>
   <th:block th:fragment="word-data">
     <div class="d-flex align-items-center flex-wrap">
-      <th:block th:with="langData=${@viewUtil.getLangData(wordData.word.lang, selectedLangs)}">
+      <th:block th:with="langData=${@viewUtil.getLangData(wordData.word.lang)}">
         <span class="lang-code text-caption mr-2" th:if="${langData != null}" th:text="${langData.codeIso2}" th:title="${langData.label}" data-toggle="tooltip"></span>
       </th:block>
       <h1 class="search__lex-title" th:utext="${@viewUtil.getWordValueMarkup(wordData.word)}">

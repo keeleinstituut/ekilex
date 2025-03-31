@@ -16,7 +16,7 @@
             </th:block>
             <th:block th:if="${hasDefinitionsByLang}">
               <section class="d-flex" th:each="definitionEntry, definitionEntryIter : ${lexeme.definitionsByLang}">
-                <th:block th:with="langData=${@viewUtil.getLangData(definitionEntry.key, selectedLangs)}">
+                <th:block th:with="langData=${@viewUtil.getLangData(definitionEntry.key)}">
                   <span th:if="${langData != null}" th:text="${langData.codeIso2}" th:title="${langData.label}" data-toggle="tooltip"
                   class="lang-code text-caption mr-2"></span>
                 </th:block>
@@ -71,7 +71,7 @@
           </div>
           <th:block th:if="${not #maps.isEmpty(lexeme.meaningNotesByLang)}">
             <section class="d-flex lang-code__border" th:each="noteEntry, noteEntryIter : ${lexeme.meaningNotesByLang}">
-              <th:block th:with="langData=${@viewUtil.getLangData(noteEntry.key, selectedLangs)}">
+              <th:block th:with="langData=${@viewUtil.getLangData(noteEntry.key)}">
                 <span class="lang-code text-caption mr-2" th:if="${langData != null}" th:text="${langData.codeIso2}" th:title="${langData.label}" data-toggle="tooltip"></span>
               </th:block>
               <div class="word-notes__wrapper" th:id="|lexeme-meaning-notes-by-lang-${lexeme.meaningId}-${noteEntry.key}-${noteEntryIter.index}|">
@@ -147,7 +147,7 @@
           </th:block>
           <th:block th:if="${not #maps.isEmpty(lexeme.meaningLexemesByLang)}">
             <div class="d-flex" th:each="meaninglexemeEntry,meaninglexemeEntryIter : ${lexeme.meaningLexemesByLang}">
-              <th:block th:with="langData=${@viewUtil.getLangData(meaninglexemeEntry.key, selectedLangs)}">
+              <th:block th:with="langData=${@viewUtil.getLangData(meaninglexemeEntry.key)}">
                 <span class="lang-code text-caption mr-2" th:if="${langData != null}" th:text="${langData.codeIso2}" th:title="${langData.label}"
                 data-toggle="tooltip"></span>
               </th:block>

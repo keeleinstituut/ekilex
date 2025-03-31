@@ -17,7 +17,7 @@
             </div>
             <div class="col-12">
               <div class="d-flex flex-row" th:each="noteEntry : ${lexeme.lexemeNotesByLang}">
-                <th:block th:with="langData=${@viewUtil.getLangData(noteEntry.key, selectedLangs)}">
+                <th:block th:with="langData=${@viewUtil.getLangData(noteEntry.key)}">
                   <span class="lang-code text-caption mr-2 align-self-start"
                   th:if="${langData != null}"
                   th:text="${langData.codeIso2}" th:title="${langData.label}" data-toggle="tooltip"></span>
@@ -37,7 +37,7 @@
                 <div class="definition-row definition-area">
                   <th:block th:if="${not #maps.isEmpty(lexeme.definitionsByLang)}">
                     <div class="mb-0 d-flex gap-2" th:each="definitionEntry : ${lexeme.definitionsByLang}">
-                      <th:block th:with="langData=${@viewUtil.getLangData(definitionEntry.key, selectedLangs)}">
+                      <th:block th:with="langData=${@viewUtil.getLangData(definitionEntry.key)}">
                         <span class="lang-code text-caption align-self-start"
                         th:if="${langData != null}"
                         th:text="${langData.codeIso2}" th:title="${langData.label}" data-toggle="tooltip"></span>
@@ -84,7 +84,7 @@
                             <span class="lang-code text-caption lang-code--unrestricted" th:each="pos : ${lexeme.poses}" th:text="${pos.value}"></span>
                           </th:block>
                           <span class="lexeme grammars lang-code text-caption lang-code--unrestricted" th:unless="${#lists.isEmpty(lexeme.grammars)}">
-                            <span th:each="grammar,grammarIter : ${lexeme.grammars}" th:utext="${grammar.value + (grammarIter.last ? '' : ', ')}"></span>
+                            <span th:each="grammar,grammarIter : ${lexeme.grammars}" th:utext="${grammar.value + (grammarIter.last ? '' : ',')}" th:classappend="${grammarIter.last ? '' : 'mr-1'}"></span>
                           </span>
                           <span class="lexeme lang-code text-caption lang-code--unrestricted" th:if="${lexeme.valueState != null}" th:text="${lexeme.valueState.value}"></span>
                         </th:block>
@@ -206,7 +206,7 @@
                     <th:block th:each="synEntry : ${lexeme.destinLangSynonymsByLang}"
                               th:with="destinLangSyns=${synEntry.value}">
                       <div th:id="${'matches-show-more-panel-' + lexeme.lexemeId + '-' + synEntry.key}" class="d-flex flex-wrap">
-                        <th:block th:with="langData=${@viewUtil.getLangData(synEntry.key, selectedLangs)}">
+                        <th:block th:with="langData=${@viewUtil.getLangData(synEntry.key)}">
                           <span class="lang-code text-caption mr-2 align-self-start"
                             th:if="${langData != null}"
                             th:text="${langData.codeIso2}" th:title="${langData.label}" data-toggle="tooltip">
@@ -331,7 +331,7 @@
                   <div class="col-12">
                     <th:block th:if="${not #maps.isEmpty(lexeme.lexemeNotesByLang)}">
                       <div class="d-flex flex-row" th:each="noteEntry : ${lexeme.lexemeNotesByLang}">
-                        <th:block th:with="langData=${@viewUtil.getLangData(noteEntry.key, selectedLangs)}">
+                        <th:block th:with="langData=${@viewUtil.getLangData(noteEntry.key)}">
                           <span class="lang-code text-caption mr-2 align-self-start"
                             th:if="${langData != null}"
                             th:text="${langData.codeIso2}" th:title="${langData.label}" data-toggle="tooltip"></span>
@@ -341,7 +341,7 @@
                     </th:block>
                     <th:block th:if="${not #maps.isEmpty(lexeme.meaningNotesByLang)}">
                       <div class="d-flex flex-row" th:each="noteEntry : ${lexeme.meaningNotesByLang}">
-                        <th:block th:with="langData=${@viewUtil.getLangData(noteEntry.key, selectedLangs)}">
+                        <th:block th:with="langData=${@viewUtil.getLangData(noteEntry.key)}">
                           <span class="lang-code text-caption mr-2 align-self-start"
                             th:if="${langData != null}"
                             th:text="${langData.codeIso2}" th:title="${langData.label}" data-toggle="tooltip">
