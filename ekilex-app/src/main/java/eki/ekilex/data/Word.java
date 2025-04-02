@@ -65,11 +65,11 @@ public class Word extends AbstractCrudEntity implements DecoratedWordType {
 
 	private List<WordEtym> etymology;
 
-	private List<Freeform> odWordRecommendations;
-
 	private List<Paradigm> paradigms;
 
 	private List<Freeform> freeforms;
+
+	private WordOdRecommendation wordOdRecommendation;
 
 	private Timestamp lastActivityEventOn;
 
@@ -291,14 +291,6 @@ public class Word extends AbstractCrudEntity implements DecoratedWordType {
 		this.etymology = etymology;
 	}
 
-	public List<Freeform> getOdWordRecommendations() {
-		return odWordRecommendations;
-	}
-
-	public void setOdWordRecommendations(List<Freeform> odWordRecommendations) {
-		this.odWordRecommendations = odWordRecommendations;
-	}
-
 	public List<Paradigm> getParadigms() {
 		return paradigms;
 	}
@@ -313,6 +305,14 @@ public class Word extends AbstractCrudEntity implements DecoratedWordType {
 
 	public void setFreeforms(List<Freeform> freeforms) {
 		this.freeforms = freeforms;
+	}
+
+	public WordOdRecommendation getWordOdRecommendation() {
+		return wordOdRecommendation;
+	}
+
+	public void setWordOdRecommendation(WordOdRecommendation wordOdRecommendation) {
+		this.wordOdRecommendation = wordOdRecommendation;
 	}
 
 	public Timestamp getLastActivityEventOn() {

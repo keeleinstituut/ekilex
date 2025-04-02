@@ -18,7 +18,6 @@ import eki.ekilex.data.EkiUser;
 import eki.ekilex.data.WordForum;
 import eki.ekilex.data.api.ApiResponse;
 import eki.ekilex.data.api.WordClassifier;
-import eki.ekilex.data.api.WordFreeform;
 import eki.ekilex.data.api.WordRelation;
 import eki.ekilex.service.CudService;
 
@@ -162,66 +161,6 @@ public class ApiWordController extends AbstractApiController {
 
 		try {
 			cudService.deleteWordForum(wordForumId);
-			return getOpSuccessResponse(authentication, request);
-		} catch (Exception e) {
-			return getOpFailResponse(authentication, request, e);
-		}
-	}
-
-	@Order(610)
-	@PreAuthorize("principal.apiCrud && @permEval.isWordCrudGranted(authentication, #crudRoleDataset, #odWordRecommendation.wordId)")
-	@PostMapping(API_SERVICES_URI + OD_WORD_RECOMMENDATION + CREATE_URI)
-	@ResponseBody
-	public ApiResponse createOdWordRecommendation(
-			@RequestParam("crudRoleDataset") String crudRoleDataset,
-			@RequestBody WordFreeform odWordRecommendation,
-			Authentication authentication,
-			HttpServletRequest request) {
-
-		try {
-			Long wordId = odWordRecommendation.getWordId();
-			String valuePrese = odWordRecommendation.getValuePrese();
-			valuePrese = valueUtil.trimAndCleanAndRemoveHtmlAndLimit(valuePrese);
-			cudService.createOdWordRecommendation(wordId, valuePrese, crudRoleDataset, MANUAL_EVENT_ON_UPDATE_ENABLED);
-			return getOpSuccessResponse(authentication, request);
-		} catch (Exception e) {
-			return getOpFailResponse(authentication, request, e);
-		}
-	}
-
-	@Order(611)
-	@PreAuthorize("principal.apiCrud && @permEval.isFreeformCrudGranted(authentication, #crudRoleDataset, #odWordRecommendation.freeformId)")
-	@PostMapping(API_SERVICES_URI + OD_WORD_RECOMMENDATION + UPDATE_URI)
-	@ResponseBody
-	public ApiResponse updateOdWordRecommendation(
-			@RequestParam("crudRoleDataset") String crudRoleDataset,
-			@RequestBody WordFreeform odWordRecommendation,
-			Authentication authentication,
-			HttpServletRequest request) {
-
-		try {
-			Long freeformId = odWordRecommendation.getFreeformId();
-			String valuePrese = odWordRecommendation.getValuePrese();
-			valuePrese = valueUtil.trimAndCleanAndRemoveHtmlAndLimit(valuePrese);
-			cudService.updateOdWordRecommendation(freeformId, valuePrese, crudRoleDataset, MANUAL_EVENT_ON_UPDATE_ENABLED);
-			return getOpSuccessResponse(authentication, request);
-		} catch (Exception e) {
-			return getOpFailResponse(authentication, request, e);
-		}
-	}
-
-	@Order(612)
-	@PreAuthorize("principal.apiCrud && @permEval.isFreeformCrudGranted(authentication, #crudRoleDataset, #odWordRecommendationId)")
-	@DeleteMapping(API_SERVICES_URI + OD_WORD_RECOMMENDATION + DELETE_URI)
-	@ResponseBody
-	public ApiResponse deleteOdWordRecommendation(
-			@RequestParam("crudRoleDataset") String crudRoleDataset,
-			@RequestParam("odWordRecommendationId") Long odWordRecommendationId,
-			Authentication authentication,
-			HttpServletRequest request) {
-
-		try {
-			cudService.deleteOdWordRecommendation(odWordRecommendationId, crudRoleDataset, MANUAL_EVENT_ON_UPDATE_ENABLED);
 			return getOpSuccessResponse(authentication, request);
 		} catch (Exception e) {
 			return getOpFailResponse(authentication, request, e);

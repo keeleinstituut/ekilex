@@ -23,7 +23,7 @@ import static eki.ekilex.data.db.main.Tables.USAGE_DEFINITION;
 import static eki.ekilex.data.db.main.Tables.USAGE_SOURCE_LINK;
 import static eki.ekilex.data.db.main.Tables.USAGE_TRANSLATION;
 import static eki.ekilex.data.db.main.Tables.WORD;
-import static eki.ekilex.data.db.main.Tables.WORD_FREEFORM;
+import static eki.ekilex.data.db.main.Tables.WORD_OD_RECOMMENDATION;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -72,7 +72,7 @@ import eki.ekilex.data.db.main.tables.UsageDefinition;
 import eki.ekilex.data.db.main.tables.UsageSourceLink;
 import eki.ekilex.data.db.main.tables.UsageTranslation;
 import eki.ekilex.data.db.main.tables.Word;
-import eki.ekilex.data.db.main.tables.WordFreeform;
+import eki.ekilex.data.db.main.tables.WordOdRecommendation;
 
 @Component
 public class LexSearchConditionComposer implements GlobalConstant, ActivityFunct, FreeformConstant {
@@ -511,7 +511,7 @@ public class LexSearchConditionComposer implements GlobalConstant, ActivityFunct
 		MeaningNote mn1 = MEANING_NOTE.as("mn1");
 		MeaningFreeform mff1 = MEANING_FREEFORM.as("mff1");
 		LexemeFreeform lff1 = LEXEME_FREEFORM.as("lff1");
-		WordFreeform wff1 = WORD_FREEFORM.as("wff1");
+		WordOdRecommendation wor = WORD_OD_RECOMMENDATION.as("wor");
 		Freeform ff1 = FREEFORM.as("ff1");
 		Lexeme l2 = LEXEME.as("l2");
 		Word w2 = WORD.as("w2");
@@ -607,12 +607,10 @@ public class LexSearchConditionComposer implements GlobalConstant, ActivityFunct
 
 		// word od recoomendation select
 		where1 = l1.WORD_ID.eq(w1.ID)
-				.and(wff1.WORD_ID.eq(w1.ID))
-				.and(wff1.FREEFORM_ID.eq(ff1.ID))
-				.and(ff1.FREEFORM_TYPE_CODE.eq(OD_WORD_RECOMMENDATION_CODE));
+				.and(wor.WORD_ID.eq(w1.ID));
 		where1 = searchFilterHelper.applyDatasetRestrictions(l1, searchDatasetsRestriction, where1);
-		where1 = searchFilterHelper.applyValueFilters(SearchKey.VALUE, searchCriteria, ff1.VALUE, where1, true);
-		SelectHavingStep<Record1<Long>> selectWordOdRecommendation = DSL.select(l1.WORD_ID).from(l1, w1, wff1, ff1).where(where1).groupBy(l1.WORD_ID);
+		where1 = searchFilterHelper.applyValueFilters(SearchKey.VALUE, searchCriteria, wor.VALUE, where1, true);
+		SelectHavingStep<Record1<Long>> selectWordOdRecommendation = DSL.select(l1.WORD_ID).from(l1, w1, wor).where(where1).groupBy(l1.WORD_ID);
 
 		Table<Record1<Long>> a1 = selectWordAndMeaningWord
 				.unionAll(selectDefinition)

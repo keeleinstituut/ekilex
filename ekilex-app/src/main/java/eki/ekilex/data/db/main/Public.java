@@ -147,6 +147,7 @@ import eki.ekilex.data.db.main.tables.WordGroup;
 import eki.ekilex.data.db.main.tables.WordGroupMember;
 import eki.ekilex.data.db.main.tables.WordGuid;
 import eki.ekilex.data.db.main.tables.WordLastActivityLog;
+import eki.ekilex.data.db.main.tables.WordOdRecommendation;
 import eki.ekilex.data.db.main.tables.WordRelMapping;
 import eki.ekilex.data.db.main.tables.WordRelType;
 import eki.ekilex.data.db.main.tables.WordRelTypeLabel;
@@ -921,6 +922,11 @@ public class Public extends SchemaImpl {
     public final WordLastActivityLog WORD_LAST_ACTIVITY_LOG = WordLastActivityLog.WORD_LAST_ACTIVITY_LOG;
 
     /**
+     * The table <code>public.word_od_recommendation</code>.
+     */
+    public final WordOdRecommendation WORD_OD_RECOMMENDATION = WordOdRecommendation.WORD_OD_RECOMMENDATION;
+
+    /**
      * The table <code>public.word_rel_mapping</code>.
      */
     public final WordRelMapping WORD_REL_MAPPING = WordRelMapping.WORD_REL_MAPPING;
@@ -1121,6 +1127,7 @@ public class Public extends SchemaImpl {
             Sequences.WORD_GUID_ID_SEQ,
             Sequences.WORD_ID_SEQ,
             Sequences.WORD_LAST_ACTIVITY_LOG_ID_SEQ,
+            Sequences.WORD_OD_RECOMMENDATION_ID_SEQ,
             Sequences.WORD_REL_TYPE_ORDER_BY_SEQ,
             Sequences.WORD_RELATION_ID_SEQ,
             Sequences.WORD_RELATION_ORDER_BY_SEQ,
@@ -1277,6 +1284,7 @@ public class Public extends SchemaImpl {
             WordGroupMember.WORD_GROUP_MEMBER,
             WordGuid.WORD_GUID,
             WordLastActivityLog.WORD_LAST_ACTIVITY_LOG,
+            WordOdRecommendation.WORD_OD_RECOMMENDATION,
             WordRelMapping.WORD_REL_MAPPING,
             WordRelType.WORD_REL_TYPE,
             WordRelTypeLabel.WORD_REL_TYPE_LABEL,

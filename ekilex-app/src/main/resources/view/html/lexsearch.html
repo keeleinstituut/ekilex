@@ -154,7 +154,7 @@
             <div class="col-4 border-left border-light h-100 overflow-auto" id="toolsColumn">
               <div class="resize-area" data-plugin="panelResize"></div>
               <div th:replace="lexdialog :: add_group_word_relation_dlg"></div>
-              <div th:replace="lexdialog :: add_od_word_recommendation_dlg"></div>
+              <div th:replace="lexdialog :: add_word_od_recommendation_dlg"></div>
               <div th:replace="lexdialog :: add_word_forum_dlg"></div>
               <div th:replace="lexdialog :: add_word_freeform_dlg"></div>
               <div th:replace="lexdialog :: add_word_lang_dlg"></div>
@@ -178,38 +178,39 @@
                 <div class="ekiAccordion" data-plugin="ekiAccordion">
                   <div class="ekiAccordion__instance">
                     <div class="ekiAccordion__title">
-                      <span class="badge badge-data-exists" th:unless="${#lists.isEmpty(details.word.odWordRecommendations)}">•</span>
+                      <span class="badge badge-data-exists" th:if="${details.word.wordOdRecommendation}">•</span>
                       <span th:text="#{lex.word.od.recommendation}">ÕS soovitab</span>
                       <button type="button" class="ekiAccordion__add"
                               th:title="#{common.add.new}" data-toggle="modal"
-                              th:data-target="${'#addOdWordRecommendationDlg_' + wordId}"
+                              th:data-target="${'#addWordOdRecommendationDlg_' + wordId}"
+                              th:unless="${details.word.wordOdRecommendation}"
                               sec:authorize="#vars.details.word.crudGrant">
                         <i class="fa fa-plus" aria-hidden="true"></i>
                       </button>
                     </div>
                     <div class="ekiAccordion__content">
-                      <div th:if="${#lists.isEmpty(details.word.odWordRecommendations)}" th:text="#{common.no.content}">
+                      <div th:if="${details.word.wordOdRecommendation == null}" th:text="#{common.no.content}">
                         Sisu puudub...
                       </div>
-                      <div th:each="odWordRecommendation : ${details.word.odWordRecommendations}">
-                        <div th:replace="lexdialog :: edit_od_word_recommendation"></div>
+                      <div th:if="${details.word.wordOdRecommendation}">
+                        <div th:replace="lexdialog :: edit_word_od_recommendation"></div>
                         <div class="col hidden-buttons pr-5">
                           <div class="action-buttons-anchor">
-                            <span th:utext="${odWordRecommendation.valuePrese}"></span>
-                            <span class="ctxt" th:text="'[' + ${odWordRecommendation.modifiedBy} + ']'" th:if="${odWordRecommendation.modifiedBy != null}"></span>
-                            <span class="ctxt" th:text="'(' + #{'enum.complexity.' + ${odWordRecommendation.complexity}} + ')'"></span>
-                            <span class="ctxt" th:text="'(' + ${#dates.format(odWordRecommendation.modifiedOn, 'dd.MM.yyyy')} + ')'" th:if="${odWordRecommendation.modifiedOn != null}"></span>
+                            <div th:utext="${details.word.wordOdRecommendation.valuePrese}"></div>
+                            <div th:utext="${details.word.wordOdRecommendation.optValuePrese}"></div>
+                            <span class="ctxt" th:text="'[' + ${details.word.wordOdRecommendation.modifiedBy} + ']'" th:if="${details.word.wordOdRecommendation.modifiedBy != null}"></span>
+                            <span class="ctxt" th:text="'(' + ${#dates.format(details.word.wordOdRecommendation.modifiedOn, 'dd.MM.yyyy')} + ')'" th:if="${details.word.wordOdRecommendation.modifiedOn != null}"></span>
                             <div class="action-buttons-2">
                               <button type="button" class="btn badge badge-primary"
                                       th:title="#{common.edit}"
                                       data-toggle="modal"
-                                      th:data-target="${'#editOdWordRecommendationDlg_' + odWordRecommendation.id}"
+                                      th:data-target="${'#editWordOdRecommendationDlg_' + details.word.wordOdRecommendation.id}"
                                       sec:authorize="#vars.details.word.crudGrant">
                                 <i class="fa fa-edit" aria-hidden="true"></i>
                               </button>
                               <button type="button" class="btn badge badge-warning"
-                                      th:data-id="${odWordRecommendation.id}"
-                                      data-op-code="od_word_recommendation"
+                                      th:data-id="${details.word.wordOdRecommendation.id}"
+                                      data-op-code="word_od_recommendation"
                                       data-toggle="delete-confirm"
                                       data-placement="right"
                                       sec:authorize="#vars.details.word.crudGrant">

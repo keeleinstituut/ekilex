@@ -656,6 +656,22 @@ create table word_etymology_relation (
 );
 alter sequence word_etymology_relation_id_seq restart with 10000;
 
+create table word_od_recommendation (
+  id bigserial primary key,
+  word_id bigint references word(id) on delete cascade not null,
+  value text not null, 
+  value_prese text not null,
+  opt_value text,
+  opt_value_prese text,
+  is_public boolean default true not null, 
+  created_by text null, 
+  created_on timestamp null, 
+  modified_by text null, 
+  modified_on timestamp null,
+  unique(word_id)
+);
+alter sequence word_od_recommendation_id_seq restart with 10000;
+
 -- keelendi vabavorm
 create table word_freeform (
   id bigserial primary key, 

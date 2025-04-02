@@ -1360,9 +1360,9 @@
       </div>
     </div>
   </div>
-  <div th:id="${'addOdWordRecommendationDlg_' + lexeme.lexemeId}" class="modal"
+  <div th:id="${'addWordOdRecommendationDlg_' + lexeme.lexemeId}" class="modal"
        role="dialog"
-       th:fragment="add_od_word_recommendation_dlg"
+       th:fragment="add_word_od_recommendation_dlg"
        data-plugin="initEkiEditorDlgAndFocusPlugin">
     <div class="modal-dialog modal-lg" role="document">
       <div class="modal-content">
@@ -1375,9 +1375,16 @@
           </div>
           <div class="modal-body">
             <input type="hidden" name="id" th:value="${lexeme.wordId}">
-            <input type="hidden" name="opCode" value="od_word_recommendation">
+            <input type="hidden" name="opCode" value="word_od_recommendation">
             <input type="hidden" name="value">
             <div th:replace="components :: eki_editor_elem"></div>
+            <!-- TODO value2 should be eki editor
+            <div class="form-group row eki-editor">
+              <div class="col-md-12">
+                <textarea name="value2" class="form-control"></textarea>
+              </div>
+            </div>
+            -->
           </div>
           <div class="modal-footer">
             <button type="submit" class="btn btn-primary" th:text="#{common.add}">Lisa</button>
@@ -1387,9 +1394,9 @@
       </div>
     </div>
   </div>
-  <div th:id="${'editOdWordRecommendationDlg_' + odWordRecommendation.id}" class="modal"
+  <div th:id="${'editWordOdRecommendationDlg_' + lexeme.lexemeWord.wordOdRecommendation.id}" class="modal"
        role="dialog"
-       th:fragment="edit_od_word_recommendation"
+       th:fragment="edit_word_od_recommendation"
        data-plugin="initEkiEditorDlgAndFocusPlugin">
     <div class="modal-dialog modal-lg" role="document">
       <div class="modal-content">
@@ -1401,10 +1408,17 @@
             </button>
           </div>
           <div class="modal-body">
-            <input type="hidden" name="id" th:value="${odWordRecommendation.id}">
-            <input type="hidden" name="opCode" value="od_word_recommendation">
-            <input type="hidden" name="value" th:value="${odWordRecommendation.valuePrese}">
+            <input type="hidden" name="id" th:value="${lexeme.lexemeWord.wordOdRecommendation.id}">
+            <input type="hidden" name="opCode" value="word_od_recommendation">
+            <input type="hidden" name="value" th:value="${lexeme.lexemeWord.wordOdRecommendation.valuePrese}">
             <div th:replace="components :: eki_editor_elem"></div>
+            <!-- TODO value2 should be eki editor
+            <div class="form-group row eki-editor">
+              <div class="col-md-12">
+                <textarea name="value2" th:text="${lexeme.lexemeWord.wordOdRecommendation.optValuePrese}" class="form-control"></textarea>
+              </div>
+            </div>
+            -->
           </div>
           <div class="modal-footer">
             <button type="submit" class="btn btn-primary" th:text="#{common.save}">Salvesta</button>

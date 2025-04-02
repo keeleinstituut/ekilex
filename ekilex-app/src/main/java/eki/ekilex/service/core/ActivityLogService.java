@@ -60,6 +60,7 @@ import eki.ekilex.data.WordEtym;
 import eki.ekilex.data.WordEtymTuple;
 import eki.ekilex.data.WordGroup;
 import eki.ekilex.data.WordLexemeMeaningIds;
+import eki.ekilex.data.WordOdRecommendation;
 import eki.ekilex.data.WordRelation;
 import eki.ekilex.service.db.ActivityLogDbService;
 import eki.ekilex.service.db.CommonDataDbService;
@@ -105,7 +106,6 @@ public class ActivityLogService implements SystemConstant, GlobalConstant, Freef
 			ActivityEntity.MEDIA_FILE,
 			ActivityEntity.SEMANTIC_TYPE,
 			ActivityEntity.SYSTEMATIC_POLYSEMY_PATTERN,
-			ActivityEntity.OD_WORD_RECOMMENDATION,
 			ActivityEntity.ADVICE_NOTE);
 
 	private static final List<ActivityEntity> SECOND_DEPTH_FREEFORM_ENTITIES = Arrays.asList(
@@ -206,6 +206,8 @@ public class ActivityLogService implements SystemConstant, GlobalConstant, Freef
 			return activityLogDbService.getWordTypeOwnerId(entityId);
 		} else if (ActivityEntity.WORD_ETYMOLOGY.equals(entity)) {
 			return activityLogDbService.getWordEtymologyOwnerId(entityId);
+		} else if (ActivityEntity.WORD_OD_RECOMMENDATION.equals(entity)) {
+			return activityLogDbService.getWordOdRecommendationOwnerId(entityId);
 		} else if (ActivityEntity.WORD_RELATION.equals(entity)) {
 			return activityLogDbService.getWordRelationOwnerId(entityId);
 		} else if (ActivityEntity.LEXEME_RELATION.equals(entity)) {
@@ -603,7 +605,7 @@ public class ActivityLogService implements SystemConstant, GlobalConstant, Freef
 		List<WordGroup> wordGroups = conversionUtil.composeWordGroups(wordGroupMembers, null);
 		List<WordEtymTuple> wordEtymTuples = lexDataDbService.getWordEtymology(wordId);
 		List<WordEtym> wordEtymology = conversionUtil.composeWordEtymology(wordEtymTuples);
-		List<Freeform> odWordRecommendations = commonDataDbService.getOdWordRecommendations(wordId);
+		WordOdRecommendation wordOdRecommendation = commonDataDbService.getWordOdRecommendation(wordId);
 		List<Paradigm> paradigms = null;
 		if (StringUtils.equals(FUNCT_NAME_DELETE_PARADIGM, functName)) {
 			List<ParadigmFormTuple> paradigmFormTuples = lexSearchDbService.getParadigmFormTuples(wordId, CLASSIF_LABEL_LANG_EST);
@@ -615,7 +617,7 @@ public class ActivityLogService implements SystemConstant, GlobalConstant, Freef
 		word.setRelations(wordRelations);
 		word.setGroups(wordGroups);
 		word.setEtymology(wordEtymology);
-		word.setOdWordRecommendations(odWordRecommendations);
+		word.setWordOdRecommendation(wordOdRecommendation);
 		word.setParadigms(paradigms);
 
 		ObjectMapper objectMapper = new ObjectMapper();

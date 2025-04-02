@@ -36,6 +36,7 @@ import static eki.ekilex.data.db.main.Tables.WORD_FREQ;
 import static eki.ekilex.data.db.main.Tables.WORD_GROUP;
 import static eki.ekilex.data.db.main.Tables.WORD_GROUP_MEMBER;
 import static eki.ekilex.data.db.main.Tables.WORD_LAST_ACTIVITY_LOG;
+import static eki.ekilex.data.db.main.Tables.WORD_OD_RECOMMENDATION;
 import static eki.ekilex.data.db.main.Tables.WORD_RELATION;
 import static eki.ekilex.data.db.main.Tables.WORD_TAG;
 import static eki.ekilex.data.db.main.Tables.WORD_WORD_TYPE;
@@ -118,6 +119,7 @@ import eki.ekilex.data.db.main.tables.WordFreq;
 import eki.ekilex.data.db.main.tables.WordGroup;
 import eki.ekilex.data.db.main.tables.WordGroupMember;
 import eki.ekilex.data.db.main.tables.WordLastActivityLog;
+import eki.ekilex.data.db.main.tables.WordOdRecommendation;
 import eki.ekilex.data.db.main.tables.WordRelation;
 import eki.ekilex.data.db.main.tables.WordTag;
 import eki.ekilex.data.db.main.tables.WordWordType;
@@ -582,23 +584,20 @@ public class SearchFilterHelper implements GlobalConstant, ActivityFunct, Freefo
 			return where;
 		}
 
-		WordFreeform wff = WORD_FREEFORM.as("wff");
-		Freeform ff = FREEFORM.as("ff");
-		Condition wordFreeformCondition = wff.WORD_ID.eq(wordIdField)
-				.and(wff.FREEFORM_ID.eq(ff.ID))
-				.and(ff.FREEFORM_TYPE_CODE.eq(OD_WORD_RECOMMENDATION_CODE));
+		WordOdRecommendation wor = WORD_OD_RECOMMENDATION.as("wor");
+		Condition where1 = wor.WORD_ID.eq(wordIdField);
 
 		boolean isNotExistsSearch = isNotExistsSearch(SearchKey.VALUE_AND_EXISTS, filteredCriteria);
 		if (isNotExistsSearch) {
-			where = where.and(DSL.notExists(DSL.select(wff.ID).from(wff, ff).where(wordFreeformCondition)));
+			where = where.and(DSL.notExists(DSL.select(wor.ID).from(wor).where(where1)));
 		} else {
 			for (SearchCriterion criterion : filteredCriteria) {
 				if (criterion.getSearchValue() != null) {
 					String searchValueStr = criterion.getSearchValue().toString();
-					wordFreeformCondition = applyValueFilter(searchValueStr, criterion.isNot(), criterion.getSearchOperand(), ff.VALUE, wordFreeformCondition, true);
+					where1 = applyValueFilter(searchValueStr, criterion.isNot(), criterion.getSearchOperand(), wor.VALUE, where1, true);
 				}
 			}
-			where = where.andExists(DSL.select(wff.WORD_ID).from(wff, ff).where(wordFreeformCondition));
+			where = where.andExists(DSL.select(wor.ID).from(wor).where(where1));
 		}
 		return where;
 	}
@@ -613,19 +612,16 @@ public class SearchFilterHelper implements GlobalConstant, ActivityFunct, Freefo
 			return where;
 		}
 
-		WordFreeform wff = WORD_FREEFORM.as("wff");
-		Freeform ff = FREEFORM.as("ff");
-		Condition wordFreeformCondition = wff.WORD_ID.eq(wordIdField)
-				.and(wff.FREEFORM_ID.eq(ff.ID))
-				.and(ff.FREEFORM_TYPE_CODE.eq(OD_WORD_RECOMMENDATION_CODE));
+		WordOdRecommendation wor = WORD_OD_RECOMMENDATION.as("wor");
+		Condition where1 = wor.WORD_ID.eq(wordIdField);
 
 		for (SearchCriterion criterion : filteredCriteria) {
 			if (criterion.getSearchValue() != null) {
 				String searchValueStr = criterion.getSearchValue().toString();
-				wordFreeformCondition = applyValueFilter(searchValueStr, criterion.isNot(), criterion.getSearchOperand(), ff.MODIFIED_ON, wordFreeformCondition, false);
+				where1 = applyValueFilter(searchValueStr, criterion.isNot(), criterion.getSearchOperand(), wor.MODIFIED_ON, where1, false);
 			}
 		}
-		where = where.andExists(DSL.select(wff.WORD_ID).from(wff, ff).where(wordFreeformCondition));
+		where = where.andExists(DSL.select(wor.ID).from(wor).where(where1));
 		return where;
 	}
 

@@ -76,7 +76,7 @@ dblink(
 	lang_complexities type_lang_complexity array,
 	meaning_words json,
 	definitions json,
-	od_word_recommendations json,
+	word_od_recommendation json,
 	freq_value numeric(12,7),
 	freq_rank bigint,
 	forms_exist boolean,

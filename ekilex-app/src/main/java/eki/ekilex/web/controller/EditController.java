@@ -180,11 +180,11 @@ public class EditController extends AbstractMutableDataPageController implements
 		case "word_freeform":
 			cudService.createWordFreeform(id, value, type, isPublic, roleDatasetCode, isManualEventOnUpdateEnabled);
 			break;
+		case "word_od_recommendation":
+			cudService.createWordOdRecommendation(id, value, value2, roleDatasetCode, isManualEventOnUpdateEnabled);
+			break;
 		case "create_syn_word":
 			synCudService.createWordAndSynRelation(id, value, value2, languageCode, roleDatasetCode, isManualEventOnUpdateEnabled);
-			break;
-		case "od_word_recommendation":
-			cudService.createOdWordRecommendation(id, value, roleDatasetCode, isManualEventOnUpdateEnabled);
 			break;
 		case "full_syn_candidate":
 			UserContextData userContextData = getUserContextData();
@@ -392,11 +392,11 @@ public class EditController extends AbstractMutableDataPageController implements
 		case "word_freeform":
 			cudService.updateWordFreeform(id, value, isPublic, roleDatasetCode, isManualEventOnUpdateEnabled);
 			break;
+		case "word_od_recommendation":
+			cudService.updateWordOdRecommendation(id, value, value2, roleDatasetCode, isManualEventOnUpdateEnabled);
+			break;
 		case "word_morph_comment":
 			cudService.updateWordMorphComment(id, value, roleDatasetCode, isManualEventOnUpdateEnabled);
-			break;
-		case "od_word_recommendation":
-			cudService.updateOdWordRecommendation(id, value, roleDatasetCode, isManualEventOnUpdateEnabled);
 			break;
 		case "meaning_domain":
 			Classifier currentMeaningDomain = conversionUtil.classifierFromIdString(currentValue);
@@ -696,8 +696,8 @@ public class EditController extends AbstractMutableDataPageController implements
 		case "word_morph_comment":
 			cudService.updateWordMorphComment(id, null, roleDatasetCode, isManualEventOnUpdateEnabled);
 			break;
-		case "od_word_recommendation":
-			cudService.deleteOdWordRecommendation(id, roleDatasetCode, isManualEventOnUpdateEnabled);
+		case "word_od_recommendation":
+			cudService.deleteWordOdRecommendation(id, roleDatasetCode, isManualEventOnUpdateEnabled);
 			break;
 		case DEFINITION_SOURCE_LINK:
 			sourceLinkService.deleteDefinitionSourceLink(id, roleDatasetCode, isManualEventOnUpdateEnabled);

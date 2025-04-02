@@ -451,7 +451,7 @@ select w.word_id,
        lc.lang_complexities,
        mw.meaning_words,
        wd.definitions,
-       od_ws.od_word_recommendations,
+       wor.word_od_recommendation,
        wf.freq_value,
        wf.freq_rank,
        w.forms_exist,
@@ -772,14 +772,21 @@ from (select w.id as word_id,
                          and   ds.is_public = true) wd
                    group by wd.word_id) wd
                on wd.word_id = w.word_id
-  left outer join (select wf.word_id,
-                          json_agg(row (ff.id, ff.freeform_type_code, ff.value_prese, null, null, null, null, ff.modified_by, ff.modified_on)::type_freeform order by ff.order_by) od_word_recommendations
-                   from word_freeform wf,
-                        freeform ff
-                   where wf.freeform_id = ff.id
-                   and   ff.freeform_type_code = 'OD_WORD_RECOMMENDATION'
-                   group by wf.word_id) od_ws
-               on od_ws.word_id = w.word_id
+  left outer join (select wor.word_id,
+                      		json_build_object(
+                      			'id', wor.id,
+                      			'wordId', wor.word_id,
+                      			'value', wor.value,
+                      			'valuePrese', wor.value_prese,
+                      			'optValue', wor.opt_value,
+                      			'optValuePrese', wor.opt_value_prese,
+                      			'createdBy', wor.created_by,
+                      			'createdOn', wor.created_on,
+                      			'modifiedBy', wor.modified_by,
+                      			'modifiedOn', wor.modified_on
+                      		) word_od_recommendation
+                   from word_od_recommendation wor) wor
+               on wor.word_id = w.word_id
   left outer join (select wf.word_id,
                           wf.value freq_value,
                           wf.rank freq_rank,

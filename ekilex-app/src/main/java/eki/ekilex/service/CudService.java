@@ -37,6 +37,7 @@ import eki.ekilex.data.UsageDefinition;
 import eki.ekilex.data.UsageTranslation;
 import eki.ekilex.data.WordLexemeMeaningDetails;
 import eki.ekilex.data.WordLexemeMeaningIdTuple;
+import eki.ekilex.data.WordOdRecommendation;
 import eki.ekilex.security.EkilexPermissionEvaluator;
 import eki.ekilex.service.db.CompositionDbService;
 import eki.ekilex.service.util.LexemeLevelCalcUtil;
@@ -801,15 +802,20 @@ public class CudService extends AbstractCudService implements PermConstant, Acti
 	}
 
 	@Transactional(rollbackOn = Exception.class)
-	public void updateOdWordRecommendation(Long freeformId, String valuePrese, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
+	public void updateWordOdRecommendation(
+			Long wordOdRecommendationId, String valuePrese, String optValuePrese, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
 
-		Freeform freeform = new Freeform();
-		freeform.setId(freeformId);
-		freeform.setValuePrese(valuePrese);
-		setValueAndPrese(freeform);
-		applyUpdate(freeform);
+		WordOdRecommendation wordOdRecommendation = new WordOdRecommendation();
+		wordOdRecommendation.setId(wordOdRecommendationId);
+		wordOdRecommendation.setValuePrese(valuePrese);
+		wordOdRecommendation.setOptValuePrese(optValuePrese);
+		setValueAndPrese(wordOdRecommendation);
+		applyUpdate(wordOdRecommendation);
 
-		updateFreeform(ActivityOwner.WORD, ActivityEntity.OD_WORD_RECOMMENDATION, freeform, roleDatasetCode, isManualEventOnUpdateEnabled);
+		Long wordId = activityLogService.getOwnerId(wordOdRecommendationId, ActivityEntity.WORD_OD_RECOMMENDATION);
+		ActivityLogData activityLog = activityLogService.prepareActivityLog("updateWordOdRecommendation", wordId, ActivityOwner.WORD, roleDatasetCode, isManualEventOnUpdateEnabled);
+		cudDbService.updateWordOdRecommendation(wordOdRecommendation);
+		activityLogService.createActivityLog(activityLog, wordOdRecommendationId, ActivityEntity.WORD_OD_RECOMMENDATION);
 	}
 
 	@Transactional(rollbackOn = Exception.class)
@@ -1193,15 +1199,18 @@ public class CudService extends AbstractCudService implements PermConstant, Acti
 	}
 
 	@Transactional(rollbackOn = Exception.class)
-	public void createOdWordRecommendation(Long wordId, String valuePrese, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
+	public void createWordOdRecommendation(Long wordId, String valuePrese, String optValuePrese, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
 
-		Freeform freeform = new Freeform();
-		freeform.setFreeformTypeCode(OD_WORD_RECOMMENDATION_CODE);
-		freeform.setValuePrese(valuePrese);
-		freeform.setComplexity(Complexity.DETAIL);
-		freeform.setPublic(true);
-		setValueAndPrese(freeform);
-		createWordFreeform(ActivityEntity.OD_WORD_RECOMMENDATION, wordId, freeform, roleDatasetCode, isManualEventOnUpdateEnabled);
+		WordOdRecommendation wordOdRecommendation = new WordOdRecommendation();
+		wordOdRecommendation.setValuePrese(valuePrese);
+		wordOdRecommendation.setOptValuePrese(optValuePrese);
+		wordOdRecommendation.setPublic(true);
+		setValueAndPrese(wordOdRecommendation);
+		applyCreateUpdate(wordOdRecommendation);
+
+		ActivityLogData activityLog = activityLogService.prepareActivityLog("createWordOdRecommendation", wordId, ActivityOwner.WORD, roleDatasetCode, isManualEventOnUpdateEnabled);
+		Long wordOdRecommendationId = cudDbService.createWordOdRecommendation(wordId, wordOdRecommendation);
+		activityLogService.createActivityLog(activityLog, wordOdRecommendationId, ActivityEntity.WORD_OD_RECOMMENDATION);
 	}
 
 	private void createWordFreeform(ActivityEntity activityEntity, Long wordId, Freeform freeform, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
@@ -1598,12 +1607,12 @@ public class CudService extends AbstractCudService implements PermConstant, Acti
 	}
 
 	@Transactional(rollbackOn = Exception.class)
-	public void deleteOdWordRecommendation(Long freeformId, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
+	public void deleteWordOdRecommendation(Long wordOdRecommendationId, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
 
-		Long wordId = activityLogService.getOwnerId(freeformId, ActivityEntity.OD_WORD_RECOMMENDATION);
-		ActivityLogData activityLog = activityLogService.prepareActivityLog("deleteOdWordRecommendation", wordId, ActivityOwner.WORD, roleDatasetCode, isManualEventOnUpdateEnabled);
-		cudDbService.deleteFreeform(freeformId);
-		activityLogService.createActivityLog(activityLog, freeformId, ActivityEntity.OD_WORD_RECOMMENDATION);
+		Long wordId = activityLogService.getOwnerId(wordOdRecommendationId, ActivityEntity.WORD_OD_RECOMMENDATION);
+		ActivityLogData activityLog = activityLogService.prepareActivityLog("deleteWordOdRecommendation", wordId, ActivityOwner.WORD, roleDatasetCode, isManualEventOnUpdateEnabled);
+		cudDbService.deleteWordOdRecommendation(wordOdRecommendationId);
+		activityLogService.createActivityLog(activityLog, wordOdRecommendationId, ActivityEntity.WORD_OD_RECOMMENDATION);
 	}
 
 	// TODO what about forms linked to colloc membs?

@@ -54,8 +54,6 @@ public interface ApiConstant {
 
 	String LEXEME_POS_URI = "/lexeme_pos";
 
-	String OD_WORD_RECOMMENDATION = "/od_word_recommendation";
-
 	String SOURCE_PROPERTY_URI = "/source_property";
 
 	String SOURCE_LINK_URI = "/source_link";

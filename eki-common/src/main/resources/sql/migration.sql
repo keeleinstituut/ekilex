@@ -228,3 +228,60 @@ where
 	l.code = ll.code
 ;
 
+-- ÕS soovitused
+
+delete from freeform where id = 2168187;
+
+update freeform_type set code = 'WORD_OD_RECOMMENDATION'
+where code = 'OD_WORD_RECOMMENDATION';
+
+update activity_log set entity_name = 'WORD_OD_RECOMMENDATION'
+where entity_name = 'OD_WORD_RECOMMENDATION';
+
+create table word_od_recommendation (
+  id bigserial primary key,
+  word_id bigint references word(id) on delete cascade not null,
+  value text not null, 
+  value_prese text not null,
+  opt_value text,
+  opt_value_prese text,
+  is_public boolean default true not null, 
+  created_by text null, 
+  created_on timestamp null, 
+  modified_by text null, 
+  modified_on timestamp null,
+  unique(word_id)
+);
+alter sequence word_od_recommendation_id_seq restart with 10000;
+
+create index word_od_recommendation_word_id_idx on word_od_recommendation(word_id);
+create index word_od_recommendation_value_idx on word_od_recommendation(value);
+create index word_od_recommendation_value_lower_idx on word_od_recommendation(lower(value));
+
+insert into word_od_recommendation (
+	word_id,
+	value,
+	value_prese,
+	is_public,
+	created_by,
+	created_on,
+	modified_by,
+	modified_on)
+select
+	wf.word_id,
+	f.value,
+	f.value_prese,
+	true,
+	f.created_by,
+	f.created_on,
+	f.modified_by,
+	f.modified_on
+from
+	freeform f,
+	word_freeform wf
+where
+	f.freeform_type_code = 'WORD_OD_RECOMMENDATION'
+	and wf.freeform_id = f.id
+order by f.id
+;
+

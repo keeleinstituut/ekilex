@@ -716,6 +716,11 @@ public class Sequences {
     public static final Sequence<Long> WORD_LAST_ACTIVITY_LOG_ID_SEQ = Internal.createSequence("word_last_activity_log_id_seq", Public.PUBLIC, SQLDataType.BIGINT.nullable(false), null, null, null, null, false, null);
 
     /**
+     * The sequence <code>public.word_od_recommendation_id_seq</code>
+     */
+    public static final Sequence<Long> WORD_OD_RECOMMENDATION_ID_SEQ = Internal.createSequence("word_od_recommendation_id_seq", Public.PUBLIC, SQLDataType.BIGINT.nullable(false), null, null, null, null, false, null);
+
+    /**
      * The sequence <code>public.word_rel_type_order_by_seq</code>
      */
     public static final Sequence<Long> WORD_REL_TYPE_ORDER_BY_SEQ = Internal.createSequence("word_rel_type_order_by_seq", Public.PUBLIC, SQLDataType.BIGINT.nullable(false), null, null, null, null, false, null);

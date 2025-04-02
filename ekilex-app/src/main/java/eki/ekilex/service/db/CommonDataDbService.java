@@ -47,6 +47,7 @@ import static eki.ekilex.data.db.main.Tables.USAGE_TRANSLATION;
 import static eki.ekilex.data.db.main.Tables.WORD;
 import static eki.ekilex.data.db.main.Tables.WORD_FORUM;
 import static eki.ekilex.data.db.main.Tables.WORD_FREEFORM;
+import static eki.ekilex.data.db.main.Tables.WORD_OD_RECOMMENDATION;
 import static eki.ekilex.data.db.main.Tables.WORD_TYPE_LABEL;
 import static eki.ekilex.data.db.main.Tables.WORD_WORD_TYPE;
 
@@ -119,6 +120,7 @@ import eki.ekilex.data.db.main.tables.UsageSourceLink;
 import eki.ekilex.data.db.main.tables.UsageTranslation;
 import eki.ekilex.data.db.main.tables.Word;
 import eki.ekilex.data.db.main.tables.WordFreeform;
+import eki.ekilex.data.db.main.tables.WordOdRecommendation;
 
 //only common use data reading!
 @Component
@@ -371,28 +373,17 @@ public class CommonDataDbService extends AbstractDataDbService {
 				.fetchInto(WordForum.class);
 	}
 
-	public List<eki.ekilex.data.Freeform> getOdWordRecommendations(Long wordId) {
+	public eki.ekilex.data.WordOdRecommendation getWordOdRecommendation(Long wordId) {
 
-		Freeform f = FREEFORM.as("f");
-		WordFreeform wf = WORD_FREEFORM.as("wf");
+		WordOdRecommendation wor = WORD_OD_RECOMMENDATION.as("wor");
 
 		return mainDb
-				.select(
-						f.ID,
-						f.VALUE,
-						f.VALUE_PRESE,
-						f.LANG,
-						f.COMPLEXITY,
-						f.ORDER_BY,
-						f.MODIFIED_BY,
-						f.MODIFIED_ON)
-				.from(f, wf)
-				.where(
-						wf.WORD_ID.eq(wordId)
-								.and(f.ID.eq(wf.FREEFORM_ID))
-								.and(f.FREEFORM_TYPE_CODE.eq(OD_WORD_RECOMMENDATION_CODE)))
-				.orderBy(f.ORDER_BY)
-				.fetchInto(eki.ekilex.data.Freeform.class);
+				.selectFrom(wor)
+				.where(wor.WORD_ID.eq(wordId))
+				.orderBy(wor.ID)
+				.limit(1)
+				.fetchOptionalInto(eki.ekilex.data.WordOdRecommendation.class)
+				.orElse(null);
 	}
 
 	public List<eki.ekilex.data.Freeform> getWordFreeforms(Long wordId, String[] excludedFreeformTypeCodes, String classifierLabelLang) {

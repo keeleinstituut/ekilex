@@ -625,7 +625,7 @@ public class SearchDbService implements GlobalConstant, SystemConstant {
 						w.WORD_TYPE_CODES,
 						w.MEANING_WORDS,
 						w.DEFINITIONS,
-						w.OD_WORD_RECOMMENDATIONS,
+						w.WORD_OD_RECOMMENDATION,
 						w.FORMS_EXIST)
 				.from(w)
 				.where(w.WORD_ID.eq(wordId))

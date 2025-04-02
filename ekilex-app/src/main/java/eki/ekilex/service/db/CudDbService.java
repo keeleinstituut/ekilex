@@ -34,6 +34,7 @@ import static eki.ekilex.data.db.main.Tables.WORD_FORUM;
 import static eki.ekilex.data.db.main.Tables.WORD_FREEFORM;
 import static eki.ekilex.data.db.main.Tables.WORD_GROUP;
 import static eki.ekilex.data.db.main.Tables.WORD_GROUP_MEMBER;
+import static eki.ekilex.data.db.main.Tables.WORD_OD_RECOMMENDATION;
 import static eki.ekilex.data.db.main.Tables.WORD_RELATION;
 import static eki.ekilex.data.db.main.Tables.WORD_RELATION_PARAM;
 import static eki.ekilex.data.db.main.Tables.WORD_TAG;
@@ -603,6 +604,20 @@ public class CudDbService extends AbstractDataDbService {
 				.execute();
 	}
 
+	public void updateWordOdRecommendation(eki.ekilex.data.WordOdRecommendation wordOdRecommendation) {
+		mainDb
+				.update(WORD_OD_RECOMMENDATION)
+				.set(WORD_OD_RECOMMENDATION.VALUE, wordOdRecommendation.getValue())
+				.set(WORD_OD_RECOMMENDATION.VALUE_PRESE, wordOdRecommendation.getValuePrese())
+				.set(WORD_OD_RECOMMENDATION.OPT_VALUE, wordOdRecommendation.getOptValue())
+				.set(WORD_OD_RECOMMENDATION.OPT_VALUE_PRESE, wordOdRecommendation.getOptValuePrese())
+				.set(WORD_OD_RECOMMENDATION.IS_PUBLIC, wordOdRecommendation.isPublic())
+				.set(WORD_OD_RECOMMENDATION.MODIFIED_BY, wordOdRecommendation.getModifiedBy())
+				.set(WORD_OD_RECOMMENDATION.MODIFIED_ON, wordOdRecommendation.getModifiedOn())
+				.where(WORD_OD_RECOMMENDATION.ID.eq(wordOdRecommendation.getId()))
+				.execute();
+	}
+
 	public void updateMeaningNote(Long meaningNoteId, Note note) {
 
 		Map<Field<?>, Object> fieldAndValueMap = new HashMap<>();
@@ -958,6 +973,37 @@ public class CudDbService extends AbstractDataDbService {
 		wordForumRecord.setModifiedBy(userName);
 		wordForumRecord.setModifiedOn(timestamp);
 		wordForumRecord.store();
+	}
+
+	public Long createWordOdRecommendation(Long wordId, eki.ekilex.data.WordOdRecommendation wordOdRecommendation) {
+
+		return mainDb
+				.insertInto(
+						WORD_OD_RECOMMENDATION,
+						WORD_OD_RECOMMENDATION.WORD_ID,
+						WORD_OD_RECOMMENDATION.VALUE,
+						WORD_OD_RECOMMENDATION.VALUE_PRESE,
+						WORD_OD_RECOMMENDATION.OPT_VALUE,
+						WORD_OD_RECOMMENDATION.OPT_VALUE_PRESE,
+						WORD_OD_RECOMMENDATION.IS_PUBLIC,
+						WORD_OD_RECOMMENDATION.CREATED_BY,
+						WORD_OD_RECOMMENDATION.CREATED_ON,
+						WORD_OD_RECOMMENDATION.MODIFIED_BY,
+						WORD_OD_RECOMMENDATION.MODIFIED_ON)
+				.values(
+						wordId,
+						wordOdRecommendation.getValue(),
+						wordOdRecommendation.getValuePrese(),
+						wordOdRecommendation.getOptValue(),
+						wordOdRecommendation.getOptValuePrese(),
+						wordOdRecommendation.isPublic(),
+						wordOdRecommendation.getCreatedBy(),
+						wordOdRecommendation.getCreatedOn(),
+						wordOdRecommendation.getModifiedBy(),
+						wordOdRecommendation.getModifiedOn())
+				.returning(WORD_OD_RECOMMENDATION.ID)
+				.fetchOne()
+				.getId();
 	}
 
 	public Long createWordType(Long wordId, String typeCode) {
@@ -1754,6 +1800,13 @@ public class CudDbService extends AbstractDataDbService {
 		mainDb
 				.delete(WORD_FORUM)
 				.where(WORD_FORUM.ID.eq(wordForumId))
+				.execute();
+	}
+
+	public void deleteWordOdRecommendation(Long wordOdRecommendationId) {
+		mainDb
+				.delete(WORD_OD_RECOMMENDATION)
+				.where(WORD_OD_RECOMMENDATION.ID.eq(wordOdRecommendationId))
 				.execute();
 	}
 

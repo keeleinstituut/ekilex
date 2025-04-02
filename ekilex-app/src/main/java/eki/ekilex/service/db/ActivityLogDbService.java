@@ -39,6 +39,7 @@ import static eki.ekilex.data.db.main.Tables.WORD_ACTIVITY_LOG;
 import static eki.ekilex.data.db.main.Tables.WORD_ETYMOLOGY;
 import static eki.ekilex.data.db.main.Tables.WORD_FREEFORM;
 import static eki.ekilex.data.db.main.Tables.WORD_LAST_ACTIVITY_LOG;
+import static eki.ekilex.data.db.main.Tables.WORD_OD_RECOMMENDATION;
 import static eki.ekilex.data.db.main.Tables.WORD_RELATION;
 import static eki.ekilex.data.db.main.Tables.WORD_WORD_TYPE;
 
@@ -661,6 +662,15 @@ public class ActivityLogDbService implements GlobalConstant, ActivityFunct {
 				.orElse(null);
 	}
 
+	public Long getWordOdRecommendationOwnerId(Long entityId) {
+		return mainDb
+				.select(WORD_OD_RECOMMENDATION.WORD_ID)
+				.from(WORD_OD_RECOMMENDATION)
+				.where(WORD_OD_RECOMMENDATION.ID.eq(entityId))
+				.fetchOptionalInto(Long.class)
+				.orElse(null);
+	}
+
 	public Long getMeaningDomainOwnerId(Long meaningDomainId) {
 		return mainDb
 				.select(MEANING_DOMAIN.MEANING_ID)
@@ -881,4 +891,5 @@ public class ActivityLogDbService implements GlobalConstant, ActivityFunct {
 								.and(MEANING_LAST_ACTIVITY_LOG.TYPE.eq(lastActivityType.name())))
 				.execute();
 	}
+
 }

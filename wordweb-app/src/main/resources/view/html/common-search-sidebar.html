@@ -36,22 +36,20 @@
         <span th:text="#{label.no.data}">Andmed puuduvad</span>
       </th:block>
     </section>
-  <th:block th:fragment="od-word-recommendations">
-    <section class="search__sidebar-block search__block text-body-two" th:if="${not #lists.isEmpty(wordData.word.odWordRecommendations)}">
-      <th:block th:each="odWordRecommendation : ${wordData.word.odWordRecommendations}">
-        <div>
-          <h5 class="recommended-usage-label">
-            <i class="fa fa-book mr-1"></i>
-            <span th:text="#{label.od.recommend}" class="label-text">ÕS selgitab</span>
-          </h5>
-          <div class="recommendation-additional-info">
-            <i class="fas fa-info-circle"></i>
-            <span>Selgitused on töös, nende sõnastus võib muutuda. Järgmine ÕS ilmub 2025. aastal.</span>
-          </div>
-          <p th:utext="${odWordRecommendation.value}"></p>
-          <p th:text="|(${#dates.format(odWordRecommendation.modifiedOn, 'dd.MM.yyyy')})|" th:if="${odWordRecommendation.modifiedOn != null}"></p>
+  <th:block th:fragment="word-od-recommendation">
+    <section class="search__sidebar-block search__block text-body-two" th:if="${wordData.word.wordOdRecommendation}">
+      <div>
+        <h5 class="recommended-usage-label">
+          <i class="fa fa-book mr-1"></i>
+          <span th:text="#{label.od.recommend}" class="label-text">ÕS selgitab</span>
+        </h5>
+        <div class="recommendation-additional-info">
+          <i class="fas fa-info-circle"></i>
+          <span>Selgitused on töös, nende sõnastus võib muutuda. Järgmine ÕS ilmub 2025. aastal.</span>
         </div>
-      </th:block>
+        <p th:utext="${wordData.word.wordOdRecommendation.valuePrese}"></p>
+        <p th:text="|(${#dates.format(wordData.word.wordOdRecommendation.modifiedOn, 'dd.MM.yyyy')})|" th:if="${wordData.word.wordOdRecommendation.modifiedOn != null}"></p>
+      </div>
     </section>
   </th:block>
   <th:block th:fragment="word-relations">
