@@ -16,7 +16,7 @@
                     onclick="getAndPlayAudio(this)" class="btn btn-speaker btn-speaker--inactive"
                     th:title="#{label.tooltip.audio.human}"
                     data-toggle="tooltip">
-              <span class="material-symbols-outlined material-symbols-outlined--default-size">record_voice_over</span>
+              <span class="material-symbols-outlined material-symbols-outlined--small">record_voice_over</span>
             </button>
           </th:block>
           <th:block th:unless="${form.audioFileExists}">
@@ -50,7 +50,7 @@
     <th:block th:if="${paradigm.inflectionTypeNr} and ${paradigm.inflectionTypeNr} != 41 and ${paradigm.inflectionTypeNr} != 0">
       <p class="btn-bold mt-3">
         <span class="text-body-two" th:text="#{label.morpho.inflectiontype}">Muuttüüp</span>
-        <th:block th:switch="${paradigm.inflectionType}">
+        <th:block th:switch='${paradigm.inflectionType.replaceAll("[(|)]", "")}'>
           <th:block th:case="'1'"   ><th:block th:replace=" :: printurl ('https://eki.ee/teatmik/kaandsona-tuup-1-ohutu-veski/#1.-ohutu')"></th:block></th:block>
           <th:block th:case="'1e'"  ><th:block th:replace=" :: printurl ('https://eki.ee/teatmik/kaandsona-tuup-1-ohutu-veski/#1e.-veski')"></th:block></th:block>
           <th:block th:case="'01'"  ><th:block th:replace=" :: printurl ('https://eki.ee/teatmik/kaandsona-tuup-1-ohutu-veski/#1.-ohutu')"></th:block></th:block>

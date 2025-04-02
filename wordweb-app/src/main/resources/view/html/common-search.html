@@ -137,7 +137,7 @@
   </th:block>
   <th:block th:fragment="word-data">
     <div class="d-flex align-items-center flex-wrap">
-      <th:block th:with="langData=${@viewUtil.getLangData(wordData.word.lang, selectedLangs)}">
+      <th:block th:with="langData=${@viewUtil.getLangData(wordData.word.lang)}">
         <span class="lang-code text-caption mr-2" th:if="${langData != null}" th:text="${langData.codeIso2}" th:title="${langData.label}" data-toggle="tooltip"></span>
       </th:block>
       <h1 class="search__lex-title" th:utext="${@viewUtil.getWordValueMarkup(wordData.word)}">
@@ -147,7 +147,7 @@
       <button th:aria-label="|#{aria.listen} - ${wordData.word.word}|" class="btn btn-speaker"
               th:if="${wordData.firstAvailableAudioFile != null}"
               th:data-audio-url="@{'/files/audio/' + ${wordData.firstAvailableAudioFile}}" onclick="getAndPlayAudio(this)">
-        <span class="material-symbols-outlined material-symbols-outlined--default-size">record_voice_over</span>
+        <span class="material-symbols-outlined material-symbols-outlined--small">record_voice_over</span>
       </button>
       <span id="spellingLine" class="mr-2" th:if="${wordData.word.vocalForm != null}" th:text="${wordData.word.vocalForm}"></span>
       <th:block th:each="wordType : ${wordData.word.wordTypes}" th:if="${not #lists.isEmpty(wordData.word.wordTypes)}">
