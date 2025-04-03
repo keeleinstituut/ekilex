@@ -62,11 +62,11 @@ public class DefinitionLoaderRunner implements GlobalConstant, LoaderConstant, S
 				definitionId = migrationDbService.getDefinitionId(meaningId, definitionValue);
 				if (definitionId == null) {
 					definitionId = cudDbService.createDefinition(meaningId, definitionValue, definitionValue, LANGUAGE_CODE_EST, DEFINITION_TYPE_CODE_UNDEFINED, complexity, isPublic);
-					cudDbService.createDefinitionDataset(definitionId, DATASET_EKI);
 					createCount++;
 				} else {
 					existCount++;
 				}
+				cudDbService.createDefinitionDataset(definitionId, DATASET_EKI);
 			} else {
 				existCount++;
 			}
