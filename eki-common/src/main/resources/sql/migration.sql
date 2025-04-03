@@ -230,7 +230,30 @@ where
 
 -- ÕS soovitused ja muud tehnilised laadimised
 
-delete from freeform where id = 2168187;
+delete
+from
+	freeform
+where
+	id in
+(
+	select
+		f.ff_id
+	from
+		(
+		select
+			(array_agg(f.id order by f.id))[2] ff_id
+		from
+			word_freeform wf,
+			freeform f
+		where
+			wf.freeform_id = f.id
+			and f.freeform_type_code = 'WORD_OD_RECOMMENDATION'
+		group by
+			wf.word_id
+	) f
+	where
+		f.ff_id is not null
+);
 
 update freeform_type set code = 'WORD_OD_RECOMMENDATION'
 where code = 'OD_WORD_RECOMMENDATION';

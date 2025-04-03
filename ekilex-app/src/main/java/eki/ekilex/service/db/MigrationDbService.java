@@ -3,6 +3,7 @@ package eki.ekilex.service.db;
 import static eki.ekilex.data.db.main.Tables.DEFINITION;
 import static eki.ekilex.data.db.main.Tables.DEFINITION_DATASET;
 import static eki.ekilex.data.db.main.Tables.DOMAIN_LABEL;
+import static eki.ekilex.data.db.main.Tables.MEANING;
 
 import java.util.List;
 
@@ -13,6 +14,7 @@ import eki.common.constant.ClassifierName;
 import eki.common.data.Classifier;
 import eki.ekilex.data.db.main.tables.Definition;
 import eki.ekilex.data.db.main.tables.DefinitionDataset;
+import eki.ekilex.data.db.main.tables.Meaning;
 
 // temporary for data migration tools
 @Component
@@ -77,6 +79,17 @@ public class MigrationDbService extends AbstractDataDbService {
 														.and(DOMAIN_LABEL.TYPE.eq(type)))))
 				.execute();
 		return resultCount > 0;
+	}
+
+	public boolean meaningExists(Long meaningId) {
+
+		Meaning m = MEANING.as("m");
+
+		return mainDb
+				.fetchExists(DSL
+						.select(m.ID)
+						.from(m)
+						.where(m.ID.eq(meaningId)));
 	}
 
 	public Long getDefinitionId(Long meaningId, String definitionValue) {

@@ -44,6 +44,7 @@ public class DefinitionLoaderRunner implements GlobalConstant, LoaderConstant, S
 
 		int existCount = 0;
 		int createCount = 0;
+		int missingMeaningCount = 0;
 
 		for (String definitionTsvLine : definitionTsvLines) {
 
@@ -57,26 +58,34 @@ public class DefinitionLoaderRunner implements GlobalConstant, LoaderConstant, S
 			Complexity complexity = Complexity.valueOf(StringUtils.trim(definitionTsvCells[2]));
 			boolean isPublic = Boolean.valueOf(StringUtils.trim(definitionTsvCells[3]));
 
-			Long definitionId = migrationDbService.getDefinitionId(meaningId, definitionValue, DATASET_EKI);
-			if (definitionId == null) {
-				definitionId = migrationDbService.getDefinitionId(meaningId, definitionValue);
+			boolean meaningExists = migrationDbService.meaningExists(meaningId);
+			if (meaningExists) {
+
+				Long definitionId = migrationDbService.getDefinitionId(meaningId, definitionValue, DATASET_EKI);
 				if (definitionId == null) {
-					definitionId = cudDbService.createDefinition(meaningId, definitionValue, definitionValue, LANGUAGE_CODE_EST, DEFINITION_TYPE_CODE_UNDEFINED, complexity, isPublic);
-					createCount++;
+					definitionId = migrationDbService.getDefinitionId(meaningId, definitionValue);
+					if (definitionId == null) {
+						definitionId = cudDbService.createDefinition(meaningId, definitionValue, definitionValue, LANGUAGE_CODE_EST, DEFINITION_TYPE_CODE_UNDEFINED, complexity, isPublic);
+						createCount++;
+					} else {
+						existCount++;
+					}
+					cudDbService.createDefinitionDataset(definitionId, DATASET_EKI);
 				} else {
 					existCount++;
 				}
-				cudDbService.createDefinitionDataset(definitionId, DATASET_EKI);
+				boolean definitionDatasetExists = migrationDbService.definitionDatasetExists(definitionId, DATASET_OD_TECH_CODE);
+				if (!definitionDatasetExists) {
+					cudDbService.createDefinitionDataset(definitionId, DATASET_OD_TECH_CODE);
+				}
+
 			} else {
-				existCount++;
-			}
-			boolean definitionDatasetExists = migrationDbService.definitionDatasetExists(definitionId, DATASET_OD_TECH_CODE);
-			if (!definitionDatasetExists) {
-				cudDbService.createDefinitionDataset(definitionId, DATASET_OD_TECH_CODE);
+				missingMeaningCount++;
 			}
 		}
 
-		logger.info("Completed load. Out of total {} lines, create count: {}, exist count: {}", definitionTsvLines.size(), createCount, existCount);
+		logger.info("Completed load. Out of {} lines, def create count: {}, def exist count: {}, missing meaning count: {}",
+				definitionTsvLines.size(), createCount, existCount, missingMeaningCount);
 	}
 
 	private List<String> readFileLines(String filePath) throws Exception {
