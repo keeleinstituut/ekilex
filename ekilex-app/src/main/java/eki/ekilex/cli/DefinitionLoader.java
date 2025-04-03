@@ -15,7 +15,6 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 import eki.common.util.ConsolePromptUtil;
 import eki.ekilex.cli.runner.DefinitionLoaderRunner;
-import eki.ekilex.cli.runner.DomainFixerRunner;
 
 @SpringBootApplication(scanBasePackages = {
 		"eki.common",
