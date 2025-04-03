@@ -228,7 +228,7 @@ where
 	l.code = ll.code
 ;
 
--- ÕS soovitused
+-- ÕS soovitused ja muud tehnilised laadimised
 
 delete from freeform where id = 2168187;
 
@@ -284,4 +284,8 @@ where
 	and wf.freeform_id = f.id
 order by f.id
 ;
+
+insert into dataset (code, type, name, description, is_visible, is_public)
+values ('ÕS-tehn', 'LEX', 'ÕS tehniline', 'ÕS tehniline. Kasutuses automaatsete laadurite poolt', false, false);
+
 

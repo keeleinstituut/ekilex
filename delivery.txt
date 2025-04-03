@@ -6,3 +6,6 @@ muutunud api rajad
 
 corpus.service.rus.url kaob, asemele tuleb
 skell.service.url
+
+DefinitionLoader
+mvn spring-boot:run -P defl -D spring-boot.run.profiles=<dev|prod> -D spring-boot.run.arguments="impfile="<import file path>"" 

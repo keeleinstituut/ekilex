@@ -65,6 +65,12 @@
 				<spring.boot.mainclass>eki.ekilex.cli.DomainFixer</spring.boot.mainclass>
 			</properties>
 		</profile>
+		<profile>
+			<id>defl</id>
+			<properties>
+				<spring.boot.mainclass>eki.ekilex.cli.DefinitionLoader</spring.boot.mainclass>
+			</properties>
+		</profile>
 	</profiles>
 
 	<build>
