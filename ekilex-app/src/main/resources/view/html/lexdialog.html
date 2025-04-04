@@ -2837,7 +2837,7 @@
   <div th:id="${'editWordOdRecommendationDlg_' + details.word.wordOdRecommendation.id}" class="modal"
         role="dialog"
         th:fragment="edit_word_od_recommendation"
-        data-plugin="initEkiEditorDlgPlugin">
+        data-plugin="initMultipleEkiEditorDlgPlugin">
     <div class="modal-dialog modal-lg" role="document">
       <div class="modal-content">
         <form th:action="@{/update_item}" method="post">
@@ -2851,14 +2851,9 @@
             <input type="hidden" name="id" th:value="${details.word.wordOdRecommendation.id}">
             <input type="hidden" name="opCode" value="word_od_recommendation">
             <input type="hidden" name="value" th:value="${details.word.wordOdRecommendation.valuePrese}">
-            <div th:replace="components :: eki_editor_elem"></div>
-            <!-- TODO value2 should be eki editor
-            <div class="form-group row eki-editor">
-              <div class="col-md-12">
-                <textarea name="value2" th:text="${details.word.wordOdRecommendation.optValuePrese}" class="form-control"></textarea>
-              </div>
-            </div>
-            -->
+            <input type="hidden" name="value2" th:value="${details.word.wordOdRecommendation.optValuePrese}">
+            <div th:replace="components :: eki_editor_elem(editFld = 'value')"></div>
+            <div th:replace="components :: eki_editor_elem(editFld = 'value2')"></div>  
           </div>
           <div class="modal-footer">
             <button type="submit" class="btn btn-primary" th:text="#{common.save}">Salvesta</button>
