@@ -55,6 +55,16 @@ $(function() {
 		})
 	}
 
+	$.fn.initMultipleEkiEditorDlgAndFocusPlugin = function() {
+		return this.each(function() {
+			const obj = $(this);
+			obj.on('show.bs.modal', function(e) {
+				initMultipleEkiEditorDlg(obj);
+				alignAndFocus(e, obj);
+			})
+		})
+	}
+
 	$.fn.initEkiEditorDlgAndFocusPlugin = function() {
 		return this.each(function() {
 			const obj = $(this);
