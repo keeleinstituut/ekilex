@@ -118,7 +118,10 @@
             <input type="hidden" name="word-selected" th:value="${word.selected}" />
             <input type="hidden" name="word-select-url" th:value="@{${@viewUtil.getSearchUri(sessionBean, searchMode, word.word, word.homonymNr, word.lang)}}" />
             <button type="button" th:id="${'word-details-link-' + word.wordId}" class="homonym-item homonym__item">
-              <span class="lang-code text-caption" th:with="langData=${@viewUtil.getLangData(word.lang)}" th:text="${langData.codeIso2}" th:title="${langData.label}" data-toggle="tooltip">1</span>
+              <th:block th:with="langData=${@viewUtil.getLangData(word.lang)}">
+                <span th:text="${langData.codeIso2}" th:title="${langData.label}" data-toggle="tooltip" th:unless="${langData.imageName}" class="lang-code text-caption">1</span>
+                <img th:src="|@{/view/images}${langData.imageName}|" th:title="${langData.label}" data-toggle="tooltip" th:if="${langData.imageName}" class="lang-code-img">
+              </th:block>
               <div class="homonym__body">
                 <div class="text-body-two">
                   <span th:utext="${@viewUtil.getWordValueMarkup(word)}">tee</span>
@@ -138,7 +141,8 @@
   <th:block th:fragment="word-data">
     <div class="d-flex align-items-center flex-wrap">
       <th:block th:with="langData=${@viewUtil.getLangData(wordData.word.lang)}">
-        <span class="lang-code text-caption mr-2" th:if="${langData != null}" th:text="${langData.codeIso2}" th:title="${langData.label}" data-toggle="tooltip"></span>
+        <span th:text="${langData.codeIso2}" th:title="${langData.label}" data-toggle="tooltip" th:unless="${langData.imageName}" class="lang-code text-caption mr-2">1</span>
+        <img th:src="|@{/view/images}${langData.imageName}|" th:title="${langData.label}" data-toggle="tooltip" th:if="${langData.imageName}" class="lang-code-img mr-2">
       </th:block>
       <h1 class="search__lex-title" th:utext="${@viewUtil.getWordValueMarkup(wordData.word)}">
         tee

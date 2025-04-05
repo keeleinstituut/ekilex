@@ -25,13 +25,13 @@ function initEkiEditorDlg(editDlg, editorOptions) {
 	editFld.val(valueInput.val());
 
 	const complexityBtns = editDlg.find('[name="complexity"]');
-	if (complexityBtns.filter(':checked').length === 0){
-		complexityBtns.eq(complexityBtns.length-1).prop('checked', true);
+	if (complexityBtns.filter(':checked').length === 0) {
+		complexityBtns.eq(complexityBtns.length - 1).prop('checked', true);
 	}
 	initCkEditor(editFld, editorOptions);
 
-	cancelBtn.off('click').on('click', function(){
-		if(errorTemplate) {
+	cancelBtn.off('click').on('click', function() {
+		if (errorTemplate) {
 			footer.find('.error-text').remove();
 		};
 	});
@@ -56,67 +56,67 @@ function initEkiEditorDlg(editDlg, editorOptions) {
 function initMultipleEkiEditorDlg(editDlg, editorOptions) {
 	// Get all editor fields and store them with their respective value fields
 	const editFields = editDlg
-    .find("[data-editor-field]")
-    .toArray()
-    .reduce((acc, editorField) => {
+		.find("[data-editor-field]")
+		.toArray()
+		.reduce((acc, editorField) => {
 			const editorFieldId = editorField.getAttribute("data-id");
-      const valueField = editDlg.find(
-        `[name="${editorFieldId}"]`
-      );
-      if (valueField.length) {
+			const valueField = editDlg.find(
+				`[name="${editorFieldId}"]`
+			);
+			if (valueField.length) {
 				// Editor field will have to be a jquery object for ckeditor
-        acc.push({ editorField: $(editorField), valueField });
-      } else {
+				acc.push({ editorField: $(editorField), valueField });
+			} else {
 				console.error(`Could not find a matching value field for ${editorFieldId}`);
 			}
-      return acc;
-    }, []);
-  let footer = editDlg.find(".modal-footer");
-  let cancelBtn = footer.find("[data-dismiss=modal]");
-  let errorText = messages["editor.error.add.note"];
-  let errorTemplate = '<span class="error-text">' + errorText + "</span>";
-  const complexityBtns = editDlg.find('[name="complexity"]');
-  if (complexityBtns.filter(":checked").length === 0) {
-    complexityBtns.eq(complexityBtns.length - 1).prop("checked", true);
-  }
+			return acc;
+		}, []);
+	let footer = editDlg.find(".modal-footer");
+	let cancelBtn = footer.find("[data-dismiss=modal]");
+	let errorText = messages["editor.error.add.note"];
+	let errorTemplate = '<span class="error-text">' + errorText + "</span>";
+	const complexityBtns = editDlg.find('[name="complexity"]');
+	if (complexityBtns.filter(":checked").length === 0) {
+		complexityBtns.eq(complexityBtns.length - 1).prop("checked", true);
+	}
 	// Init ckeditor for each field
-  editFields.forEach(({ editorField, valueField }) => {
-    editorField.val(valueField.val());
-    initCkEditor(editorField, editorOptions);
-  });
+	editFields.forEach(({ editorField, valueField }) => {
+		editorField.val(valueField.val());
+		initCkEditor(editorField, editorOptions);
+	});
 
-  cancelBtn.off("click").on("click", function () {
-    if (errorTemplate) {
-      footer.find(".error-text").remove();
-    }
-  });
+	cancelBtn.off("click").on("click", function() {
+		if (errorTemplate) {
+			footer.find(".error-text").remove();
+		}
+	});
 
-  editDlg
-    .find('button[type="submit"]')
-    .off("click")
-    .on("click", function (e) {
+	editDlg
+		.find('button[type="submit"]')
+		.off("click")
+		.on("click", function(e) {
 			// Make sure all value fields are filled (could optionally ignore some fields in the future if needed)
-      const areValuesFilled = editFields.every(({ editorField }) => {
-        if (editorField.val()) {
-          editorField.removeClass("is-invalid");
-          return true;
-        } else {
-          editorField.addClass("is-invalid");
-          return false;
-        }
-      });
-      if (areValuesFilled) {
-        editFields.forEach(({ editorField, valueField }) => {
-          const cleanedValue = cleanEkiEditorValue(editorField.val());
-          valueField.val(cleanedValue);
-        });
-        footer.find(".error-text").remove();
-        submitDialog(e, editDlg, messages["common.data.update.error"]);
-      } else {
-        e.preventDefault();
-        footer.prepend(errorTemplate);
-      }
-    });
+			const areValuesFilled = editFields.every(({ editorField }) => {
+				if (editorField.val()) {
+					editorField.removeClass("is-invalid");
+					return true;
+				} else {
+					editorField.addClass("is-invalid");
+					return false;
+				}
+			});
+			if (areValuesFilled) {
+				editFields.forEach(({ editorField, valueField }) => {
+					const cleanedValue = cleanEkiEditorValue(editorField.val());
+					valueField.val(cleanedValue);
+				});
+				footer.find(".error-text").remove();
+				submitDialog(e, editDlg, messages["common.data.update.error"]);
+			} else {
+				e.preventDefault();
+				footer.prepend(errorTemplate);
+			}
+		});
 };
 
 function cleanEkiEditorValue(editFldValue) {
