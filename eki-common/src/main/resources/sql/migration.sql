@@ -247,7 +247,7 @@ where
 			freeform f
 		where
 			wf.freeform_id = f.id
-			and f.freeform_type_code = 'WORD_OD_RECOMMENDATION'
+			and f.freeform_type_code = 'OD_WORD_RECOMMENDATION'
 		group by
 			wf.word_id
 	) f
