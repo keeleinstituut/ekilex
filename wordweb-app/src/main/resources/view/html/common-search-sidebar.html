@@ -48,6 +48,7 @@
           <span>Selgitused on töös, nende sõnastus võib muutuda. Järgmine ÕS ilmub 2025. aastal.</span>
         </div>
         <p th:utext="${wordData.word.wordOdRecommendation.valuePrese}"></p>
+        <p th:utext="${wordData.word.wordOdRecommendation.optValuePrese}" th:if="${wordData.word.wordOdRecommendation.optValuePrese}"></p>
         <p th:text="|(${#dates.format(wordData.word.wordOdRecommendation.modifiedOn, 'dd.MM.yyyy')})|" th:if="${wordData.word.wordOdRecommendation.modifiedOn != null}"></p>
       </div>
     </section>
