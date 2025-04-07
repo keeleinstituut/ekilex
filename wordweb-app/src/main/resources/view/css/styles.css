@@ -14209,6 +14209,15 @@ body.hidden-scroll {
 .lang-code--unrestricted {
   width: auto;
 }
+.lang-code-img {
+  width: 26px;
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  padding: 1px;
+  height: 20px;
+  color: var(--color-dark-blue);
+}
 .overflow-hidden {
   overflow: hidden !important;
 }
