@@ -202,7 +202,9 @@ public abstract class AbstractSearchController extends AbstractAuthActionControl
 		if (pageNum == null) {
 			return DEFAULT_OFFSET;
 		}
-		pageNum = Math.max(pageNum, DEFAULT_OFFSET);
+		if (pageNum < 1) {
+			return DEFAULT_OFFSET;
+		}
 		int offset = (pageNum - 1) * DEFAULT_MAX_RESULTS_LIMIT;
 		return offset;
 	}
