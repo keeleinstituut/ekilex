@@ -14206,6 +14206,9 @@ body.hidden-scroll {
   height: 20px;
   color: var(--color-dark-blue);
 }
+.lang-code--unrestricted {
+  width: auto;
+}
 .lang-code-img {
   width: 26px;
   display: inline-flex;
@@ -14214,9 +14217,6 @@ body.hidden-scroll {
   padding: 1px;
   height: 20px;
   color: var(--color-dark-blue);
-}
-.lang-code--unrestricted {
-  width: auto;
 }
 .overflow-hidden {
   overflow: hidden !important;
@@ -18553,10 +18553,12 @@ eki-stress {
 }
 eki-stress::after {
   position: absolute;
-  top: -2px;
-  right: 25%;
-  display: inline-block;
-  content: "\301  ";
+  content: "\301";
+  display: flex;
+  width: 100%;
+  top: -1px;
+  font-size: 1rem;
+  left: 30%;
 }
 .corp-panel eki-stress::after {
   content: none;

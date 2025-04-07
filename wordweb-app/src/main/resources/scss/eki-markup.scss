@@ -16,10 +16,12 @@ eki-stress {
 
   &::after{
     position: absolute;
-    top: -2px;
-    right: 25%;
-    display: inline-block;
-    content: "́ ";
+    content: "\301";
+    display: flex;
+    width: 100%;
+    top: -1px;
+    font-size: 1rem;
+    left: 30%;
   }
 }
 

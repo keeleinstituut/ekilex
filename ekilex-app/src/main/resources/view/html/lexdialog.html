@@ -2821,7 +2821,7 @@
             <p th:text="#{common.content}"></p>
             <div th:replace="components :: eki_editor_elem(editFld = 'value')"></div>
             <p th:text="#{common.add}"></p>
-            <div th:replace="components :: eki_editor_elem(editFld = 'value2')"></div>  
+            <div th:replace="components :: eki_editor_elem(editFld = 'value2', optional = ${true})"></div>  
           </div>
           <div class="modal-footer">
             <button type="submit" class="btn btn-primary" th:text="#{common.add}">Lisa</button>
@@ -2852,7 +2852,7 @@
             <p th:text="#{common.content}"></p>
             <div th:replace="components :: eki_editor_elem(editFld = 'value')"></div>
             <p th:text="#{common.add}"></p>
-            <div th:replace="components :: eki_editor_elem(editFld = 'value2')"></div>  
+            <div th:replace="components :: eki_editor_elem(editFld = 'value2', optional = ${true})"></div>  
           </div>
           <div class="modal-footer">
             <button type="submit" class="btn btn-primary" th:text="#{common.save}">Salvesta</button>
