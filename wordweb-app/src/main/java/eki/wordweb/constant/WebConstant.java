@@ -124,6 +124,8 @@ public interface WebConstant {
 
 	String REQUEST_START_TIME_KEY = "request_start_time";
 
+	String LANGUAGE_MUL_IMAGE_PATH = "/language_mul.svg";
+
 	String NOTHING = "";
 
 	int TYPICAL_COLLECTIONS_DISPLAY_LIMIT = 3;

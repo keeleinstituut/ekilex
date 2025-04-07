@@ -25,13 +25,13 @@ function initEkiEditorDlg(editDlg, editorOptions) {
 	editFld.val(valueInput.val());
 
 	const complexityBtns = editDlg.find('[name="complexity"]');
-	if (complexityBtns.filter(':checked').length === 0){
-		complexityBtns.eq(complexityBtns.length-1).prop('checked', true);
+	if (complexityBtns.filter(':checked').length === 0) {
+		complexityBtns.eq(complexityBtns.length - 1).prop('checked', true);
 	}
 	initCkEditor(editFld, editorOptions);
 
-	cancelBtn.off('click').on('click', function(){
-		if(errorTemplate) {
+	cancelBtn.off('click').on('click', function() {
+		if (errorTemplate) {
 			footer.find('.error-text').remove();
 		};
 	});
@@ -54,21 +54,21 @@ function initEkiEditorDlg(editDlg, editorOptions) {
 
 
 function initMultipleEkiEditorDlg(editDlg, editorOptions) {
-	// Get all editor fields and store them with their respective value fields
-	const editFields = editDlg
+  // Get all editor fields and store them with their respective value fields
+  const editFields = editDlg
     .find("[data-editor-field]")
     .toArray()
     .reduce((acc, editorField) => {
-			const editorFieldId = editorField.getAttribute("data-id");
-      const valueField = editDlg.find(
-        `[name="${editorFieldId}"]`
-      );
+      const editorFieldId = editorField.getAttribute("data-id");
+      const valueField = editDlg.find(`[name="${editorFieldId}"]`);
       if (valueField.length) {
-				// Editor field will have to be a jquery object for ckeditor
+        // Editor field will have to be a jquery object for ckeditor
         acc.push({ editorField: $(editorField), valueField });
       } else {
-				console.error(`Could not find a matching value field for ${editorFieldId}`);
-			}
+        console.error(
+          `Could not find a matching value field for ${editorFieldId}`
+        );
+      }
       return acc;
     }, []);
   let footer = editDlg.find(".modal-footer");
@@ -79,7 +79,7 @@ function initMultipleEkiEditorDlg(editDlg, editorOptions) {
   if (complexityBtns.filter(":checked").length === 0) {
     complexityBtns.eq(complexityBtns.length - 1).prop("checked", true);
   }
-	// Init ckeditor for each field
+  // Init ckeditor for each field
   editFields.forEach(({ editorField, valueField }) => {
     editorField.val(valueField.val());
     initCkEditor(editorField, editorOptions);
@@ -96,7 +96,7 @@ function initMultipleEkiEditorDlg(editDlg, editorOptions) {
     .off("click")
     .on("click", function (e) {
       const areValuesFilled = editFields.every(({ editorField }) => {
-        if (editorField.val() || editorField.data('optional')) {
+        if (editorField.val() || editorField.data("optional")) {
           editorField.removeClass("is-invalid");
           return true;
         } else {

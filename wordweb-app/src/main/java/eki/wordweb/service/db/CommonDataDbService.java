@@ -185,31 +185,31 @@ public class CommonDataDbService implements SystemConstant, GlobalConstant {
 	@Cacheable(value = CACHE_KEY_CLASSIF, key = "{#root.methodName, #lang}")
 	public Map<String, LanguageData> getLangDataMap(String lang) {
 
-		MviewWwClassifier cllbldflt = MVIEW_WW_CLASSIFIER.as("cllbldflt");
-		MviewWwClassifier cllbllang = MVIEW_WW_CLASSIFIER.as("cllbllang");
-		MviewWwClassifier cliso = MVIEW_WW_CLASSIFIER.as("cliso");
+		MviewWwClassifier cl = MVIEW_WW_CLASSIFIER.as("cl");
+		MviewWwClassifier cli = MVIEW_WW_CLASSIFIER.as("cli");
+		MviewWwClassifier cll = MVIEW_WW_CLASSIFIER.as("cll");
 
 		return create
 				.select(
-						cllbldflt.CODE,
-						cliso.VALUE.as("codeIso2"),
-						DSL.coalesce(cllbllang.VALUE, cllbldflt.VALUE).as("label"))
-				.from(
-						cliso,
-						cllbldflt.leftOuterJoin(cllbllang).on(
-								cllbllang.NAME.eq(cllbldflt.NAME)
-										.and(cllbllang.CODE.eq(cllbldflt.CODE))
-										.and(cllbllang.TYPE.eq(cllbldflt.TYPE))
-										.and(cllbllang.LANG.eq(lang))))
+						cl.CODE,
+						DSL.coalesce(cli.VALUE, DSL.value("?")).as("codeIso2"),
+						DSL.coalesce(cll.VALUE, cl.VALUE).as("label"))
+				.from(cl
+						.leftOuterJoin(cli).on(
+								cli.NAME.eq(cl.NAME)
+										.and(cli.CODE.eq(cl.CODE))
+										.and(cli.TYPE.eq(CLASSIF_VALUE_TYPE_ISO2))
+										.and(cli.LANG.eq(DEFAULT_CLASSIF_VALUE_LANG)))
+						.leftOuterJoin(cll).on(
+								cll.NAME.eq(cl.NAME)
+										.and(cll.CODE.eq(cl.CODE))
+										.and(cll.TYPE.eq(cl.TYPE))
+										.and(cll.LANG.eq(lang))))
 				.where(
-						cllbldflt.NAME.eq(ClassifierName.LANGUAGE.name())
-								.and(cllbldflt.NAME.eq(cliso.NAME))
-								.and(cllbldflt.CODE.eq(cliso.CODE))
-								.and(cllbldflt.LANG.eq(DEFAULT_CLASSIF_VALUE_LANG))
-								.and(cliso.LANG.eq(DEFAULT_CLASSIF_VALUE_LANG))
-								.and(cllbldflt.TYPE.eq(DEFAULT_CLASSIF_VALUE_TYPE))
-								.and(cliso.TYPE.eq(CLASSIF_VALUE_TYPE_ISO2)))
-				.fetchMap(cllbldflt.CODE, LanguageData.class);
+						cl.NAME.eq(ClassifierName.LANGUAGE.name())
+								.and(cl.LANG.eq(DEFAULT_CLASSIF_VALUE_LANG))
+								.and(cl.TYPE.eq(DEFAULT_CLASSIF_VALUE_TYPE)))
+				.fetchMap(cl.CODE, LanguageData.class);
 	}
 
 	@Cacheable(value = CACHE_KEY_CLASSIF, key = "{#root.methodName, #datasetCode}")

@@ -48,6 +48,7 @@
           <span>Selgitused on töös, nende sõnastus võib muutuda. Järgmine ÕS ilmub 2025. aastal.</span>
         </div>
         <p th:utext="${wordData.word.wordOdRecommendation.valuePrese}"></p>
+        <p th:utext="${wordData.word.wordOdRecommendation.optValuePrese}" th:if="${wordData.word.wordOdRecommendation.optValuePrese}"></p>
         <p th:text="|(${#dates.format(wordData.word.wordOdRecommendation.modifiedOn, 'dd.MM.yyyy')})|" th:if="${wordData.word.wordOdRecommendation.modifiedOn != null}"></p>
       </div>
     </section>
@@ -188,8 +189,10 @@
     <th:block th:if="${relationTypeGroup.asMap}">
       <th:block th:each="relationEntry,relEntryIter : ${relationTypeGroup.relatedWordsByLang}" th:with="relatedWords=${relationEntry.value}">
         <div th:id="${'word-rel-map-collapse-panel-' + wordRelType.code + '-' + relEntryIter.index}" class="collapse-panel d-flex flex-wrap">
-          <span class="lang-code text-caption mr-2 align-self-start" th:with="langData=${@viewUtil.getLangData(relationEntry.key)}" th:text="${langData.codeIso2}" th:title="${langData.label}"
-            data-toggle="tooltip"> </span>
+          <th:block th:with="langData=${@viewUtil.getLangData(relationEntry.key)}">
+            <span th:text="${langData.codeIso2}" th:title="${langData.label}" data-toggle="tooltip" th:unless="${langData.imageName}" class="lang-code text-caption mr-2 align-self-start">1</span>
+            <img th:src="|@{/view/images}${langData.imageName}|" th:title="${langData.label}" data-toggle="tooltip" th:if="${langData.imageName}" class="lang-code-img mr-2 align-self-start">
+          </th:block>
           <th:block th:each="relation, relationIter : ${relatedWords}"
             th:with="
                     isCollapsable=${relationIter.count > T(eki.wordweb.constant.WebConstant).WORD_RELATIONS_DISPLAY_LIMIT},
@@ -246,8 +249,10 @@
   <th:block th:fragment="etymology_level">
     <li class="align-items-start">
       <div>
-        <span class="lang-code text-caption mr-2 align-self-start" th:with="langData=${@viewUtil.getLangData(etymLevel.lang)}" th:text="${langData.codeIso2}" th:title="${langData.label}"
-          data-toggle="tooltip"> </span>
+        <th:block th:with="langData=${@viewUtil.getLangData(etymLevel.lang)}">
+          <span th:text="${langData.codeIso2}" th:title="${langData.label}" data-toggle="tooltip" th:unless="${langData.imageName}" class="lang-code text-caption mr-2 align-self-start">1</span>
+          <img th:src="|@{/view/images}${langData.imageName}|" th:title="${langData.label}" data-toggle="tooltip" th:if="${langData.imageName}" class="lang-code-img mr-2 align-self-start">
+        </th:block>
         <span>
           <span th:if="${etymLevel.compound}">+</span>
           <span th:if="${etymLevel.questionable}">?</span>

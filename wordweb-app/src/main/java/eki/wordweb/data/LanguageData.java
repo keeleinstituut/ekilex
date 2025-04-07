@@ -12,14 +12,7 @@ public class LanguageData extends AbstractDataObject {
 
 	private String label;
 
-	public LanguageData() {
-	}
-
-	public LanguageData(String code, String codeIso2, String label) {
-		this.code = code;
-		this.codeIso2 = codeIso2;
-		this.label = label;
-	}
+	private String imageName;
 
 	public String getCode() {
 		return code;
@@ -45,4 +38,23 @@ public class LanguageData extends AbstractDataObject {
 		this.label = label;
 	}
 
+	public String getImageName() {
+		return imageName;
+	}
+
+	public void setImageName(String imageName) {
+		this.imageName = imageName;
+	}
+
+	public void setCode(String code, String codeIso2, String label) {
+		this.code = code;
+		this.codeIso2 = codeIso2;
+		this.label = label;
+	}
+
+	public void setImage(String code, String imageName, String label) {
+		this.code = code;
+		this.imageName = imageName;
+		this.label = label;
+	}
 }
