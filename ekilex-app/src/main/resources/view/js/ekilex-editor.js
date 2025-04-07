@@ -95,9 +95,8 @@ function initMultipleEkiEditorDlg(editDlg, editorOptions) {
     .find('button[type="submit"]')
     .off("click")
     .on("click", function (e) {
-			// Make sure all value fields are filled (could optionally ignore some fields in the future if needed)
       const areValuesFilled = editFields.every(({ editorField }) => {
-        if (editorField.val()) {
+        if (editorField.val() || editorField.data('optional')) {
           editorField.removeClass("is-invalid");
           return true;
         } else {
