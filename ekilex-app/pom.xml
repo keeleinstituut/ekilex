@@ -6,12 +6,12 @@
 	<parent>
 		<groupId>eki.ekilex</groupId>
 		<artifactId>eki-root</artifactId>
-		<version>1.40-SNAPSHOT</version>
+		<version>1.40.0</version>
 	</parent>
 
 	<groupId>eki.ekilex</groupId>
 	<artifactId>ekilex-app</artifactId>
-	<version>1.40-SNAPSHOT</version>
+	<version>1.40.0</version>
 	<packaging>jar</packaging>
 
 	<name>Ekilex App</name>
@@ -117,54 +117,6 @@
 					</execution>
 				</executions>
 			</plugin>
-			<!--
-			<plugin>
-				<groupId>org.jooq</groupId>
-				<artifactId>jooq-codegen-maven</artifactId>
-				<executions>
-					<execution>
-						<phase>generate-sources</phase>
-						<goals>
-							<goal>generate</goal>
-						</goals>
-						<configuration>
-							<skip>${skip.jooq.generation}</skip>
-							<jdbc>
-								<driver>org.postgresql.Driver</driver>
-								<url>${spring.datasource.url}</url>
-								<user>${spring.datasource.username}</user>
-								<password>${spring.datasource.password}</password>
-							</jdbc>
-							<generator>
-								<database>
-									<name>
-										org.jooq.meta.postgres.PostgresDatabase</name>
-									<includes>.*</includes>
-									<includeIndexes>false</includeIndexes>
-									<includeSystemIndexes>false</includeSystemIndexes>
-									<excludes></excludes>
-									<inputSchema>public</inputSchema>
-								</database>
-								<generate>
-									<javaTimeTypes>false</javaTimeTypes>
-								</generate>
-								<target>
-									<packageName>eki.ekilex.data.db</packageName>
-									<directory>src/main/java</directory>
-								</target>
-							</generator>
-						</configuration>
-					</execution>
-				</executions>
-				<dependencies>
-					<dependency>
-						<groupId>org.postgresql</groupId>
-						<artifactId>postgresql</artifactId>
-						<version>${postgresql.version}</version>
-					</dependency>
-				</dependencies>
-			</plugin>
-			-->
 		</plugins>
 	</build>
 
@@ -303,7 +255,7 @@
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-		<java.version>15</java.version>
+		<java.version>17</java.version>
 		<skip.jooq.generation>true</skip.jooq.generation>
 		<start-class>${spring.boot.mainclass}</start-class>
 	</properties>
