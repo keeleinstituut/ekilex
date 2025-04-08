@@ -5,7 +5,7 @@
     <parent>
         <groupId>eki.ekilex</groupId>
         <artifactId>eki-root</artifactId>
-        <version>1.40-SNAPSHOT</version>
+        <version>1.41-SNAPSHOT</version>
     </parent>
 
     <groupId>eki.stat</groupId>
@@ -40,7 +40,6 @@
                     <executable>true</executable>
                 </configuration>
             </plugin>
-            <!-- used for reading values from properties file, so we can give them to jooq-codegen plugin -->
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>properties-maven-plugin</artifactId>
@@ -152,7 +151,7 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-        <java.version>15</java.version>
+        <java.version>17</java.version>
         <skip.jooq.generation>true</skip.jooq.generation>
     </properties>
 
