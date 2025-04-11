@@ -1,55 +1,48 @@
 <!DOCTYPE HTML>
 <html xmlns:th="http://www.thymeleaf.org">
 <body>
-    <section class="search__sidebar-block search__block text-body-two" id="word-morphology-results" th:fragment="paradigms">
-      <th:block th:if="${wordData.morphologyExists}">
-        <div class="d-flex align-items-center">
-          <h2 class="search__sidebar-block-title" th:text="#{label.word.forms}">
-            Sõnavormid
-          </h2>
-          <button type="button" class="btn btn-icon btn-sm" th:aria-label="#{forms.dataset.title}" data-toggle="tooltip" th:title="#{forms.dataset.title}">
-            <i class="fas fa-info-circle"></i>
-          </button>
-        </div>
-        <div th:if="${wordData.word.morphComment}">
-          <span th:utext="${wordData.word.morphComment}"></span>
-        </div>
-        <th:block th:each="paradigm,paradigmIter : ${wordData.paradigms}">
-          <div class="morphology-paradigm"
-            th:with="morphtemplates=${ {'muutumatu_est', 'verb_est', 'noomen_est', 'verb_rus', 'noun_rus', 'numeral_rus', 'adjective_rus', 'adjective1_rus', 'adjective2_rus', 'indeclinable_rus', 'participle_rus'} }">
-            <th:block th:if="${morphtemplates.contains(paradigm.wordClass + '_' + wordData.word.lang)}">
-              <th:block th:replace="morpho-short :: ${'morpho-' + paradigm.wordClass + '_' + wordData.word.lang}"></th:block>
-            </th:block>
-            <hr th:unless="${paradigmIter.last}" />
-          </div>
-        </th:block>
-      </th:block>
-      <th:block th:unless="${wordData.morphologyExists}">
-        <div class="d-flex align-items-center">
-          <h2 class="search__sidebar-block-title" th:text="#{label.word.forms}">
-            Sõnavormid
-          </h2>
-          <button type="button" class="btn btn-icon btn-sm" th:aria-label="#{forms.dataset.title}" data-toggle="tooltip" data-placement="bottom" th:title="#{forms.dataset.title}">
-            <i class="fas fa-info-circle"></i>
-          </button>
-        </div>
-        <span th:text="#{label.no.data}">Andmed puuduvad</span>
-      </th:block>
-    </section>
-  <th:block th:fragment="word-od-recommendation">
-    <section class="search__sidebar-block search__block text-body-two" th:if="${wordData.word.wordOdRecommendation}">
-      <div>
-        <h5 class="recommended-usage-label">
-          <i class="fa fa-book mr-1"></i>
-          <span th:text="#{label.od.recommend}" class="label-text">ÕS selgitab</span>
-        </h5>
-        <div class="recommendation-additional-info">
+  <section class="search__sidebar-block search__block text-body-two" id="word-morphology-results" th:fragment="paradigms">
+    <th:block th:if="${wordData.morphologyExists}">
+      <div class="d-flex align-items-center">
+        <h2 class="search__sidebar-block-title" th:text="#{label.word.forms}">Sõnavormid</h2>
+        <button type="button" class="btn btn-icon btn-sm" th:aria-label="#{forms.dataset.title}" data-toggle="tooltip" th:title="#{forms.dataset.title}">
           <i class="fas fa-info-circle"></i>
-          <span>Selgitused on töös, nende sõnastus võib muutuda. Järgmine ÕS ilmub 2025. aastal.</span>
+        </button>
+      </div>
+      <div th:if="${wordData.word.morphComment}">
+        <span th:utext="${wordData.word.morphComment}"></span>
+      </div>
+      <th:block th:each="paradigm,paradigmIter : ${wordData.paradigms}">
+        <div class="morphology-paradigm"
+          th:with="morphtemplates=${ {'muutumatu_est', 'verb_est', 'noomen_est', 'verb_rus', 'noun_rus', 'numeral_rus', 'adjective_rus', 'adjective1_rus', 'adjective2_rus', 'indeclinable_rus', 'participle_rus'} }">
+          <th:block th:if="${morphtemplates.contains(paradigm.wordClass + '_' + wordData.word.lang)}">
+            <th:block th:replace="morpho-short :: ${'morpho-' + paradigm.wordClass + '_' + wordData.word.lang}"></th:block>
+          </th:block>
+          <hr th:unless="${paradigmIter.last}" />
         </div>
-        <p th:utext="${wordData.word.wordOdRecommendation.valuePrese}"></p>
-        <p th:utext="${wordData.word.wordOdRecommendation.optValuePrese}" th:if="${wordData.word.wordOdRecommendation.optValuePrese}"></p>
-        <p th:text="|(${#temporals.format(wordData.word.wordOdRecommendation.modifiedOn, 'dd.MM.yyyy')})|" th:if="${wordData.word.wordOdRecommendation.modifiedOn != null}"></p>
+      </th:block>
+    </th:block>
+    <th:block th:unless="${wordData.morphologyExists}">
+      <div class="d-flex align-items-center">
+        <h2 class="search__sidebar-block-title" th:text="#{label.word.forms}">Sõnavormid</h2>
+        <button type="button" class="btn btn-icon btn-sm" th:aria-label="#{forms.dataset.title}" data-toggle="tooltip" data-placement="bottom" th:title="#{forms.dataset.title}">
+          <i class="fas fa-info-circle"></i>
+        </button>
+      </div>
+      <span th:text="#{label.no.data}">Andmed puuduvad</span>
+    </th:block>
+  </section>
+  <th:block th:fragment="word-od-recommendation">
+    <section class="recommendation__block text-body-two" th:if="${wordData.word.wordOdRecommendation}">
+      <div class="d-flex gap-1 align-items-center">
+        <span class="material-symbols-outlined" aria-hidden="true"> info </span>
+        <h2 class="recommendation__title" th:text="#{label.od.recommend}">ÕS selgitab</h2>
+      </div>
+      <p class="m-0" th:utext="${wordData.word.wordOdRecommendation.valuePrese}"></p>
+      <p class="m-0" th:utext="${wordData.word.wordOdRecommendation.optValuePrese}" th:if="${wordData.word.wordOdRecommendation.optValuePrese}"></p>
+      <div class="text-caption text-darker-gray" th:if="${wordData.word.wordOdRecommendation.modifiedOn != null}">
+        <span th:text="#{label.tooltip.last_modified}"></span>
+        <span th:text="|${#temporals.format(wordData.word.wordOdRecommendation.modifiedOn, 'dd.MM.yyyy')}|"></span>
       </div>
     </section>
   </th:block>
@@ -57,9 +50,7 @@
     <section class="search__sidebar-block search__block text-body-two">
       <div class="word-relations">
         <div class="d-flex align-items-center">
-          <h2 class="search__sidebar-block-title" th:text="#{label.word.relations}">
-            Sõna seosed
-          </h2>
+          <h2 class="search__sidebar-block-title" th:text="#{label.word.relations}">Sõna seosed</h2>
           <button type="button" th:aria-label="#{label.word.relations.info}" class="btn btn-icon btn-sm" data-toggle="tooltip" data-placement="top" th:title="#{label.word.relations.info}">
             <i class="fas fa-info-circle"></i>
           </button>
@@ -114,11 +105,10 @@
             <div class="d-flex align-items-center">
               <h2 class="search__sidebar-block-title">
                 <th:block th:if="${relationTypeGroup.collapsible}">
-                  <a class="btn-collapse" th:aria-expanded="${#lists.contains(uiSections, 'word-rel-type-' + relationTypeGroup.wordRelType.code + '-panel')}" data-toggle="collapse" th:href="|#word-rel-type-collapse-${relationTypeGroup.wordRelType.code}|">
+                  <a class="btn-collapse" th:aria-expanded="${#lists.contains(uiSections, 'word-rel-type-' + relationTypeGroup.wordRelType.code + '-panel')}" data-toggle="collapse"
+                    th:href="|#word-rel-type-collapse-${relationTypeGroup.wordRelType.code}|">
                     <i class="fa fa-chevron-down collapse-icon" aria-hidden="true"></i>
-                    <span th:text="${#strings.capitalize(relationTypeGroup.wordRelType.value)}">
-                      Sõna seose liik
-                    </span>
+                    <span th:text="${#strings.capitalize(relationTypeGroup.wordRelType.value)}"> Sõna seose liik </span>
                   </a>
                 </th:block>
                 <th:block th:unless="${relationTypeGroup.collapsible}">
@@ -224,15 +214,13 @@
     <section class="search__sidebar-block search__block text-body-two" id="word-etymology-results">
       <div>
         <div class="d-flex align-items-center flex-wrap">
-          <h2 class="search__sidebar-block-title" th:text="#{label.word.etymology}">
-            Päritolu
-          </h2>
+          <h2 class="search__sidebar-block-title" th:text="#{label.word.etymology}">Päritolu</h2>
           <button type="button" th:aria-label="#{label.word.etymology.info}" class="btn btn-icon btn-sm" data-toggle="tooltip" data-placement="top" th:title="#{label.word.etymology.info}">
             <i class="fas fa-info-circle"></i>
           </button>
           <th:block th:if="${wordData.word.wordEtymologyTree != null}">
-            <span class="lang-code text-caption lang-code--unrestricted" style='font-variant: small-caps;' th:if="${wordData.word.wordEtymologyTree.etymologyType != null}" th:text="${wordData.word.wordEtymologyTree.etymologyType.value}">
-            </span>
+            <span class="lang-code text-caption lang-code--unrestricted" style='font-variant: small-caps;' th:if="${wordData.word.wordEtymologyTree.etymologyType != null}"
+              th:text="${wordData.word.wordEtymologyTree.etymologyType.value}"> </span>
           </th:block>
         </div>
         <div th:if="${wordData.word.wordEtymologyTree == null}">
@@ -344,8 +332,8 @@
       </div>
     </div>
     <script th:inline="javascript">
-		$('.corp-panel [data-toggle="tooltip"]').tooltip();
-	</script>
+					$('.corp-panel [data-toggle="tooltip"]').tooltip();
+				</script>
   </th:block>
   <th:block th:fragment="corp_trans">
     <div class="corp-panel">
@@ -406,8 +394,8 @@
       </div>
     </div>
     <script th:inline="javascript">
-      $('.corp-panel [data-toggle="tooltip"]').tooltip();
-    </script>
+		$('.corp-panel [data-toggle="tooltip"]').tooltip();
+	</script>
   </th:block>
 </body>
 </html>
