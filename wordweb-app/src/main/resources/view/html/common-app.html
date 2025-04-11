@@ -282,20 +282,13 @@
             </button>
           </div>
           <div id="feedback-data" class="modal-body">
-            <div class="mb-4">
-              <span class="feedback-modal__required-text">&ast;&nbsp;</span>
-              <small th:text="#{label.feedback.required.fields}">
-                Tärniga tähistatud väljad on kohustuslikud
-              </small>
-            </div>
             <div>
               <form id="feedback-form" novalidate>
                 <input type="hidden" name="feedbackType" value="sõnaveeb">
                 <input type="hidden" name="lastSearch" th:value="${sessionBean == null ? '' : sessionBean.searchWord}">
                 <div class="feedback-modal__group">
                   <label for="descriptionInput2" class="col-form-label" th:text="#{label.feedback.description}">Probleemi lühikirjeldus</label>
-                  <span class="feedback-modal__required-text">&ast;</span>
-                  <textarea id="descriptionInput2" class="form-control" name="description" required="true" autocomplete="off" th:placeholder="#{label.feedback.placeholder.description}"></textarea>
+                  <textarea id="descriptionInput2" class="form-control" name="description" required autocomplete="off" th:placeholder="#{label.feedback.placeholder.description}"></textarea>
                   <div class="invalid-feedback" th:text="#{label.feedback.required.field}">Väli on kohustuslik</div>
                 </div>
                 <div class="feedback-modal__want-response">
@@ -315,7 +308,7 @@
               <div id="feedback-error-message" class="alert alert-danger d-none" th:text="#{label.feedback.technical.error}">Tagasiside saatmine ebaõnnestus, proovige hiljem uuesti.</div>
               <div class="d-flex gap-1 align-items-center mb-2">
                 <p id="feedback-success-message" class="m-0 d-none" th:text="#{label.feedback.success.prefix}">Aitäh, saime tagasiside kätte</p>
-                <button id="feedback-repeat" type="button" class="btn btn-link p-0 d-inline-flex d-none" th:text="#{label.feedback.success.suffix}">Saada uus tagasiside</button>
+                <button class="feedback-modal__repeat d-none" id="feedback-repeat" type="button" th:text="#{label.feedback.success.suffix}">Saada uus tagasiside</button>
               </div>
               <button type="button" class="feedback-modal__button" data-dismiss="modal" th:text="#{menu.close}">Sulge</button>
             </div>

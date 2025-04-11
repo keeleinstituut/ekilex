@@ -17064,6 +17064,15 @@ span.material-symbols-outlined--small {
 .feedback-modal input::placeholder {
   color: var(--color-dark-blue-75);
 }
+.feedback-modal__repeat {
+  display: inline-block;
+  color: var(--color-blue-300);
+  text-decoration: underline;
+  background-color: transparent;
+  border: none;
+  padding: 0;
+  margin: 0;
+}
 .collapse-text {
   overflow: hidden;
 }

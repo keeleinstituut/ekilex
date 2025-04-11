@@ -128,7 +128,7 @@ class Feedback {
     }
 
     this.modalElements.form.classList.add("was-validated");
-    if (this.modalElements.form[0].checkValidity() === false) {
+    if (this.modalElements.form.checkValidity() === false) {
       event.preventDefault();
       event.stopPropagation();
       return;
