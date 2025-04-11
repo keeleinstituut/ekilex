@@ -1,0 +1,27 @@
+.recommendation {
+  &__block {
+    background-color: var(--color-lighter-blue);
+    border-radius: 8px;
+    padding: 16px;
+    box-shadow: 0px 2px 8px 0px #0000001A;
+    margin-top: 16px;
+    overflow: hidden;
+    border: 1px solid var(--color-light-blue);
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    --icon-size: 1.25rem;
+    --icon-variation-settings: 'FILL' 1;
+
+    & a,
+    & ext-link {
+      text-decoration: underline;
+    }
+  }
+
+  &__title {
+    font-weight: 700;
+    font-size: 1rem;
+    margin: 0;
+  }
+}

@@ -67,6 +67,7 @@
   --color-blue-350: #0073e6;
   --color-blue-400: #005aa9;
   --color-blue-900: #00377a;
+  --color-lighter-blue: #EAF3FC;
   --color-light-blue: #D7E5F2;
   --color-light-blue-alternate: #DCE8F5;
   --color-dark-blue: #173148;
@@ -14642,18 +14643,28 @@ body.hidden-scroll {
 .meaning-meta {
   padding-bottom: 8px;
 }
-.recommended-usage-label {
-  position: relative;
-  display: inline-block;
-  padding: 10px 0 7px;
-  font-size: 1.25rem;
-  font-style: normal;
-  color: #0073e6;
-  text-transform: uppercase;
+.recommendation__block {
+  background-color: var(--color-lighter-blue);
+  border-radius: 8px;
+  padding: 16px;
+  box-shadow: 0px 2px 8px 0px rgba(0, 0, 0, 0.1019607843);
+  margin-top: 16px;
+  overflow: hidden;
+  border: 1px solid var(--color-light-blue);
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  --icon-size: 1.25rem;
+  --icon-variation-settings: "FILL" 1;
 }
-.recommended-usage-label .label-text {
-  position: relative;
-  z-index: 1;
+.recommendation__block a,
+.recommendation__block ext-link {
+  text-decoration: underline;
+}
+.recommendation__title {
+  font-weight: 700;
+  font-size: 1rem;
+  margin: 0;
 }
 html {
   height: 100%;
@@ -15366,6 +15377,7 @@ body {
 }
 span.material-symbols-outlined {
   font-size: var(--icon-size, var(--fallback-icon-size, inherit));
+  font-variation-settings: var(--icon-variation-settings);
 }
 span.material-symbols-outlined--default-size {
   --fallback-icon-size: 1.5rem;
@@ -16558,6 +16570,7 @@ span.material-symbols-outlined--small {
   --color-blue-350: #0073e6;
   --color-blue-400: #005aa9;
   --color-blue-900: #00377a;
+  --color-lighter-blue: #EAF3FC;
   --color-light-blue: #D7E5F2;
   --color-light-blue-alternate: #DCE8F5;
   --color-dark-blue: #173148;

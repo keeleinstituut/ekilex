@@ -37,19 +37,16 @@
       </th:block>
     </section>
   <th:block th:fragment="word-od-recommendation">
-    <section class="search__sidebar-block search__block text-body-two" th:if="${wordData.word.wordOdRecommendation}">
-      <div>
-        <h5 class="recommended-usage-label">
-          <i class="fa fa-book mr-1"></i>
-          <span th:text="#{label.od.recommend}" class="label-text">ÕS selgitab</span>
-        </h5>
-        <div class="recommendation-additional-info">
-          <i class="fas fa-info-circle"></i>
-          <span>Selgitused on töös, nende sõnastus võib muutuda. Järgmine ÕS ilmub 2025. aastal.</span>
-        </div>
-        <p th:utext="${wordData.word.wordOdRecommendation.valuePrese}"></p>
-        <p th:utext="${wordData.word.wordOdRecommendation.optValuePrese}" th:if="${wordData.word.wordOdRecommendation.optValuePrese}"></p>
-        <p th:text="|(${#dates.format(wordData.word.wordOdRecommendation.modifiedOn, 'dd.MM.yyyy')})|" th:if="${wordData.word.wordOdRecommendation.modifiedOn != null}"></p>
+    <section class="recommendation__block text-body-two" th:if="${wordData.word.wordOdRecommendation}">
+      <div class="d-flex gap-1 align-items-center">
+        <span class="material-symbols-outlined" aria-hidden="true"> info </span>
+        <h2 class="recommendation__title" th:text="#{label.od.recommend}">ÕS selgitab</h2>
+      </div>
+      <p class="m-0" th:utext="${wordData.word.wordOdRecommendation.valuePrese}"></p>
+      <p class="m-0" th:utext="${wordData.word.wordOdRecommendation.optValuePrese}" th:if="${wordData.word.wordOdRecommendation.optValuePrese}"></p>
+      <div class="text-caption text-darker-gray" th:if="${wordData.word.wordOdRecommendation.modifiedOn != null}">
+        <span th:text="#{label.tooltip.last_modified}"></span>
+        <span th:text="|${#dates.format(wordData.word.wordOdRecommendation.modifiedOn, 'dd.MM.yyyy')}|"></span>
       </div>
     </section>
   </th:block>
