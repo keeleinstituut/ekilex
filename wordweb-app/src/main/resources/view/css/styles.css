@@ -60,6 +60,7 @@
   --color-even-darker-gray: #5A656F;
   --color-notes-gray: #595959;
   --color-icon-gray: #636B74;
+  --color-discord-gray: #596573;
   --color-white: #fff;
   --color-blue-100: #a0dcf8;
   --color-blue-200: #5aabe0;
@@ -14666,6 +14667,9 @@ body.hidden-scroll {
   font-size: 1rem;
   margin: 0;
 }
+.recommendation__date {
+  color: var(--color-discord-gray);
+}
 html {
   height: 100%;
 }
@@ -16563,6 +16567,7 @@ span.material-symbols-outlined--small {
   --color-even-darker-gray: #5A656F;
   --color-notes-gray: #595959;
   --color-icon-gray: #636B74;
+  --color-discord-gray: #596573;
   --color-white: #fff;
   --color-blue-100: #a0dcf8;
   --color-blue-200: #5aabe0;

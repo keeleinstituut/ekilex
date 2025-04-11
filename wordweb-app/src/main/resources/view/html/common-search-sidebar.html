@@ -44,7 +44,7 @@
       </div>
       <p class="m-0" th:utext="${wordData.word.wordOdRecommendation.valuePrese}"></p>
       <p class="m-0" th:utext="${wordData.word.wordOdRecommendation.optValuePrese}" th:if="${wordData.word.wordOdRecommendation.optValuePrese}"></p>
-      <div class="text-caption text-darker-gray" th:if="${wordData.word.wordOdRecommendation.modifiedOn != null}">
+      <div class="text-caption recommendation__date" th:if="${wordData.word.wordOdRecommendation.modifiedOn != null}">
         <span th:text="#{label.tooltip.last_modified}"></span>
         <span th:text="|${#dates.format(wordData.word.wordOdRecommendation.modifiedOn, 'dd.MM.yyyy')}|"></span>
       </div>
