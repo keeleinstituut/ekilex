@@ -84,12 +84,12 @@ function updateBrowserHistory(wordSelectUrl) {
 	if (currentWord.indexOf('/') !== -1) {
 		wordSelectUrl = wordSelectUrl.replace(currentWord, encodeURIComponent(currentWord));
 	}
-	var historyState = {
+	const historyState = {
 		wordId: currentWordId,
 		word: currentWord,
 		wordSelectUrl: wordSelectUrl
 	};
-	history.pushState(historyState, "Sõnaveeb", wordSelectUrl);
+	history.replaceState(historyState, "Sõnaveeb", wordSelectUrl);
 }
 
 function scrollToLexeme(lexemeId) {
