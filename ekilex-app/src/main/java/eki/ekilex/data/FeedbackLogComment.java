@@ -1,6 +1,6 @@
 package eki.ekilex.data;
 
-import java.sql.Timestamp;
+import java.time.LocalDateTime;
 
 import eki.common.data.AbstractDataObject;
 
@@ -12,7 +12,7 @@ public class FeedbackLogComment extends AbstractDataObject {
 
 	private Long feedbackLogId;
 
-	private Timestamp createdOn;
+	private LocalDateTime createdOn;
 
 	private String comment;
 
@@ -34,11 +34,11 @@ public class FeedbackLogComment extends AbstractDataObject {
 		this.feedbackLogId = feedbackLogId;
 	}
 
-	public Timestamp getCreatedOn() {
+	public LocalDateTime getCreatedOn() {
 		return createdOn;
 	}
 
-	public void setCreatedOn(Timestamp createdOn) {
+	public void setCreatedOn(LocalDateTime createdOn) {
 		this.createdOn = createdOn;
 	}
 

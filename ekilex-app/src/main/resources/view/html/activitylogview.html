@@ -7,7 +7,7 @@
         <div class="p-1 mt-1 border-bottom">
           <div class="row">
             <div class="col-3 stxt">
-              <span th:text="${#dates.format(logRow.eventOn, 'dd.MM.yyyy HH:mm')}"></span>
+              <span th:text="${#temporals.format(logRow.eventOn, 'dd.MM.yyyy HH:mm')}"></span>
             </div>
             <div class="col-3 stxt">
               <span th:text="${logRow.eventBy}"></span>

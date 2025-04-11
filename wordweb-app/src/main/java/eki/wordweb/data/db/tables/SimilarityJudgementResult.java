@@ -8,7 +8,7 @@ import eki.wordweb.data.db.Keys;
 import eki.wordweb.data.db.Public;
 import eki.wordweb.data.db.tables.records.SimilarityJudgementResultRecord;
 
-import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
 
@@ -107,7 +107,7 @@ public class SimilarityJudgementResult extends TableImpl<SimilarityJudgementResu
     /**
      * The column <code>public.similarity_judgement_result.created</code>.
      */
-    public final TableField<SimilarityJudgementResultRecord, Timestamp> CREATED = createField(DSL.name("created"), SQLDataType.TIMESTAMP(6).nullable(false).defaultValue(DSL.field("statement_timestamp()", SQLDataType.TIMESTAMP)), this, "");
+    public final TableField<SimilarityJudgementResultRecord, LocalDateTime> CREATED = createField(DSL.name("created"), SQLDataType.LOCALDATETIME(6).nullable(false).defaultValue(DSL.field("statement_timestamp()", SQLDataType.LOCALDATETIME)), this, "");
 
     private SimilarityJudgementResult(Name alias, Table<SimilarityJudgementResultRecord> aliased) {
         this(alias, aliased, null);
@@ -231,7 +231,7 @@ public class SimilarityJudgementResult extends TableImpl<SimilarityJudgementResu
     // -------------------------------------------------------------------------
 
     @Override
-    public Row12<Long, String, Long, Long, Long, Long, String, String, Boolean, Boolean, Long, Timestamp> fieldsRow() {
+    public Row12<Long, String, Long, Long, Long, Long, String, String, Boolean, Boolean, Long, LocalDateTime> fieldsRow() {
         return (Row12) super.fieldsRow();
     }
 }

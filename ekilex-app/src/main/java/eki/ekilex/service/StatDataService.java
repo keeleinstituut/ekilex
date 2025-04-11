@@ -1,7 +1,7 @@
 package eki.ekilex.service;
 
-import java.sql.Timestamp;
-import java.util.Calendar;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
 
@@ -63,7 +63,7 @@ public class StatDataService implements InitializingBean, SystemConstant, Global
 		if (!isSchedulingEnabled) {
 			return;
 		}
-		Timestamp from = getPastTimestamp(ACTIVITY_STAT_DAYS_COUNT);
+		LocalDateTime from = getPastDateTime(ACTIVITY_STAT_DAYS_COUNT);
 		mainEntityStatData = statDataDbService.getMainEntityStatData();
 		freeformStatData = statDataDbService.getFreeformStatData();
 		lexemeDatasetStatData = statDataDbService.getLexemeDatasetStatData();
@@ -72,15 +72,14 @@ public class StatDataService implements InitializingBean, SystemConstant, Global
 		apiErrorStatData = statDataDbService.getApiErrorStat();
 	}
 
-	private Timestamp getPastTimestamp(int daysInPast) {
+	private LocalDateTime getPastDateTime(int daysInPast) {
 
-		Calendar cal = Calendar.getInstance();
-		cal.add(Calendar.DAY_OF_MONTH, -daysInPast);
-		cal.set(Calendar.HOUR_OF_DAY, 0);
-		cal.set(Calendar.MINUTE, 0);
-		cal.set(Calendar.SECOND, 0);
-		cal.set(Calendar.MILLISECOND, 0);
-		return new Timestamp(cal.getTimeInMillis());
+		LocalDateTime time = LocalDate
+				.now()
+				.minusDays(daysInPast)
+				.atStartOfDay();
+
+		return time;
 	}
 
 	public StatData getMainEntityStatData() {

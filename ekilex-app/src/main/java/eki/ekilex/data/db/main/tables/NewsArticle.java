@@ -8,7 +8,7 @@ import eki.ekilex.data.db.main.Keys;
 import eki.ekilex.data.db.main.Public;
 import eki.ekilex.data.db.main.tables.records.NewsArticleRecord;
 
-import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
 
@@ -57,7 +57,7 @@ public class NewsArticle extends TableImpl<NewsArticleRecord> {
     /**
      * The column <code>public.news_article.created</code>.
      */
-    public final TableField<NewsArticleRecord, Timestamp> CREATED = createField(DSL.name("created"), SQLDataType.TIMESTAMP(6).nullable(false).defaultValue(DSL.field("statement_timestamp()", SQLDataType.TIMESTAMP)), this, "");
+    public final TableField<NewsArticleRecord, LocalDateTime> CREATED = createField(DSL.name("created"), SQLDataType.LOCALDATETIME(6).nullable(false).defaultValue(DSL.field("statement_timestamp()", SQLDataType.LOCALDATETIME)), this, "");
 
     /**
      * The column <code>public.news_article.type</code>.
@@ -177,7 +177,7 @@ public class NewsArticle extends TableImpl<NewsArticleRecord> {
     // -------------------------------------------------------------------------
 
     @Override
-    public Row6<Long, Timestamp, String, String, String, String> fieldsRow() {
+    public Row6<Long, LocalDateTime, String, String, String, String> fieldsRow() {
         return (Row6) super.fieldsRow();
     }
 }

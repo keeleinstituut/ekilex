@@ -8,7 +8,7 @@ import eki.ekilex.data.db.main.Keys;
 import eki.ekilex.data.db.main.Public;
 import eki.ekilex.data.db.main.tables.records.TempDsImportQueueRecord;
 
-import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
 
@@ -62,7 +62,7 @@ public class TempDsImportQueue extends TableImpl<TempDsImportQueueRecord> {
     /**
      * The column <code>public.temp_ds_import_queue.created_on</code>.
      */
-    public final TableField<TempDsImportQueueRecord, Timestamp> CREATED_ON = createField(DSL.name("created_on"), SQLDataType.TIMESTAMP(6).nullable(false).defaultValue(DSL.field("statement_timestamp()", SQLDataType.TIMESTAMP)), this, "");
+    public final TableField<TempDsImportQueueRecord, LocalDateTime> CREATED_ON = createField(DSL.name("created_on"), SQLDataType.LOCALDATETIME(6).nullable(false).defaultValue(DSL.field("statement_timestamp()", SQLDataType.LOCALDATETIME)), this, "");
 
     /**
      * The column <code>public.temp_ds_import_queue.table_name</code>.
@@ -158,7 +158,7 @@ public class TempDsImportQueue extends TableImpl<TempDsImportQueueRecord> {
     // -------------------------------------------------------------------------
 
     @Override
-    public Row5<Long, String, Timestamp, String, String> fieldsRow() {
+    public Row5<Long, String, LocalDateTime, String, String> fieldsRow() {
         return (Row5) super.fieldsRow();
     }
 }

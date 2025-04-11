@@ -32,7 +32,7 @@ public class DataRequestDbService {
 	public void accessRequestContent(String requestKey) {
 		mainDb
 				.update(DATA_REQUEST)
-				.set(DATA_REQUEST.ACCESSED, DSL.currentTimestamp())
+				.set(DATA_REQUEST.ACCESSED, DSL.currentLocalDateTime())
 				.where(DATA_REQUEST.REQUEST_KEY.eq(requestKey))
 				.execute();
 	}

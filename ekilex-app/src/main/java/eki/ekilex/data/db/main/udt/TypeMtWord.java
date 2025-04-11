@@ -7,7 +7,7 @@ package eki.ekilex.data.db.main.udt;
 import eki.ekilex.data.db.main.Public;
 import eki.ekilex.data.db.main.udt.records.TypeMtWordRecord;
 
-import java.sql.Timestamp;
+import java.time.LocalDateTime;
 
 import org.jooq.Schema;
 import org.jooq.UDTField;
@@ -96,7 +96,7 @@ public class TypeMtWord extends UDTImpl<TypeMtWordRecord> {
     /**
      * The attribute <code>public.type_mt_word.manual_event_on</code>.
      */
-    public static final UDTField<TypeMtWordRecord, Timestamp> MANUAL_EVENT_ON = createField(DSL.name("manual_event_on"), SQLDataType.TIMESTAMP(0), TYPE_MT_WORD, "");
+    public static final UDTField<TypeMtWordRecord, LocalDateTime> MANUAL_EVENT_ON = createField(DSL.name("manual_event_on"), SQLDataType.LOCALDATETIME(0), TYPE_MT_WORD, "");
 
     /**
      * No further instances allowed

@@ -1,7 +1,13 @@
 package eki.ekilex.data;
 
-import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.List;
+
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
+
+import eki.common.util.LocalDateTimeDeserialiser;
 
 public class Meaning extends AbstractCrudEntity {
 
@@ -49,11 +55,17 @@ public class Meaning extends AbstractCrudEntity {
 
 	private boolean activeTagComplete;
 
-	private Timestamp lastActivityEventOn;
+	@JsonSerialize(using = LocalDateTimeSerializer.class)
+	@JsonDeserialize(using = LocalDateTimeDeserialiser.class)
+	private LocalDateTime lastActivityEventOn;
 
-	private Timestamp lastApproveEventOn;
+	@JsonSerialize(using = LocalDateTimeSerializer.class)
+	@JsonDeserialize(using = LocalDateTimeDeserialiser.class)
+	private LocalDateTime lastApproveEventOn;
 
-	private Timestamp manualEventOn;
+	@JsonSerialize(using = LocalDateTimeSerializer.class)
+	@JsonDeserialize(using = LocalDateTimeDeserialiser.class)
+	private LocalDateTime manualEventOn;
 
 	public Long getMeaningId() {
 		return meaningId;
@@ -223,27 +235,27 @@ public class Meaning extends AbstractCrudEntity {
 		this.activeTagComplete = activeTagComplete;
 	}
 
-	public Timestamp getLastActivityEventOn() {
+	public LocalDateTime getLastActivityEventOn() {
 		return lastActivityEventOn;
 	}
 
-	public void setLastActivityEventOn(Timestamp lastActivityEventOn) {
+	public void setLastActivityEventOn(LocalDateTime lastActivityEventOn) {
 		this.lastActivityEventOn = lastActivityEventOn;
 	}
 
-	public Timestamp getLastApproveEventOn() {
+	public LocalDateTime getLastApproveEventOn() {
 		return lastApproveEventOn;
 	}
 
-	public void setLastApproveEventOn(Timestamp lastApproveEventOn) {
+	public void setLastApproveEventOn(LocalDateTime lastApproveEventOn) {
 		this.lastApproveEventOn = lastApproveEventOn;
 	}
 
-	public Timestamp getManualEventOn() {
+	public LocalDateTime getManualEventOn() {
 		return manualEventOn;
 	}
 
-	public void setManualEventOn(Timestamp manualEventOn) {
+	public void setManualEventOn(LocalDateTime manualEventOn) {
 		this.manualEventOn = manualEventOn;
 	}
 

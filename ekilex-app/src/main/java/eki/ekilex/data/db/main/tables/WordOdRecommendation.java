@@ -8,7 +8,7 @@ import eki.ekilex.data.db.main.Keys;
 import eki.ekilex.data.db.main.Public;
 import eki.ekilex.data.db.main.tables.records.WordOdRecommendationRecord;
 
-import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
 
@@ -92,7 +92,7 @@ public class WordOdRecommendation extends TableImpl<WordOdRecommendationRecord> 
     /**
      * The column <code>public.word_od_recommendation.created_on</code>.
      */
-    public final TableField<WordOdRecommendationRecord, Timestamp> CREATED_ON = createField(DSL.name("created_on"), SQLDataType.TIMESTAMP(6), this, "");
+    public final TableField<WordOdRecommendationRecord, LocalDateTime> CREATED_ON = createField(DSL.name("created_on"), SQLDataType.LOCALDATETIME(6), this, "");
 
     /**
      * The column <code>public.word_od_recommendation.modified_by</code>.
@@ -102,7 +102,7 @@ public class WordOdRecommendation extends TableImpl<WordOdRecommendationRecord> 
     /**
      * The column <code>public.word_od_recommendation.modified_on</code>.
      */
-    public final TableField<WordOdRecommendationRecord, Timestamp> MODIFIED_ON = createField(DSL.name("modified_on"), SQLDataType.TIMESTAMP(6), this, "");
+    public final TableField<WordOdRecommendationRecord, LocalDateTime> MODIFIED_ON = createField(DSL.name("modified_on"), SQLDataType.LOCALDATETIME(6), this, "");
 
     private WordOdRecommendation(Name alias, Table<WordOdRecommendationRecord> aliased) {
         this(alias, aliased, null);
@@ -202,7 +202,7 @@ public class WordOdRecommendation extends TableImpl<WordOdRecommendationRecord> 
     // -------------------------------------------------------------------------
 
     @Override
-    public Row11<Long, Long, String, String, String, String, Boolean, String, Timestamp, String, Timestamp> fieldsRow() {
+    public Row11<Long, Long, String, String, String, String, Boolean, String, LocalDateTime, String, LocalDateTime> fieldsRow() {
         return (Row11) super.fieldsRow();
     }
 }

@@ -8,7 +8,7 @@ import eki.ekilex.data.db.main.Keys;
 import eki.ekilex.data.db.main.Public;
 import eki.ekilex.data.db.main.tables.records.MeaningForumRecord;
 
-import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
 
@@ -82,7 +82,7 @@ public class MeaningForum extends TableImpl<MeaningForumRecord> {
     /**
      * The column <code>public.meaning_forum.created_on</code>.
      */
-    public final TableField<MeaningForumRecord, Timestamp> CREATED_ON = createField(DSL.name("created_on"), SQLDataType.TIMESTAMP(6), this, "");
+    public final TableField<MeaningForumRecord, LocalDateTime> CREATED_ON = createField(DSL.name("created_on"), SQLDataType.LOCALDATETIME(6), this, "");
 
     /**
      * The column <code>public.meaning_forum.modified_by</code>.
@@ -92,7 +92,7 @@ public class MeaningForum extends TableImpl<MeaningForumRecord> {
     /**
      * The column <code>public.meaning_forum.modified_on</code>.
      */
-    public final TableField<MeaningForumRecord, Timestamp> MODIFIED_ON = createField(DSL.name("modified_on"), SQLDataType.TIMESTAMP(6), this, "");
+    public final TableField<MeaningForumRecord, LocalDateTime> MODIFIED_ON = createField(DSL.name("modified_on"), SQLDataType.LOCALDATETIME(6), this, "");
 
     /**
      * The column <code>public.meaning_forum.order_by</code>.
@@ -205,7 +205,7 @@ public class MeaningForum extends TableImpl<MeaningForumRecord> {
     // -------------------------------------------------------------------------
 
     @Override
-    public Row10<Long, Long, String, String, Long, String, Timestamp, String, Timestamp, Long> fieldsRow() {
+    public Row10<Long, Long, String, String, Long, String, LocalDateTime, String, LocalDateTime, Long> fieldsRow() {
         return (Row10) super.fieldsRow();
     }
 }

@@ -7,7 +7,7 @@ package eki.wordweb.data.db.tables;
 import eki.wordweb.data.db.Public;
 import eki.wordweb.data.db.tables.records.MviewWwNewsArticleRecord;
 
-import java.sql.Timestamp;
+import java.time.LocalDateTime;
 
 import org.jooq.Field;
 import org.jooq.ForeignKey;
@@ -52,7 +52,7 @@ public class MviewWwNewsArticle extends TableImpl<MviewWwNewsArticleRecord> {
     /**
      * The column <code>public.mview_ww_news_article.created</code>.
      */
-    public final TableField<MviewWwNewsArticleRecord, Timestamp> CREATED = createField(DSL.name("created"), SQLDataType.TIMESTAMP(0), this, "");
+    public final TableField<MviewWwNewsArticleRecord, LocalDateTime> CREATED = createField(DSL.name("created"), SQLDataType.LOCALDATETIME(0), this, "");
 
     /**
      * The column <code>public.mview_ww_news_article.type</code>.
@@ -143,7 +143,7 @@ public class MviewWwNewsArticle extends TableImpl<MviewWwNewsArticleRecord> {
     // -------------------------------------------------------------------------
 
     @Override
-    public Row6<Long, Timestamp, String, String, String, String> fieldsRow() {
+    public Row6<Long, LocalDateTime, String, String, String, String> fieldsRow() {
         return (Row6) super.fieldsRow();
     }
 }

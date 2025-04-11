@@ -4,8 +4,12 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
 
 import eki.common.data.AbstractDataObject;
+import eki.common.util.LocalDateTimeDeserialiser;
 import eki.ekilex.data.MeaningNote;
 
 public class TermMeaning extends AbstractDataObject {
@@ -31,11 +35,15 @@ public class TermMeaning extends AbstractDataObject {
 	private List<String> conceptIds;
 
 	@JsonFormat(pattern = "dd.MM.yyyy HH:mm")
+	@JsonSerialize(using = LocalDateTimeSerializer.class)
+	@JsonDeserialize(using = LocalDateTimeDeserialiser.class)
 	private LocalDateTime manualEventOn;
 
 	private String manualEventBy;
 
 	@JsonFormat(pattern = "dd.MM.yyyy HH:mm")
+	@JsonSerialize(using = LocalDateTimeSerializer.class)
+	@JsonDeserialize(using = LocalDateTimeDeserialiser.class)
 	private LocalDateTime firstCreateEventOn;
 
 	private String firstCreateEventBy;

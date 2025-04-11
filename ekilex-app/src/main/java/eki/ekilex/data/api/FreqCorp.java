@@ -1,6 +1,6 @@
 package eki.ekilex.data.api;
 
-import java.sql.Date;
+import java.time.LocalDate;
 
 import org.springframework.format.annotation.DateTimeFormat;
 
@@ -14,7 +14,7 @@ public class FreqCorp extends AbstractDataObject {
 
 	//yyyy-MM-dd
 	@DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
-	private Date corpDate;
+	private LocalDate corpDate;
 
 	private boolean isPublic;
 
@@ -26,11 +26,11 @@ public class FreqCorp extends AbstractDataObject {
 		this.name = name;
 	}
 
-	public Date getCorpDate() {
+	public LocalDate getCorpDate() {
 		return corpDate;
 	}
 
-	public void setCorpDate(Date corpDate) {
+	public void setCorpDate(LocalDate corpDate) {
 		this.corpDate = corpDate;
 	}
 

@@ -1,9 +1,12 @@
 package eki.ekilex.data;
 
-import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.List;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+
 import eki.common.data.AbstractDataObject;
+import eki.common.util.LocalDateTimeDeserialiser;
 
 public class FeedbackLog extends AbstractDataObject {
 
@@ -11,7 +14,8 @@ public class FeedbackLog extends AbstractDataObject {
 
 	private Long id;
 
-	private Timestamp createdOn;
+	@JsonDeserialize(using = LocalDateTimeDeserialiser.class)
+	private LocalDateTime createdOn;
 
 	private String feedbackType;
 
@@ -54,11 +58,11 @@ public class FeedbackLog extends AbstractDataObject {
 		this.id = id;
 	}
 
-	public Timestamp getCreatedOn() {
+	public LocalDateTime getCreatedOn() {
 		return createdOn;
 	}
 
-	public void setCreatedOn(Timestamp createdOn) {
+	public void setCreatedOn(LocalDateTime createdOn) {
 		this.createdOn = createdOn;
 	}
 

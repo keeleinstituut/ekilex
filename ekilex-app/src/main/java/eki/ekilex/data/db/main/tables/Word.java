@@ -8,7 +8,7 @@ import eki.ekilex.data.db.main.Keys;
 import eki.ekilex.data.db.main.Public;
 import eki.ekilex.data.db.main.tables.records.WordRecord;
 
-import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
 
@@ -102,7 +102,7 @@ public class Word extends TableImpl<WordRecord> {
     /**
      * The column <code>public.word.manual_event_on</code>.
      */
-    public final TableField<WordRecord, Timestamp> MANUAL_EVENT_ON = createField(DSL.name("manual_event_on"), SQLDataType.TIMESTAMP(6), this, "");
+    public final TableField<WordRecord, LocalDateTime> MANUAL_EVENT_ON = createField(DSL.name("manual_event_on"), SQLDataType.LOCALDATETIME(6), this, "");
 
     /**
      * The column <code>public.word.morphophono_form</code>.
@@ -241,7 +241,7 @@ public class Word extends TableImpl<WordRecord> {
     // -------------------------------------------------------------------------
 
     @Override
-    public Row14<Long, String, Integer, String, String, String, String, String, String, String, Timestamp, String, Boolean, String> fieldsRow() {
+    public Row14<Long, String, Integer, String, String, String, String, String, String, String, LocalDateTime, String, Boolean, String> fieldsRow() {
         return (Row14) super.fieldsRow();
     }
 }

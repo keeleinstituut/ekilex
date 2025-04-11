@@ -2,7 +2,12 @@ package eki.ekilex.data;
 
 import java.time.LocalDateTime;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
+
 import eki.common.constant.Complexity;
+import eki.common.util.LocalDateTimeDeserialiser;
 
 public class TypeMtLexemeFreeform extends AbstractCrudEntity {
 
@@ -26,10 +31,14 @@ public class TypeMtLexemeFreeform extends AbstractCrudEntity {
 
 	private String createdBy;
 
+	@JsonSerialize(using = LocalDateTimeSerializer.class)
+	@JsonDeserialize(using = LocalDateTimeDeserialiser.class)
 	private LocalDateTime createdOn;
 
 	private String modifiedBy;
 
+	@JsonSerialize(using = LocalDateTimeSerializer.class)
+	@JsonDeserialize(using = LocalDateTimeDeserialiser.class)
 	private LocalDateTime modifiedOn;
 
 	private int index;

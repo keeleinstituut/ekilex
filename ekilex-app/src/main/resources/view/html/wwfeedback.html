@@ -65,7 +65,7 @@
           <tbody>
             <tr th:each="feedbackLog : ${feedbackLogResult.feedbackLogs}">
               <td>
-                <span class="text-nowrap font-weight-light" th:text="${#dates.format(feedbackLog.createdOn, 'dd.MM.yyyy HH:mm')}"></span>
+                <span class="text-nowrap font-weight-light" th:text="${#temporals.format(feedbackLog.createdOn, 'dd.MM.yyyy HH:mm')}"></span>
                 <span class="badge badge-info" th:text="${feedbackLog.feedbackType}"></span>
               </td>
               <td>
@@ -126,7 +126,7 @@
                   <table th:id="${'ekiCommentsArea_' + feedbackLog.id}">
                     <tr th:each="feedbackLogComment : ${feedbackLog.feedbackLogComments}">
                       <td class="text-nowrap">
-                        <div class="font-weight-light" th:text="${#dates.format(feedbackLogComment.createdOn, 'dd.MM.yyyy HH:mm')}"></div>
+                        <div class="font-weight-light" th:text="${#temporals.format(feedbackLogComment.createdOn, 'dd.MM.yyyy HH:mm')}"></div>
                         <div>
                           <em th:text="${feedbackLogComment.userName}"></em>
                         </div>

@@ -97,7 +97,7 @@ public class JooqGenerator implements CommandLineRunner {
 								.withIncludeSystemIndexes(Boolean.FALSE)
 								.withInputSchema(dataSourceSchema))
 						.withGenerate(new Generate()
-								.withJavaTimeTypes(Boolean.FALSE))
+								.withJavaTimeTypes(Boolean.TRUE))
 						.withTarget(new Target()
 								.withPackageName(targetPackageName)
 								.withDirectory(targetSourceDirectory)));

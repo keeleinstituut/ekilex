@@ -8,7 +8,7 @@ import eki.ekilex.data.db.main.Keys;
 import eki.ekilex.data.db.main.Public;
 import eki.ekilex.data.db.main.tables.records.DataRequestRecord;
 
-import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
 
@@ -72,12 +72,12 @@ public class DataRequest extends TableImpl<DataRequestRecord> {
     /**
      * The column <code>public.data_request.accessed</code>.
      */
-    public final TableField<DataRequestRecord, Timestamp> ACCESSED = createField(DSL.name("accessed"), SQLDataType.TIMESTAMP(6), this, "");
+    public final TableField<DataRequestRecord, LocalDateTime> ACCESSED = createField(DSL.name("accessed"), SQLDataType.LOCALDATETIME(6), this, "");
 
     /**
      * The column <code>public.data_request.created</code>.
      */
-    public final TableField<DataRequestRecord, Timestamp> CREATED = createField(DSL.name("created"), SQLDataType.TIMESTAMP(6).nullable(false).defaultValue(DSL.field("statement_timestamp()", SQLDataType.TIMESTAMP)), this, "");
+    public final TableField<DataRequestRecord, LocalDateTime> CREATED = createField(DSL.name("created"), SQLDataType.LOCALDATETIME(6).nullable(false).defaultValue(DSL.field("statement_timestamp()", SQLDataType.LOCALDATETIME)), this, "");
 
     private DataRequest(Name alias, Table<DataRequestRecord> aliased) {
         this(alias, aliased, null);
@@ -177,7 +177,7 @@ public class DataRequest extends TableImpl<DataRequestRecord> {
     // -------------------------------------------------------------------------
 
     @Override
-    public Row6<Long, Long, String, String, Timestamp, Timestamp> fieldsRow() {
+    public Row6<Long, Long, String, String, LocalDateTime, LocalDateTime> fieldsRow() {
         return (Row6) super.fieldsRow();
     }
 }

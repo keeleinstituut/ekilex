@@ -35,13 +35,14 @@ import static eki.ekilex.data.db.main.Tables.WORD_FREEFORM;
 import static eki.ekilex.data.db.main.Tables.WORD_GROUP;
 import static eki.ekilex.data.db.main.Tables.WORD_GROUP_MEMBER;
 import static eki.ekilex.data.db.main.Tables.WORD_OD_RECOMMENDATION;
+import static eki.ekilex.data.db.main.Tables.WORD_OD_USAGE;
 import static eki.ekilex.data.db.main.Tables.WORD_RELATION;
 import static eki.ekilex.data.db.main.Tables.WORD_RELATION_PARAM;
 import static eki.ekilex.data.db.main.Tables.WORD_TAG;
 import static eki.ekilex.data.db.main.Tables.WORD_WORD_TYPE;
 
 import java.math.BigDecimal;
-import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -91,13 +92,13 @@ public class CudDbService extends AbstractDataDbService {
 
 	public void updateFreeform(Freeform freeform, String userName) {
 
-		Timestamp timestamp = new Timestamp(System.currentTimeMillis());
+		LocalDateTime now = LocalDateTime.now();
 
 		Map<Field<?>, Object> fieldAndValueMap = new HashMap<>();
 		fieldAndValueMap.put(FREEFORM.VALUE, freeform.getValue());
 		fieldAndValueMap.put(FREEFORM.VALUE_PRESE, freeform.getValuePrese());
 		fieldAndValueMap.put(FREEFORM.MODIFIED_BY, userName);
-		fieldAndValueMap.put(FREEFORM.MODIFIED_ON, timestamp);
+		fieldAndValueMap.put(FREEFORM.MODIFIED_ON, now);
 		fieldAndValueMap.put(FREEFORM.IS_PUBLIC, freeform.isPublic());
 		if (freeform.getLang() != null) {
 			fieldAndValueMap.put(FREEFORM.LANG, freeform.getLang());
@@ -618,6 +619,18 @@ public class CudDbService extends AbstractDataDbService {
 				.execute();
 	}
 
+	public void updateWordOdUsage(eki.ekilex.data.WordOdUsage wordOdUsage) {
+		mainDb
+				.update(WORD_OD_USAGE)
+				.set(WORD_OD_USAGE.VALUE, wordOdUsage.getValue())
+				.set(WORD_OD_USAGE.VALUE_PRESE, wordOdUsage.getValuePrese())
+				.set(WORD_OD_USAGE.IS_PUBLIC, wordOdUsage.isPublic())
+				.set(WORD_OD_USAGE.MODIFIED_BY, wordOdUsage.getModifiedBy())
+				.set(WORD_OD_USAGE.MODIFIED_ON, wordOdUsage.getModifiedOn())
+				.where(WORD_OD_USAGE.ID.eq(wordOdUsage.getId()))
+				.execute();
+	}
+
 	public void updateMeaningNote(Long meaningNoteId, Note note) {
 
 		Map<Field<?>, Object> fieldAndValueMap = new HashMap<>();
@@ -706,14 +719,14 @@ public class CudDbService extends AbstractDataDbService {
 
 	public void updateMeaningForum(Long meaningForumId, String value, String valuePrese, String userName) {
 
-		Timestamp timestamp = new Timestamp(System.currentTimeMillis());
+		LocalDateTime now = LocalDateTime.now();
 
 		mainDb
 				.update(MEANING_FORUM)
 				.set(MEANING_FORUM.VALUE, value)
 				.set(MEANING_FORUM.VALUE_PRESE, valuePrese)
 				.set(MEANING_FORUM.MODIFIED_BY, userName)
-				.set(MEANING_FORUM.MODIFIED_ON, timestamp)
+				.set(MEANING_FORUM.MODIFIED_ON, now)
 				.where(MEANING_FORUM.ID.eq(meaningForumId))
 				.execute();
 	}
@@ -741,14 +754,14 @@ public class CudDbService extends AbstractDataDbService {
 
 	public void updateWordForum(Long wordForumId, String value, String valuePrese, String userName) {
 
-		Timestamp timestamp = new Timestamp(System.currentTimeMillis());
+		LocalDateTime now = LocalDateTime.now();
 
 		mainDb
 				.update(WORD_FORUM)
 				.set(WORD_FORUM.VALUE, value)
 				.set(WORD_FORUM.VALUE_PRESE, valuePrese)
 				.set(WORD_FORUM.MODIFIED_BY, userName)
-				.set(WORD_FORUM.MODIFIED_ON, timestamp)
+				.set(WORD_FORUM.MODIFIED_ON, now)
 				.where(WORD_FORUM.ID.eq(wordForumId))
 				.execute();
 	}
@@ -961,7 +974,7 @@ public class CudDbService extends AbstractDataDbService {
 
 	public void createWordForum(Long wordId, String value, String valuePrese, Long userId, String userName) {
 
-		Timestamp timestamp = new Timestamp(System.currentTimeMillis());
+		LocalDateTime now = LocalDateTime.now();
 
 		WordForumRecord wordForumRecord = mainDb.newRecord(WORD_FORUM);
 		wordForumRecord.setWordId(wordId);
@@ -969,9 +982,9 @@ public class CudDbService extends AbstractDataDbService {
 		wordForumRecord.setValuePrese(valuePrese);
 		wordForumRecord.setCreatorId(userId);
 		wordForumRecord.setCreatedBy(userName);
-		wordForumRecord.setCreatedOn(timestamp);
+		wordForumRecord.setCreatedOn(now);
 		wordForumRecord.setModifiedBy(userName);
-		wordForumRecord.setModifiedOn(timestamp);
+		wordForumRecord.setModifiedOn(now);
 		wordForumRecord.store();
 	}
 
@@ -1002,6 +1015,33 @@ public class CudDbService extends AbstractDataDbService {
 						wordOdRecommendation.getModifiedBy(),
 						wordOdRecommendation.getModifiedOn())
 				.returning(WORD_OD_RECOMMENDATION.ID)
+				.fetchOne()
+				.getId();
+	}
+
+	public Long createWordOdUsage(Long wordId, eki.ekilex.data.WordOdUsage wordOdUsage) {
+
+		return mainDb
+				.insertInto(
+						WORD_OD_USAGE,
+						WORD_OD_USAGE.WORD_ID,
+						WORD_OD_USAGE.VALUE,
+						WORD_OD_USAGE.VALUE_PRESE,
+						WORD_OD_USAGE.IS_PUBLIC,
+						WORD_OD_USAGE.CREATED_BY,
+						WORD_OD_USAGE.CREATED_ON,
+						WORD_OD_USAGE.MODIFIED_BY,
+						WORD_OD_USAGE.MODIFIED_ON)
+				.values(
+						wordId,
+						wordOdUsage.getValue(),
+						wordOdUsage.getValuePrese(),
+						wordOdUsage.isPublic(),
+						wordOdUsage.getCreatedBy(),
+						wordOdUsage.getCreatedOn(),
+						wordOdUsage.getModifiedBy(),
+						wordOdUsage.getModifiedOn())
+				.returning(WORD_OD_USAGE.ID)
 				.fetchOne()
 				.getId();
 	}
@@ -1314,7 +1354,7 @@ public class CudDbService extends AbstractDataDbService {
 
 	public void createMeaningForum(Long meaningId, String value, String valuePrese, Long userId, String userName) {
 
-		Timestamp timestamp = new Timestamp(System.currentTimeMillis());
+		LocalDateTime now = LocalDateTime.now();
 
 		MeaningForumRecord meaningForumRecord = mainDb.newRecord(MEANING_FORUM);
 		meaningForumRecord.setMeaningId(meaningId);
@@ -1322,22 +1362,9 @@ public class CudDbService extends AbstractDataDbService {
 		meaningForumRecord.setValuePrese(valuePrese);
 		meaningForumRecord.setCreatorId(userId);
 		meaningForumRecord.setCreatedBy(userName);
-		meaningForumRecord.setCreatedOn(timestamp);
+		meaningForumRecord.setCreatedOn(now);
 		meaningForumRecord.setModifiedBy(userName);
-		meaningForumRecord.setModifiedOn(timestamp);
-		meaningForumRecord.store();
-	}
-
-	public void createMeaningForum(Long meaningId, String value, Timestamp createdOn, String createdBy) {
-
-		MeaningForumRecord meaningForumRecord = mainDb.newRecord(MEANING_FORUM);
-		meaningForumRecord.setMeaningId(meaningId);
-		meaningForumRecord.setValue(value);
-		meaningForumRecord.setValuePrese(value);
-		meaningForumRecord.setCreatedBy(createdBy);
-		meaningForumRecord.setCreatedOn(createdOn);
-		meaningForumRecord.setModifiedBy(createdBy);
-		meaningForumRecord.setModifiedOn(createdOn);
+		meaningForumRecord.setModifiedOn(now);
 		meaningForumRecord.store();
 	}
 
@@ -1690,7 +1717,7 @@ public class CudDbService extends AbstractDataDbService {
 
 	private Long createFreeform(Freeform freeform, String userName) {
 
-		Timestamp timestamp = new Timestamp(System.currentTimeMillis());
+		LocalDateTime now = LocalDateTime.now();
 		String complexity = freeform.getComplexity() == null ? null : freeform.getComplexity().name();
 
 		FreeformRecord freeformRecord = mainDb.newRecord(FREEFORM);
@@ -1702,9 +1729,9 @@ public class CudDbService extends AbstractDataDbService {
 		freeformRecord.setComplexity(complexity);
 		freeformRecord.setIsPublic(freeform.isPublic());
 		freeformRecord.setCreatedBy(userName);
-		freeformRecord.setCreatedOn(timestamp);
+		freeformRecord.setCreatedOn(now);
 		freeformRecord.setModifiedBy(userName);
-		freeformRecord.setModifiedOn(timestamp);
+		freeformRecord.setModifiedOn(now);
 		freeformRecord.store();
 
 		return freeformRecord.getId();
@@ -1807,6 +1834,13 @@ public class CudDbService extends AbstractDataDbService {
 		mainDb
 				.delete(WORD_OD_RECOMMENDATION)
 				.where(WORD_OD_RECOMMENDATION.ID.eq(wordOdRecommendationId))
+				.execute();
+	}
+
+	public void deleteWordOdUsage(Long wordOdUsageId) {
+		mainDb
+				.delete(WORD_OD_USAGE)
+				.where(WORD_OD_USAGE.ID.eq(wordOdUsageId))
 				.execute();
 	}
 

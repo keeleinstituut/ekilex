@@ -672,6 +672,34 @@ create table word_od_recommendation (
 );
 alter sequence word_od_recommendation_id_seq restart with 10000;
 
+create table word_od_usage (
+  id bigserial primary key,
+  word_id bigint references word(id) on delete cascade not null,
+  value text not null, 
+  value_prese text not null,
+  is_public boolean default true not null, 
+  created_by text null, 
+  created_on timestamp null, 
+  modified_by text null, 
+  modified_on timestamp null,
+  order_by bigserial
+);
+alter sequence word_od_usage_id_seq restart with 10000;
+
+create table word_od_morph (
+  id bigserial primary key,
+  word_id bigint references word(id) on delete cascade not null,
+  value text not null, 
+  value_prese text not null,
+  is_public boolean default true not null, 
+  created_by text null, 
+  created_on timestamp null, 
+  modified_by text null, 
+  modified_on timestamp null,
+  unique(word_id)
+);
+alter sequence word_od_morph_id_seq restart with 10000;
+
 -- keelendi vabavorm
 create table word_freeform (
   id bigserial primary key, 

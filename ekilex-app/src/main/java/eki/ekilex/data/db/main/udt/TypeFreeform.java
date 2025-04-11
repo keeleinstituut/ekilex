@@ -7,7 +7,7 @@ package eki.ekilex.data.db.main.udt;
 import eki.ekilex.data.db.main.Public;
 import eki.ekilex.data.db.main.udt.records.TypeFreeformRecord;
 
-import java.sql.Timestamp;
+import java.time.LocalDateTime;
 
 import org.jooq.Schema;
 import org.jooq.UDTField;
@@ -71,7 +71,7 @@ public class TypeFreeform extends UDTImpl<TypeFreeformRecord> {
     /**
      * The attribute <code>public.type_freeform.created_on</code>.
      */
-    public static final UDTField<TypeFreeformRecord, Timestamp> CREATED_ON = createField(DSL.name("created_on"), SQLDataType.TIMESTAMP(0), TYPE_FREEFORM, "");
+    public static final UDTField<TypeFreeformRecord, LocalDateTime> CREATED_ON = createField(DSL.name("created_on"), SQLDataType.LOCALDATETIME(0), TYPE_FREEFORM, "");
 
     /**
      * The attribute <code>public.type_freeform.modified_by</code>.
@@ -81,7 +81,7 @@ public class TypeFreeform extends UDTImpl<TypeFreeformRecord> {
     /**
      * The attribute <code>public.type_freeform.modified_on</code>.
      */
-    public static final UDTField<TypeFreeformRecord, Timestamp> MODIFIED_ON = createField(DSL.name("modified_on"), SQLDataType.TIMESTAMP(0), TYPE_FREEFORM, "");
+    public static final UDTField<TypeFreeformRecord, LocalDateTime> MODIFIED_ON = createField(DSL.name("modified_on"), SQLDataType.LOCALDATETIME(0), TYPE_FREEFORM, "");
 
     /**
      * No further instances allowed

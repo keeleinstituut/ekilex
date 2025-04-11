@@ -44,9 +44,9 @@ import static java.util.stream.Collectors.toList;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 import java.math.BigDecimal;
-import java.sql.Timestamp;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
@@ -2057,7 +2057,7 @@ public class SearchFilterHelper implements GlobalConstant, ActivityFunct, Freefo
 		} else if (SearchOperand.EARLIER_THAN.equals(searchOperand)) {
 			Date date = dateFormat.parse(searchValueStr);
 			@SuppressWarnings("unchecked")
-			Field<Timestamp> tsSearchField = (Field<Timestamp>) searchField;
+			Field<LocalDateTime> tsSearchField = (Field<LocalDateTime>) searchField;
 			Field<Boolean> earlierThan = DSL.field("(date_part('epoch', {0}) * 1000) <= {1}", Boolean.class, tsSearchField, DSL.inline(date.getTime()));
 			if (isNot) {
 				earlierThan = DSL.not(earlierThan);
@@ -2066,7 +2066,7 @@ public class SearchFilterHelper implements GlobalConstant, ActivityFunct, Freefo
 		} else if (SearchOperand.LATER_THAN.equals(searchOperand)) {
 			Date date = dateFormat.parse(searchValueStr);
 			@SuppressWarnings("unchecked")
-			Field<Timestamp> tsSearchField = (Field<Timestamp>) searchField;
+			Field<LocalDateTime> tsSearchField = (Field<LocalDateTime>) searchField;
 			Field<Boolean> laterThan = DSL.field("(date_part('epoch', {0}) * 1000) >= {1}", Boolean.class, tsSearchField, DSL.inline(date.getTime()));
 			if (isNot) {
 				laterThan = DSL.not(laterThan);

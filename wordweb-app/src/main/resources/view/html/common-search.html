@@ -229,7 +229,7 @@
               <span>ID</span>
               <span th:text="${lexeme.meaningId}" th:if="${isProTerm}"></span>
               <span th:text="#{label.tooltip.last_modified}"></span>
-              <span class="meaning-data__date" th:text="${#dates.format(lexeme.meaningManualEventOn, 'dd.MM.yyyy')}"></span>
+              <span class="meaning-data__date" th:text="${#temporals.format(lexeme.meaningManualEventOn, 'dd.MM.yyyy')}"></span>
             </div>
           </div>
           <a

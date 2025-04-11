@@ -51,6 +51,8 @@ import eki.ekilex.service.AbstractLoaderCommons;
 import eki.ekilex.service.cli.TransportService;
 import eki.ekilex.service.core.ActivityLogService;
 
+//DO NOT USE! OUTDATED!!
+@Deprecated
 @Component
 public class DatasetImporterRunner extends AbstractLoaderCommons {
 

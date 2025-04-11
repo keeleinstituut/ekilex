@@ -8,7 +8,7 @@ import eki.ekilex.data.db.main.Keys;
 import eki.ekilex.data.db.main.Public;
 import eki.ekilex.data.db.main.tables.records.DefinitionNoteRecord;
 
-import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
 
@@ -97,7 +97,7 @@ public class DefinitionNote extends TableImpl<DefinitionNoteRecord> {
     /**
      * The column <code>public.definition_note.created_on</code>.
      */
-    public final TableField<DefinitionNoteRecord, Timestamp> CREATED_ON = createField(DSL.name("created_on"), SQLDataType.TIMESTAMP(6), this, "");
+    public final TableField<DefinitionNoteRecord, LocalDateTime> CREATED_ON = createField(DSL.name("created_on"), SQLDataType.LOCALDATETIME(6), this, "");
 
     /**
      * The column <code>public.definition_note.modified_by</code>.
@@ -107,7 +107,7 @@ public class DefinitionNote extends TableImpl<DefinitionNoteRecord> {
     /**
      * The column <code>public.definition_note.modified_on</code>.
      */
-    public final TableField<DefinitionNoteRecord, Timestamp> MODIFIED_ON = createField(DSL.name("modified_on"), SQLDataType.TIMESTAMP(6), this, "");
+    public final TableField<DefinitionNoteRecord, LocalDateTime> MODIFIED_ON = createField(DSL.name("modified_on"), SQLDataType.LOCALDATETIME(6), this, "");
 
     /**
      * The column <code>public.definition_note.order_by</code>.
@@ -220,7 +220,7 @@ public class DefinitionNote extends TableImpl<DefinitionNoteRecord> {
     // -------------------------------------------------------------------------
 
     @Override
-    public Row13<Long, Long, Long, String, String, String, String, Boolean, String, Timestamp, String, Timestamp, Long> fieldsRow() {
+    public Row13<Long, Long, Long, String, String, String, String, Boolean, String, LocalDateTime, String, LocalDateTime, Long> fieldsRow() {
         return (Row13) super.fieldsRow();
     }
 }

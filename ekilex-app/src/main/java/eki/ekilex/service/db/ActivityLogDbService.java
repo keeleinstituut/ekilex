@@ -40,10 +40,11 @@ import static eki.ekilex.data.db.main.Tables.WORD_ETYMOLOGY;
 import static eki.ekilex.data.db.main.Tables.WORD_FREEFORM;
 import static eki.ekilex.data.db.main.Tables.WORD_LAST_ACTIVITY_LOG;
 import static eki.ekilex.data.db.main.Tables.WORD_OD_RECOMMENDATION;
+import static eki.ekilex.data.db.main.Tables.WORD_OD_USAGE;
 import static eki.ekilex.data.db.main.Tables.WORD_RELATION;
 import static eki.ekilex.data.db.main.Tables.WORD_WORD_TYPE;
 
-import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 
@@ -215,7 +216,7 @@ public class ActivityLogDbService implements GlobalConstant, ActivityFunct {
 				.fetchInto(eki.ekilex.data.ActivityLog.class);
 	}
 
-	public Timestamp getActivityLogEventOn(Long activityLogId) {
+	public LocalDateTime getActivityLogEventOn(Long activityLogId) {
 
 		ActivityLog al = ACTIVITY_LOG.as("al");
 
@@ -223,7 +224,7 @@ public class ActivityLogDbService implements GlobalConstant, ActivityFunct {
 				.select(al.EVENT_ON)
 				.from(al)
 				.where(al.ID.eq(activityLogId))
-				.fetchOneInto(Timestamp.class);
+				.fetchOneInto(LocalDateTime.class);
 	}
 
 	public Long create(eki.ekilex.data.ActivityLog activityLog) {
@@ -374,7 +375,7 @@ public class ActivityLogDbService implements GlobalConstant, ActivityFunct {
 			final String[] conceptActivityWordFunctNamesOfInterest = new String[] {"createWord", "updateWordValue", "deleteWord"};
 			final String conceptActivityWordFunctNamesCrit = "(" + StringUtils.join(conceptActivityWordFunctNamesOfInterest, '|') + ")";
 
-			Table<Record2<Long, Timestamp>> lmlwal = DSL
+			Table<Record2<Long, LocalDateTime>> lmlwal = DSL
 					.select(al.ID, al.EVENT_ON)
 					.from(mal, al)
 					.where(
@@ -465,7 +466,7 @@ public class ActivityLogDbService implements GlobalConstant, ActivityFunct {
 				.execute();
 	}
 
-	public void updateWordManualEventOn(Long wordId, Timestamp eventOn) {
+	public void updateWordManualEventOn(Long wordId, LocalDateTime eventOn) {
 
 		mainDb
 				.update(WORD)
@@ -474,7 +475,7 @@ public class ActivityLogDbService implements GlobalConstant, ActivityFunct {
 				.execute();
 	}
 
-	public void updateMeaningManualEventOn(Long meaningId, Timestamp eventOn) {
+	public void updateMeaningManualEventOn(Long meaningId, LocalDateTime eventOn) {
 
 		mainDb
 				.update(MEANING)
@@ -483,7 +484,7 @@ public class ActivityLogDbService implements GlobalConstant, ActivityFunct {
 				.execute();
 	}
 
-	public void updateMeaningFirstCreateEvent(Long meaningId, Timestamp eventOn, String eventBy) {
+	public void updateMeaningFirstCreateEvent(Long meaningId, LocalDateTime eventOn, String eventBy) {
 
 		ActivityLog al1 = ACTIVITY_LOG.as("al1");
 		ActivityLog al2 = ACTIVITY_LOG.as("al2");
@@ -667,6 +668,15 @@ public class ActivityLogDbService implements GlobalConstant, ActivityFunct {
 				.select(WORD_OD_RECOMMENDATION.WORD_ID)
 				.from(WORD_OD_RECOMMENDATION)
 				.where(WORD_OD_RECOMMENDATION.ID.eq(entityId))
+				.fetchOptionalInto(Long.class)
+				.orElse(null);
+	}
+
+	public Long getWordOdUsageOwnerId(Long entityId) {
+		return mainDb
+				.select(WORD_OD_USAGE.WORD_ID)
+				.from(WORD_OD_USAGE)
+				.where(WORD_OD_USAGE.ID.eq(entityId))
 				.fetchOptionalInto(Long.class)
 				.orElse(null);
 	}
@@ -861,7 +871,7 @@ public class ActivityLogDbService implements GlobalConstant, ActivityFunct {
 				.orElse(null);
 	}
 
-	public Timestamp getMeaningLastActivityLog(Long meaningId, LastActivityType lastActivityType) {
+	public LocalDateTime getMeaningLastActivityLog(Long meaningId, LastActivityType lastActivityType) {
 		return mainDb
 				.select(ACTIVITY_LOG.EVENT_ON)
 				.from(MEANING_LAST_ACTIVITY_LOG, ACTIVITY_LOG)
@@ -869,7 +879,7 @@ public class ActivityLogDbService implements GlobalConstant, ActivityFunct {
 						MEANING_LAST_ACTIVITY_LOG.MEANING_ID.eq(meaningId)
 								.and(MEANING_LAST_ACTIVITY_LOG.ACTIVITY_LOG_ID.eq(ACTIVITY_LOG.ID))
 								.and(MEANING_LAST_ACTIVITY_LOG.TYPE.eq(lastActivityType.name())))
-				.fetchOptionalInto(Timestamp.class)
+				.fetchOptionalInto(LocalDateTime.class)
 				.orElse(null);
 	}
 

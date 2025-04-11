@@ -1,9 +1,14 @@
 package eki.wordweb.data;
 
-import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.List;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
+
 import eki.common.data.Classifier;
+import eki.common.util.LocalDateTimeDeserialiser;
 import eki.wordweb.data.type.TypeDefinition;
 import eki.wordweb.data.type.TypeMeaningWord;
 import eki.wordweb.data.type.TypeWordRelation;
@@ -18,9 +23,13 @@ public class Word extends WordTypeData {
 
 	private String alternativeWord;
 
-	private Timestamp manualEventOn;
+	@JsonSerialize(using = LocalDateTimeSerializer.class)
+	@JsonDeserialize(using = LocalDateTimeDeserialiser.class)
+	private LocalDateTime manualEventOn;
 
-	private Timestamp lastActivityEventOn;
+	@JsonSerialize(using = LocalDateTimeSerializer.class)
+	@JsonDeserialize(using = LocalDateTimeDeserialiser.class)
+	private LocalDateTime lastActivityEventOn;
 
 	private List<TypeMeaningWord> meaningWords;
 
@@ -78,19 +87,19 @@ public class Word extends WordTypeData {
 		this.alternativeWord = alternativeWord;
 	}
 
-	public Timestamp getManualEventOn() {
+	public LocalDateTime getManualEventOn() {
 		return manualEventOn;
 	}
 
-	public void setManualEventOn(Timestamp manualEventOn) {
+	public void setManualEventOn(LocalDateTime manualEventOn) {
 		this.manualEventOn = manualEventOn;
 	}
 
-	public Timestamp getLastActivityEventOn() {
+	public LocalDateTime getLastActivityEventOn() {
 		return lastActivityEventOn;
 	}
 
-	public void setLastActivityEventOn(Timestamp lastActivityEventOn) {
+	public void setLastActivityEventOn(LocalDateTime lastActivityEventOn) {
 		this.lastActivityEventOn = lastActivityEventOn;
 	}
 

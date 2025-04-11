@@ -147,7 +147,9 @@ import eki.ekilex.data.db.main.tables.WordGroup;
 import eki.ekilex.data.db.main.tables.WordGroupMember;
 import eki.ekilex.data.db.main.tables.WordGuid;
 import eki.ekilex.data.db.main.tables.WordLastActivityLog;
+import eki.ekilex.data.db.main.tables.WordOdMorph;
 import eki.ekilex.data.db.main.tables.WordOdRecommendation;
+import eki.ekilex.data.db.main.tables.WordOdUsage;
 import eki.ekilex.data.db.main.tables.WordRelMapping;
 import eki.ekilex.data.db.main.tables.WordRelType;
 import eki.ekilex.data.db.main.tables.WordRelTypeLabel;
@@ -881,9 +883,19 @@ public class Tables {
     public static final WordLastActivityLog WORD_LAST_ACTIVITY_LOG = WordLastActivityLog.WORD_LAST_ACTIVITY_LOG;
 
     /**
+     * The table <code>public.word_od_morph</code>.
+     */
+    public static final WordOdMorph WORD_OD_MORPH = WordOdMorph.WORD_OD_MORPH;
+
+    /**
      * The table <code>public.word_od_recommendation</code>.
      */
     public static final WordOdRecommendation WORD_OD_RECOMMENDATION = WordOdRecommendation.WORD_OD_RECOMMENDATION;
+
+    /**
+     * The table <code>public.word_od_usage</code>.
+     */
+    public static final WordOdUsage WORD_OD_USAGE = WordOdUsage.WORD_OD_USAGE;
 
     /**
      * The table <code>public.word_rel_mapping</code>.

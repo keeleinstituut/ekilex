@@ -36,7 +36,7 @@
               <th:block th:each="logRow : ${activityLogHistory}">
                 <tr>
                   <td class="text-nowrap">
-                    <span th:text="${#dates.format(logRow.eventOn, 'dd.MM.yyyy HH:mm')}"></span>
+                    <span th:text="${#temporals.format(logRow.eventOn, 'dd.MM.yyyy HH:mm')}"></span>
                   </td>
                   <td class="text-nowrap">
                     <span th:text="${logRow.eventBy}"></span>

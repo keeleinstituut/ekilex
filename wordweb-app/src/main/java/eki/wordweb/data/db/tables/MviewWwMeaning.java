@@ -7,7 +7,7 @@ package eki.wordweb.data.db.tables;
 import eki.wordweb.data.db.Public;
 import eki.wordweb.data.db.tables.records.MviewWwMeaningRecord;
 
-import java.sql.Timestamp;
+import java.time.LocalDateTime;
 
 import org.jooq.Field;
 import org.jooq.ForeignKey;
@@ -53,12 +53,12 @@ public class MviewWwMeaning extends TableImpl<MviewWwMeaningRecord> {
     /**
      * The column <code>public.mview_ww_meaning.manual_event_on</code>.
      */
-    public final TableField<MviewWwMeaningRecord, Timestamp> MANUAL_EVENT_ON = createField(DSL.name("manual_event_on"), SQLDataType.TIMESTAMP(0), this, "");
+    public final TableField<MviewWwMeaningRecord, LocalDateTime> MANUAL_EVENT_ON = createField(DSL.name("manual_event_on"), SQLDataType.LOCALDATETIME(0), this, "");
 
     /**
      * The column <code>public.mview_ww_meaning.last_approve_or_edit_event_on</code>.
      */
-    public final TableField<MviewWwMeaningRecord, Timestamp> LAST_APPROVE_OR_EDIT_EVENT_ON = createField(DSL.name("last_approve_or_edit_event_on"), SQLDataType.TIMESTAMP(0), this, "");
+    public final TableField<MviewWwMeaningRecord, LocalDateTime> LAST_APPROVE_OR_EDIT_EVENT_ON = createField(DSL.name("last_approve_or_edit_event_on"), SQLDataType.LOCALDATETIME(0), this, "");
 
     /**
      * The column <code>public.mview_ww_meaning.domain_codes</code>.
@@ -169,7 +169,7 @@ public class MviewWwMeaning extends TableImpl<MviewWwMeaningRecord> {
     // -------------------------------------------------------------------------
 
     @Override
-    public Row11<Long, Timestamp, Timestamp, JSON, JSON, JSON, String[], String[], String[], JSON, JSON> fieldsRow() {
+    public Row11<Long, LocalDateTime, LocalDateTime, JSON, JSON, JSON, String[], String[], String[], JSON, JSON> fieldsRow() {
         return (Row11) super.fieldsRow();
     }
 }

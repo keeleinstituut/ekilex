@@ -1391,7 +1391,7 @@
       </div>
     </div>
   </div>
-  <div th:id="${'editWordOdRecommendationDlg_' + lexeme.lexemeWord.wordOdRecommendation.id}" class="modal"
+  <div th:id="${'editWordOdRecommendationDlg_' + wordOdRecommendation.id}" class="modal"
        role="dialog"
        th:fragment="edit_word_od_recommendation"
        data-plugin="initMultipleEkiEditorDlgAndFocusPlugin">
@@ -1405,14 +1405,68 @@
             </button>
           </div>
           <div class="modal-body">
-            <input type="hidden" name="id" th:value="${lexeme.lexemeWord.wordOdRecommendation.id}">
+            <input type="hidden" name="id" th:value="${wordOdRecommendation.id}">
             <input type="hidden" name="opCode" value="word_od_recommendation">
-            <input type="hidden" name="value" th:value="${lexeme.lexemeWord.wordOdRecommendation.valuePrese}">
-            <input type="hidden" name="value2" th:value="${lexeme.lexemeWord.wordOdRecommendation.optValuePrese}">
+            <input type="hidden" name="value" th:value="${wordOdRecommendation.valuePrese}">
+            <input type="hidden" name="value2" th:value="${wordOdRecommendation.optValuePrese}">
             <p th:text="#{common.content}"></p>
             <div th:replace="components :: eki_editor_elem(editFld = 'value')"></div>
             <p th:text="#{common.add}"></p>
             <div th:replace="components :: eki_editor_elem(editFld = 'value2', optional = ${true})"></div>  
+          </div>
+          <div class="modal-footer">
+            <button type="submit" class="btn btn-primary" th:text="#{common.save}">Salvesta</button>
+            <button type="button" class="btn btn-default" data-dismiss="modal" th:text="#{common.cancel}">Katkesta</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+  <div th:id="${'addWordOdUsageDlg_' + lexeme.lexemeId}" class="modal"
+       role="dialog"
+       th:fragment="add_word_od_usage_dlg"
+       data-plugin="initEkiEditorDlgAndFocusPlugin">
+    <div class="modal-dialog modal-lg" role="document">
+      <div class="modal-content">
+        <form th:action="@{/create_item}" method="post">
+          <div class="modal-header">
+            <h5 class="modal-title" th:text="#{term.add.od.word.usage}">Lisa kasutusnäide</h5>
+            <button type="button" class="close" aria-label="Close" data-role="close" data-dismiss="modal">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <input type="hidden" name="id" th:value="${lexeme.wordId}">
+            <input type="hidden" name="opCode" value="word_od_usage">
+            <input type="hidden" name="value">
+            <div th:replace="components :: eki_editor_elem"></div>
+          </div>
+          <div class="modal-footer">
+            <button type="submit" class="btn btn-primary" th:text="#{common.add}">Lisa</button>
+            <button type="button" class="btn btn-default" data-dismiss="modal" th:text="#{common.cancel}">Katkesta</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+  <div th:id="${'editWordOdUsageDlg_' + wordOdUsage.id}" class="modal"
+       role="dialog"
+       th:fragment="edit_word_od_usage"
+       data-plugin="initEkiEditorDlgAndFocusPlugin">
+    <div class="modal-dialog modal-lg" role="document">
+      <div class="modal-content">
+        <form th:action="@{/update_item}" method="post">
+          <div class="modal-header">
+            <h5 class="modal-title" th:text="#{term.edit.od.word.usage}">Muuda kasutusnäidet</h5>
+            <button type="button" class="close" aria-label="Close" data-role="close" data-dismiss="modal">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <input type="hidden" name="id" th:value="${wordOdUsage.id}">
+            <input type="hidden" name="opCode" value="word_od_usage">
+            <input type="hidden" name="value" th:value="${wordOdUsage.valuePrese}">
+            <div th:replace="components :: eki_editor_elem"></div>
           </div>
           <div class="modal-footer">
             <button type="submit" class="btn btn-primary" th:text="#{common.save}">Salvesta</button>
@@ -2227,7 +2281,7 @@
             <div class="d-flex d-row">
               <div class="update-date-manually">
                 <div class="input-group date" data-provide="datepicker" data-date-language="et" data-date-autoclose="true">
-                  <input type="text" class="form-control update-date-manually-input justify-content-center" name="value" th:value="${#dates.format(meaning.manualEventOn, 'dd.MM.yyyy')}">
+                  <input type="text" class="form-control update-date-manually-input justify-content-center" name="value" th:value="${#temporals.format(meaning.manualEventOn, 'dd.MM.yyyy')}">
                   <div class="input-group-addon input-group-append btn btn-primary update-date-manually-box justify-content-center">
                     <div class="input-group-text update-date-manually-box-text p-0">
                       <i class="fa fa-calendar"></i>

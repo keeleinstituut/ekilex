@@ -8,7 +8,7 @@ import eki.ekilex.data.db.main.Keys;
 import eki.ekilex.data.db.main.Public;
 import eki.ekilex.data.db.main.tables.records.MeaningRecord;
 
-import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
 
@@ -57,7 +57,7 @@ public class Meaning extends TableImpl<MeaningRecord> {
     /**
      * The column <code>public.meaning.manual_event_on</code>.
      */
-    public final TableField<MeaningRecord, Timestamp> MANUAL_EVENT_ON = createField(DSL.name("manual_event_on"), SQLDataType.TIMESTAMP(6), this, "");
+    public final TableField<MeaningRecord, LocalDateTime> MANUAL_EVENT_ON = createField(DSL.name("manual_event_on"), SQLDataType.LOCALDATETIME(6), this, "");
 
     private Meaning(Name alias, Table<MeaningRecord> aliased) {
         this(alias, aliased, null);
@@ -143,7 +143,7 @@ public class Meaning extends TableImpl<MeaningRecord> {
     // -------------------------------------------------------------------------
 
     @Override
-    public Row2<Long, Timestamp> fieldsRow() {
+    public Row2<Long, LocalDateTime> fieldsRow() {
         return (Row2) super.fieldsRow();
     }
 }

@@ -8,7 +8,7 @@ import eki.ekilex.data.db.main.Keys;
 import eki.ekilex.data.db.main.Public;
 import eki.ekilex.data.db.main.tables.records.WordForumRecord;
 
-import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
 
@@ -82,7 +82,7 @@ public class WordForum extends TableImpl<WordForumRecord> {
     /**
      * The column <code>public.word_forum.created_on</code>.
      */
-    public final TableField<WordForumRecord, Timestamp> CREATED_ON = createField(DSL.name("created_on"), SQLDataType.TIMESTAMP(6), this, "");
+    public final TableField<WordForumRecord, LocalDateTime> CREATED_ON = createField(DSL.name("created_on"), SQLDataType.LOCALDATETIME(6), this, "");
 
     /**
      * The column <code>public.word_forum.modified_by</code>.
@@ -92,7 +92,7 @@ public class WordForum extends TableImpl<WordForumRecord> {
     /**
      * The column <code>public.word_forum.modified_on</code>.
      */
-    public final TableField<WordForumRecord, Timestamp> MODIFIED_ON = createField(DSL.name("modified_on"), SQLDataType.TIMESTAMP(6), this, "");
+    public final TableField<WordForumRecord, LocalDateTime> MODIFIED_ON = createField(DSL.name("modified_on"), SQLDataType.LOCALDATETIME(6), this, "");
 
     /**
      * The column <code>public.word_forum.order_by</code>.
@@ -205,7 +205,7 @@ public class WordForum extends TableImpl<WordForumRecord> {
     // -------------------------------------------------------------------------
 
     @Override
-    public Row10<Long, Long, String, String, Long, String, Timestamp, String, Timestamp, Long> fieldsRow() {
+    public Row10<Long, Long, String, String, Long, String, LocalDateTime, String, LocalDateTime, Long> fieldsRow() {
         return (Row10) super.fieldsRow();
     }
 }

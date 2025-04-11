@@ -22,7 +22,7 @@ import static eki.ekilex.data.db.main.Tables.REGISTER;
 import static eki.ekilex.data.db.main.Tables.SOURCE;
 import static eki.ekilex.data.db.main.Tables.WORD;
 
-import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.List;
 
 import org.jooq.DSLContext;
@@ -91,7 +91,7 @@ public class StatDataDbService implements GlobalConstant {
 				.fetchInto(StatDataRow.class);
 	}
 
-	public List<StatDataRow> getActivityStatData(Timestamp from) {
+	public List<StatDataRow> getActivityStatData(LocalDateTime from) {
 
 		return mainDb
 				.select(

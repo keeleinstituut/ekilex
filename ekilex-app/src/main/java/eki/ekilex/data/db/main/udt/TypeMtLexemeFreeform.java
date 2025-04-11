@@ -7,7 +7,7 @@ package eki.ekilex.data.db.main.udt;
 import eki.ekilex.data.db.main.Public;
 import eki.ekilex.data.db.main.udt.records.TypeMtLexemeFreeformRecord;
 
-import java.sql.Timestamp;
+import java.time.LocalDateTime;
 
 import org.jooq.Schema;
 import org.jooq.UDTField;
@@ -86,7 +86,7 @@ public class TypeMtLexemeFreeform extends UDTImpl<TypeMtLexemeFreeformRecord> {
     /**
      * The attribute <code>public.type_mt_lexeme_freeform.created_on</code>.
      */
-    public static final UDTField<TypeMtLexemeFreeformRecord, Timestamp> CREATED_ON = createField(DSL.name("created_on"), SQLDataType.TIMESTAMP(0), TYPE_MT_LEXEME_FREEFORM, "");
+    public static final UDTField<TypeMtLexemeFreeformRecord, LocalDateTime> CREATED_ON = createField(DSL.name("created_on"), SQLDataType.LOCALDATETIME(0), TYPE_MT_LEXEME_FREEFORM, "");
 
     /**
      * The attribute <code>public.type_mt_lexeme_freeform.modified_by</code>.
@@ -96,7 +96,7 @@ public class TypeMtLexemeFreeform extends UDTImpl<TypeMtLexemeFreeformRecord> {
     /**
      * The attribute <code>public.type_mt_lexeme_freeform.modified_on</code>.
      */
-    public static final UDTField<TypeMtLexemeFreeformRecord, Timestamp> MODIFIED_ON = createField(DSL.name("modified_on"), SQLDataType.TIMESTAMP(0), TYPE_MT_LEXEME_FREEFORM, "");
+    public static final UDTField<TypeMtLexemeFreeformRecord, LocalDateTime> MODIFIED_ON = createField(DSL.name("modified_on"), SQLDataType.LOCALDATETIME(0), TYPE_MT_LEXEME_FREEFORM, "");
 
     /**
      * No further instances allowed

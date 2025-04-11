@@ -183,6 +183,9 @@ public class EditController extends AbstractMutableDataPageController implements
 		case "word_od_recommendation":
 			cudService.createWordOdRecommendation(id, value, value2, roleDatasetCode, isManualEventOnUpdateEnabled);
 			break;
+		case "word_od_usage":
+			cudService.createWordOdUsage(id, value, roleDatasetCode, isManualEventOnUpdateEnabled);
+			break;
 		case "create_syn_word":
 			synCudService.createWordAndSynRelation(id, value, value2, languageCode, roleDatasetCode, isManualEventOnUpdateEnabled);
 			break;
@@ -394,6 +397,9 @@ public class EditController extends AbstractMutableDataPageController implements
 			break;
 		case "word_od_recommendation":
 			cudService.updateWordOdRecommendation(id, value, value2, roleDatasetCode, isManualEventOnUpdateEnabled);
+			break;
+		case "word_od_usage":
+			cudService.updateWordOdUsage(id, value, roleDatasetCode, isManualEventOnUpdateEnabled);
 			break;
 		case "word_morph_comment":
 			cudService.updateWordMorphComment(id, value, roleDatasetCode, isManualEventOnUpdateEnabled);
@@ -698,6 +704,9 @@ public class EditController extends AbstractMutableDataPageController implements
 			break;
 		case "word_od_recommendation":
 			cudService.deleteWordOdRecommendation(id, roleDatasetCode, isManualEventOnUpdateEnabled);
+			break;
+		case "word_od_usage":
+			cudService.deleteWordOdUsage(id, roleDatasetCode, isManualEventOnUpdateEnabled);
 			break;
 		case DEFINITION_SOURCE_LINK:
 			sourceLinkService.deleteDefinitionSourceLink(id, roleDatasetCode, isManualEventOnUpdateEnabled);

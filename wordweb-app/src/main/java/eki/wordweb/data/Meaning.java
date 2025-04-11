@@ -1,9 +1,14 @@
 package eki.wordweb.data;
 
-import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.List;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
+
 import eki.common.data.AbstractDataObject;
+import eki.common.util.LocalDateTimeDeserialiser;
 import eki.wordweb.data.type.TypeDefinition;
 import eki.wordweb.data.type.TypeDomain;
 import eki.wordweb.data.type.TypeMeaningRelation;
@@ -18,9 +23,13 @@ public class Meaning extends AbstractDataObject {
 
 	private Long meaningId;
 
-	private Timestamp meaningManualEventOn;
+	@JsonSerialize(using = LocalDateTimeSerializer.class)
+	@JsonDeserialize(using = LocalDateTimeDeserialiser.class)
+	private LocalDateTime meaningManualEventOn;
 
-	private Timestamp meaningLastActivityEventOn;
+	@JsonSerialize(using = LocalDateTimeSerializer.class)
+	@JsonDeserialize(using = LocalDateTimeDeserialiser.class)
+	private LocalDateTime meaningLastActivityEventOn;
 
 	private List<TypeDomain> domainCodes;
 
@@ -56,19 +65,19 @@ public class Meaning extends AbstractDataObject {
 		this.meaningId = meaningId;
 	}
 
-	public Timestamp getMeaningManualEventOn() {
+	public LocalDateTime getMeaningManualEventOn() {
 		return meaningManualEventOn;
 	}
 
-	public void setMeaningManualEventOn(Timestamp meaningManualEventOn) {
+	public void setMeaningManualEventOn(LocalDateTime meaningManualEventOn) {
 		this.meaningManualEventOn = meaningManualEventOn;
 	}
 
-	public Timestamp getMeaningLastActivityEventOn() {
+	public LocalDateTime getMeaningLastActivityEventOn() {
 		return meaningLastActivityEventOn;
 	}
 
-	public void setMeaningLastActivityEventOn(Timestamp meaningLastActivityEventOn) {
+	public void setMeaningLastActivityEventOn(LocalDateTime meaningLastActivityEventOn) {
 		this.meaningLastActivityEventOn = meaningLastActivityEventOn;
 	}
 

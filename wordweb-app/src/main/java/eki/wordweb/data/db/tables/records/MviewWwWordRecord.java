@@ -8,7 +8,7 @@ import eki.wordweb.data.db.tables.MviewWwWord;
 import eki.wordweb.data.db.udt.records.TypeLangComplexityRecord;
 
 import java.math.BigDecimal;
-import java.sql.Timestamp;
+import java.time.LocalDateTime;
 
 import org.jooq.JSON;
 import org.jooq.impl.TableRecordImpl;
@@ -207,29 +207,29 @@ public class MviewWwWordRecord extends TableRecordImpl<MviewWwWordRecord> {
     /**
      * Setter for <code>public.mview_ww_word.manual_event_on</code>.
      */
-    public void setManualEventOn(Timestamp value) {
+    public void setManualEventOn(LocalDateTime value) {
         set(13, value);
     }
 
     /**
      * Getter for <code>public.mview_ww_word.manual_event_on</code>.
      */
-    public Timestamp getManualEventOn() {
-        return (Timestamp) get(13);
+    public LocalDateTime getManualEventOn() {
+        return (LocalDateTime) get(13);
     }
 
     /**
      * Setter for <code>public.mview_ww_word.last_activity_event_on</code>.
      */
-    public void setLastActivityEventOn(Timestamp value) {
+    public void setLastActivityEventOn(LocalDateTime value) {
         set(14, value);
     }
 
     /**
      * Getter for <code>public.mview_ww_word.last_activity_event_on</code>.
      */
-    public Timestamp getLastActivityEventOn() {
-        return (Timestamp) get(14);
+    public LocalDateTime getLastActivityEventOn() {
+        return (LocalDateTime) get(14);
     }
 
     /**
@@ -386,7 +386,7 @@ public class MviewWwWordRecord extends TableRecordImpl<MviewWwWordRecord> {
     /**
      * Create a detached, initialised MviewWwWordRecord
      */
-    public MviewWwWordRecord(Long wordId, String word, String wordPrese, String asWord, String lang, String langFilt, Long langOrderBy, Integer homonymNr, String displayMorphCode, String genderCode, String aspectCode, String vocalForm, String morphComment, Timestamp manualEventOn, Timestamp lastActivityEventOn, String[] wordTypeCodes, TypeLangComplexityRecord[] langComplexities, JSON meaningWords, JSON definitions, JSON wordOdRecommendation, BigDecimal freqValue, Long freqRank, Boolean formsExist, Long minDsOrderBy, Integer wordTypeOrderBy) {
+    public MviewWwWordRecord(Long wordId, String word, String wordPrese, String asWord, String lang, String langFilt, Long langOrderBy, Integer homonymNr, String displayMorphCode, String genderCode, String aspectCode, String vocalForm, String morphComment, LocalDateTime manualEventOn, LocalDateTime lastActivityEventOn, String[] wordTypeCodes, TypeLangComplexityRecord[] langComplexities, JSON meaningWords, JSON definitions, JSON wordOdRecommendation, BigDecimal freqValue, Long freqRank, Boolean formsExist, Long minDsOrderBy, Integer wordTypeOrderBy) {
         super(MviewWwWord.MVIEW_WW_WORD);
 
         setWordId(wordId);

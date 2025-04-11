@@ -9,7 +9,7 @@ import eki.ekilex.data.db.main.Public;
 import eki.ekilex.data.db.main.tables.records.ActivityLogRecord;
 import eki.ekilex.data.db.main.udt.records.TypeActivityLogDiffRecord;
 
-import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
 
@@ -63,7 +63,7 @@ public class ActivityLog extends TableImpl<ActivityLogRecord> {
     /**
      * The column <code>public.activity_log.event_on</code>.
      */
-    public final TableField<ActivityLogRecord, Timestamp> EVENT_ON = createField(DSL.name("event_on"), SQLDataType.TIMESTAMP(6).nullable(false).defaultValue(DSL.field("statement_timestamp()", SQLDataType.TIMESTAMP)), this, "");
+    public final TableField<ActivityLogRecord, LocalDateTime> EVENT_ON = createField(DSL.name("event_on"), SQLDataType.LOCALDATETIME(6).nullable(false).defaultValue(DSL.field("statement_timestamp()", SQLDataType.LOCALDATETIME)), this, "");
 
     /**
      * The column <code>public.activity_log.funct_name</code>.
@@ -189,7 +189,7 @@ public class ActivityLog extends TableImpl<ActivityLogRecord> {
     // -------------------------------------------------------------------------
 
     @Override
-    public Row11<Long, String, Timestamp, String, Long, String, Long, String, TypeActivityLogDiffRecord[], TypeActivityLogDiffRecord[], String> fieldsRow() {
+    public Row11<Long, String, LocalDateTime, String, Long, String, Long, String, TypeActivityLogDiffRecord[], TypeActivityLogDiffRecord[], String> fieldsRow() {
         return (Row11) super.fieldsRow();
     }
 }

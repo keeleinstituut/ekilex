@@ -143,6 +143,8 @@ drop table if exists word_freeform;
 drop table if exists word_etymology_relation;
 drop table if exists word_etymology;
 drop table if exists word_od_recommendation;
+drop table if exists word_od_usage;
+drop table if exists word_od_morph;
 drop table if exists word_tag;
 drop table if exists word_guid;
 drop table if exists word_group_member;
