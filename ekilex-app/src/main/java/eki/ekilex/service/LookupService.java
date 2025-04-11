@@ -326,22 +326,25 @@ public class LookupService extends AbstractWordSearchService {
 		String preferredDatasetCode = targetLexeme.getDatasetCode();
 
 		Integer targetHomonymNumber = null;
-		if (StringUtils.isNotBlank(searchFilter) && StringUtils.equals(targetWordValue, searchFilter)) {
+		if (StringUtils.equals(targetWordValue, searchFilter)) {
 			targetHomonymNumber = targetWord.getHomonymNr();
 		}
 
 		SearchDatasetsRestriction searchDatasetsRestriction = composeDatasetsRestriction(userPrefDatasetCodes);
 		List<Lexeme> lexemes = new ArrayList<>();
-		if (isNotBlank(targetWordValue)) {
-			String cleanWordSearchFilter = StringUtils.trim(targetWordValue);
+		if (isNotBlank(searchFilter)) {
+
+			String cleanWordSearchFilter = StringUtils.trim(searchFilter);
 			cleanWordSearchFilter = StringUtils.remove(cleanWordSearchFilter, SEARCH_MASK_CHARS);
 			cleanWordSearchFilter = StringUtils.remove(cleanWordSearchFilter, SEARCH_MASK_CHAR);
 			cleanWordSearchFilter = StringUtils.remove(cleanWordSearchFilter, '%');
 			cleanWordSearchFilter = StringUtils.remove(cleanWordSearchFilter, '_');
 			WordsResult wordsResult = getWords(cleanWordSearchFilter, userPrefDatasetCodes, tagNames, user, DEFAULT_OFFSET, DEFAULT_MAX_RESULTS_LIMIT, true);
-			if (CollectionUtils.isNotEmpty(wordsResult.getWords())) {
+			List<Word> words = wordsResult.getWords();
 
-				for (Word word : wordsResult.getWords()) {
+			if (CollectionUtils.isNotEmpty(words)) {
+
+				for (Word word : words) {
 
 					Long wordId = word.getWordId();
 					Integer homonymNr = word.getHomonymNr();
