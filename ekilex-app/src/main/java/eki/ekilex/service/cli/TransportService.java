@@ -26,6 +26,8 @@ import eki.common.data.util.ForeignKeyRowMapper;
 import eki.common.data.util.TableColumnRowMapper;
 import eki.ekilex.service.AbstractLoaderCommons;
 
+// DO NOT USE! OUTDATED!!
+@Deprecated
 @Component
 public class TransportService extends AbstractLoaderCommons implements InitializingBean {
 

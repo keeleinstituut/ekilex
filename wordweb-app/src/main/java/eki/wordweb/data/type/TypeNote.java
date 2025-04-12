@@ -1,13 +1,17 @@
 package eki.wordweb.data.type;
 
-import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.List;
 
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
 
 import eki.common.constant.Complexity;
 import eki.common.data.AbstractDataObject;
+import eki.common.util.LocalDateTimeDeserialiser;
 import eki.wordweb.data.ComplexityType;
 import eki.wordweb.data.LangType;
 import eki.wordweb.data.SourceLinkType;
@@ -31,11 +35,15 @@ public class TypeNote extends AbstractDataObject implements ComplexityType, Sour
 
 	private String createdBy;
 
-	private Timestamp createdOn;
+	@JsonSerialize(using = LocalDateTimeSerializer.class)
+	@JsonDeserialize(using = LocalDateTimeDeserialiser.class)
+	private LocalDateTime createdOn;
 
 	private String modifiedBy;
 
-	private Timestamp modifiedOn;
+	@JsonSerialize(using = LocalDateTimeSerializer.class)
+	@JsonDeserialize(using = LocalDateTimeDeserialiser.class)
+	private LocalDateTime modifiedOn;
 
 	private List<TypeSourceLink> sourceLinks;
 
@@ -95,11 +103,11 @@ public class TypeNote extends AbstractDataObject implements ComplexityType, Sour
 		this.createdBy = createdBy;
 	}
 
-	public Timestamp getCreatedOn() {
+	public LocalDateTime getCreatedOn() {
 		return createdOn;
 	}
 
-	public void setCreatedOn(Timestamp createdOn) {
+	public void setCreatedOn(LocalDateTime createdOn) {
 		this.createdOn = createdOn;
 	}
 
@@ -111,11 +119,11 @@ public class TypeNote extends AbstractDataObject implements ComplexityType, Sour
 		this.modifiedBy = modifiedBy;
 	}
 
-	public Timestamp getModifiedOn() {
+	public LocalDateTime getModifiedOn() {
 		return modifiedOn;
 	}
 
-	public void setModifiedOn(Timestamp modifiedOn) {
+	public void setModifiedOn(LocalDateTime modifiedOn) {
 		this.modifiedOn = modifiedOn;
 	}
 

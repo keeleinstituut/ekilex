@@ -7,7 +7,7 @@ import static eki.ekilex.data.db.main.Tables.MEANING;
 import static eki.ekilex.data.db.main.Tables.WORD;
 import static eki.ekilex.data.db.main.Tables.WORD_WORD_TYPE;
 
-import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -423,8 +423,8 @@ public class TermSearchDbService extends AbstractDataDbService {
 		Lexeme l = LEXEME.as("l");
 
 		Condition dsWhere = searchFilterHelper.applyDatasetRestrictions(l, searchDatasetsRestriction, null);
-		Field<Timestamp> mlacteof = queryHelper.getMeaningLastActivityEventOnField(m.ID, LastActivityType.EDIT);
-		Field<Timestamp> mlappeof = queryHelper.getMeaningLastActivityEventOnField(m.ID, LastActivityType.APPROVE);
+		Field<LocalDateTime> mlacteof = queryHelper.getMeaningLastActivityEventOnField(m.ID, LastActivityType.EDIT);
+		Field<LocalDateTime> mlappeof = queryHelper.getMeaningLastActivityEventOnField(m.ID, LastActivityType.APPROVE);
 
 		return mainDb
 				.select(

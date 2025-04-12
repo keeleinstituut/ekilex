@@ -4,8 +4,8 @@ import static eki.ekilex.data.db.main.Tables.ACTIVITY_LOG;
 import static eki.ekilex.data.db.main.Tables.LEXEME;
 import static eki.ekilex.data.db.main.Tables.WORD;
 
-import java.sql.Timestamp;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 import org.apache.commons.collections4.CollectionUtils;
@@ -45,8 +45,8 @@ public class WorkloadReportDbService implements SystemConstant {
 
 		ActivityLog al = ACTIVITY_LOG.as("al");
 
-		Timestamp from = Timestamp.valueOf(dateFrom.atStartOfDay());
-		Timestamp until = Timestamp.valueOf(dateUntil.plusDays(1).atStartOfDay());
+		LocalDateTime from = dateFrom.atStartOfDay();
+		LocalDateTime until = dateUntil.plusDays(1).atStartOfDay();
 
 		Condition where = al.EVENT_ON.ge(from)
 				.and(al.EVENT_ON.lt(until))
@@ -84,8 +84,8 @@ public class WorkloadReportDbService implements SystemConstant {
 
 		ActivityLog al = ACTIVITY_LOG.as("al");
 
-		Timestamp from = Timestamp.valueOf(dateFrom.atStartOfDay());
-		Timestamp until = Timestamp.valueOf(dateUntil.plusDays(1).atStartOfDay());
+		LocalDateTime from = dateFrom.atStartOfDay();
+		LocalDateTime until = dateUntil.plusDays(1).atStartOfDay();
 
 		Condition where = al.EVENT_ON.ge(from)
 				.and(al.EVENT_ON.lt(until))
@@ -132,8 +132,8 @@ public class WorkloadReportDbService implements SystemConstant {
 		Lexeme l = LEXEME.as("l");
 		Word w = WORD.as("w");
 
-		Timestamp from = Timestamp.valueOf(dateFrom.atStartOfDay());
-		Timestamp until = Timestamp.valueOf(dateUntil.plusDays(1).atStartOfDay());
+		LocalDateTime from = dateFrom.atStartOfDay();
+		LocalDateTime until = dateUntil.plusDays(1).atStartOfDay();
 
 		Condition where = al.EVENT_ON.ge(from)
 				.and(al.EVENT_ON.lt(until))

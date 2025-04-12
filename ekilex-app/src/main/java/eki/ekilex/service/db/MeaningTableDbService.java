@@ -8,7 +8,7 @@ import static eki.ekilex.data.db.main.Tables.LEXEME_FREEFORM;
 import static eki.ekilex.data.db.main.Tables.MEANING;
 import static eki.ekilex.data.db.main.Tables.WORD;
 
-import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.List;
 
 import org.jooq.Condition;
@@ -331,13 +331,14 @@ public class MeaningTableDbService implements GlobalConstant, SystemConstant, Fr
 	@Deprecated
 	public void updateUsage(Long usageId, String value, String valuePrese, boolean isPublic, String userName) {
 
-		Timestamp timestamp = new Timestamp(System.currentTimeMillis());
+		LocalDateTime now = LocalDateTime.now();
+
 		mainDb.update(FREEFORM)
 				.set(FREEFORM.VALUE, value)
 				.set(FREEFORM.VALUE_PRESE, valuePrese)
 				.set(FREEFORM.IS_PUBLIC, isPublic)
 				.set(FREEFORM.MODIFIED_BY, userName)
-				.set(FREEFORM.MODIFIED_ON, timestamp)
+				.set(FREEFORM.MODIFIED_ON, now)
 				.where(FREEFORM.ID.eq(usageId))
 				.execute();
 	}
@@ -361,11 +362,12 @@ public class MeaningTableDbService implements GlobalConstant, SystemConstant, Fr
 	@Deprecated
 	public void updateUsagePublicity(Long usageId, boolean isPublic, String userName) {
 
-		Timestamp timestamp = new Timestamp(System.currentTimeMillis());
+		LocalDateTime now = LocalDateTime.now();
+
 		mainDb.update(FREEFORM)
 				.set(FREEFORM.IS_PUBLIC, isPublic)
 				.set(FREEFORM.MODIFIED_BY, userName)
-				.set(FREEFORM.MODIFIED_ON, timestamp)
+				.set(FREEFORM.MODIFIED_ON, now)
 				.where(FREEFORM.ID.eq(usageId))
 				.execute();
 	}

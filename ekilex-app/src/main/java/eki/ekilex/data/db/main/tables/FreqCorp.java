@@ -8,7 +8,7 @@ import eki.ekilex.data.db.main.Keys;
 import eki.ekilex.data.db.main.Public;
 import eki.ekilex.data.db.main.tables.records.FreqCorpRecord;
 
-import java.sql.Date;
+import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.List;
 
@@ -62,7 +62,7 @@ public class FreqCorp extends TableImpl<FreqCorpRecord> {
     /**
      * The column <code>public.freq_corp.corp_date</code>.
      */
-    public final TableField<FreqCorpRecord, Date> CORP_DATE = createField(DSL.name("corp_date"), SQLDataType.DATE.nullable(false), this, "");
+    public final TableField<FreqCorpRecord, LocalDate> CORP_DATE = createField(DSL.name("corp_date"), SQLDataType.LOCALDATE.nullable(false), this, "");
 
     /**
      * The column <code>public.freq_corp.is_public</code>.
@@ -153,7 +153,7 @@ public class FreqCorp extends TableImpl<FreqCorpRecord> {
     // -------------------------------------------------------------------------
 
     @Override
-    public Row4<Long, String, Date, Boolean> fieldsRow() {
+    public Row4<Long, String, LocalDate, Boolean> fieldsRow() {
         return (Row4) super.fieldsRow();
     }
 }

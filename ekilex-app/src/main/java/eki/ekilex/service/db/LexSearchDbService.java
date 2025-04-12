@@ -14,7 +14,7 @@ import static eki.ekilex.data.db.main.Tables.PARADIGM_FORM;
 import static eki.ekilex.data.db.main.Tables.VALUE_STATE_LABEL;
 import static eki.ekilex.data.db.main.Tables.WORD;
 
-import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.List;
 
 import org.apache.commons.collections4.CollectionUtils;
@@ -240,7 +240,7 @@ public class LexSearchDbService extends AbstractDataDbService {
 		Field<Boolean> wtpf = queryHelper.getWordIsPrefixoidField(w.field("word_id", Long.class));
 		Field<Boolean> wtsf = queryHelper.getWordIsSuffixoidField(w.field("word_id", Long.class));
 		Field<Boolean> wtz = queryHelper.getWordIsForeignField(w.field("word_id", Long.class));
-		Field<Timestamp> wlaeof = queryHelper.getWordLastActivityEventOnField(w.field("word_id", Long.class));
+		Field<LocalDateTime> wlaeof = queryHelper.getWordLastActivityEventOnField(w.field("word_id", Long.class));
 
 		Field<String[]> lxvslvf;
 		Field<Boolean> lxpsf;
@@ -295,7 +295,7 @@ public class LexSearchDbService extends AbstractDataDbService {
 		} else {
 			wvobf = w.field("word_value");
 		}
-		Table<Record19<Long, String, String, Integer, String, String, String, String, String, String[], String[], Boolean, Boolean, Boolean, Boolean, String[], String[], String[], Timestamp>> ww = DSL
+		Table<Record19<Long, String, String, Integer, String, String, String, String, String, String[], String[], Boolean, Boolean, Boolean, Boolean, String[], String[], String[], LocalDateTime>> ww = DSL
 				.select(
 						w.field("word_id", Long.class),
 						w.field("word_value", String.class),

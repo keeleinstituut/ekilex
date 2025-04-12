@@ -1,9 +1,14 @@
 package eki.ekilex.data;
 
-import java.sql.Timestamp;
+import java.time.LocalDateTime;
+
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
 
 import eki.common.constant.AuthorityOperation;
 import eki.common.data.AbstractDataObject;
+import eki.common.util.LocalDateTimeDeserialiser;
 import eki.ekilex.constant.ApplicationStatus;
 
 public class EkiUserApplication extends AbstractDataObject {
@@ -28,7 +33,9 @@ public class EkiUserApplication extends AbstractDataObject {
 
 	private ApplicationStatus status;
 
-	private Timestamp created;
+	@JsonSerialize(using = LocalDateTimeSerializer.class)
+	@JsonDeserialize(using = LocalDateTimeDeserialiser.class)
+	private LocalDateTime created;
 
 	public Long getId() {
 		return id;
@@ -102,11 +109,11 @@ public class EkiUserApplication extends AbstractDataObject {
 		this.status = status;
 	}
 
-	public Timestamp getCreated() {
+	public LocalDateTime getCreated() {
 		return created;
 	}
 
-	public void setCreated(Timestamp created) {
+	public void setCreated(LocalDateTime created) {
 		this.created = created;
 	}
 }

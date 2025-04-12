@@ -8,7 +8,7 @@ import eki.ekilex.data.db.main.Keys;
 import eki.ekilex.data.db.main.Public;
 import eki.ekilex.data.db.main.tables.records.TempDsImportPkMapRecord;
 
-import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
 
@@ -62,7 +62,7 @@ public class TempDsImportPkMap extends TableImpl<TempDsImportPkMapRecord> {
     /**
      * The column <code>public.temp_ds_import_pk_map.created_on</code>.
      */
-    public final TableField<TempDsImportPkMapRecord, Timestamp> CREATED_ON = createField(DSL.name("created_on"), SQLDataType.TIMESTAMP(6).nullable(false).defaultValue(DSL.field("statement_timestamp()", SQLDataType.TIMESTAMP)), this, "");
+    public final TableField<TempDsImportPkMapRecord, LocalDateTime> CREATED_ON = createField(DSL.name("created_on"), SQLDataType.LOCALDATETIME(6).nullable(false).defaultValue(DSL.field("statement_timestamp()", SQLDataType.LOCALDATETIME)), this, "");
 
     /**
      * The column <code>public.temp_ds_import_pk_map.table_name</code>.
@@ -163,7 +163,7 @@ public class TempDsImportPkMap extends TableImpl<TempDsImportPkMapRecord> {
     // -------------------------------------------------------------------------
 
     @Override
-    public Row6<Long, String, Timestamp, String, Long, Long> fieldsRow() {
+    public Row6<Long, String, LocalDateTime, String, Long, Long> fieldsRow() {
         return (Row6) super.fieldsRow();
     }
 }

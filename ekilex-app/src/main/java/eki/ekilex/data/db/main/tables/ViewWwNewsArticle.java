@@ -7,7 +7,7 @@ package eki.ekilex.data.db.main.tables;
 import eki.ekilex.data.db.main.Public;
 import eki.ekilex.data.db.main.tables.records.ViewWwNewsArticleRecord;
 
-import java.sql.Timestamp;
+import java.time.LocalDateTime;
 
 import org.jooq.Field;
 import org.jooq.ForeignKey;
@@ -52,7 +52,7 @@ public class ViewWwNewsArticle extends TableImpl<ViewWwNewsArticleRecord> {
     /**
      * The column <code>public.view_ww_news_article.created</code>.
      */
-    public final TableField<ViewWwNewsArticleRecord, Timestamp> CREATED = createField(DSL.name("created"), SQLDataType.TIMESTAMP(6), this, "");
+    public final TableField<ViewWwNewsArticleRecord, LocalDateTime> CREATED = createField(DSL.name("created"), SQLDataType.LOCALDATETIME(6), this, "");
 
     /**
      * The column <code>public.view_ww_news_article.type</code>.
@@ -143,7 +143,7 @@ public class ViewWwNewsArticle extends TableImpl<ViewWwNewsArticleRecord> {
     // -------------------------------------------------------------------------
 
     @Override
-    public Row6<Long, Timestamp, String, String, String, String> fieldsRow() {
+    public Row6<Long, LocalDateTime, String, String, String, String> fieldsRow() {
         return (Row6) super.fieldsRow();
     }
 }

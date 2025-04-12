@@ -8,7 +8,7 @@ import eki.ekilex.data.db.main.Keys;
 import eki.ekilex.data.db.main.Public;
 import eki.ekilex.data.db.main.tables.records.FreeformRecord;
 
-import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
 
@@ -102,7 +102,7 @@ public class Freeform extends TableImpl<FreeformRecord> {
     /**
      * The column <code>public.freeform.created_on</code>.
      */
-    public final TableField<FreeformRecord, Timestamp> CREATED_ON = createField(DSL.name("created_on"), SQLDataType.TIMESTAMP(6), this, "");
+    public final TableField<FreeformRecord, LocalDateTime> CREATED_ON = createField(DSL.name("created_on"), SQLDataType.LOCALDATETIME(6), this, "");
 
     /**
      * The column <code>public.freeform.modified_by</code>.
@@ -112,7 +112,7 @@ public class Freeform extends TableImpl<FreeformRecord> {
     /**
      * The column <code>public.freeform.modified_on</code>.
      */
-    public final TableField<FreeformRecord, Timestamp> MODIFIED_ON = createField(DSL.name("modified_on"), SQLDataType.TIMESTAMP(6), this, "");
+    public final TableField<FreeformRecord, LocalDateTime> MODIFIED_ON = createField(DSL.name("modified_on"), SQLDataType.LOCALDATETIME(6), this, "");
 
     private Freeform(Name alias, Table<FreeformRecord> aliased) {
         this(alias, aliased, null);
@@ -228,7 +228,7 @@ public class Freeform extends TableImpl<FreeformRecord> {
     // -------------------------------------------------------------------------
 
     @Override
-    public Row13<Long, Long, String, String, String, String, String, Long, Boolean, String, Timestamp, String, Timestamp> fieldsRow() {
+    public Row13<Long, Long, String, String, String, String, String, Long, Boolean, String, LocalDateTime, String, LocalDateTime> fieldsRow() {
         return (Row13) super.fieldsRow();
     }
 }

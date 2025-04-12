@@ -27,10 +27,10 @@ import static eki.ekilex.data.db.main.Tables.USAGE_TRANSLATION;
 import static eki.ekilex.data.db.main.Tables.VALUE_STATE_LABEL;
 import static eki.ekilex.data.db.main.Tables.WORD_FREQ;
 import static eki.ekilex.data.db.main.Tables.WORD_LAST_ACTIVITY_LOG;
-import static eki.ekilex.data.db.main.Tables.WORD_WORD_TYPE;
 import static eki.ekilex.data.db.main.Tables.WORD_TAG;
+import static eki.ekilex.data.db.main.Tables.WORD_WORD_TYPE;
 
-import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -160,7 +160,7 @@ public class QueryHelper implements GlobalConstant {
 				.from(l.leftOuterJoin(lt).on(lt.LEXEME_ID.eq(l.ID)))
 				.where(l.WORD_ID.eq(w.ID))
 				.groupBy(w.ID));
-		Field<Timestamp> wlaeof = getWordLastActivityEventOnField(w.ID);
+		Field<LocalDateTime> wlaeof = getWordLastActivityEventOnField(w.ID);
 		Field<String[]> dsf = DSL.field(DSL
 				.select(DSL.arrayAggDistinct(l.DATASET_CODE))
 				.from(l)
@@ -250,10 +250,10 @@ public class QueryHelper implements GlobalConstant {
 		return wtz;
 	}
 
-	public Field<Timestamp> getWordLastActivityEventOnField(Field<Long> wordIdField) {
+	public Field<LocalDateTime> getWordLastActivityEventOnField(Field<Long> wordIdField) {
 		WordLastActivityLog wlal = WORD_LAST_ACTIVITY_LOG.as("wlal");
 		ActivityLog al = ACTIVITY_LOG.as("al");
-		Field<Timestamp> wlaeof = DSL.field(DSL
+		Field<LocalDateTime> wlaeof = DSL.field(DSL
 				.select(al.EVENT_ON)
 				.from(wlal, al)
 				.where(
@@ -579,11 +579,11 @@ public class QueryHelper implements GlobalConstant {
 		return clf;
 	}
 
-	public Field<Timestamp> getMeaningLastActivityEventOnField(Field<Long> meaningIdField, LastActivityType lastActivityType) {
+	public Field<LocalDateTime> getMeaningLastActivityEventOnField(Field<Long> meaningIdField, LastActivityType lastActivityType) {
 
 		MeaningLastActivityLog mlal = MEANING_LAST_ACTIVITY_LOG.as("mlal");
 		ActivityLog al = ACTIVITY_LOG.as("al");
-		Field<Timestamp> wlaeof = DSL.field(DSL
+		Field<LocalDateTime> wlaeof = DSL.field(DSL
 				.select(al.EVENT_ON)
 				.from(mlal, al)
 				.where(

@@ -34,6 +34,7 @@ import eki.ekilex.data.SearchFilter;
 import eki.ekilex.data.SearchUriData;
 import eki.ekilex.service.PermissionService;
 import eki.ekilex.service.core.UserContext;
+import eki.ekilex.service.util.ValueUtil;
 
 @Component
 public class SearchHelper implements WebConstant, GlobalConstant {

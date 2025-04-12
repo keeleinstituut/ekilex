@@ -1,10 +1,15 @@
 package eki.ekilex.data;
 
-import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
+
+import eki.common.util.LocalDateTimeDeserialiser;
 
 @JsonInclude(Include.NON_EMPTY)
 public class Word extends AbstractCrudEntity implements DecoratedWordType {
@@ -71,9 +76,15 @@ public class Word extends AbstractCrudEntity implements DecoratedWordType {
 
 	private WordOdRecommendation wordOdRecommendation;
 
-	private Timestamp lastActivityEventOn;
+	private List<WordOdUsage> wordOdUsages;
 
-	private Timestamp manualEventOn;
+	@JsonSerialize(using = LocalDateTimeSerializer.class)
+	@JsonDeserialize(using = LocalDateTimeDeserialiser.class)
+	private LocalDateTime lastActivityEventOn;
+
+	@JsonSerialize(using = LocalDateTimeSerializer.class)
+	@JsonDeserialize(using = LocalDateTimeDeserialiser.class)
+	private LocalDateTime manualEventOn;
 
 	public Long getWordId() {
 		return wordId;
@@ -315,19 +326,27 @@ public class Word extends AbstractCrudEntity implements DecoratedWordType {
 		this.wordOdRecommendation = wordOdRecommendation;
 	}
 
-	public Timestamp getLastActivityEventOn() {
+	public List<WordOdUsage> getWordOdUsages() {
+		return wordOdUsages;
+	}
+
+	public void setWordOdUsages(List<WordOdUsage> wordOdUsages) {
+		this.wordOdUsages = wordOdUsages;
+	}
+
+	public LocalDateTime getLastActivityEventOn() {
 		return lastActivityEventOn;
 	}
 
-	public void setLastActivityEventOn(Timestamp lastActivityEventOn) {
+	public void setLastActivityEventOn(LocalDateTime lastActivityEventOn) {
 		this.lastActivityEventOn = lastActivityEventOn;
 	}
 
-	public Timestamp getManualEventOn() {
+	public LocalDateTime getManualEventOn() {
 		return manualEventOn;
 	}
 
-	public void setManualEventOn(Timestamp manualEventOn) {
+	public void setManualEventOn(LocalDateTime manualEventOn) {
 		this.manualEventOn = manualEventOn;
 	}
 

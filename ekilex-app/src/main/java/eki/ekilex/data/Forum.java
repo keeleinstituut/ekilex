@@ -1,8 +1,6 @@
 package eki.ekilex.data;
 
-import java.sql.Timestamp;
-
-public class Forum extends AbstractCrudEntity {
+public class Forum extends AbstractCreateUpdateEntity {
 
 	private static final long serialVersionUID = 1L;
 
@@ -13,14 +11,6 @@ public class Forum extends AbstractCrudEntity {
 	private String valuePrese;
 
 	private Long creatorId;
-
-	private String createdBy;
-
-	private Timestamp createdOn;
-
-	private String modifiedBy;
-
-	private Timestamp modifiedOn;
 
 	private Long orderBy;
 
@@ -54,38 +44,6 @@ public class Forum extends AbstractCrudEntity {
 
 	public void setCreatorId(Long creatorId) {
 		this.creatorId = creatorId;
-	}
-
-	public String getCreatedBy() {
-		return createdBy;
-	}
-
-	public void setCreatedBy(String createdBy) {
-		this.createdBy = createdBy;
-	}
-
-	public Timestamp getCreatedOn() {
-		return createdOn;
-	}
-
-	public void setCreatedOn(Timestamp createdOn) {
-		this.createdOn = createdOn;
-	}
-
-	public String getModifiedBy() {
-		return modifiedBy;
-	}
-
-	public void setModifiedBy(String modifiedBy) {
-		this.modifiedBy = modifiedBy;
-	}
-
-	public Timestamp getModifiedOn() {
-		return modifiedOn;
-	}
-
-	public void setModifiedOn(Timestamp modifiedOn) {
-		this.modifiedOn = modifiedOn;
 	}
 
 	public Long getOrderBy() {

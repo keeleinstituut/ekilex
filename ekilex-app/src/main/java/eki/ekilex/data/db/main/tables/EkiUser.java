@@ -8,7 +8,7 @@ import eki.ekilex.data.db.main.Keys;
 import eki.ekilex.data.db.main.Public;
 import eki.ekilex.data.db.main.tables.records.EkiUserRecord;
 
-import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
 
@@ -97,7 +97,7 @@ public class EkiUser extends TableImpl<EkiUserRecord> {
     /**
      * The column <code>public.eki_user.created</code>.
      */
-    public final TableField<EkiUserRecord, Timestamp> CREATED = createField(DSL.name("created"), SQLDataType.TIMESTAMP(6).nullable(false).defaultValue(DSL.field("statement_timestamp()", SQLDataType.TIMESTAMP)), this, "");
+    public final TableField<EkiUserRecord, LocalDateTime> CREATED = createField(DSL.name("created"), SQLDataType.LOCALDATETIME(6).nullable(false).defaultValue(DSL.field("statement_timestamp()", SQLDataType.LOCALDATETIME)), this, "");
 
     /**
      * The column <code>public.eki_user.is_master</code>.
@@ -217,7 +217,7 @@ public class EkiUser extends TableImpl<EkiUserRecord> {
     // -------------------------------------------------------------------------
 
     @Override
-    public Row14<Long, String, String, String, String, String, Boolean, Boolean, String, Timestamp, Boolean, String, String, Boolean> fieldsRow() {
+    public Row14<Long, String, String, String, String, String, Boolean, Boolean, String, LocalDateTime, Boolean, String, String, Boolean> fieldsRow() {
         return (Row14) super.fieldsRow();
     }
 }

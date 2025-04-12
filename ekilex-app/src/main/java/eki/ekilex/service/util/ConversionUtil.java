@@ -2,13 +2,12 @@ package eki.ekilex.service.util;
 
 import static java.util.stream.Collectors.groupingBy;
 
-import java.sql.Timestamp;
-import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -790,11 +789,10 @@ public class ConversionUtil implements GlobalConstant {
 		}
 	}
 
-	public Timestamp dateStrToTimestamp(String dateStr) throws Exception {
+	public LocalDateTime dateStrToDateTime(String dateStr) throws Exception {
 
-		SimpleDateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy");
-		Date date = dateFormat.parse(dateStr);
-		Timestamp timestamp = new Timestamp(date.getTime());
-		return timestamp;
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
+		LocalDateTime dateTime = LocalDateTime.parse(dateStr, formatter);
+		return dateTime;
 	}
 }

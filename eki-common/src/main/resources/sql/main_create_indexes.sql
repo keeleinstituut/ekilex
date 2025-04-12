@@ -37,6 +37,12 @@ create index word_etym_rel_rel_word_id_idx on word_etymology_relation(related_wo
 create index word_od_recommendation_word_id_idx on word_od_recommendation(word_id);
 create index word_od_recommendation_value_idx on word_od_recommendation(value);
 create index word_od_recommendation_value_lower_idx on word_od_recommendation(lower(value));
+create index word_od_usage_word_id_idx on word_od_usage(word_id);
+create index word_od_usage_value_idx on word_od_usage(value);
+create index word_od_usage_value_lower_idx on word_od_usage(lower(value));
+create index word_od_morph_word_id_idx on word_od_morph(word_id);
+create index word_od_morph_value_idx on word_od_morph(value);
+create index word_od_morph_value_lower_idx on word_od_morph(lower(value));
 create index word_guid_word_id_idx on word_guid(word_id);
 create index word_guid_dataset_code_idx on word_guid(dataset_code);
 create index word_guid_guid_idx on word_guid(guid);

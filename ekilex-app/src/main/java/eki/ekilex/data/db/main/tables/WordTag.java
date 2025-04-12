@@ -8,7 +8,7 @@ import eki.ekilex.data.db.main.Keys;
 import eki.ekilex.data.db.main.Public;
 import eki.ekilex.data.db.main.tables.records.WordTagRecord;
 
-import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
 
@@ -67,7 +67,7 @@ public class WordTag extends TableImpl<WordTagRecord> {
     /**
      * The column <code>public.word_tag.created_on</code>.
      */
-    public final TableField<WordTagRecord, Timestamp> CREATED_ON = createField(DSL.name("created_on"), SQLDataType.TIMESTAMP(6).nullable(false).defaultValue(DSL.field("statement_timestamp()", SQLDataType.TIMESTAMP)), this, "");
+    public final TableField<WordTagRecord, LocalDateTime> CREATED_ON = createField(DSL.name("created_on"), SQLDataType.LOCALDATETIME(6).nullable(false).defaultValue(DSL.field("statement_timestamp()", SQLDataType.LOCALDATETIME)), this, "");
 
     private WordTag(Name alias, Table<WordTagRecord> aliased) {
         this(alias, aliased, null);
@@ -175,7 +175,7 @@ public class WordTag extends TableImpl<WordTagRecord> {
     // -------------------------------------------------------------------------
 
     @Override
-    public Row4<Long, Long, String, Timestamp> fieldsRow() {
+    public Row4<Long, Long, String, LocalDateTime> fieldsRow() {
         return (Row4) super.fieldsRow();
     }
 }

@@ -26,8 +26,8 @@ import eki.ekilex.data.SourceAndSourceLinkRequest;
 import eki.ekilex.data.SourceSearchResult;
 import eki.ekilex.service.SourceLinkService;
 import eki.ekilex.service.SourceService;
+import eki.ekilex.service.util.ValueUtil;
 import eki.ekilex.web.bean.SessionBean;
-import eki.ekilex.web.util.ValueUtil;
 
 @ConditionalOnWebApplication
 @Controller

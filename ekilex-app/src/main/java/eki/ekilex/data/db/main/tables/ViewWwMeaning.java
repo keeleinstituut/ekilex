@@ -7,7 +7,7 @@ package eki.ekilex.data.db.main.tables;
 import eki.ekilex.data.db.main.Public;
 import eki.ekilex.data.db.main.tables.records.ViewWwMeaningRecord;
 
-import java.sql.Timestamp;
+import java.time.LocalDateTime;
 
 import org.jooq.Field;
 import org.jooq.ForeignKey;
@@ -53,12 +53,12 @@ public class ViewWwMeaning extends TableImpl<ViewWwMeaningRecord> {
     /**
      * The column <code>public.view_ww_meaning.manual_event_on</code>.
      */
-    public final TableField<ViewWwMeaningRecord, Timestamp> MANUAL_EVENT_ON = createField(DSL.name("manual_event_on"), SQLDataType.TIMESTAMP(6), this, "");
+    public final TableField<ViewWwMeaningRecord, LocalDateTime> MANUAL_EVENT_ON = createField(DSL.name("manual_event_on"), SQLDataType.LOCALDATETIME(6), this, "");
 
     /**
      * The column <code>public.view_ww_meaning.last_approve_or_edit_event_on</code>.
      */
-    public final TableField<ViewWwMeaningRecord, Timestamp> LAST_APPROVE_OR_EDIT_EVENT_ON = createField(DSL.name("last_approve_or_edit_event_on"), SQLDataType.TIMESTAMP(6), this, "");
+    public final TableField<ViewWwMeaningRecord, LocalDateTime> LAST_APPROVE_OR_EDIT_EVENT_ON = createField(DSL.name("last_approve_or_edit_event_on"), SQLDataType.LOCALDATETIME(6), this, "");
 
     /**
      * The column <code>public.view_ww_meaning.domain_codes</code>.
@@ -169,7 +169,7 @@ public class ViewWwMeaning extends TableImpl<ViewWwMeaningRecord> {
     // -------------------------------------------------------------------------
 
     @Override
-    public Row11<Long, Timestamp, Timestamp, JSON, JSON, JSON, String[], String[], String[], JSON, JSON> fieldsRow() {
+    public Row11<Long, LocalDateTime, LocalDateTime, JSON, JSON, JSON, String[], String[], String[], JSON, JSON> fieldsRow() {
         return (Row11) super.fieldsRow();
     }
 }

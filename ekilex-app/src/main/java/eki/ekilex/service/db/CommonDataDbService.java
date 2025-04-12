@@ -47,7 +47,6 @@ import static eki.ekilex.data.db.main.Tables.USAGE_TRANSLATION;
 import static eki.ekilex.data.db.main.Tables.WORD;
 import static eki.ekilex.data.db.main.Tables.WORD_FORUM;
 import static eki.ekilex.data.db.main.Tables.WORD_FREEFORM;
-import static eki.ekilex.data.db.main.Tables.WORD_OD_RECOMMENDATION;
 import static eki.ekilex.data.db.main.Tables.WORD_TYPE_LABEL;
 import static eki.ekilex.data.db.main.Tables.WORD_WORD_TYPE;
 
@@ -120,7 +119,6 @@ import eki.ekilex.data.db.main.tables.UsageSourceLink;
 import eki.ekilex.data.db.main.tables.UsageTranslation;
 import eki.ekilex.data.db.main.tables.Word;
 import eki.ekilex.data.db.main.tables.WordFreeform;
-import eki.ekilex.data.db.main.tables.WordOdRecommendation;
 
 //only common use data reading!
 @Component
@@ -371,19 +369,6 @@ public class CommonDataDbService extends AbstractDataDbService {
 				.where(WORD_FORUM.WORD_ID.eq(wordId))
 				.orderBy(WORD_FORUM.ORDER_BY.desc())
 				.fetchInto(WordForum.class);
-	}
-
-	public eki.ekilex.data.WordOdRecommendation getWordOdRecommendation(Long wordId) {
-
-		WordOdRecommendation wor = WORD_OD_RECOMMENDATION.as("wor");
-
-		return mainDb
-				.selectFrom(wor)
-				.where(wor.WORD_ID.eq(wordId))
-				.orderBy(wor.ID)
-				.limit(1)
-				.fetchOptionalInto(eki.ekilex.data.WordOdRecommendation.class)
-				.orElse(null);
 	}
 
 	public List<eki.ekilex.data.Freeform> getWordFreeforms(Long wordId, String[] excludedFreeformTypeCodes, String classifierLabelLang) {

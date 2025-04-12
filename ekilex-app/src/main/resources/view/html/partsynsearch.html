@@ -71,7 +71,7 @@
                       <div class="action-buttons-anchor">
                         <span th:utext="${forum.valuePrese}"></span>
                         <span class="ctxt" th:text="'[' + ${forum.modifiedBy} + ']'" th:if="${forum.modifiedBy != null}"></span>
-                        <span class="ctxt" th:text="'(' + ${#dates.format(forum.modifiedOn, 'dd.MM.yyyy')} + ')'" th:if="${forum.modifiedOn != null}"></span>
+                        <span class="ctxt" th:text="'(' + ${#temporals.format(forum.modifiedOn, 'dd.MM.yyyy')} + ')'" th:if="${forum.modifiedOn != null}"></span>
                         <div class="action-buttons-2">
                           <button type="button" class="btn badge badge-primary"
                                   th:title="#{common.edit}"

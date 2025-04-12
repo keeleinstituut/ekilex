@@ -1,4 +1,4 @@
-package eki.ekilex.web.util;
+package eki.ekilex.service.util;
 
 import org.apache.commons.lang3.RegExUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -16,11 +16,15 @@ public class ValueUtil implements SystemConstant {
 	private TextDecorationService textDecorationService;
 
 	public String trimAndClean(String value) {
-		if (StringUtils.isBlank(value)) {
-			return StringUtils.trim(value);
-		}
+
 		String cleanValue = StringUtils.trim(value);
+		if (StringUtils.isBlank(cleanValue)) {
+			return cleanValue;
+		}
 		cleanValue = RegExUtils.replaceAll(cleanValue, "\\p{C}", "");
+		if (StringUtils.isBlank(cleanValue)) {
+			return cleanValue;
+		}
 		StringBuilder valueBuilder = new StringBuilder();
 		char[] valueChars = cleanValue.toCharArray();
 		char prevChar = 0;
@@ -52,6 +56,7 @@ public class ValueUtil implements SystemConstant {
 	}
 
 	public String trimAndCleanAndRemoveHtmlAndLimit(String value) {
+
 		value = trimAndClean(value);
 		value = textDecorationService.removeHtmlAndSkipEkiElementMarkup(value);
 		if (StringUtils.length(value) > MAX_TEXT_LENGTH_LIMIT) {

@@ -7,7 +7,7 @@ package eki.ekilex.data.db.main.udt;
 import eki.ekilex.data.db.main.Public;
 import eki.ekilex.data.db.main.udt.records.TypeNoteRecord;
 
-import java.sql.Timestamp;
+import java.time.LocalDateTime;
 
 import org.jooq.JSON;
 import org.jooq.Schema;
@@ -72,7 +72,7 @@ public class TypeNote extends UDTImpl<TypeNoteRecord> {
     /**
      * The attribute <code>public.type_note.created_on</code>.
      */
-    public static final UDTField<TypeNoteRecord, Timestamp> CREATED_ON = createField(DSL.name("created_on"), SQLDataType.TIMESTAMP(0), TYPE_NOTE, "");
+    public static final UDTField<TypeNoteRecord, LocalDateTime> CREATED_ON = createField(DSL.name("created_on"), SQLDataType.LOCALDATETIME(0), TYPE_NOTE, "");
 
     /**
      * The attribute <code>public.type_note.modified_by</code>.
@@ -82,7 +82,7 @@ public class TypeNote extends UDTImpl<TypeNoteRecord> {
     /**
      * The attribute <code>public.type_note.modified_on</code>.
      */
-    public static final UDTField<TypeNoteRecord, Timestamp> MODIFIED_ON = createField(DSL.name("modified_on"), SQLDataType.TIMESTAMP(0), TYPE_NOTE, "");
+    public static final UDTField<TypeNoteRecord, LocalDateTime> MODIFIED_ON = createField(DSL.name("modified_on"), SQLDataType.LOCALDATETIME(0), TYPE_NOTE, "");
 
     /**
      * The attribute <code>public.type_note.source_links</code>.

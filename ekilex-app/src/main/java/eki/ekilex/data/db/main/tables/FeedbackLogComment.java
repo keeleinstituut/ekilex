@@ -8,7 +8,7 @@ import eki.ekilex.data.db.main.Keys;
 import eki.ekilex.data.db.main.Public;
 import eki.ekilex.data.db.main.tables.records.FeedbackLogCommentRecord;
 
-import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
 
@@ -72,7 +72,7 @@ public class FeedbackLogComment extends TableImpl<FeedbackLogCommentRecord> {
     /**
      * The column <code>public.feedback_log_comment.created_on</code>.
      */
-    public final TableField<FeedbackLogCommentRecord, Timestamp> CREATED_ON = createField(DSL.name("created_on"), SQLDataType.TIMESTAMP(6).nullable(false).defaultValue(DSL.field("statement_timestamp()", SQLDataType.TIMESTAMP)), this, "");
+    public final TableField<FeedbackLogCommentRecord, LocalDateTime> CREATED_ON = createField(DSL.name("created_on"), SQLDataType.LOCALDATETIME(6).nullable(false).defaultValue(DSL.field("statement_timestamp()", SQLDataType.LOCALDATETIME)), this, "");
 
     private FeedbackLogComment(Name alias, Table<FeedbackLogCommentRecord> aliased) {
         this(alias, aliased, null);
@@ -172,7 +172,7 @@ public class FeedbackLogComment extends TableImpl<FeedbackLogCommentRecord> {
     // -------------------------------------------------------------------------
 
     @Override
-    public Row5<Long, Long, String, String, Timestamp> fieldsRow() {
+    public Row5<Long, Long, String, String, LocalDateTime> fieldsRow() {
         return (Row5) super.fieldsRow();
     }
 }

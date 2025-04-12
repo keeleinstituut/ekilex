@@ -4,6 +4,8 @@ import static eki.ekilex.data.db.main.Tables.DEFINITION;
 import static eki.ekilex.data.db.main.Tables.DEFINITION_DATASET;
 import static eki.ekilex.data.db.main.Tables.DOMAIN_LABEL;
 import static eki.ekilex.data.db.main.Tables.MEANING;
+import static eki.ekilex.data.db.main.Tables.WORD;
+import static eki.ekilex.data.db.main.Tables.WORD_OD_USAGE;
 
 import java.util.List;
 
@@ -15,6 +17,8 @@ import eki.common.data.Classifier;
 import eki.ekilex.data.db.main.tables.Definition;
 import eki.ekilex.data.db.main.tables.DefinitionDataset;
 import eki.ekilex.data.db.main.tables.Meaning;
+import eki.ekilex.data.db.main.tables.Word;
+import eki.ekilex.data.db.main.tables.WordOdUsage;
 
 // temporary for data migration tools
 @Component
@@ -92,6 +96,17 @@ public class MigrationDbService extends AbstractDataDbService {
 						.where(m.ID.eq(meaningId)));
 	}
 
+	public boolean wordExists(Long wordId) {
+
+		Word w = WORD.as("w");
+
+		return mainDb
+				.fetchExists(DSL
+						.select(w.ID)
+						.from(w)
+						.where(w.ID.eq(wordId)));
+	}
+
 	public Long getDefinitionId(Long meaningId, String definitionValue) {
 
 		Definition d = DEFINITION.as("d");
@@ -139,5 +154,18 @@ public class MigrationDbService extends AbstractDataDbService {
 						.where(
 								dd.DEFINITION_ID.eq(definitionId)
 										.and(dd.DATASET_CODE.eq(datasetCode))));
+	}
+
+	public boolean wordOdUsageExists(Long wordId, String usageValue) {
+
+		WordOdUsage wou = WORD_OD_USAGE.as("wou");
+
+		return mainDb
+				.fetchExists(DSL
+						.select(wou.ID)
+						.from(wou)
+						.where(
+								wou.WORD_ID.eq(wordId)
+										.and(wou.VALUE.eq(usageValue))));
 	}
 }

@@ -32,7 +32,7 @@ import eki.ekilex.data.api.Paradigm;
 import eki.ekilex.data.api.ParadigmForm;
 import eki.ekilex.data.api.ParadigmWrapper;
 import eki.ekilex.service.db.BasicDbService;
-import eki.ekilex.web.util.ValueUtil;
+import eki.ekilex.service.util.ValueUtil;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)

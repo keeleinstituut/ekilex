@@ -1,1 +1,4 @@
 Märkused ver 1.41.0 tarne kohta:
+
+WordOdUsageLoader
+mvn spring-boot:run -P wodul -D spring-boot.run.profiles=dev -D spring-boot.run.arguments="impfile="/path/to/wod-usage.tsv"" 

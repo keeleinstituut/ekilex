@@ -1,11 +1,16 @@
 package eki.ekilex.data;
 
-import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.List;
+
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
 
 import eki.common.constant.ActivityEntity;
 import eki.common.constant.ActivityOwner;
 import eki.common.data.AbstractDataObject;
+import eki.common.util.LocalDateTimeDeserialiser;
 
 public class ActivityLog extends AbstractDataObject {
 
@@ -15,7 +20,9 @@ public class ActivityLog extends AbstractDataObject {
 
 	private String eventBy;
 
-	private Timestamp eventOn;
+	@JsonSerialize(using = LocalDateTimeSerializer.class)
+	@JsonDeserialize(using = LocalDateTimeDeserialiser.class)
+	private LocalDateTime eventOn;
 
 	private String datasetCode;
 
@@ -55,11 +62,11 @@ public class ActivityLog extends AbstractDataObject {
 		this.eventBy = eventBy;
 	}
 
-	public Timestamp getEventOn() {
+	public LocalDateTime getEventOn() {
 		return eventOn;
 	}
 
-	public void setEventOn(Timestamp eventOn) {
+	public void setEventOn(LocalDateTime eventOn) {
 		this.eventOn = eventOn;
 	}
 

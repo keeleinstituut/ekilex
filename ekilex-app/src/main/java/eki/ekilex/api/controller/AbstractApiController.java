@@ -12,7 +12,7 @@ import eki.ekilex.data.api.ApiResponse;
 import eki.ekilex.service.api.ApiStatService;
 import eki.ekilex.service.core.UserContext;
 import eki.ekilex.service.util.MessageUtil;
-import eki.ekilex.web.util.ValueUtil;
+import eki.ekilex.service.util.ValueUtil;
 
 public abstract class AbstractApiController implements SystemConstant, ApiConstant, GlobalConstant {
 

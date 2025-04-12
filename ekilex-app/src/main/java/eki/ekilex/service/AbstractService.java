@@ -1,6 +1,6 @@
 package eki.ekilex.service;
 
-import java.sql.Timestamp;
+import java.time.LocalDateTime;
 
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,7 +41,7 @@ public abstract class AbstractService implements GlobalConstant, SystemConstant,
 	protected void applyCreateUpdate(AbstractCreateUpdateEntity entity) {
 
 		String userName = userContext.getUserName();
-		Timestamp now = new Timestamp(System.currentTimeMillis());
+		LocalDateTime now = LocalDateTime.now();
 		entity.setCreatedBy(userName);
 		entity.setCreatedOn(now);
 		entity.setModifiedBy(userName);
@@ -51,7 +51,7 @@ public abstract class AbstractService implements GlobalConstant, SystemConstant,
 	protected void applyUpdate(AbstractCreateUpdateEntity entity) {
 
 		String userName = userContext.getUserName();
-		Timestamp now = new Timestamp(System.currentTimeMillis());
+		LocalDateTime now = LocalDateTime.now();
 		entity.setModifiedBy(userName);
 		entity.setModifiedOn(now);
 	}

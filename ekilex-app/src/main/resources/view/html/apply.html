@@ -36,7 +36,7 @@
               <th:block th:each="userApplication : ${userApplications}">
                 <tr>
                   <td class="m-1 p-1">
-                    <span th:text="${#dates.format(userApplication.created, 'dd.MM.yyyy HH:mm')}"></span>
+                    <span th:text="${#temporals.format(userApplication.created, 'dd.MM.yyyy HH:mm')}"></span>
                   </td>
                   <td class="m-1 p-1">
                     <span th:text="#{|applicationstatus.${userApplication.status}|}"></span>

@@ -1,6 +1,12 @@
 package eki.ekilex.data;
 
-import java.sql.Timestamp;
+import java.time.LocalDateTime;
+
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
+
+import eki.common.util.LocalDateTimeDeserialiser;
 
 public abstract class AbstractCreateUpdateEntity extends AbstractPublicEntity {
 
@@ -8,11 +14,15 @@ public abstract class AbstractCreateUpdateEntity extends AbstractPublicEntity {
 
 	private String createdBy;
 
-	private Timestamp createdOn;
+	@JsonSerialize(using = LocalDateTimeSerializer.class)
+	@JsonDeserialize(using = LocalDateTimeDeserialiser.class)
+	private LocalDateTime createdOn;
 
 	private String modifiedBy;
 
-	private Timestamp modifiedOn;
+	@JsonSerialize(using = LocalDateTimeSerializer.class)
+	@JsonDeserialize(using = LocalDateTimeDeserialiser.class)
+	private LocalDateTime modifiedOn;
 
 	public String getCreatedBy() {
 		return createdBy;
@@ -22,11 +32,11 @@ public abstract class AbstractCreateUpdateEntity extends AbstractPublicEntity {
 		this.createdBy = createdBy;
 	}
 
-	public Timestamp getCreatedOn() {
+	public LocalDateTime getCreatedOn() {
 		return createdOn;
 	}
 
-	public void setCreatedOn(Timestamp createdOn) {
+	public void setCreatedOn(LocalDateTime createdOn) {
 		this.createdOn = createdOn;
 	}
 
@@ -38,11 +48,11 @@ public abstract class AbstractCreateUpdateEntity extends AbstractPublicEntity {
 		this.modifiedBy = modifiedBy;
 	}
 
-	public Timestamp getModifiedOn() {
+	public LocalDateTime getModifiedOn() {
 		return modifiedOn;
 	}
 
-	public void setModifiedOn(Timestamp modifiedOn) {
+	public void setModifiedOn(LocalDateTime modifiedOn) {
 		this.modifiedOn = modifiedOn;
 	}
 

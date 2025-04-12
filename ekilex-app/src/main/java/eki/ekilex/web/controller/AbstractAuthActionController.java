@@ -41,8 +41,8 @@ import eki.ekilex.service.PermissionService;
 import eki.ekilex.service.TagService;
 import eki.ekilex.service.UserProfileService;
 import eki.ekilex.service.core.UserContext;
+import eki.ekilex.service.util.ValueUtil;
 import eki.ekilex.web.bean.SessionBean;
-import eki.ekilex.web.util.ValueUtil;
 
 @PreAuthorize("isAuthenticated() && @permEval.isActiveTermsAgreed(authentication)")
 public abstract class AbstractAuthActionController implements WebConstant, SystemConstant, GlobalConstant, FreeformConstant {

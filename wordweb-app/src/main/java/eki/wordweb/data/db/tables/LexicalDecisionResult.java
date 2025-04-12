@@ -8,7 +8,7 @@ import eki.wordweb.data.db.Keys;
 import eki.wordweb.data.db.Public;
 import eki.wordweb.data.db.tables.records.LexicalDecisionResultRecord;
 
-import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
 
@@ -82,7 +82,7 @@ public class LexicalDecisionResult extends TableImpl<LexicalDecisionResultRecord
     /**
      * The column <code>public.lexical_decision_result.created</code>.
      */
-    public final TableField<LexicalDecisionResultRecord, Timestamp> CREATED = createField(DSL.name("created"), SQLDataType.TIMESTAMP(6).nullable(false).defaultValue(DSL.field("statement_timestamp()", SQLDataType.TIMESTAMP)), this, "");
+    public final TableField<LexicalDecisionResultRecord, LocalDateTime> CREATED = createField(DSL.name("created"), SQLDataType.LOCALDATETIME(6).nullable(false).defaultValue(DSL.field("statement_timestamp()", SQLDataType.LOCALDATETIME)), this, "");
 
     private LexicalDecisionResult(Name alias, Table<LexicalDecisionResultRecord> aliased) {
         this(alias, aliased, null);
@@ -182,7 +182,7 @@ public class LexicalDecisionResult extends TableImpl<LexicalDecisionResultRecord
     // -------------------------------------------------------------------------
 
     @Override
-    public Row7<Long, Long, String, String, Boolean, Long, Timestamp> fieldsRow() {
+    public Row7<Long, Long, String, String, Boolean, Long, LocalDateTime> fieldsRow() {
         return (Row7) super.fieldsRow();
     }
 }

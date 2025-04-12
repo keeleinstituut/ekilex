@@ -9,7 +9,7 @@ import eki.ekilex.data.db.main.tables.records.ViewWwWordRecord;
 import eki.ekilex.data.db.main.udt.records.TypeLangComplexityRecord;
 
 import java.math.BigDecimal;
-import java.sql.Timestamp;
+import java.time.LocalDateTime;
 
 import org.jooq.Field;
 import org.jooq.ForeignKey;
@@ -114,12 +114,12 @@ public class ViewWwWord extends TableImpl<ViewWwWordRecord> {
     /**
      * The column <code>public.view_ww_word.manual_event_on</code>.
      */
-    public final TableField<ViewWwWordRecord, Timestamp> MANUAL_EVENT_ON = createField(DSL.name("manual_event_on"), SQLDataType.TIMESTAMP(6), this, "");
+    public final TableField<ViewWwWordRecord, LocalDateTime> MANUAL_EVENT_ON = createField(DSL.name("manual_event_on"), SQLDataType.LOCALDATETIME(6), this, "");
 
     /**
      * The column <code>public.view_ww_word.last_activity_event_on</code>.
      */
-    public final TableField<ViewWwWordRecord, Timestamp> LAST_ACTIVITY_EVENT_ON = createField(DSL.name("last_activity_event_on"), SQLDataType.TIMESTAMP(6), this, "");
+    public final TableField<ViewWwWordRecord, LocalDateTime> LAST_ACTIVITY_EVENT_ON = createField(DSL.name("last_activity_event_on"), SQLDataType.LOCALDATETIME(6), this, "");
 
     /**
      * The column <code>public.view_ww_word.word_type_codes</code>.

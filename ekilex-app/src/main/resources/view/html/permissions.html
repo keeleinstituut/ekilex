@@ -89,7 +89,7 @@
                         <span th:if="${userPerm.enablePending}" class="fa fa-circle"></span>
                       </td>
                       <td class="p-1">
-                        <span th:text="${#dates.format(userPerm.createdOn, 'dd.MM.yyyy')}"></span>
+                        <span th:text="${#temporals.format(userPerm.createdOn, 'dd.MM.yyyy')}"></span>
                       </td>
                       <td class="p-1 text-nowrap">
                         <span th:text="${userPerm.name}"></span>
@@ -178,7 +178,7 @@
                             </th:block>
                             <br/>
                             <span class="lbl" th:text="#{permissions.time}">Aeg</span>
-                            <span th:text="${#dates.format(userApplication.created, 'dd.MM.yyyy HH:mm')}"></span>
+                            <span th:text="${#temporals.format(userApplication.created, 'dd.MM.yyyy HH:mm')}"></span>
                             <br/>
                             <span class="lbl" th:text="#{permissions.dataset}">Sõnakogu</span>
                             <span th:text="${userApplication.datasetName}"></span>

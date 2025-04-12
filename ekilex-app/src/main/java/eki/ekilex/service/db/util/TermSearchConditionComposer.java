@@ -23,7 +23,7 @@ import static eki.ekilex.data.db.main.Tables.USAGE_SOURCE_LINK;
 import static eki.ekilex.data.db.main.Tables.USAGE_TRANSLATION;
 import static eki.ekilex.data.db.main.Tables.WORD;
 
-import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -707,7 +707,7 @@ public class TermSearchConditionComposer implements GlobalConstant, ActivityFunc
 		return wherem;
 	}
 
-	private Condition applyMeaningManualEventOnFilters(List<SearchCriterion> searchCriteria, Field<Timestamp> meaningManualEventOn, Condition wherem) throws Exception {
+	private Condition applyMeaningManualEventOnFilters(List<SearchCriterion> searchCriteria, Field<LocalDateTime> meaningManualEventOn, Condition wherem) throws Exception {
 
 		List<SearchCriterion> filteredCriteria = searchFilterHelper.filterCriteriaBySearchKey(searchCriteria, SearchKey.MANUAL_UPDATE_ON);
 

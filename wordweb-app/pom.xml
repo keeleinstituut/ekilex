@@ -94,7 +94,7 @@
 									<inputSchema>public</inputSchema>
 								</database>
 								<generate>
-									<javaTimeTypes>false</javaTimeTypes>
+									<javaTimeTypes>true</javaTimeTypes>
 								</generate>
 								<target>
 									<packageName>eki.wordweb.data.db</packageName>
@@ -144,6 +144,18 @@
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-jooq</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>com.fasterxml.jackson.core</groupId>
+			<artifactId>jackson-core</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>com.fasterxml.jackson.core</groupId>
+			<artifactId>jackson-databind</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>com.fasterxml.jackson.datatype</groupId>
+			<artifactId>jackson-datatype-jsr310</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>org.postgresql</groupId>

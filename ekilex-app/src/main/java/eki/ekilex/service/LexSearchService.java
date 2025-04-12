@@ -53,6 +53,7 @@ import eki.ekilex.data.WordEtymTuple;
 import eki.ekilex.data.WordForum;
 import eki.ekilex.data.WordGroup;
 import eki.ekilex.data.WordOdRecommendation;
+import eki.ekilex.data.WordOdUsage;
 import eki.ekilex.data.WordRelation;
 import eki.ekilex.data.WordRelationDetails;
 import eki.ekilex.data.WordsResult;
@@ -95,7 +96,8 @@ public class LexSearchService extends AbstractWordSearchService {
 		List<WordEtym> wordEtymology = conversionUtil.composeWordEtymology(wordEtymTuples);
 		List<WordForum> wordForums = commonDataDbService.getWordForums(wordId);
 		permCalculator.applyCrud(user, wordForums);
-		WordOdRecommendation wordOdRecommendation = commonDataDbService.getWordOdRecommendation(wordId);
+		WordOdRecommendation wordOdRecommendation = odDataDbService.getWordOdRecommendation(wordId);
+		List<WordOdUsage> wordOdUsages = odDataDbService.getWordOdUsages(wordId);
 
 		boolean isFullDataCorrection = isFullData | CollectionUtils.size(lexemes) == 1;
 		boolean isFullDataByMeaningId = !isFullDataCorrection && fullDataMeaningId != null;
@@ -117,6 +119,7 @@ public class LexSearchService extends AbstractWordSearchService {
 		word.setForums(wordForums);
 		word.setFreeforms(wordFreeforms);
 		word.setWordOdRecommendation(wordOdRecommendation);
+		word.setWordOdUsages(wordOdUsages);
 
 		WordDetails wordDetails = new WordDetails();
 		wordDetails.setWord(word);

@@ -8,7 +8,7 @@ import eki.ekilex.data.db.main.Keys;
 import eki.ekilex.data.db.main.Public;
 import eki.ekilex.data.db.main.tables.records.LexemeTagRecord;
 
-import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
 
@@ -67,7 +67,7 @@ public class LexemeTag extends TableImpl<LexemeTagRecord> {
     /**
      * The column <code>public.lexeme_tag.created_on</code>.
      */
-    public final TableField<LexemeTagRecord, Timestamp> CREATED_ON = createField(DSL.name("created_on"), SQLDataType.TIMESTAMP(6).nullable(false).defaultValue(DSL.field("statement_timestamp()", SQLDataType.TIMESTAMP)), this, "");
+    public final TableField<LexemeTagRecord, LocalDateTime> CREATED_ON = createField(DSL.name("created_on"), SQLDataType.LOCALDATETIME(6).nullable(false).defaultValue(DSL.field("statement_timestamp()", SQLDataType.LOCALDATETIME)), this, "");
 
     private LexemeTag(Name alias, Table<LexemeTagRecord> aliased) {
         this(alias, aliased, null);
@@ -175,7 +175,7 @@ public class LexemeTag extends TableImpl<LexemeTagRecord> {
     // -------------------------------------------------------------------------
 
     @Override
-    public Row4<Long, Long, String, Timestamp> fieldsRow() {
+    public Row4<Long, Long, String, LocalDateTime> fieldsRow() {
         return (Row4) super.fieldsRow();
     }
 }

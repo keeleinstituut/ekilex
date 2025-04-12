@@ -1,6 +1,6 @@
 package eki.ekilex.service.core;
 
-import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -61,12 +61,14 @@ import eki.ekilex.data.WordEtymTuple;
 import eki.ekilex.data.WordGroup;
 import eki.ekilex.data.WordLexemeMeaningIds;
 import eki.ekilex.data.WordOdRecommendation;
+import eki.ekilex.data.WordOdUsage;
 import eki.ekilex.data.WordRelation;
 import eki.ekilex.service.db.ActivityLogDbService;
 import eki.ekilex.service.db.CommonDataDbService;
 import eki.ekilex.service.db.LexDataDbService;
 import eki.ekilex.service.db.LexSearchDbService;
 import eki.ekilex.service.db.LookupDbService;
+import eki.ekilex.service.db.OdDataDbService;
 import eki.ekilex.service.db.SourceDbService;
 import eki.ekilex.service.util.ConversionUtil;
 
@@ -133,6 +135,9 @@ public class ActivityLogService implements SystemConstant, GlobalConstant, Freef
 
 	@Autowired
 	private CommonDataDbService commonDataDbService;
+
+	@Autowired
+	private OdDataDbService odDataDbService;
 
 	@Autowired
 	private LookupDbService lookupDbService;
@@ -208,6 +213,8 @@ public class ActivityLogService implements SystemConstant, GlobalConstant, Freef
 			return activityLogDbService.getWordEtymologyOwnerId(entityId);
 		} else if (ActivityEntity.WORD_OD_RECOMMENDATION.equals(entity)) {
 			return activityLogDbService.getWordOdRecommendationOwnerId(entityId);
+		} else if (ActivityEntity.WORD_OD_USAGE.equals(entity)) {
+			return activityLogDbService.getWordOdUsageOwnerId(entityId);
 		} else if (ActivityEntity.WORD_RELATION.equals(entity)) {
 			return activityLogDbService.getWordRelationOwnerId(entityId);
 		} else if (ActivityEntity.LEXEME_RELATION.equals(entity)) {
@@ -373,8 +380,8 @@ public class ActivityLogService implements SystemConstant, GlobalConstant, Freef
 
 	public void joinApproveMeaning(Long targetMeaningId, Long sourceMeaningId) {
 
-		final Timestamp targetMeaningLastActivityEventOn = activityLogDbService.getMeaningLastActivityLog(targetMeaningId, LastActivityType.APPROVE);
-		final Timestamp sourceMeaningLastActivityEventOn = activityLogDbService.getMeaningLastActivityLog(sourceMeaningId, LastActivityType.APPROVE);
+		final LocalDateTime targetMeaningLastActivityEventOn = activityLogDbService.getMeaningLastActivityLog(targetMeaningId, LastActivityType.APPROVE);
+		final LocalDateTime sourceMeaningLastActivityEventOn = activityLogDbService.getMeaningLastActivityLog(sourceMeaningId, LastActivityType.APPROVE);
 		if (targetMeaningLastActivityEventOn == null) {
 			return;
 		}
@@ -382,10 +389,10 @@ public class ActivityLogService implements SystemConstant, GlobalConstant, Freef
 			activityLogDbService.deleteMeaningLastActivityLog(targetMeaningId, LastActivityType.APPROVE);
 			return;
 		}
-		if (targetMeaningLastActivityEventOn.before(sourceMeaningLastActivityEventOn)) {
+		if (targetMeaningLastActivityEventOn.isBefore(sourceMeaningLastActivityEventOn)) {
 			return;
 		}
-		if (targetMeaningLastActivityEventOn.after(sourceMeaningLastActivityEventOn)) {
+		if (targetMeaningLastActivityEventOn.isAfter(sourceMeaningLastActivityEventOn)) {
 			activityLogDbService.deleteMeaningLastActivityLog(targetMeaningId, LastActivityType.APPROVE);
 			activityLogDbService.moveMeaningLastActivityLog(targetMeaningId, sourceMeaningId, LastActivityType.APPROVE);
 		}
@@ -418,7 +425,7 @@ public class ActivityLogService implements SystemConstant, GlobalConstant, Freef
 		Long[] meaningIds = collect(prevWlmIds.getMeaningIds(), currWlmIds.getMeaningIds());
 
 		Long activityLogId = activityLogDbService.create(activityLogData);
-		Timestamp eventOn = activityLogDbService.getActivityLogEventOn(activityLogId);
+		LocalDateTime eventOn = activityLogDbService.getActivityLogEventOn(activityLogId);
 		activityLogDbService.createLexemesActivityLogs(activityLogId, lexemeIds);
 		activityLogDbService.createWordsActivityLogs(activityLogId, wordIds);
 		activityLogDbService.createMeaningsActivityLogs(activityLogId, meaningIds);
@@ -605,7 +612,8 @@ public class ActivityLogService implements SystemConstant, GlobalConstant, Freef
 		List<WordGroup> wordGroups = conversionUtil.composeWordGroups(wordGroupMembers, null);
 		List<WordEtymTuple> wordEtymTuples = lexDataDbService.getWordEtymology(wordId);
 		List<WordEtym> wordEtymology = conversionUtil.composeWordEtymology(wordEtymTuples);
-		WordOdRecommendation wordOdRecommendation = commonDataDbService.getWordOdRecommendation(wordId);
+		WordOdRecommendation wordOdRecommendation = odDataDbService.getWordOdRecommendation(wordId);
+		List<WordOdUsage> wordOdUsages = odDataDbService.getWordOdUsages(wordId);
 		List<Paradigm> paradigms = null;
 		if (StringUtils.equals(FUNCT_NAME_DELETE_PARADIGM, functName)) {
 			List<ParadigmFormTuple> paradigmFormTuples = lexSearchDbService.getParadigmFormTuples(wordId, CLASSIF_LABEL_LANG_EST);
@@ -618,6 +626,7 @@ public class ActivityLogService implements SystemConstant, GlobalConstant, Freef
 		word.setGroups(wordGroups);
 		word.setEtymology(wordEtymology);
 		word.setWordOdRecommendation(wordOdRecommendation);
+		word.setWordOdUsages(wordOdUsages);
 		word.setParadigms(paradigms);
 
 		ObjectMapper objectMapper = new ObjectMapper();
