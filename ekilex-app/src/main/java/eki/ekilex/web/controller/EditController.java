@@ -535,6 +535,9 @@ public class EditController extends AbstractMutableDataPageController implements
 		case "word_etymology":
 			cudService.updateWordEtymologyOrdering(items, roleDatasetCode, isManualEventOnUpdateEnabled);
 			break;
+		case "word_od_usage":
+			cudService.updateWordOdUsageOrdering(items, roleDatasetCode, isManualEventOnUpdateEnabled);
+			break;
 		case "lexeme_meaning_word":
 			Long lexemeId = listData.getAdditionalInfo();
 			cudService.updateLexemeMeaningWordOrdering(items, lexemeId, roleDatasetCode, isManualEventOnUpdateEnabled);

@@ -272,6 +272,18 @@ public class CudService extends AbstractCudService implements PermConstant, Acti
 	}
 
 	@Transactional(rollbackOn = Exception.class)
+	public void updateWordOdUsageOrdering(List<ListData> items, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
+
+		for (ListData item : items) {
+			Long wordOdUsageId = item.getId();
+			Long wordId = activityLogService.getOwnerId(wordOdUsageId, ActivityEntity.WORD_OD_USAGE);
+			ActivityLogData activityLog = activityLogService.prepareActivityLog("updateWordOdUsageOrdering", wordId, ActivityOwner.WORD, roleDatasetCode, isManualEventOnUpdateEnabled);
+			cudDbService.updateWordOdUsageOrderby(item);
+			activityLogService.createActivityLog(activityLog, wordOdUsageId, ActivityEntity.WORD_OD_USAGE);
+		}
+	}
+
+	@Transactional(rollbackOn = Exception.class)
 	public void updateMeaningManualEventOn(Long meaningId, String eventOnStr, String roleDatasetCode) throws Exception {
 
 		LocalDateTime eventOn = conversionUtil.dateStrToDateTime(eventOnStr);

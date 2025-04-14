@@ -288,6 +288,14 @@ public class CudDbService extends AbstractDataDbService {
 				.execute();
 	}
 
+	public void updateWordOdUsageOrderby(ListData item) {
+		mainDb
+				.update(WORD_OD_USAGE)
+				.set(WORD_OD_USAGE.ORDER_BY, item.getOrderby())
+				.where(WORD_OD_USAGE.ID.eq(item.getId()))
+				.execute();
+	}
+
 	public void updateLexemeOrderby(ListData item) {
 		mainDb
 				.update(LEXEME)
