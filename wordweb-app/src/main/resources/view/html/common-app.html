@@ -333,67 +333,88 @@
   </th:block>
   <!-- Footer -->
   <th:block th:fragment="footer-content" th:with="pageContext=${pageContext}?:''">
-    <footer role="contentinfo" class="footer mt-auto">
-      <div class="container footer-wrapper">
-        <div class="row">
-          <div class="col-12 col-md-4">
-            <div class="d-flex justify-content-center justify-content-md-start mb-4">
-              <a href="https://eki.ee" target="_blank">
-                <th:block th:if="${pageContext != 'simpleSearch'}">
-                  <img th:src="@{'/view/images/eki-logo-white.svg'}" th:alt="#{general.eki}" class="logo">
-                </th:block>
-                <th:block th:if="${pageContext == 'simpleSearch'}">
-                  <img th:src="@{'/view/images/eki-logo-white.svg'}" th:alt="#{general.eki}" class="logo">
-                </th:block>
-              </a>
-            </div>
+    <footer class="footer">
+      <div class="footer__grid">
+        <div class="footer__column">
+          <div class="footer__column-header">
+            <a href="https://eki.ee" target="_blank">
+              <img class="footer__logo" th:src="@{'/view/images/eki.svg'}" th:alt="#{general.eki}">
+            </a>
           </div>
-          <div class="col-12 col-md-4">
-            <div class="d-flex flex-column text-center text-md-left mb-4">
-              <span class="mb-1">Roosikrantsi 6, 10119 Tallinn</span>
-              <span>Reg-kood: 70004011</span>
+          <b th:text="#{general.eki}">Eesti Keele Instituut</b>
+          <div class="d-flex flex-column gap-1">
+            <div>Roosikrantsi 6, 10119 Tallinn</div>
+            <div th:text="#{label.footer.reg_code(70004011)}">Reg-kood: 70004011</div>
+            <div class="d-flex align-items-center justify-content-center justify-content-md-start gap-2 flex-wrap">
+              <span th:text="#{label.contact.tip}"></span>
+              <a href="tel:6313731">631 3731</a>
             </div>
-          </div>
-          <div class="col-12 col-md-4">
-            <div class="d-flex flex-column text-center text-md-left mb-4">
-              <div class="d-flex align-items-center justify-content-center justify-content-md-start">
-                <span class="mr-2" th:text="#{label.contact.tip}"></span>
-                <a class="text-decoration-none" href="tel:6313731">631 3731</a>
-              </div>
-              <div class="d-flex align-items-center justify-content-center justify-content-md-start">
-                <span class="mr-2" th:text="#{label.contact.general}"></span>
-                <a class="text-decoration-none" href="tel:6177500">617 7500</a>
-              </div>
-              <div class="d-flex align-items-center justify-content-center justify-content-md-start">
-                <span class="mr-2" th:text="#{label.feedback.email}"></span>
-                <a class="text-decoration-none" href="mailto:eki@eki.ee">eki@eki.ee</a>
-              </div>
+            <div class="d-flex align-items-center justify-content-center justify-content-md-start gap-2 flex-wrap">
+              <span th:text="#{label.contact.general}"></span>
+              <a href="tel:6177500">617 7500</a>
+            </div>
+            <div class="d-flex align-items-center justify-content-center justify-content-md-start gap-2 flex-wrap">
+              <span th:text="#{label.feedback.email}"></span>
+              <a href="mailto:eki@eki.ee">eki@eki.ee</a>
             </div>
           </div>
         </div>
-        <div class="row row-muted mt-0">
-          <div class="col-12 col-md-4">
-            <div class="d-flex flex-column d-md-block text-center text-md-left mb-2">
-              <span th:text="#{general.lastupdate}">Sõnaveeb 2021</span>
-              <th:block th:if="${appData}">
-                <a th:href="@{/news}">
-                  <span th:text="|(${appData.appName} ${appData.appVersion})|"></span>
-                </a>                
-              </th:block>
-            </div>
+        <div class="footer__column">
+          <div class="footer__column-header" th:text="#{general.title}"></div>
+          <div class="d-flex flex-column gap-1">
+            <a th:href="@{/about}" th:text="#{menu.about}">Portaalist</a>
+            <a th:href="@{/collections}" th:text="#{label.filter.dataset}">Sõnakogud</a>
+            <a th:href="@{/ekilex-api}" th:text="#{menu.ekilexapi}">Ekilex API</a>
+            <a th:href="@{/news}" th:text="#{menu.news}">Versiooniajalugu</a>
+            <a th:href="@{/regulations}" th:text="#{label.privacy.terms}">Kasutus- ja privaatsustingimused</a>
           </div>
-          <div class="col-12 col-md-4">
-            <div class="text-center text-md-left mb-2">
-              &copy;&nbsp;
-              <span th:text="#{general.eki}">Eesti Keele Instituut</span>
-            </div>
+        </div>
+        <div class="footer__column">
+          <div class="footer__column-header" th:text="#{general.title}"></div>
+          <div class="d-flex flex-column gap-1">
+            <a
+              class="d-flex align-items-center justify-content-center justify-content-md-start gap-2"
+              href="http://www.facebook.com/sharer.php?u=https://sonaveeb.ee"
+              target="_blank"
+              >
+              <div class="footer__icon footer__icon--facebook" aria-hidden="true"></div>
+              <span th:text="#{label.socials.facebook}">
+                Jaga meid sotsiaalmeedias
+              </span>
+            </a>
+            <a
+              class="d-flex align-items-center justify-content-center justify-content-md-start gap-2"
+              href="https://www.youtube.com/c/EestiKeeleInstituut"
+              target="_blank"
+            >
+              <div class="footer__icon footer__icon--youtube" aria-hidden="true"></div>
+              <span th:text="#{label.socials.youtube}">
+                Jaga meid sotsiaalmeedias
+              </span>
+            </a>
+            <a
+              class="d-flex align-items-center justify-content-center justify-content-md-start gap-2"
+              href="https://www.linkedin.com/company/institute-of-the-estonian-language/"
+              target="_blank"
+            >
+              <div class="footer__icon footer__icon--linkedin" aria-hidden="true"></div>
+              <span th:text="#{label.socials.linkedin}">
+                Jaga meid sotsiaalmeedias
+              </span>
+            </a>
           </div>
-          <div class="col-12 col-md-4">
-            <div class="d-flex align-items-center justify-content-center justify-content-md-start">
-              <a th:aria-label="#{aria.footer.facebook}" href="http://www.facebook.com/sharer.php?u=https://sonaveeb.ee" target="_blank" title="Share this in Facebook"> Jaga meid sotsiaalmeedias </a>
-              <a class="fb-icon icon"></a>
-            </div>
-          </div>
+        </div>
+        <div class="footer__column">
+          <div class="footer__column-header" th:text="#{label.footer.feedback.title}"></div>
+          <p class="text-body-two m-0" th:text="#{label.footer.feedback.description}"></p>
+          <button
+            class="footer__feedback-button"
+            type="button"
+            data-toggle="modal"
+            data-target="#feedback-modal"
+            th:text="#{label.feedback.placeholder.description}">
+            Kirjuta meile
+          </button>
         </div>
       </div>
     </footer>
