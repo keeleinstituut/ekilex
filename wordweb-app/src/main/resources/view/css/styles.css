@@ -15661,6 +15661,7 @@ span.material-symbols-outlined--small {
   z-index: 1050;
   background-color: var(--color-white);
   color: var(--color-dark-blue);
+  box-shadow: 0px 2px 4px 0px rgba(0, 0, 0, 0.2509803922);
 }
 .navigation__dropdown-menu--visible {
   display: grid;
