@@ -17,6 +17,7 @@
   </div>
   <th:block th:replace="common-app :: latest-ww-news-article"></th:block>
   <th:block th:replace="common-app :: ie-user"></th:block>
+  <th:block th:replace="common-app :: header"></th:block>
   <div th:replace="common-app :: menu-with-back-btn"></div>
   <div class="container-fluid homonym-page mb-5">
     <div class="sticky-scroll-panel">
@@ -26,9 +27,6 @@
             <th:block th:replace="common-search :: dataset-filter"></th:block>
             <div class="mr-auto mr-md-2 pl-2 d-flex align-items-center flex-wrap">
               <th:block th:replace="common-search :: lang-filter"></th:block>
-              <a th:href="@{/feelinglucky}" class="link ml-3 d-none d-md-block">
-                <span th:text="#{button.label.feelinglucky}">Ehk mul veab</span>
-              </a>
             </div>
           </div>
           <button name="feedback-btn" value="feedback" class="feedback-btn ml-auto btn btn-success py-0 show-with-details" role="button" type="button" data-toggle="modal" data-target="#feedback-modal"

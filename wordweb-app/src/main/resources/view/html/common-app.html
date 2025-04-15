@@ -62,7 +62,7 @@
     <link rel="stylesheet" th:href="@{/view/css/styles.css}" />
     <link rel="stylesheet" th:href="@{/view/js/kiosk-board/src/kioskboard.css}" />
     <!-- TODO MV, palun ressurss lae alla-->
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&icon_names=info,language,record_voice_over" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&icon_names=apps,info,language,record_voice_over" />
   </th:block>
   <!-- Bootstrap core JS -->
   <th:block th:fragment="js">
@@ -84,6 +84,22 @@
 	</script>
   </th:block>
   <!-- menu -->
+  <th:block th:fragment="header">
+    <th:block th:replace="common-app :: update-msg"></th:block>
+    <div class="header">
+      <div class="header__content">
+        <a th:href="@{/}" th:aria-label="#{aria.menu.logo}" class="header__logo"></a>
+        <div class="header__search" id="language-detail-panel" th:if="${withSearch ?: true}">
+          <div th:replace="common-search :: search(pageContext = 'search')"></div>
+        </div>
+        <a th:href="@{/feelinglucky}" class="header__lucky" th:text="#{button.label.feelinglucky}">
+          Ehk mul veab
+        </a>
+        <th:block th:replace=":: lang-select"></th:block>
+        <th:block th:replace=":: navigation"></th:block>
+      </div>
+    </div>
+  </th:block>
   <th:block th:fragment="menu">
     <th:block th:replace="common-app :: update-msg"></th:block>
     <div class="container-fluid header-container ">
@@ -118,6 +134,18 @@
       </div>
     </div>
     <th:block th:replace=":: feedback-form"></th:block>
+  </th:block>
+  <th:block th:fragment="lang-select">
+    <div class="dropdown lang-btn d-none d-md-block">
+      <a href="#" th:aria-label="#{aria.menu.lang}" role="button" class="dropdown-toggle" id="uiLangMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+        <span th:text="#{menu.current.lang}"></span>
+      </a>
+      <div class="dropdown-menu" data-target="uiLangMenuButton" aria-expanded="true" aria-labelledby="uiLangMenuButton">
+        <a role="link" class="dropdown-item" href="?uilang=et">EST</a>
+        <a role="link" class="dropdown-item" href="?uilang=ru">RUS</a>
+        <a role="link" class="dropdown-item" href="?uilang=en">ENG</a>
+      </div>
+    </div>
   </th:block>
   <th:block th:fragment="lang-and-menu-btn">
     <div class="ml-auto d-flex flex-row align-items-center">
@@ -199,6 +227,43 @@
             <!-- For WCAG focus trap. Not to be removed -->
           </a>
         </div>
+      </div>
+    </div>
+  </th:block>
+  <th:block th:fragment="navigation">
+    <div class="navigation__dropdown">
+      <button
+        type="button"
+        th:aria-label="#{button.label.menu}"
+        class="navigation__trigger"
+        id="nav-menu"
+        aria-haspopup="menu"
+        aria-expanded="false"
+        aria-controls="nav-menu-links"
+        >
+        <span class="navigation__trigger-icon material-symbols-outlined">apps</span>
+      </button>
+      <div class="navigation__dropdown-menu" id="nav-menu-links" aria-labelledby="nav-menu">
+        <a class="navigation__link" th:href="@{/}">
+          <img class="navigation__image" th:src="@{'/view/images/sonaveeb-logo-sm.svg'}" alt="">
+          <span th:text="#{general.title}"></span>
+        </a>
+        <a class="navigation__link" th:href="@{/}">
+          <img class="navigation__image navigation__image--bordered" th:src="@{'/view/images/eki-simple.svg'}" alt="">
+          <span th:text="#{menu.grammar}"></span>
+        </a>
+        <a class="navigation__link" href="https://eki.ee/teatmik/" target="_blank">
+          <img class="navigation__image navigation__image--bordered" th:src="@{'/view/images/eki-simple.svg'}" alt="">
+          <span th:text="#{menu.manual}"></span>
+        </a>
+        <a class="navigation__link" th:href="@{/lite}">
+          <img class="navigation__image" th:src="@{'/view/images/sonaveeb-logo-light-sm.svg'}" alt="">
+          <span th:text="#{menu.search.lite}"></span>
+        </a>
+        <a class="navigation__link" th:href="@{/wordgame}">
+          <img class="navigation__image" th:src="@{'/view/images/sonaveeb-logo-sm.svg'}" alt="">
+          <span th:text="#{menu.wordgame}"></span>
+        </a>
       </div>
     </div>
   </th:block>
