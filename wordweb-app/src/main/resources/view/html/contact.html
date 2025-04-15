@@ -8,7 +8,7 @@
 <body class="survey-active">
   <th:block th:replace="common-app :: wcag-main"></th:block>
   <th:block th:replace="common-app :: ie-user"></th:block>
-  <div th:replace="common-app :: menu"></div>
+  <th:block th:replace="common-app :: header(withSearch = ${false})"></th:block>
   <div class="container ">
     <div class="row learn-container">
       <div id="main" role="main" class="col-12 col-md-8 offset-md-4 learn-content">

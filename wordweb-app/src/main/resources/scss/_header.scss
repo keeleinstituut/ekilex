@@ -29,9 +29,16 @@
       margin: 0 auto;
     }
 
+    // Lang dropdown
     & .dropdown {
-      margin-left: auto;
       padding: 0;
+      & a {
+        color: var(--color-dark-blue);
+      }
+      
+      @include media-breakpoint-down(md) {
+        margin-left: auto;
+      }
     }
   }
 
@@ -46,6 +53,16 @@
       height: 47px;
       background-image: url(../images/sonaveeb-logo-lg.svg);
     }
+
+    &--light {
+      background-image: url(../images/sonaveeb-logo-light-sm.svg);
+
+      @include media-breakpoint-up(md) {
+        width: 252px;
+        height: 37px;
+        background-image: url(../images/sonaveeb-logo-light-lg.svg);
+      }
+    }
   }
 
   &__search {
@@ -55,13 +72,13 @@
     }
 
     @include media-breakpoint-up(lg) {
-      padding-left: 124px;
+      padding-left: 108px;
     }
   }
 
   &__lucky {
     display: none;
-
+    margin-left: auto;
     @include media-breakpoint-up(md) {
       display: block;
     }
@@ -120,6 +137,8 @@
     padding: 8px;
     border-radius: 8px;
     color: var(--color-dark-blue);
+    hyphens: auto;
+    text-align: center;
     &:hover {
       background-color: var(--color-bluish-but-not-exactly-gray);
       text-decoration: none;

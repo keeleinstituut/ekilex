@@ -12,9 +12,7 @@
   <th:block th:replace="common-app :: wcag-search"></th:block>
   <th:block th:replace="common-app :: latest-ww-news-article"></th:block>
   <th:block th:replace="common-app :: ie-user"></th:block>
-  <div class="header-container d-flex">
-    <div th:replace="common-app :: lang-and-menu-btn"></div>
-  </div>
+  <th:block th:replace="common-app :: header(pageContext = 'simpleSearch', withSearch = ${false})"></th:block>
   <div class="container-fluid home-page-content">
     <div class="row">
       <div class="col align-self-center main-content-wrapper">

@@ -8,7 +8,7 @@
 <body class="survey-active">
   <th:block th:replace="common-app :: wcag-main"></th:block>
   <th:block th:replace="common-app :: ie-user"></th:block>
-  <div th:replace="common-app :: menu"></div>
+  <th:block th:replace="common-app :: header(withSearch = ${false})"></th:block>
   <div class="container games-wrap home-page-content" id="main" role="main">
     <div class="row">
       <div class="col-12">

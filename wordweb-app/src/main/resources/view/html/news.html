@@ -10,7 +10,7 @@
     <th:block th:replace="common-app :: wcag-sidebar"></th:block>
     <th:block th:replace="common-app :: wcag-main"></th:block>
     <th:block th:replace="common-app :: ie-user"></th:block>
-    <div th:replace="common-app :: menu"></div>
+    <th:block th:replace="common-app :: header(withSearch = ${false})"></th:block>
     <div class="news-page__wrapper">
       <div class="news-page__header">
         <h1 th:text="#{label.news.title}">Teavituste ajalugu</h1>

@@ -88,7 +88,11 @@
     <th:block th:replace="common-app :: update-msg"></th:block>
     <div class="header">
       <div class="header__content">
-        <a th:href="@{/}" th:aria-label="#{aria.menu.logo}" class="header__logo"></a>
+        <a
+          th:href="${pageContext == 'simpleSearch'} ? @{/lite} : @{/}"
+          th:aria-label="#{aria.menu.logo}"
+          class="header__logo"
+          th:classappend="${pageContext == 'simpleSearch' ? 'header__logo--light' : ''}"></a>
         <div class="header__search" id="language-detail-panel" th:if="${withSearch ?: true}">
           <div th:replace="common-search :: search(pageContext = 'search')"></div>
         </div>
@@ -97,40 +101,6 @@
         </a>
         <th:block th:replace=":: lang-select"></th:block>
         <th:block th:replace=":: navigation"></th:block>
-      </div>
-    </div>
-  </th:block>
-  <th:block th:fragment="menu">
-    <th:block th:replace="common-app :: update-msg"></th:block>
-    <div class="container-fluid header-container ">
-      <div class="row header-wrap">
-        <div class="col-12 d-flex align-items-center px-xl-0">
-          <a th:href="@{/}" th:aria-label="#{aria.menu.logo}" role="link" class="logo logo-header">
-            <span class="sr-only">Sõnaveebi logo</span>
-          </a>
-          <div th:replace=":: lang-and-menu-btn"></div>
-        </div>
-      </div>
-    </div>
-    <th:block th:replace=":: feedback-form"></th:block>
-  </th:block>
-  <th:block th:fragment="menu-with-back-btn" th:with="pageContext=${pageContext}?:''">
-    <th:block th:replace="common-app :: update-msg"></th:block>
-    <div class="container-fluid header-container">
-      <div class="row header-wrap">
-        <div class="col-12 d-flex align-items-center px-xl-0">
-          <div class="mr-auto">
-            <a th:href="${pageContext == 'simpleSearch'} ? @{/lite} : @{/}" th:aria-label="#{aria.menu.logo}" role="link" class="logo logo-header" th:classappend="${pageContext == 'simpleSearch' ? 'logo-light' : ''}">
-              <span class="sr-only">Sõnaveebi logo</span>
-            </a>
-          </div>
-          <div class="search-panel w-100">
-            <div class="align-self-center" id="language-detail-panel">
-              <div th:replace="common-search :: search(pageContext = 'search')"></div>
-            </div>
-          </div>
-          <div th:replace=":: lang-and-menu-btn"></div>
-        </div>
       </div>
     </div>
     <th:block th:replace=":: feedback-form"></th:block>
@@ -144,89 +114,6 @@
         <a role="link" class="dropdown-item" href="?uilang=et">EST</a>
         <a role="link" class="dropdown-item" href="?uilang=ru">RUS</a>
         <a role="link" class="dropdown-item" href="?uilang=en">ENG</a>
-      </div>
-    </div>
-  </th:block>
-  <th:block th:fragment="lang-and-menu-btn">
-    <div class="ml-auto d-flex flex-row align-items-center">
-      <div class="dropdown lang-btn d-none d-md-block">
-        <a href="#" th:aria-label="#{aria.menu.lang}" role="button" class="dropdown-toggle" id="uiLangMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-          <span th:text="#{menu.current.lang}"></span>
-        </a>
-        <div class="dropdown-menu" data-target="uiLangMenuButton" aria-expanded="true" aria-labelledby="uiLangMenuButton">
-          <a role="link" class="dropdown-item" href="?uilang=et">EST</a>
-          <a role="link" class="dropdown-item" href="?uilang=ru">RUS</a>
-          <a role="link" class="dropdown-item" href="?uilang=en">ENG</a>
-        </div>
-      </div>
-      <button class="btn menu-btn btn-link align-items-center text-uppercase d-flex position-relative " th:aria-label="#{aria.menu.collapsed}" data-toggle="collapse" data-target="#headerLinks">
-        <span class="d-none d-md-block" th:text="#{button.label.menu}">Menüü</span>
-        <span class="icon icon-menu p-0 ml-md-2"></span>
-      </button>
-      <div th:replace=":: menu-links"></div>
-    </div>
-  </th:block>
-  <th:block th:fragment="menu-links">
-    <div id="headerLinks" class="navbar navbar-dark collapse">
-      <div class="header-links navbar-nav" role="navbar">
-        <div class="d-flex mb-4 pr-4">
-          <button class="btn menu-btn px-0 ml-auto text-white" data-toggle="collapse" data-target="#headerLinks">
-            <span th:text="#{menu.close}">Sulge</span>
-            <span class="fas fa-times"></span>
-          </button>
-        </div>
-        <div class="overflow-auto h-100">
-          <div class="dropdown lang-btn d-md-none px-4 py-3">
-            <a href="#" th:aria-label="#{aria.menu.lang}" role="button" class="dropdown-toggle text-white " id="uiLangMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-              <span th:text="#{menu.current.lang}"></span>
-            </a>
-            <div class="dropdown-menu" data-target="uiLangMenuButton" aria-expanded="true" aria-labelledby="uiLangMenuButton">
-              <a role="link" class="dropdown-item" href="?uilang=et">EST</a>
-              <a role="link" class="dropdown-item" href="?uilang=ru">RUS</a>
-              <a role="link" class="dropdown-item" href="?uilang=en">ENG</a>
-            </div>
-          </div>
-          <a th:href="@{/}" class="nav-link menu-item" data-item-name="search-unif">
-            <span th:text="#{menu.search.unif}">Otsing</span>
-          </a>
-          <a th:href="@{/lite}" target="_blank" class="nav-link menu-item" data-item-name="search-lite">
-            <span th:text="#{menu.search.lite}">Keeleõppija sõnaveeb</span>
-            <i class="fas fa-external-link-alt" aria-hidden="true"></i>
-          </a>
-          <a th:href="@{/about}" class="nav-link menu-item" data-item-name="about">
-            <span th:text="#{menu.about}">Portaalist</span>
-          </a>
-          <a th:href="@{/teacher-tools}" class="nav-link menu-item" data-item-name="ttools">
-            <span th:text="#{menu.ttools}">Õpetaja tööriistad</span>
-          </a>
-          <a th:href="@{/pronunciation-exercises}" class="nav-link menu-item" data-item-name="pronunciation.exercises">
-            <span th:text="#{menu.pronunciation.exercises}">E-hääldusharjutused</span>
-          </a>
-          <a th:href="@{/learn}" class="nav-link menu-item" data-item-name="learn">
-            <span th:text="#{menu.learn}">Õpime eesti keelt</span>
-          </a>
-          <a th:href="@{/wordgame}" class="nav-link menu-item" data-item-name="wordgame">
-            <span th:text="#{menu.wordgame}">Pildimäng</span>
-          </a>
-          <a aria-hidden="true" th:href="@{/games}" class="nav-link menu-item" data-item-name="games">
-            <span th:text="#{menu.games}">Keelemängud</span>
-          </a>
-          <a th:href="@{/news}" class="nav-link menu-item" data-item-name="news">
-            <span th:text="#{menu.news}">Versiooniajalugu</span>
-          </a>
-          <a th:href="@{/ekilex-api}" class="nav-link menu-item" data-item-name="ekilex-api">
-            <span th:text="#{menu.ekilexapi}">Ekilex API</span>
-          </a>
-          <a th:href="@{/contact}" class="nav-link menu-item" data-item-name="contact">
-            <span th:text="#{menu.contact}">Kontakt</span>
-          </a>
-          <a th:href="@{/#}" role="button" data-toggle="modal" data-target="#feedback-modal" class="nav-link menu-item" data-item-name="feedback">
-            <span th:text="#{menu.feedback}">Tagasiside</span>
-          </a>
-          <a class="menu-item" href="#">
-            <!-- For WCAG focus trap. Not to be removed -->
-          </a>
-        </div>
       </div>
     </div>
   </th:block>
@@ -248,10 +135,6 @@
           <img class="navigation__image" th:src="@{'/view/images/sonaveeb-logo-sm.svg'}" alt="">
           <span th:text="#{general.title}"></span>
         </a>
-        <a class="navigation__link" th:href="@{/}">
-          <img class="navigation__image navigation__image--bordered" th:src="@{'/view/images/eki-simple.svg'}" alt="">
-          <span th:text="#{menu.grammar}"></span>
-        </a>
         <a class="navigation__link" href="https://eki.ee/teatmik/" target="_blank">
           <img class="navigation__image navigation__image--bordered" th:src="@{'/view/images/eki-simple.svg'}" alt="">
           <span th:text="#{menu.manual}"></span>
@@ -260,10 +143,30 @@
           <img class="navigation__image" th:src="@{'/view/images/sonaveeb-logo-light-sm.svg'}" alt="">
           <span th:text="#{menu.search.lite}"></span>
         </a>
+        <a class="navigation__link" th:href="@{/teacher-tools}">
+          <img class="navigation__image" th:src="@{'/view/images/sonaveeb-logo-sm.svg'}" alt="">
+          <span th:text="#{menu.ttools}"></span>
+        </a>
+        <a class="navigation__link" th:href="@{/pronunciation-exercises}">
+          <img class="navigation__image" th:src="@{'/view/images/sonaveeb-logo-sm.svg'}" alt="">
+          <span th:text="#{menu.pronunciation.exercises}"></span>
+        </a>
+        <a class="navigation__link" th:href="@{/learn}">
+          <img class="navigation__image" th:src="@{'/view/images/sonaveeb-logo-sm.svg'}" alt="">
+          <span th:text="#{menu.learn}"></span>
+        </a>
         <a class="navigation__link" th:href="@{/wordgame}">
           <img class="navigation__image" th:src="@{'/view/images/sonaveeb-logo-sm.svg'}" alt="">
           <span th:text="#{menu.wordgame}"></span>
         </a>
+        <a class="navigation__link" th:href="@{/games}">
+          <img class="navigation__image" th:src="@{'/view/images/sonaveeb-logo-sm.svg'}" alt="">
+          <span th:text="#{menu.games}"></span>
+        </a>
+        <!-- <a class="navigation__link" th:href="@{/}">
+          <img class="navigation__image navigation__image--bordered" th:src="@{'/view/images/eki-simple.svg'}" alt="">
+          <span th:text="#{menu.grammar}"></span>
+        </a> -->
       </div>
     </div>
   </th:block>
