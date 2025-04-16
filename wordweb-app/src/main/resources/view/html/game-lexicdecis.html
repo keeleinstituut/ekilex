@@ -9,7 +9,7 @@
 </head>
 <body class="games-body survey-active" style="overflow-y: hidden;">
   <th:block th:replace="common-app :: ie-user"></th:block>
-  <div th:replace="common-app :: menu"></div>
+  <th:block th:replace="common-app :: header(withSearch = ${false})"></th:block>
   <div id="gameStartPage" class="frame col-sm-12">
     <div class="col-sm-112 text-center">
       <h2 th:text="#{game.lexicdecis}">Sõnatundmise mäng</h2>

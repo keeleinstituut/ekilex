@@ -129,8 +129,12 @@ $(document).on("click", ".homonym-item", function() {
 	$(this).parents(".homonym-list-item").addClass("selected last-selected");
 	var homonymList = $('.homonym-list');
 	if ($(window).width() >= windowWidthTreshold) {
+		const bodyParentPositionLeft = $('.homonym-list-item.selected .homonym__body').parent().position()?.left;
+		if (!bodyParentPositionLeft) {
+			return;
+		}
 		homonymList.animate({
-			scrollLeft: $('.homonym-list-item.selected .homonym__body').parent().position().left - $('.search-panel').offset().left + homonymList.scrollLeft()
+			scrollLeft: bodyParentPositionLeft - $('.search-panel').offset().left + homonymList.scrollLeft()
 		}, 200);
 	}
 	setSelectedHomonymValueForMobile($(this).html());

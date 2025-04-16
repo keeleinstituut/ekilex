@@ -49,18 +49,18 @@ function getGameBatch() {
 }
 
 function handleAnswerF() {
-
+	if (!currentGameRow?.wordPair1?.synonym) return;
 	$("#gameValidationNotification").hide();
 	answerGameRow = Object.assign({}, currentGameRow);
 	gameRowStopTime = new Date().getTime();
 	answerGameRow.answerPair1 = true;
 	answerGameRow.answerPair2 = false;
 	answerGameRow.delay = gameRowStopTime - gameRowStartTime;
-	answerGameRow.correct = currentGameRow.wordPair1.synonym;
+	answerGameRow.correct = currentGameRow?.wordPair1?.synonym;
 }
 
 function handleAnswerJ() {
-
+	if (!currentGameRow?.wordPair2?.synonym) return;
 	$("#gameValidationNotification").hide();
 	answerGameRow = Object.assign({}, currentGameRow);
 	gameRowStopTime = new Date().getTime();

@@ -77,7 +77,7 @@ class Sorter {
     }
 
     if (this.type === 'relations') {
-      this.bindRelations();
+      this.bindGeneric('word_relation');
     }
 
     if (this.type === 'lex-details') {
@@ -85,6 +85,9 @@ class Sorter {
       this.checkRequirements();
     }
 
+    if (this.type === 'word_od_usage') {
+      this.bindGeneric(this.type);
+    }
   }
 
   /* Custom lex details functionality */
@@ -131,7 +134,7 @@ class Sorter {
     });
   }
 
-  bindRelations() {
+  bindGeneric(opCode) {
     const main = this.main;
     const originalOrder = [];
     
@@ -139,9 +142,9 @@ class Sorter {
       originalOrder.push($(this).attr('data-orderby'));
     });
 
-    main.on('sortupdate', function(event, ui) {
+    main.on('sortupdate', function() {
       const data = {
-        opCode: 'word_relation',
+        opCode,
         items: [],
       }
       main.find('.sortable-main-group').each(function(index){
@@ -235,7 +238,7 @@ class Sorter {
       }, 60);
     });
   }
-  
+
   checkRequirements() {
     this.canActivate = this.main.find('.details-open').length === 0;
     if (this.canActivate && this.main.sortable('instance')) {
@@ -319,7 +322,7 @@ class Sorter {
       this.differentiateSynType();
       this.bindSortable();
     } else {
-      this.main.children().addClass('sortable-main-group');
+      this.main.children('[data-orderby]').addClass('sortable-main-group');
       this.bindSortable();
     }
   }
