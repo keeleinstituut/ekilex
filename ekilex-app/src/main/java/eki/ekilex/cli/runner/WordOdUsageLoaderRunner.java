@@ -29,6 +29,8 @@ public class WordOdUsageLoaderRunner implements GlobalConstant, LoaderConstant, 
 
 	private static Logger logger = LoggerFactory.getLogger(WordOdUsageLoaderRunner.class);
 
+	private static final String USER_NAME_LOADER = "Laadur";
+
 	@Autowired
 	private TextDecorationService textDecorationService;
 
@@ -73,7 +75,6 @@ public class WordOdUsageLoaderRunner implements GlobalConstant, LoaderConstant, 
 					existCount++;
 				} else {
 
-					String userName = "Laadur";
 					LocalDateTime now = LocalDateTime.now();
 
 					WordOdUsage wordOdUsage = new WordOdUsage();
@@ -81,9 +82,9 @@ public class WordOdUsageLoaderRunner implements GlobalConstant, LoaderConstant, 
 					wordOdUsage.setValue(usageValue);
 					wordOdUsage.setValuePrese(usageValuePrese);
 					wordOdUsage.setPublic(true);
-					wordOdUsage.setCreatedBy(userName);
+					wordOdUsage.setCreatedBy(USER_NAME_LOADER);
 					wordOdUsage.setCreatedOn(now);
-					wordOdUsage.setModifiedBy(userName);
+					wordOdUsage.setModifiedBy(USER_NAME_LOADER);
 					wordOdUsage.setModifiedOn(now);
 
 					cudDbService.createWordOdUsage(wordId, wordOdUsage);

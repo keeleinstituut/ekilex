@@ -77,6 +77,12 @@
 				<spring.boot.mainclass>eki.ekilex.cli.WordOdUsageLoader</spring.boot.mainclass>
 			</properties>
 		</profile>
+		<profile>
+			<id>odcwl</id>
+			<properties>
+				<spring.boot.mainclass>eki.ekilex.cli.OdCompWordLoader</spring.boot.mainclass>
+			</properties>
+		</profile>
 	</profiles>
 
 	<build>

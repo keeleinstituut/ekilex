@@ -1,4 +1,6 @@
 
+-- ÕS kasutusnäited ja lühimorfo
+
 create table word_od_usage (
   id bigserial primary key,
   word_id bigint references word(id) on delete cascade not null,
@@ -34,3 +36,8 @@ alter sequence word_od_morph_id_seq restart with 10000;
 create index word_od_morph_word_id_idx on word_od_morph(word_id);
 create index word_od_morph_value_idx on word_od_morph(value);
 create index word_od_morph_value_lower_idx on word_od_morph(lower(value));
+
+-- ÕS liitsõnaseosed
+
+insert into word_rel_mapping (code1, code2) values ('ls-esiosa', 'head');
+insert into word_rel_mapping (code1, code2) values ('ls-järelosa', 'head');

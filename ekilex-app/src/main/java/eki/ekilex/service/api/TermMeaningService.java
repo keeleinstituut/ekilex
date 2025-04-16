@@ -354,8 +354,7 @@ public class TermMeaningService extends AbstractApiCudService implements Activit
 				}
 				boolean meaningTagExists = lookupDbService.meaningTagExists(meaningId, tagName);
 				if (!meaningTagExists) {
-					activityLog = activityLogService.prepareActivityLog("createMeaningTag", meaningId, ActivityOwner.MEANING, roleDatasetCode,
-							MANUAL_EVENT_ON_UPDATE_ENABLED);
+					activityLog = activityLogService.prepareActivityLog("createMeaningTag", meaningId, ActivityOwner.MEANING, roleDatasetCode, MANUAL_EVENT_ON_UPDATE_ENABLED);
 					Long meaningTagId = cudDbService.createMeaningTag(meaningId, tagName);
 					activityLogService.createActivityLog(activityLog, meaningTagId, ActivityEntity.TAG);
 				}
