@@ -1,5 +1,8 @@
 package eki.ekilex.cli;
 
+import java.time.ZoneId;
+import java.util.TimeZone;
+
 import org.jooq.codegen.GenerationTool;
 import org.jooq.meta.jaxb.Configuration;
 import org.jooq.meta.jaxb.Database;
@@ -56,6 +59,7 @@ public class JooqGenerator implements CommandLineRunner {
 	public static void main(String[] args) {
 		logger.info("Application starting up");
 		System.setProperty("org.jooq.no-logo", "true");
+		TimeZone.setDefault(TimeZone.getTimeZone(ZoneId.of("Europe/Tallinn")));
 		SpringApplication application = new SpringApplication(JooqGenerator.class);
 		application.setWebApplicationType(WebApplicationType.NONE);
 		application.run(args);

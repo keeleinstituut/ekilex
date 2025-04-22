@@ -1,6 +1,8 @@
 package eki.ekilex.cli;
 
 import java.io.File;
+import java.time.ZoneId;
+import java.util.TimeZone;
 
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -42,6 +44,7 @@ public class OdCompWordLoader implements CommandLineRunner {
 	public static void main(String[] args) {
 		logger.info("Application starting up");
 		System.setProperty("org.jooq.no-logo", "true");
+		TimeZone.setDefault(TimeZone.getTimeZone(ZoneId.of("Europe/Tallinn")));
 		SpringApplication.run(OdCompWordLoader.class, args);
 		logger.info("Application finished");
 	}

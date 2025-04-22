@@ -4,6 +4,8 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
 
 import eki.common.data.AbstractDataObject;
 import eki.common.util.LocalDateTimeDeserialiser;
@@ -14,6 +16,7 @@ public class FeedbackLog extends AbstractDataObject {
 
 	private Long id;
 
+	@JsonSerialize(using = LocalDateTimeSerializer.class)
 	@JsonDeserialize(using = LocalDateTimeDeserialiser.class)
 	private LocalDateTime createdOn;
 

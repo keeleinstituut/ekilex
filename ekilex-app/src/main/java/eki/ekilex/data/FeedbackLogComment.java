@@ -2,7 +2,12 @@ package eki.ekilex.data;
 
 import java.time.LocalDateTime;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
+
 import eki.common.data.AbstractDataObject;
+import eki.common.util.LocalDateTimeDeserialiser;
 
 public class FeedbackLogComment extends AbstractDataObject {
 
@@ -12,6 +17,8 @@ public class FeedbackLogComment extends AbstractDataObject {
 
 	private Long feedbackLogId;
 
+	@JsonSerialize(using = LocalDateTimeSerializer.class)
+	@JsonDeserialize(using = LocalDateTimeDeserialiser.class)
 	private LocalDateTime createdOn;
 
 	private String comment;
