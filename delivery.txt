@@ -3,6 +3,9 @@ Märkused ver 1.41.0 tarne kohta:
 WordOdUsageLoader
 mvn spring-boot:run -P wodul -D spring-boot.run.profiles=dev -D spring-boot.run.arguments="impfile="/path/to/wod-usage.tsv"" 
 
+WordOdMorphLoader
+mvn spring-boot:run -P wodml -D spring-boot.run.profiles=dev -D spring-boot.run.arguments="impfile="/path/to/wod-morph.tsv""
+
 OdCompWordLoader
 mvn spring-boot:run -P odcwl -D spring-boot.run.profiles=dev -D spring-boot.run.arguments="impfile="/path/to/wrel-compound.tsv""
 
