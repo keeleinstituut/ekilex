@@ -2,6 +2,8 @@ package eki.wordweb;
 
 import java.nio.charset.StandardCharsets;
 import java.time.Duration;
+import java.time.ZoneId;
+import java.util.TimeZone;
 
 import org.apache.catalina.connector.Connector;
 import org.apache.coyote.ajp.AbstractAjpProtocol;
@@ -38,6 +40,7 @@ public class WordwebApplication {
 		System.setProperty("org.jooq.no-logo", "true");
 		System.setProperty("org.apache.tomcat.util.buf.UDecoder.ALLOW_ENCODED_SLASH", "true");
 		System.setProperty("jsse.enableSNIExtension", "false");
+		TimeZone.setDefault(TimeZone.getTimeZone(ZoneId.of("Europe/Tallinn")));
 		SpringApplication.run(WordwebApplication.class, args);
 	}
 
