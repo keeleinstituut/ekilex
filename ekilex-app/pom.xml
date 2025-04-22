@@ -78,6 +78,12 @@
 			</properties>
 		</profile>
 		<profile>
+			<id>wodml</id>
+			<properties>
+				<spring.boot.mainclass>eki.ekilex.cli.WordOdMorphLoader</spring.boot.mainclass>
+			</properties>
+		</profile>
+		<profile>
 			<id>odcwl</id>
 			<properties>
 				<spring.boot.mainclass>eki.ekilex.cli.OdCompWordLoader</spring.boot.mainclass>
