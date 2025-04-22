@@ -2,6 +2,8 @@ package eki.ekilex.app;
 
 import java.nio.charset.StandardCharsets;
 import java.time.Duration;
+import java.time.ZoneId;
+import java.util.TimeZone;
 
 import org.apache.catalina.connector.Connector;
 import org.apache.coyote.ajp.AbstractAjpProtocol;
@@ -44,6 +46,7 @@ public class EkilexApplication {
 	public static void main(String[] args) {
 		System.setProperty("org.jooq.no-logo", "true");
 		System.setProperty("org.apache.tomcat.util.buf.UDecoder.ALLOW_ENCODED_SLASH", "true");
+		TimeZone.setDefault(TimeZone.getTimeZone(ZoneId.of("Europe/Tallinn")));
 		SpringApplication.run(EkilexApplication.class, args);
 	}
 
