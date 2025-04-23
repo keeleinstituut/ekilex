@@ -86,13 +86,18 @@ public interface GlobalConstant {
 
 	String WORD_REL_TYPE_CODE_PRECOMP = "ls-esiosa";
 
+	String WORD_REL_TYPE_CODE_WPRECOMP = "ls-esiosaga";
+
 	String WORD_REL_TYPE_CODE_POSTCOMP = "ls-järelosa";
+
+	String WORD_REL_TYPE_CODE_WPOSTCOMP = "ls-järelosaga";
 
 	String[] PRIMARY_WORD_REL_TYPE_CODES = new String[] {
 			WORD_REL_TYPE_CODE_COMP,
 			WORD_REL_TYPE_CODE_RAW,
-			WORD_REL_TYPE_CODE_PRECOMP,
-			WORD_REL_TYPE_CODE_POSTCOMP};
+			WORD_REL_TYPE_CODE_WPRECOMP,
+			WORD_REL_TYPE_CODE_WPOSTCOMP
+	};
 
 	String MEANING_REL_TYPE_CODE_SIMILAR = "sarnane";
 

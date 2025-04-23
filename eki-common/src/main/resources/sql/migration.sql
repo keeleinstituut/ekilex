@@ -37,7 +37,12 @@ create index word_od_morph_word_id_idx on word_od_morph(word_id);
 create index word_od_morph_value_idx on word_od_morph(value);
 create index word_od_morph_value_lower_idx on word_od_morph(lower(value));
 
--- ÕS liitsõnaseosed
+-- ÕS liitsõnaseosed ??
 
-insert into word_rel_mapping (code1, code2) values ('ls-esiosa', 'head');
-insert into word_rel_mapping (code1, code2) values ('ls-järelosa', 'head');
+insert into word_rel_type (code, datasets) values ('ls-esiosaga', '{}');
+insert into word_rel_type (code, datasets) values ('ls-järelosaga', '{}');
+insert into word_rel_type_label (code, value, lang, type) values ('ls-esiosaga', 'liitsõna esiosaga', 'est', 'descrip');
+insert into word_rel_type_label (code, value, lang, type) values ('ls-järelosaga', 'liitsõna järelosaga', 'est', 'descrip');
+insert into word_rel_mapping (code1, code2) values ('ls-esiosa', 'ls-esiosaga');
+insert into word_rel_mapping (code1, code2) values ('ls-järelosa', 'ls-järelosaga');
+

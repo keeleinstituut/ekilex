@@ -67,14 +67,15 @@ public class OdCompWordLoaderRunner extends AbstractLoaderRunner {
 				boolean preWordExists = migrationDbService.wordExists(preWordId);
 				if (preWordExists) {
 					createRelation(compWordId, preWordId, WORD_REL_TYPE_CODE_PRECOMP, createCount, existCount);
-					createRelation(preWordId, compWordId, WORD_REL_TYPE_CODE_HEAD, createCount, existCount);
+					createRelation(preWordId, compWordId, WORD_REL_TYPE_CODE_WPRECOMP, createCount, existCount);
 				}
 			}
+
 			if (postWordId.compareTo(0L) > 0) {
 				boolean postWordExists = migrationDbService.wordExists(postWordId);
 				if (postWordExists) {
 					createRelation(compWordId, postWordId, WORD_REL_TYPE_CODE_POSTCOMP, createCount, existCount);
-					createRelation(postWordId, compWordId, WORD_REL_TYPE_CODE_HEAD, createCount, existCount);
+					createRelation(postWordId, compWordId, WORD_REL_TYPE_CODE_WPOSTCOMP, createCount, existCount);
 				}
 			}
 
