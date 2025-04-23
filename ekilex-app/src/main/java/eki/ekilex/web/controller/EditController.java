@@ -180,6 +180,9 @@ public class EditController extends AbstractMutableDataPageController implements
 		case "word_freeform":
 			cudService.createWordFreeform(id, value, type, isPublic, roleDatasetCode, isManualEventOnUpdateEnabled);
 			break;
+		case "word_od_morph":
+			cudService.createWordOdMorph(id, value, roleDatasetCode, isManualEventOnUpdateEnabled);
+			break;
 		case "word_od_recommendation":
 			cudService.createWordOdRecommendation(id, value, value2, roleDatasetCode, isManualEventOnUpdateEnabled);
 			break;
@@ -394,6 +397,9 @@ public class EditController extends AbstractMutableDataPageController implements
 			break;
 		case "word_freeform":
 			cudService.updateWordFreeform(id, value, isPublic, roleDatasetCode, isManualEventOnUpdateEnabled);
+			break;
+		case "word_od_morph":
+			cudService.updateWordOdMorph(id, value, roleDatasetCode, isManualEventOnUpdateEnabled);
 			break;
 		case "word_od_recommendation":
 			cudService.updateWordOdRecommendation(id, value, value2, roleDatasetCode, isManualEventOnUpdateEnabled);
@@ -704,6 +710,9 @@ public class EditController extends AbstractMutableDataPageController implements
 			break;
 		case "word_morph_comment":
 			cudService.updateWordMorphComment(id, null, roleDatasetCode, isManualEventOnUpdateEnabled);
+			break;
+		case "word_od_morph":
+			cudService.deleteWordOdMorph(id, roleDatasetCode, isManualEventOnUpdateEnabled);
 			break;
 		case "word_od_recommendation":
 			cudService.deleteWordOdRecommendation(id, roleDatasetCode, isManualEventOnUpdateEnabled);

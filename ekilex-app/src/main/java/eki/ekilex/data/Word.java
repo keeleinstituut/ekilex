@@ -78,6 +78,8 @@ public class Word extends AbstractCrudEntity implements DecoratedWordType {
 
 	private List<WordOdUsage> wordOdUsages;
 
+	private WordOdMorph wordOdMorph;
+
 	@JsonSerialize(using = LocalDateTimeSerializer.class)
 	@JsonDeserialize(using = LocalDateTimeDeserialiser.class)
 	private LocalDateTime lastActivityEventOn;
@@ -332,6 +334,14 @@ public class Word extends AbstractCrudEntity implements DecoratedWordType {
 
 	public void setWordOdUsages(List<WordOdUsage> wordOdUsages) {
 		this.wordOdUsages = wordOdUsages;
+	}
+
+	public WordOdMorph getWordOdMorph() {
+		return wordOdMorph;
+	}
+
+	public void setWordOdMorph(WordOdMorph wordOdMorph) {
+		this.wordOdMorph = wordOdMorph;
 	}
 
 	public LocalDateTime getLastActivityEventOn() {

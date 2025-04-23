@@ -60,6 +60,7 @@ import eki.ekilex.data.WordEtym;
 import eki.ekilex.data.WordEtymTuple;
 import eki.ekilex.data.WordGroup;
 import eki.ekilex.data.WordLexemeMeaningIds;
+import eki.ekilex.data.WordOdMorph;
 import eki.ekilex.data.WordOdRecommendation;
 import eki.ekilex.data.WordOdUsage;
 import eki.ekilex.data.WordRelation;
@@ -211,6 +212,8 @@ public class ActivityLogService implements SystemConstant, GlobalConstant, Freef
 			return activityLogDbService.getWordTypeOwnerId(entityId);
 		} else if (ActivityEntity.WORD_ETYMOLOGY.equals(entity)) {
 			return activityLogDbService.getWordEtymologyOwnerId(entityId);
+		} else if (ActivityEntity.WORD_OD_MORPH.equals(entity)) {
+			return activityLogDbService.getWordOdMorphOwnerId(entityId);
 		} else if (ActivityEntity.WORD_OD_RECOMMENDATION.equals(entity)) {
 			return activityLogDbService.getWordOdRecommendationOwnerId(entityId);
 		} else if (ActivityEntity.WORD_OD_USAGE.equals(entity)) {
@@ -614,6 +617,7 @@ public class ActivityLogService implements SystemConstant, GlobalConstant, Freef
 		List<WordEtym> wordEtymology = conversionUtil.composeWordEtymology(wordEtymTuples);
 		WordOdRecommendation wordOdRecommendation = odDataDbService.getWordOdRecommendation(wordId);
 		List<WordOdUsage> wordOdUsages = odDataDbService.getWordOdUsages(wordId);
+		WordOdMorph wordOdMorph = odDataDbService.getWordOdMorph(wordId);
 		List<Paradigm> paradigms = null;
 		if (StringUtils.equals(FUNCT_NAME_DELETE_PARADIGM, functName)) {
 			List<ParadigmFormTuple> paradigmFormTuples = lexSearchDbService.getParadigmFormTuples(wordId, CLASSIF_LABEL_LANG_EST);
@@ -627,6 +631,7 @@ public class ActivityLogService implements SystemConstant, GlobalConstant, Freef
 		word.setEtymology(wordEtymology);
 		word.setWordOdRecommendation(wordOdRecommendation);
 		word.setWordOdUsages(wordOdUsages);
+		word.setWordOdMorph(wordOdMorph);
 		word.setParadigms(paradigms);
 
 		ObjectMapper objectMapper = new ObjectMapper();

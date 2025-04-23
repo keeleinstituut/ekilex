@@ -256,7 +256,6 @@ public class TermSearchService extends AbstractSearchService {
 			List<WordForum> wordForums = commonDataDbService.getWordForums(wordId);
 			permCalculator.applyCrud(user, wordForums);
 			WordOdRecommendation wordOdRecommendation = odDataDbService.getWordOdRecommendation(wordId);
-			List<WordOdUsage> wordOdUsages = odDataDbService.getWordOdUsages(wordId);
 			List<Freeform> lexemeFreeforms = commonDataDbService.getLexemeFreeforms(lexemeId, EXCLUDED_LEXEME_ATTRIBUTE_FF_TYPE_CODES, CLASSIF_LABEL_LANG_EST);
 			List<LexemeNote> lexemeNotes = lexeme.getNotes();
 			permCalculator.filterVisibility(user, lexemeNotes);
@@ -273,7 +272,6 @@ public class TermSearchService extends AbstractSearchService {
 			word.setFreeforms(wordFreeforms);
 			word.setForums(wordForums);
 			word.setWordOdRecommendation(wordOdRecommendation);
-			word.setWordOdUsages(wordOdUsages);
 
 			boolean classifiersExist = StringUtils.isNotBlank(word.getGenderCode())
 					|| StringUtils.isNotBlank(lexeme.getLexemeValueStateCode())

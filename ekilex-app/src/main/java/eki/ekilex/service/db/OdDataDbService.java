@@ -1,5 +1,6 @@
 package eki.ekilex.service.db;
 
+import static eki.ekilex.data.db.main.Tables.WORD_OD_MORPH;
 import static eki.ekilex.data.db.main.Tables.WORD_OD_RECOMMENDATION;
 import static eki.ekilex.data.db.main.Tables.WORD_OD_USAGE;
 
@@ -9,6 +10,7 @@ import org.jooq.DSLContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import eki.ekilex.data.db.main.tables.WordOdMorph;
 import eki.ekilex.data.db.main.tables.WordOdRecommendation;
 import eki.ekilex.data.db.main.tables.WordOdUsage;
 
@@ -40,5 +42,17 @@ public class OdDataDbService {
 				.where(wou.WORD_ID.eq(wordId))
 				.orderBy(wou.ORDER_BY)
 				.fetchInto(eki.ekilex.data.WordOdUsage.class);
+	}
+
+	public eki.ekilex.data.WordOdMorph getWordOdMorph(Long wordId) {
+
+		WordOdMorph wom = WORD_OD_MORPH.as("wom");
+
+		return mainDb
+				.selectFrom(wom)
+				.where(wom.WORD_ID.eq(wordId))
+				.limit(1)
+				.fetchOptionalInto(eki.ekilex.data.WordOdMorph.class)
+				.orElse(null);
 	}
 }

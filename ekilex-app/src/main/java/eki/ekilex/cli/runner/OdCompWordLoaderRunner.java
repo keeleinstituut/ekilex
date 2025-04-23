@@ -1,50 +1,26 @@
 package eki.ekilex.cli.runner;
 
-import java.io.FileInputStream;
-import java.io.InputStream;
-import java.nio.charset.StandardCharsets;
-import java.util.Arrays;
 import java.util.List;
 
 import javax.transaction.Transactional;
 
-import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.authentication.AnonymousAuthenticationToken;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
 import eki.common.constant.ActivityEntity;
 import eki.common.constant.ActivityOwner;
-import eki.common.constant.GlobalConstant;
-import eki.common.constant.LoaderConstant;
 import eki.common.data.Count;
-import eki.ekilex.constant.SystemConstant;
 import eki.ekilex.data.ActivityLogData;
-import eki.ekilex.data.DatasetPermission;
-import eki.ekilex.data.EkiUser;
 import eki.ekilex.service.core.ActivityLogService;
-import eki.ekilex.service.db.CudDbService;
 import eki.ekilex.service.db.LookupDbService;
-import eki.ekilex.service.db.MigrationDbService;
 
 @Component
-public class OdCompWordLoaderRunner implements GlobalConstant, LoaderConstant, SystemConstant {
+public class OdCompWordLoaderRunner extends AbstractLoaderRunner {
 
 	private static Logger logger = LoggerFactory.getLogger(OdCompWordLoaderRunner.class);
-
-	private static final String USER_NAME_LOADER = "Laadur";
-
-	@Autowired
-	private CudDbService cudDbService;
-
-	@Autowired
-	private MigrationDbService migrationDbService;
 
 	@Autowired
 	private LookupDbService lookupDbService;
@@ -112,43 +88,16 @@ public class OdCompWordLoaderRunner implements GlobalConstant, LoaderConstant, S
 		logger.info("Completed load. Out of {} lines, relation create count: {}, relation exist count: {}", lineCounter, createCount.getValue(), existCount.getValue());
 	}
 
-	private void createSecurityContext() {
-
-		EkiUser user = new EkiUser();
-		user.setName(USER_NAME_LOADER);
-		user.setAdmin(Boolean.TRUE);
-		user.setMaster(Boolean.TRUE);
-		user.setEnabled(Boolean.TRUE);
-
-		DatasetPermission recentRole = new DatasetPermission();
-		recentRole.setDatasetName(DATASET_EKI);
-		recentRole.setSuperiorDataset(true);
-		user.setRecentRole(recentRole);
-
-		GrantedAuthority authority = new SimpleGrantedAuthority("import");
-		AnonymousAuthenticationToken authentication = new AnonymousAuthenticationToken("cmov", user, Arrays.asList(authority));
-		SecurityContextHolder.getContext().setAuthentication(authentication);
-	}
-
 	private void createRelation(Long wordId1, Long wordId2, String relationTypeCode, Count createCount, Count existCount) throws Exception {
 
-		ActivityLogData activityLog = activityLogService.prepareActivityLog("loadWordRelations", wordId1, ActivityOwner.WORD, DATASET_EKI, MANUAL_EVENT_ON_UPDATE_ENABLED);
 		boolean relationExists = lookupDbService.wordRelationExists(wordId1, wordId2, relationTypeCode);
 		if (relationExists) {
 			existCount.increment();
 			return;
 		}
+		ActivityLogData activityLog = activityLogService.prepareActivityLog("loadWordRelations", wordId1, ActivityOwner.WORD, DATASET_EKI, MANUAL_EVENT_ON_UPDATE_ENABLED);
 		Long wordRelationId = cudDbService.createWordRelation(wordId1, wordId2, relationTypeCode, null);
 		activityLogService.createActivityLog(activityLog, wordRelationId, ActivityEntity.WORD_RELATION);
 		createCount.increment();
-	}
-
-	private List<String> readFileLines(String filePath) throws Exception {
-		InputStream fileInputStream = new FileInputStream(filePath);
-		try {
-			return IOUtils.readLines(fileInputStream, StandardCharsets.UTF_8);
-		} finally {
-			fileInputStream.close();
-		}
 	}
 }

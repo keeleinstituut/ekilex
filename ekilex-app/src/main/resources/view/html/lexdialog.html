@@ -297,7 +297,60 @@
       </div>
     </div>
   </div>
-  
+  <div th:id="${'addWordOdMorphDlg_' + wordId}" class="modal"
+        role="dialog"
+        th:fragment="add_word_od_morph_dlg"
+        data-plugin="initEkiEditorDlgAndFocusPlugin">
+    <div class="modal-dialog modal-lg" role="document">
+      <div class="modal-content">
+        <form th:action="@{/create_item}" method="post">
+          <div class="modal-header">
+            <h5 class="modal-title" th:text="#{lex.add.od.word.morph}">Lisa soovitus</h5>
+            <button type="button" class="close" aria-label="Close" data-role="close" data-dismiss="modal">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <input type="hidden" name="id" th:value="${wordId}">
+            <input type="hidden" name="opCode" value="word_od_morph">
+            <input type="hidden" name="value">
+            <div th:replace="components :: eki_editor_elem"></div>
+          </div>
+          <div class="modal-footer">
+            <button type="submit" class="btn btn-primary" th:text="#{common.add}">Lisa</button>
+            <button type="button" class="btn btn-default" data-dismiss="modal" th:text="#{common.cancel}">Katkesta</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+  <div th:id="${'editWordOdMorphDlg_' + wordOdMorph.id}" class="modal"
+        role="dialog"
+        th:fragment="edit_word_od_morph"
+        data-plugin="initEkiEditorDlgAndFocusPlugin">
+    <div class="modal-dialog modal-lg" role="document">
+      <div class="modal-content">
+        <form th:action="@{/update_item}" method="post">
+          <div class="modal-header">
+            <h5 class="modal-title" th:text="#{lex.edit.od.word.morph}">Muuda lühimorfoloogiat</h5>
+            <button type="button" class="close" aria-label="Close" data-role="close" data-dismiss="modal">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <input type="hidden" name="id" th:value="${wordOdMorph.id}">
+            <input type="hidden" name="opCode" value="word_od_morph">
+            <input type="hidden" name="value" th:value="${wordOdMorph.valuePrese}">
+            <div th:replace="components :: eki_editor_elem"></div>
+          </div>
+          <div class="modal-footer">
+            <button type="submit" class="btn btn-primary" th:text="#{common.save}">Salvesta</button>
+            <button type="button" class="btn btn-default" data-dismiss="modal" th:text="#{common.cancel}">Katkesta</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
   <div th:id="${'addWordOdRecommendationDlg_' + wordId}" class="modal"
         role="dialog"
         th:fragment="add_word_od_recommendation_dlg"

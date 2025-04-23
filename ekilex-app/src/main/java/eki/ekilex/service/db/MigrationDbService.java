@@ -5,6 +5,7 @@ import static eki.ekilex.data.db.main.Tables.DEFINITION_DATASET;
 import static eki.ekilex.data.db.main.Tables.DOMAIN_LABEL;
 import static eki.ekilex.data.db.main.Tables.MEANING;
 import static eki.ekilex.data.db.main.Tables.WORD;
+import static eki.ekilex.data.db.main.Tables.WORD_OD_MORPH;
 import static eki.ekilex.data.db.main.Tables.WORD_OD_USAGE;
 
 import java.util.List;
@@ -18,6 +19,7 @@ import eki.ekilex.data.db.main.tables.Definition;
 import eki.ekilex.data.db.main.tables.DefinitionDataset;
 import eki.ekilex.data.db.main.tables.Meaning;
 import eki.ekilex.data.db.main.tables.Word;
+import eki.ekilex.data.db.main.tables.WordOdMorph;
 import eki.ekilex.data.db.main.tables.WordOdUsage;
 
 // temporary for data migration tools
@@ -167,5 +169,17 @@ public class MigrationDbService extends AbstractDataDbService {
 						.where(
 								wou.WORD_ID.eq(wordId)
 										.and(wou.VALUE.eq(usageValue))));
+	}
+
+	public boolean wordOdMorphExists(Long wordId) {
+
+		WordOdMorph wom = WORD_OD_MORPH.as("wom");
+
+		return mainDb
+				.fetchExists(DSL
+						.select(wom.ID)
+						.from(wom)
+						.where(
+								wom.WORD_ID.eq(wordId)));
 	}
 }

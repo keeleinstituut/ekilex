@@ -2103,53 +2103,5 @@
       </div>
     </div>
   </div>
-  
-  <div class="border-top px-0 w-100 ekiAccordion__instance" th:fragment="word_od_usage">
-    <div class="ekiAccordion__title">
-      <span class="badge badge-data-exists" th:unless="${#lists.isEmpty(lexeme.lexemeWord.wordOdUsages)}">•</span>
-      <span th:text="#{term.word.od.usage}">ÕS kasutusnäited</span>
-      <button type="button" class="ekiAccordion__add"
-              th:title="#{common.add.new}"
-              data-toggle="modal"
-              th:data-target="${'#addWordOdUsageDlg_' + lexeme.lexemeId}"
-              sec:authorize="#vars.lexeme.lexemeWord.subGrant">
-        <i class="fa fa-plus" aria-hidden="true"></i>
-      </button>
-    </div>
-    <div class="ekiAccordion__content overflow-auto">
-      <div th:if="${#lists.isEmpty(lexeme.lexemeWord.wordOdUsages)}" th:text="#{common.no.content}">
-        Sisu puudub...
-      </div>
-      <div th:unless="${#lists.isEmpty(lexeme.lexemeWord.wordOdUsages)}">
-        <th:block th:each="wordOdUsage : ${lexeme.lexemeWord.wordOdUsages}">
-          <div th:replace="termdialog :: edit_word_od_usage"></div>
-          <div class="col hidden-buttons pr-5">
-            <div class="action-buttons-anchor">
-              <div th:utext="${wordOdUsage.valuePrese}"></div>
-              <span class="ctxt" th:text="'[' + ${wordOdUsage.modifiedBy} + ']'" th:if="${wordOdUsage.modifiedBy != null}"></span>
-              <span class="ctxt" th:text="'(' + ${#temporals.format(wordOdUsage.modifiedOn, 'dd.MM.yyyy')} + ')'" th:if="${wordOdUsage.modifiedOn != null}"></span>
-              <div class="action-buttons-2">
-                <button type="button" class="btn badge badge-primary"
-                        th:title="#{common.edit}"
-                        data-toggle="modal"
-                        th:data-target="${'#editWordOdUsageDlg_' + wordOdUsage.id}"
-                        sec:authorize="#vars.lexeme.lexemeWord.crudGrant">
-                  <i class="fa fa-edit" aria-hidden="true"></i>
-                </button>
-                <button type="button" class="btn badge badge-warning"
-                        th:data-id="${wordOdUsage.id}"
-                        data-op-code="word_od_usage"
-                        data-toggle="delete-confirm"
-                        data-placement="right"
-                        sec:authorize="#vars.lexeme.lexemeWord.crudGrant">
-                  <i class="fa fa-remove" aria-hidden="true"></i>
-                </button>
-              </div>
-            </div>
-          </div>
-        </th:block>
-      </div>
-    </div>
-  </div>
 </body>
 </html>

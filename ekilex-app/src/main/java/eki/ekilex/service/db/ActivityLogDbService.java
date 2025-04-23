@@ -39,6 +39,7 @@ import static eki.ekilex.data.db.main.Tables.WORD_ACTIVITY_LOG;
 import static eki.ekilex.data.db.main.Tables.WORD_ETYMOLOGY;
 import static eki.ekilex.data.db.main.Tables.WORD_FREEFORM;
 import static eki.ekilex.data.db.main.Tables.WORD_LAST_ACTIVITY_LOG;
+import static eki.ekilex.data.db.main.Tables.WORD_OD_MORPH;
 import static eki.ekilex.data.db.main.Tables.WORD_OD_RECOMMENDATION;
 import static eki.ekilex.data.db.main.Tables.WORD_OD_USAGE;
 import static eki.ekilex.data.db.main.Tables.WORD_RELATION;
@@ -659,6 +660,15 @@ public class ActivityLogDbService implements GlobalConstant, ActivityFunct {
 				.select(WORD_ETYMOLOGY.WORD_ID)
 				.from(WORD_ETYMOLOGY)
 				.where(WORD_ETYMOLOGY.ID.eq(entityId))
+				.fetchOptionalInto(Long.class)
+				.orElse(null);
+	}
+
+	public Long getWordOdMorphOwnerId(Long entityId) {
+		return mainDb
+				.select(WORD_OD_MORPH.WORD_ID)
+				.from(WORD_OD_MORPH)
+				.where(WORD_OD_MORPH.ID.eq(entityId))
 				.fetchOptionalInto(Long.class)
 				.orElse(null);
 	}

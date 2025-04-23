@@ -37,6 +37,7 @@ import eki.ekilex.data.UsageDefinition;
 import eki.ekilex.data.UsageTranslation;
 import eki.ekilex.data.WordLexemeMeaningDetails;
 import eki.ekilex.data.WordLexemeMeaningIdTuple;
+import eki.ekilex.data.WordOdMorph;
 import eki.ekilex.data.WordOdRecommendation;
 import eki.ekilex.data.WordOdUsage;
 import eki.ekilex.security.EkilexPermissionEvaluator;
@@ -815,6 +816,22 @@ public class CudService extends AbstractCudService implements PermConstant, Acti
 	}
 
 	@Transactional(rollbackOn = Exception.class)
+	public void updateWordOdMorph(
+			Long wordOdMorphId, String valuePrese, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
+
+		WordOdMorph wordOdMorph = new WordOdMorph();
+		wordOdMorph.setId(wordOdMorphId);
+		wordOdMorph.setValuePrese(valuePrese);
+		setValueAndPrese(wordOdMorph);
+		applyUpdate(wordOdMorph);
+
+		Long wordId = activityLogService.getOwnerId(wordOdMorphId, ActivityEntity.WORD_OD_MORPH);
+		ActivityLogData activityLog = activityLogService.prepareActivityLog("updateWordOdMorph", wordId, ActivityOwner.WORD, roleDatasetCode, isManualEventOnUpdateEnabled);
+		cudDbService.updateWordOdMorph(wordOdMorph);
+		activityLogService.createActivityLog(activityLog, wordOdMorphId, ActivityEntity.WORD_OD_MORPH);
+	}
+
+	@Transactional(rollbackOn = Exception.class)
 	public void updateWordOdRecommendation(
 			Long wordOdRecommendationId, String valuePrese, String optValuePrese, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
 
@@ -1225,6 +1242,20 @@ public class CudService extends AbstractCudService implements PermConstant, Acti
 		applyCreateUpdate(freeform);
 
 		createMeaningFreeform(ActivityEntity.FREEFORM, meaningId, freeform, roleDatasetCode, isManualEventOnUpdateEnabled);
+	}
+
+	@Transactional(rollbackOn = Exception.class)
+	public void createWordOdMorph(Long wordId, String valuePrese, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
+
+		WordOdMorph wordOdMorph = new WordOdMorph();
+		wordOdMorph.setValuePrese(valuePrese);
+		wordOdMorph.setPublic(true);
+		setValueAndPrese(wordOdMorph);
+		applyCreateUpdate(wordOdMorph);
+
+		ActivityLogData activityLog = activityLogService.prepareActivityLog("createWordOdMorph", wordId, ActivityOwner.WORD, roleDatasetCode, isManualEventOnUpdateEnabled);
+		Long wordOdMorphId = cudDbService.createWordOdMorph(wordId, wordOdMorph);
+		activityLogService.createActivityLog(activityLog, wordOdMorphId, ActivityEntity.WORD_OD_MORPH);
 	}
 
 	@Transactional(rollbackOn = Exception.class)
@@ -1647,6 +1678,15 @@ public class CudService extends AbstractCudService implements PermConstant, Acti
 		ActivityLogData activityLog = activityLogService.prepareActivityLog("deleteMeaningFreeform", meaningId, ActivityOwner.MEANING, roleDatasetCode, isManualEventOnUpdateEnabled);
 		cudDbService.deleteFreeform(freeformId);
 		activityLogService.createActivityLog(activityLog, freeformId, ActivityEntity.FREEFORM);
+	}
+
+	@Transactional(rollbackOn = Exception.class)
+	public void deleteWordOdMorph(Long wordOdMorphId, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
+
+		Long wordId = activityLogService.getOwnerId(wordOdMorphId, ActivityEntity.WORD_OD_MORPH);
+		ActivityLogData activityLog = activityLogService.prepareActivityLog("deleteWordOdMorph", wordId, ActivityOwner.WORD, roleDatasetCode, isManualEventOnUpdateEnabled);
+		cudDbService.deleteWordOdMorph(wordOdMorphId);
+		activityLogService.createActivityLog(activityLog, wordOdMorphId, ActivityEntity.WORD_OD_MORPH);
 	}
 
 	@Transactional(rollbackOn = Exception.class)

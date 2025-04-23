@@ -34,6 +34,7 @@ import static eki.ekilex.data.db.main.Tables.WORD_FORUM;
 import static eki.ekilex.data.db.main.Tables.WORD_FREEFORM;
 import static eki.ekilex.data.db.main.Tables.WORD_GROUP;
 import static eki.ekilex.data.db.main.Tables.WORD_GROUP_MEMBER;
+import static eki.ekilex.data.db.main.Tables.WORD_OD_MORPH;
 import static eki.ekilex.data.db.main.Tables.WORD_OD_RECOMMENDATION;
 import static eki.ekilex.data.db.main.Tables.WORD_OD_USAGE;
 import static eki.ekilex.data.db.main.Tables.WORD_RELATION;
@@ -613,6 +614,18 @@ public class CudDbService extends AbstractDataDbService {
 				.execute();
 	}
 
+	public void updateWordOdMorph(eki.ekilex.data.WordOdMorph wordOdMorph) {
+		mainDb
+				.update(WORD_OD_MORPH)
+				.set(WORD_OD_MORPH.VALUE, wordOdMorph.getValue())
+				.set(WORD_OD_MORPH.VALUE_PRESE, wordOdMorph.getValuePrese())
+				.set(WORD_OD_MORPH.IS_PUBLIC, wordOdMorph.isPublic())
+				.set(WORD_OD_MORPH.MODIFIED_BY, wordOdMorph.getModifiedBy())
+				.set(WORD_OD_MORPH.MODIFIED_ON, wordOdMorph.getModifiedOn())
+				.where(WORD_OD_MORPH.ID.eq(wordOdMorph.getId()))
+				.execute();
+	}
+
 	public void updateWordOdRecommendation(eki.ekilex.data.WordOdRecommendation wordOdRecommendation) {
 		mainDb
 				.update(WORD_OD_RECOMMENDATION)
@@ -1050,6 +1063,33 @@ public class CudDbService extends AbstractDataDbService {
 						wordOdUsage.getModifiedBy(),
 						wordOdUsage.getModifiedOn())
 				.returning(WORD_OD_USAGE.ID)
+				.fetchOne()
+				.getId();
+	}
+
+	public Long createWordOdMorph(Long wordId, eki.ekilex.data.WordOdMorph wordOdMorph) {
+
+		return mainDb
+				.insertInto(
+						WORD_OD_MORPH,
+						WORD_OD_MORPH.WORD_ID,
+						WORD_OD_MORPH.VALUE,
+						WORD_OD_MORPH.VALUE_PRESE,
+						WORD_OD_MORPH.IS_PUBLIC,
+						WORD_OD_MORPH.CREATED_BY,
+						WORD_OD_MORPH.CREATED_ON,
+						WORD_OD_MORPH.MODIFIED_BY,
+						WORD_OD_MORPH.MODIFIED_ON)
+				.values(
+						wordId,
+						wordOdMorph.getValue(),
+						wordOdMorph.getValuePrese(),
+						wordOdMorph.isPublic(),
+						wordOdMorph.getCreatedBy(),
+						wordOdMorph.getCreatedOn(),
+						wordOdMorph.getModifiedBy(),
+						wordOdMorph.getModifiedOn())
+				.returning(WORD_OD_MORPH.ID)
 				.fetchOne()
 				.getId();
 	}
@@ -1849,6 +1889,13 @@ public class CudDbService extends AbstractDataDbService {
 		mainDb
 				.delete(WORD_OD_USAGE)
 				.where(WORD_OD_USAGE.ID.eq(wordOdUsageId))
+				.execute();
+	}
+
+	public void deleteWordOdMorph(Long wordOdMorphId) {
+		mainDb
+				.delete(WORD_OD_MORPH)
+				.where(WORD_OD_MORPH.ID.eq(wordOdMorphId))
 				.execute();
 	}
 

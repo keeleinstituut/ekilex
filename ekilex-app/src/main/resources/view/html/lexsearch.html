@@ -154,6 +154,7 @@
             <div class="col-4 border-left border-light h-100 overflow-auto" id="toolsColumn">
               <div class="resize-area" data-plugin="panelResize"></div>
               <div th:replace="lexdialog :: add_group_word_relation_dlg"></div>
+              <div th:replace="lexdialog :: add_word_od_morph_dlg"></div>
               <div th:replace="lexdialog :: add_word_od_recommendation_dlg"></div>
               <div th:replace="lexdialog :: add_word_od_usage_dlg"></div>
               <div th:replace="lexdialog :: add_word_forum_dlg"></div>
@@ -213,6 +214,53 @@
                                 <button type="button" class="btn badge badge-warning"
                                         th:data-id="${wordOdRecommendation.id}"
                                         data-op-code="word_od_recommendation"
+                                        data-toggle="delete-confirm"
+                                        data-placement="right"
+                                        sec:authorize="#vars.details.word.crudGrant">
+                                  <i class="fa fa-remove" aria-hidden="true"></i>
+                                </button>
+                              </div>
+                            </div>
+                          </div>
+                        </th:block>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="ekiAccordion__instance">
+                    <div class="ekiAccordion__title">
+                      <span class="badge badge-data-exists" th:if="${details.word.wordOdMorph}">•</span>
+                      <span th:text="#{lex.word.od.morph}">ÕS lühimorfoloogia</span>
+                      <button type="button" class="ekiAccordion__add"
+                              th:title="#{common.add.new}" data-toggle="modal"
+                              th:data-target="${'#addWordOdMorphDlg_' + wordId}"
+                              th:unless="${details.word.wordOdMorph}"
+                              sec:authorize="#vars.details.word.crudGrant">
+                        <i class="fa fa-plus" aria-hidden="true"></i>
+                      </button>
+                    </div>
+                    <div class="ekiAccordion__content">
+                      <div th:if="${details.word.wordOdMorph == null}" th:text="#{common.no.content}">
+                        Sisu puudub...
+                      </div>
+                      <div th:if="${details.word.wordOdMorph}">
+                        <th:block th:with="wordOdMorph=${details.word.wordOdMorph}">
+                          <div th:replace="lexdialog :: edit_word_od_morph"></div>
+                          <div class="col hidden-buttons pr-5">
+                            <div class="action-buttons-anchor">
+                              <div th:utext="${wordOdMorph.valuePrese}"></div>
+                              <span class="ctxt" th:text="'[' + ${wordOdMorph.modifiedBy} + ']'" th:if="${wordOdMorph.modifiedBy != null}"></span>
+                              <span class="ctxt" th:text="'(' + ${#temporals.format(wordOdMorph.modifiedOn, 'dd.MM.yyyy')} + ')'" th:if="${wordOdMorph.modifiedOn != null}"></span>
+                              <div class="action-buttons-2">
+                                <button type="button" class="btn badge badge-primary"
+                                        th:title="#{common.edit}"
+                                        data-toggle="modal"
+                                        th:data-target="${'#editWordOdMorphDlg_' + wordOdMorph.id}"
+                                        sec:authorize="#vars.details.word.crudGrant">
+                                  <i class="fa fa-edit" aria-hidden="true"></i>
+                                </button>
+                                <button type="button" class="btn badge badge-warning"
+                                        th:data-id="${wordOdMorph.id}"
+                                        data-op-code="word_od_morph"
                                         data-toggle="delete-confirm"
                                         data-placement="right"
                                         sec:authorize="#vars.details.word.crudGrant">

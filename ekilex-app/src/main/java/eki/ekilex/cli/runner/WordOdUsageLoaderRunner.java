@@ -1,58 +1,39 @@
 package eki.ekilex.cli.runner;
 
-import java.io.FileInputStream;
-import java.io.InputStream;
-import java.nio.charset.StandardCharsets;
-import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.transaction.Transactional;
 
-import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import eki.common.constant.GlobalConstant;
-import eki.common.constant.LoaderConstant;
-import eki.common.service.TextDecorationService;
-import eki.ekilex.constant.SystemConstant;
 import eki.ekilex.data.WordOdUsage;
-import eki.ekilex.service.db.CudDbService;
-import eki.ekilex.service.db.MigrationDbService;
-import eki.ekilex.service.util.ValueUtil;
 
 @Component
-public class WordOdUsageLoaderRunner implements GlobalConstant, LoaderConstant, SystemConstant {
+public class WordOdUsageLoaderRunner extends AbstractLoaderRunner {
 
 	private static Logger logger = LoggerFactory.getLogger(WordOdUsageLoaderRunner.class);
-
-	private static final String USER_NAME_LOADER = "Laadur";
-
-	@Autowired
-	private TextDecorationService textDecorationService;
-
-	@Autowired
-	private ValueUtil valueUtil;
-
-	@Autowired
-	private CudDbService cudDbService;
-
-	@Autowired
-	private MigrationDbService migrationDbService;
 
 	@Transactional(rollbackOn = Exception.class)
 	public void execute(String usageTsvFilePath) throws Exception {
 
 		logger.info("Starting loading...");
 
+		createSecurityContext();
+
 		List<String> usageTsvLines = readFileLines(usageTsvFilePath);
 
 		int createCount = 0;
 		int existCount = 0;
-		int missingWordCount = 0;
+		List<Long> missingWordIds = new ArrayList<>();
+
+		int lineCounter = 0;
+		int lineCount = usageTsvLines.size();
+		int progressIndicator = lineCount / Math.min(lineCount, 100);
 
 		for (String usageTsvLine : usageTsvLines) {
 
@@ -64,50 +45,42 @@ public class WordOdUsageLoaderRunner implements GlobalConstant, LoaderConstant, 
 			Long wordId = Long.valueOf(StringUtils.trim(usageTsvCells[0]));
 			String usageValuePrese = StringUtils.trim(usageTsvCells[1]);
 			usageValuePrese = valueUtil.trimAndCleanAndRemoveHtmlAndLimit(usageValuePrese);
-			String usageValue = textDecorationService.removeEkiElementMarkup(usageValuePrese);
 
 			boolean wordExists = migrationDbService.wordExists(wordId);
 
 			if (wordExists) {
 
-				boolean wordOdUsageExists = migrationDbService.wordOdUsageExists(wordId, usageValue);
+				WordOdUsage wordOdUsage = new WordOdUsage();
+				wordOdUsage.setWordId(wordId);
+				wordOdUsage.setValuePrese(usageValuePrese);
+				wordOdUsage.setPublic(true);
+
+				setValueAndPrese(wordOdUsage);
+				setCreateUpdate(wordOdUsage);
+
+				boolean wordOdUsageExists = migrationDbService.wordOdUsageExists(wordId, wordOdUsage.getValue());
 				if (wordOdUsageExists) {
 					existCount++;
 				} else {
-
-					LocalDateTime now = LocalDateTime.now();
-
-					WordOdUsage wordOdUsage = new WordOdUsage();
-					wordOdUsage.setWordId(wordId);
-					wordOdUsage.setValue(usageValue);
-					wordOdUsage.setValuePrese(usageValuePrese);
-					wordOdUsage.setPublic(true);
-					wordOdUsage.setCreatedBy(USER_NAME_LOADER);
-					wordOdUsage.setCreatedOn(now);
-					wordOdUsage.setModifiedBy(USER_NAME_LOADER);
-					wordOdUsage.setModifiedOn(now);
-
 					cudDbService.createWordOdUsage(wordId, wordOdUsage);
-
 					createCount++;
 				}
 
 			} else {
 				logger.warn("Missing word id: {}", wordId);
-				missingWordCount++;
+				missingWordIds.add(wordId);
+			}
+
+			lineCounter++;
+			if (lineCounter % progressIndicator == 0) {
+				int progressPercent = lineCounter / progressIndicator;
+				logger.info("{}% - {} lines processed", progressPercent, lineCounter);
 			}
 		}
 
-		logger.info("Completed load. Out of {} lines, usage create count: {}, usage exist count: {}, missing word count: {}",
-				usageTsvLines.size(), createCount, existCount, missingWordCount);
-	}
+		missingWordIds = missingWordIds.stream().distinct().collect(Collectors.toList());
 
-	private List<String> readFileLines(String filePath) throws Exception {
-		InputStream fileInputStream = new FileInputStream(filePath);
-		try {
-			return IOUtils.readLines(fileInputStream, StandardCharsets.UTF_8);
-		} finally {
-			fileInputStream.close();
-		}
+		logger.info("Completed load. Out of {} lines, usage create count: {}, usage exist count: {}, missing word count: {}",
+				usageTsvLines.size(), createCount, existCount, missingWordIds.size());
 	}
 }
