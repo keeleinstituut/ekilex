@@ -1984,7 +1984,16 @@
   <th:block th:fragment="colloc_row">
     <tr>
       <td class="col-3">
-        <span th:text="${colloc.wordValue}"></span>
+        <button
+          type="button"
+          class="btn btn-link p-0"
+          th:data-id="${colloc.wordId}"
+          name="details-btn"
+          data-plugin="contextmenu, loadDetailsPlugin"
+          data-contextmenu:compare="Ava uues paneelis"
+          data-behaviour="replace">
+          <span th:text="${colloc.wordValue}"></span>
+        </button>
       </td>
       <td class="col-2">
         <th:block th:each="collocMember : ${colloc.members}">
