@@ -48,8 +48,8 @@ public class EkiUserAuthenticationManager implements AuthenticationManager {
 			throw new BadCredentialsException("User not activated");
 		}
 		String existingPassword = user.getPassword();
-		boolean isPasswordMatch = passwordEncoder.matches(providedPassword, existingPassword);
-		if (isPasswordMatch) {
+		boolean isPassMatch = passwordEncoder.matches(providedPassword, existingPassword);
+		if (isPassMatch) {
 			logger.info("Successful authentication for user: \"{}\"", providedEmail);
 			Collection<? extends GrantedAuthority> authorities = CollectionUtils.emptyCollection();
 			UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(user, existingPassword, authorities);

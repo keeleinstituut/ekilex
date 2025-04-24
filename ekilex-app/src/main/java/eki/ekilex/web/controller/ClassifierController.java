@@ -15,8 +15,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.SessionAttributes;
 
-import eki.common.constant.ClassifierName;
 import eki.common.constant.ActivityOwner;
+import eki.common.constant.ClassifierName;
 import eki.ekilex.constant.WebConstant;
 import eki.ekilex.data.Classifier;
 import eki.ekilex.data.ClassifierFull;
@@ -24,7 +24,6 @@ import eki.ekilex.service.ClassifierService;
 
 @ConditionalOnWebApplication
 @Controller
-@PreAuthorize("principal.admin")
 @SessionAttributes(WebConstant.SESSION_BEAN)
 public class ClassifierController extends AbstractPrivatePageController {
 
@@ -60,6 +59,7 @@ public class ClassifierController extends AbstractPrivatePageController {
 		return CLASSIFIERS_PAGE;
 	}
 
+	@PreAuthorize("principal.admin")
 	@PostMapping(CREATE_CLASSIFIER_URI)
 	@ResponseBody
 	public String createClassifier(@RequestBody ClassifierFull classifier) {
@@ -71,6 +71,7 @@ public class ClassifierController extends AbstractPrivatePageController {
 		return RESPONSE_FAIL;
 	}
 
+	@PreAuthorize("principal.admin")
 	@PostMapping(UPDATE_CLASSIFIER_URI)
 	@ResponseBody
 	public String updateClassifier(@RequestBody ClassifierFull classifier) {
@@ -79,6 +80,7 @@ public class ClassifierController extends AbstractPrivatePageController {
 		return RESPONSE_OK_VER1;
 	}
 
+	@PreAuthorize("principal.admin")
 	@PostMapping(DELETE_CLASSIFIER_URI)
 	@ResponseBody
 	public String deleteClassifier(@RequestBody ClassifierFull classifier) {
@@ -92,7 +94,9 @@ public class ClassifierController extends AbstractPrivatePageController {
 
 	@GetMapping(OPPOSITE_RELATIONS_URI)
 	@ResponseBody
-	public List<Classifier> getOppositeRelations(@RequestParam("entity") ActivityOwner owner, @RequestParam("relationType") String relationTypeCode) {
+	public List<Classifier> getOppositeRelations(
+			@RequestParam("entity") ActivityOwner owner,
+			@RequestParam("relationType") String relationTypeCode) {
 		return lookupService.getOppositeRelations(owner, relationTypeCode);
 	}
 }
