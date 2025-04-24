@@ -30,6 +30,7 @@ public class ClassifierController extends AbstractPrivatePageController {
 	@Autowired
 	private ClassifierService classifierService;
 
+	@PreAuthorize("principal.admin")
 	@GetMapping({
 			CLASSIFIERS_URI,
 			CLASSIFIERS_URI + "/{classifierName}",
