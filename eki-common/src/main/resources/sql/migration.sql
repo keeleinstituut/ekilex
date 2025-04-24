@@ -41,8 +41,10 @@ create index word_od_morph_value_lower_idx on word_od_morph(lower(value));
 
 insert into word_rel_type (code, datasets) values ('ls-esiosaga', '{}');
 insert into word_rel_type (code, datasets) values ('ls-järelosaga', '{}');
-insert into word_rel_type_label (code, value, lang, type) values ('ls-esiosaga', 'liitsõna esiosaga', 'est', 'descrip');
-insert into word_rel_type_label (code, value, lang, type) values ('ls-järelosaga', 'liitsõna järelosaga', 'est', 'descrip');
+insert into word_rel_type_label (code, value, lang, type) values ('ls-esiosaga', 'Liitsõna esiosaga', 'est', 'descrip');
+insert into word_rel_type_label (code, value, lang, type) values ('ls-järelosaga', 'Liitsõna järelosaga', 'est', 'descrip');
+insert into word_rel_type_label (code, value, lang, type) values ('ls-esiosaga', 'Liitsõna esiosaga', 'est', 'wordweb');
+insert into word_rel_type_label (code, value, lang, type) values ('ls-järelosaga', 'Liitsõna järelosaga', 'est', 'wordweb');
 insert into word_rel_mapping (code1, code2) values ('ls-esiosa', 'ls-esiosaga');
 insert into word_rel_mapping (code1, code2) values ('ls-järelosa', 'ls-järelosaga');
 

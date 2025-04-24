@@ -82,7 +82,7 @@ public class OdCompWordLoaderRunner extends AbstractLoaderRunner {
 			lineCounter++;
 			if (lineCounter % progressIndicator == 0) {
 				int progressPercent = lineCounter / progressIndicator;
-				logger.info("{}% - {} lines iterated", progressPercent, lineCounter);
+				logger.info("{}% - {} lines processed", progressPercent, lineCounter);
 			}
 		}
 
