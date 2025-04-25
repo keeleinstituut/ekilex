@@ -15572,6 +15572,14 @@ span.material-symbols-outlined--small {
     margin: 0 auto;
   }
 }
+@media (max-width: 1199.98px) {
+  .header__content > *:not(.navigation__dropdown) {
+    display: none;
+  }
+  .header__content .navigation__dropdown {
+    margin-left: auto;
+  }
+}
 .header__content .dropdown {
   padding: 0;
 }
@@ -16347,6 +16355,7 @@ span.material-symbols-outlined--small {
   color: var(--color-dark-blue);
   padding: 36px 8vw;
   margin-top: auto;
+  font-size: 0.875rem;
 }
 .footer__grid {
   margin: 0 auto;
@@ -16381,6 +16390,7 @@ span.material-symbols-outlined--small {
 }
 .footer__column-header {
   height: 30px;
+  font-size: 1.25rem;
 }
 .footer__logo {
   margin-left: -4px;

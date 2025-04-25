@@ -3,6 +3,7 @@
   color: var(--color-dark-blue);
   padding: 36px 8vw;
   margin-top: auto;
+  font-size: .875rem;
 
   &__grid {
     margin: 0 auto;
@@ -38,6 +39,7 @@
 
   &__column-header {
     height: 30px;
+    font-size: 1.25rem;
   }
 
   &__logo {

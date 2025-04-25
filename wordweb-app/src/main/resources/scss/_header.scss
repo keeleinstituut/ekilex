@@ -29,6 +29,16 @@
       margin: 0 auto;
     }
 
+    @include media-breakpoint-down(lg) {
+      & > *:not(.navigation__dropdown) {
+        display: none;
+      }
+
+      & .navigation__dropdown {
+        margin-left: auto;
+      }
+    }
+
     // Lang dropdown
     & .dropdown {
       padding: 0;
