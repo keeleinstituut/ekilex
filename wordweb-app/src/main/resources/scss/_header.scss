@@ -16,10 +16,12 @@
 }
 
 .header {
-  background-color: var(--color-white);
-  border-bottom: 1px solid var(--color-lighter-gray);
   // Smaller padding on left side because the logo has extra space on its left
   padding: 16px 16px 16px 4px;
+  @include media-breakpoint-up(lg) {
+    background-color: var(--color-white);
+    border-bottom: 1px solid var(--color-lighter-gray);
+  }
   &__content {
     display: flex;
     align-items: center;
@@ -105,9 +107,13 @@
     padding: 0;
     border: none;
     color: var(--color-dark-blue);
-    background-color: var(--color-elephant-gray);
+    background-color: transparent;
     border-radius: 100px;
     --icon-size: 1.5rem;
+    
+    @include media-breakpoint-up(lg) {
+      background-color: var(--color-elephant-gray);
+    }
   }
 
   &__trigger-icon {
