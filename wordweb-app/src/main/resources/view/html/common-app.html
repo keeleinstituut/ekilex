@@ -257,7 +257,7 @@
                 <div class="feedback-modal__group">
                   <label for="descriptionInput2" class="col-form-label" th:text="#{label.feedback.description}">Probleemi lühikirjeldus</label>
                   <textarea id="descriptionInput2" class="form-control" name="description" required autocomplete="off" th:placeholder="#{label.feedback.placeholder.description}"></textarea>
-                  <div class="invalid-feedback" th:text="#{label.feedback.required.field}">Väli on kohustuslik</div>
+                  <div class="invalid-feedback" th:text="#{label.feedback.required.description}">Väli on kohustuslik</div>
                 </div>
                 <div class="feedback-modal__want-response">
                   <h2 th:text="#{label.feedback.message.heading}">Kui soovid vastust oma probleemile</h2>
@@ -265,6 +265,24 @@
                   <div class="feedback-modal__group">
                     <label for="feedback-modal-email" class="col-form-label" th:text="#{label.feedback.email}">E-post</label>
                     <input id="feedback-modal-email" type="email" class="form-control form-email" name="senderEmail" autocomplete="email" th:placeholder="#{label.feedback.placeholder.email}">
+                  </div>
+                  <div class="feedback-modal__group d-none" id="feedback-modal-checkbox-group">
+                    <div class="custom-control custom-checkbox">
+                      <input type="checkbox" class="custom-control-input" id="feedback-email-checkbox">
+                      <label class="custom-control-label" for="feedback-email-checkbox">
+                        <span th:text="#{label.feedback.iagree}">Nõustun</span>
+                        <a
+                          target="_blank"
+                          rel="noreferrer"
+                          th:href="@{/regulations}"
+                          data-item-name="regulations"
+                          th:text="#{label.feedback.withterms}">
+                          kasutus- ja privaatsustingimustega
+                        </a>
+                        <span>&ast;</span>
+                      </label>
+                      <div class="invalid-feedback" th:text="#{label.feedback.required.field}">Väli on kohustuslik</div>
+                    </div>
                   </div>
                   <button id="feedback-submit" type="button" class="feedback-modal__button" name="feedbackSendBtn" th:text="#{button.send}">Saada</button>
                 </div>

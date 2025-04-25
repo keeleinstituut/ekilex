@@ -51,7 +51,7 @@
   --color-gray-500: #8996a4;
   --color-gray-900: #3f3f3f;
   --color-gray-1000: #0e1013;
-  --color-lighter-gray: #C3CCD6;
+  --color-old-lighter-gray: #C3CCD6;
   --color-light-gray: #C4D2DD;
   --color-bluish-gray: #E4ECEF;
   --color-bluish-but-not-exactly-gray: #EAEEF5;
@@ -16346,6 +16346,7 @@ span.material-symbols-outlined--small {
   background-color: var(--color-light-gray);
   color: var(--color-dark-blue);
   padding: 36px 8vw;
+  margin-top: auto;
 }
 .footer__grid {
   margin: 0 auto;
@@ -16735,7 +16736,7 @@ span.material-symbols-outlined--small {
   --color-gray-500: #8996a4;
   --color-gray-900: #3f3f3f;
   --color-gray-1000: #0e1013;
-  --color-lighter-gray: #C3CCD6;
+  --color-old-lighter-gray: #C3CCD6;
   --color-light-gray: #C4D2DD;
   --color-bluish-gray: #E4ECEF;
   --color-bluish-but-not-exactly-gray: #EAEEF5;
@@ -17170,9 +17171,6 @@ span.material-symbols-outlined--small {
 .feedback-modal__close:hover {
   border-color: black;
 }
-.feedback-modal__required-text {
-  color: var(--color-orange);
-}
 .feedback-modal__want-response {
   display: flex;
   flex-direction: column;
@@ -17219,10 +17217,7 @@ span.material-symbols-outlined--small {
   outline-offset: 1px;
 }
 .feedback-modal__group {
-  margin-bottom: var(--feedback-modal-group-margin-bottom, 16px);
-}
-.feedback-modal__group--last {
-  margin-bottom: 28px;
+  margin-bottom: var(--feedback-modal-group-margin-bottom, 24px);
 }
 .feedback-modal .modal-body {
   padding: 4px 28px 24px;
@@ -17232,6 +17227,7 @@ span.material-symbols-outlined--small {
   border-radius: 8px;
   border-color: var(--color-dark-blue-75);
   height: 40px;
+  color: var(--color-dark-blue);
 }
 .feedback-modal textarea.form-control {
   min-height: 100px;
@@ -17258,6 +17254,25 @@ span.material-symbols-outlined--small {
   border: none;
   padding: 0;
   margin: 0;
+}
+.feedback-modal .custom-checkbox {
+  padding-left: 36px;
+  font-weight: 500;
+}
+.feedback-modal .custom-checkbox .custom-control-label::before {
+  width: 18px;
+  height: 18px;
+  border: 2px solid var(--color-dark-blue);
+  background-color: var(--color-light-blue);
+}
+.feedback-modal .custom-checkbox .custom-control-label::after {
+  width: 28px;
+  height: 28px;
+  top: -1px;
+  left: -29px;
+}
+.feedback-modal .custom-checkbox .custom-control-input:checked ~ .custom-control-label::after {
+  background-image: url(data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2216%22%20height%3D%2216%22%20viewBox%3D%220%200%208%208%22%20fill%3D%22red%22%20style%3D%22%26%2310%3B%20%20%20%20background-color%3A%20%23173148%3B%26%2310%3B%22%3E%3Cpath%20fill%3D%22%23D7E5F2%22%20d%3D%22M6.564.75l-3.59%203.612-1.538-1.55L0%204.26l2.974%202.99L8%202.193z%22%2F%3E%3C%2Fsvg%3E);
 }
 .collapse-text {
   overflow: hidden;
