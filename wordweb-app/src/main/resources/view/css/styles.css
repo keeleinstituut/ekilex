@@ -15577,10 +15577,10 @@ span.material-symbols-outlined--small {
   }
 }
 @media (max-width: 1199.98px) {
-  .header__content > *:not(.navigation__dropdown) {
+  .header__content > *:not(.navigation__dropdown, .lang-btn) {
     display: none;
   }
-  .header__content .navigation__dropdown {
+  .header__content .lang-btn {
     margin-left: auto;
   }
 }

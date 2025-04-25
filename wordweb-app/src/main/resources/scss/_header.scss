@@ -32,11 +32,11 @@
     }
 
     @include media-breakpoint-down(lg) {
-      & > *:not(.navigation__dropdown) {
+      & > *:not(.navigation__dropdown,.lang-btn) {
         display: none;
       }
 
-      & .navigation__dropdown {
+      & .lang-btn {
         margin-left: auto;
       }
     }
