@@ -17,12 +17,12 @@
           <input type="hidden" name="selectedWordLang" />
         </div>
         <div class="main-search-btns">
-          <button th:aria-label="#{aria.search.clear}" id="clear-search-btn" type="button" class="btn btn-icon clear-btn">
-            <span class="fas fa-times"></span>
+          <button th:aria-label="#{aria.search.clear}" id="clear-search-btn" type="button" class="clear-btn">
+            <span class="material-symbols-outlined" aria-hidden="true">cancel</span>
           </button>
           <div class="keyboard-search">
-            <button id="keyboard-search-btn" type="button" class="btn btn-icon keyboard-btn m-0" data-toggle="button" aria-pressed="false" autocomplete="off">
-              <span class="fas fa-keyboard"></span>
+            <button id="keyboard-search-btn" type="button" class="keyboard-btn" data-toggle="button" aria-pressed="false" autocomplete="off">
+              <span class="material-symbols-outlined" aria-hidden="true">keyboard</span>
             </button>
             <div id="keyboard-lang-search" class="dropdown dropdown-keyboard-lang" style="display: none;">
               <a aria-expanded="false" aria-haspopup="true" role="button" data-toggle="dropdown" class="dropdown-toggle" href="#">
@@ -38,12 +38,8 @@
               </div>
             </div>
           </div>
-          <button type="button" id="start-rec-btn" class="btn btn-icon speak-btn" th:title="#{button.label.start.rec}">
-            <span class="fas fa-microphone"></span>
-          </button>
-          <button type="button" th:aria-label="#{aria.search.stoprecord}" id="stop-rec-btn" class="btn btn-icon" hidden th:text="#{button.label.stop.rec}">Finish</button>
-          <button th:aria-label="#{aria.search.search}" id="search-btn" type="submit" class="btn btn-success search-btn">
-            <span class="fas fa-search"></span>
+          <button th:aria-label="#{aria.search.search}" id="search-btn" type="submit" class="search-btn">
+            <span class="material-symbols-outlined" aria-hidden="true">search</span>
           </button>
         </div>
       </form>
