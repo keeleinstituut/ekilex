@@ -128,11 +128,25 @@
   flex-flow: column;
   min-height: 100%;
 
-  .search-results-header,
   .content-panel {
     width: 100%;
   }
 
+}
+
+.search-results-header {
+  padding: 12px 15px;
+  margin: 0 -15px 20px;
+  border-bottom: 1px solid var(--color-old-lighter-gray);
+
+  &>div {
+    margin: 0 auto;
+
+    @include media-breakpoint-up(xl) {
+      // Content div
+      max-width: 80vw;
+    }
+  }
 }
 
 
@@ -143,6 +157,7 @@
     color: var(--color-dark-blue);
     margin: 0 8px 0 0;
   }
+
   &__pre-block-title {
     font-size: 1.25rem;
     font-weight: 700;
@@ -181,6 +196,7 @@
     box-shadow: 0px 2px 8px 0px #0000001A;
     margin-top: 16px;
     overflow: hidden;
+
     @layer base {
       & a {
         font-size: .875rem;
@@ -190,7 +206,7 @@
     &--unified {
       color: var(--color-dark-blue);
       line-height: 20px;
-      
+
       & a {
         color: var(--color-blue-300);
         line-height: inherit;
@@ -262,11 +278,12 @@
 }
 
 .sticky-scroll-panel {
-    @include media-breakpoint-down(sm) {
+  @include media-breakpoint-down(sm) {
     position: sticky;
     background-color: var(--color-gray-010);
     z-index: 2;
-    top: 64px;
+    // Offset by header height
+    top: 81px;
     margin: 0 -15px;
     padding: 1px 15px 14px;
 
@@ -579,18 +596,18 @@
   }
 
   &__toggle {
-    background: white;
-    border-radius: 8px;
     padding: 4px 8px;
     display: flex;
     align-items: center;
     justify-content: space-between;
-    gap: 4px;
+    gap: 8px;
     height: 28px;
-    border: 1px solid var(--color-dark-blue);
+    border: none;
+    color: var(--color-dark-blue);
 
     &::after {
       margin-left: auto;
+      font-size: 18px;
     }
 
     &-count {
@@ -693,7 +710,7 @@
   }
 }
 
-.meaning > .lang-code__border:first-of-type {
+.meaning>.lang-code__border:first-of-type {
   border-top: 0;
   padding-top: 0;
 }
@@ -705,12 +722,14 @@
   gap: 8px;
 }
 
-span.material-symbols-outlined  {
+span.material-symbols-outlined {
   font-size: var(--icon-size, var(--fallback-icon-size, inherit));
   font-variation-settings: var(--icon-variation-settings);
+
   &--default-size {
     --fallback-icon-size: 1.5rem;
   }
+
   &--small {
     --fallback-icon-size: 1.3125rem;
   }
@@ -746,6 +765,7 @@ span.material-symbols-outlined  {
   gap: 4px;
   font-size: .875rem;
   color: var(--color-dark-blue);
+
   & i {
     color: var(--color-icon-gray);
     font-size: 1rem;

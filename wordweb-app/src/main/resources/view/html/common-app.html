@@ -86,7 +86,7 @@
   <!-- menu -->
   <th:block th:fragment="header">
     <th:block th:replace="common-app :: update-msg"></th:block>
-    <div class="header">
+    <div class="header" th:classappend="${withSearch == false ? 'header--simple' : ''}">
       <div class="header__content">
         <a
           th:href="${pageContext == 'simpleSearch'} ? @{/lite} : @{/}"
