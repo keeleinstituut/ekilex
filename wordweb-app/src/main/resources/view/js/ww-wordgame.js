@@ -8,7 +8,7 @@ class WordGame {
 			images: `${viewPath}/images`,
 		}
 
-		this.languages = ['et', 'ru', 'uk', 'en'];
+		this.languages = ['et', 'ru', 'uk', 'en', 'de'];
 		this.languagesWithSound = ['et'];
 		this.languageNames = {};
 		this.images = []
