@@ -42,7 +42,6 @@ class Feedback {
     ["checkboxGroup", "feedback-modal-checkbox-group"],
     ["checkbox", "feedback-email-checkbox"],
     ["submitButton", "feedback-submit"],
-    ["repeatButton", "feedback-repeat"],
     ["emailInput", "feedback-modal-email"],
     ["data", "feedback-data"],
     ["response", "feedback-response"],
@@ -93,10 +92,6 @@ class Feedback {
       "click",
       this.handleSubmit.bind(this)
     );
-    this.modalElements.repeatButton.addEventListener("click", () => {
-      this.handleModalClose();
-      this.handleModalOpen(true);
-    });
   }
 
   static handleEmailInput(event) {
@@ -137,7 +132,6 @@ class Feedback {
     this.modalElements.successTitle.classList.add("d-none");
     this.modalElements.title.classList.remove("d-none");
     this.modalElements.errorMessage.classList.add("d-none");
-		this.modalElements.repeatButton.classList.add("d-none");
   }
 
   static handleSubmit(event) {
@@ -169,7 +163,6 @@ class Feedback {
           this.modalElements.successMessage.classList.remove("d-none");
           this.modalElements.title.classList.add("d-none");
           this.modalElements.successTitle.classList.remove("d-none");
-					this.modalElements.repeatButton.classList.remove("d-none");
         } else {
           this.modalElements.errorMessage.classList.remove("d-none");
         }

@@ -292,10 +292,7 @@
           <div id="feedback-response" class="modal-body d-none">
             <div class="d-flex flex-column">
               <div id="feedback-error-message" class="alert alert-danger d-none" th:text="#{label.feedback.technical.error}">Tagasiside saatmine ebaõnnestus, proovige hiljem uuesti.</div>
-              <div class="feedback-modal__success">
-                <p id="feedback-success-message" class="m-0 d-none" th:text="#{label.feedback.success.prefix}">Aitäh, saime tagasiside kätte</p>
-                <button class="feedback-modal__repeat d-none" id="feedback-repeat" type="button" th:text="#{label.feedback.success.suffix}">Saada uus tagasiside</button>
-              </div>
+              <p id="feedback-success-message" class="m-0 d-none" th:text="#{label.feedback.success}">Aitäh, saime tagasiside kätte</p>
               <button type="button" class="feedback-modal__button" data-dismiss="modal" th:text="#{menu.close}">Sulge</button>
             </div>
           </div>
