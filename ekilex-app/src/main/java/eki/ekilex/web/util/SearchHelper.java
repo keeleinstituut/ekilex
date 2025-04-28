@@ -19,7 +19,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.stereotype.Component;
-import org.springframework.web.util.UriUtils;
 
 import eki.common.constant.GlobalConstant;
 import eki.ekilex.constant.SearchEntity;
@@ -115,7 +114,7 @@ public class SearchHelper implements WebConstant, GlobalConstant {
 			List<String> validDatasetSelection = new ArrayList<>(CollectionUtils.intersection(selectedDatasets, userVisibleDatasets));
 			Collection<String> datasetComparison = CollectionUtils.disjunction(validDatasetSelection, userVisibleDatasets);
 			if (CollectionUtils.isNotEmpty(validDatasetSelection) && CollectionUtils.isNotEmpty(datasetComparison)) {
-				List<String> encodedDatasets = validDatasetSelection.stream().map(dataset -> encode(dataset)).collect(Collectors.toList());
+				List<String> encodedDatasets = validDatasetSelection.stream().map(dataset -> valueUtil.encode(dataset)).collect(Collectors.toList());
 				String encodedDatasetsStr = StringUtils.join(encodedDatasets, DATASETS_SEPARATOR);
 				uriBuf.append(PATH_SEPARATOR);
 				uriBuf.append(DATASETS);
@@ -129,7 +128,7 @@ public class SearchHelper implements WebConstant, GlobalConstant {
 			String critValue = new String(simpleSearchFilter);
 			critValue = StringUtils.trim(critValue);
 			critValue = valueUtil.unifyToApostrophe(critValue);
-			critValue = encode(critValue);
+			critValue = valueUtil.encode(critValue);
 			uriBuf.append(PATH_SEPARATOR);
 			uriBuf.append(SIMPLE_SEARCH_FILTER);
 			uriBuf.append(PATH_SEPARATOR);
@@ -170,8 +169,8 @@ public class SearchHelper implements WebConstant, GlobalConstant {
 								if (StringUtils.isEmpty(origin)) {
 									origin = EMPTY_VALUE;
 								}
-								origin = encode(origin);
-								String code = encode(classif.getCode());
+								origin = valueUtil.encode(origin);
+								String code = valueUtil.encode(classif.getCode());
 								uriBuf.append(PATH_SEPARATOR);
 								uriBuf.append(CRITERION_CLASSIFIER);
 								uriBuf.append(PATH_SEPARATOR);
@@ -186,7 +185,7 @@ public class SearchHelper implements WebConstant, GlobalConstant {
 								if (StringUtils.contains(critValue, TRUNCATED_SYM)) {
 									critValue = critValue + CRITERION_VAL_ANTI_TRUNC_MASK;
 								}
-								critValue = encode(critValue);
+								critValue = valueUtil.encode(critValue);
 								uriBuf.append(PATH_SEPARATOR);
 								uriBuf.append(CRITERION_VALUE);
 								uriBuf.append(PATH_SEPARATOR);
@@ -277,12 +276,12 @@ public class SearchHelper implements WebConstant, GlobalConstant {
 				resultLang = uriParts[uriPartIndex + 1];
 			} else if (StringUtils.equals(DATASETS, uriPart)) {
 				String selectedDatasetsStr = uriParts[uriPartIndex + 1];
-				selectedDatasetsStr = decode(selectedDatasetsStr);
+				selectedDatasetsStr = valueUtil.decode(selectedDatasetsStr);
 				selectedDatasetsStr = StringUtils.remove(selectedDatasetsStr, ' ');
 				selectedDatasets = Arrays.asList(StringUtils.split(selectedDatasetsStr, DATASETS_SEPARATOR));
 			} else if (StringUtils.equals(SIMPLE_SEARCH_FILTER, uriPart)) {
 				simpleSearchFilter = uriParts[uriPartIndex + 1];
-				simpleSearchFilter = decode(simpleSearchFilter);
+				simpleSearchFilter = valueUtil.decode(simpleSearchFilter);
 			} else if (StringUtils.equals(DETAIL_SEARCH_FILTER, uriPart)) {
 				detailSearchFilter = new SearchFilter();
 				detailSearchFilter.setCriteriaGroups(new ArrayList<>());
@@ -325,7 +324,7 @@ public class SearchHelper implements WebConstant, GlobalConstant {
 				boolean isNot = false;
 				if (StringUtils.equals(CRITERION_VALUE, searchValueType)) {
 					String searchValueStr = uriParts[uriPartIndex + 4];
-					searchValueStr = decode(searchValueStr);
+					searchValueStr = valueUtil.decode(searchValueStr);
 					searchValueStr = StringUtils.stripEnd(searchValueStr, CRITERION_VAL_ANTI_TRUNC_MASK);
 					searchValueStr = valueUtil.trimAndCleanAndRemoveHtmlAndLimit(searchValueStr);
 					searchValueStr = valueUtil.unifyToApostrophe(searchValueStr);
@@ -346,8 +345,8 @@ public class SearchHelper implements WebConstant, GlobalConstant {
 						break;
 					}
 					String classifName = uriParts[uriPartIndex + 4];
-					String classifOrigin = decode(uriParts[uriPartIndex + 5]);
-					String classifCode = decode(uriParts[uriPartIndex + 6]);
+					String classifOrigin = valueUtil.decode(uriParts[uriPartIndex + 5]);
+					String classifCode = valueUtil.decode(uriParts[uriPartIndex + 6]);
 					if (StringUtils.equals(EMPTY_VALUE, classifOrigin)) {
 						classifOrigin = null;
 					}
@@ -538,21 +537,5 @@ public class SearchHelper implements WebConstant, GlobalConstant {
 			}
 		}
 		return false;
-	}
-
-	private String encode(String value) {
-		value = StringUtils.replace(value, "/", ENCODE_SYM_SLASH);
-		value = StringUtils.replace(value, "\\", ENCODE_SYM_BACKSLASH);
-		value = StringUtils.replace(value, "%", ENCODE_SYM_PERCENT);
-		value = UriUtils.encode(value, UTF_8);
-		return value;
-	}
-
-	private String decode(String value) {
-		value = UriUtils.decode(value, UTF_8);
-		value = StringUtils.replace(value, ENCODE_SYM_SLASH, "/");
-		value = StringUtils.replace(value, ENCODE_SYM_BACKSLASH, "\\");
-		value = StringUtils.replace(value, ENCODE_SYM_PERCENT, "%");
-		return value;
 	}
 }

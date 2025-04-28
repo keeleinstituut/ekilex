@@ -4,13 +4,15 @@ import org.apache.commons.lang3.RegExUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.web.util.UriUtils;
 
+import eki.common.constant.GlobalConstant;
 import eki.common.service.TextDecorationService;
 import eki.ekilex.constant.SystemConstant;
 import eki.ekilex.data.WordLexemeMeaningDetails;
 
 @Component
-public class ValueUtil implements SystemConstant {
+public class ValueUtil implements SystemConstant, GlobalConstant {
 
 	@Autowired
 	private TextDecorationService textDecorationService;
@@ -78,5 +80,21 @@ public class ValueUtil implements SystemConstant {
 
 	public String unifyToApostrophe(String value) {
 		return textDecorationService.unifyToApostrophe(value);
+	}
+
+	public String encode(String value) {
+		value = StringUtils.replace(value, "/", ENCODE_SYM_SLASH);
+		value = StringUtils.replace(value, "\\", ENCODE_SYM_BACKSLASH);
+		value = StringUtils.replace(value, "%", ENCODE_SYM_PERCENT);
+		value = UriUtils.encode(value, UTF_8);
+		return value;
+	}
+
+	public String decode(String value) {
+		value = UriUtils.decode(value, UTF_8);
+		value = StringUtils.replace(value, ENCODE_SYM_SLASH, "/");
+		value = StringUtils.replace(value, ENCODE_SYM_BACKSLASH, "\\");
+		value = StringUtils.replace(value, ENCODE_SYM_PERCENT, "%");
+		return value;
 	}
 }
