@@ -39,8 +39,9 @@ class Feedback {
   static elementIds = [
     ["modal", "feedback-modal"],
     ["form", "feedback-form"],
+    ["checkboxGroup", "feedback-modal-checkbox-group"],
+    ["checkbox", "feedback-email-checkbox"],
     ["submitButton", "feedback-submit"],
-    ["repeatButton", "feedback-repeat"],
     ["emailInput", "feedback-modal-email"],
     ["data", "feedback-data"],
     ["response", "feedback-response"],
@@ -74,6 +75,10 @@ class Feedback {
   }
 
   static initListeners() {
+    this.modalElements.emailInput.addEventListener(
+      "keyup",
+      this.handleEmailInput.bind(this)
+    );
     $(this.modalElements.modal).on(
       "show.bs.modal",
       this.handleModalOpen.bind(this)
@@ -87,10 +92,17 @@ class Feedback {
       "click",
       this.handleSubmit.bind(this)
     );
-    this.modalElements.repeatButton.addEventListener("click", () => {
-      this.handleModalClose();
-      this.handleModalOpen(true);
-    });
+  }
+
+  static handleEmailInput(event) {
+    // Toggle the need of checkbox based on whether email has a value
+    if (event.target.value) {
+      this.modalElements.checkboxGroup.classList.remove("d-none");
+      this.modalElements.checkbox.required = true;
+    } else {
+      this.modalElements.checkboxGroup.classList.add("d-none");
+      this.modalElements.checkbox.required = false;
+    }
   }
 
   static handleModalOpen(skipToggle) {
@@ -111,6 +123,8 @@ class Feedback {
       "input:not([type='hidden']),textarea:not([type='hidden'])"
     );
     // Reset form state on close
+    this.modalElements.checkboxGroup.classList.add("d-none");
+    this.modalElements.checkbox.required = false;
     [...inputs].forEach((input) => {
       input.value = "";
     });
@@ -118,7 +132,6 @@ class Feedback {
     this.modalElements.successTitle.classList.add("d-none");
     this.modalElements.title.classList.remove("d-none");
     this.modalElements.errorMessage.classList.add("d-none");
-		this.modalElements.repeatButton.classList.add("d-none");
   }
 
   static handleSubmit(event) {
@@ -150,7 +163,6 @@ class Feedback {
           this.modalElements.successMessage.classList.remove("d-none");
           this.modalElements.title.classList.add("d-none");
           this.modalElements.successTitle.classList.remove("d-none");
-					this.modalElements.repeatButton.classList.remove("d-none");
         } else {
           this.modalElements.errorMessage.classList.remove("d-none");
         }
