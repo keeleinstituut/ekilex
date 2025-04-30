@@ -1,4 +1,5 @@
 drop view if exists view_ww_dataset_word_menu;
+drop view if exists view_ww_new_word_menu;
 drop view if exists view_ww_word_search;
 drop view if exists view_ww_word;
 drop view if exists view_ww_form;
@@ -186,6 +187,38 @@ group by w.dataset_code,
          w.first_letter
 order by w.dataset_code,
          w.first_letter;
+
+create view view_ww_new_word_menu
+as
+select
+	w.id word_id,
+	w.value word,
+	w.value_prese word_prese,
+	w.homonym_nr,
+	w.reg_year
+from
+	word w
+where
+	w.reg_year is not null
+	and w.is_public = true
+	and w.lang = 'est'
+	and exists (
+		select
+			1
+		from
+			lexeme l,
+			lexeme_register lr
+		where
+			l.word_id = w.id
+			and l.is_public = true
+			and l.is_word = true
+			and l.dataset_code = 'eki'
+			and lr.lexeme_id = l.id
+			and lr.register_code = 'uus'
+	)
+order by
+	w.reg_year desc,
+	w.id;
 
 create view view_ww_word_search
 as
@@ -445,6 +478,7 @@ select w.word_id,
        w.aspect_code,
        w.vocal_form,
        w.morph_comment,
+       w.reg_year,
        w.manual_event_on,
        w.last_activity_event_on,
        wt.word_type_codes,
@@ -472,6 +506,7 @@ from (select w.id as word_id,
              w.aspect_code,
              w.vocal_form,
              w.morph_comment,
+             w.reg_year,
              w.manual_event_on,
              (select al.event_on
               from word_last_activity_log wlal,

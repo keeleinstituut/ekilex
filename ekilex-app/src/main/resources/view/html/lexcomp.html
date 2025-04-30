@@ -458,6 +458,43 @@
       </span>
     </div>
   </div>
+  <div class="mr-1" th:fragment="word_reg_year">
+    <th:block th:unless="${details.word.regYear}">
+      <button type="button" class="btn btn-secondary btn-compact btn-sm"
+              data-toggle="modal"
+              th:data-target="${'#editWordRegYearDlg_' + wordId}"
+              sec:authorize="#vars.details.word.crudGrant">
+        <i class="fa fa-plus action-icon mr-1" aria-hidden="true"></i>
+        <span th:text="#{lex.word.regyear}">Registreeritud</span>
+      </button>
+    </th:block>
+    <th:block th:if="${details.word.regYear}">
+      <div class="hover-actions-container hover-actions-container-outline">
+        <span data-toggle="tooltip" data-boundary="window" data-placement="top"
+              th:text="${details.word.regYear}"
+              th:title="#{lex.word.regyear}"></span>
+        <div class="hover-actions">
+          <div class="btn-group">
+            <button type="button" class="btn btn-secondary btn-sm"
+                    th:title="#{common.edit}"
+                    data-toggle="modal"
+                    th:data-target="${'#editWordRegYearDlg_' + wordId}"
+                    sec:authorize="#vars.details.word.crudGrant">
+              <i class="fa fa-caret-down action-icon" aria-hidden="true"></i>
+            </button>
+            <button type="button" class="btn btn-secondary btn-sm"
+                th:data-id="${wordId}"
+                data-op-code="word_reg_year"
+                data-toggle="delete-confirm"
+                data-placement="right"
+                sec:authorize="#vars.details.word.crudGrant">
+              <i class="fa fa-remove action-icon" aria-hidden="true"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+    </th:block>
+  </div>
   <div class="mr-1" th:fragment="word_lang">
     <th:block th:if="${#strings.isEmpty(details.word.lang)}">
       <button type="button" class="btn btn-secondary btn-compact btn-sm"

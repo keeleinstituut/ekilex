@@ -185,6 +185,18 @@ public class CudService extends AbstractCudService implements PermConstant, Acti
 	}
 
 	@Transactional(rollbackOn = Exception.class)
+	public void updateWordRegYear(Long wordId, String regYearStr, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
+
+		Integer regYear = null;
+		if (StringUtils.isNotBlank(regYearStr)) {
+			regYear = Integer.valueOf(regYearStr);
+		}
+		ActivityLogData activityLog = activityLogService.prepareActivityLog("updateWordRegYear", wordId, ActivityOwner.WORD, roleDatasetCode, isManualEventOnUpdateEnabled);
+		cudDbService.updateWordRegYear(wordId, regYear);
+		activityLogService.createActivityLog(activityLog, wordId, ActivityEntity.WORD);
+	}
+
+	@Transactional(rollbackOn = Exception.class)
 	public void updateWordLang(Long wordId, String langCode, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
 
 		ActivityLogData activityLog = activityLogService.prepareActivityLog("updateWordLang", wordId, ActivityOwner.WORD, roleDatasetCode, isManualEventOnUpdateEnabled);

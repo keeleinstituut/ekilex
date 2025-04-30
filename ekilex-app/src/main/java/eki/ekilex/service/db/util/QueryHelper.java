@@ -177,6 +177,7 @@ public class QueryHelper implements GlobalConstant {
 		fields.add(w.VOCAL_FORM);
 		fields.add(w.MORPHOPHONO_FORM);
 		fields.add(w.MORPH_COMMENT);
+		fields.add(w.REG_YEAR);
 		fields.add(w.MANUAL_EVENT_ON);
 		fields.add(w.IS_PUBLIC.as("is_word_public"));
 		fields.add(wtf.as("tags"));

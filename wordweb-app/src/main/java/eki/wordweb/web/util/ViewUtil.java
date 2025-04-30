@@ -294,6 +294,11 @@ public class ViewUtil implements WebConstant, SystemConstant, GlobalConstant {
 		return uri;
 	}
 
+	public String getDetailSearchUri(String wordValue, Integer homonymNr) {
+		String uri = webUtil.composeDetailSearchUri(DESTIN_LANG_ALL, DATASET_ALL, wordValue, homonymNr, null);
+		return uri;
+	}
+
 	public String getSimpleSearchUri(String wordValue) {
 		String uri = webUtil.composeSimpleSearchUri(DESTIN_LANG_ALL, wordValue, null, null);
 		return uri;

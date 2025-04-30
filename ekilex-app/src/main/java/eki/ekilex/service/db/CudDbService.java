@@ -526,6 +526,14 @@ public class CudDbService extends AbstractDataDbService {
 				.execute();
 	}
 
+	public void updateWordRegYear(Long wordId, Integer regYear) {
+		mainDb
+				.update(WORD)
+				.set(WORD.REG_YEAR, regYear)
+				.where(WORD.ID.eq(wordId))
+				.execute();
+	}
+
 	public void updateWordValueAndLang(Long wordId, String value, String valuePrese, String lang) {
 		mainDb
 				.update(WORD)

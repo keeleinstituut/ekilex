@@ -1861,6 +1861,26 @@
       </div>
     </div>
   </div>
+  <div th:id="${'editWordRegYearDlg_' + wordId}" class="modal select-dlg"
+        role="dialog"
+        th:fragment="edit_word_reg_year_dlg"
+        data-plugin="initSelectDlgPlugin">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <form th:action="@{/update_item}" method="post">
+          <div class="modal-body">
+            <input type="hidden" name="id" th:value="${wordId}">
+            <input type="hidden" name="opCode" value="word_reg_year">
+            <select required class="form-control" name="value">
+              <th:block th:each="year : ${#numbers.sequence(2019, #dates.year(#dates.createNow()) + 1)}">
+                <option th:value="${year}" th:text="${year}" th:selected="${year == details.word.regYear}">2019</option>
+              </th:block>
+            </select>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
   <div th:id="${'addWordLangDlg_' + wordId}" class="modal select-dlg"
         role="dialog"
         th:fragment="add_word_lang_dlg"

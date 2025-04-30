@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="et" xmlns:th="http://www.thymeleaf.org">
+  <head th:replace="common-app :: common_header(~{::title},~{::links},_)">
+    <title>Sõnaveeb - Uued sõnad</title>
+    <th:block th:fragment="links">
+      <script type="text/javascript" th:src="@{/view/js/hash.js}"></script>
+    </th:block>
+  </head>
+  <body class="survey-active news-page">
+    <th:block th:replace="common-app :: wcag-sidebar"></th:block>
+    <th:block th:replace="common-app :: wcag-main"></th:block>
+    <th:block th:replace="common-app :: ie-user"></th:block>
+    <th:block th:replace="common-app :: header(withSearch = ${false})"></th:block>
+    <div class="news-page__wrapper">
+      <div class="news-page__header">
+        <h1 th:text="#{label.newwords.title}">Uued sõnad</h1>
+        <p th:text="#{label.newwords.description}">Midagi midagi</p>
+      </div>
+      <div class="news-page__content">
+        <th:block th:if="${newWordYears}">
+          <th:block th:each="newWordYear : ${newWordYears}">
+            <div class="text-center">
+              <h1 class="mt-5">
+                <span th:text="${newWordYear.regYear}"></span>
+              </h1>
+              <div class="row">
+                <th:block th:each="newWord : ${newWordYear.newWords}">
+                  <div class="col-md-auto ml-md-auto mr-md-auto">
+                    <a th:href="@{${@viewUtil.getDetailSearchUri(newWord.word, newWord.homonymNr)}}">
+                      <span th:utext="${newWord.wordPrese}" class="text-nowrap"></span>
+                    </a>
+                  </div>
+                </th:block>
+              </div>
+            </div>
+          </th:block>
+        </th:block>
+      </div>
+    </div>
+    <div th:replace="common-app :: footer-content"></div>
+    <th:block th:replace="common-app :: content-top"></th:block>
+    <script th:inline="javascript">
+      setActiveMenuItem("new-words");
+    </script>
+  </body>
+</html>

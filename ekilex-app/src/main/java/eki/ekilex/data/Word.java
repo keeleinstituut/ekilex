@@ -38,6 +38,8 @@ public class Word extends AbstractCrudEntity implements DecoratedWordType {
 
 	private String morphComment;
 
+	private Integer regYear;
+
 	private String wordFrequency;
 
 	private String[] wordTypeCodes;
@@ -174,6 +176,14 @@ public class Word extends AbstractCrudEntity implements DecoratedWordType {
 
 	public void setMorphComment(String morphComment) {
 		this.morphComment = morphComment;
+	}
+
+	public Integer getRegYear() {
+		return regYear;
+	}
+
+	public void setRegYear(Integer regYear) {
+		this.regYear = regYear;
 	}
 
 	public String getWordFrequency() {

@@ -389,6 +389,9 @@ public class EditController extends AbstractMutableDataPageController implements
 		case "word_lang":
 			cudService.updateWordLang(id, value, roleDatasetCode, isManualEventOnUpdateEnabled);
 			break;
+		case "word_reg_year":
+			cudService.updateWordRegYear(id, value, roleDatasetCode, isManualEventOnUpdateEnabled);
+			break;
 		case "word_manual_event_on":
 			cudService.updateWordManualEventOn(id, value, roleDatasetCode);
 			break;
@@ -707,6 +710,9 @@ public class EditController extends AbstractMutableDataPageController implements
 			break;
 		case "word_vocal_form":
 			cudService.updateWordVocalForm(id, null, roleDatasetCode, isManualEventOnUpdateEnabled);
+			break;
+		case "word_reg_year":
+			cudService.updateWordRegYear(id, null, roleDatasetCode, isManualEventOnUpdateEnabled);
 			break;
 		case "word_morph_comment":
 			cudService.updateWordMorphComment(id, null, roleDatasetCode, isManualEventOnUpdateEnabled);

@@ -2,6 +2,7 @@ package eki.wordweb.service;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -20,6 +21,8 @@ import eki.common.data.Classifier;
 import eki.wordweb.constant.SystemConstant;
 import eki.wordweb.data.Dataset;
 import eki.wordweb.data.LanguageData;
+import eki.wordweb.data.NewWord;
+import eki.wordweb.data.NewWordYear;
 import eki.wordweb.data.NewsArticle;
 import eki.wordweb.data.UiFilterElement;
 import eki.wordweb.service.db.CommonDataDbService;
@@ -43,12 +46,14 @@ public class CommonDataService implements SystemConstant {
 
 	@Transactional
 	public Map<String, LanguageData> getLangDataMap() {
+
 		String displayLang = languageContext.getDisplayLang();
 		return commonDataDbService.getLangDataMap(displayLang);
 	}
 
 	@Transactional
 	public List<UiFilterElement> getUnifLangFilter() {
+
 		Locale locale = languageContext.getDisplayLocale();
 		String displayLang = languageContext.getDisplayLang();
 		String allLangsLabel = messageSource.getMessage("label.search.lang.all", new Object[0], locale);
@@ -66,6 +71,7 @@ public class CommonDataService implements SystemConstant {
 
 	@Transactional
 	public List<UiFilterElement> getSimpleLangFilter() {
+
 		Locale locale = languageContext.getDisplayLocale();
 		String displayLang = languageContext.getDisplayLang();
 		String allLangsLabel = messageSource.getMessage("label.search.lang.all", new Object[0], locale);
@@ -81,6 +87,7 @@ public class CommonDataService implements SystemConstant {
 
 	@Transactional
 	public List<UiFilterElement> getDatasetFilter() {
+
 		Locale locale = languageContext.getDisplayLocale();
 		String allDatasetsLabel = messageSource.getMessage("label.search.dataset.all", new Object[0], locale);
 		List<UiFilterElement> datasetFilter = new ArrayList<>();
@@ -94,6 +101,7 @@ public class CommonDataService implements SystemConstant {
 
 	@Transactional
 	public List<String> getSupportedDatasetCodes() {
+
 		List<String> supportedDatasetCodes = new ArrayList<>();
 		List<String> datasetCodes = commonDataDbService.getDatasetCodes();
 		supportedDatasetCodes.add(DATASET_ALL);
@@ -103,6 +111,7 @@ public class CommonDataService implements SystemConstant {
 
 	@Transactional
 	public List<Dataset> getTermDatasets() {
+
 		List<Dataset> allDatasets = commonDataDbService.getDatasets();
 		List<Dataset> termDatasets = allDatasets.stream()
 				.filter(dataset -> DatasetType.TERM.equals(dataset.getType()))
@@ -112,6 +121,7 @@ public class CommonDataService implements SystemConstant {
 
 	@Transactional
 	public NewsArticle getLatestWordwebNewsArticle() {
+
 		String displayLang = languageContext.getDisplayLang();
 		NewsArticle newsArticle = commonDataDbService.getLatestWordwebNewsArticle(displayLang);
 		if (newsArticle == null) {
@@ -125,7 +135,21 @@ public class CommonDataService implements SystemConstant {
 
 	@Transactional
 	public List<NewsArticle> getWordwebNewsArticles() {
+
 		String displayLang = languageContext.getDisplayLang();
 		return commonDataDbService.getWordwebNewsArticles(displayLang);
+	}
+
+	@Transactional
+	public List<NewWordYear> getNewWordYears() {
+
+		List<NewWord> newWords = commonDataDbService.getNewWords();
+		List<NewWordYear> newWordYears = newWords.stream()
+				.collect(Collectors.groupingBy(NewWord::getRegYear))
+				.entrySet().stream()
+				.map(entry -> new NewWordYear(entry.getKey(), entry.getValue()))
+				.sorted(Comparator.comparing(NewWordYear::getRegYear).reversed())
+				.collect(Collectors.toList());
+		return newWordYears;
 	}
 }

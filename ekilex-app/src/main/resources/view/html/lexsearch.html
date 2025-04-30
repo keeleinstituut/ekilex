@@ -50,7 +50,9 @@
                 <span class="fa fa-ellipsis-v"></span>
               </div>
               <div class="hover-actions-container hover-actions-container-outline">
-                <h1 th:data-id="${wordId}" th:id="${'word-value-' + wordId}" th:utext="${@viewUtil.getWordValueMarkup(details.word)}" th:title="${details.word.wordFrequency}" class="mb-0">Aktiivne sõna</h1>
+                <h1 th:data-id="${wordId}" th:id="${'word-value-' + wordId}"
+                    th:utext="${@viewUtil.getWordValueMarkup(details.word)}"
+                    th:title="${details.word.wordFrequency}" class="mb-0">Aktiivne sõna</h1>
                 <div class="hover-actions hover-actions-bottom-right">
                   <button type="button" class="btn btn-compact btn-secondary"
                           title="Muuda"
@@ -129,6 +131,7 @@
               <div th:replace="lexcomp :: word_type"></div>
               <div th:replace="lexcomp :: word_aspect"></div>
               <div th:replace="lexcomp :: word_tag"></div>
+              <div th:replace="lexcomp :: word_reg_year"></div>
             </div>
           </div>
           <div class="row no-gutters h-100 overflow-hidden">
@@ -169,6 +172,7 @@
               <div th:replace="lexdialog :: add_word_morphophono_form_dlg"></div>
               <div th:replace="lexdialog :: edit_word_value_dlg"></div>
               <div th:replace="lexdialog :: edit_word_lang_dlg"></div>
+              <div th:replace="lexdialog :: edit_word_reg_year_dlg"></div>
               <div th:replace="lexdialog :: edit_word_gender_dlg"></div>
               <div th:replace="lexdialog :: edit_word_aspect_dlg"></div>
               <div th:replace="lexdialog :: edit_word_display_morph_dlg"></div>

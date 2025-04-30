@@ -112,6 +112,11 @@ public class MviewWwWord extends TableImpl<MviewWwWordRecord> {
     public final TableField<MviewWwWordRecord, String> MORPH_COMMENT = createField(DSL.name("morph_comment"), SQLDataType.CLOB, this, "");
 
     /**
+     * The column <code>public.mview_ww_word.reg_year</code>.
+     */
+    public final TableField<MviewWwWordRecord, Integer> REG_YEAR = createField(DSL.name("reg_year"), SQLDataType.INTEGER, this, "");
+
+    /**
      * The column <code>public.mview_ww_word.manual_event_on</code>.
      */
     public final TableField<MviewWwWordRecord, LocalDateTime> MANUAL_EVENT_ON = createField(DSL.name("manual_event_on"), SQLDataType.LOCALDATETIME(0), this, "");

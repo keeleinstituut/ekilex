@@ -16,6 +16,7 @@ import eki.wordweb.data.db.tables.MviewWwLexeme;
 import eki.wordweb.data.db.tables.MviewWwLexemeRelation;
 import eki.wordweb.data.db.tables.MviewWwMeaning;
 import eki.wordweb.data.db.tables.MviewWwMeaningRelation;
+import eki.wordweb.data.db.tables.MviewWwNewWordMenu;
 import eki.wordweb.data.db.tables.MviewWwNewsArticle;
 import eki.wordweb.data.db.tables.MviewWwWord;
 import eki.wordweb.data.db.tables.MviewWwWordEtymology;
@@ -109,6 +110,11 @@ public class Public extends SchemaImpl {
     public final MviewWwMeaningRelation MVIEW_WW_MEANING_RELATION = MviewWwMeaningRelation.MVIEW_WW_MEANING_RELATION;
 
     /**
+     * The table <code>public.mview_ww_new_word_menu</code>.
+     */
+    public final MviewWwNewWordMenu MVIEW_WW_NEW_WORD_MENU = MviewWwNewWordMenu.MVIEW_WW_NEW_WORD_MENU;
+
+    /**
      * The table <code>public.mview_ww_news_article</code>.
      */
     public final MviewWwNewsArticle MVIEW_WW_NEWS_ARTICLE = MviewWwNewsArticle.MVIEW_WW_NEWS_ARTICLE;
@@ -180,6 +186,7 @@ public class Public extends SchemaImpl {
             MviewWwLexemeRelation.MVIEW_WW_LEXEME_RELATION,
             MviewWwMeaning.MVIEW_WW_MEANING,
             MviewWwMeaningRelation.MVIEW_WW_MEANING_RELATION,
+            MviewWwNewWordMenu.MVIEW_WW_NEW_WORD_MENU,
             MviewWwNewsArticle.MVIEW_WW_NEWS_ARTICLE,
             MviewWwWord.MVIEW_WW_WORD,
             MviewWwWordEtymology.MVIEW_WW_WORD_ETYMOLOGY,

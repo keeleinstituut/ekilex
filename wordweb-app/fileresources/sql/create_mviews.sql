@@ -1,5 +1,6 @@
 drop materialized view if exists mview_ww_counts;
 drop materialized view if exists mview_ww_dataset_word_menu;
+drop materialized view if exists mview_ww_new_word_menu;
 drop materialized view if exists mview_ww_word_search;
 drop materialized view if exists mview_ww_word;
 drop materialized view if exists mview_ww_form;
@@ -39,6 +40,18 @@ dblink(
 	words text array
 );
 
+create materialized view mview_ww_new_word_menu as
+select * from
+dblink(
+	'host=localhost user=ekilex password=3kil3x dbname=ekilex',
+	'select * from view_ww_new_word_menu') as new_word_menu(
+	word_id bigint,
+	word text,
+	word_prese text,
+	homonym_nr integer,
+	reg_year integer
+);
+
 create materialized view mview_ww_word_search as
 select * from
 dblink(
@@ -70,6 +83,7 @@ dblink(
 	aspect_code varchar(100),
 	vocal_form text,
 	morph_comment text,
+	reg_year integer,
 	manual_event_on timestamp,
 	last_activity_event_on timestamp,
 	word_type_codes varchar(100) array,
@@ -300,6 +314,8 @@ order by l.dataset_code,
          w.lang);
 
 create index mview_ww_dataset_word_menu_dataset_fletter_idx on mview_ww_dataset_word_menu (dataset_code, first_letter);
+create index mview_ww_new_word_menu_word_id_idx on mview_ww_new_word_menu (word_id);
+create index mview_ww_new_word_menu_reg_year_idx on mview_ww_new_word_menu (reg_year);
 create index mview_ww_word_search_sgroup_idx on mview_ww_word_search (sgroup);
 create index mview_ww_word_search_crit_idx on mview_ww_word_search (crit);
 create index mview_ww_word_search_crit_prefix_idx on mview_ww_word_search (crit text_pattern_ops);

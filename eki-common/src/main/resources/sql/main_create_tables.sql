@@ -550,6 +550,7 @@ create table word (
   vocal_form text null, 
   morphophono_form text null, 
   morph_comment text null,
+  reg_year integer,
   manual_event_on timestamp null, 
   is_public boolean not null default true
 );

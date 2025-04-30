@@ -22,6 +22,8 @@ public interface WebConstant {
 
 	String MORPHO_FULL_PAGE = "morpho-full";
 
+	String NEW_WORDS_PAGE = "new-words";
+
 	String NEWS_PAGE = "news";
 
 	String EKILEX_API_PAGE = "ekilex-api";
@@ -63,6 +65,8 @@ public interface WebConstant {
 	String WORD_DETAILS_URI = "/worddetails";
 
 	String FEELING_LUCKY_URI = "/feelinglucky";
+
+	String NEW_WORDS_URI = "/newwords";
 
 	String NEWS_URI = "/news";
 

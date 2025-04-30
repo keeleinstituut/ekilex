@@ -29,6 +29,7 @@ create index word_value_as_word_lower_prefix_idx on word(lower(value_as_word) te
 create index word_manual_event_on_idx on word(manual_event_on);
 create index word_morphophono_form_idx on word(morphophono_form);
 create index word_morphophono_form_lower_idx on word(lower(morphophono_form));
+create index word_reg_year_idx on word(reg_year);
 create index word_is_public_idx on word(is_public);
 create index word_etym_word_id_idx on word_etymology(word_id);
 create index word_etym_etym_type_code_idx on word_etymology(etymology_type_code);
