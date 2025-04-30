@@ -541,7 +541,7 @@ public class CompositionService extends AbstractService implements PermConstant 
 				}
 			}
 
-			recalcLevel1 = recalcLevel1Adjust;
+			recalcLevel1 = recalcLevel1 + level1InsertCount;
 		}
 	}
 
