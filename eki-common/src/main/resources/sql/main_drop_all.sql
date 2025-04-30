@@ -1,5 +1,6 @@
 -- wordweb associated views and types
 drop view if exists view_ww_dataset_word_menu;
+drop view if exists view_ww_new_word_menu;
 drop view if exists view_ww_word_search;
 drop view if exists view_ww_word;
 drop view if exists view_ww_form;
