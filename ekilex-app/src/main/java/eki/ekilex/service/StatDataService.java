@@ -21,6 +21,7 @@ import eki.ekilex.constant.SystemConstant;
 import eki.ekilex.data.StatData;
 import eki.ekilex.data.StatDataRow;
 import eki.ekilex.service.db.StatDataDbService;
+import eki.ekilex.service.util.ValueUtil;
 
 @Component
 public class StatDataService implements InitializingBean, SystemConstant, GlobalConstant {
@@ -29,6 +30,9 @@ public class StatDataService implements InitializingBean, SystemConstant, Global
 
 	@Value("${scheduling.enabled:false}")
 	private boolean isSchedulingEnabled;
+
+	@Autowired
+	private ValueUtil valueUtil;
 
 	@Autowired
 	private EkistatClient ekistatClient;
@@ -107,6 +111,9 @@ public class StatDataService implements InitializingBean, SystemConstant, Global
 	}
 
 	public StatSearchResult getStatSearchResult(StatSearchFilter statSearchFilter) {
+		String datasetCode = statSearchFilter.getDatasetCode();
+		datasetCode = valueUtil.decode(datasetCode);
+		statSearchFilter.setDatasetCode(datasetCode);
 		return ekistatClient.getStatSearchResult(statSearchFilter);
 	}
 

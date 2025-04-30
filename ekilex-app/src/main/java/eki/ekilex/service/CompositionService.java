@@ -88,6 +88,7 @@ public class CompositionService extends AbstractService implements PermConstant 
 		boolean isPublicDataOnly = false;
 		LexemeRecord lexeme = lookupDbService.getLexemeRecord(lexemeId);
 		String datasetCode = lexeme.getDatasetCode();
+		Long sourceWordId = lexeme.getWordId();
 		Long sourceMeaningId = lexeme.getMeaningId();
 		Long targetMeaningId = cloneMeaningAndData(sourceMeaningId, isPublicDataOnly, roleDatasetCode, isManualEventOnUpdateEnabled);
 
@@ -98,6 +99,7 @@ public class CompositionService extends AbstractService implements PermConstant 
 			sourceTargetLexemeIdMap.put(sourceLexemeId, targetLexemeId);
 		}
 		cloneLexemeRelations(sourceTargetLexemeIdMap, roleDatasetCode, isManualEventOnUpdateEnabled);
+		recalculateAndUpdateAllLexemeLevels(sourceWordId, datasetCode);
 		boolean success = MapUtils.isNotEmpty(sourceTargetLexemeIdMap);
 		return success;
 	}
@@ -496,31 +498,50 @@ public class CompositionService extends AbstractService implements PermConstant 
 		}
 
 		Map<Integer, List<Lexeme>> lexemeLevel1Map = lexemes.stream().collect(Collectors.groupingBy(Lexeme::getLevel1));
-		List<Integer> existingLevel1s = new ArrayList<>(lexemeLevel1Map.keySet());
-		Collections.sort(existingLevel1s);
-		int level1Count = existingLevel1s.size();
+		List<Integer> existingLevel1Values = new ArrayList<>(lexemeLevel1Map.keySet());
+		Collections.sort(existingLevel1Values);
+		int existingLevel1Count = existingLevel1Values.size();
+		int recalcLevel1 = 0;
 
-		for (int level1Index = 0; level1Index < level1Count; level1Index++) {
+		for (int level1Index = 0; level1Index < existingLevel1Count; level1Index++) {
 
-			Integer recalcLevel1 = level1Index + 1;
-			Integer existingLevel1 = existingLevel1s.get(level1Index);
-			List<Lexeme> lexemesOfLevel1 = lexemeLevel1Map.get(existingLevel1);
-			int level2Count = lexemesOfLevel1.size();
+			int existingLevel1 = existingLevel1Values.get(level1Index);
+			List<Lexeme> level2Lexemes = lexemeLevel1Map.get(existingLevel1);
+			int existingLevel2Count = level2Lexemes.size();
+			recalcLevel1++;
+			int recalcLevel2 = 0;
+			int level1InsertCount = 0;
+			int recalcLevel1Adjust = 0;
 
-			for (int level2Index = 0; level2Index < level2Count; level2Index++) {
+			for (int level2Index = 0; level2Index < existingLevel2Count; level2Index++) {
 
-				Integer recalcLevel2 = level2Index + 1;
-				Lexeme lexeme = lexemesOfLevel1.get(level2Index);
-				Long lexemeId = lexeme.getLexemeId();
-				Integer existingLevel2 = lexeme.getLevel2();
+				Lexeme level2Lexeme = level2Lexemes.get(level2Index);
+				Long lexemeId = level2Lexeme.getLexemeId();
+				int existingLevel2 = level2Lexeme.getLevel2();
 
-				if (!recalcLevel1.equals(existingLevel1)) {
-					cudDbService.updateLexemeLevel1(lexemeId, recalcLevel1);
-				}
-				if (!recalcLevel2.equals(existingLevel2)) {
-					cudDbService.updateLexemeLevel2(lexemeId, recalcLevel2);
+				if ((level2Index > 0) && (existingLevel2 == 1)) {
+
+					level1InsertCount++;
+					recalcLevel1Adjust = recalcLevel1 + level1InsertCount;
+
+					if (recalcLevel1Adjust != existingLevel1) {
+						cudDbService.updateLexemeLevel1(lexemeId, recalcLevel1Adjust);
+					}
+
+				} else {
+
+					recalcLevel2++;
+
+					if (recalcLevel1 != existingLevel1) {
+						cudDbService.updateLexemeLevel1(lexemeId, recalcLevel1);
+					}
+					if (recalcLevel2 != existingLevel2) {
+						cudDbService.updateLexemeLevel2(lexemeId, recalcLevel2);
+					}
 				}
 			}
+
+			recalcLevel1 = recalcLevel1Adjust;
 		}
 	}
 

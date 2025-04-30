@@ -19,11 +19,15 @@ import eki.stat.constant.SystemConstant;
 import eki.stat.data.SearchDefaultCount;
 import eki.stat.data.SearchFilteredCount;
 import eki.stat.service.db.StatDbService;
+import eki.stat.service.util.ValueUtil;
 
 @Component
 public class StatService implements SystemConstant {
 
 	private static final Logger logger = LoggerFactory.getLogger(StatService.class);
+
+	@Autowired
+	private ValueUtil valueUtil;
 
 	@Autowired
 	private StatDbService statDbService;
@@ -39,6 +43,10 @@ public class StatService implements SystemConstant {
 		String searchMode = searchFilter.getSearchMode();
 		String searchLang = searchFilter.getSearchLang();
 		String datasetCode = searchFilter.getDatasetCode();
+		if (StringUtils.isNotBlank(datasetCode)) {
+			datasetCode = valueUtil.decode(datasetCode);
+			searchFilter.setDatasetCode(datasetCode);
+		}
 		int pageNum = Math.max(1, searchFilter.getPageNum());
 		int offset = (pageNum - 1) * DEFAULT_MAX_RESULTS_LIMIT;
 
