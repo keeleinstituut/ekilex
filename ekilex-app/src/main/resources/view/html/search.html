@@ -166,7 +166,10 @@
                   </select>
                 </div>
                 <div class="value-input-container col-auto flex-grow-1 flex-shrink-1" th:if="${criteria.searchKey.name() == 'TAG_NAME'}">
-                  <select class="form-control" th:name="'criteriaGroups[' + ${critGroupStat.index} + '].searchCriteria[' + ${critStat.index} + '].searchValue'" data-live-search="true" data-style="btn-outline-secondary">
+                  <select class="form-control"
+                          th:name="'criteriaGroups[' + ${critGroupStat.index} + '].searchCriteria[' + ${critStat.index} + '].searchValue'"
+                          data-live-search="true"
+                          data-style="btn-outline-secondary">
                     <option value="" selected th:text="#{common.all.tags}">Kõik sildid</option>
                     <option th:each="tag : ${allTags}"
                             th:value="${tag}"
@@ -231,7 +234,10 @@
                   </select>
                 </div>
                 <div class="value-input-container col-auto flex-grow-1 flex-shrink-1" th:if="${criteria.searchKey.name() == 'COMPLEXITY'}">
-                  <select class="form-control" th:name="'criteriaGroups[' + ${critGroupStat.index} + '].searchCriteria[' + ${critStat.index} + '].searchValue'" data-live-search="true" data-style="btn-outline-secondary">
+                  <select class="form-control"
+                          th:name="'criteriaGroups[' + ${critGroupStat.index} + '].searchCriteria[' + ${critStat.index} + '].searchValue'"
+                          data-live-search="true"
+                          data-style="btn-outline-secondary">
                     <option th:each="complexity : ${complexities}"
                             th:value="${complexity}"
                             th:selected="${criteria.searchValue == complexity.name()}"
@@ -340,6 +346,19 @@
                          th:hidden="${isExistsOperand}"
                          autocomplete="off">
                   <div class="invalid-feedback d-block" th:text="${criteria.validationMessage}">warning</div>
+                </div>
+                <div class="value-input-container col-auto flex-grow-1 flex-shrink-1" th:if="${criteria.searchKey.name() == 'REG_YEAR'}">
+                  <select class="form-control"
+                          th:name="'criteriaGroups[' + ${critGroupStat.index} + '].searchCriteria[' + ${critStat.index} + '].searchValue'"
+                          data-live-search="true"
+                          data-style="btn-outline-secondary"
+                          th:hidden="${isExistsOperand}"
+                          th:disabled="${isExistsOperand}">
+                    <option th:each="year : ${#numbers.sequence(2019, #dates.year(#dates.createNow()) + 1)}"
+                            th:value="${year}"
+                            th:text="${year}"
+                            th:selected="${#strings.equals(criteria.searchValue, #strings.toString(year))}">2019</option>
+                  </select>
                 </div>
                 <div class="value-input-container col-auto flex-grow-1 flex-shrink-1" th:if="${criteria.searchKey.name() == 'CREATED_OR_UPDATED_BY'}">
                   <input type="text" class="form-control"
@@ -795,6 +814,12 @@
             </div>
             <div name="MORPHOPHONO_FORM" class="value-input-container col-auto flex-grow-1 flex-shrink-1">
               <input type="text" class="form-control" autocomplete="off">
+            </div>
+            <div name="REG_YEAR" class="value-input-container col-auto flex-grow-1 flex-shrink-1">
+              <select class="form-control" data-live-search="true" data-style="btn-outline-secondary">
+                <option th:each="year : ${#numbers.sequence(2019, #dates.year(#dates.createNow()) + 1)}"
+                        th:value="${year}" th:text="${year}">2019</option>
+              </select>
             </div>
             <div name="CREATED_OR_UPDATED_BY" class="value-input-container col-auto flex-grow-1 flex-shrink-1">
               <input type="text" class="form-control" autocomplete="off">

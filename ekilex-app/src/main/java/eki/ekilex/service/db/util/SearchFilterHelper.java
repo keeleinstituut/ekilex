@@ -58,6 +58,7 @@ import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.RegExUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.math.NumberUtils;
 import org.jooq.CommonTableExpression;
 import org.jooq.Condition;
 import org.jooq.Field;
@@ -525,6 +526,47 @@ public class SearchFilterHelper implements GlobalConstant, ActivityFunct, Freefo
 		} else {
 			boolean isNot = existsCriteria.get(0).isNot();
 			Condition critWhere = wordMorphophonoFormField.isNotNull();
+			if (isNot) {
+				critWhere = DSL.not(critWhere);
+			}
+			where = where.and(critWhere);
+		}
+		return where;
+	}
+
+	public Condition applyWordRegYearFilters(List<SearchCriterion> searchCriteria, Field<Integer> wordRegYearField, Condition where) {
+
+		List<SearchCriterion> filteredCriteria = searchCriteria.stream()
+				.filter(c -> c.getSearchKey().equals(SearchKey.REG_YEAR))
+				.collect(toList());
+
+		if (CollectionUtils.isEmpty(filteredCriteria)) {
+			return where;
+		}
+
+		List<SearchCriterion> existsCriteria = filteredCriteria.stream()
+				.filter(crit -> crit.getSearchOperand().equals(SearchOperand.EXISTS))
+				.collect(toList());
+
+		if (CollectionUtils.isEmpty(existsCriteria)) {
+			for (SearchCriterion criterion : filteredCriteria) {
+				if (criterion.getSearchValue() != null) {
+					String regYearStr = criterion.getSearchValue().toString();
+					if (!NumberUtils.isDigits(regYearStr)) {
+						continue;
+					}
+					Integer regYear = Integer.valueOf(regYearStr);
+					boolean isNot = criterion.isNot();
+					Condition critWhere = wordRegYearField.eq(regYear);
+					if (isNot) {
+						critWhere = DSL.not(critWhere);
+					}
+					where = where.and(critWhere);
+				}
+			}
+		} else {
+			boolean isNot = existsCriteria.get(0).isNot();
+			Condition critWhere = wordRegYearField.isNotNull();
 			if (isNot) {
 				critWhere = DSL.not(critWhere);
 			}

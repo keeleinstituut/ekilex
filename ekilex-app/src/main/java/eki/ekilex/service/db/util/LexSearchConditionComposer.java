@@ -208,6 +208,7 @@ public class LexSearchConditionComposer implements GlobalConstant, ActivityFunct
 				where = searchFilterHelper.applyWordAspectFilters(searchCriteria, w1.ASPECT_CODE, where);
 				where = searchFilterHelper.applyWordVocalFormFilters(searchCriteria, w1.VOCAL_FORM, where);
 				where = searchFilterHelper.applyWordMorphophonoFormFilters(searchCriteria, w1.MORPHOPHONO_FORM, where);
+				where = searchFilterHelper.applyWordRegYearFilters(searchCriteria, w1.REG_YEAR, where);
 				where = searchFilterHelper.applyWordTypeValueFilters(searchCriteria, w1.ID, where);
 				where = searchFilterHelper.applyWordTypeExistsFilters(searchCriteria, w1.ID, where);
 				where = searchFilterHelper.applyWordFrequencyFilters(searchCriteria, w1.ID, where);

@@ -37,6 +37,8 @@ public abstract class WordTypeData extends AbstractDataObject implements LangTyp
 
 	private Classifier aspect;
 
+	private Integer regYear;
+
 	private List<String> wordTypeCodes;
 
 	private List<Classifier> wordTypes;
@@ -148,6 +150,14 @@ public abstract class WordTypeData extends AbstractDataObject implements LangTyp
 
 	public void setAspect(Classifier aspect) {
 		this.aspect = aspect;
+	}
+
+	public Integer getRegYear() {
+		return regYear;
+	}
+
+	public void setRegYear(Integer regYear) {
+		this.regYear = regYear;
 	}
 
 	@Override

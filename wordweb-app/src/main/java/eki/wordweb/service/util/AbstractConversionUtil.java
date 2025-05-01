@@ -53,21 +53,6 @@ public abstract class AbstractConversionUtil implements WebConstant, SystemConst
 		wordTypeData.setAbbreviationWord(isAbbreviationWord);
 		wordTypeData.setForeignWord(isForeignWord);
 		wordTypeData.setIncorrectWordForm(isIncorrectWordForm);
-
-		/*
-		 * danger of infinite recursion
-		 * testing, removing later
-		 * 
-		if (wordTypeData instanceof Word) {
-			Word word = (Word) wordTypeData;
-			List<TypeMeaningWord> meaningWords = word.getMeaningWords();
-			if (CollectionUtils.isNotEmpty(meaningWords)) {
-				for (TypeMeaningWord meaningWord : meaningWords) {
-					setWordTypeFlags(meaningWord);
-				}
-			}
-		}
-		*/
 	}
 
 	protected <T> OrderedMap<String, List<T>> composeOrderedMap(Map<String, List<T>> langKeyUnorderedMap, Map<String, Long> langOrderByMap) {

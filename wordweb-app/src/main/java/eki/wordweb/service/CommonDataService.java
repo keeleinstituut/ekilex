@@ -2,7 +2,6 @@ package eki.wordweb.service;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -21,8 +20,6 @@ import eki.common.data.Classifier;
 import eki.wordweb.constant.SystemConstant;
 import eki.wordweb.data.Dataset;
 import eki.wordweb.data.LanguageData;
-import eki.wordweb.data.NewWord;
-import eki.wordweb.data.NewWordYear;
 import eki.wordweb.data.NewsArticle;
 import eki.wordweb.data.UiFilterElement;
 import eki.wordweb.service.db.CommonDataDbService;
@@ -138,18 +135,5 @@ public class CommonDataService implements SystemConstant {
 
 		String displayLang = languageContext.getDisplayLang();
 		return commonDataDbService.getWordwebNewsArticles(displayLang);
-	}
-
-	@Transactional
-	public List<NewWordYear> getNewWordYears() {
-
-		List<NewWord> newWords = commonDataDbService.getNewWords();
-		List<NewWordYear> newWordYears = newWords.stream()
-				.collect(Collectors.groupingBy(NewWord::getRegYear))
-				.entrySet().stream()
-				.map(entry -> new NewWordYear(entry.getKey(), entry.getValue()))
-				.sorted(Comparator.comparing(NewWordYear::getRegYear).reversed())
-				.collect(Collectors.toList());
-		return newWordYears;
 	}
 }

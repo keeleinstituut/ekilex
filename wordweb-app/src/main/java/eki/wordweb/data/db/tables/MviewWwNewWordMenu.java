@@ -11,7 +11,7 @@ import org.jooq.Field;
 import org.jooq.ForeignKey;
 import org.jooq.Name;
 import org.jooq.Record;
-import org.jooq.Row5;
+import org.jooq.Row6;
 import org.jooq.Schema;
 import org.jooq.Table;
 import org.jooq.TableField;
@@ -66,6 +66,11 @@ public class MviewWwNewWordMenu extends TableImpl<MviewWwNewWordMenuRecord> {
      * The column <code>public.mview_ww_new_word_menu.reg_year</code>.
      */
     public final TableField<MviewWwNewWordMenuRecord, Integer> REG_YEAR = createField(DSL.name("reg_year"), SQLDataType.INTEGER, this, "");
+
+    /**
+     * The column <code>public.mview_ww_new_word_menu.word_type_codes</code>.
+     */
+    public final TableField<MviewWwNewWordMenuRecord, String[]> WORD_TYPE_CODES = createField(DSL.name("word_type_codes"), SQLDataType.VARCHAR.getArrayDataType(), this, "");
 
     private MviewWwNewWordMenu(Name alias, Table<MviewWwNewWordMenuRecord> aliased) {
         this(alias, aliased, null);
@@ -132,11 +137,11 @@ public class MviewWwNewWordMenu extends TableImpl<MviewWwNewWordMenuRecord> {
     }
 
     // -------------------------------------------------------------------------
-    // Row5 type methods
+    // Row6 type methods
     // -------------------------------------------------------------------------
 
     @Override
-    public Row5<Long, String, String, Integer, Integer> fieldsRow() {
-        return (Row5) super.fieldsRow();
+    public Row6<Long, String, String, Integer, Integer, String[]> fieldsRow() {
+        return (Row6) super.fieldsRow();
     }
 }

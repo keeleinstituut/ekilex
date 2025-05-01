@@ -49,7 +49,8 @@ dblink(
 	word text,
 	word_prese text,
 	homonym_nr integer,
-	reg_year integer
+	reg_year integer,
+	word_type_codes varchar(100) array
 );
 
 create materialized view mview_ww_word_search as

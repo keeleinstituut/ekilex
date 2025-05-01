@@ -195,7 +195,16 @@ select
 	w.value word,
 	w.value_prese word_prese,
 	w.homonym_nr,
-	w.reg_year
+	w.reg_year,
+	(
+	select
+		array_agg(wt.word_type_code order by wt.order_by)
+	from
+		word_word_type wt
+	where 
+		wt.word_id = w.id
+		and wt.word_type_code not in ('vv', 'yv', 'vvar')
+	) word_type_codes
 from
 	word w
 where

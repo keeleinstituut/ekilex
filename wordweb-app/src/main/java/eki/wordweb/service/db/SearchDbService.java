@@ -620,6 +620,7 @@ public class SearchDbService implements GlobalConstant, SystemConstant {
 						w.ASPECT_CODE,
 						w.VOCAL_FORM,
 						w.MORPH_COMMENT,
+						w.REG_YEAR,
 						w.MANUAL_EVENT_ON,
 						w.LAST_ACTIVITY_EVENT_ON,
 						w.WORD_TYPE_CODES,

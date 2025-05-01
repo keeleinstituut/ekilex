@@ -158,6 +158,12 @@
       <th:block th:each="summarisedPos : ${wordData.word.summarisedPoses}" th:if="${not #lists.isEmpty(wordData.word.summarisedPoses)}">
         <span class="lang-code text-caption lang-code--unrestricted mr-2" th:text="${summarisedPos.value}"></span>
       </th:block>
+      <th:block th:if="${wordData.word.regYear}">
+        <span class="lang-code text-caption lang-code--unrestricted mr-2">
+          <span th:text="#{label.word.regyear}"></span>
+          <span th:text="${wordData.word.regYear}" class="ml-1"></span>
+        </span>
+      </th:block>
     </div>
   </th:block>
   <th:block th:fragment="no-lexemes-exist">

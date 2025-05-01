@@ -17,6 +17,7 @@ public enum SearchEntity {
 			SearchKey.ASPECT,
 			SearchKey.VOCAL_FORM,
 			SearchKey.MORPHOPHONO_FORM,
+			SearchKey.REG_YEAR,
 			SearchKey.SOURCE_REF,
 			SearchKey.SOURCE_NAME,
 			SearchKey.SOURCE_VALUE,

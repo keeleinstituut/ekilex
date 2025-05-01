@@ -11,20 +11,11 @@ import org.springframework.web.bind.annotation.SessionAttributes;
 
 import eki.wordweb.constant.WebConstant;
 import eki.wordweb.data.Dataset;
-import eki.wordweb.data.NewWordYear;
 
 @ConditionalOnWebApplication
 @Controller
 @SessionAttributes(WebConstant.SESSION_BEAN)
 public class PagesController extends AbstractController {
-
-	@GetMapping(NEW_WORDS_URI)
-	public String newWords(Model model) {
-		populateCommonModel(model);
-		List<NewWordYear> newWordYears = commonDataService.getNewWordYears();
-		model.addAttribute("newWordYears", newWordYears);
-		return NEW_WORDS_PAGE;
-	}
 
 	@GetMapping(LEARN_URI)
 	public String learn(Model model) {

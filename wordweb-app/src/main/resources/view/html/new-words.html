@@ -27,7 +27,7 @@
                 <th:block th:each="newWord : ${newWordYear.newWords}">
                   <div class="col-md-auto ml-md-auto mr-md-auto">
                     <a th:href="@{${@viewUtil.getDetailSearchUri(newWord.word, newWord.homonymNr)}}">
-                      <span th:utext="${newWord.wordPrese}" class="text-nowrap"></span>
+                      <span th:utext="${@viewUtil.getWordValueMarkup(newWord)}" class="text-nowrap"></span>
                     </a>
                   </div>
                 </th:block>
