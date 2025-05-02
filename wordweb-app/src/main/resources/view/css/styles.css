@@ -16397,12 +16397,12 @@ span.material-symbols-outlined--small {
   }
 }
 .footer__column-header {
-  height: 30px;
+  min-height: 30px;
   font-size: 1.25rem;
 }
 .footer__logo {
   margin-left: -4px;
-  height: 100%;
+  height: 30px;
 }
 .footer__icon {
   display: inline-block;
