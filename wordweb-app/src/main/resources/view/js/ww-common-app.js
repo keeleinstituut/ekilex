@@ -402,7 +402,7 @@ class Navigation {
     });
 
     this.navLinks.addEventListener("focusout", (e) => {
-      if (!e.relatedTarget.closest("#nav-menu-links")) {
+      if (!e.relatedTarget?.closest?.("#nav-menu-links")) {
         this.closeMenu();
       }
     });

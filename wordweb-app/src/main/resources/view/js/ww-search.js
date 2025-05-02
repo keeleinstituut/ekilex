@@ -120,7 +120,7 @@ $(document).on("click", "button[id^='word-details-link']", function() {
 });
 
 $(document).on("click", "a[id^='feedback-link']", function() {
-	$("button[name='feedback-btn']").trigger('click');
+	$("button[data-target='#feedback-modal']").trigger('click');
 });
 
 $(document).on("click", ".homonym-item", function() {
