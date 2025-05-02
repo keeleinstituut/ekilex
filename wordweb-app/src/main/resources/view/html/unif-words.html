@@ -50,7 +50,7 @@
       </div>
     </div>
     <main role="main" class="content-panel">
-      <div class="word-details" th:if="${wordsMatch != null}">
+      <div id="word-details" th:if="${wordsMatch != null}">
         <div class="pt-2 search__block" th:unless="${wordsMatch.resultExists}">
           <h5 th:text="#{label.masked.search.no.results}">Tulemusi ei leidu</h5>
         </div>

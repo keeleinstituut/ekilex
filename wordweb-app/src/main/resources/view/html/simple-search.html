@@ -35,7 +35,7 @@
         </div>
       </div>
       <th:block th:replace="common-search :: homonyms"></th:block>
-      <div class="word-details">
+      <div id="word-details">
         <div class="no-results__wrapper" th:unless="${wordsData.resultExists}">
           <th:block th:if="${wordsData.validSearch}">
             <h1 class="no-results__title" th:text="#{label.search.word.not.found(${searchWord})}"></h1>
@@ -67,7 +67,7 @@
         </div>
       </div>
     </main>
-    <div th:fragment="worddetails" th:if="${wordData.word != null}">
+    <div id="word-details" th:fragment="worddetails" th:if="${wordData.word != null}">
       <input id="selected-word-homonym-nr" type="hidden" th:value="${wordData.word.homonymNr}">
       <input id="selected-word-lang" type="hidden" th:value="${wordData.word.lang}">
       <div class="py-2" th:text="#{label.lexeme.not.found}" th:unless="${wordData.relevantDataExists}">Soovitud keeltes tulemusi ei leidu</div>

@@ -29,16 +29,16 @@ $(document).on("click", ".btn-ellipsis", function(e) {
 function fetchDetails(wordId, wordSelectUrl) {
 	const wordDetailsUrlWithParams = wordDetailsUrl + "/" + wordId;
 	$.get(wordDetailsUrlWithParams).done(function(data) {
-		const wordDetailsWrapper = $('.word-details');
+		const wordDetailsWrapper = $('#word-details');
 		if (!wordDetailsWrapper.length) {
-			console.error("Unable to find word details wrapper with class 'word-details'")
+			console.error("Unable to find word details wrapper with id 'word-details'")
 		}
 		wordDetailsWrapper.replaceWith(data);
 		fetchCorpSentences();
 		fetchCorpTranslations();
 		updateBrowserHistory(wordSelectUrl);
 		setHomonymNrVisibility();
-		$('.word-details [data-toggle="tooltip"], [data-tooltip="tooltip"]').tooltip();
+		$('#word-details [data-toggle="tooltip"], [data-tooltip="tooltip"]').tooltip();
 		$('[data-toggle="popover"]').popover({
 			placement: 'top'
 		});
@@ -134,7 +134,7 @@ $(document).on("click", ".homonym-item", function() {
 			return;
 		}
 		homonymList.animate({
-			scrollLeft: bodyParentPositionLeft - $('.search-panel').offset().left + homonymList.scrollLeft()
+			scrollLeft: bodyParentPositionLeft - $('#word-details').offset().left + homonymList.scrollLeft()
 		}, 200);
 	}
 	setSelectedHomonymValueForMobile($(this).html());
