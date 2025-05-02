@@ -151,15 +151,17 @@
       background-color: var(--color-bluish-but-not-exactly-gray);
       text-decoration: none;
     }
+
+    &--disabled {
+      color: var(--color-2025-õigekeelsussõnaraamatu-hall-100);
+      pointer-events: none;
+      background-color: var(--color-hall-taust-final-final-final-hall-500);
+    }
   }
 
   &__image {
     width: 36px;
     height: 36px;
     border-radius: 100px;
-
-    &--bordered {
-      border: 2px solid var(--color-bluish-but-not-exactly-gray);
-    }
   }
 }

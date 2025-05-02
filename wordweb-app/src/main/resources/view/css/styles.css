@@ -65,6 +65,8 @@
   --color-notes-gray: #595959;
   --color-icon-gray: #636B74;
   --color-discord-gray: #596573;
+  --color-2025-\f5igekeelsuss\f5naraamatu-hall-100: #547687;
+  --color-hall-taust-final-final-final-hall-500: #F9F9F9;
   --color-white: #fff;
   --color-blue-100: #a0dcf8;
   --color-blue-200: #5aabe0;
@@ -15701,13 +15703,15 @@ span.material-symbols-outlined--small {
   background-color: var(--color-bluish-but-not-exactly-gray);
   text-decoration: none;
 }
+.navigation__link--disabled {
+  color: var(--color-2025-\f5igekeelsuss\f5naraamatu-hall-100);
+  pointer-events: none;
+  background-color: var(--color-hall-taust-final-final-final-hall-500);
+}
 .navigation__image {
   width: 36px;
   height: 36px;
   border-radius: 100px;
-}
-.navigation__image--bordered {
-  border: 2px solid var(--color-bluish-but-not-exactly-gray);
 }
 .header-container.show-header .header-links {
   display: flex;
@@ -16764,6 +16768,8 @@ span.material-symbols-outlined--small {
   --color-notes-gray: #595959;
   --color-icon-gray: #636B74;
   --color-discord-gray: #596573;
+  --color-2025-\f5igekeelsuss\f5naraamatu-hall-100: #547687;
+  --color-hall-taust-final-final-final-hall-500: #F9F9F9;
   --color-white: #fff;
   --color-blue-100: #a0dcf8;
   --color-blue-200: #5aabe0;
