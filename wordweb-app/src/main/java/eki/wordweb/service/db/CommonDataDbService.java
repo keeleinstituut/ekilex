@@ -346,7 +346,7 @@ public class CommonDataDbService implements SystemConstant, GlobalConstant {
 
 		return create
 				.selectFrom(nw)
-				.orderBy(nw.REG_YEAR.desc(), nw.WORD_ID)
+				.orderBy(nw.REG_YEAR.desc(), nw.WORD_ID.desc())
 				.fetchInto(NewWord.class);
 	}
 

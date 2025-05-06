@@ -227,7 +227,7 @@ where
 	)
 order by
 	w.reg_year desc,
-	w.id;
+	w.id desc;
 
 create view view_ww_word_search
 as
