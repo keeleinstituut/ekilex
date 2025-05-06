@@ -1198,7 +1198,7 @@ alter sequence lex_colloc_id_seq restart with 10000;
 
 create table collocation_member (
 	id bigserial primary key,
-	colloc_lexeme_id bigint references lexeme(id) not null,
+	colloc_lexeme_id bigint references lexeme(id) on delete cascade not null,
 	member_lexeme_id bigint references lexeme(id) not null,
 	member_form_id bigint references form(id) not null,
 	pos_group_code varchar(100) references pos_group(code),

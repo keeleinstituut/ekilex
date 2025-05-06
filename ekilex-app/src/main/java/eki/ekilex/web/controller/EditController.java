@@ -80,7 +80,6 @@ public class EditController extends AbstractMutableDataPageController implements
 
 		logger.debug("Create item: {}; auto update: {}", itemData, isManualEventOnUpdateEnabled);
 
-		Locale locale = LocaleContextHolder.getLocale();
 		EkiUser user = userContext.getUser();
 		String roleDatasetCode = getRoleDatasetCode();
 
@@ -95,8 +94,6 @@ public class EditController extends AbstractMutableDataPageController implements
 		String datasetCode = itemData.getDataset();
 		Complexity complexity = itemData.getComplexity();
 		boolean isPublic = itemData.isPublic();
-
-		Response response = new Response();
 
 		switch (itemData.getOpCode()) {
 		case "definition":
@@ -196,7 +193,7 @@ public class EditController extends AbstractMutableDataPageController implements
 			UserContextData userContextData = getUserContextData();
 			String candidateLang = userContextData.getFullSynCandidateLangCode();
 			String candidateDatasetCode = userContextData.getFullSynCandidateDatasetCode();
-			response = synCandidateService.createFullSynCandidate(id, value, candidateLang, candidateDatasetCode, roleDatasetCode);
+			Response response = synCandidateService.createFullSynCandidate(id, value, candidateLang, candidateDatasetCode, roleDatasetCode);
 			return response;
 		case "learner_comment":
 			cudService.createMeaningLearnerComment(id, value, languageCode, roleDatasetCode, isManualEventOnUpdateEnabled);
@@ -253,9 +250,12 @@ public class EditController extends AbstractMutableDataPageController implements
 			break;
 		}
 
-		String successMessage = messageSource.getMessage("common.create.success", new Object[0], locale);
+		Locale locale = LocaleContextHolder.getLocale();
+		String message = messageSource.getMessage("common.create.success", new Object[0], locale);
+		Response response = new Response();
 		response.setStatus(ResponseStatus.OK);
-		response.setMessage(successMessage);
+		response.setMessage(message);
+
 		return response;
 	}
 
@@ -281,12 +281,6 @@ public class EditController extends AbstractMutableDataPageController implements
 		String classifCode = itemData.getCode();
 		Complexity complexity = itemData.getComplexity();
 		boolean isPublic = itemData.isPublic();
-
-		Locale locale = LocaleContextHolder.getLocale();
-		Response response = new Response();
-		String successMessage = messageSource.getMessage("common.update.success", new Object[0], locale);
-		response.setStatus(ResponseStatus.OK);
-		response.setMessage(successMessage);
 
 		switch (itemData.getOpCode()) {
 		case "user_lang_selection":
@@ -467,6 +461,13 @@ public class EditController extends AbstractMutableDataPageController implements
 			sourceLinkService.updateFreeformSourceLink(id, value, roleDatasetCode, isManualEventOnUpdateEnabled);
 			break;
 		}
+
+		Locale locale = LocaleContextHolder.getLocale();
+		String message = messageSource.getMessage("common.update.success", new Object[0], locale);
+		Response response = new Response();
+		response.setStatus(ResponseStatus.OK);
+		response.setMessage(message);
+
 		return response;
 	}
 
@@ -570,19 +571,23 @@ public class EditController extends AbstractMutableDataPageController implements
 
 		logger.debug("Delete operation: {};  id: {}; value: {}; auto update: {}", opCode, id, valueToDelete, isManualEventOnUpdateEnabled);
 
-		Response response = new Response();
 		Locale locale = LocaleContextHolder.getLocale();
 		EkiUser user = userContext.getUser();
 		DatasetPermission userRole = user.getRecentRole();
+
 		if (userRole == null) {
+			logger.warn("User role not selected. Interrupting operation");
 			String errorMessage = messageSource.getMessage("common.delete.fail", new Object[0], locale);
+			Response response = new Response();
 			response.setStatus(ResponseStatus.ERROR);
 			response.setMessage(errorMessage);
 			return response;
 		}
 
-		String successMessage = messageSource.getMessage("common.delete.success", new Object[0], locale);
 		String roleDatasetCode = userRole.getDatasetCode();
+
+		String successMessage = messageSource.getMessage("common.delete.success", new Object[0], locale);
+		Response response = new Response();
 		response.setStatus(ResponseStatus.OK);
 		response.setMessage(successMessage);
 
@@ -751,6 +756,7 @@ public class EditController extends AbstractMutableDataPageController implements
 			sourceLinkService.deleteFreeformSourceLink(id, roleDatasetCode, isManualEventOnUpdateEnabled);
 			break;
 		}
+
 		return response;
 	}
 

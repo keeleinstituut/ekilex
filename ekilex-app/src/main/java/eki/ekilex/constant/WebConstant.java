@@ -224,6 +224,8 @@ public interface WebConstant {
 
 	String OPPOSITE_RELATIONS_URI = "/oppositerelations";
 
+	String PUBLISH_ITEM_URI = "/publish_item";
+
 	String CREATE_ITEM_URI = "/create_item";
 
 	String UPDATE_ITEM_URI = "/update_item";

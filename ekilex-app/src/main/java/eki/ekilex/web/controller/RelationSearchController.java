@@ -26,7 +26,7 @@ import eki.ekilex.web.bean.SessionBean;
 @ConditionalOnWebApplication
 @Controller
 @SessionAttributes(WebConstant.SESSION_BEAN)
-public class RelationSearchController extends AbstractMutableDataPageController {
+public class RelationSearchController extends AbstractPrivateSearchController {
 
 	private static final Logger logger = LoggerFactory.getLogger(RelationSearchController.class);
 
