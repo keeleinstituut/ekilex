@@ -31,19 +31,18 @@ public class PublishingController extends AbstractMutableDataPageController impl
 
 		logger.debug("Publish item: {}", itemData);
 
-		String opCode = itemData.getOpCode();
+		String targetName = itemData.getTargetName();
+		String entityName = itemData.getEntityName();
+		Long entityId = itemData.getId();
 
-		switch (opCode) {
-		case IS_PUBLIC:
+		switch (entityName) {
+		case ENTITY_NAME_LEXEME:
 			// TODO implement
 			break;
-		case WW_UNIF:
+		case ENTITY_NAME_DEFINITION:
 			// TODO implement
 			break;
-		case WW_SIMPLE:
-			// TODO implement
-			break;
-		case WW_OD:
+		case ENTITY_NAME_WORD_RELATION:
 			// TODO implement
 			break;
 		}

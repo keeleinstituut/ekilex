@@ -2,12 +2,17 @@ package eki.common.constant;
 
 public interface PublishingConstant {
 
-	String IS_PUBLIC = "is-public";
+	String TARGET_IS_PUBLIC = "is_public";
 
-	String WW_UNIF = "ww-unif";
+	String TARGET_NAME_WW_UNIF = "ww_unif";
 
-	String WW_SIMPLE = "ww-simple";
+	String TARGET_NAME_WW_SIMPLE = "ww_simple";
 
-	String WW_OD = "ww-od";
+	String TARGET_NAME_WW_OD = "ww_od";
 
+	String ENTITY_NAME_LEXEME = "lexeme";
+
+	String ENTITY_NAME_DEFINITION = "definition";
+
+	String ENTITY_NAME_WORD_RELATION = "word_relation";
 }

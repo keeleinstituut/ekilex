@@ -6,18 +6,28 @@ public class PublishItemRequest extends AbstractDataObject {
 
 	private static final long serialVersionUID = 1L;
 
-	private String opCode;
+	private String targetName;
+
+	private String entityName;
 
 	private Long id;
 
 	private boolean value;
 
-	public String getOpCode() {
-		return opCode;
+	public String getTargetName() {
+		return targetName;
 	}
 
-	public void setOpCode(String opCode) {
-		this.opCode = opCode;
+	public void setTargetName(String targetName) {
+		this.targetName = targetName;
+	}
+
+	public String getEntityName() {
+		return entityName;
+	}
+
+	public void setEntityName(String entityName) {
+		this.entityName = entityName;
 	}
 
 	public Long getId() {
