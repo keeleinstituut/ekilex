@@ -102,6 +102,174 @@ where
 delete from lexeme_register where register_code like 'uus20%';
 delete from register where code like 'uus20%';
 
+-- kollokatsioonide duplikaatide kustutamine
+
+alter table collocation_member
+drop constraint collocation_member_colloc_lexeme_id_fkey,
+add constraint collocation_member_colloc_lexeme_id_fkey foreign key (colloc_lexeme_id) references lexeme (id) on delete cascade;
+
+-- !! 30 min !! --
+delete
+from
+	lexeme l
+where
+	exists (
+		select
+			1
+		from
+			(
+			select
+				 (array_agg(cw1.colloc_lexeme_id order by cw1.colloc_lexeme_id))[1] orig_colloc_lexeme_id,
+				 array_agg(cw1.colloc_lexeme_id order by cw1.colloc_lexeme_id) colloc_lexeme_ids
+			from
+				(
+				select
+					cl.id colloc_lexeme_id,
+					cw.id colloc_word_id,
+					cw.value,
+					cl.complexity,
+					(
+					select
+						array_agg(cm.member_lexeme_id order by cm.member_order)
+					from
+						collocation_member cm
+					where
+						cm.colloc_lexeme_id = cl.id
+					) member_lexeme_ids,
+					(
+					select
+						array_agg(cm.member_form_id order by cm.member_order)
+					from
+						collocation_member cm
+					where
+						cm.colloc_lexeme_id = cl.id
+					) member_form_ids,
+					(
+					select
+						coalesce(array_agg(u.value order by u.value), '{}')
+					from 
+						usage u
+					where
+						u.lexeme_id = cl.id
+					) usage_values,
+					(
+					select
+						coalesce(array_agg(d.value order by d.value), '{}')
+					from
+						definition d 
+					where
+						d.meaning_id = cl.meaning_id 
+						and exists (
+							select
+								1
+							from
+								definition_dataset dd 
+							where
+								dd.definition_id = d.id
+								and dd.dataset_code = 'eki'
+						)
+					) definition_values
+				from
+					word cw,
+					lexeme cl
+				where
+					cl.word_id = cw.id
+					and cl.is_collocation = true
+					and cl.is_word = false
+				) cw1
+			where
+				exists (
+					select
+						1
+					from (
+						select
+							cl.id colloc_lexeme_id,
+							cw.value,
+							cl.complexity,
+							(
+							select
+								array_agg(cm.member_lexeme_id order by cm.member_order)
+							from
+								collocation_member cm
+							where
+								cm.colloc_lexeme_id = cl.id
+							) member_lexeme_ids,
+							(
+							select
+								array_agg(cm.member_form_id order by cm.member_order)
+							from
+								collocation_member cm
+							where
+								cm.colloc_lexeme_id = cl.id
+							) member_form_ids,
+							(
+							select
+								coalesce(array_agg(u.value order by u.value), '{}')
+							from 
+								usage u
+							where
+								u.lexeme_id = cl.id
+							) usage_values,
+							(
+							select
+								coalesce(array_agg(d.value order by d.value), '{}')
+							from
+								definition d 
+							where
+								d.meaning_id = cl.meaning_id 
+								and exists (
+									select
+										1
+									from
+										definition_dataset dd 
+									where
+										dd.definition_id = d.id
+										and dd.dataset_code = 'eki'
+								)
+							) definition_values
+						from
+							word cw,
+							lexeme cl
+						where
+							cl.word_id = cw.id
+							and cl.is_collocation = true
+							and cl.is_word = false
+						) cw2
+					where
+						cw2.value = cw1.value
+						and cw2.complexity = cw1.complexity
+						and cw2.member_lexeme_ids = cw1.member_lexeme_ids
+						and cw2.member_form_ids = cw1.member_form_ids
+						and cw2.usage_values = cw1.usage_values
+						and cw2.definition_values = cw1.definition_values
+						and cw2.colloc_lexeme_id != cw1.colloc_lexeme_id
+				)
+			group by
+				cw1.value,
+				cw1.member_lexeme_ids,
+				cw1.member_form_ids,
+				cw1.usage_values,
+				cw1.definition_values
+			) dl
+		where
+			l.id = any (dl.colloc_lexeme_ids)
+			and l.id != dl.orig_colloc_lexeme_id
+	)
+;
+
+delete
+from 
+	word w 
+where
+	not exists (
+		select
+			1
+		from
+			lexeme l 
+		where
+			l.word_id = w.id
+	)
+;
 
 
 
