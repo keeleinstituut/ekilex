@@ -3,18 +3,23 @@
 
   &__wrapper {
     display: grid;
-    grid-template-columns: [full-width-start] 1fr [content] minmax(375px, 750px) [full-width-end] 1fr;
-    gap: 16px;
+    grid-template-columns: [full-width-start] 4px [content] 1fr [full-width-end] 4px;
+    gap: 4px;
     flex-grow: 1;
     margin-bottom: 36px;
-
+    
     background-image: url("../images/bg-arrow.svg"), url("../images/bg-colon.svg"), url("../images/bg-tilde.svg"), url("../images/bg-quotes.svg");
     background-repeat: no-repeat, no-repeat, no-repeat, no-repeat;
     // Alternate left and right positions via percentages
     background-position: calc(100% - 87px) 268px, 87px calc(268px + 25%), calc(100% - 87px) calc(268px + 50%), 87px calc(268px + 75%), calc(100% - 87px) calc(268px + 100%);
-
+    
     @media (max-width: 1200px) {
       background-image: none;
+    }
+    
+    @include media-breakpoint-up(md) {
+      grid-template-columns: [full-width-start] 1fr [content] minmax(375px, 750px) [full-width-end] 1fr;
+      gap: 16px;
     }
   }
 

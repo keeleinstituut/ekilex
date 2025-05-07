@@ -1,0 +1,98 @@
+.new-words-page {
+  &__header {
+    grid-column: 1 / -1;
+    padding-top: 40px;
+    display: grid;
+    grid-template-columns: subgrid;
+    align-items: center;
+    text-align: center;
+    gap: 16px;
+    color: var(--color-dark-blue);
+    background-image: url(../images/bg-quotes.svg);
+    background-repeat: no-repeat;
+    background-position: 87px 64px;
+
+    & h1,
+    & p {
+      margin: 0;
+      grid-column: content;
+    }
+
+    & h1 {
+      font-weight: 400;
+      font-size: 3rem;
+      @include media-breakpoint-down(lg) {
+        hyphens: auto;
+      }
+    }
+
+    & p {
+      font-weight: 500;
+      font-size: .875rem;
+      text-align: center;
+    }
+
+    @media (max-width: 1200px) {
+      background-image: none;
+    }
+  }
+
+  &__illustration,
+  &__separator,
+  &__content {
+    grid-column: content;
+  }
+
+  &__illustration {
+    width: 60px;
+    height: 60px;
+    margin: 0 auto;
+  }
+
+  &__separator {
+    margin: 0 auto;
+    width: 2px;
+    height: 33px;
+    background-color: var(--color-dark-blue);
+
+    &--connected {
+      margin-top: -16px;
+    }
+  }
+
+  &__content {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    text-align: center;
+    color: var(--color-dark-blue);
+
+    & h1:first-of-type {
+      margin-top: -8px;
+    }
+  }
+
+  &__year {
+    font-weight: 400;
+    font-size: 2.125rem;
+    margin: 0;
+  }
+
+  &__word-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 8px;
+  }
+
+  &__word {
+    border-radius: 4px;
+    border: 1px solid var(--color-gray-010);
+    padding: 4px 8px;
+    background-color: var(--color-white);
+    font-size: .875rem;
+    font-weight: 500;
+    text-align: center;
+    color: var(--color-dark-blue);
+  }
+}
