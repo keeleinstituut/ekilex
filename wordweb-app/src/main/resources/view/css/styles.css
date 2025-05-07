@@ -15801,48 +15801,6 @@ span.material-symbols-outlined--small {
   height: 36px;
   border-radius: 100px;
 }
-.header-container.show-header .header-links {
-  display: flex;
-}
-.header-links {
-  position: fixed;
-  top: 0;
-  right: 0;
-  z-index: 1050;
-  display: none;
-  width: 20rem;
-  height: 100%;
-  padding: 24px 0;
-  background-color: #0e1013;
-  flex-direction: column;
-}
-.header-links::before {
-  position: fixed;
-  top: 0;
-  left: 0;
-  z-index: -1;
-  width: calc(100% - 320px);
-  height: 100%;
-  content: "";
-  background-color: #fff;
-  opacity: 0.7;
-}
-.header-links .menu-item {
-  padding: 8px 24px;
-  font-size: 1.25rem;
-}
-.header-links .menu-item:hover {
-  color: #fff;
-  background: #3f3f3f;
-}
-.header-links .menu-item.selected {
-  color: #fff;
-  background-color: #2c6fb6;
-}
-.header-links .menu-item:last-of-type {
-  pointer-events: none;
-  cursor: none;
-}
 .menu-btn {
   font-size: 1.25rem;
 }
