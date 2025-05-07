@@ -15029,7 +15029,7 @@ body {
   .sticky-scroll-panel {
     position: sticky;
     background-color: var(--color-gray-010);
-    z-index: 2;
+    z-index: 1;
     top: 75px;
     margin: 0 -15px;
     padding: 1px 15px 14px;
@@ -15796,10 +15796,19 @@ span.material-symbols-outlined--small {
   pointer-events: none;
   background-color: var(--color-hall-taust-final-final-final-hall-500);
 }
+@media (min-width: 768px) {
+  .navigation__link {
+    min-width: 106px;
+  }
+}
 .navigation__image {
   width: 36px;
   height: 36px;
   border-radius: 100px;
+}
+.navigation__link-description {
+  font-weight: 400;
+  font-size: 0.625rem;
 }
 .menu-btn {
   font-size: 1.25rem;

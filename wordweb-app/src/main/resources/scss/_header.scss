@@ -157,11 +157,20 @@
       pointer-events: none;
       background-color: var(--color-hall-taust-final-final-final-hall-500);
     }
+
+    @include media-breakpoint-up(md) {
+      min-width: 106px;
+    }
   }
 
   &__image {
     width: 36px;
     height: 36px;
     border-radius: 100px;
+  }
+
+  &__link-description {
+    font-weight: 400;
+    font-size: .625rem;
   }
 }
