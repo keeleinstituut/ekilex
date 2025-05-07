@@ -15653,7 +15653,7 @@ span.material-symbols-outlined--small {
   background-color: var(--color-gray-010);
   border: none;
 }
-.header--simple .header__content > *:not(.navigation__dropdown, .lang-btn) {
+.header--simple .header__lucky {
   display: none;
 }
 .header--simple .lang-btn {

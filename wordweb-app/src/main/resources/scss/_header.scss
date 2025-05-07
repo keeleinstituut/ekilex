@@ -9,7 +9,7 @@
   &--simple {
     background-color: var(--color-gray-010);
     border: none;
-    & .header__content > *:not(.navigation__dropdown,.lang-btn) {
+    & .header__lucky {
       display: none;
     }
 

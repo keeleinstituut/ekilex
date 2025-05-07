@@ -92,7 +92,7 @@
           th:href="${pageContext == 'simpleSearch'} ? @{/lite} : @{/}"
           th:aria-label="#{aria.menu.logo}"
           class="header__logo"
-          th:classappend="${pageContext == 'simpleSearch' ? 'header__logo--light' : ''}"></a>
+          th:classappend="${pageContext == 'simpleSearch' ? 'header__logo--light' : ''}" th:if="${withLogo ?: true}"></a>
         <div class="header__search" id="language-detail-panel" th:if="${withSearch ?: true}">
           <div th:replace="common-search :: search(pageContext = 'search')"></div>
         </div>
