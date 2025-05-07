@@ -14735,35 +14735,30 @@ body {
 }
 .logo-list {
   display: flex;
-  flex-direction: column;
   flex-wrap: wrap;
   align-items: center;
-  justify-content: center;
+  justify-content: space-evenly;
   padding: 0 32px;
-  margin: 1.5rem auto 0;
+  margin: 24px auto;
+  gap: 20px 40px;
 }
 @media (min-width: 768px) {
   .logo-list {
     flex-direction: row;
     margin-top: 4rem;
     margin-bottom: 4rem;
+    gap: 20px 64px;
   }
 }
 .mini-logo {
   display: block;
   justify-content: center;
-  margin: 1.5rem 1rem;
   background-repeat: no-repeat;
   background-size: contain;
 }
-@media (min-width: 768px) {
-  .mini-logo {
-    margin: 1.5rem 2rem;
-  }
-}
 .htm-logo {
-  width: 9.21875rem;
-  height: 3.828125rem;
+  width: 99px;
+  height: 41px;
   background-image: url(../images/htm.svg);
 }
 @media (min-width: 768px) {
@@ -14780,8 +14775,8 @@ body {
 }
 .esf-logo,
 .erf-logo {
-  width: 11.0625rem;
-  height: 5.84375rem;
+  width: 91px;
+  height: 45px;
 }
 @media (min-width: 768px) {
   .esf-logo,
@@ -14791,8 +14786,8 @@ body {
   }
 }
 .eki-logo {
-  width: 9.375rem;
-  height: 3.4722222222rem;
+  width: 91px;
+  height: 45px;
   background-image: url(../images/eki.svg);
 }
 @media (min-width: 768px) {
