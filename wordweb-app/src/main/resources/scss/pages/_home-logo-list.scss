@@ -5,35 +5,31 @@
 
 .logo-list {
   display: flex;
-  flex-direction: column;
   flex-wrap: wrap;
   align-items: center;
-  justify-content: center;
+  justify-content: space-evenly;
   padding: 0 32px;
-  margin: 1.5rem auto 0;
+  margin: 24px auto;
+  gap: 20px 40px;
 
   @include media-breakpoint-up(md) {
     flex-direction: row;
     margin-top: 4rem;
     margin-bottom: 4rem;
+    gap: 20px 64px;
   }
 }
 
 .mini-logo {
   display: block;
   justify-content: center;
-  margin: 1.5rem 1rem;
   background-repeat: no-repeat;
   background-size: contain;
-
-  @include media-breakpoint-up(md) {
-    margin: 1.5rem 2rem;
-  }
 }
 
 .htm-logo {
-  width: calc(14.75rem / 1.6);
-  height: calc(6.125rem / 1.6);
+  width: 99px;
+  height: 41px;
   background-image: url(../images/htm.svg);
   @include media-breakpoint-up(md) {
     width: calc(14.75rem / 1.4);
@@ -51,8 +47,8 @@
 
 .esf-logo,
 .erf-logo {
-  width: calc(22.125rem / 2);
-  height: calc(11.6875rem / 2);
+  width: 91px;
+  height: 45px;
   @include media-breakpoint-up(md) {
     width: calc(22.125rem / 2.2);
     height: calc(11.6875rem / 2.2);
@@ -60,8 +56,8 @@
 }
 
 .eki-logo {
-  width: calc(16.875rem / 1.8);
-  height: calc(6.25rem / 1.8);
+  width: 91px;
+  height: 45px;
   background-image: url(../images/eki.svg);
 
   @include media-breakpoint-up(md) {

@@ -6,32 +6,46 @@
       <script type="text/javascript" th:src="@{/view/js/hash.js}"></script>
     </th:block>
   </head>
-  <body class="survey-active news-page">
+  <body class="survey-active">
     <th:block th:replace="common-app :: wcag-sidebar"></th:block>
     <th:block th:replace="common-app :: wcag-main"></th:block>
     <th:block th:replace="common-app :: ie-user"></th:block>
-    <th:block th:replace="common-app :: header(withSearch = ${false})"></th:block>
+    <th:block
+      th:replace="common-app :: header(withSearch = ${false})"
+    ></th:block>
     <div class="news-page__wrapper">
-      <div class="news-page__header">
+      <div class="new-words-page__header">
         <h1 th:text="#{label.newwords.title}">Uued sõnad</h1>
         <p th:text="#{label.newwords.description}">Midagi midagi</p>
+        <img
+          class="new-words-page__illustration"
+          th:src="@{/view/images/nature.svg}"
+          alt=""
+          width="60"
+          height="60"
+        />
       </div>
-      <div class="news-page__content">
+      <div class="new-words-page__content">
         <th:block th:if="${newWordYears}">
-          <th:block th:each="newWordYear : ${newWordYears}">
-            <div class="text-center">
-              <h1 class="mt-5">
-                <span th:text="${newWordYear.regYear}"></span>
-              </h1>
-              <div class="row">
-                <th:block th:each="newWord : ${newWordYear.newWords}">
-                  <div class="col-md-auto ml-md-auto mr-md-auto">
-                    <a th:href="@{${@viewUtil.getDetailSearchUri(newWord.word, newWord.homonymNr)}}">
-                      <span th:utext="${@viewUtil.getWordValueMarkup(newWord)}" class="text-nowrap"></span>
-                    </a>
-                  </div>
-                </th:block>
-              </div>
+          <th:block th:each="newWordYear, newWordYearIter : ${newWordYears}">
+            <div
+              class="new-words-page__separator"
+              th:classappend="${newWordYearIter.isFirst ? 'new-words-page__separator--connected' : ''}"
+            ></div>
+            <h1
+              class="new-words-page__year"
+              th:text="${newWordYear.regYear}"
+            ></h1>
+            <div class="new-words-page__word-container">
+              <th:block th:each="newWord : ${newWordYear.newWords}">
+                <a
+                  class="new-words-page__word"
+                  th:href="@{${@viewUtil.getDetailSearchUri(newWord.word, newWord.homonymNr)}}"
+                  th:utext="${@viewUtil.getWordValueMarkup(newWord)}"
+                >
+                Sõna
+                </a>
+              </th:block>
             </div>
           </th:block>
         </th:block>
@@ -39,8 +53,5 @@
     </div>
     <div th:replace="common-app :: footer-content"></div>
     <th:block th:replace="common-app :: content-top"></th:block>
-    <script th:inline="javascript">
-      setActiveMenuItem("new-words");
-    </script>
   </body>
 </html>

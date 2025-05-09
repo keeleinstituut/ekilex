@@ -92,7 +92,7 @@
           th:href="${pageContext == 'simpleSearch'} ? @{/lite} : @{/}"
           th:aria-label="#{aria.menu.logo}"
           class="header__logo"
-          th:classappend="${pageContext == 'simpleSearch' ? 'header__logo--light' : ''}"></a>
+          th:classappend="${pageContext == 'simpleSearch' ? 'header__logo--light' : ''}" th:if="${withLogo ?: true}"></a>
         <div class="header__search" id="language-detail-panel" th:if="${withSearch ?: true}">
           <div th:replace="common-search :: search(pageContext = 'search')"></div>
         </div>
@@ -141,7 +141,12 @@
         </a>
         <a class="navigation__link navigation__link--disabled" th:href="@{/}" target="_blank">
           <img class="navigation__image" th:src="@{'/view/images/menu-grammar.svg'}" alt="">
-          <span th:utext="#{menu.grammar}"></span>
+          <span th:utext="#{menu.grammar.title}"></span>
+          <span class="navigation__link-description" th:utext="#{menu.grammar.description}"></span>
+        </a>
+        <a class="navigation__link" href="https://eki.ee/keeleinfo/sonastikud/" target="_blank">
+          <img class="navigation__image" th:src="@{'/view/images/menu-dictionaries.svg'}" alt="">
+          <span th:utext="#{menu.dictionaries}"></span>
         </a>
         <a class="navigation__link" th:href="@{/lite}" target="_blank">
           <img class="navigation__image" th:src="@{'/view/images/menu-lite.svg'}" alt="">

@@ -124,7 +124,7 @@
           th:unless="${#lists.isEmpty(details.word.wordOdUsages)}">
           <th:block th:each="wordOdUsage : ${details.word.wordOdUsages}">
             <div th:replace="lexdialog :: edit_word_od_usage"></div>
-            <div class="d-flex sidebar-ordering"
+            <div class="d-flex sidebar-actions"
               th:data-id="${wordOdUsage.id}"
               th:data-orderby="${wordOdUsage.orderBy}"
             >
@@ -386,7 +386,7 @@
         </div>
         <ul
           th:unless="${#lists.isEmpty(relationGroup.members)}"
-          class="sidebar-ordering"
+          class="sidebar-actions"
           data-plugin="sorter"
           data-sorter:type="relations"
           data-sorter:handle=".sorter-handle">
@@ -394,7 +394,7 @@
             th:each="relation, itemIter : ${relationGroup.members}"
             th:data-id="${relation.id}"
             th:data-orderby="${relation.orderBy}">
-            <div class="sidebar-ordering__item">
+            <div class="sidebar-actions__item">
               <span sec:authorize="#vars.details.word.crudGrant" class="sorter-handle"><i class="fa fa-ellipsis-v"></i></span>
               <button type="button"
                 class="btn btn-link btn-text-wrap btn-xs"
@@ -405,7 +405,7 @@
                 name="details-btn">
                 <span th:utext="${@viewUtil.getWordValueMarkup(relation) + ' (' + @viewUtil.getLangIso2(relation.wordLang) + ')'}"></span>
               </button>
-              <div class="sidebar-ordering__buttons">
+              <div class="sidebar-actions__buttons">
                 <button type="button" class="btn badge badge-warning"
                   th:data-id="${relation.id}"
                   data-op-code="word_relation"
@@ -414,6 +414,14 @@
                   sec:authorize="#vars.details.word.crudGrant">
                   <i class="fa fa-remove" aria-hidden="true"></i>
                 </button>
+                <th:block
+                  th:replace=" :: word_publishing(
+                    entityId = ${relation.id},
+                    entityName = 'word_relation',
+                    wwActive = ${false},
+                    odActive = ${false},
+                    liteActive = ${false})">
+                </th:block>
               </div>
             </div>
           </li>
@@ -554,6 +562,60 @@
           </div>
         </div>
       </div>
+    </div>
+  </th:block>
+  <th:block th:fragment="word_publishing">
+    <div class="dropdown publishing" data-plugin="publishingHandler" th:data-entity-id="${entityId}" th:data-entity-name="${entityName}">
+      <button type="button" class="publishing__button publishing__button--toggle"
+        th:id="|publishing-trigger-${entityName}-${entityId}|"
+        sec:authorize="#vars.details.word.crudGrant"
+        data-toggle="publishing-menu"
+        aria-haspopup="true"
+        aria-expanded="false"
+        >
+        <span class="material-symbols-outlined">apps</span>
+      </button>
+      <div
+        class="dropdown-menu publishing__menu"
+        th:id="|publishing-menu-${entityName}-${entityId}|"
+        th:aria-labelledby="|publishing-trigger-${entityName}-${entityId}|">
+        <button
+          class="publishing__menu-item"
+          data-publishing-item="ww"
+          th:data-publishing-item-active="${wwActive}">
+          <span th:utext="#{publishing.wordweb}"></span>
+        </button>
+        <button
+          class="publishing__menu-item"
+          data-publishing-item="od"
+          th:data-publishing-item-active="${odActive}">
+          <span th:utext="#{publishing.od}"></span>
+        </button>
+        <button
+          class="publishing__menu-item"
+          data-publishing-item="lite"
+          th:data-publishing-item-active="${liteActive}">
+          <span th:utext="#{publishing.lite}"></span>
+        </button>
+      </div>
+      <button type="button" class="publishing__button publishing__button--icon"
+        data-publishing-item="ww"
+        th:data-publishing-item-active="${wwActive}"
+        sec:authorize="#vars.details.word.crudGrant"
+        >
+      </button>
+      <button type="button" class="publishing__button publishing__button--icon"
+        data-publishing-item="od"
+        th:data-publishing-item-active="${odActive}"
+        sec:authorize="#vars.details.word.crudGrant"
+        >
+      </button>
+      <button type="button" class="publishing__button publishing__button--icon"
+        data-publishing-item="lite"
+        th:data-publishing-item-active="${liteActive}"
+        sec:authorize="#vars.details.word.crudGrant"
+        >
+      </button>
     </div>
   </th:block>
 </body>

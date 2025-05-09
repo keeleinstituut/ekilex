@@ -292,3 +292,16 @@ select:invalid {
 		margin-top: 4px;
 	}
 }
+
+span.material-symbols-outlined {
+  font-size: var(--icon-size, var(--fallback-icon-size, inherit));
+  font-variation-settings: var(--icon-variation-settings);
+
+  &--default-size {
+    --fallback-icon-size: 1.5rem;
+  }
+
+  &--small {
+    --fallback-icon-size: 1.3125rem;
+  }
+}

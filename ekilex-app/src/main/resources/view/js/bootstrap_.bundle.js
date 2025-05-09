@@ -3882,6 +3882,7 @@
     }]);
     return Popper;
   }();
+  window.Popper = Popper;
 
   /**
    * The `referenceObject` is an object that provides an interface compatible with Popper.js

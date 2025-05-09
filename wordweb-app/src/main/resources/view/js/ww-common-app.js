@@ -5,13 +5,6 @@ $(document).ready(function() {
 	$('[autofocus]:not(:focus)').eq(0).trigger('focus');
 	$('.home-page #search').trigger('focus');
 
-	// Focus trap sidebar
-	$('.header-links .menu-item:last-of-type').on('focus', function(e) {
-		if ($("#uiLangMenuButton").val() == "") {
-			$("#uiLangMenuButton").trigger('focus');
-		}
-	});
-
 	$('[data-toggle="tooltip"]').tooltip();
 	Feedback.init(feedbackServiceUrl);
 	closeSurveyBanner();
@@ -29,10 +22,6 @@ $(document).on("click", ".menu-btn", function() {
 		headerContainer.classList.add('show-header');
 	}
 });
-
-function setActiveMenuItem(itemName) {
-	$('.menu-item[data-item-name=' + itemName + ']').addClass('selected');
-}
 
 class Feedback {
   static serviceUrl = "";
