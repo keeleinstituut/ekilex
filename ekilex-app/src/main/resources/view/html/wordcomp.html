@@ -286,6 +286,12 @@
       </div>
     </div>
   </th:block>
+  <th:block th:fragment="word_relation">
+    <div th:id="|word_relation_section_${wordId}|">
+      <th:block th:replace=" :: word_sec_relation"></th:block>
+      <th:block th:replace=" :: word_prim_relation"></th:block>
+    </div>
+  </th:block>
   <th:block th:fragment="word_sec_relation">
     <div class="ekiAccordion__instance">
       <div class="ekiAccordion__title">

@@ -27,12 +27,13 @@ import eki.ekilex.data.ClassifierSelect;
 import eki.ekilex.data.EkiUser;
 import eki.ekilex.data.EkiUserProfile;
 import eki.ekilex.data.InternalLinkSearchRequest;
+import eki.ekilex.data.Lexeme;
 import eki.ekilex.data.SearchFilter;
 import eki.ekilex.data.SearchUriData;
 import eki.ekilex.data.Tag;
 import eki.ekilex.data.UserContextData;
 import eki.ekilex.data.WordDetails;
-import eki.ekilex.data.Lexeme;
+import eki.ekilex.data.WordRelationDetails;
 import eki.ekilex.data.WordsResult;
 import eki.ekilex.service.LexSearchService;
 import eki.ekilex.web.bean.SessionBean;
@@ -216,7 +217,19 @@ public class LexSearchController extends AbstractPrivateSearchController {
 		model.addAttribute("wordId", wordId);
 		model.addAttribute("details", details);
 
-		return LEX_SEARCH_PAGE + PAGE_FRAGMENT_ELEM + "word_details";
+		return LEX_SEARCH_PAGE + PAGE_FRAGMENT_ELEM + WORD_DETAILS_FRAGMENT;
+	}
+
+	@GetMapping(WORD_RELATION_URI + "/{wordId}")
+	public String wordRelationDetails(@PathVariable("wordId") Long wordId, Model model) {
+
+		WordRelationDetails wordRelationDetails = lexSearchService.getWordRelationDetails(wordId);
+		WordDetails details = new WordDetails();
+		details.setWordRelationDetails(wordRelationDetails);
+		model.addAttribute("wordId", wordId);
+		model.addAttribute("details", details);
+
+		return WORD_COMPONENTS_PAGE + PAGE_FRAGMENT_ELEM + WORD_RELATION_FRAGMENT;
 	}
 
 	@GetMapping(LEXEME_DETAILS_URI + "/{composition}/{lexemeId}/{levels}")

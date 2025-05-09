@@ -20,6 +20,8 @@ public class AbstractRelation extends AbstractDataObject implements DecoratedWor
 
 	private String wordLang;
 
+	private Integer wordHomonymNr;
+
 	private String wordAspectCode;
 
 	private String[] wordTypeCodes;
@@ -29,8 +31,6 @@ public class AbstractRelation extends AbstractDataObject implements DecoratedWor
 	private boolean suffixoid;
 
 	private boolean foreign;
-
-	private Integer wordHomonymNr;
 
 	private boolean homonymsExist;
 
@@ -72,22 +72,18 @@ public class AbstractRelation extends AbstractDataObject implements DecoratedWor
 		this.wordId = wordId;
 	}
 
-	@Override
 	public String getWordValue() {
 		return wordValue;
 	}
 
-	@Override
 	public void setWordValue(String wordValue) {
 		this.wordValue = wordValue;
 	}
 
-	@Override
 	public String getWordValuePrese() {
 		return wordValuePrese;
 	}
 
-	@Override
 	public void setWordValuePrese(String wordValuePrese) {
 		this.wordValuePrese = wordValuePrese;
 	}
@@ -100,6 +96,14 @@ public class AbstractRelation extends AbstractDataObject implements DecoratedWor
 		this.wordLang = wordLang;
 	}
 
+	public Integer getWordHomonymNr() {
+		return wordHomonymNr;
+	}
+
+	public void setWordHomonymNr(Integer wordHomonymNr) {
+		this.wordHomonymNr = wordHomonymNr;
+	}
+
 	public String getWordAspectCode() {
 		return wordAspectCode;
 	}
@@ -108,52 +112,36 @@ public class AbstractRelation extends AbstractDataObject implements DecoratedWor
 		this.wordAspectCode = wordAspectCode;
 	}
 
-	@Override
 	public String[] getWordTypeCodes() {
 		return wordTypeCodes;
 	}
 
-	@Override
 	public void setWordTypeCodes(String[] wordTypeCodes) {
 		this.wordTypeCodes = wordTypeCodes;
 	}
 
-	@Override
 	public boolean isPrefixoid() {
 		return prefixoid;
 	}
 
-	@Override
 	public void setPrefixoid(boolean prefixoid) {
 		this.prefixoid = prefixoid;
 	}
 
-	@Override
 	public boolean isSuffixoid() {
 		return suffixoid;
 	}
 
-	@Override
 	public void setSuffixoid(boolean suffixoid) {
 		this.suffixoid = suffixoid;
 	}
 
-	@Override
 	public boolean isForeign() {
 		return foreign;
 	}
 
-	@Override
 	public void setForeign(boolean foreign) {
 		this.foreign = foreign;
-	}
-
-	public Integer getWordHomonymNr() {
-		return wordHomonymNr;
-	}
-
-	public void setWordHomonymNr(Integer wordHomonymNr) {
-		this.wordHomonymNr = wordHomonymNr;
 	}
 
 	public boolean isHomonymsExist() {
@@ -187,4 +175,5 @@ public class AbstractRelation extends AbstractDataObject implements DecoratedWor
 	public void setOrderBy(Long orderBy) {
 		this.orderBy = orderBy;
 	}
+
 }

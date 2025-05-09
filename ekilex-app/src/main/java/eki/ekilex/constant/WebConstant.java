@@ -90,6 +90,14 @@ public interface WebConstant {
 
 	String TERM_COMPONENTS_PAGE = "termcomp";
 
+	String WORD_COMPONENTS_PAGE = "wordcomp";
+
+	String WORD_RELATION_FRAGMENT = "word_relation";
+
+	String WORD_RELATION_URI = "/wordrelation";
+
+	String WORD_DETAILS_FRAGMENT = "word_details";
+
 	String WORD_DETAILS_URI = "/worddetails";
 
 	String LEXEME_DETAILS_URI = "/lexemedetails";

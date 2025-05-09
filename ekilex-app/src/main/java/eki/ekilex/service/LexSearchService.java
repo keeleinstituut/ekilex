@@ -134,6 +134,21 @@ public class LexSearchService extends AbstractWordSearchService {
 	}
 
 	@Transactional
+	public WordRelationDetails getWordRelationDetails(Long wordId) {
+
+		Word word = lexSearchDbService.getWord(wordId);
+		String wordLang = word.getLang();
+		List<WordRelation> wordRelations = lexDataDbService.getWordRelations(wordId, CLASSIF_LABEL_LANG_EST);
+		List<Classifier> allWordRelationTypes = commonDataDbService.getDefaultClassifiers(ClassifierName.WORD_REL_TYPE, CLASSIF_LABEL_LANG_EST);
+		List<Classifier> allAspects = commonDataDbService.getDefaultClassifiers(ClassifierName.ASPECT, CLASSIF_LABEL_LANG_EST);
+		List<WordRelation> wordGroupMembers = lexDataDbService.getWordGroupMembers(wordId, CLASSIF_LABEL_LANG_EST);
+		List<WordGroup> wordGroups = conversionUtil.composeWordGroups(wordGroupMembers, allAspects);
+		WordRelationDetails wordRelationDetails = conversionUtil.composeWordRelationDetails(wordRelations, wordGroups, wordLang, allWordRelationTypes);
+
+		return wordRelationDetails;
+	}
+
+	@Transactional
 	public Lexeme getWordLexeme(
 			Long lexemeId, List<ClassifierSelect> languagesOrder, EkiUserProfile userProfile, EkiUser user, boolean isFullData) throws Exception {
 
