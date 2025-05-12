@@ -14,6 +14,7 @@ import org.springframework.cache.annotation.Cacheable;
 
 import eki.common.constant.FreeformConstant;
 import eki.common.constant.GlobalConstant;
+import eki.common.constant.PublishingConstant;
 import eki.ekilex.constant.SystemConstant;
 import eki.ekilex.data.SimpleWord;
 import eki.ekilex.data.db.main.tables.Dataset;
@@ -21,7 +22,7 @@ import eki.ekilex.data.db.main.tables.Lexeme;
 import eki.ekilex.data.db.main.tables.Word;
 import eki.ekilex.service.db.util.QueryHelper;
 
-public abstract class AbstractDataDbService implements SystemConstant, GlobalConstant, FreeformConstant {
+public abstract class AbstractDataDbService implements SystemConstant, GlobalConstant, FreeformConstant, PublishingConstant {
 
 	@Autowired
 	protected DSLContext mainDb;

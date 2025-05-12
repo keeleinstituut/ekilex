@@ -521,6 +521,11 @@ public class Sequences {
     public static final Sequence<Long> PROFICIENCY_LEVEL_ORDER_BY_SEQ = Internal.createSequence("proficiency_level_order_by_seq", Public.PUBLIC, SQLDataType.BIGINT.nullable(false), null, null, null, null, false, null);
 
     /**
+     * The sequence <code>public.publishing_id_seq</code>
+     */
+    public static final Sequence<Long> PUBLISHING_ID_SEQ = Internal.createSequence("publishing_id_seq", Public.PUBLIC, SQLDataType.BIGINT.nullable(false), null, null, null, null, false, null);
+
+    /**
      * The sequence <code>public.region_order_by_seq</code>
      */
     public static final Sequence<Long> REGION_ORDER_BY_SEQ = Internal.createSequence("region_order_by_seq", Public.PUBLIC, SQLDataType.BIGINT.nullable(false), null, null, null, null, false, null);

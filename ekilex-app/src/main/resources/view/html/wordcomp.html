@@ -421,12 +421,12 @@
                   <i class="fa fa-remove" aria-hidden="true"></i>
                 </button>
                 <th:block
-                  th:replace=" :: word_publishing(
+                  th:replace=" :: entity_publishing(
                     entityId = ${relation.id},
                     entityName = 'word_relation',
-                    wwActive = ${false},
-                    odActive = ${false},
-                    liteActive = ${false})">
+                    isWwUnif = ${relation.wwUnif},
+                    isWwLite = ${relation.wwLite},
+                    isWwOd = ${relation.wwOd})">
                 </th:block>
               </div>
             </div>
@@ -570,7 +570,7 @@
       </div>
     </div>
   </th:block>
-  <th:block th:fragment="word_publishing">
+  <th:block th:fragment="entity_publishing">
     <div class="dropdown publishing" data-plugin="publishingHandler" th:data-entity-id="${entityId}" th:data-entity-name="${entityName}">
       <button type="button" class="publishing__button publishing__button--toggle"
         th:id="|publishing-trigger-${entityName}-${entityId}|"
@@ -588,37 +588,37 @@
         <button
           class="publishing__menu-item"
           data-publishing-item="ww"
-          th:data-publishing-item-active="${wwActive}">
-          <span th:utext="#{publishing.wordweb}"></span>
+          th:data-publishing-item-active="${isWwUnif}">
+          <span th:utext="#{publishing.unif}"></span>
         </button>
         <button
           class="publishing__menu-item"
           data-publishing-item="od"
-          th:data-publishing-item-active="${odActive}">
+          th:data-publishing-item-active="${isWwOd}">
           <span th:utext="#{publishing.od}"></span>
         </button>
         <button
           class="publishing__menu-item"
           data-publishing-item="lite"
-          th:data-publishing-item-active="${liteActive}">
+          th:data-publishing-item-active="${isWwLite}">
           <span th:utext="#{publishing.lite}"></span>
         </button>
       </div>
       <button type="button" class="publishing__button publishing__button--icon"
         data-publishing-item="ww"
-        th:data-publishing-item-active="${wwActive}"
+        th:data-publishing-item-active="${isWwUnif}"
         sec:authorize="#vars.details.word.crudGrant"
         >
       </button>
       <button type="button" class="publishing__button publishing__button--icon"
         data-publishing-item="od"
-        th:data-publishing-item-active="${odActive}"
+        th:data-publishing-item-active="${isWwOd}"
         sec:authorize="#vars.details.word.crudGrant"
         >
       </button>
       <button type="button" class="publishing__button publishing__button--icon"
         data-publishing-item="lite"
-        th:data-publishing-item-active="${liteActive}"
+        th:data-publishing-item-active="${isWwLite}"
         sec:authorize="#vars.details.word.crudGrant"
         >
       </button>

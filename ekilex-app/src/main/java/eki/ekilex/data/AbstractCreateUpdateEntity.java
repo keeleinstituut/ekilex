@@ -8,7 +8,7 @@ import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
 
 import eki.common.util.LocalDateTimeDeserialiser;
 
-public abstract class AbstractCreateUpdateEntity extends AbstractPublicEntity {
+public abstract class AbstractCreateUpdateEntity extends AbstractGrantEntity {
 
 	private static final long serialVersionUID = 1L;
 

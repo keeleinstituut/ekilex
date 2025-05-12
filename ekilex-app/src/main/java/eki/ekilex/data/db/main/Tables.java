@@ -97,6 +97,7 @@ import eki.ekilex.data.db.main.tables.PosGroupLabel;
 import eki.ekilex.data.db.main.tables.PosLabel;
 import eki.ekilex.data.db.main.tables.ProficiencyLevel;
 import eki.ekilex.data.db.main.tables.ProficiencyLevelLabel;
+import eki.ekilex.data.db.main.tables.Publishing;
 import eki.ekilex.data.db.main.tables.Region;
 import eki.ekilex.data.db.main.tables.Register;
 import eki.ekilex.data.db.main.tables.RegisterLabel;
@@ -129,6 +130,7 @@ import eki.ekilex.data.db.main.tables.ViewWwLexemeRelation;
 import eki.ekilex.data.db.main.tables.ViewWwLexicalDecisionData;
 import eki.ekilex.data.db.main.tables.ViewWwMeaning;
 import eki.ekilex.data.db.main.tables.ViewWwMeaningRelation;
+import eki.ekilex.data.db.main.tables.ViewWwNewWordMenu;
 import eki.ekilex.data.db.main.tables.ViewWwNewsArticle;
 import eki.ekilex.data.db.main.tables.ViewWwSimilarityJudgementData;
 import eki.ekilex.data.db.main.tables.ViewWwWord;
@@ -633,6 +635,11 @@ public class Tables {
     public static final ProficiencyLevelLabel PROFICIENCY_LEVEL_LABEL = ProficiencyLevelLabel.PROFICIENCY_LEVEL_LABEL;
 
     /**
+     * The table <code>public.publishing</code>.
+     */
+    public static final Publishing PUBLISHING = Publishing.PUBLISHING;
+
+    /**
      * The table <code>public.region</code>.
      */
     public static final Region REGION = Region.REGION;
@@ -791,6 +798,11 @@ public class Tables {
      * The table <code>public.view_ww_meaning_relation</code>.
      */
     public static final ViewWwMeaningRelation VIEW_WW_MEANING_RELATION = ViewWwMeaningRelation.VIEW_WW_MEANING_RELATION;
+
+    /**
+     * The table <code>public.view_ww_new_word_menu</code>.
+     */
+    public static final ViewWwNewWordMenu VIEW_WW_NEW_WORD_MENU = ViewWwNewWordMenu.VIEW_WW_NEW_WORD_MENU;
 
     /**
      * The table <code>public.view_ww_news_article</code>.

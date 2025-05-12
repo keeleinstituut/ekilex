@@ -6,7 +6,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import eki.common.data.AbstractDataObject;
 
 @JsonIgnoreProperties({"crudGrant", "readGrant", "subGrant", "anyGrant"})
-public abstract class AbstractCrudEntity extends AbstractDataObject {
+public abstract class AbstractGrantEntity extends AbstractPublishingEntity {
 
 	private static final long serialVersionUID = 1L;
 

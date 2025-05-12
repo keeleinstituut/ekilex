@@ -1,5 +1,5 @@
 
--- ÕS kasutusnäited ja lühimorfo
+-- ÕS kasutusnäited ja lühimorfo --
 
 create table word_od_usage (
   id bigserial primary key,
@@ -37,7 +37,7 @@ create index word_od_morph_word_id_idx on word_od_morph(word_id);
 create index word_od_morph_value_idx on word_od_morph(value);
 create index word_od_morph_value_lower_idx on word_od_morph(lower(value));
 
--- ÕS liitsõnaseosed
+-- ÕS liitsõnaseosed --
 
 insert into word_rel_type (code, datasets) values ('ls-esiosaga', '{}');
 insert into word_rel_type (code, datasets) values ('ls-järelosaga', '{}');
@@ -48,7 +48,7 @@ insert into word_rel_type_label (code, value, lang, type) values ('ls-järelosag
 insert into word_rel_mapping (code1, code2) values ('ls-esiosa', 'ls-esiosaga');
 insert into word_rel_mapping (code1, code2) values ('ls-järelosa', 'ls-järelosaga');
 
--- keelendite registreerimine
+-- keelendite registreerimine --
 
 alter table word add column reg_year integer;
 create index word_reg_year_idx on word(reg_year);
@@ -102,7 +102,7 @@ where
 delete from lexeme_register where register_code like 'uus20%';
 delete from register where code like 'uus20%';
 
--- kollokatsioonide duplikaatide kustutamine
+-- kollokatsioonide duplikaatide kustutamine --
 
 alter table collocation_member
 drop constraint collocation_member_colloc_lexeme_id_fkey,
@@ -271,5 +271,22 @@ where
 	)
 ;
 
+-- publitseerimine --
 
+create table publishing (
+	id bigserial primary key,
+	event_by text not null,
+	event_on timestamp not null default statement_timestamp(),
+	target_name varchar(100) not null,
+	entity_name varchar(100) not null,
+	entity_id bigint not null,
+	unique (target_name, entity_name, entity_id)
+);
+alter sequence publishing_id_seq restart with 10000;
+
+create index publishing_event_by_idx on publishing(event_by);
+create index publishing_event_on_idx on publishing(event_on);
+create index publishing_target_name_idx on publishing(target_name);
+create index publishing_entity_name_idx on publishing(entity_name);
+create index publishing_entity_id_idx on publishing(entity_id);
 

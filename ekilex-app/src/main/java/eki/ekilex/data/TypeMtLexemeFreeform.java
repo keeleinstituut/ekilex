@@ -9,7 +9,7 @@ import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
 import eki.common.constant.Complexity;
 import eki.common.util.LocalDateTimeDeserialiser;
 
-public class TypeMtLexemeFreeform extends AbstractCrudEntity {
+public class TypeMtLexemeFreeform extends AbstractGrantEntity {
 
 	private static final long serialVersionUID = 1L;
 

@@ -5,7 +5,7 @@ import java.util.List;
 import eki.common.constant.Complexity;
 import eki.common.data.LexemeLevel;
 
-public class Lexeme extends AbstractCrudEntity implements LexemeLevel {
+public class Lexeme extends AbstractGrantEntity implements LexemeLevel {
 
 	private static final long serialVersionUID = 1L;
 
@@ -44,8 +44,6 @@ public class Lexeme extends AbstractCrudEntity implements LexemeLevel {
 	private Long orderBy;
 
 	private Complexity complexity;
-
-	private boolean isPublic;
 
 	private boolean isWord;
 
@@ -242,14 +240,6 @@ public class Lexeme extends AbstractCrudEntity implements LexemeLevel {
 
 	public void setComplexity(Complexity complexity) {
 		this.complexity = complexity;
-	}
-
-	public boolean isPublic() {
-		return isPublic;
-	}
-
-	public void setPublic(boolean isPublic) {
-		this.isPublic = isPublic;
 	}
 
 	public boolean isWord() {

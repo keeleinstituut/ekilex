@@ -97,6 +97,7 @@ import eki.ekilex.data.db.main.tables.PosGroupLabel;
 import eki.ekilex.data.db.main.tables.PosLabel;
 import eki.ekilex.data.db.main.tables.ProficiencyLevel;
 import eki.ekilex.data.db.main.tables.ProficiencyLevelLabel;
+import eki.ekilex.data.db.main.tables.Publishing;
 import eki.ekilex.data.db.main.tables.Region;
 import eki.ekilex.data.db.main.tables.Register;
 import eki.ekilex.data.db.main.tables.RegisterLabel;
@@ -129,6 +130,7 @@ import eki.ekilex.data.db.main.tables.ViewWwLexemeRelation;
 import eki.ekilex.data.db.main.tables.ViewWwLexicalDecisionData;
 import eki.ekilex.data.db.main.tables.ViewWwMeaning;
 import eki.ekilex.data.db.main.tables.ViewWwMeaningRelation;
+import eki.ekilex.data.db.main.tables.ViewWwNewWordMenu;
 import eki.ekilex.data.db.main.tables.ViewWwNewsArticle;
 import eki.ekilex.data.db.main.tables.ViewWwSimilarityJudgementData;
 import eki.ekilex.data.db.main.tables.ViewWwWord;
@@ -674,6 +676,11 @@ public class Public extends SchemaImpl {
     public final ProficiencyLevelLabel PROFICIENCY_LEVEL_LABEL = ProficiencyLevelLabel.PROFICIENCY_LEVEL_LABEL;
 
     /**
+     * The table <code>public.publishing</code>.
+     */
+    public final Publishing PUBLISHING = Publishing.PUBLISHING;
+
+    /**
      * The table <code>public.region</code>.
      */
     public final Region REGION = Region.REGION;
@@ -832,6 +839,11 @@ public class Public extends SchemaImpl {
      * The table <code>public.view_ww_meaning_relation</code>.
      */
     public final ViewWwMeaningRelation VIEW_WW_MEANING_RELATION = ViewWwMeaningRelation.VIEW_WW_MEANING_RELATION;
+
+    /**
+     * The table <code>public.view_ww_new_word_menu</code>.
+     */
+    public final ViewWwNewWordMenu VIEW_WW_NEW_WORD_MENU = ViewWwNewWordMenu.VIEW_WW_NEW_WORD_MENU;
 
     /**
      * The table <code>public.view_ww_news_article</code>.
@@ -1100,6 +1112,7 @@ public class Public extends SchemaImpl {
             Sequences.POS_GROUP_ORDER_BY_SEQ,
             Sequences.POS_ORDER_BY_SEQ,
             Sequences.PROFICIENCY_LEVEL_ORDER_BY_SEQ,
+            Sequences.PUBLISHING_ID_SEQ,
             Sequences.REGION_ORDER_BY_SEQ,
             Sequences.REGISTER_ORDER_BY_SEQ,
             Sequences.REL_GROUP_ORDER_BY_SEQ,
@@ -1249,6 +1262,7 @@ public class Public extends SchemaImpl {
             PosLabel.POS_LABEL,
             ProficiencyLevel.PROFICIENCY_LEVEL,
             ProficiencyLevelLabel.PROFICIENCY_LEVEL_LABEL,
+            Publishing.PUBLISHING,
             Region.REGION,
             Register.REGISTER,
             RegisterLabel.REGISTER_LABEL,
@@ -1281,6 +1295,7 @@ public class Public extends SchemaImpl {
             ViewWwLexicalDecisionData.VIEW_WW_LEXICAL_DECISION_DATA,
             ViewWwMeaning.VIEW_WW_MEANING,
             ViewWwMeaningRelation.VIEW_WW_MEANING_RELATION,
+            ViewWwNewWordMenu.VIEW_WW_NEW_WORD_MENU,
             ViewWwNewsArticle.VIEW_WW_NEWS_ARTICLE,
             ViewWwSimilarityJudgementData.VIEW_WW_SIMILARITY_JUDGEMENT_DATA,
             ViewWwWord.VIEW_WW_WORD,

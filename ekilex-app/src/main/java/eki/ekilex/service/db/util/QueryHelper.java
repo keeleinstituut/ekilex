@@ -17,6 +17,7 @@ import static eki.ekilex.data.db.main.Tables.MEANING_DOMAIN;
 import static eki.ekilex.data.db.main.Tables.MEANING_LAST_ACTIVITY_LOG;
 import static eki.ekilex.data.db.main.Tables.POS_LABEL;
 import static eki.ekilex.data.db.main.Tables.PROFICIENCY_LEVEL_LABEL;
+import static eki.ekilex.data.db.main.Tables.PUBLISHING;
 import static eki.ekilex.data.db.main.Tables.REGION;
 import static eki.ekilex.data.db.main.Tables.REGISTER_LABEL;
 import static eki.ekilex.data.db.main.Tables.SOURCE;
@@ -62,6 +63,7 @@ import eki.ekilex.data.db.main.tables.MeaningDomain;
 import eki.ekilex.data.db.main.tables.MeaningLastActivityLog;
 import eki.ekilex.data.db.main.tables.PosLabel;
 import eki.ekilex.data.db.main.tables.ProficiencyLevelLabel;
+import eki.ekilex.data.db.main.tables.Publishing;
 import eki.ekilex.data.db.main.tables.Region;
 import eki.ekilex.data.db.main.tables.RegisterLabel;
 import eki.ekilex.data.db.main.tables.Source;
@@ -76,51 +78,6 @@ import eki.ekilex.data.db.main.tables.WordLastActivityLog;
 
 @Component
 public class QueryHelper implements GlobalConstant {
-
-	public List<Field<?>> getLexemeFields(Lexeme l, Dataset ds, String classifierLabelLang, String classifierLabelTypeCode) {
-
-		List<Field<?>> fields = new ArrayList<>();
-
-		Field<JSON> lposf = getLexemePosField(l.ID, classifierLabelLang, classifierLabelTypeCode);
-		Field<JSON> lderf = getLexemeDerivsField(l.ID, classifierLabelLang, classifierLabelTypeCode);
-		Field<JSON> lregf = getLexemeRegistersField(l.ID, classifierLabelLang, classifierLabelTypeCode);
-		Field<JSON> lrgnf = getLexemeRegionsField(l.ID);
-		Field<JSON> lvalstf = getLexemeValueStateField(l, classifierLabelLang, classifierLabelTypeCode);
-		Field<JSON> lproflf = getLexemeProficiencyLevelField(l, classifierLabelLang, classifierLabelTypeCode);
-		Field<JSON> lslf = getLexemeSourceLinksField(l.ID);
-		Field<JSON> uf = getLexemeUsagesField(l.ID);
-		Field<JSON> lnf = getLexemeNotesField(l.ID);
-		Field<JSON> ltf = getLexemeTagsField(l.ID);
-
-		fields.add(l.ID.as("lexeme_id"));
-		fields.add(l.WORD_ID);
-		fields.add(l.MEANING_ID);
-		fields.add(ds.NAME.as("dataset_name"));
-		fields.add(l.DATASET_CODE);
-		fields.add(l.LEVEL1);
-		fields.add(l.LEVEL2);
-		fields.add(l.VALUE_STATE_CODE.as("lexeme_value_state_code"));
-		fields.add(lvalstf.as("lexeme_value_state"));
-		fields.add(l.PROFICIENCY_LEVEL_CODE.as("lexeme_proficiency_level_code"));
-		fields.add(lproflf.as("lexeme_proficiency_level"));
-		fields.add(l.WEIGHT);
-		fields.add(l.RELIABILITY);
-		fields.add(l.COMPLEXITY);
-		fields.add(l.ORDER_BY);
-		fields.add(l.IS_PUBLIC);
-		fields.add(l.IS_WORD);
-		fields.add(l.IS_COLLOCATION);
-		fields.add(lposf.as("pos"));
-		fields.add(lderf.as("derivs"));
-		fields.add(lregf.as("registers"));
-		fields.add(lrgnf.as("regions"));
-		fields.add(lslf.as("source_links"));
-		fields.add(uf.as("usages"));
-		fields.add(lnf.as("notes"));
-		fields.add(ltf.as("tags"));
-
-		return fields;
-	}
 
 	public List<Field<?>> getWordFields(Word w) {
 
@@ -262,6 +219,51 @@ public class QueryHelper implements GlobalConstant {
 								.and(wlal.ACTIVITY_LOG_ID.eq(al.ID)))
 				.limit(1));
 		return wlaeof;
+	}
+
+	public List<Field<?>> getLexemeFields(Lexeme l, Dataset ds, String classifierLabelLang, String classifierLabelTypeCode) {
+
+		List<Field<?>> fields = new ArrayList<>();
+
+		Field<JSON> lposf = getLexemePosField(l.ID, classifierLabelLang, classifierLabelTypeCode);
+		Field<JSON> lderf = getLexemeDerivsField(l.ID, classifierLabelLang, classifierLabelTypeCode);
+		Field<JSON> lregf = getLexemeRegistersField(l.ID, classifierLabelLang, classifierLabelTypeCode);
+		Field<JSON> lrgnf = getLexemeRegionsField(l.ID);
+		Field<JSON> lvalstf = getLexemeValueStateField(l, classifierLabelLang, classifierLabelTypeCode);
+		Field<JSON> lproflf = getLexemeProficiencyLevelField(l, classifierLabelLang, classifierLabelTypeCode);
+		Field<JSON> lslf = getLexemeSourceLinksField(l.ID);
+		Field<JSON> uf = getLexemeUsagesField(l.ID);
+		Field<JSON> lnf = getLexemeNotesField(l.ID);
+		Field<JSON> ltf = getLexemeTagsField(l.ID);
+
+		fields.add(l.ID.as("lexeme_id"));
+		fields.add(l.WORD_ID);
+		fields.add(l.MEANING_ID);
+		fields.add(ds.NAME.as("dataset_name"));
+		fields.add(l.DATASET_CODE);
+		fields.add(l.LEVEL1);
+		fields.add(l.LEVEL2);
+		fields.add(l.VALUE_STATE_CODE.as("lexeme_value_state_code"));
+		fields.add(lvalstf.as("lexeme_value_state"));
+		fields.add(l.PROFICIENCY_LEVEL_CODE.as("lexeme_proficiency_level_code"));
+		fields.add(lproflf.as("lexeme_proficiency_level"));
+		fields.add(l.WEIGHT);
+		fields.add(l.RELIABILITY);
+		fields.add(l.COMPLEXITY);
+		fields.add(l.ORDER_BY);
+		fields.add(l.IS_PUBLIC);
+		fields.add(l.IS_WORD);
+		fields.add(l.IS_COLLOCATION);
+		fields.add(lposf.as("pos"));
+		fields.add(lderf.as("derivs"));
+		fields.add(lregf.as("registers"));
+		fields.add(lrgnf.as("regions"));
+		fields.add(lslf.as("source_links"));
+		fields.add(uf.as("usages"));
+		fields.add(lnf.as("notes"));
+		fields.add(ltf.as("tags"));
+
+		return fields;
 	}
 
 	public Field<JSON> getLexemePosField(Field<Long> lexemeIdField, String classifierLabelLang, String classifierLabelTypeCode) {
@@ -593,6 +595,20 @@ public class QueryHelper implements GlobalConstant {
 								.and(mlal.ACTIVITY_LOG_ID.eq(al.ID)))
 				.limit(1));
 		return wlaeof;
+	}
+
+	public Field<Boolean> getPublishingField(String targetName, String entityName, Field<Long> entityId) {
+
+		Publishing p = PUBLISHING.as("p");
+		Field<Boolean> pf = DSL.field(DSL
+				.exists(DSL
+						.select(p.ID)
+						.from(p)
+						.where(
+								p.TARGET_NAME.eq(targetName)
+										.and(p.ENTITY_NAME.eq(entityName))
+										.and(p.ENTITY_ID.eq(entityId)))));
+		return pf;
 	}
 
 	public void replaceNullCollections(eki.ekilex.data.Lexeme pojo) {

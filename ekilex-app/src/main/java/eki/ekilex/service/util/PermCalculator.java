@@ -8,8 +8,7 @@ import org.springframework.stereotype.Component;
 
 import eki.common.constant.AuthorityOperation;
 import eki.common.constant.PermConstant;
-import eki.ekilex.data.AbstractCrudEntity;
-import eki.ekilex.data.AbstractPublicEntity;
+import eki.ekilex.data.AbstractGrantEntity;
 import eki.ekilex.data.DatasetPermission;
 import eki.ekilex.data.Definition;
 import eki.ekilex.data.DefinitionNote;
@@ -33,7 +32,7 @@ public class PermCalculator implements PermConstant {
 	@Autowired
 	private PermissionDbService permissionDbService;
 
-	public void applyCrud(EkiUser user, List<? extends AbstractCrudEntity> crudEntities) {
+	public void applyCrud(EkiUser user, List<? extends AbstractGrantEntity> crudEntities) {
 
 		if (CollectionUtils.isEmpty(crudEntities)) {
 			return;
@@ -45,7 +44,7 @@ public class PermCalculator implements PermConstant {
 		Long userId = user.getId();
 		DatasetPermission userRole = user.getRecentRole();
 
-		for (AbstractCrudEntity crudEntity : crudEntities) {
+		for (AbstractGrantEntity crudEntity : crudEntities) {
 
 			boolean isCrudGrant = false;
 			boolean isAnyGrant = false;
@@ -107,7 +106,7 @@ public class PermCalculator implements PermConstant {
 		}
 	}
 
-	public void applyCrud(EkiUser user, AbstractCrudEntity crudEntity) {
+	public void applyCrud(EkiUser user, AbstractGrantEntity crudEntity) {
 
 		if (user == null) {
 			return;
@@ -158,7 +157,7 @@ public class PermCalculator implements PermConstant {
 		crudEntity.setAnyGrant(isAnyGrant);
 	}
 
-	public void filterVisibility(EkiUser user, List<? extends AbstractPublicEntity> publicEntities) {
+	public void filterVisibility(EkiUser user, List<? extends AbstractGrantEntity> publicEntities) {
 
 		if (CollectionUtils.isEmpty(publicEntities)) {
 			return;
@@ -177,7 +176,7 @@ public class PermCalculator implements PermConstant {
 		publicEntities.removeIf(entity -> !isEntityVisible(userId, userRole, entity));
 	}
 
-	private boolean isEntityVisible(Long userId, DatasetPermission userRole, AbstractPublicEntity entity) {
+	private boolean isEntityVisible(Long userId, DatasetPermission userRole, AbstractGrantEntity entity) {
 
 		if (entity.isPublic()) {
 			return true;

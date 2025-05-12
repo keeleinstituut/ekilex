@@ -2,7 +2,7 @@ package eki.ekilex.data;
 
 import eki.common.constant.Complexity;
 
-public class TypeMtDefinition extends AbstractCrudEntity {
+public class TypeMtDefinition extends AbstractGrantEntity {
 
 	private static final long serialVersionUID = 1L;
 

@@ -257,7 +257,8 @@ public class LookupDbService extends AbstractDataDbService {
 	}
 
 	public List<WordRelation> getWordRelations(Long wordId, String relTypeCode) {
-		return mainDb.select(WORD_RELATION.ID, WORD_RELATION.ORDER_BY)
+		return mainDb
+				.select(WORD_RELATION.ID, WORD_RELATION.ORDER_BY)
 				.from(WORD_RELATION)
 				.where(WORD_RELATION.WORD1_ID.eq(wordId))
 				.and(WORD_RELATION.WORD_REL_TYPE_CODE.eq(relTypeCode))

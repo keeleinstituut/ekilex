@@ -101,6 +101,9 @@ public class LexDataDbService extends AbstractDataDbService {
 		Field<Boolean> wtpf = queryHelper.getWordIsPrefixoidField(w2.ID);
 		Field<Boolean> wtsf = queryHelper.getWordIsSuffixoidField(w2.ID);
 		Field<Boolean> wtz = queryHelper.getWordIsForeignField(w2.ID);
+		Field<Boolean> wwupf = queryHelper.getPublishingField(TARGET_NAME_WW_UNIF, ENTITY_NAME_WORD_RELATION, r.ID);
+		Field<Boolean> wwlpf = queryHelper.getPublishingField(TARGET_NAME_WW_LITE, ENTITY_NAME_WORD_RELATION, r.ID);
+		Field<Boolean> wwopf = queryHelper.getPublishingField(TARGET_NAME_WW_OD, ENTITY_NAME_WORD_RELATION, r.ID);
 
 		return mainDb
 				.selectDistinct(
@@ -116,7 +119,10 @@ public class LexDataDbService extends AbstractDataDbService {
 						r.WORD_REL_TYPE_CODE.as("rel_type_code"),
 						rtl.VALUE.as("rel_type_label"),
 						r.RELATION_STATUS,
-						r.ORDER_BY)
+						r.ORDER_BY,
+						wwupf.as("is_ww_unif"),
+						wwlpf.as("is_ww_lite"),
+						wwopf.as("is_ww_od"))
 				.from(
 						r
 								.innerJoin(w2).on(

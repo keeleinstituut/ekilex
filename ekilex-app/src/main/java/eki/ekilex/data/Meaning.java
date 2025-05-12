@@ -9,7 +9,7 @@ import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
 
 import eki.common.util.LocalDateTimeDeserialiser;
 
-public class Meaning extends AbstractCrudEntity {
+public class Meaning extends AbstractGrantEntity {
 
 	private static final long serialVersionUID = 1L;
 

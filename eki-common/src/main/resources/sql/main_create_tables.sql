@@ -1270,6 +1270,17 @@ create table news_article (
 );
 alter sequence news_article_id_seq restart with 10000;
 
+create table publishing (
+	id bigserial primary key,
+	event_by text not null,
+	event_on timestamp not null default statement_timestamp(),
+	target_name varchar(100) not null,
+	entity_name varchar(100) not null,
+	entity_id bigint not null,
+	unique (target_name, entity_name, entity_id)
+);
+alter sequence publishing_id_seq restart with 10000;
+
 create table activity_log (
   id bigserial primary key, 
   event_by text not null, 

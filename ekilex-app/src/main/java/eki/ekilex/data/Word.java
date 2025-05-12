@@ -12,7 +12,7 @@ import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
 import eki.common.util.LocalDateTimeDeserialiser;
 
 @JsonInclude(Include.NON_EMPTY)
-public class Word extends AbstractCrudEntity implements DecoratedWordType {
+public class Word extends AbstractGrantEntity implements DecoratedWordType {
 
 	private static final long serialVersionUID = 1L;
 

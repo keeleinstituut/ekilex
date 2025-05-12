@@ -4,7 +4,7 @@ import java.util.List;
 
 import eki.common.constant.SourceType;
 
-public class Source extends AbstractCrudEntity {
+public class Source extends AbstractGrantEntity {
 
 	private static final long serialVersionUID = 1L;
 

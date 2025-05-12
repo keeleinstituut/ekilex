@@ -6,7 +6,7 @@ public interface PublishingConstant {
 
 	String TARGET_NAME_WW_UNIF = "ww_unif";
 
-	String TARGET_NAME_WW_SIMPLE = "ww_simple";
+	String TARGET_NAME_WW_LITE = "ww_lite";
 
 	String TARGET_NAME_WW_OD = "ww_od";
 

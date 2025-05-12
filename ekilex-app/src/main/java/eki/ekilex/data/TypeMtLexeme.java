@@ -2,7 +2,7 @@ package eki.ekilex.data;
 
 import java.util.List;
 
-public class TypeMtLexeme extends AbstractCrudEntity {
+public class TypeMtLexeme extends AbstractGrantEntity {
 
 	private static final long serialVersionUID = 1L;
 
