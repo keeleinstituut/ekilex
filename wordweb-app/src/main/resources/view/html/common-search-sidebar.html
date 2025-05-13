@@ -1,35 +1,32 @@
 <!DOCTYPE HTML>
 <html xmlns:th="http://www.thymeleaf.org">
 <body>
-  <section class="search__sidebar-block search__block text-body-two" id="word-morphology-results" th:fragment="paradigms">
-    <th:block th:if="${wordData.morphologyExists}">
-      <div class="d-flex align-items-center">
-        <h2 class="search__sidebar-block-title" th:text="#{label.word.forms}">Sõnavormid</h2>
-        <button type="button" class="btn btn-icon btn-sm" th:aria-label="#{forms.dataset.title}" data-toggle="tooltip" th:title="#{forms.dataset.title}">
-          <i class="fas fa-info-circle"></i>
-        </button>
+  <section
+    class="search__sidebar-block search__block text-body-two"
+    id="word-morphology-results"
+    th:fragment="paradigms"
+    th:with="isBlockEmpty = ${!wordData.morphologyExists}">
+    <div class="search__sidebar-block-title-wrapper">
+      <h2
+        class="search__sidebar-block-title"
+        th:classappend="${isBlockEmpty ? 'search__sidebar-block-title--empty' : ''}"
+        th:text="|#{label.word.forms} ${isBlockEmpty ? #messages.msg('label.block_empty') : ''}|"
+        >Sõnavormid</h2>
+      <button type="button" class="btn btn-icon btn-sm" th:aria-label="#{forms.dataset.title}" data-toggle="tooltip" th:title="#{forms.dataset.title}">
+        <i class="fas fa-info-circle"></i>
+      </button>
+    </div>
+    <div th:if="${wordData.word.morphComment}">
+      <span th:utext="${wordData.word.morphComment}"></span>
+    </div>
+    <th:block th:each="paradigm,paradigmIter : ${wordData.paradigms}">
+      <div class="morphology-paradigm"
+        th:with="morphtemplates=${ {'muutumatu_est', 'verb_est', 'noomen_est', 'verb_rus', 'noun_rus', 'numeral_rus', 'adjective_rus', 'adjective1_rus', 'adjective2_rus', 'indeclinable_rus', 'participle_rus'} }">
+        <th:block th:if="${morphtemplates.contains(paradigm.wordClass + '_' + wordData.word.lang)}">
+          <th:block th:replace="morpho-short :: ${'morpho-' + paradigm.wordClass + '_' + wordData.word.lang}"></th:block>
+        </th:block>
+        <hr th:unless="${paradigmIter.last}" />
       </div>
-      <div th:if="${wordData.word.morphComment}">
-        <span th:utext="${wordData.word.morphComment}"></span>
-      </div>
-      <th:block th:each="paradigm,paradigmIter : ${wordData.paradigms}">
-        <div class="morphology-paradigm"
-          th:with="morphtemplates=${ {'muutumatu_est', 'verb_est', 'noomen_est', 'verb_rus', 'noun_rus', 'numeral_rus', 'adjective_rus', 'adjective1_rus', 'adjective2_rus', 'indeclinable_rus', 'participle_rus'} }">
-          <th:block th:if="${morphtemplates.contains(paradigm.wordClass + '_' + wordData.word.lang)}">
-            <th:block th:replace="morpho-short :: ${'morpho-' + paradigm.wordClass + '_' + wordData.word.lang}"></th:block>
-          </th:block>
-          <hr th:unless="${paradigmIter.last}" />
-        </div>
-      </th:block>
-    </th:block>
-    <th:block th:unless="${wordData.morphologyExists}">
-      <div class="d-flex align-items-center">
-        <h2 class="search__sidebar-block-title" th:text="#{label.word.forms}">Sõnavormid</h2>
-        <button type="button" class="btn btn-icon btn-sm" th:aria-label="#{forms.dataset.title}" data-toggle="tooltip" data-placement="bottom" th:title="#{forms.dataset.title}">
-          <i class="fas fa-info-circle"></i>
-        </button>
-      </div>
-      <span th:text="#{label.no.data}">Andmed puuduvad</span>
     </th:block>
   </section>
   <th:block th:fragment="word-od-recommendation">
@@ -48,17 +45,18 @@
   </th:block>
   <th:block th:fragment="word-relations">
     <section class="search__sidebar-block search__block text-body-two">
-      <div class="word-relations">
-        <div class="d-flex align-items-center">
-          <h2 class="search__sidebar-block-title" th:text="#{label.word.relations}">Sõna seosed</h2>
+      <div class="word-relations" th:with="isBlockEmpty = ${!wordData.word.wordRelationsExist}">
+        <div class="search__sidebar-block-title-wrapper">
+          <h2
+            class="search__sidebar-block-title"
+            th:classappend="${isBlockEmpty ? 'search__sidebar-block-title--empty' : ''}"
+            th:text="|#{label.word.relations} ${isBlockEmpty ? #messages.msg('label.block_empty') : ''}|"
+            >Sõna seosed</h2>
           <button type="button" th:aria-label="#{label.word.relations.info}" class="btn btn-icon btn-sm" data-toggle="tooltip" data-placement="top" th:title="#{label.word.relations.info}">
             <i class="fas fa-info-circle"></i>
           </button>
         </div>
-        <div th:unless="${wordData.word.wordRelationsExist}">
-          <span th:text="#{label.no.data}">Andmed puuduvad</span>
-        </div>
-        <div th:if="${wordData.word.wordRelationsExist}">
+        <div th:unless="${isBlockEmpty}">
           <div th:if="${not #lists.isEmpty(wordData.word.wordGroups)}">
             <div class="mb-1" th:each="wordGroup : ${wordData.word.wordGroups}" th:with="isAspect=${wordGroup.wordRelTypeCode == T(eki.common.constant.GlobalConstant).WORD_REL_TYPE_CODE_ASCPECTS}">
               <span th:text="${#strings.capitalize(wordGroup.wordRelType.value) + ':'}"></span>
@@ -101,48 +99,24 @@
     <th:block th:if="${not #lists.isEmpty(wordData.word.primaryRelatedWordTypeGroups)}">
       <th:block th:each="relationTypeGroup,relGroupIter : ${wordData.word.primaryRelatedWordTypeGroups}">
         <section class="search__sidebar-block search__block text-body-two" th:id="${relationTypeGroup.wordRelType.code.equals('ühend') ? 'word-relation-results' : null}">
-          <div class="word-relations">
-            <div class="d-flex align-items-center">
-              <h2 class="search__sidebar-block-title">
-                <th:block th:if="${relationTypeGroup.collapsible}">
-                  <a class="btn-collapse" th:aria-expanded="${#lists.contains(uiSections, 'word-rel-type-' + relationTypeGroup.wordRelType.code + '-panel')}" data-toggle="collapse"
-                    th:href="|#word-rel-type-collapse-${relationTypeGroup.wordRelType.code}|">
-                    <i class="fa fa-chevron-down collapse-icon" aria-hidden="true"></i>
-                    <span th:text="${#strings.capitalize(relationTypeGroup.wordRelType.value)}"> Sõna seose liik </span>
-                  </a>
-                </th:block>
-                <th:block th:unless="${relationTypeGroup.collapsible}">
-                  <span th:text="${#strings.capitalize(relationTypeGroup.wordRelType.value)}">Sõna seose liik</span>
-                </th:block>
+          <div class="word-relations" th:with="isBlockEmpty = ${relationTypeGroup.empty}">
+            <div class="search__sidebar-block-title-wrapper">
+              <h2
+                class="search__sidebar-block-title"
+                th:classappend="${isBlockEmpty ? 'search__sidebar-block-title--empty' : ''}"
+                th:text="|${#strings.capitalize(relationTypeGroup.wordRelType.value)} ${isBlockEmpty ? #messages.msg('label.block_empty') : ''}|"
+                >
               </h2>
               <button type="button" th:aria-label="#{label.word.primary.relations.info}" class="btn btn-icon btn-sm" data-toggle="tooltip" data-placement="top"
                 th:title="#{label.word.primary.relations.info}">
                 <i class="fas fa-info-circle"></i>
               </button>
             </div>
-            <th:block th:if="${relationTypeGroup.collapsible}" th:with="collapseName=|word-rel-type-${relationTypeGroup.wordRelType.code}-panel|">
-              <div th:id="|word-rel-type-collapse-${relationTypeGroup.wordRelType.code}|" th:data-name="${collapseName}" class="collapse user-preference"
-                th:classappend="${#lists.contains(uiSections, collapseName) ? 'show' : ''}">
-                <div th:if="${relationTypeGroup.empty}">
-                  <span th:text="#{label.no.data}">Andmed puuduvad</span>
-                </div>
-                <div th:unless="${relationTypeGroup.empty}">
-                  <div class="word-grouper-wrapper">
-                    <th:block th:with="wordRelType = ${relationTypeGroup.wordRelType}" th:include=" :: word-rel-group"></th:block>
-                  </div>
-                </div>
+            <div th:unless="${isBlockEmpty}">
+              <div class="word-grouper-wrapper">
+                <th:block th:with="wordRelType = ${relationTypeGroup.wordRelType}" th:include=" :: word-rel-group"></th:block>
               </div>
-            </th:block>
-            <th:block th:unless="${relationTypeGroup.collapsible}">
-              <div th:if="${relationTypeGroup.empty}">
-                <span th:text="#{label.no.data}">Andmed puuduvad</span>
-              </div>
-              <div th:unless="${relationTypeGroup.empty}">
-                <div class="word-grouper-wrapper">
-                  <th:block th:with="wordRelType = ${relationTypeGroup.wordRelType}" th:include=" :: word-rel-group"></th:block>
-                </div>
-              </div>
-            </th:block>
+            </div>
           </div>
         </section>
       </th:block>
@@ -211,11 +185,18 @@
     </th:block>
   </th:block>
   <th:block th:fragment="etymology">
-    <section class="search__sidebar-block search__block text-body-two" id="word-etymology-results">
+    <section
+      class="search__sidebar-block search__block text-body-two"
+      id="word-etymology-results"
+      th:with="isBlockEmpty = ${wordData.word.wordEtymologyTree == null}">
       <div>
-        <div class="d-flex align-items-center flex-wrap">
-          <h2 class="search__sidebar-block-title" th:text="#{label.word.etymology}">Päritolu</h2>
-          <button type="button" th:aria-label="#{label.word.etymology.info}" class="btn btn-icon btn-sm" data-toggle="tooltip" data-placement="top" th:title="#{label.word.etymology.info}">
+        <div class="search__sidebar-block-title-wrapper">
+          <h2
+            class="search__sidebar-block-title"
+            th:classappend="${isBlockEmpty ? 'search__sidebar-block-title--empty' : ''}"
+            th:text="|#{label.word.etymology} ${isBlockEmpty ? #messages.msg('label.block_empty') : ''}|"
+            >Päritolu</h2>
+          <button type="button" th:aria-label="#{label.word.etymology.info}" class="btn btn-icon btn-sm ml-auto" data-toggle="tooltip" data-placement="top" th:title="#{label.word.etymology.info}">
             <i class="fas fa-info-circle"></i>
           </button>
           <th:block th:if="${wordData.word.wordEtymologyTree != null}">
@@ -223,10 +204,7 @@
               th:text="${wordData.word.wordEtymologyTree.etymologyType.value}"> </span>
           </th:block>
         </div>
-        <div th:if="${wordData.word.wordEtymologyTree == null}">
-          <span th:text="#{label.no.data}">Andmed puuduvad</span>
-        </div>
-        <div th:if="${wordData.word.wordEtymologyTree != null}">
+        <div th:unless="${isBlockEmpty}">
           <ul class="list-unstyled etymology-tree">
             <th:block th:with="etymLevel = ${wordData.word.wordEtymologyTree}" th:include=" :: etymology_level"></th:block>
           </ul>
@@ -265,66 +243,67 @@
     </li>
   </th:block>
   <th:block th:fragment="keelenou">
-    <section class="search__sidebar-block search__block text-body-two" th:if="${wordData.rusHeadword}">
+    <section class="search__sidebar-block search__block text-body-two">
       <div class="corp-panel">
-        <div class="mb-0 d-flex align-items-center">
-          <h2 class="search__sidebar-block-title" th:text="#{label.same.word}"></h2>
-          <a th:if="${wordData.rusHeadword}" th:aria-label="|#{aria.search.from.eki.rus.est} ${wordData.word.word}, #{aria.new.window}|"
-            th:href="${@viewUtil.getEkiOldskoolRusDictUrl(wordData.word.word)}" target="_blank">
-            <span th:text="#{label.same.word.rusest}">vene-eesti sõnaraamatus</span>
-            <i class="fas fa-external-link-alt" aria-hidden="true"></i>
-          </a>
+        <div class="search__sidebar-block-title-wrapper" th:with="isBlockEmpty = ${!wordData.rusHeadword}">
+          <h2
+            class="search__sidebar-block-title"
+            th:classappend="${isBlockEmpty ? 'search__sidebar-block-title--empty' : ''}"
+            th:text="|#{label.same.word} ${isBlockEmpty ? #messages.msg('label.block_empty') : ''}|"
+            ></h2>
         </div>
+        <a th:if="${wordData.rusHeadword}" th:aria-label="|#{aria.search.from.eki.rus.est} ${wordData.word.word}, #{aria.new.window}|"
+          th:href="${@viewUtil.getEkiOldskoolRusDictUrl(wordData.word.word)}" target="_blank">
+          <span th:text="#{label.same.word.rusest}">vene-eesti sõnaraamatus</span>
+          <i class="fas fa-external-link-alt" aria-hidden="true"></i>
+        </a>
       </div>
     </section>
     <section class="search__sidebar-block search__block text-body-two">
       <div class="corp-panel">
-        <div class="mb-0 d-flex align-items-center">
+        <div class="search__sidebar-block-title-wrapper">
           <h2 class="search__sidebar-block-title" th:text="#{label.same.word}"></h2>
-          <a th:aria-label="|#{label.same.word.iate} ${wordData.word.word}, #{aria.new.window}|" th:href="${@viewUtil.getIateSearchUrl(wordData.word.word, wordData.word.lang)}" target="_blank">
-            <span th:text="#{label.same.word.iate}">IATE terminibaasis</span>
-            <i class="fas fa-external-link-alt" aria-hidden="true"></i>
-          </a>
         </div>
+        <a th:aria-label="|#{label.same.word.iate} ${wordData.word.word}, #{aria.new.window}|" th:href="${@viewUtil.getIateSearchUrl(wordData.word.word, wordData.word.lang)}" target="_blank">
+          <span th:text="#{label.same.word.iate}">IATE terminibaasis</span>
+          <i class="fas fa-external-link-alt" aria-hidden="true"></i>
+        </a>
       </div>
     </section>
   </th:block>
   <th:block th:fragment="corp">
-    <div class="corp-panel">
-      <div class="heading-wrapper">
-        <h5 class="font-weight-bold mb-0 d-flex align-items-center text-dark">
-          <a class="btn-collapse" th:aria-expanded="${#lists.contains(uiSections, 'corp-panel')}" data-toggle="collapse" href="#corp-panel-collapse">
-            <i class="fa fa-chevron-down collapse-icon" aria-hidden="true"></i>
-            <span th:text="#{label.corp.examples}">Veebilauseid</span>
-          </a>
-          <button type="button" class="btn btn-icon btn-sm" data-toggle="tooltip" data-placement="top" th:aria-label="#{|corpus.title.${searchMode}.${corpLang}|}"
-            th:title="#{|corpus.title.${searchMode}.${corpLang}|}">
-            <i class="fas fa-info-circle"></i>
-          </button>
-        </h5>
+    <div class="corp-panel" th:with="isBlockEmpty = ${#lists.isEmpty(sentences)}">
+      <div class="search__sidebar-block-title-wrapper">
+        <h2
+          class="search__sidebar-block-title"
+          th:text="|#{label.corp.examples} ${isBlockEmpty ? #messages.msg('label.block_empty') : ''}|"
+          th:classappend="${isBlockEmpty ? 'search__sidebar-block-title--empty' : ''}"
+          >Veebilauseid</h2>
+        <button type="button" class="btn btn-icon btn-sm" data-toggle="tooltip" data-placement="top"
+          th:title="#{|corpus.title.${searchMode}.${corpLang}|}">
+          <i class="fas fa-info-circle"></i>
+        </button>
       </div>
-      <div id="corp-panel-collapse" data-name="corp-panel" class="collapse user-preference" th:classappend="${#lists.contains(uiSections, 'corp-panel') ? 'show' : ''}">
-        <div id="corp-panel-sentences" class="collapse-subset">
-          <div class="corp-warning mb-1" th:unless="${#lists.isEmpty(sentences)}">
-            <i class="text-danger fa fa-exclamation-triangle mr-1 mt-1" aria-hidden="true"></i>
-            <span th:text="#{corpus.warning}"></span>
-          </div>
-          <th:block th:each="sentence, sentenceIter : ${sentences}" th:with="isCollapsable=${sentenceIter.count > 2}">
-            <div class="sentence-wrapper" th:classappend="${isCollapsable ? 'collapse collapse-target' : ''}">
-              <p class="mb-2" th:utext="${sentence.getLeftPart() + '<b>' + sentence.getMiddlePart() + '</b>' + sentence.getRightPart()}"></p>
-            </div>
-          </th:block>
-          <button class="btn-collapse show-more-btn btn-ellipsis" type="button" aria-expanded="false" data-dynamic-text="true" data-toggle="collapse"
-            data-target="#corp-panel-sentences .collapse-target" th:if="${#lists.size(sentences) > T(eki.wordweb.constant.WebConstant).CORPUS_SENTENCES_DISPLAY_LIMIT}">
-            <span class="btn-content see-more-content" th:title="#{button.see.more}">
-              <i class="fa fa-ellipsis-h" aria-hidden="true"></i>
-            </span>
-            <span class="btn-content see-less-content">
-              <i class="fa fa-angle-up" aria-hidden="true"></i>
-              <span class="btn-txt" th:text="#{button.see.less}"></span>
-            </span>
-          </button>
+      <div id="corp-panel-sentences" class="collapse-subset">
+        <div class="corp-warning mb-1" th:unless="${isBlockEmpty}">
+          <i class="text-danger fa fa-exclamation-triangle mr-1 mt-1" aria-hidden="true"></i>
+          <span th:text="#{corpus.warning}"></span>
         </div>
+        <th:block th:each="sentence, sentenceIter : ${sentences}" th:with="isCollapsable=${sentenceIter.count > 2}">
+          <div class="sentence-wrapper" th:classappend="${isCollapsable ? 'collapse collapse-target' : ''}">
+            <p class="mb-2" th:utext="${sentence.getLeftPart() + '<b>' + sentence.getMiddlePart() + '</b>' + sentence.getRightPart()}"></p>
+          </div>
+        </th:block>
+        <button class="btn-collapse show-more-btn btn-ellipsis" type="button" aria-expanded="false" data-dynamic-text="true" data-toggle="collapse"
+          data-target="#corp-panel-sentences .collapse-target" th:if="${#lists.size(sentences) > T(eki.wordweb.constant.WebConstant).CORPUS_SENTENCES_DISPLAY_LIMIT}">
+          <span class="btn-content see-more-content" th:title="#{button.see.more}">
+            <i class="fa fa-ellipsis-h" aria-hidden="true"></i>
+          </span>
+          <span class="btn-content see-less-content">
+            <i class="fa fa-angle-up" aria-hidden="true"></i>
+            <span class="btn-txt" th:text="#{button.see.less}"></span>
+          </span>
+        </button>
       </div>
     </div>
     <script th:inline="javascript">
@@ -332,36 +311,33 @@
 				</script>
   </th:block>
   <th:block th:fragment="corp_trans">
-    <div class="corp-panel">
-      <div class="heading-wrapper">
-        <h5 class="font-weight-bold mb-0 d-flex align-items-center text-dark">
-          <a class="btn-collapse" th:aria-expanded="${#lists.contains(uiSections, 'corp-trans-panel')}" data-toggle="collapse" href="#corp-trans-panel-collapse">
-            <i class="fa fa-chevron-down collapse-icon" aria-hidden="true"></i>
-            <span th:text="#{label.corp.translations}">Tõlgitud näited</span>
-          </a>
+    <div class="corp-panel" th:with="isBlockEmpty = ${#lists.isEmpty(translations)}">
+      <div class="search__sidebar-block-title-wrapper">
+        <h2
+          class="search__sidebar-block-title"
+          th:text="|#{label.corp.translations} ${isBlockEmpty ? #messages.msg('label.block_empty') : ''}|"
+          th:classappend="${isBlockEmpty ? 'search__sidebar-block-title--empty' : ''}"
+          >Tõlgitud näited</h2>
           <button type="button" class="btn btn-icon btn-sm" data-toggle="tooltip" data-placement="top" th:aria-label="#{corpus.translations.title}" th:title="#{corpus.translations.title}">
             <i class="fas fa-info-circle"></i>
           </button>
-        </h5>
       </div>
-      <div id="corp-trans-panel-collapse" data-name="corp-trans-panel" class="collapse user-preference" th:classappend="${#lists.contains(uiSections, 'corp-trans-panel') ? 'show' : ''}">
-        <div id="corp-trans-panel-sentences" class="collapse-subset">
-          <th:block th:each="translation, translationIter : ${translations}" th:with="isCollapsable=${translationIter.count > 2}">
-            <div class="sentence-wrapper" th:classappend="${isCollapsable ? 'collapse collapse-target' : ''}">
-              <p class="mb-2" th:utext="${translation.sentence + ' - ' + translation.translatedSentence}"></p>
-            </div>
-          </th:block>
-          <button class="btn-collapse show-more-btn btn-ellipsis" type="button" aria-expanded="false" data-dynamic-text="true" data-toggle="collapse"
-            data-target="#corp-trans-panel-sentences .collapse-target" th:if="${#lists.size(translations) > T(eki.wordweb.constant.WebConstant).CORPUS_SENTENCES_DISPLAY_LIMIT}">
-            <span class="btn-content see-more-content" th:title="#{button.see.more}">
-              <i class="fa fa-ellipsis-h" aria-hidden="true"></i>
-            </span>
-            <span class="btn-content see-less-content">
-              <i class="fa fa-angle-up" aria-hidden="true"></i>
-              <span class="btn-txt" th:text="#{button.see.less}"></span>
-            </span>
-          </button>
-        </div>
+      <div id="corp-trans-panel-sentences" class="collapse-subset">
+        <th:block th:each="translation, translationIter : ${translations}" th:with="isCollapsable=${translationIter.count > 2}">
+          <div class="sentence-wrapper" th:classappend="${isCollapsable ? 'collapse collapse-target' : ''}">
+            <p class="mb-2" th:utext="${translation.sentence + ' - ' + translation.translatedSentence}"></p>
+          </div>
+        </th:block>
+        <button class="btn-collapse show-more-btn btn-ellipsis" type="button" aria-expanded="false" data-dynamic-text="true" data-toggle="collapse"
+          data-target="#corp-trans-panel-sentences .collapse-target" th:if="${#lists.size(translations) > T(eki.wordweb.constant.WebConstant).CORPUS_SENTENCES_DISPLAY_LIMIT}">
+          <span class="btn-content see-more-content" th:title="#{button.see.more}">
+            <i class="fa fa-ellipsis-h" aria-hidden="true"></i>
+          </span>
+          <span class="btn-content see-less-content">
+            <i class="fa fa-angle-up" aria-hidden="true"></i>
+            <span class="btn-txt" th:text="#{button.see.less}"></span>
+          </span>
+        </button>
       </div>
     </div>
     <script th:inline="javascript">
@@ -370,14 +346,14 @@
   </th:block>
   <th:block th:fragment="skell-search-link">
     <div class="corp-panel">
-      <div class="heading-wrapper">
-        <h5 class="font-weight-bold mb-0 d-flex align-items-center text-dark">
-          <span th:text="#{label.corp.examples}">Veebilauseid</span>
-          <button type="button" class="btn btn-icon btn-sm" data-toggle="tooltip" data-placement="top" th:aria-label="#{|corpus.title.${searchMode}.rus|}"
-            th:title="#{|corpus.title.${searchMode}.rus|}">
-            <i class="fas fa-info-circle"></i>
-          </button>
-        </h5>
+      <div class="search__sidebar-block-title-wrapper">
+        <h2
+          class="search__sidebar-block-title"
+          th:text="#{label.corp.examples}"></h2>
+        <button type="button" class="btn btn-icon btn-sm" data-toggle="tooltip" data-placement="top" th:aria-label="#{|corpus.title.${searchMode}.rus|}"
+          th:title="#{|corpus.title.${searchMode}.rus|}">
+          <i class="fas fa-info-circle"></i>
+        </button>
       </div>
       <div class="corp-warning mb-1">
         <i class="text-danger fa fa-exclamation-triangle mr-1 mt-1" aria-hidden="true"></i>

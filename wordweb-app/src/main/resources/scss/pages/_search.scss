@@ -179,6 +179,10 @@
       font-weight: 500;
       line-height: 20px;
     }
+    // Remove box shadow on empty blocks to make them "inactive"
+    &:has(.search__sidebar-block-title--empty) {
+      box-shadow: none;
+    }
   }
 
   &__sidebar-block-title {
@@ -187,6 +191,22 @@
     color: var(--color-dark-blue);
     line-height: 19px;
     margin: 0 8px 0 0;
+
+    &--empty {
+      color: var(--color-cloudy-day);
+    }
+  }
+
+  &__sidebar-block-title-wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    margin-bottom: 16px;
+    // Remove margin on empty blocks as they have no content
+    &:has(.search__sidebar-block-title--empty) {
+      margin-bottom: 0;
+    }
   }
 
   &__block {

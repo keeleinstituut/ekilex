@@ -67,6 +67,7 @@
   --color-discord-gray: #596573;
   --color-2025-\f5igekeelsuss\f5naraamatu-hall-100: #547687;
   --color-hall-taust-final-final-final-hall-500: #F9F9F9;
+  --color-cloudy-day: #7C8898;
   --color-white: #fff;
   --color-blue-100: #a0dcf8;
   --color-blue-200: #5aabe0;
@@ -14945,12 +14946,28 @@ body {
   font-weight: 500;
   line-height: 20px;
 }
+.search__sidebar-block:has(.search__sidebar-block-title--empty) {
+  box-shadow: none;
+}
 .search__sidebar-block-title {
   font-weight: 700;
   font-size: 1rem;
   color: var(--color-dark-blue);
   line-height: 19px;
   margin: 0 8px 0 0;
+}
+.search__sidebar-block-title--empty {
+  color: var(--color-cloudy-day);
+}
+.search__sidebar-block-title-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+.search__sidebar-block-title-wrapper:has(.search__sidebar-block-title--empty) {
+  margin-bottom: 0;
 }
 .search__block {
   background-color: var(--color-white);
@@ -16828,6 +16845,7 @@ span.material-symbols-outlined--small {
   --color-discord-gray: #596573;
   --color-2025-\f5igekeelsuss\f5naraamatu-hall-100: #547687;
   --color-hall-taust-final-final-final-hall-500: #F9F9F9;
+  --color-cloudy-day: #7C8898;
   --color-white: #fff;
   --color-blue-100: #a0dcf8;
   --color-blue-200: #5aabe0;
