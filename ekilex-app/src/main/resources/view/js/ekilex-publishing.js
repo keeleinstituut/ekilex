@@ -27,6 +27,7 @@ class PublishingHandler {
   id;
   replaceTarget;
   replaceEntityId;
+  initAccordion;
 
   constructor(container) {
     this.container = container;
@@ -36,6 +37,7 @@ class PublishingHandler {
     this.id = container.attr("data-entity-id");
     this.replaceTarget = container.attr("data-replace-target");
     this.replaceEntityId = container.attr("data-replace-entity-id");
+    this.initAccordion = container.attr("data-init-accordion") === "true";
     if (!this.trigger.length) {
       console.error("Could not find trigger for publishing: ", this.container);
     }
@@ -185,7 +187,15 @@ class PublishingHandler {
     $.ajax({
       url,
     }).done((res) => {
-      $(`#${this.replaceTarget}`).replaceWith(res);
+      // Using data attribute because eki accordion overrides id, which would break consequent uses
+      const targetSelector = `[data-replace-id='${this.replaceTarget}']`;
+      const target = $(targetSelector);
+      target.replaceWith(res);
+      const newContainer = $(targetSelector);
+      $wpm.bindObjects();
+      if (this.initAccordion) {
+        newContainer.ekiAccordion();
+      }
     });
   }
 }

@@ -287,7 +287,7 @@
     </div>
   </th:block>
   <th:block th:fragment="word_relation" th:with="relationSectionId=${'word_relation_section_' + wordId}">
-    <div th:id="${relationSectionId}">
+    <div th:data-replace-id="${relationSectionId}">
       <th:block th:replace=" :: word_sec_relation"></th:block>
       <th:block th:replace=" :: word_prim_relation"></th:block>
     </div>
@@ -427,7 +427,8 @@
                     isWwUnif = ${relation.wwUnif},
                     isWwLite = ${relation.wwLite},
                     isWwOd = ${relation.wwOd},
-                    replaceTarget = ${relationSectionId})">
+                    replaceTarget = ${relationSectionId},
+                    initAccordion = true)">
                 </th:block>
               </div>
             </div>
@@ -579,6 +580,7 @@
       th:data-entity-name="${entityName}"
       th:data-replace-entity-id="${wordId}"
       th:data-replace-target="${replaceTarget}"
+      th:data-init-accordion="${initAccordion}"
       >
       <button type="button" class="publishing__button publishing__button--toggle"
         th:id="|publishing-trigger-${entityName}-${entityId}|"
