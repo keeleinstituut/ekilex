@@ -134,9 +134,10 @@ public class LexSearchService extends AbstractWordSearchService {
 	}
 
 	@Transactional
-	public WordRelationDetails getWordRelationDetails(Long wordId) {
+	public WordDetails getWordRelationDetails(Long wordId, EkiUser user) {
 
 		Word word = lexSearchDbService.getWord(wordId);
+		permCalculator.applyCrud(user, word);
 		String wordLang = word.getLang();
 		List<WordRelation> wordRelations = lexDataDbService.getWordRelations(wordId, CLASSIF_LABEL_LANG_EST);
 		List<Classifier> allWordRelationTypes = commonDataDbService.getDefaultClassifiers(ClassifierName.WORD_REL_TYPE, CLASSIF_LABEL_LANG_EST);
@@ -145,7 +146,11 @@ public class LexSearchService extends AbstractWordSearchService {
 		List<WordGroup> wordGroups = conversionUtil.composeWordGroups(wordGroupMembers, allAspects);
 		WordRelationDetails wordRelationDetails = conversionUtil.composeWordRelationDetails(wordRelations, wordGroups, wordLang, allWordRelationTypes);
 
-		return wordRelationDetails;
+		WordDetails wordDetails = new WordDetails();
+		wordDetails.setWord(word);
+		wordDetails.setWordRelationDetails(wordRelationDetails);
+
+		return wordDetails;
 	}
 
 	@Transactional

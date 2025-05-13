@@ -33,7 +33,6 @@ import eki.ekilex.data.SearchUriData;
 import eki.ekilex.data.Tag;
 import eki.ekilex.data.UserContextData;
 import eki.ekilex.data.WordDetails;
-import eki.ekilex.data.WordRelationDetails;
 import eki.ekilex.data.WordsResult;
 import eki.ekilex.service.LexSearchService;
 import eki.ekilex.web.bean.SessionBean;
@@ -223,9 +222,8 @@ public class LexSearchController extends AbstractPrivateSearchController {
 	@GetMapping(WORD_RELATION_URI + "/{wordId}")
 	public String wordRelationDetails(@PathVariable("wordId") Long wordId, Model model) {
 
-		WordRelationDetails wordRelationDetails = lexSearchService.getWordRelationDetails(wordId);
-		WordDetails details = new WordDetails();
-		details.setWordRelationDetails(wordRelationDetails);
+		EkiUser user = userContext.getUser();
+		WordDetails details = lexSearchService.getWordRelationDetails(wordId, user);
 		model.addAttribute("wordId", wordId);
 		model.addAttribute("details", details);
 
