@@ -136,10 +136,12 @@ class PublishingHandler {
   }
 
   handleItemClick(e) {
-    const targetName = e.target.dataset?.publishingItem;
-    const currentValue = e.target.dataset?.publishingItemActive;
+    // currentTarget would refer to the actual button if user happened to press span etc
+    const target = e.currentTarget ?? e.target;
+    const targetName = target.dataset?.publishingItem;
+    const currentValue = target.dataset?.publishingItemActive;
     // Icon buttons always turn off, menu buttons toggle
-    const newValue = e.target.classList.contains("publishing__button--icon")
+    const newValue = target.classList.contains("publishing__button--icon")
       ? false
       : currentValue !== "true";
     if (targetName && currentValue !== undefined) {

@@ -385,5 +385,9 @@
       </div>
     </div>
   </div>
+  <label class="input-switch" th:fragment="input_switch">
+    <input type="checkbox" th:name="${inputName}" th:value="${inputValue}" th:checked="${inputChecked}">
+    <span th:text="${inputLabel}"></span>
+  </label>
 </body>
 </html>

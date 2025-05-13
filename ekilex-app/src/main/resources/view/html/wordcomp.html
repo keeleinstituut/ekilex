@@ -427,8 +427,10 @@
                     isWwUnif = ${relation.wwUnif},
                     isWwLite = ${relation.wwLite},
                     isWwOd = ${relation.wwOd},
+                    isPublic = ${relation.isPublic},
                     replaceTarget = ${relationSectionId},
-                    initAccordion = true)">
+                    initAccordion = true,
+                    withPublicSwitch = ${true})">
                 </th:block>
               </div>
             </div>
@@ -588,7 +590,7 @@
         data-toggle="publishing-menu"
         aria-haspopup="true"
         aria-expanded="false"
-        th:aria-label="#{publishing.open}"
+        th:title="#{publishing.open}"
         >
         <span class="material-symbols-outlined">apps</span>
       </button>
@@ -620,25 +622,37 @@
           >
           <span th:utext="#{publishing.lite}"></span>
         </button>
+        <div
+          class="publishing__switch-container"
+          data-publishing-item="public"
+          th:data-publishing-item-active="${isPublic}"
+          th:if="${withPublicSwitch}">
+          <th:block th:replace="components :: input_switch(
+            inputName = 'isPublic',
+            inputValue = 'isPublic',
+            inputChecked = ${isPublic},
+            inputLabel = #{publishing.public}
+          )"></th:block>
+        </div>
       </div>
       <button type="button" class="publishing__button publishing__button--icon"
         data-publishing-item="ww"
         th:data-publishing-item-active="${isWwUnif}"
-        th:aria-label="#{publishing.toggle.unif}"
+        th:title="#{publishing.toggle.unif}"
         sec:authorize="#vars.details.word.crudGrant"
         >
       </button>
       <button type="button" class="publishing__button publishing__button--icon"
         data-publishing-item="od"
         th:data-publishing-item-active="${isWwOd}"
-        th:aria-label="#{publishing.toggle.od}"
+        th:title="#{publishing.toggle.od}"
         sec:authorize="#vars.details.word.crudGrant"
         >
       </button>
       <button type="button" class="publishing__button publishing__button--icon"
         data-publishing-item="lite"
         th:data-publishing-item-active="${isWwLite}"
-        th:aria-label="#{publishing.toggle.lite}"
+        th:title="#{publishing.toggle.lite}"
         sec:authorize="#vars.details.word.crudGrant"
         >
       </button>

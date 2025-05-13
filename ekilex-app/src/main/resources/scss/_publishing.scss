@@ -100,4 +100,12 @@
       background-color: var(--color-light-blue);
     }
   }
+
+  &__switch-container {
+    grid-column: 1/-1;
+    display: flex;
+    border-top: 1px solid var(--color-medium-blue);
+    padding: 8px 8px 0;
+    margin-top: 8px;
+  }
 }
