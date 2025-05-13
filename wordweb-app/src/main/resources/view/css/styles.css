@@ -16488,6 +16488,10 @@ span.material-symbols-outlined--small {
   border-radius: 100px;
   width: max-content;
 }
+.footer__version {
+  font-size: 0.75rem;
+  font-weight: 400;
+}
 .search-wrap {
   position: sticky;
   top: 70px;

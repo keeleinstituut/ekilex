@@ -345,6 +345,7 @@
               <a href="mailto:eki@eki.ee">eki@eki.ee</a>
             </div>
           </div>
+          <div class="footer__version" th:text="|${appData.appName} ${appData.appVersion}|" th:if="${appData}"></div>
         </div>
         <div class="footer__column">
           <div class="footer__column-header" th:text="#{general.title}"></div>
