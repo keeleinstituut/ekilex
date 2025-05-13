@@ -13,16 +13,20 @@ class PublishingHandler {
     ww: "ww_unif",
     lite: "ww_lite",
     od: "ww_od",
-    ww_unif: "ww",
-    ww_lite: "lite",
-    ww_od: "od",
   };
-  container;
+  static replaceData = {
+    word_relation: {
+      endpoint: "wordrelation",
+    },
+  };
+  static container;
   trigger;
   menu;
   lastMenuItem;
   entityName;
   id;
+  replaceTarget;
+  replaceEntityId;
 
   constructor(container) {
     this.container = container;
@@ -30,6 +34,8 @@ class PublishingHandler {
     this.menu = container.find(`.${PublishingHandler.menuClass}`);
     this.entityName = container.attr("data-entity-name");
     this.id = container.attr("data-entity-id");
+    this.replaceTarget = container.attr("data-replace-target");
+    this.replaceEntityId = container.attr("data-replace-entity-id");
     if (!this.trigger.length) {
       console.error("Could not find trigger for publishing: ", this.container);
     }
@@ -45,6 +51,20 @@ class PublishingHandler {
 
     if (!this.id) {
       console.error("Could not find an id for publishing: ", this.container);
+    }
+
+    if (!this.replaceTarget) {
+      console.error(
+        "Could not find a replace target for publishing: ",
+        this.container
+      );
+    }
+
+    if (!this.replaceEntityId) {
+      console.error(
+        "Could not find a replace entity id for publishing: ",
+        this.container
+      );
     }
   }
 
@@ -91,20 +111,23 @@ class PublishingHandler {
 
     this.trigger.on("click", () => {
       if (popperInstance) {
-        this.closeMenu();
+        this.closeMenus();
       } else {
         this.trigger.trigger("show.bs.dropdown");
       }
     });
 
-    $(document).on("click", (e) => {
-      if (
-        e.target !== this.trigger.get(0) &&
-        !e.target.closest(`.${PublishingHandler.menuClass}`)
-      ) {
-        this.closeMenu();
-      }
-    });
+    if (!window.publishingClickOutsideActive) {
+      $(document).on("click", (e) => {
+        if (
+          e.target.getAttribute("data-toggle") !== "publishing-menu" &&
+          !e.target.closest(`.${PublishingHandler.menuClass}`)
+        ) {
+          this.closeMenus();
+        }
+      });
+      window.publishingClickOutsideActive = true;
+    }
 
     this.container.on("click", this.handleItemClick.bind(this));
     this.menu.children().on("click", this.handleItemClick.bind(this));
@@ -125,8 +148,8 @@ class PublishingHandler {
     }
   }
 
-  closeMenu() {
-    this.trigger.trigger("hide.bs.dropdown");
+  closeMenus() {
+    $('[data-toggle="publishing-menu"]').trigger("hide.bs.dropdown");
   }
 
   setTarget(targetName, value) {
@@ -145,15 +168,24 @@ class PublishingHandler {
       method: "POST",
       contentType: "application/json",
     }).done(() => {
-      this.closeMenu();
-      // Since closing menu involves literally moving the element, push state changes to the back
-      requestAnimationFrame(() => {
-        this.container
-          .find(
-            `[data-publishing-item='${PublishingHandler.targetConstantsMap[targetName]}']`
-          )
-          .attr("data-publishing-item-active", value);
-      });
+      this.closeMenus();
+      if (this.replaceTarget) {
+        this.replaceTargetContainer();
+      }
+    });
+  }
+
+  replaceTargetContainer() {
+    const endpoint = PublishingHandler.replaceData[this.entityName]?.endpoint;
+    if (!endpoint) {
+      console.error("Failed to find replace endpoint for ", this.entityName);
+      return;
+    }
+    const url = `${applicationUrl}${endpoint}/${this.replaceEntityId}`;
+    $.ajax({
+      url,
+    }).done((res) => {
+      $(`#${this.replaceTarget}`).replaceWith(res);
     });
   }
 }
