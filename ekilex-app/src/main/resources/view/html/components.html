@@ -245,9 +245,9 @@
     <div class="form-row">
       <div class="col-12">
         <div class="form-group row ui-front">
-          <label class="col-auto col-form-label" th:text="#{source.search}">Otsing</label>
+          <label class="col-auto col-form-label" th:text="#{source.search}" for="source-quick-search">Otsing</label>
           <div class="col-5">
-            <input type="text" class="form-control" name="searchFilter" th:placeholder="#{source.search.placeholder}">
+            <input type="text" class="form-control" name="searchFilter" th:placeholder="#{source.search.placeholder}" id="source-quick-search">
           </div>
           <div class="col-2">
             <button type="submit" class="btn btn-primary" th:text="#{common.search}" data-submit-id="source_search_form">Otsi</button>
@@ -276,9 +276,9 @@
               </div>
             </div>
             <div class="form-group row m-4">
-              <label class="col-12 col-form-label" th:text="#{source.name}">Lühike kuju</label>
+              <label class="col-12 col-form-label" th:text="#{source.name}" for="add-source-modal-short-name">Lühike kuju</label>
               <div class="col-md-12">
-                <input class="form-control required-field" name="name" autocomplete="off">
+                <input class="form-control required-field" name="name" autocomplete="off" id="add-source-modal-short-name">
               </div>
             </div>
             <div class="form-group row m-4">
