@@ -400,12 +400,12 @@
                         </th:block>
                         <th:block th:unless="${#lists.isEmpty(usage.usageTranslations)}">
                           <span th:each="usageTranslation : ${usage.usageTranslations}" class="example-text">
-                            <span class="example-text-value" th:utext="${@viewUtil.wrapDecorations(usageTranslation)}"></span>
+                            <span class="example-text-value text-weight-medium" th:utext="${@viewUtil.wrapDecorations(usageTranslation)}"></span>
                           </span>
                         </th:block>
                         <th:block th:unless="${#lists.isEmpty(usage.usageDefinitions)}">
                           <span th:each="usageDefinition : ${usage.usageDefinitions}" class="example-text" >
-                            <span class="example-text-value" th:utext="${usageDefinition}"></span>
+                            <span class="example-text-value text-weight-medium" th:utext="${usageDefinition}"></span>
                           </span>
                         </th:block>
                       </div>
@@ -418,7 +418,7 @@
                         <div class="usage-item" th:if="${isCollapsable}">
                           <div class="example-sentence-wrap">
                             <span class="example-text example-text-w-audio">
-                              <span class="example-text-value" th:utext="${usage.valuePrese}"></span>
+                              <span class="example-text-value text-weight-medium" th:utext="${usage.valuePrese}"></span>
                               <button class="btn btn-speaker btn-speaker--inactive" th:aria-label="|#{aria.listen} - ${usage.value}|" th:if="${usage.putOnSpeaker}"
                                       th:data-text="${usage.value}"
                                       data-service-id="speech"
@@ -433,12 +433,12 @@
                             </th:block>
                             <th:block th:unless="${#lists.isEmpty(usage.usageTranslations)}">
                               <span th:each="usageTranslation : ${usage.usageTranslations}" class="example-text">
-                                <span class="example-text-value" th:utext="${@viewUtil.wrapDecorations(usageTranslation)}"></span>
+                                <span class="example-text-value text-weight-medium" th:utext="${@viewUtil.wrapDecorations(usageTranslation)}"></span>
                               </span>
                             </th:block>
                             <th:block th:unless="${#lists.isEmpty(usage.usageDefinitions)}">
                               <span th:each="usageDefinition : ${usage.usageDefinitions}" class="example-text" >
-                                <span class="example-text-value" th:utext="${usageDefinition}"></span>
+                                <span class="example-text-value text-weight-medium" th:utext="${usageDefinition}"></span>
                               </span>
                             </th:block>
                           </div>
