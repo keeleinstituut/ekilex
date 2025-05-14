@@ -1899,6 +1899,12 @@
       </table>
     </div>
   </div>
+  <th:block th:fragment="collocation">
+    <div th:id="|colloc_section_${lexeme.lexemeId}|">
+      <th:block th:replace="lexcomp :: primary_colloc"></th:block>
+      <th:block th:replace="lexcomp :: secondary_colloc"></th:block>
+    </div>
+  </th:block>
   <th:block th:fragment="primary_colloc">
     <div class="mt-2" th:if="${lexeme.collocationsExist}">
       <span class="lbl" th:text="#{lex.collocations}">Kollokatsioonid</span>
@@ -1908,11 +1914,15 @@
         <h3 th:text="${collocPosGr.posGroupValue}"></h3>
         <th:block th:each="collocRelGr : ${collocPosGr.relGroups}">
           <h5 th:text="${collocRelGr.relGroupValue}"></h5>
-          <table class="table table-sm">
-            <th:block th:each="colloc : ${collocRelGr.collocations}">
-              <th:block th:replace="lexcomp :: colloc_row"></th:block>
-            </th:block>
-          </table>
+          <div class="orderable" data-op-code="colloc">
+            <table class="table table-sm">
+              <tr th:each="colloc, collocIter : ${collocRelGr.collocations}"
+                  th:data-id="${colloc.wordId}"
+                  th:data-orderby="${colloc.groupOrder}">
+                <th:block th:replace="lexcomp :: colloc_row"></th:block>
+              </tr>
+            </table>
+          </div>
         </th:block>
       </th:block>
     </div>
@@ -1920,52 +1930,80 @@
   <th:block th:fragment="secondary_colloc">
     <div class="mt-2" th:if="${not #lists.isEmpty(lexeme.secondaryCollocations)}">
       <h3 th:text="#{lex.collocation.secondary}">Klassifitseerimata</h3>
-      <table class="table table-sm">
-        <th:block th:each="colloc : ${lexeme.secondaryCollocations}">
-          <th:block th:replace="lexcomp :: colloc_row"></th:block>
-        </th:block>
-      </table>
+      <div class="orderable" data-op-code="colloc">
+        <table class="table table-sm">
+          <tr th:each="colloc, collocIter : ${lexeme.secondaryCollocations}"
+              th:data-id="${colloc.wordId}"
+              th:data-orderby="${colloc.groupOrder}">
+            <th:block th:replace="lexcomp :: colloc_row"></th:block>
+          </tr>
+        </table>
+      </div>
     </div>
   </th:block>
   <th:block th:fragment="colloc_row">
-    <tr>
-      <td class="col-3">
-        <button
-          type="button"
-          class="btn btn-link p-0"
-          th:data-id="${colloc.wordId}"
-          name="details-btn"
-          data-plugin="contextmenu, loadDetailsPlugin"
-          data-contextmenu:compare="Ava uues paneelis"
-          data-behaviour="replace">
-          <span th:text="${colloc.wordValue}"></span>
-        </button>
-      </td>
-      <td class="col-2">
-        <th:block th:each="collocMember : ${colloc.members}">
-          <div th:if="${lexeme.wordId != collocMember.wordId}" class="p-0">
-            <button
-              type="button"
-              class="btn btn-link p-0"
-              th:data-id="${collocMember.wordId}"
-              name="details-btn"
-              data-plugin="contextmenu, loadDetailsPlugin"
-              data-contextmenu:compare="Ava uues paneelis"
-              data-behaviour="replace">
-              <span th:text="${collocMember.wordValue}"></span>
-            </button>
-            <span th:text="${collocMember.weight}" class="small text-muted ml-2 mt-2"></span>
-          </div>
-        </th:block>
-      </td>
-      <td>
-        <div th:if="${not #lists.isEmpty(colloc.usages)}">
-          <div th:each="usage : ${colloc.usages}">
-            <i><span th:text="${usage.valuePrese}"></span></i>
-          </div>
+    <td class="col-3">
+      <button
+        type="button"
+        class="btn btn-link p-0"
+        th:data-id="${colloc.wordId}"
+        name="details-btn"
+        data-plugin="contextmenu, loadDetailsPlugin"
+        data-contextmenu:compare="Ava uues paneelis"
+        data-behaviour="replace">
+        <span th:text="${colloc.wordValue}"></span>
+      </button>
+    </td>
+    <td>
+      <th:block th:each="collocMember : ${colloc.members}">
+        <div th:if="${lexeme.wordId != collocMember.wordId}" class="p-0">
+          <button
+            type="button"
+            class="btn btn-link p-0"
+            th:data-id="${collocMember.wordId}"
+            name="details-btn"
+            data-plugin="contextmenu, loadDetailsPlugin"
+            data-contextmenu:compare="Ava uues paneelis"
+            data-behaviour="replace">
+            <span th:text="${collocMember.wordValue}"></span>
+          </button>
+          <span th:text="${collocMember.weight}" class="small text-muted ml-2 mt-2"></span>
         </div>
-      </td>
-    </tr>
+      </th:block>
+    </td>
+    <td>
+      <div th:if="${not #lists.isEmpty(colloc.usages)}">
+        <div th:each="usage : ${colloc.usages}">
+          <i><span th:text="${usage.valuePrese}"></span></i>
+        </div>
+      </div>
+    </td>
+    <td class="hidden-buttons" width="70px">
+      <button type="button"
+              th:hidden="${collocIter.first}"
+              th:title="#{common.update.ordering}"
+              data-plugin="changeItemOrderingPlugin"
+              class="btn badge badge-secondary order-up" >
+        <i class="fa fa-arrow-up" aria-hidden="true"></i>
+      </button>
+      <button type="button"
+              th:hidden="${collocIter.last}"
+              th:title="#{common.update.ordering}" 
+              data-plugin="changeItemOrderingPlugin"
+              class="btn badge badge-secondary order-down" >
+        <i class="fa fa-arrow-down" aria-hidden="true"></i>
+      </button>
+      <button type="button"
+              data-op-code="colloc"
+              th:data-id="${colloc.wordId}"
+              th:data-callback="${@viewUtil.composeFunction('loadFullLexemeDetails', lexeme.lexemeId, lexeme.levels)}"
+              data-toggle="delete-confirm"
+              data-placement="right"
+              sec:authorize="#vars.lexeme.crudGrant"
+              class="btn badge badge-warning">
+        <i class="fa fa-remove" aria-hidden="true"></i>
+      </button>
+    </td>
   </th:block>
   <th:block th:fragment="colloc_members">
     <div class="row" th:if="${not #lists.isEmpty(lexeme.collocationMembers)}">

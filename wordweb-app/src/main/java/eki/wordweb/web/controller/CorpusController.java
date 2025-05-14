@@ -50,7 +50,7 @@ public class CorpusController implements WebConstant, SystemConstant {
 		model.addAttribute("corpLang", wordLang);
 		model.addAttribute("uiSections", uiSections);
 
-		return "common-search-sidebar :: corp";
+		return COMMON_SEARCH_SIDEBAR_PAGE + PAGE_FRAGMENT_ELEM + "corp";
 	}
 
 	@GetMapping(CORP_TRANS_URI + "/{wordId}/{wordValue}/{wordLang}")
@@ -67,6 +67,6 @@ public class CorpusController implements WebConstant, SystemConstant {
 		model.addAttribute("translations", translations);
 		model.addAttribute("uiSections", uiSections);
 
-		return "common-search-sidebar :: corp_trans";
+		return COMMON_SEARCH_SIDEBAR_PAGE + PAGE_FRAGMENT_ELEM + "corp_trans";
 	}
 }

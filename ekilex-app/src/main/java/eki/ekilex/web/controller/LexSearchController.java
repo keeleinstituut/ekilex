@@ -219,17 +219,6 @@ public class LexSearchController extends AbstractPrivateSearchController {
 		return LEX_SEARCH_PAGE + PAGE_FRAGMENT_ELEM + WORD_DETAILS_FRAGMENT;
 	}
 
-	@GetMapping(WORD_RELATION_URI + "/{wordId}")
-	public String wordRelationDetails(@PathVariable("wordId") Long wordId, Model model) {
-
-		EkiUser user = userContext.getUser();
-		WordDetails details = lexSearchService.getWordRelationDetails(wordId, user);
-		model.addAttribute("wordId", wordId);
-		model.addAttribute("details", details);
-
-		return WORD_COMPONENTS_PAGE + PAGE_FRAGMENT_ELEM + WORD_RELATION_FRAGMENT;
-	}
-
 	@GetMapping(LEXEME_DETAILS_URI + "/{composition}/{lexemeId}/{levels}")
 	public String lexemeDetails(
 			@PathVariable("composition") String composition,

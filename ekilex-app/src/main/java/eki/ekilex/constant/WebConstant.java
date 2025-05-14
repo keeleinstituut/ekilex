@@ -20,8 +20,6 @@ public interface WebConstant {
 
 	String VIEW_RESOURCES_URI = "/view";
 
-	String COMPONENTS_PAGE = "components";
-
 	String COMMON_PAGE = "common";
 
 	String ERROR_PAGE = "error";
@@ -58,8 +56,6 @@ public interface WebConstant {
 
 	String LEX_PAGING_URI = "/lex_paging";
 
-	String LEX_COMPONENTS_PAGE = "lexcomp";
-
 	String TERM_SEARCH_PAGE = "termsearch";
 
 	String TERM_SEARCH_URI = "/termsearch";
@@ -88,9 +84,13 @@ public interface WebConstant {
 
 	String LIM_TERM_PAGING_URI = "/lim_term_paging";
 
+	String COMPONENTS_PAGE = "components";
+
 	String TERM_COMPONENTS_PAGE = "termcomp";
 
 	String WORD_COMPONENTS_PAGE = "wordcomp";
+
+	String LEX_COMPONENTS_PAGE = "lexcomp";
 
 	String WORD_RELATION_FRAGMENT = "word_relation";
 
@@ -105,6 +105,8 @@ public interface WebConstant {
 	String TERM_MEANING_DETAILS_URI = "/termmeaningdetails";
 
 	String LIM_TERM_MEANING_DETAILS_URI = "/limtermmeaningdetails";
+
+	String LEXEME_COLLOCATION_URI = "/lexemecolloc";
 
 	String WORD_SELECT_URI = "/wordselect";
 

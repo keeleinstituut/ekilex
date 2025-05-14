@@ -154,6 +154,24 @@ public class LexSearchService extends AbstractWordSearchService {
 	}
 
 	@Transactional
+	public Lexeme getLexemeCollocations(Long lexemeId, EkiUser user) {
+
+		Lexeme lexeme = lexSearchDbService.getLexeme(lexemeId, CLASSIF_LABEL_LANG_EST);
+		permCalculator.applyCrud(user, lexeme);
+		List<CollocPosGroup> primaryCollocations = lexDataDbService.getPrimaryCollocations(lexemeId, CLASSIF_LABEL_LANG_EST);
+		List<Colloc> secondaryCollocations = lexDataDbService.getSecondaryCollocations(lexemeId);
+		List<CollocMember> collocationMembers = commonDataDbService.getCollocationMembers(lexemeId);
+		boolean isCollocationsExist = lexDataDbService.isCollocationsExist(lexemeId);
+
+		lexeme.setPrimaryCollocations(primaryCollocations);
+		lexeme.setSecondaryCollocations(secondaryCollocations);
+		lexeme.setCollocationMembers(collocationMembers);
+		lexeme.setCollocationsExist(isCollocationsExist);
+
+		return lexeme;
+	}
+
+	@Transactional
 	public Lexeme getWordLexeme(
 			Long lexemeId, List<ClassifierSelect> languagesOrder, EkiUserProfile userProfile, EkiUser user, boolean isFullData) throws Exception {
 
@@ -227,9 +245,9 @@ public class LexSearchService extends AbstractWordSearchService {
 		List<SynonymLangGroup> synonymLangGroups = conversionUtil.composeSynonymLangGroups(synMeaningRelations, synMeaningWords, inexactSynonyms, userProfile, wordLang, languagesOrder);
 		List<OrderedClassifier> meaningDomains = commonDataDbService.getMeaningDomains(meaningId, CLASSIF_LABEL_LANG_EST);
 		List<Definition> definitions = commonDataDbService.getMeaningDefinitions(meaningId, datasetCode, CLASSIF_LABEL_LANG_EST);
+		List<MeaningForum> meaningForums = commonDataDbService.getMeaningForums(meaningId);
 		permCalculator.applyCrud(user, definitions);
 		permCalculator.filterVisibility(user, definitions);
-		List<MeaningForum> meaningForums = commonDataDbService.getMeaningForums(meaningId);
 		permCalculator.applyCrud(user, meaningForums);
 
 		Meaning meaning = new Meaning();

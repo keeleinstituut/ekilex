@@ -22,6 +22,8 @@ public interface WebConstant {
 
 	String MORPHO_FULL_PAGE = "morpho-full";
 
+	String COMMON_SEARCH_SIDEBAR_PAGE = "common-search-sidebar";
+
 	String NEW_WORDS_PAGE = "new-words";
 
 	String NEWS_PAGE = "news";
@@ -47,6 +49,8 @@ public interface WebConstant {
 	String GAME_SIMILJUDGE_PAGE = "game-similjudge";
 
 	String ERROR_PAGE = "error";
+
+	String PAGE_FRAGMENT_ELEM = " :: ";
 
 	String HOME_URI = "/";
 
