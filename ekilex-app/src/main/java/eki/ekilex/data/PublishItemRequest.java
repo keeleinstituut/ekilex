@@ -10,7 +10,7 @@ public class PublishItemRequest extends AbstractDataObject {
 
 	private String entityName;
 
-	private Long id;
+	private Long entityId;
 
 	private boolean value;
 
@@ -30,12 +30,12 @@ public class PublishItemRequest extends AbstractDataObject {
 		this.entityName = entityName;
 	}
 
-	public Long getId() {
-		return id;
+	public Long getEntityId() {
+		return entityId;
 	}
 
-	public void setId(Long id) {
-		this.id = id;
+	public void setEntityId(Long entityId) {
+		this.entityId = entityId;
 	}
 
 	public boolean isValue() {

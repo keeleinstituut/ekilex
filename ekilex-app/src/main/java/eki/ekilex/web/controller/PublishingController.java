@@ -41,7 +41,7 @@ public class PublishingController extends AbstractMutableDataPageController impl
 
 		String targetName = itemData.getTargetName();
 		String entityName = itemData.getEntityName();
-		Long entityId = itemData.getId();
+		Long entityId = itemData.getEntityId();
 		boolean isPublish = itemData.isValue();
 
 		publishingService.publish(user, targetName, entityName, entityId, isPublish);

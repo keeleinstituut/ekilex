@@ -385,6 +385,86 @@
       </div>
     </div>
   </div>
+  <th:block th:fragment="entity_publishing">
+    <div
+      class="dropdown publishing"
+      data-plugin="publishingHandler"
+      th:data-entity-id="${entityId}"
+      th:data-entity-name="${entityName}"
+      th:data-replace-section-id="${replaceSectionId}"
+      th:data-replace-owner-id="${replaceOwnerId}"
+      th:data-init-accordion="${initAccordion}"
+      >
+      <button type="button" class="publishing__button publishing__button--toggle"
+        th:id="|publishing-trigger-${entityName}-${entityId}|"
+        data-toggle="publishing-menu"
+        aria-haspopup="true"
+        aria-expanded="false"
+        th:title="#{publishing.open}"
+        >
+        <span class="material-symbols-outlined">apps</span>
+      </button>
+      <div
+        class="dropdown-menu publishing__menu"
+        th:id="|publishing-menu-${entityName}-${entityId}|"
+        th:aria-labelledby="|publishing-trigger-${entityName}-${entityId}|">
+        <button
+          class="publishing__menu-item"
+          data-publishing-item="unif"
+          th:data-publishing-item-active="${isWwUnif}"
+          th:aria-pressed="${isWwUnif}"
+          >
+          <span th:utext="#{publishing.unif}"></span>
+        </button>
+        <button
+          class="publishing__menu-item"
+          data-publishing-item="od"
+          th:data-publishing-item-active="${isWwOd}"
+          th:aria-pressed="${isWwOd}"
+          >
+          <span th:utext="#{publishing.od}"></span>
+        </button>
+        <button
+          class="publishing__menu-item"
+          data-publishing-item="lite"
+          th:data-publishing-item-active="${isWwLite}"
+          th:aria-pressed="${isWwLite}"
+          >
+          <span th:utext="#{publishing.lite}"></span>
+        </button>
+        <div
+          class="publishing__switch-container"
+          data-publishing-item="public"
+          th:data-publishing-item-active="${isPublic}"
+          th:if="${withPublicSwitch}">
+          <th:block th:replace="components :: input_switch(
+            inputName = 'isPublic',
+            inputValue = 'isPublic',
+            inputChecked = ${isPublic},
+            inputLabel = #{publishing.public}
+          )"></th:block>
+        </div>
+      </div>
+      <button type="button" class="publishing__button publishing__button--icon"
+        data-publishing-item="unif"
+        th:data-publishing-item-active="${isWwUnif}"
+        th:title="#{publishing.toggle.unif}"
+        >
+      </button>
+      <button type="button" class="publishing__button publishing__button--icon"
+        data-publishing-item="od"
+        th:data-publishing-item-active="${isWwOd}"
+        th:title="#{publishing.toggle.od}"
+        >
+      </button>
+      <button type="button" class="publishing__button publishing__button--icon"
+        data-publishing-item="lite"
+        th:data-publishing-item-active="${isWwLite}"
+        th:title="#{publishing.toggle.lite}"
+        >
+      </button>
+    </div>
+  </th:block>
   <label class="input-switch" th:fragment="input_switch">
     <input type="checkbox" th:name="${inputName}" th:value="${inputValue}" th:checked="${inputChecked}">
     <span th:text="${inputLabel}"></span>

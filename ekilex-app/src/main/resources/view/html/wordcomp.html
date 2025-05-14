@@ -286,8 +286,8 @@
       </div>
     </div>
   </th:block>
-  <th:block th:fragment="word_relation" th:with="relationSectionId=${'word_relation_section_' + wordId}">
-    <div th:data-replace-id="${relationSectionId}">
+  <th:block th:fragment="word_relation" th:with="wordRelationSectionId=${'word_relation_section_' + wordId}">
+    <div th:data-replace-id="${wordRelationSectionId}">
       <th:block th:replace=" :: word_sec_relation"></th:block>
       <th:block th:replace=" :: word_prim_relation"></th:block>
     </div>
@@ -421,16 +421,18 @@
                   <i class="fa fa-remove" aria-hidden="true"></i>
                 </button>
                 <th:block
-                  th:replace=" :: entity_publishing(
+                  sec:authorize="#vars.details.word.crudGrant"
+                  th:replace="components :: entity_publishing(
                     entityId = ${relation.id},
                     entityName = 'word_relation',
+                    isPublic = ${relation.isPublic},
                     isWwUnif = ${relation.wwUnif},
                     isWwLite = ${relation.wwLite},
                     isWwOd = ${relation.wwOd},
-                    isPublic = ${relation.isPublic},
-                    replaceTarget = ${relationSectionId},
+                    replaceSectionId = ${wordRelationSectionId},
+                    replaceOwnerId = ${wordId},
                     initAccordion = true,
-                    withPublicSwitch = ${true})">
+                    withPublicSwitch = false)">
                 </th:block>
               </div>
             </div>
@@ -572,90 +574,6 @@
           </div>
         </div>
       </div>
-    </div>
-  </th:block>
-  <th:block th:fragment="entity_publishing">
-    <div
-      class="dropdown publishing"
-      data-plugin="publishingHandler"
-      th:data-entity-id="${entityId}"
-      th:data-entity-name="${entityName}"
-      th:data-replace-entity-id="${wordId}"
-      th:data-replace-target="${replaceTarget}"
-      th:data-init-accordion="${initAccordion}"
-      >
-      <button type="button" class="publishing__button publishing__button--toggle"
-        th:id="|publishing-trigger-${entityName}-${entityId}|"
-        sec:authorize="#vars.details.word.crudGrant"
-        data-toggle="publishing-menu"
-        aria-haspopup="true"
-        aria-expanded="false"
-        th:title="#{publishing.open}"
-        >
-        <span class="material-symbols-outlined">apps</span>
-      </button>
-      <div
-        class="dropdown-menu publishing__menu"
-        th:id="|publishing-menu-${entityName}-${entityId}|"
-        th:aria-labelledby="|publishing-trigger-${entityName}-${entityId}|">
-        <button
-          class="publishing__menu-item"
-          data-publishing-item="ww"
-          th:data-publishing-item-active="${isWwUnif}"
-          th:aria-pressed="${isWwUnif}"
-          >
-          <span th:utext="#{publishing.unif}"></span>
-        </button>
-        <button
-          class="publishing__menu-item"
-          data-publishing-item="od"
-          th:data-publishing-item-active="${isWwOd}"
-          th:aria-pressed="${isWwOd}"
-          >
-          <span th:utext="#{publishing.od}"></span>
-        </button>
-        <button
-          class="publishing__menu-item"
-          data-publishing-item="lite"
-          th:data-publishing-item-active="${isWwLite}"
-          th:aria-pressed="${isWwLite}"
-          >
-          <span th:utext="#{publishing.lite}"></span>
-        </button>
-        <div
-          class="publishing__switch-container"
-          data-publishing-item="public"
-          th:data-publishing-item-active="${isPublic}"
-          th:if="${withPublicSwitch}">
-          <th:block th:replace="components :: input_switch(
-            inputName = 'isPublic',
-            inputValue = 'isPublic',
-            inputChecked = ${isPublic},
-            inputLabel = #{publishing.public}
-          )"></th:block>
-        </div>
-      </div>
-      <button type="button" class="publishing__button publishing__button--icon"
-        data-publishing-item="ww"
-        th:data-publishing-item-active="${isWwUnif}"
-        th:title="#{publishing.toggle.unif}"
-        sec:authorize="#vars.details.word.crudGrant"
-        >
-      </button>
-      <button type="button" class="publishing__button publishing__button--icon"
-        data-publishing-item="od"
-        th:data-publishing-item-active="${isWwOd}"
-        th:title="#{publishing.toggle.od}"
-        sec:authorize="#vars.details.word.crudGrant"
-        >
-      </button>
-      <button type="button" class="publishing__button publishing__button--icon"
-        data-publishing-item="lite"
-        th:data-publishing-item-active="${isWwLite}"
-        th:title="#{publishing.toggle.lite}"
-        sec:authorize="#vars.details.word.crudGrant"
-        >
-      </button>
     </div>
   </th:block>
 </body>
