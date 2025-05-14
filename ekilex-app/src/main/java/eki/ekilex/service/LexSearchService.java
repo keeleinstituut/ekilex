@@ -69,7 +69,7 @@ public class LexSearchService extends AbstractWordSearchService {
 	@Transactional
 	public WordDetails getWordDetails(
 			Long wordId, Long fullDataMeaningId, List<String> selectedDatasetCodes, List<ClassifierSelect> languagesOrder,
-			EkiUser user, EkiUserProfile userProfile, Tag activeTag, boolean isFullData) throws Exception {
+			EkiUser user, EkiUserProfile userProfile, Tag activeTag, boolean isCollocData, boolean isFullData) throws Exception {
 
 		SearchDatasetsRestriction searchDatasetsRestriction = composeDatasetsRestriction(selectedDatasetCodes);
 		Word word = lexSearchDbService.getWord(wordId);
@@ -106,10 +106,10 @@ public class LexSearchService extends AbstractWordSearchService {
 		for (Lexeme lexeme : lexemes) {
 			Long lexemeMeaningId = lexeme.getMeaningId();
 			if (isFullDataByMeaningId && fullDataMeaningId.equals(lexemeMeaningId)) {
-				populateLexeme(lexeme, word, languagesOrder, user, userProfile, true);
+				populateLexeme(lexeme, word, languagesOrder, user, userProfile, isCollocData, true);
 				isFullDataByMeaningId = false;
 			} else {
-				populateLexeme(lexeme, word, languagesOrder, user, userProfile, isFullDataCorrection);
+				populateLexeme(lexeme, word, languagesOrder, user, userProfile, isCollocData, isFullDataCorrection);
 			}
 		}
 		lexemeLevelPreseUtil.combineLevels(lexemes);
@@ -173,13 +173,18 @@ public class LexSearchService extends AbstractWordSearchService {
 
 	@Transactional
 	public Lexeme getWordLexeme(
-			Long lexemeId, List<ClassifierSelect> languagesOrder, EkiUserProfile userProfile, EkiUser user, boolean isFullData) throws Exception {
+			Long lexemeId,
+			List<ClassifierSelect> languagesOrder,
+			EkiUser user,
+			EkiUserProfile userProfile,
+			boolean isCollocData,
+			boolean isFullData) throws Exception {
 
 		Lexeme lexeme = lexSearchDbService.getLexeme(lexemeId, CLASSIF_LABEL_LANG_EST);
 		if (lexeme != null) {
 			Long wordId = lexeme.getWordId();
 			Word word = lexSearchDbService.getWord(wordId);
-			populateLexeme(lexeme, word, languagesOrder, user, userProfile, isFullData);
+			populateLexeme(lexeme, word, languagesOrder, user, userProfile, isCollocData, isFullData);
 		}
 		return lexeme;
 	}
@@ -224,7 +229,13 @@ public class LexSearchService extends AbstractWordSearchService {
 	}
 
 	private void populateLexeme(
-			Lexeme lexeme, Word word, List<ClassifierSelect> languagesOrder, EkiUser user, EkiUserProfile userProfile, boolean isFullData) throws Exception {
+			Lexeme lexeme,
+			Word word,
+			List<ClassifierSelect> languagesOrder,
+			EkiUser user,
+			EkiUserProfile userProfile,
+			boolean isCollocData,
+			boolean isFullData) throws Exception {
 
 		List<String> preferredMeaningWordLangs = new ArrayList<>();
 		if (userProfile != null) {
@@ -276,9 +287,14 @@ public class LexSearchService extends AbstractWordSearchService {
 			List<Freeform> lexemeFreeforms = commonDataDbService.getLexemeFreeforms(lexemeId, EXCLUDED_LEXEME_ATTRIBUTE_FF_TYPE_CODES, CLASSIF_LABEL_LANG_EST);
 			List<NoteLangGroup> lexemeNoteLangGroups = conversionUtil.composeNoteLangGroups(lexemeNotes, languagesOrder);
 			List<LexemeRelation> lexemeRelations = commonDataDbService.getLexemeRelations(lexemeId, CLASSIF_LABEL_LANG_EST);
-			List<CollocPosGroup> primaryCollocations = lexDataDbService.getPrimaryCollocations(lexemeId, CLASSIF_LABEL_LANG_EST);
-			List<Colloc> secondaryCollocations = lexDataDbService.getSecondaryCollocations(lexemeId);
-			List<CollocMember> collocationMembers = commonDataDbService.getCollocationMembers(lexemeId);
+			List<CollocPosGroup> primaryCollocations = null;
+			List<Colloc> secondaryCollocations = null;
+			List<CollocMember> collocationMembers = null;
+			if (isCollocData) {
+				primaryCollocations = lexDataDbService.getPrimaryCollocations(lexemeId, CLASSIF_LABEL_LANG_EST);
+				secondaryCollocations = lexDataDbService.getSecondaryCollocations(lexemeId);
+				collocationMembers = commonDataDbService.getCollocationMembers(lexemeId);
+			}
 			List<Freeform> meaningFreeforms = commonDataDbService.getMeaningFreeforms(meaningId, EXCLUDED_MEANING_ATTRIBUTE_FF_TYPE_CODES, CLASSIF_LABEL_LANG_EST);
 			List<Freeform> meaningLearnerComments = commonDataDbService.getMeaningLearnerComments(meaningId);
 			List<Media> meaningImages = commonDataDbService.getMeaningImagesAsMedia(meaningId);

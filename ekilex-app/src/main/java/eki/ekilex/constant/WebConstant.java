@@ -120,6 +120,8 @@ public interface WebConstant {
 
 	String UPDATE_TAG_PREFS_URI = "/update_tag_prefs";
 
+	String LEXEME_COLLOC_EXPAND_URI = "/lexeme_colloc_expand";
+
 	String UPDATE_WORD_ACTIVE_TAG_COMPLETE_URI = "/update_word_active_tag_complete";
 
 	String UPDATE_MEANING_ACTIVE_TAG_COMPLETE_URI = "/update_meaning_active_tag_complete";

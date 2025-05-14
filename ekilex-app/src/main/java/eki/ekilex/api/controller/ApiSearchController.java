@@ -187,10 +187,11 @@ public class ApiSearchController extends AbstractApiController {
 			HttpServletRequest request) throws Exception {
 
 		List<String> datasets = parseDatasets(datasetsStr);
+		boolean isCollocData = true;
 		boolean isFullData = true;
 		EkiUser user = userContext.getUser();
 		// TODO either specific role or anonymous user should be applied here
-		WordDetails result = lexSearchService.getWordDetails(wordId, null, datasets, null, user, null, null, isFullData);
+		WordDetails result = lexSearchService.getWordDetails(wordId, null, datasets, null, user, null, null, isCollocData, isFullData);
 		addRequestStat(authentication, request);
 		return result;
 	}

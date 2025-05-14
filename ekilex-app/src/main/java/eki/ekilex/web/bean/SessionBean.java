@@ -22,6 +22,8 @@ public class SessionBean extends AbstractDataObject {
 
 	private boolean isManualEventOnUpdateEnabled;
 
+	private boolean isLexemeCollocExpanded;
+
 	public SearchResultMode getTermSearchResultMode() {
 		return termSearchResultMode;
 	}
@@ -69,4 +71,13 @@ public class SessionBean extends AbstractDataObject {
 	public void setManualEventOnUpdateEnabled(boolean manualEventOnUpdateEnabled) {
 		isManualEventOnUpdateEnabled = manualEventOnUpdateEnabled;
 	}
+
+	public boolean isLexemeCollocExpanded() {
+		return isLexemeCollocExpanded;
+	}
+
+	public void setLexemeCollocExpanded(boolean isLexemeCollocExpanded) {
+		this.isLexemeCollocExpanded = isLexemeCollocExpanded;
+	}
+
 }

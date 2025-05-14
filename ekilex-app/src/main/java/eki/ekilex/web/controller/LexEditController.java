@@ -83,7 +83,7 @@ public class LexEditController extends AbstractPrivatePageController {
 		List<String> tagNames = userContextData.getTagNames();
 		List<String> datasetCodes = userContextData.getPreferredDatasetCodes();
 		EkiUserProfile userProfile = userProfileService.getUserProfile(userId);
-		Lexeme targetLexeme = lexSearchService.getWordLexeme(targetLexemeId, languagesOrder, userProfile, user, true);
+		Lexeme targetLexeme = lexSearchService.getWordLexeme(targetLexemeId, languagesOrder, user, userProfile, true, true);
 		List<Lexeme> sourceLexemes = lookupService.getWordLexemesOfJoinCandidates(user, datasetCodes, targetLexeme, tagNames, null);
 		String searchFilter = targetLexeme.getLexemeWord().getWordValue();
 
@@ -108,7 +108,7 @@ public class LexEditController extends AbstractPrivatePageController {
 		List<String> tagNames = userContextData.getTagNames();
 		List<String> datasetCodes = userContextData.getPreferredDatasetCodes();
 		EkiUserProfile userProfile = userProfileService.getUserProfile(userId);
-		Lexeme targetLexeme = lexSearchService.getWordLexeme(targetLexemeId, languagesOrder, userProfile, user, true);
+		Lexeme targetLexeme = lexSearchService.getWordLexeme(targetLexemeId, languagesOrder, user, userProfile, true, true);
 		List<Lexeme> sourceLexemes = lookupService.getWordLexemesOfJoinCandidates(user, datasetCodes, targetLexeme, tagNames, searchFilter);
 
 		model.addAttribute("targetLexeme", targetLexeme);

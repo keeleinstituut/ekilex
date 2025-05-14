@@ -242,3 +242,17 @@ $.fn.complexityAndPublicity = function() {
 	main.addClass('complexity-icon').attr('title', text).html('<i class="' + types[text] + '"></i>');
 	main.tooltip();
 }
+
+$.fn.lexemeCollocExpandPlugin = function() {
+	return this.each(function() {
+		const btn = $(this);
+		btn.on('click', function() {
+			const successCallback = btn.attr("data-callback");
+			const successCallbackFunc = createCallback(successCallback);
+			postJson(applicationUrl + 'lexeme_colloc_expand').done(function() {
+				successCallbackFunc();
+			});
+		})
+	})
+}
+

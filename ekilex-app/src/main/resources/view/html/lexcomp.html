@@ -1901,15 +1901,40 @@
   </div>
   <th:block th:fragment="collocation">
     <div th:id="|colloc_section_${lexeme.lexemeId}|">
-      <th:block th:replace="lexcomp :: primary_colloc"></th:block>
-      <th:block th:replace="lexcomp :: secondary_colloc"></th:block>
-      <th:block th:replace="lexcomp :: colloc_members"></th:block>
+      <th:block th:if="${lexeme.collocationsExist}">
+        <div class="row">
+          <hr/>
+          <div class="col pr-0 col-w13rem">
+            <span class="lbl" th:text="#{lex.collocations}">Kollokatsioonid</span>
+          </div>
+          <div class="col pl-0">
+            <th:block th:unless="${sessionBean.lexemeCollocExpanded}">
+              <button class="btn badge badge-light"
+                      data-plugin="lexemeCollocExpandPlugin"
+                      th:data-callback="${@viewUtil.composeFunction('loadFullLexemeDetails', lexeme.lexemeId, lexeme.levels)}">
+                <i class="fa fa-ellipsis-h"></i>
+              </button>
+            </th:block>
+            <th:block th:if="${sessionBean.lexemeCollocExpanded}">
+              <button class="btn badge badge-light"
+                      data-plugin="lexemeCollocExpandPlugin"
+                      th:data-callback="${@viewUtil.composeFunction('loadFullLexemeDetails', lexeme.lexemeId, lexeme.levels)}">
+                <i class="fa fa-times"></i>
+              </button>
+            </th:block>
+          </div>
+        </div>
+        <th:block th:if="${sessionBean.lexemeCollocExpanded}">
+          <div class="mt-2">
+            <th:block th:replace="lexcomp :: primary_colloc"></th:block>
+            <th:block th:replace="lexcomp :: secondary_colloc"></th:block>
+            <th:block th:replace="lexcomp :: colloc_members"></th:block>
+          </div>
+        </th:block>
+      </th:block>
     </div>
   </th:block>
   <th:block th:fragment="primary_colloc">
-    <div class="mt-2" th:if="${lexeme.collocationsExist}">
-      <span class="lbl" th:text="#{lex.collocations}">Kollokatsioonid</span>
-    </div>
     <div class="mt-2" th:if="${not #lists.isEmpty(lexeme.primaryCollocations)}">
       <th:block th:each="collocPosGr : ${lexeme.primaryCollocations}">
         <h3 th:text="${collocPosGr.posGroupValue}"></h3>

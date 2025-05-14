@@ -10,6 +10,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
@@ -20,6 +21,7 @@ import eki.ekilex.data.EkiUserApplication;
 import eki.ekilex.data.EkiUserProfile;
 import eki.ekilex.service.UserService;
 import eki.ekilex.service.util.UserValidator;
+import eki.ekilex.web.bean.SessionBean;
 
 @ConditionalOnWebApplication
 @Controller
@@ -133,6 +135,16 @@ public class UserProfileController extends AbstractPrivatePageController {
 		userProfileService.updateApproveMeaningEnabled(userId, approveMeaningEnabled);
 
 		return REDIRECT_PREF + USER_PROFILE_URI;
+	}
+
+	@PostMapping(LEXEME_COLLOC_EXPAND_URI)
+	@ResponseBody
+	public String lexemeCollocationExpand(Model model) {
+
+		SessionBean sessionBean = getSessionBean(model);
+		sessionBean.setLexemeCollocExpanded(!sessionBean.isLexemeCollocExpanded());
+
+		return RESPONSE_OK_VER2;
 	}
 
 	@PostMapping(GENERATE_API_KEY)
