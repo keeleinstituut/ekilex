@@ -15457,6 +15457,9 @@ span.material-symbols-outlined--small {
 .icon--small {
   font-size: 1.3125rem;
 }
+.ui-autocomplete {
+  z-index: 1072;
+}
 .news-page {
   background-color: var(--color-white);
 }

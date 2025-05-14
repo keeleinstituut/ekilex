@@ -804,3 +804,9 @@ span.material-symbols-outlined {
     font-size: 1.3125rem;
   }
 }
+
+
+.ui-autocomplete {
+  // Equal z index to header to prevent suggestions staying behind header
+  z-index: 1072;
+}
