@@ -16902,6 +16902,9 @@ span.material-symbols-outlined--small {
   --color-purple-100: #db8dff;
   --color-orange: #DE6837;
 }
+.modal {
+  z-index: 1074;
+}
 .modal .modal-dialog {
   max-width: 800px;
 }
@@ -16937,6 +16940,9 @@ span.material-symbols-outlined--small {
   padding: 10px 32px;
   line-height: 20px;
   border-radius: 20px;
+}
+.modal-backdrop {
+  z-index: 1073;
 }
 .wordmodal .subtitle {
   padding-top: 20px;
