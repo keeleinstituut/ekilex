@@ -1903,6 +1903,7 @@
     <div th:id="|colloc_section_${lexeme.lexemeId}|">
       <th:block th:replace="lexcomp :: primary_colloc"></th:block>
       <th:block th:replace="lexcomp :: secondary_colloc"></th:block>
+      <th:block th:replace="lexcomp :: colloc_members"></th:block>
     </div>
   </th:block>
   <th:block th:fragment="primary_colloc">
