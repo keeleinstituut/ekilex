@@ -12,6 +12,11 @@ $(document).ready(function() {
 	Navigation.init();
 });
 
+// Remove other tooltips when a new one opens
+$(document).on('show.bs.tooltip', function () {
+  $('.tooltip').not(this).remove();
+});
+
 $(document).on("click", ".menu-btn", function() {
 	const headerContainer = document.querySelector('.header-container');
 	if (headerContainer.classList.contains('show-header')) {
