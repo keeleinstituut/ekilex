@@ -155,7 +155,38 @@
     font-weight: 700;
     font-size: 2.25rem;
     color: var(--color-dark-blue);
-    margin: 0 8px 0 0;
+    margin: 0;
+  }
+
+  &__lex-title-wrapper {
+    display: inline-flex;
+    align-items: center;
+    gap: 24px;
+    // User's viewport width - side padding
+    max-width: calc(100dvw - 30px);
+    margin-right: 8px;
+    & h1 {
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+  }
+
+  &__long-text-tooltip {
+    display: none;
+    background-color: var(--color-white);
+    border: 1px solid var(--color-dark-blue-75);
+    box-shadow: 0px 1px 2px 0px #15151514;
+    min-width: 40px;
+    height: 40px;
+    border-radius: 8px;
+    --icon-size: 24px;
+    --icon-variation-settings: 'FILL' 1;
+    padding: 0;
+    justify-content: center;
+    align-items: center;
+    @include media-breakpoint-down(xs) {
+      display: flex;
+    }
   }
 
   &__pre-block-title {

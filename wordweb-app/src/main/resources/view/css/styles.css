@@ -14927,7 +14927,37 @@ body {
   font-weight: 700;
   font-size: 2.25rem;
   color: var(--color-dark-blue);
-  margin: 0 8px 0 0;
+  margin: 0;
+}
+.search__lex-title-wrapper {
+  display: inline-flex;
+  align-items: center;
+  gap: 24px;
+  max-width: calc(100dvw - 30px);
+  margin-right: 8px;
+}
+.search__lex-title-wrapper h1 {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.search__long-text-tooltip {
+  display: none;
+  background-color: var(--color-white);
+  border: 1px solid var(--color-dark-blue-75);
+  box-shadow: 0px 1px 2px 0px rgba(21, 21, 21, 0.0784313725);
+  min-width: 40px;
+  height: 40px;
+  border-radius: 8px;
+  --icon-size: 24px;
+  --icon-variation-settings: "FILL" 1;
+  padding: 0;
+  justify-content: center;
+  align-items: center;
+}
+@media (max-width: 575.98px) {
+  .search__long-text-tooltip {
+    display: flex;
+  }
 }
 .search__pre-block-title {
   font-size: 1.25rem;
