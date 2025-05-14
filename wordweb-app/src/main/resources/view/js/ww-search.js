@@ -167,6 +167,7 @@ $(window).on('load', function() {
 function initStickyScrollPanel() {
 	const panel = document.querySelector(".sticky-scroll-panel");
 	const tags = panel?.querySelector(".sticky-scroll-panel__tags");
+	const header = document.querySelector('.header');
   if (!tags) {
 		return;
   }
@@ -180,7 +181,7 @@ function initStickyScrollPanel() {
 			if (target) {
 				const elementPosition = target.getBoundingClientRect().top;
 				// Scroll to element, subtracting the sticky panels height and a little extra
-				const offsetPosition = elementPosition + window.scrollY - panelHeight - 48;
+				const offsetPosition = elementPosition + window.scrollY - panelHeight - (header.offsetHeight ?? 0);
 			
 				window.scrollTo({
 					top: offsetPosition,

@@ -3,7 +3,8 @@
   padding: 16px 16px 16px 4px;
   position: sticky;
   top: 0;
-  z-index: 2;
+  // Higher than sticky scroll panel by 1, otherwise navigation menu will not be able to stay on top of the panel in mobile
+  z-index: 1072;
   background-color: var(--color-white);
   border-bottom: 1px solid var(--color-old-lighter-gray);
   &--simple {
@@ -125,7 +126,6 @@
     grid-template-columns: repeat(3, 1fr);
     gap: 16px;
     border-radius: 5px;
-    z-index: 1050;
     background-color: var(--color-white);
     color: var(--color-dark-blue);
     box-shadow: 0px 2px 4px 0px #00000040;

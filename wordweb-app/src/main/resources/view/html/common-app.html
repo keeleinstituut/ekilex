@@ -62,7 +62,7 @@
     <link rel="stylesheet" th:href="@{/view/css/styles.css}" />
     <link rel="stylesheet" th:href="@{/view/js/kiosk-board/src/kioskboard.css}" />
     <!-- TODO MV, palun ressurss lae alla-->
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&icon_names=apps,cancel,info,keyboard,language,record_voice_over,search" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&icon_names=apps,cancel,info,keyboard,language,record_voice_over,search,visibility" />
   </th:block>
   <!-- Bootstrap core JS -->
   <th:block th:fragment="js">
@@ -345,6 +345,7 @@
               <a href="mailto:eki@eki.ee">eki@eki.ee</a>
             </div>
           </div>
+          <div class="footer__version" th:text="|${appData.appName} ${appData.appVersion}|" th:if="${appData}"></div>
         </div>
         <div class="footer__column">
           <div class="footer__column-header" th:text="#{general.title}"></div>

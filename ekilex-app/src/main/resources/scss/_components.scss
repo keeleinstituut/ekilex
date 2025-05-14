@@ -1,0 +1,48 @@
+.input-switch {
+  display: flex;
+  gap: 4px;
+  align-items: center;
+  position: relative;
+  cursor: pointer;
+
+  & input {
+    width: 0;
+    height: 0;
+    opacity: 0;
+    position: absolute;
+  }
+
+  & span {
+    font-weight: 600;
+    font-size: .5rem;
+    color: var(--color-dark-blue);
+  }
+
+  &::before {
+    content: "";
+    width: 23px;
+    height: 12px;
+    border-radius: 100px;
+    background-color: var(--color-medium-blue);
+    transition: background-color 250ms ease-in-out;
+  }
+  &::after {
+    content: "";
+    width: 10px;
+    height: 10px;
+    border-radius: 100px;
+    background-color: var(--color-white);
+    position: absolute;
+    left: 10px;
+    transition: left 250ms ease-in-out;
+  }
+
+  &:has(input:checked) {
+    &::before {
+      background-color: var(--color-green);
+    }
+    &::after {
+      left: 2px;
+    }
+  }
+}

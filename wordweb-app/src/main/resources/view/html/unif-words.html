@@ -21,28 +21,11 @@
   <div class="container-fluid homonym-page mb-5">
     <div class="search-results-header">
       <div class="d-flex align-items-center">
-        <th:block th:replace="common-search :: lang-filter"></th:block>
-        <div class="mr-auto mr-md-2 pl-2 d-flex align-items-center flex-wrap">
-          <label class="mr-2 my-0 p-0" th:text="#{label.filter.dataset}">Sõnakogud</label>
-          <div class="dropdown">
-            <button class="btn btn-link dropdown-toggle p-0" type="button" id="datasetMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-              <span id="selected-datasets" th:text="${selectedDatasetsStr}"></span>
-            </button>
-            <div class="dropdown-menu py-0" aria-labelledby="datasetMenuButton">
-              <div class="dropdown-menu-scroll px-2 py-1">
-                <th:block th:each="filterElem : ${datasetFilter}">
-                  <a href="#" th:id="${'dataset-' + filterElem.code}" th:data-filter-code="${filterElem.code}" th:text="${filterElem.value}"
-                    class="dropdown-item dropdown-item-multiselect px-2 text-wrap py-1" th:classappend="${filterElem.selected ? 'active' : ''}">Sõnakogu</a>
-                  <th:block th:if="${filterElem.addSeparator}">
-                    <div class="dropdown-divider"></div>
-                    <div class="text-muted font-italic pl-1" th:text="#{label.pick.some}">vali üks või mitu</div>
-                  </th:block>
-                </th:block>
-              </div>
-            </div>
+          <th:block th:replace="common-search :: dataset-filter"></th:block>
+          <div class="mr-auto mr-md-2 pl-2 d-flex align-items-center flex-wrap">
+            <th:block th:replace="common-search :: lang-filter"></th:block>
           </div>
         </div>
-      </div>
     </div>
     <main role="main" class="content-panel">
       <div id="word-details" th:if="${wordsMatch != null}">

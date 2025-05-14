@@ -135,14 +135,19 @@
     </div>
   </th:block>
   <th:block th:fragment="word-data">
-    <div class="d-flex align-items-center flex-wrap">
+    <div class="d-flex align-items-center flex-wrap" th:with="title = ${@viewUtil.getWordValueMarkup(wordData.word)}">
       <th:block th:with="langData=${@viewUtil.getLangData(wordData.word.lang)}">
         <span th:text="${langData.codeIso2}" th:title="${langData.label}" data-toggle="tooltip" th:unless="${langData.imageName}" class="lang-code text-caption mr-2">1</span>
         <img th:src="|@{/view/images}${langData.imageName}|" th:title="${langData.label}" data-toggle="tooltip" th:if="${langData.imageName}" class="lang-code-img mr-2">
       </th:block>
-      <h1 class="search__lex-title" th:utext="${@viewUtil.getWordValueMarkup(wordData.word)}">
-        tee
-      </h1>
+      <div class="search__lex-title-wrapper" th:with="isLongWord = ${#strings.length(wordData.word.wordPrese) > 18}">
+        <h1 class="search__lex-title" th:utext="${@viewUtil.getWordValueMarkup(wordData.word)}">
+          tee
+        </h1>
+        <button class="search__long-text-tooltip" th:if="${isLongWord}" th:title="${@viewUtil.getWordValueMarkup(wordData.word)}" data-toggle="tooltip" data-html="true" data-placement="bottom" aria-hidden="true">
+          <span class="material-symbols-outlined">visibility</span>
+        </button>
+      </div>
       <span class="word-details-homonym-nr d-none mr-2" th:aria-label="|#{aria.homonym} ${wordData.word.homonymNr}|" th:text="${wordData.word.homonymNr}">1</span>
       <button th:aria-label="|#{aria.listen} - ${wordData.word.word}|" class="btn btn-speaker"
               th:if="${wordData.firstAvailableAudioFile != null}"

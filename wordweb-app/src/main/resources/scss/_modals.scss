@@ -2,6 +2,8 @@
 @import "variables";
 
 .modal {
+  // 2 more than header, 1 more than backdrop
+  z-index: 1074;
   .modal-dialog {
     max-width: 800px;
   }
@@ -45,6 +47,11 @@
       border-radius: 20px;
     }
   }
+}
+
+.modal-backdrop {
+  // One more than header
+  z-index: 1073;
 }
 
 .wordmodal {
