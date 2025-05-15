@@ -42,9 +42,9 @@ public class PublishingController extends AbstractMutableDataPageController impl
 		String targetName = itemData.getTargetName();
 		String entityName = itemData.getEntityName();
 		Long entityId = itemData.getEntityId();
-		boolean isPublish = itemData.isValue();
+		boolean isPublicOrPublish = itemData.isValue();
 
-		publishingService.publish(user, targetName, entityName, entityId, isPublish);
+		publishingService.publish(user, targetName, entityName, entityId, isPublicOrPublish);
 
 		Locale locale = LocaleContextHolder.getLocale();
 		String successMessage = messageSource.getMessage("common.data.update.success", new Object[0], locale);
