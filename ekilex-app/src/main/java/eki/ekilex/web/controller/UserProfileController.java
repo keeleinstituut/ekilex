@@ -139,7 +139,7 @@ public class UserProfileController extends AbstractPrivatePageController {
 
 	@PostMapping(LEXEME_COLLOC_EXPAND_URI)
 	@ResponseBody
-	public String lexemeCollocationExpand(Model model) {
+	public String toggleLexemeCollocationExpand(Model model) {
 
 		SessionBean sessionBean = getSessionBean(model);
 		sessionBean.setLexemeCollocExpanded(!sessionBean.isLexemeCollocExpanded());

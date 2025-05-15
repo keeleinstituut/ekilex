@@ -28,6 +28,7 @@ class PublishingHandler {
 	entityId;
 	replaceSectionId;
 	replaceOwnerId;
+	callback;
 	initAccordion;
 
 	constructor(container) {
@@ -38,36 +39,23 @@ class PublishingHandler {
 		this.entityId = container.attr("data-entity-id");
 		this.replaceSectionId = container.attr("data-replace-section-id");
 		this.replaceOwnerId = container.attr("data-replace-owner-id");
+		this.callback = container.attr("data-callback");
 		this.initAccordion = container.attr("data-init-accordion") === "true";
+
 		if (!this.trigger.length) {
 			console.error("Could not find trigger for publishing: ", this.container);
 		}
 		if (!this.menu.length) {
 			console.error("Could not find menu for publishing: ", this.container);
 		}
-		if (!this.entityName || !this.entityId) {
-			console.error(
-				"Could not find an entity name for publishing: ",
-				this.container
-			);
+		if (!this.entityName) {
+			console.error("Could not find an entity name for publishing: ", this.container);
 		}
-
 		if (!this.entityId) {
-			console.error("Could not find an id for publishing: ", this.container);
+			console.error("Could not find an entity id for publishing: ", this.container);
 		}
-
-		if (!this.replaceSectionId) {
-			console.error(
-				"Could not find a replace target for publishing: ",
-				this.container
-			);
-		}
-
-		if (!this.replaceOwnerId) {
-			console.error(
-				"Could not find a replace entity id for publishing: ",
-				this.container
-			);
+		if (!this.replaceSectionId && !this.callback) {
+			console.error("No replace section nor callback have been defined: ", this.container);
 		}
 	}
 
@@ -174,13 +162,23 @@ class PublishingHandler {
 			contentType: "application/json",
 		}).done(() => {
 			this.closeMenus();
-			if (this.replaceSectionId) {
-				this.replaceSectionContainer();
-			}
+			this.handleDataReload();
 		});
 	}
 
+	handleDataReload() {
+		if (this.entityName == 'word_relation') {
+			this.replaceSectionContainer();
+		} else if (this.entityName == 'definition') {
+			this.reloadFromCallback();
+		}
+	}
+
 	replaceSectionContainer() {
+		if (!this.replaceSectionId) {
+			console.error("No replace section have been defined for ", this.entityName);
+			return;
+		}
 		const endpoint = PublishingHandler.replaceData[this.entityName]?.endpoint;
 		if (!endpoint) {
 			console.error("Failed to find replace endpoint for ", this.entityName);
@@ -200,5 +198,14 @@ class PublishingHandler {
 				newContainer.ekiAccordion();
 			}
 		});
+	}
+
+	reloadFromCallback() {
+		if (!this.callback) {
+			console.error("No callback function have been defined for ", this.entityName);
+			return;
+		}
+		const reloadCallbackFunc = createCallback(this.callback);
+		reloadCallbackFunc();
 	}
 }

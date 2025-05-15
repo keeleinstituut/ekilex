@@ -290,3 +290,115 @@ create index publishing_target_name_idx on publishing(target_name);
 create index publishing_entity_name_idx on publishing(entity_name);
 create index publishing_entity_id_idx on publishing(entity_id);
 
+-- detailsuse kolimine publitseerimisse --
+
+
+
+insert into publishing (event_by, target_name, entity_name, entity_id)
+select
+	'Laadur',
+	'ww_unif',
+	'definition',
+	d.id
+from
+	definition d
+where
+	d.complexity in ('ANY', 'DETAIL')
+	and d.is_public = true
+	and exists (
+		select
+			1
+		from
+			definition_dataset dd
+		where
+			dd.definition_id = d.id
+			and dd.dataset_code = 'eki'
+	)
+	and not exists (
+		select
+			1
+		from
+			publishing p
+		where
+			p.target_name = 'ww_unif'
+			and p.entity_name = 'definition'
+			and p.entity_id = d.id
+	)
+; -- 151977
+
+insert into publishing (event_by, target_name, entity_name, entity_id)
+select
+	'Laadur',
+	'ww_lite',
+	'definition',
+	d.id
+from
+	definition d
+where
+	d.complexity in ('ANY', 'SIMPLE')
+	and d.is_public = true
+	and exists (
+		select
+			1
+		from
+			lexeme l
+		where
+			l.meaning_id = d.meaning_id 
+			and l.complexity in ('ANY', 'SIMPLE')
+	)
+	and exists (
+		select
+			1
+		from
+			definition_dataset dd
+		where
+			dd.definition_id = d.id
+			and dd.dataset_code = 'eki'
+	)
+	and not exists (
+		select
+			1
+		from
+			publishing p
+		where
+			p.target_name = 'ww_lite'
+			and p.entity_name = 'definition'
+			and p.entity_id = d.id
+	)
+; -- 7904
+
+insert into publishing (event_by, target_name, entity_name, entity_id)
+select
+	'Laadur',
+	'ww_od',
+	'definition',
+	d.id
+from
+	definition d
+where
+	d.complexity = 'ANY'
+	and d.is_public = false
+	and exists (
+		select
+			1
+		from
+			definition_dataset dd
+		where
+			dd.definition_id = d.id
+			and dd.dataset_code = 'eki'
+	)
+	and not exists (
+		select
+			1
+		from
+			publishing p
+		where
+			p.target_name = 'ww_od'
+			and p.entity_name = 'definition'
+			and p.entity_id = d.id
+	)
+; -- 39214
+
+
+
+
