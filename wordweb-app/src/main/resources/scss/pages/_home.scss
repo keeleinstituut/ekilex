@@ -33,17 +33,18 @@
     display: block;
     margin: 0 auto;
   }
+
   .home-page-content .detail-toggle-container {
     display: block;
     margin: 0 auto .5rem;
   }
 }
 
-.simple-search-brand-link{
-  display: inline-flex;
+.simple-search-brand-link {
+  display: flex;
   align-items: center;
-  margin: 0 auto;
-  &::before{
+
+  &::before {
     width: 32px;
     height: 32px;
     margin-right: 5px;

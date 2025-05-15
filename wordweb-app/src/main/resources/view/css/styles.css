@@ -14256,10 +14256,28 @@ body.hidden-scroll {
     gap: 8px;
   }
   .gap-3 {
-    gap: 16px;
+    gap: 12px;
   }
   .gap-4 {
+    gap: 16px;
+  }
+  .gap-5 {
+    gap: 20px;
+  }
+  .gap-6 {
     gap: 24px;
+  }
+  .gap-7 {
+    gap: 28px;
+  }
+  .gap-8 {
+    gap: 32px;
+  }
+  .gap-9 {
+    gap: 36px;
+  }
+  .gap-10 {
+    gap: 40px;
   }
 }
 .dropdown-menu {
@@ -14719,9 +14737,8 @@ body {
   }
 }
 .simple-search-brand-link {
-  display: inline-flex;
+  display: flex;
   align-items: center;
-  margin: 0 auto;
 }
 .simple-search-brand-link::before {
   width: 32px;
@@ -16565,7 +16582,7 @@ span.material-symbols-outlined--small {
 }
 .main-search-input {
   height: 40px;
-  padding-right: 56px;
+  padding-right: 80px;
   border-color: #ecf0f2;
   border-radius: 8px;
   border: 1px solid var(--color-dark-blue-75);
