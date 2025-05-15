@@ -874,6 +874,19 @@
                   <i class="fa fa-remove" aria-hidden="true"></i>
                 </button>
               </div>
+              <th:block
+                sec:authorize="#vars.definition.crudGrant"
+                th:replace="components :: entity_publishing(
+                  entityId = ${definition.id},
+                  entityName = 'definition',
+                  isPublic = ${definition.isPublic},
+                  isWwUnif = ${definition.wwUnif},
+                  isWwLite = ${definition.wwLite},
+                  isWwOd = ${definition.wwOd},
+                  callback = ${@viewUtil.composeFunction('loadFullLexemeDetails', lexeme.lexemeId, lexeme.levels)},
+                  initAccordion = true,
+                  withPublicSwitch = true)">
+              </th:block>
             </div>
             <div class="hidden-buttons">
               <th:block th:unless="${#lists.isEmpty(definition.sourceLinks)}">

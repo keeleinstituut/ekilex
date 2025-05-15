@@ -792,6 +792,10 @@ public class CommonDataDbService extends AbstractDataDbService {
 								.and(dsl.SOURCE_ID.eq(s.ID)))
 				.asField();
 
+		Field<Boolean> wwupf = queryHelper.getPublishingField(TARGET_NAME_WW_UNIF, ENTITY_NAME_DEFINITION, d.ID);
+		Field<Boolean> wwlpf = queryHelper.getPublishingField(TARGET_NAME_WW_LITE, ENTITY_NAME_DEFINITION, d.ID);
+		Field<Boolean> wwopf = queryHelper.getPublishingField(TARGET_NAME_WW_OD, ENTITY_NAME_DEFINITION, d.ID);
+
 		return mainDb
 				.select(
 						d.ID,
@@ -803,6 +807,9 @@ public class CommonDataDbService extends AbstractDataDbService {
 						d.DEFINITION_TYPE_CODE.as("type_code"),
 						dtl.VALUE.as("type_value"),
 						d.IS_PUBLIC,
+						wwupf.as("is_ww_unif"),
+						wwlpf.as("is_ww_lite"),
+						wwopf.as("is_ww_od"),
 						ddsf.as("dataset_codes"),
 						dnf.as("notes"),
 						dslf.as("source_links"))
