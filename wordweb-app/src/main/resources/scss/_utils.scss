@@ -26,17 +26,10 @@
 
 @layer base {
   .gap {
-    &-1 {
-      gap: 4px;
-    }
-    &-2 {
-      gap: 8px;
-    }
-    &-3 {
-      gap: 16px;
-    }
-    &-4 {
-      gap: 24px;
+    @for $i from 1 through 10 {
+      &-#{$i} {
+        gap: #{$i * 4}px;
+      }
     }
   }
 }
