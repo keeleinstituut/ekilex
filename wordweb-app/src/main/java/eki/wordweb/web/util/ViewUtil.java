@@ -1,17 +1,14 @@
 package eki.wordweb.web.util;
 
-import eki.common.constant.DatasetType;
-import eki.common.constant.GlobalConstant;
-import eki.common.constant.TextDecoration;
-import eki.common.data.Classifier;
-import eki.wordweb.constant.CollocMemberGroup;
-import eki.wordweb.constant.SystemConstant;
-import eki.wordweb.constant.WebConstant;
-import eki.wordweb.data.*;
-import eki.wordweb.data.type.TypeFreeform;
-import eki.wordweb.service.CommonDataService;
-import eki.wordweb.service.util.LanguageContext;
-import eki.wordweb.web.bean.SessionBean;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Objects;
+import java.util.regex.Pattern;
+import java.util.stream.Collectors;
+
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -19,9 +16,24 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Component;
 
-import java.util.*;
-import java.util.regex.Pattern;
-import java.util.stream.Collectors;
+import eki.common.constant.DatasetType;
+import eki.common.constant.GlobalConstant;
+import eki.common.constant.TextDecoration;
+import eki.common.data.Classifier;
+import eki.wordweb.constant.CollocMemberGroup;
+import eki.wordweb.constant.SystemConstant;
+import eki.wordweb.constant.WebConstant;
+import eki.wordweb.data.CollocMember;
+import eki.wordweb.data.DecoratedWordType;
+import eki.wordweb.data.DisplayColloc;
+import eki.wordweb.data.Form;
+import eki.wordweb.data.LanguageData;
+import eki.wordweb.data.LexemeWord;
+import eki.wordweb.data.Paradigm;
+import eki.wordweb.data.type.TypeFreeform;
+import eki.wordweb.service.CommonDataService;
+import eki.wordweb.service.util.LanguageContext;
+import eki.wordweb.web.bean.SessionBean;
 
 @Component
 public class ViewUtil implements WebConstant, SystemConstant, GlobalConstant {
@@ -340,13 +352,4 @@ public class ViewUtil implements WebConstant, SystemConstant, GlobalConstant {
 		return StringUtils.equals(enum1.name(), enum2.name());
 	}
 
-	public boolean isLongWord(String word) {
-		if (word == null || word.length() < 19) {
-			return false;
-		}
-		// Check if the first part of the word contains a space or a hyphen
-		var firstPart = word.substring(0, 19);
-		var pattern = Pattern.compile("[- ]");
-        return !pattern.matcher(firstPart).find();
-    }
 }

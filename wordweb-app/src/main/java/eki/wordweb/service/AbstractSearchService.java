@@ -209,6 +209,7 @@ public abstract class AbstractSearchService implements SystemConstant, WebConsta
 
 		String firstAvailableAudioFile = null;
 		boolean morphologyExists = false;
+		boolean headwordOverflow = false;
 
 		if (CollectionUtils.isNotEmpty(forms)) {
 			Form firstAvailableWordForm = forms.stream()
@@ -220,6 +221,11 @@ public abstract class AbstractSearchService implements SystemConstant, WebConsta
 		}
 		if (CollectionUtils.isNotEmpty(paradigms)) {
 			morphologyExists = paradigms.stream().anyMatch(paradigm -> StringUtils.isNotBlank(paradigm.getWordClass()));
+		}
+
+		if (StringUtils.length(headwordValue) >= WORD_OVERFLOW_LENGTH) {
+			int naturalWrapperIndex = StringUtils.indexOfAny(headwordValue, ' ', '-');
+			headwordOverflow = (naturalWrapperIndex < 0) || (naturalWrapperIndex >= WORD_OVERFLOW_LENGTH);
 		}
 
 		WordData wordData = new WordData();
@@ -237,6 +243,7 @@ public abstract class AbstractSearchService implements SystemConstant, WebConsta
 		wordData.setRusHeadword(rusHeadword);
 		wordData.setRusContent(rusContent);
 		wordData.setSkellCompatible(skellCompatible);
+		wordData.setHeadwordOverflow(headwordOverflow);
 
 		return wordData;
 	}

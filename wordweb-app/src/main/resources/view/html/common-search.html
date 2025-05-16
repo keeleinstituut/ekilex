@@ -140,11 +140,11 @@
         <span th:text="${langData.codeIso2}" th:title="${langData.label}" data-toggle="tooltip" th:unless="${langData.imageName}" class="lang-code text-caption mr-2">1</span>
         <img th:src="|@{/view/images}${langData.imageName}|" th:title="${langData.label}" data-toggle="tooltip" th:if="${langData.imageName}" class="lang-code-img mr-2">
       </th:block>
-      <div class="search__lex-title-wrapper" th:with="isLongWord = ${@viewUtil.isLongWord(wordData.word.wordPrese)}">
+      <div class="search__lex-title-wrapper">
         <h1 class="search__lex-title" th:utext="${@viewUtil.getWordValueMarkup(wordData.word)}">
           tee
         </h1>
-        <button class="search__long-text-tooltip" th:if="${isLongWord}" th:title="${@viewUtil.getWordValueMarkup(wordData.word)}" data-toggle="tooltip" data-html="true" data-placement="bottom">
+        <button class="search__long-text-tooltip" th:if="${wordData.headwordOverflow}" th:title="${@viewUtil.getWordValueMarkup(wordData.word)}" data-toggle="tooltip" data-html="true" data-placement="bottom">
           <span class="material-symbols-outlined">visibility</span>
         </button>
       </div>

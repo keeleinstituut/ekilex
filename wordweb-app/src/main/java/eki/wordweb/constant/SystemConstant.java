@@ -71,6 +71,8 @@ public interface SystemConstant extends StatSearchConstant {
 
 	int MASKED_SEARCH_RESULT_LIMIT = 100;
 
+	int WORD_OVERFLOW_LENGTH = 19;
+
 	int COOKIE_AGE_ONE_MONTH = 2629743;
 
 	String COOKIE_NAME_PREFIX = "ww-";

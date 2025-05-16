@@ -38,6 +38,8 @@ public class WordData extends AbstractDataObject {
 
 	private boolean skellCompatible;
 
+	private boolean headwordOverflow;
+
 	public Word getWord() {
 		return word;
 	}
@@ -156,6 +158,14 @@ public class WordData extends AbstractDataObject {
 
 	public void setSkellCompatible(boolean skellCompatible) {
 		this.skellCompatible = skellCompatible;
+	}
+
+	public boolean isHeadwordOverflow() {
+		return headwordOverflow;
+	}
+
+	public void setHeadwordOverflow(boolean headwordOverflow) {
+		this.headwordOverflow = headwordOverflow;
 	}
 
 }
