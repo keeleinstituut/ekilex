@@ -22,6 +22,7 @@ import eki.common.constant.FreeformConstant;
 import eki.common.constant.PermConstant;
 import eki.ekilex.data.ActivityLogData;
 import eki.ekilex.data.Classifier;
+import eki.ekilex.data.CollocMemberOrder;
 import eki.ekilex.data.DatasetPermission;
 import eki.ekilex.data.EkiUser;
 import eki.ekilex.data.Freeform;
@@ -426,6 +427,37 @@ public class CudService extends AbstractCudService implements PermConstant, Acti
 			cudDbService.updateLexemeOrderby(item);
 		}
 		activityLogService.createActivityLogUnknownEntity(activityLog, ActivityEntity.MEANING_WORD);
+	}
+
+	@Transactional(rollbackOn = Exception.class)
+	public void updateCollocMemberGroupOrder(Long collocLexemeId, Long memberLexemeId, String direction, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
+
+		ActivityLogData activityLog = activityLogService.prepareActivityLog("updateCollocMemberGroupOrder", memberLexemeId, ActivityOwner.LEXEME, roleDatasetCode, isManualEventOnUpdateEnabled);
+		List<CollocMemberOrder> collocMembers = lookupDbService.getCollocMemberOrdersOfRelGroup(collocLexemeId, memberLexemeId);
+		int collocMemberCount = collocMembers.size();
+		CollocMemberOrder sourceCollocMember = collocMembers.stream()
+				.filter(collocMember -> collocMember.getCollocLexemeId().equals(collocLexemeId))
+				.findFirst()
+				.get();
+		int sourceCollocMemberIndex = collocMembers.indexOf(sourceCollocMember);
+		if (sourceCollocMemberIndex < 0) {
+			return;
+		}
+		CollocMemberOrder targetCollocMember = null;
+		if (StringUtils.equalsIgnoreCase(direction, "up") && (sourceCollocMemberIndex > 0)) {
+			targetCollocMember = collocMembers.get(sourceCollocMemberIndex - 1);
+		} else if (StringUtils.equalsIgnoreCase(direction, "down") && (sourceCollocMemberIndex < (collocMemberCount - 1))) {
+			targetCollocMember = collocMembers.get(sourceCollocMemberIndex + 1);
+		}
+		if (targetCollocMember != null) {
+			Long sourceCollocMemberId = sourceCollocMember.getId();
+			Integer sourceCollocGroupOrder = sourceCollocMember.getGroupOrder();
+			Long targetCollocMemberId = targetCollocMember.getId();
+			Integer targetCollocGroupOrder = targetCollocMember.getGroupOrder();
+			cudDbService.updateLexemeCollocMemberGroupOrder(sourceCollocMemberId, targetCollocGroupOrder);
+			cudDbService.updateLexemeCollocMemberGroupOrder(targetCollocMemberId, sourceCollocGroupOrder);
+		}
+		activityLogService.createActivityLog(activityLog, memberLexemeId, ActivityEntity.LEXEME);
 	}
 
 	@Transactional(rollbackOn = Exception.class)
@@ -1529,6 +1561,20 @@ public class CudService extends AbstractCudService implements PermConstant, Acti
 			cudDbService.deleteLexemeTag(lexemeTagId);
 			activityLogService.createActivityLog(activityLog, lexemeTagId, ActivityEntity.TAG);
 		}
+	}
+
+	@Transactional(rollbackOn = Exception.class)
+	public void deleteWord(Long wordId, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
+
+		/*
+		 * TODO extremely questionable
+		 * 
+		ActivityLogData activityLog = activityLogService.prepareActivityLog("deleteWord", wordId, ActivityOwner.WORD, roleDatasetCode, isManualEventOnUpdateEnabled);
+		SimpleWord word = lookupDbService.getSimpleWord(wordId);
+		cudDbService.deleteLexemesByWordId(wordId);
+		cudDbService.deleteWord(word);
+		activityLogService.createActivityLog(activityLog, wordId, ActivityEntity.WORD);
+		*/
 	}
 
 	@Transactional(rollbackOn = Exception.class)

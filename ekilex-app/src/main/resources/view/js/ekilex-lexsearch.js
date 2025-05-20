@@ -256,3 +256,25 @@ $.fn.lexemeCollocExpandPlugin = function() {
 	})
 }
 
+$.fn.lexemeCollocMovePlugin = function() {
+	return this.each(function() {
+		const btn = $(this);
+		btn.on('click', function() {
+			const collocLexemeId = btn.attr("data-colloc-lexeme-id");
+			const memberLexemeId = btn.attr("data-member-lexeme-id");
+			const direction = btn.attr("data-direction");
+			const successCallback = btn.attr("data-callback");
+			const successCallbackFunc = createCallback(successCallback);
+			const data = {
+				collocLexemeId: collocLexemeId,
+				memberLexemeId: memberLexemeId,
+				direction: direction
+			};
+			postJson(applicationUrl + 'update_colloc_member_group_order', data).done(function() {
+				successCallbackFunc();
+			});
+		})
+	})
+}
+
+

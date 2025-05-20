@@ -244,6 +244,8 @@ public interface WebConstant {
 
 	String UPDATE_ORDERING_URI = "/update_ordering";
 
+	String UPDATE_COLLOC_MEMBER_GROUP_ORDER_URI = "/update_colloc_member_group_order";
+
 	String UPDATE_LEVELS_URI = "/update_levels";
 
 	String UPDATE_LEXEME_LEVELS_URI = "/update_lexeme_levels";

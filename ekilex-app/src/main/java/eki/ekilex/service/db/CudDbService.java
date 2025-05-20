@@ -329,6 +329,14 @@ public class CudDbService extends AbstractDataDbService {
 				.execute();
 	}
 
+	public void updateLexemeCollocMemberGroupOrder(Long collocMemberId, Integer groupOrder) {
+		mainDb
+				.update(COLLOCATION_MEMBER)
+				.set(COLLOCATION_MEMBER.GROUP_ORDER, groupOrder)
+				.where(COLLOCATION_MEMBER.ID.eq(collocMemberId))
+				.execute();
+	}
+
 	public void updateMeaningRelationWeight(Long meaningRelationId, BigDecimal relationWeight) {
 		mainDb
 				.update(MEANING_RELATION)
@@ -1794,16 +1802,20 @@ public class CudDbService extends AbstractDataDbService {
 	}
 
 	public void deleteWord(SimpleWord word) {
+
 		Long wordId = word.getWordId();
-		mainDb.delete(FREEFORM)
+		mainDb
+				.delete(FREEFORM)
 				.where(FREEFORM.ID.in(DSL
 						.select(WORD_FREEFORM.FREEFORM_ID)
 						.from(WORD_FREEFORM)
 						.where(WORD_FREEFORM.WORD_ID.eq(wordId))))
 				.execute();
-		mainDb.delete(WORD)
+		mainDb
+				.delete(WORD)
 				.where(WORD.ID.eq(wordId))
 				.execute();
+
 		adjustWordHomonymNrs(word);
 	}
 
@@ -1918,6 +1930,13 @@ public class CudDbService extends AbstractDataDbService {
 		mainDb
 				.delete(LEXEME)
 				.where(LEXEME.ID.eq(lexemeId))
+				.execute();
+	}
+
+	public void deleteLexemesByWordId(Long wordId) {
+		mainDb
+				.delete(LEXEME)
+				.where(LEXEME.WORD_ID.eq(wordId))
 				.execute();
 	}
 

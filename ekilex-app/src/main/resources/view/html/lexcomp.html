@@ -884,7 +884,7 @@
                   isWwLite = ${definition.wwLite},
                   isWwOd = ${definition.wwOd},
                   callback = ${@viewUtil.composeFunction('loadFullLexemeDetails', lexeme.lexemeId, lexeme.levels)},
-                  initAccordion = true,
+                  initAccordion = false,
                   withPublicSwitch = true)">
               </th:block>
             </div>
@@ -1922,17 +1922,17 @@
           </div>
           <div class="col pl-0">
             <th:block th:unless="${sessionBean.lexemeCollocExpanded}">
-              <button class="btn badge badge-light"
+              <button class="btn badge badge-secondary btn-toggle"
                       data-plugin="lexemeCollocExpandPlugin"
                       th:data-callback="${@viewUtil.composeFunction('loadFullLexemeDetails', lexeme.lexemeId, lexeme.levels)}">
-                <i class="fa fa-ellipsis-h"></i>
+                <i class="fa fa-angle-right"></i>
               </button>
             </th:block>
             <th:block th:if="${sessionBean.lexemeCollocExpanded}">
-              <button class="btn badge badge-light"
+              <button class="btn badge badge-secondary btn-toggle"
                       data-plugin="lexemeCollocExpandPlugin"
                       th:data-callback="${@viewUtil.composeFunction('loadFullLexemeDetails', lexeme.lexemeId, lexeme.levels)}">
-                <i class="fa fa-times"></i>
+                <i class="fa fa-angle-down"></i>
               </button>
             </th:block>
           </div>
@@ -1949,19 +1949,16 @@
   </th:block>
   <th:block th:fragment="primary_colloc">
     <div class="mt-2" th:if="${not #lists.isEmpty(lexeme.primaryCollocations)}">
-      <th:block th:each="collocPosGr : ${lexeme.primaryCollocations}">
+      <th:block th:each="collocPosGr : ${lexeme.primaryCollocations}"
+                th:with="callback=${@viewUtil.composeFunction('loadFullLexemeDetails', lexeme.lexemeId, lexeme.levels)}">
         <h3 th:text="${collocPosGr.posGroupValue}"></h3>
         <th:block th:each="collocRelGr : ${collocPosGr.relGroups}">
           <h5 th:text="${collocRelGr.relGroupValue}"></h5>
-          <div class="orderable" data-op-code="colloc">
-            <table class="table table-sm">
-              <tr th:each="colloc, collocIter : ${collocRelGr.collocations}"
-                  th:data-id="${colloc.wordId}"
-                  th:data-orderby="${colloc.groupOrder}">
-                <th:block th:replace="lexcomp :: colloc_row"></th:block>
-              </tr>
-            </table>
-          </div>
+          <table class="table table-sm">
+            <tr th:each="colloc, collocIter : ${collocRelGr.collocations}">
+              <th:block th:replace="lexcomp :: colloc_row"></th:block>
+            </tr>
+          </table>
         </th:block>
       </th:block>
     </div>
@@ -1969,15 +1966,11 @@
   <th:block th:fragment="secondary_colloc">
     <div class="mt-2" th:if="${not #lists.isEmpty(lexeme.secondaryCollocations)}">
       <h3 th:text="#{lex.collocation.secondary}">Klassifitseerimata</h3>
-      <div class="orderable" data-op-code="colloc">
-        <table class="table table-sm">
-          <tr th:each="colloc, collocIter : ${lexeme.secondaryCollocations}"
-              th:data-id="${colloc.wordId}"
-              th:data-orderby="${colloc.groupOrder}">
-            <th:block th:replace="lexcomp :: colloc_row"></th:block>
-          </tr>
-        </table>
-      </div>
+      <table class="table table-sm">
+        <tr th:each="colloc, collocIter : ${lexeme.secondaryCollocations}">
+          <th:block th:replace="lexcomp :: colloc_row"></th:block>
+        </tr>
+      </table>
     </div>
   </th:block>
   <th:block th:fragment="colloc_row">
@@ -2018,24 +2011,34 @@
       </div>
     </td>
     <td class="hidden-buttons" width="70px">
-      <button type="button"
-              th:hidden="${collocIter.first}"
-              th:title="#{common.update.ordering}"
-              data-plugin="changeItemOrderingPlugin"
-              class="btn badge badge-secondary order-up" >
-        <i class="fa fa-arrow-up" aria-hidden="true"></i>
-      </button>
-      <button type="button"
-              th:hidden="${collocIter.last}"
-              th:title="#{common.update.ordering}" 
-              data-plugin="changeItemOrderingPlugin"
-              class="btn badge badge-secondary order-down" >
-        <i class="fa fa-arrow-down" aria-hidden="true"></i>
-      </button>
+      <th:block th:if="${callback}">
+        <button type="button"
+                th:hidden="${collocIter.first}"
+                th:title="#{common.update.ordering}"
+                th:data-callback="${callback}"
+                th:data-colloc-lexeme-id="${colloc.lexemeId}"
+                th:data-member-lexeme-id="${lexeme.lexemeId}"
+                data-direction="up"
+                data-plugin="lexemeCollocMovePlugin"
+                class="btn badge badge-secondary order-up" >
+          <i class="fa fa-arrow-up" aria-hidden="true"></i>
+        </button>
+        <button type="button"
+                th:hidden="${collocIter.last}"
+                th:title="#{common.update.ordering}"
+                th:data-callback="${callback}"
+                th:data-colloc-lexeme-id="${colloc.lexemeId}"
+                th:data-member-lexeme-id="${lexeme.lexemeId}"
+                data-direction="down"
+                data-plugin="lexemeCollocMovePlugin"
+                class="btn badge badge-secondary order-down" >
+          <i class="fa fa-arrow-down" aria-hidden="true"></i>
+        </button>
+      </th:block>
       <button type="button"
               data-op-code="colloc"
               th:data-id="${colloc.wordId}"
-              th:data-callback="${@viewUtil.composeFunction('loadFullLexemeDetails', lexeme.lexemeId, lexeme.levels)}"
+              th:data-callback="${callback}"
               data-toggle="delete-confirm"
               data-placement="right"
               sec:authorize="#vars.lexeme.crudGrant"
