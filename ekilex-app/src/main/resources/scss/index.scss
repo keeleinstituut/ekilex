@@ -342,8 +342,21 @@
 li:has(> .sidebar-actions__item) {
   &:hover,
   &:focus-within {
-    .sidebar-actions__buttons {
+    & .sidebar-actions__buttons {
       display: inline-flex;
+    }
+
+    background-color: var(--color-light-blue);
+  }
+}
+
+
+.colloc__container {
+  // If a table row inside colloc container is hovered or has focus inside it, show hidden buttons for that row
+  & tr:hover,
+  & tr:focus-within {
+    & .hidden-buttons > * {
+      display: inline-block;
     }
   }
 }

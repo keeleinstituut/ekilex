@@ -420,21 +420,21 @@
                   sec:authorize="#vars.details.word.crudGrant">
                   <i class="fa fa-remove" aria-hidden="true"></i>
                 </button>
-                <th:block
-                  sec:authorize="#vars.details.word.crudGrant"
-                  th:replace="components :: entity_publishing(
-                    entityId = ${relation.id},
-                    entityName = 'word_relation',
-                    isPublic = ${relation.isPublic},
-                    isWwUnif = ${relation.wwUnif},
-                    isWwLite = ${relation.wwLite},
-                    isWwOd = ${relation.wwOd},
-                    replaceSectionId = ${wordRelationSectionId},
-                    replaceOwnerId = ${wordId},
-                    initAccordion = true,
-                    withPublicSwitch = false)">
-                </th:block>
               </div>
+              <th:block
+                sec:authorize="#vars.details.word.crudGrant"
+                th:replace="components :: entity_publishing(
+                  entityId = ${relation.id},
+                  entityName = 'word_relation',
+                  isPublic = ${relation.isPublic},
+                  isWwUnif = ${relation.wwUnif},
+                  isWwLite = ${relation.wwLite},
+                  isWwOd = ${relation.wwOd},
+                  replaceSectionId = ${wordRelationSectionId},
+                  replaceOwnerId = ${wordId},
+                  initAccordion = true,
+                  withPublicSwitch = false)">
+              </th:block>
             </div>
           </li>
         </ul>
