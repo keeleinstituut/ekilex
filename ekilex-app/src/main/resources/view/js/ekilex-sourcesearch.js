@@ -18,13 +18,13 @@ $.fn.addSourceAndSourceLinkPlugin = function() {
 	const main = $(this);
 	main.on('click', function(e) {
 		e.preventDefault();
-		$("#noSourcesFoundDiv").hide();
 		const modal = main.closest('.modal');
+		modal.find("#noSourcesFoundDiv").hide();
 		// Pre-fill short name with the non-existing search term
 		modal.find("#add-source-modal-short-name").val(modal.find('#source-quick-search').val());
-		$("#addSourceDiv").show();
-		const duplicateCancelBtnFooter = main.closest('.modal-content').find('.modal-footer').last();
-		duplicateCancelBtnFooter.hide();
+		modal.find("#addSourceDiv").show();
+		// Hide duplicate modal footer
+		modal.find('.modal-footer').last().hide();
 	});
 };
 
