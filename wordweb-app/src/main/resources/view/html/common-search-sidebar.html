@@ -243,16 +243,15 @@
     </li>
   </th:block>
   <th:block th:fragment="keelenou">
-    <section class="search__sidebar-block search__block text-body-two">
+    <section class="search__sidebar-block search__block text-body-two" th:if="${wordData.rusHeadword}">
       <div class="corp-panel">
-        <div class="search__sidebar-block-title-wrapper" th:with="isBlockEmpty = ${!wordData.rusHeadword}">
+        <div class="search__sidebar-block-title-wrapper">
           <h2
             class="search__sidebar-block-title"
-            th:classappend="${isBlockEmpty ? 'search__sidebar-block-title--empty' : ''}"
-            th:text="|#{label.same.word} ${isBlockEmpty ? #messages.msg('label.block_empty') : ''}|"
+            th:text="#{label.same.word}"
             ></h2>
         </div>
-        <a th:if="${wordData.rusHeadword}" th:aria-label="|#{aria.search.from.eki.rus.est} ${wordData.word.word}, #{aria.new.window}|"
+        <a th:aria-label="|#{aria.search.from.eki.rus.est} ${wordData.word.word}, #{aria.new.window}|"
           th:href="${@viewUtil.getEkiOldskoolRusDictUrl(wordData.word.word)}" target="_blank">
           <span th:text="#{label.same.word.rusest}">vene-eesti sõnaraamatus</span>
           <i class="fas fa-external-link-alt" aria-hidden="true"></i>

@@ -30,6 +30,7 @@ class PublishingHandler {
 	replaceOwnerId;
 	callback;
 	initAccordion;
+	requestInProgress = {};
 
 	constructor(container) {
 		this.container = container;
@@ -120,11 +121,17 @@ class PublishingHandler {
 			window.publishingClickOutsideActive = true;
 		}
 
-		this.container.on("click", this.handleItemClick.bind(this));
+		// Make sure click only selects buttons
+		this.container.on("click", '[data-publishing-item]', this.handleItemClick.bind(this));
 		this.menu.children().on("click", this.handleItemClick.bind(this));
 	}
 
 	handleItemClick(e) {
+		// Exclude input clicks, as checkbox will trigger an event for both the label and input
+		if (e.target?.tagName === 'INPUT') {
+			return;
+		}
+
 		// currentTarget would refer to the actual button if user happened to press span etc
 		const target = e.currentTarget ?? e.target;
 		const targetName = target.dataset?.publishingItem;
@@ -149,6 +156,10 @@ class PublishingHandler {
 		if (!this.entityName || !this.entityId) {
 			return;
 		}
+		if (this.requestInProgress[targetName]) {
+			return;
+		}
+		this.requestInProgress[targetName] = true;
 		const url = `${applicationUrl}publish_item`;
 		$.ajax({
 			url,
@@ -163,6 +174,8 @@ class PublishingHandler {
 		}).done(() => {
 			this.closeMenus();
 			this.handleDataReload();
+		}).always(() => {
+			this.requestInProgress[targetName] = false;
 		});
 	}
 

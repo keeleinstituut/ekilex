@@ -874,19 +874,6 @@
                   <i class="fa fa-remove" aria-hidden="true"></i>
                 </button>
               </div>
-              <th:block
-                sec:authorize="#vars.definition.crudGrant"
-                th:replace="components :: entity_publishing(
-                  entityId = ${definition.id},
-                  entityName = 'definition',
-                  isPublic = ${definition.isPublic},
-                  isWwUnif = ${definition.wwUnif},
-                  isWwLite = ${definition.wwLite},
-                  isWwOd = ${definition.wwOd},
-                  callback = ${@viewUtil.composeFunction('loadFullLexemeDetails', lexeme.lexemeId, lexeme.levels)},
-                  initAccordion = false,
-                  withPublicSwitch = true)">
-              </th:block>
             </div>
             <div class="hidden-buttons">
               <th:block th:unless="${#lists.isEmpty(definition.sourceLinks)}">
@@ -926,6 +913,19 @@
                 </div>
               </th:block>
             </div>
+            <th:block
+                sec:authorize="#vars.definition.crudGrant"
+                th:replace="components :: entity_publishing(
+                  entityId = ${definition.id},
+                  entityName = 'definition',
+                  isPublic = ${definition.isPublic},
+                  isWwUnif = ${definition.wwUnif},
+                  isWwLite = ${definition.wwLite},
+                  isWwOd = ${definition.wwOd},
+                  callback = ${@viewUtil.composeFunction('loadFullLexemeDetails', lexeme.lexemeId, lexeme.levels)},
+                  initAccordion = false,
+                  withPublicSwitch = true)">
+            </th:block>
             <div th:if="${not #lists.isEmpty(definition.notes)}" class="col pl-0">
               <div>
                 <span class="lbl" th:text="#{lex.note}">Märkus</span>
@@ -1913,7 +1913,7 @@
     </div>
   </div>
   <th:block th:fragment="collocation">
-    <div th:id="|colloc_section_${lexeme.lexemeId}|">
+    <div th:id="|colloc_section_${lexeme.lexemeId}|" class="colloc__container">
       <th:block th:if="${lexeme.collocationsExist}">
         <div class="row">
           <hr/>
