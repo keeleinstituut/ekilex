@@ -2162,6 +2162,18 @@
             <input type="hidden" name="value">
             <div th:replace="components :: eki_editor_elem"></div>
             <div class="form-group row">
+              <div class="col-md-8">
+                <select class="form-control required-field classifier-select" data-live-search="true" name="language" required="required">
+                  <option value="" disabled th:selected="${#strings.isEmpty(sessionBean.recentLanguage)}" th:text="#{common.select.language}">vali keel...</option>
+                  <option th:each="language : ${userRoleLanguagesExtended}"
+                          th:value="${language.code}"
+                          th:selected="${language.code == sessionBean.recentLanguage}"
+                          th:text="${language.value}">language
+                  </option>
+                </select>
+              </div>
+            </div>
+            <div class="form-group row">
               <div class="col-md-4">
                 <select required class="form-control required-field" name="complexity">
                   <option value="" hidden disabled selected th:text="#{common.select.complexity}">vali detailsus...</option>
@@ -2187,9 +2199,20 @@
           <div class="modal-body">
             <input type="hidden" name="id" th:value="${grammar.id}">
             <input type="hidden" name="opCode" value="lexeme_grammar">
-            <input type="hidden" name="complexity" th:value="${grammar.complexity}">
             <input type="hidden" name="value" th:value="${grammar.valuePrese}">
             <div th:replace="components :: eki_editor_elem"></div>
+            <div class="form-group row">
+              <div class="col-md-8">
+                <select class="form-control required-field classifier-select" data-live-search="true" name="language" required="required">
+                  <option value="" disabled th:selected="${#strings.isEmpty(sessionBean.recentLanguage)}" th:text="#{common.select.language}">vali keel...</option>
+                  <option th:each="language : ${userRoleLanguagesExtended}"
+                          th:value="${language.code}"
+                          th:selected="${language.code == grammar.lang}"
+                          th:text="${language.value}">language
+                  </option>
+                </select>
+              </div>
+            </div>
             <div class="form-group row">
               <div class="col-md-4">
                 <select required class="form-control" name="complexity">

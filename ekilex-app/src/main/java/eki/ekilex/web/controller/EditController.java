@@ -136,7 +136,7 @@ public class EditController extends AbstractMutableDataPageController implements
 			cudService.updateLexemeReliability(id, value, roleDatasetCode, isManualEventOnUpdateEnabled);
 			break;
 		case "lexeme_grammar":
-			cudService.createLexemeGrammar(id, value, complexity, roleDatasetCode, isManualEventOnUpdateEnabled);
+			cudService.createLexemeGrammar(id, value, languageCode, complexity, roleDatasetCode, isManualEventOnUpdateEnabled);
 			break;
 		case "lexeme_value_state":
 			cudService.updateLexemeValueState(id, value, roleDatasetCode, isManualEventOnUpdateEnabled);
@@ -196,7 +196,7 @@ public class EditController extends AbstractMutableDataPageController implements
 			Response response = synCandidateService.createFullSynCandidate(id, value, candidateLang, candidateDatasetCode, roleDatasetCode);
 			return response;
 		case "learner_comment":
-			cudService.createMeaningLearnerComment(id, value, languageCode, roleDatasetCode, isManualEventOnUpdateEnabled);
+			cudService.createMeaningLearnerComment(id, value, roleDatasetCode, isManualEventOnUpdateEnabled);
 			break;
 		case "meaning_note":
 			cudService.createMeaningNote(id, value, languageCode, complexity, isPublic, roleDatasetCode, isManualEventOnUpdateEnabled);
@@ -351,7 +351,7 @@ public class EditController extends AbstractMutableDataPageController implements
 			cudService.updateMeaningLearnerComment(id, value, roleDatasetCode, isManualEventOnUpdateEnabled);
 			break;
 		case "lexeme_grammar":
-			cudService.updateLexemeGrammar(id, value, complexity, roleDatasetCode, isManualEventOnUpdateEnabled);
+			cudService.updateLexemeGrammar(id, value, languageCode, complexity, roleDatasetCode, isManualEventOnUpdateEnabled);
 			break;
 		case "lexeme_note":
 			cudService.updateLexemeNote(id, value, languageCode, complexity, isPublic, roleDatasetCode, isManualEventOnUpdateEnabled);
@@ -650,7 +650,7 @@ public class EditController extends AbstractMutableDataPageController implements
 			cudService.deleteLexeme(id, roleDatasetCode, isManualEventOnUpdateEnabled);
 			break;
 		case "colloc":
-			cudService.deleteWord(id, roleDatasetCode, isManualEventOnUpdateEnabled);
+			cudService.deleteCollocMember(id, roleDatasetCode, isManualEventOnUpdateEnabled);
 			break;
 		case "rus_meaning_lexemes":
 			cudService.deleteLexemeAndMeaningLexemes(id, LANGUAGE_CODE_RUS, roleDatasetCode, isManualEventOnUpdateEnabled);

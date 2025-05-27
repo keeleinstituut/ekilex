@@ -635,8 +635,6 @@ public class CompositionDbService extends AbstractDataDbService implements Globa
 		return targetLexeme.getId();
 	}
 
-	// TODO working on lexemes
-
 	public void cloneLexemeUsages(Long sourceLexemeId, Long targetLexemeId) {
 
 		Result<UsageRecord> sourceUsages = mainDb

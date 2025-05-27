@@ -45,11 +45,14 @@ import eki.ekilex.data.db.main.tables.FreqCorp;
 import eki.ekilex.data.db.main.tables.GameNonword;
 import eki.ekilex.data.db.main.tables.Gender;
 import eki.ekilex.data.db.main.tables.GenderLabel;
+import eki.ekilex.data.db.main.tables.Government;
 import eki.ekilex.data.db.main.tables.GovernmentType;
 import eki.ekilex.data.db.main.tables.GovernmentTypeLabel;
+import eki.ekilex.data.db.main.tables.Grammar;
 import eki.ekilex.data.db.main.tables.LabelType;
 import eki.ekilex.data.db.main.tables.Language;
 import eki.ekilex.data.db.main.tables.LanguageLabel;
+import eki.ekilex.data.db.main.tables.LearnerComment;
 import eki.ekilex.data.db.main.tables.LexColloc;
 import eki.ekilex.data.db.main.tables.LexCollocPosGroup;
 import eki.ekilex.data.db.main.tables.LexCollocRelGroup;
@@ -76,6 +79,7 @@ import eki.ekilex.data.db.main.tables.MeaningFreeform;
 import eki.ekilex.data.db.main.tables.MeaningImage;
 import eki.ekilex.data.db.main.tables.MeaningImageSourceLink;
 import eki.ekilex.data.db.main.tables.MeaningLastActivityLog;
+import eki.ekilex.data.db.main.tables.MeaningMedia;
 import eki.ekilex.data.db.main.tables.MeaningNote;
 import eki.ekilex.data.db.main.tables.MeaningNoteSourceLink;
 import eki.ekilex.data.db.main.tables.MeaningNr;
@@ -107,7 +111,6 @@ import eki.ekilex.data.db.main.tables.SemanticType;
 import eki.ekilex.data.db.main.tables.SemanticTypeLabel;
 import eki.ekilex.data.db.main.tables.Source;
 import eki.ekilex.data.db.main.tables.SourceActivityLog;
-import eki.ekilex.data.db.main.tables.SourceFreeform;
 import eki.ekilex.data.db.main.tables.Tag;
 import eki.ekilex.data.db.main.tables.TempDsImportPkMap;
 import eki.ekilex.data.db.main.tables.TempDsImportQueue;
@@ -375,6 +378,11 @@ public class Tables {
     public static final GenderLabel GENDER_LABEL = GenderLabel.GENDER_LABEL;
 
     /**
+     * The table <code>public.government</code>.
+     */
+    public static final Government GOVERNMENT = Government.GOVERNMENT;
+
+    /**
      * The table <code>public.government_type</code>.
      */
     public static final GovernmentType GOVERNMENT_TYPE = GovernmentType.GOVERNMENT_TYPE;
@@ -383,6 +391,11 @@ public class Tables {
      * The table <code>public.government_type_label</code>.
      */
     public static final GovernmentTypeLabel GOVERNMENT_TYPE_LABEL = GovernmentTypeLabel.GOVERNMENT_TYPE_LABEL;
+
+    /**
+     * The table <code>public.grammar</code>.
+     */
+    public static final Grammar GRAMMAR = Grammar.GRAMMAR;
 
     /**
      * The table <code>public.label_type</code>.
@@ -398,6 +411,11 @@ public class Tables {
      * The table <code>public.language_label</code>.
      */
     public static final LanguageLabel LANGUAGE_LABEL = LanguageLabel.LANGUAGE_LABEL;
+
+    /**
+     * The table <code>public.learner_comment</code>.
+     */
+    public static final LearnerComment LEARNER_COMMENT = LearnerComment.LEARNER_COMMENT;
 
     /**
      * The table <code>public.lex_colloc</code>.
@@ -528,6 +546,11 @@ public class Tables {
      * The table <code>public.meaning_last_activity_log</code>.
      */
     public static final MeaningLastActivityLog MEANING_LAST_ACTIVITY_LOG = MeaningLastActivityLog.MEANING_LAST_ACTIVITY_LOG;
+
+    /**
+     * The table <code>public.meaning_media</code>.
+     */
+    public static final MeaningMedia MEANING_MEDIA = MeaningMedia.MEANING_MEDIA;
 
     /**
      * The table <code>public.meaning_note</code>.
@@ -683,11 +706,6 @@ public class Tables {
      * The table <code>public.source_activity_log</code>.
      */
     public static final SourceActivityLog SOURCE_ACTIVITY_LOG = SourceActivityLog.SOURCE_ACTIVITY_LOG;
-
-    /**
-     * The table <code>public.source_freeform</code>.
-     */
-    public static final SourceFreeform SOURCE_FREEFORM = SourceFreeform.SOURCE_FREEFORM;
 
     /**
      * The table <code>public.tag</code>.

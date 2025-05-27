@@ -23,6 +23,7 @@ import eki.ekilex.data.db.main.udt.TypeNote;
 import eki.ekilex.data.db.main.udt.TypeSourceLink;
 import eki.ekilex.data.db.main.udt.TypeTermMeaningWord;
 import eki.ekilex.data.db.main.udt.TypeUsage;
+import eki.ekilex.data.db.main.udt.TypeValueEntity;
 import eki.ekilex.data.db.main.udt.TypeValueNameLang;
 import eki.ekilex.data.db.main.udt.TypeWordEtymRelation;
 import eki.ekilex.data.db.main.udt.TypeWordHomNrDataTuple;
@@ -131,6 +132,11 @@ public class UDTs {
      * The type <code>public.type_usage</code>
      */
     public static final TypeUsage TYPE_USAGE = eki.ekilex.data.db.main.udt.TypeUsage.TYPE_USAGE;
+
+    /**
+     * The type <code>public.type_value_entity</code>
+     */
+    public static final TypeValueEntity TYPE_VALUE_ENTITY = eki.ekilex.data.db.main.udt.TypeValueEntity.TYPE_VALUE_ENTITY;
 
     /**
      * The type <code>public.type_value_name_lang</code>

@@ -2,13 +2,15 @@ package eki.ekilex.data;
 
 import eki.common.constant.Complexity;
 
-public class Government extends AbstractCreateUpdateEntity {
+public class MeaningMedia extends AbstractCreateUpdateEntity {
 
 	private static final long serialVersionUID = 1L;
 
 	private Long id;
 
-	private String value;
+	private Long meaningId;
+
+	private String url;
 
 	private Complexity complexity;
 
@@ -22,12 +24,20 @@ public class Government extends AbstractCreateUpdateEntity {
 		this.id = id;
 	}
 
-	public String getValue() {
-		return value;
+	public Long getMeaningId() {
+		return meaningId;
 	}
 
-	public void setValue(String value) {
-		this.value = value;
+	public void setMeaningId(Long meaningId) {
+		this.meaningId = meaningId;
+	}
+
+	public String getUrl() {
+		return url;
+	}
+
+	public void setUrl(String url) {
+		this.url = url;
 	}
 
 	public Complexity getComplexity() {

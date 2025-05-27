@@ -164,21 +164,6 @@
         </div>
       </td>
     </tr>
-    <tr>
-      <td style="width: 50px"></td>
-      <td>
-        <th:block th:each="sourceProperty : ${source.sourceProperties}">
-          <div class="row ml-0 mr-0">
-            <div class="mb-1">
-              <div style="display: list-item; position: absolute"></div>
-              <span class="text-break" th:text="#{|source.property.${sourceProperty.typeCode}|}"></span>
-              -
-              <span class="text-break" th:text="${sourceProperty.value}"></span>
-            </div>
-          </div>
-        </th:block>
-      </td>
-    </tr>
   </table>
   <div class="form-group row eki-editor" th:fragment="eki_editor_elem">
     <div class="col-md-12">

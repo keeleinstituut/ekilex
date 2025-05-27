@@ -453,7 +453,7 @@ public class LookupService extends AbstractWordSearchService {
 		permCalculator.filterVisibility(user, definitions);
 		List<DefinitionLangGroup> definitionLangGroups = conversionUtil.composeMeaningDefinitionLangGroups(definitions, languagesOrder);
 		List<OrderedClassifier> domains = commonDataDbService.getMeaningDomains(meaningId, CLASSIF_LABEL_LANG_EST);
-		List<Freeform> meaningFreeforms = commonDataDbService.getMeaningFreeforms(meaningId, EXCLUDED_MEANING_ATTRIBUTE_FF_TYPE_CODES_MIN, CLASSIF_LABEL_LANG_EST);
+		List<Freeform> meaningFreeforms = commonDataDbService.getMeaningFreeforms(meaningId,  CLASSIF_LABEL_LANG_EST);
 
 		List<Long> lexemeIds = meaning.getLexemeIds();
 		List<Lexeme> lexemes = new ArrayList<>();

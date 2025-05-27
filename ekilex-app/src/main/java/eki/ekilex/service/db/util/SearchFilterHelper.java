@@ -9,6 +9,8 @@ import static eki.ekilex.data.db.main.Tables.DOMAIN;
 import static eki.ekilex.data.db.main.Tables.FORM_FREQ;
 import static eki.ekilex.data.db.main.Tables.FREEFORM;
 import static eki.ekilex.data.db.main.Tables.FREQ_CORP;
+import static eki.ekilex.data.db.main.Tables.GOVERNMENT;
+import static eki.ekilex.data.db.main.Tables.GRAMMAR;
 import static eki.ekilex.data.db.main.Tables.LEXEME;
 import static eki.ekilex.data.db.main.Tables.LEXEME_ACTIVITY_LOG;
 import static eki.ekilex.data.db.main.Tables.LEXEME_DERIV;
@@ -90,6 +92,8 @@ import eki.ekilex.data.db.main.tables.Domain;
 import eki.ekilex.data.db.main.tables.FormFreq;
 import eki.ekilex.data.db.main.tables.Freeform;
 import eki.ekilex.data.db.main.tables.FreqCorp;
+import eki.ekilex.data.db.main.tables.Government;
+import eki.ekilex.data.db.main.tables.Grammar;
 import eki.ekilex.data.db.main.tables.LexRelation;
 import eki.ekilex.data.db.main.tables.Lexeme;
 import eki.ekilex.data.db.main.tables.LexemeActivityLog;
@@ -1435,6 +1439,84 @@ public class SearchFilterHelper implements GlobalConstant, ActivityFunct, Freefo
 		return where;
 	}
 
+	public Condition applyLexemeGovernmentFilters(
+			List<SearchCriterion> searchCriteria,
+			Field<Long> lexemeIdField,
+			Condition where) throws Exception {
+
+		List<SearchCriterion> filteredCriteria = searchCriteria.stream()
+				.filter(c -> c.getSearchKey().equals(SearchKey.LEXEME_GOVERNMENT))
+				.collect(toList());
+
+		if (CollectionUtils.isEmpty(filteredCriteria)) {
+			return where;
+		}
+
+		List<SearchCriterion> existsCriteria = filteredCriteria.stream()
+				.filter(crit -> crit.getSearchOperand().equals(SearchOperand.EXISTS))
+				.collect(toList());
+
+		Government lg = GOVERNMENT.as("lg");
+		Condition where1 = lg.LEXEME_ID.eq(lexemeIdField);
+
+		if (CollectionUtils.isEmpty(existsCriteria)) {
+			for (SearchCriterion criterion : filteredCriteria) {
+				if (criterion.getSearchValue() != null) {
+					String searchValueStr = criterion.getSearchValue().toString();
+					where1 = applyValueFilter(searchValueStr, criterion.isNot(), criterion.getSearchOperand(), lg.VALUE, where1, true);
+				}
+			}
+			where = where.and(DSL.exists(DSL.select(lg.ID).from(lg).where(where1)));
+		} else {
+			boolean isNot = existsCriteria.get(0).isNot();
+			Condition critWhere = DSL.exists(DSL.select(lg.ID).from(lg).where(where1));
+			if (isNot) {
+				critWhere = DSL.not(critWhere);
+			}
+			where = where.and(critWhere);
+		}
+		return where;
+	}
+
+	public Condition applyLexemeGrammarFilters(
+			List<SearchCriterion> searchCriteria,
+			Field<Long> lexemeIdField,
+			Condition where) throws Exception {
+
+		List<SearchCriterion> filteredCriteria = searchCriteria.stream()
+				.filter(c -> c.getSearchKey().equals(SearchKey.LEXEME_GRAMMAR))
+				.collect(toList());
+
+		if (CollectionUtils.isEmpty(filteredCriteria)) {
+			return where;
+		}
+
+		List<SearchCriterion> existsCriteria = filteredCriteria.stream()
+				.filter(crit -> crit.getSearchOperand().equals(SearchOperand.EXISTS))
+				.collect(toList());
+
+		Grammar lg = GRAMMAR.as("lg");
+		Condition where1 = lg.LEXEME_ID.eq(lexemeIdField);
+
+		if (CollectionUtils.isEmpty(existsCriteria)) {
+			for (SearchCriterion criterion : filteredCriteria) {
+				if (criterion.getSearchValue() != null) {
+					String searchValueStr = criterion.getSearchValue().toString();
+					where1 = applyValueFilter(searchValueStr, criterion.isNot(), criterion.getSearchOperand(), lg.VALUE, where1, true);
+				}
+			}
+			where = where.and(DSL.exists(DSL.select(lg.ID).from(lg).where(where1)));
+		} else {
+			boolean isNot = existsCriteria.get(0).isNot();
+			Condition critWhere = DSL.exists(DSL.select(lg.ID).from(lg).where(where1));
+			if (isNot) {
+				critWhere = DSL.not(critWhere);
+			}
+			where = where.and(critWhere);
+		}
+		return where;
+	}
+
 	public Condition applyLexemeNoteFilters(
 			List<SearchCriterion> searchCriteria,
 			Field<Long> lexemeIdField,
@@ -1750,8 +1832,7 @@ public class SearchFilterHelper implements GlobalConstant, ActivityFunct, Freefo
 		WordFreeform wff = WORD_FREEFORM.as("wff");
 		Freeform ff = FREEFORM.as("ff");
 		Condition where1 = wff.WORD_ID.eq(wordIdField)
-				.and(wff.FREEFORM_ID.eq(ff.ID))
-				.and(ff.FREEFORM_TYPE_CODE.notIn(EXCLUDED_WORD_ATTRIBUTE_FF_TYPE_CODES));
+				.and(wff.FREEFORM_ID.eq(ff.ID));
 		where1 = applyFreeformFilters(filteredCriteria, "word", ff, where1);
 		where = where.and(DSL.exists(DSL.select(wff.ID).from(wff, ff).where(where1)));
 		return where;
@@ -1777,8 +1858,7 @@ public class SearchFilterHelper implements GlobalConstant, ActivityFunct, Freefo
 		LexemeFreeform lff = LEXEME_FREEFORM.as("lff");
 		Freeform ff = FREEFORM.as("ff");
 		Condition where1 = lff.LEXEME_ID.eq(lexemeIdField)
-				.and(lff.FREEFORM_ID.eq(ff.ID))
-				.and(ff.FREEFORM_TYPE_CODE.notIn(EXCLUDED_LEXEME_ATTRIBUTE_FF_TYPE_CODES));
+				.and(lff.FREEFORM_ID.eq(ff.ID));
 		where1 = applyFreeformFilters(filteredCriteria, "lexeme", ff, where1);
 		where = where.and(DSL.exists(DSL.select(lff.ID).from(lff, ff).where(where1)));
 		return where;
@@ -1803,8 +1883,7 @@ public class SearchFilterHelper implements GlobalConstant, ActivityFunct, Freefo
 		MeaningFreeform mff = MEANING_FREEFORM.as("mff");
 		Freeform ff = FREEFORM.as("ff");
 		Condition where1 = mff.MEANING_ID.eq(meaningIdField)
-				.and(mff.FREEFORM_ID.eq(ff.ID))
-				.and(ff.FREEFORM_TYPE_CODE.notIn(EXCLUDED_MEANING_ATTRIBUTE_FF_TYPE_CODES));
+				.and(mff.FREEFORM_ID.eq(ff.ID));
 		where1 = applyFreeformFilters(filteredCriteria, "meaning", ff, where1);
 		where = where.and(DSL.exists(DSL.select(mff.ID).from(mff, ff).where(where1)));
 		return where;

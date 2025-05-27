@@ -26,9 +26,13 @@ import eki.ekilex.data.CollocMemberOrder;
 import eki.ekilex.data.DatasetPermission;
 import eki.ekilex.data.EkiUser;
 import eki.ekilex.data.Freeform;
+import eki.ekilex.data.Government;
+import eki.ekilex.data.Grammar;
+import eki.ekilex.data.LearnerComment;
 import eki.ekilex.data.Lexeme;
 import eki.ekilex.data.ListData;
 import eki.ekilex.data.MeaningImage;
+import eki.ekilex.data.MeaningMedia;
 import eki.ekilex.data.Note;
 import eki.ekilex.data.Response;
 import eki.ekilex.data.SimpleWord;
@@ -57,6 +61,437 @@ public class CudService extends AbstractCudService implements PermConstant, Acti
 
 	@Autowired
 	private EkilexPermissionEvaluator ekilexPermissionEvaluator;
+
+	// --- CREATE ---
+
+	@Transactional(rollbackOn = Exception.class)
+	public WordLexemeMeaningIdTuple createWord(WordLexemeMeaningDetails wordDetails, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
+
+		String value = wordDetails.getWordValue();
+		String language = wordDetails.getLanguage();
+		String dataset = wordDetails.getDataset();
+		Long meaningId = wordDetails.getMeaningId();
+		boolean isMeaningCreate = meaningId == null;
+
+		value = textDecorationService.removeEkiElementMarkup(value);
+		String cleanValue = textDecorationService.unifyToApostrophe(value);
+		String valueAsWord = textDecorationService.removeAccents(cleanValue);
+		if (StringUtils.isBlank(valueAsWord) && !StringUtils.equals(value, cleanValue)) {
+			valueAsWord = cleanValue;
+		}
+		WordLexemeMeaningIdTuple wordLexemeMeaningId = cudDbService.createWordAndLexemeAndMeaning(value, value, valueAsWord, value, language, dataset, PUBLICITY_PUBLIC, meaningId);
+
+		Long wordId = wordLexemeMeaningId.getWordId();
+		Long lexemeId = wordLexemeMeaningId.getLexemeId();
+		meaningId = wordLexemeMeaningId.getMeaningId();
+		tagDbService.createLexemeAutomaticTags(lexemeId);
+		activityLogService.createActivityLog("createWord", wordId, ActivityOwner.WORD, roleDatasetCode, isManualEventOnUpdateEnabled);
+		activityLogService.createActivityLog("createWord", lexemeId, ActivityOwner.LEXEME, roleDatasetCode, isManualEventOnUpdateEnabled);
+		if (isMeaningCreate) {
+			activityLogService.createActivityLog("createWord", meaningId, ActivityOwner.MEANING, roleDatasetCode, isManualEventOnUpdateEnabled);
+		}
+
+		return wordLexemeMeaningId;
+	}
+
+	@Transactional(rollbackOn = Exception.class)
+	public void createWordType(Long wordId, String typeCode, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
+
+		ActivityLogData activityLog = activityLogService.prepareActivityLog("createWordType", wordId, ActivityOwner.WORD, roleDatasetCode, isManualEventOnUpdateEnabled);
+		Long wordTypeId = cudDbService.createWordType(wordId, typeCode);
+		activityLogService.createActivityLog(activityLog, wordTypeId, ActivityEntity.WORD_TYPE);
+	}
+
+	@Transactional(rollbackOn = Exception.class)
+	public void createWordTypeWithDuplication(Long wordId, String typeCode, EkiUser user, boolean isManualEventOnUpdateEnabled) throws Exception {
+
+		DatasetPermission userRole = user.getRecentRole();
+		String roleDatasetCode = userRole.getDatasetCode();
+		boolean isWordCrudGrant = ekilexPermissionEvaluator.isWordCrudGranted(user, roleDatasetCode, wordId);
+		if (isWordCrudGrant) {
+			createWordType(wordId, typeCode, roleDatasetCode, isManualEventOnUpdateEnabled);
+		} else {
+			Long duplicateWordId = duplicateWordData(wordId, roleDatasetCode, isManualEventOnUpdateEnabled);
+			updateWordLexemesWordId(wordId, duplicateWordId, roleDatasetCode, isManualEventOnUpdateEnabled);
+			createWordType(duplicateWordId, typeCode, roleDatasetCode, isManualEventOnUpdateEnabled);
+		}
+	}
+
+	@Transactional(rollbackOn = Exception.class)
+	public void createWordTag(Long wordId, String tagName, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
+
+		ActivityLogData activityLog = activityLogService.prepareActivityLog("createWordTag", wordId, ActivityOwner.WORD, roleDatasetCode, isManualEventOnUpdateEnabled);
+		Long wordTagId = cudDbService.createWordTag(wordId, tagName);
+		activityLogService.createActivityLog(activityLog, wordTagId, ActivityEntity.WORD_TAG);
+	}
+
+	@Transactional(rollbackOn = Exception.class)
+	public void createWordForum(Long wordId, String valuePrese, EkiUser user) {
+
+		String value = textDecorationService.removeEkiElementMarkup(valuePrese);
+		Long userId = user.getId();
+		String userName = user.getName();
+
+		cudDbService.createWordForum(wordId, value, valuePrese, userId, userName);
+	}
+
+	@Transactional(rollbackOn = Exception.class)
+	public void createWordFreeform(Long wordId, String valuePrese, String freeformTypeCode, boolean isPublic, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
+
+		Freeform freeform = new Freeform();
+		freeform.setFreeformTypeCode(freeformTypeCode);
+		freeform.setValuePrese(valuePrese);
+		freeform.setComplexity(Complexity.DETAIL);
+		freeform.setPublic(isPublic);
+		setValueAndPrese(freeform);
+		applyCreateUpdate(freeform);
+
+		createWordFreeform(ActivityEntity.FREEFORM, wordId, freeform, roleDatasetCode, isManualEventOnUpdateEnabled);
+	}
+
+	@Transactional(rollbackOn = Exception.class)
+	public void createUsageTranslation(Long usageId, String valuePrese, String lang, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
+
+		UsageTranslation usageTranslation = new UsageTranslation();
+		usageTranslation.setValuePrese(valuePrese);
+		usageTranslation.setLang(lang);
+		setValueAndPrese(usageTranslation);
+		applyCreateUpdate(usageTranslation);
+
+		Long lexemeId = activityLogService.getOwnerId(usageId, ActivityEntity.USAGE);
+		ActivityLogData activityLog = activityLogService.prepareActivityLog("createUsageTranslation", lexemeId, ActivityOwner.LEXEME, roleDatasetCode, isManualEventOnUpdateEnabled);
+		Long usageTranslationId = cudDbService.createUsageTranslation(usageId, usageTranslation);
+		activityLogService.createActivityLog(activityLog, usageTranslationId, ActivityEntity.USAGE_TRANSLATION);
+	}
+
+	@Transactional(rollbackOn = Exception.class)
+	public void createUsageDefinition(Long usageId, String valuePrese, String lang, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
+
+		UsageDefinition usageDefinition = new UsageDefinition();
+		usageDefinition.setValuePrese(valuePrese);
+		usageDefinition.setLang(lang);
+		setValueAndPrese(usageDefinition);
+		applyCreateUpdate(usageDefinition);
+
+		Long lexemeId = activityLogService.getOwnerId(usageId, ActivityEntity.USAGE);
+		ActivityLogData activityLog = activityLogService.prepareActivityLog("createUsageDefinition", lexemeId, ActivityOwner.LEXEME, roleDatasetCode, isManualEventOnUpdateEnabled);
+		Long usageDefinitionId = cudDbService.createUsageDefinition(usageId, usageDefinition);
+		activityLogService.createActivityLog(activityLog, usageDefinitionId, ActivityEntity.USAGE_DEFINITION);
+	}
+
+	@Transactional(rollbackOn = Exception.class)
+	public void createLexemeTag(Long lexemeId, String tagName, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
+
+		ActivityLogData activityLog = activityLogService.prepareActivityLog("createLexemeTag", lexemeId, ActivityOwner.LEXEME, roleDatasetCode, isManualEventOnUpdateEnabled);
+		Long lexemeTagId = cudDbService.createLexemeTag(lexemeId, tagName);
+		activityLogService.createActivityLog(activityLog, lexemeTagId, ActivityEntity.TAG);
+	}
+
+	@Transactional(rollbackOn = Exception.class)
+	public void createMeaningTag(Long meaningId, String tagName, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
+
+		ActivityLogData activityLog = activityLogService.prepareActivityLog("createMeaningTag", meaningId, ActivityOwner.MEANING, roleDatasetCode, isManualEventOnUpdateEnabled);
+		Long meaningTagId = cudDbService.createMeaningTag(meaningId, tagName);
+		activityLogService.createActivityLog(activityLog, meaningTagId, ActivityEntity.TAG);
+	}
+
+	@Transactional(rollbackOn = Exception.class)
+	public void createLexemeDeriv(Long lexemeId, String derivCode, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
+
+		ActivityLogData activityLog = activityLogService.prepareActivityLog("createLexemeDeriv", lexemeId, ActivityOwner.LEXEME, roleDatasetCode, isManualEventOnUpdateEnabled);
+		Long lexemeDerivId = cudDbService.createLexemeDeriv(lexemeId, derivCode);
+		activityLogService.createActivityLog(activityLog, lexemeDerivId, ActivityEntity.DERIV);
+	}
+
+	@Transactional(rollbackOn = Exception.class)
+	public void createLexemeRegister(Long lexemeId, String registerCode, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
+
+		ActivityLogData activityLog = activityLogService.prepareActivityLog("createLexemeRegister", lexemeId, ActivityOwner.LEXEME, roleDatasetCode, isManualEventOnUpdateEnabled);
+		Long lexemeRegisterId = cudDbService.createLexemeRegister(lexemeId, registerCode);
+		activityLogService.createActivityLog(activityLog, lexemeRegisterId, ActivityEntity.REGISTER);
+	}
+
+	@Transactional(rollbackOn = Exception.class)
+	public void createLexemeRegion(Long lexemeId, String regionCode, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
+
+		ActivityLogData activityLog = activityLogService.prepareActivityLog("createLexemeRegion", lexemeId, ActivityOwner.LEXEME, roleDatasetCode, isManualEventOnUpdateEnabled);
+		Long lexemeRegionId = cudDbService.createLexemeRegion(lexemeId, regionCode);
+		activityLogService.createActivityLog(activityLog, lexemeRegionId, ActivityEntity.REGION);
+	}
+
+	@Transactional(rollbackOn = Exception.class)
+	public void createLexemeGovernment(Long lexemeId, String value, Complexity complexity, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
+
+		Government government = new Government();
+		government.setValue(value);
+		government.setComplexity(complexity);
+
+		createLexemeGovernment(lexemeId, government, roleDatasetCode, isManualEventOnUpdateEnabled);
+	}
+
+	@Transactional(rollbackOn = Exception.class)
+	public Long createLexemeGovernment(Long lexemeId, Government government, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
+
+		applyCreateUpdate(government);
+		ActivityLogData activityLog = activityLogService.prepareActivityLog("createLexemeGovernment", lexemeId, ActivityOwner.LEXEME, roleDatasetCode, isManualEventOnUpdateEnabled);
+		Long governmentId = cudDbService.createGovernment(lexemeId, government);
+		activityLogService.createActivityLog(activityLog, governmentId, ActivityEntity.GOVERNMENT);
+
+		return governmentId;
+	}
+
+	@Transactional(rollbackOn = Exception.class)
+	public Long createLexemeGrammar(Long lexemeId, String valuePrese, String lang, Complexity complexity, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
+
+		Grammar usage = new Grammar();
+		usage.setValuePrese(valuePrese);
+		usage.setLang(lang);
+		usage.setComplexity(complexity);
+
+		return createLexemeGrammar(lexemeId, usage, roleDatasetCode, isManualEventOnUpdateEnabled);
+	}
+
+	@Transactional(rollbackOn = Exception.class)
+	public Long createLexemeGrammar(Long lexemeId, Grammar grammar, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
+
+		setValueAndPrese(grammar);
+		applyCreateUpdate(grammar);
+		ActivityLogData activityLog = activityLogService.prepareActivityLog("createLexemeGrammar", lexemeId, ActivityOwner.LEXEME, roleDatasetCode, isManualEventOnUpdateEnabled);
+		Long grammarId = cudDbService.createGrammar(lexemeId, grammar);
+		activityLogService.createActivityLog(activityLog, grammarId, ActivityEntity.GRAMMAR);
+
+		return grammarId;
+	}
+
+	@Transactional(rollbackOn = Exception.class)
+	public void createLexemeNote(Long lexemeId, String valuePrese, String lang, Complexity complexity, boolean isPublic, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
+
+		Note note = initNote(valuePrese, lang, complexity, isPublic);
+		applyCreateUpdate(note);
+		ActivityLogData activityLog = activityLogService.prepareActivityLog("createLexemeNote", lexemeId, ActivityOwner.LEXEME, roleDatasetCode, isManualEventOnUpdateEnabled);
+		Long lexemeNoteId = cudDbService.createLexemeNote(lexemeId, note);
+		activityLogService.createActivityLog(activityLog, lexemeNoteId, ActivityEntity.LEXEME_NOTE);
+	}
+
+	@Transactional(rollbackOn = Exception.class)
+	public void createLexemeFreeform(Long lexemeId, String valuePrese, String freeformTypeCode, boolean isPublic, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
+
+		Freeform freeform = new Freeform();
+		freeform.setFreeformTypeCode(freeformTypeCode);
+		freeform.setValuePrese(valuePrese);
+		freeform.setComplexity(Complexity.DETAIL);
+		freeform.setPublic(isPublic);
+		setValueAndPrese(freeform);
+		applyCreateUpdate(freeform);
+
+		createLexemeFreeform(ActivityEntity.FREEFORM, lexemeId, freeform, roleDatasetCode, isManualEventOnUpdateEnabled);
+	}
+
+	@Transactional(rollbackOn = Exception.class)
+	public void createLexemeRelation(Long lexemeId1, Long lexemeId2, String relationType, String oppositeRelationType, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
+
+		ActivityLogData activityLog;
+		activityLog = activityLogService.prepareActivityLog("createLexemeRelation", lexemeId1, ActivityOwner.LEXEME, roleDatasetCode, isManualEventOnUpdateEnabled);
+		Long relationId = cudDbService.createLexemeRelation(lexemeId1, lexemeId2, relationType);
+		activityLogService.createActivityLog(activityLog, relationId, ActivityEntity.LEXEME_RELATION);
+		if (StringUtils.isNotEmpty(oppositeRelationType)) {
+			boolean oppositeRelationExists = lookupDbService.lexemeRelationExists(lexemeId2, lexemeId1, oppositeRelationType);
+			if (oppositeRelationExists) {
+				return;
+			}
+			activityLog = activityLogService.prepareActivityLog("createLexemeRelation", lexemeId2, ActivityOwner.LEXEME, roleDatasetCode, isManualEventOnUpdateEnabled);
+			Long oppositeRelationId = cudDbService.createLexemeRelation(lexemeId2, lexemeId1, oppositeRelationType);
+			activityLogService.createActivityLog(activityLog, oppositeRelationId, ActivityEntity.LEXEME_RELATION);
+		}
+	}
+
+	@Transactional(rollbackOn = Exception.class)
+	public void createMeaningDomain(Long meaningId, Classifier domain, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
+
+		ActivityLogData activityLog = activityLogService.prepareActivityLog("createMeaningDomain", meaningId, ActivityOwner.MEANING, roleDatasetCode, isManualEventOnUpdateEnabled);
+		Long meaningDomainId = cudDbService.createMeaningDomain(meaningId, domain);
+		activityLogService.createActivityLog(activityLog, meaningDomainId, ActivityEntity.DOMAIN);
+	}
+
+	@Transactional(rollbackOn = Exception.class)
+	public void createMeaningRelation(Long meaningId1, Long meaningId2, String relationType, String oppositeRelationType, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
+
+		ActivityLogData activityLog;
+		activityLog = activityLogService.prepareActivityLog("createMeaningRelation", meaningId1, ActivityOwner.MEANING, roleDatasetCode, isManualEventOnUpdateEnabled);
+		Long relationId = cudDbService.createMeaningRelation(meaningId1, meaningId2, relationType);
+		activityLogService.createActivityLog(activityLog, relationId, ActivityEntity.MEANING_RELATION);
+		if (StringUtils.isNotEmpty(oppositeRelationType)) {
+			boolean oppositeRelationExists = lookupDbService.meaningRelationExists(meaningId2, meaningId1, oppositeRelationType);
+			if (oppositeRelationExists) {
+				return;
+			}
+			activityLog = activityLogService.prepareActivityLog("createMeaningRelation", meaningId2, ActivityOwner.MEANING, roleDatasetCode, isManualEventOnUpdateEnabled);
+			Long oppositeRelationId = cudDbService.createMeaningRelation(meaningId2, meaningId1, oppositeRelationType);
+			activityLogService.createActivityLog(activityLog, oppositeRelationId, ActivityEntity.MEANING_RELATION);
+		}
+	}
+
+	@Transactional(rollbackOn = Exception.class)
+	public Long createMeaningLearnerComment(Long meaningId, String valuePrese, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
+
+		LearnerComment learnerComment = new LearnerComment();
+		learnerComment.setValuePrese(valuePrese);
+
+		return createMeaningLearnerComment(meaningId, learnerComment, roleDatasetCode, isManualEventOnUpdateEnabled);
+	}
+
+	@Transactional(rollbackOn = Exception.class)
+	public Long createMeaningLearnerComment(Long meaningId, LearnerComment learnerComment, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
+
+		setValueAndPrese(learnerComment);
+		applyCreateUpdate(learnerComment);
+
+		ActivityLogData activityLog = activityLogService.prepareActivityLog("createLexemeGrammar", meaningId, ActivityOwner.MEANING, roleDatasetCode, isManualEventOnUpdateEnabled);
+		Long learnerCommentId = cudDbService.createLearnerComment(meaningId, learnerComment);
+		activityLogService.createActivityLog(activityLog, learnerCommentId, ActivityEntity.LEARNER_COMMENT);
+
+		return learnerCommentId;
+	}
+
+	@Transactional(rollbackOn = Exception.class)
+	public void createMeaningNote(Long meaningId, String valuePrese, String lang, Complexity complexity, boolean isPublic, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
+
+		Note note = initNote(valuePrese, lang, complexity, isPublic);
+		applyCreateUpdate(note);
+		ActivityLogData activityLog = activityLogService.prepareActivityLog("createMeaningNote", meaningId, ActivityOwner.MEANING, roleDatasetCode, isManualEventOnUpdateEnabled);
+		Long meaningNoteId = cudDbService.createMeaningNote(meaningId, note);
+		activityLogService.createActivityLog(activityLog, meaningNoteId, ActivityEntity.MEANING_NOTE);
+	}
+
+	@Transactional(rollbackOn = Exception.class)
+	public void createMeaningForum(Long meaningId, String valuePrese, EkiUser user) {
+
+		String value = textDecorationService.removeEkiElementMarkup(valuePrese);
+		Long userId = user.getId();
+		String userName = user.getName();
+		cudDbService.createMeaningForum(meaningId, value, valuePrese, userId, userName);
+	}
+
+	@Transactional(rollbackOn = Exception.class)
+	public void createMeaningSemanticType(Long meaningId, String semanticTypeCode, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
+
+		ActivityLogData activityLog = activityLogService.prepareActivityLog("createMeaningSemanticType", meaningId, ActivityOwner.MEANING, roleDatasetCode, isManualEventOnUpdateEnabled);
+		Long meaningSemanticTypeId = cudDbService.createMeaningSemanticType(meaningId, semanticTypeCode);
+		activityLogService.createActivityLog(activityLog, meaningSemanticTypeId, ActivityEntity.SEMANTIC_TYPE);
+
+	}
+
+	@Transactional(rollbackOn = Exception.class)
+	public void createDefinitionNote(Long definitionId, String valuePrese, String lang, boolean isPublic, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
+
+		Note note = initNote(valuePrese, lang, Complexity.DETAIL, isPublic);
+		applyCreateUpdate(note);
+		Long meaningId = activityLogService.getOwnerId(definitionId, ActivityEntity.DEFINITION);
+		ActivityLogData activityLog = activityLogService.prepareActivityLog("createDefinitionNote", meaningId, ActivityOwner.MEANING, roleDatasetCode, isManualEventOnUpdateEnabled);
+		Long definitionNoteId = cudDbService.createDefinitionNote(definitionId, note);
+		activityLogService.createActivityLog(activityLog, definitionNoteId, ActivityEntity.DEFINITION_NOTE);
+	}
+
+	@Transactional(rollbackOn = Exception.class)
+	public void createMeaningImage(Long meaningId, String url, String title, Complexity complexity, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
+
+		MeaningImage meaningImage = new MeaningImage();
+		meaningImage.setTitle(title);
+		meaningImage.setUrl(url);
+		meaningImage.setComplexity(complexity);
+		meaningImage.setPublic(PUBLICITY_PUBLIC);
+		applyCreateUpdate(meaningImage);
+
+		ActivityLogData activityLog = activityLogService.prepareActivityLog("createMeaningImage", meaningId, ActivityOwner.MEANING, roleDatasetCode, isManualEventOnUpdateEnabled);
+		Long meaningImageId = cudDbService.createMeaningImage(meaningId, meaningImage);
+		activityLogService.createActivityLog(activityLog, meaningImageId, ActivityEntity.MEANING_IMAGE);
+	}
+
+	@Transactional(rollbackOn = Exception.class)
+	public void createMeaningMedia(Long meaningId, String url, Complexity complexity, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
+
+		MeaningMedia meaningMedia = new MeaningMedia();
+		meaningMedia.setUrl(url);
+		meaningMedia.setComplexity(complexity);
+		applyCreateUpdate(meaningMedia);
+
+		ActivityLogData activityLog = activityLogService.prepareActivityLog("createMeaningMedia", meaningId, ActivityOwner.MEANING, roleDatasetCode, isManualEventOnUpdateEnabled);
+		Long meaningImageId = cudDbService.createMeaningMedia(meaningId, meaningMedia);
+		activityLogService.createActivityLog(activityLog, meaningImageId, ActivityEntity.MEANING_MEDIA);
+	}
+
+	@Transactional(rollbackOn = Exception.class)
+	public void createMeaningFreeform(Long meaningId, String valuePrese, String freeformTypeCode, boolean isPublic, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
+
+		Freeform freeform = new Freeform();
+		freeform.setFreeformTypeCode(freeformTypeCode);
+		freeform.setValuePrese(valuePrese);
+		freeform.setComplexity(Complexity.DETAIL);
+		freeform.setPublic(isPublic);
+		setValueAndPrese(freeform);
+		applyCreateUpdate(freeform);
+
+		createMeaningFreeform(ActivityEntity.FREEFORM, meaningId, freeform, roleDatasetCode, isManualEventOnUpdateEnabled);
+	}
+
+	@Transactional(rollbackOn = Exception.class)
+	public void createWordOdMorph(Long wordId, String valuePrese, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
+
+		WordOdMorph wordOdMorph = new WordOdMorph();
+		wordOdMorph.setValuePrese(valuePrese);
+		wordOdMorph.setPublic(true);
+		setValueAndPrese(wordOdMorph);
+		applyCreateUpdate(wordOdMorph);
+
+		ActivityLogData activityLog = activityLogService.prepareActivityLog("createWordOdMorph", wordId, ActivityOwner.WORD, roleDatasetCode, isManualEventOnUpdateEnabled);
+		Long wordOdMorphId = cudDbService.createWordOdMorph(wordId, wordOdMorph);
+		activityLogService.createActivityLog(activityLog, wordOdMorphId, ActivityEntity.WORD_OD_MORPH);
+	}
+
+	@Transactional(rollbackOn = Exception.class)
+	public void createWordOdRecommendation(Long wordId, String valuePrese, String optValuePrese, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
+
+		WordOdRecommendation wordOdRecommendation = new WordOdRecommendation();
+		wordOdRecommendation.setValuePrese(valuePrese);
+		wordOdRecommendation.setOptValuePrese(optValuePrese);
+		wordOdRecommendation.setPublic(true);
+		setValueAndPrese(wordOdRecommendation);
+		applyCreateUpdate(wordOdRecommendation);
+
+		ActivityLogData activityLog = activityLogService.prepareActivityLog("createWordOdRecommendation", wordId, ActivityOwner.WORD, roleDatasetCode, isManualEventOnUpdateEnabled);
+		Long wordOdRecommendationId = cudDbService.createWordOdRecommendation(wordId, wordOdRecommendation);
+		activityLogService.createActivityLog(activityLog, wordOdRecommendationId, ActivityEntity.WORD_OD_RECOMMENDATION);
+	}
+
+	@Transactional(rollbackOn = Exception.class)
+	public void createWordOdUsage(Long wordId, String valuePrese, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
+
+		WordOdUsage wordOdUsage = new WordOdUsage();
+		wordOdUsage.setValuePrese(valuePrese);
+		wordOdUsage.setPublic(true);
+		setValueAndPrese(wordOdUsage);
+		applyCreateUpdate(wordOdUsage);
+
+		ActivityLogData activityLog = activityLogService.prepareActivityLog("createWordOdUsage", wordId, ActivityOwner.WORD, roleDatasetCode, isManualEventOnUpdateEnabled);
+		Long wordOdUsageId = cudDbService.createWordOdUsage(wordId, wordOdUsage);
+		activityLogService.createActivityLog(activityLog, wordOdUsageId, ActivityEntity.WORD_OD_USAGE);
+	}
+
+	private void createWordFreeform(ActivityEntity activityEntity, Long wordId, Freeform freeform, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
+
+		String userName = userContext.getUserName();
+		ActivityLogData activityLog = activityLogService.prepareActivityLog("createWordFreeform", wordId, ActivityOwner.WORD, roleDatasetCode, isManualEventOnUpdateEnabled);
+		Long wordFreeformId = cudDbService.createWordFreeform(wordId, freeform, userName);
+		activityLogService.createActivityLog(activityLog, wordFreeformId, activityEntity);
+	}
+
+	private void createMeaningFreeform(ActivityEntity activityEntity, Long meaningId, Freeform freeform, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
+
+		String userName = userContext.getUserName();
+		ActivityLogData activityLog = activityLogService.prepareActivityLog("createMeaningFreeform", meaningId, ActivityOwner.MEANING, roleDatasetCode, isManualEventOnUpdateEnabled);
+		Long meaningFreeformId = cudDbService.createMeaningFreeform(meaningId, freeform, userName);
+		activityLogService.createActivityLog(activityLog, meaningFreeformId, activityEntity);
+	}
 
 	// --- UPDATE ---
 
@@ -461,18 +896,6 @@ public class CudService extends AbstractCudService implements PermConstant, Acti
 	}
 
 	@Transactional(rollbackOn = Exception.class)
-	public void updateUsage(Usage usage, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
-
-		setValueAndPrese(usage);
-		applyUpdate(usage);
-		Long usageId = usage.getId();
-		Long lexemeId = activityLogService.getOwnerId(usageId, ActivityEntity.USAGE);
-		ActivityLogData activityLog = activityLogService.prepareActivityLog("updateUsage", lexemeId, ActivityOwner.LEXEME, roleDatasetCode, isManualEventOnUpdateEnabled);
-		cudDbService.updateUsage(usage);
-		activityLogService.createActivityLog(activityLog, usageId, ActivityEntity.USAGE);
-	}
-
-	@Transactional(rollbackOn = Exception.class)
 	public void updateUsage(Long usageId, String valuePrese, Complexity complexity, boolean isPublic, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
 
 		Usage usage = new Usage();
@@ -480,9 +903,17 @@ public class CudService extends AbstractCudService implements PermConstant, Acti
 		usage.setValuePrese(valuePrese);
 		usage.setComplexity(complexity);
 		usage.setPublic(isPublic);
+
+		updateUsage(usage, roleDatasetCode, isManualEventOnUpdateEnabled);
+	}
+
+	@Transactional(rollbackOn = Exception.class)
+	public void updateUsage(Usage usage, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
+
 		setValueAndPrese(usage);
 		applyUpdate(usage);
 
+		Long usageId = usage.getId();
 		Long lexemeId = activityLogService.getOwnerId(usageId, ActivityEntity.USAGE);
 		ActivityLogData activityLog = activityLogService.prepareActivityLog("updateUsage", lexemeId, ActivityOwner.LEXEME, roleDatasetCode, isManualEventOnUpdateEnabled);
 		cudDbService.updateUsage(usage);
@@ -566,29 +997,51 @@ public class CudService extends AbstractCudService implements PermConstant, Acti
 	}
 
 	@Transactional(rollbackOn = Exception.class)
-	public void updateLexemeGovernment(Long lexemeGovernmentId, String valuePrese, Complexity complexity, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
+	public void updateLexemeGrammar(Long grammarId, String valuePrese, String lang, Complexity complexity, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
 
-		Freeform freeform = new Freeform();
-		freeform.setId(lexemeGovernmentId);
-		freeform.setValuePrese(valuePrese);
-		freeform.setComplexity(complexity);
-		setValueAndPrese(freeform);
-		applyUpdate(freeform);
+		Grammar grammar = new Grammar();
+		grammar.setId(grammarId);
+		grammar.setValuePrese(valuePrese);
+		grammar.setLang(lang);
+		grammar.setComplexity(complexity);
 
-		updateFreeform(ActivityOwner.LEXEME, ActivityEntity.GOVERNMENT, freeform, roleDatasetCode, isManualEventOnUpdateEnabled);
+		updateLexemeGrammar(grammar, roleDatasetCode, isManualEventOnUpdateEnabled);
 	}
 
 	@Transactional(rollbackOn = Exception.class)
-	public void updateLexemeGrammar(Long lexemeGrammarId, String valuePrese, Complexity complexity, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
+	public void updateLexemeGrammar(Grammar grammar, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
 
-		Freeform freeform = new Freeform();
-		freeform.setId(lexemeGrammarId);
-		freeform.setValuePrese(valuePrese);
-		freeform.setComplexity(complexity);
-		setValueAndPrese(freeform);
-		applyUpdate(freeform);
+		setValueAndPrese(grammar);
+		applyUpdate(grammar);
 
-		updateFreeform(ActivityOwner.LEXEME, ActivityEntity.GRAMMAR, freeform, roleDatasetCode, isManualEventOnUpdateEnabled);
+		Long grammarId = grammar.getId();
+		Long lexemeId = activityLogService.getOwnerId(grammarId, ActivityEntity.GRAMMAR);
+		ActivityLogData activityLog = activityLogService.prepareActivityLog("updateLexemeGrammar", lexemeId, ActivityOwner.LEXEME, roleDatasetCode, isManualEventOnUpdateEnabled);
+		cudDbService.updateGrammar(grammar);
+		activityLogService.createActivityLog(activityLog, grammarId, ActivityEntity.GRAMMAR);
+	}
+
+	@Transactional(rollbackOn = Exception.class)
+	public void updateLexemeGovernment(Long governmentId, String value, Complexity complexity, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
+
+		Government government = new Government();
+		government.setId(governmentId);
+		government.setValue(value);
+		government.setComplexity(complexity);
+
+		updateLexemeGovernment(government, roleDatasetCode, isManualEventOnUpdateEnabled);
+	}
+
+	@Transactional(rollbackOn = Exception.class)
+	public void updateLexemeGovernment(Government government, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
+
+		applyUpdate(government);
+
+		Long governmentId = government.getId();
+		Long lexemeId = activityLogService.getOwnerId(governmentId, ActivityEntity.GOVERNMENT);
+		ActivityLogData activityLog = activityLogService.prepareActivityLog("updateLexemeGovernment", lexemeId, ActivityOwner.LEXEME, roleDatasetCode, isManualEventOnUpdateEnabled);
+		cudDbService.updateGovernment(government);
+		activityLogService.createActivityLog(activityLog, governmentId, ActivityEntity.GOVERNMENT);
 	}
 
 	@Transactional(rollbackOn = Exception.class)
@@ -779,13 +1232,16 @@ public class CudService extends AbstractCudService implements PermConstant, Acti
 	@Transactional(rollbackOn = Exception.class)
 	public void updateMeaningLearnerComment(Long learnerCommentId, String valuePrese, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
 
-		Freeform freeform = new Freeform();
-		freeform.setId(learnerCommentId);
-		freeform.setValuePrese(valuePrese);
-		setValueAndPrese(freeform);
-		applyUpdate(freeform);
+		LearnerComment learnerComment = new LearnerComment();
+		learnerComment.setId(learnerCommentId);
+		learnerComment.setValuePrese(valuePrese);
+		setValueAndPrese(learnerComment);
+		applyUpdate(learnerComment);
 
-		updateFreeform(ActivityOwner.MEANING, ActivityEntity.LEARNER_COMMENT, freeform, roleDatasetCode, isManualEventOnUpdateEnabled);
+		Long meaningId = activityLogService.getOwnerId(learnerCommentId, ActivityEntity.LEARNER_COMMENT);
+		ActivityLogData activityLog = activityLogService.prepareActivityLog("updateMeaningLearnerComment", meaningId, ActivityOwner.MEANING, roleDatasetCode, isManualEventOnUpdateEnabled);
+		cudDbService.updateLearnerComment(learnerCommentId, learnerComment);
+		activityLogService.createActivityLog(activityLog, learnerCommentId, ActivityEntity.LEARNER_COMMENT);
 	}
 
 	@Transactional(rollbackOn = Exception.class)
@@ -834,16 +1290,17 @@ public class CudService extends AbstractCudService implements PermConstant, Acti
 	}
 
 	@Transactional(rollbackOn = Exception.class)
-	public void updateMeaningMedia(Long mediaId, String valuePrese, Complexity complexity, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
+	public void updateMeaningMedia(Long meaningMediaId, String url, Complexity complexity, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
 
-		Freeform freeform = new Freeform();
-		freeform.setId(mediaId);
-		freeform.setValuePrese(valuePrese);
-		freeform.setComplexity(complexity);
-		setValueAndPrese(freeform);
-		applyUpdate(freeform);
+		MeaningMedia meaningImage = new MeaningMedia();
+		meaningImage.setUrl(url);
+		meaningImage.setComplexity(complexity);
+		applyUpdate(meaningImage);
 
-		updateFreeform(ActivityOwner.MEANING, ActivityEntity.MEDIA_FILE, freeform, roleDatasetCode, isManualEventOnUpdateEnabled);
+		Long meaningId = activityLogService.getOwnerId(meaningMediaId, ActivityEntity.MEANING_MEDIA);
+		ActivityLogData activityLog = activityLogService.prepareActivityLog("updateMeaningMedia", meaningId, ActivityOwner.MEANING, roleDatasetCode, isManualEventOnUpdateEnabled);
+		cudDbService.updateMeaningMedia(meaningMediaId, meaningImage);
+		activityLogService.createActivityLog(activityLog, meaningMediaId, ActivityEntity.MEANING_MEDIA);
 	}
 
 	@Transactional(rollbackOn = Exception.class)
@@ -860,8 +1317,7 @@ public class CudService extends AbstractCudService implements PermConstant, Acti
 	}
 
 	@Transactional(rollbackOn = Exception.class)
-	public void updateWordOdMorph(
-			Long wordOdMorphId, String valuePrese, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
+	public void updateWordOdMorph(Long wordOdMorphId, String valuePrese, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
 
 		WordOdMorph wordOdMorph = new WordOdMorph();
 		wordOdMorph.setId(wordOdMorphId);
@@ -940,411 +1396,6 @@ public class CudService extends AbstractCudService implements PermConstant, Acti
 		ActivityLogData activityLog = activityLogService.prepareActivityLog("updateFreeform", ownerId, logOwner, roleDatasetCode, isManualEventOnUpdateEnabled);
 		cudDbService.updateFreeform(freeform, userName);
 		activityLogService.createActivityLog(activityLog, freeformId, activityEntity);
-	}
-
-	// --- CREATE ---
-
-	@Transactional(rollbackOn = Exception.class)
-	public WordLexemeMeaningIdTuple createWord(WordLexemeMeaningDetails wordDetails, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
-
-		String value = wordDetails.getWordValue();
-		String language = wordDetails.getLanguage();
-		String dataset = wordDetails.getDataset();
-		Long meaningId = wordDetails.getMeaningId();
-		boolean isMeaningCreate = meaningId == null;
-
-		value = textDecorationService.removeEkiElementMarkup(value);
-		String cleanValue = textDecorationService.unifyToApostrophe(value);
-		String valueAsWord = textDecorationService.removeAccents(cleanValue);
-		if (StringUtils.isBlank(valueAsWord) && !StringUtils.equals(value, cleanValue)) {
-			valueAsWord = cleanValue;
-		}
-		WordLexemeMeaningIdTuple wordLexemeMeaningId = cudDbService.createWordAndLexemeAndMeaning(value, value, valueAsWord, value, language, dataset, PUBLICITY_PUBLIC, meaningId);
-
-		Long wordId = wordLexemeMeaningId.getWordId();
-		Long lexemeId = wordLexemeMeaningId.getLexemeId();
-		meaningId = wordLexemeMeaningId.getMeaningId();
-		tagDbService.createLexemeAutomaticTags(lexemeId);
-		activityLogService.createActivityLog("createWord", wordId, ActivityOwner.WORD, roleDatasetCode, isManualEventOnUpdateEnabled);
-		activityLogService.createActivityLog("createWord", lexemeId, ActivityOwner.LEXEME, roleDatasetCode, isManualEventOnUpdateEnabled);
-		if (isMeaningCreate) {
-			activityLogService.createActivityLog("createWord", meaningId, ActivityOwner.MEANING, roleDatasetCode, isManualEventOnUpdateEnabled);
-		}
-
-		return wordLexemeMeaningId;
-	}
-
-	@Transactional(rollbackOn = Exception.class)
-	public void createWordType(Long wordId, String typeCode, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
-
-		ActivityLogData activityLog = activityLogService.prepareActivityLog("createWordType", wordId, ActivityOwner.WORD, roleDatasetCode, isManualEventOnUpdateEnabled);
-		Long wordTypeId = cudDbService.createWordType(wordId, typeCode);
-		activityLogService.createActivityLog(activityLog, wordTypeId, ActivityEntity.WORD_TYPE);
-	}
-
-	@Transactional(rollbackOn = Exception.class)
-	public void createWordTypeWithDuplication(Long wordId, String typeCode, EkiUser user, boolean isManualEventOnUpdateEnabled) throws Exception {
-
-		DatasetPermission userRole = user.getRecentRole();
-		String roleDatasetCode = userRole.getDatasetCode();
-		boolean isWordCrudGrant = ekilexPermissionEvaluator.isWordCrudGranted(user, roleDatasetCode, wordId);
-		if (isWordCrudGrant) {
-			createWordType(wordId, typeCode, roleDatasetCode, isManualEventOnUpdateEnabled);
-		} else {
-			Long duplicateWordId = duplicateWordData(wordId, roleDatasetCode, isManualEventOnUpdateEnabled);
-			updateWordLexemesWordId(wordId, duplicateWordId, roleDatasetCode, isManualEventOnUpdateEnabled);
-			createWordType(duplicateWordId, typeCode, roleDatasetCode, isManualEventOnUpdateEnabled);
-		}
-	}
-
-	@Transactional(rollbackOn = Exception.class)
-	public void createWordTag(Long wordId, String tagName, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
-
-		ActivityLogData activityLog = activityLogService.prepareActivityLog("createWordTag", wordId, ActivityOwner.WORD, roleDatasetCode, isManualEventOnUpdateEnabled);
-		Long wordTagId = cudDbService.createWordTag(wordId, tagName);
-		activityLogService.createActivityLog(activityLog, wordTagId, ActivityEntity.WORD_TAG);
-	}
-
-	@Transactional(rollbackOn = Exception.class)
-	public void createWordForum(Long wordId, String valuePrese, EkiUser user) {
-
-		String value = textDecorationService.removeEkiElementMarkup(valuePrese);
-		Long userId = user.getId();
-		String userName = user.getName();
-
-		cudDbService.createWordForum(wordId, value, valuePrese, userId, userName);
-	}
-
-	@Transactional(rollbackOn = Exception.class)
-	public void createWordFreeform(Long wordId, String valuePrese, String freeformTypeCode, boolean isPublic, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
-
-		Freeform freeform = new Freeform();
-		freeform.setFreeformTypeCode(freeformTypeCode);
-		freeform.setValuePrese(valuePrese);
-		freeform.setComplexity(Complexity.DETAIL);
-		freeform.setPublic(isPublic);
-		setValueAndPrese(freeform);
-		applyCreateUpdate(freeform);
-
-		createWordFreeform(ActivityEntity.FREEFORM, wordId, freeform, roleDatasetCode, isManualEventOnUpdateEnabled);
-	}
-
-	@Transactional(rollbackOn = Exception.class)
-	public void createUsageTranslation(Long usageId, String valuePrese, String lang, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
-
-		UsageTranslation usageTranslation = new UsageTranslation();
-		usageTranslation.setValuePrese(valuePrese);
-		usageTranslation.setLang(lang);
-		setValueAndPrese(usageTranslation);
-		applyCreateUpdate(usageTranslation);
-
-		Long lexemeId = activityLogService.getOwnerId(usageId, ActivityEntity.USAGE);
-		ActivityLogData activityLog = activityLogService.prepareActivityLog("createUsageTranslation", lexemeId, ActivityOwner.LEXEME, roleDatasetCode, isManualEventOnUpdateEnabled);
-		Long usageTranslationId = cudDbService.createUsageTranslation(usageId, usageTranslation);
-		activityLogService.createActivityLog(activityLog, usageTranslationId, ActivityEntity.USAGE_TRANSLATION);
-	}
-
-	@Transactional(rollbackOn = Exception.class)
-	public void createUsageDefinition(Long usageId, String valuePrese, String lang, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
-
-		UsageDefinition usageDefinition = new UsageDefinition();
-		usageDefinition.setValuePrese(valuePrese);
-		usageDefinition.setLang(lang);
-		setValueAndPrese(usageDefinition);
-		applyCreateUpdate(usageDefinition);
-
-		Long lexemeId = activityLogService.getOwnerId(usageId, ActivityEntity.USAGE);
-		ActivityLogData activityLog = activityLogService.prepareActivityLog("createUsageDefinition", lexemeId, ActivityOwner.LEXEME, roleDatasetCode, isManualEventOnUpdateEnabled);
-		Long usageDefinitionId = cudDbService.createUsageDefinition(usageId, usageDefinition);
-		activityLogService.createActivityLog(activityLog, usageDefinitionId, ActivityEntity.USAGE_DEFINITION);
-	}
-
-	@Transactional(rollbackOn = Exception.class)
-	public void createLexemeTag(Long lexemeId, String tagName, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
-
-		ActivityLogData activityLog = activityLogService.prepareActivityLog("createLexemeTag", lexemeId, ActivityOwner.LEXEME, roleDatasetCode, isManualEventOnUpdateEnabled);
-		Long lexemeTagId = cudDbService.createLexemeTag(lexemeId, tagName);
-		activityLogService.createActivityLog(activityLog, lexemeTagId, ActivityEntity.TAG);
-	}
-
-	@Transactional(rollbackOn = Exception.class)
-	public void createMeaningTag(Long meaningId, String tagName, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
-
-		ActivityLogData activityLog = activityLogService.prepareActivityLog("createMeaningTag", meaningId, ActivityOwner.MEANING, roleDatasetCode, isManualEventOnUpdateEnabled);
-		Long meaningTagId = cudDbService.createMeaningTag(meaningId, tagName);
-		activityLogService.createActivityLog(activityLog, meaningTagId, ActivityEntity.TAG);
-	}
-
-	@Transactional(rollbackOn = Exception.class)
-	public void createLexemeDeriv(Long lexemeId, String derivCode, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
-
-		ActivityLogData activityLog = activityLogService.prepareActivityLog("createLexemeDeriv", lexemeId, ActivityOwner.LEXEME, roleDatasetCode, isManualEventOnUpdateEnabled);
-		Long lexemeDerivId = cudDbService.createLexemeDeriv(lexemeId, derivCode);
-		activityLogService.createActivityLog(activityLog, lexemeDerivId, ActivityEntity.DERIV);
-	}
-
-	@Transactional(rollbackOn = Exception.class)
-	public void createLexemeRegister(Long lexemeId, String registerCode, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
-
-		ActivityLogData activityLog = activityLogService.prepareActivityLog("createLexemeRegister", lexemeId, ActivityOwner.LEXEME, roleDatasetCode, isManualEventOnUpdateEnabled);
-		Long lexemeRegisterId = cudDbService.createLexemeRegister(lexemeId, registerCode);
-		activityLogService.createActivityLog(activityLog, lexemeRegisterId, ActivityEntity.REGISTER);
-	}
-
-	@Transactional(rollbackOn = Exception.class)
-	public void createLexemeRegion(Long lexemeId, String regionCode, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
-
-		ActivityLogData activityLog = activityLogService.prepareActivityLog("createLexemeRegion", lexemeId, ActivityOwner.LEXEME, roleDatasetCode, isManualEventOnUpdateEnabled);
-		Long lexemeRegionId = cudDbService.createLexemeRegion(lexemeId, regionCode);
-		activityLogService.createActivityLog(activityLog, lexemeRegionId, ActivityEntity.REGION);
-	}
-
-	@Transactional(rollbackOn = Exception.class)
-	public void createLexemeGovernment(Long lexemeId, String valuePrese, Complexity complexity, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
-
-		Freeform freeform = new Freeform();
-		freeform.setFreeformTypeCode(GOVERNMENT_CODE);
-		freeform.setValuePrese(valuePrese);
-		freeform.setComplexity(complexity);
-		setValueAndPrese(freeform);
-		applyCreateUpdate(freeform);
-
-		createLexemeFreeform(ActivityEntity.GOVERNMENT, lexemeId, freeform, roleDatasetCode, isManualEventOnUpdateEnabled);
-	}
-
-	@Transactional(rollbackOn = Exception.class)
-	public void createLexemeGrammar(Long lexemeId, String valuePrese, Complexity complexity, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
-
-		Freeform freeform = new Freeform();
-		freeform.setFreeformTypeCode(GRAMMAR_CODE);
-		freeform.setValuePrese(valuePrese);
-		freeform.setComplexity(complexity);
-		setValueAndPrese(freeform);
-		applyCreateUpdate(freeform);
-
-		createLexemeFreeform(ActivityEntity.GRAMMAR, lexemeId, freeform, roleDatasetCode, isManualEventOnUpdateEnabled);
-	}
-
-	@Transactional(rollbackOn = Exception.class)
-	public void createLexemeNote(Long lexemeId, String valuePrese, String lang, Complexity complexity, boolean isPublic, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
-
-		Note note = initNote(valuePrese, lang, complexity, isPublic);
-		applyCreateUpdate(note);
-		ActivityLogData activityLog = activityLogService.prepareActivityLog("createLexemeNote", lexemeId, ActivityOwner.LEXEME, roleDatasetCode, isManualEventOnUpdateEnabled);
-		Long lexemeNoteId = cudDbService.createLexemeNote(lexemeId, note);
-		activityLogService.createActivityLog(activityLog, lexemeNoteId, ActivityEntity.LEXEME_NOTE);
-	}
-
-	@Transactional(rollbackOn = Exception.class)
-	public void createLexemeFreeform(Long lexemeId, String valuePrese, String freeformTypeCode, boolean isPublic, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
-
-		Freeform freeform = new Freeform();
-		freeform.setFreeformTypeCode(freeformTypeCode);
-		freeform.setValuePrese(valuePrese);
-		freeform.setComplexity(Complexity.DETAIL);
-		freeform.setPublic(isPublic);
-		setValueAndPrese(freeform);
-		applyCreateUpdate(freeform);
-
-		createLexemeFreeform(ActivityEntity.FREEFORM, lexemeId, freeform, roleDatasetCode, isManualEventOnUpdateEnabled);
-	}
-
-	@Transactional(rollbackOn = Exception.class)
-	public void createLexemeRelation(Long lexemeId1, Long lexemeId2, String relationType, String oppositeRelationType, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
-
-		ActivityLogData activityLog;
-		activityLog = activityLogService.prepareActivityLog("createLexemeRelation", lexemeId1, ActivityOwner.LEXEME, roleDatasetCode, isManualEventOnUpdateEnabled);
-		Long relationId = cudDbService.createLexemeRelation(lexemeId1, lexemeId2, relationType);
-		activityLogService.createActivityLog(activityLog, relationId, ActivityEntity.LEXEME_RELATION);
-		if (StringUtils.isNotEmpty(oppositeRelationType)) {
-			boolean oppositeRelationExists = lookupDbService.lexemeRelationExists(lexemeId2, lexemeId1, oppositeRelationType);
-			if (oppositeRelationExists) {
-				return;
-			}
-			activityLog = activityLogService.prepareActivityLog("createLexemeRelation", lexemeId2, ActivityOwner.LEXEME, roleDatasetCode, isManualEventOnUpdateEnabled);
-			Long oppositeRelationId = cudDbService.createLexemeRelation(lexemeId2, lexemeId1, oppositeRelationType);
-			activityLogService.createActivityLog(activityLog, oppositeRelationId, ActivityEntity.LEXEME_RELATION);
-		}
-	}
-
-	@Transactional(rollbackOn = Exception.class)
-	public void createMeaningDomain(Long meaningId, Classifier domain, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
-
-		ActivityLogData activityLog = activityLogService.prepareActivityLog("createMeaningDomain", meaningId, ActivityOwner.MEANING, roleDatasetCode, isManualEventOnUpdateEnabled);
-		Long meaningDomainId = cudDbService.createMeaningDomain(meaningId, domain);
-		activityLogService.createActivityLog(activityLog, meaningDomainId, ActivityEntity.DOMAIN);
-	}
-
-	@Transactional(rollbackOn = Exception.class)
-	public void createMeaningRelation(Long meaningId1, Long meaningId2, String relationType, String oppositeRelationType, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
-
-		ActivityLogData activityLog;
-		activityLog = activityLogService.prepareActivityLog("createMeaningRelation", meaningId1, ActivityOwner.MEANING, roleDatasetCode, isManualEventOnUpdateEnabled);
-		Long relationId = cudDbService.createMeaningRelation(meaningId1, meaningId2, relationType);
-		activityLogService.createActivityLog(activityLog, relationId, ActivityEntity.MEANING_RELATION);
-		if (StringUtils.isNotEmpty(oppositeRelationType)) {
-			boolean oppositeRelationExists = lookupDbService.meaningRelationExists(meaningId2, meaningId1, oppositeRelationType);
-			if (oppositeRelationExists) {
-				return;
-			}
-			activityLog = activityLogService.prepareActivityLog("createMeaningRelation", meaningId2, ActivityOwner.MEANING, roleDatasetCode, isManualEventOnUpdateEnabled);
-			Long oppositeRelationId = cudDbService.createMeaningRelation(meaningId2, meaningId1, oppositeRelationType);
-			activityLogService.createActivityLog(activityLog, oppositeRelationId, ActivityEntity.MEANING_RELATION);
-		}
-	}
-
-	@Transactional(rollbackOn = Exception.class)
-	public void createMeaningLearnerComment(Long meaningId, String valuePrese, String lang, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
-
-		Freeform freeform = new Freeform();
-		freeform.setFreeformTypeCode(LEARNER_COMMENT_CODE);
-		freeform.setValuePrese(valuePrese);
-		freeform.setLang(lang);
-		freeform.setComplexity(Complexity.SIMPLE);
-		setValueAndPrese(freeform);
-		applyCreateUpdate(freeform);
-
-		createMeaningFreeform(ActivityEntity.LEARNER_COMMENT, meaningId, freeform, roleDatasetCode, isManualEventOnUpdateEnabled);
-	}
-
-	@Transactional(rollbackOn = Exception.class)
-	public void createMeaningNote(Long meaningId, String valuePrese, String lang, Complexity complexity, boolean isPublic, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
-
-		Note note = initNote(valuePrese, lang, complexity, isPublic);
-		applyCreateUpdate(note);
-		ActivityLogData activityLog = activityLogService.prepareActivityLog("createMeaningNote", meaningId, ActivityOwner.MEANING, roleDatasetCode, isManualEventOnUpdateEnabled);
-		Long meaningNoteId = cudDbService.createMeaningNote(meaningId, note);
-		activityLogService.createActivityLog(activityLog, meaningNoteId, ActivityEntity.MEANING_NOTE);
-	}
-
-	@Transactional(rollbackOn = Exception.class)
-	public void createMeaningForum(Long meaningId, String valuePrese, EkiUser user) {
-
-		String value = textDecorationService.removeEkiElementMarkup(valuePrese);
-		Long userId = user.getId();
-		String userName = user.getName();
-		cudDbService.createMeaningForum(meaningId, value, valuePrese, userId, userName);
-	}
-
-	@Transactional(rollbackOn = Exception.class)
-	public void createMeaningSemanticType(Long meaningId, String semanticTypeCode, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
-
-		ActivityLogData activityLog = activityLogService.prepareActivityLog("createMeaningSemanticType", meaningId, ActivityOwner.MEANING, roleDatasetCode, isManualEventOnUpdateEnabled);
-		Long meaningSemanticTypeId = cudDbService.createMeaningSemanticType(meaningId, semanticTypeCode);
-		activityLogService.createActivityLog(activityLog, meaningSemanticTypeId, ActivityEntity.SEMANTIC_TYPE);
-
-	}
-
-	@Transactional(rollbackOn = Exception.class)
-	public void createDefinitionNote(Long definitionId, String valuePrese, String lang, boolean isPublic, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
-
-		Note note = initNote(valuePrese, lang, Complexity.DETAIL, isPublic);
-		applyCreateUpdate(note);
-		Long meaningId = activityLogService.getOwnerId(definitionId, ActivityEntity.DEFINITION);
-		ActivityLogData activityLog = activityLogService.prepareActivityLog("createDefinitionNote", meaningId, ActivityOwner.MEANING, roleDatasetCode, isManualEventOnUpdateEnabled);
-		Long definitionNoteId = cudDbService.createDefinitionNote(definitionId, note);
-		activityLogService.createActivityLog(activityLog, definitionNoteId, ActivityEntity.DEFINITION_NOTE);
-	}
-
-	@Transactional(rollbackOn = Exception.class)
-	public void createMeaningImage(Long meaningId, String url, String title, Complexity complexity, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
-
-		MeaningImage meaningImage = new MeaningImage();
-		meaningImage.setTitle(title);
-		meaningImage.setUrl(url);
-		meaningImage.setComplexity(complexity);
-		meaningImage.setPublic(PUBLICITY_PUBLIC);
-		applyCreateUpdate(meaningImage);
-
-		ActivityLogData activityLog = activityLogService.prepareActivityLog("createMeaningImage", meaningId, ActivityOwner.MEANING, roleDatasetCode, isManualEventOnUpdateEnabled);
-		Long meaningImageId = cudDbService.createMeaningImage(meaningId, meaningImage);
-		activityLogService.createActivityLog(activityLog, meaningImageId, ActivityEntity.MEANING_IMAGE);
-	}
-
-	@Transactional(rollbackOn = Exception.class)
-	public void createMeaningMedia(Long meaningId, String valuePrese, Complexity complexity, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
-
-		Freeform freeform = new Freeform();
-		freeform.setFreeformTypeCode(MEDIA_FILE_CODE);
-		freeform.setValuePrese(valuePrese);
-		freeform.setComplexity(complexity);
-		setValueAndPrese(freeform);
-		applyCreateUpdate(freeform);
-
-		createMeaningFreeform(ActivityEntity.MEDIA_FILE, meaningId, freeform, roleDatasetCode, isManualEventOnUpdateEnabled);
-	}
-
-	@Transactional(rollbackOn = Exception.class)
-	public void createMeaningFreeform(Long meaningId, String valuePrese, String freeformTypeCode, boolean isPublic, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
-
-		Freeform freeform = new Freeform();
-		freeform.setFreeformTypeCode(freeformTypeCode);
-		freeform.setValuePrese(valuePrese);
-		freeform.setComplexity(Complexity.DETAIL);
-		freeform.setPublic(isPublic);
-		setValueAndPrese(freeform);
-		applyCreateUpdate(freeform);
-
-		createMeaningFreeform(ActivityEntity.FREEFORM, meaningId, freeform, roleDatasetCode, isManualEventOnUpdateEnabled);
-	}
-
-	@Transactional(rollbackOn = Exception.class)
-	public void createWordOdMorph(Long wordId, String valuePrese, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
-
-		WordOdMorph wordOdMorph = new WordOdMorph();
-		wordOdMorph.setValuePrese(valuePrese);
-		wordOdMorph.setPublic(true);
-		setValueAndPrese(wordOdMorph);
-		applyCreateUpdate(wordOdMorph);
-
-		ActivityLogData activityLog = activityLogService.prepareActivityLog("createWordOdMorph", wordId, ActivityOwner.WORD, roleDatasetCode, isManualEventOnUpdateEnabled);
-		Long wordOdMorphId = cudDbService.createWordOdMorph(wordId, wordOdMorph);
-		activityLogService.createActivityLog(activityLog, wordOdMorphId, ActivityEntity.WORD_OD_MORPH);
-	}
-
-	@Transactional(rollbackOn = Exception.class)
-	public void createWordOdRecommendation(Long wordId, String valuePrese, String optValuePrese, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
-
-		WordOdRecommendation wordOdRecommendation = new WordOdRecommendation();
-		wordOdRecommendation.setValuePrese(valuePrese);
-		wordOdRecommendation.setOptValuePrese(optValuePrese);
-		wordOdRecommendation.setPublic(true);
-		setValueAndPrese(wordOdRecommendation);
-		applyCreateUpdate(wordOdRecommendation);
-
-		ActivityLogData activityLog = activityLogService.prepareActivityLog("createWordOdRecommendation", wordId, ActivityOwner.WORD, roleDatasetCode, isManualEventOnUpdateEnabled);
-		Long wordOdRecommendationId = cudDbService.createWordOdRecommendation(wordId, wordOdRecommendation);
-		activityLogService.createActivityLog(activityLog, wordOdRecommendationId, ActivityEntity.WORD_OD_RECOMMENDATION);
-	}
-
-	@Transactional(rollbackOn = Exception.class)
-	public void createWordOdUsage(Long wordId, String valuePrese, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
-
-		WordOdUsage wordOdUsage = new WordOdUsage();
-		wordOdUsage.setValuePrese(valuePrese);
-		wordOdUsage.setPublic(true);
-		setValueAndPrese(wordOdUsage);
-		applyCreateUpdate(wordOdUsage);
-
-		ActivityLogData activityLog = activityLogService.prepareActivityLog("createWordOdUsage", wordId, ActivityOwner.WORD, roleDatasetCode, isManualEventOnUpdateEnabled);
-		Long wordOdUsageId = cudDbService.createWordOdUsage(wordId, wordOdUsage);
-		activityLogService.createActivityLog(activityLog, wordOdUsageId, ActivityEntity.WORD_OD_USAGE);
-	}
-
-	private void createWordFreeform(ActivityEntity activityEntity, Long wordId, Freeform freeform, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
-
-		String userName = userContext.getUserName();
-		ActivityLogData activityLog = activityLogService.prepareActivityLog("createWordFreeform", wordId, ActivityOwner.WORD, roleDatasetCode, isManualEventOnUpdateEnabled);
-		Long wordFreeformId = cudDbService.createWordFreeform(wordId, freeform, userName);
-		activityLogService.createActivityLog(activityLog, wordFreeformId, activityEntity);
-	}
-
-	private void createMeaningFreeform(ActivityEntity activityEntity, Long meaningId, Freeform freeform, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
-
-		String userName = userContext.getUserName();
-		ActivityLogData activityLog = activityLogService.prepareActivityLog("createMeaningFreeform", meaningId, ActivityOwner.MEANING, roleDatasetCode, isManualEventOnUpdateEnabled);
-		Long meaningFreeformId = cudDbService.createMeaningFreeform(meaningId, freeform, userName);
-		activityLogService.createActivityLog(activityLog, meaningFreeformId, activityEntity);
 	}
 
 	// --- DELETE ---
@@ -1519,7 +1570,7 @@ public class CudService extends AbstractCudService implements PermConstant, Acti
 
 		Long lexemeId = activityLogService.getOwnerId(governmentId, ActivityEntity.GOVERNMENT);
 		ActivityLogData activityLog = activityLogService.prepareActivityLog("deleteLexemeGovernment", lexemeId, ActivityOwner.LEXEME, roleDatasetCode, isManualEventOnUpdateEnabled);
-		cudDbService.deleteFreeform(governmentId);
+		cudDbService.deleteGovernment(governmentId);
 		activityLogService.createActivityLog(activityLog, governmentId, ActivityEntity.GOVERNMENT);
 	}
 
@@ -1528,7 +1579,7 @@ public class CudService extends AbstractCudService implements PermConstant, Acti
 
 		Long lexemeId = activityLogService.getOwnerId(grammarId, ActivityEntity.GRAMMAR);
 		ActivityLogData activityLog = activityLogService.prepareActivityLog("deleteLexemeGrammar", lexemeId, ActivityOwner.LEXEME, roleDatasetCode, isManualEventOnUpdateEnabled);
-		cudDbService.deleteFreeform(grammarId);
+		cudDbService.deleteGrammar(grammarId);
 		activityLogService.createActivityLog(activityLog, grammarId, ActivityEntity.GRAMMAR);
 	}
 
@@ -1564,16 +1615,11 @@ public class CudService extends AbstractCudService implements PermConstant, Acti
 	}
 
 	@Transactional(rollbackOn = Exception.class)
-	public void deleteWord(Long wordId, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
+	public void deleteCollocMember(Long wordId, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
 
 		/*
-		 * TODO extremely questionable
+		 * TODO delete colloc member
 		 * 
-		ActivityLogData activityLog = activityLogService.prepareActivityLog("deleteWord", wordId, ActivityOwner.WORD, roleDatasetCode, isManualEventOnUpdateEnabled);
-		SimpleWord word = lookupDbService.getSimpleWord(wordId);
-		cudDbService.deleteLexemesByWordId(wordId);
-		cudDbService.deleteWord(word);
-		activityLogService.createActivityLog(activityLog, wordId, ActivityEntity.WORD);
 		*/
 	}
 
@@ -1692,7 +1738,7 @@ public class CudService extends AbstractCudService implements PermConstant, Acti
 
 		Long meaningId = activityLogService.getOwnerId(learnerCommentId, ActivityEntity.LEARNER_COMMENT);
 		ActivityLogData activityLog = activityLogService.prepareActivityLog("deleteMeaningLearnerComment", meaningId, ActivityOwner.MEANING, roleDatasetCode, isManualEventOnUpdateEnabled);
-		cudDbService.deleteFreeform(learnerCommentId);
+		cudDbService.deleteLearnerComment(learnerCommentId);
 		activityLogService.createActivityLog(activityLog, learnerCommentId, ActivityEntity.LEARNER_COMMENT);
 	}
 
@@ -1721,12 +1767,12 @@ public class CudService extends AbstractCudService implements PermConstant, Acti
 	}
 
 	@Transactional(rollbackOn = Exception.class)
-	public void deleteMeaningMedia(Long mediaId, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
+	public void deleteMeaningMedia(Long meaningMediaId, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
 
-		Long meaningId = activityLogService.getOwnerId(mediaId, ActivityEntity.MEDIA_FILE);
+		Long meaningId = activityLogService.getOwnerId(meaningMediaId, ActivityEntity.MEANING_MEDIA);
 		ActivityLogData activityLog = activityLogService.prepareActivityLog("deleteMeaningMedia", meaningId, ActivityOwner.MEANING, roleDatasetCode, isManualEventOnUpdateEnabled);
-		cudDbService.deleteFreeform(mediaId);
-		activityLogService.createActivityLog(activityLog, mediaId, ActivityEntity.MEDIA_FILE);
+		cudDbService.deleteMeaningMedia(meaningMediaId);
+		activityLogService.createActivityLog(activityLog, meaningMediaId, ActivityEntity.MEANING_MEDIA);
 	}
 
 	@Transactional(rollbackOn = Exception.class)

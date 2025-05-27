@@ -43,10 +43,7 @@ import eki.ekilex.data.Note;
 import eki.ekilex.data.NoteLangGroup;
 import eki.ekilex.data.Paradigm;
 import eki.ekilex.data.ParadigmFormTuple;
-import eki.ekilex.data.Source;
 import eki.ekilex.data.SourceLink;
-import eki.ekilex.data.SourceProperty;
-import eki.ekilex.data.SourcePropertyTuple;
 import eki.ekilex.data.SynWord;
 import eki.ekilex.data.Synonym;
 import eki.ekilex.data.SynonymLangGroup;
@@ -681,69 +678,6 @@ public class ConversionUtil implements GlobalConstant {
 				}
 			}
 		}
-	}
-
-	public Source composeSource(Source source, List<SourcePropertyTuple> sourcePropertyTuples) {
-
-		if (CollectionUtils.isEmpty(sourcePropertyTuples)) {
-			return source;
-		}
-
-		List<SourceProperty> sourceProperties = new ArrayList<>();
-		for (SourcePropertyTuple tuple : sourcePropertyTuples) {
-
-			Long sourcePropertyId = tuple.getSourcePropertyId();
-			String sourcePropertyTypeCode = tuple.getSourcePropertyTypeCode();
-			String sourcePropertyValue = tuple.getSourcePropertyValue();
-
-			SourceProperty sourceProperty = new SourceProperty();
-			sourceProperty.setId(sourcePropertyId);
-			sourceProperty.setTypeCode(sourcePropertyTypeCode);
-			sourceProperty.setValue(sourcePropertyValue);
-			sourceProperties.add(sourceProperty);
-		}
-		source.setSourceProperties(sourceProperties);
-		return source;
-	}
-
-	public List<Source> composeSources(List<SourcePropertyTuple> sourcePropertyTuples) {
-
-		List<Source> sources = new ArrayList<>();
-		Map<Long, Source> sourceMap = new HashMap<>();
-
-		for (SourcePropertyTuple tuple : sourcePropertyTuples) {
-
-			Long sourceId = tuple.getSourceId();
-			Long sourcePropertyId = tuple.getSourcePropertyId();
-			String sourcePropertyTypeCode = tuple.getSourcePropertyTypeCode();
-			String sourcePropertyValue = tuple.getSourcePropertyValue();
-			boolean sourcePropertyMatch = tuple.isSourcePropertyMatch();
-
-			Source source = sourceMap.get(sourceId);
-			if (source == null) {
-				source = new Source();
-				source.setId(sourceId);
-				source.setDatasetCode(tuple.getSourceDatasetCode());
-				source.setType(tuple.getSourceType());
-				source.setName(tuple.getSourceName());
-				source.setValue(tuple.getSourceValue());
-				source.setValuePrese(tuple.getSourceValuePrese());
-				source.setComment(tuple.getSourceComment());
-				source.setPublic(tuple.isSourcePublic());
-				source.setSourceProperties(new ArrayList<>());
-				sources.add(source);
-				sourceMap.put(sourceId, source);
-			}
-
-			SourceProperty sourceProperty = new SourceProperty();
-			sourceProperty.setId(sourcePropertyId);
-			sourceProperty.setTypeCode(sourcePropertyTypeCode);
-			sourceProperty.setValue(sourcePropertyValue);
-			sourceProperty.setValueMatch(sourcePropertyMatch);
-			source.getSourceProperties().add(sourceProperty);
-		}
-
-		return sources;
 	}
 
 	public boolean isLexemesActiveTagComplete(DatasetPermission userRole, List<Lexeme> lexemes, Tag activeTag) {

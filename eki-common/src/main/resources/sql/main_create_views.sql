@@ -18,6 +18,7 @@ drop view if exists view_ww_dataset;
 drop view if exists view_ww_news_article;
 drop type if exists type_meaning_word;
 drop type if exists type_note;
+drop type if exists type_value_entity;
 drop type if exists type_freeform;
 drop type if exists type_lang_complexity;
 drop type if exists type_definition;
@@ -82,6 +83,16 @@ create type type_note as (
         		modified_by text,
         		modified_on timestamp,
         		source_links json);
+create type type_value_entity as (
+				id bigint,
+				value text,
+				value_prese text,
+				lang char(3),
+				complexity varchar(100),
+				created_by text,
+				created_on timestamp,
+        		modified_by text,
+        		modified_on timestamp);
 create type type_freeform as (
 				freeform_id bigint,
 				freeform_type_code varchar(100),
@@ -366,25 +377,41 @@ from (
          union all
            (select
                  w.value as word,
-                 coalesce(ff.lang, w.lang) lang,
+                 g.lang,
                  l.dataset_code,
                  l.complexity lex_complexity,
-                 ff.complexity data_complexity
-            from word w,
+                 g.complexity data_complexity
+           from  word w,
                  lexeme l,
-                 lexeme_freeform lff,
-                 freeform ff,
+                 grammar g,
                  dataset ds
-            where l.is_public = true
-              and l.is_word = true
-              and l.word_id = w.id
-              and l.dataset_code = ds.code
-              and w.is_public = true
-              and ds.is_public = true
-              and lff.lexeme_id = l.id
-              and lff.freeform_id = ff.id
-              and ff.is_public = true
-              and ff.freeform_type_code in ('GRAMMAR', 'GOVERNMENT'))
+           where l.is_public = true
+             and l.is_word = true
+             and l.word_id = w.id
+             and l.dataset_code = ds.code
+             and w.is_public = true
+             and ds.is_public = true
+             and g.lexeme_id = l.id
+           )
+         union all
+           (select
+                 w.value as word,
+                 w.lang,
+                 l.dataset_code,
+                 l.complexity lex_complexity,
+                 g.complexity data_complexity
+           from  word w,
+                 lexeme l,
+                 government g,
+                 dataset ds
+           where l.is_public = true
+             and l.is_word = true
+             and l.word_id = w.id
+             and l.dataset_code = ds.code
+             and w.is_public = true
+             and ds.is_public = true
+             and g.lexeme_id = l.id
+           )
          union all
            (select
                  w.value as word,
@@ -655,26 +682,41 @@ from (select w.id as word_id,
                      where l1.is_public = true
                      and   l1.is_word = true)
                      union all
-                     (select l.word_id,
-                            coalesce(ff.lang, w.lang) lang,
-                            l.dataset_code,
-                            l.complexity lex_complexity,
-                            ff.complexity data_complexity
-                     from word w,
-                          lexeme l,
-                          lexeme_freeform lff,
-                          freeform ff,
-                          dataset ds
-                     where l.is_public = true
-                     and   l.is_word = true
-                     and   ds.code = l.dataset_code
-                     and   ds.is_public = true
-                     and   l.word_id = w.id
-                     and   w.is_public = true
-                     and   lff.lexeme_id = l.id
-                     and   lff.freeform_id = ff.id
-                     and   ff.is_public = true
-                     and   ff.freeform_type_code in ('GRAMMAR', 'GOVERNMENT'))
+			           (select
+			                 l.word_id,
+			                 g.lang,
+			                 l.dataset_code,
+			                 l.complexity lex_complexity,
+			                 g.complexity data_complexity
+			           from  word w,
+			                 lexeme l,
+			                 grammar g,
+			                 dataset ds
+			           where l.is_public = true
+			             and l.is_word = true
+			             and l.word_id = w.id
+			             and l.dataset_code = ds.code
+			             and w.is_public = true
+			             and ds.is_public = true
+			             and g.lexeme_id = l.id)
+			         union all
+			           (select
+			                 l.word_id,
+			                 w.lang,
+			                 l.dataset_code,
+			                 l.complexity lex_complexity,
+			                 g.complexity data_complexity
+			           from  word w,
+			                 lexeme l,
+			                 government g,
+			                 dataset ds
+			           where l.is_public = true
+			             and l.is_word = true
+			             and l.word_id = w.id
+			             and l.dataset_code = ds.code
+			             and w.is_public = true
+			             and ds.is_public = true
+			             and g.lexeme_id = l.id)
                      union all
                      (select l.word_id,
                             coalesce(ln.lang, w.lang) lang,
@@ -766,12 +808,8 @@ from (select w.id as word_id,
                      and   not exists (select d.id from definition d where d.meaning_id = l1.meaning_id and d.is_public = true)
                      and   not exists (select ln.id from lexeme_note ln where ln.lexeme_id = l1.id and ln.is_public = true)
                      and   not exists (select u.id from usage u where u.lexeme_id = l1.id and u.is_public = true)
-                     and   not exists (select ff.id
-                                       from lexeme_freeform lff,
-                                            freeform ff
-                                       where lff.lexeme_id = l1.id
-                                       and   lff.freeform_id = ff.id
-                                       and   ff.freeform_type_code in ('GRAMMAR', 'GOVERNMENT')))) lc
+                     and   not exists (select g.id from grammar g where g.lexeme_id = l1.id)
+                     and   not exists (select g.id from government g where g.lexeme_id = l1.id))) lc
               group by lc.word_id) lc
           on lc.word_id = w.word_id
   left outer join (select wd.word_id,
@@ -1063,21 +1101,18 @@ from (select m.id,
 										 where misl.source_id = s.id
 										 group by misl.meaning_image_id) misl on misl.meaning_image_id = mi.id
                    group by mi.meaning_id) m_img on m_img.meaning_id = m.id
-  left outer join (select mff.meaning_id,
+  left outer join (select mm.meaning_id,
                           json_agg(row (
-                                      ff_mf.id,
-                                      ff_mf.value,
+                                      mm.id,
+                                      mm.url,
                                       null,
-                                      ff_mf.complexity,
+                                      mm.complexity,
                                       null
                                       )::type_media_file
-                                    order by ff_mf.order_by
+                                    order by mm.order_by
                             ) media_files
-                   from meaning_freeform mff,
-                   		freeform ff_mf
-                   where ff_mf.id = mff.freeform_id
-                   and 	 ff_mf.freeform_type_code = 'MEDIA_FILE'
-                   group by mff.meaning_id) m_media on m_media.meaning_id = m.id
+                   from meaning_media mm
+                   group by mm.meaning_id) m_media on m_media.meaning_id = m.id
   left outer join (select mf.meaning_id,
                           array_agg(ff.value order by ff.order_by) systematic_polysemy_patterns
                    from meaning_freeform mf,
@@ -1085,20 +1120,14 @@ from (select m.id,
                    where mf.freeform_id = ff.id
                    and   ff.freeform_type_code = 'SYSTEMATIC_POLYSEMY_PATTERN'
                    group by mf.meaning_id) m_spp on m_spp.meaning_id = m.id
-  left outer join (select mf.meaning_id,
-                          array_agg(ff.value order by ff.order_by) semantic_types
-                   from meaning_freeform mf,
-                        freeform ff
-                   where mf.freeform_id = ff.id
-                   and   ff.freeform_type_code = 'SEMANTIC_TYPE'
-                   group by mf.meaning_id) m_smt on m_smt.meaning_id = m.id
-  left outer join (select mf.meaning_id,
-                          array_agg(ff.value_prese order by ff.order_by) learner_comments
-                   from meaning_freeform mf,
-                        freeform ff
-                   where mf.freeform_id = ff.id
-                   and   ff.freeform_type_code = 'LEARNER_COMMENT'
-                   group by mf.meaning_id) m_lcm on m_lcm.meaning_id = m.id
+  left outer join (select mst.meaning_id,
+                          array_agg(mst.semantic_type_code order by mst.order_by) semantic_types
+                   from meaning_semantic_type mst
+                   group by mst.meaning_id) m_smt on m_smt.meaning_id = m.id
+  left outer join (select lc.meaning_id,
+                          array_agg(lc.value_prese order by lc.order_by) learner_comments
+                   from learner_comment lc
+                   group by lc.meaning_id) m_lcm on m_lcm.meaning_id = m.id
   left outer join (select mn.meaning_id,
                           json_agg(row (
                             mn.meaning_note_id,
@@ -1168,7 +1197,6 @@ select l.id lexeme_id,
        l_rgn.region_codes,
        l_der.deriv_codes,
        mw.meaning_words,
-       anote.advice_notes,
        pnote.notes,
        gramm.grammars,
        gov.governments,
@@ -1180,13 +1208,6 @@ from lexeme l
   left outer join (select l_pos.lexeme_id, array_agg(l_pos.pos_code order by l_pos.order_by) pos_codes from lexeme_pos l_pos group by l_pos.lexeme_id) l_pos on l_pos.lexeme_id = l.id
   left outer join (select l_rgn.lexeme_id, array_agg(l_rgn.region_code order by l_rgn.order_by) region_codes from lexeme_region l_rgn group by l_rgn.lexeme_id) l_rgn on l_rgn.lexeme_id = l.id
   left outer join (select l_der.lexeme_id, array_agg(l_der.deriv_code) deriv_codes from lexeme_deriv l_der group by l_der.lexeme_id) l_der on l_der.lexeme_id = l.id
-  left outer join (select lf.lexeme_id,
-                          array_agg(ff.value order by ff.order_by) advice_notes
-                   from lexeme_freeform lf,
-                        freeform ff
-                   where lf.freeform_id = ff.id
-                   and   ff.freeform_type_code = 'ADVICE_NOTE'
-                   group by lf.lexeme_id) anote on anote.lexeme_id = l.id
   left outer join (select ln.lexeme_id,
                           json_agg(row (
                           	ln.lexeme_note_id,
@@ -1231,20 +1252,34 @@ from lexeme l
 										 group by lnsl.lexeme_note_id) lnsl on lnsl.lexeme_note_id = ln.id
                    		where ln.is_public = true) ln
                    group by ln.lexeme_id) pnote on pnote.lexeme_id = l.id
-  left outer join (select lf.lexeme_id,
-                          json_agg(row (ff.id, ff.freeform_type_code, ff.value_prese, ff.lang, ff.complexity, null, null, null, null)::type_freeform order by ff.order_by) grammars
-                   from lexeme_freeform lf,
-                        freeform ff
-                   where lf.freeform_id = ff.id
-                   and   ff.freeform_type_code = 'GRAMMAR'
-                   group by lf.lexeme_id) gramm on gramm.lexeme_id = l.id
-  left outer join (select lf.lexeme_id,
-                          json_agg(row (ff.id, ff.freeform_type_code, ff.value_prese, ff.lang, ff.complexity, null, null, null, null)::type_freeform order by ff.order_by) governments
-                   from lexeme_freeform lf,
-                        freeform ff
-                   where lf.freeform_id = ff.id
-                   and   ff.freeform_type_code = 'GOVERNMENT'
-                   group by lf.lexeme_id) gov on gov.lexeme_id = l.id
+  left outer join (select g.lexeme_id,
+                          json_agg(row (
+                          			g.id,
+                          			g.value,
+                          			g.value_prese,
+                          			g.lang,
+                          			g.complexity,
+                          			g.created_by,
+                          			g.created_on,
+                          			g.modified_by,
+                          			g.modified_on)::type_value_entity
+                          			order by g.order_by) grammars
+                   from  grammar g
+                   group by g.lexeme_id) gramm on gramm.lexeme_id = l.id
+  left outer join (select g.lexeme_id,
+                          json_agg(row (
+                          			g.id,
+                          			g.value,
+                          			g.value,
+                          			null,
+                          			g.complexity,
+                          			g.created_by,
+                          			g.created_on,
+                          			g.modified_by,
+                          			g.modified_on)::type_value_entity
+                          			order by g.order_by) governments
+                   from  government g
+                   group by g.lexeme_id) gov on gov.lexeme_id = l.id
   left outer join (select mw.lexeme_id,
                           json_agg(row (
                                 mw.lexeme_id,
@@ -1279,14 +1314,23 @@ from lexeme l
                                 l2.id mw_lex_id,
                                 l2.complexity mw_lex_complexity,
                                 l2.weight mw_lex_weight,
-                                (select jsonb_agg(row (ff.id, ff.freeform_type_code, ff.value, ff.lang, ff.complexity, null, null, null, null)::type_freeform order by ff.order_by)
-                                 from lexeme_freeform lf,
-                                      freeform ff
-                                 where lf.lexeme_id = l2.id
-                                 and   lf.freeform_id = ff.id
-                                 and   ff.freeform_type_code = 'GOVERNMENT'
-                                 group by lf.lexeme_id) mw_lex_governments,
-                                (select array_agg(l_reg.register_code order by l_reg.order_by) from lexeme_register l_reg where l_reg.lexeme_id = l2.id group by l_reg.lexeme_id) mw_lex_register_codes,
+                                (select jsonb_agg(row (
+                                					g.id,
+                                					g.value,
+                                					g.value,
+                                					null,
+                                					g.complexity,
+                                					g.created_by,
+                                					g.created_on,
+                                					g.modified_by,
+                                					g.modified_on)::type_value_entity order by g.order_by)
+                                 from  government g
+                                 where g.lexeme_id = l2.id
+                                 group by g.lexeme_id) mw_lex_governments,
+                                (select array_agg(l_reg.register_code order by l_reg.order_by) 
+                                 from lexeme_register l_reg 
+                                 where l_reg.lexeme_id = l2.id 
+                                 group by l_reg.lexeme_id) mw_lex_register_codes,
                                 l2.value_state_code mw_lex_value_state_code,
                                 w2.id mw_word_id,
                                 w2.value mw_word,
@@ -1409,14 +1453,13 @@ from lexeme l
                           and   l2ds.is_public = true)
                           union all
                           (select l.id,
-                                 coalesce(ff.lang, w.lang) lang,
-                                 l.dataset_code,
-                                 l.complexity lex_complexity,
-                                 ff.complexity data_complexity
+                                  g.lang,
+                                  l.dataset_code,
+                                  l.complexity lex_complexity,
+                                  g.complexity data_complexity
                           from word w,
                                lexeme l,
-                               lexeme_freeform lff,
-                               freeform ff,
+                               grammar g,
                                dataset ds
                           where l.is_public = true
                           and   l.is_word = true
@@ -1424,9 +1467,24 @@ from lexeme l
 						  and   ds.code = l.dataset_code
                           and   ds.is_public = true
                           and   w.is_public = true
-                          and   lff.lexeme_id = l.id
-                          and   lff.freeform_id = ff.id
-                          and   ff.freeform_type_code in ('GRAMMAR', 'GOVERNMENT'))
+                          and   g.lexeme_id = l.id)
+                          union all
+                          (select l.id,
+                                  w.lang,
+                                  l.dataset_code,
+                                  l.complexity lex_complexity,
+                                  g.complexity data_complexity
+                          from word w,
+                               lexeme l,
+                               government g,
+                               dataset ds
+                          where l.is_public = true
+                          and   l.is_word = true
+						  and   l.word_id = w.id
+						  and   ds.code = l.dataset_code
+                          and   ds.is_public = true
+                          and   w.is_public = true
+                          and   g.lexeme_id = l.id)
                           union all
                           (select l.id,
                                  coalesce(ln.lang, w.lang) lang,
@@ -1545,12 +1603,8 @@ from lexeme l
 		                  and   not exists (select d.id from definition d where d.meaning_id = l1.meaning_id and d.is_public = true)
 		                  and   not exists (select ln.id from lexeme_note ln where ln.lexeme_id = l1.id and ln.is_public = true)
 		                  and   not exists (select u.id from usage u where u.lexeme_id = l1.id and u.is_public = true)
-		                  and   not exists (select ff.id
-	                                        from lexeme_freeform lff,
-	                                        	 freeform ff
-	                                        where lff.lexeme_id = l1.id
-	                                        and   lff.freeform_id = ff.id
-	                                        and   ff.freeform_type_code in ('GRAMMAR', 'GOVERNMENT')))) lc
+		                  and   not exists (select g.id from grammar g where g.lexeme_id = l1.id)
+		                  and   not exists (select g.id from government g where g.lexeme_id = l1.id))) lc
                    group by lc.id) l_lc on l_lc.id = l.id
 where l.is_public = true
 and   l.is_word = true
@@ -2083,9 +2137,8 @@ from (select mr.meaning1_id m1_id,
                 and l_ds.code = l.dataset_code
                 and l_ds.is_public = true
               group by l.word_id, l.meaning_id) lex_register_codes,
-             (select array_agg(ff.value)
-              from freeform ff,
-                   lexeme_freeform lff,
+             (select array_agg(g.value)
+              from government g,
                    lexeme l,
                    dataset l_ds
               where l.meaning_id = m.id
@@ -2093,9 +2146,7 @@ from (select mr.meaning1_id m1_id,
                 and l.is_public = true
                 and l_ds.code = l.dataset_code
                 and l_ds.is_public = true
-                and lff.lexeme_id = l.id
-                and ff.id = lff.freeform_id
-                and ff.freeform_type_code = 'GOVERNMENT'
+                and g.lexeme_id = l.id
               group by l.word_id, l.meaning_id) lex_government_values,
              l.order_by lex_order_by,
              mr.meaning_rel_type_code meaning_rel_type_code,

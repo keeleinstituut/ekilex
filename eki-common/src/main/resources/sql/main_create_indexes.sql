@@ -160,6 +160,15 @@ create index meaning_domain_code_origin_idx on meaning_domain(domain_code, domai
 create index meaning_domain_origin_idx on meaning_domain(domain_origin);
 create index meaning_domain_code_idx on meaning_domain(domain_code);
 create index meaning_semantic_type_meaning_id_idx on meaning_semantic_type(meaning_id);
+create index grammar_original_freeform_id_idx on grammar(original_freeform_id);
+create index grammar_lexeme_id_idx on grammar(lexeme_id);
+create index grammar_lang_idx on grammar(lang);
+create index grammar_complexity_idx on grammar(complexity);
+create index government_original_freeform_id_idx on government(original_freeform_id);
+create index government_lexeme_id_idx on government(lexeme_id);
+create index government_value_idx on government(value);
+create index government_value_lower_idx on government(lower(value));
+create index government_complexity_idx on government(complexity);
 create index usage_original_freeform_id_idx on usage(original_freeform_id);
 create index usage_lexeme_id_idx on usage(lexeme_id);
 create index usage_lang_idx on usage(lang);
@@ -193,6 +202,13 @@ create index meaning_note_source_link_meaning_note_id_idx on meaning_note_source
 create index meaning_note_source_link_source_id_idx on meaning_note_source_link(source_id);
 create index meaning_note_source_link_name_idx on meaning_note_source_link(name);
 create index meaning_note_source_link_name_lower_idx on meaning_note_source_link(lower(name));
+create index learner_comment_original_freeform_id_idx on learner_comment(original_freeform_id);
+create index learner_comment_meaning_id_idx on learner_comment(meaning_id);
+create index learner_comment_value_idx on learner_comment(value);
+create index learner_comment_value_lower_idx on learner_comment(lower(value));
+create index meaning_media_original_freeform_id_idx on meaning_media(original_freeform_id);
+create index meaning_media_meaning_id_idx on meaning_media(meaning_id);
+create index meaning_media_complexity_idx on meaning_media(complexity);
 create index meaning_image_original_freeform_id_idx on meaning_image(original_freeform_id);
 create index meaning_image_meaning_id_idx on meaning_image(meaning_id);
 create index meaning_image_lang_idx on meaning_image(title);
@@ -273,12 +289,16 @@ create index temp_ds_import_queue_table_name_idx on temp_ds_import_queue(table_n
 create index domain_code_origin_idx on domain(code, origin);
 create index domain_parent_code_origin_idx on domain(parent_code, parent_origin);
 create index domain_label_code_origin_idx on domain_label(code, origin);
+
 create index definition_fts_idx on definition using gin(to_tsvector('simple', value));
 create index freeform_fts_idx on freeform using gin(to_tsvector('simple', value));
 create index form_fts_idx on form using gin(to_tsvector('simple', value));
+create index grammar_fts_idx on grammar using gin(to_tsvector('simple', value));
+create index government_fts_idx on government using gin(to_tsvector('simple', value));
 create index usage_fts_idx on usage using gin(to_tsvector('simple', value));
 create index lexeme_note_fts_idx on lexeme_note using gin(to_tsvector('simple', value));
 create index meaning_note_fts_idx on meaning_note using gin(to_tsvector('simple', value));
+create index learner_comment_fts_idx on learner_comment using gin(to_tsvector('simple', value));
 create index definition_note_fts_idx on definition_note using gin(to_tsvector('simple', value));
 
 

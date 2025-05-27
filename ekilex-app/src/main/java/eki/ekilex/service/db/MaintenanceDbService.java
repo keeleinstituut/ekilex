@@ -10,7 +10,6 @@ import static eki.ekilex.data.db.main.Tables.LEXEME_FREEFORM;
 import static eki.ekilex.data.db.main.Tables.MEANING;
 import static eki.ekilex.data.db.main.Tables.MEANING_FREEFORM;
 import static eki.ekilex.data.db.main.Tables.PARADIGM_FORM;
-import static eki.ekilex.data.db.main.Tables.SOURCE_FREEFORM;
 import static eki.ekilex.data.db.main.Tables.WORD;
 import static eki.ekilex.data.db.main.Tables.WORD_FREEFORM;
 
@@ -144,10 +143,6 @@ public class MaintenanceDbService extends AbstractDataDbService {
 		return mainDb
 				.delete(FREEFORM)
 				.where(FREEFORM.PARENT_ID.isNull())
-				.andNotExists(DSL
-						.select(SOURCE_FREEFORM.ID, DSL.value(IGNORE_QUERY_LOG))
-						.from(SOURCE_FREEFORM)
-						.where(SOURCE_FREEFORM.FREEFORM_ID.eq(FREEFORM.ID)))
 				.andNotExists(DSL
 						.select(MEANING_FREEFORM.ID)
 						.from(MEANING_FREEFORM)

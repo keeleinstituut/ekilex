@@ -1,8 +1,6 @@
 package eki.ekilex.data;
 
-import eki.common.constant.Complexity;
-
-public class Government extends AbstractCreateUpdateEntity {
+public class LearnerComment extends AbstractCreateUpdateEntity implements ValueAndPrese {
 
 	private static final long serialVersionUID = 1L;
 
@@ -10,7 +8,7 @@ public class Government extends AbstractCreateUpdateEntity {
 
 	private String value;
 
-	private Complexity complexity;
+	private String valuePrese;
 
 	private Long orderBy;
 
@@ -30,12 +28,12 @@ public class Government extends AbstractCreateUpdateEntity {
 		this.value = value;
 	}
 
-	public Complexity getComplexity() {
-		return complexity;
+	public String getValuePrese() {
+		return valuePrese;
 	}
 
-	public void setComplexity(Complexity complexity) {
-		this.complexity = complexity;
+	public void setValuePrese(String valuePrese) {
+		this.valuePrese = valuePrese;
 	}
 
 	public Long getOrderBy() {

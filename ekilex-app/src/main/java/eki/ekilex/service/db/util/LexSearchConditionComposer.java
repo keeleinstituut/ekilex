@@ -6,8 +6,10 @@ import static eki.ekilex.data.db.main.Tables.DEFINITION_NOTE_SOURCE_LINK;
 import static eki.ekilex.data.db.main.Tables.DEFINITION_SOURCE_LINK;
 import static eki.ekilex.data.db.main.Tables.FORM;
 import static eki.ekilex.data.db.main.Tables.FREEFORM;
+import static eki.ekilex.data.db.main.Tables.GOVERNMENT;
+import static eki.ekilex.data.db.main.Tables.GRAMMAR;
+import static eki.ekilex.data.db.main.Tables.LEARNER_COMMENT;
 import static eki.ekilex.data.db.main.Tables.LEXEME;
-import static eki.ekilex.data.db.main.Tables.LEXEME_FREEFORM;
 import static eki.ekilex.data.db.main.Tables.LEXEME_NOTE;
 import static eki.ekilex.data.db.main.Tables.LEXEME_NOTE_SOURCE_LINK;
 import static eki.ekilex.data.db.main.Tables.LEXEME_SOURCE_LINK;
@@ -55,8 +57,10 @@ import eki.ekilex.data.db.main.tables.DefinitionNoteSourceLink;
 import eki.ekilex.data.db.main.tables.DefinitionSourceLink;
 import eki.ekilex.data.db.main.tables.Form;
 import eki.ekilex.data.db.main.tables.Freeform;
+import eki.ekilex.data.db.main.tables.Government;
+import eki.ekilex.data.db.main.tables.Grammar;
+import eki.ekilex.data.db.main.tables.LearnerComment;
 import eki.ekilex.data.db.main.tables.Lexeme;
-import eki.ekilex.data.db.main.tables.LexemeFreeform;
 import eki.ekilex.data.db.main.tables.LexemeNote;
 import eki.ekilex.data.db.main.tables.LexemeNoteSourceLink;
 import eki.ekilex.data.db.main.tables.LexemeSourceLink;
@@ -154,8 +158,8 @@ public class LexSearchConditionComposer implements GlobalConstant, ActivityFunct
 					where1 = searchFilterHelper.applyWordStatusFilters(searchCriteria, l1, where1);
 					where1 = searchFilterHelper.applyLexemeSourceRefFilter(searchCriteria, l1.ID, where1);
 					where1 = searchFilterHelper.applyLexemeSourceFilters(searchCriteria, l1.ID, where1);
-					where1 = searchFilterHelper.applyLexemeFreeformFilters(SearchKey.LEXEME_GRAMMAR, GRAMMAR_CODE, searchCriteria, l1.ID, where1);
-					where1 = searchFilterHelper.applyLexemeFreeformFilters(SearchKey.LEXEME_GOVERNMENT, GOVERNMENT_CODE, searchCriteria, l1.ID, where1);
+					where1 = searchFilterHelper.applyLexemeGrammarFilters(searchCriteria, l1.ID, where1);
+					where1 = searchFilterHelper.applyLexemeGovernmentFilters(searchCriteria, l1.ID, where1);
 					where1 = searchFilterHelper.applyLexemeFreeformFilters(searchCriteria, l1.ID, where1);
 					where1 = searchFilterHelper.applyLexemeNoteFilters(searchCriteria, l1.ID, where1);
 					where1 = searchFilterHelper.applyLexemeRegisterValueFilters(searchCriteria, l1.ID, where1);
@@ -260,8 +264,8 @@ public class LexSearchConditionComposer implements GlobalConstant, ActivityFunct
 						where1 = searchFilterHelper.applyLexemeSourceRefFilter(searchCriteria, l2.ID, where1);
 						where1 = searchFilterHelper.applyLexemeSourceFilters(searchCriteria, l2.ID, where1);
 						where1 = searchFilterHelper.applyPublicityFilters(searchCriteria, l2.IS_PUBLIC, where1);
-						where1 = searchFilterHelper.applyLexemeFreeformFilters(SearchKey.LEXEME_GRAMMAR, GRAMMAR_CODE, searchCriteria, l2.ID, where1);
-						where1 = searchFilterHelper.applyLexemeFreeformFilters(SearchKey.LEXEME_GOVERNMENT, GOVERNMENT_CODE, searchCriteria, l2.ID, where1);
+						where1 = searchFilterHelper.applyLexemeGrammarFilters(searchCriteria, l2.ID, where1);
+						where1 = searchFilterHelper.applyLexemeGovernmentFilters(searchCriteria, l2.ID, where1);
 						where1 = searchFilterHelper.applyLexemePosValueFilters(searchCriteria, l2.ID, where1);
 						where1 = searchFilterHelper.applyLexemePosExistsFilters(searchCriteria, l2.ID, where1);
 						where1 = searchFilterHelper.applyLexemeRegisterValueFilters(searchCriteria, l2.ID, where1);
@@ -504,6 +508,8 @@ public class LexSearchConditionComposer implements GlobalConstant, ActivityFunct
 		Definition d1 = DEFINITION.as("d1");
 		DefinitionNote dn1 = DEFINITION_NOTE.as("dn1");
 		Lexeme l1 = LEXEME.as("l1");
+		Grammar lgr1 = GRAMMAR.as("lgr1");
+		Government lgo1 = GOVERNMENT.as("lgo1");
 		LexemeNote ln1 = LEXEME_NOTE.as("ln1");
 		Usage u1 = USAGE.as("u1");
 		UsageDefinition ud1 = USAGE_DEFINITION.as("ud1");
@@ -511,7 +517,7 @@ public class LexSearchConditionComposer implements GlobalConstant, ActivityFunct
 		Meaning m1 = MEANING.as("m1");
 		MeaningNote mn1 = MEANING_NOTE.as("mn1");
 		MeaningFreeform mff1 = MEANING_FREEFORM.as("mff1");
-		LexemeFreeform lff1 = LEXEME_FREEFORM.as("lff1");
+		LearnerComment lc1 = LEARNER_COMMENT.as("lc1");
 		WordOdRecommendation wor = WORD_OD_RECOMMENDATION.as("wor");
 		Freeform ff1 = FREEFORM.as("ff1");
 		Lexeme l2 = LEXEME.as("l2");
@@ -548,6 +554,18 @@ public class LexSearchConditionComposer implements GlobalConstant, ActivityFunct
 		where1 = searchFilterHelper.applyValueFilters(SearchKey.VALUE, searchCriteria, dn1.VALUE, where1, true);
 		SelectHavingStep<Record1<Long>> selectDefinitionNote = DSL.select(l1.WORD_ID).from(l1, m1, d1, dn1).where(where1).groupBy(l1.WORD_ID);
 
+		// lexeme grammar select
+		where1 = lgr1.LEXEME_ID.eq(l1.ID);
+		where1 = searchFilterHelper.applyDatasetRestrictions(l1, searchDatasetsRestriction, where1);
+		where1 = searchFilterHelper.applyValueFilters(SearchKey.VALUE, searchCriteria, lgr1.VALUE, where1, true);
+		SelectHavingStep<Record1<Long>> selectLexemeGrammar = DSL.select(l1.WORD_ID).from(l1, lgr1).where(where1).groupBy(l1.WORD_ID);
+
+		// lexeme government select
+		where1 = lgo1.LEXEME_ID.eq(l1.ID);
+		where1 = searchFilterHelper.applyDatasetRestrictions(l1, searchDatasetsRestriction, where1);
+		where1 = searchFilterHelper.applyValueFilters(SearchKey.VALUE, searchCriteria, lgo1.VALUE, where1, true);
+		SelectHavingStep<Record1<Long>> selectLexemeGovernment = DSL.select(l1.WORD_ID).from(l1, lgo1).where(where1).groupBy(l1.WORD_ID);
+
 		// lexeme note select
 		where1 = ln1.LEXEME_ID.eq(l1.ID);
 		where1 = searchFilterHelper.applyDatasetRestrictions(l1, searchDatasetsRestriction, where1);
@@ -574,14 +592,6 @@ public class LexSearchConditionComposer implements GlobalConstant, ActivityFunct
 		where1 = searchFilterHelper.applyValueFilters(SearchKey.VALUE, searchCriteria, ut1.VALUE, where1, true);
 		SelectHavingStep<Record1<Long>> selectUsageTranslation = DSL.select(l1.WORD_ID).from(l1, u1, ut1).where(where1).groupBy(l1.WORD_ID);
 
-		// lexeme ff select
-		where1 = lff1.LEXEME_ID.eq(l1.ID)
-				.and(lff1.FREEFORM_ID.eq(ff1.ID))
-				.and(ff1.FREEFORM_TYPE_CODE.in(CLUELESS_SEARCH_LEXEME_FF_TYPE_CODES));
-		where1 = searchFilterHelper.applyDatasetRestrictions(l1, searchDatasetsRestriction, where1);
-		where1 = searchFilterHelper.applyValueFilters(SearchKey.VALUE, searchCriteria, ff1.VALUE, where1, true);
-		SelectHavingStep<Record1<Long>> selectLexemeFreeform = DSL.select(l1.WORD_ID).from(l1, lff1, ff1).where(where1).groupBy(l1.WORD_ID);
-
 		// meaning note select
 		where1 = l1.MEANING_ID.eq(m1.ID)
 				.and(mn1.MEANING_ID.eq(m1.ID));
@@ -589,11 +599,18 @@ public class LexSearchConditionComposer implements GlobalConstant, ActivityFunct
 		where1 = searchFilterHelper.applyValueFilters(SearchKey.VALUE, searchCriteria, mn1.VALUE, where1, true);
 		SelectHavingStep<Record1<Long>> selectMeaningNote = DSL.select(l1.WORD_ID).from(l1, m1, mn1).where(where1).groupBy(l1.WORD_ID);
 
+		// meaning learner comment select
+		where1 = l1.MEANING_ID.eq(m1.ID)
+				.and(lc1.MEANING_ID.eq(m1.ID));
+		where1 = searchFilterHelper.applyDatasetRestrictions(l1, searchDatasetsRestriction, where1);
+		where1 = searchFilterHelper.applyValueFilters(SearchKey.VALUE, searchCriteria, lc1.VALUE, where1, true);
+		SelectHavingStep<Record1<Long>> selectLearnerComment = DSL.select(l1.WORD_ID).from(l1, m1, lc1).where(where1).groupBy(l1.WORD_ID);
+
 		// meaning ff select
 		where1 = l1.MEANING_ID.eq(m1.ID)
 				.and(mff1.MEANING_ID.eq(m1.ID))
 				.and(mff1.FREEFORM_ID.eq(ff1.ID))
-				.and(ff1.FREEFORM_TYPE_CODE.in(CLUELESS_SEARCH_MEANING_FF_TYPE_CODES));
+				.and(ff1.FREEFORM_TYPE_CODE.eq(CONCEPT_ID_CODE));
 		where1 = searchFilterHelper.applyDatasetRestrictions(l1, searchDatasetsRestriction, where1);
 		where1 = searchFilterHelper.applyValueFilters(SearchKey.VALUE, searchCriteria, ff1.VALUE, where1, true);
 		SelectHavingStep<Record1<Long>> selectMeaningFreeform = DSL.select(l1.WORD_ID).from(l1, m1, mff1, ff1).where(where1).groupBy(l1.WORD_ID);
@@ -617,12 +634,14 @@ public class LexSearchConditionComposer implements GlobalConstant, ActivityFunct
 				.unionAll(selectDefinition)
 				.unionAll(selectDefinitionNote)
 				.unionAll(selectMeaningNote)
+				.unionAll(selectLearnerComment)
 				.unionAll(selectMeaningFreeform)
 				.unionAll(selectLexemeNote)
 				.unionAll(selectUsage)
 				.unionAll(selectUsageDefinition)
 				.unionAll(selectUsageTranslation)
-				.unionAll(selectLexemeFreeform)
+				.unionAll(selectLexemeGrammar)
+				.unionAll(selectLexemeGovernment)
 				.unionAll(selectForm)
 				.unionAll(selectWordOdRecommendation)
 				.asTable("a1");

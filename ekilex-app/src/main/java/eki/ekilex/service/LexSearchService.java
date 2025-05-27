@@ -27,7 +27,9 @@ import eki.ekilex.data.EkiUser;
 import eki.ekilex.data.EkiUserProfile;
 import eki.ekilex.data.Freeform;
 import eki.ekilex.data.Government;
+import eki.ekilex.data.Grammar;
 import eki.ekilex.data.InexactSynonym;
+import eki.ekilex.data.LearnerComment;
 import eki.ekilex.data.Lexeme;
 import eki.ekilex.data.LexemeNote;
 import eki.ekilex.data.LexemeRelation;
@@ -83,7 +85,7 @@ public class LexSearchService extends AbstractWordSearchService {
 		permCalculator.applyCrud(user, word);
 		String wordLang = word.getLang();
 		List<Lexeme> lexemes = lexSearchDbService.getWordLexemes(wordId, searchDatasetsRestriction, CLASSIF_LABEL_LANG_EST);
-		List<Freeform> wordFreeforms = commonDataDbService.getWordFreeforms(wordId, EXCLUDED_WORD_ATTRIBUTE_FF_TYPE_CODES, CLASSIF_LABEL_LANG_EST);
+		List<Freeform> wordFreeforms = commonDataDbService.getWordFreeforms(wordId, CLASSIF_LABEL_LANG_EST);
 		List<Classifier> wordTypes = commonDataDbService.getWordTypes(wordId, CLASSIF_LABEL_LANG_EST);
 		List<ParadigmFormTuple> paradigmFormTuples = lexSearchDbService.getParadigmFormTuples(wordId, CLASSIF_LABEL_LANG_EST);
 		List<Paradigm> paradigms = conversionUtil.composeParadigms(paradigmFormTuples);
@@ -278,13 +280,13 @@ public class LexSearchService extends AbstractWordSearchService {
 				permCalculator.filterVisibility(user, definitionNotes);
 			}
 			List<Government> governments = commonDataDbService.getLexemeGovernments(lexemeId);
-			List<Freeform> grammars = commonDataDbService.getLexemeGrammars(lexemeId);
+			List<Grammar> grammars = commonDataDbService.getLexemeGrammars(lexemeId);
 			List<Usage> usages = lexeme.getUsages();
 			permCalculator.applyCrud(user, usages);
 			permCalculator.filterVisibility(user, usages);
 			List<LexemeNote> lexemeNotes = lexeme.getNotes();
 			permCalculator.filterVisibility(user, lexemeNotes);
-			List<Freeform> lexemeFreeforms = commonDataDbService.getLexemeFreeforms(lexemeId, EXCLUDED_LEXEME_ATTRIBUTE_FF_TYPE_CODES, CLASSIF_LABEL_LANG_EST);
+			List<Freeform> lexemeFreeforms = commonDataDbService.getLexemeFreeforms(lexemeId, CLASSIF_LABEL_LANG_EST);
 			List<NoteLangGroup> lexemeNoteLangGroups = conversionUtil.composeNoteLangGroups(lexemeNotes, languagesOrder);
 			List<LexemeRelation> lexemeRelations = commonDataDbService.getLexemeRelations(lexemeId, CLASSIF_LABEL_LANG_EST);
 			List<CollocPosGroup> primaryCollocations = null;
@@ -295,10 +297,10 @@ public class LexSearchService extends AbstractWordSearchService {
 				secondaryCollocations = lexDataDbService.getSecondaryCollocations(lexemeId);
 				collocationMembers = commonDataDbService.getCollocationMembers(lexemeId);
 			}
-			List<Freeform> meaningFreeforms = commonDataDbService.getMeaningFreeforms(meaningId, EXCLUDED_MEANING_ATTRIBUTE_FF_TYPE_CODES, CLASSIF_LABEL_LANG_EST);
-			List<Freeform> meaningLearnerComments = commonDataDbService.getMeaningLearnerComments(meaningId);
-			List<Media> meaningImages = commonDataDbService.getMeaningImagesAsMedia(meaningId);
-			List<Media> meaningMedias = commonDataDbService.getMeaningMediaFiles(meaningId);
+			List<Freeform> meaningFreeforms = commonDataDbService.getMeaningFreeforms(meaningId, CLASSIF_LABEL_LANG_EST);
+			List<LearnerComment> meaningLearnerComments = commonDataDbService.getMeaningLearnerComments(meaningId);
+			List<Media> meaningImages = commonDataDbService.getMeaningImages(meaningId);
+			List<Media> meaningMedias = commonDataDbService.getMeaningMedias(meaningId);
 			List<MeaningNote> meaningNotes = commonDataDbService.getMeaningNotes(meaningId);
 			permCalculator.filterVisibility(user, meaningNotes);
 			List<NoteLangGroup> meaningNoteLangGroups = conversionUtil.composeNoteLangGroups(meaningNotes, languagesOrder);

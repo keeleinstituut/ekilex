@@ -795,6 +795,20 @@ create table meaning_note_source_link (
 );
 alter sequence meaning_note_source_link_id_seq restart with 10000;
 
+create table learner_comment (
+  id bigserial primary key, 
+  original_freeform_id bigint, -- to be dropped later
+  meaning_id bigint references meaning(id) on delete cascade not null, 
+  value text not null, 
+  value_prese text not null, 
+  created_by text null, 
+  created_on timestamp null, 
+  modified_by text null, 
+  modified_on timestamp null, 
+  order_by bigserial
+);
+alter sequence learner_comment_id_seq restart with 10000;
+
 create table meaning_image (
   id bigserial primary key, 
   original_freeform_id bigint, -- to be dropped later
@@ -810,6 +824,20 @@ create table meaning_image (
   order_by bigserial
 );
 alter sequence meaning_image_id_seq restart with 10000;
+
+create table meaning_media (
+  id bigserial primary key, 
+  original_freeform_id bigint, -- to be dropped later
+  meaning_id bigint references meaning(id) on delete cascade not null, 
+  url text not null,
+  complexity varchar(100) not null, 
+  created_by text null, 
+  created_on timestamp null, 
+  modified_by text null, 
+  modified_on timestamp null, 
+  order_by bigserial
+);
+alter sequence meaning_media_id_seq restart with 10000;
 
 create table meaning_image_source_link (
 	id bigserial primary key, 
@@ -1008,6 +1036,36 @@ create table lexeme_source_link (
   order_by bigserial
 );
 alter sequence lexeme_source_link_id_seq restart with 10000;
+
+create table grammar (
+  id bigserial primary key, 
+  original_freeform_id bigint, -- to be dropped later
+  lexeme_id bigint references lexeme(id) on delete cascade not null, 
+  value text not null, 
+  value_prese text not null, 
+  lang char(3) references language(code) not null, 
+  complexity varchar(100) not null, 
+  created_by text null, 
+  created_on timestamp null, 
+  modified_by text null, 
+  modified_on timestamp null, 
+  order_by bigserial
+);
+alter sequence grammar_id_seq restart with 10000;
+
+create table government (
+  id bigserial primary key, 
+  original_freeform_id bigint, -- to be dropped later
+  lexeme_id bigint references lexeme(id) on delete cascade not null, 
+  value text not null, 
+  complexity varchar(100) not null, 
+  created_by text null, 
+  created_on timestamp null, 
+  modified_by text null, 
+  modified_on timestamp null, 
+  order_by bigserial
+);
+alter sequence government_id_seq restart with 10000;
 
 create table usage (
   id bigserial primary key, 

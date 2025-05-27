@@ -316,87 +316,73 @@ public class ViewWwLexemeRecord extends TableRecordImpl<ViewWwLexemeRecord> {
     }
 
     /**
-     * Setter for <code>public.view_ww_lexeme.advice_notes</code>.
-     */
-    public void setAdviceNotes(String[] value) {
-        set(21, value);
-    }
-
-    /**
-     * Getter for <code>public.view_ww_lexeme.advice_notes</code>.
-     */
-    public String[] getAdviceNotes() {
-        return (String[]) get(21);
-    }
-
-    /**
      * Setter for <code>public.view_ww_lexeme.notes</code>.
      */
     public void setNotes(JSON value) {
-        set(22, value);
+        set(21, value);
     }
 
     /**
      * Getter for <code>public.view_ww_lexeme.notes</code>.
      */
     public JSON getNotes() {
-        return (JSON) get(22);
+        return (JSON) get(21);
     }
 
     /**
      * Setter for <code>public.view_ww_lexeme.grammars</code>.
      */
     public void setGrammars(JSON value) {
-        set(23, value);
+        set(22, value);
     }
 
     /**
      * Getter for <code>public.view_ww_lexeme.grammars</code>.
      */
     public JSON getGrammars() {
-        return (JSON) get(23);
+        return (JSON) get(22);
     }
 
     /**
      * Setter for <code>public.view_ww_lexeme.governments</code>.
      */
     public void setGovernments(JSON value) {
-        set(24, value);
+        set(23, value);
     }
 
     /**
      * Getter for <code>public.view_ww_lexeme.governments</code>.
      */
     public JSON getGovernments() {
-        return (JSON) get(24);
+        return (JSON) get(23);
     }
 
     /**
      * Setter for <code>public.view_ww_lexeme.usages</code>.
      */
     public void setUsages(JSON value) {
-        set(25, value);
+        set(24, value);
     }
 
     /**
      * Getter for <code>public.view_ww_lexeme.usages</code>.
      */
     public JSON getUsages() {
-        return (JSON) get(25);
+        return (JSON) get(24);
     }
 
     /**
      * Setter for <code>public.view_ww_lexeme.source_links</code>.
      */
     public void setSourceLinks(JSON value) {
-        set(26, value);
+        set(25, value);
     }
 
     /**
      * Getter for <code>public.view_ww_lexeme.source_links</code>.
      */
     public JSON getSourceLinks() {
-        return (JSON) get(26);
+        return (JSON) get(25);
     }
 
     // -------------------------------------------------------------------------
@@ -413,7 +399,7 @@ public class ViewWwLexemeRecord extends TableRecordImpl<ViewWwLexemeRecord> {
     /**
      * Create a detached, initialised ViewWwLexemeRecord
      */
-    public ViewWwLexemeRecord(Long lexemeId, Long wordId, Long meaningId, String datasetCode, String datasetType, String datasetName, String valueStateCode, String proficiencyLevelCode, Integer reliability, Integer level1, Integer level2, BigDecimal weight, String complexity, Long datasetOrderBy, Long lexemeOrderBy, TypeLangComplexityRecord[] langComplexities, String[] registerCodes, String[] posCodes, String[] regionCodes, String[] derivCodes, JSON meaningWords, String[] adviceNotes, JSON notes, JSON grammars, JSON governments, JSON usages, JSON sourceLinks) {
+    public ViewWwLexemeRecord(Long lexemeId, Long wordId, Long meaningId, String datasetCode, String datasetType, String datasetName, String valueStateCode, String proficiencyLevelCode, Integer reliability, Integer level1, Integer level2, BigDecimal weight, String complexity, Long datasetOrderBy, Long lexemeOrderBy, TypeLangComplexityRecord[] langComplexities, String[] registerCodes, String[] posCodes, String[] regionCodes, String[] derivCodes, JSON meaningWords, JSON notes, JSON grammars, JSON governments, JSON usages, JSON sourceLinks) {
         super(ViewWwLexeme.VIEW_WW_LEXEME);
 
         setLexemeId(lexemeId);
@@ -437,7 +423,6 @@ public class ViewWwLexemeRecord extends TableRecordImpl<ViewWwLexemeRecord> {
         setRegionCodes(regionCodes);
         setDerivCodes(derivCodes);
         setMeaningWords(meaningWords);
-        setAdviceNotes(adviceNotes);
         setNotes(notes);
         setGrammars(grammars);
         setGovernments(governments);

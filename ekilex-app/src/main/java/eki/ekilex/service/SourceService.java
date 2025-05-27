@@ -23,7 +23,6 @@ import eki.ekilex.data.EkiUser;
 import eki.ekilex.data.SearchDatasetsRestriction;
 import eki.ekilex.data.SearchFilter;
 import eki.ekilex.data.Source;
-import eki.ekilex.data.SourcePropertyTuple;
 import eki.ekilex.data.SourceSearchResult;
 import eki.ekilex.service.db.PermissionDbService;
 import eki.ekilex.service.util.PermCalculator;
@@ -47,9 +46,6 @@ public class SourceService extends AbstractSourceService {
 			logger.warn("No source found for id {}", sourceId);
 			return null;
 		}
-
-		List<SourcePropertyTuple> sourcePropertyTuples = sourceDbService.getSourcePropertyTuples(sourceId);
-		conversionUtil.composeSource(source, sourcePropertyTuples);
 		return source;
 	}
 
@@ -61,9 +57,6 @@ public class SourceService extends AbstractSourceService {
 			logger.warn("No source found for id {}", sourceId);
 			return null;
 		}
-
-		List<SourcePropertyTuple> sourcePropertyTuples = sourceDbService.getSourcePropertyTuples(sourceId);
-		conversionUtil.composeSource(source, sourcePropertyTuples);
 		permCalculator.applyCrud(user, source);
 		return source;
 	}
@@ -173,12 +166,6 @@ public class SourceService extends AbstractSourceService {
 		List<Source> sources = sourceSearchResult.getSources();
 
 		if (CollectionUtils.isNotEmpty(sources)) {
-			// TODO should be removed soon
-			for (Source source : sources) {
-				Long sourceId = source.getId();
-				List<SourcePropertyTuple> sourcePropertyTuples = sourceDbService.getSourcePropertyTuples(sourceId);
-				conversionUtil.composeSource(source, sourcePropertyTuples);
-			}
 			permCalculator.applyCrud(user, sources);
 		}
 
@@ -222,7 +209,6 @@ public class SourceService extends AbstractSourceService {
 	@Transactional(rollbackOn = Exception.class)
 	public void joinSources(Long targetSourceId, Long originSourceId, String roleDatasetCode) throws Exception {
 
-		// TODO remove this functionality after removing source properties?
 		ActivityLogData activityLog1 = activityLogService.prepareActivityLog("joinSources", originSourceId, ActivityOwner.SOURCE, roleDatasetCode, MANUAL_EVENT_ON_UPDATE_DISABLED);
 		ActivityLogData activityLog2 = activityLogService.prepareActivityLog("joinSources", targetSourceId, ActivityOwner.SOURCE, roleDatasetCode, MANUAL_EVENT_ON_UPDATE_DISABLED);
 

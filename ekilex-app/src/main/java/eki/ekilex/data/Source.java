@@ -1,7 +1,5 @@
 package eki.ekilex.data;
 
-import java.util.List;
-
 import eki.common.constant.SourceType;
 
 public class Source extends AbstractGrantEntity {
@@ -22,11 +20,7 @@ public class Source extends AbstractGrantEntity {
 
 	private String comment;
 
-	private boolean isPublic;
-
 	private boolean isPriority;
-
-	private List<SourceProperty> sourceProperties;
 
 	public Long getId() {
 		return id;
@@ -84,27 +78,11 @@ public class Source extends AbstractGrantEntity {
 		this.comment = comment;
 	}
 
-	public boolean isPublic() {
-		return isPublic;
-	}
-
-	public void setPublic(boolean isPublic) {
-		this.isPublic = isPublic;
-	}
-
 	public boolean isPriority() {
 		return isPriority;
 	}
 
 	public void setPriority(boolean isPriority) {
 		this.isPriority = isPriority;
-	}
-
-	public List<SourceProperty> getSourceProperties() {
-		return sourceProperties;
-	}
-
-	public void setSourceProperties(List<SourceProperty> sourceProperties) {
-		this.sourceProperties = sourceProperties;
 	}
 }

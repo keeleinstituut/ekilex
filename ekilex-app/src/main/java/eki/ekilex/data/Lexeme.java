@@ -61,7 +61,7 @@ public class Lexeme extends AbstractGrantEntity implements LexemeLevel {
 
 	private List<Government> governments;
 
-	private List<Freeform> grammars;
+	private List<Grammar> grammars;
 
 	private List<Usage> usages;
 
@@ -306,11 +306,11 @@ public class Lexeme extends AbstractGrantEntity implements LexemeLevel {
 		this.governments = governments;
 	}
 
-	public List<Freeform> getGrammars() {
+	public List<Grammar> getGrammars() {
 		return grammars;
 	}
 
-	public void setGrammars(List<Freeform> grammars) {
+	public void setGrammars(List<Grammar> grammars) {
 		this.grammars = grammars;
 	}
 

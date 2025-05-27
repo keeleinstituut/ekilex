@@ -9,6 +9,9 @@ import static eki.ekilex.data.db.main.Tables.DEFINITION_NOTE_SOURCE_LINK;
 import static eki.ekilex.data.db.main.Tables.DEFINITION_SOURCE_LINK;
 import static eki.ekilex.data.db.main.Tables.FREEFORM;
 import static eki.ekilex.data.db.main.Tables.FREEFORM_SOURCE_LINK;
+import static eki.ekilex.data.db.main.Tables.GOVERNMENT;
+import static eki.ekilex.data.db.main.Tables.GRAMMAR;
+import static eki.ekilex.data.db.main.Tables.LEARNER_COMMENT;
 import static eki.ekilex.data.db.main.Tables.LEXEME;
 import static eki.ekilex.data.db.main.Tables.LEXEME_ACTIVITY_LOG;
 import static eki.ekilex.data.db.main.Tables.LEXEME_FREEFORM;
@@ -23,13 +26,13 @@ import static eki.ekilex.data.db.main.Tables.MEANING_FREEFORM;
 import static eki.ekilex.data.db.main.Tables.MEANING_IMAGE;
 import static eki.ekilex.data.db.main.Tables.MEANING_IMAGE_SOURCE_LINK;
 import static eki.ekilex.data.db.main.Tables.MEANING_LAST_ACTIVITY_LOG;
+import static eki.ekilex.data.db.main.Tables.MEANING_MEDIA;
 import static eki.ekilex.data.db.main.Tables.MEANING_NOTE;
 import static eki.ekilex.data.db.main.Tables.MEANING_NOTE_SOURCE_LINK;
 import static eki.ekilex.data.db.main.Tables.MEANING_RELATION;
 import static eki.ekilex.data.db.main.Tables.PARADIGM;
 import static eki.ekilex.data.db.main.Tables.SOURCE;
 import static eki.ekilex.data.db.main.Tables.SOURCE_ACTIVITY_LOG;
-import static eki.ekilex.data.db.main.Tables.SOURCE_FREEFORM;
 import static eki.ekilex.data.db.main.Tables.USAGE;
 import static eki.ekilex.data.db.main.Tables.USAGE_DEFINITION;
 import static eki.ekilex.data.db.main.Tables.USAGE_SOURCE_LINK;
@@ -80,7 +83,6 @@ import eki.ekilex.data.db.main.tables.MeaningActivityLog;
 import eki.ekilex.data.db.main.tables.MeaningFreeform;
 import eki.ekilex.data.db.main.tables.MeaningLastActivityLog;
 import eki.ekilex.data.db.main.tables.SourceActivityLog;
-import eki.ekilex.data.db.main.tables.SourceFreeform;
 import eki.ekilex.data.db.main.tables.Word;
 import eki.ekilex.data.db.main.tables.WordActivityLog;
 import eki.ekilex.data.db.main.tables.WordFreeform;
@@ -571,7 +573,6 @@ public class ActivityLogDbService implements GlobalConstant, ActivityFunct {
 		LexemeFreeform lff = LEXEME_FREEFORM.as("lff");
 		WordFreeform wff = WORD_FREEFORM.as("wff");
 		MeaningFreeform mff = MEANING_FREEFORM.as("mff");
-		SourceFreeform sff = SOURCE_FREEFORM.as("sff");
 		DefinitionFreeform dff = DEFINITION_FREEFORM.as("dff");
 		Definition d = DEFINITION.as("d");
 		Freeform ff = FREEFORM.as("ff");
@@ -582,46 +583,13 @@ public class ActivityLogDbService implements GlobalConstant, ActivityFunct {
 						lff.LEXEME_ID,
 						wff.WORD_ID,
 						mff.MEANING_ID,
-						d.MEANING_ID.as("d_meaning_id"),
-						sff.SOURCE_ID)
+						d.MEANING_ID.as("d_meaning_id"))
 				.from(
 						ff
 								.leftOuterJoin(lff).on(lff.FREEFORM_ID.eq(ff.ID))
 								.leftOuterJoin(wff).on(wff.FREEFORM_ID.eq(ff.ID))
 								.leftOuterJoin(mff).on(mff.FREEFORM_ID.eq(ff.ID))
-								.leftOuterJoin(sff).on(sff.FREEFORM_ID.eq(ff.ID))
 								.leftOuterJoin(dff).on(dff.FREEFORM_ID.eq(ff.ID))
-								.leftOuterJoin(d).on(d.ID.eq(dff.DEFINITION_ID)))
-				.where(ff.ID.eq(freeformId))
-				.fetchOptionalMap()
-				.orElse(null);
-	}
-
-	public Map<String, Object> getSecondDepthFreeformOwnerDataMap(Long freeformId) {
-
-		LexemeFreeform lff = LEXEME_FREEFORM.as("lff");
-		WordFreeform wff = WORD_FREEFORM.as("wff");
-		MeaningFreeform mff = MEANING_FREEFORM.as("mff");
-		SourceFreeform sff = SOURCE_FREEFORM.as("sff");
-		DefinitionFreeform dff = DEFINITION_FREEFORM.as("dff");
-		Definition d = DEFINITION.as("d");
-		Freeform ff = FREEFORM.as("ff");
-
-		return mainDb
-				.select(
-						ff.FREEFORM_TYPE_CODE,
-						lff.LEXEME_ID,
-						wff.WORD_ID,
-						mff.MEANING_ID,
-						d.MEANING_ID.as("d_meaning_id"),
-						sff.SOURCE_ID)
-				.from(
-						ff
-								.leftOuterJoin(lff).on(lff.FREEFORM_ID.eq(ff.PARENT_ID))
-								.leftOuterJoin(wff).on(wff.FREEFORM_ID.eq(ff.PARENT_ID))
-								.leftOuterJoin(mff).on(mff.FREEFORM_ID.eq(ff.PARENT_ID))
-								.leftOuterJoin(sff).on(sff.FREEFORM_ID.eq(ff.PARENT_ID))
-								.leftOuterJoin(dff).on(dff.FREEFORM_ID.eq(ff.PARENT_ID))
 								.leftOuterJoin(d).on(d.ID.eq(dff.DEFINITION_ID)))
 				.where(ff.ID.eq(freeformId))
 				.fetchOptionalMap()
@@ -700,11 +668,29 @@ public class ActivityLogDbService implements GlobalConstant, ActivityFunct {
 				.orElse(null);
 	}
 
+	public Long getLearnerCommentOwnerId(Long learnerCommentId) {
+		return mainDb
+				.select(LEARNER_COMMENT.MEANING_ID)
+				.from(LEARNER_COMMENT)
+				.where(LEARNER_COMMENT.ID.eq(learnerCommentId))
+				.fetchOptionalInto(Long.class)
+				.orElse(null);
+	}
+
 	public Long getMeaningImageOwnerId(Long meaningImageId) {
 		return mainDb
 				.select(MEANING_IMAGE.MEANING_ID)
 				.from(MEANING_IMAGE)
 				.where(MEANING_IMAGE.ID.eq(meaningImageId))
+				.fetchOptionalInto(Long.class)
+				.orElse(null);
+	}
+
+	public Long getMeaningMediaOwnerId(Long meaningMediaId) {
+		return mainDb
+				.select(MEANING_MEDIA.MEANING_ID)
+				.from(MEANING_MEDIA)
+				.where(MEANING_MEDIA.ID.eq(meaningMediaId))
 				.fetchOptionalInto(Long.class)
 				.orElse(null);
 	}
@@ -815,6 +801,24 @@ public class ActivityLogDbService implements GlobalConstant, ActivityFunct {
 				.where(
 						LEXEME_NOTE_SOURCE_LINK.ID.eq(sourceLinkId)
 								.and(LEXEME_NOTE_SOURCE_LINK.LEXEME_NOTE_ID.eq(LEXEME_NOTE.ID)))
+				.fetchOptionalInto(Long.class)
+				.orElse(null);
+	}
+
+	public Long getGrammarOwnerId(Long grammarId) {
+		return mainDb
+				.select(GRAMMAR.LEXEME_ID)
+				.from(GRAMMAR)
+				.where(GRAMMAR.ID.eq(grammarId))
+				.fetchOptionalInto(Long.class)
+				.orElse(null);
+	}
+
+	public Long getGovernmentOwnerId(Long governmentId) {
+		return mainDb
+				.select(GOVERNMENT.LEXEME_ID)
+				.from(GOVERNMENT)
+				.where(GOVERNMENT.ID.eq(governmentId))
 				.fetchOptionalInto(Long.class)
 				.orElse(null);
 	}

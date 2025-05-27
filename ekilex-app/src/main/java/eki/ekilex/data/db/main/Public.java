@@ -45,11 +45,14 @@ import eki.ekilex.data.db.main.tables.FreqCorp;
 import eki.ekilex.data.db.main.tables.GameNonword;
 import eki.ekilex.data.db.main.tables.Gender;
 import eki.ekilex.data.db.main.tables.GenderLabel;
+import eki.ekilex.data.db.main.tables.Government;
 import eki.ekilex.data.db.main.tables.GovernmentType;
 import eki.ekilex.data.db.main.tables.GovernmentTypeLabel;
+import eki.ekilex.data.db.main.tables.Grammar;
 import eki.ekilex.data.db.main.tables.LabelType;
 import eki.ekilex.data.db.main.tables.Language;
 import eki.ekilex.data.db.main.tables.LanguageLabel;
+import eki.ekilex.data.db.main.tables.LearnerComment;
 import eki.ekilex.data.db.main.tables.LexColloc;
 import eki.ekilex.data.db.main.tables.LexCollocPosGroup;
 import eki.ekilex.data.db.main.tables.LexCollocRelGroup;
@@ -76,6 +79,7 @@ import eki.ekilex.data.db.main.tables.MeaningFreeform;
 import eki.ekilex.data.db.main.tables.MeaningImage;
 import eki.ekilex.data.db.main.tables.MeaningImageSourceLink;
 import eki.ekilex.data.db.main.tables.MeaningLastActivityLog;
+import eki.ekilex.data.db.main.tables.MeaningMedia;
 import eki.ekilex.data.db.main.tables.MeaningNote;
 import eki.ekilex.data.db.main.tables.MeaningNoteSourceLink;
 import eki.ekilex.data.db.main.tables.MeaningNr;
@@ -107,7 +111,6 @@ import eki.ekilex.data.db.main.tables.SemanticType;
 import eki.ekilex.data.db.main.tables.SemanticTypeLabel;
 import eki.ekilex.data.db.main.tables.Source;
 import eki.ekilex.data.db.main.tables.SourceActivityLog;
-import eki.ekilex.data.db.main.tables.SourceFreeform;
 import eki.ekilex.data.db.main.tables.Tag;
 import eki.ekilex.data.db.main.tables.TempDsImportPkMap;
 import eki.ekilex.data.db.main.tables.TempDsImportQueue;
@@ -180,6 +183,7 @@ import eki.ekilex.data.db.main.udt.TypeNote;
 import eki.ekilex.data.db.main.udt.TypeSourceLink;
 import eki.ekilex.data.db.main.udt.TypeTermMeaningWord;
 import eki.ekilex.data.db.main.udt.TypeUsage;
+import eki.ekilex.data.db.main.udt.TypeValueEntity;
 import eki.ekilex.data.db.main.udt.TypeValueNameLang;
 import eki.ekilex.data.db.main.udt.TypeWordEtymRelation;
 import eki.ekilex.data.db.main.udt.TypeWordHomNrDataTuple;
@@ -416,6 +420,11 @@ public class Public extends SchemaImpl {
     public final GenderLabel GENDER_LABEL = GenderLabel.GENDER_LABEL;
 
     /**
+     * The table <code>public.government</code>.
+     */
+    public final Government GOVERNMENT = Government.GOVERNMENT;
+
+    /**
      * The table <code>public.government_type</code>.
      */
     public final GovernmentType GOVERNMENT_TYPE = GovernmentType.GOVERNMENT_TYPE;
@@ -424,6 +433,11 @@ public class Public extends SchemaImpl {
      * The table <code>public.government_type_label</code>.
      */
     public final GovernmentTypeLabel GOVERNMENT_TYPE_LABEL = GovernmentTypeLabel.GOVERNMENT_TYPE_LABEL;
+
+    /**
+     * The table <code>public.grammar</code>.
+     */
+    public final Grammar GRAMMAR = Grammar.GRAMMAR;
 
     /**
      * The table <code>public.label_type</code>.
@@ -439,6 +453,11 @@ public class Public extends SchemaImpl {
      * The table <code>public.language_label</code>.
      */
     public final LanguageLabel LANGUAGE_LABEL = LanguageLabel.LANGUAGE_LABEL;
+
+    /**
+     * The table <code>public.learner_comment</code>.
+     */
+    public final LearnerComment LEARNER_COMMENT = LearnerComment.LEARNER_COMMENT;
 
     /**
      * The table <code>public.lex_colloc</code>.
@@ -569,6 +588,11 @@ public class Public extends SchemaImpl {
      * The table <code>public.meaning_last_activity_log</code>.
      */
     public final MeaningLastActivityLog MEANING_LAST_ACTIVITY_LOG = MeaningLastActivityLog.MEANING_LAST_ACTIVITY_LOG;
+
+    /**
+     * The table <code>public.meaning_media</code>.
+     */
+    public final MeaningMedia MEANING_MEDIA = MeaningMedia.MEANING_MEDIA;
 
     /**
      * The table <code>public.meaning_note</code>.
@@ -724,11 +748,6 @@ public class Public extends SchemaImpl {
      * The table <code>public.source_activity_log</code>.
      */
     public final SourceActivityLog SOURCE_ACTIVITY_LOG = SourceActivityLog.SOURCE_ACTIVITY_LOG;
-
-    /**
-     * The table <code>public.source_freeform</code>.
-     */
-    public final SourceFreeform SOURCE_FREEFORM = SourceFreeform.SOURCE_FREEFORM;
 
     /**
      * The table <code>public.tag</code>.
@@ -1050,8 +1069,14 @@ public class Public extends SchemaImpl {
             Sequences.FREQ_CORP_ID_SEQ,
             Sequences.GAME_NONWORD_ID_SEQ,
             Sequences.GENDER_ORDER_BY_SEQ,
+            Sequences.GOVERNMENT_ID_SEQ,
+            Sequences.GOVERNMENT_ORDER_BY_SEQ,
             Sequences.GOVERNMENT_TYPE_ORDER_BY_SEQ,
+            Sequences.GRAMMAR_ID_SEQ,
+            Sequences.GRAMMAR_ORDER_BY_SEQ,
             Sequences.LANGUAGE_ORDER_BY_SEQ,
+            Sequences.LEARNER_COMMENT_ID_SEQ,
+            Sequences.LEARNER_COMMENT_ORDER_BY_SEQ,
             Sequences.LEX_COLLOC_ID_SEQ,
             Sequences.LEX_COLLOC_POS_GROUP_ID_SEQ,
             Sequences.LEX_COLLOC_POS_GROUP_ORDER_BY_SEQ,
@@ -1092,6 +1117,8 @@ public class Public extends SchemaImpl {
             Sequences.MEANING_IMAGE_SOURCE_LINK_ID_SEQ,
             Sequences.MEANING_IMAGE_SOURCE_LINK_ORDER_BY_SEQ,
             Sequences.MEANING_LAST_ACTIVITY_LOG_ID_SEQ,
+            Sequences.MEANING_MEDIA_ID_SEQ,
+            Sequences.MEANING_MEDIA_ORDER_BY_SEQ,
             Sequences.MEANING_NOTE_ID_SEQ,
             Sequences.MEANING_NOTE_ORDER_BY_SEQ,
             Sequences.MEANING_NOTE_SOURCE_LINK_ID_SEQ,
@@ -1118,7 +1145,6 @@ public class Public extends SchemaImpl {
             Sequences.REL_GROUP_ORDER_BY_SEQ,
             Sequences.SEMANTIC_TYPE_ORDER_BY_SEQ,
             Sequences.SOURCE_ACTIVITY_LOG_ID_SEQ,
-            Sequences.SOURCE_FREEFORM_ID_SEQ,
             Sequences.SOURCE_ID_SEQ,
             Sequences.TAG_ORDER_BY_SEQ,
             Sequences.TEMP_DS_IMPORT_PK_MAP_ID_SEQ,
@@ -1210,11 +1236,14 @@ public class Public extends SchemaImpl {
             GameNonword.GAME_NONWORD,
             Gender.GENDER,
             GenderLabel.GENDER_LABEL,
+            Government.GOVERNMENT,
             GovernmentType.GOVERNMENT_TYPE,
             GovernmentTypeLabel.GOVERNMENT_TYPE_LABEL,
+            Grammar.GRAMMAR,
             LabelType.LABEL_TYPE,
             Language.LANGUAGE,
             LanguageLabel.LANGUAGE_LABEL,
+            LearnerComment.LEARNER_COMMENT,
             LexColloc.LEX_COLLOC,
             LexCollocPosGroup.LEX_COLLOC_POS_GROUP,
             LexCollocRelGroup.LEX_COLLOC_REL_GROUP,
@@ -1241,6 +1270,7 @@ public class Public extends SchemaImpl {
             MeaningImage.MEANING_IMAGE,
             MeaningImageSourceLink.MEANING_IMAGE_SOURCE_LINK,
             MeaningLastActivityLog.MEANING_LAST_ACTIVITY_LOG,
+            MeaningMedia.MEANING_MEDIA,
             MeaningNote.MEANING_NOTE,
             MeaningNoteSourceLink.MEANING_NOTE_SOURCE_LINK,
             MeaningNr.MEANING_NR,
@@ -1272,7 +1302,6 @@ public class Public extends SchemaImpl {
             SemanticTypeLabel.SEMANTIC_TYPE_LABEL,
             Source.SOURCE,
             SourceActivityLog.SOURCE_ACTIVITY_LOG,
-            SourceFreeform.SOURCE_FREEFORM,
             Tag.TAG,
             TempDsImportPkMap.TEMP_DS_IMPORT_PK_MAP,
             TempDsImportQueue.TEMP_DS_IMPORT_QUEUE,
@@ -1350,6 +1379,7 @@ public class Public extends SchemaImpl {
             TypeSourceLink.TYPE_SOURCE_LINK,
             TypeTermMeaningWord.TYPE_TERM_MEANING_WORD,
             TypeUsage.TYPE_USAGE,
+            TypeValueEntity.TYPE_VALUE_ENTITY,
             TypeValueNameLang.TYPE_VALUE_NAME_LANG,
             TypeWordEtymRelation.TYPE_WORD_ETYM_RELATION,
             TypeWordHomNrDataTuple.TYPE_WORD_HOM_NR_DATA_TUPLE,

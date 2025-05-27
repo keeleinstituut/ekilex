@@ -35,7 +35,7 @@ public class Meaning extends AbstractGrantEntity {
 
 	private List<Freeform> freeforms;
 
-	private List<Freeform> learnerComments;
+	private List<LearnerComment> learnerComments;
 
 	private List<Media> images;
 
@@ -155,11 +155,11 @@ public class Meaning extends AbstractGrantEntity {
 		this.freeforms = freeforms;
 	}
 
-	public List<Freeform> getLearnerComments() {
+	public List<LearnerComment> getLearnerComments() {
 		return learnerComments;
 	}
 
-	public void setLearnerComments(List<Freeform> learnerComments) {
+	public void setLearnerComments(List<LearnerComment> learnerComments) {
 		this.learnerComments = learnerComments;
 	}
 

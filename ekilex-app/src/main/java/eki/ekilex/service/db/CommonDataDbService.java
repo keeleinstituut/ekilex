@@ -18,8 +18,11 @@ import static eki.ekilex.data.db.main.Tables.FREEFORM;
 import static eki.ekilex.data.db.main.Tables.FREEFORM_SOURCE_LINK;
 import static eki.ekilex.data.db.main.Tables.FREEFORM_TYPE;
 import static eki.ekilex.data.db.main.Tables.FREEFORM_TYPE_LABEL;
+import static eki.ekilex.data.db.main.Tables.GOVERNMENT;
+import static eki.ekilex.data.db.main.Tables.GRAMMAR;
 import static eki.ekilex.data.db.main.Tables.LANGUAGE;
 import static eki.ekilex.data.db.main.Tables.LANGUAGE_LABEL;
+import static eki.ekilex.data.db.main.Tables.LEARNER_COMMENT;
 import static eki.ekilex.data.db.main.Tables.LEXEME;
 import static eki.ekilex.data.db.main.Tables.LEXEME_FREEFORM;
 import static eki.ekilex.data.db.main.Tables.LEXEME_REGISTER;
@@ -31,6 +34,7 @@ import static eki.ekilex.data.db.main.Tables.MEANING_FORUM;
 import static eki.ekilex.data.db.main.Tables.MEANING_FREEFORM;
 import static eki.ekilex.data.db.main.Tables.MEANING_IMAGE;
 import static eki.ekilex.data.db.main.Tables.MEANING_IMAGE_SOURCE_LINK;
+import static eki.ekilex.data.db.main.Tables.MEANING_MEDIA;
 import static eki.ekilex.data.db.main.Tables.MEANING_NOTE;
 import static eki.ekilex.data.db.main.Tables.MEANING_NOTE_SOURCE_LINK;
 import static eki.ekilex.data.db.main.Tables.MEANING_RELATION;
@@ -72,7 +76,6 @@ import eki.common.constant.FreeformOwner;
 import eki.ekilex.data.Classifier;
 import eki.ekilex.data.CollocMember;
 import eki.ekilex.data.Dataset;
-import eki.ekilex.data.Government;
 import eki.ekilex.data.LexemeRelation;
 import eki.ekilex.data.MeaningForum;
 import eki.ekilex.data.MeaningWord;
@@ -96,6 +99,7 @@ import eki.ekilex.data.db.main.tables.Freeform;
 import eki.ekilex.data.db.main.tables.FreeformSourceLink;
 import eki.ekilex.data.db.main.tables.FreeformType;
 import eki.ekilex.data.db.main.tables.FreeformTypeLabel;
+import eki.ekilex.data.db.main.tables.Government;
 import eki.ekilex.data.db.main.tables.Language;
 import eki.ekilex.data.db.main.tables.LanguageLabel;
 import eki.ekilex.data.db.main.tables.LexRelTypeLabel;
@@ -108,6 +112,7 @@ import eki.ekilex.data.db.main.tables.MeaningDomain;
 import eki.ekilex.data.db.main.tables.MeaningFreeform;
 import eki.ekilex.data.db.main.tables.MeaningImage;
 import eki.ekilex.data.db.main.tables.MeaningImageSourceLink;
+import eki.ekilex.data.db.main.tables.MeaningMedia;
 import eki.ekilex.data.db.main.tables.MeaningNote;
 import eki.ekilex.data.db.main.tables.MeaningNoteSourceLink;
 import eki.ekilex.data.db.main.tables.MeaningRelTypeLabel;
@@ -371,7 +376,7 @@ public class CommonDataDbService extends AbstractDataDbService {
 				.fetchInto(WordForum.class);
 	}
 
-	public List<eki.ekilex.data.Freeform> getWordFreeforms(Long wordId, String[] excludedFreeformTypeCodes, String classifierLabelLang) {
+	public List<eki.ekilex.data.Freeform> getWordFreeforms(Long wordId, String classifierLabelLang) {
 
 		Freeform f = FREEFORM.as("f");
 		WordFreeform wf = WORD_FREEFORM.as("wf");
@@ -413,9 +418,7 @@ public class CommonDataDbService extends AbstractDataDbService {
 						fslf.as("source_links"))
 				.from(
 						wf
-								.innerJoin(f).on(
-										f.ID.eq(wf.FREEFORM_ID)
-												.and(f.FREEFORM_TYPE_CODE.notIn(excludedFreeformTypeCodes)))
+								.innerJoin(f).on(f.ID.eq(wf.FREEFORM_ID))
 								.leftOuterJoin(ftl).on(
 										ftl.CODE.eq(f.FREEFORM_TYPE_CODE)
 												.and(ftl.TYPE.eq(CLASSIF_LABEL_TYPE_DESCRIP))
@@ -492,7 +495,7 @@ public class CommonDataDbService extends AbstractDataDbService {
 				.orElse(null);
 	}
 
-	public List<eki.ekilex.data.Freeform> getMeaningFreeforms(Long meaningId, String[] excludedFreeformTypeCodes, String classifierLabelLang) {
+	public List<eki.ekilex.data.Freeform> getMeaningFreeforms(Long meaningId, String classifierLabelLang) {
 
 		Freeform f = FREEFORM.as("f");
 		MeaningFreeform mf = MEANING_FREEFORM.as("mf");
@@ -534,9 +537,7 @@ public class CommonDataDbService extends AbstractDataDbService {
 						fslf.as("source_links"))
 				.from(
 						mf
-								.innerJoin(f).on(
-										f.ID.eq(mf.FREEFORM_ID)
-												.and(f.FREEFORM_TYPE_CODE.notIn(excludedFreeformTypeCodes)))
+								.innerJoin(f).on(f.ID.eq(mf.FREEFORM_ID))
 								.leftOuterJoin(ftl).on(
 										ftl.CODE.eq(f.FREEFORM_TYPE_CODE)
 												.and(ftl.TYPE.eq(CLASSIF_LABEL_TYPE_DESCRIP))
@@ -546,22 +547,13 @@ public class CommonDataDbService extends AbstractDataDbService {
 				.fetchInto(eki.ekilex.data.Freeform.class);
 	}
 
-	public List<eki.ekilex.data.Freeform> getMeaningLearnerComments(Long meaningId) {
+	public List<eki.ekilex.data.LearnerComment> getMeaningLearnerComments(Long meaningId) {
 
 		return mainDb
-				.select(
-						FREEFORM.ID,
-						FREEFORM.VALUE,
-						FREEFORM.VALUE_PRESE,
-						FREEFORM.LANG,
-						FREEFORM.COMPLEXITY)
-				.from(FREEFORM, MEANING_FREEFORM)
-				.where(
-						MEANING_FREEFORM.MEANING_ID.eq(meaningId)
-								.and(FREEFORM.ID.eq(MEANING_FREEFORM.FREEFORM_ID))
-								.and(FREEFORM.FREEFORM_TYPE_CODE.eq(LEARNER_COMMENT_CODE)))
-				.orderBy(FREEFORM.ORDER_BY)
-				.fetchInto(eki.ekilex.data.Freeform.class);
+				.selectFrom(LEARNER_COMMENT)
+				.where(LEARNER_COMMENT.MEANING_ID.eq(meaningId))
+				.orderBy(LEARNER_COMMENT.ORDER_BY)
+				.fetchInto(eki.ekilex.data.LearnerComment.class);
 	}
 
 	public List<eki.ekilex.data.MeaningNote> getMeaningNotes(Long meaningId) {
@@ -607,7 +599,7 @@ public class CommonDataDbService extends AbstractDataDbService {
 				.fetchInto(eki.ekilex.data.MeaningNote.class);
 	}
 
-	public List<Media> getMeaningImagesAsMedia(Long meaningId) {
+	public List<Media> getMeaningImages(Long meaningId) {
 
 		MeaningImage mi = MEANING_IMAGE.as("mi");
 		MeaningImageSourceLink misl = MEANING_IMAGE_SOURCE_LINK.as("misl");
@@ -642,21 +634,17 @@ public class CommonDataDbService extends AbstractDataDbService {
 				.fetchInto(Media.class);
 	}
 
-	public List<Media> getMeaningMediaFiles(Long meaningId) {
+	public List<Media> getMeaningMedias(Long meaningId) {
 
-		Freeform ff = FREEFORM.as("ff");
-		MeaningFreeform mff = MEANING_FREEFORM.as("mff");
+		MeaningMedia mm = MEANING_MEDIA.as("mm");
 
 		return mainDb
 				.select(
-						ff.ID,
-						ff.VALUE.as("sourceUrl"),
-						ff.COMPLEXITY)
-				.from(ff, mff)
-				.where(
-						mff.MEANING_ID.eq(meaningId)
-								.and(ff.ID.eq(mff.FREEFORM_ID))
-								.and(ff.FREEFORM_TYPE_CODE.eq(MEDIA_FILE_CODE)))
+						mm.ID,
+						mm.URL.as("sourceUrl"),
+						mm.COMPLEXITY)
+				.from(mm)
+				.where(mm.MEANING_ID.eq(meaningId))
 				.fetchInto(Media.class);
 	}
 
@@ -979,8 +967,7 @@ public class CommonDataDbService extends AbstractDataDbService {
 		Meaning m2 = MEANING.as("m2");
 		Lexeme l2 = LEXEME.as("l2");
 		LexemeRegister lr = LEXEME_REGISTER.as("lr");
-		LexemeFreeform lff = LEXEME_FREEFORM.as("lff");
-		Freeform ff = FREEFORM.as("ff");
+		Government lg = GOVERNMENT.as("lg");
 		Word w2 = WORD.as("w2");
 
 		Field<String> mrtf = DSL.field(DSL
@@ -1007,13 +994,11 @@ public class CommonDataDbService extends AbstractDataDbService {
 				.groupBy(l2.WORD_ID, l2.MEANING_ID));
 
 		Field<String[]> lgf = DSL.field(DSL
-				.select(DSL.arrayAgg(ff.VALUE_PRESE))
-				.from(ff, lff, l2)
+				.select(DSL.arrayAgg(lg.VALUE))
+				.from(lg, l2)
 				.where(l2.MEANING_ID.eq(m2.ID)
 						.and(l2.WORD_ID.eq(w2.ID))
-						.and(lff.LEXEME_ID.eq(l2.ID))
-						.and(ff.ID.eq(lff.FREEFORM_ID))
-						.and(ff.FREEFORM_TYPE_CODE.eq(GOVERNMENT_CODE)))
+						.and(lg.LEXEME_ID.eq(l2.ID)))
 				.groupBy(l2.WORD_ID, l2.MEANING_ID));
 
 		Field<String[]> ldsf = DSL.field(DSL
@@ -1103,7 +1088,7 @@ public class CommonDataDbService extends AbstractDataDbService {
 				.fetchInto(MeaningForum.class);
 	}
 
-	public List<eki.ekilex.data.Freeform> getLexemeFreeforms(Long lexemeId, String[] excludedFreeformTypeCodes, String classifierLabelLang) {
+	public List<eki.ekilex.data.Freeform> getLexemeFreeforms(Long lexemeId, String classifierLabelLang) {
 
 		Freeform f = FREEFORM.as("f");
 		LexemeFreeform lf = LEXEME_FREEFORM.as("lf");
@@ -1145,9 +1130,7 @@ public class CommonDataDbService extends AbstractDataDbService {
 						fslf.as("source_links"))
 				.from(
 						lf
-								.innerJoin(f).on(
-										f.ID.eq(lf.FREEFORM_ID)
-												.and(f.FREEFORM_TYPE_CODE.notIn(excludedFreeformTypeCodes)))
+								.innerJoin(f).on(f.ID.eq(lf.FREEFORM_ID))
 								.leftOuterJoin(ftl).on(
 										ftl.CODE.eq(f.FREEFORM_TYPE_CODE)
 												.and(ftl.TYPE.eq(CLASSIF_LABEL_TYPE_DESCRIP))
@@ -1157,41 +1140,41 @@ public class CommonDataDbService extends AbstractDataDbService {
 				.fetchInto(eki.ekilex.data.Freeform.class);
 	}
 
-	// TODO should be moved out of freeforms
-	public List<eki.ekilex.data.Freeform> getLexemeGrammars(Long lexemeId) {
+	public List<eki.ekilex.data.Grammar> getLexemeGrammars(Long lexemeId) {
 		return mainDb
 				.select(
-						FREEFORM.ID,
-						FREEFORM.VALUE,
-						FREEFORM.VALUE_PRESE,
-						FREEFORM.LANG,
-						FREEFORM.COMPLEXITY,
-						FREEFORM.ORDER_BY)
-				.from(FREEFORM, LEXEME_FREEFORM)
-				.where(LEXEME_FREEFORM.LEXEME_ID.eq(lexemeId)
-						.and(FREEFORM.ID.eq(LEXEME_FREEFORM.FREEFORM_ID))
-						.and(FREEFORM.FREEFORM_TYPE_CODE.eq(GRAMMAR_CODE)))
-				.orderBy(FREEFORM.ORDER_BY)
-				.fetchInto(eki.ekilex.data.Freeform.class);
+						GRAMMAR.ID,
+						GRAMMAR.VALUE,
+						GRAMMAR.VALUE_PRESE,
+						GRAMMAR.LANG,
+						GRAMMAR.COMPLEXITY,
+						GRAMMAR.CREATED_BY,
+						GRAMMAR.CREATED_ON,
+						GRAMMAR.MODIFIED_BY,
+						GRAMMAR.MODIFIED_ON,
+						GRAMMAR.ORDER_BY)
+				.from(GRAMMAR)
+				.where(GRAMMAR.LEXEME_ID.eq(lexemeId))
+				.orderBy(GRAMMAR.ORDER_BY)
+				.fetchInto(eki.ekilex.data.Grammar.class);
 	}
 
-	// TODO should be moved out of freeforms
-	public List<Government> getLexemeGovernments(Long lexemeId) {
-
-		LexemeFreeform glff = LEXEME_FREEFORM.as("glff");
-		Freeform g = FREEFORM.as("g");
+	public List<eki.ekilex.data.Government> getLexemeGovernments(Long lexemeId) {
 
 		return mainDb
 				.select(
-						g.ID,
-						g.VALUE,
-						g.COMPLEXITY,
-						g.ORDER_BY)
-				.from(glff
-						.innerJoin(g).on(glff.FREEFORM_ID.eq(g.ID).and(g.FREEFORM_TYPE_CODE.eq(GOVERNMENT_CODE))))
-				.where(glff.LEXEME_ID.eq(lexemeId))
-				.orderBy(g.ORDER_BY)
-				.fetchInto(Government.class);
+						GOVERNMENT.ID,
+						GOVERNMENT.VALUE,
+						GOVERNMENT.COMPLEXITY,
+						GOVERNMENT.CREATED_BY,
+						GOVERNMENT.CREATED_ON,
+						GOVERNMENT.MODIFIED_BY,
+						GOVERNMENT.MODIFIED_ON,
+						GOVERNMENT.ORDER_BY)
+				.from(GOVERNMENT)
+				.where(GOVERNMENT.LEXEME_ID.eq(lexemeId))
+				.orderBy(GOVERNMENT.ORDER_BY)
+				.fetchInto(eki.ekilex.data.Government.class);
 	}
 
 	public List<eki.ekilex.data.Usage> getUsages(Long lexemeId) {

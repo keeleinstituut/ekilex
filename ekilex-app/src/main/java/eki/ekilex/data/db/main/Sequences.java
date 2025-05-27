@@ -211,14 +211,44 @@ public class Sequences {
     public static final Sequence<Long> GENDER_ORDER_BY_SEQ = Internal.createSequence("gender_order_by_seq", Public.PUBLIC, SQLDataType.BIGINT.nullable(false), null, null, null, null, false, null);
 
     /**
+     * The sequence <code>public.government_id_seq</code>
+     */
+    public static final Sequence<Long> GOVERNMENT_ID_SEQ = Internal.createSequence("government_id_seq", Public.PUBLIC, SQLDataType.BIGINT.nullable(false), null, null, null, null, false, null);
+
+    /**
+     * The sequence <code>public.government_order_by_seq</code>
+     */
+    public static final Sequence<Long> GOVERNMENT_ORDER_BY_SEQ = Internal.createSequence("government_order_by_seq", Public.PUBLIC, SQLDataType.BIGINT.nullable(false), null, null, null, null, false, null);
+
+    /**
      * The sequence <code>public.government_type_order_by_seq</code>
      */
     public static final Sequence<Long> GOVERNMENT_TYPE_ORDER_BY_SEQ = Internal.createSequence("government_type_order_by_seq", Public.PUBLIC, SQLDataType.BIGINT.nullable(false), null, null, null, null, false, null);
 
     /**
+     * The sequence <code>public.grammar_id_seq</code>
+     */
+    public static final Sequence<Long> GRAMMAR_ID_SEQ = Internal.createSequence("grammar_id_seq", Public.PUBLIC, SQLDataType.BIGINT.nullable(false), null, null, null, null, false, null);
+
+    /**
+     * The sequence <code>public.grammar_order_by_seq</code>
+     */
+    public static final Sequence<Long> GRAMMAR_ORDER_BY_SEQ = Internal.createSequence("grammar_order_by_seq", Public.PUBLIC, SQLDataType.BIGINT.nullable(false), null, null, null, null, false, null);
+
+    /**
      * The sequence <code>public.language_order_by_seq</code>
      */
     public static final Sequence<Long> LANGUAGE_ORDER_BY_SEQ = Internal.createSequence("language_order_by_seq", Public.PUBLIC, SQLDataType.BIGINT.nullable(false), null, null, null, null, false, null);
+
+    /**
+     * The sequence <code>public.learner_comment_id_seq</code>
+     */
+    public static final Sequence<Long> LEARNER_COMMENT_ID_SEQ = Internal.createSequence("learner_comment_id_seq", Public.PUBLIC, SQLDataType.BIGINT.nullable(false), null, null, null, null, false, null);
+
+    /**
+     * The sequence <code>public.learner_comment_order_by_seq</code>
+     */
+    public static final Sequence<Long> LEARNER_COMMENT_ORDER_BY_SEQ = Internal.createSequence("learner_comment_order_by_seq", Public.PUBLIC, SQLDataType.BIGINT.nullable(false), null, null, null, null, false, null);
 
     /**
      * The sequence <code>public.lex_colloc_id_seq</code>
@@ -421,6 +451,16 @@ public class Sequences {
     public static final Sequence<Long> MEANING_LAST_ACTIVITY_LOG_ID_SEQ = Internal.createSequence("meaning_last_activity_log_id_seq", Public.PUBLIC, SQLDataType.BIGINT.nullable(false), null, null, null, null, false, null);
 
     /**
+     * The sequence <code>public.meaning_media_id_seq</code>
+     */
+    public static final Sequence<Long> MEANING_MEDIA_ID_SEQ = Internal.createSequence("meaning_media_id_seq", Public.PUBLIC, SQLDataType.BIGINT.nullable(false), null, null, null, null, false, null);
+
+    /**
+     * The sequence <code>public.meaning_media_order_by_seq</code>
+     */
+    public static final Sequence<Long> MEANING_MEDIA_ORDER_BY_SEQ = Internal.createSequence("meaning_media_order_by_seq", Public.PUBLIC, SQLDataType.BIGINT.nullable(false), null, null, null, null, false, null);
+
+    /**
      * The sequence <code>public.meaning_note_id_seq</code>
      */
     public static final Sequence<Long> MEANING_NOTE_ID_SEQ = Internal.createSequence("meaning_note_id_seq", Public.PUBLIC, SQLDataType.BIGINT.nullable(false), null, null, null, null, false, null);
@@ -549,11 +589,6 @@ public class Sequences {
      * The sequence <code>public.source_activity_log_id_seq</code>
      */
     public static final Sequence<Long> SOURCE_ACTIVITY_LOG_ID_SEQ = Internal.createSequence("source_activity_log_id_seq", Public.PUBLIC, SQLDataType.BIGINT.nullable(false), null, null, null, null, false, null);
-
-    /**
-     * The sequence <code>public.source_freeform_id_seq</code>
-     */
-    public static final Sequence<Long> SOURCE_FREEFORM_ID_SEQ = Internal.createSequence("source_freeform_id_seq", Public.PUBLIC, SQLDataType.BIGINT.nullable(false), null, null, null, null, false, null);
 
     /**
      * The sequence <code>public.source_id_seq</code>

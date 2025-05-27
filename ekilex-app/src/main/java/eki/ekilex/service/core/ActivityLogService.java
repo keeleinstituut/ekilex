@@ -9,7 +9,6 @@ import java.util.Objects;
 
 import javax.transaction.Transactional;
 
-import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.collections4.MapUtils;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -40,6 +39,8 @@ import eki.ekilex.data.DefinitionLangGroup;
 import eki.ekilex.data.EkiUser;
 import eki.ekilex.data.Freeform;
 import eki.ekilex.data.Government;
+import eki.ekilex.data.Grammar;
+import eki.ekilex.data.LearnerComment;
 import eki.ekilex.data.Lexeme;
 import eki.ekilex.data.LexemeNote;
 import eki.ekilex.data.LexemeRelation;
@@ -53,7 +54,6 @@ import eki.ekilex.data.OrderedClassifier;
 import eki.ekilex.data.Paradigm;
 import eki.ekilex.data.ParadigmFormTuple;
 import eki.ekilex.data.Source;
-import eki.ekilex.data.SourcePropertyTuple;
 import eki.ekilex.data.TypeActivityLogDiff;
 import eki.ekilex.data.Word;
 import eki.ekilex.data.WordEtym;
@@ -82,9 +82,6 @@ public class ActivityLogService implements SystemConstant, GlobalConstant, Freef
 
 	private static final List<ActivityEntity> FIRST_DEPTH_FREEFORM_ENTITIES = Arrays.asList(
 			ActivityEntity.FREEFORM,
-			ActivityEntity.GOVERNMENT,
-			ActivityEntity.GOVERNMENT_TYPE,
-			ActivityEntity.GRAMMAR,
 			ActivityEntity.LTB_ID,
 			ActivityEntity.LTB_SOURCE,
 			ActivityEntity.ADVICE_NOTE,
@@ -105,17 +102,9 @@ public class ActivityLogService implements SystemConstant, GlobalConstant, Freef
 			ActivityEntity.SOURCE_ARTICLE_TITLE,
 			ActivityEntity.SOURCE_ARTICLE_AUTHOR,
 			ActivityEntity.EXTERNAL_SOURCE_ID,
-			ActivityEntity.LEARNER_COMMENT,
-			ActivityEntity.MEDIA_FILE,
 			ActivityEntity.SEMANTIC_TYPE,
 			ActivityEntity.SYSTEMATIC_POLYSEMY_PATTERN,
 			ActivityEntity.ADVICE_NOTE);
-
-	private static final List<ActivityEntity> SECOND_DEPTH_FREEFORM_ENTITIES = Arrays.asList(
-			ActivityEntity.GOVERNMENT_PLACEMENT,
-			ActivityEntity.GOVERNMENT_VARIANT,
-			ActivityEntity.GOVERNMENT_OPTIONAL,
-			ActivityEntity.SEMANTIC_TYPE_GROUP);
 
 	private static final String FUNCT_NAME_DELETE_PARADIGM = "deleteParadigm";
 
@@ -171,10 +160,6 @@ public class ActivityLogService implements SystemConstant, GlobalConstant, Freef
 		if (FIRST_DEPTH_FREEFORM_ENTITIES.contains(entity)) {
 			ActivityLogOwnerEntityDescr freeformOwnerDescr = getFreeformOwnerDescr(entityId);
 			return freeformOwnerDescr.getOwnerId();
-		} else if (SECOND_DEPTH_FREEFORM_ENTITIES.contains(entity)) {
-			Map<String, Object> freeformOwnerDataMap = activityLogDbService.getSecondDepthFreeformOwnerDataMap(entityId);
-			ActivityLogOwnerEntityDescr freeformOwnerDescr = resolveOwnerDescr(freeformOwnerDataMap);
-			return freeformOwnerDescr.getOwnerId();
 		} else if (ActivityEntity.FREEFORM_SOURCE_LINK.equals(entity)) {
 			ActivityLogOwnerEntityDescr freeformOwnerDescr = getFreeformSourceLinkOwnerDescr(entityId);
 			return freeformOwnerDescr.getOwnerId();
@@ -184,6 +169,10 @@ public class ActivityLogService implements SystemConstant, GlobalConstant, Freef
 			return activityLogDbService.getLexemeNoteOwnerId(entityId);
 		} else if (ActivityEntity.LEXEME_NOTE_SOURCE_LINK.equals(entity)) {
 			return activityLogDbService.getLexemeNoteSourceLinkOwnerId(entityId);
+		} else if (ActivityEntity.GRAMMAR.equals(entity)) {
+			return activityLogDbService.getGrammarOwnerId(entityId);
+		} else if (ActivityEntity.GOVERNMENT.equals(entity)) {
+			return activityLogDbService.getGovernmentOwnerId(entityId);
 		} else if (ActivityEntity.USAGE.equals(entity)) {
 			return activityLogDbService.getUsageOwnerId(entityId);
 		} else if (ActivityEntity.USAGE_SOURCE_LINK.equals(entity)) {
@@ -192,6 +181,10 @@ public class ActivityLogService implements SystemConstant, GlobalConstant, Freef
 			return activityLogDbService.getUsageTranslationOwnerId(entityId);
 		} else if (ActivityEntity.USAGE_DEFINITION.equals(entity)) {
 			return activityLogDbService.getUsageDefinitionOwnerId(entityId);
+		} else if (ActivityEntity.LEARNER_COMMENT.equals(entity)) {
+			return activityLogDbService.getLearnerCommentOwnerId(entityId);
+		} else if (ActivityEntity.MEANING_MEDIA.equals(entity)) {
+			return activityLogDbService.getMeaningMediaOwnerId(entityId);
 		} else if (ActivityEntity.MEANING_IMAGE.equals(entity)) {
 			return activityLogDbService.getMeaningImageOwnerId(entityId);
 		} else if (ActivityEntity.MEANING_IMAGE_SOURCE_LINK.equals(entity)) {
@@ -242,8 +235,6 @@ public class ActivityLogService implements SystemConstant, GlobalConstant, Freef
 		if (MapUtils.isEmpty(freeformOwnerDataMap)) {
 			throw new IllegalParamException("Unable to locate freeform");
 		}
-		String ffTypeCode = (String) freeformOwnerDataMap.get("freeform_type_code");
-		ActivityEntity activityEntity;
 		Long id;
 		id = (Long) freeformOwnerDataMap.get("lexeme_id");
 		if (id != null) {
@@ -260,19 +251,6 @@ public class ActivityLogService implements SystemConstant, GlobalConstant, Freef
 		id = (Long) freeformOwnerDataMap.get("d_meaning_id");
 		if (id != null) {
 			return new ActivityLogOwnerEntityDescr(ActivityOwner.MEANING, id, ActivityEntity.FREEFORM);
-		}
-		id = (Long) freeformOwnerDataMap.get("source_id");
-		if (id != null) {
-			if (StringUtils.equals(NOTE_CODE, ffTypeCode)) {
-				activityEntity = ActivityEntity.SOURCE_NOTE;
-			} else {
-				try {
-					activityEntity = ActivityEntity.valueOf(ffTypeCode);
-				} catch (Exception e) {
-					throw new IllegalParamException("Missing activity entity owner mapping for source freeform " + ffTypeCode);
-				}
-			}
-			return new ActivityLogOwnerEntityDescr(ActivityOwner.SOURCE, id, activityEntity);
 		}
 		throw new IllegalParamException("Unable to locate owner of the freeform");
 	}
@@ -576,8 +554,8 @@ public class ActivityLogService implements SystemConstant, GlobalConstant, Freef
 		Word word = lexSearchDbService.getWord(wordId);
 		List<MeaningWord> meaningWords = commonDataDbService.getMeaningWords(lexemeId);
 		List<Government> governments = commonDataDbService.getLexemeGovernments(lexemeId);
-		List<Freeform> grammars = commonDataDbService.getLexemeGrammars(lexemeId);
-		List<Freeform> lexemeFreeforms = commonDataDbService.getLexemeFreeforms(lexemeId, EXCLUDED_LEXEME_ATTRIBUTE_FF_TYPE_CODES, CLASSIF_LABEL_LANG_EST);
+		List<Grammar> grammars = commonDataDbService.getLexemeGrammars(lexemeId);
+		List<Freeform> lexemeFreeforms = commonDataDbService.getLexemeFreeforms(lexemeId, CLASSIF_LABEL_LANG_EST);
 		List<LexemeNote> lexemeNotes = lexeme.getNotes();
 		List<NoteLangGroup> lexemeNoteLangGroups = conversionUtil.composeNoteLangGroups(lexemeNotes, null);
 		List<LexemeRelation> lexemeRelations = commonDataDbService.getLexemeRelations(lexemeId, CLASSIF_LABEL_LANG_EST);
@@ -608,7 +586,7 @@ public class ActivityLogService implements SystemConstant, GlobalConstant, Freef
 		if (word == null) {
 			return EMPTY_CONTENT_JSON;
 		}
-		List<Freeform> wordFreeforms = commonDataDbService.getWordFreeforms(wordId, EXCLUDED_WORD_ATTRIBUTE_FF_TYPE_CODES, CLASSIF_LABEL_LANG_EST);
+		List<Freeform> wordFreeforms = commonDataDbService.getWordFreeforms(wordId, CLASSIF_LABEL_LANG_EST);
 		List<Classifier> wordTypes = commonDataDbService.getWordTypes(wordId, CLASSIF_LABEL_LANG_EST);
 		List<WordRelation> wordRelations = lexDataDbService.getWordRelations(wordId, CLASSIF_LABEL_LANG_EST);
 		List<WordRelation> wordGroupMembers = lexDataDbService.getWordGroupMembers(wordId, CLASSIF_LABEL_LANG_EST);
@@ -650,10 +628,10 @@ public class ActivityLogService implements SystemConstant, GlobalConstant, Freef
 		List<OrderedClassifier> meaningDomains = commonDataDbService.getMeaningDomains(meaningId, CLASSIF_LABEL_LANG_EST);
 		List<String> meaningTags = commonDataDbService.getMeaningTags(meaningId);
 		List<Definition> definitions = commonDataDbService.getMeaningDefinitions(meaningId, CLASSIF_LABEL_LANG_EST);
-		List<Freeform> meaningFreeforms = commonDataDbService.getMeaningFreeforms(meaningId, EXCLUDED_MEANING_ATTRIBUTE_FF_TYPE_CODES, CLASSIF_LABEL_LANG_EST);
-		List<Freeform> meaningLearnerComments = commonDataDbService.getMeaningLearnerComments(meaningId);
-		List<Media> meaningImages = commonDataDbService.getMeaningImagesAsMedia(meaningId);
-		List<Media> meaningMedias = commonDataDbService.getMeaningMediaFiles(meaningId);
+		List<Freeform> meaningFreeforms = commonDataDbService.getMeaningFreeforms(meaningId, CLASSIF_LABEL_LANG_EST);
+		List<LearnerComment> meaningLearnerComments = commonDataDbService.getMeaningLearnerComments(meaningId);
+		List<Media> meaningImages = commonDataDbService.getMeaningImages(meaningId);
+		List<Media> meaningMedias = commonDataDbService.getMeaningMedias(meaningId);
 		List<MeaningNote> meaningNotes = commonDataDbService.getMeaningNotes(meaningId);
 		List<NoteLangGroup> meaningNoteLangGroups = conversionUtil.composeNoteLangGroups(meaningNotes, null);
 		List<Classifier> meaningSemanticTypes = commonDataDbService.getMeaningSemanticTypes(meaningId, CLASSIF_LABEL_LANG_EST);
@@ -684,11 +662,6 @@ public class ActivityLogService implements SystemConstant, GlobalConstant, Freef
 		Source source = sourceDbService.getSource(sourceId);
 		if (source == null) {
 			return EMPTY_CONTENT_JSON;
-		}
-
-		List<SourcePropertyTuple> sourcePropertyTuples = sourceDbService.getSourcePropertyTuples(sourceId);
-		if (CollectionUtils.isNotEmpty(sourcePropertyTuples)) {
-			conversionUtil.composeSource(source, sourcePropertyTuples);
 		}
 
 		ObjectMapper objectMapper = new ObjectMapper();

@@ -6,6 +6,9 @@ import static eki.ekilex.data.db.main.Tables.DEFINITION_DATASET;
 import static eki.ekilex.data.db.main.Tables.DEFINITION_FREEFORM;
 import static eki.ekilex.data.db.main.Tables.DEFINITION_NOTE;
 import static eki.ekilex.data.db.main.Tables.FREEFORM;
+import static eki.ekilex.data.db.main.Tables.GOVERNMENT;
+import static eki.ekilex.data.db.main.Tables.GRAMMAR;
+import static eki.ekilex.data.db.main.Tables.LEARNER_COMMENT;
 import static eki.ekilex.data.db.main.Tables.LEXEME;
 import static eki.ekilex.data.db.main.Tables.LEXEME_DERIV;
 import static eki.ekilex.data.db.main.Tables.LEXEME_FREEFORM;
@@ -20,6 +23,7 @@ import static eki.ekilex.data.db.main.Tables.MEANING_DOMAIN;
 import static eki.ekilex.data.db.main.Tables.MEANING_FORUM;
 import static eki.ekilex.data.db.main.Tables.MEANING_FREEFORM;
 import static eki.ekilex.data.db.main.Tables.MEANING_IMAGE;
+import static eki.ekilex.data.db.main.Tables.MEANING_MEDIA;
 import static eki.ekilex.data.db.main.Tables.MEANING_NOTE;
 import static eki.ekilex.data.db.main.Tables.MEANING_RELATION;
 import static eki.ekilex.data.db.main.Tables.MEANING_SEMANTIC_TYPE;
@@ -61,8 +65,12 @@ import org.springframework.stereotype.Component;
 import eki.common.constant.Complexity;
 import eki.ekilex.data.Classifier;
 import eki.ekilex.data.Freeform;
+import eki.ekilex.data.Government;
+import eki.ekilex.data.Grammar;
+import eki.ekilex.data.LearnerComment;
 import eki.ekilex.data.ListData;
 import eki.ekilex.data.MeaningImage;
+import eki.ekilex.data.MeaningMedia;
 import eki.ekilex.data.Note;
 import eki.ekilex.data.SimpleWord;
 import eki.ekilex.data.Usage;
@@ -112,6 +120,44 @@ public class CudDbService extends AbstractDataDbService {
 				.update(FREEFORM)
 				.set(fieldAndValueMap)
 				.where(FREEFORM.ID.eq(freeform.getId()))
+				.execute();
+	}
+
+	public void updateGovernment(Government grammar) {
+
+		Map<Field<?>, Object> fieldAndValueMap = new HashMap<>();
+		fieldAndValueMap.put(GOVERNMENT.VALUE, grammar.getValue());
+		fieldAndValueMap.put(GOVERNMENT.MODIFIED_BY, grammar.getModifiedBy());
+		fieldAndValueMap.put(GOVERNMENT.MODIFIED_ON, grammar.getModifiedOn());
+		if (grammar.getComplexity() != null) {
+			fieldAndValueMap.put(GOVERNMENT.COMPLEXITY, grammar.getComplexity().name());
+		}
+
+		mainDb
+				.update(GOVERNMENT)
+				.set(fieldAndValueMap)
+				.where(GOVERNMENT.ID.eq(grammar.getId()))
+				.execute();
+	}
+
+	public void updateGrammar(Grammar grammar) {
+
+		Map<Field<?>, Object> fieldAndValueMap = new HashMap<>();
+		fieldAndValueMap.put(GRAMMAR.VALUE, grammar.getValue());
+		fieldAndValueMap.put(GRAMMAR.VALUE_PRESE, grammar.getValuePrese());
+		fieldAndValueMap.put(GRAMMAR.MODIFIED_BY, grammar.getModifiedBy());
+		fieldAndValueMap.put(GRAMMAR.MODIFIED_ON, grammar.getModifiedOn());
+		if (StringUtils.isNotBlank(grammar.getLang())) {
+			fieldAndValueMap.put(GRAMMAR.LANG, grammar.getLang());
+		}
+		if (grammar.getComplexity() != null) {
+			fieldAndValueMap.put(GRAMMAR.COMPLEXITY, grammar.getComplexity().name());
+		}
+
+		mainDb
+				.update(GRAMMAR)
+				.set(fieldAndValueMap)
+				.where(GRAMMAR.ID.eq(grammar.getId()))
 				.execute();
 	}
 
@@ -706,6 +752,38 @@ public class CudDbService extends AbstractDataDbService {
 				.update(MEANING_IMAGE)
 				.set(fieldAndValueMap)
 				.where(MEANING_IMAGE.ID.eq(meaningImageId))
+				.execute();
+	}
+
+	public void updateMeaningMedia(Long meaningMediaId, MeaningMedia meaningMedia) {
+
+		Map<Field<?>, Object> fieldAndValueMap = new HashMap<>();
+		fieldAndValueMap.put(MEANING_MEDIA.URL, meaningMedia.getUrl());
+		fieldAndValueMap.put(MEANING_MEDIA.MODIFIED_BY, meaningMedia.getModifiedBy());
+		fieldAndValueMap.put(MEANING_MEDIA.MODIFIED_ON, meaningMedia.getModifiedOn());
+		if (meaningMedia.getComplexity() != null) {
+			fieldAndValueMap.put(MEANING_MEDIA.COMPLEXITY, meaningMedia.getComplexity().name());
+		}
+
+		mainDb
+				.update(MEANING_MEDIA)
+				.set(fieldAndValueMap)
+				.where(MEANING_MEDIA.ID.eq(meaningMediaId))
+				.execute();
+	}
+
+	public void updateLearnerComment(Long learnerCommentId, LearnerComment learnerComment) {
+
+		Map<Field<?>, Object> fieldAndValueMap = new HashMap<>();
+		fieldAndValueMap.put(LEARNER_COMMENT.VALUE, learnerComment.getValue());
+		fieldAndValueMap.put(LEARNER_COMMENT.VALUE_PRESE, learnerComment.getValuePrese());
+		fieldAndValueMap.put(LEARNER_COMMENT.MODIFIED_BY, learnerComment.getModifiedBy());
+		fieldAndValueMap.put(LEARNER_COMMENT.MODIFIED_ON, learnerComment.getModifiedOn());
+
+		mainDb
+				.update(LEARNER_COMMENT)
+				.set(fieldAndValueMap)
+				.where(LEARNER_COMMENT.ID.eq(learnerCommentId))
 				.execute();
 	}
 
@@ -1375,6 +1453,31 @@ public class CudDbService extends AbstractDataDbService {
 				.getId();
 	}
 
+	public Long createMeaningMedia(Long meaningId, MeaningMedia meaningMedia) {
+
+		return mainDb
+				.insertInto(
+						MEANING_MEDIA,
+						MEANING_MEDIA.MEANING_ID,
+						MEANING_MEDIA.URL,
+						MEANING_MEDIA.COMPLEXITY,
+						MEANING_MEDIA.CREATED_BY,
+						MEANING_MEDIA.CREATED_ON,
+						MEANING_MEDIA.MODIFIED_BY,
+						MEANING_MEDIA.MODIFIED_ON)
+				.values(
+						meaningId,
+						meaningMedia.getUrl(),
+						meaningMedia.getComplexity().name(),
+						meaningMedia.getCreatedBy(),
+						meaningMedia.getCreatedOn(),
+						meaningMedia.getModifiedBy(),
+						meaningMedia.getModifiedOn())
+				.returning(MEANING_MEDIA.ID)
+				.fetchOne()
+				.getId();
+	}
+
 	public Long createMeaningImage(Long meaningId, MeaningImage meaningImage) {
 
 		return mainDb
@@ -1400,6 +1503,31 @@ public class CudDbService extends AbstractDataDbService {
 						meaningImage.getModifiedBy(),
 						meaningImage.getModifiedOn())
 				.returning(MEANING_IMAGE.ID)
+				.fetchOne()
+				.getId();
+	}
+
+	public Long createLearnerComment(Long meaningId, LearnerComment learnerComment) {
+
+		return mainDb
+				.insertInto(
+						LEARNER_COMMENT,
+						LEARNER_COMMENT.MEANING_ID,
+						LEARNER_COMMENT.VALUE,
+						LEARNER_COMMENT.VALUE_PRESE,
+						LEARNER_COMMENT.CREATED_BY,
+						LEARNER_COMMENT.CREATED_ON,
+						LEARNER_COMMENT.MODIFIED_BY,
+						LEARNER_COMMENT.MODIFIED_ON)
+				.values(
+						meaningId,
+						learnerComment.getValue(),
+						learnerComment.getValuePrese(),
+						learnerComment.getCreatedBy(),
+						learnerComment.getCreatedOn(),
+						learnerComment.getModifiedBy(),
+						learnerComment.getModifiedOn())
+				.returning(LEARNER_COMMENT.ID)
 				.fetchOne()
 				.getId();
 	}
@@ -1452,15 +1580,20 @@ public class CudDbService extends AbstractDataDbService {
 	}
 
 	public Long createMeaningSemanticType(Long meaningId, String semanticTypeCode) {
+
 		Long meaningSemanticTypeCodeId = mainDb
-				.select(MEANING_SEMANTIC_TYPE.ID).from(MEANING_SEMANTIC_TYPE)
+				.select(MEANING_SEMANTIC_TYPE.ID)
+				.from(MEANING_SEMANTIC_TYPE)
 				.where(MEANING_SEMANTIC_TYPE.MEANING_ID.eq(meaningId)
 						.and(MEANING_SEMANTIC_TYPE.SEMANTIC_TYPE_CODE.eq(semanticTypeCode)))
 				.limit(1)
 				.fetchOneInto(Long.class);
 		if (meaningSemanticTypeCodeId == null) {
 			meaningSemanticTypeCodeId = mainDb
-					.insertInto(MEANING_SEMANTIC_TYPE, MEANING_SEMANTIC_TYPE.MEANING_ID, MEANING_SEMANTIC_TYPE.SEMANTIC_TYPE_CODE)
+					.insertInto(
+							MEANING_SEMANTIC_TYPE,
+							MEANING_SEMANTIC_TYPE.MEANING_ID,
+							MEANING_SEMANTIC_TYPE.SEMANTIC_TYPE_CODE)
 					.values(meaningId, semanticTypeCode)
 					.returning(MEANING_SEMANTIC_TYPE.ID)
 					.fetchOne()
@@ -1686,6 +1819,60 @@ public class CudDbService extends AbstractDataDbService {
 					.getId();
 		}
 		return lexemeRegionId;
+	}
+
+	public Long createGrammar(Long lexemeId, Grammar grammar) {
+
+		return mainDb
+				.insertInto(
+						GRAMMAR,
+						GRAMMAR.LEXEME_ID,
+						GRAMMAR.VALUE,
+						GRAMMAR.VALUE_PRESE,
+						GRAMMAR.LANG,
+						GRAMMAR.COMPLEXITY,
+						GRAMMAR.CREATED_BY,
+						GRAMMAR.CREATED_ON,
+						GRAMMAR.MODIFIED_BY,
+						GRAMMAR.MODIFIED_ON)
+				.values(
+						lexemeId,
+						grammar.getValue(),
+						grammar.getValuePrese(),
+						grammar.getLang(),
+						grammar.getComplexity().name(),
+						grammar.getCreatedBy(),
+						grammar.getCreatedOn(),
+						grammar.getModifiedBy(),
+						grammar.getModifiedOn())
+				.returning(GRAMMAR.ID)
+				.fetchOne()
+				.getId();
+	}
+
+	public Long createGovernment(Long lexemeId, Government government) {
+
+		return mainDb
+				.insertInto(
+						GOVERNMENT,
+						GOVERNMENT.LEXEME_ID,
+						GOVERNMENT.VALUE,
+						GOVERNMENT.COMPLEXITY,
+						GOVERNMENT.CREATED_BY,
+						GOVERNMENT.CREATED_ON,
+						GOVERNMENT.MODIFIED_BY,
+						GOVERNMENT.MODIFIED_ON)
+				.values(
+						lexemeId,
+						government.getValue(),
+						government.getComplexity().name(),
+						government.getCreatedBy(),
+						government.getCreatedOn(),
+						government.getModifiedBy(),
+						government.getModifiedOn())
+				.returning(GOVERNMENT.ID)
+				.fetchOne()
+				.getId();
 	}
 
 	public Long createUsage(Long lexemeId, Usage usage) {
@@ -1947,6 +2134,20 @@ public class CudDbService extends AbstractDataDbService {
 				.execute();
 	}
 
+	public void deleteGovernment(Long governmentId) {
+		mainDb
+				.delete(GOVERNMENT)
+				.where(GOVERNMENT.ID.eq(governmentId))
+				.execute();
+	}
+
+	public void deleteGrammar(Long grammarId) {
+		mainDb
+				.delete(GRAMMAR)
+				.where(GRAMMAR.ID.eq(grammarId))
+				.execute();
+	}
+
 	public void deleteUsage(Long usageId) {
 		mainDb
 				.deleteFrom(USAGE)
@@ -2093,6 +2294,20 @@ public class CudDbService extends AbstractDataDbService {
 		mainDb
 				.delete(MEANING_DOMAIN)
 				.where(MEANING_DOMAIN.ID.eq(meaningDomainId))
+				.execute();
+	}
+
+	public void deleteLearnerComment(Long learnerCommentId) {
+		mainDb
+				.deleteFrom(LEARNER_COMMENT)
+				.where(LEARNER_COMMENT.ID.eq(learnerCommentId))
+				.execute();
+	}
+
+	public void deleteMeaningMedia(Long meaningMediaId) {
+		mainDb
+				.deleteFrom(MEANING_MEDIA)
+				.where(MEANING_MEDIA.ID.eq(meaningMediaId))
 				.execute();
 	}
 

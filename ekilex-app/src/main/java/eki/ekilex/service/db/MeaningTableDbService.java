@@ -194,7 +194,7 @@ public class MeaningTableDbService implements GlobalConstant, SystemConstant, Fr
 				.where(
 						wherel.and(lff.LEXEME_ID.eq(l.ID))
 								.and(lff.FREEFORM_ID.eq(ff.ID))
-								.and(ff.FREEFORM_TYPE_CODE.eq(USAGE_CODE)))
+								.and(ff.FREEFORM_TYPE_CODE.eq("USAGE")))
 				.asField();
 		return uf;
 	}

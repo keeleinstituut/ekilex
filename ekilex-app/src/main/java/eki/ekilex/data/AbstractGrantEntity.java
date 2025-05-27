@@ -3,8 +3,6 @@ package eki.ekilex.data;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
-import eki.common.data.AbstractDataObject;
-
 @JsonIgnoreProperties({"crudGrant", "readGrant", "subGrant", "anyGrant"})
 public abstract class AbstractGrantEntity extends AbstractPublishingEntity {
 
