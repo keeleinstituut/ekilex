@@ -179,7 +179,6 @@ dblink(
 	region_codes varchar(100) array,
 	deriv_codes varchar(100) array,
 	meaning_words json,
-	advice_notes text array,
 	notes json,
 	grammars json,
 	governments json,

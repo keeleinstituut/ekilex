@@ -4,6 +4,9 @@
 package eki.wordweb.data.db;
 
 
+import org.jooq.Configuration;
+import org.jooq.Field;
+
 import eki.wordweb.data.db.routines.DaitchMokotoff;
 import eki.wordweb.data.db.routines.Difference;
 import eki.wordweb.data.db.routines.Dmetaphone;
@@ -46,9 +49,6 @@ import eki.wordweb.data.db.routines.WordSimilarityCommutatorOp;
 import eki.wordweb.data.db.routines.WordSimilarityDistCommutatorOp;
 import eki.wordweb.data.db.routines.WordSimilarityDistOp;
 import eki.wordweb.data.db.routines.WordSimilarityOp;
-
-import org.jooq.Configuration;
-import org.jooq.Field;
 
 
 /**

@@ -352,7 +352,6 @@ public class WordConversionUtil extends AbstractConversionUtil {
 						|| (lexemeWord.getValueState() != null);
 				boolean isShowSection2 = CollectionUtils.isNotEmpty(lexemeWord.getRelatedLexemes())
 						|| CollectionUtils.isNotEmpty(lexemeWord.getRelatedMeanings())
-						|| CollectionUtils.isNotEmpty(lexemeWord.getAdviceNotes())
 						|| CollectionUtils.isNotEmpty(lexemeWord.getLearnerComments())
 						|| CollectionUtils.isNotEmpty(lexemeWord.getLexemeNotes())
 						|| CollectionUtils.isNotEmpty(lexemeWord.getMeaningNotes())

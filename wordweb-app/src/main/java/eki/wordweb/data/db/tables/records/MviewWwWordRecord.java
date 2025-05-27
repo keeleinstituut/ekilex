@@ -4,14 +4,14 @@
 package eki.wordweb.data.db.tables.records;
 
 
-import eki.wordweb.data.db.tables.MviewWwWord;
-import eki.wordweb.data.db.udt.records.TypeLangComplexityRecord;
-
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 import org.jooq.JSON;
 import org.jooq.impl.TableRecordImpl;
+
+import eki.wordweb.data.db.tables.MviewWwWord;
+import eki.wordweb.data.db.udt.records.TypeLangComplexityRecord;
 
 
 /**

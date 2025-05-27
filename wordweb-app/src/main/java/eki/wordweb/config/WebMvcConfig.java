@@ -1,6 +1,7 @@
 package eki.wordweb.config;
 
-import eki.wordweb.web.interceptor.PageRequestPostHandler;
+import java.util.Locale;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
 import org.springframework.context.annotation.Bean;
@@ -14,7 +15,7 @@ import org.springframework.web.servlet.i18n.LocaleChangeInterceptor;
 import org.springframework.web.servlet.i18n.SessionLocaleResolver;
 import org.springframework.web.util.UrlPathHelper;
 
-import java.util.Locale;
+import eki.wordweb.web.interceptor.PageRequestPostHandler;
 
 @ConditionalOnWebApplication
 @Configuration

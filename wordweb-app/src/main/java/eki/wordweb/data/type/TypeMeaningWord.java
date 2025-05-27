@@ -32,7 +32,7 @@ public class TypeMeaningWord extends WordTypeData implements ComplexityType {
 
 	private List<String> mwLexGovernmentValues;
 
-	private List<TypeFreeform> mwLexGovernments;
+	private List<TypeValueEntity> mwLexGovernments;
 
 	private List<String> mwLexRegisterCodes;
 
@@ -115,11 +115,11 @@ public class TypeMeaningWord extends WordTypeData implements ComplexityType {
 		this.mwLexGovernmentValues = mwLexGovernmentValues;
 	}
 
-	public List<TypeFreeform> getMwLexGovernments() {
+	public List<TypeValueEntity> getMwLexGovernments() {
 		return mwLexGovernments;
 	}
 
-	public void setMwLexGovernments(List<TypeFreeform> mwLexGovernments) {
+	public void setMwLexGovernments(List<TypeValueEntity> mwLexGovernments) {
 		this.mwLexGovernments = mwLexGovernments;
 	}
 

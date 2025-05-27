@@ -4,12 +4,12 @@
 package eki.wordweb.data.db.tables.records;
 
 
-import eki.wordweb.data.db.tables.MviewWwNewWordMenu;
-
 import org.jooq.Field;
 import org.jooq.Record6;
 import org.jooq.Row6;
 import org.jooq.impl.TableRecordImpl;
+
+import eki.wordweb.data.db.tables.MviewWwNewWordMenu;
 
 
 /**

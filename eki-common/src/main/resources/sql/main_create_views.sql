@@ -5,7 +5,6 @@ drop view if exists view_ww_word;
 drop view if exists view_ww_form;
 drop view if exists view_ww_meaning;
 drop view if exists view_ww_lexeme;
-drop view if exists view_ww_collocation; -- to be removed later
 drop view if exists view_ww_colloc_pos_group;
 drop view if exists view_ww_word_etymology;
 drop view if exists view_ww_word_relation;
@@ -118,7 +117,7 @@ create type type_meaning_word as (
 				mw_lexeme_id bigint,
 				mw_lex_complexity varchar(100),
 				mw_lex_weight numeric(5,4),
-				mw_lex_governments json, -- type_freeform
+				mw_lex_governments json, -- type_value_entity
 				mw_lex_register_codes varchar(100) array,
 				mw_lex_value_state_code varchar(100),
 				word_id bigint,

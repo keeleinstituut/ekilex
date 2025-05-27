@@ -304,14 +304,6 @@
                     </th:block>
                   </div>
                 </div>
-                <div class="row" th:unless="${#lists.isEmpty(lexeme.adviceNotes)}">
-                  <div class="col-3">
-                    <b th:text="#{label.advice.note}">Keelenõu</b>
-                  </div>
-                  <div class="col-9">
-                    <div th:each="note : ${lexeme.adviceNotes}" th:text="${note}"></div>
-                  </div>
-                </div>
                 <div class="row" th:unless="${#lists.isEmpty(lexeme.learnerComments)}">
                   <div class="col-6">
                     <span th:text="#{label.learner.comment}" class="text-caption">Õppekommentaar</span>

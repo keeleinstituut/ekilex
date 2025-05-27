@@ -4,9 +4,6 @@
 package eki.wordweb.data.db.tables;
 
 
-import eki.wordweb.data.db.Public;
-import eki.wordweb.data.db.tables.records.MviewWwMeaningRecord;
-
 import java.time.LocalDateTime;
 
 import org.jooq.Field;
@@ -22,6 +19,9 @@ import org.jooq.TableOptions;
 import org.jooq.impl.DSL;
 import org.jooq.impl.SQLDataType;
 import org.jooq.impl.TableImpl;
+
+import eki.wordweb.data.db.Public;
+import eki.wordweb.data.db.tables.records.MviewWwMeaningRecord;
 
 
 /**

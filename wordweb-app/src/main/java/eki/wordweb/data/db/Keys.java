@@ -4,6 +4,12 @@
 package eki.wordweb.data.db;
 
 
+import org.jooq.ForeignKey;
+import org.jooq.TableField;
+import org.jooq.UniqueKey;
+import org.jooq.impl.DSL;
+import org.jooq.impl.Internal;
+
 import eki.wordweb.data.db.tables.LexicalDecisionData;
 import eki.wordweb.data.db.tables.LexicalDecisionResult;
 import eki.wordweb.data.db.tables.SimilarityJudgementData;
@@ -12,12 +18,6 @@ import eki.wordweb.data.db.tables.records.LexicalDecisionDataRecord;
 import eki.wordweb.data.db.tables.records.LexicalDecisionResultRecord;
 import eki.wordweb.data.db.tables.records.SimilarityJudgementDataRecord;
 import eki.wordweb.data.db.tables.records.SimilarityJudgementResultRecord;
-
-import org.jooq.ForeignKey;
-import org.jooq.TableField;
-import org.jooq.UniqueKey;
-import org.jooq.impl.DSL;
-import org.jooq.impl.Internal;
 
 
 /**

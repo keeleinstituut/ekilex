@@ -16,8 +16,8 @@ import org.springframework.web.context.request.RequestContextHolder;
 
 import eki.common.constant.GlobalConstant;
 import eki.wordweb.constant.WebConstant;
-import eki.wordweb.data.LexicalDecisionGameRow;
 import eki.wordweb.data.GameStat;
+import eki.wordweb.data.LexicalDecisionGameRow;
 import eki.wordweb.service.GameDataService;
 
 @Controller

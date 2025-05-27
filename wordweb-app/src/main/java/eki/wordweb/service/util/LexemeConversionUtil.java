@@ -25,7 +25,6 @@ import eki.wordweb.data.SearchContext;
 import eki.wordweb.data.Word;
 import eki.wordweb.data.WordTypeData;
 import eki.wordweb.data.type.TypeDefinition;
-import eki.wordweb.data.type.TypeFreeform;
 import eki.wordweb.data.type.TypeLexemeRelation;
 import eki.wordweb.data.type.TypeMeaningRelation;
 import eki.wordweb.data.type.TypeMeaningWord;
@@ -33,6 +32,7 @@ import eki.wordweb.data.type.TypeMediaFile;
 import eki.wordweb.data.type.TypeNote;
 import eki.wordweb.data.type.TypeSourceLink;
 import eki.wordweb.data.type.TypeUsage;
+import eki.wordweb.data.type.TypeValueEntity;
 
 @Component
 public class LexemeConversionUtil extends AbstractConversionUtil {
@@ -237,8 +237,8 @@ public class LexemeConversionUtil extends AbstractConversionUtil {
 		lexemeWord.setCollocPosGroups(new ArrayList<>());
 
 		List<TypeSourceLink> lexemeSourceLinks = lexemeWord.getLexemeSourceLinks();
-		List<TypeFreeform> grammars = lexemeWord.getGrammars();
-		List<TypeFreeform> governments = lexemeWord.getGovernments();
+		List<TypeValueEntity> grammars = lexemeWord.getGrammars();
+		List<TypeValueEntity> governments = lexemeWord.getGovernments();
 
 		convertUrlsToHrefs(lexemeSourceLinks);
 		lexemeWord.setGrammars(filter(grammars, lexComplexity));

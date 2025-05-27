@@ -4,10 +4,6 @@
 package eki.wordweb.data.db.tables;
 
 
-import eki.wordweb.data.db.Public;
-import eki.wordweb.data.db.tables.records.MviewWwLexemeRecord;
-import eki.wordweb.data.db.udt.records.TypeLangComplexityRecord;
-
 import java.math.BigDecimal;
 
 import org.jooq.Field;
@@ -22,6 +18,10 @@ import org.jooq.TableOptions;
 import org.jooq.impl.DSL;
 import org.jooq.impl.SQLDataType;
 import org.jooq.impl.TableImpl;
+
+import eki.wordweb.data.db.Public;
+import eki.wordweb.data.db.tables.records.MviewWwLexemeRecord;
+import eki.wordweb.data.db.udt.records.TypeLangComplexityRecord;
 
 
 /**
@@ -149,11 +149,6 @@ public class MviewWwLexeme extends TableImpl<MviewWwLexemeRecord> {
      * The column <code>public.mview_ww_lexeme.meaning_words</code>.
      */
     public final TableField<MviewWwLexemeRecord, JSON> MEANING_WORDS = createField(DSL.name("meaning_words"), SQLDataType.JSON, this, "");
-
-    /**
-     * The column <code>public.mview_ww_lexeme.advice_notes</code>.
-     */
-    public final TableField<MviewWwLexemeRecord, String[]> ADVICE_NOTES = createField(DSL.name("advice_notes"), SQLDataType.CLOB.getArrayDataType(), this, "");
 
     /**
      * The column <code>public.mview_ww_lexeme.notes</code>.

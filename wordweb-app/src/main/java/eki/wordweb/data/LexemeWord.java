@@ -14,7 +14,6 @@ import eki.common.data.Classifier;
 import eki.common.data.LexemeLevel;
 import eki.common.util.LocalDateTimeDeserialiser;
 import eki.wordweb.data.type.TypeDefinition;
-import eki.wordweb.data.type.TypeFreeform;
 import eki.wordweb.data.type.TypeLexemeRelation;
 import eki.wordweb.data.type.TypeMeaningRelation;
 import eki.wordweb.data.type.TypeMeaningWord;
@@ -22,6 +21,7 @@ import eki.wordweb.data.type.TypeMediaFile;
 import eki.wordweb.data.type.TypeNote;
 import eki.wordweb.data.type.TypeSourceLink;
 import eki.wordweb.data.type.TypeUsage;
+import eki.wordweb.data.type.TypeValueEntity;
 
 public class LexemeWord extends WordTypeData implements LexemeLevel, ComplexityType {
 
@@ -67,8 +67,6 @@ public class LexemeWord extends WordTypeData implements LexemeLevel, ComplexityT
 
 	private Long lexemeOrderBy;
 
-	private List<String> adviceNotes;
-
 	private List<TypeNote> lexemeNotes;
 
 	private Map<String, List<TypeNote>> lexemeNotesByLang;
@@ -77,9 +75,9 @@ public class LexemeWord extends WordTypeData implements LexemeLevel, ComplexityT
 
 	private Map<String, List<TypeNote>> meaningNotesByLang;
 
-	private List<TypeFreeform> grammars;
+	private List<TypeValueEntity> grammars;
 
-	private List<TypeFreeform> governments;
+	private List<TypeValueEntity> governments;
 
 	private List<TypeUsage> usages;
 
@@ -315,14 +313,6 @@ public class LexemeWord extends WordTypeData implements LexemeLevel, ComplexityT
 		this.lexemeOrderBy = lexemeOrderBy;
 	}
 
-	public List<String> getAdviceNotes() {
-		return adviceNotes;
-	}
-
-	public void setAdviceNotes(List<String> adviceNotes) {
-		this.adviceNotes = adviceNotes;
-	}
-
 	public List<TypeNote> getLexemeNotes() {
 		return lexemeNotes;
 	}
@@ -355,19 +345,19 @@ public class LexemeWord extends WordTypeData implements LexemeLevel, ComplexityT
 		this.meaningNotesByLang = meaningNotesByLang;
 	}
 
-	public List<TypeFreeform> getGrammars() {
+	public List<TypeValueEntity> getGrammars() {
 		return grammars;
 	}
 
-	public void setGrammars(List<TypeFreeform> grammars) {
+	public void setGrammars(List<TypeValueEntity> grammars) {
 		this.grammars = grammars;
 	}
 
-	public List<TypeFreeform> getGovernments() {
+	public List<TypeValueEntity> getGovernments() {
 		return governments;
 	}
 
-	public void setGovernments(List<TypeFreeform> governments) {
+	public void setGovernments(List<TypeValueEntity> governments) {
 		this.governments = governments;
 	}
 

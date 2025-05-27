@@ -4,13 +4,13 @@
 package eki.wordweb.data.db.tables.records;
 
 
-import eki.wordweb.data.db.tables.SimilarityJudgementData;
-
 import org.jooq.Field;
 import org.jooq.Record1;
 import org.jooq.Record5;
 import org.jooq.Row5;
 import org.jooq.impl.UpdatableRecordImpl;
+
+import eki.wordweb.data.db.tables.SimilarityJudgementData;
 
 
 /**
