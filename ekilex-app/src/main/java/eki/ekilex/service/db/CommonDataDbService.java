@@ -79,7 +79,6 @@ import eki.ekilex.data.Dataset;
 import eki.ekilex.data.LexemeRelation;
 import eki.ekilex.data.MeaningForum;
 import eki.ekilex.data.MeaningWord;
-import eki.ekilex.data.Media;
 import eki.ekilex.data.OrderedClassifier;
 import eki.ekilex.data.Origin;
 import eki.ekilex.data.SearchLangsRestriction;
@@ -100,6 +99,7 @@ import eki.ekilex.data.db.main.tables.FreeformSourceLink;
 import eki.ekilex.data.db.main.tables.FreeformType;
 import eki.ekilex.data.db.main.tables.FreeformTypeLabel;
 import eki.ekilex.data.db.main.tables.Government;
+import eki.ekilex.data.db.main.tables.Grammar;
 import eki.ekilex.data.db.main.tables.Language;
 import eki.ekilex.data.db.main.tables.LanguageLabel;
 import eki.ekilex.data.db.main.tables.LexRelTypeLabel;
@@ -408,9 +408,7 @@ public class CommonDataDbService extends AbstractDataDbService {
 						f.VALUE,
 						f.VALUE_PRESE,
 						f.LANG,
-						f.COMPLEXITY,
 						f.ORDER_BY,
-						f.IS_PUBLIC,
 						f.CREATED_BY,
 						f.CREATED_ON,
 						f.MODIFIED_BY,
@@ -477,9 +475,7 @@ public class CommonDataDbService extends AbstractDataDbService {
 						f.VALUE,
 						f.VALUE_PRESE,
 						f.LANG,
-						f.COMPLEXITY,
 						f.ORDER_BY,
-						f.IS_PUBLIC,
 						f.CREATED_BY,
 						f.CREATED_ON,
 						f.MODIFIED_BY,
@@ -527,9 +523,7 @@ public class CommonDataDbService extends AbstractDataDbService {
 						f.VALUE,
 						f.VALUE_PRESE,
 						f.LANG,
-						f.COMPLEXITY,
 						f.ORDER_BY,
-						f.IS_PUBLIC,
 						f.CREATED_BY,
 						f.CREATED_ON,
 						f.MODIFIED_BY,
@@ -562,6 +556,10 @@ public class CommonDataDbService extends AbstractDataDbService {
 		MeaningNoteSourceLink mnsl = MEANING_NOTE_SOURCE_LINK.as("mnsl");
 		Source s = SOURCE.as("s");
 
+		Field<Boolean> wwupf = queryHelper.getPublishingField(TARGET_NAME_WW_UNIF, ENTITY_NAME_MEANING_NOTE, mn.ID);
+		Field<Boolean> wwlpf = queryHelper.getPublishingField(TARGET_NAME_WW_LITE, ENTITY_NAME_MEANING_NOTE, mn.ID);
+		Field<Boolean> wwopf = queryHelper.getPublishingField(TARGET_NAME_WW_OD, ENTITY_NAME_MEANING_NOTE, mn.ID);
+
 		Field<JSON> mnslf = DSL
 				.select(DSL
 						.jsonArrayAgg(DSL
@@ -592,6 +590,9 @@ public class CommonDataDbService extends AbstractDataDbService {
 						mn.MODIFIED_ON,
 						mn.MODIFIED_BY,
 						mn.ORDER_BY,
+						wwupf.as("is_ww_unif"),
+						wwlpf.as("is_ww_lite"),
+						wwopf.as("is_ww_od"),
 						mnslf.as("source_links"))
 				.from(mn)
 				.where(mn.MEANING_ID.eq(meaningId))
@@ -599,11 +600,15 @@ public class CommonDataDbService extends AbstractDataDbService {
 				.fetchInto(eki.ekilex.data.MeaningNote.class);
 	}
 
-	public List<Media> getMeaningImages(Long meaningId) {
+	public List<eki.ekilex.data.MeaningImage> getMeaningImages(Long meaningId) {
 
 		MeaningImage mi = MEANING_IMAGE.as("mi");
 		MeaningImageSourceLink misl = MEANING_IMAGE_SOURCE_LINK.as("misl");
 		Source s = SOURCE.as("s");
+
+		Field<Boolean> wwupf = queryHelper.getPublishingField(TARGET_NAME_WW_UNIF, ENTITY_NAME_MEANING_IMAGE, mi.ID);
+		Field<Boolean> wwlpf = queryHelper.getPublishingField(TARGET_NAME_WW_LITE, ENTITY_NAME_MEANING_IMAGE, mi.ID);
+		Field<Boolean> wwopf = queryHelper.getPublishingField(TARGET_NAME_WW_OD, ENTITY_NAME_MEANING_IMAGE, mi.ID);
 
 		Field<JSON> mislf = DSL
 				.select(DSL
@@ -624,28 +629,38 @@ public class CommonDataDbService extends AbstractDataDbService {
 		return mainDb
 				.select(
 						mi.ID,
-						mi.URL.as("source_url"),
+						mi.URL,
 						mi.TITLE,
 						mi.COMPLEXITY,
+						wwupf.as("is_ww_unif"),
+						wwlpf.as("is_ww_lite"),
+						wwopf.as("is_ww_od"),
 						mislf.as("source_links"))
 				.from(mi)
 				.where(mi.MEANING_ID.eq(meaningId))
 				.orderBy(mi.ORDER_BY)
-				.fetchInto(Media.class);
+				.fetchInto(eki.ekilex.data.MeaningImage.class);
 	}
 
-	public List<Media> getMeaningMedias(Long meaningId) {
+	public List<eki.ekilex.data.MeaningMedia> getMeaningMedias(Long meaningId) {
 
 		MeaningMedia mm = MEANING_MEDIA.as("mm");
+
+		Field<Boolean> wwupf = queryHelper.getPublishingField(TARGET_NAME_WW_UNIF, ENTITY_NAME_MEANING_MEDIA, mm.ID);
+		Field<Boolean> wwlpf = queryHelper.getPublishingField(TARGET_NAME_WW_LITE, ENTITY_NAME_MEANING_MEDIA, mm.ID);
+		Field<Boolean> wwopf = queryHelper.getPublishingField(TARGET_NAME_WW_OD, ENTITY_NAME_MEANING_MEDIA, mm.ID);
 
 		return mainDb
 				.select(
 						mm.ID,
-						mm.URL.as("sourceUrl"),
-						mm.COMPLEXITY)
+						mm.URL,
+						mm.COMPLEXITY,
+						wwupf.as("is_ww_unif"),
+						wwlpf.as("is_ww_lite"),
+						wwopf.as("is_ww_od"))
 				.from(mm)
 				.where(mm.MEANING_ID.eq(meaningId))
-				.fetchInto(Media.class);
+				.fetchInto(eki.ekilex.data.MeaningMedia.class);
 	}
 
 	public List<OrderedClassifier> getMeaningDomains(Long meaningId, String classifierLabelLang) {
@@ -751,13 +766,11 @@ public class CommonDataDbService extends AbstractDataDbService {
 										DSL.key("value").value(dn.VALUE),
 										DSL.key("valuePrese").value(dn.VALUE_PRESE),
 										DSL.key("lang").value(dn.LANG),
-										DSL.key("complexity").value(dn.COMPLEXITY),
 										DSL.key("public").value(dn.IS_PUBLIC),
 										DSL.key("createdOn").value(dn.CREATED_ON),
 										DSL.key("createdBy").value(dn.CREATED_BY),
 										DSL.key("modifiedOn").value(dn.MODIFIED_ON),
 										DSL.key("modifiedBy").value(dn.MODIFIED_BY),
-										DSL.key("orderBy").value(dn.ORDER_BY),
 										DSL.key("sourceLinks").value(dnslf)))
 						.orderBy(dn.ORDER_BY))
 				.from(dn)
@@ -1120,9 +1133,7 @@ public class CommonDataDbService extends AbstractDataDbService {
 						f.VALUE,
 						f.VALUE_PRESE,
 						f.LANG,
-						f.COMPLEXITY,
 						f.ORDER_BY,
-						f.IS_PUBLIC,
 						f.CREATED_BY,
 						f.CREATED_ON,
 						f.MODIFIED_BY,
@@ -1141,39 +1152,56 @@ public class CommonDataDbService extends AbstractDataDbService {
 	}
 
 	public List<eki.ekilex.data.Grammar> getLexemeGrammars(Long lexemeId) {
+
+		Grammar g = GRAMMAR.as("g");
+		Field<Boolean> wwupf = queryHelper.getPublishingField(TARGET_NAME_WW_UNIF, ENTITY_NAME_GRAMMAR, g.ID);
+		Field<Boolean> wwlpf = queryHelper.getPublishingField(TARGET_NAME_WW_LITE, ENTITY_NAME_GRAMMAR, g.ID);
+		Field<Boolean> wwopf = queryHelper.getPublishingField(TARGET_NAME_WW_OD, ENTITY_NAME_GRAMMAR, g.ID);
+
 		return mainDb
 				.select(
-						GRAMMAR.ID,
-						GRAMMAR.VALUE,
-						GRAMMAR.VALUE_PRESE,
-						GRAMMAR.LANG,
-						GRAMMAR.COMPLEXITY,
-						GRAMMAR.CREATED_BY,
-						GRAMMAR.CREATED_ON,
-						GRAMMAR.MODIFIED_BY,
-						GRAMMAR.MODIFIED_ON,
-						GRAMMAR.ORDER_BY)
-				.from(GRAMMAR)
-				.where(GRAMMAR.LEXEME_ID.eq(lexemeId))
-				.orderBy(GRAMMAR.ORDER_BY)
+						g.ID,
+						g.VALUE,
+						g.VALUE_PRESE,
+						g.LANG,
+						g.COMPLEXITY,
+						g.CREATED_BY,
+						g.CREATED_ON,
+						g.MODIFIED_BY,
+						g.MODIFIED_ON,
+						g.ORDER_BY,
+						wwupf.as("is_ww_unif"),
+						wwlpf.as("is_ww_lite"),
+						wwopf.as("is_ww_od"))
+				.from(g)
+				.where(g.LEXEME_ID.eq(lexemeId))
+				.orderBy(g.ORDER_BY)
 				.fetchInto(eki.ekilex.data.Grammar.class);
 	}
 
 	public List<eki.ekilex.data.Government> getLexemeGovernments(Long lexemeId) {
 
+		Government g = GOVERNMENT.as("g");
+		Field<Boolean> wwupf = queryHelper.getPublishingField(TARGET_NAME_WW_UNIF, ENTITY_NAME_GOVERNMENT, g.ID);
+		Field<Boolean> wwlpf = queryHelper.getPublishingField(TARGET_NAME_WW_LITE, ENTITY_NAME_GOVERNMENT, g.ID);
+		Field<Boolean> wwopf = queryHelper.getPublishingField(TARGET_NAME_WW_OD, ENTITY_NAME_GOVERNMENT, g.ID);
+
 		return mainDb
 				.select(
-						GOVERNMENT.ID,
-						GOVERNMENT.VALUE,
-						GOVERNMENT.COMPLEXITY,
-						GOVERNMENT.CREATED_BY,
-						GOVERNMENT.CREATED_ON,
-						GOVERNMENT.MODIFIED_BY,
-						GOVERNMENT.MODIFIED_ON,
-						GOVERNMENT.ORDER_BY)
-				.from(GOVERNMENT)
-				.where(GOVERNMENT.LEXEME_ID.eq(lexemeId))
-				.orderBy(GOVERNMENT.ORDER_BY)
+						g.ID,
+						g.VALUE,
+						g.COMPLEXITY,
+						g.CREATED_BY,
+						g.CREATED_ON,
+						g.MODIFIED_BY,
+						g.MODIFIED_ON,
+						g.ORDER_BY,
+						wwupf.as("is_ww_unif"),
+						wwlpf.as("is_ww_lite"),
+						wwopf.as("is_ww_od"))
+				.from(g)
+				.where(g.LEXEME_ID.eq(lexemeId))
+				.orderBy(g.ORDER_BY)
 				.fetchInto(eki.ekilex.data.Government.class);
 	}
 
@@ -1184,6 +1212,10 @@ public class CommonDataDbService extends AbstractDataDbService {
 		UsageDefinition ud = USAGE_DEFINITION.as("ud");
 		UsageSourceLink usl = USAGE_SOURCE_LINK.as("usl");
 		Source s = SOURCE.as("s");
+
+		Field<Boolean> wwupf = queryHelper.getPublishingField(TARGET_NAME_WW_UNIF, ENTITY_NAME_USAGE, u.ID);
+		Field<Boolean> wwlpf = queryHelper.getPublishingField(TARGET_NAME_WW_LITE, ENTITY_NAME_USAGE, u.ID);
+		Field<Boolean> wwopf = queryHelper.getPublishingField(TARGET_NAME_WW_OD, ENTITY_NAME_USAGE, u.ID);
 
 		Field<JSON> utf = DSL
 				.select(DSL
@@ -1252,6 +1284,9 @@ public class CommonDataDbService extends AbstractDataDbService {
 						u.MODIFIED_BY,
 						u.MODIFIED_BY,
 						u.ORDER_BY,
+						wwupf.as("is_ww_unif"),
+						wwlpf.as("is_ww_lite"),
+						wwopf.as("is_ww_od"),
 						utf.as("translations"),
 						udf.as("definitions"),
 						uslf.as("source_links"))

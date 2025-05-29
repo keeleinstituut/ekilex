@@ -2,7 +2,10 @@ package eki.ekilex.service.db;
 
 import static eki.ekilex.data.db.main.Tables.DEFINITION;
 import static eki.ekilex.data.db.main.Tables.LEXEME;
+import static eki.ekilex.data.db.main.Tables.LEXEME_NOTE;
+import static eki.ekilex.data.db.main.Tables.MEANING_NOTE;
 import static eki.ekilex.data.db.main.Tables.PUBLISHING;
+import static eki.ekilex.data.db.main.Tables.USAGE;
 
 import org.jooq.DSLContext;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,6 +25,33 @@ public class PublishingDbService {
 				.update(LEXEME)
 				.set(LEXEME.IS_PUBLIC, isPublic)
 				.where(LEXEME.ID.eq(lexemeId))
+				.execute();
+	}
+
+	public void updateLexemeNotePublicity(Long lexemeNoteId, boolean isPublic) {
+
+		mainDb
+				.update(LEXEME_NOTE)
+				.set(LEXEME_NOTE.IS_PUBLIC, isPublic)
+				.where(LEXEME_NOTE.ID.eq(lexemeNoteId))
+				.execute();
+	}
+
+	public void updateUsagePublicity(Long usageId, boolean isPublic) {
+
+		mainDb
+				.update(USAGE)
+				.set(USAGE.IS_PUBLIC, isPublic)
+				.where(USAGE.ID.eq(usageId))
+				.execute();
+	}
+
+	public void updateMeaningNotePublicity(Long meaningNoteId, boolean isPublic) {
+
+		mainDb
+				.update(MEANING_NOTE)
+				.set(MEANING_NOTE.IS_PUBLIC, isPublic)
+				.where(MEANING_NOTE.ID.eq(meaningNoteId))
 				.execute();
 	}
 

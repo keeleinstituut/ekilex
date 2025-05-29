@@ -73,7 +73,7 @@ public class CompositionService extends AbstractService implements PermConstant 
 		List<LexemeRecord> sourceLexemes = lookupDbService.getLexemeRecordsByMeaning(sourceMeaningId);
 		for (LexemeRecord sourceLexeme : sourceLexemes) {
 			Long sourceLexemeId = sourceLexeme.getId();
-			Long targetLexemeId = cloneLexemeAndData(sourceLexemeId, targetMeaningId, null, publicDataOnly, roleDatasetCode, isManualEventOnUpdateEnabled);
+			Long targetLexemeId = cloneLexemeAndData(sourceLexemeId, targetMeaningId, null, roleDatasetCode, isManualEventOnUpdateEnabled);
 			sourceTargetLexemeIdMap.put(sourceLexemeId, targetLexemeId);
 		}
 		cloneLexemeRelations(sourceTargetLexemeIdMap, roleDatasetCode, isManualEventOnUpdateEnabled);
@@ -95,7 +95,7 @@ public class CompositionService extends AbstractService implements PermConstant 
 		List<LexemeRecord> sourceLexemes = lookupDbService.getLexemeRecordsByMeaning(sourceMeaningId, datasetCode);
 		for (LexemeRecord sourceLexeme : sourceLexemes) {
 			Long sourceLexemeId = sourceLexeme.getId();
-			Long targetLexemeId = cloneLexemeAndData(sourceLexemeId, targetMeaningId, null, isPublicDataOnly, roleDatasetCode, isManualEventOnUpdateEnabled);
+			Long targetLexemeId = cloneLexemeAndData(sourceLexemeId, targetMeaningId, null, roleDatasetCode, isManualEventOnUpdateEnabled);
 			sourceTargetLexemeIdMap.put(sourceLexemeId, targetLexemeId);
 		}
 		cloneLexemeRelations(sourceTargetLexemeIdMap, roleDatasetCode, isManualEventOnUpdateEnabled);
@@ -126,7 +126,7 @@ public class CompositionService extends AbstractService implements PermConstant 
 		Long sourceWordId = sourceLexemeRecord.getWordId();
 		String datasetCode = sourceLexemeRecord.getDatasetCode();
 		Long targetWordId = cloneWordAndData(sourceWordId, roleDatasetCode, isManualEventOnUpdateEnabled);
-		Long targetLexemeId = cloneLexemeAndData(sourceLexemeId, null, targetWordId, false, roleDatasetCode, isManualEventOnUpdateEnabled);
+		Long targetLexemeId = cloneLexemeAndData(sourceLexemeId, null, targetWordId, roleDatasetCode, isManualEventOnUpdateEnabled);
 		recalculateAndUpdateAllLexemeLevels(sourceWordId, datasetCode);
 
 		return targetLexemeId;
@@ -243,7 +243,7 @@ public class CompositionService extends AbstractService implements PermConstant 
 		cudDbService.adjustWordHomonymNrs(updatedSimpleWord);
 	}
 
-	private Long cloneLexemeAndData(Long sourceLexemeId, Long targetMeaningId, Long targetWordId, boolean isPublicDataOnly, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
+	private Long cloneLexemeAndData(Long sourceLexemeId, Long targetMeaningId, Long targetWordId, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
 
 		Long targetLexemeId = compositionDbService.cloneLexeme(sourceLexemeId, targetMeaningId, targetWordId);
 		compositionDbService.cloneLexemeUsages(sourceLexemeId, targetLexemeId);
@@ -253,7 +253,7 @@ public class CompositionService extends AbstractService implements PermConstant 
 		compositionDbService.cloneLexemeRegions(sourceLexemeId, targetLexemeId);
 		compositionDbService.cloneLexemePoses(sourceLexemeId, targetLexemeId);
 		compositionDbService.cloneLexemeRegisters(sourceLexemeId, targetLexemeId);
-		compositionDbService.cloneLexemeFreeforms(sourceLexemeId, targetLexemeId, isPublicDataOnly);
+		compositionDbService.cloneLexemeFreeforms(sourceLexemeId, targetLexemeId);
 		compositionDbService.cloneLexemeSoureLinks(sourceLexemeId, targetLexemeId);
 		// cloning of lexeme relations are in separate flow after all lexemes have been cloned
 
@@ -290,7 +290,7 @@ public class CompositionService extends AbstractService implements PermConstant 
 		compositionDbService.cloneMeaningNotes(sourceMeaningId, targetMeaningId);
 		compositionDbService.cloneMeaningImages(sourceMeaningId, targetMeaningId);
 		compositionDbService.cloneMeaningRelations(sourceMeaningId, targetMeaningId);
-		compositionDbService.cloneMeaningFreeforms(sourceMeaningId, targetMeaningId, isPublicDataOnly);
+		compositionDbService.cloneMeaningFreeforms(sourceMeaningId, targetMeaningId);
 		compositionDbService.cloneMeaningDefinitions(sourceMeaningId, targetMeaningId, isPublicDataOnly);
 
 		activityLogService.createActivityLog("cloneMeaningAndData", targetMeaningId, ActivityOwner.MEANING, roleDatasetCode, isManualEventOnUpdateEnabled);

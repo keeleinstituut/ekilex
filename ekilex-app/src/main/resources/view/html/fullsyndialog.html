@@ -54,7 +54,8 @@
   <div th:id="${'editLexemeComplexityDlg_' + synWord.lexemeId}" class="modal select-dlg"
        role="dialog"
        th:fragment="edit_lexeme_complexity_dlg"
-       data-plugin="initSelectDlgPlugin">
+       data-plugin="initSelectDlgPlugin"
+       style="text-decoration: line-through;" title="Asendub avaldamisega">
     <div class="modal-dialog" role="document">
       <div class="modal-content">
         <form th:action="@{/update_item}" method="post">

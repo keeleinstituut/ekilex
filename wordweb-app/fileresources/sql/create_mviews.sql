@@ -146,7 +146,6 @@ dblink(
 	domain_codes json,
 	meaning_images json,
 	media_files json,
-	systematic_polysemy_patterns text array,
 	semantic_types text array,
 	learner_comments text array,
 	notes json,

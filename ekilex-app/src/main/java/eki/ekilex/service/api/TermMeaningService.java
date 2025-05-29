@@ -371,8 +371,6 @@ public class TermMeaningService extends AbstractApiCudService implements Activit
 					freeform.setValue(conceptId);
 					freeform.setValuePrese(conceptId);
 					freeform.setLang(null);
-					freeform.setComplexity(Complexity.DETAIL);
-					freeform.setPublic(PUBLICITY_PUBLIC);
 					activityLog = activityLogService.prepareActivityLog("createMeaningFreeform", meaningId, ActivityOwner.MEANING, roleDatasetCode, MANUAL_EVENT_ON_UPDATE_ENABLED);
 					Long meaningFreeformId = cudDbService.createMeaningFreeform(meaningId, freeform, userName);
 					activityLogService.createActivityLog(activityLog, meaningFreeformId, ActivityEntity.FREEFORM);

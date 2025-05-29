@@ -35,10 +35,11 @@ import eki.ekilex.data.LexemeNote;
 import eki.ekilex.data.LexemeRelation;
 import eki.ekilex.data.Meaning;
 import eki.ekilex.data.MeaningForum;
+import eki.ekilex.data.MeaningImage;
+import eki.ekilex.data.MeaningMedia;
 import eki.ekilex.data.MeaningNote;
 import eki.ekilex.data.MeaningRelation;
 import eki.ekilex.data.MeaningWord;
-import eki.ekilex.data.Media;
 import eki.ekilex.data.NoteLangGroup;
 import eki.ekilex.data.OrderedClassifier;
 import eki.ekilex.data.Paradigm;
@@ -299,8 +300,8 @@ public class LexSearchService extends AbstractWordSearchService {
 			}
 			List<Freeform> meaningFreeforms = commonDataDbService.getMeaningFreeforms(meaningId, CLASSIF_LABEL_LANG_EST);
 			List<LearnerComment> meaningLearnerComments = commonDataDbService.getMeaningLearnerComments(meaningId);
-			List<Media> meaningImages = commonDataDbService.getMeaningImages(meaningId);
-			List<Media> meaningMedias = commonDataDbService.getMeaningMedias(meaningId);
+			List<MeaningImage> meaningImages = commonDataDbService.getMeaningImages(meaningId);
+			List<MeaningMedia> meaningMedias = commonDataDbService.getMeaningMedias(meaningId);
 			List<MeaningNote> meaningNotes = commonDataDbService.getMeaningNotes(meaningId);
 			permCalculator.filterVisibility(user, meaningNotes);
 			List<NoteLangGroup> meaningNoteLangGroups = conversionUtil.composeNoteLangGroups(meaningNotes, languagesOrder);

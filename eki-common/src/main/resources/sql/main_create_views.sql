@@ -92,16 +92,6 @@ create type type_value_entity as (
 				created_on timestamp,
         		modified_by text,
         		modified_on timestamp);
-create type type_freeform as (
-				freeform_id bigint,
-				freeform_type_code varchar(100),
-				value text,
-				lang char(3),
-				complexity varchar(100),
-				created_by text,
-				created_on timestamp,
-        		modified_by text,
-        		modified_on timestamp);
 create type type_colloc_member as (
 				lexeme_id bigint,
 				word_id bigint,
@@ -970,7 +960,6 @@ select m.id meaning_id,
        m_dom.domain_codes,
        m_img.meaning_images,
        m_media.media_files,
-       m_spp.systematic_polysemy_patterns,
        m_smt.semantic_types,
        m_lcm.learner_comments,
        m_pnt.notes,
@@ -1112,13 +1101,6 @@ from (select m.id,
                             ) media_files
                    from meaning_media mm
                    group by mm.meaning_id) m_media on m_media.meaning_id = m.id
-  left outer join (select mf.meaning_id,
-                          array_agg(ff.value order by ff.order_by) systematic_polysemy_patterns
-                   from meaning_freeform mf,
-                        freeform ff
-                   where mf.freeform_id = ff.id
-                   and   ff.freeform_type_code = 'SYSTEMATIC_POLYSEMY_PATTERN'
-                   group by mf.meaning_id) m_spp on m_spp.meaning_id = m.id
   left outer join (select mst.meaning_id,
                           array_agg(mst.semantic_type_code order by mst.order_by) semantic_types
                    from meaning_semantic_type mst

@@ -17,7 +17,7 @@ import org.jooq.ForeignKey;
 import org.jooq.Identity;
 import org.jooq.Name;
 import org.jooq.Record;
-import org.jooq.Row13;
+import org.jooq.Row11;
 import org.jooq.Schema;
 import org.jooq.Table;
 import org.jooq.TableField;
@@ -80,19 +80,9 @@ public class Freeform extends TableImpl<FreeformRecord> {
     public final TableField<FreeformRecord, String> LANG = createField(DSL.name("lang"), SQLDataType.CHAR(3), this, "");
 
     /**
-     * The column <code>public.freeform.complexity</code>.
-     */
-    public final TableField<FreeformRecord, String> COMPLEXITY = createField(DSL.name("complexity"), SQLDataType.VARCHAR(100), this, "");
-
-    /**
      * The column <code>public.freeform.order_by</code>.
      */
     public final TableField<FreeformRecord, Long> ORDER_BY = createField(DSL.name("order_by"), SQLDataType.BIGINT.nullable(false).identity(true), this, "");
-
-    /**
-     * The column <code>public.freeform.is_public</code>.
-     */
-    public final TableField<FreeformRecord, Boolean> IS_PUBLIC = createField(DSL.name("is_public"), SQLDataType.BOOLEAN.nullable(false).defaultValue(DSL.field("true", SQLDataType.BOOLEAN)), this, "");
 
     /**
      * The column <code>public.freeform.created_by</code>.
@@ -224,11 +214,11 @@ public class Freeform extends TableImpl<FreeformRecord> {
     }
 
     // -------------------------------------------------------------------------
-    // Row13 type methods
+    // Row11 type methods
     // -------------------------------------------------------------------------
 
     @Override
-    public Row13<Long, Long, String, String, String, String, String, Long, Boolean, String, LocalDateTime, String, LocalDateTime> fieldsRow() {
-        return (Row13) super.fieldsRow();
+    public Row11<Long, Long, String, String, String, String, Long, String, LocalDateTime, String, LocalDateTime> fieldsRow() {
+        return (Row11) super.fieldsRow();
     }
 }

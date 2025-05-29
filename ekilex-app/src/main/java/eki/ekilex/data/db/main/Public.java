@@ -169,7 +169,6 @@ import eki.ekilex.data.db.main.udt.TypeClassifier;
 import eki.ekilex.data.db.main.udt.TypeCollocMember;
 import eki.ekilex.data.db.main.udt.TypeDefinition;
 import eki.ekilex.data.db.main.udt.TypeDomain;
-import eki.ekilex.data.db.main.udt.TypeFreeform;
 import eki.ekilex.data.db.main.udt.TypeLangComplexity;
 import eki.ekilex.data.db.main.udt.TypeLexemeRelation;
 import eki.ekilex.data.db.main.udt.TypeMeaningRelation;
@@ -1365,7 +1364,6 @@ public class Public extends SchemaImpl {
             TypeCollocMember.TYPE_COLLOC_MEMBER,
             TypeDefinition.TYPE_DEFINITION,
             TypeDomain.TYPE_DOMAIN,
-            TypeFreeform.TYPE_FREEFORM,
             TypeLangComplexity.TYPE_LANG_COMPLEXITY,
             TypeLexemeRelation.TYPE_LEXEME_RELATION,
             TypeMeaningRelation.TYPE_MEANING_RELATION,

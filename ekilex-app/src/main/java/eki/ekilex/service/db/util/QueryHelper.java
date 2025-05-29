@@ -45,6 +45,7 @@ import org.springframework.stereotype.Component;
 import eki.common.constant.ClassifierName;
 import eki.common.constant.GlobalConstant;
 import eki.common.constant.LastActivityType;
+import eki.common.constant.PublishingConstant;
 import eki.ekilex.data.db.main.tables.ActivityLog;
 import eki.ekilex.data.db.main.tables.Dataset;
 import eki.ekilex.data.db.main.tables.DerivLabel;
@@ -77,7 +78,7 @@ import eki.ekilex.data.db.main.tables.WordFreq;
 import eki.ekilex.data.db.main.tables.WordLastActivityLog;
 
 @Component
-public class QueryHelper implements GlobalConstant {
+public class QueryHelper implements GlobalConstant, PublishingConstant {
 
 	public List<Field<?>> getWordFields(Word w) {
 
@@ -235,6 +236,9 @@ public class QueryHelper implements GlobalConstant {
 		Field<JSON> uf = getLexemeUsagesField(l.ID);
 		Field<JSON> lnf = getLexemeNotesField(l.ID);
 		Field<JSON> ltf = getLexemeTagsField(l.ID);
+		Field<Boolean> wwupf = getPublishingField(TARGET_NAME_WW_UNIF, ENTITY_NAME_LEXEME, l.ID);
+		Field<Boolean> wwlpf = getPublishingField(TARGET_NAME_WW_LITE, ENTITY_NAME_LEXEME, l.ID);
+		Field<Boolean> wwopf = getPublishingField(TARGET_NAME_WW_OD, ENTITY_NAME_LEXEME, l.ID);
 
 		fields.add(l.ID.as("lexeme_id"));
 		fields.add(l.WORD_ID);
@@ -262,6 +266,9 @@ public class QueryHelper implements GlobalConstant {
 		fields.add(uf.as("usages"));
 		fields.add(lnf.as("notes"));
 		fields.add(ltf.as("tags"));
+		fields.add(wwupf.as("is_ww_unif"));
+		fields.add(wwlpf.as("is_ww_lite"));
+		fields.add(wwopf.as("is_ww_od"));
 
 		return fields;
 	}
@@ -422,6 +429,10 @@ public class QueryHelper implements GlobalConstant {
 		UsageSourceLink usl = USAGE_SOURCE_LINK.as("usl");
 		Source s = SOURCE.as("s");
 
+		Field<Boolean> wwupf = getPublishingField(TARGET_NAME_WW_UNIF, ENTITY_NAME_USAGE, u.ID);
+		Field<Boolean> wwlpf = getPublishingField(TARGET_NAME_WW_LITE, ENTITY_NAME_USAGE, u.ID);
+		Field<Boolean> wwopf = getPublishingField(TARGET_NAME_WW_OD, ENTITY_NAME_USAGE, u.ID);
+
 		Field<JSON> utf = DSL
 				.select(DSL
 						.jsonArrayAgg(DSL
@@ -491,6 +502,9 @@ public class QueryHelper implements GlobalConstant {
 										DSL.key("modifiedOn").value(u.MODIFIED_ON),
 										DSL.key("modifiedBy").value(u.MODIFIED_BY),
 										DSL.key("orderBy").value(u.ORDER_BY),
+										DSL.key("wwUnif").value(wwupf),
+										DSL.key("wwLite").value(wwlpf),
+										DSL.key("wwOd").value(wwopf),
 										DSL.key("translations").value(utf),
 										DSL.key("definitions").value(udf),
 										DSL.key("sourceLinks").value(uslf)))
@@ -505,6 +519,10 @@ public class QueryHelper implements GlobalConstant {
 		LexemeNote ln = LEXEME_NOTE.as("ln");
 		LexemeNoteSourceLink lnsl = LEXEME_NOTE_SOURCE_LINK.as("lnsl");
 		Source s = SOURCE.as("s");
+
+		Field<Boolean> wwupf = getPublishingField(TARGET_NAME_WW_UNIF, ENTITY_NAME_LEXEME_NOTE, ln.ID);
+		Field<Boolean> wwlpf = getPublishingField(TARGET_NAME_WW_LITE, ENTITY_NAME_LEXEME_NOTE, ln.ID);
+		Field<Boolean> wwopf = getPublishingField(TARGET_NAME_WW_OD, ENTITY_NAME_LEXEME_NOTE, ln.ID);
 
 		Field<JSON> lnslf = DSL
 				.select(DSL
@@ -538,6 +556,9 @@ public class QueryHelper implements GlobalConstant {
 										DSL.key("modifiedOn").value(ln.MODIFIED_ON),
 										DSL.key("modifiedBy").value(ln.MODIFIED_BY),
 										DSL.key("orderBy").value(ln.ORDER_BY),
+										DSL.key("wwUnif").value(wwupf),
+										DSL.key("wwLite").value(wwlpf),
+										DSL.key("wwOd").value(wwopf),
 										DSL.key("sourceLinks").value(lnslf)))
 						.orderBy(ln.ORDER_BY))
 				.from(ln)

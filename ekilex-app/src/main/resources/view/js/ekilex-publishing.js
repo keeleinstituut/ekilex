@@ -180,10 +180,10 @@ class PublishingHandler {
 	}
 
 	handleDataReload() {
-		if (this.entityName == 'word_relation') {
-			this.replaceSectionContainer();
-		} else if (this.entityName == 'definition') {
+		if (this.callback) {
 			this.reloadFromCallback();
+		} else if (this.replaceSectionId) {
+			this.replaceSectionContainer();
 		}
 	}
 
