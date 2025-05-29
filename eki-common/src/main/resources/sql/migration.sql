@@ -271,6 +271,302 @@ where
 	)
 ;
 
+-- vabavormidest kolimine --
+
+create table grammar (
+  id bigserial primary key, 
+  original_freeform_id bigint, -- to be dropped later
+  lexeme_id bigint references lexeme(id) on delete cascade not null, 
+  value text not null, 
+  value_prese text not null, 
+  lang char(3) references language(code) not null, 
+  complexity varchar(100) not null, 
+  created_by text null, 
+  created_on timestamp null, 
+  modified_by text null, 
+  modified_on timestamp null, 
+  order_by bigserial
+);
+alter sequence grammar_id_seq restart with 10000;
+
+create index grammar_original_freeform_id_idx on grammar(original_freeform_id);
+create index grammar_lexeme_id_idx on grammar(lexeme_id);
+create index grammar_value_idx on grammar(value);
+create index grammar_value_lower_idx on grammar(lower(value));
+create index grammar_lang_idx on grammar(lang);
+create index grammar_complexity_idx on grammar(complexity);
+create index grammar_fts_idx on grammar using gin(to_tsvector('simple', value));
+
+insert into grammar (
+	original_freeform_id,
+	lexeme_id,
+	value,
+	value_prese,
+	lang,
+	complexity,
+	created_by,
+	created_on,
+	modified_by,
+	modified_on)
+select
+	f.id,
+	lf.lexeme_id,
+	f.value,
+	f.value_prese,
+	coalesce(f.lang, 'est'),
+	f.complexity,
+	f.created_by,
+	f.created_on,
+	f.modified_by,
+	f.modified_on
+from
+	lexeme_freeform lf,
+	freeform f
+where
+	lf.freeform_id = f.id
+	and f.freeform_type_code = 'GRAMMAR'
+order by f.order_by;
+
+create table government (
+  id bigserial primary key, 
+  original_freeform_id bigint, -- to be dropped later
+  lexeme_id bigint references lexeme(id) on delete cascade not null, 
+  value text not null, 
+  complexity varchar(100) not null, 
+  created_by text null, 
+  created_on timestamp null, 
+  modified_by text null, 
+  modified_on timestamp null, 
+  order_by bigserial
+);
+alter sequence government_id_seq restart with 10000;
+
+create index government_original_freeform_id_idx on government(original_freeform_id);
+create index government_lexeme_id_idx on government(lexeme_id);
+create index government_value_idx on government(value);
+create index government_value_lower_idx on government(lower(value));
+create index government_complexity_idx on government(complexity);
+create index government_fts_idx on government using gin(to_tsvector('simple', value));
+
+insert into government (
+	original_freeform_id,
+	lexeme_id,
+	value,
+	complexity,
+	created_by,
+	created_on,
+	modified_by,
+	modified_on)
+select
+	f.id,
+	lf.lexeme_id,
+	f.value,
+	f.complexity,
+	f.created_by,
+	f.created_on,
+	f.modified_by,
+	f.modified_on
+from
+	lexeme_freeform lf,
+	(
+	select
+		f1.id,
+		f1.value,
+		f1.complexity,
+		f1.created_by,
+		f1.created_on,
+		f1.modified_by,
+		f1.modified_on,
+		f1.order_by
+	from
+		freeform f1
+	where
+		f1.freeform_type_code = 'GOVERNMENT'
+	union all
+	select
+		f1.id,
+		f2.value,
+		f1.complexity,
+		f1.created_by,
+		f1.created_on,
+		f1.modified_by,
+		f1.modified_on,
+		f2.order_by
+	from
+		freeform f1,
+		freeform f2
+	where
+		f1.freeform_type_code = 'GOVERNMENT'
+		and f2.parent_id = f1.id
+		and f2.freeform_type_code in ('GOVERNMENT_OPTIONAL', 'GOVERNMENT_PLACEMENT', 'GOVERNMENT_VARIANT')
+	) f
+where
+	lf.freeform_id = f.id
+order by f.order_by;
+
+create table meaning_media (
+  id bigserial primary key, 
+  original_freeform_id bigint, -- to be dropped later
+  meaning_id bigint references meaning(id) on delete cascade not null, 
+  url text not null,
+  complexity varchar(100) not null, 
+  created_by text null, 
+  created_on timestamp null, 
+  modified_by text null, 
+  modified_on timestamp null, 
+  order_by bigserial
+);
+alter sequence meaning_media_id_seq restart with 10000;
+
+create index meaning_media_original_freeform_id_idx on meaning_media(original_freeform_id);
+create index meaning_media_meaning_id_idx on meaning_media(meaning_id);
+create index meaning_media_complexity_idx on meaning_media(complexity);
+
+insert into meaning_media (
+	original_freeform_id,
+	meaning_id,
+	url,
+	complexity,
+	created_by,
+	created_on,
+	modified_by,
+	modified_on)
+select
+	f.id,
+	mf.meaning_id,
+	f.value,
+	f.complexity,
+	f.created_by,
+	f.created_on,
+	f.modified_by,
+	f.modified_on
+from
+	meaning_freeform mf,
+	freeform f
+where
+	mf.freeform_id = f.id
+	and f.freeform_type_code = 'MEDIA_FILE'
+order by f.order_by;
+
+create table learner_comment (
+  id bigserial primary key, 
+  original_freeform_id bigint, -- to be dropped later
+  meaning_id bigint references meaning(id) on delete cascade not null, 
+  value text not null, 
+  value_prese text not null, 
+  created_by text null, 
+  created_on timestamp null, 
+  modified_by text null, 
+  modified_on timestamp null, 
+  order_by bigserial
+);
+alter sequence learner_comment_id_seq restart with 10000;
+
+create index learner_comment_original_freeform_id_idx on learner_comment(original_freeform_id);
+create index learner_comment_meaning_id_idx on learner_comment(meaning_id);
+create index learner_comment_value_idx on learner_comment(value);
+create index learner_comment_value_lower_idx on learner_comment(lower(value));
+create index learner_comment_fts_idx on learner_comment using gin(to_tsvector('simple', value));
+
+insert into learner_comment (
+	original_freeform_id,
+	meaning_id,
+	value,
+	value_prese,
+	created_by,
+	created_on,
+	modified_by,
+	modified_on)
+select
+	f.id,
+	mf.meaning_id,
+	f.value,
+	f.value_prese,
+	f.created_by,
+	f.created_on,
+	f.modified_by,
+	f.modified_on
+from
+	meaning_freeform mf,
+	freeform f
+where
+	mf.freeform_id = f.id
+	and f.freeform_type_code = 'LEARNER_COMMENT'
+order by f.order_by;
+
+-- aegunud vabavormide kustutamine 
+
+delete
+from
+	freeform f
+where
+	exists (
+		select
+			1
+		from
+			source_freeform sf
+		where
+			sf.freeform_id = f.id
+	);
+
+drop table source_freeform cascade;
+
+delete
+from
+	freeform f
+where
+	f.freeform_type_code in (
+	'GOVERNMENT',
+	'GOVERNMENT_OPTIONAL',
+	'GOVERNMENT_PLACEMENT',
+	'GOVERNMENT_VARIANT',
+	'GRAMMAR',
+	'LEARNER_COMMENT',
+	'SEMANTIC_TYPE',
+	'MEDIA_FILE',
+	'MEANING_IMAGE',
+	'IMAGE_TITLE',
+	'IMAGE_FILE',
+	'NOTE',
+	'USAGE',
+	'USAGE_DEFINITION',
+	'USAGE_TRANSLATION',
+	'WORD_OD_RECOMMENDATION',
+	'SYSTEMATIC_POLYSEMY_PATTERN'
+	'SOURCE_EXPLANATION',
+	'SOURCE_FILE');
+	
+delete
+from 
+	freeform_type ft 
+where
+	ft.code in (
+	'GOVERNMENT',
+	'GOVERNMENT_OPTIONAL',
+	'GOVERNMENT_PLACEMENT',
+	'GOVERNMENT_VARIANT',
+	'GRAMMAR',
+	'LEARNER_COMMENT',
+	'SEMANTIC_TYPE',
+	'MEDIA_FILE',
+	'MEANING_IMAGE',
+	'IMAGE_TITLE',
+	'IMAGE_FILE',
+	'NOTE',
+	'USAGE',
+	'USAGE_DEFINITION',
+	'USAGE_TRANSLATION',
+	'WORD_OD_RECOMMENDATION',
+	'SYSTEMATIC_POLYSEMY_PATTERN');
+
+delete
+from 
+	freeform_type ft 
+where
+	ft.code like 'SOURCE_%'
+	and ft.code != 'SOURCE_NAME';
+	
+
 -- publitseerimine --
 
 create table publishing (
@@ -1069,303 +1365,10 @@ where
 	)
 ;
 
+analyze publishing;
 alter table definition_note drop column complexity cascade;
 alter table freeform drop column complexity cascade;
 alter table freeform drop column is_public cascade;
 alter table meaning_image drop column is_public cascade;
 
--- vabavormidest kolimine --
-
-create table grammar (
-  id bigserial primary key, 
-  original_freeform_id bigint, -- to be dropped later
-  lexeme_id bigint references lexeme(id) on delete cascade not null, 
-  value text not null, 
-  value_prese text not null, 
-  lang char(3) references language(code) not null, 
-  complexity varchar(100) not null, 
-  created_by text null, 
-  created_on timestamp null, 
-  modified_by text null, 
-  modified_on timestamp null, 
-  order_by bigserial
-);
-alter sequence grammar_id_seq restart with 10000;
-
-create index grammar_original_freeform_id_idx on grammar(original_freeform_id);
-create index grammar_lexeme_id_idx on grammar(lexeme_id);
-create index grammar_value_idx on grammar(value);
-create index grammar_value_lower_idx on grammar(lower(value));
-create index grammar_lang_idx on grammar(lang);
-create index grammar_complexity_idx on grammar(complexity);
-create index grammar_fts_idx on grammar using gin(to_tsvector('simple', value));
-
-insert into grammar (
-	original_freeform_id,
-	lexeme_id,
-	value,
-	value_prese,
-	lang,
-	complexity,
-	created_by,
-	created_on,
-	modified_by,
-	modified_on)
-select
-	f.id,
-	lf.lexeme_id,
-	f.value,
-	f.value_prese,
-	coalesce(f.lang, 'est'),
-	f.complexity,
-	f.created_by,
-	f.created_on,
-	f.modified_by,
-	f.modified_on
-from
-	lexeme_freeform lf,
-	freeform f
-where
-	lf.freeform_id = f.id
-	and f.freeform_type_code = 'GRAMMAR'
-order by f.order_by;
-
-create table government (
-  id bigserial primary key, 
-  original_freeform_id bigint, -- to be dropped later
-  lexeme_id bigint references lexeme(id) on delete cascade not null, 
-  value text not null, 
-  complexity varchar(100) not null, 
-  created_by text null, 
-  created_on timestamp null, 
-  modified_by text null, 
-  modified_on timestamp null, 
-  order_by bigserial
-);
-alter sequence government_id_seq restart with 10000;
-
-create index government_original_freeform_id_idx on government(original_freeform_id);
-create index government_lexeme_id_idx on government(lexeme_id);
-create index government_value_idx on government(value);
-create index government_value_lower_idx on government(lower(value));
-create index government_complexity_idx on government(complexity);
-create index government_fts_idx on government using gin(to_tsvector('simple', value));
-
-insert into government (
-	original_freeform_id,
-	lexeme_id,
-	value,
-	complexity,
-	created_by,
-	created_on,
-	modified_by,
-	modified_on)
-select
-	f.id,
-	lf.lexeme_id,
-	f.value,
-	f.complexity,
-	f.created_by,
-	f.created_on,
-	f.modified_by,
-	f.modified_on
-from
-	lexeme_freeform lf,
-	(
-	select
-		f1.id,
-		f1.value,
-		f1.complexity,
-		f1.created_by,
-		f1.created_on,
-		f1.modified_by,
-		f1.modified_on,
-		f1.order_by
-	from
-		freeform f1
-	where
-		f1.freeform_type_code = 'GOVERNMENT'
-	union all
-	select
-		f1.id,
-		f2.value,
-		f1.complexity,
-		f1.created_by,
-		f1.created_on,
-		f1.modified_by,
-		f1.modified_on,
-		f2.order_by
-	from
-		freeform f1,
-		freeform f2
-	where
-		f1.freeform_type_code = 'GOVERNMENT'
-		and f2.parent_id = f1.id
-		and f2.freeform_type_code in ('GOVERNMENT_OPTIONAL', 'GOVERNMENT_PLACEMENT', 'GOVERNMENT_VARIANT')
-	) f
-where
-	lf.freeform_id = f.id
-order by f.order_by;
-
-create table meaning_media (
-  id bigserial primary key, 
-  original_freeform_id bigint, -- to be dropped later
-  meaning_id bigint references meaning(id) on delete cascade not null, 
-  url text not null,
-  complexity varchar(100) not null, 
-  created_by text null, 
-  created_on timestamp null, 
-  modified_by text null, 
-  modified_on timestamp null, 
-  order_by bigserial
-);
-alter sequence meaning_media_id_seq restart with 10000;
-
-create index meaning_media_original_freeform_id_idx on meaning_media(original_freeform_id);
-create index meaning_media_meaning_id_idx on meaning_media(meaning_id);
-create index meaning_media_complexity_idx on meaning_media(complexity);
-
-insert into meaning_media (
-	original_freeform_id,
-	meaning_id,
-	url,
-	complexity,
-	created_by,
-	created_on,
-	modified_by,
-	modified_on)
-select
-	f.id,
-	mf.meaning_id,
-	f.value,
-	f.complexity,
-	f.created_by,
-	f.created_on,
-	f.modified_by,
-	f.modified_on
-from
-	meaning_freeform mf,
-	freeform f
-where
-	mf.freeform_id = f.id
-	and f.freeform_type_code = 'MEDIA_FILE'
-order by f.order_by;
-
-create table learner_comment (
-  id bigserial primary key, 
-  original_freeform_id bigint, -- to be dropped later
-  meaning_id bigint references meaning(id) on delete cascade not null, 
-  value text not null, 
-  value_prese text not null, 
-  created_by text null, 
-  created_on timestamp null, 
-  modified_by text null, 
-  modified_on timestamp null, 
-  order_by bigserial
-);
-alter sequence learner_comment_id_seq restart with 10000;
-
-create index learner_comment_original_freeform_id_idx on learner_comment(original_freeform_id);
-create index learner_comment_meaning_id_idx on learner_comment(meaning_id);
-create index learner_comment_value_idx on learner_comment(value);
-create index learner_comment_value_lower_idx on learner_comment(lower(value));
-create index learner_comment_fts_idx on learner_comment using gin(to_tsvector('simple', value));
-
-insert into learner_comment (
-	original_freeform_id,
-	meaning_id,
-	value,
-	value_prese,
-	created_by,
-	created_on,
-	modified_by,
-	modified_on)
-select
-	f.id,
-	mf.meaning_id,
-	f.value,
-	f.value_prese,
-	f.created_by,
-	f.created_on,
-	f.modified_by,
-	f.modified_on
-from
-	meaning_freeform mf,
-	freeform f
-where
-	mf.freeform_id = f.id
-	and f.freeform_type_code = 'LEARNER_COMMENT'
-order by f.order_by;
-
--- aegunud vabavormide kustutamine 
-
-delete
-from
-	freeform f
-where
-	exists (
-		select
-			1
-		from
-			source_freeform sf
-		where
-			sf.freeform_id = f.id
-	);
-
-drop table source_freeform cascade;
-
-delete
-from
-	freeform f
-where
-	f.freeform_type_code in (
-	'GOVERNMENT',
-	'GOVERNMENT_OPTIONAL',
-	'GOVERNMENT_PLACEMENT',
-	'GOVERNMENT_VARIANT',
-	'GRAMMAR',
-	'LEARNER_COMMENT',
-	'SEMANTIC_TYPE',
-	'MEDIA_FILE',
-	'MEANING_IMAGE',
-	'IMAGE_TITLE',
-	'IMAGE_FILE',
-	'NOTE',
-	'USAGE',
-	'USAGE_DEFINITION',
-	'USAGE_TRANSLATION',
-	'WORD_OD_RECOMMENDATION',
-	'SYSTEMATIC_POLYSEMY_PATTERN'
-	'SOURCE_EXPLANATION');
-	
-delete
-from 
-	freeform_type ft 
-where
-	ft.code in (
-	'GOVERNMENT',
-	'GOVERNMENT_OPTIONAL',
-	'GOVERNMENT_PLACEMENT',
-	'GOVERNMENT_VARIANT',
-	'GRAMMAR',
-	'LEARNER_COMMENT',
-	'SEMANTIC_TYPE',
-	'MEDIA_FILE',
-	'MEANING_IMAGE',
-	'IMAGE_TITLE',
-	'IMAGE_FILE',
-	'NOTE',
-	'USAGE',
-	'USAGE_DEFINITION',
-	'USAGE_TRANSLATION',
-	'WORD_OD_RECOMMENDATION',
-	'SYSTEMATIC_POLYSEMY_PATTERN');
-
-delete
-from 
-	freeform_type ft 
-where
-	ft.code like 'SOURCE_%'
-	and ft.code not in ('SOURCE_FILE', 'SOURCE_NAME');
-	
 

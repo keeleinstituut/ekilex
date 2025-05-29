@@ -644,12 +644,11 @@ public class CudService extends AbstractCudService implements PermConstant, Acti
 	}
 
 	@Transactional(rollbackOn = Exception.class)
-	public void updateWordFreeform(Long freeformId, String valuePrese, boolean isPublic, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
+	public void updateWordFreeform(Long freeformId, String valuePrese, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
 
 		Freeform freeform = new Freeform();
 		freeform.setId(freeformId);
 		freeform.setValuePrese(valuePrese);
-		freeform.setPublic(isPublic);
 		setValueAndPrese(freeform);
 		applyUpdate(freeform);
 
@@ -1079,12 +1078,11 @@ public class CudService extends AbstractCudService implements PermConstant, Acti
 	}
 
 	@Transactional(rollbackOn = Exception.class)
-	public void updateLexemeFreeform(Long freeformId, String valuePrese, boolean isPublic, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
+	public void updateLexemeFreeform(Long freeformId, String valuePrese, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
 
 		Freeform freeform = new Freeform();
 		freeform.setId(freeformId);
 		freeform.setValuePrese(valuePrese);
-		freeform.setPublic(isPublic);
 		setValueAndPrese(freeform);
 		applyUpdate(freeform);
 
@@ -1298,12 +1296,11 @@ public class CudService extends AbstractCudService implements PermConstant, Acti
 	}
 
 	@Transactional(rollbackOn = Exception.class)
-	public void updateMeaningFreeform(Long freeformId, String valuePrese, boolean isPublic, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
+	public void updateMeaningFreeform(Long freeformId, String valuePrese, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
 
 		Freeform freeform = new Freeform();
 		freeform.setId(freeformId);
 		freeform.setValuePrese(valuePrese);
-		freeform.setPublic(isPublic);
 		setValueAndPrese(freeform);
 		applyUpdate(freeform);
 

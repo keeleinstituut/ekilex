@@ -321,7 +321,7 @@ public class EditController extends AbstractMutableDataPageController implements
 			cudService.updateLexemePos(id, currentValue, value, roleDatasetCode, isManualEventOnUpdateEnabled);
 			break;
 		case "lexeme_freeform":
-			cudService.updateLexemeFreeform(id, value, isPublic, roleDatasetCode, isManualEventOnUpdateEnabled);
+			cudService.updateLexemeFreeform(id, value, roleDatasetCode, isManualEventOnUpdateEnabled);
 			break;
 		case "government":
 			cudService.updateLexemeGovernment(id, value, complexity, roleDatasetCode, isManualEventOnUpdateEnabled);
@@ -393,7 +393,7 @@ public class EditController extends AbstractMutableDataPageController implements
 			cudService.updateWordForum(id, value, user);
 			break;
 		case "word_freeform":
-			cudService.updateWordFreeform(id, value, isPublic, roleDatasetCode, isManualEventOnUpdateEnabled);
+			cudService.updateWordFreeform(id, value, roleDatasetCode, isManualEventOnUpdateEnabled);
 			break;
 		case "word_od_morph":
 			cudService.updateWordOdMorph(id, value, roleDatasetCode, isManualEventOnUpdateEnabled);
@@ -428,7 +428,7 @@ public class EditController extends AbstractMutableDataPageController implements
 			cudService.updateMeaningMedia(id, value, complexity, roleDatasetCode, isManualEventOnUpdateEnabled);
 			break;
 		case "meaning_freeform":
-			cudService.updateMeaningFreeform(id, value, isPublic, roleDatasetCode, isManualEventOnUpdateEnabled);
+			cudService.updateMeaningFreeform(id, value, roleDatasetCode, isManualEventOnUpdateEnabled);
 			break;
 		case "meaning_semantic_type":
 			cudService.updateMeaningSemanticType(id, currentValue, value, roleDatasetCode, isManualEventOnUpdateEnabled);
