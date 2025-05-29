@@ -5,7 +5,7 @@
   }}
 />
 
-<div class="absolute top-14 right-4 overflow-hidden z-10 flex flex-col gap-2">
+<div class="absolute top-14 right-4 overflow-hidden z-[1073] flex flex-col gap-2">
   {#each toasts as toast}
     <div
       class="bg-eki-white border border-eki-light-blue text-eki-dark-blue-text rounded-lg pl-6 pr-[10px] pb-5 pt-3 grid grid-cols-[1fr_24px] gap-2 w-[335px] left-0"

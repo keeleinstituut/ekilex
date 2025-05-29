@@ -328,7 +328,6 @@
                       audio-value="{{item.audio_link}}"
                       audio-type="play"
                       {% if (item.audio_link is empty or item.audio_link is null) and options.wordgame_lang in languagesWithSound %} title="{{labels.nosound}}" {% endif %}
-                      aria-label="Audio"
                       data-origword="{{item.word}}">
                       {{item.word}} {% if item.audio_link is not empty and item.audio_link is not null and options.wordgame_lang in languagesWithSound %} <img src="{{ viewPath }}/images/speaker-icon-dark.svg" aria-hidden="true" alt="{{labels.word}} icon"> {% endif %}
                     </button>
@@ -344,7 +343,7 @@
                     <p>
                       {{example}}
                       {% if options.wordgame_lang in languagesWithSound %}
-                      <button tabindex="-1" class="wordgame__card__audiobtn" data-words="{{example}}" aria-label="Audio"><img src="{{ viewPath }}/images/speaker-icon-dark.svg" alt="Audio icon" aria-hidden="true"/></button>
+                      <button tabindex="-1" class="wordgame__card__audiobtn" data-words="{{example}}"><img src="{{ viewPath }}/images/speaker-icon-dark.svg" alt="Audio icon" aria-hidden="true"/></button>
                       {% endif %}
                     </p>
                     {% endfor %}
@@ -360,7 +359,6 @@
                     audio-value="{{item.audio_link}}"
                     audio-type="play"
                     {% if (item.audio_link is empty or item.audio_link is null) and options.wordgame_lang in languagesWithSound %} title="{{labels.nosound}}" {% endif %}
-                    aria-label="Audio"
                     data-origword="{{item.word}}">
                       {{item.word}} {% if item.audio_link is not empty and item.audio_link is not null and options.wordgame_lang in languagesWithSound %} <img src="{{ viewPath }}/images/speaker-icon-dark.svg" aria-hidden="true" alt="{{labels.word}} icon"> {% endif %}
                     </button>
@@ -398,7 +396,6 @@
                     audio-value="{{item.audio_link}}"
                     audio-type="play"
                     {% if (item.audio_link is empty or item.audio_link is null) and options.wordgame_lang in languagesWithSound %} title="{{labels.nosound}}" {% endif %}
-                    aria-label="Audio"
                     data-origword="{{item.word}}">
                       {{item.word}}
                     </button>

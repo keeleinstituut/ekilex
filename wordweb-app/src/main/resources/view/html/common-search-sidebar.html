@@ -196,13 +196,13 @@
             th:classappend="${isBlockEmpty ? 'search__sidebar-block-title--empty' : ''}"
             th:text="|#{label.word.etymology} ${isBlockEmpty ? #messages.msg('label.block_empty') : ''}|"
             >Päritolu</h2>
-          <button type="button" th:aria-label="#{label.word.etymology.info}" class="btn btn-icon btn-sm ml-auto" data-toggle="tooltip" data-placement="top" th:title="#{label.word.etymology.info}">
-            <i class="fas fa-info-circle"></i>
-          </button>
           <th:block th:if="${wordData.word.wordEtymologyTree != null}">
             <span class="lang-code text-caption lang-code--unrestricted" style='font-variant: small-caps;' th:if="${wordData.word.wordEtymologyTree.etymologyType != null}"
               th:text="${wordData.word.wordEtymologyTree.etymologyType.value}"> </span>
           </th:block>
+          <button type="button" th:aria-label="#{label.word.etymology.info}" class="btn btn-icon btn-sm ml-auto" data-toggle="tooltip" data-placement="top" th:title="#{label.word.etymology.info}">
+            <i class="fas fa-info-circle"></i>
+          </button>
         </div>
         <div th:unless="${isBlockEmpty}">
           <ul class="list-unstyled etymology-tree">
