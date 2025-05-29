@@ -85,8 +85,6 @@ public class Lexeme extends AbstractGrantEntity implements LexemeLevel {
 
 	private List<SynonymLangGroup> synonymLangGroups;
 
-	private List<Media> images;
-
 	private boolean collocationsExist;
 
 	private boolean lexemeOrMeaningClassifiersExist;
@@ -400,14 +398,6 @@ public class Lexeme extends AbstractGrantEntity implements LexemeLevel {
 
 	public void setSynonymLangGroups(List<SynonymLangGroup> synonymLangGroups) {
 		this.synonymLangGroups = synonymLangGroups;
-	}
-
-	public List<Media> getImages() {
-		return images;
-	}
-
-	public void setImages(List<Media> images) {
-		this.images = images;
 	}
 
 	public boolean isCollocationsExist() {

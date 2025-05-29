@@ -810,7 +810,7 @@
         <div th:replace="termdialog :: add_meaning_image_source_link_dlg"></div>
         <div th:if="${imageIter.index > 0}" class="mt-3"></div>
         <div class="invisible-buttons action-buttons-anchor w-100">
-          <img class="w-50" th:src="${image.sourceUrl}">
+          <img class="w-50" th:src="${image.url}">
           <span class="invisible-buttons">
             <button type="button" class="btn badge badge-primary align-bottom"
                     th:title="#{common.edit}"
@@ -895,7 +895,7 @@
       <th:block th:each="media : ${meaning.medias}">
         <div th:replace="termdialog :: edit_meaning_media_dlg"></div>
         <div class="invisible-buttons action-buttons-anchor w-100">
-          <iframe th:src="${media.sourceUrl}" allowfullscreen></iframe>
+          <iframe th:src="${media.url}" allowfullscreen></iframe>
           <span class="invisible-buttons">
             <button type="button" class="btn badge badge-primary"
                     th:title="#{common.edit}"
@@ -945,7 +945,6 @@
           <div class="invisible-buttons action-buttons-anchor mw-80">
             <span th:text="${freeform.freeformTypeValue}" class="text-monospace mr-3"></span>
             <span th:utext="${freeform.valuePrese}"></span>
-            <span th:text="'(' + #{'boolean.public.' + ${freeform.public}} + ')'" class="ctxt"></span>
             <div class="action-buttons-3">
               <button type="button" class="btn badge badge-primary"
                       th:title="#{common.edit}"
@@ -1757,7 +1756,6 @@
           <div class="invisible-buttons action-buttons-anchor mw-80">
             <span th:text="${freeform.freeformTypeValue}" class="text-monospace mr-2"></span>
             <span th:utext="${freeform.valuePrese}"></span>
-            <span class="ctxt" th:text="'(' + #{'boolean.public.' + ${freeform.public}} + ')'"></span>
             <div class="action-buttons-3">
               <button type="button" class="btn badge badge-primary"
                       th:title="#{common.edit}"
@@ -1944,7 +1942,6 @@
           <div class="invisible-buttons action-buttons-anchor">
             <span th:text="${freeform.freeformTypeValue}" class="text-monospace mr-2"></span>
             <span th:utext="${freeform.valuePrese}"></span>
-            <span class="ctxt" th:text="'(' + #{'boolean.public.' + ${freeform.public}} + ')'"></span>
             <div class="action-buttons-3">
               <button type="button" class="btn badge badge-primary" data-toggle="modal" 
                 th:title="#{common.edit}" 

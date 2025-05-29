@@ -326,38 +326,6 @@ where
 insert into publishing (event_by, target_name, entity_name, entity_id)
 select
 	'Laadur',
-	'ww_unif',
-	'definition',
-	d.id
-from
-	definition d
-where
-	d.complexity in ('ANY', 'DETAIL')
-	and d.is_public = true
-	and exists (
-		select
-			1
-		from
-			definition_dataset dd
-		where
-			dd.definition_id = d.id
-			and dd.dataset_code = 'eki'
-	)
-	and not exists (
-		select
-			1
-		from
-			publishing p
-		where
-			p.target_name = 'ww_unif'
-			and p.entity_name = 'definition'
-			and p.entity_id = d.id
-	)
-; -- 151977
-
-insert into publishing (event_by, target_name, entity_name, entity_id)
-select
-	'Laadur',
 	'ww_lite',
 	'definition',
 	d.id
@@ -394,7 +362,7 @@ where
 			and p.entity_name = 'definition'
 			and p.entity_id = d.id
 	)
-; -- 7904
+;
 
 insert into publishing (event_by, target_name, entity_name, entity_id)
 select
@@ -426,7 +394,7 @@ where
 			and p.entity_name = 'definition'
 			and p.entity_id = d.id
 	)
-; -- 39214
+;
 
 insert into publishing (event_by, target_name, entity_name, entity_id)
 select
@@ -465,9 +433,7 @@ where
 			and p.entity_name = 'definition'
 			and p.entity_id = d.id
 	)
-; -- 2595
-
--- pigem ajutine: --
+;
 
 insert into publishing (event_by, target_name, entity_name, entity_id)
 select
@@ -506,7 +472,7 @@ where
 			and p.entity_name = 'word_relation'
 			and p.entity_id = wr.id
 	)
-; -- 2423458
+;
 
 insert into publishing (event_by, target_name, entity_name, entity_id)
 select
@@ -547,7 +513,566 @@ where
 			and p.entity_name = 'word_relation'
 			and p.entity_id = wr.id
 	)
-; -- 102957
+;
+
+insert into publishing (event_by, target_name, entity_name, entity_id)
+select
+	'Laadur',
+	'ww_od',
+	'word_relation',
+	wr.id
+from
+	word_relation wr
+where
+	exists (
+		select
+			1
+		from
+			lexeme l,
+			lexeme_tag lt
+		where
+			l.word_id = wr.word1_id 
+			and lt.lexeme_id = l.id
+			and lt.tag_name = 'ÕSi liitsõna'
+	)
+	and exists (
+		select
+			1
+		from
+			lexeme l,
+			lexeme_tag lt
+		where
+			l.word_id = wr.word2_id 
+			and lt.lexeme_id = l.id
+			and lt.tag_name = 'ÕSi liitsõna'
+	)
+	and not exists (
+		select
+			1
+		from
+			publishing p
+		where
+			p.target_name = 'ww_od'
+			and p.entity_name = 'word_relation'
+			and p.entity_id = wr.id
+	)
+;
+
+insert into publishing (event_by, target_name, entity_name, entity_id)
+select
+	'Laadur',
+	'ww_unif',
+	'lexeme',
+	l.id
+from
+	lexeme l
+where
+	l.complexity in ('ANY', 'DETAIL')
+	and l.dataset_code = 'eki'
+	and not exists (
+		select
+			1
+		from
+			publishing p
+		where
+			p.target_name = 'ww_unif'
+			and p.entity_name = 'lexeme'
+			and p.entity_id = l.id
+	)
+;
+
+insert into publishing (event_by, target_name, entity_name, entity_id)
+select
+	'Laadur',
+	'ww_lite',
+	'lexeme',
+	l.id
+from
+	lexeme l
+where
+	l.complexity in ('ANY', 'SIMPLE')
+	and l.dataset_code = 'eki'
+	and not exists (
+		select
+			1
+		from
+			publishing p
+		where
+			p.target_name = 'ww_lite'
+			and p.entity_name = 'lexeme'
+			and p.entity_id = l.id
+	)
+;
+
+insert into publishing (event_by, target_name, entity_name, entity_id)
+select
+	'Laadur',
+	'ww_od',
+	'lexeme',
+	l.id
+from
+	lexeme l
+where
+	l.dataset_code = 'eki'
+	and exists (
+		select
+			1
+		from
+			lexeme_tag lt
+		where
+			lt.lexeme_id = l.id
+			and lt.tag_name in ('ÕSi sõna', 'ÕSi liitsõna')
+	)
+	and not exists (
+		select
+			1
+		from
+			publishing p
+		where
+			p.target_name = 'ww_od'
+			and p.entity_name = 'lexeme'
+			and p.entity_id = l.id
+	)
+;
+
+insert into publishing (event_by, target_name, entity_name, entity_id)
+select
+	'Laadur',
+	'ww_unif',
+	'usage',
+	u.id
+from
+	usage u
+where
+	exists (
+		select
+			1
+		from
+			lexeme l
+		where
+			l.id = u.lexeme_id
+			and l.complexity in ('ANY', 'DETAIL')
+			and l.dataset_code = 'eki'
+	)
+	and not exists (
+		select
+			1
+		from
+			publishing p
+		where
+			p.target_name = 'ww_unif'
+			and p.entity_name = 'usage'
+			and p.entity_id = u.id
+	)
+;
+
+insert into publishing (event_by, target_name, entity_name, entity_id)
+select
+	'Laadur',
+	'ww_lite',
+	'usage',
+	u.id
+from
+	usage u
+where
+	exists (
+		select
+			1
+		from
+			lexeme l
+		where
+			l.id = u.lexeme_id
+			and l.complexity in ('ANY', 'SIMPLE')
+			and l.dataset_code = 'eki'
+	)
+	and not exists (
+		select
+			1
+		from
+			publishing p
+		where
+			p.target_name = 'ww_lite'
+			and p.entity_name = 'usage'
+			and p.entity_id = u.id
+	)
+;
+
+insert into publishing (event_by, target_name, entity_name, entity_id)
+select
+	'Laadur',
+	'ww_unif',
+	'lexeme_note',
+	ln.id
+from
+	lexeme_note ln
+where
+	exists (
+		select
+			1
+		from
+			lexeme l
+		where
+			l.id = ln.lexeme_id
+			and l.complexity in ('ANY', 'DETAIL')
+			and l.dataset_code = 'eki'
+	)
+	and not exists (
+		select
+			1
+		from
+			publishing p
+		where
+			p.target_name = 'ww_unif'
+			and p.entity_name = 'lexeme_note'
+			and p.entity_id = ln.id
+	)
+;
+
+insert into publishing (event_by, target_name, entity_name, entity_id)
+select
+	'Laadur',
+	'ww_lite',
+	'lexeme_note',
+	ln.id
+from
+	lexeme_note ln
+where
+	exists (
+		select
+			1
+		from
+			lexeme l
+		where
+			l.id = ln.lexeme_id
+			and l.complexity in ('ANY', 'SIMPLE')
+			and l.dataset_code = 'eki'
+	)
+	and not exists (
+		select
+			1
+		from
+			publishing p
+		where
+			p.target_name = 'ww_lite'
+			and p.entity_name = 'lexeme_note'
+			and p.entity_id = ln.id
+	)
+;
+
+insert into publishing (event_by, target_name, entity_name, entity_id)
+select
+	'Laadur',
+	'ww_unif',
+	'meaning_note',
+	mn.id
+from
+	meaning_note mn
+where
+	exists (
+		select
+			1
+		from
+			lexeme l
+		where
+			l.meaning_id = mn.meaning_id
+			and l.complexity in ('ANY', 'DETAIL')
+			and l.dataset_code = 'eki'
+	)
+	and not exists (
+		select
+			1
+		from
+			publishing p
+		where
+			p.target_name = 'ww_unif'
+			and p.entity_name = 'meaning_note'
+			and p.entity_id = mn.id
+	)
+;
+
+insert into publishing (event_by, target_name, entity_name, entity_id)
+select
+	'Laadur',
+	'ww_lite',
+	'meaning_note',
+	mn.id
+from
+	meaning_note mn
+where
+	exists (
+		select
+			1
+		from
+			lexeme l
+		where
+			l.meaning_id = mn.meaning_id
+			and l.complexity in ('ANY', 'SIMPLE')
+			and l.dataset_code = 'eki'
+	)
+	and not exists (
+		select
+			1
+		from
+			publishing p
+		where
+			p.target_name = 'ww_lite'
+			and p.entity_name = 'meaning_note'
+			and p.entity_id = mn.id
+	)
+;
+
+insert into publishing (event_by, target_name, entity_name, entity_id)
+select
+	'Laadur',
+	'ww_unif',
+	'meaning_image',
+	mi.id
+from
+	meaning_image mi
+where
+	exists (
+		select
+			1
+		from
+			lexeme l
+		where
+			l.meaning_id = mi.meaning_id
+			and l.complexity in ('ANY', 'DETAIL')
+			and l.dataset_code = 'eki'
+	)
+	and not exists (
+		select
+			1
+		from
+			publishing p
+		where
+			p.target_name = 'ww_unif'
+			and p.entity_name = 'meaning_image'
+			and p.entity_id = mi.id
+	)
+;
+
+insert into publishing (event_by, target_name, entity_name, entity_id)
+select
+	'Laadur',
+	'ww_lite',
+	'meaning_image',
+	mi.id
+from
+	meaning_image mi
+where
+	exists (
+		select
+			1
+		from
+			lexeme l
+		where
+			l.meaning_id = mi.meaning_id
+			and l.complexity in ('ANY', 'SIMPLE')
+			and l.dataset_code = 'eki'
+	)
+	and not exists (
+		select
+			1
+		from
+			publishing p
+		where
+			p.target_name = 'ww_lite'
+			and p.entity_name = 'meaning_image'
+			and p.entity_id = mi.id
+	)
+;
+
+insert into publishing (event_by, target_name, entity_name, entity_id)
+select
+	'Laadur',
+	'ww_unif',
+	'meaning_media',
+	mm.id
+from
+	meaning_media mm
+where
+	exists (
+		select
+			1
+		from
+			lexeme l
+		where
+			l.meaning_id = mm.meaning_id
+			and l.complexity in ('ANY', 'DETAIL')
+			and l.dataset_code = 'eki'
+	)
+	and not exists (
+		select
+			1
+		from
+			publishing p
+		where
+			p.target_name = 'ww_unif'
+			and p.entity_name = 'meaning_media'
+			and p.entity_id = mm.id
+	)
+;
+
+insert into publishing (event_by, target_name, entity_name, entity_id)
+select
+	'Laadur',
+	'ww_lite',
+	'meaning_media',
+	mm.id
+from
+	meaning_media mm
+where
+	exists (
+		select
+			1
+		from
+			lexeme l
+		where
+			l.meaning_id = mm.meaning_id
+			and l.complexity in ('ANY', 'SIMPLE')
+			and l.dataset_code = 'eki'
+	)
+	and not exists (
+		select
+			1
+		from
+			publishing p
+		where
+			p.target_name = 'ww_lite'
+			and p.entity_name = 'meaning_media'
+			and p.entity_id = mm.id
+	)
+;
+
+insert into publishing (event_by, target_name, entity_name, entity_id)
+select
+	'Laadur',
+	'ww_unif',
+	'grammar',
+	g.id
+from
+	grammar g
+where
+	exists (
+		select
+			1
+		from
+			lexeme l
+		where
+			l.id = g.lexeme_id
+			and l.complexity in ('ANY', 'DETAIL')
+			and l.dataset_code = 'eki'
+	)
+	and not exists (
+		select
+			1
+		from
+			publishing p
+		where
+			p.target_name = 'ww_unif'
+			and p.entity_name = 'grammar'
+			and p.entity_id = g.id
+	)
+;
+
+insert into publishing (event_by, target_name, entity_name, entity_id)
+select
+	'Laadur',
+	'ww_lite',
+	'grammar',
+	g.id
+from
+	grammar g
+where
+	exists (
+		select
+			1
+		from
+			lexeme l
+		where
+			l.id = g.lexeme_id
+			and l.complexity in ('ANY', 'SIMPLE')
+			and l.dataset_code = 'eki'
+	)
+	and not exists (
+		select
+			1
+		from
+			publishing p
+		where
+			p.target_name = 'ww_lite'
+			and p.entity_name = 'grammar'
+			and p.entity_id = g.id
+	)
+;
+
+insert into publishing (event_by, target_name, entity_name, entity_id)
+select
+	'Laadur',
+	'ww_unif',
+	'government',
+	g.id
+from
+	government g
+where
+	exists (
+		select
+			1
+		from
+			lexeme l
+		where
+			l.id = g.lexeme_id
+			and l.complexity in ('ANY', 'DETAIL')
+			and l.dataset_code = 'eki'
+	)
+	and not exists (
+		select
+			1
+		from
+			publishing p
+		where
+			p.target_name = 'ww_unif'
+			and p.entity_name = 'government'
+			and p.entity_id = g.id
+	)
+;
+
+insert into publishing (event_by, target_name, entity_name, entity_id)
+select
+	'Laadur',
+	'ww_lite',
+	'government',
+	g.id
+from
+	government g
+where
+	exists (
+		select
+			1
+		from
+			lexeme l
+		where
+			l.id = g.lexeme_id
+			and l.complexity in ('ANY', 'SIMPLE')
+			and l.dataset_code = 'eki'
+	)
+	and not exists (
+		select
+			1
+		from
+			publishing p
+		where
+			p.target_name = 'ww_lite'
+			and p.entity_name = 'government'
+			and p.entity_id = g.id
+	)
+;
+
+alter table definition_note drop column complexity cascade;
+alter table freeform drop column complexity cascade;
+alter table freeform drop column is_public cascade;
+alter table meaning_image drop column is_public cascade;
 
 -- vabavormidest kolimine --
 
@@ -810,6 +1335,7 @@ where
 	'USAGE_DEFINITION',
 	'USAGE_TRANSLATION',
 	'WORD_OD_RECOMMENDATION',
+	'SYSTEMATIC_POLYSEMY_PATTERN'
 	'SOURCE_EXPLANATION');
 	
 delete
@@ -832,7 +1358,8 @@ where
 	'USAGE',
 	'USAGE_DEFINITION',
 	'USAGE_TRANSLATION',
-	'WORD_OD_RECOMMENDATION');
+	'WORD_OD_RECOMMENDATION',
+	'SYSTEMATIC_POLYSEMY_PATTERN');
 
 delete
 from 

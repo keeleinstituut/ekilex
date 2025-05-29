@@ -9,7 +9,6 @@ import eki.ekilex.data.db.main.udt.TypeClassifier;
 import eki.ekilex.data.db.main.udt.TypeCollocMember;
 import eki.ekilex.data.db.main.udt.TypeDefinition;
 import eki.ekilex.data.db.main.udt.TypeDomain;
-import eki.ekilex.data.db.main.udt.TypeFreeform;
 import eki.ekilex.data.db.main.udt.TypeLangComplexity;
 import eki.ekilex.data.db.main.udt.TypeLexemeRelation;
 import eki.ekilex.data.db.main.udt.TypeMeaningRelation;
@@ -62,11 +61,6 @@ public class UDTs {
      * The type <code>public.type_domain</code>
      */
     public static final TypeDomain TYPE_DOMAIN = eki.ekilex.data.db.main.udt.TypeDomain.TYPE_DOMAIN;
-
-    /**
-     * The type <code>public.type_freeform</code>
-     */
-    public static final TypeFreeform TYPE_FREEFORM = eki.ekilex.data.db.main.udt.TypeFreeform.TYPE_FREEFORM;
 
     /**
      * The type <code>public.type_lang_complexity</code>

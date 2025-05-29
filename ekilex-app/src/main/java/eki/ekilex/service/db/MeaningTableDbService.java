@@ -44,6 +44,7 @@ import eki.ekilex.service.db.util.SearchFilterHelper;
 import eki.ekilex.service.db.util.TermSearchConditionComposer;
 
 //TODO needs complete overhauling. remove all wrapper types
+@Deprecated
 @Component
 public class MeaningTableDbService implements GlobalConstant, SystemConstant, FreeformConstant {
 
@@ -180,8 +181,6 @@ public class MeaningTableDbService implements GlobalConstant, SystemConstant, Fr
 						Routines.encodeText(ff.VALUE),
 						Routines.encodeText(ff.VALUE_PRESE),
 						ff.LANG,
-						ff.COMPLEXITY,
-						ff.IS_PUBLIC,
 						ff.CREATED_BY,
 						ff.CREATED_ON,
 						ff.MODIFIED_BY,
@@ -305,8 +304,7 @@ public class MeaningTableDbService implements GlobalConstant, SystemConstant, Fr
 				.from(FREEFORM)
 				.where(
 						FREEFORM.ID.eq(usageId)
-								.and(FREEFORM.VALUE_PRESE.eq(valuePrese))
-								.and(FREEFORM.IS_PUBLIC.eq(isPublic)))
+								.and(FREEFORM.VALUE_PRESE.eq(valuePrese)))
 				.fetchSingleInto(Boolean.class);
 	}
 
@@ -336,7 +334,6 @@ public class MeaningTableDbService implements GlobalConstant, SystemConstant, Fr
 		mainDb.update(FREEFORM)
 				.set(FREEFORM.VALUE, value)
 				.set(FREEFORM.VALUE_PRESE, valuePrese)
-				.set(FREEFORM.IS_PUBLIC, isPublic)
 				.set(FREEFORM.MODIFIED_BY, userName)
 				.set(FREEFORM.MODIFIED_ON, now)
 				.where(FREEFORM.ID.eq(usageId))
@@ -365,7 +362,6 @@ public class MeaningTableDbService implements GlobalConstant, SystemConstant, Fr
 		LocalDateTime now = LocalDateTime.now();
 
 		mainDb.update(FREEFORM)
-				.set(FREEFORM.IS_PUBLIC, isPublic)
 				.set(FREEFORM.MODIFIED_BY, userName)
 				.set(FREEFORM.MODIFIED_ON, now)
 				.where(FREEFORM.ID.eq(usageId))

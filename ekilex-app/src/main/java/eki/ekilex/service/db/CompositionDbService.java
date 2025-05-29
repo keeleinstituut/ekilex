@@ -774,13 +774,10 @@ public class CompositionDbService extends AbstractDataDbService implements Globa
 				});
 	}
 
-	public void cloneLexemeFreeforms(Long sourceLexemeId, Long targetLexemeId, boolean isPublicDataOnly) {
+	public void cloneLexemeFreeforms(Long sourceLexemeId, Long targetLexemeId) {
 
 		Condition where = LEXEME_FREEFORM.LEXEME_ID.eq(sourceLexemeId)
 				.and(LEXEME_FREEFORM.FREEFORM_ID.eq(FREEFORM.ID));
-		if (isPublicDataOnly) {
-			where = where.and(FREEFORM.IS_PUBLIC.isTrue());
-		}
 
 		Result<FreeformRecord> sourceFreeforms = mainDb
 				.select(FREEFORM.fields())
@@ -1232,13 +1229,10 @@ public class CompositionDbService extends AbstractDataDbService implements Globa
 				});
 	}
 
-	public void cloneMeaningFreeforms(Long sourceMeaningId, Long targetMeaningId, boolean isPublicDataOnly) {
+	public void cloneMeaningFreeforms(Long sourceMeaningId, Long targetMeaningId) {
 
 		Condition where = MEANING_FREEFORM.MEANING_ID.eq(sourceMeaningId)
 				.and(MEANING_FREEFORM.FREEFORM_ID.eq(FREEFORM.ID));
-		if (isPublicDataOnly) {
-			where = where.and(FREEFORM.IS_PUBLIC.isTrue());
-		}
 
 		Result<FreeformRecord> sourceFreeforms = mainDb
 				.select(FREEFORM.fields())
@@ -1288,7 +1282,7 @@ public class CompositionDbService extends AbstractDataDbService implements Globa
 
 			cloneDefinitionDatasets(sourceDefinitionId, targetDefinitionId);
 			cloneDefinitionNotes(sourceDefinitionId, targetDefinitionId);
-			cloneDefinitionFreeforms(sourceDefinitionId, targetDefinitionId, isPublicDataOnly);
+			cloneDefinitionFreeforms(sourceDefinitionId, targetDefinitionId);
 			cloneDefinitionSourceLinks(sourceDefinitionId, targetDefinitionId);
 		});
 	}
@@ -1340,13 +1334,10 @@ public class CompositionDbService extends AbstractDataDbService implements Globa
 		});
 	}
 
-	private void cloneDefinitionFreeforms(Long sourceDefinitionId, Long targetDefinintionId, boolean isPublicDataOnly) {
+	private void cloneDefinitionFreeforms(Long sourceDefinitionId, Long targetDefinintionId) {
 
 		Condition where = DEFINITION_FREEFORM.DEFINITION_ID.eq(sourceDefinitionId)
 				.and(DEFINITION_FREEFORM.FREEFORM_ID.eq(FREEFORM.ID));
-		if (isPublicDataOnly) {
-			where = where.and(FREEFORM.IS_PUBLIC.isTrue());
-		}
 
 		Result<FreeformRecord> sourceFreeforms = mainDb
 				.select(FREEFORM.fields())

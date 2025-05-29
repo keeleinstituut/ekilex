@@ -606,20 +606,6 @@
                 <textarea class="form-control" rows="4" name="value" th:text="${freeform.value}"></textarea>
               </div>
             </div>
-            <div class="formItem">
-              <div class="formItem__element">
-                <div class="radioTabs">
-                  <label class="radioTabs__item">
-                    <input type="radio" name="public" value="true" th:checked="${freeform.public}" />
-                    <span th:text="#{boolean.public.true}">avalik</span>
-                  </label>
-                  <label class="radioTabs__item">
-                    <input type="radio" name="public" value="false" th:checked="${!freeform.public}" />
-                    <span th:text="#{boolean.public.false}">mitteavalik</span>
-                  </label>
-                </div>
-              </div>
-            </div>
           </div>
           <div class="modal-footer">
             <button type="submit" class="btn btn-primary" th:text="#{common.save}">Salvesta</button>
@@ -741,20 +727,6 @@
             <div class="form-group row">
               <div class="col-md-12">
                 <textarea class="form-control" rows="4" name="value" th:text="${freeform.value}"></textarea>
-              </div>
-            </div>
-            <div class="formItem">
-              <div class="formItem__element">
-                <div class="radioTabs">
-                  <label class="radioTabs__item">
-                    <input type="radio" name="public" value="true" th:checked="${freeform.public}" />
-                    <span th:text="#{boolean.public.true}">avalik</span>
-                  </label>
-                  <label class="radioTabs__item">
-                    <input type="radio" name="public" value="false" th:checked="${!freeform.public}" />
-                    <span th:text="#{boolean.public.false}">mitteavalik</span>
-                  </label>
-                </div>
               </div>
             </div>
           </div>
@@ -1244,20 +1216,6 @@
             <div class="form-group row">
               <div class="col-md-12">
                 <textarea class="form-control" rows="4" name="value" th:text="${freeform.value}"></textarea>
-              </div>
-            </div>
-            <div class="formItem">
-              <div class="formItem__element">
-                <div class="radioTabs">
-                  <label class="radioTabs__item">
-                    <input type="radio" name="public" value="true" th:checked="${freeform.public}" />
-                    <span th:text="#{boolean.public.true}">avalik</span>
-                  </label>
-                  <label class="radioTabs__item">
-                    <input type="radio" name="public" value="false" th:checked="${!freeform.public}" />
-                    <span th:text="#{boolean.public.false}">mitteavalik</span>
-                  </label>
-                </div>
               </div>
             </div>
           </div>
@@ -2032,7 +1990,7 @@
             <input type="hidden" name="complexity" th:value="${image.complexity}">
             <div class="form-group row">
               <div class="col-md-12">
-                <input type="text" class="form-control required-field" name="value" th:placeholder="#{term.placeholder.image.url}" th:value="${image.sourceUrl}" required="required" autocomplete="off"></input>
+                <input type="text" class="form-control required-field" name="value" th:placeholder="#{term.placeholder.image.url}" th:value="${image.url}" required="required" autocomplete="off"></input>
               </div>
             </div>
             <div class="form-group row">
@@ -2088,7 +2046,7 @@
             <input type="hidden" name="complexity" th:value="${media.complexity}">
             <div class="form-group row">
               <div class="col-md-12">
-                <textarea class="form-control" rows="1" name="value" th:text="${media.sourceUrl}"></textarea>
+                <textarea class="form-control" rows="1" name="value" th:text="${media.url}"></textarea>
               </div>
             </div>
             <div class="modal-footer">

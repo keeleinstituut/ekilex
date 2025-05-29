@@ -118,7 +118,7 @@ public class EditController extends AbstractMutableDataPageController implements
 			cudService.createLexemeTag(id, value, roleDatasetCode, isManualEventOnUpdateEnabled);
 			break;
 		case "lexeme_freeform":
-			cudService.createLexemeFreeform(id, value, type, isPublic, roleDatasetCode, isManualEventOnUpdateEnabled);
+			cudService.createLexemeFreeform(id, value, type, roleDatasetCode, isManualEventOnUpdateEnabled);
 			break;
 		case "government":
 			cudService.createLexemeGovernment(id, value, complexity, roleDatasetCode, isManualEventOnUpdateEnabled);
@@ -175,7 +175,7 @@ public class EditController extends AbstractMutableDataPageController implements
 			cudService.createWordForum(id, value, user);
 			break;
 		case "word_freeform":
-			cudService.createWordFreeform(id, value, type, isPublic, roleDatasetCode, isManualEventOnUpdateEnabled);
+			cudService.createWordFreeform(id, value, type, roleDatasetCode, isManualEventOnUpdateEnabled);
 			break;
 		case "word_od_morph":
 			cudService.createWordOdMorph(id, value, roleDatasetCode, isManualEventOnUpdateEnabled);
@@ -212,7 +212,7 @@ public class EditController extends AbstractMutableDataPageController implements
 			cudService.createMeaningMedia(id, value, complexity, roleDatasetCode, isManualEventOnUpdateEnabled);
 			break;
 		case "meaning_freeform":
-			cudService.createMeaningFreeform(id, value, type, isPublic, roleDatasetCode, isManualEventOnUpdateEnabled);
+			cudService.createMeaningFreeform(id, value, type, roleDatasetCode, isManualEventOnUpdateEnabled);
 			break;
 		case "meaning_semantic_type":
 			cudService.createMeaningSemanticType(id2, value, roleDatasetCode, isManualEventOnUpdateEnabled);

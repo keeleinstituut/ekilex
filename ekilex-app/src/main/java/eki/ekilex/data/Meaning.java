@@ -37,9 +37,9 @@ public class Meaning extends AbstractGrantEntity {
 
 	private List<LearnerComment> learnerComments;
 
-	private List<Media> images;
+	private List<MeaningImage> images;
 
-	private List<Media> medias;
+	private List<MeaningMedia> medias;
 
 	private List<MeaningForum> forums;
 
@@ -163,19 +163,19 @@ public class Meaning extends AbstractGrantEntity {
 		this.learnerComments = learnerComments;
 	}
 
-	public List<Media> getImages() {
+	public List<MeaningImage> getImages() {
 		return images;
 	}
 
-	public void setImages(List<Media> images) {
+	public void setImages(List<MeaningImage> images) {
 		this.images = images;
 	}
 
-	public List<Media> getMedias() {
+	public List<MeaningMedia> getMedias() {
 		return medias;
 	}
 
-	public void setMedias(List<Media> medias) {
+	public void setMedias(List<MeaningMedia> medias) {
 		this.medias = medias;
 	}
 

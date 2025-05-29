@@ -96,8 +96,6 @@ create index freeform_value_idx on freeform(value);
 create index freeform_value_lower_idx on freeform(lower(value));
 create index freeform_type_code_idx on freeform(freeform_type_code);
 create index freeform_lang_idx on freeform(lang);
-create index freeform_complexity_idx on freeform(complexity);
-create index freeform_is_public_idx on freeform(is_public);
 create index source_dataset_code_idx on source(dataset_code);
 create index source_type_idx on source(type);
 create index source_name_idx on source(name);
@@ -213,7 +211,6 @@ create index meaning_image_original_freeform_id_idx on meaning_image(original_fr
 create index meaning_image_meaning_id_idx on meaning_image(meaning_id);
 create index meaning_image_lang_idx on meaning_image(title);
 create index meaning_image_complexity_idx on meaning_image(complexity);
-create index meaning_image_is_public_idx on meaning_image(is_public);
 create index meaning_image_source_link_meaning_image_id_idx on meaning_image_source_link(meaning_image_id);
 create index meaning_image_source_link_source_id_idx on meaning_image_source_link(source_id);
 create index meaning_image_source_link_name_idx on meaning_image_source_link(name);
@@ -221,7 +218,6 @@ create index meaning_image_source_link_name_lower_idx on meaning_image_source_li
 create index definition_note_original_freeform_id_idx on definition_note(original_freeform_id);
 create index definition_note_definition_id_idx on definition_note(definition_id);
 create index definition_note_lang_idx on definition_note(lang);
-create index definition_note_complexity_idx on definition_note(complexity);
 create index definition_note_is_public_idx on definition_note(is_public);
 create index definition_note_source_link_definition_note_id_idx on definition_note_source_link(definition_note_id);
 create index definition_note_source_link_source_id_idx on definition_note_source_link(source_id);

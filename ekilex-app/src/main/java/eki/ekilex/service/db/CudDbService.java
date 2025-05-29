@@ -108,12 +108,8 @@ public class CudDbService extends AbstractDataDbService {
 		fieldAndValueMap.put(FREEFORM.VALUE_PRESE, freeform.getValuePrese());
 		fieldAndValueMap.put(FREEFORM.MODIFIED_BY, userName);
 		fieldAndValueMap.put(FREEFORM.MODIFIED_ON, now);
-		fieldAndValueMap.put(FREEFORM.IS_PUBLIC, freeform.isPublic());
 		if (freeform.getLang() != null) {
 			fieldAndValueMap.put(FREEFORM.LANG, freeform.getLang());
-		}
-		if (freeform.getComplexity() != null) {
-			fieldAndValueMap.put(FREEFORM.COMPLEXITY, freeform.getComplexity().name());
 		}
 
 		mainDb
@@ -267,9 +263,6 @@ public class CudDbService extends AbstractDataDbService {
 		fieldAndValueMap.put(DEFINITION_NOTE.MODIFIED_ON, note.getModifiedOn());
 		if (StringUtils.isNotBlank(note.getLang())) {
 			fieldAndValueMap.put(DEFINITION_NOTE.LANG, note.getLang());
-		}
-		if (note.getComplexity() != null) {
-			fieldAndValueMap.put(DEFINITION_NOTE.COMPLEXITY, note.getComplexity().name());
 		}
 
 		mainDb
@@ -1362,7 +1355,6 @@ public class CudDbService extends AbstractDataDbService {
 						DEFINITION_NOTE.VALUE,
 						DEFINITION_NOTE.VALUE_PRESE,
 						DEFINITION_NOTE.LANG,
-						DEFINITION_NOTE.COMPLEXITY,
 						DEFINITION_NOTE.IS_PUBLIC,
 						DEFINITION_NOTE.CREATED_BY,
 						DEFINITION_NOTE.CREATED_ON,
@@ -1373,7 +1365,6 @@ public class CudDbService extends AbstractDataDbService {
 						note.getValue(),
 						note.getValuePrese(),
 						note.getLang(),
-						note.getComplexity().name(),
 						note.isPublic(),
 						note.getCreatedBy(),
 						note.getCreatedOn(),
@@ -1487,7 +1478,6 @@ public class CudDbService extends AbstractDataDbService {
 						MEANING_IMAGE.TITLE,
 						MEANING_IMAGE.URL,
 						MEANING_IMAGE.COMPLEXITY,
-						MEANING_IMAGE.IS_PUBLIC,
 						MEANING_IMAGE.CREATED_BY,
 						MEANING_IMAGE.CREATED_ON,
 						MEANING_IMAGE.MODIFIED_BY,
@@ -1497,7 +1487,6 @@ public class CudDbService extends AbstractDataDbService {
 						meaningImage.getTitle(),
 						meaningImage.getUrl(),
 						meaningImage.getComplexity().name(),
-						meaningImage.isPublic(),
 						meaningImage.getCreatedBy(),
 						meaningImage.getCreatedOn(),
 						meaningImage.getModifiedBy(),
@@ -1969,7 +1958,6 @@ public class CudDbService extends AbstractDataDbService {
 	private Long createFreeform(Freeform freeform, String userName) {
 
 		LocalDateTime now = LocalDateTime.now();
-		String complexity = freeform.getComplexity() == null ? null : freeform.getComplexity().name();
 
 		FreeformRecord freeformRecord = mainDb.newRecord(FREEFORM);
 		freeformRecord.setParentId(freeform.getParentId());
@@ -1977,8 +1965,6 @@ public class CudDbService extends AbstractDataDbService {
 		freeformRecord.setValue(freeform.getValue());
 		freeformRecord.setValuePrese(freeform.getValuePrese());
 		freeformRecord.setLang(freeform.getLang());
-		freeformRecord.setComplexity(complexity);
-		freeformRecord.setIsPublic(freeform.isPublic());
 		freeformRecord.setCreatedBy(userName);
 		freeformRecord.setCreatedOn(now);
 		freeformRecord.setModifiedBy(userName);
