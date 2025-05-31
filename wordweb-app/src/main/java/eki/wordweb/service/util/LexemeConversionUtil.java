@@ -618,7 +618,6 @@ public class LexemeConversionUtil extends AbstractConversionUtil {
 		lexemeWord.setMeaningLastActivityEventOn(meaning.getMeaningLastActivityEventOn());
 		lexemeWord.setMeaningImages(filteredImageFiles);
 		lexemeWord.setMediaFiles(filteredMediaFiles);
-		lexemeWord.setSystematicPolysemyPatterns(meaning.getSystematicPolysemyPatterns());
 		lexemeWord.setSemanticTypes(meaning.getSemanticTypes());
 
 		if (Complexity.SIMPLE.equals(lexComplexity)) {

@@ -105,8 +105,6 @@ public class LexemeWord extends WordTypeData implements LexemeLevel, ComplexityT
 
 	private List<TypeMediaFile> mediaFiles;
 
-	private List<String> systematicPolysemyPatterns;
-
 	private List<String> semanticTypes;
 
 	private List<String> learnerComments;
@@ -463,14 +461,6 @@ public class LexemeWord extends WordTypeData implements LexemeLevel, ComplexityT
 
 	public void setMediaFiles(List<TypeMediaFile> mediaFiles) {
 		this.mediaFiles = mediaFiles;
-	}
-
-	public List<String> getSystematicPolysemyPatterns() {
-		return systematicPolysemyPatterns;
-	}
-
-	public void setSystematicPolysemyPatterns(List<String> systematicPolysemyPatterns) {
-		this.systematicPolysemyPatterns = systematicPolysemyPatterns;
 	}
 
 	public List<String> getSemanticTypes() {

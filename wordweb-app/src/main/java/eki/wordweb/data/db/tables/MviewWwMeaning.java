@@ -4,6 +4,9 @@
 package eki.wordweb.data.db.tables;
 
 
+import eki.wordweb.data.db.Public;
+import eki.wordweb.data.db.tables.records.MviewWwMeaningRecord;
+
 import java.time.LocalDateTime;
 
 import org.jooq.Field;
@@ -11,7 +14,7 @@ import org.jooq.ForeignKey;
 import org.jooq.JSON;
 import org.jooq.Name;
 import org.jooq.Record;
-import org.jooq.Row11;
+import org.jooq.Row10;
 import org.jooq.Schema;
 import org.jooq.Table;
 import org.jooq.TableField;
@@ -19,9 +22,6 @@ import org.jooq.TableOptions;
 import org.jooq.impl.DSL;
 import org.jooq.impl.SQLDataType;
 import org.jooq.impl.TableImpl;
-
-import eki.wordweb.data.db.Public;
-import eki.wordweb.data.db.tables.records.MviewWwMeaningRecord;
 
 
 /**
@@ -74,11 +74,6 @@ public class MviewWwMeaning extends TableImpl<MviewWwMeaningRecord> {
      * The column <code>public.mview_ww_meaning.media_files</code>.
      */
     public final TableField<MviewWwMeaningRecord, JSON> MEDIA_FILES = createField(DSL.name("media_files"), SQLDataType.JSON, this, "");
-
-    /**
-     * The column <code>public.mview_ww_meaning.systematic_polysemy_patterns</code>.
-     */
-    public final TableField<MviewWwMeaningRecord, String[]> SYSTEMATIC_POLYSEMY_PATTERNS = createField(DSL.name("systematic_polysemy_patterns"), SQLDataType.CLOB.getArrayDataType(), this, "");
 
     /**
      * The column <code>public.mview_ww_meaning.semantic_types</code>.
@@ -165,11 +160,11 @@ public class MviewWwMeaning extends TableImpl<MviewWwMeaningRecord> {
     }
 
     // -------------------------------------------------------------------------
-    // Row11 type methods
+    // Row10 type methods
     // -------------------------------------------------------------------------
 
     @Override
-    public Row11<Long, LocalDateTime, LocalDateTime, JSON, JSON, JSON, String[], String[], String[], JSON, JSON> fieldsRow() {
-        return (Row11) super.fieldsRow();
+    public Row10<Long, LocalDateTime, LocalDateTime, JSON, JSON, JSON, String[], String[], JSON, JSON> fieldsRow() {
+        return (Row10) super.fieldsRow();
     }
 }

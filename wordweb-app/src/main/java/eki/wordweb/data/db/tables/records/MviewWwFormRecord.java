@@ -4,11 +4,11 @@
 package eki.wordweb.data.db.tables.records;
 
 
+import eki.wordweb.data.db.tables.MviewWwForm;
+
 import java.math.BigDecimal;
 
 import org.jooq.impl.TableRecordImpl;
-
-import eki.wordweb.data.db.tables.MviewWwForm;
 
 
 /**

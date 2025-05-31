@@ -4,12 +4,12 @@
 package eki.wordweb.data.db.tables.records;
 
 
+import eki.wordweb.data.db.tables.MviewWwClassifier;
+
 import org.jooq.Field;
 import org.jooq.Record7;
 import org.jooq.Row7;
 import org.jooq.impl.TableRecordImpl;
-
-import eki.wordweb.data.db.tables.MviewWwClassifier;
 
 
 /**

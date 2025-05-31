@@ -4,15 +4,6 @@
 package eki.wordweb.data.db;
 
 
-import java.util.Arrays;
-import java.util.List;
-
-import org.jooq.Catalog;
-import org.jooq.Sequence;
-import org.jooq.Table;
-import org.jooq.UDT;
-import org.jooq.impl.SchemaImpl;
-
 import eki.wordweb.data.db.tables.LexicalDecisionData;
 import eki.wordweb.data.db.tables.LexicalDecisionResult;
 import eki.wordweb.data.db.tables.MviewWwClassifier;
@@ -34,6 +25,15 @@ import eki.wordweb.data.db.tables.MviewWwWordSearch;
 import eki.wordweb.data.db.tables.SimilarityJudgementData;
 import eki.wordweb.data.db.tables.SimilarityJudgementResult;
 import eki.wordweb.data.db.udt.TypeLangComplexity;
+
+import java.util.Arrays;
+import java.util.List;
+
+import org.jooq.Catalog;
+import org.jooq.Sequence;
+import org.jooq.Table;
+import org.jooq.UDT;
+import org.jooq.impl.SchemaImpl;
 
 
 /**

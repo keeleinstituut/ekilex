@@ -4,13 +4,13 @@
 package eki.wordweb.data.db.tables.records;
 
 
+import eki.wordweb.data.db.tables.MviewWwWordRelation;
+
 import org.jooq.Field;
 import org.jooq.JSON;
 import org.jooq.Record3;
 import org.jooq.Row3;
 import org.jooq.impl.TableRecordImpl;
-
-import eki.wordweb.data.db.tables.MviewWwWordRelation;
 
 
 /**

@@ -37,8 +37,6 @@ public class Meaning extends AbstractDataObject {
 
 	private List<TypeMediaFile> mediaFiles;
 
-	private List<String> systematicPolysemyPatterns;
-
 	private List<String> semanticTypes;
 
 	private List<String> learnerComments;
@@ -103,14 +101,6 @@ public class Meaning extends AbstractDataObject {
 
 	public void setMediaFiles(List<TypeMediaFile> mediaFiles) {
 		this.mediaFiles = mediaFiles;
-	}
-
-	public List<String> getSystematicPolysemyPatterns() {
-		return systematicPolysemyPatterns;
-	}
-
-	public void setSystematicPolysemyPatterns(List<String> systematicPolysemyPatterns) {
-		this.systematicPolysemyPatterns = systematicPolysemyPatterns;
 	}
 
 	public List<String> getSemanticTypes() {

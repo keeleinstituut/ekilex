@@ -4,11 +4,11 @@
 package eki.wordweb.data.db.routines;
 
 
+import eki.wordweb.data.db.Public;
+
 import org.jooq.Parameter;
 import org.jooq.impl.AbstractRoutine;
 import org.jooq.impl.Internal;
-
-import eki.wordweb.data.db.Public;
 
 
 /**

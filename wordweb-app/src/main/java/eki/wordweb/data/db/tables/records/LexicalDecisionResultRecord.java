@@ -4,6 +4,8 @@
 package eki.wordweb.data.db.tables.records;
 
 
+import eki.wordweb.data.db.tables.LexicalDecisionResult;
+
 import java.time.LocalDateTime;
 
 import org.jooq.Field;
@@ -11,8 +13,6 @@ import org.jooq.Record1;
 import org.jooq.Record7;
 import org.jooq.Row7;
 import org.jooq.impl.UpdatableRecordImpl;
-
-import eki.wordweb.data.db.tables.LexicalDecisionResult;
 
 
 /**

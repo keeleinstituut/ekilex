@@ -4,12 +4,12 @@
 package eki.wordweb.data.db.udt.records;
 
 
+import eki.wordweb.data.db.udt.TypeLangComplexity;
+
 import org.jooq.Field;
 import org.jooq.Record4;
 import org.jooq.Row4;
 import org.jooq.impl.UDTRecordImpl;
-
-import eki.wordweb.data.db.udt.TypeLangComplexity;
 
 
 /**

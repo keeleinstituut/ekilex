@@ -716,7 +716,6 @@ public class SearchDbService implements GlobalConstant, SystemConstant {
 						m.DOMAIN_CODES,
 						m.MEANING_IMAGES,
 						m.MEDIA_FILES,
-						m.SYSTEMATIC_POLYSEMY_PATTERNS,
 						m.SEMANTIC_TYPES,
 						m.LEARNER_COMMENTS,
 						m.NOTES,
