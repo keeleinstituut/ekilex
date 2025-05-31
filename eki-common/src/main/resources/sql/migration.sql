@@ -532,7 +532,7 @@ where
 	'USAGE_DEFINITION',
 	'USAGE_TRANSLATION',
 	'WORD_OD_RECOMMENDATION',
-	'SYSTEMATIC_POLYSEMY_PATTERN'
+	'SYSTEMATIC_POLYSEMY_PATTERN',
 	'SOURCE_EXPLANATION',
 	'SOURCE_FILE');
 	
@@ -940,14 +940,14 @@ select
 from
 	usage u
 where
-	exists (
+	u.complexity in ('ANY', 'DETAIL')
+	and exists (
 		select
 			1
 		from
 			lexeme l
 		where
 			l.id = u.lexeme_id
-			and l.complexity in ('ANY', 'DETAIL')
 			and l.dataset_code = 'eki'
 	)
 	and not exists (
@@ -971,14 +971,14 @@ select
 from
 	usage u
 where
-	exists (
+	u.complexity in ('ANY', 'SIMPLE')
+	and exists (
 		select
 			1
 		from
 			lexeme l
 		where
 			l.id = u.lexeme_id
-			and l.complexity in ('ANY', 'SIMPLE')
 			and l.dataset_code = 'eki'
 	)
 	and not exists (
@@ -1002,14 +1002,14 @@ select
 from
 	lexeme_note ln
 where
-	exists (
+	ln.complexity in ('ANY', 'DETAIL')
+	and exists (
 		select
 			1
 		from
 			lexeme l
 		where
 			l.id = ln.lexeme_id
-			and l.complexity in ('ANY', 'DETAIL')
 			and l.dataset_code = 'eki'
 	)
 	and not exists (
@@ -1033,14 +1033,14 @@ select
 from
 	lexeme_note ln
 where
-	exists (
+	ln.complexity in ('ANY', 'SIMPLE')
+	and exists (
 		select
 			1
 		from
 			lexeme l
 		where
 			l.id = ln.lexeme_id
-			and l.complexity in ('ANY', 'SIMPLE')
 			and l.dataset_code = 'eki'
 	)
 	and not exists (
@@ -1064,14 +1064,14 @@ select
 from
 	meaning_note mn
 where
-	exists (
+	mn.complexity in ('ANY', 'DETAIL')
+	and exists (
 		select
 			1
 		from
 			lexeme l
 		where
 			l.meaning_id = mn.meaning_id
-			and l.complexity in ('ANY', 'DETAIL')
 			and l.dataset_code = 'eki'
 	)
 	and not exists (
@@ -1095,14 +1095,14 @@ select
 from
 	meaning_note mn
 where
-	exists (
+	mn.complexity in ('ANY', 'SIMPLE')
+	and exists (
 		select
 			1
 		from
 			lexeme l
 		where
 			l.meaning_id = mn.meaning_id
-			and l.complexity in ('ANY', 'SIMPLE')
 			and l.dataset_code = 'eki'
 	)
 	and not exists (
@@ -1126,14 +1126,14 @@ select
 from
 	meaning_image mi
 where
-	exists (
+	mi.complexity in ('ANY', 'DETAIL')
+	and exists (
 		select
 			1
 		from
 			lexeme l
 		where
 			l.meaning_id = mi.meaning_id
-			and l.complexity in ('ANY', 'DETAIL')
 			and l.dataset_code = 'eki'
 	)
 	and not exists (
@@ -1157,14 +1157,14 @@ select
 from
 	meaning_image mi
 where
-	exists (
+	mi.complexity in ('ANY', 'SIMPLE')
+	and exists (
 		select
 			1
 		from
 			lexeme l
 		where
 			l.meaning_id = mi.meaning_id
-			and l.complexity in ('ANY', 'SIMPLE')
 			and l.dataset_code = 'eki'
 	)
 	and not exists (
@@ -1188,14 +1188,14 @@ select
 from
 	meaning_media mm
 where
-	exists (
+	mm.complexity in ('ANY', 'DETAIL')
+	and exists (
 		select
 			1
 		from
 			lexeme l
 		where
 			l.meaning_id = mm.meaning_id
-			and l.complexity in ('ANY', 'DETAIL')
 			and l.dataset_code = 'eki'
 	)
 	and not exists (
@@ -1219,14 +1219,14 @@ select
 from
 	meaning_media mm
 where
-	exists (
+	mm.complexity in ('ANY', 'SIMPLE')
+	and exists (
 		select
 			1
 		from
 			lexeme l
 		where
 			l.meaning_id = mm.meaning_id
-			and l.complexity in ('ANY', 'SIMPLE')
 			and l.dataset_code = 'eki'
 	)
 	and not exists (
@@ -1250,14 +1250,14 @@ select
 from
 	grammar g
 where
-	exists (
+	g.complexity in ('ANY', 'DETAIL')
+	and exists (
 		select
 			1
 		from
 			lexeme l
 		where
 			l.id = g.lexeme_id
-			and l.complexity in ('ANY', 'DETAIL')
 			and l.dataset_code = 'eki'
 	)
 	and not exists (
@@ -1281,14 +1281,14 @@ select
 from
 	grammar g
 where
-	exists (
+	g.complexity in ('ANY', 'SIMPLE')
+	and exists (
 		select
 			1
 		from
 			lexeme l
 		where
 			l.id = g.lexeme_id
-			and l.complexity in ('ANY', 'SIMPLE')
 			and l.dataset_code = 'eki'
 	)
 	and not exists (
@@ -1312,14 +1312,14 @@ select
 from
 	government g
 where
-	exists (
+	g.complexity in ('ANY', 'DETAIL')
+	and exists (
 		select
 			1
 		from
 			lexeme l
 		where
 			l.id = g.lexeme_id
-			and l.complexity in ('ANY', 'DETAIL')
 			and l.dataset_code = 'eki'
 	)
 	and not exists (
@@ -1343,14 +1343,14 @@ select
 from
 	government g
 where
-	exists (
+	g.complexity in ('ANY', 'SIMPLE')
+	and exists (
 		select
 			1
 		from
 			lexeme l
 		where
 			l.id = g.lexeme_id
-			and l.complexity in ('ANY', 'SIMPLE')
 			and l.dataset_code = 'eki'
 	)
 	and not exists (
@@ -1366,6 +1366,9 @@ where
 ;
 
 analyze publishing;
+
+-- absolutely final skit --
+
 alter table definition_note drop column complexity cascade;
 alter table freeform drop column complexity cascade;
 alter table freeform drop column is_public cascade;
