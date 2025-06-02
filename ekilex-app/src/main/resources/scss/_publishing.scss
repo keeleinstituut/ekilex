@@ -2,8 +2,9 @@
   display: inline-flex;
   align-items: center;
   gap: 4px;
-  height: 16px;
+  height: 24px;
   position: relative;
+  margin-left: auto;
 
   &:not(&--reversed) {
     & .publishing__icon--reversed {
@@ -23,8 +24,8 @@
     padding: 0;
     border-radius: 4px;
     --icon-size: 16px;
-    width: 16px;
-    height: 16px;
+    width: var(--icon-size);
+    height: var(--icon-size);
     background-repeat: no-repeat;
     background-position: center;
     background-size: 100%;
@@ -54,10 +55,10 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    width: 10px;
-    height: 10px;
-    border-radius: 100px;
     --icon-size: 10px;
+    width: var(--icon-size);
+    height: var(--icon-size);
+    border-radius: 100px;
     --icon-variation-settings: 'FILL' 1;
 
     &[data-publishing-item-active='false'] {

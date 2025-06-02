@@ -486,5 +486,25 @@
     <input type="checkbox" th:name="${inputName}" th:value="${inputValue}" th:checked="${inputChecked}">
     <span th:text="${inputLabel}"></span>
   </label>
+  <th:block th:fragment="action_dropdown">
+    <div
+      class="dropdown action-dropdown"
+      data-plugin="actionDropdownHandler">
+      <button type="button" class="action-dropdown__trigger"
+        th:id="|action-dropdown-trigger-${idPrefix}|"
+        aria-haspopup="true"
+        aria-expanded="false"
+        th:title="${triggerTitle}"
+        >
+        <span class="material-symbols-outlined" th:text="${triggerIcon}"></span>
+      </button>
+      <div
+        class="dropdown-menu action-dropdown__menu"
+        th:id="|action-dropdown-${idPrefix}|"
+        th:aria-labelledby="|action-dropdown-trigger-${idPrefix}|">
+        <th:block th:replace="${content}"></th:block>
+      </div>
+    </div>
+  </th:block>
 </body>
 </html>
