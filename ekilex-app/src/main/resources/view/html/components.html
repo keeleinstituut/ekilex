@@ -370,7 +370,7 @@
       </div>
     </div>
   </div>
-  <th:block th:fragment="entity_publishing">
+  <th:block th:fragment="entity_publishing" th:with="isReversed = ${reversed ?: false}">
     <div
       class="dropdown publishing"
       data-plugin="publishingHandler"
@@ -380,7 +380,33 @@
       th:data-replace-owner-id="${replaceOwnerId}"
       th:data-callback="${callback}"
       th:data-init-accordion="${initAccordion}"
+      th:classappend="|${isReversed ? 'publishing--reversed': ''}${extraClasses ?: ''}|"
       >
+      <button type="button" class="publishing__button publishing__button--icon publishing__button--reversed"
+        data-publishing-item="unif"
+        th:data-publishing-item-active="${isWwUnif}"
+        th:title="#{publishing.unif}"
+        >
+      </button>
+      <button type="button" class="publishing__button publishing__button--icon publishing__button--reversed"
+        data-publishing-item="od"
+        th:data-publishing-item-active="${isWwOd}"
+        th:title="#{publishing.od}"
+        >
+      </button>
+      <button type="button" class="publishing__button publishing__button--icon publishing__button--reversed"
+        data-publishing-item="lite"
+        th:data-publishing-item-active="${isWwLite}"
+        th:title="#{publishing.lite}"
+        >
+      </button>
+      <button type="button" class="publishing__button publishing__button--icon publishing__button--reversed"
+        data-publishing-item="public"
+        th:data-publishing-item-active="${isPublic}"
+        th:title="#{publishing.public}"
+        >
+        <span class="material-symbols-outlined">lock</span>
+      </button>
       <button type="button" class="publishing__button publishing__button--toggle"
         th:id="|publishing-trigger-${entityName}-${entityId}|"
         data-toggle="publishing-menu"
@@ -388,7 +414,7 @@
         aria-expanded="false"
         th:title="#{publishing.open}"
         >
-        <span class="material-symbols-outlined">apps</span>
+        <span class="material-symbols-outlined">upload</span>
       </button>
       <div
         class="dropdown-menu publishing__menu"
@@ -434,20 +460,27 @@
       <button type="button" class="publishing__button publishing__button--icon"
         data-publishing-item="unif"
         th:data-publishing-item-active="${isWwUnif}"
-        th:title="#{publishing.toggle.unif}"
+        th:title="#{publishing.unif}"
         >
       </button>
       <button type="button" class="publishing__button publishing__button--icon"
         data-publishing-item="od"
         th:data-publishing-item-active="${isWwOd}"
-        th:title="#{publishing.toggle.od}"
+        th:title="#{publishing.od}"
         >
       </button>
       <button type="button" class="publishing__button publishing__button--icon"
         data-publishing-item="lite"
         th:data-publishing-item-active="${isWwLite}"
-        th:title="#{publishing.toggle.lite}"
+        th:title="#{publishing.lite}"
         >
+      </button>
+      <button type="button" class="publishing__button publishing__button--icon"
+        data-publishing-item="public"
+        th:data-publishing-item-active="${isPublic}"
+        th:title="#{publishing.public}"
+        >
+        <span class="material-symbols-outlined">lock</span>
       </button>
     </div>
   </th:block>
