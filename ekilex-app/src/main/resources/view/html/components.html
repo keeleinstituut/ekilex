@@ -382,31 +382,30 @@
       th:data-init-accordion="${initAccordion}"
       th:classappend="|${isReversed ? 'publishing--reversed': ''}${extraClasses ?: ''}|"
       >
-      <button type="button" class="publishing__button publishing__button--icon publishing__button--reversed"
+      <span class="publishing__icon publishing__icon--reversed"
         data-publishing-item="unif"
         th:data-publishing-item-active="${isWwUnif}"
         th:title="#{publishing.unif}"
         >
-      </button>
-      <button type="button" class="publishing__button publishing__button--icon publishing__button--reversed"
+      </span>
+      <span class="publishing__icon publishing__icon--reversed"
         data-publishing-item="od"
         th:data-publishing-item-active="${isWwOd}"
         th:title="#{publishing.od}"
         >
-      </button>
-      <button type="button" class="publishing__button publishing__button--icon publishing__button--reversed"
+      </span>
+      <span class="publishing__icon publishing__icon--reversed"
         data-publishing-item="lite"
         th:data-publishing-item-active="${isWwLite}"
         th:title="#{publishing.lite}"
-        >
-      </button>
-      <button type="button" class="publishing__button publishing__button--icon publishing__button--reversed"
+      >
+      </span>
+      <span class="publishing__icon publishing__icon--reversed"
         data-publishing-item="public"
         th:data-publishing-item-active="${isPublic}"
-        th:title="#{publishing.public}"
-        >
-        <span class="material-symbols-outlined">lock</span>
-      </button>
+        th:title="#{publishing.public.state}"
+        ><span class="material-symbols-outlined">lock</span>
+      </span>
       <button type="button" class="publishing__button publishing__button--toggle"
         th:id="|publishing-trigger-${entityName}-${entityId}|"
         data-toggle="publishing-menu"
@@ -453,35 +452,34 @@
             inputName = 'isPublic',
             inputValue = 'isPublic',
             inputChecked = ${isPublic},
-            inputLabel = #{publishing.public}
+            inputLabel = #{publishing.public.label}
           )"></th:block>
         </div>
       </div>
-      <button type="button" class="publishing__button publishing__button--icon"
+      <span class="publishing__icon"
         data-publishing-item="unif"
         th:data-publishing-item-active="${isWwUnif}"
         th:title="#{publishing.unif}"
         >
-      </button>
-      <button type="button" class="publishing__button publishing__button--icon"
+      </span>
+      <span class="publishing__icon"
         data-publishing-item="od"
         th:data-publishing-item-active="${isWwOd}"
         th:title="#{publishing.od}"
         >
-      </button>
-      <button type="button" class="publishing__button publishing__button--icon"
+      </span>
+      <span class="publishing__icon"
         data-publishing-item="lite"
         th:data-publishing-item-active="${isWwLite}"
         th:title="#{publishing.lite}"
-        >
-      </button>
-      <button type="button" class="publishing__button publishing__button--icon"
+      >
+      </span>
+      <span class="publishing__icon"
         data-publishing-item="public"
         th:data-publishing-item-active="${isPublic}"
-        th:title="#{publishing.public}"
-        >
-        <span class="material-symbols-outlined">lock</span>
-      </button>
+        th:title="#{publishing.public.state}"
+        ><span class="material-symbols-outlined">lock</span>
+      </span>
     </div>
   </th:block>
   <label class="input-switch" th:fragment="input_switch">

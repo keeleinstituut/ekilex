@@ -122,7 +122,6 @@ class PublishingHandler {
 		}
 
 		// Make sure click only selects buttons
-		this.container.on("click", '[data-publishing-item]', this.handleItemClick.bind(this));
 		this.menu.children().on("click", this.handleItemClick.bind(this));
 	}
 
@@ -136,10 +135,7 @@ class PublishingHandler {
 		const target = e.currentTarget ?? e.target;
 		const targetName = target.dataset?.publishingItem;
 		const currentValue = target.dataset?.publishingItemActive;
-		// Icon buttons always turn off, menu buttons toggle
-		const newValue = target.classList.contains("publishing__button--icon")
-			? false
-			: currentValue !== "true";
+		const newValue = currentValue !== "true";
 		if (targetName && currentValue !== undefined) {
 			this.setTarget(
 				PublishingHandler.targetConstantsMap[targetName],
