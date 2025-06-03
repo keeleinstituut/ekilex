@@ -1178,29 +1178,36 @@
                 initAccordion = false,
                 withPublicSwitch = false)">
           </th:block>
-          <button type="button" class="btn badge badge-primary align-bottom"
-                  th:title="#{common.edit}"
+          <th:block
+              sec:authorize="#vars.lexeme.meaning.crudGrant"
+              th:replace="components :: action_dropdown(
+                idPrefix = |lexeme-meaning-image-${lexeme.lexemeId}-${image.id}|,
+                triggerTitle = #{common.edit},
+                triggerIcon = 'more_horiz',
+                content = ~{:: meaning_image_actions})">
+            <th:block th:fragment="meaning_image_actions">
+              <button type="button" class="plain-action"
+                  th:text="#{common.edit}"
                   data-toggle="modal"
                   th:data-target="${'#editMeaningImageDlg_' + lexeme.lexemeId + '_' + image.id}"
                   sec:authorize="#vars.lexeme.meaning.crudGrant">
-            <i class="fa fa-edit" aria-hidden="true"></i>
-          </button>
-          <button type="button" class="btn badge badge-success align-bottom"
-                  th:title="#{common.add.source.link}"
-                  data-toggle="modal"
-                  th:data-target="${'#addMeaningImageSourceLinkDlg_' + image.id}"
-                  sec:authorize="#vars.lexeme.meaning.crudGrant">
-            <i class="fa fa-external-link" aria-hidden="true"></i>
-          </button>
-          <button type="button" class="btn badge badge-warning align-bottom"
-                  th:title="#{lex.delete.image}"
-                  data-op-code="meaning_image"
-                  th:data-id="${image.id}"
-                  th:data-callback="${@viewUtil.composeFunction('loadFullLexemeDetails', lexeme.lexemeId, lexeme.levels)}"
-                  data-toggle="delete-confirm"
-                  sec:authorize="#vars.lexeme.meaning.crudGrant">
-            <i class="fa fa-remove" aria-hidden="true"></i>
-          </button>
+              </button>
+              <button type="button" class="plain-action"
+                      th:text="#{common.add.source.link}"
+                      data-toggle="modal"
+                      th:data-target="${'#addMeaningImageSourceLinkDlg_' + image.id}"
+                      sec:authorize="#vars.lexeme.meaning.crudGrant">
+              </button>
+              <button type="button" class="plain-action plain-action--red"
+                      th:text="#{lex.delete.image}"
+                      data-op-code="meaning_image"
+                      th:data-id="${image.id}"
+                      th:data-callback="${@viewUtil.composeFunction('loadFullLexemeDetails', lexeme.lexemeId, lexeme.levels)}"
+                      data-toggle="delete-confirm"
+                      sec:authorize="#vars.lexeme.meaning.crudGrant">
+              </button>
+            </th:block>    
+          </th:block>
         </div>
         <div th:unless="${#strings.isEmpty(image.title)}">
           <span th:text="${image.title}"></span>
@@ -1317,34 +1324,40 @@
           <div class="action-column">
             <th:block th:replace="common :: ordering_buttons(${freeformIter})" sec:authorize="#vars.lexeme.meaning.crudGrant"></th:block>
           </div>
-          <div class="invisible-buttons action-buttons-anchor mw-80">
+          <div class="invisible-buttons action-buttons-anchor">
             <span th:text="${freeform.freeformTypeValue}" class="text-monospace pr-3"></span>
             <span th:utext="${freeform.valuePrese}"></span>
-            <div class="action-buttons-3">
-              <button type="button" class="btn badge badge-primary"
-                      th:title="#{common.edit}"
+            <th:block
+              sec:authorize="#vars.lexeme.meaning.crudGrant"
+              th:replace="components :: action_dropdown(
+                idPrefix = |lexeme-meaning-freeform-${lexeme.lexemeId}-${freeform.id}|,
+                triggerTitle = #{common.edit},
+                triggerIcon = 'more_horiz',
+                content = ~{:: meaning_freeform_actions})">
+              <th:block th:fragment="meaning_freeform_actions">
+                <button type="button" class="plain-action"
+                      th:text="#{common.edit}"
                       data-toggle="modal"
                       th:data-target="${'#editMeaningFreeformDlg_' + lexeme.lexemeId + '_' + freeform.id}"
                       sec:authorize="#vars.lexeme.meaning.crudGrant">
-                <i class="fa fa-edit" aria-hidden="true"></i>
-              </button>
-              <button type="button" class="btn badge badge-success hidden"
-                      th:title="#{common.add.source.link}"
-                      data-toggle="modal"
-                      th:data-target="${'#addMeaningFreeformSourceLinkDlg_' + lexeme.lexemeId + '_' + freeform.id}"
-                      sec:authorize="#vars.lexeme.meaning.crudGrant">
-                <i class="fa fa-external-link" aria-hidden="true"></i>
-              </button>
-              <button type="button" class="btn badge badge-warning"
-                      data-op-code="meaning_freeform"
-                      th:data-id="${freeform.id}"
-                      th:data-callback="${@viewUtil.composeFunction('loadFullLexemeDetails', lexeme.lexemeId, lexeme.levels)}"
-                      data-toggle="delete-confirm"
-                      data-placement="right"
-                      sec:authorize="#vars.lexeme.meaning.crudGrant">
-                <i class="fa fa-remove" aria-hidden="true"></i>
-              </button>
-            </div>
+                </button>
+                <button type="button" class="plain-action"
+                        th:text="#{common.add.source.link}"
+                        data-toggle="modal"
+                        th:data-target="${'#addMeaningFreeformSourceLinkDlg_' + lexeme.lexemeId + '_' + freeform.id}"
+                        sec:authorize="#vars.lexeme.meaning.crudGrant">
+                </button>
+                <button type="button" class="plain-action plain-action--red"
+                        data-op-code="meaning_freeform"
+                        th:data-id="${freeform.id}"
+                        th:data-callback="${@viewUtil.composeFunction('loadFullLexemeDetails', lexeme.lexemeId, lexeme.levels)}"
+                        data-toggle="delete-confirm"
+                        data-placement="right"
+                        sec:authorize="#vars.lexeme.meaning.crudGrant"
+                        th:text="#{common.delete}">
+                </button>
+              </th:block>
+            </th:block>
           </div>
           <div class="hidden-buttons">
             <th:block th:unless="${#lists.isEmpty(freeform.sourceLinks)}">
