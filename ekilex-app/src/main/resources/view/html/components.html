@@ -383,6 +383,17 @@
       th:classappend="|${isReversed ? 'publishing--reversed': ''}${extraClasses ?: ''}|"
       >
       <span class="publishing__icon publishing__icon--reversed"
+        data-publishing-item="public"
+        th:data-publishing-item-active="${isPublic}"
+        th:title="${isPublic 
+          ? #messages.msg('publishing.public.state.public') 
+          : #messages.msg('publishing.public.state.not_public')}"
+        th:if="${withPublicSwitch}"
+        >
+        <span class="material-symbols-outlined publishing__lock--closed">lock</span>
+        <span class="material-symbols-outlined publishing__lock--open">lock_open</span>
+      </span>
+      <span class="publishing__icon publishing__icon--reversed"
         data-publishing-item="unif"
         th:data-publishing-item-active="${isWwUnif}"
         th:title="#{publishing.unif}"
@@ -399,12 +410,6 @@
         th:data-publishing-item-active="${isWwLite}"
         th:title="#{publishing.lite}"
       >
-      </span>
-      <span class="publishing__icon publishing__icon--reversed"
-        data-publishing-item="public"
-        th:data-publishing-item-active="${isPublic}"
-        th:title="#{publishing.public.state}"
-        ><span class="material-symbols-outlined">lock</span>
       </span>
       <button type="button" class="publishing__button publishing__button--toggle"
         th:id="|publishing-trigger-${entityName}-${entityId}|"
@@ -477,8 +482,13 @@
       <span class="publishing__icon"
         data-publishing-item="public"
         th:data-publishing-item-active="${isPublic}"
-        th:title="#{publishing.public.state}"
-        ><span class="material-symbols-outlined">lock</span>
+        th:title="${isPublic 
+          ? #messages.msg('publishing.public.state.public') 
+          : #messages.msg('publishing.public.state.not_public')}"
+        th:if="${withPublicSwitch}"
+        >
+        <span class="material-symbols-outlined publishing__lock--closed">lock</span>
+        <span class="material-symbols-outlined publishing__lock--open">lock_open</span>
       </span>
     </div>
   </th:block>

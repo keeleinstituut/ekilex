@@ -60,8 +60,8 @@
     height: var(--icon-size);
     border-radius: 100px;
     --icon-variation-settings: 'FILL' 1;
-
-    &[data-publishing-item-active='false'] {
+    // The lock icon for public is always visible
+    &[data-publishing-item-active='false']:not([data-publishing-item='public']) {
       display: none;
     }
 
@@ -75,6 +75,19 @@
 
     &[data-publishing-item='lite'] {
       background-image: url('../img/wordweb-lite.svg');
+    }
+    // Show lock icon as open or closed based on state
+    &[data-publishing-item='public'] {
+      &[data-publishing-item-active='false'] {
+        & .publishing__lock--open {
+          display: none;
+        }
+      }
+      &[data-publishing-item-active='true'] {
+        & .publishing__lock--closed {
+          display: none;
+        }
+      }
     }
   }
 
