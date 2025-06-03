@@ -90,6 +90,7 @@
   --color-yellow-100: #ffffe8;
   --color-purple-100: #db8dff;
   --color-orange: #DE6837;
+  --header-z-index: 1072;
 }
 :root {
   --blue: #005aa9;
@@ -15093,7 +15094,7 @@ body {
   .sticky-scroll-panel {
     position: sticky;
     background-color: var(--color-gray-010);
-    z-index: 1071;
+    z-index: calc(var(--header-z-index) - 1);
     top: 75px;
     margin: 0 -15px;
     padding: 1px 15px 14px;
@@ -15712,7 +15713,7 @@ span.material-symbols-outlined--small {
   padding: 16px 16px 16px 4px;
   position: sticky;
   top: 0;
-  z-index: 1072;
+  z-index: var(--header-z-index);
   background-color: var(--color-white);
   border-bottom: 1px solid var(--color-old-lighter-gray);
 }
@@ -16918,9 +16919,10 @@ span.material-symbols-outlined--small {
   --color-yellow-100: #ffffe8;
   --color-purple-100: #db8dff;
   --color-orange: #DE6837;
+  --header-z-index: 1072;
 }
 .modal {
-  z-index: 1074;
+  z-index: calc(var(--header-z-index) + 3);
 }
 .modal .modal-dialog {
   max-width: 800px;
@@ -16959,7 +16961,7 @@ span.material-symbols-outlined--small {
   border-radius: 20px;
 }
 .modal-backdrop {
-  z-index: 1074;
+  z-index: calc(var(--header-z-index) + 2);
 }
 .wordmodal .subtitle {
   padding-top: 20px;

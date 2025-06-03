@@ -3,8 +3,7 @@
   padding: 16px 16px 16px 4px;
   position: sticky;
   top: 0;
-  // Higher than sticky scroll panel by 1, otherwise navigation menu will not be able to stay on top of the panel in mobile
-  z-index: 1072;
+  z-index: var(--header-z-index);
   background-color: var(--color-white);
   border-bottom: 1px solid var(--color-old-lighter-gray);
   &--simple {

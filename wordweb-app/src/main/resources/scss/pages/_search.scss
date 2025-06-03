@@ -332,7 +332,7 @@
   @include media-breakpoint-down(sm) {
     position: sticky;
     background-color: var(--color-gray-010);
-    z-index: 1071;
+    z-index: calc(var(--header-z-index) - 1);
     // Offset by header height
     top: 75px;
     margin: 0 -15px;
