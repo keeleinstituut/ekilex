@@ -172,6 +172,10 @@
           <img class="navigation__image" th:src="@{'/view/images/menu-games.svg'}" alt="">
           <span th:utext="#{menu.split.games}"></span>
         </a>
+        <a class="navigation__link" th:href="@{/newwords}" target="_blank">
+          <img class="navigation__image" th:src="@{'/view/images/menu-new-words.svg'}" alt="">
+          <span th:utext="#{menu.newwords}"></span>
+        </a>
       </div>
     </div>
   </th:block>
@@ -352,7 +356,6 @@
           <div class="d-flex flex-column gap-1">
             <a th:href="@{/about}" th:text="#{menu.about}">Portaalist</a>
             <a th:href="@{/collections}" th:text="#{label.filter.dataset}">Sõnakogud</a>
-            <a th:href="@{/newwords}" th:text="#{menu.newwords}">Uued sõnad</a>
             <a th:href="@{/ekilex-api}" th:text="#{menu.ekilexapi}">Ekilex API</a>
             <a th:href="@{/news}" th:text="#{menu.news}">Versiooniajalugu</a>
             <a th:href="@{/regulations}" th:text="#{label.privacy.terms}">Kasutus- ja privaatsustingimused</a>
