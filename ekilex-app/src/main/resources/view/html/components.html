@@ -370,7 +370,7 @@
       </div>
     </div>
   </div>
-  <th:block th:fragment="entity_publishing" th:with="isReversed = ${reversed ?: false}">
+  <th:block th:fragment="entity_publishing">
     <div
       class="dropdown publishing"
       data-plugin="publishingHandler"
@@ -380,9 +380,9 @@
       th:data-replace-owner-id="${replaceOwnerId}"
       th:data-callback="${callback}"
       th:data-init-accordion="${initAccordion}"
-      th:classappend="|${isReversed ? 'publishing--reversed': ''}${extraClasses ?: ''}|"
+      th:classappend="|${extraClasses ?: ''}|"
       >
-      <span class="publishing__icon publishing__icon--reversed"
+      <span class="publishing__icon"
         data-publishing-item="public"
         th:data-publishing-item-active="${isPublic}"
         th:title="${isPublic 
@@ -393,19 +393,19 @@
         <span class="material-symbols-outlined publishing__lock--closed">lock</span>
         <span class="material-symbols-outlined publishing__lock--open">lock_open</span>
       </span>
-      <span class="publishing__icon publishing__icon--reversed"
+      <span class="publishing__icon"
         data-publishing-item="unif"
         th:data-publishing-item-active="${isWwUnif}"
         th:title="#{publishing.unif}"
         >
       </span>
-      <span class="publishing__icon publishing__icon--reversed"
+      <span class="publishing__icon"
         data-publishing-item="od"
         th:data-publishing-item-active="${isWwOd}"
         th:title="#{publishing.od}"
         >
       </span>
-      <span class="publishing__icon publishing__icon--reversed"
+      <span class="publishing__icon"
         data-publishing-item="lite"
         th:data-publishing-item-active="${isWwLite}"
         th:title="#{publishing.lite}"
@@ -461,35 +461,6 @@
           )"></th:block>
         </div>
       </div>
-      <span class="publishing__icon"
-        data-publishing-item="unif"
-        th:data-publishing-item-active="${isWwUnif}"
-        th:title="#{publishing.unif}"
-        >
-      </span>
-      <span class="publishing__icon"
-        data-publishing-item="od"
-        th:data-publishing-item-active="${isWwOd}"
-        th:title="#{publishing.od}"
-        >
-      </span>
-      <span class="publishing__icon"
-        data-publishing-item="lite"
-        th:data-publishing-item-active="${isWwLite}"
-        th:title="#{publishing.lite}"
-      >
-      </span>
-      <span class="publishing__icon"
-        data-publishing-item="public"
-        th:data-publishing-item-active="${isPublic}"
-        th:title="${isPublic 
-          ? #messages.msg('publishing.public.state.public') 
-          : #messages.msg('publishing.public.state.not_public')}"
-        th:if="${withPublicSwitch}"
-        >
-        <span class="material-symbols-outlined publishing__lock--closed">lock</span>
-        <span class="material-symbols-outlined publishing__lock--open">lock_open</span>
-      </span>
     </div>
   </th:block>
   <label class="input-switch" th:fragment="input_switch">

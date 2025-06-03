@@ -82,8 +82,7 @@
                 isWwOd = ${lexeme.wwOd},
                 callback = ${@viewUtil.composeFunction('loadFullLexemeDetails', lexeme.lexemeId, lexeme.levels)},
                 initAccordion = false,
-                withPublicSwitch = true,
-                reversed = true)">
+                withPublicSwitch = true)">
             </th:block>
             <b th:text="${lexeme.datasetName}" class="mx-2"></b>
             <button type="button" name="lexeme-details-btn"
@@ -306,8 +305,7 @@
                 isWwOd = ${lexeme.wwOd},
                 callback = ${@viewUtil.composeFunction('loadFullLexemeDetails', lexeme.lexemeId, lexeme.levels)},
                 initAccordion = false,
-                withPublicSwitch = true,
-                reversed = true)">
+                withPublicSwitch = true)">
               </th:block>
               <b class="ml-2" th:text="${lexeme.datasetName}"></b>
             </div>

@@ -6,18 +6,6 @@
   position: relative;
   margin-left: auto;
 
-  &:not(&--reversed) {
-    & .publishing__icon--reversed {
-      display: none;
-    }
-  }
-
-  &--reversed {
-    & .publishing__icon:not(.publishing__icon--reversed) {
-      display: none;
-    }
-  }
-
   &__button {
     background-color: transparent;
     border: none;
