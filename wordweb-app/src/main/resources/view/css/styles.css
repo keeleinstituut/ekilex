@@ -15005,7 +15005,7 @@ body {
   margin: 0 8px 0 0;
 }
 .search__sidebar-block-title--empty {
-  color: var(--color-cloudy-day);
+  color: var(--color-darker-gray);
 }
 .search__sidebar-block-title-wrapper {
   display: flex;
@@ -18952,7 +18952,7 @@ ext-link {
   cursor: pointer;
 }
 eki-form {
-  color: #20b900;
+  color: #348338;
 }
 eki-shy::before {
   content: "\ad";
