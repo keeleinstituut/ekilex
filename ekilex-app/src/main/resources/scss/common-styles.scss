@@ -306,3 +306,11 @@ span.material-symbols-outlined {
     --fallback-icon-size: 1.3125rem;
   }
 }
+
+.gap {
+	@for $i from 1 through 10 {
+		&-#{$i} {
+			gap: #{$i * 4}px;
+		}
+	}
+}
