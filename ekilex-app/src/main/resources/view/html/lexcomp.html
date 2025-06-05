@@ -880,7 +880,6 @@
               <span th:utext="${definition.valuePrese}"></span>
               <span class="ctxt" th:text="'(' + #{'enum.complexity.' + ${definition.complexity}} + ')'" data-plugin="complexityAndPublicity"></span>
               <span class="ctxt" th:each="datasetCode,iter : ${definition.datasetCodes}" th:text="${(iter.first ? '[' : '') + datasetCode + (iter.last ? ']' : ', ')}"></span>
-              <span class="ctxt" th:text="'(' + #{'boolean.public.' + ${definition.public}} + ')'" th:if="${definition.crudGrant}" data-plugin="complexityAndPublicity"></span>
               <th:block
               sec:authorize="#vars.lexeme.meaning.crudGrant"
               th:replace="components :: action_dropdown(
@@ -1595,7 +1594,6 @@
             <div class="invisible-buttons action-buttons-anchor">
               <span th:utext="${usage.valuePrese}"></span>
               <span class="ctxt" th:text="'(' + #{'enum.complexity.' + ${usage.complexity}} + ')'" data-plugin="complexityAndPublicity"></span>
-              <span class="ctxt" th:text="'(' + #{'boolean.public.' + ${usage.public}} + ')'" th:if="${usage.crudGrant}" data-plugin="complexityAndPublicity"></span>
               <th:block
               sec:authorize="#vars.lexeme.meaning.crudGrant"
               th:replace="components :: action_dropdown(
@@ -1814,7 +1812,6 @@
             <div class="invisible-buttons action-buttons-anchor">
               <span th:utext="${note.valuePrese}"></span>
               <span class="ctxt" th:text="'(' + #{'enum.complexity.' + ${note.complexity}} + ')'" data-plugin="complexityAndPublicity"></span>
-              <span class="ctxt" th:text="'(' + #{'boolean.public.' + ${note.public}} + ')'" th:if="${lexeme.crudGrant}" data-plugin="complexityAndPublicity"></span>
               <th:block
                   sec:authorize="#vars.lexeme.meaning.crudGrant"
                   th:replace="components :: action_dropdown(
@@ -1895,7 +1892,6 @@
             <div class="invisible-buttons action-buttons-anchor">
               <span th:utext="${note.valuePrese}"></span>
               <span class="ctxt" th:text="'(' + #{'enum.complexity.' + ${note.complexity}} + ')'" th:if="${lexeme.meaning.crudGrant}" data-plugin="complexityAndPublicity"></span>
-              <span class="ctxt" th:text="'(' + #{'boolean.public.' + ${note.public}} + ')'" th:if="${lexeme.meaning.crudGrant}" data-plugin="complexityAndPublicity"></span>
               <th:block
                   sec:authorize="#vars.lexeme.meaning.crudGrant"
                   th:replace="components :: action_dropdown(
