@@ -4,6 +4,7 @@
   gap: 4px;
   height: 24px;
   position: relative;
+  // Can be overriden by other components if they also want to be nearby
   margin-left: auto;
 
   &__button {

@@ -873,19 +873,6 @@
               <span class="ctxt" th:each="datasetCode,iter : ${definition.datasetCodes}" th:text="${(iter.first ? '[' : '') + datasetCode + (iter.last ? ']' : ', ')}"></span>
               <span class="ctxt" th:text="'(' + #{'boolean.public.' + ${definition.public}} + ')'" th:if="${definition.crudGrant}" data-plugin="complexityAndPublicity"></span>
               <th:block
-                  sec:authorize="#vars.definition.crudGrant"
-                  th:replace="components :: entity_publishing(
-                    entityId = ${definition.id},
-                    entityName = 'definition',
-                    isPublic = ${definition.isPublic},
-                    isWwUnif = ${definition.wwUnif},
-                    isWwLite = ${definition.wwLite},
-                    isWwOd = ${definition.wwOd},
-                    callback = ${@viewUtil.composeFunction('loadFullLexemeDetails', lexeme.lexemeId, lexeme.levels)},
-                    initAccordion = false,
-                    withPublicSwitch = true)">
-              </th:block>
-              <th:block
               sec:authorize="#vars.lexeme.meaning.crudGrant"
               th:replace="components :: action_dropdown(
                 idPrefix = |definition-actions-${definition.id}|,
@@ -919,8 +906,21 @@
                     data-placement="right"
                     sec:authorize="#vars.definition.crudGrant"
                     th:text="#{common.delete}">
-                </button>
+                  </button>
+                </th:block>
               </th:block>
+              <th:block
+                  sec:authorize="#vars.definition.crudGrant"
+                  th:replace="components :: entity_publishing(
+                    entityId = ${definition.id},
+                    entityName = 'definition',
+                    isPublic = ${definition.isPublic},
+                    isWwUnif = ${definition.wwUnif},
+                    isWwLite = ${definition.wwLite},
+                    isWwOd = ${definition.wwOd},
+                    callback = ${@viewUtil.composeFunction('loadFullLexemeDetails', lexeme.lexemeId, lexeme.levels)},
+                    initAccordion = false,
+                    withPublicSwitch = true)">
               </th:block>
             </div>
             <div class="hidden-buttons">
@@ -1168,18 +1168,6 @@
           <img class="w-50" th:src="${image.url}">
           <th:block
               sec:authorize="#vars.lexeme.meaning.crudGrant"
-              th:replace="components :: entity_publishing(
-                entityId = ${image.id},
-                entityName = 'meaning_image',
-                isWwUnif = ${image.wwUnif},
-                isWwLite = ${image.wwLite},
-                isWwOd = ${image.wwOd},
-                callback = ${@viewUtil.composeFunction('loadFullLexemeDetails', lexeme.lexemeId, lexeme.levels)},
-                initAccordion = false,
-                withPublicSwitch = false)">
-          </th:block>
-          <th:block
-              sec:authorize="#vars.lexeme.meaning.crudGrant"
               th:replace="components :: action_dropdown(
                 idPrefix = |lexeme-meaning-image-${lexeme.lexemeId}-${image.id}|,
                 triggerTitle = #{common.edit},
@@ -1207,6 +1195,18 @@
                       sec:authorize="#vars.lexeme.meaning.crudGrant">
               </button>
             </th:block>    
+          </th:block>
+          <th:block
+              sec:authorize="#vars.lexeme.meaning.crudGrant"
+              th:replace="components :: entity_publishing(
+                entityId = ${image.id},
+                entityName = 'meaning_image',
+                isWwUnif = ${image.wwUnif},
+                isWwLite = ${image.wwLite},
+                isWwOd = ${image.wwOd},
+                callback = ${@viewUtil.composeFunction('loadFullLexemeDetails', lexeme.lexemeId, lexeme.levels)},
+                initAccordion = false,
+                withPublicSwitch = false)">
           </th:block>
         </div>
         <div th:unless="${#strings.isEmpty(image.title)}">
@@ -1572,19 +1572,6 @@
               <span class="ctxt" th:text="'(' + #{'enum.complexity.' + ${usage.complexity}} + ')'" data-plugin="complexityAndPublicity"></span>
               <span class="ctxt" th:text="'(' + #{'boolean.public.' + ${usage.public}} + ')'" th:if="${usage.crudGrant}" data-plugin="complexityAndPublicity"></span>
               <th:block
-                  sec:authorize="#vars.usage.crudGrant"
-                  th:replace="components :: entity_publishing(
-                    entityId = ${usage.id},
-                    entityName = 'usage',
-                    isPublic = ${usage.isPublic},
-                    isWwUnif = ${usage.wwUnif},
-                    isWwLite = ${usage.wwLite},
-                    isWwOd = ${usage.wwOd},
-                    callback = ${@viewUtil.composeFunction('loadFullLexemeDetails', lexeme.lexemeId, lexeme.levels)},
-                    initAccordion = false,
-                    withPublicSwitch = true)">
-              </th:block>
-              <th:block
               sec:authorize="#vars.lexeme.meaning.crudGrant"
               th:replace="components :: action_dropdown(
                 idPrefix = |definition-usage-${usage.id}|,
@@ -1620,6 +1607,19 @@
                     th:text="#{common.delete}">
                   </button>
                 </th:block>
+              </th:block>
+              <th:block
+                  sec:authorize="#vars.usage.crudGrant"
+                  th:replace="components :: entity_publishing(
+                    entityId = ${usage.id},
+                    entityName = 'usage',
+                    isPublic = ${usage.isPublic},
+                    isWwUnif = ${usage.wwUnif},
+                    isWwLite = ${usage.wwLite},
+                    isWwOd = ${usage.wwOd},
+                    callback = ${@viewUtil.composeFunction('loadFullLexemeDetails', lexeme.lexemeId, lexeme.levels)},
+                    initAccordion = false,
+                    withPublicSwitch = true)">
               </th:block>
             </div>
             <div class="hidden-buttons">
@@ -1660,13 +1660,13 @@
                 </div>
               </th:block>
             </div>
-            <div th:if="${not #lists.isEmpty(usage.translations)}" class="col pl-0">
+            <div th:if="${not #lists.isEmpty(usage.translations)}">
               <div>
                 <span class="lbl" th:text="#{lex.usage.translation}">Kasutusnäite tõlge</span>
               </div>
-              <div class="row" th:each="usageTranslation : ${usage.translations}">
+              <div th:each="usageTranslation : ${usage.translations}">
                 <div th:replace="lexdialog :: edit_usage_translation_dlg"></div>
-                <div class="col hidden-buttons ml-2">
+                <div class="hidden-buttons ml-2">
                   <!-- intentional generic lexeme perm on translations -->
                   <div class="action-buttons-anchor">
                     <span th:utext="${usageTranslation.valuePrese}"></span>

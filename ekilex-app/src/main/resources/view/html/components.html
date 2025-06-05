@@ -457,7 +457,9 @@
             inputName = 'isPublic',
             inputValue = 'isPublic',
             inputChecked = ${isPublic},
-            inputLabel = #{publishing.public.label}
+            inputLabel = ${isPublic 
+              ? #messages.msg('publishing.public.state.public') 
+              : #messages.msg('publishing.public.state.not_public')}
           )"></th:block>
         </div>
       </div>

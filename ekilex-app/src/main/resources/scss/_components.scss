@@ -56,6 +56,11 @@
   gap: 4px;
   height: 24px;
   position: relative;
+  margin-left: auto;
+
+  & ~ .publishing {
+    margin-left: 8px;
+  }
 
   &__menu {
     display: none;
@@ -96,7 +101,7 @@
   border: none;
   padding: 0;
   font-weight: 600;
-  font-size: .5rem;
+  font-size: .75rem;
   color: var(--color-dark-blue);
   text-align: left;
   
