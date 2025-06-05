@@ -152,6 +152,8 @@ public class RegisterController extends AbstractPublicPageController {
 	@GetMapping(PASSWORD_RECOVERY_URI)
 	public String passwordRecoveryPage(Model model, HttpServletRequest request) {
 		setBotProtectionCode(model, request);
+		String activeTerms = userService.getActiveTermsValue();
+		model.addAttribute("activeTerms", activeTerms);
 		return PASSWORD_RECOVERY_PAGE;
 	}
 

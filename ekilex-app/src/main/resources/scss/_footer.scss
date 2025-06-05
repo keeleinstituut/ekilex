@@ -71,4 +71,16 @@
     font-size: .75rem;
     font-weight: 400;
   }
+
+  &__terms {
+    background-color: transparent;
+    border: none;
+    color: inherit;
+    text-align: left;
+    padding: 0;
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
 }

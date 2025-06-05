@@ -517,16 +517,14 @@
           </div>
           <div class="footer__version" th:text="|${appData.appName} ${appData.appVersion}|" th:if="${appData}"></div>
         </div>
-        <!-- <div class="footer__column">
+        <div class="footer__column">
           <div class="footer__column-header" th:text="#{general.title}"></div>
           <div class="d-flex flex-column gap-1">
-            <a th:href="@{/about}" th:text="#{menu.about}">Portaalist</a>
-            <a th:href="@{/collections}" th:text="#{label.filter.dataset}">Sõnakogud</a>
-            <a th:href="@{/ekilex-api}" th:text="#{menu.ekilexapi}">Ekilex API</a>
-            <a th:href="@{/news}" th:text="#{menu.news}">Versiooniajalugu</a>
-            <a th:href="@{/regulations}" th:text="#{label.privacy.terms}">Kasutus- ja privaatsustingimused</a>
+            <a href="https://keeleinstituut.github.io/ekilex/" th:text="#{label.footer.manual}">Kasutusjuhend</a>
+            <a href="https://github.com/keeleinstituut/ekilex/wiki/Ekilex-API" th:text="#{label.footer.api}">Ekilex API</a>
+            <button class="footer__terms" data-toggle="modal" data-target="#terms" th:text="#{label.footer.terms}">Kasutustingimused</button>
           </div>
-        </div> -->
+        </div>
         <div class="footer__column">
           <div class="footer__column-header" th:text="#{label.socials.title}"></div>
           <span th:text="#{label.socials.description}"></span>
@@ -565,6 +563,24 @@
         </div>
       </div>
     </footer>
+    <div class="modal" tabindex="-1" role="dialog" id="terms">
+    <div class="modal-dialog modal-dialog-scrollable modal-xl" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" th:text="#{register.conditions}">Tingimused</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+          <div class="modal-body">
+            <div th:utext="${activeTerms}"></div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal" th:text="#{common.close}">Sulge</button>
+          </div>
+        </div>
+      </div>
+    </div>
   </th:block>
 </body>
 </html>

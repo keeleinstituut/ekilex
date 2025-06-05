@@ -146,6 +146,12 @@ input:checked+.slider:before {
 .body-with-navbar {
 	height: 100vh;
 	padding-top: 3rem;
+
+	&--spaced {
+		display: flex;
+		flex-direction: column;
+		gap: 48px;
+	}
 }
 
 

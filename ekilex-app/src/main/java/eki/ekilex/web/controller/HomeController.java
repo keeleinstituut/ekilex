@@ -49,8 +49,10 @@ public class HomeController extends AbstractPublicPageController {
 	private EkilexPermissionEvaluator permissionEvaluator;
 
 	@GetMapping(INDEX_URI)
-	public String index() {
+	public String index(Model model) {
 		boolean isAuthenticatedUser = userContext.isAuthenticatedUser();
+		String activeTerms = userService.getActiveTermsValue();
+		model.addAttribute("activeTerms", activeTerms);
 		if (isAuthenticatedUser) {
 			return REDIRECT_PREF + HOME_URI;
 		}
@@ -80,7 +82,9 @@ public class HomeController extends AbstractPublicPageController {
 	}
 
 	@GetMapping(LOGIN_PAGE_URI)
-	public String login() {
+	public String login(Model model) {
+		String activeTerms = userService.getActiveTermsValue();
+		model.addAttribute("activeTerms", activeTerms);
 		return LOGIN_PAGE;
 	}
 
