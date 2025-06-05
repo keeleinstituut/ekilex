@@ -45,7 +45,13 @@
       <div id="word-details">
         <div class="no-results__wrapper" th:unless="${wordsData.resultExists}" th:with="isFiltered = ${isLangFiltered || isDatasetFiltered}">
           <th:block th:if="${wordsData.validSearch}">
-            <h1 class="no-results__title" th:text="#{label.search.word.not.found(${searchWord})}"></h1>
+            <h1 class="no-results__title">
+              <span th:text="#{label.search.word.not.found(${searchWord}, ${wordsData.formResultExists ? ',' : ''})}"></span>
+              <th:block th:if="${wordsData.formResultExists}">
+                <span th:text="#{label.suggest.form}">see on ka vorm sõnast</span>
+                <a href="#" class="word-form" th:each="word,wordIter : ${wordsData.suggestedWordValues}" th:text="${wordIter.last ? word : word + ',&nbsp;'}" th:data-word="${word}"> </a>
+              </th:block>
+            </h1>
             <th:block th:unless="${wordsData.suggestionExists}">
               <th:block th:if="${wordsData.availableLanguagesDatasets.availableFiltersExist}">
                 <div th:text="#{label.search.filter.suggestion.detail}">Otsing annab tulemusi teistes keeltes või sõnakogudes kui sinu valitud filtris.</div>
@@ -70,10 +76,6 @@
               </th:block>
             </th:block>
             <th:block th:if="${wordsData.formResultExists}">
-              <div>
-                <span th:text="#{label.suggest.form}">see on ka vorm sõnast</span>
-                <a href="#" class="word-form" th:each="word,wordIter : ${wordsData.suggestedWordValues}" th:text="${wordIter.last ? word : word + ',&nbsp;'}" th:data-word="${word}"> </a>
-              </div>
               <div th:utext="#{|label.form.found.detail.filtered.${isFiltered}|}">Ei leidnud midagi</div>
             </th:block>
             <th:block th:if="${wordsData.altResultExists}">

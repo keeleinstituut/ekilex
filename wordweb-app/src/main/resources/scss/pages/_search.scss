@@ -735,6 +735,9 @@
     font-weight: 400;
     line-height: 29px;
     margin: 0;
+    display: flex;
+    gap: 4px;
+    flex-wrap: wrap;
   }
 
   &__list {
