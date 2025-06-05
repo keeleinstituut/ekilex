@@ -320,3 +320,7 @@ span.material-symbols-outlined {
 		}
 	}
 }
+
+button:focus {
+	outline: 1px solid black;
+}
