@@ -8,7 +8,7 @@
   &__grid {
     margin: 0 auto;
     display: grid;
-    grid-template-columns: repeat(4, 1fr);
+    grid-template-columns: repeat(3, minmax(0, 300px));
     justify-content: center;
     font-weight: 500;
     gap: 24px;
@@ -16,11 +16,12 @@
     & a {
       color: inherit;
       text-decoration: none;
+
       &:hover {
         text-decoration: underline;
       }
     }
-    
+
     @media (max-width: 767px) {
       grid-template-columns: 1fr;
       text-align: center;
@@ -31,6 +32,26 @@
     display: flex;
     flex-direction: column;
     gap: 24px;
+    position: relative;
+
+    &:last-child {
+      &::after {
+        content: "";
+        background-image: url(../img/erf.svg);
+        background-repeat: no-repeat;
+        width: 86px;
+        height: 54px;
+        position: absolute;
+        left: 100%;
+        // Subtract the leftover from (footer's bottom padding - logo's height) to line it up with the bottom of the footer
+        top: calc(100% - 18px);
+        // Subtract padding from image size
+        background-size: calc(100% - 16px);
+        padding: 8px;
+        background-color: var(--color-white);
+        background-position: center;
+      }
+    }
 
     @media (max-width: 767px) {
       align-items: center;
