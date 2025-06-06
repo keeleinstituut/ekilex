@@ -4,8 +4,7 @@
   <title>EKILEX</title>
 </head>
 <body class="d-flex flex-column">
-
-
+  <th:block th:replace="components :: header(isDev = ${appData.devEnv}, envName = ${appData.envName})"></th:block>
   <main class="container-fluid flex-shrink-0">
     <div class="card mt-4 mb-4 shadow">
       <div class="card-header">

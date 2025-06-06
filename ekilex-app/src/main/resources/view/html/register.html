@@ -5,7 +5,8 @@
 </th:block>
 </head>
 <body class="body-with-navbar body-with-navbar--spaced">
-  <th:block th:replace="common :: nav_bar(activeItem = 'home')"></th:block>
+  <th:block th:replace="components :: header(isDev = ${appData.devEnv}, envName = ${appData.envName})" sec:authorize="!isAuthenticated()"></th:block>
+  <th:block th:replace="common :: nav_bar(activeItem = 'home')" sec:authorize="isAuthenticated()"></th:block>
   <div class="container-fluid">
     <div class="card mt-4 shadow">
       <div class="card-header">

@@ -582,5 +582,88 @@
       </div>
     </div>
   </th:block>
+  <th:block th:fragment="header">
+    <div class="header">
+      <div class="header__contents">
+        <div class="header__title-wrapper">
+          <a th:href="@{/}" class="header__title">
+            Ekilex
+          </a>
+          <span th:if="${isDev}" class="header__dev-env" th:text="${envName}">
+            TEST
+          </span>
+        </div>
+        <div class="header__actions">
+          <a class="header__login" th:href="@{/login}" th:text="#{login.title}">
+            Logi sisse
+          </a>
+          <th:block th:replace=":: navigation"></th:block>
+        </div>
+      </div>
+    </div>
+  </th:block>
+  <th:block th:fragment="navigation">
+    <div class="navigation__dropdown">
+      <button
+        type="button"
+        th:aria-label="#{button.label.menu}"
+        class="navigation__trigger"
+        id="nav-menu"
+        aria-haspopup="menu"
+        aria-expanded="false"
+        aria-controls="nav-menu-links"
+        data-plugin="navigationPlugin"
+        >
+        <span class="navigation__trigger-icon material-symbols-outlined">apps</span>
+      </button>
+      <div class="navigation__dropdown-menu" id="nav-menu-links" aria-labelledby="nav-menu">
+        <a class="navigation__link" href="https://sõnaveeb.ee" target="_blank">
+          <img class="navigation__image" th:src="@{'/view/img/wordweb.svg'}" alt="">
+          <span th:utext="#{menu.search.unif}"></span>
+        </a>
+        <a class="navigation__link" href="https://eki.ee/teatmik/" target="_blank">
+          <img class="navigation__image" th:src="@{'/view/img/menu-reference.svg'}" alt="">
+          <span th:utext="#{menu.manual}"></span>
+        </a>
+        <a class="navigation__link navigation__link--disabled" href="https://sõnaveeb.ee" target="_blank">
+          <img class="navigation__image" th:src="@{'/view/img/menu-grammar.svg'}" alt="">
+          <span th:utext="#{menu.grammar.title}"></span>
+          <span class="navigation__link-description" th:utext="#{menu.grammar.description}"></span>
+        </a>
+        <a class="navigation__link" href="https://eki.ee/keeleinfo/sonastikud/" target="_blank">
+          <img class="navigation__image" th:src="@{'/view/img/menu-dictionaries.svg'}" alt="">
+          <span th:utext="#{menu.dictionaries}"></span>
+        </a>
+        <a class="navigation__link" href="https://sõnaveeb.ee/lite" target="_blank">
+          <img class="navigation__image" th:src="@{'/view/img/wordweb-lite.svg'}" alt="">
+          <span th:utext="#{menu.split.lite}"></span>
+        </a>
+        <a class="navigation__link" href="https://sõnaveeb.ee/teacher-tools" target="_blank">
+          <img class="navigation__image" th:src="@{'/view/img/menu-teacher-tools.svg'}" alt="">
+          <span th:utext="#{menu.ttools}"></span>
+        </a>
+        <a class="navigation__link" href="https://sõnaveeb.ee/pronunciation-exercises" target="_blank">
+          <img class="navigation__image" th:src="@{'/view/img/menu-spelling.svg'}" alt="">
+          <span th:utext="#{menu.pronunciation.exercises}"></span>
+        </a>
+        <a class="navigation__link" href="https://sõnaveeb.ee/learn" target="_blank">
+          <img class="navigation__image" th:src="@{'/view/img/menu-learn.svg'}" alt="">
+          <span th:utext="#{menu.learn}"></span>
+        </a>
+        <a class="navigation__link" href="https://sõnaveeb.ee/wordgame" target="_blank">
+          <img class="navigation__image" th:src="@{'/view/img/menu-word-games.svg'}" alt="">
+          <span th:utext="#{menu.split.wordgame}"></span>
+        </a>
+        <a class="navigation__link" href="https://sõnaveeb.ee/games" target="_blank">
+          <img class="navigation__image" th:src="@{'/view/img/menu-games.svg'}" alt="">
+          <span th:utext="#{menu.split.games}"></span>
+        </a>
+        <a class="navigation__link" href="https://sõnaveeb.ee/newwords" target="_blank">
+          <img class="navigation__image" th:src="@{'/view/img/menu-new-words.svg'}" alt="">
+          <span th:utext="#{menu.newwords}"></span>
+        </a>
+      </div>
+    </div>
+  </th:block>
 </body>
 </html>

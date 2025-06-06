@@ -151,6 +151,7 @@ input:checked+.slider:before {
 		display: flex;
 		flex-direction: column;
 		gap: 48px;
+		padding-top: 0;
 	}
 }
 

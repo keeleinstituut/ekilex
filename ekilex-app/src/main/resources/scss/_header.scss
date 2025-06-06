@@ -1,0 +1,151 @@
+.header {
+  padding: 12px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-bottom: 1px solid var(--color-dark-blue);
+  background-color: var(--color-white);
+  z-index: 1;
+
+  &__contents {
+    width: 100%;
+    max-width: 1200px;
+    display: flex;
+    align-items: center;
+  }
+
+  &__title,
+  &__dev-env {
+    font-family: "Helvetica Neue", Arial;
+    font-size: 1.5rem;
+    text-transform: uppercase;
+  }
+
+  &__title {
+    color: black;
+    &:hover {
+      text-decoration: none;
+    }
+  }
+
+  &__title-wrapper {
+    display: flex;
+    align-items: center;
+  }
+
+  &__dev-env {
+    color: var(--color-red);
+    font-weight: 700;
+  }
+
+  &__actions {
+    margin-left: auto;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+
+  &__login {
+    padding: 4px 20px;
+    border: 1px solid var(--color-dark-blue);
+    background-color: var(--color-white);
+    color: var(--color-dark-blue);
+    border-radius: 100px;
+    font-weight: 500;
+    font-size: .875rem;
+
+    &:hover {
+      text-decoration: none;
+      background-color: var(--color-bluish-but-not-exactly-gray);
+    }
+  }
+}
+
+
+
+.navigation {
+  &__trigger {
+    width: 36px;
+    height: 36px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 0;
+    border: none;
+    color: var(--color-dark-blue);
+    background-color: transparent;
+    border-radius: 100px;
+    --icon-size: 1.5rem;
+
+    &:active {
+      background-color: var(--color-elephant-gray);
+    }
+  }
+
+  &__trigger-icon {
+    pointer-events: none;
+  }
+
+  &__dropdown {
+    position: relative;
+  }
+
+  &__dropdown-menu {
+    position: absolute;
+    top: calc(100% + 8px);
+    right: 0;
+    padding: 16px;
+    border: 5px solid var(--color-bluish-but-not-exactly-gray);
+    display: none;
+    grid-template-columns: repeat(3, 1fr);
+    border-radius: 5px;
+    background-color: var(--color-white);
+    color: var(--color-dark-blue);
+    box-shadow: 0px 2px 4px 0px #00000040;
+
+    &--visible {
+      display: grid;
+    }
+  }
+
+  &__link {
+    min-width: 79px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    font-weight: 600;
+    font-size: .75rem;
+    padding: 8px;
+    border-radius: 8px;
+    color: var(--color-dark-blue);
+    hyphens: auto;
+    text-align: center;
+
+    &:hover {
+      background-color: var(--color-bluish-but-not-exactly-gray);
+      text-decoration: none;
+    }
+
+    &--disabled {
+      color: var(--color-2025-õigekeelsussõnaraamatu-hall-100);
+      pointer-events: none;
+      background-color: var(--color-hall-taust-final-final-final-hall-500);
+    }
+
+    @media (min-width: 768px) {
+      min-width: 106px;
+    }
+  }
+
+  &__image {
+    width: 36px;
+    height: 36px;
+    border-radius: 100px;
+  }
+
+  &__link-description {
+    font-weight: 400;
+    font-size: .625rem;
+  }
+}
