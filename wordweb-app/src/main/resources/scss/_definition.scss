@@ -22,6 +22,19 @@
   }
 }
 
+.definition-source {
+  max-width: 50ch;
+  & > * {
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+  }
+
+  @include media-breakpoint-down(sm) {
+    max-width: 30ch;
+  }
+}
+
 .ul-list-style{
   margin-bottom: 12px;
   list-style: disc;

@@ -19,12 +19,11 @@
     <div th:if="${wordData.word.morphComment}">
       <span th:utext="${wordData.word.morphComment}"></span>
     </div>
-    <th:block th:each="paradigm,paradigmIter : ${wordData.paradigms}">
+    <th:block th:each="paradigm,paradigmIter : ${wordData.paradigms}" th:with="morphtemplates=${ {'muutumatu_est', 'verb_est', 'noomen_est', 'verb_rus', 'noun_rus', 'numeral_rus', 'adjective_rus', 'adjective1_rus', 'adjective2_rus', 'indeclinable_rus', 'participle_rus'} }">
       <div class="morphology-paradigm"
-        th:with="morphtemplates=${ {'muutumatu_est', 'verb_est', 'noomen_est', 'verb_rus', 'noun_rus', 'numeral_rus', 'adjective_rus', 'adjective1_rus', 'adjective2_rus', 'indeclinable_rus', 'participle_rus'} }">
-        <th:block th:if="${morphtemplates.contains(paradigm.wordClass + '_' + wordData.word.lang)}">
-          <th:block th:replace="morpho-short :: ${'morpho-' + paradigm.wordClass + '_' + wordData.word.lang}"></th:block>
-        </th:block>
+        th:if="${morphtemplates.contains(paradigm.wordClass + '_' + wordData.word.lang)}"
+        >
+        <th:block th:replace="morpho-short :: ${'morpho-' + paradigm.wordClass + '_' + wordData.word.lang}"></th:block>
         <hr th:unless="${paradigmIter.last}" />
       </div>
     </th:block>

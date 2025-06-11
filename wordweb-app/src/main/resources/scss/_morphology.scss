@@ -41,6 +41,12 @@
 }
 
 .morphology-paradigm {
+  // If there is no next paradigm, hide the dividing line
+  &:not(:has(~ &)) {
+    & hr {
+      display: none;
+    }
+  }
   hr {
     margin: 10px -10px 0;
   }

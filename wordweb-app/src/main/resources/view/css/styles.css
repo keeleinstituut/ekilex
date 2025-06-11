@@ -14543,6 +14543,19 @@ body.hidden-scroll {
   text-align: left;
   word-break: break-all;
 }
+.definition-source {
+  max-width: 50ch;
+}
+.definition-source > * {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+@media (max-width: 767.98px) {
+  .definition-source {
+    max-width: 30ch;
+  }
+}
 .ul-list-style {
   margin-bottom: 12px;
   list-style: disc;
@@ -19375,6 +19388,9 @@ eki-shy {
 .paradigm-comment {
   margin: 13px 0;
   font-size: smaller;
+}
+.morphology-paradigm:not(:has(~ .morphology-paradigm)) hr {
+  display: none;
 }
 .morphology-paradigm hr {
   margin: 10px -10px 0;
