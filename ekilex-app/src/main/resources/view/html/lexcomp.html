@@ -969,7 +969,7 @@
                 </div>
               </th:block>
             </div>
-            <div th:if="${not #lists.isEmpty(definition.notes)}" class="col pl-0">
+            <div th:if="${not #lists.isEmpty(definition.notes)}">
               <div>
                 <span class="lbl" th:text="#{lex.note}">Märkus</span>
               </div>
@@ -984,34 +984,43 @@
                   <div class="action-column">
                     <th:block th:replace="common :: ordering_buttons(${noteIter})" sec:authorize="#vars.definition.crudGrant"></th:block>
                   </div>
-                  <div class="invisible-buttons action-buttons-anchor mw-90">
+                  <div class="invisible-buttons action-buttons-anchor">
                     <span th:utext="${note.valuePrese}"></span>
                     <span class="ctxt" th:text="'(' + #{'boolean.public.' + ${note.public}} + ')'" th:if="${definition.crudGrant}" data-plugin="complexityAndPublicity"></span>
-                    <div class="action-buttons-3">
-                      <button type="button" class="btn badge badge-primary"
-                              th:title="#{common.edit}"
-                              data-toggle="modal"
-                              th:data-target="${'#editDefinitionNoteDlg_' + lexeme.lexemeId + '_' + note.id}"
-                              sec:authorize="#vars.definition.crudGrant">
-                        <i class="fa fa-edit" aria-hidden="true"></i>
-                      </button>
-                      <button type="button" class="btn badge badge-success"
-                              th:title="#{common.add.source.link}"
-                              data-toggle="modal"
-                              th:data-target="${'#addDefinitionNoteSourceLinkDlg_' + definition.id + '_' + note.id}"
-                              sec:authorize="#vars.definition.crudGrant">
-                        <i class="fa fa-external-link" aria-hidden="true"></i>
-                      </button>
-                      <button type="button" class="btn badge badge-warning"
-                              th:data-id="${note.id}"
-                              data-op-code="definition_note"
-                              th:data-callback="${@viewUtil.composeFunction('loadFullLexemeDetails', lexeme.lexemeId, lexeme.levels)}"
-                              data-toggle="delete-confirm"
-                              data-placement="right"
-                              sec:authorize="#vars.definition.crudGrant">
-                        <i class="fa fa-remove" aria-hidden="true"></i>
-                      </button>
-                    </div>
+                    <th:block
+                      sec:authorize="#vars.lexeme.meaning.crudGrant"
+                      th:replace="components :: action_dropdown(
+                        idPrefix = |lexeme-definition-note-${lexeme.lexemeId}-${note.id}|,
+                        triggerTitle = #{common.edit},
+                        triggerIcon = 'more_horiz',
+                        content = ~{:: definition_note_actions})">
+                        <th:block th:fragment="definition_note_actions">
+                          <button type="button" class="plain-action"
+                                  th:text="#{common.edit}"
+                                  data-toggle="modal"
+                                  th:data-target="${'#editDefinitionNoteDlg_' + lexeme.lexemeId + '_' + note.id}"
+                                  sec:authorize="#vars.definition.crudGrant">
+                            <i class="fa fa-edit" aria-hidden="true"></i>
+                          </button>
+                          <button type="button" class="plain-action"
+                                  th:text="#{common.add.source.link}"
+                                  data-toggle="modal"
+                                  th:data-target="${'#addDefinitionNoteSourceLinkDlg_' + definition.id + '_' + note.id}"
+                                  sec:authorize="#vars.definition.crudGrant">
+                            <i class="fa fa-external-link" aria-hidden="true"></i>
+                          </button>
+                          <button type="button" class="plain-action plain-action--red"
+                                  th:data-id="${note.id}"
+                                  data-op-code="definition_note"
+                                  th:data-callback="${@viewUtil.composeFunction('loadFullLexemeDetails', lexeme.lexemeId, lexeme.levels)}"
+                                  data-toggle="delete-confirm"
+                                  data-placement="right"
+                                  sec:authorize="#vars.definition.crudGrant"
+                                  th:text="#{common.delete}">
+                            <i class="fa fa-remove" aria-hidden="true"></i>
+                          </button>
+                        </th:block>
+                    </th:block>
                   </div>
                   <div class="hidden-buttons">
                     <th:block th:unless="${#lists.isEmpty(note.sourceLinks)}">
