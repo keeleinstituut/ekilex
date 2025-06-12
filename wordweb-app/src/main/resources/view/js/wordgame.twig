@@ -211,7 +211,7 @@
           role="tablist"
 
         {% for key, item in data %}
-        <li>
+        <li role="presentation">
           <a class="nav-link {% if key == options.active_category %}active wordgame-active{% endif %}"
             data-toggle="pill"
             href="#v-pills-{{ key|slug }}"
@@ -233,7 +233,7 @@
   <aside class="wordgame__menu d-md-block d-none d-print-none">
     <ul role="tablist">
     {% for key, item in data %}
-      <li>
+      <li role="presentation">
         <button
           {% if key == options.active_category %}
             class="wordgame-active"

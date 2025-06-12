@@ -4,8 +4,9 @@
 <th:block th:fragment="links">
 </th:block>
 </head>
-<body class="body-with-navbar">
-  <th:block th:replace="common :: nav_bar(activeItem = 'home')"></th:block>
+<body class="body-with-navbar body-with-navbar--spaced">
+  <th:block th:replace="components :: header(isDev = ${appData.devEnv}, envName = ${appData.envName})" sec:authorize="!isAuthenticated()"></th:block>
+  <th:block th:replace="common :: nav_bar(activeItem = 'home')" sec:authorize="isAuthenticated()"></th:block>
   <div class="container-fluid">
     <div class="card mt-4 shadow">
       <div class="card-header">
@@ -70,24 +71,7 @@
       </div>
     </div>
   </div>
-  <div class="modal" tabindex="-1" role="dialog" id="terms">
-    <div class="modal-dialog modal-dialog-scrollable modal-xl" role="document">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title" th:text="#{register.conditions}">Tingimused</h5>
-          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-          </button>
-        </div>
-        <div class="modal-body">
-          <div th:utext="${activeTerms}"></div>
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-dismiss="modal" th:text="#{common.close}">Sulge</button>
-        </div>
-      </div>
-    </div>
-  </div>
+  <th:block th:replace="components :: footer"></th:block>
   <script th:inline="javascript">
     // Currently unneeded with plugins
 	  // initializeRegister();

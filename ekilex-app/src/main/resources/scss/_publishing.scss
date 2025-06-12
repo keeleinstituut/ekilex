@@ -2,18 +2,19 @@
   display: inline-flex;
   align-items: center;
   gap: 4px;
-  height: 16px;
+  height: 24px;
   position: relative;
+  // Can be overriden by other components if they also want to be nearby
   margin-left: auto;
 
   &__button {
     background-color: transparent;
-    border: 1px solid var(--color-medium-blue);
+    border: none;
     padding: 0;
     border-radius: 4px;
     --icon-size: 16px;
-    width: 16px;
-    height: 16px;
+    width: var(--icon-size);
+    height: var(--icon-size);
     background-repeat: no-repeat;
     background-position: center;
     background-size: 100%;
@@ -21,13 +22,36 @@
     justify-content: center;
     align-items: center;
 
-    &--icon {
-      width: 10px;
-      height: 10px;
+    &--toggle[aria-expanded="true"] {
+      background-color: var(--color-light-blue);
+      border: 1px solid var(--color-medium-blue);
 
-      &[data-publishing-item-active='false'] {
-        display: none;
-      }
+    }
+    &>span {
+      pointer-events: none;
+    }
+
+    &:active {
+      background-color: var(--color-light-blue);
+      border: 1px solid var(--color-medium-blue);
+    }
+  }
+
+  &__icon {
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    --icon-size: 16px;
+    width: var(--icon-size);
+    height: var(--icon-size);
+    border-radius: 100px;
+    --icon-variation-settings: 'FILL' 1;
+    // The lock icon for public is always visible
+    &[data-publishing-item-active='false']:not([data-publishing-item='public']) {
+      display: none;
     }
 
     &[data-publishing-item='unif'] {
@@ -41,13 +65,18 @@
     &[data-publishing-item='lite'] {
       background-image: url('../img/wordweb-lite.svg');
     }
-
-    &>span {
-      pointer-events: none;
-    }
-
-    &:not(&--icon):active {
-      background-color: var(--color-light-blue);
+    // Show lock icon as open or closed based on state
+    &[data-publishing-item='public'] {
+      &[data-publishing-item-active='false'] {
+        & .publishing__lock--open {
+          display: none;
+        }
+      }
+      &[data-publishing-item-active='true'] {
+        & .publishing__lock--closed {
+          display: none;
+        }
+      }
     }
   }
 

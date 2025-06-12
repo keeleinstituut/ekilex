@@ -22,6 +22,15 @@ $.fn.editSourcePlugin = function() {
 				return;
 			}
 
+			const nameField = form.find('[name=name]');
+			const nameError = document.getElementById('edit-source-short-name-error');
+			if (nameField.val()?.length > 50) {
+				nameError.classList.remove('d-none');
+				return;
+			} else {
+				nameError.classList.add('d-none');
+			}
+
 			let editFldValue = editFld.val();
 			editFldValue = cleanEkiEditorValue(editFldValue);
 			valueInput.val(editFldValue);

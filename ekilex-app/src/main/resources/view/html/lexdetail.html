@@ -71,7 +71,20 @@
             </div>
           </div>
           <div class="d-flex flex-row w-50 ml-auto align-items-center justify-content-end">
-            <b th:text="${lexeme.datasetName}" class="mr-2"></b>
+            <th:block
+              sec:authorize="#vars.lexeme.crudGrant"
+              th:replace="components :: entity_publishing(
+                entityId = ${lexeme.lexemeId},
+                entityName = 'lexeme',
+                isPublic = ${lexeme.isPublic},
+                isWwUnif = ${lexeme.wwUnif},
+                isWwLite = ${lexeme.wwLite},
+                isWwOd = ${lexeme.wwOd},
+                callback = ${@viewUtil.composeFunction('loadFullLexemeDetails', lexeme.lexemeId, lexeme.levels)},
+                initAccordion = false,
+                withPublicSwitch = true)">
+            </th:block>
+            <b th:text="${lexeme.datasetName}" class="mx-2"></b>
             <button type="button" name="lexeme-details-btn"
                     class="btn btn-secondary btn-sm btn-toggle" title="Näita detaile"
                     th:data-id="${lexeme.lexemeId}" th:data-lex-levels="${lexeme.levels}" th:data-composition="full"
@@ -280,8 +293,21 @@
                 </div>
               </th:block>
             </div>
-            <div class="d-flex w-50 justify-content-end flex-shrink-1 pr-1">
-              <b th:text="${lexeme.datasetName}"></b>
+            <div class="d-flex w-50 justify-content-end flex-shrink-1 pr-1 align-items-center">
+              <th:block
+              sec:authorize="#vars.lexeme.crudGrant"
+              th:replace="components :: entity_publishing(
+                entityId = ${lexeme.lexemeId},
+                entityName = 'lexeme',
+                isPublic = ${lexeme.isPublic},
+                isWwUnif = ${lexeme.wwUnif},
+                isWwLite = ${lexeme.wwLite},
+                isWwOd = ${lexeme.wwOd},
+                callback = ${@viewUtil.composeFunction('loadFullLexemeDetails', lexeme.lexemeId, lexeme.levels)},
+                initAccordion = false,
+                withPublicSwitch = true)">
+              </th:block>
+              <b class="ml-2" th:text="${lexeme.datasetName}"></b>
             </div>
             <button type="button" name="lexeme-details-btn"
               class="btn btn-secondary btn-sm btn-toggle float-right" title="Peida detailid"
@@ -366,7 +392,6 @@
               <th:block th:replace="lexcomp :: data_ids"></th:block>
               <th:block th:replace="lexcomp :: word_status"></th:block>
               <th:block th:replace="lexcomp :: lexeme_tags"></th:block>
-              <th:block th:replace="lexcomp :: lexeme_publishing"></th:block>
               <th:block th:replace="lexcomp :: lexeme_complexity"></th:block>
               <th:block th:replace="lexcomp :: lexeme_proficiency_level"></th:block>
               <th:block th:replace="lexcomp :: lexeme_value_state"></th:block>

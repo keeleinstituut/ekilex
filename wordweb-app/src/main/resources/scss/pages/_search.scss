@@ -224,7 +224,7 @@
     margin: 0 8px 0 0;
 
     &--empty {
-      color: var(--color-cloudy-day);
+      color: var(--color-darker-gray);
     }
   }
 
@@ -332,7 +332,7 @@
   @include media-breakpoint-down(sm) {
     position: sticky;
     background-color: var(--color-gray-010);
-    z-index: 1071;
+    z-index: calc(var(--header-z-index) - 1);
     // Offset by header height
     top: 75px;
     margin: 0 -15px;
@@ -735,6 +735,9 @@
     font-weight: 400;
     line-height: 29px;
     margin: 0;
+    display: flex;
+    gap: 4px;
+    flex-wrap: wrap;
   }
 
   &__list {

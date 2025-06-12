@@ -140,7 +140,7 @@
           <span th:utext="#{menu.manual}"></span>
         </a>
         <a class="navigation__link navigation__link--disabled" th:href="@{/}" target="_blank">
-          <img class="navigation__image" th:src="@{'/view/images/menu-grammar.svg'}" alt="">
+          <img class="navigation__image" th:src="@{'/view/images/od.svg'}" alt="">
           <span th:utext="#{menu.grammar.title}"></span>
           <span class="navigation__link-description" th:utext="#{menu.grammar.description}"></span>
         </a>
@@ -171,6 +171,10 @@
         <a class="navigation__link" th:href="@{/games}" target="_blank">
           <img class="navigation__image" th:src="@{'/view/images/menu-games.svg'}" alt="">
           <span th:utext="#{menu.split.games}"></span>
+        </a>
+        <a class="navigation__link" th:href="@{/newwords}" target="_blank">
+          <img class="navigation__image" th:src="@{'/view/images/menu-new-words.svg'}" alt="">
+          <span th:utext="#{menu.newwords}"></span>
         </a>
       </div>
     </div>
@@ -352,7 +356,6 @@
           <div class="d-flex flex-column gap-1">
             <a th:href="@{/about}" th:text="#{menu.about}">Portaalist</a>
             <a th:href="@{/collections}" th:text="#{label.filter.dataset}">Sõnakogud</a>
-            <a th:href="@{/newwords}" th:text="#{menu.newwords}">Uued sõnad</a>
             <a th:href="@{/ekilex-api}" th:text="#{menu.ekilexapi}">Ekilex API</a>
             <a th:href="@{/news}" th:text="#{menu.news}">Versiooniajalugu</a>
             <a th:href="@{/regulations}" th:text="#{label.privacy.terms}">Kasutus- ja privaatsustingimused</a>
@@ -428,7 +431,7 @@
   <th:block th:fragment="source-link" th:with="dataContent=${sourceLink.isSourcePublic} ? ${sourceLink.sourceValuePrese} : #{label.source.value.not.public}">
     <button
       type="button"
-      class="lang-code text-caption lang-code--unrestricted"
+      class="lang-code text-caption lang-code--unrestricted definition-source"
       data-toggle="popover"
       data-html="true"
       th:title="#{label.source}"

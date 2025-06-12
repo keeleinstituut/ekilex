@@ -4,8 +4,7 @@
   <title>EKILEX</title>
 </head>
 <body class="d-flex flex-column">
-
-
+  <th:block th:replace="components :: header(isDev = ${appData.devEnv}, envName = ${appData.envName})"></th:block>
   <main class="container-fluid flex-shrink-0">
     <div class="card mt-4 mb-4 shadow">
       <div class="card-header">
@@ -36,36 +35,6 @@
       </div>
     </div>
   </main>
-
-  <footer role="contentinfo" class="footer mt-auto">
-    <div class="container footer-wrapper">
-      <div class="row">
-        <div class="col-12 col-sm-6 col-md-4">
-          <p>
-            <strong>Eesti Keele Instituut</strong>
-            <br>
-            Roosikrantsi 6, 10119 Tallinn
-            <br>
-            tel: 617 7500
-            <br>
-            e-post:
-            <a class="text-underline" href="mailto:eki@eki.ee">eki@eki.ee</a>
-            <br>
-            reg-kood: 70004011
-          </p>
-        </div>
-        <div class="col-12 col-md-4 order-2 order-md-1 col-reverse mt-3">
-          <span class="last-update">
-            <span th:text="#{general.lastupdate}">Ekilex 2021</span>
-            <span th:if="${appData != null}" th:text="${'(' + appData.appName + '-' + appData.appVersion + ')'}" style="color: gray"></span>
-          </span>
-          <span class="copyright">
-              &copy;&nbsp;
-              <span th:text="#{general.eki}">Eesti Keele Instituut 2024</span>
-            </span>
-        </div>
-      </div>
-    </div>
-  </footer>
+  <th:block th:replace="components :: footer"></th:block>
 </body>
 </html>

@@ -17,7 +17,7 @@
 <th:block th:replace="common-app :: header(withSearch = ${false})"></th:block>
 <div class="container-fluid learn">
   <div class="row no-gutters learn-container">
-    <aside class="col-12 col-md-4  learn-container-menu">
+    <aside class="col-12 col-md-4  learn-container-menu" tabindex="0">
       <div class="col-12">
         <h1 class="mx-lg-4 mt-md-4 font-weight-bold page-title">Õpime eesti keelt</h1>
       </div>
@@ -34,7 +34,7 @@
         </button>
         <ul class="dropdown-menu"
             role="tablist">
-          <li>
+          <li role="presentation">
             <a class="nav-link active"
                id="v-pills-arvud-tab"
                data-toggle="pill"
@@ -43,7 +43,7 @@
                aria-controls="v-pills-arvud"
                aria-selected="false">Arvud</a>
           </li>
-          <li>
+          <li role="presentation">
             <a class="nav-link"
                id="v-pills-margid-tab"
                data-toggle="pill"
@@ -52,7 +52,7 @@
                aria-controls="v-pills-margid"
                aria-selected="false">Märgid</a>
           </li>
-          <li>
+          <li role="presentation">
             <a class="nav-link"
                id="v-pills-aeg-tab"
                data-toggle="pill"
@@ -61,7 +61,7 @@
                aria-controls="v-pills-aeg"
                aria-selected="false">Aeg</a>
           </li>
-          <li>
+          <li role="presentation">
             <a class="nav-link"
                id="v-pills-luhendid-tab"
                data-toggle="pill"
@@ -70,7 +70,7 @@
                aria-controls="v-pills-luhendid"
                aria-selected="false">Lühendid</a>
           </li>
-          <li>
+          <li role="presentation">
             <a class="nav-link"
                id="v-pills-kirjavahemargid-tab"
                data-toggle="pill"
@@ -80,9 +80,9 @@
                aria-selected="false">Kirjavahemärgid
             </a>
           </li>
-          <li>
+          <li role="presentation">
           </li>
-          <li class="has-submenu">
+          <li class="has-submenu" role="presentation">
             <a class="nav-link"
                id="v-pills-kirjutamine-tab"
                data-toggle="pill"
@@ -155,7 +155,7 @@
               </li>
             </ul>
           </li>
-          <li class="has-submenu">
+          <li class="has-submenu" role="presentation">
             <a class="nav-link"
                href="#v-pills-kasulikke"
                data-toggle="pill"
@@ -237,7 +237,7 @@
               </li>
             </ul>
           </li>
-          <li class="has-submenu">
+          <li class="has-submenu" role="presentation">
             <a class="nav-link"
                id="v-pills-oppetoo-tab"
                data-toggle="pill"
@@ -283,7 +283,7 @@
               </li>
             </ul>
           </li>
-          <li class="has-submenu">
+          <li class="has-submenu" role="presentation">
             <a
               class="nav-link"
               id="v-pills-keelekasutus-tab"
@@ -314,7 +314,7 @@
               </li>
             </ul>
           </li>
-          <li>
+          <li role="presentation">
             <a class="nav-link"
                id="v-pills-grammatikatabelid-tab"
                data-toggle="pill"
@@ -325,7 +325,7 @@
               <i class="fas fa-file-pdf"></i>
             </a>
           </li>
-          <li>
+          <li role="presentation">
             <a class="nav-link"
                id="v-pills-regions-tab"
                data-toggle="pill"
@@ -336,7 +336,7 @@
               <i class="fas fa-file-pdf"></i>
             </a>
           </li>
-          <li>
+          <li role="presentation">
             <a class="nav-link"
                id="v-pills-keeleabi-tab"
                data-toggle="pill"

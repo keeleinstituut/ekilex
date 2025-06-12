@@ -34,7 +34,15 @@
       <div id="word-details">
         <div class="no-results__wrapper" th:unless="${wordsData.resultExists}">
           <th:block th:if="${wordsData.validSearch}">
-            <h1 class="no-results__title" th:text="#{label.search.word.not.found(${searchWord})}"></h1>
+            <h1 class="no-results__title">
+              <span th:text="#{label.search.word.not.found(${searchWord}, ${wordsData.formResultExists ? ',' : ''})}"></span>
+              <th:block th:if="${wordsData.formResultExists}">
+                <span th:text="${wordsData.suggestedWordValues.size() > 1 
+                  ? #messages.msg('label.suggest.form.plural') 
+                  : #messages.msg('label.suggest.form.single')}">see on ka vorm sõnast</span>
+                <a href="#" class="word-form" th:each="word,wordIter : ${wordsData.suggestedWordValues}" th:text="${wordIter.last ? word : word + ',&nbsp;'}" th:data-word="${word}"> </a>
+              </th:block>
+            </h1>
             <th:block th:if="${wordsData.availableLanguagesDatasets.availableFiltersExist}">
               <div th:text="#{label.search.filter.suggestion.simple}">Otsing annab tulemusi teistes keeltes või sõnakogudes kui sinu valitud filtris.</div>
               <div class="no-results__columns no-results__columns--single" th:with="hasLanguages = ${not #lists.isEmpty(wordsData.availableLanguagesDatasets.languages)}">
@@ -44,12 +52,6 @@
               </div>
               <div>
                 <a th:href="@{${@viewUtil.getSimpleSearchUri(searchWord)}}" th:text="#{label.search.filter.clear}"> Otsi uuesti ilma piiranguteta </a>
-              </div>
-            </th:block>
-            <th:block th:if="${wordsData.formResultExists}">
-              <div>
-                <span th:text="#{label.suggest.form}">see on ka vorm sõnast</span>
-                <a href="#" class="word-form" th:each="word,wordIter : ${wordsData.suggestedWordValues}" th:text="${wordIter.last ? word : word + ',&nbsp;'}" th:data-word="${word}"> </a>
               </div>
             </th:block>
             <th:block th:unless="${wordsData.availableLanguagesDatasets.availableFiltersExist}">

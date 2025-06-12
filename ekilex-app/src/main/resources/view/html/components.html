@@ -263,7 +263,12 @@
             <div class="form-group row m-4">
               <label class="col-12 col-form-label" th:text="#{source.name}" for="add-source-modal-short-name">Lühike kuju</label>
               <div class="col-md-12">
-                <input class="form-control required-field" name="name" autocomplete="off" id="add-source-modal-short-name">
+                <input class="form-control required-field" name="name" autocomplete="off" id="add-source-modal-short-name" maxlength="50">
+              </div>
+              <div role="alert">
+                <div class="alert alert-danger alert--form d-none" id="add-source-short-name-error" th:text="#{common.error.max_length(50)}">
+                  Sisend ei saa olla pikem kui 50 karakteri
+                </div>
               </div>
             </div>
             <div class="form-group row m-4">
@@ -380,7 +385,37 @@
       th:data-replace-owner-id="${replaceOwnerId}"
       th:data-callback="${callback}"
       th:data-init-accordion="${initAccordion}"
+      th:classappend="|${extraClasses ?: ''}|"
       >
+      <span class="publishing__icon"
+        data-publishing-item="public"
+        th:data-publishing-item-active="${isPublic}"
+        th:title="${isPublic 
+          ? #messages.msg('publishing.public.state.public') 
+          : #messages.msg('publishing.public.state.not_public')}"
+        th:if="${withPublicSwitch}"
+        >
+        <span class="material-symbols-outlined publishing__lock--closed">lock</span>
+        <span class="material-symbols-outlined publishing__lock--open">lock_open</span>
+      </span>
+      <span class="publishing__icon"
+        data-publishing-item="unif"
+        th:data-publishing-item-active="${isWwUnif}"
+        th:title="#{publishing.unif}"
+        >
+      </span>
+      <span class="publishing__icon"
+        data-publishing-item="od"
+        th:data-publishing-item-active="${isWwOd}"
+        th:title="#{publishing.od}"
+        >
+      </span>
+      <span class="publishing__icon"
+        data-publishing-item="lite"
+        th:data-publishing-item-active="${isWwLite}"
+        th:title="#{publishing.lite}"
+      >
+      </span>
       <button type="button" class="publishing__button publishing__button--toggle"
         th:id="|publishing-trigger-${entityName}-${entityId}|"
         data-toggle="publishing-menu"
@@ -388,7 +423,7 @@
         aria-expanded="false"
         th:title="#{publishing.open}"
         >
-        <span class="material-symbols-outlined">apps</span>
+        <span class="material-symbols-outlined">upload</span>
       </button>
       <div
         class="dropdown-menu publishing__menu"
@@ -427,33 +462,213 @@
             inputName = 'isPublic',
             inputValue = 'isPublic',
             inputChecked = ${isPublic},
-            inputLabel = #{publishing.public}
+            inputLabel = ${isPublic 
+              ? #messages.msg('publishing.public.state.public') 
+              : #messages.msg('publishing.public.state.not_public')}
           )"></th:block>
         </div>
       </div>
-      <button type="button" class="publishing__button publishing__button--icon"
-        data-publishing-item="unif"
-        th:data-publishing-item-active="${isWwUnif}"
-        th:title="#{publishing.toggle.unif}"
-        >
-      </button>
-      <button type="button" class="publishing__button publishing__button--icon"
-        data-publishing-item="od"
-        th:data-publishing-item-active="${isWwOd}"
-        th:title="#{publishing.toggle.od}"
-        >
-      </button>
-      <button type="button" class="publishing__button publishing__button--icon"
-        data-publishing-item="lite"
-        th:data-publishing-item-active="${isWwLite}"
-        th:title="#{publishing.toggle.lite}"
-        >
-      </button>
     </div>
   </th:block>
   <label class="input-switch" th:fragment="input_switch">
     <input type="checkbox" th:name="${inputName}" th:value="${inputValue}" th:checked="${inputChecked}">
     <span th:text="${inputLabel}"></span>
   </label>
+  <th:block th:fragment="action_dropdown">
+    <div
+      class="dropdown action-dropdown"
+      data-plugin="actionDropdownHandler">
+      <button type="button" class="action-dropdown__trigger"
+        th:id="|action-dropdown-trigger-${idPrefix}|"
+        aria-haspopup="true"
+        aria-expanded="false"
+        th:title="${triggerTitle}"
+        >
+        <span class="material-symbols-outlined" th:text="${triggerIcon}"></span>
+      </button>
+      <div
+        class="dropdown-menu action-dropdown__menu"
+        th:id="|action-dropdown-${idPrefix}|"
+        th:aria-labelledby="|action-dropdown-trigger-${idPrefix}|">
+        <th:block th:replace="${content}"></th:block>
+      </div>
+    </div>
+  </th:block>
+
+  <th:block th:fragment="footer">
+    <footer class="footer">
+      <div class="footer__grid">
+        <div class="footer__column">
+          <div class="footer__column-header">
+            <a href="https://eki.ee" target="_blank">
+              <img class="footer__logo" th:src="@{'/view/img/eki-hq.svg'}" th:alt="#{general.eki}">
+            </a>
+          </div>
+          <div class="d-flex flex-column gap-1">
+            <div>Roosikrantsi 6, 10119 Tallinn</div>
+            <div th:text="#{label.footer.reg_code('70004011')}">Reg-kood: 70004011</div>
+            <div class="d-flex align-items-center justify-content-center justify-content-md-start gap-2 flex-wrap">
+              <span th:text="#{label.footer.contact.tip}"></span>
+              <a href="tel:6313731">631 3731</a>
+            </div>
+            <div class="d-flex align-items-center justify-content-center justify-content-md-start gap-2 flex-wrap">
+              <span th:text="#{label.footer.contact.general}"></span>
+              <a href="tel:6177500">617 7500</a>
+            </div>
+            <div class="d-flex align-items-center justify-content-center justify-content-md-start gap-2 flex-wrap">
+              <span th:text="#{label.footer.email}"></span>
+              <a href="mailto:eki@eki.ee">eki@eki.ee</a>
+            </div>
+          </div>
+          <div class="footer__version" th:text="|${appData.appName} ${appData.appVersion}|" th:if="${appData}"></div>
+        </div>
+        <div class="footer__column">
+          <div class="footer__column-header" th:text="#{general.title}"></div>
+          <div class="d-flex flex-column gap-1">
+            <a href="https://keeleinstituut.github.io/ekilex/" th:text="#{label.footer.manual}">Kasutusjuhend</a>
+            <a href="https://github.com/keeleinstituut/ekilex/wiki/Ekilex-API" th:text="#{label.footer.api}">Ekilex API</a>
+            <button class="footer__terms" data-toggle="modal" data-target="#terms" th:text="#{label.footer.terms}">Kasutustingimused</button>
+          </div>
+        </div>
+        <div class="footer__column">
+          <div class="footer__column-header" th:text="#{label.socials.title}"></div>
+          <span th:text="#{label.socials.description}"></span>
+          <div class="d-flex flex-column gap-1">
+            <a
+              class="d-flex align-items-center justify-content-center justify-content-md-start gap-2"
+              href="https://www.facebook.com/Eesti.Keele.Instituut"
+              target="_blank"
+              >
+              <div class="footer__icon footer__icon--facebook" aria-hidden="true"></div>
+              <span th:text="#{label.socials.facebook}">
+                Jaga meid sotsiaalmeedias
+              </span>
+            </a>
+            <a
+              class="d-flex align-items-center justify-content-center justify-content-md-start gap-2"
+              href="https://www.youtube.com/c/EestiKeeleInstituut"
+              target="_blank"
+            >
+              <div class="footer__icon footer__icon--youtube" aria-hidden="true"></div>
+              <span th:text="#{label.socials.youtube}">
+                Jaga meid sotsiaalmeedias
+              </span>
+            </a>
+            <a
+              class="d-flex align-items-center justify-content-center justify-content-md-start gap-2"
+              href="https://www.linkedin.com/company/institute-of-the-estonian-language/"
+              target="_blank"
+            >
+              <div class="footer__icon footer__icon--linkedin" aria-hidden="true"></div>
+              <span th:text="#{label.socials.linkedin}">
+                Jaga meid sotsiaalmeedias
+              </span>
+            </a>
+          </div>
+        </div>
+      </div>
+    </footer>
+    <div class="modal" tabindex="-1" role="dialog" id="terms">
+    <div class="modal-dialog modal-dialog-scrollable modal-xl" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" th:text="#{register.conditions}">Tingimused</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+          <div class="modal-body">
+            <div th:utext="${activeTerms}"></div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal" th:text="#{common.close}">Sulge</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </th:block>
+  <th:block th:fragment="header">
+    <div class="header">
+      <div class="header__contents">
+        <div class="header__title-wrapper">
+          <a th:href="@{/}" class="header__title">
+            Ekilex
+          </a>
+          <span th:if="${isDev}" class="header__dev-env" th:text="${envName}">
+            TEST
+          </span>
+        </div>
+        <div class="header__actions">
+          <a class="header__login" th:href="@{/login}" th:text="#{login.title}">
+            Logi sisse
+          </a>
+          <th:block th:replace=":: navigation"></th:block>
+        </div>
+      </div>
+    </div>
+  </th:block>
+  <th:block th:fragment="navigation">
+    <div class="navigation__dropdown">
+      <button
+        type="button"
+        th:aria-label="#{button.label.menu}"
+        class="navigation__trigger"
+        id="nav-menu"
+        aria-haspopup="menu"
+        aria-expanded="false"
+        aria-controls="nav-menu-links"
+        data-plugin="navigationPlugin"
+        >
+        <span class="navigation__trigger-icon material-symbols-outlined">apps</span>
+      </button>
+      <div class="navigation__dropdown-menu" id="nav-menu-links" aria-labelledby="nav-menu">
+        <a class="navigation__link" href="https://sonaveeb.ee" target="_blank">
+          <img class="navigation__image" th:src="@{'/view/img/wordweb.svg'}" alt="">
+          <span th:utext="#{menu.search.unif}"></span>
+        </a>
+        <a class="navigation__link" href="https://eki.ee/teatmik/" target="_blank">
+          <img class="navigation__image" th:src="@{'/view/img/menu-reference.svg'}" alt="">
+          <span th:utext="#{menu.manual}"></span>
+        </a>
+        <a class="navigation__link navigation__link--disabled" href="https://sonaveeb.ee" target="_blank">
+          <img class="navigation__image" th:src="@{'/view/img/od.svg'}" alt="">
+          <span th:utext="#{menu.grammar.title}"></span>
+          <span class="navigation__link-description" th:utext="#{menu.grammar.description}"></span>
+        </a>
+        <a class="navigation__link" href="https://eki.ee/keeleinfo/sonastikud/" target="_blank">
+          <img class="navigation__image" th:src="@{'/view/img/menu-dictionaries.svg'}" alt="">
+          <span th:utext="#{menu.dictionaries}"></span>
+        </a>
+        <a class="navigation__link" href="https://sonaveeb.ee/lite" target="_blank">
+          <img class="navigation__image" th:src="@{'/view/img/wordweb-lite.svg'}" alt="">
+          <span th:utext="#{menu.split.lite}"></span>
+        </a>
+        <a class="navigation__link" href="https://sonaveeb.ee/teacher-tools" target="_blank">
+          <img class="navigation__image" th:src="@{'/view/img/menu-teacher-tools.svg'}" alt="">
+          <span th:utext="#{menu.ttools}"></span>
+        </a>
+        <a class="navigation__link" href="https://sonaveeb.ee/pronunciation-exercises" target="_blank">
+          <img class="navigation__image" th:src="@{'/view/img/menu-spelling.svg'}" alt="">
+          <span th:utext="#{menu.pronunciation.exercises}"></span>
+        </a>
+        <a class="navigation__link" href="https://sonaveeb.ee/learn" target="_blank">
+          <img class="navigation__image" th:src="@{'/view/img/menu-learn.svg'}" alt="">
+          <span th:utext="#{menu.learn}"></span>
+        </a>
+        <a class="navigation__link" href="https://sonaveeb.ee/wordgame" target="_blank">
+          <img class="navigation__image" th:src="@{'/view/img/menu-word-games.svg'}" alt="">
+          <span th:utext="#{menu.split.wordgame}"></span>
+        </a>
+        <a class="navigation__link" href="https://sonaveeb.ee/games" target="_blank">
+          <img class="navigation__image" th:src="@{'/view/img/menu-games.svg'}" alt="">
+          <span th:utext="#{menu.split.games}"></span>
+        </a>
+        <a class="navigation__link" href="https://sonaveeb.ee/newwords" target="_blank">
+          <img class="navigation__image" th:src="@{'/view/img/menu-new-words.svg'}" alt="">
+          <span th:utext="#{menu.newwords}"></span>
+        </a>
+      </div>
+    </div>
+  </th:block>
 </body>
 </html>

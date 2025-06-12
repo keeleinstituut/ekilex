@@ -41,6 +41,12 @@
 }
 
 .morphology-paradigm {
+  // If there is no next paradigm, hide the dividing line
+  &:not(:has(~ &)) {
+    & hr {
+      display: none;
+    }
+  }
   hr {
     margin: 10px -10px 0;
   }
@@ -57,6 +63,7 @@
       line-height: 1.4;
       text-overflow: ellipsis;
       overflow: hidden;
+      font-weight: 500;
       div {
         padding: 2px;
         margin-right: 4px;
