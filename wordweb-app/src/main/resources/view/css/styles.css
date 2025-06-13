@@ -89,6 +89,7 @@
   --color-success-green: #2E7D32;
   --color-money-green: #328237;
   --color-light-green: #F7FDF9;
+  --color-dark-green: #267C6B;
   --color-yellow-100: #ffffe8;
   --color-purple-100: #db8dff;
   --color-orange: #DE6837;
@@ -16935,6 +16936,7 @@ span.material-symbols-outlined--small {
   --color-success-green: #2E7D32;
   --color-money-green: #328237;
   --color-light-green: #F7FDF9;
+  --color-dark-green: #267C6B;
   --color-yellow-100: #ffffe8;
   --color-purple-100: #db8dff;
   --color-orange: #DE6837;
@@ -18971,11 +18973,8 @@ ext-link {
   cursor: pointer;
 }
 eki-form {
-  color: #348338;
-  color: var(--color-money-green);
-  border: 1px solid currentColor;
-  background-color: var(--color-light-green);
-  border-radius: 4px;
+  color: var(--color-dark-green);
+  font-weight: 700;
 }
 eki-shy::before {
   content: "\ad";
