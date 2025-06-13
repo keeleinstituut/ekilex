@@ -25,10 +25,10 @@ $.fn.editSourcePlugin = function() {
 			const nameField = form.find('[name=name]');
 			const nameError = form.find('[data-id=edit-source-short-name-error]');
 			if (nameField.val()?.length > 50) {
-				nameError.classList.remove('d-none');
+				nameError.removeClass('d-none');
 				return;
 			} else {
-				nameError.classList.add('d-none');
+				nameError.addClass('d-none');
 			}
 
 			let editFldValue = editFld.val();
