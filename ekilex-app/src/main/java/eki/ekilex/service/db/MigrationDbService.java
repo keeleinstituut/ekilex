@@ -4,6 +4,7 @@ import static eki.ekilex.data.db.main.Tables.DEFINITION;
 import static eki.ekilex.data.db.main.Tables.DEFINITION_DATASET;
 import static eki.ekilex.data.db.main.Tables.DOMAIN_LABEL;
 import static eki.ekilex.data.db.main.Tables.MEANING;
+import static eki.ekilex.data.db.main.Tables.PUBLISHING;
 import static eki.ekilex.data.db.main.Tables.WORD;
 import static eki.ekilex.data.db.main.Tables.WORD_OD_MORPH;
 import static eki.ekilex.data.db.main.Tables.WORD_OD_USAGE;
@@ -14,17 +15,20 @@ import org.jooq.impl.DSL;
 import org.springframework.stereotype.Component;
 
 import eki.common.constant.ClassifierName;
+import eki.common.constant.PublishingConstant;
 import eki.common.data.Classifier;
 import eki.ekilex.data.db.main.tables.Definition;
 import eki.ekilex.data.db.main.tables.DefinitionDataset;
 import eki.ekilex.data.db.main.tables.Meaning;
+import eki.ekilex.data.db.main.tables.Publishing;
 import eki.ekilex.data.db.main.tables.Word;
 import eki.ekilex.data.db.main.tables.WordOdMorph;
 import eki.ekilex.data.db.main.tables.WordOdUsage;
+import eki.ekilex.data.migra.DefinitionDuplicate;
 
-// temporary for data migration tools
+// temporary content for data migration tools
 @Component
-public class MigrationDbService extends AbstractDataDbService {
+public class MigrationDbService extends AbstractDataDbService implements PublishingConstant {
 
 	public List<Classifier> getDomains(String origin, String type) {
 
@@ -182,4 +186,54 @@ public class MigrationDbService extends AbstractDataDbService {
 						.where(
 								wom.WORD_ID.eq(wordId)));
 	}
+
+	public List<DefinitionDuplicate> getDefinitionDuplicates(String datasetCode) {
+
+		Definition d1 = DEFINITION.as("d1");
+		Definition d2 = DEFINITION.as("d2");
+		Publishing p = PUBLISHING.as("p");
+		DefinitionDataset dd = DEFINITION_DATASET.as("dd");
+
+		return mainDb
+				.select(
+						d1.ID.as("definition_id"),
+						d1.MEANING_ID,
+						p.ID.as("publishing_id"),
+						p.TARGET_NAME)
+				.from(d1
+						.leftOuterJoin(p).on(
+								p.ENTITY_NAME.eq(ENTITY_NAME_DEFINITION)
+										.and(p.ENTITY_ID.eq(d1.ID))))
+				.whereExists(DSL
+						.select(dd.DEFINITION_ID)
+						.from(dd)
+						.where(
+								dd.DEFINITION_ID.eq(d1.ID)
+										.and(dd.DATASET_CODE.eq(datasetCode))))
+				.andExists(DSL
+						.select(d2.ID)
+						.from(d2)
+						.where(
+								d2.MEANING_ID.eq(d1.MEANING_ID)
+										.and(d2.VALUE.eq(d1.VALUE))
+										.and(d2.ID.ne(d1.ID))
+										.andExists(DSL
+												.select(dd.DEFINITION_ID)
+												.from(dd)
+												.where(
+														dd.DEFINITION_ID.eq(d2.ID)
+																.and(dd.DATASET_CODE.eq(datasetCode))))))
+				.orderBy(d1.MEANING_ID, d1.VALUE, d1.ID)
+				.fetchInto(DefinitionDuplicate.class);
+	}
+
+	public void updatePublishingEntityId(Long publishingId, Long entityId) {
+
+		mainDb
+				.update(PUBLISHING)
+				.set(PUBLISHING.ENTITY_ID, entityId)
+				.where(PUBLISHING.ID.eq(publishingId))
+				.execute();
+	}
+
 }
