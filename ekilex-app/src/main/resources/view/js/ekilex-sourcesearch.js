@@ -119,7 +119,7 @@ $.fn.addSourceSubmitPlugin = function() {
 		obj.on('click', function() {
 			const addSourceForm = obj.closest('form');
 			const nameField = addSourceForm.find('[name=name]');
-			const nameError = document.getElementById('add-source-short-name-error');
+			const nameError = addSourceForm.find('[data-id=add-source-short-name-error]');
 			if (nameField.val()?.length > 50) {
 				nameError.classList.remove('d-none');
 				return;

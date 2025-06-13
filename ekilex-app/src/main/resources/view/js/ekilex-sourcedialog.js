@@ -23,7 +23,7 @@ $.fn.editSourcePlugin = function() {
 			}
 
 			const nameField = form.find('[name=name]');
-			const nameError = document.getElementById('edit-source-short-name-error');
+			const nameError = form.find('[data-id=edit-source-short-name-error]');
 			if (nameField.val()?.length > 50) {
 				nameError.classList.remove('d-none');
 				return;
