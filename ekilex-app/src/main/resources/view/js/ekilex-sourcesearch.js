@@ -119,12 +119,12 @@ $.fn.addSourceSubmitPlugin = function() {
 		obj.on('click', function() {
 			const addSourceForm = obj.closest('form');
 			const nameField = addSourceForm.find('[name=name]');
-			const nameError = document.getElementById('add-source-short-name-error');
+			const nameError = addSourceForm.find('[data-id=add-source-short-name-error]');
 			if (nameField.val()?.length > 50) {
-				nameError.classList.remove('d-none');
+				nameError.removeClass('d-none');
 				return;
 			} else {
-				nameError.classList.add('d-none');
+				nameError.addClass('d-none');
 			}
 			const editFld = addSourceForm.find('[data-id="editFld"]');
 			const valueInput = addSourceForm.find('[name=valuePrese]');

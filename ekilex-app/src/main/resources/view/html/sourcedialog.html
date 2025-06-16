@@ -26,7 +26,7 @@
                 <input class="form-control required-field" name="name" th:value="${source.name}" maxlength="50">
               </div>
               <div role="alert">
-                <div class="alert alert-danger alert--form d-none" id="edit-source-short-name-error" th:text="#{common.error.max_length(50)}">
+                <div class="alert alert-danger alert--form d-none" data-id="edit-source-short-name-error" th:text="#{common.error.max_length(50)}">
                   Sisend ei saa olla pikem kui 50 karakteri
                 </div>
               </div>

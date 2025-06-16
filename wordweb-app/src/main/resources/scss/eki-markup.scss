@@ -53,11 +53,8 @@ eki-link, ext-link {
 }
 
 eki-form { 
-  color: #348338;
-  color: var(--color-money-green);
-  border: 1px solid currentColor;
-  background-color: var(--color-light-green);
-  border-radius: 4px;
+  color: var(--color-dark-green);
+  font-weight: 700;
 }
 
 eki-shy::before {
