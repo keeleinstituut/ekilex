@@ -145,3 +145,22 @@
     font-size: 14px;
   }
 }
+
+.button {
+  background-color: var(--color-dark-blue);
+  color: var(--color-white);
+  font-size: .875rem;
+  font-weight: 500;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 16px 20px;
+  border-radius: 100px;
+  width: max-content;
+  transition: 125ms color ease-in-out;
+
+  &:hover {
+    color: var(--color-light-gray);
+    text-decoration: none;
+  }
+}

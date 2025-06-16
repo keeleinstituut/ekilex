@@ -5,34 +5,20 @@
 </head>
 <body class="d-flex flex-column">
   <th:block th:replace="components :: header(isDev = ${appData.devEnv}, envName = ${appData.envName})"></th:block>
-  <main class="container-fluid flex-shrink-0">
-    <div class="card mt-4 mb-4 shadow">
-      <div class="card-header">
-        <span class="erf-logo mini-logo"></span>
-        <span class="eki-logo mini-logo"></span>
+  <main class="home-page">
+    <div class="home-page__header">
+        <h1 th:text="#{label.home.title}">Sõnastiku- ja terminibaasisüsteem Ekilex</h1>
+        <p th:text="#{label.home.description}">Kirjeldus</p>
+        <a class="button" th:href="@{/register}" th:text="#{label.home.register}"></a>
       </div>
-      <div class="card-body">
-        <p class="card-text">Eesti Keele Instituudi sõnastiku- ja terminibaasisüsteem Ekilex on loodud sõnastike ja terminibaaside koostamiseks ja ajakohastamiseks
-          leksikograafidele, terminoloogidele ning kõigile asjahuvilistele.<br>
-          Ekilex koondab infot sõnade ja terminite kohta paljudest sõnakogudest ja terminibaasidest. Iga autor või töörühm täiendab ühiskasutatavaid andmeid oma infoga,
-          näiteks lisab uusi sõnu või termineid, sünonüüme, tõlkevasteid mis tahes keeles või ajakohastab terminikirjeid.<br>
-          Ekilex aitab vähendada sõnakogude andmete dubleerimist, koostamisel tekkivaid püsivigu ning lihtsustab tehtu avalikustamist.<br>
-          Kasutaja saab ühisotsinguga kätte kogu info kõigist sõnakogudest ja terminibaasidest. 2024. aasta seisuga sisaldab Ekilex üle 130 sõnakogu:
-          üldkeele sõnaraamatuid, oskussõnastikke ja terminibaase.<br>
-          Ekilexi töölaud on jagatud mitmeks osaks. Leksikograafide vaade näitab sõnu ja nende tähendusi. Terminoloogide vaade näitab mõisteid ja neid
-          tähistavaid termineid.
-        </p>
-        <p class="card-text">Sõnastiku- ja terminibaasisüsteemi Ekilex loomist on rahastatud projektidest "EKI-ASTRA (2014–2020.4.01.16-0034, 2016–2022)",
-          "Ekilexi väliskasutajaliidesed ja API (2014–2020.12.03.18-0384, 2018–2020)" ning "Sõnastikusüsteemi EKILEX arenduse II etapp (2014-2020.12.03.21-0962, 2022-2023)".
-        </p>
-        <div class="form-group row">
-          <div class="col-sm-auto">
-            <a role="button" class="btn btn-primary mr-5 mb-2" th:href="@{/home}">Logi sisse</a>
-            <a role="button" class="btn btn-info mr-5 mb-2" th:href="@{/register}">Loo kasutaja</a>
-            <a class="btn btn-light mb-2" href="https://keeleinstituut.github.io/ekilex/" target="ekilexUserManual"><i class="fa fa-info-circle" aria-hidden="true"></i> Kasutusjuhend</a>
-          </div>
-        </div>
-      </div>
+    <div class="home-page__language-data">
+      <h2 th:text="#{label.home.data.title}"></h2>
+      <p th:text="#{label.home.data.description.first}"></p>
+      <p th:text="#{label.home.data.description.second}"></p>
+    </div>
+    <div class="home-page__financing">
+      <h2 th:text="#{label.home.financing.title}"></h2>
+      <p th:text="#{label.home.financing.description}"></p>
     </div>
   </main>
   <th:block th:replace="components :: footer"></th:block>

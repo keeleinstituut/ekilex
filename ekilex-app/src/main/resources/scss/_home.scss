@@ -1,0 +1,105 @@
+.home-page {
+  background-color: var(--color-white);
+  display: grid;
+  grid-template-columns: [full-width-start] 4px [content] 1fr [full-width-end] 4px;
+  flex-grow: 1;
+  grid-template-rows: max-content;
+  color: var(--color-dark-blue);
+
+  @media (min-width: 768px) {
+    grid-template-columns: [full-width-start] 1fr [content] minmax(375px, 960px) [full-width-end] 1fr;
+  }
+
+  & h1,
+  & h2,
+  & p {
+    margin: 0;
+  }
+
+  &__header {
+    grid-column: 1/-1;
+    padding: 48px 0;
+    background-color: var(--color-light-blue);
+    display: grid;
+    grid-template-columns: subgrid;
+    align-items: center;
+    text-align: center;
+    gap: 16px;
+
+    &>* {
+      grid-column: content;
+    }
+
+    & h1 {
+      font-size: 3rem;
+      font-weight: 400;
+    }
+
+    & p {
+      font-size: 1.25rem;
+      font-weight: 500;
+      line-height: 30px;
+    }
+
+    & .button {
+      margin: 0 auto;
+    }
+  }
+
+  &__language-data,
+  &__financing {
+    & h2 {
+      font-size: 2.125rem;
+      font-weight: 400;
+    }
+
+    & p {
+      font-size: .875rem;
+    }
+  }
+
+  &__language-data {
+    grid-column: content;
+    display: grid;
+    grid-template-columns: 250px 1fr;
+    grid-template-rows: repeat(3, max-content);
+    align-items: flex-end;
+    gap: 24px;
+    padding: 143px 100px;
+    background-image: url('../img/bg-quotes.svg');
+    background-repeat: no-repeat;
+    background-position: center left;
+    background-size: 352px auto;
+
+    &>* {
+      grid-column: 2;
+    }
+  }
+
+  &__financing {
+    grid-column: content;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    padding: 20px 191px 163px;
+    margin-top: 162px;
+
+    & h2 {
+      position: relative;
+      width: max-content;
+      line-height: 1;
+
+      &::after {
+        content: "";
+        background-image: url('../img/bg-tilde.svg');
+        background-repeat: no-repeat;
+        background-size: 100%;
+        position: absolute;
+        left: calc(100% + 24px);
+        width: 514px;
+        height: 173px;
+        bottom: calc(100% - 1lh);
+      }
+    }
+  }
+}
