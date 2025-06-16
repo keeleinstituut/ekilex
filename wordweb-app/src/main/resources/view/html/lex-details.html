@@ -212,7 +212,7 @@
                                   th:with="
                                   isCollapsable=${synIter.count > T(eki.wordweb.constant.WebConstant).SYN_WORDS_DISPLAY_LIMIT},
                                   isLimit=${synIter.count == T(eki.wordweb.constant.WebConstant).SYN_WORDS_DISPLAY_LIMIT},
-                                  isInexactSyn=${syn.type == T(eki.common.constant.SynonymType).INEXACT_SYN_MEANING_REL}">
+                                  isNearSyn=${syn.type == T(eki.common.constant.SynonymType).INEXACT_SYN_MEANING_REL}">
                           <span class="mr-1" th:classappend="${isCollapsable ? 'collapse collapse-target':''}">
                             <a th:href="@{${@viewUtil.getSearchUri(sessionBean, searchMode, syn.value, syn.homonymNr, syn.lang)}}"
                                th:classappend="${syn.wordId == wordId ? 'word-matches-search' : ''}"
@@ -234,10 +234,10 @@
                                 </th:block>
                               </th:block>
                             </span>
-                            <th:block th:if="${isInexactSyn}" th:with="inexactSynMeaningDefExists=${not #strings.isEmpty(syn.inexactSynMeaningDefinition)}">
-                              <span th:if="${inexactSynMeaningDefExists}">
+                            <th:block th:if="${isNearSyn}">
+                              <span th:if="${nearSynDefinitionValue}">
                                 <span class="mr-n1">(</span>
-                                <span th:text="${syn.inexactSynMeaningDefinition}"></span>
+                                <span th:text="${syn.nearSynDefinitionValue}"></span>
                                 <span class="ml-n1">)</span>
                               </span>
                             </th:block>
