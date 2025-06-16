@@ -66,14 +66,19 @@ public class MviewWwMeaning extends TableImpl<MviewWwMeaningRecord> {
     public final TableField<MviewWwMeaningRecord, JSON> DOMAIN_CODES = createField(DSL.name("domain_codes"), SQLDataType.JSON, this, "");
 
     /**
+     * The column <code>public.mview_ww_meaning.definitions</code>.
+     */
+    public final TableField<MviewWwMeaningRecord, JSON> DEFINITIONS = createField(DSL.name("definitions"), SQLDataType.JSON, this, "");
+
+    /**
      * The column <code>public.mview_ww_meaning.meaning_images</code>.
      */
     public final TableField<MviewWwMeaningRecord, JSON> MEANING_IMAGES = createField(DSL.name("meaning_images"), SQLDataType.JSON, this, "");
 
     /**
-     * The column <code>public.mview_ww_meaning.media_files</code>.
+     * The column <code>public.mview_ww_meaning.meaning_medias</code>.
      */
-    public final TableField<MviewWwMeaningRecord, JSON> MEDIA_FILES = createField(DSL.name("media_files"), SQLDataType.JSON, this, "");
+    public final TableField<MviewWwMeaningRecord, JSON> MEANING_MEDIAS = createField(DSL.name("meaning_medias"), SQLDataType.JSON, this, "");
 
     /**
      * The column <code>public.mview_ww_meaning.semantic_types</code>.
@@ -86,14 +91,9 @@ public class MviewWwMeaning extends TableImpl<MviewWwMeaningRecord> {
     public final TableField<MviewWwMeaningRecord, String[]> LEARNER_COMMENTS = createField(DSL.name("learner_comments"), SQLDataType.CLOB.getArrayDataType(), this, "");
 
     /**
-     * The column <code>public.mview_ww_meaning.notes</code>.
+     * The column <code>public.mview_ww_meaning.meaning_notes</code>.
      */
-    public final TableField<MviewWwMeaningRecord, JSON> NOTES = createField(DSL.name("notes"), SQLDataType.JSON, this, "");
-
-    /**
-     * The column <code>public.mview_ww_meaning.definitions</code>.
-     */
-    public final TableField<MviewWwMeaningRecord, JSON> DEFINITIONS = createField(DSL.name("definitions"), SQLDataType.JSON, this, "");
+    public final TableField<MviewWwMeaningRecord, JSON> MEANING_NOTES = createField(DSL.name("meaning_notes"), SQLDataType.JSON, this, "");
 
     private MviewWwMeaning(Name alias, Table<MviewWwMeaningRecord> aliased) {
         this(alias, aliased, null);
@@ -164,7 +164,7 @@ public class MviewWwMeaning extends TableImpl<MviewWwMeaningRecord> {
     // -------------------------------------------------------------------------
 
     @Override
-    public Row10<Long, LocalDateTime, LocalDateTime, JSON, JSON, JSON, String[], String[], JSON, JSON> fieldsRow() {
+    public Row10<Long, LocalDateTime, LocalDateTime, JSON, JSON, JSON, JSON, String[], String[], JSON> fieldsRow() {
         return (Row10) super.fieldsRow();
     }
 }

@@ -209,7 +209,7 @@ public class UnifSearchController extends AbstractSearchController {
 		WordData wordData = unifSearchService.getWordData(wordId, searchFilter);
 		wordData.setLinkedLexemeId(linkedLexemeId);
 
-		String wordValue = wordData.getWord().getWord();
+		String wordValue = wordData.getWord().getValue();
 		sessionBean.setRecentWord(wordValue);
 		sessionBean.setLinkedLexemeId(null);
 

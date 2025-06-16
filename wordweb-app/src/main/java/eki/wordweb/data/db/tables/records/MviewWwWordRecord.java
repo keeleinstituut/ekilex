@@ -5,7 +5,7 @@ package eki.wordweb.data.db.tables.records;
 
 
 import eki.wordweb.data.db.tables.MviewWwWord;
-import eki.wordweb.data.db.udt.records.TypeLangComplexityRecord;
+import eki.wordweb.data.db.udt.records.TypeLangDatasetPublishingRecord;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -37,44 +37,44 @@ public class MviewWwWordRecord extends TableRecordImpl<MviewWwWordRecord> {
     }
 
     /**
-     * Setter for <code>public.mview_ww_word.word</code>.
+     * Setter for <code>public.mview_ww_word.value</code>.
      */
-    public void setWord(String value) {
+    public void setValue(String value) {
         set(1, value);
     }
 
     /**
-     * Getter for <code>public.mview_ww_word.word</code>.
+     * Getter for <code>public.mview_ww_word.value</code>.
      */
-    public String getWord() {
+    public String getValue() {
         return (String) get(1);
     }
 
     /**
-     * Setter for <code>public.mview_ww_word.word_prese</code>.
+     * Setter for <code>public.mview_ww_word.value_prese</code>.
      */
-    public void setWordPrese(String value) {
+    public void setValuePrese(String value) {
         set(2, value);
     }
 
     /**
-     * Getter for <code>public.mview_ww_word.word_prese</code>.
+     * Getter for <code>public.mview_ww_word.value_prese</code>.
      */
-    public String getWordPrese() {
+    public String getValuePrese() {
         return (String) get(2);
     }
 
     /**
-     * Setter for <code>public.mview_ww_word.as_word</code>.
+     * Setter for <code>public.mview_ww_word.value_as_word</code>.
      */
-    public void setAsWord(String value) {
+    public void setValueAsWord(String value) {
         set(3, value);
     }
 
     /**
-     * Getter for <code>public.mview_ww_word.as_word</code>.
+     * Getter for <code>public.mview_ww_word.value_as_word</code>.
      */
-    public String getAsWord() {
+    public String getValueAsWord() {
         return (String) get(3);
     }
 
@@ -261,129 +261,129 @@ public class MviewWwWordRecord extends TableRecordImpl<MviewWwWordRecord> {
     }
 
     /**
-     * Setter for <code>public.mview_ww_word.lang_complexities</code>.
-     */
-    public void setLangComplexities(TypeLangComplexityRecord[] value) {
-        set(17, value);
-    }
-
-    /**
-     * Getter for <code>public.mview_ww_word.lang_complexities</code>.
-     */
-    public TypeLangComplexityRecord[] getLangComplexities() {
-        return (TypeLangComplexityRecord[]) get(17);
-    }
-
-    /**
      * Setter for <code>public.mview_ww_word.meaning_words</code>.
      */
     public void setMeaningWords(JSON value) {
-        set(18, value);
+        set(17, value);
     }
 
     /**
      * Getter for <code>public.mview_ww_word.meaning_words</code>.
      */
     public JSON getMeaningWords() {
-        return (JSON) get(18);
+        return (JSON) get(17);
     }
 
     /**
      * Setter for <code>public.mview_ww_word.definitions</code>.
      */
     public void setDefinitions(JSON value) {
-        set(19, value);
+        set(18, value);
     }
 
     /**
      * Getter for <code>public.mview_ww_word.definitions</code>.
      */
     public JSON getDefinitions() {
-        return (JSON) get(19);
+        return (JSON) get(18);
     }
 
     /**
      * Setter for <code>public.mview_ww_word.word_od_recommendation</code>.
      */
     public void setWordOdRecommendation(JSON value) {
-        set(20, value);
+        set(19, value);
     }
 
     /**
      * Getter for <code>public.mview_ww_word.word_od_recommendation</code>.
      */
     public JSON getWordOdRecommendation() {
-        return (JSON) get(20);
+        return (JSON) get(19);
     }
 
     /**
      * Setter for <code>public.mview_ww_word.freq_value</code>.
      */
     public void setFreqValue(BigDecimal value) {
-        set(21, value);
+        set(20, value);
     }
 
     /**
      * Getter for <code>public.mview_ww_word.freq_value</code>.
      */
     public BigDecimal getFreqValue() {
-        return (BigDecimal) get(21);
+        return (BigDecimal) get(20);
     }
 
     /**
      * Setter for <code>public.mview_ww_word.freq_rank</code>.
      */
     public void setFreqRank(Long value) {
-        set(22, value);
+        set(21, value);
     }
 
     /**
      * Getter for <code>public.mview_ww_word.freq_rank</code>.
      */
     public Long getFreqRank() {
-        return (Long) get(22);
+        return (Long) get(21);
     }
 
     /**
      * Setter for <code>public.mview_ww_word.forms_exist</code>.
      */
     public void setFormsExist(Boolean value) {
-        set(23, value);
+        set(22, value);
     }
 
     /**
      * Getter for <code>public.mview_ww_word.forms_exist</code>.
      */
     public Boolean getFormsExist() {
-        return (Boolean) get(23);
+        return (Boolean) get(22);
     }
 
     /**
      * Setter for <code>public.mview_ww_word.min_ds_order_by</code>.
      */
     public void setMinDsOrderBy(Long value) {
-        set(24, value);
+        set(23, value);
     }
 
     /**
      * Getter for <code>public.mview_ww_word.min_ds_order_by</code>.
      */
     public Long getMinDsOrderBy() {
-        return (Long) get(24);
+        return (Long) get(23);
     }
 
     /**
      * Setter for <code>public.mview_ww_word.word_type_order_by</code>.
      */
     public void setWordTypeOrderBy(Integer value) {
-        set(25, value);
+        set(24, value);
     }
 
     /**
      * Getter for <code>public.mview_ww_word.word_type_order_by</code>.
      */
     public Integer getWordTypeOrderBy() {
-        return (Integer) get(25);
+        return (Integer) get(24);
+    }
+
+    /**
+     * Setter for <code>public.mview_ww_word.lang_ds_pubs</code>.
+     */
+    public void setLangDsPubs(TypeLangDatasetPublishingRecord[] value) {
+        set(25, value);
+    }
+
+    /**
+     * Getter for <code>public.mview_ww_word.lang_ds_pubs</code>.
+     */
+    public TypeLangDatasetPublishingRecord[] getLangDsPubs() {
+        return (TypeLangDatasetPublishingRecord[]) get(25);
     }
 
     // -------------------------------------------------------------------------
@@ -400,13 +400,13 @@ public class MviewWwWordRecord extends TableRecordImpl<MviewWwWordRecord> {
     /**
      * Create a detached, initialised MviewWwWordRecord
      */
-    public MviewWwWordRecord(Long wordId, String word, String wordPrese, String asWord, String lang, String langFilt, Long langOrderBy, Integer homonymNr, String displayMorphCode, String genderCode, String aspectCode, String vocalForm, String morphComment, Integer regYear, LocalDateTime manualEventOn, LocalDateTime lastActivityEventOn, String[] wordTypeCodes, TypeLangComplexityRecord[] langComplexities, JSON meaningWords, JSON definitions, JSON wordOdRecommendation, BigDecimal freqValue, Long freqRank, Boolean formsExist, Long minDsOrderBy, Integer wordTypeOrderBy) {
+    public MviewWwWordRecord(Long wordId, String value, String valuePrese, String valueAsWord, String lang, String langFilt, Long langOrderBy, Integer homonymNr, String displayMorphCode, String genderCode, String aspectCode, String vocalForm, String morphComment, Integer regYear, LocalDateTime manualEventOn, LocalDateTime lastActivityEventOn, String[] wordTypeCodes, JSON meaningWords, JSON definitions, JSON wordOdRecommendation, BigDecimal freqValue, Long freqRank, Boolean formsExist, Long minDsOrderBy, Integer wordTypeOrderBy, TypeLangDatasetPublishingRecord[] langDsPubs) {
         super(MviewWwWord.MVIEW_WW_WORD);
 
         setWordId(wordId);
-        setWord(word);
-        setWordPrese(wordPrese);
-        setAsWord(asWord);
+        setValue(value);
+        setValuePrese(valuePrese);
+        setValueAsWord(valueAsWord);
         setLang(lang);
         setLangFilt(langFilt);
         setLangOrderBy(langOrderBy);
@@ -420,7 +420,6 @@ public class MviewWwWordRecord extends TableRecordImpl<MviewWwWordRecord> {
         setManualEventOn(manualEventOn);
         setLastActivityEventOn(lastActivityEventOn);
         setWordTypeCodes(wordTypeCodes);
-        setLangComplexities(langComplexities);
         setMeaningWords(meaningWords);
         setDefinitions(definitions);
         setWordOdRecommendation(wordOdRecommendation);
@@ -429,5 +428,6 @@ public class MviewWwWordRecord extends TableRecordImpl<MviewWwWordRecord> {
         setFormsExist(formsExist);
         setMinDsOrderBy(minDsOrderBy);
         setWordTypeOrderBy(wordTypeOrderBy);
+        setLangDsPubs(langDsPubs);
     }
 }

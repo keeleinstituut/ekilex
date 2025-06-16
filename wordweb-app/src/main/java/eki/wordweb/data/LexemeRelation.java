@@ -1,19 +1,12 @@
-package eki.wordweb.data.type;
+package eki.wordweb.data;
 
-import eki.common.constant.Complexity;
 import eki.common.data.Classifier;
-import eki.wordweb.data.ComplexityType;
-import eki.wordweb.data.DecoratedWordType;
-import eki.wordweb.data.LangType;
-import eki.wordweb.data.WordTypeData;
 
-public class TypeLexemeRelation extends WordTypeData implements ComplexityType, LangType, DecoratedWordType {
+public class LexemeRelation extends WordTypeData implements LangType, DecoratedWordType {
 
 	private static final long serialVersionUID = 1L;
 
 	private Long lexemeId;
-
-	private Complexity complexity;
 
 	private String lexRelTypeCode;
 
@@ -25,15 +18,6 @@ public class TypeLexemeRelation extends WordTypeData implements ComplexityType, 
 
 	public void setLexemeId(Long lexemeId) {
 		this.lexemeId = lexemeId;
-	}
-
-	@Override
-	public Complexity getComplexity() {
-		return complexity;
-	}
-
-	public void setComplexity(Complexity complexity) {
-		this.complexity = complexity;
 	}
 
 	public String getLexRelTypeCode() {

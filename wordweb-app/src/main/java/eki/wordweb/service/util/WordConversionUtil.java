@@ -16,45 +16,42 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
 
 import eki.common.constant.ClassifierName;
-import eki.common.constant.Complexity;
 import eki.common.constant.RelationStatus;
 import eki.common.data.Classifier;
+import eki.wordweb.data.Definition;
 import eki.wordweb.data.LexemeWord;
+import eki.wordweb.data.MeaningWord;
 import eki.wordweb.data.SearchContext;
 import eki.wordweb.data.Word;
 import eki.wordweb.data.WordGroup;
+import eki.wordweb.data.WordRelation;
 import eki.wordweb.data.WordRelationGroup;
 import eki.wordweb.data.WordRelationsTuple;
-import eki.wordweb.data.type.TypeDefinition;
-import eki.wordweb.data.type.TypeMeaningWord;
-import eki.wordweb.data.type.TypeWordRelation;
 
 @Component
 public class WordConversionUtil extends AbstractConversionUtil {
 
 	public void composeHomonymWrapups(List<Word> words, SearchContext searchContext) {
 
-		Complexity lexComplexity = searchContext.getLexComplexity();
-
 		for (Word word : words) {
 
 			String wordLang = word.getLang();
-			List<TypeDefinition> definitions = word.getDefinitions();
-			List<TypeMeaningWord> meaningWords = word.getMeaningWords();
+			List<Definition> definitions = word.getDefinitions();
+			List<MeaningWord> meaningWords = word.getMeaningWords();
 			Long definitionMeaningId = null;
 
 			if (CollectionUtils.isNotEmpty(definitions)) {
-				List<TypeDefinition> primaryDefinitions = definitions.stream()
-						.filter(definition -> isComplexityMatch(definition.getComplexity(), lexComplexity))
+				List<Definition> primaryDefinitions = definitions.stream()
+						.filter(definition -> isPublishingTargetMatch(definition, searchContext))
 						.collect(Collectors.toList());
 				if (CollectionUtils.isNotEmpty(primaryDefinitions)) {
-					TypeDefinition firstDefinition = primaryDefinitions.get(0);
+					Definition firstDefinition = primaryDefinitions.get(0);
 					if (StringUtils.isNotBlank(firstDefinition.getValue())) {
 						Long lexemeId = firstDefinition.getLexemeId();
 						definitionMeaningId = firstDefinition.getMeaningId();
 						List<String> definitionValues = primaryDefinitions.stream()
 								.filter(definition -> definition.getLexemeId().equals(lexemeId))
-								.map(TypeDefinition::getValue)
+								.map(Definition::getValue)
 								.collect(Collectors.toList());
 						String definitionsWrapup = StringUtils.join(definitionValues, ", ");
 						word.setDefinitionsWrapup(definitionsWrapup);
@@ -63,8 +60,8 @@ public class WordConversionUtil extends AbstractConversionUtil {
 			}
 
 			if (definitionMeaningId != null && CollectionUtils.isNotEmpty(meaningWords)) {
-				List<TypeMeaningWord> primaryMeaningWords = meaningWords.stream()
-						.filter(meaningWord -> isComplexityMatch(meaningWord.getMwLexComplexity(), lexComplexity))
+				List<MeaningWord> primaryMeaningWords = meaningWords.stream()
+						.filter(meaningWord -> isPublishingTargetMatch(meaningWord, searchContext))
 						.collect(Collectors.toList());
 				if (CollectionUtils.isNotEmpty(primaryMeaningWords)) {
 					Long meaningWordMeaningId = definitionMeaningId;
@@ -73,11 +70,11 @@ public class WordConversionUtil extends AbstractConversionUtil {
 							.filter(meaningWord -> StringUtils.equals(wordLang, meaningWord.getLang()))
 							.map(meaningWord -> {
 								if (meaningWord.isPrefixoid()) {
-									return meaningWord.getWord() + "-";
+									return meaningWord.getValue() + "-";
 								} else if (meaningWord.isSuffixoid()) {
-									return "-" + meaningWord.getWord();
+									return "-" + meaningWord.getValue();
 								} else {
-									return meaningWord.getWord();
+									return meaningWord.getValue();
 								}
 							})
 							.distinct()
@@ -131,7 +128,6 @@ public class WordConversionUtil extends AbstractConversionUtil {
 		}
 
 		String wordLang = word.getLang();
-		Complexity lexComplexity = searchContext.getLexComplexity();
 		List<String> destinLangs = searchContext.getDestinLangs();
 
 		word.setWordGroups(new ArrayList<>());
@@ -141,16 +137,15 @@ public class WordConversionUtil extends AbstractConversionUtil {
 
 		List<Classifier> wordRelTypes = classifierUtil.getClassifiers(ClassifierName.WORD_REL_TYPE, displayLang);
 		List<Classifier> aspects = classifierUtil.getClassifiers(ClassifierName.ASPECT, displayLang);
-		List<Complexity> combinedLexComplexity = Arrays.asList(lexComplexity, Complexity.ANY);
 		List<RelationStatus> relationStatusOrder = Arrays.asList(RelationStatus.PROCESSED, RelationStatus.UNDEFINED, RelationStatus.DELETED);
 
-		List<TypeWordRelation> wordRelations = wordRelationsTuple.getRelatedWords();
-		Map<String, List<TypeWordRelation>> wordRelationsMap = new HashMap<>();
+		List<WordRelation> wordRelations = wordRelationsTuple.getRelatedWords();
+		Map<String, List<WordRelation>> wordRelationsMap = new HashMap<>();
 		if (CollectionUtils.isNotEmpty(wordRelations)) {
 			wordRelations = filter(wordRelations, wordLang, destinLangs);
 			wordRelations = wordRelations.stream()
 					.filter(relation -> !RelationStatus.DELETED.equals(relation.getRelationStatus()))
-					.filter(relation -> CollectionUtils.isNotEmpty(CollectionUtils.intersection(relation.getLexComplexities(), combinedLexComplexity)))
+					.filter(relation -> isPublishingTargetMatch(relation, searchContext))
 					.sorted((relation1, relation2) -> {
 						if (relation1.getRelationStatus().equals(relation2.getRelationStatus())) {
 							return (int) (relation1.getOrderBy() - relation2.getOrderBy());
@@ -162,22 +157,22 @@ public class WordConversionUtil extends AbstractConversionUtil {
 					.collect(Collectors.toList());
 			if (CollectionUtils.isNotEmpty(wordRelations)) {
 				String alternativeWord = null;
-				for (TypeWordRelation wordRelation : wordRelations) {
+				for (WordRelation wordRelation : wordRelations) {
 					classifierUtil.applyClassifiers(wordRelation, displayLang);
 					setWordTypeFlags(wordRelation);
 					if (StringUtils.equals(wordRelation.getWordRelTypeCode(), WORD_REL_TYPE_CODE_DERIVATIVE_BASE)) {
-						alternativeWord = wordRelation.getWord();
+						alternativeWord = wordRelation.getValue();
 					}
 				}
 				word.setAlternativeWord(alternativeWord);
 				word.getRelatedWords().addAll(wordRelations);
-				wordRelationsMap = wordRelations.stream().collect(Collectors.groupingBy(TypeWordRelation::getWordRelTypeCode));
+				wordRelationsMap = wordRelations.stream().collect(Collectors.groupingBy(WordRelation::getWordRelTypeCode));
 			}
 		}
 
 		for (Classifier wordRelType : wordRelTypes) {
 			String wordRelTypeCode = wordRelType.getCode();
-			List<TypeWordRelation> relatedWordsOfType = wordRelationsMap.get(wordRelTypeCode);
+			List<WordRelation> relatedWordsOfType = wordRelationsMap.get(wordRelTypeCode);
 			List<WordRelationGroup> wordRelationGroups;
 			if (ArrayUtils.contains(PRIMARY_WORD_REL_TYPE_CODES, wordRelTypeCode)) {
 				wordRelationGroups = word.getPrimaryRelatedWordTypeGroups();
@@ -188,29 +183,29 @@ public class WordConversionUtil extends AbstractConversionUtil {
 			}
 		}
 
-		List<TypeWordRelation> allWordGroupMembers = wordRelationsTuple.getWordGroupMembers();
+		List<WordRelation> allWordGroupMembers = wordRelationsTuple.getWordGroupMembers();
 		if (CollectionUtils.isNotEmpty(allWordGroupMembers)) {
 			allWordGroupMembers = filter(allWordGroupMembers, wordLang, destinLangs);
 			List<String> aspectCodeOrder = aspects.stream().map(Classifier::getCode).collect(Collectors.toList());
-			Map<Long, List<TypeWordRelation>> wordGroupMap = allWordGroupMembers.stream().collect(Collectors.groupingBy(TypeWordRelation::getWordGroupId));
+			Map<Long, List<WordRelation>> wordGroupMap = allWordGroupMembers.stream().collect(Collectors.groupingBy(WordRelation::getWordGroupId));
 			List<Long> wordGroupIds = new ArrayList<>(wordGroupMap.keySet());
 			Collections.sort(wordGroupIds);
 			for (Long wordGroupId : wordGroupIds) {
-				List<TypeWordRelation> wordGroupMembers = wordGroupMap.get(wordGroupId);
+				List<WordRelation> wordGroupMembers = wordGroupMap.get(wordGroupId);
 				wordGroupMembers = wordGroupMembers.stream()
-						.filter(member -> CollectionUtils.isNotEmpty(CollectionUtils.intersection(member.getLexComplexities(), combinedLexComplexity)))
+						.filter(member -> isPublishingTargetMatch(member, searchContext))
 						.collect(Collectors.toList());
 				if (CollectionUtils.isNotEmpty(wordGroupMembers)) {
-					for (TypeWordRelation wordGroupMember : wordGroupMembers) {
+					for (WordRelation wordGroupMember : wordGroupMembers) {
 						classifierUtil.applyClassifiers(wordGroupMember, displayLang);
 						setWordTypeFlags(wordGroupMember);
 					}
-					TypeWordRelation firstWordGroupMember = wordGroupMembers.get(0);
+					WordRelation firstWordGroupMember = wordGroupMembers.get(0);
 					String groupWordRelTypeCode = firstWordGroupMember.getWordRelTypeCode();
 					Classifier groupWordRelType = firstWordGroupMember.getWordRelType();
 					if (StringUtils.equals(WORD_REL_TYPE_CODE_ASCPECTS, groupWordRelTypeCode)) {
 						groupWordRelType = classifierUtil.reValue(groupWordRelType, "classifier.word_rel_type.aspect", displayLocale);
-						wordGroupMembers.sort((TypeWordRelation rel1, TypeWordRelation rel2) -> {
+						wordGroupMembers.sort((WordRelation rel1, WordRelation rel2) -> {
 							String aspectCode1 = rel1.getAspectCode();
 							String aspectCode2 = rel2.getAspectCode();
 							if (StringUtils.isBlank(aspectCode1) || StringUtils.isBlank(aspectCode2)) {
@@ -238,17 +233,17 @@ public class WordConversionUtil extends AbstractConversionUtil {
 	private void handleWordRelType(
 			Word word,
 			Classifier wordRelType,
-			List<TypeWordRelation> wordRelations,
+			List<WordRelation> wordRelations,
 			List<WordRelationGroup> wordRelationGroups,
 			Map<String, Long> langOrderByMap,
 			Locale displayLocale) {
 
 		WordRelationGroup wordRelationGroup;
 		if (StringUtils.equals(WORD_REL_TYPE_CODE_RAW, wordRelType.getCode())) {
-			List<TypeWordRelation> wordRelationSyns = null;
-			List<TypeWordRelation> wordRelationMatches = null;
+			List<WordRelation> wordRelationSyns = null;
+			List<WordRelation> wordRelationMatches = null;
 			if (CollectionUtils.isNotEmpty(wordRelations)) {
-				Map<Boolean, List<TypeWordRelation>> wordRelationSynOrMatchMap = wordRelations.stream()
+				Map<Boolean, List<WordRelation>> wordRelationSynOrMatchMap = wordRelations.stream()
 						.collect(Collectors.groupingBy(wordRelation -> StringUtils.equals(word.getLang(), wordRelation.getLang())));
 				wordRelationSyns = wordRelationSynOrMatchMap.get(Boolean.TRUE);
 				wordRelationMatches = wordRelationSynOrMatchMap.get(Boolean.FALSE);
@@ -275,7 +270,7 @@ public class WordConversionUtil extends AbstractConversionUtil {
 	private void appendRelatedWordTypeGroup(
 			WordRelationGroup wordRelationGroup,
 			List<WordRelationGroup> wordRelationGroups,
-			List<TypeWordRelation> relatedWordsOfType,
+			List<WordRelation> relatedWordsOfType,
 			Map<String, Long> langOrderByMap) {
 
 		if (CollectionUtils.isEmpty(relatedWordsOfType)) {
@@ -284,8 +279,8 @@ public class WordConversionUtil extends AbstractConversionUtil {
 			wordRelationGroup.setRelatedWords(relatedWordsOfType);
 			wordRelationGroup.setAsList(true);
 		} else {
-			Map<String, List<TypeWordRelation>> relatedWordsByLangUnordered = relatedWordsOfType.stream().collect(Collectors.groupingBy(TypeWordRelation::getLang));
-			Map<String, List<TypeWordRelation>> relatedWordsByLangOrdered = composeOrderedMap(relatedWordsByLangUnordered, langOrderByMap);
+			Map<String, List<WordRelation>> relatedWordsByLangUnordered = relatedWordsOfType.stream().collect(Collectors.groupingBy(WordRelation::getLang));
+			Map<String, List<WordRelation>> relatedWordsByLangOrdered = composeOrderedMap(relatedWordsByLangUnordered, langOrderByMap);
 			wordRelationGroup.setRelatedWordsByLang(relatedWordsByLangOrdered);
 			wordRelationGroup.setAsMap(true);
 		}
@@ -293,16 +288,16 @@ public class WordConversionUtil extends AbstractConversionUtil {
 	}
 
 	public List<String> collectAllRelatedWords(Word word) {
-		List<TypeWordRelation> relatedWords = word.getRelatedWords();
+		List<WordRelation> relatedWords = word.getRelatedWords();
 		List<String> allRelatedWordValues = new ArrayList<>();
 		if (CollectionUtils.isNotEmpty(relatedWords)) {
-			List<String> relatedWordValues = relatedWords.stream().map(TypeWordRelation::getWord).distinct().collect(Collectors.toList());
+			List<String> relatedWordValues = relatedWords.stream().map(WordRelation::getValue).distinct().collect(Collectors.toList());
 			allRelatedWordValues.addAll(relatedWordValues);
 		}
 		List<WordGroup> wordGroups = word.getWordGroups();
 		if (CollectionUtils.isNotEmpty(wordGroups)) {
 			for (WordGroup wordGroup : wordGroups) {
-				List<String> relatedWordValues = wordGroup.getWordGroupMembers().stream().map(TypeWordRelation::getWord).distinct().collect(Collectors.toList());
+				List<String> relatedWordValues = wordGroup.getWordGroupMembers().stream().map(WordRelation::getValue).distinct().collect(Collectors.toList());
 				allRelatedWordValues.addAll(relatedWordValues);
 			}
 		}
@@ -375,11 +370,11 @@ public class WordConversionUtil extends AbstractConversionUtil {
 
 			for (LexemeWord lexemeWord : termLexemes) {
 
-				String wordValue = lexemeWord.getWord();
+				String wordValue = lexemeWord.getValue();
 				String wordLang = lexemeWord.getLang();
 				List<LexemeWord> meaningLexemes = lexemeWord.getMeaningLexemes();
 				for (LexemeWord meaningLexeme : meaningLexemes) {
-					String meaningLexemeWordValue = meaningLexeme.getWord();
+					String meaningLexemeWordValue = meaningLexeme.getValue();
 					String meaningLexemeWordlang = meaningLexeme.getLang();
 					if (StringUtils.equals(meaningLexemeWordValue, wordValue) && StringUtils.equals(meaningLexemeWordlang, wordLang)) {
 						meaningLexeme.setShowWordDataAsHidden(false);
@@ -414,7 +409,7 @@ public class WordConversionUtil extends AbstractConversionUtil {
 		}
 		for (WordRelationGroup wordRelationGroup : primaryRelatedWordTypeGroups) {
 			Classifier wordRelType = wordRelationGroup.getWordRelType();
-			List<TypeWordRelation> relatedWords = wordRelationGroup.getRelatedWords();
+			List<WordRelation> relatedWords = wordRelationGroup.getRelatedWords();
 			if (CollectionUtils.isEmpty(relatedWords)) {
 				continue;
 			}

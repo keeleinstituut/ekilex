@@ -11,7 +11,7 @@ public class WordEtymLevel extends AbstractDataObject {
 
 	private Long wordId;
 
-	private String word;
+	private String wordValue;
 
 	private String lang;
 
@@ -43,12 +43,12 @@ public class WordEtymLevel extends AbstractDataObject {
 		this.wordId = wordId;
 	}
 
-	public String getWord() {
-		return word;
+	public String getWordValue() {
+		return wordValue;
 	}
 
-	public void setWord(String word) {
-		this.word = word;
+	public void setWordValue(String wordValue) {
+		this.wordValue = wordValue;
 	}
 
 	public String getLang() {

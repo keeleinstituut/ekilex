@@ -9,11 +9,11 @@ import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import eki.wordweb.data.SourceLink;
 import eki.wordweb.data.Word;
 import eki.wordweb.data.WordEtymLevel;
+import eki.wordweb.data.WordEtymRelation;
 import eki.wordweb.data.WordEtymTuple;
-import eki.wordweb.data.type.TypeSourceLink;
-import eki.wordweb.data.type.TypeWordEtymRelation;
 
 @Component
 public class EtymConversionUtil {
@@ -58,7 +58,7 @@ public class EtymConversionUtil {
 	}
 
 	private void composeEtymTree(
-			WordEtymLevel wordEtymLevel, List<TypeWordEtymRelation> wordEtymRelations,
+			WordEtymLevel wordEtymLevel, List<WordEtymRelation> wordEtymRelations,
 			Map<Long, WordEtymTuple> wordEtymTupleMap) {
 
 		if (CollectionUtils.isEmpty(wordEtymRelations)) {
@@ -66,7 +66,7 @@ public class EtymConversionUtil {
 		}
 		wordEtymLevel.setTree(new ArrayList<>());
 
-		for (TypeWordEtymRelation relation : wordEtymRelations) {
+		for (WordEtymRelation relation : wordEtymRelations) {
 			Long relatedWordId = relation.getRelatedWordId();
 			Long etymLevelWordId = wordEtymLevel.getWordId();
 			if (relatedWordId.equals(etymLevelWordId)) {
@@ -86,19 +86,21 @@ public class EtymConversionUtil {
 
 		WordEtymLevel wordEtymLevel = new WordEtymLevel();
 		wordEtymLevel.setWordId(tuple.getWordEtymWordId());
-		wordEtymLevel.setWord(tuple.getWordEtymWord());
+		wordEtymLevel.setWordValue(tuple.getWordEtymWordValue());
 		wordEtymLevel.setLang(tuple.getWordEtymWordLang());
 		wordEtymLevel.setLanguage(tuple.getWordEtymWordLanguage());
-		wordEtymLevel.setMeaningWords(tuple.getWordEtymWordMeaningWords());
+		wordEtymLevel.setMeaningWords(tuple.getWordEtymWordMeaningWordValues());
 		wordEtymLevel.setEtymologyTypeCode(tuple.getEtymologyTypeCode());
 		wordEtymLevel.setEtymologyType(tuple.getEtymologyType());
 		wordEtymLevel.setEtymYear(tuple.getEtymologyYear());
 		wordEtymLevel.setQuestionable(questionable);
 		wordEtymLevel.setCompound(compound);
 		wordEtymLevel.setComment(comment);
-		List<TypeSourceLink> sourceLinks = tuple.getSourceLinks();
+		List<SourceLink> sourceLinks = tuple.getSourceLinks();
 		if (CollectionUtils.isNotEmpty(sourceLinks)) {
-			List<String> sourceLinkValues = sourceLinks.stream().map(TypeSourceLink::getSourceValue).collect(Collectors.toList());
+			List<String> sourceLinkValues = sourceLinks.stream()
+					.map(SourceLink::getSourceValue)
+					.collect(Collectors.toList());
 			wordEtymLevel.setSourceLinkValues(sourceLinkValues);
 		}
 		return wordEtymLevel;

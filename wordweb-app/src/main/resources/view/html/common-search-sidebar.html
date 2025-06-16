@@ -62,7 +62,7 @@
               <th:block th:if="${isAspect}">
                 <th:block th:each="relation, relationIter : ${wordGroup.wordGroupMembers}">
                   <span class="word-options mb-1">
-                    <a th:href="@{${@viewUtil.getSearchUri(sessionBean, searchMode, relation.word, relation.homonymNr, relation.lang)}}" th:classappend="${relation.homonymsExist ? 'is-homonym':''}">
+                    <a th:href="@{${@viewUtil.getSearchUri(sessionBean, searchMode, relation.value, relation.homonymNr, relation.lang)}}" th:classappend="${relation.homonymsExist ? 'is-homonym':''}">
                       <span th:utext="${@viewUtil.getWordValueMarkup(relation)}" data-toggle="tooltip" data-placement="top" th:title="${relation.aspect?.value}">tee</span>
                       <sup th:if="${relation.homonymsExist}" th:text="${relation.homonymNr}"></sup>
                     </a>
@@ -73,7 +73,7 @@
               <th:block th:unless="${isAspect}">
                 <th:block th:each="relation, relationIter : ${wordGroup.wordGroupMembers}">
                   <span class="word-options mb-1">
-                    <a th:href="@{${@viewUtil.getSearchUri(sessionBean, searchMode, relation.word, relation.homonymNr, relation.lang)}}" th:classappend="${relation.homonymsExist ? 'is-homonym':''}">
+                    <a th:href="@{${@viewUtil.getSearchUri(sessionBean, searchMode, relation.value, relation.homonymNr, relation.lang)}}" th:classappend="${relation.homonymsExist ? 'is-homonym':''}">
                       <span th:utext="${@viewUtil.getWordValueMarkup(relation)}">tee</span>
                       <sup th:if="${relation.homonymsExist}" th:text="${relation.homonymNr}"></sup>
                     </a>
@@ -129,7 +129,7 @@
                   isCollapsable=${relationIter.count > T(eki.wordweb.constant.WebConstant).WORD_RELATIONS_DISPLAY_LIMIT},
                   isLimit=${relationIter.count == T(eki.wordweb.constant.WebConstant).WORD_RELATIONS_DISPLAY_LIMIT}">
           <span class="word-options mb-1" th:classappend="${isCollapsable ? 'collapse collapse-target': isLimit ? 'limit limit-collapsed' : ''}">
-            <a th:href="@{${@viewUtil.getSearchUri(sessionBean, searchMode, relation.word, relation.homonymNr, relation.lang)}}" th:classappend="${relation.homonymsExist ? 'is-homonym' : ''}">
+            <a th:href="@{${@viewUtil.getSearchUri(sessionBean, searchMode, relation.value, relation.homonymNr, relation.lang)}}" th:classappend="${relation.homonymsExist ? 'is-homonym' : ''}">
               <span th:utext="${@viewUtil.getWordValueMarkup(relation)}">tee</span>
               <sup th:if="${relation.homonymsExist}" th:text="${relation.homonymNr}"></sup>
             </a>
@@ -161,7 +161,7 @@
                     isCollapsable=${relationIter.count > T(eki.wordweb.constant.WebConstant).WORD_RELATIONS_DISPLAY_LIMIT},
                     isLimit=${relationIter.count == T(eki.wordweb.constant.WebConstant).WORD_RELATIONS_DISPLAY_LIMIT}">
             <span class="word-options mb-1" th:classappend="${isCollapsable ? 'collapse collapse-target' : isLimit ? 'limit limit-collapsed' : ''}">
-              <a th:href="@{${@viewUtil.getSearchUri(sessionBean, searchMode, relation.word, relation.homonymNr, relation.lang)}}" th:classappend="${relation.homonymsExist ? 'is-homonym':''}">
+              <a th:href="@{${@viewUtil.getSearchUri(sessionBean, searchMode, relation.value, relation.homonymNr, relation.lang)}}" th:classappend="${relation.homonymsExist ? 'is-homonym':''}">
                 <span th:utext="${@viewUtil.getWordValueMarkup(relation)}">tee</span>
                 <sup th:if="${relation.homonymsExist}" th:text="${relation.homonymNr}"></sup>
               </a>
@@ -221,7 +221,7 @@
         <span>
           <span th:if="${etymLevel.compound}">+</span>
           <span th:if="${etymLevel.questionable}">?</span>
-          <i th:utext="${etymLevel.word}"></i>
+          <i th:utext="${etymLevel.wordValue}"></i>
           <span th:if="${not #lists.isEmpty(etymLevel.meaningWords)}" th:utext="${'''' + #strings.listJoin(etymLevel.meaningWords, ', ') + ''''}"></span>
           <th:block th:if="${not #lists.isEmpty(etymLevel.sourceLinkValues)}">
             <span>(</span>
@@ -250,8 +250,8 @@
             th:text="#{label.same.word}"
             ></h2>
         </div>
-        <a th:aria-label="|#{aria.search.from.eki.rus.est} ${wordData.word.word}, #{aria.new.window}|"
-          th:href="${@viewUtil.getEkiOldskoolRusDictUrl(wordData.word.word)}" target="_blank">
+        <a th:aria-label="|#{aria.search.from.eki.rus.est} ${wordData.word.value}, #{aria.new.window}|"
+          th:href="${@viewUtil.getEkiOldskoolRusDictUrl(wordData.word.value)}" target="_blank">
           <span th:text="#{label.same.word.rusest}">vene-eesti sõnaraamatus</span>
           <i class="fas fa-external-link-alt" aria-hidden="true"></i>
         </a>
@@ -262,7 +262,7 @@
         <div class="search__sidebar-block-title-wrapper">
           <h2 class="search__sidebar-block-title" th:text="#{label.same.word}"></h2>
         </div>
-        <a th:aria-label="|#{label.same.word.iate} ${wordData.word.word}, #{aria.new.window}|" th:href="${@viewUtil.getIateSearchUrl(wordData.word.word, wordData.word.lang)}" target="_blank">
+        <a th:aria-label="|#{label.same.word.iate} ${wordData.word.value}, #{aria.new.window}|" th:href="${@viewUtil.getIateSearchUrl(wordData.word.value, wordData.word.lang)}" target="_blank">
           <span th:text="#{label.same.word.iate}">IATE terminibaasis</span>
           <i class="fas fa-external-link-alt" aria-hidden="true"></i>
         </a>
@@ -358,7 +358,7 @@
         <span th:text="#{corpus.warning.rus}"></span>
       </div>
       <div class="col-6">
-        <a th:href="${@viewUtil.getSkellSearchUrl(wordData.word.word, wordData.word.lang)}" target="_blank">
+        <a th:href="${@viewUtil.getSkellSearchUrl(wordData.word.value, wordData.word.lang)}" target="_blank">
           <img th:src="@{'/view/images/skell-logo.jpg'}" alt="Skell logo" class="img-fluid">
         </a>
       </div>

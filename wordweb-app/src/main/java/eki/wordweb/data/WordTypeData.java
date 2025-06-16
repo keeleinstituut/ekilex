@@ -2,24 +2,20 @@ package eki.wordweb.data;
 
 import java.util.List;
 
-import com.fasterxml.jackson.databind.PropertyNamingStrategies;
-import com.fasterxml.jackson.databind.annotation.JsonNaming;
-
-import eki.common.data.AbstractDataObject;
 import eki.common.data.Classifier;
 
-@JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
-public abstract class WordTypeData extends AbstractDataObject implements LangType, DecoratedWordType {
+public abstract class WordTypeData extends AbstractPublishingEntity implements LangType, DecoratedWordType {
 
 	private static final long serialVersionUID = 1L;
 
 	private Long wordId;
 
-	private String word;
+	// TODO actually, change to wordValue. value is too ambiguous
+	private String value;
 
-	private String wordPrese;
+	private String valuePrese;
 
-	private String asWord;
+	private String valueAsWord;
 
 	private Integer homonymNr;
 
@@ -62,29 +58,29 @@ public abstract class WordTypeData extends AbstractDataObject implements LangTyp
 	}
 
 	@Override
-	public String getWord() {
-		return word;
+	public String getValue() {
+		return value;
 	}
 
-	public void setWord(String word) {
-		this.word = word;
+	public void setValue(String value) {
+		this.value = value;
 	}
 
 	@Override
-	public String getWordPrese() {
-		return wordPrese;
+	public String getValuePrese() {
+		return valuePrese;
 	}
 
-	public void setWordPrese(String wordPrese) {
-		this.wordPrese = wordPrese;
+	public void setValuePrese(String valuePrese) {
+		this.valuePrese = valuePrese;
 	}
 
-	public String getAsWord() {
-		return asWord;
+	public String getValueAsWord() {
+		return valueAsWord;
 	}
 
-	public void setAsWord(String asWord) {
-		this.asWord = asWord;
+	public void setValueAsWord(String valueAsWord) {
+		this.valueAsWord = valueAsWord;
 	}
 
 	public Integer getHomonymNr() {
@@ -160,7 +156,6 @@ public abstract class WordTypeData extends AbstractDataObject implements LangTyp
 		this.regYear = regYear;
 	}
 
-	@Override
 	public List<String> getWordTypeCodes() {
 		return wordTypeCodes;
 	}
@@ -219,4 +214,5 @@ public abstract class WordTypeData extends AbstractDataObject implements LangTyp
 	public void setIncorrectWordForm(boolean incorrectWordForm) {
 		this.incorrectWordForm = incorrectWordForm;
 	}
+
 }

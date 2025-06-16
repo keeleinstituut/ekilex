@@ -12,7 +12,6 @@ import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
 
-import eki.common.constant.Complexity;
 import eki.common.constant.ContentKey;
 import eki.common.constant.DatasetType;
 import eki.wordweb.data.Form;
@@ -157,7 +156,6 @@ public class UnifSearchService extends AbstractSearchService {
 
 	private SearchContext getSearchContext(List<String> destinLangs, List<String> datasetCodes) {
 
-		Complexity lexComplexity = Complexity.DETAIL;
 		DatasetType datasetType = null;
 		Integer maxDisplayLevel = DEFAULT_MORPHOLOGY_MAX_DISPLAY_LEVEL;
 		List<String> destinLangsClean = destinLangs.stream()
@@ -172,8 +170,8 @@ public class UnifSearchService extends AbstractSearchService {
 				.collect(Collectors.toList());
 		boolean excludeQuestionable = false;
 		boolean fiCollationExists = commonDataDbService.fiCollationExists();
-		SearchContext searchContext = new SearchContext(
-				datasetType, destinLangsClean, datasetCodesClean, lexComplexity, maxDisplayLevel, excludeQuestionable, fiCollationExists);
+		SearchContext searchContext = new SearchContext(datasetType, destinLangsClean, datasetCodesClean, maxDisplayLevel, excludeQuestionable, fiCollationExists);
+		searchContext.setWwUnif(true);
 		return searchContext;
 	}
 }

@@ -40,7 +40,7 @@
               <th:block th:each="newWord : ${newWordYear.newWords}">
                 <a
                   class="new-words-page__word"
-                  th:href="@{${@viewUtil.getDetailSearchUri(newWord.word, newWord.homonymNr)}}"
+                  th:href="@{${@viewUtil.getDetailSearchUri(newWord.value, newWord.homonymNr)}}"
                   th:utext="${@viewUtil.getWordValueMarkup(newWord)}"
                 >
                 Sõna

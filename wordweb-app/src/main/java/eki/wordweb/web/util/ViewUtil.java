@@ -27,10 +27,11 @@ import eki.wordweb.data.CollocMember;
 import eki.wordweb.data.DecoratedWordType;
 import eki.wordweb.data.DisplayColloc;
 import eki.wordweb.data.Form;
+import eki.wordweb.data.Government;
+import eki.wordweb.data.Grammar;
 import eki.wordweb.data.LanguageData;
 import eki.wordweb.data.LexemeWord;
 import eki.wordweb.data.Paradigm;
-import eki.wordweb.data.type.TypeValueEntity;
 import eki.wordweb.service.CommonDataService;
 import eki.wordweb.service.util.LanguageContext;
 import eki.wordweb.web.bean.SessionBean;
@@ -103,7 +104,7 @@ public class ViewUtil implements WebConstant, SystemConstant, GlobalConstant {
 
 	public String getWordValueMarkup(DecoratedWordType word) {
 
-		String wordPrese = new String(word.getWordPrese());
+		String wordPrese = new String(word.getValuePrese());
 		if (word.isSuffixoid()) {
 			wordPrese = "-" + wordPrese;
 		} else if (word.isPrefixoid()) {
@@ -203,10 +204,10 @@ public class ViewUtil implements WebConstant, SystemConstant, GlobalConstant {
 			htmlBuf.append(lexemeWord.getGender().getValue());
 			htmlBuf.append("</div>");
 		}
-		List<TypeValueEntity> grammars = lexemeWord.getGrammars();
+		List<Grammar> grammars = lexemeWord.getGrammars();
 		if (CollectionUtils.isNotEmpty(grammars)) {
 			var grammarValues = grammars.stream()
-					.map(TypeValueEntity::getValue)
+					.map(Grammar::getValue)
 					.collect(Collectors.joining(", "));
 			htmlBuf.append("<div>");
 			htmlBuf.append(grammarValues);
@@ -215,7 +216,7 @@ public class ViewUtil implements WebConstant, SystemConstant, GlobalConstant {
 		return htmlBuf.toString();
 	}
 
-	public String getGovernmentTooltipText(TypeValueEntity government, List<String> lexemePosCodes) {
+	public String getGovernmentTooltipText(Government government, List<String> lexemePosCodes) {
 
 		String tooltipText = "";
 

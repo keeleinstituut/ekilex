@@ -34,11 +34,11 @@ public class ProtoDbService implements SystemConstant {
 		MviewWwWordSearch aw = MVIEW_WW_WORD_SEARCH.as("aw");
 		Table<Record3<String, Long, Integer>> ws = null;
 
-		Field<Integer> wlf = DSL.field(Routines.levenshtein1(w.WORD, wordCritLowerField));
+		Field<Integer> wlf = DSL.field(Routines.levenshtein1(w.WORD_VALUE, wordCritLowerField));
 
 		SelectConditionStep<Record3<String, Long, Integer>> wselect = DSL
 				.select(
-						w.WORD,
+						w.WORD_VALUE,
 						w.LANG_ORDER_BY,
 						wlf.as("lev"))
 				.from(w)
@@ -50,12 +50,12 @@ public class ProtoDbService implements SystemConstant {
 		if (includeAsWordSearch) {
 
 			Field<String> wordCritLowerUnaccentLikeField = DSL.lower('%' + wordCritUnaccent + '%');
-			Field<Integer> awlf = DSL.field(Routines.levenshtein1(aw.WORD, wordCritLowerField));
+			Field<Integer> awlf = DSL.field(Routines.levenshtein1(aw.WORD_VALUE, wordCritLowerField));
 
 			ws = wselect
 					.unionAll(DSL
 							.select(
-									aw.WORD,
+									aw.WORD_VALUE,
 									aw.LANG_ORDER_BY,
 									awlf.as("lev"))
 							.from(aw)
@@ -69,7 +69,7 @@ public class ProtoDbService implements SystemConstant {
 		}
 
 		return create
-				.select(ws.field("word"))
+				.select(ws.field("word_value"))
 				.from(ws)
 				.orderBy(
 						ws.field("lang_order_by"),
@@ -85,11 +85,11 @@ public class ProtoDbService implements SystemConstant {
 		MviewWwWordSearch aw = MVIEW_WW_WORD_SEARCH.as("aw");
 		Table<Record3<String, Long, Float>> ws = null;
 
-		Field<Float> wsf = DSL.field(Routines.similarity(w.WORD, wordCritLowerField));
+		Field<Float> wsf = DSL.field(Routines.similarity(w.WORD_VALUE, wordCritLowerField));
 
 		SelectConditionStep<Record3<String, Long, Float>> wselect = DSL
 				.select(
-						w.WORD,
+						w.WORD_VALUE,
 						w.LANG_ORDER_BY,
 						wsf.as("sim"))
 				.from(w)
@@ -101,12 +101,12 @@ public class ProtoDbService implements SystemConstant {
 		if (includeAsWordSearch) {
 
 			Field<String> wordCritLowerUnaccentField = DSL.lower(wordCritUnaccent);
-			Field<Float> awsf = DSL.field(Routines.similarity(aw.WORD, wordCritLowerField));
+			Field<Float> awsf = DSL.field(Routines.similarity(aw.WORD_VALUE, wordCritLowerField));
 
 			ws = wselect
 					.unionAll(DSL
 							.select(
-									aw.WORD,
+									aw.WORD_VALUE,
 									aw.LANG_ORDER_BY,
 									awsf.as("sim"))
 							.from(aw)
@@ -121,7 +121,7 @@ public class ProtoDbService implements SystemConstant {
 		}
 
 		return create
-				.select(ws.field("word"))
+				.select(ws.field("word_value"))
 				.from(ws)
 				.orderBy(
 						ws.field("lang_order_by"),
@@ -139,11 +139,11 @@ public class ProtoDbService implements SystemConstant {
 		MviewWwWordSearch aw = MVIEW_WW_WORD_SEARCH.as("aw");
 		Table<Record3<String, Long, Integer>> ws = null;
 
-		Field<Integer> wsf = DSL.field(Routines.levenshtein1(w.WORD, wordCritLowerField));
+		Field<Integer> wsf = DSL.field(Routines.levenshtein1(w.WORD_VALUE, wordCritLowerField));
 
 		SelectConditionStep<Record3<String, Long, Integer>> wselect = DSL
 				.select(
-						w.WORD,
+						w.WORD_VALUE,
 						w.LANG_ORDER_BY,
 						wsf.as("lev"))
 				.from(w)
@@ -155,12 +155,12 @@ public class ProtoDbService implements SystemConstant {
 		if (includeAsWordSearch) {
 
 			Field<String> wordCritLowerUnaccentField = DSL.lower(wordCritUnaccent);
-			Field<Integer> awsf = DSL.field(Routines.levenshtein1(aw.WORD, wordCritLowerField));
+			Field<Integer> awsf = DSL.field(Routines.levenshtein1(aw.WORD_VALUE, wordCritLowerField));
 
 			ws = wselect
 					.unionAll(DSL
 							.select(
-									aw.WORD,
+									aw.WORD_VALUE,
 									aw.LANG_ORDER_BY,
 									awsf.as("lev"))
 							.from(aw)
@@ -175,7 +175,7 @@ public class ProtoDbService implements SystemConstant {
 		}
 
 		return create
-				.select(ws.field("word"))
+				.select(ws.field("word_value"))
 				.from(ws)
 				.orderBy(
 						ws.field("lang_order_by"),
@@ -194,11 +194,11 @@ public class ProtoDbService implements SystemConstant {
 		MviewWwWordSearch aw = MVIEW_WW_WORD_SEARCH.as("aw");
 		Table<Record3<String, Long, Integer>> ws = null;
 
-		Field<Integer> wsf = DSL.field(Routines.levenshteinLessEqual1(w.WORD, wordCritLowerField, DSL.val(MAX_LEV_DIST)));
+		Field<Integer> wsf = DSL.field(Routines.levenshteinLessEqual1(w.WORD_VALUE, wordCritLowerField, DSL.val(MAX_LEV_DIST)));
 
 		SelectConditionStep<Record3<String, Long, Integer>> wselect = DSL
 				.select(
-						w.WORD,
+						w.WORD_VALUE,
 						w.LANG_ORDER_BY,
 						wsf.as("lev"))
 				.from(w)
@@ -210,12 +210,12 @@ public class ProtoDbService implements SystemConstant {
 		if (includeAsWordSearch) {
 
 			Field<String> wordCritLowerUnaccentField = DSL.lower(wordCritUnaccent);
-			Field<Integer> awsf = DSL.field(Routines.levenshteinLessEqual1(aw.WORD, wordCritLowerField, DSL.val(MAX_LEV_DIST)));
+			Field<Integer> awsf = DSL.field(Routines.levenshteinLessEqual1(aw.WORD_VALUE, wordCritLowerField, DSL.val(MAX_LEV_DIST)));
 
 			ws = wselect
 					.unionAll(DSL
 							.select(
-									aw.WORD,
+									aw.WORD_VALUE,
 									aw.LANG_ORDER_BY,
 									awsf.as("lev"))
 							.from(aw)
@@ -230,7 +230,7 @@ public class ProtoDbService implements SystemConstant {
 		}
 
 		return create
-				.select(ws.field("word"))
+				.select(ws.field("word_value"))
 				.from(ws)
 				.orderBy(
 						ws.field("lang_order_by"),
@@ -254,7 +254,7 @@ public class ProtoDbService implements SystemConstant {
 
 		SelectConditionStep<Record3<String, Long, Float>> wselect = DSL
 				.select(
-						w.WORD,
+						w.WORD_VALUE,
 						w.LANG_ORDER_BY,
 						wsf.as("dist"))
 				.from(w)
@@ -271,7 +271,7 @@ public class ProtoDbService implements SystemConstant {
 			ws = wselect
 					.unionAll(DSL
 							.select(
-									aw.WORD,
+									aw.WORD_VALUE,
 									aw.LANG_ORDER_BY,
 									awsf.as("dist"))
 							.from(aw)
@@ -286,7 +286,7 @@ public class ProtoDbService implements SystemConstant {
 		}
 
 		return create
-				.select(ws.field("word"))
+				.select(ws.field("word_value"))
 				.from(ws)
 				.orderBy(
 						ws.field("lang_order_by"),
@@ -308,7 +308,7 @@ public class ProtoDbService implements SystemConstant {
 
 		SelectConditionStep<Record3<String, Long, Float>> wselect = DSL
 				.select(
-						w.WORD,
+						w.WORD_VALUE,
 						w.LANG_ORDER_BY,
 						wsf.as("dist"))
 				.from(w)
@@ -325,7 +325,7 @@ public class ProtoDbService implements SystemConstant {
 			ws = wselect
 					.unionAll(DSL
 							.select(
-									aw.WORD,
+									aw.WORD_VALUE,
 									aw.LANG_ORDER_BY,
 									awsf.as("dist"))
 							.from(aw)
@@ -340,7 +340,7 @@ public class ProtoDbService implements SystemConstant {
 		}
 
 		return create
-				.select(ws.field("word"))
+				.select(ws.field("word_value"))
 				.from(ws)
 				.orderBy(
 						ws.field("lang_order_by"),

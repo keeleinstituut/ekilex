@@ -6,7 +6,7 @@ package eki.wordweb.data.db.tables;
 
 import eki.wordweb.data.db.Public;
 import eki.wordweb.data.db.tables.records.MviewWwWordRecord;
-import eki.wordweb.data.db.udt.records.TypeLangComplexityRecord;
+import eki.wordweb.data.db.udt.records.TypeLangDatasetPublishingRecord;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -52,19 +52,19 @@ public class MviewWwWord extends TableImpl<MviewWwWordRecord> {
     public final TableField<MviewWwWordRecord, Long> WORD_ID = createField(DSL.name("word_id"), SQLDataType.BIGINT, this, "");
 
     /**
-     * The column <code>public.mview_ww_word.word</code>.
+     * The column <code>public.mview_ww_word.value</code>.
      */
-    public final TableField<MviewWwWordRecord, String> WORD = createField(DSL.name("word"), SQLDataType.CLOB, this, "");
+    public final TableField<MviewWwWordRecord, String> VALUE = createField(DSL.name("value"), SQLDataType.CLOB, this, "");
 
     /**
-     * The column <code>public.mview_ww_word.word_prese</code>.
+     * The column <code>public.mview_ww_word.value_prese</code>.
      */
-    public final TableField<MviewWwWordRecord, String> WORD_PRESE = createField(DSL.name("word_prese"), SQLDataType.CLOB, this, "");
+    public final TableField<MviewWwWordRecord, String> VALUE_PRESE = createField(DSL.name("value_prese"), SQLDataType.CLOB, this, "");
 
     /**
-     * The column <code>public.mview_ww_word.as_word</code>.
+     * The column <code>public.mview_ww_word.value_as_word</code>.
      */
-    public final TableField<MviewWwWordRecord, String> AS_WORD = createField(DSL.name("as_word"), SQLDataType.CLOB, this, "");
+    public final TableField<MviewWwWordRecord, String> VALUE_AS_WORD = createField(DSL.name("value_as_word"), SQLDataType.CLOB, this, "");
 
     /**
      * The column <code>public.mview_ww_word.lang</code>.
@@ -132,11 +132,6 @@ public class MviewWwWord extends TableImpl<MviewWwWordRecord> {
     public final TableField<MviewWwWordRecord, String[]> WORD_TYPE_CODES = createField(DSL.name("word_type_codes"), SQLDataType.VARCHAR.getArrayDataType(), this, "");
 
     /**
-     * The column <code>public.mview_ww_word.lang_complexities</code>.
-     */
-    public final TableField<MviewWwWordRecord, TypeLangComplexityRecord[]> LANG_COMPLEXITIES = createField(DSL.name("lang_complexities"), eki.wordweb.data.db.udt.TypeLangComplexity.TYPE_LANG_COMPLEXITY.getDataType().getArrayDataType(), this, "");
-
-    /**
      * The column <code>public.mview_ww_word.meaning_words</code>.
      */
     public final TableField<MviewWwWordRecord, JSON> MEANING_WORDS = createField(DSL.name("meaning_words"), SQLDataType.JSON, this, "");
@@ -175,6 +170,11 @@ public class MviewWwWord extends TableImpl<MviewWwWordRecord> {
      * The column <code>public.mview_ww_word.word_type_order_by</code>.
      */
     public final TableField<MviewWwWordRecord, Integer> WORD_TYPE_ORDER_BY = createField(DSL.name("word_type_order_by"), SQLDataType.INTEGER, this, "");
+
+    /**
+     * The column <code>public.mview_ww_word.lang_ds_pubs</code>.
+     */
+    public final TableField<MviewWwWordRecord, TypeLangDatasetPublishingRecord[]> LANG_DS_PUBS = createField(DSL.name("lang_ds_pubs"), eki.wordweb.data.db.udt.TypeLangDatasetPublishing.TYPE_LANG_DATASET_PUBLISHING.getDataType().getArrayDataType(), this, "");
 
     private MviewWwWord(Name alias, Table<MviewWwWordRecord> aliased) {
         this(alias, aliased, null);

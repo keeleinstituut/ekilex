@@ -87,7 +87,7 @@ public class ViewWwDataset extends TableImpl<ViewWwDatasetRecord> {
     }
 
     private ViewWwDataset(Name alias, Table<ViewWwDatasetRecord> aliased, Field<?>[] parameters) {
-        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.view("create view \"view_ww_dataset\" as  SELECT code,\n    type,\n    name,\n    description,\n    contact,\n    image_url,\n    is_superior,\n    order_by\n   FROM dataset\n  WHERE (is_public = true)\n  ORDER BY order_by;"));
+        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.view("create view \"view_ww_dataset\" as  SELECT code,\n    type,\n    name,\n    description,\n    contact,\n    image_url,\n    is_superior,\n    order_by\n   FROM dataset ds\n  WHERE (is_public = true)\n  ORDER BY order_by;"));
     }
 
     /**

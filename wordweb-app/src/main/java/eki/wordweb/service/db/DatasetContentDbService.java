@@ -29,18 +29,18 @@ public class DatasetContentDbService {
 
 	public List<String> getDatasetWords(String datasetCode, Character firstLetter) {
 
-		String[] words = create
-				.select(MVIEW_WW_DATASET_WORD_MENU.WORDS)
+		String[] wordValues = create
+				.select(MVIEW_WW_DATASET_WORD_MENU.WORD_VALUES)
 				.from(MVIEW_WW_DATASET_WORD_MENU)
 				.where(
 						MVIEW_WW_DATASET_WORD_MENU.DATASET_CODE.eq(datasetCode)
 						.and(MVIEW_WW_DATASET_WORD_MENU.FIRST_LETTER.eq(String.valueOf(firstLetter)))
 				)
-				.fetchOne(record -> (String[]) record.into(Object.class));
+				.fetchSingleInto(String[].class);
 
-		if (ArrayUtils.isEmpty(words)) {
+		if (ArrayUtils.isEmpty(wordValues)) {
 			return Collections.emptyList();
 		}
-		return Arrays.asList(words);
+		return Arrays.asList(wordValues);
 	}
 }

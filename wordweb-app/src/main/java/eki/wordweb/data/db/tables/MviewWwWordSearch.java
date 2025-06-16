@@ -6,7 +6,7 @@ package eki.wordweb.data.db.tables;
 
 import eki.wordweb.data.db.Public;
 import eki.wordweb.data.db.tables.records.MviewWwWordSearchRecord;
-import eki.wordweb.data.db.udt.records.TypeLangComplexityRecord;
+import eki.wordweb.data.db.udt.records.TypeLangDatasetPublishingRecord;
 
 import org.jooq.Field;
 import org.jooq.ForeignKey;
@@ -49,9 +49,9 @@ public class MviewWwWordSearch extends TableImpl<MviewWwWordSearchRecord> {
     public final TableField<MviewWwWordSearchRecord, String> SGROUP = createField(DSL.name("sgroup"), SQLDataType.VARCHAR(10), this, "");
 
     /**
-     * The column <code>public.mview_ww_word_search.word</code>.
+     * The column <code>public.mview_ww_word_search.word_value</code>.
      */
-    public final TableField<MviewWwWordSearchRecord, String> WORD = createField(DSL.name("word"), SQLDataType.CLOB, this, "");
+    public final TableField<MviewWwWordSearchRecord, String> WORD_VALUE = createField(DSL.name("word_value"), SQLDataType.CLOB, this, "");
 
     /**
      * The column <code>public.mview_ww_word_search.crit</code>.
@@ -59,9 +59,9 @@ public class MviewWwWordSearch extends TableImpl<MviewWwWordSearchRecord> {
     public final TableField<MviewWwWordSearchRecord, String> CRIT = createField(DSL.name("crit"), SQLDataType.CLOB, this, "");
 
     /**
-     * The column <code>public.mview_ww_word_search.langs_filt</code>.
+     * The column <code>public.mview_ww_word_search.filt_langs</code>.
      */
-    public final TableField<MviewWwWordSearchRecord, String[]> LANGS_FILT = createField(DSL.name("langs_filt"), SQLDataType.VARCHAR.getArrayDataType(), this, "");
+    public final TableField<MviewWwWordSearchRecord, String[]> FILT_LANGS = createField(DSL.name("filt_langs"), SQLDataType.VARCHAR.getArrayDataType(), this, "");
 
     /**
      * The column <code>public.mview_ww_word_search.lang_order_by</code>.
@@ -69,9 +69,9 @@ public class MviewWwWordSearch extends TableImpl<MviewWwWordSearchRecord> {
     public final TableField<MviewWwWordSearchRecord, Long> LANG_ORDER_BY = createField(DSL.name("lang_order_by"), SQLDataType.BIGINT, this, "");
 
     /**
-     * The column <code>public.mview_ww_word_search.lang_complexities</code>.
+     * The column <code>public.mview_ww_word_search.lang_ds_pubs</code>.
      */
-    public final TableField<MviewWwWordSearchRecord, TypeLangComplexityRecord[]> LANG_COMPLEXITIES = createField(DSL.name("lang_complexities"), eki.wordweb.data.db.udt.TypeLangComplexity.TYPE_LANG_COMPLEXITY.getDataType().getArrayDataType(), this, "");
+    public final TableField<MviewWwWordSearchRecord, TypeLangDatasetPublishingRecord[]> LANG_DS_PUBS = createField(DSL.name("lang_ds_pubs"), eki.wordweb.data.db.udt.TypeLangDatasetPublishing.TYPE_LANG_DATASET_PUBLISHING.getDataType().getArrayDataType(), this, "");
 
     private MviewWwWordSearch(Name alias, Table<MviewWwWordSearchRecord> aliased) {
         this(alias, aliased, null);
@@ -142,7 +142,7 @@ public class MviewWwWordSearch extends TableImpl<MviewWwWordSearchRecord> {
     // -------------------------------------------------------------------------
 
     @Override
-    public Row6<String, String, String, String[], Long, TypeLangComplexityRecord[]> fieldsRow() {
+    public Row6<String, String, String, String[], Long, TypeLangDatasetPublishingRecord[]> fieldsRow() {
         return (Row6) super.fieldsRow();
     }
 }

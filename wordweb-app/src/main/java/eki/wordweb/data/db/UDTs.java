@@ -4,7 +4,7 @@
 package eki.wordweb.data.db;
 
 
-import eki.wordweb.data.db.udt.TypeLangComplexity;
+import eki.wordweb.data.db.udt.TypeLangDatasetPublishing;
 
 
 /**
@@ -14,7 +14,7 @@ import eki.wordweb.data.db.udt.TypeLangComplexity;
 public class UDTs {
 
     /**
-     * The type <code>public.type_lang_complexity</code>
+     * The type <code>public.type_lang_dataset_publishing</code>
      */
-    public static final TypeLangComplexity TYPE_LANG_COMPLEXITY = eki.wordweb.data.db.udt.TypeLangComplexity.TYPE_LANG_COMPLEXITY;
+    public static final TypeLangDatasetPublishing TYPE_LANG_DATASET_PUBLISHING = eki.wordweb.data.db.udt.TypeLangDatasetPublishing.TYPE_LANG_DATASET_PUBLISHING;
 }

@@ -2,15 +2,9 @@ package eki.wordweb.data;
 
 import java.util.List;
 
-import com.fasterxml.jackson.databind.PropertyNamingStrategies;
-import com.fasterxml.jackson.databind.annotation.JsonNaming;
-
 import eki.common.data.AbstractDataObject;
 import eki.common.data.Classifier;
-import eki.wordweb.data.type.TypeSourceLink;
-import eki.wordweb.data.type.TypeWordEtymRelation;
 
-@JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
 public class WordEtymTuple extends AbstractDataObject {
 
 	private static final long serialVersionUID = 1L;
@@ -21,13 +15,13 @@ public class WordEtymTuple extends AbstractDataObject {
 
 	private Long wordEtymWordId;
 
-	private String wordEtymWord;
+	private String wordEtymWordValue;
 
 	private String wordEtymWordLang;
 
 	private Classifier wordEtymWordLanguage;
 
-	private List<String> wordEtymWordMeaningWords;
+	private List<String> wordEtymWordMeaningWordValues;
 
 	private String etymologyTypeCode;
 
@@ -39,9 +33,9 @@ public class WordEtymTuple extends AbstractDataObject {
 
 	private boolean wordEtymIsQuestionable;
 
-	private List<TypeWordEtymRelation> wordEtymRelations;
+	private List<WordEtymRelation> wordEtymRelations;
 
-	private List<TypeSourceLink> sourceLinks;
+	private List<SourceLink> sourceLinks;
 
 	public Long getWordId() {
 		return wordId;
@@ -67,12 +61,12 @@ public class WordEtymTuple extends AbstractDataObject {
 		this.wordEtymWordId = wordEtymWordId;
 	}
 
-	public String getWordEtymWord() {
-		return wordEtymWord;
+	public String getWordEtymWordValue() {
+		return wordEtymWordValue;
 	}
 
-	public void setWordEtymWord(String wordEtymWord) {
-		this.wordEtymWord = wordEtymWord;
+	public void setWordEtymWordValue(String wordEtymWordValue) {
+		this.wordEtymWordValue = wordEtymWordValue;
 	}
 
 	public String getWordEtymWordLang() {
@@ -91,12 +85,12 @@ public class WordEtymTuple extends AbstractDataObject {
 		this.wordEtymWordLanguage = wordEtymWordLanguage;
 	}
 
-	public List<String> getWordEtymWordMeaningWords() {
-		return wordEtymWordMeaningWords;
+	public List<String> getWordEtymWordMeaningWordValues() {
+		return wordEtymWordMeaningWordValues;
 	}
 
-	public void setWordEtymWordMeaningWords(List<String> wordEtymWordMeaningWords) {
-		this.wordEtymWordMeaningWords = wordEtymWordMeaningWords;
+	public void setWordEtymWordMeaningWordValues(List<String> wordEtymWordMeaningWordValues) {
+		this.wordEtymWordMeaningWordValues = wordEtymWordMeaningWordValues;
 	}
 
 	public String getEtymologyTypeCode() {
@@ -139,19 +133,19 @@ public class WordEtymTuple extends AbstractDataObject {
 		this.wordEtymIsQuestionable = wordEtymIsQuestionable;
 	}
 
-	public List<TypeWordEtymRelation> getWordEtymRelations() {
+	public List<WordEtymRelation> getWordEtymRelations() {
 		return wordEtymRelations;
 	}
 
-	public void setWordEtymRelations(List<TypeWordEtymRelation> wordEtymRelations) {
+	public void setWordEtymRelations(List<WordEtymRelation> wordEtymRelations) {
 		this.wordEtymRelations = wordEtymRelations;
 	}
 
-	public List<TypeSourceLink> getSourceLinks() {
+	public List<SourceLink> getSourceLinks() {
 		return sourceLinks;
 	}
 
-	public void setSourceLinks(List<TypeSourceLink> sourceLinks) {
+	public void setSourceLinks(List<SourceLink> sourceLinks) {
 		this.sourceLinks = sourceLinks;
 	}
 

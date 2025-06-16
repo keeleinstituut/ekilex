@@ -629,7 +629,6 @@ from
 	definition d
 where
 	d.complexity in ('ANY', 'SIMPLE')
-	and d.is_public = true
 	and exists (
 		select
 			1
@@ -880,6 +879,35 @@ where
 insert into publishing (event_by, target_name, entity_name, entity_id)
 select
 	'Laadur',
+	'ww_unif',
+	'lexeme',
+	l.id
+from
+	lexeme l
+where
+	exists (
+		select
+			1
+		from
+			word_etymology we
+		where
+			we.word_id = l.word_id
+	)
+	and not exists (
+		select
+			1
+		from
+			publishing p
+		where
+			p.target_name = 'ww_unif'
+			and p.entity_name = 'lexeme'
+			and p.entity_id = l.id
+	)
+;
+
+insert into publishing (event_by, target_name, entity_name, entity_id)
+select
+	'Laadur',
 	'ww_lite',
 	'lexeme',
 	l.id
@@ -917,7 +945,7 @@ where
 			lexeme_tag lt
 		where
 			lt.lexeme_id = l.id
-			and lt.tag_name in ('ÕSi sõna', 'ÕSi liitsõna')
+			and lt.tag_name = 'ÕSi sõna'
 	)
 	and not exists (
 		select

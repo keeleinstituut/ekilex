@@ -13,7 +13,6 @@ import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
 
-import eki.common.constant.Complexity;
 import eki.common.constant.DatasetType;
 import eki.wordweb.data.Form;
 import eki.wordweb.data.LanguagesDatasets;
@@ -100,7 +99,6 @@ public class SimpleSearchService extends AbstractSearchService {
 
 		List<String> destinLangs = searchFilter.getDestinLangs();
 		List<String> datasetCodes = Arrays.asList(DATASET_EKI);
-		Complexity lexComplexity = Complexity.SIMPLE;
 		DatasetType datasetType = DatasetType.LEX;
 		Integer maxDisplayLevel = SIMPLE_MORPHOLOGY_MAX_DISPLAY_LEVEL;
 		List<String> destinLangsClean = destinLangs.stream()
@@ -111,8 +109,8 @@ public class SimpleSearchService extends AbstractSearchService {
 		}
 		boolean excludeQuestionable = true;
 		boolean fiCollationExists = commonDataDbService.fiCollationExists();
-		SearchContext searchContext = new SearchContext(
-				datasetType, destinLangsClean, datasetCodes, lexComplexity, maxDisplayLevel, excludeQuestionable, fiCollationExists);
+		SearchContext searchContext = new SearchContext(datasetType, destinLangsClean, datasetCodes, maxDisplayLevel, excludeQuestionable, fiCollationExists);
+		searchContext.setWwLite(true);
 		return searchContext;
 	}
 }

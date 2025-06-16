@@ -8,22 +8,12 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
 
-import eki.common.constant.Complexity;
 import eki.common.constant.DatasetType;
 import eki.common.data.Classifier;
 import eki.common.data.LexemeLevel;
 import eki.common.util.LocalDateTimeDeserialiser;
-import eki.wordweb.data.type.TypeDefinition;
-import eki.wordweb.data.type.TypeLexemeRelation;
-import eki.wordweb.data.type.TypeMeaningRelation;
-import eki.wordweb.data.type.TypeMeaningWord;
-import eki.wordweb.data.type.TypeMediaFile;
-import eki.wordweb.data.type.TypeNote;
-import eki.wordweb.data.type.TypeSourceLink;
-import eki.wordweb.data.type.TypeUsage;
-import eki.wordweb.data.type.TypeValueEntity;
 
-public class LexemeWord extends WordTypeData implements LexemeLevel, ComplexityType {
+public class LexemeWord extends WordTypeData implements LexemeLevel {
 
 	private static final long serialVersionUID = 1L;
 
@@ -57,8 +47,6 @@ public class LexemeWord extends WordTypeData implements LexemeLevel, ComplexityT
 
 	private String levels;
 
-	private Complexity complexity;
-
 	private Integer reliability;
 
 	private Float weight;
@@ -67,19 +55,19 @@ public class LexemeWord extends WordTypeData implements LexemeLevel, ComplexityT
 
 	private Long lexemeOrderBy;
 
-	private List<TypeNote> lexemeNotes;
+	private List<Note> lexemeNotes;
 
-	private Map<String, List<TypeNote>> lexemeNotesByLang;
+	private Map<String, List<Note>> lexemeNotesByLang;
 
-	private List<TypeNote> meaningNotes;
+	private List<Note> meaningNotes;
 
-	private Map<String, List<TypeNote>> meaningNotesByLang;
+	private Map<String, List<Note>> meaningNotesByLang;
 
-	private List<TypeValueEntity> grammars;
+	private List<Grammar> grammars;
 
-	private List<TypeValueEntity> governments;
+	private List<Government> governments;
 
-	private List<TypeUsage> usages;
+	private List<Usage> usages;
 
 	private boolean moreUsages;
 
@@ -101,47 +89,47 @@ public class LexemeWord extends WordTypeData implements LexemeLevel, ComplexityT
 
 	private List<Classifier> domains;
 
-	private List<TypeMediaFile> meaningImages;
+	private List<MeaningImage> meaningImages;
 
-	private List<TypeMediaFile> mediaFiles;
+	private List<MeaningMedia> meaningMedias;
 
 	private List<String> semanticTypes;
 
 	private List<String> learnerComments;
 
-	private List<TypeDefinition> definitions;
+	private List<Definition> definitions;
 
-	private Map<String, List<TypeDefinition>> definitionsByLang;
+	private Map<String, List<Definition>> definitionsByLang;
 
-	private TypeMeaningWord correctMeaningWord;
+	private MeaningWord correctMeaningWord;
 
-	private TypeMeaningWord preferredTermMeaningWord;
+	private MeaningWord preferredTermMeaningWord;
 
-	private List<TypeMeaningWord> meaningWords;
+	private List<MeaningWord> meaningWords;
 
-	private List<TypeMeaningWord> sourceLangFullSynonyms;
+	private List<MeaningWord> sourceLangFullSynonyms;
 
-	private List<TypeMeaningWord> sourceLangNearSynonyms;
+	private List<MeaningWord> sourceLangNearSynonyms;
 
-	private List<TypeMeaningWord> destinLangSynonyms;
+	private List<MeaningWord> destinLangSynonyms;
 
-	private Map<String, List<TypeMeaningWord>> destinLangSynonymsByLang;
+	private Map<String, List<MeaningWord>> destinLangSynonymsByLang;
 
 	private List<Long> sourceLangSynonymWordIds;
 
-	private List<TypeLexemeRelation> relatedLexemes;
+	private List<LexemeRelation> relatedLexemes;
 
-	private Map<Classifier, List<TypeLexemeRelation>> relatedLexemesByType;
+	private Map<Classifier, List<LexemeRelation>> relatedLexemesByType;
 
-	private List<TypeMeaningRelation> relatedMeanings;
+	private List<MeaningRelation> relatedMeanings;
 
-	private Map<Classifier, List<TypeMeaningRelation>> relatedMeaningsByType;
+	private Map<Classifier, List<MeaningRelation>> relatedMeaningsByType;
 
 	private List<CollocPosGroup> collocPosGroups;
 
 	private List<DisplayColloc> limitedPrimaryDisplayCollocs;
 
-	private List<TypeSourceLink> lexemeSourceLinks;
+	private List<SourceLink> lexemeSourceLinks;
 
 	private List<LexemeWord> meaningLexemes;
 
@@ -271,14 +259,6 @@ public class LexemeWord extends WordTypeData implements LexemeLevel, ComplexityT
 		this.levels = levels;
 	}
 
-	public Complexity getComplexity() {
-		return complexity;
-	}
-
-	public void setComplexity(Complexity complexity) {
-		this.complexity = complexity;
-	}
-
 	public Integer getReliability() {
 		return reliability;
 	}
@@ -311,59 +291,59 @@ public class LexemeWord extends WordTypeData implements LexemeLevel, ComplexityT
 		this.lexemeOrderBy = lexemeOrderBy;
 	}
 
-	public List<TypeNote> getLexemeNotes() {
+	public List<Note> getLexemeNotes() {
 		return lexemeNotes;
 	}
 
-	public void setLexemeNotes(List<TypeNote> lexemeNotes) {
+	public void setLexemeNotes(List<Note> lexemeNotes) {
 		this.lexemeNotes = lexemeNotes;
 	}
 
-	public Map<String, List<TypeNote>> getLexemeNotesByLang() {
+	public Map<String, List<Note>> getLexemeNotesByLang() {
 		return lexemeNotesByLang;
 	}
 
-	public void setLexemeNotesByLang(Map<String, List<TypeNote>> lexemeNotesByLang) {
+	public void setLexemeNotesByLang(Map<String, List<Note>> lexemeNotesByLang) {
 		this.lexemeNotesByLang = lexemeNotesByLang;
 	}
 
-	public List<TypeNote> getMeaningNotes() {
+	public List<Note> getMeaningNotes() {
 		return meaningNotes;
 	}
 
-	public void setMeaningNotes(List<TypeNote> meaningNotes) {
+	public void setMeaningNotes(List<Note> meaningNotes) {
 		this.meaningNotes = meaningNotes;
 	}
 
-	public Map<String, List<TypeNote>> getMeaningNotesByLang() {
+	public Map<String, List<Note>> getMeaningNotesByLang() {
 		return meaningNotesByLang;
 	}
 
-	public void setMeaningNotesByLang(Map<String, List<TypeNote>> meaningNotesByLang) {
+	public void setMeaningNotesByLang(Map<String, List<Note>> meaningNotesByLang) {
 		this.meaningNotesByLang = meaningNotesByLang;
 	}
 
-	public List<TypeValueEntity> getGrammars() {
+	public List<Grammar> getGrammars() {
 		return grammars;
 	}
 
-	public void setGrammars(List<TypeValueEntity> grammars) {
+	public void setGrammars(List<Grammar> grammars) {
 		this.grammars = grammars;
 	}
 
-	public List<TypeValueEntity> getGovernments() {
+	public List<Government> getGovernments() {
 		return governments;
 	}
 
-	public void setGovernments(List<TypeValueEntity> governments) {
+	public void setGovernments(List<Government> governments) {
 		this.governments = governments;
 	}
 
-	public List<TypeUsage> getUsages() {
+	public List<Usage> getUsages() {
 		return usages;
 	}
 
-	public void setUsages(List<TypeUsage> usages) {
+	public void setUsages(List<Usage> usages) {
 		this.usages = usages;
 	}
 
@@ -447,20 +427,20 @@ public class LexemeWord extends WordTypeData implements LexemeLevel, ComplexityT
 		this.domains = domains;
 	}
 
-	public List<TypeMediaFile> getMeaningImages() {
+	public List<MeaningImage> getMeaningImages() {
 		return meaningImages;
 	}
 
-	public void setMeaningImages(List<TypeMediaFile> meaningImages) {
+	public void setMeaningImages(List<MeaningImage> meaningImages) {
 		this.meaningImages = meaningImages;
 	}
 
-	public List<TypeMediaFile> getMediaFiles() {
-		return mediaFiles;
+	public List<MeaningMedia> getMeaningMedias() {
+		return meaningMedias;
 	}
 
-	public void setMediaFiles(List<TypeMediaFile> mediaFiles) {
-		this.mediaFiles = mediaFiles;
+	public void setMeaningMedias(List<MeaningMedia> meaningMedias) {
+		this.meaningMedias = meaningMedias;
 	}
 
 	public List<String> getSemanticTypes() {
@@ -479,75 +459,75 @@ public class LexemeWord extends WordTypeData implements LexemeLevel, ComplexityT
 		this.learnerComments = learnerComments;
 	}
 
-	public List<TypeDefinition> getDefinitions() {
+	public List<Definition> getDefinitions() {
 		return definitions;
 	}
 
-	public void setDefinitions(List<TypeDefinition> definitions) {
+	public void setDefinitions(List<Definition> definitions) {
 		this.definitions = definitions;
 	}
 
-	public Map<String, List<TypeDefinition>> getDefinitionsByLang() {
+	public Map<String, List<Definition>> getDefinitionsByLang() {
 		return definitionsByLang;
 	}
 
-	public void setDefinitionsByLang(Map<String, List<TypeDefinition>> definitionsByLang) {
+	public void setDefinitionsByLang(Map<String, List<Definition>> definitionsByLang) {
 		this.definitionsByLang = definitionsByLang;
 	}
 
-	public TypeMeaningWord getCorrectMeaningWord() {
+	public MeaningWord getCorrectMeaningWord() {
 		return correctMeaningWord;
 	}
 
-	public void setCorrectMeaningWord(TypeMeaningWord correctMeaningWord) {
+	public void setCorrectMeaningWord(MeaningWord correctMeaningWord) {
 		this.correctMeaningWord = correctMeaningWord;
 	}
 
-	public TypeMeaningWord getPreferredTermMeaningWord() {
+	public MeaningWord getPreferredTermMeaningWord() {
 		return preferredTermMeaningWord;
 	}
 
-	public void setPreferredTermMeaningWord(TypeMeaningWord preferredTermMeaningWord) {
+	public void setPreferredTermMeaningWord(MeaningWord preferredTermMeaningWord) {
 		this.preferredTermMeaningWord = preferredTermMeaningWord;
 	}
 
-	public List<TypeMeaningWord> getMeaningWords() {
+	public List<MeaningWord> getMeaningWords() {
 		return meaningWords;
 	}
 
-	public void setMeaningWords(List<TypeMeaningWord> meaningWords) {
+	public void setMeaningWords(List<MeaningWord> meaningWords) {
 		this.meaningWords = meaningWords;
 	}
 
-	public List<TypeMeaningWord> getSourceLangFullSynonyms() {
+	public List<MeaningWord> getSourceLangFullSynonyms() {
 		return sourceLangFullSynonyms;
 	}
 
-	public void setSourceLangFullSynonyms(List<TypeMeaningWord> sourceLangFullSynonyms) {
+	public void setSourceLangFullSynonyms(List<MeaningWord> sourceLangFullSynonyms) {
 		this.sourceLangFullSynonyms = sourceLangFullSynonyms;
 	}
 
-	public List<TypeMeaningWord> getSourceLangNearSynonyms() {
+	public List<MeaningWord> getSourceLangNearSynonyms() {
 		return sourceLangNearSynonyms;
 	}
 
-	public void setSourceLangNearSynonyms(List<TypeMeaningWord> sourceLangNearSynonyms) {
+	public void setSourceLangNearSynonyms(List<MeaningWord> sourceLangNearSynonyms) {
 		this.sourceLangNearSynonyms = sourceLangNearSynonyms;
 	}
 
-	public List<TypeMeaningWord> getDestinLangSynonyms() {
+	public List<MeaningWord> getDestinLangSynonyms() {
 		return destinLangSynonyms;
 	}
 
-	public void setDestinLangSynonyms(List<TypeMeaningWord> destinLangSynonyms) {
+	public void setDestinLangSynonyms(List<MeaningWord> destinLangSynonyms) {
 		this.destinLangSynonyms = destinLangSynonyms;
 	}
 
-	public Map<String, List<TypeMeaningWord>> getDestinLangSynonymsByLang() {
+	public Map<String, List<MeaningWord>> getDestinLangSynonymsByLang() {
 		return destinLangSynonymsByLang;
 	}
 
-	public void setDestinLangSynonymsByLang(Map<String, List<TypeMeaningWord>> destinLangSynonymsByLang) {
+	public void setDestinLangSynonymsByLang(Map<String, List<MeaningWord>> destinLangSynonymsByLang) {
 		this.destinLangSynonymsByLang = destinLangSynonymsByLang;
 	}
 
@@ -559,35 +539,35 @@ public class LexemeWord extends WordTypeData implements LexemeLevel, ComplexityT
 		this.sourceLangSynonymWordIds = sourceLangSynonymWordIds;
 	}
 
-	public List<TypeLexemeRelation> getRelatedLexemes() {
+	public List<LexemeRelation> getRelatedLexemes() {
 		return relatedLexemes;
 	}
 
-	public void setRelatedLexemes(List<TypeLexemeRelation> relatedLexemes) {
+	public void setRelatedLexemes(List<LexemeRelation> relatedLexemes) {
 		this.relatedLexemes = relatedLexemes;
 	}
 
-	public Map<Classifier, List<TypeLexemeRelation>> getRelatedLexemesByType() {
+	public Map<Classifier, List<LexemeRelation>> getRelatedLexemesByType() {
 		return relatedLexemesByType;
 	}
 
-	public void setRelatedLexemesByType(Map<Classifier, List<TypeLexemeRelation>> relatedLexemesByType) {
+	public void setRelatedLexemesByType(Map<Classifier, List<LexemeRelation>> relatedLexemesByType) {
 		this.relatedLexemesByType = relatedLexemesByType;
 	}
 
-	public List<TypeMeaningRelation> getRelatedMeanings() {
+	public List<MeaningRelation> getRelatedMeanings() {
 		return relatedMeanings;
 	}
 
-	public void setRelatedMeanings(List<TypeMeaningRelation> relatedMeanings) {
+	public void setRelatedMeanings(List<MeaningRelation> relatedMeanings) {
 		this.relatedMeanings = relatedMeanings;
 	}
 
-	public Map<Classifier, List<TypeMeaningRelation>> getRelatedMeaningsByType() {
+	public Map<Classifier, List<MeaningRelation>> getRelatedMeaningsByType() {
 		return relatedMeaningsByType;
 	}
 
-	public void setRelatedMeaningsByType(Map<Classifier, List<TypeMeaningRelation>> relatedMeaningsByType) {
+	public void setRelatedMeaningsByType(Map<Classifier, List<MeaningRelation>> relatedMeaningsByType) {
 		this.relatedMeaningsByType = relatedMeaningsByType;
 	}
 
@@ -607,11 +587,11 @@ public class LexemeWord extends WordTypeData implements LexemeLevel, ComplexityT
 		this.limitedPrimaryDisplayCollocs = limitedPrimaryDisplayCollocs;
 	}
 
-	public List<TypeSourceLink> getLexemeSourceLinks() {
+	public List<SourceLink> getLexemeSourceLinks() {
 		return lexemeSourceLinks;
 	}
 
-	public void setLexemeSourceLinks(List<TypeSourceLink> lexemeSourceLinks) {
+	public void setLexemeSourceLinks(List<SourceLink> lexemeSourceLinks) {
 		this.lexemeSourceLinks = lexemeSourceLinks;
 	}
 

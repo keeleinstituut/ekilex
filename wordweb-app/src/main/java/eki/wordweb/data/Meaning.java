@@ -9,11 +9,7 @@ import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
 
 import eki.common.data.AbstractDataObject;
 import eki.common.util.LocalDateTimeDeserialiser;
-import eki.wordweb.data.type.TypeDefinition;
 import eki.wordweb.data.type.TypeDomain;
-import eki.wordweb.data.type.TypeMeaningRelation;
-import eki.wordweb.data.type.TypeMediaFile;
-import eki.wordweb.data.type.TypeNote;
 
 public class Meaning extends AbstractDataObject {
 
@@ -33,19 +29,19 @@ public class Meaning extends AbstractDataObject {
 
 	private List<TypeDomain> domainCodes;
 
-	private List<TypeMediaFile> meaningImages;
+	private List<Definition> definitions;
 
-	private List<TypeMediaFile> mediaFiles;
+	private List<MeaningImage> meaningImages;
+
+	private List<MeaningMedia> meaningMedias;
 
 	private List<String> semanticTypes;
 
 	private List<String> learnerComments;
 
-	private List<TypeNote> notes;
+	private List<Note> meaningNotes;
 
-	private List<TypeDefinition> definitions;
-
-	private List<TypeMeaningRelation> relatedMeanings;
+	private List<MeaningRelation> relatedMeanings;
 
 	public Long getLexemeId() {
 		return lexemeId;
@@ -87,20 +83,28 @@ public class Meaning extends AbstractDataObject {
 		this.domainCodes = domainCodes;
 	}
 
-	public List<TypeMediaFile> getMeaningImages() {
+	public List<Definition> getDefinitions() {
+		return definitions;
+	}
+
+	public void setDefinitions(List<Definition> definitions) {
+		this.definitions = definitions;
+	}
+
+	public List<MeaningImage> getMeaningImages() {
 		return meaningImages;
 	}
 
-	public void setMeaningImages(List<TypeMediaFile> meaningImages) {
+	public void setMeaningImages(List<MeaningImage> meaningImages) {
 		this.meaningImages = meaningImages;
 	}
 
-	public List<TypeMediaFile> getMediaFiles() {
-		return mediaFiles;
+	public List<MeaningMedia> getMeaningMedias() {
+		return meaningMedias;
 	}
 
-	public void setMediaFiles(List<TypeMediaFile> mediaFiles) {
-		this.mediaFiles = mediaFiles;
+	public void setMeaningMedias(List<MeaningMedia> meaningMedias) {
+		this.meaningMedias = meaningMedias;
 	}
 
 	public List<String> getSemanticTypes() {
@@ -119,27 +123,19 @@ public class Meaning extends AbstractDataObject {
 		this.learnerComments = learnerComments;
 	}
 
-	public List<TypeNote> getNotes() {
-		return notes;
+	public List<Note> getMeaningNotes() {
+		return meaningNotes;
 	}
 
-	public void setNotes(List<TypeNote> notes) {
-		this.notes = notes;
+	public void setMeaningNotes(List<Note> meaningNotes) {
+		this.meaningNotes = meaningNotes;
 	}
 
-	public List<TypeDefinition> getDefinitions() {
-		return definitions;
-	}
-
-	public void setDefinitions(List<TypeDefinition> definitions) {
-		this.definitions = definitions;
-	}
-
-	public List<TypeMeaningRelation> getRelatedMeanings() {
+	public List<MeaningRelation> getRelatedMeanings() {
 		return relatedMeanings;
 	}
 
-	public void setRelatedMeanings(List<TypeMeaningRelation> relatedMeanings) {
+	public void setRelatedMeanings(List<MeaningRelation> relatedMeanings) {
 		this.relatedMeanings = relatedMeanings;
 	}
 

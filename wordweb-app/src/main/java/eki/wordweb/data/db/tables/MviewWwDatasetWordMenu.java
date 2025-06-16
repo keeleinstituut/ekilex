@@ -53,9 +53,9 @@ public class MviewWwDatasetWordMenu extends TableImpl<MviewWwDatasetWordMenuReco
     public final TableField<MviewWwDatasetWordMenuRecord, String> FIRST_LETTER = createField(DSL.name("first_letter"), SQLDataType.CHAR(1), this, "");
 
     /**
-     * The column <code>public.mview_ww_dataset_word_menu.words</code>.
+     * The column <code>public.mview_ww_dataset_word_menu.word_values</code>.
      */
-    public final TableField<MviewWwDatasetWordMenuRecord, String[]> WORDS = createField(DSL.name("words"), SQLDataType.CLOB.getArrayDataType(), this, "");
+    public final TableField<MviewWwDatasetWordMenuRecord, String[]> WORD_VALUES = createField(DSL.name("word_values"), SQLDataType.CLOB.getArrayDataType(), this, "");
 
     private MviewWwDatasetWordMenu(Name alias, Table<MviewWwDatasetWordMenuRecord> aliased) {
         this(alias, aliased, null);

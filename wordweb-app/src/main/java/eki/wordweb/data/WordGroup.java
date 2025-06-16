@@ -4,7 +4,6 @@ import java.util.List;
 
 import eki.common.data.AbstractDataObject;
 import eki.common.data.Classifier;
-import eki.wordweb.data.type.TypeWordRelation;
 
 public class WordGroup extends AbstractDataObject {
 
@@ -16,7 +15,7 @@ public class WordGroup extends AbstractDataObject {
 
 	private Classifier wordRelType;
 
-	private List<TypeWordRelation> wordGroupMembers;
+	private List<WordRelation> wordGroupMembers;
 
 	public Long getWordGroupId() {
 		return wordGroupId;
@@ -42,11 +41,11 @@ public class WordGroup extends AbstractDataObject {
 		this.wordRelType = wordRelType;
 	}
 
-	public List<TypeWordRelation> getWordGroupMembers() {
+	public List<WordRelation> getWordGroupMembers() {
 		return wordGroupMembers;
 	}
 
-	public void setWordGroupMembers(List<TypeWordRelation> wordGroupMembers) {
+	public void setWordGroupMembers(List<WordRelation> wordGroupMembers) {
 		this.wordGroupMembers = wordGroupMembers;
 	}
 

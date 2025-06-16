@@ -8,7 +8,7 @@ public class WordSearchElement extends AbstractDataObject {
 
 	private String sgroup;
 
-	private String word;
+	private String wordValue;
 
 	private Integer homonymNr;
 
@@ -20,12 +20,12 @@ public class WordSearchElement extends AbstractDataObject {
 		this.sgroup = sgroup;
 	}
 
-	public String getWord() {
-		return word;
+	public String getWordValue() {
+		return wordValue;
 	}
 
-	public void setWord(String word) {
-		this.word = word;
+	public void setWordValue(String wordValue) {
+		this.wordValue = wordValue;
 	}
 
 	public Integer getHomonymNr() {

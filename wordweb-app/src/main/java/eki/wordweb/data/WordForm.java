@@ -6,24 +6,24 @@ public class WordForm extends AbstractDataObject {
 
 	private static final long serialVersionUID = 1L;
 
-	private String word;
+	private String wordValue;
 
-	private String form;
+	private String formValue;
 
-	public String getWord() {
-		return word;
+	public String getWordValue() {
+		return wordValue;
 	}
 
-	public void setWord(String word) {
-		this.word = word;
+	public void setWordValue(String wordValue) {
+		this.wordValue = wordValue;
 	}
 
-	public String getForm() {
-		return form;
+	public String getFormValue() {
+		return formValue;
 	}
 
-	public void setForm(String form) {
-		this.form = form;
+	public void setFormValue(String formValue) {
+		this.formValue = formValue;
 	}
 
 }

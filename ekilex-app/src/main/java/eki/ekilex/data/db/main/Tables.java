@@ -130,12 +130,10 @@ import eki.ekilex.data.db.main.tables.ViewWwDatasetWordMenu;
 import eki.ekilex.data.db.main.tables.ViewWwForm;
 import eki.ekilex.data.db.main.tables.ViewWwLexeme;
 import eki.ekilex.data.db.main.tables.ViewWwLexemeRelation;
-import eki.ekilex.data.db.main.tables.ViewWwLexicalDecisionData;
 import eki.ekilex.data.db.main.tables.ViewWwMeaning;
 import eki.ekilex.data.db.main.tables.ViewWwMeaningRelation;
 import eki.ekilex.data.db.main.tables.ViewWwNewWordMenu;
 import eki.ekilex.data.db.main.tables.ViewWwNewsArticle;
-import eki.ekilex.data.db.main.tables.ViewWwSimilarityJudgementData;
 import eki.ekilex.data.db.main.tables.ViewWwWord;
 import eki.ekilex.data.db.main.tables.ViewWwWordEtymology;
 import eki.ekilex.data.db.main.tables.ViewWwWordRelation;
@@ -803,11 +801,6 @@ public class Tables {
     public static final ViewWwLexemeRelation VIEW_WW_LEXEME_RELATION = ViewWwLexemeRelation.VIEW_WW_LEXEME_RELATION;
 
     /**
-     * The table <code>public.view_ww_lexical_decision_data</code>.
-     */
-    public static final ViewWwLexicalDecisionData VIEW_WW_LEXICAL_DECISION_DATA = ViewWwLexicalDecisionData.VIEW_WW_LEXICAL_DECISION_DATA;
-
-    /**
      * The table <code>public.view_ww_meaning</code>.
      */
     public static final ViewWwMeaning VIEW_WW_MEANING = ViewWwMeaning.VIEW_WW_MEANING;
@@ -826,11 +819,6 @@ public class Tables {
      * The table <code>public.view_ww_news_article</code>.
      */
     public static final ViewWwNewsArticle VIEW_WW_NEWS_ARTICLE = ViewWwNewsArticle.VIEW_WW_NEWS_ARTICLE;
-
-    /**
-     * The table <code>public.view_ww_similarity_judgement_data</code>.
-     */
-    public static final ViewWwSimilarityJudgementData VIEW_WW_SIMILARITY_JUDGEMENT_DATA = ViewWwSimilarityJudgementData.VIEW_WW_SIMILARITY_JUDGEMENT_DATA;
 
     /**
      * The table <code>public.view_ww_word</code>.

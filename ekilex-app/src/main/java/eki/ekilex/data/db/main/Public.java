@@ -130,12 +130,10 @@ import eki.ekilex.data.db.main.tables.ViewWwDatasetWordMenu;
 import eki.ekilex.data.db.main.tables.ViewWwForm;
 import eki.ekilex.data.db.main.tables.ViewWwLexeme;
 import eki.ekilex.data.db.main.tables.ViewWwLexemeRelation;
-import eki.ekilex.data.db.main.tables.ViewWwLexicalDecisionData;
 import eki.ekilex.data.db.main.tables.ViewWwMeaning;
 import eki.ekilex.data.db.main.tables.ViewWwMeaningRelation;
 import eki.ekilex.data.db.main.tables.ViewWwNewWordMenu;
 import eki.ekilex.data.db.main.tables.ViewWwNewsArticle;
-import eki.ekilex.data.db.main.tables.ViewWwSimilarityJudgementData;
 import eki.ekilex.data.db.main.tables.ViewWwWord;
 import eki.ekilex.data.db.main.tables.ViewWwWordEtymology;
 import eki.ekilex.data.db.main.tables.ViewWwWordRelation;
@@ -166,29 +164,17 @@ import eki.ekilex.data.db.main.tables.WordTypeLabel;
 import eki.ekilex.data.db.main.tables.WordWordType;
 import eki.ekilex.data.db.main.udt.TypeActivityLogDiff;
 import eki.ekilex.data.db.main.udt.TypeClassifier;
-import eki.ekilex.data.db.main.udt.TypeCollocMember;
-import eki.ekilex.data.db.main.udt.TypeDefinition;
 import eki.ekilex.data.db.main.udt.TypeDomain;
-import eki.ekilex.data.db.main.udt.TypeLangComplexity;
-import eki.ekilex.data.db.main.udt.TypeLexemeRelation;
-import eki.ekilex.data.db.main.udt.TypeMeaningRelation;
-import eki.ekilex.data.db.main.udt.TypeMeaningWord;
-import eki.ekilex.data.db.main.udt.TypeMediaFile;
+import eki.ekilex.data.db.main.udt.TypeLangDatasetPublishing;
 import eki.ekilex.data.db.main.udt.TypeMtDefinition;
 import eki.ekilex.data.db.main.udt.TypeMtLexeme;
 import eki.ekilex.data.db.main.udt.TypeMtLexemeFreeform;
 import eki.ekilex.data.db.main.udt.TypeMtWord;
-import eki.ekilex.data.db.main.udt.TypeNote;
-import eki.ekilex.data.db.main.udt.TypeSourceLink;
 import eki.ekilex.data.db.main.udt.TypeTermMeaningWord;
-import eki.ekilex.data.db.main.udt.TypeUsage;
-import eki.ekilex.data.db.main.udt.TypeValueEntity;
 import eki.ekilex.data.db.main.udt.TypeValueNameLang;
-import eki.ekilex.data.db.main.udt.TypeWordEtymRelation;
 import eki.ekilex.data.db.main.udt.TypeWordHomNrDataTuple;
 import eki.ekilex.data.db.main.udt.TypeWordRelMeaning;
 import eki.ekilex.data.db.main.udt.TypeWordRelParam;
-import eki.ekilex.data.db.main.udt.TypeWordRelation;
 
 import java.util.Arrays;
 import java.util.List;
@@ -844,11 +830,6 @@ public class Public extends SchemaImpl {
     public final ViewWwLexemeRelation VIEW_WW_LEXEME_RELATION = ViewWwLexemeRelation.VIEW_WW_LEXEME_RELATION;
 
     /**
-     * The table <code>public.view_ww_lexical_decision_data</code>.
-     */
-    public final ViewWwLexicalDecisionData VIEW_WW_LEXICAL_DECISION_DATA = ViewWwLexicalDecisionData.VIEW_WW_LEXICAL_DECISION_DATA;
-
-    /**
      * The table <code>public.view_ww_meaning</code>.
      */
     public final ViewWwMeaning VIEW_WW_MEANING = ViewWwMeaning.VIEW_WW_MEANING;
@@ -867,11 +848,6 @@ public class Public extends SchemaImpl {
      * The table <code>public.view_ww_news_article</code>.
      */
     public final ViewWwNewsArticle VIEW_WW_NEWS_ARTICLE = ViewWwNewsArticle.VIEW_WW_NEWS_ARTICLE;
-
-    /**
-     * The table <code>public.view_ww_similarity_judgement_data</code>.
-     */
-    public final ViewWwSimilarityJudgementData VIEW_WW_SIMILARITY_JUDGEMENT_DATA = ViewWwSimilarityJudgementData.VIEW_WW_SIMILARITY_JUDGEMENT_DATA;
 
     /**
      * The table <code>public.view_ww_word</code>.
@@ -1320,12 +1296,10 @@ public class Public extends SchemaImpl {
             ViewWwForm.VIEW_WW_FORM,
             ViewWwLexeme.VIEW_WW_LEXEME,
             ViewWwLexemeRelation.VIEW_WW_LEXEME_RELATION,
-            ViewWwLexicalDecisionData.VIEW_WW_LEXICAL_DECISION_DATA,
             ViewWwMeaning.VIEW_WW_MEANING,
             ViewWwMeaningRelation.VIEW_WW_MEANING_RELATION,
             ViewWwNewWordMenu.VIEW_WW_NEW_WORD_MENU,
             ViewWwNewsArticle.VIEW_WW_NEWS_ARTICLE,
-            ViewWwSimilarityJudgementData.VIEW_WW_SIMILARITY_JUDGEMENT_DATA,
             ViewWwWord.VIEW_WW_WORD,
             ViewWwWordEtymology.VIEW_WW_WORD_ETYMOLOGY,
             ViewWwWordRelation.VIEW_WW_WORD_RELATION,
@@ -1361,28 +1335,16 @@ public class Public extends SchemaImpl {
         return Arrays.<UDT<?>>asList(
             TypeActivityLogDiff.TYPE_ACTIVITY_LOG_DIFF,
             TypeClassifier.TYPE_CLASSIFIER,
-            TypeCollocMember.TYPE_COLLOC_MEMBER,
-            TypeDefinition.TYPE_DEFINITION,
             TypeDomain.TYPE_DOMAIN,
-            TypeLangComplexity.TYPE_LANG_COMPLEXITY,
-            TypeLexemeRelation.TYPE_LEXEME_RELATION,
-            TypeMeaningRelation.TYPE_MEANING_RELATION,
-            TypeMeaningWord.TYPE_MEANING_WORD,
-            TypeMediaFile.TYPE_MEDIA_FILE,
+            TypeLangDatasetPublishing.TYPE_LANG_DATASET_PUBLISHING,
             TypeMtDefinition.TYPE_MT_DEFINITION,
             TypeMtLexeme.TYPE_MT_LEXEME,
             TypeMtLexemeFreeform.TYPE_MT_LEXEME_FREEFORM,
             TypeMtWord.TYPE_MT_WORD,
-            TypeNote.TYPE_NOTE,
-            TypeSourceLink.TYPE_SOURCE_LINK,
             TypeTermMeaningWord.TYPE_TERM_MEANING_WORD,
-            TypeUsage.TYPE_USAGE,
-            TypeValueEntity.TYPE_VALUE_ENTITY,
             TypeValueNameLang.TYPE_VALUE_NAME_LANG,
-            TypeWordEtymRelation.TYPE_WORD_ETYM_RELATION,
             TypeWordHomNrDataTuple.TYPE_WORD_HOM_NR_DATA_TUPLE,
             TypeWordRelMeaning.TYPE_WORD_REL_MEANING,
-            TypeWordRelParam.TYPE_WORD_REL_PARAM,
-            TypeWordRelation.TYPE_WORD_RELATION);
+            TypeWordRelParam.TYPE_WORD_REL_PARAM);
     }
 }

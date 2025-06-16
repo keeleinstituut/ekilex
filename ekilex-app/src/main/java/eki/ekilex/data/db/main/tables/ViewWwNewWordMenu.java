@@ -48,14 +48,14 @@ public class ViewWwNewWordMenu extends TableImpl<ViewWwNewWordMenuRecord> {
     public final TableField<ViewWwNewWordMenuRecord, Long> WORD_ID = createField(DSL.name("word_id"), SQLDataType.BIGINT, this, "");
 
     /**
-     * The column <code>public.view_ww_new_word_menu.word</code>.
+     * The column <code>public.view_ww_new_word_menu.word_value</code>.
      */
-    public final TableField<ViewWwNewWordMenuRecord, String> WORD = createField(DSL.name("word"), SQLDataType.CLOB, this, "");
+    public final TableField<ViewWwNewWordMenuRecord, String> WORD_VALUE = createField(DSL.name("word_value"), SQLDataType.CLOB, this, "");
 
     /**
-     * The column <code>public.view_ww_new_word_menu.word_prese</code>.
+     * The column <code>public.view_ww_new_word_menu.word_value_prese</code>.
      */
-    public final TableField<ViewWwNewWordMenuRecord, String> WORD_PRESE = createField(DSL.name("word_prese"), SQLDataType.CLOB, this, "");
+    public final TableField<ViewWwNewWordMenuRecord, String> WORD_VALUE_PRESE = createField(DSL.name("word_value_prese"), SQLDataType.CLOB, this, "");
 
     /**
      * The column <code>public.view_ww_new_word_menu.homonym_nr</code>.
@@ -77,7 +77,7 @@ public class ViewWwNewWordMenu extends TableImpl<ViewWwNewWordMenuRecord> {
     }
 
     private ViewWwNewWordMenu(Name alias, Table<ViewWwNewWordMenuRecord> aliased, Field<?>[] parameters) {
-        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.view("create view \"view_ww_new_word_menu\" as  SELECT id AS word_id,\n    value AS word,\n    value_prese AS word_prese,\n    homonym_nr,\n    reg_year,\n    ( SELECT array_agg(wt.word_type_code ORDER BY wt.order_by) AS array_agg\n           FROM word_word_type wt\n          WHERE ((wt.word_id = w.id) AND ((wt.word_type_code)::text <> ALL ((ARRAY['vv'::character varying, 'yv'::character varying, 'vvar'::character varying])::text[])))) AS word_type_codes\n   FROM word w\n  WHERE ((reg_year IS NOT NULL) AND (is_public = true) AND (lang = 'est'::bpchar) AND (EXISTS ( SELECT 1\n           FROM lexeme l,\n            lexeme_register lr\n          WHERE ((l.word_id = w.id) AND (l.is_public = true) AND (l.is_word = true) AND ((l.dataset_code)::text = 'eki'::text) AND (lr.lexeme_id = l.id) AND ((lr.register_code)::text = 'uus'::text)))))\n  ORDER BY reg_year DESC, id DESC;"));
+        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.view("create view \"view_ww_new_word_menu\" as  SELECT id AS word_id,\n    value AS word_value,\n    value_prese AS word_value_prese,\n    homonym_nr,\n    reg_year,\n    ( SELECT array_agg(wt.word_type_code ORDER BY wt.order_by) AS array_agg\n           FROM word_word_type wt\n          WHERE ((wt.word_id = w.id) AND ((wt.word_type_code)::text <> ALL ((ARRAY['vv'::character varying, 'yv'::character varying, 'vvar'::character varying])::text[])))) AS word_type_codes\n   FROM word w\n  WHERE ((reg_year IS NOT NULL) AND (is_public = true) AND (lang = 'est'::bpchar) AND (EXISTS ( SELECT 1\n           FROM lexeme l,\n            lexeme_register lr\n          WHERE ((l.word_id = w.id) AND (l.is_public = true) AND (l.is_word = true) AND ((l.dataset_code)::text = 'eki'::text) AND (lr.lexeme_id = l.id) AND ((lr.register_code)::text = 'uus'::text)))))\n  ORDER BY reg_year DESC, id DESC;"));
     }
 
     /**

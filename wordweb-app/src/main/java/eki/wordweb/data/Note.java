@@ -2,7 +2,7 @@ package eki.wordweb.data;
 
 import java.util.List;
 
-public class Usage extends AbstractCreateUpdateEntity implements SourceLinkType, LangType {
+public class Note extends AbstractCreateUpdateEntity implements SourceLinkType, LangType {
 
 	private static final long serialVersionUID = 1L;
 
@@ -14,13 +14,7 @@ public class Usage extends AbstractCreateUpdateEntity implements SourceLinkType,
 
 	private String lang;
 
-	private List<String> usageTranslationValues;
-
-	private List<String> usageDefinitionValues;
-
 	private List<SourceLink> sourceLinks;
-
-	private boolean putOnSpeaker;
 
 	public Long getId() {
 		return id;
@@ -54,22 +48,6 @@ public class Usage extends AbstractCreateUpdateEntity implements SourceLinkType,
 		this.lang = lang;
 	}
 
-	public List<String> getUsageTranslationValues() {
-		return usageTranslationValues;
-	}
-
-	public void setUsageTranslationValues(List<String> usageTranslationValues) {
-		this.usageTranslationValues = usageTranslationValues;
-	}
-
-	public List<String> getUsageDefinitionValues() {
-		return usageDefinitionValues;
-	}
-
-	public void setUsageDefinitionValues(List<String> usageDefinitionValues) {
-		this.usageDefinitionValues = usageDefinitionValues;
-	}
-
 	@Override
 	public List<SourceLink> getSourceLinks() {
 		return sourceLinks;
@@ -78,14 +56,6 @@ public class Usage extends AbstractCreateUpdateEntity implements SourceLinkType,
 	@Override
 	public void setSourceLinks(List<SourceLink> sourceLinks) {
 		this.sourceLinks = sourceLinks;
-	}
-
-	public boolean isPutOnSpeaker() {
-		return putOnSpeaker;
-	}
-
-	public void setPutOnSpeaker(boolean putOnSpeaker) {
-		this.putOnSpeaker = putOnSpeaker;
 	}
 
 }
