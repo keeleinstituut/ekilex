@@ -2410,7 +2410,37 @@ select
 														and ml.word_id = mw.id
 														and cm2.member_form_id = mf.id
 												),
-												'groupOrder', cm1.group_order
+												'groupOrder', cm1.group_order,
+												'wwUnif', (exists (
+													select
+														p.id
+													from
+														publishing p 
+													where
+														p.target_name = 'ww_unif'
+														and p.entity_name = 'lexeme'
+														and p.entity_id = cl.id)
+												),
+												'wwLite', (exists (
+													select
+														p.id
+													from
+														publishing p 
+													where
+														p.target_name = 'ww_lite'
+														and p.entity_name = 'lexeme'
+														and p.entity_id = cl.id)
+												),
+												'wwOd', (exists (
+													select
+														p.id
+													from
+														publishing p 
+													where
+														p.target_name = 'ww_od'
+														and p.entity_name = 'lexeme'
+														and p.entity_id = cl.id)
+												)
 											)
 											order by cm1.group_order
 										)
@@ -2424,6 +2454,17 @@ select
 										and cm1.rel_group_code = rg.code
 										and cm1.colloc_lexeme_id = cl.id
 										and cl.word_id = cw.id
+										and cl.is_collocation = true
+										and cl.is_public = true
+										and exists (
+											select
+												1
+											from
+												publishing p
+											where
+												p.entity_name = 'lexeme'
+												and p.entity_id = cl.id
+										)
 								)
 							)
 							order by rg.order_by

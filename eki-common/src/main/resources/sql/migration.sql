@@ -565,7 +565,28 @@ from
 where
 	ft.code like 'SOURCE_%'
 	and ft.code != 'SOURCE_NAME';
-	
+
+-- kollokatsioonide väliskuju lekseemide detailsuse parandus
+
+update
+	lexeme cl
+set
+	complexity = 'DETAIL'
+where 
+	cl.complexity = 'ANY'
+	and cl.is_collocation = true
+	and exists (
+		select
+			1
+		from
+			collocation_member cm,
+			lexeme ml
+		where
+			cm.colloc_lexeme_id = cl.id
+			and cm.member_lexeme_id = ml.id
+			and ml.complexity = 'DETAIL'
+		)
+;
 
 -- publitseerimine --
 
