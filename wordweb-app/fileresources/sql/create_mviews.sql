@@ -50,8 +50,8 @@ dblink(
 	'host=localhost user=ekilex password=3kil3x dbname=ekilex',
 	'select * from view_ww_new_word_menu') as new_word_menu(
 	word_id bigint,
-	word_value text,
-	word_value_prese text,
+	value text,
+	value_prese text,
 	homonym_nr integer,
 	reg_year integer,
 	word_type_codes varchar(100) array

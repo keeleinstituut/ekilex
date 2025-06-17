@@ -104,25 +104,25 @@ public class ViewUtil implements WebConstant, SystemConstant, GlobalConstant {
 
 	public String getWordValueMarkup(DecoratedWordType word) {
 
-		String wordPrese = new String(word.getValuePrese());
+		String wordValuePrese = new String(word.getValuePrese());
 		if (word.isSuffixoid()) {
-			wordPrese = "-" + wordPrese;
+			wordValuePrese = "-" + wordValuePrese;
 		} else if (word.isPrefixoid()) {
-			wordPrese = wordPrese + "-";
+			wordValuePrese = wordValuePrese + "-";
 		}
 		StringBuilder htmlBuf = new StringBuilder();
 		htmlBuf.append("<span>");
 		String foreignMarkupCode = TextDecoration.FOREIGN.getCode();
-		if (word.isForeignWord() && !StringUtils.contains(wordPrese, foreignMarkupCode)) {
+		if (word.isForeignWord() && !StringUtils.contains(wordValuePrese, foreignMarkupCode)) {
 			htmlBuf.append('<');
 			htmlBuf.append(foreignMarkupCode);
 			htmlBuf.append('>');
-			htmlBuf.append(wordPrese);
+			htmlBuf.append(wordValuePrese);
 			htmlBuf.append("</");
 			htmlBuf.append(foreignMarkupCode);
 			htmlBuf.append('>');
 		} else {
-			htmlBuf.append(wordPrese);
+			htmlBuf.append(wordValuePrese);
 		}
 		htmlBuf.append("</span>");
 		return htmlBuf.toString();

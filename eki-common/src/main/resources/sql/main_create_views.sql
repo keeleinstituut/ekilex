@@ -81,8 +81,8 @@ create view view_ww_new_word_menu
 as
 select
 	w.id word_id,
-	w.value word_value,
-	w.value_prese word_value_prese,
+	w.value,
+	w.value_prese,
 	w.homonym_nr,
 	w.reg_year,
 	(
@@ -669,8 +669,8 @@ from (
 				l.level2,
 				l.order_by lex_order_by,
 				d.id definition_id,
-				substring(d.value, 1, 200) "value",
-				substring(d.value_prese, 1, 200) value_prese,
+				d.value,
+				d.value_prese,
 				d.lang,
 				(exists (
 					select
@@ -1071,8 +1071,8 @@ from (
 			select
 				d.id definition_id,
 				d.meaning_id,
-				substring(d.value, 1, 200) "value",
-				substring(d.value_prese, 1, 200) value_prese,
+				d.value,
+				d.value_prese,
 				d.lang,
 				d.order_by,
 				(exists (
@@ -2670,7 +2670,6 @@ from
 					and l.is_public = true
 					and ds.code = l.dataset_code
 					and ds.type = 'LEX'
-					and l.dataset_code != 'ety'
 					and (exists (
 							select
 								1

@@ -35,7 +35,8 @@ public class EtymConversionUtil {
 
 	private void composeWordEtymTree(Word word, List<WordEtymTuple> wordEtymTuples) {
 
-		Map<Long, WordEtymTuple> wordEtymTupleMap = wordEtymTuples.stream().collect(Collectors.groupingBy(WordEtymTuple::getWordEtymWordId))
+		Map<Long, WordEtymTuple> wordEtymTupleMap = wordEtymTuples.stream()
+				.collect(Collectors.groupingBy(WordEtymTuple::getWordEtymWordId))
 				.entrySet().stream()
 				.collect(Collectors.toMap(
 						entry -> entry.getKey(),
@@ -67,6 +68,7 @@ public class EtymConversionUtil {
 		wordEtymLevel.setTree(new ArrayList<>());
 
 		for (WordEtymRelation relation : wordEtymRelations) {
+
 			Long relatedWordId = relation.getRelatedWordId();
 			Long etymLevelWordId = wordEtymLevel.getWordId();
 			if (relatedWordId.equals(etymLevelWordId)) {

@@ -102,14 +102,19 @@ public class LexemeConversionUtil extends AbstractConversionUtil {
 
 				String headwordValue = headword.getValue();
 				List<MeaningWord> meaningWords1 = lexemeWord1.getMeaningWords();
-				boolean isPreferred1 = meaningWords1.stream()
-						.anyMatch(mw -> StringUtils.equals(headwordValue, mw.getValue())
-								&& StringUtils.equals(VALUE_STATE_CODE_MOST_PREFERRED, mw.getMwLexemeValueStateCode()));
+				boolean isPreferred1 = false;
+				if (CollectionUtils.isNotEmpty(meaningWords1)) {
+					isPreferred1 = meaningWords1.stream()
+							.anyMatch(mw -> StringUtils.equals(headwordValue, mw.getValue())
+									&& StringUtils.equals(VALUE_STATE_CODE_MOST_PREFERRED, mw.getMwLexemeValueStateCode()));
+				}
 				List<MeaningWord> meaningWords2 = lexemeWord2.getMeaningWords();
-				boolean isPreferred2 = meaningWords2.stream()
-						.anyMatch(mw -> StringUtils.equals(headwordValue, mw.getValue())
-								&& StringUtils.equals(VALUE_STATE_CODE_MOST_PREFERRED, mw.getMwLexemeValueStateCode()));
-
+				boolean isPreferred2 = false;
+				if (CollectionUtils.isNotEmpty(meaningWords2)) {
+					isPreferred2 = meaningWords2.stream()
+							.anyMatch(mw -> StringUtils.equals(headwordValue, mw.getValue())
+									&& StringUtils.equals(VALUE_STATE_CODE_MOST_PREFERRED, mw.getMwLexemeValueStateCode()));
+				}
 				if (isPreferred1 && isPreferred2) {
 					return 0;
 				}
@@ -730,6 +735,7 @@ public class LexemeConversionUtil extends AbstractConversionUtil {
 		lexemeWord.setValueStatePriority(valueStatePriority);
 	}
 
+	// good code. keeping just in case
 	private String getOversizeValuePreseCut(String valuePrese, int oversizeLimit) {
 
 		final int oversizeLimitForMarkupBuffering = Double.valueOf(oversizeLimit * 1.5).intValue();

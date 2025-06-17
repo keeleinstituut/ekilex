@@ -36,7 +36,7 @@ public class DatasetContentDbService {
 						MVIEW_WW_DATASET_WORD_MENU.DATASET_CODE.eq(datasetCode)
 						.and(MVIEW_WW_DATASET_WORD_MENU.FIRST_LETTER.eq(String.valueOf(firstLetter)))
 				)
-				.fetchSingleInto(String[].class);
+				.fetchOne(record -> (String[]) record.into(Object.class));
 
 		if (ArrayUtils.isEmpty(wordValues)) {
 			return Collections.emptyList();

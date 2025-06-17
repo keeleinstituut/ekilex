@@ -48,14 +48,14 @@ public class MviewWwNewWordMenu extends TableImpl<MviewWwNewWordMenuRecord> {
     public final TableField<MviewWwNewWordMenuRecord, Long> WORD_ID = createField(DSL.name("word_id"), SQLDataType.BIGINT, this, "");
 
     /**
-     * The column <code>public.mview_ww_new_word_menu.word_value</code>.
+     * The column <code>public.mview_ww_new_word_menu.value</code>.
      */
-    public final TableField<MviewWwNewWordMenuRecord, String> WORD_VALUE = createField(DSL.name("word_value"), SQLDataType.CLOB, this, "");
+    public final TableField<MviewWwNewWordMenuRecord, String> VALUE = createField(DSL.name("value"), SQLDataType.CLOB, this, "");
 
     /**
-     * The column <code>public.mview_ww_new_word_menu.word_value_prese</code>.
+     * The column <code>public.mview_ww_new_word_menu.value_prese</code>.
      */
-    public final TableField<MviewWwNewWordMenuRecord, String> WORD_VALUE_PRESE = createField(DSL.name("word_value_prese"), SQLDataType.CLOB, this, "");
+    public final TableField<MviewWwNewWordMenuRecord, String> VALUE_PRESE = createField(DSL.name("value_prese"), SQLDataType.CLOB, this, "");
 
     /**
      * The column <code>public.mview_ww_new_word_menu.homonym_nr</code>.
