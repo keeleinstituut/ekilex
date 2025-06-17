@@ -20,6 +20,10 @@
         <div class="row">
           <div class="col-8">
             <form th:action="@{/dologin}" method="post">
+              <th:block th:replace="components :: input_text(
+                id = 'login-email',
+                label = #{login.email},
+                placeholder = #{label.login.email.placeholder})"></th:block>
               <div class="form-group row">
                 <label class="col-sm-2 col-form-label">
                   <span class="float-right" th:text="#{login.email}">E-posti aadress</span>

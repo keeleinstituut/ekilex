@@ -670,5 +670,24 @@
       </div>
     </div>
   </th:block>
+  <th:block th:fragment="input_text">
+    <div class="input-text">
+      <label th:for="${id}" th:text="${label}"></label>
+      <div class="input-text__container">
+        <input type="text" th:id="${id}" th:value="${value ?: ''}" th:placeholder="${placeholder ?: ''}">
+      </div>
+    </div>
+  </th:block>
+  <th:block th:fragment="input_password">
+    <div class="input-text input-text--password">
+      <label th:for="${id}" th:text="${label}"></label>
+      <div class="input-text__container">
+        <input type="password" th:id="${id}" th:value="${value ?: ''}" th:placeholder="${placeholder}" th:autocomplete="${autocomplete ?: 'off'}">
+        <button class="input-text__password-toggle">
+          <span class="material-symbols-outlined">visibility</span>
+        </button>
+      </div>
+    </div>
+  </th:block>
 </body>
 </html>
