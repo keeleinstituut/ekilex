@@ -1,18 +1,1 @@
-Märkused ver 1.41.0 tarne kohta:
-
-main-delivery-1.sql
-
-WordOdUsageLoader
-mvn spring-boot:run -P wodul -D spring-boot.run.profiles=dev -D spring-boot.run.arguments="impfile="/path/to/wod-usage.tsv"" 
-
-WordOdMorphLoader
-mvn spring-boot:run -P wodml -D spring-boot.run.profiles=dev -D spring-boot.run.arguments="impfile="/path/to/wod-morph.tsv""
-
-OdCompWordLoader
-mvn spring-boot:run -P odcwl -D spring-boot.run.profiles=dev -D spring-boot.run.arguments="impfile="/path/to/wrel-compound.tsv""
-
-main-delivery-2.sql
-
-DefinitionPurger
-mvn spring-boot:run -P depu -D spring-boot.run.profiles=dev
-
+Märkused ver 1.42.0 tarne kohta:
