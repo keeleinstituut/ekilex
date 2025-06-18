@@ -242,6 +242,10 @@ public class LexemeConversionUtil extends AbstractConversionUtil {
 		lexemeWord.setGrammars(filter(grammars, searchContext));
 		lexemeWord.setGovernments(filter(governments, searchContext));
 
+		if (searchContext.isWwUnif()) {
+			lexemeWord.setProficiencyLevelCode(null);
+		}
+
 		classifierUtil.applyClassifiers(lexemeWord, displayLang);
 		classifierUtil.applyClassifiers((WordTypeData) lexemeWord, displayLang);
 	}

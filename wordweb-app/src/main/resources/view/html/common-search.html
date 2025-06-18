@@ -209,7 +209,7 @@
       <i class="fa fa-exclamation-triangle small mr-2 mt-1" aria-hidden="true"></i>
       <span th:text="#{warning.eki.rus}">See ei ole valmis sõnastik.</span>
     </div>
-    <section class="level-3-panel meaning-panel d-flex flex-row text-body-two mb-2" th:each="lexeme : ${wordData.lexLexemes}">
+    <section th:each="lexeme : ${wordData.lexLexemes}" class="level-3-panel meaning-panel d-flex flex-row text-body-two mb-2">
       <div th:replace="lex-details :: lexeme-data"></div>
     </section>
     <div th:replace="common-search :: no-lexemes-exist"></div>
@@ -217,7 +217,7 @@
   <th:block th:fragment="lex-detail-view-simple">
     <th:block th:if="${wordData.lexemesExist}">
       <div th:if="${not #lists.isEmpty(wordData.lexLexemes)}">
-        <section class="level-3-panel meaning-panel d-flex flex-row mb-2" th:each="lexeme : ${wordData.lexLexemes}">
+        <section th:each="lexeme : ${wordData.lexLexemes}" class="level-3-panel meaning-panel d-flex flex-row mb-2">
           <div th:replace="lex-details :: lexeme-data"></div>
         </section>
       </div>
@@ -231,7 +231,7 @@
       <div class="search__block">
         <div class="d-flex">
           <div class="search__block-header">
-              <span class="search__block-title" th:text="${lexeme.datasetName}">EKI ühendsõnastik 2020</span>
+            <span class="search__block-title" th:text="${lexeme.datasetName}">EKI ühendsõnastik 2020</span>
             <div class="meaning-data__modified">
               <span>ID</span>
               <span th:text="${lexeme.meaningId}" th:if="${isProTerm}"></span>
@@ -239,12 +239,7 @@
               <span class="meaning-data__date" th:text="${#temporals.format(lexeme.meaningManualEventOn, 'dd.MM.yyyy')}"></span>
             </div>
           </div>
-          <a
-          class="meaning-data__link"
-          th:href="|@{/ds}/${lexeme.datasetCode}|"
-          target="_blank"
-          rel="noreferrer"
-          th:text="#{label.view.dataset}">Vaata sõnakogu</a>
+          <a th:href="|@{/ds}/${lexeme.datasetCode}|" target="_blank" rel="noreferrer" th:text="#{label.view.dataset}" class="meaning-data__link">Vaata sõnakogu</a>
         </div>
         <th:block th:replace="term-details :: meaning-data"></th:block>
       </div>

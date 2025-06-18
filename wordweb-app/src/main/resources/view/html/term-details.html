@@ -2,7 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <body class="survey-active">
   <th:block th:fragment="meaning-data">
-    <div>
+    <div th:id="|lexeme-section-${lexeme.lexemeId}|">
       <div>
         <a th:href="${@viewUtil.getEkilexLimTermMeaningDetailsUrl(lexeme.meaningId)}" th:text="${lexeme.meaningId}" th:if="${isLimTerm}"></a>
         <div class="meaning" th:with="hasDomains=${not #lists.isEmpty(lexeme.domains)},
