@@ -24,7 +24,7 @@ import eki.wordweb.data.db.tables.MviewWwWordRelation;
 import eki.wordweb.data.db.tables.MviewWwWordSearch;
 import eki.wordweb.data.db.tables.SimilarityJudgementData;
 import eki.wordweb.data.db.tables.SimilarityJudgementResult;
-import eki.wordweb.data.db.udt.TypeLangComplexity;
+import eki.wordweb.data.db.udt.TypeLangDatasetPublishing;
 
 import java.util.Arrays;
 import java.util.List;
@@ -199,6 +199,6 @@ public class Public extends SchemaImpl {
     @Override
     public final List<UDT<?>> getUDTs() {
         return Arrays.<UDT<?>>asList(
-            TypeLangComplexity.TYPE_LANG_COMPLEXITY);
+            TypeLangDatasetPublishing.TYPE_LANG_DATASET_PUBLISHING);
     }
 }

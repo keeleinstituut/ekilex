@@ -2,6 +2,23 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <body class="survey-active">
   <th:block th:fragment="meaning-data">
+    <div class="d-flex">
+      <div class="search__block-header">
+          <span class="search__block-title" th:text="${lexeme.datasetName}">EKI ühendsõnastik 2020</span>
+        <div class="meaning-data__modified">
+          <span>ID</span>
+          <span th:text="${lexeme.meaningId}" th:if="${isProTerm}"></span>
+          <span th:text="#{label.tooltip.last_modified}"></span>
+          <span class="meaning-data__date" th:text="${#temporals.format(lexeme.meaningManualEventOn, 'dd.MM.yyyy')}"></span>
+        </div>
+      </div>
+      <a
+      class="meaning-data__link"
+      th:href="|@{/ds}/${lexeme.datasetCode}|"
+      target="_blank"
+      rel="noreferrer"
+      th:text="#{label.view.dataset}">Vaata sõnakogu</a>
+    </div>
     <div>
       <div>
         <a th:href="${@viewUtil.getEkilexLimTermMeaningDetailsUrl(lexeme.meaningId)}" th:text="${lexeme.meaningId}" th:if="${isLimTerm}"></a>
@@ -24,12 +41,12 @@
                   <ul class="word-notes__list">
                     <li th:each="definition,definitionIter : ${definitionEntry.value}">
                       <th:block th:if="${!definition.subDataExists}">
-                        <div class="d-flex gap-2 flex-wrap" th:id="${'definition-entry-' + definition.definitionId}">
+                        <div class="d-flex gap-2 flex-wrap" th:id="${'definition-entry-' + definition.id}">
                           <span class="definition-value text-body-regular text-weight-semi-bold" th:utext="${definition.valuePrese}"></span>
                         </div>
                       </th:block>
                       <th:block th:if="${definition.subDataExists}">
-                        <div class="d-flex gap-2 flex-wrap" th:id="${'definition-entry-' + definition.definitionId}">
+                        <div class="d-flex gap-2 flex-wrap" th:id="${'definition-entry-' + definition.id}">
                           <span class="definition-value text-body-regular text-weight-semi-bold">
                             <th:block th:utext="${definition.valuePrese}"></th:block>
                             <th:block th:if="${not #lists.isEmpty(definition.sourceLinks)}">
@@ -79,7 +96,7 @@
                 <span class="word-notes__note text-caption" th:text="#{label.public.note}"></span>
                 <ul class="word-notes__list">
                   <li class="word-notes__note" th:each="note : ${noteEntry.value}">
-                    <div class="d-flex" th:id="${'note-entry-text-' + note.noteId}">
+                    <div class="d-flex" th:id="${'note-entry-text-' + note.id}">
                       <div>
                         <span class="text-body-two" th:utext="${note.valuePrese}"></span>
                         <span th:if="${isLimTerm}" th:utext="${'[' + note.createdBy + ']'}" class="text-muted text-small"></span>
@@ -101,8 +118,8 @@
             <div class="mt-3 d-flex flex-wrap row">
               <th:block th:each="meaningImage : ${lexeme.meaningImages}">
                 <div class="col-12 col-md-4 mb-3 d-flex flex-column">
-                  <a th:href="${meaningImage.sourceUrl}" class="gallery-image my-auto">
-                    <img class="homonym-image m-0 p-0" th:src="${meaningImage.sourceUrl}" th:title="${meaningImage.title}">
+                  <a th:href="${meaningImage.url}" class="gallery-image my-auto">
+                    <img class="homonym-image m-0 p-0" th:src="${meaningImage.url}" th:title="${meaningImage.title}">
                     <span class="text-muted text-small py-1 d-block" th:utext="${meaningImage.title}"></span>
                   </a>
                   <th:block th:if="${not #lists.isEmpty(meaningImage.sourceLinks)}">
@@ -114,11 +131,11 @@
               </th:block>
             </div>
           </th:block>
-          <th:block th:if="${not #lists.isEmpty(lexeme.mediaFiles)}">
+          <th:block th:if="${not #lists.isEmpty(lexeme.meaningMedias)}">
             <div class="mt-3 d-flex flex-wrap row">
-              <th:block th:each="mediaFile : ${lexeme.mediaFiles}">
+              <th:block th:each="mediaFile : ${lexeme.meaningMedias}">
                 <div class="col-12 col-md-4 mb-3 d-flex flex-column">
-                  <iframe th:src="${mediaFile.sourceUrl}" allowfullscreen></iframe>
+                  <iframe th:src="${mediaFile.url}" allowfullscreen></iframe>
                 </div>
               </th:block>
             </div>
@@ -129,7 +146,7 @@
                 <span class="mr-2 text-caption" th:text="${relationType.value}"></span>
                 <th:block th:each="relation, relationIter : ${lexeme.relatedMeaningsByType.get(relationType)}">
                   <div class="relation-item mr-1">
-                    <a th:href="@{${@viewUtil.getSearchUri(sessionBean, searchMode, relation.word, relation.homonymNr, relation.lang)}}">
+                    <a th:href="@{${@viewUtil.getSearchUri(sessionBean, searchMode, relation.value, relation.homonymNr, relation.lang)}}">
                       <span th:utext="${@viewUtil.getWordValueMarkup(relation)}">tee</span>
                     </a>
                     <th:block th:if="${not #lists.isEmpty(relation.lexRegisters)}">
@@ -154,7 +171,7 @@
               </th:block>
               <div class="word-notes__wrapper" th:with="meaningLangLexemes=${meaninglexemeEntry.value}">
                 <div th:each="meaningLexeme,meaninglexemeIter : ${meaningLangLexemes}" th:classappend="${meaninglexemeIter.last ? '' : 'mb-1'}">
-                  <a th:href="@{${@viewUtil.getSearchUri(sessionBean, searchMode, meaningLexeme.word, meaningLexeme.homonymNr, meaningLexeme.lang)}}"
+                  <a th:href="@{${@viewUtil.getSearchUri(sessionBean, searchMode, meaningLexeme.value, meaningLexeme.homonymNr, meaningLexeme.lang)}}"
                     th:classappend="${meaningLexeme.wordId == wordId ? 'word-matches-search' : ''}" th:utext="${@viewUtil.getWordValueMarkup(meaningLexeme)}"> tee </a>
                   <th:block th:if="${meaningLexeme.showWordDataAsHidden}">
                     <button type="button" class="meaning-data__popover-trigger" data-toggle="popover" data-html="true" th:aria-label="#{label.meaning.grammar.contents}"
@@ -278,7 +295,7 @@
                         <th:block th:each="noteEntry : ${meaningLexeme.lexemeNotesByLang}">
                           <th:block th:each="note : ${noteEntry.value}">
                             <li class="word-notes__note">
-                              <div class="d-flex" th:id="|note-entry-text-${note.noteId}|">
+                              <div class="d-flex" th:id="|note-entry-text-${note.id}|">
                                 <div>
                                   <span class="text-body-two" th:utext="${note.valuePrese}"></span>
                                   <th:block th:if="${not #lists.isEmpty(note.sourceLinks)}">

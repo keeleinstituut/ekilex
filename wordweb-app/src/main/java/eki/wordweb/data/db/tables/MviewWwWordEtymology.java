@@ -59,19 +59,14 @@ public class MviewWwWordEtymology extends TableImpl<MviewWwWordEtymologyRecord> 
     public final TableField<MviewWwWordEtymologyRecord, Long> WORD_ETYM_WORD_ID = createField(DSL.name("word_etym_word_id"), SQLDataType.BIGINT, this, "");
 
     /**
-     * The column <code>public.mview_ww_word_etymology.word_etym_word</code>.
+     * The column <code>public.mview_ww_word_etymology.word_etym_word_value</code>.
      */
-    public final TableField<MviewWwWordEtymologyRecord, String> WORD_ETYM_WORD = createField(DSL.name("word_etym_word"), SQLDataType.CLOB, this, "");
+    public final TableField<MviewWwWordEtymologyRecord, String> WORD_ETYM_WORD_VALUE = createField(DSL.name("word_etym_word_value"), SQLDataType.CLOB, this, "");
 
     /**
      * The column <code>public.mview_ww_word_etymology.word_etym_word_lang</code>.
      */
     public final TableField<MviewWwWordEtymologyRecord, String> WORD_ETYM_WORD_LANG = createField(DSL.name("word_etym_word_lang"), SQLDataType.CHAR(3), this, "");
-
-    /**
-     * The column <code>public.mview_ww_word_etymology.word_etym_word_meaning_words</code>.
-     */
-    public final TableField<MviewWwWordEtymologyRecord, String[]> WORD_ETYM_WORD_MEANING_WORDS = createField(DSL.name("word_etym_word_meaning_words"), SQLDataType.CLOB.getArrayDataType(), this, "");
 
     /**
      * The column <code>public.mview_ww_word_etymology.etymology_type_code</code>.
@@ -97,6 +92,11 @@ public class MviewWwWordEtymology extends TableImpl<MviewWwWordEtymologyRecord> 
      * The column <code>public.mview_ww_word_etymology.word_etym_order_by</code>.
      */
     public final TableField<MviewWwWordEtymologyRecord, Long> WORD_ETYM_ORDER_BY = createField(DSL.name("word_etym_order_by"), SQLDataType.BIGINT, this, "");
+
+    /**
+     * The column <code>public.mview_ww_word_etymology.word_etym_meaning_word_values</code>.
+     */
+    public final TableField<MviewWwWordEtymologyRecord, String[]> WORD_ETYM_MEANING_WORD_VALUES = createField(DSL.name("word_etym_meaning_word_values"), SQLDataType.CLOB.getArrayDataType(), this, "");
 
     /**
      * The column <code>public.mview_ww_word_etymology.word_etym_relations</code>.
@@ -177,7 +177,7 @@ public class MviewWwWordEtymology extends TableImpl<MviewWwWordEtymologyRecord> 
     // -------------------------------------------------------------------------
 
     @Override
-    public Row13<Long, Long, Long, String, String, String[], String, String, String, Boolean, Long, JSON, JSON> fieldsRow() {
+    public Row13<Long, Long, Long, String, String, String, String, String, Boolean, Long, String[], JSON, JSON> fieldsRow() {
         return (Row13) super.fieldsRow();
     }
 }

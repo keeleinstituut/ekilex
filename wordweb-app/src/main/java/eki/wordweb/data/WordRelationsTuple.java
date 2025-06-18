@@ -3,7 +3,6 @@ package eki.wordweb.data;
 import java.util.List;
 
 import eki.common.data.AbstractDataObject;
-import eki.wordweb.data.type.TypeWordRelation;
 
 public class WordRelationsTuple extends AbstractDataObject {
 
@@ -11,9 +10,9 @@ public class WordRelationsTuple extends AbstractDataObject {
 
 	private Long wordId;
 
-	private List<TypeWordRelation> relatedWords;
+	private List<WordRelation> relatedWords;
 
-	private List<TypeWordRelation> wordGroupMembers;
+	private List<WordRelation> wordGroupMembers;
 
 	public Long getWordId() {
 		return wordId;
@@ -23,19 +22,19 @@ public class WordRelationsTuple extends AbstractDataObject {
 		this.wordId = wordId;
 	}
 
-	public List<TypeWordRelation> getRelatedWords() {
+	public List<WordRelation> getRelatedWords() {
 		return relatedWords;
 	}
 
-	public void setRelatedWords(List<TypeWordRelation> relatedWords) {
+	public void setRelatedWords(List<WordRelation> relatedWords) {
 		this.relatedWords = relatedWords;
 	}
 
-	public List<TypeWordRelation> getWordGroupMembers() {
+	public List<WordRelation> getWordGroupMembers() {
 		return wordGroupMembers;
 	}
 
-	public void setWordGroupMembers(List<TypeWordRelation> wordGroupMembers) {
+	public void setWordGroupMembers(List<WordRelation> wordGroupMembers) {
 		this.wordGroupMembers = wordGroupMembers;
 	}
 

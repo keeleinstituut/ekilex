@@ -196,7 +196,7 @@ public class SimpleSearchController extends AbstractSearchController {
 
 	private void populateRecent(SessionBean sessionBean, WordData wordData) {
 		Word word = wordData.getWord();
-		String wordValue = word.getWord();
+		String wordValue = word.getValue();
 		sessionBean.setRecentWord(wordValue);
 	}
 

@@ -13959,6 +13959,12 @@ body.hidden-scroll {
     opacity: 0;
   }
 }
+.sl-wrapper {
+  z-index: calc(var(--header-z-index) + 2);
+}
+.sl-overlay {
+  z-index: calc(var(--header-z-index) + 1);
+}
 .homonym-item-wrap {
   display: block;
   transition: 0ms !important;
@@ -14610,6 +14616,7 @@ body.hidden-scroll {
 }
 .btn-speaker .icon {
   padding: 0;
+  pointer-events: none;
 }
 .btn-speaker--inactive {
   color: var(--color-gray-300);

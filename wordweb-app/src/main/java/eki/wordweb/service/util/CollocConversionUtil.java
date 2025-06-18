@@ -31,7 +31,12 @@ public class CollocConversionUtil extends AbstractConversionUtil {
 	@Autowired
 	private ClassifierUtil classifierUtil;
 
-	public void composeDisplay(Long wordId, List<LexemeWord> lexemeWords, List<WordCollocPosGroups> wordCollocPosGroups, SearchContext searchContext, String displayLang) {
+	public void composeDisplay(
+			Long wordId,
+			List<LexemeWord> lexemeWords,
+			List<WordCollocPosGroups> wordCollocPosGroups,
+			SearchContext searchContext,
+			String displayLang) {
 
 		if (CollectionUtils.isEmpty(lexemeWords)) {
 			return;
@@ -50,7 +55,8 @@ public class CollocConversionUtil extends AbstractConversionUtil {
 			if (lexemeCollocPosGroups == null) {
 				continue;
 			}
-			List<CollocPosGroup> collocPosGroups = compensateDataQualityIssues(lexemeWord, lexemeCollocPosGroups);
+			filterCollocations(lexemeCollocPosGroups, searchContext);
+			List<CollocPosGroup> collocPosGroups = compensateDataQualityIssues(lexemeCollocPosGroups);
 			classifierUtil.applyClassifiers(collocPosGroups, displayLang);
 			lexemeWord.setCollocPosGroups(collocPosGroups);
 			divideCollocRelGroupsByCollocMemberForms(wordId, lexemeWord);
@@ -58,7 +64,26 @@ public class CollocConversionUtil extends AbstractConversionUtil {
 		}
 	}
 
-	private List<CollocPosGroup> compensateDataQualityIssues(LexemeWord lexemeWord, WordCollocPosGroups lexemeCollocPosGroups) {
+	private void filterCollocations(WordCollocPosGroups lexemeCollocPosGroups, SearchContext searchContext) {
+
+		List<CollocPosGroup> collocPosGroups = lexemeCollocPosGroups.getPosGroups();
+
+		for (CollocPosGroup collocPosGroup : collocPosGroups) {
+
+			List<CollocRelGroup> collocRelGroups = collocPosGroup.getRelGroups();
+			if (CollectionUtils.isEmpty(collocRelGroups)) {
+				continue;
+			}
+			for (CollocRelGroup collocRelGroup : collocRelGroups) {
+
+				List<Colloc> collocations = collocRelGroup.getCollocations();
+				collocations = filter(collocations, searchContext);
+				collocRelGroup.setCollocations(collocations);
+			}
+		}
+	}
+
+	private List<CollocPosGroup> compensateDataQualityIssues(WordCollocPosGroups lexemeCollocPosGroups) {
 
 		List<CollocPosGroup> collocPosGroups = lexemeCollocPosGroups.getPosGroups();
 		List<CollocPosGroup> cleanCollocPosGroups = new ArrayList<>();
@@ -72,6 +97,9 @@ public class CollocConversionUtil extends AbstractConversionUtil {
 			for (CollocRelGroup collocRelGroup : collocRelGroups) {
 
 				List<Colloc> collocations = collocRelGroup.getCollocations();
+				if (CollectionUtils.isEmpty(collocations)) {
+					continue;
+				}
 				List<String> collocValues = collocations.stream()
 						.map(Colloc::getWordValue)
 						.distinct()
@@ -117,9 +145,12 @@ public class CollocConversionUtil extends AbstractConversionUtil {
 
 			for (CollocRelGroup collocRelGroup : collocRelGroups) {
 
-				List<Colloc> collocs = collocRelGroup.getCollocations();
+				List<Colloc> collocations = collocRelGroup.getCollocations();
+				if (CollectionUtils.isEmpty(collocations)) {
+					continue;
+				}
 
-				Map<String, List<Colloc>> collocRelGroupDivisionMap = collocs.stream()
+				Map<String, List<Colloc>> collocRelGroupDivisionMap = collocations.stream()
 						.collect(Collectors.groupingBy(col -> col.getMembers().stream()
 								.filter(colm -> colm.getWordId().equals(wordId))
 								.map(CollocMember::getFormValue)

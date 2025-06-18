@@ -1,27 +1,22 @@
-package eki.wordweb.data.type;
+package eki.wordweb.data;
 
 import java.util.List;
 
-import eki.common.constant.Complexity;
 import eki.common.data.Classifier;
-import eki.wordweb.data.ComplexityType;
-import eki.wordweb.data.WordTypeData;
 
-public class TypeMeaningRelation extends WordTypeData implements ComplexityType {
+public class MeaningRelation extends WordTypeData {
 
 	private static final long serialVersionUID = 1L;
 
 	private Long meaningId;
 
-	private Complexity complexity;
-
 	private Float weight;
 
-	private String inexactSynDef;
+	private String nearSynDefinitionValue;
 
-	private List<String> lexValueStateCodes;
+	private String lexValueStateCode;
 
-	private List<Classifier> lexValueStates;
+	private Classifier lexValueState;
 
 	private List<String> lexRegisterCodes;
 
@@ -41,15 +36,6 @@ public class TypeMeaningRelation extends WordTypeData implements ComplexityType 
 		this.meaningId = meaningId;
 	}
 
-	@Override
-	public Complexity getComplexity() {
-		return complexity;
-	}
-
-	public void setComplexity(Complexity complexity) {
-		this.complexity = complexity;
-	}
-
 	public Float getWeight() {
 		return weight;
 	}
@@ -58,28 +44,28 @@ public class TypeMeaningRelation extends WordTypeData implements ComplexityType 
 		this.weight = weight;
 	}
 
-	public String getInexactSynDef() {
-		return inexactSynDef;
+	public String getNearSynDefinitionValue() {
+		return nearSynDefinitionValue;
 	}
 
-	public void setInexactSynDef(String inexactSynDef) {
-		this.inexactSynDef = inexactSynDef;
+	public void setNearSynDefinitionValue(String nearSynDefinitionValue) {
+		this.nearSynDefinitionValue = nearSynDefinitionValue;
 	}
 
-	public List<String> getLexValueStateCodes() {
-		return lexValueStateCodes;
+	public String getLexValueStateCode() {
+		return lexValueStateCode;
 	}
 
-	public void setLexValueStateCodes(List<String> lexValueStateCodes) {
-		this.lexValueStateCodes = lexValueStateCodes;
+	public void setLexValueStateCode(String lexValueStateCode) {
+		this.lexValueStateCode = lexValueStateCode;
 	}
 
-	public List<Classifier> getLexValueStates() {
-		return lexValueStates;
+	public Classifier getLexValueState() {
+		return lexValueState;
 	}
 
-	public void setLexValueStates(List<Classifier> lexValueStates) {
-		this.lexValueStates = lexValueStates;
+	public void setLexValueState(Classifier lexValueState) {
+		this.lexValueState = lexValueState;
 	}
 
 	public List<String> getLexRegisterCodes() {

@@ -17,15 +17,15 @@ import eki.wordweb.data.CollocRelGroup;
 import eki.wordweb.data.Dataset;
 import eki.wordweb.data.Form;
 import eki.wordweb.data.LanguagesDatasets;
+import eki.wordweb.data.LexemeRelation;
 import eki.wordweb.data.LexemeWord;
 import eki.wordweb.data.Meaning;
+import eki.wordweb.data.MeaningRelation;
+import eki.wordweb.data.MeaningWord;
 import eki.wordweb.data.WordEtymTuple;
+import eki.wordweb.data.WordRelation;
 import eki.wordweb.data.WordTypeData;
 import eki.wordweb.data.type.TypeDomain;
-import eki.wordweb.data.type.TypeLexemeRelation;
-import eki.wordweb.data.type.TypeMeaningRelation;
-import eki.wordweb.data.type.TypeMeaningWord;
-import eki.wordweb.data.type.TypeWordRelation;
 import eki.wordweb.service.db.CommonDataDbService;
 
 @Component
@@ -102,7 +102,7 @@ public class ClassifierUtil {
 		lexemeWord.setDerivs(classifiers);
 	}
 
-	public void applyClassifiers(TypeMeaningWord meaningWord, String displayLang) {
+	public void applyClassifiers(MeaningWord meaningWord, String displayLang) {
 		String classifierCode;
 		List<String> classifierCodes;
 		Classifier classifier;
@@ -113,12 +113,12 @@ public class ClassifierUtil {
 		classifierCodes = meaningWord.getWordTypeCodes();
 		classifiers = getClassifiers(ClassifierName.WORD_TYPE, classifierCodes, displayLang);
 		meaningWord.setWordTypes(classifiers);
-		classifierCodes = meaningWord.getMwLexRegisterCodes();
+		classifierCodes = meaningWord.getMwLexemeRegisterCodes();
 		classifiers = getClassifiers(ClassifierName.REGISTER, classifierCodes, displayLang);
-		meaningWord.setMwLexRegisters(classifiers);
-		classifierCode = meaningWord.getMwLexValueStateCode();
+		meaningWord.setMwLexemeRegisters(classifiers);
+		classifierCode = meaningWord.getMwLexemeValueStateCode();
 		classifier = getClassifier(ClassifierName.VALUE_STATE, classifierCode, displayLang);
-		meaningWord.setMwLexValueState(classifier);
+		meaningWord.setMwLexemeValueState(classifier);
 	}
 
 	public void applyClassifiers(Meaning tuple, LexemeWord lexemeWord, String displayLang) {
@@ -128,7 +128,7 @@ public class ClassifierUtil {
 		lexemeWord.setDomains(classifiers);
 	}
 
-	public void applyClassifiers(TypeLexemeRelation lexemeRelation, String displayLang) {
+	public void applyClassifiers(LexemeRelation lexemeRelation, String displayLang) {
 		String classifierCode;
 		Classifier classifier;
 		classifierCode = lexemeRelation.getLexRelTypeCode();
@@ -136,7 +136,7 @@ public class ClassifierUtil {
 		lexemeRelation.setLexRelType(classifier);
 	}
 
-	public void applyClassifiers(TypeMeaningRelation meaningRelation, String displayLang) {
+	public void applyClassifiers(MeaningRelation meaningRelation, String displayLang) {
 		String classifierCode;
 		List<String> classifierCodes;
 		Classifier classifier;
@@ -144,9 +144,9 @@ public class ClassifierUtil {
 		classifierCode = meaningRelation.getAspectCode();
 		classifier = getClassifier(ClassifierName.ASPECT, classifierCode, displayLang);
 		meaningRelation.setAspect(classifier);
-		classifierCodes = meaningRelation.getLexValueStateCodes();
-		classifiers = getClassifiers(ClassifierName.VALUE_STATE, classifierCodes, displayLang);
-		meaningRelation.setLexValueStates(classifiers);
+		classifierCode = meaningRelation.getLexValueStateCode();
+		classifier = getClassifier(ClassifierName.VALUE_STATE, classifierCode, displayLang);
+		meaningRelation.setLexValueState(classifier);
 		classifierCodes = meaningRelation.getWordTypeCodes();
 		classifiers = getClassifiers(ClassifierName.WORD_TYPE, classifierCodes, displayLang);
 		meaningRelation.setWordTypes(classifiers);
@@ -158,7 +158,7 @@ public class ClassifierUtil {
 		meaningRelation.setMeaningRelType(classifier);
 	}
 
-	public void applyClassifiers(TypeWordRelation wordRelation, String displayLang) {
+	public void applyClassifiers(WordRelation wordRelation, String displayLang) {
 		String classifierCode;
 		Classifier classifier;
 		classifierCode = wordRelation.getWordRelTypeCode();

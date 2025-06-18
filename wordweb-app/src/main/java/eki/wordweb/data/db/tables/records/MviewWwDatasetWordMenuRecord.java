@@ -49,16 +49,16 @@ public class MviewWwDatasetWordMenuRecord extends TableRecordImpl<MviewWwDataset
     }
 
     /**
-     * Setter for <code>public.mview_ww_dataset_word_menu.words</code>.
+     * Setter for <code>public.mview_ww_dataset_word_menu.word_values</code>.
      */
-    public void setWords(String[] value) {
+    public void setWordValues(String[] value) {
         set(2, value);
     }
 
     /**
-     * Getter for <code>public.mview_ww_dataset_word_menu.words</code>.
+     * Getter for <code>public.mview_ww_dataset_word_menu.word_values</code>.
      */
-    public String[] getWords() {
+    public String[] getWordValues() {
         return (String[]) get(2);
     }
 
@@ -88,7 +88,7 @@ public class MviewWwDatasetWordMenuRecord extends TableRecordImpl<MviewWwDataset
 
     @Override
     public Field<String[]> field3() {
-        return MviewWwDatasetWordMenu.MVIEW_WW_DATASET_WORD_MENU.WORDS;
+        return MviewWwDatasetWordMenu.MVIEW_WW_DATASET_WORD_MENU.WORD_VALUES;
     }
 
     @Override
@@ -103,7 +103,7 @@ public class MviewWwDatasetWordMenuRecord extends TableRecordImpl<MviewWwDataset
 
     @Override
     public String[] component3() {
-        return getWords();
+        return getWordValues();
     }
 
     @Override
@@ -118,7 +118,7 @@ public class MviewWwDatasetWordMenuRecord extends TableRecordImpl<MviewWwDataset
 
     @Override
     public String[] value3() {
-        return getWords();
+        return getWordValues();
     }
 
     @Override
@@ -135,7 +135,7 @@ public class MviewWwDatasetWordMenuRecord extends TableRecordImpl<MviewWwDataset
 
     @Override
     public MviewWwDatasetWordMenuRecord value3(String[] value) {
-        setWords(value);
+        setWordValues(value);
         return this;
     }
 
@@ -161,11 +161,11 @@ public class MviewWwDatasetWordMenuRecord extends TableRecordImpl<MviewWwDataset
     /**
      * Create a detached, initialised MviewWwDatasetWordMenuRecord
      */
-    public MviewWwDatasetWordMenuRecord(String datasetCode, String firstLetter, String[] words) {
+    public MviewWwDatasetWordMenuRecord(String datasetCode, String firstLetter, String[] wordValues) {
         super(MviewWwDatasetWordMenu.MVIEW_WW_DATASET_WORD_MENU);
 
         setDatasetCode(datasetCode);
         setFirstLetter(firstLetter);
-        setWords(words);
+        setWordValues(wordValues);
     }
 }

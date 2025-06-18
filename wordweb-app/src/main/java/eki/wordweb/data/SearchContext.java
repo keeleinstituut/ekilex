@@ -2,11 +2,9 @@ package eki.wordweb.data;
 
 import java.util.List;
 
-import eki.common.constant.Complexity;
 import eki.common.constant.DatasetType;
-import eki.common.data.AbstractDataObject;
 
-public class SearchContext extends AbstractDataObject {
+public class SearchContext extends AbstractPublishingEntity {
 
 	private static final long serialVersionUID = 1L;
 
@@ -15,8 +13,6 @@ public class SearchContext extends AbstractDataObject {
 	private List<String> destinLangs;
 
 	private List<String> datasetCodes;
-
-	private Complexity lexComplexity;
 
 	private Integer maxDisplayLevel;
 
@@ -28,14 +24,12 @@ public class SearchContext extends AbstractDataObject {
 			DatasetType datasetType,
 			List<String> destinLangs,
 			List<String> datasetCodes,
-			Complexity lexComplexity,
 			Integer maxDisplayLevel,
 			boolean excludeQuestionable,
 			boolean fiCollationExists) {
 		this.datasetType = datasetType;
 		this.destinLangs = destinLangs;
 		this.datasetCodes = datasetCodes;
-		this.lexComplexity = lexComplexity;
 		this.maxDisplayLevel = maxDisplayLevel;
 		this.excludeQuestionable = excludeQuestionable;
 		this.fiCollationExists = fiCollationExists;
@@ -51,10 +45,6 @@ public class SearchContext extends AbstractDataObject {
 
 	public List<String> getDatasetCodes() {
 		return datasetCodes;
-	}
-
-	public Complexity getLexComplexity() {
-		return lexComplexity;
 	}
 
 	public Integer getMaxDisplayLevel() {

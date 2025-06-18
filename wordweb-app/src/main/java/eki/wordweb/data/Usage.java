@@ -1,9 +1,8 @@
 package eki.wordweb.data;
 
-import eki.common.constant.Complexity;
-import eki.common.data.AbstractDataObject;
+import java.util.List;
 
-public class Usage extends AbstractDataObject {
+public class Usage extends AbstractCreateUpdateEntity implements SourceLinkType, LangType {
 
 	private static final long serialVersionUID = 1L;
 
@@ -15,9 +14,13 @@ public class Usage extends AbstractDataObject {
 
 	private String lang;
 
-	private Complexity complexity;
+	private List<String> usageTranslationValues;
 
-	private Long orderBy;
+	private List<String> usageDefinitionValues;
+
+	private List<SourceLink> sourceLinks;
+
+	private boolean putOnSpeaker;
 
 	public Long getId() {
 		return id;
@@ -51,20 +54,38 @@ public class Usage extends AbstractDataObject {
 		this.lang = lang;
 	}
 
-	public Complexity getComplexity() {
-		return complexity;
+	public List<String> getUsageTranslationValues() {
+		return usageTranslationValues;
 	}
 
-	public void setComplexity(Complexity complexity) {
-		this.complexity = complexity;
+	public void setUsageTranslationValues(List<String> usageTranslationValues) {
+		this.usageTranslationValues = usageTranslationValues;
 	}
 
-	public Long getOrderBy() {
-		return orderBy;
+	public List<String> getUsageDefinitionValues() {
+		return usageDefinitionValues;
 	}
 
-	public void setOrderBy(Long orderBy) {
-		this.orderBy = orderBy;
+	public void setUsageDefinitionValues(List<String> usageDefinitionValues) {
+		this.usageDefinitionValues = usageDefinitionValues;
+	}
+
+	@Override
+	public List<SourceLink> getSourceLinks() {
+		return sourceLinks;
+	}
+
+	@Override
+	public void setSourceLinks(List<SourceLink> sourceLinks) {
+		this.sourceLinks = sourceLinks;
+	}
+
+	public boolean isPutOnSpeaker() {
+		return putOnSpeaker;
+	}
+
+	public void setPutOnSpeaker(boolean putOnSpeaker) {
+		this.putOnSpeaker = putOnSpeaker;
 	}
 
 }

@@ -6,7 +6,6 @@ package eki.wordweb.data.db.tables;
 
 import eki.wordweb.data.db.Public;
 import eki.wordweb.data.db.tables.records.MviewWwLexemeRecord;
-import eki.wordweb.data.db.udt.records.TypeLangComplexityRecord;
 
 import java.math.BigDecimal;
 
@@ -66,14 +65,14 @@ public class MviewWwLexeme extends TableImpl<MviewWwLexemeRecord> {
     public final TableField<MviewWwLexemeRecord, String> DATASET_CODE = createField(DSL.name("dataset_code"), SQLDataType.VARCHAR(10), this, "");
 
     /**
-     * The column <code>public.mview_ww_lexeme.dataset_type</code>.
-     */
-    public final TableField<MviewWwLexemeRecord, String> DATASET_TYPE = createField(DSL.name("dataset_type"), SQLDataType.VARCHAR(10), this, "");
-
-    /**
      * The column <code>public.mview_ww_lexeme.dataset_name</code>.
      */
     public final TableField<MviewWwLexemeRecord, String> DATASET_NAME = createField(DSL.name("dataset_name"), SQLDataType.CLOB, this, "");
+
+    /**
+     * The column <code>public.mview_ww_lexeme.dataset_type</code>.
+     */
+    public final TableField<MviewWwLexemeRecord, String> DATASET_TYPE = createField(DSL.name("dataset_type"), SQLDataType.VARCHAR(10), this, "");
 
     /**
      * The column <code>public.mview_ww_lexeme.value_state_code</code>.
@@ -106,24 +105,14 @@ public class MviewWwLexeme extends TableImpl<MviewWwLexemeRecord> {
     public final TableField<MviewWwLexemeRecord, BigDecimal> WEIGHT = createField(DSL.name("weight"), SQLDataType.NUMERIC(5, 4), this, "");
 
     /**
-     * The column <code>public.mview_ww_lexeme.complexity</code>.
-     */
-    public final TableField<MviewWwLexemeRecord, String> COMPLEXITY = createField(DSL.name("complexity"), SQLDataType.VARCHAR(100), this, "");
-
-    /**
-     * The column <code>public.mview_ww_lexeme.dataset_order_by</code>.
-     */
-    public final TableField<MviewWwLexemeRecord, Long> DATASET_ORDER_BY = createField(DSL.name("dataset_order_by"), SQLDataType.BIGINT, this, "");
-
-    /**
      * The column <code>public.mview_ww_lexeme.lexeme_order_by</code>.
      */
     public final TableField<MviewWwLexemeRecord, Long> LEXEME_ORDER_BY = createField(DSL.name("lexeme_order_by"), SQLDataType.BIGINT, this, "");
 
     /**
-     * The column <code>public.mview_ww_lexeme.lang_complexities</code>.
+     * The column <code>public.mview_ww_lexeme.dataset_order_by</code>.
      */
-    public final TableField<MviewWwLexemeRecord, TypeLangComplexityRecord[]> LANG_COMPLEXITIES = createField(DSL.name("lang_complexities"), eki.wordweb.data.db.udt.TypeLangComplexity.TYPE_LANG_COMPLEXITY.getDataType().getArrayDataType(), this, "");
+    public final TableField<MviewWwLexemeRecord, Long> DATASET_ORDER_BY = createField(DSL.name("dataset_order_by"), SQLDataType.BIGINT, this, "");
 
     /**
      * The column <code>public.mview_ww_lexeme.register_codes</code>.
@@ -146,14 +135,9 @@ public class MviewWwLexeme extends TableImpl<MviewWwLexemeRecord> {
     public final TableField<MviewWwLexemeRecord, String[]> DERIV_CODES = createField(DSL.name("deriv_codes"), SQLDataType.VARCHAR.getArrayDataType(), this, "");
 
     /**
-     * The column <code>public.mview_ww_lexeme.meaning_words</code>.
+     * The column <code>public.mview_ww_lexeme.lexeme_notes</code>.
      */
-    public final TableField<MviewWwLexemeRecord, JSON> MEANING_WORDS = createField(DSL.name("meaning_words"), SQLDataType.JSON, this, "");
-
-    /**
-     * The column <code>public.mview_ww_lexeme.notes</code>.
-     */
-    public final TableField<MviewWwLexemeRecord, JSON> NOTES = createField(DSL.name("notes"), SQLDataType.JSON, this, "");
+    public final TableField<MviewWwLexemeRecord, JSON> LEXEME_NOTES = createField(DSL.name("lexeme_notes"), SQLDataType.JSON, this, "");
 
     /**
      * The column <code>public.mview_ww_lexeme.grammars</code>.
@@ -174,6 +158,26 @@ public class MviewWwLexeme extends TableImpl<MviewWwLexemeRecord> {
      * The column <code>public.mview_ww_lexeme.source_links</code>.
      */
     public final TableField<MviewWwLexemeRecord, JSON> SOURCE_LINKS = createField(DSL.name("source_links"), SQLDataType.JSON, this, "");
+
+    /**
+     * The column <code>public.mview_ww_lexeme.meaning_words</code>.
+     */
+    public final TableField<MviewWwLexemeRecord, JSON> MEANING_WORDS = createField(DSL.name("meaning_words"), SQLDataType.JSON, this, "");
+
+    /**
+     * The column <code>public.mview_ww_lexeme.is_ww_unif</code>.
+     */
+    public final TableField<MviewWwLexemeRecord, Boolean> IS_WW_UNIF = createField(DSL.name("is_ww_unif"), SQLDataType.BOOLEAN, this, "");
+
+    /**
+     * The column <code>public.mview_ww_lexeme.is_ww_lite</code>.
+     */
+    public final TableField<MviewWwLexemeRecord, Boolean> IS_WW_LITE = createField(DSL.name("is_ww_lite"), SQLDataType.BOOLEAN, this, "");
+
+    /**
+     * The column <code>public.mview_ww_lexeme.is_ww_od</code>.
+     */
+    public final TableField<MviewWwLexemeRecord, Boolean> IS_WW_OD = createField(DSL.name("is_ww_od"), SQLDataType.BOOLEAN, this, "");
 
     private MviewWwLexeme(Name alias, Table<MviewWwLexemeRecord> aliased) {
         this(alias, aliased, null);

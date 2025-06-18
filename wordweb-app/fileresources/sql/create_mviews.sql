@@ -6,7 +6,7 @@ drop materialized view if exists mview_ww_word;
 drop materialized view if exists mview_ww_form;
 drop materialized view if exists mview_ww_meaning;
 drop materialized view if exists mview_ww_lexeme;
-drop materialized view if exists mview_ww_collocation; -- to be removed later
+drop materialized view if exists mview_ww_collocation; -- remove later
 drop materialized view if exists mview_ww_colloc_pos_group;
 drop materialized view if exists mview_ww_word_etymology;
 drop materialized view if exists mview_ww_word_relation;
@@ -16,7 +16,9 @@ drop materialized view if exists mview_ww_classifier;
 drop materialized view if exists mview_ww_dataset;
 drop materialized view if exists mview_ww_news_article;
 
-drop type if exists type_lang_complexity;
+drop type if exists type_lang_complexity; -- remove later
+drop type if exists type_lang_dataset_publishing;
+
 
 -- run this once:
 -- create extension dblink;
@@ -24,11 +26,13 @@ drop type if exists type_lang_complexity;
 -- create extension pg_trgm;
 -- create extension fuzzystrmatch;
 
-create type type_lang_complexity as (
-				lang varchar(10),
-				dataset_code varchar(10),
-				lex_complexity varchar(100),
-				data_complexity varchar(100));
+create type type_lang_dataset_publishing as (
+	lang varchar(10),
+	dataset_code varchar(10),
+	is_ww_unif boolean,
+	is_ww_lite boolean,
+	is_ww_od boolean
+);
 
 create materialized view mview_ww_dataset_word_menu as
 select * from
@@ -37,7 +41,7 @@ dblink(
 	'select * from view_ww_dataset_word_menu') as dataset_word_menu(
 	dataset_code varchar(10),
 	first_letter char(1),
-	words text array
+	word_values text array
 );
 
 create materialized view mview_ww_new_word_menu as
@@ -46,8 +50,8 @@ dblink(
 	'host=localhost user=ekilex password=3kil3x dbname=ekilex',
 	'select * from view_ww_new_word_menu') as new_word_menu(
 	word_id bigint,
-	word text,
-	word_prese text,
+	value text,
+	value_prese text,
 	homonym_nr integer,
 	reg_year integer,
 	word_type_codes varchar(100) array
@@ -59,11 +63,11 @@ dblink(
 	'host=localhost user=ekilex password=3kil3x dbname=ekilex',
 	'select * from view_ww_word_search') as word_search(
 	sgroup varchar(10),
-	word text,
+	word_value text,
 	crit text,
-	langs_filt varchar(10) array,
+	filt_langs varchar(10) array,
 	lang_order_by bigint,
-	lang_complexities type_lang_complexity array
+	lang_ds_pubs type_lang_dataset_publishing array
 );
 
 create materialized view mview_ww_word as
@@ -72,9 +76,9 @@ dblink(
 	'host=localhost user=ekilex password=3kil3x dbname=ekilex',
 	'select * from view_ww_word') as word(
 	word_id bigint,
-	word text,
-	word_prese text,
-	as_word text,
+	value text,
+	value_prese text,
+	value_as_word text,
 	lang char(3),
 	lang_filt varchar(10),
 	lang_order_by bigint,
@@ -88,7 +92,6 @@ dblink(
 	manual_event_on timestamp,
 	last_activity_event_on timestamp,
 	word_type_codes varchar(100) array,
-	lang_complexities type_lang_complexity array,
 	meaning_words json,
 	definitions json,
 	word_od_recommendation json,
@@ -96,7 +99,8 @@ dblink(
 	freq_rank bigint,
 	forms_exist boolean,
 	min_ds_order_by bigint,
-	word_type_order_by integer
+	word_type_order_by integer,
+	lang_ds_pubs type_lang_dataset_publishing array
 );
 
 create materialized view mview_ww_form as
@@ -105,7 +109,7 @@ dblink(
 	'host=localhost user=ekilex password=3kil3x dbname=ekilex',
 	'select * from view_ww_form') as form(
 	word_id bigint,
-	word text,
+	word_value text,
 	lang char(3),
 	vocal_form text,
 	morph_comment text,
@@ -144,12 +148,12 @@ dblink(
 	manual_event_on timestamp,
 	last_approve_or_edit_event_on timestamp,
 	domain_codes json,
+	definitions json,
 	meaning_images json,
-	media_files json,
+	meaning_medias json,
 	semantic_types text array,
 	learner_comments text array,
-	notes json,
-	definitions json
+	meaning_notes json
 );
 
 create materialized view mview_ww_lexeme as
@@ -161,28 +165,29 @@ dblink(
 	word_id bigint,
 	meaning_id bigint,
 	dataset_code varchar(10),
-	dataset_type varchar(10),
 	dataset_name text,
+	dataset_type varchar(10),
 	value_state_code varchar(100),
 	proficiency_level_code varchar(100),
 	reliability integer,
 	level1 integer,
 	level2 integer,
 	weight numeric(5,4),
-	complexity varchar(100),
-	dataset_order_by bigint,
 	lexeme_order_by bigint,
-	lang_complexities type_lang_complexity array,
+	dataset_order_by bigint,
 	register_codes varchar(100) array,
 	pos_codes varchar(100) array,
 	region_codes varchar(100) array,
 	deriv_codes varchar(100) array,
-	meaning_words json,
-	notes json,
+	lexeme_notes json,
 	grammars json,
 	governments json,
 	usages json,
-	source_links json
+	source_links json,
+	meaning_words json,
+	is_ww_unif boolean,
+	is_ww_lite boolean,
+	is_ww_od boolean
 );
 
 create materialized view mview_ww_colloc_pos_group as
@@ -203,14 +208,14 @@ dblink(
 	word_id bigint,
 	word_etym_id bigint,
 	word_etym_word_id bigint,
-	word_etym_word text,
+	word_etym_word_value text,
 	word_etym_word_lang char(3),
-	word_etym_word_meaning_words text array,
 	etymology_type_code varchar(100),
 	etymology_year text,
 	word_etym_comment text,
 	word_etym_is_questionable boolean,
 	word_etym_order_by bigint,
+	word_etym_meaning_word_values text array,
 	word_etym_relations json,
 	source_links json
 );
@@ -253,7 +258,7 @@ dblink(
 	name text,
 	description text,
 	contact text,
-  image_url text,
+	image_url text,
 	is_superior boolean,
 	order_by bigint
 );
@@ -286,31 +291,41 @@ dblink(
 );
 
 create materialized view mview_ww_counts as
-(select 'dsall' as dataset_code,
-       w.lang,
-       count(w.word_id) word_record_count,
-       count(distinct w.word) word_value_count,
-       count(distinct l.meaning_id) meaning_record_count
-from mview_ww_lexeme l,
-     mview_ww_word w
-where l.word_id = w.word_id
-and   l.dataset_code != 'ety'
-group by w.lang
-order by w.lang)
+(select 
+	'dsall' as dataset_code,
+	w.lang,
+	count(w.word_id) word_record_count,
+	count(distinct w.value) word_value_count,
+	count(distinct l.meaning_id) meaning_record_count
+from 
+	mview_ww_lexeme l,
+	mview_ww_word w
+where 
+	l.word_id = w.word_id
+	and l.dataset_code != 'ety'
+group by 
+	w.lang
+order by 
+	w.lang)
 union all 
-(select l.dataset_code,
-       w.lang,
-       count(w.word_id) word_record_count,
-       count(distinct w.word) word_value_count,
-       count(distinct l.meaning_id) meaning_record_count
-from mview_ww_lexeme l,
-     mview_ww_word w
-where l.word_id = w.word_id
-and   l.dataset_code != 'ety'
-group by l.dataset_code,
-         w.lang
-order by l.dataset_code,
-         w.lang);
+(select
+	l.dataset_code,
+	w.lang,
+	count(w.word_id) word_record_count,
+	count(distinct w.value) word_value_count,
+	count(distinct l.meaning_id) meaning_record_count
+from 
+	mview_ww_lexeme l,
+	mview_ww_word w
+where 
+	l.word_id = w.word_id
+	and l.dataset_code != 'ety'
+group by 
+	l.dataset_code,
+	w.lang
+order by 
+	l.dataset_code,
+	w.lang);
 
 create index mview_ww_dataset_word_menu_dataset_fletter_idx on mview_ww_dataset_word_menu (dataset_code, first_letter);
 create index mview_ww_new_word_menu_word_id_idx on mview_ww_new_word_menu (word_id);
@@ -319,20 +334,22 @@ create index mview_ww_word_search_sgroup_idx on mview_ww_word_search (sgroup);
 create index mview_ww_word_search_crit_idx on mview_ww_word_search (crit);
 create index mview_ww_word_search_crit_prefix_idx on mview_ww_word_search (crit text_pattern_ops);
 create index mview_ww_word_search_crit_tri_idx on mview_ww_word_search using gin(crit gin_trgm_ops);
-create index mview_ww_word_search_langs_filt_idx on mview_ww_word_search using gin(langs_filt);
+create index mview_ww_word_search_filt_langs_idx on mview_ww_word_search using gin(filt_langs);
+create index mview_ww_word_search_lang_ds_pubs_idx on mview_ww_word_search using gin(lang_ds_pubs);
 create index mview_ww_word_word_id_idx on mview_ww_word (word_id);
-create index mview_ww_word_value_idx on mview_ww_word (word);
-create index mview_ww_word_value_lower_idx on mview_ww_word (lower(word));
-create index mview_ww_word_value_prefix_idx on mview_ww_word (word text_pattern_ops);
-create index mview_ww_word_value_lower_prefix_idx on mview_ww_word (lower(word) text_pattern_ops);
-create index mview_ww_word_as_value_lower_idx on mview_ww_word (lower(as_word));
-create index mview_ww_word_as_value_prefix_idx on mview_ww_word (as_word text_pattern_ops);
-create index mview_ww_word_as_value_lower_prefix_idx on mview_ww_word (lower(as_word) text_pattern_ops);
+create index mview_ww_word_value_idx on mview_ww_word (value);
+create index mview_ww_word_value_lower_idx on mview_ww_word (lower(value));
+create index mview_ww_word_value_prefix_idx on mview_ww_word (value text_pattern_ops);
+create index mview_ww_word_value_lower_prefix_idx on mview_ww_word (lower(value) text_pattern_ops);
+create index mview_ww_word_value_as_word_lower_idx on mview_ww_word (lower(value_as_word));
+create index mview_ww_word_value_as_word_prefix_idx on mview_ww_word (value_as_word text_pattern_ops);
+create index mview_ww_word_value_as_word_lower_prefix_idx on mview_ww_word (lower(value_as_word) text_pattern_ops);
 create index mview_ww_word_lang_idx on mview_ww_word (lang);
 create index mview_ww_word_lang_filt_idx on mview_ww_word (lang_filt);
+create index mview_ww_word_lang_ds_pubs_idx on mview_ww_word using gin(lang_ds_pubs);
 create index mview_ww_form_word_id_idx on mview_ww_form (word_id);
-create index mview_ww_form_word_idx on mview_ww_form (word);
-create index mview_ww_form_word_lower_idx on mview_ww_form (lower(word));
+create index mview_ww_form_word_value_idx on mview_ww_form (word_value);
+create index mview_ww_form_word_value_lower_idx on mview_ww_form (lower(word_value));
 create index mview_ww_form_paradigm_id_idx on mview_ww_form (paradigm_id);
 create index mview_ww_form_value_idx on mview_ww_form (value);
 create index mview_ww_form_value_lower_idx on mview_ww_form (lower(value));
@@ -344,7 +361,9 @@ create index mview_ww_lexeme_word_id_idx on mview_ww_lexeme (word_id);
 create index mview_ww_lexeme_meaning_id_idx on mview_ww_lexeme (meaning_id);
 create index mview_ww_lexeme_dataset_type_idx on mview_ww_lexeme (dataset_type);
 create index mview_ww_lexeme_dataset_code_idx on mview_ww_lexeme (dataset_code);
-create index mview_ww_lexeme_complexity_idx on mview_ww_lexeme (complexity);
+create index mview_ww_lexeme_is_ww_unif_idx on mview_ww_lexeme (is_ww_unif);
+create index mview_ww_lexeme_is_ww_lite_idx on mview_ww_lexeme (is_ww_lite);
+create index mview_ww_lexeme_is_ww_od_idx on mview_ww_lexeme (is_ww_od);
 create index mview_ww_colloc_pos_group_lexeme_id_idx on mview_ww_colloc_pos_group (lexeme_id);
 create index mview_ww_colloc_pos_group_word_id_idx on mview_ww_colloc_pos_group (word_id);
 create index mview_ww_word_etymology_word_id_idx on mview_ww_word_etymology (word_id);
@@ -358,3 +377,4 @@ create index mview_ww_counts_lang_idx on mview_ww_counts (lang);
 create index mview_ww_news_article_created_idx on mview_ww_news_article (created);
 create index mview_ww_news_article_type_idx on mview_ww_news_article (type);
 create index mview_ww_news_article_lang_idx on mview_ww_news_article (lang);
+

@@ -49,9 +49,9 @@ public class MviewWwForm extends TableImpl<MviewWwFormRecord> {
     public final TableField<MviewWwFormRecord, Long> WORD_ID = createField(DSL.name("word_id"), SQLDataType.BIGINT, this, "");
 
     /**
-     * The column <code>public.mview_ww_form.word</code>.
+     * The column <code>public.mview_ww_form.word_value</code>.
      */
-    public final TableField<MviewWwFormRecord, String> WORD = createField(DSL.name("word"), SQLDataType.CLOB, this, "");
+    public final TableField<MviewWwFormRecord, String> WORD_VALUE = createField(DSL.name("word_value"), SQLDataType.CLOB, this, "");
 
     /**
      * The column <code>public.mview_ww_form.lang</code>.

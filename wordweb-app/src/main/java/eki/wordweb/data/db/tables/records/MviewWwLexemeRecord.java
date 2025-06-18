@@ -5,7 +5,6 @@ package eki.wordweb.data.db.tables.records;
 
 
 import eki.wordweb.data.db.tables.MviewWwLexeme;
-import eki.wordweb.data.db.udt.records.TypeLangComplexityRecord;
 
 import java.math.BigDecimal;
 
@@ -78,30 +77,30 @@ public class MviewWwLexemeRecord extends TableRecordImpl<MviewWwLexemeRecord> {
     }
 
     /**
-     * Setter for <code>public.mview_ww_lexeme.dataset_type</code>.
-     */
-    public void setDatasetType(String value) {
-        set(4, value);
-    }
-
-    /**
-     * Getter for <code>public.mview_ww_lexeme.dataset_type</code>.
-     */
-    public String getDatasetType() {
-        return (String) get(4);
-    }
-
-    /**
      * Setter for <code>public.mview_ww_lexeme.dataset_name</code>.
      */
     public void setDatasetName(String value) {
-        set(5, value);
+        set(4, value);
     }
 
     /**
      * Getter for <code>public.mview_ww_lexeme.dataset_name</code>.
      */
     public String getDatasetName() {
+        return (String) get(4);
+    }
+
+    /**
+     * Setter for <code>public.mview_ww_lexeme.dataset_type</code>.
+     */
+    public void setDatasetType(String value) {
+        set(5, value);
+    }
+
+    /**
+     * Getter for <code>public.mview_ww_lexeme.dataset_type</code>.
+     */
+    public String getDatasetType() {
         return (String) get(5);
     }
 
@@ -190,17 +189,17 @@ public class MviewWwLexemeRecord extends TableRecordImpl<MviewWwLexemeRecord> {
     }
 
     /**
-     * Setter for <code>public.mview_ww_lexeme.complexity</code>.
+     * Setter for <code>public.mview_ww_lexeme.lexeme_order_by</code>.
      */
-    public void setComplexity(String value) {
+    public void setLexemeOrderBy(Long value) {
         set(12, value);
     }
 
     /**
-     * Getter for <code>public.mview_ww_lexeme.complexity</code>.
+     * Getter for <code>public.mview_ww_lexeme.lexeme_order_by</code>.
      */
-    public String getComplexity() {
-        return (String) get(12);
+    public Long getLexemeOrderBy() {
+        return (Long) get(12);
     }
 
     /**
@@ -218,171 +217,185 @@ public class MviewWwLexemeRecord extends TableRecordImpl<MviewWwLexemeRecord> {
     }
 
     /**
-     * Setter for <code>public.mview_ww_lexeme.lexeme_order_by</code>.
-     */
-    public void setLexemeOrderBy(Long value) {
-        set(14, value);
-    }
-
-    /**
-     * Getter for <code>public.mview_ww_lexeme.lexeme_order_by</code>.
-     */
-    public Long getLexemeOrderBy() {
-        return (Long) get(14);
-    }
-
-    /**
-     * Setter for <code>public.mview_ww_lexeme.lang_complexities</code>.
-     */
-    public void setLangComplexities(TypeLangComplexityRecord[] value) {
-        set(15, value);
-    }
-
-    /**
-     * Getter for <code>public.mview_ww_lexeme.lang_complexities</code>.
-     */
-    public TypeLangComplexityRecord[] getLangComplexities() {
-        return (TypeLangComplexityRecord[]) get(15);
-    }
-
-    /**
      * Setter for <code>public.mview_ww_lexeme.register_codes</code>.
      */
     public void setRegisterCodes(String[] value) {
-        set(16, value);
+        set(14, value);
     }
 
     /**
      * Getter for <code>public.mview_ww_lexeme.register_codes</code>.
      */
     public String[] getRegisterCodes() {
-        return (String[]) get(16);
+        return (String[]) get(14);
     }
 
     /**
      * Setter for <code>public.mview_ww_lexeme.pos_codes</code>.
      */
     public void setPosCodes(String[] value) {
-        set(17, value);
+        set(15, value);
     }
 
     /**
      * Getter for <code>public.mview_ww_lexeme.pos_codes</code>.
      */
     public String[] getPosCodes() {
-        return (String[]) get(17);
+        return (String[]) get(15);
     }
 
     /**
      * Setter for <code>public.mview_ww_lexeme.region_codes</code>.
      */
     public void setRegionCodes(String[] value) {
-        set(18, value);
+        set(16, value);
     }
 
     /**
      * Getter for <code>public.mview_ww_lexeme.region_codes</code>.
      */
     public String[] getRegionCodes() {
-        return (String[]) get(18);
+        return (String[]) get(16);
     }
 
     /**
      * Setter for <code>public.mview_ww_lexeme.deriv_codes</code>.
      */
     public void setDerivCodes(String[] value) {
-        set(19, value);
+        set(17, value);
     }
 
     /**
      * Getter for <code>public.mview_ww_lexeme.deriv_codes</code>.
      */
     public String[] getDerivCodes() {
-        return (String[]) get(19);
+        return (String[]) get(17);
     }
 
     /**
-     * Setter for <code>public.mview_ww_lexeme.meaning_words</code>.
+     * Setter for <code>public.mview_ww_lexeme.lexeme_notes</code>.
      */
-    public void setMeaningWords(JSON value) {
-        set(20, value);
+    public void setLexemeNotes(JSON value) {
+        set(18, value);
     }
 
     /**
-     * Getter for <code>public.mview_ww_lexeme.meaning_words</code>.
+     * Getter for <code>public.mview_ww_lexeme.lexeme_notes</code>.
      */
-    public JSON getMeaningWords() {
-        return (JSON) get(20);
-    }
-
-    /**
-     * Setter for <code>public.mview_ww_lexeme.notes</code>.
-     */
-    public void setNotes(JSON value) {
-        set(21, value);
-    }
-
-    /**
-     * Getter for <code>public.mview_ww_lexeme.notes</code>.
-     */
-    public JSON getNotes() {
-        return (JSON) get(21);
+    public JSON getLexemeNotes() {
+        return (JSON) get(18);
     }
 
     /**
      * Setter for <code>public.mview_ww_lexeme.grammars</code>.
      */
     public void setGrammars(JSON value) {
-        set(22, value);
+        set(19, value);
     }
 
     /**
      * Getter for <code>public.mview_ww_lexeme.grammars</code>.
      */
     public JSON getGrammars() {
-        return (JSON) get(22);
+        return (JSON) get(19);
     }
 
     /**
      * Setter for <code>public.mview_ww_lexeme.governments</code>.
      */
     public void setGovernments(JSON value) {
-        set(23, value);
+        set(20, value);
     }
 
     /**
      * Getter for <code>public.mview_ww_lexeme.governments</code>.
      */
     public JSON getGovernments() {
-        return (JSON) get(23);
+        return (JSON) get(20);
     }
 
     /**
      * Setter for <code>public.mview_ww_lexeme.usages</code>.
      */
     public void setUsages(JSON value) {
-        set(24, value);
+        set(21, value);
     }
 
     /**
      * Getter for <code>public.mview_ww_lexeme.usages</code>.
      */
     public JSON getUsages() {
-        return (JSON) get(24);
+        return (JSON) get(21);
     }
 
     /**
      * Setter for <code>public.mview_ww_lexeme.source_links</code>.
      */
     public void setSourceLinks(JSON value) {
-        set(25, value);
+        set(22, value);
     }
 
     /**
      * Getter for <code>public.mview_ww_lexeme.source_links</code>.
      */
     public JSON getSourceLinks() {
-        return (JSON) get(25);
+        return (JSON) get(22);
+    }
+
+    /**
+     * Setter for <code>public.mview_ww_lexeme.meaning_words</code>.
+     */
+    public void setMeaningWords(JSON value) {
+        set(23, value);
+    }
+
+    /**
+     * Getter for <code>public.mview_ww_lexeme.meaning_words</code>.
+     */
+    public JSON getMeaningWords() {
+        return (JSON) get(23);
+    }
+
+    /**
+     * Setter for <code>public.mview_ww_lexeme.is_ww_unif</code>.
+     */
+    public void setIsWwUnif(Boolean value) {
+        set(24, value);
+    }
+
+    /**
+     * Getter for <code>public.mview_ww_lexeme.is_ww_unif</code>.
+     */
+    public Boolean getIsWwUnif() {
+        return (Boolean) get(24);
+    }
+
+    /**
+     * Setter for <code>public.mview_ww_lexeme.is_ww_lite</code>.
+     */
+    public void setIsWwLite(Boolean value) {
+        set(25, value);
+    }
+
+    /**
+     * Getter for <code>public.mview_ww_lexeme.is_ww_lite</code>.
+     */
+    public Boolean getIsWwLite() {
+        return (Boolean) get(25);
+    }
+
+    /**
+     * Setter for <code>public.mview_ww_lexeme.is_ww_od</code>.
+     */
+    public void setIsWwOd(Boolean value) {
+        set(26, value);
+    }
+
+    /**
+     * Getter for <code>public.mview_ww_lexeme.is_ww_od</code>.
+     */
+    public Boolean getIsWwOd() {
+        return (Boolean) get(26);
     }
 
     // -------------------------------------------------------------------------
@@ -399,34 +412,35 @@ public class MviewWwLexemeRecord extends TableRecordImpl<MviewWwLexemeRecord> {
     /**
      * Create a detached, initialised MviewWwLexemeRecord
      */
-    public MviewWwLexemeRecord(Long lexemeId, Long wordId, Long meaningId, String datasetCode, String datasetType, String datasetName, String valueStateCode, String proficiencyLevelCode, Integer reliability, Integer level1, Integer level2, BigDecimal weight, String complexity, Long datasetOrderBy, Long lexemeOrderBy, TypeLangComplexityRecord[] langComplexities, String[] registerCodes, String[] posCodes, String[] regionCodes, String[] derivCodes, JSON meaningWords, JSON notes, JSON grammars, JSON governments, JSON usages, JSON sourceLinks) {
+    public MviewWwLexemeRecord(Long lexemeId, Long wordId, Long meaningId, String datasetCode, String datasetName, String datasetType, String valueStateCode, String proficiencyLevelCode, Integer reliability, Integer level1, Integer level2, BigDecimal weight, Long lexemeOrderBy, Long datasetOrderBy, String[] registerCodes, String[] posCodes, String[] regionCodes, String[] derivCodes, JSON lexemeNotes, JSON grammars, JSON governments, JSON usages, JSON sourceLinks, JSON meaningWords, Boolean isWwUnif, Boolean isWwLite, Boolean isWwOd) {
         super(MviewWwLexeme.MVIEW_WW_LEXEME);
 
         setLexemeId(lexemeId);
         setWordId(wordId);
         setMeaningId(meaningId);
         setDatasetCode(datasetCode);
-        setDatasetType(datasetType);
         setDatasetName(datasetName);
+        setDatasetType(datasetType);
         setValueStateCode(valueStateCode);
         setProficiencyLevelCode(proficiencyLevelCode);
         setReliability(reliability);
         setLevel1(level1);
         setLevel2(level2);
         setWeight(weight);
-        setComplexity(complexity);
-        setDatasetOrderBy(datasetOrderBy);
         setLexemeOrderBy(lexemeOrderBy);
-        setLangComplexities(langComplexities);
+        setDatasetOrderBy(datasetOrderBy);
         setRegisterCodes(registerCodes);
         setPosCodes(posCodes);
         setRegionCodes(regionCodes);
         setDerivCodes(derivCodes);
-        setMeaningWords(meaningWords);
-        setNotes(notes);
+        setLexemeNotes(lexemeNotes);
         setGrammars(grammars);
         setGovernments(governments);
         setUsages(usages);
         setSourceLinks(sourceLinks);
+        setMeaningWords(meaningWords);
+        setIsWwUnif(isWwUnif);
+        setIsWwLite(isWwLite);
+        setIsWwOd(isWwOd);
     }
 }

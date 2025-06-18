@@ -10,16 +10,15 @@ import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import eki.common.constant.Complexity;
 import eki.common.constant.GlobalConstant;
 import eki.common.data.OrderedMap;
 import eki.wordweb.constant.SystemConstant;
 import eki.wordweb.constant.WebConstant;
-import eki.wordweb.data.ComplexityType;
+import eki.wordweb.data.AbstractPublishingEntity;
 import eki.wordweb.data.LangType;
+import eki.wordweb.data.SourceLink;
 import eki.wordweb.data.SourceLinkType;
 import eki.wordweb.data.WordTypeData;
-import eki.wordweb.data.type.TypeSourceLink;
 
 public abstract class AbstractConversionUtil implements WebConstant, SystemConstant, GlobalConstant {
 
@@ -71,26 +70,29 @@ public abstract class AbstractConversionUtil implements WebConstant, SystemConst
 				.collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (oldValue, newValue) -> oldValue, OrderedMap::new));
 	}
 
-	protected <T extends ComplexityType> List<T> filter(List<T> list, Complexity lexComplexity) {
+	protected <T extends AbstractPublishingEntity> List<T> filter(List<T> list, AbstractPublishingEntity targetPublishingContext) {
 		if (CollectionUtils.isEmpty(list)) {
 			return list;
 		}
-		if (lexComplexity == null) {
+		if (targetPublishingContext == null) {
 			return list;
 		}
 		return list.stream()
-				.filter(elem -> isComplexityMatch(elem.getComplexity(), lexComplexity))
+				.filter(elem -> isPublishingTargetMatch(elem, targetPublishingContext))
 				.collect(Collectors.toList());
 	}
 
-	protected boolean isComplexityMatch(Complexity dataComplexity, Complexity lexComplexity) {
-		if (dataComplexity == null) {
-			return true;
+	protected boolean isPublishingTargetMatch(AbstractPublishingEntity dataPublishingContext, AbstractPublishingEntity targetPublishingContext) {
+		if (targetPublishingContext.isWwUnif()) {
+			return dataPublishingContext.isWwUnif();
 		}
-		if (Complexity.ANY.equals(dataComplexity)) {
-			return true;
+		if (targetPublishingContext.isWwLite()) {
+			return dataPublishingContext.isWwLite();
 		}
-		return dataComplexity.equals(lexComplexity);
+		if (targetPublishingContext.isWwOd()) {
+			return dataPublishingContext.isWwOd();
+		}
+		return false;
 	}
 
 	protected <T extends LangType> List<T> filter(List<T> list, String wordLang, List<String> destinLangs) {
@@ -136,18 +138,18 @@ public abstract class AbstractConversionUtil implements WebConstant, SystemConst
 			return;
 		}
 		for (SourceLinkType sourceLinkType : sourceLinkTypes) {
-			List<TypeSourceLink> sourceLinks = sourceLinkType.getSourceLinks();
+			List<SourceLink> sourceLinks = sourceLinkType.getSourceLinks();
 			convertUrlsToHrefs(sourceLinks);
 		}
 	}
 
-	protected void convertUrlsToHrefs(List<TypeSourceLink> sourceLinks) {
+	protected void convertUrlsToHrefs(List<SourceLink> sourceLinks) {
 
 		if (CollectionUtils.isEmpty(sourceLinks)) {
 			return;
 		}
 		final String[] urlPrefixes = new String[] {"http://", "https://"};
-		for (TypeSourceLink sourceLink : sourceLinks) {
+		for (SourceLink sourceLink : sourceLinks) {
 			String valuePrese = sourceLink.getSourceValuePrese();
 			if (StringUtils.contains(valuePrese, "<a href=")) {
 				continue;

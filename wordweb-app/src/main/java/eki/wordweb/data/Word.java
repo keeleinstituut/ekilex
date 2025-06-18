@@ -9,9 +9,6 @@ import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
 
 import eki.common.data.Classifier;
 import eki.common.util.LocalDateTimeDeserialiser;
-import eki.wordweb.data.type.TypeDefinition;
-import eki.wordweb.data.type.TypeMeaningWord;
-import eki.wordweb.data.type.TypeWordRelation;
 
 public class Word extends WordTypeData {
 
@@ -31,11 +28,11 @@ public class Word extends WordTypeData {
 	@JsonDeserialize(using = LocalDateTimeDeserialiser.class)
 	private LocalDateTime lastActivityEventOn;
 
-	private List<TypeMeaningWord> meaningWords;
+	private List<MeaningWord> meaningWords;
 
 	private String meaningWordsWrapup;
 
-	private List<TypeDefinition> definitions;
+	private List<Definition> definitions;
 
 	private String definitionsWrapup;
 
@@ -43,7 +40,7 @@ public class Word extends WordTypeData {
 
 	private WordEtymLevel wordEtymologyTree;
 
-	private List<TypeWordRelation> relatedWords;
+	private List<WordRelation> relatedWords;
 
 	private List<WordRelationGroup> primaryRelatedWordTypeGroups;
 
@@ -103,11 +100,11 @@ public class Word extends WordTypeData {
 		this.lastActivityEventOn = lastActivityEventOn;
 	}
 
-	public List<TypeMeaningWord> getMeaningWords() {
+	public List<MeaningWord> getMeaningWords() {
 		return meaningWords;
 	}
 
-	public void setMeaningWords(List<TypeMeaningWord> meaningWords) {
+	public void setMeaningWords(List<MeaningWord> meaningWords) {
 		this.meaningWords = meaningWords;
 	}
 
@@ -119,11 +116,11 @@ public class Word extends WordTypeData {
 		this.meaningWordsWrapup = meaningWordsWrapup;
 	}
 
-	public List<TypeDefinition> getDefinitions() {
+	public List<Definition> getDefinitions() {
 		return definitions;
 	}
 
-	public void setDefinitions(List<TypeDefinition> definitions) {
+	public void setDefinitions(List<Definition> definitions) {
 		this.definitions = definitions;
 	}
 
@@ -151,11 +148,11 @@ public class Word extends WordTypeData {
 		this.wordEtymologyTree = wordEtymologyTree;
 	}
 
-	public List<TypeWordRelation> getRelatedWords() {
+	public List<WordRelation> getRelatedWords() {
 		return relatedWords;
 	}
 
-	public void setRelatedWords(List<TypeWordRelation> relatedWords) {
+	public void setRelatedWords(List<WordRelation> relatedWords) {
 		this.relatedWords = relatedWords;
 	}
 

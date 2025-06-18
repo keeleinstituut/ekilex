@@ -53,16 +53,16 @@ public class ViewWwDatasetWordMenu extends TableImpl<ViewWwDatasetWordMenuRecord
     public final TableField<ViewWwDatasetWordMenuRecord, String> FIRST_LETTER = createField(DSL.name("first_letter"), SQLDataType.CLOB, this, "");
 
     /**
-     * The column <code>public.view_ww_dataset_word_menu.words</code>.
+     * The column <code>public.view_ww_dataset_word_menu.word_values</code>.
      */
-    public final TableField<ViewWwDatasetWordMenuRecord, String[]> WORDS = createField(DSL.name("words"), SQLDataType.CLOB.getArrayDataType(), this, "");
+    public final TableField<ViewWwDatasetWordMenuRecord, String[]> WORD_VALUES = createField(DSL.name("word_values"), SQLDataType.CLOB.getArrayDataType(), this, "");
 
     private ViewWwDatasetWordMenu(Name alias, Table<ViewWwDatasetWordMenuRecord> aliased) {
         this(alias, aliased, null);
     }
 
     private ViewWwDatasetWordMenu(Name alias, Table<ViewWwDatasetWordMenuRecord> aliased, Field<?>[] parameters) {
-        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.view("create view \"view_ww_dataset_word_menu\" as  SELECT dataset_code,\n    first_letter,\n    array_agg(word ORDER BY word) AS words\n   FROM ( SELECT \"left\"(w_1.value, 1) AS first_letter,\n            w_1.value AS word,\n            l.dataset_code\n           FROM word w_1,\n            lexeme l,\n            dataset ds\n          WHERE ((w_1.value <> ''::text) AND (w_1.is_public = true) AND (l.word_id = w_1.id) AND (l.is_public = true) AND (l.is_word = true) AND ((l.dataset_code)::text = (ds.code)::text) AND (ds.is_public = true) AND ((ds.code)::text <> ALL ((ARRAY['ety'::character varying, 'eki'::character varying])::text[])))) w\n  GROUP BY dataset_code, first_letter\n  ORDER BY dataset_code, first_letter;"));
+        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.view("create view \"view_ww_dataset_word_menu\" as  SELECT dataset_code,\n    first_letter,\n    array_agg(value ORDER BY value) AS word_values\n   FROM ( SELECT \"left\"(w.value, 1) AS first_letter,\n            w.value,\n            l.dataset_code\n           FROM word w,\n            lexeme l,\n            dataset ds\n          WHERE ((w.value <> ''::text) AND (w.is_public = true) AND (l.word_id = w.id) AND (l.is_public = true) AND (l.is_word = true) AND ((l.dataset_code)::text = (ds.code)::text) AND (ds.is_public = true) AND ((ds.code)::text <> ALL ((ARRAY['ety'::character varying, 'eki'::character varying])::text[])))) dsw\n  GROUP BY dataset_code, first_letter\n  ORDER BY dataset_code, first_letter;"));
     }
 
     /**

@@ -1,13 +1,10 @@
-package eki.wordweb.data.type;
+package eki.wordweb.data;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.PropertyNamingStrategies;
-import com.fasterxml.jackson.databind.annotation.JsonNaming;
 
 import eki.common.data.AbstractDataObject;
 
-@JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
-public class TypeSourceLink extends AbstractDataObject {
+public class SourceLink extends AbstractDataObject {
 
 	private static final long serialVersionUID = 1L;
 

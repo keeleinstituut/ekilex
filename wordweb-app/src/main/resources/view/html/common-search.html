@@ -112,7 +112,7 @@
           <form class="h-100">
             <input type="hidden" name="word-id" th:value="${word.wordId}" />
             <input type="hidden" name="word-selected" th:value="${word.selected}" />
-            <input type="hidden" name="word-select-url" th:value="@{${@viewUtil.getSearchUri(sessionBean, searchMode, word.word, word.homonymNr, word.lang)}}" />
+            <input type="hidden" name="word-select-url" th:value="@{${@viewUtil.getSearchUri(sessionBean, searchMode, word.value, word.homonymNr, word.lang)}}" />
             <button type="button" th:id="${'word-details-link-' + word.wordId}" class="homonym-item homonym__item">
               <th:block th:with="langData=${@viewUtil.getLangData(word.lang)}">
                 <span th:text="${langData.codeIso2}" th:title="${langData.label}" data-toggle="tooltip" th:unless="${langData.imageName}" class="lang-code text-caption">1</span>
@@ -149,7 +149,7 @@
         </button>
       </div>
       <span class="word-details-homonym-nr d-none mr-2" th:aria-label="|#{aria.homonym} ${wordData.word.homonymNr}|" th:text="${wordData.word.homonymNr}">1</span>
-      <button th:aria-label="|#{aria.listen} - ${wordData.word.word}|" class="btn btn-speaker"
+      <button th:aria-label="|#{aria.listen} - ${wordData.word.value}|" class="btn btn-speaker"
               th:if="${wordData.firstAvailableAudioFile != null}"
               th:data-audio-url="@{'/files/audio/' + ${wordData.firstAvailableAudioFile}}" onclick="getAndPlayAudio(this)">
         <span class="material-symbols-outlined material-symbols-outlined--small">record_voice_over</span>
@@ -209,7 +209,7 @@
       <i class="fa fa-exclamation-triangle small mr-2 mt-1" aria-hidden="true"></i>
       <span th:text="#{warning.eki.rus}">See ei ole valmis sõnastik.</span>
     </div>
-    <section class="level-3-panel meaning-panel d-flex flex-row text-body-two mb-2" th:each="lexeme : ${wordData.lexLexemes}">
+    <section th:each="lexeme : ${wordData.lexLexemes}" class="level-3-panel meaning-panel d-flex flex-row text-body-two mb-2">
       <div th:replace="lex-details :: lexeme-data"></div>
     </section>
     <div th:replace="common-search :: no-lexemes-exist"></div>
@@ -217,7 +217,7 @@
   <th:block th:fragment="lex-detail-view-simple">
     <th:block th:if="${wordData.lexemesExist}">
       <div th:if="${not #lists.isEmpty(wordData.lexLexemes)}">
-        <section class="level-3-panel meaning-panel d-flex flex-row mb-2" th:each="lexeme : ${wordData.lexLexemes}">
+        <section th:each="lexeme : ${wordData.lexLexemes}" class="level-3-panel meaning-panel d-flex flex-row mb-2">
           <div th:replace="lex-details :: lexeme-data"></div>
         </section>
       </div>
@@ -228,24 +228,7 @@
     <th:block th:each="lexeme : ${wordData.termLexemes}" th:with="
     isProTerm = ${@viewUtil.isProTermData(lexeme)},
     isLimTerm = ${@viewUtil.isLimTermData(lexeme)}">
-      <div class="search__block">
-        <div class="d-flex">
-          <div class="search__block-header">
-              <span class="search__block-title" th:text="${lexeme.datasetName}">EKI ühendsõnastik 2020</span>
-            <div class="meaning-data__modified">
-              <span>ID</span>
-              <span th:text="${lexeme.meaningId}" th:if="${isProTerm}"></span>
-              <span th:text="#{label.tooltip.last_modified}"></span>
-              <span class="meaning-data__date" th:text="${#temporals.format(lexeme.meaningManualEventOn, 'dd.MM.yyyy')}"></span>
-            </div>
-          </div>
-          <a
-          class="meaning-data__link"
-          th:href="|@{/ds}/${lexeme.datasetCode}|"
-          target="_blank"
-          rel="noreferrer"
-          th:text="#{label.view.dataset}">Vaata sõnakogu</a>
-        </div>
+      <div class="search__block" th:id="|lexeme-section-${lexeme.lexemeId}|">
         <th:block th:replace="term-details :: meaning-data"></th:block>
       </div>
     </th:block>

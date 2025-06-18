@@ -27,10 +27,10 @@ import eki.wordweb.data.SearchContext;
 import eki.wordweb.data.SearchFilter;
 import eki.wordweb.data.Word;
 import eki.wordweb.data.WordData;
+import eki.wordweb.data.WordRelation;
 import eki.wordweb.data.WordSearchElement;
 import eki.wordweb.data.WordsData;
 import eki.wordweb.data.WordsMatch;
-import eki.wordweb.data.type.TypeWordRelation;
 import eki.wordweb.service.db.CommonDataDbService;
 import eki.wordweb.service.db.SearchDbService;
 import eki.wordweb.service.util.ClassifierUtil;
@@ -102,8 +102,8 @@ public abstract class AbstractSearchService implements SystemConstant, WebConsta
 		if (CollectionUtils.isEmpty(formGroup)) {
 			formGroup = new ArrayList<>();
 		}
-		List<String> prefWords = wordGroup.stream().map(WordSearchElement::getWord).distinct().collect(Collectors.toList());
-		List<String> formWords = formGroup.stream().map(WordSearchElement::getWord).distinct().collect(Collectors.toList());
+		List<String> prefWords = wordGroup.stream().map(WordSearchElement::getWordValue).distinct().collect(Collectors.toList());
+		List<String> formWords = formGroup.stream().map(WordSearchElement::getWordValue).distinct().collect(Collectors.toList());
 		if (CollectionUtils.isNotEmpty(prefWords)) {
 			prefWords.forEach(formWords::remove);
 			int prefWordsCount = prefWords.size();
@@ -153,7 +153,7 @@ public abstract class AbstractSearchService implements SystemConstant, WebConsta
 				.collect(Collectors.toList());
 		List<String> formMatchWordValues = allWords.stream()
 				.filter(Word::isFormMatch)
-				.map(Word::getWord)
+				.map(Word::getValue)
 				.distinct()
 				.collect(Collectors.toList());
 
@@ -176,7 +176,7 @@ public abstract class AbstractSearchService implements SystemConstant, WebConsta
 			return new WordsData(similarWordValues, altResultExists);
 		}
 
-		LanguagesDatasets availableLanguagesDatasets = searchDbService.getAvailableLanguagesDatasets(searchWord, searchContext.getLexComplexity());
+		LanguagesDatasets availableLanguagesDatasets = searchDbService.getAvailableLanguagesDatasets(searchWord, searchContext);
 		String displayLang = languageContext.getDisplayLang();
 		composeFilteringSuggestions(searchFilter, availableLanguagesDatasets);
 		classifierUtil.applyClassifiers(availableLanguagesDatasets, displayLang);
@@ -194,9 +194,9 @@ public abstract class AbstractSearchService implements SystemConstant, WebConsta
 			SearchContext searchContext) {
 
 		List<String> skellCompatibleLangs = Arrays.asList(LANGUAGE_CODE_ENG, LANGUAGE_CODE_DEU, LANGUAGE_CODE_RUS);
-		String headwordValue = word.getWord();
+		String headwordValue = word.getValue();
 		String headwordLang = word.getLang();
-		List<TypeWordRelation> headwordRelatedWords = word.getRelatedWords();
+		List<WordRelation> headwordRelatedWords = word.getRelatedWords();
 		List<String> destinLangs = searchContext.getDestinLangs();
 
 		boolean lexemesExist = CollectionUtils.isNotEmpty(lexLexemes) || CollectionUtils.isNotEmpty(termLexemes) || CollectionUtils.isNotEmpty(limTermLexemes);

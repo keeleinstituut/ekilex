@@ -34,16 +34,16 @@ public class ViewWwFormRecord extends TableRecordImpl<ViewWwFormRecord> {
     }
 
     /**
-     * Setter for <code>public.view_ww_form.word</code>.
+     * Setter for <code>public.view_ww_form.word_value</code>.
      */
-    public void setWord(String value) {
+    public void setWordValue(String value) {
         set(1, value);
     }
 
     /**
-     * Getter for <code>public.view_ww_form.word</code>.
+     * Getter for <code>public.view_ww_form.word_value</code>.
      */
-    public String getWord() {
+    public String getWordValue() {
         return (String) get(1);
     }
 
@@ -439,11 +439,11 @@ public class ViewWwFormRecord extends TableRecordImpl<ViewWwFormRecord> {
     /**
      * Create a detached, initialised ViewWwFormRecord
      */
-    public ViewWwFormRecord(Long wordId, String word, String lang, String vocalForm, String morphComment, Long paradigmId, String paradigmComment, String inflectionType, String inflectionTypeNr, String wordClass, Long formId, String value, String valuePrese, String morphCode, String morphGroup1, String morphGroup2, String morphGroup3, Integer displayLevel, String displayForm, String audioFile, Boolean morphExists, Boolean isQuestionable, Long orderBy, BigDecimal formFreqValue, Long formFreqRank, Long formFreqRankMax, BigDecimal morphFreqValue, Long morphFreqRank, Long morphFreqRankMax) {
+    public ViewWwFormRecord(Long wordId, String wordValue, String lang, String vocalForm, String morphComment, Long paradigmId, String paradigmComment, String inflectionType, String inflectionTypeNr, String wordClass, Long formId, String value, String valuePrese, String morphCode, String morphGroup1, String morphGroup2, String morphGroup3, Integer displayLevel, String displayForm, String audioFile, Boolean morphExists, Boolean isQuestionable, Long orderBy, BigDecimal formFreqValue, Long formFreqRank, Long formFreqRankMax, BigDecimal morphFreqValue, Long morphFreqRank, Long morphFreqRankMax) {
         super(ViewWwForm.VIEW_WW_FORM);
 
         setWordId(wordId);
-        setWord(word);
+        setWordValue(wordValue);
         setLang(lang);
         setVocalForm(vocalForm);
         setMorphComment(morphComment);

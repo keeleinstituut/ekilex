@@ -4,9 +4,9 @@ import java.util.List;
 
 public interface DecoratedWordType {
 
-	String getWord();
+	String getValue();
 
-	String getWordPrese();
+	String getValuePrese();
 
 	List<String> getWordTypeCodes();
 

@@ -1,13 +1,9 @@
-package eki.wordweb.data.type;
+package eki.wordweb.data;
 
-import java.util.List;
-
-import eki.common.constant.Complexity;
 import eki.common.constant.RelationStatus;
 import eki.common.data.Classifier;
-import eki.wordweb.data.WordTypeData;
 
-public class TypeWordRelation extends WordTypeData {
+public class WordRelation extends WordTypeData {
 
 	private static final long serialVersionUID = 1L;
 
@@ -20,8 +16,6 @@ public class TypeWordRelation extends WordTypeData {
 	private RelationStatus relationStatus;
 
 	private Long orderBy;
-
-	private List<Complexity> lexComplexities;
 
 	private boolean homonymsExist;
 
@@ -63,14 +57,6 @@ public class TypeWordRelation extends WordTypeData {
 
 	public void setOrderBy(Long orderBy) {
 		this.orderBy = orderBy;
-	}
-
-	public List<Complexity> getLexComplexities() {
-		return lexComplexities;
-	}
-
-	public void setLexComplexities(List<Complexity> lexComplexities) {
-		this.lexComplexities = lexComplexities;
 	}
 
 	public boolean isHomonymsExist() {

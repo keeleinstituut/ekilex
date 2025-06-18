@@ -13,7 +13,6 @@ import static eki.wordweb.data.db.Tables.MVIEW_WW_WORD_RELATION;
 import static eki.wordweb.data.db.Tables.MVIEW_WW_WORD_SEARCH;
 
 import java.math.BigDecimal;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -37,7 +36,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Component;
 
-import eki.common.constant.Complexity;
 import eki.common.constant.DatasetType;
 import eki.common.constant.GlobalConstant;
 import eki.wordweb.constant.SystemConstant;
@@ -66,7 +64,7 @@ import eki.wordweb.data.db.tables.MviewWwWord;
 import eki.wordweb.data.db.tables.MviewWwWordEtymology;
 import eki.wordweb.data.db.tables.MviewWwWordRelation;
 import eki.wordweb.data.db.tables.MviewWwWordSearch;
-import eki.wordweb.data.db.udt.records.TypeLangComplexityRecord;
+import eki.wordweb.data.db.udt.records.TypeLangDatasetPublishingRecord;
 
 @Component
 public class SearchDbService implements GlobalConstant, SystemConstant {
@@ -80,7 +78,7 @@ public class SearchDbService implements GlobalConstant, SystemConstant {
 		MviewWwCounts c = MVIEW_WW_COUNTS.as("c");
 
 		Table<Record2<String, Integer>> ww = DSL
-				.select(w.WORD, DSL.rowNumber().over().as("rownum"))
+				.select(w.VALUE, DSL.rowNumber().over().as("rownum"))
 				.from(w)
 				.where(w.LANG.eq(lang))
 				.asTable("w");
@@ -92,7 +90,7 @@ public class SearchDbService implements GlobalConstant, SystemConstant {
 								.and(c.DATASET_CODE.eq(DATASET_ALL)))
 				.asTable("c");
 		return create
-				.select(ww.field("word", String.class))
+				.select(ww.field("value", String.class))
 				.from(ww, cc)
 				.where(ww.field("rownum", Integer.class).eq(cc.field("rndrownum", Integer.class)))
 				.fetchOneInto(String.class);
@@ -130,34 +128,34 @@ public class SearchDbService implements GlobalConstant, SystemConstant {
 				.and(f.SGROUP.eq(WORD_SEARCH_GROUP_FORM))
 				.and(f.CRIT.eq(wordInfixLowerField));
 
-		Table<Record5<String, String, String, Long, TypeLangComplexityRecord[]>> ws = DSL
+		Table<Record5<String, String, String, Long, TypeLangDatasetPublishingRecord[]>> ws = DSL
 				.select(
 						wgf.as("sgroup"),
-						w.WORD,
+						w.WORD_VALUE,
 						w.CRIT,
 						w.LANG_ORDER_BY,
-						w.LANG_COMPLEXITIES)
+						w.LANG_DS_PUBS)
 				.from(w)
 				.where(wwhere)
 				.unionAll(DSL
 						.select(
 								wgf.as("sgroup"),
-								aw.WORD,
+								aw.WORD_VALUE,
 								aw.CRIT,
 								aw.LANG_ORDER_BY,
-								aw.LANG_COMPLEXITIES)
+								aw.LANG_DS_PUBS)
 						.from(aw)
 						.where(awwhere))
 				.asTable("ws");
 
-		Field<Integer> wlf = DSL.field(Routines.levenshtein1(ws.field("word", String.class), wordInfixLowerField));
+		Field<Integer> wlf = DSL.field(Routines.levenshtein1(ws.field("word_value", String.class), wordInfixLowerField));
 
 		Condition wsWhere = applyContainingLangComplexityDatasetFilter(ws, searchContext, DSL.noCondition());
 
 		Table<Record3<String, String, Integer>> wfs = DSL
 				.select(
 						ws.field("sgroup", String.class),
-						ws.field("word", String.class),
+						ws.field("word_value", String.class),
 						wlf.as("lev"))
 				.from(ws)
 				.where(wsWhere)
@@ -168,18 +166,18 @@ public class SearchDbService implements GlobalConstant, SystemConstant {
 				.unionAll(DSL
 						.select(
 								f.SGROUP,
-								f.WORD,
+								f.WORD_VALUE,
 								DSL.field(DSL.val(0)).as("lev"))
 						.from(f)
 						.where(fwhere)
-						.orderBy(f.WORD)
+						.orderBy(f.WORD_VALUE)
 						.limit(maxWordCount))
 				.asTable("wfs");
 
 		return (Map<String, List<WordSearchElement>>) create
 				.select(
 						wfs.field("sgroup", String.class),
-						wfs.field("word", String.class))
+						wfs.field("word_value", String.class))
 				.from(wfs)
 				.fetchGroups("sgroup", WordSearchElement.class);
 	}
@@ -193,12 +191,12 @@ public class SearchDbService implements GlobalConstant, SystemConstant {
 
 		MviewWwWordSearch w = MVIEW_WW_WORD_SEARCH.as("w");
 		MviewWwWordSearch aw = MVIEW_WW_WORD_SEARCH.as("aw");
-		Table<Record4<String, Long, TypeLangComplexityRecord[], Integer>> ws = null;
+		Table<Record4<String, Long, TypeLangDatasetPublishingRecord[], Integer>> ws = null;
 
 		Field<String> searchWordLowerField = DSL.lower(searchWord);
 		Field<String> searchWordUnaccentLowerField = DSL.lower(searchWordUnaccent);
-		Field<Integer> wsf = DSL.field(Routines.levenshteinLessEqual1(w.WORD, searchWordLowerField, DSL.val(MAX_LEV_DIST)));
-		Field<Integer> awsf = DSL.field(Routines.levenshteinLessEqual1(aw.WORD, searchWordLowerField, DSL.val(MAX_LEV_DIST)));
+		Field<Integer> wsf = DSL.field(Routines.levenshteinLessEqual1(w.WORD_VALUE, searchWordLowerField, DSL.val(MAX_LEV_DIST)));
+		Field<Integer> awsf = DSL.field(Routines.levenshteinLessEqual1(aw.WORD_VALUE, searchWordLowerField, DSL.val(MAX_LEV_DIST)));
 
 		Condition wwhere = applyWordLangFilter(w, destinLangs, DSL.noCondition())
 				.and(w.SGROUP.eq(WORD_SEARCH_GROUP_WORD))
@@ -208,11 +206,11 @@ public class SearchDbService implements GlobalConstant, SystemConstant {
 				.and(aw.SGROUP.eq(WORD_SEARCH_GROUP_AS_WORD))
 				.and(Routines.levenshteinLessEqual1(aw.CRIT, searchWordUnaccentLowerField, DSL.val(D_MAX)).le(MAX_LEV_DIST));
 
-		SelectConditionStep<Record4<String, Long, TypeLangComplexityRecord[], Integer>> wselect = DSL
+		SelectConditionStep<Record4<String, Long, TypeLangDatasetPublishingRecord[], Integer>> wselect = DSL
 				.select(
-						w.WORD,
+						w.WORD_VALUE,
 						w.LANG_ORDER_BY,
-						w.LANG_COMPLEXITIES,
+						w.LANG_DS_PUBS,
 						wsf.as("lev"))
 				.from(w)
 				.where(wwhere);
@@ -224,9 +222,9 @@ public class SearchDbService implements GlobalConstant, SystemConstant {
 			ws = wselect
 					.unionAll(DSL
 							.select(
-									aw.WORD,
+									aw.WORD_VALUE,
 									aw.LANG_ORDER_BY,
-									aw.LANG_COMPLEXITIES,
+									aw.LANG_DS_PUBS,
 									awsf.as("lev"))
 							.from(aw)
 							.where(awwhere))
@@ -241,7 +239,7 @@ public class SearchDbService implements GlobalConstant, SystemConstant {
 		Condition wsWhere = applyContainingLangComplexityDatasetFilter(ws, searchContext, DSL.noCondition());
 
 		return create
-				.select(ws.field("word"))
+				.select(ws.field("word_value"))
 				.from(ws)
 				.where(wsWhere)
 				.orderBy(
@@ -265,10 +263,10 @@ public class SearchDbService implements GlobalConstant, SystemConstant {
 		where = applyWordLangFilter(w, destinLangs, where);
 
 		List<String> wordValues = create
-				.select(w.WORD)
+				.select(w.WORD_VALUE)
 				.from(w)
 				.where(where)
-				.orderBy(w.WORD)
+				.orderBy(w.WORD_VALUE)
 				.limit(MASKED_SEARCH_RESULT_LIMIT)
 				.fetchInto(String.class);
 
@@ -307,15 +305,15 @@ public class SearchDbService implements GlobalConstant, SystemConstant {
 					.select(DSL.field(DSL.val(false)).as("form_match"))
 					.from(w)
 					.where(DSL.or(
-							DSL.lower(w.WORD).eq(searchWordLowerField),
-							DSL.lower(w.AS_WORD).eq(searchWordLowerField)))
+							DSL.lower(w.VALUE).eq(searchWordLowerField),
+							DSL.lower(w.VALUE_AS_WORD).eq(searchWordLowerField)))
 					.asTable("w");
 
 		} else {
 
 			Condition whereForm = f.WORD_ID.eq(w.WORD_ID)
 					.and(DSL.lower(f.VALUE).eq(searchWordLowerField))
-					.and(f.VALUE.ne(f.WORD))
+					.and(f.VALUE.ne(f.WORD_VALUE))
 					.and(f.MORPH_CODE.ne(MORPH_CODE_UNKNOWN))
 					.and(f.MORPH_EXISTS.isTrue());
 
@@ -328,8 +326,8 @@ public class SearchDbService implements GlobalConstant, SystemConstant {
 					.select(DSL.field(DSL.val(false)).as("form_match"))
 					.from(w)
 					.where(DSL.or(
-							DSL.lower(w.WORD).eq(searchWordLowerField),
-							DSL.lower(w.AS_WORD).eq(searchWordLowerField)))
+							DSL.lower(w.VALUE).eq(searchWordLowerField),
+							DSL.lower(w.VALUE_AS_WORD).eq(searchWordLowerField)))
 					.unionAll(DSL
 							.select(w.fields())
 							.select(DSL.field(DSL.val(false)).as("word_match"))
@@ -355,10 +353,11 @@ public class SearchDbService implements GlobalConstant, SystemConstant {
 
 		Field<String> wvobf;
 		if (fiCollationExists) {
-			wvobf = ww.field("word", String.class).collate("fi_FI");
+			wvobf = ww.field("value", String.class).collate("fi_FI");
 		} else {
-			wvobf = ww.field("word", String.class);
+			wvobf = ww.field("value", String.class);
 		}
+
 		return create
 				.selectFrom(ww)
 				.where(where)
@@ -371,27 +370,35 @@ public class SearchDbService implements GlobalConstant, SystemConstant {
 				.fetchInto(Word.class);
 	}
 
-	public LanguagesDatasets getAvailableLanguagesDatasets(String searchWord, Complexity lexComplexity) {
+	public LanguagesDatasets getAvailableLanguagesDatasets(String searchWord, SearchContext searchContext) {
 
+		boolean isWwUnif = searchContext.isWwUnif();
+		boolean isWwLite = searchContext.isWwLite();
+		boolean isWwOd = searchContext.isWwOd();
 		Field<String> searchWordLowerField = DSL.lower(searchWord);
 
 		MviewWwWord w = MVIEW_WW_WORD.as("w");
 		MviewWwLexeme l = MVIEW_WW_LEXEME.as("l");
 
-		List<String> complexityNames = composeFilteringComplexityNames(lexComplexity);
-
-		Table<?> lc = DSL.unnest(w.LANG_COMPLEXITIES).as("lc", "lang", "dataset_code", "lex_complexity", "data_complexity");
-		Condition lcWhere = lc.field("lex_complexity", String.class).in(complexityNames)
-				.and(lc.field("data_complexity", String.class).in(complexityNames));
+		Table<?> lc = DSL.unnest(w.LANG_DS_PUBS).as("ldp", "lang", "dataset_code", "is_ww_unif", "is_ww_lite", "is_ww_od");
+		Condition lcWhere = DSL.noCondition();
+		if (isWwUnif) {
+			lcWhere = lc.field("is_ww_unif", boolean.class).isTrue();
+		} else if (isWwLite) {
+			lcWhere = lc.field("is_ww_lite", boolean.class).isTrue();
+		} else if (isWwOd) {
+			lcWhere = lc.field("is_ww_od", boolean.class).isTrue();
+		}
 
 		return create
 				.select(
 						DSL.arrayAggDistinct(w.LANG).as("language_codes"),
 						DSL.arrayAggDistinct(l.DATASET_CODE).as("dataset_codes"))
 				.from(w, l)
-				.where(DSL.or(
-						DSL.lower(w.WORD).eq(searchWordLowerField),
-						DSL.lower(w.AS_WORD).eq(searchWordLowerField))
+				.where(DSL
+						.or(
+								DSL.lower(w.VALUE).eq(searchWordLowerField),
+								DSL.lower(w.VALUE_AS_WORD).eq(searchWordLowerField))
 						.and(l.WORD_ID.eq(w.WORD_ID))
 						.andExists(DSL.select(DSL.val(1)).from(lc).where(lcWhere)))
 				.fetchOptionalInto(LanguagesDatasets.class)
@@ -407,30 +414,33 @@ public class SearchDbService implements GlobalConstant, SystemConstant {
 
 		return create
 				.select(
-						l.WORD_ID,
 						l.LEXEME_ID,
+						l.WORD_ID,
 						l.MEANING_ID,
 						l.DATASET_CODE,
-						l.DATASET_TYPE,
 						l.DATASET_NAME,
+						l.DATASET_TYPE,
 						l.VALUE_STATE_CODE,
 						l.PROFICIENCY_LEVEL_CODE,
 						l.RELIABILITY,
 						l.LEVEL1,
 						l.LEVEL2,
-						l.COMPLEXITY,
 						l.WEIGHT,
-						l.DATASET_ORDER_BY,
 						l.LEXEME_ORDER_BY,
+						l.DATASET_ORDER_BY,
 						l.REGISTER_CODES,
 						l.POS_CODES,
+						l.REGION_CODES,
 						l.DERIV_CODES,
-						l.MEANING_WORDS,
-						l.NOTES.as("lexeme_notes"),
+						l.LEXEME_NOTES,
 						l.GRAMMARS,
 						l.GOVERNMENTS,
 						l.USAGES,
 						l.SOURCE_LINKS.as("lexeme_source_links"),
+						l.MEANING_WORDS,
+						l.IS_WW_UNIF,
+						l.IS_WW_LITE,
+						l.IS_WW_OD,
 						lr.RELATED_LEXEMES)
 				.from(l
 						.leftOuterJoin(lr).on(lr.LEXEME_ID.eq(l.LEXEME_ID)))
@@ -450,39 +460,42 @@ public class SearchDbService implements GlobalConstant, SystemConstant {
 
 		return create
 				.select(
-						l2.WORD_ID,
 						l2.LEXEME_ID,
+						l2.WORD_ID,
 						l2.MEANING_ID,
 						l2.DATASET_CODE,
-						l2.DATASET_TYPE,
 						l2.DATASET_NAME,
+						l2.DATASET_TYPE,
 						l2.VALUE_STATE_CODE,
+						l2.PROFICIENCY_LEVEL_CODE,
 						l2.RELIABILITY,
 						l2.LEVEL1,
 						l2.LEVEL2,
-						l2.COMPLEXITY,
 						l2.WEIGHT,
-						l2.DATASET_ORDER_BY,
 						l2.LEXEME_ORDER_BY,
+						l2.DATASET_ORDER_BY,
 						l2.REGISTER_CODES,
 						l2.POS_CODES,
 						l2.REGION_CODES,
 						l2.DERIV_CODES,
-						l2.MEANING_WORDS,
-						l2.NOTES.as("lexeme_notes"),
+						l2.LEXEME_NOTES,
 						l2.GRAMMARS,
 						l2.GOVERNMENTS,
 						l2.USAGES,
 						l2.SOURCE_LINKS.as("lexeme_source_links"),
-						w2.WORD,
-						w2.WORD_PRESE,
-						w2.AS_WORD,
+						l2.MEANING_WORDS,
+						l2.IS_WW_UNIF,
+						l2.IS_WW_LITE,
+						l2.IS_WW_OD,
+						lr.RELATED_LEXEMES,
+						w2.VALUE,
+						w2.VALUE_PRESE,
+						w2.VALUE_AS_WORD,
 						w2.HOMONYM_NR,
 						w2.LANG,
 						w2.GENDER_CODE,
 						w2.ASPECT_CODE,
-						w2.WORD_TYPE_CODES,
-						lr.RELATED_LEXEMES)
+						w2.WORD_TYPE_CODES)
 				.from(l1
 						.innerJoin(l2).on(l2.MEANING_ID.eq(l1.MEANING_ID).and(whereL2))
 						.innerJoin(w2).on(w2.WORD_ID.eq(l2.WORD_ID))
@@ -518,10 +531,17 @@ public class SearchDbService implements GlobalConstant, SystemConstant {
 		}
 
 		return create
-				.select(w.WORD, w.HOMONYM_NR, l.LEXEME_ID, l.MEANING_ID)
+				.select(
+						w.VALUE.as("word_value"),
+						w.HOMONYM_NR,
+						l.LEXEME_ID,
+						l.MEANING_ID)
 				.from(l, w)
 				.where(where)
-				.orderBy(l.DATASET_ORDER_BY, w.LANG_ORDER_BY, l.LEXEME_ORDER_BY)
+				.orderBy(
+						l.DATASET_ORDER_BY,
+						w.LANG_ORDER_BY,
+						l.LEXEME_ORDER_BY)
 				.limit(1)
 				.fetchOptionalInto(LinkedWordSearchElement.class)
 				.orElse(null);
@@ -531,10 +551,18 @@ public class SearchDbService implements GlobalConstant, SystemConstant {
 
 		DatasetType datasetType = searchContext.getDatasetType();
 		List<String> datasetCodes = searchContext.getDatasetCodes();
-		Complexity lexComplexity = searchContext.getLexComplexity();
-		List<String> complexityNames = composeFilteringComplexityNames(lexComplexity);
+		boolean isWwUnif = searchContext.isWwUnif();
+		boolean isWwLite = searchContext.isWwLite();
+		boolean isWwOd = searchContext.isWwOd();
 
-		Condition where = l.COMPLEXITY.in(complexityNames);
+		Condition where = DSL.noCondition();
+		if (isWwUnif) {
+			where = where.and(l.IS_WW_UNIF.isTrue());
+		} else if (isWwLite) {
+			where = where.and(l.IS_WW_LITE.isTrue());
+		} else if (isWwOd) {
+			where = where.and(l.IS_WW_OD.isTrue());
+		}
 		if (datasetType != null) {
 			where = where.and(l.DATASET_TYPE.eq(datasetType.name()));
 		}
@@ -546,24 +574,27 @@ public class SearchDbService implements GlobalConstant, SystemConstant {
 				where = where.and(l.DATASET_CODE.in(datasetCodes));
 			}
 		}
-		where = applyContainingLangComplexityDatasetFilter(l, searchContext, where);
 		return where;
-	}
-
-	private List<String> composeFilteringComplexityNames(Complexity lexComplexity) {
-		return Arrays.asList(Complexity.ANY.name(), lexComplexity.name());
 	}
 
 	private Condition applyContainingLangComplexityDatasetFilter(Table<?> lcTable, SearchContext searchContext, Condition where) {
 
 		//List<String> destinLangs = searchContext.getDestinLangs();
 		List<String> datasetCodes = searchContext.getDatasetCodes();
-		Complexity lexComplexity = searchContext.getLexComplexity();
-		List<String> complexityNames = composeFilteringComplexityNames(lexComplexity);
+		boolean isWwUnif = searchContext.isWwUnif();
+		boolean isWwLite = searchContext.isWwLite();
+		boolean isWwOd = searchContext.isWwOd();
 
-		Table<?> lc = DSL.unnest(lcTable.field("lang_complexities")).as("lc", "lang", "dataset_code", "lex_complexity", "data_complexity");
-		Condition lcWhere = lc.field("lex_complexity", String.class).in(complexityNames)
-				.and(lc.field("data_complexity", String.class).in(complexityNames));
+		Table<?> lc = DSL.unnest(lcTable.field("lang_ds_pubs")).as("ldp", "lang", "dataset_code", "is_ww_unif", "is_ww_lite", "is_ww_od");
+		Condition lcWhere = DSL.noCondition();
+		if (isWwUnif) {
+			lcWhere = lc.field("is_ww_unif", boolean.class).isTrue();
+		} else if (isWwLite) {
+			lcWhere = lc.field("is_ww_lite", boolean.class).isTrue();
+		} else if (isWwOd) {
+			lcWhere = lc.field("is_ww_od", boolean.class).isTrue();
+		}
+
 		/*
 		 * filtering by containing data language is now disabled
 		 * 
@@ -585,6 +616,7 @@ public class SearchDbService implements GlobalConstant, SystemConstant {
 			}
 		}
 		where = where.andExists(DSL.select(DSL.val(1)).from(lc).where(lcWhere));
+
 		return where;
 	}
 
@@ -594,9 +626,9 @@ public class SearchDbService implements GlobalConstant, SystemConstant {
 			return where;
 		} else if (destinLangs.size() == 1) {
 			String destinLang = destinLangs.get(0);
-			where = where.and(DSL.value(destinLang).eq(DSL.any(w.LANGS_FILT)));
+			where = where.and(DSL.value(destinLang).eq(DSL.any(w.FILT_LANGS)));
 		} else {
-			where = where.and(DSL.condition(toSqlArray(destinLangs) + "::varchar(10)[] @> {0}", w.LANGS_FILT));
+			where = where.and(DSL.condition(toSqlArray(destinLangs) + "::varchar(10)[] @> {0}", w.FILT_LANGS));
 		}
 		return where;
 	}
@@ -608,11 +640,11 @@ public class SearchDbService implements GlobalConstant, SystemConstant {
 		return create
 				.select(
 						w.WORD_ID,
-						w.WORD,
-						w.WORD_PRESE,
-						w.AS_WORD,
-						w.HOMONYM_NR,
+						w.VALUE,
+						w.VALUE_PRESE,
+						w.VALUE_AS_WORD,
 						w.LANG,
+						w.HOMONYM_NR,
 						w.DISPLAY_MORPH_CODE,
 						w.GENDER_CODE,
 						w.ASPECT_CODE,
@@ -636,7 +668,9 @@ public class SearchDbService implements GlobalConstant, SystemConstant {
 		MviewWwWord w = MVIEW_WW_WORD.as("w");
 
 		return create
-				.select(w.WORD, w.HOMONYM_NR)
+				.select(
+						w.VALUE.as("word_value"),
+						w.HOMONYM_NR)
 				.from(w)
 				.where(w.WORD_ID.eq(wordId))
 				.fetchOptionalInto(LinkedWordSearchElement.class)
@@ -690,8 +724,8 @@ public class SearchDbService implements GlobalConstant, SystemConstant {
 
 		return create
 				.select(
-						f.WORD,
-						f.VALUE.as("form"))
+						f.WORD_VALUE,
+						f.VALUE.as("form_value"))
 				.from(f)
 				.where(
 						f.WORD_ID.eq(wordId)
@@ -714,12 +748,12 @@ public class SearchDbService implements GlobalConstant, SystemConstant {
 						m.MANUAL_EVENT_ON.as("meaning_manual_event_on"),
 						m.LAST_APPROVE_OR_EDIT_EVENT_ON.as("meaning_last_activity_event_on"),
 						m.DOMAIN_CODES,
+						m.DEFINITIONS,
 						m.MEANING_IMAGES,
-						m.MEDIA_FILES,
+						m.MEANING_MEDIAS,
 						m.SEMANTIC_TYPES,
 						m.LEARNER_COMMENTS,
-						m.NOTES,
-						m.DEFINITIONS,
+						m.MEANING_NOTES,
 						mr.RELATED_MEANINGS)
 				.from(
 						l.innerJoin(m).on(m.MEANING_ID.eq(l.MEANING_ID))
@@ -753,13 +787,13 @@ public class SearchDbService implements GlobalConstant, SystemConstant {
 						we.WORD_ID,
 						we.WORD_ETYM_ID,
 						we.WORD_ETYM_WORD_ID,
-						we.WORD_ETYM_WORD,
+						we.WORD_ETYM_WORD_VALUE,
 						we.WORD_ETYM_WORD_LANG,
-						we.WORD_ETYM_WORD_MEANING_WORDS,
 						we.ETYMOLOGY_TYPE_CODE,
 						we.ETYMOLOGY_YEAR,
 						we.WORD_ETYM_COMMENT,
 						we.WORD_ETYM_IS_QUESTIONABLE,
+						we.WORD_ETYM_MEANING_WORD_VALUES,
 						we.WORD_ETYM_RELATIONS,
 						we.SOURCE_LINKS)
 				.from(we)
