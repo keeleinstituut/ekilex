@@ -1157,7 +1157,7 @@ function () {
 
       this.isAnimating = true;
       this.currentImageIndex = this.relatedElements.indexOf(element);
-      var targetURL = element.getAttribute(this.options.sourceAttr);
+      const targetURL = element.getAttribute(this.options.sourceAttr)?.split('?')?.[0];
       this.currentImage = document.createElement('img');
       this.currentImage.style.display = 'none';
       this.currentImage.setAttribute('src', targetURL);

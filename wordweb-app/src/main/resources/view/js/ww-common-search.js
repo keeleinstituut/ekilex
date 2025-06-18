@@ -151,13 +151,13 @@ $(document).on("click", "eki-link", function(e) {
 	$.get(searchLinkUrlWithParams).done(function(data) {
 		if (data) {
 			const searchForm = $('#hiddenSearchForm');
-			searchForm.find("input[name='searchWord']").val(data.word);
+			searchForm.find("input[name='searchWord']").val(data.wordValue);
 			searchForm.find("input[name='selectedWordHomonymNr']").val(data.homonymNr);
 			searchForm.find("input[name='selectedWordLang']").val(data.lang);
 			searchForm.find("input[name='linkedLexemeId']").val(data.lexemeId);
 			searchForm.submit();
 		} else {
-			//handle incorrect link?
+			console.error('Could not get data for eki-link: ', this);
 		}
 	});
 });

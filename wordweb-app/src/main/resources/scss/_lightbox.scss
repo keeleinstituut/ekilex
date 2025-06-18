@@ -1,0 +1,7 @@
+.sl-wrapper {
+  z-index: calc(var(--header-z-index) + 2);
+}
+
+.sl-overlay {
+  z-index: calc(var(--header-z-index) + 1);
+}

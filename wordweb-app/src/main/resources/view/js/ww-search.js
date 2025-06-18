@@ -93,11 +93,17 @@ function updateBrowserHistory(wordSelectUrl) {
 }
 
 function scrollToLexeme(lexemeId) {
-	if (lexemeId) {
-		$([document.documentElement, document.body]).animate({
-			scrollTop: $("#lexeme-section-" + lexemeId).offset().top - 100
-		}, 1000);
+	if (!lexemeId) {
+		return
+	};
+	const lexemeSectionOffset = $("#lexeme-section-" + lexemeId).offset();
+	if (!lexemeSectionOffset) {
+		console.info('Failed to find a lexeme section with id', lexemeId);
+		return;
 	}
+	$([document.documentElement, document.body]).animate({
+		scrollTop: lexemeSectionOffset.top - 100
+	}, 1000);
 }
 
 $(document).on("click", ".menu-btn", function() {
