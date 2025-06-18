@@ -137,6 +137,8 @@ public class LexemeWord extends WordTypeData implements LexemeLevel {
 
 	private boolean missingMatchWords;
 
+	private boolean collocExists;
+
 	private boolean emptyLexeme;
 
 	private boolean valueStatePreferred;
@@ -617,6 +619,14 @@ public class LexemeWord extends WordTypeData implements LexemeLevel {
 
 	public void setMissingMatchWords(boolean missingMatchWords) {
 		this.missingMatchWords = missingMatchWords;
+	}
+
+	public boolean isCollocExists() {
+		return collocExists;
+	}
+
+	public void setCollocExists(boolean collocExists) {
+		this.collocExists = collocExists;
 	}
 
 	public boolean isEmptyLexeme() {
