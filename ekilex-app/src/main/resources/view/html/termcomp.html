@@ -423,9 +423,11 @@
               <th:block th:replace="common :: ordering_buttons(${itemIter})" sec:authorize="#vars.meaning.crudGrant"></th:block>
             </div>
             <div class="invisible-buttons action-buttons-anchor mw-80">
-              <span th:utext="${definition.valuePrese}"></span>
-              <span class="font-italic text-info" th:text="${definition.typeValue}"></span>
-              <span th:text="'(' + #{'boolean.public.' + ${definition.public}} + ')'" class="ctxt" th:if="${definition.crudGrant}"></span>
+              <div>
+                <span th:utext="${definition.valuePrese}"></span>
+                <span class="font-italic text-info" th:text="${definition.typeValue}"></span>
+                <span th:text="'(' + #{'boolean.public.' + ${definition.public}} + ')'" class="ctxt" th:if="${definition.crudGrant}"></span>
+              </div>
               <span class="show-on-mouseover" th:unless="${definition.editDisabled}">
                 <button type="button" class="btn badge badge-success"
                         th:title="#{common.add.source.link}"
@@ -512,8 +514,10 @@
                     <th:block th:replace="common :: ordering_buttons(${noteIter})" sec:authorize="#vars.definition.crudGrant"></th:block>
                   </div>
                   <div class="invisible-buttons action-buttons-anchor mw-80 ml-4">
-                    <span th:utext="${note.valuePrese}"></span>
-                    <span class="ctxt" th:text="'(' + #{'boolean.public.' + ${note.public}} + ')'" th:if="${definition.crudGrant}"></span>
+                    <div>
+                      <span th:utext="${note.valuePrese}"></span>
+                      <span class="ctxt" th:text="'(' + #{'boolean.public.' + ${note.public}} + ')'" th:if="${definition.crudGrant}"></span>
+                    </div>
                     <div class="action-buttons-3">
                       <button type="button" class="btn badge badge-primary"
                               th:title="#{common.edit}"
@@ -620,8 +624,10 @@
               <th:block th:replace="common :: ordering_buttons(${itemIter})" sec:authorize="#vars.meaning.crudGrant"></th:block>
             </div>
             <div class="invisible-buttons action-buttons-anchor mw-80">
-              <span th:utext="${note.valuePrese}"></span>
-              <span class="ctxt" th:text="'(' + #{'boolean.public.' + ${note.public}} + ')'" th:if="${meaning.crudGrant}"></span>
+              <div>
+                <span th:utext="${note.valuePrese}"></span>
+                <span class="ctxt" th:text="'(' + #{'boolean.public.' + ${note.public}} + ')'" th:if="${meaning.crudGrant}"></span>
+              </div>
               <div class="action-buttons-3">
                 <button type="button" class="btn badge badge-primary"
                         th:title="#{common.edit}"
@@ -719,9 +725,11 @@
             <div th:replace="termdialog :: add_meaning_note_source_link_dlg"></div>
             <div style="display: list-item; position: absolute"></div>
             <div class="invisible-buttons action-buttons-anchor mw-80">
-              <span th:utext="${note.valuePrese}"></span>
-              <span class="ctxt" th:text="'[' + ${note.modifiedBy} + ']'" th:if="${note.modifiedBy != null}"></span>
-              <span class="ctxt" th:text="${#temporals.format(note.modifiedOn, 'dd.MM.yyyy HH:mm')}" th:if="${note.modifiedOn != null}"></span>
+              <div>
+                <span th:utext="${note.valuePrese}"></span>
+                <span class="ctxt" th:text="'[' + ${note.modifiedBy} + ']'" th:if="${note.modifiedBy != null}"></span>
+                <span class="ctxt" th:text="${#temporals.format(note.modifiedOn, 'dd.MM.yyyy HH:mm')}" th:if="${note.modifiedOn != null}"></span>
+              </div>
               <span class="show-on-mouseover" th:if="${#lists.isEmpty(note.sourceLinks)}">
                 [
                 <button type="button" class="btn badge badge-secondary"
@@ -1661,8 +1669,10 @@
               <th:block th:replace="common :: ordering_buttons(${itemIter})" sec:authorize="#vars.lexeme.crudGrant"></th:block>
             </div>
             <div class="invisible-buttons action-buttons-anchor mw-80">
-              <span th:utext="${note.valuePrese}"></span>
-              <span class="ctxt" th:text="'(' + #{'boolean.public.' + ${note.public}} + ')'" th:if="${lexeme.crudGrant}"></span>
+              <div>
+                <span th:utext="${note.valuePrese}"></span>
+                <span class="ctxt" th:text="'(' + #{'boolean.public.' + ${note.public}} + ')'" th:if="${lexeme.crudGrant}"></span>
+              </div>
               <div class="action-buttons-3">
                 <button type="button" class="btn badge badge-primary"
                         th:title="#{common.edit}"
@@ -1894,9 +1904,11 @@
         <div th:replace="termdialog :: edit_word_forum_dlg"></div>
         <div class="col hidden-buttons pr-5" th:classappend="${forumIter.last ? '' : 'mb-3'}">
           <div class="action-buttons-anchor">
-            <span th:utext="${forum.valuePrese}"></span>
-            <span class="ctxt" th:text="'[' + ${forum.modifiedBy} + ']'" th:if="${forum.modifiedBy != null}"></span>
-            <span class="ctxt" th:text="'(' + ${#temporals.format(forum.modifiedOn, 'dd.MM.yyyy')} + ')'" th:if="${forum.modifiedOn != null}"></span>
+            <div>
+              <div th:utext="${forum.valuePrese}"></div>
+              <span class="ctxt" th:text="'[' + ${forum.modifiedBy} + ']'" th:if="${forum.modifiedBy != null}"></span>
+              <span class="ctxt" th:text="'(' + ${#temporals.format(forum.modifiedOn, 'dd.MM.yyyy')} + ')'" th:if="${forum.modifiedOn != null}"></span>
+            </div>
             <div class="action-buttons-2">
               <button type="button" class="btn badge badge-primary"
                       th:title="#{common.edit}"
@@ -2026,9 +2038,11 @@
         <div th:replace="termdialog :: edit_meaning_forum_dlg"></div>
         <div class="col hidden-buttons pr-5" th:classappend="${forumIter.last ? '' : 'mb-3'}">
           <div class="action-buttons-anchor">
-            <span th:utext="${forum.valuePrese}"></span>
-            <span class="ctxt" th:text="'[' + ${forum.modifiedBy} + ']'" th:if="${forum.modifiedBy != null}"></span>
-            <span class="ctxt" th:text="'(' + ${#temporals.format(forum.modifiedOn, 'dd.MM.yyyy')} + ')'" th:if="${forum.modifiedOn != null}"></span>
+            <div>
+              <span th:utext="${forum.valuePrese}"></span>
+              <span class="ctxt" th:text="'[' + ${forum.modifiedBy} + ']'" th:if="${forum.modifiedBy != null}"></span>
+              <span class="ctxt" th:text="'(' + ${#temporals.format(forum.modifiedOn, 'dd.MM.yyyy')} + ')'" th:if="${forum.modifiedOn != null}"></span>
+            </div>
             <div class="action-buttons-2">
               <button type="button" class="btn badge badge-primary"
                       th:title="#{common.edit}"
@@ -2073,10 +2087,12 @@
           <div th:replace="termdialog :: edit_word_od_recommendation"></div>
           <div class="col hidden-buttons pr-5">
             <div class="action-buttons-anchor">
-              <div th:utext="${wordOdRecommendation.valuePrese}"></div>
-              <div th:utext="${wordOdRecommendation.optValuePrese}"></div>
-              <span class="ctxt" th:text="'[' + ${wordOdRecommendation.modifiedBy} + ']'" th:if="${wordOdRecommendation.modifiedBy != null}"></span>
-              <span class="ctxt" th:text="'(' + ${#temporals.format(wordOdRecommendation.modifiedOn, 'dd.MM.yyyy')} + ')'" th:if="${wordOdRecommendation.modifiedOn != null}"></span>
+              <div>
+                <div th:utext="${wordOdRecommendation.valuePrese}"></div>
+                <div th:utext="${wordOdRecommendation.optValuePrese}"></div>
+                <span class="ctxt" th:text="'[' + ${wordOdRecommendation.modifiedBy} + ']'" th:if="${wordOdRecommendation.modifiedBy != null}"></span>
+                <span class="ctxt" th:text="'(' + ${#temporals.format(wordOdRecommendation.modifiedOn, 'dd.MM.yyyy')} + ')'" th:if="${wordOdRecommendation.modifiedOn != null}"></span>
+              </div>
               <div class="action-buttons-2">
                 <button type="button" class="btn badge badge-primary"
                         th:title="#{common.edit}"
