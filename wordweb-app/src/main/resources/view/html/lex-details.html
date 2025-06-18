@@ -82,7 +82,7 @@
                             <span class="lang-code text-caption lang-code--unrestricted" th:each="pos : ${lexeme.poses}" th:text="${pos.value}"></span>
                           </th:block>
                           <span class="lexeme grammars lang-code text-caption lang-code--unrestricted" th:unless="${#lists.isEmpty(lexeme.grammars)}">
-                            <span th:each="grammar,grammarIter : ${lexeme.grammars}" th:utext="${grammar.value + (grammarIter.last ? '' : ',')}" th:classappend="${grammarIter.last ? '' : 'mr-1'}"></span>
+                            <span th:each="grammar,grammarIter : ${lexeme.grammars}" th:utext="${grammar.valuePrese + (grammarIter.last ? '' : ',')}" th:classappend="${grammarIter.last ? '' : 'mr-1'}"></span>
                           </span>
                           <span class="lexeme lang-code text-caption lang-code--unrestricted" th:if="${lexeme.valueState != null}" th:text="${lexeme.valueState.value}"></span>
                         </th:block>
@@ -392,12 +392,12 @@
                         </th:block>
                         <th:block th:unless="${#lists.isEmpty(usage.usageTranslationValues)}">
                           <span th:each="usageTranslation : ${usage.usageTranslationValues}" class="example-text">
-                            <span class="example-text-value text-weight-medium" th:utext="${@viewUtil.wrapDecorations(usageTranslation)}"></span>
+                            <span class="example-text-value text-body-two text-weight-medium" th:utext="${@viewUtil.wrapDecorations(usageTranslation)}"></span>
                           </span>
                         </th:block>
                         <th:block th:unless="${#lists.isEmpty(usage.usageDefinitionValues)}">
                           <span th:each="usageDefinition : ${usage.usageDefinitionValues}" class="example-text" >
-                            <span class="example-text-value text-weight-medium" th:utext="${usageDefinition}"></span>
+                            <span class="example-text-value text-body-two text-weight-medium" th:utext="${usageDefinition}"></span>
                           </span>
                         </th:block>
                       </div>
@@ -410,7 +410,7 @@
                         <div class="usage-item" th:if="${isCollapsable}">
                           <div class="example-sentence-wrap">
                             <span class="example-text example-text-w-audio">
-                              <span class="example-text-value text-weight-medium" th:utext="${usage.valuePrese}"></span>
+                              <span class="example-text-value text-body-two text-weight-medium" th:utext="${usage.valuePrese}"></span>
                               <button class="btn btn-speaker btn-speaker--inactive" th:aria-label="|#{aria.listen} - ${usage.value}|" th:if="${usage.putOnSpeaker}"
                                       th:data-text="${usage.value}"
                                       data-service-id="speech"
@@ -425,12 +425,12 @@
                             </th:block>
                             <th:block th:unless="${#lists.isEmpty(usage.usageTranslationValues)}">
                               <span th:each="usageTranslation : ${usage.usageTranslationValues}" class="example-text">
-                                <span class="example-text-value text-weight-medium" th:utext="${@viewUtil.wrapDecorations(usageTranslation)}"></span>
+                                <span class="example-text-value text-body-two text-weight-medium" th:utext="${@viewUtil.wrapDecorations(usageTranslation)}"></span>
                               </span>
                             </th:block>
                             <th:block th:unless="${#lists.isEmpty(usage.usageDefinitionValues)}">
                               <span th:each="usageDefinition : ${usage.usageDefinitionValues}" class="example-text" >
-                                <span class="example-text-value text-weight-medium" th:utext="${usageDefinition}"></span>
+                                <span class="example-text-value text-body-two text-weight-medium" th:utext="${usageDefinition}"></span>
                               </span>
                             </th:block>
                           </div>

@@ -228,19 +228,7 @@
     <th:block th:each="lexeme : ${wordData.termLexemes}" th:with="
     isProTerm = ${@viewUtil.isProTermData(lexeme)},
     isLimTerm = ${@viewUtil.isLimTermData(lexeme)}">
-      <div class="search__block">
-        <div class="d-flex">
-          <div class="search__block-header">
-            <span class="search__block-title" th:text="${lexeme.datasetName}">EKI ühendsõnastik 2020</span>
-            <div class="meaning-data__modified">
-              <span>ID</span>
-              <span th:text="${lexeme.meaningId}" th:if="${isProTerm}"></span>
-              <span th:text="#{label.tooltip.last_modified}"></span>
-              <span class="meaning-data__date" th:text="${#temporals.format(lexeme.meaningManualEventOn, 'dd.MM.yyyy')}"></span>
-            </div>
-          </div>
-          <a th:href="|@{/ds}/${lexeme.datasetCode}|" target="_blank" rel="noreferrer" th:text="#{label.view.dataset}" class="meaning-data__link">Vaata sõnakogu</a>
-        </div>
+      <div class="search__block" th:id="|lexeme-section-${lexeme.lexemeId}|">
         <th:block th:replace="term-details :: meaning-data"></th:block>
       </div>
     </th:block>

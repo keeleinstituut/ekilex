@@ -24,28 +24,30 @@
             <div th:replace="lexdialog :: edit_word_od_recommendation"></div>
             <div class="col hidden-buttons pr-5">
               <div class="action-buttons-anchor">
-                <div th:utext="${wordOdRecommendation.valuePrese}"></div>
-                <div th:utext="${wordOdRecommendation.optValuePrese}"></div>
-                <span class="ctxt" th:text="'[' + ${wordOdRecommendation.modifiedBy} + ']'" th:if="${wordOdRecommendation.modifiedBy != null}"></span>
-                <span class="ctxt" th:text="'(' + ${#temporals.format(wordOdRecommendation.modifiedOn, 'dd.MM.yyyy')} + ')'" th:if="${wordOdRecommendation.modifiedOn != null}"></span>
+                <div>
+                  <div th:utext="${wordOdRecommendation.valuePrese}"></div>
+                  <div th:utext="${wordOdRecommendation.optValuePrese}"></div>
+                  <span class="ctxt" th:text="'[' + ${wordOdRecommendation.modifiedBy} + ']'" th:if="${wordOdRecommendation.modifiedBy != null}"></span>
+                  <span class="ctxt" th:text="'(' + ${#temporals.format(wordOdRecommendation.modifiedOn, 'dd.MM.yyyy')} + ')'" th:if="${wordOdRecommendation.modifiedOn != null}"></span>
+                </div>
                 <div class="action-buttons-2">
                   <button type="button" class="btn badge badge-primary"
-                          th:title="#{common.edit}"
-                          data-toggle="modal"
-                          th:data-target="${'#editWordOdRecommendationDlg_' + wordOdRecommendation.id}"
+                  th:title="#{common.edit}"
+                  data-toggle="modal"
+                  th:data-target="${'#editWordOdRecommendationDlg_' + wordOdRecommendation.id}"
                           sec:authorize="#vars.details.word.crudGrant">
-                    <i class="fa fa-edit" aria-hidden="true"></i>
-                  </button>
-                  <button type="button" class="btn badge badge-warning"
-                          th:data-id="${wordOdRecommendation.id}"
-                          data-op-code="word_od_recommendation"
-                          data-toggle="delete-confirm"
-                          data-placement="right"
-                          sec:authorize="#vars.details.word.crudGrant">
-                    <i class="fa fa-remove" aria-hidden="true"></i>
-                  </button>
+                          <i class="fa fa-edit" aria-hidden="true"></i>
+                        </button>
+                        <button type="button" class="btn badge badge-warning"
+                        th:data-id="${wordOdRecommendation.id}"
+                        data-op-code="word_od_recommendation"
+                        data-toggle="delete-confirm"
+                        data-placement="right"
+                        sec:authorize="#vars.details.word.crudGrant">
+                        <i class="fa fa-remove" aria-hidden="true"></i>
+                    </button>
+                  </div>
                 </div>
-              </div>
             </div>
           </th:block>
         </div>
@@ -74,9 +76,11 @@
             <div th:replace="lexdialog :: edit_word_od_morph"></div>
             <div class="col hidden-buttons pr-5">
               <div class="action-buttons-anchor">
-                <div th:utext="${wordOdMorph.valuePrese}"></div>
-                <span class="ctxt" th:text="'[' + ${wordOdMorph.modifiedBy} + ']'" th:if="${wordOdMorph.modifiedBy != null}"></span>
-                <span class="ctxt" th:text="'(' + ${#temporals.format(wordOdMorph.modifiedOn, 'dd.MM.yyyy')} + ')'" th:if="${wordOdMorph.modifiedOn != null}"></span>
+                <div>
+                  <div th:utext="${wordOdMorph.valuePrese}"></div>
+                  <span class="ctxt" th:text="'[' + ${wordOdMorph.modifiedBy} + ']'" th:if="${wordOdMorph.modifiedBy != null}"></span>
+                  <span class="ctxt" th:text="'(' + ${#temporals.format(wordOdMorph.modifiedOn, 'dd.MM.yyyy')} + ')'" th:if="${wordOdMorph.modifiedOn != null}"></span>
+                </div>
                 <div class="action-buttons-2">
                   <button type="button" class="btn badge badge-primary"
                           th:title="#{common.edit}"
@@ -136,9 +140,11 @@
               <div
                 class="col hidden-buttons pr-5">
                 <div class="action-buttons-anchor">
-                  <div th:utext="${wordOdUsage.valuePrese}"></div>
-                  <span class="ctxt" th:text="'[' + ${wordOdUsage.modifiedBy} + ']'" th:if="${wordOdUsage.modifiedBy != null}"></span>
-                  <span class="ctxt" th:text="'(' + ${#temporals.format(wordOdUsage.modifiedOn, 'dd.MM.yyyy')} + ')'" th:if="${wordOdUsage.modifiedOn != null}"></span>
+                  <div>
+                    <div th:utext="${wordOdUsage.valuePrese}"></div>
+                    <span class="ctxt" th:text="'[' + ${wordOdUsage.modifiedBy} + ']'" th:if="${wordOdUsage.modifiedBy != null}"></span>
+                    <span class="ctxt" th:text="'(' + ${#temporals.format(wordOdUsage.modifiedOn, 'dd.MM.yyyy')} + ')'" th:if="${wordOdUsage.modifiedOn != null}"></span>
+                  </div>
                   <div class="action-buttons-2">
                     <button type="button" class="btn badge badge-primary"
                             th:title="#{common.edit}"
@@ -184,9 +190,11 @@
           <div th:replace="lexdialog :: edit_word_forum_dlg"></div>
           <div class="col hidden-buttons pr-5" th:classappend="${forumIter.last ? '' : 'mb-3'}">
             <div class="action-buttons-anchor">
-              <span th:utext="${forum.valuePrese}"></span>
-              <span class="ctxt" th:text="'[' + ${forum.modifiedBy} + ']'" th:if="${forum.modifiedBy != null}"></span>
-              <span class="ctxt" th:text="'(' + ${#temporals.format(forum.modifiedOn, 'dd.MM.yyyy')} + ')'" th:if="${forum.modifiedOn != null}"></span>
+              <div>
+                <span th:utext="${forum.valuePrese}"></span>
+                <span class="ctxt" th:text="'[' + ${forum.modifiedBy} + ']'" th:if="${forum.modifiedBy != null}"></span>
+                <span class="ctxt" th:text="'(' + ${#temporals.format(forum.modifiedOn, 'dd.MM.yyyy')} + ')'" th:if="${forum.modifiedOn != null}"></span>
+              </div>
               <div class="action-buttons-2">
                 <button type="button" class="btn badge badge-primary"
                         th:title="#{common.edit}"
