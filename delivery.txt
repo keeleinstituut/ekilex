@@ -1,18 +1,105 @@
 Märkused ver 1.41.0 tarne kohta:
 
-main-delivery-1.sql
+Tarne sisaldab mahukaid andmemudeli muudatusi, täiendusi, uute andmete laadimisi ja aegunud aendmete kustutamisi.
+Käivitada tuleb kaks migratsiooni andmebaasiskripti ning neli utiliitrakendust. Nende korrektne käivitamise järjekord on kriitiliselt oluline.
 
-WordOdUsageLoader
-mvn spring-boot:run -P wodul -D spring-boot.run.profiles=dev -D spring-boot.run.arguments="impfile="/path/to/wod-usage.tsv"" 
+1) Võta githubist värske tarkvara versioon, mille viite arendaja annab
 
-WordOdMorphLoader
-mvn spring-boot:run -P wodml -D spring-boot.run.profiles=dev -D spring-boot.run.arguments="impfile="/path/to/wod-morph.tsv""
+2) Ehita tarkvara tarkvaraprojekti juurikast.
 
-OdCompWordLoader
-mvn spring-boot:run -P odcwl -D spring-boot.run.profiles=dev -D spring-boot.run.arguments="impfile="/path/to/wrel-compound.tsv""
+   ../ekilex>mvn clean install -D skipTests
 
-main-delivery-2.sql
+   Ekilex rakenduse pake asub
 
-DefinitionPurger
-mvn spring-boot:run -P depu -D spring-boot.run.profiles=dev
+   ../ekilex/ekilex-app/target/ekilex-app.jar
 
+   Sõnaveebi rakenduse pake asub
+
+   ../ekilex/wordweb-app/target/wordweb-app.jar
+
+3) Käivita ekilex andmebaasis muudatuste esimene skript:
+
+   ../ekilex/eki-common/src/main/resources/sql/main-delivery-1.sql
+
+4) Seadista keskkond kõigi selle tarne utiliitrakenduste käivitamisteks.
+
+   1. loo rakenduse "dev"-profiili määrangute fail:
+
+      ../ekilex/ekilex-app/src/main/resources/application-dev.properties
+
+   2. sisusta fail ainult selles kontekstis oluliste rakenduse määrangutega:
+
+      server.port=1234
+      spring.datasource.url=jdbc:postgresql://localhost:5432/ekilex
+      spring.datasource.username=<username>
+      spring.datasource.password=<password>
+      
+      logging.level.root=warn
+      logging.level.eki.ekilex=debug
+      logging.level.eki.common=info
+      logging.level.org.jooq=warn
+      
+      Andmebaasi ühenduse parameetrid peavad olema reaalsed selle keskkonna parameetrid.
+      Kuna erinevad ekilexi rakendused käivitavad ka veebikonteksti siis on oluline, et nende veebi pordid ei konkureeriks.
+      Seepärast määra "server.port"-le mingi ajutine fiktiivne väärtus
+
+   3. kopeeri tarnega kaasatud failid "wod-usage.tsv", "wod-morph.tsv", "wrel-compound.tsv" kohalikku failisüsteemi utiliitrakendustele juurdepääsetavasse kohta.
+
+   4. kehtib kõigi utiliitrakenduste kohta:
+   
+      Väärtusta parameeter "impfile" korrektse viitega failile! Märka topelt jutumärke!
+      Spring profiil "dev" tähendab automaatselt seda, et rakenduse logi jookseb otse terminali mitte logifaili.
+      See on antud juhul kasulik kiireks tagassideks rakenduselt.
+	  Rakendused annavad logisse tagasisidet toimingute progressi kohta %-des.
+      Logi lõppeb infoga "BUILD SUCCESS". Kui logi sisaldab midagi muud, informeeri arendajat.
+
+5) Käivita ÕS näitelausete laadur ekilex/ekilex-app rajalt:
+
+   mvn spring-boot:run -P wodul -D spring-boot.run.profiles=dev -D spring-boot.run.arguments="impfile="/path/to/wod-usage.tsv""
+
+   Rakendus jookseb alla minuti
+
+6) Käivita ÕS morfoloogia laadur ekilex/ekilex-app rajalt:
+
+   mvn spring-boot:run -P wodml -D spring-boot.run.profiles=dev -D spring-boot.run.arguments="impfile="/path/to/wod-morph.tsv""
+
+   Rakendus jookseb alla minuti
+
+7) Käivita ÕS liitsõnaseoste laadur ekilex/ekilex-app rajalt:
+
+   mvn spring-boot:run -P odcwl -D spring-boot.run.profiles=dev -D spring-boot.run.arguments="impfile="/path/to/wrel-compound.tsv""
+
+   NB!! Rakendus jookseb kuni 3 tundi!
+
+8) Käivita ekilex andmebaasis muudatuste teine skript:
+
+   ../ekilex/eki-common/src/main/resources/sql/main-delivery-2.sql
+
+   NB! Skript jookseb u 35 minutit!
+
+9) Käivita kollokatsioonide duplikaatide kustutaja ekilex/ekilex-app rajalt:
+
+   mvn spring-boot:run -P depu -D spring-boot.run.profiles=dev
+
+   Rakendus jookseb mõned minutid
+
+10) Sõnaveebi andmebaasi agregeerimine.
+
+   1. kustuta ja taasloo Ekilex andmebaasis Sõnaveebiga seotud vaated ja andmetüübid skriptiga:
+
+      ../ekilex/eki-common/src/main/resources/sql/create_views.sql
+
+   2. kustuta ja loo Sõnaveebi andmebaasis materjaliseeritud vaated ja andmetüübid skriptiga:
+
+      ../ekilex/wordweb-app/fileresources/sql/create_mviews.sql
+
+      NB! Muuda skriptis dblink parameetreid vastavalt keskkonnale!
+      NB! Ühtegi veateadet ei tohi olla!
+
+      Skript jookseb alla poole tunni.
+
+11) Soovitavalt käivita andmebaasides hoolduskorraldus "vacuum"
+
+12) Seo rakenduste *.jar failid teenustega nagu seni ja käivita. Kontrolli peale käivitamist rakenduste logifailidest kas käivitamisega kaasnesid veateated, neid ei ohiks olla ühtegi.
+
+<märkmete lõpp>
