@@ -77,7 +77,7 @@ Käivitada tuleb kaks migratsiooni andmebaasiskripti ning neli utiliitrakendust.
 
    NB! Skript jookseb u 35 minutit!
 
-9) Käivita kollokatsioonide duplikaatide kustutaja ekilex/ekilex-app rajalt:
+9) Käivita definitsioonide duplikaatide kustutaja ekilex/ekilex-app rajalt:
 
    mvn spring-boot:run -P depu -D spring-boot.run.profiles=dev
 
