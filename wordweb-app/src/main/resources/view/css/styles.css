@@ -14616,6 +14616,7 @@ body.hidden-scroll {
 }
 .btn-speaker .icon {
   padding: 0;
+  pointer-events: none;
 }
 .btn-speaker--inactive {
   color: var(--color-gray-300);

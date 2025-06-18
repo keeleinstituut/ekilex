@@ -15,32 +15,32 @@ function playAudio(audioUrl, onEndedCallback) {
 }
 
 function getAndPlayAudio(e) {
-	var elem = $(e);
+	// Get button as target if click was somehow on the icon
+	const target = e?.classList?.contains('icon') 
+		? e.closest('.btn-speaker') 
+		: e;
+	const elem = $(target);
 	if (elem.data('is-playing') !== undefined) {
 		return;
 	}
 	elem.data('is-playing', '');
 
-	var content;
-	var buttonSpeaker = elem.find('.btn-speaker').addBack('.btn-speaker');
-	if (buttonSpeaker.length !== 0) {
-		content = buttonSpeaker.html();
-		buttonSpeaker.html('<i class="fa fa-spinner fa-spin"></i>');
-	}
-	var onEndCallback = function() {
+	const content = elem.html();
+	elem.html('<i class="fa fa-spinner fa-spin"></i>');
+	const onEndCallback = function() {
 		elem.removeData('is-playing');
-		if (buttonSpeaker.length !== 0) {
-			buttonSpeaker.html(content);
+		if (content) {
+			elem.html(content);
 		}
 	};
 
-	var definedAudioUrl = elem.data('audio-url');
+	const definedAudioUrl = elem.data('audio-url');
 	if (definedAudioUrl !== undefined) {
 		playAudio(definedAudioUrl, onEndCallback);
 		return;
 	}
 
-	var data = {
+	const data = {
 		'text': elem.data('text'),
 		'serviceId': elem.data('service-id')
 	};
