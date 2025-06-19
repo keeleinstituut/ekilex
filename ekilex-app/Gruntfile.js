@@ -81,7 +81,18 @@ module.exports = function (grunt) {
 
 		babel: {
 			options: {
-				presets: ['@babel/preset-env'],
+				presets: [
+					['@babel/preset-env',
+						{
+							targets: {
+								esmodules: true
+							},
+							useBuiltIns: false,
+							modules: false,
+							exclude: ['@babel/plugin-transform-regenerator']
+						}
+					]
+				],
 				plugins: ['@babel/plugin-proposal-class-properties'],
 				comments: false,
 				compact: true,

@@ -6,6 +6,8 @@ export default {
       "eki-white": "#FFFFFF",
       "eki-light-blue": "#D7E5F2",
       "eki-dark-blue-text": "#173148",
+      "eki-red": "#E70505",
+      "eki-light-red": "#FFF5F1",
     },
   },
 };

@@ -1,5 +1,5 @@
 export interface Toast {
-  title: string;
+  title?: string;
   body: string;
   readMoreUrl?: string;
   readMoreText?: string;
@@ -7,4 +7,6 @@ export interface Toast {
   closeLabel: string;
   isVisible?: boolean;
   id?: number;
+  type?: 'error';
+  class: string;
 }

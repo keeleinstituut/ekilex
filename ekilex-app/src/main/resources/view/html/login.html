@@ -2,17 +2,12 @@
 <html lang="et" xmlns:th="http://www.thymeleaf.org">
 <head th:replace="common :: common_header(_,_)">
 </head>
-<body class="body-with-navbar">
+<body class="body-with-navbar body-with-navbar--no-padding">
   <th:block th:replace="components :: header(isDev = ${appData.devEnv}, envName = ${appData.envName})" sec:authorize="!isAuthenticated()"></th:block>
   <th:block th:replace="common :: nav_bar(activeItem = 'home')" sec:authorize="isAuthenticated()"></th:block>
+  <eki-toast id="login-error-toast-container"></eki-toast>
   <div class="login-page">
     <form class="login-page__form" th:action="@{/dologin}" method="post">
-      <div class="alert alert-info" role="alert" th:if="${successMessage}">
-        <span th:text="${successMessage}"></span>
-      </div>
-      <div class="alert alert-warning" role="alert" th:if="${loginerror}">
-        <span th:text="${loginerror}"></span>
-      </div>
       <h1 class="login-page__title" th:text="#{login.title}">Tere</h1>
       <th:block th:replace="components :: input_text(
         id = 'login-email',
@@ -34,5 +29,23 @@
     </form>
   </div>
   <th:block th:replace="components :: footer"></th:block>
+
+  <script th:inline="javascript">
+    $(document).ready(function() {
+      const toastContainer = document.getElementById('login-error-toast-container');
+      // The following comment syntax is for thymeleaf to embed variables
+      const successMessage = /*[[${successMessage}]]*/ "";
+      const loginError = /*[[${loginerror}]]*/ "";
+      if (!successMessage && !loginError) {
+        return;
+      }
+      toastContainer.addToast({
+        body: successMessage || loginError,
+        closeLabel:/*[[#{common.close}]]*/ "",
+        id: 'login-toast',
+        type: loginError ? 'error' : undefined
+      });
+    });
+  </script>
 </body>
 </html>

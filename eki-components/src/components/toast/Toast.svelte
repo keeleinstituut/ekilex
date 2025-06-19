@@ -5,15 +5,16 @@
   }}
 />
 
-<div class="absolute top-14 right-4 overflow-hidden z-[1073] flex flex-col gap-2">
+<div
+  class="absolute top-14 right-4 overflow-hidden z-[1073] flex flex-col gap-2"
+>
   {#each toasts as toast}
-    <div
-      class="bg-eki-white border border-eki-light-blue text-eki-dark-blue-text rounded-lg pl-6 pr-[10px] pb-5 pt-3 grid grid-cols-[1fr_24px] gap-2 w-[335px] left-0"
-      transition:fly={{ x: 100 }}
-    >
-      <div class="flex gap-1 flex-col mt-2">
-        <span class="text-sm font-medium">{toast.title}</span>
-        <p class="text-xs">
+    <div class={toast.class} transition:fly={{ x: 100 }}>
+      <div class="flex gap-1 flex-col{toast.title ? ' mt-2' : ''}">
+        {#if toast.title}
+          <span class="text-sm font-medium">{toast.title}</span>
+        {/if}
+        <p class={toast.type === 'error' ? "text-sm" : "text-xs"}>
           <span>
             {toast.body}
           </span>
@@ -58,6 +59,8 @@
   export let component;
   let toasts: Toast[] = [];
   let id = 0;
+  const baseToastClass =
+    "border text-eki-dark-blue-text rounded-lg pl-6 pr-[10px] grid grid-cols-[1fr_24px] gap-2 w-[335px] left-0";
   const closeToast = (toast: Toast) => {
     toasts = toasts.filter((existingToast) => existingToast.id !== toast.id);
     component.dispatchEvent(
@@ -72,6 +75,13 @@
   export const addToast = (toast: Toast) => {
     toast.isVisible = true;
     toast.id ??= id++;
+    const additionalClasses = [
+      toast.type === "error" && "bg-eki-light-red border-eki-red py-3",
+      !toast.type && "bg-eki-white border-eki-light-blue pt-3 pb-5",
+    ]
+      .filter(Boolean)
+      .join(" ");
+    toast.class = `${baseToastClass} ${additionalClasses}`;
     toasts = [...toasts, toast];
     component.dispatchEvent(
       new CustomEvent("eki-toast-opened", {
