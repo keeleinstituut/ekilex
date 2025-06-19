@@ -674,16 +674,29 @@
     <div class="input-text">
       <label th:for="${id}" th:text="${label}"></label>
       <div class="input-text__container">
-        <input type="text" th:id="${id}" th:value="${value ?: ''}" th:placeholder="${placeholder ?: ''}">
+        <input
+          type="text"
+          th:id="${id}"
+          th:name="${name}"
+          th:value="${value ?: ''}"
+          th:placeholder="${placeholder ?: ''}"
+          th:autofocus="${autofocus}">
       </div>
     </div>
   </th:block>
   <th:block th:fragment="input_password">
-    <div class="input-text input-text--password">
+    <div class="input-text input-text--password" data-plugin="passwordVisibilityToggle">
       <label th:for="${id}" th:text="${label}"></label>
       <div class="input-text__container">
-        <input type="password" th:id="${id}" th:value="${value ?: ''}" th:placeholder="${placeholder}" th:autocomplete="${autocomplete ?: 'off'}">
-        <button class="input-text__password-toggle">
+        <input
+          type="password"
+          th:id="${id}"
+          th:name="${name}"
+          th:value="${value ?: ''}"
+          th:placeholder="${placeholder}"
+          th:autocomplete="${autocomplete ?: 'off'}"
+          th:autofocus="${autofocus}">
+        <button class="input-text__password-toggle" type="button" data-id="password-visibility-toggle">
           <span class="material-symbols-outlined">visibility</span>
         </button>
       </div>

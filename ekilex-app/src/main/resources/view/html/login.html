@@ -2,55 +2,36 @@
 <html lang="et" xmlns:th="http://www.thymeleaf.org">
 <head th:replace="common :: common_header(_,_)">
 </head>
-<body class="body-with-navbar body-with-navbar--spaced">
+<body class="body-with-navbar">
   <th:block th:replace="components :: header(isDev = ${appData.devEnv}, envName = ${appData.envName})" sec:authorize="!isAuthenticated()"></th:block>
   <th:block th:replace="common :: nav_bar(activeItem = 'home')" sec:authorize="isAuthenticated()"></th:block>
-  <div class="container-fluid">
-    <div class="card mt-4 shadow">
-      <div class="card-header">
-        <h5 class="card-title" th:text="#{login.title}">Tere</h5>
+  <div class="login-page">
+    <form class="login-page__form" th:action="@{/dologin}" method="post">
+      <div class="alert alert-info" role="alert" th:if="${successMessage}">
+        <span th:text="${successMessage}"></span>
       </div>
-      <div class="card-body">
-        <div class="alert alert-info" role="alert" th:if="${successMessage}">
-          <span th:text="${successMessage}"></span>
-        </div>
-        <div class="alert alert-warning" role="alert" th:if="${loginerror}">
-          <span th:text="${loginerror}"></span>
-        </div>
-        <div class="row">
-          <div class="col-8">
-            <form th:action="@{/dologin}" method="post">
-              <th:block th:replace="components :: input_text(
-                id = 'login-email',
-                label = #{login.email},
-                placeholder = #{label.login.email.placeholder})"></th:block>
-              <div class="form-group row">
-                <label class="col-sm-2 col-form-label">
-                  <span class="float-right" th:text="#{login.email}">E-posti aadress</span>
-                </label>
-                <div class="col-sm-4">
-                  <input type="email" class="form-control" name="email" th:placeholder="#{login.email}" th:value="${userEmail}">
-                </div>
-              </div>
-              <div class="form-group row">
-                <label class="col-sm-2 col-form-label">
-                  <span class="float-right" th:text="#{login.password}">Salasõna</span>
-                </label>
-                <div class="col-sm-4">
-                  <input type="password" class="form-control" name="password" th:autofocus="${userEmail != null}">
-                </div>
-              </div>
-              <div class="form-group row">
-                <div class="col-sm-4 offset-sm-2">
-                  <button type="submit" class="btn btn-primary float-left" th:text="#{login.login}">Sisene</button>
-                  <a class="float-right" th:href="@{/passwordrecovery}" th:text="#{login.password.set}">Soovin salasõna vahetada</a>
-                </div>
-              </div>
-            </form>
-          </div>
-        </div>
+      <div class="alert alert-warning" role="alert" th:if="${loginerror}">
+        <span th:text="${loginerror}"></span>
       </div>
-    </div>
+      <h1 class="login-page__title" th:text="#{login.title}">Tere</h1>
+      <th:block th:replace="components :: input_text(
+        id = 'login-email',
+        label = #{login.email},
+        name = 'email',
+        placeholder = #{label.login.email.placeholder},
+        value = ${userEmail})"></th:block>
+      <th:block th:replace="components :: input_password(
+        id = 'login-password',
+        label = #{login.password},
+        name = 'password',
+        placeholder = #{label.login.password.placeholder},
+        autofocus = ${userEmail != null})"></th:block>
+      <div class="login-page__links">
+        <a th:href="@{/register}" th:text="#{label.home.register}">Loo kasutaja</a>
+        <a th:href="@{/passwordrecovery}" th:text="#{login.password.set}">Parool kadunud?</a>
+      </div>
+      <button class="button" type="submit" th:text="#{login.login}">Sisene</button>
+    </form>
   </div>
   <th:block th:replace="components :: footer"></th:block>
 </body>

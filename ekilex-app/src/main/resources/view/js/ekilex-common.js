@@ -1448,3 +1448,25 @@ $(function() {
 	}
 });
 
+
+
+$.fn.passwordVisibilityToggle = function() {
+	const inputWrapper = $(this);
+	const input = inputWrapper.find('input');
+	// Show password while user is holding button down via mouse or keyboard
+	inputWrapper.on('mousedown keydown pointerdown', '[data-id="password-visibility-toggle"]', function(e) {
+		if (e.key && e.code !== 'Space') {
+			return;
+		}
+		input.attr('type', 'text');
+		inputWrapper.one('mouseup keyup pointerup', '[data-id="password-visibility-toggle"]', function() {
+			input.attr('type', 'password');
+		});
+	});
+	// Fallback in case something goes wrong, prevent password field from staying visible
+	inputWrapper.on('focusout', function() {
+		if (input.attr('type') !== 'password') {
+			input.attr('type', 'password');
+		}
+	})
+}

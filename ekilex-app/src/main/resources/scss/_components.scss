@@ -109,3 +109,53 @@
     color: var(--color-light-red);
   }
 }
+
+
+.input-text {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+
+  & label {
+    margin: 0;
+  }
+
+  &__container {
+    padding: 10px 16px;
+    display: flex;
+    gap: 8px;
+    border: 1px solid var(--color-dark-blue-75);
+    border-radius: 8px;
+    color: var(--color-dark-blue);
+    font-size: .875rem;
+
+    & input {
+      width: 100%;
+      border: none;
+      background-color: transparent;
+      &:focus {
+        outline: none;
+      }
+      &::placeholder {
+        color: var(--color-dark-blue-75);
+      }
+    }
+    // Prevent outline if focus is on something that is not an input
+    &:focus-within:not(&:has(*:not(input):focus)) {
+      outline: 1px solid black;
+    }
+  }
+
+  &__password-toggle {
+    padding: 0;
+    background-color: transparent;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    --icon-size: 24px;
+    --icon-variation-settings: 'FILL' 1;
+    --icon-color: var(--color-icon-gray);
+    border: none;
+  }
+}
