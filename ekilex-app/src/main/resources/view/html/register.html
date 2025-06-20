@@ -9,10 +9,11 @@
   <th:block th:replace="common :: nav_bar(activeItem = 'home')" sec:authorize="isAuthenticated()"></th:block>
   <eki-toast id="register-error-toast-container"></eki-toast>
   <div class="icons-bg-page">
-    <form class="register-page__form" id="registerForm" th:action="@{/submit}" method="post">
-      <h1 class="register-page__title" th:text="#{register.title}">Kasutajaks registreerumine</h1>
+    <form class="icons-bg-page__form" id="registerForm" th:action="@{/submit}" method="post">
+      <h1 class="icons-bg-page__title" th:text="#{register.title}">Kasutajaks registreerumine</h1>
       <th:block th:replace="components :: input_text(
         id = 'register-name',
+        type = 'email',
         label = #{register.name},
         name = 'name',
         placeholder = #{label.register.name.placeholder},
@@ -21,6 +22,7 @@
         autocomplete = 'name')"></th:block>
       <th:block th:replace="components :: input_text(
         id = 'register-email',
+        type = 'email',
         label = #{register.email},
         name = 'email',
         placeholder = #{label.register.email.placeholder},
@@ -45,7 +47,7 @@
             inputLabel = #{register.terms.agreement},
             plugin = 'agreementChkPlugin'
           )"></th:block>
-      <div class="register-page__actions">
+      <div class="icons-bg-page__actions">
         <a class="plain-action" th:href="@{/login}" th:text="#{login.title}">Logi sisse</a>
         <button
           class="button"
@@ -63,12 +65,12 @@
     $(document).ready(function() {
       const toastContainer = document.getElementById('register-error-toast-container');
       // The following comment syntax is for thymeleaf to embed variables
-      const loginError = /*[[${loginerror}]]*/ "";
-      if (!loginError) {
+      const errorMessage = /*[[${errorMessage}]]*/ "";
+      if (!errorMessage) {
         return;
       }
       toastContainer.addToast({
-        body: loginError,
+        body: errorMessage,
         closeLabel:/*[[#{common.close}]]*/ "",
         id: 'register-toast',
         type: 'error'

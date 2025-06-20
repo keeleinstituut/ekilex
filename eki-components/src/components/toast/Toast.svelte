@@ -79,6 +79,8 @@
       [
         toast.type === "error" && "bg-eki-light-red border-eki-red py-3",
         toast.type === "success" && "bg-eki-light-green border-eki-green py-3",
+        toast.type === "warning" &&
+          "bg-eki-light-warning border-eki-warning py-3",
       ]
         .filter(Boolean)
         .join(" ") || "bg-eki-white border-eki-light-blue pt-3 pb-5";

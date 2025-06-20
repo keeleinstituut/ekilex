@@ -7,6 +7,6 @@ export interface Toast {
   closeLabel: string;
   isVisible?: boolean;
   id?: number;
-  type?: 'error' | 'success';
+  type?: 'error' | 'success' | 'warning';
   class: string;
 }

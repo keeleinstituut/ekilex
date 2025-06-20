@@ -9,7 +9,9 @@ export default {
       "eki-red": "#E70505",
       "eki-light-red": "#FFF5F1",
       "eki-green": "#2E7D32",
-      "eki-light-green": "#F7FDF9"
+      "eki-light-green": "#F7FDF9",
+      "eki-warning": "#856404",
+      "eki-light-warning": "#fff3cd"
     },
   },
 };

@@ -5,10 +5,8 @@ $.fn.registerClickPlugin = function() {
 			const registerForm = obj.closest("#registerForm");
 			const code = obj.data('code');
 			const action = `${applicationUrl}register/${code}`;
-			if (checkRequiredFields(registerForm)) {
-				registerForm.attr("action", action);
-				registerForm.trigger('submit');
-			}
+			registerForm.attr("action", action);
+			registerForm.trigger('submit');
 		});
 	});
 }

@@ -674,7 +674,7 @@
     <label th:for="${id}" th:text="${label}"></label>
     <div class="input-text__container">
       <input
-        type="text"
+        th:type="${type ?: 'text'}"
         th:id="${id}"
         th:name="${name}"
         th:value="${value ?: ''}"

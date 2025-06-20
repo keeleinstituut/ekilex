@@ -1,5 +1,5 @@
 .icons-bg-page {
-    padding: 131px 0;
+  padding: 131px 0;
   color: var(--color-dark-blue);
   display: flex;
   flex-direction: column;
@@ -8,11 +8,43 @@
   background-color: var(--color-light-blue);
   background-image: url("../img/bg-tilde.svg"), url("../img/bg-quotes.svg"), url("../img/bg-arrow-up.svg"), url("../img/bg-colon.svg"), url("../img/bg-tilted-line.svg"), url("../img/bg-arrow.svg");
   background-repeat: no-repeat, no-repeat, no-repeat, no-repeat;
-  background-position: 
+  background-position:
     19% 23%,
     calc(100% - 19%) 18%,
     6% 44%,
     calc(100% - 6%) 48%,
     19% 69%,
     calc(100% - 19%) 66%;
+
+  &__title {
+    font-size: 1.5rem;
+    font-weight: 400;
+  }
+
+  &__form {
+    padding: 36px;
+    border-radius: 8px;
+    background-color: var(--color-white);
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    min-width: 488px;
+    --button-padding: 16px 40px;
+  }
+
+  &__actions {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 8px;
+    --plain-action-font-size: .875rem;
+
+    & a {
+      color: var(--color-dark-blue);
+    }
+  }
+
+  & .button {
+    margin-left: auto;
+  }
 }
