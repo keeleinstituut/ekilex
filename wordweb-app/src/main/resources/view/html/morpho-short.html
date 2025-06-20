@@ -11,7 +11,7 @@
                 data-toggle="tooltip" class="form-value-field" th:classappend="${form.questionable ? 'text-muted ml-n1' : ''}">
           </span>
           <th:block th:if="${form.audioFileExists}">
-            <button type="button" aria-label="Kuula hääldust - lugemas"
+            <button type="button" th:aria-label="|#{aria.listen} - ${form.value}|"
                     th:data-audio-url="@{'/files/audio/' + ${form.audioFile}}"
                     onclick="getAndPlayAudio(this)" class="btn btn-speaker btn-speaker--inactive"
                     th:title="#{label.tooltip.audio.human}"
@@ -20,7 +20,7 @@
             </button>
           </th:block>
           <th:block th:unless="${form.audioFileExists}">
-            <button type="button" aria-label="Kuula hääldust - lugemas"
+            <button type="button" th:aria-label="|#{aria.listen} - ${form.value}|"
                     th:data-text="${form.displayForm}"
                     data-service-id="morpho"
                     onclick="getAndPlayAudio(this)" class="btn btn-speaker btn-speaker--inactive"
