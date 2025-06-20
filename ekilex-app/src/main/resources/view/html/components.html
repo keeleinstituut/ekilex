@@ -399,10 +399,10 @@
         <span class="material-symbols-outlined publishing__lock--open">lock_open</span>
       </span>
       <span class="publishing__icon"
-        data-publishing-item="unif"
-        th:data-publishing-item-active="${isWwUnif}"
-        th:title="#{publishing.unif}"
-        >
+        data-publishing-item="lite"
+        th:data-publishing-item-active="${isWwLite}"
+        th:title="#{publishing.lite}"
+      >
       </span>
       <span class="publishing__icon"
         data-publishing-item="od"
@@ -411,10 +411,10 @@
         >
       </span>
       <span class="publishing__icon"
-        data-publishing-item="lite"
-        th:data-publishing-item-active="${isWwLite}"
-        th:title="#{publishing.lite}"
-      >
+        data-publishing-item="unif"
+        th:data-publishing-item-active="${isWwUnif}"
+        th:title="#{publishing.unif}"
+        >
       </span>
       <button type="button" class="publishing__button publishing__button--toggle"
         th:id="|publishing-trigger-${entityName}-${entityId}|"
