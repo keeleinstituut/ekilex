@@ -163,4 +163,9 @@
     color: var(--color-light-gray);
     text-decoration: none;
   }
+
+  &:disabled {
+    background-color: var(--color-icon-gray);
+    color: var(--color-hall-taust-final-final-final-hall-500);
+  }
 }

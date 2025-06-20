@@ -670,37 +670,43 @@
       </div>
     </div>
   </th:block>
-  <th:block th:fragment="input_text">
-    <div class="input-text">
-      <label th:for="${id}" th:text="${label}"></label>
-      <div class="input-text__container">
-        <input
-          type="text"
-          th:id="${id}"
-          th:name="${name}"
-          th:value="${value ?: ''}"
-          th:placeholder="${placeholder ?: ''}"
-          th:autofocus="${autofocus}">
-      </div>
+  <div class="input-text" th:fragment="input_text">
+    <label th:for="${id}" th:text="${label}"></label>
+    <div class="input-text__container">
+      <input
+        type="text"
+        th:id="${id}"
+        th:name="${name}"
+        th:value="${value ?: ''}"
+        th:placeholder="${placeholder ?: ''}"
+        th:autocomplete="${autocomplete ?: 'off'}"
+        th:autofocus="${autofocus}"
+        th:required="${required}">
     </div>
-  </th:block>
-  <th:block th:fragment="input_password">
-    <div class="input-text input-text--password" data-plugin="passwordVisibilityToggle">
-      <label th:for="${id}" th:text="${label}"></label>
-      <div class="input-text__container">
-        <input
-          type="password"
-          th:id="${id}"
-          th:name="${name}"
-          th:value="${value ?: ''}"
-          th:placeholder="${placeholder}"
-          th:autocomplete="${autocomplete ?: 'off'}"
-          th:autofocus="${autofocus}">
-        <button class="input-text__password-toggle" type="button" data-id="password-visibility-toggle">
-          <span class="material-symbols-outlined">visibility</span>
-        </button>
-      </div>
+  </div>
+  <div class="input-text input-text--password" data-plugin="passwordVisibilityToggle" th:fragment="input_password">
+    <label th:for="${id}" th:text="${label}"></label>
+    <div class="input-text__container">
+      <input
+        type="password"
+        th:id="${id}"
+        th:name="${name}"
+        th:value="${value ?: ''}"
+        th:placeholder="${placeholder}"
+        th:autocomplete="${autocomplete ?: 'off'}"
+        th:autofocus="${autofocus}"
+        th:required="${required}">
+      <button class="input-text__password-toggle" type="button" data-id="password-visibility-toggle">
+        <span class="material-symbols-outlined">visibility</span>
+      </button>
     </div>
-  </th:block>
+  </div>
+  <label class="input-checkbox" th:fragment="input_checkbox" th:data-plugin="${plugin}">
+    <input type="checkbox" th:name="${inputName}" th:value="${inputValue}" th:checked="${inputChecked}">
+    <span class="input-checkbox__box">
+      <span class="material-symbols-outlined">check</span>
+    </span>
+    <span th:utext="${inputLabel}"></span>
+  </label>
 </body>
 </html>

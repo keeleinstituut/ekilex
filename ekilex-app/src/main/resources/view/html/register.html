@@ -4,77 +4,76 @@
 <th:block th:fragment="links">
 </th:block>
 </head>
-<body class="body-with-navbar body-with-navbar--spaced">
+<body class="body-with-navbar body-with-navbar--no-padding">
   <th:block th:replace="components :: header(isDev = ${appData.devEnv}, envName = ${appData.envName})" sec:authorize="!isAuthenticated()"></th:block>
   <th:block th:replace="common :: nav_bar(activeItem = 'home')" sec:authorize="isAuthenticated()"></th:block>
-  <div class="container-fluid">
-    <div class="card mt-4 shadow">
-      <div class="card-header">
-        <h5 class="card-title" th:text="#{register.title}">Kasutajaks registreerumine</h5>
+  <eki-toast id="register-error-toast-container"></eki-toast>
+  <div class="icons-bg-page">
+    <form class="register-page__form" id="registerForm" th:action="@{/submit}" method="post">
+      <h1 class="register-page__title" th:text="#{register.title}">Kasutajaks registreerumine</h1>
+      <th:block th:replace="components :: input_text(
+        id = 'register-name',
+        label = #{register.name},
+        name = 'name',
+        placeholder = #{label.register.name.placeholder},
+        value = ${userName},
+        autofocus = ${userName == null},
+        autocomplete = 'name')"></th:block>
+      <th:block th:replace="components :: input_text(
+        id = 'register-email',
+        label = #{register.email},
+        name = 'email',
+        placeholder = #{label.register.email.placeholder},
+        value = ${userEmail},
+        autocomplete = 'email')"></th:block>
+      <th:block th:replace="components :: input_password(
+        id = 'register-new-password',
+        label = #{register.new.password},
+        name = 'salasona',
+        placeholder = #{label.register.password.placeholder},
+        autofocus = ${userEmail != null},
+        autocomplete = 'new-password')"></th:block>
+        <th:block th:replace="components :: input_password(
+        id = 'register-new-password-repeat',
+        label = #{register.password.again},
+        name = 'salasona2',
+        placeholder = #{label.register.password_repeat.placeholder},
+        autocomplete = 'new-password')"></th:block>
+        <th:block th:replace="components :: input_checkbox(
+            inputName = 'agreement',
+            inputValue = 'agreement',
+            inputLabel = #{register.terms.agreement},
+            plugin = 'agreementChkPlugin'
+          )"></th:block>
+      <div class="register-page__actions">
+        <a class="plain-action" th:href="@{/login}" th:text="#{login.title}">Logi sisse</a>
+        <button
+          class="button"
+          type="button"
+          th:text="#{register.register}"
+          id="registerBtn"
+          th:data-code="${botProtectionCode}"
+          disabled
+          data-plugin="registerClickPlugin">Sisene</button>
       </div>
-      <div class="card-body">
-        <div class="alert alert-danger" role="alert" th:if="${errorMessage}">
-          <span th:text="${errorMessage}"></span>
-        </div>
-        <div class="row">
-          <div class="col-8">
-            <form id="registerForm" th:action="@{/submit}" method="post">
-              <div class="form-group row">
-                <label class="col-sm-2 col-form-label">
-                  <span class="float-right" th:text="#{register.name}">Ees- ja perekonnanimi</span>
-                </label>
-                <div class="col-sm-4">
-                  <input type="text" class="form-control required-field" name="name" th:value="${userName}" th:autofocus="${userName == null}">
-                </div>
-              </div>
-              <div class="form-group row">
-                <label class="col-sm-2 col-form-label">
-                  <span class="float-right" th:text="#{register.email}">E-posti aadress</span>
-                </label>
-                <div class="col-sm-4">
-                  <input type="email" class="form-control required-field" name="email" th:placeholder="#{register.email}" th:value="${userEmail}">
-                </div>
-              </div>
-              <div class="form-group row">
-                <label class="col-sm-2 col-form-label">
-                  <span class="float-right">Parool</span>
-                </label>
-                <div class="col-sm-4">
-                  <input type="password" class="form-control" name="salasona" th:autofocus="${userName != null}" minlength="8" th:title="#{register.password.min.length}">
-                </div>
-              </div>
-              <div class="form-group row">
-                <label class="col-sm-2 col-form-label">
-                  <span class="float-right" th:text="#{register.password.again}">Parool uuesti</span>
-                </label>
-                <div class="col-sm-4">
-                  <input type="password" class="form-control" name="salasona2">
-                </div>
-              </div>
-              <div class="form-group row">
-                <div class="col-sm-10 offset-sm-2">
-                  <label class="col-form-label">
-                    <input type="checkbox" name="agreement" data-plugin="agreementChkPlugin">
-                    <span th:utext="#{register.terms.agreement}"></span>
-                  </label>
-                </div>
-              </div>
-              <div class="form-group row">
-                <div class="col-sm-10 offset-sm-2">
-                  <button type="button" class="btn btn-primary" id="registerBtn" th:data-code="${botProtectionCode}"
-                      disabled data-plugin="registerClickPlugin" th:text="#{register.register}">Registreeru</button>
-                </div>
-              </div>
-            </form>
-          </div>
-        </div>
-      </div>
-    </div>
+    </form>
   </div>
   <th:block th:replace="components :: footer"></th:block>
   <script th:inline="javascript">
-    // Currently unneeded with plugins
-	  // initializeRegister();
+    $(document).ready(function() {
+      const toastContainer = document.getElementById('register-error-toast-container');
+      // The following comment syntax is for thymeleaf to embed variables
+      const loginError = /*[[${loginerror}]]*/ "";
+      if (!loginError) {
+        return;
+      }
+      toastContainer.addToast({
+        body: loginError,
+        closeLabel:/*[[#{common.close}]]*/ "",
+        id: 'register-toast',
+        type: 'error'
+      });
+    });
   </script>
 </body>
 </html>

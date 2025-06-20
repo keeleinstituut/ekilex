@@ -6,7 +6,7 @@
   <th:block th:replace="components :: header(isDev = ${appData.devEnv}, envName = ${appData.envName})" sec:authorize="!isAuthenticated()"></th:block>
   <th:block th:replace="common :: nav_bar(activeItem = 'home')" sec:authorize="isAuthenticated()"></th:block>
   <eki-toast id="login-error-toast-container"></eki-toast>
-  <div class="login-page">
+  <div class="icons-bg-page">
     <form class="login-page__form" th:action="@{/dologin}" method="post">
       <h1 class="login-page__title" th:text="#{login.title}">Tere</h1>
       <th:block th:replace="components :: input_text(
@@ -14,13 +14,15 @@
         label = #{login.email},
         name = 'email',
         placeholder = #{label.login.email.placeholder},
-        value = ${userEmail})"></th:block>
+        value = ${userEmail},
+        required = ${true})"></th:block>
       <th:block th:replace="components :: input_password(
         id = 'login-password',
         label = #{login.password},
         name = 'password',
         placeholder = #{label.login.password.placeholder},
-        autofocus = ${userEmail != null})"></th:block>
+        autofocus = ${userEmail != null},
+        required = ${true})"></th:block>
       <div class="login-page__links">
         <a th:href="@{/register}" th:text="#{label.home.register}">Loo kasutaja</a>
         <a th:href="@{/passwordrecovery}" th:text="#{login.password.set}">Parool kadunud?</a>

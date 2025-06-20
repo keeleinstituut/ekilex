@@ -1,4 +1,5 @@
-.login-page {
+.register-page {
+  
   &__title {
     font-size: 1.5rem;
     font-weight: 400;
@@ -14,15 +15,11 @@
     --button-padding: 16px 40px;
   }
 
-  &__links {
+  &__actions {
     display: flex;
     justify-content: space-between;
-    & a {
-      color: var(--color-dark-blue);
-    }
-  }
-
-  & .button {
-    margin-left: auto;
+    align-items: center;
+    gap: 8px;
+    --plain-action-font-size: .875rem;
   }
 }

@@ -58,7 +58,7 @@
   position: relative;
   margin-left: auto;
 
-  & ~ .publishing {
+  &~.publishing {
     margin-left: 8px;
   }
 
@@ -75,12 +75,12 @@
     margin-top: -10px;
     gap: 8px;
     min-width: auto;
-    
+
     &--visible {
       display: flex;
     }
   }
-  
+
   &__trigger {
     background-color: transparent;
     border: none;
@@ -89,7 +89,7 @@
     --icon-size: 16px;
     width: var(--icon-size);
     height: var(--icon-size);
-    
+
     &>* {
       pointer-events: none;
     }
@@ -101,10 +101,10 @@
   border: none;
   padding: 0;
   font-weight: 600;
-  font-size: .75rem;
+  font-size: var(--plain-action-font-size, .75rem);
   color: var(--color-dark-blue);
   text-align: left;
-  
+
   &--red {
     color: var(--color-light-red);
   }
@@ -133,13 +133,16 @@
       width: 100%;
       border: none;
       background-color: transparent;
+
       &:focus {
         outline: none;
       }
+
       &::placeholder {
         color: var(--color-dark-blue-75);
       }
     }
+
     // Prevent outline if focus is on something that is not an input
     &:focus-within:not(&:has(*:not(input):focus)) {
       outline: 1px solid black;
@@ -157,5 +160,69 @@
     --icon-variation-settings: 'FILL' 1;
     --icon-color: var(--color-icon-gray);
     border: none;
+  }
+}
+
+
+.input-checkbox {
+  padding: 12px;
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  color: var(--color-dark-blue);
+  position: relative;
+  isolation: isolate;
+
+  &:not(:has(input:disabled)) {
+    cursor: pointer;
+  }
+
+  & input {
+    position: absolute;
+    visibility: hidden;
+    width: 0;
+    height: 0;
+  }
+
+  &__box {
+    width: 18px;
+    height: 18px;
+    border: 2px solid var(--color-dark-blue);
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 3px;
+    --icon-size: 18px;
+    --icon-color: var(--color-white);
+    --icon-variation-settings: 'WEIGHT' 700;
+    & span {
+      display: none;
+    }
+  }
+
+  &:hover {
+    &::after {
+      content: "";
+      position: absolute;
+      left: 1px;
+      top: calc(50% - 20px);
+      width: 40px;
+      height: 40px;
+      border-radius: 100px;
+      background-color: var(--color-light-blue);
+      z-index: -1;
+    }
+  }
+
+  &:has(input:checked) {
+    & .input-checkbox__box {
+      background-color: var(--color-dark-blue);
+
+      & span {
+        display: block;
+      }
+    }
   }
 }
