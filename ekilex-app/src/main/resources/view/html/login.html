@@ -43,7 +43,7 @@
         body: successMessage || loginError,
         closeLabel:/*[[#{common.close}]]*/ "",
         id: 'login-toast',
-        type: loginError ? 'error' : undefined
+        type: successMessage ? 'success' : 'error'
       });
     });
   </script>

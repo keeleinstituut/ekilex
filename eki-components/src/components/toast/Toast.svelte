@@ -14,7 +14,7 @@
         {#if toast.title}
           <span class="text-sm font-medium">{toast.title}</span>
         {/if}
-        <p class={toast.type === 'error' ? "text-sm" : "text-xs"}>
+        <p class={toast.type ? "text-sm" : "text-xs"}>
           <span>
             {toast.body}
           </span>
@@ -75,12 +75,13 @@
   export const addToast = (toast: Toast) => {
     toast.isVisible = true;
     toast.id ??= id++;
-    const additionalClasses = [
-      toast.type === "error" && "bg-eki-light-red border-eki-red py-3",
-      !toast.type && "bg-eki-white border-eki-light-blue pt-3 pb-5",
-    ]
-      .filter(Boolean)
-      .join(" ");
+    const additionalClasses =
+      [
+        toast.type === "error" && "bg-eki-light-red border-eki-red py-3",
+        toast.type === "success" && "bg-eki-light-green border-eki-green py-3",
+      ]
+        .filter(Boolean)
+        .join(" ") || "bg-eki-white border-eki-light-blue pt-3 pb-5";
     toast.class = `${baseToastClass} ${additionalClasses}`;
     toasts = [...toasts, toast];
     component.dispatchEvent(

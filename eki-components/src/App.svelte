@@ -26,7 +26,13 @@ Hello world
   // import Toast from "./components/Toast.svelte";
   import "./dev.css";
   /**
-   * @type {{ addToast: (arg0: { title?: string; body: string; closeLabel: string; readMoreText: string; readMoreUrl: string; type?: 'error'; }) => any; }}
+   * @type {{ addToast: (arg0: {
+   *  title?: string;
+   *  body: string;
+   * closeLabel: string;
+   * readMoreText: string;
+   * readMoreUrl: string;
+   * type?: 'error' | 'success'; }) => any; }}
    */
   let toastContainer;
 </script>
