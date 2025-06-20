@@ -480,7 +480,7 @@
                   </th:block>
                 </div>
               </div>
-              <div class="collocations-section" th:unless="${#lists.isEmpty(lexeme.collocPosGroups)}">
+              <div class="collocations-section" th:if="${lexeme.collocExists}">
                 <div th:id="|collocs-area-${lexeme.lexemeId}|">
                   <div th:id="|colloc-fulldata-${lexeme.lexemeId}|" class="collapse">
                     <th:block th:unless="${#lists.isEmpty(lexeme.collocPosGroups)}">

@@ -83,13 +83,8 @@
             </div>
             <div th:id="${'government_' + lexeme.lexemeId}" class="form-group row value-group" style="display: none">
               <div class="col-md-12">
+                <input type="hidden" name="complexity" value="ANY">
                 <input type="text" class="form-control value-select required-field">
-              </div>
-              <div class="col-md-4 mt-2" style="text-decoration: line-through;" title="Asendub avaldamisega">
-                <select required class="form-control required-field" name="complexity">
-                  <option value="" hidden disabled selected th:text="#{common.select.complexity}">vali detailsus...</option>
-                  <option th:each="complexity : ${complexities}" th:value="${complexity}" th:text="#{'enum.complexity.' + ${complexity}}">value</option>
-                </select>
               </div>
             </div>
             <div th:id="${'meaning_domain_' + lexeme.lexemeId}" class="form-group row value-group" style="display: none">
@@ -139,6 +134,7 @@
               <input type="hidden" name="id" th:value="${lexeme.meaningId}">
               <input type="hidden" name="opCode" value="definition">
               <input type="hidden" name="itemType" th:value="${defaultDefinitionTypeCode}">
+              <input type="hidden" name="complexity" value="ANY">
               <input type="hidden" name="value">
               <div th:replace="components :: eki_editor_elem"></div>
               <div class="formItem" th:if="${userRoleData.master}">
@@ -170,20 +166,6 @@
                             th:text="${language.value}">language
                     </option>
                   </select>
-                </div>
-              </div>
-              <div class="formItem" style="text-decoration: line-through;" title="Asendub avaldamisega">
-                <div class="formItem__title" th:text="#{lex.select.complexity}">Vali detailsus</div>
-                <div class="formItem__element">
-                  <div class="radioTabs">
-                    <label class="radioTabs__item" th:each="complexity : ${complexities}">
-                      <input type="radio"
-                             name="complexity"
-                             th:checked="${complexity == 'DETAIL'}"
-                             th:value="${complexity}"/>
-                      <span th:text="#{'enum.complexity.' + ${complexity}}">value</span>
-                    </label>
-                  </div>
                 </div>
               </div>
               <div class="formItem">
@@ -227,7 +209,7 @@
             <input type="hidden" name="opCode" value="definition">
             <input type="hidden" name="value" th:value="${definition.valuePrese}">
             <input type="hidden" name="code" th:value="${definition.typeCode}">
-            <input type="hidden" name="complexity" th:value="${definition.complexity}">
+            <input type="hidden" name="complexity" value="ANY">
             <div th:replace="components :: eki_editor_elem"></div>
             <div class="formItem">
               <div class="formItem__title" th:text="#{lex.select.language}">Vali keel</div>
@@ -239,17 +221,6 @@
                           th:text="${language.value}">language
                   </option>
                 </select>
-              </div>
-            </div>
-            <div class="formItem" style="text-decoration: line-through;" title="Asendub avaldamisega">
-              <div class="formItem__title" th:text="#{lex.select.complexity}">Vali detailsus</div>
-              <div class="formItem__element">
-                <div class="radioTabs">
-                  <label class="radioTabs__item" th:each="complexity : ${complexities}">
-                    <input type="radio" name="complexity" th:value="${complexity}" th:checked="${complexity == definition.complexity}" />
-                    <span th:text="#{'enum.complexity.' + ${complexity}}">value</span>
-                  </label>
-                </div>
               </div>
             </div>
             <div class="formItem">
@@ -738,17 +709,10 @@
           <div class="modal-body">
             <input type="hidden" name="id" th:value="${lexeme.lexemeId}">
             <input type="hidden" name="opCode" value="government">
+            <input type="hidden" name="complexity" value="ANY">
             <div class="form-group row">
               <div class="col-md-12">
                 <textarea class="form-control" rows="1" name="value"></textarea>
-              </div>
-            </div>
-            <div class="form-group row" style="text-decoration: line-through;" title="Asendub avaldamisega">
-              <div class="col-md-6">
-                <select required class="form-control required-field" name="complexity">
-                  <option value="" hidden disabled selected th:text="#{common.select.complexity}">vali detailsus...</option>
-                  <option th:each="complexity : ${complexities}" th:value="${complexity}" th:text="#{'enum.complexity.' + ${complexity}}">value</option>
-                </select>
               </div>
             </div>
           </div>
@@ -769,21 +733,10 @@
           <div class="modal-body">
             <input type="hidden" name="id" th:value="${government.id}">
             <input type="hidden" name="opCode" value="government">
-            <input type="hidden" name="complexity" th:value="${government.complexity}">
+            <input type="hidden" name="complexity" value="ANY">
             <div class="form-group row">
               <div class="col-md-12">
                 <textarea class="form-control" rows="1" name="value" th:text="${government.value}"></textarea>
-              </div>
-            </div>
-            <div class="form-group row" style="text-decoration: line-through;" title="Asendub avaldamisega">
-              <div class="col-md-6">
-                <select required class="form-control" name="complexity">
-                  <option th:each="complexity : ${complexities}"
-                          th:value="${complexity}"
-                          th:selected="${complexity == government.complexity}"
-                          th:text="#{'enum.complexity.' + ${complexity}}">value
-                  </option>
-                </select>
               </div>
             </div>
           </div>
@@ -811,19 +764,9 @@
             <input type="hidden" name="id" th:value="${lexeme.lexemeId}">
             <input type="hidden" name="language" th:value="${lexeme.lexemeWord.lang}">
             <input type="hidden" name="opCode" value="usage">
+            <input type="hidden" name="complexity" value="ANY">
             <input type="hidden" name="value">
             <div th:replace="components :: eki_editor_elem"></div>
-            <div class="formItem" style="text-decoration: line-through;" title="Asendub avaldamisega">
-              <div class="formItem__title" th:text="#{lex.select.complexity}">Vali detailsus</div>
-              <div class="formItem__element">
-                <div class="radioTabs">
-                  <label class="radioTabs__item" th:each="complexity : ${complexities}">
-                    <input type="radio" name="complexity" th:value="${complexity}" />
-                    <span th:text="#{'enum.complexity.' + ${complexity}}">value</span>
-                  </label>
-                </div>
-              </div>
-            </div>
             <div class="formItem">
               <div class="formItem__title" th:text="#{lex.select.publicity}">Vali avalikkus</div>
               <div class="formItem__element">
@@ -886,23 +829,8 @@
             <input type="hidden" name="id" th:value="${usage.id}">
             <input type="hidden" name="opCode" value="usage">
             <input type="hidden" name="value" th:value="${usage.valuePrese}">
-            <input type="hidden" name="complexity" th:value="${usage.complexity}">
+            <input type="hidden" name="complexity" value="ANY">
             <div th:replace="components :: eki_editor_elem"></div>
-            <div class="formItem" style="text-decoration: line-through;" title="Asendub avaldamisega">
-              <div class="formItem__title" th:text="#{lex.select.complexity}">Vali detailsus</div>
-              <div class="formItem__element">
-                <div class="radioTabs">
-                  <label class="radioTabs__item" th:each="complexity : ${complexities}">
-                    <input
-                      type="radio"
-                      name="complexity" 
-                      th:value="${complexity}"
-                      th:checked="${complexity == usage.complexity}"/>
-                    <span th:text="#{'enum.complexity.' + ${complexity}}">value</span>
-                  </label>
-                </div>
-              </div>
-            </div>
             <div class="formItem">
               <div class="formItem__title" th:text="#{lex.select.publicity}">Vali avalikkus</div>
               <div class="formItem__element">
@@ -1025,6 +953,7 @@
             <input type="hidden" name="id" th:value="${lexeme.lexemeId}">
             <input type="hidden" name="opCode" value="lexeme_note">
             <input type="hidden" name="value">
+            <input type="hidden" name="complexity" value="ANY">
             <div th:replace="components :: eki_editor_elem"></div>
             <div class="form-group row">
               <div class="col-md-4">
@@ -1034,14 +963,6 @@
                           th:selected="${language.code == lexeme.lexemeWord.lang}"
                           th:text="${language.value}">language
                   </option>
-                </select>
-              </div>
-            </div>
-            <div class="form-group row" style="text-decoration: line-through;" title="Asendub avaldamisega">
-              <div class="col-md-4">
-                <select required class="form-control required-field" name="complexity">
-                  <option value="" hidden disabled selected th:text="#{common.select.complexity}">vali detailsus...</option>
-                  <option th:each="complexity : ${complexities}" th:value="${complexity}" th:text="#{'enum.complexity.' + ${complexity}}">value</option>
                 </select>
               </div>
             </div>
@@ -1070,7 +991,7 @@
             <input type="hidden" name="id" th:value="${note.id}">
             <input type="hidden" name="opCode" value="lexeme_note">
             <input type="hidden" name="value" th:value="${note.valuePrese}">
-            <input type="hidden" name="complexity" th:value="${note.complexity}">
+            <input type="hidden" name="complexity" value="ANY">
             <div th:replace="components :: eki_editor_elem"></div>
             <div class="form-group row">
               <div class="col-md-4">
@@ -1079,17 +1000,6 @@
                           th:value="${language.code}"
                           th:selected="${language.code == note.lang}"
                           th:text="${language.value}">language
-                  </option>
-                </select>
-              </div>
-            </div>
-            <div class="form-group row" style="text-decoration: line-through;" title="Asendub avaldamisega">
-              <div class="col-md-4">
-                <select required class="form-control" name="complexity">
-                  <option th:each="complexity : ${complexities}"
-                          th:value="${complexity}"
-                          th:selected="${complexity == note.complexity}"
-                          th:text="#{'enum.complexity.' + ${complexity}}">value
                   </option>
                 </select>
               </div>
@@ -1346,6 +1256,7 @@
           <div class="modal-body">
             <input type="hidden" name="id" th:value="${lexeme.meaningId}">
             <input type="hidden" name="opCode" value="meaning_note">
+            <input type="hidden" name="complexity" value="ANY">
             <input type="hidden" name="value">
             <div th:replace="components :: eki_editor_elem"></div>
             <div class="form-group row">
@@ -1357,14 +1268,6 @@
                           th:selected="${language.code == sessionBean.recentNoteLanguage}"
                           th:text="${language.value}">language
                   </option>
-                </select>
-              </div>
-            </div>
-            <div class="form-group row" style="text-decoration: line-through;" title="Asendub avaldamisega">
-              <div class="col-md-4">
-                <select required class="form-control required-field" name="complexity">
-                  <option value="" hidden disabled selected th:text="#{common.select.complexity}">vali detailsus...</option>
-                  <option th:each="complexity : ${complexities}" th:value="${complexity}" th:text="#{'enum.complexity.' + ${complexity}}">value</option>
                 </select>
               </div>
             </div>
@@ -1392,6 +1295,7 @@
           <div class="modal-body">
             <input type="hidden" name="id" th:value="${note.id}">
             <input type="hidden" name="opCode" value="meaning_note">
+            <input type="hidden" name="complexity" value="ANY">
             <input type="hidden" name="value" th:value="${note.valuePrese}">
             <div th:replace="components :: eki_editor_elem"></div>
             <div class="form-group row">
@@ -1401,17 +1305,6 @@
                           th:value="${language.code}"
                           th:selected="${language.code == note.lang}"
                           th:text="${language.value}">language
-                  </option>
-                </select>
-              </div>
-            </div>
-            <div class="form-group row" style="text-decoration: line-through;" title="Asendub avaldamisega">
-              <div class="col-md-4">
-                <select required class="form-control" name="complexity">
-                  <option th:each="complexity : ${complexities}"
-                          th:value="${complexity}"
-                          th:selected="${complexity == note.complexity}"
-                          th:text="#{'enum.complexity.' + ${complexity}}">value
                   </option>
                 </select>
               </div>
@@ -2104,6 +1997,7 @@
           <div class="modal-body">
             <input type="hidden" name="id" th:value="${lexeme.lexemeId}">
             <input type="hidden" name="opCode" value="lexeme_grammar">
+            <input type="hidden" name="complexity" value="ANY">
             <input type="hidden" name="value">
             <div th:replace="components :: eki_editor_elem"></div>
             <div class="form-group row">
@@ -2115,14 +2009,6 @@
                           th:selected="${language.code == sessionBean.recentLanguage}"
                           th:text="${language.value}">language
                   </option>
-                </select>
-              </div>
-            </div>
-            <div class="form-group row" style="text-decoration: line-through;" title="Asendub avaldamisega">
-              <div class="col-md-4">
-                <select required class="form-control required-field" name="complexity">
-                  <option value="" hidden disabled selected th:text="#{common.select.complexity}">vali detailsus...</option>
-                  <option th:each="complexity : ${complexities}" th:value="${complexity}" th:text="#{'enum.complexity.' + ${complexity}}">value</option>
                 </select>
               </div>
             </div>
@@ -2144,6 +2030,7 @@
           <div class="modal-body">
             <input type="hidden" name="id" th:value="${grammar.id}">
             <input type="hidden" name="opCode" value="lexeme_grammar">
+            <input type="hidden" name="complexity" value="ANY">
             <input type="hidden" name="value" th:value="${grammar.valuePrese}">
             <div th:replace="components :: eki_editor_elem"></div>
             <div class="form-group row">
@@ -2154,17 +2041,6 @@
                           th:value="${language.code}"
                           th:selected="${language.code == grammar.lang}"
                           th:text="${language.value}">language
-                  </option>
-                </select>
-              </div>
-            </div>
-            <div class="form-group row" style="text-decoration: line-through;" title="Asendub avaldamisega">
-              <div class="col-md-4">
-                <select required class="form-control" name="complexity">
-                  <option th:each="complexity : ${complexities}"
-                          th:value="${complexity}"
-                          th:selected="${complexity == grammar.complexity}"
-                          th:text="#{'enum.complexity.' + ${complexity}}">value
                   </option>
                 </select>
               </div>
@@ -2485,6 +2361,7 @@
           <div class="modal-body">
             <input type="hidden" name="id" th:value="${lexeme.meaningId}">
             <input type="hidden" name="opCode" value="meaning_image">
+            <input type="hidden" name="complexity" value="ANY">
             <div class="form-group row">
               <div class="col-md-12">
                 <input type="text" class="form-control required-field" name="value" th:placeholder="#{lex.placeholder.image.url}" required="required" autocomplete="off"></input>
@@ -2493,14 +2370,6 @@
             <div class="form-group row">
               <div class="col-md-12">
                 <input type="text" class="form-control" name="value2" th:placeholder="#{lex.placeholder.image.title}" autocomplete="off"></input>
-              </div>
-            </div>
-            <div class="form-group row" style="text-decoration: line-through;" title="Asendub avaldamisega">
-              <div class="col-md-4">
-                <select required="required" class="form-control required-field" name="complexity">
-                  <option value="" hidden disabled selected th:text="#{common.select.complexity}">vali detailsus...</option>
-                  <option th:each="complexity : ${complexities}" th:value="${complexity}" th:text="#{'enum.complexity.' + ${complexity}}">value</option>
-                </select>
               </div>
             </div>
             <div class="modal-footer">
@@ -2521,6 +2390,7 @@
           <div class="modal-body">
             <input type="hidden" name="id" th:value="${image.id}">
             <input type="hidden" name="opCode" value="meaning_image">
+            <input type="hidden" name="complexity" value="ANY">
             <div class="form-group row">
               <div class="col-md-12">
                 <input type="text" class="form-control required-field" name="value" th:placeholder="#{lex.placeholder.image.url}" th:value="${image.url}" required="required" autocomplete="off"></input>
@@ -2529,17 +2399,6 @@
             <div class="form-group row">
               <div class="col-md-12">
                 <input type="text" class="form-control" name="value2" th:placeholder="#{lex.placeholder.image.title}" th:value="${image.title}" autocomplete="off"></input>
-              </div>
-            </div>
-            <div class="form-group row" style="text-decoration: line-through;" title="Asendub avaldamisega">
-              <div class="col-md-4">
-                <select required class="form-control" name="complexity">
-                  <option th:each="complexity : ${complexities}"
-                          th:value="${complexity}"
-                          th:selected="${complexity == image.complexity}"
-                          th:text="#{'enum.complexity.' + ${complexity}}">value
-                  </option>
-                </select>
               </div>
             </div>
             <div class="modal-footer">
@@ -2581,18 +2440,11 @@
           <div class="modal-body">
             <input type="hidden" name="id" th:value="${lexeme.meaningId}">
             <input type="hidden" name="opCode" value="meaning_media">
+            <input type="hidden" name="complexity" value="ANY">
             <input type="hidden" name="value">
             <div class="form-group row">
               <div class="col-md-12">
                 <textarea class="form-control" rows="1" th:placeholder="#{lex.placeholder.media.url}" name="value"></textarea>
-              </div>
-            </div>
-            <div class="form-group row" style="text-decoration: line-through;" title="Asendub avaldamisega">
-              <div class="col-md-4">
-                <select required class="form-control required-field" name="complexity">
-                  <option value="" hidden disabled selected th:text="#{common.select.complexity}">vali detailsus...</option>
-                  <option th:each="complexity : ${complexities}" th:value="${complexity}" th:text="#{'enum.complexity.' + ${complexity}}">value</option>
-                </select>
               </div>
             </div>
             <div class="modal-footer">
@@ -2613,20 +2465,10 @@
           <div class="modal-body">
             <input type="hidden" name="id" th:value="${media.id}">
             <input type="hidden" name="opCode" value="meaning_media">
+            <input type="hidden" name="complexity" value="ANY">
             <div class="form-group row">
               <div class="col-md-12">
                 <textarea class="form-control" rows="1" name="value" th:text="${media.url}"></textarea>
-              </div>
-            </div>
-            <div class="form-group row" style="text-decoration: line-through;" title="Asendub avaldamisega">
-              <div class="col-md-4">
-                <select required class="form-control" name="complexity">
-                  <option th:each="complexity : ${complexities}"
-                          th:value="${complexity}"
-                          th:selected="${complexity == media.complexity}"
-                          th:text="#{'enum.complexity.' + ${complexity}}">value
-                  </option>
-                </select>
               </div>
             </div>
             <div class="modal-footer">

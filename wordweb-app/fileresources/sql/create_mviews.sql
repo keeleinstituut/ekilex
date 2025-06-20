@@ -6,7 +6,6 @@ drop materialized view if exists mview_ww_word;
 drop materialized view if exists mview_ww_form;
 drop materialized view if exists mview_ww_meaning;
 drop materialized view if exists mview_ww_lexeme;
-drop materialized view if exists mview_ww_collocation; -- remove later
 drop materialized view if exists mview_ww_colloc_pos_group;
 drop materialized view if exists mview_ww_word_etymology;
 drop materialized view if exists mview_ww_word_relation;

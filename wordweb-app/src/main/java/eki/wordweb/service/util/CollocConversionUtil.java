@@ -53,20 +53,26 @@ public class CollocConversionUtil extends AbstractConversionUtil {
 			Long lexemeId = lexemeWord.getLexemeId();
 			WordCollocPosGroups lexemeCollocPosGroups = lexemeCollocPosGroupsMap.get(lexemeId);
 			if (lexemeCollocPosGroups == null) {
+				lexemeWord.setCollocExists(false);
 				continue;
 			}
-			filterCollocations(lexemeCollocPosGroups, searchContext);
+			boolean collocExists = filterCollocations(lexemeCollocPosGroups, searchContext);
 			List<CollocPosGroup> collocPosGroups = compensateDataQualityIssues(lexemeCollocPosGroups);
 			classifierUtil.applyClassifiers(collocPosGroups, displayLang);
 			lexemeWord.setCollocPosGroups(collocPosGroups);
+			lexemeWord.setCollocExists(collocExists);
+			if (!collocExists) {
+				continue;
+			}
 			divideCollocRelGroupsByCollocMemberForms(wordId, lexemeWord);
 			transformCollocPosGroupsForDisplay(wordId, lexemeWord);
 		}
 	}
 
-	private void filterCollocations(WordCollocPosGroups lexemeCollocPosGroups, SearchContext searchContext) {
+	private boolean filterCollocations(WordCollocPosGroups lexemeCollocPosGroups, SearchContext searchContext) {
 
 		List<CollocPosGroup> collocPosGroups = lexemeCollocPosGroups.getPosGroups();
+		boolean collocExists = false;
 
 		for (CollocPosGroup collocPosGroup : collocPosGroups) {
 
@@ -79,8 +85,10 @@ public class CollocConversionUtil extends AbstractConversionUtil {
 				List<Colloc> collocations = collocRelGroup.getCollocations();
 				collocations = filter(collocations, searchContext);
 				collocRelGroup.setCollocations(collocations);
+				collocExists = collocExists | CollectionUtils.isNotEmpty(collocations);
 			}
 		}
+		return collocExists;
 	}
 
 	private List<CollocPosGroup> compensateDataQualityIssues(WordCollocPosGroups lexemeCollocPosGroups) {

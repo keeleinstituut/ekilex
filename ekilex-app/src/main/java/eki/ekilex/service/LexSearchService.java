@@ -292,11 +292,10 @@ public class LexSearchService extends AbstractWordSearchService {
 			List<LexemeRelation> lexemeRelations = commonDataDbService.getLexemeRelations(lexemeId, CLASSIF_LABEL_LANG_EST);
 			List<CollocPosGroup> primaryCollocations = null;
 			List<Colloc> secondaryCollocations = null;
-			List<CollocMember> collocationMembers = null;
+			List<CollocMember> collocationMembers = commonDataDbService.getCollocationMembers(lexemeId);
 			if (isCollocData) {
 				primaryCollocations = lexDataDbService.getPrimaryCollocations(lexemeId, CLASSIF_LABEL_LANG_EST);
 				secondaryCollocations = lexDataDbService.getSecondaryCollocations(lexemeId);
-				collocationMembers = commonDataDbService.getCollocationMembers(lexemeId);
 			}
 			List<Freeform> meaningFreeforms = commonDataDbService.getMeaningFreeforms(meaningId, CLASSIF_LABEL_LANG_EST);
 			List<LearnerComment> meaningLearnerComments = commonDataDbService.getMeaningLearnerComments(meaningId);
