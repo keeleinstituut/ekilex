@@ -35,30 +35,30 @@ public class ViewWwNewWordMenuRecord extends TableRecordImpl<ViewWwNewWordMenuRe
     }
 
     /**
-     * Setter for <code>public.view_ww_new_word_menu.word_value</code>.
+     * Setter for <code>public.view_ww_new_word_menu.value</code>.
      */
-    public void setWordValue(String value) {
+    public void setValue(String value) {
         set(1, value);
     }
 
     /**
-     * Getter for <code>public.view_ww_new_word_menu.word_value</code>.
+     * Getter for <code>public.view_ww_new_word_menu.value</code>.
      */
-    public String getWordValue() {
+    public String getValue() {
         return (String) get(1);
     }
 
     /**
-     * Setter for <code>public.view_ww_new_word_menu.word_value_prese</code>.
+     * Setter for <code>public.view_ww_new_word_menu.value_prese</code>.
      */
-    public void setWordValuePrese(String value) {
+    public void setValuePrese(String value) {
         set(2, value);
     }
 
     /**
-     * Getter for <code>public.view_ww_new_word_menu.word_value_prese</code>.
+     * Getter for <code>public.view_ww_new_word_menu.value_prese</code>.
      */
-    public String getWordValuePrese() {
+    public String getValuePrese() {
         return (String) get(2);
     }
 
@@ -125,12 +125,12 @@ public class ViewWwNewWordMenuRecord extends TableRecordImpl<ViewWwNewWordMenuRe
 
     @Override
     public Field<String> field2() {
-        return ViewWwNewWordMenu.VIEW_WW_NEW_WORD_MENU.WORD_VALUE;
+        return ViewWwNewWordMenu.VIEW_WW_NEW_WORD_MENU.VALUE;
     }
 
     @Override
     public Field<String> field3() {
-        return ViewWwNewWordMenu.VIEW_WW_NEW_WORD_MENU.WORD_VALUE_PRESE;
+        return ViewWwNewWordMenu.VIEW_WW_NEW_WORD_MENU.VALUE_PRESE;
     }
 
     @Override
@@ -155,12 +155,12 @@ public class ViewWwNewWordMenuRecord extends TableRecordImpl<ViewWwNewWordMenuRe
 
     @Override
     public String component2() {
-        return getWordValue();
+        return getValue();
     }
 
     @Override
     public String component3() {
-        return getWordValuePrese();
+        return getValuePrese();
     }
 
     @Override
@@ -185,12 +185,12 @@ public class ViewWwNewWordMenuRecord extends TableRecordImpl<ViewWwNewWordMenuRe
 
     @Override
     public String value2() {
-        return getWordValue();
+        return getValue();
     }
 
     @Override
     public String value3() {
-        return getWordValuePrese();
+        return getValuePrese();
     }
 
     @Override
@@ -216,13 +216,13 @@ public class ViewWwNewWordMenuRecord extends TableRecordImpl<ViewWwNewWordMenuRe
 
     @Override
     public ViewWwNewWordMenuRecord value2(String value) {
-        setWordValue(value);
+        setValue(value);
         return this;
     }
 
     @Override
     public ViewWwNewWordMenuRecord value3(String value) {
-        setWordValuePrese(value);
+        setValuePrese(value);
         return this;
     }
 
@@ -269,12 +269,12 @@ public class ViewWwNewWordMenuRecord extends TableRecordImpl<ViewWwNewWordMenuRe
     /**
      * Create a detached, initialised ViewWwNewWordMenuRecord
      */
-    public ViewWwNewWordMenuRecord(Long wordId, String wordValue, String wordValuePrese, Integer homonymNr, Integer regYear, String[] wordTypeCodes) {
+    public ViewWwNewWordMenuRecord(Long wordId, String value, String valuePrese, Integer homonymNr, Integer regYear, String[] wordTypeCodes) {
         super(ViewWwNewWordMenu.VIEW_WW_NEW_WORD_MENU);
 
         setWordId(wordId);
-        setWordValue(wordValue);
-        setWordValuePrese(wordValuePrese);
+        setValue(value);
+        setValuePrese(valuePrese);
         setHomonymNr(homonymNr);
         setRegYear(regYear);
         setWordTypeCodes(wordTypeCodes);

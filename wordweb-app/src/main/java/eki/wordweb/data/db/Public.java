@@ -6,6 +6,15 @@ package eki.wordweb.data.db;
 
 import eki.wordweb.data.db.tables.LexicalDecisionData;
 import eki.wordweb.data.db.tables.LexicalDecisionResult;
+import eki.wordweb.data.db.tables.MviewOdDefinition;
+import eki.wordweb.data.db.tables.MviewOdLexemeMeaning;
+import eki.wordweb.data.db.tables.MviewOdWord;
+import eki.wordweb.data.db.tables.MviewOdWordOdMorph;
+import eki.wordweb.data.db.tables.MviewOdWordOdRecommend;
+import eki.wordweb.data.db.tables.MviewOdWordOdUsage;
+import eki.wordweb.data.db.tables.MviewOdWordOdUsageIdx;
+import eki.wordweb.data.db.tables.MviewOdWordRelation;
+import eki.wordweb.data.db.tables.MviewOdWordRelationIdx;
 import eki.wordweb.data.db.tables.MviewWwClassifier;
 import eki.wordweb.data.db.tables.MviewWwCollocPosGroup;
 import eki.wordweb.data.db.tables.MviewWwCounts;
@@ -58,6 +67,51 @@ public class Public extends SchemaImpl {
      * The table <code>public.lexical_decision_result</code>.
      */
     public final LexicalDecisionResult LEXICAL_DECISION_RESULT = LexicalDecisionResult.LEXICAL_DECISION_RESULT;
+
+    /**
+     * The table <code>public.mview_od_definition</code>.
+     */
+    public final MviewOdDefinition MVIEW_OD_DEFINITION = MviewOdDefinition.MVIEW_OD_DEFINITION;
+
+    /**
+     * The table <code>public.mview_od_lexeme_meaning</code>.
+     */
+    public final MviewOdLexemeMeaning MVIEW_OD_LEXEME_MEANING = MviewOdLexemeMeaning.MVIEW_OD_LEXEME_MEANING;
+
+    /**
+     * The table <code>public.mview_od_word</code>.
+     */
+    public final MviewOdWord MVIEW_OD_WORD = MviewOdWord.MVIEW_OD_WORD;
+
+    /**
+     * The table <code>public.mview_od_word_od_morph</code>.
+     */
+    public final MviewOdWordOdMorph MVIEW_OD_WORD_OD_MORPH = MviewOdWordOdMorph.MVIEW_OD_WORD_OD_MORPH;
+
+    /**
+     * The table <code>public.mview_od_word_od_recommend</code>.
+     */
+    public final MviewOdWordOdRecommend MVIEW_OD_WORD_OD_RECOMMEND = MviewOdWordOdRecommend.MVIEW_OD_WORD_OD_RECOMMEND;
+
+    /**
+     * The table <code>public.mview_od_word_od_usage</code>.
+     */
+    public final MviewOdWordOdUsage MVIEW_OD_WORD_OD_USAGE = MviewOdWordOdUsage.MVIEW_OD_WORD_OD_USAGE;
+
+    /**
+     * The table <code>public.mview_od_word_od_usage_idx</code>.
+     */
+    public final MviewOdWordOdUsageIdx MVIEW_OD_WORD_OD_USAGE_IDX = MviewOdWordOdUsageIdx.MVIEW_OD_WORD_OD_USAGE_IDX;
+
+    /**
+     * The table <code>public.mview_od_word_relation</code>.
+     */
+    public final MviewOdWordRelation MVIEW_OD_WORD_RELATION = MviewOdWordRelation.MVIEW_OD_WORD_RELATION;
+
+    /**
+     * The table <code>public.mview_od_word_relation_idx</code>.
+     */
+    public final MviewOdWordRelationIdx MVIEW_OD_WORD_RELATION_IDX = MviewOdWordRelationIdx.MVIEW_OD_WORD_RELATION_IDX;
 
     /**
      * The table <code>public.mview_ww_classifier</code>.
@@ -176,6 +230,15 @@ public class Public extends SchemaImpl {
         return Arrays.<Table<?>>asList(
             LexicalDecisionData.LEXICAL_DECISION_DATA,
             LexicalDecisionResult.LEXICAL_DECISION_RESULT,
+            MviewOdDefinition.MVIEW_OD_DEFINITION,
+            MviewOdLexemeMeaning.MVIEW_OD_LEXEME_MEANING,
+            MviewOdWord.MVIEW_OD_WORD,
+            MviewOdWordOdMorph.MVIEW_OD_WORD_OD_MORPH,
+            MviewOdWordOdRecommend.MVIEW_OD_WORD_OD_RECOMMEND,
+            MviewOdWordOdUsage.MVIEW_OD_WORD_OD_USAGE,
+            MviewOdWordOdUsageIdx.MVIEW_OD_WORD_OD_USAGE_IDX,
+            MviewOdWordRelation.MVIEW_OD_WORD_RELATION,
+            MviewOdWordRelationIdx.MVIEW_OD_WORD_RELATION_IDX,
             MviewWwClassifier.MVIEW_WW_CLASSIFIER,
             MviewWwCollocPosGroup.MVIEW_WW_COLLOC_POS_GROUP,
             MviewWwCounts.MVIEW_WW_COUNTS,

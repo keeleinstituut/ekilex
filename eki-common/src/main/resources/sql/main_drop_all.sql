@@ -16,6 +16,15 @@ drop view if exists view_ww_similarity_judgement_data;
 drop view if exists view_ww_classifier;
 drop view if exists view_ww_dataset;
 drop view if exists view_ww_news_article;
+drop view if exists view_od_word;
+drop view if exists view_od_word_od_morph;
+drop view if exists view_od_word_od_usage;
+drop view if exists view_od_word_od_usage_idx;
+drop view if exists view_od_word_od_recommend;
+drop view if exists view_od_lexeme_meaning;
+drop view if exists view_od_definition;
+drop view if exists view_od_word_relation;
+drop view if exists view_od_word_relation_idx;
 drop type if exists type_meaning_word; -- remove later
 drop type if exists type_note; -- remove later
 drop type if exists type_value_entity; -- remove later

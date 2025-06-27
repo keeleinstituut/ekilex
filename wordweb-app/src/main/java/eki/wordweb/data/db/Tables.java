@@ -6,6 +6,15 @@ package eki.wordweb.data.db;
 
 import eki.wordweb.data.db.tables.LexicalDecisionData;
 import eki.wordweb.data.db.tables.LexicalDecisionResult;
+import eki.wordweb.data.db.tables.MviewOdDefinition;
+import eki.wordweb.data.db.tables.MviewOdLexemeMeaning;
+import eki.wordweb.data.db.tables.MviewOdWord;
+import eki.wordweb.data.db.tables.MviewOdWordOdMorph;
+import eki.wordweb.data.db.tables.MviewOdWordOdRecommend;
+import eki.wordweb.data.db.tables.MviewOdWordOdUsage;
+import eki.wordweb.data.db.tables.MviewOdWordOdUsageIdx;
+import eki.wordweb.data.db.tables.MviewOdWordRelation;
+import eki.wordweb.data.db.tables.MviewOdWordRelationIdx;
 import eki.wordweb.data.db.tables.MviewWwClassifier;
 import eki.wordweb.data.db.tables.MviewWwCollocPosGroup;
 import eki.wordweb.data.db.tables.MviewWwCounts;
@@ -41,6 +50,51 @@ public class Tables {
      * The table <code>public.lexical_decision_result</code>.
      */
     public static final LexicalDecisionResult LEXICAL_DECISION_RESULT = LexicalDecisionResult.LEXICAL_DECISION_RESULT;
+
+    /**
+     * The table <code>public.mview_od_definition</code>.
+     */
+    public static final MviewOdDefinition MVIEW_OD_DEFINITION = MviewOdDefinition.MVIEW_OD_DEFINITION;
+
+    /**
+     * The table <code>public.mview_od_lexeme_meaning</code>.
+     */
+    public static final MviewOdLexemeMeaning MVIEW_OD_LEXEME_MEANING = MviewOdLexemeMeaning.MVIEW_OD_LEXEME_MEANING;
+
+    /**
+     * The table <code>public.mview_od_word</code>.
+     */
+    public static final MviewOdWord MVIEW_OD_WORD = MviewOdWord.MVIEW_OD_WORD;
+
+    /**
+     * The table <code>public.mview_od_word_od_morph</code>.
+     */
+    public static final MviewOdWordOdMorph MVIEW_OD_WORD_OD_MORPH = MviewOdWordOdMorph.MVIEW_OD_WORD_OD_MORPH;
+
+    /**
+     * The table <code>public.mview_od_word_od_recommend</code>.
+     */
+    public static final MviewOdWordOdRecommend MVIEW_OD_WORD_OD_RECOMMEND = MviewOdWordOdRecommend.MVIEW_OD_WORD_OD_RECOMMEND;
+
+    /**
+     * The table <code>public.mview_od_word_od_usage</code>.
+     */
+    public static final MviewOdWordOdUsage MVIEW_OD_WORD_OD_USAGE = MviewOdWordOdUsage.MVIEW_OD_WORD_OD_USAGE;
+
+    /**
+     * The table <code>public.mview_od_word_od_usage_idx</code>.
+     */
+    public static final MviewOdWordOdUsageIdx MVIEW_OD_WORD_OD_USAGE_IDX = MviewOdWordOdUsageIdx.MVIEW_OD_WORD_OD_USAGE_IDX;
+
+    /**
+     * The table <code>public.mview_od_word_relation</code>.
+     */
+    public static final MviewOdWordRelation MVIEW_OD_WORD_RELATION = MviewOdWordRelation.MVIEW_OD_WORD_RELATION;
+
+    /**
+     * The table <code>public.mview_od_word_relation_idx</code>.
+     */
+    public static final MviewOdWordRelationIdx MVIEW_OD_WORD_RELATION_IDX = MviewOdWordRelationIdx.MVIEW_OD_WORD_RELATION_IDX;
 
     /**
      * The table <code>public.mview_ww_classifier</code>.

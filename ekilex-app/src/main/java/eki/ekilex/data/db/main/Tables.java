@@ -123,6 +123,15 @@ import eki.ekilex.data.db.main.tables.UsageType;
 import eki.ekilex.data.db.main.tables.UsageTypeLabel;
 import eki.ekilex.data.db.main.tables.ValueState;
 import eki.ekilex.data.db.main.tables.ValueStateLabel;
+import eki.ekilex.data.db.main.tables.ViewOdDefinition;
+import eki.ekilex.data.db.main.tables.ViewOdLexemeMeaning;
+import eki.ekilex.data.db.main.tables.ViewOdWord;
+import eki.ekilex.data.db.main.tables.ViewOdWordOdMorph;
+import eki.ekilex.data.db.main.tables.ViewOdWordOdRecommend;
+import eki.ekilex.data.db.main.tables.ViewOdWordOdUsage;
+import eki.ekilex.data.db.main.tables.ViewOdWordOdUsageIdx;
+import eki.ekilex.data.db.main.tables.ViewOdWordRelation;
+import eki.ekilex.data.db.main.tables.ViewOdWordRelationIdx;
 import eki.ekilex.data.db.main.tables.ViewWwClassifier;
 import eki.ekilex.data.db.main.tables.ViewWwCollocPosGroup;
 import eki.ekilex.data.db.main.tables.ViewWwDataset;
@@ -764,6 +773,51 @@ public class Tables {
      * The table <code>public.value_state_label</code>.
      */
     public static final ValueStateLabel VALUE_STATE_LABEL = ValueStateLabel.VALUE_STATE_LABEL;
+
+    /**
+     * The table <code>public.view_od_definition</code>.
+     */
+    public static final ViewOdDefinition VIEW_OD_DEFINITION = ViewOdDefinition.VIEW_OD_DEFINITION;
+
+    /**
+     * The table <code>public.view_od_lexeme_meaning</code>.
+     */
+    public static final ViewOdLexemeMeaning VIEW_OD_LEXEME_MEANING = ViewOdLexemeMeaning.VIEW_OD_LEXEME_MEANING;
+
+    /**
+     * The table <code>public.view_od_word</code>.
+     */
+    public static final ViewOdWord VIEW_OD_WORD = ViewOdWord.VIEW_OD_WORD;
+
+    /**
+     * The table <code>public.view_od_word_od_morph</code>.
+     */
+    public static final ViewOdWordOdMorph VIEW_OD_WORD_OD_MORPH = ViewOdWordOdMorph.VIEW_OD_WORD_OD_MORPH;
+
+    /**
+     * The table <code>public.view_od_word_od_recommend</code>.
+     */
+    public static final ViewOdWordOdRecommend VIEW_OD_WORD_OD_RECOMMEND = ViewOdWordOdRecommend.VIEW_OD_WORD_OD_RECOMMEND;
+
+    /**
+     * The table <code>public.view_od_word_od_usage</code>.
+     */
+    public static final ViewOdWordOdUsage VIEW_OD_WORD_OD_USAGE = ViewOdWordOdUsage.VIEW_OD_WORD_OD_USAGE;
+
+    /**
+     * The table <code>public.view_od_word_od_usage_idx</code>.
+     */
+    public static final ViewOdWordOdUsageIdx VIEW_OD_WORD_OD_USAGE_IDX = ViewOdWordOdUsageIdx.VIEW_OD_WORD_OD_USAGE_IDX;
+
+    /**
+     * The table <code>public.view_od_word_relation</code>.
+     */
+    public static final ViewOdWordRelation VIEW_OD_WORD_RELATION = ViewOdWordRelation.VIEW_OD_WORD_RELATION;
+
+    /**
+     * The table <code>public.view_od_word_relation_idx</code>.
+     */
+    public static final ViewOdWordRelationIdx VIEW_OD_WORD_RELATION_IDX = ViewOdWordRelationIdx.VIEW_OD_WORD_RELATION_IDX;
 
     /**
      * The table <code>public.view_ww_classifier</code>.
