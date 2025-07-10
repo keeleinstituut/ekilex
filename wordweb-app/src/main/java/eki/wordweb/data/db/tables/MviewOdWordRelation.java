@@ -49,9 +49,9 @@ public class MviewOdWordRelation extends TableImpl<MviewOdWordRelationRecord> {
     public final TableField<MviewOdWordRelationRecord, Long> WORD_ID = createField(DSL.name("word_id"), SQLDataType.BIGINT, this, "");
 
     /**
-     * The column <code>public.mview_od_word_relation.related_words</code>.
+     * The column <code>public.mview_od_word_relation.word_relation_groups</code>.
      */
-    public final TableField<MviewOdWordRelationRecord, JSON> RELATED_WORDS = createField(DSL.name("related_words"), SQLDataType.JSON, this, "");
+    public final TableField<MviewOdWordRelationRecord, JSON> WORD_RELATION_GROUPS = createField(DSL.name("word_relation_groups"), SQLDataType.JSON, this, "");
 
     private MviewOdWordRelation(Name alias, Table<MviewOdWordRelationRecord> aliased) {
         this(alias, aliased, null);

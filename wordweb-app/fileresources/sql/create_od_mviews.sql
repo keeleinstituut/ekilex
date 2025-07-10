@@ -4,7 +4,7 @@ drop materialized view if exists mview_od_word_od_usage_idx;
 drop materialized view if exists mview_od_word_od_recommend;
 drop materialized view if exists mview_od_word_relation;
 drop materialized view if exists mview_od_word_relation_idx;
-drop materialized view if exists mview_od_definition;
+drop materialized view if exists mview_od_definition_idx;
 drop materialized view if exists mview_od_lexeme_meaning;
 drop materialized view if exists mview_od_word;
 
@@ -17,7 +17,6 @@ dblink(
 	value text,
 	value_prese text,
 	value_as_word text,
-	lang char(3),
 	homonym_nr integer,
 	vocal_form text,
 	word_type_codes varchar(100) array
@@ -72,22 +71,18 @@ dblink(
 	'host=localhost user=ekilex password=3kil3x dbname=ekilex',
 	'select * from view_od_lexeme_meaning') as od_lexeme_meaning(
 	word_id bigint,
-	lexeme_id bigint,
-	meaning_id bigint,
-	value_state_code varchar(100),
-	register_codes varchar(100) array
+	lexeme_meanings json
 );
 
-create materialized view mview_od_definition as
+create materialized view mview_od_definition_idx as
 select * from
 dblink(
 	'host=localhost user=ekilex password=3kil3x dbname=ekilex',
-	'select * from view_od_definition') as od_definition(
+	'select * from view_od_definition_idx') as od_definition(
+	word_id bigint,
 	meaning_id bigint,
 	definition_id bigint,
-	value text,
-	value_prese text,
-	lang char(3)
+	value text
 );
 
 create materialized view mview_od_word_relation as
@@ -96,7 +91,7 @@ dblink(
 	'host=localhost user=ekilex password=3kil3x dbname=ekilex',
 	'select * from view_od_word_relation') as od_word_relation(
 	word_id bigint,
-	related_words json
+	word_relation_groups json
 );
 
 create materialized view mview_od_word_relation_idx as
@@ -105,6 +100,7 @@ dblink(
 	'host=localhost user=ekilex password=3kil3x dbname=ekilex',
 	'select * from view_od_word_relation_idx') as od_word_relation_idx(
 	word_id bigint,
+	word_relation_id bigint,
 	word_rel_type_code varchar(100), -- unindexed
 	related_word_id bigint,
 	value text,
@@ -144,19 +140,19 @@ create index mview_od_word_od_recommend_value_prefix_idx on mview_od_word_od_rec
 create index mview_od_word_od_recommend_value_prefix_lower_idx on mview_od_word_od_recommend (lower(value) text_pattern_ops);
 
 create index mview_od_lexeme_meaning_word_id_idx on mview_od_lexeme_meaning (word_id);
-create index mview_od_lexeme_meaning_lexeme_id_idx on mview_od_lexeme_meaning (lexeme_id);
-create index mview_od_lexeme_meaning_meaning_id_idx on mview_od_lexeme_meaning (meaning_id);
 
-create index mview_od_definition_meaning_id_idx on mview_od_definition (meaning_id);
-create index mview_od_definition_definition_id_idx on mview_od_definition (definition_id);
-create index mview_od_definition_value_idx on mview_od_definition (value);
-create index mview_od_definition_value_lower_idx on mview_od_definition (lower(value));
-create index mview_od_definition_value_prefix_idx on mview_od_definition (value text_pattern_ops);
-create index mview_od_definition_value_prefix_lower_idx on mview_od_definition (lower(value) text_pattern_ops);
+create index mview_od_definition_idx_word_id_idx on mview_od_definition_idx (word_id);
+create index mview_od_definition_idx_meaning_id_idx on mview_od_definition_idx (meaning_id);
+create index mview_od_definition_idx_definition_id_idx on mview_od_definition_idx (definition_id);
+create index mview_od_definition_idx_value_idx on mview_od_definition_idx (value);
+create index mview_od_definition_idx_value_lower_idx on mview_od_definition_idx (lower(value));
+create index mview_od_definition_idx_value_prefix_idx on mview_od_definition_idx (value text_pattern_ops);
+create index mview_od_definition_idx_value_prefix_lower_idx on mview_od_definition_idx (lower(value) text_pattern_ops);
 
 create index mview_od_word_relation_word_id_idx on mview_od_word_relation (word_id);
 
 create index mview_od_word_relation_idx_word_id_idx on mview_od_word_relation_idx (word_id);
+create index mview_od_word_relation_idx_word_relation_id_idx on mview_od_word_relation_idx (word_relation_id);
 create index mview_od_word_relation_idx_related_word_id_idx on mview_od_word_relation_idx (related_word_id);
 create index mview_od_word_relation_idx_value_idx on mview_od_word_relation_idx (value);
 create index mview_od_word_relation_idx_value_lower_idx on mview_od_word_relation_idx (lower(value));

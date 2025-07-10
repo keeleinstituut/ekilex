@@ -11,7 +11,7 @@ import org.jooq.Field;
 import org.jooq.ForeignKey;
 import org.jooq.Name;
 import org.jooq.Record;
-import org.jooq.Row8;
+import org.jooq.Row7;
 import org.jooq.Schema;
 import org.jooq.Table;
 import org.jooq.TableField;
@@ -61,11 +61,6 @@ public class MviewOdWord extends TableImpl<MviewOdWordRecord> {
      * The column <code>public.mview_od_word.value_as_word</code>.
      */
     public final TableField<MviewOdWordRecord, String> VALUE_AS_WORD = createField(DSL.name("value_as_word"), SQLDataType.CLOB, this, "");
-
-    /**
-     * The column <code>public.mview_od_word.lang</code>.
-     */
-    public final TableField<MviewOdWordRecord, String> LANG = createField(DSL.name("lang"), SQLDataType.CHAR(3), this, "");
 
     /**
      * The column <code>public.mview_od_word.homonym_nr</code>.
@@ -147,11 +142,11 @@ public class MviewOdWord extends TableImpl<MviewOdWordRecord> {
     }
 
     // -------------------------------------------------------------------------
-    // Row8 type methods
+    // Row7 type methods
     // -------------------------------------------------------------------------
 
     @Override
-    public Row8<Long, String, String, String, String, Integer, String, String[]> fieldsRow() {
-        return (Row8) super.fieldsRow();
+    public Row7<Long, String, String, String, Integer, String, String[]> fieldsRow() {
+        return (Row7) super.fieldsRow();
     }
 }

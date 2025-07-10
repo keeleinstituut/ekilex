@@ -177,8 +177,8 @@ public abstract class AbstractSearchService implements SystemConstant, WebConsta
 		}
 
 		LanguagesDatasets availableLanguagesDatasets = searchDbService.getAvailableLanguagesDatasets(searchWord, searchContext);
-		String displayLang = languageContext.getDisplayLang();
 		composeFilteringSuggestions(searchFilter, availableLanguagesDatasets);
+		String displayLang = languageContext.getDisplayLang();
 		classifierUtil.applyClassifiers(availableLanguagesDatasets, displayLang);
 
 		return new WordsData(availableLanguagesDatasets);

@@ -124,6 +124,7 @@ import eki.ekilex.data.db.main.tables.UsageTypeLabel;
 import eki.ekilex.data.db.main.tables.ValueState;
 import eki.ekilex.data.db.main.tables.ValueStateLabel;
 import eki.ekilex.data.db.main.tables.ViewOdDefinition;
+import eki.ekilex.data.db.main.tables.ViewOdDefinitionIdx;
 import eki.ekilex.data.db.main.tables.ViewOdLexemeMeaning;
 import eki.ekilex.data.db.main.tables.ViewOdWord;
 import eki.ekilex.data.db.main.tables.ViewOdWordOdMorph;
@@ -809,6 +810,11 @@ public class Public extends SchemaImpl {
     public final ViewOdDefinition VIEW_OD_DEFINITION = ViewOdDefinition.VIEW_OD_DEFINITION;
 
     /**
+     * The table <code>public.view_od_definition_idx</code>.
+     */
+    public final ViewOdDefinitionIdx VIEW_OD_DEFINITION_IDX = ViewOdDefinitionIdx.VIEW_OD_DEFINITION_IDX;
+
+    /**
      * The table <code>public.view_od_lexeme_meaning</code>.
      */
     public final ViewOdLexemeMeaning VIEW_OD_LEXEME_MEANING = ViewOdLexemeMeaning.VIEW_OD_LEXEME_MEANING;
@@ -1344,6 +1350,7 @@ public class Public extends SchemaImpl {
             ValueState.VALUE_STATE,
             ValueStateLabel.VALUE_STATE_LABEL,
             ViewOdDefinition.VIEW_OD_DEFINITION,
+            ViewOdDefinitionIdx.VIEW_OD_DEFINITION_IDX,
             ViewOdLexemeMeaning.VIEW_OD_LEXEME_MEANING,
             ViewOdWord.VIEW_OD_WORD,
             ViewOdWordOdMorph.VIEW_OD_WORD_OD_MORPH,

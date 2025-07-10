@@ -36,16 +36,16 @@ public class MviewOdWordRelationRecord extends TableRecordImpl<MviewOdWordRelati
     }
 
     /**
-     * Setter for <code>public.mview_od_word_relation.related_words</code>.
+     * Setter for <code>public.mview_od_word_relation.word_relation_groups</code>.
      */
-    public void setRelatedWords(JSON value) {
+    public void setWordRelationGroups(JSON value) {
         set(1, value);
     }
 
     /**
-     * Getter for <code>public.mview_od_word_relation.related_words</code>.
+     * Getter for <code>public.mview_od_word_relation.word_relation_groups</code>.
      */
-    public JSON getRelatedWords() {
+    public JSON getWordRelationGroups() {
         return (JSON) get(1);
     }
 
@@ -70,7 +70,7 @@ public class MviewOdWordRelationRecord extends TableRecordImpl<MviewOdWordRelati
 
     @Override
     public Field<JSON> field2() {
-        return MviewOdWordRelation.MVIEW_OD_WORD_RELATION.RELATED_WORDS;
+        return MviewOdWordRelation.MVIEW_OD_WORD_RELATION.WORD_RELATION_GROUPS;
     }
 
     @Override
@@ -80,7 +80,7 @@ public class MviewOdWordRelationRecord extends TableRecordImpl<MviewOdWordRelati
 
     @Override
     public JSON component2() {
-        return getRelatedWords();
+        return getWordRelationGroups();
     }
 
     @Override
@@ -90,7 +90,7 @@ public class MviewOdWordRelationRecord extends TableRecordImpl<MviewOdWordRelati
 
     @Override
     public JSON value2() {
-        return getRelatedWords();
+        return getWordRelationGroups();
     }
 
     @Override
@@ -101,7 +101,7 @@ public class MviewOdWordRelationRecord extends TableRecordImpl<MviewOdWordRelati
 
     @Override
     public MviewOdWordRelationRecord value2(JSON value) {
-        setRelatedWords(value);
+        setWordRelationGroups(value);
         return this;
     }
 
@@ -126,10 +126,10 @@ public class MviewOdWordRelationRecord extends TableRecordImpl<MviewOdWordRelati
     /**
      * Create a detached, initialised MviewOdWordRelationRecord
      */
-    public MviewOdWordRelationRecord(Long wordId, JSON relatedWords) {
+    public MviewOdWordRelationRecord(Long wordId, JSON wordRelationGroups) {
         super(MviewOdWordRelation.MVIEW_OD_WORD_RELATION);
 
         setWordId(wordId);
-        setRelatedWords(relatedWords);
+        setWordRelationGroups(wordRelationGroups);
     }
 }

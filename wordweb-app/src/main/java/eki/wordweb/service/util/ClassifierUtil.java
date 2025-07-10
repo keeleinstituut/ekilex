@@ -25,6 +25,12 @@ import eki.wordweb.data.MeaningWord;
 import eki.wordweb.data.WordEtymTuple;
 import eki.wordweb.data.WordRelation;
 import eki.wordweb.data.WordTypeData;
+import eki.wordweb.data.od.OdLexemeMeaning;
+import eki.wordweb.data.od.OdLexemeWord;
+import eki.wordweb.data.od.OdMeaning;
+import eki.wordweb.data.od.OdWord;
+import eki.wordweb.data.od.OdWordRelation;
+import eki.wordweb.data.od.OdWordRelationGroup;
 import eki.wordweb.data.type.TypeDomain;
 import eki.wordweb.service.db.CommonDataDbService;
 
@@ -196,6 +202,56 @@ public class ClassifierUtil {
 		}
 	}
 
+	public void applyOdClassifiers(OdWord word, String displayLang) {
+		String classifierCode;
+		Classifier classifier;
+		applyOdWordClassifiers(word, displayLang);
+		List<OdLexemeMeaning> lexemeMeanings = word.getLexemeMeanings();
+		for (OdLexemeMeaning lexemeMeaning : lexemeMeanings) {
+			applyOdLexemeClassifiers(lexemeMeaning, displayLang);
+			OdMeaning meaning = lexemeMeaning.getMeaning();
+			List<OdLexemeWord> lexemeWords = meaning.getLexemeWords();
+			if (CollectionUtils.isNotEmpty(lexemeWords)) {
+				for (OdLexemeWord lexemeWord : lexemeWords) {
+					applyOdLexemeClassifiers(lexemeWord, displayLang);
+					applyOdWordClassifiers(lexemeWord, displayLang);
+				}
+			}
+		}
+		List<OdWordRelationGroup> wordRelationGroups = word.getWordRelationGroups();
+		if (CollectionUtils.isNotEmpty(wordRelationGroups)) {
+			for (OdWordRelationGroup wordRelationGroup : wordRelationGroups) {
+				classifierCode = wordRelationGroup.getWordRelTypeCode();
+				classifier = getClassifier(ClassifierName.WORD_REL_TYPE, classifierCode, displayLang);
+				wordRelationGroup.setWordRelType(classifier);
+				List<OdWordRelation> relatedWords = wordRelationGroup.getRelatedWords();
+				if (CollectionUtils.isNotEmpty(relatedWords)) {
+					for (OdWordRelation wordRelation : relatedWords) {
+						classifierCode = wordRelation.getWordRelTypeCode();
+						classifier = getClassifier(ClassifierName.WORD_REL_TYPE, classifierCode, displayLang);
+						wordRelation.setWordRelType(classifier);
+						applyOdWordClassifiers(wordRelation, displayLang);
+					}
+				}
+			}
+		}
+	}
+
+	private void applyOdLexemeClassifiers(OdLexemeClassifiers lexeme, String displayLang) {
+		List<String> classifierCodes = lexeme.getRegisterCodes();
+		List<Classifier> classifiers = getClassifiers(ClassifierName.REGISTER, classifierCodes, displayLang);
+		lexeme.setRegisters(classifiers);
+		String classifierCode = lexeme.getValueStateCode();
+		Classifier classifier = getClassifier(ClassifierName.VALUE_STATE, classifierCode, displayLang);
+		lexeme.setValueState(classifier);
+	}
+
+	private void applyOdWordClassifiers(OdWord word, String displayLang) {
+		List<String> classifierCodes = word.getWordTypeCodes();
+		List<Classifier> classifiers = getClassifiers(ClassifierName.WORD_TYPE, classifierCodes, displayLang);
+		word.setWordTypes(classifiers);
+	}
+
 	private Classifier getClassifier(ClassifierName name, String code, String lang) {
 		if (StringUtils.isBlank(code)) {
 			return null;
@@ -213,7 +269,7 @@ public class ClassifierUtil {
 		if (CollectionUtils.isEmpty(codes)) {
 			return Collections.emptyList();
 		}
-		List<Classifier> classifiers = commonDataDbService.getClassifiers(name, codes, lang);
+		List<Classifier> classifiers = commonDataDbService.getClassifiersInProvidedOrder(name, codes, lang);
 		return classifiers;
 	}
 

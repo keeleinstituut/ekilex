@@ -120,7 +120,7 @@
               </th:block>
               <div class="homonym__body">
                 <div class="text-body-two">
-                  <span th:utext="${@viewUtil.getWordValueMarkup(word)}">tee</span>
+                  <span th:utext="${@decorUtil.getWordValueMarkup(word)}">tee</span>
                   <span class="homonym-nr d-none" th:text="${word.homonymNr}">1</span>
                 </div>
                 <div class="text-caption homonym__text">
@@ -135,16 +135,16 @@
     </div>
   </th:block>
   <th:block th:fragment="word-data">
-    <div class="d-flex align-items-center flex-wrap" th:with="title = ${@viewUtil.getWordValueMarkup(wordData.word)}">
+    <div class="d-flex align-items-center flex-wrap" th:with="title = ${@decorUtil.getWordValueMarkup(wordData.word)}">
       <th:block th:with="langData=${@viewUtil.getLangData(wordData.word.lang)}">
         <span th:text="${langData.codeIso2}" th:title="${langData.label}" data-toggle="tooltip" th:unless="${langData.imageName}" class="lang-code text-caption mr-2">1</span>
         <img th:src="|@{/view/images}${langData.imageName}|" th:title="${langData.label}" data-toggle="tooltip" th:if="${langData.imageName}" class="lang-code-img mr-2">
       </th:block>
       <div class="search__lex-title-wrapper">
-        <h1 class="search__lex-title" th:utext="${@viewUtil.getWordValueMarkup(wordData.word)}">
+        <h1 class="search__lex-title" th:utext="${@decorUtil.getWordValueMarkup(wordData.word)}">
           tee
         </h1>
-        <button class="search__long-text-tooltip" th:if="${wordData.headwordOverflow}" th:title="${@viewUtil.getWordValueMarkup(wordData.word)}" data-toggle="tooltip" data-html="true" data-placement="bottom">
+        <button class="search__long-text-tooltip" th:if="${wordData.headwordOverflow}" th:title="${@decorUtil.getWordValueMarkup(wordData.word)}" data-toggle="tooltip" data-html="true" data-placement="bottom">
           <span class="material-symbols-outlined">visibility</span>
         </button>
       </div>

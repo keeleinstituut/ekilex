@@ -43,9 +43,9 @@ public abstract class WordTypeData extends AbstractPublishingEntity implements L
 
 	private boolean suffixoid;
 
-	private boolean abbreviationWord;
-
 	private boolean foreignWord;
+
+	private boolean abbreviationWord;
 
 	private boolean incorrectWordForm;
 
@@ -190,14 +190,6 @@ public abstract class WordTypeData extends AbstractPublishingEntity implements L
 		this.suffixoid = suffixoid;
 	}
 
-	public boolean isAbbreviationWord() {
-		return abbreviationWord;
-	}
-
-	public void setAbbreviationWord(boolean abbreviationWord) {
-		this.abbreviationWord = abbreviationWord;
-	}
-
 	@Override
 	public boolean isForeignWord() {
 		return foreignWord;
@@ -205,6 +197,15 @@ public abstract class WordTypeData extends AbstractPublishingEntity implements L
 
 	public void setForeignWord(boolean foreignWord) {
 		this.foreignWord = foreignWord;
+	}
+
+	@Override
+	public boolean isAbbreviationWord() {
+		return abbreviationWord;
+	}
+
+	public void setAbbreviationWord(boolean abbreviationWord) {
+		this.abbreviationWord = abbreviationWord;
 	}
 
 	public boolean isIncorrectWordForm() {

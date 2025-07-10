@@ -122,7 +122,7 @@ public class CommonDataDbService implements SystemConstant, GlobalConstant {
 	}
 
 	@Cacheable(value = CACHE_KEY_CLASSIF, key = "{#name, #codes, #lang}")
-	public List<Classifier> getClassifiers(ClassifierName name, List<String> codes, String lang) {
+	public List<Classifier> getClassifiersInProvidedOrder(ClassifierName name, List<String> codes, String lang) {
 
 		if (CollectionUtils.isEmpty(codes)) {
 			return Collections.emptyList();
@@ -152,6 +152,38 @@ public class CommonDataDbService implements SystemConstant, GlobalConstant {
 						.and(clc.TYPE.eq(DEFAULT_CLASSIF_VALUE_TYPE)))
 				.groupBy(clc.NAME, clc.CODE, clc.ORDER_BY, clv.VALUE, clv.LANG)
 				.orderBy(DSL.field("array_position({0}, clc.code)", Integer.class, DSL.val(codesArr)))
+				.fetchInto(Classifier.class);
+	}
+
+	@Cacheable(value = CACHE_KEY_CLASSIF, key = "{#name, #codes, #lang}")
+	public List<Classifier> getClassifiersInSystemOrder(ClassifierName name, List<String> codes, String lang) {
+
+		if (CollectionUtils.isEmpty(codes)) {
+			return Collections.emptyList();
+		}
+		if (codes.size() == 1) {
+			String code = codes.get(0);
+			Classifier classifier = getClassifier(name, code, lang);
+			return Arrays.asList(classifier);
+		}
+		MviewWwClassifier clc = MVIEW_WW_CLASSIFIER.as("clc");
+		MviewWwClassifier clv = MVIEW_WW_CLASSIFIER.as("clv");
+		return create
+				.select(
+						clc.NAME,
+						clc.CODE,
+						DSL.coalesce(clv.VALUE, clc.CODE).as("value"),
+						clv.LANG)
+				.from(clc.leftOuterJoin(clv).on(
+						clv.NAME.eq(clc.NAME)
+								.and(clv.CODE.eq(clc.CODE))
+								.and(clv.TYPE.eq(clc.TYPE))
+								.and(clv.LANG.eq(lang))))
+				.where(clc.NAME.eq(name.name())
+						.and(clc.CODE.in(codes))
+						.and(clc.TYPE.eq(DEFAULT_CLASSIF_VALUE_TYPE)))
+				.groupBy(clc.NAME, clc.CODE, clc.ORDER_BY, clv.VALUE, clv.LANG)
+				.orderBy(clc.ORDER_BY)
 				.fetchInto(Classifier.class);
 	}
 

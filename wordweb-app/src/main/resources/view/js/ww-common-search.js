@@ -309,15 +309,15 @@ function getActiveDatasetCodes(container) {
 		return [datasetAllCode];
 	}
 	const activeCheckboxes = container?.querySelectorAll("input:checked");
-  if (!activeCheckboxes.length) {
-    return [datasetAllCode];
-  }
+	if (!activeCheckboxes.length) {
+		return [datasetAllCode];
+	}
 	// Join all dataset codes with a comma
-  const dataCodes = Array.from(activeCheckboxes).reduce((acc, checkbox, i) => {
-    acc += `${i > 0 ? "," : ""}${checkbox.dataset?.filterCode}`;
-    return acc;
-  }, "");
-  return [dataCodes, activeCheckboxes.length];
+	const dataCodes = Array.from(activeCheckboxes).reduce((acc, checkbox, i) => {
+		acc += `${i > 0 ? "," : ""}${checkbox.dataset?.filterCode}`;
+		return acc;
+	}, "");
+	return [dataCodes, activeCheckboxes.length];
 }
 
 function updateDatasetFilterCount(codes, count) {
@@ -335,45 +335,45 @@ function initDatasetDropdown() {
 	});
 
 	let menuContainer = document.getElementById('dataset-filters-popover')?.nextElementSibling
-	$(document).on("change", "#dataset-filter-wrapper .search-filter__menu input", function (e) {
-    e.stopPropagation();
-    if (!menuContainer) {
-      menuContainer = document.getElementById(
-        "dataset-filters-popover"
-      )?.nextElementSibling;
-    }
-		
+	$(document).on("change", "#dataset-filter-wrapper .search-filter__menu input", function(e) {
+		e.stopPropagation();
+		if (!menuContainer) {
+			menuContainer = document.getElementById(
+				"dataset-filters-popover"
+			)?.nextElementSibling;
+		}
+
 		const inputs = Array.from(menuContainer.getElementsByTagName("input"));
 		if (e.target?.dataset?.filterCode === datasetAllCode) {
 			// Set all other inputs if the "All" choice is selected
-      inputs.forEach((input) => {
+			inputs.forEach((input) => {
 				input.checked = e.target?.checked;
-      });
-    } else {
+			});
+		} else {
 			const inputAll = document.getElementById("dataset-input-dsall");
 			// Set input all to checked if all other checkboxes are checked
 			inputAll.checked = inputs.every(input => input === inputAll || input.checked);
 		}
-  });
+	});
 
 
 	let [dataCodes, datasetCount] = getActiveDatasetCodes(menuContainer);
 	updateDatasetFilterCount(dataCodes, datasetCount);
-	$(document).on("hide.bs.dropdown", "#dataset-filter-wrapper", function () {
-    const [newCodes, newCount] = getActiveDatasetCodes(menuContainer);
-    if (newCodes !== dataCodes) {
+	$(document).on("hide.bs.dropdown", "#dataset-filter-wrapper", function() {
+		const [newCodes, newCount] = getActiveDatasetCodes(menuContainer);
+		if (newCodes !== dataCodes) {
 			// Push new search to another tick, otherwise the dropdown event keeps repeating
-      requestAnimationFrame(() => {
+			requestAnimationFrame(() => {
 				// Keep track of active codes so we don't search again if nothing changed
 				dataCodes = newCodes
 				datasetCount = newCount
 				updateDatasetFilterCount(dataCodes, datasetCount)
-        $("input[name='datasetCodesStr']").val(dataCodes);
-        setSelectedWordHomonymNrAndLang();
-        clickSearchIfInputExists();
-      });
-    }
-  });
+				$("input[name='datasetCodesStr']").val(dataCodes);
+				setSelectedWordHomonymNrAndLang();
+				clickSearchIfInputExists();
+			});
+		}
+	});
 }
 
 
@@ -384,16 +384,16 @@ function getActiveLangCodes(container) {
 		return [langAllCode];
 	}
 	const foundCheckboxes = container?.querySelectorAll("input:checked");
-  if (!foundCheckboxes.length) {
-    return [langAllCode];
-  }
+	if (!foundCheckboxes.length) {
+		return [langAllCode];
+	}
 	const activeCheckboxes = Array.from(foundCheckboxes);
 	// Join all dataset codes with a comma
-  const dataCodes = activeCheckboxes.reduce((acc, checkbox, i) => {
-    acc += `${i > 0 ? "," : ""}${checkbox.dataset?.filterCode}`;
-    return acc;
-  }, "");
-  return [dataCodes, activeCheckboxes];
+	const dataCodes = activeCheckboxes.reduce((acc, checkbox, i) => {
+		acc += `${i > 0 ? "," : ""}${checkbox.dataset?.filterCode}`;
+		return acc;
+	}, "");
+	return [dataCodes, activeCheckboxes];
 }
 
 function updateLangFilterStates(codes, checkboxes) {
@@ -428,43 +428,43 @@ function initLangDropdown() {
 		e.stopPropagation();
 	});
 	let menuContainer = document.getElementById('lang-filters-popover')?.nextElementSibling
-	$(document).on("change", "#lang-filter-wrapper .search-filter__menu input", function (e) {
-    e.stopPropagation();
-    if (!menuContainer) {
+	$(document).on("change", "#lang-filter-wrapper .search-filter__menu input", function(e) {
+		e.stopPropagation();
+		if (!menuContainer) {
 			menuContainer = document.getElementById(
 				"lang-filters-popover"
-      )?.nextElementSibling;
-    }
+			)?.nextElementSibling;
+		}
 		const inputs = Array.from(menuContainer.getElementsByTagName("input"));
-    if (e.target?.dataset?.filterCode === langAllCode) {
+		if (e.target?.dataset?.filterCode === langAllCode) {
 			// Set all other inputs if the "All" choice is selected
-      inputs.forEach((input) => {
+			inputs.forEach((input) => {
 				input.checked = e.target?.checked;
-      });
-    } else {
+			});
+		} else {
 			const inputAll = document.getElementById("lang-input-dlall");
 			inputAll.checked = inputs.every(input => input === inputAll || input.checked);
 		}
-  });
+	});
 
 
 	let [langCodes, langCheckboxes] = getActiveLangCodes(menuContainer);
 	updateLangFilterStates(langCodes, langCheckboxes);
-	$(document).on("hide.bs.dropdown", "#lang-filter-wrapper", function () {
-    const [newCodes, newLangCheckboxes] = getActiveLangCodes(menuContainer);
-    if (newCodes !== langCodes) {
+	$(document).on("hide.bs.dropdown", "#lang-filter-wrapper", function() {
+		const [newCodes, newLangCheckboxes] = getActiveLangCodes(menuContainer);
+		if (newCodes !== langCodes) {
 			// Push new search to another tick, otherwise the dropdown event keeps repeating
-      requestAnimationFrame(() => {
+			requestAnimationFrame(() => {
 				// Keep track of active codes so we don't search again if nothing changed
 				langCodes = newCodes
 				langCheckboxes = newLangCheckboxes
 				updateLangFilterStates(langCodes, langCheckboxes)
-        $("input[name='destinLangsStr']").val(langCodes);
-        setSelectedWordHomonymNrAndLang();
-        clickSearchIfInputExists();
-      });
-    }
-  });
+				$("input[name='destinLangsStr']").val(langCodes);
+				setSelectedWordHomonymNrAndLang();
+				clickSearchIfInputExists();
+			});
+		}
+	});
 
 	$(document).on('click', '#lang-filter-tags button', function(e) {
 		const targetCheckbox = menuContainer.querySelector(`input[data-filter-code=${e.currentTarget.dataset?.filterCode}]`)

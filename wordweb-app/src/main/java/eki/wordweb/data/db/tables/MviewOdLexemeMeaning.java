@@ -9,9 +9,10 @@ import eki.wordweb.data.db.tables.records.MviewOdLexemeMeaningRecord;
 
 import org.jooq.Field;
 import org.jooq.ForeignKey;
+import org.jooq.JSON;
 import org.jooq.Name;
 import org.jooq.Record;
-import org.jooq.Row5;
+import org.jooq.Row2;
 import org.jooq.Schema;
 import org.jooq.Table;
 import org.jooq.TableField;
@@ -48,24 +49,9 @@ public class MviewOdLexemeMeaning extends TableImpl<MviewOdLexemeMeaningRecord> 
     public final TableField<MviewOdLexemeMeaningRecord, Long> WORD_ID = createField(DSL.name("word_id"), SQLDataType.BIGINT, this, "");
 
     /**
-     * The column <code>public.mview_od_lexeme_meaning.lexeme_id</code>.
+     * The column <code>public.mview_od_lexeme_meaning.lexeme_meanings</code>.
      */
-    public final TableField<MviewOdLexemeMeaningRecord, Long> LEXEME_ID = createField(DSL.name("lexeme_id"), SQLDataType.BIGINT, this, "");
-
-    /**
-     * The column <code>public.mview_od_lexeme_meaning.meaning_id</code>.
-     */
-    public final TableField<MviewOdLexemeMeaningRecord, Long> MEANING_ID = createField(DSL.name("meaning_id"), SQLDataType.BIGINT, this, "");
-
-    /**
-     * The column <code>public.mview_od_lexeme_meaning.value_state_code</code>.
-     */
-    public final TableField<MviewOdLexemeMeaningRecord, String> VALUE_STATE_CODE = createField(DSL.name("value_state_code"), SQLDataType.VARCHAR(100), this, "");
-
-    /**
-     * The column <code>public.mview_od_lexeme_meaning.register_codes</code>.
-     */
-    public final TableField<MviewOdLexemeMeaningRecord, String[]> REGISTER_CODES = createField(DSL.name("register_codes"), SQLDataType.VARCHAR.getArrayDataType(), this, "");
+    public final TableField<MviewOdLexemeMeaningRecord, JSON> LEXEME_MEANINGS = createField(DSL.name("lexeme_meanings"), SQLDataType.JSON, this, "");
 
     private MviewOdLexemeMeaning(Name alias, Table<MviewOdLexemeMeaningRecord> aliased) {
         this(alias, aliased, null);
@@ -132,11 +118,11 @@ public class MviewOdLexemeMeaning extends TableImpl<MviewOdLexemeMeaningRecord> 
     }
 
     // -------------------------------------------------------------------------
-    // Row5 type methods
+    // Row2 type methods
     // -------------------------------------------------------------------------
 
     @Override
-    public Row5<Long, Long, Long, String, String[]> fieldsRow() {
-        return (Row5) super.fieldsRow();
+    public Row2<Long, JSON> fieldsRow() {
+        return (Row2) super.fieldsRow();
     }
 }

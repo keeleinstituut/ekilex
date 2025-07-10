@@ -32,7 +32,7 @@
     <section class="recommendation__block text-body-two" th:if="${wordData.word.wordOdRecommendation}">
       <div class="d-flex gap-1 align-items-center">
         <span class="material-symbols-outlined" aria-hidden="true"> info </span>
-        <h2 class="recommendation__title" th:text="#{label.od.recommend}">ÕS selgitab</h2>
+        <h2 class="recommendation__title" th:text="#{label.word.od.recommend}">ÕS selgitab</h2>
       </div>
       <p class="m-0" th:utext="${wordData.word.wordOdRecommendation.valuePrese}"></p>
       <p class="m-0" th:utext="${wordData.word.wordOdRecommendation.optValuePrese}" th:if="${wordData.word.wordOdRecommendation.optValuePrese}"></p>
@@ -63,7 +63,7 @@
                 <th:block th:each="relation, relationIter : ${wordGroup.wordGroupMembers}">
                   <span class="word-options mb-1">
                     <a th:href="@{${@viewUtil.getSearchUri(sessionBean, searchMode, relation.value, relation.homonymNr, relation.lang)}}" th:classappend="${relation.homonymsExist ? 'is-homonym':''}">
-                      <span th:utext="${@viewUtil.getWordValueMarkup(relation)}" data-toggle="tooltip" data-placement="top" th:title="${relation.aspect?.value}">tee</span>
+                      <span th:utext="${@decorUtil.getWordValueMarkup(relation)}" data-toggle="tooltip" data-placement="top" th:title="${relation.aspect?.value}">tee</span>
                       <sup th:if="${relation.homonymsExist}" th:text="${relation.homonymNr}"></sup>
                     </a>
                     <span th:unless="${relationIter.last}">-</span>
@@ -74,7 +74,7 @@
                 <th:block th:each="relation, relationIter : ${wordGroup.wordGroupMembers}">
                   <span class="word-options mb-1">
                     <a th:href="@{${@viewUtil.getSearchUri(sessionBean, searchMode, relation.value, relation.homonymNr, relation.lang)}}" th:classappend="${relation.homonymsExist ? 'is-homonym':''}">
-                      <span th:utext="${@viewUtil.getWordValueMarkup(relation)}">tee</span>
+                      <span th:utext="${@decorUtil.getWordValueMarkup(relation)}">tee</span>
                       <sup th:if="${relation.homonymsExist}" th:text="${relation.homonymNr}"></sup>
                     </a>
                   </span>
@@ -130,7 +130,7 @@
                   isLimit=${relationIter.count == T(eki.wordweb.constant.WebConstant).WORD_RELATIONS_DISPLAY_LIMIT}">
           <span class="word-options mb-1" th:classappend="${isCollapsable ? 'collapse collapse-target': isLimit ? 'limit limit-collapsed' : ''}">
             <a th:href="@{${@viewUtil.getSearchUri(sessionBean, searchMode, relation.value, relation.homonymNr, relation.lang)}}" th:classappend="${relation.homonymsExist ? 'is-homonym' : ''}">
-              <span th:utext="${@viewUtil.getWordValueMarkup(relation)}">tee</span>
+              <span th:utext="${@decorUtil.getWordValueMarkup(relation)}">tee</span>
               <sup th:if="${relation.homonymsExist}" th:text="${relation.homonymNr}"></sup>
             </a>
           </span>
@@ -162,7 +162,7 @@
                     isLimit=${relationIter.count == T(eki.wordweb.constant.WebConstant).WORD_RELATIONS_DISPLAY_LIMIT}">
             <span class="word-options mb-1" th:classappend="${isCollapsable ? 'collapse collapse-target' : isLimit ? 'limit limit-collapsed' : ''}">
               <a th:href="@{${@viewUtil.getSearchUri(sessionBean, searchMode, relation.value, relation.homonymNr, relation.lang)}}" th:classappend="${relation.homonymsExist ? 'is-homonym':''}">
-                <span th:utext="${@viewUtil.getWordValueMarkup(relation)}">tee</span>
+                <span th:utext="${@decorUtil.getWordValueMarkup(relation)}">tee</span>
                 <sup th:if="${relation.homonymsExist}" th:text="${relation.homonymNr}"></sup>
               </a>
             </span>

@@ -18,13 +18,11 @@ import org.springframework.stereotype.Component;
 
 import eki.common.constant.DatasetType;
 import eki.common.constant.GlobalConstant;
-import eki.common.constant.TextDecoration;
 import eki.common.data.Classifier;
 import eki.wordweb.constant.CollocMemberGroup;
 import eki.wordweb.constant.SystemConstant;
 import eki.wordweb.constant.WebConstant;
 import eki.wordweb.data.CollocMember;
-import eki.wordweb.data.DecoratedWordType;
 import eki.wordweb.data.DisplayColloc;
 import eki.wordweb.data.Form;
 import eki.wordweb.data.Government;
@@ -100,32 +98,6 @@ public class ViewUtil implements WebConstant, SystemConstant, GlobalConstant {
 			return null;
 		}
 		return getLangData(langIso3);
-	}
-
-	public String getWordValueMarkup(DecoratedWordType word) {
-
-		String wordValuePrese = new String(word.getValuePrese());
-		if (word.isSuffixoid()) {
-			wordValuePrese = "-" + wordValuePrese;
-		} else if (word.isPrefixoid()) {
-			wordValuePrese = wordValuePrese + "-";
-		}
-		StringBuilder htmlBuf = new StringBuilder();
-		htmlBuf.append("<span>");
-		String foreignMarkupCode = TextDecoration.FOREIGN.getCode();
-		if (word.isForeignWord() && !StringUtils.contains(wordValuePrese, foreignMarkupCode)) {
-			htmlBuf.append('<');
-			htmlBuf.append(foreignMarkupCode);
-			htmlBuf.append('>');
-			htmlBuf.append(wordValuePrese);
-			htmlBuf.append("</");
-			htmlBuf.append(foreignMarkupCode);
-			htmlBuf.append('>');
-		} else {
-			htmlBuf.append(wordValuePrese);
-		}
-		htmlBuf.append("</span>");
-		return htmlBuf.toString();
 	}
 
 	public String getTooltipHtml(DisplayColloc displayColloc) {

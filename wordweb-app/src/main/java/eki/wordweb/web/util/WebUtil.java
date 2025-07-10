@@ -40,29 +40,40 @@ public class WebUtil implements WebConstant, SystemConstant, GlobalConstant {
 		return false;
 	}
 
-	public String composeDetailSearchUri(String destinLangsStr, String datasetCodesStr, String word, Integer homonymNr, String lang) {
-		String encodedWord = encode(word);
+	public String composeDetailSearchUri(String destinLangsStr, String datasetCodesStr, String wordValue, Integer homonymNr, String lang) {
+		String encodedWordValue = encode(wordValue);
 		String encodedDatasetCodesStr = encodeSeparatedValuesStr(datasetCodesStr);
 		String searchUri;
 		if (homonymNr == null) {
-			searchUri = StringUtils.join(SEARCH_URI, UNIF_URI, '/', destinLangsStr, '/', encodedDatasetCodesStr, '/', encodedWord);
+			searchUri = StringUtils.join(SEARCH_URI, UNIF_URI, '/', destinLangsStr, '/', encodedDatasetCodesStr, '/', encodedWordValue);
 		} else if (StringUtils.isBlank(lang)) {
-			searchUri = StringUtils.join(SEARCH_URI, UNIF_URI, '/', destinLangsStr, '/', encodedDatasetCodesStr, '/', encodedWord);
+			searchUri = StringUtils.join(SEARCH_URI, UNIF_URI, '/', destinLangsStr, '/', encodedDatasetCodesStr, '/', encodedWordValue);
 		} else {
-			searchUri = StringUtils.join(SEARCH_URI, UNIF_URI, '/', destinLangsStr, '/', encodedDatasetCodesStr, '/', encodedWord, '/', homonymNr, '/', lang);
+			searchUri = StringUtils.join(SEARCH_URI, UNIF_URI, '/', destinLangsStr, '/', encodedDatasetCodesStr, '/', encodedWordValue, '/', homonymNr, '/', lang);
 		}
 		return searchUri;
 	}
 
-	public String composeSimpleSearchUri(String destinLangsStr, String word, Integer homonymNr, String lang) {
-		String encodedWord = encode(word);
+	public String composeSimpleSearchUri(String destinLangsStr, String wordValue, Integer homonymNr, String lang) {
+		String encodedWordValue = encode(wordValue);
 		String searchUri;
 		if (homonymNr == null) {
-			searchUri = StringUtils.join(SEARCH_URI, LITE_URI, '/', destinLangsStr, '/', encodedWord);
+			searchUri = StringUtils.join(SEARCH_URI, LITE_URI, '/', destinLangsStr, '/', encodedWordValue);
 		} else if (StringUtils.isBlank(lang)) {
-			searchUri = StringUtils.join(SEARCH_URI, LITE_URI, '/', destinLangsStr, '/', encodedWord);
+			searchUri = StringUtils.join(SEARCH_URI, LITE_URI, '/', destinLangsStr, '/', encodedWordValue);
 		} else {
-			searchUri = StringUtils.join(SEARCH_URI, LITE_URI, '/', destinLangsStr, '/', encodedWord, '/', homonymNr, '/', lang);
+			searchUri = StringUtils.join(SEARCH_URI, LITE_URI, '/', destinLangsStr, '/', encodedWordValue, '/', homonymNr, '/', lang);
+		}
+		return searchUri;
+	}
+
+	public String composeOdSearchUri(String searchValue, Integer homonymNr) {
+		String encodedWordValue = encode(searchValue);
+		String searchUri;
+		if (homonymNr == null) {
+			searchUri = StringUtils.join(SEARCH_URI, OD_URI, '/', encodedWordValue);
+		} else {
+			searchUri = StringUtils.join(SEARCH_URI, OD_URI, '/', encodedWordValue, '/', homonymNr);
 		}
 		return searchUri;
 	}

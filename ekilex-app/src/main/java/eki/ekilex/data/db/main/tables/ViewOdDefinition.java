@@ -11,7 +11,7 @@ import org.jooq.Field;
 import org.jooq.ForeignKey;
 import org.jooq.Name;
 import org.jooq.Record;
-import org.jooq.Row5;
+import org.jooq.Row4;
 import org.jooq.Schema;
 import org.jooq.Table;
 import org.jooq.TableField;
@@ -62,17 +62,12 @@ public class ViewOdDefinition extends TableImpl<ViewOdDefinitionRecord> {
      */
     public final TableField<ViewOdDefinitionRecord, String> VALUE_PRESE = createField(DSL.name("value_prese"), SQLDataType.CLOB, this, "");
 
-    /**
-     * The column <code>public.view_od_definition.lang</code>.
-     */
-    public final TableField<ViewOdDefinitionRecord, String> LANG = createField(DSL.name("lang"), SQLDataType.CLOB, this, "");
-
     private ViewOdDefinition(Name alias, Table<ViewOdDefinitionRecord> aliased) {
         this(alias, aliased, null);
     }
 
     private ViewOdDefinition(Name alias, Table<ViewOdDefinitionRecord> aliased, Field<?>[] parameters) {
-        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.view("create view \"view_od_definition\" as  SELECT meaning_id,\n    definition_id,\n    value,\n    value_prese,\n    lang\n   FROM ( SELECT d_1.meaning_id,\n            ((d_1.definition ->> 'definition_id'::text))::bigint AS definition_id,\n            (d_1.definition ->> 'value'::text) AS value,\n            (d_1.definition ->> 'value_prese'::text) AS value_prese,\n            (d_1.definition ->> 'lang'::text) AS lang\n           FROM ( SELECT d_2.meaning_id,\n                    (array_agg(json_build_object('definition_id', d_2.id, 'value', d_2.value, 'value_prese', d_2.value_prese, 'lang', d_2.lang) ORDER BY d_2.order_by))[1] AS definition\n                   FROM definition d_2\n                  WHERE ((d_2.is_public = true) AND (d_2.lang = 'est'::bpchar) AND (EXISTS ( SELECT 1\n                           FROM publishing p\n                          WHERE (((p.target_name)::text = 'ww_od'::text) AND ((p.entity_name)::text = 'definition'::text) AND (p.entity_id = d_2.id)))))\n                  GROUP BY d_2.meaning_id) d_1) d\n  ORDER BY meaning_id, definition_id;"));
+        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.view("create view \"view_od_definition\" as  SELECT meaning_id,\n    definition_id,\n    value,\n    value_prese\n   FROM ( SELECT d_1.meaning_id,\n            ((d_1.definition ->> 'definition_id'::text))::bigint AS definition_id,\n            (d_1.definition ->> 'value'::text) AS value,\n            (d_1.definition ->> 'value_prese'::text) AS value_prese,\n            (d_1.definition ->> 'lang'::text) AS lang\n           FROM ( SELECT d_2.meaning_id,\n                    (array_agg(json_build_object('definition_id', d_2.id, 'value', d_2.value, 'value_prese', d_2.value_prese, 'lang', d_2.lang) ORDER BY d_2.order_by))[1] AS definition\n                   FROM definition d_2\n                  WHERE ((d_2.is_public = true) AND (d_2.lang = 'est'::bpchar) AND (EXISTS ( SELECT 1\n                           FROM publishing p\n                          WHERE (((p.target_name)::text = 'ww_od'::text) AND ((p.entity_name)::text = 'definition'::text) AND (p.entity_id = d_2.id)))))\n                  GROUP BY d_2.meaning_id) d_1) d\n  ORDER BY meaning_id, definition_id;"));
     }
 
     /**
@@ -132,11 +127,11 @@ public class ViewOdDefinition extends TableImpl<ViewOdDefinitionRecord> {
     }
 
     // -------------------------------------------------------------------------
-    // Row5 type methods
+    // Row4 type methods
     // -------------------------------------------------------------------------
 
     @Override
-    public Row5<Long, Long, String, String, String> fieldsRow() {
-        return (Row5) super.fieldsRow();
+    public Row4<Long, Long, String, String> fieldsRow() {
+        return (Row4) super.fieldsRow();
     }
 }

@@ -22,6 +22,10 @@ public interface WebConstant {
 
 	String MORPHO_FULL_PAGE = "morpho-full";
 
+	String OD_HOME_PAGE = "od-home";
+
+	String OD_SEARCH_PAGE = "od-search";
+
 	String COMMON_SEARCH_SIDEBAR_PAGE = "common-search-sidebar";
 
 	String NEW_WORDS_PAGE = "new-words";
@@ -59,6 +63,8 @@ public interface WebConstant {
 	String UNIF_URI = "/unif";
 
 	String LITE_URI = "/lite";
+
+	String OD_URI = "/od";
 
 	String SEARCH_URI = "/search";
 

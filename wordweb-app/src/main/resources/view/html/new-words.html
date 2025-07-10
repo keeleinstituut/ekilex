@@ -41,7 +41,7 @@
                 <a
                   class="new-words-page__word"
                   th:href="@{${@viewUtil.getDetailSearchUri(newWord.value, newWord.homonymNr)}}"
-                  th:utext="${@viewUtil.getWordValueMarkup(newWord)}"
+                  th:utext="${@decorUtil.getWordValueMarkup(newWord)}"
                 >
                 Sõna
                 </a>

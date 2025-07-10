@@ -1,0 +1,91 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+  <th:block th:fragment="header">
+    <div class="header header--simple">
+      <div class="header__content">
+        <th:block th:replace="common-app :: lang-select"></th:block>
+        <th:block th:replace="common-app :: navigation"></th:block>
+      </div>
+    </div>
+  </th:block>
+  <th:block th:fragment="search">
+    <div class="header header--simple">
+      <div class="header__content">
+        <div class="header__search">
+          <div class="main-search">
+            <form th:action="@{/search/od}" th:method="post" name="searchForm">
+              <div>
+                <input type="text" id="searchInput" name="searchValue" th:value="${searchValue}" th:placeholder="#{search.placeholder}"
+                  class="main-search-input form-control search-phrase js-kioskboard-input" role="search" autocapitalize="off" autocomplete="off" data-kioskboard-type="keyboard"
+                  data-kioskboard-placement="bottom" data-kioskboard-specialcharacters="true" />
+              </div>
+              <div class="main-search-btns">
+                <button th:aria-label="#{aria.search.clear}" id="clear-search-btn" type="button" class="clear-btn">
+                  <span class="material-symbols-outlined" aria-hidden="true">cancel</span>
+                </button>
+                <button th:aria-label="#{aria.search.search}" id="search-btn" type="submit" class="search-btn">
+                  <span class="material-symbols-outlined" aria-hidden="true">search</span>
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </th:block>
+  <th:block th:fragment="search-header">
+    <div class="header header--simple">
+      <div class="header__content">
+        <div class="header__search">
+          <div class="main-search compact">
+            <form th:action="@{/search/od}" th:method="post" name="searchForm">
+              <div>
+                <input type="text" id="searchInput" name="searchValue" th:value="${searchValue}" th:placeholder="#{search.placeholder}"
+                  class="main-search-input form-control search-phrase js-kioskboard-input compact" role="search" autocapitalize="off" autocomplete="off" data-kioskboard-type="keyboard"
+                  data-kioskboard-placement="bottom" data-kioskboard-specialcharacters="true" />
+              </div>
+              <div class="main-search-btns">
+                <button th:aria-label="#{aria.search.clear}" id="clear-search-btn" type="button" class="clear-btn">
+                  <span class="material-symbols-outlined" aria-hidden="true">cancel</span>
+                </button>
+                <button th:aria-label="#{aria.search.search}" id="search-btn" type="submit" class="search-btn">
+                  <span class="material-symbols-outlined" aria-hidden="true">search</span>
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+        <th:block th:replace="common-app :: lang-select"></th:block>
+        <th:block th:replace="common-app :: navigation"></th:block>
+      </div>
+    </div>
+  </th:block>
+  <th:block th:fragment="homonyms">
+    <div th:if="${searchResult.resultExists}" th:class="${searchResult.singleResult ? 'd-none' : 'overflow-hidden homonym-panel'}">
+      <ul class="homonym-list list-unstyled w-100">
+        <th:block th:each="word : ${searchResult.words}">
+          <li class="homonym-list-item" th:classappend="${word.selected ? 'selected' : ''}">
+            <form class="h-100" th:action="${word.searchUri}" method="get">
+              <button type="submit" class="homonym-item homonym__item" th:classappend="${word.selected ? 'animation-target' : ''}">
+                <div class="homonym__body">
+                  <div class="text-body-two">
+                    <span th:utext="${@decorUtil.getWordValueMarkup(word)}">tee</span>
+                    <strong>
+                      <sup th:text="${word.homonymNr}">1</sup>
+                    </strong>
+                  </div>
+                  <div class="text-caption homonym__text">
+                    <span class="homonym__matches" th:utext="${word.meaningWordsWrapup}"></span>
+                    <p th:utext="${word.definitionsWrapup}"></p>
+                  </div>
+                </div>
+              </button>
+            </form>
+          </li>
+        </th:block>
+      </ul>
+    </div>
+  </th:block>
+</body>
+</html>

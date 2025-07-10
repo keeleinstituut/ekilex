@@ -124,6 +124,7 @@ import eki.ekilex.data.db.main.tables.UsageTypeLabel;
 import eki.ekilex.data.db.main.tables.ValueState;
 import eki.ekilex.data.db.main.tables.ValueStateLabel;
 import eki.ekilex.data.db.main.tables.ViewOdDefinition;
+import eki.ekilex.data.db.main.tables.ViewOdDefinitionIdx;
 import eki.ekilex.data.db.main.tables.ViewOdLexemeMeaning;
 import eki.ekilex.data.db.main.tables.ViewOdWord;
 import eki.ekilex.data.db.main.tables.ViewOdWordOdMorph;
@@ -778,6 +779,11 @@ public class Tables {
      * The table <code>public.view_od_definition</code>.
      */
     public static final ViewOdDefinition VIEW_OD_DEFINITION = ViewOdDefinition.VIEW_OD_DEFINITION;
+
+    /**
+     * The table <code>public.view_od_definition_idx</code>.
+     */
+    public static final ViewOdDefinitionIdx VIEW_OD_DEFINITION_IDX = ViewOdDefinitionIdx.VIEW_OD_DEFINITION_IDX;
 
     /**
      * The table <code>public.view_od_lexeme_meaning</code>.

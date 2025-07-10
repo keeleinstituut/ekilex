@@ -11,7 +11,7 @@ import org.jooq.Field;
 import org.jooq.ForeignKey;
 import org.jooq.Name;
 import org.jooq.Record;
-import org.jooq.Row5;
+import org.jooq.Row6;
 import org.jooq.Schema;
 import org.jooq.Table;
 import org.jooq.TableField;
@@ -46,6 +46,11 @@ public class MviewOdWordRelationIdx extends TableImpl<MviewOdWordRelationIdxReco
      * The column <code>public.mview_od_word_relation_idx.word_id</code>.
      */
     public final TableField<MviewOdWordRelationIdxRecord, Long> WORD_ID = createField(DSL.name("word_id"), SQLDataType.BIGINT, this, "");
+
+    /**
+     * The column <code>public.mview_od_word_relation_idx.word_relation_id</code>.
+     */
+    public final TableField<MviewOdWordRelationIdxRecord, Long> WORD_RELATION_ID = createField(DSL.name("word_relation_id"), SQLDataType.BIGINT, this, "");
 
     /**
      * The column <code>public.mview_od_word_relation_idx.word_rel_type_code</code>.
@@ -132,11 +137,11 @@ public class MviewOdWordRelationIdx extends TableImpl<MviewOdWordRelationIdxReco
     }
 
     // -------------------------------------------------------------------------
-    // Row5 type methods
+    // Row6 type methods
     // -------------------------------------------------------------------------
 
     @Override
-    public Row5<Long, String, Long, String, String> fieldsRow() {
-        return (Row5) super.fieldsRow();
+    public Row6<Long, Long, String, Long, String, String> fieldsRow() {
+        return (Row6) super.fieldsRow();
     }
 }

@@ -15,4 +15,6 @@ public interface DecoratedWordType {
 	boolean isSuffixoid();
 
 	boolean isForeignWord();
+
+	boolean isAbbreviationWord();
 }

@@ -8,7 +8,7 @@
           <div>
             <span th:text="#{label.word.incorrect}"></span>
             <a th:href="@{${@viewUtil.getSearchUri(sessionBean, searchMode, lexeme.correctMeaningWord.value, lexeme.correctMeaningWord.homonymNr, lexeme.correctMeaningWord.lang)}}" class="synonym">
-              <span th:utext="${@viewUtil.getWordValueMarkup(lexeme.correctMeaningWord)}">tee</span>
+              <span th:utext="${@decorUtil.getWordValueMarkup(lexeme.correctMeaningWord)}">tee</span>
             </a>
           </div>
           <div class="row" th:if="${not #maps.isEmpty(lexeme.lexemeNotesByLang)}">
@@ -104,7 +104,7 @@
                             th:href="@{${@viewUtil.getSearchUri(sessionBean, searchMode, syn.value, syn.homonymNr, syn.lang)}}"
                             class="synonym"
                             th:attr="data-toggle=${syn.mwLexemeWeight == 1} ? 'tooltip' : null, title=${syn.mwLexemeWeight == 1} ? #{label.tooltip.synonym.full} : null"
-                            th:utext="${@viewUtil.getWordValueMarkup(syn)}">
+                            th:utext="${@decorUtil.getWordValueMarkup(syn)}">
                             tee
                           </a>
                           <span th:if="${syn.additionalDataExists}" class="synonym-additional-meta text-small">
@@ -157,7 +157,7 @@
                             th:href="@{${@viewUtil.getSearchUri(sessionBean, searchMode, syn.value, syn.homonymNr, syn.lang)}}"
                             class="synonym"
                             th:attr="data-toggle=${syn.mwLexemeWeight == 1} ? 'tooltip' : null, title=${syn.mwLexemeWeight == 1} ? #{label.tooltip.synonym.full} : null"
-                            th:utext="${@viewUtil.getWordValueMarkup(syn)}">
+                            th:utext="${@decorUtil.getWordValueMarkup(syn)}">
                             tee
                           </a>
                           <span th:if="${syn.additionalDataExists}" class="synonym-additional-meta text-small">
@@ -216,7 +216,7 @@
                           <span class="mr-1" th:classappend="${isCollapsable ? 'collapse collapse-target':''}">
                             <a th:href="@{${@viewUtil.getSearchUri(sessionBean, searchMode, syn.value, syn.homonymNr, syn.lang)}}"
                                th:classappend="${syn.wordId == wordId ? 'word-matches-search' : ''}"
-                               th:utext="${@viewUtil.getWordValueMarkup(syn)}">
+                               th:utext="${@decorUtil.getWordValueMarkup(syn)}">
                                tee
                             </a>
                             <span th:if="${syn.additionalDataExists}" class="text-small">
@@ -273,7 +273,7 @@
                     <span th:text="${relationType.value}" class="text-caption"></span>
                     <th:block th:each="relation, relationIter : ${lexeme.relatedLexemesByType.get(relationType)}">
                       <a th:href="@{${@viewUtil.getSearchUri(sessionBean, searchMode, relation.value, relation.homonymNr, relation.lang)}}"
-                         th:utext="${@viewUtil.getWordValueMarkup(relation) + (relationIter.last ? '' : ',')}"></a>
+                         th:utext="${@decorUtil.getWordValueMarkup(relation) + (relationIter.last ? '' : ',')}"></a>
                     </th:block>
                   </div>
                 </div>
@@ -283,7 +283,7 @@
                     <th:block th:each="relation, relationIter : ${lexeme.relatedMeaningsByType.get(relationType)}">
                       <div class="relation-item mr-1">
                         <a class="font-weight-bold" th:href="@{${@viewUtil.getSearchUri(sessionBean, searchMode, relation.value, relation.homonymNr, relation.lang)}}">
-                          <span th:utext="${@viewUtil.getWordValueMarkup(relation)}">tee</span>
+                          <span th:utext="${@decorUtil.getWordValueMarkup(relation)}">tee</span>
                         </a>
                         <th:block th:unless="${#lists.isEmpty(relation.wordTypes)}">
                           <th:block th:each="wordType,wtIter : ${relation.wordTypes}">

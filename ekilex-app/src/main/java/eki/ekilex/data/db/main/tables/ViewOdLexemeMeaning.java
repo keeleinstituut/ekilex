@@ -9,9 +9,10 @@ import eki.ekilex.data.db.main.tables.records.ViewOdLexemeMeaningRecord;
 
 import org.jooq.Field;
 import org.jooq.ForeignKey;
+import org.jooq.JSON;
 import org.jooq.Name;
 import org.jooq.Record;
-import org.jooq.Row5;
+import org.jooq.Row2;
 import org.jooq.Schema;
 import org.jooq.Table;
 import org.jooq.TableField;
@@ -48,31 +49,16 @@ public class ViewOdLexemeMeaning extends TableImpl<ViewOdLexemeMeaningRecord> {
     public final TableField<ViewOdLexemeMeaningRecord, Long> WORD_ID = createField(DSL.name("word_id"), SQLDataType.BIGINT, this, "");
 
     /**
-     * The column <code>public.view_od_lexeme_meaning.lexeme_id</code>.
+     * The column <code>public.view_od_lexeme_meaning.lexeme_meanings</code>.
      */
-    public final TableField<ViewOdLexemeMeaningRecord, Long> LEXEME_ID = createField(DSL.name("lexeme_id"), SQLDataType.BIGINT, this, "");
-
-    /**
-     * The column <code>public.view_od_lexeme_meaning.meaning_id</code>.
-     */
-    public final TableField<ViewOdLexemeMeaningRecord, Long> MEANING_ID = createField(DSL.name("meaning_id"), SQLDataType.BIGINT, this, "");
-
-    /**
-     * The column <code>public.view_od_lexeme_meaning.value_state_code</code>.
-     */
-    public final TableField<ViewOdLexemeMeaningRecord, String> VALUE_STATE_CODE = createField(DSL.name("value_state_code"), SQLDataType.VARCHAR(100), this, "");
-
-    /**
-     * The column <code>public.view_od_lexeme_meaning.register_codes</code>.
-     */
-    public final TableField<ViewOdLexemeMeaningRecord, String[]> REGISTER_CODES = createField(DSL.name("register_codes"), SQLDataType.VARCHAR.getArrayDataType(), this, "");
+    public final TableField<ViewOdLexemeMeaningRecord, JSON> LEXEME_MEANINGS = createField(DSL.name("lexeme_meanings"), SQLDataType.JSON, this, "");
 
     private ViewOdLexemeMeaning(Name alias, Table<ViewOdLexemeMeaningRecord> aliased) {
         this(alias, aliased, null);
     }
 
     private ViewOdLexemeMeaning(Name alias, Table<ViewOdLexemeMeaningRecord> aliased, Field<?>[] parameters) {
-        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.view("create view \"view_od_lexeme_meaning\" as  SELECT l.word_id,\n    l.id AS lexeme_id,\n    l.meaning_id,\n    l.value_state_code,\n    ( SELECT array_agg(lr.register_code) AS array_agg\n           FROM lexeme_register lr\n          WHERE (lr.lexeme_id = l.id)) AS register_codes\n   FROM lexeme l,\n    meaning m\n  WHERE ((l.meaning_id = m.id) AND (l.is_public = true) AND (l.is_word = true) AND ((l.dataset_code)::text = 'eki'::text) AND (EXISTS ( SELECT 1\n           FROM word w\n          WHERE ((w.id = l.word_id) AND (w.lang = 'est'::bpchar)))) AND (EXISTS ( SELECT 1\n           FROM publishing p\n          WHERE (((p.target_name)::text = 'ww_od'::text) AND ((p.entity_name)::text = 'lexeme'::text) AND (p.entity_id = l.id)))))\n  ORDER BY l.id, m.id;"));
+        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.view("create view \"view_od_lexeme_meaning\" as  SELECT word_id,\n    json_agg(json_build_object('lexemeId', id, 'wordId', word_id, 'meaningId', meaning_id, 'valueStateCode', value_state_code, 'registerCodes', ( SELECT array_agg(lr.register_code) AS array_agg\n           FROM lexeme_register lr\n          WHERE (lr.lexeme_id = l.id)), 'meaning', ( SELECT json_build_object('meaningId', m.id, 'definition', ( SELECT json_build_object('definitionId', d.definition_id, 'meaningId', d.meaning_id, 'value', d.value, 'valuePrese', d.value_prese) AS json_build_object\n                   FROM view_od_definition d\n                  WHERE (d.meaning_id = m.id)\n                 LIMIT 1), 'lexemeWords', ( SELECT json_agg(json_build_object('lexemeId', l2.id, 'wordId', l2.word_id, 'meaningId', l2.meaning_id, 'valueStateCode', l2.value_state_code, 'registerCodes', ( SELECT array_agg(lr.register_code) AS array_agg\n                           FROM lexeme_register lr\n                          WHERE (lr.lexeme_id = l2.id)), 'value', w2.value, 'valuePrese', w2.value_prese, 'homonymNr', w2.homonym_nr, 'vocalForm', w2.vocal_form, 'wordTypeCodes', ( SELECT array_agg(wwt.word_type_code) AS array_agg\n                           FROM word_word_type wwt\n                          WHERE (wwt.word_id = w2.id))) ORDER BY l2.order_by) AS json_agg\n                   FROM lexeme l2,\n                    word w2\n                  WHERE ((l2.meaning_id = m.id) AND (l2.word_id = w2.id) AND (l2.id <> l.id) AND (l2.is_public = true) AND (l2.is_word = true) AND ((l2.dataset_code)::text = 'eki'::text) AND (w2.is_public = true) AND (w2.lang = 'est'::bpchar) AND (EXISTS ( SELECT 1\n                           FROM publishing p\n                          WHERE (((p.target_name)::text = 'ww_od'::text) AND ((p.entity_name)::text = 'lexeme'::text) AND (p.entity_id = l2.id))))))) AS json_build_object\n           FROM meaning m\n          WHERE (m.id = l.meaning_id))) ORDER BY level1, level2) AS lexeme_meanings\n   FROM lexeme l\n  WHERE ((is_public = true) AND (is_word = true) AND ((dataset_code)::text = 'eki'::text) AND (EXISTS ( SELECT 1\n           FROM word w\n          WHERE ((w.id = l.word_id) AND (w.lang = 'est'::bpchar)))) AND (EXISTS ( SELECT 1\n           FROM publishing p\n          WHERE (((p.target_name)::text = 'ww_od'::text) AND ((p.entity_name)::text = 'lexeme'::text) AND (p.entity_id = l.id)))))\n  GROUP BY word_id\n  ORDER BY word_id;"));
     }
 
     /**
@@ -132,11 +118,11 @@ public class ViewOdLexemeMeaning extends TableImpl<ViewOdLexemeMeaningRecord> {
     }
 
     // -------------------------------------------------------------------------
-    // Row5 type methods
+    // Row2 type methods
     // -------------------------------------------------------------------------
 
     @Override
-    public Row5<Long, Long, Long, String, String[]> fieldsRow() {
-        return (Row5) super.fieldsRow();
+    public Row2<Long, JSON> fieldsRow() {
+        return (Row2) super.fieldsRow();
     }
 }

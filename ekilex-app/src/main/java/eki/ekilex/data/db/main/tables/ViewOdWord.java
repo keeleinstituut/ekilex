@@ -11,7 +11,7 @@ import org.jooq.Field;
 import org.jooq.ForeignKey;
 import org.jooq.Name;
 import org.jooq.Record;
-import org.jooq.Row8;
+import org.jooq.Row7;
 import org.jooq.Schema;
 import org.jooq.Table;
 import org.jooq.TableField;
@@ -63,11 +63,6 @@ public class ViewOdWord extends TableImpl<ViewOdWordRecord> {
     public final TableField<ViewOdWordRecord, String> VALUE_AS_WORD = createField(DSL.name("value_as_word"), SQLDataType.CLOB, this, "");
 
     /**
-     * The column <code>public.view_od_word.lang</code>.
-     */
-    public final TableField<ViewOdWordRecord, String> LANG = createField(DSL.name("lang"), SQLDataType.CHAR(3), this, "");
-
-    /**
      * The column <code>public.view_od_word.homonym_nr</code>.
      */
     public final TableField<ViewOdWordRecord, Integer> HOMONYM_NR = createField(DSL.name("homonym_nr"), SQLDataType.INTEGER, this, "");
@@ -87,7 +82,7 @@ public class ViewOdWord extends TableImpl<ViewOdWordRecord> {
     }
 
     private ViewOdWord(Name alias, Table<ViewOdWordRecord> aliased, Field<?>[] parameters) {
-        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.view("create view \"view_od_word\" as  SELECT id AS word_id,\n    value,\n    value_prese,\n    value_as_word,\n    lang,\n    homonym_nr,\n    vocal_form,\n    ( SELECT array_agg(wwt.word_type_code) AS array_agg\n           FROM word_word_type wwt\n          WHERE (wwt.word_id = w.id)) AS word_type_codes\n   FROM word w\n  WHERE ((is_public = true) AND (lang = 'est'::bpchar) AND (EXISTS ( SELECT 1\n           FROM lexeme l\n          WHERE ((l.word_id = w.id) AND (l.is_public = true) AND (l.is_word = true) AND ((l.dataset_code)::text = 'eki'::text) AND (EXISTS ( SELECT 1\n                   FROM publishing p\n                  WHERE (((p.target_name)::text = 'ww_od'::text) AND ((p.entity_name)::text = 'lexeme'::text) AND (p.entity_id = l.id))))))))\n  ORDER BY id;"));
+        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.view("create view \"view_od_word\" as  SELECT id AS word_id,\n    value,\n    value_prese,\n    value_as_word,\n    homonym_nr,\n    vocal_form,\n    ( SELECT array_agg(wwt.word_type_code) AS array_agg\n           FROM word_word_type wwt\n          WHERE (wwt.word_id = w.id)) AS word_type_codes\n   FROM word w\n  WHERE ((is_public = true) AND (lang = 'est'::bpchar) AND (EXISTS ( SELECT 1\n           FROM lexeme l\n          WHERE ((l.word_id = w.id) AND (l.is_public = true) AND (l.is_word = true) AND ((l.dataset_code)::text = 'eki'::text) AND (EXISTS ( SELECT 1\n                   FROM publishing p\n                  WHERE (((p.target_name)::text = 'ww_od'::text) AND ((p.entity_name)::text = 'lexeme'::text) AND (p.entity_id = l.id))))))))\n  ORDER BY id;"));
     }
 
     /**
@@ -147,11 +142,11 @@ public class ViewOdWord extends TableImpl<ViewOdWordRecord> {
     }
 
     // -------------------------------------------------------------------------
-    // Row8 type methods
+    // Row7 type methods
     // -------------------------------------------------------------------------
 
     @Override
-    public Row8<Long, String, String, String, String, Integer, String, String[]> fieldsRow() {
-        return (Row8) super.fieldsRow();
+    public Row7<Long, String, String, String, Integer, String, String[]> fieldsRow() {
+        return (Row7) super.fieldsRow();
     }
 }

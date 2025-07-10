@@ -7,6 +7,7 @@ package eki.wordweb.data.db;
 import eki.wordweb.data.db.tables.LexicalDecisionData;
 import eki.wordweb.data.db.tables.LexicalDecisionResult;
 import eki.wordweb.data.db.tables.MviewOdDefinition;
+import eki.wordweb.data.db.tables.MviewOdDefinitionIdx;
 import eki.wordweb.data.db.tables.MviewOdLexemeMeaning;
 import eki.wordweb.data.db.tables.MviewOdWord;
 import eki.wordweb.data.db.tables.MviewOdWordOdMorph;
@@ -55,6 +56,11 @@ public class Tables {
      * The table <code>public.mview_od_definition</code>.
      */
     public static final MviewOdDefinition MVIEW_OD_DEFINITION = MviewOdDefinition.MVIEW_OD_DEFINITION;
+
+    /**
+     * The table <code>public.mview_od_definition_idx</code>.
+     */
+    public static final MviewOdDefinitionIdx MVIEW_OD_DEFINITION_IDX = MviewOdDefinitionIdx.MVIEW_OD_DEFINITION_IDX;
 
     /**
      * The table <code>public.mview_od_lexeme_meaning</code>.
