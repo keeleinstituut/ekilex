@@ -20,7 +20,9 @@ public class OdWord extends AbstractDataObject implements DecoratedWordType {
 
 	private Integer homonymNr;
 
-	private String vocalForm;
+	private String displayMorphCode;
+
+	private Classifier displayMorph;
 
 	private List<String> wordTypeCodes;
 
@@ -100,12 +102,20 @@ public class OdWord extends AbstractDataObject implements DecoratedWordType {
 		this.homonymNr = homonymNr;
 	}
 
-	public String getVocalForm() {
-		return vocalForm;
+	public String getDisplayMorphCode() {
+		return displayMorphCode;
 	}
 
-	public void setVocalForm(String vocalForm) {
-		this.vocalForm = vocalForm;
+	public void setDisplayMorphCode(String displayMorphCode) {
+		this.displayMorphCode = displayMorphCode;
+	}
+
+	public Classifier getDisplayMorph() {
+		return displayMorph;
+	}
+
+	public void setDisplayMorph(Classifier displayMorph) {
+		this.displayMorph = displayMorph;
 	}
 
 	@Override

@@ -91,16 +91,16 @@ public class MviewOdWordRecord extends TableRecordImpl<MviewOdWordRecord> implem
     }
 
     /**
-     * Setter for <code>public.mview_od_word.vocal_form</code>.
+     * Setter for <code>public.mview_od_word.display_morph_code</code>.
      */
-    public void setVocalForm(String value) {
+    public void setDisplayMorphCode(String value) {
         set(5, value);
     }
 
     /**
-     * Getter for <code>public.mview_od_word.vocal_form</code>.
+     * Getter for <code>public.mview_od_word.display_morph_code</code>.
      */
-    public String getVocalForm() {
+    public String getDisplayMorphCode() {
         return (String) get(5);
     }
 
@@ -159,7 +159,7 @@ public class MviewOdWordRecord extends TableRecordImpl<MviewOdWordRecord> implem
 
     @Override
     public Field<String> field6() {
-        return MviewOdWord.MVIEW_OD_WORD.VOCAL_FORM;
+        return MviewOdWord.MVIEW_OD_WORD.DISPLAY_MORPH_CODE;
     }
 
     @Override
@@ -194,7 +194,7 @@ public class MviewOdWordRecord extends TableRecordImpl<MviewOdWordRecord> implem
 
     @Override
     public String component6() {
-        return getVocalForm();
+        return getDisplayMorphCode();
     }
 
     @Override
@@ -229,7 +229,7 @@ public class MviewOdWordRecord extends TableRecordImpl<MviewOdWordRecord> implem
 
     @Override
     public String value6() {
-        return getVocalForm();
+        return getDisplayMorphCode();
     }
 
     @Override
@@ -269,7 +269,7 @@ public class MviewOdWordRecord extends TableRecordImpl<MviewOdWordRecord> implem
 
     @Override
     public MviewOdWordRecord value6(String value) {
-        setVocalForm(value);
+        setDisplayMorphCode(value);
         return this;
     }
 
@@ -305,7 +305,7 @@ public class MviewOdWordRecord extends TableRecordImpl<MviewOdWordRecord> implem
     /**
      * Create a detached, initialised MviewOdWordRecord
      */
-    public MviewOdWordRecord(Long wordId, String value, String valuePrese, String valueAsWord, Integer homonymNr, String vocalForm, String[] wordTypeCodes) {
+    public MviewOdWordRecord(Long wordId, String value, String valuePrese, String valueAsWord, Integer homonymNr, String displayMorphCode, String[] wordTypeCodes) {
         super(MviewOdWord.MVIEW_OD_WORD);
 
         setWordId(wordId);
@@ -313,7 +313,7 @@ public class MviewOdWordRecord extends TableRecordImpl<MviewOdWordRecord> implem
         setValuePrese(valuePrese);
         setValueAsWord(valueAsWord);
         setHomonymNr(homonymNr);
-        setVocalForm(vocalForm);
+        setDisplayMorphCode(displayMorphCode);
         setWordTypeCodes(wordTypeCodes);
     }
 }

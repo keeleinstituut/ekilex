@@ -68,9 +68,9 @@ public class ViewOdWord extends TableImpl<ViewOdWordRecord> {
     public final TableField<ViewOdWordRecord, Integer> HOMONYM_NR = createField(DSL.name("homonym_nr"), SQLDataType.INTEGER, this, "");
 
     /**
-     * The column <code>public.view_od_word.vocal_form</code>.
+     * The column <code>public.view_od_word.display_morph_code</code>.
      */
-    public final TableField<ViewOdWordRecord, String> VOCAL_FORM = createField(DSL.name("vocal_form"), SQLDataType.CLOB, this, "");
+    public final TableField<ViewOdWordRecord, String> DISPLAY_MORPH_CODE = createField(DSL.name("display_morph_code"), SQLDataType.VARCHAR(100), this, "");
 
     /**
      * The column <code>public.view_od_word.word_type_codes</code>.
@@ -82,7 +82,7 @@ public class ViewOdWord extends TableImpl<ViewOdWordRecord> {
     }
 
     private ViewOdWord(Name alias, Table<ViewOdWordRecord> aliased, Field<?>[] parameters) {
-        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.view("create view \"view_od_word\" as  SELECT id AS word_id,\n    value,\n    value_prese,\n    value_as_word,\n    homonym_nr,\n    vocal_form,\n    ( SELECT array_agg(wwt.word_type_code) AS array_agg\n           FROM word_word_type wwt\n          WHERE (wwt.word_id = w.id)) AS word_type_codes\n   FROM word w\n  WHERE ((is_public = true) AND (lang = 'est'::bpchar) AND (EXISTS ( SELECT 1\n           FROM lexeme l\n          WHERE ((l.word_id = w.id) AND (l.is_public = true) AND (l.is_word = true) AND ((l.dataset_code)::text = 'eki'::text) AND (EXISTS ( SELECT 1\n                   FROM publishing p\n                  WHERE (((p.target_name)::text = 'ww_od'::text) AND ((p.entity_name)::text = 'lexeme'::text) AND (p.entity_id = l.id))))))))\n  ORDER BY id;"));
+        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.view("create view \"view_od_word\" as  SELECT id AS word_id,\n    value,\n    value_prese,\n    value_as_word,\n    homonym_nr,\n    display_morph_code,\n    ( SELECT array_agg(wwt.word_type_code) AS array_agg\n           FROM word_word_type wwt\n          WHERE (wwt.word_id = w.id)) AS word_type_codes\n   FROM word w\n  WHERE ((is_public = true) AND (lang = 'est'::bpchar) AND (EXISTS ( SELECT 1\n           FROM lexeme l\n          WHERE ((l.word_id = w.id) AND (l.is_public = true) AND (l.is_word = true) AND ((l.dataset_code)::text = 'eki'::text) AND (EXISTS ( SELECT 1\n                   FROM publishing p\n                  WHERE (((p.target_name)::text = 'ww_od'::text) AND ((p.entity_name)::text = 'lexeme'::text) AND (p.entity_id = l.id))))))))\n  ORDER BY id;"));
     }
 
     /**

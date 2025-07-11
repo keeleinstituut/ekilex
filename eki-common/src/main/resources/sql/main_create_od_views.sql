@@ -20,7 +20,7 @@ select
 	w.value_prese,
 	w.value_as_word,
 	w.homonym_nr,
-	w.vocal_form,
+	w.display_morph_code,
 	(select
 		array_agg(wwt.word_type_code)
 	from
@@ -281,7 +281,7 @@ select
 										'value', w2.value,
 										'valuePrese', w2.value_prese,
 										'homonymNr', w2.homonym_nr,
-										'vocalForm', w2.vocal_form,
+										'displayMorphCode', w2.display_morph_code,
 										'wordTypeCodes', (
 											select
 												array_agg(wwt.word_type_code)
@@ -378,7 +378,7 @@ select
 							'value', w2.value,
 							'valuePrese', w2.value_prese,
 							'homonymNr', w2.homonym_nr,
-							'vocalForm', w2.vocal_form,
+							'displayMorphCode', w2.display_morph_code,
 							'wordTypeCodes', (
 							select
 								array_agg(wwt.word_type_code)

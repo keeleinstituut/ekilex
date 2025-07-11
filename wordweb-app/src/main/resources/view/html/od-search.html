@@ -33,7 +33,7 @@
                   <h1 class="search__lex-title" th:utext="${@decorUtil.getWordValueMarkup(word)}">tee</h1>
                 </div>
                 <strong class="mr-2" th:aria-label="|#{aria.homonym} ${word.homonymNr}|" th:text="${word.homonymNr}">1</strong>
-                <span class="mr-2" th:if="${word.vocalForm != null}" th:text="${word.vocalForm}"></span>
+                <span class="mr-2" th:if="${word.displayMorph != null}" th:text="${word.displayMorph.value}"></span>
                 <th:block th:each="wordType : ${word.wordTypes}" th:if="${not #lists.isEmpty(word.wordTypes)}">
                   <span class="lang-code text-caption lang-code--unrestricted mr-2" th:text="${wordType.value}"></span>
                 </th:block>
@@ -81,7 +81,6 @@
                   <div class="mt-2">
                     <div th:text="#{label.od.recommend}" class="text-muted">Selgitus</div>
                     <div th:utext="${word.wordOdRecommend.valuePrese}"></div>
-                    <div th:utext="${word.wordOdRecommend.optValuePrese}" th:if="${word.wordOdRecommend.optValuePrese}"></div>
                   </div>
                 </th:block>
                 <th:block th:if="${word.wordOdUsages}">

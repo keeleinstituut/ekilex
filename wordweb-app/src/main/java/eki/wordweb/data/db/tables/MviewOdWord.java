@@ -68,9 +68,9 @@ public class MviewOdWord extends TableImpl<MviewOdWordRecord> {
     public final TableField<MviewOdWordRecord, Integer> HOMONYM_NR = createField(DSL.name("homonym_nr"), SQLDataType.INTEGER, this, "");
 
     /**
-     * The column <code>public.mview_od_word.vocal_form</code>.
+     * The column <code>public.mview_od_word.display_morph_code</code>.
      */
-    public final TableField<MviewOdWordRecord, String> VOCAL_FORM = createField(DSL.name("vocal_form"), SQLDataType.CLOB, this, "");
+    public final TableField<MviewOdWordRecord, String> DISPLAY_MORPH_CODE = createField(DSL.name("display_morph_code"), SQLDataType.CLOB, this, "");
 
     /**
      * The column <code>public.mview_od_word.word_type_codes</code>.

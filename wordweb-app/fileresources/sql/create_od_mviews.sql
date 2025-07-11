@@ -18,7 +18,7 @@ dblink(
 	value_prese text,
 	value_as_word text,
 	homonym_nr integer,
-	vocal_form text,
+	display_morph_code text,
 	word_type_codes varchar(100) array
 );
 

@@ -247,6 +247,9 @@ public class ClassifierUtil {
 	}
 
 	private void applyOdWordClassifiers(OdWord word, String displayLang) {
+		String classifierCode = word.getDisplayMorphCode();
+		Classifier classifier = getClassifier(ClassifierName.DISPLAY_MORPH, classifierCode, displayLang);
+		word.setDisplayMorph(classifier);
 		List<String> classifierCodes = word.getWordTypeCodes();
 		List<Classifier> classifiers = getClassifiers(ClassifierName.WORD_TYPE, classifierCodes, displayLang);
 		word.setWordTypes(classifiers);
