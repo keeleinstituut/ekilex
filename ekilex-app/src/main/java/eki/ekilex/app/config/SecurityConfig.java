@@ -79,26 +79,26 @@ public class SecurityConfig {
 					.authorizeHttpRequests(
 							authorize -> authorize
 									.antMatchers(INDEX_URI,
-											LOGIN_PAGE_URI,
+											LOGIN_URI,
 											LOGIN_ERROR_URI,
-											REGISTER_PAGE_URI + "/**",
-											TERMS_OF_USE_PAGE_URI,
+											REGISTER_URI + "/**",
+											TERMS_OF_USE_URI,
 											VIEW_RESOURCES_URI + "/**",
 											SEND_FEEDBACK_URI,
 											FAKE_REGISTER_AND_PASSWORD_RECOVERY_URI,
 											PASSWORD_RECOVERY_URI + "/**",
-											PASSWORD_SET_PAGE_URI + "/**")
+											PASSWORD_SET_URI + "/**")
 									.permitAll()
 									.anyRequest()
 									.authenticated())
 					.formLogin(login -> login
-							.loginPage(LOGIN_PAGE_URI)
-							.loginProcessingUrl(LOGIN_URI)
+							.loginPage(LOGIN_URI)
+							.loginProcessingUrl(DO_LOGIN_URI)
 							.usernameParameter("email")
 							.defaultSuccessUrl(HOME_URI)
 							.failureUrl(LOGIN_ERROR_URI))
 					.logout(logout -> logout
-							.logoutUrl(LOGOUT_URI)
+							.logoutUrl(DO_LOGOUT_URI)
 							.invalidateHttpSession(true)
 							.clearAuthentication(true)
 							.deleteCookies("JSESSIONID")

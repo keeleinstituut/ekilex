@@ -4,11 +4,11 @@ public interface WebConstant {
 
 	String INDEX_URI = "/";
 
-	String LOGIN_URI = "/dologin";
+	String DO_LOGIN_URI = "/dologin";
 
-	String LOGOUT_URI = "/dologout";
+	String DO_LOGOUT_URI = "/dologout";
 
-	String LOGIN_PAGE_URI = "/login";
+	String LOGIN_URI = "/login";
 
 	String LOGIN_ERROR_URI = "/loginerror";
 
@@ -182,15 +182,15 @@ public interface WebConstant {
 
 	String FAKE_REGISTER_AND_PASSWORD_RECOVERY_URI = "/submit";
 
-	String REGISTER_PAGE_URI = "/register";
+	String REGISTER_URI = "/register";
 
 	String REGISTER_PAGE = "register";
 
-	String TERMS_OF_USE_PAGE_URI = "/termsofuse";
+	String TERMS_OF_USE_URI = "/termsofuse";
 
 	String TERMS_OF_USE_PAGE = "termsofuse";
 
-	String TERMS_AGREEMENT_PAGE_URI = "/termsagreement";
+	String TERMS_AGREEMENT_URI = "/termsagreement";
 
 	String TERMS_AGREEMENT_PAGE = "termsagreement";
 
@@ -198,7 +198,7 @@ public interface WebConstant {
 
 	String REFUSE_TERMS_URI = "/refuse_terms";
 
-	String ACTIVATE_PAGE_URI = "/activate";
+	String ACTIVATE_URI = "/activate";
 
 	String PROTO_URI = "/proto";
 
@@ -206,7 +206,7 @@ public interface WebConstant {
 
 	String PASSWORD_RECOVERY_PAGE = "passwordrecovery";
 
-	String PASSWORD_SET_PAGE_URI = "/passwordset";
+	String PASSWORD_SET_URI = "/passwordset";
 
 	String PASSWORD_SET_PAGE = "passwordset";
 

@@ -60,7 +60,7 @@ public class ExceptionHandlerController implements WebConstant, ApiConstant {
 
 		if (exception instanceof TermsNotAcceptedException) {
 			modelAndView = new ModelAndView();
-			modelAndView.setViewName(REDIRECT_PREF + TERMS_AGREEMENT_PAGE_URI);
+			modelAndView.setViewName(REDIRECT_PREF + TERMS_AGREEMENT_URI);
 			return modelAndView;
 		}
 

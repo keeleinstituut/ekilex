@@ -64,7 +64,7 @@ public class HomeController extends AbstractPublicPageController {
 
 		boolean isActiveTermsAgreed = permissionEvaluator.isActiveTermsAgreed(authentication);
 		if (!isActiveTermsAgreed) {
-			return REDIRECT_PREF + TERMS_AGREEMENT_PAGE_URI;
+			return REDIRECT_PREF + TERMS_AGREEMENT_URI;
 		}
 		boolean isPrivatePageAccessPermitted = permissionEvaluator.isPrivatePageAccessPermitted(authentication);
 		if (isPrivatePageAccessPermitted) {
@@ -81,7 +81,7 @@ public class HomeController extends AbstractPublicPageController {
 		return APPLY_PAGE;
 	}
 
-	@GetMapping(LOGIN_PAGE_URI)
+	@GetMapping(LOGIN_URI)
 	public String login(Model model) {
 		String activeTerms = userService.getActiveTermsValue();
 		model.addAttribute("activeTerms", activeTerms);
@@ -199,7 +199,7 @@ public class HomeController extends AbstractPublicPageController {
 	@GetMapping("/loginerror")
 	public String loginError(RedirectAttributes attributes) {
 		attributes.addFlashAttribute("loginerror", "Autentimine ebaõnnestus");
-		return REDIRECT_PREF + LOGIN_PAGE_URI;
+		return REDIRECT_PREF + LOGIN_URI;
 	}
 
 	@PreAuthorize("authentication.principal.datasetPermissionsExist")
@@ -215,7 +215,7 @@ public class HomeController extends AbstractPublicPageController {
 		return REDIRECT_PREF + HOME_URI;
 	}
 
-	@GetMapping(TERMS_OF_USE_PAGE_URI)
+	@GetMapping(TERMS_OF_USE_URI)
 	public String termsOfUse(Model model) {
 
 		String activeTerms = userService.getActiveTermsValue();
@@ -223,7 +223,7 @@ public class HomeController extends AbstractPublicPageController {
 		return TERMS_OF_USE_PAGE;
 	}
 
-	@GetMapping(TERMS_AGREEMENT_PAGE_URI)
+	@GetMapping(TERMS_AGREEMENT_URI)
 	public String termsAgreement(Model model) {
 
 		EkiUser user = userContext.getUser();
@@ -251,7 +251,7 @@ public class HomeController extends AbstractPublicPageController {
 
 		EkiUser user = userContext.getUser();
 		userService.refuseTerms(user);
-		return REDIRECT_PREF + LOGOUT_URI;
+		return REDIRECT_PREF + DO_LOGOUT_URI;
 	}
 
 }

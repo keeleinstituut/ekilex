@@ -670,7 +670,7 @@
       </div>
     </div>
   </th:block>
-  <div class="input-text" th:fragment="input_text">
+  <div th:fragment="input_text" class="input-text" >
     <label th:for="${id}" th:text="${label}"></label>
     <div class="input-text__container">
       <input
@@ -684,7 +684,7 @@
         th:required="${required}">
     </div>
   </div>
-  <div class="input-text input-text--password" data-plugin="passwordVisibilityToggle" th:fragment="input_password">
+  <div th:fragment="input_password" class="input-text input-text--password" data-plugin="passwordVisibilityToggle">
     <label th:for="${id}" th:text="${label}"></label>
     <div class="input-text__container">
       <input
@@ -693,7 +693,7 @@
         th:name="${name}"
         th:value="${value ?: ''}"
         th:placeholder="${placeholder}"
-        th:autocomplete="${autocomplete ?: 'off'}"
+        autocomplete="off"
         th:autofocus="${autofocus}"
         th:required="${required}">
       <button class="input-text__password-toggle" type="button" data-id="password-visibility-toggle">

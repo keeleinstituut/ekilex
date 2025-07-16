@@ -37,7 +37,7 @@ public class RegisterController extends AbstractPublicPageController {
 	@Autowired
 	private EmailService emailService;
 
-	@GetMapping(REGISTER_PAGE_URI)
+	@GetMapping(REGISTER_URI)
 	public String register(Model model, HttpServletRequest request) {
 		boolean isAuthenticatedUser = userContext.isAuthenticatedUser();
 		if (isAuthenticatedUser) {
@@ -49,28 +49,38 @@ public class RegisterController extends AbstractPublicPageController {
 		return REGISTER_PAGE;
 	}
 
-	@PostMapping(REGISTER_PAGE_URI + "/{botProtectionCode}")
+	@PostMapping(REGISTER_URI + "/{botProtectionCode}")
 	public String registerNewUser(
 			@PathVariable(value = "botProtectionCode", required = false) String botProtectionCode,
 			@RequestParam("email") String email,
 			@RequestParam("name") String name,
 			@RequestParam("salasona") String password,
 			@RequestParam("salasona2") String password2,
-			@RequestParam(name = "agreement", required = false) boolean agreement,
+			@RequestParam(name = "agreement", required = false) Boolean agreement,
 			Model model,
 			RedirectAttributes attributes,
 			HttpServletRequest request) {
 
+		System.out.println("---> " + agreement);
+
 		boolean isBotProtectionTriggered = checkBotProtection(request, botProtectionCode, email);
 		if (isBotProtectionTriggered) {
-			return REDIRECT_PREF + LOGIN_PAGE_URI;
+			return REDIRECT_PREF + LOGIN_URI;
 		}
 
 		Locale locale = LocaleContextHolder.getLocale();
 		String activeTerms = userService.getActiveTermsValue();
 		model.addAttribute("activeTerms", activeTerms);
 
-		if (!agreement) {
+		if (agreement == null) {
+			String message = messageSource.getMessage("register.no.agreement", new Object[0], locale);
+			model.addAttribute("userName", name);
+			model.addAttribute("userEmail", email);
+			model.addAttribute("errorMessage", message);
+			return REGISTER_PAGE;
+		}
+
+		if (Boolean.FALSE.equals(agreement)) {
 			String message = messageSource.getMessage("register.no.agreement", new Object[0], locale);
 			model.addAttribute("userName", name);
 			model.addAttribute("userEmail", email);
@@ -115,10 +125,11 @@ public class RegisterController extends AbstractPublicPageController {
 			String message = messageSource.getMessage("register.activation.link.sent", new Object[0], locale);
 			attributes.addFlashAttribute("successMessage", message + " " + email);
 		} else {
-			String message = messageSource.getMessage("register.activation.link", new Object[0], locale);
-			attributes.addFlashAttribute("successMessage", message + " " + activationLink);
+			String message = messageSource.getMessage("register.activation.link.click", new Object[0], locale);
+			attributes.addFlashAttribute("successMessage", message);
+			attributes.addFlashAttribute("activationLink", activationLink);
 		}
-		return REDIRECT_PREF + LOGIN_PAGE_URI;
+		return REDIRECT_PREF + LOGIN_URI;
 	}
 
 	@PostMapping(FAKE_REGISTER_AND_PASSWORD_RECOVERY_URI)
@@ -127,10 +138,10 @@ public class RegisterController extends AbstractPublicPageController {
 		String clientAddress = request.getRemoteAddr();
 		logger.warn("Fake submit action used. Client IP: {}, email: {}", clientAddress, email);
 		sleep(10);
-		return REDIRECT_PREF + LOGIN_PAGE_URI;
+		return REDIRECT_PREF + LOGIN_URI;
 	}
 
-	@GetMapping(REGISTER_PAGE_URI + ACTIVATE_PAGE_URI + "/{activationKey}")
+	@GetMapping(REGISTER_URI + ACTIVATE_URI + "/{activationKey}")
 	public String activate(@PathVariable(name = "activationKey") String activationKey, Model model, RedirectAttributes attributes) {
 
 		EkiUser ekiUser = userService.activateUser(activationKey);
@@ -145,7 +156,7 @@ public class RegisterController extends AbstractPublicPageController {
 			String message = messageSource.getMessage("register.activation.success", new Object[0], locale);
 			attributes.addFlashAttribute("successMessage", message);
 			attributes.addFlashAttribute("userEmail", ekiUser.getEmail());
-			return REDIRECT_PREF + LOGIN_PAGE_URI;
+			return REDIRECT_PREF + LOGIN_URI;
 		}
 	}
 
@@ -166,7 +177,7 @@ public class RegisterController extends AbstractPublicPageController {
 
 		boolean isBotProtectionTriggered = checkBotProtection(request, botProtectionCode, email);
 		if (isBotProtectionTriggered) {
-			return REDIRECT_PREF + LOGIN_PAGE_URI;
+			return REDIRECT_PREF + LOGIN_URI;
 		}
 
 		Locale locale = LocaleContextHolder.getLocale();
@@ -199,7 +210,7 @@ public class RegisterController extends AbstractPublicPageController {
 		return PASSWORD_RECOVERY_PAGE;
 	}
 
-	@GetMapping(PASSWORD_SET_PAGE_URI + "/{recoveryKey}")
+	@GetMapping(PASSWORD_SET_URI + "/{recoveryKey}")
 	public String setPasswordPage(@PathVariable(name = "recoveryKey") String recoveryKey, Model model) {
 
 		String userEmail = userService.getUserEmailByRecoveryKey(recoveryKey);
@@ -214,7 +225,7 @@ public class RegisterController extends AbstractPublicPageController {
 		return PASSWORD_SET_PAGE;
 	}
 
-	@PostMapping(PASSWORD_SET_PAGE_URI)
+	@PostMapping(PASSWORD_SET_URI)
 	public String setPassword(
 			@RequestParam("salasona") String password,
 			@RequestParam("salasona2") String password2,
@@ -240,7 +251,7 @@ public class RegisterController extends AbstractPublicPageController {
 		String message = messageSource.getMessage("register.recovery.success", new Object[0], locale);
 		attributes.addFlashAttribute("successMessage", message);
 		attributes.addFlashAttribute("userEmail", userEmail);
-		return REDIRECT_PREF + LOGIN_PAGE_URI;
+		return REDIRECT_PREF + LOGIN_URI;
 	}
 
 	private void setBotProtectionCode(Model model, HttpServletRequest request) {

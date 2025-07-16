@@ -33,17 +33,15 @@
         label = #{register.new.password},
         name = 'salasona',
         placeholder = #{label.register.password.placeholder},
-        autofocus = ${userEmail != null},
-        autocomplete = 'new-password')"></th:block>
+        autofocus = ${userEmail != null})"></th:block>
         <th:block th:replace="components :: input_password(
         id = 'register-new-password-repeat',
         label = #{register.password.again},
         name = 'salasona2',
-        placeholder = #{label.register.password_repeat.placeholder},
-        autocomplete = 'new-password')"></th:block>
+        placeholder = #{label.register.password_repeat.placeholder})"></th:block>
         <th:block th:replace="components :: input_checkbox(
             inputName = 'agreement',
-            inputValue = 'agreement',
+            inputValue = ${true},
             inputLabel = #{register.terms.agreement},
             plugin = 'agreementChkPlugin'
           )"></th:block>

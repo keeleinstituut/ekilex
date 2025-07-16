@@ -230,7 +230,7 @@ public class UserService implements WebConstant, GlobalConstant {
 
 		email = StringUtils.lowerCase(email);
 		String activationKey = generateUniqueKey();
-		String activationLink = ekilexAppUrl + REGISTER_PAGE_URI + ACTIVATE_PAGE_URI + "/" + activationKey;
+		String activationLink = ekilexAppUrl + REGISTER_URI + ACTIVATE_URI + "/" + activationKey;
 		String encodedPassword = passwordEncoder.encode(password);
 		String activeTermsVersion = userDbService.getActiveTermsVersion();
 		Long userId = userDbService.createUser(email, name, encodedPassword, activationKey, activeTermsVersion);
@@ -347,7 +347,7 @@ public class UserService implements WebConstant, GlobalConstant {
 	public String handleUserPasswordRecovery(Long userId, String email) {
 
 		String recoveryKey = generateUniqueKey();
-		String passwordRecoveryLink = ekilexAppUrl + PASSWORD_SET_PAGE_URI + "/" + recoveryKey;
+		String passwordRecoveryLink = ekilexAppUrl + PASSWORD_SET_URI + "/" + recoveryKey;
 		userDbService.setUserRecoveryKey(userId, recoveryKey);
 		emailService.sendPasswordRecoveryEmail(email, passwordRecoveryLink);
 		return passwordRecoveryLink;
