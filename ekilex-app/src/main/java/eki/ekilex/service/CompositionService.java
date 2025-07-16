@@ -39,7 +39,7 @@ import eki.ekilex.service.db.TagDbService;
 import eki.ekilex.service.util.LexemeLevelCalcUtil;
 
 @Component
-public class CompositionService extends AbstractService implements PermConstant {
+public class CompositionService extends AbstractCudService implements PermConstant {
 
 	private static final Logger logger = LoggerFactory.getLogger(CompositionService.class);
 
@@ -65,7 +65,7 @@ public class CompositionService extends AbstractService implements PermConstant 
 	private EkilexPermissionEvaluator ekilexPermissionEvaluator;
 
 	@Transactional(rollbackOn = Exception.class)
-	public Long cloneMeaningWithLexemes(Long sourceMeaningId, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
+	public Long cloneMeaningWithLexemes(Long sourceMeaningId, EkiUser user, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
 
 		Map<Long, Long> sourceTargetLexemeIdMap = new HashMap<>();
 		boolean publicDataOnly = false;
@@ -74,6 +74,7 @@ public class CompositionService extends AbstractService implements PermConstant 
 		for (LexemeRecord sourceLexeme : sourceLexemes) {
 			Long sourceLexemeId = sourceLexeme.getId();
 			Long targetLexemeId = cloneLexemeAndData(sourceLexemeId, targetMeaningId, null, roleDatasetCode, isManualEventOnUpdateEnabled);
+			createPublishing(user, roleDatasetCode, TARGET_NAME_WW_UNIF, ENTITY_NAME_LEXEME, targetLexemeId);
 			sourceTargetLexemeIdMap.put(sourceLexemeId, targetLexemeId);
 		}
 		cloneLexemeRelations(sourceTargetLexemeIdMap, roleDatasetCode, isManualEventOnUpdateEnabled);
@@ -82,7 +83,7 @@ public class CompositionService extends AbstractService implements PermConstant 
 	}
 
 	@Transactional(rollbackOn = Exception.class)
-	public boolean cloneLexemeMeaningAndLexemes(Long lexemeId, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
+	public boolean cloneLexemeMeaningAndLexemes(Long lexemeId, EkiUser user, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
 
 		Map<Long, Long> sourceTargetLexemeIdMap = new HashMap<>();
 		boolean isPublicDataOnly = false;
@@ -96,6 +97,7 @@ public class CompositionService extends AbstractService implements PermConstant 
 		for (LexemeRecord sourceLexeme : sourceLexemes) {
 			Long sourceLexemeId = sourceLexeme.getId();
 			Long targetLexemeId = cloneLexemeAndData(sourceLexemeId, targetMeaningId, null, roleDatasetCode, isManualEventOnUpdateEnabled);
+			createPublishing(user, roleDatasetCode, TARGET_NAME_WW_UNIF, ENTITY_NAME_LEXEME, targetLexemeId);
 			sourceTargetLexemeIdMap.put(sourceLexemeId, targetLexemeId);
 		}
 		cloneLexemeRelations(sourceTargetLexemeIdMap, roleDatasetCode, isManualEventOnUpdateEnabled);
@@ -105,7 +107,7 @@ public class CompositionService extends AbstractService implements PermConstant 
 	}
 
 	@Transactional(rollbackOn = Exception.class)
-	public Long cloneEmptyLexemeAndMeaning(Long sourceLexemeId, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
+	public Long cloneEmptyLexemeAndMeaning(Long sourceLexemeId, EkiUser user, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
 
 		LexemeRecord sourceLexemeRecord = lookupDbService.getLexemeRecord(sourceLexemeId);
 		Long sourceWordId = sourceLexemeRecord.getWordId();
@@ -114,19 +116,21 @@ public class CompositionService extends AbstractService implements PermConstant 
 		activityLogService.createActivityLog("cloneEmptyLexemeAndMeaning", targetMeaningId, ActivityOwner.MEANING, roleDatasetCode, isManualEventOnUpdateEnabled);
 		Long targetLexemeId = compositionDbService.cloneEmptyLexeme(sourceLexemeId, targetMeaningId);
 		recalculateAndUpdateAllLexemeLevels(sourceWordId, datasetCode);
+		createPublishing(user, roleDatasetCode, TARGET_NAME_WW_UNIF, ENTITY_NAME_LEXEME, targetLexemeId);
 		activityLogService.createActivityLog("cloneEmptyLexemeAndMeaning", targetLexemeId, ActivityOwner.LEXEME, roleDatasetCode, isManualEventOnUpdateEnabled);
 
 		return targetLexemeId;
 	}
 
 	@Transactional(rollbackOn = Exception.class)
-	public Long cloneLexemeAndWord(Long sourceLexemeId, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
+	public Long cloneLexemeAndWord(Long sourceLexemeId, EkiUser user, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
 
 		LexemeRecord sourceLexemeRecord = lookupDbService.getLexemeRecord(sourceLexemeId);
 		Long sourceWordId = sourceLexemeRecord.getWordId();
 		String datasetCode = sourceLexemeRecord.getDatasetCode();
 		Long targetWordId = cloneWordAndData(sourceWordId, roleDatasetCode, isManualEventOnUpdateEnabled);
 		Long targetLexemeId = cloneLexemeAndData(sourceLexemeId, null, targetWordId, roleDatasetCode, isManualEventOnUpdateEnabled);
+		createPublishing(user, roleDatasetCode, TARGET_NAME_WW_UNIF, ENTITY_NAME_LEXEME, targetLexemeId);
 		recalculateAndUpdateAllLexemeLevels(sourceWordId, datasetCode);
 
 		return targetLexemeId;

@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import eki.ekilex.data.EkiUser;
 import eki.ekilex.data.api.ApiResponse;
 import eki.ekilex.data.api.SynCandidacy;
 import eki.ekilex.data.api.SynCandidateWord;
@@ -48,6 +49,7 @@ public class ApiSynController extends AbstractApiController {
 			HttpServletRequest request) {
 
 		try {
+			EkiUser user = userContext.getUser();
 			String headwordValue = synCandidacy.getHeadwordValue();
 			String headwordLang = synCandidacy.getHeadwordLang();
 			String datasetCode = synCandidacy.getSynCandidateDatasetCode();
@@ -72,7 +74,7 @@ public class ApiSynController extends AbstractApiController {
 			if (!headwordExists) {
 				return getOpFailResponse(authentication, request, "Headword does not exist");
 			}
-			synCandidateService.createFullSynCandidacy(synCandidacy, crudRoleDataset);
+			synCandidateService.createFullSynCandidacy(synCandidacy, user, crudRoleDataset);
 			return getOpSuccessResponse(authentication, request);
 		} catch (Exception e) {
 			return getOpFailResponse(authentication, request, e);

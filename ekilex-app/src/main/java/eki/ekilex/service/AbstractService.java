@@ -33,10 +33,10 @@ public abstract class AbstractService implements GlobalConstant, SystemConstant,
 	protected ActivityLogDbService activityLogDbService;
 
 	@Autowired
-	protected MessageSource messageSource;
+	protected TextDecorationService textDecorationService;
 
 	@Autowired
-	protected TextDecorationService textDecorationService;
+	protected MessageSource messageSource;
 
 	protected void applyCreateUpdate(AbstractCreateUpdateEntity entity) {
 

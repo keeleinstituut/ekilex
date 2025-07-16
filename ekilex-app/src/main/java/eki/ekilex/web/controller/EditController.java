@@ -97,13 +97,13 @@ public class EditController extends AbstractMutableDataPageController implements
 
 		switch (itemData.getOpCode()) {
 		case "definition":
-			cudService.createDefinition(id, value, languageCode, datasetCode, complexity, type, isPublic, roleDatasetCode, isManualEventOnUpdateEnabled);
+			cudService.createDefinition(id, value, languageCode, datasetCode, complexity, type, isPublic, user, roleDatasetCode, isManualEventOnUpdateEnabled);
 			break;
 		case "definition_note":
 			cudService.createDefinitionNote(id, value, languageCode, isPublic, roleDatasetCode, isManualEventOnUpdateEnabled);
 			break;
 		case "usage":
-			cudService.createUsage(id, value, languageCode, complexity, isPublic, roleDatasetCode, isManualEventOnUpdateEnabled);
+			cudService.createUsage(id, value, languageCode, complexity, isPublic, user, roleDatasetCode, isManualEventOnUpdateEnabled);
 			break;
 		case "usage_translation":
 			cudService.createUsageTranslation(id, value, languageCode, roleDatasetCode, isManualEventOnUpdateEnabled);
@@ -121,7 +121,7 @@ public class EditController extends AbstractMutableDataPageController implements
 			cudService.createLexemeFreeform(id, value, type, roleDatasetCode, isManualEventOnUpdateEnabled);
 			break;
 		case "government":
-			cudService.createLexemeGovernment(id, value, complexity, roleDatasetCode, isManualEventOnUpdateEnabled);
+			cudService.createLexemeGovernment(id, value, complexity, user, roleDatasetCode, isManualEventOnUpdateEnabled);
 			break;
 		case "lexeme_deriv":
 			cudService.createLexemeDeriv(id, value, roleDatasetCode, isManualEventOnUpdateEnabled);
@@ -136,7 +136,7 @@ public class EditController extends AbstractMutableDataPageController implements
 			cudService.updateLexemeReliability(id, value, roleDatasetCode, isManualEventOnUpdateEnabled);
 			break;
 		case "lexeme_grammar":
-			cudService.createLexemeGrammar(id, value, languageCode, complexity, roleDatasetCode, isManualEventOnUpdateEnabled);
+			cudService.createLexemeGrammar(id, value, languageCode, complexity, user, roleDatasetCode, isManualEventOnUpdateEnabled);
 			break;
 		case "lexeme_value_state":
 			cudService.updateLexemeValueState(id, value, roleDatasetCode, isManualEventOnUpdateEnabled);
@@ -145,7 +145,7 @@ public class EditController extends AbstractMutableDataPageController implements
 			cudService.updateLexemeProficiencyLevel(id, value, roleDatasetCode, isManualEventOnUpdateEnabled);
 			break;
 		case "lexeme_note":
-			cudService.createLexemeNote(id, value, languageCode, complexity, isPublic, roleDatasetCode, isManualEventOnUpdateEnabled);
+			cudService.createLexemeNote(id, value, languageCode, complexity, isPublic, user, roleDatasetCode, isManualEventOnUpdateEnabled);
 			break;
 		case "word_gender":
 			cudService.updateWordGenderWithDuplication(id3, value, user, isManualEventOnUpdateEnabled);
@@ -199,17 +199,17 @@ public class EditController extends AbstractMutableDataPageController implements
 			cudService.createMeaningLearnerComment(id, value, roleDatasetCode, isManualEventOnUpdateEnabled);
 			break;
 		case "meaning_note":
-			cudService.createMeaningNote(id, value, languageCode, complexity, isPublic, roleDatasetCode, isManualEventOnUpdateEnabled);
+			cudService.createMeaningNote(id, value, languageCode, complexity, isPublic, user, roleDatasetCode, isManualEventOnUpdateEnabled);
 			sessionBean.setRecentNoteLanguage(languageCode);
 			break;
 		case "meaning_forum":
 			cudService.createMeaningForum(id, value, user);
 			break;
 		case "meaning_image":
-			cudService.createMeaningImage(id, value, value2, complexity, roleDatasetCode, isManualEventOnUpdateEnabled);
+			cudService.createMeaningImage(id, value, value2, complexity, user, roleDatasetCode, isManualEventOnUpdateEnabled);
 			break;
 		case "meaning_media":
-			cudService.createMeaningMedia(id, value, complexity, roleDatasetCode, isManualEventOnUpdateEnabled);
+			cudService.createMeaningMedia(id, value, complexity, user, roleDatasetCode, isManualEventOnUpdateEnabled);
 			break;
 		case "meaning_freeform":
 			cudService.createMeaningFreeform(id, value, type, roleDatasetCode, isManualEventOnUpdateEnabled);
@@ -838,8 +838,9 @@ public class EditController extends AbstractMutableDataPageController implements
 			@RequestParam("ids") List<Long> ids,
 			@ModelAttribute(name = SESSION_BEAN) SessionBean sessionBean) throws Exception {
 
-		boolean isManualEventOnUpdateEnabled = sessionBean.isManualEventOnUpdateEnabled();
+		EkiUser user = userContext.getUser();
 		String roleDatasetCode = getRoleDatasetCode();
+		boolean isManualEventOnUpdateEnabled = sessionBean.isManualEventOnUpdateEnabled();
 		for (Long id2 : ids) {
 			switch (opCode) {
 			case "meaning_relation":
@@ -849,13 +850,13 @@ public class EditController extends AbstractMutableDataPageController implements
 				cudService.createLexemeRelation(id1, id2, relationType, oppositeRelationType, roleDatasetCode, isManualEventOnUpdateEnabled);
 				break;
 			case "word_relation":
-				cudService.createWordRelation(id1, id2, relationType, oppositeRelationType, roleDatasetCode, isManualEventOnUpdateEnabled);
+				cudService.createWordRelation(id1, id2, relationType, oppositeRelationType, user, roleDatasetCode, isManualEventOnUpdateEnabled);
 				break;
 			case "syn_meaning_relation":
 				synCudService.createSynMeaningRelation(id1, id2, weightStr, roleDatasetCode, isManualEventOnUpdateEnabled);
 				break;
 			case "raw_relation":
-				synCudService.createSynWordRelation(id1, id2, weightStr, roleDatasetCode, isManualEventOnUpdateEnabled);
+				synCudService.createSynWordRelation(id1, id2, weightStr, user, roleDatasetCode, isManualEventOnUpdateEnabled);
 				break;
 			}
 		}

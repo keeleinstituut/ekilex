@@ -32,8 +32,9 @@ import eki.ekilex.data.WordLexemeMeaningIdTuple;
 import eki.ekilex.data.db.main.tables.records.LexemeRecord;
 import eki.ekilex.service.db.CudDbService;
 
+// TODO rename inexact -> near everywhere
 @Component
-public class InexactSynService extends AbstractSynSearchService {
+public class NearSynService extends AbstractSynSearchService {
 
 	@Autowired
 	private CudDbService cudDbService;
@@ -277,10 +278,10 @@ public class InexactSynService extends AbstractSynSearchService {
 		if (!meaningHasTranslationLangWord) {
 			Long inexactSynTransltionLangLexemeId;
 			if (translationLangWordId == null) {
-				inexactSynTransltionLangLexemeId = createInexactSynWordAndLexeme(
+				inexactSynTransltionLangLexemeId = createNearSynWordAndLexeme(
 						inexactSynMeaningId, translationLangWordValue, translationLang, roleDatasetCode, isManualEventOnUpdateEnabled);
 			} else {
-				inexactSynTransltionLangLexemeId = createInexactSynLexeme(inexactSynMeaningId, translationLangWordId, roleDatasetCode, isManualEventOnUpdateEnabled);
+				inexactSynTransltionLangLexemeId = createNearSynLexeme(inexactSynMeaningId, translationLangWordId, roleDatasetCode, isManualEventOnUpdateEnabled);
 			}
 
 			cloneCandidateData(inexactSynMeaningId, wordRelationId, inexactSynTransltionLangLexemeId, roleDatasetCode);
@@ -298,9 +299,9 @@ public class InexactSynService extends AbstractSynSearchService {
 			boolean meaningHasTargetLangWord = lookupDbService.meaningHasWord(inexactSynMeaningId, targetLangWordValue, targetLang);
 			if (!meaningHasTargetLangWord) {
 				if (targetLangWordId == null) {
-					createInexactSynWordAndLexeme(inexactSynMeaningId, targetLangWordValue, targetLang, roleDatasetCode, isManualEventOnUpdateEnabled);
+					createNearSynWordAndLexeme(inexactSynMeaningId, targetLangWordValue, targetLang, roleDatasetCode, isManualEventOnUpdateEnabled);
 				} else {
-					createInexactSynLexeme(inexactSynMeaningId, targetLangWordId, roleDatasetCode, isManualEventOnUpdateEnabled);
+					createNearSynLexeme(inexactSynMeaningId, targetLangWordId, roleDatasetCode, isManualEventOnUpdateEnabled);
 				}
 			}
 		}
@@ -319,24 +320,22 @@ public class InexactSynService extends AbstractSynSearchService {
 		return response;
 	}
 
-	private Long createInexactSynWordAndLexeme(
+	private Long createNearSynWordAndLexeme(
 			Long inexactSynMeaningId, String wordValue, String lang, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
 
-		WordLexemeMeaningIdTuple wordLexemeMeaningId = cudDbService
-				.createWordAndLexemeAndMeaning(wordValue, wordValue, null, wordValue, lang, roleDatasetCode, PUBLICITY_PUBLIC, inexactSynMeaningId);
+		WordLexemeMeaningIdTuple wordLexemeMeaningId = cudDbService.createWordAndLexemeAndMeaning(wordValue, wordValue, null, wordValue, lang, roleDatasetCode, PUBLICITY_PUBLIC, inexactSynMeaningId);
 
 		Long wordId = wordLexemeMeaningId.getWordId();
 		Long lexemeId = wordLexemeMeaningId.getLexemeId();
-		activityLogService.createActivityLog("createInexactSynWordAndLexeme", wordId, ActivityOwner.WORD, roleDatasetCode, isManualEventOnUpdateEnabled);
-		activityLogService.createActivityLog("createInexactSynWordAndLexeme", lexemeId, ActivityOwner.LEXEME, roleDatasetCode, isManualEventOnUpdateEnabled);
+		activityLogService.createActivityLog("createNearSynWordAndLexeme", wordId, ActivityOwner.WORD, roleDatasetCode, isManualEventOnUpdateEnabled);
+		activityLogService.createActivityLog("createNearSynWordAndLexeme", lexemeId, ActivityOwner.LEXEME, roleDatasetCode, isManualEventOnUpdateEnabled);
 		return lexemeId;
 	}
 
-	private Long createInexactSynLexeme(
+	private Long createNearSynLexeme(
 			Long inexactSynMeaningId, Long translationLangWordId, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
 
-		ActivityLogData activityLog = activityLogService
-				.prepareActivityLog("createLexeme", translationLangWordId, ActivityOwner.WORD, roleDatasetCode, isManualEventOnUpdateEnabled);
+		ActivityLogData activityLog = activityLogService.prepareActivityLog("createNearSynLexeme", translationLangWordId, ActivityOwner.WORD, roleDatasetCode, isManualEventOnUpdateEnabled);
 		int currentWordLexemesMaxLevel1 = lookupDbService.getWordLexemesMaxLevel1(translationLangWordId, roleDatasetCode);
 		int lexemeLevel1 = currentWordLexemesMaxLevel1 + 1;
 		WordLexemeMeaningIdTuple wordLexemeMeaningId = cudDbService.createLexemeWithCreateOrSelectMeaning(translationLangWordId, roleDatasetCode, inexactSynMeaningId, lexemeLevel1, null, PUBLICITY_PUBLIC);
@@ -348,8 +347,7 @@ public class InexactSynService extends AbstractSynSearchService {
 	private void createInexactSynDefinition(
 			Long inexactSynMeaningId, String inexactSynDefValue, String targetLang, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
 
-		ActivityLogData activityLog = activityLogService
-				.prepareActivityLog("createInexactSynDefinition", inexactSynMeaningId, ActivityOwner.MEANING, roleDatasetCode, isManualEventOnUpdateEnabled);
+		ActivityLogData activityLog = activityLogService.prepareActivityLog("createInexactSynDefinition", inexactSynMeaningId, ActivityOwner.MEANING, roleDatasetCode, isManualEventOnUpdateEnabled);
 		Long definitionId = cudDbService
 				.createDefinition(inexactSynMeaningId, inexactSynDefValue, inexactSynDefValue, targetLang, DEFINITION_TYPE_CODE_INEXACT_SYN, Complexity.DETAIL, PUBLICITY_PUBLIC);
 		cudDbService.createDefinitionDataset(definitionId, roleDatasetCode);
@@ -359,8 +357,7 @@ public class InexactSynService extends AbstractSynSearchService {
 	private void updateInexactSynDefinitionValue(
 			Long inexactSynMeaningId, Long inexactSynDefId, String inexactSynDefValue, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
 
-		ActivityLogData activityLog = activityLogService
-				.prepareActivityLog("updateInexactSynDefinitionValue", inexactSynMeaningId, ActivityOwner.MEANING, roleDatasetCode, isManualEventOnUpdateEnabled);
+		ActivityLogData activityLog = activityLogService.prepareActivityLog("updateInexactSynDefinitionValue", inexactSynMeaningId, ActivityOwner.MEANING, roleDatasetCode, isManualEventOnUpdateEnabled);
 		cudDbService.updateDefinitionValue(inexactSynDefId, inexactSynDefValue, inexactSynDefValue);
 		activityLogService.createActivityLog(activityLog, inexactSynDefId, ActivityEntity.DEFINITION);
 	}

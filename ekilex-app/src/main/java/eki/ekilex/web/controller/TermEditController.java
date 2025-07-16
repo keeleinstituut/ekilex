@@ -151,12 +151,13 @@ public class TermEditController extends AbstractMutableDataPageController {
 	@PostMapping(MEANING_DUPLICATE_URI + "/{meaningId}")
 	public Response duplicateMeaning(@PathVariable("meaningId") Long meaningId, @ModelAttribute(name = SESSION_BEAN) SessionBean sessionBean) {
 
+		EkiUser user = userContext.getUser();
 		Locale locale = LocaleContextHolder.getLocale();
 		boolean isManualEventOnUpdateEnabled = sessionBean.isManualEventOnUpdateEnabled();
 		String roleDatasetCode = getRoleDatasetCode();
 		Long newMeaningId;
 		try {
-			newMeaningId = compositionService.cloneMeaningWithLexemes(meaningId, roleDatasetCode, isManualEventOnUpdateEnabled);
+			newMeaningId = compositionService.cloneMeaningWithLexemes(meaningId, user, roleDatasetCode, isManualEventOnUpdateEnabled);
 		} catch (Exception e) {
 			logger.warn("Cloning of meaning failed", e);
 			newMeaningId = null;
@@ -191,8 +192,8 @@ public class TermEditController extends AbstractMutableDataPageController {
 		boolean clearResults = requestData.isClearResults();
 
 		EkiUser user = userContext.getUser();
-		boolean isManualEventOnUpdateEnabled = sessionBean.isManualEventOnUpdateEnabled();
 		String roleDatasetCode = getRoleDatasetCode();
+		boolean isManualEventOnUpdateEnabled = sessionBean.isManualEventOnUpdateEnabled();
 		model.addAttribute("backUri", backUri);
 
 		if (clearResults || StringUtils.isAnyBlank(wordValue, datasetCode, language)) {
@@ -209,7 +210,7 @@ public class TermEditController extends AbstractMutableDataPageController {
 			createWordDetails.setWordValue(wordValue);
 			createWordDetails.setLanguage(language);
 			createWordDetails.setDataset(datasetCode);
-			WordLexemeMeaningIdTuple wordLexemeMeaningId = cudService.createWord(createWordDetails, roleDatasetCode, isManualEventOnUpdateEnabled);
+			WordLexemeMeaningIdTuple wordLexemeMeaningId = cudService.createWord(createWordDetails, user, roleDatasetCode, isManualEventOnUpdateEnabled);
 			Long meaningId = wordLexemeMeaningId.getMeaningId();
 			addRedirectSuccessMessage(redirectAttributes, "termcreatemeaning.usermessage.word.and.meaning.created");
 			String redirectToMeaning = composeRedirectToMeaning(meaningId, backUri);
@@ -231,8 +232,9 @@ public class TermEditController extends AbstractMutableDataPageController {
 			RedirectAttributes redirectAttributes) throws Exception {
 
 		boolean isManualEventOnUpdateEnabled = sessionBean.isManualEventOnUpdateEnabled();
+		EkiUser user = userContext.getUser();
 		String roleDatasetCode = getRoleDatasetCode();
-		WordLexemeMeaningIdTuple wordLexemeMeaningId = cudService.createLexeme(wordId, datasetCode, null, roleDatasetCode, isManualEventOnUpdateEnabled);
+		WordLexemeMeaningIdTuple wordLexemeMeaningId = cudService.createLexeme(wordId, datasetCode, null, user, roleDatasetCode, isManualEventOnUpdateEnabled);
 		Long meaningId = wordLexemeMeaningId.getMeaningId();
 		addRedirectSuccessMessage(redirectAttributes, "termcreatemeaning.usermessage.meaning.created");
 		String redirectToMeaning = composeRedirectToMeaning(meaningId, backUri);
@@ -255,8 +257,8 @@ public class TermEditController extends AbstractMutableDataPageController {
 		boolean clearResults = requestData.isClearResults();
 
 		EkiUser user = userContext.getUser();
-		boolean isManualEventOnUpdateEnabled = sessionBean.isManualEventOnUpdateEnabled();
 		String roleDatasetCode = getRoleDatasetCode();
+		boolean isManualEventOnUpdateEnabled = sessionBean.isManualEventOnUpdateEnabled();
 		model.addAttribute("backUri", backUri);
 
 		if (clearResults || StringUtils.isAnyBlank(wordValue, datasetCode, language)) {
@@ -280,7 +282,7 @@ public class TermEditController extends AbstractMutableDataPageController {
 			wordDetails.setWordValue(wordValue);
 			wordDetails.setLanguage(language);
 			wordDetails.setDataset(datasetCode);
-			cudService.createWord(wordDetails, roleDatasetCode, isManualEventOnUpdateEnabled);
+			cudService.createWord(wordDetails, user, roleDatasetCode, isManualEventOnUpdateEnabled);
 			addRedirectSuccessMessage(redirectAttributes, "termcreateword.usermessage.word.and.lexeme.created");
 			return REDIRECT_PREF + backUri;
 		}
@@ -289,7 +291,7 @@ public class TermEditController extends AbstractMutableDataPageController {
 		if (isOtherDatasetOnlyWord) {
 			List<Word> words = lookupService.getWords(wordValue, language);
 			Long onlyWordId = words.get(0).getWordId();
-			cudService.createLexeme(onlyWordId, datasetCode, meaningId, roleDatasetCode, isManualEventOnUpdateEnabled);
+			cudService.createLexeme(onlyWordId, datasetCode, meaningId, user, roleDatasetCode, isManualEventOnUpdateEnabled);
 			addRedirectSuccessMessage(redirectAttributes, "termcreateword.usermessage.lexeme.created");
 			return REDIRECT_PREF + backUri;
 		}
@@ -310,8 +312,9 @@ public class TermEditController extends AbstractMutableDataPageController {
 			RedirectAttributes redirectAttributes) throws Exception {
 
 		boolean isManualEventOnUpdateEnabled = sessionBean.isManualEventOnUpdateEnabled();
+		EkiUser user = userContext.getUser();
 		String roleDatasetCode = getRoleDatasetCode();
-		cudService.createLexeme(wordId, datasetCode, meaningId, roleDatasetCode, isManualEventOnUpdateEnabled);
+		cudService.createLexeme(wordId, datasetCode, meaningId, user, roleDatasetCode, isManualEventOnUpdateEnabled);
 
 		addRedirectSuccessMessage(redirectAttributes, "termcreateword.usermessage.lexeme.created");
 		return REDIRECT_PREF + backUri;

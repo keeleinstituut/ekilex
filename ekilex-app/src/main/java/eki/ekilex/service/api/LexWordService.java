@@ -14,6 +14,7 @@ import eki.common.constant.ActivityEntity;
 import eki.common.constant.ActivityOwner;
 import eki.common.constant.Complexity;
 import eki.ekilex.data.ActivityLogData;
+import eki.ekilex.data.EkiUser;
 import eki.ekilex.data.SimpleWord;
 import eki.ekilex.data.Usage;
 import eki.ekilex.data.WordLexemeMeaningIdTuple;
@@ -67,6 +68,10 @@ public class LexWordService extends AbstractApiCudService {
 		final String updateFunctName = "updateLexWord";
 		final String createFunctName = "createLexWord";
 
+		EkiUser user = userContext.getUser();
+		Long userId = user.getId();
+		String userName = user.getName();
+
 		Long wordId = word.getWordId();
 		String wordValue = word.getWordValue();
 		String valueAsWord = getValueAsWord(wordValue);
@@ -109,8 +114,6 @@ public class LexWordService extends AbstractApiCudService {
 
 		if (CollectionUtils.isNotEmpty(wordForums)) {
 
-			Long userId = userContext.getUserId();
-			String userName = userContext.getUserName();
 			for (Forum wordForum : wordForums) {
 
 				Long wordForumId = wordForum.getId();
@@ -130,7 +133,7 @@ public class LexWordService extends AbstractApiCudService {
 					Long wordRelationTargetWordId = wordRelation.getTargetWordId();
 					String relationTypeCode = wordRelation.getRelationTypeCode();
 					String oppositeRelationTypeCode = wordRelation.getOppositeRelationTypeCode();
-					createWordRelation(wordId, wordRelationTargetWordId, relationTypeCode, oppositeRelationTypeCode, roleDatasetCode, MANUAL_EVENT_ON_UPDATE_ENABLED);
+					createWordRelation(wordId, wordRelationTargetWordId, relationTypeCode, oppositeRelationTypeCode, user, roleDatasetCode, MANUAL_EVENT_ON_UPDATE_ENABLED);
 				}
 			}
 		}

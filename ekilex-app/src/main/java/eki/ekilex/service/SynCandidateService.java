@@ -17,6 +17,7 @@ import org.springframework.stereotype.Component;
 import eki.common.constant.ActivityOwner;
 import eki.common.constant.Complexity;
 import eki.ekilex.constant.ResponseStatus;
+import eki.ekilex.data.EkiUser;
 import eki.ekilex.data.Response;
 import eki.ekilex.data.SourceLink;
 import eki.ekilex.data.Word;
@@ -28,7 +29,7 @@ import eki.ekilex.service.db.LookupDbService;
 import eki.ekilex.service.db.SynSearchDbService;
 
 @Component
-public class SynCandidateService extends AbstractCudService {
+public class SynCandidateService extends AbstractSynCudService {
 
 	private static final Logger logger = LoggerFactory.getLogger(SynCandidateService.class);
 
@@ -41,7 +42,7 @@ public class SynCandidateService extends AbstractCudService {
 	private SynSearchDbService synSearchDbService;
 
 	@Transactional(rollbackOn = Exception.class)
-	public void createFullSynCandidacy(SynCandidacy synCandidacy, String roleDatasetCode) throws Exception {
+	public void createFullSynCandidacy(SynCandidacy synCandidacy, EkiUser user, String roleDatasetCode) throws Exception {
 
 		String headwordValue = synCandidacy.getHeadwordValue();
 		String headwordLang = synCandidacy.getHeadwordLang();
@@ -55,8 +56,7 @@ public class SynCandidateService extends AbstractCudService {
 		for (SynCandidateWord synCandidateWord : synCandidateWords) {
 
 			BigDecimal synLexemeWeight = synCandidateWord.getWeight();
-
-			WordLexemeMeaningIdTuple synCandidateWordLexemeMeaningId = handleSynCandidateWord(synCandidateDatasetCode, synCandidateWord, roleDatasetCode);
+			WordLexemeMeaningIdTuple synCandidateWordLexemeMeaningId = handleSynCandidateWord(synCandidateDatasetCode, synCandidateWord, user, roleDatasetCode);
 
 			for (Word headword : existingHeadwords) {
 				Long headwordId = headword.getWordId();
@@ -91,7 +91,7 @@ public class SynCandidateService extends AbstractCudService {
 		return response;
 	}
 
-	private WordLexemeMeaningIdTuple handleSynCandidateWord(String synCandidateDatasetCode, SynCandidateWord synCandidateWord, String roleDatasetCode) throws Exception {
+	private WordLexemeMeaningIdTuple handleSynCandidateWord(String synCandidateDatasetCode, SynCandidateWord synCandidateWord, EkiUser user, String roleDatasetCode) throws Exception {
 
 		String synCandidateWordValue = synCandidateWord.getValue();
 		String synCandidateWordLang = synCandidateWord.getLang();
@@ -113,7 +113,7 @@ public class SynCandidateService extends AbstractCudService {
 			for (TextWithSource usage : synUsages) {
 				String usageValue = usage.getValue();
 				List<SourceLink> usageSourceLinks = usage.getSourceLinks();
-				Long usageId = createUsage(synCandidateLexemeId, usageValue, synCandidateWordLang, Complexity.DETAIL, PUBLICITY_PRIVATE, roleDatasetCode, MANUAL_EVENT_ON_UPDATE_DISABLED);
+				Long usageId = createUsage(synCandidateLexemeId, usageValue, synCandidateWordLang, Complexity.DETAIL, PUBLICITY_PRIVATE, user, roleDatasetCode, MANUAL_EVENT_ON_UPDATE_DISABLED);
 				if (CollectionUtils.isNotEmpty(usageSourceLinks)) {
 					for (SourceLink usageSourceLink : usageSourceLinks) {
 						createUsageSourceLink(synCandidateLexemeId, usageId, usageSourceLink, roleDatasetCode, MANUAL_EVENT_ON_UPDATE_DISABLED);
@@ -127,7 +127,7 @@ public class SynCandidateService extends AbstractCudService {
 				List<SourceLink> definitionSourceLinks = definition.getSourceLinks();
 				Long definitionId = createDefinition(
 						synCandidateMeaningId, definitionValue, synCandidateWordLang, synCandidateDatasetCode, Complexity.DETAIL,
-						DEFINITION_TYPE_CODE_UNDEFINED, PUBLICITY_PRIVATE, roleDatasetCode, MANUAL_EVENT_ON_UPDATE_DISABLED);
+						DEFINITION_TYPE_CODE_UNDEFINED, PUBLICITY_PRIVATE, user, roleDatasetCode, MANUAL_EVENT_ON_UPDATE_DISABLED);
 				if (CollectionUtils.isNotEmpty(definitionSourceLinks)) {
 					for (SourceLink definitionSourceLink : definitionSourceLinks) {
 						createDefinitionSourceLink(synCandidateMeaningId, definitionId, definitionSourceLink, roleDatasetCode, MANUAL_EVENT_ON_UPDATE_DISABLED);
@@ -170,16 +170,16 @@ public class SynCandidateService extends AbstractCudService {
 
 	/*
 	private void createUsageSourceLink(Long usageId, Long sourceId, Long lexemeId, String roleDatasetCode) throws Exception {
-
+	
 		ActivityLogData activityLog = activityLogService.prepareActivityLog("createUsageSourceLink", lexemeId, ActivityOwner.LEXEME, roleDatasetCode, MANUAL_EVENT_ON_UPDATE_DISABLED);
 		ReferenceType refType = ReferenceType.ANY;
 		String sourceLinkName = null;
 		Long sourceLinkId = sourceLinkDbService.createFreeformSourceLink(usageId, sourceId, refType, sourceLinkName);
 		activityLogService.createActivityLog(activityLog, sourceLinkId, ActivityEntity.USAGE_SOURCE_LINK);
 	}
-
+	
 	private void createDefinitionSourceLink(Long definitionId, Long sourceId, Long meaningId, String roleDatasetCode) throws Exception {
-
+	
 		ActivityLogData activityLog = activityLogService.prepareActivityLog("createDefinitionSourceLink", meaningId, ActivityOwner.MEANING, roleDatasetCode, MANUAL_EVENT_ON_UPDATE_DISABLED);
 		ReferenceType refType = ReferenceType.ANY;
 		String sourceLinkName = null;

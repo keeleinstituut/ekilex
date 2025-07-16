@@ -34,7 +34,7 @@ public abstract class AbstractLoaderRunner implements GlobalConstant, LoaderCons
 	private static final String USER_NAME_LOADER = "Laadur";
 
 	@Autowired
-	private UserContext userContext;
+	protected UserContext userContext;
 
 	@Autowired
 	private TextDecorationService textDecorationService;

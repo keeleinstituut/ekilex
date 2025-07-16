@@ -8,6 +8,7 @@ import static eki.ekilex.data.db.main.Tables.PUBLISHING;
 import static eki.ekilex.data.db.main.Tables.USAGE;
 
 import org.jooq.DSLContext;
+import org.jooq.impl.DSL;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -80,6 +81,19 @@ public class PublishingDbService {
 	}
 
 	public void createPublishing(eki.ekilex.data.Publishing publishing) {
+
+		boolean publishingExists = mainDb
+				.fetchExists(DSL
+						.select(PUBLISHING.ID)
+						.from(PUBLISHING)
+						.where(
+								PUBLISHING.TARGET_NAME.eq(publishing.getTargetName())
+										.and(PUBLISHING.ENTITY_NAME.eq(publishing.getEntityName()))
+										.and(PUBLISHING.ENTITY_ID.eq(publishing.getEntityId()))));
+
+		if (publishingExists) {
+			return;
+		}
 
 		mainDb
 				.insertInto(

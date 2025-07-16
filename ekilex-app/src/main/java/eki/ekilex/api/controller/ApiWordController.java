@@ -79,11 +79,12 @@ public class ApiWordController extends AbstractApiController {
 			HttpServletRequest request) {
 
 		try {
+			EkiUser user = userContext.getUser();
 			Long wordId = wordRelation.getWordId();
 			Long targetWordId = wordRelation.getTargetWordId();
 			String relationTypeCode = wordRelation.getRelationTypeCode();
 			String oppositeRelationTypeCode = wordRelation.getOppositeRelationTypeCode();
-			cudService.createWordRelation(wordId, targetWordId, relationTypeCode, oppositeRelationTypeCode, crudRoleDataset, MANUAL_EVENT_ON_UPDATE_ENABLED);
+			cudService.createWordRelation(wordId, targetWordId, relationTypeCode, oppositeRelationTypeCode, user, crudRoleDataset, MANUAL_EVENT_ON_UPDATE_ENABLED);
 			return getOpSuccessResponse(authentication, request);
 		} catch (Exception e) {
 			return getOpFailResponse(authentication, request, e);

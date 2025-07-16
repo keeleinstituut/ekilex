@@ -23,6 +23,7 @@ import eki.common.constant.RelationStatus;
 import eki.common.exception.OperationDeniedException;
 import eki.ekilex.constant.SystemConstant;
 import eki.ekilex.data.ActivityLogData;
+import eki.ekilex.data.EkiUser;
 import eki.ekilex.data.SynRelation;
 import eki.ekilex.data.TypeWordRelParam;
 import eki.ekilex.data.Word;
@@ -32,7 +33,7 @@ import eki.ekilex.data.db.main.tables.records.LexemeRecord;
 import eki.ekilex.service.db.SynSearchDbService;
 
 @Component
-public class SynCudService extends AbstractCudService implements SystemConstant {
+public class SynCudService extends AbstractSynCudService implements SystemConstant {
 
 	private static final String USER_ADDED_WORD_RELATION_NAME = "user";
 
@@ -199,11 +200,11 @@ public class SynCudService extends AbstractCudService implements SystemConstant 
 	}
 
 	@Transactional(rollbackOn = Exception.class)
-	public void createSynWordRelation(Long targetWordId, Long sourceWordId, String weightStr, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
+	public void createSynWordRelation(Long targetWordId, Long sourceWordId, String weightStr, EkiUser user, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
 
 		boolean word2DatasetLexemeExists = lookupDbService.wordLexemeExists(sourceWordId, roleDatasetCode);
 		if (!word2DatasetLexemeExists) {
-			createLexeme(sourceWordId, roleDatasetCode, null, roleDatasetCode, isManualEventOnUpdateEnabled);
+			createLexeme(sourceWordId, roleDatasetCode, null, user, roleDatasetCode, isManualEventOnUpdateEnabled);
 		}
 		ActivityLogData activityLog = activityLogService.prepareActivityLog("createSynWordRelation", targetWordId, ActivityOwner.WORD, roleDatasetCode, isManualEventOnUpdateEnabled);
 		Long createdRelationId = cudDbService.createWordRelation(targetWordId, sourceWordId, WORD_REL_TYPE_CODE_RAW, RELATION_STATUS_UNDEFINED);

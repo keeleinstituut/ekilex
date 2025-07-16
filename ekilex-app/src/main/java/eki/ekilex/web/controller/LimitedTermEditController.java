@@ -49,6 +49,7 @@ public class LimitedTermEditController extends AbstractMutableDataPageController
 	@PostMapping(LIM_TERM_CREATE_WORD_URI)
 	public String createWord(WordLexemeMeaningDetails wordDetails, @ModelAttribute(name = SESSION_BEAN) SessionBean sessionBean) throws Exception {
 
+		EkiUser user = userContext.getUser();
 		String roleDatasetCode = getRoleDatasetCode();
 		valueUtil.trimAndCleanAndRemoveHtml(wordDetails);
 
@@ -59,7 +60,7 @@ public class LimitedTermEditController extends AbstractMutableDataPageController
 			boolean isManualEventOnUpdateEnabled = sessionBean.isManualEventOnUpdateEnabled();
 			sessionBean.setRecentLanguage(language);
 			searchUri = searchHelper.composeSearchUri(limitedDatasets, wordValue);
-			cudService.createWord(wordDetails, roleDatasetCode, isManualEventOnUpdateEnabled);
+			cudService.createWord(wordDetails, user, roleDatasetCode, isManualEventOnUpdateEnabled);
 		}
 		return REDIRECT_PREF + LIM_TERM_SEARCH_URI + searchUri;
 	}

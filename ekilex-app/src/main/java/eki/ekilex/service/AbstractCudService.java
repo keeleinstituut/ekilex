@@ -1,7 +1,6 @@
 package eki.ekilex.service;
 
-import java.util.List;
-import java.util.stream.Collectors;
+import java.time.LocalDateTime;
 
 import javax.transaction.Transactional;
 
@@ -11,21 +10,23 @@ import org.springframework.beans.factory.annotation.Autowired;
 import eki.common.constant.ActivityEntity;
 import eki.common.constant.ActivityOwner;
 import eki.common.constant.Complexity;
+import eki.common.constant.PublishingConstant;
 import eki.common.constant.WordRelationGroupType;
 import eki.common.service.TextDecorationService;
 import eki.ekilex.data.ActivityLogData;
-import eki.ekilex.data.Freeform;
+import eki.ekilex.data.EkiUser;
 import eki.ekilex.data.Note;
+import eki.ekilex.data.Publishing;
 import eki.ekilex.data.SourceLink;
 import eki.ekilex.data.Usage;
 import eki.ekilex.data.WordLexemeMeaningIdTuple;
-import eki.ekilex.data.WordRelation;
 import eki.ekilex.service.db.CudDbService;
 import eki.ekilex.service.db.LookupDbService;
+import eki.ekilex.service.db.PublishingDbService;
 import eki.ekilex.service.db.SourceLinkDbService;
 import eki.ekilex.service.db.TagDbService;
 
-public abstract class AbstractCudService extends AbstractService {
+public abstract class AbstractCudService extends AbstractService implements PublishingConstant {
 
 	@Autowired
 	protected TextDecorationService textDecorationService;
@@ -42,21 +43,25 @@ public abstract class AbstractCudService extends AbstractService {
 	@Autowired
 	protected TagDbService tagDbService;
 
+	@Autowired
+	private PublishingDbService publishingDbService;
+
 	@Transactional(rollbackOn = Exception.class)
 	public Long createDefinition(
 			Long meaningId, String valuePrese, String languageCode, String datasetCode, Complexity complexity, String typeCode, boolean isPublic,
-			String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
+			EkiUser user, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
 
 		String value = textDecorationService.removeEkiElementMarkup(valuePrese);
 		ActivityLogData activityLog = activityLogService.prepareActivityLog("createDefinition", meaningId, ActivityOwner.MEANING, roleDatasetCode, isManualEventOnUpdateEnabled);
 		Long definitionId = cudDbService.createDefinition(meaningId, value, valuePrese, languageCode, typeCode, complexity, isPublic);
 		cudDbService.createDefinitionDataset(definitionId, datasetCode);
+		createPublishing(user, roleDatasetCode, TARGET_NAME_WW_UNIF, ENTITY_NAME_DEFINITION, definitionId);
 		activityLogService.createActivityLog(activityLog, definitionId, ActivityEntity.DEFINITION);
 		return definitionId;
 	}
 
 	@Transactional(rollbackOn = Exception.class)
-	public WordLexemeMeaningIdTuple createLexeme(Long wordId, String datasetCode, Long meaningId, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
+	public WordLexemeMeaningIdTuple createLexeme(Long wordId, String datasetCode, Long meaningId, EkiUser user, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
 
 		int currentLexemesMaxLevel1 = lookupDbService.getWordLexemesMaxLevel1(wordId, datasetCode);
 		int lexemeLevel1 = currentLexemesMaxLevel1 + 1;
@@ -67,6 +72,7 @@ public abstract class AbstractCudService extends AbstractService {
 			return wordLexemeMeaningId;
 		}
 		tagDbService.createLexemeAutomaticTags(lexemeId);
+		createPublishing(user, roleDatasetCode, TARGET_NAME_WW_UNIF, ENTITY_NAME_LEXEME, lexemeId);
 		activityLogService.createActivityLog(activityLog, lexemeId, ActivityEntity.LEXEME);
 
 		return wordLexemeMeaningId;
@@ -81,7 +87,7 @@ public abstract class AbstractCudService extends AbstractService {
 	}
 
 	@Transactional(rollbackOn = Exception.class)
-	public Long createUsage(Long lexemeId, String valuePrese, String lang, Complexity complexity, boolean isPublic, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
+	public Long createUsage(Long lexemeId, String valuePrese, String lang, Complexity complexity, boolean isPublic, EkiUser user, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
 
 		Usage usage = new Usage();
 		usage.setValuePrese(valuePrese);
@@ -89,28 +95,30 @@ public abstract class AbstractCudService extends AbstractService {
 		usage.setComplexity(complexity);
 		usage.setPublic(isPublic);
 
-		return createUsage(lexemeId, usage, roleDatasetCode, isManualEventOnUpdateEnabled);
+		return createUsage(lexemeId, usage, user, roleDatasetCode, isManualEventOnUpdateEnabled);
 	}
 
 	@Transactional(rollbackOn = Exception.class)
-	public Long createUsage(Long lexemeId, Usage usage, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
+	public Long createUsage(Long lexemeId, Usage usage, EkiUser user, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
 
 		setValueAndPrese(usage);
 		applyCreateUpdate(usage);
 		ActivityLogData activityLog = activityLogService.prepareActivityLog("createUsage", lexemeId, ActivityOwner.LEXEME, roleDatasetCode, isManualEventOnUpdateEnabled);
 		Long usageId = cudDbService.createUsage(lexemeId, usage);
+		createPublishing(user, roleDatasetCode, TARGET_NAME_WW_UNIF, ENTITY_NAME_USAGE, usageId);
 		activityLogService.createActivityLog(activityLog, usageId, ActivityEntity.USAGE);
 		return usageId;
 	}
 
 	@Transactional(rollbackOn = Exception.class)
-	public void createWordRelation(Long wordId, Long targetWordId, String relationTypeCode, String oppositeRelationTypeCode, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
+	public void createWordRelation(Long wordId, Long targetWordId, String relationTypeCode, String oppositeRelationTypeCode, EkiUser user, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
 
 		ActivityLogData activityLog;
 		WordRelationGroupType wordRelationGroupType = WordRelationGroupType.toRelationGroupType(relationTypeCode);
 		if (wordRelationGroupType == null) {
 			activityLog = activityLogService.prepareActivityLog("createWordRelation", wordId, ActivityOwner.WORD, roleDatasetCode, isManualEventOnUpdateEnabled);
 			Long relationId = cudDbService.createWordRelation(wordId, targetWordId, relationTypeCode, null);
+			createPublishing(user, roleDatasetCode, TARGET_NAME_WW_UNIF, ENTITY_NAME_WORD_RELATION, relationId);
 			activityLogService.createActivityLog(activityLog, relationId, ActivityEntity.WORD_RELATION);
 			if (StringUtils.isNotEmpty(oppositeRelationTypeCode)) {
 				boolean oppositeRelationExists = lookupDbService.wordRelationExists(targetWordId, wordId, oppositeRelationTypeCode);
@@ -206,32 +214,22 @@ public abstract class AbstractCudService extends AbstractService {
 		return note;
 	}
 
-	protected Long createLexemeFreeform(ActivityEntity activityEntity, Long lexemeId, Freeform freeform, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
+	protected void createPublishing(EkiUser user, String roleDatasetCode, String targetName, String entityName, Long entityId) {
 
-		String userName = userContext.getUserName();
-		ActivityLogData activityLog = activityLogService.prepareActivityLog("createLexemeFreeform", lexemeId, ActivityOwner.LEXEME, roleDatasetCode, isManualEventOnUpdateEnabled);
-		Long freeformId = cudDbService.createLexemeFreeform(lexemeId, freeform, userName);
-		activityLogService.createActivityLog(activityLog, freeformId, activityEntity);
-		return freeformId;
-	}
-
-	protected void moveCreatedWordRelationToFirst(Long wordId, Long relationId, String relTypeCode) {
-
-		List<WordRelation> existingRelations = lookupDbService.getWordRelations(wordId, relTypeCode);
-		if (existingRelations.size() > 1) {
-
-			WordRelation firstRelation = existingRelations.get(0);
-			List<Long> existingOrderByValues = existingRelations.stream().map(WordRelation::getOrderBy).collect(Collectors.toList());
-
-			cudDbService.updateWordRelationOrderBy(relationId, firstRelation.getOrderBy());
-			existingRelations.remove(existingRelations.size() - 1);
-			existingOrderByValues.remove(0);
-
-			int relIdx = 0;
-			for (WordRelation relation : existingRelations) {
-				cudDbService.updateWordRelationOrderBy(relation.getId(), existingOrderByValues.get(relIdx));
-				relIdx++;
-			}
+		if (!StringUtils.equals(DATASET_EKI, roleDatasetCode)) {
+			return;
 		}
+
+		String userName = user.getName();
+		LocalDateTime now = LocalDateTime.now();
+
+		Publishing publishing = new Publishing();
+		publishing.setEventBy(userName);
+		publishing.setEventOn(now);
+		publishing.setTargetName(targetName);
+		publishing.setEntityName(entityName);
+		publishing.setEntityId(entityId);
+
+		publishingDbService.createPublishing(publishing);
 	}
 }
