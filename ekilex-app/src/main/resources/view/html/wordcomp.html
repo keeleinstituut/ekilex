@@ -303,7 +303,7 @@
   <th:block th:fragment="word_sec_relation">
     <div class="ekiAccordion__instance">
       <div class="ekiAccordion__title">
-        <span class="badge badge-data-exists" th:if="${details.wordRelationDetails.groupRelationExists}">•</span>
+        <span th:if="${details.wordRelationDetails.groupRelationExists}" class="badge badge-data-exists">•</span>
         <span th:text="#{lex.word.relation}">Sõna seos</span>
         <button type="button" class="ekiAccordion__add"
                 th:title="#{common.add.new}" data-toggle="modal"
@@ -348,41 +348,14 @@
           </table>
         </div>
         <div th:each="relationGroup,relGroupIter : ${details.wordRelationDetails.secondaryWordRelationGroups}">
-          <table class="orderable" data-op-code="word_relation" th:unless="${#lists.isEmpty(relationGroup.members)}">
-            <tr th:each="relation, itemIter : ${relationGroup.members}" th:data-id="${relation.id}" th:data-orderby="${relation.orderBy}">
-              <td class="action-column">
-                <th:block th:replace="common :: ordering_buttons(${itemIter})" sec:authorize="#vars.details.word.crudGrant"></th:block>
-              </td>
-              <td class="invisible-buttons">
-                <button type="button"
-                        class="btn btn-link btn-text-wrap btn-xs"
-                        th:data-id="${relation.wordId}"
-                        data-plugin="contextmenu, loadDetailsPlugin"
-                        data-contextmenu:compare="Ava uues paneelis"
-                        data-behaviour="replace"
-                        name="details-btn">
-                  <span th:utext="|${@viewUtil.getWordValueMarkup(relation)} (${@viewUtil.getLangIso2(relation.wordLang)})|"></span>
-                </button>
-                <button type="button" class="btn badge badge-warning"
-                        th:data-id="${relation.id}"
-                        data-op-code="word_relation"
-                        data-toggle="delete-confirm"
-                        data-placement="left"
-                        sec:authorize="#vars.details.word.crudGrant">
-                  <i class="fa fa-remove" aria-hidden="true"></i>
-                </button>
-              </td>
-              <td>
-                <span th:text="${relation.relTypeLabel}"></span>
-              </td>
-            </tr>
-          </table>
+          <div th:text="${relationGroup.groupTypeLabel}" class="ml-2"></div>
+          <th:block th:replace=" :: word_relation_group_list"></th:block>
         </div>
       </div>
     </div>
   </th:block>
   <th:block th:fragment="word_prim_relation">
-    <div class="ekiAccordion__instance" th:each="relationGroup,relGroupIter : ${details.wordRelationDetails.primaryWordRelationGroups}">
+    <div th:each="relationGroup,relGroupIter : ${details.wordRelationDetails.primaryWordRelationGroups}" class="ekiAccordion__instance">
       <div th:replace="lexdialog :: add_primary_word_relation_dlg"></div>
       <div class="ekiAccordion__title">
         <span class="badge badge-data-exists" th:unless="${#lists.isEmpty(relationGroup.members)}">•</span>
@@ -398,56 +371,62 @@
         <div th:if="${#lists.isEmpty(relationGroup.members)}" th:text="#{common.no.content}">
           Sisu puudub...
         </div>
-        <ul
-          th:unless="${#lists.isEmpty(relationGroup.members)}"
-          class="sidebar-actions"
-          data-plugin="sorter"
-          data-sorter:type="relations"
-          data-sorter:handle=".sorter-handle">
-          <li 
-            th:each="relation, itemIter : ${relationGroup.members}"
-            th:data-id="${relation.id}"
-            th:data-orderby="${relation.orderBy}">
-            <div class="sidebar-actions__item">
-              <span sec:authorize="#vars.details.word.crudGrant" class="sorter-handle"><i class="fa fa-ellipsis-v"></i></span>
-              <button type="button"
-                class="btn btn-link btn-text-wrap btn-xs"
-                th:data-id="${relation.wordId}"
-                data-plugin="contextmenu, loadDetailsPlugin"
-                data-contextmenu:compare="Ava uues paneelis"
-                data-behaviour="replace"
-                name="details-btn">
-                <span th:utext="${@viewUtil.getWordValueMarkup(relation) + ' (' + @viewUtil.getLangIso2(relation.wordLang) + ')'}"></span>
-              </button>
-              <div class="sidebar-actions__buttons">
-                <button type="button" class="btn badge badge-warning"
-                  th:data-id="${relation.id}"
-                  data-op-code="word_relation"
-                  data-toggle="delete-confirm"
-                  data-placement="left"
-                  sec:authorize="#vars.details.word.crudGrant">
-                  <i class="fa fa-remove" aria-hidden="true"></i>
-                </button>
-              </div>
-              <th:block
-                sec:authorize="#vars.details.word.crudGrant"
-                th:replace="components :: entity_publishing(
-                  entityId = ${relation.id},
-                  entityName = 'word_relation',
-                  isPublic = ${relation.isPublic},
-                  isWwUnif = ${relation.wwUnif},
-                  isWwLite = ${relation.wwLite},
-                  isWwOd = ${relation.wwOd},
-                  replaceSectionId = ${wordRelationSectionId},
-                  replaceOwnerId = ${wordId},
-                  initAccordion = true,
-                  withPublicSwitch = false)">
-              </th:block>
-            </div>
-          </li>
-        </ul>
+        <th:block th:replace=" :: word_relation_group_list"></th:block>
       </div>
     </div>
+  </th:block>
+  <th:block th:fragment="word_relation_group_list">
+    <ul
+      th:unless="${#lists.isEmpty(relationGroup.members)}"
+      class="sidebar-actions"
+      data-plugin="sorter"
+      data-sorter:type="relations"
+      data-sorter:handle=".sorter-handle">
+      <li 
+        th:each="relation, itemIter : ${relationGroup.members}"
+        th:data-id="${relation.id}"
+        th:data-orderby="${relation.orderBy}">
+        <div class="sidebar-actions__item">
+          <span sec:authorize="#vars.details.word.crudGrant" class="sorter-handle">
+            <i class="fa fa-ellipsis-v"></i>
+          </span>
+          <button type="button"
+            class="btn btn-link btn-text-wrap btn-xs"
+            th:data-id="${relation.wordId}"
+            data-plugin="contextmenu, loadDetailsPlugin"
+            data-contextmenu:compare="Ava uues paneelis"
+            data-behaviour="replace"
+            name="details-btn">
+            <span th:utext="${@viewUtil.getWordValueMarkup(relation)}"></span>
+            <span th:utext="|(${@viewUtil.getLangIso2(relation.wordLang)})|"></span>
+          </button>
+          <div class="sidebar-actions__buttons">
+            <button type="button" class="btn badge badge-warning"
+              th:data-id="${relation.id}"
+              data-op-code="word_relation"
+              data-toggle="delete-confirm"
+              data-placement="left"
+              sec:authorize="#vars.details.word.crudGrant">
+              <i class="fa fa-remove" aria-hidden="true"></i>
+            </button>
+          </div>
+          <th:block
+            sec:authorize="#vars.details.word.crudGrant"
+            th:replace="components :: entity_publishing(
+              entityId = ${relation.id},
+              entityName = 'word_relation',
+              isPublic = ${relation.isPublic},
+              isWwUnif = ${relation.wwUnif},
+              isWwLite = ${relation.wwLite},
+              isWwOd = ${relation.wwOd},
+              replaceSectionId = ${wordRelationSectionId},
+              replaceOwnerId = ${wordId},
+              initAccordion = true,
+              withPublicSwitch = false)">
+          </th:block>
+        </div>
+      </li>
+    </ul>
   </th:block>
   <th:block th:fragment="word_etym">
     <div class="ekiAccordion__instance" th:unless="${#lists.isEmpty(details.word.etymology)}">
