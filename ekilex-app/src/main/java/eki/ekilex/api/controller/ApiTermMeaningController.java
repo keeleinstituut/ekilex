@@ -56,6 +56,7 @@ public class ApiTermMeaningController extends AbstractApiController {
 	@ResponseBody
 	public ApiResponse saveTermMeaning(
 			@RequestParam("crudRoleDataset") String crudRoleDataset,
+			@RequestParam(value = "isManualEventOnUpdateEnabled", required = false, defaultValue = "true") boolean isManualEventOnUpdateEnabled,
 			@RequestBody TermMeaning termMeaning,
 			Authentication authentication,
 			HttpServletRequest request) {
@@ -64,7 +65,7 @@ public class ApiTermMeaningController extends AbstractApiController {
 			if (CollectionUtils.isEmpty(termMeaning.getWords())) {
 				return getOpFailResponse(authentication, request, "Missing words");
 			}
-			Long meaningId = termMeaningService.saveTermMeaning(termMeaning, crudRoleDataset);
+			Long meaningId = termMeaningService.saveTermMeaning(termMeaning, crudRoleDataset, isManualEventOnUpdateEnabled);
 			return getOpSuccessResponse(authentication, request, "MEANING", meaningId);
 		} catch (Exception e) {
 			return getOpFailResponse(authentication, request, e);

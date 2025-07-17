@@ -74,7 +74,7 @@ public class TermMeaningService extends AbstractApiCudService implements Activit
 	}
 
 	@Transactional(rollbackOn = Exception.class)
-	public Long saveTermMeaning(TermMeaning termMeaning, String roleDatasetCode) throws Exception {
+	public Long saveTermMeaning(TermMeaning termMeaning, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
 
 		final String updateFunctName = "updateTermMeaning";
 		final String createFunctName = "createTermMeaning";
@@ -141,7 +141,7 @@ public class TermMeaningService extends AbstractApiCudService implements Activit
 						} else {
 							WordLexemeMeaningIdTuple idTuple = cudDbService.createLexemeWithCreateOrSelectMeaning(wordId, datasetCode, meaningId, 1, lexemeValueStateCode, isPublic);
 							lexemeId = idTuple.getLexemeId();
-							activityLogService.createActivityLog(createFunctName, lexemeId, ActivityOwner.LEXEME, roleDatasetCode, MANUAL_EVENT_ON_UPDATE_ENABLED);
+							activityLogService.createActivityLog(createFunctName, lexemeId, ActivityOwner.LEXEME, roleDatasetCode, isManualEventOnUpdateEnabled);
 						}
 					}
 				} else {
@@ -154,8 +154,8 @@ public class TermMeaningService extends AbstractApiCudService implements Activit
 						wordId = cudDbService.createWord(wordValue, wordValuePrese, valueAsWord, wordLang, synWordHomNr);
 						WordLexemeMeaningIdTuple idTuple = cudDbService.createLexemeWithCreateOrSelectMeaning(wordId, datasetCode, meaningId, 1, lexemeValueStateCode, isPublic);
 						lexemeId = idTuple.getLexemeId();
-						activityLogService.createActivityLog(createFunctName, wordId, ActivityOwner.WORD, roleDatasetCode, MANUAL_EVENT_ON_UPDATE_ENABLED);
-						activityLogService.createActivityLog(createFunctName, lexemeId, ActivityOwner.LEXEME, roleDatasetCode, MANUAL_EVENT_ON_UPDATE_ENABLED);
+						activityLogService.createActivityLog(createFunctName, wordId, ActivityOwner.WORD, roleDatasetCode, isManualEventOnUpdateEnabled);
+						activityLogService.createActivityLog(createFunctName, lexemeId, ActivityOwner.LEXEME, roleDatasetCode, isManualEventOnUpdateEnabled);
 					} else {
 						if (existingWordIds.contains(wordId)) {
 							lexeme = termMeaningDbService.getLexeme(wordId, meaningId, datasetCode);
@@ -163,9 +163,9 @@ public class TermMeaningService extends AbstractApiCudService implements Activit
 						} else {
 							WordLexemeMeaningIdTuple idTuple = cudDbService.createLexemeWithCreateOrSelectMeaning(wordId, datasetCode, meaningId, 1, lexemeValueStateCode, isPublic);
 							lexemeId = idTuple.getLexemeId();
-							activityLogService.createActivityLog(createFunctName, lexemeId, ActivityOwner.LEXEME, roleDatasetCode, MANUAL_EVENT_ON_UPDATE_ENABLED);
+							activityLogService.createActivityLog(createFunctName, lexemeId, ActivityOwner.LEXEME, roleDatasetCode, isManualEventOnUpdateEnabled);
 						}
-						activityLog = activityLogService.prepareActivityLog(updateFunctName, wordId, ActivityOwner.WORD, roleDatasetCode, MANUAL_EVENT_ON_UPDATE_ENABLED);
+						activityLog = activityLogService.prepareActivityLog(updateFunctName, wordId, ActivityOwner.WORD, roleDatasetCode, isManualEventOnUpdateEnabled);
 						cudDbService.updateWordValueAndAsWordAndLang(wordId, wordValue, wordValuePrese, valueAsWord, wordLang);
 						activityLogService.createActivityLog(activityLog, wordId, ActivityEntity.WORD);
 					}
@@ -176,7 +176,7 @@ public class TermMeaningService extends AbstractApiCudService implements Activit
 					List<String> existingWordTypeCodes = lookupDbService.getWordTypeCodes(wordId);
 					for (String wordTypeCode : wordTypeCodes) {
 						if (!existingWordTypeCodes.contains(wordTypeCode)) {
-							activityLog = activityLogService.prepareActivityLog("createWordType", wordId, ActivityOwner.WORD, roleDatasetCode, MANUAL_EVENT_ON_UPDATE_ENABLED);
+							activityLog = activityLogService.prepareActivityLog("createWordType", wordId, ActivityOwner.WORD, roleDatasetCode, isManualEventOnUpdateEnabled);
 							Long wordTypeId = cudDbService.createWordType(wordId, wordTypeCode);
 							activityLogService.createActivityLog(activityLog, wordTypeId, ActivityEntity.WORD_TYPE);
 						}
@@ -190,7 +190,7 @@ public class TermMeaningService extends AbstractApiCudService implements Activit
 					isUpdateLexeme = !StringUtils.equals(existingValueStateCode, lexemeValueStateCode) || (existingIsPublic != isPublic);
 				}
 				if (isUpdateLexeme) {
-					activityLog = activityLogService.prepareActivityLog(updateFunctName, lexemeId, ActivityOwner.LEXEME, roleDatasetCode, MANUAL_EVENT_ON_UPDATE_ENABLED);
+					activityLog = activityLogService.prepareActivityLog(updateFunctName, lexemeId, ActivityOwner.LEXEME, roleDatasetCode, isManualEventOnUpdateEnabled);
 					cudDbService.updateLexemeValueState(lexemeId, lexemeValueStateCode);
 					cudDbService.updateLexemePublicity(lexemeId, isPublic);
 					activityLogService.createActivityLog(activityLog, lexemeId, ActivityEntity.LEXEME);
@@ -206,11 +206,11 @@ public class TermMeaningService extends AbstractApiCudService implements Activit
 
 						if (lexemeNoteId == null) {
 							applyCreateUpdate(lexemeNote);
-							activityLog = activityLogService.prepareActivityLog("createLexemeNote", lexemeId, ActivityOwner.LEXEME, roleDatasetCode, MANUAL_EVENT_ON_UPDATE_ENABLED);
+							activityLog = activityLogService.prepareActivityLog("createLexemeNote", lexemeId, ActivityOwner.LEXEME, roleDatasetCode, isManualEventOnUpdateEnabled);
 							lexemeNoteId = cudDbService.createLexemeNote(lexemeId, lexemeNote);
 						} else {
 							applyUpdate(lexemeNote);
-							activityLog = activityLogService.prepareActivityLog("updateLexemeNote", lexemeId, ActivityOwner.LEXEME, roleDatasetCode, MANUAL_EVENT_ON_UPDATE_ENABLED);
+							activityLog = activityLogService.prepareActivityLog("updateLexemeNote", lexemeId, ActivityOwner.LEXEME, roleDatasetCode, isManualEventOnUpdateEnabled);
 							cudDbService.updateLexemeNote(lexemeNoteId, lexemeNote);
 						}
 						activityLogService.createActivityLog(activityLog, lexemeNoteId, ActivityEntity.LEXEME_NOTE);
@@ -222,9 +222,9 @@ public class TermMeaningService extends AbstractApiCudService implements Activit
 								Long sourceLinkId = lexemeNoteSourceLink.getId();
 								String sourceLinkName = lexemeNoteSourceLink.getName();
 								if (sourceLinkId == null) {
-									createLexemeNoteSourceLink(lexemeId, lexemeNoteId, lexemeNoteSourceLink, roleDatasetCode, MANUAL_EVENT_ON_UPDATE_ENABLED);
+									createLexemeNoteSourceLink(lexemeId, lexemeNoteId, lexemeNoteSourceLink, roleDatasetCode, isManualEventOnUpdateEnabled);
 								} else {
-									updateLexemeNoteSourceLink(lexemeId, sourceLinkId, sourceLinkName, roleDatasetCode, MANUAL_EVENT_ON_UPDATE_ENABLED);
+									updateLexemeNoteSourceLink(lexemeId, sourceLinkId, sourceLinkName, roleDatasetCode, isManualEventOnUpdateEnabled);
 								}
 							}
 						}
@@ -237,7 +237,7 @@ public class TermMeaningService extends AbstractApiCudService implements Activit
 
 						boolean lexemeTagExists = lookupDbService.lexemeTagExists(lexemeId, tagName);
 						if (!lexemeTagExists) {
-							activityLog = activityLogService.prepareActivityLog("createLexemeTag", lexemeId, ActivityOwner.LEXEME, roleDatasetCode, MANUAL_EVENT_ON_UPDATE_ENABLED);
+							activityLog = activityLogService.prepareActivityLog("createLexemeTag", lexemeId, ActivityOwner.LEXEME, roleDatasetCode, isManualEventOnUpdateEnabled);
 							Long lexemeTagId = cudDbService.createLexemeTag(lexemeId, tagName);
 							activityLogService.createActivityLog(activityLog, lexemeTagId, ActivityEntity.TAG);
 						}
@@ -270,7 +270,7 @@ public class TermMeaningService extends AbstractApiCudService implements Activit
 		}
 
 		if (isMeaningCreate) {
-			activityLogService.createActivityLog(createFunctName, meaningId, ActivityOwner.MEANING, roleDatasetCode, MANUAL_EVENT_ON_UPDATE_ENABLED);
+			activityLogService.createActivityLog(createFunctName, meaningId, ActivityOwner.MEANING, roleDatasetCode, isManualEventOnUpdateEnabled);
 		}
 
 		if (CollectionUtils.isNotEmpty(domains)) {
@@ -289,7 +289,7 @@ public class TermMeaningService extends AbstractApiCudService implements Activit
 				classifier.setCode(domainCode);
 				classifier.setOrigin(domainOrigin);
 
-				activityLog = activityLogService.prepareActivityLog("createMeaningDomain", meaningId, ActivityOwner.MEANING, roleDatasetCode, MANUAL_EVENT_ON_UPDATE_ENABLED);
+				activityLog = activityLogService.prepareActivityLog("createMeaningDomain", meaningId, ActivityOwner.MEANING, roleDatasetCode, isManualEventOnUpdateEnabled);
 				Long meaningDomainId = cudDbService.createMeaningDomain(meaningId, classifier);
 				activityLogService.createActivityLog(activityLog, meaningDomainId, ActivityEntity.DOMAIN);
 			}
@@ -305,11 +305,11 @@ public class TermMeaningService extends AbstractApiCudService implements Activit
 
 				if (meaningNoteId == null) {
 					applyCreateUpdate(meaningNote);
-					activityLog = activityLogService.prepareActivityLog("createMeaningNote", meaningId, ActivityOwner.MEANING, roleDatasetCode, MANUAL_EVENT_ON_UPDATE_ENABLED);
+					activityLog = activityLogService.prepareActivityLog("createMeaningNote", meaningId, ActivityOwner.MEANING, roleDatasetCode, isManualEventOnUpdateEnabled);
 					meaningNoteId = cudDbService.createMeaningNote(meaningId, meaningNote);
 				} else {
 					applyUpdate(meaningNote);
-					activityLog = activityLogService.prepareActivityLog("updateMeaningNote", meaningId, ActivityOwner.MEANING, roleDatasetCode, MANUAL_EVENT_ON_UPDATE_ENABLED);
+					activityLog = activityLogService.prepareActivityLog("updateMeaningNote", meaningId, ActivityOwner.MEANING, roleDatasetCode, isManualEventOnUpdateEnabled);
 					cudDbService.updateMeaningNote(meaningNoteId, meaningNote);
 				}
 				activityLogService.createActivityLog(activityLog, meaningNoteId, ActivityEntity.MEANING_NOTE);
@@ -321,9 +321,9 @@ public class TermMeaningService extends AbstractApiCudService implements Activit
 						Long sourceLinkId = meaningNoteSourceLink.getId();
 						String sourceLinkName = meaningNoteSourceLink.getName();
 						if (sourceLinkId == null) {
-							createMeaningNoteSourceLink(meaningId, meaningNoteId, meaningNoteSourceLink, roleDatasetCode, MANUAL_EVENT_ON_UPDATE_ENABLED);
+							createMeaningNoteSourceLink(meaningId, meaningNoteId, meaningNoteSourceLink, roleDatasetCode, isManualEventOnUpdateEnabled);
 						} else {
-							updateMeaningNoteSourceLink(meaningId, sourceLinkId, sourceLinkName, roleDatasetCode, MANUAL_EVENT_ON_UPDATE_ENABLED);
+							updateMeaningNoteSourceLink(meaningId, sourceLinkId, sourceLinkName, roleDatasetCode, isManualEventOnUpdateEnabled);
 						}
 					}
 				}
@@ -354,7 +354,7 @@ public class TermMeaningService extends AbstractApiCudService implements Activit
 				}
 				boolean meaningTagExists = lookupDbService.meaningTagExists(meaningId, tagName);
 				if (!meaningTagExists) {
-					activityLog = activityLogService.prepareActivityLog("createMeaningTag", meaningId, ActivityOwner.MEANING, roleDatasetCode, MANUAL_EVENT_ON_UPDATE_ENABLED);
+					activityLog = activityLogService.prepareActivityLog("createMeaningTag", meaningId, ActivityOwner.MEANING, roleDatasetCode, isManualEventOnUpdateEnabled);
 					Long meaningTagId = cudDbService.createMeaningTag(meaningId, tagName);
 					activityLogService.createActivityLog(activityLog, meaningTagId, ActivityEntity.TAG);
 				}
@@ -371,7 +371,7 @@ public class TermMeaningService extends AbstractApiCudService implements Activit
 					freeform.setValue(conceptId);
 					freeform.setValuePrese(conceptId);
 					freeform.setLang(null);
-					activityLog = activityLogService.prepareActivityLog("createMeaningFreeform", meaningId, ActivityOwner.MEANING, roleDatasetCode, MANUAL_EVENT_ON_UPDATE_ENABLED);
+					activityLog = activityLogService.prepareActivityLog("createMeaningFreeform", meaningId, ActivityOwner.MEANING, roleDatasetCode, isManualEventOnUpdateEnabled);
 					Long meaningFreeformId = cudDbService.createMeaningFreeform(meaningId, freeform, userName);
 					activityLogService.createActivityLog(activityLog, meaningFreeformId, ActivityEntity.FREEFORM);
 				}
