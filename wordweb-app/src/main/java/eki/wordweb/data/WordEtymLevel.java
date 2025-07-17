@@ -17,8 +17,6 @@ public class WordEtymLevel extends AbstractDataObject {
 
 	private Classifier language;
 
-	private List<String> meaningWords;
-
 	private String etymologyTypeCode;
 
 	private Classifier etymologyType;
@@ -30,6 +28,8 @@ public class WordEtymLevel extends AbstractDataObject {
 	private boolean compound;
 
 	private String comment;
+
+	private List<String> meaningWordValues;
 
 	private List<String> sourceLinkValues;
 
@@ -65,14 +65,6 @@ public class WordEtymLevel extends AbstractDataObject {
 
 	public void setLanguage(Classifier language) {
 		this.language = language;
-	}
-
-	public List<String> getMeaningWords() {
-		return meaningWords;
-	}
-
-	public void setMeaningWords(List<String> meaningWords) {
-		this.meaningWords = meaningWords;
 	}
 
 	public String getEtymologyTypeCode() {
@@ -121,6 +113,14 @@ public class WordEtymLevel extends AbstractDataObject {
 
 	public void setComment(String comment) {
 		this.comment = comment;
+	}
+
+	public List<String> getMeaningWordValues() {
+		return meaningWordValues;
+	}
+
+	public void setMeaningWordValues(List<String> meaningWordValues) {
+		this.meaningWordValues = meaningWordValues;
 	}
 
 	public List<String> getSourceLinkValues() {

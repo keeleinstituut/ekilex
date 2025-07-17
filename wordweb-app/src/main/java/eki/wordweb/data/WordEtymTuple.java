@@ -21,8 +21,6 @@ public class WordEtymTuple extends AbstractDataObject {
 
 	private Classifier wordEtymWordLanguage;
 
-	private List<String> wordEtymWordMeaningWordValues;
-
 	private String etymologyTypeCode;
 
 	private Classifier etymologyType;
@@ -32,6 +30,8 @@ public class WordEtymTuple extends AbstractDataObject {
 	private String wordEtymComment;
 
 	private boolean wordEtymIsQuestionable;
+
+	private List<String> wordEtymMeaningWordValues;
 
 	private List<WordEtymRelation> wordEtymRelations;
 
@@ -85,14 +85,6 @@ public class WordEtymTuple extends AbstractDataObject {
 		this.wordEtymWordLanguage = wordEtymWordLanguage;
 	}
 
-	public List<String> getWordEtymWordMeaningWordValues() {
-		return wordEtymWordMeaningWordValues;
-	}
-
-	public void setWordEtymWordMeaningWordValues(List<String> wordEtymWordMeaningWordValues) {
-		this.wordEtymWordMeaningWordValues = wordEtymWordMeaningWordValues;
-	}
-
 	public String getEtymologyTypeCode() {
 		return etymologyTypeCode;
 	}
@@ -131,6 +123,14 @@ public class WordEtymTuple extends AbstractDataObject {
 
 	public void setWordEtymIsQuestionable(boolean wordEtymIsQuestionable) {
 		this.wordEtymIsQuestionable = wordEtymIsQuestionable;
+	}
+
+	public List<String> getWordEtymMeaningWordValues() {
+		return wordEtymMeaningWordValues;
+	}
+
+	public void setWordEtymMeaningWordValues(List<String> wordEtymMeaningWordValues) {
+		this.wordEtymMeaningWordValues = wordEtymMeaningWordValues;
 	}
 
 	public List<WordEtymRelation> getWordEtymRelations() {

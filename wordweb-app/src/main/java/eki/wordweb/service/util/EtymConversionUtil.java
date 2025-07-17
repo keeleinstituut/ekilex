@@ -91,13 +91,13 @@ public class EtymConversionUtil {
 		wordEtymLevel.setWordValue(tuple.getWordEtymWordValue());
 		wordEtymLevel.setLang(tuple.getWordEtymWordLang());
 		wordEtymLevel.setLanguage(tuple.getWordEtymWordLanguage());
-		wordEtymLevel.setMeaningWords(tuple.getWordEtymWordMeaningWordValues());
 		wordEtymLevel.setEtymologyTypeCode(tuple.getEtymologyTypeCode());
 		wordEtymLevel.setEtymologyType(tuple.getEtymologyType());
 		wordEtymLevel.setEtymYear(tuple.getEtymologyYear());
 		wordEtymLevel.setQuestionable(questionable);
 		wordEtymLevel.setCompound(compound);
 		wordEtymLevel.setComment(comment);
+		wordEtymLevel.setMeaningWordValues(tuple.getWordEtymMeaningWordValues());
 		List<SourceLink> sourceLinks = tuple.getSourceLinks();
 		if (CollectionUtils.isNotEmpty(sourceLinks)) {
 			List<String> sourceLinkValues = sourceLinks.stream()

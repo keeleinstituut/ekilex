@@ -222,7 +222,7 @@
           <span th:if="${etymLevel.compound}">+</span>
           <span th:if="${etymLevel.questionable}">?</span>
           <i th:utext="${etymLevel.wordValue}"></i>
-          <span th:if="${not #lists.isEmpty(etymLevel.meaningWords)}" th:utext="${'''' + #strings.listJoin(etymLevel.meaningWords, ', ') + ''''}"></span>
+          <span th:if="${not #lists.isEmpty(etymLevel.meaningWordValues)}" th:utext="${'''' + #strings.listJoin(etymLevel.meaningWordValues, ', ') + ''''}"></span>
           <th:block th:if="${not #lists.isEmpty(etymLevel.sourceLinkValues)}">
             <span>(</span>
             <span th:text="${#strings.listJoin(etymLevel.sourceLinkValues, ', ')}" class="ml-n1"></span>
