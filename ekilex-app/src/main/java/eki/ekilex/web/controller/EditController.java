@@ -21,7 +21,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.SessionAttributes;
 
-import eki.common.constant.Complexity;
 import eki.common.constant.ContentKey;
 import eki.ekilex.constant.ResponseStatus;
 import eki.ekilex.constant.WebConstant;
@@ -92,18 +91,17 @@ public class EditController extends AbstractMutableDataPageController implements
 		String type = itemData.getItemType();
 		String languageCode = itemData.getLanguage();
 		String datasetCode = itemData.getDataset();
-		Complexity complexity = itemData.getComplexity();
 		boolean isPublic = itemData.isPublic();
 
 		switch (itemData.getOpCode()) {
 		case "definition":
-			cudService.createDefinition(id, value, languageCode, datasetCode, complexity, type, isPublic, user, roleDatasetCode, isManualEventOnUpdateEnabled);
+			cudService.createDefinition(id, value, languageCode, datasetCode, type, isPublic, user, roleDatasetCode, isManualEventOnUpdateEnabled);
 			break;
 		case "definition_note":
 			cudService.createDefinitionNote(id, value, languageCode, isPublic, roleDatasetCode, isManualEventOnUpdateEnabled);
 			break;
 		case "usage":
-			cudService.createUsage(id, value, languageCode, complexity, isPublic, user, roleDatasetCode, isManualEventOnUpdateEnabled);
+			cudService.createUsage(id, value, languageCode, isPublic, user, roleDatasetCode, isManualEventOnUpdateEnabled);
 			break;
 		case "usage_translation":
 			cudService.createUsageTranslation(id, value, languageCode, roleDatasetCode, isManualEventOnUpdateEnabled);
@@ -121,7 +119,7 @@ public class EditController extends AbstractMutableDataPageController implements
 			cudService.createLexemeFreeform(id, value, type, roleDatasetCode, isManualEventOnUpdateEnabled);
 			break;
 		case "government":
-			cudService.createLexemeGovernment(id, value, complexity, user, roleDatasetCode, isManualEventOnUpdateEnabled);
+			cudService.createLexemeGovernment(id, value, user, roleDatasetCode, isManualEventOnUpdateEnabled);
 			break;
 		case "lexeme_deriv":
 			cudService.createLexemeDeriv(id, value, roleDatasetCode, isManualEventOnUpdateEnabled);
@@ -136,7 +134,7 @@ public class EditController extends AbstractMutableDataPageController implements
 			cudService.updateLexemeReliability(id, value, roleDatasetCode, isManualEventOnUpdateEnabled);
 			break;
 		case "lexeme_grammar":
-			cudService.createLexemeGrammar(id, value, languageCode, complexity, user, roleDatasetCode, isManualEventOnUpdateEnabled);
+			cudService.createLexemeGrammar(id, value, languageCode, user, roleDatasetCode, isManualEventOnUpdateEnabled);
 			break;
 		case "lexeme_value_state":
 			cudService.updateLexemeValueState(id, value, roleDatasetCode, isManualEventOnUpdateEnabled);
@@ -145,7 +143,7 @@ public class EditController extends AbstractMutableDataPageController implements
 			cudService.updateLexemeProficiencyLevel(id, value, roleDatasetCode, isManualEventOnUpdateEnabled);
 			break;
 		case "lexeme_note":
-			cudService.createLexemeNote(id, value, languageCode, complexity, isPublic, user, roleDatasetCode, isManualEventOnUpdateEnabled);
+			cudService.createLexemeNote(id, value, languageCode, isPublic, user, roleDatasetCode, isManualEventOnUpdateEnabled);
 			break;
 		case "word_gender":
 			cudService.updateWordGenderWithDuplication(id3, value, user, isManualEventOnUpdateEnabled);
@@ -199,17 +197,17 @@ public class EditController extends AbstractMutableDataPageController implements
 			cudService.createMeaningLearnerComment(id, value, roleDatasetCode, isManualEventOnUpdateEnabled);
 			break;
 		case "meaning_note":
-			cudService.createMeaningNote(id, value, languageCode, complexity, isPublic, user, roleDatasetCode, isManualEventOnUpdateEnabled);
+			cudService.createMeaningNote(id, value, languageCode, isPublic, user, roleDatasetCode, isManualEventOnUpdateEnabled);
 			sessionBean.setRecentNoteLanguage(languageCode);
 			break;
 		case "meaning_forum":
 			cudService.createMeaningForum(id, value, user);
 			break;
 		case "meaning_image":
-			cudService.createMeaningImage(id, value, value2, complexity, user, roleDatasetCode, isManualEventOnUpdateEnabled);
+			cudService.createMeaningImage(id, value, value2, user, roleDatasetCode, isManualEventOnUpdateEnabled);
 			break;
 		case "meaning_media":
-			cudService.createMeaningMedia(id, value, complexity, user, roleDatasetCode, isManualEventOnUpdateEnabled);
+			cudService.createMeaningMedia(id, value, user, roleDatasetCode, isManualEventOnUpdateEnabled);
 			break;
 		case "meaning_freeform":
 			cudService.createMeaningFreeform(id, value, type, roleDatasetCode, isManualEventOnUpdateEnabled);
@@ -279,7 +277,6 @@ public class EditController extends AbstractMutableDataPageController implements
 		BigDecimal numberValue = itemData.getNumberValue();
 		String languageCode = itemData.getLanguage();
 		String classifCode = itemData.getCode();
-		Complexity complexity = itemData.getComplexity();
 		boolean isPublic = itemData.isPublic();
 
 		switch (itemData.getOpCode()) {
@@ -289,13 +286,13 @@ public class EditController extends AbstractMutableDataPageController implements
 			langSelect.setSelected(!langSelect.isSelected());
 			break;
 		case "definition":
-			cudService.updateDefinition(id, value, languageCode, complexity, classifCode, isPublic, roleDatasetCode, isManualEventOnUpdateEnabled);
+			cudService.updateDefinition(id, value, languageCode, classifCode, isPublic, roleDatasetCode, isManualEventOnUpdateEnabled);
 			break;
 		case "definition_note":
 			cudService.updateDefinitionNote(id, value, languageCode, isPublic, roleDatasetCode, isManualEventOnUpdateEnabled);
 			break;
 		case "usage":
-			cudService.updateUsage(id, value, complexity, isPublic, roleDatasetCode, isManualEventOnUpdateEnabled);
+			cudService.updateUsage(id, value, isPublic, roleDatasetCode, isManualEventOnUpdateEnabled);
 			break;
 		case "usage_translation":
 			cudService.updateUsageTranslation(id, value, languageCode, roleDatasetCode, isManualEventOnUpdateEnabled);
@@ -314,9 +311,6 @@ public class EditController extends AbstractMutableDataPageController implements
 			boolean isCollocation = Boolean.valueOf(value);
 			cudService.updateLexemeIsCollocation(id, isCollocation, roleDatasetCode, isManualEventOnUpdateEnabled);
 			break;
-		case "lexeme_complexity":
-			cudService.updateLexemeComplexity(id, value, roleDatasetCode, isManualEventOnUpdateEnabled);
-			break;
 		case "lexeme_pos":
 			cudService.updateLexemePos(id, currentValue, value, roleDatasetCode, isManualEventOnUpdateEnabled);
 			break;
@@ -324,7 +318,7 @@ public class EditController extends AbstractMutableDataPageController implements
 			cudService.updateLexemeFreeform(id, value, roleDatasetCode, isManualEventOnUpdateEnabled);
 			break;
 		case "government":
-			cudService.updateLexemeGovernment(id, value, complexity, roleDatasetCode, isManualEventOnUpdateEnabled);
+			cudService.updateLexemeGovernment(id, value, roleDatasetCode, isManualEventOnUpdateEnabled);
 			break;
 		case "lexeme_deriv":
 			cudService.updateLexemeDeriv(id, currentValue, value, roleDatasetCode, isManualEventOnUpdateEnabled);
@@ -351,10 +345,10 @@ public class EditController extends AbstractMutableDataPageController implements
 			cudService.updateMeaningLearnerComment(id, value, roleDatasetCode, isManualEventOnUpdateEnabled);
 			break;
 		case "lexeme_grammar":
-			cudService.updateLexemeGrammar(id, value, languageCode, complexity, roleDatasetCode, isManualEventOnUpdateEnabled);
+			cudService.updateLexemeGrammar(id, value, languageCode, roleDatasetCode, isManualEventOnUpdateEnabled);
 			break;
 		case "lexeme_note":
-			cudService.updateLexemeNote(id, value, languageCode, complexity, isPublic, roleDatasetCode, isManualEventOnUpdateEnabled);
+			cudService.updateLexemeNote(id, value, languageCode, isPublic, roleDatasetCode, isManualEventOnUpdateEnabled);
 			break;
 		case "word_value":
 			cudService.updateWordValue(id, value, roleDatasetCode, isManualEventOnUpdateEnabled);
@@ -413,7 +407,7 @@ public class EditController extends AbstractMutableDataPageController implements
 			cudService.updateMeaningDomain(id, currentMeaningDomain, newMeaningDomain, roleDatasetCode, isManualEventOnUpdateEnabled);
 			break;
 		case "meaning_note":
-			cudService.updateMeaningNote(id, value, languageCode, complexity, isPublic, roleDatasetCode, isManualEventOnUpdateEnabled);
+			cudService.updateMeaningNote(id, value, languageCode, isPublic, roleDatasetCode, isManualEventOnUpdateEnabled);
 			break;
 		case "meaning_forum":
 			cudService.updateMeaningForum(id, value, user);
@@ -422,10 +416,10 @@ public class EditController extends AbstractMutableDataPageController implements
 			cudService.updateMeaningRelationWeight(id, numberValue, roleDatasetCode, isManualEventOnUpdateEnabled);
 			break;
 		case "meaning_image":
-			cudService.updateMeaningImage(id, value, value2, complexity, roleDatasetCode, isManualEventOnUpdateEnabled);
+			cudService.updateMeaningImage(id, value, value2, roleDatasetCode, isManualEventOnUpdateEnabled);
 			break;
 		case "meaning_media":
-			cudService.updateMeaningMedia(id, value, complexity, roleDatasetCode, isManualEventOnUpdateEnabled);
+			cudService.updateMeaningMedia(id, value, roleDatasetCode, isManualEventOnUpdateEnabled);
 			break;
 		case "meaning_freeform":
 			cudService.updateMeaningFreeform(id, value, roleDatasetCode, isManualEventOnUpdateEnabled);

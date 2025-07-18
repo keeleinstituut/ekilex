@@ -1,3 +1,4 @@
+-- obsolete
 select p.*
 from paradigm p
 where exists (select l.id

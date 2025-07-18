@@ -2,8 +2,6 @@ package eki.ekilex.data;
 
 import java.util.List;
 
-import eki.common.constant.Complexity;
-
 public class Note extends AbstractCreateUpdateEntity implements ValueAndPrese {
 
 	private static final long serialVersionUID = 1L;
@@ -15,8 +13,6 @@ public class Note extends AbstractCreateUpdateEntity implements ValueAndPrese {
 	private String valuePrese;
 
 	private String lang;
-
-	private Complexity complexity;
 
 	private Long orderBy;
 
@@ -52,14 +48,6 @@ public class Note extends AbstractCreateUpdateEntity implements ValueAndPrese {
 
 	public void setLang(String lang) {
 		this.lang = lang;
-	}
-
-	public Complexity getComplexity() {
-		return complexity;
-	}
-
-	public void setComplexity(Complexity complexity) {
-		this.complexity = complexity;
 	}
 
 	public Long getOrderBy() {

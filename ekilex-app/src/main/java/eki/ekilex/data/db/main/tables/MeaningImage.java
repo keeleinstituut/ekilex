@@ -17,7 +17,7 @@ import org.jooq.ForeignKey;
 import org.jooq.Identity;
 import org.jooq.Name;
 import org.jooq.Record;
-import org.jooq.Row11;
+import org.jooq.Row10;
 import org.jooq.Schema;
 import org.jooq.Table;
 import org.jooq.TableField;
@@ -73,11 +73,6 @@ public class MeaningImage extends TableImpl<MeaningImageRecord> {
      * The column <code>public.meaning_image.url</code>.
      */
     public final TableField<MeaningImageRecord, String> URL = createField(DSL.name("url"), SQLDataType.CLOB.nullable(false), this, "");
-
-    /**
-     * The column <code>public.meaning_image.complexity</code>.
-     */
-    public final TableField<MeaningImageRecord, String> COMPLEXITY = createField(DSL.name("complexity"), SQLDataType.VARCHAR(100).nullable(false), this, "");
 
     /**
      * The column <code>public.meaning_image.created_by</code>.
@@ -198,11 +193,11 @@ public class MeaningImage extends TableImpl<MeaningImageRecord> {
     }
 
     // -------------------------------------------------------------------------
-    // Row11 type methods
+    // Row10 type methods
     // -------------------------------------------------------------------------
 
     @Override
-    public Row11<Long, Long, Long, String, String, String, String, LocalDateTime, String, LocalDateTime, Long> fieldsRow() {
-        return (Row11) super.fieldsRow();
+    public Row10<Long, Long, Long, String, String, String, LocalDateTime, String, LocalDateTime, Long> fieldsRow() {
+        return (Row10) super.fieldsRow();
     }
 }

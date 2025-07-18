@@ -583,7 +583,6 @@ public class CommonDataDbService extends AbstractDataDbService {
 						mn.VALUE,
 						mn.VALUE_PRESE,
 						mn.LANG,
-						mn.COMPLEXITY,
 						mn.IS_PUBLIC,
 						mn.CREATED_ON,
 						mn.CREATED_BY,
@@ -631,7 +630,6 @@ public class CommonDataDbService extends AbstractDataDbService {
 						mi.ID,
 						mi.URL,
 						mi.TITLE,
-						mi.COMPLEXITY,
 						wwupf.as("is_ww_unif"),
 						wwlpf.as("is_ww_lite"),
 						wwopf.as("is_ww_od"),
@@ -654,7 +652,6 @@ public class CommonDataDbService extends AbstractDataDbService {
 				.select(
 						mm.ID,
 						mm.URL,
-						mm.COMPLEXITY,
 						wwupf.as("is_ww_unif"),
 						wwlpf.as("is_ww_lite"),
 						wwopf.as("is_ww_od"))
@@ -803,7 +800,6 @@ public class CommonDataDbService extends AbstractDataDbService {
 						d.VALUE,
 						d.VALUE_PRESE,
 						d.LANG,
-						d.COMPLEXITY,
 						d.ORDER_BY,
 						d.DEFINITION_TYPE_CODE.as("type_code"),
 						dtl.VALUE.as("type_value"),
@@ -889,7 +885,6 @@ public class CommonDataDbService extends AbstractDataDbService {
 						wtz.as("foreign"),
 						l2.ID.as("lexeme_id"),
 						l2.WEIGHT.as("lexeme_weight"),
-						l2.COMPLEXITY.as("lexeme_complexity"),
 						l2.IS_PUBLIC.as("is_lexeme_public"),
 						lrc.as("lex_register_codes"),
 						l2.ORDER_BY)
@@ -1164,7 +1159,6 @@ public class CommonDataDbService extends AbstractDataDbService {
 						g.VALUE,
 						g.VALUE_PRESE,
 						g.LANG,
-						g.COMPLEXITY,
 						g.CREATED_BY,
 						g.CREATED_ON,
 						g.MODIFIED_BY,
@@ -1190,7 +1184,6 @@ public class CommonDataDbService extends AbstractDataDbService {
 				.select(
 						g.ID,
 						g.VALUE,
-						g.COMPLEXITY,
 						g.CREATED_BY,
 						g.CREATED_ON,
 						g.MODIFIED_BY,
@@ -1277,7 +1270,6 @@ public class CommonDataDbService extends AbstractDataDbService {
 						u.VALUE,
 						u.VALUE_PRESE,
 						u.LANG,
-						u.COMPLEXITY,
 						u.IS_PUBLIC,
 						u.CREATED_BY,
 						u.CREATED_ON,

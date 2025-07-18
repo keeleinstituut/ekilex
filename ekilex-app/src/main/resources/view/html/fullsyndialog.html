@@ -51,29 +51,6 @@
       </div>
     </div>
   </div>
-  <div th:id="${'editLexemeComplexityDlg_' + synWord.lexemeId}" class="modal select-dlg"
-       role="dialog"
-       th:fragment="edit_lexeme_complexity_dlg"
-       data-plugin="initSelectDlgPlugin"
-       style="text-decoration: line-through;" title="Asendub avaldamisega">
-    <div class="modal-dialog" role="document">
-      <div class="modal-content">
-        <form th:action="@{/update_item}" method="post">
-          <div class="modal-body">
-            <input type="hidden" name="id" th:value="${synWord.lexemeId}">
-            <input type="hidden" name="opCode" value="lexeme_complexity">
-            <input type="hidden" name="value" th:value="${synWord.lexemeComplexity}">
-            <select class="form-control" name="value">
-              <option th:each="complexity : ${complexities}"
-                      th:value="${complexity}"
-                      th:selected="${complexity == synWord.lexemeComplexity}"
-                      th:text="#{'enum.complexity.' + ${complexity}}"></option>
-            </select>
-          </div>
-        </form>
-      </div>
-    </div>
-  </div>
   <div th:id="${'addSynMeaningWordDlg_' + lexeme.lexemeId}"
        class="modal" role="dialog"
        th:fragment="add_syn_meaning_word_dlg"

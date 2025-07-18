@@ -17,7 +17,7 @@ import org.jooq.ForeignKey;
 import org.jooq.Identity;
 import org.jooq.Name;
 import org.jooq.Record;
-import org.jooq.Row7;
+import org.jooq.Row6;
 import org.jooq.Schema;
 import org.jooq.Table;
 import org.jooq.TableField;
@@ -78,11 +78,6 @@ public class Collocation extends TableImpl<CollocationRecord> {
      * The column <code>public.collocation.usages</code>.
      */
     public final TableField<CollocationRecord, String[]> USAGES = createField(DSL.name("usages"), SQLDataType.CLOB.getArrayDataType(), this, "");
-
-    /**
-     * The column <code>public.collocation.complexity</code>.
-     */
-    public final TableField<CollocationRecord, String> COMPLEXITY = createField(DSL.name("complexity"), SQLDataType.VARCHAR(100).nullable(false), this, "");
 
     private Collocation(Name alias, Table<CollocationRecord> aliased) {
         this(alias, aliased, null);
@@ -164,11 +159,11 @@ public class Collocation extends TableImpl<CollocationRecord> {
     }
 
     // -------------------------------------------------------------------------
-    // Row7 type methods
+    // Row6 type methods
     // -------------------------------------------------------------------------
 
     @Override
-    public Row7<Long, String, String, BigDecimal, BigDecimal, String[], String> fieldsRow() {
-        return (Row7) super.fieldsRow();
+    public Row6<Long, String, String, BigDecimal, BigDecimal, String[]> fieldsRow() {
+        return (Row6) super.fieldsRow();
     }
 }

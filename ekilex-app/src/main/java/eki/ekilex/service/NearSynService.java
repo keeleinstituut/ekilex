@@ -14,7 +14,6 @@ import org.springframework.stereotype.Component;
 
 import eki.common.constant.ActivityEntity;
 import eki.common.constant.ActivityOwner;
-import eki.common.constant.Complexity;
 import eki.common.constant.RelationStatus;
 import eki.common.exception.OperationDeniedException;
 import eki.ekilex.constant.ResponseStatus;
@@ -349,7 +348,7 @@ public class NearSynService extends AbstractSynSearchService {
 
 		ActivityLogData activityLog = activityLogService.prepareActivityLog("createInexactSynDefinition", inexactSynMeaningId, ActivityOwner.MEANING, roleDatasetCode, isManualEventOnUpdateEnabled);
 		Long definitionId = cudDbService
-				.createDefinition(inexactSynMeaningId, inexactSynDefValue, inexactSynDefValue, targetLang, DEFINITION_TYPE_CODE_INEXACT_SYN, Complexity.DETAIL, PUBLICITY_PUBLIC);
+				.createDefinition(inexactSynMeaningId, inexactSynDefValue, inexactSynDefValue, targetLang, DEFINITION_TYPE_CODE_INEXACT_SYN, PUBLICITY_PUBLIC);
 		cudDbService.createDefinitionDataset(definitionId, roleDatasetCode);
 		activityLogService.createActivityLog(activityLog, definitionId, ActivityEntity.DEFINITION);
 	}

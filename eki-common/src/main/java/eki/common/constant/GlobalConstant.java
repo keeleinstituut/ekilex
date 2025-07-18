@@ -127,10 +127,6 @@ public interface GlobalConstant {
 
 	String WORD_RELATION_PARAM_NAME_SYN_CANDIDATE = "syn candidate";
 
-	String COMPLEXITY_DETAIL = Complexity.DETAIL.name();
-
-	String COMPLEXITY_ANY = Complexity.ANY.name();
-
 	String RELATION_STATUS_UNDEFINED = RelationStatus.UNDEFINED.name();
 
 	char DISPLAY_FORM_STRESS_SYMBOL = '"';

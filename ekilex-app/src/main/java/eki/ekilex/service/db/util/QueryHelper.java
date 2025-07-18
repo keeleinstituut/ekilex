@@ -253,7 +253,6 @@ public class QueryHelper implements GlobalConstant, PublishingConstant {
 		fields.add(lproflf.as("lexeme_proficiency_level"));
 		fields.add(l.WEIGHT);
 		fields.add(l.RELIABILITY);
-		fields.add(l.COMPLEXITY);
 		fields.add(l.ORDER_BY);
 		fields.add(l.IS_PUBLIC);
 		fields.add(l.IS_WORD);
@@ -495,7 +494,6 @@ public class QueryHelper implements GlobalConstant, PublishingConstant {
 										DSL.key("value").value(u.VALUE),
 										DSL.key("valuePrese").value(u.VALUE_PRESE),
 										DSL.key("lang").value(u.LANG),
-										DSL.key("complexity").value(u.COMPLEXITY),
 										DSL.key("public").value(u.IS_PUBLIC),
 										DSL.key("createdOn").value(u.CREATED_ON),
 										DSL.key("createdBy").value(u.CREATED_BY),
@@ -549,7 +547,6 @@ public class QueryHelper implements GlobalConstant, PublishingConstant {
 										DSL.key("value").value(ln.VALUE),
 										DSL.key("valuePrese").value(ln.VALUE_PRESE),
 										DSL.key("lang").value(ln.LANG),
-										DSL.key("complexity").value(ln.COMPLEXITY),
 										DSL.key("public").value(ln.IS_PUBLIC),
 										DSL.key("createdOn").value(ln.CREATED_ON),
 										DSL.key("createdBy").value(ln.CREATED_BY),

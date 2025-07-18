@@ -14,7 +14,6 @@ import org.springframework.stereotype.Component;
 import eki.common.constant.ActivityEntity;
 import eki.common.constant.ActivityFunct;
 import eki.common.constant.ActivityOwner;
-import eki.common.constant.Complexity;
 import eki.common.constant.FreeformConstant;
 import eki.common.exception.OperationDeniedException;
 import eki.ekilex.data.ActivityLog;
@@ -36,8 +35,6 @@ import eki.ekilex.service.db.api.TermMeaningDbService;
 
 @Component
 public class TermMeaningService extends AbstractApiCudService implements ActivityFunct, FreeformConstant {
-
-	private static final Complexity DEFAULT_COMPLEXITY = Complexity.DETAIL;
 
 	private static final boolean DEFAULT_PUBLICITY = PUBLICITY_PUBLIC;
 
@@ -105,7 +102,7 @@ public class TermMeaningService extends AbstractApiCudService implements Activit
 		if (CollectionUtils.isNotEmpty(definitions)) {
 
 			for (Definition definition : definitions) {
-				createOrUpdateDefinition(definition, meaningId, datasetCode, DEFAULT_COMPLEXITY, DEFAULT_PUBLICITY, roleDatasetCode);
+				createOrUpdateDefinition(definition, meaningId, datasetCode, DEFAULT_PUBLICITY, roleDatasetCode);
 			}
 		}
 
@@ -247,7 +244,7 @@ public class TermMeaningService extends AbstractApiCudService implements Activit
 				if (CollectionUtils.isNotEmpty(usages)) {
 
 					for (Usage usage : usages) {
-						createOrUpdateUsage(lexemeId, usage, DEFAULT_COMPLEXITY, DEFAULT_PUBLICITY, roleDatasetCode);
+						createOrUpdateUsage(lexemeId, usage, roleDatasetCode);
 					}
 				}
 

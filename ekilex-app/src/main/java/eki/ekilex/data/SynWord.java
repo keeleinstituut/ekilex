@@ -2,7 +2,6 @@ package eki.ekilex.data;
 
 import java.util.List;
 
-import eki.common.constant.Complexity;
 import eki.common.data.AbstractDataObject;
 
 public class SynWord extends AbstractDataObject implements DecoratedWordType {
@@ -34,8 +33,6 @@ public class SynWord extends AbstractDataObject implements DecoratedWordType {
 	private Long lexemeId;
 
 	private String lexemeLevels;
-
-	private Complexity lexemeComplexity;
 
 	private boolean isLexemePublic;
 
@@ -153,14 +150,6 @@ public class SynWord extends AbstractDataObject implements DecoratedWordType {
 
 	public void setLexemeLevels(String lexemeLevels) {
 		this.lexemeLevels = lexemeLevels;
-	}
-
-	public Complexity getLexemeComplexity() {
-		return lexemeComplexity;
-	}
-
-	public void setLexemeComplexity(Complexity lexemeComplexity) {
-		this.lexemeComplexity = lexemeComplexity;
 	}
 
 	public boolean isLexemePublic() {

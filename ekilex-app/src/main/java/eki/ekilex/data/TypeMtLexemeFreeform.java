@@ -6,7 +6,6 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
 
-import eki.common.constant.Complexity;
 import eki.common.util.LocalDateTimeDeserialiser;
 
 public class TypeMtLexemeFreeform extends AbstractGrantEntity {
@@ -24,8 +23,6 @@ public class TypeMtLexemeFreeform extends AbstractGrantEntity {
 	private String valuePrese;
 
 	private String lang;
-
-	private Complexity complexity;
 
 	private boolean isPublic;
 
@@ -89,14 +86,6 @@ public class TypeMtLexemeFreeform extends AbstractGrantEntity {
 
 	public void setLang(String lang) {
 		this.lang = lang;
-	}
-
-	public Complexity getComplexity() {
-		return complexity;
-	}
-
-	public void setComplexity(Complexity complexity) {
-		this.complexity = complexity;
 	}
 
 	public boolean isPublic() {

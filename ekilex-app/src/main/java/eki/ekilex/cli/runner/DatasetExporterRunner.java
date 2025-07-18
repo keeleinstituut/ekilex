@@ -41,7 +41,7 @@ import eki.common.data.transport.TableColumn;
 import eki.ekilex.service.AbstractLoaderCommons;
 import eki.ekilex.service.cli.TransportService;
 
-// TODO update data structures
+// TODO obsolete
 @Component
 public class DatasetExporterRunner extends AbstractLoaderCommons implements InitializingBean {
 

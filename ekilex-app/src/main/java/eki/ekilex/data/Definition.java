@@ -2,8 +2,6 @@ package eki.ekilex.data;
 
 import java.util.List;
 
-import eki.common.constant.Complexity;
-
 public class Definition extends AbstractGrantEntity {
 
 	private static final long serialVersionUID = 1L;
@@ -15,8 +13,6 @@ public class Definition extends AbstractGrantEntity {
 	private String valuePrese;
 
 	private String lang;
-
-	private Complexity complexity;
 
 	private Long orderBy;
 
@@ -62,14 +58,6 @@ public class Definition extends AbstractGrantEntity {
 
 	public void setLang(String lang) {
 		this.lang = lang;
-	}
-
-	public Complexity getComplexity() {
-		return complexity;
-	}
-
-	public void setComplexity(Complexity complexity) {
-		this.complexity = complexity;
 	}
 
 	public Long getOrderBy() {

@@ -15,7 +15,6 @@ import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.stereotype.Component;
 
 import eki.common.constant.ActivityOwner;
-import eki.common.constant.Complexity;
 import eki.ekilex.constant.ResponseStatus;
 import eki.ekilex.data.EkiUser;
 import eki.ekilex.data.Response;
@@ -113,7 +112,7 @@ public class SynCandidateService extends AbstractSynCudService {
 			for (TextWithSource usage : synUsages) {
 				String usageValue = usage.getValue();
 				List<SourceLink> usageSourceLinks = usage.getSourceLinks();
-				Long usageId = createUsage(synCandidateLexemeId, usageValue, synCandidateWordLang, Complexity.DETAIL, PUBLICITY_PRIVATE, user, roleDatasetCode, MANUAL_EVENT_ON_UPDATE_DISABLED);
+				Long usageId = createUsage(synCandidateLexemeId, usageValue, synCandidateWordLang, PUBLICITY_PRIVATE, user, roleDatasetCode, MANUAL_EVENT_ON_UPDATE_DISABLED);
 				if (CollectionUtils.isNotEmpty(usageSourceLinks)) {
 					for (SourceLink usageSourceLink : usageSourceLinks) {
 						createUsageSourceLink(synCandidateLexemeId, usageId, usageSourceLink, roleDatasetCode, MANUAL_EVENT_ON_UPDATE_DISABLED);
@@ -126,8 +125,8 @@ public class SynCandidateService extends AbstractSynCudService {
 				String definitionValue = definition.getValue();
 				List<SourceLink> definitionSourceLinks = definition.getSourceLinks();
 				Long definitionId = createDefinition(
-						synCandidateMeaningId, definitionValue, synCandidateWordLang, synCandidateDatasetCode, Complexity.DETAIL,
-						DEFINITION_TYPE_CODE_UNDEFINED, PUBLICITY_PRIVATE, user, roleDatasetCode, MANUAL_EVENT_ON_UPDATE_DISABLED);
+						synCandidateMeaningId, definitionValue, synCandidateWordLang, synCandidateDatasetCode, DEFINITION_TYPE_CODE_UNDEFINED,
+						PUBLICITY_PRIVATE, user, roleDatasetCode, MANUAL_EVENT_ON_UPDATE_DISABLED);
 				if (CollectionUtils.isNotEmpty(definitionSourceLinks)) {
 					for (SourceLink definitionSourceLink : definitionSourceLinks) {
 						createDefinitionSourceLink(synCandidateMeaningId, definitionId, definitionSourceLink, roleDatasetCode, MANUAL_EVENT_ON_UPDATE_DISABLED);

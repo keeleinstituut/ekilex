@@ -51,6 +51,7 @@
                 </form>
               </div>
             </th:block>
+            <!-- TODO disabled until the termmeaningtable view gets fixed
             <div>
               <form th:action="@{/termmeaningtable}" method="post" target="_blank">
                 <span>|</span>
@@ -58,6 +59,7 @@
                 <button type="button" data-plugin="tableViewTermSearchResults" class="btn btn-secondary" th:data-result-count="${termSearchResult.meaningCount}" th:text="#{term.meaning.table.title}">Tabelivaade</button>
               </form>
             </div>
+             -->
             <div>
               <form th:action="@{/term_paging}" method="post">
                 <span>|</span>

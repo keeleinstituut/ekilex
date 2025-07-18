@@ -83,7 +83,6 @@
             </div>
             <div th:id="${'government_' + lexeme.lexemeId}" class="form-group row value-group" style="display: none">
               <div class="col-md-12">
-                <input type="hidden" name="complexity" value="ANY">
                 <input type="text" class="form-control value-select required-field">
               </div>
             </div>
@@ -134,7 +133,6 @@
               <input type="hidden" name="id" th:value="${lexeme.meaningId}">
               <input type="hidden" name="opCode" value="definition">
               <input type="hidden" name="itemType" th:value="${defaultDefinitionTypeCode}">
-              <input type="hidden" name="complexity" value="ANY">
               <input type="hidden" name="value">
               <div th:replace="components :: eki_editor_elem"></div>
               <div class="formItem" th:if="${userRoleData.master}">
@@ -209,7 +207,6 @@
             <input type="hidden" name="opCode" value="definition">
             <input type="hidden" name="value" th:value="${definition.valuePrese}">
             <input type="hidden" name="code" th:value="${definition.typeCode}">
-            <input type="hidden" name="complexity" value="ANY">
             <div th:replace="components :: eki_editor_elem"></div>
             <div class="formItem">
               <div class="formItem__title" th:text="#{lex.select.language}">Vali keel</div>
@@ -709,7 +706,6 @@
           <div class="modal-body">
             <input type="hidden" name="id" th:value="${lexeme.lexemeId}">
             <input type="hidden" name="opCode" value="government">
-            <input type="hidden" name="complexity" value="ANY">
             <div class="form-group row">
               <div class="col-md-12">
                 <textarea class="form-control" rows="1" name="value"></textarea>
@@ -733,7 +729,6 @@
           <div class="modal-body">
             <input type="hidden" name="id" th:value="${government.id}">
             <input type="hidden" name="opCode" value="government">
-            <input type="hidden" name="complexity" value="ANY">
             <div class="form-group row">
               <div class="col-md-12">
                 <textarea class="form-control" rows="1" name="value" th:text="${government.value}"></textarea>
@@ -764,7 +759,6 @@
             <input type="hidden" name="id" th:value="${lexeme.lexemeId}">
             <input type="hidden" name="language" th:value="${lexeme.lexemeWord.lang}">
             <input type="hidden" name="opCode" value="usage">
-            <input type="hidden" name="complexity" value="ANY">
             <input type="hidden" name="value">
             <div th:replace="components :: eki_editor_elem"></div>
             <div class="formItem">
@@ -829,7 +823,6 @@
             <input type="hidden" name="id" th:value="${usage.id}">
             <input type="hidden" name="opCode" value="usage">
             <input type="hidden" name="value" th:value="${usage.valuePrese}">
-            <input type="hidden" name="complexity" value="ANY">
             <div th:replace="components :: eki_editor_elem"></div>
             <div class="formItem">
               <div class="formItem__title" th:text="#{lex.select.publicity}">Vali avalikkus</div>
@@ -953,7 +946,6 @@
             <input type="hidden" name="id" th:value="${lexeme.lexemeId}">
             <input type="hidden" name="opCode" value="lexeme_note">
             <input type="hidden" name="value">
-            <input type="hidden" name="complexity" value="ANY">
             <div th:replace="components :: eki_editor_elem"></div>
             <div class="form-group row">
               <div class="col-md-4">
@@ -991,7 +983,6 @@
             <input type="hidden" name="id" th:value="${note.id}">
             <input type="hidden" name="opCode" value="lexeme_note">
             <input type="hidden" name="value" th:value="${note.valuePrese}">
-            <input type="hidden" name="complexity" value="ANY">
             <div th:replace="components :: eki_editor_elem"></div>
             <div class="form-group row">
               <div class="col-md-4">
@@ -1256,7 +1247,6 @@
           <div class="modal-body">
             <input type="hidden" name="id" th:value="${lexeme.meaningId}">
             <input type="hidden" name="opCode" value="meaning_note">
-            <input type="hidden" name="complexity" value="ANY">
             <input type="hidden" name="value">
             <div th:replace="components :: eki_editor_elem"></div>
             <div class="form-group row">
@@ -1295,7 +1285,6 @@
           <div class="modal-body">
             <input type="hidden" name="id" th:value="${note.id}">
             <input type="hidden" name="opCode" value="meaning_note">
-            <input type="hidden" name="complexity" value="ANY">
             <input type="hidden" name="value" th:value="${note.valuePrese}">
             <div th:replace="components :: eki_editor_elem"></div>
             <div class="form-group row">
@@ -1931,29 +1920,6 @@
       </div>
     </div>
   </div>
-  <div th:id="${'editLexemeComplexityDlg_' + lexeme.lexemeId}"
-       th:data-callback="${@viewUtil.composeFunction('loadFullLexemeDetails', lexeme.lexemeId, lexeme.levels)}"
-       class="modal select-dlg" role="dialog" th:fragment="edit_lexeme_complexity_dlg"
-       data-plugin="initSelectDlgPlugin"
-       style="text-decoration: line-through;" title="Asendub avaldamisega">
-    <div class="modal-dialog" role="document">
-      <div class="modal-content">
-        <form th:action="@{/update_item}" method="post">
-          <div class="modal-body">
-            <input type="hidden" name="id" th:value="${lexeme.lexemeId}">
-            <input type="hidden" name="opCode" value="lexeme_complexity">
-            <input type="hidden" name="value" th:value="${lexeme.complexity}">
-            <select class="form-control" name="value">
-              <option th:each="complexity : ${complexities}"
-                      th:value="${complexity}"
-                      th:selected="${complexity == lexeme.complexity}"
-                      th:text="#{'enum.complexity.' + ${complexity}}"></option>
-            </select>
-          </div>
-        </form>
-      </div>
-    </div>
-  </div>
   <div th:id="${'editLexemeValueStateCodeDlg_' + lexeme.lexemeId}"
        th:data-callback="${@viewUtil.composeFunction('loadFullLexemeDetails', lexeme.lexemeId, lexeme.levels)}"
        class="modal select-dlg" role="dialog" th:fragment="edit_lexeme_value_state_dlg" data-plugin="initSelectDlgPlugin">
@@ -1997,7 +1963,6 @@
           <div class="modal-body">
             <input type="hidden" name="id" th:value="${lexeme.lexemeId}">
             <input type="hidden" name="opCode" value="lexeme_grammar">
-            <input type="hidden" name="complexity" value="ANY">
             <input type="hidden" name="value">
             <div th:replace="components :: eki_editor_elem"></div>
             <div class="form-group row">
@@ -2030,7 +1995,6 @@
           <div class="modal-body">
             <input type="hidden" name="id" th:value="${grammar.id}">
             <input type="hidden" name="opCode" value="lexeme_grammar">
-            <input type="hidden" name="complexity" value="ANY">
             <input type="hidden" name="value" th:value="${grammar.valuePrese}">
             <div th:replace="components :: eki_editor_elem"></div>
             <div class="form-group row">
@@ -2361,7 +2325,6 @@
           <div class="modal-body">
             <input type="hidden" name="id" th:value="${lexeme.meaningId}">
             <input type="hidden" name="opCode" value="meaning_image">
-            <input type="hidden" name="complexity" value="ANY">
             <div class="form-group row">
               <div class="col-md-12">
                 <input type="text" class="form-control required-field" name="value" th:placeholder="#{lex.placeholder.image.url}" required="required" autocomplete="off"></input>
@@ -2390,7 +2353,6 @@
           <div class="modal-body">
             <input type="hidden" name="id" th:value="${image.id}">
             <input type="hidden" name="opCode" value="meaning_image">
-            <input type="hidden" name="complexity" value="ANY">
             <div class="form-group row">
               <div class="col-md-12">
                 <input type="text" class="form-control required-field" name="value" th:placeholder="#{lex.placeholder.image.url}" th:value="${image.url}" required="required" autocomplete="off"></input>
@@ -2440,7 +2402,6 @@
           <div class="modal-body">
             <input type="hidden" name="id" th:value="${lexeme.meaningId}">
             <input type="hidden" name="opCode" value="meaning_media">
-            <input type="hidden" name="complexity" value="ANY">
             <input type="hidden" name="value">
             <div class="form-group row">
               <div class="col-md-12">
@@ -2465,7 +2426,6 @@
           <div class="modal-body">
             <input type="hidden" name="id" th:value="${media.id}">
             <input type="hidden" name="opCode" value="meaning_media">
-            <input type="hidden" name="complexity" value="ANY">
             <div class="form-group row">
               <div class="col-md-12">
                 <textarea class="form-control" rows="1" name="value" th:text="${media.url}"></textarea>

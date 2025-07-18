@@ -162,22 +162,13 @@
                         th:data-label="#{'boolean.public.' + ${synWord.lexemePublic}}">
                     <span name="icon-span"></span>
                   </span>
-                  <span class="ctxt" th:text="'(' + #{'enum.complexity.' + ${synWord.lexemeComplexity}} + ')'" data-plugin="complexityAndPublicity"></span>
                   <div th:replace="fullsyndialog :: edit_lexeme_weight_dlg"></div>
-                  <div th:replace="fullsyndialog :: edit_lexeme_complexity_dlg"></div>
                   <button type="button" class="btn badge badge-secondary btn-xs"
                           th:title="#{syn.edit.syn.lexeme.weight}"
                           data-toggle="modal"
                           th:data-target="${'#editLexemeWeightDlg_' + synWord.lexemeId}"
                           sec:authorize="#vars.lexeme.crudGrant">
                     <i class="fa fa-edit" aria-hidden="true"></i>
-                  </button>
-                  <button type="button" class="btn badge badge-secondary btn-xs"
-                          th:title="#{syn.edit.syn.lexeme.complexity}"
-                          data-toggle="modal"
-                          th:data-target="${'#editLexemeComplexityDlg_' + synWord.lexemeId}"
-                          sec:authorize="#vars.lexeme.crudGrant">
-                    <i class="fa fa-caret-down" aria-hidden="true"></i>
                   </button>
                   <button type="button" class="btn badge badge-warning"
                           th:data-id="${synWord.lexemeId}"

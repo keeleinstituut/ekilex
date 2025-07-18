@@ -233,15 +233,15 @@
                             th:text="${semanticType.code}">semantic type</option>
                   </select>
                 </div>
-                <div class="value-input-container col-auto flex-grow-1 flex-shrink-1" th:if="${criteria.searchKey.name() == 'COMPLEXITY'}">
+                <div class="value-input-container col-auto flex-grow-1 flex-shrink-1" th:if="${criteria.searchKey.name() == 'PUBLISHING_TARGET'}">
                   <select class="form-control"
                           th:name="'criteriaGroups[' + ${critGroupStat.index} + '].searchCriteria[' + ${critStat.index} + '].searchValue'"
                           data-live-search="true"
                           data-style="btn-outline-secondary">
-                    <option th:each="complexity : ${complexities}"
-                            th:value="${complexity}"
-                            th:selected="${criteria.searchValue == complexity.name()}"
-                            th:text="#{|enum.complexity.${complexity}|}"></option>
+                    <option th:each="publishingTargetName : ${publishingTargetNames}"
+                            th:value="${publishingTargetName}"
+                            th:selected="${criteria.searchValue == publishingTargetName}"
+                            th:text="#{|publishing.target.${publishingTargetName}|}"></option>
                   </select>
                 </div>
                 <div class="value-input-container col-auto flex-grow-1 flex-shrink-1" th:if="${criteria.searchKey.name() == 'FREQUENCY'}">
@@ -789,9 +789,9 @@
                 <option th:each="semanticType : ${semanticTypes}" th:value="${semanticType.code}" th:text="${semanticType.code}">semantic type</option>
               </select>
             </div>
-            <div name="COMPLEXITY" class="value-input-container col-auto flex-grow-1 flex-shrink-1">
+            <div name="PUBLISHING_TARGET" class="value-input-container col-auto flex-grow-1 flex-shrink-1">
               <select class="form-control" data-live-search="true" data-style="btn-outline-secondary">
-                <option th:each="complexity : ${complexities}" th:value="${complexity}" th:text="#{'enum.complexity.' + ${complexity}}"></option>
+                <option th:each="publishingTargetName : ${publishingTargetNames}" th:value="${publishingTargetName}" th:text="#{|publishing.target.${publishingTargetName}|}"></option>
               </select>
             </div>
             <div name="SOURCE_ID" class="value-input-container col-auto flex-grow-1 flex-shrink-1">

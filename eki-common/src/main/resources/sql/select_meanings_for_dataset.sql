@@ -1,3 +1,4 @@
+-- obsolete
 select m.*
 from meaning m
 where exists (select l.id

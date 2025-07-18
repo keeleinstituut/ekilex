@@ -235,7 +235,6 @@ public class WordDbService extends AbstractDataDbService {
 										DSL.key("value").value(u.VALUE),
 										DSL.key("valuePrese").value(u.VALUE_PRESE),
 										DSL.key("lang").value(u.LANG),
-										DSL.key("complexity").value(u.COMPLEXITY),
 										DSL.key("public").value(u.IS_PUBLIC),
 										DSL.key("sourceLinks").value(uslf)))
 						.orderBy(u.ORDER_BY))

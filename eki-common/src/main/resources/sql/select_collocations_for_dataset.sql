@@ -1,3 +1,4 @@
+-- obsolete
 select c.*
 from collocation c
 where exists (select l.id

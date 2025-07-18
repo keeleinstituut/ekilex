@@ -211,7 +211,6 @@ public class LexDataDbService extends AbstractDataDbService {
 										DSL.key("value").value(u.VALUE),
 										DSL.key("valuePrese").value(u.VALUE_PRESE),
 										DSL.key("lang").value(u.LANG),
-										DSL.key("complexity").value(u.COMPLEXITY),
 										DSL.key("orderBy").value(u.ORDER_BY)))
 						.orderBy(u.ORDER_BY))
 				.from(u)
@@ -326,7 +325,6 @@ public class LexDataDbService extends AbstractDataDbService {
 										DSL.key("value").value(u.VALUE),
 										DSL.key("valuePrese").value(u.VALUE_PRESE),
 										DSL.key("lang").value(u.LANG),
-										DSL.key("complexity").value(u.COMPLEXITY),
 										DSL.key("orderBy").value(u.ORDER_BY)))
 						.orderBy(u.ORDER_BY))
 				.from(u)

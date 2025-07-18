@@ -1,7 +1,5 @@
 package eki.ekilex.data;
 
-import eki.common.constant.Complexity;
-
 public class MeaningMedia extends AbstractCreateUpdateEntity {
 
 	private static final long serialVersionUID = 1L;
@@ -11,8 +9,6 @@ public class MeaningMedia extends AbstractCreateUpdateEntity {
 	private Long meaningId;
 
 	private String url;
-
-	private Complexity complexity;
 
 	private Long orderBy;
 
@@ -38,14 +34,6 @@ public class MeaningMedia extends AbstractCreateUpdateEntity {
 
 	public void setUrl(String url) {
 		this.url = url;
-	}
-
-	public Complexity getComplexity() {
-		return complexity;
-	}
-
-	public void setComplexity(Complexity complexity) {
-		this.complexity = complexity;
 	}
 
 	public Long getOrderBy() {

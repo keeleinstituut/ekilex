@@ -324,6 +324,7 @@ public class TermSearchDbService extends AbstractDataDbService {
 
 		Field<JSON> mdf = queryHelper.getMeaningDomainsField(wmm.field("meaning_id", Long.class), CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
 
+		// TODO refactor with jsob builder
 		Field<TypeTermMeaningWordRecord[]> mw = DSL
 				.field("array(select row ("
 						+ "wm.word_id,"

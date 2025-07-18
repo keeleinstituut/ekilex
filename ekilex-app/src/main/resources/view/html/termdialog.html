@@ -803,7 +803,6 @@
             <input type="hidden" name="language" th:value="${lexeme.lexemeWord.lang}">
             <input type="hidden" name="opCode" value="usage">
             <input type="hidden" name="value">
-            <input type="hidden" name="complexity" th:value="${T(eki.common.constant.Complexity).DETAIL}">
             <div th:replace="components :: eki_editor_elem"></div>
             <div class="form-group form-check">
               <label class="form-check-label">
@@ -831,7 +830,6 @@
             <input type="hidden" name="id" th:value="${usage.id}">
             <input type="hidden" name="opCode" value="usage">
             <input type="hidden" name="value" th:value="${usage.valuePrese}">
-            <input type="hidden" name="complexity" th:value="${usage.complexity}">
             <div th:replace="components :: eki_editor_elem"></div>
             <div class="form-group form-check">
               <label class="form-check-label">
@@ -992,7 +990,6 @@
             <input type="hidden" name="id" th:value="${lexeme.lexemeId}">
             <input type="hidden" name="opCode" value="lexeme_note">
             <input type="hidden" name="value">
-            <input type="hidden" name="complexity" th:value="${T(eki.common.constant.Complexity).DETAIL}">
             <div th:replace="components :: eki_editor_elem"></div>
             <div class="form-group row">
               <div class="col-md-4">
@@ -1031,7 +1028,6 @@
             <input type="hidden" name="id" th:value="${note.id}">
             <input type="hidden" name="opCode" value="lexeme_note">
             <input type="hidden" name="value" th:value="${note.valuePrese}">
-            <input type="hidden" name="complexity" th:value="${note.complexity}">
             <div th:replace="components :: eki_editor_elem"></div>
             <div class="form-group row">
               <div class="col-md-4">
@@ -1371,7 +1367,6 @@
             <input type="hidden" name="id" th:value="${meaningId}">
             <input type="hidden" name="opCode" value="meaning_note">
             <input type="hidden" name="value">
-            <input type="hidden" name="complexity" th:value="${T(eki.common.constant.Complexity).DETAIL}">
             <div th:replace="components :: eki_editor_elem"></div>
             <div class="form-group row">
               <div class="col-md-4">
@@ -1411,7 +1406,6 @@
             <input type="hidden" name="id" th:value="${meaningId}">
             <input type="hidden" name="opCode" value="meaning_note">
             <input type="hidden" name="value">
-            <input type="hidden" name="complexity" th:value="${T(eki.common.constant.Complexity).DETAIL}">
             <input type="hidden" name="public" value="true">
             <div th:replace="components :: eki_editor_elem"></div>
             <div class="form-group row">
@@ -1446,7 +1440,6 @@
             <input type="hidden" name="id" th:value="${note.id}">
             <input type="hidden" name="opCode" value="meaning_note">
             <input type="hidden" name="value" th:value="${note.valuePrese}">
-            <input type="hidden" name="complexity" th:value="${note.complexity}">
             <div th:replace="components :: eki_editor_elem"></div>
             <div class="form-group row">
               <div class="col-md-4">
@@ -1485,7 +1478,6 @@
             <input type="hidden" name="id" th:value="${note.id}">
             <input type="hidden" name="opCode" value="meaning_note">
             <input type="hidden" name="value" th:value="${note.valuePrese}">
-            <input type="hidden" name="complexity" th:value="${note.complexity}">
             <input type="hidden" name="public" th:value="${note.public}">
             <div th:replace="components :: eki_editor_elem"></div>
             <div class="form-group row">
@@ -1542,7 +1534,6 @@
             <input type="hidden" name="language" value="est">
             <input type="hidden" name="opCode" value="definition">
             <input type="hidden" name="value">
-            <input type="hidden" name="complexity" th:value="${T(eki.common.constant.Complexity).DETAIL}">
             <div th:replace="components :: eki_editor_elem"></div>
             <div class="form-group row">
               <div class="col-md-8" th:if="${userRoleData.master}">
@@ -1607,7 +1598,6 @@
             <input type="hidden" name="id" th:value="${definition.id}">
             <input type="hidden" name="opCode" value="definition">
             <input type="hidden" name="value" th:value="${definition.valuePrese}">
-            <input type="hidden" name="complexity" th:value="${definition.complexity}">
             <div th:replace="components :: eki_editor_elem"></div>
             <div class="form-group row">
               <div class="col-md-4">
@@ -1915,7 +1905,6 @@
           <div class="modal-body">
             <input type="hidden" name="id" th:value="${meaningId}">
             <input type="hidden" name="opCode" value="meaning_image">
-            <input type="hidden" name="complexity" th:value="${T(eki.common.constant.Complexity).DETAIL}">
             <div class="form-group row">
               <div class="col-md-12">
                 <input type="text" class="form-control required-field" th:placeholder="#{term.placeholder.image.url}" name="value" required="required" autocomplete="off"></input>
@@ -1945,7 +1934,6 @@
           <div class="modal-body">
             <input type="hidden" name="id" th:value="${image.id}">
             <input type="hidden" name="opCode" value="meaning_image">
-            <input type="hidden" name="complexity" th:value="${image.complexity}">
             <div class="form-group row">
               <div class="col-md-12">
                 <input type="text" class="form-control required-field" name="value" th:placeholder="#{term.placeholder.image.url}" th:value="${image.url}" required="required" autocomplete="off"></input>
@@ -1975,7 +1963,6 @@
           <div class="modal-body">
             <input type="hidden" name="id" th:value="${meaningId}">
             <input type="hidden" name="opCode" value="meaning_media">
-            <input type="hidden" name="complexity" th:value="${T(eki.common.constant.Complexity).DETAIL}">
             <input type="hidden" name="value">
             <div class="form-group row">
               <div class="col-md-12">
@@ -2001,7 +1988,6 @@
           <div class="modal-body">
             <input type="hidden" name="id" th:value="${media.id}">
             <input type="hidden" name="opCode" value="meaning_media">
-            <input type="hidden" name="complexity" th:value="${media.complexity}">
             <div class="form-group row">
               <div class="col-md-12">
                 <textarea class="form-control" rows="1" name="value" th:text="${media.url}"></textarea>

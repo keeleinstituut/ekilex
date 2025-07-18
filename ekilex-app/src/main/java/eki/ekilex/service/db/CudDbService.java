@@ -62,7 +62,6 @@ import org.jooq.Table;
 import org.jooq.impl.DSL;
 import org.springframework.stereotype.Component;
 
-import eki.common.constant.Complexity;
 import eki.ekilex.data.Classifier;
 import eki.ekilex.data.Freeform;
 import eki.ekilex.data.Government;
@@ -125,9 +124,6 @@ public class CudDbService extends AbstractDataDbService {
 		fieldAndValueMap.put(GOVERNMENT.VALUE, grammar.getValue());
 		fieldAndValueMap.put(GOVERNMENT.MODIFIED_BY, grammar.getModifiedBy());
 		fieldAndValueMap.put(GOVERNMENT.MODIFIED_ON, grammar.getModifiedOn());
-		if (grammar.getComplexity() != null) {
-			fieldAndValueMap.put(GOVERNMENT.COMPLEXITY, grammar.getComplexity().name());
-		}
 
 		mainDb
 				.update(GOVERNMENT)
@@ -145,9 +141,6 @@ public class CudDbService extends AbstractDataDbService {
 		fieldAndValueMap.put(GRAMMAR.MODIFIED_ON, grammar.getModifiedOn());
 		if (StringUtils.isNotBlank(grammar.getLang())) {
 			fieldAndValueMap.put(GRAMMAR.LANG, grammar.getLang());
-		}
-		if (grammar.getComplexity() != null) {
-			fieldAndValueMap.put(GRAMMAR.COMPLEXITY, grammar.getComplexity().name());
 		}
 
 		mainDb
@@ -167,9 +160,6 @@ public class CudDbService extends AbstractDataDbService {
 		fieldAndValueMap.put(USAGE.IS_PUBLIC, usage.isPublic());
 		if (StringUtils.isNotBlank(usage.getLang())) {
 			fieldAndValueMap.put(USAGE.LANG, usage.getLang());
-		}
-		if (usage.getComplexity() != null) {
-			fieldAndValueMap.put(USAGE.COMPLEXITY, usage.getComplexity().name());
 		}
 
 		mainDb
@@ -215,19 +205,14 @@ public class CudDbService extends AbstractDataDbService {
 				.execute();
 	}
 
-	public void updateDefinition(Long id, String value, String valuePrese, String lang, String typeCode, Complexity complexity, Boolean isPublic) {
+	public void updateDefinition(Long id, String value, String valuePrese, String lang, String typeCode, boolean isPublic) {
 
 		Map<Field<?>, Object> fieldAndValueMap = new HashMap<>();
 		fieldAndValueMap.put(DEFINITION.VALUE, value);
 		fieldAndValueMap.put(DEFINITION.VALUE_PRESE, valuePrese);
 		fieldAndValueMap.put(DEFINITION.LANG, lang);
 		fieldAndValueMap.put(DEFINITION.DEFINITION_TYPE_CODE, typeCode);
-		if (complexity != null) {
-			fieldAndValueMap.put(DEFINITION.COMPLEXITY, complexity.name());
-		}
-		if (isPublic != null) {
-			fieldAndValueMap.put(DEFINITION.IS_PUBLIC, isPublic);
-		}
+		fieldAndValueMap.put(DEFINITION.IS_PUBLIC, isPublic);
 
 		mainDb
 				.update(DEFINITION)
@@ -395,9 +380,6 @@ public class CudDbService extends AbstractDataDbService {
 		if (StringUtils.isNotBlank(note.getLang())) {
 			fieldAndValueMap.put(LEXEME_NOTE.LANG, note.getLang());
 		}
-		if (note.getComplexity() != null) {
-			fieldAndValueMap.put(LEXEME_NOTE.COMPLEXITY, note.getComplexity().name());
-		}
 
 		mainDb
 				.update(LEXEME_NOTE)
@@ -483,14 +465,6 @@ public class CudDbService extends AbstractDataDbService {
 		mainDb
 				.update(LEXEME)
 				.set(LEXEME.PROFICIENCY_LEVEL_CODE, proficiencyLevelCode)
-				.where(LEXEME.ID.eq(lexemeId))
-				.execute();
-	}
-
-	public void updateLexemeComplexity(Long lexemeId, String complexity) {
-		mainDb
-				.update(LEXEME)
-				.set(LEXEME.COMPLEXITY, complexity)
 				.where(LEXEME.ID.eq(lexemeId))
 				.execute();
 	}
@@ -718,9 +692,6 @@ public class CudDbService extends AbstractDataDbService {
 		if (StringUtils.isNotBlank(note.getLang())) {
 			fieldAndValueMap.put(MEANING_NOTE.LANG, note.getLang());
 		}
-		if (note.getComplexity() != null) {
-			fieldAndValueMap.put(MEANING_NOTE.COMPLEXITY, note.getComplexity().name());
-		}
 
 		mainDb
 				.update(MEANING_NOTE)
@@ -737,9 +708,6 @@ public class CudDbService extends AbstractDataDbService {
 		//fieldAndValueMap.put(MEANING_IMAGE.IS_PUBLIC, meaningImage.isPublic()); not yet implemented in UI
 		fieldAndValueMap.put(MEANING_IMAGE.MODIFIED_BY, meaningImage.getModifiedBy());
 		fieldAndValueMap.put(MEANING_IMAGE.MODIFIED_ON, meaningImage.getModifiedOn());
-		if (meaningImage.getComplexity() != null) {
-			fieldAndValueMap.put(MEANING_IMAGE.COMPLEXITY, meaningImage.getComplexity().name());
-		}
 
 		mainDb
 				.update(MEANING_IMAGE)
@@ -754,9 +722,6 @@ public class CudDbService extends AbstractDataDbService {
 		fieldAndValueMap.put(MEANING_MEDIA.URL, meaningMedia.getUrl());
 		fieldAndValueMap.put(MEANING_MEDIA.MODIFIED_BY, meaningMedia.getModifiedBy());
 		fieldAndValueMap.put(MEANING_MEDIA.MODIFIED_ON, meaningMedia.getModifiedOn());
-		if (meaningMedia.getComplexity() != null) {
-			fieldAndValueMap.put(MEANING_MEDIA.COMPLEXITY, meaningMedia.getComplexity().name());
-		}
 
 		mainDb
 				.update(MEANING_MEDIA)
@@ -1316,7 +1281,7 @@ public class CudDbService extends AbstractDataDbService {
 		return lexemeIds;
 	}
 
-	public Long createDefinition(Long meaningId, String value, String valuePrese, String languageCode, String definitionTypeCode, Complexity complexity, boolean isPublic) {
+	public Long createDefinition(Long meaningId, String value, String valuePrese, String languageCode, String definitionTypeCode, boolean isPublic) {
 		return mainDb
 				.insertInto(
 						DEFINITION,
@@ -1325,7 +1290,6 @@ public class CudDbService extends AbstractDataDbService {
 						DEFINITION.VALUE,
 						DEFINITION.VALUE_PRESE,
 						DEFINITION.DEFINITION_TYPE_CODE,
-						DEFINITION.COMPLEXITY,
 						DEFINITION.IS_PUBLIC)
 				.values(
 						meaningId,
@@ -1333,7 +1297,6 @@ public class CudDbService extends AbstractDataDbService {
 						value,
 						valuePrese,
 						definitionTypeCode,
-						complexity.name(),
 						isPublic)
 				.returning(DEFINITION.ID)
 				.fetchOne()
@@ -1422,7 +1385,6 @@ public class CudDbService extends AbstractDataDbService {
 						MEANING_NOTE.VALUE,
 						MEANING_NOTE.VALUE_PRESE,
 						MEANING_NOTE.LANG,
-						MEANING_NOTE.COMPLEXITY,
 						MEANING_NOTE.IS_PUBLIC,
 						MEANING_NOTE.CREATED_BY,
 						MEANING_NOTE.CREATED_ON,
@@ -1433,7 +1395,6 @@ public class CudDbService extends AbstractDataDbService {
 						note.getValue(),
 						note.getValuePrese(),
 						note.getLang(),
-						note.getComplexity().name(),
 						note.isPublic(),
 						note.getCreatedBy(),
 						note.getCreatedOn(),
@@ -1451,7 +1412,6 @@ public class CudDbService extends AbstractDataDbService {
 						MEANING_MEDIA,
 						MEANING_MEDIA.MEANING_ID,
 						MEANING_MEDIA.URL,
-						MEANING_MEDIA.COMPLEXITY,
 						MEANING_MEDIA.CREATED_BY,
 						MEANING_MEDIA.CREATED_ON,
 						MEANING_MEDIA.MODIFIED_BY,
@@ -1459,7 +1419,6 @@ public class CudDbService extends AbstractDataDbService {
 				.values(
 						meaningId,
 						meaningMedia.getUrl(),
-						meaningMedia.getComplexity().name(),
 						meaningMedia.getCreatedBy(),
 						meaningMedia.getCreatedOn(),
 						meaningMedia.getModifiedBy(),
@@ -1477,7 +1436,6 @@ public class CudDbService extends AbstractDataDbService {
 						MEANING_IMAGE.MEANING_ID,
 						MEANING_IMAGE.TITLE,
 						MEANING_IMAGE.URL,
-						MEANING_IMAGE.COMPLEXITY,
 						MEANING_IMAGE.CREATED_BY,
 						MEANING_IMAGE.CREATED_ON,
 						MEANING_IMAGE.MODIFIED_BY,
@@ -1486,7 +1444,6 @@ public class CudDbService extends AbstractDataDbService {
 						meaningId,
 						meaningImage.getTitle(),
 						meaningImage.getUrl(),
-						meaningImage.getComplexity().name(),
 						meaningImage.getCreatedBy(),
 						meaningImage.getCreatedOn(),
 						meaningImage.getModifiedBy(),
@@ -1604,8 +1561,7 @@ public class CudDbService extends AbstractDataDbService {
 						LEXEME.VALUE_STATE_CODE,
 						LEXEME.IS_WORD,
 						LEXEME.IS_COLLOCATION,
-						LEXEME.IS_PUBLIC,
-						LEXEME.COMPLEXITY)
+						LEXEME.IS_PUBLIC)
 				.values(
 						meaningId,
 						wordId,
@@ -1615,8 +1571,7 @@ public class CudDbService extends AbstractDataDbService {
 						valueStateCode,
 						Boolean.TRUE,
 						Boolean.FALSE,
-						isPublic,
-						COMPLEXITY_DETAIL)
+						isPublic)
 				.returning(LEXEME.ID)
 				.fetchOne()
 				.getId();
@@ -1666,7 +1621,6 @@ public class CudDbService extends AbstractDataDbService {
 						LEXEME_NOTE.VALUE,
 						LEXEME_NOTE.VALUE_PRESE,
 						LEXEME_NOTE.LANG,
-						LEXEME_NOTE.COMPLEXITY,
 						LEXEME_NOTE.IS_PUBLIC,
 						LEXEME_NOTE.CREATED_BY,
 						LEXEME_NOTE.CREATED_ON,
@@ -1677,7 +1631,6 @@ public class CudDbService extends AbstractDataDbService {
 						note.getValue(),
 						note.getValuePrese(),
 						note.getLang(),
-						note.getComplexity().name(),
 						note.isPublic(),
 						note.getCreatedBy(),
 						note.getCreatedOn(),
@@ -1819,7 +1772,6 @@ public class CudDbService extends AbstractDataDbService {
 						GRAMMAR.VALUE,
 						GRAMMAR.VALUE_PRESE,
 						GRAMMAR.LANG,
-						GRAMMAR.COMPLEXITY,
 						GRAMMAR.CREATED_BY,
 						GRAMMAR.CREATED_ON,
 						GRAMMAR.MODIFIED_BY,
@@ -1829,7 +1781,6 @@ public class CudDbService extends AbstractDataDbService {
 						grammar.getValue(),
 						grammar.getValuePrese(),
 						grammar.getLang(),
-						grammar.getComplexity().name(),
 						grammar.getCreatedBy(),
 						grammar.getCreatedOn(),
 						grammar.getModifiedBy(),
@@ -1846,7 +1797,6 @@ public class CudDbService extends AbstractDataDbService {
 						GOVERNMENT,
 						GOVERNMENT.LEXEME_ID,
 						GOVERNMENT.VALUE,
-						GOVERNMENT.COMPLEXITY,
 						GOVERNMENT.CREATED_BY,
 						GOVERNMENT.CREATED_ON,
 						GOVERNMENT.MODIFIED_BY,
@@ -1854,7 +1804,6 @@ public class CudDbService extends AbstractDataDbService {
 				.values(
 						lexemeId,
 						government.getValue(),
-						government.getComplexity().name(),
 						government.getCreatedBy(),
 						government.getCreatedOn(),
 						government.getModifiedBy(),
@@ -1873,7 +1822,6 @@ public class CudDbService extends AbstractDataDbService {
 						USAGE.VALUE,
 						USAGE.VALUE_PRESE,
 						USAGE.LANG,
-						USAGE.COMPLEXITY,
 						USAGE.CREATED_BY,
 						USAGE.CREATED_ON,
 						USAGE.MODIFIED_BY,
@@ -1884,7 +1832,6 @@ public class CudDbService extends AbstractDataDbService {
 						usage.getValue(),
 						usage.getValuePrese(),
 						usage.getLang(),
-						usage.getComplexity().name(),
 						usage.getCreatedBy(),
 						usage.getCreatedOn(),
 						usage.getModifiedBy(),

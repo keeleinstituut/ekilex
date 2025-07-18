@@ -158,21 +158,6 @@
       </th:block>
     </div>
   </div>
-  <div class="hidden-buttons row" th:if="${lexeme.complexity != null}" th:fragment="lexeme_complexity" style="text-decoration: line-through;" title="Asendub avaldamisega">
-    <div class="col pr-0 col-w13rem">
-      <span class="lbl" th:text="#{lex.complexity}">Detailsus</span>
-    </div>
-    <div class="col pl-0">
-      <span th:text="#{'enum.complexity.' + ${lexeme.complexity}}"></span>
-      <button type="button" class="btn badge badge-primary"
-              th:title="#{common.edit}"
-              data-toggle="modal"
-              th:data-target="${'#editLexemeComplexityDlg_' + lexeme.lexemeId}"
-              sec:authorize="#vars.lexeme.crudGrant">
-        <i class="fa fa-caret-down" aria-hidden="true"></i>
-      </button>
-    </div>
-  </div>
   <div class="hidden-buttons row" th:if="${lexeme.lexemeValueState != null}" th:fragment="lexeme_value_state">
     <div class="col pr-0 col-w13rem">
       <span class="lbl" th:text="#{lex.lexeme.value.state}">Väärtusolek</span>
@@ -236,7 +221,6 @@
       <span th:each="grammar,grammarIter : ${lexeme.grammars}" class="d-flex align-items-center">
         <span th:replace="lexdialog :: edit_lexeme_grammar_dlg"></span>
         <span th:utext="${grammar.valuePrese}"></span>
-        <span class="ctxt" th:text="'(' + #{'enum.complexity.' + ${grammar.complexity}} + ')'" data-plugin="complexityAndPublicity"></span>
         <th:block
                   sec:authorize="#vars.lexeme.meaning.crudGrant"
                   th:replace="components :: action_dropdown(
@@ -878,7 +862,6 @@
             </div>
             <div class="invisible-buttons action-buttons-anchor">
               <span th:utext="${definition.valuePrese}"></span>
-              <span class="ctxt" th:text="'(' + #{'enum.complexity.' + ${definition.complexity}} + ')'" data-plugin="complexityAndPublicity"></span>
               <span class="ctxt" th:each="datasetCode,iter : ${definition.datasetCodes}" th:text="${(iter.first ? '[' : '') + datasetCode + (iter.last ? ']' : ', ')}"></span>
               <th:block
               sec:authorize="#vars.lexeme.meaning.crudGrant"
@@ -986,7 +969,6 @@
                   </div>
                   <div class="invisible-buttons action-buttons-anchor">
                     <span th:utext="${note.valuePrese}"></span>
-                    <span class="ctxt" th:text="'(' + #{'boolean.public.' + ${note.public}} + ')'" th:if="${definition.crudGrant}" data-plugin="complexityAndPublicity"></span>
                     <th:block
                       sec:authorize="#vars.lexeme.meaning.crudGrant"
                       th:replace="components :: action_dropdown(
@@ -1531,7 +1513,6 @@
             <div class="col hidden-buttons">
               <div class="action-buttons-anchor">
                 <span class="pr-3" th:text="${government.value}"></span>
-                <span class="ctxt" th:text="'(' + #{'enum.complexity.' + ${government.complexity}} + ')'" data-plugin="complexityAndPublicity"></span>
                 <th:block
                   sec:authorize="#vars.lexeme.meaning.crudGrant"
                   th:replace="components :: action_dropdown(
@@ -1602,7 +1583,6 @@
             </div>
             <div class="invisible-buttons action-buttons-anchor">
               <span th:utext="${usage.valuePrese}"></span>
-              <span class="ctxt" th:text="'(' + #{'enum.complexity.' + ${usage.complexity}} + ')'" data-plugin="complexityAndPublicity"></span>
               <th:block
               sec:authorize="#vars.lexeme.meaning.crudGrant"
               th:replace="components :: action_dropdown(
@@ -1820,7 +1800,6 @@
             </div>
             <div class="invisible-buttons action-buttons-anchor">
               <span th:utext="${note.valuePrese}"></span>
-              <span class="ctxt" th:text="'(' + #{'enum.complexity.' + ${note.complexity}} + ')'" data-plugin="complexityAndPublicity"></span>
               <th:block
                   sec:authorize="#vars.lexeme.meaning.crudGrant"
                   th:replace="components :: action_dropdown(
@@ -1900,7 +1879,6 @@
             </div>
             <div class="invisible-buttons action-buttons-anchor">
               <span th:utext="${note.valuePrese}"></span>
-              <span class="ctxt" th:text="'(' + #{'enum.complexity.' + ${note.complexity}} + ')'" th:if="${lexeme.meaning.crudGrant}" data-plugin="complexityAndPublicity"></span>
               <th:block
                   sec:authorize="#vars.lexeme.meaning.crudGrant"
                   th:replace="components :: action_dropdown(

@@ -34,8 +34,6 @@ public class LexCollocationTuple extends AbstractDataObject {
 
 	private List<String> collocUsages;
 
-	private String collocComplexity;
-
 	public Long getLexCollocId() {
 		return lexCollocId;
 	}
@@ -138,13 +136,5 @@ public class LexCollocationTuple extends AbstractDataObject {
 
 	public void setCollocUsages(List<String> collocUsages) {
 		this.collocUsages = collocUsages;
-	}
-
-	public String getCollocComplexity() {
-		return collocComplexity;
-	}
-
-	public void setCollocComplexity(String collocComplexity) {
-		this.collocComplexity = collocComplexity;
 	}
 }

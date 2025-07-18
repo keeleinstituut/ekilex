@@ -30,6 +30,7 @@ import static eki.ekilex.data.db.main.Tables.MEANING_NOTE_SOURCE_LINK;
 import static eki.ekilex.data.db.main.Tables.MEANING_RELATION;
 import static eki.ekilex.data.db.main.Tables.MEANING_SEMANTIC_TYPE;
 import static eki.ekilex.data.db.main.Tables.MEANING_TAG;
+import static eki.ekilex.data.db.main.Tables.PUBLISHING;
 import static eki.ekilex.data.db.main.Tables.USAGE_SOURCE_LINK;
 import static eki.ekilex.data.db.main.Tables.WORD_ACTIVITY_LOG;
 import static eki.ekilex.data.db.main.Tables.WORD_FORUM;
@@ -114,6 +115,7 @@ import eki.ekilex.data.db.main.tables.MeaningNoteSourceLink;
 import eki.ekilex.data.db.main.tables.MeaningRelation;
 import eki.ekilex.data.db.main.tables.MeaningSemanticType;
 import eki.ekilex.data.db.main.tables.MeaningTag;
+import eki.ekilex.data.db.main.tables.Publishing;
 import eki.ekilex.data.db.main.tables.Source;
 import eki.ekilex.data.db.main.tables.UsageSourceLink;
 import eki.ekilex.data.db.main.tables.Word;
@@ -1106,23 +1108,28 @@ public class SearchFilterHelper implements GlobalConstant, ActivityFunct, Freefo
 		return where.andExists(DSL.select(lal.ID).from(l1, lal, al).where(where1));
 	}
 
-	public Condition applyLexemeComplexityFilters(List<SearchCriterion> searchCriteria, Field<String> entityComplexityField, Condition where) {
+	public Condition applyPublishingTargetFilters(List<SearchCriterion> searchCriteria, String entityName, Field<Long> entityIdField, Condition where) {
 
-		List<SearchCriterion> filteredCriteria = filterCriteriaBySearchKeyAndOperands(searchCriteria, SearchKey.COMPLEXITY, SearchOperand.EQUALS);
+		List<SearchCriterion> filteredCriteria = filterCriteriaBySearchKeyAndOperands(searchCriteria, SearchKey.PUBLISHING_TARGET, SearchOperand.EQUALS);
 
 		if (CollectionUtils.isEmpty(filteredCriteria)) {
 			return where;
 		}
 
+		Publishing pub = PUBLISHING.as("pub");
+		Condition where1 = pub.ENTITY_NAME.eq(entityName)
+				.and(pub.ENTITY_ID.eq(entityIdField));
+
 		for (SearchCriterion criterion : filteredCriteria) {
-			String complexity = criterion.getSearchValue().toString();
+			String publishingTargetName = criterion.getSearchValue().toString();
 			boolean isNot = criterion.isNot();
-			Condition critWhere = entityComplexityField.eq(complexity);
+			Condition critWhere = pub.TARGET_NAME.eq(publishingTargetName);
 			if (isNot) {
 				critWhere = DSL.not(critWhere);
 			}
-			where = where.and(critWhere);
+			where1 = where1.and(critWhere);
 		}
+		where = where.and(DSL.exists(DSL.select(pub.ID).from(pub).where(where1)));
 		return where;
 	}
 
@@ -1135,8 +1142,8 @@ public class SearchFilterHelper implements GlobalConstant, ActivityFunct, Freefo
 		}
 
 		LexemePos lpos = LEXEME_POS.as("lpos");
-
 		Condition where1 = lpos.LEXEME_ID.eq(lexemeIdField);
+
 		for (SearchCriterion criterion : filteredCriteria) {
 			String lexemePosCode = criterion.getSearchValue().toString();
 			boolean isNot = criterion.isNot();

@@ -194,7 +194,6 @@ public class TermSearchConditionComposer implements GlobalConstant, ActivityFunc
 					whered1 = searchFilterHelper.applyPublicityFilters(searchCriteria, d1.IS_PUBLIC, whered1);
 					whered1 = searchFilterHelper.applyDefinitionSourceFilters(searchCriteria, d1.ID, whered1);
 					whered1 = searchFilterHelper.applyDefinitionSourceRefFilter(searchCriteria, d1.ID, whered1);
-					whered1 = searchFilterHelper.applyLexemeComplexityFilters(searchCriteria, d1.COMPLEXITY, whered1);
 					whered1 = searchFilterHelper.applyDefinitionNoteFilters(searchCriteria, d1.ID, whered1);
 					wherem = wherem.andExists(DSL.select(d1.ID).from(d1).where(whered1));
 				}
@@ -228,7 +227,6 @@ public class TermSearchConditionComposer implements GlobalConstant, ActivityFunc
 					whereff1 = searchFilterHelper.applyUsageSourceFilters(searchCriteria, u1.ID, whereff1);
 					whereff1 = searchFilterHelper.applyUsageSourceRefFilter(searchCriteria, u1.ID, whereff1);
 					whereff1 = searchFilterHelper.applyPublicityFilters(searchCriteria, u1.IS_PUBLIC, whereff1);
-					whereff1 = searchFilterHelper.applyLexemeComplexityFilters(searchCriteria, u1.COMPLEXITY, whereff1);
 					wherel = wherel.andExists(DSL.select(u1.ID).from(u1).where(whereff1));
 				}
 

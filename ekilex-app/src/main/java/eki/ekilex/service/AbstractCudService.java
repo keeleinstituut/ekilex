@@ -9,7 +9,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import eki.common.constant.ActivityEntity;
 import eki.common.constant.ActivityOwner;
-import eki.common.constant.Complexity;
 import eki.common.constant.PublishingConstant;
 import eki.common.constant.WordRelationGroupType;
 import eki.common.service.TextDecorationService;
@@ -48,12 +47,12 @@ public abstract class AbstractCudService extends AbstractService implements Publ
 
 	@Transactional(rollbackOn = Exception.class)
 	public Long createDefinition(
-			Long meaningId, String valuePrese, String languageCode, String datasetCode, Complexity complexity, String typeCode, boolean isPublic,
-			EkiUser user, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
+			Long meaningId, String valuePrese, String languageCode, String datasetCode, String typeCode, boolean isPublic, EkiUser user,
+			String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
 
 		String value = textDecorationService.removeEkiElementMarkup(valuePrese);
 		ActivityLogData activityLog = activityLogService.prepareActivityLog("createDefinition", meaningId, ActivityOwner.MEANING, roleDatasetCode, isManualEventOnUpdateEnabled);
-		Long definitionId = cudDbService.createDefinition(meaningId, value, valuePrese, languageCode, typeCode, complexity, isPublic);
+		Long definitionId = cudDbService.createDefinition(meaningId, value, valuePrese, languageCode, typeCode, isPublic);
 		cudDbService.createDefinitionDataset(definitionId, datasetCode);
 		createPublishing(user, roleDatasetCode, TARGET_NAME_WW_UNIF, ENTITY_NAME_DEFINITION, definitionId);
 		activityLogService.createActivityLog(activityLog, definitionId, ActivityEntity.DEFINITION);
@@ -87,12 +86,11 @@ public abstract class AbstractCudService extends AbstractService implements Publ
 	}
 
 	@Transactional(rollbackOn = Exception.class)
-	public Long createUsage(Long lexemeId, String valuePrese, String lang, Complexity complexity, boolean isPublic, EkiUser user, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
+	public Long createUsage(Long lexemeId, String valuePrese, String lang, boolean isPublic, EkiUser user, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
 
 		Usage usage = new Usage();
 		usage.setValuePrese(valuePrese);
 		usage.setLang(lang);
-		usage.setComplexity(complexity);
 		usage.setPublic(isPublic);
 
 		return createUsage(lexemeId, usage, user, roleDatasetCode, isManualEventOnUpdateEnabled);
@@ -202,12 +200,11 @@ public abstract class AbstractCudService extends AbstractService implements Publ
 		activityLogService.createActivityLog(activityLog, sourceLinkId, ActivityEntity.DEFINITION_SOURCE_LINK);
 	}
 
-	protected Note initNote(String valuePrese, String lang, Complexity complexity, boolean isPublic) {
+	protected Note initNote(String valuePrese, String lang, boolean isPublic) {
 
 		Note note = new Note();
 		note.setValuePrese(valuePrese);
 		note.setLang(lang);
-		note.setComplexity(complexity);
 		note.setPublic(isPublic);
 		setValueAndPrese(note);
 

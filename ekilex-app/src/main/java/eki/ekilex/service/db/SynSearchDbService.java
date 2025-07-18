@@ -586,7 +586,6 @@ public class SynSearchDbService extends AbstractDataDbService {
 		synLexeme.setWordId(wordId);
 		synLexeme.setDatasetCode(datasetCode);
 		synLexeme.setWeight(weight);
-		synLexeme.setComplexity(COMPLEXITY_DETAIL);
 		synLexeme.setLevel1(synLexemeLevel1);
 		synLexeme.setLevel2(DEFAULT_LEXEME_LEVEL);
 		synLexeme.setIsPublic(PUBLICITY_PUBLIC);
@@ -645,7 +644,6 @@ public class SynSearchDbService extends AbstractDataDbService {
 			Long sourceUsageId = sourceUsage.getId();
 			UsageRecord targetUsage = sourceUsage.copy();
 			targetUsage.setIsPublic(PUBLICITY_PRIVATE);
-			targetUsage.setComplexity(COMPLEXITY_ANY);
 			targetUsage.changed(USAGE.ORDER_BY, false);
 			targetUsage.store();
 			Long targetUsageId = targetUsage.getId();
@@ -691,7 +689,6 @@ public class SynSearchDbService extends AbstractDataDbService {
 			DefinitionRecord synDefinition = sourceDefinition.copy();
 			synDefinition.setMeaningId(targetMeaningId);
 			synDefinition.setIsPublic(PUBLICITY_PRIVATE);
-			synDefinition.setComplexity(COMPLEXITY_ANY);
 			synDefinition.changed(DEFINITION.ORDER_BY, false);
 			synDefinition.store();
 			Long synDefinitionId = synDefinition.getId();

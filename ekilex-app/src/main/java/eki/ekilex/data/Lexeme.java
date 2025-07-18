@@ -2,7 +2,6 @@ package eki.ekilex.data;
 
 import java.util.List;
 
-import eki.common.constant.Complexity;
 import eki.common.data.LexemeLevel;
 
 public class Lexeme extends AbstractGrantEntity implements LexemeLevel {
@@ -42,8 +41,6 @@ public class Lexeme extends AbstractGrantEntity implements LexemeLevel {
 	private Float weight;
 
 	private Long orderBy;
-
-	private Complexity complexity;
 
 	private boolean isWord;
 
@@ -230,14 +227,6 @@ public class Lexeme extends AbstractGrantEntity implements LexemeLevel {
 
 	public void setOrderBy(Long orderBy) {
 		this.orderBy = orderBy;
-	}
-
-	public Complexity getComplexity() {
-		return complexity;
-	}
-
-	public void setComplexity(Complexity complexity) {
-		this.complexity = complexity;
 	}
 
 	public boolean isWord() {

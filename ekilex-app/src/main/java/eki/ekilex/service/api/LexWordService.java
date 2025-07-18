@@ -12,7 +12,6 @@ import org.springframework.stereotype.Component;
 
 import eki.common.constant.ActivityEntity;
 import eki.common.constant.ActivityOwner;
-import eki.common.constant.Complexity;
 import eki.ekilex.data.ActivityLogData;
 import eki.ekilex.data.EkiUser;
 import eki.ekilex.data.SimpleWord;
@@ -29,8 +28,6 @@ import eki.ekilex.service.db.api.WordDbService;
 
 @Component
 public class LexWordService extends AbstractApiCudService {
-
-	private static final Complexity DEFAULT_COMPLEXITY = Complexity.DETAIL;
 
 	private static final boolean DEFAULT_PUBLICITY = PUBLICITY_PUBLIC;
 
@@ -183,14 +180,14 @@ public class LexWordService extends AbstractApiCudService {
 			if (CollectionUtils.isNotEmpty(definitions)) {
 
 				for (Definition definition : definitions) {
-					createOrUpdateDefinition(definition, meaningId, datasetCode, DEFAULT_COMPLEXITY, DEFAULT_PUBLICITY, roleDatasetCode);
+					createOrUpdateDefinition(definition, meaningId, datasetCode, DEFAULT_PUBLICITY, roleDatasetCode);
 				}
 			}
 
 			if (CollectionUtils.isNotEmpty(usages)) {
 
 				for (Usage usage : usages) {
-					createOrUpdateUsage(lexemeId, usage, DEFAULT_COMPLEXITY, DEFAULT_PUBLICITY, roleDatasetCode);
+					createOrUpdateUsage(lexemeId, usage, roleDatasetCode);
 				}
 			}
 		}

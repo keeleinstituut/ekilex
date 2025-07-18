@@ -54,7 +54,6 @@ create type type_mt_definition as (
   value text, 
   value_prese text, 
   lang char(3), 
-  complexity varchar(100), 
   is_public boolean
 );
 
@@ -88,7 +87,6 @@ create type type_mt_lexeme_freeform as (
   value text, 
   value_prese text, 
   lang char(3), 
-  complexity varchar(100), 
   is_public boolean, 
   created_by text, 
   created_on timestamp, 

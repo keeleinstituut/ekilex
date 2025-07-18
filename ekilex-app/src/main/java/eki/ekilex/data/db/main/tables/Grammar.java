@@ -17,7 +17,7 @@ import org.jooq.ForeignKey;
 import org.jooq.Identity;
 import org.jooq.Name;
 import org.jooq.Record;
-import org.jooq.Row12;
+import org.jooq.Row11;
 import org.jooq.Schema;
 import org.jooq.Table;
 import org.jooq.TableField;
@@ -78,11 +78,6 @@ public class Grammar extends TableImpl<GrammarRecord> {
      * The column <code>public.grammar.lang</code>.
      */
     public final TableField<GrammarRecord, String> LANG = createField(DSL.name("lang"), SQLDataType.CHAR(3).nullable(false), this, "");
-
-    /**
-     * The column <code>public.grammar.complexity</code>.
-     */
-    public final TableField<GrammarRecord, String> COMPLEXITY = createField(DSL.name("complexity"), SQLDataType.VARCHAR(100).nullable(false), this, "");
 
     /**
      * The column <code>public.grammar.created_by</code>.
@@ -211,11 +206,11 @@ public class Grammar extends TableImpl<GrammarRecord> {
     }
 
     // -------------------------------------------------------------------------
-    // Row12 type methods
+    // Row11 type methods
     // -------------------------------------------------------------------------
 
     @Override
-    public Row12<Long, Long, Long, String, String, String, String, String, LocalDateTime, String, LocalDateTime, Long> fieldsRow() {
-        return (Row12) super.fieldsRow();
+    public Row11<Long, Long, Long, String, String, String, String, LocalDateTime, String, LocalDateTime, Long> fieldsRow() {
+        return (Row11) super.fieldsRow();
     }
 }

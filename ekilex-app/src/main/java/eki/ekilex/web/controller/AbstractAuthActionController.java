@@ -15,11 +15,11 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import eki.common.constant.Complexity;
 import eki.common.constant.DatasetType;
 import eki.common.constant.FreeformConstant;
 import eki.common.constant.FreeformOwner;
 import eki.common.constant.GlobalConstant;
+import eki.common.constant.PublishingConstant;
 import eki.common.constant.SourceType;
 import eki.common.constant.TagType;
 import eki.common.constant.TextDecoration;
@@ -269,9 +269,9 @@ public abstract class AbstractAuthActionController implements WebConstant, Syste
 		return Arrays.asList(SourceType.class.getEnumConstants());
 	}
 
-	@ModelAttribute("complexities")
-	public List<Complexity> getComplexities() {
-		return Arrays.asList(Complexity.ANY, Complexity.SIMPLE, Complexity.DETAIL);
+	@ModelAttribute("publishingTargetNames")
+	public List<String> getPublishingTargetNames() {
+		return Arrays.asList(PublishingConstant.PUBLISHING_TARGET_NAMES);
 	}
 
 	@ModelAttribute("enabledDatasetTypes")

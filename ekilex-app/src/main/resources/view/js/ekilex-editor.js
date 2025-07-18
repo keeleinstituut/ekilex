@@ -24,10 +24,6 @@ function initEkiEditorDlg(editDlg, editorOptions) {
 	let errorTemplate = '<span class="error-text">' + errorText + '</span>';
 	editFld.val(valueInput.val());
 
-	const complexityBtns = editDlg.find('[name="complexity"]');
-	if (complexityBtns.filter(':checked').length === 0) {
-		complexityBtns.eq(complexityBtns.length - 1).prop('checked', true);
-	}
 	initCkEditor(editFld, editorOptions);
 
 	cancelBtn.off('click').on('click', function() {
@@ -75,10 +71,6 @@ function initMultipleEkiEditorDlg(editDlg, editorOptions) {
   let cancelBtn = footer.find("[data-dismiss=modal]");
   let errorText = messages["editor.error.add.note"];
   let errorTemplate = '<span class="error-text">' + errorText + "</span>";
-  const complexityBtns = editDlg.find('[name="complexity"]');
-  if (complexityBtns.filter(":checked").length === 0) {
-    complexityBtns.eq(complexityBtns.length - 1).prop("checked", true);
-  }
   // Init ckeditor for each field
   editFields.forEach(({ editorField, valueField }) => {
     editorField.val(valueField.val());

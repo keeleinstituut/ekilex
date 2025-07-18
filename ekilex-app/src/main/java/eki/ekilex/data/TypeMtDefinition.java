@@ -1,7 +1,5 @@
 package eki.ekilex.data;
 
-import eki.common.constant.Complexity;
-
 public class TypeMtDefinition extends AbstractGrantEntity {
 
 	private static final long serialVersionUID = 1L;
@@ -15,8 +13,6 @@ public class TypeMtDefinition extends AbstractGrantEntity {
 	private String valuePrese;
 
 	private String lang;
-
-	private Complexity complexity;
 
 	private boolean isPublic;
 
@@ -58,14 +54,6 @@ public class TypeMtDefinition extends AbstractGrantEntity {
 
 	public void setLang(String lang) {
 		this.lang = lang;
-	}
-
-	public Complexity getComplexity() {
-		return complexity;
-	}
-
-	public void setComplexity(Complexity complexity) {
-		this.complexity = complexity;
 	}
 
 	public boolean isPublic() {

@@ -2,8 +2,6 @@ package eki.ekilex.data;
 
 import java.util.List;
 
-import eki.common.constant.Complexity;
-
 public class MeaningImage extends AbstractCreateUpdateEntity {
 
 	private static final long serialVersionUID = 1L;
@@ -15,8 +13,6 @@ public class MeaningImage extends AbstractCreateUpdateEntity {
 	private String url;
 
 	private String title;
-
-	private Complexity complexity;
 
 	private Long orderBy;
 
@@ -52,14 +48,6 @@ public class MeaningImage extends AbstractCreateUpdateEntity {
 
 	public void setTitle(String title) {
 		this.title = title;
-	}
-
-	public Complexity getComplexity() {
-		return complexity;
-	}
-
-	public void setComplexity(Complexity complexity) {
-		this.complexity = complexity;
 	}
 
 	public Long getOrderBy() {

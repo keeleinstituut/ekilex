@@ -68,7 +68,6 @@ import org.jooq.Result;
 import org.jooq.impl.DSL;
 import org.springframework.stereotype.Component;
 
-import eki.common.constant.Complexity;
 import eki.common.constant.GlobalConstant;
 import eki.ekilex.data.LexCollocationGroupTuple;
 import eki.ekilex.data.LexCollocationTuple;
@@ -212,13 +211,11 @@ public class CompositionDbService extends AbstractDataDbService implements Globa
 		boolean isPublic = sourceLexeme.getIsPublic() || targetLexeme.getIsPublic();
 		boolean isWord = sourceLexeme.getIsWord() || targetLexeme.getIsWord();
 		boolean isCollocation = sourceLexeme.getIsCollocation() || targetLexeme.getIsCollocation();
-		Complexity complexity = Complexity.ANY;
 		mainDb
 				.update(LEXEME)
 				.set(LEXEME.IS_PUBLIC, isPublic)
 				.set(LEXEME.IS_WORD, isWord)
 				.set(LEXEME.IS_COLLOCATION, isCollocation)
-				.set(LEXEME.COMPLEXITY, complexity.name())
 				.where(LEXEME.ID.eq(targetLexemeId))
 				.execute();
 	}
@@ -569,8 +566,7 @@ public class CompositionDbService extends AbstractDataDbService implements Globa
 						.select(def2.ID)
 						.from(def2)
 						.where(def2.MEANING_ID.eq(targetMeaningId)
-								.and(def2.VALUE.eq(def1.VALUE))
-								.and(def2.COMPLEXITY.eq(def1.COMPLEXITY))))
+								.and(def2.VALUE.eq(def1.VALUE))))
 				.execute();
 	}
 
@@ -924,8 +920,7 @@ public class CompositionDbService extends AbstractDataDbService implements Globa
 						c.DEFINITION.as("colloc_definition"),
 						c.FREQUENCY.as("colloc_frequency"),
 						c.SCORE.as("colloc_score"),
-						c.USAGES.as("colloc_usages"),
-						c.COMPLEXITY.as("colloc_complexity"))
+						c.USAGES.as("colloc_usages"))
 				.from(lc, c)
 				.where(lc.LEXEME_ID.eq(lexemeId)
 						.and(c.ID.eq(lc.COLLOCATION_ID)))
@@ -965,7 +960,6 @@ public class CompositionDbService extends AbstractDataDbService implements Globa
 		BigDecimal frequency = lexCollocationTuple.getCollocFrequency() == null ? null : BigDecimal.valueOf(lexCollocationTuple.getCollocFrequency());
 		BigDecimal score = lexCollocationTuple.getCollocScore() == null ? null : BigDecimal.valueOf(lexCollocationTuple.getCollocScore());
 		String[] usages = lexCollocationTuple.getCollocUsages() == null ? null : lexCollocationTuple.getCollocUsages().toArray(new String[0]);
-		String complexity = lexCollocationTuple.getCollocComplexity();
 
 		return mainDb
 				.insertInto(COLLOCATION,
@@ -973,9 +967,8 @@ public class CompositionDbService extends AbstractDataDbService implements Globa
 						COLLOCATION.DEFINITION,
 						COLLOCATION.FREQUENCY,
 						COLLOCATION.SCORE,
-						COLLOCATION.USAGES,
-						COLLOCATION.COMPLEXITY)
-				.values(value, definition, frequency, score, usages, complexity)
+						COLLOCATION.USAGES)
+				.values(value, definition, frequency, score, usages)
 				.returning(COLLOCATION.ID)
 				.fetchOne()
 				.getId();

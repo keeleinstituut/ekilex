@@ -236,7 +236,6 @@ public class MeaningTableDbService implements GlobalConstant, SystemConstant, Fr
 						Routines.encodeText(d.VALUE),
 						d.VALUE_PRESE,
 						d.LANG,
-						d.COMPLEXITY,
 						d.IS_PUBLIC)
 				.toString();
 		Field<TypeMtDefinitionRecord[]> daggf = DSL.field("array_agg(" + drowsql + "::type_mt_definition order by d.order_by)", TypeMtDefinitionRecord[].class);

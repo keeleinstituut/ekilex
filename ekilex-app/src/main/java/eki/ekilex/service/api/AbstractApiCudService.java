@@ -8,7 +8,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import eki.common.constant.ActivityEntity;
 import eki.common.constant.ActivityOwner;
-import eki.common.constant.Complexity;
 import eki.ekilex.data.ActivityLogData;
 import eki.ekilex.data.SourceLink;
 import eki.ekilex.data.Usage;
@@ -21,7 +20,7 @@ public abstract class AbstractApiCudService extends AbstractCudService {
 	@Autowired
 	protected SourceLinkDbService sourceLinkDbService;
 
-	protected void createOrUpdateDefinition(Definition definition, Long meaningId, String datasetCode, Complexity defaultComplexity, Boolean defaultPublicity, String roleDatasetCode) throws Exception {
+	protected void createOrUpdateDefinition(Definition definition, Long meaningId, String datasetCode, boolean isPublic, String roleDatasetCode) throws Exception {
 
 		Long definitionId = definition.getId();
 		String definitionValue = StringUtils.trim(definition.getValue());
@@ -36,11 +35,11 @@ public abstract class AbstractApiCudService extends AbstractCudService {
 		ActivityLogData activityLog;
 		if (definitionId == null) {
 			activityLog = activityLogService.prepareActivityLog("createDefinition", meaningId, ActivityOwner.MEANING, roleDatasetCode, MANUAL_EVENT_ON_UPDATE_ENABLED);
-			definitionId = cudDbService.createDefinition(meaningId, definitionValue, definitionValue, definitionLang, definitionTypeCode, defaultComplexity, defaultPublicity);
+			definitionId = cudDbService.createDefinition(meaningId, definitionValue, definitionValue, definitionLang, definitionTypeCode, isPublic);
 			cudDbService.createDefinitionDataset(definitionId, datasetCode);
 		} else {
 			activityLog = activityLogService.prepareActivityLog("updateDefinition", meaningId, ActivityOwner.MEANING, roleDatasetCode, MANUAL_EVENT_ON_UPDATE_ENABLED);
-			cudDbService.updateDefinition(definitionId, definitionValue, definitionValue, definitionLang, definitionTypeCode, null, null);
+			cudDbService.updateDefinition(definitionId, definitionValue, definitionValue, definitionLang, definitionTypeCode, isPublic);
 		}
 		activityLogService.createActivityLog(activityLog, definitionId, ActivityEntity.DEFINITION);
 
@@ -58,7 +57,7 @@ public abstract class AbstractApiCudService extends AbstractCudService {
 		}
 	}
 
-	protected void createOrUpdateUsage(Long lexemeId, Usage usage, Complexity defaultComplexity, Boolean defaultPublicity, String roleDatasetCode) throws Exception {
+	protected void createOrUpdateUsage(Long lexemeId, Usage usage, String roleDatasetCode) throws Exception {
 
 		Long usageId = usage.getId();
 		List<SourceLink> usageSourceLinks = usage.getSourceLinks();

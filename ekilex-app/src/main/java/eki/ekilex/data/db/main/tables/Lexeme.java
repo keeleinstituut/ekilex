@@ -17,7 +17,7 @@ import org.jooq.ForeignKey;
 import org.jooq.Identity;
 import org.jooq.Name;
 import org.jooq.Record;
-import org.jooq.Row15;
+import org.jooq.Row14;
 import org.jooq.Schema;
 import org.jooq.Table;
 import org.jooq.TableField;
@@ -83,11 +83,6 @@ public class Lexeme extends TableImpl<LexemeRecord> {
      * The column <code>public.lexeme.value_state_code</code>.
      */
     public final TableField<LexemeRecord, String> VALUE_STATE_CODE = createField(DSL.name("value_state_code"), SQLDataType.VARCHAR(100), this, "");
-
-    /**
-     * The column <code>public.lexeme.complexity</code>.
-     */
-    public final TableField<LexemeRecord, String> COMPLEXITY = createField(DSL.name("complexity"), SQLDataType.VARCHAR(100).nullable(false), this, "");
 
     /**
      * The column <code>public.lexeme.order_by</code>.
@@ -250,11 +245,11 @@ public class Lexeme extends TableImpl<LexemeRecord> {
     }
 
     // -------------------------------------------------------------------------
-    // Row15 type methods
+    // Row14 type methods
     // -------------------------------------------------------------------------
 
     @Override
-    public Row15<Long, Long, Long, String, Integer, Integer, String, String, Long, BigDecimal, Boolean, Integer, String, Boolean, Boolean> fieldsRow() {
-        return (Row15) super.fieldsRow();
+    public Row14<Long, Long, Long, String, Integer, Integer, String, Long, BigDecimal, Boolean, Integer, String, Boolean, Boolean> fieldsRow() {
+        return (Row14) super.fieldsRow();
     }
 }

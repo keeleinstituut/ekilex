@@ -1,3 +1,4 @@
+-- obsolete
 select w.*
 from word w
 where exists (select l.id

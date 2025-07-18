@@ -1,6 +1,5 @@
 package eki.ekilex.data;
 
-import eki.common.constant.Complexity;
 import eki.common.data.AbstractDataObject;
 
 public class CreateItemRequest extends AbstractDataObject {
@@ -24,8 +23,6 @@ public class CreateItemRequest extends AbstractDataObject {
 	private String language;
 
 	private String dataset;
-
-	private Complexity complexity;
 
 	private boolean isPublic;
 
@@ -99,14 +96,6 @@ public class CreateItemRequest extends AbstractDataObject {
 
 	public void setDataset(String dataset) {
 		this.dataset = dataset;
-	}
-
-	public Complexity getComplexity() {
-		return complexity;
-	}
-
-	public void setComplexity(Complexity complexity) {
-		this.complexity = complexity;
 	}
 
 	public boolean isPublic() {

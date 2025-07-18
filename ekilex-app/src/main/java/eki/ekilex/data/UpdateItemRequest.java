@@ -2,7 +2,6 @@ package eki.ekilex.data;
 
 import java.math.BigDecimal;
 
-import eki.common.constant.Complexity;
 import eki.common.data.AbstractDataObject;
 
 //lots of properties just in case. should unify usage to less
@@ -35,8 +34,6 @@ public class UpdateItemRequest extends AbstractDataObject {
 	private String language;
 
 	private boolean selected;
-
-	private Complexity complexity;
 
 	private boolean isPublic;
 
@@ -142,14 +139,6 @@ public class UpdateItemRequest extends AbstractDataObject {
 
 	public void setSelected(boolean selected) {
 		this.selected = selected;
-	}
-
-	public Complexity getComplexity() {
-		return complexity;
-	}
-
-	public void setComplexity(Complexity complexity) {
-		this.complexity = complexity;
 	}
 
 	public boolean isPublic() {

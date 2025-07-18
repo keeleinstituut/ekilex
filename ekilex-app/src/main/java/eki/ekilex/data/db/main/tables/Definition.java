@@ -16,7 +16,7 @@ import org.jooq.ForeignKey;
 import org.jooq.Identity;
 import org.jooq.Name;
 import org.jooq.Record;
-import org.jooq.Row9;
+import org.jooq.Row8;
 import org.jooq.Schema;
 import org.jooq.Table;
 import org.jooq.TableField;
@@ -77,11 +77,6 @@ public class Definition extends TableImpl<DefinitionRecord> {
      * The column <code>public.definition.lang</code>.
      */
     public final TableField<DefinitionRecord, String> LANG = createField(DSL.name("lang"), SQLDataType.CHAR(3).nullable(false), this, "");
-
-    /**
-     * The column <code>public.definition.complexity</code>.
-     */
-    public final TableField<DefinitionRecord, String> COMPLEXITY = createField(DSL.name("complexity"), SQLDataType.VARCHAR(100).nullable(false), this, "");
 
     /**
      * The column <code>public.definition.order_by</code>.
@@ -203,11 +198,11 @@ public class Definition extends TableImpl<DefinitionRecord> {
     }
 
     // -------------------------------------------------------------------------
-    // Row9 type methods
+    // Row8 type methods
     // -------------------------------------------------------------------------
 
     @Override
-    public Row9<Long, Long, String, String, String, String, String, Long, Boolean> fieldsRow() {
-        return (Row9) super.fieldsRow();
+    public Row8<Long, Long, String, String, String, String, Long, Boolean> fieldsRow() {
+        return (Row8) super.fieldsRow();
     }
 }
