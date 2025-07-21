@@ -49,7 +49,7 @@ import eki.ekilex.data.Synonym;
 import eki.ekilex.data.SynonymLangGroup;
 import eki.ekilex.data.Tag;
 import eki.ekilex.data.TermMeaning;
-import eki.ekilex.data.TypeTermMeaningWord;
+import eki.ekilex.data.TermMeaningWord;
 import eki.ekilex.data.Word;
 import eki.ekilex.data.WordEtym;
 import eki.ekilex.data.WordEtymRel;
@@ -67,7 +67,7 @@ public class ConversionUtil implements GlobalConstant {
 	public void cleanTermMeanings(List<TermMeaning> termMeanings) {
 
 		termMeanings.forEach(termMeaning -> {
-			List<TypeTermMeaningWord> meaningWords = termMeaning.getMeaningWords().stream()
+			List<TermMeaningWord> meaningWords = termMeaning.getMeaningWords().stream()
 					.filter(meaningWord -> meaningWord.getWordId() != null)
 					.distinct()
 					.collect(Collectors.toList());

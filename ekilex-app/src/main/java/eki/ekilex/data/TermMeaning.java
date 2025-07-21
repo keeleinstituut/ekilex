@@ -12,7 +12,7 @@ public class TermMeaning extends AbstractDataObject {
 
 	private List<Classifier> meaningDomains;
 
-	private List<TypeTermMeaningWord> meaningWords;
+	private List<TermMeaningWord> meaningWords;
 
 	private boolean meaningWordsExist;
 
@@ -32,11 +32,11 @@ public class TermMeaning extends AbstractDataObject {
 		this.meaningDomains = meaningDomains;
 	}
 
-	public List<TypeTermMeaningWord> getMeaningWords() {
+	public List<TermMeaningWord> getMeaningWords() {
 		return meaningWords;
 	}
 
-	public void setMeaningWords(List<TypeTermMeaningWord> meaningWords) {
+	public void setMeaningWords(List<TermMeaningWord> meaningWords) {
 		this.meaningWords = meaningWords;
 	}
 

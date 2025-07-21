@@ -1403,7 +1403,6 @@ public class SearchFilterHelper implements GlobalConstant, ActivityFunct, Freefo
 		return where;
 	}
 
-	// TODO should be removed after entity move
 	public Condition applyLexemeFreeformFilters(
 			SearchKey searchKey,
 			String freeformTypeCode,

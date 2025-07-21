@@ -134,7 +134,7 @@ from
 		lower(w.value) crit,
 		array_agg(
 			case
-				when (w.lang in ('est', 'rus', 'eng', 'ukr', 'fra', 'mul')) then w.lang
+				when (w.lang in ('est', 'eng', 'deu', 'fra', 'rus', 'ukr', 'mul')) then w.lang
 				else 'other'
 			end) filt_langs,
 		(array_agg(wl.order_by order by wl.order_by))[1] lang_order_by
@@ -172,7 +172,7 @@ from
 		lower(w.value_as_word) crit,
 		array_agg(
 			case
-				when (w.lang in ('est', 'rus', 'eng', 'ukr', 'fra', 'mul')) then w.lang
+				when (w.lang in ('est', 'eng', 'deu', 'fra', 'rus', 'ukr', 'mul')) then w.lang
 				else 'other'
 			end) langs_filt,
 		(array_agg(wl.order_by order by wl.order_by))[1] lang_order_by
@@ -213,7 +213,7 @@ from
 		lower(f.value) crit,
 		array_agg(
 			case
-				when (w.lang in ('est', 'rus', 'eng', 'ukr', 'fra', 'mul')) then w.lang
+				when (w.lang in ('est', 'eng', 'deu', 'fra', 'rus', 'ukr', 'mul')) then w.lang
 				else 'other'
 			end) langs_filt,
 		(array_agg(wl.order_by order by wl.order_by))[1] lang_order_by
@@ -252,7 +252,7 @@ from
 		array_agg(
 			distinct row (
 				case
-					when (w.lang in ('est', 'rus', 'eng', 'ukr', 'fra', 'mul')) then w.lang
+					when (w.lang in ('est', 'eng', 'deu', 'fra', 'rus', 'ukr', 'mul')) then w.lang
 					else 'other'
 				end,
 				l.dataset_code,
@@ -327,7 +327,7 @@ select
 	w.value_as_word,
 	w.lang,
 	case
-		when (w.lang in ('est', 'rus', 'eng', 'ukr', 'fra', 'mul')) then w.lang
+		when (w.lang in ('est', 'eng', 'deu', 'fra', 'rus', 'ukr', 'mul')) then w.lang
 		else 'other'
 	end lang_filt,
 	w.lang_order_by,
@@ -443,7 +443,7 @@ from (
 			array_agg(
 				distinct row (
 					case
-						when (w.lang in ('est', 'rus', 'eng', 'ukr', 'fra', 'mul')) then w.lang
+						when (w.lang in ('est', 'eng', 'deu', 'fra', 'rus', 'ukr', 'mul')) then w.lang
 						else 'other'
 					end,
 					l.dataset_code,

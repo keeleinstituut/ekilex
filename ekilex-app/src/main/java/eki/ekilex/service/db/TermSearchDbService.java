@@ -17,7 +17,6 @@ import org.jooq.Condition;
 import org.jooq.Field;
 import org.jooq.JSON;
 import org.jooq.Record17;
-import org.jooq.Record19;
 import org.jooq.Record3;
 import org.jooq.Table;
 import org.jooq.impl.DSL;
@@ -90,81 +89,56 @@ public class TermSearchDbService extends AbstractDataDbService {
 		Field<Boolean> wtsf = queryHelper.getWordIsSuffixoidField(wo.ID);
 		Field<Boolean> wtzf = queryHelper.getWordIsForeignField(wo.ID);
 		Field<Boolean> imwf = DSL.field(wo.ID.eq(DSL.any(m.field("match_word_ids", Long[].class))));
-
 		Field<Boolean> lvsmpf = DSL.field(lo.VALUE_STATE_CODE.eq(VALUE_STATE_CODE_MOST_PREFERRED));
 		Field<Boolean> lvslpf = DSL.field(lo.VALUE_STATE_CODE.eq(VALUE_STATE_CODE_LEAST_PREFERRED));
 
-		Table<Record3<Long, String, Long>> wdsf = DSL
-				.selectDistinct(lds.WORD_ID, lds.DATASET_CODE, ds.ORDER_BY)
+		Field<String[]> wds = DSL.field(DSL
+				.select(DSL
+						.arrayAgg(lds.DATASET_CODE)
+						.orderBy(ds.ORDER_BY))
 				.from(lds, ds)
 				.where(
 						lds.WORD_ID.eq(wo.ID)
 								.and(lds.MEANING_ID.eq(m.field("meaning_id", Long.class)))
 								.and(lds.DATASET_CODE.eq(ds.CODE))
 								.and(lds.DATASET_CODE.in(availableDatasetCodes)))
-				.asTable("wdsf");
+				.groupBy(lds.DATASET_CODE, ds.ORDER_BY));
 
-		Field<String[]> wds = DSL.field(DSL
-				.select(DSL.arrayAgg(wdsf.field("dataset_code", String.class)).orderBy(wdsf.field("order_by")))
-				.from(wdsf));
+		Condition wherewolo = searchFilterHelper.applyDatasetRestrictions(lo, searchDatasetsRestriction, null)
+				.and(lo.MEANING_ID.eq(m.field("meaning_id", Long.class)))
+				.and(lo.WORD_ID.eq(wo.ID))
+				.and(wo.LANG.eq(wol.CODE));
 
-		Condition wherelods = searchFilterHelper.applyDatasetRestrictions(lo, searchDatasetsRestriction, null);
-
-		Condition wherewo = wo.ID.eq(lo.WORD_ID);
 		if (StringUtils.isNotBlank(resultLang)) {
-			wherewo = wherewo.and(wo.LANG.eq(resultLang));
+			wherewolo = wherewolo.and(wo.LANG.eq(resultLang));
 		}
 
-		Table<Record19<Long, Long, String, Long, String, String, Integer, String, String[], Boolean, Boolean, Boolean, Boolean, Boolean, Boolean, Boolean, String[], Long, Long>> mm = DSL
-				.select(
-						m.field("meaning_id", Long.class),
-						wm.ID.as("order_by_word_id"),
-						wm.VALUE.as("order_by_word"),
-						wo.ID.as("word_id"),
-						wo.VALUE.as("word_value"),
-						wo.VALUE_PRESE.as("word_value_prese"),
-						wo.HOMONYM_NR,
-						wo.LANG,
-						wtf.as("word_type_codes"),
-						wtpf.as("prefixoid"),
-						wtsf.as("suffixoid"),
-						wtzf.as("foreign"),
-						imwf.as("matching_word"),
-						lvsmpf.as("most_preferred"),
-						lvslpf.as("least_preferred"),
-						lo.IS_PUBLIC,
-						wds.as("dataset_codes"),
-						wol.ORDER_BY.as("lang_order_by"),
-						lo.ORDER_BY.as("lex_order_by"))
-				.from(m
-						.innerJoin(wm).on(wm.ID.eq(m.field("word_id", Long.class)))
-						.innerJoin(lo).on(lo.MEANING_ID.eq(m.field("meaning_id", Long.class)).and(wherelods))
-						.innerJoin(wo).on(wherewo)
-						.innerJoin(wol).on(wol.CODE.eq(wo.LANG)))
-				.asTable("m");
+		Field<JSON> mdf = queryHelper.getMeaningDomainsField(m.field("meaning_id", Long.class), CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
 
-		Field<JSON> mdf = queryHelper.getMeaningDomainsField(mm.field("meaning_id", Long.class), CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
-
-		Field<TypeTermMeaningWordRecord[]> mw = DSL
-				.field("array_agg(row ("
-						+ "m.word_id,"
-						+ "' ' || m.word_value,"
-						+ "' ' || m.word_value_prese,"
-						+ "m.homonym_nr,"
-						+ "m.lang,"
-						+ "m.word_type_codes,"
-						+ "m.prefixoid,"
-						+ "m.suffixoid,"
-						+ "m.foreign,"
-						+ "m.matching_word,"
-						+ "m.most_preferred,"
-						+ "m.least_preferred,"
-						+ "m.is_public,"
-						+ "m.dataset_codes"
-						+ ")::type_term_meaning_word "
-						+ "order by "
-						+ "m.lang_order_by,"
-						+ "m.lex_order_by)", TypeTermMeaningWordRecord[].class);
+		Field<JSON> mwf = DSL
+				.select(DSL
+						.jsonArrayAgg(DSL
+								.jsonObject(
+										DSL.key("wordId").value(wo.ID),
+										DSL.key("wordValue").value(wo.VALUE),
+										DSL.key("wordValuePrese").value(wo.VALUE_PRESE),
+										DSL.key("homonymNr").value(wo.HOMONYM_NR),
+										DSL.key("lang").value(wo.LANG),
+										DSL.key("wordTypeCodes").value(wtf),
+										DSL.key("prefixoid").value(wtpf),
+										DSL.key("suffixoid").value(wtsf),
+										DSL.key("foreign").value(wtzf),
+										DSL.key("matchingWord").value(imwf),
+										DSL.key("mostPreferred").value(lvsmpf),
+										DSL.key("leastPreferred").value(lvslpf),
+										DSL.key("public").value(lo.IS_PUBLIC),
+										DSL.key("datasetCodes").value(wds)))
+						.orderBy(
+								wol.ORDER_BY,
+								lo.ORDER_BY))
+				.from(wo, lo, wol)
+				.where(wherewolo)
+				.asField();
 
 		int limit = DEFAULT_MAX_RESULTS_LIMIT;
 		if (noLimit) {
@@ -172,27 +146,20 @@ public class TermSearchDbService extends AbstractDataDbService {
 		}
 
 		boolean fiCollationExists = fiCollationExists();
-		Field<?> wvobf;
+		Field<String> wvobf;
 		if (fiCollationExists) {
-			wvobf = mm.field("order_by_word").collate("fi_FI");
+			wvobf = wm.VALUE.collate("fi_FI");
 		} else {
-			wvobf = mm.field("order_by_word");
+			wvobf = wm.VALUE;
 		}
 
-		/*
-		 * meaning words of same homonym and same meaning for different datasets are repeating
-		 * which is cleaned programmatically at ui conversion
-		 */
 		return mainDb
 				.select(
-						mm.field("meaning_id", Long.class),
+						m.field("meaning_id", Long.class),
 						mdf.as("meaning_domains"),
-						mw.as("meaning_words"))
-				.from(mm)
-				.groupBy(
-						mm.field("meaning_id"),
-						mm.field("order_by_word_id"),
-						wvobf)
+						mwf.as("meaning_words"))
+				.from(m
+						.innerJoin(wm).on(wm.ID.eq(m.field("word_id", Long.class))))
 				.orderBy(wvobf)
 				.limit(limit)
 				.offset(offset)
@@ -324,7 +291,7 @@ public class TermSearchDbService extends AbstractDataDbService {
 
 		Field<JSON> mdf = queryHelper.getMeaningDomainsField(wmm.field("meaning_id", Long.class), CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
 
-		// TODO refactor with jsob builder
+		// TODO refactor with json builder
 		Field<TypeTermMeaningWordRecord[]> mw = DSL
 				.field("array(select row ("
 						+ "wm.word_id,"

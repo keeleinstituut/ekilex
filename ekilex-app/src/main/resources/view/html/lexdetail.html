@@ -344,7 +344,9 @@
             <button th:data-lexeme-id="${lexeme.lexemeId}"
                     data-plugin="duplicateWordAndMoveLexemePlugin"
                     th:text="#{lex.new.homonym}"
-                    class="btn btn-sm btn-primary px-1 py-0">Uus homonüüm</button>
+                    class="btn btn-sm btn-primary px-1 py-0"
+                    title="EI TÖÖTA!"
+                    disabled="disabled">Uus homonüüm</button>
             <button th:id="${'duplicateEmptyLexemeBtn_' + lexeme.lexemeId}"
                     th:title="#{lex.add.lexeme.and.meaning}"
                     th:data-lexeme-id="${lexeme.lexemeId}"
