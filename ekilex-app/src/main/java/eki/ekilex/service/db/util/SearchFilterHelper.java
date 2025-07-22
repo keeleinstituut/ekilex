@@ -241,17 +241,19 @@ public class SearchFilterHelper implements GlobalConstant, ActivityFunct, Freefo
 		for (SearchCriterion criterion : filteredCriteria) {
 			SearchOperand searchOperand = criterion.getSearchOperand();
 			String searchIdStr = criterion.getSearchValue().toString();
-			searchIdStr = RegExUtils.replaceAll(searchIdStr, "[^0-9.]", "");
-			if (StringUtils.isNotEmpty(searchIdStr)) {
-				Long searchId = Long.valueOf(searchIdStr);
-				condition = applyIdFilter(searchId, searchOperand, idField, condition);
-			}
+			condition = applyIdFilter(searchIdStr, searchOperand, idField, condition);
 		}
 		return condition;
 	}
 
-	private Condition applyIdFilter(Long searchId, SearchOperand searchOperand, Field<Long> searchField, Condition condition) throws Exception {
+	public Condition applyIdFilter(String searchIdStr, SearchOperand searchOperand, Field<Long> searchField, Condition condition) throws Exception {
 
+		searchIdStr = StringUtils.trim(searchIdStr);
+		searchIdStr = RegExUtils.replaceAll(searchIdStr, "[^0-9.]", "");
+		if (StringUtils.isBlank(searchIdStr)) {
+			return condition;
+		}
+		Long searchId = Long.valueOf(searchIdStr);
 		if (SearchOperand.EQUALS.equals(searchOperand)) {
 			condition = condition.and(searchField.eq(searchId));
 		} else {

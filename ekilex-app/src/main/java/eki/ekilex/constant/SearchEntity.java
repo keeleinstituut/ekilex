@@ -151,6 +151,7 @@ public enum SearchEntity {
 	SOURCE(
 			SearchKey.SOURCE_NAME,
 			SearchKey.SOURCE_VALUE,
+			SearchKey.SOURCE_ID,
 			SearchKey.SOURCE_COMMENT,
 			SearchKey.DATASET_USAGE,
 			SearchKey.CREATED_BY,

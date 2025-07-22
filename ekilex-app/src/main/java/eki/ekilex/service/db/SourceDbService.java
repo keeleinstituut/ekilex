@@ -146,6 +146,8 @@ public class SourceDbService implements GlobalConstant, SystemConstant, Activity
 						where = searchFilterHelper.applyValueFilter(searchValueStr, isNot, searchOperand, s.NAME, where, true);
 					} else if (SearchKey.SOURCE_VALUE.equals(searchKey)) {
 						where = searchFilterHelper.applyValueFilter(searchValueStr, isNot, searchOperand, s.VALUE, where, true);
+					} else if (SearchKey.SOURCE_ID.equals(searchKey)) {
+						where = searchFilterHelper.applyIdFilter(searchValueStr, searchOperand, s.ID, where);
 					} else if (SearchKey.SOURCE_COMMENT.equals(searchKey)) {
 						where = searchFilterHelper.applyValueFilter(searchValueStr, isNot, searchOperand, s.COMMENT, where, true);
 					}
