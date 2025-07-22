@@ -16,3 +16,7 @@ alter table government drop column complexity cascade;
 alter table usage drop column complexity cascade;
 alter table lexeme_note drop column complexity cascade;
 alter table collocation drop column complexity cascade;
+
+-- ÕS oma klassif väärtuste liik
+
+insert into label_type (code, value) values ('od', 'od');

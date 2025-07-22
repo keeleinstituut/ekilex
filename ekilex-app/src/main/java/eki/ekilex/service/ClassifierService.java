@@ -63,7 +63,11 @@ public class ClassifierService implements GlobalConstant, SystemConstant {
 		List<String> labelTypes;
 		boolean hasLabel = classifierName.hasLabel();
 		if (hasLabel) {
-			labelTypes = Arrays.asList(CLASSIF_LABEL_TYPE_DESCRIP, CLASSIF_LABEL_TYPE_WORDWEB, CLASSIF_LABEL_TYPE_COMMENT);
+			labelTypes = Arrays.asList(
+					CLASSIF_LABEL_TYPE_DESCRIP,
+					CLASSIF_LABEL_TYPE_WORDWEB,
+					CLASSIF_LABEL_TYPE_OD,
+					CLASSIF_LABEL_TYPE_COMMENT);
 		} else {
 			labelTypes = Collections.emptyList();
 		}
