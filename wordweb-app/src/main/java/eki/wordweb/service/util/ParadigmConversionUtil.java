@@ -12,13 +12,14 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import eki.common.constant.GlobalConstant;
 import eki.wordweb.constant.SystemConstant;
 import eki.wordweb.constant.WebConstant;
 import eki.wordweb.data.Form;
 import eki.wordweb.data.Paradigm;
 
 @Component
-public class ParadigmConversionUtil implements WebConstant, SystemConstant {
+public class ParadigmConversionUtil implements WebConstant, SystemConstant, GlobalConstant {
 
 	@Autowired
 	private ClassifierUtil classifierUtil;
@@ -66,7 +67,9 @@ public class ParadigmConversionUtil implements WebConstant, SystemConstant {
 		for (Form form : paradigmForms) {
 			classifierUtil.applyClassifiers(form, displayLang);
 			boolean audioFileExists = StringUtils.isNotBlank(form.getAudioFile());
+			boolean langEst = StringUtils.equals(LANGUAGE_CODE_EST, form.getLang());
 			form.setAudioFileExists(audioFileExists);
+			form.setLangEst(langEst);
 		}
 
 		Form firstForm = paradigmForms.get(0);

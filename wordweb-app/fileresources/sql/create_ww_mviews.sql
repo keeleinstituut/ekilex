@@ -354,6 +354,7 @@ create index mview_ww_form_value_idx on mview_ww_form (value);
 create index mview_ww_form_value_lower_idx on mview_ww_form (lower(value));
 create index mview_ww_form_lang_idx on mview_ww_form (lang);
 create index mview_ww_form_display_level_idx on mview_ww_form (display_level);
+create index mview_ww_form_is_questionable_idx on mview_ww_form (is_questionable);
 create index mview_ww_meaning_meaning_id_idx on mview_ww_meaning (meaning_id);
 create index mview_ww_lexeme_lexeme_id_idx on mview_ww_lexeme (lexeme_id);
 create index mview_ww_lexeme_word_id_idx on mview_ww_lexeme (word_id);

@@ -22,6 +22,8 @@ public class WordData extends AbstractDataObject {
 
 	private String firstAvailableAudioFile;
 
+	private boolean audioFileExists;
+
 	private boolean morphologyExists;
 
 	private boolean relevantDataExists;
@@ -94,6 +96,14 @@ public class WordData extends AbstractDataObject {
 
 	public void setFirstAvailableAudioFile(String firstAvailableAudioFile) {
 		this.firstAvailableAudioFile = firstAvailableAudioFile;
+	}
+
+	public boolean isAudioFileExists() {
+		return audioFileExists;
+	}
+
+	public void setAudioFileExists(boolean audioFileExists) {
+		this.audioFileExists = audioFileExists;
 	}
 
 	public boolean isMorphologyExists() {

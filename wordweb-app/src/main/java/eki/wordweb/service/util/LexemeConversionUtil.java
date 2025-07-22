@@ -296,8 +296,8 @@ public class LexemeConversionUtil extends AbstractConversionUtil {
 				usage.setUsageTranslationValues(null);
 			}
 			String usageLang = usage.getLang();
-			boolean isPutOnSpeaker = StringUtils.equals(usageLang, DESTIN_LANG_EST);
-			usage.setPutOnSpeaker(isPutOnSpeaker);
+			boolean langEst = StringUtils.equals(DESTIN_LANG_EST, usageLang);
+			usage.setLangEst(langEst);
 		});
 		boolean isMoreUsages = CollectionUtils.size(usages) > TYPICAL_COLLECTIONS_DISPLAY_LIMIT;
 		lexemeWord.setMoreUsages(isMoreUsages);

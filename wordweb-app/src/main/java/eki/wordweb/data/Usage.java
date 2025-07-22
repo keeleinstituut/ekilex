@@ -14,13 +14,13 @@ public class Usage extends AbstractCreateUpdateEntity implements SourceLinkType,
 
 	private String lang;
 
+	private boolean langEst;
+
 	private List<String> usageTranslationValues;
 
 	private List<String> usageDefinitionValues;
 
 	private List<SourceLink> sourceLinks;
-
-	private boolean putOnSpeaker;
 
 	public Long getId() {
 		return id;
@@ -54,6 +54,14 @@ public class Usage extends AbstractCreateUpdateEntity implements SourceLinkType,
 		this.lang = lang;
 	}
 
+	public boolean isLangEst() {
+		return langEst;
+	}
+
+	public void setLangEst(boolean langEst) {
+		this.langEst = langEst;
+	}
+
 	public List<String> getUsageTranslationValues() {
 		return usageTranslationValues;
 	}
@@ -78,14 +86,6 @@ public class Usage extends AbstractCreateUpdateEntity implements SourceLinkType,
 	@Override
 	public void setSourceLinks(List<SourceLink> sourceLinks) {
 		this.sourceLinks = sourceLinks;
-	}
-
-	public boolean isPutOnSpeaker() {
-		return putOnSpeaker;
-	}
-
-	public void setPutOnSpeaker(boolean putOnSpeaker) {
-		this.putOnSpeaker = putOnSpeaker;
 	}
 
 }

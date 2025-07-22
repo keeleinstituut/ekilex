@@ -208,16 +208,19 @@ public abstract class AbstractSearchService implements SystemConstant, WebConsta
 		boolean skellCompatible = skellCompatibleLangs.contains(headwordLang);
 
 		String firstAvailableAudioFile = null;
+		boolean audioFileExists = false;
 		boolean morphologyExists = false;
 		boolean headwordOverflow = false;
 
 		if (CollectionUtils.isNotEmpty(forms)) {
-			Form firstAvailableWordForm = forms.stream()
-					.filter(form -> !form.isQuestionable() && StringUtils.equals(headwordValue, form.getValue()))
-					.findFirst().orElse(null);
-			if (firstAvailableWordForm != null) {
-				firstAvailableAudioFile = firstAvailableWordForm.getAudioFile();
-			}
+			firstAvailableAudioFile = forms.stream()
+					.filter(form -> !form.isQuestionable()
+							&& StringUtils.equals(headwordValue, form.getValue())
+							&& StringUtils.isNotBlank(form.getAudioFile()))
+					.map(Form::getAudioFile)
+					.findFirst()
+					.orElse(null);
+			audioFileExists = StringUtils.isNotBlank(firstAvailableAudioFile);
 		}
 		if (CollectionUtils.isNotEmpty(paradigms)) {
 			morphologyExists = paradigms.stream().anyMatch(paradigm -> StringUtils.isNotBlank(paradigm.getWordClass()));
@@ -235,6 +238,7 @@ public abstract class AbstractSearchService implements SystemConstant, WebConsta
 		wordData.setLimTermLexemes(limTermLexemes);
 		wordData.setParadigms(paradigms);
 		wordData.setFirstAvailableAudioFile(firstAvailableAudioFile);
+		wordData.setAudioFileExists(audioFileExists);
 		wordData.setMorphologyExists(morphologyExists);
 		wordData.setRelevantDataExists(relevantDataExists);
 		wordData.setLexemesExist(lexemesExist);

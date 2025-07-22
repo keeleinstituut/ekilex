@@ -9,6 +9,8 @@ public class Form extends AbstractDataObject {
 
 	private String lang;
 
+	private boolean langEst;
+
 	private String vocalForm;
 
 	private String morphComment;
@@ -79,6 +81,14 @@ public class Form extends AbstractDataObject {
 
 	public void setLang(String lang) {
 		this.lang = lang;
+	}
+
+	public boolean isLangEst() {
+		return langEst;
+	}
+
+	public void setLangEst(boolean langEst) {
+		this.langEst = langEst;
 	}
 
 	public String getVocalForm() {

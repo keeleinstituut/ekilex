@@ -378,10 +378,10 @@
                       <div class="example-sentence-wrap">
                         <span class="example-text example-text-w-audio">
                           <span class="text-body-two text-weight-medium" th:utext="${usage.valuePrese}"></span>
-                          <button class="btn btn-speaker btn-speaker--inactive" th:aria-label="|#{aria.listen} - ${usage.value}|" th:if="${usage.putOnSpeaker}"
+                          <button class="btn btn-speaker btn-speaker--inactive" th:aria-label="|#{aria.listen} - ${usage.value}|" th:if="${usage.langEst}"
                                   th:data-text="${usage.value}"
                                   data-service-id="speech"
-                                  th:attr="onclick=${usage.putOnSpeaker ? 'getAndPlayAudio(this)' : ''}">
+                                  onclick="getAndPlayAudio(this)">
                             <span class="icon icon-speaker icon--small"></span>
                           </button>
                         </span>
@@ -411,10 +411,10 @@
                           <div class="example-sentence-wrap">
                             <span class="example-text example-text-w-audio">
                               <span class="example-text-value text-body-two text-weight-medium" th:utext="${usage.valuePrese}"></span>
-                              <button class="btn btn-speaker btn-speaker--inactive" th:aria-label="|#{aria.listen} - ${usage.value}|" th:if="${usage.putOnSpeaker}"
+                              <button class="btn btn-speaker btn-speaker--inactive" th:aria-label="|#{aria.listen} - ${usage.value}|" th:if="${usage.langEst}"
                                       th:data-text="${usage.value}"
                                       data-service-id="speech"
-                                      th:attr="onclick=${usage.putOnSpeaker ? 'getAndPlayAudio(this)' : ''}">
+                                      onclick="getAndPlayAudio(this)">
                                 <span class="icon icon-speaker icon--small"></span>
                               </button>
                             </span>

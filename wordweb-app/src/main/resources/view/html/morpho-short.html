@@ -19,7 +19,7 @@
               <span class="material-symbols-outlined material-symbols-outlined--small">record_voice_over</span>
             </button>
           </th:block>
-          <th:block th:unless="${form.audioFileExists}">
+          <th:block th:if="${!form.audioFileExists && form.langEst}">
             <button type="button" th:aria-label="|#{aria.listen} - ${form.value}|"
                     th:data-text="${form.displayForm}"
                     data-service-id="morpho"
