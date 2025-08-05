@@ -14,7 +14,11 @@
         {#if toast.title}
           <span class="text-sm font-medium">{toast.title}</span>
         {/if}
-        <p class={toast.type ? "text-sm" : "text-xs"}>
+        <p
+          class="break-word"
+          class:text-sm={toast.type}
+          class:text-xs={!toast.type}
+        >
           <span>
             {toast.body}
           </span>
