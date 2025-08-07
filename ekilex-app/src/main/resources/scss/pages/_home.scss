@@ -31,12 +31,12 @@
     }
 
     & h1 {
-      font-size: 3rem;
+      font-size: 2.125rem;
       font-weight: 400;
     }
 
     & p {
-      font-size: 1.25rem;
+      font-size: 1rem;
       font-weight: 500;
       line-height: 30px;
     }
@@ -46,59 +46,114 @@
     }
   }
 
-  &__language-data,
-  &__financing {
+  &__cards {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+    grid-column: content;
+    margin-top: 24px;
+
+    @media (min-width: 768px) {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+
+  &__card {
+    background-color: var(--color-also-bluish-but-not-exactly-gray);
+    padding: 72px 24px 24px;
+    position: relative;
+    width: 290px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+
+    & h2,
+    & p {
+      font-weight: 500;
+    }
+
     & h2 {
-      font-size: 2.125rem;
-      font-weight: 400;
+      font-size: 1.25rem;
     }
 
     & p {
       font-size: .875rem;
     }
-  }
 
-  &__language-data {
-    grid-column: content;
-    display: grid;
-    grid-template-columns: 250px 1fr;
-    grid-template-rows: repeat(3, max-content);
-    align-items: flex-end;
-    gap: 24px;
-    padding: 143px 100px;
-    background-image: url('../img/bg-quotes.svg');
-    background-repeat: no-repeat;
-    background-position: center left;
-    background-size: 352px auto;
+    &::before {
+      content: "";
+      position: absolute;
+      top: 24px;
+      left: 24px;
+      background-color: white;
+      mask-size: contain;
+      mask-repeat: no-repeat;
+    }
 
-    &>* {
-      grid-column: 2;
+    &:first-child {
+      &::before {
+        width: 12px;
+        height: 32px;
+        mask-image: url("../img/bg-arrow.svg");
+      }
+    }
+
+    &:nth-child(2) {
+      &::before {
+        width: 42px;
+        height: 14px;
+        mask-image: url("../img/bg-tilde.svg");
+      }
+    }
+
+    &:last-child {
+      &::before {
+        width: 33px;
+        height: 32px;
+        mask-image: url("../img/bg-arrow-up.svg");
+      }
     }
   }
 
   &__financing {
     grid-column: content;
+    padding: 24px;
     display: flex;
     flex-direction: column;
     gap: 24px;
-    padding: 20px 191px 163px;
-    margin-top: 162px;
+    margin: 0 auto;
 
     & h2 {
-      position: relative;
-      width: max-content;
-      line-height: 1;
+      font-size: 1.5rem;
+    }
 
-      &::after {
+    & p,
+    & li {
+      font-size: .875rem;
+      font-weight: 500;
+    }
+
+    & ol {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+
+    & li {
+      position: relative;
+      padding-left: 32px;
+
+      &::before {
+        mask-image: url("../img/bg-tilde.svg");
+        width: 24px;
+        height: 8px;
         content: "";
-        background-image: url('../img/bg-tilde.svg');
-        background-repeat: no-repeat;
-        background-size: 100%;
         position: absolute;
-        left: calc(100% + 24px);
-        width: 514px;
-        height: 173px;
-        bottom: calc(100% - 1lh);
+        left: 0;
+        top: 6px;
+        mask-size: contain;
+        mask-repeat: no-repeat;
+        background-color: var(--color-light-blue);
       }
     }
   }

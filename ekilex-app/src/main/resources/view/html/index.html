@@ -1,25 +1,43 @@
 <!DOCTYPE html>
 <html lang="et" xmlns:th="http://www.thymeleaf.org">
-<head th:replace="common :: common_header(~{::title},_)">
-  <title>EKILEX</title>
-</head>
-<body class="d-flex flex-column">
-  <th:block th:replace="components :: header(isDev = ${appData.devEnv}, envName = ${appData.envName})"></th:block>
-  <main class="home-page">
-    <div class="home-page__header">
-        <h1 th:text="#{label.home.title}">Sõnastiku- ja terminibaasisüsteem Ekilex</h1>
+  <head th:replace="common :: common_header(~{::title},_)">
+    <title>EKILEX</title>
+  </head>
+  <body class="d-flex flex-column">
+    <th:block
+      th:replace="components :: header(isDev = ${appData.devEnv}, envName = ${appData.envName})"
+    ></th:block>
+    <main class="home-page">
+      <div class="home-page__header">
+        <h1 th:text="#{label.home.title}">
+          Sõnastiku- ja terminibaasisüsteem Ekilex
+        </h1>
         <p th:text="#{label.home.description}">Kirjeldus</p>
       </div>
-    <div class="home-page__language-data">
-      <h2 th:text="#{label.home.data.title}"></h2>
-      <p th:text="#{label.home.data.description.first}"></p>
-      <p th:text="#{label.home.data.description.second}"></p>
-    </div>
-    <div class="home-page__financing">
-      <h2 th:text="#{label.home.financing.title}"></h2>
-      <p th:text="#{label.home.financing.description}"></p>
-    </div>
-  </main>
-  <th:block th:replace="components :: footer"></th:block>
-</body>
+      <div class="home-page__cards">
+        <div class="home-page__card">
+          <h2 th:text="#{label.home.cards.first.title}"></h2>
+          <p th:text="#{label.home.cards.first.description}"></p>
+        </div>
+        <div class="home-page__card">
+          <h2 th:text="#{label.home.cards.second.title}"></h2>
+          <p th:text="#{label.home.cards.second.description}"></p>
+        </div>
+        <div class="home-page__card">
+          <h2 th:text="#{label.home.cards.third.title}"></h2>
+          <p th:text="#{label.home.cards.third.description}"></p>
+        </div>
+      </div>
+      <div class="home-page__financing">
+        <h2 th:text="#{label.home.financing.title}"></h2>
+        <p th:text="#{label.home.financing.description}"></p>
+        <ol
+          th:with="financeItems = ${#strings.arraySplit(#messages.msg('label.home.financing.points'), '||')}"
+        >
+          <li th:each="item : ${financeItems}" th:text="${item}"></li>
+        </ol>
+      </div>
+    </main>
+    <th:block th:replace="components :: footer"></th:block>
+  </body>
 </html>
