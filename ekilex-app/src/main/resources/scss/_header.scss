@@ -6,6 +6,7 @@
   border-bottom: 1px solid var(--color-dark-blue);
   background-color: var(--color-white);
   z-index: 1;
+  --button-padding: 4px 20px;
 
   &__contents {
     width: 100%;
