@@ -15790,6 +15790,9 @@ span.material-symbols-outlined--small {
 .header--simple .lang-btn {
   margin-left: auto;
 }
+.header--simple .header__od-logo {
+  margin-right: auto;
+}
 .header__content {
   display: flex;
   align-items: center;
