@@ -7,7 +7,12 @@
 </head>
 <body class="home-page d-flex flex-column survey-active">
   <th:block th:replace="common-app :: ie-user"></th:block>
-  <th:block th:replace="od-comp :: header"></th:block>
+  <th:block th:replace="common-app :: header(
+    logoTemplate = ~{od-comp :: logo},
+    withLucky = ${false},
+    withLangSelect = ${false},
+    searchInputTemplate = ~{od-comp :: search}
+  )"></th:block>
   <div class="container-fluid home-page-content">
     <div class="row">
       <div class="col align-self-center main-content-wrapper">

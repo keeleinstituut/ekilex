@@ -1,0 +1,12 @@
+.od-results {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+
+.homonym-page {
+  &--od {
+    margin: 32px 0;
+  }
+}

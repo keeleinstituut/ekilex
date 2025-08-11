@@ -15735,6 +15735,14 @@ span.material-symbols-outlined--small {
   text-align: center;
   color: var(--color-dark-blue);
 }
+.od-results {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+.homonym-page--od {
+  margin: 32px 0;
+}
 .header {
   padding: 16px 16px 16px 4px;
   position: sticky;
@@ -15780,10 +15788,13 @@ span.material-symbols-outlined--small {
     margin-left: auto;
   }
 }
-.header__logo {
+.header__logo,
+.header__od-logo {
   background-repeat: no-repeat;
   background-size: contain;
   background-position: center;
+}
+.header__logo {
   width: 48px;
   height: 42px;
   background-image: url(../images/sonaveeb-logo-sm.svg);
@@ -15804,6 +15815,11 @@ span.material-symbols-outlined--small {
     height: 37px;
     background-image: url(../images/sonaveeb-logo-light-lg.svg);
   }
+}
+.header__od-logo {
+  width: 188px;
+  height: 45px;
+  background-image: url(../images/od-full.svg);
 }
 .header__search {
   flex-grow: 1;
