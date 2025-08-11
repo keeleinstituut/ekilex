@@ -20,3 +20,8 @@ alter table collocation drop column complexity cascade;
 -- ÕS oma klassif väärtuste liik
 
 insert into label_type (code, value) values ('od', 'od');
+
+-- ÕS soovituse lisavälja otsing
+
+create index word_od_recommendation_opt_value_idx on word_od_recommendation(opt_value);
+create index word_od_recommendation_opt_value_lower_idx on word_od_recommendation(lower(opt_value));

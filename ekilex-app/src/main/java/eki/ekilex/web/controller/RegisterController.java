@@ -61,8 +61,6 @@ public class RegisterController extends AbstractPublicPageController {
 			RedirectAttributes attributes,
 			HttpServletRequest request) {
 
-		System.out.println("---> " + agreement);
-
 		boolean isBotProtectionTriggered = checkBotProtection(request, botProtectionCode, email);
 		if (isBotProtectionTriggered) {
 			return REDIRECT_PREF + LOGIN_URI;
