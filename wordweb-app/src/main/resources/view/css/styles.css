@@ -68,6 +68,8 @@
   --color-2025-\f5igekeelsuss\f5naraamatu-hall-100: #547687;
   --color-hall-taust-final-final-final-hall-500: #F9F9F9;
   --color-cloudy-day: #7C8898;
+  --color-hylge-hall: #C1C9D4;
+  --color-meri-hylge-hall: #E3EFFB;
   --color-white: #fff;
   --color-blue-100: #a0dcf8;
   --color-blue-200: #5aabe0;
@@ -14220,7 +14222,7 @@ body.hidden-scroll {
   align-items: center;
   border-radius: 4px;
   border: 1px solid var(--color-gray-010);
-  background: #F9F9F9;
+  background: var(--color-hall-taust-final-final-final-hall-500);
   padding: 4px;
   height: 20px;
   color: var(--color-dark-blue);
@@ -15514,7 +15516,7 @@ span.material-symbols-outlined--small {
   border-radius: 4px;
   border: 1px solid var(--color-gray-010);
   padding: 0 4px;
-  background-color: #F9F9F9;
+  background-color: var(--color-hall-taust-final-final-final-hall-500);
   gap: 4px;
   font-size: 0.875rem;
   color: var(--color-dark-blue);
@@ -15742,6 +15744,33 @@ span.material-symbols-outlined--small {
 }
 .homonym-page--od {
   margin: 32px 0;
+}
+.od-tag {
+  width: auto;
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 4px;
+  border: 1px solid var(--color-hylge-hall);
+  background: var(--color-hall-taust-final-final-final-hall-500);
+  padding: 4px;
+  height: 16px;
+  color: var(--color-dark-blue);
+  font-size: 0.75rem;
+  font-weight: 700;
+}
+.od-explanation {
+  background-color: var(--color-meri-hylge-hall);
+  border: 1px solid var(--color-light-blue);
+  padding: 8px;
+  border-radius: 8px;
+  display: flex;
+  gap: 20px;
+  --icon-size: 20px;
+  --icon-variation-settings: "FILL" 1;
+}
+.od-explanation p {
+  margin: 0;
 }
 .header {
   padding: 16px 16px 16px 4px;
@@ -16938,6 +16967,8 @@ span.material-symbols-outlined--small {
   --color-2025-\f5igekeelsuss\f5naraamatu-hall-100: #547687;
   --color-hall-taust-final-final-final-hall-500: #F9F9F9;
   --color-cloudy-day: #7C8898;
+  --color-hylge-hall: #C1C9D4;
+  --color-meri-hylge-hall: #E3EFFB;
   --color-white: #fff;
   --color-blue-100: #a0dcf8;
   --color-blue-200: #5aabe0;

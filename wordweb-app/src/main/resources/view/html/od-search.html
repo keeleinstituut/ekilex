@@ -35,8 +35,8 @@
             <div class="search__lex-title-wrapper">
               <h1 class="search__lex-title" th:utext="${@decorUtil.getWordValueMarkup(word)}">tee</h1>
             </div>
-            <strong class="mr-2" th:aria-label="|#{aria.homonym} ${word.homonymNr}|" th:text="${word.homonymNr}">1</strong>
-            <span class="mr-2" th:if="${word.displayMorph != null}" th:text="${word.displayMorph.value}"></span>
+            <strong class="mr-2" th:aria-label="|#{aria.homonym} ${word.homonymNr}|" th:text="${word.homonymNr}" th:unless="${searchResult.singleResult}">1</strong>
+            <span class="od-tag mr-2" th:if="${word.displayMorph != null}" th:text="${word.displayMorph.value}"></span>
             <th:block th:each="wordType : ${word.wordTypes}" th:if="${not #lists.isEmpty(word.wordTypes)}">
               <span class="lang-code text-caption lang-code--unrestricted mr-2" th:text="${wordType.value}"></span>
             </th:block>
@@ -48,7 +48,11 @@
             <th:block th:if="${word.wordOdMorph}">
               <div class="mt-2">
                 <div th:text="#{label.od.morpho}" class="text-darker-gray">Lühimorfo</div>
-                <div th:utext="${word.wordOdMorph.valuePrese}"></div>
+                <div class="d-flex">
+                  <span><</span>
+                  <th:block th:utext="${word.wordOdMorph.valuePrese}"></th:block>
+                  <span>></span>
+                </div>
               </div>
             </th:block>
             <th:block th:if="${word.lexemeMeaningsContentExist}">
@@ -80,12 +84,6 @@
                 </div>
               </div>
             </th:block>
-            <th:block th:if="${word.wordOdRecommend}">
-              <div class="mt-2">
-                <div th:text="#{label.od.recommend}" class="text-darker-gray">Selgitus</div>
-                <div th:utext="${word.wordOdRecommend.valuePrese}"></div>
-              </div>
-            </th:block>
             <th:block th:if="${word.wordOdUsages}">
               <div class="mt-2">
                 <div th:text="#{label.od.usage}" class="text-darker-gray">Näited</div>
@@ -97,7 +95,7 @@
             <th:block th:if="${word.primaryWordRelationGroups}">
               <div class="mt-2">
                 <div th:text="#{label.od.word.rel.comp}" class="text-darker-gray">Liitsõnad</div>
-                <ul class="list-unstyled">
+                <ul>
                   <th:block th:each="wordRelationGroup : ${word.primaryWordRelationGroups}">
                     <li>
                       <th:block th:each="relatedWord, relatedWordIter : ${wordRelationGroup.relatedWords}">
@@ -121,6 +119,12 @@
                   </div>
                 </div>
               </th:block>
+            </th:block>
+            <th:block th:if="${word.wordOdRecommend}">
+              <div class="od-explanation mt-3">
+                <span class="material-symbols-outlined" aria-hidden="true"> info </span>
+                <p th:utext="${word.wordOdRecommend.valuePrese}"></p>
+              </div>
             </th:block>
           </div>
         </div>
