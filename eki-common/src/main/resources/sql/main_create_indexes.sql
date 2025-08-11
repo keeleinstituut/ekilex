@@ -38,6 +38,8 @@ create index word_etym_rel_rel_word_id_idx on word_etymology_relation(related_wo
 create index word_od_recommendation_word_id_idx on word_od_recommendation(word_id);
 create index word_od_recommendation_value_idx on word_od_recommendation(value);
 create index word_od_recommendation_value_lower_idx on word_od_recommendation(lower(value));
+create index word_od_recommendation_opt_value_idx on word_od_recommendation(opt_value);
+create index word_od_recommendation_opt_value_lower_idx on word_od_recommendation(lower(opt_value));
 create index word_od_usage_word_id_idx on word_od_usage(word_id);
 create index word_od_usage_value_idx on word_od_usage(value);
 create index word_od_usage_value_lower_idx on word_od_usage(lower(value));
