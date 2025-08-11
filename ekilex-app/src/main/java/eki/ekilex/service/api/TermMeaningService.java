@@ -256,9 +256,9 @@ public class TermMeaningService extends AbstractApiCudService implements Activit
 						Long sourceId = lexemeSourceLink.getSourceId();
 						String sourceLinkName = lexemeSourceLink.getName();
 						if (sourceLinkId == null) {
-							createLexemeSourceLink(lexemeId, sourceId, sourceLinkName, roleDatasetCode);
+							createLexemeSourceLink(lexemeId, sourceId, sourceLinkName, roleDatasetCode, isManualEventOnUpdateEnabled);
 						} else {
-							updateLexemeSourceLink(lexemeId, sourceLinkId, sourceLinkName, roleDatasetCode);
+							updateLexemeSourceLink(lexemeId, sourceLinkId, sourceLinkName, roleDatasetCode, isManualEventOnUpdateEnabled);
 						}
 					}
 				}
@@ -377,7 +377,7 @@ public class TermMeaningService extends AbstractApiCudService implements Activit
 
 		if (manualEventOn != null) {
 
-			activityLog = activityLogService.prepareActivityLog(UPDATE_MEANING_MANUAL_EVENT_ON_FUNCT, meaningId, ActivityOwner.MEANING, roleDatasetCode, MANUAL_EVENT_ON_UPDATE_DISABLED);
+			activityLog = activityLogService.prepareActivityLog(UPDATE_MEANING_MANUAL_EVENT_ON_FUNCT, meaningId, ActivityOwner.MEANING, roleDatasetCode, isManualEventOnUpdateEnabled);
 			if (StringUtils.isNotBlank(manualEventBy)) {
 				activityLog.setEventBy(manualEventBy);
 			}
@@ -396,16 +396,16 @@ public class TermMeaningService extends AbstractApiCudService implements Activit
 		return meaningId;
 	}
 
-	private void createLexemeSourceLink(Long lexemeId, Long sourceId, String sourceLinkName, String roleDatasetCode) throws Exception {
+	private void createLexemeSourceLink(Long lexemeId, Long sourceId, String sourceLinkName, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
 
-		ActivityLogData activityLog = activityLogService.prepareActivityLog("createLexemeSourceLink", lexemeId, ActivityOwner.LEXEME, roleDatasetCode, MANUAL_EVENT_ON_UPDATE_ENABLED);
+		ActivityLogData activityLog = activityLogService.prepareActivityLog("createLexemeSourceLink", lexemeId, ActivityOwner.LEXEME, roleDatasetCode, isManualEventOnUpdateEnabled);
 		Long sourceLinkId = sourceLinkDbService.createLexemeSourceLink(lexemeId, sourceId, sourceLinkName);
 		activityLogService.createActivityLog(activityLog, sourceLinkId, ActivityEntity.LEXEME_SOURCE_LINK);
 	}
 
-	private void updateLexemeSourceLink(Long lexemeId, Long sourceLinkId, String sourceLinkName, String roleDatasetCode) throws Exception {
+	private void updateLexemeSourceLink(Long lexemeId, Long sourceLinkId, String sourceLinkName, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
 
-		ActivityLogData activityLog = activityLogService.prepareActivityLog("updateLexemeSourceLink", lexemeId, ActivityOwner.LEXEME, roleDatasetCode, MANUAL_EVENT_ON_UPDATE_ENABLED);
+		ActivityLogData activityLog = activityLogService.prepareActivityLog("updateLexemeSourceLink", lexemeId, ActivityOwner.LEXEME, roleDatasetCode, isManualEventOnUpdateEnabled);
 		sourceLinkDbService.updateLexemeSourceLink(sourceLinkId, sourceLinkName);
 		activityLogService.createActivityLog(activityLog, sourceLinkId, ActivityEntity.LEXEME_SOURCE_LINK);
 	}
