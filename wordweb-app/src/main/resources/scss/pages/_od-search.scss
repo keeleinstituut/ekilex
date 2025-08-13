@@ -1,0 +1,43 @@
+.od-results {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+
+.homonym-page {
+  &--od {
+    margin: 32px 0;
+  }
+}
+
+
+.od-tag {
+  width: auto;
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 4px;
+  border: 1px solid var(--color-hylge-hall);
+  background: var(--color-hall-taust-final-final-final-hall-500);
+  padding: 4px;
+  height: 16px;
+  color: var(--color-dark-blue);
+  font-size: .75rem;
+  font-weight: 700;
+}
+
+.od-explanation {
+  background-color: var(--color-meri-hylge-hall);
+  border: 1px solid var(--color-light-blue);
+  padding: 8px;
+  border-radius: 8px;
+  display: flex;
+  gap: 20px;
+  --icon-size: 20px;
+  --icon-variation-settings: 'FILL' 1;
+
+  & p {
+    margin: 0;
+  }
+}

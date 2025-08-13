@@ -1,64 +1,29 @@
 <!DOCTYPE HTML>
 <html xmlns:th="http://www.thymeleaf.org">
 <body>
-  <th:block th:fragment="header">
-    <div class="header header--simple">
-      <div class="header__content">
-        <th:block th:replace="common-app :: lang-select"></th:block>
-        <th:block th:replace="common-app :: navigation"></th:block>
-      </div>
-    </div>
+  <th:block th:fragment="logo">
+    <a
+      th:href="@{/od}"
+      th:aria-label="#{label.od.logo}"
+      class="header__od-logo"></a>
   </th:block>
   <th:block th:fragment="search">
-    <div class="header header--simple">
-      <div class="header__content">
-        <div class="header__search">
-          <div class="main-search">
-            <form th:action="@{/search/od}" th:method="post" name="searchForm">
-              <div>
-                <input type="text" id="searchInput" name="searchValue" th:value="${searchValue}" th:placeholder="#{search.placeholder}"
-                  class="main-search-input form-control search-phrase js-kioskboard-input" role="search" autocapitalize="off" autocomplete="off" data-kioskboard-type="keyboard"
-                  data-kioskboard-placement="bottom" data-kioskboard-specialcharacters="true" />
-              </div>
-              <div class="main-search-btns">
-                <button th:aria-label="#{aria.search.clear}" id="clear-search-btn" type="button" class="clear-btn">
-                  <span class="material-symbols-outlined" aria-hidden="true">cancel</span>
-                </button>
-                <button th:aria-label="#{aria.search.search}" id="search-btn" type="submit" class="search-btn">
-                  <span class="material-symbols-outlined" aria-hidden="true">search</span>
-                </button>
-              </div>
-            </form>
-          </div>
+    <div class="main-search">
+      <form th:action="@{/search/od}" th:method="post" name="searchForm">
+        <div>
+          <input type="text" id="searchInput" name="searchValue" th:value="${searchValue}" th:placeholder="#{label.od.search.placeholder}"
+            class="main-search-input form-control search-phrase js-kioskboard-input" role="search" autocapitalize="off" autocomplete="off" data-kioskboard-type="keyboard"
+            data-kioskboard-placement="bottom" data-kioskboard-specialcharacters="true" />
         </div>
-      </div>
-    </div>
-  </th:block>
-  <th:block th:fragment="search-header">
-    <div class="header header--simple">
-      <div class="header__content">
-        <div class="header__search">
-          <div class="main-search compact">
-            <form th:action="@{/search/od}" th:method="post" name="searchForm">
-              <div>
-                <input type="text" id="searchInput" name="searchValue" th:value="${searchValue}" th:placeholder="#{search.placeholder}"
-                  class="main-search-input form-control search-phrase js-kioskboard-input compact" role="search" autocapitalize="off" autocomplete="off" data-kioskboard-type="keyboard"
-                  data-kioskboard-placement="bottom" data-kioskboard-specialcharacters="true" />
-              </div>
-              <div class="main-search-btns">
-                <button th:aria-label="#{aria.search.clear}" id="clear-search-btn" type="button" class="clear-btn">
-                  <span class="material-symbols-outlined" aria-hidden="true">cancel</span>
-                </button>
-                <button th:aria-label="#{aria.search.search}" id="search-btn" type="submit" class="search-btn">
-                  <span class="material-symbols-outlined" aria-hidden="true">search</span>
-                </button>
-              </div>
-            </form>
-          </div>
+        <div class="main-search-btns">
+          <button th:aria-label="#{aria.search.clear}" id="clear-search-btn" type="button" class="clear-btn">
+            <span class="material-symbols-outlined" aria-hidden="true">cancel</span>
+          </button>
+          <button th:aria-label="#{aria.search.search}" id="search-btn" type="submit" class="search-btn">
+            <span class="material-symbols-outlined" aria-hidden="true">search</span>
+          </button>
         </div>
-        <th:block th:replace="common-app :: lang-select"></th:block>
-        <th:block th:replace="common-app :: navigation"></th:block>
-      </div>
+      </form>
     </div>
   </th:block>
   <th:block th:fragment="homonyms">

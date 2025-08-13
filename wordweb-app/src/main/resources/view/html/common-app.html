@@ -88,18 +88,29 @@
     <th:block th:replace="common-app :: update-msg"></th:block>
     <div class="header" th:classappend="${withSearch == false ? 'header--simple' : ''}">
       <div class="header__content">
+        <th:block th:if="${logoTemplate}">
+          <th:block th:replace="${logoTemplate}"></th:block>
+        </th:block>
         <a
           th:href="${pageContext == 'simpleSearch'} ? @{/lite} : @{/}"
           th:aria-label="#{aria.menu.logo}"
           class="header__logo"
-          th:classappend="${pageContext == 'simpleSearch' ? 'header__logo--light' : ''}" th:if="${withLogo ?: true}"></a>
+          th:classappend="${pageContext == 'simpleSearch' ? 'header__logo--light' : ''}"
+          th:if="${logoTemplate == null && (withLogo ?: true)}"></a>
         <div class="header__search" id="language-detail-panel" th:if="${withSearch ?: true}">
-          <div th:replace="common-search :: search(pageContext = 'search')"></div>
+          <th:block th:if="${searchInputTemplate}">
+            <th:block th:replace="${searchInputTemplate}"></th:block>
+          </th:block>
+          <th:block th:if="${searchInputTemplate == null}">
+            <div th:replace="common-search :: search(pageContext = 'search')"></div>
+          </th:block>
         </div>
-        <a th:href="@{/feelinglucky}" class="header__lucky" th:text="#{button.label.feelinglucky}">
+        <a th:href="@{/feelinglucky}" class="header__lucky" th:text="#{button.label.feelinglucky}" th:if="${withLucky ?: true}">
           Ehk mul veab
         </a>
-        <th:block th:replace=":: lang-select"></th:block>
+        <th:block th:if="${withLangSelect ?: true}">
+          <th:block th:replace=":: lang-select"></th:block>
+        </th:block>
         <th:block th:replace=":: navigation"></th:block>
       </div>
     </div>
