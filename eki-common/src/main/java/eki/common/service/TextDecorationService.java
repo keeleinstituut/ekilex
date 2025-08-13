@@ -15,6 +15,7 @@ import org.springframework.beans.factory.InitializingBean;
 import org.springframework.stereotype.Component;
 
 import eki.common.constant.TextDecoration;
+import eki.common.data.AsWordResult;
 import eki.common.data.CodeValue;
 import eki.common.data.TextDecorationDescriptor;
 
@@ -45,7 +46,11 @@ public class TextDecorationService implements InitializingBean, TextDecoration {
 
 	private static final char[] ACCENT_APOSTROPHES = new char[] {'´', '`', '‘', '’'};
 
-	private static final char APOSTROPHE = '\'';
+	private static final char UNIFIED_APOSTROPHE = '\'';
+
+	private static final char[] ACCENT_DASHES = new char[] {'\u2013', '\u2014'};
+
+	private static final char UNIFIED_DASH = '-';
 
 	private List<TextDecorationDescriptor> allEkiMarkupDescriptors;
 
@@ -240,20 +245,36 @@ public class TextDecorationService implements InitializingBean, TextDecoration {
 		return matcher.find();
 	}
 
-	public String unifyToApostrophe(String value) {
+	public String unifySymbols(String value) {
 		if (StringUtils.isBlank(value)) {
 			return value;
 		}
-		StringBuffer cleanValueBuf = new StringBuffer();
-		char[] chars = value.toCharArray();
-		for (char c : chars) {
-			if (ArrayUtils.contains(ACCENT_APOSTROPHES, c)) {
-				cleanValueBuf.append(APOSTROPHE);
+		StringBuffer cleanValueBuf;
+		char[] chars;
+		cleanValueBuf = new StringBuffer();
+		chars = value.toCharArray();
+		for (char ch : chars) {
+			if (ArrayUtils.contains(ACCENT_APOSTROPHES, ch)) {
+				cleanValueBuf.append(UNIFIED_APOSTROPHE);
+			} else if (ArrayUtils.contains(ACCENT_DASHES, ch)) {
+				cleanValueBuf.append(UNIFIED_DASH);
 			} else {
-				cleanValueBuf.append(c);
+				cleanValueBuf.append(ch);
 			}
 		}
-		return cleanValueBuf.toString();
+		value = cleanValueBuf.toString();
+		cleanValueBuf = new StringBuffer();
+		chars = value.toCharArray();
+		char prevCh = ' ';
+		for (char ch : chars) {
+			if ((ch == UNIFIED_DASH) && (ch == prevCh)) {
+				continue;
+			}
+			cleanValueBuf.append(ch);
+			prevCh = ch;
+		}
+		value = cleanValueBuf.toString();
+		return value;
 	}
 
 	public String removeAccents(String value) {
@@ -271,20 +292,20 @@ public class TextDecorationService implements InitializingBean, TextDecoration {
 		String charAsStr;
 		String simpleStr;
 		char primaryChar;
-		for (char c : chars) {
-			boolean isIgnoredChar = ArrayUtils.contains(IGNORED_DIACRITIC_CHARS, c);
+		for (char ch : chars) {
+			boolean isIgnoredChar = ArrayUtils.contains(IGNORED_DIACRITIC_CHARS, ch);
 			if (isIgnoredChar) {
-				cleanValueBuf.append(c);
+				cleanValueBuf.append(ch);
 			} else {
-				charAsStr = Character.toString(c);
+				charAsStr = Character.toString(ch);
 				decomposedChars = Normalizer.normalize(charAsStr, Normalizer.Form.NFD);
 				if (decomposedChars.length() > 1) {
 					primaryChar = decomposedChars.charAt(0);
 					cleanValueBuf.append(primaryChar);
 				} else {
-					simpleStr = symbolSimplificationMap.get(c);
+					simpleStr = symbolSimplificationMap.get(ch);
 					if (simpleStr == null) {
-						cleanValueBuf.append(c);						
+						cleanValueBuf.append(ch);
 					} else {
 						cleanValueBuf.append(simpleStr);
 					}
@@ -296,6 +317,23 @@ public class TextDecorationService implements InitializingBean, TextDecoration {
 			return null;
 		}
 		return cleanValue;
+	}
+
+	public AsWordResult getAsWordResult(String value) {
+
+		String valueAsWord = getValueAsWord(value);
+		boolean valueAsWordExists = StringUtils.isNotBlank(valueAsWord) && !StringUtils.equals(value, valueAsWord);
+		return new AsWordResult(value, valueAsWord, valueAsWordExists);
+	}
+
+	public String getValueAsWord(String value) {
+
+		String cleanValue = unifySymbols(value);
+		String valueAsWord = removeAccents(cleanValue);
+		if (StringUtils.isBlank(valueAsWord) && !StringUtils.equals(value, cleanValue)) {
+			valueAsWord = cleanValue;
+		}
+		return valueAsWord;
 	}
 
 	private String replaceByPattern(Pattern pattern, String text, String preDecoration, String postDecoration) {

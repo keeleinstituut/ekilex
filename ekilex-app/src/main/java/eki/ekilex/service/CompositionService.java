@@ -20,6 +20,7 @@ import org.springframework.stereotype.Component;
 import eki.common.constant.ActivityEntity;
 import eki.common.constant.ActivityOwner;
 import eki.common.constant.PermConstant;
+import eki.common.data.AsWordResult;
 import eki.common.service.TextDecorationService;
 import eki.ekilex.data.ActivityLogData;
 import eki.ekilex.data.DatasetPermission;
@@ -230,16 +231,14 @@ public class CompositionService extends AbstractCudService implements PermConsta
 
 	private void updateWordValue(Long wordId, String wordValue, String wordValuePrese, String wordLang, String originalWordValue, String originalWordLang) {
 
-		String cleanValue = textDecorationService.unifyToApostrophe(wordValue);
-		String valueAsWord = textDecorationService.removeAccents(cleanValue);
-		if (StringUtils.isBlank(valueAsWord) && !StringUtils.equals(wordValue, cleanValue)) {
-			valueAsWord = cleanValue;
-		}
+		AsWordResult asWordResult = textDecorationService.getAsWordResult(wordValue);
+		String valueAsWord = asWordResult.getValueAsWord();
+		boolean valueAsWordExists = asWordResult.isValueAsWordExists();
 		SimpleWord originalSimpleWord = new SimpleWord(null, originalWordValue, originalWordLang);
 		SimpleWord updatedSimpleWord = new SimpleWord(null, wordValue, wordLang);
 
 		cudDbService.updateWordValueAndLang(wordId, wordValue, wordValuePrese, wordLang);
-		if (StringUtils.isNotEmpty(valueAsWord)) {
+		if (valueAsWordExists) {
 			cudDbService.updateAsWordValue(wordId, valueAsWord);
 		}
 

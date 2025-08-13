@@ -1,1 +1,4 @@
 Märkused ver 1.42.0 tarne kohta:
+
+mvn spring-boot:run -P maint -D spring-boot.run.profiles=<dev|prod> -D spring-boot.run.arguments="task="<name>""
+

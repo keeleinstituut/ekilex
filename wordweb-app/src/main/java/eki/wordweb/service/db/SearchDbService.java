@@ -101,7 +101,6 @@ public class SearchDbService implements GlobalConstant, SystemConstant {
 			String wordInfix, String wordInfixUnaccent, SearchContext searchContext, int maxWordCount) {
 
 		List<String> destinLangs = searchContext.getDestinLangs();
-
 		Field<String> wordInfixLowerField = DSL.lower(wordInfix);
 		Field<String> wordInfixLowerLikeField = DSL.lower('%' + wordInfix + '%');
 		Field<String> wordInfixLowerUnaccentLikeField;

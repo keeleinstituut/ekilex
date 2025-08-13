@@ -80,7 +80,6 @@ public class SimpleSearchController extends AbstractSearchController {
 		} else {
 			selectedWordHomonymNr = nullSafe(selectedWordHomonymNrStr);
 		}
-		searchWord = textDecorationService.unifyToApostrophe(searchWord);
 		String searchUri = webUtil.composeSimpleSearchUri(destinLangsStr, searchWord, selectedWordHomonymNr, selectedWordLang);
 		setSearchFormAttribute(redirectAttributes, Boolean.TRUE);
 

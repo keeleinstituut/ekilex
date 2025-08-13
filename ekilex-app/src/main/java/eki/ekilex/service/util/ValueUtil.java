@@ -79,7 +79,7 @@ public class ValueUtil implements SystemConstant, GlobalConstant {
 	}
 
 	public String unifyToApostrophe(String value) {
-		return textDecorationService.unifyToApostrophe(value);
+		return textDecorationService.unifySymbols(value);
 	}
 
 	public String encode(String value) {

@@ -163,8 +163,7 @@ public class SynCudService extends AbstractSynCudService implements SystemConsta
 
 		if (synWordId == null) {
 			int synWordHomNr = cudDbService.getWordNextHomonymNr(wordValue, wordLang);
-			String cleanValue = textDecorationService.unifyToApostrophe(wordValue);
-			String valueAsWord = textDecorationService.removeAccents(cleanValue);
+			String valueAsWord = textDecorationService.getValueAsWord(wordValue);
 			synWordId = cudDbService.createWord(wordValue, wordValue, valueAsWord, wordLang, synWordHomNr);
 		}
 
@@ -180,11 +179,7 @@ public class SynCudService extends AbstractSynCudService implements SystemConsta
 			Long existingWordId, String valuePrese, String weightStr, String language, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
 
 		String value = textDecorationService.removeEkiElementMarkup(valuePrese);
-		String cleanValue = textDecorationService.unifyToApostrophe(value);
-		String valueAsWord = textDecorationService.removeAccents(cleanValue);
-		if (StringUtils.isBlank(valueAsWord) && !StringUtils.equals(value, cleanValue)) {
-			valueAsWord = cleanValue;
-		}
+		String valueAsWord = textDecorationService.getValueAsWord(value);
 		WordLexemeMeaningIdTuple wordLexemeMeaningId = cudDbService.createWordAndLexemeAndMeaning(value, valuePrese, valueAsWord, value, language, roleDatasetCode, PUBLICITY_PRIVATE, null);
 		Long createdWordId = wordLexemeMeaningId.getWordId();
 		Long createdLexemeId = wordLexemeMeaningId.getLexemeId();

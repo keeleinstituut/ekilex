@@ -49,7 +49,7 @@ public class OdSearchController extends AbstractSearchController {
 		if (StringUtils.isBlank(searchValue)) {
 			return REDIRECT_PREF + SEARCH_URI + OD_URI;
 		}
-		searchValue = textDecorationService.unifyToApostrophe(searchValue);
+		searchValue = textDecorationService.unifySymbols(searchValue);
 		Integer homonymNr = 1;
 		String searchUri = webUtil.composeOdSearchUri(searchValue, homonymNr);
 		setSearchFormAttribute(redirectAttributes, Boolean.TRUE);

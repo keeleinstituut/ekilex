@@ -19,6 +19,7 @@ import eki.common.constant.ActivityFunct;
 import eki.common.constant.ActivityOwner;
 import eki.common.constant.FreeformConstant;
 import eki.common.constant.PermConstant;
+import eki.common.data.AsWordResult;
 import eki.ekilex.data.ActivityLogData;
 import eki.ekilex.data.Classifier;
 import eki.ekilex.data.CollocMemberOrder;
@@ -73,11 +74,7 @@ public class CudService extends AbstractCudService implements PermConstant, Acti
 		boolean isMeaningCreate = meaningId == null;
 
 		value = textDecorationService.removeEkiElementMarkup(value);
-		String cleanValue = textDecorationService.unifyToApostrophe(value);
-		String valueAsWord = textDecorationService.removeAccents(cleanValue);
-		if (StringUtils.isBlank(valueAsWord) && !StringUtils.equals(value, cleanValue)) {
-			valueAsWord = cleanValue;
-		}
+		String valueAsWord = textDecorationService.getValueAsWord(value);
 		WordLexemeMeaningIdTuple wordLexemeMeaningId = cudDbService.createWordAndLexemeAndMeaning(value, value, valueAsWord, value, language, dataset, PUBLICITY_PUBLIC, meaningId);
 
 		Long wordId = wordLexemeMeaningId.getWordId();
@@ -500,14 +497,12 @@ public class CudService extends AbstractCudService implements PermConstant, Acti
 		SimpleWord originalWord = cudDbService.getSimpleWord(wordId);
 		String lang = originalWord.getLang();
 		String value = textDecorationService.removeEkiElementMarkup(valuePrese);
-		String cleanValue = textDecorationService.unifyToApostrophe(value);
-		String valueAsWord = textDecorationService.removeAccents(cleanValue);
-		if (StringUtils.isBlank(valueAsWord) && !StringUtils.equals(value, cleanValue)) {
-			valueAsWord = cleanValue;
-		}
+		AsWordResult asWordResult = textDecorationService.getAsWordResult(value);
+		String valueAsWord = asWordResult.getValueAsWord();
+		boolean valueAsWordExists = asWordResult.isValueAsWordExists();
 		ActivityLogData activityLog = activityLogService.prepareActivityLog("updateWordValue", wordId, ActivityOwner.WORD, roleDatasetCode, isManualEventOnUpdateEnabled);
 		cudDbService.updateWordValue(wordId, value, valuePrese);
-		if (StringUtils.isNotEmpty(valueAsWord)) {
+		if (valueAsWordExists) {
 			cudDbService.updateAsWordValue(wordId, valueAsWord);
 		}
 		SimpleWord updatedWord = new SimpleWord(wordId, value, lang);

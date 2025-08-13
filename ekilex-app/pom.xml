@@ -89,6 +89,12 @@
 				<spring.boot.mainclass>eki.ekilex.cli.DefinitionPurger</spring.boot.mainclass>
 			</properties>
 		</profile>
+		<profile>
+			<id>maint</id>
+			<properties>
+				<spring.boot.mainclass>eki.ekilex.cli.Maintenancer</spring.boot.mainclass>
+			</properties>
+		</profile>
 	</profiles>
 
 	<build>

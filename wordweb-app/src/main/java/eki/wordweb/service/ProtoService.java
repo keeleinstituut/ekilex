@@ -28,7 +28,7 @@ public class ProtoService {
 
 		Long t1, t2;
 		t1 = System.currentTimeMillis();
-		String wordCritClean = textDecorationService.unifyToApostrophe(wordCrit);
+		String wordCritClean = textDecorationService.unifySymbols(wordCrit);
 		String wordCritUnaccent = textDecorationService.removeAccents(wordCritClean);
 		List<String> words = new ArrayList<>();
 		if (StringUtils.equals(algo, "infixlev")) {

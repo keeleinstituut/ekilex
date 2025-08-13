@@ -143,8 +143,7 @@ public class TermMeaningService extends AbstractApiCudService implements Activit
 					}
 				} else {
 					String wordValue = textDecorationService.removeEkiElementMarkup(wordValuePrese);
-					String cleanValue = textDecorationService.unifyToApostrophe(wordValue);
-					String valueAsWord = textDecorationService.removeAccents(cleanValue);
+					String valueAsWord = textDecorationService.getValueAsWord(wordValue);
 
 					if (wordId == null) {
 						int synWordHomNr = cudDbService.getWordNextHomonymNr(wordValue, wordLang);

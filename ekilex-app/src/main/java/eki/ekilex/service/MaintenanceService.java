@@ -16,6 +16,7 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import eki.common.constant.GlobalConstant;
+import eki.common.data.AsWordResult;
 import eki.common.data.Count;
 import eki.common.service.TextDecorationService;
 import eki.ekilex.constant.SystemConstant;
@@ -117,53 +118,57 @@ public class MaintenanceService implements SystemConstant, GlobalConstant {
 	}
 
 	@Transactional(rollbackOn = Exception.class)
-	public Map<String, Count> unifyApostrophesAndRecalcAccents() {
+	public Map<String, Count> unifySymbolsAndRecalcAccents() {
 
-		logger.info("Unifying apostrophes and updating accents...");
+		logger.info("Unifying symbols and updating accents...");
 
+		Count createCount = new Count();
 		Count updateCount = new Count();
+		Count removeCount = new Count();
 		Map<String, Count> resultCounts = new HashMap<>();
+		resultCounts.put("createCount", createCount);
 		resultCounts.put("updateCount", updateCount);
+		resultCounts.put("removeCount", removeCount);
 
 		List<WordRecord> wordRecords = maintenanceDbService.getWordRecords();
-		boolean updateExists;
+		int wordCount = wordRecords.size();
+		boolean changesExist = false;
+
 		for (WordRecord wordRecord : wordRecords) {
+
 			String value = wordRecord.getValue();
 			String valueAsWordSrc = wordRecord.getValueAsWord();
-			String valueClean = textDecorationService.unifyToApostrophe(value);
-			String valueAsWordTrgt = textDecorationService.removeAccents(valueClean);
-			updateExists = false;
-			if (StringUtils.isBlank(valueAsWordSrc)) {
-				// initial valuation
-				if (StringUtils.isNotBlank(valueAsWordTrgt)) {
-					wordRecord.setValueAsWord(valueAsWordTrgt);
-					updateExists = true;
-				} else if (!StringUtils.equals(value, valueClean)) {
-					wordRecord.setValueAsWord(valueClean);
-					updateExists = true;
-				}
-			} else {
-				// compare with existing value
-				if (StringUtils.isNotBlank(valueAsWordTrgt)) {
-					if (!StringUtils.equals(valueAsWordSrc, valueAsWordTrgt)) {
-						wordRecord.setValueAsWord(valueAsWordTrgt);
-						updateExists = true;
-					}
-				} else if (!StringUtils.equals(valueAsWordSrc, valueClean)) {
-					wordRecord.setValueAsWord(valueClean);
-					updateExists = true;
-				}
-			}
-			if (updateExists) {
+			AsWordResult asWordResult = textDecorationService.getAsWordResult(value);
+			String valueAsWordTrgt = asWordResult.getValueAsWord();
+			boolean isValueAsWordExists = asWordResult.isValueAsWordExists();
+			if (StringUtils.isBlank(valueAsWordSrc) && isValueAsWordExists) {
+				wordRecord.setValueAsWord(valueAsWordTrgt);
+				wordRecord.update();
+				createCount.increment();
+				changesExist = true;
+			} else if (StringUtils.isNotBlank(valueAsWordSrc) && !isValueAsWordExists) {
+				wordRecord.setValueAsWord(null);
+				wordRecord.update();
+				removeCount.increment();
+				changesExist = true;
+			} else if (StringUtils.isNotBlank(valueAsWordSrc)
+					&& isValueAsWordExists
+					&& !StringUtils.equals(valueAsWordSrc, valueAsWordTrgt)) {
+				wordRecord.setValueAsWord(valueAsWordTrgt);
 				wordRecord.update();
 				updateCount.increment();
+				changesExist = true;
 			}
 		}
-		if (updateCount.getValue() > 0) {
-			logger.info("Unified apostrophe and accent recalc update count: {}", updateCount.getValue());
+
+		if (changesExist) {
+			logger.info("Out of {} words, unified symbols and accent recalc create count: {}, update count: {}, remove count: {}",
+					wordCount, createCount.getValue(), updateCount.getValue(), removeCount.getValue());
+		} else {
+			logger.info("Already up-to-date");
 		}
 
-		logger.info("...apostrophes and accents done");
+		logger.info("...unified symbols and accents done");
 
 		return resultCounts;
 	}

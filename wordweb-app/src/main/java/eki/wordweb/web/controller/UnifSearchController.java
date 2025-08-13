@@ -94,7 +94,6 @@ public class UnifSearchController extends AbstractSearchController {
 		} else {
 			selectedWordHomonymNr = nullSafe(selectedWordHomonymNrStr);
 		}
-		searchWord = textDecorationService.unifyToApostrophe(searchWord);
 		String searchUri = webUtil.composeDetailSearchUri(destinLangsStr, datasetCodesStr, searchWord, selectedWordHomonymNr, selectedWordLang);
 		setSearchFormAttribute(redirectAttributes, Boolean.TRUE);
 		redirectAttributes.addFlashAttribute("linkedLexemeId", linkedLexemeId);

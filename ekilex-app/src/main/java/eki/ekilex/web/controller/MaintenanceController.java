@@ -52,7 +52,7 @@ public class MaintenanceController implements WebConstant {
 	@GetMapping(MAINTENANCE_URI + "/recalcaccents")
 	public Map<String, Count> recalcAccents() {
 
-		Map<String, Count> resultCounts = maintenanceService.unifyApostrophesAndRecalcAccents();
+		Map<String, Count> resultCounts = maintenanceService.unifySymbolsAndRecalcAccents();
 
 		return resultCounts;
 	}

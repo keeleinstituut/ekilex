@@ -71,7 +71,8 @@ public class LexWordService extends AbstractApiCudService {
 
 		Long wordId = word.getWordId();
 		String wordValue = word.getWordValue();
-		String valueAsWord = getValueAsWord(wordValue);
+		wordValue = textDecorationService.removeEkiElementMarkup(wordValue);
+		String valueAsWord = textDecorationService.getValueAsWord(wordValue);
 		List<String> wordTypeCodes = word.getWordTypeCodes();
 		List<Forum> wordForums = word.getForums();
 		List<WordRelation> wordRelations = word.getRelations();
@@ -192,18 +193,6 @@ public class LexWordService extends AbstractApiCudService {
 			}
 		}
 		return wordId;
-	}
-
-	private String getValueAsWord(String value) {
-
-		String valueAsWord;
-		value = textDecorationService.removeEkiElementMarkup(value);
-		String cleanValue = textDecorationService.unifyToApostrophe(value);
-		valueAsWord = textDecorationService.removeAccents(cleanValue);
-		if (StringUtils.isBlank(valueAsWord) && !StringUtils.equals(value, cleanValue)) {
-			valueAsWord = cleanValue;
-		}
-		return valueAsWord;
 	}
 
 }

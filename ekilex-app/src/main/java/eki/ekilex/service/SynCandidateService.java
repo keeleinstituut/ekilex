@@ -7,7 +7,6 @@ import java.util.Locale;
 import javax.transaction.Transactional;
 
 import org.apache.commons.collections4.CollectionUtils;
-import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -141,11 +140,7 @@ public class SynCandidateService extends AbstractSynCudService {
 	private WordLexemeMeaningIdTuple createSynCandidateWordAndLexemeAndMeaning(String value, String lang, String datasetCode, String roleDatasetCode) throws Exception {
 
 		value = textDecorationService.removeEkiElementMarkup(value);
-		String cleanValue = textDecorationService.unifyToApostrophe(value);
-		String valueAsWord = textDecorationService.removeAccents(cleanValue);
-		if (StringUtils.isBlank(valueAsWord) && !StringUtils.equals(value, cleanValue)) {
-			valueAsWord = cleanValue;
-		}
+		String valueAsWord = textDecorationService.getValueAsWord(value);
 		WordLexemeMeaningIdTuple wordLexemeMeaningId = cudDbService.createPrivateWordAndLexemeAndMeaning(value, value, valueAsWord, value, lang, datasetCode);
 
 		Long wordId = wordLexemeMeaningId.getWordId();
@@ -166,24 +161,4 @@ public class SynCandidateService extends AbstractSynCudService {
 		moveCreatedWordRelationToFirst(headwordId, createdRelationId, WORD_REL_TYPE_CODE_RAW);
 		cudDbService.createWordRelationParam(createdRelationId, WORD_RELATION_PARAM_NAME_SYN_CANDIDATE, weight);
 	}
-
-	/*
-	private void createUsageSourceLink(Long usageId, Long sourceId, Long lexemeId, String roleDatasetCode) throws Exception {
-	
-		ActivityLogData activityLog = activityLogService.prepareActivityLog("createUsageSourceLink", lexemeId, ActivityOwner.LEXEME, roleDatasetCode, MANUAL_EVENT_ON_UPDATE_DISABLED);
-		ReferenceType refType = ReferenceType.ANY;
-		String sourceLinkName = null;
-		Long sourceLinkId = sourceLinkDbService.createFreeformSourceLink(usageId, sourceId, refType, sourceLinkName);
-		activityLogService.createActivityLog(activityLog, sourceLinkId, ActivityEntity.USAGE_SOURCE_LINK);
-	}
-	
-	private void createDefinitionSourceLink(Long definitionId, Long sourceId, Long meaningId, String roleDatasetCode) throws Exception {
-	
-		ActivityLogData activityLog = activityLogService.prepareActivityLog("createDefinitionSourceLink", meaningId, ActivityOwner.MEANING, roleDatasetCode, MANUAL_EVENT_ON_UPDATE_DISABLED);
-		ReferenceType refType = ReferenceType.ANY;
-		String sourceLinkName = null;
-		Long sourceLinkId = sourceLinkDbService.createDefinitionSourceLink(definitionId, sourceId, refType, sourceLinkName);
-		activityLogService.createActivityLog(activityLog, sourceLinkId, ActivityEntity.DEFINITION_SOURCE_LINK);
-	}
-	*/
 }

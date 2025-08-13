@@ -15,6 +15,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import eki.common.constant.GlobalConstant;
+import eki.common.data.AsWordResult;
 import eki.common.service.TextDecorationService;
 import eki.common.service.util.LexemeLevelPreseUtil;
 import eki.wordweb.constant.SystemConstant;
@@ -91,8 +92,7 @@ public abstract class AbstractSearchService implements SystemConstant, WebConsta
 	public Map<String, List<String>> getWordsByInfixLev(String wordInfix, SearchFilter searchFilter, int limit) {
 
 		SearchContext searchContext = getSearchContext(searchFilter);
-		String wordInfixClean = textDecorationService.unifyToApostrophe(wordInfix);
-		String wordInfixUnaccent = textDecorationService.removeAccents(wordInfixClean);
+		String wordInfixUnaccent = textDecorationService.getValueAsWord(wordInfix);
 		Map<String, List<WordSearchElement>> results = searchDbService.getWordsByInfixLev(wordInfix, wordInfixUnaccent, searchContext, limit);
 		List<WordSearchElement> wordGroup = results.get(WORD_SEARCH_GROUP_WORD);
 		List<WordSearchElement> formGroup = results.get(WORD_SEARCH_GROUP_FORM);
@@ -141,9 +141,15 @@ public abstract class AbstractSearchService implements SystemConstant, WebConsta
 		String searchWord = searchFilter.getSearchWord();
 		Integer homonymNr = searchFilter.getHomonymNr();
 		String lang = searchFilter.getLang();
-
+		AsWordResult asWordResult = textDecorationService.getAsWordResult(searchWord);
+		String searchWordUnaccent;
+		if (asWordResult.isValueAsWordExists()) {
+			searchWordUnaccent = asWordResult.getValueAsWord();
+		} else {
+			searchWordUnaccent = asWordResult.getValue();
+		}
 		SearchContext searchContext = getSearchContext(searchFilter);
-		List<Word> allWords = searchDbService.getWords(searchWord, searchContext, false);
+		List<Word> allWords = searchDbService.getWords(searchWordUnaccent, searchContext, false);
 		wordConversionUtil.setWordTypeFlags(allWords);
 		wordConversionUtil.composeHomonymWrapups(allWords, searchContext);
 		wordConversionUtil.selectHomonymWithLang(allWords, homonymNr, lang);
@@ -167,8 +173,6 @@ public abstract class AbstractSearchService implements SystemConstant, WebConsta
 			return new WordsData(wordMatchWords, wordResultExists, isSingleResult, wordResultCount, formMatchWordValues, formResultExists);
 		}
 
-		String searchWordClean = textDecorationService.unifyToApostrophe(searchWord);
-		String searchWordUnaccent = textDecorationService.removeAccents(searchWordClean);
 		List<String> similarWordValues = searchDbService.getWordValuesByLevenshteinLess(searchWord, searchWordUnaccent, searchContext, ALT_WORDS_DISPLAY_LIMIT);
 		boolean altResultExists = CollectionUtils.isNotEmpty(similarWordValues);
 
