@@ -8,6 +8,7 @@
 <body class="home-page d-flex flex-column survey-active">
   <th:block th:replace="common-app :: ie-user"></th:block>
   <th:block th:replace="common-app :: header(
+    odPage = ${true},
     logoTemplate = ~{od-comp :: logo},
     withLucky = ${false},
     withLangSelect = ${false},

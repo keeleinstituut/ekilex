@@ -22,7 +22,7 @@
 }
 
 .main-search-input {
-  height: 40px;
+  height: var(--main-search-input-height, 40px);
   padding-right: 80px;
   border-color: $gray-100;
   border-radius: 8px;

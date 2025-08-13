@@ -9,6 +9,7 @@
 <body class="survey-active">
   <th:block th:replace="common-app :: ie-user"></th:block>
   <th:block th:replace="common-app :: header(
+    odPage = ${true},
     logoTemplate = ~{od-comp :: logo},
     withLucky = ${false},
     withLangSelect = ${false},
@@ -48,10 +49,8 @@
             <th:block th:if="${word.wordOdMorph}">
               <div class="mt-2">
                 <div th:text="#{label.od.morpho}" class="text-darker-gray">Lühimorfo</div>
-                <div class="d-flex">
-                  <span><</span>
-                  <th:block th:utext="${word.wordOdMorph.valuePrese}"></th:block>
-                  <span>></span>
+                <div>
+                  <span><</span><span th:utext="${word.wordOdMorph.valuePrese}"></span><span>></span>
                 </div>
               </div>
             </th:block>
