@@ -109,7 +109,7 @@
             <th:block th:if="${word.secondaryWordRelationGroups}">
               <th:block th:each="wordRelationGroup : ${word.secondaryWordRelationGroups}">
                 <div class="mt-2">
-                  <div th:text="${wordRelationGroup.wordRelType.value}" class="text-darker-gray">Võrded</div>
+                  <div th:text="${wordRelationGroup.wordRelType.value}" class="text-darker-gray text-capitalize">Võrded</div>
                   <div>
                     <th:block th:each="relatedWord, relatedWordIter : ${wordRelationGroup.relatedWords}">
                       <span th:utext="${relatedWord.valuePrese}"></span>

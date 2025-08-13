@@ -5,9 +5,10 @@
 }
 
 
-.homonym-page {
-  &--od {
-    margin: 32px 0;
+.homonym-page--od {
+  margin: 32px 0;
+  & .content-panel {
+    --content-panel-max-width: 779px;
   }
 }
 

@@ -37,6 +37,9 @@
   .text-underlined {
     text-decoration: underline;
   }
+  .text-capitalize {
+    text-transform: capitalize;
+  }
   .text-darker-gray {
     color: var(--color-darker-gray);
   }
@@ -15745,6 +15748,9 @@ span.material-symbols-outlined--small {
 .homonym-page--od {
   margin: 32px 0;
 }
+.homonym-page--od .content-panel {
+  --content-panel-max-width: 779px;
+}
 .od-tag {
   width: auto;
   display: inline-flex;
@@ -16384,7 +16390,7 @@ span.material-symbols-outlined--small {
   .search-panel,
   .footer-wrapper,
   .content-panel {
-    max-width: 80vw !important;
+    max-width: var(--content-panel-max-width, 80vw) !important;
     margin-right: auto !important;
     margin-left: auto !important;
   }
