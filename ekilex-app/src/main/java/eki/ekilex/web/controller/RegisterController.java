@@ -232,19 +232,21 @@ public class RegisterController extends AbstractPublicPageController {
 			RedirectAttributes attributes) {
 
 		Locale locale = LocaleContextHolder.getLocale();
-		if (!userValidator.isValidPassword(password, password2)) {
-			String message = messageSource.getMessage("register.invalid.password", new Object[0], locale);
-			model.addAttribute("error", message);
-			model.addAttribute("recoveryKey", recoveryKey);
-			return PASSWORD_SET_PAGE;
-		}
-
 		String userEmail = userService.getUserEmailByRecoveryKey(recoveryKey);
 		if (StringUtils.isBlank(userEmail)) {
 			String message = messageSource.getMessage("register.unknown.recovery.key", new Object[0], locale);
 			model.addAttribute("warning", message);
 			return PASSWORD_RECOVERY_PAGE;
 		}
+
+		if (!userValidator.isValidPassword(password, password2)) {
+			String message = messageSource.getMessage("register.invalid.password", new Object[0], locale);
+			model.addAttribute("error", message);
+			model.addAttribute("recoveryKey", recoveryKey);
+			model.addAttribute("userEmail", userEmail);
+			return PASSWORD_SET_PAGE;
+		}
+
 		userService.setUserPassword(userEmail, password);
 		String message = messageSource.getMessage("register.recovery.success", new Object[0], locale);
 		attributes.addFlashAttribute("successMessage", message);
