@@ -152,8 +152,7 @@ public class SynCudService extends AbstractSynCudService implements SystemConsta
 	@Transactional(rollbackOn = Exception.class)
 	public void createSynMeaningWord(Long targetMeaningId, Long synWordId, String wordValue, String wordLang, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
 
-		ActivityLogData activityLog = activityLogService
-				.prepareActivityLog("createSynMeaningWord", targetMeaningId, ActivityOwner.MEANING, roleDatasetCode, isManualEventOnUpdateEnabled);
+		ActivityLogData activityLog = activityLogService.prepareActivityLog("createSynMeaningWord", targetMeaningId, ActivityOwner.MEANING, roleDatasetCode, isManualEventOnUpdateEnabled);
 		wordValue = textDecorationService.removeEkiElementMarkup(wordValue);
 
 		boolean targetMeaningHasWord = lookupDbService.meaningHasWord(targetMeaningId, roleDatasetCode, wordValue, wordLang);

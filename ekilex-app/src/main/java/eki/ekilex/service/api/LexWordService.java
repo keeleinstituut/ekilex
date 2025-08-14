@@ -70,7 +70,7 @@ public class LexWordService extends AbstractApiCudService {
 		String userName = user.getName();
 
 		Long wordId = word.getWordId();
-		String wordValue = word.getWordValue();
+		String wordValue = valueUtil.trimAndCleanAndRemoveHtmlAndLimit(word.getWordValue());
 		wordValue = textDecorationService.removeEkiElementMarkup(wordValue);
 		String valueAsWord = textDecorationService.getValueAsWord(wordValue);
 		List<String> wordTypeCodes = word.getWordTypeCodes();

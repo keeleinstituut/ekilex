@@ -114,7 +114,7 @@ public class TermMeaningService extends AbstractApiCudService implements Activit
 			for (TermWord word : words) {
 
 				Long wordId = word.getWordId();
-				String wordValuePrese = StringUtils.trim(word.getValuePrese());
+				String wordValuePrese = valueUtil.trimAndCleanAndRemoveHtmlAndLimit(word.getValuePrese());
 				String wordLang = word.getLang();
 				List<String> wordTypeCodes = word.getWordTypeCodes();
 				boolean isValueOrLangMissing = StringUtils.isAnyBlank(wordValuePrese, wordLang);

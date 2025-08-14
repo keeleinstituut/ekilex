@@ -24,8 +24,12 @@ import eki.ekilex.service.db.LookupDbService;
 import eki.ekilex.service.db.PublishingDbService;
 import eki.ekilex.service.db.SourceLinkDbService;
 import eki.ekilex.service.db.TagDbService;
+import eki.ekilex.service.util.ValueUtil;
 
 public abstract class AbstractCudService extends AbstractService implements PublishingConstant {
+
+	@Autowired
+	protected ValueUtil valueUtil;
 
 	@Autowired
 	protected TextDecorationService textDecorationService;

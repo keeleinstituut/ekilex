@@ -25,3 +25,13 @@ insert into label_type (code, value) values ('od', 'od');
 
 create index word_od_recommendation_opt_value_idx on word_od_recommendation(opt_value);
 create index word_od_recommendation_opt_value_lower_idx on word_od_recommendation(lower(opt_value));
+
+-- ebastandardsete tühikute asendamine keelendites
+
+update word w
+set 
+	value = replace(w.value, chr(160), ' '),
+	value_prese = replace(w.value_prese, chr(160), ' ')
+where
+	w.value like '%' || chr(160) || '%'
+;
