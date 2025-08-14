@@ -64,8 +64,13 @@ function setHomonymNrVisibility() {
 
 function fetchCorpSentences() {
 	var corpDiv = $("#corp");
-	var corpSentencesUrl = corpUrl + '/' + encodeURIComponent(currentWord) + '/' + currentWordLang;
-	$.get(corpSentencesUrl).done(function(data) {
+	var corpUrlWithParams;
+	if (currentWordPosCodes) {
+		corpUrlWithParams = corpUrl + '/' + encodeURIComponent(currentWord) + '/' + currentWordLang + '/' + currentWordPosCodes;
+	} else {
+		corpUrlWithParams = corpUrl + '/' + encodeURIComponent(currentWord) + '/' + currentWordLang;
+	}
+	$.get(corpUrlWithParams).done(function(data) {
 		corpDiv.replaceWith(data);
 	}).fail(function(data) {
 	})

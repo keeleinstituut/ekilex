@@ -38,6 +38,8 @@ public class Word extends WordTypeData {
 
 	private List<Classifier> summarisedPoses;
 
+	private String summarisedPosCodesStr;
+
 	private WordEtymLevel wordEtymologyTree;
 
 	private List<WordRelation> relatedWords;
@@ -138,6 +140,14 @@ public class Word extends WordTypeData {
 
 	public void setSummarisedPoses(List<Classifier> summarisedPoses) {
 		this.summarisedPoses = summarisedPoses;
+	}
+
+	public String getSummarisedPosCodesStr() {
+		return summarisedPosCodesStr;
+	}
+
+	public void setSummarisedPosCodesStr(String summarisedPosCodesStr) {
+		this.summarisedPosCodesStr = summarisedPosCodesStr;
 	}
 
 	public WordEtymLevel getWordEtymologyTree() {

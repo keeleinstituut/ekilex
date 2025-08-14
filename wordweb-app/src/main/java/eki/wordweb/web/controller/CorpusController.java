@@ -32,18 +32,21 @@ public class CorpusController implements WebConstant, SystemConstant {
 	@Autowired
 	private CorpusTranslationService corpusTranslationService;
 
-	@GetMapping(CORP_URI + "/{searchMode}/{wordValue}/{wordLang}")
+	@GetMapping(value = {
+			CORP_URI + "/{searchMode}/{wordValue}/{wordLang}",
+			CORP_URI + "/{searchMode}/{wordValue}/{wordLang}/{posCodes}"})
 	public String searchFromCorpus(
 			@PathVariable("searchMode") String searchMode,
 			@PathVariable("wordValue") String wordValue,
 			@PathVariable("wordLang") String wordLang,
+			@PathVariable(value = "posCodes", required = false) List<String> posCodes,
 			@ModelAttribute(SESSION_BEAN) SessionBean sessionBean,
 			Model model) {
 
 		List<String> uiSections = sessionBean.getUiSections();
 		List<CorpusSentence> sentences = new ArrayList<>();
 		if (StringUtils.equals(wordLang, DESTIN_LANG_EST)) {
-			sentences = corpusEstService.getCorpusSentences(wordValue, searchMode);
+			sentences = corpusEstService.getCorpusSentences(searchMode, wordValue, posCodes);
 		}
 
 		model.addAttribute("sentences", sentences);

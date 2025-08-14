@@ -328,6 +328,7 @@ public class WordConversionUtil extends AbstractConversionUtil {
 
 		summarisedPoses = summarisedPoses.stream().distinct().collect(Collectors.toList());
 		List<String> summarisedPosCodes = summarisedPoses.stream().map(Classifier::getCode).collect(Collectors.toList());
+		String summarisedPosCodesStr = StringUtils.join(summarisedPosCodes, ",");
 
 		boolean isShowLexPoses = false;
 		boolean isShowTermPoses = false;
@@ -389,6 +390,7 @@ public class WordConversionUtil extends AbstractConversionUtil {
 		}
 
 		word.setSummarisedPoses(summarisedPoses);
+		word.setSummarisedPosCodesStr(summarisedPosCodesStr);
 	}
 
 	public void filterWordRelationsBySynonyms(Word word, List<LexemeWord> lexemeWords) {

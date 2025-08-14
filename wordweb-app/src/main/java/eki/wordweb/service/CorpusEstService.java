@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.collections4.MapUtils;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -21,6 +22,14 @@ import eki.wordweb.data.CorpusSentence;
 
 @Component
 public class CorpusEstService extends AbstractRemoteRequestService {
+
+	private static final String[] POS_PUNCTUATIONS = {"Z", "_Z_"};
+
+	private static final String QUOTATION_MARK = "\"";
+
+	private static final String[] SKIP_QUERY_POS_CODES = {"inda", "suf", "prf"};
+
+	private static final String[] IGNORE_POS_CODES = {"vrm"};
 
 	@Value("${corpus.service.est.url:}")
 	private String serviceUrl;
@@ -40,37 +49,41 @@ public class CorpusEstService extends AbstractRemoteRequestService {
 	@Value("#{${corpus.service.est.parameters}}")
 	private MultiValueMap<String, String> defaultQueryParamsMap;
 
-	private final String[] POS_PUNCTUATIONS = new String[] {"Z", "_Z_"};
+	@Value("#{${corpus.service.est.posmap}}")
+	private Map<String, String> posMap;
 
-	private final String QUOTATION_MARK = "\"";
+	@Cacheable(value = CACHE_KEY_CORPUS, key = "{#root.methodName, #searchMode, #wordValue, #posCodes}")
+	public List<CorpusSentence> getCorpusSentences(String searchMode, String wordValue, List<String> posCodes) {
 
-	@Cacheable(value = CACHE_KEY_CORPUS, key = "{#root.methodName, #wordValue, #searchMode}")
-	public List<CorpusSentence> getCorpusSentences(String wordValue, String searchMode) {
-
-		URI corpusUrl = composeCorpusUri(wordValue, searchMode);
+		URI corpusUrl = composeCorpusUri(searchMode, wordValue, posCodes);
 		Map<String, Object> response = request(corpusUrl);
-		return parseResponse(response);
+		List<CorpusSentence> corpusSentences = parseResponse(response);
+		return corpusSentences;
 	}
 
-	private URI composeCorpusUri(String wordValue, String searchMode) {
+	private URI composeCorpusUri(String searchMode, String wordValue, List<String> posCodes) {
 
 		if (isBlank(serviceUrl)) {
 			return null;
 		}
 
-		boolean isPosQuery = false;
-		String corpName = null;
-		String queryParamKey = null;
-		if (StringUtils.equals(searchMode, SEARCH_MODE_DETAIL)) {
-			isPosQuery = true;
-			corpName = corpNameDetail;
-			queryParamKey = wordQueryParamKeyDetail;
-		} else if (StringUtils.equals(searchMode, SEARCH_MODE_SIMPLE)) {
-			corpName = corpNameSimple;
-			queryParamKey = wordQueryParamKeySimple;
+		boolean isSkipQuery = CollectionUtils.isNotEmpty(posCodes)
+				&& CollectionUtils.containsAny(posCodes, SKIP_QUERY_POS_CODES);
+		if (isSkipQuery) {
+			return null;
 		}
 
-		String queryString = composeQueryString(wordValue, queryParamKey, isPosQuery);
+		String corpName = null;
+		String queryString;
+		if (StringUtils.equals(searchMode, SEARCH_MODE_DETAIL)) {
+			corpName = corpNameDetail;
+			queryString = composeQueryString(wordValue, posCodes, true);
+		} else if (StringUtils.equals(searchMode, SEARCH_MODE_SIMPLE)) {
+			corpName = corpNameSimple;
+			queryString = composeQueryString(wordValue, null, false);
+		} else {
+			return null;
+		}
 
 		try {
 			return UriComponentsBuilder
@@ -87,25 +100,63 @@ public class CorpusEstService extends AbstractRemoteRequestService {
 		}
 	}
 
-	private String composeQueryString(String wordValue, String queryParamKey, boolean isPosQuery) {
+	private String composeQueryString(String wordValue, List<String> posCodes, boolean isPosQuery) {
 
 		String[] wordValueTokens = StringUtils.split(wordValue, " ");
 		List<String> queryParams = new ArrayList<>();
+
 		for (String wordValueToken : wordValueTokens) {
-			String queryParam = createQueryParam(queryParamKey, wordValueToken, isPosQuery);
-			queryParams.add(queryParam);
+
+			if (isPosQuery) {
+				appendQueryParamWithPos(queryParams, wordValueToken, posCodes);
+			} else {
+				appendQueryParamWithoutPos(queryParams, wordValueToken);
+			}
 		}
-		String queryString = String.join(" ", queryParams);
+		String queryString = StringUtils.join(queryParams, " ");
 		return queryString;
 	}
 
-	private String createQueryParam(String queryParamKey, String queryParamValue, boolean isPosQuery) {
+	private void appendQueryParamWithPos(List<String> queryParams, String wordValueToken, List<String> posCodes) {
 
-		if (isPosQuery) {
-			return "[" + queryParamKey + "=\"" + queryParamValue + "-.?\"]";
+		String queryParam;
+		String queryPosCode;
+
+		if (CollectionUtils.isEmpty(posCodes)) {
+
+			queryPosCode = ".?";
+			queryParam = "[" + composeQueryParamWithPos(wordValueToken, queryPosCode) + "]";
+			queryParams.add(queryParam);
+
 		} else {
-			return "[" + queryParamKey + "=\"" + queryParamValue + "\"]";
+
+			List<String> posQueryParams = new ArrayList<>();
+			for (String posCode : posCodes) {
+
+				if (ArrayUtils.contains(IGNORE_POS_CODES, posCode)) {
+					queryPosCode = ".?";
+				} else {
+					queryPosCode = posMap.get(posCode);
+				}
+				if (StringUtils.isBlank(queryPosCode)) {
+					queryPosCode = ".?";
+				}
+				queryParam = composeQueryParamWithPos(wordValueToken, queryPosCode);
+				posQueryParams.add(queryParam);
+			}
+			queryParam = "[" + StringUtils.join(posQueryParams, "|") + "]";
+			queryParams.add(queryParam);
 		}
+	}
+
+	private String composeQueryParamWithPos(String wordValueToken, String queryPosCode) {
+		return wordQueryParamKeyDetail + "=\"" + wordValueToken + "-" + queryPosCode + "\"";
+	}
+
+	private void appendQueryParamWithoutPos(List<String> queryParams, String wordValueToken) {
+
+		String queryParam = "[" + wordQueryParamKeySimple + "=\"" + wordValueToken + "\"]";
+		queryParams.add(queryParam);
 	}
 
 	private List<CorpusSentence> parseResponse(Map<String, Object> response) {
