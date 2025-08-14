@@ -2,12 +2,22 @@
   display: flex;
   flex-direction: column;
   gap: 16px;
+  font-size: .875rem;
+
+  & eki-link, 
+  & ext-link {
+    color: var(--color-blue-300);
+    text-decoration: underline;
+    font-weight: 500;
+    font-size: .875rem;
+  }
 }
 
 
-.homonym-page {
-  &--od {
-    margin: 32px 0;
+.homonym-page--od {
+  margin: 32px 0;
+  & .content-panel {
+    --content-panel-max-width: 779px;
   }
 }
 

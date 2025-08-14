@@ -9,6 +9,7 @@
 <body class="survey-active">
   <th:block th:replace="common-app :: ie-user"></th:block>
   <th:block th:replace="common-app :: header(
+    odPage = ${true},
     logoTemplate = ~{od-comp :: logo},
     withLucky = ${false},
     withLangSelect = ${false},
@@ -47,17 +48,15 @@
           <div class="search__block search__block--unified">
             <th:block th:if="${word.wordOdMorph}">
               <div class="mt-2">
-                <div th:text="#{label.od.morpho}" class="text-darker-gray">Lühimorfo</div>
-                <div class="d-flex">
-                  <span><</span>
-                  <th:block th:utext="${word.wordOdMorph.valuePrese}"></th:block>
-                  <span>></span>
+                <div th:text="#{label.od.morpho}" class="text-caption text-darker-gray">Lühimorfo</div>
+                <div>
+                  <span><</span><span th:utext="${word.wordOdMorph.valuePrese}"></span><span>></span>
                 </div>
               </div>
             </th:block>
             <th:block th:if="${word.lexemeMeaningsContentExist}">
               <div class="mt-2">
-                <div th:text="#{label.od.meaning}" class="text-darker-gray">Tähendusvihjed</div>
+                <div th:text="#{label.od.meaning}" class="text-caption text-darker-gray">Tähendusvihjed</div>
                 <div>
                   <th:block th:each="lexemeMeaning, lexemeMeaningIter : ${word.lexemeMeanings}">
                     <th:block th:each="register, registerIter : ${lexemeMeaning.registers}">
@@ -86,7 +85,7 @@
             </th:block>
             <th:block th:if="${word.wordOdUsages}">
               <div class="mt-2">
-                <div th:text="#{label.od.usage}" class="text-darker-gray">Näited</div>
+                <div th:text="#{label.od.usage}" class="text-caption text-darker-gray">Näited</div>
                 <th:block th:each="usage : ${word.wordOdUsages}">
                   <span th:utext="${usage.valuePrese}"></span>
                 </th:block>
@@ -94,7 +93,7 @@
             </th:block>
             <th:block th:if="${word.primaryWordRelationGroups}">
               <div class="mt-2">
-                <div th:text="#{label.od.word.rel.comp}" class="text-darker-gray">Liitsõnad</div>
+                <div th:text="#{label.od.word.rel.comp}" class="text-caption text-darker-gray">Liitsõnad</div>
                 <ul>
                   <th:block th:each="wordRelationGroup : ${word.primaryWordRelationGroups}">
                     <li>
@@ -110,7 +109,7 @@
             <th:block th:if="${word.secondaryWordRelationGroups}">
               <th:block th:each="wordRelationGroup : ${word.secondaryWordRelationGroups}">
                 <div class="mt-2">
-                  <div th:text="${wordRelationGroup.wordRelType.value}" class="text-darker-gray">Võrded</div>
+                  <div th:text="${wordRelationGroup.wordRelType.value}" class="text-caption text-darker-gray text-capitalize">Võrded</div>
                   <div>
                     <th:block th:each="relatedWord, relatedWordIter : ${wordRelationGroup.relatedWords}">
                       <span th:utext="${relatedWord.valuePrese}"></span>

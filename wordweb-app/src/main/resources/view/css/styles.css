@@ -37,6 +37,9 @@
   .text-underlined {
     text-decoration: underline;
   }
+  .text-capitalize {
+    text-transform: capitalize;
+  }
   .text-darker-gray {
     color: var(--color-darker-gray);
   }
@@ -15741,9 +15744,20 @@ span.material-symbols-outlined--small {
   display: flex;
   flex-direction: column;
   gap: 16px;
+  font-size: 0.875rem;
+}
+.od-results eki-link,
+.od-results ext-link {
+  color: var(--color-blue-300);
+  text-decoration: underline;
+  font-weight: 500;
+  font-size: 0.875rem;
 }
 .homonym-page--od {
   margin: 32px 0;
+}
+.homonym-page--od .content-panel {
+  --content-panel-max-width: 779px;
 }
 .od-tag {
   width: auto;
@@ -15790,8 +15804,17 @@ span.material-symbols-outlined--small {
 .header--simple .lang-btn {
   margin-left: auto;
 }
-.header--simple .header__od-logo {
+.header--od {
+  padding: 16px;
+  --main-search-input-height: 48px;
+}
+.header--od .header__od-logo {
   margin-right: auto;
+}
+@media (min-width: 992px) {
+  .header--od {
+    --header-search-width: 500px;
+  }
 }
 .header__content {
   display: flex;
@@ -15849,9 +15872,16 @@ span.material-symbols-outlined--small {
   }
 }
 .header__od-logo {
-  width: 188px;
-  height: 45px;
-  background-image: url(../images/od-full.svg);
+  width: 36px;
+  height: 36px;
+  background-image: url(../images/od.svg);
+}
+@media (min-width: 992px) {
+  .header__od-logo {
+    width: 188px;
+    height: 45px;
+    background-image: url(../images/od-full.svg);
+  }
 }
 .header__search {
   flex-grow: 1;
@@ -15874,6 +15904,10 @@ span.material-symbols-outlined--small {
   .header__lucky {
     display: block;
   }
+}
+.header .main-search {
+  width: var(--header-search-width, fit-content);
+  margin: 0 auto;
 }
 .navigation__trigger {
   width: 36px;
@@ -16364,7 +16398,7 @@ span.material-symbols-outlined--small {
   .search-panel,
   .footer-wrapper,
   .content-panel {
-    max-width: 80vw !important;
+    max-width: var(--content-panel-max-width, 80vw) !important;
     margin-right: auto !important;
     margin-left: auto !important;
   }
@@ -16655,7 +16689,7 @@ span.material-symbols-outlined--small {
   position: relative;
 }
 .main-search-input {
-  height: 40px;
+  height: var(--main-search-input-height, 40px);
   padding-right: 80px;
   border-color: #ecf0f2;
   border-radius: 8px;
