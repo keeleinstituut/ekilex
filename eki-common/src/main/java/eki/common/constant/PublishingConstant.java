@@ -8,9 +8,9 @@ public interface PublishingConstant {
 
 	String TARGET_NAME_WW_LITE = "ww_lite";
 
-	String TARGET_NAME_WW_OD = "ww_od";
+	String TARGET_NAME_WW_OS = "ww_os";
 
-	String[] PUBLISHING_TARGET_NAMES = {TARGET_NAME_WW_UNIF, TARGET_NAME_WW_LITE, TARGET_NAME_WW_OD};
+	String[] PUBLISHING_TARGET_NAMES = {TARGET_NAME_WW_UNIF, TARGET_NAME_WW_LITE, TARGET_NAME_WW_OS};
 
 	String ENTITY_NAME_LEXEME = "lexeme";
 

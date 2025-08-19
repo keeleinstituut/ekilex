@@ -385,16 +385,16 @@ public class ViewWwLexemeRecord extends TableRecordImpl<ViewWwLexemeRecord> {
     }
 
     /**
-     * Setter for <code>public.view_ww_lexeme.is_ww_od</code>.
+     * Setter for <code>public.view_ww_lexeme.is_ww_os</code>.
      */
-    public void setIsWwOd(Boolean value) {
+    public void setIsWwOs(Boolean value) {
         set(26, value);
     }
 
     /**
-     * Getter for <code>public.view_ww_lexeme.is_ww_od</code>.
+     * Getter for <code>public.view_ww_lexeme.is_ww_os</code>.
      */
-    public Boolean getIsWwOd() {
+    public Boolean getIsWwOs() {
         return (Boolean) get(26);
     }
 
@@ -412,7 +412,7 @@ public class ViewWwLexemeRecord extends TableRecordImpl<ViewWwLexemeRecord> {
     /**
      * Create a detached, initialised ViewWwLexemeRecord
      */
-    public ViewWwLexemeRecord(Long lexemeId, Long wordId, Long meaningId, String datasetCode, String datasetName, String datasetType, String valueStateCode, String proficiencyLevelCode, Integer reliability, Integer level1, Integer level2, BigDecimal weight, Long lexemeOrderBy, Long datasetOrderBy, String[] registerCodes, String[] posCodes, String[] regionCodes, String[] derivCodes, JSON lexemeNotes, JSON grammars, JSON governments, JSON usages, JSON sourceLinks, JSON meaningWords, Boolean isWwUnif, Boolean isWwLite, Boolean isWwOd) {
+    public ViewWwLexemeRecord(Long lexemeId, Long wordId, Long meaningId, String datasetCode, String datasetName, String datasetType, String valueStateCode, String proficiencyLevelCode, Integer reliability, Integer level1, Integer level2, BigDecimal weight, Long lexemeOrderBy, Long datasetOrderBy, String[] registerCodes, String[] posCodes, String[] regionCodes, String[] derivCodes, JSON lexemeNotes, JSON grammars, JSON governments, JSON usages, JSON sourceLinks, JSON meaningWords, Boolean isWwUnif, Boolean isWwLite, Boolean isWwOs) {
         super(ViewWwLexeme.VIEW_WW_LEXEME);
 
         setLexemeId(lexemeId);
@@ -441,6 +441,6 @@ public class ViewWwLexemeRecord extends TableRecordImpl<ViewWwLexemeRecord> {
         setMeaningWords(meaningWords);
         setIsWwUnif(isWwUnif);
         setIsWwLite(isWwLite);
-        setIsWwOd(isWwOd);
+        setIsWwOs(isWwOs);
     }
 }

@@ -238,7 +238,7 @@ public class QueryHelper implements GlobalConstant, PublishingConstant {
 		Field<JSON> ltf = getLexemeTagsField(l.ID);
 		Field<Boolean> wwupf = getPublishingField(TARGET_NAME_WW_UNIF, ENTITY_NAME_LEXEME, l.ID);
 		Field<Boolean> wwlpf = getPublishingField(TARGET_NAME_WW_LITE, ENTITY_NAME_LEXEME, l.ID);
-		Field<Boolean> wwopf = getPublishingField(TARGET_NAME_WW_OD, ENTITY_NAME_LEXEME, l.ID);
+		Field<Boolean> wwopf = getPublishingField(TARGET_NAME_WW_OS, ENTITY_NAME_LEXEME, l.ID);
 
 		fields.add(l.ID.as("lexeme_id"));
 		fields.add(l.WORD_ID);
@@ -267,7 +267,7 @@ public class QueryHelper implements GlobalConstant, PublishingConstant {
 		fields.add(ltf.as("tags"));
 		fields.add(wwupf.as("is_ww_unif"));
 		fields.add(wwlpf.as("is_ww_lite"));
-		fields.add(wwopf.as("is_ww_od"));
+		fields.add(wwopf.as("is_ww_os"));
 
 		return fields;
 	}
@@ -430,7 +430,7 @@ public class QueryHelper implements GlobalConstant, PublishingConstant {
 
 		Field<Boolean> wwupf = getPublishingField(TARGET_NAME_WW_UNIF, ENTITY_NAME_USAGE, u.ID);
 		Field<Boolean> wwlpf = getPublishingField(TARGET_NAME_WW_LITE, ENTITY_NAME_USAGE, u.ID);
-		Field<Boolean> wwopf = getPublishingField(TARGET_NAME_WW_OD, ENTITY_NAME_USAGE, u.ID);
+		Field<Boolean> wwopf = getPublishingField(TARGET_NAME_WW_OS, ENTITY_NAME_USAGE, u.ID);
 
 		Field<JSON> utf = DSL
 				.select(DSL
@@ -502,7 +502,7 @@ public class QueryHelper implements GlobalConstant, PublishingConstant {
 										DSL.key("orderBy").value(u.ORDER_BY),
 										DSL.key("wwUnif").value(wwupf),
 										DSL.key("wwLite").value(wwlpf),
-										DSL.key("wwOd").value(wwopf),
+										DSL.key("wwOs").value(wwopf),
 										DSL.key("translations").value(utf),
 										DSL.key("definitions").value(udf),
 										DSL.key("sourceLinks").value(uslf)))
@@ -520,7 +520,7 @@ public class QueryHelper implements GlobalConstant, PublishingConstant {
 
 		Field<Boolean> wwupf = getPublishingField(TARGET_NAME_WW_UNIF, ENTITY_NAME_LEXEME_NOTE, ln.ID);
 		Field<Boolean> wwlpf = getPublishingField(TARGET_NAME_WW_LITE, ENTITY_NAME_LEXEME_NOTE, ln.ID);
-		Field<Boolean> wwopf = getPublishingField(TARGET_NAME_WW_OD, ENTITY_NAME_LEXEME_NOTE, ln.ID);
+		Field<Boolean> wwopf = getPublishingField(TARGET_NAME_WW_OS, ENTITY_NAME_LEXEME_NOTE, ln.ID);
 
 		Field<JSON> lnslf = DSL
 				.select(DSL
@@ -555,7 +555,7 @@ public class QueryHelper implements GlobalConstant, PublishingConstant {
 										DSL.key("orderBy").value(ln.ORDER_BY),
 										DSL.key("wwUnif").value(wwupf),
 										DSL.key("wwLite").value(wwlpf),
-										DSL.key("wwOd").value(wwopf),
+										DSL.key("wwOs").value(wwopf),
 										DSL.key("sourceLinks").value(lnslf)))
 						.orderBy(ln.ORDER_BY))
 				.from(ln)

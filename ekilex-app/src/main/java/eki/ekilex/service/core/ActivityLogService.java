@@ -61,16 +61,16 @@ import eki.ekilex.data.WordEtym;
 import eki.ekilex.data.WordEtymTuple;
 import eki.ekilex.data.WordGroup;
 import eki.ekilex.data.WordLexemeMeaningIds;
-import eki.ekilex.data.WordOdMorph;
-import eki.ekilex.data.WordOdRecommendation;
-import eki.ekilex.data.WordOdUsage;
+import eki.ekilex.data.WordOsMorph;
+import eki.ekilex.data.WordOsRecommendation;
+import eki.ekilex.data.WordOsUsage;
 import eki.ekilex.data.WordRelation;
 import eki.ekilex.service.db.ActivityLogDbService;
 import eki.ekilex.service.db.CommonDataDbService;
 import eki.ekilex.service.db.LexDataDbService;
 import eki.ekilex.service.db.LexSearchDbService;
 import eki.ekilex.service.db.LookupDbService;
-import eki.ekilex.service.db.OdDataDbService;
+import eki.ekilex.service.db.OsDataDbService;
 import eki.ekilex.service.db.SourceDbService;
 import eki.ekilex.service.util.ConversionUtil;
 
@@ -128,7 +128,7 @@ public class ActivityLogService implements SystemConstant, GlobalConstant, Freef
 	private CommonDataDbService commonDataDbService;
 
 	@Autowired
-	private OdDataDbService odDataDbService;
+	private OsDataDbService osDataDbService;
 
 	@Autowired
 	private LookupDbService lookupDbService;
@@ -206,12 +206,12 @@ public class ActivityLogService implements SystemConstant, GlobalConstant, Freef
 			return activityLogDbService.getWordTypeOwnerId(entityId);
 		} else if (ActivityEntity.WORD_ETYMOLOGY.equals(entity)) {
 			return activityLogDbService.getWordEtymologyOwnerId(entityId);
-		} else if (ActivityEntity.WORD_OD_MORPH.equals(entity)) {
-			return activityLogDbService.getWordOdMorphOwnerId(entityId);
-		} else if (ActivityEntity.WORD_OD_RECOMMENDATION.equals(entity)) {
-			return activityLogDbService.getWordOdRecommendationOwnerId(entityId);
-		} else if (ActivityEntity.WORD_OD_USAGE.equals(entity)) {
-			return activityLogDbService.getWordOdUsageOwnerId(entityId);
+		} else if (ActivityEntity.WORD_OS_MORPH.equals(entity)) {
+			return activityLogDbService.getWordOsMorphOwnerId(entityId);
+		} else if (ActivityEntity.WORD_OS_RECOMMENDATION.equals(entity)) {
+			return activityLogDbService.getWordOsRecommendationOwnerId(entityId);
+		} else if (ActivityEntity.WORD_OS_USAGE.equals(entity)) {
+			return activityLogDbService.getWordOsUsageOwnerId(entityId);
 		} else if (ActivityEntity.WORD_RELATION.equals(entity)) {
 			return activityLogDbService.getWordRelationOwnerId(entityId);
 		} else if (ActivityEntity.LEXEME_RELATION.equals(entity)) {
@@ -594,9 +594,9 @@ public class ActivityLogService implements SystemConstant, GlobalConstant, Freef
 		List<WordGroup> wordGroups = conversionUtil.composeWordGroups(wordGroupMembers, null);
 		List<WordEtymTuple> wordEtymTuples = lexDataDbService.getWordEtymology(wordId);
 		List<WordEtym> wordEtymology = conversionUtil.composeWordEtymology(wordEtymTuples);
-		WordOdRecommendation wordOdRecommendation = odDataDbService.getWordOdRecommendation(wordId);
-		List<WordOdUsage> wordOdUsages = odDataDbService.getWordOdUsages(wordId);
-		WordOdMorph wordOdMorph = odDataDbService.getWordOdMorph(wordId);
+		WordOsRecommendation wordOsRecommendation = osDataDbService.getWordOsRecommendation(wordId);
+		List<WordOsUsage> wordOsUsages = osDataDbService.getWordOsUsages(wordId);
+		WordOsMorph wordOsMorph = osDataDbService.getWordOsMorph(wordId);
 		List<Paradigm> paradigms = null;
 		if (StringUtils.equals(FUNCT_NAME_DELETE_PARADIGM, functName)) {
 			List<ParadigmFormTuple> paradigmFormTuples = lexSearchDbService.getParadigmFormTuples(wordId, CLASSIF_LABEL_LANG_EST);
@@ -608,9 +608,9 @@ public class ActivityLogService implements SystemConstant, GlobalConstant, Freef
 		word.setRelations(wordRelations);
 		word.setGroups(wordGroups);
 		word.setEtymology(wordEtymology);
-		word.setWordOdRecommendation(wordOdRecommendation);
-		word.setWordOdUsages(wordOdUsages);
-		word.setWordOdMorph(wordOdMorph);
+		word.setWordOsRecommendation(wordOsRecommendation);
+		word.setWordOsUsages(wordOsUsages);
+		word.setWordOsMorph(wordOsMorph);
 		word.setParadigms(paradigms);
 
 		ObjectMapper objectMapper = new ObjectMapper();

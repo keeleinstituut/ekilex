@@ -55,9 +55,9 @@ import eki.ekilex.data.WordEtym;
 import eki.ekilex.data.WordEtymTuple;
 import eki.ekilex.data.WordForum;
 import eki.ekilex.data.WordGroup;
-import eki.ekilex.data.WordOdMorph;
-import eki.ekilex.data.WordOdRecommendation;
-import eki.ekilex.data.WordOdUsage;
+import eki.ekilex.data.WordOsMorph;
+import eki.ekilex.data.WordOsRecommendation;
+import eki.ekilex.data.WordOsUsage;
 import eki.ekilex.data.WordRelation;
 import eki.ekilex.data.WordRelationDetails;
 import eki.ekilex.data.WordsResult;
@@ -100,9 +100,9 @@ public class LexSearchService extends AbstractWordSearchService {
 		List<WordEtym> wordEtymology = conversionUtil.composeWordEtymology(wordEtymTuples);
 		List<WordForum> wordForums = commonDataDbService.getWordForums(wordId);
 		permCalculator.applyCrud(user, wordForums);
-		WordOdRecommendation wordOdRecommendation = odDataDbService.getWordOdRecommendation(wordId);
-		List<WordOdUsage> wordOdUsages = odDataDbService.getWordOdUsages(wordId);
-		WordOdMorph wordOdMorph = odDataDbService.getWordOdMorph(wordId);
+		WordOsRecommendation wordOsRecommendation = osDataDbService.getWordOsRecommendation(wordId);
+		List<WordOsUsage> wordOsUsages = osDataDbService.getWordOsUsages(wordId);
+		WordOsMorph wordOsMorph = osDataDbService.getWordOsMorph(wordId);
 
 		boolean isFullDataCorrection = isFullData | CollectionUtils.size(lexemes) == 1;
 		boolean isFullDataByMeaningId = !isFullDataCorrection && fullDataMeaningId != null;
@@ -123,9 +123,9 @@ public class LexSearchService extends AbstractWordSearchService {
 		word.setEtymology(wordEtymology);
 		word.setForums(wordForums);
 		word.setFreeforms(wordFreeforms);
-		word.setWordOdRecommendation(wordOdRecommendation);
-		word.setWordOdUsages(wordOdUsages);
-		word.setWordOdMorph(wordOdMorph);
+		word.setWordOsRecommendation(wordOsRecommendation);
+		word.setWordOsUsages(wordOsUsages);
+		word.setWordOsMorph(wordOsMorph);
 
 		WordDetails wordDetails = new WordDetails();
 		wordDetails.setWord(word);

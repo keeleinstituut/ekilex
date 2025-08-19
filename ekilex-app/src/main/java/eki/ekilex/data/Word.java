@@ -76,11 +76,11 @@ public class Word extends AbstractGrantEntity implements DecoratedWordType {
 
 	private List<Freeform> freeforms;
 
-	private WordOdRecommendation wordOdRecommendation;
+	private WordOsRecommendation wordOsRecommendation;
 
-	private List<WordOdUsage> wordOdUsages;
+	private List<WordOsUsage> wordOsUsages;
 
-	private WordOdMorph wordOdMorph;
+	private WordOsMorph wordOsMorph;
 
 	@JsonSerialize(using = LocalDateTimeSerializer.class)
 	@JsonDeserialize(using = LocalDateTimeDeserialiser.class)
@@ -330,28 +330,28 @@ public class Word extends AbstractGrantEntity implements DecoratedWordType {
 		this.freeforms = freeforms;
 	}
 
-	public WordOdRecommendation getWordOdRecommendation() {
-		return wordOdRecommendation;
+	public WordOsRecommendation getWordOsRecommendation() {
+		return wordOsRecommendation;
 	}
 
-	public void setWordOdRecommendation(WordOdRecommendation wordOdRecommendation) {
-		this.wordOdRecommendation = wordOdRecommendation;
+	public void setWordOsRecommendation(WordOsRecommendation wordOsRecommendation) {
+		this.wordOsRecommendation = wordOsRecommendation;
 	}
 
-	public List<WordOdUsage> getWordOdUsages() {
-		return wordOdUsages;
+	public List<WordOsUsage> getWordOsUsages() {
+		return wordOsUsages;
 	}
 
-	public void setWordOdUsages(List<WordOdUsage> wordOdUsages) {
-		this.wordOdUsages = wordOdUsages;
+	public void setWordOsUsages(List<WordOsUsage> wordOsUsages) {
+		this.wordOsUsages = wordOsUsages;
 	}
 
-	public WordOdMorph getWordOdMorph() {
-		return wordOdMorph;
+	public WordOsMorph getWordOsMorph() {
+		return wordOsMorph;
 	}
 
-	public void setWordOdMorph(WordOdMorph wordOdMorph) {
-		this.wordOdMorph = wordOdMorph;
+	public void setWordOsMorph(WordOsMorph wordOsMorph) {
+		this.wordOsMorph = wordOsMorph;
 	}
 
 	public LocalDateTime getLastActivityEventOn() {

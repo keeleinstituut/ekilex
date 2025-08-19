@@ -42,9 +42,9 @@ import eki.ekilex.data.UsageDefinition;
 import eki.ekilex.data.UsageTranslation;
 import eki.ekilex.data.WordLexemeMeaningDetails;
 import eki.ekilex.data.WordLexemeMeaningIdTuple;
-import eki.ekilex.data.WordOdMorph;
-import eki.ekilex.data.WordOdRecommendation;
-import eki.ekilex.data.WordOdUsage;
+import eki.ekilex.data.WordOsMorph;
+import eki.ekilex.data.WordOsRecommendation;
+import eki.ekilex.data.WordOsUsage;
 import eki.ekilex.security.EkilexPermissionEvaluator;
 import eki.ekilex.service.db.CompositionDbService;
 import eki.ekilex.service.util.LexemeLevelCalcUtil;
@@ -431,46 +431,46 @@ public class CudService extends AbstractCudService implements PermConstant, Acti
 	}
 
 	@Transactional(rollbackOn = Exception.class)
-	public void createWordOdMorph(Long wordId, String valuePrese, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
+	public void createWordOsMorph(Long wordId, String valuePrese, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
 
-		WordOdMorph wordOdMorph = new WordOdMorph();
-		wordOdMorph.setValuePrese(valuePrese);
-		wordOdMorph.setPublic(true);
-		setValueAndPrese(wordOdMorph);
-		applyCreateUpdate(wordOdMorph);
+		WordOsMorph wordOsMorph = new WordOsMorph();
+		wordOsMorph.setValuePrese(valuePrese);
+		wordOsMorph.setPublic(true);
+		setValueAndPrese(wordOsMorph);
+		applyCreateUpdate(wordOsMorph);
 
-		ActivityLogData activityLog = activityLogService.prepareActivityLog("createWordOdMorph", wordId, ActivityOwner.WORD, roleDatasetCode, isManualEventOnUpdateEnabled);
-		Long wordOdMorphId = cudDbService.createWordOdMorph(wordId, wordOdMorph);
-		activityLogService.createActivityLog(activityLog, wordOdMorphId, ActivityEntity.WORD_OD_MORPH);
+		ActivityLogData activityLog = activityLogService.prepareActivityLog("createWordOsMorph", wordId, ActivityOwner.WORD, roleDatasetCode, isManualEventOnUpdateEnabled);
+		Long wordOsMorphId = cudDbService.createWordOsMorph(wordId, wordOsMorph);
+		activityLogService.createActivityLog(activityLog, wordOsMorphId, ActivityEntity.WORD_OS_MORPH);
 	}
 
 	@Transactional(rollbackOn = Exception.class)
-	public void createWordOdRecommendation(Long wordId, String valuePrese, String optValuePrese, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
+	public void createWordOsRecommendation(Long wordId, String valuePrese, String optValuePrese, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
 
-		WordOdRecommendation wordOdRecommendation = new WordOdRecommendation();
-		wordOdRecommendation.setValuePrese(valuePrese);
-		wordOdRecommendation.setOptValuePrese(optValuePrese);
-		wordOdRecommendation.setPublic(true);
-		setValueAndPrese(wordOdRecommendation);
-		applyCreateUpdate(wordOdRecommendation);
+		WordOsRecommendation wordOsRecommendation = new WordOsRecommendation();
+		wordOsRecommendation.setValuePrese(valuePrese);
+		wordOsRecommendation.setOptValuePrese(optValuePrese);
+		wordOsRecommendation.setPublic(true);
+		setValueAndPrese(wordOsRecommendation);
+		applyCreateUpdate(wordOsRecommendation);
 
-		ActivityLogData activityLog = activityLogService.prepareActivityLog("createWordOdRecommendation", wordId, ActivityOwner.WORD, roleDatasetCode, isManualEventOnUpdateEnabled);
-		Long wordOdRecommendationId = cudDbService.createWordOdRecommendation(wordId, wordOdRecommendation);
-		activityLogService.createActivityLog(activityLog, wordOdRecommendationId, ActivityEntity.WORD_OD_RECOMMENDATION);
+		ActivityLogData activityLog = activityLogService.prepareActivityLog("createWordOsRecommendation", wordId, ActivityOwner.WORD, roleDatasetCode, isManualEventOnUpdateEnabled);
+		Long wordOsRecommendationId = cudDbService.createWordOsRecommendation(wordId, wordOsRecommendation);
+		activityLogService.createActivityLog(activityLog, wordOsRecommendationId, ActivityEntity.WORD_OS_RECOMMENDATION);
 	}
 
 	@Transactional(rollbackOn = Exception.class)
-	public void createWordOdUsage(Long wordId, String valuePrese, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
+	public void createWordOsUsage(Long wordId, String valuePrese, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
 
-		WordOdUsage wordOdUsage = new WordOdUsage();
-		wordOdUsage.setValuePrese(valuePrese);
-		wordOdUsage.setPublic(true);
-		setValueAndPrese(wordOdUsage);
-		applyCreateUpdate(wordOdUsage);
+		WordOsUsage wordOsUsage = new WordOsUsage();
+		wordOsUsage.setValuePrese(valuePrese);
+		wordOsUsage.setPublic(true);
+		setValueAndPrese(wordOsUsage);
+		applyCreateUpdate(wordOsUsage);
 
-		ActivityLogData activityLog = activityLogService.prepareActivityLog("createWordOdUsage", wordId, ActivityOwner.WORD, roleDatasetCode, isManualEventOnUpdateEnabled);
-		Long wordOdUsageId = cudDbService.createWordOdUsage(wordId, wordOdUsage);
-		activityLogService.createActivityLog(activityLog, wordOdUsageId, ActivityEntity.WORD_OD_USAGE);
+		ActivityLogData activityLog = activityLogService.prepareActivityLog("createWordOsUsage", wordId, ActivityOwner.WORD, roleDatasetCode, isManualEventOnUpdateEnabled);
+		Long wordOsUsageId = cudDbService.createWordOsUsage(wordId, wordOsUsage);
+		activityLogService.createActivityLog(activityLog, wordOsUsageId, ActivityEntity.WORD_OS_USAGE);
 	}
 
 	private void createWordFreeform(ActivityEntity activityEntity, Long wordId, Freeform freeform, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
@@ -714,14 +714,14 @@ public class CudService extends AbstractCudService implements PermConstant, Acti
 	}
 
 	@Transactional(rollbackOn = Exception.class)
-	public void updateWordOdUsageOrdering(List<ListData> items, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
+	public void updateWordOsUsageOrdering(List<ListData> items, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
 
 		for (ListData item : items) {
-			Long wordOdUsageId = item.getId();
-			Long wordId = activityLogService.getOwnerId(wordOdUsageId, ActivityEntity.WORD_OD_USAGE);
-			ActivityLogData activityLog = activityLogService.prepareActivityLog("updateWordOdUsageOrdering", wordId, ActivityOwner.WORD, roleDatasetCode, isManualEventOnUpdateEnabled);
-			cudDbService.updateWordOdUsageOrderby(item);
-			activityLogService.createActivityLog(activityLog, wordOdUsageId, ActivityEntity.WORD_OD_USAGE);
+			Long wordOsUsageId = item.getId();
+			Long wordId = activityLogService.getOwnerId(wordOsUsageId, ActivityEntity.WORD_OS_USAGE);
+			ActivityLogData activityLog = activityLogService.prepareActivityLog("updateWordOsUsageOrdering", wordId, ActivityOwner.WORD, roleDatasetCode, isManualEventOnUpdateEnabled);
+			cudDbService.updateWordOsUsageOrderby(item);
+			activityLogService.createActivityLog(activityLog, wordOsUsageId, ActivityEntity.WORD_OS_USAGE);
 		}
 	}
 
@@ -1292,51 +1292,51 @@ public class CudService extends AbstractCudService implements PermConstant, Acti
 	}
 
 	@Transactional(rollbackOn = Exception.class)
-	public void updateWordOdMorph(Long wordOdMorphId, String valuePrese, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
+	public void updateWordOsMorph(Long wordOsMorphId, String valuePrese, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
 
-		WordOdMorph wordOdMorph = new WordOdMorph();
-		wordOdMorph.setId(wordOdMorphId);
-		wordOdMorph.setValuePrese(valuePrese);
-		setValueAndPrese(wordOdMorph);
-		applyUpdate(wordOdMorph);
+		WordOsMorph wordOsMorph = new WordOsMorph();
+		wordOsMorph.setId(wordOsMorphId);
+		wordOsMorph.setValuePrese(valuePrese);
+		setValueAndPrese(wordOsMorph);
+		applyUpdate(wordOsMorph);
 
-		Long wordId = activityLogService.getOwnerId(wordOdMorphId, ActivityEntity.WORD_OD_MORPH);
-		ActivityLogData activityLog = activityLogService.prepareActivityLog("updateWordOdMorph", wordId, ActivityOwner.WORD, roleDatasetCode, isManualEventOnUpdateEnabled);
-		cudDbService.updateWordOdMorph(wordOdMorph);
-		activityLogService.createActivityLog(activityLog, wordOdMorphId, ActivityEntity.WORD_OD_MORPH);
+		Long wordId = activityLogService.getOwnerId(wordOsMorphId, ActivityEntity.WORD_OS_MORPH);
+		ActivityLogData activityLog = activityLogService.prepareActivityLog("updateWordOsMorph", wordId, ActivityOwner.WORD, roleDatasetCode, isManualEventOnUpdateEnabled);
+		cudDbService.updateWordOsMorph(wordOsMorph);
+		activityLogService.createActivityLog(activityLog, wordOsMorphId, ActivityEntity.WORD_OS_MORPH);
 	}
 
 	@Transactional(rollbackOn = Exception.class)
-	public void updateWordOdRecommendation(
-			Long wordOdRecommendationId, String valuePrese, String optValuePrese, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
+	public void updateWordOsRecommendation(
+			Long wordOsRecommendationId, String valuePrese, String optValuePrese, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
 
-		WordOdRecommendation wordOdRecommendation = new WordOdRecommendation();
-		wordOdRecommendation.setId(wordOdRecommendationId);
-		wordOdRecommendation.setValuePrese(valuePrese);
-		wordOdRecommendation.setOptValuePrese(optValuePrese);
-		setValueAndPrese(wordOdRecommendation);
-		applyUpdate(wordOdRecommendation);
+		WordOsRecommendation wordOsRecommendation = new WordOsRecommendation();
+		wordOsRecommendation.setId(wordOsRecommendationId);
+		wordOsRecommendation.setValuePrese(valuePrese);
+		wordOsRecommendation.setOptValuePrese(optValuePrese);
+		setValueAndPrese(wordOsRecommendation);
+		applyUpdate(wordOsRecommendation);
 
-		Long wordId = activityLogService.getOwnerId(wordOdRecommendationId, ActivityEntity.WORD_OD_RECOMMENDATION);
-		ActivityLogData activityLog = activityLogService.prepareActivityLog("updateWordOdRecommendation", wordId, ActivityOwner.WORD, roleDatasetCode, isManualEventOnUpdateEnabled);
-		cudDbService.updateWordOdRecommendation(wordOdRecommendation);
-		activityLogService.createActivityLog(activityLog, wordOdRecommendationId, ActivityEntity.WORD_OD_RECOMMENDATION);
+		Long wordId = activityLogService.getOwnerId(wordOsRecommendationId, ActivityEntity.WORD_OS_RECOMMENDATION);
+		ActivityLogData activityLog = activityLogService.prepareActivityLog("updateWordOsRecommendation", wordId, ActivityOwner.WORD, roleDatasetCode, isManualEventOnUpdateEnabled);
+		cudDbService.updateWordOsRecommendation(wordOsRecommendation);
+		activityLogService.createActivityLog(activityLog, wordOsRecommendationId, ActivityEntity.WORD_OS_RECOMMENDATION);
 	}
 
 	@Transactional(rollbackOn = Exception.class)
-	public void updateWordOdUsage(
-			Long wordOdUsageId, String valuePrese, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
+	public void updateWordOsUsage(
+			Long wordOsUsageId, String valuePrese, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
 
-		WordOdUsage wordOdUsage = new WordOdUsage();
-		wordOdUsage.setId(wordOdUsageId);
-		wordOdUsage.setValuePrese(valuePrese);
-		setValueAndPrese(wordOdUsage);
-		applyUpdate(wordOdUsage);
+		WordOsUsage wordOsUsage = new WordOsUsage();
+		wordOsUsage.setId(wordOsUsageId);
+		wordOsUsage.setValuePrese(valuePrese);
+		setValueAndPrese(wordOsUsage);
+		applyUpdate(wordOsUsage);
 
-		Long wordId = activityLogService.getOwnerId(wordOdUsageId, ActivityEntity.WORD_OD_USAGE);
-		ActivityLogData activityLog = activityLogService.prepareActivityLog("updateWordOdUsage", wordId, ActivityOwner.WORD, roleDatasetCode, isManualEventOnUpdateEnabled);
-		cudDbService.updateWordOdUsage(wordOdUsage);
-		activityLogService.createActivityLog(activityLog, wordOdUsageId, ActivityEntity.WORD_OD_USAGE);
+		Long wordId = activityLogService.getOwnerId(wordOsUsageId, ActivityEntity.WORD_OS_USAGE);
+		ActivityLogData activityLog = activityLogService.prepareActivityLog("updateWordOsUsage", wordId, ActivityOwner.WORD, roleDatasetCode, isManualEventOnUpdateEnabled);
+		cudDbService.updateWordOsUsage(wordOsUsage);
+		activityLogService.createActivityLog(activityLog, wordOsUsageId, ActivityEntity.WORD_OS_USAGE);
 	}
 
 	@Transactional(rollbackOn = Exception.class)
@@ -1760,30 +1760,30 @@ public class CudService extends AbstractCudService implements PermConstant, Acti
 	}
 
 	@Transactional(rollbackOn = Exception.class)
-	public void deleteWordOdMorph(Long wordOdMorphId, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
+	public void deleteWordOsMorph(Long wordOsMorphId, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
 
-		Long wordId = activityLogService.getOwnerId(wordOdMorphId, ActivityEntity.WORD_OD_MORPH);
-		ActivityLogData activityLog = activityLogService.prepareActivityLog("deleteWordOdMorph", wordId, ActivityOwner.WORD, roleDatasetCode, isManualEventOnUpdateEnabled);
-		cudDbService.deleteWordOdMorph(wordOdMorphId);
-		activityLogService.createActivityLog(activityLog, wordOdMorphId, ActivityEntity.WORD_OD_MORPH);
+		Long wordId = activityLogService.getOwnerId(wordOsMorphId, ActivityEntity.WORD_OS_MORPH);
+		ActivityLogData activityLog = activityLogService.prepareActivityLog("deleteWordOsMorph", wordId, ActivityOwner.WORD, roleDatasetCode, isManualEventOnUpdateEnabled);
+		cudDbService.deleteWordOsMorph(wordOsMorphId);
+		activityLogService.createActivityLog(activityLog, wordOsMorphId, ActivityEntity.WORD_OS_MORPH);
 	}
 
 	@Transactional(rollbackOn = Exception.class)
-	public void deleteWordOdRecommendation(Long wordOdRecommendationId, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
+	public void deleteWordOsRecommendation(Long wordOsRecommendationId, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
 
-		Long wordId = activityLogService.getOwnerId(wordOdRecommendationId, ActivityEntity.WORD_OD_RECOMMENDATION);
-		ActivityLogData activityLog = activityLogService.prepareActivityLog("deleteWordOdRecommendation", wordId, ActivityOwner.WORD, roleDatasetCode, isManualEventOnUpdateEnabled);
-		cudDbService.deleteWordOdRecommendation(wordOdRecommendationId);
-		activityLogService.createActivityLog(activityLog, wordOdRecommendationId, ActivityEntity.WORD_OD_RECOMMENDATION);
+		Long wordId = activityLogService.getOwnerId(wordOsRecommendationId, ActivityEntity.WORD_OS_RECOMMENDATION);
+		ActivityLogData activityLog = activityLogService.prepareActivityLog("deleteWordOsRecommendation", wordId, ActivityOwner.WORD, roleDatasetCode, isManualEventOnUpdateEnabled);
+		cudDbService.deleteWordOsRecommendation(wordOsRecommendationId);
+		activityLogService.createActivityLog(activityLog, wordOsRecommendationId, ActivityEntity.WORD_OS_RECOMMENDATION);
 	}
 
 	@Transactional(rollbackOn = Exception.class)
-	public void deleteWordOdUsage(Long wordOdUsageId, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
+	public void deleteWordOsUsage(Long wordOsUsageId, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
 
-		Long wordId = activityLogService.getOwnerId(wordOdUsageId, ActivityEntity.WORD_OD_USAGE);
-		ActivityLogData activityLog = activityLogService.prepareActivityLog("deleteWordOdUsage", wordId, ActivityOwner.WORD, roleDatasetCode, isManualEventOnUpdateEnabled);
-		cudDbService.deleteWordOdUsage(wordOdUsageId);
-		activityLogService.createActivityLog(activityLog, wordOdUsageId, ActivityEntity.WORD_OD_USAGE);
+		Long wordId = activityLogService.getOwnerId(wordOsUsageId, ActivityEntity.WORD_OS_USAGE);
+		ActivityLogData activityLog = activityLogService.prepareActivityLog("deleteWordOsUsage", wordId, ActivityOwner.WORD, roleDatasetCode, isManualEventOnUpdateEnabled);
+		cudDbService.deleteWordOsUsage(wordOsUsageId);
+		activityLogService.createActivityLog(activityLog, wordOsUsageId, ActivityEntity.WORD_OS_USAGE);
 	}
 
 	// TODO what about forms linked to colloc membs?

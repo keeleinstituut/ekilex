@@ -12,7 +12,7 @@ class PublishingHandler {
 		public: "is_public",
 		unif: "ww_unif",
 		lite: "ww_lite",
-		od: "ww_od",
+		os: "ww_os",
 	};
 	static replaceData = {
 		word_relation: {

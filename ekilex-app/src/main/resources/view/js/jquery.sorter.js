@@ -85,7 +85,7 @@ class Sorter {
       this.checkRequirements();
     }
 
-    if (this.type === 'word_od_usage') {
+    if (this.type === 'word_os_usage') {
       this.bindGeneric(this.type);
     }
   }

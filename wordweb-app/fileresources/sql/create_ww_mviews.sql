@@ -30,7 +30,7 @@ create type type_lang_dataset_publishing as (
 	dataset_code varchar(10),
 	is_ww_unif boolean,
 	is_ww_lite boolean,
-	is_ww_od boolean
+	is_ww_os boolean
 );
 
 create materialized view mview_ww_dataset_word_menu as
@@ -93,7 +93,7 @@ dblink(
 	word_type_codes varchar(100) array,
 	meaning_words json,
 	definitions json,
-	word_od_recommendation json,
+	word_os_recommendation json,
 	freq_value numeric(12,7),
 	freq_rank bigint,
 	forms_exist boolean,
@@ -186,7 +186,7 @@ dblink(
 	meaning_words json,
 	is_ww_unif boolean,
 	is_ww_lite boolean,
-	is_ww_od boolean
+	is_ww_os boolean
 );
 
 create materialized view mview_ww_colloc_pos_group as
@@ -363,7 +363,7 @@ create index mview_ww_lexeme_dataset_type_idx on mview_ww_lexeme (dataset_type);
 create index mview_ww_lexeme_dataset_code_idx on mview_ww_lexeme (dataset_code);
 create index mview_ww_lexeme_is_ww_unif_idx on mview_ww_lexeme (is_ww_unif);
 create index mview_ww_lexeme_is_ww_lite_idx on mview_ww_lexeme (is_ww_lite);
-create index mview_ww_lexeme_is_ww_od_idx on mview_ww_lexeme (is_ww_od);
+create index mview_ww_lexeme_is_ww_os_idx on mview_ww_lexeme (is_ww_os);
 create index mview_ww_colloc_pos_group_lexeme_id_idx on mview_ww_colloc_pos_group (lexeme_id);
 create index mview_ww_colloc_pos_group_word_id_idx on mview_ww_colloc_pos_group (word_id);
 create index mview_ww_word_etymology_word_id_idx on mview_ww_word_etymology (word_id);

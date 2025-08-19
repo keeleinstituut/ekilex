@@ -123,16 +123,16 @@ import eki.ekilex.data.db.main.tables.UsageType;
 import eki.ekilex.data.db.main.tables.UsageTypeLabel;
 import eki.ekilex.data.db.main.tables.ValueState;
 import eki.ekilex.data.db.main.tables.ValueStateLabel;
-import eki.ekilex.data.db.main.tables.ViewOdDefinition;
-import eki.ekilex.data.db.main.tables.ViewOdDefinitionIdx;
-import eki.ekilex.data.db.main.tables.ViewOdLexemeMeaning;
-import eki.ekilex.data.db.main.tables.ViewOdWord;
-import eki.ekilex.data.db.main.tables.ViewOdWordOdMorph;
-import eki.ekilex.data.db.main.tables.ViewOdWordOdRecommend;
-import eki.ekilex.data.db.main.tables.ViewOdWordOdUsage;
-import eki.ekilex.data.db.main.tables.ViewOdWordOdUsageIdx;
-import eki.ekilex.data.db.main.tables.ViewOdWordRelation;
-import eki.ekilex.data.db.main.tables.ViewOdWordRelationIdx;
+import eki.ekilex.data.db.main.tables.ViewOsDefinition;
+import eki.ekilex.data.db.main.tables.ViewOsDefinitionIdx;
+import eki.ekilex.data.db.main.tables.ViewOsLexemeMeaning;
+import eki.ekilex.data.db.main.tables.ViewOsWord;
+import eki.ekilex.data.db.main.tables.ViewOsWordOsMorph;
+import eki.ekilex.data.db.main.tables.ViewOsWordOsRecommend;
+import eki.ekilex.data.db.main.tables.ViewOsWordOsUsage;
+import eki.ekilex.data.db.main.tables.ViewOsWordOsUsageIdx;
+import eki.ekilex.data.db.main.tables.ViewOsWordRelation;
+import eki.ekilex.data.db.main.tables.ViewOsWordRelationIdx;
 import eki.ekilex.data.db.main.tables.ViewWwClassifier;
 import eki.ekilex.data.db.main.tables.ViewWwCollocPosGroup;
 import eki.ekilex.data.db.main.tables.ViewWwDataset;
@@ -160,9 +160,9 @@ import eki.ekilex.data.db.main.tables.WordGroup;
 import eki.ekilex.data.db.main.tables.WordGroupMember;
 import eki.ekilex.data.db.main.tables.WordGuid;
 import eki.ekilex.data.db.main.tables.WordLastActivityLog;
-import eki.ekilex.data.db.main.tables.WordOdMorph;
-import eki.ekilex.data.db.main.tables.WordOdRecommendation;
-import eki.ekilex.data.db.main.tables.WordOdUsage;
+import eki.ekilex.data.db.main.tables.WordOsMorph;
+import eki.ekilex.data.db.main.tables.WordOsRecommendation;
+import eki.ekilex.data.db.main.tables.WordOsUsage;
 import eki.ekilex.data.db.main.tables.WordRelMapping;
 import eki.ekilex.data.db.main.tables.WordRelType;
 import eki.ekilex.data.db.main.tables.WordRelTypeLabel;
@@ -776,54 +776,54 @@ public class Tables {
     public static final ValueStateLabel VALUE_STATE_LABEL = ValueStateLabel.VALUE_STATE_LABEL;
 
     /**
-     * The table <code>public.view_od_definition</code>.
+     * The table <code>public.view_os_definition</code>.
      */
-    public static final ViewOdDefinition VIEW_OD_DEFINITION = ViewOdDefinition.VIEW_OD_DEFINITION;
+    public static final ViewOsDefinition VIEW_OS_DEFINITION = ViewOsDefinition.VIEW_OS_DEFINITION;
 
     /**
-     * The table <code>public.view_od_definition_idx</code>.
+     * The table <code>public.view_os_definition_idx</code>.
      */
-    public static final ViewOdDefinitionIdx VIEW_OD_DEFINITION_IDX = ViewOdDefinitionIdx.VIEW_OD_DEFINITION_IDX;
+    public static final ViewOsDefinitionIdx VIEW_OS_DEFINITION_IDX = ViewOsDefinitionIdx.VIEW_OS_DEFINITION_IDX;
 
     /**
-     * The table <code>public.view_od_lexeme_meaning</code>.
+     * The table <code>public.view_os_lexeme_meaning</code>.
      */
-    public static final ViewOdLexemeMeaning VIEW_OD_LEXEME_MEANING = ViewOdLexemeMeaning.VIEW_OD_LEXEME_MEANING;
+    public static final ViewOsLexemeMeaning VIEW_OS_LEXEME_MEANING = ViewOsLexemeMeaning.VIEW_OS_LEXEME_MEANING;
 
     /**
-     * The table <code>public.view_od_word</code>.
+     * The table <code>public.view_os_word</code>.
      */
-    public static final ViewOdWord VIEW_OD_WORD = ViewOdWord.VIEW_OD_WORD;
+    public static final ViewOsWord VIEW_OS_WORD = ViewOsWord.VIEW_OS_WORD;
 
     /**
-     * The table <code>public.view_od_word_od_morph</code>.
+     * The table <code>public.view_os_word_os_morph</code>.
      */
-    public static final ViewOdWordOdMorph VIEW_OD_WORD_OD_MORPH = ViewOdWordOdMorph.VIEW_OD_WORD_OD_MORPH;
+    public static final ViewOsWordOsMorph VIEW_OS_WORD_OS_MORPH = ViewOsWordOsMorph.VIEW_OS_WORD_OS_MORPH;
 
     /**
-     * The table <code>public.view_od_word_od_recommend</code>.
+     * The table <code>public.view_os_word_os_recommend</code>.
      */
-    public static final ViewOdWordOdRecommend VIEW_OD_WORD_OD_RECOMMEND = ViewOdWordOdRecommend.VIEW_OD_WORD_OD_RECOMMEND;
+    public static final ViewOsWordOsRecommend VIEW_OS_WORD_OS_RECOMMEND = ViewOsWordOsRecommend.VIEW_OS_WORD_OS_RECOMMEND;
 
     /**
-     * The table <code>public.view_od_word_od_usage</code>.
+     * The table <code>public.view_os_word_os_usage</code>.
      */
-    public static final ViewOdWordOdUsage VIEW_OD_WORD_OD_USAGE = ViewOdWordOdUsage.VIEW_OD_WORD_OD_USAGE;
+    public static final ViewOsWordOsUsage VIEW_OS_WORD_OS_USAGE = ViewOsWordOsUsage.VIEW_OS_WORD_OS_USAGE;
 
     /**
-     * The table <code>public.view_od_word_od_usage_idx</code>.
+     * The table <code>public.view_os_word_os_usage_idx</code>.
      */
-    public static final ViewOdWordOdUsageIdx VIEW_OD_WORD_OD_USAGE_IDX = ViewOdWordOdUsageIdx.VIEW_OD_WORD_OD_USAGE_IDX;
+    public static final ViewOsWordOsUsageIdx VIEW_OS_WORD_OS_USAGE_IDX = ViewOsWordOsUsageIdx.VIEW_OS_WORD_OS_USAGE_IDX;
 
     /**
-     * The table <code>public.view_od_word_relation</code>.
+     * The table <code>public.view_os_word_relation</code>.
      */
-    public static final ViewOdWordRelation VIEW_OD_WORD_RELATION = ViewOdWordRelation.VIEW_OD_WORD_RELATION;
+    public static final ViewOsWordRelation VIEW_OS_WORD_RELATION = ViewOsWordRelation.VIEW_OS_WORD_RELATION;
 
     /**
-     * The table <code>public.view_od_word_relation_idx</code>.
+     * The table <code>public.view_os_word_relation_idx</code>.
      */
-    public static final ViewOdWordRelationIdx VIEW_OD_WORD_RELATION_IDX = ViewOdWordRelationIdx.VIEW_OD_WORD_RELATION_IDX;
+    public static final ViewOsWordRelationIdx VIEW_OS_WORD_RELATION_IDX = ViewOsWordRelationIdx.VIEW_OS_WORD_RELATION_IDX;
 
     /**
      * The table <code>public.view_ww_classifier</code>.
@@ -961,19 +961,19 @@ public class Tables {
     public static final WordLastActivityLog WORD_LAST_ACTIVITY_LOG = WordLastActivityLog.WORD_LAST_ACTIVITY_LOG;
 
     /**
-     * The table <code>public.word_od_morph</code>.
+     * The table <code>public.word_os_morph</code>.
      */
-    public static final WordOdMorph WORD_OD_MORPH = WordOdMorph.WORD_OD_MORPH;
+    public static final WordOsMorph WORD_OS_MORPH = WordOsMorph.WORD_OS_MORPH;
 
     /**
-     * The table <code>public.word_od_recommendation</code>.
+     * The table <code>public.word_os_recommendation</code>.
      */
-    public static final WordOdRecommendation WORD_OD_RECOMMENDATION = WordOdRecommendation.WORD_OD_RECOMMENDATION;
+    public static final WordOsRecommendation WORD_OS_RECOMMENDATION = WordOsRecommendation.WORD_OS_RECOMMENDATION;
 
     /**
-     * The table <code>public.word_od_usage</code>.
+     * The table <code>public.word_os_usage</code>.
      */
-    public static final WordOdUsage WORD_OD_USAGE = WordOdUsage.WORD_OD_USAGE;
+    public static final WordOsUsage WORD_OS_USAGE = WordOsUsage.WORD_OS_USAGE;
 
     /**
      * The table <code>public.word_rel_mapping</code>.

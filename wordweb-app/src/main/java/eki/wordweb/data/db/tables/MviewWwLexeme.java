@@ -175,9 +175,9 @@ public class MviewWwLexeme extends TableImpl<MviewWwLexemeRecord> {
     public final TableField<MviewWwLexemeRecord, Boolean> IS_WW_LITE = createField(DSL.name("is_ww_lite"), SQLDataType.BOOLEAN, this, "");
 
     /**
-     * The column <code>public.mview_ww_lexeme.is_ww_od</code>.
+     * The column <code>public.mview_ww_lexeme.is_ww_os</code>.
      */
-    public final TableField<MviewWwLexemeRecord, Boolean> IS_WW_OD = createField(DSL.name("is_ww_od"), SQLDataType.BOOLEAN, this, "");
+    public final TableField<MviewWwLexemeRecord, Boolean> IS_WW_OS = createField(DSL.name("is_ww_os"), SQLDataType.BOOLEAN, this, "");
 
     private MviewWwLexeme(Name alias, Table<MviewWwLexemeRecord> aliased) {
         this(alias, aliased, null);

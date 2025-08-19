@@ -25,7 +25,7 @@ import static eki.ekilex.data.db.main.Tables.USAGE_DEFINITION;
 import static eki.ekilex.data.db.main.Tables.USAGE_SOURCE_LINK;
 import static eki.ekilex.data.db.main.Tables.USAGE_TRANSLATION;
 import static eki.ekilex.data.db.main.Tables.WORD;
-import static eki.ekilex.data.db.main.Tables.WORD_OD_RECOMMENDATION;
+import static eki.ekilex.data.db.main.Tables.WORD_OS_RECOMMENDATION;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -77,7 +77,7 @@ import eki.ekilex.data.db.main.tables.UsageDefinition;
 import eki.ekilex.data.db.main.tables.UsageSourceLink;
 import eki.ekilex.data.db.main.tables.UsageTranslation;
 import eki.ekilex.data.db.main.tables.Word;
-import eki.ekilex.data.db.main.tables.WordOdRecommendation;
+import eki.ekilex.data.db.main.tables.WordOsRecommendation;
 
 @Component
 public class LexSearchConditionComposer implements GlobalConstant, ActivityFunct, FreeformConstant, PublishingConstant {
@@ -470,10 +470,10 @@ public class LexSearchConditionComposer implements GlobalConstant, ActivityFunct
 					where = where.andExists(DSL.select(n1.field("word_id")).from(n1).where(n1.field("word_id", Long.class).eq(w1.ID)));
 				}
 
-			} else if (SearchEntity.OD_RECOMMENDATION.equals(searchEntity)) {
+			} else if (SearchEntity.OS_RECOMMENDATION.equals(searchEntity)) {
 
-				where = searchFilterHelper.applyWordOdRecommendationValueFilters(searchCriteria, w1.ID, where);
-				where = searchFilterHelper.applyWordOdRecommendationModificationFilters(searchCriteria, w1.ID, where);
+				where = searchFilterHelper.applyWordOsRecommendationValueFilters(searchCriteria, w1.ID, where);
+				where = searchFilterHelper.applyWordOsRecommendationModificationFilters(searchCriteria, w1.ID, where);
 
 			} else if (SearchEntity.CLUELESS.equals(searchEntity)) {
 
@@ -518,7 +518,7 @@ public class LexSearchConditionComposer implements GlobalConstant, ActivityFunct
 		MeaningNote mn1 = MEANING_NOTE.as("mn1");
 		MeaningFreeform mff1 = MEANING_FREEFORM.as("mff1");
 		LearnerComment lc1 = LEARNER_COMMENT.as("lc1");
-		WordOdRecommendation wor = WORD_OD_RECOMMENDATION.as("wor");
+		WordOsRecommendation wor = WORD_OS_RECOMMENDATION.as("wor");
 		Freeform ff1 = FREEFORM.as("ff1");
 		Lexeme l2 = LEXEME.as("l2");
 		Word w2 = WORD.as("w2");
@@ -628,7 +628,7 @@ public class LexSearchConditionComposer implements GlobalConstant, ActivityFunct
 				.and(wor.WORD_ID.eq(w1.ID));
 		where1 = searchFilterHelper.applyDatasetRestrictions(l1, searchDatasetsRestriction, where1);
 		where1 = searchFilterHelper.applyValueFilters(SearchKey.VALUE, searchCriteria, wor.VALUE, where1, true);
-		SelectHavingStep<Record1<Long>> selectWordOdRecommendation = DSL.select(l1.WORD_ID).from(l1, w1, wor).where(where1).groupBy(l1.WORD_ID);
+		SelectHavingStep<Record1<Long>> selectWordOsRecommendation = DSL.select(l1.WORD_ID).from(l1, w1, wor).where(where1).groupBy(l1.WORD_ID);
 
 		Table<Record1<Long>> a1 = selectWordAndMeaningWord
 				.unionAll(selectDefinition)
@@ -643,7 +643,7 @@ public class LexSearchConditionComposer implements GlobalConstant, ActivityFunct
 				.unionAll(selectLexemeGrammar)
 				.unionAll(selectLexemeGovernment)
 				.unionAll(selectForm)
-				.unionAll(selectWordOdRecommendation)
+				.unionAll(selectWordOsRecommendation)
 				.asTable("a1");
 
 		where = where.andExists(DSL.select(a1.field("word_id")).from(a1).where(a1.field("word_id", Long.class).eq(w1.ID)));

@@ -373,20 +373,20 @@ public class SearchDbService implements GlobalConstant, SystemConstant {
 
 		boolean isWwUnif = searchContext.isWwUnif();
 		boolean isWwLite = searchContext.isWwLite();
-		boolean isWwOd = searchContext.isWwOd();
+		boolean isWwOs = searchContext.isWwOs();
 		Field<String> searchWordLowerField = DSL.lower(searchWord);
 
 		MviewWwWord w = MVIEW_WW_WORD.as("w");
 		MviewWwLexeme l = MVIEW_WW_LEXEME.as("l");
 
-		Table<?> lc = DSL.unnest(w.LANG_DS_PUBS).as("ldp", "lang", "dataset_code", "is_ww_unif", "is_ww_lite", "is_ww_od");
+		Table<?> lc = DSL.unnest(w.LANG_DS_PUBS).as("ldp", "lang", "dataset_code", "is_ww_unif", "is_ww_lite", "is_ww_os");
 		Condition lcWhere = DSL.noCondition();
 		if (isWwUnif) {
 			lcWhere = lc.field("is_ww_unif", boolean.class).isTrue();
 		} else if (isWwLite) {
 			lcWhere = lc.field("is_ww_lite", boolean.class).isTrue();
-		} else if (isWwOd) {
-			lcWhere = lc.field("is_ww_od", boolean.class).isTrue();
+		} else if (isWwOs) {
+			lcWhere = lc.field("is_ww_os", boolean.class).isTrue();
 		}
 
 		return create
@@ -439,7 +439,7 @@ public class SearchDbService implements GlobalConstant, SystemConstant {
 						l.MEANING_WORDS,
 						l.IS_WW_UNIF,
 						l.IS_WW_LITE,
-						l.IS_WW_OD,
+						l.IS_WW_OS,
 						lr.RELATED_LEXEMES)
 				.from(l
 						.leftOuterJoin(lr).on(lr.LEXEME_ID.eq(l.LEXEME_ID)))
@@ -485,7 +485,7 @@ public class SearchDbService implements GlobalConstant, SystemConstant {
 						l2.MEANING_WORDS,
 						l2.IS_WW_UNIF,
 						l2.IS_WW_LITE,
-						l2.IS_WW_OD,
+						l2.IS_WW_OS,
 						lr.RELATED_LEXEMES,
 						w2.VALUE,
 						w2.VALUE_PRESE,
@@ -552,15 +552,15 @@ public class SearchDbService implements GlobalConstant, SystemConstant {
 		List<String> datasetCodes = searchContext.getDatasetCodes();
 		boolean isWwUnif = searchContext.isWwUnif();
 		boolean isWwLite = searchContext.isWwLite();
-		boolean isWwOd = searchContext.isWwOd();
+		boolean isWwOs = searchContext.isWwOs();
 
 		Condition where = DSL.noCondition();
 		if (isWwUnif) {
 			where = where.and(l.IS_WW_UNIF.isTrue());
 		} else if (isWwLite) {
 			where = where.and(l.IS_WW_LITE.isTrue());
-		} else if (isWwOd) {
-			where = where.and(l.IS_WW_OD.isTrue());
+		} else if (isWwOs) {
+			where = where.and(l.IS_WW_OS.isTrue());
 		}
 		if (datasetType != null) {
 			where = where.and(l.DATASET_TYPE.eq(datasetType.name()));
@@ -582,16 +582,16 @@ public class SearchDbService implements GlobalConstant, SystemConstant {
 		List<String> datasetCodes = searchContext.getDatasetCodes();
 		boolean isWwUnif = searchContext.isWwUnif();
 		boolean isWwLite = searchContext.isWwLite();
-		boolean isWwOd = searchContext.isWwOd();
+		boolean isWwOs = searchContext.isWwOs();
 
-		Table<?> lc = DSL.unnest(lcTable.field("lang_ds_pubs")).as("ldp", "lang", "dataset_code", "is_ww_unif", "is_ww_lite", "is_ww_od");
+		Table<?> lc = DSL.unnest(lcTable.field("lang_ds_pubs")).as("ldp", "lang", "dataset_code", "is_ww_unif", "is_ww_lite", "is_ww_os");
 		Condition lcWhere = DSL.noCondition();
 		if (isWwUnif) {
 			lcWhere = lc.field("is_ww_unif", boolean.class).isTrue();
 		} else if (isWwLite) {
 			lcWhere = lc.field("is_ww_lite", boolean.class).isTrue();
-		} else if (isWwOd) {
-			lcWhere = lc.field("is_ww_od", boolean.class).isTrue();
+		} else if (isWwOs) {
+			lcWhere = lc.field("is_ww_os", boolean.class).isTrue();
 		}
 
 		/*
@@ -655,7 +655,7 @@ public class SearchDbService implements GlobalConstant, SystemConstant {
 						w.WORD_TYPE_CODES,
 						w.MEANING_WORDS,
 						w.DEFINITIONS,
-						w.WORD_OD_RECOMMENDATION,
+						w.WORD_OS_RECOMMENDATION,
 						w.FORMS_EXIST)
 				.from(w)
 				.where(w.WORD_ID.eq(wordId))

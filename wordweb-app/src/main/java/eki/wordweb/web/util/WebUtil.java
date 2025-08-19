@@ -67,13 +67,13 @@ public class WebUtil implements WebConstant, SystemConstant, GlobalConstant {
 		return searchUri;
 	}
 
-	public String composeOdSearchUri(String searchValue, Integer homonymNr) {
+	public String composeOsSearchUri(String searchValue, Integer homonymNr) {
 		String encodedWordValue = encode(searchValue);
 		String searchUri;
 		if (homonymNr == null) {
-			searchUri = StringUtils.join(SEARCH_URI, OD_URI, '/', encodedWordValue);
+			searchUri = StringUtils.join(SEARCH_URI, OS_URI, '/', encodedWordValue);
 		} else {
-			searchUri = StringUtils.join(SEARCH_URI, OD_URI, '/', encodedWordValue, '/', homonymNr);
+			searchUri = StringUtils.join(SEARCH_URI, OS_URI, '/', encodedWordValue, '/', homonymNr);
 		}
 		return searchUri;
 	}

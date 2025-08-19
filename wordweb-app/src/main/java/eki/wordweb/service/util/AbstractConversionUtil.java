@@ -89,8 +89,8 @@ public abstract class AbstractConversionUtil implements WebConstant, SystemConst
 		if (targetPublishingContext.isWwLite()) {
 			return dataPublishingContext.isWwLite();
 		}
-		if (targetPublishingContext.isWwOd()) {
-			return dataPublishingContext.isWwOd();
+		if (targetPublishingContext.isWwOs()) {
+			return dataPublishingContext.isWwOs();
 		}
 		return false;
 	}

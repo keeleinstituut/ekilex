@@ -558,7 +558,7 @@ public class CommonDataDbService extends AbstractDataDbService {
 
 		Field<Boolean> wwupf = queryHelper.getPublishingField(TARGET_NAME_WW_UNIF, ENTITY_NAME_MEANING_NOTE, mn.ID);
 		Field<Boolean> wwlpf = queryHelper.getPublishingField(TARGET_NAME_WW_LITE, ENTITY_NAME_MEANING_NOTE, mn.ID);
-		Field<Boolean> wwopf = queryHelper.getPublishingField(TARGET_NAME_WW_OD, ENTITY_NAME_MEANING_NOTE, mn.ID);
+		Field<Boolean> wwopf = queryHelper.getPublishingField(TARGET_NAME_WW_OS, ENTITY_NAME_MEANING_NOTE, mn.ID);
 
 		Field<JSON> mnslf = DSL
 				.select(DSL
@@ -591,7 +591,7 @@ public class CommonDataDbService extends AbstractDataDbService {
 						mn.ORDER_BY,
 						wwupf.as("is_ww_unif"),
 						wwlpf.as("is_ww_lite"),
-						wwopf.as("is_ww_od"),
+						wwopf.as("is_ww_os"),
 						mnslf.as("source_links"))
 				.from(mn)
 				.where(mn.MEANING_ID.eq(meaningId))
@@ -607,7 +607,7 @@ public class CommonDataDbService extends AbstractDataDbService {
 
 		Field<Boolean> wwupf = queryHelper.getPublishingField(TARGET_NAME_WW_UNIF, ENTITY_NAME_MEANING_IMAGE, mi.ID);
 		Field<Boolean> wwlpf = queryHelper.getPublishingField(TARGET_NAME_WW_LITE, ENTITY_NAME_MEANING_IMAGE, mi.ID);
-		Field<Boolean> wwopf = queryHelper.getPublishingField(TARGET_NAME_WW_OD, ENTITY_NAME_MEANING_IMAGE, mi.ID);
+		Field<Boolean> wwopf = queryHelper.getPublishingField(TARGET_NAME_WW_OS, ENTITY_NAME_MEANING_IMAGE, mi.ID);
 
 		Field<JSON> mislf = DSL
 				.select(DSL
@@ -632,7 +632,7 @@ public class CommonDataDbService extends AbstractDataDbService {
 						mi.TITLE,
 						wwupf.as("is_ww_unif"),
 						wwlpf.as("is_ww_lite"),
-						wwopf.as("is_ww_od"),
+						wwopf.as("is_ww_os"),
 						mislf.as("source_links"))
 				.from(mi)
 				.where(mi.MEANING_ID.eq(meaningId))
@@ -646,7 +646,7 @@ public class CommonDataDbService extends AbstractDataDbService {
 
 		Field<Boolean> wwupf = queryHelper.getPublishingField(TARGET_NAME_WW_UNIF, ENTITY_NAME_MEANING_MEDIA, mm.ID);
 		Field<Boolean> wwlpf = queryHelper.getPublishingField(TARGET_NAME_WW_LITE, ENTITY_NAME_MEANING_MEDIA, mm.ID);
-		Field<Boolean> wwopf = queryHelper.getPublishingField(TARGET_NAME_WW_OD, ENTITY_NAME_MEANING_MEDIA, mm.ID);
+		Field<Boolean> wwopf = queryHelper.getPublishingField(TARGET_NAME_WW_OS, ENTITY_NAME_MEANING_MEDIA, mm.ID);
 
 		return mainDb
 				.select(
@@ -654,7 +654,7 @@ public class CommonDataDbService extends AbstractDataDbService {
 						mm.URL,
 						wwupf.as("is_ww_unif"),
 						wwlpf.as("is_ww_lite"),
-						wwopf.as("is_ww_od"))
+						wwopf.as("is_ww_os"))
 				.from(mm)
 				.where(mm.MEANING_ID.eq(meaningId))
 				.fetchInto(eki.ekilex.data.MeaningMedia.class);
@@ -792,7 +792,7 @@ public class CommonDataDbService extends AbstractDataDbService {
 
 		Field<Boolean> wwupf = queryHelper.getPublishingField(TARGET_NAME_WW_UNIF, ENTITY_NAME_DEFINITION, d.ID);
 		Field<Boolean> wwlpf = queryHelper.getPublishingField(TARGET_NAME_WW_LITE, ENTITY_NAME_DEFINITION, d.ID);
-		Field<Boolean> wwopf = queryHelper.getPublishingField(TARGET_NAME_WW_OD, ENTITY_NAME_DEFINITION, d.ID);
+		Field<Boolean> wwopf = queryHelper.getPublishingField(TARGET_NAME_WW_OS, ENTITY_NAME_DEFINITION, d.ID);
 
 		return mainDb
 				.select(
@@ -806,7 +806,7 @@ public class CommonDataDbService extends AbstractDataDbService {
 						d.IS_PUBLIC,
 						wwupf.as("is_ww_unif"),
 						wwlpf.as("is_ww_lite"),
-						wwopf.as("is_ww_od"),
+						wwopf.as("is_ww_os"),
 						ddsf.as("dataset_codes"),
 						dnf.as("notes"),
 						dslf.as("source_links"))
@@ -1151,7 +1151,7 @@ public class CommonDataDbService extends AbstractDataDbService {
 		Grammar g = GRAMMAR.as("g");
 		Field<Boolean> wwupf = queryHelper.getPublishingField(TARGET_NAME_WW_UNIF, ENTITY_NAME_GRAMMAR, g.ID);
 		Field<Boolean> wwlpf = queryHelper.getPublishingField(TARGET_NAME_WW_LITE, ENTITY_NAME_GRAMMAR, g.ID);
-		Field<Boolean> wwopf = queryHelper.getPublishingField(TARGET_NAME_WW_OD, ENTITY_NAME_GRAMMAR, g.ID);
+		Field<Boolean> wwopf = queryHelper.getPublishingField(TARGET_NAME_WW_OS, ENTITY_NAME_GRAMMAR, g.ID);
 
 		return mainDb
 				.select(
@@ -1166,7 +1166,7 @@ public class CommonDataDbService extends AbstractDataDbService {
 						g.ORDER_BY,
 						wwupf.as("is_ww_unif"),
 						wwlpf.as("is_ww_lite"),
-						wwopf.as("is_ww_od"))
+						wwopf.as("is_ww_os"))
 				.from(g)
 				.where(g.LEXEME_ID.eq(lexemeId))
 				.orderBy(g.ORDER_BY)
@@ -1178,7 +1178,7 @@ public class CommonDataDbService extends AbstractDataDbService {
 		Government g = GOVERNMENT.as("g");
 		Field<Boolean> wwupf = queryHelper.getPublishingField(TARGET_NAME_WW_UNIF, ENTITY_NAME_GOVERNMENT, g.ID);
 		Field<Boolean> wwlpf = queryHelper.getPublishingField(TARGET_NAME_WW_LITE, ENTITY_NAME_GOVERNMENT, g.ID);
-		Field<Boolean> wwopf = queryHelper.getPublishingField(TARGET_NAME_WW_OD, ENTITY_NAME_GOVERNMENT, g.ID);
+		Field<Boolean> wwopf = queryHelper.getPublishingField(TARGET_NAME_WW_OS, ENTITY_NAME_GOVERNMENT, g.ID);
 
 		return mainDb
 				.select(
@@ -1191,7 +1191,7 @@ public class CommonDataDbService extends AbstractDataDbService {
 						g.ORDER_BY,
 						wwupf.as("is_ww_unif"),
 						wwlpf.as("is_ww_lite"),
-						wwopf.as("is_ww_od"))
+						wwopf.as("is_ww_os"))
 				.from(g)
 				.where(g.LEXEME_ID.eq(lexemeId))
 				.orderBy(g.ORDER_BY)
@@ -1208,7 +1208,7 @@ public class CommonDataDbService extends AbstractDataDbService {
 
 		Field<Boolean> wwupf = queryHelper.getPublishingField(TARGET_NAME_WW_UNIF, ENTITY_NAME_USAGE, u.ID);
 		Field<Boolean> wwlpf = queryHelper.getPublishingField(TARGET_NAME_WW_LITE, ENTITY_NAME_USAGE, u.ID);
-		Field<Boolean> wwopf = queryHelper.getPublishingField(TARGET_NAME_WW_OD, ENTITY_NAME_USAGE, u.ID);
+		Field<Boolean> wwopf = queryHelper.getPublishingField(TARGET_NAME_WW_OS, ENTITY_NAME_USAGE, u.ID);
 
 		Field<JSON> utf = DSL
 				.select(DSL
@@ -1278,7 +1278,7 @@ public class CommonDataDbService extends AbstractDataDbService {
 						u.ORDER_BY,
 						wwupf.as("is_ww_unif"),
 						wwlpf.as("is_ww_lite"),
-						wwopf.as("is_ww_od"),
+						wwopf.as("is_ww_os"),
 						utf.as("translations"),
 						udf.as("definitions"),
 						uslf.as("source_links"))

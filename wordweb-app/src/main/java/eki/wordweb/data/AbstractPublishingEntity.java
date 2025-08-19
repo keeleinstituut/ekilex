@@ -10,7 +10,7 @@ public abstract class AbstractPublishingEntity extends AbstractDataObject {
 
 	private boolean isWwLite;
 
-	private boolean isWwOd;
+	private boolean isWwOs;
 
 	public boolean isWwUnif() {
 		return isWwUnif;
@@ -28,12 +28,12 @@ public abstract class AbstractPublishingEntity extends AbstractDataObject {
 		this.isWwLite = isWwLite;
 	}
 
-	public boolean isWwOd() {
-		return isWwOd;
+	public boolean isWwOs() {
+		return isWwOs;
 	}
 
-	public void setWwOd(boolean isWwOd) {
-		this.isWwOd = isWwOd;
+	public void setWwOs(boolean isWwOs) {
+		this.isWwOs = isWwOs;
 	}
 
 }

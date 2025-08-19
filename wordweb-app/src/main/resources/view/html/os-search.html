@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="et" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="common-app :: common_header(~{::title},~{::links},_)">
+<title th:text="#{search.title(${searchValue})}">Otsing</title>
+<th:block th:fragment="links">
+  <script type="text/javascript" th:src="@{/view/js/ww-od.js}"></script>
+</th:block>
+</head>
+<body class="survey-active">
+  <th:block th:replace="common-app :: ie-user"></th:block>
+  <th:block
+    th:replace="common-app :: header(
+    odPage = ${true},
+    logoTemplate = ~{os-comp :: logo},
+    withLucky = ${false},
+    withLangSelect = ${false},
+    searchInputTemplate = ~{os-comp :: search})">
+  </th:block>
+  <div class="container-fluid homonym-page homonym-page--od">
+    <main id="mainContentArea" role="main" class="content-panel loading">
+      <th:block th:replace="os-comp :: homonyms"></th:block>
+      <th:block th:unless="${searchResult.resultExists}">
+        <div class="no-results__wrapper">
+          <th:block th:if="${searchResult.validSearch}">
+            <h1 class="no-results__title">
+              <span th:text="#{label.word.not.found.od}"></span>
+            </h1>
+          </th:block>
+          <th:block th:unless="${searchResult.validSearch}">
+            <h1 class="no-results__title" th:text="#{label.search.word.invalid}"></h1>
+          </th:block>
+        </div>
+      </th:block>
+      <th:block th:if="${searchResult.resultExists}">
+        <div class="od-results" th:if="${searchResult.selectedWord != null}" th:with="word = ${searchResult.selectedWord}">
+          <div class="d-flex align-items-center flex-wrap">
+            <div class="search__lex-title-wrapper">
+              <h1 class="search__lex-title" th:utext="${@decorUtil.getWordValueMarkup(word)}">tee</h1>
+            </div>
+            <strong class="mr-2" th:aria-label="|#{aria.homonym} ${word.homonymNr}|" th:text="${word.homonymNr}" th:unless="${searchResult.singleResult}">1</strong>
+            <span class="od-tag mr-2" th:if="${word.displayMorph != null}" th:text="${word.displayMorph.value}"></span>
+            <th:block th:each="wordType : ${word.wordTypes}" th:if="${not #lists.isEmpty(word.wordTypes)}">
+              <span class="lang-code text-caption lang-code--unrestricted mr-2" th:text="${wordType.value}"></span>
+            </th:block>
+          </div>
+          <div class="d-flex align-items-end flex-wrap gap-2">
+            <!-- if needed -->
+          </div>
+          <div class="search__block search__block--unified">
+            <th:block th:if="${word.wordOsMorph}">
+              <div class="mt-2">
+                <div th:text="#{label.os.morpho}" class="text-caption text-darker-gray">Lühimorfo</div>
+                <div>
+                  <span><</span>
+                  <span th:utext="${word.wordOsMorph.valuePrese}"></span>
+                  <span>></span>
+                </div>
+              </div>
+            </th:block>
+            <th:block th:if="${word.lexemeMeaningsContentExist}">
+              <div class="mt-2">
+                <div th:text="#{label.os.meaning}" class="text-caption text-darker-gray">Tähendusvihjed</div>
+                <div>
+                  <th:block th:each="lexemeMeaning, lexemeMeaningIter : ${word.lexemeMeanings}">
+                    <th:block th:each="register, registerIter : ${lexemeMeaning.registers}">
+                      <span th:text="${register.value}"></span>
+                      <span th:unless="${registerIter.last}" class="ml-n1">,</span>
+                    </th:block>
+                    <span th:if="${lexemeMeaning.valueState != null}" th:text="${lexemeMeaning.valueState.value}"></span>
+                    <th:block th:if="${lexemeMeaning.meaning.lexemeWords}">
+                      <span>(=</span>
+                      <th:block th:each="lexemeWord, lexemeWordIter : ${lexemeMeaning.meaning.lexemeWords}">
+                        <span th:utext="${lexemeWord.valuePrese}"></span>
+                        <th:block th:each="register, registerIter : ${lexemeWord.registers}">
+                          <span th:text="${register.value}"></span>
+                          <span th:unless="${registerIter.last}" class="ml-n1">,</span>
+                        </th:block>
+                        <span th:if="${lexemeWord.valueState != null}" th:text="${lexemeWord.valueState.value}"></span>
+                        <span th:unless="${lexemeWordIter.last}" class="ml-n1">,</span>
+                      </th:block>
+                      <span class="ml-n1">)</span>
+                    </th:block>
+                    <span th:if="${lexemeMeaning.meaning.definition}" th:utext="${lexemeMeaning.meaning.definition.valuePrese}"></span>
+                    <span th:unless="${lexemeMeaningIter.last}" class="ml-n1">;</span>
+                  </th:block>
+                </div>
+              </div>
+            </th:block>
+            <th:block th:if="${word.wordOsUsages}">
+              <div class="mt-2">
+                <div th:text="#{label.os.usage}" class="text-caption text-darker-gray">Näited</div>
+                <th:block th:each="usage : ${word.wordOsUsages}">
+                  <span th:utext="${usage.valuePrese}"></span>
+                </th:block>
+              </div>
+            </th:block>
+            <th:block th:if="${word.primaryWordRelationGroups}">
+              <div class="mt-2">
+                <div th:text="#{label.os.word.rel.comp}" class="text-caption text-darker-gray">Liitsõnad</div>
+                <ul>
+                  <th:block th:each="wordRelationGroup : ${word.primaryWordRelationGroups}">
+                    <li>
+                      <th:block th:each="relatedWord, relatedWordIter : ${wordRelationGroup.relatedWords}">
+                        <span th:utext="${relatedWord.valuePrese}"></span>
+                        <span th:unless="${relatedWordIter.last}" class="ml-n1">,</span>
+                      </th:block>
+                    </li>
+                  </th:block>
+                </ul>
+              </div>
+            </th:block>
+            <th:block th:if="${word.secondaryWordRelationGroups}">
+              <th:block th:each="wordRelationGroup : ${word.secondaryWordRelationGroups}">
+                <div class="mt-2">
+                  <div th:text="${wordRelationGroup.wordRelType.value}" class="text-caption text-darker-gray text-capitalize">Võrded</div>
+                  <div>
+                    <th:block th:each="relatedWord, relatedWordIter : ${wordRelationGroup.relatedWords}">
+                      <span th:utext="${relatedWord.valuePrese}"></span>
+                      <span th:unless="${relatedWordIter.last}" class="ml-n1">,</span>
+                    </th:block>
+                  </div>
+                </div>
+              </th:block>
+            </th:block>
+            <th:block th:if="${word.wordOsRecommend}">
+              <div class="od-explanation mt-3">
+                <span class="material-symbols-outlined" aria-hidden="true"> info </span>
+                <p th:utext="${word.wordOsRecommend.valuePrese}"></p>
+              </div>
+            </th:block>
+          </div>
+        </div>
+      </th:block>
+    </main>
+  </div>
+  <div th:replace="common-app :: footer-content"></div>
+  <script th:inline="javascript"></script>
+</body>
+</html>

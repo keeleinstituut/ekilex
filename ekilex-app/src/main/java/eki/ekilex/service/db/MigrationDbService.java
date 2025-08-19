@@ -6,8 +6,8 @@ import static eki.ekilex.data.db.main.Tables.DOMAIN_LABEL;
 import static eki.ekilex.data.db.main.Tables.MEANING;
 import static eki.ekilex.data.db.main.Tables.PUBLISHING;
 import static eki.ekilex.data.db.main.Tables.WORD;
-import static eki.ekilex.data.db.main.Tables.WORD_OD_MORPH;
-import static eki.ekilex.data.db.main.Tables.WORD_OD_USAGE;
+import static eki.ekilex.data.db.main.Tables.WORD_OS_MORPH;
+import static eki.ekilex.data.db.main.Tables.WORD_OS_USAGE;
 
 import java.util.List;
 
@@ -22,8 +22,8 @@ import eki.ekilex.data.db.main.tables.DefinitionDataset;
 import eki.ekilex.data.db.main.tables.Meaning;
 import eki.ekilex.data.db.main.tables.Publishing;
 import eki.ekilex.data.db.main.tables.Word;
-import eki.ekilex.data.db.main.tables.WordOdMorph;
-import eki.ekilex.data.db.main.tables.WordOdUsage;
+import eki.ekilex.data.db.main.tables.WordOsMorph;
+import eki.ekilex.data.db.main.tables.WordOsUsage;
 import eki.ekilex.data.migra.DefinitionDuplicate;
 
 // temporary content for data migration tools
@@ -162,9 +162,9 @@ public class MigrationDbService extends AbstractDataDbService implements Publish
 										.and(dd.DATASET_CODE.eq(datasetCode))));
 	}
 
-	public boolean wordOdUsageExists(Long wordId, String usageValue) {
+	public boolean wordOsUsageExists(Long wordId, String usageValue) {
 
-		WordOdUsage wou = WORD_OD_USAGE.as("wou");
+		WordOsUsage wou = WORD_OS_USAGE.as("wou");
 
 		return mainDb
 				.fetchExists(DSL
@@ -175,9 +175,9 @@ public class MigrationDbService extends AbstractDataDbService implements Publish
 										.and(wou.VALUE.eq(usageValue))));
 	}
 
-	public boolean wordOdMorphExists(Long wordId) {
+	public boolean wordOsMorphExists(Long wordId) {
 
-		WordOdMorph wom = WORD_OD_MORPH.as("wom");
+		WordOsMorph wom = WORD_OS_MORPH.as("wom");
 
 		return mainDb
 				.fetchExists(DSL

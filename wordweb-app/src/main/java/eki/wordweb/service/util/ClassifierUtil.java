@@ -25,12 +25,12 @@ import eki.wordweb.data.MeaningWord;
 import eki.wordweb.data.WordEtymTuple;
 import eki.wordweb.data.WordRelation;
 import eki.wordweb.data.WordTypeData;
-import eki.wordweb.data.od.OdLexemeMeaning;
-import eki.wordweb.data.od.OdLexemeWord;
-import eki.wordweb.data.od.OdMeaning;
-import eki.wordweb.data.od.OdWord;
-import eki.wordweb.data.od.OdWordRelation;
-import eki.wordweb.data.od.OdWordRelationGroup;
+import eki.wordweb.data.os.OsLexemeMeaning;
+import eki.wordweb.data.os.OsLexemeWord;
+import eki.wordweb.data.os.OsMeaning;
+import eki.wordweb.data.os.OsWord;
+import eki.wordweb.data.os.OsWordRelation;
+import eki.wordweb.data.os.OsWordRelationGroup;
 import eki.wordweb.data.type.TypeDomain;
 import eki.wordweb.service.db.CommonDataDbService;
 
@@ -202,31 +202,31 @@ public class ClassifierUtil {
 		}
 	}
 
-	public void applyOdClassifiers(OdWord word, String displayLang) {
+	public void applyOdClassifiers(OsWord word, String displayLang) {
 		String classifierCode;
 		Classifier classifier;
 		applyOdWordClassifiers(word, displayLang);
-		List<OdLexemeMeaning> lexemeMeanings = word.getLexemeMeanings();
-		for (OdLexemeMeaning lexemeMeaning : lexemeMeanings) {
+		List<OsLexemeMeaning> lexemeMeanings = word.getLexemeMeanings();
+		for (OsLexemeMeaning lexemeMeaning : lexemeMeanings) {
 			applyOdLexemeClassifiers(lexemeMeaning, displayLang);
-			OdMeaning meaning = lexemeMeaning.getMeaning();
-			List<OdLexemeWord> lexemeWords = meaning.getLexemeWords();
+			OsMeaning meaning = lexemeMeaning.getMeaning();
+			List<OsLexemeWord> lexemeWords = meaning.getLexemeWords();
 			if (CollectionUtils.isNotEmpty(lexemeWords)) {
-				for (OdLexemeWord lexemeWord : lexemeWords) {
+				for (OsLexemeWord lexemeWord : lexemeWords) {
 					applyOdLexemeClassifiers(lexemeWord, displayLang);
 					applyOdWordClassifiers(lexemeWord, displayLang);
 				}
 			}
 		}
-		List<OdWordRelationGroup> wordRelationGroups = word.getWordRelationGroups();
+		List<OsWordRelationGroup> wordRelationGroups = word.getWordRelationGroups();
 		if (CollectionUtils.isNotEmpty(wordRelationGroups)) {
-			for (OdWordRelationGroup wordRelationGroup : wordRelationGroups) {
+			for (OsWordRelationGroup wordRelationGroup : wordRelationGroups) {
 				classifierCode = wordRelationGroup.getWordRelTypeCode();
 				classifier = getClassifier(ClassifierName.WORD_REL_TYPE, classifierCode, displayLang);
 				wordRelationGroup.setWordRelType(classifier);
-				List<OdWordRelation> relatedWords = wordRelationGroup.getRelatedWords();
+				List<OsWordRelation> relatedWords = wordRelationGroup.getRelatedWords();
 				if (CollectionUtils.isNotEmpty(relatedWords)) {
-					for (OdWordRelation wordRelation : relatedWords) {
+					for (OsWordRelation wordRelation : relatedWords) {
 						classifierCode = wordRelation.getWordRelTypeCode();
 						classifier = getClassifier(ClassifierName.WORD_REL_TYPE, classifierCode, displayLang);
 						wordRelation.setWordRelType(classifier);
@@ -237,7 +237,7 @@ public class ClassifierUtil {
 		}
 	}
 
-	private void applyOdLexemeClassifiers(OdLexemeClassifiers lexeme, String displayLang) {
+	private void applyOdLexemeClassifiers(OsLexemeClassifiers lexeme, String displayLang) {
 		List<String> classifierCodes = lexeme.getRegisterCodes();
 		List<Classifier> classifiers = getClassifiers(ClassifierName.REGISTER, classifierCodes, displayLang);
 		lexeme.setRegisters(classifiers);
@@ -246,7 +246,7 @@ public class ClassifierUtil {
 		lexeme.setValueState(classifier);
 	}
 
-	private void applyOdWordClassifiers(OdWord word, String displayLang) {
+	private void applyOdWordClassifiers(OsWord word, String displayLang) {
 		String classifierCode = word.getDisplayMorphCode();
 		Classifier classifier = getClassifier(ClassifierName.DISPLAY_MORPH, classifierCode, displayLang);
 		word.setDisplayMorph(classifier);

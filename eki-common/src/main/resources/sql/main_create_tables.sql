@@ -655,7 +655,7 @@ create table word_etymology_relation (
 );
 alter sequence word_etymology_relation_id_seq restart with 10000;
 
-create table word_od_recommendation (
+create table word_os_recommendation (
   id bigserial primary key,
   word_id bigint references word(id) on delete cascade not null,
   value text not null, 
@@ -669,9 +669,9 @@ create table word_od_recommendation (
   modified_on timestamp null,
   unique(word_id)
 );
-alter sequence word_od_recommendation_id_seq restart with 10000;
+alter sequence word_os_recommendation_id_seq restart with 10000;
 
-create table word_od_usage (
+create table word_os_usage (
   id bigserial primary key,
   word_id bigint references word(id) on delete cascade not null,
   value text not null, 
@@ -683,9 +683,9 @@ create table word_od_usage (
   modified_on timestamp null,
   order_by bigserial
 );
-alter sequence word_od_usage_id_seq restart with 10000;
+alter sequence word_os_usage_id_seq restart with 10000;
 
-create table word_od_morph (
+create table word_os_morph (
   id bigserial primary key,
   word_id bigint references word(id) on delete cascade not null,
   value text not null, 
@@ -697,7 +697,7 @@ create table word_od_morph (
   modified_on timestamp null,
   unique(word_id)
 );
-alter sequence word_od_morph_id_seq restart with 10000;
+alter sequence word_os_morph_id_seq restart with 10000;
 
 -- keelendi vabavorm
 create table word_freeform (

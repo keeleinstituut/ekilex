@@ -425,7 +425,7 @@ public class LexemeConversionUtil extends AbstractConversionUtil {
 					synMeaningRel.setMwLexemeGovernmentValues(new ArrayList<>());
 					synMeaningRel.setWwUnif(meaningRelation.isWwUnif());
 					synMeaningRel.setWwLite(meaningRelation.isWwLite());
-					synMeaningRel.setWwOd(meaningRelation.isWwOd());
+					synMeaningRel.setWwOs(meaningRelation.isWwOs());
 					synMeaningRelsMap.put(wordValue, synMeaningRel);
 				}
 
@@ -505,7 +505,7 @@ public class LexemeConversionUtil extends AbstractConversionUtil {
 				destinLangNearSyn.setMwLexemeGovernmentValues(destinLangNearSynMeaningRel.getLexGovernmentValues());
 				destinLangNearSyn.setWwUnif(destinLangNearSynMeaningRel.isWwUnif());
 				destinLangNearSyn.setWwLite(destinLangNearSynMeaningRel.isWwLite());
-				destinLangNearSyn.setWwOd(destinLangNearSynMeaningRel.isWwOd());
+				destinLangNearSyn.setWwOs(destinLangNearSynMeaningRel.isWwOs());
 				setWordTypeFlags(destinLangNearSyn);
 				destinLangNearSyn.setMwLexemeValueStateCode(destinLangNearSynMeaningRel.getLexValueStateCode());
 

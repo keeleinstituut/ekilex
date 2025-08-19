@@ -38,9 +38,9 @@ import static eki.ekilex.data.db.main.Tables.WORD_FORUM;
 import static eki.ekilex.data.db.main.Tables.WORD_FREEFORM;
 import static eki.ekilex.data.db.main.Tables.WORD_GROUP;
 import static eki.ekilex.data.db.main.Tables.WORD_GROUP_MEMBER;
-import static eki.ekilex.data.db.main.Tables.WORD_OD_MORPH;
-import static eki.ekilex.data.db.main.Tables.WORD_OD_RECOMMENDATION;
-import static eki.ekilex.data.db.main.Tables.WORD_OD_USAGE;
+import static eki.ekilex.data.db.main.Tables.WORD_OS_MORPH;
+import static eki.ekilex.data.db.main.Tables.WORD_OS_RECOMMENDATION;
+import static eki.ekilex.data.db.main.Tables.WORD_OS_USAGE;
 import static eki.ekilex.data.db.main.Tables.WORD_RELATION;
 import static eki.ekilex.data.db.main.Tables.WORD_RELATION_PARAM;
 import static eki.ekilex.data.db.main.Tables.WORD_TAG;
@@ -313,11 +313,11 @@ public class CudDbService extends AbstractDataDbService {
 				.execute();
 	}
 
-	public void updateWordOdUsageOrderby(ListData item) {
+	public void updateWordOsUsageOrderby(ListData item) {
 		mainDb
-				.update(WORD_OD_USAGE)
-				.set(WORD_OD_USAGE.ORDER_BY, item.getOrderby())
-				.where(WORD_OD_USAGE.ID.eq(item.getId()))
+				.update(WORD_OS_USAGE)
+				.set(WORD_OS_USAGE.ORDER_BY, item.getOrderby())
+				.where(WORD_OS_USAGE.ID.eq(item.getId()))
 				.execute();
 	}
 
@@ -643,41 +643,41 @@ public class CudDbService extends AbstractDataDbService {
 				.execute();
 	}
 
-	public void updateWordOdMorph(eki.ekilex.data.WordOdMorph wordOdMorph) {
+	public void updateWordOsMorph(eki.ekilex.data.WordOsMorph wordOsMorph) {
 		mainDb
-				.update(WORD_OD_MORPH)
-				.set(WORD_OD_MORPH.VALUE, wordOdMorph.getValue())
-				.set(WORD_OD_MORPH.VALUE_PRESE, wordOdMorph.getValuePrese())
-				.set(WORD_OD_MORPH.IS_PUBLIC, wordOdMorph.isPublic())
-				.set(WORD_OD_MORPH.MODIFIED_BY, wordOdMorph.getModifiedBy())
-				.set(WORD_OD_MORPH.MODIFIED_ON, wordOdMorph.getModifiedOn())
-				.where(WORD_OD_MORPH.ID.eq(wordOdMorph.getId()))
+				.update(WORD_OS_MORPH)
+				.set(WORD_OS_MORPH.VALUE, wordOsMorph.getValue())
+				.set(WORD_OS_MORPH.VALUE_PRESE, wordOsMorph.getValuePrese())
+				.set(WORD_OS_MORPH.IS_PUBLIC, wordOsMorph.isPublic())
+				.set(WORD_OS_MORPH.MODIFIED_BY, wordOsMorph.getModifiedBy())
+				.set(WORD_OS_MORPH.MODIFIED_ON, wordOsMorph.getModifiedOn())
+				.where(WORD_OS_MORPH.ID.eq(wordOsMorph.getId()))
 				.execute();
 	}
 
-	public void updateWordOdRecommendation(eki.ekilex.data.WordOdRecommendation wordOdRecommendation) {
+	public void updateWordOsRecommendation(eki.ekilex.data.WordOsRecommendation wordOsRecommendation) {
 		mainDb
-				.update(WORD_OD_RECOMMENDATION)
-				.set(WORD_OD_RECOMMENDATION.VALUE, wordOdRecommendation.getValue())
-				.set(WORD_OD_RECOMMENDATION.VALUE_PRESE, wordOdRecommendation.getValuePrese())
-				.set(WORD_OD_RECOMMENDATION.OPT_VALUE, wordOdRecommendation.getOptValue())
-				.set(WORD_OD_RECOMMENDATION.OPT_VALUE_PRESE, wordOdRecommendation.getOptValuePrese())
-				.set(WORD_OD_RECOMMENDATION.IS_PUBLIC, wordOdRecommendation.isPublic())
-				.set(WORD_OD_RECOMMENDATION.MODIFIED_BY, wordOdRecommendation.getModifiedBy())
-				.set(WORD_OD_RECOMMENDATION.MODIFIED_ON, wordOdRecommendation.getModifiedOn())
-				.where(WORD_OD_RECOMMENDATION.ID.eq(wordOdRecommendation.getId()))
+				.update(WORD_OS_RECOMMENDATION)
+				.set(WORD_OS_RECOMMENDATION.VALUE, wordOsRecommendation.getValue())
+				.set(WORD_OS_RECOMMENDATION.VALUE_PRESE, wordOsRecommendation.getValuePrese())
+				.set(WORD_OS_RECOMMENDATION.OPT_VALUE, wordOsRecommendation.getOptValue())
+				.set(WORD_OS_RECOMMENDATION.OPT_VALUE_PRESE, wordOsRecommendation.getOptValuePrese())
+				.set(WORD_OS_RECOMMENDATION.IS_PUBLIC, wordOsRecommendation.isPublic())
+				.set(WORD_OS_RECOMMENDATION.MODIFIED_BY, wordOsRecommendation.getModifiedBy())
+				.set(WORD_OS_RECOMMENDATION.MODIFIED_ON, wordOsRecommendation.getModifiedOn())
+				.where(WORD_OS_RECOMMENDATION.ID.eq(wordOsRecommendation.getId()))
 				.execute();
 	}
 
-	public void updateWordOdUsage(eki.ekilex.data.WordOdUsage wordOdUsage) {
+	public void updateWordOsUsage(eki.ekilex.data.WordOsUsage wordOsUsage) {
 		mainDb
-				.update(WORD_OD_USAGE)
-				.set(WORD_OD_USAGE.VALUE, wordOdUsage.getValue())
-				.set(WORD_OD_USAGE.VALUE_PRESE, wordOdUsage.getValuePrese())
-				.set(WORD_OD_USAGE.IS_PUBLIC, wordOdUsage.isPublic())
-				.set(WORD_OD_USAGE.MODIFIED_BY, wordOdUsage.getModifiedBy())
-				.set(WORD_OD_USAGE.MODIFIED_ON, wordOdUsage.getModifiedOn())
-				.where(WORD_OD_USAGE.ID.eq(wordOdUsage.getId()))
+				.update(WORD_OS_USAGE)
+				.set(WORD_OS_USAGE.VALUE, wordOsUsage.getValue())
+				.set(WORD_OS_USAGE.VALUE_PRESE, wordOsUsage.getValuePrese())
+				.set(WORD_OS_USAGE.IS_PUBLIC, wordOsUsage.isPublic())
+				.set(WORD_OS_USAGE.MODIFIED_BY, wordOsUsage.getModifiedBy())
+				.set(WORD_OS_USAGE.MODIFIED_ON, wordOsUsage.getModifiedOn())
+				.where(WORD_OS_USAGE.ID.eq(wordOsUsage.getId()))
 				.execute();
 	}
 
@@ -1061,87 +1061,87 @@ public class CudDbService extends AbstractDataDbService {
 		wordForumRecord.store();
 	}
 
-	public Long createWordOdRecommendation(Long wordId, eki.ekilex.data.WordOdRecommendation wordOdRecommendation) {
+	public Long createWordOsRecommendation(Long wordId, eki.ekilex.data.WordOsRecommendation wordOsRecommendation) {
 
 		return mainDb
 				.insertInto(
-						WORD_OD_RECOMMENDATION,
-						WORD_OD_RECOMMENDATION.WORD_ID,
-						WORD_OD_RECOMMENDATION.VALUE,
-						WORD_OD_RECOMMENDATION.VALUE_PRESE,
-						WORD_OD_RECOMMENDATION.OPT_VALUE,
-						WORD_OD_RECOMMENDATION.OPT_VALUE_PRESE,
-						WORD_OD_RECOMMENDATION.IS_PUBLIC,
-						WORD_OD_RECOMMENDATION.CREATED_BY,
-						WORD_OD_RECOMMENDATION.CREATED_ON,
-						WORD_OD_RECOMMENDATION.MODIFIED_BY,
-						WORD_OD_RECOMMENDATION.MODIFIED_ON)
+						WORD_OS_RECOMMENDATION,
+						WORD_OS_RECOMMENDATION.WORD_ID,
+						WORD_OS_RECOMMENDATION.VALUE,
+						WORD_OS_RECOMMENDATION.VALUE_PRESE,
+						WORD_OS_RECOMMENDATION.OPT_VALUE,
+						WORD_OS_RECOMMENDATION.OPT_VALUE_PRESE,
+						WORD_OS_RECOMMENDATION.IS_PUBLIC,
+						WORD_OS_RECOMMENDATION.CREATED_BY,
+						WORD_OS_RECOMMENDATION.CREATED_ON,
+						WORD_OS_RECOMMENDATION.MODIFIED_BY,
+						WORD_OS_RECOMMENDATION.MODIFIED_ON)
 				.values(
 						wordId,
-						wordOdRecommendation.getValue(),
-						wordOdRecommendation.getValuePrese(),
-						wordOdRecommendation.getOptValue(),
-						wordOdRecommendation.getOptValuePrese(),
-						wordOdRecommendation.isPublic(),
-						wordOdRecommendation.getCreatedBy(),
-						wordOdRecommendation.getCreatedOn(),
-						wordOdRecommendation.getModifiedBy(),
-						wordOdRecommendation.getModifiedOn())
-				.returning(WORD_OD_RECOMMENDATION.ID)
+						wordOsRecommendation.getValue(),
+						wordOsRecommendation.getValuePrese(),
+						wordOsRecommendation.getOptValue(),
+						wordOsRecommendation.getOptValuePrese(),
+						wordOsRecommendation.isPublic(),
+						wordOsRecommendation.getCreatedBy(),
+						wordOsRecommendation.getCreatedOn(),
+						wordOsRecommendation.getModifiedBy(),
+						wordOsRecommendation.getModifiedOn())
+				.returning(WORD_OS_RECOMMENDATION.ID)
 				.fetchOne()
 				.getId();
 	}
 
-	public Long createWordOdUsage(Long wordId, eki.ekilex.data.WordOdUsage wordOdUsage) {
+	public Long createWordOsUsage(Long wordId, eki.ekilex.data.WordOsUsage wordOsUsage) {
 
 		return mainDb
 				.insertInto(
-						WORD_OD_USAGE,
-						WORD_OD_USAGE.WORD_ID,
-						WORD_OD_USAGE.VALUE,
-						WORD_OD_USAGE.VALUE_PRESE,
-						WORD_OD_USAGE.IS_PUBLIC,
-						WORD_OD_USAGE.CREATED_BY,
-						WORD_OD_USAGE.CREATED_ON,
-						WORD_OD_USAGE.MODIFIED_BY,
-						WORD_OD_USAGE.MODIFIED_ON)
+						WORD_OS_USAGE,
+						WORD_OS_USAGE.WORD_ID,
+						WORD_OS_USAGE.VALUE,
+						WORD_OS_USAGE.VALUE_PRESE,
+						WORD_OS_USAGE.IS_PUBLIC,
+						WORD_OS_USAGE.CREATED_BY,
+						WORD_OS_USAGE.CREATED_ON,
+						WORD_OS_USAGE.MODIFIED_BY,
+						WORD_OS_USAGE.MODIFIED_ON)
 				.values(
 						wordId,
-						wordOdUsage.getValue(),
-						wordOdUsage.getValuePrese(),
-						wordOdUsage.isPublic(),
-						wordOdUsage.getCreatedBy(),
-						wordOdUsage.getCreatedOn(),
-						wordOdUsage.getModifiedBy(),
-						wordOdUsage.getModifiedOn())
-				.returning(WORD_OD_USAGE.ID)
+						wordOsUsage.getValue(),
+						wordOsUsage.getValuePrese(),
+						wordOsUsage.isPublic(),
+						wordOsUsage.getCreatedBy(),
+						wordOsUsage.getCreatedOn(),
+						wordOsUsage.getModifiedBy(),
+						wordOsUsage.getModifiedOn())
+				.returning(WORD_OS_USAGE.ID)
 				.fetchOne()
 				.getId();
 	}
 
-	public Long createWordOdMorph(Long wordId, eki.ekilex.data.WordOdMorph wordOdMorph) {
+	public Long createWordOsMorph(Long wordId, eki.ekilex.data.WordOsMorph wordOsMorph) {
 
 		return mainDb
 				.insertInto(
-						WORD_OD_MORPH,
-						WORD_OD_MORPH.WORD_ID,
-						WORD_OD_MORPH.VALUE,
-						WORD_OD_MORPH.VALUE_PRESE,
-						WORD_OD_MORPH.IS_PUBLIC,
-						WORD_OD_MORPH.CREATED_BY,
-						WORD_OD_MORPH.CREATED_ON,
-						WORD_OD_MORPH.MODIFIED_BY,
-						WORD_OD_MORPH.MODIFIED_ON)
+						WORD_OS_MORPH,
+						WORD_OS_MORPH.WORD_ID,
+						WORD_OS_MORPH.VALUE,
+						WORD_OS_MORPH.VALUE_PRESE,
+						WORD_OS_MORPH.IS_PUBLIC,
+						WORD_OS_MORPH.CREATED_BY,
+						WORD_OS_MORPH.CREATED_ON,
+						WORD_OS_MORPH.MODIFIED_BY,
+						WORD_OS_MORPH.MODIFIED_ON)
 				.values(
 						wordId,
-						wordOdMorph.getValue(),
-						wordOdMorph.getValuePrese(),
-						wordOdMorph.isPublic(),
-						wordOdMorph.getCreatedBy(),
-						wordOdMorph.getCreatedOn(),
-						wordOdMorph.getModifiedBy(),
-						wordOdMorph.getModifiedOn())
-				.returning(WORD_OD_MORPH.ID)
+						wordOsMorph.getValue(),
+						wordOsMorph.getValuePrese(),
+						wordOsMorph.isPublic(),
+						wordOsMorph.getCreatedBy(),
+						wordOsMorph.getCreatedOn(),
+						wordOsMorph.getModifiedBy(),
+						wordOsMorph.getModifiedOn())
+				.returning(WORD_OS_MORPH.ID)
 				.fetchOne()
 				.getId();
 	}
@@ -2018,24 +2018,24 @@ public class CudDbService extends AbstractDataDbService {
 				.execute();
 	}
 
-	public void deleteWordOdRecommendation(Long wordOdRecommendationId) {
+	public void deleteWordOsRecommendation(Long wordOsRecommendationId) {
 		mainDb
-				.delete(WORD_OD_RECOMMENDATION)
-				.where(WORD_OD_RECOMMENDATION.ID.eq(wordOdRecommendationId))
+				.delete(WORD_OS_RECOMMENDATION)
+				.where(WORD_OS_RECOMMENDATION.ID.eq(wordOsRecommendationId))
 				.execute();
 	}
 
-	public void deleteWordOdUsage(Long wordOdUsageId) {
+	public void deleteWordOsUsage(Long wordOsUsageId) {
 		mainDb
-				.delete(WORD_OD_USAGE)
-				.where(WORD_OD_USAGE.ID.eq(wordOdUsageId))
+				.delete(WORD_OS_USAGE)
+				.where(WORD_OS_USAGE.ID.eq(wordOsUsageId))
 				.execute();
 	}
 
-	public void deleteWordOdMorph(Long wordOdMorphId) {
+	public void deleteWordOsMorph(Long wordOsMorphId) {
 		mainDb
-				.delete(WORD_OD_MORPH)
-				.where(WORD_OD_MORPH.ID.eq(wordOdMorphId))
+				.delete(WORD_OS_MORPH)
+				.where(WORD_OS_MORPH.ID.eq(wordOsMorphId))
 				.execute();
 	}
 

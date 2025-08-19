@@ -86,7 +86,7 @@
   <!-- menu -->
   <th:block th:fragment="header">
     <th:block th:replace="common-app :: update-msg"></th:block>
-    <div class="header" th:classappend="|${withSearch == false ? 'header--simple' : ''} ${odPage == true ? 'header--od' : ''}|">
+    <div class="header" th:classappend="|${withSearch == false ? 'header--simple' : ''} ${osPage == true ? 'header--od' : ''}|">
       <div class="header__content">
         <th:block th:if="${logoTemplate}">
           <th:block th:replace="${logoTemplate}"></th:block>

@@ -141,7 +141,7 @@ public enum SearchEntity {
 			SearchKey.TAG_NAME,
 			SearchKey.CREATED_OR_UPDATED_BY,
 			SearchKey.CREATED_OR_UPDATED_ON),
-	OD_RECOMMENDATION(
+	OS_RECOMMENDATION(
 			SearchKey.VALUE_AND_EXISTS,
 			SearchKey.UPDATED_ON),
 	CLUELESS(
@@ -171,11 +171,11 @@ public enum SearchEntity {
 	}
 
 	public static List<SearchEntity> getLexEntities() {
-		return asList(HEADWORD, WORD, TAG, FORM, MEANING, DEFINITION, USAGE, NOTE, OD_RECOMMENDATION, CLUELESS);
+		return asList(HEADWORD, WORD, TAG, FORM, MEANING, DEFINITION, USAGE, NOTE, OS_RECOMMENDATION, CLUELESS);
 	}
 
 	public static List<SearchEntity> getTermEntities() {
-		return asList(TERM, CONCEPT, TAG, DEFINITION, USAGE, NOTE, OD_RECOMMENDATION, CLUELESS);
+		return asList(TERM, CONCEPT, TAG, DEFINITION, USAGE, NOTE, OS_RECOMMENDATION, CLUELESS);
 	}
 
 	public static List<SearchEntity> getSourceEntities() {

@@ -57,9 +57,9 @@ public class TypeLangDatasetPublishing extends UDTImpl<TypeLangDatasetPublishing
     public static final UDTField<TypeLangDatasetPublishingRecord, Boolean> IS_WW_LITE = createField(DSL.name("is_ww_lite"), SQLDataType.BOOLEAN, TYPE_LANG_DATASET_PUBLISHING, "");
 
     /**
-     * The attribute <code>public.type_lang_dataset_publishing.is_ww_od</code>.
+     * The attribute <code>public.type_lang_dataset_publishing.is_ww_os</code>.
      */
-    public static final UDTField<TypeLangDatasetPublishingRecord, Boolean> IS_WW_OD = createField(DSL.name("is_ww_od"), SQLDataType.BOOLEAN, TYPE_LANG_DATASET_PUBLISHING, "");
+    public static final UDTField<TypeLangDatasetPublishingRecord, Boolean> IS_WW_OS = createField(DSL.name("is_ww_os"), SQLDataType.BOOLEAN, TYPE_LANG_DATASET_PUBLISHING, "");
 
     /**
      * No further instances allowed

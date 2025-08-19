@@ -77,16 +77,16 @@ public class TypeLangDatasetPublishingRecord extends UDTRecordImpl<TypeLangDatas
     }
 
     /**
-     * Setter for <code>public.type_lang_dataset_publishing.is_ww_od</code>.
+     * Setter for <code>public.type_lang_dataset_publishing.is_ww_os</code>.
      */
-    public void setIsWwOd(Boolean value) {
+    public void setIsWwOs(Boolean value) {
         set(4, value);
     }
 
     /**
-     * Getter for <code>public.type_lang_dataset_publishing.is_ww_od</code>.
+     * Getter for <code>public.type_lang_dataset_publishing.is_ww_os</code>.
      */
-    public Boolean getIsWwOd() {
+    public Boolean getIsWwOs() {
         return (Boolean) get(4);
     }
 
@@ -126,7 +126,7 @@ public class TypeLangDatasetPublishingRecord extends UDTRecordImpl<TypeLangDatas
 
     @Override
     public Field<Boolean> field5() {
-        return TypeLangDatasetPublishing.IS_WW_OD;
+        return TypeLangDatasetPublishing.IS_WW_OS;
     }
 
     @Override
@@ -151,7 +151,7 @@ public class TypeLangDatasetPublishingRecord extends UDTRecordImpl<TypeLangDatas
 
     @Override
     public Boolean component5() {
-        return getIsWwOd();
+        return getIsWwOs();
     }
 
     @Override
@@ -176,7 +176,7 @@ public class TypeLangDatasetPublishingRecord extends UDTRecordImpl<TypeLangDatas
 
     @Override
     public Boolean value5() {
-        return getIsWwOd();
+        return getIsWwOs();
     }
 
     @Override
@@ -205,7 +205,7 @@ public class TypeLangDatasetPublishingRecord extends UDTRecordImpl<TypeLangDatas
 
     @Override
     public TypeLangDatasetPublishingRecord value5(Boolean value) {
-        setIsWwOd(value);
+        setIsWwOs(value);
         return this;
     }
 
@@ -233,13 +233,13 @@ public class TypeLangDatasetPublishingRecord extends UDTRecordImpl<TypeLangDatas
     /**
      * Create a detached, initialised TypeLangDatasetPublishingRecord
      */
-    public TypeLangDatasetPublishingRecord(String lang, String datasetCode, Boolean isWwUnif, Boolean isWwLite, Boolean isWwOd) {
+    public TypeLangDatasetPublishingRecord(String lang, String datasetCode, Boolean isWwUnif, Boolean isWwLite, Boolean isWwOs) {
         super(TypeLangDatasetPublishing.TYPE_LANG_DATASET_PUBLISHING);
 
         setLang(lang);
         setDatasetCode(datasetCode);
         setIsWwUnif(isWwUnif);
         setIsWwLite(isWwLite);
-        setIsWwOd(isWwOd);
+        setIsWwOs(isWwOs);
     }
 }

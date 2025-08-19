@@ -16,16 +16,26 @@ drop view if exists view_ww_similarity_judgement_data;
 drop view if exists view_ww_classifier;
 drop view if exists view_ww_dataset;
 drop view if exists view_ww_news_article;
-drop view if exists view_od_lexeme_meaning;
-drop view if exists view_od_definition_idx;
-drop view if exists view_od_definition;
-drop view if exists view_od_word_relation_idx;
-drop view if exists view_od_word_relation;
-drop view if exists view_od_word_od_recommend;
-drop view if exists view_od_word_od_usage_idx;
-drop view if exists view_od_word_od_usage;
-drop view if exists view_od_word_od_morph;
-drop view if exists view_od_word;
+drop view if exists view_od_lexeme_meaning; -- remove later
+drop view if exists view_od_definition_idx; -- remove later
+drop view if exists view_od_definition; -- remove later
+drop view if exists view_od_word_relation_idx; -- remove later
+drop view if exists view_od_word_relation; -- remove later
+drop view if exists view_od_word_od_recommend; -- remove later
+drop view if exists view_od_word_od_usage_idx; -- remove later
+drop view if exists view_od_word_od_usage; -- remove later
+drop view if exists view_od_word_od_morph; -- remove later
+drop view if exists view_od_word; -- remove later
+drop view if exists view_os_lexeme_meaning;
+drop view if exists view_os_definition_idx;
+drop view if exists view_os_definition;
+drop view if exists view_os_word_relation_idx;
+drop view if exists view_os_word_relation;
+drop view if exists view_os_word_os_recommend;
+drop view if exists view_os_word_os_usage_idx;
+drop view if exists view_os_word_os_usage;
+drop view if exists view_os_word_os_morph;
+drop view if exists view_os_word;
 drop type if exists type_meaning_word; -- remove later
 drop type if exists type_note; -- remove later
 drop type if exists type_value_entity; -- remove later
@@ -127,9 +137,12 @@ drop table if exists word_forum;
 drop table if exists word_freeform;
 drop table if exists word_etymology_relation;
 drop table if exists word_etymology;
-drop table if exists word_od_recommendation;
-drop table if exists word_od_usage;
-drop table if exists word_od_morph;
+drop table if exists word_od_recommendation; -- remove later
+drop table if exists word_od_usage; -- remove later
+drop table if exists word_od_morph; -- remove later
+drop table if exists word_os_recommendation;
+drop table if exists word_os_usage;
+drop table if exists word_os_morph;
 drop table if exists word_tag;
 drop table if exists word_guid;
 drop table if exists word_group_member;

@@ -385,16 +385,16 @@ public class MviewWwLexemeRecord extends TableRecordImpl<MviewWwLexemeRecord> {
     }
 
     /**
-     * Setter for <code>public.mview_ww_lexeme.is_ww_od</code>.
+     * Setter for <code>public.mview_ww_lexeme.is_ww_os</code>.
      */
-    public void setIsWwOd(Boolean value) {
+    public void setIsWwOs(Boolean value) {
         set(26, value);
     }
 
     /**
-     * Getter for <code>public.mview_ww_lexeme.is_ww_od</code>.
+     * Getter for <code>public.mview_ww_lexeme.is_ww_os</code>.
      */
-    public Boolean getIsWwOd() {
+    public Boolean getIsWwOs() {
         return (Boolean) get(26);
     }
 
@@ -412,7 +412,7 @@ public class MviewWwLexemeRecord extends TableRecordImpl<MviewWwLexemeRecord> {
     /**
      * Create a detached, initialised MviewWwLexemeRecord
      */
-    public MviewWwLexemeRecord(Long lexemeId, Long wordId, Long meaningId, String datasetCode, String datasetName, String datasetType, String valueStateCode, String proficiencyLevelCode, Integer reliability, Integer level1, Integer level2, BigDecimal weight, Long lexemeOrderBy, Long datasetOrderBy, String[] registerCodes, String[] posCodes, String[] regionCodes, String[] derivCodes, JSON lexemeNotes, JSON grammars, JSON governments, JSON usages, JSON sourceLinks, JSON meaningWords, Boolean isWwUnif, Boolean isWwLite, Boolean isWwOd) {
+    public MviewWwLexemeRecord(Long lexemeId, Long wordId, Long meaningId, String datasetCode, String datasetName, String datasetType, String valueStateCode, String proficiencyLevelCode, Integer reliability, Integer level1, Integer level2, BigDecimal weight, Long lexemeOrderBy, Long datasetOrderBy, String[] registerCodes, String[] posCodes, String[] regionCodes, String[] derivCodes, JSON lexemeNotes, JSON grammars, JSON governments, JSON usages, JSON sourceLinks, JSON meaningWords, Boolean isWwUnif, Boolean isWwLite, Boolean isWwOs) {
         super(MviewWwLexeme.MVIEW_WW_LEXEME);
 
         setLexemeId(lexemeId);
@@ -441,6 +441,6 @@ public class MviewWwLexemeRecord extends TableRecordImpl<MviewWwLexemeRecord> {
         setMeaningWords(meaningWords);
         setIsWwUnif(isWwUnif);
         setIsWwLite(isWwLite);
-        setIsWwOd(isWwOd);
+        setIsWwOs(isWwOs);
     }
 }

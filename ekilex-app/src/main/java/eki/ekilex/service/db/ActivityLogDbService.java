@@ -42,9 +42,9 @@ import static eki.ekilex.data.db.main.Tables.WORD_ACTIVITY_LOG;
 import static eki.ekilex.data.db.main.Tables.WORD_ETYMOLOGY;
 import static eki.ekilex.data.db.main.Tables.WORD_FREEFORM;
 import static eki.ekilex.data.db.main.Tables.WORD_LAST_ACTIVITY_LOG;
-import static eki.ekilex.data.db.main.Tables.WORD_OD_MORPH;
-import static eki.ekilex.data.db.main.Tables.WORD_OD_RECOMMENDATION;
-import static eki.ekilex.data.db.main.Tables.WORD_OD_USAGE;
+import static eki.ekilex.data.db.main.Tables.WORD_OS_MORPH;
+import static eki.ekilex.data.db.main.Tables.WORD_OS_RECOMMENDATION;
+import static eki.ekilex.data.db.main.Tables.WORD_OS_USAGE;
 import static eki.ekilex.data.db.main.Tables.WORD_RELATION;
 import static eki.ekilex.data.db.main.Tables.WORD_WORD_TYPE;
 
@@ -632,29 +632,29 @@ public class ActivityLogDbService implements GlobalConstant, ActivityFunct {
 				.orElse(null);
 	}
 
-	public Long getWordOdMorphOwnerId(Long entityId) {
+	public Long getWordOsMorphOwnerId(Long entityId) {
 		return mainDb
-				.select(WORD_OD_MORPH.WORD_ID)
-				.from(WORD_OD_MORPH)
-				.where(WORD_OD_MORPH.ID.eq(entityId))
+				.select(WORD_OS_MORPH.WORD_ID)
+				.from(WORD_OS_MORPH)
+				.where(WORD_OS_MORPH.ID.eq(entityId))
 				.fetchOptionalInto(Long.class)
 				.orElse(null);
 	}
 
-	public Long getWordOdRecommendationOwnerId(Long entityId) {
+	public Long getWordOsRecommendationOwnerId(Long entityId) {
 		return mainDb
-				.select(WORD_OD_RECOMMENDATION.WORD_ID)
-				.from(WORD_OD_RECOMMENDATION)
-				.where(WORD_OD_RECOMMENDATION.ID.eq(entityId))
+				.select(WORD_OS_RECOMMENDATION.WORD_ID)
+				.from(WORD_OS_RECOMMENDATION)
+				.where(WORD_OS_RECOMMENDATION.ID.eq(entityId))
 				.fetchOptionalInto(Long.class)
 				.orElse(null);
 	}
 
-	public Long getWordOdUsageOwnerId(Long entityId) {
+	public Long getWordOsUsageOwnerId(Long entityId) {
 		return mainDb
-				.select(WORD_OD_USAGE.WORD_ID)
-				.from(WORD_OD_USAGE)
-				.where(WORD_OD_USAGE.ID.eq(entityId))
+				.select(WORD_OS_USAGE.WORD_ID)
+				.from(WORD_OS_USAGE)
+				.where(WORD_OS_USAGE.ID.eq(entityId))
 				.fetchOptionalInto(Long.class)
 				.orElse(null);
 	}

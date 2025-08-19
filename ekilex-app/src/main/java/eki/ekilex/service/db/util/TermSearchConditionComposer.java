@@ -295,10 +295,10 @@ public class TermSearchConditionComposer implements GlobalConstant, ActivityFunc
 					wherem = wherem.andExists(DSL.select(n1.field("meaning_id")).from(n1).where(n1.field("meaning_id", Long.class).eq(m1.ID)));
 				}
 
-			} else if (SearchEntity.OD_RECOMMENDATION.equals(searchEntity)) {
+			} else if (SearchEntity.OS_RECOMMENDATION.equals(searchEntity)) {
 
-				wherew = searchFilterHelper.applyWordOdRecommendationValueFilters(searchCriteria, w1.ID, wherew);
-				wherew = searchFilterHelper.applyWordOdRecommendationModificationFilters(searchCriteria, w1.ID, wherew);
+				wherew = searchFilterHelper.applyWordOsRecommendationValueFilters(searchCriteria, w1.ID, wherew);
+				wherew = searchFilterHelper.applyWordOsRecommendationModificationFilters(searchCriteria, w1.ID, wherew);
 
 			} else if (SearchEntity.CLUELESS.equals(searchEntity)) {
 

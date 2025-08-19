@@ -66,19 +66,19 @@
 			</properties>
 		</profile>
 		<profile>
-			<id>wodul</id>
+			<id>wosul</id>
 			<properties>
 				<spring.boot.mainclass>eki.ekilex.cli.WordOdUsageLoader</spring.boot.mainclass>
 			</properties>
 		</profile>
 		<profile>
-			<id>wodml</id>
+			<id>wosml</id>
 			<properties>
 				<spring.boot.mainclass>eki.ekilex.cli.WordOdMorphLoader</spring.boot.mainclass>
 			</properties>
 		</profile>
 		<profile>
-			<id>odcwl</id>
+			<id>oscwl</id>
 			<properties>
 				<spring.boot.mainclass>eki.ekilex.cli.OdCompWordLoader</spring.boot.mainclass>
 			</properties>

@@ -30,7 +30,7 @@ public interface SystemConstant {
 
 	String CLASSIF_LABEL_TYPE_WORDWEB = "wordweb";
 
-	String CLASSIF_LABEL_TYPE_OD = "od";
+	String CLASSIF_LABEL_TYPE_OS = "os";
 
 	String CLASSIF_LABEL_TYPE_COMMENT = "comment";
 

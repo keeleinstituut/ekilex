@@ -32,7 +32,7 @@ public class TestEnvInitialiser {
 				"sql/main_create_tables.sql",
 				"sql/main_create_indexes.sql",
 				"sql/main_create_ww_views.sql",
-				"sql/main_create_od_views.sql",
+				"sql/main_create_os_views.sql",
 				"sql/main_create_functions.sql",
 				"sql/arch_create_tables.sql",
 				"sql/arch_create_indexes.sql",

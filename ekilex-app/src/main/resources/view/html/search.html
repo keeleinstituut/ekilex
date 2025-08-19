@@ -473,7 +473,7 @@
                     <option value="false" th:selected="${criteria.searchValue == 'false'}">mitteavalik</option>
                   </select>
                 </div>
-                <div class="value-input-container col-auto flex-grow-1 flex-shrink-1" th:if="${criteria.searchKey.name() == 'OD_RECOMMENDATION'}">
+                <div class="value-input-container col-auto flex-grow-1 flex-shrink-1" th:if="${criteria.searchKey.name() == 'OS_RECOMMENDATION'}">
                   <input type="text" class="form-control"
                          th:value="${criteria.searchValue}"
                          th:name="'criteriaGroups[' + ${critGroupStat.index} + '].searchCriteria[' + ${critStat.index} + '].searchValue'"
@@ -898,7 +898,7 @@
                 <option value="false">mitteavalik</option>
               </select>
             </div>
-            <div name="OD_RECOMMENDATION" class="value-input-container col-auto flex-grow-1 flex-shrink-1">
+            <div name="OS_RECOMMENDATION" class="value-input-container col-auto flex-grow-1 flex-shrink-1">
               <input type="text" class="form-control" autocomplete="off">
             </div>
             <div name="LEXEME_GRAMMAR" class="value-input-container col-auto flex-grow-1 flex-shrink-1">

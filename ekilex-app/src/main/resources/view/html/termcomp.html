@@ -2067,45 +2067,45 @@
       </div>
     </div>
   </div>
-  <div class="border-top px-0 w-100 ekiAccordion__instance" th:fragment="word_od_recommendation">
+  <div class="border-top px-0 w-100 ekiAccordion__instance" th:fragment="word_os_recommendation">
     <div class="ekiAccordion__title">
-      <span class="badge badge-data-exists" th:if="${lexeme.lexemeWord.wordOdRecommendation}">•</span>
-      <span th:text="#{term.word.od.recommendation}">ÕS soovitab</span>
+      <span class="badge badge-data-exists" th:if="${lexeme.lexemeWord.wordOsRecommendation}">•</span>
+      <span th:text="#{term.word.os.recommendation}">ÕS soovitab</span>
       <button type="button" class="ekiAccordion__add"
               th:title="#{common.add.new}"
               data-toggle="modal"
-              th:data-target="${'#addWordOdRecommendationDlg_' + lexeme.lexemeId}"
-              th:unless="${lexeme.lexemeWord.wordOdRecommendation}"
+              th:data-target="${'#addWordOsRecommendationDlg_' + lexeme.lexemeId}"
+              th:unless="${lexeme.lexemeWord.wordOsRecommendation}"
               sec:authorize="#vars.lexeme.lexemeWord.subGrant">
         <i class="fa fa-plus" aria-hidden="true"></i>
       </button>
     </div>
     <div class="ekiAccordion__content overflow-auto">
-      <div th:if="${lexeme.lexemeWord.wordOdRecommendation == null}" th:text="#{common.no.content}">
+      <div th:if="${lexeme.lexemeWord.wordOsRecommendation == null}" th:text="#{common.no.content}">
         Sisu puudub...
       </div>
-      <div th:if="${lexeme.lexemeWord.wordOdRecommendation}">
-        <th:block th:with="wordOdRecommendation=${lexeme.lexemeWord.wordOdRecommendation}">
-          <div th:replace="termdialog :: edit_word_od_recommendation"></div>
+      <div th:if="${lexeme.lexemeWord.wordOsRecommendation}">
+        <th:block th:with="wordOsRecommendation=${lexeme.lexemeWord.wordOsRecommendation}">
+          <div th:replace="termdialog :: edit_word_os_recommendation"></div>
           <div class="col hidden-buttons pr-5">
             <div class="action-buttons-anchor">
               <div>
-                <div th:utext="${wordOdRecommendation.valuePrese}"></div>
-                <div th:utext="${wordOdRecommendation.optValuePrese}"></div>
-                <span class="ctxt" th:text="'[' + ${wordOdRecommendation.modifiedBy} + ']'" th:if="${wordOdRecommendation.modifiedBy != null}"></span>
-                <span class="ctxt" th:text="'(' + ${#temporals.format(wordOdRecommendation.modifiedOn, 'dd.MM.yyyy')} + ')'" th:if="${wordOdRecommendation.modifiedOn != null}"></span>
+                <div th:utext="${wordOsRecommendation.valuePrese}"></div>
+                <div th:utext="${wordOsRecommendation.optValuePrese}"></div>
+                <span class="ctxt" th:text="'[' + ${wordOsRecommendation.modifiedBy} + ']'" th:if="${wordOsRecommendation.modifiedBy != null}"></span>
+                <span class="ctxt" th:text="'(' + ${#temporals.format(wordOsRecommendation.modifiedOn, 'dd.MM.yyyy')} + ')'" th:if="${wordOsRecommendation.modifiedOn != null}"></span>
               </div>
               <div class="action-buttons-2">
                 <button type="button" class="btn badge badge-primary"
                         th:title="#{common.edit}"
                         data-toggle="modal"
-                        th:data-target="${'#editWordOdRecommendationDlg_' + wordOdRecommendation.id}"
+                        th:data-target="${'#editWordOsRecommendationDlg_' + wordOsRecommendation.id}"
                         sec:authorize="#vars.lexeme.lexemeWord.crudGrant">
                   <i class="fa fa-edit" aria-hidden="true"></i>
                 </button>
                 <button type="button" class="btn badge badge-warning"
-                        th:data-id="${wordOdRecommendation.id}"
-                        data-op-code="word_od_recommendation"
+                        th:data-id="${wordOsRecommendation.id}"
+                        data-op-code="word_os_recommendation"
                         data-toggle="delete-confirm"
                         data-placement="right"
                         sec:authorize="#vars.lexeme.lexemeWord.crudGrant">

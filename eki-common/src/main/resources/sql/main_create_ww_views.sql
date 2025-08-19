@@ -37,7 +37,7 @@ create type type_lang_dataset_publishing as (
 	dataset_code varchar(10),
 	is_ww_unif boolean,
 	is_ww_lite boolean,
-	is_ww_od boolean
+	is_ww_os boolean
 );
 
 create type type_domain as (
@@ -282,7 +282,7 @@ from
 					from
 						publishing p 
 					where
-						p.target_name = 'ww_od'
+						p.target_name = 'ww_os'
 						and p.entity_name = 'lexeme'
 						and p.entity_id = l.id
 				))
@@ -343,7 +343,7 @@ select
 	wt.word_type_codes,
 	mw.meaning_words,
 	wd.definitions,
-	wor.word_od_recommendation,
+	wor.word_os_recommendation,
 	wf.freq_value,
 	wf.freq_rank,
 	w.forms_exist,
@@ -473,7 +473,7 @@ from (
 						from
 							publishing p 
 						where
-							p.target_name = 'ww_od'
+							p.target_name = 'ww_os'
 							and p.entity_name = 'lexeme'
 							and p.entity_id = l.id
 					))
@@ -530,7 +530,7 @@ from (
 					'wordTypeCodes', mw.mw_word_type_codes,
 					'wwUnif', mw.is_ww_unif,
 					'wwLite', mw.is_ww_lite,
-					'wwOd', mw.is_ww_od
+					'wwOs', mw.is_ww_os
 				)
 				order by
 					mw.hw_lexeme_level1,
@@ -576,10 +576,10 @@ from (
 					from
 						publishing p 
 					where
-						p.target_name = 'ww_od'
+						p.target_name = 'ww_os'
 						and p.entity_name = 'lexeme'
 						and p.entity_id = l2.id
-				)) is_ww_od,
+				)) is_ww_os,
 				w2.id mw_word_id,
 				w2.value mw_value,
 				w2.value_prese mw_value_prese,
@@ -651,7 +651,7 @@ from (
 					'lang', wd.lang,
 					'wwUnif', wd.is_ww_unif,
 					'wwLite', wd.is_ww_lite,
-					'wwOd', wd.is_ww_od
+					'wwOs', wd.is_ww_os
 				)
 				order by
 					wd.ds_order_by,
@@ -706,10 +706,10 @@ from (
 					from
 						publishing p 
 					where
-						p.target_name = 'ww_od'
+						p.target_name = 'ww_os'
 						and p.entity_name = 'definition'
 						and p.entity_id = d.id
-				)) is_ww_od,
+				)) is_ww_os,
 				d.order_by def_order_by,
 				ds.order_by ds_order_by
 			from
@@ -766,9 +766,9 @@ from (
 				'createdOn', wor.created_on,
 				'modifiedBy', wor.modified_by,
 				'modifiedOn', wor.modified_on
-			) word_od_recommendation
+			) word_os_recommendation
 		from 
-			word_od_recommendation wor
+			word_os_recommendation wor
 	) wor on wor.word_id = w.word_id
 	left outer join (
 		select
@@ -996,7 +996,7 @@ from (
 					'lang', md.lang,
 					'wwUnif', md.is_ww_unif,
 					'wwLite', md.is_ww_lite,
-					'wwOd', md.is_ww_od,
+					'wwOs', md.is_ww_os,
 					'notes', (
 						select
 							json_agg(
@@ -1109,10 +1109,10 @@ from (
 					from
 						publishing p 
 					where
-						p.target_name = 'ww_od'
+						p.target_name = 'ww_os'
 						and p.entity_name = 'definition'
 						and p.entity_id = d.id
-				)) is_ww_od
+				)) is_ww_os
 			from
 				definition d
 			where
@@ -1149,7 +1149,7 @@ from (
 					'title', mi.title,
 					'wwUnif', mi.is_ww_unif,
 					'wwLite', mi.is_ww_lite,
-					'wwOd', mi.is_ww_od,
+					'wwOs', mi.is_ww_os,
 					'sourceLinks', (
 						select
 							json_agg(
@@ -1217,10 +1217,10 @@ from (
 					from
 						publishing p 
 					where
-						p.target_name = 'ww_od'
+						p.target_name = 'ww_os'
 						and p.entity_name = 'meaning_image'
 						and p.entity_id = mi.id
-				)) is_ww_od
+				)) is_ww_os
 			from
 				meaning_image mi
 			where
@@ -1254,7 +1254,7 @@ from (
 					'url', mm.url,
 					'wwUnif', mm.is_ww_unif,
 					'wwLite', mm.is_ww_lite,
-					'wwOd', mm.is_ww_od
+					'wwOs', mm.is_ww_os
 				)
 				order by
 					mm.order_by
@@ -1299,10 +1299,10 @@ from (
 					from
 						publishing p 
 					where
-						p.target_name = 'ww_od'
+						p.target_name = 'ww_os'
 						and p.entity_name = 'meaning_media'
 						and p.entity_id = mm.id
-				)) is_ww_od
+				)) is_ww_os
 			from
 				meaning_media mm
 			where
@@ -1358,7 +1358,7 @@ from (
 					'orderBy', mn.order_by,
 					'wwUnif', mn.is_ww_unif,
 					'wwLite', mn.is_ww_lite,
-					'wwOd', mn.is_ww_od,
+					'wwOs', mn.is_ww_os,
 					'sourceLinks', (
 						select
 							json_agg(
@@ -1430,10 +1430,10 @@ from (
 					from
 						publishing p 
 					where
-						p.target_name = 'ww_od'
+						p.target_name = 'ww_os'
 						and p.entity_name = 'meaning_note'
 						and p.entity_id = mn.id
-				)) is_ww_od
+				)) is_ww_os
 			from
 				meaning_note mn 
 			where
@@ -1490,7 +1490,7 @@ select
 	l_mea.meaning_words,
 	l.is_ww_unif,
 	l.is_ww_lite,
-	l.is_ww_od
+	l.is_ww_os
 from 
 	(
 	select
@@ -1532,10 +1532,10 @@ from
 			from
 				publishing p 
 			where
-				p.target_name = 'ww_od'
+				p.target_name = 'ww_os'
 				and p.entity_name = 'lexeme'
 				and p.entity_id = l.id
-		)) is_ww_od,
+		)) is_ww_os,
 		ds.type dataset_type,
 		ds.name dataset_name,
 		ds.order_by dataset_order_by
@@ -1606,7 +1606,7 @@ from
 					'orderBy', ln.order_by,
 					'wwUnif', ln.is_ww_unif,
 					'wwLite', ln.is_ww_lite,
-					'wwOd', ln.is_ww_od,
+					'wwOs', ln.is_ww_os,
 					'sourceLinks', (
 						select
 							json_agg(
@@ -1678,10 +1678,10 @@ from
 					from
 						publishing p 
 					where
-						p.target_name = 'ww_od'
+						p.target_name = 'ww_os'
 						and p.entity_name = 'lexeme_note'
 						and p.entity_id = ln.id
-				)) is_ww_od
+				)) is_ww_os
 			from
 				lexeme_note ln 
 			where
@@ -1723,7 +1723,7 @@ from
 					'orderBy', lg.order_by,
 					'wwUnif', lg.is_ww_unif,
 					'wwLite', lg.is_ww_lite,
-					'wwOd', lg.is_ww_od
+					'wwOs', lg.is_ww_os
 				)
 				order by lg.order_by
 			) grammars
@@ -1773,10 +1773,10 @@ from
 					from
 						publishing p 
 					where
-						p.target_name = 'ww_od'
+						p.target_name = 'ww_os'
 						and p.entity_name = 'grammar'
 						and p.entity_id = g.id
-				)) is_ww_od
+				)) is_ww_os
 			from
 				grammar g
 			where
@@ -1814,7 +1814,7 @@ from
 					'orderBy', lg.order_by,
 					'wwUnif', lg.is_ww_unif,
 					'wwLite', lg.is_ww_lite,
-					'wwOd', lg.is_ww_od
+					'wwOs', lg.is_ww_os
 				)
 			order by lg.order_by) governments
 		from  (
@@ -1861,10 +1861,10 @@ from
 					from
 						publishing p 
 					where
-						p.target_name = 'ww_od'
+						p.target_name = 'ww_os'
 						and p.entity_name = 'government'
 						and p.entity_id = g.id
-				)) is_ww_od
+				)) is_ww_os
 			from
 				government g
 			where
@@ -1909,7 +1909,7 @@ from
 					'wordTypeCodes', mw.mw_word_type_codes,
 					'wwUnif', mw.is_ww_unif,
 					'wwLite', mw.is_ww_lite,
-					'wwOd', mw.is_ww_od
+					'wwOs', mw.is_ww_os
 				)
 				order by
 					mw.hw_lexeme_reliability,
@@ -1943,7 +1943,7 @@ from
 							'orderBy', g.order_by,
 							'wwUnif', g.is_ww_unif,
 							'wwLite', g.is_ww_lite,
-							'wwOd', g.is_ww_od
+							'wwOs', g.is_ww_os
 						)
 						order by g.order_by
 					)
@@ -1991,10 +1991,10 @@ from
 							from
 								publishing p 
 							where
-								p.target_name = 'ww_od'
+								p.target_name = 'ww_os'
 								and p.entity_name = 'government'
 								and p.entity_id = g.id
-						)) is_ww_od
+						)) is_ww_os
 					from
 						government g
 					where
@@ -2054,10 +2054,10 @@ from
 					from
 						publishing p 
 					where
-						p.target_name = 'ww_od'
+						p.target_name = 'ww_os'
 						and p.entity_name = 'lexeme'
 						and p.entity_id = l2.id
-				)) is_ww_od,
+				)) is_ww_os,
 				w2.id mw_word_id,
 				w2.value mw_value,
 				w2.value_prese mw_value_prese,
@@ -2130,7 +2130,7 @@ from
 					'orderBy', lu.order_by,
 					'wwUnif', lu.is_ww_unif,
 					'wwLite', lu.is_ww_lite,
-					'wwOd', lu.is_ww_od,
+					'wwOs', lu.is_ww_os,
 					'usageTranslationValues', lu.usage_translation_values,
 					'usageDefinitionValues', lu.usage_definition_values,
 					'sourceLinks', lu.source_links
@@ -2219,10 +2219,10 @@ from
 					from
 						publishing p 
 					where
-						p.target_name = 'ww_od'
+						p.target_name = 'ww_os'
 						and p.entity_name = 'usage'
 						and p.entity_id = u.id
-				)) is_ww_od
+				)) is_ww_os
 			from
 				"usage" u
 			where
@@ -2308,7 +2308,7 @@ select
 																'orderBy', u.order_by,
 																'wwUnif', u.is_ww_unif,
 																'wwLite', u.is_ww_lite,
-																'wwOd', u.is_ww_od
+																'wwOs', u.is_ww_os
 															)
 															order by u.order_by
 														)
@@ -2353,10 +2353,10 @@ select
 																from
 																	publishing p 
 																where
-																	p.target_name = 'ww_od'
+																	p.target_name = 'ww_os'
 																	and p.entity_name = 'usage'
 																	and p.entity_id = u.id
-															)) is_ww_od
+															)) is_ww_os
 														from
 															"usage" u 
 														where
@@ -2431,13 +2431,13 @@ select
 														and p.entity_name = 'lexeme'
 														and p.entity_id = cl.id)
 												),
-												'wwOd', (exists (
+												'wwOs', (exists (
 													select
 														p.id
 													from
 														publishing p 
 													where
-														p.target_name = 'ww_od'
+														p.target_name = 'ww_os'
 														and p.entity_name = 'lexeme'
 														and p.entity_id = cl.id)
 												)
@@ -2712,7 +2712,7 @@ from
 					'wordTypeCodes', wr.related_word_type_codes,
 					'wwUnif', wr.is_ww_unif,
 					'wwLite', wr.is_ww_lite,
-					'wwOd', wr.is_ww_od
+					'wwOs', wr.is_ww_os
 				)
 				order by wr.word_rel_order_by
 			) related_words
@@ -2795,10 +2795,10 @@ from
 					from
 						publishing p 
 					where
-						p.target_name = 'ww_od'
+						p.target_name = 'ww_os'
 						and p.entity_name = 'word_relation'
 						and p.entity_id = wr.id
-				)) is_ww_od
+				)) is_ww_os
 			from
 				word w1,
 				word_relation wr,
@@ -2881,7 +2881,7 @@ from
 					'wordTypeCodes', wg.group_member_word_type_codes,
 					'wwUnif', wg.is_ww_unif,
 					'wwLite', wg.is_ww_lite,
-					'wwOd', wg.is_ww_od
+					'wwOs', wg.is_ww_os
 				)
 				order by 
 					wg.word_group_id, 
@@ -2980,10 +2980,10 @@ from
 						publishing p 
 					where
 						l.word_id = w2.id
-						and p.target_name = 'ww_od'
+						and p.target_name = 'ww_os'
 						and p.entity_name = 'lexeme'
 						and p.entity_id = l.id
-				)) is_ww_od
+				)) is_ww_os
 			from
 				word w1,
 				word w2,
@@ -3124,14 +3124,14 @@ select
 						and p.entity_id = l2.id
 				)
 			),
-			'wwOd', (
+			'wwOs', (
 				exists (
 					select
 						p.id
 					from
 						publishing p 
 					where
-						p.target_name = 'ww_od'
+						p.target_name = 'ww_os'
 						and p.entity_name = 'lexeme'
 						and p.entity_id = l2.id
 				)
@@ -3205,7 +3205,7 @@ select
 			'wordTypeCodes', mr.word_type_codes,
 			'wwUnif', mr.is_ww_unif,
 			'wwLite', mr.is_ww_lite,
-			'wwOd', mr.is_ww_od
+			'wwOs', mr.is_ww_os
 		)
 		order by 
 			mr.order_by,
@@ -3287,10 +3287,10 @@ from (
 			from
 				publishing p 
 			where
-				p.target_name = 'ww_od'
+				p.target_name = 'ww_os'
 				and p.entity_name = 'lexeme'
 				and p.entity_id = l2.id
-		)) is_ww_od
+		)) is_ww_os
 	from 
 		meaning_relation mr,
 		meaning m2,

@@ -39,7 +39,7 @@ import static eki.ekilex.data.db.main.Tables.WORD_FREQ;
 import static eki.ekilex.data.db.main.Tables.WORD_GROUP;
 import static eki.ekilex.data.db.main.Tables.WORD_GROUP_MEMBER;
 import static eki.ekilex.data.db.main.Tables.WORD_LAST_ACTIVITY_LOG;
-import static eki.ekilex.data.db.main.Tables.WORD_OD_RECOMMENDATION;
+import static eki.ekilex.data.db.main.Tables.WORD_OS_RECOMMENDATION;
 import static eki.ekilex.data.db.main.Tables.WORD_RELATION;
 import static eki.ekilex.data.db.main.Tables.WORD_TAG;
 import static eki.ekilex.data.db.main.Tables.WORD_WORD_TYPE;
@@ -126,7 +126,7 @@ import eki.ekilex.data.db.main.tables.WordFreq;
 import eki.ekilex.data.db.main.tables.WordGroup;
 import eki.ekilex.data.db.main.tables.WordGroupMember;
 import eki.ekilex.data.db.main.tables.WordLastActivityLog;
-import eki.ekilex.data.db.main.tables.WordOdRecommendation;
+import eki.ekilex.data.db.main.tables.WordOsRecommendation;
 import eki.ekilex.data.db.main.tables.WordRelation;
 import eki.ekilex.data.db.main.tables.WordTag;
 import eki.ekilex.data.db.main.tables.WordWordType;
@@ -629,7 +629,7 @@ public class SearchFilterHelper implements GlobalConstant, ActivityFunct, Freefo
 		return where;
 	}
 
-	public Condition applyWordOdRecommendationValueFilters(List<SearchCriterion> searchCriteria, Field<Long> wordIdField, Condition where) throws Exception {
+	public Condition applyWordOsRecommendationValueFilters(List<SearchCriterion> searchCriteria, Field<Long> wordIdField, Condition where) throws Exception {
 
 		List<SearchCriterion> filteredCriteria = searchCriteria.stream()
 				.filter(c -> c.getSearchKey().equals(SearchKey.VALUE_AND_EXISTS))
@@ -639,7 +639,7 @@ public class SearchFilterHelper implements GlobalConstant, ActivityFunct, Freefo
 			return where;
 		}
 
-		WordOdRecommendation wor = WORD_OD_RECOMMENDATION.as("wor");
+		WordOsRecommendation wor = WORD_OS_RECOMMENDATION.as("wor");
 		Condition where1 = wor.WORD_ID.eq(wordIdField);
 
 		boolean isNotExistsSearch = isNotExistsSearch(SearchKey.VALUE_AND_EXISTS, filteredCriteria);
@@ -659,7 +659,7 @@ public class SearchFilterHelper implements GlobalConstant, ActivityFunct, Freefo
 		return where;
 	}
 
-	public Condition applyWordOdRecommendationModificationFilters(List<SearchCriterion> searchCriteria, Field<Long> wordIdField, Condition where) throws Exception {
+	public Condition applyWordOsRecommendationModificationFilters(List<SearchCriterion> searchCriteria, Field<Long> wordIdField, Condition where) throws Exception {
 
 		List<SearchCriterion> filteredCriteria = searchCriteria.stream()
 				.filter(c -> c.getSearchKey().equals(SearchKey.UPDATED_ON))
@@ -669,7 +669,7 @@ public class SearchFilterHelper implements GlobalConstant, ActivityFunct, Freefo
 			return where;
 		}
 
-		WordOdRecommendation wor = WORD_OD_RECOMMENDATION.as("wor");
+		WordOsRecommendation wor = WORD_OS_RECOMMENDATION.as("wor");
 		Condition where1 = wor.WORD_ID.eq(wordIdField);
 
 		for (SearchCriterion criterion : filteredCriteria) {
