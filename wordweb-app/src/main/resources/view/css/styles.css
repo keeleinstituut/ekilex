@@ -13985,6 +13985,21 @@ body.hidden-scroll {
   font-size: 0.875rem;
   color: var(--color-dark-blue);
 }
+.gallery-image__wrapper {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 16px;
+}
+@media (min-width: 768px) {
+  .gallery-image__wrapper {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+@media (min-width: 992px) {
+  .gallery-image__wrapper {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
 .homonym-item-wrap {
   display: block;
   transition: 0ms !important;

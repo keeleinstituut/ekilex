@@ -457,9 +457,9 @@
                     </span>
                   </button>
                 </div>
-                <div class="mt-3 d-flex flex-wrap row" th:unless="${#lists.isEmpty(lexeme.meaningImages)}">
+                <div class="mt-3 gallery-image__wrapper" th:unless="${#lists.isEmpty(lexeme.meaningImages)}">
                   <th:block th:each="meaningImage : ${lexeme.meaningImages}">
-                    <div class="col-12 col-md-4 mb-3 d-flex flex-column">
+                    <div>
                       <a th:href="${meaningImage.url}" class="gallery-image my-auto">
                         <img class="homonym-image m-0 p-0" th:src="${meaningImage.url}" th:title="${meaningImage.title}">
                         <span class="gallery-image__title" th:utext="${meaningImage.title}"></span>

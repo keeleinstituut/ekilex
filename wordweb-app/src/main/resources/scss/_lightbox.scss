@@ -19,4 +19,17 @@
     font-size: .875rem;
     color: var(--color-dark-blue);
   }
+
+  &__wrapper {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 16px;
+    @include media-breakpoint-up(md) {
+      grid-template-columns: repeat(2, 1fr);
+    }
+
+    @include media-breakpoint-up(lg) {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
 }
