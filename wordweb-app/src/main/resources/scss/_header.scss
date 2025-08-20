@@ -21,11 +21,11 @@
 
   }
 
-  &--od {
+  &--os {
     padding: 16px;
     --main-search-input-height: 48px;
 
-    & .header__od-logo {
+    & .header__os-logo {
       margin-right: auto;
     }
 
@@ -63,7 +63,7 @@
   }
 
   &__logo,
-  &__od-logo {
+  &__os-logo {
     background-repeat: no-repeat;
     background-size: contain;
     background-position: center;
@@ -92,15 +92,15 @@
     }
   }
 
-  &__od-logo {
+  &__os-logo {
     width: 36px;
     height: 36px;
-    background-image: url(../images/od.svg);
+    background-image: url(../images/os.svg);
     
     @include media-breakpoint-up(lg) {
       width: 188px;
       height: 45px;
-      background-image: url(../images/od-full.svg);
+      background-image: url(../images/os-full.svg);
     }
   }
 

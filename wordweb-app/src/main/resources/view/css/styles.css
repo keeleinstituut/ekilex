@@ -15740,26 +15740,26 @@ span.material-symbols-outlined--small {
   text-align: center;
   color: var(--color-dark-blue);
 }
-.od-results {
+.os-results {
   display: flex;
   flex-direction: column;
   gap: 16px;
   font-size: 0.875rem;
 }
-.od-results eki-link,
-.od-results ext-link {
+.os-results eki-link,
+.os-results ext-link {
   color: var(--color-blue-300);
   text-decoration: underline;
   font-weight: 500;
   font-size: 0.875rem;
 }
-.homonym-page--od {
+.homonym-page--os {
   margin: 32px 0;
 }
-.homonym-page--od .content-panel {
+.homonym-page--os .content-panel {
   --content-panel-max-width: 779px;
 }
-.od-tag {
+.os-tag {
   width: auto;
   display: inline-flex;
   justify-content: center;
@@ -15773,7 +15773,7 @@ span.material-symbols-outlined--small {
   font-size: 0.75rem;
   font-weight: 700;
 }
-.od-explanation {
+.os-explanation {
   background-color: var(--color-meri-hylge-hall);
   border: 1px solid var(--color-light-blue);
   padding: 8px;
@@ -15783,7 +15783,7 @@ span.material-symbols-outlined--small {
   --icon-size: 20px;
   --icon-variation-settings: "FILL" 1;
 }
-.od-explanation p {
+.os-explanation p {
   margin: 0;
 }
 .header {
@@ -15804,15 +15804,15 @@ span.material-symbols-outlined--small {
 .header--simple .lang-btn {
   margin-left: auto;
 }
-.header--od {
+.header--os {
   padding: 16px;
   --main-search-input-height: 48px;
 }
-.header--od .header__od-logo {
+.header--os .header__os-logo {
   margin-right: auto;
 }
 @media (min-width: 992px) {
-  .header--od {
+  .header--os {
     --header-search-width: 500px;
   }
 }
@@ -15844,7 +15844,7 @@ span.material-symbols-outlined--small {
   }
 }
 .header__logo,
-.header__od-logo {
+.header__os-logo {
   background-repeat: no-repeat;
   background-size: contain;
   background-position: center;
@@ -15871,16 +15871,16 @@ span.material-symbols-outlined--small {
     background-image: url(../images/sonaveeb-logo-light-lg.svg);
   }
 }
-.header__od-logo {
+.header__os-logo {
   width: 36px;
   height: 36px;
-  background-image: url(../images/od.svg);
+  background-image: url(../images/os.svg);
 }
 @media (min-width: 992px) {
-  .header__od-logo {
+  .header__os-logo {
     width: 188px;
     height: 45px;
-    background-image: url(../images/od-full.svg);
+    background-image: url(../images/os-full.svg);
   }
 }
 .header__search {
