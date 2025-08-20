@@ -57,28 +57,28 @@
                               </span>
                             </th:block>
                           </span>
-                          <th:block th:if="${not #lists.isEmpty(definition.notes)}">
-                            <div class="mt-2">
-                              <div class="d-flex">
-                                <span class="word-notes__note text-caption" th:text="#{label.public.note}"></span>
-                              </div>
-                              <ul class="word-notes__list">
-                                <li class="word-notes__note" th:each="note : ${definition.notes}">
-                                  <div class="d-flex">
-                                    <span>
-                                      <span class="text-body-two" th:utext="${note.valuePrese}"></span>
-                                      <span class="definition-sources">
-                                        <th:block th:each="sourceLink,sourceLinkIter : ${note.sourceLinks}">
-                                          <th:block th:replace="common-app :: source-link"></th:block>
-                                        </th:block>
-                                      </span>
-                                    </span>
-                                  </div>
-                                </li>
-                              </ul>
-                            </div>
-                          </th:block>
                         </div>
+                        <th:block th:if="${not #lists.isEmpty(definition.notes)}">
+                          <div class="mt-2">
+                            <div class="d-flex">
+                              <span class="word-notes__note text-caption" th:text="#{label.public.note}"></span>
+                            </div>
+                            <ul class="word-notes__list">
+                              <li class="word-notes__note" th:each="note : ${definition.notes}">
+                                <div class="d-flex">
+                                  <span>
+                                    <span class="text-body-two" th:utext="${note.valuePrese}"></span>
+                                    <span class="definition-sources">
+                                      <th:block th:each="sourceLink,sourceLinkIter : ${note.sourceLinks}">
+                                        <th:block th:replace="common-app :: source-link"></th:block>
+                                      </th:block>
+                                    </span>
+                                  </span>
+                                </div>
+                              </li>
+                            </ul>
+                          </div>
+                        </th:block>
                       </th:block>
                     </li>
                   </ul>
