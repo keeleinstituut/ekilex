@@ -117,7 +117,6 @@ function submitForm(form, failMessage, callback) {
 			if (detailsOpen.length) {
 				Cookies.set('details-open', detailsOpen.parent().attr('id'));
 			}
-			ScrollStore.saveActiveScroll();
 			form
 				.parents('#details-area:first, #meaning-details-area:first, #syn-details-area:first')
 				.find('#refresh-details')
@@ -1205,6 +1204,7 @@ function scrollDetails(div, scrollPosition) {
 }
 
 function loadDetails(wordOrMeaningId, task, lastWordOrMeaningId) {
+	ScrollStore.saveActiveScroll();
 	// Hide all existing loading spinners and show current one
 	$("[id^='select_wait_']").hide();
 	$("#select_wait_" + wordOrMeaningId).show();
@@ -1246,7 +1246,6 @@ function loadDetails(wordOrMeaningId, task, lastWordOrMeaningId) {
 			resultColumn.find('[data-rel="details-area"]').slice(1).remove();
 			detailsDiv.replaceWith(dataObject[0].outerHTML);
 			detailsDiv = $('#details-area');
-			ScrollStore.loadPrevScroll();
 		} else {
 			dataObject.find('[data-hideable="toolsColumn"]').attr('data-hideable', `toolsColumn-${wordOrMeaningId}`);
 			dataObject.find('#toolsColumn').attr('id', `toolsColumn-${wordOrMeaningId}`);
@@ -1315,6 +1314,10 @@ function loadDetails(wordOrMeaningId, task, lastWordOrMeaningId) {
 				closeWaitDlg();
 			}
 		}, 60);
+		// If we're just loading data or updating data, restore scroll
+		if (!task || `${wordOrMeaningId}` === `${lastWordOrMeaningId}`) {
+			ScrollStore.loadPrevScroll();
+		}
 
 	}).fail(function(data) {
 		alert('Keelendi detailide päring ebaõnnestus');
@@ -1402,33 +1405,47 @@ function createCallback(data, optionalArgs) {
  * Class for storing scroll value
  */
 class ScrollStore {
-	prevScrollValue = 0;
-
-	static setPrevScroll(scroll) {
-		this.prevScrollValue = scroll;
+	prevScrollValues = {
+		content: 0,
+		sidebar: 0
 	};
 
-	static getContentScroll() {
-		const detailsArea = $('#syn-details-area');
-		const detailsAreaScrollContainer = detailsArea.find('.overflow-auto').first();
-		const detailsAreaScroll = detailsAreaScrollContainer.scrollTop();
+	static setPrevScroll(scrollValues) {
+		if (!this.prevScrollValues) {
+			this.prevScrollValues = {};
+		}
+		this.prevScrollValues.content = scrollValues.content ?? 0;
+		this.prevScrollValues.sidebar = scrollValues.sidebar ?? 0;
+	};
+
+	static getScrollValues() {
+		const detailsArea = $('#syn-details-area, #details-area');
+		const detailsAreaScrollContentContainer = detailsArea.find('.overflow-auto').first();
+		const detailsAreaScrollSidebarContainer = detailsArea.find('.overflow-auto[id*=toolsColumn]').first();
+		const detailsAreaScroll = detailsAreaScrollContentContainer.scrollTop();
+		const sidebarScroll = detailsAreaScrollSidebarContainer.scrollTop();
 		// Return 0 if scroll value is nullish
-		return detailsAreaScroll ?? 0;
+		return {
+			content: detailsAreaScroll ?? 0,
+			sidebar: sidebarScroll ?? 0
+		}
 	}
 
-	static setContentScroll(scroll) {
-		const detailsArea = $('#syn-details-area');
+	static setContentScroll(scrollValues) {
+		const detailsArea = $('#syn-details-area, #details-area');
 		const detailsAreaScrollContainer = detailsArea.find('.overflow-auto').first();
-		detailsAreaScrollContainer.scrollTop(scroll);
+		const detailsAreaScrollSidebarContainer = detailsArea.find('.overflow-auto[id*=toolsColumn]').first();
+		detailsAreaScrollContainer.scrollTop(scrollValues.content);
+		detailsAreaScrollSidebarContainer.scrollTop(scrollValues.sidebar);
 	}
 
 	static loadPrevScroll() {
-		this.setContentScroll(this.prevScrollValue);
-		this.prevScrollValue = 0;
+		this.setContentScroll(this.prevScrollValues);
+		this.setPrevScroll({});
 	}
 
 	static saveActiveScroll() {
-		this.prevScrollValue = this.getContentScroll();
+		this.setPrevScroll(this.getScrollValues());
 	}
 }
 
