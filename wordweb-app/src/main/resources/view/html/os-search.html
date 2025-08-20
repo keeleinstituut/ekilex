@@ -34,10 +34,10 @@
       <th:block th:if="${searchResult.resultExists}">
         <div class="os-results" th:if="${searchResult.selectedWord != null}" th:with="word = ${searchResult.selectedWord}">
           <div class="d-flex align-items-center flex-wrap">
-            <div class="search__lex-title-wrapper">
+            <div class="os-search__title-wrapper">
               <h1 class="search__lex-title" th:utext="${@decorUtil.getWordValueMarkup(word)}">tee</h1>
+              <strong class="os-search__title-number" th:aria-label="|#{aria.homonym} ${word.homonymNr}|" th:text="${word.homonymNr}" th:unless="${searchResult.singleResult}">1</strong>
             </div>
-            <strong class="mr-2" th:aria-label="|#{aria.homonym} ${word.homonymNr}|" th:text="${word.homonymNr}" th:unless="${searchResult.singleResult}">1</strong>
             <span class="os-tag mr-2" th:if="${word.displayMorph != null}" th:text="${word.displayMorph.value}"></span>
             <th:block th:each="wordType : ${word.wordTypes}" th:if="${not #lists.isEmpty(word.wordTypes)}">
               <span class="lang-code text-caption lang-code--unrestricted mr-2" th:text="${wordType.value}"></span>

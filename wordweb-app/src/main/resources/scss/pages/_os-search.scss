@@ -51,3 +51,22 @@
     margin: 0;
   }
 }
+
+
+.os-search {
+  &__title-wrapper {
+    display: inline-flex;
+    align-items: center;
+    // User's viewport width - side padding
+    max-width: calc(100dvw - 30px);
+    margin-right: 8px;
+    & h1 {
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+  }
+  &__title-number {
+    font-size: .6875rem;
+    align-self: flex-start;
+  }
+}
