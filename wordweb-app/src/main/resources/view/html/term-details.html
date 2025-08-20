@@ -120,7 +120,7 @@
                 <div class="col-12 col-md-4 mb-3 d-flex flex-column">
                   <a th:href="${meaningImage.url}" class="gallery-image my-auto">
                     <img class="homonym-image m-0 p-0" th:src="${meaningImage.url}" th:title="${meaningImage.title}">
-                    <span class="text-muted text-small py-1 d-block" th:utext="${meaningImage.title}"></span>
+                    <span class="gallery-image__title" th:utext="${meaningImage.title}"></span>
                   </a>
                   <th:block th:if="${not #lists.isEmpty(meaningImage.sourceLinks)}">
                     <div th:each="sourceLink : ${meaningImage.sourceLinks}">
