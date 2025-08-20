@@ -843,3 +843,17 @@ span.material-symbols-outlined {
   // Equal z index to header to prevent suggestions staying behind header
   z-index: 1072;
 }
+
+
+.search-alert {
+  text-wrap-style: pretty;
+  font-size: 1rem;
+
+  &--sm {
+    padding: 16px;
+  }
+
+  &--warning {
+    background-color: var(--color-alert-yellow);
+  }
+}
