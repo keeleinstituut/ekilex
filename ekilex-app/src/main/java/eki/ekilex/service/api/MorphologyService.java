@@ -90,6 +90,7 @@ public class MorphologyService implements GlobalConstant {
 		for (Long wordId : wordIds) {
 
 			List<Form> existingWordForms = morphologyDbService.getForms(wordId);
+			List<Form> existingReservedForms = new ArrayList<>();
 			List<Paradigm> providedWordParadigms = providedWordParadigmMap.get(wordId);
 			List<Form> providedWordForms = providedWordParadigms.stream()
 					.map(Paradigm::getParadigmForms)
@@ -129,7 +130,12 @@ public class MorphologyService implements GlobalConstant {
 				if (!formIdMap.containsKey(formUnit)) {
 					boolean isFormInUse = morphologyDbService.isFormInUse(formId);
 					if (isFormInUse) {
-						throw new OperationDeniedException("Can't delete form. Form \"" + formValue + " - " + morphCode + "\" is in use by a collocation");
+						if (StringUtils.equals(morphCode, MORPH_CODE_UNKNOWN)) {
+							existingReservedForms.add(existingWordForm);
+							continue;
+						} else {
+							throw new OperationDeniedException("Can't delete form. Form \"" + formValue + " - " + morphCode + "\" is in use by a collocation");
+						}
 					}
 					morphologyDbService.deleteForm(formId);
 				}
@@ -158,6 +164,20 @@ public class MorphologyService implements GlobalConstant {
 					for (String removeTagName : removeTagNames) {
 						deleteWordTag(wordId, removeTagName, ACTIVITY_LOG_DATASET_CODE_PLACEHOLDER, MANUAL_EVENT_ON_UPDATE_DISABLED);
 					}
+				}
+			}
+
+			if (CollectionUtils.isNotEmpty(existingReservedForms)) {
+
+				Paradigm reservedParadigm = new Paradigm();
+				Long paradigmId = morphologyDbService.createParadigm(wordId, reservedParadigm);
+
+				for (Form reservedForm : existingReservedForms) {
+
+					Long formId = reservedForm.getId();
+					ParadigmForm paradigmForm = new ParadigmForm();
+					paradigmForm.setDisplayLevel(1);
+					morphologyDbService.createParadigmForm(paradigmId, formId, paradigmForm);
 				}
 			}
 		}

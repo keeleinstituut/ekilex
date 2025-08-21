@@ -388,6 +388,7 @@ from (
 			p.word_id = w.id
 			and pf.paradigm_id = p.id
 			and pf.form_id = f.id
+			and f.morph_code != '??'
 		) forms_exist,
 		(select
 			min(ds.order_by)
@@ -897,6 +898,7 @@ from
 				and mff.morph_code = f.morph_code)
 where 
 	w.is_public = true
+	and f.morph_code != '??'
 	and exists (
 		select 
 			l.id

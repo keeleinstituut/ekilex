@@ -680,7 +680,7 @@ public class SearchDbService implements GlobalConstant, SystemConstant {
 
 		MviewWwForm f = MVIEW_WW_FORM.as("f");
 
-		Condition where = f.PARADIGM_ID.eq(paradigmId);
+		Condition where = f.PARADIGM_ID.eq(paradigmId).and(f.MORPH_CODE.ne(MORPH_CODE_UNKNOWN));
 		if (maxDisplayLevel != null) {
 			where = where.and(f.DISPLAY_LEVEL.le(maxDisplayLevel));
 		}
@@ -702,7 +702,7 @@ public class SearchDbService implements GlobalConstant, SystemConstant {
 
 		MviewWwForm f = MVIEW_WW_FORM.as("f");
 
-		Condition where = f.WORD_ID.eq(wordId);
+		Condition where = f.WORD_ID.eq(wordId).and(f.MORPH_CODE.ne(MORPH_CODE_UNKNOWN));
 		if (maxDisplayLevel != null) {
 			where = where.and(f.DISPLAY_LEVEL.le(maxDisplayLevel));
 		}
