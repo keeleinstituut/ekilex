@@ -1449,12 +1449,6 @@ class ScrollStore {
 	}
 }
 
-let scrollStoreInstance;
-if (!scrollStoreInstance) {
-	// Conditionally creating new instance, we only need one.	
-	scrollStoreInstance = new ScrollStore();
-}
-
 $(function() {
 	const successMessage = $('#successMessage');
 	const warningMessage = $('#warningMessage');
