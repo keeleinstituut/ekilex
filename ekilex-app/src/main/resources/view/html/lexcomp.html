@@ -862,7 +862,7 @@
             </div>
             <div class="invisible-buttons action-buttons-anchor">
               <span th:utext="${definition.valuePrese}"></span>
-              <span class="ctxt" th:each="datasetCode,iter : ${definition.datasetCodes}" th:text="${(iter.first ? '[' : '') + datasetCode + (iter.last ? ']' : ', ')}"></span>
+              <span class="ctxt ml-1" th:each="datasetCode,iter : ${definition.datasetCodes}" th:text="${(iter.first ? '[' : '') + datasetCode + (iter.last ? ']' : ', ')}"></span>
               <th:block
               sec:authorize="#vars.lexeme.meaning.crudGrant"
               th:replace="components :: action_dropdown(

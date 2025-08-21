@@ -46,19 +46,10 @@
     gap: 16px;
   }
 
-  &__login {
-    padding: 4px 20px;
-    border: 1px solid var(--color-dark-blue);
-    background-color: var(--color-white);
-    color: var(--color-dark-blue);
-    border-radius: 100px;
-    font-weight: 500;
-    font-size: .875rem;
-
-    &:hover {
-      text-decoration: none;
-      background-color: var(--color-bluish-but-not-exactly-gray);
-    }
+  &__logo {
+    width: 36px;
+    height: 36px;
+    margin-right: 8px;
   }
 }
 

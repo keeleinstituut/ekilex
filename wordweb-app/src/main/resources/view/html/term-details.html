@@ -57,28 +57,28 @@
                               </span>
                             </th:block>
                           </span>
-                          <th:block th:if="${not #lists.isEmpty(definition.notes)}">
-                            <div class="mt-2">
-                              <div class="d-flex">
-                                <span class="word-notes__note text-caption" th:text="#{label.public.note}"></span>
-                              </div>
-                              <ul class="word-notes__list">
-                                <li class="word-notes__note" th:each="note : ${definition.notes}">
-                                  <div class="d-flex">
-                                    <span>
-                                      <span class="text-body-two" th:utext="${note.valuePrese}"></span>
-                                      <span class="definition-sources">
-                                        <th:block th:each="sourceLink,sourceLinkIter : ${note.sourceLinks}">
-                                          <th:block th:replace="common-app :: source-link"></th:block>
-                                        </th:block>
-                                      </span>
-                                    </span>
-                                  </div>
-                                </li>
-                              </ul>
-                            </div>
-                          </th:block>
                         </div>
+                        <th:block th:if="${not #lists.isEmpty(definition.notes)}">
+                          <div class="mt-2">
+                            <div class="d-flex">
+                              <span class="word-notes__note text-caption" th:text="#{label.public.note}"></span>
+                            </div>
+                            <ul class="word-notes__list">
+                              <li class="word-notes__note" th:each="note : ${definition.notes}">
+                                <div class="d-flex">
+                                  <span>
+                                    <span class="text-body-two" th:utext="${note.valuePrese}"></span>
+                                    <span class="definition-sources">
+                                      <th:block th:each="sourceLink,sourceLinkIter : ${note.sourceLinks}">
+                                        <th:block th:replace="common-app :: source-link"></th:block>
+                                      </th:block>
+                                    </span>
+                                  </span>
+                                </div>
+                              </li>
+                            </ul>
+                          </div>
+                        </th:block>
                       </th:block>
                     </li>
                   </ul>
@@ -115,12 +115,12 @@
             </section>
           </th:block>
           <th:block th:if="${not #lists.isEmpty(lexeme.meaningImages)}">
-            <div class="mt-3 d-flex flex-wrap row">
+            <div class="mt-3 gallery-image__wrapper">
               <th:block th:each="meaningImage : ${lexeme.meaningImages}">
-                <div class="col-12 col-md-4 mb-3 d-flex flex-column">
+                <div>
                   <a th:href="${meaningImage.url}" class="gallery-image my-auto">
                     <img class="homonym-image m-0 p-0" th:src="${meaningImage.url}" th:title="${meaningImage.title}">
-                    <span class="text-muted text-small py-1 d-block" th:utext="${meaningImage.title}"></span>
+                    <span class="gallery-image__title" th:utext="${meaningImage.title}"></span>
                   </a>
                   <th:block th:if="${not #lists.isEmpty(meaningImage.sourceLinks)}">
                     <div th:each="sourceLink : ${meaningImage.sourceLinks}">

@@ -590,6 +590,7 @@
   <th:block th:fragment="header">
     <div class="header">
       <div class="header__contents">
+        <img class="header__logo" th:src="@{'/view/img/ekilex.svg'}" alt="" width="36" height="36">
         <div class="header__title-wrapper">
           <a th:href="@{/}" class="header__title">
             Ekilex
@@ -599,10 +600,10 @@
           </span>
         </div>
         <div class="header__actions">
-          <a class="button" th:href="@{/register}" th:text="#{label.home.register}"></a>
-          <a class="header__login" th:href="@{/login}" th:text="#{login.title}">
+          <a class="button" th:href="@{/login}" th:text="#{login.title}">
             Logi sisse
           </a>
+          <a class="button button--secondary" th:href="@{/register}" th:text="#{label.home.register}"></a>
           <th:block th:replace=":: navigation"></th:block>
         </div>
       </div>
@@ -632,7 +633,7 @@
           <span th:utext="#{menu.manual}"></span>
         </a>
         <a class="navigation__link navigation__link--disabled" href="https://sonaveeb.ee" target="_blank">
-          <img class="navigation__image" th:src="@{'/view/img/od.svg'}" alt="">
+          <img class="navigation__image" th:src="@{'/view/img/os.svg'}" alt="">
           <span th:utext="#{menu.grammar.title}"></span>
           <span class="navigation__link-description" th:utext="#{menu.grammar.description}"></span>
         </a>

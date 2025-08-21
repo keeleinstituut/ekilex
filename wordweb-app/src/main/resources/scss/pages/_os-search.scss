@@ -1,4 +1,4 @@
-.od-results {
+.os-results {
   display: flex;
   flex-direction: column;
   gap: 16px;
@@ -14,7 +14,7 @@
 }
 
 
-.homonym-page--od {
+.homonym-page--os {
   margin: 32px 0;
   & .content-panel {
     --content-panel-max-width: 779px;
@@ -22,7 +22,7 @@
 }
 
 
-.od-tag {
+.os-tag {
   width: auto;
   display: inline-flex;
   justify-content: center;
@@ -37,7 +37,7 @@
   font-weight: 700;
 }
 
-.od-explanation {
+.os-explanation {
   background-color: var(--color-meri-hylge-hall);
   border: 1px solid var(--color-light-blue);
   padding: 8px;
@@ -49,5 +49,24 @@
 
   & p {
     margin: 0;
+  }
+}
+
+
+.os-search {
+  &__title-wrapper {
+    display: inline-flex;
+    align-items: center;
+    // User's viewport width - side padding
+    max-width: calc(100dvw - 30px);
+    margin-right: 8px;
+    & h1 {
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+  }
+  &__title-number {
+    font-size: .6875rem;
+    align-self: flex-start;
   }
 }

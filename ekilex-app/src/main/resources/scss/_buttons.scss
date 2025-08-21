@@ -158,10 +158,22 @@
   border-radius: 100px;
   width: max-content;
   transition: 125ms color ease-in-out;
+  border: 1px solid transparent;
 
   &:hover {
     color: var(--color-light-gray);
     text-decoration: none;
+  }
+
+  &--secondary {
+    border-color: var(--color-dark-blue);
+    background-color: var(--color-white);
+    color: var(--color-dark-blue);
+
+    &:hover {
+      color: var(--color-dark-blue);
+      background-color: var(--color-bluish-but-not-exactly-gray);
+    }
   }
 
   &:disabled {

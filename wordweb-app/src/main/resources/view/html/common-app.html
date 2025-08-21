@@ -86,7 +86,7 @@
   <!-- menu -->
   <th:block th:fragment="header">
     <th:block th:replace="common-app :: update-msg"></th:block>
-    <div class="header" th:classappend="|${withSearch == false ? 'header--simple' : ''} ${osPage == true ? 'header--od' : ''}|">
+    <div class="header" th:classappend="|${withSearch == false ? 'header--simple' : ''} ${osPage == true ? 'header--os' : ''}|">
       <div class="header__content">
         <th:block th:if="${logoTemplate}">
           <th:block th:replace="${logoTemplate}"></th:block>
@@ -151,7 +151,7 @@
           <span th:utext="#{menu.manual}"></span>
         </a>
         <a class="navigation__link navigation__link--disabled" th:href="@{/}" target="_blank">
-          <img class="navigation__image" th:src="@{'/view/images/od.svg'}" alt="">
+          <img class="navigation__image" th:src="@{'/view/images/os.svg'}" alt="">
           <span th:utext="#{menu.grammar.title}"></span>
           <span class="navigation__link-description" th:utext="#{menu.grammar.description}"></span>
         </a>

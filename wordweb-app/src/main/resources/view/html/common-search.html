@@ -205,9 +205,8 @@
   </th:block>
   <th:block th:fragment="lex-detail-view">
     <h3 class="search__block-title" th:text="#{label.lex.title}">Tähendused ja näited</h3>
-    <div th:if="${wordData.rusHeadword}" class="alert bg-warning text-black px-3 py-1 d-flex align-items-center update-alert flex-nowrap" role="alert">
-      <i class="fa fa-exclamation-triangle small mr-2 mt-1" aria-hidden="true"></i>
-      <span th:text="#{warning.eki.rus}">See ei ole valmis sõnastik.</span>
+    <div th:if="${wordData.rusHeadword}" class="search-alert search-alert--sm search-alert--warning mb-3" role="alert" th:text="#{warning.eki.rus}">
+      See ei ole valmis sõnastik.
     </div>
     <section th:each="lexeme : ${wordData.lexLexemes}" class="level-3-panel meaning-panel d-flex flex-row text-body-two mb-2">
       <div th:replace="lex-details :: lexeme-data"></div>

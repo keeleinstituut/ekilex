@@ -194,6 +194,7 @@ class PublishingHandler {
 			return;
 		}
 		const url = `${applicationUrl}${endpoint}/${this.replaceOwnerId}`;
+		ScrollStore.saveActiveScroll();
 		$.ajax({
 			url,
 		}).done((res) => {
@@ -206,6 +207,7 @@ class PublishingHandler {
 			if (this.initAccordion) {
 				newContainer.ekiAccordion();
 			}
+			ScrollStore.loadPrevScroll();
 		});
 	}
 
