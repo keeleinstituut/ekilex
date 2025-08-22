@@ -44,7 +44,8 @@ where
 update source s
 set 
 	value = replace(s.value, chr(160), ' '),
-	value_prese = replace(s.value_prese, chr(160), ' ')
+	value_prese = replace(s.value_prese, chr(160), ' '),
+	name = replace(s.name, chr(160), ' ')
 where
 	s.value like '%' || chr(160) || '%'
 ;
@@ -71,6 +72,65 @@ set
 	value_prese = replace(n.value_prese, chr(160), ' ')
 where
 	n.value like '%' || chr(160) || '%'
+;
+
+-- trim
+
+update word w
+set 
+	value = trim(w.value),
+	value_prese = trim(w.value_prese)
+where
+	w.value != trim(w.value)
+;
+
+update definition d
+set 
+	value = trim(d.value),
+	value_prese = trim(d.value_prese)
+where
+	d.value != trim(d.value)
+;
+
+update usage u
+set 
+	value = trim(u.value),
+	value_prese = trim(u.value_prese)
+where
+	u.value != trim(u.value)
+;
+
+update source s
+set 
+	value = trim(s.value),
+	value_prese = trim(s.value_prese),
+	name = trim(s.name)
+where
+	s.value != trim(s.value)
+;
+
+update freeform f
+set 
+	value = trim(f.value),
+	value_prese = trim(f.value_prese)
+where
+	f.value != trim(f.value)
+;
+
+update lexeme_note n
+set 
+	value = trim(n.value),
+	value_prese = trim(n.value_prese)
+where
+	n.value != trim(n.value)
+;
+
+update meaning_note n
+set 
+	value = trim(n.value),
+	value_prese = trim(n.value_prese)
+where
+	n.value != trim(n.value)
 ;
 
 -- ÕS klassif väärtuste loomine
