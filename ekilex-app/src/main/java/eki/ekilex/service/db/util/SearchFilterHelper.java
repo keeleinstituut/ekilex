@@ -1119,26 +1119,58 @@ public class SearchFilterHelper implements GlobalConstant, ActivityFunct, Freefo
 
 	public Condition applyPublishingTargetFilters(List<SearchCriterion> searchCriteria, String entityName, Field<Long> entityIdField, Condition where) {
 
-		List<SearchCriterion> filteredCriteria = filterCriteriaBySearchKeyAndOperands(searchCriteria, SearchKey.PUBLISHING_TARGET, SearchOperand.EQUALS);
-
+		List<SearchCriterion> filteredCriteria = searchCriteria.stream()
+				.filter(crit -> SearchKey.PUBLISHING_TARGET.equals(crit.getSearchKey()))
+				.collect(Collectors.toList());
 		if (CollectionUtils.isEmpty(filteredCriteria)) {
 			return where;
 		}
+
+		List<SearchCriterion> equalsCriteria = filterCriteriaBySearchKeyAndOperands(searchCriteria, SearchKey.PUBLISHING_TARGET, SearchOperand.EQUALS);
+		List<SearchCriterion> notContainsCriteria = filterCriteriaBySearchKeyAndOperands(searchCriteria, SearchKey.PUBLISHING_TARGET, SearchOperand.NOT_CONTAINS);
+		boolean existsCritExists = filteredCriteria.stream().anyMatch(crit -> SearchOperand.EXISTS.equals(crit.getSearchOperand()));
+		boolean isNotExistsCrit = filteredCriteria.stream().anyMatch(crit -> SearchOperand.EXISTS.equals(crit.getSearchOperand()) && crit.isNot());
 
 		Publishing pub = PUBLISHING.as("pub");
 		Condition where1 = pub.ENTITY_NAME.eq(entityName)
 				.and(pub.ENTITY_ID.eq(entityIdField));
 
-		for (SearchCriterion criterion : filteredCriteria) {
-			String publishingTargetName = criterion.getSearchValue().toString();
-			boolean isNot = criterion.isNot();
-			Condition critWhere = pub.TARGET_NAME.eq(publishingTargetName);
-			if (isNot) {
-				critWhere = DSL.not(critWhere);
+		if (CollectionUtils.isNotEmpty(equalsCriteria)) {
+
+			Condition where2 = DSL.noCondition().and(where1);
+			for (SearchCriterion criterion : equalsCriteria) {
+				String publishingTargetName = criterion.getSearchValue().toString();
+				boolean isNot = criterion.isNot();
+				Condition critWhere = pub.TARGET_NAME.eq(publishingTargetName);
+				if (isNot) {
+					critWhere = DSL.not(critWhere);
+				}
+				where2 = where2.and(critWhere);
 			}
-			where1 = where1.and(critWhere);
+			where = where.and(DSL.exists(DSL.select(pub.ID).from(pub).where(where2)));
 		}
-		where = where.and(DSL.exists(DSL.select(pub.ID).from(pub).where(where1)));
+		if (CollectionUtils.isNotEmpty(notContainsCriteria)) {
+
+			Condition where2 = DSL.noCondition().and(where1);
+			for (SearchCriterion criterion : notContainsCriteria) {
+				String publishingTargetName = criterion.getSearchValue().toString();
+				boolean isNot = criterion.isNot();
+				Condition critWhere = pub.TARGET_NAME.eq(publishingTargetName);
+				if (isNot) {
+					critWhere = DSL.not(critWhere);
+				}
+				where2 = where2.and(critWhere);
+			}
+			where = where.and(DSL.notExists(DSL.select(pub.ID).from(pub).where(where2)));
+		}
+		if (existsCritExists) {
+			Condition where2 = DSL.noCondition().and(where1);
+			if (isNotExistsCrit) {
+				where = where.and(DSL.notExists(DSL.select(pub.ID).from(pub).where(where2)));
+			} else {
+				where = where.and(DSL.exists(DSL.select(pub.ID).from(pub).where(where2)));
+			}
+		}
 		return where;
 	}
 

@@ -237,7 +237,9 @@
                   <select class="form-control"
                           th:name="'criteriaGroups[' + ${critGroupStat.index} + '].searchCriteria[' + ${critStat.index} + '].searchValue'"
                           data-live-search="true"
-                          data-style="btn-outline-secondary">
+                          data-style="btn-outline-secondary"
+                          th:hidden="${isExistsOperand}"
+                          th:disabled="${isExistsOperand}">
                     <option th:each="publishingTargetName : ${publishingTargetNames}"
                             th:value="${publishingTargetName}"
                             th:selected="${criteria.searchValue == publishingTargetName}"

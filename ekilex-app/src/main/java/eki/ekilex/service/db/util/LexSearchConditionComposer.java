@@ -156,6 +156,7 @@ public class LexSearchConditionComposer implements GlobalConstant, ActivityFunct
 					Condition where1 = l1.WORD_ID.eq(w1.ID);
 					where1 = searchFilterHelper.applyDatasetRestrictions(l1, searchDatasetsRestriction, where1);
 					where1 = searchFilterHelper.applyPublicityFilters(searchCriteria, l1.IS_PUBLIC, where1);
+					where1 = searchFilterHelper.applyPublishingTargetFilters(searchCriteria, ENTITY_NAME_LEXEME, l1.ID, where1);
 					where1 = searchFilterHelper.applyWordStatusFilters(searchCriteria, l1, where1);
 					where1 = searchFilterHelper.applyLexemeSourceRefFilter(searchCriteria, l1.ID, where1);
 					where1 = searchFilterHelper.applyLexemeSourceFilters(searchCriteria, l1.ID, where1);
@@ -171,7 +172,6 @@ public class LexSearchConditionComposer implements GlobalConstant, ActivityFunct
 					where1 = searchFilterHelper.applyLexemeRelationExistsFilters(searchCriteria, l1.ID, where1);
 					where1 = searchFilterHelper.applyLexemePosValueFilters(searchCriteria, l1.ID, where1);
 					where1 = searchFilterHelper.applyLexemePosExistsFilters(searchCriteria, l1.ID, where1);
-					where1 = searchFilterHelper.applyPublishingTargetFilters(searchCriteria, ENTITY_NAME_LEXEME, l1.ID, where1);
 					where1 = searchFilterHelper.applyLexemeValueStateFilters(searchCriteria, l1.VALUE_STATE_CODE, where1);
 					where1 = searchFilterHelper.applyLexemeProficiencyLevelFilters(searchCriteria, l1.PROFICIENCY_LEVEL_CODE, where1);
 					where = where.andExists(DSL.select(l1.ID).from(l1).where(where1));
