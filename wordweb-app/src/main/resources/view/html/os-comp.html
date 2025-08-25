@@ -34,7 +34,7 @@
                   <div class="text-body-two">
                     <span th:utext="${@decorUtil.getWordValueMarkup(word)}">tee</span>
                     <strong>
-                      <sup th:text="${word.homonymNr}">1</sup>
+                      <sup th:text="${word.homonymNr}" th:if="${word.homonymExists}">1</sup>
                     </strong>
                   </div>
                   <div class="text-caption homonym__text">
