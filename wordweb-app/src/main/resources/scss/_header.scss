@@ -23,14 +23,9 @@
 
   &--os {
     padding: 16px;
-    --main-search-input-height: 48px;
-
+    --main-search-padding-left: 0;
     & .header__os-logo {
       margin-right: auto;
-    }
-
-    @include media-breakpoint-up(lg) {
-      --header-search-width: 500px;
     }
   }
 
@@ -108,11 +103,11 @@
     flex-grow: 1;
 
     @include media-breakpoint-up(md) {
-      padding-left: 20px;
+      padding-left: var(--main-search-padding-left, 20px);
     }
 
     @include media-breakpoint-up(lg) {
-      padding-left: 108px;
+      padding-left: var(--main-search-padding-left, 108px);
     }
   }
 
@@ -126,7 +121,6 @@
   }
 
   & .main-search {
-    width: var(--header-search-width, fit-content);
     margin: 0 auto;
   }
 }
