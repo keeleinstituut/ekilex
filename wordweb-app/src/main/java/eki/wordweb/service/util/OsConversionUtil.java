@@ -25,7 +25,7 @@ public class OsConversionUtil implements GlobalConstant {
 	@Autowired
 	private WebUtil webUtil;
 
-	public void applyGenericConversions(List<OsWord> words, Integer selectedHomonymNr) {
+	public void applyGenericConversions(List<OsWord> words, String searchValue, Integer selectedHomonymNr) {
 
 		if (CollectionUtils.isEmpty(words)) {
 			return;
@@ -58,7 +58,9 @@ public class OsConversionUtil implements GlobalConstant {
 			}
 
 			String searchUri = webUtil.composeOsSearchUri(wordValue, homonymNr);
-			boolean selected = homonymNr.equals(selectedHomonymNr) && !alreadySelected;
+			boolean selected = StringUtils.equals(searchValue, wordValue)
+					&& homonymNr.equals(selectedHomonymNr)
+					&& !alreadySelected;
 			if (selected) {
 				alreadySelected = true;
 			}
