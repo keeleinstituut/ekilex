@@ -31,6 +31,8 @@ public class OsConversionUtil implements GlobalConstant {
 			return;
 		}
 
+		boolean alreadySelected = false;
+
 		for (OsWord word : words) {
 
 			String wordValue = word.getValue();
@@ -56,7 +58,10 @@ public class OsConversionUtil implements GlobalConstant {
 			}
 
 			String searchUri = webUtil.composeOsSearchUri(wordValue, homonymNr);
-			boolean selected = homonymNr.equals(selectedHomonymNr);
+			boolean selected = homonymNr.equals(selectedHomonymNr) && !alreadySelected;
+			if (selected) {
+				alreadySelected = true;
+			}
 
 			word.setSearchUri(searchUri);
 			word.setHomonymNr(homonymNr);
