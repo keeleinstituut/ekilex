@@ -11,7 +11,7 @@ import org.jooq.Field;
 import org.jooq.ForeignKey;
 import org.jooq.Name;
 import org.jooq.Record;
-import org.jooq.Row7;
+import org.jooq.Row8;
 import org.jooq.Schema;
 import org.jooq.Table;
 import org.jooq.TableField;
@@ -68,6 +68,11 @@ public class ViewOsWord extends TableImpl<ViewOsWordRecord> {
     public final TableField<ViewOsWordRecord, Integer> HOMONYM_NR = createField(DSL.name("homonym_nr"), SQLDataType.INTEGER, this, "");
 
     /**
+     * The column <code>public.view_os_word.homonym_exists</code>.
+     */
+    public final TableField<ViewOsWordRecord, Boolean> HOMONYM_EXISTS = createField(DSL.name("homonym_exists"), SQLDataType.BOOLEAN, this, "");
+
+    /**
      * The column <code>public.view_os_word.display_morph_code</code>.
      */
     public final TableField<ViewOsWordRecord, String> DISPLAY_MORPH_CODE = createField(DSL.name("display_morph_code"), SQLDataType.VARCHAR(100), this, "");
@@ -82,7 +87,7 @@ public class ViewOsWord extends TableImpl<ViewOsWordRecord> {
     }
 
     private ViewOsWord(Name alias, Table<ViewOsWordRecord> aliased, Field<?>[] parameters) {
-        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.view("create view \"view_os_word\" as  SELECT id AS word_id,\n    value,\n    value_prese,\n    value_as_word,\n    homonym_nr,\n    display_morph_code,\n    ( SELECT array_agg(wwt.word_type_code) AS array_agg\n           FROM word_word_type wwt\n          WHERE (wwt.word_id = w.id)) AS word_type_codes\n   FROM word w\n  WHERE ((is_public = true) AND (lang = 'est'::bpchar) AND (EXISTS ( SELECT 1\n           FROM lexeme l\n          WHERE ((l.word_id = w.id) AND (l.is_public = true) AND (l.is_word = true) AND ((l.dataset_code)::text = 'eki'::text) AND (EXISTS ( SELECT 1\n                   FROM publishing p\n                  WHERE (((p.target_name)::text = 'ww_os'::text) AND ((p.entity_name)::text = 'lexeme'::text) AND (p.entity_id = l.id))))))))\n  ORDER BY id;"));
+        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.view("create view \"view_os_word\" as  SELECT w.id AS word_id,\n    w.value,\n    w.value_prese,\n    w.value_as_word,\n    COALESCE(hn.homonym_nr, w.homonym_nr) AS homonym_nr,\n    (EXISTS ( SELECT 1\n           FROM word w2\n          WHERE ((w2.value = w.value) AND (w2.id <> w.id) AND (w2.is_public = true) AND (w2.lang = 'est'::bpchar) AND (EXISTS ( SELECT 1\n                   FROM lexeme l2\n                  WHERE ((l2.word_id = w2.id) AND (l2.is_public = true) AND (l2.is_word = true) AND ((l2.dataset_code)::text = 'eki'::text) AND (EXISTS ( SELECT 1\n                           FROM publishing p2\n                          WHERE (((p2.target_name)::text = 'ww_os'::text) AND ((p2.entity_name)::text = 'lexeme'::text) AND (p2.entity_id = l2.id)))))))))) AS homonym_exists,\n    w.display_morph_code,\n    ( SELECT array_agg(wwt.word_type_code) AS array_agg\n           FROM word_word_type wwt\n          WHERE (wwt.word_id = w.id)) AS word_type_codes\n   FROM (word w\n     LEFT JOIN word_os_homonym_nr hn ON ((hn.word_id = w.id)))\n  WHERE ((w.is_public = true) AND (w.lang = 'est'::bpchar) AND (EXISTS ( SELECT 1\n           FROM lexeme l\n          WHERE ((l.word_id = w.id) AND (l.is_public = true) AND (l.is_word = true) AND ((l.dataset_code)::text = 'eki'::text) AND (EXISTS ( SELECT 1\n                   FROM publishing p\n                  WHERE (((p.target_name)::text = 'ww_os'::text) AND ((p.entity_name)::text = 'lexeme'::text) AND (p.entity_id = l.id))))))))\n  ORDER BY w.id;"));
     }
 
     /**
@@ -142,11 +147,11 @@ public class ViewOsWord extends TableImpl<ViewOsWordRecord> {
     }
 
     // -------------------------------------------------------------------------
-    // Row7 type methods
+    // Row8 type methods
     // -------------------------------------------------------------------------
 
     @Override
-    public Row7<Long, String, String, String, Integer, String, String[]> fieldsRow() {
-        return (Row7) super.fieldsRow();
+    public Row8<Long, String, String, String, Integer, Boolean, String, String[]> fieldsRow() {
+        return (Row8) super.fieldsRow();
     }
 }

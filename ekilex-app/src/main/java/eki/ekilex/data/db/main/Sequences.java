@@ -756,6 +756,11 @@ public class Sequences {
     public static final Sequence<Long> WORD_LAST_ACTIVITY_LOG_ID_SEQ = Internal.createSequence("word_last_activity_log_id_seq", Public.PUBLIC, SQLDataType.BIGINT.nullable(false), null, null, null, null, false, null);
 
     /**
+     * The sequence <code>public.word_os_homonym_nr_id_seq</code>
+     */
+    public static final Sequence<Long> WORD_OS_HOMONYM_NR_ID_SEQ = Internal.createSequence("word_os_homonym_nr_id_seq", Public.PUBLIC, SQLDataType.BIGINT.nullable(false), null, null, null, null, false, null);
+
+    /**
      * The sequence <code>public.word_os_morph_id_seq</code>
      */
     public static final Sequence<Long> WORD_OS_MORPH_ID_SEQ = Internal.createSequence("word_os_morph_id_seq", Public.PUBLIC, SQLDataType.BIGINT.nullable(false), null, null, null, null, false, null);

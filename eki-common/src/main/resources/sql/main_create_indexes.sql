@@ -35,6 +35,7 @@ create index word_etym_word_id_idx on word_etymology(word_id);
 create index word_etym_etym_type_code_idx on word_etymology(etymology_type_code);
 create index word_etym_rel_word_etym_id_idx on word_etymology_relation(word_etym_id);
 create index word_etym_rel_rel_word_id_idx on word_etymology_relation(related_word_id);
+create index word_os_homonym_nr_word_id_idx on word_os_homonym_nr(word_id);
 create index word_os_recommendation_word_id_idx on word_os_recommendation(word_id);
 create index word_os_recommendation_value_idx on word_os_recommendation(value);
 create index word_os_recommendation_value_lower_idx on word_os_recommendation(lower(value));

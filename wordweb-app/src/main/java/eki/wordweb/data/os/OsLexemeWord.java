@@ -3,7 +3,6 @@ package eki.wordweb.data.os;
 import java.util.List;
 
 import eki.common.data.Classifier;
-import eki.wordweb.service.util.OsLexemeClassifiers;
 
 public class OsLexemeWord extends OsWord implements OsLexemeClassifiers {
 

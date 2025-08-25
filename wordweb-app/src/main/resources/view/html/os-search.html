@@ -71,6 +71,7 @@
                       <span>(=</span>
                       <th:block th:each="lexemeWord, lexemeWordIter : ${lexemeMeaning.meaning.lexemeWords}">
                         <span th:utext="${lexemeWord.valuePrese}"></span>
+                        <sup th:text="${lexemeWord.homonymNr}" th:if="${lexemeWord.homonymExists}"></sup>
                         <th:block th:each="register, registerIter : ${lexemeWord.registers}">
                           <span class="os-hints__register" th:text="${register.value}"></span>
                           <span th:unless="${registerIter.last}" class="ml-n1">,</span>
@@ -102,6 +103,7 @@
                     <li>
                       <th:block th:each="relatedWord, relatedWordIter : ${wordRelationGroup.relatedWords}">
                         <span th:utext="${relatedWord.valuePrese}"></span>
+                        <sup th:text="${relatedWord.homonymNr}" th:if="${relatedWord.homonymExists}"></sup>
                         <span th:unless="${relatedWordIter.last}" class="ml-n1">,</span>
                       </th:block>
                     </li>
@@ -116,6 +118,7 @@
                   <div>
                     <th:block th:each="relatedWord, relatedWordIter : ${wordRelationGroup.relatedWords}">
                       <span th:utext="${relatedWord.valuePrese}"></span>
+                      <sup th:text="${relatedWord.homonymNr}" th:if="${relatedWord.homonymExists}"></sup>
                       <span th:unless="${relatedWordIter.last}" class="ml-n1">,</span>
                     </th:block>
                   </div>

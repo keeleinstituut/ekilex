@@ -429,4 +429,52 @@ analyze word_os_usage;
 analyze word_os_morph;
 analyze publishing;
 
+-- keelendi ÕS homonüümi nr
+
+create table word_os_homonym_nr (
+  id bigserial primary key,
+  word_id bigint references word(id) on delete cascade not null,
+  homonym_nr integer not null default 1,
+  unique(word_id)
+);
+alter sequence word_os_homonym_nr_id_seq restart with 10000;
+
+create index word_os_homonym_nr_word_id_idx on word_os_homonym_nr(word_id);
+
+insert into word_os_homonym_nr (word_id, homonym_nr)
+select
+	w.id word_id,
+	(row_number() over (partition by w.value order by w.value, w.homonym_nr)) homonym_nr
+from 
+	word w
+where
+	w.is_public = true
+	and w.lang = 'est'
+	and exists (
+		select
+			1
+		from
+			lexeme l
+		where
+			l.word_id = w.id
+			and l.is_public = true
+			and l.is_word = true
+			and l.dataset_code = 'eki'
+			and exists (
+				select
+					1
+				from
+					publishing p 
+				where
+					p.target_name = 'ww_os'
+					and p.entity_name = 'lexeme'
+					and p.entity_id = l.id
+			)
+	)
+order by
+	w.value,
+	w.homonym_nr
+;
+
+
 

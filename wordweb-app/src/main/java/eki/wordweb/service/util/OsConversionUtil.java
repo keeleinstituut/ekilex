@@ -31,11 +31,10 @@ public class OsConversionUtil implements GlobalConstant {
 			return;
 		}
 
-		Integer homonymNr = 1;
-
 		for (OsWord word : words) {
 
 			String wordValue = word.getValue();
+			Integer homonymNr = word.getHomonymNr();
 			List<OsLexemeMeaning> lexemeMeanings = word.getLexemeMeanings();
 
 			for (OsLexemeMeaning lexemeMeaning : lexemeMeanings) {
@@ -64,8 +63,6 @@ public class OsConversionUtil implements GlobalConstant {
 			word.setSelected(selected);
 
 			setWordTypeFlags(word);
-
-			homonymNr++;
 		}
 
 		boolean isNotHomonymSelected = words.stream().noneMatch(OsWord::isSelected);

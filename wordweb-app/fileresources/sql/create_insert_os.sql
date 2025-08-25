@@ -25,6 +25,7 @@ create table os_word (
 	value_prese text not null,
 	value_as_word text,
 	homonym_nr integer not null,
+	homonym_exists boolean not null,
 	display_morph_code text,
 	word_type_codes varchar(100) array
 );
@@ -45,6 +46,7 @@ select
 	value_prese, 
 	value_as_word, 
 	homonym_nr, 
+	homonym_exists,
 	display_morph_code, 
 	word_type_codes 
 from
@@ -56,6 +58,7 @@ dblink(
 	value_prese text,
 	value_as_word text,
 	homonym_nr integer,
+	homonym_exists boolean,
 	display_morph_code text,
 	word_type_codes varchar(100) array
 );

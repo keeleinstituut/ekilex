@@ -1,4 +1,4 @@
-package eki.wordweb.service.util;
+package eki.wordweb.data.os;
 
 import java.util.List;
 

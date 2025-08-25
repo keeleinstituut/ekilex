@@ -140,6 +140,7 @@ drop table if exists word_etymology;
 drop table if exists word_od_recommendation; -- remove later
 drop table if exists word_od_usage; -- remove later
 drop table if exists word_od_morph; -- remove later
+drop table if exists word_os_homonym_nr;
 drop table if exists word_os_recommendation;
 drop table if exists word_os_usage;
 drop table if exists word_os_morph;

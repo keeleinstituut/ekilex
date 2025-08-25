@@ -11,7 +11,7 @@ import org.jooq.Field;
 import org.jooq.ForeignKey;
 import org.jooq.Name;
 import org.jooq.Record;
-import org.jooq.Row7;
+import org.jooq.Row8;
 import org.jooq.Schema;
 import org.jooq.Table;
 import org.jooq.TableField;
@@ -66,6 +66,11 @@ public class OsWord extends TableImpl<OsWordRecord> {
      * The column <code>public.os_word.homonym_nr</code>.
      */
     public final TableField<OsWordRecord, Integer> HOMONYM_NR = createField(DSL.name("homonym_nr"), SQLDataType.INTEGER.nullable(false), this, "");
+
+    /**
+     * The column <code>public.os_word.homonym_exists</code>.
+     */
+    public final TableField<OsWordRecord, Boolean> HOMONYM_EXISTS = createField(DSL.name("homonym_exists"), SQLDataType.BOOLEAN.nullable(false), this, "");
 
     /**
      * The column <code>public.os_word.display_morph_code</code>.
@@ -142,11 +147,11 @@ public class OsWord extends TableImpl<OsWordRecord> {
     }
 
     // -------------------------------------------------------------------------
-    // Row7 type methods
+    // Row8 type methods
     // -------------------------------------------------------------------------
 
     @Override
-    public Row7<Long, String, String, String, Integer, String, String[]> fieldsRow() {
-        return (Row7) super.fieldsRow();
+    public Row8<Long, String, String, String, Integer, Boolean, String, String[]> fieldsRow() {
+        return (Row8) super.fieldsRow();
     }
 }

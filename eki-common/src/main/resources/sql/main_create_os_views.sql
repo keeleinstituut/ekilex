@@ -30,7 +30,39 @@ select
 	w.value,
 	w.value_prese,
 	w.value_as_word,
-	w.homonym_nr,
+	coalesce(hn.homonym_nr, w.homonym_nr) homonym_nr,
+	(exists (
+		select
+			1
+		from
+			word w2
+		where
+			w2.value = w.value
+			and w2.id != w.id
+			and w2.is_public = true
+			and w2.lang = 'est'
+			and exists (
+				select
+					1
+				from
+					lexeme l2
+				where
+					l2.word_id = w2.id
+					and l2.is_public = true
+					and l2.is_word = true
+					and l2.dataset_code = 'eki'
+					and exists (
+						select
+							1
+						from
+							publishing p2 
+						where
+							p2.target_name = 'ww_os'
+							and p2.entity_name = 'lexeme'
+							and p2.entity_id = l2.id
+					)
+			)
+	)) homonym_exists,
 	w.display_morph_code,
 	(select
 		array_agg(wwt.word_type_code)
@@ -41,6 +73,7 @@ select
 	) word_type_codes
 from 
 	word w
+	left outer join word_os_homonym_nr hn on hn.word_id = w.id
 where
 	w.is_public = true
 	and w.lang = 'est'
@@ -291,7 +324,41 @@ select
 										),
 										'value', w2.value,
 										'valuePrese', w2.value_prese,
-										'homonymNr', w2.homonym_nr,
+										'homonymNr', coalesce(hn2.homonym_nr, w2.homonym_nr),
+										'homonymExists', (
+											exists (
+												select
+													1
+												from
+													word w3
+												where
+													w3.value = w2.value
+													and w3.id != w2.id
+													and w3.is_public = true
+													and w3.lang = 'est'
+													and exists (
+														select
+															1
+														from
+															lexeme l3
+														where
+															l3.word_id = w3.id
+															and l3.is_public = true
+															and l3.is_word = true
+															and l3.dataset_code = 'eki'
+															and exists (
+																select
+																	1
+																from
+																	publishing p3 
+																where
+																	p3.target_name = 'ww_os'
+																	and p3.entity_name = 'lexeme'
+																	and p3.entity_id = l3.id
+															)
+													)
+											)
+										),
 										'displayMorphCode', w2.display_morph_code,
 										'wordTypeCodes', (
 											select
@@ -306,11 +373,11 @@ select
 										l2.order_by
 								)
 							from
-								lexeme l2,
-								word w2
+								lexeme l2
+								inner join word w2 on w2.id = l2.word_id
+								left outer join word_os_homonym_nr hn2 on hn2.word_id = w2.id
 							where
 								l2.meaning_id = m.id
-								and l2.word_id = w2.id
 								and l2.id != l.id
 								and l2.is_public = true
 								and l2.is_word = true
@@ -388,26 +455,60 @@ select
 							'wordRelTypeCode', wr.word_rel_type_code,
 							'value', w2.value,
 							'valuePrese', w2.value_prese,
-							'homonymNr', w2.homonym_nr,
+							'homonymNr', coalesce(hn2.homonym_nr, w2.homonym_nr),
+							'homonymExists', (
+								exists (
+									select
+										1
+									from
+										word w3
+									where
+										w3.value = w2.value
+										and w3.id != w2.id
+										and w3.is_public = true
+										and w3.lang = 'est'
+										and exists (
+											select
+												1
+											from
+												lexeme l3
+											where
+												l3.word_id = w3.id
+												and l3.is_public = true
+												and l3.is_word = true
+												and l3.dataset_code = 'eki'
+												and exists (
+													select
+														1
+													from
+														publishing p3 
+													where
+														p3.target_name = 'ww_os'
+														and p3.entity_name = 'lexeme'
+														and p3.entity_id = l3.id
+												)
+										)
+								)
+							),
 							'displayMorphCode', w2.display_morph_code,
 							'wordTypeCodes', (
-							select
-								array_agg(wwt.word_type_code)
-							from
-								word_word_type wwt
-							where
-								wwt.word_id = w2.id
+								select
+									array_agg(wwt.word_type_code)
+								from
+									word_word_type wwt
+								where
+									wwt.word_id = w2.id
 							)
 						)
 						order by
 							wr.order_by
 					)
 				from
-					word_relation wr,
-					word w2
+					word_relation wr
+					inner join word w2 on w2.id = wr.word2_id
+					left outer join word_os_homonym_nr hn2 on hn2.word_id = w2.id
 				where
 					wr.word1_id = w.id
-					and wr.word2_id = w2.id
 					and wr.word_rel_type_code = wrt.code
 					and w2.is_public = true
 					and w2.lang = 'est'

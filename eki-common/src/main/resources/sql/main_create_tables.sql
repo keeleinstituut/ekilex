@@ -655,6 +655,14 @@ create table word_etymology_relation (
 );
 alter sequence word_etymology_relation_id_seq restart with 10000;
 
+create table word_os_homonym_nr (
+  id bigserial primary key,
+  word_id bigint references word(id) on delete cascade not null,
+  homonym_nr integer not null default 1,
+  unique(word_id)
+);
+alter sequence word_os_homonym_nr_id_seq restart with 10000;
+
 create table word_os_recommendation (
   id bigserial primary key,
   word_id bigint references word(id) on delete cascade not null,

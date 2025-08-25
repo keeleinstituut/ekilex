@@ -160,6 +160,7 @@ import eki.ekilex.data.db.main.tables.WordGroup;
 import eki.ekilex.data.db.main.tables.WordGroupMember;
 import eki.ekilex.data.db.main.tables.WordGuid;
 import eki.ekilex.data.db.main.tables.WordLastActivityLog;
+import eki.ekilex.data.db.main.tables.WordOsHomonymNr;
 import eki.ekilex.data.db.main.tables.WordOsMorph;
 import eki.ekilex.data.db.main.tables.WordOsRecommendation;
 import eki.ekilex.data.db.main.tables.WordOsUsage;
@@ -959,6 +960,11 @@ public class Tables {
      * The table <code>public.word_last_activity_log</code>.
      */
     public static final WordLastActivityLog WORD_LAST_ACTIVITY_LOG = WordLastActivityLog.WORD_LAST_ACTIVITY_LOG;
+
+    /**
+     * The table <code>public.word_os_homonym_nr</code>.
+     */
+    public static final WordOsHomonymNr WORD_OS_HOMONYM_NR = WordOsHomonymNr.WORD_OS_HOMONYM_NR;
 
     /**
      * The table <code>public.word_os_morph</code>.

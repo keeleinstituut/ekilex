@@ -25,6 +25,7 @@ import eki.wordweb.data.MeaningWord;
 import eki.wordweb.data.WordEtymTuple;
 import eki.wordweb.data.WordRelation;
 import eki.wordweb.data.WordTypeData;
+import eki.wordweb.data.os.OsLexemeClassifiers;
 import eki.wordweb.data.os.OsLexemeMeaning;
 import eki.wordweb.data.os.OsLexemeWord;
 import eki.wordweb.data.os.OsMeaning;

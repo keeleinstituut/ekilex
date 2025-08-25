@@ -20,6 +20,8 @@ public class OsWord extends AbstractDataObject implements DecoratedWordType {
 
 	private Integer homonymNr;
 
+	private boolean homonymExists;
+
 	private String displayMorphCode;
 
 	private Classifier displayMorph;
@@ -100,6 +102,14 @@ public class OsWord extends AbstractDataObject implements DecoratedWordType {
 
 	public void setHomonymNr(Integer homonymNr) {
 		this.homonymNr = homonymNr;
+	}
+
+	public boolean isHomonymExists() {
+		return homonymExists;
+	}
+
+	public void setHomonymExists(boolean homonymExists) {
+		this.homonymExists = homonymExists;
 	}
 
 	public String getDisplayMorphCode() {

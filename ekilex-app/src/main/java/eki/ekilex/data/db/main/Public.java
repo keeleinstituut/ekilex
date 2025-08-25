@@ -160,6 +160,7 @@ import eki.ekilex.data.db.main.tables.WordGroup;
 import eki.ekilex.data.db.main.tables.WordGroupMember;
 import eki.ekilex.data.db.main.tables.WordGuid;
 import eki.ekilex.data.db.main.tables.WordLastActivityLog;
+import eki.ekilex.data.db.main.tables.WordOsHomonymNr;
 import eki.ekilex.data.db.main.tables.WordOsMorph;
 import eki.ekilex.data.db.main.tables.WordOsRecommendation;
 import eki.ekilex.data.db.main.tables.WordOsUsage;
@@ -990,6 +991,11 @@ public class Public extends SchemaImpl {
     public final WordLastActivityLog WORD_LAST_ACTIVITY_LOG = WordLastActivityLog.WORD_LAST_ACTIVITY_LOG;
 
     /**
+     * The table <code>public.word_os_homonym_nr</code>.
+     */
+    public final WordOsHomonymNr WORD_OS_HOMONYM_NR = WordOsHomonymNr.WORD_OS_HOMONYM_NR;
+
+    /**
      * The table <code>public.word_os_morph</code>.
      */
     public final WordOsMorph WORD_OS_MORPH = WordOsMorph.WORD_OS_MORPH;
@@ -1213,6 +1219,7 @@ public class Public extends SchemaImpl {
             Sequences.WORD_GUID_ID_SEQ,
             Sequences.WORD_ID_SEQ,
             Sequences.WORD_LAST_ACTIVITY_LOG_ID_SEQ,
+            Sequences.WORD_OS_HOMONYM_NR_ID_SEQ,
             Sequences.WORD_OS_MORPH_ID_SEQ,
             Sequences.WORD_OS_RECOMMENDATION_ID_SEQ,
             Sequences.WORD_OS_USAGE_ID_SEQ,
@@ -1386,6 +1393,7 @@ public class Public extends SchemaImpl {
             WordGroupMember.WORD_GROUP_MEMBER,
             WordGuid.WORD_GUID,
             WordLastActivityLog.WORD_LAST_ACTIVITY_LOG,
+            WordOsHomonymNr.WORD_OS_HOMONYM_NR,
             WordOsMorph.WORD_OS_MORPH,
             WordOsRecommendation.WORD_OS_RECOMMENDATION,
             WordOsUsage.WORD_OS_USAGE,
