@@ -10,7 +10,7 @@
   <th:block th:replace="common-app :: ie-user"></th:block>
   <th:block
     th:replace="common-app :: header(
-    odPage = ${true},
+    osPage = ${true},
     logoTemplate = ~{os-comp :: logo},
     withLucky = ${false},
     withLangSelect = ${false},
@@ -60,10 +60,10 @@
             <th:block th:if="${word.lexemeMeaningsContentExist}">
               <div class="mt-2">
                 <div th:text="#{label.os.meaning}" class="text-caption text-darker-gray">Tähendusvihjed</div>
-                <div>
+                <div class="os-hints">
                   <th:block th:each="lexemeMeaning, lexemeMeaningIter : ${word.lexemeMeanings}">
                     <th:block th:each="register, registerIter : ${lexemeMeaning.registers}">
-                      <span th:text="${register.value}"></span>
+                      <span class="os-hints__register" th:text="${register.value}"></span>
                       <span th:unless="${registerIter.last}" class="ml-n1">,</span>
                     </th:block>
                     <span th:if="${lexemeMeaning.valueState != null}" th:text="${lexemeMeaning.valueState.value}"></span>
@@ -72,7 +72,7 @@
                       <th:block th:each="lexemeWord, lexemeWordIter : ${lexemeMeaning.meaning.lexemeWords}">
                         <span th:utext="${lexemeWord.valuePrese}"></span>
                         <th:block th:each="register, registerIter : ${lexemeWord.registers}">
-                          <span th:text="${register.value}"></span>
+                          <span class="os-hints__register" th:text="${register.value}"></span>
                           <span th:unless="${registerIter.last}" class="ml-n1">,</span>
                         </th:block>
                         <span th:if="${lexemeWord.valueState != null}" th:text="${lexemeWord.valueState.value}"></span>
