@@ -35,7 +35,8 @@ public class OsSearchService implements GlobalConstant {
 	public OsSearchResult search(String searchValue, Integer selectedHomonymNr) {
 
 		String displayLang = languageContext.getDisplayLang();
-		List<OsWord> words = osDbService.getWords(searchValue);
+		boolean fiCollationExists = osDbService.fiCollationExists();
+		List<OsWord> words = osDbService.getWords(searchValue, fiCollationExists);
 		OsWord selectedWord = null;
 
 		if (CollectionUtils.isNotEmpty(words)) {

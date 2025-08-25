@@ -14,8 +14,10 @@ import org.jooq.Field;
 import org.jooq.JSON;
 import org.jooq.impl.DSL;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Component;
 
+import eki.wordweb.constant.SystemConstant;
 import eki.wordweb.data.db.tables.OsLexemeMeaning;
 import eki.wordweb.data.db.tables.OsWord;
 import eki.wordweb.data.db.tables.OsWordOsMorph;
@@ -24,12 +26,12 @@ import eki.wordweb.data.db.tables.OsWordOsUsage;
 import eki.wordweb.data.db.tables.OsWordRelation;
 
 @Component
-public class OsDbService {
+public class OsDbService implements SystemConstant {
 
 	@Autowired
 	private DSLContext create;
 
-	public List<eki.wordweb.data.os.OsWord> getWords(String searchValue) {
+	public List<eki.wordweb.data.os.OsWord> getWords(String searchValue, boolean fiCollationExists) {
 
 		Field<String> searchValueLowerField = DSL.lower(searchValue);
 
@@ -42,13 +44,20 @@ public class OsDbService {
 				.where(lm.WORD_ID.eq(w.WORD_ID))
 				.asField();
 
+		Field<String> wvobf;
+		if (fiCollationExists) {
+			wvobf = w.VALUE.collate("fi_FI");
+		} else {
+			wvobf = w.VALUE;
+		}
+
 		return create
 				.select(w.fields())
 				.select(lmf.as("lexeme_meanings"))
 				.from(w)
 				.where(DSL.lower(w.VALUE).eq(searchValueLowerField))
 				.orderBy(
-						w.VALUE.collate("fi_FI"),
+						wvobf,
 						w.HOMONYM_NR)
 				.fetchInto(eki.wordweb.data.os.OsWord.class);
 	}
@@ -118,5 +127,15 @@ public class OsDbService {
 				.where(w.WORD_ID.eq(wordId))
 				.fetchOptionalInto(eki.wordweb.data.os.OsWord.class)
 				.orElse(null);
+	}
+
+	@Cacheable(value = CACHE_KEY_CLASSIF, key = "#root.methodName")
+	public boolean fiCollationExists() {
+
+		Integer fiCollationCnt = create
+				.selectCount()
+				.from("pg_collation where lower(collcollate) = 'fi_fi.utf8'")
+				.fetchSingleInto(Integer.class);
+		return fiCollationCnt > 0;
 	}
 }
