@@ -70,3 +70,13 @@
     align-self: flex-start;
   }
 }
+
+
+.os-hints {
+  font-weight: 500;
+  &__register {
+    font-weight: 400;
+    font-size: .75rem;
+    text-transform: uppercase;
+  }
+}

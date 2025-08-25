@@ -15840,6 +15840,14 @@ span.material-symbols-outlined--small {
   font-size: 0.6875rem;
   align-self: flex-start;
 }
+.os-hints {
+  font-weight: 500;
+}
+.os-hints__register {
+  font-weight: 400;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+}
 .header {
   padding: 16px 16px 16px 4px;
   position: sticky;
