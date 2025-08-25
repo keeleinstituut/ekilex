@@ -48,7 +48,7 @@ public class OsDbService {
 				.from(w)
 				.where(DSL.lower(w.VALUE).eq(searchValueLowerField))
 				.orderBy(
-						w.VALUE,
+						w.VALUE.collate("fi_FI"),
 						w.HOMONYM_NR)
 				.fetchInto(eki.wordweb.data.os.OsWord.class);
 	}
