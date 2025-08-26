@@ -15843,7 +15843,7 @@ span.material-symbols-outlined--small {
 .os-hints {
   font-weight: 500;
 }
-.os-hints__register {
+.os-hints__small {
   font-weight: 400;
   font-size: 0.75rem;
   text-transform: uppercase;

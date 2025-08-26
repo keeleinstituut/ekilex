@@ -63,20 +63,20 @@
                 <div class="os-hints">
                   <th:block th:each="lexemeMeaning, lexemeMeaningIter : ${word.lexemeMeanings}">
                     <th:block th:each="register, registerIter : ${lexemeMeaning.registers}">
-                      <span class="os-hints__register" th:text="${register.value}"></span>
+                      <span class="os-hints__small" th:text="${register.value}"></span>
                       <span th:unless="${registerIter.last}" class="ml-n1">,</span>
                     </th:block>
-                    <span th:if="${lexemeMeaning.valueState != null}" th:text="${lexemeMeaning.valueState.value}"></span>
+                    <span class="os-hints__small" th:if="${lexemeMeaning.valueState != null}" th:text="${lexemeMeaning.valueState.value}"></span>
                     <th:block th:if="${lexemeMeaning.meaning.lexemeWords}">
                       <span>(=</span>
                       <th:block th:each="lexemeWord, lexemeWordIter : ${lexemeMeaning.meaning.lexemeWords}">
                         <span th:utext="${lexemeWord.valuePrese}"></span>
                         <sup th:text="${lexemeWord.homonymNr}" th:if="${lexemeWord.homonymExists}"></sup>
                         <th:block th:each="register, registerIter : ${lexemeWord.registers}">
-                          <span class="os-hints__register" th:text="${register.value}"></span>
+                          <span class="os-hints__small" th:text="${register.value}"></span>
                           <span th:unless="${registerIter.last}" class="ml-n1">,</span>
                         </th:block>
-                        <span th:if="${lexemeWord.valueState != null}" th:text="${lexemeWord.valueState.value}"></span>
+                        <span class="os-hints__small" th:if="${lexemeWord.valueState != null}" th:text="${lexemeWord.valueState.value}"></span>
                         <span th:unless="${lexemeWordIter.last}" class="ml-n1">,</span>
                       </th:block>
                       <span class="ml-n1">)</span>
