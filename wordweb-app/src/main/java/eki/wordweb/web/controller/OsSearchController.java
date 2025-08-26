@@ -16,8 +16,9 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import eki.wordweb.data.os.OsSearchResult;
 import eki.wordweb.service.OsSearchService;
 
-@ConditionalOnWebApplication
-@Controller
+//TODO not yet public
+//@ConditionalOnWebApplication
+//@Controller
 public class OsSearchController extends AbstractSearchController {
 
 	@Autowired
