@@ -51,9 +51,9 @@
               <div class="mt-2">
                 <div th:text="#{label.os.morpho}" class="text-caption text-darker-gray">Lühimorfo</div>
                 <div>
-                  <span><</span>
+                  <span>&lt;</span>
                   <span th:utext="${word.wordOsMorph.valuePrese}"></span>
-                  <span>></span>
+                  <span>&gt;</span>
                 </div>
               </div>
             </th:block>
@@ -70,13 +70,18 @@
                     <th:block th:if="${lexemeMeaning.meaning.lexemeWords}">
                       <span>(=</span>
                       <th:block th:each="lexemeWord, lexemeWordIter : ${lexemeMeaning.meaning.lexemeWords}">
-                        <span th:utext="${lexemeWord.valuePrese}"></span>
+                        <span th:utext="${@decorUtil.getWordValueMarkup(lexemeWord)}">tee</span>
                         <sup th:text="${lexemeWord.homonymNr}" th:if="${lexemeWord.homonymExists}"></sup>
                         <th:block th:each="register, registerIter : ${lexemeWord.registers}">
                           <span class="os-hints__small" th:text="${register.value}"></span>
                           <span th:unless="${registerIter.last}" class="ml-n1">,</span>
                         </th:block>
                         <span class="os-hints__small" th:if="${lexemeWord.valueState != null}" th:text="${lexemeWord.valueState.value}"></span>
+                        <span class="os-hints__small" th:if="${lexemeWord.displayMorph != null}" th:text="${lexemeWord.displayMorph.value}"></span>
+                        <th:block th:each="wordType, wordTypeIter : ${lexemeWord.wordTypes}" th:if="${not #lists.isEmpty(lexemeWord.wordTypes)}">
+                          <span class="lang-code text-caption lang-code--unrestricted" th:text="${wordType.value}"></span>
+                          <span th:unless="${wordTypeIter.last}"></span>
+                        </th:block>
                         <span th:unless="${lexemeWordIter.last}" class="ml-n1">,</span>
                       </th:block>
                       <span class="ml-n1">)</span>
@@ -95,11 +100,11 @@
                 </th:block>
               </div>
             </th:block>
-            <th:block th:if="${word.primaryWordRelationGroups}">
+            <th:block th:if="${word.primary1WordRelationGroups}">
               <div class="mt-2">
                 <div th:text="#{label.os.word.rel.comp}" class="text-caption text-darker-gray">Liitsõnad</div>
                 <ul>
-                  <th:block th:each="wordRelationGroup : ${word.primaryWordRelationGroups}">
+                  <th:block th:each="wordRelationGroup : ${word.primary1WordRelationGroups}">
                     <li>
                       <th:block th:each="relatedWord, relatedWordIter : ${wordRelationGroup.relatedWords}">
                         <span th:utext="${relatedWord.valuePrese}"></span>
@@ -109,6 +114,22 @@
                     </li>
                   </th:block>
                 </ul>
+              </div>
+            </th:block>
+            <th:block th:if="${word.primary2WordRelationGroups}">
+              <div class="mt-2">
+                <div th:text="#{label.os.word.rel.degr}" class="text-caption text-darker-gray">Võrded</div>
+                <div>
+                  <th:block th:each="wordRelationGroup, wordRelationGroupIter : ${word.primary2WordRelationGroups}">
+                    <span th:utext="${wordRelationGroup.wordRelType.value}"></span>
+                    <th:block th:each="relatedWord, relatedWordIter : ${wordRelationGroup.relatedWords}">
+                      <span th:utext="${relatedWord.valuePrese}"></span>
+                      <sup th:text="${relatedWord.homonymNr}" th:if="${relatedWord.homonymExists}"></sup>
+                      <span th:unless="${relatedWordIter.last}">~</span>
+                    </th:block>
+                    <span th:unless="${wordRelationGroupIter.last}" class="ml-n1">,</span>
+                  </th:block>
+                </div>
               </div>
             </th:block>
             <th:block th:if="${word.secondaryWordRelationGroups}">

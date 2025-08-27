@@ -203,19 +203,19 @@ public class ClassifierUtil {
 		}
 	}
 
-	public void applyOdClassifiers(OsWord word, String displayLang) {
+	public void applyOsClassifiers(OsWord word, String displayLang) {
 		String classifierCode;
 		Classifier classifier;
-		applyOdWordClassifiers(word, displayLang);
+		applyOsWordClassifiers(word);
 		List<OsLexemeMeaning> lexemeMeanings = word.getLexemeMeanings();
 		for (OsLexemeMeaning lexemeMeaning : lexemeMeanings) {
-			applyOdLexemeClassifiers(lexemeMeaning, displayLang);
+			applyOsLexemeClassifiers(lexemeMeaning);
 			OsMeaning meaning = lexemeMeaning.getMeaning();
 			List<OsLexemeWord> lexemeWords = meaning.getLexemeWords();
 			if (CollectionUtils.isNotEmpty(lexemeWords)) {
 				for (OsLexemeWord lexemeWord : lexemeWords) {
-					applyOdLexemeClassifiers(lexemeWord, displayLang);
-					applyOdWordClassifiers(lexemeWord, displayLang);
+					applyOsLexemeClassifiers(lexemeWord);
+					applyOsWordClassifiers(lexemeWord);
 				}
 			}
 		}
@@ -231,29 +231,45 @@ public class ClassifierUtil {
 						classifierCode = wordRelation.getWordRelTypeCode();
 						classifier = getClassifier(ClassifierName.WORD_REL_TYPE, classifierCode, displayLang);
 						wordRelation.setWordRelType(classifier);
-						applyOdWordClassifiers(wordRelation, displayLang);
+						applyOsWordClassifiers(wordRelation);
 					}
 				}
 			}
 		}
 	}
 
-	private void applyOdLexemeClassifiers(OsLexemeClassifiers lexeme, String displayLang) {
+	private void applyOsLexemeClassifiers(OsLexemeClassifiers lexeme) {
 		List<String> classifierCodes = lexeme.getRegisterCodes();
-		List<Classifier> classifiers = getClassifiers(ClassifierName.REGISTER, classifierCodes, displayLang);
+		List<Classifier> classifiers = getOsClassifiers(ClassifierName.REGISTER, classifierCodes);
 		lexeme.setRegisters(classifiers);
 		String classifierCode = lexeme.getValueStateCode();
-		Classifier classifier = getClassifier(ClassifierName.VALUE_STATE, classifierCode, displayLang);
+		Classifier classifier = getOsClassifier(ClassifierName.VALUE_STATE, classifierCode);
 		lexeme.setValueState(classifier);
 	}
 
-	private void applyOdWordClassifiers(OsWord word, String displayLang) {
+	private void applyOsWordClassifiers(OsWord word) {
 		String classifierCode = word.getDisplayMorphCode();
-		Classifier classifier = getClassifier(ClassifierName.DISPLAY_MORPH, classifierCode, displayLang);
+		Classifier classifier = getOsClassifier(ClassifierName.DISPLAY_MORPH, classifierCode);
 		word.setDisplayMorph(classifier);
 		List<String> classifierCodes = word.getWordTypeCodes();
-		List<Classifier> classifiers = getClassifiers(ClassifierName.WORD_TYPE, classifierCodes, displayLang);
+		List<Classifier> classifiers = getOsClassifiers(ClassifierName.WORD_TYPE, classifierCodes);
 		word.setWordTypes(classifiers);
+	}
+
+	private Classifier getOsClassifier(ClassifierName name, String code) {
+		if (StringUtils.isBlank(code)) {
+			return null;
+		}
+		Classifier classifier = commonDataDbService.getOsClassifier(name, code);
+		return classifier;
+	}
+
+	private List<Classifier> getOsClassifiers(ClassifierName name, List<String> codes) {
+		if (CollectionUtils.isEmpty(codes)) {
+			return Collections.emptyList();
+		}
+		List<Classifier> classifiers = commonDataDbService.getOsClassifiersInProvidedOrder(name, codes);
+		return classifiers;
 	}
 
 	private Classifier getClassifier(ClassifierName name, String code, String lang) {

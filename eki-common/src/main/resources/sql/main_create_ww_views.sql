@@ -3411,7 +3411,7 @@ create view view_ww_classifier
 		display_morph_label cl
 	where 
 		c.code = cl.code
-		and cl.type = 'wordweb'
+		and cl.type in ('wordweb', 'os')
 	order by c.order_by, cl.lang, cl.type)
 	union all
 	(select
@@ -3427,7 +3427,7 @@ create view view_ww_classifier
 		word_type_label cl
 	where 
 		c.code = cl.code
-		and cl.type = 'wordweb'
+		and cl.type in ('wordweb', 'os')
 	order by c.order_by, cl.lang, cl.type)
 	union all
 	(select
@@ -3491,7 +3491,7 @@ create view view_ww_classifier
 		register_label cl
 	where 
 		c.code = cl.code
-		and cl.type = 'wordweb'
+		and cl.type in ('wordweb', 'os')
 	order by c.order_by, cl.lang, cl.type)
 	union all
 	(select
@@ -3633,10 +3633,10 @@ create view view_ww_classifier
 		c.order_by
 	from 
 		value_state c,
-    value_state_label cl
+    	value_state_label cl
 	where 
 		c.code = cl.code
-		and cl.type = 'wordweb'
+		and cl.type in ('wordweb', 'os')
 	order by c.order_by, cl.lang, cl.type)
 );
 

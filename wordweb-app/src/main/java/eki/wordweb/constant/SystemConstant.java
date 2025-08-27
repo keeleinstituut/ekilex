@@ -59,6 +59,8 @@ public interface SystemConstant extends StatSearchConstant {
 
 	String DEFAULT_CLASSIF_VALUE_TYPE = "wordweb";
 
+	String OS_CLASSIF_VALUE_TYPE = "os";
+
 	String CLASSIF_VALUE_TYPE_ISO2 = "iso2";
 
 	String WORD_SEARCH_GROUP_WORD = "word";

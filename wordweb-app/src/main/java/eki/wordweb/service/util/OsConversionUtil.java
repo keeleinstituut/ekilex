@@ -82,9 +82,11 @@ public class OsConversionUtil implements GlobalConstant {
 	public void applyWordRelationConversions(OsWord word) {
 
 		List<OsWordRelationGroup> wordRelationGroups = word.getWordRelationGroups();
-		List<OsWordRelationGroup> primaryWordRelationGroups = null;
+		List<OsWordRelationGroup> primary1WordRelationGroups = null;
+		List<OsWordRelationGroup> primary2WordRelationGroups = null;
 		List<OsWordRelationGroup> secondaryWordRelationGroups = null;
-		final List<String> primaryWordRelTypeCodes = Arrays.asList(PRIMARY_OS_WORD_REL_TYPE_CODES);
+		final List<String> primary1WordRelTypeCodes = Arrays.asList(OS_PRIMARY1_WORD_REL_TYPE_CODES);
+		final List<String> primary2WordRelTypeCodes = Arrays.asList(OS_PRIMARY2_WORD_REL_TYPE_CODES);
 
 		if (CollectionUtils.isEmpty(wordRelationGroups)) {
 			return;
@@ -93,11 +95,16 @@ public class OsConversionUtil implements GlobalConstant {
 		for (OsWordRelationGroup wordRelationGroup : wordRelationGroups) {
 
 			String wordRelTypeCode = wordRelationGroup.getWordRelTypeCode();
-			if (primaryWordRelTypeCodes.contains(wordRelTypeCode)) {
-				if (primaryWordRelationGroups == null) {
-					primaryWordRelationGroups = new ArrayList<>();
+			if (primary1WordRelTypeCodes.contains(wordRelTypeCode)) {
+				if (primary1WordRelationGroups == null) {
+					primary1WordRelationGroups = new ArrayList<>();
 				}
-				primaryWordRelationGroups.add(wordRelationGroup);
+				primary1WordRelationGroups.add(wordRelationGroup);
+			} else if (primary2WordRelTypeCodes.contains(wordRelTypeCode)) {
+				if (primary2WordRelationGroups == null) {
+					primary2WordRelationGroups = new ArrayList<>();
+				}
+				primary2WordRelationGroups.add(wordRelationGroup);
 			} else {
 				if (secondaryWordRelationGroups == null) {
 					secondaryWordRelationGroups = new ArrayList<>();
@@ -106,11 +113,16 @@ public class OsConversionUtil implements GlobalConstant {
 			}
 		}
 
-		word.setPrimaryWordRelationGroups(primaryWordRelationGroups);
+		word.setPrimary1WordRelationGroups(primary1WordRelationGroups);
+		word.setPrimary2WordRelationGroups(primary2WordRelationGroups);
 		word.setSecondaryWordRelationGroups(secondaryWordRelationGroups);
 	}
 
 	public void setWordTypeFlags(OsWord word) {
+
+		if (word == null) {
+			return;
+		}
 
 		boolean isPrefixoid = false;
 		boolean isSuffixoid = false;
@@ -127,6 +139,19 @@ public class OsConversionUtil implements GlobalConstant {
 		word.setSuffixoid(isSuffixoid);
 		word.setAbbreviationWord(isAbbreviationWord);
 		word.setForeignWord(isForeignWord);
+
+		List<OsLexemeMeaning> lexemeMeanings = word.getLexemeMeanings();
+		if (CollectionUtils.isNotEmpty(lexemeMeanings)) {
+			for (OsLexemeMeaning lexemeMeaning : lexemeMeanings) {
+				OsMeaning meaning = lexemeMeaning.getMeaning();
+				List<OsLexemeWord> lexemeWords = meaning.getLexemeWords();
+				if (CollectionUtils.isNotEmpty(lexemeWords)) {
+					for (OsLexemeWord lexemeWord : lexemeWords) {
+						setWordTypeFlags(lexemeWord);
+					}
+				}
+			}
+		}
 	}
 
 	public Long getSelectedWordId(List<OsWord> words) {

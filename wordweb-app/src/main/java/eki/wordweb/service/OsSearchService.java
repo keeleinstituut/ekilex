@@ -43,7 +43,7 @@ public class OsSearchService implements GlobalConstant {
 			osConversionUtil.applyGenericConversions(words, searchValue, selectedHomonymNr);
 			Long wordId = osConversionUtil.getSelectedWordId(words);
 			selectedWord = osDbService.getOdWord(wordId);
-			classifierUtil.applyOdClassifiers(selectedWord, displayLang);
+			classifierUtil.applyOsClassifiers(selectedWord, displayLang);
 			osConversionUtil.applyWordRelationConversions(selectedWord);
 			osConversionUtil.setWordTypeFlags(selectedWord);
 			osConversionUtil.setContentExistsFlags(selectedWord);

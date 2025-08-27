@@ -41,7 +41,7 @@ public class CommonDataDbService implements SystemConstant, GlobalConstant {
 	@Autowired
 	private DSLContext create;
 
-	@Cacheable(value = CACHE_KEY_CLASSIF, key = "{#name, #code, #lang}")
+	@Cacheable(value = CACHE_KEY_CLASSIF, key = "{#root.methodName, #name, #code, #lang}")
 	public Classifier getClassifier(ClassifierName name, String code, String lang) {
 
 		if (StringUtils.isBlank(code)) {
@@ -68,7 +68,7 @@ public class CommonDataDbService implements SystemConstant, GlobalConstant {
 				.orElse(new Classifier(name.name(), null, null, code, code, lang));
 	}
 
-	@Cacheable(value = CACHE_KEY_CLASSIF, key = "{#name, #origin, #code, #lang}")
+	@Cacheable(value = CACHE_KEY_CLASSIF, key = "{#root.methodName, #name, #origin, #code, #lang}")
 	public Classifier getClassifier(ClassifierName name, String origin, String code, String lang) {
 
 		if (StringUtils.isBlank(code)) {
@@ -98,7 +98,7 @@ public class CommonDataDbService implements SystemConstant, GlobalConstant {
 				.orElse(new Classifier(name.name(), origin, null, code, code, lang));
 	}
 
-	@Cacheable(value = CACHE_KEY_CLASSIF, key = "{#name, #lang}")
+	@Cacheable(value = CACHE_KEY_CLASSIF, key = "{#root.methodName, #name, #lang}")
 	public List<Classifier> getClassifiers(ClassifierName name, String lang) {
 
 		MviewWwClassifier clc = MVIEW_WW_CLASSIFIER.as("clc");
@@ -121,7 +121,7 @@ public class CommonDataDbService implements SystemConstant, GlobalConstant {
 				.fetchInto(Classifier.class);
 	}
 
-	@Cacheable(value = CACHE_KEY_CLASSIF, key = "{#name, #codes, #lang}")
+	@Cacheable(value = CACHE_KEY_CLASSIF, key = "{#root.methodName, #name, #codes, #lang}")
 	public List<Classifier> getClassifiersInProvidedOrder(ClassifierName name, List<String> codes, String lang) {
 
 		if (CollectionUtils.isEmpty(codes)) {
@@ -130,6 +130,9 @@ public class CommonDataDbService implements SystemConstant, GlobalConstant {
 		if (codes.size() == 1) {
 			String code = codes.get(0);
 			Classifier classifier = getClassifier(name, code, lang);
+			if (classifier == null) {
+				return Collections.emptyList();
+			}
 			return Arrays.asList(classifier);
 		}
 		String[] codesArr = new String[codes.size()];
@@ -155,7 +158,7 @@ public class CommonDataDbService implements SystemConstant, GlobalConstant {
 				.fetchInto(Classifier.class);
 	}
 
-	@Cacheable(value = CACHE_KEY_CLASSIF, key = "{#name, #codes, #lang}")
+	@Cacheable(value = CACHE_KEY_CLASSIF, key = "{#root.methodName, #name, #codes, #lang}")
 	public List<Classifier> getClassifiersInSystemOrder(ClassifierName name, List<String> codes, String lang) {
 
 		if (CollectionUtils.isEmpty(codes)) {
@@ -164,6 +167,9 @@ public class CommonDataDbService implements SystemConstant, GlobalConstant {
 		if (codes.size() == 1) {
 			String code = codes.get(0);
 			Classifier classifier = getClassifier(name, code, lang);
+			if (classifier == null) {
+				return Collections.emptyList();
+			}
 			return Arrays.asList(classifier);
 		}
 		MviewWwClassifier clc = MVIEW_WW_CLASSIFIER.as("clc");
@@ -187,7 +193,7 @@ public class CommonDataDbService implements SystemConstant, GlobalConstant {
 				.fetchInto(Classifier.class);
 	}
 
-	@Cacheable(value = CACHE_KEY_CLASSIF, key = "{#name, #codes, #lang}")
+	@Cacheable(value = CACHE_KEY_CLASSIF, key = "{#root.methodName, #name, #codes, #lang}")
 	public List<Classifier> getClassifiersWithOrigin(ClassifierName name, List<TypeDomain> codes, String lang) {
 
 		if (CollectionUtils.isEmpty(codes)) {
@@ -201,6 +207,63 @@ public class CommonDataDbService implements SystemConstant, GlobalConstant {
 			}
 		}
 		return classifiers;
+	}
+
+	@Cacheable(value = CACHE_KEY_CLASSIF, key = "{#root.methodName, #name, #code}")
+	public Classifier getOsClassifier(ClassifierName name, String code) {
+
+		if (StringUtils.isBlank(code)) {
+			return null;
+		}
+		MviewWwClassifier cl = MVIEW_WW_CLASSIFIER.as("cl");
+		return create
+				.select(
+						cl.NAME,
+						cl.CODE,
+						cl.VALUE,
+						cl.LANG)
+				.from(cl)
+				.where(
+						cl.NAME.eq(name.name())
+								.and(cl.CODE.eq(code))
+								.and(cl.TYPE.eq(OS_CLASSIF_VALUE_TYPE))
+								.and(cl.LANG.eq(DEFAULT_CLASSIF_VALUE_LANG)))
+				.limit(1)
+				.fetchOptionalInto(Classifier.class)
+				.orElse(null);
+	}
+
+	@Cacheable(value = CACHE_KEY_CLASSIF, key = "{#root.methodName, #name, #codes, #lang}")
+	public List<Classifier> getOsClassifiersInProvidedOrder(ClassifierName name, List<String> codes) {
+
+		if (CollectionUtils.isEmpty(codes)) {
+			return Collections.emptyList();
+		}
+		if (codes.size() == 1) {
+			String code = codes.get(0);
+			Classifier classifier = getOsClassifier(name, code);
+			if (classifier == null) {
+				return Collections.emptyList();
+			}
+			return Arrays.asList(classifier);
+		}
+		String[] codesArr = new String[codes.size()];
+		codesArr = codes.toArray(codesArr);
+		MviewWwClassifier cl = MVIEW_WW_CLASSIFIER.as("cl");
+		return create
+				.select(
+						cl.NAME,
+						cl.CODE,
+						cl.VALUE,
+						cl.LANG)
+				.from(cl)
+				.where(cl.NAME.eq(name.name())
+						.and(cl.CODE.in(codes))
+						.and(cl.TYPE.eq(OS_CLASSIF_VALUE_TYPE))
+						.and(cl.LANG.eq(DEFAULT_CLASSIF_VALUE_LANG)))
+				.groupBy(cl.NAME, cl.CODE, cl.ORDER_BY, cl.VALUE, cl.LANG)
+				.orderBy(DSL.field("array_position({0}, cl.code)", Integer.class, DSL.val(codesArr)))
+				.fetchInto(Classifier.class);
 	}
 
 	@Cacheable(value = CACHE_KEY_CLASSIF, key = "#root.methodName")

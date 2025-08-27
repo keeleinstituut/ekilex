@@ -40,7 +40,9 @@ public class OsWord extends AbstractDataObject implements DecoratedWordType {
 
 	private List<OsWordRelationGroup> wordRelationGroups;
 
-	private List<OsWordRelationGroup> primaryWordRelationGroups;
+	private List<OsWordRelationGroup> primary1WordRelationGroups;
+
+	private List<OsWordRelationGroup> primary2WordRelationGroups;
 
 	private List<OsWordRelationGroup> secondaryWordRelationGroups;
 
@@ -185,12 +187,20 @@ public class OsWord extends AbstractDataObject implements DecoratedWordType {
 		this.wordRelationGroups = wordRelationGroups;
 	}
 
-	public List<OsWordRelationGroup> getPrimaryWordRelationGroups() {
-		return primaryWordRelationGroups;
+	public List<OsWordRelationGroup> getPrimary1WordRelationGroups() {
+		return primary1WordRelationGroups;
 	}
 
-	public void setPrimaryWordRelationGroups(List<OsWordRelationGroup> primaryWordRelationGroups) {
-		this.primaryWordRelationGroups = primaryWordRelationGroups;
+	public void setPrimary1WordRelationGroups(List<OsWordRelationGroup> primary1WordRelationGroups) {
+		this.primary1WordRelationGroups = primary1WordRelationGroups;
+	}
+
+	public List<OsWordRelationGroup> getPrimary2WordRelationGroups() {
+		return primary2WordRelationGroups;
+	}
+
+	public void setPrimary2WordRelationGroups(List<OsWordRelationGroup> primary2WordRelationGroups) {
+		this.primary2WordRelationGroups = primary2WordRelationGroups;
 	}
 
 	public List<OsWordRelationGroup> getSecondaryWordRelationGroups() {
