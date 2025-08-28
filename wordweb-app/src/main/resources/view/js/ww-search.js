@@ -1,5 +1,3 @@
-var windowWidthTreshold = 768;
-
 $(window).on("popstate", function(e) {
 	e.preventDefault();
 	var historyState = e.originalEvent.state;
@@ -132,24 +130,6 @@ $(document).on("click", "button[id^='word-details-link']", function() {
 
 $(document).on("click", "a[id^='feedback-link']", function() {
 	$("button[data-target='#feedback-modal']").trigger('click');
-});
-
-$(document).on("click", ".homonym-item", function() {
-	$(".homonym-list-item").removeClass("selected last-selected");
-	$(".homonym-item:first").removeClass("animation-target").dequeue();
-	$(this).parents(".homonym-list-item").addClass("selected last-selected");
-	var homonymList = $('.homonym-list');
-	if ($(window).width() >= windowWidthTreshold) {
-		const bodyParentPositionLeft = $('.homonym-list-item.selected .homonym__body').parent().position()?.left;
-		if (!bodyParentPositionLeft) {
-			return;
-		}
-		homonymList.animate({
-			scrollLeft: bodyParentPositionLeft - $('#word-details').offset().left + homonymList.scrollLeft()
-		}, 200);
-	}
-	setSelectedHomonymValueForMobile($(this).html());
-	$(".homonym-list").removeClass("expand");
 });
 
 $(document).on("click", ".word-form", function() {

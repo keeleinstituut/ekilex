@@ -25,10 +25,12 @@
   </th:block>
   <th:block th:fragment="homonyms">
     <div th:if="${searchResult.resultExists}" th:class="${searchResult.singleResult ? 'd-none' : 'overflow-hidden homonym-panel'}">
+      <button type="button" class="homonym-list-toggle d-flex d-md-none" id="homonymListToggleButton">Nupu sisu</button>
       <ul class="homonym-list list-unstyled w-100">
         <th:block th:each="word : ${searchResult.words}">
           <li class="homonym-list-item" th:classappend="${word.selected ? 'selected' : ''}">
             <form class="h-100" th:action="@{${word.searchUri}}" method="get">
+              <input type="hidden" name="word-selected" th:value="${word.selected}" />
               <button type="submit" class="homonym-item homonym__item" th:classappend="${word.selected ? 'animation-target' : ''}">
                 <div class="homonym__body">
                   <div class="text-body-two">

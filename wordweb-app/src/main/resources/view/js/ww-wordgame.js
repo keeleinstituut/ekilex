@@ -593,7 +593,6 @@ class WordGame {
 
 	bindVoiceSearch() {
 		$("#wordgame-button-start-rec").click(function(e) {
-			console.log('aaaaa');
 			$('#wordgame-button-start-rec').prop('hidden', 'hidden');
 			$('#wordgame-button-stop-rec').prop('hidden', null);
 			$('.search-btn').prop('disabled', true);

@@ -73,7 +73,7 @@
   --color-cloudy-day: #7C8898;
   --color-hylge-hall: #C1C9D4;
   --color-meri-hylge-hall: #E3EFFB;
-  --color-placeholder-gray: #E7E7E7;
+  --color-linna-hall: #E7E7E7;
   --color-white: #fff;
   --color-blue-100: #a0dcf8;
   --color-blue-200: #5aabe0;
@@ -13973,7 +13973,7 @@ body.hidden-scroll {
   z-index: calc(var(--header-z-index) + 1);
 }
 .gallery-image {
-  border: 1px solid var(--color-placeholder-gray);
+  border: 1px solid var(--color-linna-hall);
   border-radius: 8px;
   display: flex;
   flex-direction: column;
@@ -14188,8 +14188,9 @@ body.hidden-scroll {
 @media (min-width: 768px) {
   .homonym__item {
     width: 200px;
-    height: 92px;
+    height: 100%;
     border-radius: 8px;
+    max-height: 120px;
   }
 }
 .homonym__body {
@@ -17062,7 +17063,7 @@ span.material-symbols-outlined--small {
   --color-cloudy-day: #7C8898;
   --color-hylge-hall: #C1C9D4;
   --color-meri-hylge-hall: #E3EFFB;
-  --color-placeholder-gray: #E7E7E7;
+  --color-linna-hall: #E7E7E7;
   --color-white: #fff;
   --color-blue-100: #a0dcf8;
   --color-blue-200: #5aabe0;
