@@ -1,6 +1,6 @@
 export interface Toast {
   title?: string;
-  body: string;
+  body?: string;
   readMoreUrl?: string;
   readMoreText?: string;
   readMoreIsExternal?: boolean;

@@ -14,6 +14,7 @@ Hello world
 <button
   on:click={() =>
     toastContainer.addToast({
+      title: "Version 1.41 Release Notes 19.06.2025",
       body: "- Parandatud viga, mis põhjustas kasutusnäite muutmisel selle märgenduse kadumise",
       closeLabel: "Sulge",
       readMoreText: "Loe lähemalt",
@@ -28,7 +29,7 @@ Hello world
   /**
    * @type {{ addToast: (arg0: {
    *  title?: string;
-   *  body: string;
+   *  body?: string;
    * closeLabel: string;
    * readMoreText: string;
    * readMoreUrl: string;
