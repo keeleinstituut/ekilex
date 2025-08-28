@@ -195,11 +195,14 @@
       <eki-toast id="latest-ww-news-toast-container"></eki-toast>
       <script th:inline="javascript">
         $(document).ready(function() {
-          const toastContainer = $("#latest-ww-news-toast-container").get(0);
+          const toastContainer = document.getElementById("latest-ww-news-toast-container");
+          if (!toastContainer) {
+            console.warn("Could not find a toast container");
+            return;
+          }
           // The following comment syntax is for thymeleaf to embed variables
           toastContainer.addToast({
             title:/*[[${latestWordwebNewsArticle.title} + ' ' + ${#temporals.format(latestWordwebNewsArticle.created, 'dd.MM.yyyy')}]]*/ "",
-            body:/*[[${latestWordwebNewsArticle.contentCut}]]*/ "",
             closeLabel:/*[[#{menu.close}]]*/ "",
             readMoreText: /*[[#{button.read.more}]]*/ "",
             readMoreUrl: /*[[@{/news}]]*/ "",
