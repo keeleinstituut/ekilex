@@ -47,14 +47,15 @@
   }
 
   &__cards {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
+    display: flex;
+    flex-wrap: wrap;
     gap: 16px;
     grid-column: content;
     margin-top: 24px;
+    justify-content: center;
 
     @media (min-width: 768px) {
-      grid-template-columns: repeat(3, 1fr);
+      justify-content: baseline;
     }
   }
 

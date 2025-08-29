@@ -10,28 +10,41 @@
 >
   {#each toasts as toast}
     <div class={toast.class} transition:fly={{ x: 100 }}>
-      <div class="flex gap-1 flex-col{toast.title ? ' mt-2' : ''}">
+      <div
+        class="flex gap-1"
+        class:flex-col={toast.body}
+        class:mt-2={toast.title}
+      >
         {#if toast.title}
-          <span class="text-sm font-medium">{toast.title}</span>
+          <p class="text-sm font-medium">
+            {toast.title}
+            {#if !toast.body && toast.readMoreText}
+              <a
+                class="underline hover:no-underline"
+                href={toast.readMoreUrl}
+                target={toast.readMoreIsExternal ? "_blank" : undefined}
+                rel={toast.readMoreIsExternal ? "noreferrer" : undefined}
+                >{toast.readMoreText}</a
+              >
+            {/if}
+          </p>
         {/if}
-        <p
-          class="break-word"
-          class:text-sm={toast.type}
-          class:text-xs={!toast.type}
-        >
-          <span>
-            {toast.body}
-          </span>
-          {#if toast.readMoreText}
-            <a
-              class="underline hover:no-underline"
-              href={toast.readMoreUrl}
-              target={toast.readMoreIsExternal ? "_blank" : undefined}
-              rel={toast.readMoreIsExternal ? "noreferrer" : undefined}
-              >{toast.readMoreText}</a
-            >
-          {/if}
-        </p>
+        {#if toast.body}
+          <p class="break-word text-sm">
+            <span>
+              {toast.body}
+            </span>
+            {#if toast.readMoreText}
+              <a
+                class="underline hover:no-underline"
+                href={toast.readMoreUrl}
+                target={toast.readMoreIsExternal ? "_blank" : undefined}
+                rel={toast.readMoreIsExternal ? "noreferrer" : undefined}
+                >{toast.readMoreText}</a
+              >
+            {/if}
+          </p>
+        {/if}
       </div>
       <button
         class="w-6 h-6 flex justify-center items-center"

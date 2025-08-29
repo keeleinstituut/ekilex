@@ -590,15 +590,17 @@
   <th:block th:fragment="header">
     <div class="header">
       <div class="header__contents">
-        <img class="header__logo" th:src="@{'/view/img/ekilex.svg'}" alt="" width="36" height="36">
-        <div class="header__title-wrapper">
-          <a th:href="@{/}" class="header__title">
-            Ekilex
-          </a>
-          <span th:if="${isDev}" class="header__dev-env" th:text="${envName}">
-            TEST
-          </span>
-        </div>
+        <a class="header__index-link" th:href="@{/}" th:aria-label="|Ekilex${isDev ? ' ' + envName : ''}|">
+          <img class="header__logo" th:src="@{'/view/img/ekilex.svg'}" alt="" width="36" height="36">
+          <div class="header__title-wrapper">
+            <span class="header__title">
+              Ekilex
+            </span>
+            <span th:if="${isDev}" class="header__dev-env" th:text="${envName}">
+              TEST
+            </span>
+          </div>
+        </a>
         <div class="header__actions">
           <a class="button" th:href="@{/login}" th:text="#{login.title}">
             Logi sisse

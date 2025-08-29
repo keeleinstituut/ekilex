@@ -42,7 +42,7 @@
         width: 86px;
         height: 54px;
         position: absolute;
-        left: 100%;
+        left: calc(100% - 86px);
         // Subtract the leftover from (footer's bottom padding - logo's height) to line it up with the bottom of the footer
         top: calc(100% - 18px);
         // Subtract padding from image size

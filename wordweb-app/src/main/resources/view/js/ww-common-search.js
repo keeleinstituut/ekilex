@@ -1,8 +1,4 @@
 $(document).ready(function() {
-	var selectedHomonymItem = getSelectedHomonym();
-	selectedHomonymItem.delay(500).queue(function() { }).trigger('click');
-	selectedHomonymItem.addClass("animation-target");
-	setSelectedHomonymValueForMobile(getSelectedHomonym().html());
 	initDatasetDropdown();
 	initLangDropdown();
 	searchWordAutocomplete();
@@ -192,27 +188,6 @@ function clickSearchIfInputExists() {
 	}
 }
 
-function getSelectedHomonym() {
-	var selectedHomonymItem = $(".homonym-item").filter(function() {
-		var isHomonymSelected = $(this).closest("form").find("input[name='word-selected']").val();
-		return isHomonymSelected == "true";
-	}).filter(":first");
-	if (selectedHomonymItem.get().length == 0) {
-		selectedHomonymItem = $(".homonym-item:first");
-	}
-	return selectedHomonymItem;
-}
-
-function setSelectedHomonymValueForMobile(inputHTML) {
-	var isMultiHomonym = $(".homonym-item").length > 1;
-	if (isMultiHomonym) {
-		$("#homonymListToggleButton").html(inputHTML);
-	}
-}
-
-$(document).on("click", "#homonymListToggleButton", function() {
-	$(".homonym-list").toggleClass("expand");
-});
 
 $(document).on("shown.bs.modal", "[id^='morpho-modal-']", function() {
 	var main = $(this);
