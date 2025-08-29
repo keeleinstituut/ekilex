@@ -1,6 +1,7 @@
 package eki.wordweb.web.util;
 
 import java.net.URI;
+import java.util.Collections;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -18,6 +19,28 @@ public class StatDataUtil {
 
 	@Value("${wordweb.home.domains}")
 	private List<String> wwHomeDomains;
+
+	public SearchStat composeSearchStat(
+			HttpServletRequest request,
+			boolean isSearchForm,
+			String searchMode,
+			String searchWord,
+			Integer homonymNr,
+			String searchUri,
+			AbstractSearchResult searchResult) throws Exception {
+
+		List<String> destinLangs = Collections.emptyList();
+		List<String> datasetCodes = Collections.emptyList();
+
+		SearchValidation searchValidation = new SearchValidation();
+		searchValidation.setSearchWord(searchWord);
+		searchValidation.setHomonymNr(homonymNr);
+		searchValidation.setDestinLangs(destinLangs);
+		searchValidation.setDatasetCodes(datasetCodes);
+		searchValidation.setSearchUri(searchUri);
+
+		return composeSearchStat(request, isSearchForm, searchMode, searchValidation, searchResult);
+	}
 
 	public SearchStat composeSearchStat(
 			HttpServletRequest request,

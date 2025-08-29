@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import eki.common.data.SearchStat;
 import eki.wordweb.data.WordsMatch;
 import eki.wordweb.data.os.OsSearchResult;
 import eki.wordweb.service.OsSearchService;
@@ -82,6 +83,7 @@ public class OsSearchController extends AbstractSearchController {
 	public String searchOsWordsByUri(
 			@PathVariable(name = "searchValue") String searchValue,
 			@PathVariable(name = "homonymNr", required = false) String homonymNrStr,
+			HttpServletRequest request,
 			Model model) throws Exception {
 
 		searchValue = decode(searchValue);
@@ -91,6 +93,7 @@ public class OsSearchController extends AbstractSearchController {
 		}
 		searchValue = textDecorationService.unifySymbols(searchValue);
 		boolean isMaskedSearchCrit = webUtil.isMaskedSearchCrit(searchValue);
+		boolean isSearchForm = isSearchForm(model);
 
 		if (isMaskedSearchCrit) {
 			String cleanMaskSearchValue = cleanupMask(searchValue);
@@ -102,6 +105,10 @@ public class OsSearchController extends AbstractSearchController {
 			WordsMatch wordsMatch = osSearchService.getWordsWithMask(cleanMaskSearchValue);
 			model.addAttribute("wordsMatch", wordsMatch);
 
+			String searchUri = webUtil.composeOsSearchUri(searchValue, null);
+			SearchStat searchStat = statDataUtil.composeSearchStat(request, isSearchForm, SEARCH_MODE_OS, searchValue, null, searchUri, wordsMatch);
+			statDataCollector.postSearchStat(searchStat);
+
 			return OS_WORDS_PAGE;
 		} else {
 			Integer homonymNr = nullSafe(homonymNrStr);
@@ -112,6 +119,10 @@ public class OsSearchController extends AbstractSearchController {
 			}
 			OsSearchResult searchResult = osSearchService.search(searchValue, homonymNr);
 			model.addAttribute("searchResult", searchResult);
+
+			String searchUri = webUtil.composeOsSearchUri(searchValue, homonymNr);
+			SearchStat searchStat = statDataUtil.composeSearchStat(request, isSearchForm, SEARCH_MODE_OS, searchValue, homonymNr, searchUri, searchResult);
+			statDataCollector.postSearchStat(searchStat);
 
 			return OS_SEARCH_PAGE;
 		}
