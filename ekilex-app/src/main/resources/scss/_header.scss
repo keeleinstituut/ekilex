@@ -15,6 +15,20 @@
     align-items: center;
   }
 
+  &__index-link {
+    display: flex;
+    gap: 8px;
+    margin-right: 4px;
+    align-items: center;
+    &:hover {
+      text-decoration: none;
+    }
+
+    @media (min-width: 768px) {
+      margin-right: 8px;
+    }
+  }
+
   &__title,
   &__dev-env {
     font-family: "Helvetica Neue", Arial;
@@ -30,8 +44,12 @@
   }
 
   &__title-wrapper {
-    display: flex;
+    display: none;
     align-items: center;
+    
+    @media (min-width: 768px) {
+      display: flex;
+    }
   }
 
   &__dev-env {
@@ -49,7 +67,6 @@
   &__logo {
     width: 36px;
     height: 36px;
-    margin-right: 8px;
   }
 }
 
