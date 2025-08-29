@@ -283,6 +283,11 @@ public class ViewUtil implements WebConstant, SystemConstant, GlobalConstant {
 		return uri;
 	}
 
+	public String getOsSearchUri(String word, Integer homonymNr) {
+		String uri = webUtil.composeOsSearchUri(word, homonymNr);
+		return uri;
+	}
+
 	public String getDatasetFirstLetterSearchUri(String datasetCode, Character firstLetter) {
 		String uri = webUtil.composeDatasetFirstLetterSearchUri(datasetCode, firstLetter);
 		return uri;
