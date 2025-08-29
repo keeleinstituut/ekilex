@@ -43,7 +43,7 @@ import eki.wordweb.web.bean.SessionBean;
 @ConditionalOnWebApplication
 @Controller
 @SessionAttributes(WebConstant.SESSION_BEAN)
-public class UnifSearchController extends AbstractSearchController {
+public class UnifSearchController extends AbstractMainSearchController {
 
 	private static Logger logger = LoggerFactory.getLogger(UnifSearchController.class);
 
@@ -86,7 +86,7 @@ public class UnifSearchController extends AbstractSearchController {
 		Integer selectedWordHomonymNr = null;
 		if (webUtil.isMaskedSearchCrit(searchWord)) {
 			String cleanMaskSearchWord = cleanupMask(searchWord);
-			boolean isValidMaskedSearch = isValidMaskedSearch(searchWord, cleanMaskSearchWord);
+			boolean isValidMaskedSearch = isValidMaskedSearch(cleanMaskSearchWord);
 			if (!isValidMaskedSearch) {
 				return REDIRECT_PREF + SEARCH_URI + UNIF_URI;
 			}
@@ -323,7 +323,7 @@ public class UnifSearchController extends AbstractSearchController {
 
 		// mask
 		String cleanMaskSearchWord = cleanupMask(searchWord);
-		isValid = isValid & isValidMaskedSearch(searchWord, cleanMaskSearchWord);
+		isValid = isValid & isValidMaskedSearch(cleanMaskSearchWord);
 		isValid = isValid & StringUtils.equals(searchWord, cleanMaskSearchWord);
 
 		destinLangsStr = StringUtils.join(searchValidation.getDestinLangs(), UI_FILTER_VALUES_SEPARATOR);

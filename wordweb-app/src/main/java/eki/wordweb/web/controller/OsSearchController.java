@@ -1,5 +1,8 @@
 package eki.wordweb.web.controller;
 
+import java.util.List;
+import java.util.Map;
+
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.lang3.StringUtils;
@@ -11,8 +14,10 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import eki.wordweb.data.WordsMatch;
 import eki.wordweb.data.os.OsSearchResult;
 import eki.wordweb.service.OsSearchService;
 
@@ -50,7 +55,20 @@ public class OsSearchController extends AbstractSearchController {
 			return REDIRECT_PREF + SEARCH_URI + OS_URI;
 		}
 		searchValue = textDecorationService.unifySymbols(searchValue);
-		Integer homonymNr = 1;
+		boolean isMaskedSearchCrit = webUtil.isMaskedSearchCrit(searchValue);
+
+		Integer homonymNr;
+		if (isMaskedSearchCrit) {
+			String cleanMaskSearchValue = cleanupMask(searchValue);
+			boolean isValidMaskedSearch = isValidMaskedSearch(cleanMaskSearchValue);
+			if (!isValidMaskedSearch) {
+				return REDIRECT_PREF + SEARCH_URI + OS_URI;
+			}
+			searchValue = cleanMaskSearchValue;
+			homonymNr = null;
+		} else {
+			homonymNr = 1;
+		}
 		String searchUri = webUtil.composeOsSearchUri(searchValue, homonymNr);
 		setSearchFormAttribute(redirectAttributes, Boolean.TRUE);
 
@@ -61,21 +79,51 @@ public class OsSearchController extends AbstractSearchController {
 			SEARCH_URI + OS_URI + "/{searchValue}",
 			SEARCH_URI + OS_URI + "/{searchValue}/{homonymNr}"
 	})
-	public String searchUnifWordsByUri(
+	public String searchOsWordsByUri(
 			@PathVariable(name = "searchValue") String searchValue,
 			@PathVariable(name = "homonymNr", required = false) String homonymNrStr,
 			Model model) throws Exception {
 
-		Integer homonymNr = nullSafe(homonymNrStr);
-		if (homonymNr == null) {
-			homonymNr = 1;
-			String searchUri = webUtil.composeOsSearchUri(searchValue, homonymNr);
-			return REDIRECT_PREF + searchUri;
+		searchValue = decode(searchValue);
+		searchValue = cleanupMain(searchValue);
+		if (StringUtils.isBlank(searchValue)) {
+			return REDIRECT_PREF + SEARCH_URI + OS_URI;
 		}
-		OsSearchResult searchResult = osSearchService.search(searchValue, homonymNr);
+		searchValue = textDecorationService.unifySymbols(searchValue);
+		boolean isMaskedSearchCrit = webUtil.isMaskedSearchCrit(searchValue);
 
-		model.addAttribute("searchResult", searchResult);
+		if (isMaskedSearchCrit) {
+			String cleanMaskSearchValue = cleanupMask(searchValue);
+			boolean isValidMaskedSearch = isValidMaskedSearch(cleanMaskSearchValue);
+			if (!isValidMaskedSearch) {
+				return REDIRECT_PREF + SEARCH_URI + OS_URI;
+			}
+			searchValue = cleanMaskSearchValue;
+			WordsMatch wordsMatch = osSearchService.getWordsWithMask(cleanMaskSearchValue);
+			model.addAttribute("wordsMatch", wordsMatch);
 
-		return OS_SEARCH_PAGE;
+			return OS_WORDS_PAGE;
+		} else {
+			Integer homonymNr = nullSafe(homonymNrStr);
+			if (homonymNr == null) {
+				homonymNr = 1;
+				String searchUri = webUtil.composeOsSearchUri(searchValue, homonymNr);
+				return REDIRECT_PREF + searchUri;
+			}
+			OsSearchResult searchResult = osSearchService.search(searchValue, homonymNr);
+			model.addAttribute("searchResult", searchResult);
+
+			return OS_SEARCH_PAGE;
+		}
+	}
+
+	@GetMapping(value = SEARCH_WORD_FRAG_URI + OS_URI + "/{wordFrag}", produces = "application/json;charset=UTF-8")
+	@ResponseBody
+	public Map<String, List<String>> searchWordsByFragment(@PathVariable("wordFrag") String wordFragment) {
+
+		wordFragment = cleanupBasic(wordFragment);
+		Map<String, List<String>> wordsMap = osSearchService.getWordsByInfixLev(wordFragment, AUTOCOMPLETE_MAX_RESULTS_LIMIT);
+
+		return wordsMap;
 	}
 }

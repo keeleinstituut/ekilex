@@ -2,7 +2,7 @@
 <html lang="et" xmlns:th="http://www.thymeleaf.org">
 <head th:replace="common-app :: common_header(_,~{::links},_)">
 <th:block th:fragment="links">
-  <script type="text/javascript" th:src="@{/view/js/ww-od.js}"></script>
+  <script type="text/javascript" th:src="@{/view/js/ww-os.js}"></script>
 </th:block>
 </head>
 <body class="home-page d-flex flex-column survey-active">
@@ -53,7 +53,7 @@
   <div th:replace="common-app :: footer-content"></div>
   <div th:replace="common-app :: feedback-form"></div>
   <script th:inline="javascript">
-	
+  	var searchWordFragUrl = /*[[@{/searchwordfrag/os}]]*/"/searchwordfrag/os";
   </script>
 </body>
 </html>

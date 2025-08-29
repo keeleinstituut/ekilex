@@ -179,12 +179,12 @@ function initStickyScrollPanel() {
 	const panel = document.querySelector(".sticky-scroll-panel");
 	const tags = panel?.querySelector(".sticky-scroll-panel__tags");
 	const header = document.querySelector('.header');
-  if (!tags) {
+	if (!tags) {
 		return;
-  }
+	}
 	const panelHeight = panel.offsetHeight ?? 0;
 	let stickyScrollTimeout;
-  const links = [...tags.children];
+	const links = [...tags.children];
 	links.forEach(link => {
 		link.addEventListener('click', e => {
 			e.preventDefault();
@@ -193,7 +193,7 @@ function initStickyScrollPanel() {
 				const elementPosition = target.getBoundingClientRect().top;
 				// Scroll to element, subtracting the sticky panels height and a little extra
 				const offsetPosition = elementPosition + window.scrollY - panelHeight - (header.offsetHeight ?? 0);
-			
+
 				window.scrollTo({
 					top: offsetPosition,
 					behavior: "smooth"
@@ -203,39 +203,39 @@ function initStickyScrollPanel() {
 	})
 	const linkTargetCache = {};
 
-  const activeClass = "sticky-scroll-panel__tag--active";
-  document.addEventListener("scroll", () => {
-    // Debounce scroll events
-    clearTimeout(stickyScrollTimeout);
-    stickyScrollTimeout = setTimeout(() => {
-      const element = [];
-      links.forEach((link) => {
-        let target = linkTargetCache[link.href];
-        if (!target) {
-          const block = document.getElementById(link.href.split("#")?.[1]);
-          if (block) {
-            linkTargetCache[link.href] = block;
-            target = block;
-          }
-        }
-        link.classList.remove(activeClass);
+	const activeClass = "sticky-scroll-panel__tag--active";
+	document.addEventListener("scroll", () => {
+		// Debounce scroll events
+		clearTimeout(stickyScrollTimeout);
+		stickyScrollTimeout = setTimeout(() => {
+			const element = [];
+			links.forEach((link) => {
+				let target = linkTargetCache[link.href];
+				if (!target) {
+					const block = document.getElementById(link.href.split("#")?.[1]);
+					if (block) {
+						linkTargetCache[link.href] = block;
+						target = block;
+					}
+				}
+				link.classList.remove(activeClass);
 				if (!target) {
 					return;
 				}
-        // Check if element is in viewport
-        const targetTop = target.getBoundingClientRect().top;
-        // Get the closest element to the top of viewport
-        if (
-          targetTop <= target.offsetHeight + 64 &&
-          (element[0] < targetTop || element[0] === undefined)
-        ) {
-          element[0] = targetTop;
-          element[1] = link;
-        }
-      });
-      if (element[1]) {
-        element[1].classList.add(activeClass);
-      }
-    }, 50);
-  });
+				// Check if element is in viewport
+				const targetTop = target.getBoundingClientRect().top;
+				// Get the closest element to the top of viewport
+				if (
+					targetTop <= target.offsetHeight + 64 &&
+					(element[0] < targetTop || element[0] === undefined)
+				) {
+					element[0] = targetTop;
+					element[1] = link;
+				}
+			});
+			if (element[1]) {
+				element[1].classList.add(activeClass);
+			}
+		}, 50);
+	});
 }

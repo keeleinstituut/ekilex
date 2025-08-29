@@ -26,6 +26,8 @@ public interface WebConstant {
 
 	String OS_SEARCH_PAGE = "os-search";
 
+	String OS_WORDS_PAGE = "os-words";
+
 	String COMMON_SEARCH_SIDEBAR_PAGE = "common-search-sidebar";
 
 	String NEW_WORDS_PAGE = "new-words";

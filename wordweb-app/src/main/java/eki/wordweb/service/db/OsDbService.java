@@ -8,16 +8,25 @@ import static eki.wordweb.data.db.Tables.OS_WORD_OS_USAGE;
 import static eki.wordweb.data.db.Tables.OS_WORD_RELATION;
 
 import java.util.List;
+import java.util.Map;
 
+import org.apache.commons.lang3.StringUtils;
+import org.jooq.Condition;
 import org.jooq.DSLContext;
 import org.jooq.Field;
 import org.jooq.JSON;
+import org.jooq.Record2;
+import org.jooq.Table;
 import org.jooq.impl.DSL;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Component;
 
+import eki.common.constant.GlobalConstant;
 import eki.wordweb.constant.SystemConstant;
+import eki.wordweb.data.WordSearchElement;
+import eki.wordweb.data.WordsMatch;
+import eki.wordweb.data.db.Routines;
 import eki.wordweb.data.db.tables.OsLexemeMeaning;
 import eki.wordweb.data.db.tables.OsWord;
 import eki.wordweb.data.db.tables.OsWordOsMorph;
@@ -26,7 +35,7 @@ import eki.wordweb.data.db.tables.OsWordOsUsage;
 import eki.wordweb.data.db.tables.OsWordRelation;
 
 @Component
-public class OsDbService implements SystemConstant {
+public class OsDbService implements SystemConstant, GlobalConstant {
 
 	@Autowired
 	private DSLContext create;
@@ -62,7 +71,7 @@ public class OsDbService implements SystemConstant {
 				.fetchInto(eki.wordweb.data.os.OsWord.class);
 	}
 
-	public eki.wordweb.data.os.OsWord getOdWord(Long wordId) {
+	public eki.wordweb.data.os.OsWord getWord(Long wordId) {
 
 		OsWord w = OS_WORD.as("w");
 		OsWordOsMorph wom = OS_WORD_OS_MORPH.as("wom");
@@ -127,6 +136,82 @@ public class OsDbService implements SystemConstant {
 				.where(w.WORD_ID.eq(wordId))
 				.fetchOptionalInto(eki.wordweb.data.os.OsWord.class)
 				.orElse(null);
+	}
+
+	public WordsMatch getWordsWithMask(String searchValue) {
+
+		searchValue = StringUtils.trim(searchValue);
+		searchValue = StringUtils.replace(searchValue, SEARCH_MASK_CHARS, "%");
+		searchValue = StringUtils.replace(searchValue, SEARCH_MASK_CHAR, "_");
+		Field<String> searchValueLowerField = DSL.lower(searchValue);
+
+		OsWord w = OS_WORD.as("w");
+		Condition where = w.VALUE.like(searchValueLowerField);
+
+		List<String> wordValues = create
+				.selectDistinct(w.VALUE)
+				.from(w)
+				.where(where)
+				.orderBy(w.VALUE)
+				.limit(MASKED_SEARCH_RESULT_LIMIT)
+				.fetchInto(String.class);
+
+		int resultCount = create
+				.select(DSL.countDistinct(w.VALUE))
+				.from(w)
+				.where(where)
+				.fetchSingleInto(int.class);
+
+		boolean resultExists = resultCount > 0;
+		boolean singleResult = resultCount == 1;
+
+		return new WordsMatch(wordValues, resultExists, singleResult, resultCount);
+	}
+
+	@SuppressWarnings("unchecked")
+	public Map<String, List<WordSearchElement>> getWordsByInfixLev(String wordInfix, String wordInfixUnaccent, int maxWordCount) {
+
+		Field<String> wordInfixLowerField = DSL.lower(wordInfix);
+		Field<String> wordInfixLowerLikeField = DSL.lower('%' + wordInfix + '%');
+		Field<String> wordInfixLowerUnaccentLikeField;
+		if (StringUtils.isBlank(wordInfixUnaccent)) {
+			wordInfixLowerUnaccentLikeField = wordInfixLowerLikeField;
+		} else {
+			wordInfixLowerUnaccentLikeField = DSL.lower('%' + wordInfixUnaccent + '%');
+		}
+
+		OsWord w = OS_WORD.as("w");
+		OsWord aw = OS_WORD.as("aw");
+		Condition wwhere = w.VALUE.like(wordInfixLowerLikeField);
+		Condition awwhere = aw.VALUE_AS_WORD.like(wordInfixLowerUnaccentLikeField);
+
+		// keeping the grouping structure for future features
+
+		Table<Record2<String, String>> ws = DSL
+				.select(
+						DSL.val(WORD_SEARCH_GROUP_WORD).as("sgroup"),
+						w.VALUE.as("word_value"))
+				.from(w)
+				.where(wwhere)
+				.unionAll(DSL
+						.select(
+								DSL.val(WORD_SEARCH_GROUP_WORD).as("sgroup"),
+								aw.VALUE.as("word_value"))
+						.from(aw)
+						.where(awwhere))
+				.asTable("ws");
+
+		Field<Integer> wlf = DSL.field(Routines.levenshtein1(ws.field("word_value", String.class), wordInfixLowerField));
+
+		return (Map<String, List<WordSearchElement>>) create
+				.select(
+						ws.field("sgroup", String.class),
+						ws.field("word_value", String.class),
+						wlf.as("lev"))
+				.from(ws)
+				.orderBy(DSL.field("lev"))
+				.limit(maxWordCount)
+				.fetchGroups("sgroup", WordSearchElement.class);
 	}
 
 	@Cacheable(value = CACHE_KEY_CLASSIF, key = "#root.methodName")

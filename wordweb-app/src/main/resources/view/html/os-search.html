@@ -158,6 +158,8 @@
     </main>
   </div>
   <div th:replace="common-app :: footer-content"></div>
-  <script th:inline="javascript"></script>
+  <script th:inline="javascript">
+  	var searchWordFragUrl = /*[[@{/searchwordfrag/os}]]*/"/searchwordfrag/os";
+  </script>
 </body>
 </html>
