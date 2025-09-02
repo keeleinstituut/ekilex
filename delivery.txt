@@ -1,5 +1,6 @@
-Märkused ver 1.42.0 tarne kohta:
+Märkused ver 1.43.0 tarne kohta:
 
-mvn spring-boot:run -P maint -D spring-boot.run.profiles=dev -D spring-boot.run.arguments="task="recacc""
+ülivõrde seoste ümberjärjestamine
+mvn spring-boot:run -P wrsupr -D spring-boot.run.profiles=dev
 
 

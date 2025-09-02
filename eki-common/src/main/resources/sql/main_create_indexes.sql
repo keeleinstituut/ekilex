@@ -4,6 +4,7 @@ create index eki_user_profile_user_id_idx on eki_user_profile(user_id);
 create index eki_user_profile_recent_dataset_permission_id_idx on eki_user_profile(recent_dataset_permission_id);
 create index dataset_code_idx on dataset(code);
 create index dataset_type_idx on dataset(type);
+create index dataset_is_public_idx on dataset(is_public);
 create index dataset_freeform_type_dataset_code_idx on dataset_freeform_type(dataset_code);
 create index dataset_freeform_type_freeform_owner_idx on dataset_freeform_type(freeform_owner);
 create index dataset_perm_user_id_idx on dataset_permission(user_id);

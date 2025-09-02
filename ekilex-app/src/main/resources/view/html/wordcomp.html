@@ -32,22 +32,22 @@
                 </div>
                 <div class="action-buttons-2">
                   <button type="button" class="btn badge badge-primary"
-                  th:title="#{common.edit}"
-                  data-toggle="modal"
-                  th:data-target="${'#editWordOsRecommendationDlg_' + wordOsRecommendation.id}"
+                          th:title="#{common.edit}"
+                          data-toggle="modal"
+                          th:data-target="${'#editWordOsRecommendationDlg_' + wordOsRecommendation.id}"
                           sec:authorize="#vars.details.word.crudGrant">
-                          <i class="fa fa-edit" aria-hidden="true"></i>
-                        </button>
-                        <button type="button" class="btn badge badge-warning"
-                        th:data-id="${wordOsRecommendation.id}"
-                        data-op-code="word_os_recommendation"
-                        data-toggle="delete-confirm"
-                        data-placement="right"
-                        sec:authorize="#vars.details.word.crudGrant">
-                        <i class="fa fa-remove" aria-hidden="true"></i>
-                    </button>
-                  </div>
+                    <i class="fa fa-edit" aria-hidden="true"></i>
+                  </button>
+                  <button type="button" class="btn badge badge-warning"
+                          th:data-id="${wordOsRecommendation.id}"
+                          data-op-code="word_os_recommendation"
+                          data-toggle="delete-confirm"
+                          data-placement="right"
+                          sec:authorize="#vars.details.word.crudGrant">
+                    <i class="fa fa-remove" aria-hidden="true"></i>
+                  </button>
                 </div>
+              </div>
             </div>
           </th:block>
         </div>
@@ -110,35 +110,20 @@
       <div class="ekiAccordion__title">
         <span class="badge badge-data-exists" th:unless="${#lists.isEmpty(details.word.wordOsUsages)}">•</span>
         <span th:text="#{lex.word.os.usage}">ÕS kasutusnäited</span>
-        <button type="button" class="ekiAccordion__add"
-                th:title="#{common.add.new}" data-toggle="modal"
-                th:data-target="${'#addWordOsUsageDlg_' + wordId}"
-                sec:authorize="#vars.details.word.crudGrant">
+        <button type="button" class="ekiAccordion__add" th:title="#{common.add.new}" data-toggle="modal" th:data-target="${'#addWordOsUsageDlg_' + wordId}" sec:authorize="#vars.details.word.crudGrant">
           <i class="fa fa-plus" aria-hidden="true"></i>
         </button>
       </div>
       <div class="ekiAccordion__content">
-        <div th:if="${#lists.isEmpty(details.word.wordOsUsages)}" th:text="#{common.no.content}">
-          Sisu puudub...
-        </div>
-        <div 
-          data-plugin="sorter"
-          data-sorter:type="word_os_usage"
-          data-sorter:handle=".sorter-handle"
-          th:unless="${#lists.isEmpty(details.word.wordOsUsages)}">
+        <div th:if="${#lists.isEmpty(details.word.wordOsUsages)}" th:text="#{common.no.content}">Sisu puudub...</div>
+        <div data-plugin="sorter" data-sorter:type="word_os_usage" data-sorter:handle=".sorter-handle" th:unless="${#lists.isEmpty(details.word.wordOsUsages)}">
           <th:block th:each="wordOsUsage : ${details.word.wordOsUsages}">
             <div th:replace="lexdialog :: edit_word_os_usage"></div>
-            <div class="d-flex sidebar-actions"
-              th:data-id="${wordOsUsage.id}"
-              th:data-orderby="${wordOsUsage.orderBy}"
-            >
-              <span
-                sec:authorize="#vars.details.word.crudGrant"
-                class="sorter-handle">
-                  <i class="fa fa-ellipsis-v"></i>
+            <div class="d-flex sidebar-actions" th:data-id="${wordOsUsage.id}" th:data-orderby="${wordOsUsage.orderBy}">
+              <span sec:authorize="#vars.details.word.crudGrant" class="sorter-handle">
+                <i class="fa fa-ellipsis-v"></i>
               </span>
-              <div
-                class="col hidden-buttons pr-5">
+              <div class="col hidden-buttons pr-5">
                 <div class="action-buttons-anchor">
                   <div>
                     <div th:utext="${wordOsUsage.valuePrese}"></div>
@@ -146,19 +131,12 @@
                     <span class="ctxt" th:text="'(' + ${#temporals.format(wordOsUsage.modifiedOn, 'dd.MM.yyyy')} + ')'" th:if="${wordOsUsage.modifiedOn != null}"></span>
                   </div>
                   <div class="action-buttons-2">
-                    <button type="button" class="btn badge badge-primary"
-                            th:title="#{common.edit}"
-                            data-toggle="modal"
-                            th:data-target="${'#editWordOsUsageDlg_' + wordOsUsage.id}"
-                            sec:authorize="#vars.details.word.crudGrant">
+                    <button type="button" class="btn badge badge-primary" th:title="#{common.edit}" data-toggle="modal" th:data-target="${'#editWordOsUsageDlg_' + wordOsUsage.id}"
+                      sec:authorize="#vars.details.word.crudGrant">
                       <i class="fa fa-edit" aria-hidden="true"></i>
                     </button>
-                    <button type="button" class="btn badge badge-warning"
-                            th:data-id="${wordOsUsage.id}"
-                            data-op-code="word_os_usage"
-                            data-toggle="delete-confirm"
-                            data-placement="right"
-                            sec:authorize="#vars.details.word.crudGrant">
+                    <button type="button" class="btn badge badge-warning" th:data-id="${wordOsUsage.id}" data-op-code="word_os_usage" data-toggle="delete-confirm" data-placement="right"
+                      sec:authorize="#vars.details.word.crudGrant">
                       <i class="fa fa-remove" aria-hidden="true"></i>
                     </button>
                   </div>

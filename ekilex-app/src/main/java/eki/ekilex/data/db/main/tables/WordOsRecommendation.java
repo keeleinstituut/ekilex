@@ -17,7 +17,7 @@ import org.jooq.ForeignKey;
 import org.jooq.Identity;
 import org.jooq.Name;
 import org.jooq.Record;
-import org.jooq.Row11;
+import org.jooq.Row10;
 import org.jooq.Schema;
 import org.jooq.Table;
 import org.jooq.TableField;
@@ -78,11 +78,6 @@ public class WordOsRecommendation extends TableImpl<WordOsRecommendationRecord> 
      * The column <code>public.word_os_recommendation.opt_value_prese</code>.
      */
     public final TableField<WordOsRecommendationRecord, String> OPT_VALUE_PRESE = createField(DSL.name("opt_value_prese"), SQLDataType.CLOB, this, "");
-
-    /**
-     * The column <code>public.word_os_recommendation.is_public</code>.
-     */
-    public final TableField<WordOsRecommendationRecord, Boolean> IS_PUBLIC = createField(DSL.name("is_public"), SQLDataType.BOOLEAN.nullable(false).defaultValue(DSL.field("true", SQLDataType.BOOLEAN)), this, "");
 
     /**
      * The column <code>public.word_os_recommendation.created_by</code>.
@@ -198,11 +193,11 @@ public class WordOsRecommendation extends TableImpl<WordOsRecommendationRecord> 
     }
 
     // -------------------------------------------------------------------------
-    // Row11 type methods
+    // Row10 type methods
     // -------------------------------------------------------------------------
 
     @Override
-    public Row11<Long, Long, String, String, String, String, Boolean, String, LocalDateTime, String, LocalDateTime> fieldsRow() {
-        return (Row11) super.fieldsRow();
+    public Row10<Long, Long, String, String, String, String, String, LocalDateTime, String, LocalDateTime> fieldsRow() {
+        return (Row10) super.fieldsRow();
     }
 }

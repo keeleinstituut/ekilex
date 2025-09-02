@@ -17,7 +17,7 @@ import org.jooq.ForeignKey;
 import org.jooq.Identity;
 import org.jooq.Name;
 import org.jooq.Record;
-import org.jooq.Row10;
+import org.jooq.Row9;
 import org.jooq.Schema;
 import org.jooq.Table;
 import org.jooq.TableField;
@@ -68,11 +68,6 @@ public class WordOsUsage extends TableImpl<WordOsUsageRecord> {
      * The column <code>public.word_os_usage.value_prese</code>.
      */
     public final TableField<WordOsUsageRecord, String> VALUE_PRESE = createField(DSL.name("value_prese"), SQLDataType.CLOB.nullable(false), this, "");
-
-    /**
-     * The column <code>public.word_os_usage.is_public</code>.
-     */
-    public final TableField<WordOsUsageRecord, Boolean> IS_PUBLIC = createField(DSL.name("is_public"), SQLDataType.BOOLEAN.nullable(false).defaultValue(DSL.field("true", SQLDataType.BOOLEAN)), this, "");
 
     /**
      * The column <code>public.word_os_usage.created_by</code>.
@@ -193,11 +188,11 @@ public class WordOsUsage extends TableImpl<WordOsUsageRecord> {
     }
 
     // -------------------------------------------------------------------------
-    // Row10 type methods
+    // Row9 type methods
     // -------------------------------------------------------------------------
 
     @Override
-    public Row10<Long, Long, String, String, Boolean, String, LocalDateTime, String, LocalDateTime, Long> fieldsRow() {
-        return (Row10) super.fieldsRow();
+    public Row9<Long, Long, String, String, String, LocalDateTime, String, LocalDateTime, Long> fieldsRow() {
+        return (Row9) super.fieldsRow();
     }
 }

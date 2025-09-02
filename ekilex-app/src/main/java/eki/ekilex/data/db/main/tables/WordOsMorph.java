@@ -17,7 +17,7 @@ import org.jooq.ForeignKey;
 import org.jooq.Identity;
 import org.jooq.Name;
 import org.jooq.Record;
-import org.jooq.Row9;
+import org.jooq.Row8;
 import org.jooq.Schema;
 import org.jooq.Table;
 import org.jooq.TableField;
@@ -68,11 +68,6 @@ public class WordOsMorph extends TableImpl<WordOsMorphRecord> {
      * The column <code>public.word_os_morph.value_prese</code>.
      */
     public final TableField<WordOsMorphRecord, String> VALUE_PRESE = createField(DSL.name("value_prese"), SQLDataType.CLOB.nullable(false), this, "");
-
-    /**
-     * The column <code>public.word_os_morph.is_public</code>.
-     */
-    public final TableField<WordOsMorphRecord, Boolean> IS_PUBLIC = createField(DSL.name("is_public"), SQLDataType.BOOLEAN.nullable(false).defaultValue(DSL.field("true", SQLDataType.BOOLEAN)), this, "");
 
     /**
      * The column <code>public.word_os_morph.created_by</code>.
@@ -188,11 +183,11 @@ public class WordOsMorph extends TableImpl<WordOsMorphRecord> {
     }
 
     // -------------------------------------------------------------------------
-    // Row9 type methods
+    // Row8 type methods
     // -------------------------------------------------------------------------
 
     @Override
-    public Row9<Long, Long, String, String, Boolean, String, LocalDateTime, String, LocalDateTime> fieldsRow() {
-        return (Row9) super.fieldsRow();
+    public Row8<Long, Long, String, String, String, LocalDateTime, String, LocalDateTime> fieldsRow() {
+        return (Row8) super.fieldsRow();
     }
 }

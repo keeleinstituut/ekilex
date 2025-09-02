@@ -648,7 +648,6 @@ public class CudDbService extends AbstractDataDbService {
 				.update(WORD_OS_MORPH)
 				.set(WORD_OS_MORPH.VALUE, wordOsMorph.getValue())
 				.set(WORD_OS_MORPH.VALUE_PRESE, wordOsMorph.getValuePrese())
-				.set(WORD_OS_MORPH.IS_PUBLIC, wordOsMorph.isPublic())
 				.set(WORD_OS_MORPH.MODIFIED_BY, wordOsMorph.getModifiedBy())
 				.set(WORD_OS_MORPH.MODIFIED_ON, wordOsMorph.getModifiedOn())
 				.where(WORD_OS_MORPH.ID.eq(wordOsMorph.getId()))
@@ -662,7 +661,6 @@ public class CudDbService extends AbstractDataDbService {
 				.set(WORD_OS_RECOMMENDATION.VALUE_PRESE, wordOsRecommendation.getValuePrese())
 				.set(WORD_OS_RECOMMENDATION.OPT_VALUE, wordOsRecommendation.getOptValue())
 				.set(WORD_OS_RECOMMENDATION.OPT_VALUE_PRESE, wordOsRecommendation.getOptValuePrese())
-				.set(WORD_OS_RECOMMENDATION.IS_PUBLIC, wordOsRecommendation.isPublic())
 				.set(WORD_OS_RECOMMENDATION.MODIFIED_BY, wordOsRecommendation.getModifiedBy())
 				.set(WORD_OS_RECOMMENDATION.MODIFIED_ON, wordOsRecommendation.getModifiedOn())
 				.where(WORD_OS_RECOMMENDATION.ID.eq(wordOsRecommendation.getId()))
@@ -674,7 +672,6 @@ public class CudDbService extends AbstractDataDbService {
 				.update(WORD_OS_USAGE)
 				.set(WORD_OS_USAGE.VALUE, wordOsUsage.getValue())
 				.set(WORD_OS_USAGE.VALUE_PRESE, wordOsUsage.getValuePrese())
-				.set(WORD_OS_USAGE.IS_PUBLIC, wordOsUsage.isPublic())
 				.set(WORD_OS_USAGE.MODIFIED_BY, wordOsUsage.getModifiedBy())
 				.set(WORD_OS_USAGE.MODIFIED_ON, wordOsUsage.getModifiedOn())
 				.where(WORD_OS_USAGE.ID.eq(wordOsUsage.getId()))
@@ -1071,7 +1068,6 @@ public class CudDbService extends AbstractDataDbService {
 						WORD_OS_RECOMMENDATION.VALUE_PRESE,
 						WORD_OS_RECOMMENDATION.OPT_VALUE,
 						WORD_OS_RECOMMENDATION.OPT_VALUE_PRESE,
-						WORD_OS_RECOMMENDATION.IS_PUBLIC,
 						WORD_OS_RECOMMENDATION.CREATED_BY,
 						WORD_OS_RECOMMENDATION.CREATED_ON,
 						WORD_OS_RECOMMENDATION.MODIFIED_BY,
@@ -1082,7 +1078,6 @@ public class CudDbService extends AbstractDataDbService {
 						wordOsRecommendation.getValuePrese(),
 						wordOsRecommendation.getOptValue(),
 						wordOsRecommendation.getOptValuePrese(),
-						wordOsRecommendation.isPublic(),
 						wordOsRecommendation.getCreatedBy(),
 						wordOsRecommendation.getCreatedOn(),
 						wordOsRecommendation.getModifiedBy(),
@@ -1100,7 +1095,6 @@ public class CudDbService extends AbstractDataDbService {
 						WORD_OS_USAGE.WORD_ID,
 						WORD_OS_USAGE.VALUE,
 						WORD_OS_USAGE.VALUE_PRESE,
-						WORD_OS_USAGE.IS_PUBLIC,
 						WORD_OS_USAGE.CREATED_BY,
 						WORD_OS_USAGE.CREATED_ON,
 						WORD_OS_USAGE.MODIFIED_BY,
@@ -1109,7 +1103,6 @@ public class CudDbService extends AbstractDataDbService {
 						wordId,
 						wordOsUsage.getValue(),
 						wordOsUsage.getValuePrese(),
-						wordOsUsage.isPublic(),
 						wordOsUsage.getCreatedBy(),
 						wordOsUsage.getCreatedOn(),
 						wordOsUsage.getModifiedBy(),
@@ -1127,7 +1120,6 @@ public class CudDbService extends AbstractDataDbService {
 						WORD_OS_MORPH.WORD_ID,
 						WORD_OS_MORPH.VALUE,
 						WORD_OS_MORPH.VALUE_PRESE,
-						WORD_OS_MORPH.IS_PUBLIC,
 						WORD_OS_MORPH.CREATED_BY,
 						WORD_OS_MORPH.CREATED_ON,
 						WORD_OS_MORPH.MODIFIED_BY,
@@ -1136,7 +1128,6 @@ public class CudDbService extends AbstractDataDbService {
 						wordId,
 						wordOsMorph.getValue(),
 						wordOsMorph.getValuePrese(),
-						wordOsMorph.isPublic(),
 						wordOsMorph.getCreatedBy(),
 						wordOsMorph.getCreatedOn(),
 						wordOsMorph.getModifiedBy(),
