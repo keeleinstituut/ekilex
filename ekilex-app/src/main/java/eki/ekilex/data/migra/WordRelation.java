@@ -6,29 +6,74 @@ public class WordRelation extends AbstractDataObject {
 
 	private static final long serialVersionUID = 1L;
 
-	private Long wordId1;
+	private Long id;
 
-	private Long wordId2;
+	private Long word1Id;
 
-	private String relationTypeCode;
+	private String word1Value;
 
-	public WordRelation(Long wordId1, Long wordId2, String relationTypeCode) {
-		super();
-		this.wordId1 = wordId1;
-		this.wordId2 = wordId2;
-		this.relationTypeCode = relationTypeCode;
+	private Long word2Id;
+
+	private String word2Value;
+
+	private String wordRelTypeCode;
+
+	private Long orderBy;
+
+	public Long getId() {
+		return id;
 	}
 
-	public Long getWordId1() {
-		return wordId1;
+	public void setId(Long id) {
+		this.id = id;
 	}
 
-	public Long getWordId2() {
-		return wordId2;
+	public Long getWord1Id() {
+		return word1Id;
 	}
 
-	public String getRelationTypeCode() {
-		return relationTypeCode;
+	public void setWord1Id(Long word1Id) {
+		this.word1Id = word1Id;
+	}
+
+	public String getWord1Value() {
+		return word1Value;
+	}
+
+	public void setWord1Value(String word1Value) {
+		this.word1Value = word1Value;
+	}
+
+	public Long getWord2Id() {
+		return word2Id;
+	}
+
+	public void setWord2Id(Long word2Id) {
+		this.word2Id = word2Id;
+	}
+
+	public String getWord2Value() {
+		return word2Value;
+	}
+
+	public void setWord2Value(String word2Value) {
+		this.word2Value = word2Value;
+	}
+
+	public String getWordRelTypeCode() {
+		return wordRelTypeCode;
+	}
+
+	public void setWordRelTypeCode(String wordRelTypeCode) {
+		this.wordRelTypeCode = wordRelTypeCode;
+	}
+
+	public Long getOrderBy() {
+		return orderBy;
+	}
+
+	public void setOrderBy(Long orderBy) {
+		this.orderBy = orderBy;
 	}
 
 }

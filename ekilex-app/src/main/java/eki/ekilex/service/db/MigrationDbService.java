@@ -8,15 +8,16 @@ import static eki.ekilex.data.db.main.Tables.PUBLISHING;
 import static eki.ekilex.data.db.main.Tables.WORD;
 import static eki.ekilex.data.db.main.Tables.WORD_OS_MORPH;
 import static eki.ekilex.data.db.main.Tables.WORD_OS_USAGE;
+import static eki.ekilex.data.db.main.Tables.WORD_RELATION;
 
 import java.util.List;
 
+import org.jooq.Field;
 import org.jooq.impl.DSL;
 import org.springframework.stereotype.Component;
 
-import eki.common.constant.ClassifierName;
+import eki.common.constant.GlobalConstant;
 import eki.common.constant.PublishingConstant;
-import eki.common.data.Classifier;
 import eki.ekilex.data.db.main.tables.Definition;
 import eki.ekilex.data.db.main.tables.DefinitionDataset;
 import eki.ekilex.data.db.main.tables.Meaning;
@@ -24,30 +25,12 @@ import eki.ekilex.data.db.main.tables.Publishing;
 import eki.ekilex.data.db.main.tables.Word;
 import eki.ekilex.data.db.main.tables.WordOsMorph;
 import eki.ekilex.data.db.main.tables.WordOsUsage;
+import eki.ekilex.data.db.main.tables.WordRelation;
 import eki.ekilex.data.migra.DefinitionDuplicate;
 
 // temporary content for data migration tools
 @Component
-public class MigrationDbService extends AbstractDataDbService implements PublishingConstant {
-
-	public List<Classifier> getDomains(String origin, String type) {
-
-		return mainDb
-				.select(
-						DSL.val(ClassifierName.DOMAIN.name()).as("name"),
-						DOMAIN_LABEL.ORIGIN,
-						DOMAIN_LABEL.CODE,
-						DOMAIN_LABEL.VALUE,
-						DOMAIN_LABEL.LANG)
-				.from(DOMAIN_LABEL)
-				.where(
-						DOMAIN_LABEL.ORIGIN.eq(origin)
-								.and(DOMAIN_LABEL.TYPE.eq(type)))
-				.orderBy(
-						DOMAIN_LABEL.CODE,
-						DOMAIN_LABEL.LANG)
-				.fetchInto(Classifier.class);
-	}
+public class MigrationDbService extends AbstractDataDbService implements PublishingConstant, GlobalConstant {
 
 	public void updateDomainLabelValue(String code, String origin, String value, String lang, String type) {
 
@@ -111,55 +94,6 @@ public class MigrationDbService extends AbstractDataDbService implements Publish
 						.select(w.ID)
 						.from(w)
 						.where(w.ID.eq(wordId)));
-	}
-
-	public Long getDefinitionId(Long meaningId, String definitionValue) {
-
-		Definition d = DEFINITION.as("d");
-
-		return mainDb
-				.select(d.ID)
-				.from(d)
-				.where(
-						d.MEANING_ID.eq(meaningId)
-								.and(d.VALUE.eq(definitionValue)))
-				.limit(1)
-				.fetchOptionalInto(Long.class)
-				.orElse(null);
-	}
-
-	public Long getDefinitionId(Long meaningId, String definitionValue, String datasetCode) {
-
-		Definition d = DEFINITION.as("d");
-		DefinitionDataset dd = DEFINITION_DATASET.as("dd");
-
-		return mainDb
-				.select(d.ID)
-				.from(d)
-				.where(
-						d.MEANING_ID.eq(meaningId)
-								.and(d.VALUE.eq(definitionValue))
-								.andExists(DSL
-										.select(dd.DEFINITION_ID)
-										.from(dd)
-										.where(dd.DEFINITION_ID.eq(d.ID)
-												.and(dd.DATASET_CODE.eq(datasetCode)))))
-				.limit(1)
-				.fetchOptionalInto(Long.class)
-				.orElse(null);
-	}
-
-	public boolean definitionDatasetExists(Long definitionId, String datasetCode) {
-
-		DefinitionDataset dd = DEFINITION_DATASET.as("dd");
-
-		return mainDb
-				.fetchExists(DSL
-						.select(dd.DEFINITION_ID)
-						.from(dd)
-						.where(
-								dd.DEFINITION_ID.eq(definitionId)
-										.and(dd.DATASET_CODE.eq(datasetCode))));
 	}
 
 	public boolean wordOsUsageExists(Long wordId, String usageValue) {
@@ -236,4 +170,40 @@ public class MigrationDbService extends AbstractDataDbService implements Publish
 				.execute();
 	}
 
+	public List<eki.ekilex.data.migra.WordRelation> getWordRelationsByContaingPrefix(String wordRelTypeCode, String relatedWordValuePrefix) {
+
+		Word w1 = WORD.as("w1");
+		Word w2 = WORD.as("w2");
+		Word wt = WORD.as("wt");
+		WordRelation wr = WORD_RELATION.as("wr");
+		WordRelation wrt = WORD_RELATION.as("wre");
+		Field<String> w2ValueFilter = DSL.lower(relatedWordValuePrefix + " %");
+
+		return mainDb
+				.select(
+						wr.ID,
+						wr.WORD1_ID,
+						w1.VALUE.as("word1_value"),
+						wr.WORD2_ID,
+						w2.VALUE.as("word2_value"),
+						wr.WORD_REL_TYPE_CODE,
+						wr.ORDER_BY)
+				.from(wr, w1, w2)
+				.where(
+						wr.WORD1_ID.eq(w1.ID)
+								.and(wr.WORD2_ID.eq(w2.ID))
+								.and(wr.WORD_REL_TYPE_CODE.eq(wordRelTypeCode))
+								.andExists(DSL
+										.select(wrt.ID)
+										.from(wrt, wt)
+										.where(
+												wrt.WORD1_ID.eq(wr.WORD1_ID)
+														.and(wrt.WORD2_ID.eq(wt.ID))
+														.and(wrt.WORD_REL_TYPE_CODE.eq(wordRelTypeCode))
+														.and(DSL.lower(wt.VALUE).like(w2ValueFilter))))
+
+				)
+				.orderBy(w1.ID, wr.ORDER_BY)
+				.fetchInto(eki.ekilex.data.migra.WordRelation.class);
+	}
 }

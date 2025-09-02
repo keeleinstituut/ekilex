@@ -90,6 +90,12 @@
 			</properties>
 		</profile>
 		<profile>
+			<id>wrsupr</id>
+			<properties>
+				<spring.boot.mainclass>eki.ekilex.cli.WordRelationSuperlReorder</spring.boot.mainclass>
+			</properties>
+		</profile>
+		<profile>
 			<id>maint</id>
 			<properties>
 				<spring.boot.mainclass>eki.ekilex.cli.Maintenancer</spring.boot.mainclass>
