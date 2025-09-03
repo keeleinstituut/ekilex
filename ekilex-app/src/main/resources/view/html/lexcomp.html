@@ -2,74 +2,67 @@
 <html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head></head>
 <body>
-  <div class="card-body p-0 d-flex flex-column h-100" th:fragment="search_result">
+  <div class="lex-results" th:fragment="search_result">
     <input type="hidden" id="selectedMeaningId" th:value="${selectedMeaningId}">
     <input type="hidden" id="pageNum" th:value="${wordsResult.currentPage}">
-    <div class="bg-light rounded-top px-2 py-1">
-      <div class="d-flex flex-row">
+    <div class="lex-results__header">
+      <div class="lex-results__count">
         <span th:text="#{lex.results.found}">Kokku leiti:</span>
-        <span th:text="${wordsResult.totalCount}"></span>
-        <div class="d-flex ml-auto mr-2">
-          <form th:action="@{/lex_paging}" method="post">
-            <input type="hidden" name="searchUri" th:value="${searchUri}">
-            <input type="hidden" name="pageNum" th:value="${wordsResult.currentPage}">
-            <input type="hidden" name="direction" value="page">
-            <input type="hidden" name="offset" value="0">
-            <button type="button" data-plugin="refreshSearchResults" class="btn btn-sm btn-secondary" data-toggle="tooltip" th:title="#{common.refresh.search}">
-              <i class="fa fa-refresh" aria-hidden="true"></i>
-            </button>
-          </form>
-        </div>
+        <strong th:text="${wordsResult.totalCount}"></strong>
       </div>
+      <form th:action="@{/lex_paging}" method="post">
+        <input type="hidden" name="searchUri" th:value="${searchUri}">
+        <input type="hidden" name="pageNum" th:value="${wordsResult.currentPage}">
+        <input type="hidden" name="direction" value="page">
+        <input type="hidden" name="offset" value="0">
+        <button type="button" data-plugin="refreshSearchResults" class="lex-results__refresh" data-toggle="tooltip" th:title="#{common.refresh.search}">
+          <span class="material-symbols-outlined" aria-hidden="true">cached</span>
+        </button>
+      </form>
     </div>
     <th:block th:replace=" :: search_result_rows"></th:block>
   </div>
   <th:block th:fragment="search_result_rows">
-    <div class="overflow-auto h-100">
-      <ul id="results" class="mb-0 pb-3 list-group">
-        <th:block th:each="word : ${wordsResult.words}">
-          <li th:id="${'word-result-' + word.wordId}" class="list-group-item search-result-item border-left-0 border-right-0 rounded-0 p-0">
-            <button
-              type="button"
-              data-plugin="contextmenu, loadDetailsPlugin"
-              data-contextmenu:compare="Ava uues paneelis"
-              class="search-result-btn btn btn-block p-2 text-left position-relative rounded-0"
-              th:data-id="${word.wordId}"
-              name="details-btn">
-              <span class="d-flex align-items-center">
-                <span class="badge badge-light mr-2" th:text="${word.homonymNr}" th:if="${word.homonymNr > 0}"></span>
-                <span th:utext="${@viewUtil.getWordValueMarkup(word)}">vorm 1</span>
-                <span th:text="${'(' + @viewUtil.getLangIso2(word.lang) + ')'}" class="ml-1"></span>
-              </span>
-              <small class="d-flex">
-                <span th:text="${#strings.listJoin(word.datasetCodes, ', ')}"></span>
-              </small>
-              <small class="d-flex" th:if="${!word.wordPublic}">
-                <span>Mitteavalik keelend</span>
-              </small>
-              <span class="d-flex align-items-start">
-                <small th:if="${not #lists.isEmpty(word.lexemesValueStateLabels)}">
-                  <span th:text="${#strings.listJoin(word.lexemesValueStateLabels, ', ')}"></span>
-                </small>
-                <small th:if="${word.lexemesArePublic != null}">
-                  <span class="ml-1" th:if="${not #lists.isEmpty(word.lexemesValueStateLabels)}">|</span>
-                  <span th:text="#{'boolean.public.' + ${word.lexemesArePublic}}">avalik/mitteavalik</span>
-                </small>
-                <span class="badge badge-pill badge-light ml-auto" th:if="${not #lists.isEmpty(word.lexemesTagNames)}">
-                  <span th:text="${#strings.listJoin(word.lexemesTagNames, ', ')}"></span>
-                </span>
-              </span>
-              <span class="position-absolute search-result-status">
-                <span th:id="${'select_wait_' + word.wordId}" class="fa fa-refresh fa-spin" style="display: none"></span>
-              </span>
-            </button>
-          </li>
-        </th:block>
-      </ul>
-    </div>
-    <div th:if="${wordsResult.showPaging}">
+    <ul class="lex-results__rows" id="results">
+      <li th:each="word : ${wordsResult.words}"
+        th:id="${'word-result-' + word.wordId}"
+        class="lex-results__row">
+        <button
+          type="button"
+          data-plugin="contextmenu, loadDetailsPlugin"
+          data-contextmenu:compare="Ava uues paneelis"
+          th:data-id="${word.wordId}"
+          name="details-btn">
+          <div class="lex-results__row-title">
+            <span class="lex-results__badge" th:text="${word.homonymNr}" th:if="${word.homonymNr > 0}"></span>
+            <span>
+              <th:block th:utext="${@viewUtil.getWordValueMarkup(word)}">vorm 1</th:block>
+              <span th:text="${'(' + @viewUtil.getLangIso2(word.lang) + ')'}"></span>
+            </span>
+          </div>
+          <span th:text="${#strings.listJoin(word.datasetCodes, ', ')}"></span>
+          <span th:if="${!word.wordPublic}">Mitteavalik keelend</span>
+          <span class="d-flex align-items-start">
+            <span
+              th:if="${not #lists.isEmpty(word.lexemesValueStateLabels)}"
+              th:text="${#strings.listJoin(word.lexemesValueStateLabels, ', ')}"></span>
+            <span th:if="${word.lexemesArePublic != null}">
+              <span class="ml-1" th:if="${not #lists.isEmpty(word.lexemesValueStateLabels)}">|</span>
+              <span th:text="#{'boolean.public.' + ${word.lexemesArePublic}}">avalik/mitteavalik</span>
+            </span>
+            <span class="badge badge-pill badge-light ml-auto" th:if="${not #lists.isEmpty(word.lexemesTagNames)}">
+              <span th:text="${#strings.listJoin(word.lexemesTagNames, ', ')}"></span>
+            </span>
+          </span>
+          <span class="lex-results__status">
+            <span th:id="${'select_wait_' + word.wordId}" class="fa fa-refresh fa-spin" style="display: none"></span>
+          </span>
+        </button>
+      </li>
+    </ul>
+    <th:block th:if="${wordsResult.showPaging}">
       <div th:replace="components :: paging(${wordsResult})"></div>
-    </div>
+    </th:block>
   </th:block>
   <div class="row" th:fragment="lexeme_tags">
     <div class="col pr-0 col-w13rem">

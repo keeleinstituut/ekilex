@@ -1209,7 +1209,7 @@ function loadDetails(wordOrMeaningId, task, lastWordOrMeaningId) {
 	$("[id^='select_wait_']").hide();
 	$("#select_wait_" + wordOrMeaningId).show();
 	if (!task) {
-		$('#results_div .list-group-item').removeClass('active');
+		$('#results_div .list-group-item, #results_div .lex-results__row').removeClass('active');
 		PanelBreadcrumbs.removeAllButFirstData();
 	}
 	openWaitDlg();
@@ -1279,13 +1279,13 @@ function loadDetails(wordOrMeaningId, task, lastWordOrMeaningId) {
 
 		$('[data-toggle="tooltip"]').tooltip({ trigger: 'hover' });
 
-		$('#results_div .list-group-item').removeClass('active');
+		$('#results_div .list-group-item, #results_div .lex-results__row').removeClass('active');
 		resultColumn.find('[data-rel="details-area"]').each(function() {
 			const id = $(this).attr('data-id');
 			$(`#results button[data-id=${id}]`).parent().addClass('active');
 		});
 
-		$('#results_div .list-group-item').each(function() {
+		$('#results_div .list-group-item, #results_div .lex-results__row').each(function() {
 			const elem = $(this);
 			const button = elem.find('button');
 			if (elem.is('.active')) {
