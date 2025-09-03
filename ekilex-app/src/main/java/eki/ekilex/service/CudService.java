@@ -517,10 +517,10 @@ public class CudService extends AbstractCudService implements PermConstant, Acti
 		Long duplicateWordId = compositionDbService.cloneWord(simpleWord);
 		compositionDbService.cloneWordParadigmsAndForms(wordId, duplicateWordId);
 		compositionDbService.cloneWordTypes(wordId, duplicateWordId);
-		compositionDbService.cloneWordRelations(wordId, duplicateWordId);
+		compositionDbService.cloneWordRelationsAndSubdata(wordId, duplicateWordId);
 		compositionDbService.cloneWordGroupMembers(wordId, duplicateWordId);
-		compositionDbService.cloneWordFreeforms(wordId, duplicateWordId);
-		compositionDbService.cloneWordEtymology(wordId, duplicateWordId);
+		compositionDbService.cloneWordFreeformsAndSubdata(wordId, duplicateWordId);
+		compositionDbService.cloneWordEtymologyAndSubdata(wordId, duplicateWordId);
 		activityLogService.createActivityLog("duplicateWordData", duplicateWordId, ActivityOwner.WORD, roleDatasetCode, isManualEventOnUpdateEnabled);
 
 		return duplicateWordId;

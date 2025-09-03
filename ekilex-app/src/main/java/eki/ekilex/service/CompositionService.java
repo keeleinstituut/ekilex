@@ -75,7 +75,6 @@ public class CompositionService extends AbstractCudService implements PermConsta
 		for (LexemeRecord sourceLexeme : sourceLexemes) {
 			Long sourceLexemeId = sourceLexeme.getId();
 			Long targetLexemeId = cloneLexemeAndData(sourceLexemeId, targetMeaningId, null, roleDatasetCode, isManualEventOnUpdateEnabled);
-			createPublishing(user, roleDatasetCode, TARGET_NAME_WW_UNIF, ENTITY_NAME_LEXEME, targetLexemeId);
 			sourceTargetLexemeIdMap.put(sourceLexemeId, targetLexemeId);
 		}
 		cloneLexemeRelations(sourceTargetLexemeIdMap, roleDatasetCode, isManualEventOnUpdateEnabled);
@@ -98,7 +97,6 @@ public class CompositionService extends AbstractCudService implements PermConsta
 		for (LexemeRecord sourceLexeme : sourceLexemes) {
 			Long sourceLexemeId = sourceLexeme.getId();
 			Long targetLexemeId = cloneLexemeAndData(sourceLexemeId, targetMeaningId, null, roleDatasetCode, isManualEventOnUpdateEnabled);
-			createPublishing(user, roleDatasetCode, TARGET_NAME_WW_UNIF, ENTITY_NAME_LEXEME, targetLexemeId);
 			sourceTargetLexemeIdMap.put(sourceLexemeId, targetLexemeId);
 		}
 		cloneLexemeRelations(sourceTargetLexemeIdMap, roleDatasetCode, isManualEventOnUpdateEnabled);
@@ -249,15 +247,18 @@ public class CompositionService extends AbstractCudService implements PermConsta
 	private Long cloneLexemeAndData(Long sourceLexemeId, Long targetMeaningId, Long targetWordId, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
 
 		Long targetLexemeId = compositionDbService.cloneLexeme(sourceLexemeId, targetMeaningId, targetWordId);
-		compositionDbService.cloneLexemeUsages(sourceLexemeId, targetLexemeId);
-		compositionDbService.cloneLexemeNotes(sourceLexemeId, targetLexemeId);
+		compositionDbService.cloneLexemeUsagesAndSubdata(sourceLexemeId, targetLexemeId);
+		compositionDbService.cloneLexemeNotesAndSubdata(sourceLexemeId, targetLexemeId);
 		compositionDbService.cloneLexemeTags(sourceLexemeId, targetLexemeId);
+		compositionDbService.cloneLexemeGrammarsAndSubdata(sourceLexemeId, targetLexemeId);
+		compositionDbService.cloneLexemeGovernmentsAndSubdata(sourceLexemeId, targetLexemeId);
 		compositionDbService.cloneLexemeDerivs(sourceLexemeId, targetLexemeId);
 		compositionDbService.cloneLexemeRegions(sourceLexemeId, targetLexemeId);
 		compositionDbService.cloneLexemePoses(sourceLexemeId, targetLexemeId);
 		compositionDbService.cloneLexemeRegisters(sourceLexemeId, targetLexemeId);
-		compositionDbService.cloneLexemeFreeforms(sourceLexemeId, targetLexemeId);
+		compositionDbService.cloneLexemeFreeformsAndSubdata(sourceLexemeId, targetLexemeId);
 		compositionDbService.cloneLexemeSoureLinks(sourceLexemeId, targetLexemeId);
+		compositionDbService.clonePublishing(sourceLexemeId, targetLexemeId, ENTITY_NAME_LEXEME);
 		// cloning of lexeme relations are in separate flow after all lexemes have been cloned
 
 		activityLogService.createActivityLog("cloneLexemeAndData", targetLexemeId, ActivityOwner.LEXEME, roleDatasetCode, isManualEventOnUpdateEnabled);
@@ -273,10 +274,10 @@ public class CompositionService extends AbstractCudService implements PermConsta
 		compositionDbService.cloneWordTypes(sourceWordId, targetWordId);
 		compositionDbService.cloneWordTags(sourceWordId, targetWordId);
 		compositionDbService.cloneWordForums(sourceWordId, targetWordId);
-		compositionDbService.cloneWordRelations(sourceWordId, targetWordId);
+		compositionDbService.cloneWordRelationsAndSubdata(sourceWordId, targetWordId);
 		compositionDbService.cloneWordGroupMembers(sourceWordId, targetWordId);
-		compositionDbService.cloneWordFreeforms(sourceWordId, targetWordId);
-		compositionDbService.cloneWordEtymology(sourceWordId, targetWordId);
+		compositionDbService.cloneWordFreeformsAndSubdata(sourceWordId, targetWordId);
+		compositionDbService.cloneWordEtymologyAndSubdata(sourceWordId, targetWordId);
 
 		activityLogService.createActivityLog("cloneWordAndData", targetWordId, ActivityOwner.WORD, roleDatasetCode, isManualEventOnUpdateEnabled);
 
@@ -290,11 +291,12 @@ public class CompositionService extends AbstractCudService implements PermConsta
 		compositionDbService.cloneMeaningTags(sourceMeaningId, targetMeaningId);
 		compositionDbService.cloneMeaningForums(sourceMeaningId, targetMeaningId);
 		compositionDbService.cloneMeaningDomains(sourceMeaningId, targetMeaningId);
-		compositionDbService.cloneMeaningNotes(sourceMeaningId, targetMeaningId);
-		compositionDbService.cloneMeaningImages(sourceMeaningId, targetMeaningId);
+		compositionDbService.cloneMeaningNotesAndSubdata(sourceMeaningId, targetMeaningId);
+		compositionDbService.cloneMeaningImagesAndSubdata(sourceMeaningId, targetMeaningId);
+		compositionDbService.cloneMeaningMediasAndSubdata(sourceMeaningId, targetMeaningId);
 		compositionDbService.cloneMeaningRelations(sourceMeaningId, targetMeaningId);
-		compositionDbService.cloneMeaningFreeforms(sourceMeaningId, targetMeaningId);
-		compositionDbService.cloneMeaningDefinitions(sourceMeaningId, targetMeaningId, isPublicDataOnly);
+		compositionDbService.cloneMeaningFreeformsAndSubdata(sourceMeaningId, targetMeaningId);
+		compositionDbService.cloneMeaningDefinitionsAndSubdata(sourceMeaningId, targetMeaningId, isPublicDataOnly);
 
 		activityLogService.createActivityLog("cloneMeaningAndData", targetMeaningId, ActivityOwner.MEANING, roleDatasetCode, isManualEventOnUpdateEnabled);
 

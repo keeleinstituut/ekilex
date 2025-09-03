@@ -10,6 +10,8 @@ import static eki.ekilex.data.db.main.Tables.DEFINITION_NOTE_SOURCE_LINK;
 import static eki.ekilex.data.db.main.Tables.DEFINITION_SOURCE_LINK;
 import static eki.ekilex.data.db.main.Tables.FREEFORM;
 import static eki.ekilex.data.db.main.Tables.FREEFORM_SOURCE_LINK;
+import static eki.ekilex.data.db.main.Tables.GOVERNMENT;
+import static eki.ekilex.data.db.main.Tables.GRAMMAR;
 import static eki.ekilex.data.db.main.Tables.LEXEME;
 import static eki.ekilex.data.db.main.Tables.LEXEME_ACTIVITY_LOG;
 import static eki.ekilex.data.db.main.Tables.LEXEME_DERIV;
@@ -32,6 +34,7 @@ import static eki.ekilex.data.db.main.Tables.MEANING_FORUM;
 import static eki.ekilex.data.db.main.Tables.MEANING_FREEFORM;
 import static eki.ekilex.data.db.main.Tables.MEANING_IMAGE;
 import static eki.ekilex.data.db.main.Tables.MEANING_IMAGE_SOURCE_LINK;
+import static eki.ekilex.data.db.main.Tables.MEANING_MEDIA;
 import static eki.ekilex.data.db.main.Tables.MEANING_NOTE;
 import static eki.ekilex.data.db.main.Tables.MEANING_NOTE_SOURCE_LINK;
 import static eki.ekilex.data.db.main.Tables.MEANING_RELATION;
@@ -39,6 +42,7 @@ import static eki.ekilex.data.db.main.Tables.MEANING_SEMANTIC_TYPE;
 import static eki.ekilex.data.db.main.Tables.MEANING_TAG;
 import static eki.ekilex.data.db.main.Tables.PARADIGM;
 import static eki.ekilex.data.db.main.Tables.PARADIGM_FORM;
+import static eki.ekilex.data.db.main.Tables.PUBLISHING;
 import static eki.ekilex.data.db.main.Tables.USAGE;
 import static eki.ekilex.data.db.main.Tables.USAGE_DEFINITION;
 import static eki.ekilex.data.db.main.Tables.USAGE_SOURCE_LINK;
@@ -69,6 +73,7 @@ import org.jooq.impl.DSL;
 import org.springframework.stereotype.Component;
 
 import eki.common.constant.GlobalConstant;
+import eki.common.constant.PublishingConstant;
 import eki.ekilex.data.LexCollocationGroupTuple;
 import eki.ekilex.data.LexCollocationTuple;
 import eki.ekilex.data.SimpleWord;
@@ -103,6 +108,8 @@ import eki.ekilex.data.db.main.tables.records.DefinitionRecord;
 import eki.ekilex.data.db.main.tables.records.DefinitionSourceLinkRecord;
 import eki.ekilex.data.db.main.tables.records.FreeformRecord;
 import eki.ekilex.data.db.main.tables.records.FreeformSourceLinkRecord;
+import eki.ekilex.data.db.main.tables.records.GovernmentRecord;
+import eki.ekilex.data.db.main.tables.records.GrammarRecord;
 import eki.ekilex.data.db.main.tables.records.LexCollocRecord;
 import eki.ekilex.data.db.main.tables.records.LexemeDerivRecord;
 import eki.ekilex.data.db.main.tables.records.LexemeFreeformRecord;
@@ -119,6 +126,7 @@ import eki.ekilex.data.db.main.tables.records.MeaningForumRecord;
 import eki.ekilex.data.db.main.tables.records.MeaningFreeformRecord;
 import eki.ekilex.data.db.main.tables.records.MeaningImageRecord;
 import eki.ekilex.data.db.main.tables.records.MeaningImageSourceLinkRecord;
+import eki.ekilex.data.db.main.tables.records.MeaningMediaRecord;
 import eki.ekilex.data.db.main.tables.records.MeaningNoteRecord;
 import eki.ekilex.data.db.main.tables.records.MeaningNoteSourceLinkRecord;
 import eki.ekilex.data.db.main.tables.records.MeaningRecord;
@@ -127,6 +135,7 @@ import eki.ekilex.data.db.main.tables.records.MeaningSemanticTypeRecord;
 import eki.ekilex.data.db.main.tables.records.MeaningTagRecord;
 import eki.ekilex.data.db.main.tables.records.ParadigmFormRecord;
 import eki.ekilex.data.db.main.tables.records.ParadigmRecord;
+import eki.ekilex.data.db.main.tables.records.PublishingRecord;
 import eki.ekilex.data.db.main.tables.records.UsageDefinitionRecord;
 import eki.ekilex.data.db.main.tables.records.UsageRecord;
 import eki.ekilex.data.db.main.tables.records.UsageSourceLinkRecord;
@@ -143,7 +152,7 @@ import eki.ekilex.data.db.main.tables.records.WordTagRecord;
 import eki.ekilex.data.db.main.tables.records.WordWordTypeRecord;
 
 @Component
-public class CompositionDbService extends AbstractDataDbService implements GlobalConstant {
+public class CompositionDbService extends AbstractDataDbService implements GlobalConstant, PublishingConstant {
 
 	public void joinMeanings(Long targetMeaningId, Long sourceMeaningId) {
 
@@ -631,7 +640,7 @@ public class CompositionDbService extends AbstractDataDbService implements Globa
 		return targetLexeme.getId();
 	}
 
-	public void cloneLexemeUsages(Long sourceLexemeId, Long targetLexemeId) {
+	public void cloneLexemeUsagesAndSubdata(Long sourceLexemeId, Long targetLexemeId) {
 
 		Result<UsageRecord> sourceUsages = mainDb
 				.selectFrom(USAGE)
@@ -687,10 +696,12 @@ public class CompositionDbService extends AbstractDataDbService implements Globa
 						targetUsageTranslation.setUsageId(targetUsageId);
 						targetUsageTranslation.store();
 					});
+
+			clonePublishing(sourceUsageId, targetUsageId, ENTITY_NAME_USAGE);
 		});
 	}
 
-	public void cloneLexemeNotes(Long sourceLexemeId, Long targetLexemeId) {
+	public void cloneLexemeNotesAndSubdata(Long sourceLexemeId, Long targetLexemeId) {
 
 		Result<LexemeNoteRecord> sourceLexemeNotes = mainDb
 				.selectFrom(LEXEME_NOTE)
@@ -720,6 +731,8 @@ public class CompositionDbService extends AbstractDataDbService implements Globa
 						targetLexemeNoteSourceLink.changed(LEXEME_NOTE_SOURCE_LINK.ORDER_BY, false);
 						targetLexemeNoteSourceLink.store();
 					});
+
+			clonePublishing(sourceLexemeNoteId, targetLexemeNoteId, ENTITY_NAME_LEXEME_NOTE);
 		});
 	}
 
@@ -736,6 +749,48 @@ public class CompositionDbService extends AbstractDataDbService implements Globa
 					targetLexemeTag.setLexemeId(targetLexemeId);
 					targetLexemeTag.store();
 				});
+	}
+
+	public void cloneLexemeGrammarsAndSubdata(Long sourceLexemeId, Long targetLexemeId) {
+
+		Result<GrammarRecord> sourceGrammars = mainDb
+				.selectFrom(GRAMMAR)
+				.where(GRAMMAR.LEXEME_ID.eq(sourceLexemeId))
+				.orderBy(GRAMMAR.ORDER_BY)
+				.fetch();
+
+		sourceGrammars.forEach(sourceGrammar -> {
+
+			GrammarRecord targetGrammar = sourceGrammar.copy();
+			targetGrammar.setLexemeId(targetLexemeId);
+			targetGrammar.changed(GRAMMAR.ORDER_BY, false);
+			targetGrammar.store();
+			Long targetGrammarId = targetGrammar.getId();
+			Long sourceGrammarId = sourceGrammar.getId();
+
+			clonePublishing(sourceGrammarId, targetGrammarId, ENTITY_NAME_GRAMMAR);
+		});
+	}
+
+	public void cloneLexemeGovernmentsAndSubdata(Long sourceLexemeId, Long targetLexemeId) {
+
+		Result<GovernmentRecord> sourceGovernments = mainDb
+				.selectFrom(GOVERNMENT)
+				.where(GOVERNMENT.LEXEME_ID.eq(sourceLexemeId))
+				.orderBy(GOVERNMENT.ORDER_BY)
+				.fetch();
+
+		sourceGovernments.forEach(sourceGovernment -> {
+
+			GovernmentRecord targetGovernment = sourceGovernment.copy();
+			targetGovernment.setLexemeId(targetLexemeId);
+			targetGovernment.changed(GOVERNMENT.ORDER_BY, false);
+			targetGovernment.store();
+			Long targetGovernmentId = targetGovernment.getId();
+			Long sourceGovernmentId = sourceGovernment.getId();
+
+			clonePublishing(sourceGovernmentId, targetGovernmentId, ENTITY_NAME_GOVERNMENT);
+		});
 	}
 
 	public void cloneLexemeDerivs(Long sourceLexemeId, Long targetLexemeId) {
@@ -770,7 +825,7 @@ public class CompositionDbService extends AbstractDataDbService implements Globa
 				});
 	}
 
-	public void cloneLexemeFreeforms(Long sourceLexemeId, Long targetLexemeId) {
+	public void cloneLexemeFreeformsAndSubdata(Long sourceLexemeId, Long targetLexemeId) {
 
 		Condition where = LEXEME_FREEFORM.LEXEME_ID.eq(sourceLexemeId)
 				.and(LEXEME_FREEFORM.FREEFORM_ID.eq(FREEFORM.ID));
@@ -1125,7 +1180,7 @@ public class CompositionDbService extends AbstractDataDbService implements Globa
 				});
 	}
 
-	public void cloneMeaningNotes(Long sourceMeaningId, Long targetMeaningId) {
+	public void cloneMeaningNotesAndSubdata(Long sourceMeaningId, Long targetMeaningId) {
 
 		Result<MeaningNoteRecord> sourceMeaningNotes = mainDb
 				.selectFrom(MEANING_NOTE)
@@ -1155,10 +1210,12 @@ public class CompositionDbService extends AbstractDataDbService implements Globa
 						targetMeaningNoteSourceLink.changed(MEANING_NOTE_SOURCE_LINK.ORDER_BY, false);
 						targetMeaningNoteSourceLink.store();
 					});
+
+			clonePublishing(sourceMeaningNoteId, targetMeaningNoteId, ENTITY_NAME_MEANING_NOTE);
 		});
 	}
 
-	public void cloneMeaningImages(Long sourceMeaningId, Long targetMeaningId) {
+	public void cloneMeaningImagesAndSubdata(Long sourceMeaningId, Long targetMeaningId) {
 
 		Result<MeaningImageRecord> sourceMeaningImages = mainDb
 				.selectFrom(MEANING_IMAGE)
@@ -1188,8 +1245,30 @@ public class CompositionDbService extends AbstractDataDbService implements Globa
 						targetMeaningImageSourceLink.changed(MEANING_IMAGE_SOURCE_LINK.ORDER_BY, false);
 						targetMeaningImageSourceLink.store();
 					});
-		});
 
+			clonePublishing(sourceMeaningImageId, targetMeaningImageId, ENTITY_NAME_MEANING_IMAGE);
+		});
+	}
+
+	public void cloneMeaningMediasAndSubdata(Long sourceMeaningId, Long targetMeaningId) {
+
+		Result<MeaningMediaRecord> sourceMeaningMedias = mainDb
+				.selectFrom(MEANING_MEDIA)
+				.where(MEANING_MEDIA.MEANING_ID.eq(sourceMeaningId))
+				.orderBy(MEANING_MEDIA.ORDER_BY)
+				.fetch();
+
+		sourceMeaningMedias.forEach(sourceMeaningMedia -> {
+
+			MeaningMediaRecord targetMeaningMedia = sourceMeaningMedia.copy();
+			targetMeaningMedia.setMeaningId(targetMeaningId);
+			targetMeaningMedia.changed(MEANING_MEDIA.ORDER_BY, false);
+			targetMeaningMedia.store();
+			Long targetMeaningMediaId = targetMeaningMedia.getId();
+			Long sourceMeaningMediaId = sourceMeaningMedia.getId();
+
+			clonePublishing(sourceMeaningMediaId, targetMeaningMediaId, ENTITY_NAME_MEANING_MEDIA);
+		});
 	}
 
 	public void cloneMeaningRelations(Long sourceMeaningId, Long targetMeaningId) {
@@ -1222,7 +1301,7 @@ public class CompositionDbService extends AbstractDataDbService implements Globa
 				});
 	}
 
-	public void cloneMeaningFreeforms(Long sourceMeaningId, Long targetMeaningId) {
+	public void cloneMeaningFreeformsAndSubdata(Long sourceMeaningId, Long targetMeaningId) {
 
 		Condition where = MEANING_FREEFORM.MEANING_ID.eq(sourceMeaningId)
 				.and(MEANING_FREEFORM.FREEFORM_ID.eq(FREEFORM.ID));
@@ -1252,7 +1331,7 @@ public class CompositionDbService extends AbstractDataDbService implements Globa
 		});
 	}
 
-	public void cloneMeaningDefinitions(Long sourceMeaningId, Long targetMeaningId, boolean isPublicDataOnly) {
+	public void cloneMeaningDefinitionsAndSubdata(Long sourceMeaningId, Long targetMeaningId, boolean isPublicDataOnly) {
 
 		Condition where = DEFINITION.MEANING_ID.eq(sourceMeaningId);
 		if (isPublicDataOnly) {
@@ -1273,9 +1352,10 @@ public class CompositionDbService extends AbstractDataDbService implements Globa
 			Long targetDefinitionId = targetDefinition.getId();
 			Long sourceDefinitionId = sourceDefinition.getId();
 
+			clonePublishing(sourceDefinitionId, targetDefinitionId, ENTITY_NAME_DEFINITION);
 			cloneDefinitionDatasets(sourceDefinitionId, targetDefinitionId);
-			cloneDefinitionNotes(sourceDefinitionId, targetDefinitionId);
-			cloneDefinitionFreeforms(sourceDefinitionId, targetDefinitionId);
+			cloneDefinitionNotesAndSubdata(sourceDefinitionId, targetDefinitionId);
+			cloneDefinitionFreeformsAndSubdata(sourceDefinitionId, targetDefinitionId);
 			cloneDefinitionSourceLinks(sourceDefinitionId, targetDefinitionId);
 		});
 	}
@@ -1294,7 +1374,7 @@ public class CompositionDbService extends AbstractDataDbService implements Globa
 		});
 	}
 
-	private void cloneDefinitionNotes(Long sourceDefinitionId, Long targetDefinintionId) {
+	private void cloneDefinitionNotesAndSubdata(Long sourceDefinitionId, Long targetDefinintionId) {
 
 		Result<DefinitionNoteRecord> sourceDefinitionNotes = mainDb
 				.selectFrom(DEFINITION_NOTE)
@@ -1327,7 +1407,7 @@ public class CompositionDbService extends AbstractDataDbService implements Globa
 		});
 	}
 
-	private void cloneDefinitionFreeforms(Long sourceDefinitionId, Long targetDefinintionId) {
+	private void cloneDefinitionFreeformsAndSubdata(Long sourceDefinitionId, Long targetDefinintionId) {
 
 		Condition where = DEFINITION_FREEFORM.DEFINITION_ID.eq(sourceDefinitionId)
 				.and(DEFINITION_FREEFORM.FREEFORM_ID.eq(FREEFORM.ID));
@@ -1507,7 +1587,7 @@ public class CompositionDbService extends AbstractDataDbService implements Globa
 				});
 	}
 
-	public void cloneWordRelations(Long sourceWordId, Long targetWordId) {
+	public void cloneWordRelationsAndSubdata(Long sourceWordId, Long targetWordId) {
 
 		Result<WordRelationRecord> sourceWordRelations = mainDb
 				.selectFrom(WORD_RELATION)
@@ -1516,20 +1596,25 @@ public class CompositionDbService extends AbstractDataDbService implements Globa
 								.or(WORD_RELATION.WORD2_ID.eq(sourceWordId)))
 				.orderBy(WORD_RELATION.ORDER_BY)
 				.fetch();
-		sourceWordRelations.stream()
-				.map(WordRelationRecord::copy)
-				.forEach(targetWordRelation -> {
-					if (targetWordRelation.getWord1Id().equals(sourceWordId)) {
-						targetWordRelation.setWord1Id(targetWordId);
-					} else {
-						targetWordRelation.setWord2Id(targetWordId);
-					}
-					targetWordRelation.changed(WORD_RELATION.ORDER_BY, false);
-					targetWordRelation.store();
-				});
+
+		sourceWordRelations.forEach(sourceWordRelation -> {
+
+			WordRelationRecord targetWordRelation = sourceWordRelation.copy();
+			if (targetWordRelation.getWord1Id().equals(sourceWordId)) {
+				targetWordRelation.setWord1Id(targetWordId);
+			} else {
+				targetWordRelation.setWord2Id(targetWordId);
+			}
+			targetWordRelation.changed(WORD_RELATION.ORDER_BY, false);
+			targetWordRelation.store();
+			Long targetWordRelationId = targetWordRelation.getId();
+			Long sourceWordRelationId = sourceWordRelation.getId();
+
+			clonePublishing(sourceWordRelationId, targetWordRelationId, ENTITY_NAME_WORD_RELATION);
+		});
 	}
 
-	public void cloneWordFreeforms(Long sourceWordId, Long targetWordId) {
+	public void cloneWordFreeformsAndSubdata(Long sourceWordId, Long targetWordId) {
 
 		Result<FreeformRecord> sourceFreeforms = mainDb
 				.select(FREEFORM.fields())
@@ -1574,7 +1659,7 @@ public class CompositionDbService extends AbstractDataDbService implements Globa
 				});
 	}
 
-	public void cloneWordEtymology(Long sourceWordId, Long targetWordId) {
+	public void cloneWordEtymologyAndSubdata(Long sourceWordId, Long targetWordId) {
 
 		Result<WordEtymologyRecord> sourceWordEtyms = mainDb
 				.selectFrom(WORD_ETYMOLOGY)
@@ -1618,6 +1703,23 @@ public class CompositionDbService extends AbstractDataDbService implements Globa
 						targetWordEtymSourceLink.store();
 					});
 		});
+	}
+
+	public void clonePublishing(Long sourceEntityId, Long targetEntityId, String entityName) {
+
+		Result<PublishingRecord> sourceEntityPublishings = mainDb
+				.selectFrom(PUBLISHING)
+				.where(
+						PUBLISHING.ENTITY_NAME.eq(entityName)
+								.and(PUBLISHING.ENTITY_ID.eq(sourceEntityId)))
+				.orderBy(PUBLISHING.ID)
+				.fetch();
+		sourceEntityPublishings.stream()
+				.map(PublishingRecord::copy)
+				.forEach(targetEntityPublishing -> {
+					targetEntityPublishing.setEntityId(targetEntityId);
+					targetEntityPublishing.store();
+				});
 	}
 
 	private void mergeWordFields(Long targetWordId, Long sourceWordId) {
