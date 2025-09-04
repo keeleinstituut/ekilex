@@ -43,16 +43,12 @@ function searchOsWordAutocomplete() {
 
 		ul.addClass("list-group");
 		$.each(groups, function(index, group) {
-			/*
-			 * additional labels when necessary
-			 *
-			if (group == "formWord") {
+			if (group == "infixWordRelation") {
 				var li = $("<li>");
-				li.addClass("list-group-item list-group-item-info");
-				li.text(messages.this_is_form);
+				li.addClass("list-group-item list-group-item-info py-1");
+				li.text("Seotud sõnad");
 				ul.append(li);
 			}
-			*/
 			$.each(items, function(index, item) {
 				if (item.group == group) {
 					self._renderItemData(ul, item);
@@ -65,7 +61,6 @@ function searchOsWordAutocomplete() {
 		source: function(request, response) {
 			var wordFrag = request.term;
 			var searchWordFragUrlWithParams = searchWordFragUrl + "/" + wordFrag;
-			console.log("--> " + searchWordFragUrlWithParams);
 			if (wordFrag.indexOf('*') > -1) {
 				response([]);
 				return;
@@ -86,17 +81,13 @@ function searchOsWordAutocomplete() {
 							value: item
 						});
 					});
-					/*
-					 * additional groups when necessary
-					 *
-					$.each(data.formWords, function(index, item) {
+					$.each(data.infixWordRelations, function(index, item) {
 						fullList.push({
-							group: "formWord",
+							group: "infixWordRelation",
 							label: item,
 							value: item
 						});
 					});
-					*/
 					response(fullList);
 				}
 			});
