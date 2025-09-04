@@ -929,53 +929,48 @@ $.fn.pagingBtnPlugin = function() {
 			}
 
 			if (direction === 'page') {
-				const inputPageValue = form.find('.paging-input').val().trim();
+				const inputPageValue = button.data('page') || form.find('.paging-input,[data-page-input]').val().trim();
 				const totalPages = form.find('input[name="totalPages"]').val();
+				const inputPageValueInt = parseInt(inputPageValue);
+				const totalPagesInt = parseInt(totalPages);
 
-				if (($.isNumeric(inputPageValue)) && ($.isNumeric(totalPages))) {
-					const inputPageValueInt = parseInt(inputPageValue);
-					const totalPagesInt = parseInt(totalPages);
-					if (1 <= inputPageValueInt && inputPageValueInt <= totalPagesInt) {
-						form.find('input[name="direction"]').val(direction);
-						form.find('input[name="pageNum"]').val(inputPageValueInt);
-					} else {
-						run = false;
-					}
-				} else {
-					run = false;
+				if (Number.isNaN(inputPageValueInt) || Number.isNaN(totalPagesInt)) {
+					closeWaitDlg();
+					return;
+				}
+
+				if (1 <= inputPageValueInt && inputPageValueInt <= totalPagesInt) {
+					form.find('input[name="direction"]').val(direction);
+					form.find('input[name="pageNum"]').val(inputPageValueInt);
 				}
 			} else {
 				form.find('input[name="direction"]').val(direction);
 			}
-			if (run) {
-				$.ajax({
-					url: url,
-					data: form.serialize(),
-					method: 'POST',
-				}).done(function(data) {
-					closeWaitDlg();
-					if (syn.length) {
-						$('#synSearchResultsDiv')
-							.html(data)
-							.parent()
-							.scrollTop(0);
-						$('#syn-details-area').empty();
-					} else {
-						$('#results_div')
-							.html(data)
-							.parent()
-							.scrollTop(0);
-					}
-
-					$wpm.bindObjects();
-				}).fail(function(data) {
-					console.log(data);
-					closeWaitDlg();
-					openAlertDlg(messages["common.error"]);
-				});
-			} else {
+			$.ajax({
+				url: url,
+				data: form.serialize(),
+				method: 'POST',
+			}).done(function(data) {
 				closeWaitDlg();
-			}
+				if (syn.length) {
+					$('#synSearchResultsDiv')
+						.html(data)
+						.parent()
+						.scrollTop(0);
+					$('#syn-details-area').empty();
+				} else {
+					$('#results_div')
+						.html(data)
+						.parent()
+						.scrollTop(0);
+				}
+
+				$wpm.bindObjects();
+			}).fail(function(data) {
+				console.log(data);
+				closeWaitDlg();
+				openAlertDlg(messages["common.error"]);
+			});
 		});
 	});
 }
@@ -995,7 +990,7 @@ $.fn.pagingInputPlugin = function() {
 		input.on('keydown', function(e) {
 			if (e.which === 13 || e.keyCode === 13) {
 				e.preventDefault();
-				input.siblings('.paging-submit').trigger('click');
+				input.siblings('.paging-submit, [data-page-button]').trigger('click');
 			}
 		})
 	})

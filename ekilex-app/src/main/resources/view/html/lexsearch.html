@@ -19,7 +19,7 @@
     <div class="mt-4 float-left" th:if="${invalidSearch}">
       <div th:text="#{lex.search.invalid}"></div>
     </div>
-    <div class="row no-gutters py-3 flex-grow-1 h-100">
+    <div class="row no-gutters py-3 flex-grow-1 h-100 lex-results__container">
       <div class="col-3 pr-2 h-100" id="searchColumn" th:if="${isSearchResult}">
         <div th:if="${noResults == true}">
           <div th:text="#{lex.not.found}">Not found.</div>

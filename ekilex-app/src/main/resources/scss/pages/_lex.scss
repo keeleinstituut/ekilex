@@ -5,6 +5,10 @@
   background-color: transparent;
   color: var(--color-dark-blue);
 
+  &__container {
+    container: results / size;
+  }
+
   &__header {
     display: flex;
     justify-content: space-between;
@@ -43,6 +47,8 @@
     padding: 0;
     margin: 0;
     list-style-type: none;
+    // Results container height - sidebar header - paging
+    max-height: calc(100cqh - 42px - 80px);
   }
 
   &__row {
@@ -111,5 +117,55 @@
     display: flex;
     align-items: center;
     gap: 8px;
+  }
+
+  &__paging {
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    --icon-size: 1.5rem;
+
+    & button {
+      padding: 0;
+      border: none;
+      background-color: transparent;
+      cursor: pointer;
+      font-size: .625rem;
+      color: inherit;
+
+      &[data-active='false'] {
+        color: var(--color-dark-blue-25);
+      }
+    }
+  }
+
+  &__pages {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+
+  }
+
+  &__page-input {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 4px;
+
+    & input {
+      width: 50%;
+    }
+
+    & button {
+      height: 100%;
+    }
+
+    &:has(input:placeholder-shown) {
+      & button {
+        display: none;
+      }
+    }
   }
 }
