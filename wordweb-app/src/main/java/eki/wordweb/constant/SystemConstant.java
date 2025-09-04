@@ -69,6 +69,8 @@ public interface SystemConstant extends StatSearchConstant {
 
 	String WORD_SEARCH_GROUP_FORM = "form";
 
+	String WORD_SEARCH_GROUP_WORD_RELATION = "word_relation";
+
 	String ILLEGAL_FORM_VALUE = "-";
 
 	int SEARCH_WORD_MAX_LENGTH = 250;

@@ -6,6 +6,7 @@ import static eki.wordweb.data.db.Tables.OS_WORD_OS_MORPH;
 import static eki.wordweb.data.db.Tables.OS_WORD_OS_RECOMMEND;
 import static eki.wordweb.data.db.Tables.OS_WORD_OS_USAGE;
 import static eki.wordweb.data.db.Tables.OS_WORD_RELATION;
+import static eki.wordweb.data.db.Tables.OS_WORD_RELATION_IDX;
 
 import java.util.List;
 import java.util.Map;
@@ -16,6 +17,7 @@ import org.jooq.DSLContext;
 import org.jooq.Field;
 import org.jooq.JSON;
 import org.jooq.Record2;
+import org.jooq.Record3;
 import org.jooq.Table;
 import org.jooq.impl.DSL;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,6 +35,7 @@ import eki.wordweb.data.db.tables.OsWordOsMorph;
 import eki.wordweb.data.db.tables.OsWordOsRecommend;
 import eki.wordweb.data.db.tables.OsWordOsUsage;
 import eki.wordweb.data.db.tables.OsWordRelation;
+import eki.wordweb.data.db.tables.OsWordRelationIdx;
 
 @Component
 public class OsDbService implements SystemConstant, GlobalConstant {
@@ -45,6 +48,32 @@ public class OsDbService implements SystemConstant, GlobalConstant {
 		Field<String> searchValueLowerField = DSL.lower(searchValue);
 
 		OsWord w = OS_WORD.as("w");
+		Condition where = DSL.lower(w.VALUE).eq(searchValueLowerField);
+
+		return getWords(w, where, fiCollationExists);
+	}
+
+	public List<eki.wordweb.data.os.OsWord> getRelatedWords(String searchValue, boolean fiCollationExists) {
+
+		Field<String> searchValueLowerField = DSL.lower(searchValue);
+
+		OsWord w = OS_WORD.as("w");
+		OsWordRelationIdx wr = OS_WORD_RELATION_IDX.as("wr");
+		Condition where = DSL
+				.exists(DSL
+						.select(wr.WORD_ID)
+						.from(wr)
+						.where(
+								wr.WORD_ID.eq(w.WORD_ID)
+										.and(DSL.lower(wr.VALUE).eq(searchValueLowerField)))
+
+				);
+
+		return getWords(w, where, fiCollationExists);
+	}
+
+	private List<eki.wordweb.data.os.OsWord> getWords(OsWord w, Condition where, boolean fiCollationExists) {
+
 		OsLexemeMeaning lm = OS_LEXEME_MEANING.as("lm");
 
 		Field<JSON> lmf = DSL
@@ -64,7 +93,7 @@ public class OsDbService implements SystemConstant, GlobalConstant {
 				.select(w.fields())
 				.select(lmf.as("lexeme_meanings"))
 				.from(w)
-				.where(DSL.lower(w.VALUE).eq(searchValueLowerField))
+				.where(where)
 				.orderBy(
 						wvobf,
 						w.HOMONYM_NR)
@@ -146,7 +175,7 @@ public class OsDbService implements SystemConstant, GlobalConstant {
 		Field<String> searchValueLowerField = DSL.lower(searchValue);
 
 		OsWord w = OS_WORD.as("w");
-		Condition where = w.VALUE.like(searchValueLowerField);
+		Condition where = DSL.lower(w.VALUE).like(searchValueLowerField);
 
 		List<String> wordValues = create
 				.selectDistinct(w.VALUE)
@@ -182,28 +211,39 @@ public class OsDbService implements SystemConstant, GlobalConstant {
 
 		OsWord w = OS_WORD.as("w");
 		OsWord aw = OS_WORD.as("aw");
-		Condition wwhere = w.VALUE.like(wordInfixLowerLikeField);
-		Condition awwhere = aw.VALUE_AS_WORD.like(wordInfixLowerUnaccentLikeField);
-
-		// keeping the grouping structure for future features
+		OsWordRelationIdx wr = OS_WORD_RELATION_IDX.as("wr");
 
 		Table<Record2<String, String>> ws = DSL
 				.select(
 						DSL.val(WORD_SEARCH_GROUP_WORD).as("sgroup"),
 						w.VALUE.as("word_value"))
 				.from(w)
-				.where(wwhere)
+				.where(DSL.lower(w.VALUE).like(wordInfixLowerLikeField))
 				.unionAll(DSL
 						.select(
 								DSL.val(WORD_SEARCH_GROUP_WORD).as("sgroup"),
 								aw.VALUE.as("word_value"))
 						.from(aw)
-						.where(awwhere))
+						.where(DSL.lower(aw.VALUE_AS_WORD).like(wordInfixLowerUnaccentLikeField)))
 				.asTable("ws");
+
+		Table<Record2<String, String>> wrs = DSL
+				.select(
+						DSL.val(WORD_SEARCH_GROUP_WORD_RELATION).as("sgroup"),
+						w.VALUE.as("word_value"))
+				.from(w)
+				.whereExists(DSL
+						.select(wr.WORD_ID)
+						.from(wr)
+						.where(
+								wr.WORD_ID.eq(w.WORD_ID)
+										.and(DSL.lower(wr.VALUE).eq(wordInfixLowerField))))
+				.orderBy(w.VALUE)
+				.asTable("wrs");
 
 		Field<Integer> wlf = DSL.field(Routines.levenshtein1(ws.field("word_value", String.class), wordInfixLowerField));
 
-		return (Map<String, List<WordSearchElement>>) create
+		Table<Record3<String, String, Integer>> wst = DSL
 				.select(
 						ws.field("sgroup", String.class),
 						ws.field("word_value", String.class),
@@ -211,6 +251,21 @@ public class OsDbService implements SystemConstant, GlobalConstant {
 				.from(ws)
 				.orderBy(DSL.field("lev"))
 				.limit(maxWordCount)
+				.unionAll(DSL
+						.select(
+								wrs.field("sgroup", String.class),
+								wrs.field("word_value", String.class),
+								DSL.val(0).as("lev"))
+						.from(wrs)
+						.orderBy(DSL.field("word_value"))
+						.limit(maxWordCount))
+				.asTable("wst");
+
+		return (Map<String, List<WordSearchElement>>) create
+				.select(
+						wst.field("sgroup", String.class),
+						wst.field("word_value", String.class))
+				.from(wst)
 				.fetchGroups("sgroup", WordSearchElement.class);
 	}
 

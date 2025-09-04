@@ -24,8 +24,10 @@
         <div class="no-results__wrapper">
           <th:block th:if="${searchResult.validSearch}">
             <h1 class="no-results__title">
-              <span th:text="#{label.word.not.found.os}"></span>
+              <span th:text="#{label.search.word.not.found(${searchValue}, '')}"></span>
             </h1>
+            <div th:utext="#{label.word.not.found.os}">Ei leidnud midagi</div>
+            <a th:href="@{${@viewUtil.getDetailSearchUri(searchValue)}}" class="text-break" th:text="${searchValue}" target="_blank"></a>
           </th:block>
           <th:block th:unless="${searchResult.validSearch}">
             <h1 class="no-results__title" th:text="#{label.search.word.invalid}"></h1>

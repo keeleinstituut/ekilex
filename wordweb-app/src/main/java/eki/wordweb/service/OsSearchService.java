@@ -1,6 +1,5 @@
 package eki.wordweb.service;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -49,8 +48,14 @@ public class OsSearchService implements GlobalConstant, SystemConstant {
 
 		String displayLang = languageContext.getDisplayLang();
 		boolean fiCollationExists = osDbService.fiCollationExists();
-		List<OsWord> words = osDbService.getWords(searchValue, fiCollationExists);
+		List<OsWord> words;
 		OsWord selectedWord = null;
+
+		words = osDbService.getWords(searchValue, fiCollationExists);
+
+		if (CollectionUtils.isEmpty(words)) {
+			words = osDbService.getRelatedWords(searchValue, fiCollationExists);
+		}
 
 		if (CollectionUtils.isNotEmpty(words)) {
 			osConversionUtil.applyGenericConversions(words, searchValue, selectedHomonymNr);
@@ -88,13 +93,28 @@ public class OsSearchService implements GlobalConstant, SystemConstant {
 
 		String wordInfixUnaccent = textDecorationService.getValueAsWord(wordInfix);
 		Map<String, List<WordSearchElement>> results = osDbService.getWordsByInfixLev(wordInfix, wordInfixUnaccent, limit);
-		List<WordSearchElement> wordGroup = results.get(WORD_SEARCH_GROUP_WORD);
-		if (CollectionUtils.isEmpty(wordGroup)) {
-			wordGroup = new ArrayList<>();
-		}
-		List<String> infixWords = wordGroup.stream().map(WordSearchElement::getWordValue).distinct().collect(Collectors.toList());
 		Map<String, List<String>> searchResultCandidates = new HashMap<>();
-		searchResultCandidates.put("infixWords", infixWords);
+		applySearchGroup(WORD_SEARCH_GROUP_WORD, results, "infixWords", searchResultCandidates);
+		applySearchGroup(WORD_SEARCH_GROUP_WORD_RELATION, results, "infixWordRelations", searchResultCandidates);
+
 		return searchResultCandidates;
+	}
+
+	private void applySearchGroup(
+			String searchGroupName,
+			Map<String, List<WordSearchElement>> searchGroupMap,
+			String resultGroupName,
+			Map<String, List<String>> resultsMap) {
+
+		List<WordSearchElement> searchGroup;
+		List<String> searchWords;
+		searchGroup = searchGroupMap.get(searchGroupName);
+		if (CollectionUtils.isNotEmpty(searchGroup)) {
+			searchWords = searchGroup.stream()
+					.map(WordSearchElement::getWordValue)
+					.distinct()
+					.collect(Collectors.toList());
+			resultsMap.put(resultGroupName, searchWords);
+		}
 	}
 }
