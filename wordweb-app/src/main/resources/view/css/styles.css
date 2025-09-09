@@ -15794,6 +15794,9 @@ span.material-symbols-outlined--small {
   font-weight: 500;
   font-size: 0.875rem;
 }
+.os-results ul {
+  padding-left: 24px;
+}
 .homonym-page--os {
   margin: 32px 0;
 }
