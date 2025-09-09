@@ -2282,9 +2282,11 @@
         <div th:replace="lexdialog :: edit_meaning_forum_dlg"></div>
         <div class="col hidden-buttons pr-5" th:classappend="${forumIter.last ? '' : 'mb-3'}">
           <div class="action-buttons-anchor w-100">
-            <span th:utext="${forum.valuePrese}"></span>
-            <span class="ctxt" th:text="'[' + ${forum.modifiedBy} + ']'" th:if="${forum.modifiedBy != null}"></span>
-            <span class="ctxt" th:text="'(' + ${#temporals.format(forum.modifiedOn, 'dd.MM.yyyy')} + ')'" th:if="${forum.modifiedOn != null}"></span>
+            <div class="d-flex flex-column">
+              <span th:utext="${forum.valuePrese}"></span>
+              <span class="ctxt" th:text="'[' + ${forum.modifiedBy} + ']'" th:if="${forum.modifiedBy != null}"></span>
+              <span class="ctxt" th:text="'(' + ${#temporals.format(forum.modifiedOn, 'dd.MM.yyyy')} + ')'" th:if="${forum.modifiedOn != null}"></span>
+            </div>
             <div class="action-buttons-2">
               <button type="button" class="btn badge badge-primary"
                       th:title="#{common.edit}"
