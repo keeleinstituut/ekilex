@@ -82,7 +82,6 @@
                           <span th:unless="${registerIter.last}" class="ml-n1">,</span>
                         </th:block>
                         <span class="os-hints__small" th:if="${lexemeWord.valueState != null}" th:text="${lexemeWord.valueState.value}"></span>
-                        <span class="os-hints__small" th:if="${lexemeWord.displayMorph != null}" th:text="${lexemeWord.displayMorph.value}"></span>
                         <th:block th:each="wordType, wordTypeIter : ${lexemeWord.wordTypes}" th:if="${not #lists.isEmpty(lexemeWord.wordTypes)}">
                           <span class="os-hints__small" th:text="${wordType.value}"></span>
                           <span th:unless="${wordTypeIter.last}"></span>
