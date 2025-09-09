@@ -74,6 +74,7 @@
   --color-hylge-hall: #C1C9D4;
   --color-meri-hylge-hall: #E3EFFB;
   --color-linna-hall: #E7E7E7;
+  --color-linnahall: #BAD2DE40;
   --color-white: #fff;
   --color-blue-100: #a0dcf8;
   --color-blue-200: #5aabe0;
@@ -15852,6 +15853,59 @@ span.material-symbols-outlined--small {
   font-size: 0.75rem;
   text-transform: uppercase;
 }
+.os-home {
+  background-color: var(--color-white);
+  --header-bg-color: var(--color-white);
+}
+.os-home::after {
+  position: absolute;
+  right: 8vw;
+  top: 200px;
+  width: clamp(100px, 17vw, 275px);
+  height: 91px;
+  background-color: var(--color-linnahall);
+  mask-size: contain;
+  mask-repeat: no-repeat;
+}
+@media (min-width: 992px) {
+  .os-home::after {
+    content: "";
+    mask-image: url(../images/bg-tilde.svg);
+  }
+}
+.os-home__logo {
+  background-image: url(../images/os-full.svg);
+  background-repeat: no-repeat;
+  background-size: contain;
+  background-position: center;
+  width: 270px;
+  height: 91px;
+  margin: 0 auto 4px;
+}
+@media (min-width: 576px) {
+  .os-home__logo {
+    width: 418px;
+    margin-bottom: 48px;
+  }
+}
+.os-home__link {
+  color: var(--color-dark-blue);
+  font-size: 0.875rem;
+  font-weight: 500;
+  display: block;
+  margin: 24px auto 24px;
+}
+.os-home__link:hover {
+  text-decoration: none;
+}
+.os-home__link span:first-child {
+  text-decoration: underline;
+}
+@media (min-width: 768px) {
+  .os-home__link {
+    margin: 88px auto 198px;
+  }
+}
 .header {
   padding: 16px 16px 16px 4px;
   position: sticky;
@@ -15861,7 +15915,7 @@ span.material-symbols-outlined--small {
   border-bottom: 1px solid var(--color-old-lighter-gray);
 }
 .header--simple {
-  background-color: var(--color-gray-010);
+  background-color: var(--header-bg-color, var(--color-gray-010));
   border: none;
 }
 .header--simple .header__lucky {
@@ -15990,6 +16044,9 @@ span.material-symbols-outlined--small {
 }
 .navigation__dropdown {
   position: relative;
+}
+.navigation__dropdown:only-child {
+  margin-left: auto;
 }
 .navigation__dropdown-menu {
   position: absolute;
@@ -17067,6 +17124,7 @@ span.material-symbols-outlined--small {
   --color-hylge-hall: #C1C9D4;
   --color-meri-hylge-hall: #E3EFFB;
   --color-linna-hall: #E7E7E7;
+  --color-linnahall: #BAD2DE40;
   --color-white: #fff;
   --color-blue-100: #a0dcf8;
   --color-blue-200: #5aabe0;
