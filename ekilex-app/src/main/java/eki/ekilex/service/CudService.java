@@ -445,7 +445,7 @@ public class CudService extends AbstractCudService implements PermConstant, Acti
 	}
 
 	@Transactional(rollbackOn = Exception.class)
-	public void createWordOsRecommendation(Long wordId, String valuePrese, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
+	public void createWordOsRecommendation(Long wordId, String valuePrese, EkiUser user, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
 
 		WordOsRecommendation wordOsRecommendation = new WordOsRecommendation();
 		wordOsRecommendation.setValuePrese(valuePrese);
@@ -455,6 +455,7 @@ public class CudService extends AbstractCudService implements PermConstant, Acti
 
 		ActivityLogData activityLog = activityLogService.prepareActivityLog("createWordOsRecommendation", wordId, ActivityOwner.WORD, roleDatasetCode, isManualEventOnUpdateEnabled);
 		Long wordOsRecommendationId = cudDbService.createWordOsRecommendation(wordId, wordOsRecommendation);
+		createPublishing(user, roleDatasetCode, TARGET_NAME_WW_UNIF, ENTITY_NAME_WORD_OS_RECOMMENDATION, wordOsRecommendationId);
 		activityLogService.createActivityLog(activityLog, wordOsRecommendationId, ActivityEntity.WORD_OS_RECOMMENDATION);
 	}
 

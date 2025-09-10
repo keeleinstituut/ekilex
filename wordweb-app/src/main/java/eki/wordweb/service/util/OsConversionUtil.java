@@ -82,11 +82,13 @@ public class OsConversionUtil implements GlobalConstant {
 	public void applyWordRelationConversions(OsWord word) {
 
 		List<OsWordRelationGroup> wordRelationGroups = word.getWordRelationGroups();
-		List<OsWordRelationGroup> primary1WordRelationGroups = null;
-		List<OsWordRelationGroup> primary2WordRelationGroups = null;
+		List<OsWordRelationGroup> title1WordRelationGroups = null;
+		List<OsWordRelationGroup> title2WordRelationGroups = null;
+		List<OsWordRelationGroup> title3WordRelationGroups = null;
 		List<OsWordRelationGroup> secondaryWordRelationGroups = null;
-		final List<String> primary1WordRelTypeCodes = Arrays.asList(OS_PRIMARY1_WORD_REL_TYPE_CODES);
-		final List<String> primary2WordRelTypeCodes = Arrays.asList(OS_PRIMARY2_WORD_REL_TYPE_CODES);
+		final List<String> title1WordRelTypeCodes = Arrays.asList(OS_TITLE_1_WORD_REL_TYPE_CODES);
+		final List<String> title2WordRelTypeCodes = Arrays.asList(OS_TITLE_2_WORD_REL_TYPE_CODES);
+		final List<String> title3WordRelTypeCodes = Arrays.asList(OS_TITLE_3_WORD_REL_TYPE_CODES);
 
 		if (CollectionUtils.isEmpty(wordRelationGroups)) {
 			return;
@@ -95,16 +97,21 @@ public class OsConversionUtil implements GlobalConstant {
 		for (OsWordRelationGroup wordRelationGroup : wordRelationGroups) {
 
 			String wordRelTypeCode = wordRelationGroup.getWordRelTypeCode();
-			if (primary1WordRelTypeCodes.contains(wordRelTypeCode)) {
-				if (primary1WordRelationGroups == null) {
-					primary1WordRelationGroups = new ArrayList<>();
+			if (title1WordRelTypeCodes.contains(wordRelTypeCode)) {
+				if (title1WordRelationGroups == null) {
+					title1WordRelationGroups = new ArrayList<>();
 				}
-				primary1WordRelationGroups.add(wordRelationGroup);
-			} else if (primary2WordRelTypeCodes.contains(wordRelTypeCode)) {
-				if (primary2WordRelationGroups == null) {
-					primary2WordRelationGroups = new ArrayList<>();
+				title1WordRelationGroups.add(wordRelationGroup);
+			} else if (title2WordRelTypeCodes.contains(wordRelTypeCode)) {
+				if (title2WordRelationGroups == null) {
+					title2WordRelationGroups = new ArrayList<>();
 				}
-				primary2WordRelationGroups.add(wordRelationGroup);
+				title2WordRelationGroups.add(wordRelationGroup);
+			} else if (title3WordRelTypeCodes.contains(wordRelTypeCode)) {
+				if (title3WordRelationGroups == null) {
+					title3WordRelationGroups = new ArrayList<>();
+				}
+				title3WordRelationGroups.add(wordRelationGroup);
 			} else {
 				if (secondaryWordRelationGroups == null) {
 					secondaryWordRelationGroups = new ArrayList<>();
@@ -113,8 +120,9 @@ public class OsConversionUtil implements GlobalConstant {
 			}
 		}
 
-		word.setPrimary1WordRelationGroups(primary1WordRelationGroups);
-		word.setPrimary2WordRelationGroups(primary2WordRelationGroups);
+		word.setTitle1WordRelationGroups(title1WordRelationGroups);
+		word.setTitle2WordRelationGroups(title2WordRelationGroups);
+		word.setTitle3WordRelationGroups(title3WordRelationGroups);
 		word.setSecondaryWordRelationGroups(secondaryWordRelationGroups);
 	}
 

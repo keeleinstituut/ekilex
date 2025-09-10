@@ -40,9 +40,11 @@ public class OsWord extends AbstractDataObject implements DecoratedWordType {
 
 	private List<OsWordRelationGroup> wordRelationGroups;
 
-	private List<OsWordRelationGroup> primary1WordRelationGroups;
+	private List<OsWordRelationGroup> title1WordRelationGroups;
 
-	private List<OsWordRelationGroup> primary2WordRelationGroups;
+	private List<OsWordRelationGroup> title2WordRelationGroups;
+
+	private List<OsWordRelationGroup> title3WordRelationGroups;
 
 	private List<OsWordRelationGroup> secondaryWordRelationGroups;
 
@@ -187,20 +189,28 @@ public class OsWord extends AbstractDataObject implements DecoratedWordType {
 		this.wordRelationGroups = wordRelationGroups;
 	}
 
-	public List<OsWordRelationGroup> getPrimary1WordRelationGroups() {
-		return primary1WordRelationGroups;
+	public List<OsWordRelationGroup> getTitle1WordRelationGroups() {
+		return title1WordRelationGroups;
 	}
 
-	public void setPrimary1WordRelationGroups(List<OsWordRelationGroup> primary1WordRelationGroups) {
-		this.primary1WordRelationGroups = primary1WordRelationGroups;
+	public void setTitle1WordRelationGroups(List<OsWordRelationGroup> title1WordRelationGroups) {
+		this.title1WordRelationGroups = title1WordRelationGroups;
 	}
 
-	public List<OsWordRelationGroup> getPrimary2WordRelationGroups() {
-		return primary2WordRelationGroups;
+	public List<OsWordRelationGroup> getTitle2WordRelationGroups() {
+		return title2WordRelationGroups;
 	}
 
-	public void setPrimary2WordRelationGroups(List<OsWordRelationGroup> primary2WordRelationGroups) {
-		this.primary2WordRelationGroups = primary2WordRelationGroups;
+	public void setTitle2WordRelationGroups(List<OsWordRelationGroup> title2WordRelationGroups) {
+		this.title2WordRelationGroups = title2WordRelationGroups;
+	}
+
+	public List<OsWordRelationGroup> getTitle3WordRelationGroups() {
+		return title3WordRelationGroups;
+	}
+
+	public void setTitle3WordRelationGroups(List<OsWordRelationGroup> title3WordRelationGroups) {
+		this.title3WordRelationGroups = title3WordRelationGroups;
 	}
 
 	public List<OsWordRelationGroup> getSecondaryWordRelationGroups() {
