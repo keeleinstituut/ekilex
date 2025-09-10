@@ -336,11 +336,8 @@
             <input type="hidden" name="id" th:value="${wordId}">
             <input type="hidden" name="opCode" value="word_os_recommendation">
             <input type="hidden" name="value">
-            <input type="hidden" name="value2">
             <p th:text="#{common.content}"></p>
             <div th:replace="components :: eki_editor_elem(editFld = 'value')"></div>
-            <p th:text="#{common.add}"></p>
-            <div th:replace="components :: eki_editor_elem(editFld = 'value2', optional = ${true})"></div>  
           </div>
           <div class="modal-footer">
             <button type="submit" class="btn btn-primary" th:text="#{common.add}">Lisa</button>
@@ -367,11 +364,8 @@
             <input type="hidden" name="id" th:value="${wordOsRecommendation.id}">
             <input type="hidden" name="opCode" value="word_os_recommendation">
             <input type="hidden" name="value" th:value="${wordOsRecommendation.valuePrese}">
-            <input type="hidden" name="value2" th:value="${wordOsRecommendation.optValuePrese}">
             <p th:text="#{common.content}"></p>
             <div th:replace="components :: eki_editor_elem(editFld = 'value')"></div>
-            <p th:text="#{common.add}"></p>
-            <div th:replace="components :: eki_editor_elem(editFld = 'value2', optional = ${true})"></div>  
           </div>
           <div class="modal-footer">
             <button type="submit" class="btn btn-primary" th:text="#{common.save}">Salvesta</button>

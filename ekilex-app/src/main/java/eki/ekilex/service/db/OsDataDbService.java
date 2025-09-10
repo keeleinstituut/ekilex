@@ -7,30 +7,43 @@ import static eki.ekilex.data.db.main.Tables.WORD_OS_USAGE;
 import java.util.List;
 
 import org.jooq.DSLContext;
+import org.jooq.Field;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import eki.common.constant.PublishingConstant;
 import eki.ekilex.data.db.main.tables.WordOsMorph;
 import eki.ekilex.data.db.main.tables.WordOsRecommendation;
 import eki.ekilex.data.db.main.tables.WordOsUsage;
+import eki.ekilex.service.db.util.QueryHelper;
 
 @Component
-public class OsDataDbService {
+public class OsDataDbService implements PublishingConstant {
 
 	@Autowired
-	protected DSLContext mainDb;
+	private DSLContext mainDb;
 
-	public eki.ekilex.data.WordOsRecommendation getWordOsRecommendation(Long wordId) {
+	@Autowired
+	private QueryHelper queryHelper;
+
+	public List<eki.ekilex.data.WordOsRecommendation> getWordOsRecommendations(Long wordId) {
 
 		WordOsRecommendation wor = WORD_OS_RECOMMENDATION.as("wor");
 
+		Field<Boolean> wwupf = queryHelper.getPublishingField(TARGET_NAME_WW_UNIF, ENTITY_NAME_WORD_OS_RECOMMENDATION, wor.ID);
+		Field<Boolean> wwlpf = queryHelper.getPublishingField(TARGET_NAME_WW_LITE, ENTITY_NAME_WORD_OS_RECOMMENDATION, wor.ID);
+		Field<Boolean> wwopf = queryHelper.getPublishingField(TARGET_NAME_WW_OS, ENTITY_NAME_WORD_OS_RECOMMENDATION, wor.ID);
+
 		return mainDb
-				.selectFrom(wor)
+				.select(wor.fields())
+				.select(
+						wwupf.as("is_ww_unif"),
+						wwlpf.as("is_ww_lite"),
+						wwopf.as("is_ww_os"))
+				.from(wor)
 				.where(wor.WORD_ID.eq(wordId))
 				.orderBy(wor.ID)
-				.limit(1)
-				.fetchOptionalInto(eki.ekilex.data.WordOsRecommendation.class)
-				.orElse(null);
+				.fetchInto(eki.ekilex.data.WordOsRecommendation.class);
 	}
 
 	public List<eki.ekilex.data.WordOsUsage> getWordOsUsages(Long wordId) {

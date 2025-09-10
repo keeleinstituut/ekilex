@@ -23,7 +23,6 @@ import eki.ekilex.data.AbstractCreateUpdateEntity;
 import eki.ekilex.data.DatasetPermission;
 import eki.ekilex.data.EkiUser;
 import eki.ekilex.data.ValueAndPrese;
-import eki.ekilex.data.WordOsRecommendation;
 import eki.ekilex.service.core.UserContext;
 import eki.ekilex.service.db.CudDbService;
 import eki.ekilex.service.db.MigrationDbService;
@@ -72,14 +71,6 @@ public abstract class AbstractLoaderRunner implements GlobalConstant, LoaderCons
 		String value = textDecorationService.removeEkiElementMarkup(valuePrese);
 		entity.setValue(value);
 		entity.setValuePrese(valuePrese);
-
-		if (entity instanceof WordOsRecommendation) {
-			WordOsRecommendation wordOsRecommendation = (WordOsRecommendation) entity;
-			String optValuePrese = StringUtils.trim(wordOsRecommendation.getOptValuePrese());
-			String optValue = textDecorationService.removeEkiElementMarkup(optValuePrese);
-			wordOsRecommendation.setOptValue(optValue);
-			wordOsRecommendation.setOptValuePrese(optValuePrese);
-		}
 	}
 
 	protected void setCreateUpdate(AbstractCreateUpdateEntity entity) {

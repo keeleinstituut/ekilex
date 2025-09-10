@@ -128,7 +128,7 @@ import eki.ekilex.data.db.main.tables.ViewOsDefinitionIdx;
 import eki.ekilex.data.db.main.tables.ViewOsLexemeMeaning;
 import eki.ekilex.data.db.main.tables.ViewOsWord;
 import eki.ekilex.data.db.main.tables.ViewOsWordOsMorph;
-import eki.ekilex.data.db.main.tables.ViewOsWordOsRecommend;
+import eki.ekilex.data.db.main.tables.ViewOsWordOsRecommendation;
 import eki.ekilex.data.db.main.tables.ViewOsWordOsUsage;
 import eki.ekilex.data.db.main.tables.ViewOsWordOsUsageIdx;
 import eki.ekilex.data.db.main.tables.ViewOsWordRelation;
@@ -831,9 +831,9 @@ public class Public extends SchemaImpl {
     public final ViewOsWordOsMorph VIEW_OS_WORD_OS_MORPH = ViewOsWordOsMorph.VIEW_OS_WORD_OS_MORPH;
 
     /**
-     * The table <code>public.view_os_word_os_recommend</code>.
+     * The table <code>public.view_os_word_os_recommendation</code>.
      */
-    public final ViewOsWordOsRecommend VIEW_OS_WORD_OS_RECOMMEND = ViewOsWordOsRecommend.VIEW_OS_WORD_OS_RECOMMEND;
+    public final ViewOsWordOsRecommendation VIEW_OS_WORD_OS_RECOMMENDATION = ViewOsWordOsRecommendation.VIEW_OS_WORD_OS_RECOMMENDATION;
 
     /**
      * The table <code>public.view_os_word_os_usage</code>.
@@ -1361,7 +1361,7 @@ public class Public extends SchemaImpl {
             ViewOsLexemeMeaning.VIEW_OS_LEXEME_MEANING,
             ViewOsWord.VIEW_OS_WORD,
             ViewOsWordOsMorph.VIEW_OS_WORD_OS_MORPH,
-            ViewOsWordOsRecommend.VIEW_OS_WORD_OS_RECOMMEND,
+            ViewOsWordOsRecommendation.VIEW_OS_WORD_OS_RECOMMENDATION,
             ViewOsWordOsUsage.VIEW_OS_WORD_OS_USAGE,
             ViewOsWordOsUsageIdx.VIEW_OS_WORD_OS_USAGE_IDX,
             ViewOsWordRelation.VIEW_OS_WORD_RELATION,

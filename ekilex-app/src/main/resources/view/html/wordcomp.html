@@ -2,31 +2,29 @@
 <html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head></head>
 <body>
-  <th:block th:fragment="word_os_recommendation">
-    <div class="ekiAccordion__instance">
-      <div class="ekiAccordion__title">
-        <span class="badge badge-data-exists" th:if="${details.word.wordOsRecommendation}">•</span>
-        <span th:text="#{lex.word.os.recommendation}">ÕS soovitab</span>
-        <button type="button" class="ekiAccordion__add"
-                th:title="#{common.add.new}" data-toggle="modal"
-                th:data-target="${'#addWordOsRecommendationDlg_' + wordId}"
-                th:unless="${details.word.wordOsRecommendation}"
-                sec:authorize="#vars.details.word.crudGrant">
-          <i class="fa fa-plus" aria-hidden="true"></i>
-        </button>
-      </div>
-      <div class="ekiAccordion__content">
-        <div th:if="${details.word.wordOsRecommendation == null}" th:text="#{common.no.content}">
-          Sisu puudub...
+  <th:block th:fragment="word_os_recommendation" th:with="wordOsRecommendationSectionId=${'word_os_recommendation_' + wordId}">
+    <div th:data-replace-id="${wordOsRecommendationSectionId}">
+      <div class="ekiAccordion__instance">
+        <div class="ekiAccordion__title">
+          <span class="badge badge-data-exists" th:unless="${#lists.isEmpty(details.word.wordOsRecommendations)}">•</span>
+          <span th:text="#{lex.word.os.recommendation}">ÕS soovitab</span>
+          <button type="button" class="ekiAccordion__add"
+                  th:title="#{common.add.new}" data-toggle="modal"
+                  th:data-target="${'#addWordOsRecommendationDlg_' + wordId}"
+                  sec:authorize="#vars.details.word.crudGrant">
+            <i class="fa fa-plus" aria-hidden="true"></i>
+          </button>
         </div>
-        <div th:if="${details.word.wordOsRecommendation}">
-          <th:block th:with="wordOsRecommendation=${details.word.wordOsRecommendation}">
+        <div class="ekiAccordion__content">
+          <div th:if="${#lists.isEmpty(details.word.wordOsRecommendations)}" th:text="#{common.no.content}">
+            Sisu puudub...
+          </div>
+          <div th:each="wordOsRecommendation : ${details.word.wordOsRecommendations}">
             <div th:replace="lexdialog :: edit_word_os_recommendation"></div>
             <div class="col hidden-buttons pr-5">
               <div class="action-buttons-anchor">
                 <div>
                   <div th:utext="${wordOsRecommendation.valuePrese}"></div>
-                  <div th:utext="${wordOsRecommendation.optValuePrese}"></div>
                   <span class="ctxt" th:text="'[' + ${wordOsRecommendation.modifiedBy} + ']'" th:if="${wordOsRecommendation.modifiedBy != null}"></span>
                   <span class="ctxt" th:text="'(' + ${#temporals.format(wordOsRecommendation.modifiedOn, 'dd.MM.yyyy')} + ')'" th:if="${wordOsRecommendation.modifiedOn != null}"></span>
                 </div>
@@ -47,9 +45,23 @@
                     <i class="fa fa-remove" aria-hidden="true"></i>
                   </button>
                 </div>
+                <th:block
+                  sec:authorize="#vars.details.word.crudGrant"
+                  th:replace="components :: entity_publishing(
+                    entityId = ${wordOsRecommendation.id},
+                    entityName = 'word_os_recommendation',
+                    isPublic = ${wordOsRecommendation.isPublic},
+                    isWwUnif = ${wordOsRecommendation.wwUnif},
+                    isWwLite = ${wordOsRecommendation.wwLite},
+                    isWwOs = ${wordOsRecommendation.wwOs},
+                    replaceSectionId = ${wordOsRecommendationSectionId},
+                    replaceOwnerId = ${wordId},
+                    initAccordion = true,
+                    withPublicSwitch = false)">
+                </th:block>
               </div>
             </div>
-          </th:block>
+          </div>
         </div>
       </div>
     </div>

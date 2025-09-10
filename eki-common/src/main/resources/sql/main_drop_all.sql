@@ -31,7 +31,8 @@ drop view if exists view_os_definition_idx;
 drop view if exists view_os_definition;
 drop view if exists view_os_word_relation_idx;
 drop view if exists view_os_word_relation;
-drop view if exists view_os_word_os_recommend;
+drop view if exists view_os_word_os_recommend; -- remove later
+drop view if exists view_os_word_os_recommendation;
 drop view if exists view_os_word_os_usage_idx;
 drop view if exists view_os_word_os_usage;
 drop view if exists view_os_word_os_morph;

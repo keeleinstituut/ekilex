@@ -12,7 +12,8 @@ drop materialized view if exists mview_od_word; -- remove later
 drop table if exists os_word_os_morph;
 drop table if exists os_word_os_usage;
 drop table if exists os_word_os_usage_idx;
-drop table if exists os_word_os_recommend;
+drop table if exists os_word_os_recommend; -- remove later
+drop table if exists os_word_os_recommendation;
 drop table if exists os_word_relation;
 drop table if exists os_word_relation_idx;
 drop table if exists os_definition_idx;
@@ -139,40 +140,23 @@ dblink(
 	value text
 );
 
-create table os_word_os_recommend (
+create table os_word_os_recommendation (
 	word_id bigint not null,
-	word_os_recommend_id bigint not null,
-	value text not null,
-	value_prese text not null,
-	opt_value text, -- unindexed
-	opt_value_prese text
+	word_os_recommendations json not null
 );
 
-create index os_word_os_recommend_word_id_idx on os_word_os_recommend (word_id);
-create index os_word_os_recommend_word_os_recommend_id_idx on os_word_os_recommend (word_os_recommend_id);
-create index os_word_os_recommend_value_idx on os_word_os_recommend (value);
-create index os_word_os_recommend_value_lower_idx on os_word_os_recommend (lower(value));
-create index os_word_os_recommend_value_prefix_idx on os_word_os_recommend (value text_pattern_ops);
-create index os_word_os_recommend_value_prefix_lower_idx on os_word_os_recommend (lower(value) text_pattern_ops);
+create index os_word_os_recommendation_word_id_idx on os_word_os_recommendation (word_id);
 
-insert into os_word_os_recommend 
+insert into os_word_os_recommendation 
 select 
 	word_id,
-	word_os_recommend_id,
-	value,
-	value_prese,
-	opt_value,
-	opt_value_prese
+	word_os_recommendations
 from
 dblink(
 	'host=localhost user=ekilex password=3kil3x dbname=ekilex',
-	'select * from view_os_word_os_recommend') as os_word_os_recommend (
+	'select * from view_os_word_os_recommendation') as os_word_os_recommendation (
 	word_id bigint,
-	word_os_recommend_id bigint,
-	value text,
-	value_prese text,
-	opt_value text,
-	opt_value_prese text
+	word_os_recommendations json
 );
 
 create table os_lexeme_meaning (

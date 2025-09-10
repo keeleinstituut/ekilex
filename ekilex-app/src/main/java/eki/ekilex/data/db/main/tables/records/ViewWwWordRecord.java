@@ -289,16 +289,16 @@ public class ViewWwWordRecord extends TableRecordImpl<ViewWwWordRecord> {
     }
 
     /**
-     * Setter for <code>public.view_ww_word.word_os_recommendation</code>.
+     * Setter for <code>public.view_ww_word.word_os_recommendations</code>.
      */
-    public void setWordOsRecommendation(JSON value) {
+    public void setWordOsRecommendations(JSON value) {
         set(19, value);
     }
 
     /**
-     * Getter for <code>public.view_ww_word.word_os_recommendation</code>.
+     * Getter for <code>public.view_ww_word.word_os_recommendations</code>.
      */
-    public JSON getWordOsRecommendation() {
+    public JSON getWordOsRecommendations() {
         return (JSON) get(19);
     }
 
@@ -400,7 +400,7 @@ public class ViewWwWordRecord extends TableRecordImpl<ViewWwWordRecord> {
     /**
      * Create a detached, initialised ViewWwWordRecord
      */
-    public ViewWwWordRecord(Long wordId, String value, String valuePrese, String valueAsWord, String lang, String langFilt, Long langOrderBy, Integer homonymNr, String displayMorphCode, String genderCode, String aspectCode, String vocalForm, String morphComment, Integer regYear, LocalDateTime manualEventOn, LocalDateTime lastActivityEventOn, String[] wordTypeCodes, JSON meaningWords, JSON definitions, JSON wordOsRecommendation, BigDecimal freqValue, Long freqRank, Boolean formsExist, Long minDsOrderBy, Long wordTypeOrderBy, TypeLangDatasetPublishingRecord[] langDsPubs) {
+    public ViewWwWordRecord(Long wordId, String value, String valuePrese, String valueAsWord, String lang, String langFilt, Long langOrderBy, Integer homonymNr, String displayMorphCode, String genderCode, String aspectCode, String vocalForm, String morphComment, Integer regYear, LocalDateTime manualEventOn, LocalDateTime lastActivityEventOn, String[] wordTypeCodes, JSON meaningWords, JSON definitions, JSON wordOsRecommendations, BigDecimal freqValue, Long freqRank, Boolean formsExist, Long minDsOrderBy, Long wordTypeOrderBy, TypeLangDatasetPublishingRecord[] langDsPubs) {
         super(ViewWwWord.VIEW_WW_WORD);
 
         setWordId(wordId);
@@ -422,7 +422,7 @@ public class ViewWwWordRecord extends TableRecordImpl<ViewWwWordRecord> {
         setWordTypeCodes(wordTypeCodes);
         setMeaningWords(meaningWords);
         setDefinitions(definitions);
-        setWordOsRecommendation(wordOsRecommendation);
+        setWordOsRecommendations(wordOsRecommendations);
         setFreqValue(freqValue);
         setFreqRank(freqRank);
         setFormsExist(formsExist);

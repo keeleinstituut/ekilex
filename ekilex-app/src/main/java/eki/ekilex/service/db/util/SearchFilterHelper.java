@@ -153,7 +153,12 @@ public class SearchFilterHelper implements GlobalConstant, ActivityFunct, Freefo
 			} else if (CollectionUtils.isEmpty(userPermDatasetCodes)) {
 				//all visible ds, only public
 				dsWhere = lexeme.IS_PUBLIC.eq(PUBLICITY_PUBLIC)
-						.andExists(DSL.select(DATASET.CODE).from(DATASET).where(DATASET.CODE.eq(lexeme.DATASET_CODE).and(DATASET.IS_VISIBLE.isTrue())));
+						.andExists(DSL
+								.select(DATASET.CODE)
+								.from(DATASET)
+								.where(
+										DATASET.CODE.eq(lexeme.DATASET_CODE)
+										.and(DATASET.IS_VISIBLE.isTrue())));
 			} else {
 				//all visible ds, selected perm
 				Condition permDatasetCodeCond;
@@ -649,9 +654,7 @@ public class SearchFilterHelper implements GlobalConstant, ActivityFunct, Freefo
 			for (SearchCriterion criterion : filteredCriteria) {
 				if (criterion.getSearchValue() != null) {
 					String searchValueStr = criterion.getSearchValue().toString();
-					where1 = where1.and(DSL.or(
-							applyValueFilter(searchValueStr, criterion.isNot(), criterion.getSearchOperand(), wor.VALUE, DSL.noCondition(), true),
-							applyValueFilter(searchValueStr, criterion.isNot(), criterion.getSearchOperand(), wor.OPT_VALUE, DSL.noCondition(), true)));
+					where1 = applyValueFilter(searchValueStr, criterion.isNot(), criterion.getSearchOperand(), wor.VALUE, where1, true);
 				}
 			}
 			where = where.andExists(DSL.select(wor.ID).from(wor).where(where1));

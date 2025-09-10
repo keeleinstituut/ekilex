@@ -128,7 +128,7 @@ import eki.ekilex.data.db.main.tables.ViewOsDefinitionIdx;
 import eki.ekilex.data.db.main.tables.ViewOsLexemeMeaning;
 import eki.ekilex.data.db.main.tables.ViewOsWord;
 import eki.ekilex.data.db.main.tables.ViewOsWordOsMorph;
-import eki.ekilex.data.db.main.tables.ViewOsWordOsRecommend;
+import eki.ekilex.data.db.main.tables.ViewOsWordOsRecommendation;
 import eki.ekilex.data.db.main.tables.ViewOsWordOsUsage;
 import eki.ekilex.data.db.main.tables.ViewOsWordOsUsageIdx;
 import eki.ekilex.data.db.main.tables.ViewOsWordRelation;
@@ -802,9 +802,9 @@ public class Tables {
     public static final ViewOsWordOsMorph VIEW_OS_WORD_OS_MORPH = ViewOsWordOsMorph.VIEW_OS_WORD_OS_MORPH;
 
     /**
-     * The table <code>public.view_os_word_os_recommend</code>.
+     * The table <code>public.view_os_word_os_recommendation</code>.
      */
-    public static final ViewOsWordOsRecommend VIEW_OS_WORD_OS_RECOMMEND = ViewOsWordOsRecommend.VIEW_OS_WORD_OS_RECOMMEND;
+    public static final ViewOsWordOsRecommendation VIEW_OS_WORD_OS_RECOMMENDATION = ViewOsWordOsRecommendation.VIEW_OS_WORD_OS_RECOMMENDATION;
 
     /**
      * The table <code>public.view_os_word_os_usage</code>.

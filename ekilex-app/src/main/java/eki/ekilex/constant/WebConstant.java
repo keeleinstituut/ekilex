@@ -96,6 +96,10 @@ public interface WebConstant {
 
 	String WORD_RELATION_URI = "/wordrelation";
 
+	String WORD_OS_RECOMMENDATION_FRAGMENT = "word_os_recommendation";
+
+	String WORD_OS_RECOMMENDATION_URI = "/wordosrecommendation";
+
 	String WORD_DETAILS_FRAGMENT = "word_details";
 
 	String WORD_DETAILS_URI = "/worddetails";

@@ -21,16 +21,17 @@
     </th:block>
   </section>
   <th:block th:fragment="word-os-recommendation">
-    <section class="recommendation__block text-body-two" th:if="${wordData.word.wordOsRecommendation}">
+    <section class="recommendation__block text-body-two" th:unless="${#lists.isEmpty(wordData.word.wordOsRecommendations)}">
       <div class="d-flex gap-1 align-items-center">
         <span class="material-symbols-outlined" aria-hidden="true"> info </span>
         <h2 class="recommendation__title" th:text="#{label.word.os.recommend}">ÕS selgitab</h2>
       </div>
-      <p class="m-0" th:utext="${wordData.word.wordOsRecommendation.valuePrese}"></p>
-      <p class="m-0" th:utext="${wordData.word.wordOsRecommendation.optValuePrese}" th:if="${wordData.word.wordOsRecommendation.optValuePrese}"></p>
-      <div class="text-caption recommendation__date" th:if="${wordData.word.wordOsRecommendation.modifiedOn != null}">
-        <span th:text="#{label.tooltip.last_modified}"></span>
-        <span th:text="|${#temporals.format(wordData.word.wordOsRecommendation.modifiedOn, 'dd.MM.yyyy')}|"></span>
+      <div th:each="wordOsRecommendation : ${wordData.word.wordOsRecommendations}">
+        <p class="m-0" th:utext="${wordOsRecommendation.valuePrese}"></p>
+        <div class="text-caption recommendation__date" th:if="${wordOsRecommendation.modifiedOn != null}">
+          <span th:text="#{label.tooltip.last_modified}"></span>
+          <span th:text="|${#temporals.format(wordOsRecommendation.modifiedOn, 'dd.MM.yyyy')}|"></span>
+        </div>
       </div>
     </section>
   </th:block>

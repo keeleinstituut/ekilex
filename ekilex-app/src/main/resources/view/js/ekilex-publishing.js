@@ -16,8 +16,11 @@ class PublishingHandler {
 	};
 	static replaceData = {
 		word_relation: {
-			endpoint: "wordrelation",
+			endpoint: "wordrelation"
 		},
+		word_os_recommendation: {
+			endpoint: "wordosrecommendation"
+		}
 	};
 
 	static container;

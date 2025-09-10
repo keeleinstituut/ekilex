@@ -12,7 +12,6 @@ import eki.common.service.TextDecorationService;
 import eki.ekilex.constant.SystemConstant;
 import eki.ekilex.data.AbstractCreateUpdateEntity;
 import eki.ekilex.data.ValueAndPrese;
-import eki.ekilex.data.WordOsRecommendation;
 import eki.ekilex.service.core.ActivityLogService;
 import eki.ekilex.service.core.UserContext;
 import eki.ekilex.service.db.ActivityLogDbService;
@@ -62,13 +61,5 @@ public abstract class AbstractService implements GlobalConstant, SystemConstant,
 		String value = textDecorationService.removeEkiElementMarkup(valuePrese);
 		entity.setValue(value);
 		entity.setValuePrese(valuePrese);
-
-		if (entity instanceof WordOsRecommendation) {
-			WordOsRecommendation wordOsRecommendation = (WordOsRecommendation) entity;
-			String optValuePrese = StringUtils.trim(wordOsRecommendation.getOptValuePrese());
-			String optValue = textDecorationService.removeEkiElementMarkup(optValuePrese);
-			wordOsRecommendation.setOptValue(optValue);
-			wordOsRecommendation.setOptValuePrese(optValuePrese);
-		}
 	}
 }

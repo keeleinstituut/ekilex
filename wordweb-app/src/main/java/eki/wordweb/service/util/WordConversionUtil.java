@@ -24,6 +24,7 @@ import eki.wordweb.data.MeaningWord;
 import eki.wordweb.data.SearchContext;
 import eki.wordweb.data.Word;
 import eki.wordweb.data.WordGroup;
+import eki.wordweb.data.WordOsRecommendation;
 import eki.wordweb.data.WordRelation;
 import eki.wordweb.data.WordRelationGroup;
 import eki.wordweb.data.WordRelationsTuple;
@@ -285,6 +286,16 @@ public class WordConversionUtil extends AbstractConversionUtil {
 			wordRelationGroup.setAsMap(true);
 		}
 		wordRelationGroups.add(wordRelationGroup);
+	}
+
+	public void composeWordOsRecommendations(Word word, SearchContext searchContext) {
+
+		List<WordOsRecommendation> wordOsRecommendations = word.getWordOsRecommendations();
+		if (CollectionUtils.isEmpty(wordOsRecommendations)) {
+			return;
+		}
+		wordOsRecommendations = filter(wordOsRecommendations, searchContext);
+		word.setWordOsRecommendations(wordOsRecommendations);
 	}
 
 	public List<String> collectAllRelatedWords(Word word) {

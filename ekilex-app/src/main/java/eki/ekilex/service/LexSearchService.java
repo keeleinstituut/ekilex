@@ -100,7 +100,7 @@ public class LexSearchService extends AbstractWordSearchService {
 		List<WordEtym> wordEtymology = conversionUtil.composeWordEtymology(wordEtymTuples);
 		List<WordForum> wordForums = commonDataDbService.getWordForums(wordId);
 		permCalculator.applyCrud(user, wordForums);
-		WordOsRecommendation wordOsRecommendation = osDataDbService.getWordOsRecommendation(wordId);
+		List<WordOsRecommendation> wordOsRecommendations = osDataDbService.getWordOsRecommendations(wordId);
 		List<WordOsUsage> wordOsUsages = osDataDbService.getWordOsUsages(wordId);
 		WordOsMorph wordOsMorph = osDataDbService.getWordOsMorph(wordId);
 
@@ -123,7 +123,7 @@ public class LexSearchService extends AbstractWordSearchService {
 		word.setEtymology(wordEtymology);
 		word.setForums(wordForums);
 		word.setFreeforms(wordFreeforms);
-		word.setWordOsRecommendation(wordOsRecommendation);
+		word.setWordOsRecommendations(wordOsRecommendations);
 		word.setWordOsUsages(wordOsUsages);
 		word.setWordOsMorph(wordOsMorph);
 
@@ -152,6 +152,19 @@ public class LexSearchService extends AbstractWordSearchService {
 		WordDetails wordDetails = new WordDetails();
 		wordDetails.setWord(word);
 		wordDetails.setWordRelationDetails(wordRelationDetails);
+
+		return wordDetails;
+	}
+
+	@Transactional
+	public WordDetails getWordOsRecommendationDetails(Long wordId, EkiUser user) {
+
+		Word word = lexSearchDbService.getWord(wordId);
+		permCalculator.applyCrud(user, word);
+		List<WordOsRecommendation> wordOsRecommendations = osDataDbService.getWordOsRecommendations(wordId);
+		word.setWordOsRecommendations(wordOsRecommendations);
+		WordDetails wordDetails = new WordDetails();
+		wordDetails.setWord(word);
 
 		return wordDetails;
 	}

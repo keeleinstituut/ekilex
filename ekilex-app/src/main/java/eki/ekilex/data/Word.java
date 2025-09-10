@@ -76,7 +76,7 @@ public class Word extends AbstractGrantEntity implements DecoratedWordType {
 
 	private List<Freeform> freeforms;
 
-	private WordOsRecommendation wordOsRecommendation;
+	private List<WordOsRecommendation> wordOsRecommendations;
 
 	private List<WordOsUsage> wordOsUsages;
 
@@ -330,12 +330,12 @@ public class Word extends AbstractGrantEntity implements DecoratedWordType {
 		this.freeforms = freeforms;
 	}
 
-	public WordOsRecommendation getWordOsRecommendation() {
-		return wordOsRecommendation;
+	public List<WordOsRecommendation> getWordOsRecommendations() {
+		return wordOsRecommendations;
 	}
 
-	public void setWordOsRecommendation(WordOsRecommendation wordOsRecommendation) {
-		this.wordOsRecommendation = wordOsRecommendation;
+	public void setWordOsRecommendations(List<WordOsRecommendation> wordOsRecommendations) {
+		this.wordOsRecommendations = wordOsRecommendations;
 	}
 
 	public List<WordOsUsage> getWordOsUsages() {

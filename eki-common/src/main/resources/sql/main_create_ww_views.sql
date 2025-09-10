@@ -343,7 +343,7 @@ select
 	wt.word_type_codes,
 	mw.meaning_words,
 	wd.definitions,
-	wor.word_os_recommendation,
+	wor.word_os_recommendations,
 	wf.freq_value,
 	wf.freq_rank,
 	w.forms_exist,
@@ -756,20 +756,77 @@ from (
 	left outer join (
 		select
 			wor.word_id,
-			json_build_object(
-				'id', wor.id,
-				'wordId', wor.word_id,
-				'value', wor.value,
-				'valuePrese', wor.value_prese,
-				'optValue', wor.opt_value,
-				'optValuePrese', wor.opt_value_prese,
-				'createdBy', wor.created_by,
-				'createdOn', wor.created_on,
-				'modifiedBy', wor.modified_by,
-				'modifiedOn', wor.modified_on
-			) word_os_recommendation
-		from 
-			word_os_recommendation wor
+			json_agg(
+				json_build_object(
+					'id', wor.word_os_recommendation_id,
+					'wordId', wor.word_id,
+					'value', wor.value,
+					'valuePrese', wor.value_prese,
+					'createdBy', wor.created_by,
+					'createdOn', wor.created_on,
+					'modifiedBy', wor.modified_by,
+					'modifiedOn', wor.modified_on,
+					'wwUnif', wor.is_ww_unif,
+					'wwLite', wor.is_ww_lite,
+					'wwOs', wor.is_ww_os
+				)
+				order by
+					wor.word_os_recommendation_id
+			) word_os_recommendations
+		from (
+			select
+				wor.id word_os_recommendation_id,
+				wor.word_id,
+				wor.value,
+				wor.value_prese,
+				wor.created_by,
+				wor.created_on,
+				wor.modified_by,
+				wor.modified_on,
+				(exists (
+					select
+						p.id
+					from
+						publishing p 
+					where
+						p.target_name = 'ww_unif'
+						and p.entity_name = 'word_os_recommendation'
+						and p.entity_id = wor.id
+				)) is_ww_unif,
+				(exists (
+					select
+						p.id
+					from
+						publishing p 
+					where
+						p.target_name = 'ww_lite'
+						and p.entity_name = 'word_os_recommendation'
+						and p.entity_id = wor.id
+				)) is_ww_lite,
+				(exists (
+					select
+						p.id
+					from
+						publishing p 
+					where
+						p.target_name = 'ww_os'
+						and p.entity_name = 'word_os_recommendation'
+						and p.entity_id = wor.id
+				)) is_ww_os
+			from
+				word_os_recommendation wor
+			where
+				exists (
+					select
+						1
+					from
+						publishing p
+					where
+						p.entity_name = 'word_os_recommendation'
+						and p.entity_id = wor.id)
+		) wor
+		group by
+			wor.word_id
 	) wor on wor.word_id = w.word_id
 	left outer join (
 		select

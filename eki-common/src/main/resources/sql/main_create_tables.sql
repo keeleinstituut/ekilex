@@ -668,13 +668,10 @@ create table word_os_recommendation (
   word_id bigint references word(id) on delete cascade not null,
   value text not null, 
   value_prese text not null,
-  opt_value text,
-  opt_value_prese text,
   created_by text null, 
   created_on timestamp null, 
   modified_by text null, 
-  modified_on timestamp null,
-  unique(word_id)
+  modified_on timestamp null
 );
 alter sequence word_os_recommendation_id_seq restart with 10000;
 

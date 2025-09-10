@@ -26,7 +26,7 @@ import eki.wordweb.data.db.tables.OsDefinitionIdx;
 import eki.wordweb.data.db.tables.OsLexemeMeaning;
 import eki.wordweb.data.db.tables.OsWord;
 import eki.wordweb.data.db.tables.OsWordOsMorph;
-import eki.wordweb.data.db.tables.OsWordOsRecommend;
+import eki.wordweb.data.db.tables.OsWordOsRecommendation;
 import eki.wordweb.data.db.tables.OsWordOsUsage;
 import eki.wordweb.data.db.tables.OsWordOsUsageIdx;
 import eki.wordweb.data.db.tables.OsWordRelation;
@@ -152,9 +152,9 @@ public class Tables {
     public static final OsWordOsMorph OS_WORD_OS_MORPH = OsWordOsMorph.OS_WORD_OS_MORPH;
 
     /**
-     * The table <code>public.os_word_os_recommend</code>.
+     * The table <code>public.os_word_os_recommendation</code>.
      */
-    public static final OsWordOsRecommend OS_WORD_OS_RECOMMEND = OsWordOsRecommend.OS_WORD_OS_RECOMMEND;
+    public static final OsWordOsRecommendation OS_WORD_OS_RECOMMENDATION = OsWordOsRecommendation.OS_WORD_OS_RECOMMENDATION;
 
     /**
      * The table <code>public.os_word_os_usage</code>.

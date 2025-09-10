@@ -3,7 +3,7 @@ package eki.wordweb.service.db;
 import static eki.wordweb.data.db.Tables.OS_LEXEME_MEANING;
 import static eki.wordweb.data.db.Tables.OS_WORD;
 import static eki.wordweb.data.db.Tables.OS_WORD_OS_MORPH;
-import static eki.wordweb.data.db.Tables.OS_WORD_OS_RECOMMEND;
+import static eki.wordweb.data.db.Tables.OS_WORD_OS_RECOMMENDATION;
 import static eki.wordweb.data.db.Tables.OS_WORD_OS_USAGE;
 import static eki.wordweb.data.db.Tables.OS_WORD_RELATION;
 import static eki.wordweb.data.db.Tables.OS_WORD_RELATION_IDX;
@@ -32,7 +32,7 @@ import eki.wordweb.data.db.Routines;
 import eki.wordweb.data.db.tables.OsLexemeMeaning;
 import eki.wordweb.data.db.tables.OsWord;
 import eki.wordweb.data.db.tables.OsWordOsMorph;
-import eki.wordweb.data.db.tables.OsWordOsRecommend;
+import eki.wordweb.data.db.tables.OsWordOsRecommendation;
 import eki.wordweb.data.db.tables.OsWordOsUsage;
 import eki.wordweb.data.db.tables.OsWordRelation;
 import eki.wordweb.data.db.tables.OsWordRelationIdx;
@@ -105,7 +105,7 @@ public class OsDbService implements SystemConstant, GlobalConstant {
 		OsWord w = OS_WORD.as("w");
 		OsWordOsMorph wom = OS_WORD_OS_MORPH.as("wom");
 		OsWordOsUsage wou = OS_WORD_OS_USAGE.as("wou");
-		OsWordOsRecommend wor = OS_WORD_OS_RECOMMEND.as("wor");
+		OsWordOsRecommendation wor = OS_WORD_OS_RECOMMENDATION.as("wor");
 		OsLexemeMeaning lm = OS_LEXEME_MEANING.as("lm");
 		OsWordRelation wr = OS_WORD_RELATION.as("wr");
 
@@ -128,14 +128,7 @@ public class OsDbService implements SystemConstant, GlobalConstant {
 				.asField();
 
 		Field<JSON> worf = DSL
-				.select(DSL
-						.jsonObject(
-								DSL.key("wordId").value(wor.WORD_ID),
-								DSL.key("wordOsRecommendId").value(wor.WORD_OS_RECOMMEND_ID),
-								DSL.key("value").value(wor.VALUE),
-								DSL.key("valuePrese").value(wor.VALUE_PRESE),
-								DSL.key("optValue").value(wor.OPT_VALUE),
-								DSL.key("optValuePrese").value(wor.OPT_VALUE_PRESE)))
+				.select(wor.WORD_OS_RECOMMENDATIONS)
 				.from(wor)
 				.where(wor.WORD_ID.eq(w.WORD_ID))
 				.limit(1)
@@ -158,7 +151,7 @@ public class OsDbService implements SystemConstant, GlobalConstant {
 				.select(
 						womf.as("word_os_morph"),
 						wouf.as("word_os_usages"),
-						worf.as("word_os_recommend"),
+						worf.as("word_os_recommendations"),
 						lmf.as("lexeme_meanings"),
 						wrf.as("word_relation_groups"))
 				.from(w)

@@ -15,7 +15,8 @@ drop view if exists view_os_definition_idx;
 drop view if exists view_os_definition;
 drop view if exists view_os_word_relation_idx;
 drop view if exists view_os_word_relation;
-drop view if exists view_os_word_os_recommend;
+drop view if exists view_os_word_os_recommend; -- remove later
+drop view if exists view_os_word_os_recommendation;
 drop view if exists view_os_word_os_usage_idx;
 drop view if exists view_os_word_os_usage;
 drop view if exists view_os_word_os_morph;
@@ -158,19 +159,36 @@ order by
 
 -- word os recommend --
 
-create view view_os_word_os_recommend
+create view view_os_word_os_recommendation
 as
 select 
 	wor.word_id,
-	wor.id word_os_recommend_id,
-	wor.value,
-	wor.value_prese,
-	wor.opt_value,
-	wor.opt_value_prese 
+	json_agg(
+		json_build_object(
+			'wordId', wor.word_id,
+			'wordOsRecommendationId', wor.id,
+			'value', wor.value,
+			'valuePrese', wor.value_prese
+		)
+		order by
+			wor.id
+	) word_os_recommendations
 from 
 	word_os_recommendation wor 
+where
+	exists (
+		select
+			1
+		from
+			publishing p
+		where
+			p.target_name = 'ww_os'
+			and p.entity_name = 'word_os_recommendation'
+			and p.entity_id = wor.id)
+group by
+	wor.word_id
 order by
-	wor.id 
+	wor.word_id
 ;
 
 -- definition --

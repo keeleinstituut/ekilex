@@ -179,7 +179,7 @@ public class EditController extends AbstractMutableDataPageController implements
 			cudService.createWordOsMorph(id, value, roleDatasetCode, isManualEventOnUpdateEnabled);
 			break;
 		case "word_os_recommendation":
-			cudService.createWordOsRecommendation(id, value, value2, roleDatasetCode, isManualEventOnUpdateEnabled);
+			cudService.createWordOsRecommendation(id, value, roleDatasetCode, isManualEventOnUpdateEnabled);
 			break;
 		case "word_os_usage":
 			cudService.createWordOsUsage(id, value, roleDatasetCode, isManualEventOnUpdateEnabled);
@@ -393,7 +393,7 @@ public class EditController extends AbstractMutableDataPageController implements
 			cudService.updateWordOsMorph(id, value, roleDatasetCode, isManualEventOnUpdateEnabled);
 			break;
 		case "word_os_recommendation":
-			cudService.updateWordOsRecommendation(id, value, value2, roleDatasetCode, isManualEventOnUpdateEnabled);
+			cudService.updateWordOsRecommendation(id, value, roleDatasetCode, isManualEventOnUpdateEnabled);
 			break;
 		case "word_os_usage":
 			cudService.updateWordOsUsage(id, value, roleDatasetCode, isManualEventOnUpdateEnabled);

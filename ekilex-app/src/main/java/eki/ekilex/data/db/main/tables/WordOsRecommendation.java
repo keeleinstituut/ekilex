@@ -17,7 +17,7 @@ import org.jooq.ForeignKey;
 import org.jooq.Identity;
 import org.jooq.Name;
 import org.jooq.Record;
-import org.jooq.Row10;
+import org.jooq.Row8;
 import org.jooq.Schema;
 import org.jooq.Table;
 import org.jooq.TableField;
@@ -68,16 +68,6 @@ public class WordOsRecommendation extends TableImpl<WordOsRecommendationRecord> 
      * The column <code>public.word_os_recommendation.value_prese</code>.
      */
     public final TableField<WordOsRecommendationRecord, String> VALUE_PRESE = createField(DSL.name("value_prese"), SQLDataType.CLOB.nullable(false), this, "");
-
-    /**
-     * The column <code>public.word_os_recommendation.opt_value</code>.
-     */
-    public final TableField<WordOsRecommendationRecord, String> OPT_VALUE = createField(DSL.name("opt_value"), SQLDataType.CLOB, this, "");
-
-    /**
-     * The column <code>public.word_os_recommendation.opt_value_prese</code>.
-     */
-    public final TableField<WordOsRecommendationRecord, String> OPT_VALUE_PRESE = createField(DSL.name("opt_value_prese"), SQLDataType.CLOB, this, "");
 
     /**
      * The column <code>public.word_os_recommendation.created_by</code>.
@@ -149,7 +139,7 @@ public class WordOsRecommendation extends TableImpl<WordOsRecommendationRecord> 
 
     @Override
     public List<UniqueKey<WordOsRecommendationRecord>> getKeys() {
-        return Arrays.<UniqueKey<WordOsRecommendationRecord>>asList(Keys.WORD_OS_RECOMMENDATION_PKEY, Keys.WORD_OS_RECOMMENDATION_WORD_ID_KEY);
+        return Arrays.<UniqueKey<WordOsRecommendationRecord>>asList(Keys.WORD_OS_RECOMMENDATION_PKEY);
     }
 
     @Override
@@ -193,11 +183,11 @@ public class WordOsRecommendation extends TableImpl<WordOsRecommendationRecord> 
     }
 
     // -------------------------------------------------------------------------
-    // Row10 type methods
+    // Row8 type methods
     // -------------------------------------------------------------------------
 
     @Override
-    public Row10<Long, Long, String, String, String, String, String, LocalDateTime, String, LocalDateTime> fieldsRow() {
-        return (Row10) super.fieldsRow();
+    public Row8<Long, Long, String, String, String, LocalDateTime, String, LocalDateTime> fieldsRow() {
+        return (Row8) super.fieldsRow();
     }
 }

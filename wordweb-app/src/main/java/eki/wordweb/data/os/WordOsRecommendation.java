@@ -1,24 +1,18 @@
-package eki.wordweb.data;
+package eki.wordweb.data.os;
 
-public class WordOsRecommendation extends AbstractCreateUpdateEntity {
+import eki.common.data.AbstractDataObject;
+
+public class WordOsRecommendation extends AbstractDataObject {
 
 	private static final long serialVersionUID = 1L;
 
-	private Long id;
-
 	private Long wordId;
+
+	private Long wordOsRecommendationId;
 
 	private String value;
 
 	private String valuePrese;
-
-	public Long getId() {
-		return id;
-	}
-
-	public void setId(Long id) {
-		this.id = id;
-	}
 
 	public Long getWordId() {
 		return wordId;
@@ -26,6 +20,14 @@ public class WordOsRecommendation extends AbstractCreateUpdateEntity {
 
 	public void setWordId(Long wordId) {
 		this.wordId = wordId;
+	}
+
+	public Long getWordOsRecommendationId() {
+		return wordOsRecommendationId;
+	}
+
+	public void setWordOsRecommendationId(Long wordOsRecommendationId) {
+		this.wordOsRecommendationId = wordOsRecommendationId;
 	}
 
 	public String getValue() {
@@ -43,4 +45,5 @@ public class WordOsRecommendation extends AbstractCreateUpdateEntity {
 	public void setValuePrese(String valuePrese) {
 		this.valuePrese = valuePrese;
 	}
+
 }

@@ -142,9 +142,9 @@ public class MviewWwWord extends TableImpl<MviewWwWordRecord> {
     public final TableField<MviewWwWordRecord, JSON> DEFINITIONS = createField(DSL.name("definitions"), SQLDataType.JSON, this, "");
 
     /**
-     * The column <code>public.mview_ww_word.word_os_recommendation</code>.
+     * The column <code>public.mview_ww_word.word_os_recommendations</code>.
      */
-    public final TableField<MviewWwWordRecord, JSON> WORD_OS_RECOMMENDATION = createField(DSL.name("word_os_recommendation"), SQLDataType.JSON, this, "");
+    public final TableField<MviewWwWordRecord, JSON> WORD_OS_RECOMMENDATIONS = createField(DSL.name("word_os_recommendations"), SQLDataType.JSON, this, "");
 
     /**
      * The column <code>public.mview_ww_word.freq_value</code>.

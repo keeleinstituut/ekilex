@@ -445,11 +445,10 @@ public class CudService extends AbstractCudService implements PermConstant, Acti
 	}
 
 	@Transactional(rollbackOn = Exception.class)
-	public void createWordOsRecommendation(Long wordId, String valuePrese, String optValuePrese, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
+	public void createWordOsRecommendation(Long wordId, String valuePrese, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
 
 		WordOsRecommendation wordOsRecommendation = new WordOsRecommendation();
 		wordOsRecommendation.setValuePrese(valuePrese);
-		wordOsRecommendation.setOptValuePrese(optValuePrese);
 		wordOsRecommendation.setPublic(true);
 		setValueAndPrese(wordOsRecommendation);
 		applyCreateUpdate(wordOsRecommendation);
@@ -1307,13 +1306,11 @@ public class CudService extends AbstractCudService implements PermConstant, Acti
 	}
 
 	@Transactional(rollbackOn = Exception.class)
-	public void updateWordOsRecommendation(
-			Long wordOsRecommendationId, String valuePrese, String optValuePrese, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
+	public void updateWordOsRecommendation(Long wordOsRecommendationId, String valuePrese, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
 
 		WordOsRecommendation wordOsRecommendation = new WordOsRecommendation();
 		wordOsRecommendation.setId(wordOsRecommendationId);
 		wordOsRecommendation.setValuePrese(valuePrese);
-		wordOsRecommendation.setOptValuePrese(optValuePrese);
 		setValueAndPrese(wordOsRecommendation);
 		applyUpdate(wordOsRecommendation);
 
@@ -1324,8 +1321,7 @@ public class CudService extends AbstractCudService implements PermConstant, Acti
 	}
 
 	@Transactional(rollbackOn = Exception.class)
-	public void updateWordOsUsage(
-			Long wordOsUsageId, String valuePrese, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
+	public void updateWordOsUsage(Long wordOsUsageId, String valuePrese, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
 
 		WordOsUsage wordOsUsage = new WordOsUsage();
 		wordOsUsage.setId(wordOsUsageId);

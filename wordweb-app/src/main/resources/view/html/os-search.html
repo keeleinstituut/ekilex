@@ -151,10 +151,12 @@
                 </div>
               </th:block>
             </th:block>
-            <th:block th:if="${word.wordOsRecommend}">
+            <th:block th:unless="${#lists.isEmpty(word.wordOsRecommendations)}">
               <div class="os-explanation mt-3">
                 <span class="material-symbols-outlined" aria-hidden="true"> info </span>
-                <p th:utext="${word.wordOsRecommend.valuePrese}"></p>
+                <th:block th:each="wordOsRecommendation : ${word.wordOsRecommendations}">
+                  <p th:utext="${wordOsRecommendation.valuePrese}"></p>
+                </th:block>
               </div>
             </th:block>
           </div>

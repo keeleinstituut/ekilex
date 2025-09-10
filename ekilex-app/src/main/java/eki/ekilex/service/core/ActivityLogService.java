@@ -594,7 +594,7 @@ public class ActivityLogService implements SystemConstant, GlobalConstant, Freef
 		List<WordGroup> wordGroups = conversionUtil.composeWordGroups(wordGroupMembers, null);
 		List<WordEtymTuple> wordEtymTuples = lexDataDbService.getWordEtymology(wordId);
 		List<WordEtym> wordEtymology = conversionUtil.composeWordEtymology(wordEtymTuples);
-		WordOsRecommendation wordOsRecommendation = osDataDbService.getWordOsRecommendation(wordId);
+		List<WordOsRecommendation> wordOsRecommendations = osDataDbService.getWordOsRecommendations(wordId);
 		List<WordOsUsage> wordOsUsages = osDataDbService.getWordOsUsages(wordId);
 		WordOsMorph wordOsMorph = osDataDbService.getWordOsMorph(wordId);
 		List<Paradigm> paradigms = null;
@@ -608,7 +608,7 @@ public class ActivityLogService implements SystemConstant, GlobalConstant, Freef
 		word.setRelations(wordRelations);
 		word.setGroups(wordGroups);
 		word.setEtymology(wordEtymology);
-		word.setWordOsRecommendation(wordOsRecommendation);
+		word.setWordOsRecommendations(wordOsRecommendations);
 		word.setWordOsUsages(wordOsUsages);
 		word.setWordOsMorph(wordOsMorph);
 		word.setParadigms(paradigms);

@@ -659,8 +659,6 @@ public class CudDbService extends AbstractDataDbService {
 				.update(WORD_OS_RECOMMENDATION)
 				.set(WORD_OS_RECOMMENDATION.VALUE, wordOsRecommendation.getValue())
 				.set(WORD_OS_RECOMMENDATION.VALUE_PRESE, wordOsRecommendation.getValuePrese())
-				.set(WORD_OS_RECOMMENDATION.OPT_VALUE, wordOsRecommendation.getOptValue())
-				.set(WORD_OS_RECOMMENDATION.OPT_VALUE_PRESE, wordOsRecommendation.getOptValuePrese())
 				.set(WORD_OS_RECOMMENDATION.MODIFIED_BY, wordOsRecommendation.getModifiedBy())
 				.set(WORD_OS_RECOMMENDATION.MODIFIED_ON, wordOsRecommendation.getModifiedOn())
 				.where(WORD_OS_RECOMMENDATION.ID.eq(wordOsRecommendation.getId()))
@@ -1066,8 +1064,6 @@ public class CudDbService extends AbstractDataDbService {
 						WORD_OS_RECOMMENDATION.WORD_ID,
 						WORD_OS_RECOMMENDATION.VALUE,
 						WORD_OS_RECOMMENDATION.VALUE_PRESE,
-						WORD_OS_RECOMMENDATION.OPT_VALUE,
-						WORD_OS_RECOMMENDATION.OPT_VALUE_PRESE,
 						WORD_OS_RECOMMENDATION.CREATED_BY,
 						WORD_OS_RECOMMENDATION.CREATED_ON,
 						WORD_OS_RECOMMENDATION.MODIFIED_BY,
@@ -1076,8 +1072,6 @@ public class CudDbService extends AbstractDataDbService {
 						wordId,
 						wordOsRecommendation.getValue(),
 						wordOsRecommendation.getValuePrese(),
-						wordOsRecommendation.getOptValue(),
-						wordOsRecommendation.getOptValuePrese(),
 						wordOsRecommendation.getCreatedBy(),
 						wordOsRecommendation.getCreatedOn(),
 						wordOsRecommendation.getModifiedBy(),

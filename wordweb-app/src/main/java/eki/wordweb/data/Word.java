@@ -50,7 +50,7 @@ public class Word extends WordTypeData {
 
 	private List<WordGroup> wordGroups;
 
-	private WordOsRecommendation wordOsRecommendation;
+	private List<WordOsRecommendation> wordOsRecommendations;
 
 	private boolean wordMatch;
 
@@ -190,12 +190,12 @@ public class Word extends WordTypeData {
 		this.wordGroups = wordGroups;
 	}
 
-	public WordOsRecommendation getWordOsRecommendation() {
-		return wordOsRecommendation;
+	public List<WordOsRecommendation> getWordOsRecommendations() {
+		return wordOsRecommendations;
 	}
 
-	public void setWordOsRecommendation(WordOsRecommendation wordOsRecommendation) {
-		this.wordOsRecommendation = wordOsRecommendation;
+	public void setWordOsRecommendations(List<WordOsRecommendation> wordOsRecommendations) {
+		this.wordOsRecommendations = wordOsRecommendations;
 	}
 
 	public boolean isWordMatch() {
