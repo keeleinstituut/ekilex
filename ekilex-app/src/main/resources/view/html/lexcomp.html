@@ -46,10 +46,6 @@
             <span
               th:if="${not #lists.isEmpty(word.lexemesValueStateLabels)}"
               th:text="${#strings.listJoin(word.lexemesValueStateLabels, ', ')}"></span>
-            <span th:if="${word.lexemesArePublic != null}">
-              <span class="ml-1" th:if="${not #lists.isEmpty(word.lexemesValueStateLabels)}">|</span>
-              <span th:text="#{'boolean.public.' + ${word.lexemesArePublic}}">avalik/mitteavalik</span>
-            </span>
             <span class="badge badge-pill badge-light ml-auto" th:if="${not #lists.isEmpty(word.lexemesTagNames)}">
               <span th:text="${#strings.listJoin(word.lexemesTagNames, ', ')}"></span>
             </span>
@@ -64,6 +60,56 @@
       <div th:replace="components :: paging(${wordsResult})"></div>
     </th:block>
   </th:block>
+  <form th:action="@{/update_paging}" method="post" id="pagingForm" th:fragment="lexeme_paging(pagingResult)">
+    <input type="hidden" name="offset" th:value="${pagingResult.offset}">
+    <input type="hidden" name="totalPages" th:value="${pagingResult.totalPages}" disabled="disabled">
+    <input type="hidden" name="searchUri" th:value="${searchUri}">
+    <input type="hidden" name="direction">
+    <input type="hidden" name="pageNum">
+    <div class="lex-results__paging">
+      <div class="lex-results__pages">
+        <button
+          type="button"
+          data-direction="previous"
+          th:title="#{common.previous.page}"
+          data-plugin="pagingBtnPlugin"
+          th:data-active="${pagingResult.previousPageExists}"
+          th:disabled="${pagingResult.previousPageExists ? true : null}"
+          >
+          <span class="material-symbols-outlined" aria-hidden="true">arrow_left_alt</span>
+        </button>
+        <button 
+          th:each="i : ${#numbers.sequence(pagingResult.currentPage, pagingResult.currentPage + 4)}"
+          type="button"
+          th:title="|#{common.select.page} ${i}|"
+          data-direction="page"
+          th:data-page="${i}"
+          data-plugin="pagingBtnPlugin"
+          th:text="${i}">
+        </button>
+        <button 
+          type="button"
+          th:title="#{common.next.page}"
+          data-direction="next"
+          th:data-active="${pagingResult.nextPageExists}"
+          th:disabled="${pagingResult.nextPageExists ? true : null}"
+          data-plugin="pagingBtnPlugin">
+          <span class="material-symbols-outlined">arrow_right_alt</span>
+        </button>
+      </div>
+      <div class="lex-results__page-input">
+        <input name="targetPage" type="text" data-page-input data-plugin="pagingInputPlugin" th:placeholder="#{common.select.page}">
+        <button
+          type="button"
+          th:title="#{common.select.page}"
+          data-direction="page"
+          data-page-button
+          data-plugin="pagingBtnPlugin">
+          <span class="material-symbols-outlined">arrow_right_alt</span>
+        </button>
+      </div>
+    </div>
+  </form>
   <div class="row" th:fragment="lexeme_tags">
     <div class="col pr-0 col-w13rem">
       <span class="lbl" th:text="#{lex.lexeme.tag}">Ilmiku silt</span>
@@ -2236,9 +2282,11 @@
         <div th:replace="lexdialog :: edit_meaning_forum_dlg"></div>
         <div class="col hidden-buttons pr-5" th:classappend="${forumIter.last ? '' : 'mb-3'}">
           <div class="action-buttons-anchor w-100">
-            <span th:utext="${forum.valuePrese}"></span>
-            <span class="ctxt" th:text="'[' + ${forum.modifiedBy} + ']'" th:if="${forum.modifiedBy != null}"></span>
-            <span class="ctxt" th:text="'(' + ${#temporals.format(forum.modifiedOn, 'dd.MM.yyyy')} + ')'" th:if="${forum.modifiedOn != null}"></span>
+            <div class="d-flex flex-column">
+              <span th:utext="${forum.valuePrese}"></span>
+              <span class="ctxt" th:text="'[' + ${forum.modifiedBy} + ']'" th:if="${forum.modifiedBy != null}"></span>
+              <span class="ctxt" th:text="'(' + ${#temporals.format(forum.modifiedOn, 'dd.MM.yyyy')} + ')'" th:if="${forum.modifiedOn != null}"></span>
+            </div>
             <div class="action-buttons-2">
               <button type="button" class="btn badge badge-primary"
                       th:title="#{common.edit}"

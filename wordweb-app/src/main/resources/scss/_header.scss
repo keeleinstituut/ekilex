@@ -8,7 +8,7 @@
   border-bottom: 1px solid var(--color-old-lighter-gray);
 
   &--simple {
-    background-color: var(--color-gray-010);
+    background-color: var(--header-bg-color, var(--color-gray-010));
     border: none;
 
     & .header__lucky {
@@ -24,6 +24,7 @@
   &--os {
     padding: 16px;
     --main-search-padding-left: 0;
+
     & .header__os-logo {
       margin-right: auto;
     }
@@ -91,7 +92,7 @@
     width: 36px;
     height: 36px;
     background-image: url(../images/os.svg);
-    
+
     @include media-breakpoint-up(lg) {
       width: 188px;
       height: 45px;
@@ -150,6 +151,10 @@
 
   &__dropdown {
     position: relative;
+
+    &:only-child {
+      margin-left: auto;
+    }
   }
 
   &__dropdown-menu {
