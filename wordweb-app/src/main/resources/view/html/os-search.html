@@ -177,9 +177,13 @@
           </div>
         </div>
       </th:block>
+      <a class="os-link os-link--smaller-margin" href="https://www.riigiteataja.ee/akt/114062011003" target="_blank">
+        <span th:text="#{label.os.home.link.prefix}"></span>
+        <span th:text="#{label.os.home.link.suffix}"></span>
+      </a>
     </main>
   </div>
-  <div th:replace="common-app :: footer-content"></div>
+  <th:block th:replace="~{os-comp :: footer}"></th:block>
   <script th:inline="javascript">
   	var searchWordFragUrl = /*[[@{/searchwordfrag/os}]]*/"/searchwordfrag/os";
   </script>
