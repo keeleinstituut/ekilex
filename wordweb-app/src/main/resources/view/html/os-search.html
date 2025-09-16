@@ -111,9 +111,11 @@
                   <th:block th:each="wordRelationGroup : ${word.title1WordRelationGroups}">
                     <li>
                       <th:block th:each="relatedWord, relatedWordIter : ${wordRelationGroup.relatedWords}">
-                        <span th:utext="${relatedWord.valuePrese}"></span>
-                        <sup th:text="${relatedWord.homonymNr}" th:if="${relatedWord.homonymExists}"></sup>
-                        <span th:unless="${relatedWordIter.last}" class="ml-n1">,</span>
+                        <span><!--
+                          --><th:block th:utext="${relatedWord.valuePrese}"></th:block><!--
+                        --><sup th:text="${relatedWord.homonymNr}" th:if="${relatedWord.homonymExists}"></sup><!--
+                        --><th:block th:unless="${relatedWordIter.last}">,</th:block>
+                        </span>
                       </th:block>
                     </li>
                   </th:block>
