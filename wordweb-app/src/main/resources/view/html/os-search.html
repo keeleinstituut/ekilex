@@ -111,7 +111,7 @@
                   <th:block th:each="wordRelationGroup : ${word.title1WordRelationGroups}">
                     <li>
                       <th:block th:each="relatedWord, relatedWordIter : ${wordRelationGroup.relatedWords}">
-                        <span><!--
+                        <span th:class="${relatedWord.valuePrese == searchValue ? 'os-results__highlighted' : ''}"><!--
                           --><th:block th:utext="${relatedWord.valuePrese}"></th:block><!--
                         --><sup th:text="${relatedWord.homonymNr}" th:if="${relatedWord.homonymExists}"></sup><!--
                         --><th:block th:unless="${relatedWordIter.last}">,</th:block>
@@ -129,9 +129,11 @@
                   <th:block th:each="wordRelationGroup : ${word.title2WordRelationGroups}">
                     <li>
                       <th:block th:each="relatedWord, relatedWordIter : ${wordRelationGroup.relatedWords}">
-                        <span th:utext="${relatedWord.valuePrese}"></span>
-                        <sup th:text="${relatedWord.homonymNr}" th:if="${relatedWord.homonymExists}"></sup>
-                        <span th:unless="${relatedWordIter.last}" class="ml-n1">,</span>
+                        <span th:class="${relatedWord.valuePrese == searchValue ? 'os-results__highlighted' : ''}"><!--
+                          --><th:block th:utext="${relatedWord.valuePrese}"></th:block><!--
+                        --><sup th:text="${relatedWord.homonymNr}" th:if="${relatedWord.homonymExists}"></sup><!--
+                        --><th:block th:unless="${relatedWordIter.last}">,</th:block>
+                        </span>
                       </th:block>
                     </li>
                   </th:block>
@@ -160,9 +162,11 @@
                   <div th:text="${wordRelationGroup.wordRelType.value}" class="text-caption text-darker-gray text-capitalize">Mingid</div>
                   <div>
                     <th:block th:each="relatedWord, relatedWordIter : ${wordRelationGroup.relatedWords}">
-                      <span th:utext="${relatedWord.valuePrese}"></span>
-                      <sup th:text="${relatedWord.homonymNr}" th:if="${relatedWord.homonymExists}"></sup>
-                      <span th:unless="${relatedWordIter.last}" class="ml-n1">,</span>
+                      <span th:class="${relatedWord.valuePrese == searchValue ? 'os-results__highlighted' : ''}"><!--
+                          --><th:block th:utext="${relatedWord.valuePrese}"></th:block><!--
+                        --><sup th:text="${relatedWord.homonymNr}" th:if="${relatedWord.homonymExists}"></sup><!--
+                        --><th:block th:unless="${relatedWordIter.last}">,</th:block>
+                        </span>
                     </th:block>
                   </div>
                 </div>

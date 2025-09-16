@@ -15798,6 +15798,9 @@ span.material-symbols-outlined--small {
 .os-results ul {
   padding-left: 24px;
 }
+.os-results__highlighted {
+  background-color: var(--color-alert-yellow);
+}
 .homonym-page--os {
   margin: 32px 0;
 }
