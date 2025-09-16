@@ -169,9 +169,11 @@
             <th:block th:unless="${#lists.isEmpty(word.wordOsRecommendations)}">
               <div class="os-explanation mt-3">
                 <span class="material-symbols-outlined" aria-hidden="true"> info </span>
-                <th:block th:each="wordOsRecommendation : ${word.wordOsRecommendations}">
-                  <p th:utext="${wordOsRecommendation.valuePrese}"></p>
-                </th:block>
+                <div class="os-explanation__contents">
+                  <th:block th:each="wordOsRecommendation : ${word.wordOsRecommendations}">
+                    <p th:utext="${wordOsRecommendation.valuePrese}"></p>
+                  </th:block>
+                </div>
               </div>
             </th:block>
           </div>

@@ -15831,6 +15831,11 @@ span.material-symbols-outlined--small {
 .os-explanation p {
   margin: 0;
 }
+.os-explanation__contents {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
 .os-search__title-wrapper {
   display: inline-flex;
   align-items: center;
