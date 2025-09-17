@@ -2,6 +2,7 @@ package eki.ekilex.service;
 
 import java.util.List;
 
+import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -28,6 +29,13 @@ public class CollocationService {
 			Long targetCollocMemberLexemeId,
 			String roleDatasetCode,
 			boolean isManualEventOnUpdateEnabled) throws Exception {
+
+		if (CollectionUtils.isEmpty(collocLexemeIds)) {
+			return;
+		}
+		if (sourceCollocMemberLexemeId.equals(targetCollocMemberLexemeId)) {
+			return;
+		}
 
 		ActivityLogData sourceLexemeActivityLog = activityLogService.prepareActivityLog("moveCollocMember", sourceCollocMemberLexemeId, ActivityOwner.LEXEME, roleDatasetCode, isManualEventOnUpdateEnabled);
 		ActivityLogData targetLexemeActivityLog = activityLogService.prepareActivityLog("moveCollocMember", targetCollocMemberLexemeId, ActivityOwner.LEXEME, roleDatasetCode, isManualEventOnUpdateEnabled);
