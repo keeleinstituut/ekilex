@@ -1,0 +1,251 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head></head>
+<body>
+  <th:block th:fragment="collocation">
+    <div th:id="|colloc_section_${lexeme.lexemeId}|" class="colloc__container">
+      <th:block th:if="${lexeme.collocationsExist}">
+        <div class="row">
+          <hr/>
+          <div class="col pr-0 col-w13rem">
+            <span class="lbl" th:text="#{lex.collocations}">Kollokatsioonid</span>
+          </div>
+          <div class="col pl-0">
+            <th:block th:unless="${sessionBean.lexemeCollocExpanded}">
+              <button class="btn badge badge-secondary btn-toggle"
+                      data-plugin="lexemeCollocExpandPlugin"
+                      th:data-callback="${@viewUtil.composeFunction('loadFullLexemeDetails', lexeme.lexemeId, lexeme.levels)}">
+                <i class="fa fa-angle-right"></i>
+              </button>
+            </th:block>
+            <th:block th:if="${sessionBean.lexemeCollocExpanded}">
+              <button class="btn badge badge-secondary btn-toggle"
+                      data-plugin="lexemeCollocExpandPlugin"
+                      th:data-callback="${@viewUtil.composeFunction('loadFullLexemeDetails', lexeme.lexemeId, lexeme.levels)}">
+                <i class="fa fa-angle-down"></i>
+              </button>
+            </th:block>
+          </div>
+        </div>
+        <th:block th:if="${sessionBean.lexemeCollocExpanded}">
+          <div class="mt-2">
+            <div th:replace="colloc :: colloc_member_move_dlg"></div>
+            <th:block th:replace="colloc :: primary_colloc"></th:block>
+            <th:block th:replace="colloc :: secondary_colloc"></th:block>
+          </div>
+        </th:block>
+      </th:block>
+      <th:block th:replace="colloc :: colloc_members"></th:block>
+    </div>
+    <div th:id="|colloc-member-move-dlg-${lexeme.lexemeId}|"
+         th:data-callback="${@viewUtil.composeFunction('loadFullLexemeDetails', lexeme.lexemeId, lexeme.levels)}"
+         class="modal" role="dialog" th:fragment="colloc_member_move_dlg">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <form th:action="@{/colloc_member_move}" method="post">
+            <div class="modal-header">
+              <h5 class="modal-title" th:text="#{lex.collocation.member.move}">Vaheta kollokatsiooni liikme tähendus</h5>
+              <button type="button" class="close" aria-label="Close" data-role="close" data-dismiss="modal">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body">
+              <input type="hidden" name="collocLexemeIds">
+              <input type="hidden" name="sourceCollocMemberLexemeId" th:value="${lexeme.lexemeId}">
+              <div class="form-group">
+                <th:block th:each="collocMemberMeaning : ${lexeme.collocationMemberMeanings}">
+                  <div class="form-check">
+                    <input type="radio" class="form-check-input" 
+                           name="targetCollocMemberLexemeId"
+                           th:value="${collocMemberMeaning.lexemeId}"
+                           th:checked="${collocMemberMeaning.lexemeId == lexeme.lexemeId}">
+                    <label class="form-check-label">
+                      <th:block th:each="definitionValue, definitionValueIter : ${collocMemberMeaning.definitionValues}">
+                        <span th:text="${definitionValue}"></span>
+                        <span th:unless="${definitionValueIter.last}" class="ml-n1">;</span>
+                      </th:block>
+                    </label>
+                  </div>
+                </th:block>
+              </div>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-primary" data-plugin="collocMemberMovePlugin" th:text="#{common.save}">Salvesta</button>
+              <button type="button" class="btn btn-default" data-dismiss="modal" th:text="#{common.cancel}">Katkesta</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+    <script th:inline="javascript">
+      $('[data-toggle=delete-colloc-member-confirm]').confirmation({
+        btnOkLabel : /*[[#{common.yes}]]*/'Jah',
+        btnCancelLabel : /*[[#{common.no}]]*/'Ei',
+        title : /*[[#{lex.collocation.confirm.delete.member}]]*/'Kinnita kustutamine',
+        html : true,
+        onConfirm : executeDelete
+      });
+    </script>
+  </th:block>
+  <th:block th:fragment="primary_colloc">
+    <div class="mt-2" th:if="${not #lists.isEmpty(lexeme.primaryCollocations)}">
+      <th:block th:each="collocPosGr : ${lexeme.primaryCollocations}"
+                th:with="callback=${@viewUtil.composeFunction('loadFullLexemeDetails', lexeme.lexemeId, lexeme.levels)}">
+        <div class="d-flex flex-row">
+          <h3 th:text="${collocPosGr.posGroupValue}"></h3>
+          <div class="ml-2" th:if="${lexeme.collocationMemberMeaningCandidacyExist}">
+            <button type="button" class="btn btn-sm badge badge-secondary" th:title="#{common.edit}"
+                    sec:authorize="#vars.lexeme.crudGrant">
+              <i class="fa fa-pencil" aria-hidden="true"></i>
+            </button>
+            <button type="button" class="btn btn-sm badge badge-secondary" th:title="#{lex.collocation.member.move}"
+                    data-toggle="modal"
+                    th:data-target="|#colloc-member-move-dlg-${lexeme.lexemeId}|"
+                    sec:authorize="#vars.lexeme.crudGrant">
+              <i class="fa fa-folder" aria-hidden="true"></i>
+            </button>
+          </div>
+        </div>
+        <th:block th:each="collocRelGr : ${collocPosGr.relGroups}">
+          <div class="d-flex flex-row">
+            <input name="selectRelGroupCheck" type="checkbox" class="float-right mb-2 ml-1 mr-2"/>
+            <h5 th:text="${collocRelGr.relGroupValue}"></h5>
+          </div>
+          <table class="table table-sm">
+            <tr th:each="colloc, collocIter : ${collocRelGr.collocations}">
+              <th:block th:replace="colloc :: colloc_row"></th:block>
+            </tr>
+          </table>
+        </th:block>
+      </th:block>
+    </div>
+  </th:block>
+  <th:block th:fragment="secondary_colloc">
+    <div class="mt-2" th:if="${not #lists.isEmpty(lexeme.secondaryCollocations)}">
+      <div class="d-flex flex-row">
+        <h3 th:text="#{lex.collocation.secondary}">Klassifitseerimata</h3>
+        <div class="ml-2" th:if="${lexeme.collocationMemberMeaningCandidacyExist}">
+          <button type="button" class="btn btn-sm badge badge-secondary" th:title="#{common.edit}"
+                  sec:authorize="#vars.lexeme.crudGrant">
+            <i class="fa fa-pencil" aria-hidden="true"></i>
+          </button>
+          <button type="button" class="btn btn-sm badge badge-secondary" th:title="#{lex.collocation.member.move}"
+                  data-toggle="modal"
+                  th:data-target="|#colloc-member-move-dlg-${lexeme.lexemeId}|"
+                  sec:authorize="#vars.lexeme.crudGrant">
+            <i class="fa fa-folder" aria-hidden="true"></i>
+          </button>
+        </div>
+      </div>
+      <table class="table table-sm">
+        <tr th:each="colloc, collocIter : ${lexeme.secondaryCollocations}">
+          <th:block th:replace="colloc :: colloc_row"></th:block>
+        </tr>
+      </table>
+    </div>
+  </th:block>
+  <th:block th:fragment="colloc_row">
+    <td class="p-0">
+      <input name="collocLexemeIds" type="checkbox" class="float-right mt-2 mr-2" th:value="${colloc.lexemeId}"/>
+    </td>
+    <td class="text-nowrap">
+      <button
+        type="button"
+        class="btn btn-link p-0"
+        th:data-id="${colloc.wordId}"
+        name="details-btn"
+        data-plugin="contextmenu, loadDetailsPlugin"
+        data-contextmenu:compare="Ava uues paneelis"
+        data-behaviour="replace">
+        <span th:text="${colloc.wordValue}"></span>
+      </button>
+    </td>
+    <td class="px-2">
+      <th:block th:each="collocMember : ${colloc.members}">
+        <div th:if="${lexeme.wordId != collocMember.wordId}" class="text-nowrap">
+          <button
+            type="button"
+            class="btn btn-link p-0"
+            th:data-id="${collocMember.wordId}"
+            name="details-btn"
+            data-plugin="contextmenu, loadDetailsPlugin"
+            data-contextmenu:compare="Ava uues paneelis"
+            data-behaviour="replace">
+            <span th:text="${collocMember.wordValue}"></span>
+          </button>
+          <span th:text="${collocMember.weight}" class="small text-muted ml-2 mt-2"></span>
+        </div>
+      </th:block>
+    </td>
+    <td class="px-2">
+      <div th:if="${not #lists.isEmpty(colloc.usages)}">
+        <div th:each="usage : ${colloc.usages}">
+          <i><span th:text="${usage.valuePrese}"></span></i>
+        </div>
+      </div>
+    </td>
+    <td class="hidden-buttons" width="70px">
+      <th:block th:if="${callback}">
+        <button type="button"
+                th:hidden="${collocIter.first}"
+                th:title="#{common.update.ordering}"
+                th:data-callback="${callback}"
+                th:data-colloc-lexeme-id="${colloc.lexemeId}"
+                th:data-member-lexeme-id="${lexeme.lexemeId}"
+                data-direction="up"
+                data-plugin="lexemeCollocMovePlugin"
+                class="btn badge badge-secondary order-up" >
+          <i class="fa fa-arrow-up" aria-hidden="true"></i>
+        </button>
+        <button type="button"
+                th:hidden="${collocIter.last}"
+                th:title="#{common.update.ordering}"
+                th:data-callback="${callback}"
+                th:data-colloc-lexeme-id="${colloc.lexemeId}"
+                th:data-member-lexeme-id="${lexeme.lexemeId}"
+                data-direction="down"
+                data-plugin="lexemeCollocMovePlugin"
+                class="btn badge badge-secondary order-down" >
+          <i class="fa fa-arrow-down" aria-hidden="true"></i>
+        </button>
+      </th:block>
+      <button type="button"
+              th:if="${colloc.headwordCollocMemberId}"
+              data-op-code="colloc_member"
+              th:data-id="${colloc.headwordCollocMemberId}"
+              th:data-callback="${callback}"
+              data-toggle="delete-colloc-member-confirm"
+              data-placement="right"
+              sec:authorize="#vars.lexeme.crudGrant"
+              class="btn badge badge-warning">
+        <i class="fa fa-remove" aria-hidden="true"></i>
+      </button>
+    </td>
+  </th:block>
+  <th:block th:fragment="colloc_members">
+    <div class="row" th:if="${not #lists.isEmpty(lexeme.collocationMembers)}">
+      <hr/>
+      <div class="col pr-0 col-w13rem">
+        <span class="lbl" th:text="#{lex.collocation.members}">Kollokatsiooni liikmed</span>
+      </div>
+      <div class="col pl-0">
+        <th:block th:each="collocMember : ${lexeme.collocationMembers}">
+          <div class="p-0">
+            <button
+              type="button"
+              class="btn btn-link p-0"
+              th:data-id="${collocMember.wordId}"
+              name="details-btn"
+              data-plugin="contextmenu, loadDetailsPlugin"
+              data-contextmenu:compare="Ava uues paneelis"
+              data-behaviour="replace">
+              <span th:text="${collocMember.wordValue}"></span>
+            </button>
+            <span th:text="${collocMember.weight}" class="small text-muted ml-2 mt-2"></span>
+          </div>
+        </th:block>
+      </div>
+    </div>
+  </th:block>
+</body>
+</html>

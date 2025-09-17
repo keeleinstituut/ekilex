@@ -1208,7 +1208,6 @@ function loadDetails(wordOrMeaningId, task, lastWordOrMeaningId) {
 		PanelBreadcrumbs.removeAllButFirstData();
 	}
 	openWaitDlg();
-	console.log("viewType: " + viewType);
 
 	let detailsUrl;
 	switch (viewType) {

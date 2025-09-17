@@ -643,7 +643,7 @@ public class EditController extends AbstractMutableDataPageController implements
 		case "lexeme":
 			cudService.deleteLexeme(id, roleDatasetCode, isManualEventOnUpdateEnabled);
 			break;
-		case "colloc":
+		case "colloc_member":
 			cudService.deleteCollocMember(id, roleDatasetCode, isManualEventOnUpdateEnabled);
 			break;
 		case "rus_meaning_lexemes":

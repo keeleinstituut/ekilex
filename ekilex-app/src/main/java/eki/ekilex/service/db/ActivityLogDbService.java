@@ -30,6 +30,7 @@ import static eki.ekilex.data.db.main.Tables.MEANING_MEDIA;
 import static eki.ekilex.data.db.main.Tables.MEANING_NOTE;
 import static eki.ekilex.data.db.main.Tables.MEANING_NOTE_SOURCE_LINK;
 import static eki.ekilex.data.db.main.Tables.MEANING_RELATION;
+import static eki.ekilex.data.db.main.Tables.MEANING_SEMANTIC_TYPE;
 import static eki.ekilex.data.db.main.Tables.PARADIGM;
 import static eki.ekilex.data.db.main.Tables.SOURCE;
 import static eki.ekilex.data.db.main.Tables.SOURCE_ACTIVITY_LOG;
@@ -47,6 +48,7 @@ import static eki.ekilex.data.db.main.Tables.WORD_OS_RECOMMENDATION;
 import static eki.ekilex.data.db.main.Tables.WORD_OS_USAGE;
 import static eki.ekilex.data.db.main.Tables.WORD_RELATION;
 import static eki.ekilex.data.db.main.Tables.WORD_WORD_TYPE;
+import static eki.ekilex.data.db.main.Tables.COLLOCATION_MEMBER;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -726,6 +728,15 @@ public class ActivityLogDbService implements GlobalConstant, ActivityFunct {
 				.orElse(null);
 	}
 
+	public Long getMeaningSemanticTypeOwnerId(Long meaningSemanticTypeId) {
+		return mainDb
+				.select(MEANING_SEMANTIC_TYPE.MEANING_ID)
+				.from(MEANING_SEMANTIC_TYPE)
+				.where(MEANING_SEMANTIC_TYPE.ID.eq(meaningSemanticTypeId))
+				.fetchOptionalInto(Long.class)
+				.orElse(null);
+	}
+
 	public Long getDefinitionOwnerId(Long definitionId) {
 		return mainDb
 				.select(DEFINITION.MEANING_ID)
@@ -801,6 +812,15 @@ public class ActivityLogDbService implements GlobalConstant, ActivityFunct {
 				.where(
 						LEXEME_NOTE_SOURCE_LINK.ID.eq(sourceLinkId)
 								.and(LEXEME_NOTE_SOURCE_LINK.LEXEME_NOTE_ID.eq(LEXEME_NOTE.ID)))
+				.fetchOptionalInto(Long.class)
+				.orElse(null);
+	}
+
+	public Long getCollocMemberCollocOwnerId(Long collocMemberId) {
+		return mainDb
+				.select(COLLOCATION_MEMBER.COLLOC_LEXEME_ID)
+				.from(COLLOCATION_MEMBER)
+				.where(COLLOCATION_MEMBER.ID.eq(collocMemberId))
 				.fetchOptionalInto(Long.class)
 				.orElse(null);
 	}

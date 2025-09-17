@@ -1338,6 +1338,7 @@ public class CommonDataDbService extends AbstractDataDbService {
 
 		return mainDb
 				.select(
+						cm.ID,
 						cm.CONJUNCT,
 						ml.ID.as("lexeme_id"),
 						mw.ID.as("word_id"),

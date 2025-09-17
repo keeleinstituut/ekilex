@@ -2122,10 +2122,17 @@ public class CudDbService extends AbstractDataDbService {
 				.execute();
 	}
 
-	public void deleteLexemeCollocMember(Long lexemeId) {
+	public void deleteLexemeCollocMembers(Long lexemeId) {
 		mainDb
 				.delete(COLLOCATION_MEMBER)
 				.where(COLLOCATION_MEMBER.MEMBER_LEXEME_ID.eq(lexemeId))
+				.execute();
+	}
+
+	public void deleteCollocMember(Long collocMemberId) {
+		mainDb
+				.delete(COLLOCATION_MEMBER)
+				.where(COLLOCATION_MEMBER.ID.eq(collocMemberId))
 				.execute();
 	}
 

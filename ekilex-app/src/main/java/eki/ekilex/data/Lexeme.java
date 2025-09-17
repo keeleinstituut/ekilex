@@ -76,6 +76,8 @@ public class Lexeme extends AbstractGrantEntity implements LexemeLevel {
 
 	private List<CollocMember> collocationMembers;
 
+	private List<CollocMemberMeaning> collocationMemberMeanings;
+
 	private List<SourceLink> sourceLinks;
 
 	private List<MeaningWord> meaningWords;
@@ -83,6 +85,8 @@ public class Lexeme extends AbstractGrantEntity implements LexemeLevel {
 	private List<SynonymLangGroup> synonymLangGroups;
 
 	private boolean collocationsExist;
+
+	private boolean collocationMemberMeaningCandidacyExist;
 
 	private boolean lexemeOrMeaningClassifiersExist;
 
@@ -365,6 +369,14 @@ public class Lexeme extends AbstractGrantEntity implements LexemeLevel {
 		this.collocationMembers = collocationMembers;
 	}
 
+	public List<CollocMemberMeaning> getCollocationMemberMeanings() {
+		return collocationMemberMeanings;
+	}
+
+	public void setCollocationMemberMeanings(List<CollocMemberMeaning> collocationMemberMeanings) {
+		this.collocationMemberMeanings = collocationMemberMeanings;
+	}
+
 	public List<SourceLink> getSourceLinks() {
 		return sourceLinks;
 	}
@@ -395,6 +407,14 @@ public class Lexeme extends AbstractGrantEntity implements LexemeLevel {
 
 	public void setCollocationsExist(boolean collocationsExist) {
 		this.collocationsExist = collocationsExist;
+	}
+
+	public boolean isCollocationMemberMeaningCandidacyExist() {
+		return collocationMemberMeaningCandidacyExist;
+	}
+
+	public void setCollocationMemberMeaningCandidacyExist(boolean collocationMemberMeaningCandidacyExist) {
+		this.collocationMemberMeaningCandidacyExist = collocationMemberMeaningCandidacyExist;
 	}
 
 	public boolean isLexemeOrMeaningClassifiersExist() {

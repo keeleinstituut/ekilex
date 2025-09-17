@@ -18,6 +18,7 @@ import eki.ekilex.data.Classifier;
 import eki.ekilex.data.ClassifierSelect;
 import eki.ekilex.data.Colloc;
 import eki.ekilex.data.CollocMember;
+import eki.ekilex.data.CollocMemberMeaning;
 import eki.ekilex.data.CollocPosGroup;
 import eki.ekilex.data.DatasetPermission;
 import eki.ekilex.data.Definition;
@@ -176,13 +177,17 @@ public class LexSearchService extends AbstractWordSearchService {
 		permCalculator.applyCrud(user, lexeme);
 		List<CollocPosGroup> primaryCollocations = lexDataDbService.getPrimaryCollocations(lexemeId, CLASSIF_LABEL_LANG_EST);
 		List<Colloc> secondaryCollocations = lexDataDbService.getSecondaryCollocations(lexemeId);
+		List<CollocMemberMeaning> collocationMemberMeanings = lexDataDbService.getCollocationMemberMeanings(lexemeId);
 		List<CollocMember> collocationMembers = commonDataDbService.getCollocationMembers(lexemeId);
 		boolean isCollocationsExist = lexDataDbService.isCollocationsExist(lexemeId);
+		boolean isCollocationMemberMeaningCandidacyExist = CollectionUtils.size(collocationMemberMeanings) > 1;
 
 		lexeme.setPrimaryCollocations(primaryCollocations);
 		lexeme.setSecondaryCollocations(secondaryCollocations);
 		lexeme.setCollocationMembers(collocationMembers);
+		lexeme.setCollocationMemberMeanings(collocationMemberMeanings);
 		lexeme.setCollocationsExist(isCollocationsExist);
+		lexeme.setCollocationMemberMeaningCandidacyExist(isCollocationMemberMeaningCandidacyExist);
 
 		return lexeme;
 	}
@@ -305,10 +310,12 @@ public class LexSearchService extends AbstractWordSearchService {
 			List<LexemeRelation> lexemeRelations = commonDataDbService.getLexemeRelations(lexemeId, CLASSIF_LABEL_LANG_EST);
 			List<CollocPosGroup> primaryCollocations = null;
 			List<Colloc> secondaryCollocations = null;
+			List<CollocMemberMeaning> collocationMemberMeanings = null;
 			List<CollocMember> collocationMembers = commonDataDbService.getCollocationMembers(lexemeId);
 			if (isCollocData) {
 				primaryCollocations = lexDataDbService.getPrimaryCollocations(lexemeId, CLASSIF_LABEL_LANG_EST);
 				secondaryCollocations = lexDataDbService.getSecondaryCollocations(lexemeId);
+				collocationMemberMeanings = lexDataDbService.getCollocationMemberMeanings(lexemeId);
 			}
 			List<Freeform> meaningFreeforms = commonDataDbService.getMeaningFreeforms(meaningId, CLASSIF_LABEL_LANG_EST);
 			List<LearnerComment> meaningLearnerComments = commonDataDbService.getMeaningLearnerComments(meaningId);
@@ -323,6 +330,7 @@ public class LexSearchService extends AbstractWordSearchService {
 			List<List<MeaningRelation>> viewMeaningRelations = conversionUtil.composeViewMeaningRelations(meaningRelations, userProfile, wordLang, languagesOrder);
 			List<DefinitionLangGroup> definitionLangGroups = conversionUtil.composeMeaningDefinitionLangGroups(definitions, languagesOrder);
 			boolean isCollocationsExist = lexDataDbService.isCollocationsExist(lexemeId);
+			boolean isCollocationMemberMeaningCandidacyExist = CollectionUtils.size(collocationMemberMeanings) > 1;
 
 			lexeme.setGovernments(governments);
 			lexeme.setGrammars(grammars);
@@ -332,7 +340,9 @@ public class LexSearchService extends AbstractWordSearchService {
 			lexeme.setPrimaryCollocations(primaryCollocations);
 			lexeme.setSecondaryCollocations(secondaryCollocations);
 			lexeme.setCollocationMembers(collocationMembers);
+			lexeme.setCollocationMemberMeanings(collocationMemberMeanings);
 			lexeme.setCollocationsExist(isCollocationsExist);
+			lexeme.setCollocationMemberMeaningCandidacyExist(isCollocationMemberMeaningCandidacyExist);
 
 			meaning.setFreeforms(meaningFreeforms);
 			meaning.setLearnerComments(meaningLearnerComments);

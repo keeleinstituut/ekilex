@@ -1476,7 +1476,7 @@ public class CudService extends AbstractCudService implements PermConstant, Acti
 			activityLogService.createActivityLog("deleteWord", wordId, ActivityOwner.WORD, roleDatasetCode, isManualEventOnUpdateEnabled);
 		}
 		activityLogService.createActivityLog("deleteLexeme", lexemeId, ActivityOwner.LEXEME, roleDatasetCode, isManualEventOnUpdateEnabled);
-		cudDbService.deleteLexemeCollocMember(lexemeId);
+		cudDbService.deleteLexemeCollocMembers(lexemeId);
 		cudDbService.deleteLexeme(lexemeId);
 		if (isOnlyLexemeForMeaning) {
 			cudDbService.deleteMeaning(meaningId);
@@ -1587,12 +1587,12 @@ public class CudService extends AbstractCudService implements PermConstant, Acti
 	}
 
 	@Transactional(rollbackOn = Exception.class)
-	public void deleteCollocMember(Long wordId, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
+	public void deleteCollocMember(Long collocMemberId, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
 
-		/*
-		 * TODO delete colloc member
-		 * 
-		*/
+		Long lexemeId = activityLogService.getOwnerId(collocMemberId, ActivityEntity.COLLOC_MEMBER);
+		ActivityLogData activityLog = activityLogService.prepareActivityLog("deleteCollocMember", lexemeId, ActivityOwner.LEXEME, roleDatasetCode, isManualEventOnUpdateEnabled);
+		cudDbService.deleteCollocMember(collocMemberId);
+		activityLogService.createActivityLog(activityLog, collocMemberId, ActivityEntity.COLLOC_MEMBER);
 	}
 
 	@Transactional(rollbackOn = Exception.class)

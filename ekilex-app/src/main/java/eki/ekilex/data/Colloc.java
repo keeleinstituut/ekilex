@@ -20,6 +20,8 @@ public class Colloc extends AbstractDataObject {
 
 	private Long groupOrder;
 
+	private Long headwordCollocMemberId;
+
 	public Long getLexemeId() {
 		return lexemeId;
 	}
@@ -66,6 +68,14 @@ public class Colloc extends AbstractDataObject {
 
 	public void setGroupOrder(Long groupOrder) {
 		this.groupOrder = groupOrder;
+	}
+
+	public Long getHeadwordCollocMemberId() {
+		return headwordCollocMemberId;
+	}
+
+	public void setHeadwordCollocMemberId(Long headwordCollocMemberId) {
+		this.headwordCollocMemberId = headwordCollocMemberId;
 	}
 
 }

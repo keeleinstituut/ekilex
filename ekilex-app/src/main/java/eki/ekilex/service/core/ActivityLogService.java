@@ -81,32 +81,6 @@ public class ActivityLogService implements SystemConstant, GlobalConstant, Freef
 
 	private static final String EMPTY_CONTENT_JSON = "{}";
 
-	private static final List<ActivityEntity> FIRST_DEPTH_FREEFORM_ENTITIES = Arrays.asList(
-			ActivityEntity.FREEFORM,
-			ActivityEntity.LTB_ID,
-			ActivityEntity.LTB_SOURCE,
-			ActivityEntity.ADVICE_NOTE,
-			ActivityEntity.UNCLASSIFIED,
-			ActivityEntity.SOURCE_NAME,
-			ActivityEntity.SOURCE_RT,
-			ActivityEntity.SOURCE_CELEX,
-			ActivityEntity.SOURCE_WWW,
-			ActivityEntity.SOURCE_AUTHOR,
-			ActivityEntity.SOURCE_ISBN,
-			ActivityEntity.SOURCE_ISSN,
-			ActivityEntity.SOURCE_PUBLISHER,
-			ActivityEntity.SOURCE_PUBLICATION_YEAR,
-			ActivityEntity.SOURCE_PUBLICATION_PLACE,
-			ActivityEntity.SOURCE_PUBLICATION_NAME,
-			ActivityEntity.SOURCE_FILE,
-			ActivityEntity.SOURCE_EXPLANATION,
-			ActivityEntity.SOURCE_ARTICLE_TITLE,
-			ActivityEntity.SOURCE_ARTICLE_AUTHOR,
-			ActivityEntity.EXTERNAL_SOURCE_ID,
-			ActivityEntity.SEMANTIC_TYPE,
-			ActivityEntity.SYSTEMATIC_POLYSEMY_PATTERN,
-			ActivityEntity.ADVICE_NOTE);
-
 	private static final String FUNCT_NAME_DELETE_PARADIGM = "deleteParadigm";
 
 	@Autowired
@@ -158,7 +132,7 @@ public class ActivityLogService implements SystemConstant, GlobalConstant, Freef
 
 	public Long getOwnerId(Long entityId, ActivityEntity entity) throws Exception {
 
-		if (FIRST_DEPTH_FREEFORM_ENTITIES.contains(entity)) {
+		if (ActivityEntity.FREEFORM.equals(entity)) {
 			ActivityLogOwnerEntityDescr freeformOwnerDescr = getFreeformOwnerDescr(entityId);
 			return freeformOwnerDescr.getOwnerId();
 		} else if (ActivityEntity.FREEFORM_SOURCE_LINK.equals(entity)) {
@@ -170,6 +144,8 @@ public class ActivityLogService implements SystemConstant, GlobalConstant, Freef
 			return activityLogDbService.getLexemeNoteOwnerId(entityId);
 		} else if (ActivityEntity.LEXEME_NOTE_SOURCE_LINK.equals(entity)) {
 			return activityLogDbService.getLexemeNoteSourceLinkOwnerId(entityId);
+		} else if (ActivityEntity.COLLOC_MEMBER.equals(entity)) {
+			return activityLogDbService.getCollocMemberCollocOwnerId(entityId);
 		} else if (ActivityEntity.GRAMMAR.equals(entity)) {
 			return activityLogDbService.getGrammarOwnerId(entityId);
 		} else if (ActivityEntity.GOVERNMENT.equals(entity)) {
@@ -184,6 +160,8 @@ public class ActivityLogService implements SystemConstant, GlobalConstant, Freef
 			return activityLogDbService.getUsageDefinitionOwnerId(entityId);
 		} else if (ActivityEntity.LEARNER_COMMENT.equals(entity)) {
 			return activityLogDbService.getLearnerCommentOwnerId(entityId);
+		} else if (ActivityEntity.SEMANTIC_TYPE.equals(entity)) {
+			return activityLogDbService.getMeaningSemanticTypeOwnerId(entityId);
 		} else if (ActivityEntity.MEANING_MEDIA.equals(entity)) {
 			return activityLogDbService.getMeaningMediaOwnerId(entityId);
 		} else if (ActivityEntity.MEANING_IMAGE.equals(entity)) {

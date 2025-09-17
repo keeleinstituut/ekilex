@@ -112,6 +112,8 @@ public interface WebConstant {
 
 	String LEXEME_COLLOCATION_URI = "/lexemecolloc";
 
+	String COLLOC_MEMBER_MOVE_URI = "/colloc_member_move";
+
 	String WORD_SELECT_URI = "/wordselect";
 
 	String WORD_SELECT_PAGE = "wordselect";
