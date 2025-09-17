@@ -9,7 +9,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import javax.transaction.Transactional;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.transform.OutputKeys;
@@ -26,6 +25,7 @@ import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -123,7 +123,7 @@ public class FedTermUploadService implements InitializingBean {
 		return fedTermClient.isFedTermAccessEnabled();
 	}
 
-	@Transactional(rollbackOn = Exception.class)
+	@Transactional(rollbackFor = Exception.class)
 	public List<QueueItem> composeFedTermUploadQueueSteps(EkiUser user, String datasetCode) {
 
 		if (!isFedTermAccessEnabled()) {
@@ -157,7 +157,7 @@ public class FedTermUploadService implements InitializingBean {
 		return fedTermUploadQueueSteps;
 	}
 
-	@Transactional(rollbackOn = Exception.class)
+	@Transactional(rollbackFor = Exception.class)
 	public String getOrCreateFedTermCollectionId(String datasetCode) throws Exception {
 
 		Dataset dataset = datasetDbService.getDataset(datasetCode);
@@ -173,7 +173,7 @@ public class FedTermUploadService implements InitializingBean {
 		return fedTermCollectionId;
 	}
 
-	@Transactional(rollbackOn = Exception.class)
+	@Transactional(rollbackFor = Exception.class)
 	public void deleteFedTermCollection(String datasetCode) throws Exception {
 
 		Dataset dataset = datasetDbService.getDataset(datasetCode);
@@ -182,7 +182,7 @@ public class FedTermUploadService implements InitializingBean {
 		fedTermClient.deleteFedTermCollection(datasetCode, fedTermCollectionId);
 	}
 
-	@Transactional(rollbackOn = Exception.class)
+	@Transactional(rollbackFor = Exception.class)
 	public void uploadFedTermConceptEntries(String fedTermCollectionId, FedTermUploadQueueContent content) throws Exception {
 
 		if (StringUtils.isBlank(fedTermCollectionId)) {

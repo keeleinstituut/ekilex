@@ -7,8 +7,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import javax.transaction.Transactional;
-
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.collections4.MapUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -16,6 +14,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import eki.common.constant.ActivityEntity;
 import eki.common.constant.ActivityOwner;
@@ -65,7 +64,7 @@ public class CompositionService extends AbstractCudService implements PermConsta
 	@Autowired
 	private EkilexPermissionEvaluator ekilexPermissionEvaluator;
 
-	@Transactional(rollbackOn = Exception.class)
+	@Transactional(rollbackFor = Exception.class)
 	public Long cloneMeaningWithLexemes(Long sourceMeaningId, EkiUser user, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
 
 		Map<Long, Long> sourceTargetLexemeIdMap = new HashMap<>();
@@ -82,7 +81,7 @@ public class CompositionService extends AbstractCudService implements PermConsta
 		return targetMeaningId;
 	}
 
-	@Transactional(rollbackOn = Exception.class)
+	@Transactional(rollbackFor = Exception.class)
 	public boolean cloneLexemeMeaningAndLexemes(Long lexemeId, EkiUser user, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
 
 		Map<Long, Long> sourceTargetLexemeIdMap = new HashMap<>();
@@ -105,7 +104,7 @@ public class CompositionService extends AbstractCudService implements PermConsta
 		return success;
 	}
 
-	@Transactional(rollbackOn = Exception.class)
+	@Transactional(rollbackFor = Exception.class)
 	public Long cloneEmptyLexemeAndMeaning(Long sourceLexemeId, EkiUser user, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
 
 		LexemeRecord sourceLexemeRecord = lookupDbService.getLexemeRecord(sourceLexemeId);
@@ -121,7 +120,7 @@ public class CompositionService extends AbstractCudService implements PermConsta
 		return targetLexemeId;
 	}
 
-	@Transactional(rollbackOn = Exception.class)
+	@Transactional(rollbackFor = Exception.class)
 	public Long cloneLexemeAndWord(Long sourceLexemeId, EkiUser user, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
 
 		LexemeRecord sourceLexemeRecord = lookupDbService.getLexemeRecord(sourceLexemeId);
@@ -135,7 +134,7 @@ public class CompositionService extends AbstractCudService implements PermConsta
 		return targetLexemeId;
 	}
 
-	@Transactional(rollbackOn = Exception.class)
+	@Transactional(rollbackFor = Exception.class)
 	public IdPair cloneWordAndMoveLexeme(Long lexemeId, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
 
 		LexemeRecord lexemeRecord = lookupDbService.getLexemeRecord(lexemeId);
@@ -151,7 +150,7 @@ public class CompositionService extends AbstractCudService implements PermConsta
 		return new IdPair(sourceWordId, targetWordId);
 	}
 
-	@Transactional(rollbackOn = Exception.class)
+	@Transactional(rollbackFor = Exception.class)
 	public void moveLexeme(Long lexemeId, Long targetWordId, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
 
 		LexemeRecord lexemeRecord = lookupDbService.getLexemeRecord(lexemeId);
@@ -165,7 +164,7 @@ public class CompositionService extends AbstractCudService implements PermConsta
 		activityLogService.createActivityLog(lexemeActivityLog, lexemeId, ActivityEntity.LEXEME);
 	}
 
-	@Transactional(rollbackOn = Exception.class)
+	@Transactional(rollbackFor = Exception.class)
 	public boolean updateWordValuePrese(EkiUser user, Long wordId, String wordValuePrese, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
 
 		DatasetPermission userRole = user.getRecentRole();
@@ -179,7 +178,7 @@ public class CompositionService extends AbstractCudService implements PermConsta
 		return isWordCrudGrant;
 	}
 
-	@Transactional(rollbackOn = Exception.class)
+	@Transactional(rollbackFor = Exception.class)
 	public void updateLexemeWordValue(Long lexemeId, String wordValuePrese, String wordLang, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
 
 		ActivityLogData lexemeActivityLog = activityLogService.prepareActivityLog("updateLexemeWordValue", lexemeId, ActivityOwner.LEXEME, roleDatasetCode, isManualEventOnUpdateEnabled);
@@ -342,7 +341,7 @@ public class CompositionService extends AbstractCudService implements PermConsta
 		}
 	}
 
-	@Transactional(rollbackOn = Exception.class)
+	@Transactional(rollbackFor = Exception.class)
 	public void joinMeanings(Long targetMeaningId, List<Long> sourceMeaningIds, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
 		for (Long sourceMeaningId : sourceMeaningIds) {
 			joinMeanings(targetMeaningId, sourceMeaningId, roleDatasetCode, isManualEventOnUpdateEnabled);
@@ -363,7 +362,7 @@ public class CompositionService extends AbstractCudService implements PermConsta
 		activityLogService.createActivityLog(activityLog2, targetMeaningId, ActivityEntity.MEANING);
 	}
 
-	@Transactional(rollbackOn = Exception.class)
+	@Transactional(rollbackFor = Exception.class)
 	public void joinLexemes(Long targetLexemeId, List<Long> sourceLexemeIds, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
 		for (Long sourceLexemeId : sourceLexemeIds) {
 			joinLexemes(targetLexemeId, sourceLexemeId, roleDatasetCode, isManualEventOnUpdateEnabled);
@@ -391,7 +390,7 @@ public class CompositionService extends AbstractCudService implements PermConsta
 		activityLogService.createActivityLog(activityLog2, targetLexemeId, ActivityEntity.LEXEME);
 	}
 
-	@Transactional(rollbackOn = Exception.class)
+	@Transactional(rollbackFor = Exception.class)
 	public Long joinWords(Long targetWordId, List<Long> sourceWordIds, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
 		for (Long sourceWordId : sourceWordIds) {
 			targetWordId = joinWords(targetWordId, sourceWordId, roleDatasetCode, isManualEventOnUpdateEnabled);
@@ -581,7 +580,7 @@ public class CompositionService extends AbstractCudService implements PermConsta
 		}
 	}
 
-	@Transactional(rollbackOn = Exception.class)
+	@Transactional(rollbackFor = Exception.class)
 	public void approveMeaning(Long meaningId, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
 
 		activityLogService.createActivityLog(FUNCT_NAME_APPROVE_MEANING, meaningId, ActivityOwner.MEANING, roleDatasetCode, isManualEventOnUpdateEnabled);

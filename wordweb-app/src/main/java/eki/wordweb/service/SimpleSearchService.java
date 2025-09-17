@@ -7,11 +7,10 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import javax.transaction.Transactional;
-
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import eki.common.constant.DatasetType;
 import eki.wordweb.data.Form;
@@ -104,7 +103,8 @@ public class SimpleSearchService extends AbstractSearchService {
 		Integer maxDisplayLevel = SIMPLE_MORPHOLOGY_MAX_DISPLAY_LEVEL;
 		List<String> destinLangsClean = destinLangs.stream()
 				.filter(destinLang -> !StringUtils.equals(destinLang, DESTIN_LANG_ALL))
-				.collect(Collectors.toList());;
+				.collect(Collectors.toList());
+		;
 		if (CollectionUtils.isNotEmpty(destinLangsClean)) {
 			destinLangsClean.add(lANGUAGE_CODE_MUL);
 		}

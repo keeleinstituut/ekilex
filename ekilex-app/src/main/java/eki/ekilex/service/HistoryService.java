@@ -2,10 +2,9 @@ package eki.ekilex.service;
 
 import java.util.List;
 
-import javax.transaction.Transactional;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import eki.ekilex.data.ActivityLogHistory;
 import eki.ekilex.service.db.HistoryDbService;
@@ -24,5 +23,5 @@ public class HistoryService {
 	@Transactional
 	public List<ActivityLogHistory> getMeaningsHistory(int offset, int limit) {
 		return historyDbService.getMeaningsHistory(offset, limit);
-	}	
+	}
 }

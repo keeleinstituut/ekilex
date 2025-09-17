@@ -8,14 +8,13 @@ import java.util.Map;
 import java.util.Random;
 import java.util.stream.Collectors;
 
-import javax.transaction.Transactional;
-
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import eki.wordweb.constant.SystemConstant;
 import eki.wordweb.data.GameResult;

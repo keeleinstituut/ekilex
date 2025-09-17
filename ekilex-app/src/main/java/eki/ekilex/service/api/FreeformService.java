@@ -1,9 +1,8 @@
 package eki.ekilex.service.api;
 
-import javax.transaction.Transactional;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import eki.common.constant.ActivityEntity;
 import eki.common.constant.ActivityOwner;
@@ -31,7 +30,7 @@ public class FreeformService extends AbstractService {
 		return commonDataDbService.getFreeform(freeformId, CLASSIF_LABEL_LANG_EST);
 	}
 
-	@Transactional(rollbackOn = Exception.class)
+	@Transactional(rollbackFor = Exception.class)
 	public Long createWordFreeform(WordFreeform freeform, String roleDatasetCode) throws Exception {
 
 		setValueAndPrese(freeform);
@@ -46,7 +45,7 @@ public class FreeformService extends AbstractService {
 		return freeformId;
 	}
 
-	@Transactional(rollbackOn = Exception.class)
+	@Transactional(rollbackFor = Exception.class)
 	public Long createLexemeFreeform(LexemeFreeform freeform, String roleDatasetCode) throws Exception {
 
 		setValueAndPrese(freeform);
@@ -61,7 +60,7 @@ public class FreeformService extends AbstractService {
 		return freeformId;
 	}
 
-	@Transactional(rollbackOn = Exception.class)
+	@Transactional(rollbackFor = Exception.class)
 	public Long createMeaningFreeform(MeaningFreeform freeform, String roleDatasetCode) throws Exception {
 
 		setValueAndPrese(freeform);
@@ -76,7 +75,7 @@ public class FreeformService extends AbstractService {
 		return freeformId;
 	}
 
-	@Transactional(rollbackOn = Exception.class)
+	@Transactional(rollbackFor = Exception.class)
 	public void updateFreeform(Freeform freeform, String roleDatasetCode) throws Exception {
 
 		setValueAndPrese(freeform);
@@ -92,7 +91,7 @@ public class FreeformService extends AbstractService {
 		activityLogService.createActivityLog(activityLog, freeformId, ActivityEntity.FREEFORM);
 	}
 
-	@Transactional(rollbackOn = Exception.class)
+	@Transactional(rollbackFor = Exception.class)
 	public void deleteFreeform(Long freeformId, String roleDatasetCode) throws Exception {
 
 		ActivityLogOwnerEntityDescr freeformOwnerDescr = activityLogService.getFreeformOwnerDescr(freeformId);

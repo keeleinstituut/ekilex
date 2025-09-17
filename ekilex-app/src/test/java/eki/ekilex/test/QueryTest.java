@@ -13,8 +13,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.transaction.Transactional;
-
 import org.apache.commons.lang3.StringUtils;
 import org.jooq.DSLContext;
 import org.junit.Before;
@@ -25,6 +23,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.transaction.annotation.Transactional;
 
 import eki.common.test.TestEnvInitialiser;
 import eki.ekilex.app.EkilexApplication;

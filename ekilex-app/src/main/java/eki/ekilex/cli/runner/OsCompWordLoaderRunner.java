@@ -3,13 +3,12 @@ package eki.ekilex.cli.runner;
 import java.time.LocalDateTime;
 import java.util.List;
 
-import javax.transaction.Transactional;
-
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import eki.common.constant.ActivityEntity;
 import eki.common.constant.ActivityOwner;
@@ -35,7 +34,7 @@ public class OsCompWordLoaderRunner extends AbstractLoaderRunner implements Publ
 	@Autowired
 	private ActivityLogService activityLogService;
 
-	@Transactional(rollbackOn = Exception.class)
+	@Transactional(rollbackFor = Exception.class)
 	public void execute(String compWordTsvFilePath) throws Exception {
 
 		logger.info("Starting loading...");

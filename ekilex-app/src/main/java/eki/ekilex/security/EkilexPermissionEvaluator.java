@@ -4,13 +4,12 @@ import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
 
-import javax.transaction.Transactional;
-
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.PermissionEvaluator;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import eki.common.constant.AuthorityItem;
 import eki.common.constant.AuthorityOperation;

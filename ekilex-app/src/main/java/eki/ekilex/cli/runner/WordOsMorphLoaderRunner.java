@@ -4,13 +4,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import javax.transaction.Transactional;
-
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import eki.ekilex.data.WordOsMorph;
 import eki.ekilex.service.db.OsDataDbService;
@@ -23,7 +22,7 @@ public class WordOsMorphLoaderRunner extends AbstractLoaderRunner {
 	@Autowired
 	private OsDataDbService osDataDbService;
 
-	@Transactional(rollbackOn = Exception.class)
+	@Transactional(rollbackFor = Exception.class)
 	public void execute(String morphTsvFilePath) throws Exception {
 
 		logger.info("Starting loading...");

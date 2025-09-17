@@ -5,12 +5,11 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
-import javax.transaction.Transactional;
-
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import eki.common.constant.ActivityEntity;
 import eki.common.constant.ActivityOwner;
@@ -23,10 +22,10 @@ import eki.ekilex.data.Definition;
 import eki.ekilex.data.EkiUser;
 import eki.ekilex.data.InexactSynMeaning;
 import eki.ekilex.data.InexactSynMeaningRequest;
+import eki.ekilex.data.Lexeme;
 import eki.ekilex.data.Response;
 import eki.ekilex.data.Word;
 import eki.ekilex.data.WordDescript;
-import eki.ekilex.data.Lexeme;
 import eki.ekilex.data.WordLexemeMeaningIdTuple;
 import eki.ekilex.data.db.main.tables.records.LexemeRecord;
 import eki.ekilex.service.db.CudDbService;
@@ -232,7 +231,7 @@ public class NearSynService extends AbstractSynSearchService {
 		return inexactSynMeaningRequest;
 	}
 
-	@Transactional(rollbackOn = Exception.class)
+	@Transactional(rollbackFor = Exception.class)
 	public Response saveInexactSynMeaningAndRelation(InexactSynMeaningRequest inexactSynMeaningRequest, String roleDatasetCode) throws Exception {
 
 		Locale locale = LocaleContextHolder.getLocale();

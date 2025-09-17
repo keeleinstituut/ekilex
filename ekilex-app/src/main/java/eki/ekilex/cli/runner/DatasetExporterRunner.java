@@ -17,8 +17,6 @@ import java.util.Set;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
-import javax.transaction.Transactional;
-
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.collections4.MapUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -29,6 +27,7 @@ import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.core.JsonGenerator;
@@ -171,7 +170,7 @@ public class DatasetExporterRunner extends AbstractLoaderCommons implements Init
 		sqlSelectMeaningsForDataset = getContent(resourceFileInputStream);
 	}
 
-	@Transactional(rollbackOn = Exception.class)
+	@Transactional(rollbackFor = Exception.class)
 	public void execute(String datasetCode, boolean isOnlyPublic, String exportFolder) throws Exception {
 
 		logger.info("Starting dataset \"{}\" export...", datasetCode);

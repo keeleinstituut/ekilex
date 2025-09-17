@@ -4,12 +4,11 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import javax.transaction.Transactional;
-
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import eki.common.constant.ClassifierName;
 import eki.common.constant.GlobalConstant;
@@ -105,12 +104,12 @@ public class UserProfileService implements GlobalConstant, SystemConstant {
 		return userAvailableLanguages;
 	}
 
-	@Transactional(rollbackOn = Exception.class)
+	@Transactional(rollbackFor = Exception.class)
 	public void updateUserPreferredDatasets(List<String> selectedDatasets, Long userId) {
 		userProfileDbService.updatePreferredDatasets(selectedDatasets, userId);
 	}
 
-	@Transactional(rollbackOn = Exception.class)
+	@Transactional(rollbackFor = Exception.class)
 	public void setRecentDatasetPermission(Long permissionId, Long userId) {
 
 		if (permissionId == null) {
@@ -125,13 +124,13 @@ public class UserProfileService implements GlobalConstant, SystemConstant {
 		}
 	}
 
-	@Transactional(rollbackOn = Exception.class)
+	@Transactional(rollbackFor = Exception.class)
 	public void updateApproveMeaningEnabled(Long userId, boolean approveMeaningEnabled) {
 
 		userProfileDbService.updateApproveMeaningEnabled(userId, approveMeaningEnabled);
 	}
 
-	@Transactional(rollbackOn = Exception.class)
+	@Transactional(rollbackFor = Exception.class)
 	public void updateUserProfile(EkiUserProfile userProfile) {
 		userProfileDbService.updateUserProfile(userProfile);
 	}

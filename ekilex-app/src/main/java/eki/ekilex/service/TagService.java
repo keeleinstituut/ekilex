@@ -2,10 +2,9 @@ package eki.ekilex.service;
 
 import java.util.List;
 
-import javax.transaction.Transactional;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import eki.common.constant.TagType;
 import eki.ekilex.data.Tag;
@@ -30,7 +29,7 @@ public class TagService {
 		return tagDbService.getTags();
 	}
 
-	@Transactional(rollbackOn = Exception.class)
+	@Transactional(rollbackFor = Exception.class)
 	public boolean createTag(String tagName, TagType tagType, boolean setAutomatically, boolean removeToComplete) {
 
 		boolean tagExists = tagDbService.tagExists(tagName);
@@ -44,7 +43,7 @@ public class TagService {
 		return true;
 	}
 
-	@Transactional(rollbackOn = Exception.class)
+	@Transactional(rollbackFor = Exception.class)
 	public boolean updateTag(String currentTagName, String tagName, Long tagOrder, boolean setAutomatically, boolean removeToComplete) {
 
 		Long currentOrderBy = tagDbService.getTagOrderBy(currentTagName);
@@ -71,7 +70,7 @@ public class TagService {
 		return true;
 	}
 
-	@Transactional(rollbackOn = Exception.class)
+	@Transactional(rollbackFor = Exception.class)
 	public void deleteTag(String tagName) {
 		tagDbService.deleteTag(tagName);
 		maintenanceService.clearTagCache();

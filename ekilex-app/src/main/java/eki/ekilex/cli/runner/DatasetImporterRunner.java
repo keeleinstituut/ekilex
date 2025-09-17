@@ -16,8 +16,6 @@ import java.util.stream.Collectors;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
-import javax.transaction.Transactional;
-
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.collections4.MapUtils;
 import org.apache.commons.lang3.ArrayUtils;
@@ -34,6 +32,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -86,7 +85,7 @@ public class DatasetImporterRunner extends AbstractLoaderCommons {
 	@Autowired
 	private ActivityLogService activityLogService;
 
-	@Transactional(rollbackOn = Exception.class)
+	@Transactional(rollbackFor = Exception.class)
 	public void execute(boolean isCreate, boolean isAppend, boolean isLoadMin, boolean isLoadMax, String importFilePath) throws Exception {
 
 		String importCode = CodeGenerator.generateUniqueId();

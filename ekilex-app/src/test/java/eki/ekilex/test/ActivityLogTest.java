@@ -2,8 +2,6 @@ package eki.ekilex.test;
 
 import static org.junit.Assert.assertEquals;
 
-import javax.transaction.Transactional;
-
 import org.apache.commons.lang3.StringUtils;
 import org.junit.Before;
 import org.junit.Test;
@@ -13,6 +11,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.transaction.annotation.Transactional;
 
 import eki.common.constant.ActivityEntity;
 import eki.common.constant.ActivityOwner;

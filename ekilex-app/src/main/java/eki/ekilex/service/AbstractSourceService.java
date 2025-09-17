@@ -1,8 +1,7 @@
 package eki.ekilex.service;
 
-import javax.transaction.Transactional;
-
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
 
 import eki.common.constant.ActivityOwner;
 import eki.ekilex.data.Source;
@@ -17,7 +16,7 @@ public abstract class AbstractSourceService extends AbstractService {
 	@Autowired
 	protected SourceLinkDbService sourceLinkDbService;
 
-	@Transactional(rollbackOn = Exception.class)
+	@Transactional(rollbackFor = Exception.class)
 	public Long createSource(
 			Source source,
 			String roleDatasetCode,

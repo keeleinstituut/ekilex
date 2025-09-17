@@ -2,13 +2,12 @@ package eki.stat.service;
 
 import java.util.List;
 
-import javax.transaction.Transactional;
-
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import eki.common.constant.RequestOrigin;
 import eki.common.data.ExceptionStat;
@@ -78,7 +77,7 @@ public class StatService implements SystemConstant {
 		return statSearchResult;
 	}
 
-	@Transactional(rollbackOn = Exception.class)
+	@Transactional(rollbackFor = Exception.class)
 	public void createWwSearchStat(SearchStat searchStat) {
 
 		String searchWord = searchStat.getSearchWord();
@@ -119,7 +118,7 @@ public class StatService implements SystemConstant {
 		}
 	}
 
-	@Transactional(rollbackOn = Exception.class)
+	@Transactional(rollbackFor = Exception.class)
 	public void createWwExceptionStat(ExceptionStat exceptionStat) {
 
 		String exceptionName = exceptionStat.getExceptionName();

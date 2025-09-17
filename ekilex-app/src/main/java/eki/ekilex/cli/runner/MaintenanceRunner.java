@@ -2,13 +2,12 @@ package eki.ekilex.cli.runner;
 
 import java.util.List;
 
-import javax.transaction.Transactional;
-
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import eki.common.data.AsWordResult;
 import eki.common.data.Count;
@@ -27,7 +26,7 @@ public class MaintenanceRunner {
 	@Autowired
 	private MaintenanceDbService maintenanceDbService;
 
-	@Transactional(rollbackOn = Exception.class)
+	@Transactional(rollbackFor = Exception.class)
 	public void unifySymbolsAndRecalcAccents() {
 
 		logger.info("Unifying symbols and updating accents...");

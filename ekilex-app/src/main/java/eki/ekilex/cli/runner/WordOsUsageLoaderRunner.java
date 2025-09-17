@@ -4,12 +4,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import javax.transaction.Transactional;
-
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import eki.ekilex.data.WordOsUsage;
 
@@ -18,7 +17,7 @@ public class WordOsUsageLoaderRunner extends AbstractLoaderRunner {
 
 	private static Logger logger = LoggerFactory.getLogger(WordOsUsageLoaderRunner.class);
 
-	@Transactional(rollbackOn = Exception.class)
+	@Transactional(rollbackFor = Exception.class)
 	public void execute(String usageTsvFilePath) throws Exception {
 
 		logger.info("Starting loading...");

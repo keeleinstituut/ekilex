@@ -5,14 +5,13 @@ import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 
-import javax.transaction.Transactional;
-
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import eki.common.constant.GlobalConstant;
 import eki.common.constant.LoaderConstant;
@@ -27,7 +26,7 @@ public class DomainFixerRunner implements GlobalConstant, LoaderConstant, System
 	@Autowired
 	private MigrationDbService migrationDbService;
 
-	@Transactional(rollbackOn = Exception.class)
+	@Transactional(rollbackFor = Exception.class)
 	public void execute(String domainTsvFilePath) throws Exception {
 
 		logger.info("Starting fixing...");

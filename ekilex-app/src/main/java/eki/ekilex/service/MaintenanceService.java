@@ -4,8 +4,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.transaction.Transactional;
-
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,6 +12,7 @@ import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import eki.common.constant.GlobalConstant;
 import eki.common.data.AsWordResult;
@@ -91,7 +90,7 @@ public class MaintenanceService implements SystemConstant, GlobalConstant {
 	}
 
 	@Scheduled(cron = JOIN_HOMONYMS_TIME_3_AM)
-	@Transactional(rollbackOn = Exception.class)
+	@Transactional(rollbackFor = Exception.class)
 	public void joinHomonyms() throws Exception {
 
 		logger.info("Starting joining homonyms ...");
@@ -110,14 +109,14 @@ public class MaintenanceService implements SystemConstant, GlobalConstant {
 	}
 
 	@Scheduled(cron = ADJUST_HOMONYM_NRS_TIME_3_30_AM)
-	@Transactional(rollbackOn = Exception.class)
+	@Transactional(rollbackFor = Exception.class)
 	public void adjustHomonymNrs() {
 
 		logger.info("Starting homonym numbers adjust procedure...");
 		maintenanceDbService.adjustHomonymNrs();
 	}
 
-	@Transactional(rollbackOn = Exception.class)
+	@Transactional(rollbackFor = Exception.class)
 	public Map<String, Count> unifySymbolsAndRecalcAccents() {
 
 		logger.info("Unifying symbols and updating accents...");
@@ -174,7 +173,7 @@ public class MaintenanceService implements SystemConstant, GlobalConstant {
 	}
 
 	@Scheduled(cron = DELETE_FLOATING_DATA_TIME_4_AM)
-	@Transactional(rollbackOn = Exception.class)
+	@Transactional(rollbackFor = Exception.class)
 	public void deleteFloatingData() {
 
 		logger.info("Deleting floating data...");
@@ -200,7 +199,7 @@ public class MaintenanceService implements SystemConstant, GlobalConstant {
 	}
 
 	@Scheduled(cron = DELETE_OUTDATED_DATA_REQUESTS_TIME_5_AM)
-	@Transactional(rollbackOn = Exception.class)
+	@Transactional(rollbackFor = Exception.class)
 	public void deleteOutdatedDataRequests() {
 
 		int deletedDataRequestCount = maintenanceDbService.deleteAccessedDataRequests(DELETE_OUTDATED_DATA_AFTER_ACCESS_HOURS);

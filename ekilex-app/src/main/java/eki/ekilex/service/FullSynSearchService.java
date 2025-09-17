@@ -6,16 +6,16 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import javax.transaction.Transactional;
-
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import eki.ekilex.data.ClassifierSelect;
 import eki.ekilex.data.DatasetPermission;
 import eki.ekilex.data.Definition;
 import eki.ekilex.data.EkiUser;
 import eki.ekilex.data.EkiUserProfile;
+import eki.ekilex.data.Lexeme;
 import eki.ekilex.data.Meaning;
 import eki.ekilex.data.SearchDatasetsRestriction;
 import eki.ekilex.data.SynRelation;
@@ -27,7 +27,6 @@ import eki.ekilex.data.Word;
 import eki.ekilex.data.WordDescript;
 import eki.ekilex.data.WordDetails;
 import eki.ekilex.data.WordForum;
-import eki.ekilex.data.Lexeme;
 import eki.ekilex.data.WordRelationDetails;
 
 @Component

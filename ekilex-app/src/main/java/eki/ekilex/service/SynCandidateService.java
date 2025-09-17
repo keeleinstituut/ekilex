@@ -4,14 +4,13 @@ import java.math.BigDecimal;
 import java.util.List;
 import java.util.Locale;
 
-import javax.transaction.Transactional;
-
 import org.apache.commons.collections4.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import eki.common.constant.ActivityOwner;
 import eki.ekilex.constant.ResponseStatus;
@@ -39,7 +38,7 @@ public class SynCandidateService extends AbstractSynCudService {
 	@Autowired
 	private SynSearchDbService synSearchDbService;
 
-	@Transactional(rollbackOn = Exception.class)
+	@Transactional(rollbackFor = Exception.class)
 	public void createFullSynCandidacy(SynCandidacy synCandidacy, EkiUser user, String roleDatasetCode) throws Exception {
 
 		String headwordValue = synCandidacy.getHeadwordValue();
@@ -64,7 +63,7 @@ public class SynCandidateService extends AbstractSynCudService {
 		}
 	}
 
-	@Transactional(rollbackOn = Exception.class)
+	@Transactional(rollbackFor = Exception.class)
 	public Response createFullSynCandidate(Long headwordId, String synCandidateWordValue, String synCandidateWordLang, String synCandidateDatasetCode, String roleDatasetCode) throws Exception {
 
 		Locale locale = LocaleContextHolder.getLocale();

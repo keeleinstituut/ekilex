@@ -8,11 +8,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import javax.transaction.Transactional;
-
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
 
 import eki.common.constant.GlobalConstant;
 import eki.common.data.AsWordResult;

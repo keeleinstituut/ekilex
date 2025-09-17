@@ -4,18 +4,17 @@ import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 import java.util.List;
 
-import javax.transaction.Transactional;
-
 import org.apache.commons.lang3.StringUtils;
 import org.jooq.exception.DataAccessException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import eki.ekilex.constant.SystemConstant;
-import eki.ekilex.data.FeedbackLogComment;
 import eki.ekilex.data.FeedbackLog;
+import eki.ekilex.data.FeedbackLogComment;
 import eki.ekilex.data.FeedbackLogResult;
 import eki.ekilex.service.db.FeedbackDbService;
 
@@ -55,7 +54,7 @@ public class FeedbackService implements SystemConstant {
 		return feedbackDbService.getFeedbackLogComments(feedbackLogId);
 	}
 
-	@Transactional(rollbackOn = Exception.class)
+	@Transactional(rollbackFor = Exception.class)
 	public void createFeedbackLogComment(Long feedbackId, String comment, String userName) {
 		feedbackDbService.createFeedbackLogComment(feedbackId, comment, userName);
 	}
@@ -79,7 +78,7 @@ public class FeedbackService implements SystemConstant {
 		return isValid;
 	}
 
-	@Transactional(rollbackOn = Exception.class)
+	@Transactional(rollbackFor = Exception.class)
 	public String createFeedbackLog(FeedbackLog feedbackLog) {
 		String retMessage = "ok";
 		try {
@@ -91,7 +90,7 @@ public class FeedbackService implements SystemConstant {
 		return retMessage;
 	}
 
-	@Transactional(rollbackOn = Exception.class)
+	@Transactional(rollbackFor = Exception.class)
 	public void deleteFeedbackLog(Long feedbackLogId) {
 		feedbackDbService.deleteFeedbackLog(feedbackLogId);
 	}

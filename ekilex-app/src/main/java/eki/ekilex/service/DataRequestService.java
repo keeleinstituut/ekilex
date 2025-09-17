@@ -1,10 +1,9 @@
 package eki.ekilex.service;
 
-import javax.transaction.Transactional;
-
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import eki.ekilex.service.db.DataRequestDbService;
 
@@ -14,7 +13,7 @@ public class DataRequestService {
 	@Autowired
 	private DataRequestDbService dataRequestDbService;
 
-	@Transactional(rollbackOn = Exception.class)
+	@Transactional(rollbackFor = Exception.class)
 	public void createDataRequest(Long userId, String requestKey, String content) {
 		dataRequestDbService.createDataRequest(userId, requestKey, content);
 	}

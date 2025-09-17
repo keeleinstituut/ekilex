@@ -1,9 +1,8 @@
 package eki.ekilex.service;
 
-import javax.transaction.Transactional;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import eki.common.constant.PermConstant;
 import eki.ekilex.data.DatasetPermission;

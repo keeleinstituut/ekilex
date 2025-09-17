@@ -10,25 +10,24 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import javax.transaction.Transactional;
-
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import eki.common.exception.OperationDeniedException;
 import eki.common.service.util.LexemeLevelPreseUtil;
 import eki.ekilex.data.DatasetPermission;
 import eki.ekilex.data.Definition;
 import eki.ekilex.data.EkiUser;
+import eki.ekilex.data.Lexeme;
 import eki.ekilex.data.Meaning;
 import eki.ekilex.data.MeaningRelation;
 import eki.ekilex.data.SearchDatasetsRestriction;
 import eki.ekilex.data.SearchFilter;
 import eki.ekilex.data.Word;
 import eki.ekilex.data.WordDescript;
-import eki.ekilex.data.Lexeme;
 import eki.ekilex.data.WordsResult;
 import eki.ekilex.service.db.LexDataDbService;
 import eki.ekilex.service.db.LexSearchDbService;

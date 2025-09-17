@@ -2,10 +2,9 @@ package eki.ekilex.service;
 
 import java.time.LocalDateTime;
 
-import javax.transaction.Transactional;
-
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
 
 import eki.common.constant.ActivityEntity;
 import eki.common.constant.ActivityOwner;
@@ -49,7 +48,7 @@ public abstract class AbstractCudService extends AbstractService implements Publ
 	@Autowired
 	private PublishingDbService publishingDbService;
 
-	@Transactional(rollbackOn = Exception.class)
+	@Transactional(rollbackFor = Exception.class)
 	public Long createDefinition(
 			Long meaningId, String valuePrese, String languageCode, String datasetCode, String typeCode, boolean isPublic, EkiUser user,
 			String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
@@ -63,7 +62,7 @@ public abstract class AbstractCudService extends AbstractService implements Publ
 		return definitionId;
 	}
 
-	@Transactional(rollbackOn = Exception.class)
+	@Transactional(rollbackFor = Exception.class)
 	public WordLexemeMeaningIdTuple createLexeme(Long wordId, String datasetCode, Long meaningId, EkiUser user, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
 
 		int currentLexemesMaxLevel1 = lookupDbService.getWordLexemesMaxLevel1(wordId, datasetCode);
@@ -81,7 +80,7 @@ public abstract class AbstractCudService extends AbstractService implements Publ
 		return wordLexemeMeaningId;
 	}
 
-	@Transactional(rollbackOn = Exception.class)
+	@Transactional(rollbackFor = Exception.class)
 	public void createLexemePos(Long lexemeId, String posCode, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
 
 		ActivityLogData activityLog = activityLogService.prepareActivityLog("createLexemePos", lexemeId, ActivityOwner.LEXEME, roleDatasetCode, isManualEventOnUpdateEnabled);
@@ -89,7 +88,7 @@ public abstract class AbstractCudService extends AbstractService implements Publ
 		activityLogService.createActivityLog(activityLog, lexemePosId, ActivityEntity.POS);
 	}
 
-	@Transactional(rollbackOn = Exception.class)
+	@Transactional(rollbackFor = Exception.class)
 	public Long createUsage(Long lexemeId, String valuePrese, String lang, boolean isPublic, EkiUser user, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
 
 		Usage usage = new Usage();
@@ -100,7 +99,7 @@ public abstract class AbstractCudService extends AbstractService implements Publ
 		return createUsage(lexemeId, usage, user, roleDatasetCode, isManualEventOnUpdateEnabled);
 	}
 
-	@Transactional(rollbackOn = Exception.class)
+	@Transactional(rollbackFor = Exception.class)
 	public Long createUsage(Long lexemeId, Usage usage, EkiUser user, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
 
 		setValueAndPrese(usage);
@@ -112,7 +111,7 @@ public abstract class AbstractCudService extends AbstractService implements Publ
 		return usageId;
 	}
 
-	@Transactional(rollbackOn = Exception.class)
+	@Transactional(rollbackFor = Exception.class)
 	public void createWordRelation(Long wordId, Long targetWordId, String relationTypeCode, String oppositeRelationTypeCode, EkiUser user, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
 
 		ActivityLogData activityLog;

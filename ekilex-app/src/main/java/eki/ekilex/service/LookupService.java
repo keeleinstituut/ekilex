@@ -11,12 +11,11 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import javax.transaction.Transactional;
-
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import eki.common.constant.ActivityOwner;
 import eki.common.constant.ClassifierName;
@@ -453,7 +452,7 @@ public class LookupService extends AbstractWordSearchService {
 		permCalculator.filterVisibility(user, definitions);
 		List<DefinitionLangGroup> definitionLangGroups = conversionUtil.composeMeaningDefinitionLangGroups(definitions, languagesOrder);
 		List<OrderedClassifier> domains = commonDataDbService.getMeaningDomains(meaningId, CLASSIF_LABEL_LANG_EST);
-		List<Freeform> meaningFreeforms = commonDataDbService.getMeaningFreeforms(meaningId,  CLASSIF_LABEL_LANG_EST);
+		List<Freeform> meaningFreeforms = commonDataDbService.getMeaningFreeforms(meaningId, CLASSIF_LABEL_LANG_EST);
 
 		List<Long> lexemeIds = meaning.getLexemeIds();
 		List<Lexeme> lexemes = new ArrayList<>();

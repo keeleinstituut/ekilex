@@ -5,11 +5,10 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 
-import javax.transaction.Transactional;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import eki.common.constant.NewsArticleType;
 import eki.ekilex.data.NewsArticle;
@@ -43,7 +42,7 @@ public class NewsService {
 		return newsArticles;
 	}
 
-	@Transactional(rollbackOn = Exception.class)
+	@Transactional(rollbackFor = Exception.class)
 	public void saveNewsArticle(NewsArticle newsArticle) {
 
 		Long newsArticleId = newsArticle.getId();
@@ -54,7 +53,7 @@ public class NewsService {
 		}
 	}
 
-	@Transactional(rollbackOn = Exception.class)
+	@Transactional(rollbackFor = Exception.class)
 	public void deleteNewsArticle(Long id) {
 		newsDbService.deleteNewsArticle(id);
 	}

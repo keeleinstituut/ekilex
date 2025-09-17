@@ -3,12 +3,11 @@ package eki.ekilex.service;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import javax.transaction.Transactional;
-
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import eki.common.constant.ClassifierName;
 import eki.common.constant.FreeformOwner;
@@ -99,7 +98,7 @@ public class DatasetService implements SystemConstant, GlobalConstant {
 		return domains;
 	}
 
-	@Transactional(rollbackOn = Exception.class)
+	@Transactional(rollbackFor = Exception.class)
 	public void createDataset(Dataset dataset) {
 
 		datasetDbService.createDataset(dataset);
@@ -107,7 +106,7 @@ public class DatasetService implements SystemConstant, GlobalConstant {
 		maintenanceService.clearDatasetCache();
 	}
 
-	@Transactional(rollbackOn = Exception.class)
+	@Transactional(rollbackFor = Exception.class)
 	public void updateDataset(Dataset dataset) {
 
 		datasetDbService.updateDataset(dataset);
@@ -116,7 +115,7 @@ public class DatasetService implements SystemConstant, GlobalConstant {
 		maintenanceService.clearDatasetCache();
 	}
 
-	@Transactional(rollbackOn = Exception.class)
+	@Transactional(rollbackFor = Exception.class)
 	public void deleteDataset(String datasetCode) {
 
 		removeDatasetFromAllClassifiers(datasetCode);

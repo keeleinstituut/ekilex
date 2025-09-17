@@ -7,14 +7,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import javax.transaction.Transactional;
-
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.HttpClientErrorException;
 
 import eki.common.constant.ActivityEntity;
@@ -45,7 +44,7 @@ public class SynCudService extends AbstractSynCudService implements SystemConsta
 	@Autowired
 	private SynSearchDbService synSearchDbService;
 
-	@Transactional(rollbackOn = Exception.class)
+	@Transactional(rollbackFor = Exception.class)
 	public void createSynMeaningRelation(Long targetMeaningId, Long sourceMeaningId, Long wordRelationId, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
 
 		List<TypeWordRelParam> typeWordRelParams = synSearchDbService.getWordRelationParams(wordRelationId);
@@ -81,7 +80,7 @@ public class SynCudService extends AbstractSynCudService implements SystemConsta
 		return relationWeight;
 	}
 
-	@Transactional(rollbackOn = Exception.class)
+	@Transactional(rollbackFor = Exception.class)
 	public void createSynMeaningRelation(Long targetMeaningId, Long sourceMeaningId, String weightStr, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
 
 		Float meaningRelationWeight = NumberUtils.toFloat(weightStr);
@@ -106,7 +105,7 @@ public class SynCudService extends AbstractSynCudService implements SystemConsta
 		activityLogService.createActivityLog(activityLog, meaningRelationId, ActivityEntity.MEANING_RELATION);
 	}
 
-	@Transactional(rollbackOn = Exception.class)
+	@Transactional(rollbackFor = Exception.class)
 	public void createSynMeaningWordWithCandidateData(Long targetMeaningId, Long synWordId, Long wordRelationId, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
 
 		ActivityLogData activityLog = activityLogService
@@ -149,7 +148,7 @@ public class SynCudService extends AbstractSynCudService implements SystemConsta
 		activityLogService.createActivityLog(activityLog, targetMeaningId, ActivityEntity.MEANING_WORD);
 	}
 
-	@Transactional(rollbackOn = Exception.class)
+	@Transactional(rollbackFor = Exception.class)
 	public void createSynMeaningWord(Long targetMeaningId, Long synWordId, String wordValue, String wordLang, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
 
 		ActivityLogData activityLog = activityLogService.prepareActivityLog("createSynMeaningWord", targetMeaningId, ActivityOwner.MEANING, roleDatasetCode, isManualEventOnUpdateEnabled);
@@ -173,7 +172,7 @@ public class SynCudService extends AbstractSynCudService implements SystemConsta
 		activityLogService.createActivityLog(activityLog, targetMeaningId, ActivityEntity.MEANING_WORD);
 	}
 
-	@Transactional(rollbackOn = Exception.class)
+	@Transactional(rollbackFor = Exception.class)
 	public void createWordAndSynRelation(
 			Long existingWordId, String valuePrese, String weightStr, String language, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
 
@@ -193,7 +192,7 @@ public class SynCudService extends AbstractSynCudService implements SystemConsta
 		activityLogService.createActivityLog(activityLog, createdRelationId, ActivityEntity.WORD_RELATION);
 	}
 
-	@Transactional(rollbackOn = Exception.class)
+	@Transactional(rollbackFor = Exception.class)
 	public void createSynWordRelation(Long targetWordId, Long sourceWordId, String weightStr, EkiUser user, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
 
 		boolean word2DatasetLexemeExists = lookupDbService.wordLexemeExists(sourceWordId, roleDatasetCode);
@@ -208,7 +207,7 @@ public class SynCudService extends AbstractSynCudService implements SystemConsta
 		activityLogService.createActivityLog(activityLog, createdRelationId, ActivityEntity.WORD_RELATION);
 	}
 
-	@Transactional(rollbackOn = Exception.class)
+	@Transactional(rollbackFor = Exception.class)
 	public void updateRelationStatus(Long relationId, String relationStatus, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
 
 		if (StringUtils.equals(RelationStatus.DELETED.name(), relationStatus)) {
@@ -217,7 +216,7 @@ public class SynCudService extends AbstractSynCudService implements SystemConsta
 		updateWordRelationStatus("updateRelationStatus", relationId, relationStatus, roleDatasetCode, isManualEventOnUpdateEnabled);
 	}
 
-	@Transactional(rollbackOn = Exception.class)
+	@Transactional(rollbackFor = Exception.class)
 	public void updateWordSynRelationsStatusDeleted(
 			Long wordId, String datasetCode, String synCandidateLangCode, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
 

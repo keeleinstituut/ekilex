@@ -2,11 +2,10 @@ package eki.ekilex.service.api;
 
 import java.util.StringTokenizer;
 
-import javax.transaction.Transactional;
-
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import eki.ekilex.service.db.api.ApiStatDbService;
 
@@ -20,7 +19,7 @@ public class ApiStatService {
 	@Autowired
 	private ApiStatDbService apiStatDbService;
 
-	@Transactional(rollbackOn = Exception.class)
+	@Transactional(rollbackFor = Exception.class)
 	public void addRequest(String authName, String servletPath) {
 
 		String genericPath = extractGenericPath(servletPath);
@@ -28,7 +27,7 @@ public class ApiStatService {
 		apiStatDbService.createOrUpdateRequestCount(authName, genericPath);
 	}
 
-	@Transactional(rollbackOn = Exception.class)
+	@Transactional(rollbackFor = Exception.class)
 	public void addError(String authName, String servletPath, String message) {
 
 		String genericPath = extractGenericPath(servletPath);

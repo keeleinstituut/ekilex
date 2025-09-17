@@ -4,8 +4,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
-import javax.transaction.Transactional;
-
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -14,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import eki.common.constant.AuthorityItem;
 import eki.common.constant.AuthorityOperation;
@@ -75,7 +74,7 @@ public class UserService implements WebConstant, GlobalConstant {
 		}
 	}
 
-	@Transactional(rollbackOn = Exception.class)
+	@Transactional(rollbackFor = Exception.class)
 	public void updateUserEmail(String email) {
 
 		EkiUser user = userContext.getUser();
@@ -225,7 +224,7 @@ public class UserService implements WebConstant, GlobalConstant {
 		return user != null;
 	}
 
-	@Transactional(rollbackOn = Exception.class)
+	@Transactional(rollbackFor = Exception.class)
 	public String createUser(String email, String name, String password) {
 
 		email = StringUtils.lowerCase(email);
@@ -241,36 +240,36 @@ public class UserService implements WebConstant, GlobalConstant {
 		return activationLink;
 	}
 
-	@Transactional(rollbackOn = Exception.class)
+	@Transactional(rollbackFor = Exception.class)
 	public EkiUser activateUser(String activationKey) {
 		EkiUser user = userDbService.activateUser(activationKey);
 		return user;
 	}
 
 	@PreAuthorize("principal.admin")
-	@Transactional(rollbackOn = Exception.class)
+	@Transactional(rollbackFor = Exception.class)
 	public void setApiCrud(Long userId, boolean isApiCrud) {
 		userDbService.setApiCrud(userId, isApiCrud);
 	}
 
 	@PreAuthorize("principal.admin")
-	@Transactional(rollbackOn = Exception.class)
+	@Transactional(rollbackFor = Exception.class)
 	public void setAdmin(Long userId, boolean isAdmin) {
 		userDbService.setAdmin(userId, isAdmin);
 	}
 
 	@PreAuthorize("principal.admin")
-	@Transactional(rollbackOn = Exception.class)
+	@Transactional(rollbackFor = Exception.class)
 	public void setMaster(Long userId, boolean isMaster) {
 		userDbService.setMaster(userId, isMaster);
 	}
 
-	@Transactional(rollbackOn = Exception.class)
+	@Transactional(rollbackFor = Exception.class)
 	public void enableUser(Long userId, boolean enable) {
 		userDbService.enableUser(userId, enable);
 	}
 
-	@Transactional(rollbackOn = Exception.class)
+	@Transactional(rollbackFor = Exception.class)
 	public void enableUserWithTestAndLimitedDatasetPerm(Long userId) {
 
 		userDbService.enableUser(userId, true);
@@ -280,7 +279,7 @@ public class UserService implements WebConstant, GlobalConstant {
 		updateUserSecurityContext();
 	}
 
-	@Transactional(rollbackOn = Exception.class)
+	@Transactional(rollbackFor = Exception.class)
 	public void enableLimitedUser(Long userId) {
 
 		userDbService.enableUser(userId, true);
@@ -291,7 +290,7 @@ public class UserService implements WebConstant, GlobalConstant {
 		updateUserSecurityContext();
 	}
 
-	@Transactional(rollbackOn = Exception.class)
+	@Transactional(rollbackFor = Exception.class)
 	public void updateReviewComment(Long userId, String reviewComment) {
 		userDbService.updateReviewComment(userId, reviewComment);
 	}
@@ -301,19 +300,19 @@ public class UserService implements WebConstant, GlobalConstant {
 		return userDbService.getActiveTermsValue();
 	}
 
-	@Transactional(rollbackOn = Exception.class)
+	@Transactional(rollbackFor = Exception.class)
 	public void agreeActiveTerms(Long userId) {
 		userDbService.agreeActiveTerms(userId);
 		updateUserSecurityContext();
 	}
 
-	@Transactional(rollbackOn = Exception.class)
+	@Transactional(rollbackFor = Exception.class)
 	public void refuseTerms(EkiUser user) {
 		List<String> adminEmails = userDbService.getAdminEmails();
 		emailService.sendTermsRefuseEmail(user, adminEmails);
 	}
 
-	@Transactional(rollbackOn = Exception.class)
+	@Transactional(rollbackFor = Exception.class)
 	public void submitUserApplication(EkiUser user, String datasetCode, AuthorityOperation authOp, String lang, String comment) {
 
 		createUserApplication(user, datasetCode, authOp, lang, comment);
@@ -343,7 +342,7 @@ public class UserService implements WebConstant, GlobalConstant {
 		return userApplications;
 	}
 
-	@Transactional(rollbackOn = Exception.class)
+	@Transactional(rollbackFor = Exception.class)
 	public String handleUserPasswordRecovery(Long userId, String email) {
 
 		String recoveryKey = generateUniqueKey();
@@ -353,13 +352,13 @@ public class UserService implements WebConstant, GlobalConstant {
 		return passwordRecoveryLink;
 	}
 
-	@Transactional(rollbackOn = Exception.class)
+	@Transactional(rollbackFor = Exception.class)
 	public void setUserPassword(String email, String password) {
 		String encodedPassword = passwordEncoder.encode(password);
 		userDbService.setUserPassword(email, encodedPassword);
 	}
 
-	@Transactional(rollbackOn = Exception.class)
+	@Transactional(rollbackFor = Exception.class)
 	public String generateApiKey(EkiUser user) {
 
 		Long userId = user.getId();

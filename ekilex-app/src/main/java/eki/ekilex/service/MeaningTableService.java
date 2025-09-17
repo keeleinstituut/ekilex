@@ -5,12 +5,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import javax.transaction.Transactional;
-
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.collections4.ListUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import eki.common.constant.ActivityEntity;
 import eki.common.constant.ActivityOwner;
@@ -139,7 +138,7 @@ public class MeaningTableService extends AbstractSearchService {
 	}
 
 	@Deprecated
-	@Transactional(rollbackOn = Exception.class)
+	@Transactional(rollbackFor = Exception.class)
 	public void updateTermMeaningTableMeaning(MeaningTableRow meaning, EkiUser user, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
 
 		String userName = user.getName();
@@ -190,7 +189,7 @@ public class MeaningTableService extends AbstractSearchService {
 		}
 	}
 
-	@Transactional(rollbackOn = Exception.class)
+	@Transactional(rollbackFor = Exception.class)
 	public void updateDefinitionsPublicity(List<Long> definitionIds, boolean isPublic, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
 
 		if (CollectionUtils.isEmpty(definitionIds)) {
@@ -206,7 +205,7 @@ public class MeaningTableService extends AbstractSearchService {
 		}
 	}
 
-	@Transactional(rollbackOn = Exception.class)
+	@Transactional(rollbackFor = Exception.class)
 	public void updateLexemesPublicity(List<Long> lexemeIds, boolean isPublic, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
 
 		if (CollectionUtils.isEmpty(lexemeIds)) {
@@ -221,7 +220,7 @@ public class MeaningTableService extends AbstractSearchService {
 		}
 	}
 
-	@Transactional(rollbackOn = Exception.class)
+	@Transactional(rollbackFor = Exception.class)
 	public void updateUsagesPublicity(List<Long> usageIds, boolean isPublic, EkiUser user, boolean isManualEventOnUpdateEnabled) throws Exception {
 
 		if (CollectionUtils.isEmpty(usageIds)) {
