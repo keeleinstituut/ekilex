@@ -366,8 +366,11 @@
           <div class="footer__version" th:text="|${appData.appName} ${appData.appVersion}|" th:if="${appData}"></div>
         </div>
         <div class="footer__column">
-          <div class="footer__column-header" th:text="#{general.title}"></div>
-          <div class="d-flex flex-column gap-1">
+          <div class="footer__column-header" th:text="${linksTitle ?: #messages.msg('general.title')}"></div>
+          <th:block th:if="${linksTemplate}">
+            <th:block th:replace="${linksTemplate}"></th:block>
+          </th:block>
+          <div class="d-flex flex-column gap-1" th:unless="${linksTemplate}">
             <a th:href="@{/about}" th:text="#{menu.about}">Portaalist</a>
             <a th:href="@{/collections}" th:text="#{label.filter.dataset}">Sõnakogud</a>
             <a th:href="@{/ekilex-api}" th:text="#{menu.ekilexapi}">Ekilex API</a>
@@ -412,16 +415,21 @@
           </div>
         </div>
         <div class="footer__column">
-          <div class="footer__column-header" th:text="#{label.footer.feedback.title}"></div>
-          <p class="text-body-two m-0" th:text="#{label.footer.feedback.description}"></p>
-          <button
-            class="footer__feedback-button"
-            type="button"
-            data-toggle="modal"
-            data-target="#feedback-modal"
-            th:text="#{label.feedback.placeholder.description}">
+          <th:block th:if="${feedbackTemplate}">
+            <th:block th:replace="${feedbackTemplate}"></th:block>
+          </th:block>
+          <th:block th:unless="${feedbackTemplate}">
+            <div class="footer__column-header" th:text="#{label.footer.feedback.title}"></div>
+            <p class="text-body-two m-0" th:text="#{label.footer.feedback.description}"></p>
+            <button
+              class="footer__feedback-button"
+              type="button"
+              data-toggle="modal"
+              data-target="#feedback-modal"
+              th:text="#{label.feedback.placeholder.description}">
             Kirjuta meile
-          </button>
+            </button>
+          </th:block>
         </div>
       </div>
     </footer>

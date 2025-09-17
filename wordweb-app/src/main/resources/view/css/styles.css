@@ -15798,6 +15798,9 @@ span.material-symbols-outlined--small {
 .os-results ul {
   padding-left: 24px;
 }
+.os-results__highlighted {
+  background-color: var(--color-alert-yellow);
+}
 .homonym-page--os {
   margin: 32px 0;
 }
@@ -15830,6 +15833,11 @@ span.material-symbols-outlined--small {
 }
 .os-explanation p {
   margin: 0;
+}
+.os-explanation__contents {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
 }
 .os-search__title-wrapper {
   display: inline-flex;
@@ -15888,23 +15896,26 @@ span.material-symbols-outlined--small {
     margin-bottom: 48px;
   }
 }
-.os-home__link {
+.os-link {
   color: var(--color-dark-blue);
   font-size: 0.875rem;
   font-weight: 500;
   display: block;
   margin: 24px auto 24px;
 }
-.os-home__link:hover {
+.os-link:hover {
   text-decoration: none;
 }
-.os-home__link span:first-child {
+.os-link span:first-child {
   text-decoration: underline;
 }
 @media (min-width: 768px) {
-  .os-home__link {
+  .os-link {
     margin: 88px auto 198px;
   }
+}
+.os-link--smaller-margin {
+  margin: 16px auto;
 }
 .header {
   padding: 16px 16px 16px 4px;

@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="et" xmlns:th="http://www.thymeleaf.org">
-<head th:replace="common-app :: common_header(_,~{::links},_)">
+<head th:replace="common-app :: common_header(~{::title},~{::links},_)">
+<title th:text="#{menu.os.title}">ÕS</title>
 <th:block th:fragment="links">
   <script type="text/javascript" th:src="@{/view/js/ww-os.js}"></script>
 </th:block>
@@ -21,12 +22,12 @@
     <div class="col-sm-10 col-md-8 col-lg-6 offset-sm-1 offset-md-2 offset-lg-3">
       <th:block th:replace="os-comp :: search"></th:block>
     </div>
-    <a class="os-home__link" href="https://www.riigiteataja.ee/akt/114062011003" target="_blank">
+    <a class="os-link" href="https://www.riigiteataja.ee/akt/114062011003" target="_blank">
       <span th:text="#{label.os.home.link.prefix}"></span>
       <span th:text="#{label.os.home.link.suffix}"></span>
     </a>
   </div>
-  <div th:replace="common-app :: footer-content"></div>
+  <div th:replace="os-comp :: footer"></div>
   <div th:replace="common-app :: feedback-form"></div>
   <script th:inline="javascript">
   	var searchWordFragUrl = /*[[@{/searchwordfrag/os}]]*/"/searchwordfrag/os";

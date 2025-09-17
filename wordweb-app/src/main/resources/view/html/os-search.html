@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="et" xmlns:th="http://www.thymeleaf.org">
 <head th:replace="common-app :: common_header(~{::title},~{::links},_)">
-<title th:text="#{search.title(${searchValue})}">Otsing</title>
+<title th:text="#{label.os.search.title(${searchValue})}">Otsing</title>
 <th:block th:fragment="links">
   <script type="text/javascript" th:src="@{/view/js/shared.js}"></script>
   <script type="text/javascript" th:src="@{/view/js/ww-os.js}"></script>
@@ -111,9 +111,11 @@
                   <th:block th:each="wordRelationGroup : ${word.title1WordRelationGroups}">
                     <li>
                       <th:block th:each="relatedWord, relatedWordIter : ${wordRelationGroup.relatedWords}">
-                        <span th:utext="${relatedWord.valuePrese}"></span>
-                        <sup th:text="${relatedWord.homonymNr}" th:if="${relatedWord.homonymExists}"></sup>
-                        <span th:unless="${relatedWordIter.last}" class="ml-n1">,</span>
+                        <span th:class="${relatedWord.valuePrese == searchValue ? 'os-results__highlighted' : ''}"><!--
+                          --><th:block th:utext="${relatedWord.valuePrese}"></th:block><!--
+                        --><sup th:text="${relatedWord.homonymNr}" th:if="${relatedWord.homonymExists}"></sup><!--
+                        --><th:block th:unless="${relatedWordIter.last}">,</th:block>
+                        </span>
                       </th:block>
                     </li>
                   </th:block>
@@ -127,9 +129,11 @@
                   <th:block th:each="wordRelationGroup : ${word.title2WordRelationGroups}">
                     <li>
                       <th:block th:each="relatedWord, relatedWordIter : ${wordRelationGroup.relatedWords}">
-                        <span th:utext="${relatedWord.valuePrese}"></span>
-                        <sup th:text="${relatedWord.homonymNr}" th:if="${relatedWord.homonymExists}"></sup>
-                        <span th:unless="${relatedWordIter.last}" class="ml-n1">,</span>
+                        <span th:class="${relatedWord.valuePrese == searchValue ? 'os-results__highlighted' : ''}"><!--
+                          --><th:block th:utext="${relatedWord.valuePrese}"></th:block><!--
+                        --><sup th:text="${relatedWord.homonymNr}" th:if="${relatedWord.homonymExists}"></sup><!--
+                        --><th:block th:unless="${relatedWordIter.last}">,</th:block>
+                        </span>
                       </th:block>
                     </li>
                   </th:block>
@@ -158,9 +162,11 @@
                   <div th:text="${wordRelationGroup.wordRelType.value}" class="text-caption text-darker-gray text-capitalize">Mingid</div>
                   <div>
                     <th:block th:each="relatedWord, relatedWordIter : ${wordRelationGroup.relatedWords}">
-                      <span th:utext="${relatedWord.valuePrese}"></span>
-                      <sup th:text="${relatedWord.homonymNr}" th:if="${relatedWord.homonymExists}"></sup>
-                      <span th:unless="${relatedWordIter.last}" class="ml-n1">,</span>
+                      <span th:class="${relatedWord.valuePrese == searchValue ? 'os-results__highlighted' : ''}"><!--
+                          --><th:block th:utext="${relatedWord.valuePrese}"></th:block><!--
+                        --><sup th:text="${relatedWord.homonymNr}" th:if="${relatedWord.homonymExists}"></sup><!--
+                        --><th:block th:unless="${relatedWordIter.last}">,</th:block>
+                        </span>
                     </th:block>
                   </div>
                 </div>
@@ -169,17 +175,23 @@
             <th:block th:unless="${#lists.isEmpty(word.wordOsRecommendations)}">
               <div class="os-explanation mt-3">
                 <span class="material-symbols-outlined" aria-hidden="true"> info </span>
-                <th:block th:each="wordOsRecommendation : ${word.wordOsRecommendations}">
-                  <p th:utext="${wordOsRecommendation.valuePrese}"></p>
-                </th:block>
+                <div class="os-explanation__contents">
+                  <th:block th:each="wordOsRecommendation : ${word.wordOsRecommendations}">
+                    <p th:utext="${wordOsRecommendation.valuePrese}"></p>
+                  </th:block>
+                </div>
               </div>
             </th:block>
           </div>
         </div>
       </th:block>
+      <a class="os-link os-link--smaller-margin" href="https://www.riigiteataja.ee/akt/114062011003" target="_blank">
+        <span th:text="#{label.os.home.link.prefix}"></span>
+        <span th:text="#{label.os.home.link.suffix}"></span>
+      </a>
     </main>
   </div>
-  <div th:replace="common-app :: footer-content"></div>
+  <th:block th:replace="~{os-comp :: footer}"></th:block>
   <script th:inline="javascript">
   	var searchWordFragUrl = /*[[@{/searchwordfrag/os}]]*/"/searchwordfrag/os";
   </script>
