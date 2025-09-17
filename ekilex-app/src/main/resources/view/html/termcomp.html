@@ -1175,35 +1175,6 @@
       <span class="pr-1" th:text="'M' + ${lexeme.meaningId}"></span>
     </div>
   </div>
-  <div class="hidden-buttons row no-gutters" th:fragment="word_status">
-    <div class="col pr-0 col-w13rem">
-      <span class="lbl" th:text="#{lex.word.status.wordis}">Keelend on</span>
-    </div>
-    <div class="col pl-0">
-      <span>
-        <span th:text="#{|boolean.is.${lexeme.word}|}"></span>
-        <button type="button" class="btn badge badge-primary"
-                th:title="#{common.edit}"
-                data-toggle="modal"
-                th:data-target="${'#editLexemeIsWordDlg_' + lexeme.lexemeId}"
-                sec:authorize="#vars.lexeme.crudGrant">
-          <i class="fa fa-caret-down" aria-hidden="true"></i>
-        </button>
-        <span th:text="#{lex.word.status.isword}">sõna</span>
-      </span>
-      <span class="ml-3">
-        <span th:text="#{|boolean.is.${lexeme.collocation}|}"></span>
-        <button type="button" class="btn badge badge-primary"
-                th:title="#{common.edit}"
-                data-toggle="modal"
-                th:data-target="${'#editLexemeIsCollocDlg_' + lexeme.lexemeId}"
-                sec:authorize="#vars.lexeme.crudGrant">
-          <i class="fa fa-caret-down" aria-hidden="true"></i>
-        </button>
-        <span th:text="#{lex.word.status.iscollocation}">kollokatsioon</span>
-      </span>
-    </div>
-  </div>
   <div class="row no-gutters" th:if="${not #lists.isEmpty(lexeme.tags)}" th:fragment="lexeme_tags">
     <div class="col pr-0 col-w13rem">
       <span class="lbl" th:text="#{term.lexeme.tag}">Ilmiku silt</span>

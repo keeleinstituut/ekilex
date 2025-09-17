@@ -253,46 +253,6 @@
       </div>
     </div>
   </div>
-  <div th:id="${'editLexemeIsWordDlg_' + lexeme.lexemeId}"
-       class="modal select-dlg" role="dialog"
-       th:fragment="edit_lexeme_is_word_dlg"
-       data-plugin="initSelectDlgPlugin">
-    <div class="modal-dialog" role="document">
-      <div class="modal-content">
-        <form th:action="@{/update_item}" method="post">
-          <div class="modal-body">
-            <input type="hidden" name="id" th:value="${lexeme.lexemeId}">
-            <input type="hidden" name="opCode" value="lexeme_is_word">
-            <input type="hidden" name="value" th:value="${lexeme.word}">
-            <select class="form-control" name="value">
-              <option value="true" th:selected="${lexeme.word}" th:text="#{boolean.is.true}">on</option>
-              <option value="false" th:selected="${not lexeme.word}" th:text="#{boolean.is.false}">ei ole</option>
-            </select>
-          </div>
-        </form>
-      </div>
-    </div>
-  </div>
-  <div th:id="${'editLexemeIsCollocDlg_' + lexeme.lexemeId}"
-       class="modal select-dlg" role="dialog"
-       th:fragment="edit_lexeme_is_colloc_dlg"
-       data-plugin="initSelectDlgPlugin">
-    <div class="modal-dialog" role="document">
-      <div class="modal-content">
-        <form th:action="@{/update_item}" method="post">
-          <div class="modal-body">
-            <input type="hidden" name="id" th:value="${lexeme.lexemeId}">
-            <input type="hidden" name="opCode" value="lexeme_is_colloc">
-            <input type="hidden" name="value" th:value="${lexeme.collocation}">
-            <select class="form-control" name="value">
-              <option value="true" th:selected="${lexeme.collocation}" th:text="#{boolean.is.true}">on</option>
-              <option value="false" th:selected="${not lexeme.collocation}" th:text="#{boolean.is.false}">ei ole</option>
-            </select>
-          </div>
-        </form>
-      </div>
-    </div>
-  </div>
   <div th:id="${'editLexemeValueStateCodeDlg_' + lexeme.lexemeId}" class="modal select-dlg"
         role="dialog"
         th:fragment="edit_lexeme_value_state_dlg"
