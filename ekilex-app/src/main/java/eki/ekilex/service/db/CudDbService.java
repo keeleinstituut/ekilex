@@ -30,7 +30,6 @@ import static eki.ekilex.data.db.main.Tables.MEANING_SEMANTIC_TYPE;
 import static eki.ekilex.data.db.main.Tables.MEANING_TAG;
 import static eki.ekilex.data.db.main.Tables.PARADIGM;
 import static eki.ekilex.data.db.main.Tables.USAGE;
-import static eki.ekilex.data.db.main.Tables.USAGE_DEFINITION;
 import static eki.ekilex.data.db.main.Tables.USAGE_TRANSLATION;
 import static eki.ekilex.data.db.main.Tables.WORD;
 import static eki.ekilex.data.db.main.Tables.WORD_ETYMOLOGY;
@@ -73,7 +72,6 @@ import eki.ekilex.data.MeaningMedia;
 import eki.ekilex.data.Note;
 import eki.ekilex.data.SimpleWord;
 import eki.ekilex.data.Usage;
-import eki.ekilex.data.UsageDefinition;
 import eki.ekilex.data.UsageTranslation;
 import eki.ekilex.data.WordLexemeMeaningIdTuple;
 import eki.ekilex.data.db.main.tables.LexRelation;
@@ -184,24 +182,6 @@ public class CudDbService extends AbstractDataDbService {
 				.update(USAGE_TRANSLATION)
 				.set(fieldAndValueMap)
 				.where(USAGE_TRANSLATION.ID.eq(usageTranslation.getId()))
-				.execute();
-	}
-
-	public void updateUsageDefinition(UsageDefinition usageDefinition) {
-
-		Map<Field<?>, Object> fieldAndValueMap = new HashMap<>();
-		fieldAndValueMap.put(USAGE_DEFINITION.VALUE, usageDefinition.getValue());
-		fieldAndValueMap.put(USAGE_DEFINITION.VALUE_PRESE, usageDefinition.getValuePrese());
-		fieldAndValueMap.put(USAGE_DEFINITION.MODIFIED_BY, usageDefinition.getModifiedBy());
-		fieldAndValueMap.put(USAGE_DEFINITION.MODIFIED_ON, usageDefinition.getModifiedOn());
-		if (StringUtils.isNotBlank(usageDefinition.getLang())) {
-			fieldAndValueMap.put(USAGE_DEFINITION.LANG, usageDefinition.getLang());
-		}
-
-		mainDb
-				.update(USAGE_DEFINITION)
-				.set(fieldAndValueMap)
-				.where(USAGE_DEFINITION.ID.eq(usageDefinition.getId()))
 				.execute();
 	}
 
@@ -1854,33 +1834,6 @@ public class CudDbService extends AbstractDataDbService {
 				.getId();
 	}
 
-	public Long createUsageDefinition(Long usageId, UsageDefinition usageDefinition) {
-
-		return mainDb
-				.insertInto(
-						USAGE_TRANSLATION,
-						USAGE_TRANSLATION.USAGE_ID,
-						USAGE_TRANSLATION.VALUE,
-						USAGE_TRANSLATION.VALUE_PRESE,
-						USAGE_TRANSLATION.LANG,
-						USAGE_TRANSLATION.CREATED_BY,
-						USAGE_TRANSLATION.CREATED_ON,
-						USAGE_TRANSLATION.MODIFIED_BY,
-						USAGE_TRANSLATION.MODIFIED_ON)
-				.values(
-						usageId,
-						usageDefinition.getValue(),
-						usageDefinition.getValuePrese(),
-						usageDefinition.getLang(),
-						usageDefinition.getCreatedBy(),
-						usageDefinition.getCreatedOn(),
-						usageDefinition.getModifiedBy(),
-						usageDefinition.getModifiedOn())
-				.returning(USAGE_TRANSLATION.ID)
-				.fetchOne()
-				.getId();
-	}
-
 	public Long createChildFreeform(Freeform freeform, String userName) {
 
 		Long freeformId = createFreeform(freeform, userName);
@@ -2077,13 +2030,6 @@ public class CudDbService extends AbstractDataDbService {
 		mainDb
 				.deleteFrom(USAGE_TRANSLATION)
 				.where(USAGE_TRANSLATION.ID.eq(usageTranslationId))
-				.execute();
-	}
-
-	public void deleteUsageDefinition(Long usageDefinitionId) {
-		mainDb
-				.deleteFrom(USAGE_DEFINITION)
-				.where(USAGE_DEFINITION.ID.eq(usageDefinitionId))
 				.execute();
 	}
 

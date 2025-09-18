@@ -155,8 +155,6 @@ public class ActivityLogService implements SystemConstant, GlobalConstant, Freef
 			return activityLogDbService.getUsageSourceLinkOwnerId(entityId);
 		} else if (ActivityEntity.USAGE_TRANSLATION.equals(entity)) {
 			return activityLogDbService.getUsageTranslationOwnerId(entityId);
-		} else if (ActivityEntity.USAGE_DEFINITION.equals(entity)) {
-			return activityLogDbService.getUsageDefinitionOwnerId(entityId);
 		} else if (ActivityEntity.LEARNER_COMMENT.equals(entity)) {
 			return activityLogDbService.getLearnerCommentOwnerId(entityId);
 		} else if (ActivityEntity.SEMANTIC_TYPE.equals(entity)) {

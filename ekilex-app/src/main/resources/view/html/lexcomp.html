@@ -1756,44 +1756,6 @@
                 </div>
               </div>
             </div>
-            <div th:if="${not #lists.isEmpty(usage.definitions)}" class="col pl-0">
-              <div>
-                <span class="lbl" th:text="#{lex.usage.definition}">Seletus</span>
-              </div>
-              <div class="row" th:each="usageDefinition : ${usage.definitions}">
-                <div th:replace="lexdialog :: edit_usage_definition_dlg"></div>
-                <div class="col hidden-buttons ml-2">
-                  <div class="action-buttons-anchor">
-                    <span th:utext="${usageDefinition.valuePrese}"></span>
-                    <div class="action-buttons-3">
-                      <button type="button" class="btn badge badge-primary"
-                              th:title="#{common.edit}"
-                              data-toggle="modal"
-                              th:data-target="${'#editUsageDefinitionDlg_' + lexeme.lexemeId + '_' + usage.id + '_' + usageDefinition.id}"
-                              sec:authorize="#vars.usage.crudGrant">
-                        <i class="fa fa-edit" aria-hidden="true"></i>
-                      </button>
-                      <button type="button" class="btn badge badge-success"
-                              th:title="#{common.add.new}"
-                              data-toggle="modal"
-                              th:data-target="${'#addUsageMemberDlg_' + lexeme.lexemeId + '_' + usage.id}"
-                              sec:authorize="#vars.usage.crudGrant">
-                        <i class="fa fa-plus" aria-hidden="true"></i>
-                      </button>
-                      <button type="button" class="btn badge badge-warning"
-                              data-op-code="usage_definition"
-                              th:data-id="${usageDefinition.id}"
-                              th:data-callback="${@viewUtil.composeFunction('loadFullLexemeDetails', lexeme.lexemeId, lexeme.levels)}"
-                              data-toggle="delete-confirm"
-                              data-placement="right"
-                              sec:authorize="#vars.usage.crudGrant">
-                        <i class="fa fa-remove" aria-hidden="true"></i>
-                      </button>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
             <div class="w-50" th:unless="${usageIter.last}">
               <hr/>
             </div>

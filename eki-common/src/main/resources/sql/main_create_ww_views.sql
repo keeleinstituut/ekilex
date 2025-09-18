@@ -2191,7 +2191,6 @@ from
 					'wwLite', lu.is_ww_lite,
 					'wwOs', lu.is_ww_os,
 					'usageTranslationValues', lu.usage_translation_values,
-					'usageDefinitionValues', lu.usage_definition_values,
 					'sourceLinks', lu.source_links
 				)
 				order by lu.order_by
@@ -2216,13 +2215,6 @@ from
 					ut.usage_id = u.id
 					and ut.lang = 'rus'
 				) usage_translation_values,
-				(select
-					array_agg(ud.value_prese order by ud.order_by)
-				from
-					usage_definition ud
-				where
-					ud.usage_id = u.id
-				) usage_definition_values,
 				(select
 					json_agg(
 						json_build_object(

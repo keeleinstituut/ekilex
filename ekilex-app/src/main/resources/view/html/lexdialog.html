@@ -855,7 +855,6 @@
               <div class="col-md-4">
                 <select id="usageMemberTypeSelect" required class="form-control" name="opCode">
                   <option value="usage_translation" th:text="#{lex.usage.translation}">Kasutusnäite tõlge</option>
-                  <option value="usage_definition" th:text="#{lex.usage.definition}">Kasutusnäite seletus</option>
                 </select>
               </div>
             </div>
@@ -901,26 +900,6 @@
                 </select>
               </div>
             </div>
-          </div>
-          <div class="modal-footer">
-            <button type="submit" class="btn btn-primary" th:text="#{common.save}">Salvesta</button>
-            <button type="button" class="btn btn-default" data-dismiss="modal" th:text="#{common.cancel}">Katkesta</button>
-          </div>
-        </form>
-      </div>
-    </div>
-  </div>
-  <div th:id="${'editUsageDefinitionDlg_' + lexeme.lexemeId + '_' + usage.id + '_' + usageDefinition.id}"
-       th:data-callback="${@viewUtil.composeFunction('loadFullLexemeDetails', lexeme.lexemeId, lexeme.levels)}"
-       class="modal" role="dialog" th:fragment="edit_usage_definition_dlg" data-plugin="initEkiEditorDlgAndFocusPlugin">
-    <div class="modal-dialog modal-lg" role="document">
-      <div class="modal-content">
-        <form th:action="@{/update_item}" method="post">
-          <div class="modal-body">
-            <input type="hidden" name="id" th:value="${usageDefinition.id}">
-            <input type="hidden" name="opCode" value="usage_definition">
-            <input type="hidden" name="value" th:value="${usageDefinition.value}">
-            <div th:replace="components :: eki_editor_elem"></div>
           </div>
           <div class="modal-footer">
             <button type="submit" class="btn btn-primary" th:text="#{common.save}">Salvesta</button>

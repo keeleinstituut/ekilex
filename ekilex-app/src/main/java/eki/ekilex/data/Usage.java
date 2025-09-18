@@ -18,8 +18,6 @@ public class Usage extends AbstractCreateUpdateEntity implements ValueAndPrese {
 
 	private List<UsageTranslation> translations;
 
-	private List<UsageDefinition> definitions;
-
 	private List<SourceLink> sourceLinks;
 
 	public Long getId() {
@@ -68,14 +66,6 @@ public class Usage extends AbstractCreateUpdateEntity implements ValueAndPrese {
 
 	public void setTranslations(List<UsageTranslation> translations) {
 		this.translations = translations;
-	}
-
-	public List<UsageDefinition> getDefinitions() {
-		return definitions;
-	}
-
-	public void setDefinitions(List<UsageDefinition> definitions) {
-		this.definitions = definitions;
 	}
 
 	public List<SourceLink> getSourceLinks() {

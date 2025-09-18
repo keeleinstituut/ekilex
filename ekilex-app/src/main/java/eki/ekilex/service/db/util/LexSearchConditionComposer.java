@@ -21,7 +21,6 @@ import static eki.ekilex.data.db.main.Tables.MEANING_RELATION;
 import static eki.ekilex.data.db.main.Tables.PARADIGM;
 import static eki.ekilex.data.db.main.Tables.PARADIGM_FORM;
 import static eki.ekilex.data.db.main.Tables.USAGE;
-import static eki.ekilex.data.db.main.Tables.USAGE_DEFINITION;
 import static eki.ekilex.data.db.main.Tables.USAGE_SOURCE_LINK;
 import static eki.ekilex.data.db.main.Tables.USAGE_TRANSLATION;
 import static eki.ekilex.data.db.main.Tables.WORD;
@@ -73,7 +72,6 @@ import eki.ekilex.data.db.main.tables.MeaningRelation;
 import eki.ekilex.data.db.main.tables.Paradigm;
 import eki.ekilex.data.db.main.tables.ParadigmForm;
 import eki.ekilex.data.db.main.tables.Usage;
-import eki.ekilex.data.db.main.tables.UsageDefinition;
 import eki.ekilex.data.db.main.tables.UsageSourceLink;
 import eki.ekilex.data.db.main.tables.UsageTranslation;
 import eki.ekilex.data.db.main.tables.Word;
@@ -512,7 +510,6 @@ public class LexSearchConditionComposer implements GlobalConstant, ActivityFunct
 		Government lgo1 = GOVERNMENT.as("lgo1");
 		LexemeNote ln1 = LEXEME_NOTE.as("ln1");
 		Usage u1 = USAGE.as("u1");
-		UsageDefinition ud1 = USAGE_DEFINITION.as("ud1");
 		UsageTranslation ut1 = USAGE_TRANSLATION.as("ut1");
 		Meaning m1 = MEANING.as("m1");
 		MeaningNote mn1 = MEANING_NOTE.as("mn1");
@@ -578,13 +575,6 @@ public class LexSearchConditionComposer implements GlobalConstant, ActivityFunct
 		where1 = searchFilterHelper.applyValueFilters(SearchKey.VALUE, searchCriteria, u1.VALUE, where1, true);
 		SelectHavingStep<Record1<Long>> selectUsage = DSL.select(l1.WORD_ID).from(l1, u1).where(where1).groupBy(l1.WORD_ID);
 
-		// usage definition select
-		where1 = u1.LEXEME_ID.eq(l1.ID)
-				.and(ud1.USAGE_ID.eq(u1.ID));
-		where1 = searchFilterHelper.applyDatasetRestrictions(l1, searchDatasetsRestriction, where1);
-		where1 = searchFilterHelper.applyValueFilters(SearchKey.VALUE, searchCriteria, ud1.VALUE, where1, true);
-		SelectHavingStep<Record1<Long>> selectUsageDefinition = DSL.select(l1.WORD_ID).from(l1, u1, ud1).where(where1).groupBy(l1.WORD_ID);
-
 		// usage translation select
 		where1 = u1.LEXEME_ID.eq(l1.ID)
 				.and(ut1.USAGE_ID.eq(u1.ID));
@@ -638,7 +628,6 @@ public class LexSearchConditionComposer implements GlobalConstant, ActivityFunct
 				.unionAll(selectMeaningFreeform)
 				.unionAll(selectLexemeNote)
 				.unionAll(selectUsage)
-				.unionAll(selectUsageDefinition)
 				.unionAll(selectUsageTranslation)
 				.unionAll(selectLexemeGrammar)
 				.unionAll(selectLexemeGovernment)

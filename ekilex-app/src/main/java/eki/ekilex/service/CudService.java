@@ -37,7 +37,6 @@ import eki.ekilex.data.Response;
 import eki.ekilex.data.SimpleWord;
 import eki.ekilex.data.Tag;
 import eki.ekilex.data.Usage;
-import eki.ekilex.data.UsageDefinition;
 import eki.ekilex.data.UsageTranslation;
 import eki.ekilex.data.WordLexemeMeaningDetails;
 import eki.ekilex.data.WordLexemeMeaningIdTuple;
@@ -156,21 +155,6 @@ public class CudService extends AbstractCudService implements PermConstant, Acti
 		ActivityLogData activityLog = activityLogService.prepareActivityLog("createUsageTranslation", lexemeId, ActivityOwner.LEXEME, roleDatasetCode, isManualEventOnUpdateEnabled);
 		Long usageTranslationId = cudDbService.createUsageTranslation(usageId, usageTranslation);
 		activityLogService.createActivityLog(activityLog, usageTranslationId, ActivityEntity.USAGE_TRANSLATION);
-	}
-
-	@Transactional(rollbackFor = Exception.class)
-	public void createUsageDefinition(Long usageId, String valuePrese, String lang, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
-
-		UsageDefinition usageDefinition = new UsageDefinition();
-		usageDefinition.setValuePrese(valuePrese);
-		usageDefinition.setLang(lang);
-		setValueAndPrese(usageDefinition);
-		applyCreateUpdate(usageDefinition);
-
-		Long lexemeId = activityLogService.getOwnerId(usageId, ActivityEntity.USAGE);
-		ActivityLogData activityLog = activityLogService.prepareActivityLog("createUsageDefinition", lexemeId, ActivityOwner.LEXEME, roleDatasetCode, isManualEventOnUpdateEnabled);
-		Long usageDefinitionId = cudDbService.createUsageDefinition(usageId, usageDefinition);
-		activityLogService.createActivityLog(activityLog, usageDefinitionId, ActivityEntity.USAGE_DEFINITION);
 	}
 
 	@Transactional(rollbackFor = Exception.class)
@@ -928,21 +912,6 @@ public class CudService extends AbstractCudService implements PermConstant, Acti
 	}
 
 	@Transactional(rollbackFor = Exception.class)
-	public void updateUsageDefinition(Long usageDefinitionId, String valuePrese, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
-
-		UsageDefinition usageDefinition = new UsageDefinition();
-		usageDefinition.setId(usageDefinitionId);
-		usageDefinition.setValuePrese(valuePrese);
-		setValueAndPrese(usageDefinition);
-		applyUpdate(usageDefinition);
-
-		Long lexemeId = activityLogService.getOwnerId(usageDefinitionId, ActivityEntity.USAGE_DEFINITION);
-		ActivityLogData activityLog = activityLogService.prepareActivityLog("updateUsageDefinition", lexemeId, ActivityOwner.LEXEME, roleDatasetCode, isManualEventOnUpdateEnabled);
-		cudDbService.updateUsageDefinition(usageDefinition);
-		activityLogService.createActivityLog(activityLog, usageDefinitionId, ActivityEntity.USAGE_DEFINITION);
-	}
-
-	@Transactional(rollbackFor = Exception.class)
 	public void updateLexemeOrdering(List<ListData> items, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
 
 		for (ListData item : items) {
@@ -1516,15 +1485,6 @@ public class CudService extends AbstractCudService implements PermConstant, Acti
 		ActivityLogData activityLog = activityLogService.prepareActivityLog("deleteUsageTranslation", lexemeId, ActivityOwner.LEXEME, roleDatasetCode, isManualEventOnUpdateEnabled);
 		cudDbService.deleteUsageTranslation(usageTranslationId);
 		activityLogService.createActivityLog(activityLog, usageTranslationId, ActivityEntity.USAGE_TRANSLATION);
-	}
-
-	@Transactional(rollbackFor = Exception.class)
-	public void deleteUsageDefinition(Long usageDefinitionId, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
-
-		Long lexemeId = activityLogService.getOwnerId(usageDefinitionId, ActivityEntity.USAGE_DEFINITION);
-		ActivityLogData activityLog = activityLogService.prepareActivityLog("deleteUsageDefinition", lexemeId, ActivityOwner.LEXEME, roleDatasetCode, isManualEventOnUpdateEnabled);
-		cudDbService.deleteUsageDefinition(usageDefinitionId);
-		activityLogService.createActivityLog(activityLog, usageDefinitionId, ActivityEntity.USAGE_DEFINITION);
 	}
 
 	@Transactional(rollbackFor = Exception.class)

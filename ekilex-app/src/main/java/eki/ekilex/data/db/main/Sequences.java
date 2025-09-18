@@ -616,16 +616,6 @@ public class Sequences {
     public static final Sequence<Long> TERMS_OF_USE_ID_SEQ = Internal.createSequence("terms_of_use_id_seq", Public.PUBLIC, SQLDataType.BIGINT.nullable(false), null, null, null, null, false, null);
 
     /**
-     * The sequence <code>public.usage_definition_id_seq</code>
-     */
-    public static final Sequence<Long> USAGE_DEFINITION_ID_SEQ = Internal.createSequence("usage_definition_id_seq", Public.PUBLIC, SQLDataType.BIGINT.nullable(false), null, null, null, null, false, null);
-
-    /**
-     * The sequence <code>public.usage_definition_order_by_seq</code>
-     */
-    public static final Sequence<Long> USAGE_DEFINITION_ORDER_BY_SEQ = Internal.createSequence("usage_definition_order_by_seq", Public.PUBLIC, SQLDataType.BIGINT.nullable(false), null, null, null, null, false, null);
-
-    /**
      * The sequence <code>public.usage_id_seq</code>
      */
     public static final Sequence<Long> USAGE_ID_SEQ = Internal.createSequence("usage_id_seq", Public.PUBLIC, SQLDataType.BIGINT.nullable(false), null, null, null, null, false, null);

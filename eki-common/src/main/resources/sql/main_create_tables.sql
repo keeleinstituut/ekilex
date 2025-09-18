@@ -1098,21 +1098,6 @@ create table usage_translation (
 );
 alter sequence usage_translation_id_seq restart with 10000;
 
-create table usage_definition (
-  id bigserial primary key, 
-  original_freeform_id bigint, -- to be dropped later
-  usage_id bigint references usage(id) on delete cascade not null, 
-  value text not null, 
-  value_prese text not null, 
-  lang char(3) references language(code) not null, 
-  created_by text null, 
-  created_on timestamp null, 
-  modified_by text null, 
-  modified_on timestamp null, 
-  order_by bigserial
-);
-alter sequence usage_definition_id_seq restart with 10000;
-
 create table lexeme_note (
   id bigserial primary key, 
   original_freeform_id bigint, -- to be dropped later

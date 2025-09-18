@@ -20,7 +20,6 @@ import static eki.ekilex.data.db.main.Tables.MEANING_LAST_ACTIVITY_LOG;
 import static eki.ekilex.data.db.main.Tables.MEANING_NOTE;
 import static eki.ekilex.data.db.main.Tables.MEANING_NOTE_SOURCE_LINK;
 import static eki.ekilex.data.db.main.Tables.USAGE;
-import static eki.ekilex.data.db.main.Tables.USAGE_DEFINITION;
 import static eki.ekilex.data.db.main.Tables.USAGE_SOURCE_LINK;
 import static eki.ekilex.data.db.main.Tables.USAGE_TRANSLATION;
 import static eki.ekilex.data.db.main.Tables.WORD;
@@ -75,7 +74,6 @@ import eki.ekilex.data.db.main.tables.MeaningLastActivityLog;
 import eki.ekilex.data.db.main.tables.MeaningNote;
 import eki.ekilex.data.db.main.tables.MeaningNoteSourceLink;
 import eki.ekilex.data.db.main.tables.Usage;
-import eki.ekilex.data.db.main.tables.UsageDefinition;
 import eki.ekilex.data.db.main.tables.UsageSourceLink;
 import eki.ekilex.data.db.main.tables.UsageTranslation;
 import eki.ekilex.data.db.main.tables.Word;
@@ -430,7 +428,6 @@ public class TermSearchConditionComposer implements GlobalConstant, ActivityFunc
 		Government lgo1 = GOVERNMENT.as("lgo1");
 		LexemeNote ln1 = LEXEME_NOTE.as("ln1");
 		Usage u1 = USAGE.as("u1");
-		UsageDefinition ud1 = USAGE_DEFINITION.as("ud1");
 		UsageTranslation ut1 = USAGE_TRANSLATION.as("ut1");
 		MeaningNote mn1 = MEANING_NOTE.as("mn1");
 		LearnerComment lc1 = LEARNER_COMMENT.as("lc1");
@@ -504,13 +501,6 @@ public class TermSearchConditionComposer implements GlobalConstant, ActivityFunc
 		where1 = searchFilterHelper.applyValueFilters(SearchKey.VALUE, searchCriteria, u1.VALUE, where1, true);
 		SelectHavingStep<Record1<Long>> selectUsage = DSL.select(l1.MEANING_ID).from(l1, u1).where(where1).groupBy(l1.MEANING_ID);
 
-		// usage definition select
-		where1 = u1.LEXEME_ID.eq(l1.ID)
-				.and(ud1.USAGE_ID.eq(u1.ID));
-		where1 = searchFilterHelper.applyDatasetRestrictions(l1, searchDatasetsRestriction, where1);
-		where1 = searchFilterHelper.applyValueFilters(SearchKey.VALUE, searchCriteria, ud1.VALUE, where1, true);
-		SelectHavingStep<Record1<Long>> selectUsageDefinition = DSL.select(l1.MEANING_ID).from(l1, u1, ud1).where(where1).groupBy(l1.MEANING_ID);
-
 		// usage translation select
 		where1 = u1.LEXEME_ID.eq(l1.ID)
 				.and(ut1.USAGE_ID.eq(u1.ID));
@@ -529,7 +519,6 @@ public class TermSearchConditionComposer implements GlobalConstant, ActivityFunc
 				.unionAll(selectLexemeGovernment)
 				.unionAll(selectLexemeNote)
 				.unionAll(selectUsage)
-				.unionAll(selectUsageDefinition)
 				.unionAll(selectUsageTranslation)
 				.asTable("a1");
 

@@ -22,7 +22,6 @@ import static eki.ekilex.data.db.main.Tables.REGION;
 import static eki.ekilex.data.db.main.Tables.REGISTER_LABEL;
 import static eki.ekilex.data.db.main.Tables.SOURCE;
 import static eki.ekilex.data.db.main.Tables.USAGE;
-import static eki.ekilex.data.db.main.Tables.USAGE_DEFINITION;
 import static eki.ekilex.data.db.main.Tables.USAGE_SOURCE_LINK;
 import static eki.ekilex.data.db.main.Tables.USAGE_TRANSLATION;
 import static eki.ekilex.data.db.main.Tables.VALUE_STATE_LABEL;
@@ -69,7 +68,6 @@ import eki.ekilex.data.db.main.tables.Region;
 import eki.ekilex.data.db.main.tables.RegisterLabel;
 import eki.ekilex.data.db.main.tables.Source;
 import eki.ekilex.data.db.main.tables.Usage;
-import eki.ekilex.data.db.main.tables.UsageDefinition;
 import eki.ekilex.data.db.main.tables.UsageSourceLink;
 import eki.ekilex.data.db.main.tables.UsageTranslation;
 import eki.ekilex.data.db.main.tables.ValueStateLabel;
@@ -424,7 +422,6 @@ public class QueryHelper implements GlobalConstant, PublishingConstant {
 
 		Usage u = USAGE.as("u");
 		UsageTranslation ut = USAGE_TRANSLATION.as("ut");
-		UsageDefinition ud = USAGE_DEFINITION.as("ud");
 		UsageSourceLink usl = USAGE_SOURCE_LINK.as("usl");
 		Source s = SOURCE.as("s");
 
@@ -449,25 +446,6 @@ public class QueryHelper implements GlobalConstant, PublishingConstant {
 						.orderBy(ut.ORDER_BY))
 				.from(ut)
 				.where(ut.USAGE_ID.eq(u.ID))
-				.asField();
-
-		Field<JSON> udf = DSL
-				.select(DSL
-						.jsonArrayAgg(DSL
-								.jsonObject(
-										DSL.key("id").value(ud.ID),
-										DSL.key("usageId").value(ud.USAGE_ID),
-										DSL.key("value").value(ud.VALUE),
-										DSL.key("valuePrese").value(ud.VALUE_PRESE),
-										DSL.key("lang").value(ud.LANG),
-										DSL.key("createdBy").value(ud.CREATED_BY),
-										DSL.key("createdOn").value(ud.CREATED_ON),
-										DSL.key("modifiedBy").value(ud.MODIFIED_BY),
-										DSL.key("modifiedOn").value(ud.MODIFIED_ON),
-										DSL.key("orderBy").value(ud.ORDER_BY)))
-						.orderBy(ud.ORDER_BY))
-				.from(ud)
-				.where(ud.USAGE_ID.eq(u.ID))
 				.asField();
 
 		Field<JSON> uslf = DSL
@@ -504,7 +482,6 @@ public class QueryHelper implements GlobalConstant, PublishingConstant {
 										DSL.key("wwLite").value(wwlpf),
 										DSL.key("wwOs").value(wwopf),
 										DSL.key("translations").value(utf),
-										DSL.key("definitions").value(udf),
 										DSL.key("sourceLinks").value(uslf)))
 						.orderBy(u.ORDER_BY))
 				.from(u)

@@ -2,6 +2,7 @@ package eki.ekilex.service.db;
 
 import static eki.ekilex.data.db.arch.Tables.ACTIVITY_LOG_BULK;
 import static eki.ekilex.data.db.main.Tables.ACTIVITY_LOG;
+import static eki.ekilex.data.db.main.Tables.COLLOCATION_MEMBER;
 import static eki.ekilex.data.db.main.Tables.DEFINITION;
 import static eki.ekilex.data.db.main.Tables.DEFINITION_FREEFORM;
 import static eki.ekilex.data.db.main.Tables.DEFINITION_NOTE;
@@ -35,7 +36,6 @@ import static eki.ekilex.data.db.main.Tables.PARADIGM;
 import static eki.ekilex.data.db.main.Tables.SOURCE;
 import static eki.ekilex.data.db.main.Tables.SOURCE_ACTIVITY_LOG;
 import static eki.ekilex.data.db.main.Tables.USAGE;
-import static eki.ekilex.data.db.main.Tables.USAGE_DEFINITION;
 import static eki.ekilex.data.db.main.Tables.USAGE_SOURCE_LINK;
 import static eki.ekilex.data.db.main.Tables.USAGE_TRANSLATION;
 import static eki.ekilex.data.db.main.Tables.WORD;
@@ -48,7 +48,6 @@ import static eki.ekilex.data.db.main.Tables.WORD_OS_RECOMMENDATION;
 import static eki.ekilex.data.db.main.Tables.WORD_OS_USAGE;
 import static eki.ekilex.data.db.main.Tables.WORD_RELATION;
 import static eki.ekilex.data.db.main.Tables.WORD_WORD_TYPE;
-import static eki.ekilex.data.db.main.Tables.COLLOCATION_MEMBER;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -859,17 +858,6 @@ public class ActivityLogDbService implements GlobalConstant, ActivityFunct {
 				.where(
 						USAGE_TRANSLATION.ID.eq(usageTranslationId)
 								.and(USAGE_TRANSLATION.USAGE_ID.eq(USAGE.ID)))
-				.fetchOptionalInto(Long.class)
-				.orElse(null);
-	}
-
-	public Long getUsageDefinitionOwnerId(Long usageDefinitionId) {
-		return mainDb
-				.select(USAGE.LEXEME_ID)
-				.from(USAGE, USAGE_DEFINITION)
-				.where(
-						USAGE_DEFINITION.ID.eq(usageDefinitionId)
-								.and(USAGE_DEFINITION.USAGE_ID.eq(USAGE.ID)))
 				.fetchOptionalInto(Long.class)
 				.orElse(null);
 	}

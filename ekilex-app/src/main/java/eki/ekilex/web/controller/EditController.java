@@ -106,9 +106,6 @@ public class EditController extends AbstractMutableDataPageController implements
 		case "usage_translation":
 			cudService.createUsageTranslation(id, value, languageCode, roleDatasetCode, isManualEventOnUpdateEnabled);
 			break;
-		case "usage_definition":
-			cudService.createUsageDefinition(id, value, languageCode, roleDatasetCode, isManualEventOnUpdateEnabled);
-			break;
 		case "lexeme_pos":
 			cudService.createLexemePos(id, value, roleDatasetCode, isManualEventOnUpdateEnabled);
 			break;
@@ -296,9 +293,6 @@ public class EditController extends AbstractMutableDataPageController implements
 			break;
 		case "usage_translation":
 			cudService.updateUsageTranslation(id, value, languageCode, roleDatasetCode, isManualEventOnUpdateEnabled);
-			break;
-		case "usage_definition":
-			cudService.updateUsageDefinition(id, value, roleDatasetCode, isManualEventOnUpdateEnabled);
 			break;
 		case "lexeme_publicity":
 			cudService.updateLexemePublicity(id, isPublic, roleDatasetCode, isManualEventOnUpdateEnabled);
@@ -597,9 +591,6 @@ public class EditController extends AbstractMutableDataPageController implements
 			break;
 		case "usage_translation":
 			cudService.deleteUsageTranslation(id, roleDatasetCode, isManualEventOnUpdateEnabled);
-			break;
-		case "usage_definition":
-			cudService.deleteUsageDefinition(id, roleDatasetCode, isManualEventOnUpdateEnabled);
 			break;
 		case "lexeme_freeform":
 			cudService.deleteLexemeFreeform(id, roleDatasetCode, isManualEventOnUpdateEnabled);

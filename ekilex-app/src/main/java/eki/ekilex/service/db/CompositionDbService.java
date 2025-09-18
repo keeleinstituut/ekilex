@@ -44,7 +44,6 @@ import static eki.ekilex.data.db.main.Tables.PARADIGM;
 import static eki.ekilex.data.db.main.Tables.PARADIGM_FORM;
 import static eki.ekilex.data.db.main.Tables.PUBLISHING;
 import static eki.ekilex.data.db.main.Tables.USAGE;
-import static eki.ekilex.data.db.main.Tables.USAGE_DEFINITION;
 import static eki.ekilex.data.db.main.Tables.USAGE_SOURCE_LINK;
 import static eki.ekilex.data.db.main.Tables.USAGE_TRANSLATION;
 import static eki.ekilex.data.db.main.Tables.WORD;
@@ -136,7 +135,6 @@ import eki.ekilex.data.db.main.tables.records.MeaningTagRecord;
 import eki.ekilex.data.db.main.tables.records.ParadigmFormRecord;
 import eki.ekilex.data.db.main.tables.records.ParadigmRecord;
 import eki.ekilex.data.db.main.tables.records.PublishingRecord;
-import eki.ekilex.data.db.main.tables.records.UsageDefinitionRecord;
 import eki.ekilex.data.db.main.tables.records.UsageRecord;
 import eki.ekilex.data.db.main.tables.records.UsageSourceLinkRecord;
 import eki.ekilex.data.db.main.tables.records.UsageTranslationRecord;
@@ -669,19 +667,6 @@ public class CompositionDbService extends AbstractDataDbService implements Globa
 						targetUsageSourceLink.setUsageId(targetUsageId);
 						targetUsageSourceLink.changed(USAGE_SOURCE_LINK.ORDER_BY, false);
 						targetUsageSourceLink.store();
-					});
-
-			Result<UsageDefinitionRecord> sourceUsageDefinitions = mainDb
-					.selectFrom(USAGE_DEFINITION)
-					.where(USAGE_DEFINITION.USAGE_ID.eq(sourceUsageId))
-					.orderBy(USAGE_DEFINITION.ORDER_BY)
-					.fetch();
-
-			sourceUsageDefinitions.stream()
-					.map(UsageDefinitionRecord::copy)
-					.forEach(targetUsageDefinition -> {
-						targetUsageDefinition.setUsageId(targetUsageId);
-						targetUsageDefinition.store();
 					});
 
 			Result<UsageTranslationRecord> sourceUsageTranslations = mainDb

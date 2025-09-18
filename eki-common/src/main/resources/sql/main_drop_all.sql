@@ -101,7 +101,7 @@ drop table if exists lex_colloc;
 drop table if exists lex_colloc_rel_group;
 drop table if exists lex_colloc_pos_group;
 drop table if exists lex_relation;
-drop table if exists usage_definition;
+drop table if exists usage_definition; -- remove later
 drop table if exists usage_translation;
 drop table if exists usage;
 drop table if exists grammar;

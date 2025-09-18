@@ -86,3 +86,20 @@ where
 	)
 ;
 
+delete from 
+	usage u
+where
+	u.is_public = false
+	and exists (
+		select
+			1
+		from
+			lexeme l 
+		where 
+			l.id = u.lexeme_id
+			and l.dataset_code = 'eki'
+	)
+;
+
+drop table usage_definition cascade;
+

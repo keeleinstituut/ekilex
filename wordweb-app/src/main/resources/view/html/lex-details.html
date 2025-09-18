@@ -395,11 +395,6 @@
                             <span class="example-text-value text-body-two text-weight-medium" th:utext="${@viewUtil.wrapDecorations(usageTranslation)}"></span>
                           </span>
                         </th:block>
-                        <th:block th:unless="${#lists.isEmpty(usage.usageDefinitionValues)}">
-                          <span th:each="usageDefinition : ${usage.usageDefinitionValues}" class="example-text" >
-                            <span class="example-text-value text-body-two text-weight-medium" th:utext="${usageDefinition}"></span>
-                          </span>
-                        </th:block>
                       </div>
                     </div>
                   </th:block>
@@ -426,11 +421,6 @@
                             <th:block th:unless="${#lists.isEmpty(usage.usageTranslationValues)}">
                               <span th:each="usageTranslation : ${usage.usageTranslationValues}" class="example-text">
                                 <span class="example-text-value text-body-two text-weight-medium" th:utext="${@viewUtil.wrapDecorations(usageTranslation)}"></span>
-                              </span>
-                            </th:block>
-                            <th:block th:unless="${#lists.isEmpty(usage.usageDefinitionValues)}">
-                              <span th:each="usageDefinition : ${usage.usageDefinitionValues}" class="example-text" >
-                                <span class="example-text-value text-body-two text-weight-medium" th:utext="${usageDefinition}"></span>
                               </span>
                             </th:block>
                           </div>

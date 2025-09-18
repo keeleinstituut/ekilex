@@ -18,8 +18,6 @@ public class Usage extends AbstractCreateUpdateEntity implements SourceLinkType,
 
 	private List<String> usageTranslationValues;
 
-	private List<String> usageDefinitionValues;
-
 	private List<SourceLink> sourceLinks;
 
 	public Long getId() {
@@ -68,14 +66,6 @@ public class Usage extends AbstractCreateUpdateEntity implements SourceLinkType,
 
 	public void setUsageTranslationValues(List<String> usageTranslationValues) {
 		this.usageTranslationValues = usageTranslationValues;
-	}
-
-	public List<String> getUsageDefinitionValues() {
-		return usageDefinitionValues;
-	}
-
-	public void setUsageDefinitionValues(List<String> usageDefinitionValues) {
-		this.usageDefinitionValues = usageDefinitionValues;
 	}
 
 	@Override
