@@ -93,7 +93,7 @@ dblink(
 	word_type_codes varchar(100) array,
 	meaning_words json,
 	definitions json,
-	word_os_recommendations json,
+	word_eki_recommendations json,
 	freq_value numeric(12,7),
 	freq_rank bigint,
 	forms_exist boolean,

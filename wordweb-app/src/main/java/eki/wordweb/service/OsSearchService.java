@@ -60,6 +60,7 @@ public class OsSearchService implements GlobalConstant, SystemConstant {
 			osConversionUtil.applyGenericConversions(words, searchValue, selectedHomonymNr);
 			Long wordId = osConversionUtil.getSelectedWordId(words);
 			selectedWord = osDbService.getWord(wordId);
+			System.out.println("---> " + selectedWord.getWordEkiRecommendations());
 			classifierUtil.applyOsClassifiers(selectedWord, displayLang);
 			osConversionUtil.applyWordRelationConversions(selectedWord);
 			osConversionUtil.setWordTypeFlags(selectedWord);

@@ -51,12 +51,12 @@ import eki.ekilex.data.Tag;
 import eki.ekilex.data.Usage;
 import eki.ekilex.data.Word;
 import eki.ekilex.data.WordDetails;
+import eki.ekilex.data.WordEkiRecommendation;
 import eki.ekilex.data.WordEtym;
 import eki.ekilex.data.WordEtymTuple;
 import eki.ekilex.data.WordForum;
 import eki.ekilex.data.WordGroup;
 import eki.ekilex.data.WordOsMorph;
-import eki.ekilex.data.WordOsRecommendation;
 import eki.ekilex.data.WordOsUsage;
 import eki.ekilex.data.WordRelation;
 import eki.ekilex.data.WordRelationDetails;
@@ -87,6 +87,7 @@ public class LexSearchService extends AbstractWordSearchService {
 		String wordLang = word.getLang();
 		List<Lexeme> lexemes = lexSearchDbService.getWordLexemes(wordId, searchDatasetsRestriction, CLASSIF_LABEL_LANG_EST);
 		List<Freeform> wordFreeforms = commonDataDbService.getWordFreeforms(wordId, CLASSIF_LABEL_LANG_EST);
+		List<WordEkiRecommendation> wordEkiRecommendations = commonDataDbService.getWordEkiRecommendations(wordId);
 		List<Classifier> wordTypes = commonDataDbService.getWordTypes(wordId, CLASSIF_LABEL_LANG_EST);
 		List<ParadigmFormTuple> paradigmFormTuples = lexSearchDbService.getParadigmFormTuples(wordId, CLASSIF_LABEL_LANG_EST);
 		List<Paradigm> paradigms = conversionUtil.composeParadigms(paradigmFormTuples);
@@ -100,7 +101,6 @@ public class LexSearchService extends AbstractWordSearchService {
 		List<WordEtym> wordEtymology = conversionUtil.composeWordEtymology(wordEtymTuples);
 		List<WordForum> wordForums = commonDataDbService.getWordForums(wordId);
 		permCalculator.applyCrud(user, wordForums);
-		List<WordOsRecommendation> wordOsRecommendations = osDataDbService.getWordOsRecommendations(wordId);
 		List<WordOsUsage> wordOsUsages = osDataDbService.getWordOsUsages(wordId);
 		WordOsMorph wordOsMorph = osDataDbService.getWordOsMorph(wordId);
 
@@ -123,7 +123,7 @@ public class LexSearchService extends AbstractWordSearchService {
 		word.setEtymology(wordEtymology);
 		word.setForums(wordForums);
 		word.setFreeforms(wordFreeforms);
-		word.setWordOsRecommendations(wordOsRecommendations);
+		word.setWordEkiRecommendations(wordEkiRecommendations);
 		word.setWordOsUsages(wordOsUsages);
 		word.setWordOsMorph(wordOsMorph);
 
@@ -157,12 +157,12 @@ public class LexSearchService extends AbstractWordSearchService {
 	}
 
 	@Transactional
-	public WordDetails getWordOsRecommendationDetails(Long wordId, EkiUser user) {
+	public WordDetails getWordEkiRecommendationDetails(Long wordId, EkiUser user) {
 
 		Word word = lexSearchDbService.getWord(wordId);
 		permCalculator.applyCrud(user, word);
-		List<WordOsRecommendation> wordOsRecommendations = osDataDbService.getWordOsRecommendations(wordId);
-		word.setWordOsRecommendations(wordOsRecommendations);
+		List<WordEkiRecommendation> wordEkiRecommendations = commonDataDbService.getWordEkiRecommendations(wordId);
+		word.setWordEkiRecommendations(wordEkiRecommendations);
 		WordDetails wordDetails = new WordDetails();
 		wordDetails.setWord(word);
 

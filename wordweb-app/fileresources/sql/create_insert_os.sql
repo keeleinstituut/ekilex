@@ -13,7 +13,8 @@ drop table if exists os_word_os_morph;
 drop table if exists os_word_os_usage;
 drop table if exists os_word_os_usage_idx;
 drop table if exists os_word_os_recommend; -- remove later
-drop table if exists os_word_os_recommendation;
+drop table if exists os_word_os_recommendation; -- remove later
+drop table if exists os_word_eki_recommendation;
 drop table if exists os_word_relation;
 drop table if exists os_word_relation_idx;
 drop table if exists os_definition_idx;
@@ -140,23 +141,23 @@ dblink(
 	value text
 );
 
-create table os_word_os_recommendation (
+create table os_word_eki_recommendation (
 	word_id bigint not null,
-	word_os_recommendations json not null
+	word_eki_recommendations json not null
 );
 
-create index os_word_os_recommendation_word_id_idx on os_word_os_recommendation (word_id);
+create index os_word_eki_recommendation_word_id_idx on os_word_eki_recommendation (word_id);
 
-insert into os_word_os_recommendation 
+insert into os_word_eki_recommendation 
 select 
 	word_id,
-	word_os_recommendations
+	word_eki_recommendations
 from
 dblink(
 	'host=localhost user=ekilex password=3kil3x dbname=ekilex',
-	'select * from view_os_word_os_recommendation') as os_word_os_recommendation (
+	'select * from view_os_word_eki_recommendation') as os_word_eki_recommendation (
 	word_id bigint,
-	word_os_recommendations json
+	word_eki_recommendations json
 );
 
 create table os_lexeme_meaning (

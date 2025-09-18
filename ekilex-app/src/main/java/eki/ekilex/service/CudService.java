@@ -41,7 +41,7 @@ import eki.ekilex.data.UsageTranslation;
 import eki.ekilex.data.WordLexemeMeaningDetails;
 import eki.ekilex.data.WordLexemeMeaningIdTuple;
 import eki.ekilex.data.WordOsMorph;
-import eki.ekilex.data.WordOsRecommendation;
+import eki.ekilex.data.WordEkiRecommendation;
 import eki.ekilex.data.WordOsUsage;
 import eki.ekilex.security.EkilexPermissionEvaluator;
 import eki.ekilex.service.db.CompositionDbService;
@@ -428,18 +428,18 @@ public class CudService extends AbstractCudService implements PermConstant, Acti
 	}
 
 	@Transactional(rollbackFor = Exception.class)
-	public void createWordOsRecommendation(Long wordId, String valuePrese, EkiUser user, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
+	public void createWordEkiRecommendation(Long wordId, String valuePrese, EkiUser user, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
 
-		WordOsRecommendation wordOsRecommendation = new WordOsRecommendation();
-		wordOsRecommendation.setValuePrese(valuePrese);
-		wordOsRecommendation.setPublic(true);
-		setValueAndPrese(wordOsRecommendation);
-		applyCreateUpdate(wordOsRecommendation);
+		WordEkiRecommendation wordEkiRecommendation = new WordEkiRecommendation();
+		wordEkiRecommendation.setValuePrese(valuePrese);
+		wordEkiRecommendation.setPublic(true);
+		setValueAndPrese(wordEkiRecommendation);
+		applyCreateUpdate(wordEkiRecommendation);
 
-		ActivityLogData activityLog = activityLogService.prepareActivityLog("createWordOsRecommendation", wordId, ActivityOwner.WORD, roleDatasetCode, isManualEventOnUpdateEnabled);
-		Long wordOsRecommendationId = cudDbService.createWordOsRecommendation(wordId, wordOsRecommendation);
-		createPublishing(user, roleDatasetCode, TARGET_NAME_WW_UNIF, ENTITY_NAME_WORD_OS_RECOMMENDATION, wordOsRecommendationId);
-		activityLogService.createActivityLog(activityLog, wordOsRecommendationId, ActivityEntity.WORD_OS_RECOMMENDATION);
+		ActivityLogData activityLog = activityLogService.prepareActivityLog("createWordEkiRecommendation", wordId, ActivityOwner.WORD, roleDatasetCode, isManualEventOnUpdateEnabled);
+		Long wordEkiRecommendationId = cudDbService.createWordEkiRecommendation(wordId, wordEkiRecommendation);
+		createPublishing(user, roleDatasetCode, TARGET_NAME_WW_UNIF, ENTITY_NAME_WORD_EKI_RECOMMENDATION, wordEkiRecommendationId);
+		activityLogService.createActivityLog(activityLog, wordEkiRecommendationId, ActivityEntity.WORD_EKI_RECOMMENDATION);
 	}
 
 	@Transactional(rollbackFor = Exception.class)
@@ -1275,18 +1275,18 @@ public class CudService extends AbstractCudService implements PermConstant, Acti
 	}
 
 	@Transactional(rollbackFor = Exception.class)
-	public void updateWordOsRecommendation(Long wordOsRecommendationId, String valuePrese, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
+	public void updateWordEkiRecommendation(Long wordEkiRecommendationId, String valuePrese, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
 
-		WordOsRecommendation wordOsRecommendation = new WordOsRecommendation();
-		wordOsRecommendation.setId(wordOsRecommendationId);
-		wordOsRecommendation.setValuePrese(valuePrese);
-		setValueAndPrese(wordOsRecommendation);
-		applyUpdate(wordOsRecommendation);
+		WordEkiRecommendation wordEkiRecommendation = new WordEkiRecommendation();
+		wordEkiRecommendation.setId(wordEkiRecommendationId);
+		wordEkiRecommendation.setValuePrese(valuePrese);
+		setValueAndPrese(wordEkiRecommendation);
+		applyUpdate(wordEkiRecommendation);
 
-		Long wordId = activityLogService.getOwnerId(wordOsRecommendationId, ActivityEntity.WORD_OS_RECOMMENDATION);
-		ActivityLogData activityLog = activityLogService.prepareActivityLog("updateWordOsRecommendation", wordId, ActivityOwner.WORD, roleDatasetCode, isManualEventOnUpdateEnabled);
-		cudDbService.updateWordOsRecommendation(wordOsRecommendation);
-		activityLogService.createActivityLog(activityLog, wordOsRecommendationId, ActivityEntity.WORD_OS_RECOMMENDATION);
+		Long wordId = activityLogService.getOwnerId(wordEkiRecommendationId, ActivityEntity.WORD_EKI_RECOMMENDATION);
+		ActivityLogData activityLog = activityLogService.prepareActivityLog("updateWordEkiRecommendation", wordId, ActivityOwner.WORD, roleDatasetCode, isManualEventOnUpdateEnabled);
+		cudDbService.updateWordEkiRecommendation(wordEkiRecommendation);
+		activityLogService.createActivityLog(activityLog, wordEkiRecommendationId, ActivityEntity.WORD_EKI_RECOMMENDATION);
 	}
 
 	@Transactional(rollbackFor = Exception.class)
@@ -1725,12 +1725,12 @@ public class CudService extends AbstractCudService implements PermConstant, Acti
 	}
 
 	@Transactional(rollbackFor = Exception.class)
-	public void deleteWordOsRecommendation(Long wordOsRecommendationId, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
+	public void deleteWordEkiRecommendation(Long wordEkiRecommendationId, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
 
-		Long wordId = activityLogService.getOwnerId(wordOsRecommendationId, ActivityEntity.WORD_OS_RECOMMENDATION);
-		ActivityLogData activityLog = activityLogService.prepareActivityLog("deleteWordOsRecommendation", wordId, ActivityOwner.WORD, roleDatasetCode, isManualEventOnUpdateEnabled);
-		cudDbService.deleteWordOsRecommendation(wordOsRecommendationId);
-		activityLogService.createActivityLog(activityLog, wordOsRecommendationId, ActivityEntity.WORD_OS_RECOMMENDATION);
+		Long wordId = activityLogService.getOwnerId(wordEkiRecommendationId, ActivityEntity.WORD_EKI_RECOMMENDATION);
+		ActivityLogData activityLog = activityLogService.prepareActivityLog("deleteWordEkiRecommendation", wordId, ActivityOwner.WORD, roleDatasetCode, isManualEventOnUpdateEnabled);
+		cudDbService.deleteWordEkiRecommendation(wordEkiRecommendationId);
+		activityLogService.createActivityLog(activityLog, wordEkiRecommendationId, ActivityEntity.WORD_EKI_RECOMMENDATION);
 	}
 
 	@Transactional(rollbackFor = Exception.class)

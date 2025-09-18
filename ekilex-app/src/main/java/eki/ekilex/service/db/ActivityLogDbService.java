@@ -40,11 +40,11 @@ import static eki.ekilex.data.db.main.Tables.USAGE_SOURCE_LINK;
 import static eki.ekilex.data.db.main.Tables.USAGE_TRANSLATION;
 import static eki.ekilex.data.db.main.Tables.WORD;
 import static eki.ekilex.data.db.main.Tables.WORD_ACTIVITY_LOG;
+import static eki.ekilex.data.db.main.Tables.WORD_EKI_RECOMMENDATION;
 import static eki.ekilex.data.db.main.Tables.WORD_ETYMOLOGY;
 import static eki.ekilex.data.db.main.Tables.WORD_FREEFORM;
 import static eki.ekilex.data.db.main.Tables.WORD_LAST_ACTIVITY_LOG;
 import static eki.ekilex.data.db.main.Tables.WORD_OS_MORPH;
-import static eki.ekilex.data.db.main.Tables.WORD_OS_RECOMMENDATION;
 import static eki.ekilex.data.db.main.Tables.WORD_OS_USAGE;
 import static eki.ekilex.data.db.main.Tables.WORD_RELATION;
 import static eki.ekilex.data.db.main.Tables.WORD_WORD_TYPE;
@@ -642,11 +642,11 @@ public class ActivityLogDbService implements GlobalConstant, ActivityFunct {
 				.orElse(null);
 	}
 
-	public Long getWordOsRecommendationOwnerId(Long entityId) {
+	public Long getWordEkiRecommendationOwnerId(Long entityId) {
 		return mainDb
-				.select(WORD_OS_RECOMMENDATION.WORD_ID)
-				.from(WORD_OS_RECOMMENDATION)
-				.where(WORD_OS_RECOMMENDATION.ID.eq(entityId))
+				.select(WORD_EKI_RECOMMENDATION.WORD_ID)
+				.from(WORD_EKI_RECOMMENDATION)
+				.where(WORD_EKI_RECOMMENDATION.ID.eq(entityId))
 				.fetchOptionalInto(Long.class)
 				.orElse(null);
 	}

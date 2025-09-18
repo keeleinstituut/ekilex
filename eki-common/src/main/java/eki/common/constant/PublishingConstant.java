@@ -32,7 +32,7 @@ public interface PublishingConstant {
 
 	String ENTITY_NAME_WORD_RELATION = "word_relation";
 
-	String ENTITY_NAME_WORD_OS_RECOMMENDATION = "word_os_recommendation";
+	String ENTITY_NAME_WORD_EKI_RECOMMENDATION = "word_eki_recommendation";
 
 	String[] PUBLISHING_ENTITY_NAMES = {
 			ENTITY_NAME_LEXEME,
@@ -45,6 +45,6 @@ public interface PublishingConstant {
 			ENTITY_NAME_GRAMMAR,
 			ENTITY_NAME_GOVERNMENT,
 			ENTITY_NAME_WORD_RELATION,
-			ENTITY_NAME_WORD_OS_RECOMMENDATION
+			ENTITY_NAME_WORD_EKI_RECOMMENDATION
 	};
 }

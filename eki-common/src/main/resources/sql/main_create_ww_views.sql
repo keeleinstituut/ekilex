@@ -343,7 +343,7 @@ select
 	wt.word_type_codes,
 	mw.meaning_words,
 	wd.definitions,
-	wor.word_os_recommendations,
+	wer.word_eki_recommendations,
 	wf.freq_value,
 	wf.freq_rank,
 	w.forms_exist,
@@ -755,34 +755,34 @@ from (
 	) wd on wd.word_id = w.word_id
 	left outer join (
 		select
-			wor.word_id,
+			wer.word_id,
 			json_agg(
 				json_build_object(
-					'id', wor.word_os_recommendation_id,
-					'wordId', wor.word_id,
-					'value', wor.value,
-					'valuePrese', wor.value_prese,
-					'createdBy', wor.created_by,
-					'createdOn', wor.created_on,
-					'modifiedBy', wor.modified_by,
-					'modifiedOn', wor.modified_on,
-					'wwUnif', wor.is_ww_unif,
-					'wwLite', wor.is_ww_lite,
-					'wwOs', wor.is_ww_os
+					'id', wer.word_eki_recommendation_id,
+					'wordId', wer.word_id,
+					'value', wer.value,
+					'valuePrese', wer.value_prese,
+					'createdBy', wer.created_by,
+					'createdOn', wer.created_on,
+					'modifiedBy', wer.modified_by,
+					'modifiedOn', wer.modified_on,
+					'wwUnif', wer.is_ww_unif,
+					'wwLite', wer.is_ww_lite,
+					'wwOs', wer.is_ww_os
 				)
 				order by
-					wor.word_os_recommendation_id
-			) word_os_recommendations
+					wer.word_eki_recommendation_id
+			) word_eki_recommendations
 		from (
 			select
-				wor.id word_os_recommendation_id,
-				wor.word_id,
-				wor.value,
-				wor.value_prese,
-				wor.created_by,
-				wor.created_on,
-				wor.modified_by,
-				wor.modified_on,
+				wer.id word_eki_recommendation_id,
+				wer.word_id,
+				wer.value,
+				wer.value_prese,
+				wer.created_by,
+				wer.created_on,
+				wer.modified_by,
+				wer.modified_on,
 				(exists (
 					select
 						p.id
@@ -790,8 +790,8 @@ from (
 						publishing p 
 					where
 						p.target_name = 'ww_unif'
-						and p.entity_name = 'word_os_recommendation'
-						and p.entity_id = wor.id
+						and p.entity_name = 'word_eki_recommendation'
+						and p.entity_id = wer.id
 				)) is_ww_unif,
 				(exists (
 					select
@@ -800,8 +800,8 @@ from (
 						publishing p 
 					where
 						p.target_name = 'ww_lite'
-						and p.entity_name = 'word_os_recommendation'
-						and p.entity_id = wor.id
+						and p.entity_name = 'word_eki_recommendation'
+						and p.entity_id = wer.id
 				)) is_ww_lite,
 				(exists (
 					select
@@ -810,11 +810,11 @@ from (
 						publishing p 
 					where
 						p.target_name = 'ww_os'
-						and p.entity_name = 'word_os_recommendation'
-						and p.entity_id = wor.id
+						and p.entity_name = 'word_eki_recommendation'
+						and p.entity_id = wer.id
 				)) is_ww_os
 			from
-				word_os_recommendation wor
+				word_eki_recommendation wer
 			where
 				exists (
 					select
@@ -822,12 +822,12 @@ from (
 					from
 						publishing p
 					where
-						p.entity_name = 'word_os_recommendation'
-						and p.entity_id = wor.id)
-		) wor
+						p.entity_name = 'word_eki_recommendation'
+						and p.entity_id = wer.id)
+		) wer
 		group by
-			wor.word_id
-	) wor on wor.word_id = w.word_id
+			wer.word_id
+	) wer on wer.word_id = w.word_id
 	left outer join (
 		select
 			wf.word_id,

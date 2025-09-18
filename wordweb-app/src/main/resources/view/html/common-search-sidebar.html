@@ -20,17 +20,17 @@
       </div>
     </th:block>
   </section>
-  <th:block th:fragment="word-os-recommendation">
-    <section class="recommendation__block text-body-two" th:unless="${#lists.isEmpty(wordData.word.wordOsRecommendations)}">
+  <th:block th:fragment="word-eki-recommendation">
+    <section class="recommendation__block text-body-two" th:unless="${#lists.isEmpty(wordData.word.wordEkiRecommendations)}">
       <div class="d-flex gap-1 align-items-center">
         <span class="material-symbols-outlined" aria-hidden="true"> info </span>
-        <h2 class="recommendation__title" th:text="#{label.word.os.recommend}">ÕS selgitab</h2>
+        <h2 class="recommendation__title" th:text="#{label.word.eki.recommend}">ÕS selgitab</h2>
       </div>
-      <div th:each="wordOsRecommendation : ${wordData.word.wordOsRecommendations}">
-        <p class="m-0" th:utext="${wordOsRecommendation.valuePrese}"></p>
-        <div class="text-caption recommendation__date" th:if="${wordOsRecommendation.modifiedOn != null}">
+      <div th:each="wordEkiRecommendation : ${wordData.word.wordEkiRecommendations}">
+        <p class="m-0" th:utext="${wordEkiRecommendation.valuePrese}"></p>
+        <div class="text-caption recommendation__date" th:if="${wordEkiRecommendation.modifiedOn != null}">
           <span th:text="#{label.tooltip.last_modified}"></span>
-          <span th:text="|${#temporals.format(wordOsRecommendation.modifiedOn, 'dd.MM.yyyy')}|"></span>
+          <span th:text="|${#temporals.format(wordEkiRecommendation.modifiedOn, 'dd.MM.yyyy')}|"></span>
         </div>
       </div>
     </section>

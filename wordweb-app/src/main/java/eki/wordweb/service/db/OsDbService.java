@@ -2,8 +2,8 @@ package eki.wordweb.service.db;
 
 import static eki.wordweb.data.db.Tables.OS_LEXEME_MEANING;
 import static eki.wordweb.data.db.Tables.OS_WORD;
+import static eki.wordweb.data.db.Tables.OS_WORD_EKI_RECOMMENDATION;
 import static eki.wordweb.data.db.Tables.OS_WORD_OS_MORPH;
-import static eki.wordweb.data.db.Tables.OS_WORD_OS_RECOMMENDATION;
 import static eki.wordweb.data.db.Tables.OS_WORD_OS_USAGE;
 import static eki.wordweb.data.db.Tables.OS_WORD_RELATION;
 import static eki.wordweb.data.db.Tables.OS_WORD_RELATION_IDX;
@@ -31,8 +31,8 @@ import eki.wordweb.data.WordsMatch;
 import eki.wordweb.data.db.Routines;
 import eki.wordweb.data.db.tables.OsLexemeMeaning;
 import eki.wordweb.data.db.tables.OsWord;
+import eki.wordweb.data.db.tables.OsWordEkiRecommendation;
 import eki.wordweb.data.db.tables.OsWordOsMorph;
-import eki.wordweb.data.db.tables.OsWordOsRecommendation;
 import eki.wordweb.data.db.tables.OsWordOsUsage;
 import eki.wordweb.data.db.tables.OsWordRelation;
 import eki.wordweb.data.db.tables.OsWordRelationIdx;
@@ -105,7 +105,7 @@ public class OsDbService implements SystemConstant, GlobalConstant {
 		OsWord w = OS_WORD.as("w");
 		OsWordOsMorph wom = OS_WORD_OS_MORPH.as("wom");
 		OsWordOsUsage wou = OS_WORD_OS_USAGE.as("wou");
-		OsWordOsRecommendation wor = OS_WORD_OS_RECOMMENDATION.as("wor");
+		OsWordEkiRecommendation wer = OS_WORD_EKI_RECOMMENDATION.as("wer");
 		OsLexemeMeaning lm = OS_LEXEME_MEANING.as("lm");
 		OsWordRelation wr = OS_WORD_RELATION.as("wr");
 
@@ -128,9 +128,9 @@ public class OsDbService implements SystemConstant, GlobalConstant {
 				.asField();
 
 		Field<JSON> worf = DSL
-				.select(wor.WORD_OS_RECOMMENDATIONS)
-				.from(wor)
-				.where(wor.WORD_ID.eq(w.WORD_ID))
+				.select(wer.WORD_EKI_RECOMMENDATIONS)
+				.from(wer)
+				.where(wer.WORD_ID.eq(w.WORD_ID))
 				.limit(1)
 				.asField();
 
@@ -151,7 +151,7 @@ public class OsDbService implements SystemConstant, GlobalConstant {
 				.select(
 						womf.as("word_os_morph"),
 						wouf.as("word_os_usages"),
-						worf.as("word_os_recommendations"),
+						worf.as("word_eki_recommendations"),
 						lmf.as("lexeme_meanings"),
 						wrf.as("word_relation_groups"))
 				.from(w)

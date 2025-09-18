@@ -33,13 +33,13 @@ import static eki.ekilex.data.db.main.Tables.MEANING_TAG;
 import static eki.ekilex.data.db.main.Tables.PUBLISHING;
 import static eki.ekilex.data.db.main.Tables.USAGE_SOURCE_LINK;
 import static eki.ekilex.data.db.main.Tables.WORD_ACTIVITY_LOG;
+import static eki.ekilex.data.db.main.Tables.WORD_EKI_RECOMMENDATION;
 import static eki.ekilex.data.db.main.Tables.WORD_FORUM;
 import static eki.ekilex.data.db.main.Tables.WORD_FREEFORM;
 import static eki.ekilex.data.db.main.Tables.WORD_FREQ;
 import static eki.ekilex.data.db.main.Tables.WORD_GROUP;
 import static eki.ekilex.data.db.main.Tables.WORD_GROUP_MEMBER;
 import static eki.ekilex.data.db.main.Tables.WORD_LAST_ACTIVITY_LOG;
-import static eki.ekilex.data.db.main.Tables.WORD_OS_RECOMMENDATION;
 import static eki.ekilex.data.db.main.Tables.WORD_RELATION;
 import static eki.ekilex.data.db.main.Tables.WORD_TAG;
 import static eki.ekilex.data.db.main.Tables.WORD_WORD_TYPE;
@@ -120,13 +120,13 @@ import eki.ekilex.data.db.main.tables.Source;
 import eki.ekilex.data.db.main.tables.UsageSourceLink;
 import eki.ekilex.data.db.main.tables.Word;
 import eki.ekilex.data.db.main.tables.WordActivityLog;
+import eki.ekilex.data.db.main.tables.WordEkiRecommendation;
 import eki.ekilex.data.db.main.tables.WordForum;
 import eki.ekilex.data.db.main.tables.WordFreeform;
 import eki.ekilex.data.db.main.tables.WordFreq;
 import eki.ekilex.data.db.main.tables.WordGroup;
 import eki.ekilex.data.db.main.tables.WordGroupMember;
 import eki.ekilex.data.db.main.tables.WordLastActivityLog;
-import eki.ekilex.data.db.main.tables.WordOsRecommendation;
 import eki.ekilex.data.db.main.tables.WordRelation;
 import eki.ekilex.data.db.main.tables.WordTag;
 import eki.ekilex.data.db.main.tables.WordWordType;
@@ -158,7 +158,7 @@ public class SearchFilterHelper implements GlobalConstant, ActivityFunct, Freefo
 								.from(DATASET)
 								.where(
 										DATASET.CODE.eq(lexeme.DATASET_CODE)
-										.and(DATASET.IS_VISIBLE.isTrue())));
+												.and(DATASET.IS_VISIBLE.isTrue())));
 			} else {
 				//all visible ds, selected perm
 				Condition permDatasetCodeCond;
@@ -634,7 +634,7 @@ public class SearchFilterHelper implements GlobalConstant, ActivityFunct, Freefo
 		return where;
 	}
 
-	public Condition applyWordOsRecommendationValueFilters(List<SearchCriterion> searchCriteria, Field<Long> wordIdField, Condition where) throws Exception {
+	public Condition applyWordEkiRecommendationValueFilters(List<SearchCriterion> searchCriteria, Field<Long> wordIdField, Condition where) throws Exception {
 
 		List<SearchCriterion> filteredCriteria = searchCriteria.stream()
 				.filter(c -> c.getSearchKey().equals(SearchKey.VALUE_AND_EXISTS))
@@ -644,25 +644,25 @@ public class SearchFilterHelper implements GlobalConstant, ActivityFunct, Freefo
 			return where;
 		}
 
-		WordOsRecommendation wor = WORD_OS_RECOMMENDATION.as("wor");
-		Condition where1 = wor.WORD_ID.eq(wordIdField);
+		WordEkiRecommendation wer = WORD_EKI_RECOMMENDATION.as("wer");
+		Condition where1 = wer.WORD_ID.eq(wordIdField);
 
 		boolean isNotExistsSearch = isNotExistsSearch(SearchKey.VALUE_AND_EXISTS, filteredCriteria);
 		if (isNotExistsSearch) {
-			where = where.and(DSL.notExists(DSL.select(wor.ID).from(wor).where(where1)));
+			where = where.and(DSL.notExists(DSL.select(wer.ID).from(wer).where(where1)));
 		} else {
 			for (SearchCriterion criterion : filteredCriteria) {
 				if (criterion.getSearchValue() != null) {
 					String searchValueStr = criterion.getSearchValue().toString();
-					where1 = applyValueFilter(searchValueStr, criterion.isNot(), criterion.getSearchOperand(), wor.VALUE, where1, true);
+					where1 = applyValueFilter(searchValueStr, criterion.isNot(), criterion.getSearchOperand(), wer.VALUE, where1, true);
 				}
 			}
-			where = where.andExists(DSL.select(wor.ID).from(wor).where(where1));
+			where = where.andExists(DSL.select(wer.ID).from(wer).where(where1));
 		}
 		return where;
 	}
 
-	public Condition applyWordOsRecommendationModificationFilters(List<SearchCriterion> searchCriteria, Field<Long> wordIdField, Condition where) throws Exception {
+	public Condition applyWordEkiRecommendationModificationFilters(List<SearchCriterion> searchCriteria, Field<Long> wordIdField, Condition where) throws Exception {
 
 		List<SearchCriterion> filteredCriteria = searchCriteria.stream()
 				.filter(c -> c.getSearchKey().equals(SearchKey.UPDATED_ON))
@@ -672,16 +672,16 @@ public class SearchFilterHelper implements GlobalConstant, ActivityFunct, Freefo
 			return where;
 		}
 
-		WordOsRecommendation wor = WORD_OS_RECOMMENDATION.as("wor");
-		Condition where1 = wor.WORD_ID.eq(wordIdField);
+		WordEkiRecommendation wer = WORD_EKI_RECOMMENDATION.as("wer");
+		Condition where1 = wer.WORD_ID.eq(wordIdField);
 
 		for (SearchCriterion criterion : filteredCriteria) {
 			if (criterion.getSearchValue() != null) {
 				String searchValueStr = criterion.getSearchValue().toString();
-				where1 = applyValueFilter(searchValueStr, criterion.isNot(), criterion.getSearchOperand(), wor.MODIFIED_ON, where1, false);
+				where1 = applyValueFilter(searchValueStr, criterion.isNot(), criterion.getSearchOperand(), wer.MODIFIED_ON, where1, false);
 			}
 		}
-		where = where.andExists(DSL.select(wor.ID).from(wor).where(where1));
+		where = where.andExists(DSL.select(wer.ID).from(wer).where(where1));
 		return where;
 	}
 

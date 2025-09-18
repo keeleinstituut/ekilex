@@ -34,7 +34,7 @@ public class OsWord extends AbstractDataObject implements DecoratedWordType {
 
 	private List<WordOsUsage> wordOsUsages;
 
-	private List<WordOsRecommendation> wordOsRecommendations;
+	private List<WordEkiRecommendation> wordEkiRecommendations;
 
 	private List<OsLexemeMeaning> lexemeMeanings;
 
@@ -165,12 +165,12 @@ public class OsWord extends AbstractDataObject implements DecoratedWordType {
 		this.wordOsUsages = wordOsUsages;
 	}
 
-	public List<WordOsRecommendation> getWordOsRecommendations() {
-		return wordOsRecommendations;
+	public List<WordEkiRecommendation> getWordEkiRecommendations() {
+		return wordEkiRecommendations;
 	}
 
-	public void setWordOsRecommendations(List<WordOsRecommendation> wordOsRecommendations) {
-		this.wordOsRecommendations = wordOsRecommendations;
+	public void setWordEkiRecommendations(List<WordEkiRecommendation> wordEkiRecommendations) {
+		this.wordEkiRecommendations = wordEkiRecommendations;
 	}
 
 	public List<OsLexemeMeaning> getLexemeMeanings() {

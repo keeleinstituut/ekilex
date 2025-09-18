@@ -1232,22 +1232,22 @@
       </div>
     </div>
   </div>
-  <div th:id="${'addWordOsRecommendationDlg_' + lexeme.lexemeId}" class="modal"
+  <div th:id="${'addWordEkiRecommendationDlg_' + lexeme.lexemeId}" class="modal"
        role="dialog"
-       th:fragment="add_word_os_recommendation_dlg"
+       th:fragment="add_word_eki_recommendation_dlg"
        data-plugin="initMultipleEkiEditorDlgAndFocusPlugin">
     <div class="modal-dialog modal-lg" role="document">
       <div class="modal-content">
         <form th:action="@{/create_item}" method="post">
           <div class="modal-header">
-            <h5 class="modal-title" th:text="#{term.add.os.word.recommendation}">Lisa soovitus</h5>
+            <h5 class="modal-title" th:text="#{term.add.word.eki.recommendation}">Lisa soovitus</h5>
             <button type="button" class="close" aria-label="Close" data-role="close" data-dismiss="modal">
               <span aria-hidden="true">&times;</span>
             </button>
           </div>
           <div class="modal-body">
             <input type="hidden" name="id" th:value="${lexeme.wordId}">
-            <input type="hidden" name="opCode" value="word_os_recommendation">
+            <input type="hidden" name="opCode" value="word_eki_recommendation">
             <input type="hidden" name="value">
             <p th:text="#{common.content}"></p>
             <div th:replace="components :: eki_editor_elem(editFld = 'value')"></div>
@@ -1260,23 +1260,23 @@
       </div>
     </div>
   </div>
-  <div th:id="${'editWordOsRecommendationDlg_' + wordOsRecommendation.id}" class="modal"
+  <div th:id="${'editWordEkiRecommendationDlg_' + wordEkiRecommendation.id}" class="modal"
        role="dialog"
-       th:fragment="edit_word_os_recommendation"
+       th:fragment="edit_word_eki_recommendation"
        data-plugin="initMultipleEkiEditorDlgAndFocusPlugin">
     <div class="modal-dialog modal-lg" role="document">
       <div class="modal-content">
         <form th:action="@{/update_item}" method="post">
           <div class="modal-header">
-            <h5 class="modal-title" th:text="#{term.edit.os.word.recommendation}">Muuda soovitust</h5>
+            <h5 class="modal-title" th:text="#{term.edit.word.eki.recommendation}">Muuda soovitust</h5>
             <button type="button" class="close" aria-label="Close" data-role="close" data-dismiss="modal">
               <span aria-hidden="true">&times;</span>
             </button>
           </div>
           <div class="modal-body">
-            <input type="hidden" name="id" th:value="${wordOsRecommendation.id}">
-            <input type="hidden" name="opCode" value="word_os_recommendation">
-            <input type="hidden" name="value" th:value="${wordOsRecommendation.valuePrese}">
+            <input type="hidden" name="id" th:value="${wordEkiRecommendation.id}">
+            <input type="hidden" name="opCode" value="word_eki_recommendation">
+            <input type="hidden" name="value" th:value="${wordEkiRecommendation.valuePrese}">
             <p th:text="#{common.content}"></p>
             <div th:replace="components :: eki_editor_elem(editFld = 'value')"></div>
           </div>

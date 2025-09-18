@@ -172,12 +172,12 @@
                 </div>
               </th:block>
             </th:block>
-            <th:block th:unless="${#lists.isEmpty(word.wordOsRecommendations)}">
+            <th:block th:unless="${#lists.isEmpty(word.wordEkiRecommendations)}">
               <div class="os-explanation mt-3">
                 <span class="material-symbols-outlined" aria-hidden="true"> info </span>
                 <div class="os-explanation__contents">
-                  <th:block th:each="wordOsRecommendation : ${word.wordOsRecommendations}">
-                    <p th:utext="${wordOsRecommendation.valuePrese}"></p>
+                  <th:block th:each="wordEkiRecommendation : ${word.wordEkiRecommendations}">
+                    <p th:utext="${wordEkiRecommendation.valuePrese}"></p>
                   </th:block>
                 </div>
               </div>

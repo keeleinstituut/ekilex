@@ -1,5 +1,6 @@
 package eki.ekilex.service.db;
 
+import static eki.ekilex.data.db.main.Public.PUBLIC;
 import static eki.ekilex.data.db.main.Tables.DATA_REQUEST;
 import static eki.ekilex.data.db.main.Tables.DEFINITION;
 import static eki.ekilex.data.db.main.Tables.DEFINITION_FREEFORM;
@@ -10,6 +11,7 @@ import static eki.ekilex.data.db.main.Tables.LEXEME_FREEFORM;
 import static eki.ekilex.data.db.main.Tables.MEANING;
 import static eki.ekilex.data.db.main.Tables.MEANING_FREEFORM;
 import static eki.ekilex.data.db.main.Tables.PARADIGM_FORM;
+import static eki.ekilex.data.db.main.Tables.PUBLISHING;
 import static eki.ekilex.data.db.main.Tables.WORD;
 import static eki.ekilex.data.db.main.Tables.WORD_FREEFORM;
 
@@ -27,6 +29,7 @@ import eki.ekilex.data.SourceTargetIdTuple;
 import eki.ekilex.data.db.main.Routines;
 import eki.ekilex.data.db.main.tables.DataRequest;
 import eki.ekilex.data.db.main.tables.Lexeme;
+import eki.ekilex.data.db.main.tables.Publishing;
 import eki.ekilex.data.db.main.tables.Word;
 import eki.ekilex.data.db.main.tables.records.WordRecord;
 
@@ -197,6 +200,31 @@ public class MaintenanceDbService extends AbstractDataDbService {
 						.from(PARADIGM_FORM)
 						.where(PARADIGM_FORM.FORM_ID.eq(FORM.ID)))
 				.execute();
+	}
+
+	public int deleteFloatingPublishing(String[] entityNames) {
+
+		Publishing p = PUBLISHING.as("p");
+
+		int totalDeleteCount = 0;
+
+		for (String entityName : entityNames) {
+
+			Table<?> e = PUBLIC.getTable(entityName).as("e");
+			int entityDeleteCount = mainDb
+					.deleteFrom(p)
+					.where(
+							p.ENTITY_NAME.eq(entityName)
+									.andNotExists(DSL
+											.select(e.field("id"))
+											.from(e)
+											.where(e.field("id", Long.class).eq(p.ENTITY_ID)))
+
+					)
+					.execute();
+			totalDeleteCount = totalDeleteCount + entityDeleteCount;
+		}
+		return totalDeleteCount;
 	}
 
 	public int deleteAccessedDataRequests(int hours) {

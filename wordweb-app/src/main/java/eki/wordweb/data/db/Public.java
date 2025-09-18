@@ -25,8 +25,8 @@ import eki.wordweb.data.db.tables.MviewWwWordSearch;
 import eki.wordweb.data.db.tables.OsDefinitionIdx;
 import eki.wordweb.data.db.tables.OsLexemeMeaning;
 import eki.wordweb.data.db.tables.OsWord;
+import eki.wordweb.data.db.tables.OsWordEkiRecommendation;
 import eki.wordweb.data.db.tables.OsWordOsMorph;
-import eki.wordweb.data.db.tables.OsWordOsRecommendation;
 import eki.wordweb.data.db.tables.OsWordOsUsage;
 import eki.wordweb.data.db.tables.OsWordOsUsageIdx;
 import eki.wordweb.data.db.tables.OsWordRelation;
@@ -164,14 +164,14 @@ public class Public extends SchemaImpl {
     public final OsWord OS_WORD = OsWord.OS_WORD;
 
     /**
+     * The table <code>public.os_word_eki_recommendation</code>.
+     */
+    public final OsWordEkiRecommendation OS_WORD_EKI_RECOMMENDATION = OsWordEkiRecommendation.OS_WORD_EKI_RECOMMENDATION;
+
+    /**
      * The table <code>public.os_word_os_morph</code>.
      */
     public final OsWordOsMorph OS_WORD_OS_MORPH = OsWordOsMorph.OS_WORD_OS_MORPH;
-
-    /**
-     * The table <code>public.os_word_os_recommendation</code>.
-     */
-    public final OsWordOsRecommendation OS_WORD_OS_RECOMMENDATION = OsWordOsRecommendation.OS_WORD_OS_RECOMMENDATION;
 
     /**
      * The table <code>public.os_word_os_usage</code>.
@@ -249,8 +249,8 @@ public class Public extends SchemaImpl {
             OsDefinitionIdx.OS_DEFINITION_IDX,
             OsLexemeMeaning.OS_LEXEME_MEANING,
             OsWord.OS_WORD,
+            OsWordEkiRecommendation.OS_WORD_EKI_RECOMMENDATION,
             OsWordOsMorph.OS_WORD_OS_MORPH,
-            OsWordOsRecommendation.OS_WORD_OS_RECOMMENDATION,
             OsWordOsUsage.OS_WORD_OS_USAGE,
             OsWordOsUsageIdx.OS_WORD_OS_USAGE_IDX,
             OsWordRelation.OS_WORD_RELATION,

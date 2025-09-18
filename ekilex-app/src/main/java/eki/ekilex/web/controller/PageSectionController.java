@@ -43,15 +43,15 @@ public class PageSectionController extends AbstractPrivateSearchController {
 		return WORD_COMPONENTS_PAGE + PAGE_FRAGMENT_ELEM + WORD_RELATION_FRAGMENT;
 	}
 
-	@GetMapping(WORD_OS_RECOMMENDATION_URI + "/{wordId}")
-	public String wordOsRecommendationDetails(@PathVariable("wordId") Long wordId, Model model) {
+	@GetMapping(WORD_EKI_RECOMMENDATION_URI + "/{wordId}")
+	public String wordEkiRecommendationDetails(@PathVariable("wordId") Long wordId, Model model) {
 
 		EkiUser user = userContext.getUser();
-		WordDetails details = lexSearchService.getWordOsRecommendationDetails(wordId, user);
+		WordDetails details = lexSearchService.getWordEkiRecommendationDetails(wordId, user);
 		model.addAttribute("wordId", wordId);
 		model.addAttribute("details", details);
 
-		return WORD_COMPONENTS_PAGE + PAGE_FRAGMENT_ELEM + WORD_OS_RECOMMENDATION_FRAGMENT;
+		return WORD_COMPONENTS_PAGE + PAGE_FRAGMENT_ELEM + WORD_EKI_RECOMMENDATION_FRAGMENT;
 	}
 
 }

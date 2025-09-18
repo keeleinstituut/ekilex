@@ -16,7 +16,8 @@ drop view if exists view_os_definition;
 drop view if exists view_os_word_relation_idx;
 drop view if exists view_os_word_relation;
 drop view if exists view_os_word_os_recommend; -- remove later
-drop view if exists view_os_word_os_recommendation;
+drop view if exists view_os_word_os_recommendation; -- remove later
+drop view if exists view_os_word_eki_recommendation;
 drop view if exists view_os_word_os_usage_idx;
 drop view if exists view_os_word_os_usage;
 drop view if exists view_os_word_os_morph;
@@ -157,24 +158,24 @@ order by
 	wou.id
 ;
 
--- word os recommend --
+-- word eki recommend --
 
-create view view_os_word_os_recommendation
+create view view_os_word_eki_recommendation
 as
 select 
-	wor.word_id,
+	wer.word_id,
 	json_agg(
 		json_build_object(
-			'wordId', wor.word_id,
-			'wordOsRecommendationId', wor.id,
-			'value', wor.value,
-			'valuePrese', wor.value_prese
+			'wordId', wer.word_id,
+			'wordEkiRecommendationId', wer.id,
+			'value', wer.value,
+			'valuePrese', wer.value_prese
 		)
 		order by
-			wor.id
-	) word_os_recommendations
+			wer.id
+	) word_eki_recommendations
 from 
-	word_os_recommendation wor 
+	word_eki_recommendation wer 
 where
 	exists (
 		select
@@ -183,12 +184,12 @@ where
 			publishing p
 		where
 			p.target_name = 'ww_os'
-			and p.entity_name = 'word_os_recommendation'
-			and p.entity_id = wor.id)
+			and p.entity_name = 'word_eki_recommendation'
+			and p.entity_id = wer.id)
 group by
-	wor.word_id
+	wer.word_id
 order by
-	wor.word_id
+	wer.word_id
 ;
 
 -- definition --

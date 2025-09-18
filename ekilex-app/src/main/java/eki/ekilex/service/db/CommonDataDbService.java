@@ -48,6 +48,7 @@ import static eki.ekilex.data.db.main.Tables.USAGE;
 import static eki.ekilex.data.db.main.Tables.USAGE_SOURCE_LINK;
 import static eki.ekilex.data.db.main.Tables.USAGE_TRANSLATION;
 import static eki.ekilex.data.db.main.Tables.WORD;
+import static eki.ekilex.data.db.main.Tables.WORD_EKI_RECOMMENDATION;
 import static eki.ekilex.data.db.main.Tables.WORD_FORUM;
 import static eki.ekilex.data.db.main.Tables.WORD_FREEFORM;
 import static eki.ekilex.data.db.main.Tables.WORD_TYPE_LABEL;
@@ -121,6 +122,7 @@ import eki.ekilex.data.db.main.tables.Usage;
 import eki.ekilex.data.db.main.tables.UsageSourceLink;
 import eki.ekilex.data.db.main.tables.UsageTranslation;
 import eki.ekilex.data.db.main.tables.Word;
+import eki.ekilex.data.db.main.tables.WordEkiRecommendation;
 import eki.ekilex.data.db.main.tables.WordFreeform;
 
 //only common use data reading!
@@ -422,6 +424,26 @@ public class CommonDataDbService extends AbstractDataDbService {
 				.where(wf.WORD_ID.eq(wordId))
 				.orderBy(f.ORDER_BY)
 				.fetchInto(eki.ekilex.data.Freeform.class);
+	}
+
+	public List<eki.ekilex.data.WordEkiRecommendation> getWordEkiRecommendations(Long wordId) {
+
+		WordEkiRecommendation wer = WORD_EKI_RECOMMENDATION.as("wer");
+
+		Field<Boolean> wwupf = queryHelper.getPublishingField(TARGET_NAME_WW_UNIF, ENTITY_NAME_WORD_EKI_RECOMMENDATION, wer.ID);
+		Field<Boolean> wwlpf = queryHelper.getPublishingField(TARGET_NAME_WW_LITE, ENTITY_NAME_WORD_EKI_RECOMMENDATION, wer.ID);
+		Field<Boolean> wwopf = queryHelper.getPublishingField(TARGET_NAME_WW_OS, ENTITY_NAME_WORD_EKI_RECOMMENDATION, wer.ID);
+
+		return mainDb
+				.select(wer.fields())
+				.select(
+						wwupf.as("is_ww_unif"),
+						wwlpf.as("is_ww_lite"),
+						wwopf.as("is_ww_os"))
+				.from(wer)
+				.where(wer.WORD_ID.eq(wordId))
+				.orderBy(wer.ID)
+				.fetchInto(eki.ekilex.data.WordEkiRecommendation.class);
 	}
 
 	public eki.ekilex.data.Meaning getMeaning(Long meaningId) {

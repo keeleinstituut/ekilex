@@ -126,8 +126,8 @@ import eki.ekilex.data.db.main.tables.ViewOsDefinition;
 import eki.ekilex.data.db.main.tables.ViewOsDefinitionIdx;
 import eki.ekilex.data.db.main.tables.ViewOsLexemeMeaning;
 import eki.ekilex.data.db.main.tables.ViewOsWord;
+import eki.ekilex.data.db.main.tables.ViewOsWordEkiRecommendation;
 import eki.ekilex.data.db.main.tables.ViewOsWordOsMorph;
-import eki.ekilex.data.db.main.tables.ViewOsWordOsRecommendation;
 import eki.ekilex.data.db.main.tables.ViewOsWordOsUsage;
 import eki.ekilex.data.db.main.tables.ViewOsWordOsUsageIdx;
 import eki.ekilex.data.db.main.tables.ViewOsWordRelation;
@@ -149,6 +149,7 @@ import eki.ekilex.data.db.main.tables.ViewWwWordRelation;
 import eki.ekilex.data.db.main.tables.ViewWwWordSearch;
 import eki.ekilex.data.db.main.tables.Word;
 import eki.ekilex.data.db.main.tables.WordActivityLog;
+import eki.ekilex.data.db.main.tables.WordEkiRecommendation;
 import eki.ekilex.data.db.main.tables.WordEtymology;
 import eki.ekilex.data.db.main.tables.WordEtymologyRelation;
 import eki.ekilex.data.db.main.tables.WordEtymologySourceLink;
@@ -161,7 +162,6 @@ import eki.ekilex.data.db.main.tables.WordGuid;
 import eki.ekilex.data.db.main.tables.WordLastActivityLog;
 import eki.ekilex.data.db.main.tables.WordOsHomonymNr;
 import eki.ekilex.data.db.main.tables.WordOsMorph;
-import eki.ekilex.data.db.main.tables.WordOsRecommendation;
 import eki.ekilex.data.db.main.tables.WordOsUsage;
 import eki.ekilex.data.db.main.tables.WordRelMapping;
 import eki.ekilex.data.db.main.tables.WordRelType;
@@ -791,14 +791,14 @@ public class Tables {
     public static final ViewOsWord VIEW_OS_WORD = ViewOsWord.VIEW_OS_WORD;
 
     /**
+     * The table <code>public.view_os_word_eki_recommendation</code>.
+     */
+    public static final ViewOsWordEkiRecommendation VIEW_OS_WORD_EKI_RECOMMENDATION = ViewOsWordEkiRecommendation.VIEW_OS_WORD_EKI_RECOMMENDATION;
+
+    /**
      * The table <code>public.view_os_word_os_morph</code>.
      */
     public static final ViewOsWordOsMorph VIEW_OS_WORD_OS_MORPH = ViewOsWordOsMorph.VIEW_OS_WORD_OS_MORPH;
-
-    /**
-     * The table <code>public.view_os_word_os_recommendation</code>.
-     */
-    public static final ViewOsWordOsRecommendation VIEW_OS_WORD_OS_RECOMMENDATION = ViewOsWordOsRecommendation.VIEW_OS_WORD_OS_RECOMMENDATION;
 
     /**
      * The table <code>public.view_os_word_os_usage</code>.
@@ -906,6 +906,11 @@ public class Tables {
     public static final WordActivityLog WORD_ACTIVITY_LOG = WordActivityLog.WORD_ACTIVITY_LOG;
 
     /**
+     * The table <code>public.word_eki_recommendation</code>.
+     */
+    public static final WordEkiRecommendation WORD_EKI_RECOMMENDATION = WordEkiRecommendation.WORD_EKI_RECOMMENDATION;
+
+    /**
      * The table <code>public.word_etymology</code>.
      */
     public static final WordEtymology WORD_ETYMOLOGY = WordEtymology.WORD_ETYMOLOGY;
@@ -964,11 +969,6 @@ public class Tables {
      * The table <code>public.word_os_morph</code>.
      */
     public static final WordOsMorph WORD_OS_MORPH = WordOsMorph.WORD_OS_MORPH;
-
-    /**
-     * The table <code>public.word_os_recommendation</code>.
-     */
-    public static final WordOsRecommendation WORD_OS_RECOMMENDATION = WordOsRecommendation.WORD_OS_RECOMMENDATION;
 
     /**
      * The table <code>public.word_os_usage</code>.

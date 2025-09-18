@@ -61,7 +61,7 @@ import eki.ekilex.data.WordEtymTuple;
 import eki.ekilex.data.WordGroup;
 import eki.ekilex.data.WordLexemeMeaningIds;
 import eki.ekilex.data.WordOsMorph;
-import eki.ekilex.data.WordOsRecommendation;
+import eki.ekilex.data.WordEkiRecommendation;
 import eki.ekilex.data.WordOsUsage;
 import eki.ekilex.data.WordRelation;
 import eki.ekilex.service.db.ActivityLogDbService;
@@ -183,8 +183,8 @@ public class ActivityLogService implements SystemConstant, GlobalConstant, Freef
 			return activityLogDbService.getWordEtymologyOwnerId(entityId);
 		} else if (ActivityEntity.WORD_OS_MORPH.equals(entity)) {
 			return activityLogDbService.getWordOsMorphOwnerId(entityId);
-		} else if (ActivityEntity.WORD_OS_RECOMMENDATION.equals(entity)) {
-			return activityLogDbService.getWordOsRecommendationOwnerId(entityId);
+		} else if (ActivityEntity.WORD_EKI_RECOMMENDATION.equals(entity)) {
+			return activityLogDbService.getWordEkiRecommendationOwnerId(entityId);
 		} else if (ActivityEntity.WORD_OS_USAGE.equals(entity)) {
 			return activityLogDbService.getWordOsUsageOwnerId(entityId);
 		} else if (ActivityEntity.WORD_RELATION.equals(entity)) {
@@ -563,13 +563,13 @@ public class ActivityLogService implements SystemConstant, GlobalConstant, Freef
 			return EMPTY_CONTENT_JSON;
 		}
 		List<Freeform> wordFreeforms = commonDataDbService.getWordFreeforms(wordId, CLASSIF_LABEL_LANG_EST);
+		List<WordEkiRecommendation> wordEkiRecommendations = commonDataDbService.getWordEkiRecommendations(wordId);
 		List<Classifier> wordTypes = commonDataDbService.getWordTypes(wordId, CLASSIF_LABEL_LANG_EST);
 		List<WordRelation> wordRelations = lexDataDbService.getWordRelations(wordId, CLASSIF_LABEL_LANG_EST);
 		List<WordRelation> wordGroupMembers = lexDataDbService.getWordGroupMembers(wordId, CLASSIF_LABEL_LANG_EST);
 		List<WordGroup> wordGroups = conversionUtil.composeWordGroups(wordGroupMembers, null);
 		List<WordEtymTuple> wordEtymTuples = lexDataDbService.getWordEtymology(wordId);
 		List<WordEtym> wordEtymology = conversionUtil.composeWordEtymology(wordEtymTuples);
-		List<WordOsRecommendation> wordOsRecommendations = osDataDbService.getWordOsRecommendations(wordId);
 		List<WordOsUsage> wordOsUsages = osDataDbService.getWordOsUsages(wordId);
 		WordOsMorph wordOsMorph = osDataDbService.getWordOsMorph(wordId);
 		List<Paradigm> paradigms = null;
@@ -583,7 +583,7 @@ public class ActivityLogService implements SystemConstant, GlobalConstant, Freef
 		word.setRelations(wordRelations);
 		word.setGroups(wordGroups);
 		word.setEtymology(wordEtymology);
-		word.setWordOsRecommendations(wordOsRecommendations);
+		word.setWordEkiRecommendations(wordEkiRecommendations);
 		word.setWordOsUsages(wordOsUsages);
 		word.setWordOsMorph(wordOsMorph);
 		word.setParadigms(paradigms);

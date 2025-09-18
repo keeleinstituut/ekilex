@@ -2,13 +2,13 @@ package eki.wordweb.data.os;
 
 import eki.common.data.AbstractDataObject;
 
-public class WordOsRecommendation extends AbstractDataObject {
+public class WordEkiRecommendation extends AbstractDataObject {
 
 	private static final long serialVersionUID = 1L;
 
 	private Long wordId;
 
-	private Long wordOsRecommendationId;
+	private Long wordEkiRecommendationId;
 
 	private String value;
 
@@ -22,12 +22,12 @@ public class WordOsRecommendation extends AbstractDataObject {
 		this.wordId = wordId;
 	}
 
-	public Long getWordOsRecommendationId() {
-		return wordOsRecommendationId;
+	public Long getWordEkiRecommendationId() {
+		return wordEkiRecommendationId;
 	}
 
-	public void setWordOsRecommendationId(Long wordOsRecommendationId) {
-		this.wordOsRecommendationId = wordOsRecommendationId;
+	public void setWordEkiRecommendationId(Long wordEkiRecommendationId) {
+		this.wordEkiRecommendationId = wordEkiRecommendationId;
 	}
 
 	public String getValue() {

@@ -18,8 +18,8 @@ class PublishingHandler {
 		word_relation: {
 			endpoint: "wordrelation"
 		},
-		word_os_recommendation: {
-			endpoint: "wordosrecommendation"
+		word_eki_recommendation: {
+			endpoint: "wordekirecommendation"
 		}
 	};
 

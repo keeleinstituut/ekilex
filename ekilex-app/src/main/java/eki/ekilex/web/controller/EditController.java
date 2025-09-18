@@ -175,8 +175,8 @@ public class EditController extends AbstractMutableDataPageController implements
 		case "word_os_morph":
 			cudService.createWordOsMorph(id, value, roleDatasetCode, isManualEventOnUpdateEnabled);
 			break;
-		case "word_os_recommendation":
-			cudService.createWordOsRecommendation(id, value, user, roleDatasetCode, isManualEventOnUpdateEnabled);
+		case "word_eki_recommendation":
+			cudService.createWordEkiRecommendation(id, value, user, roleDatasetCode, isManualEventOnUpdateEnabled);
 			break;
 		case "word_os_usage":
 			cudService.createWordOsUsage(id, value, roleDatasetCode, isManualEventOnUpdateEnabled);
@@ -386,8 +386,8 @@ public class EditController extends AbstractMutableDataPageController implements
 		case "word_os_morph":
 			cudService.updateWordOsMorph(id, value, roleDatasetCode, isManualEventOnUpdateEnabled);
 			break;
-		case "word_os_recommendation":
-			cudService.updateWordOsRecommendation(id, value, roleDatasetCode, isManualEventOnUpdateEnabled);
+		case "word_eki_recommendation":
+			cudService.updateWordEkiRecommendation(id, value, roleDatasetCode, isManualEventOnUpdateEnabled);
 			break;
 		case "word_os_usage":
 			cudService.updateWordOsUsage(id, value, roleDatasetCode, isManualEventOnUpdateEnabled);
@@ -713,8 +713,8 @@ public class EditController extends AbstractMutableDataPageController implements
 		case "word_os_morph":
 			cudService.deleteWordOsMorph(id, roleDatasetCode, isManualEventOnUpdateEnabled);
 			break;
-		case "word_os_recommendation":
-			cudService.deleteWordOsRecommendation(id, roleDatasetCode, isManualEventOnUpdateEnabled);
+		case "word_eki_recommendation":
+			cudService.deleteWordEkiRecommendation(id, roleDatasetCode, isManualEventOnUpdateEnabled);
 			break;
 		case "word_os_usage":
 			cudService.deleteWordOsUsage(id, roleDatasetCode, isManualEventOnUpdateEnabled);

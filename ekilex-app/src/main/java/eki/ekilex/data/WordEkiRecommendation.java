@@ -1,6 +1,6 @@
-package eki.wordweb.data;
+package eki.ekilex.data;
 
-public class WordOsRecommendation extends AbstractCreateUpdateEntity {
+public class WordEkiRecommendation extends AbstractCreateUpdateEntity implements ValueAndPrese {
 
 	private static final long serialVersionUID = 1L;
 
@@ -32,15 +32,19 @@ public class WordOsRecommendation extends AbstractCreateUpdateEntity {
 		return value;
 	}
 
+	@Override
 	public void setValue(String value) {
 		this.value = value;
 	}
 
+	@Override
 	public String getValuePrese() {
 		return valuePrese;
 	}
 
+	@Override
 	public void setValuePrese(String valuePrese) {
 		this.valuePrese = valuePrese;
 	}
+
 }

@@ -663,17 +663,17 @@ create table word_os_homonym_nr (
 );
 alter sequence word_os_homonym_nr_id_seq restart with 10000;
 
-create table word_os_recommendation (
-  id bigserial primary key,
-  word_id bigint references word(id) on delete cascade not null,
-  value text not null, 
-  value_prese text not null,
-  created_by text null, 
-  created_on timestamp null, 
-  modified_by text null, 
-  modified_on timestamp null
+create table word_eki_recommendation (
+	id bigserial primary key,
+	word_id bigint references word(id) on delete cascade not null,
+	value text not null, 
+	value_prese text not null,
+	created_by text null, 
+	created_on timestamp null, 
+	modified_by text null, 
+	modified_on timestamp null
 );
-alter sequence word_os_recommendation_id_seq restart with 10000;
+alter sequence word_eki_recommendation_id_seq restart with 10000;
 
 create table word_os_usage (
   id bigserial primary key,

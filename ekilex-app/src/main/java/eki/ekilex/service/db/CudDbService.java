@@ -32,13 +32,13 @@ import static eki.ekilex.data.db.main.Tables.PARADIGM;
 import static eki.ekilex.data.db.main.Tables.USAGE;
 import static eki.ekilex.data.db.main.Tables.USAGE_TRANSLATION;
 import static eki.ekilex.data.db.main.Tables.WORD;
+import static eki.ekilex.data.db.main.Tables.WORD_EKI_RECOMMENDATION;
 import static eki.ekilex.data.db.main.Tables.WORD_ETYMOLOGY;
 import static eki.ekilex.data.db.main.Tables.WORD_FORUM;
 import static eki.ekilex.data.db.main.Tables.WORD_FREEFORM;
 import static eki.ekilex.data.db.main.Tables.WORD_GROUP;
 import static eki.ekilex.data.db.main.Tables.WORD_GROUP_MEMBER;
 import static eki.ekilex.data.db.main.Tables.WORD_OS_MORPH;
-import static eki.ekilex.data.db.main.Tables.WORD_OS_RECOMMENDATION;
 import static eki.ekilex.data.db.main.Tables.WORD_OS_USAGE;
 import static eki.ekilex.data.db.main.Tables.WORD_RELATION;
 import static eki.ekilex.data.db.main.Tables.WORD_RELATION_PARAM;
@@ -634,14 +634,14 @@ public class CudDbService extends AbstractDataDbService {
 				.execute();
 	}
 
-	public void updateWordOsRecommendation(eki.ekilex.data.WordOsRecommendation wordOsRecommendation) {
+	public void updateWordEkiRecommendation(eki.ekilex.data.WordEkiRecommendation wordEkiRecommendation) {
 		mainDb
-				.update(WORD_OS_RECOMMENDATION)
-				.set(WORD_OS_RECOMMENDATION.VALUE, wordOsRecommendation.getValue())
-				.set(WORD_OS_RECOMMENDATION.VALUE_PRESE, wordOsRecommendation.getValuePrese())
-				.set(WORD_OS_RECOMMENDATION.MODIFIED_BY, wordOsRecommendation.getModifiedBy())
-				.set(WORD_OS_RECOMMENDATION.MODIFIED_ON, wordOsRecommendation.getModifiedOn())
-				.where(WORD_OS_RECOMMENDATION.ID.eq(wordOsRecommendation.getId()))
+				.update(WORD_EKI_RECOMMENDATION)
+				.set(WORD_EKI_RECOMMENDATION.VALUE, wordEkiRecommendation.getValue())
+				.set(WORD_EKI_RECOMMENDATION.VALUE_PRESE, wordEkiRecommendation.getValuePrese())
+				.set(WORD_EKI_RECOMMENDATION.MODIFIED_BY, wordEkiRecommendation.getModifiedBy())
+				.set(WORD_EKI_RECOMMENDATION.MODIFIED_ON, wordEkiRecommendation.getModifiedOn())
+				.where(WORD_EKI_RECOMMENDATION.ID.eq(wordEkiRecommendation.getId()))
 				.execute();
 	}
 
@@ -1036,27 +1036,27 @@ public class CudDbService extends AbstractDataDbService {
 		wordForumRecord.store();
 	}
 
-	public Long createWordOsRecommendation(Long wordId, eki.ekilex.data.WordOsRecommendation wordOsRecommendation) {
+	public Long createWordEkiRecommendation(Long wordId, eki.ekilex.data.WordEkiRecommendation wordEkiRecommendation) {
 
 		return mainDb
 				.insertInto(
-						WORD_OS_RECOMMENDATION,
-						WORD_OS_RECOMMENDATION.WORD_ID,
-						WORD_OS_RECOMMENDATION.VALUE,
-						WORD_OS_RECOMMENDATION.VALUE_PRESE,
-						WORD_OS_RECOMMENDATION.CREATED_BY,
-						WORD_OS_RECOMMENDATION.CREATED_ON,
-						WORD_OS_RECOMMENDATION.MODIFIED_BY,
-						WORD_OS_RECOMMENDATION.MODIFIED_ON)
+						WORD_EKI_RECOMMENDATION,
+						WORD_EKI_RECOMMENDATION.WORD_ID,
+						WORD_EKI_RECOMMENDATION.VALUE,
+						WORD_EKI_RECOMMENDATION.VALUE_PRESE,
+						WORD_EKI_RECOMMENDATION.CREATED_BY,
+						WORD_EKI_RECOMMENDATION.CREATED_ON,
+						WORD_EKI_RECOMMENDATION.MODIFIED_BY,
+						WORD_EKI_RECOMMENDATION.MODIFIED_ON)
 				.values(
 						wordId,
-						wordOsRecommendation.getValue(),
-						wordOsRecommendation.getValuePrese(),
-						wordOsRecommendation.getCreatedBy(),
-						wordOsRecommendation.getCreatedOn(),
-						wordOsRecommendation.getModifiedBy(),
-						wordOsRecommendation.getModifiedOn())
-				.returning(WORD_OS_RECOMMENDATION.ID)
+						wordEkiRecommendation.getValue(),
+						wordEkiRecommendation.getValuePrese(),
+						wordEkiRecommendation.getCreatedBy(),
+						wordEkiRecommendation.getCreatedOn(),
+						wordEkiRecommendation.getModifiedBy(),
+						wordEkiRecommendation.getModifiedOn())
+				.returning(WORD_EKI_RECOMMENDATION.ID)
 				.fetchOne()
 				.getId();
 	}
@@ -1956,10 +1956,10 @@ public class CudDbService extends AbstractDataDbService {
 				.execute();
 	}
 
-	public void deleteWordOsRecommendation(Long wordOsRecommendationId) {
+	public void deleteWordEkiRecommendation(Long wordEkiRecommendationId) {
 		mainDb
-				.delete(WORD_OS_RECOMMENDATION)
-				.where(WORD_OS_RECOMMENDATION.ID.eq(wordOsRecommendationId))
+				.delete(WORD_EKI_RECOMMENDATION)
+				.where(WORD_EKI_RECOMMENDATION.ID.eq(wordEkiRecommendationId))
 				.execute();
 	}
 

@@ -33,6 +33,7 @@ drop view if exists view_os_word_relation_idx;
 drop view if exists view_os_word_relation;
 drop view if exists view_os_word_os_recommend; -- remove later
 drop view if exists view_os_word_os_recommendation;
+drop view if exists view_os_word_eki_recommendation;
 drop view if exists view_os_word_os_usage_idx;
 drop view if exists view_os_word_os_usage;
 drop view if exists view_os_word_os_morph;
@@ -142,7 +143,8 @@ drop table if exists word_od_recommendation; -- remove later
 drop table if exists word_od_usage; -- remove later
 drop table if exists word_od_morph; -- remove later
 drop table if exists word_os_homonym_nr;
-drop table if exists word_os_recommendation;
+drop table if exists word_os_recommendation; -- remove later
+drop table if exists word_eki_recommendation;
 drop table if exists word_os_usage;
 drop table if exists word_os_morph;
 drop table if exists word_tag;

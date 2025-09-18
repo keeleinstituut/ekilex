@@ -289,16 +289,16 @@ public class MviewWwWordRecord extends TableRecordImpl<MviewWwWordRecord> {
     }
 
     /**
-     * Setter for <code>public.mview_ww_word.word_os_recommendations</code>.
+     * Setter for <code>public.mview_ww_word.word_eki_recommendations</code>.
      */
-    public void setWordOsRecommendations(JSON value) {
+    public void setWordEkiRecommendations(JSON value) {
         set(19, value);
     }
 
     /**
-     * Getter for <code>public.mview_ww_word.word_os_recommendations</code>.
+     * Getter for <code>public.mview_ww_word.word_eki_recommendations</code>.
      */
-    public JSON getWordOsRecommendations() {
+    public JSON getWordEkiRecommendations() {
         return (JSON) get(19);
     }
 
@@ -400,7 +400,7 @@ public class MviewWwWordRecord extends TableRecordImpl<MviewWwWordRecord> {
     /**
      * Create a detached, initialised MviewWwWordRecord
      */
-    public MviewWwWordRecord(Long wordId, String value, String valuePrese, String valueAsWord, String lang, String langFilt, Long langOrderBy, Integer homonymNr, String displayMorphCode, String genderCode, String aspectCode, String vocalForm, String morphComment, Integer regYear, LocalDateTime manualEventOn, LocalDateTime lastActivityEventOn, String[] wordTypeCodes, JSON meaningWords, JSON definitions, JSON wordOsRecommendations, BigDecimal freqValue, Long freqRank, Boolean formsExist, Long minDsOrderBy, Integer wordTypeOrderBy, TypeLangDatasetPublishingRecord[] langDsPubs) {
+    public MviewWwWordRecord(Long wordId, String value, String valuePrese, String valueAsWord, String lang, String langFilt, Long langOrderBy, Integer homonymNr, String displayMorphCode, String genderCode, String aspectCode, String vocalForm, String morphComment, Integer regYear, LocalDateTime manualEventOn, LocalDateTime lastActivityEventOn, String[] wordTypeCodes, JSON meaningWords, JSON definitions, JSON wordEkiRecommendations, BigDecimal freqValue, Long freqRank, Boolean formsExist, Long minDsOrderBy, Integer wordTypeOrderBy, TypeLangDatasetPublishingRecord[] langDsPubs) {
         super(MviewWwWord.MVIEW_WW_WORD);
 
         setWordId(wordId);
@@ -422,7 +422,7 @@ public class MviewWwWordRecord extends TableRecordImpl<MviewWwWordRecord> {
         setWordTypeCodes(wordTypeCodes);
         setMeaningWords(meaningWords);
         setDefinitions(definitions);
-        setWordOsRecommendations(wordOsRecommendations);
+        setWordEkiRecommendations(wordEkiRecommendations);
         setFreqValue(freqValue);
         setFreqRank(freqRank);
         setFormsExist(formsExist);

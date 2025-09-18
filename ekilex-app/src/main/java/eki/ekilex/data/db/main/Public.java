@@ -126,8 +126,8 @@ import eki.ekilex.data.db.main.tables.ViewOsDefinition;
 import eki.ekilex.data.db.main.tables.ViewOsDefinitionIdx;
 import eki.ekilex.data.db.main.tables.ViewOsLexemeMeaning;
 import eki.ekilex.data.db.main.tables.ViewOsWord;
+import eki.ekilex.data.db.main.tables.ViewOsWordEkiRecommendation;
 import eki.ekilex.data.db.main.tables.ViewOsWordOsMorph;
-import eki.ekilex.data.db.main.tables.ViewOsWordOsRecommendation;
 import eki.ekilex.data.db.main.tables.ViewOsWordOsUsage;
 import eki.ekilex.data.db.main.tables.ViewOsWordOsUsageIdx;
 import eki.ekilex.data.db.main.tables.ViewOsWordRelation;
@@ -149,6 +149,7 @@ import eki.ekilex.data.db.main.tables.ViewWwWordRelation;
 import eki.ekilex.data.db.main.tables.ViewWwWordSearch;
 import eki.ekilex.data.db.main.tables.Word;
 import eki.ekilex.data.db.main.tables.WordActivityLog;
+import eki.ekilex.data.db.main.tables.WordEkiRecommendation;
 import eki.ekilex.data.db.main.tables.WordEtymology;
 import eki.ekilex.data.db.main.tables.WordEtymologyRelation;
 import eki.ekilex.data.db.main.tables.WordEtymologySourceLink;
@@ -161,7 +162,6 @@ import eki.ekilex.data.db.main.tables.WordGuid;
 import eki.ekilex.data.db.main.tables.WordLastActivityLog;
 import eki.ekilex.data.db.main.tables.WordOsHomonymNr;
 import eki.ekilex.data.db.main.tables.WordOsMorph;
-import eki.ekilex.data.db.main.tables.WordOsRecommendation;
 import eki.ekilex.data.db.main.tables.WordOsUsage;
 import eki.ekilex.data.db.main.tables.WordRelMapping;
 import eki.ekilex.data.db.main.tables.WordRelType;
@@ -820,14 +820,14 @@ public class Public extends SchemaImpl {
     public final ViewOsWord VIEW_OS_WORD = ViewOsWord.VIEW_OS_WORD;
 
     /**
+     * The table <code>public.view_os_word_eki_recommendation</code>.
+     */
+    public final ViewOsWordEkiRecommendation VIEW_OS_WORD_EKI_RECOMMENDATION = ViewOsWordEkiRecommendation.VIEW_OS_WORD_EKI_RECOMMENDATION;
+
+    /**
      * The table <code>public.view_os_word_os_morph</code>.
      */
     public final ViewOsWordOsMorph VIEW_OS_WORD_OS_MORPH = ViewOsWordOsMorph.VIEW_OS_WORD_OS_MORPH;
-
-    /**
-     * The table <code>public.view_os_word_os_recommendation</code>.
-     */
-    public final ViewOsWordOsRecommendation VIEW_OS_WORD_OS_RECOMMENDATION = ViewOsWordOsRecommendation.VIEW_OS_WORD_OS_RECOMMENDATION;
 
     /**
      * The table <code>public.view_os_word_os_usage</code>.
@@ -935,6 +935,11 @@ public class Public extends SchemaImpl {
     public final WordActivityLog WORD_ACTIVITY_LOG = WordActivityLog.WORD_ACTIVITY_LOG;
 
     /**
+     * The table <code>public.word_eki_recommendation</code>.
+     */
+    public final WordEkiRecommendation WORD_EKI_RECOMMENDATION = WordEkiRecommendation.WORD_EKI_RECOMMENDATION;
+
+    /**
      * The table <code>public.word_etymology</code>.
      */
     public final WordEtymology WORD_ETYMOLOGY = WordEtymology.WORD_ETYMOLOGY;
@@ -993,11 +998,6 @@ public class Public extends SchemaImpl {
      * The table <code>public.word_os_morph</code>.
      */
     public final WordOsMorph WORD_OS_MORPH = WordOsMorph.WORD_OS_MORPH;
-
-    /**
-     * The table <code>public.word_os_recommendation</code>.
-     */
-    public final WordOsRecommendation WORD_OS_RECOMMENDATION = WordOsRecommendation.WORD_OS_RECOMMENDATION;
 
     /**
      * The table <code>public.word_os_usage</code>.
@@ -1194,6 +1194,7 @@ public class Public extends SchemaImpl {
             Sequences.USAGE_TYPE_ORDER_BY_SEQ,
             Sequences.VALUE_STATE_ORDER_BY_SEQ,
             Sequences.WORD_ACTIVITY_LOG_ID_SEQ,
+            Sequences.WORD_EKI_RECOMMENDATION_ID_SEQ,
             Sequences.WORD_ETYMOLOGY_ID_SEQ,
             Sequences.WORD_ETYMOLOGY_ORDER_BY_SEQ,
             Sequences.WORD_ETYMOLOGY_RELATION_ID_SEQ,
@@ -1213,7 +1214,6 @@ public class Public extends SchemaImpl {
             Sequences.WORD_LAST_ACTIVITY_LOG_ID_SEQ,
             Sequences.WORD_OS_HOMONYM_NR_ID_SEQ,
             Sequences.WORD_OS_MORPH_ID_SEQ,
-            Sequences.WORD_OS_RECOMMENDATION_ID_SEQ,
             Sequences.WORD_OS_USAGE_ID_SEQ,
             Sequences.WORD_OS_USAGE_ORDER_BY_SEQ,
             Sequences.WORD_REL_TYPE_ORDER_BY_SEQ,
@@ -1351,8 +1351,8 @@ public class Public extends SchemaImpl {
             ViewOsDefinitionIdx.VIEW_OS_DEFINITION_IDX,
             ViewOsLexemeMeaning.VIEW_OS_LEXEME_MEANING,
             ViewOsWord.VIEW_OS_WORD,
+            ViewOsWordEkiRecommendation.VIEW_OS_WORD_EKI_RECOMMENDATION,
             ViewOsWordOsMorph.VIEW_OS_WORD_OS_MORPH,
-            ViewOsWordOsRecommendation.VIEW_OS_WORD_OS_RECOMMENDATION,
             ViewOsWordOsUsage.VIEW_OS_WORD_OS_USAGE,
             ViewOsWordOsUsageIdx.VIEW_OS_WORD_OS_USAGE_IDX,
             ViewOsWordRelation.VIEW_OS_WORD_RELATION,
@@ -1374,6 +1374,7 @@ public class Public extends SchemaImpl {
             ViewWwWordSearch.VIEW_WW_WORD_SEARCH,
             Word.WORD,
             WordActivityLog.WORD_ACTIVITY_LOG,
+            WordEkiRecommendation.WORD_EKI_RECOMMENDATION,
             WordEtymology.WORD_ETYMOLOGY,
             WordEtymologyRelation.WORD_ETYMOLOGY_RELATION,
             WordEtymologySourceLink.WORD_ETYMOLOGY_SOURCE_LINK,
@@ -1386,7 +1387,6 @@ public class Public extends SchemaImpl {
             WordLastActivityLog.WORD_LAST_ACTIVITY_LOG,
             WordOsHomonymNr.WORD_OS_HOMONYM_NR,
             WordOsMorph.WORD_OS_MORPH,
-            WordOsRecommendation.WORD_OS_RECOMMENDATION,
             WordOsUsage.WORD_OS_USAGE,
             WordRelMapping.WORD_REL_MAPPING,
             WordRelType.WORD_REL_TYPE,

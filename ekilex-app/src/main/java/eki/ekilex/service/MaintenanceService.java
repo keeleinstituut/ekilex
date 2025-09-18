@@ -15,6 +15,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import eki.common.constant.GlobalConstant;
+import eki.common.constant.PublishingConstant;
 import eki.common.data.AsWordResult;
 import eki.common.data.Count;
 import eki.common.service.TextDecorationService;
@@ -24,7 +25,7 @@ import eki.ekilex.data.db.main.tables.records.WordRecord;
 import eki.ekilex.service.db.MaintenanceDbService;
 
 @Component
-public class MaintenanceService implements SystemConstant, GlobalConstant {
+public class MaintenanceService implements SystemConstant, GlobalConstant, PublishingConstant {
 
 	private static final Logger logger = LoggerFactory.getLogger(MaintenanceService.class);
 
@@ -179,22 +180,27 @@ public class MaintenanceService implements SystemConstant, GlobalConstant {
 		logger.info("Deleting floating data...");
 		int deletedFreeformCount = maintenanceDbService.deleteFloatingFreeforms();
 		if (deletedFreeformCount > 0) {
-			logger.debug("Maintenance service deleted {} floating freeforms", deletedFreeformCount);
+			logger.info("Maintenance service deleted {} floating freeforms", deletedFreeformCount);
 		}
 
 		int deletedMeaningCount = maintenanceDbService.deleteFloatingMeanings();
 		if (deletedMeaningCount > 0) {
-			logger.debug("Maintenance service deleted {} floating meanings", deletedMeaningCount);
+			logger.info("Maintenance service deleted {} floating meanings", deletedMeaningCount);
 		}
 
 		int deletedWordCount = maintenanceDbService.deleteFloatingWords();
 		if (deletedWordCount > 0) {
-			logger.debug("Maintenance service deleted {} floating words", deletedWordCount);
+			logger.info("Maintenance service deleted {} floating words", deletedWordCount);
 		}
 
 		int deletedFormCount = maintenanceDbService.deleteFloatingForms();
 		if (deletedFormCount > 0) {
-			logger.debug("Maintenance service deleted {} floating forms", deletedFormCount);
+			logger.info("Maintenance service deleted {} floating forms", deletedFormCount);
+		}
+
+		int deletedPublishingCount = maintenanceDbService.deleteFloatingPublishing(PUBLISHING_ENTITY_NAMES);
+		if (deletedPublishingCount > 0) {
+			logger.info("Maintenance service deleted {} floating publishing records", deletedPublishingCount);
 		}
 	}
 
