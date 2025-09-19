@@ -89,16 +89,16 @@
   </th:block>
   <th:block th:fragment="primary_colloc">
     <div class="mt-2" th:if="${not #lists.isEmpty(lexeme.primaryCollocations)}">
-      <th:block th:each="collocPosGr : ${lexeme.primaryCollocations}"
+      <div class="colloc-move__container" th:each="collocPosGr : ${lexeme.primaryCollocations}"
                 th:with="callback=${@viewUtil.composeFunction('loadFullLexemeDetails', lexeme.lexemeId, lexeme.levels)}">
-        <div class="d-flex flex-row">
+        <div class="d-flex hover-container" th:data-colloc-pos-group="${collocPosGr.posGroupCode}">
           <h3 th:text="${collocPosGr.posGroupValue}"></h3>
-          <div class="ml-2" th:if="${lexeme.collocationMemberMeaningCandidacyExist}">
-            <button type="button" class="btn btn-sm badge badge-secondary" th:title="#{common.edit}"
-                    sec:authorize="#vars.lexeme.crudGrant">
+          <div class="d-flex align-items-center gap-1 ml-2" th:if="${lexeme.collocationMemberMeaningCandidacyExist}">
+            <button type="button" class="btn btn-sm badge badge-secondary hover-container__item" th:title="#{common.edit}"
+                    sec:authorize="#vars.lexeme.crudGrant" role="switch" data-plugin="collocPosGroupTogglePlugin" aria-checked="false">
               <i class="fa fa-pencil" aria-hidden="true"></i>
             </button>
-            <button type="button" class="btn btn-sm badge badge-secondary" th:title="#{lex.collocation.member.move}"
+            <button type="button" class="btn btn-sm badge badge-secondary colloc-move__toggle" th:title="#{lex.collocation.member.move}"
                     data-toggle="modal"
                     th:data-target="|#colloc-member-move-dlg-${lexeme.lexemeId}|"
                     sec:authorize="#vars.lexeme.crudGrant">
@@ -107,29 +107,29 @@
           </div>
         </div>
         <th:block th:each="collocRelGr : ${collocPosGr.relGroups}">
-          <div class="d-flex flex-row">
-            <input name="selectRelGroupCheck" type="checkbox" class="float-right mb-2 ml-1 mr-2"/>
+          <div class="d-flex" th:data-colloc-rel-group-for="${collocPosGr.posGroupCode}">
+            <input name="selectRelGroupCheck" type="checkbox" class="mb-2 ml-1 mr-2 d-none" data-plugin="collocRelGroupTogglePlugin" th:data-colloc-rel-group="${collocRelGr.relGroupCode}"/>
             <h5 th:text="${collocRelGr.relGroupValue}"></h5>
           </div>
-          <table class="table table-sm">
+          <table class="table table-sm" th:data-colloc-rel-group-for="${collocPosGr.posGroupCode}" th:data-colloc-rel-group="${collocRelGr.relGroupCode}">
             <tr th:each="colloc, collocIter : ${collocRelGr.collocations}">
               <th:block th:replace="colloc :: colloc_row"></th:block>
             </tr>
           </table>
         </th:block>
-      </th:block>
+      </div>
     </div>
   </th:block>
   <th:block th:fragment="secondary_colloc">
-    <div class="mt-2" th:if="${not #lists.isEmpty(lexeme.secondaryCollocations)}">
-      <div class="d-flex flex-row">
+    <div class="mt-2 colloc-move__container" th:if="${not #lists.isEmpty(lexeme.secondaryCollocations)}" data-colloc-checkbox-container>
+      <div class="d-flex hover-container">
         <h3 th:text="#{lex.collocation.secondary}">Klassifitseerimata</h3>
-        <div class="ml-2" th:if="${lexeme.collocationMemberMeaningCandidacyExist}">
-          <button type="button" class="btn btn-sm badge badge-secondary" th:title="#{common.edit}"
-                  sec:authorize="#vars.lexeme.crudGrant">
+        <div class="d-flex align-items-center gap-1 ml-2" th:if="${lexeme.collocationMemberMeaningCandidacyExist}">
+          <button type="button" class="btn btn-sm badge badge-secondary hover-container__item" th:title="#{common.edit}"
+                  sec:authorize="#vars.lexeme.crudGrant" data-plugin="collocCheckboxContainerTogglePlugin" role="switch" aria-checked="false">
             <i class="fa fa-pencil" aria-hidden="true"></i>
           </button>
-          <button type="button" class="btn btn-sm badge badge-secondary" th:title="#{lex.collocation.member.move}"
+          <button type="button" class="btn btn-sm badge badge-secondary colloc-move__toggle" th:title="#{lex.collocation.member.move}"
                   data-toggle="modal"
                   th:data-target="|#colloc-member-move-dlg-${lexeme.lexemeId}|"
                   sec:authorize="#vars.lexeme.crudGrant">
@@ -146,7 +146,7 @@
   </th:block>
   <th:block th:fragment="colloc_row">
     <td class="p-0">
-      <input name="collocLexemeIds" type="checkbox" class="float-right mt-2 mr-2" th:value="${colloc.lexemeId}"/>
+      <input name="collocLexemeIds" type="checkbox" class="float-right mt-2 mr-2 d-none" th:value="${colloc.lexemeId}"/>
     </td>
     <td class="text-nowrap">
       <button

@@ -226,3 +226,16 @@
     }
   }
 }
+
+
+.hover-container {
+  &:hover {
+    & .hover-container__item {
+      display: block;
+    }
+  }
+
+  &__item {
+    display: none;
+  }
+}

@@ -1,0 +1,10 @@
+.colloc-move {
+  &__container {
+    // Hide move toggles if there's no checked checkboxes in the container
+    &:not(:has(input:checked)) {
+      & .colloc-move__toggle {
+        display: none;
+      }
+    }
+  }
+}
