@@ -9,9 +9,14 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import eki.common.constant.ActivityEntity;
 import eki.common.constant.PublishingConstant;
+import eki.ekilex.data.ActivityContext;
+import eki.ekilex.data.ActivityLogData;
 import eki.ekilex.data.EkiUser;
+import eki.ekilex.data.PublishItemRequest;
 import eki.ekilex.data.Publishing;
+import eki.ekilex.service.core.ActivityLogService;
 import eki.ekilex.service.db.PublishingDbService;
 
 @Component
@@ -22,7 +27,15 @@ public class PublishingService implements PublishingConstant {
 	@Autowired
 	private PublishingDbService publishingDbService;
 
-	public void publish(EkiUser user, String targetName, String entityName, Long entityId, boolean isPublicOrPublish) {
+	@Autowired
+	private ActivityLogService activityLogService;
+
+	public void publish(PublishItemRequest publishingItem, EkiUser user, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
+
+		String targetName = publishingItem.getTargetName();
+		String entityName = publishingItem.getEntityName();
+		Long entityId = publishingItem.getEntityId();
+		boolean isPublicOrPublish = publishingItem.isValue();
 
 		if (!ArrayUtils.contains(PUBLISHING_ENTITY_NAMES, entityName)) {
 			logger.warn("Usupported publishing entity name \"{}\"", entityName);
@@ -47,7 +60,10 @@ public class PublishingService implements PublishingConstant {
 
 		} else if (ArrayUtils.contains(PUBLISHING_TARGET_NAMES, targetName)) {
 
+			ActivityContext activityContext = activityLogService.getActivityContext(entityId, entityName);
+			ActivityLogData activityLog = activityLogService.prepareActivityLog("publish", activityContext, roleDatasetCode, isManualEventOnUpdateEnabled);
 			Long publishingId = publishingDbService.getPublishingId(targetName, entityName, entityId);
+
 			if ((publishingId == null) && isPublicOrPublish) {
 
 				String userName = user.getName();
@@ -60,11 +76,13 @@ public class PublishingService implements PublishingConstant {
 				publishing.setEntityName(entityName);
 				publishing.setEntityId(entityId);
 
-				publishingDbService.createPublishing(publishing);
+				publishingId = publishingDbService.createPublishing(publishing);
+				activityLogService.createActivityLog(activityLog, publishingId, ActivityEntity.PUBLISHING);
 
 			} else if ((publishingId != null) && !isPublicOrPublish) {
 
 				publishingDbService.deletePublishing(publishingId);
+				activityLogService.createActivityLog(activityLog, publishingId, ActivityEntity.PUBLISHING);
 			}
 
 		} else {

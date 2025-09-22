@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -20,6 +21,7 @@ import eki.ekilex.data.EkiUser;
 import eki.ekilex.data.PublishItemRequest;
 import eki.ekilex.data.Response;
 import eki.ekilex.service.PublishingService;
+import eki.ekilex.web.bean.SessionBean;
 
 @ConditionalOnWebApplication
 @Controller
@@ -33,18 +35,15 @@ public class PublishingController extends AbstractMutableDataPageController impl
 
 	@ResponseBody
 	@PostMapping(PUBLISH_ITEM_URI)
-	public Response publish(@RequestBody PublishItemRequest itemData) {
+	public Response publish(@RequestBody PublishItemRequest publishingItem, @ModelAttribute(name = SESSION_BEAN) SessionBean sessionBean) throws Exception {
 
-		logger.debug("Publish item: {}", itemData);
+		logger.debug("Publish item: {}", publishingItem);
 
 		EkiUser user = userContext.getUser();
+		String roleDatasetCode = getRoleDatasetCode();
+		boolean isManualEventOnUpdateEnabled = sessionBean.isManualEventOnUpdateEnabled();
 
-		String targetName = itemData.getTargetName();
-		String entityName = itemData.getEntityName();
-		Long entityId = itemData.getEntityId();
-		boolean isPublicOrPublish = itemData.isValue();
-
-		publishingService.publish(user, targetName, entityName, entityId, isPublicOrPublish);
+		publishingService.publish(publishingItem, user, roleDatasetCode, isManualEventOnUpdateEnabled);
 
 		Locale locale = LocaleContextHolder.getLocale();
 		String successMessage = messageSource.getMessage("common.data.update.success", new Object[0], locale);

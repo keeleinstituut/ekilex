@@ -151,7 +151,7 @@ public class CudService extends AbstractCudService implements PermConstant, Acti
 		setValueAndPrese(usageTranslation);
 		applyCreateUpdate(usageTranslation);
 
-		Long lexemeId = activityLogService.getOwnerId(usageId, ActivityEntity.USAGE);
+		Long lexemeId = activityLogService.getActivityOwnerId(usageId, ActivityEntity.USAGE);
 		ActivityLogData activityLog = activityLogService.prepareActivityLog("createUsageTranslation", lexemeId, ActivityOwner.LEXEME, roleDatasetCode, isManualEventOnUpdateEnabled);
 		Long usageTranslationId = cudDbService.createUsageTranslation(usageId, usageTranslation);
 		activityLogService.createActivityLog(activityLog, usageTranslationId, ActivityEntity.USAGE_TRANSLATION);
@@ -367,7 +367,7 @@ public class CudService extends AbstractCudService implements PermConstant, Acti
 
 		Note note = initNote(valuePrese, lang, isPublic);
 		applyCreateUpdate(note);
-		Long meaningId = activityLogService.getOwnerId(definitionId, ActivityEntity.DEFINITION);
+		Long meaningId = activityLogService.getActivityOwnerId(definitionId, ActivityEntity.DEFINITION);
 		ActivityLogData activityLog = activityLogService.prepareActivityLog("createDefinitionNote", meaningId, ActivityOwner.MEANING, roleDatasetCode, isManualEventOnUpdateEnabled);
 		Long definitionNoteId = cudDbService.createDefinitionNote(definitionId, note);
 		activityLogService.createActivityLog(activityLog, definitionNoteId, ActivityEntity.DEFINITION_NOTE);
@@ -677,7 +677,7 @@ public class CudService extends AbstractCudService implements PermConstant, Acti
 
 		for (ListData item : items) {
 			Long wordRelationId = item.getId();
-			Long wordId = activityLogService.getOwnerId(wordRelationId, ActivityEntity.WORD_RELATION);
+			Long wordId = activityLogService.getActivityOwnerId(wordRelationId, ActivityEntity.WORD_RELATION);
 			ActivityLogData activityLog = activityLogService.prepareActivityLog("updateWordRelationOrdering", wordId, ActivityOwner.WORD, roleDatasetCode, isManualEventOnUpdateEnabled);
 			cudDbService.updateWordRelationOrderby(item);
 			activityLogService.createActivityLog(activityLog, wordRelationId, ActivityEntity.WORD_RELATION);
@@ -689,7 +689,7 @@ public class CudService extends AbstractCudService implements PermConstant, Acti
 
 		for (ListData item : items) {
 			Long wordEtymId = item.getId();
-			Long wordId = activityLogService.getOwnerId(wordEtymId, ActivityEntity.WORD_ETYMOLOGY);
+			Long wordId = activityLogService.getActivityOwnerId(wordEtymId, ActivityEntity.WORD_ETYMOLOGY);
 			ActivityLogData activityLog = activityLogService.prepareActivityLog("updateWordEtymologyOrdering", wordId, ActivityOwner.WORD, roleDatasetCode, isManualEventOnUpdateEnabled);
 			cudDbService.updateWordEtymologyOrderby(item);
 			activityLogService.createActivityLog(activityLog, wordEtymId, ActivityEntity.WORD_ETYMOLOGY);
@@ -701,7 +701,7 @@ public class CudService extends AbstractCudService implements PermConstant, Acti
 
 		for (ListData item : items) {
 			Long wordOsUsageId = item.getId();
-			Long wordId = activityLogService.getOwnerId(wordOsUsageId, ActivityEntity.WORD_OS_USAGE);
+			Long wordId = activityLogService.getActivityOwnerId(wordOsUsageId, ActivityEntity.WORD_OS_USAGE);
 			ActivityLogData activityLog = activityLogService.prepareActivityLog("updateWordOsUsageOrdering", wordId, ActivityOwner.WORD, roleDatasetCode, isManualEventOnUpdateEnabled);
 			cudDbService.updateWordOsUsageOrderby(item);
 			activityLogService.createActivityLog(activityLog, wordOsUsageId, ActivityEntity.WORD_OS_USAGE);
@@ -739,7 +739,7 @@ public class CudService extends AbstractCudService implements PermConstant, Acti
 
 		for (ListData item : items) {
 			Long meaningDomainId = item.getId();
-			Long meaningId = activityLogService.getOwnerId(meaningDomainId, ActivityEntity.DOMAIN);
+			Long meaningId = activityLogService.getActivityOwnerId(meaningDomainId, ActivityEntity.DOMAIN);
 			ActivityLogData activityLog = activityLogService.prepareActivityLog("updateMeaningDomainOrdering", meaningId, ActivityOwner.MEANING, roleDatasetCode, isManualEventOnUpdateEnabled);
 			cudDbService.updateMeaningDomainOrderby(item);
 			activityLogService.createActivityLog(activityLog, meaningDomainId, ActivityEntity.DOMAIN);
@@ -751,7 +751,7 @@ public class CudService extends AbstractCudService implements PermConstant, Acti
 
 		for (ListData item : items) {
 			Long governmentId = item.getId();
-			Long lexemeId = activityLogService.getOwnerId(governmentId, ActivityEntity.GOVERNMENT);
+			Long lexemeId = activityLogService.getActivityOwnerId(governmentId, ActivityEntity.GOVERNMENT);
 			ActivityLogData activityLog = activityLogService.prepareActivityLog("updateGovernmentOrdering", lexemeId, ActivityOwner.LEXEME, roleDatasetCode, isManualEventOnUpdateEnabled);
 			cudDbService.updateFreeformOrderby(item);
 			activityLogService.createActivityLog(activityLog, governmentId, ActivityEntity.GOVERNMENT);
@@ -763,7 +763,7 @@ public class CudService extends AbstractCudService implements PermConstant, Acti
 
 		for (ListData item : items) {
 			Long usageId = item.getId();
-			Long lexemeId = activityLogService.getOwnerId(usageId, ActivityEntity.USAGE);
+			Long lexemeId = activityLogService.getActivityOwnerId(usageId, ActivityEntity.USAGE);
 			ActivityLogData activityLog = activityLogService.prepareActivityLog("updateUsageOrdering", lexemeId, ActivityOwner.LEXEME, roleDatasetCode, isManualEventOnUpdateEnabled);
 			cudDbService.updateUsageOrderby(item);
 			activityLogService.createActivityLog(activityLog, usageId, ActivityEntity.USAGE);
@@ -775,7 +775,7 @@ public class CudService extends AbstractCudService implements PermConstant, Acti
 
 		for (ListData item : items) {
 			Long freeformId = item.getId();
-			Long lexemeId = activityLogService.getOwnerId(freeformId, ActivityEntity.FREEFORM);
+			Long lexemeId = activityLogService.getActivityOwnerId(freeformId, ActivityEntity.FREEFORM);
 			ActivityLogData activityLog = activityLogService.prepareActivityLog("updateLexemeFreeformOrdering", lexemeId, ActivityOwner.LEXEME, roleDatasetCode, isManualEventOnUpdateEnabled);
 			cudDbService.updateFreeformOrderby(item);
 			activityLogService.createActivityLog(activityLog, freeformId, ActivityEntity.FREEFORM);
@@ -787,7 +787,7 @@ public class CudService extends AbstractCudService implements PermConstant, Acti
 
 		for (ListData item : items) {
 			Long freeformId = item.getId();
-			Long meaningId = activityLogService.getOwnerId(freeformId, ActivityEntity.FREEFORM);
+			Long meaningId = activityLogService.getActivityOwnerId(freeformId, ActivityEntity.FREEFORM);
 			ActivityLogData activityLog = activityLogService.prepareActivityLog("updateMeaningFreeformOrdering", meaningId, ActivityOwner.MEANING, roleDatasetCode, isManualEventOnUpdateEnabled);
 			cudDbService.updateFreeformOrderby(item);
 			activityLogService.createActivityLog(activityLog, freeformId, ActivityEntity.FREEFORM);
@@ -799,7 +799,7 @@ public class CudService extends AbstractCudService implements PermConstant, Acti
 
 		for (ListData item : items) {
 			Long lexemeNoteId = item.getId();
-			Long lexemeId = activityLogService.getOwnerId(lexemeNoteId, ActivityEntity.LEXEME_NOTE);
+			Long lexemeId = activityLogService.getActivityOwnerId(lexemeNoteId, ActivityEntity.LEXEME_NOTE);
 			ActivityLogData activityLog = activityLogService.prepareActivityLog("updateLexemeNoteOrdering", lexemeId, ActivityOwner.LEXEME, roleDatasetCode, isManualEventOnUpdateEnabled);
 			cudDbService.updateLexemeNoteOrderby(item);
 			activityLogService.createActivityLog(activityLog, lexemeNoteId, ActivityEntity.LEXEME_NOTE);
@@ -811,7 +811,7 @@ public class CudService extends AbstractCudService implements PermConstant, Acti
 
 		for (ListData item : items) {
 			Long meaningNoteId = item.getId();
-			Long meaningId = activityLogService.getOwnerId(meaningNoteId, ActivityEntity.MEANING_NOTE);
+			Long meaningId = activityLogService.getActivityOwnerId(meaningNoteId, ActivityEntity.MEANING_NOTE);
 			ActivityLogData activityLog = activityLogService.prepareActivityLog("updateMeaningNoteOrdering", meaningId, ActivityOwner.MEANING, roleDatasetCode, isManualEventOnUpdateEnabled);
 			cudDbService.updateMeaningNoteOrderby(item);
 			activityLogService.createActivityLog(activityLog, meaningNoteId, ActivityEntity.MEANING_NOTE);
@@ -823,7 +823,7 @@ public class CudService extends AbstractCudService implements PermConstant, Acti
 
 		for (ListData item : items) {
 			Long definitionNoteId = item.getId();
-			Long meaningId = activityLogService.getOwnerId(definitionNoteId, ActivityEntity.DEFINITION_NOTE);
+			Long meaningId = activityLogService.getActivityOwnerId(definitionNoteId, ActivityEntity.DEFINITION_NOTE);
 			ActivityLogData activityLog = activityLogService.prepareActivityLog("updateDefinitionNoteOrdering", meaningId, ActivityOwner.MEANING, roleDatasetCode, isManualEventOnUpdateEnabled);
 			cudDbService.updateDefinitionNoteOrderby(item);
 			activityLogService.createActivityLog(activityLog, definitionNoteId, ActivityEntity.DEFINITION_NOTE);
@@ -889,7 +889,7 @@ public class CudService extends AbstractCudService implements PermConstant, Acti
 		applyUpdate(usage);
 
 		Long usageId = usage.getId();
-		Long lexemeId = activityLogService.getOwnerId(usageId, ActivityEntity.USAGE);
+		Long lexemeId = activityLogService.getActivityOwnerId(usageId, ActivityEntity.USAGE);
 		ActivityLogData activityLog = activityLogService.prepareActivityLog("updateUsage", lexemeId, ActivityOwner.LEXEME, roleDatasetCode, isManualEventOnUpdateEnabled);
 		cudDbService.updateUsage(usage);
 		activityLogService.createActivityLog(activityLog, usageId, ActivityEntity.USAGE);
@@ -905,7 +905,7 @@ public class CudService extends AbstractCudService implements PermConstant, Acti
 		setValueAndPrese(usageTranslation);
 		applyUpdate(usageTranslation);
 
-		Long lexemeId = activityLogService.getOwnerId(usageTranslationId, ActivityEntity.USAGE_TRANSLATION);
+		Long lexemeId = activityLogService.getActivityOwnerId(usageTranslationId, ActivityEntity.USAGE_TRANSLATION);
 		ActivityLogData activityLog = activityLogService.prepareActivityLog("updateUsageTranslation", lexemeId, ActivityOwner.LEXEME, roleDatasetCode, isManualEventOnUpdateEnabled);
 		cudDbService.updateUsageTranslation(usageTranslation);
 		activityLogService.createActivityLog(activityLog, usageTranslationId, ActivityEntity.USAGE_TRANSLATION);
@@ -974,7 +974,7 @@ public class CudService extends AbstractCudService implements PermConstant, Acti
 		applyUpdate(grammar);
 
 		Long grammarId = grammar.getId();
-		Long lexemeId = activityLogService.getOwnerId(grammarId, ActivityEntity.GRAMMAR);
+		Long lexemeId = activityLogService.getActivityOwnerId(grammarId, ActivityEntity.GRAMMAR);
 		ActivityLogData activityLog = activityLogService.prepareActivityLog("updateLexemeGrammar", lexemeId, ActivityOwner.LEXEME, roleDatasetCode, isManualEventOnUpdateEnabled);
 		cudDbService.updateGrammar(grammar);
 		activityLogService.createActivityLog(activityLog, grammarId, ActivityEntity.GRAMMAR);
@@ -996,7 +996,7 @@ public class CudService extends AbstractCudService implements PermConstant, Acti
 		applyUpdate(government);
 
 		Long governmentId = government.getId();
-		Long lexemeId = activityLogService.getOwnerId(governmentId, ActivityEntity.GOVERNMENT);
+		Long lexemeId = activityLogService.getActivityOwnerId(governmentId, ActivityEntity.GOVERNMENT);
 		ActivityLogData activityLog = activityLogService.prepareActivityLog("updateLexemeGovernment", lexemeId, ActivityOwner.LEXEME, roleDatasetCode, isManualEventOnUpdateEnabled);
 		cudDbService.updateGovernment(government);
 		activityLogService.createActivityLog(activityLog, governmentId, ActivityEntity.GOVERNMENT);
@@ -1065,7 +1065,7 @@ public class CudService extends AbstractCudService implements PermConstant, Acti
 
 		Note note = initNote(valuePrese, lang, isPublic);
 		applyUpdate(note);
-		Long lexemeId = activityLogService.getOwnerId(lexemeNoteId, ActivityEntity.LEXEME_NOTE);
+		Long lexemeId = activityLogService.getActivityOwnerId(lexemeNoteId, ActivityEntity.LEXEME_NOTE);
 		ActivityLogData activityLog = activityLogService.prepareActivityLog("updateLexemeNote", lexemeId, ActivityOwner.LEXEME, roleDatasetCode, isManualEventOnUpdateEnabled);
 		cudDbService.updateLexemeNote(lexemeNoteId, note);
 		activityLogService.createActivityLog(activityLog, lexemeNoteId, ActivityEntity.LEXEME_NOTE);
@@ -1116,7 +1116,7 @@ public class CudService extends AbstractCudService implements PermConstant, Acti
 
 		for (ListData item : items) {
 			Long lexemeRelationId = item.getId();
-			Long lexemeId = activityLogService.getOwnerId(lexemeRelationId, ActivityEntity.LEXEME_RELATION);
+			Long lexemeId = activityLogService.getActivityOwnerId(lexemeRelationId, ActivityEntity.LEXEME_RELATION);
 			ActivityLogData activityLog = activityLogService.prepareActivityLog("updateLexemeRelationOrdering", lexemeId, ActivityOwner.LEXEME, roleDatasetCode, isManualEventOnUpdateEnabled);
 			cudDbService.updateLexemeRelationOrderby(item);
 			activityLogService.createActivityLog(activityLog, lexemeRelationId, ActivityEntity.LEXEME_RELATION);
@@ -1127,7 +1127,7 @@ public class CudService extends AbstractCudService implements PermConstant, Acti
 	public void updateDefinition(Long definitionId, String valuePrese, String lang, String typeCode, boolean isPublic, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
 
 		String value = textDecorationService.removeEkiElementMarkup(valuePrese);
-		Long meaningId = activityLogService.getOwnerId(definitionId, ActivityEntity.DEFINITION);
+		Long meaningId = activityLogService.getActivityOwnerId(definitionId, ActivityEntity.DEFINITION);
 		ActivityLogData activityLog = activityLogService.prepareActivityLog("updateDefinition", meaningId, ActivityOwner.MEANING, roleDatasetCode, isManualEventOnUpdateEnabled);
 		cudDbService.updateDefinition(definitionId, value, valuePrese, lang, typeCode, isPublic);
 		activityLogService.createActivityLog(activityLog, definitionId, ActivityEntity.DEFINITION);
@@ -1138,7 +1138,7 @@ public class CudService extends AbstractCudService implements PermConstant, Acti
 
 		for (ListData item : items) {
 			Long definitionId = item.getId();
-			Long meaningId = activityLogService.getOwnerId(definitionId, ActivityEntity.DEFINITION);
+			Long meaningId = activityLogService.getActivityOwnerId(definitionId, ActivityEntity.DEFINITION);
 			ActivityLogData activityLog = activityLogService.prepareActivityLog("updateDefinitionOrdering", meaningId, ActivityOwner.MEANING, roleDatasetCode, isManualEventOnUpdateEnabled);
 			cudDbService.updateDefinitionOrderby(item);
 			activityLogService.createActivityLog(activityLog, definitionId, ActivityEntity.DEFINITION);
@@ -1150,7 +1150,7 @@ public class CudService extends AbstractCudService implements PermConstant, Acti
 
 		Note note = initNote(valuePrese, lang, isPublic);
 		applyUpdate(note);
-		Long meaningId = activityLogService.getOwnerId(definitionNoteId, ActivityEntity.DEFINITION_NOTE);
+		Long meaningId = activityLogService.getActivityOwnerId(definitionNoteId, ActivityEntity.DEFINITION_NOTE);
 		ActivityLogData activityLog = activityLogService.prepareActivityLog("updateDefinitionNote", meaningId, ActivityOwner.MEANING, roleDatasetCode, isManualEventOnUpdateEnabled);
 		cudDbService.updateDefinitionNote(definitionNoteId, note);
 		activityLogService.createActivityLog(activityLog, definitionNoteId, ActivityEntity.DEFINITION_NOTE);
@@ -1161,7 +1161,7 @@ public class CudService extends AbstractCudService implements PermConstant, Acti
 
 		for (ListData item : items) {
 			Long meaningRelationId = item.getId();
-			Long meaningId = activityLogService.getOwnerId(meaningRelationId, ActivityEntity.MEANING_RELATION);
+			Long meaningId = activityLogService.getActivityOwnerId(meaningRelationId, ActivityEntity.MEANING_RELATION);
 			ActivityLogData activityLog = activityLogService.prepareActivityLog("updateMeaningRelationOrdering", meaningId, ActivityOwner.MEANING, roleDatasetCode, isManualEventOnUpdateEnabled);
 			cudDbService.updateMeaningRelationOrderby(item);
 			activityLogService.createActivityLog(activityLog, meaningRelationId, ActivityEntity.MEANING_RELATION);
@@ -1185,7 +1185,7 @@ public class CudService extends AbstractCudService implements PermConstant, Acti
 		setValueAndPrese(learnerComment);
 		applyUpdate(learnerComment);
 
-		Long meaningId = activityLogService.getOwnerId(learnerCommentId, ActivityEntity.LEARNER_COMMENT);
+		Long meaningId = activityLogService.getActivityOwnerId(learnerCommentId, ActivityEntity.LEARNER_COMMENT);
 		ActivityLogData activityLog = activityLogService.prepareActivityLog("updateMeaningLearnerComment", meaningId, ActivityOwner.MEANING, roleDatasetCode, isManualEventOnUpdateEnabled);
 		cudDbService.updateLearnerComment(learnerCommentId, learnerComment);
 		activityLogService.createActivityLog(activityLog, learnerCommentId, ActivityEntity.LEARNER_COMMENT);
@@ -1196,7 +1196,7 @@ public class CudService extends AbstractCudService implements PermConstant, Acti
 
 		Note note = initNote(valuePrese, lang, isPublic);
 		applyUpdate(note);
-		Long meaningId = activityLogService.getOwnerId(meaningNoteId, ActivityEntity.MEANING_NOTE);
+		Long meaningId = activityLogService.getActivityOwnerId(meaningNoteId, ActivityEntity.MEANING_NOTE);
 		ActivityLogData activityLog = activityLogService.prepareActivityLog("updateMeaningNote", meaningId, ActivityOwner.MEANING, roleDatasetCode, isManualEventOnUpdateEnabled);
 		cudDbService.updateMeaningNote(meaningNoteId, note);
 		activityLogService.createActivityLog(activityLog, meaningNoteId, ActivityEntity.MEANING_NOTE);
@@ -1228,7 +1228,7 @@ public class CudService extends AbstractCudService implements PermConstant, Acti
 		//meaningImage.setPublic(isPublic); not yet implemented in UI
 		applyUpdate(meaningImage);
 
-		Long meaningId = activityLogService.getOwnerId(meaningImageId, ActivityEntity.MEANING_IMAGE);
+		Long meaningId = activityLogService.getActivityOwnerId(meaningImageId, ActivityEntity.MEANING_IMAGE);
 		ActivityLogData activityLog = activityLogService.prepareActivityLog("updateMeaningImage", meaningId, ActivityOwner.MEANING, roleDatasetCode, isManualEventOnUpdateEnabled);
 		cudDbService.updateMeaningImage(meaningImageId, meaningImage);
 		activityLogService.createActivityLog(activityLog, meaningImageId, ActivityEntity.MEANING_IMAGE);
@@ -1241,7 +1241,7 @@ public class CudService extends AbstractCudService implements PermConstant, Acti
 		meaningImage.setUrl(url);
 		applyUpdate(meaningImage);
 
-		Long meaningId = activityLogService.getOwnerId(meaningMediaId, ActivityEntity.MEANING_MEDIA);
+		Long meaningId = activityLogService.getActivityOwnerId(meaningMediaId, ActivityEntity.MEANING_MEDIA);
 		ActivityLogData activityLog = activityLogService.prepareActivityLog("updateMeaningMedia", meaningId, ActivityOwner.MEANING, roleDatasetCode, isManualEventOnUpdateEnabled);
 		cudDbService.updateMeaningMedia(meaningMediaId, meaningImage);
 		activityLogService.createActivityLog(activityLog, meaningMediaId, ActivityEntity.MEANING_MEDIA);
@@ -1268,7 +1268,7 @@ public class CudService extends AbstractCudService implements PermConstant, Acti
 		setValueAndPrese(wordOsMorph);
 		applyUpdate(wordOsMorph);
 
-		Long wordId = activityLogService.getOwnerId(wordOsMorphId, ActivityEntity.WORD_OS_MORPH);
+		Long wordId = activityLogService.getActivityOwnerId(wordOsMorphId, ActivityEntity.WORD_OS_MORPH);
 		ActivityLogData activityLog = activityLogService.prepareActivityLog("updateWordOsMorph", wordId, ActivityOwner.WORD, roleDatasetCode, isManualEventOnUpdateEnabled);
 		cudDbService.updateWordOsMorph(wordOsMorph);
 		activityLogService.createActivityLog(activityLog, wordOsMorphId, ActivityEntity.WORD_OS_MORPH);
@@ -1283,7 +1283,7 @@ public class CudService extends AbstractCudService implements PermConstant, Acti
 		setValueAndPrese(wordEkiRecommendation);
 		applyUpdate(wordEkiRecommendation);
 
-		Long wordId = activityLogService.getOwnerId(wordEkiRecommendationId, ActivityEntity.WORD_EKI_RECOMMENDATION);
+		Long wordId = activityLogService.getActivityOwnerId(wordEkiRecommendationId, ActivityEntity.WORD_EKI_RECOMMENDATION);
 		ActivityLogData activityLog = activityLogService.prepareActivityLog("updateWordEkiRecommendation", wordId, ActivityOwner.WORD, roleDatasetCode, isManualEventOnUpdateEnabled);
 		cudDbService.updateWordEkiRecommendation(wordEkiRecommendation);
 		activityLogService.createActivityLog(activityLog, wordEkiRecommendationId, ActivityEntity.WORD_EKI_RECOMMENDATION);
@@ -1298,7 +1298,7 @@ public class CudService extends AbstractCudService implements PermConstant, Acti
 		setValueAndPrese(wordOsUsage);
 		applyUpdate(wordOsUsage);
 
-		Long wordId = activityLogService.getOwnerId(wordOsUsageId, ActivityEntity.WORD_OS_USAGE);
+		Long wordId = activityLogService.getActivityOwnerId(wordOsUsageId, ActivityEntity.WORD_OS_USAGE);
 		ActivityLogData activityLog = activityLogService.prepareActivityLog("updateWordOsUsage", wordId, ActivityOwner.WORD, roleDatasetCode, isManualEventOnUpdateEnabled);
 		cudDbService.updateWordOsUsage(wordOsUsage);
 		activityLogService.createActivityLog(activityLog, wordOsUsageId, ActivityEntity.WORD_OS_USAGE);
@@ -1315,7 +1315,7 @@ public class CudService extends AbstractCudService implements PermConstant, Acti
 	@Transactional(rollbackFor = Exception.class)
 	public void updateMeaningRelationWeight(Long meaningRelationId, BigDecimal lexemeWeight, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
 
-		Long meaningId = activityLogService.getOwnerId(meaningRelationId, ActivityEntity.MEANING_RELATION);
+		Long meaningId = activityLogService.getActivityOwnerId(meaningRelationId, ActivityEntity.MEANING_RELATION);
 		ActivityLogData activityLog = activityLogService.prepareActivityLog("updateMeaningRelationWeight", meaningId, ActivityOwner.MEANING, roleDatasetCode, isManualEventOnUpdateEnabled);
 		cudDbService.updateMeaningRelationWeight(meaningRelationId, lexemeWeight);
 		activityLogService.createActivityLog(activityLog, meaningRelationId, ActivityEntity.MEANING_RELATION);
@@ -1332,7 +1332,7 @@ public class CudService extends AbstractCudService implements PermConstant, Acti
 
 		String userName = userContext.getUserName();
 		Long freeformId = freeform.getId();
-		Long ownerId = activityLogService.getOwnerId(freeformId, activityEntity);
+		Long ownerId = activityLogService.getActivityOwnerId(freeformId, activityEntity);
 		ActivityLogData activityLog = activityLogService.prepareActivityLog("updateFreeform", ownerId, logOwner, roleDatasetCode, isManualEventOnUpdateEnabled);
 		cudDbService.updateFreeform(freeform, userName);
 		activityLogService.createActivityLog(activityLog, freeformId, activityEntity);
@@ -1380,7 +1380,7 @@ public class CudService extends AbstractCudService implements PermConstant, Acti
 	@Transactional(rollbackFor = Exception.class)
 	public void deleteWordRelation(Long relationId, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
 
-		Long wordId = activityLogService.getOwnerId(relationId, ActivityEntity.WORD_RELATION);
+		Long wordId = activityLogService.getActivityOwnerId(relationId, ActivityEntity.WORD_RELATION);
 		ActivityLogData activityLog = activityLogService.prepareActivityLog("deleteWordRelation", wordId, ActivityOwner.WORD, roleDatasetCode, isManualEventOnUpdateEnabled);
 		Long groupId = lookupDbService.getWordRelationGroupId(relationId);
 		if (groupId == null) {
@@ -1404,7 +1404,7 @@ public class CudService extends AbstractCudService implements PermConstant, Acti
 	@Transactional(rollbackFor = Exception.class)
 	public void deleteWordFreeform(Long freeformId, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
 
-		Long wordId = activityLogService.getOwnerId(freeformId, ActivityEntity.FREEFORM);
+		Long wordId = activityLogService.getActivityOwnerId(freeformId, ActivityEntity.FREEFORM);
 		ActivityLogData activityLog = activityLogService.prepareActivityLog("deleteWordFreeform", wordId, ActivityOwner.WORD, roleDatasetCode, isManualEventOnUpdateEnabled);
 		cudDbService.deleteFreeform(freeformId);
 		activityLogService.createActivityLog(activityLog, freeformId, ActivityEntity.FREEFORM);
@@ -1413,7 +1413,7 @@ public class CudService extends AbstractCudService implements PermConstant, Acti
 	@Transactional(rollbackFor = Exception.class)
 	public void deleteDefinition(Long definitionId, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
 
-		Long meaningId = activityLogService.getOwnerId(definitionId, ActivityEntity.DEFINITION);
+		Long meaningId = activityLogService.getActivityOwnerId(definitionId, ActivityEntity.DEFINITION);
 		ActivityLogData activityLog = activityLogService.prepareActivityLog("deleteDefinition", meaningId, ActivityOwner.MEANING, roleDatasetCode, isManualEventOnUpdateEnabled);
 		cudDbService.deleteDefinition(definitionId);
 		activityLogService.createActivityLog(activityLog, definitionId, ActivityEntity.DEFINITION);
@@ -1422,7 +1422,7 @@ public class CudService extends AbstractCudService implements PermConstant, Acti
 	@Transactional(rollbackFor = Exception.class)
 	public void deleteDefinitionNote(Long definitionNoteId, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
 
-		Long meaningId = activityLogService.getOwnerId(definitionNoteId, ActivityEntity.DEFINITION_NOTE);
+		Long meaningId = activityLogService.getActivityOwnerId(definitionNoteId, ActivityEntity.DEFINITION_NOTE);
 		ActivityLogData activityLog = activityLogService.prepareActivityLog("deleteDefinitionNote", meaningId, ActivityOwner.MEANING, roleDatasetCode, isManualEventOnUpdateEnabled);
 		cudDbService.deleteDefinitionNote(definitionNoteId);
 		activityLogService.createActivityLog(activityLog, definitionNoteId, ActivityEntity.DEFINITION_NOTE);
@@ -1472,7 +1472,7 @@ public class CudService extends AbstractCudService implements PermConstant, Acti
 	@Transactional(rollbackFor = Exception.class)
 	public void deleteUsage(Long usageId, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
 
-		Long lexemeId = activityLogService.getOwnerId(usageId, ActivityEntity.USAGE);
+		Long lexemeId = activityLogService.getActivityOwnerId(usageId, ActivityEntity.USAGE);
 		ActivityLogData activityLog = activityLogService.prepareActivityLog("deleteUsage", lexemeId, ActivityOwner.LEXEME, roleDatasetCode, isManualEventOnUpdateEnabled);
 		cudDbService.deleteUsage(usageId);
 		activityLogService.createActivityLog(activityLog, usageId, ActivityEntity.USAGE);
@@ -1481,7 +1481,7 @@ public class CudService extends AbstractCudService implements PermConstant, Acti
 	@Transactional(rollbackFor = Exception.class)
 	public void deleteUsageTranslation(Long usageTranslationId, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
 
-		Long lexemeId = activityLogService.getOwnerId(usageTranslationId, ActivityEntity.USAGE_TRANSLATION);
+		Long lexemeId = activityLogService.getActivityOwnerId(usageTranslationId, ActivityEntity.USAGE_TRANSLATION);
 		ActivityLogData activityLog = activityLogService.prepareActivityLog("deleteUsageTranslation", lexemeId, ActivityOwner.LEXEME, roleDatasetCode, isManualEventOnUpdateEnabled);
 		cudDbService.deleteUsageTranslation(usageTranslationId);
 		activityLogService.createActivityLog(activityLog, usageTranslationId, ActivityEntity.USAGE_TRANSLATION);
@@ -1490,7 +1490,7 @@ public class CudService extends AbstractCudService implements PermConstant, Acti
 	@Transactional(rollbackFor = Exception.class)
 	public void deleteLexemeFreeform(Long freeformId, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
 
-		Long lexemeId = activityLogService.getOwnerId(freeformId, ActivityEntity.FREEFORM);
+		Long lexemeId = activityLogService.getActivityOwnerId(freeformId, ActivityEntity.FREEFORM);
 		ActivityLogData activityLog = activityLogService.prepareActivityLog("deleteLexemeFreeform", lexemeId, ActivityOwner.LEXEME, roleDatasetCode, isManualEventOnUpdateEnabled);
 		cudDbService.deleteFreeform(freeformId);
 		activityLogService.createActivityLog(activityLog, freeformId, ActivityEntity.FREEFORM);
@@ -1499,7 +1499,7 @@ public class CudService extends AbstractCudService implements PermConstant, Acti
 	@Transactional(rollbackFor = Exception.class)
 	public void deleteLexemeGovernment(Long governmentId, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
 
-		Long lexemeId = activityLogService.getOwnerId(governmentId, ActivityEntity.GOVERNMENT);
+		Long lexemeId = activityLogService.getActivityOwnerId(governmentId, ActivityEntity.GOVERNMENT);
 		ActivityLogData activityLog = activityLogService.prepareActivityLog("deleteLexemeGovernment", lexemeId, ActivityOwner.LEXEME, roleDatasetCode, isManualEventOnUpdateEnabled);
 		cudDbService.deleteGovernment(governmentId);
 		activityLogService.createActivityLog(activityLog, governmentId, ActivityEntity.GOVERNMENT);
@@ -1508,7 +1508,7 @@ public class CudService extends AbstractCudService implements PermConstant, Acti
 	@Transactional(rollbackFor = Exception.class)
 	public void deleteLexemeGrammar(Long grammarId, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
 
-		Long lexemeId = activityLogService.getOwnerId(grammarId, ActivityEntity.GRAMMAR);
+		Long lexemeId = activityLogService.getActivityOwnerId(grammarId, ActivityEntity.GRAMMAR);
 		ActivityLogData activityLog = activityLogService.prepareActivityLog("deleteLexemeGrammar", lexemeId, ActivityOwner.LEXEME, roleDatasetCode, isManualEventOnUpdateEnabled);
 		cudDbService.deleteGrammar(grammarId);
 		activityLogService.createActivityLog(activityLog, grammarId, ActivityEntity.GRAMMAR);
@@ -1517,7 +1517,7 @@ public class CudService extends AbstractCudService implements PermConstant, Acti
 	@Transactional(rollbackFor = Exception.class)
 	public void deleteLexemeNote(Long lexemeNoteId, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
 
-		Long lexemeId = activityLogService.getOwnerId(lexemeNoteId, ActivityEntity.LEXEME_NOTE);
+		Long lexemeId = activityLogService.getActivityOwnerId(lexemeNoteId, ActivityEntity.LEXEME_NOTE);
 		ActivityLogData activityLog = activityLogService.prepareActivityLog("deleteLexemeNote", lexemeId, ActivityOwner.LEXEME, roleDatasetCode, isManualEventOnUpdateEnabled);
 		cudDbService.deleteLexemeNote(lexemeNoteId);
 		activityLogService.createActivityLog(activityLog, lexemeNoteId, ActivityEntity.LEXEME_NOTE);
@@ -1548,7 +1548,7 @@ public class CudService extends AbstractCudService implements PermConstant, Acti
 	@Transactional(rollbackFor = Exception.class)
 	public void deleteCollocMember(Long collocMemberId, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
 
-		Long lexemeId = activityLogService.getOwnerId(collocMemberId, ActivityEntity.COLLOC_MEMBER);
+		Long lexemeId = activityLogService.getActivityOwnerId(collocMemberId, ActivityEntity.COLLOC_MEMBER);
 		ActivityLogData activityLog = activityLogService.prepareActivityLog("deleteCollocMember", lexemeId, ActivityOwner.LEXEME, roleDatasetCode, isManualEventOnUpdateEnabled);
 		cudDbService.deleteCollocMember(collocMemberId);
 		activityLogService.createActivityLog(activityLog, collocMemberId, ActivityEntity.COLLOC_MEMBER);
@@ -1601,7 +1601,7 @@ public class CudService extends AbstractCudService implements PermConstant, Acti
 	@Transactional(rollbackFor = Exception.class)
 	public void deleteLexemeRelation(Long relationId, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
 
-		Long lexemeId = activityLogService.getOwnerId(relationId, ActivityEntity.LEXEME_RELATION);
+		Long lexemeId = activityLogService.getActivityOwnerId(relationId, ActivityEntity.LEXEME_RELATION);
 		ActivityLogData activityLog = activityLogService.prepareActivityLog("deleteLexemeRelation", lexemeId, ActivityOwner.LEXEME, roleDatasetCode, isManualEventOnUpdateEnabled);
 		cudDbService.deleteLexemeRelation(relationId);
 		activityLogService.createActivityLog(activityLog, relationId, ActivityEntity.LEXEME_RELATION);
@@ -1647,7 +1647,7 @@ public class CudService extends AbstractCudService implements PermConstant, Acti
 		List<Long> oppositeRelationIds = lookupDbService.getMeaningRelationOppositeRelationIds(relationId);
 		if (oppositeRelationIds.size() == 1) {
 			Long oppositeRelationId = oppositeRelationIds.get(0);
-			Long oppositeMeaningId = activityLogService.getOwnerId(oppositeRelationId, ActivityEntity.MEANING_RELATION);
+			Long oppositeMeaningId = activityLogService.getActivityOwnerId(oppositeRelationId, ActivityEntity.MEANING_RELATION);
 			activityLog = activityLogService.prepareActivityLog("deleteMeaningRelation", oppositeMeaningId, ActivityOwner.MEANING, roleDatasetCode, isManualEventOnUpdateEnabled);
 			cudDbService.deleteMeaningRelation(oppositeRelationId);
 			activityLogService.createActivityLog(activityLog, oppositeRelationId, ActivityEntity.MEANING_RELATION);
@@ -1656,7 +1656,7 @@ public class CudService extends AbstractCudService implements PermConstant, Acti
 			response.setMessage(message);
 		}
 
-		Long meaningId = activityLogService.getOwnerId(relationId, ActivityEntity.MEANING_RELATION);
+		Long meaningId = activityLogService.getActivityOwnerId(relationId, ActivityEntity.MEANING_RELATION);
 		activityLog = activityLogService.prepareActivityLog("deleteMeaningRelation", meaningId, ActivityOwner.MEANING, roleDatasetCode, isManualEventOnUpdateEnabled);
 		cudDbService.deleteMeaningRelation(relationId);
 		activityLogService.createActivityLog(activityLog, relationId, ActivityEntity.MEANING_RELATION);
@@ -1667,7 +1667,7 @@ public class CudService extends AbstractCudService implements PermConstant, Acti
 	@Transactional(rollbackFor = Exception.class)
 	public void deleteMeaningLearnerComment(Long learnerCommentId, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
 
-		Long meaningId = activityLogService.getOwnerId(learnerCommentId, ActivityEntity.LEARNER_COMMENT);
+		Long meaningId = activityLogService.getActivityOwnerId(learnerCommentId, ActivityEntity.LEARNER_COMMENT);
 		ActivityLogData activityLog = activityLogService.prepareActivityLog("deleteMeaningLearnerComment", meaningId, ActivityOwner.MEANING, roleDatasetCode, isManualEventOnUpdateEnabled);
 		cudDbService.deleteLearnerComment(learnerCommentId);
 		activityLogService.createActivityLog(activityLog, learnerCommentId, ActivityEntity.LEARNER_COMMENT);
@@ -1676,7 +1676,7 @@ public class CudService extends AbstractCudService implements PermConstant, Acti
 	@Transactional(rollbackFor = Exception.class)
 	public void deleteMeaningNote(Long meaningNoteId, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
 
-		Long meaningId = activityLogService.getOwnerId(meaningNoteId, ActivityEntity.MEANING_NOTE);
+		Long meaningId = activityLogService.getActivityOwnerId(meaningNoteId, ActivityEntity.MEANING_NOTE);
 		ActivityLogData activityLog = activityLogService.prepareActivityLog("deleteMeaningNote", meaningId, ActivityOwner.MEANING, roleDatasetCode, isManualEventOnUpdateEnabled);
 		cudDbService.deleteMeaningNote(meaningNoteId);
 		activityLogService.createActivityLog(activityLog, meaningNoteId, ActivityEntity.MEANING_NOTE);
@@ -1691,7 +1691,7 @@ public class CudService extends AbstractCudService implements PermConstant, Acti
 	@Transactional(rollbackFor = Exception.class)
 	public void deleteMeaningImage(Long meaningImageId, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
 
-		Long meaningId = activityLogService.getOwnerId(meaningImageId, ActivityEntity.MEANING_IMAGE);
+		Long meaningId = activityLogService.getActivityOwnerId(meaningImageId, ActivityEntity.MEANING_IMAGE);
 		ActivityLogData activityLog = activityLogService.prepareActivityLog("deleteMeaningImage", meaningId, ActivityOwner.MEANING, roleDatasetCode, isManualEventOnUpdateEnabled);
 		cudDbService.deleteMeaningImage(meaningImageId);
 		activityLogService.createActivityLog(activityLog, meaningImageId, ActivityEntity.MEANING_IMAGE);
@@ -1700,7 +1700,7 @@ public class CudService extends AbstractCudService implements PermConstant, Acti
 	@Transactional(rollbackFor = Exception.class)
 	public void deleteMeaningMedia(Long meaningMediaId, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
 
-		Long meaningId = activityLogService.getOwnerId(meaningMediaId, ActivityEntity.MEANING_MEDIA);
+		Long meaningId = activityLogService.getActivityOwnerId(meaningMediaId, ActivityEntity.MEANING_MEDIA);
 		ActivityLogData activityLog = activityLogService.prepareActivityLog("deleteMeaningMedia", meaningId, ActivityOwner.MEANING, roleDatasetCode, isManualEventOnUpdateEnabled);
 		cudDbService.deleteMeaningMedia(meaningMediaId);
 		activityLogService.createActivityLog(activityLog, meaningMediaId, ActivityEntity.MEANING_MEDIA);
@@ -1709,7 +1709,7 @@ public class CudService extends AbstractCudService implements PermConstant, Acti
 	@Transactional(rollbackFor = Exception.class)
 	public void deleteMeaningFreeform(Long freeformId, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
 
-		Long meaningId = activityLogService.getOwnerId(freeformId, ActivityEntity.FREEFORM);
+		Long meaningId = activityLogService.getActivityOwnerId(freeformId, ActivityEntity.FREEFORM);
 		ActivityLogData activityLog = activityLogService.prepareActivityLog("deleteMeaningFreeform", meaningId, ActivityOwner.MEANING, roleDatasetCode, isManualEventOnUpdateEnabled);
 		cudDbService.deleteFreeform(freeformId);
 		activityLogService.createActivityLog(activityLog, freeformId, ActivityEntity.FREEFORM);
@@ -1718,7 +1718,7 @@ public class CudService extends AbstractCudService implements PermConstant, Acti
 	@Transactional(rollbackFor = Exception.class)
 	public void deleteWordOsMorph(Long wordOsMorphId, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
 
-		Long wordId = activityLogService.getOwnerId(wordOsMorphId, ActivityEntity.WORD_OS_MORPH);
+		Long wordId = activityLogService.getActivityOwnerId(wordOsMorphId, ActivityEntity.WORD_OS_MORPH);
 		ActivityLogData activityLog = activityLogService.prepareActivityLog("deleteWordOsMorph", wordId, ActivityOwner.WORD, roleDatasetCode, isManualEventOnUpdateEnabled);
 		cudDbService.deleteWordOsMorph(wordOsMorphId);
 		activityLogService.createActivityLog(activityLog, wordOsMorphId, ActivityEntity.WORD_OS_MORPH);
@@ -1727,7 +1727,7 @@ public class CudService extends AbstractCudService implements PermConstant, Acti
 	@Transactional(rollbackFor = Exception.class)
 	public void deleteWordEkiRecommendation(Long wordEkiRecommendationId, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
 
-		Long wordId = activityLogService.getOwnerId(wordEkiRecommendationId, ActivityEntity.WORD_EKI_RECOMMENDATION);
+		Long wordId = activityLogService.getActivityOwnerId(wordEkiRecommendationId, ActivityEntity.WORD_EKI_RECOMMENDATION);
 		ActivityLogData activityLog = activityLogService.prepareActivityLog("deleteWordEkiRecommendation", wordId, ActivityOwner.WORD, roleDatasetCode, isManualEventOnUpdateEnabled);
 		cudDbService.deleteWordEkiRecommendation(wordEkiRecommendationId);
 		activityLogService.createActivityLog(activityLog, wordEkiRecommendationId, ActivityEntity.WORD_EKI_RECOMMENDATION);
@@ -1736,7 +1736,7 @@ public class CudService extends AbstractCudService implements PermConstant, Acti
 	@Transactional(rollbackFor = Exception.class)
 	public void deleteWordOsUsage(Long wordOsUsageId, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
 
-		Long wordId = activityLogService.getOwnerId(wordOsUsageId, ActivityEntity.WORD_OS_USAGE);
+		Long wordId = activityLogService.getActivityOwnerId(wordOsUsageId, ActivityEntity.WORD_OS_USAGE);
 		ActivityLogData activityLog = activityLogService.prepareActivityLog("deleteWordOsUsage", wordId, ActivityOwner.WORD, roleDatasetCode, isManualEventOnUpdateEnabled);
 		cudDbService.deleteWordOsUsage(wordOsUsageId);
 		activityLogService.createActivityLog(activityLog, wordOsUsageId, ActivityEntity.WORD_OS_USAGE);
@@ -1746,7 +1746,7 @@ public class CudService extends AbstractCudService implements PermConstant, Acti
 	@Transactional(rollbackFor = Exception.class)
 	public void deleteParadigm(Long paradigmId, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
 
-		Long wordId = activityLogService.getOwnerId(paradigmId, ActivityEntity.PARADIGM);
+		Long wordId = activityLogService.getActivityOwnerId(paradigmId, ActivityEntity.PARADIGM);
 		ActivityLogData activityLog = activityLogService.prepareActivityLog("deleteParadigm", wordId, ActivityOwner.WORD, roleDatasetCode, isManualEventOnUpdateEnabled);
 		cudDbService.deleteParadigm(paradigmId);
 		activityLogService.createActivityLog(activityLog, paradigmId, ActivityEntity.PARADIGM);

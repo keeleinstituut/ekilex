@@ -234,7 +234,7 @@ public class SynCudService extends AbstractSynCudService implements SystemConsta
 
 	private void updateWordRelationStatus(String functName, Long wordRelationId, String relationStatus, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
 
-		Long relationWordId = activityLogService.getOwnerId(wordRelationId, ActivityEntity.WORD_RELATION);
+		Long relationWordId = activityLogService.getActivityOwnerId(wordRelationId, ActivityEntity.WORD_RELATION);
 		ActivityLogData activityLog = activityLogService.prepareActivityLog(functName, relationWordId, ActivityOwner.WORD, roleDatasetCode, isManualEventOnUpdateEnabled);
 		synSearchDbService.updateRelationStatus(wordRelationId, relationStatus);
 		activityLogService.createActivityLog(activityLog, wordRelationId, ActivityEntity.WORD_RELATION);

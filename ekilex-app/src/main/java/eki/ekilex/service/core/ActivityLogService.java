@@ -24,8 +24,10 @@ import eki.common.constant.ActivityOwner;
 import eki.common.constant.FreeformConstant;
 import eki.common.constant.GlobalConstant;
 import eki.common.constant.LastActivityType;
+import eki.common.constant.PublishingConstant;
 import eki.common.exception.IllegalParamException;
 import eki.ekilex.constant.SystemConstant;
+import eki.ekilex.data.ActivityContext;
 import eki.ekilex.data.ActivityLog;
 import eki.ekilex.data.ActivityLogData;
 import eki.ekilex.data.ActivityLogOwnerEntityDescr;
@@ -56,12 +58,12 @@ import eki.ekilex.data.ParadigmFormTuple;
 import eki.ekilex.data.Source;
 import eki.ekilex.data.TypeActivityLogDiff;
 import eki.ekilex.data.Word;
+import eki.ekilex.data.WordEkiRecommendation;
 import eki.ekilex.data.WordEtym;
 import eki.ekilex.data.WordEtymTuple;
 import eki.ekilex.data.WordGroup;
 import eki.ekilex.data.WordLexemeMeaningIds;
 import eki.ekilex.data.WordOsMorph;
-import eki.ekilex.data.WordEkiRecommendation;
 import eki.ekilex.data.WordOsUsage;
 import eki.ekilex.data.WordRelation;
 import eki.ekilex.service.db.ActivityLogDbService;
@@ -74,7 +76,7 @@ import eki.ekilex.service.db.SourceDbService;
 import eki.ekilex.service.util.ConversionUtil;
 
 @Component
-public class ActivityLogService implements SystemConstant, GlobalConstant, FreeformConstant {
+public class ActivityLogService implements SystemConstant, GlobalConstant, FreeformConstant, PublishingConstant {
 
 	private static final String ACTIVITY_LOG_DIFF_FIELD_NAME = "diff";
 
@@ -129,7 +131,7 @@ public class ActivityLogService implements SystemConstant, GlobalConstant, Freef
 		return getFreeformOwnerDescr(freeformId);
 	}
 
-	public Long getOwnerId(Long entityId, ActivityEntity entity) throws Exception {
+	public Long getActivityOwnerId(Long entityId, ActivityEntity entity) throws Exception {
 
 		if (ActivityEntity.FREEFORM.equals(entity)) {
 			ActivityLogOwnerEntityDescr freeformOwnerDescr = getFreeformOwnerDescr(entityId);
@@ -202,6 +204,45 @@ public class ActivityLogService implements SystemConstant, GlobalConstant, Freef
 		}
 	}
 
+	public ActivityContext getActivityContext(Long entityId, String entityName) throws Exception {
+
+		if (StringUtils.equalsIgnoreCase(entityName, ENTITY_NAME_LEXEME)) {
+			return new ActivityContext(entityId, ActivityOwner.LEXEME, entityId, ActivityEntity.LEXEME);
+		} else if (StringUtils.equalsIgnoreCase(entityName, ENTITY_NAME_LEXEME_NOTE)) {
+			Long ownerId = activityLogDbService.getLexemeNoteOwnerId(entityId);
+			return new ActivityContext(ownerId, ActivityOwner.LEXEME, entityId, ActivityEntity.LEXEME_NOTE);
+		} else if (StringUtils.equalsIgnoreCase(entityName, ENTITY_NAME_MEANING_NOTE)) {
+			Long ownerId = activityLogDbService.getMeaningNoteOwnerId(entityId);
+			return new ActivityContext(ownerId, ActivityOwner.MEANING, entityId, ActivityEntity.MEANING_NOTE);
+		} else if (StringUtils.equalsIgnoreCase(entityName, ENTITY_NAME_MEANING_IMAGE)) {
+			Long ownerId = activityLogDbService.getMeaningImageOwnerId(entityId);
+			return new ActivityContext(ownerId, ActivityOwner.MEANING, entityId, ActivityEntity.MEANING_IMAGE);
+		} else if (StringUtils.equalsIgnoreCase(entityName, ENTITY_NAME_MEANING_MEDIA)) {
+			Long ownerId = activityLogDbService.getMeaningMediaOwnerId(entityId);
+			return new ActivityContext(ownerId, ActivityOwner.MEANING, entityId, ActivityEntity.MEANING_MEDIA);
+		} else if (StringUtils.equalsIgnoreCase(entityName, ENTITY_NAME_DEFINITION)) {
+			Long ownerId = activityLogDbService.getDefinitionOwnerId(entityId);
+			return new ActivityContext(ownerId, ActivityOwner.MEANING, entityId, ActivityEntity.DEFINITION);
+		} else if (StringUtils.equalsIgnoreCase(entityName, ENTITY_NAME_USAGE)) {
+			Long ownerId = activityLogDbService.getUsageOwnerId(entityId);
+			return new ActivityContext(ownerId, ActivityOwner.LEXEME, entityId, ActivityEntity.USAGE);
+		} else if (StringUtils.equalsIgnoreCase(entityName, ENTITY_NAME_GRAMMAR)) {
+			Long ownerId = activityLogDbService.getGrammarOwnerId(entityId);
+			return new ActivityContext(ownerId, ActivityOwner.LEXEME, entityId, ActivityEntity.GRAMMAR);
+		} else if (StringUtils.equalsIgnoreCase(entityName, ENTITY_NAME_GOVERNMENT)) {
+			Long ownerId = activityLogDbService.getGovernmentOwnerId(entityId);
+			return new ActivityContext(ownerId, ActivityOwner.LEXEME, entityId, ActivityEntity.GOVERNMENT);
+		} else if (StringUtils.equalsIgnoreCase(entityName, ENTITY_NAME_WORD_RELATION)) {
+			Long ownerId = activityLogDbService.getWordRelationOwnerId(entityId);
+			return new ActivityContext(ownerId, ActivityOwner.WORD, entityId, ActivityEntity.WORD_RELATION);
+		} else if (StringUtils.equalsIgnoreCase(entityName, ENTITY_NAME_WORD_EKI_RECOMMENDATION)) {
+			Long ownerId = activityLogDbService.getWordEkiRecommendationOwnerId(entityId);
+			return new ActivityContext(ownerId, ActivityOwner.WORD, entityId, ActivityEntity.WORD_EKI_RECOMMENDATION);
+		} else {
+			throw new IllegalParamException("Missing activity context for " + entityName);
+		}
+	}
+
 	public ActivityLogOwnerEntityDescr getFreeformOwnerDescr(Long freeformId) throws Exception {
 		Map<String, Object> freeformOwnerDataMap = activityLogDbService.getFirstDepthFreeformOwnerDataMap(freeformId);
 		return resolveOwnerDescr(freeformOwnerDataMap);
@@ -229,6 +270,11 @@ public class ActivityLogService implements SystemConstant, GlobalConstant, Freef
 			return new ActivityLogOwnerEntityDescr(ActivityOwner.MEANING, id, ActivityEntity.FREEFORM);
 		}
 		throw new IllegalParamException("Unable to locate owner of the freeform");
+	}
+
+	public ActivityLogData prepareActivityLog(String functName, ActivityContext activityContext, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
+
+		return prepareActivityLog(functName, activityContext.getOwnerId(), activityContext.getOwnerName(), roleDatasetCode, isManualEventOnUpdateEnabled);
 	}
 
 	public ActivityLogData prepareActivityLog(String functName, Long ownerId, ActivityOwner ownerName, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {

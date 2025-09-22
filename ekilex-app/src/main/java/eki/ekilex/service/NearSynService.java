@@ -400,7 +400,7 @@ public class NearSynService extends AbstractSynSearchService {
 
 	private void setRelationStatusProcessed(Long wordRelationId, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
 
-		Long relationWordId = activityLogService.getOwnerId(wordRelationId, ActivityEntity.WORD_RELATION);
+		Long relationWordId = activityLogService.getActivityOwnerId(wordRelationId, ActivityEntity.WORD_RELATION);
 		ActivityLogData activityLog = activityLogService.prepareActivityLog("setRelationStatusProcessed", relationWordId, ActivityOwner.WORD, roleDatasetCode, isManualEventOnUpdateEnabled);
 		synSearchDbService.updateRelationStatus(wordRelationId, RelationStatus.PROCESSED.name());
 		activityLogService.createActivityLog(activityLog, wordRelationId, ActivityEntity.WORD_RELATION);

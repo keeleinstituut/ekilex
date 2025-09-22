@@ -75,12 +75,11 @@ public class EditController extends AbstractMutableDataPageController implements
 	@PostMapping(CREATE_ITEM_URI)
 	public Response createItem(@RequestBody CreateItemRequest itemData, @ModelAttribute(name = SESSION_BEAN) SessionBean sessionBean) throws Exception {
 
+		EkiUser user = userContext.getUser();
+		String roleDatasetCode = getRoleDatasetCode();
 		boolean isManualEventOnUpdateEnabled = sessionBean.isManualEventOnUpdateEnabled();
 
 		logger.debug("Create item: {}; auto update: {}", itemData, isManualEventOnUpdateEnabled);
-
-		EkiUser user = userContext.getUser();
-		String roleDatasetCode = getRoleDatasetCode();
 
 		Long id = itemData.getId();
 		Long id2 = itemData.getId2();

@@ -180,7 +180,7 @@ public class MeaningTableService extends AbstractSearchService {
 			boolean isUsageUpdate = meaningTableDbService.isUsageUpdate(usageId, valuePrese, isPublic);
 			if (isUsageUpdate) {
 				String value = textDecorationService.removeEkiElementMarkup(valuePrese);
-				Long lexemeId = activityLogService.getOwnerId(usageId, ActivityEntity.USAGE);
+				Long lexemeId = activityLogService.getActivityOwnerId(usageId, ActivityEntity.USAGE);
 				ActivityLogData activityLog = activityLogService
 						.prepareActivityLog("updateTermMeaningTableMeaning", lexemeId, ActivityOwner.LEXEME, roleDatasetCode, isManualEventOnUpdateEnabled);
 				meaningTableDbService.updateUsage(usageId, value, valuePrese, isPublic, userName);
@@ -197,7 +197,7 @@ public class MeaningTableService extends AbstractSearchService {
 		}
 
 		for (Long definitionId : definitionIds) {
-			Long meaningId = activityLogService.getOwnerId(definitionId, ActivityEntity.DEFINITION);
+			Long meaningId = activityLogService.getActivityOwnerId(definitionId, ActivityEntity.DEFINITION);
 			ActivityLogData activityLog = activityLogService
 					.prepareActivityLog("updateDefinitionsPublicity", meaningId, ActivityOwner.MEANING, roleDatasetCode, isManualEventOnUpdateEnabled);
 			meaningTableDbService.updateDefinitionPublicity(definitionId, isPublic);
@@ -231,7 +231,7 @@ public class MeaningTableService extends AbstractSearchService {
 		DatasetPermission userRole = user.getRecentRole();
 		String roleDatasetCode = userRole.getDatasetCode();
 		for (Long usageId : usageIds) {
-			Long lexemeId = activityLogService.getOwnerId(usageId, ActivityEntity.USAGE);
+			Long lexemeId = activityLogService.getActivityOwnerId(usageId, ActivityEntity.USAGE);
 			ActivityLogData activityLog = activityLogService
 					.prepareActivityLog("updateUsagesPublicity", lexemeId, ActivityOwner.LEXEME, roleDatasetCode, isManualEventOnUpdateEnabled);
 			meaningTableDbService.updateUsagePublicity(usageId, isPublic, userName);
