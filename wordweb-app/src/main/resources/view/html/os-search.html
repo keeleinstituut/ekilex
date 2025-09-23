@@ -146,7 +146,6 @@
                 <div th:text="#{label.os.word.rel.degr}" class="text-caption text-darker-gray">Võrded</div>
                 <div>
                   <th:block th:each="wordRelationGroup, wordRelationGroupIter : ${word.title3WordRelationGroups}">
-                    <span th:utext="${wordRelationGroup.wordRelType.value}"></span>
                     <th:block th:each="relatedWord, relatedWordIter : ${wordRelationGroup.relatedWords}">
                       <span th:utext="${relatedWord.valuePrese}"></span>
                       <sup th:text="${relatedWord.homonymNr}" th:if="${relatedWord.homonymExists}"></sup>
