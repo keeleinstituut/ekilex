@@ -22,7 +22,7 @@
           <div th:each="wordEkiRecommendation : ${details.word.wordEkiRecommendations}">
             <div th:replace="lexdialog :: edit_word_eki_recommendation"></div>
             <div class="col hidden-buttons pr-5">
-              <div class="action-buttons-anchor">
+              <div class="action-buttons-anchor align-items-start">
                 <div>
                   <div th:utext="${wordEkiRecommendation.valuePrese}"></div>
                   <span class="ctxt" th:text="'[' + ${wordEkiRecommendation.modifiedBy} + ']'" th:if="${wordEkiRecommendation.modifiedBy != null}"></span>
