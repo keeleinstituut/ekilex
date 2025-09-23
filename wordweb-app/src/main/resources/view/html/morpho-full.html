@@ -30,11 +30,14 @@
   <th:block th:fragment="morpho-form-value(form)" th:with="prefix=${prefix} ?: '', tilde=${tilde} ?: false">
     <th:block th:if="${form.morphExists && !#strings.isEmpty(form.value)}">
       <div style="display: inline-block; max-width: 40vw;">
-        <span th:if="${tilde}"> ~ </span>
-        <span th:if="${form.questionable}" class="text-muted">*</span>
-        <span th:text="${prefix}" th:if="${!#strings.isEmpty(prefix) && !#strings.equals(form.value, '-')}"></span>
-        <span th:utext="${form.displayForm}" class="form-display-form-field" style="display: none;"></span>
-        <span th:utext="${form.valuePrese}" class="form-value-field" th:classappend="${form.questionable ? 'text-muted ml-n1' : ''}"></span>
+        <span class="d-inline-flex">
+          <span class="mr-1" th:if="${tilde}">(~</span>
+          <span th:if="${form.questionable}" class="text-muted">*</span>
+          <span th:text="${prefix}" th:if="${!#strings.isEmpty(prefix) && !#strings.equals(form.value, '-')}"></span>
+          <span th:utext="${form.displayForm}" class="form-display-form-field" style="display: none;"></span>
+          <span th:utext="${form.valuePrese}" class="form-value-field" th:classappend="${form.questionable ? 'text-muted ml-n1' : ''}"></span>
+          <span th:if="${tilde}">)</span>
+        </span>
         <th:block th:if="${form.audioFileExists}">
           <button type="button" th:aria-label="|#{aria.listen} - ${form.value}|" th:if="${#strings.isEmpty(prefix)}"
                   th:data-audio-url="@{'/files/audio/' + ${form.audioFile}}"
