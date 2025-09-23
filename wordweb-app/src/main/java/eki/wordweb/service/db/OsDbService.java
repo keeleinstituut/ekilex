@@ -221,14 +221,11 @@ public class OsDbService implements SystemConstant, GlobalConstant {
 				.select(
 						DSL.val(WORD_SEARCH_GROUP_WORD_RELATION).as("sgroup"),
 						w.VALUE.as("word_value"))
-				.from(w)
-				.whereExists(DSL
-						.select(wr.WORD_ID)
-						.from(wr)
-						.where(
-								wr.WORD_ID.eq(w.WORD_ID)
-										.and(DSL.lower(wr.VALUE).eq(wordInfixLowerField))))
-				.orderBy(w.VALUE)
+				.from(w, wr)
+				.where(
+						wr.WORD_ID.eq(w.WORD_ID)
+								.and(DSL.lower(wr.VALUE).eq(wordInfixLowerField)))
+				.orderBy(wr.ORDER_BY)
 				.asTable("wrs");
 
 		Field<Integer> wlf = DSL.field(Routines.levenshtein1(ws.field("word_value", String.class), wordInfixLowerField));
@@ -247,7 +244,6 @@ public class OsDbService implements SystemConstant, GlobalConstant {
 								wrs.field("word_value", String.class),
 								DSL.val(0).as("lev"))
 						.from(wrs)
-						.orderBy(DSL.field("word_value"))
 						.limit(maxWordCount))
 				.asTable("wst");
 
