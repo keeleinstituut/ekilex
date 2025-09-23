@@ -48,32 +48,6 @@ public class OsDbService implements SystemConstant, GlobalConstant {
 		Field<String> searchValueLowerField = DSL.lower(searchValue);
 
 		OsWord w = OS_WORD.as("w");
-		Condition where = DSL.lower(w.VALUE).eq(searchValueLowerField);
-
-		return getWords(w, where, fiCollationExists);
-	}
-
-	public List<eki.wordweb.data.os.OsWord> getRelatedWords(String searchValue, boolean fiCollationExists) {
-
-		Field<String> searchValueLowerField = DSL.lower(searchValue);
-
-		OsWord w = OS_WORD.as("w");
-		OsWordRelationIdx wr = OS_WORD_RELATION_IDX.as("wr");
-		Condition where = DSL
-				.exists(DSL
-						.select(wr.WORD_ID)
-						.from(wr)
-						.where(
-								wr.WORD_ID.eq(w.WORD_ID)
-										.and(DSL.lower(wr.VALUE).eq(searchValueLowerField)))
-
-				);
-
-		return getWords(w, where, fiCollationExists);
-	}
-
-	private List<eki.wordweb.data.os.OsWord> getWords(OsWord w, Condition where, boolean fiCollationExists) {
-
 		OsLexemeMeaning lm = OS_LEXEME_MEANING.as("lm");
 
 		Field<JSON> lmf = DSL
@@ -93,10 +67,33 @@ public class OsDbService implements SystemConstant, GlobalConstant {
 				.select(w.fields())
 				.select(lmf.as("lexeme_meanings"))
 				.from(w)
-				.where(where)
-				.orderBy(
-						wvobf,
-						w.HOMONYM_NR)
+				.where(DSL.lower(w.VALUE).eq(searchValueLowerField))
+				.orderBy(wvobf, w.HOMONYM_NR)
+				.fetchInto(eki.wordweb.data.os.OsWord.class);
+	}
+
+	public List<eki.wordweb.data.os.OsWord> getRelatedWords(String searchValue) {
+
+		Field<String> searchValueLowerField = DSL.lower(searchValue);
+
+		OsWord w = OS_WORD.as("w");
+		OsLexemeMeaning lm = OS_LEXEME_MEANING.as("lm");
+		OsWordRelationIdx wr = OS_WORD_RELATION_IDX.as("wr");
+
+		Field<JSON> lmf = DSL
+				.select(lm.LEXEME_MEANINGS)
+				.from(lm)
+				.where(lm.WORD_ID.eq(w.WORD_ID))
+				.asField();
+
+		return create
+				.select(w.fields())
+				.select(lmf.as("lexeme_meanings"))
+				.from(w, wr)
+				.where(
+						wr.WORD_ID.eq(w.WORD_ID)
+								.and(DSL.lower(wr.VALUE).eq(searchValueLowerField)))
+				.orderBy(wr.ORDER_BY)
 				.fetchInto(eki.wordweb.data.os.OsWord.class);
 	}
 

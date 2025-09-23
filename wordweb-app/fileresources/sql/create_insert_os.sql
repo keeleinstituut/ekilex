@@ -233,6 +233,7 @@ create table os_word_relation_idx (
 	word_id bigint not null,
 	word_relation_id bigint not null,
 	word_rel_type_code varchar(100) not null, -- unindexed
+	order_by bigint not null,
 	related_word_id bigint not null,
 	value text not null,
 	value_as_word text
@@ -254,6 +255,7 @@ select
 	word_id,
 	word_relation_id,
 	word_rel_type_code,
+	order_by,
 	related_word_id,
 	value,
 	value_as_word
@@ -264,6 +266,7 @@ dblink(
 	word_id bigint,
 	word_relation_id bigint,
 	word_rel_type_code varchar(100),
+	order_by bigint,
 	related_word_id bigint,
 	value text,
 	value_as_word text

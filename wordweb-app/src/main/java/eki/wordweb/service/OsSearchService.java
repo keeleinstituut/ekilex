@@ -54,7 +54,7 @@ public class OsSearchService implements GlobalConstant, SystemConstant {
 		words = osDbService.getWords(searchValue, fiCollationExists);
 
 		if (CollectionUtils.isEmpty(words)) {
-			words = osDbService.getRelatedWords(searchValue, fiCollationExists);
+			words = osDbService.getRelatedWords(searchValue);
 			isCompoundSearch = true;
 		}
 

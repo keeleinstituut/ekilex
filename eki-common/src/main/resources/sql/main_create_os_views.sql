@@ -640,6 +640,7 @@ select
 	w1.id word_id,
 	wr.id word_relation_id,
 	wr.word_rel_type_code,
+	wr.order_by,
 	w2.id related_word_id,
 	w2.value,
 	w2.value_as_word

@@ -11,7 +11,7 @@ import org.jooq.Field;
 import org.jooq.ForeignKey;
 import org.jooq.Name;
 import org.jooq.Record;
-import org.jooq.Row6;
+import org.jooq.Row7;
 import org.jooq.Schema;
 import org.jooq.Table;
 import org.jooq.TableField;
@@ -56,6 +56,11 @@ public class OsWordRelationIdx extends TableImpl<OsWordRelationIdxRecord> {
      * The column <code>public.os_word_relation_idx.word_rel_type_code</code>.
      */
     public final TableField<OsWordRelationIdxRecord, String> WORD_REL_TYPE_CODE = createField(DSL.name("word_rel_type_code"), SQLDataType.VARCHAR(100).nullable(false), this, "");
+
+    /**
+     * The column <code>public.os_word_relation_idx.order_by</code>.
+     */
+    public final TableField<OsWordRelationIdxRecord, Long> ORDER_BY = createField(DSL.name("order_by"), SQLDataType.BIGINT.nullable(false), this, "");
 
     /**
      * The column <code>public.os_word_relation_idx.related_word_id</code>.
@@ -137,11 +142,11 @@ public class OsWordRelationIdx extends TableImpl<OsWordRelationIdxRecord> {
     }
 
     // -------------------------------------------------------------------------
-    // Row6 type methods
+    // Row7 type methods
     // -------------------------------------------------------------------------
 
     @Override
-    public Row6<Long, Long, String, Long, String, String> fieldsRow() {
-        return (Row6) super.fieldsRow();
+    public Row7<Long, Long, String, Long, Long, String, String> fieldsRow() {
+        return (Row7) super.fieldsRow();
     }
 }
