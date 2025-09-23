@@ -74,10 +74,12 @@
                     <th:block th:if="${lexemeMeaning.meaning.lexemeWords}">
                       <span>(=</span>
                       <th:block th:each="lexemeWord, lexemeWordIter : ${lexemeMeaning.meaning.lexemeWords}">
-                        <a th:href="@{${@viewUtil.getOsSearchUri(lexemeWord.value, lexemeWord.homonymNr)}}">
-                          <span th:utext="${@decorUtil.getWordValueMarkup(lexemeWord)}">tee</span>
-                        </a>
-                        <sup th:text="${lexemeWord.homonymNr}" th:if="${lexemeWord.homonymExists}"></sup>
+                        <span class="os-results__inline-word">
+                          <a class="os-results__inline-word" th:href="@{${@viewUtil.getOsSearchUri(lexemeWord.value, lexemeWord.homonymNr)}}">
+                            <span th:utext="${@decorUtil.getWordValueMarkup(lexemeWord)}">tee</span>
+                          </a>
+                          <sup th:text="${lexemeWord.homonymNr}" th:if="${lexemeWord.homonymExists}"></sup>
+                        </span>  
                         <th:block th:each="register, registerIter : ${lexemeWord.registers}">
                           <span class="os-hints__small" th:text="${register.value}"></span>
                           <span th:unless="${registerIter.last}" class="ml-n1">,</span>

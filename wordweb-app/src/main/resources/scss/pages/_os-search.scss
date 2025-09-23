@@ -16,6 +16,12 @@
     padding-left: 24px;
   }
 
+  & sup {
+    position: static;
+    vertical-align: super;
+    line-height: 1;
+  }
+
   &__highlighted {
     background-color: var(--color-alert-yellow);
   }
