@@ -13,6 +13,10 @@ public class OsSearchResult extends AbstractSearchResult {
 
 	private OsWord selectedWord;
 
+	private boolean homonymSearch;
+
+	private boolean compoundSearch;
+
 	private boolean validSearch;
 
 	public OsSearchResult() {
@@ -20,12 +24,23 @@ public class OsSearchResult extends AbstractSearchResult {
 		this.words = Collections.emptyList();
 		this.selectedWord = null;
 		this.validSearch = false;
+		this.homonymSearch = true;
+		this.compoundSearch = false;
 	}
 
-	public OsSearchResult(List<OsWord> words, OsWord selectedWord, boolean resultExists, boolean singleResult, int resultCount) {
+	public OsSearchResult(
+			List<OsWord> words,
+			OsWord selectedWord,
+			boolean homonymSearch,
+			boolean compoundSearch,
+			boolean resultExists,
+			boolean singleResult,
+			int resultCount) {
 		super(resultExists, singleResult, resultCount);
 		this.words = words;
 		this.selectedWord = selectedWord;
+		this.homonymSearch = homonymSearch;
+		this.compoundSearch = compoundSearch;
 		this.validSearch = true;
 	}
 
@@ -35,6 +50,14 @@ public class OsSearchResult extends AbstractSearchResult {
 
 	public OsWord getSelectedWord() {
 		return selectedWord;
+	}
+
+	public boolean isHomonymSearch() {
+		return homonymSearch;
+	}
+
+	public boolean isCompoundSearch() {
+		return compoundSearch;
 	}
 
 	public boolean isValidSearch() {

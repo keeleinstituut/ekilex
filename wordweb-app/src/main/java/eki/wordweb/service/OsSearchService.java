@@ -49,11 +49,13 @@ public class OsSearchService implements GlobalConstant, SystemConstant {
 		boolean fiCollationExists = osDbService.fiCollationExists();
 		List<OsWord> words;
 		OsWord selectedWord = null;
+		boolean isCompoundSearch = false;
 
 		words = osDbService.getWords(searchValue, fiCollationExists);
 
 		if (CollectionUtils.isEmpty(words)) {
 			words = osDbService.getRelatedWords(searchValue, fiCollationExists);
+			isCompoundSearch = true;
 		}
 
 		if (CollectionUtils.isNotEmpty(words)) {
@@ -66,11 +68,13 @@ public class OsSearchService implements GlobalConstant, SystemConstant {
 			osConversionUtil.setContentExistsFlags(selectedWord);
 		}
 
+		boolean isHomonymSearch = !isCompoundSearch;
 		int resultCount = CollectionUtils.size(words);
 		boolean resultExists = CollectionUtils.isNotEmpty(words);
 		boolean singleResult = resultCount == 1;
 
-		OsSearchResult searchResult = new OsSearchResult(words, selectedWord, resultExists, singleResult, resultCount);
+		OsSearchResult searchResult = new OsSearchResult(
+				words, selectedWord, isHomonymSearch, isCompoundSearch, resultExists, singleResult, resultCount);
 
 		return searchResult;
 	}

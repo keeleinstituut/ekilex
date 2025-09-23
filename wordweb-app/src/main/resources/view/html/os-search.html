@@ -39,7 +39,8 @@
           <div class="d-flex align-items-center flex-wrap">
             <div class="os-search__title-wrapper">
               <h1 class="search__lex-title" th:utext="${@decorUtil.getWordValueMarkup(word)}">tee</h1>
-              <strong class="os-search__title-number" th:aria-label="|#{aria.homonym} ${word.homonymNr}|" th:text="${word.homonymNr}" th:unless="${searchResult.singleResult}">1</strong>
+              <strong th:text="${word.homonymNr}" th:if="${word.homonymExists}"
+                      class="os-search__title-number" th:aria-label="|#{aria.homonym} ${word.homonymNr}|" >1</strong>
             </div>
             <span class="os-tag mr-2" th:if="${word.displayMorph != null}" th:text="${word.displayMorph.value}"></span>
             <th:block th:each="wordType : ${word.wordTypes}" th:if="${not #lists.isEmpty(word.wordTypes)}">
