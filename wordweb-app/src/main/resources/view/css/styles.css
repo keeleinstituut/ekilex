@@ -15801,6 +15801,9 @@ span.material-symbols-outlined--small {
 .os-results__highlighted {
   background-color: var(--color-alert-yellow);
 }
+.os-results__inline-word {
+  display: inline-flex;
+}
 .homonym-page--os {
   margin: 32px 0;
 }

@@ -19,6 +19,11 @@
   &__highlighted {
     background-color: var(--color-alert-yellow);
   }
+
+  &__inline-word {
+    // Keep text and comma spans together
+    display: inline-flex;
+  }
 }
 
 
