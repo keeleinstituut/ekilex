@@ -6,7 +6,7 @@
 />
 
 <div
-  class="absolute top-14 right-4 overflow-hidden z-[1073] flex flex-col gap-2"
+  class="absolute top-14 min-[320px]:right-4 overflow-hidden z-[1073] flex flex-col gap-2"
 >
   {#each toasts as toast}
     <div class={toast.class} transition:fly={{ x: 100 }}>
@@ -77,7 +77,7 @@
   let toasts: Toast[] = [];
   let id = 0;
   const baseToastClass =
-    "border text-eki-dark-blue-text rounded-lg pl-6 pr-[10px] grid grid-cols-[1fr_24px] gap-2 w-[335px] left-0";
+    "border text-eki-dark-blue-text rounded-lg pl-6 pr-[10px] grid grid-cols-[1fr_24px] gap-2 max-w-[335px] left-0";
   const closeToast = (toast: Toast) => {
     toasts = toasts.filter((existingToast) => existingToast.id !== toast.id);
     component.dispatchEvent(
