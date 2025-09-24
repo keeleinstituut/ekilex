@@ -37,23 +37,22 @@ public class OsConversionUtil implements GlobalConstant {
 
 			String wordValue = word.getValue();
 			Integer homonymNr = word.getHomonymNr();
-			List<OsWord> meaningWords = word.getMeaningWords();
 			List<OsLexemeMeaning> lexemeMeanings = word.getLexemeMeanings();
 			String meaningWordsWrapup = null;
 			String definitionsWrapup = null;
 
-			if (CollectionUtils.isNotEmpty(meaningWords)) {
-				meaningWordsWrapup = meaningWords.stream()
-						.map(OsWord::getValuePrese)
-						.collect(Collectors.joining(", "));
-			}
 			if (CollectionUtils.isNotEmpty(lexemeMeanings)) {
-				definitionsWrapup = lexemeMeanings.stream()
-						.map(OsLexemeMeaning::getMeaning)
-						.filter(meaning -> meaning.getDefinition() != null)
-						.map(OsMeaning::getDefinition)
-						.map(OsDefinition::getValuePrese)
-						.collect(Collectors.joining(", "));
+				OsMeaning firstMeaning = lexemeMeanings.get(0).getMeaning();
+				OsDefinition definition = firstMeaning.getDefinition();
+				if (definition != null) {
+					definitionsWrapup = definition.getValuePrese();
+				}
+				List<OsLexemeWord> lexemeWords = firstMeaning.getLexemeWords();
+				if (CollectionUtils.isNotEmpty(lexemeWords)) {
+					meaningWordsWrapup = lexemeWords.stream()
+							.map(OsLexemeWord::getValuePrese)
+							.collect(Collectors.joining(", "));
+				}
 			}
 
 			String searchUri = webUtil.composeOsSearchUri(wordValue, homonymNr);
