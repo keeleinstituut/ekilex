@@ -68,19 +68,19 @@
 		<profile>
 			<id>wosul</id>
 			<properties>
-				<spring.boot.mainclass>eki.ekilex.cli.WordOdUsageLoader</spring.boot.mainclass>
+				<spring.boot.mainclass>eki.ekilex.cli.WordOsUsageLoader</spring.boot.mainclass>
 			</properties>
 		</profile>
 		<profile>
 			<id>wosml</id>
 			<properties>
-				<spring.boot.mainclass>eki.ekilex.cli.WordOdMorphLoader</spring.boot.mainclass>
+				<spring.boot.mainclass>eki.ekilex.cli.WordOsMorphLoader</spring.boot.mainclass>
 			</properties>
 		</profile>
 		<profile>
 			<id>oscwl</id>
 			<properties>
-				<spring.boot.mainclass>eki.ekilex.cli.OdCompWordLoader</spring.boot.mainclass>
+				<spring.boot.mainclass>eki.ekilex.cli.OsCompWordLoader</spring.boot.mainclass>
 			</properties>
 		</profile>
 		<profile>

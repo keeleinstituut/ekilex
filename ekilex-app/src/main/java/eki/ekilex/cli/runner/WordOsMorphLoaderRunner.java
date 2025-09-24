@@ -65,7 +65,6 @@ public class WordOsMorphLoaderRunner extends AbstractLoaderRunner {
 				wordOsMorph = new WordOsMorph();
 				wordOsMorph.setWordId(wordId);
 				wordOsMorph.setValuePrese(morphValuePrese);
-				wordOsMorph.setPublic(true);
 
 				setValueAndPrese(wordOsMorph);
 				setCreateUpdate(wordOsMorph);
