@@ -30,6 +30,8 @@ public class OsWord extends AbstractDataObject implements DecoratedWordType {
 
 	private List<Classifier> wordTypes;
 
+	private List<OsWord> meaningWords;
+
 	private WordOsMorph wordOsMorph;
 
 	private List<WordOsUsage> wordOsUsages;
@@ -147,6 +149,14 @@ public class OsWord extends AbstractDataObject implements DecoratedWordType {
 
 	public void setWordTypes(List<Classifier> wordTypes) {
 		this.wordTypes = wordTypes;
+	}
+
+	public List<OsWord> getMeaningWords() {
+		return meaningWords;
+	}
+
+	public void setMeaningWords(List<OsWord> meaningWords) {
+		this.meaningWords = meaningWords;
 	}
 
 	public WordOsMorph getWordOsMorph() {

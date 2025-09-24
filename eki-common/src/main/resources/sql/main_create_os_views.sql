@@ -72,7 +72,98 @@ select
 		word_word_type wwt
 	where
 		wwt.word_id = w.id
-	) word_type_codes
+	) word_type_codes,
+	(select
+		json_agg(
+			json_build_object(
+				'wordId', w2.id,
+				'value', w2.value,
+				'valuePrese', w2.value_prese,
+				'homonymNr', coalesce(hn2.homonym_nr, w2.homonym_nr),
+				'homonymExists',
+				(exists (
+					select
+						1
+					from
+						word w3
+					where
+						w3.value = w2.value
+						and w3.id != w2.id
+						and w3.is_public = true
+						and w3.lang = 'est'
+						and exists (
+							select
+								1
+							from
+								lexeme l3
+							where
+								l3.word_id = w3.id
+								and l3.is_public = true
+								and l3.is_word = true
+								and l3.dataset_code = 'eki'
+								and exists (
+									select
+										1
+									from
+										publishing p3 
+									where
+										p3.target_name = 'ww_os'
+										and p3.entity_name = 'lexeme'
+										and p3.entity_id = l3.id
+								)
+						)
+				)),
+				'displayMorphCode', w2.display_morph_code,
+				'wordTypeCodes',
+				(select
+					array_agg(wwt2.word_type_code)
+				from
+					word_word_type wwt2
+				where
+					wwt2.word_id = w2.id
+				)
+			)
+			order by
+				l2.order_by
+		)
+	from
+		word w2
+		left outer join word_os_homonym_nr hn2 on hn2.word_id = w2.id
+		inner join lexeme l1 on l1.word_id = w.id
+		inner join lexeme l2 on l2.word_id = w2.id
+	where
+		w2.is_public = true
+		and w2.lang = 'est'
+		and l1.is_public = true
+		and l1.is_word = true
+		and l1.dataset_code = 'eki'
+		and exists (
+			select
+				1
+			from
+				publishing p2 
+			where
+				p2.target_name = 'ww_os'
+				and p2.entity_name = 'lexeme'
+				and p2.entity_id = l1.id
+		)
+		and l1.id != l2.id
+		and l1.meaning_id = l2.meaning_id
+		and l2.word_id = w2.id
+		and l2.is_public = true
+		and l2.is_word = true
+		and l2.dataset_code = 'eki'
+		and exists (
+			select
+				1
+			from
+				publishing p2 
+			where
+				p2.target_name = 'ww_os'
+				and p2.entity_name = 'lexeme'
+				and p2.entity_id = l2.id
+		)
+	) meaning_words
 from 
 	word w
 	left outer join word_os_homonym_nr hn on hn.word_id = w.id

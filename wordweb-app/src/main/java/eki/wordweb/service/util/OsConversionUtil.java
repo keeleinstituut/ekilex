@@ -37,24 +37,23 @@ public class OsConversionUtil implements GlobalConstant {
 
 			String wordValue = word.getValue();
 			Integer homonymNr = word.getHomonymNr();
+			List<OsWord> meaningWords = word.getMeaningWords();
 			List<OsLexemeMeaning> lexemeMeanings = word.getLexemeMeanings();
+			String meaningWordsWrapup = null;
+			String definitionsWrapup = null;
 
-			for (OsLexemeMeaning lexemeMeaning : lexemeMeanings) {
-
-				OsMeaning meaning = lexemeMeaning.getMeaning();
-				OsDefinition definition = meaning.getDefinition();
-				List<OsLexemeWord> lexemeWords = meaning.getLexemeWords();
-
-				if (definition == null) {
-					continue;
-				}
-				word.setDefinitionsWrapup(definition.getValuePrese());
-				if (CollectionUtils.isNotEmpty(lexemeWords)) {
-					String meaningWordsWrapup = lexemeWords.stream()
-							.map(OsLexemeWord::getValuePrese)
-							.collect(Collectors.joining(", "));
-					word.setMeaningWordsWrapup(meaningWordsWrapup);
-				}
+			if (CollectionUtils.isNotEmpty(meaningWords)) {
+				meaningWordsWrapup = meaningWords.stream()
+						.map(OsWord::getValuePrese)
+						.collect(Collectors.joining(", "));
+			}
+			if (CollectionUtils.isNotEmpty(lexemeMeanings)) {
+				definitionsWrapup = lexemeMeanings.stream()
+						.map(OsLexemeMeaning::getMeaning)
+						.filter(meaning -> meaning.getDefinition() != null)
+						.map(OsMeaning::getDefinition)
+						.map(OsDefinition::getValuePrese)
+						.collect(Collectors.joining(", "));
 			}
 
 			String searchUri = webUtil.composeOsSearchUri(wordValue, homonymNr);
@@ -65,6 +64,8 @@ public class OsConversionUtil implements GlobalConstant {
 				alreadySelected = true;
 			}
 
+			word.setMeaningWordsWrapup(meaningWordsWrapup);
+			word.setDefinitionsWrapup(definitionsWrapup);
 			word.setSearchUri(searchUri);
 			word.setHomonymNr(homonymNr);
 			word.setSelected(selected);

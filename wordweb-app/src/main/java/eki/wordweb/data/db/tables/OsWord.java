@@ -9,9 +9,10 @@ import eki.wordweb.data.db.tables.records.OsWordRecord;
 
 import org.jooq.Field;
 import org.jooq.ForeignKey;
+import org.jooq.JSON;
 import org.jooq.Name;
 import org.jooq.Record;
-import org.jooq.Row8;
+import org.jooq.Row9;
 import org.jooq.Schema;
 import org.jooq.Table;
 import org.jooq.TableField;
@@ -82,6 +83,11 @@ public class OsWord extends TableImpl<OsWordRecord> {
      */
     public final TableField<OsWordRecord, String[]> WORD_TYPE_CODES = createField(DSL.name("word_type_codes"), SQLDataType.VARCHAR(100).getArrayDataType(), this, "");
 
+    /**
+     * The column <code>public.os_word.meaning_words</code>.
+     */
+    public final TableField<OsWordRecord, JSON> MEANING_WORDS = createField(DSL.name("meaning_words"), SQLDataType.JSON, this, "");
+
     private OsWord(Name alias, Table<OsWordRecord> aliased) {
         this(alias, aliased, null);
     }
@@ -147,11 +153,11 @@ public class OsWord extends TableImpl<OsWordRecord> {
     }
 
     // -------------------------------------------------------------------------
-    // Row8 type methods
+    // Row9 type methods
     // -------------------------------------------------------------------------
 
     @Override
-    public Row8<Long, String, String, String, Integer, Boolean, String, String[]> fieldsRow() {
-        return (Row8) super.fieldsRow();
+    public Row9<Long, String, String, String, Integer, Boolean, String, String[], JSON> fieldsRow() {
+        return (Row9) super.fieldsRow();
     }
 }

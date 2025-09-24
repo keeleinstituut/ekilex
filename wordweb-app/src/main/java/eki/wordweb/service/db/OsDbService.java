@@ -128,7 +128,6 @@ public class OsDbService implements SystemConstant, GlobalConstant {
 				.select(wer.WORD_EKI_RECOMMENDATIONS)
 				.from(wer)
 				.where(wer.WORD_ID.eq(w.WORD_ID))
-				.limit(1)
 				.asField();
 
 		Field<JSON> lmf = DSL

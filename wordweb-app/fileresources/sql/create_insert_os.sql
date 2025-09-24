@@ -29,7 +29,8 @@ create table os_word (
 	homonym_nr integer not null,
 	homonym_exists boolean not null,
 	display_morph_code text,
-	word_type_codes varchar(100) array
+	word_type_codes varchar(100) array,
+	meaning_words json
 );
 
 create index os_word_word_id_idx on os_word (word_id);
@@ -50,7 +51,8 @@ select
 	homonym_nr, 
 	homonym_exists,
 	display_morph_code, 
-	word_type_codes 
+	word_type_codes,
+	meaning_words
 from
 dblink(
 	'host=localhost user=ekilex password=3kil3x dbname=ekilex',
@@ -62,7 +64,8 @@ dblink(
 	homonym_nr integer,
 	homonym_exists boolean,
 	display_morph_code text,
-	word_type_codes varchar(100) array
+	word_type_codes varchar(100) array,
+	meaning_words json
 );
 
 create table os_word_os_morph (
