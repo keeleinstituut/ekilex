@@ -32,10 +32,10 @@
       <div style="display: inline-block; max-width: 40vw;">
         <span class="d-inline-flex">
           <span class="mr-1" th:if="${tilde}">(~</span>
-          <span th:if="${form.questionable}" class="text-muted">*</span>
-          <span th:text="${prefix}" th:if="${!#strings.isEmpty(prefix) && !#strings.equals(form.value, '-')}"></span>
-          <span th:utext="${form.displayForm}" class="form-display-form-field" style="display: none;"></span>
-          <span th:utext="${form.valuePrese}" class="form-value-field" th:classappend="${form.questionable ? 'text-muted ml-n1' : ''}"></span>
+          <span th:if="${form.questionable}" class="text-muted mr-1">*</span>
+          <span class="mr-1" th:text="${prefix}" th:if="${!#strings.isEmpty(prefix) && !#strings.equals(form.value, '-')}"></span>
+          <span th:utext="${form.displayForm}" class="form-display-form-field mr-1" style="display: none;"></span>
+          <span th:utext="${form.valuePrese}" class="form-value-field mr-1" th:classappend="${form.questionable ? 'text-muted ml-n1' : ''}"></span>
           <span th:if="${tilde}">)</span>
         </span>
         <th:block th:if="${form.audioFileExists}">

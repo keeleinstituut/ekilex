@@ -21,14 +21,14 @@
           </div>
           <div th:each="wordEkiRecommendation : ${details.word.wordEkiRecommendations}">
             <div th:replace="lexdialog :: edit_word_eki_recommendation"></div>
-            <div class="col hidden-buttons pr-5">
+            <div class="sidebar-actions__item">
               <div class="action-buttons-anchor align-items-start">
                 <div>
                   <div th:utext="${wordEkiRecommendation.valuePrese}"></div>
                   <span class="ctxt" th:text="'[' + ${wordEkiRecommendation.modifiedBy} + ']'" th:if="${wordEkiRecommendation.modifiedBy != null}"></span>
                   <span class="ctxt" th:text="'(' + ${#temporals.format(wordEkiRecommendation.modifiedOn, 'dd.MM.yyyy')} + ')'" th:if="${wordEkiRecommendation.modifiedOn != null}"></span>
                 </div>
-                <div class="action-buttons-2">
+                <div class="sidebar-actions__buttons mt-1 mr-1">
                   <button type="button" class="btn badge badge-primary"
                           th:title="#{common.edit}"
                           data-toggle="modal"
@@ -376,7 +376,7 @@
         th:each="relation, itemIter : ${relationGroup.members}"
         th:data-id="${relation.id}"
         th:data-orderby="${relation.orderBy}">
-        <div class="sidebar-actions__item">
+        <div class="sidebar-actions__item sidebar-actions__item--with-highlight">
           <span sec:authorize="#vars.details.word.crudGrant" class="sorter-handle">
             <i class="fa fa-ellipsis-v"></i>
           </span>

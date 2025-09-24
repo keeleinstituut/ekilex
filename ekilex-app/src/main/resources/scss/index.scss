@@ -322,14 +322,16 @@
   cursor: move;
 }
 
-li:has(> .sidebar-actions__item) {
+.sidebar-actions__item {
   &:hover,
   &:focus-within {
     & .sidebar-actions__buttons {
       display: inline-flex;
     }
 
-    background-color: var(--color-light-blue);
+    &.sidebar-actions__item--with-highlight {
+      background-color: var(--color-light-blue);
+    }
   }
 }
 
