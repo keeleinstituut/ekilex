@@ -16,8 +16,19 @@
     padding-left: 24px;
   }
 
+  & sup {
+    position: static;
+    vertical-align: super;
+    line-height: 1;
+  }
+
   &__highlighted {
     background-color: var(--color-alert-yellow);
+  }
+
+  &__inline-word {
+    // Keep text and comma spans together
+    display: inline-flex;
   }
 }
 

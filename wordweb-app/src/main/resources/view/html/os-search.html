@@ -55,9 +55,7 @@
               <div class="mt-2">
                 <div th:text="#{label.os.morpho}" class="text-caption text-darker-gray">Lühimorfo</div>
                 <div>
-                  <span>&lt;</span>
-                  <span th:utext="${word.wordOsMorph.valuePrese}"></span>
-                  <span>&gt;</span>
+                  <span>&lt;</span><span th:utext="${word.wordOsMorph.valuePrese}"></span><span>&gt;</span>
                 </div>
               </div>
             </th:block>
@@ -74,10 +72,12 @@
                     <th:block th:if="${lexemeMeaning.meaning.lexemeWords}">
                       <span>(=</span>
                       <th:block th:each="lexemeWord, lexemeWordIter : ${lexemeMeaning.meaning.lexemeWords}">
-                        <a th:href="@{${@viewUtil.getOsSearchUri(lexemeWord.value, lexemeWord.homonymNr)}}">
-                          <span th:utext="${@decorUtil.getWordValueMarkup(lexemeWord)}">tee</span>
-                        </a>
-                        <sup th:text="${lexemeWord.homonymNr}" th:if="${lexemeWord.homonymExists}"></sup>
+                        <span class="os-results__inline-word">
+                          <a class="os-results__inline-word" th:href="@{${@viewUtil.getOsSearchUri(lexemeWord.value, lexemeWord.homonymNr)}}">
+                            <span th:utext="${@decorUtil.getWordValueMarkup(lexemeWord)}">tee</span>
+                          </a>
+                          <sup th:text="${lexemeWord.homonymNr}" th:if="${lexemeWord.homonymExists}"></sup>
+                        </span>  
                         <th:block th:each="register, registerIter : ${lexemeWord.registers}">
                           <span class="os-hints__small" th:text="${register.value}"></span>
                           <span th:unless="${registerIter.last}" class="ml-n1">,</span>
@@ -112,10 +112,10 @@
                   <th:block th:each="wordRelationGroup : ${word.title1WordRelationGroups}">
                     <li>
                       <th:block th:each="relatedWord, relatedWordIter : ${wordRelationGroup.relatedWords}">
-                        <span th:class="${relatedWord.valuePrese == searchValue ? 'os-results__highlighted' : ''}"><!--
-                          --><th:block th:utext="${relatedWord.valuePrese}"></th:block><!--
-                        --><sup th:text="${relatedWord.homonymNr}" th:if="${relatedWord.homonymExists}"></sup><!--
-                        --><th:block th:unless="${relatedWordIter.last}">,</th:block>
+                        <span class="os-results__inline-word">
+                          <span th:utext="${relatedWord.valuePrese}" th:class="${relatedWord.valuePrese == searchValue ? 'os-results__highlighted' : ''}"></span>
+                          <sup th:text="${relatedWord.homonymNr}" th:if="${relatedWord.homonymExists}"></sup>
+                          <span th:unless="${relatedWordIter.last}">,</span>
                         </span>
                       </th:block>
                     </li>
@@ -130,10 +130,10 @@
                   <th:block th:each="wordRelationGroup : ${word.title2WordRelationGroups}">
                     <li>
                       <th:block th:each="relatedWord, relatedWordIter : ${wordRelationGroup.relatedWords}">
-                        <span th:class="${relatedWord.valuePrese == searchValue ? 'os-results__highlighted' : ''}"><!--
-                          --><th:block th:utext="${relatedWord.valuePrese}"></th:block><!--
-                        --><sup th:text="${relatedWord.homonymNr}" th:if="${relatedWord.homonymExists}"></sup><!--
-                        --><th:block th:unless="${relatedWordIter.last}">,</th:block>
+                        <span class="os-results__inline-word">
+                          <span th:utext="${relatedWord.valuePrese}" th:class="${relatedWord.valuePrese == searchValue ? 'os-results__highlighted' : ''}"></span>
+                          <sup th:text="${relatedWord.homonymNr}" th:if="${relatedWord.homonymExists}"></sup>
+                          <span th:unless="${relatedWordIter.last}">,</span>
                         </span>
                       </th:block>
                     </li>
@@ -146,11 +146,11 @@
                 <div th:text="#{label.os.word.rel.degr}" class="text-caption text-darker-gray">Võrded</div>
                 <div>
                   <th:block th:each="wordRelationGroup, wordRelationGroupIter : ${word.title3WordRelationGroups}">
-                    <th:block th:each="relatedWord, relatedWordIter : ${wordRelationGroup.relatedWords}">
-                      <span th:utext="${relatedWord.valuePrese}"></span>
+                    <span class="os-results__inline-word" th:each="relatedWord, relatedWordIter : ${wordRelationGroup.relatedWords}">
+                      <span th:utext="${relatedWord.valuePrese}" th:class="${relatedWord.valuePrese == searchValue ? 'os-results__highlighted' : ''}"></span>
                       <sup th:text="${relatedWord.homonymNr}" th:if="${relatedWord.homonymExists}"></sup>
-                      <span th:unless="${relatedWordIter.last}">~</span>
-                    </th:block>
+                      <span class="mx-1" th:unless="${relatedWordIter.last}">~</span>
+                    </span>
                     <span th:unless="${wordRelationGroupIter.last}" class="ml-n1">,</span>
                   </th:block>
                 </div>
@@ -162,11 +162,11 @@
                   <div th:text="${wordRelationGroup.wordRelType.value}" class="text-caption text-darker-gray text-capitalize">Mingid</div>
                   <div>
                     <th:block th:each="relatedWord, relatedWordIter : ${wordRelationGroup.relatedWords}">
-                      <span th:class="${relatedWord.valuePrese == searchValue ? 'os-results__highlighted' : ''}"><!--
-                          --><th:block th:utext="${relatedWord.valuePrese}"></th:block><!--
-                        --><sup th:text="${relatedWord.homonymNr}" th:if="${relatedWord.homonymExists}"></sup><!--
-                        --><th:block th:unless="${relatedWordIter.last}">,</th:block>
-                        </span>
+                      <span class="os-results__inline-word">
+                        <span th:utext="${relatedWord.valuePrese}" th:class="${relatedWord.valuePrese == searchValue ? 'os-results__highlighted' : ''}"></span>
+                        <sup th:text="${relatedWord.homonymNr}" th:if="${relatedWord.homonymExists}"></sup>
+                        <span th:unless="${relatedWordIter.last}">,</span>
+                      </span>
                     </th:block>
                   </div>
                 </div>

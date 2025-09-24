@@ -15798,8 +15798,16 @@ span.material-symbols-outlined--small {
 .os-results ul {
   padding-left: 24px;
 }
+.os-results sup {
+  position: static;
+  vertical-align: super;
+  line-height: 1;
+}
 .os-results__highlighted {
   background-color: var(--color-alert-yellow);
+}
+.os-results__inline-word {
+  display: inline-flex;
 }
 .homonym-page--os {
   margin: 32px 0;
@@ -16223,22 +16231,6 @@ span.material-symbols-outlined--small {
 }
 .icon-back::before {
   content: "\e90d";
-}
-@media (max-width: 319px) {
-  html::after {
-    position: fixed;
-    top: 0;
-    left: 0;
-    z-index: 9999999999999;
-    width: 100%;
-    height: 100%;
-    content: "";
-    background-color: rgba(255, 255, 255, 0.5);
-  }
-  *:not(html) {
-    -webkit-filter: blur(0.0625rem);
-    filter: blur(0.0625rem);
-  }
 }
 .break {
   flex-basis: 100%;
@@ -16703,7 +16695,7 @@ span.material-symbols-outlined--small {
 }
 .logo-big {
   display: block;
-  width: 270px;
+  max-width: 270px;
   height: 93px;
   margin: 0 auto;
   background-image: url(../images/sonaveeb-logo-lg.svg);
