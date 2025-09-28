@@ -24,7 +24,7 @@
           <form th:action="@{/wwfeedback/search}" method="post">
             <div class="form-group row">
               <div class="col-2">
-                <input type="text" class="form-control" name="searchFilter" th:value="${wwFeedbackSearchBean.searchFilter}" th:placeholder="#{feedback.placeholder.search}">
+                <input type="text" name="searchFilter" th:value="${wwFeedbackSearchBean.searchFilter}" class="form-control" th:placeholder="#{feedback.placeholder.search}" autocomplete="false">
               </div>
               <div class="col-2">
                 <div class="form-control">

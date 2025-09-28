@@ -15,15 +15,19 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import eki.common.data.SearchStat;
+import eki.wordweb.constant.WebConstant;
 import eki.wordweb.data.WordsMatch;
 import eki.wordweb.data.os.OsSearchResult;
 import eki.wordweb.service.OsSearchService;
+import eki.wordweb.web.bean.SessionBean;
 
 @ConditionalOnWebApplication
 @Controller
+@SessionAttributes(WebConstant.SESSION_BEAN)
 public class OsSearchController extends AbstractSearchController {
 
 	@Autowired
@@ -96,6 +100,8 @@ public class OsSearchController extends AbstractSearchController {
 		searchValue = textDecorationService.unifySymbols(searchValue);
 		boolean isMaskedSearchCrit = webUtil.isMaskedSearchCrit(searchValue);
 		boolean isSearchForm = isSearchForm(model);
+		SessionBean sessionBean = getSessionBean(model);
+		sessionBean.setSearchWord(searchValue);
 
 		if (isMaskedSearchCrit) {
 			String cleanMaskSearchValue = cleanupMask(searchValue);
