@@ -31,12 +31,13 @@
     <th:block th:if="${form.morphExists && !#strings.isEmpty(form.value)}">
       <div style="display: inline-block; max-width: 40vw;">
         <span class="d-inline-flex">
-          <span class="mr-1" th:if="${tilde}">(~</span>
+          <span th:if="${form.displayLevel == 3}">(</span>
+          <span class="mr-1" th:if="${tilde}">~</span>
           <span th:if="${form.questionable}" class="text-muted mr-1">*</span>
           <span class="mr-1" th:text="${prefix}" th:if="${!#strings.isEmpty(prefix) && !#strings.equals(form.value, '-')}"></span>
           <span th:utext="${form.displayForm}" class="form-display-form-field mr-1" style="display: none;"></span>
-          <span th:utext="${form.valuePrese}" class="form-value-field mr-1" th:classappend="${form.questionable ? 'text-muted ml-n1' : ''}"></span>
-          <span th:if="${tilde}">)</span>
+          <span th:utext="${form.valuePrese}" class="form-value-field" th:classappend="${form.questionable ? 'text-muted ml-n1' : ''}"></span>
+          <span th:if="${form.displayLevel == 3}">)</span>
         </span>
         <th:block th:if="${form.audioFileExists}">
           <button type="button" th:aria-label="|#{aria.listen} - ${form.value}|" th:if="${#strings.isEmpty(prefix)}"
@@ -136,7 +137,7 @@
       </tr>
       <tr>
         <td class="legend-sign" style="min-width: none; width: 40px">()</td>
-        <td class="legend-text" style="min-width: none; width: 90%">ümarsulud märgivad vähem kasutatavat muuttüüpi: aeglane 12 ja (10)</td>
+        <td class="legend-text" style="min-width: none; width: 90%">ümarsulud märgivad vähem kasutatavat muuttüüpi: aeglane 12 ja (10) või vormi: filmidesse (~ filmesse)</td>
       </tr>
       <tr>
         <td class="legend-sign" style="min-width: none; width: 40px"></td>
