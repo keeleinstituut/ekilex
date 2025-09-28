@@ -205,5 +205,192 @@ where
 
 alter table word_eki_recommendation drop column orig_id cascade;
 
+-- #5 --
+
+create table feedback_log_attr (
+	id bigserial primary key,
+	feedback_log_id bigint references feedback_log(id) on delete cascade not null,
+	name text not null,
+	value text not null,
+	unique(feedback_log_id, name)
+);
+
+create index feedback_log_attr_feedback_log_id_idx on feedback_log_attr(feedback_log_id);
+create index feedback_log_attr_value_idx on feedback_log_attr(value);
+create index feedback_log_attr_value_lower_idx on feedback_log_attr(lower(value));
+
+insert into feedback_log_attr (
+	feedback_log_id,
+	name,
+	value
+)
+select
+	fl.id,
+	'sender_name',
+	fl.sender_name
+from
+	feedback_log fl
+where
+	fl.sender_name is not null
+	and fl.sender_name != ''
+order by
+	fl.id
+;
+
+insert into feedback_log_attr (
+	feedback_log_id,
+	name,
+	value
+)
+select
+	fl.id,
+	'company',
+	fl.company
+from
+	feedback_log fl
+where
+	fl.company is not null
+	and fl.company != ''
+order by
+	fl.id
+;
+
+insert into feedback_log_attr (
+	feedback_log_id,
+	name,
+	value
+)
+select
+	fl.id,
+	'word',
+	fl.word
+from
+	feedback_log fl
+where
+	fl.word is not null
+	and fl.word != ''
+order by
+	fl.id
+;
+
+insert into feedback_log_attr (
+	feedback_log_id,
+	name,
+	value
+)
+select
+	fl.id,
+	'definition',
+	fl.definition
+from
+	feedback_log fl
+where
+	fl.definition is not null
+	and fl.definition != ''
+order by
+	fl.id
+;
+
+insert into feedback_log_attr (
+	feedback_log_id,
+	name,
+	value
+)
+select
+	fl.id,
+	'definition_source',
+	fl.definition_source
+from
+	feedback_log fl
+where
+	fl.definition_source is not null
+	and fl.definition_source != ''
+order by
+	fl.id
+;
+
+insert into feedback_log_attr (
+	feedback_log_id,
+	name,
+	value
+)
+select
+	fl.id,
+	'usage',
+	fl.usage
+from
+	feedback_log fl
+where
+	fl.usage is not null
+	and fl.usage != ''
+order by
+	fl.id
+;
+
+insert into feedback_log_attr (
+	feedback_log_id,
+	name,
+	value
+)
+select
+	fl.id,
+	'usage_source',
+	fl.usage_source
+from
+	feedback_log fl
+where
+	fl.usage_source is not null
+	and fl.usage_source != ''
+order by
+	fl.id
+;
+
+insert into feedback_log_attr (
+	feedback_log_id,
+	name,
+	value
+)
+select
+	fl.id,
+	'domain',
+	fl.domain
+from
+	feedback_log fl
+where
+	fl.domain is not null
+	and fl.domain != ''
+order by
+	fl.id
+;
+
+insert into feedback_log_attr (
+	feedback_log_id,
+	name,
+	value
+)
+select
+	fl.id,
+	'other_info',
+	fl.other_info
+from
+	feedback_log fl
+where
+	fl.other_info is not null
+	and fl.other_info != ''
+order by
+	fl.id
+;
+
+alter table feedback_log drop column sender_name cascade;
+alter table feedback_log drop column company cascade;
+alter table feedback_log drop column word cascade;
+alter table feedback_log drop column definition cascade;
+alter table feedback_log drop column definition_source cascade;
+alter table feedback_log drop column usage cascade;
+alter table feedback_log drop column usage_source cascade;
+alter table feedback_log drop column domain cascade;
+alter table feedback_log drop column other_info cascade;
+
+
 
 

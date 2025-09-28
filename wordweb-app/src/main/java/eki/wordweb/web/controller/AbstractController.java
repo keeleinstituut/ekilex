@@ -41,7 +41,7 @@ public abstract class AbstractController implements WebConstant, SystemConstant,
 	private String speechRecognitionServiceUrl;
 
 	@Value("${wordweb.feedback.service.url:}")
-	private String feedbackServiceUrl;
+	protected String feedbackServiceUrl;
 
 	@Autowired
 	protected TextDecorationService textDecorationService;

@@ -17,7 +17,7 @@ import org.jooq.ForeignKey;
 import org.jooq.Identity;
 import org.jooq.Name;
 import org.jooq.Record;
-import org.jooq.Row15;
+import org.jooq.Row6;
 import org.jooq.Schema;
 import org.jooq.Table;
 import org.jooq.TableField;
@@ -60,11 +60,6 @@ public class FeedbackLog extends TableImpl<FeedbackLogRecord> {
     public final TableField<FeedbackLogRecord, String> FEEDBACK_TYPE = createField(DSL.name("feedback_type"), SQLDataType.VARCHAR(100).nullable(false), this, "");
 
     /**
-     * The column <code>public.feedback_log.sender_name</code>.
-     */
-    public final TableField<FeedbackLogRecord, String> SENDER_NAME = createField(DSL.name("sender_name"), SQLDataType.CLOB, this, "");
-
-    /**
      * The column <code>public.feedback_log.sender_email</code>.
      */
     public final TableField<FeedbackLogRecord, String> SENDER_EMAIL = createField(DSL.name("sender_email"), SQLDataType.CLOB, this, "");
@@ -75,26 +70,6 @@ public class FeedbackLog extends TableImpl<FeedbackLogRecord> {
     public final TableField<FeedbackLogRecord, LocalDateTime> CREATED_ON = createField(DSL.name("created_on"), SQLDataType.LOCALDATETIME(6).nullable(false).defaultValue(DSL.field("statement_timestamp()", SQLDataType.LOCALDATETIME)), this, "");
 
     /**
-     * The column <code>public.feedback_log.word</code>.
-     */
-    public final TableField<FeedbackLogRecord, String> WORD = createField(DSL.name("word"), SQLDataType.CLOB, this, "");
-
-    /**
-     * The column <code>public.feedback_log.definition</code>.
-     */
-    public final TableField<FeedbackLogRecord, String> DEFINITION = createField(DSL.name("definition"), SQLDataType.CLOB, this, "");
-
-    /**
-     * The column <code>public.feedback_log.usage</code>.
-     */
-    public final TableField<FeedbackLogRecord, String> USAGE = createField(DSL.name("usage"), SQLDataType.CLOB, this, "");
-
-    /**
-     * The column <code>public.feedback_log.other_info</code>.
-     */
-    public final TableField<FeedbackLogRecord, String> OTHER_INFO = createField(DSL.name("other_info"), SQLDataType.CLOB, this, "");
-
-    /**
      * The column <code>public.feedback_log.last_search</code>.
      */
     public final TableField<FeedbackLogRecord, String> LAST_SEARCH = createField(DSL.name("last_search"), SQLDataType.CLOB, this, "");
@@ -103,26 +78,6 @@ public class FeedbackLog extends TableImpl<FeedbackLogRecord> {
      * The column <code>public.feedback_log.description</code>.
      */
     public final TableField<FeedbackLogRecord, String> DESCRIPTION = createField(DSL.name("description"), SQLDataType.CLOB, this, "");
-
-    /**
-     * The column <code>public.feedback_log.definition_source</code>.
-     */
-    public final TableField<FeedbackLogRecord, String> DEFINITION_SOURCE = createField(DSL.name("definition_source"), SQLDataType.CLOB, this, "");
-
-    /**
-     * The column <code>public.feedback_log.usage_source</code>.
-     */
-    public final TableField<FeedbackLogRecord, String> USAGE_SOURCE = createField(DSL.name("usage_source"), SQLDataType.CLOB, this, "");
-
-    /**
-     * The column <code>public.feedback_log.company</code>.
-     */
-    public final TableField<FeedbackLogRecord, String> COMPANY = createField(DSL.name("company"), SQLDataType.CLOB, this, "");
-
-    /**
-     * The column <code>public.feedback_log.domain</code>.
-     */
-    public final TableField<FeedbackLogRecord, String> DOMAIN = createField(DSL.name("domain"), SQLDataType.CLOB, this, "");
 
     private FeedbackLog(Name alias, Table<FeedbackLogRecord> aliased) {
         this(alias, aliased, null);
@@ -204,11 +159,11 @@ public class FeedbackLog extends TableImpl<FeedbackLogRecord> {
     }
 
     // -------------------------------------------------------------------------
-    // Row15 type methods
+    // Row6 type methods
     // -------------------------------------------------------------------------
 
     @Override
-    public Row15<Long, String, String, String, LocalDateTime, String, String, String, String, String, String, String, String, String, String> fieldsRow() {
-        return (Row15) super.fieldsRow();
+    public Row6<Long, String, String, LocalDateTime, String, String> fieldsRow() {
+        return (Row6) super.fieldsRow();
     }
 }

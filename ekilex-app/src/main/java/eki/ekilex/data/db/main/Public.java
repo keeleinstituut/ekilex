@@ -34,6 +34,7 @@ import eki.ekilex.data.db.main.tables.EkiUserApplication;
 import eki.ekilex.data.db.main.tables.EkiUserProfile;
 import eki.ekilex.data.db.main.tables.EtymologyType;
 import eki.ekilex.data.db.main.tables.FeedbackLog;
+import eki.ekilex.data.db.main.tables.FeedbackLogAttr;
 import eki.ekilex.data.db.main.tables.FeedbackLogComment;
 import eki.ekilex.data.db.main.tables.Form;
 import eki.ekilex.data.db.main.tables.FormFreq;
@@ -358,6 +359,11 @@ public class Public extends SchemaImpl {
      * The table <code>public.feedback_log</code>.
      */
     public final FeedbackLog FEEDBACK_LOG = FeedbackLog.FEEDBACK_LOG;
+
+    /**
+     * The table <code>public.feedback_log_attr</code>.
+     */
+    public final FeedbackLogAttr FEEDBACK_LOG_ATTR = FeedbackLogAttr.FEEDBACK_LOG_ATTR;
 
     /**
      * The table <code>public.feedback_log_comment</code>.
@@ -1092,6 +1098,7 @@ public class Public extends SchemaImpl {
             Sequences.EKI_USER_ID_SEQ,
             Sequences.EKI_USER_PROFILE_ID_SEQ,
             Sequences.ETYMOLOGY_TYPE_ORDER_BY_SEQ,
+            Sequences.FEEDBACK_LOG_ATTR_ID_SEQ,
             Sequences.FEEDBACK_LOG_COMMENT_ID_SEQ,
             Sequences.FEEDBACK_LOG_ID_SEQ,
             Sequences.FORM_FREQ_ID_SEQ,
@@ -1259,6 +1266,7 @@ public class Public extends SchemaImpl {
             EkiUserProfile.EKI_USER_PROFILE,
             EtymologyType.ETYMOLOGY_TYPE,
             FeedbackLog.FEEDBACK_LOG,
+            FeedbackLogAttr.FEEDBACK_LOG_ATTR,
             FeedbackLogComment.FEEDBACK_LOG_COMMENT,
             Form.FORM,
             FormFreq.FORM_FREQ,

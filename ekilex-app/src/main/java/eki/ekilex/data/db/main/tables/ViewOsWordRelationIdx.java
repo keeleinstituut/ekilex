@@ -11,7 +11,7 @@ import org.jooq.Field;
 import org.jooq.ForeignKey;
 import org.jooq.Name;
 import org.jooq.Record;
-import org.jooq.Row6;
+import org.jooq.Row7;
 import org.jooq.Schema;
 import org.jooq.Table;
 import org.jooq.TableField;
@@ -58,6 +58,11 @@ public class ViewOsWordRelationIdx extends TableImpl<ViewOsWordRelationIdxRecord
     public final TableField<ViewOsWordRelationIdxRecord, String> WORD_REL_TYPE_CODE = createField(DSL.name("word_rel_type_code"), SQLDataType.VARCHAR(100), this, "");
 
     /**
+     * The column <code>public.view_os_word_relation_idx.order_by</code>.
+     */
+    public final TableField<ViewOsWordRelationIdxRecord, Long> ORDER_BY = createField(DSL.name("order_by"), SQLDataType.BIGINT, this, "");
+
+    /**
      * The column <code>public.view_os_word_relation_idx.related_word_id</code>.
      */
     public final TableField<ViewOsWordRelationIdxRecord, Long> RELATED_WORD_ID = createField(DSL.name("related_word_id"), SQLDataType.BIGINT, this, "");
@@ -77,7 +82,7 @@ public class ViewOsWordRelationIdx extends TableImpl<ViewOsWordRelationIdxRecord
     }
 
     private ViewOsWordRelationIdx(Name alias, Table<ViewOsWordRelationIdxRecord> aliased, Field<?>[] parameters) {
-        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.view("create view \"view_os_word_relation_idx\" as  SELECT w1.id AS word_id,\n    wr.id AS word_relation_id,\n    wr.word_rel_type_code,\n    w2.id AS related_word_id,\n    w2.value,\n    w2.value_as_word\n   FROM word w1,\n    word w2,\n    word_relation wr\n  WHERE ((wr.word1_id = w1.id) AND (wr.word2_id = w2.id) AND (w1.lang = 'est'::bpchar) AND (w2.lang = 'est'::bpchar) AND (w1.is_public = true) AND (w2.is_public = true) AND ((wr.word_rel_type_code)::text = ANY ((ARRAY['ls-järelosaga'::character varying, 'ls-esiosaga'::character varying, 'deriv'::character varying, 'komp'::character varying, 'superl'::character varying, 'posit'::character varying])::text[])) AND (EXISTS ( SELECT 1\n           FROM lexeme l\n          WHERE ((l.word_id = w1.id) AND (l.is_public = true) AND (l.is_word = true) AND ((l.dataset_code)::text = 'eki'::text) AND (EXISTS ( SELECT 1\n                   FROM publishing p\n                  WHERE (((p.target_name)::text = 'ww_os'::text) AND ((p.entity_name)::text = 'lexeme'::text) AND (p.entity_id = l.id))))))) AND (EXISTS ( SELECT 1\n           FROM publishing p\n          WHERE (((p.target_name)::text = 'ww_os'::text) AND ((p.entity_name)::text = 'word_relation'::text) AND (p.entity_id = wr.id)))))\n  ORDER BY w1.id, wr.id;"));
+        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.view("create view \"view_os_word_relation_idx\" as  SELECT w1.id AS word_id,\n    wr.id AS word_relation_id,\n    wr.word_rel_type_code,\n    wr.order_by,\n    w2.id AS related_word_id,\n    w2.value,\n    w2.value_as_word\n   FROM word w1,\n    word w2,\n    word_relation wr\n  WHERE ((wr.word1_id = w1.id) AND (wr.word2_id = w2.id) AND (w1.lang = 'est'::bpchar) AND (w2.lang = 'est'::bpchar) AND (w1.is_public = true) AND (w2.is_public = true) AND ((wr.word_rel_type_code)::text = ANY ((ARRAY['ls-järelosaga'::character varying, 'ls-esiosaga'::character varying, 'deriv'::character varying, 'komp'::character varying, 'superl'::character varying, 'posit'::character varying])::text[])) AND (EXISTS ( SELECT 1\n           FROM lexeme l\n          WHERE ((l.word_id = w1.id) AND (l.is_public = true) AND (l.is_word = true) AND ((l.dataset_code)::text = 'eki'::text) AND (EXISTS ( SELECT 1\n                   FROM publishing p\n                  WHERE (((p.target_name)::text = 'ww_os'::text) AND ((p.entity_name)::text = 'lexeme'::text) AND (p.entity_id = l.id))))))) AND (EXISTS ( SELECT 1\n           FROM publishing p\n          WHERE (((p.target_name)::text = 'ww_os'::text) AND ((p.entity_name)::text = 'word_relation'::text) AND (p.entity_id = wr.id)))))\n  ORDER BY w1.id, wr.id;"));
     }
 
     /**
@@ -137,11 +142,11 @@ public class ViewOsWordRelationIdx extends TableImpl<ViewOsWordRelationIdxRecord
     }
 
     // -------------------------------------------------------------------------
-    // Row6 type methods
+    // Row7 type methods
     // -------------------------------------------------------------------------
 
     @Override
-    public Row6<Long, Long, String, Long, String, String> fieldsRow() {
-        return (Row6) super.fieldsRow();
+    public Row7<Long, Long, String, Long, Long, String, String> fieldsRow() {
+        return (Row7) super.fieldsRow();
     }
 }

@@ -33,6 +33,7 @@ public class OsSearchController extends AbstractSearchController {
 	public String home(HttpServletRequest request, Model model) {
 
 		model.addAttribute("searchResult", new OsSearchResult());
+		model.addAttribute("feedbackServiceUrl", feedbackServiceUrl);
 
 		return OS_HOME_PAGE;
 	}
@@ -41,6 +42,7 @@ public class OsSearchController extends AbstractSearchController {
 	public String search(HttpServletRequest request, Model model) {
 
 		model.addAttribute("searchResult", new OsSearchResult());
+		model.addAttribute("feedbackServiceUrl", feedbackServiceUrl);
 
 		return OS_SEARCH_PAGE;
 	}
@@ -104,6 +106,7 @@ public class OsSearchController extends AbstractSearchController {
 			searchValue = cleanMaskSearchValue;
 			WordsMatch wordsMatch = osSearchService.getWordsWithMask(cleanMaskSearchValue);
 			model.addAttribute("wordsMatch", wordsMatch);
+			model.addAttribute("feedbackServiceUrl", feedbackServiceUrl);
 
 			String searchUri = webUtil.composeOsSearchUri(searchValue, null);
 			SearchStat searchStat = statDataUtil.composeSearchStat(request, isSearchForm, SEARCH_MODE_OS, searchValue, null, searchUri, wordsMatch);
@@ -119,6 +122,7 @@ public class OsSearchController extends AbstractSearchController {
 			}
 			OsSearchResult searchResult = osSearchService.search(searchValue, homonymNr);
 			model.addAttribute("searchResult", searchResult);
+			model.addAttribute("feedbackServiceUrl", feedbackServiceUrl);
 
 			String searchUri = webUtil.composeOsSearchUri(searchValue, homonymNr);
 			SearchStat searchStat = statDataUtil.composeSearchStat(request, isSearchForm, SEARCH_MODE_OS, searchValue, homonymNr, searchUri, searchResult);

@@ -3,4 +3,5 @@ Märkused ver 1.43.0 tarne kohta:
 ülivõrde seoste ümberjärjestamine
 mvn spring-boot:run -P wrsupr -D spring-boot.run.profiles=dev
 
-
+ÕS morfo uus laadimine
+mvn spring-boot:run -P wosml -D spring-boot.run.profiles=dev -D spring-boot.run.arguments="impfile="/apps/data/wos-morph.tsv""

@@ -70,54 +70,29 @@
               </td>
               <td>
                 <div class="text-primary" th:text="${feedbackLog.senderEmail}"></div>
-                <em th:text="${feedbackLog.senderName}"></em>
               </td>
               <td>
-                <div>
-                  <strong th:text="${feedbackLog.word}"></strong>
-                </div>
-                <div>
-                  <span th:text="${feedbackLog.lastSearch}"></span>
-                </div>
+                <span th:text="${feedbackLog.lastSearch}"></span>
               </td>
               <td class="breakWords pr-3">
                 <div class="row ml-1" th:unless="${#strings.isEmpty(feedbackLog.description)}">
                   <span class="lbl pr-2" th:text="#{feedback.description}">Kirjeldus</span>
                   <span th:text="${feedbackLog.description}"></span>
                 </div>
-                <div class="row ml-1" th:unless="${#strings.isEmpty(feedbackLog.domain)}">
-                  <span class="lbl pr-2" th:text="#{feedback.domain}">Valdkond</span>
-                  <span th:text="${feedbackLog.domain}"></span>
-                </div>
-                <div class="row ml-1" th:unless="${#strings.isEmpty(feedbackLog.definition)}">
-                  <span class="lbl pr-2" th:text="#{feedback.definition}">Tähendus</span>
-                  <span th:text="${feedbackLog.definition}"></span>
-                </div>
-                <div class="row ml-1" th:unless="${#strings.isEmpty(feedbackLog.definitionSource)}">
-                  <span class="lbl pr-2" th:text="#{feedback.definition.source}">Tähenduse allikas</span>
-                  <span th:text="${feedbackLog.definitionSource}"></span>
-                </div>
-                <div class="row ml-1" th:unless="${#strings.isEmpty(feedbackLog.usage)}">
-                  <span class="lbl pr-2" th:text="#{feedback.usage}">Kasutusnäide</span>
-                  <span th:text="${feedbackLog.usage}"></span>
-                </div>
-                <div class="row ml-1" th:unless="${#strings.isEmpty(feedbackLog.usageSource)}">
-                  <span class="lbl pr-2" th:text="#{feedback.usage.source}">Kasutusnäite allikas</span>
-                  <span th:text="${feedbackLog.usageSource}"></span>
-                </div>
-                <div class="row ml-1" th:unless="${#strings.isEmpty(feedbackLog.otherInfo)}">
-                  <span class="lbl pr-2" th:text="#{feedback.other.info}">Muu info</span>
-                  <span th:text="${feedbackLog.otherInfo}"></span>
-                </div>
-                <div class="row ml-1" th:unless="${#strings.isEmpty(feedbackLog.company)}">
-                  <span class="lbl pr-2" th:text="#{feedback.company}">Asutus</span>
-                  <span th:text="${feedbackLog.company}"></span>
-                </div>
+                <th:block th:if="${feedbackLog.feedbackLogAttrs}">
+                  <th:block th:each="feedbackLogAttr : ${feedbackLog.feedbackLogAttrs}">
+                    <div class="row ml-1">
+                      <span class="lbl pr-2" th:text="#{|feedback.${feedbackLogAttr.name}|}">Attr name</span>
+                      <span th:text="${feedbackLogAttr.value}"></span>
+                    </div>
+                  </th:block>
+                </th:block>
               </td>
               <td>
                 <div th:replace="wwfeedbackdialog :: add_feedback_comment_dlg"></div>
-                <button type="button" class="btn badge badge-success" th:title="#{common.add.new}" data-toggle="modal" th:data-target="${'#addFeedbackCommentDlg_' + feedbackLog.id}"
-                  sec:authorize="${#vars.isDatasetCrudOwnerOrAdmin}">
+                <button type="button" class="btn badge badge-success" th:title="#{common.add.new}"
+                        data-toggle="modal" th:data-target="${'#addFeedbackCommentDlg_' + feedbackLog.id}"
+                        sec:authorize="${#vars.isDatasetCrudOwnerOrAdmin}">
                   <i class="fa fa-plus" aria-hidden="true"></i>
                 </button>
               </td>

@@ -73,6 +73,7 @@ drop table if exists temp_ds_import_queue;
 drop table if exists api_request_count;
 drop table if exists api_error_count;
 drop table if exists feedback_log_comment;
+drop table if exists feedback_log_attr;
 drop table if exists feedback_log;
 drop table if exists game_nonword;
 drop table if exists lexeme_activity_log;

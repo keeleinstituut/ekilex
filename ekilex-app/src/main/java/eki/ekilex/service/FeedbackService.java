@@ -4,7 +4,7 @@ import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 import java.util.List;
 
-import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.ArrayUtils;
 import org.jooq.exception.DataAccessException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,7 +27,11 @@ public class FeedbackService implements SystemConstant {
 
 	private static final String FEEDBACK_TYPE_WW = "sõnaveeb";
 
+	private static final String FEEDBACK_TYPE_OS = "ÕS";
+
 	private static final String FEEDBACK_TYPE_EXT = "väline";
+
+	private static final String[] FEEDBACK_TYPES = {FEEDBACK_TYPE_WW, FEEDBACK_TYPE_OS, FEEDBACK_TYPE_EXT};
 
 	@Autowired
 	private FeedbackDbService feedbackDbService;
@@ -61,20 +65,13 @@ public class FeedbackService implements SystemConstant {
 
 	public boolean isValidFeedbackLog(FeedbackLog newFeedback) {
 
-		boolean isValid = false;
-		if (newFeedback != null) {
-
-			String feedbackType = newFeedback.getFeedbackType();
-			String senderName = newFeedback.getSenderName();
-			String senderEmail = newFeedback.getSenderEmail();
-			String description = newFeedback.getDescription();
-
-			if (StringUtils.equalsIgnoreCase(feedbackType, FEEDBACK_TYPE_EXT)) {
-				isValid = isNotBlank(description) && isNotBlank(senderName) && isNotBlank(senderEmail);
-			} else if (StringUtils.equalsIgnoreCase(feedbackType, FEEDBACK_TYPE_WW)) {
-				isValid = isNotBlank(description);
-			}
+		if (newFeedback == null) {
+			return false;
 		}
+		String feedbackType = newFeedback.getFeedbackType();
+		String description = newFeedback.getDescription();
+
+		boolean isValid = ArrayUtils.contains(FEEDBACK_TYPES, feedbackType) && isNotBlank(description);
 		return isValid;
 	}
 

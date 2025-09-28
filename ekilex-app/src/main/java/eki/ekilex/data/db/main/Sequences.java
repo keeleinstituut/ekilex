@@ -151,6 +151,11 @@ public class Sequences {
     public static final Sequence<Long> ETYMOLOGY_TYPE_ORDER_BY_SEQ = Internal.createSequence("etymology_type_order_by_seq", Public.PUBLIC, SQLDataType.BIGINT.nullable(false), null, null, null, null, false, null);
 
     /**
+     * The sequence <code>public.feedback_log_attr_id_seq</code>
+     */
+    public static final Sequence<Long> FEEDBACK_LOG_ATTR_ID_SEQ = Internal.createSequence("feedback_log_attr_id_seq", Public.PUBLIC, SQLDataType.BIGINT.nullable(false), null, null, null, null, false, null);
+
+    /**
      * The sequence <code>public.feedback_log_comment_id_seq</code>
      */
     public static final Sequence<Long> FEEDBACK_LOG_COMMENT_ID_SEQ = Internal.createSequence("feedback_log_comment_id_seq", Public.PUBLIC, SQLDataType.BIGINT.nullable(false), null, null, null, null, false, null);

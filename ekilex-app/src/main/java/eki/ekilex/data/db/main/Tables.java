@@ -34,6 +34,7 @@ import eki.ekilex.data.db.main.tables.EkiUserApplication;
 import eki.ekilex.data.db.main.tables.EkiUserProfile;
 import eki.ekilex.data.db.main.tables.EtymologyType;
 import eki.ekilex.data.db.main.tables.FeedbackLog;
+import eki.ekilex.data.db.main.tables.FeedbackLogAttr;
 import eki.ekilex.data.db.main.tables.FeedbackLogComment;
 import eki.ekilex.data.db.main.tables.Form;
 import eki.ekilex.data.db.main.tables.FormFreq;
@@ -329,6 +330,11 @@ public class Tables {
      * The table <code>public.feedback_log</code>.
      */
     public static final FeedbackLog FEEDBACK_LOG = FeedbackLog.FEEDBACK_LOG;
+
+    /**
+     * The table <code>public.feedback_log_attr</code>.
+     */
+    public static final FeedbackLogAttr FEEDBACK_LOG_ATTR = FeedbackLogAttr.FEEDBACK_LOG_ATTR;
 
     /**
      * The table <code>public.feedback_log_comment</code>.

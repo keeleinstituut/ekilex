@@ -22,34 +22,13 @@ public class FeedbackLog extends AbstractDataObject {
 
 	private String feedbackType;
 
-	@Deprecated
-	private String senderName;
-
 	private String senderEmail;
+
+	private String lastSearch;
 
 	private String description;
 
-	private String word;
-
-	private String definition;
-
-	@Deprecated
-	private String definitionSource;
-
-	@Deprecated
-	private String domain;
-
-	private String usage;
-
-	@Deprecated
-	private String usageSource;
-
-	private String otherInfo;
-
-	@Deprecated
-	private String company;
-
-	private String lastSearch;
+	private List<FeedbackLogAttr> feedbackLogAttrs;
 
 	private List<FeedbackLogComment> feedbackLogComments;
 
@@ -77,20 +56,20 @@ public class FeedbackLog extends AbstractDataObject {
 		this.feedbackType = feedbackType;
 	}
 
-	public String getSenderName() {
-		return senderName;
-	}
-
-	public void setSenderName(String senderName) {
-		this.senderName = senderName;
-	}
-
 	public String getSenderEmail() {
 		return senderEmail;
 	}
 
 	public void setSenderEmail(String senderEmail) {
 		this.senderEmail = senderEmail;
+	}
+
+	public String getLastSearch() {
+		return lastSearch;
+	}
+
+	public void setLastSearch(String lastSearch) {
+		this.lastSearch = lastSearch;
 	}
 
 	public String getDescription() {
@@ -101,76 +80,12 @@ public class FeedbackLog extends AbstractDataObject {
 		this.description = description;
 	}
 
-	public String getWord() {
-		return word;
+	public List<FeedbackLogAttr> getFeedbackLogAttrs() {
+		return feedbackLogAttrs;
 	}
 
-	public void setWord(String word) {
-		this.word = word;
-	}
-
-	public String getDefinition() {
-		return definition;
-	}
-
-	public void setDefinition(String definition) {
-		this.definition = definition;
-	}
-
-	public String getDefinitionSource() {
-		return definitionSource;
-	}
-
-	public void setDefinitionSource(String definitionSource) {
-		this.definitionSource = definitionSource;
-	}
-
-	public String getDomain() {
-		return domain;
-	}
-
-	public void setDomain(String domain) {
-		this.domain = domain;
-	}
-
-	public String getUsage() {
-		return usage;
-	}
-
-	public void setUsage(String usage) {
-		this.usage = usage;
-	}
-
-	public String getUsageSource() {
-		return usageSource;
-	}
-
-	public void setUsageSource(String usageSource) {
-		this.usageSource = usageSource;
-	}
-
-	public String getOtherInfo() {
-		return otherInfo;
-	}
-
-	public void setOtherInfo(String otherInfo) {
-		this.otherInfo = otherInfo;
-	}
-
-	public String getCompany() {
-		return company;
-	}
-
-	public void setCompany(String company) {
-		this.company = company;
-	}
-
-	public String getLastSearch() {
-		return lastSearch;
-	}
-
-	public void setLastSearch(String lastSearch) {
-		this.lastSearch = lastSearch;
+	public void setFeedbackLogAttrs(List<FeedbackLogAttr> feedbackLogAttrs) {
+		this.feedbackLogAttrs = feedbackLogAttrs;
 	}
 
 	public List<FeedbackLogComment> getFeedbackLogComments() {

@@ -1,6 +1,7 @@
 package eki.ekilex.service.db;
 
 import static eki.ekilex.data.db.main.Tables.FEEDBACK_LOG;
+import static eki.ekilex.data.db.main.Tables.FEEDBACK_LOG_ATTR;
 import static eki.ekilex.data.db.main.Tables.FEEDBACK_LOG_COMMENT;
 
 import java.util.List;
@@ -15,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import eki.ekilex.data.db.main.tables.FeedbackLog;
+import eki.ekilex.data.db.main.tables.FeedbackLogAttr;
 import eki.ekilex.data.db.main.tables.FeedbackLogComment;
 
 @Component
@@ -29,24 +31,14 @@ public class FeedbackDbService {
 				.insertInto(
 						FEEDBACK_LOG,
 						FEEDBACK_LOG.FEEDBACK_TYPE,
-						FEEDBACK_LOG.SENDER_NAME,
 						FEEDBACK_LOG.SENDER_EMAIL,
-						FEEDBACK_LOG.DESCRIPTION,
-						FEEDBACK_LOG.WORD,
-						FEEDBACK_LOG.DEFINITION,
-						FEEDBACK_LOG.USAGE,
-						FEEDBACK_LOG.OTHER_INFO,
-						FEEDBACK_LOG.LAST_SEARCH)
+						FEEDBACK_LOG.LAST_SEARCH,
+						FEEDBACK_LOG.DESCRIPTION)
 				.values(
 						feedbackLog.getFeedbackType(),
-						feedbackLog.getSenderName(),
 						feedbackLog.getSenderEmail(),
-						feedbackLog.getDescription(),
-						feedbackLog.getWord(),
-						feedbackLog.getDefinition(),
-						feedbackLog.getUsage(),
-						feedbackLog.getOtherInfo(),
-						feedbackLog.getLastSearch())
+						feedbackLog.getLastSearch(),
+						feedbackLog.getDescription())
 				.execute();
 	}
 
@@ -73,6 +65,7 @@ public class FeedbackDbService {
 	public List<eki.ekilex.data.FeedbackLog> getFeedbackLogs(String searchFilter, Boolean notCommentedFilter, int offset, int limit) {
 
 		FeedbackLog fl = FEEDBACK_LOG.as("fl");
+		FeedbackLogAttr fla = FEEDBACK_LOG_ATTR.as("fla");
 		FeedbackLogComment flc = FEEDBACK_LOG_COMMENT.as("flc");
 		Condition where = getFeedbackLogCond(fl, searchFilter, notCommentedFilter);
 
@@ -90,9 +83,24 @@ public class FeedbackDbService {
 				.where(flc.FEEDBACK_LOG_ID.eq(fl.ID))
 				.asField();
 
+		Field<JSON> flaf = DSL
+				.select(DSL
+						.jsonArrayAgg(DSL
+								.jsonObject(
+										DSL.key("id").value(fla.ID),
+										DSL.key("feedbackLogId").value(fla.FEEDBACK_LOG_ID),
+										DSL.key("name").value(fla.NAME),
+										DSL.key("value").value(fla.VALUE)))
+						.orderBy(fla.ID.desc()))
+				.from(fla)
+				.where(fla.FEEDBACK_LOG_ID.eq(fl.ID))
+				.asField();
+
 		return mainDb
 				.select(fl.fields())
-				.select(flcf.as("feedback_log_comments"))
+				.select(
+						flaf.as("feedback_log_attrs"),
+						flcf.as("feedback_log_comments"))
 				.from(fl)
 				.where(where)
 				.orderBy(fl.CREATED_ON.desc())
@@ -104,27 +112,27 @@ public class FeedbackDbService {
 	private Condition getFeedbackLogCond(FeedbackLog fl, String searchFilter, Boolean notCommentedFilter) {
 
 		FeedbackLogComment flc = FEEDBACK_LOG_COMMENT.as("flc");
+		FeedbackLogAttr fla = FEEDBACK_LOG_ATTR.as("fla");
 		Condition where = DSL.noCondition();
 
 		if (StringUtils.isNotBlank(searchFilter)) {
 
 			String searchCrit = "%" + searchFilter + "%";
 			where = where.and(DSL.or(
-					fl.SENDER_NAME.likeIgnoreCase(searchCrit),
 					fl.SENDER_EMAIL.likeIgnoreCase(searchCrit),
 					fl.DESCRIPTION.likeIgnoreCase(searchCrit),
-					fl.WORD.likeIgnoreCase(searchCrit),
-					fl.DEFINITION.likeIgnoreCase(searchCrit),
-					fl.DEFINITION_SOURCE.likeIgnoreCase(searchCrit),
-					fl.USAGE.likeIgnoreCase(searchCrit),
-					fl.USAGE_SOURCE.likeIgnoreCase(searchCrit),
-					fl.COMPANY.likeIgnoreCase(searchCrit),
 					fl.LAST_SEARCH.likeIgnoreCase(searchCrit),
+					DSL.exists(DSL
+							.select(fla.ID)
+							.from(fla)
+							.where(
+									fla.FEEDBACK_LOG_ID.eq(fl.ID)
+											.and(fla.VALUE.likeIgnoreCase(searchCrit)))),
 					DSL.exists(DSL
 							.select(flc.ID)
 							.from(flc)
-							.where(flc.COMMENT.likeIgnoreCase(searchCrit)
-									.and(flc.FEEDBACK_LOG_ID.eq(fl.ID))))));
+							.where(flc.FEEDBACK_LOG_ID.eq(fl.ID)
+									.and(flc.COMMENT.likeIgnoreCase(searchCrit))))));
 		}
 		if (Boolean.TRUE.equals(notCommentedFilter)) {
 

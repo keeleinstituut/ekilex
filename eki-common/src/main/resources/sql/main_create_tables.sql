@@ -1404,6 +1404,15 @@ create table feedback_log (
 );
 alter sequence feedback_log_id_seq restart with 10000;
 
+create table feedback_log_attr (
+	id bigserial primary key,
+	feedback_log_id bigint references feedback_log(id) on delete cascade not null,
+	name text not null,
+	value text not null,
+	unique(feedback_log_id, name)
+);
+alter sequence feedback_log_attr_id_seq restart with 10000;
+
 create table feedback_log_comment (
   id bigserial primary key, 
   feedback_log_id bigint references feedback_log(id) on delete cascade not null, 

@@ -9,9 +9,10 @@ import eki.ekilex.data.db.main.tables.records.ViewOsWordRecord;
 
 import org.jooq.Field;
 import org.jooq.ForeignKey;
+import org.jooq.JSON;
 import org.jooq.Name;
 import org.jooq.Record;
-import org.jooq.Row8;
+import org.jooq.Row9;
 import org.jooq.Schema;
 import org.jooq.Table;
 import org.jooq.TableField;
@@ -82,12 +83,17 @@ public class ViewOsWord extends TableImpl<ViewOsWordRecord> {
      */
     public final TableField<ViewOsWordRecord, String[]> WORD_TYPE_CODES = createField(DSL.name("word_type_codes"), SQLDataType.VARCHAR.getArrayDataType(), this, "");
 
+    /**
+     * The column <code>public.view_os_word.meaning_words</code>.
+     */
+    public final TableField<ViewOsWordRecord, JSON> MEANING_WORDS = createField(DSL.name("meaning_words"), SQLDataType.JSON, this, "");
+
     private ViewOsWord(Name alias, Table<ViewOsWordRecord> aliased) {
         this(alias, aliased, null);
     }
 
     private ViewOsWord(Name alias, Table<ViewOsWordRecord> aliased, Field<?>[] parameters) {
-        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.view("create view \"view_os_word\" as  SELECT w.id AS word_id,\n    w.value,\n    w.value_prese,\n    w.value_as_word,\n    COALESCE(hn.homonym_nr, w.homonym_nr) AS homonym_nr,\n    (EXISTS ( SELECT 1\n           FROM word w2\n          WHERE ((w2.value = w.value) AND (w2.id <> w.id) AND (w2.is_public = true) AND (w2.lang = 'est'::bpchar) AND (EXISTS ( SELECT 1\n                   FROM lexeme l2\n                  WHERE ((l2.word_id = w2.id) AND (l2.is_public = true) AND (l2.is_word = true) AND ((l2.dataset_code)::text = 'eki'::text) AND (EXISTS ( SELECT 1\n                           FROM publishing p2\n                          WHERE (((p2.target_name)::text = 'ww_os'::text) AND ((p2.entity_name)::text = 'lexeme'::text) AND (p2.entity_id = l2.id)))))))))) AS homonym_exists,\n    w.display_morph_code,\n    ( SELECT array_agg(wwt.word_type_code) AS array_agg\n           FROM word_word_type wwt\n          WHERE (wwt.word_id = w.id)) AS word_type_codes\n   FROM (word w\n     LEFT JOIN word_os_homonym_nr hn ON ((hn.word_id = w.id)))\n  WHERE ((w.is_public = true) AND (w.lang = 'est'::bpchar) AND (EXISTS ( SELECT 1\n           FROM lexeme l\n          WHERE ((l.word_id = w.id) AND (l.is_public = true) AND (l.is_word = true) AND ((l.dataset_code)::text = 'eki'::text) AND (EXISTS ( SELECT 1\n                   FROM publishing p\n                  WHERE (((p.target_name)::text = 'ww_os'::text) AND ((p.entity_name)::text = 'lexeme'::text) AND (p.entity_id = l.id))))))))\n  ORDER BY w.id;"));
+        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.view("create view \"view_os_word\" as  SELECT w.id AS word_id,\n    w.value,\n    w.value_prese,\n    w.value_as_word,\n    COALESCE(hn.homonym_nr, w.homonym_nr) AS homonym_nr,\n    (EXISTS ( SELECT 1\n           FROM word w2\n          WHERE ((w2.value = w.value) AND (w2.id <> w.id) AND (w2.is_public = true) AND (w2.lang = 'est'::bpchar) AND (EXISTS ( SELECT 1\n                   FROM lexeme l2\n                  WHERE ((l2.word_id = w2.id) AND (l2.is_public = true) AND (l2.is_word = true) AND ((l2.dataset_code)::text = 'eki'::text) AND (EXISTS ( SELECT 1\n                           FROM publishing p2\n                          WHERE (((p2.target_name)::text = 'ww_os'::text) AND ((p2.entity_name)::text = 'lexeme'::text) AND (p2.entity_id = l2.id)))))))))) AS homonym_exists,\n    w.display_morph_code,\n    ( SELECT array_agg(wwt.word_type_code) AS array_agg\n           FROM word_word_type wwt\n          WHERE (wwt.word_id = w.id)) AS word_type_codes,\n    ( SELECT json_agg(json_build_object('wordId', w2.id, 'value', w2.value, 'valuePrese', w2.value_prese, 'homonymNr', COALESCE(hn2.homonym_nr, w2.homonym_nr), 'homonymExists', (EXISTS ( SELECT 1\n                   FROM word w3\n                  WHERE ((w3.value = w2.value) AND (w3.id <> w2.id) AND (w3.is_public = true) AND (w3.lang = 'est'::bpchar) AND (EXISTS ( SELECT 1\n                           FROM lexeme l3\n                          WHERE ((l3.word_id = w3.id) AND (l3.is_public = true) AND (l3.is_word = true) AND ((l3.dataset_code)::text = 'eki'::text) AND (EXISTS ( SELECT 1\n                                   FROM publishing p3\n                                  WHERE (((p3.target_name)::text = 'ww_os'::text) AND ((p3.entity_name)::text = 'lexeme'::text) AND (p3.entity_id = l3.id)))))))))), 'displayMorphCode', w2.display_morph_code, 'wordTypeCodes', ( SELECT array_agg(wwt2.word_type_code) AS array_agg\n                   FROM word_word_type wwt2\n                  WHERE (wwt2.word_id = w2.id))) ORDER BY l2.order_by) AS json_agg\n           FROM (((word w2\n             LEFT JOIN word_os_homonym_nr hn2 ON ((hn2.word_id = w2.id)))\n             JOIN lexeme l1 ON ((l1.word_id = w.id)))\n             JOIN lexeme l2 ON ((l2.word_id = w2.id)))\n          WHERE ((w2.is_public = true) AND (w2.lang = 'est'::bpchar) AND (l1.is_public = true) AND (l1.is_word = true) AND ((l1.dataset_code)::text = 'eki'::text) AND (EXISTS ( SELECT 1\n                   FROM publishing p2\n                  WHERE (((p2.target_name)::text = 'ww_os'::text) AND ((p2.entity_name)::text = 'lexeme'::text) AND (p2.entity_id = l1.id)))) AND (l1.id <> l2.id) AND (l1.meaning_id = l2.meaning_id) AND (l2.word_id = w2.id) AND (l2.is_public = true) AND (l2.is_word = true) AND ((l2.dataset_code)::text = 'eki'::text) AND (EXISTS ( SELECT 1\n                   FROM publishing p2\n                  WHERE (((p2.target_name)::text = 'ww_os'::text) AND ((p2.entity_name)::text = 'lexeme'::text) AND (p2.entity_id = l2.id)))))) AS meaning_words\n   FROM (word w\n     LEFT JOIN word_os_homonym_nr hn ON ((hn.word_id = w.id)))\n  WHERE ((w.is_public = true) AND (w.lang = 'est'::bpchar) AND (EXISTS ( SELECT 1\n           FROM lexeme l\n          WHERE ((l.word_id = w.id) AND (l.is_public = true) AND (l.is_word = true) AND ((l.dataset_code)::text = 'eki'::text) AND (EXISTS ( SELECT 1\n                   FROM publishing p\n                  WHERE (((p.target_name)::text = 'ww_os'::text) AND ((p.entity_name)::text = 'lexeme'::text) AND (p.entity_id = l.id))))))))\n  ORDER BY w.id;"));
     }
 
     /**
@@ -147,11 +153,11 @@ public class ViewOsWord extends TableImpl<ViewOsWordRecord> {
     }
 
     // -------------------------------------------------------------------------
-    // Row8 type methods
+    // Row9 type methods
     // -------------------------------------------------------------------------
 
     @Override
-    public Row8<Long, String, String, String, Integer, Boolean, String, String[]> fieldsRow() {
-        return (Row8) super.fieldsRow();
+    public Row9<Long, String, String, String, Integer, Boolean, String, String[], JSON> fieldsRow() {
+        return (Row9) super.fieldsRow();
     }
 }
