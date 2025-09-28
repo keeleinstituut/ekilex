@@ -99,6 +99,8 @@ public abstract class AbstractController implements WebConstant, SystemConstant,
 		model.addAttribute("feedbackServiceUrl", feedbackServiceUrl);
 		model.addAttribute("ekilexLimTermSearchUrl", ekilexLimTermSearchUrl);
 		model.addAttribute("yearToday", yearToday);
+		model.addAttribute("feedbackType", "sõnaveeb");
+
 		return sessionBean;
 	}
 

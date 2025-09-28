@@ -275,7 +275,7 @@
           <div id="feedback-data" class="modal-body">
             <div>
               <form id="feedback-form" novalidate>
-                <input type="hidden" name="feedbackType" value="sõnaveeb">
+                <input type="hidden" name="feedbackType" th:value="${feedbackType}">
                 <input type="hidden" name="lastSearch" th:value="${sessionBean == null ? '' : sessionBean.searchWord}">
                 <div class="feedback-modal__group">
                   <label for="descriptionInput2" class="col-form-label" th:text="#{label.feedback.description}">Probleemi lühikirjeldus</label>
