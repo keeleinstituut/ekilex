@@ -101,10 +101,18 @@ public class LexemeConversionUtil extends AbstractConversionUtil {
 				}
 
 				String headwordValue = headword.getValue();
-				boolean isPreferred1 = StringUtils.equals(headwordValue, lexemeWord1.getValue())
-						&& StringUtils.equals(VALUE_STATE_CODE_MOST_PREFERRED, lexemeWord1.getValueStateCode());
-				boolean isPreferred2 = StringUtils.equals(headwordValue, lexemeWord2.getValue())
-						&& StringUtils.equals(VALUE_STATE_CODE_MOST_PREFERRED, lexemeWord2.getValueStateCode());
+				String wordValue1 = lexemeWord1.getValue();
+				String wordValue2 = lexemeWord2.getValue();
+				String valueStateCode1 = lexemeWord1.getValueStateCode();
+				String valueStateCode2 = lexemeWord2.getValueStateCode();
+
+				boolean isPreferred1 = StringUtils.equals(headwordValue, wordValue1)
+						&& (StringUtils.equals(VALUE_STATE_CODE_MOST_PREFERRED, valueStateCode1)
+								|| ((valueStateCode1 == null) && !StringUtils.equals(VALUE_STATE_CODE_MOST_PREFERRED, valueStateCode2)));
+				boolean isPreferred2 = StringUtils.equals(headwordValue, wordValue2)
+						&& (StringUtils.equals(VALUE_STATE_CODE_MOST_PREFERRED, valueStateCode2)
+								|| ((valueStateCode2 == null) && !StringUtils.equals(VALUE_STATE_CODE_MOST_PREFERRED, valueStateCode1)));
+
 				if (isPreferred1 && isPreferred2) {
 					return 0;
 				}
