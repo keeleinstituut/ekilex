@@ -1,5 +1,108 @@
 Märkused ver 1.43.0 tarne kohta:
 
+Tarne sisaldab muudatusi ja parandusi Ekilexis, Sõnaveebis ja Ekistat rakendustes ja andmebaasides.
+Ekistat andmeteenuses on tehtud parandus, mis Sõnaveebi liidestust kuidagi ei mõjuta.
+
+1) Võta githubist värske tarkvara versioon, mille viite arendaja annab
+
+2) Ehita tarkvara tarkvaraprojekti juurikast.
+
+   ../ekilex>mvn clean install -D skipTests
+
+   Ekilex rakenduse pake asub
+
+   ../ekilex/ekilex-app/target/ekilex-app.jar
+
+   Ekistat rakenduse pake asub
+
+   ../ekilex/ekistat-app/target/ekistat-app.jar
+
+   Sõnaveebi rakenduse pake asub
+
+   ../ekilex/wordweb-app/target/wordweb-app.jar
+   
+3) Käivita ekilex andmebaasis muudatuste skript:
+
+   ../ekilex/eki-common/src/main/resources/sql/delivery.sql
+
+4) Seadista keskkond selle tarne utiliitrakenduste käivitamisteks.
+
+   1. loo rakenduse "dev"-profiili määrangute fail:
+
+      ../ekilex/ekilex-app/src/main/resources/application-dev.properties
+
+   2. sisusta fail ainult selles kontekstis oluliste rakenduse määrangutega:
+
+      server.port=1234
+      spring.datasource.url=jdbc:postgresql://localhost:5432/ekilex
+      spring.datasource.username=<username>
+      spring.datasource.password=<password>
+      
+      logging.level.root=warn
+      logging.level.eki.ekilex=debug
+      logging.level.eki.common=info
+      logging.level.org.jooq=warn
+      
+      Andmebaasi ühenduse parameetrid peavad olema reaalsed selle keskkonna parameetrid.
+      Kuna erinevad ekilexi rakendused käivitavad ka veebikonteksti siis on oluline, et nende veebi pordid ei konkureeriks.
+      Seepärast määra "server.port"-le mingi ajutine fiktiivne väärtus
+
+   3. kopeeri tarnega kaasatud fail "wos-morph.tsv" kohalikku failisüsteemi utiliitrakendusele juurdepääsetavasse kohta.
+
+   4. kehtib kõigi utiliitrakenduste kohta:
+   
+      Väärtusta parameeter "impfile" korrektse viitega failile! Märka topelt jutumärke!
+      Spring profiil "dev" tähendab automaatselt seda, et rakenduse logi jookseb otse terminali mitte logifaili.
+      See on antud juhul kasulik kiireks tagassideks rakenduselt.
+	  Rakendused annavad logisse tagasisidet toimingute progressi kohta %-des.
+      Logi lõppeb infoga "BUILD SUCCESS". Kui logi sisaldab midagi muud, informeeri arendajat.
+
+5) Käivita ülivõrde seoste ümberjärjestmise utiliit ekilex/ekilex-app rajalt:
+
+   mvn spring-boot:run -P wrsupr -D spring-boot.run.profiles=dev
+
+   Rakendus jookseb alla minuti
+
+6) Käivita ÕS morfoloogia laadur ekilex/ekilex-app rajalt:
+
+   mvn spring-boot:run -P wosml -D spring-boot.run.profiles=dev -D spring-boot.run.arguments="impfile="/path/to/wos-morph.tsv""
+
+   Rakendus jookseb alla minuti
+
+7) Sõnaveebi andmebaasi agregeerimine.
+   Senisele põhi-Sõnaveebi jaoks loodud andmebaasivaadete skriptile Ekilexis lisandub nüüd ÕS-le pühendatud skripti fail.
+   Samuti lisandub eraldi ÕS-le pühendatud andmestruktuuride loomise ja laadimise skripti fail Sõnaveebi.
+
+   1. kustuta ja taasloo Ekilex andmebaasis senised põhi-Sõnaveebiga seotud vaated ja andmetüübid skriptiga:
+
+      ../ekilex/eki-common/src/main/resources/sql/main_create_ww_views.sql
+
+   2. kustuta ja taasloo Ekilex andmebaasis ÕS-Sõnaveebiga seotud vaated skriptiga:
+
+      ../ekilex/eki-common/src/main/resources/sql/main_create_os_views.sql
+
+   3. kustuta ja taasloo Sõnaveebi andmebaasis põhi-Sõnaveebi materjaliseeritud vaated ja andmetüübid ja lae andmed skriptiga:
+
+      ../ekilex/wordweb-app/fileresources/sql/create_ww_mviews.sql
+
+      NB! Muuda skriptis dblink parameetreid vastavalt keskkonnale!
+      NB! Ühtegi veateadet ei tohi olla!
+
+      Skript jookseb umbes pool tundi.
+
+   4. loo Sõnaveebi andmebaasis ÕS-Sõnaveebi andmetabelid ja lae andmed skriptiga:
+
+      ../ekilex/wordweb-app/fileresources/sql/create_insert_os.sql
+
+      NB! Muuda skriptis dblink parameetreid vastavalt keskkonnale!
+      NB! Ühtegi veateadet ei tohi olla!
+
+      Skript jookseb alla minuti.
+
+6) Seo rakenduste *.jar failid teenustega nagu seni ja käivita. Kontrolli peale käivitamist rakenduste logifailidest kas käivitamisega kaasnesid veateated, neid ei ohiks olla ühtegi.
+
+<märkmete lõpp>
+
 ülivõrde seoste ümberjärjestamine
 mvn spring-boot:run -P wrsupr -D spring-boot.run.profiles=dev
 

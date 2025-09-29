@@ -65,14 +65,14 @@ public class WwException extends TableImpl<WwExceptionRecord> {
     public final TableField<WwExceptionRecord, String> EXCEPTION_MESSAGE = createField(DSL.name("exception_message"), SQLDataType.CLOB, this, "");
 
     /**
-     * The column <code>public.ww_exception.event_on</code>.
-     */
-    public final TableField<WwExceptionRecord, LocalDateTime> EVENT_ON = createField(DSL.name("event_on"), SQLDataType.LOCALDATETIME(6).nullable(false).defaultValue(DSL.field("statement_timestamp()", SQLDataType.LOCALDATETIME)), this, "");
-
-    /**
      * The column <code>public.ww_exception.remote_host</code>.
      */
     public final TableField<WwExceptionRecord, String> REMOTE_HOST = createField(DSL.name("remote_host"), SQLDataType.CLOB, this, "");
+
+    /**
+     * The column <code>public.ww_exception.event_on</code>.
+     */
+    public final TableField<WwExceptionRecord, LocalDateTime> EVENT_ON = createField(DSL.name("event_on"), SQLDataType.LOCALDATETIME(6).nullable(false).defaultValue(DSL.field("statement_timestamp()", SQLDataType.LOCALDATETIME)), this, "");
 
     private WwException(Name alias, Table<WwExceptionRecord> aliased) {
         this(alias, aliased, null);
@@ -158,7 +158,7 @@ public class WwException extends TableImpl<WwExceptionRecord> {
     // -------------------------------------------------------------------------
 
     @Override
-    public Row5<Long, String, String, LocalDateTime, String> fieldsRow() {
+    public Row5<Long, String, String, String, LocalDateTime> fieldsRow() {
         return (Row5) super.fieldsRow();
     }
 }

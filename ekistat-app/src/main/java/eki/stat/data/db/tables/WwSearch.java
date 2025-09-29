@@ -100,6 +100,11 @@ public class WwSearch extends TableImpl<WwSearchRecord> {
     public final TableField<WwSearchRecord, Boolean> SINGLE_RESULT = createField(DSL.name("single_result"), SQLDataType.BOOLEAN, this, "");
 
     /**
+     * The column <code>public.ww_search.request_origin</code>.
+     */
+    public final TableField<WwSearchRecord, String> REQUEST_ORIGIN = createField(DSL.name("request_origin"), SQLDataType.CLOB.nullable(false), this, "");
+
+    /**
      * The column <code>public.ww_search.user_agent</code>.
      */
     public final TableField<WwSearchRecord, String> USER_AGENT = createField(DSL.name("user_agent"), SQLDataType.CLOB, this, "");
@@ -110,24 +115,19 @@ public class WwSearch extends TableImpl<WwSearchRecord> {
     public final TableField<WwSearchRecord, String> REFERRER_DOMAIN = createField(DSL.name("referrer_domain"), SQLDataType.CLOB, this, "");
 
     /**
+     * The column <code>public.ww_search.server_domain</code>.
+     */
+    public final TableField<WwSearchRecord, String> SERVER_DOMAIN = createField(DSL.name("server_domain"), SQLDataType.CLOB, this, "");
+
+    /**
      * The column <code>public.ww_search.session_id</code>.
      */
     public final TableField<WwSearchRecord, String> SESSION_ID = createField(DSL.name("session_id"), SQLDataType.CLOB.nullable(false), this, "");
 
     /**
-     * The column <code>public.ww_search.request_origin</code>.
-     */
-    public final TableField<WwSearchRecord, String> REQUEST_ORIGIN = createField(DSL.name("request_origin"), SQLDataType.CLOB.nullable(false), this, "");
-
-    /**
      * The column <code>public.ww_search.event_on</code>.
      */
     public final TableField<WwSearchRecord, LocalDateTime> EVENT_ON = createField(DSL.name("event_on"), SQLDataType.LOCALDATETIME(6).nullable(false).defaultValue(DSL.field("statement_timestamp()", SQLDataType.LOCALDATETIME)), this, "");
-
-    /**
-     * The column <code>public.ww_search.server_domain</code>.
-     */
-    public final TableField<WwSearchRecord, String> SERVER_DOMAIN = createField(DSL.name("server_domain"), SQLDataType.CLOB, this, "");
 
     private WwSearch(Name alias, Table<WwSearchRecord> aliased) {
         this(alias, aliased, null);
@@ -213,7 +213,7 @@ public class WwSearch extends TableImpl<WwSearchRecord> {
     // -------------------------------------------------------------------------
 
     @Override
-    public Row16<Long, String, Integer, String, String[], String[], String, Integer, Boolean, Boolean, String, String, String, String, LocalDateTime, String> fieldsRow() {
+    public Row16<Long, String, Integer, String, String[], String[], String, Integer, Boolean, Boolean, String, String, String, String, String, LocalDateTime> fieldsRow() {
         return (Row16) super.fieldsRow();
     }
 }

@@ -260,8 +260,8 @@ public class StatDbService implements GlobalConstant, SystemConstant {
 				.where(
 						sfc.SEARCH_WORD.eq(searchWord)
 								.and(sfc.SEARCH_MODE.eq(searchMode))
-								.and(sfc.DESTIN_LANGS.contains(destinLangs))
-								.and(sfc.DATASET_CODES.contains(datasetCodes))
+								.and(sfc.DESTIN_LANGS.eq(destinLangs))
+								.and(sfc.DATASET_CODES.eq(datasetCodes))
 								.and(sfc.RESULT_EXISTS.eq(resultExists))
 								.and(sfc.REQUEST_ORIGIN.eq(requestOrigin.name()))
 								.and(sfc.SEARCH_DATE.eq(searchDate)))
@@ -277,6 +277,7 @@ public class StatDbService implements GlobalConstant, SystemConstant {
 			countRecord.setDatasetCodes(datasetCodes);
 			countRecord.setResultExists(resultExists);
 			countRecord.setRequestOrigin(requestOrigin.name());
+			countRecord.setSearchDate(searchDate);
 			countRecord.setSearchCount(1);
 			countRecord.store();
 
