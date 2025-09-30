@@ -1,10 +1,5 @@
 package eki.ekilex.cli.runner;
 
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.OutputStreamWriter;
-import java.nio.charset.StandardCharsets;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
@@ -22,7 +17,6 @@ import eki.common.constant.LoaderConstant;
 import eki.common.constant.PublishingConstant;
 import eki.common.data.Count;
 import eki.ekilex.constant.SystemConstant;
-import eki.ekilex.data.migra.Word;
 import eki.ekilex.data.migra.WordRelation;
 import eki.ekilex.service.db.CudDbService;
 import eki.ekilex.service.db.MigrationDbService;
@@ -46,25 +40,13 @@ public class WordRelationSuperlReorderRunner implements GlobalConstant, LoaderCo
 		final String relatedWordValuePrefix = "Kõige";
 		List<WordRelation> wordRelations = migrationDbService.getWordRelationsByContaingPrefix(WORD_REL_TYPE_CODE_SUPERLATIVE, relatedWordValuePrefix);
 
-		Map<Long, String> wordIdValueMap = wordRelations.stream()
-				.map(rel -> new Word(rel.getWord1Id(), rel.getWord1Value()))
-				.distinct()
-				.collect(Collectors.toMap(Word::getId, Word::getValue));
-
 		Map<Long, List<WordRelation>> wordRelOwnerMap = wordRelations.stream()
 				.collect(Collectors.groupingBy(WordRelation::getWord1Id));
 
 		Count updateCount = new Count();
 
-		String reportFilename = "report.txt";
-		File reportFile = new File(reportFilename);
-		FileOutputStream fos = new FileOutputStream(reportFile);
-		OutputStreamWriter osw = new OutputStreamWriter(fos, StandardCharsets.UTF_8);
-		BufferedWriter writer = new BufferedWriter(osw);
-
 		for (Long wordId : wordRelOwnerMap.keySet()) {
 
-			String ownerValue = wordIdValueMap.get(wordId);
 			List<WordRelation> ownerRelations = wordRelOwnerMap.get(wordId);
 
 			if (ownerRelations.size() == 1) {
@@ -101,8 +83,6 @@ public class WordRelationSuperlReorderRunner implements GlobalConstant, LoaderCo
 					.sorted()
 					.collect(Collectors.toList());
 
-			boolean reorderExists = false;
-
 			for (int relIndex = 0; relIndex < sortedRelations.size(); relIndex++) {
 
 				WordRelation sortedRelation = sortedRelations.get(relIndex);
@@ -112,38 +92,13 @@ public class WordRelationSuperlReorderRunner implements GlobalConstant, LoaderCo
 
 				if (existingOrderBy.compareTo(suggestedOrderBy) != 0) {
 					cudDbService.updateWordRelationOrderBy(wordRelationId, suggestedOrderBy);
-					reorderExists = true;
 					updateCount.increment();
 				}
 			}
-
-			if (reorderExists) {
-
-				String existingRelValuesStr = ownerRelations.stream().map(WordRelation::getWord2Value).collect(Collectors.joining(", "));
-				String sortedRelValuesStr = sortedRelations.stream().map(WordRelation::getWord2Value).collect(Collectors.joining(", "));
-
-				StringBuffer sbuf = new StringBuffer();
-				sbuf.append(wordId);
-				sbuf.append('\t');
-				sbuf.append(ownerValue);
-				sbuf.append('\t');
-				sbuf.append(existingRelValuesStr);
-				sbuf.append('\t');
-				sbuf.append(sortedRelValuesStr);
-				sbuf.append('\n');
-				writer.write(sbuf.toString());
-			}
 		}
-
-		writer.flush();
-		writer.close();
-		osw.close();
-		fos.close();
 
 		logger.info("Out of {} relations of {} words {} relation reorder updates were made",
 				wordRelations.size(), wordRelOwnerMap.size(), updateCount.getValue());
-
-		logger.info("Word relation re-ordering complete. Results are in file \"{}\"", reportFilename);
 	}
 
 }

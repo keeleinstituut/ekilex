@@ -1,3 +1,8 @@
+drop table if exists ww_exception;
+drop table if exists ww_search;
+drop table if exists ww_search_default_count;
+drop table if exists ww_search_filtered_count;
+
 create table ww_search
 (
   id bigserial primary key,
