@@ -26,9 +26,11 @@ import eki.wordweb.data.os.OsSearchResult;
 import eki.wordweb.service.OsSearchService;
 import eki.wordweb.web.bean.SessionBean;
 
+/*
 @ConditionalOnWebApplication
 @Controller
 @SessionAttributes(WebConstant.SESSION_BEAN)
+*/
 public class OsSearchController extends AbstractSearchController {
 
 	@Autowired
