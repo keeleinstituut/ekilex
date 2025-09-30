@@ -5,12 +5,12 @@
     <parent>
         <groupId>eki.ekilex</groupId>
         <artifactId>eki-root</artifactId>
-        <version>1.43-SNAPSHOT</version>
+        <version>1.44-SNAPSHOT</version>
     </parent>
 
     <groupId>eki.stat</groupId>
     <artifactId>ekistat-app</artifactId>
-    <version>1.4.0</version>
+    <version>1.4.1</version>
     <packaging>jar</packaging>
 
     <name>Ekistat App</name>
