@@ -1553,10 +1553,6 @@
       </div>
     </div>
   </div>
-  <div class="row" th:if="${not #lists.isEmpty(lexeme.collocationMembers)}" th:fragment="colloc_members">
-    <hr/>
-    <th:block th:replace="colloc :: colloc_members"></th:block>
-  </div>
   <div class="row no-gutters" th:if="${not #lists.isEmpty(lexeme.lexemeRelations)}" th:fragment="lexeme_relation">
     <hr/>
     <div class="col pr-0 col-w13rem">

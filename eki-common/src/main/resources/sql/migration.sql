@@ -20,6 +20,6 @@ where
 	conjunct = 'või'
 ;
 
-alter table collocation_member drop column conjunct;
+alter table collocation_member drop column conjunct cascade;
 
 analyze collocation_member;
