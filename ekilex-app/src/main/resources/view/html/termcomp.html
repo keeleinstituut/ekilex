@@ -1555,17 +1555,7 @@
   </div>
   <div class="row" th:if="${not #lists.isEmpty(lexeme.collocationMembers)}" th:fragment="colloc_members">
     <hr/>
-    <div class="col pr-0 col-w13rem">
-      <span class="lbl" th:text="#{lex.collocation.members}">Kollokatsiooni liikmed</span>
-    </div>
-    <div class="col pl-0">
-      <th:block th:each="collocMember : ${lexeme.collocationMembers}">
-        <div class="p-0">
-          <span th:text="${collocMember.wordValue}"></span>
-          <span th:text="${collocMember.weight}" class="small text-muted ml-2 mt-2"></span>
-        </div>
-      </th:block>
-    </div>
+    <th:block th:replace="colloc :: colloc_members"></th:block>
   </div>
   <div class="row no-gutters" th:if="${not #lists.isEmpty(lexeme.lexemeRelations)}" th:fragment="lexeme_relation">
     <hr/>

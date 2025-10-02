@@ -1,6 +1,7 @@
 package eki.ekilex.data;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 import eki.common.data.AbstractDataObject;
 
@@ -28,9 +29,23 @@ public class CollocMember extends AbstractDataObject {
 
 	private String morphCode;
 
+	private String morphValue;
+
+	private String posGroupCode;
+
+	private String posGroupValue;
+
+	private String relGroupCode;
+
+	private String relGroupValue;
+
 	private BigDecimal weight;
 
+	private Integer weightLevel;
+
 	private Long memberOrder;
+
+	private List<String> definitionValues;
 
 	public Long getId() {
 		return id;
@@ -112,6 +127,46 @@ public class CollocMember extends AbstractDataObject {
 		this.morphCode = morphCode;
 	}
 
+	public String getMorphValue() {
+		return morphValue;
+	}
+
+	public void setMorphValue(String morphValue) {
+		this.morphValue = morphValue;
+	}
+
+	public String getPosGroupCode() {
+		return posGroupCode;
+	}
+
+	public void setPosGroupCode(String posGroupCode) {
+		this.posGroupCode = posGroupCode;
+	}
+
+	public String getPosGroupValue() {
+		return posGroupValue;
+	}
+
+	public void setPosGroupValue(String posGroupValue) {
+		this.posGroupValue = posGroupValue;
+	}
+
+	public String getRelGroupCode() {
+		return relGroupCode;
+	}
+
+	public void setRelGroupCode(String relGroupCode) {
+		this.relGroupCode = relGroupCode;
+	}
+
+	public String getRelGroupValue() {
+		return relGroupValue;
+	}
+
+	public void setRelGroupValue(String relGroupValue) {
+		this.relGroupValue = relGroupValue;
+	}
+
 	public BigDecimal getWeight() {
 		return weight;
 	}
@@ -120,12 +175,28 @@ public class CollocMember extends AbstractDataObject {
 		this.weight = weight;
 	}
 
+	public Integer getWeightLevel() {
+		return weightLevel;
+	}
+
+	public void setWeightLevel(Integer weightLevel) {
+		this.weightLevel = weightLevel;
+	}
+
 	public Long getMemberOrder() {
 		return memberOrder;
 	}
 
 	public void setMemberOrder(Long memberOrder) {
 		this.memberOrder = memberOrder;
+	}
+
+	public List<String> getDefinitionValues() {
+		return definitionValues;
+	}
+
+	public void setDefinitionValues(List<String> definitionValues) {
+		this.definitionValues = definitionValues;
 	}
 
 }

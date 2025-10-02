@@ -265,7 +265,7 @@ public class TermSearchService extends AbstractSearchService {
 			List<Usage> usages = lexeme.getUsages();
 			permCalculator.applyCrud(user, usages);
 			permCalculator.filterVisibility(user, usages);
-			List<CollocMember> collocationMembers = commonDataDbService.getCollocationMembers(lexemeId);
+			List<CollocMember> collocationMembers = commonDataDbService.getCollocationMembers(lexemeId, CLASSIF_LABEL_LANG_EST);
 
 			Word word = lexeme.getLexemeWord();
 			word.setWordTypes(wordTypes);

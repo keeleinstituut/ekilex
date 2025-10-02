@@ -229,21 +229,52 @@
         <span class="lbl" th:text="#{lex.collocation.members}">Kollokatsiooni liikmed</span>
       </div>
       <div class="col pl-0">
-        <th:block th:each="collocMember : ${lexeme.collocationMembers}">
-          <div class="p-0">
-            <button
-              type="button"
-              class="btn btn-link p-0"
-              th:data-id="${collocMember.wordId}"
-              name="details-btn"
-              data-plugin="contextmenu, loadDetailsPlugin"
-              data-contextmenu:compare="Ava uues paneelis"
-              data-behaviour="replace">
-              <span th:text="${collocMember.wordValue}"></span>
-            </button>
-            <span th:text="${collocMember.weight}" class="small text-muted ml-2 mt-2"></span>
-          </div>
-        </th:block>
+        <table>
+          <th:block th:each="collocMember, collocMemberIter : ${lexeme.collocationMembers}">
+            <tr th:if="${collocMember.conjunct}" class="border-bottom">
+              <td class="px-2 align-top" colspan="2">
+                <span th:text="${collocMember.conjunct}"></span>
+              </td>
+            </tr>
+            <tr th:classappend="${collocMemberIter.last ? '' : 'border-bottom'}">
+              <td class="px-2 align-top">
+                <button
+                  type="button"
+                  class="btn btn-link p-0"
+                  th:data-id="${collocMember.wordId}"
+                  name="details-btn"
+                  data-plugin="contextmenu, loadDetailsPlugin"
+                  data-contextmenu:compare="Ava uues paneelis"
+                  data-behaviour="replace">
+                  <span th:text="${collocMember.wordValue}"></span>
+                </button>
+              </td>
+              <td class="px-2">
+                <div>
+                  <strong th:text="${collocMember.wordValue}"></strong>
+                  <span th:text="${collocMember.morphValue}"></span>
+                </div>
+                <ul th:if="${collocMember.definitionValues}" class="mb-0">
+                  <li th:each="definitionValue : ${collocMember.definitionValues}">
+                    <span th:text="${definitionValue}"></span>
+                  </li>
+                </ul>
+                <div>
+                  <span class="lbl" th:text="#{lex.collocation.pos.group}">Sõnaliik</span>
+                  <span th:text="${collocMember.posGroupValue}"></span>
+                </div>
+                <div>
+                  <span class="lbl" th:text="#{lex.collocation.rel.group}">Seose liik</span>
+                  <span th:text="${collocMember.relGroupValue}"></span>
+                </div>
+                <div>
+                  <span class="lbl" th:text="#{lex.collocation.role}">Roll</span>
+                  <span th:text="#{|lex.collocation.weight.level.${collocMember.weightLevel}|}"></span>
+                </div>
+              </td>
+            </tr>
+          </th:block>
+        </table>
       </div>
     </div>
   </th:block>

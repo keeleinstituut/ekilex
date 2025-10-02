@@ -80,11 +80,6 @@ public class CollocationMember extends TableImpl<CollocationMemberRecord> {
     public final TableField<CollocationMemberRecord, String> REL_GROUP_CODE = createField(DSL.name("rel_group_code"), SQLDataType.VARCHAR(100), this, "");
 
     /**
-     * The column <code>public.collocation_member.conjunct</code>.
-     */
-    public final TableField<CollocationMemberRecord, String> CONJUNCT = createField(DSL.name("conjunct"), SQLDataType.VARCHAR(100), this, "");
-
-    /**
      * The column <code>public.collocation_member.weight</code>.
      */
     public final TableField<CollocationMemberRecord, BigDecimal> WEIGHT = createField(DSL.name("weight"), SQLDataType.NUMERIC(14, 4), this, "");
@@ -98,6 +93,11 @@ public class CollocationMember extends TableImpl<CollocationMemberRecord> {
      * The column <code>public.collocation_member.group_order</code>.
      */
     public final TableField<CollocationMemberRecord, Integer> GROUP_ORDER = createField(DSL.name("group_order"), SQLDataType.INTEGER, this, "");
+
+    /**
+     * The column <code>public.collocation_member.conjunct_lexeme_id</code>.
+     */
+    public final TableField<CollocationMemberRecord, Long> CONJUNCT_LEXEME_ID = createField(DSL.name("conjunct_lexeme_id"), SQLDataType.BIGINT, this, "");
 
     private CollocationMember(Name alias, Table<CollocationMemberRecord> aliased) {
         this(alias, aliased, null);
@@ -154,7 +154,7 @@ public class CollocationMember extends TableImpl<CollocationMemberRecord> {
 
     @Override
     public List<ForeignKey<CollocationMemberRecord, ?>> getReferences() {
-        return Arrays.<ForeignKey<CollocationMemberRecord, ?>>asList(Keys.COLLOCATION_MEMBER__COLLOCATION_MEMBER_COLLOC_LEXEME_ID_FKEY, Keys.COLLOCATION_MEMBER__COLLOCATION_MEMBER_MEMBER_LEXEME_ID_FKEY, Keys.COLLOCATION_MEMBER__COLLOCATION_MEMBER_MEMBER_FORM_ID_FKEY, Keys.COLLOCATION_MEMBER__COLLOCATION_MEMBER_POS_GROUP_CODE_FKEY, Keys.COLLOCATION_MEMBER__COLLOCATION_MEMBER_REL_GROUP_CODE_FKEY);
+        return Arrays.<ForeignKey<CollocationMemberRecord, ?>>asList(Keys.COLLOCATION_MEMBER__COLLOCATION_MEMBER_COLLOC_LEXEME_ID_FKEY, Keys.COLLOCATION_MEMBER__COLLOCATION_MEMBER_MEMBER_LEXEME_ID_FKEY, Keys.COLLOCATION_MEMBER__COLLOCATION_MEMBER_MEMBER_FORM_ID_FKEY, Keys.COLLOCATION_MEMBER__COLLOCATION_MEMBER_POS_GROUP_CODE_FKEY, Keys.COLLOCATION_MEMBER__COLLOCATION_MEMBER_REL_GROUP_CODE_FKEY, Keys.COLLOCATION_MEMBER__COLLOCATION_MEMBER_CONJUNCT_LEXEME_ID_FKEY);
     }
 
     private transient Lexeme _collocationMemberCollocLexemeIdFkey;
@@ -162,6 +162,7 @@ public class CollocationMember extends TableImpl<CollocationMemberRecord> {
     private transient Form _form;
     private transient PosGroup _posGroup;
     private transient RelGroup _relGroup;
+    private transient Lexeme _collocationMemberConjunctLexemeIdFkey;
 
     public Lexeme collocationMemberCollocLexemeIdFkey() {
         if (_collocationMemberCollocLexemeIdFkey == null)
@@ -198,6 +199,13 @@ public class CollocationMember extends TableImpl<CollocationMemberRecord> {
         return _relGroup;
     }
 
+    public Lexeme collocationMemberConjunctLexemeIdFkey() {
+        if (_collocationMemberConjunctLexemeIdFkey == null)
+            _collocationMemberConjunctLexemeIdFkey = new Lexeme(this, Keys.COLLOCATION_MEMBER__COLLOCATION_MEMBER_CONJUNCT_LEXEME_ID_FKEY);
+
+        return _collocationMemberConjunctLexemeIdFkey;
+    }
+
     @Override
     public CollocationMember as(String alias) {
         return new CollocationMember(DSL.name(alias), this);
@@ -229,7 +237,7 @@ public class CollocationMember extends TableImpl<CollocationMemberRecord> {
     // -------------------------------------------------------------------------
 
     @Override
-    public Row10<Long, Long, Long, Long, String, String, String, BigDecimal, Integer, Integer> fieldsRow() {
+    public Row10<Long, Long, Long, Long, String, String, BigDecimal, Integer, Integer, Long> fieldsRow() {
         return (Row10) super.fieldsRow();
     }
 }

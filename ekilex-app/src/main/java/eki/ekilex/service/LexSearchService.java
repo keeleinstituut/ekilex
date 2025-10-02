@@ -177,7 +177,7 @@ public class LexSearchService extends AbstractWordSearchService {
 		List<CollocPosGroup> primaryCollocations = lexDataDbService.getPrimaryCollocations(lexemeId, CLASSIF_LABEL_LANG_EST);
 		List<Colloc> secondaryCollocations = lexDataDbService.getSecondaryCollocations(lexemeId);
 		List<CollocMemberMeaning> collocationMemberMeanings = lexDataDbService.getCollocationMemberMeanings(lexemeId);
-		List<CollocMember> collocationMembers = commonDataDbService.getCollocationMembers(lexemeId);
+		List<CollocMember> collocationMembers = commonDataDbService.getCollocationMembers(lexemeId, CLASSIF_LABEL_LANG_EST);
 		boolean isCollocationsExist = lexDataDbService.isCollocationsExist(lexemeId);
 		boolean isCollocationMemberMeaningCandidacyExist = CollectionUtils.size(collocationMemberMeanings) > 1;
 
@@ -310,7 +310,7 @@ public class LexSearchService extends AbstractWordSearchService {
 			List<CollocPosGroup> primaryCollocations = null;
 			List<Colloc> secondaryCollocations = null;
 			List<CollocMemberMeaning> collocationMemberMeanings = null;
-			List<CollocMember> collocationMembers = commonDataDbService.getCollocationMembers(lexemeId);
+			List<CollocMember> collocationMembers = commonDataDbService.getCollocationMembers(lexemeId, CLASSIF_LABEL_LANG_EST);
 			if (isCollocData) {
 				primaryCollocations = lexDataDbService.getPrimaryCollocations(lexemeId, CLASSIF_LABEL_LANG_EST);
 				secondaryCollocations = lexDataDbService.getSecondaryCollocations(lexemeId);

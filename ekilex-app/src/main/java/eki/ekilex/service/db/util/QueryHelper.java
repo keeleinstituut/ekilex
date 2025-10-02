@@ -1,8 +1,10 @@
 package eki.ekilex.service.db.util;
 
 import static eki.ekilex.data.db.main.Tables.ACTIVITY_LOG;
+import static eki.ekilex.data.db.main.Tables.COLLOCATION_MEMBER;
 import static eki.ekilex.data.db.main.Tables.DERIV_LABEL;
 import static eki.ekilex.data.db.main.Tables.DOMAIN_LABEL;
+import static eki.ekilex.data.db.main.Tables.FORM;
 import static eki.ekilex.data.db.main.Tables.FREQ_CORP;
 import static eki.ekilex.data.db.main.Tables.LEXEME;
 import static eki.ekilex.data.db.main.Tables.LEXEME_DERIV;
@@ -15,6 +17,7 @@ import static eki.ekilex.data.db.main.Tables.LEXEME_SOURCE_LINK;
 import static eki.ekilex.data.db.main.Tables.LEXEME_TAG;
 import static eki.ekilex.data.db.main.Tables.MEANING_DOMAIN;
 import static eki.ekilex.data.db.main.Tables.MEANING_LAST_ACTIVITY_LOG;
+import static eki.ekilex.data.db.main.Tables.MORPH_LABEL;
 import static eki.ekilex.data.db.main.Tables.POS_LABEL;
 import static eki.ekilex.data.db.main.Tables.PROFICIENCY_LEVEL_LABEL;
 import static eki.ekilex.data.db.main.Tables.PUBLISHING;
@@ -25,6 +28,7 @@ import static eki.ekilex.data.db.main.Tables.USAGE;
 import static eki.ekilex.data.db.main.Tables.USAGE_SOURCE_LINK;
 import static eki.ekilex.data.db.main.Tables.USAGE_TRANSLATION;
 import static eki.ekilex.data.db.main.Tables.VALUE_STATE_LABEL;
+import static eki.ekilex.data.db.main.Tables.WORD;
 import static eki.ekilex.data.db.main.Tables.WORD_FREQ;
 import static eki.ekilex.data.db.main.Tables.WORD_LAST_ACTIVITY_LOG;
 import static eki.ekilex.data.db.main.Tables.WORD_TAG;
@@ -46,9 +50,11 @@ import eki.common.constant.GlobalConstant;
 import eki.common.constant.LastActivityType;
 import eki.common.constant.PublishingConstant;
 import eki.ekilex.data.db.main.tables.ActivityLog;
+import eki.ekilex.data.db.main.tables.CollocationMember;
 import eki.ekilex.data.db.main.tables.Dataset;
 import eki.ekilex.data.db.main.tables.DerivLabel;
 import eki.ekilex.data.db.main.tables.DomainLabel;
+import eki.ekilex.data.db.main.tables.Form;
 import eki.ekilex.data.db.main.tables.FreqCorp;
 import eki.ekilex.data.db.main.tables.Lexeme;
 import eki.ekilex.data.db.main.tables.LexemeDeriv;
@@ -61,6 +67,7 @@ import eki.ekilex.data.db.main.tables.LexemeSourceLink;
 import eki.ekilex.data.db.main.tables.LexemeTag;
 import eki.ekilex.data.db.main.tables.MeaningDomain;
 import eki.ekilex.data.db.main.tables.MeaningLastActivityLog;
+import eki.ekilex.data.db.main.tables.MorphLabel;
 import eki.ekilex.data.db.main.tables.PosLabel;
 import eki.ekilex.data.db.main.tables.ProficiencyLevelLabel;
 import eki.ekilex.data.db.main.tables.Publishing;
@@ -489,6 +496,27 @@ public class QueryHelper implements GlobalConstant, PublishingConstant {
 				.asField();
 	}
 
+	public Field<JSON> getSimpleLexemeUsagesField(Field<Long> lexemeId) {
+
+		Usage u = USAGE.as("u");
+
+		Field<JSON> usaf = DSL
+				.select(DSL
+						.jsonArrayAgg(DSL
+								.jsonObject(
+										DSL.key("id").value(u.ID),
+										DSL.key("value").value(u.VALUE),
+										DSL.key("valuePrese").value(u.VALUE_PRESE),
+										DSL.key("lang").value(u.LANG),
+										DSL.key("orderBy").value(u.ORDER_BY)))
+						.orderBy(u.ORDER_BY))
+				.from(u)
+				.where(u.LEXEME_ID.eq(lexemeId))
+				.asField();
+
+		return usaf;
+	}
+
 	public Field<JSON> getLexemeNotesField(Field<Long> lexemeIdField) {
 
 		LexemeNote ln = LEXEME_NOTE.as("ln");
@@ -551,6 +579,50 @@ public class QueryHelper implements GlobalConstant, PublishingConstant {
 				.from(lt)
 				.where(lt.LEXEME_ID.eq(lexemeIdField))
 				.asField();
+	}
+
+	public Field<JSON> getCollocationMembersField(Field<Long> collocLexemeIdField, String classifierLabelLang, String classifierLabelTypeCode) {
+
+		CollocationMember cm2 = COLLOCATION_MEMBER.as("cm2");
+		Word mw = WORD.as("mw");
+		Word jw = WORD.as("jw");
+		Lexeme ml = LEXEME.as("ml");
+		Lexeme jl = LEXEME.as("jl");
+		Form mf = FORM.as("mf");
+		MorphLabel mfl = MORPH_LABEL.as("mfl");
+
+		Field<JSON> memf = DSL
+				.select(DSL
+						.jsonArrayAgg(DSL
+								.jsonObject(
+										DSL.key("id").value(cm2.ID),
+										DSL.key("conjunct").value(jw.VALUE),
+										DSL.key("lexemeId").value(ml.ID),
+										DSL.key("wordId").value(mw.ID),
+										DSL.key("wordValue").value(mw.VALUE),
+										DSL.key("homonymNr").value(mw.HOMONYM_NR),
+										DSL.key("lang").value(mw.LANG),
+										DSL.key("formId").value(mf.ID),
+										DSL.key("formValue").value(mf.VALUE),
+										DSL.key("morphCode").value(mf.MORPH_CODE),
+										DSL.key("morphValue").value(mfl.VALUE),
+										DSL.key("weight").value(cm2.WEIGHT),
+										DSL.key("memberOrder").value(cm2.MEMBER_ORDER)))
+						.orderBy(cm2.MEMBER_ORDER))
+				.from(cm2
+						.innerJoin(ml).on(ml.ID.eq(cm2.MEMBER_LEXEME_ID))
+						.innerJoin(mw).on(mw.ID.eq(ml.WORD_ID))
+						.innerJoin(mf).on(mf.ID.eq(cm2.MEMBER_FORM_ID))
+						.leftOuterJoin(jl).on(jl.ID.eq(cm2.CONJUNCT_LEXEME_ID))
+						.leftOuterJoin(jw).on(jw.ID.eq(jl.WORD_ID))
+						.leftOuterJoin(mfl).on(
+								mfl.CODE.eq(mf.MORPH_CODE)
+										.and(mfl.TYPE.eq(classifierLabelTypeCode))
+										.and(mfl.LANG.eq(classifierLabelLang))))
+				.where(cm2.COLLOC_LEXEME_ID.eq(collocLexemeIdField))
+				.asField();
+
+		return memf;
 	}
 
 	public Field<JSON> getMeaningDomainsField(Field<Long> meaningIdField, String classifierLabelLang, String classifierLabelTypeCode) {

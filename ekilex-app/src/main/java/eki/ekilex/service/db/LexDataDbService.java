@@ -2,14 +2,12 @@ package eki.ekilex.service.db;
 
 import static eki.ekilex.data.db.main.Tables.COLLOCATION_MEMBER;
 import static eki.ekilex.data.db.main.Tables.DEFINITION;
-import static eki.ekilex.data.db.main.Tables.FORM;
 import static eki.ekilex.data.db.main.Tables.LEXEME;
 import static eki.ekilex.data.db.main.Tables.POS_GROUP;
 import static eki.ekilex.data.db.main.Tables.POS_GROUP_LABEL;
 import static eki.ekilex.data.db.main.Tables.REL_GROUP;
 import static eki.ekilex.data.db.main.Tables.REL_GROUP_LABEL;
 import static eki.ekilex.data.db.main.Tables.SOURCE;
-import static eki.ekilex.data.db.main.Tables.USAGE;
 import static eki.ekilex.data.db.main.Tables.WORD;
 import static eki.ekilex.data.db.main.Tables.WORD_ETYMOLOGY;
 import static eki.ekilex.data.db.main.Tables.WORD_ETYMOLOGY_RELATION;
@@ -30,14 +28,12 @@ import eki.ekilex.data.CollocMemberMeaning;
 import eki.ekilex.data.WordEtymTuple;
 import eki.ekilex.data.db.main.tables.CollocationMember;
 import eki.ekilex.data.db.main.tables.Definition;
-import eki.ekilex.data.db.main.tables.Form;
 import eki.ekilex.data.db.main.tables.Lexeme;
 import eki.ekilex.data.db.main.tables.PosGroup;
 import eki.ekilex.data.db.main.tables.PosGroupLabel;
 import eki.ekilex.data.db.main.tables.RelGroup;
 import eki.ekilex.data.db.main.tables.RelGroupLabel;
 import eki.ekilex.data.db.main.tables.Source;
-import eki.ekilex.data.db.main.tables.Usage;
 import eki.ekilex.data.db.main.tables.Word;
 import eki.ekilex.data.db.main.tables.WordEtymology;
 import eki.ekilex.data.db.main.tables.WordEtymologyRelation;
@@ -198,53 +194,12 @@ public class LexDataDbService extends AbstractDataDbService {
 		RelGroupLabel rgl = REL_GROUP_LABEL.as("rgl");
 		CollocationMember cm = COLLOCATION_MEMBER.as("cm");
 		CollocationMember cm1 = COLLOCATION_MEMBER.as("cm1");
-		CollocationMember cm2 = COLLOCATION_MEMBER.as("cm2");
 		CollocationMember cm3 = COLLOCATION_MEMBER.as("cm3");
 		Word cw = WORD.as("cw");
-		Word mw = WORD.as("mw");
 		Lexeme cl = LEXEME.as("cl");
-		Lexeme ml = LEXEME.as("ml");
-		Form mf = FORM.as("mf");
-		Usage u = USAGE.as("u");
 
-		Field<JSON> usaf = DSL
-				.select(DSL
-						.jsonArrayAgg(DSL
-								.jsonObject(
-										DSL.key("id").value(u.ID),
-										DSL.key("value").value(u.VALUE),
-										DSL.key("valuePrese").value(u.VALUE_PRESE),
-										DSL.key("lang").value(u.LANG),
-										DSL.key("orderBy").value(u.ORDER_BY)))
-						.orderBy(u.ORDER_BY))
-				.from(u)
-				.where(u.LEXEME_ID.eq(cl.ID))
-				.asField();
-
-		Field<JSON> memf = DSL
-				.select(DSL
-						.jsonArrayAgg(DSL
-								.jsonObject(
-										DSL.key("id").value(cm2.ID),
-										DSL.key("conjunct").value(cm2.CONJUNCT),
-										DSL.key("lexemeId").value(ml.ID),
-										DSL.key("wordId").value(mw.ID),
-										DSL.key("wordValue").value(mw.VALUE),
-										DSL.key("homonymNr").value(mw.HOMONYM_NR),
-										DSL.key("lang").value(mw.LANG),
-										DSL.key("formId").value(mf.ID),
-										DSL.key("formValue").value(mf.VALUE),
-										DSL.key("morphCode").value(mf.MORPH_CODE),
-										DSL.key("weight").value(cm2.WEIGHT),
-										DSL.key("memberOrder").value(cm2.MEMBER_ORDER)))
-						.orderBy(cm2.MEMBER_ORDER))
-				.from(mf, mw, ml, cm2)
-				.where(
-						cm2.COLLOC_LEXEME_ID.eq(cl.ID)
-								.and(cm2.MEMBER_LEXEME_ID.eq(ml.ID))
-								.and(cm2.MEMBER_FORM_ID.eq(mf.ID))
-								.and(ml.WORD_ID.eq(mw.ID)))
-				.asField();
+		Field<JSON> usaf = queryHelper.getSimpleLexemeUsagesField(cl.ID);
+		Field<JSON> memf = queryHelper.getCollocationMembersField(cl.ID, classifierLabelLang, CLASSIF_LABEL_TYPE_DESCRIP);
 
 		Field<Long> hwmemidf = DSL
 				.select(cm3.ID)
@@ -322,51 +277,12 @@ public class LexDataDbService extends AbstractDataDbService {
 	public List<eki.ekilex.data.Colloc> getSecondaryCollocations(Long lexemeId) {
 
 		CollocationMember cm1 = COLLOCATION_MEMBER.as("cm1");
-		CollocationMember cm2 = COLLOCATION_MEMBER.as("cm2");
 		CollocationMember cm3 = COLLOCATION_MEMBER.as("cm3");
 		Word cw = WORD.as("cw");
-		Word mw = WORD.as("mw");
 		Lexeme cl = LEXEME.as("cl");
-		Lexeme ml = LEXEME.as("ml");
-		Form mf = FORM.as("mf");
-		Usage u = USAGE.as("u");
 
-		Field<JSON> usaf = DSL
-				.select(DSL
-						.jsonArrayAgg(DSL
-								.jsonObject(
-										DSL.key("id").value(u.ID),
-										DSL.key("value").value(u.VALUE),
-										DSL.key("valuePrese").value(u.VALUE_PRESE),
-										DSL.key("lang").value(u.LANG),
-										DSL.key("orderBy").value(u.ORDER_BY)))
-						.orderBy(u.ORDER_BY))
-				.from(u)
-				.where(u.LEXEME_ID.eq(cl.ID))
-				.asField();
-
-		Field<JSON> memf = DSL
-				.select(DSL
-						.jsonArrayAgg(DSL
-								.jsonObject(
-										DSL.key("id").value(cm2.ID),
-										DSL.key("conjunct").value(cm2.CONJUNCT),
-										DSL.key("lexemeId").value(ml.ID),
-										DSL.key("wordId").value(mw.ID),
-										DSL.key("wordValue").value(mw.VALUE),
-										DSL.key("formId").value(mf.ID),
-										DSL.key("formValue").value(mf.VALUE),
-										DSL.key("morphCode").value(mf.MORPH_CODE),
-										DSL.key("weight").value(cm2.WEIGHT),
-										DSL.key("memberOrder").value(cm2.MEMBER_ORDER)))
-						.orderBy(cm2.MEMBER_ORDER))
-				.from(mf, mw, ml, cm2)
-				.where(
-						cm2.COLLOC_LEXEME_ID.eq(cl.ID)
-								.and(cm2.MEMBER_LEXEME_ID.eq(ml.ID))
-								.and(cm2.MEMBER_FORM_ID.eq(mf.ID))
-								.and(ml.WORD_ID.eq(mw.ID)))
-				.asField();
+		Field<JSON> usaf = queryHelper.getSimpleLexemeUsagesField(cl.ID);
+		Field<JSON> memf = queryHelper.getCollocationMembersField(cl.ID, null, null);
 
 		Field<Long> hwmemidf = DSL
 				.select(cm3.ID)

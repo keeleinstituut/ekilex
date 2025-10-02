@@ -1231,11 +1231,11 @@ alter sequence lex_colloc_id_seq restart with 10000;
 create table collocation_member (
 	id bigserial primary key,
 	colloc_lexeme_id bigint references lexeme(id) on delete cascade not null,
+	conjunct_lexeme_id bigint references lexeme(id),
 	member_lexeme_id bigint references lexeme(id) not null,
 	member_form_id bigint references form(id) not null,
 	pos_group_code varchar(100) references pos_group(code),
 	rel_group_code varchar(100) references rel_group(code),
-	conjunct varchar(100),
 	weight numeric(14, 4),
 	member_order integer not null,
 	group_order integer,

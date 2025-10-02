@@ -2436,7 +2436,7 @@ select
 													select
 														json_agg(
 															json_build_object(
-																'conjunct', cm2.conjunct,
+																'conjunct', jw.value,
 																'lexemeId', ml.id,
 																'wordId', mw.id,
 																'wordValue', mw.value,
@@ -2451,15 +2451,14 @@ select
 															order by cm2.member_order
 														)
 													from
-														form mf,
-														word mw,
-														lexeme ml,
 														collocation_member cm2
+														inner join lexeme ml on ml.id = cm2.member_lexeme_id
+														inner join word mw on mw.id = ml.word_id
+														inner join form mf on mf.id = cm2.member_form_id
+														left outer join lexeme jl on jl.id = cm2.conjunct_lexeme_id
+														left outer join word jw on jw.id = jl.word_id
 													where
 														cm2.colloc_lexeme_id = cl.id
-														and cm2.member_lexeme_id = ml.id
-														and ml.word_id = mw.id
-														and cm2.member_form_id = mf.id
 												),
 												'groupOrder', cm1.group_order,
 												'wwUnif', (exists (

@@ -144,6 +144,7 @@ create index lex_colloc_rel_group_id_idx on lex_colloc(rel_group_id);
 create index lex_colloc_collocation_id_idx on lex_colloc(collocation_id);
 create index collocation_value_idx on collocation(value);
 create index collocation_member_colloc_lexeme_id_idx on collocation_member(colloc_lexeme_id);
+create index collocation_member_conjunct_lexeme_id_idx on collocation_member(conjunct_lexeme_id);
 create index collocation_member_member_lexeme_id_idx on collocation_member(member_lexeme_id);
 create index collocation_member_member_form_id_idx on collocation_member(member_form_id);
 create index collocation_member_pos_group_code_idx on collocation_member(pos_group_code);
