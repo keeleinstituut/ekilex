@@ -1,28 +1,54 @@
 // The function actually applying the offset
 function offsetAnchor() {
-  var mdBreakpoint = 768;
+  const mdBreakpoint = 768;
 
   if (location.hash.length !== 0) {
     window.scrollTo(window.scrollX, window.scrollY - 100);
-  } 
+  }
 
-  if ($(window).width() < mdBreakpoint) {
+  if (window.innerWidth < mdBreakpoint) {
     window.scrollTo(window.scrollX, window.scrollY - 40);
   }
 }
 
-// Captures click events of all <a> elements with href starting with #
-$(document).on('click', 'a[href^="#"]', function(event) {
-  // Click events are captured before hashchanges. Timeout
-  // causes offsetAnchor to be called after the page jump.
-  window.setTimeout(function() {
-    offsetAnchor();
-  }, 0);
-});
-
 // Set the offset when entering page with hash present in the url
-window.setTimeout(offsetAnchor, 0);
+requestAnimationFrame(offsetAnchor);
 
-$("#topUp").on("click", function() {
-    $("body").scrollTop(0);
-});
+function initKeyboardListeners() {
+  const sidebar = document.getElementById("sidebar");
+  const content = document.getElementById("main");
+  let lastActiveLink = sidebar.querySelector("a");
+  content.addEventListener("keydown", (e) => {
+    if (e.key === "ArrowLeft") {
+      lastActiveLink ??= sidebar.querySelector("a");
+      lastActiveLink?.focus?.();
+    }
+  });
+
+  sidebar.addEventListener("keydown", (e) => {
+    if (e.key === "ArrowRight") {
+      lastActiveLink = e.target?.querySelector("a") || e.target;
+      content.focus();
+    }
+  });
+}
+
+document.addEventListener(
+  "DOMContentLoaded",
+  () => {
+    const topUp = document.getElementById("topUp");
+    topUp.addEventListener("click", function () {
+      window.scrollTo(window.scrollX, 0);
+    });
+
+    // Captures click events of all <a> elements with href starting with #
+    document.addEventListener("click", function (e) {
+      const link = e.target?.href || e.target?.querySelector("a")?.href;
+      if (link?.includes("#")) {
+        requestAnimationFrame(offsetAnchor);
+      }
+    });
+    initKeyboardListeners();
+  },
+  { once: true }
+);
