@@ -259,17 +259,20 @@
                     <span th:text="${definitionValue}"></span>
                   </li>
                 </ul>
-                <div th:if="${collocMember.posGroupValue}">
+                <div>
                   <span class="lbl" th:text="#{lex.collocation.pos.group}">Sõnaliik</span>
-                  <span th:text="${collocMember.posGroupValue}"></span>
+                  <span th:text="${collocMember.posGroupValue}" th:if="${collocMember.posGroupValue}"></span>
+                  <span th:text="#{lex.collocation.prop.empty}" th:unless="${collocMember.posGroupValue}">määramata</span>
                 </div>
-                <div th:if="${collocMember.relGroupValue}">
+                <div>
                   <span class="lbl" th:text="#{lex.collocation.rel.group}">Seose liik</span>
-                  <span th:text="${collocMember.relGroupValue}"></span>
+                  <span th:text="${collocMember.relGroupValue}" th:if="${collocMember.relGroupValue}"></span>
+                  <span th:text="#{lex.collocation.prop.empty}" th:unless="${collocMember.relGroupValue}">määramata</span>
                 </div>
-                <div th:if="${collocMember.weightLevel}">
+                <div>
                   <span class="lbl" th:text="#{lex.collocation.role}">Roll</span>
-                  <span th:text="#{|lex.collocation.weight.level.${collocMember.weightLevel}|}"></span>
+                  <span th:text="#{|lex.collocation.weight.level.${collocMember.weightLevel}|}" th:if="${collocMember.weightLevel}"></span>
+                  <span th:text="#{lex.collocation.prop.empty}" th:unless="${collocMember.weightLevel}">määramata</span>
                 </div>
               </td>
             </tr>
