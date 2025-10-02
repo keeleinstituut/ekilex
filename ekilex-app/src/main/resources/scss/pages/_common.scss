@@ -28,8 +28,10 @@
     display: flex;
     flex-direction: column;
     gap: 16px;
-    min-width: 488px;
     --button-padding: 16px 40px;
+    @media (min-width: 768px) {
+      min-width: 488px;
+    }
   }
 
   &__actions {
@@ -38,9 +40,13 @@
     align-items: center;
     gap: 8px;
     --plain-action-font-size: .875rem;
-
+    
     & a {
       color: var(--color-dark-blue);
+    }
+    
+    @media (max-width: 500px) {
+      flex-direction: column;
     }
   }
 
