@@ -1336,9 +1336,9 @@ public class CommonDataDbService extends AbstractDataDbService {
 
 	public List<CollocMember> getCollocationMembers(Long lexemeId, String classifierLabelLang) {
 
-		final BigDecimal COLLOC_MEMBER_WEIGHT_LEVEL_1 = new BigDecimal(1);
-		final BigDecimal COLLOC_MEMBER_WEIGHT_LEVEL_2 = new BigDecimal(0.8F);
-		final BigDecimal COLLOC_MEMBER_WEIGHT_LEVEL_3 = new BigDecimal(0.5F);
+		final BigDecimal COLLOC_MEMBER_WEIGHT_LEVEL_1 = new BigDecimal("1.0");
+		final BigDecimal COLLOC_MEMBER_WEIGHT_LEVEL_2 = new BigDecimal("0.8");
+		final BigDecimal COLLOC_MEMBER_WEIGHT_LEVEL_3 = new BigDecimal("0.5");
 
 		CollocationMember cm = COLLOCATION_MEMBER.as("cm");
 		Word mw = WORD.as("mw");
