@@ -259,15 +259,15 @@
                     <span th:text="${definitionValue}"></span>
                   </li>
                 </ul>
-                <div>
+                <div th:if="${collocMember.posGroupValue}">
                   <span class="lbl" th:text="#{lex.collocation.pos.group}">Sõnaliik</span>
                   <span th:text="${collocMember.posGroupValue}"></span>
                 </div>
-                <div>
+                <div th:if="${collocMember.relGroupValue}">
                   <span class="lbl" th:text="#{lex.collocation.rel.group}">Seose liik</span>
                   <span th:text="${collocMember.relGroupValue}"></span>
                 </div>
-                <div>
+                <div th:if="${collocMember.weightLevel}">
                   <span class="lbl" th:text="#{lex.collocation.role}">Roll</span>
                   <span th:text="#{|lex.collocation.weight.level.${collocMember.weightLevel}|}"></span>
                 </div>
