@@ -21,9 +21,11 @@
 	var applicationUrl = /*[[@{/}]]*/'/';
 	var sessionTimeoutSec = /*[[${appData == null ? 3600 : appData.sessionTimeoutSec}]]*/3600;
 	const feedbackServiceUrl = /*[[${feedbackServiceUrl}]]*/'http://localhost/blah';
-	var messages = {
-		'this_is_form' : /*[[#{label.word.is.form.of}]]*/'see on ka vorm sõnadest',
+	const messages = {
+    'this_is_form' : /*[[#{label.word.is.form.of}]]*/'see on ka vorm sõnadest',
+    'audio_generating_loading': /*[[#{label.audio.generation.loading}]]*/'Heli genereeritakse...',
 		'audio_generation_failure' : /*[[#{label.audio.generation.failure}]]*/'Heli genereerimise teenus hetkel ei toimi, proovige hiljem uuesti.',
+    'audio_play_failure': /*[[#{label.audio.play.failure}]]*/'Heli mängimine ebaõnnestus',
 		'search_failure' : /*[[#{label.detail.search.failure}]]*/'Detailide päring ebaõnnestus, proovige hiljem uuesti.',
 		'feedback_missing_service' : /*[[#{label.feedback.missing.service}]]*/'Tagasiside teenus ei ole seadistatud.'
 	}
@@ -229,6 +231,7 @@
   <th:block th:fragment="wcag-search">
     <a class="sr-only sr-only-focusable" role="button" href="#search" th:text="#{aria.skip.link.search}">Põhisisu juurde</a>
   </th:block>
+  <div aria-live="polite" class="sr-only" id="aria-live-announcer" th:fragment="aria-live-announcer"></div>
   <!-- debugging aid -->
   <div th:fragment="dump_vars" class="m-4">
     <h4>Dump of all variables in Thymeleaf context</h4>

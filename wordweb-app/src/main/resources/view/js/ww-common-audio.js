@@ -5,11 +5,16 @@ $(document).ready(function() {
 function playAudio(audioUrl, onEndedCallback) {
 	if (audioUrl === null) {
 		console.error('Attempted to play audio with no url');
+		announceForScreenReader(messages.audio_play_failure);
 		return
 	}
 	// Replace hardcoded url with current host to avoid fetching sonaveeb.ee on sõnaveeb.ee for example
 	const urlWithCurrentHost = audioUrl.replace('sonaveeb.ee', window.location.host);
 	const music = new Audio(urlWithCurrentHost);
+	music.addEventListener('error', (e) => {
+		console.error('Failed to play audio', e);
+		announceForScreenReader(messages.audio_play_failure);
+	});
 	music.onended = onEndedCallback;
 	music.play();
 }
@@ -34,6 +39,8 @@ function getAndPlayAudio(e) {
 		}
 	};
 
+	announceForScreenReader(messages.audio_generating_loading);
+
 	const definedAudioUrl = elem.data('audio-url');
 	if (definedAudioUrl !== undefined) {
 		playAudio(definedAudioUrl, onEndCallback);
@@ -51,10 +58,12 @@ function getAndPlayAudio(e) {
 				playAudio(providedAudioUrl, onEndCallback);
 			} else {
 				onEndCallback();
+				announceForScreenReader(messages.audio_generation_failure)
 			}
 		}).fail(function() {
 			onEndCallback();
 			alert(messages.audio_generation_failure);
+			announceForScreenReader(messages.audio_generation_failure)
 		})
 }
 

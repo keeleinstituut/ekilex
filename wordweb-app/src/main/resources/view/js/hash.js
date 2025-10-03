@@ -17,6 +17,9 @@ requestAnimationFrame(offsetAnchor);
 function initKeyboardListeners() {
   const sidebar = document.getElementById("sidebar");
   const content = document.getElementById("main");
+  if (!sidebar || !content) {
+    return;
+  }
   let lastActiveLink = sidebar.querySelector("a");
   content.addEventListener("keydown", (e) => {
     if (e.key === "ArrowLeft") {
