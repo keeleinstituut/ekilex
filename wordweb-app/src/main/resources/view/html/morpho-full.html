@@ -40,7 +40,7 @@
           <span th:if="${form.displayLevel == 3}">)</span>
         </span>
         <th:block th:if="${form.audioFileExists}">
-          <button type="button" th:aria-label="|#{aria.listen} - ${form.value}|" th:if="${#strings.isEmpty(prefix)}"
+          <button type="button" th:aria-label="|#{aria.listen.human} - ${form.value}|" th:if="${#strings.isEmpty(prefix)}"
                   th:data-audio-url="@{'/files/audio/' + ${form.audioFile}}"
                   onclick="getAndPlayAudio(this)" class="btn btn-speaker btn-speaker--inactive"
                   th:title="#{label.tooltip.audio.human}"
@@ -49,7 +49,7 @@
           </button>
         </th:block>
         <th:block th:if="${!form.audioFileExists && form.langEst}">
-          <button type="button" th:aria-label="|#{aria.listen} - ${form.value}|" th:if="${#strings.isEmpty(prefix)}"
+          <button type="button" th:aria-label="|#{aria.listen.artificial} - ${form.value}|" th:if="${#strings.isEmpty(prefix)}"
                   th:data-text="${form.displayForm}"
                   data-service-id="morpho"
                   onclick="getAndPlayAudio(this)" class="btn btn-speaker btn-speaker--inactive"
