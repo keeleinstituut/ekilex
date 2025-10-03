@@ -459,6 +459,7 @@
       th:title="#{label.source}"
       th:data-content="${dataContent}"
       th:unless="${#strings.isEmpty(sourceLink.sourceName)}"
+      th:aria-label="|${#messages.msg('label.source')} ${sourceLink.sourceName}${#strings.isEmpty(sourceLink.sourceLinkName) ? '' : ' ' + sourceLink.sourceLinkName}|"
       >
       <span class="text-underlined mr-1" th:utext="${sourceLink.sourceName}"></span>
       <span th:utext="|${sourceLink.sourceLinkName}|" th:unless="${#strings.isEmpty(sourceLink.sourceLinkName)}"></span>
