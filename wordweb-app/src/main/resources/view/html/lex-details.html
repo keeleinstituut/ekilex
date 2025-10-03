@@ -135,12 +135,12 @@
                             aria-expanded="false"
                             th:aria-controls="${'#full-synonym-collapse-panel-' + lexeme.lexemeId}"
                             th:if="${#lists.size(lexeme.sourceLangFullSynonyms) > T(eki.wordweb.constant.WebConstant).SYN_WORDS_DISPLAY_LIMIT}">
-                        <span class="btn-content see-more-content" th:title="#{button.see.more}">
+                        <span class="btn-content see-more-content" th:title="#{button.see.more}" th:aria-label="#{label.syn.show_more}">
                           <i class="fa fa-ellipsis-h" aria-hidden="true"></i>
                         </span>
                         <span class="btn-content see-less-content">
                           <i class="fa fa-angle-up" aria-hidden="true"></i>
-                          <span class="btn-txt" th:text="#{button.see.less}"></span>
+                          <span class="btn-txt" th:text="#{button.see.less}" th:aria-label="#{label.syn.show_less}"></span>
                         </span>
                       </button>
                     </div>
@@ -188,12 +188,12 @@
                             aria-expanded="false"
                             th:aria-controls="${'#near-synonym-collapse-panel-' + lexeme.lexemeId}"
                             th:if="${#lists.size(lexeme.sourceLangNearSynonyms) > T(eki.wordweb.constant.WebConstant).SYN_WORDS_DISPLAY_LIMIT}">
-                        <span class="btn-content see-more-content" th:title="#{button.see.more}">
+                        <span class="btn-content see-more-content" th:title="#{button.see.more}" th:aria-label="#{label.syn.show_more}">
                           <i class="fa fa-ellipsis-h" aria-hidden="true"></i>
                         </span>
                         <span class="btn-content see-less-content">
                           <i class="fa fa-angle-up" aria-hidden="true"></i>
-                          <span class="btn-txt" th:text="#{button.see.less}"></span>
+                          <span class="btn-txt" th:text="#{button.see.less}" th:aria-label="#{label.syn.show_less}"></span>
                         </span>
                       </button>
                     </div>
@@ -254,12 +254,12 @@
                               aria-expanded="false"
                               th:aria-controls="${'#matches-show-more-panel-' + lexeme.lexemeId + '-' + synEntry.key}"
                               th:if="${#lists.size(destinLangSyns) > T(eki.wordweb.constant.WebConstant).SYN_WORDS_DISPLAY_LIMIT}">
-                          <span class="btn-content see-more-content" th:title="#{button.see.more}">
+                          <span class="btn-content see-more-content" th:title="#{button.see.more}" th:aria-label="#{label.matches.show_more}">
                             <i class="fa fa-ellipsis-h" aria-hidden="true"></i>
                           </span>
                           <span class="btn-content see-less-content">
                             <i class="fa fa-angle-up" aria-hidden="true"></i>
-                            <span class="btn-txt" th:text="#{button.see.less}"></span>
+                            <span class="btn-txt" th:text="#{button.see.less}" th:aria-label="#{label.matches.show_less}"></span>
                           </span>
                         </button>
                       </div>
@@ -438,12 +438,12 @@
                         th:aria-controls="${'#lexeme-usages-more-panel-' + lexeme.lexemeId}"
                         th:data-target="${'#lexeme-usages-more-panel-' + lexeme.lexemeId}"
                         th:if="${lexeme.moreUsages}">
-                    <span class="btn-content see-more-content" th:title="#{button.see.more}">
+                    <span class="btn-content see-more-content" th:title="#{button.see.more}" th:aria-label="#{label.usage.show_more}">
                       <i class="fa fa-ellipsis-h" aria-hidden="true"></i>
                     </span>
                     <span class="btn-content see-less-content">
                       <i class="fa fa-angle-up" aria-hidden="true"></i>
-                      <span class="btn-txt" th:text="#{button.see.less}"></span>
+                      <span class="btn-txt" th:text="#{button.see.less}" th:aria-label="#{label.usage.show_less}"></span>
                     </span>
                   </button>
                 </div>
@@ -534,7 +534,8 @@
                                       aria-expanded="false"
                                       th:aria-controls="|#colloc-usages-area-${lexeme.lexemeId}-${collocPosGrIter.index}-${collocRelGrIter.index}|"
                                       th:data-target="|#colloc-usages-area-${lexeme.lexemeId}-${collocPosGrIter.index}-${collocRelGrIter.index}, #colloc-toggle-btn-${lexeme.lexemeId}-${collocPosGrIter.index}-${collocRelGrIter.index}|"
-                                      th:unless="${#lists.isEmpty(collocRelGr.allUsageValues)}">
+                                      th:unless="${#lists.isEmpty(collocRelGr.allUsageValues)}"
+                                      th:aria-label="#{label.colloc.show_more}">
                                 <i class="collapse-icon fa fa-ellipsis-h" aria-hidden="true"></i>
                               </button>
                             </div>
@@ -553,7 +554,7 @@
                                       th:aria-controls="|#colloc-usages-area-${lexeme.lexemeId}-${collocPosGrIter.index}-${collocRelGrIter.index}|"
                                       th:data-target="|#colloc-usages-area-${lexeme.lexemeId}-${collocPosGrIter.index}-${collocRelGrIter.index}, #colloc-toggle-btn-${lexeme.lexemeId}-${collocPosGrIter.index}-${collocRelGrIter.index}|">
                                 <i class="collapse-icon fa fa-angle-up" aria-hidden="true"></i>
-                                <span th:text="#{button.see.less}"></span>
+                                <span th:text="#{button.see.less}" th:aria-label="#{label.colloc.show_less}"></span>
                               </button>
                             </div>
                           </div>
@@ -562,7 +563,7 @@
                     </th:block>
                     <button class="show-more-btn show-more-btn--unrestricted" data-toggle="collapse" th:data-target="${'#colloc-samples-' + lexeme.lexemeId + ', ' + '#colloc-fulldata-' + lexeme.lexemeId}" >
                       <i class="fa fa-angle-up" aria-hidden="true"></i>
-                      <span th:text="#{button.see.less}"></span>
+                      <span th:text="#{button.see.less}" th:aria-label="#{label.colloc.show_less}"></span>
                     </button>
                   </div>
                   <div th:id="|colloc-samples-${lexeme.lexemeId}|" class="w-100 collapse show">
@@ -617,7 +618,8 @@
                                   type="button"
                                   data-toggle="collapse"
                                   aria-expanded="false"
-                                  th:data-target="|#colloc-samples-${lexeme.lexemeId}, #colloc-fulldata-${lexeme.lexemeId}|">
+                                  th:data-target="|#colloc-samples-${lexeme.lexemeId}, #colloc-fulldata-${lexeme.lexemeId}|"
+                                  th:aria-label="#{label.colloc.show_more}">
                             <i class="fa fa-ellipsis-h" aria-hidden="true"></i>
                           </button>
                         </div>

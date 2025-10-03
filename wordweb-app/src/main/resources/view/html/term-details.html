@@ -274,12 +274,12 @@
                             class="btn-collapse show-more-btn" th:title="#{button.see.more}"
                             type="button" data-toggle="collapse" aria-expanded="false" th:aria-controls="${'#lexeme-usages-more-panel-' + meaningLexeme.lexemeId}"
                             th:data-target="|#lexeme-usages-more-panel-${meaningLexeme.lexemeId}|" th:if="${meaningLexeme.moreUsages}">
-                            <span class="btn-content see-more-content" th:title="#{button.see.more}">
+                            <span class="btn-content see-more-content" th:title="#{button.see.more}" th:aria-label="#{label.usage.show_more}">
                               <i class="fa fa-ellipsis-h" aria-hidden="true"></i>
                             </span>
                             <span class="btn-content see-less-content">
                               <i class="fa fa-angle-up" aria-hidden="true"></i>
-                              <span class="btn-txt" th:text="#{button.see.less}"></span>
+                              <span class="btn-txt" th:text="#{button.see.less}" th:aria-label="#{label.usage.show_less}"></span>
                             </span>
                           </button>
                         </div>
