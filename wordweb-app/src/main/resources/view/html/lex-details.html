@@ -79,7 +79,9 @@
                         </th:block>
                         <th:block th:if="${lexeme.showSection1}">
                           <th:block th:if="${lexeme.showPoses}">
-                            <span class="lang-code text-caption lang-code--unrestricted" th:each="pos : ${lexeme.poses}" th:text="${pos.value}"></span>
+                            <ul class="list-unstyled m-0 d-inline-block" th:aria-label="#{label.poses}">
+                              <li class="lang-code text-caption lang-code--unrestricted" th:each="pos : ${lexeme.poses}" th:text="${pos.value}"></li>
+                            </ul>
                           </th:block>
                           <span class="lexeme grammars lang-code text-caption lang-code--unrestricted" th:unless="${#lists.isEmpty(lexeme.grammars)}">
                             <span th:each="grammar,grammarIter : ${lexeme.grammars}" th:utext="${grammar.valuePrese + (grammarIter.last ? '' : ',')}" th:classappend="${grammarIter.last ? '' : 'mr-1'}"></span>
