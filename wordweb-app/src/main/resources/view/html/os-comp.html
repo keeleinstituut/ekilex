@@ -34,9 +34,9 @@
               <button type="submit" class="homonym-item homonym__item" th:classappend="${word.selected ? 'animation-target' : ''}">
                 <div class="homonym__body">
                   <div class="text-body-two">
-                    <span th:utext="${@decorUtil.getWordValueMarkup(word)}">tee</span>
-                    <strong>
-                      <sup th:text="${word.homonymNr}" th:if="${word.homonymExists}">1</sup>
+                    <span th:utext="${@decorUtil.getWordValueMarkup(word)}">tee</span><!--
+                    --><strong class="d-inline-block" th:if="${word.homonymExists}">
+                      <sup th:text="${word.homonymNr}">1</sup>
                     </strong>
                   </div>
                   <div class="text-caption homonym__text">
