@@ -147,6 +147,36 @@ public class UserProfileController extends AbstractPrivatePageController {
 		return RESPONSE_OK_VER2;
 	}
 
+	@PostMapping(MEANING_FREEFORM_EXPAND_URI)
+	@ResponseBody
+	public String toggleMeaningFreeformExpand(Model model) {
+
+		SessionBean sessionBean = getSessionBean(model);
+		sessionBean.setMeaningFreeformExpanded(!sessionBean.isMeaningFreeformExpanded());
+
+		return RESPONSE_OK_VER2;
+	}
+
+	@PostMapping(MEANING_IMAGE_EXPAND_URI)
+	@ResponseBody
+	public String toggleMeaningImageExpand(Model model) {
+
+		SessionBean sessionBean = getSessionBean(model);
+		sessionBean.setMeaningImageExpanded(!sessionBean.isMeaningImageExpanded());
+
+		return RESPONSE_OK_VER2;
+	}
+
+	@PostMapping(MEANING_MEDIA_EXPAND_URI)
+	@ResponseBody
+	public String toggleMeaningMediaExpand(Model model) {
+
+		SessionBean sessionBean = getSessionBean(model);
+		sessionBean.setMeaningMediaExpanded(!sessionBean.isMeaningMediaExpanded());
+
+		return RESPONSE_OK_VER2;
+	}
+
 	@PostMapping(GENERATE_API_KEY)
 	public String generateApiKey() {
 

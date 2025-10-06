@@ -128,6 +128,12 @@ public interface WebConstant {
 
 	String LEXEME_COLLOC_EXPAND_URI = "/lexeme_colloc_expand";
 
+	String MEANING_FREEFORM_EXPAND_URI = "/meaning_freeform_expand";
+
+	String MEANING_IMAGE_EXPAND_URI = "/meaning_image_expand";
+
+	String MEANING_MEDIA_EXPAND_URI = "/meaning_media_expand";
+
 	String UPDATE_WORD_ACTIVE_TAG_COMPLETE_URI = "/update_word_active_tag_complete";
 
 	String UPDATE_MEANING_ACTIVE_TAG_COMPLETE_URI = "/update_meaning_active_tag_complete";

@@ -24,6 +24,12 @@ public class SessionBean extends AbstractDataObject {
 
 	private boolean isLexemeCollocExpanded;
 
+	private boolean isMeaningFreeformExpanded;
+
+	private boolean isMeaningImageExpanded;
+
+	private boolean isMeaningMediaExpanded;
+
 	public SearchResultMode getTermSearchResultMode() {
 		return termSearchResultMode;
 	}
@@ -78,6 +84,30 @@ public class SessionBean extends AbstractDataObject {
 
 	public void setLexemeCollocExpanded(boolean isLexemeCollocExpanded) {
 		this.isLexemeCollocExpanded = isLexemeCollocExpanded;
+	}
+
+	public boolean isMeaningFreeformExpanded() {
+		return isMeaningFreeformExpanded;
+	}
+
+	public void setMeaningFreeformExpanded(boolean isMeaningFreeformExpanded) {
+		this.isMeaningFreeformExpanded = isMeaningFreeformExpanded;
+	}
+
+	public boolean isMeaningImageExpanded() {
+		return isMeaningImageExpanded;
+	}
+
+	public void setMeaningImageExpanded(boolean isMeaningImageExpanded) {
+		this.isMeaningImageExpanded = isMeaningImageExpanded;
+	}
+
+	public boolean isMeaningMediaExpanded() {
+		return isMeaningMediaExpanded;
+	}
+
+	public void setMeaningMediaExpanded(boolean isMeaningMediaExpanded) {
+		this.isMeaningMediaExpanded = isMeaningMediaExpanded;
 	}
 
 }

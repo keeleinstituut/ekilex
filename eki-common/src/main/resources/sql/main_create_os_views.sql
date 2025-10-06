@@ -775,6 +775,69 @@ where
 					and p.entity_id = l.id
 			)
 	)
+	and (exists (
+			select
+				1
+			from
+				publishing p 
+			where
+				p.target_name = 'ww_os'
+				and p.entity_name = 'word_relation'
+				and p.entity_id = wr.id
+		)
+		or 
+		(
+			wr.word_rel_type_code in (
+				'ls-järelosaga',
+				'ls-esiosaga'
+			)
+			and exists (
+				select
+					1
+				from
+					word_relation wr2
+				where
+					wr2.word2_id = w2.id
+					and wr2.id != wr.id
+					and wr2.word_rel_type_code in (
+						'ls-järelosaga',
+						'ls-esiosaga'
+					)
+					and exists (
+						select
+							1
+						from
+							lexeme l 
+						where
+							l.word_id = wr2.word1_id
+							and l.is_public = true
+							and l.is_word = true
+							and l.dataset_code = 'eki'
+							and exists (
+								select
+									1
+								from
+									publishing p 
+								where
+									p.target_name = 'ww_os'
+									and p.entity_name = 'lexeme'
+									and p.entity_id = l.id
+							)
+					)
+					and exists (
+						select
+							1
+						from
+							publishing p 
+						where
+							p.target_name = 'ww_os'
+							and p.entity_name = 'word_relation'
+							and p.entity_id = wr2.id
+					)
+			)
+		)
+	)
+	/*
 	and exists (
 		select
 			1
@@ -785,6 +848,7 @@ where
 			and p.entity_name = 'word_relation'
 			and p.entity_id = wr.id
 	)
+	*/
 order by
 	w1.id,
 	wr.id

@@ -93,7 +93,9 @@ public class OsDbService implements SystemConstant, GlobalConstant {
 				.where(
 						wr.WORD_ID.eq(w.WORD_ID)
 								.and(DSL.lower(wr.VALUE).eq(searchValueLowerField)))
-				.orderBy(wr.ORDER_BY)
+				.orderBy(
+						wr.WORD_REL_TYPE_CODE,
+						wr.ORDER_BY)
 				.fetchInto(eki.wordweb.data.os.OsWord.class);
 	}
 
@@ -224,7 +226,9 @@ public class OsDbService implements SystemConstant, GlobalConstant {
 				.where(
 						wr.WORD_ID.eq(w.WORD_ID)
 								.and(DSL.lower(wr.VALUE).eq(wordInfixLowerField)))
-				.orderBy(wr.ORDER_BY)
+				.orderBy(
+						wr.WORD_REL_TYPE_CODE,
+						wr.ORDER_BY)
 				.asTable("wrs");
 
 		Field<Integer> wlf = DSL.field(Routines.levenshtein1(ws.field("word_value", String.class), wordInfixLowerField));
