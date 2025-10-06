@@ -5,30 +5,40 @@
     <td>
       <th:block th:each="form, formIter : ${@viewUtil.getForms(paradigm, morphCode)}">
         <th:block th:if="${form.morphExists && !#strings.isEmpty(form.value)}">
-          <span th:unless="${formIter.first}">~</span>
-          <span th:if="${form.questionable}" class="text-muted">*</span>
-          <span th:utext="${form.valuePrese}" th:title="${form.morph.value + ' - ' + form.displayForm}"
-                data-toggle="tooltip" class="form-value-field" th:classappend="${form.questionable ? 'text-muted ml-n1' : ''}">
+          <span class="d-inline-flex">
+            <span th:if="${form.displayLevel == 3}">(</span>
+            <span class="mr-1" th:unless="${formIter.first}">~</span>
+            <span th:if="${form.questionable}" class="text-muted mr-1">*</span>
+            <span th:utext="${form.valuePrese}" th:title="${form.morph.value + ' - ' + form.displayForm}"
+            data-toggle="tooltip" class="form-value-field mr-1" th:classappend="${form.questionable ? 'text-muted ml-n1' : ''}">
+            </span>
+            <span th:if="${form.displayLevel == 3}">)</span>
+            <th:block th:if="${form.audioFileExists}">
+              <button
+                type="button"
+                th:aria-label="|#{aria.listen.human} - ${form.value}|"
+                th:data-audio-url="@{'/files/audio/' + ${form.audioFile}}"
+                onclick="getAndPlayAudio(this)"
+                class="btn btn-speaker btn-speaker--inactive mr-1"
+                th:title="#{label.tooltip.audio.human}"
+                data-toggle="tooltip">
+                  <span class="material-symbols-outlined material-symbols-outlined--small">record_voice_over</span>
+              </button>
+            </th:block>
+            <th:block th:if="${!form.audioFileExists && form.langEst}">
+              <button
+                type="button"
+                th:aria-label="|#{aria.listen.artificial} - ${form.value}|"
+                th:data-text="${form.displayForm}"
+                data-service-id="morpho"
+                onclick="getAndPlayAudio(this)"
+                class="btn btn-speaker btn-speaker--inactive"
+                th:title="#{label.tooltip.audio.artificial}"
+                data-toggle="tooltip">
+                <span class="icon icon-speaker icon--small"></span>
+              </button>
+            </th:block>
           </span>
-          <th:block th:if="${form.audioFileExists}">
-            <button type="button" th:aria-label="|#{aria.listen.human} - ${form.value}|"
-                    th:data-audio-url="@{'/files/audio/' + ${form.audioFile}}"
-                    onclick="getAndPlayAudio(this)" class="btn btn-speaker btn-speaker--inactive"
-                    th:title="#{label.tooltip.audio.human}"
-                    data-toggle="tooltip">
-              <span class="material-symbols-outlined material-symbols-outlined--small">record_voice_over</span>
-            </button>
-          </th:block>
-          <th:block th:if="${!form.audioFileExists && form.langEst}">
-            <button type="button" th:aria-label="|#{aria.listen.artificial} - ${form.value}|"
-                    th:data-text="${form.displayForm}"
-                    data-service-id="morpho"
-                    onclick="getAndPlayAudio(this)" class="btn btn-speaker btn-speaker--inactive"
-                    th:title="#{label.tooltip.audio.artificial}"
-                    data-toggle="tooltip">
-              <span class="icon icon-speaker icon--small"></span>
-            </button>
-          </th:block>
         </th:block>
       </th:block>
     </td>
