@@ -25,7 +25,7 @@
     }
     .close .fa {
       padding: 0;
-      font-size: 32px;
+      font-size: 2rem;
       font-weight: 900;
       line-height: 37px;
     }
@@ -66,7 +66,7 @@
   }
 
   .text-center {
-    font-size: 18px;
+    font-size: 1.125rem;
     font-weight: bold;
   }
   .uppercase {
@@ -88,7 +88,7 @@
   .modal-header {
     height: 60px;
     .close {
-      font-size: 32px;
+      font-size: 2rem;
     }
   }
   .scrollable-table {
@@ -124,13 +124,13 @@
   }
   .modal-title {
     font-family: Inter;
-    font-size: 20px;
+    font-size: 1.25rem;
     font-weight: 700;
     line-height: 20px;
     color: $gray-1000;
     span {
       margin-left: 4px;
-      font-size: 14px;
+      font-size: .875rem;
       font-weight: 400;
       color: $gray-900;
     }
@@ -156,7 +156,7 @@
           height: 20px;
           display: inline-block;
           line-height: 18px;
-          font-size: 12px;
+          font-size: .75rem;
           text-align: center;
           border-radius: 4px;
           color: #fff;
@@ -178,7 +178,7 @@
     }
     .btn {
       padding: 5px 12px;
-      font-size: 16px;
+      font-size: 1rem;
       border-radius: 5px;
     }
     .nav-pills{
@@ -209,14 +209,14 @@
       margin: -7px 0;
       --icon-size: 1.3125rem;
       .icon-speaker {
-        font-size: 21px;
+        font-size: 1.3125rem;
       }
     }
   }
 
   h2 {
     margin: 26px 0 12px;
-    font-size: 18px;
+    font-size: 1.125rem;
     font-weight: normal;
     color: $gray-900;
     text-transform:  uppercase;
@@ -255,11 +255,11 @@
       }
     }
   }
-  .word-sufix {
+  .word-suffix {
     min-width: 35px;
     display: inline-block;
   }
-  .word-sufix-rus {
+  .word-suffix-rus {
     min-width: 80px;
     display: inline-block;
   }
@@ -267,7 +267,7 @@
     min-width: 125px;
     display: inline-block;
     color: $gray-350;
-    font-size: 12px;
+    font-size: .75rem;
   }
 
   table {
@@ -279,16 +279,16 @@
     table-layout: fixed;
     &.first-row-sizes {
       td:nth-child(1) {
-        font-size: 16px;
+        font-size: 1rem;
         .highlight {
-          font-size: 12px;
+          font-size: .75rem;
         }
       }
     }
     &.inflected {
       td:nth-child(1) {
         .highlight {
-          font-size: 16px;
+          font-size: 1rem;
         }
       }
     }
@@ -304,14 +304,14 @@
       table-layout: unset;
       td:nth-child(1) {
         width: 25%;
-        font-size: 16px;
+        font-size: 1rem;
         .highlight {
-          font-size: 14px;
+          font-size: .875rem;
         }
       }
     }
     th {
-      font-size: 16px;
+      font-size: 1rem;
       font-weight: 700;
       line-height: 120%;
       color: $gray-900;
@@ -320,7 +320,7 @@
       }
       &[colspan="3"] {
         border: none;
-        font-size: 18px;
+        font-size: 1.125rem;
         line-height: 22px;
         font-weight: normal;;
         &.text-center {
@@ -340,7 +340,7 @@
       &:first-child {
         .highlight {
           color: $gray-350;
-          font-size: 12px;
+          font-size: .75rem;
         }
       }
     }
@@ -353,7 +353,7 @@
   .rating {
     display: inline-block;
     margin: 0 0 3px 8px;
-    font-size: 8px;
+    font-size: .5rem;
     line-height: 120%;
     white-space: nowrap;
     vertical-align: middle;
@@ -366,7 +366,7 @@
   }
 
   .table-legend {
-    font-size: 14px;
+    font-size: .875rem;
     .fa {
       margin-right: 4px;
       color: $gray-200;
@@ -384,13 +384,13 @@
   }
 
   .legend-sign {
-    font-size: 14px;
+    font-size: .875rem;
     font-weight: bold;
     min-width: 32px;
     text-align: center;
   }
   .legend-text {
-    font-size: 14px;
+    font-size: .875rem;
     white-space: normal;
   }
   

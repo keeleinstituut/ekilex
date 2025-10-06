@@ -17178,7 +17178,7 @@ span.material-symbols-outlined--small {
 }
 .modal .modal-header .close .fa {
   padding: 0;
-  font-size: 32px;
+  font-size: 2rem;
   font-weight: 900;
   line-height: 37px;
 }
@@ -17207,7 +17207,7 @@ span.material-symbols-outlined--small {
   padding-bottom: 0;
 }
 .wordmodal .text-center {
-  font-size: 18px;
+  font-size: 1.125rem;
   font-weight: bold;
 }
 .wordmodal .uppercase {
@@ -17230,7 +17230,7 @@ span.material-symbols-outlined--small {
   height: 60px;
 }
 .wordmodal .modal-header .close {
-  font-size: 32px;
+  font-size: 2rem;
 }
 .wordmodal .scrollable-table {
   position: relative;
@@ -17273,14 +17273,14 @@ span.material-symbols-outlined--small {
 }
 .wordmodal .modal-title {
   font-family: Inter;
-  font-size: 20px;
+  font-size: 1.25rem;
   font-weight: 700;
   line-height: 20px;
   color: #0e1013;
 }
 .wordmodal .modal-title span {
   margin-left: 4px;
-  font-size: 14px;
+  font-size: 0.875rem;
   font-weight: 400;
   color: #3f3f3f;
 }
@@ -17306,7 +17306,7 @@ span.material-symbols-outlined--small {
   height: 20px;
   display: inline-block;
   line-height: 18px;
-  font-size: 12px;
+  font-size: 0.75rem;
   text-align: center;
   border-radius: 4px;
   color: #fff;
@@ -17324,7 +17324,7 @@ span.material-symbols-outlined--small {
 }
 .wordmodal .modal-body .btn {
   padding: 5px 12px;
-  font-size: 16px;
+  font-size: 1rem;
   border-radius: 5px;
 }
 .wordmodal .modal-body .nav-pills {
@@ -17348,11 +17348,11 @@ span.material-symbols-outlined--small {
   --icon-size: 1.3125rem;
 }
 .wordmodal .modal-body .btn-speaker .icon-speaker {
-  font-size: 21px;
+  font-size: 1.3125rem;
 }
 .wordmodal h2 {
   margin: 26px 0 12px;
-  font-size: 18px;
+  font-size: 1.125rem;
   font-weight: normal;
   color: #3f3f3f;
   text-transform: uppercase;
@@ -17388,11 +17388,11 @@ span.material-symbols-outlined--small {
 .wordmodal .tableClone th:nth-child(2) {
   visibility: hidden;
 }
-.wordmodal .word-sufix {
+.wordmodal .word-suffix {
   min-width: 35px;
   display: inline-block;
 }
-.wordmodal .word-sufix-rus {
+.wordmodal .word-suffix-rus {
   min-width: 80px;
   display: inline-block;
 }
@@ -17400,7 +17400,7 @@ span.material-symbols-outlined--small {
   min-width: 125px;
   display: inline-block;
   color: #687887;
-  font-size: 12px;
+  font-size: 0.75rem;
 }
 .wordmodal table {
   min-width: 100%;
@@ -17411,13 +17411,13 @@ span.material-symbols-outlined--small {
   table-layout: fixed;
 }
 .wordmodal table.first-row-sizes td:nth-child(1) {
-  font-size: 16px;
+  font-size: 1rem;
 }
 .wordmodal table.first-row-sizes td:nth-child(1) .highlight {
-  font-size: 12px;
+  font-size: 0.75rem;
 }
 .wordmodal table.inflected td:nth-child(1) .highlight {
-  font-size: 16px;
+  font-size: 1rem;
 }
 .wordmodal table table {
   margin: 0;
@@ -17432,13 +17432,13 @@ span.material-symbols-outlined--small {
 }
 .wordmodal table.stretch-middle-td td:nth-child(1) {
   width: 25%;
-  font-size: 16px;
+  font-size: 1rem;
 }
 .wordmodal table.stretch-middle-td td:nth-child(1) .highlight {
-  font-size: 14px;
+  font-size: 0.875rem;
 }
 .wordmodal table th {
-  font-size: 16px;
+  font-size: 1rem;
   font-weight: 700;
   line-height: 120%;
   color: #3f3f3f;
@@ -17448,7 +17448,7 @@ span.material-symbols-outlined--small {
 }
 .wordmodal table th[colspan="3"] {
   border: none;
-  font-size: 18px;
+  font-size: 1.125rem;
   line-height: 22px;
   font-weight: normal;
 }
@@ -17467,7 +17467,7 @@ span.material-symbols-outlined--small {
 }
 .wordmodal table td:first-child .highlight {
   color: #687887;
-  font-size: 12px;
+  font-size: 0.75rem;
 }
 .wordmodal .word-section {
   display: inline-block;
@@ -17476,7 +17476,7 @@ span.material-symbols-outlined--small {
 .wordmodal .rating {
   display: inline-block;
   margin: 0 0 3px 8px;
-  font-size: 8px;
+  font-size: 0.5rem;
   line-height: 120%;
   white-space: nowrap;
   vertical-align: middle;
@@ -17488,7 +17488,7 @@ span.material-symbols-outlined--small {
   color: #00892e;
 }
 .wordmodal .table-legend {
-  font-size: 14px;
+  font-size: 0.875rem;
 }
 .wordmodal .table-legend .fa {
   margin-right: 4px;
@@ -17505,13 +17505,13 @@ span.material-symbols-outlined--small {
   margin-right: 0;
 }
 .wordmodal .legend-sign {
-  font-size: 14px;
+  font-size: 0.875rem;
   font-weight: bold;
   min-width: 32px;
   text-align: center;
 }
 .wordmodal .legend-text {
-  font-size: 14px;
+  font-size: 0.875rem;
   white-space: normal;
 }
 @media (max-width: 767px) {
