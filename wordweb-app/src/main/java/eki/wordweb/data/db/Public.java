@@ -31,6 +31,7 @@ import eki.wordweb.data.db.tables.OsWordOsUsage;
 import eki.wordweb.data.db.tables.OsWordOsUsageIdx;
 import eki.wordweb.data.db.tables.OsWordRelation;
 import eki.wordweb.data.db.tables.OsWordRelationIdx;
+import eki.wordweb.data.db.tables.OsWordSearch;
 import eki.wordweb.data.db.tables.SimilarityJudgementData;
 import eki.wordweb.data.db.tables.SimilarityJudgementResult;
 import eki.wordweb.data.db.udt.TypeLangDatasetPublishing;
@@ -194,6 +195,11 @@ public class Public extends SchemaImpl {
     public final OsWordRelationIdx OS_WORD_RELATION_IDX = OsWordRelationIdx.OS_WORD_RELATION_IDX;
 
     /**
+     * The table <code>public.os_word_search</code>.
+     */
+    public final OsWordSearch OS_WORD_SEARCH = OsWordSearch.OS_WORD_SEARCH;
+
+    /**
      * The table <code>public.similarity_judgement_data</code>.
      */
     public final SimilarityJudgementData SIMILARITY_JUDGEMENT_DATA = SimilarityJudgementData.SIMILARITY_JUDGEMENT_DATA;
@@ -255,6 +261,7 @@ public class Public extends SchemaImpl {
             OsWordOsUsageIdx.OS_WORD_OS_USAGE_IDX,
             OsWordRelation.OS_WORD_RELATION,
             OsWordRelationIdx.OS_WORD_RELATION_IDX,
+            OsWordSearch.OS_WORD_SEARCH,
             SimilarityJudgementData.SIMILARITY_JUDGEMENT_DATA,
             SimilarityJudgementResult.SIMILARITY_JUDGEMENT_RESULT);
     }

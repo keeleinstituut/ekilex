@@ -729,12 +729,13 @@ create view view_os_word_relation_idx
 as
 select
 	w1.id word_id,
+	w1.value word_value,
 	wr.id word_relation_id,
 	wr.word_rel_type_code,
 	wr.order_by,
 	w2.id related_word_id,
-	w2.value,
-	w2.value_as_word
+	w2.value related_word_value,
+	w2.value_as_word related_word_value_as_word
 from
 	word w1,
 	word w2,

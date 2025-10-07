@@ -31,6 +31,7 @@ import eki.wordweb.data.db.tables.OsWordOsUsage;
 import eki.wordweb.data.db.tables.OsWordOsUsageIdx;
 import eki.wordweb.data.db.tables.OsWordRelation;
 import eki.wordweb.data.db.tables.OsWordRelationIdx;
+import eki.wordweb.data.db.tables.OsWordSearch;
 import eki.wordweb.data.db.tables.SimilarityJudgementData;
 import eki.wordweb.data.db.tables.SimilarityJudgementResult;
 
@@ -175,6 +176,11 @@ public class Tables {
      * The table <code>public.os_word_relation_idx</code>.
      */
     public static final OsWordRelationIdx OS_WORD_RELATION_IDX = OsWordRelationIdx.OS_WORD_RELATION_IDX;
+
+    /**
+     * The table <code>public.os_word_search</code>.
+     */
+    public static final OsWordSearch OS_WORD_SEARCH = OsWordSearch.OS_WORD_SEARCH;
 
     /**
      * The table <code>public.similarity_judgement_data</code>.

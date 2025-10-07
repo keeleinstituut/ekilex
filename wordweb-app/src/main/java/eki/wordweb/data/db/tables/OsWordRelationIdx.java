@@ -11,7 +11,7 @@ import org.jooq.Field;
 import org.jooq.ForeignKey;
 import org.jooq.Name;
 import org.jooq.Record;
-import org.jooq.Row7;
+import org.jooq.Row8;
 import org.jooq.Schema;
 import org.jooq.Table;
 import org.jooq.TableField;
@@ -48,6 +48,11 @@ public class OsWordRelationIdx extends TableImpl<OsWordRelationIdxRecord> {
     public final TableField<OsWordRelationIdxRecord, Long> WORD_ID = createField(DSL.name("word_id"), SQLDataType.BIGINT.nullable(false), this, "");
 
     /**
+     * The column <code>public.os_word_relation_idx.word_value</code>.
+     */
+    public final TableField<OsWordRelationIdxRecord, String> WORD_VALUE = createField(DSL.name("word_value"), SQLDataType.CLOB.nullable(false), this, "");
+
+    /**
      * The column <code>public.os_word_relation_idx.word_relation_id</code>.
      */
     public final TableField<OsWordRelationIdxRecord, Long> WORD_RELATION_ID = createField(DSL.name("word_relation_id"), SQLDataType.BIGINT.nullable(false), this, "");
@@ -68,14 +73,14 @@ public class OsWordRelationIdx extends TableImpl<OsWordRelationIdxRecord> {
     public final TableField<OsWordRelationIdxRecord, Long> RELATED_WORD_ID = createField(DSL.name("related_word_id"), SQLDataType.BIGINT.nullable(false), this, "");
 
     /**
-     * The column <code>public.os_word_relation_idx.value</code>.
+     * The column <code>public.os_word_relation_idx.related_word_value</code>.
      */
-    public final TableField<OsWordRelationIdxRecord, String> VALUE = createField(DSL.name("value"), SQLDataType.CLOB.nullable(false), this, "");
+    public final TableField<OsWordRelationIdxRecord, String> RELATED_WORD_VALUE = createField(DSL.name("related_word_value"), SQLDataType.CLOB.nullable(false), this, "");
 
     /**
-     * The column <code>public.os_word_relation_idx.value_as_word</code>.
+     * The column <code>public.os_word_relation_idx.related_word_value_as_word</code>.
      */
-    public final TableField<OsWordRelationIdxRecord, String> VALUE_AS_WORD = createField(DSL.name("value_as_word"), SQLDataType.CLOB, this, "");
+    public final TableField<OsWordRelationIdxRecord, String> RELATED_WORD_VALUE_AS_WORD = createField(DSL.name("related_word_value_as_word"), SQLDataType.CLOB, this, "");
 
     private OsWordRelationIdx(Name alias, Table<OsWordRelationIdxRecord> aliased) {
         this(alias, aliased, null);
@@ -142,11 +147,11 @@ public class OsWordRelationIdx extends TableImpl<OsWordRelationIdxRecord> {
     }
 
     // -------------------------------------------------------------------------
-    // Row7 type methods
+    // Row8 type methods
     // -------------------------------------------------------------------------
 
     @Override
-    public Row7<Long, Long, String, Long, Long, String, String> fieldsRow() {
-        return (Row7) super.fieldsRow();
+    public Row8<Long, String, Long, String, Long, Long, String, String> fieldsRow() {
+        return (Row8) super.fieldsRow();
     }
 }

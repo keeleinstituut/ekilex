@@ -29,6 +29,9 @@ $(document).on('click', 'ext-link', function() {
 
 function searchOsWordAutocomplete() {
 
+	const wordRelValuesTitle = "Artiklis esitatud sõnad";
+	const wordRelComponentsTitle = "Sõnaosad";
+
 	var searchWordAutocompleteMenuRenderer = function(ul, items) {
 		var self = this;
 		var groups = [];
@@ -43,10 +46,16 @@ function searchOsWordAutocomplete() {
 
 		ul.addClass("list-group");
 		$.each(groups, function(index, group) {
-			if (group == "infixWordRelation") {
+			if (group == "wordRelValues") {
 				var li = $("<li>");
 				li.addClass("list-group-item list-group-item-info py-1");
-				li.text("Seotud sõnad");
+				li.text(wordRelValuesTitle);
+				ul.append(li);
+			}
+			if (group == "wordRelComponents") {
+				var li = $("<li>");
+				li.addClass("list-group-item list-group-item-info py-1");
+				li.text(wordRelComponentsTitle);
 				ul.append(li);
 			}
 			$.each(items, function(index, item) {
@@ -76,14 +85,21 @@ function searchOsWordAutocomplete() {
 					var fullList = [];
 					$.each(data.infixWords, function(index, item) {
 						fullList.push({
-							group: "infixWord",
+							group: "infixWords",
 							label: item,
 							value: item
 						});
 					});
-					$.each(data.infixWordRelations, function(index, item) {
+					$.each(data.wordRelValues, function(index, item) {
 						fullList.push({
-							group: "infixWordRelation",
+							group: "wordRelValues",
+							label: item,
+							value: item
+						});
+					});
+					$.each(data.wordRelComponents, function(index, item) {
+						fullList.push({
+							group: "wordRelComponents",
 							label: item,
 							value: item
 						});

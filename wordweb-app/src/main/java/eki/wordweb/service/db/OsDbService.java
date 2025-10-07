@@ -7,6 +7,7 @@ import static eki.wordweb.data.db.Tables.OS_WORD_OS_MORPH;
 import static eki.wordweb.data.db.Tables.OS_WORD_OS_USAGE;
 import static eki.wordweb.data.db.Tables.OS_WORD_RELATION;
 import static eki.wordweb.data.db.Tables.OS_WORD_RELATION_IDX;
+import static eki.wordweb.data.db.Tables.OS_WORD_SEARCH;
 
 import java.util.List;
 import java.util.Map;
@@ -36,6 +37,7 @@ import eki.wordweb.data.db.tables.OsWordOsMorph;
 import eki.wordweb.data.db.tables.OsWordOsUsage;
 import eki.wordweb.data.db.tables.OsWordRelation;
 import eki.wordweb.data.db.tables.OsWordRelationIdx;
+import eki.wordweb.data.db.tables.OsWordSearch;
 
 @Component
 public class OsDbService implements SystemConstant, GlobalConstant {
@@ -67,7 +69,9 @@ public class OsDbService implements SystemConstant, GlobalConstant {
 				.select(w.fields())
 				.select(lmf.as("lexeme_meanings"))
 				.from(w)
-				.where(DSL.lower(w.VALUE).eq(searchValueLowerField))
+				.where(DSL.or(
+						DSL.lower(w.VALUE).eq(searchValueLowerField),
+						DSL.lower(w.VALUE_AS_WORD).eq(searchValueLowerField)))
 				.orderBy(wvobf, w.HOMONYM_NR)
 				.fetchInto(eki.wordweb.data.os.OsWord.class);
 	}
@@ -92,7 +96,7 @@ public class OsDbService implements SystemConstant, GlobalConstant {
 				.from(w, wr)
 				.where(
 						wr.WORD_ID.eq(w.WORD_ID)
-								.and(DSL.lower(wr.VALUE).eq(searchValueLowerField)))
+								.and(DSL.lower(wr.RELATED_WORD_VALUE).eq(searchValueLowerField)))
 				.orderBy(
 						wr.WORD_REL_TYPE_CODE,
 						wr.ORDER_BY)
@@ -189,64 +193,84 @@ public class OsDbService implements SystemConstant, GlobalConstant {
 	}
 
 	@SuppressWarnings("unchecked")
-	public Map<String, List<WordSearchElement>> getWordsByInfixLev(String wordInfix, String wordInfixUnaccent, int maxWordCount) {
+	public Map<String, List<WordSearchElement>> getWordsByInfixLev(String searchValue, String searchValueUnaccent, int maxWordCount) {
 
-		Field<String> wordInfixLowerField = DSL.lower(wordInfix);
-		Field<String> wordInfixLowerLikeField = DSL.lower('%' + wordInfix + '%');
-		Field<String> wordInfixLowerUnaccentLikeField;
-		if (StringUtils.isBlank(wordInfixUnaccent)) {
-			wordInfixLowerUnaccentLikeField = wordInfixLowerLikeField;
+		Field<String> searchValueLowerField = DSL.lower(searchValue);
+		Field<String> searchValueLowerInfixField = DSL.lower('%' + searchValue + '%');
+		Field<String> searchValueLowerPrefixField = DSL.lower(searchValue + '%');
+		Field<String> searchValueLowerUnaccentInfixField;
+		if (StringUtils.isBlank(searchValueUnaccent)) {
+			searchValueLowerUnaccentInfixField = searchValueLowerInfixField;
 		} else {
-			wordInfixLowerUnaccentLikeField = DSL.lower('%' + wordInfixUnaccent + '%');
+			searchValueLowerUnaccentInfixField = DSL.lower('%' + searchValueUnaccent + '%');
 		}
 
-		OsWord w = OS_WORD.as("w");
-		OsWord aw = OS_WORD.as("aw");
+		OsWordSearch ws = OS_WORD_SEARCH.as("ws");
 		OsWordRelationIdx wr = OS_WORD_RELATION_IDX.as("wr");
 
-		Table<Record2<String, String>> ws = DSL
+		Table<Record2<String, String>> wsw = DSL
 				.select(
 						DSL.val(WORD_SEARCH_GROUP_WORD).as("sgroup"),
-						w.VALUE.as("word_value"))
-				.from(w)
-				.where(DSL.lower(w.VALUE).like(wordInfixLowerLikeField))
+						ws.WORD_VALUE)
+				.from(ws)
+				.where(
+						ws.SGROUP.eq(WORD_SEARCH_GROUP_WORD)
+								.and(DSL.lower(ws.CRIT).like(searchValueLowerInfixField)))
 				.unionAll(DSL
 						.select(
 								DSL.val(WORD_SEARCH_GROUP_WORD).as("sgroup"),
-								aw.VALUE.as("word_value"))
-						.from(aw)
-						.where(DSL.lower(aw.VALUE_AS_WORD).like(wordInfixLowerUnaccentLikeField)))
+								ws.WORD_VALUE)
+						.from(ws)
+						.where(
+								ws.SGROUP.eq(WORD_SEARCH_GROUP_AS_WORD)
+										.and(DSL.lower(ws.CRIT).like(searchValueLowerUnaccentInfixField))))
 				.asTable("ws");
 
-		Table<Record2<String, String>> wrs = DSL
+		Table<Record2<String, String>> wrvs = DSL
 				.select(
-						DSL.val(WORD_SEARCH_GROUP_WORD_RELATION).as("sgroup"),
-						w.VALUE.as("word_value"))
-				.from(w, wr)
+						DSL.val(WORD_SEARCH_GROUP_WORD_REL_VALUE).as("sgroup"),
+						ws.WORD_VALUE)
+				.from(ws)
 				.where(
-						wr.WORD_ID.eq(w.WORD_ID)
-								.and(DSL.lower(wr.VALUE).eq(wordInfixLowerField)))
+						ws.SGROUP.eq(WORD_SEARCH_GROUP_WORD_REL)
+								.and(DSL.lower(ws.CRIT).like(searchValueLowerPrefixField)))
+				.orderBy(ws.WORD_VALUE)
+				.asTable("wrvs");
+
+		Table<Record2<String, String>> wrcs = DSL
+				.select(
+						DSL.val(WORD_SEARCH_GROUP_WORD_REL_COMP).as("sgroup"),
+						wr.WORD_VALUE)
+				.from(wr)
+				.where(DSL.lower(wr.RELATED_WORD_VALUE).eq(searchValueLowerField))
 				.orderBy(
 						wr.WORD_REL_TYPE_CODE,
 						wr.ORDER_BY)
-				.asTable("wrs");
+				.asTable("wrcs");
 
-		Field<Integer> wlf = DSL.field(Routines.levenshtein1(ws.field("word_value", String.class), wordInfixLowerField));
+		Field<Integer> wlf = DSL.field(Routines.levenshtein1(wsw.field("word_value", String.class), searchValueLowerField));
 
 		Table<Record3<String, String, Integer>> wst = DSL
 				.select(
-						ws.field("sgroup", String.class),
-						ws.field("word_value", String.class),
+						wsw.field("sgroup", String.class),
+						wsw.field("word_value", String.class),
 						wlf.as("lev"))
-				.from(ws)
+				.from(wsw)
 				.orderBy(DSL.field("lev"))
 				.limit(maxWordCount)
 				.unionAll(DSL
 						.select(
-								wrs.field("sgroup", String.class),
-								wrs.field("word_value", String.class),
+								wrvs.field("sgroup", String.class),
+								wrvs.field("word_value", String.class),
 								DSL.val(0).as("lev"))
-						.from(wrs)
+						.from(wrvs)
+						.limit(maxWordCount))
+				.unionAll(DSL
+						.select(
+								wrcs.field("sgroup", String.class),
+								wrcs.field("word_value", String.class),
+								DSL.val(0).as("lev"))
+						.from(wrcs)
 						.limit(maxWordCount))
 				.asTable("wst");
 

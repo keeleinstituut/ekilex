@@ -19,6 +19,7 @@ drop table if exists os_word_relation;
 drop table if exists os_word_relation_idx;
 drop table if exists os_definition_idx;
 drop table if exists os_lexeme_meaning;
+drop table if exists os_word_search;
 drop table if exists os_word;
 
 create table os_word (
@@ -38,6 +39,7 @@ create index os_word_value_idx on os_word (value);
 create index os_word_value_lower_idx on os_word (lower(value));
 create index os_word_value_prefix_idx on os_word (value text_pattern_ops);
 create index os_word_value_prefix_lower_idx on os_word (lower(value) text_pattern_ops);
+create index os_word_value_as_word_idx on os_word (value_as_word);
 create index os_word_value_as_word_lower_idx on os_word (lower(value_as_word));
 create index os_word_value_as_word_prefix_idx on os_word (value_as_word text_pattern_ops);
 create index os_word_value_as_word_lower_prefix_idx on os_word (lower(value_as_word) text_pattern_ops);
@@ -234,43 +236,116 @@ dblink(
 
 create table os_word_relation_idx (
 	word_id bigint not null,
+	word_value text not null,
 	word_relation_id bigint not null,
 	word_rel_type_code varchar(100) not null, -- unindexed
 	order_by bigint not null,
 	related_word_id bigint not null,
-	value text not null,
-	value_as_word text
+	related_word_value text not null,
+	related_word_value_as_word text
 );
 
 create index os_word_relation_idx_word_id_idx on os_word_relation_idx (word_id);
 create index os_word_relation_idx_word_relation_id_idx on os_word_relation_idx (word_relation_id);
 create index os_word_relation_idx_related_word_id_idx on os_word_relation_idx (related_word_id);
-create index os_word_relation_idx_value_idx on os_word_relation_idx (value);
-create index os_word_relation_idx_value_lower_idx on os_word_relation_idx (lower(value));
-create index os_word_relation_idx_value_prefix_idx on os_word_relation_idx (value text_pattern_ops);
-create index os_word_relation_idx_value_prefix_lower_idx on os_word_relation_idx (lower(value) text_pattern_ops);
-create index os_word_relation_idx_value_as_word_lower_idx on os_word_relation_idx (lower(value_as_word));
-create index os_word_relation_idx_value_as_word_prefix_idx on os_word_relation_idx (value_as_word text_pattern_ops);
-create index os_word_relation_idx_value_as_word_lower_prefix_idx on os_word_relation_idx (lower(value_as_word) text_pattern_ops);
+create index os_word_relation_idx_word_rel_type_code_idx on os_word_relation_idx (word_rel_type_code);
+create index os_word_relation_idx_related_word_value_idx on os_word_relation_idx (related_word_value);
+create index os_word_relation_idx_related_word_value_lower_idx on os_word_relation_idx (lower(related_word_value));
+create index os_word_relation_idx_related_word_value_prefix_idx on os_word_relation_idx (related_word_value text_pattern_ops);
+create index os_word_relation_idx_related_word_value_prefix_lower_idx on os_word_relation_idx (lower(related_word_value) text_pattern_ops);
+create index os_word_relation_idx_related_word_value_as_word_idx on os_word_relation_idx (related_word_value_as_word);
+create index os_word_relation_idx_related_word_value_as_word_lower_idx on os_word_relation_idx (lower(related_word_value_as_word));
+create index os_word_relation_idx_related_word_value_as_word_prefix_idx on os_word_relation_idx (related_word_value_as_word text_pattern_ops);
+create index os_word_relation_idx_related_word_value_as_word_lower_prefix_idx on os_word_relation_idx (lower(related_word_value_as_word) text_pattern_ops);
 
 insert into os_word_relation_idx 
 select 
 	word_id,
+	word_value,
 	word_relation_id,
 	word_rel_type_code,
 	order_by,
 	related_word_id,
-	value,
-	value_as_word
+	related_word_value,
+	related_word_value_as_word
 from
 dblink(
 	'host=localhost user=ekilex password=3kil3x dbname=ekilex',
 	'select * from view_os_word_relation_idx') as os_word_relation_idx (
 	word_id bigint,
+	word_value text,
 	word_relation_id bigint,
 	word_rel_type_code varchar(100),
 	order_by bigint,
 	related_word_id bigint,
-	value text,
-	value_as_word text
+	related_word_value text,
+	related_word_value_as_word text
 );
+
+create table os_word_search (
+	sgroup varchar(20) not null,
+	word_value text not null,
+	crit text not null
+);
+
+create index os_word_search_sgroup_idx on os_word_search (sgroup);
+create index os_word_search_crit_idx on os_word_search (crit);
+create index os_word_search_crit_prefix_idx on os_word_search (crit text_pattern_ops);
+
+insert into os_word_search
+select
+	'word' sgroup,
+	w.value word_value,
+	lower(w.value) crit
+from
+	(
+	(select
+		w.value
+	from
+		os_word w
+	where
+		w.word_type_codes is null
+		or
+		('pf' != any(w.word_type_codes)
+		and 'sf' != any(w.word_type_codes)))
+	union all
+	(select
+		(w.value || '-') value
+	from
+		os_word w
+	where
+		'pf' = any(w.word_type_codes))
+	union all
+	(select
+		('-' || w.value) value
+	from
+		os_word w
+	where
+		'sf' = any(w.word_type_codes))
+	) w
+group by
+	w.value
+union all
+select
+	'as_word' sgroup,
+	w.value word_value,
+	lower(w.value_as_word) crit
+from
+	os_word w
+where
+	w.value_as_word is not null
+group by
+	w.value,
+	w.value_as_word
+union all
+select
+	'word_rel' sgroup,
+	r.related_word_value word_value,
+	lower(r.related_word_value) crit
+from
+	os_word_relation_idx r
+group by
+	r.related_word_value
+;
+
+

@@ -98,7 +98,8 @@ public class OsSearchService implements GlobalConstant, SystemConstant {
 		Map<String, List<WordSearchElement>> results = osDbService.getWordsByInfixLev(wordInfix, wordInfixUnaccent, limit);
 		Map<String, List<String>> searchResultCandidates = new HashMap<>();
 		applySearchGroup(WORD_SEARCH_GROUP_WORD, results, "infixWords", searchResultCandidates);
-		applySearchGroup(WORD_SEARCH_GROUP_WORD_RELATION, results, "infixWordRelations", searchResultCandidates);
+		applySearchGroup(WORD_SEARCH_GROUP_WORD_REL_VALUE, results, "wordRelValues", searchResultCandidates);
+		applySearchGroup(WORD_SEARCH_GROUP_WORD_REL_COMP, results, "wordRelComponents", searchResultCandidates);
 
 		return searchResultCandidates;
 	}
