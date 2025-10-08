@@ -20,8 +20,6 @@ import eki.wordweb.data.WordsMatch;
 import eki.wordweb.data.os.OsSearchResult;
 import eki.wordweb.data.os.OsWord;
 import eki.wordweb.service.db.OsDbService;
-import eki.wordweb.service.util.ClassifierUtil;
-import eki.wordweb.service.util.LanguageContext;
 import eki.wordweb.service.util.OsConversionUtil;
 
 @Component
@@ -36,36 +34,26 @@ public class OsSearchService implements GlobalConstant, SystemConstant {
 	@Autowired
 	private OsConversionUtil osConversionUtil;
 
-	@Autowired
-	private ClassifierUtil classifierUtil;
-
-	@Autowired
-	private LanguageContext languageContext;
-
 	@Transactional
 	public OsSearchResult search(String searchValue, Integer selectedHomonymNr) {
 
-		String displayLang = languageContext.getDisplayLang();
 		boolean fiCollationExists = osDbService.fiCollationExists();
-		List<OsWord> words;
-		OsWord selectedWord = null;
 		boolean isCompoundSearch = false;
 
-		words = osDbService.getWords(searchValue, fiCollationExists);
+		List<OsWord> words = osDbService.getWords(searchValue, fiCollationExists);
 
 		if (CollectionUtils.isEmpty(words)) {
 			words = osDbService.getRelatedWords(searchValue);
-			isCompoundSearch = true;
+			isCompoundSearch = CollectionUtils.isNotEmpty(words);
 		}
 
 		if (CollectionUtils.isNotEmpty(words)) {
-			osConversionUtil.applyGenericConversions(words, searchValue, selectedHomonymNr);
-			Long wordId = osConversionUtil.getSelectedWordId(words);
-			selectedWord = osDbService.getWord(wordId);
-			classifierUtil.applyOsClassifiers(selectedWord, displayLang);
-			osConversionUtil.applyWordRelationConversions(selectedWord);
-			osConversionUtil.setWordTypeFlags(selectedWord);
-			osConversionUtil.setContentExistsFlags(selectedWord);
+			osConversionUtil.applyAllConversions(words);
+			if (isCompoundSearch) {
+				osConversionUtil.makeCompoundSearchSelection(words);
+			} else {
+				osConversionUtil.makeHomonymSearchSelection(words, searchValue, selectedHomonymNr);
+			}
 		}
 
 		boolean isHomonymSearch = !isCompoundSearch;
@@ -74,7 +62,7 @@ public class OsSearchService implements GlobalConstant, SystemConstant {
 		boolean singleResult = resultCount == 1;
 
 		OsSearchResult searchResult = new OsSearchResult(
-				words, selectedWord, isHomonymSearch, isCompoundSearch, resultExists, singleResult, resultCount);
+				words, isHomonymSearch, isCompoundSearch, resultExists, singleResult, resultCount);
 
 		return searchResult;
 	}

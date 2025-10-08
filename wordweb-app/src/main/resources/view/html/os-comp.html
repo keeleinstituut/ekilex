@@ -24,18 +24,17 @@
     </div>
   </th:block>
   <th:block th:fragment="homonyms">
-    <div th:if="${searchResult.resultExists}" th:class="${searchResult.singleResult ? 'd-none' : 'overflow-hidden homonym-panel'}">
+    <div th:if="${searchResult.resultExists && searchResult.homonymSearch && !searchResult.singleResult}" th:class="${searchResult.singleResult ? 'd-none' : 'overflow-hidden homonym-panel'}">
       <button type="button" class="homonym-list-toggle d-flex d-md-none" id="homonymListToggleButton">Nupu sisu</button>
       <ul class="homonym-list list-unstyled w-100">
         <th:block th:each="word : ${searchResult.words}">
           <li class="homonym-list-item" th:classappend="${word.selected ? 'selected' : ''}">
             <form class="h-100" th:action="@{${word.searchUri}}" method="get">
-              <input type="hidden" name="word-selected" th:value="${word.selected}" />
               <button type="submit" class="homonym-item homonym__item" th:classappend="${word.selected ? 'animation-target' : ''}">
                 <div class="homonym__body">
                   <div class="text-body-two">
-                    <span th:utext="${@decorUtil.getWordValueMarkup(word)}">tee</span><!--
-                    --><strong class="d-inline-block" th:if="${word.homonymExists}">
+                    <span th:utext="${@decorUtil.getWordValueMarkup(word)}">tee</span>
+                    <strong class="d-inline-block" th:if="${word.homonymExists}">
                       <sup th:text="${word.homonymNr}">1</sup>
                     </strong>
                   </div>
@@ -71,13 +70,12 @@
       Kirjuta meile
     </button>
   </th:block>
-
   <th:block th:fragment="footer">
     <div th:replace="common-app :: footer-content(
       linksTitle=#{label.os.footer.links.title},
       linksTemplate=~{os-comp :: links},
-      feedbackTemplate=~{os-comp :: feedback}
-    )"></div>
+      feedbackTemplate=~{os-comp :: feedback})">
+    </div>
   </th:block>
 </body>
 </html>

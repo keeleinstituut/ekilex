@@ -9,6 +9,7 @@ import static eki.wordweb.data.db.Tables.OS_WORD_RELATION;
 import static eki.wordweb.data.db.Tables.OS_WORD_RELATION_IDX;
 import static eki.wordweb.data.db.Tables.OS_WORD_SEARCH;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -50,13 +51,7 @@ public class OsDbService implements SystemConstant, GlobalConstant {
 		Field<String> searchValueLowerField = DSL.lower(searchValue);
 
 		OsWord w = OS_WORD.as("w");
-		OsLexemeMeaning lm = OS_LEXEME_MEANING.as("lm");
-
-		Field<JSON> lmf = DSL
-				.select(lm.LEXEME_MEANINGS)
-				.from(lm)
-				.where(lm.WORD_ID.eq(w.WORD_ID))
-				.asField();
+		List<Field<JSON>> wordFields = getWordFields(w.WORD_ID);
 
 		Field<String> wvobf;
 		if (fiCollationExists) {
@@ -67,7 +62,7 @@ public class OsDbService implements SystemConstant, GlobalConstant {
 
 		return create
 				.select(w.fields())
-				.select(lmf.as("lexeme_meanings"))
+				.select(wordFields)
 				.from(w)
 				.where(DSL.or(
 						DSL.lower(w.VALUE).eq(searchValueLowerField),
@@ -81,18 +76,12 @@ public class OsDbService implements SystemConstant, GlobalConstant {
 		Field<String> searchValueLowerField = DSL.lower(searchValue);
 
 		OsWord w = OS_WORD.as("w");
-		OsLexemeMeaning lm = OS_LEXEME_MEANING.as("lm");
 		OsWordRelationIdx wr = OS_WORD_RELATION_IDX.as("wr");
-
-		Field<JSON> lmf = DSL
-				.select(lm.LEXEME_MEANINGS)
-				.from(lm)
-				.where(lm.WORD_ID.eq(w.WORD_ID))
-				.asField();
+		List<Field<JSON>> wordFields = getWordFields(w.WORD_ID);
 
 		return create
 				.select(w.fields())
-				.select(lmf.as("lexeme_meanings"))
+				.select(wordFields)
 				.from(w, wr)
 				.where(
 						wr.WORD_ID.eq(w.WORD_ID)
@@ -101,65 +90,6 @@ public class OsDbService implements SystemConstant, GlobalConstant {
 						wr.WORD_REL_TYPE_CODE,
 						wr.ORDER_BY)
 				.fetchInto(eki.wordweb.data.os.OsWord.class);
-	}
-
-	public eki.wordweb.data.os.OsWord getWord(Long wordId) {
-
-		OsWord w = OS_WORD.as("w");
-		OsWordOsMorph wom = OS_WORD_OS_MORPH.as("wom");
-		OsWordOsUsage wou = OS_WORD_OS_USAGE.as("wou");
-		OsWordEkiRecommendation wer = OS_WORD_EKI_RECOMMENDATION.as("wer");
-		OsLexemeMeaning lm = OS_LEXEME_MEANING.as("lm");
-		OsWordRelation wr = OS_WORD_RELATION.as("wr");
-
-		Field<JSON> womf = DSL
-				.select(DSL
-						.jsonObject(
-								DSL.key("wordId").value(wom.WORD_ID),
-								DSL.key("wordOsMorphId").value(wom.WORD_OS_MORPH_ID),
-								DSL.key("value").value(wom.VALUE),
-								DSL.key("valuePrese").value(wom.VALUE_PRESE)))
-				.from(wom)
-				.where(wom.WORD_ID.eq(w.WORD_ID))
-				.limit(1)
-				.asField();
-
-		Field<JSON> wouf = DSL
-				.select(wou.WORD_OS_USAGES)
-				.from(wou)
-				.where(wou.WORD_ID.eq(w.WORD_ID))
-				.asField();
-
-		Field<JSON> worf = DSL
-				.select(wer.WORD_EKI_RECOMMENDATIONS)
-				.from(wer)
-				.where(wer.WORD_ID.eq(w.WORD_ID))
-				.asField();
-
-		Field<JSON> lmf = DSL
-				.select(lm.LEXEME_MEANINGS)
-				.from(lm)
-				.where(lm.WORD_ID.eq(w.WORD_ID))
-				.asField();
-
-		Field<JSON> wrf = DSL
-				.select(wr.WORD_RELATION_GROUPS)
-				.from(wr)
-				.where(wr.WORD_ID.eq(w.WORD_ID))
-				.asField();
-
-		return create
-				.select(w.fields())
-				.select(
-						womf.as("word_os_morph"),
-						wouf.as("word_os_usages"),
-						worf.as("word_eki_recommendations"),
-						lmf.as("lexeme_meanings"),
-						wrf.as("word_relation_groups"))
-				.from(w)
-				.where(w.WORD_ID.eq(wordId))
-				.fetchOptionalInto(eki.wordweb.data.os.OsWord.class)
-				.orElse(null);
 	}
 
 	public WordsMatch getWordsWithMask(String searchValue) {
@@ -280,6 +210,60 @@ public class OsDbService implements SystemConstant, GlobalConstant {
 						wst.field("word_value", String.class))
 				.from(wst)
 				.fetchGroups("sgroup", WordSearchElement.class);
+	}
+
+	private List<Field<JSON>> getWordFields(Field<Long> wordIdField) {
+
+		List<Field<JSON>> wordFields = new ArrayList<>();
+
+		OsWordOsMorph wom = OS_WORD_OS_MORPH.as("wom");
+		OsWordOsUsage wou = OS_WORD_OS_USAGE.as("wou");
+		OsWordEkiRecommendation wer = OS_WORD_EKI_RECOMMENDATION.as("wer");
+		OsLexemeMeaning lm = OS_LEXEME_MEANING.as("lm");
+		OsWordRelation wr = OS_WORD_RELATION.as("wr");
+
+		Field<JSON> womf = DSL
+				.select(DSL
+						.jsonObject(
+								DSL.key("wordId").value(wom.WORD_ID),
+								DSL.key("wordOsMorphId").value(wom.WORD_OS_MORPH_ID),
+								DSL.key("value").value(wom.VALUE),
+								DSL.key("valuePrese").value(wom.VALUE_PRESE)))
+				.from(wom)
+				.where(wom.WORD_ID.eq(wordIdField))
+				.limit(1)
+				.asField("word_os_morph");
+		wordFields.add(womf);
+
+		Field<JSON> wouf = DSL
+				.select(wou.WORD_OS_USAGES)
+				.from(wou)
+				.where(wou.WORD_ID.eq(wordIdField))
+				.asField("word_os_usages");
+		wordFields.add(wouf);
+
+		Field<JSON> worf = DSL
+				.select(wer.WORD_EKI_RECOMMENDATIONS)
+				.from(wer)
+				.where(wer.WORD_ID.eq(wordIdField))
+				.asField("word_eki_recommendations");
+		wordFields.add(worf);
+
+		Field<JSON> lmf = DSL
+				.select(lm.LEXEME_MEANINGS)
+				.from(lm)
+				.where(lm.WORD_ID.eq(wordIdField))
+				.asField("lexeme_meanings");
+		wordFields.add(lmf);
+
+		Field<JSON> wrf = DSL
+				.select(wr.WORD_RELATION_GROUPS)
+				.from(wr)
+				.where(wr.WORD_ID.eq(wordIdField))
+				.asField("word_relation_groups");
+		wordFields.add(wrf);
+
+		return wordFields;
 	}
 
 	@Cacheable(value = CACHE_KEY_CLASSIF, key = "#root.methodName")

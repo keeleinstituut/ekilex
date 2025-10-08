@@ -49,12 +49,14 @@ function searchOsWordAutocomplete() {
 			if (group == "wordRelValues") {
 				var li = $("<li>");
 				li.addClass("list-group-item list-group-item-info py-1");
+				li.css("pointer-events", "none");
 				li.text(wordRelValuesTitle);
 				ul.append(li);
 			}
 			if (group == "wordRelComponents") {
 				var li = $("<li>");
 				li.addClass("list-group-item list-group-item-info py-1");
+				li.css("pointer-events", "none");
 				li.text(wordRelComponentsTitle);
 				ul.append(li);
 			}
@@ -129,6 +131,6 @@ function searchOsWordAutocomplete() {
 	};
 
 	$(document).on("change input", "input[name='searchValue']", function() {
-		$(this).autocomplete(searchWordAutocompleteConfig).autocomplete("search");		
+		$(this).autocomplete(searchWordAutocompleteConfig).autocomplete("search");
 	});
 };

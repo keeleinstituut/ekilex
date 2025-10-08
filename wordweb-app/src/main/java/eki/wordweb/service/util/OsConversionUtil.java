@@ -23,63 +23,88 @@ import eki.wordweb.web.util.WebUtil;
 public class OsConversionUtil implements GlobalConstant {
 
 	@Autowired
+	private ClassifierUtil classifierUtil;
+
+	@Autowired
 	private WebUtil webUtil;
 
-	public void applyGenericConversions(List<OsWord> words, String searchValue, Integer selectedHomonymNr) {
+	public void applyAllConversions(List<OsWord> words) {
 
 		if (CollectionUtils.isEmpty(words)) {
 			return;
 		}
 
-		boolean alreadySelected = false;
-
 		for (OsWord word : words) {
 
-			String wordValue = word.getValue();
-			Integer homonymNr = word.getHomonymNr();
-			List<OsLexemeMeaning> lexemeMeanings = word.getLexemeMeanings();
-			String meaningWordsWrapup = null;
-			String definitionsWrapup = null;
-
-			if (CollectionUtils.isNotEmpty(lexemeMeanings)) {
-				OsMeaning firstMeaning = lexemeMeanings.get(0).getMeaning();
-				OsDefinition definition = firstMeaning.getDefinition();
-				if (definition != null) {
-					definitionsWrapup = definition.getValuePrese();
-				}
-				List<OsLexemeWord> lexemeWords = firstMeaning.getLexemeWords();
-				if (CollectionUtils.isNotEmpty(lexemeWords)) {
-					meaningWordsWrapup = lexemeWords.stream()
-							.map(OsLexemeWord::getValuePrese)
-							.collect(Collectors.joining(", "));
-				}
-			}
-
-			String searchUri = webUtil.composeOsSearchUri(wordValue, homonymNr);
-			boolean selected = StringUtils.equals(searchValue, wordValue)
-					&& homonymNr.equals(selectedHomonymNr)
-					&& !alreadySelected;
-			if (selected) {
-				alreadySelected = true;
-			}
-
-			word.setMeaningWordsWrapup(meaningWordsWrapup);
-			word.setDefinitionsWrapup(definitionsWrapup);
-			word.setSearchUri(searchUri);
-			word.setHomonymNr(homonymNr);
-			word.setSelected(selected);
-
+			classifierUtil.applyOsClassifiers(word, LANGUAGE_CODE_EST);
 			setWordTypeFlags(word);
-		}
-
-		boolean isNotHomonymSelected = words.stream().noneMatch(OsWord::isSelected);
-		if (isNotHomonymSelected) {
-			OsWord firstWord = words.get(0);
-			firstWord.setSelected(true);
+			applyWordRelationConversions(word);
+			setContentExistsFlags(word);
+			applySearchUri(word);
+			applyWrapups(word);
 		}
 	}
 
-	public void applyWordRelationConversions(OsWord word) {
+	public void makeHomonymSearchSelection(List<OsWord> words, String searchValue, Integer selectedHomonymNr) {
+
+		if (CollectionUtils.isEmpty(words)) {
+			return;
+		}
+
+		OsWord selectedWord = words.stream()
+				.filter(word -> StringUtils.equals(word.getValue(), searchValue)
+						&& word.getHomonymNr().equals(selectedHomonymNr))
+				.findFirst()
+				.orElse(null);
+
+		if (selectedWord == null) {
+			selectedWord = words.get(0);
+		}
+		selectedWord.setSelected(true);
+	}
+
+	public void makeCompoundSearchSelection(List<OsWord> words) {
+
+		if (CollectionUtils.isEmpty(words)) {
+			return;
+		}
+
+		words.forEach(word -> word.setSelected(true));
+	}
+
+	private void applySearchUri(OsWord word) {
+
+		String wordValue = word.getValue();
+		Integer homonymNr = word.getHomonymNr();
+		String searchUri = webUtil.composeOsSearchUri(wordValue, homonymNr);
+		word.setSearchUri(searchUri);
+	}
+
+	private void applyWrapups(OsWord word) {
+
+		List<OsLexemeMeaning> lexemeMeanings = word.getLexemeMeanings();
+		String meaningWordsWrapup = null;
+		String definitionsWrapup = null;
+
+		if (CollectionUtils.isNotEmpty(lexemeMeanings)) {
+			OsMeaning firstMeaning = lexemeMeanings.get(0).getMeaning();
+			OsDefinition definition = firstMeaning.getDefinition();
+			if (definition != null) {
+				definitionsWrapup = definition.getValuePrese();
+			}
+			List<OsLexemeWord> lexemeWords = firstMeaning.getLexemeWords();
+			if (CollectionUtils.isNotEmpty(lexemeWords)) {
+				meaningWordsWrapup = lexemeWords.stream()
+						.map(OsLexemeWord::getValuePrese)
+						.collect(Collectors.joining(", "));
+			}
+		}
+
+		word.setMeaningWordsWrapup(meaningWordsWrapup);
+		word.setDefinitionsWrapup(definitionsWrapup);
+	}
+
+	private void applyWordRelationConversions(OsWord word) {
 
 		List<OsWordRelationGroup> wordRelationGroups = word.getWordRelationGroups();
 		List<OsWordRelationGroup> title1WordRelationGroups = null;
@@ -126,7 +151,7 @@ public class OsConversionUtil implements GlobalConstant {
 		word.setSecondaryWordRelationGroups(secondaryWordRelationGroups);
 	}
 
-	public void setWordTypeFlags(OsWord word) {
+	private void setWordTypeFlags(OsWord word) {
 
 		if (word == null) {
 			return;
@@ -162,26 +187,7 @@ public class OsConversionUtil implements GlobalConstant {
 		}
 	}
 
-	public Long getSelectedWordId(List<OsWord> words) {
-
-		if (CollectionUtils.isEmpty(words)) {
-			return null;
-		}
-		OsWord word = words.stream()
-				.filter(OsWord::isSelected)
-				.findFirst()
-				.orElse(null);
-		Long wordId;
-		if (word == null) {
-			OsWord firstWord = words.get(0);
-			wordId = firstWord.getWordId();
-		} else {
-			wordId = word.getWordId();
-		}
-		return wordId;
-	}
-
-	public void setContentExistsFlags(OsWord selectedWord) {
+	private void setContentExistsFlags(OsWord selectedWord) {
 
 		List<OsLexemeMeaning> lexemeMeanings = selectedWord.getLexemeMeanings();
 		if (CollectionUtils.isEmpty(lexemeMeanings)) {
