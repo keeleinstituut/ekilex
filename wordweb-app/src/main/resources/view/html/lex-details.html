@@ -380,7 +380,7 @@
                       <div class="example-sentence-wrap">
                         <span class="example-text example-text-w-audio">
                           <span class="text-body-two text-weight-medium" th:utext="${usage.valuePrese}"></span>
-                          <button class="btn btn-speaker btn-speaker--inactive" th:aria-label="|#{aria.listen} - ${usage.value}|" th:if="${usage.langEst}"
+                          <button class="btn btn-speaker btn-speaker--inactive" th:aria-label="|#{aria.listen.artificial} - ${usage.value}|" th:if="${usage.langEst}"
                                   th:data-text="${usage.value}"
                                   data-service-id="speech"
                                   onclick="getAndPlayAudio(this)">
@@ -408,7 +408,7 @@
                           <div class="example-sentence-wrap">
                             <span class="example-text example-text-w-audio">
                               <span class="example-text-value text-body-two text-weight-medium" th:utext="${usage.valuePrese}"></span>
-                              <button class="btn btn-speaker btn-speaker--inactive" th:aria-label="|#{aria.listen} - ${usage.value}|" th:if="${usage.langEst}"
+                              <button class="btn btn-speaker btn-speaker--inactive" th:aria-label="|#{aria.listen.artificial} - ${usage.value}|" th:if="${usage.langEst}"
                                       th:data-text="${usage.value}"
                                       data-service-id="speech"
                                       onclick="getAndPlayAudio(this)">
@@ -545,7 +545,7 @@
                                  th:unless="${#lists.isEmpty(collocRelGr.allUsageValues)}" class="pb-1 pl-2 pl-md-4 collapse">
                               <div th:each="collocUsage : ${collocRelGr.allUsageValues}" class="colloc-usage-row examle-text-wrap">
                                 <span class="font-italic" th:text="${collocUsage}"></span>
-                                <button th:aria-label="|#{aria.listen} - ${collocUsage}|" class="btn btn-speaker btn-speaker--inactive"
+                                <button th:aria-label="|#{aria.listen.artificial} - ${collocUsage}|" class="btn btn-speaker btn-speaker--inactive"
                                         th:data-text="${collocUsage}"
                                         data-service-id="speech"
                                         onclick="getAndPlayAudio(this)">

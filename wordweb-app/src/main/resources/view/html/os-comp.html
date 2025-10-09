@@ -31,7 +31,7 @@
           <li class="homonym-list-item" role="none" th:classappend="${word.selected ? 'selected' : ''}">
             <a th:href="@{${word.searchUri}}" class="homonym-item homonym__item" role="menuitem" th:aria-current="${word.selected ? 'page' : null}">
               <div class="homonym__body">
-                <div class="text-body-two">
+                <div class="text-body-two d-flex">
                   <span th:utext="${@decorUtil.getWordValueMarkup(word)}">tee</span>
                   <strong class="d-inline-block" th:if="${word.homonymExists}">
                     <sup th:text="${word.homonymNr}">1</sup>

@@ -145,14 +145,14 @@
           tee
         </h1>
         <button class="search__long-text-tooltip" th:if="${wordData.headwordOverflow}" th:title="${@decorUtil.getWordValueMarkup(wordData.word)}" data-toggle="tooltip" data-html="true" data-placement="bottom">
-          <span class="material-symbols-outlined">visibility</span>
+          <span class="material-symbols-outlined" aria-hidden="true">visibility</span>
         </button>
       </div>
       <span class="word-details-homonym-nr d-none mr-2" th:aria-label="|#{aria.homonym} ${wordData.word.homonymNr}|" th:text="${wordData.word.homonymNr}">1</span>
-      <button th:aria-label="|#{aria.listen} - ${wordData.word.value}|" class="btn btn-speaker"
+      <button th:aria-label="|#{aria.listen.human} - ${wordData.word.value}|" class="btn btn-speaker"
               th:if="${wordData.audioFileExists}"
               th:data-audio-url="@{'/files/audio/' + ${wordData.firstAvailableAudioFile}}" onclick="getAndPlayAudio(this)">
-        <span class="material-symbols-outlined material-symbols-outlined--small">record_voice_over</span>
+        <span class="material-symbols-outlined material-symbols-outlined--small" aria-hidden="true">record_voice_over</span>
       </button>
       <span id="spellingLine" class="mr-2" th:if="${wordData.word.vocalForm != null}" th:text="${wordData.word.vocalForm}"></span>
       <th:block th:each="wordType : ${wordData.word.wordTypes}" th:if="${not #lists.isEmpty(wordData.word.wordTypes)}">

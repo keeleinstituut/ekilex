@@ -15798,11 +15798,6 @@ span.material-symbols-outlined--small {
 .os-results ul {
   padding-left: 24px;
 }
-.os-results sup {
-  position: static;
-  vertical-align: super;
-  line-height: 1;
-}
 .os-results__highlighted {
   background-color: var(--color-alert-yellow);
 }
@@ -15814,6 +15809,11 @@ span.material-symbols-outlined--small {
 }
 .homonym-page--os .content-panel {
   --content-panel-max-width: 779px;
+}
+.homonym-page--os sup {
+  position: static;
+  vertical-align: super;
+  line-height: 1;
 }
 .os-tag {
   width: auto;
