@@ -25,26 +25,24 @@
   </th:block>
   <th:block th:fragment="homonyms">
     <div th:if="${searchResult.resultExists && searchResult.homonymSearch && !searchResult.singleResult}" th:class="${searchResult.singleResult ? 'd-none' : 'overflow-hidden homonym-panel'}">
-      <button type="button" class="homonym-list-toggle d-flex d-md-none" id="homonymListToggleButton">Nupu sisu</button>
-      <ul class="homonym-list list-unstyled w-100">
+      <button type="button" class="homonym-list-toggle d-flex d-md-none" id="os-homonym-toggle" aria-controls="os-homonym-list" aria-haspopup="menu"></button>
+      <ul class="homonym-list list-unstyled w-100" aria-expanded="false" role="menu" id="os-homonym-list">
         <th:block th:each="word : ${searchResult.words}">
-          <li class="homonym-list-item" th:classappend="${word.selected ? 'selected' : ''}">
-            <form class="h-100" th:action="@{${word.searchUri}}" method="get">
-              <button type="submit" class="homonym-item homonym__item" th:classappend="${word.selected ? 'animation-target' : ''}">
-                <div class="homonym__body">
-                  <div class="text-body-two">
-                    <span th:utext="${@decorUtil.getWordValueMarkup(word)}">tee</span>
-                    <strong class="d-inline-block" th:if="${word.homonymExists}">
-                      <sup th:text="${word.homonymNr}">1</sup>
-                    </strong>
-                  </div>
-                  <div class="text-caption homonym__text">
-                    <span class="homonym__matches" th:utext="${word.meaningWordsWrapup}"></span>
-                    <p th:utext="${word.definitionsWrapup}"></p>
-                  </div>
+          <li class="homonym-list-item" role="none" th:classappend="${word.selected ? 'selected' : ''}">
+            <a th:href="@{${word.searchUri}}" class="homonym-item homonym__item" role="menuitem" th:aria-current="${word.selected ? 'page' : null}">
+              <div class="homonym__body">
+                <div class="text-body-two">
+                  <span th:utext="${@decorUtil.getWordValueMarkup(word)}">tee</span>
+                  <strong class="d-inline-block" th:if="${word.homonymExists}">
+                    <sup th:text="${word.homonymNr}">1</sup>
+                  </strong>
                 </div>
-              </button>
-            </form>
+                <div class="text-caption homonym__text">
+                  <span class="homonym__matches" th:utext="${word.meaningWordsWrapup}"></span>
+                  <p th:utext="${word.definitionsWrapup}"></p>
+                </div>
+              </div>
+            </a>
           </li>
         </th:block>
       </ul>

@@ -1,6 +1,7 @@
 $(document).ready(function() {
 	focusSearchInput();
 	searchOsWordAutocomplete();
+	initHomonymMobileSelect();
 });
 
 function focusSearchInput() {
@@ -134,3 +135,92 @@ function searchOsWordAutocomplete() {
 		$(this).autocomplete(searchWordAutocompleteConfig).autocomplete("search");
 	});
 };
+
+
+function initHomonymMobileSelect() {
+	const toggle = document.getElementById('os-homonym-toggle');
+	const list = document.getElementById('os-homonym-list');
+	if (!toggle || !list) {
+		return;
+	}
+
+	const selectedItem = list.querySelector('.selected a');
+
+	if (selectedItem) {
+		toggle.innerHTML = selectedItem.innerHTML;
+	}
+
+	toggle.addEventListener('click', () => {
+		const isOpen = list.getAttribute('aria-expanded') === 'true';
+		if (isOpen) {
+			list.classList.remove('expand');
+			list.setAttribute('aria-expanded', false);
+		} else {
+			list.classList.add('expand');
+			list.setAttribute('aria-expanded', true);
+		}
+	});
+
+	
+	const listItemLinks = Array.from(list.querySelectorAll('[role="menuitem"]'));
+	toggle.addEventListener('keydown', (e) => {
+		if (e.key === 'Escape') {
+			list.classList.remove('expand');
+			list.setAttribute('aria-expanded', false);
+		} else if (e.key === 'ArrowDown') {
+			const firstItem = listItemLinks[0];
+			if (firstItem) {
+				e.preventDefault();
+				firstItem.focus();
+			}
+		}
+	});
+	listItemLinks.forEach(item => {
+		item.addEventListener('keydown', (e) => {
+			const listItem = e.target?.closest('li');
+			if (['ArrowDown', 'ArrowUp', 'Home', 'End'].includes(e.key)) {
+				e.preventDefault();
+			}
+			switch (e.key) {
+				case 'ArrowDown': {
+					const nextItem = listItem.nextElementSibling;
+					if (nextItem) {
+						const newTarget = nextItem.querySelector('a');
+						newTarget.focus();
+					}
+					break;
+				};
+				case 'ArrowUp': {
+					const prevItem = listItem.previousElementSibling;
+					if (prevItem) {
+						const newTarget = prevItem.querySelector('a');
+						newTarget.focus();
+					}
+					break;
+				}
+				case 'Home': {
+					const firstItem = listItemLinks[0];
+					if (firstItem) {
+						firstItem.focus();
+					}
+					break;
+				}
+				case 'End': {
+					const lastItem = listItemLinks.at(-1);
+					if (lastItem) {
+						lastItem.focus();
+					}
+					break;
+				}
+			}
+		});
+	});
+
+	document.addEventListener('keydown', (e) => {
+		if (e.key === 'Escape') {
+			list.classList.remove('expand');
+			list.setAttribute('aria-expanded', false);
+			toggle.focus();
+		}
+	});
+}
