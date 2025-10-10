@@ -130,6 +130,7 @@ select
 from 
 	((select
 		'word' as sgroup,
+		w.comp word_value_comp,
 		w.value word_value,
 		lower(w.value) crit,
 		array_agg(
@@ -137,37 +138,76 @@ from
 				when (w.lang in ('est', 'eng', 'deu', 'fra', 'rus', 'ukr', 'mul')) then w.lang
 				else 'other'
 			end) filt_langs,
-		(array_agg(wl.order_by order by wl.order_by))[1] lang_order_by
+		(array_agg(w.order_by order by w.order_by))[1] lang_order_by
 	from
-		word w,
-		language wl
-	where 
-		w.lang = wl.code
-		and w.is_public = true
-		and not exists (
-			select 
-				wwt.id
-			from 
-				word_word_type wwt
-			where 
-				wwt.word_id = w.id
-				and wwt.word_type_code = 'viga')
-		and exists (
-			select 
-				w.id
+		(select
+			w.value comp,
+			case 
+				when w.is_pf = true then (w.value || '-')
+				when w.is_sf = true then ('-' || w.value)
+				else w.value
+			end value,
+			w.lang,
+			w.order_by
+		from
+			(select
+				w.value,
+				w.lang,
+				wl.order_by,
+				(exists (
+					select
+						1
+					from
+						word_word_type wwt
+					where
+						wwt.word_id = w.id
+						and wwt.word_type_code = 'pf'
+				)) is_pf,
+				(exists (
+					select
+						1
+					from
+						word_word_type wwt
+					where
+						wwt.word_id = w.id
+						and wwt.word_type_code = 'sf'
+				)) is_sf
 			from
-				lexeme as l,
-				dataset ds
-			where
-				l.word_id = w.id
-				and l.is_public = true
-				and l.is_word = true
-				and ds.code = l.dataset_code
-				and ds.is_public = true)
-	group by w.value)
+				word w,
+				language wl
+			where 
+				w.lang = wl.code
+				and w.is_public = true
+				and not exists (
+					select 
+						wwt.id
+					from 
+						word_word_type wwt
+					where 
+						wwt.word_id = w.id
+						and wwt.word_type_code = 'viga')
+				and exists (
+					select 
+						w.id
+					from
+						lexeme as l,
+						dataset ds
+					where
+						l.word_id = w.id
+						and l.is_public = true
+						and l.is_word = true
+						and ds.code = l.dataset_code
+						and ds.is_public = true)
+				
+			) w
+		) w
+	group by
+		w.comp,
+		w.value)
 	union all
 	(select
 		'as_word' as sgroup,
+		w.value word_value_comp,
 		w.value word_value,
 		lower(w.value_as_word) crit,
 		array_agg(
@@ -209,6 +249,7 @@ from
 	union all
 	(select
 		'form' as sgroup,
+		w.value word_value_comp,
 		w.value word_value,
 		lower(f.value) crit,
 		array_agg(
@@ -312,7 +353,7 @@ from
 			or l.dataset_code != 'eki')
 	group by w.value) wldp
 where
-	ws.word_value = wldp.word_value
+	ws.word_value_comp = wldp.word_value
 order by
 	ws.sgroup,
 	ws.word_value,
