@@ -126,9 +126,7 @@ public interface WebConstant {
 
 	String UPDATE_TAG_PREFS_URI = "/update_tag_prefs";
 
-	String LEXEME_COLLOC_EXPAND_URI = "/lexeme_colloc_expand";
-
-	String MEANING_FREEFORM_EXPAND_URI = "/meaning_freeform_expand";
+	String TOGGLE_SECTION_EXPAND_URI = "/toggle_section_expand";
 
 	String MEANING_IMAGE_EXPAND_URI = "/meaning_image_expand";
 

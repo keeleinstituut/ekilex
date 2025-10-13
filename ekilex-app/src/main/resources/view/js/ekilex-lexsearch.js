@@ -243,13 +243,15 @@ $.fn.complexityAndPublicity = function() {
 	main.tooltip();
 }
 
-$.fn.lexemeCollocExpandPlugin = function() {
+$.fn.sectionExpandPlugin = function() {
 	return this.each(function() {
 		const btn = $(this);
 		btn.on('click', function() {
+			const sectionName = btn.attr("data-section-name");
 			const successCallback = btn.attr("data-callback");
 			const successCallbackFunc = createCallback(successCallback);
-			postJson(applicationUrl + 'lexeme_colloc_expand').done(function() {
+			const urlWithParam = applicationUrl + 'toggle_section_expand/' + sectionName;
+			postJson(urlWithParam).done(function() {
 				successCallbackFunc();
 			});
 		})
@@ -276,5 +278,4 @@ $.fn.lexemeCollocMovePlugin = function() {
 		})
 	})
 }
-
 

@@ -201,12 +201,15 @@ public class EditController extends AbstractMutableDataPageController implements
 			break;
 		case "meaning_image":
 			cudService.createMeaningImage(id, value, value2, user, roleDatasetCode, isManualEventOnUpdateEnabled);
+			sessionBean.setMeaningImageExpanded(true);
 			break;
 		case "meaning_media":
 			cudService.createMeaningMedia(id, value, user, roleDatasetCode, isManualEventOnUpdateEnabled);
+			sessionBean.setMeaningMediaExpanded(true);
 			break;
 		case "meaning_freeform":
 			cudService.createMeaningFreeform(id, value, type, roleDatasetCode, isManualEventOnUpdateEnabled);
+			sessionBean.setMeaningFreeformExpanded(true);
 			break;
 		case "meaning_semantic_type":
 			cudService.createMeaningSemanticType(id2, value, roleDatasetCode, isManualEventOnUpdateEnabled);

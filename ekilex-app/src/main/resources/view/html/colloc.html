@@ -11,20 +11,13 @@
             <span class="lbl" th:text="#{lex.collocations}">Kollokatsioonid</span>
           </div>
           <div class="col pl-0">
-            <th:block th:unless="${sessionBean.lexemeCollocExpanded}">
-              <button class="btn badge badge-secondary btn-toggle"
-                      data-plugin="lexemeCollocExpandPlugin"
-                      th:data-callback="${@viewUtil.composeFunction('loadFullLexemeDetails', lexeme.lexemeId, lexeme.levels)}">
-                <i class="fa fa-angle-right"></i>
-              </button>
-            </th:block>
-            <th:block th:if="${sessionBean.lexemeCollocExpanded}">
-              <button class="btn badge badge-secondary btn-toggle"
-                      data-plugin="lexemeCollocExpandPlugin"
-                      th:data-callback="${@viewUtil.composeFunction('loadFullLexemeDetails', lexeme.lexemeId, lexeme.levels)}">
-                <i class="fa fa-angle-down"></i>
-              </button>
-            </th:block>
+            <button class="btn badge badge-secondary btn-toggle"
+                    data-plugin="sectionExpandPlugin"
+                    data-section-name="lexeme_colloc"
+                    th:data-callback="${@viewUtil.composeFunction('loadFullLexemeDetails', lexeme.lexemeId, lexeme.levels)}">
+              <i class="fa fa-angle-right" th:unless="${sessionBean.lexemeCollocExpanded}"></i>
+              <i class="fa fa-angle-down" th:if="${sessionBean.lexemeCollocExpanded}"></i>
+            </button>
           </div>
         </div>
         <th:block th:if="${sessionBean.lexemeCollocExpanded}">

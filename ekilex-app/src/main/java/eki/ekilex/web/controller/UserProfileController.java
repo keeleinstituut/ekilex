@@ -8,6 +8,7 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplicat
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -137,22 +138,20 @@ public class UserProfileController extends AbstractPrivatePageController {
 		return REDIRECT_PREF + USER_PROFILE_URI;
 	}
 
-	@PostMapping(LEXEME_COLLOC_EXPAND_URI)
+	@PostMapping(TOGGLE_SECTION_EXPAND_URI + "/{sectionName}")
 	@ResponseBody
-	public String toggleLexemeCollocationExpand(Model model) {
+	public String toggleLexemeCollocationExpand(@PathVariable("sectionName") String sectionName, Model model) {
 
 		SessionBean sessionBean = getSessionBean(model);
-		sessionBean.setLexemeCollocExpanded(!sessionBean.isLexemeCollocExpanded());
-
-		return RESPONSE_OK_VER2;
-	}
-
-	@PostMapping(MEANING_FREEFORM_EXPAND_URI)
-	@ResponseBody
-	public String toggleMeaningFreeformExpand(Model model) {
-
-		SessionBean sessionBean = getSessionBean(model);
-		sessionBean.setMeaningFreeformExpanded(!sessionBean.isMeaningFreeformExpanded());
+		if (StringUtils.equalsIgnoreCase(sectionName, "lexeme_colloc")) {
+			sessionBean.setLexemeCollocExpanded(!sessionBean.isLexemeCollocExpanded());
+		} else if (StringUtils.equalsIgnoreCase(sectionName, "meaning_freeform")) {
+			sessionBean.setMeaningFreeformExpanded(!sessionBean.isMeaningFreeformExpanded());
+		} else if (StringUtils.equalsIgnoreCase(sectionName, "meaning_image")) {
+			sessionBean.setMeaningImageExpanded(!sessionBean.isMeaningImageExpanded());
+		} else if (StringUtils.equalsIgnoreCase(sectionName, "meaning_media")) {
+			sessionBean.setMeaningMediaExpanded(!sessionBean.isMeaningMediaExpanded());
+		}
 
 		return RESPONSE_OK_VER2;
 	}
