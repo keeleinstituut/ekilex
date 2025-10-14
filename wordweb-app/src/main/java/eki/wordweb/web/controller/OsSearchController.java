@@ -2,9 +2,11 @@ package eki.wordweb.web.controller;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +19,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.SessionAttributes;
+import org.springframework.web.servlet.LocaleResolver;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import eki.common.data.SearchStat;
@@ -31,21 +34,32 @@ import eki.wordweb.web.bean.SessionBean;
 @SessionAttributes(WebConstant.SESSION_BEAN)
 public class OsSearchController extends AbstractSearchController {
 
+	private static final Locale OS_LOCALE = new Locale("et");
+
+	@Autowired
+	private LocaleResolver localeResolver;
+
 	@Autowired
 	private OsSearchService osSearchService;
 
 	@GetMapping(OS_URI)
-	public String home(HttpServletRequest request, Model model) {
+	public String home(
+			HttpServletRequest request,
+			HttpServletResponse response,
+			Model model) {
 
-		populateOsModel(new OsSearchResult(), model);
+		populateOsModel(new OsSearchResult(), request, response, model);
 
 		return OS_HOME_PAGE;
 	}
 
 	@GetMapping(SEARCH_URI + OS_URI)
-	public String search(HttpServletRequest request, Model model) {
+	public String search(
+			HttpServletRequest request,
+			HttpServletResponse response,
+			Model model) {
 
-		populateOsModel(new OsSearchResult(), model);
+		populateOsModel(new OsSearchResult(), request, response, model);
 
 		return OS_SEARCH_PAGE;
 	}
@@ -89,6 +103,7 @@ public class OsSearchController extends AbstractSearchController {
 			@PathVariable(name = "searchValue") String searchValue,
 			@PathVariable(name = "homonymNr", required = false) String homonymNrStr,
 			HttpServletRequest request,
+			HttpServletResponse response,
 			Model model) throws Exception {
 
 		searchValue = decode(searchValue);
@@ -112,7 +127,7 @@ public class OsSearchController extends AbstractSearchController {
 			searchValue = cleanMaskSearchValue;
 			WordsMatch wordsMatch = osSearchService.getWordsWithMask(cleanMaskSearchValue);
 			model.addAttribute("wordsMatch", wordsMatch);
-			populateOsModel(null, model);
+			populateOsModel(null, request, response, model);
 
 			String searchUri = webUtil.composeOsSearchUri(searchValue, null);
 			SearchStat searchStat = statDataUtil.composeSearchStat(request, isSearchForm, SEARCH_MODE_OS, searchValue, null, searchUri, wordsMatch);
@@ -127,7 +142,7 @@ public class OsSearchController extends AbstractSearchController {
 				return REDIRECT_PREF + searchUri;
 			}
 			OsSearchResult searchResult = osSearchService.search(searchValue, homonymNr);
-			populateOsModel(searchResult, model);
+			populateOsModel(searchResult, request, response, model);
 
 			String searchUri = webUtil.composeOsSearchUri(searchValue, homonymNr);
 			SearchStat searchStat = statDataUtil.composeSearchStat(request, isSearchForm, SEARCH_MODE_OS, searchValue, homonymNr, searchUri, searchResult);
@@ -147,7 +162,14 @@ public class OsSearchController extends AbstractSearchController {
 		return wordsMap;
 	}
 
-	private void populateOsModel(OsSearchResult searchResult, Model model) {
+	private void populateOsModel(
+			OsSearchResult searchResult,
+			HttpServletRequest request,
+			HttpServletResponse response,
+			Model model) {
+
+		localeResolver.setLocale(request, response, OS_LOCALE);
+
 		if (searchResult != null) {
 			model.addAttribute("searchResult", searchResult);
 		}

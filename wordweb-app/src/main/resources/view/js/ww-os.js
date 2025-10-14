@@ -31,7 +31,7 @@ $(document).on('click', 'ext-link', function() {
 function searchOsWordAutocomplete() {
 
 	const wordRelValuesTitle = "Artiklis esitatud sõnad";
-	const wordRelComponentsTitle = "Sõnaosad";
+	const wordRelComponentsTitle = "Sõna osad";
 
 	var searchWordAutocompleteMenuRenderer = function(ul, items) {
 		var self = this;
