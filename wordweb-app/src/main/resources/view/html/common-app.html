@@ -120,7 +120,7 @@
   </th:block>
   <th:block th:fragment="lang-select">
     <div class="dropdown lang-btn">
-      <a href="#" role="button" class="dropdown-toggle" id="uiLangMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+      <a href="#" role="button" class="dropdown-toggle" id="uiLangMenuButton" data-toggle="dropdown" aria-expanded="false">
         <span th:text="#{menu.current.lang}"></span>
       </a>
       <div class="dropdown-menu" data-target="uiLangMenuButton" aria-expanded="true" aria-labelledby="uiLangMenuButton">
@@ -137,7 +137,6 @@
         th:aria-label="#{button.label.menu}"
         class="navigation__trigger"
         id="nav-menu"
-        aria-haspopup="menu"
         aria-expanded="false"
         aria-controls="nav-menu-links"
         >
@@ -221,15 +220,15 @@
   </th:block>
   <!-- WCAG main -->
   <th:block th:fragment="wcag-main">
-    <a class="sr-only sr-only-focusable" role="button" href="#main" th:text="#{aria.skip.link}">Põhisisu juurde</a>
+    <a class="sr-only sr-only-focusable" href="#main" th:text="#{aria.skip.link}">Põhisisu juurde</a>
   </th:block>
   <!-- WCAG sidebar -->
   <th:block th:fragment="wcag-sidebar">
-    <a class="sr-only sr-only-focusable" role="button" href="#sidebar" th:text="#{aria.skip.link.sidebar}">Külgriba juurde</a>
+    <a class="sr-only sr-only-focusable" href="#sidebar" th:text="#{aria.skip.link.sidebar}">Külgriba juurde</a>
   </th:block>
   <!-- WCAG search -->
   <th:block th:fragment="wcag-search">
-    <a class="sr-only sr-only-focusable" role="button" href="#search" th:text="#{aria.skip.link.search}">Põhisisu juurde</a>
+    <a class="sr-only sr-only-focusable" href="#search" th:text="#{aria.skip.link.search}">Põhisisu juurde</a>
   </th:block>
   <div aria-live="polite" class="sr-only" id="aria-live-announcer" th:fragment="aria-live-announcer"></div>
   <!-- debugging aid -->
@@ -271,7 +270,7 @@
           <div class="modal-header feedback-modal__header">
             <h1 class="modal-title" th:text="#{feedback.title}" id="feedback-modal-title">Tagasiside</h1>
             <h1 class="modal-title d-none" th:text="#{feedback.success.title}" id="feedback-modal-success-title">Aitäh</h1>
-            <button type="button" class="feedback-modal__close" data-dismiss="modal" th:attr="aria-label=#{menu.close}">
+            <button type="button" class="feedback-modal__close" data-dismiss="modal" th:aria-label="#{menu.close}">
               <span class="fa fa-times" aria-hidden="true"></span>
             </button>
           </div>
@@ -448,7 +447,7 @@
     <div class="alert   alert-dismissible fade show bg-warning text-black px-3 py-1 d-flex align-items-center update-alert" role="alert">
       <i class="fa fa-exclamation-triangle small mr-2" aria-hidden="true"></i>
       <span th:text="#{warning.underconstruction.everything}">Sõnaveeb uueneb. Uut versiooni tutvustame ... 2021</span>
-      <button type="button" class="close btn bg-transparent ml-auto py-1" data-dismiss="alert" aria-label="Close">
+      <button type="button" class="close btn bg-transparent ml-auto py-1" data-dismiss="alert" th:aria-label="${menu.close}">
         <span aria-hidden="true">&times;</span>
       </button>
     </div>

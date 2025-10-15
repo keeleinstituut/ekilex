@@ -128,7 +128,7 @@ $(document).ready(function () {
   }
 
   function keyboardLang() { // select correct lang keys
-    let lang = $(langBox + '#selected').attr('value');
+    let lang = $(langBox + '#selected-language').attr('data-value');
     if (lang === 'estonia') {
       keys = 'kioskboard-keys-estonia.json';
     } else if (lang === 'russian') {
@@ -192,12 +192,12 @@ $(document).ready(function () {
   });
 
   // language change
-  $(document).on('click',  langBox + '.dropdown-menu a', function (event) {
-    let replace = langBox + '#selected';
+  $(document).on('click',  langBox + '.dropdown-menu button', function (event) {
+    let replace = langBox + '#selected-language';
     event.preventDefault();
     /*changes to user selected value*/
     $(replace).text($(this).text());
-    $(replace).attr('value', $(this).attr('value'));
+    $(replace).attr('data-value', $(this).attr('data-value'));
 
     /* check if keyboard is allowed to run */
     if (langChange) {
