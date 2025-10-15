@@ -4,7 +4,7 @@ import java.math.BigDecimal;
 
 import eki.common.data.AbstractDataObject;
 
-public class CollocationMember extends AbstractDataObject {
+public class CollocMember extends AbstractDataObject {
 
 	private static final long serialVersionUID = 1L;
 
@@ -14,13 +14,13 @@ public class CollocationMember extends AbstractDataObject {
 
 	private Long memberLexemeId;
 
+	private Long conjunctLexemeId;
+
 	private Long memberFormId;
 
 	private String posGroupCode;
 
 	private String relGroupCode;
-
-	private String conjunct;
 
 	private BigDecimal weight;
 
@@ -52,6 +52,14 @@ public class CollocationMember extends AbstractDataObject {
 		this.memberLexemeId = memberLexemeId;
 	}
 
+	public Long getConjunctLexemeId() {
+		return conjunctLexemeId;
+	}
+
+	public void setConjunctLexemeId(Long conjunctLexemeId) {
+		this.conjunctLexemeId = conjunctLexemeId;
+	}
+
 	public Long getMemberFormId() {
 		return memberFormId;
 	}
@@ -74,14 +82,6 @@ public class CollocationMember extends AbstractDataObject {
 
 	public void setRelGroupCode(String relGroupCode) {
 		this.relGroupCode = relGroupCode;
-	}
-
-	public String getConjunct() {
-		return conjunct;
-	}
-
-	public void setConjunct(String conjunct) {
-		this.conjunct = conjunct;
 	}
 
 	public BigDecimal getWeight() {

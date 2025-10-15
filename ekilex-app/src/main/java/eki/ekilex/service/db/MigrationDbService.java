@@ -1,10 +1,13 @@
 package eki.ekilex.service.db;
 
+import static eki.ekilex.data.db.main.Tables.COLLOCATION_MEMBER;
 import static eki.ekilex.data.db.main.Tables.DEFINITION;
 import static eki.ekilex.data.db.main.Tables.DEFINITION_DATASET;
 import static eki.ekilex.data.db.main.Tables.DOMAIN_LABEL;
+import static eki.ekilex.data.db.main.Tables.LEXEME;
 import static eki.ekilex.data.db.main.Tables.MEANING;
 import static eki.ekilex.data.db.main.Tables.PUBLISHING;
+import static eki.ekilex.data.db.main.Tables.USAGE;
 import static eki.ekilex.data.db.main.Tables.WORD;
 import static eki.ekilex.data.db.main.Tables.WORD_OS_MORPH;
 import static eki.ekilex.data.db.main.Tables.WORD_OS_USAGE;
@@ -12,16 +15,21 @@ import static eki.ekilex.data.db.main.Tables.WORD_RELATION;
 
 import java.util.List;
 
+import org.jooq.Condition;
 import org.jooq.Field;
+import org.jooq.JSON;
 import org.jooq.impl.DSL;
 import org.springframework.stereotype.Component;
 
 import eki.common.constant.GlobalConstant;
 import eki.common.constant.PublishingConstant;
+import eki.ekilex.data.db.main.tables.CollocationMember;
 import eki.ekilex.data.db.main.tables.Definition;
 import eki.ekilex.data.db.main.tables.DefinitionDataset;
+import eki.ekilex.data.db.main.tables.Lexeme;
 import eki.ekilex.data.db.main.tables.Meaning;
 import eki.ekilex.data.db.main.tables.Publishing;
+import eki.ekilex.data.db.main.tables.Usage;
 import eki.ekilex.data.db.main.tables.Word;
 import eki.ekilex.data.db.main.tables.WordOsMorph;
 import eki.ekilex.data.db.main.tables.WordOsUsage;
@@ -31,6 +39,78 @@ import eki.ekilex.data.migra.DefinitionDuplicate;
 // temporary content for data migration tools
 @Component
 public class MigrationDbService extends AbstractDataDbService implements PublishingConstant, GlobalConstant {
+
+	public List<eki.ekilex.data.migra.Colloc> getCollocationsWithDuplicates() {
+
+		Word cw = WORD.as("cw");
+		Word cwd = WORD.as("cwd");
+		Lexeme cl = LEXEME.as("cl");
+		Lexeme cld = LEXEME.as("cld");
+		CollocationMember cm = COLLOCATION_MEMBER.as("cm");
+		CollocationMember cme = COLLOCATION_MEMBER.as("cme");
+		Usage u = USAGE.as("u");
+
+		Field<String[]> uvf = DSL
+				.select(DSL
+						.arrayAgg(u.VALUE)
+						.orderBy(u.ORDER_BY))
+				.from(u)
+				.where(u.LEXEME_ID.eq(cl.ID))
+				.asField();
+
+		Field<JSON> memf = DSL
+				.select(DSL
+						.jsonArrayAgg(DSL
+								.jsonObject(
+										DSL.key("id").value(cm.ID),
+										DSL.key("collocLexemeId").value(cm.COLLOC_LEXEME_ID),
+										DSL.key("memberLexemeId").value(cm.MEMBER_LEXEME_ID),
+										DSL.key("conjunctLexemeId").value(cm.CONJUNCT_LEXEME_ID),
+										DSL.key("memberFormId").value(cm.MEMBER_FORM_ID),
+										DSL.key("posGroupCode").value(cm.POS_GROUP_CODE),
+										DSL.key("relGroupCode").value(cm.REL_GROUP_CODE),
+										DSL.key("weight").value(cm.WEIGHT),
+										DSL.key("memberOrder").value(cm.MEMBER_ORDER),
+										DSL.key("groupOrder").value(cm.GROUP_ORDER)))
+						.orderBy(cm.MEMBER_ORDER))
+				.from(cm)
+				.where(cm.COLLOC_LEXEME_ID.eq(cl.ID))
+				.asField();
+
+		Condition where = cl.WORD_ID.eq(cw.ID)
+				.and(cl.IS_WORD.isFalse())
+				.and(cl.IS_COLLOCATION.isTrue())
+				.andExists(DSL
+						.select(cme.ID)
+						.from(cme)
+						.where(cme.COLLOC_LEXEME_ID.eq(cl.ID)))
+				.andExists(DSL
+						.select(cld.ID)
+						.from(cwd, cld)
+						.where(
+								cld.WORD_ID.eq(cwd.ID)
+										.and(cld.IS_WORD.isFalse())
+										.and(cld.IS_COLLOCATION.isTrue())
+										.and(cld.ID.ne(cl.ID))
+										.and(cwd.VALUE.eq(cw.VALUE))
+										.andExists(DSL
+												.select(cme.ID)
+												.from(cme)
+												.where(cme.COLLOC_LEXEME_ID.eq(cld.ID)))));
+
+		return mainDb
+				.select(
+						cl.ID.as("colloc_lexeme_id"),
+						cw.ID.as("colloc_word_id"),
+						cw.VALUE.as("colloc_word_value"),
+						uvf.as("usage_values"),
+						memf.as("colloc_members"))
+				.from(cw, cl)
+				.where(where)
+				.orderBy(cw.VALUE)
+				.fetchInto(eki.ekilex.data.migra.Colloc.class);
+
+	}
 
 	public void updateDomainLabelValue(String code, String origin, String value, String lang, String type) {
 
