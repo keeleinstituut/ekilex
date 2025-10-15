@@ -101,6 +101,7 @@
   --color-purple-100: #db8dff;
   --color-orange: #DE6837;
   --color-alert-yellow: #FDF0E1;
+  --color-outline: #000;
   --header-z-index: 1072;
 }
 :root {
@@ -16830,13 +16831,13 @@ span.material-symbols-outlined--small {
 }
 .recommendation-additional-info i {
   margin-right: 4px;
-  font-size: 22px;
+  font-size: 1.375rem;
   color: #0073e6;
 }
 .recommendation-additional-info span {
   display: block;
   padding-bottom: 16px;
-  font-size: 14px;
+  font-size: 0.875rem;
   color: #5d606e;
 }
 .main-search-btns {
@@ -16849,11 +16850,11 @@ span.material-symbols-outlined--small {
   right: 18px;
 }
 .speak-btn {
-  font-size: 17px;
+  font-size: 1.0625rem;
 }
 @media (min-width: 768px) {
   .speak-btn {
-    font-size: 28px;
+    font-size: 1.75rem;
   }
 }
 .search-btn,
@@ -16905,11 +16906,12 @@ span.material-symbols-outlined--small {
 }
 #keyboard-search-btn:focus {
   box-shadow: none;
+  outline: 1px solid var(--color-outline);
 }
 #keyboard-search-btn .fas.fa-keyboard {
   width: 27px;
   height: 28px;
-  font-size: 24px;
+  font-size: 1.5rem;
   font-style: normal;
   font-weight: 900;
   line-height: 28px;
@@ -16922,11 +16924,14 @@ span.material-symbols-outlined--small {
 }
 #keyboard-lang-search .dropdown-toggle {
   display: inline-flex;
-  font-size: 16px;
+  font-size: 1rem;
   font-style: normal;
   font-weight: 400;
   line-height: 24px;
   color: #fff;
+  background-color: transparent;
+  padding: 0;
+  border: none;
 }
 #keyboard-lang-search .dropdown-toggle::after {
   display: none;
@@ -16938,7 +16943,7 @@ span.material-symbols-outlined--small {
   width: 13px;
   height: 16px;
   font-family: "Font Awesome 5 Free";
-  font-size: 14px;
+  font-size: 0.875rem;
   font-style: normal;
   font-weight: 900;
   line-height: 16px;
@@ -17154,6 +17159,7 @@ span.material-symbols-outlined--small {
   --color-purple-100: #db8dff;
   --color-orange: #DE6837;
   --color-alert-yellow: #FDF0E1;
+  --color-outline: #000;
   --header-z-index: 1072;
 }
 .modal {

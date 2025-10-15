@@ -25,16 +25,16 @@
               <span class="material-symbols-outlined" aria-hidden="true">keyboard</span>
             </button>
             <div id="keyboard-lang-search" class="dropdown dropdown-keyboard-lang" style="display: none;">
-              <a aria-expanded="false" aria-haspopup="true" role="button" data-toggle="dropdown" class="dropdown-toggle" href="#">
-                <span value="estonia" id="selected">ET</span>
+              <button type="button" aria-expanded="false" aria-haspopup="true" data-toggle="dropdown" class="dropdown-toggle">
+                <span data-value="estonia" id="selected-language">ET</span>
                 <span class="costom-keyboard-lang-angle-down">
                   <i class="fa fa-angle-down" aria-hidden="true"></i>
                 </span>
-              </a>
+              </button>
               <div class="dropdown-menu">
-                <a class="dropdown-item" href="#" value="estonia">ET</a>
-                <a class="dropdown-item" href="#" value="russian">RU</a>
-                <a class="dropdown-item" href="#" value="english">EN</a>
+                <button type="button" class="dropdown-item" data-value="estonia">ET</button>
+                <button type="button" class="dropdown-item" data-value="russian">RU</button>
+                <button type="button" class="dropdown-item" data-value="english">EN</button>
               </div>
             </div>
           </div>
@@ -55,7 +55,7 @@
   </th:block>
   <th:block th:fragment="dataset-filter">
     <div class="dropdown search-filter__wrapper" id="dataset-filter-wrapper">
-      <button class="dropdown-toggle search-filter__toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" id="dataset-filters-popover">
+      <button class="dropdown-toggle search-filter__toggle" data-toggle="dropdown" aria-expanded="false" id="dataset-filters-popover">
         <span class="search-filter__toggle-label" th:text="#{label.filter.dataset}">Sõnakogud</span>
         <span class="search-filter__toggle-count" id="dataset-filter-count"></span>
       </button>
@@ -80,7 +80,7 @@
   </th:block>
   <th:block th:fragment="lang-filter">
     <div class="dropdown search-filter__wrapper" id="lang-filter-wrapper">
-      <button class="dropdown-toggle search-filter__toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" id="lang-filters-popover">
+      <button class="dropdown-toggle search-filter__toggle" data-toggle="dropdown" aria-expanded="false" id="lang-filters-popover">
         <span class="search-filter__toggle-label" th:text="#{label.filter.lang}">Keel</span>
         <span class="search-filter__toggle-count" id="lang-filter-count"></span>
       </button>
