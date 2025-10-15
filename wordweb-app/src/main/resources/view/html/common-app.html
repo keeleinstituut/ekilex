@@ -271,7 +271,7 @@
           <div class="modal-header feedback-modal__header">
             <h1 class="modal-title" th:text="#{feedback.title}" id="feedback-modal-title">Tagasiside</h1>
             <h1 class="modal-title d-none" th:text="#{feedback.success.title}" id="feedback-modal-success-title">Aitäh</h1>
-            <button type="button" class="feedback-modal__close" data-dismiss="modal" th:attr="aria-label=#{menu.close}">
+            <button type="button" class="feedback-modal__close" data-dismiss="modal" th:aria-label="#{menu.close}">
               <span class="fa fa-times" aria-hidden="true"></span>
             </button>
           </div>
@@ -448,7 +448,7 @@
     <div class="alert   alert-dismissible fade show bg-warning text-black px-3 py-1 d-flex align-items-center update-alert" role="alert">
       <i class="fa fa-exclamation-triangle small mr-2" aria-hidden="true"></i>
       <span th:text="#{warning.underconstruction.everything}">Sõnaveeb uueneb. Uut versiooni tutvustame ... 2021</span>
-      <button type="button" class="close btn bg-transparent ml-auto py-1" data-dismiss="alert" aria-label="Close">
+      <button type="button" class="close btn bg-transparent ml-auto py-1" data-dismiss="alert" th:aria-label="${menu.close}">
         <span aria-hidden="true">&times;</span>
       </button>
     </div>
