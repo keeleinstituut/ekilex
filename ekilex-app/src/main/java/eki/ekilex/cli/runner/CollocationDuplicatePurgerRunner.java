@@ -6,6 +6,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -43,11 +44,7 @@ public class CollocationDuplicatePurgerRunner implements GlobalConstant, SystemC
 		logger.info("Starting purge...");
 
 		Count singleCount = new Count();
-		Count fullMatchCount = new Count();
-		Count subMatchCount = new Count();
-		Count discardCount = new Count();
 		Count keepCount = new Count();
-		Count deleteCount = new Count();
 
 		final String reportFileName = "report.txt";
 		FileOutputStream reportStream = new FileOutputStream(reportFileName);
@@ -61,20 +58,17 @@ public class CollocationDuplicatePurgerRunner implements GlobalConstant, SystemC
 		List<String> collocValues = new ArrayList<>(collocsByValueMap.keySet());
 		Collections.sort(collocValues);
 
+		List<Long> totalDeleteCollocLexemeId = new ArrayList<>();
+
 		for (String collocValue : collocValues) {
 
 			List<Colloc> duplCollocsByValue = collocsByValueMap.get(collocValue);
 			Map<String, List<Colloc>> collocsByHashMap = duplCollocsByValue.stream()
-					.collect(Collectors.groupingBy(Colloc::getCollocHash));
+					.collect(Collectors.groupingBy(Colloc::getHash));
 
 			for (String collocHash : collocsByHashMap.keySet()) {
 
 				List<Colloc> duplCollocsByHash = collocsByHashMap.get(collocHash);
-				List<String> collocMembersHashes = duplCollocsByHash.stream().map(Colloc::getMembersHash)
-						.distinct()
-						.sorted(Comparator.comparingInt(String::length).reversed())
-						.collect(Collectors.toList());
-				String mostCompletecollocMembersHash = collocMembersHashes.get(0);
 
 				if (duplCollocsByHash.size() == 1) {
 					// single colloc
@@ -82,58 +76,79 @@ public class CollocationDuplicatePurgerRunner implements GlobalConstant, SystemC
 					continue;
 				}
 
-				Colloc bestVersionColloc = null;
-				List<Colloc> deleteDuplCollocs = new ArrayList<>();
+				Map<List<Long>, List<Colloc>> duplCollocMap = new HashMap<>();
 
 				for (Colloc colloc : duplCollocsByHash) {
 
-					String collocMembersHash = colloc.getMembersHash();
-					if (StringUtils.equals(mostCompletecollocMembersHash, collocMembersHash)) {
-						// full match
-						if (bestVersionColloc == null) {
-							bestVersionColloc = colloc;
-						} else {
-							deleteDuplCollocs.add(colloc);
+					Long collocLexemeId = colloc.getCollocLexemeId();
+					List<String> collocMemberHashes = colloc.getCollocMemberHashes();
+					List<Colloc> duplCollocs = new ArrayList<>();
+					duplCollocs.add(colloc);
+
+					for (Colloc duplCandColloc : duplCollocsByHash) {
+
+						Long duplCandCollocLexemeId = duplCandColloc.getCollocLexemeId();
+						List<String> duplCandCollocMemberHashes = duplCandColloc.getCollocMemberHashes();
+						if (duplCandCollocLexemeId.equals(collocLexemeId)) {
+							continue;
 						}
-						fullMatchCount.increment();
-					} else if (StringUtils.contains(mostCompletecollocMembersHash, collocMembersHash)) {
-						// subcontaining
-						deleteDuplCollocs.add(colloc);
-						subMatchCount.increment();
-					} else {
-						// completely off
-						discardCount.increment();
+						boolean isMemberMatch = CollectionUtils.containsAll(collocMemberHashes, duplCandCollocMemberHashes);
+						if (isMemberMatch) {
+							duplCollocs.add(duplCandColloc);
+						}
 					}
+
+					List<Long> duplCollocLexemeIds = duplCollocs.stream()
+							.map(Colloc::getCollocLexemeId)
+							.sorted()
+							.collect(Collectors.toList());
+
+					// TODO remove later
+					// System.out.println(collocLexemeId + " : " + duplCollocLexemeIds);
+
+					if (duplCollocLexemeIds.size() == 1) {
+						// single colloc
+						singleCount.increment();
+						continue;
+					} else if (duplCollocMap.containsKey(duplCollocLexemeIds)) {
+						continue;
+					}
+
+					duplCollocMap.put(duplCollocLexemeIds, duplCollocs);
 				}
 
-				if (CollectionUtils.isEmpty(deleteDuplCollocs)) {
-					// nothing to delete
-					continue;
+				for (List<Colloc> duplCollocs : duplCollocMap.values()) {
+
+					Colloc bestVersionColloc = duplCollocs.stream()
+							.max(Comparator.comparingInt(Colloc::getCollocMemberCount).reversed())
+							.get();
+					Long bestVersionCollocLexemeId = bestVersionColloc.getCollocLexemeId();
+					List<Colloc> deleteDuplCollocs = duplCollocs.stream()
+							.filter(colloc -> !colloc.getCollocLexemeId().equals(bestVersionCollocLexemeId))
+							.collect(Collectors.toList());
+					List<Long> deleteDuplCollocLexemeIds = deleteDuplCollocs.stream()
+							.map(Colloc::getCollocLexemeId)
+							.collect(Collectors.toList());
+					totalDeleteCollocLexemeId.addAll(deleteDuplCollocLexemeIds);
+					keepCount.increment();
+					writeReportLine(reportWriter, bestVersionColloc, deleteDuplCollocs);
+
+					// TODO delete
 				}
-
-				keepCount.increment();
-				deleteCount.increment(deleteDuplCollocs.size());
-
-				writeReportLine(reportWriter, bestVersionColloc, deleteDuplCollocs);
-
-				// TODO delete
 			}
 		}
+
+		long uniqueDeleteCollocLexemeCount = totalDeleteCollocLexemeId.stream().distinct().count();
 
 		reportWriter.flush();
 		reportStream.flush();
 		reportWriter.close();
 		reportStream.close();
 
-		logger.info("Single count: {}. Full match count: {}. Submatch count: {}. Discard count: {}",
-				singleCount.getValue(), fullMatchCount.getValue(), subMatchCount.getValue(), discardCount.getValue());
-		logger.info("Duplicate count: {}. Value count: {}. Keep count: {}. Delete count: {}",
-				collocs.size(), collocValues.size(), keepCount.getValue(), deleteCount.getValue());
+		logger.info("Single count: {}. Duplicate count: {}. Value count: {}. Keep count: {}. Delete count: {}",
+				singleCount.getValue(), collocs.size(), collocValues.size(), keepCount.getValue(), uniqueDeleteCollocLexemeCount);
 
-		/*
-		Single count: 5053. Full match count: 27002. Submatch count: 16005. Discard count: 14624
-		Duplicate count: 62684. Value count: 29186. Keep count: 15664. Delete count: 16005
-		*/
+		//Single count: 45393. Duplicate count: 62684. Value count: 29186. Keep count: 17289. Delete count: 16442
 	}
 
 	private void writeReportHeader(OutputStreamWriter reportWriter) throws Exception {
@@ -167,16 +182,30 @@ public class CollocationDuplicatePurgerRunner implements GlobalConstant, SystemC
 
 	private void applyHash(Colloc colloc) {
 
-		String collocWordValue = colloc.getCollocWordValue();
-		List<String> usageValues = colloc.getUsageValues();
 		List<CollocMember> collocMembers = colloc.getCollocMembers();
 
-		List<Object> hashList;
-		List<Object> subHashList;
+		composeHash(colloc);
+		composeHash(collocMembers);
+
+		List<String> collocMemberHashes = collocMembers.stream()
+				.map(CollocMember::getHash)
+				.collect(Collectors.toList());
+		colloc.setCollocMemberHashes(collocMemberHashes);
+	}
+
+	private void composeHash(Colloc colloc) {
+
+		String collocWordValue = colloc.getCollocWordValue();
+		List<String> usageValues = colloc.getUsageValues();
+		boolean isWwUnif = colloc.isWwUnif();
+		boolean isWwLite = colloc.isWwLite();
+
 		String hash;
 
-		hashList = new ArrayList<>();
+		List<Object> hashList = new ArrayList<>();
 		hashList.add(collocWordValue);
+		hashList.add("unif:" + isWwUnif);
+		hashList.add("lite:" + isWwLite);
 
 		if (CollectionUtils.isNotEmpty(usageValues)) {
 			hash = StringUtils.join(usageValues, "-");
@@ -184,25 +213,23 @@ public class CollocationDuplicatePurgerRunner implements GlobalConstant, SystemC
 		}
 
 		hash = StringUtils.join(hashList, "|");
-		colloc.setCollocHash(hash);
+		colloc.setHash(hash);
+	}
 
-		hashList = new ArrayList<>();
+	private void composeHash(List<CollocMember> collocMembers) {
 
 		for (CollocMember collocMember : collocMembers) {
 
-			subHashList = new ArrayList<>();
-			subHashList.add(collocMember.getMemberLexemeId());
-			subHashList.add(collocMember.getConjunctLexemeId());
-			subHashList.add(collocMember.getMemberFormId());
-			subHashList.add(collocMember.getPosGroupCode());
-			subHashList.add(collocMember.getRelGroupCode());
-			subHashList.add(collocMember.getWeight());
+			List<Object> hashList = new ArrayList<>();
+			hashList.add(collocMember.getMemberLexemeId());
+			hashList.add(collocMember.getConjunctLexemeId());
+			hashList.add(collocMember.getMemberFormId());
+			hashList.add(collocMember.getPosGroupCode());
+			hashList.add(collocMember.getRelGroupCode());
+			hashList.add(collocMember.getWeight());
 
-			hash = StringUtils.join(subHashList, "-");
-			hashList.add(hash);
+			String hash = StringUtils.join(hashList, "-");
+			collocMember.setHash(hash);
 		}
-
-		hash = StringUtils.join(hashList, "|");
-		colloc.setMembersHash(hash);
 	}
 }

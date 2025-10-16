@@ -838,18 +838,6 @@ where
 			)
 		)
 	)
-	/*
-	and exists (
-		select
-			1
-		from
-			publishing p 
-		where
-			p.target_name = 'ww_os'
-			and p.entity_name = 'word_relation'
-			and p.entity_id = wr.id
-	)
-	*/
 order by
 	w1.id,
 	wr.id

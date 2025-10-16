@@ -2,9 +2,9 @@ package eki.ekilex.data.migra;
 
 import java.util.List;
 
-import eki.common.data.AbstractDataObject;
+import eki.ekilex.data.AbstractPublishingEntity;
 
-public class Colloc extends AbstractDataObject {
+public class Colloc extends AbstractPublishingEntity {
 
 	private static final long serialVersionUID = 1L;
 
@@ -18,9 +18,11 @@ public class Colloc extends AbstractDataObject {
 
 	private List<CollocMember> collocMembers;
 
-	private String collocHash;
+	private String hash;
 
-	private String membersHash;
+	private List<String> collocMemberHashes;
+
+	private int collocMemberCount;
 
 	public Long getCollocLexemeId() {
 		return collocLexemeId;
@@ -62,20 +64,28 @@ public class Colloc extends AbstractDataObject {
 		this.collocMembers = collocMembers;
 	}
 
-	public String getCollocHash() {
-		return collocHash;
+	public String getHash() {
+		return hash;
 	}
 
-	public void setCollocHash(String collocHash) {
-		this.collocHash = collocHash;
+	public void setHash(String hash) {
+		this.hash = hash;
 	}
 
-	public String getMembersHash() {
-		return membersHash;
+	public List<String> getCollocMemberHashes() {
+		return collocMemberHashes;
 	}
 
-	public void setMembersHash(String membersHash) {
-		this.membersHash = membersHash;
+	public void setCollocMemberHashes(List<String> collocMemberHashes) {
+		this.collocMemberHashes = collocMemberHashes;
+	}
+
+	public int getCollocMemberCount() {
+		return collocMemberCount;
+	}
+
+	public void setCollocMemberCount(int collocMemberCount) {
+		this.collocMemberCount = collocMemberCount;
 	}
 
 }

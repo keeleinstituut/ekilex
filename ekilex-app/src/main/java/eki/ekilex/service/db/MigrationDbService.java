@@ -19,6 +19,7 @@ import org.jooq.Condition;
 import org.jooq.Field;
 import org.jooq.JSON;
 import org.jooq.impl.DSL;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import eki.common.constant.GlobalConstant;
@@ -35,10 +36,14 @@ import eki.ekilex.data.db.main.tables.WordOsMorph;
 import eki.ekilex.data.db.main.tables.WordOsUsage;
 import eki.ekilex.data.db.main.tables.WordRelation;
 import eki.ekilex.data.migra.DefinitionDuplicate;
+import eki.ekilex.service.db.util.QueryHelper;
 
 // temporary content for data migration tools
 @Component
 public class MigrationDbService extends AbstractDataDbService implements PublishingConstant, GlobalConstant {
+
+	@Autowired
+	private QueryHelper queryHelper;
 
 	public List<eki.ekilex.data.migra.Colloc> getCollocationsWithDuplicates() {
 
@@ -98,16 +103,23 @@ public class MigrationDbService extends AbstractDataDbService implements Publish
 												.from(cme)
 												.where(cme.COLLOC_LEXEME_ID.eq(cld.ID)))));
 
+		Field<Boolean> wwupf = queryHelper.getPublishingField(TARGET_NAME_WW_UNIF, ENTITY_NAME_LEXEME, cl.ID);
+		Field<Boolean> wwlpf = queryHelper.getPublishingField(TARGET_NAME_WW_LITE, ENTITY_NAME_LEXEME, cl.ID);
+
 		return mainDb
 				.select(
 						cl.ID.as("colloc_lexeme_id"),
 						cw.ID.as("colloc_word_id"),
 						cw.VALUE.as("colloc_word_value"),
 						uvf.as("usage_values"),
-						memf.as("colloc_members"))
+						memf.as("colloc_members"),
+						wwupf.as("is_ww_unif"),
+						wwlpf.as("is_ww_lite"))
 				.from(cw, cl)
 				.where(where)
-				.orderBy(cw.VALUE)
+				.orderBy(
+						cw.VALUE,
+						cl.ID)
 				.fetchInto(eki.ekilex.data.migra.Colloc.class);
 
 	}

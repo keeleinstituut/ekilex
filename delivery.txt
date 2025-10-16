@@ -1,1 +1,3 @@
 Märkused ver 1.44.0 tarne kohta:
+
+mvn spring-boot:run -P codup -D spring-boot.run.profiles=dev

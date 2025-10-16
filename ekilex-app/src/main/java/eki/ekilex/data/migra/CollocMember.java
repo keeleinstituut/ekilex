@@ -28,6 +28,8 @@ public class CollocMember extends AbstractDataObject {
 
 	private Integer groupOrder;
 
+	private String hash;
+
 	public Long getId() {
 		return id;
 	}
@@ -106,6 +108,14 @@ public class CollocMember extends AbstractDataObject {
 
 	public void setGroupOrder(Integer groupOrder) {
 		this.groupOrder = groupOrder;
+	}
+
+	public String getHash() {
+		return hash;
+	}
+
+	public void setHash(String hash) {
+		this.hash = hash;
 	}
 
 }
