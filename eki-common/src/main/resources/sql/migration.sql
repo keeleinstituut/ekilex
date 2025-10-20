@@ -23,3 +23,22 @@ where
 alter table collocation_member drop column conjunct cascade;
 
 analyze collocation_member;
+
+-- #2 --
+
+delete
+from
+	lexeme cl
+where
+	cl.is_word = false
+	and cl.is_collocation = true
+	and not exists (
+		select
+			1
+		from
+			collocation_member cm
+		where
+			cm.colloc_lexeme_id = cl.id
+	)
+;
+

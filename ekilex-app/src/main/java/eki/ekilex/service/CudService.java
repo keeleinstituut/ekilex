@@ -1445,6 +1445,7 @@ public class CudService extends AbstractCudService implements PermConstant, Acti
 		}
 		activityLogService.createActivityLog("deleteLexeme", lexemeId, ActivityOwner.LEXEME, roleDatasetCode, isManualEventOnUpdateEnabled);
 		cudDbService.deleteLexemeCollocMembers(lexemeId);
+		cudDbService.deleteLexemeFreeforms(lexemeId);
 		cudDbService.deleteLexeme(lexemeId);
 		if (isOnlyLexemeForMeaning) {
 			cudDbService.deleteMeaning(meaningId);

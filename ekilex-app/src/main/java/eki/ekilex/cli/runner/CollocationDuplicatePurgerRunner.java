@@ -22,9 +22,12 @@ import org.springframework.transaction.annotation.Transactional;
 import eki.common.constant.GlobalConstant;
 import eki.common.data.Count;
 import eki.ekilex.constant.SystemConstant;
+import eki.ekilex.data.SimpleWord;
+import eki.ekilex.data.WordLexemeMeaningIdTuple;
 import eki.ekilex.data.migra.Colloc;
 import eki.ekilex.data.migra.CollocMember;
 import eki.ekilex.service.db.CudDbService;
+import eki.ekilex.service.db.LookupDbService;
 import eki.ekilex.service.db.MigrationDbService;
 
 @Component
@@ -36,20 +39,30 @@ public class CollocationDuplicatePurgerRunner implements GlobalConstant, SystemC
 	private MigrationDbService migrationDbService;
 
 	@Autowired
+	private LookupDbService lookupDbService;
+
+	@Autowired
 	private CudDbService cudDbService;
+
+	private final String reportFileName = "report.txt";
+
+	private boolean makeReport = false;
 
 	@Transactional(rollbackFor = Exception.class)
 	public void execute() throws Exception {
 
-		logger.info("Starting purge...");
+		logger.info("Collecting collocation duplicates...");
 
 		Count singleCount = new Count();
 		Count keepCount = new Count();
 
-		final String reportFileName = "report.txt";
-		FileOutputStream reportStream = new FileOutputStream(reportFileName);
-		OutputStreamWriter reportWriter = new OutputStreamWriter(reportStream, StandardCharsets.UTF_8);
-		writeReportHeader(reportWriter);
+		FileOutputStream reportStream = null;
+		OutputStreamWriter reportWriter = null;
+		if (makeReport) {
+			reportStream = new FileOutputStream(reportFileName);
+			reportWriter = new OutputStreamWriter(reportStream, StandardCharsets.UTF_8);
+			writeReportHeader(reportWriter);
+		}
 
 		List<Colloc> collocs = migrationDbService.getCollocationsWithDuplicates();
 		applyHash(collocs);
@@ -58,7 +71,7 @@ public class CollocationDuplicatePurgerRunner implements GlobalConstant, SystemC
 		List<String> collocValues = new ArrayList<>(collocsByValueMap.keySet());
 		Collections.sort(collocValues);
 
-		List<Long> totalDeleteCollocLexemeId = new ArrayList<>();
+		List<Long> totalDeleteCollocLexemeIds = new ArrayList<>();
 
 		for (String collocValue : collocValues) {
 
@@ -103,9 +116,6 @@ public class CollocationDuplicatePurgerRunner implements GlobalConstant, SystemC
 							.sorted()
 							.collect(Collectors.toList());
 
-					// TODO remove later
-					// System.out.println(collocLexemeId + " : " + duplCollocLexemeIds);
-
 					if (duplCollocLexemeIds.size() == 1) {
 						// single colloc
 						singleCount.increment();
@@ -129,24 +139,45 @@ public class CollocationDuplicatePurgerRunner implements GlobalConstant, SystemC
 					List<Long> deleteDuplCollocLexemeIds = deleteDuplCollocs.stream()
 							.map(Colloc::getCollocLexemeId)
 							.collect(Collectors.toList());
-					totalDeleteCollocLexemeId.addAll(deleteDuplCollocLexemeIds);
+					totalDeleteCollocLexemeIds.addAll(deleteDuplCollocLexemeIds);
 					keepCount.increment();
-					writeReportLine(reportWriter, bestVersionColloc, deleteDuplCollocs);
-
-					// TODO delete
+					if (makeReport) {
+						writeReportLine(reportWriter, bestVersionColloc, deleteDuplCollocs);
+					}
 				}
 			}
 		}
 
-		long uniqueDeleteCollocLexemeCount = totalDeleteCollocLexemeId.stream().distinct().count();
+		totalDeleteCollocLexemeIds = totalDeleteCollocLexemeIds.stream().distinct().collect(Collectors.toList());
 
-		reportWriter.flush();
-		reportStream.flush();
-		reportWriter.close();
-		reportStream.close();
+		logger.info("Deleting collocation duplicates...");
+
+		for (Long collocLexemeId : totalDeleteCollocLexemeIds) {
+
+			boolean isOnlyLexemeForMeaning = lookupDbService.isOnlyLexemeForMeaning(collocLexemeId);
+			boolean isOnlyLexemeForWord = lookupDbService.isOnlyLexemeForWord(collocLexemeId);
+			WordLexemeMeaningIdTuple wordLexemeMeaningId = lookupDbService.getWordLexemeMeaningIdByLexeme(collocLexemeId);
+			Long wordId = wordLexemeMeaningId.getWordId();
+			Long meaningId = wordLexemeMeaningId.getMeaningId();
+			cudDbService.deleteLexeme(collocLexemeId);
+			if (isOnlyLexemeForMeaning) {
+				cudDbService.deleteMeaning(meaningId);
+			}
+			if (isOnlyLexemeForWord) {
+				SimpleWord word = lookupDbService.getSimpleWord(wordId);
+				cudDbService.deleteWord(word);
+			}
+		}
+
+		if (makeReport) {
+			reportWriter.flush();
+			reportStream.flush();
+			reportWriter.close();
+			reportStream.close();
+		}
 
 		logger.info("Single count: {}. Duplicate count: {}. Value count: {}. Keep count: {}. Delete count: {}",
-				singleCount.getValue(), collocs.size(), collocValues.size(), keepCount.getValue(), uniqueDeleteCollocLexemeCount);
+				singleCount.getValue(), collocs.size(), collocValues.size(), keepCount.getValue(), totalDeleteCollocLexemeIds.size());
 
 		//Single count: 45393. Duplicate count: 62684. Value count: 29186. Keep count: 17289. Delete count: 16442
 	}

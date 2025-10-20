@@ -1977,7 +1977,7 @@ public class CudDbService extends AbstractDataDbService {
 				.execute();
 	}
 
-	public void deleteLexeme(Long lexemeId) {
+	public void deleteLexemeFreeforms(Long lexemeId) {
 		mainDb
 				.delete(FREEFORM)
 				.where(FREEFORM.ID.in(DSL
@@ -1985,6 +1985,9 @@ public class CudDbService extends AbstractDataDbService {
 						.from(LEXEME_FREEFORM)
 						.where(LEXEME_FREEFORM.LEXEME_ID.eq(lexemeId))))
 				.execute();
+	}
+
+	public void deleteLexeme(Long lexemeId) {
 		mainDb
 				.delete(LEXEME)
 				.where(LEXEME.ID.eq(lexemeId))
