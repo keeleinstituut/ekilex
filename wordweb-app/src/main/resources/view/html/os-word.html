@@ -16,7 +16,7 @@
       </div>
       <div class="search__block search__block--unified">
         <th:block th:if="${word.wordOsMorph}">
-          <div class="mt-2">
+          <div>
             <div th:text="#{label.os.morpho}" class="text-caption text-darker-gray">Lühimorfo</div>
             <div>
               <span>&lt;</span><span th:utext="${word.wordOsMorph.valuePrese}"></span><span>&gt;</span>
@@ -24,7 +24,7 @@
           </div>
         </th:block>
         <th:block th:if="${word.lexemeMeaningsContentExist}">
-          <div class="mt-2">
+          <div class="mt-3">
             <div th:text="#{label.os.meaning}" class="text-caption text-darker-gray">Tähendusvihjed</div>
             <div class="os-hints">
               <th:block th:each="lexemeMeaning, lexemeMeaningIter : ${word.lexemeMeanings}">
@@ -62,7 +62,7 @@
           </div>
         </th:block>
         <th:block th:if="${word.wordOsUsages}">
-          <div class="mt-2">
+          <div class="mt-3">
             <div th:text="#{label.os.usage}" class="text-caption text-darker-gray">Näited</div>
             <th:block th:each="usage : ${word.wordOsUsages}">
               <span th:utext="${usage.valuePrese}"></span>
@@ -70,7 +70,7 @@
           </div>
         </th:block>
         <th:block th:if="${word.title1WordRelationGroups}">
-          <div class="mt-2">
+          <div class="mt-3">
             <div th:text="#{label.os.word.rel.comp}" class="text-caption text-darker-gray">Liitsõnad</div>
             <ul>
               <th:block th:each="wordRelationGroup : ${word.title1WordRelationGroups}">
@@ -88,7 +88,7 @@
           </div>
         </th:block>
         <th:block th:if="${word.title2WordRelationGroups}">
-          <div class="mt-2">
+          <div class="mt-3">
             <div th:text="#{label.os.word.rel.deriv}" class="text-caption text-darker-gray">Tuletised</div>
             <ul>
               <th:block th:each="wordRelationGroup : ${word.title2WordRelationGroups}">
@@ -106,7 +106,7 @@
           </div>
         </th:block>
         <th:block th:if="${word.title3WordRelationGroups}">
-          <div class="mt-2">
+          <div class="mt-3">
             <div th:text="#{label.os.word.rel.degr}" class="text-caption text-darker-gray">Võrded</div>
             <div>
               <th:block th:each="wordRelationGroup, wordRelationGroupIter : ${word.title3WordRelationGroups}">
@@ -122,7 +122,7 @@
         </th:block>
         <th:block th:if="${word.secondaryWordRelationGroups}">
           <th:block th:each="wordRelationGroup : ${word.secondaryWordRelationGroups}">
-            <div class="mt-2">
+            <div class="mt-3">
               <div th:text="${wordRelationGroup.wordRelType.value}" class="text-caption text-darker-gray text-capitalize">Mingid</div>
               <div>
                 <th:block th:each="relatedWord, relatedWordIter : ${wordRelationGroup.relatedWords}">
