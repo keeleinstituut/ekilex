@@ -15801,6 +15801,7 @@ span.material-symbols-outlined--small {
 }
 .os-results__highlighted {
   background-color: var(--color-alert-yellow);
+  font-weight: 700;
 }
 .os-results__inline-word {
   display: inline-flex;
