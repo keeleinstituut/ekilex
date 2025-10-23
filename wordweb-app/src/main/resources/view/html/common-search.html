@@ -137,7 +137,7 @@
   <th:block th:fragment="word-data">
     <div class="d-flex align-items-center flex-wrap" th:with="title = ${@decorUtil.getWordValueMarkup(wordData.word)}">
       <th:block th:with="langData=${@viewUtil.getLangData(wordData.word.lang)}">
-        <span th:text="${langData.codeIso2}" th:aria-label="|${langData.codeIso2} - ${langData.label}|" th:title="${langData.label}" data-toggle="tooltip" th:unless="${langData.imageName}" class="lang-code text-caption mr-2">1</span>
+        <span th:text="${langData.codeIso2}" th:aria-label="|${langData.codeIso2} - ${langData.label}|" tabindex="0" th:title="${langData.label}" data-toggle="tooltip" th:unless="${langData.imageName}" class="lang-code text-caption mr-2">1</span>
         <img th:src="|@{/view/images}${langData.imageName}|" th:title="${langData.label}" data-toggle="tooltip" th:if="${langData.imageName}" class="lang-code-img mr-2">
       </th:block>
       <div class="search__lex-title-wrapper">

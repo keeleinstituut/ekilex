@@ -37,7 +37,7 @@
                   <th:block th:if="${not #maps.isEmpty(lexeme.definitionsByLang)}">
                     <div class="mb-0 d-flex gap-2" th:each="definitionEntry : ${lexeme.definitionsByLang}">
                       <th:block th:with="langData=${@viewUtil.getLangData(definitionEntry.key)}">
-                        <span th:text="${langData.codeIso2}" th:aria-label="|${langData.codeIso2} - ${langData.label}|" th:title="${langData.label}" data-toggle="tooltip" th:unless="${langData.imageName}" class="lang-code text-caption align-self-start">1</span>
+                        <button th:text="${langData.codeIso2}" th:aria-label="|${langData.codeIso2} - ${langData.label}|" th:title="${langData.label}" data-toggle="tooltip" th:unless="${langData.imageName}" class="lang-code text-caption align-self-start lang-code--button">1</button>
                         <img th:src="|@{/view/images}${langData.imageName}|" th:title="${langData.label}" data-toggle="tooltip" th:if="${langData.imageName}" class="lang-code-img align-self-start">
                       </th:block>
                       <span class="lang-code text-caption align-self-start"
@@ -207,7 +207,7 @@
                               th:with="destinLangSyns=${synEntry.value}">
                       <div th:id="${'matches-show-more-panel-' + lexeme.lexemeId + '-' + synEntry.key}" class="d-flex flex-wrap">
                         <th:block th:with="langData=${@viewUtil.getLangData(synEntry.key)}">
-                          <span th:text="${langData.codeIso2}" th:aria-label="|${langData.codeIso2} - ${langData.label}|" th:title="${langData.label}" data-toggle="tooltip" th:unless="${langData.imageName}" class="lang-code text-caption mr-2 align-self-start">1</span>
+                          <button th:text="${langData.codeIso2}" th:aria-label="|${langData.codeIso2} - ${langData.label}|" type="button" th:title="${langData.label}" data-toggle="tooltip" th:unless="${langData.imageName}" class="lang-code text-caption mr-2 align-self-start lang-code--button">1</button>
                           <img th:src="|@{/view/images}${langData.imageName}|" th:title="${langData.label}" data-toggle="tooltip" th:if="${langData.imageName}" class="lang-code-img mr-2 align-self-start">
                         </th:block>
                         <th:block th:each="syn,synIter : ${destinLangSyns}"
@@ -322,7 +322,7 @@
                     <th:block th:if="${not #maps.isEmpty(lexeme.lexemeNotesByLang)}">
                       <div class="d-flex flex-row" th:each="noteEntry : ${lexeme.lexemeNotesByLang}">
                         <th:block th:with="langData=${@viewUtil.getLangData(noteEntry.key)}">
-                          <span th:text="${langData.codeIso2}" th:aria-label="|${langData.codeIso2} - ${langData.label}|" th:title="${langData.label}" data-toggle="tooltip" th:unless="${langData.imageName}" class="lang-code text-caption mr-2 align-self-start">1</span>
+                          <button th:text="${langData.codeIso2}" th:aria-label="|${langData.codeIso2} - ${langData.label}|" type="button" th:title="${langData.label}" data-toggle="tooltip" th:unless="${langData.imageName}" class="lang-code text-caption mr-2 align-self-start">1</button>
                           <img th:src="|@{/view/images}${langData.imageName}|" th:title="${langData.label}" data-toggle="tooltip" th:if="${langData.imageName}" class="lang-code-img mr-2 align-self-start">
                         </th:block>
                         <div><p  class="mb-1 text-body-two text-weight-medium" th:each="note, noteIter : ${noteEntry.value}" th:utext="${note.valuePrese}"></p></div>
@@ -331,7 +331,7 @@
                     <th:block th:if="${not #maps.isEmpty(lexeme.meaningNotesByLang)}">
                       <div class="d-flex flex-row" th:each="noteEntry : ${lexeme.meaningNotesByLang}">
                         <th:block th:with="langData=${@viewUtil.getLangData(noteEntry.key)}">
-                          <span th:text="${langData.codeIso2}" th:aria-label="|${langData.codeIso2} - ${langData.label}|" th:title="${langData.label}" data-toggle="tooltip" th:unless="${langData.imageName}" class="lang-code text-caption mr-2 align-self-start">1</span>
+                          <span th:text="${langData.codeIso2}" th:aria-label="|${langData.codeIso2} - ${langData.label}|" tabindex="0" th:title="${langData.label}" data-toggle="tooltip" th:unless="${langData.imageName}" class="lang-code text-caption mr-2 align-self-start">1</span>
                           <img th:src="|@{/view/images}${langData.imageName}|" th:title="${langData.label}" data-toggle="tooltip" th:if="${langData.imageName}" class="lang-code-img mr-2 align-self-start">
                         </th:block>
                         <div class="d-flex flex-column good-to-know-info">
