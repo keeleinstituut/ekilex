@@ -1,7 +1,7 @@
-<div class={toast.class} transition:fly={{ x: 100 }}>
+<section class={toast.class} aria-labelledby={`toast-title-${toast.id} toast-body-${toast.id}`}  transition:fly={{ x: 100 }}>
   <div class="flex gap-1" class:flex-col={toast.body} class:mt-2={toast.title}>
     {#if toast.title}
-      <p class="text-sm font-medium">
+      <p class="text-sm font-medium" id={`toast-title-${toast.id}`}>
         {toast.title}
         {#if !toast.body && toast.readMoreText}
           <a
@@ -16,7 +16,7 @@
     {/if}
     {#if toast.body}
       <p class="break-word text-sm">
-        <span>
+        <span id={`toast-body-${toast.id}`}>
           {toast.body}
         </span>
         {#if toast.readMoreText}
@@ -50,7 +50,7 @@
       />
     </svg>
   </button>
-</div>
+</section>
 
 <script lang="ts">
   import { fly } from "svelte/transition";
