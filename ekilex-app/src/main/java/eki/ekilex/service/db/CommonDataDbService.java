@@ -684,6 +684,7 @@ public class CommonDataDbService extends AbstractDataDbService {
 						wwopf.as("is_ww_os"))
 				.from(mm)
 				.where(mm.MEANING_ID.eq(meaningId))
+				.orderBy(mm.ORDER_BY)
 				.fetchInto(eki.ekilex.data.MeaningMedia.class);
 	}
 
