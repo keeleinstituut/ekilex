@@ -8,73 +8,31 @@
 <div
   class="absolute top-14 min-[320px]:right-4 overflow-hidden z-[1073] flex flex-col gap-2"
 >
-  {#each toasts as toast}
-    <div class={toast.class} transition:fly={{ x: 100 }}>
-      <div
-        class="flex gap-1"
-        class:flex-col={toast.body}
-        class:mt-2={toast.title}
-      >
-        {#if toast.title}
-          <p class="text-sm font-medium">
-            {toast.title}
-            {#if !toast.body && toast.readMoreText}
-              <a
-                class="underline hover:no-underline"
-                href={toast.readMoreUrl}
-                target={toast.readMoreIsExternal ? "_blank" : undefined}
-                rel={toast.readMoreIsExternal ? "noreferrer" : undefined}
-                >{toast.readMoreText}</a
-              >
-            {/if}
-          </p>
-        {/if}
-        {#if toast.body}
-          <p class="break-word text-sm">
-            <span>
-              {toast.body}
-            </span>
-            {#if toast.readMoreText}
-              <a
-                class="underline hover:no-underline"
-                href={toast.readMoreUrl}
-                target={toast.readMoreIsExternal ? "_blank" : undefined}
-                rel={toast.readMoreIsExternal ? "noreferrer" : undefined}
-                >{toast.readMoreText}</a
-              >
-            {/if}
-          </p>
-        {/if}
-      </div>
-      <button
-        class="w-6 h-6 flex justify-center items-center"
-        type="button"
-        aria-label={toast.closeLabel}
-        on:click={() => closeToast(toast)}
-      >
-        <svg
-          width="14"
-          height="14"
-          viewBox="0 0 14 14"
-          fill="none"
-          xmlns="http://www.w3.org/2000/svg"
-        >
-          <path
-            d="M14 1.41L12.59 0L7 5.59L1.41 0L0 1.41L5.59 7L0 12.59L1.41 14L7 8.41L12.59 14L14 12.59L8.41 7L14 1.41Z"
-            fill="currentColor"
-          />
-        </svg>
-      </button>
-    </div>{/each}
+  <div class="flex flex-col gap-2" role="alert">
+    {#each alertToasts as toast (toast.id)}
+      <ToastBody {toast} {closeToast} />
+    {/each}
+  </div>
+  <div class="flex flex-col gap-2" role="status">
+    {#each statusToasts as toast (toast.id)}
+      <ToastBody {toast} {closeToast} />
+    {/each}
+  </div>
 </div>
 
 <script lang="ts">
-  import { fly } from "svelte/transition";
   import { ekiComponentBase } from "../../lib/eki-component-base";
   import type { Toast } from "./toast.model";
+  import ToastBody from "./ToastBody.svelte";
   // Component reference provided by component base
   export let component;
   let toasts: Toast[] = [];
+  $: alertToasts = toasts.filter(
+    (toast) => toast.type && ["error", "warning"].includes(toast.type),
+  );
+  $: statusToasts = toasts.filter(
+    (toast) => !toast.type || !["error", "warning"].includes(toast.type),
+  );
   let id = 0;
   const baseToastClass =
     "border text-eki-dark-blue-text rounded-lg pl-6 pr-[10px] grid grid-cols-[1fr_24px] gap-2 max-w-[335px] left-0";

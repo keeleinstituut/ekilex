@@ -59,23 +59,23 @@
         <span class="search-filter__toggle-label" th:text="#{label.filter.dataset}">Sõnakogud</span>
         <span class="search-filter__toggle-count" id="dataset-filter-count"></span>
       </button>
-      <div
+      <ul
         class="dropdown-menu search-filter__menu"
         aria-labelledby="dataset-filters-popover"
         th:style="|--search-filter-rows: ${#lists.size(datasetFilter) / 3 + 3}|">
         <th:block th:each="filterElem : ${datasetFilter}">
-          <div class="search-filter__item" th:classappend="${filterElem.addSeparator ? 'search-filter__item--full-row' : ''}">
+          <li class="search-filter__item" th:classappend="${filterElem.addSeparator ? 'search-filter__item--full-row' : ''}">
             <input
-              type="checkbox"
-              th:id="|dataset-input-${filterElem.code}|"
-              th:data-filter-code="${filterElem.code}"
-              th:name="${filterElem.value}"
-              th:checked="${filterElem.selected or datasetFilter[0].selected}" />
+            type="checkbox"
+            th:id="|dataset-input-${filterElem.code}|"
+            th:data-filter-code="${filterElem.code}"
+            th:name="${filterElem.value}"
+            th:checked="${filterElem.selected or datasetFilter[0].selected}" />
             <label th:for="|dataset-input-${filterElem.code}|" th:text="${filterElem.value}">value</label>
-          </div>
-          <div class="search-filter__divider" th:if="${filterElem.addSeparator}"></div>
+          </li>
+          <li class="search-filter__divider" th:if="${filterElem.addSeparator}" aria-hidden="true"></li>
         </th:block>
-      </div>
+      </ul>
     </div>
   </th:block>
   <th:block th:fragment="lang-filter">
@@ -84,12 +84,12 @@
         <span class="search-filter__toggle-label" th:text="#{label.filter.lang}">Keel</span>
         <span class="search-filter__toggle-count" id="lang-filter-count"></span>
       </button>
-      <div
+      <ul
         class="dropdown-menu search-filter__menu search-filter__menu--small"
         aria-labelledby="lang-filters-popover"
         th:style="|--search-filter-rows: ${#lists.size(langFilter) + 1}|">
         <th:block th:each="filterElem : ${langFilter}">
-          <div class="search-filter__item" th:classappend="${filterElem.addSeparator ? 'search-filter__item--full-row' : ''}">
+          <li class="search-filter__item" th:classappend="${filterElem.addSeparator ? 'search-filter__item--full-row' : ''}">
             <input
               type="checkbox"
               th:id="|lang-input-${filterElem.code}|"
@@ -97,10 +97,10 @@
               th:name="${filterElem.value}"
               th:checked="${filterElem.selected or langFilter[0].selected}" />
             <label th:for="|lang-input-${filterElem.code}|" th:text="${filterElem.value}">value</label>
-          </div>
-          <div class="search-filter__divider" th:if="${filterElem.addSeparator}"></div>
+          </li>
+          <li class="search-filter__divider" th:if="${filterElem.addSeparator}" aria-hidden="true"></li>
         </th:block>
-      </div>
+      </ul>
     </div>
     <div class="search-filter__tags" id="lang-filter-tags"></div>
   </th:block>
@@ -115,7 +115,7 @@
             <input type="hidden" name="word-select-url" th:value="@{${@viewUtil.getSearchUri(sessionBean, searchMode, word.value, word.homonymNr, word.lang)}}" />
             <button type="button" th:id="${'word-details-link-' + word.wordId}" class="homonym-item homonym__item">
               <th:block th:with="langData=${@viewUtil.getLangData(word.lang)}">
-                <span th:text="${langData.codeIso2}" th:title="${langData.label}" data-toggle="tooltip" th:unless="${langData.imageName}" class="lang-code text-caption">1</span>
+                <span th:text="${langData.codeIso2}" th:aria-label="|${langData.codeIso2} - ${langData.label}|" th:title="${langData.label}" data-toggle="tooltip" th:unless="${langData.imageName}" class="lang-code text-caption">1</span>
                 <img th:src="|@{/view/images}${langData.imageName}|" th:title="${langData.label}" data-toggle="tooltip" th:if="${langData.imageName}" class="lang-code-img">
               </th:block>
               <div class="homonym__body">
@@ -137,7 +137,7 @@
   <th:block th:fragment="word-data">
     <div class="d-flex align-items-center flex-wrap" th:with="title = ${@decorUtil.getWordValueMarkup(wordData.word)}">
       <th:block th:with="langData=${@viewUtil.getLangData(wordData.word.lang)}">
-        <span th:text="${langData.codeIso2}" th:title="${langData.label}" data-toggle="tooltip" th:unless="${langData.imageName}" class="lang-code text-caption mr-2">1</span>
+        <span th:text="${langData.codeIso2}" th:aria-label="|${langData.codeIso2} - ${langData.label}|" tabindex="0" th:title="${langData.label}" data-toggle="tooltip" th:unless="${langData.imageName}" class="lang-code text-caption mr-2">1</span>
         <img th:src="|@{/view/images}${langData.imageName}|" th:title="${langData.label}" data-toggle="tooltip" th:if="${langData.imageName}" class="lang-code-img mr-2">
       </th:block>
       <div class="search__lex-title-wrapper">

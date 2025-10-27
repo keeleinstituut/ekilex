@@ -26,7 +26,10 @@
               <span th:text="#{label.search.word.not.found(${searchValue}, '')}"></span>
             </h1>
             <div th:utext="#{label.word.not.found.os}">Ei leidnud midagi</div>
-            <a th:href="@{${@viewUtil.getDetailSearchUri(searchValue)}}" class="text-break" th:text="${searchValue}" target="_blank"></a>
+            <a th:href="@{${@viewUtil.getDetailSearchUri(searchValue)}}" class="text-break" target="_blank">
+              <span th:text="${searchValue}"></span>
+              <i class="fas fa-external-link-alt" aria-hidden="true"></i>
+            </a>
           </th:block>
           <th:block th:unless="${searchResult.validSearch}">
             <h1 class="no-results__title" th:text="#{label.search.word.invalid}"></h1>
@@ -44,6 +47,7 @@
       <a class="os-link os-link--smaller-margin" href="https://www.riigiteataja.ee/akt/114062011003" target="_blank">
         <span th:text="#{label.os.home.link.prefix}"></span>
         <span th:text="#{label.os.home.link.suffix}"></span>
+        <i class="fas fa-external-link-alt ml-1" aria-hidden="true"></i>
       </a>
     </main>
   </div>
