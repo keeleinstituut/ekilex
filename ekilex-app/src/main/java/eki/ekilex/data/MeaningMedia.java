@@ -8,6 +8,8 @@ public class MeaningMedia extends AbstractCreateUpdateEntity {
 
 	private Long meaningId;
 
+	private String title;
+
 	private String url;
 
 	private Long orderBy;
@@ -26,6 +28,14 @@ public class MeaningMedia extends AbstractCreateUpdateEntity {
 
 	public void setMeaningId(Long meaningId) {
 		this.meaningId = meaningId;
+	}
+
+	public String getTitle() {
+		return title;
+	}
+
+	public void setTitle(String title) {
+		this.title = title;
 	}
 
 	public String getUrl() {

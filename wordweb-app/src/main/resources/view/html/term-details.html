@@ -4,7 +4,10 @@
   <th:block th:fragment="meaning-data">
     <div class="d-flex">
       <div class="search__block-header">
-          <span class="search__block-title" th:text="${lexeme.datasetName}">EKI ühendsõnastik 2020</span>
+        <span class="search__block-title" th:text="${lexeme.datasetName}">EKI ühendsõnastik 2020</span>
+        <button class="btn btn-sm" name="datasetSearchUrl" th:value="${lexeme.datasetSearchUrl}">
+          <i class="fa fa-copy"></i>
+        </button>
         <div class="meaning-data__modified">
           <span>ID</span>
           <span th:text="${lexeme.meaningId}" th:if="${isProTerm}"></span>
@@ -133,9 +136,12 @@
           </th:block>
           <th:block th:if="${not #lists.isEmpty(lexeme.meaningMedias)}">
             <div class="mt-3 d-flex flex-wrap row">
-              <th:block th:each="mediaFile : ${lexeme.meaningMedias}">
+              <th:block th:each="media : ${lexeme.meaningMedias}">
                 <div class="col-12 col-md-4 mb-3 d-flex flex-column">
-                  <iframe th:src="${mediaFile.url}" allowfullscreen></iframe>
+                  <iframe th:src="${media.url}" allowfullscreen></iframe>
+                  <div th:if="${media.title}">
+                    <span th:text="${media.title}" class="gallery-image__title"></span>
+                  </div>
                 </div>
               </th:block>
             </div>

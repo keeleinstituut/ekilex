@@ -680,7 +680,6 @@ public class CudDbService extends AbstractDataDbService {
 		Map<Field<?>, Object> fieldAndValueMap = new HashMap<>();
 		fieldAndValueMap.put(MEANING_IMAGE.URL, meaningImage.getUrl());
 		fieldAndValueMap.put(MEANING_IMAGE.TITLE, meaningImage.getTitle());
-		//fieldAndValueMap.put(MEANING_IMAGE.IS_PUBLIC, meaningImage.isPublic()); not yet implemented in UI
 		fieldAndValueMap.put(MEANING_IMAGE.MODIFIED_BY, meaningImage.getModifiedBy());
 		fieldAndValueMap.put(MEANING_IMAGE.MODIFIED_ON, meaningImage.getModifiedOn());
 
@@ -695,6 +694,7 @@ public class CudDbService extends AbstractDataDbService {
 
 		Map<Field<?>, Object> fieldAndValueMap = new HashMap<>();
 		fieldAndValueMap.put(MEANING_MEDIA.URL, meaningMedia.getUrl());
+		fieldAndValueMap.put(MEANING_IMAGE.TITLE, meaningMedia.getTitle());
 		fieldAndValueMap.put(MEANING_MEDIA.MODIFIED_BY, meaningMedia.getModifiedBy());
 		fieldAndValueMap.put(MEANING_MEDIA.MODIFIED_ON, meaningMedia.getModifiedOn());
 
@@ -1376,6 +1376,7 @@ public class CudDbService extends AbstractDataDbService {
 				.insertInto(
 						MEANING_MEDIA,
 						MEANING_MEDIA.MEANING_ID,
+						MEANING_MEDIA.TITLE,
 						MEANING_MEDIA.URL,
 						MEANING_MEDIA.CREATED_BY,
 						MEANING_MEDIA.CREATED_ON,
@@ -1383,6 +1384,7 @@ public class CudDbService extends AbstractDataDbService {
 						MEANING_MEDIA.MODIFIED_ON)
 				.values(
 						meaningId,
+						meaningMedia.getTitle(),
 						meaningMedia.getUrl(),
 						meaningMedia.getCreatedBy(),
 						meaningMedia.getCreatedOn(),

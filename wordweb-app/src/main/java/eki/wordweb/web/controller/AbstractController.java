@@ -26,6 +26,7 @@ import eki.wordweb.constant.WebConstant;
 import eki.wordweb.service.CommonDataService;
 import eki.wordweb.service.StatDataCollector;
 import eki.wordweb.web.bean.SessionBean;
+import eki.wordweb.web.util.LinkUtil;
 import eki.wordweb.web.util.UserAgentUtil;
 import eki.wordweb.web.util.WebUtil;
 
@@ -48,6 +49,9 @@ public abstract class AbstractController implements WebConstant, SystemConstant,
 
 	@Autowired
 	protected WebUtil webUtil;
+
+	@Autowired
+	protected LinkUtil linkUtil;
 
 	@Autowired
 	protected UserAgentUtil userAgentUtil;

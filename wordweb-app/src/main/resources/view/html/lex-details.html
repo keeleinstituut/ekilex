@@ -465,9 +465,12 @@
                   </th:block>
                 </div>
                 <div class="mt-3 d-flex flex-wrap row" th:unless="${#lists.isEmpty(lexeme.meaningMedias)}">
-                  <th:block th:each="mediaFile : ${lexeme.meaningMedias}">
+                  <th:block th:each="media : ${lexeme.meaningMedias}">
                     <div class="col-12 col-md-4 mb-3 d-flex flex-column">
-                      <iframe th:src="${mediaFile.url}" allowfullscreen></iframe>
+                      <iframe th:src="${media.url}" allowfullscreen></iframe>
+                      <div th:if="${media.title}">
+                        <span th:text="${media.title}" class="gallery-image__title"></span>
+                      </div>
                     </div>
                   </th:block>
                 </div>

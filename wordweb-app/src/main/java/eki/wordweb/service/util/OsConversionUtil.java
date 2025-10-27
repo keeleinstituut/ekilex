@@ -195,7 +195,7 @@ public class OsConversionUtil implements GlobalConstant {
 		}
 		boolean lexemeMeaningsContentExist = lexemeMeanings.stream()
 				.anyMatch(lexemeMeaning -> StringUtils.isNotBlank(lexemeMeaning.getValueStateCode())
-						|| CollectionUtils.isNotEmpty(lexemeMeaning.getRegisterCodes())
+						|| CollectionUtils.isNotEmpty(lexemeMeaning.getRegisters())
 						|| (lexemeMeaning.getMeaning().getDefinition() != null)
 						|| CollectionUtils.isNotEmpty(lexemeMeaning.getMeaning().getLexemeWords()));
 		selectedWord.setLexemeMeaningsContentExist(lexemeMeaningsContentExist);

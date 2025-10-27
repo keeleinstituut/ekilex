@@ -80,7 +80,7 @@ public class SimpleSearchController extends AbstractMainSearchController {
 		} else {
 			selectedWordHomonymNr = nullSafe(selectedWordHomonymNrStr);
 		}
-		String searchUri = webUtil.composeSimpleSearchUri(destinLangsStr, searchWord, selectedWordHomonymNr, selectedWordLang);
+		String searchUri = webUtil.composeAndEncodeSimpleSearchUri(destinLangsStr, searchWord, selectedWordHomonymNr, selectedWordLang);
 		setSearchFormAttribute(redirectAttributes, Boolean.TRUE);
 
 		return REDIRECT_PREF + searchUri;
@@ -182,6 +182,8 @@ public class SimpleSearchController extends AbstractMainSearchController {
 		List<String> datasetCodes = sessionBean.getDatasetCodes();
 		SearchFilter searchFilter = new SearchFilter(destinLangs, datasetCodes);
 		WordData wordData = simpleSearchService.getWordData(wordId, searchFilter);
+		Word word = wordData.getWord();
+		linkUtil.applyLexSimpleSearchUrl(word, destinLangs);
 
 		populateUserPref(sessionBean, model);
 		populateRecent(sessionBean, wordData);
@@ -220,7 +222,7 @@ public class SimpleSearchController extends AbstractMainSearchController {
 		}
 
 		destinLangsStr = StringUtils.join(searchValidation.getDestinLangs(), UI_FILTER_VALUES_SEPARATOR);
-		String searchUri = webUtil.composeSimpleSearchUri(destinLangsStr, searchWord, homonymNr, lang);
+		String searchUri = webUtil.composeAndEncodeSimpleSearchUri(destinLangsStr, searchWord, homonymNr, lang);
 
 		searchValidation.setSearchWord(searchWord);
 		searchValidation.setHomonymNr(homonymNr);
@@ -246,7 +248,7 @@ public class SimpleSearchController extends AbstractMainSearchController {
 		isValid = isValid & StringUtils.equals(searchWord, cleanMaskSearchWord);
 
 		destinLangsStr = StringUtils.join(searchValidation.getDestinLangs(), UI_FILTER_VALUES_SEPARATOR);
-		String searchUri = webUtil.composeSimpleSearchUri(destinLangsStr, cleanMaskSearchWord, null, null);
+		String searchUri = webUtil.composeAndEncodeSimpleSearchUri(destinLangsStr, cleanMaskSearchWord, null, null);
 
 		searchValidation.setSearchWord(cleanMaskSearchWord);
 		searchValidation.setSearchUri(searchUri);

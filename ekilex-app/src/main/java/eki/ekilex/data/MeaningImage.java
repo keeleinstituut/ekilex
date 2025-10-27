@@ -10,9 +10,9 @@ public class MeaningImage extends AbstractCreateUpdateEntity {
 
 	private Long meaningId;
 
-	private String url;
-
 	private String title;
+
+	private String url;
 
 	private Long orderBy;
 
@@ -34,20 +34,20 @@ public class MeaningImage extends AbstractCreateUpdateEntity {
 		this.meaningId = meaningId;
 	}
 
-	public String getUrl() {
-		return url;
-	}
-
-	public void setUrl(String url) {
-		this.url = url;
-	}
-
 	public String getTitle() {
 		return title;
 	}
 
 	public void setTitle(String title) {
 		this.title = title;
+	}
+
+	public String getUrl() {
+		return url;
+	}
+
+	public void setUrl(String url) {
+		this.url = url;
 	}
 
 	public Long getOrderBy() {

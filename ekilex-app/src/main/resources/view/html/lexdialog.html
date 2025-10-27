@@ -2375,10 +2375,14 @@
           <div class="modal-body">
             <input type="hidden" name="id" th:value="${lexeme.meaningId}">
             <input type="hidden" name="opCode" value="meaning_media">
-            <input type="hidden" name="value">
             <div class="form-group row">
               <div class="col-md-12">
-                <textarea class="form-control" rows="1" th:placeholder="#{lex.placeholder.media.url}" name="value"></textarea>
+                <textarea class="form-control" rows="1" th:placeholder="#{lex.placeholder.media.url}" name="value" required="required"></textarea>
+              </div>
+            </div>
+            <div class="form-group row">
+              <div class="col-md-12">
+                <input type="text" class="form-control" name="value2" th:placeholder="#{lex.placeholder.media.title}" autocomplete="off"></input>
               </div>
             </div>
             <div class="modal-footer">
@@ -2401,7 +2405,12 @@
             <input type="hidden" name="opCode" value="meaning_media">
             <div class="form-group row">
               <div class="col-md-12">
-                <textarea class="form-control" rows="1" name="value" th:text="${media.url}"></textarea>
+                <textarea class="form-control" rows="1" name="value" th:text="${media.url}" required="required"></textarea>
+              </div>
+            </div>
+            <div class="form-group row">
+              <div class="col-md-12">
+                <input type="text" class="form-control" name="value2" th:placeholder="#{lex.placeholder.media.title}" th:value="${media.title}" autocomplete="off"></input>
               </div>
             </div>
             <div class="modal-footer">

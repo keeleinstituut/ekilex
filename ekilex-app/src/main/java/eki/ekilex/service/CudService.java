@@ -38,10 +38,10 @@ import eki.ekilex.data.SimpleWord;
 import eki.ekilex.data.Tag;
 import eki.ekilex.data.Usage;
 import eki.ekilex.data.UsageTranslation;
+import eki.ekilex.data.WordEkiRecommendation;
 import eki.ekilex.data.WordLexemeMeaningDetails;
 import eki.ekilex.data.WordLexemeMeaningIdTuple;
 import eki.ekilex.data.WordOsMorph;
-import eki.ekilex.data.WordEkiRecommendation;
 import eki.ekilex.data.WordOsUsage;
 import eki.ekilex.security.EkilexPermissionEvaluator;
 import eki.ekilex.service.db.CompositionDbService;
@@ -376,10 +376,12 @@ public class CudService extends AbstractCudService implements PermConstant, Acti
 	@Transactional(rollbackFor = Exception.class)
 	public void createMeaningImage(Long meaningId, String url, String title, EkiUser user, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
 
+		if (StringUtils.isBlank(url)) {
+			return;
+		}
 		MeaningImage meaningImage = new MeaningImage();
 		meaningImage.setTitle(title);
 		meaningImage.setUrl(url);
-		meaningImage.setPublic(PUBLICITY_PUBLIC);
 		applyCreateUpdate(meaningImage);
 
 		ActivityLogData activityLog = activityLogService.prepareActivityLog("createMeaningImage", meaningId, ActivityOwner.MEANING, roleDatasetCode, isManualEventOnUpdateEnabled);
@@ -389,9 +391,13 @@ public class CudService extends AbstractCudService implements PermConstant, Acti
 	}
 
 	@Transactional(rollbackFor = Exception.class)
-	public void createMeaningMedia(Long meaningId, String url, EkiUser user, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
+	public void createMeaningMedia(Long meaningId, String url, String title, EkiUser user, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
 
+		if (StringUtils.isBlank(url)) {
+			return;
+		}
 		MeaningMedia meaningMedia = new MeaningMedia();
+		meaningMedia.setTitle(title);
 		meaningMedia.setUrl(url);
 		applyCreateUpdate(meaningMedia);
 
@@ -1222,10 +1228,12 @@ public class CudService extends AbstractCudService implements PermConstant, Acti
 	@Transactional(rollbackFor = Exception.class)
 	public void updateMeaningImage(Long meaningImageId, String url, String title, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
 
+		if (StringUtils.isBlank(url)) {
+			return;
+		}
 		MeaningImage meaningImage = new MeaningImage();
-		meaningImage.setUrl(url);
 		meaningImage.setTitle(title);
-		//meaningImage.setPublic(isPublic); not yet implemented in UI
+		meaningImage.setUrl(url);
 		applyUpdate(meaningImage);
 
 		Long meaningId = activityLogService.getActivityOwnerId(meaningImageId, ActivityEntity.MEANING_IMAGE);
@@ -1235,15 +1243,19 @@ public class CudService extends AbstractCudService implements PermConstant, Acti
 	}
 
 	@Transactional(rollbackFor = Exception.class)
-	public void updateMeaningMedia(Long meaningMediaId, String url, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
+	public void updateMeaningMedia(Long meaningMediaId, String url, String title, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
 
-		MeaningMedia meaningImage = new MeaningMedia();
-		meaningImage.setUrl(url);
-		applyUpdate(meaningImage);
+		if (StringUtils.isBlank(url)) {
+			return;
+		}
+		MeaningMedia meaningMedia = new MeaningMedia();
+		meaningMedia.setTitle(title);
+		meaningMedia.setUrl(url);
+		applyUpdate(meaningMedia);
 
 		Long meaningId = activityLogService.getActivityOwnerId(meaningMediaId, ActivityEntity.MEANING_MEDIA);
 		ActivityLogData activityLog = activityLogService.prepareActivityLog("updateMeaningMedia", meaningId, ActivityOwner.MEANING, roleDatasetCode, isManualEventOnUpdateEnabled);
-		cudDbService.updateMeaningMedia(meaningMediaId, meaningImage);
+		cudDbService.updateMeaningMedia(meaningMediaId, meaningMedia);
 		activityLogService.createActivityLog(activityLog, meaningMediaId, ActivityEntity.MEANING_MEDIA);
 	}
 

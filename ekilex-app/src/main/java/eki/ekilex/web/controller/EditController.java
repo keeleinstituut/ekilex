@@ -204,7 +204,7 @@ public class EditController extends AbstractMutableDataPageController implements
 			sessionBean.setMeaningImageExpanded(true);
 			break;
 		case "meaning_media":
-			cudService.createMeaningMedia(id, value, user, roleDatasetCode, isManualEventOnUpdateEnabled);
+			cudService.createMeaningMedia(id, value, value2, user, roleDatasetCode, isManualEventOnUpdateEnabled);
 			sessionBean.setMeaningMediaExpanded(true);
 			break;
 		case "meaning_freeform":
@@ -415,7 +415,7 @@ public class EditController extends AbstractMutableDataPageController implements
 			cudService.updateMeaningImage(id, value, value2, roleDatasetCode, isManualEventOnUpdateEnabled);
 			break;
 		case "meaning_media":
-			cudService.updateMeaningMedia(id, value, roleDatasetCode, isManualEventOnUpdateEnabled);
+			cudService.updateMeaningMedia(id, value, value2, roleDatasetCode, isManualEventOnUpdateEnabled);
 			break;
 		case "meaning_freeform":
 			cudService.updateMeaningFreeform(id, value, roleDatasetCode, isManualEventOnUpdateEnabled);

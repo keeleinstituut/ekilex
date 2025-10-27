@@ -1352,6 +1352,7 @@ from (
 					'id', mm.meaning_media_id,
 					'meaningId', mm.meaning_id,
 					'url', mm.url,
+					'title', mm.title,
 					'wwUnif', mm.is_ww_unif,
 					'wwLite', mm.is_ww_lite,
 					'wwOs', mm.is_ww_os
@@ -1364,6 +1365,7 @@ from (
 				mm.id meaning_media_id,
 				mm.meaning_id,
 				mm.url,
+				mm.title,
 				mm.order_by,
 				(exists (
 					select

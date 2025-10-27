@@ -29,8 +29,7 @@
           </div>
         </div>
       </div>
-      <div class="sticky-scroll-panel__tags"
-        th:classappend="${wordsData.resultExists} ? '' : 'sticky-scroll-panel__tags--empty'">
+      <div class="sticky-scroll-panel__tags" th:classappend="${wordsData.resultExists} ? '' : 'sticky-scroll-panel__tags--empty'">
         <a href="#word-morphology-results" class="sticky-scroll-panel__tag" th:text="#{label.word.forms}">Sõnavormid</a>
         <a href="#word-etymology-results" class="sticky-scroll-panel__tag" th:text="#{label.word.etymology}">Päritolu</a>
         <a href="#word-relation-results" class="sticky-scroll-panel__tag" th:text="#{label.word.relations.union}">Ühendid</a>
@@ -49,19 +48,22 @@
             <h1 class="no-results__title">
               <span th:text="#{label.search.word.not.found(${searchWord}, ${wordsData.formResultExists ? ',' : ''})}"></span>
               <th:block th:if="${wordsData.formResultExists}">
-                <span th:text="${wordsData.suggestedWordValues.size() > 1 
+                <span
+                  th:text="${wordsData.suggestedWordValues.size() > 1 
                   ? #messages.msg('label.suggest.form.plural') 
-                  : #messages.msg('label.suggest.form.single')}">see on ka vorm sõnast</span>
+                  : #messages.msg('label.suggest.form.single')}">see
+                  on ka vorm sõnast</span>
                 <a href="#" class="word-form" th:each="word,wordIter : ${wordsData.suggestedWordValues}" th:text="${wordIter.last ? word : word + ',&nbsp;'}" th:data-word="${word}"> </a>
               </th:block>
             </h1>
             <th:block th:unless="${wordsData.suggestionExists}">
               <th:block th:if="${wordsData.availableLanguagesDatasets.availableFiltersExist}">
                 <div th:text="#{label.search.filter.suggestion.detail}">Otsing annab tulemusi teistes keeltes või sõnakogudes kui sinu valitud filtris.</div>
-                <div th:with="
+                <div
+                  th:with="
                       hasLanguages = ${not #lists.isEmpty(wordsData.availableLanguagesDatasets.languages)},
                       hasDatasets = ${not #lists.isEmpty(wordsData.availableLanguagesDatasets.datasets)}"
-                      class="no-results__columns" th:classappend="${!hasLanguages || !hasDatasets ? 'no-results__columns--single' : ''}">
+                  class="no-results__columns" th:classappend="${!hasLanguages || !hasDatasets ? 'no-results__columns--single' : ''}">
                   <div th:if="${hasLanguages}">
                     <div th:each="language : ${wordsData.availableLanguagesDatasets.languages}" th:text="${language.value}"></div>
                   </div>
@@ -105,12 +107,12 @@
             <th:block th:if="${not #lists.isEmpty(wordData.lexLexemes)}">
               <div class="d-flex align-items-end flex-wrap gap-2">
                 <h2 class="search__pre-block-title search__pre-block-title--no-bottom-margin" th:text="#{lexdata.title}"></h2>
+                <button class="btn btn-sm" name="datasetSearchUrl" th:href="${wordData.word.lexSearchUrl}">
+                  <i class="fa fa-copy"></i>
+                </button>
                 <div class="text-caption text-darker-gray">
                   <span th:text="#{label.tooltip.last_modified}"></span>
-                  <span th:text="${
-                    wordData.word.manualEventOn == null
-                    ? null
-                    : #temporals.format(wordData.word.manualEventOn, 'dd.MM.yyyy')}"></span>
+                  <span th:text="${#temporals.format(wordData.word.manualEventOn, 'dd.MM.yyyy')}" th:if="${wordData.word.manualEventOn}"></span>
                 </div>
               </div>
               <div class="search__block search__block--unified">
@@ -119,8 +121,7 @@
             </th:block>
             <th:block th:if="${not #lists.isEmpty(wordData.termLexemes)}">
               <h2 class="search__pre-block-title" th:text="#{termdata.title}">Oskussõnastikud</h2>
-              <th:block th:replace="common-search :: term-detail-view">
-              </th:block>
+              <th:block th:replace="common-search :: term-detail-view"></th:block>
             </th:block>
           </th:block>
           <th:block th:replace="common-search :: no-lexemes-exist"></th:block>
@@ -145,27 +146,27 @@
         </div>
       </div>
       <script th:inline="javascript">
-		var currentWord = /*[[${wordData.word.value}]]*/'';
-		var currentWordId = /*[[${wordData.word.wordId}]]*/'';
-		var currentWordLang = /*[[${wordData.word.lang}]]*/'';
-		var currentWordPosCodes = /*[[${wordData.word.summarisedPosCodesStr}]]*/'';
-		var currentLinkedLexemeId = /*[[${wordData.linkedLexemeId}]]*/'';
-		scrollToLexeme(currentLinkedLexemeId);
-	  </script>
+							var currentWord = /*[[${wordData.word.value}]]*/'';
+							var currentWordId = /*[[${wordData.word.wordId}]]*/'';
+							var currentWordLang = /*[[${wordData.word.lang}]]*/'';
+							var currentWordPosCodes = /*[[${wordData.word.summarisedPosCodesStr}]]*/'';
+							var currentLinkedLexemeId = /*[[${wordData.linkedLexemeId}]]*/'';
+							scrollToLexeme(currentLinkedLexemeId);
+						</script>
     </div>
   </div>
   <div th:replace="common-app :: footer-content"></div>
   <script th:inline="javascript">
-  	var currentPage = /*[[@{/search/unif}]]*/"/search/unif";
-  	var searchWordFragUrl = /*[[@{/searchwordfrag/unif}]]*/"/searchwordfrag/unif";
-  	var wordDetailsUrl = /*[[@{/worddetails/unif}]]*/"/worddetails/unif";
-  	var newsAcceptUrl = /*[[@{/newsaccept}]]*/"/newsaccept";
-  	var morphoUrl = /*[[@{/morpho/unif}]]*/"/morpho/unif";
-  	var searchLinkUrl = /*[[@{/searchlink/unif}]]*/"/searchlink/unif";
-  	var corpUrl = /*[[@{/corp/detail}]]*/"/corp/detail";
-  	var corpTransUrl = /*[[@{/corptrans}]]*/"/corptrans";
-  	var speechRecognitionServiceUrl = /*[[${speechRecognitionServiceUrl}]]*/'/';
-  	var userPrefUrl = /*[[@{/user-pref}]]*/"/user-pref";
-  </script>
+			var currentPage = /*[[@{/search/unif}]]*/"/search/unif";
+			var searchWordFragUrl = /*[[@{/searchwordfrag/unif}]]*/"/searchwordfrag/unif";
+			var wordDetailsUrl = /*[[@{/worddetails/unif}]]*/"/worddetails/unif";
+			var newsAcceptUrl = /*[[@{/newsaccept}]]*/"/newsaccept";
+			var morphoUrl = /*[[@{/morpho/unif}]]*/"/morpho/unif";
+			var searchLinkUrl = /*[[@{/searchlink/unif}]]*/"/searchlink/unif";
+			var corpUrl = /*[[@{/corp/detail}]]*/"/corp/detail";
+			var corpTransUrl = /*[[@{/corptrans}]]*/"/corptrans";
+			var speechRecognitionServiceUrl = /*[[${speechRecognitionServiceUrl}]]*/'/';
+			var userPrefUrl = /*[[@{/user-pref}]]*/"/user-pref";
+		</script>
 </body>
 </html>

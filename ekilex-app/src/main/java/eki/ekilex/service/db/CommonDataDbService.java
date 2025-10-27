@@ -678,6 +678,7 @@ public class CommonDataDbService extends AbstractDataDbService {
 				.select(
 						mm.ID,
 						mm.URL,
+						mm.TITLE,
 						wwupf.as("is_ww_unif"),
 						wwlpf.as("is_ww_lite"),
 						wwopf.as("is_ww_os"))

@@ -76,12 +76,12 @@
             <th:block th:if="${not #lists.isEmpty(wordData.lexLexemes)}">
               <div class="d-flex align-items-end flex-wrap gap-2">
                 <h2 class="search__pre-block-title search__pre-block-title--no-bottom-margin" th:text="#{lexdata.title}"></h2>
+                <button class="btn btn-sm" name="datasetSearchUrl" th:href="${wordData.word.lexSearchUrl}">
+                  <i class="fa fa-copy"></i>
+                </button>
                 <div class="text-caption text-darker-gray">
                   <span th:text="#{label.tooltip.last_modified}"></span>
-                  <span th:text="${
-                    wordData.word.manualEventOn == null
-                    ? null
-                    : #temporals.format(wordData.word.manualEventOn, 'dd.MM.yyyy')}"></span>
+                  <span th:text="${#temporals.format(wordData.word.manualEventOn, 'dd.MM.yyyy')}" th:if="${wordData.word.manualEventOn}"></span>
                 </div>
               </div>
               <div class="search__block search__block--unified">

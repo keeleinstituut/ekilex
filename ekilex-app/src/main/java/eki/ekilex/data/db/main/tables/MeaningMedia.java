@@ -17,7 +17,7 @@ import org.jooq.ForeignKey;
 import org.jooq.Identity;
 import org.jooq.Name;
 import org.jooq.Record;
-import org.jooq.Row9;
+import org.jooq.Row10;
 import org.jooq.Schema;
 import org.jooq.Table;
 import org.jooq.TableField;
@@ -93,6 +93,11 @@ public class MeaningMedia extends TableImpl<MeaningMediaRecord> {
      * The column <code>public.meaning_media.order_by</code>.
      */
     public final TableField<MeaningMediaRecord, Long> ORDER_BY = createField(DSL.name("order_by"), SQLDataType.BIGINT.nullable(false).identity(true), this, "");
+
+    /**
+     * The column <code>public.meaning_media.title</code>.
+     */
+    public final TableField<MeaningMediaRecord, String> TITLE = createField(DSL.name("title"), SQLDataType.CLOB, this, "");
 
     private MeaningMedia(Name alias, Table<MeaningMediaRecord> aliased) {
         this(alias, aliased, null);
@@ -188,11 +193,11 @@ public class MeaningMedia extends TableImpl<MeaningMediaRecord> {
     }
 
     // -------------------------------------------------------------------------
-    // Row9 type methods
+    // Row10 type methods
     // -------------------------------------------------------------------------
 
     @Override
-    public Row9<Long, Long, Long, String, String, LocalDateTime, String, LocalDateTime, Long> fieldsRow() {
-        return (Row9) super.fieldsRow();
+    public Row10<Long, Long, Long, String, String, LocalDateTime, String, LocalDateTime, Long, String> fieldsRow() {
+        return (Row10) super.fieldsRow();
     }
 }

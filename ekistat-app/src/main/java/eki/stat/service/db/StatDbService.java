@@ -31,8 +31,6 @@ import eki.stat.data.db.tables.WwSearch;
 import eki.stat.data.db.tables.WwSearchDefaultCount;
 import eki.stat.data.db.tables.WwSearchFilteredCount;
 import eki.stat.data.db.tables.records.WwExceptionRecord;
-import eki.stat.data.db.tables.records.WwSearchDefaultCountRecord;
-import eki.stat.data.db.tables.records.WwSearchFilteredCountRecord;
 import eki.stat.data.db.tables.records.WwSearchRecord;
 
 @Component
@@ -202,7 +200,7 @@ public class StatDbService implements GlobalConstant, SystemConstant {
 		wwExceptionRecord.store();
 	}
 
-	public void createOrIncrementCount(SearchDefaultCount searchCount) {
+	public synchronized void createOrIncrementCount(SearchDefaultCount searchCount) {
 
 		String searchWord = searchCount.getSearchWord();
 		boolean resultExists = searchCount.isResultExists();
@@ -224,13 +222,21 @@ public class StatDbService implements GlobalConstant, SystemConstant {
 
 		if (existingCountId == null) {
 
-			WwSearchDefaultCountRecord countRecord = create.newRecord(WW_SEARCH_DEFAULT_COUNT);
-			countRecord.setSearchWord(searchWord);
-			countRecord.setResultExists(resultExists);
-			countRecord.setRequestOrigin(requestOrigin.name());
-			countRecord.setSearchDate(searchDate);
-			countRecord.setSearchCount(1);
-			countRecord.store();
+			create
+					.insertInto(
+							WW_SEARCH_DEFAULT_COUNT,
+							WW_SEARCH_DEFAULT_COUNT.SEARCH_WORD,
+							WW_SEARCH_DEFAULT_COUNT.RESULT_EXISTS,
+							WW_SEARCH_DEFAULT_COUNT.REQUEST_ORIGIN,
+							WW_SEARCH_DEFAULT_COUNT.SEARCH_DATE,
+							WW_SEARCH_DEFAULT_COUNT.SEARCH_COUNT)
+					.values(
+							searchWord,
+							resultExists,
+							requestOrigin.name(),
+							searchDate,
+							1)
+					.execute();
 
 		} else {
 
@@ -242,7 +248,7 @@ public class StatDbService implements GlobalConstant, SystemConstant {
 		}
 	}
 
-	public void createOrIncrementCount(SearchFilteredCount searchCount) {
+	public synchronized void createOrIncrementCount(SearchFilteredCount searchCount) {
 
 		String searchWord = searchCount.getSearchWord();
 		String searchMode = searchCount.getSearchMode();
@@ -270,16 +276,27 @@ public class StatDbService implements GlobalConstant, SystemConstant {
 
 		if (existingCountId == null) {
 
-			WwSearchFilteredCountRecord countRecord = create.newRecord(WW_SEARCH_FILTERED_COUNT);
-			countRecord.setSearchWord(searchWord);
-			countRecord.setSearchMode(searchMode);
-			countRecord.setDestinLangs(destinLangs);
-			countRecord.setDatasetCodes(datasetCodes);
-			countRecord.setResultExists(resultExists);
-			countRecord.setRequestOrigin(requestOrigin.name());
-			countRecord.setSearchDate(searchDate);
-			countRecord.setSearchCount(1);
-			countRecord.store();
+			create
+					.insertInto(
+							WW_SEARCH_FILTERED_COUNT,
+							WW_SEARCH_FILTERED_COUNT.SEARCH_WORD,
+							WW_SEARCH_FILTERED_COUNT.SEARCH_MODE,
+							WW_SEARCH_FILTERED_COUNT.DESTIN_LANGS,
+							WW_SEARCH_FILTERED_COUNT.DATASET_CODES,
+							WW_SEARCH_FILTERED_COUNT.RESULT_EXISTS,
+							WW_SEARCH_FILTERED_COUNT.REQUEST_ORIGIN,
+							WW_SEARCH_FILTERED_COUNT.SEARCH_DATE,
+							WW_SEARCH_FILTERED_COUNT.SEARCH_COUNT)
+					.values(
+							searchWord,
+							searchMode,
+							destinLangs,
+							datasetCodes,
+							resultExists,
+							requestOrigin.name(),
+							searchDate,
+							1)
+					.execute();
 
 		} else {
 

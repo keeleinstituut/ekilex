@@ -10,6 +10,8 @@ public class MeaningMedia extends AbstractPublishingEntity {
 
 	private String url;
 
+	private String title;
+
 	public Long getId() {
 		return id;
 	}
@@ -32,6 +34,14 @@ public class MeaningMedia extends AbstractPublishingEntity {
 
 	public void setUrl(String url) {
 		this.url = url;
+	}
+
+	public String getTitle() {
+		return title;
+	}
+
+	public void setTitle(String title) {
+		this.title = title;
 	}
 
 }

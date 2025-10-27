@@ -1327,8 +1327,9 @@
       </div>
       <th:block th:if="${sessionBean.meaningMediaExpanded}">
         <div class="p-2">
-          <th:block th:each="media : ${lexeme.meaning.medias}">
+          <th:block th:each="media,mediaIter : ${lexeme.meaning.medias}">
             <div th:replace="lexdialog :: edit_meaning_media_dlg"></div>
+            <div th:if="${mediaIter.index > 0}" class="mt-3"></div>
             <div class="invisible-buttons action-buttons-anchor w-100">
               <iframe th:src="${media.url}" allowfullscreen></iframe>
               <th:block
@@ -1368,6 +1369,9 @@
                     initAccordion = false,
                     withPublicSwitch = false)">
               </th:block>
+            </div>
+            <div th:unless="${#strings.isEmpty(media.title)}">
+              <span th:text="${media.title}"></span>
             </div>
           </th:block>
         </div>

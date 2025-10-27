@@ -199,6 +199,7 @@ create index learner_comment_value_idx on learner_comment(value);
 create index learner_comment_value_lower_idx on learner_comment(lower(value));
 create index meaning_media_original_freeform_id_idx on meaning_media(original_freeform_id);
 create index meaning_media_meaning_id_idx on meaning_media(meaning_id);
+create index meaning_media_title_idx on meaning_media(title);
 create index meaning_image_original_freeform_id_idx on meaning_image(original_freeform_id);
 create index meaning_image_meaning_id_idx on meaning_image(meaning_id);
 create index meaning_image_lang_idx on meaning_image(title);

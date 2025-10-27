@@ -42,3 +42,7 @@ where
 	)
 ;
 
+-- #3 --
+
+alter table meaning_media add column title text null;
+create index meaning_media_title_idx on meaning_media(title);
