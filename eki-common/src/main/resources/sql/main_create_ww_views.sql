@@ -104,15 +104,12 @@ where
 		select
 			1
 		from
-			lexeme l,
-			lexeme_register lr
+			lexeme l
 		where
 			l.word_id = w.id
 			and l.is_public = true
 			and l.is_word = true
 			and l.dataset_code = 'eki'
-			and lr.lexeme_id = l.id
-			and lr.register_code = 'uus'
 	)
 order by
 	w.reg_year desc,

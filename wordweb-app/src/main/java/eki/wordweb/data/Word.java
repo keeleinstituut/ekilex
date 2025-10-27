@@ -52,6 +52,8 @@ public class Word extends WordTypeData {
 
 	private List<WordEkiRecommendation> wordEkiRecommendations;
 
+	private LocalDateTime wordEkiRecommendationLatestModifiedOn;
+
 	private boolean wordMatch;
 
 	private boolean formMatch;
@@ -198,6 +200,14 @@ public class Word extends WordTypeData {
 
 	public void setWordEkiRecommendations(List<WordEkiRecommendation> wordEkiRecommendations) {
 		this.wordEkiRecommendations = wordEkiRecommendations;
+	}
+
+	public LocalDateTime getWordEkiRecommendationLatestModifiedOn() {
+		return wordEkiRecommendationLatestModifiedOn;
+	}
+
+	public void setWordEkiRecommendationLatestModifiedOn(LocalDateTime wordEkiRecommendationLatestModifiedOn) {
+		this.wordEkiRecommendationLatestModifiedOn = wordEkiRecommendationLatestModifiedOn;
 	}
 
 	public boolean isWordMatch() {

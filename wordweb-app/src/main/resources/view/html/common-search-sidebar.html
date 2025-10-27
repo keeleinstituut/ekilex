@@ -28,10 +28,10 @@
       </div>
       <div th:each="wordEkiRecommendation : ${wordData.word.wordEkiRecommendations}">
         <p class="m-0" th:utext="${wordEkiRecommendation.valuePrese}"></p>
-        <div class="text-caption recommendation__date" th:if="${wordEkiRecommendation.modifiedOn != null}">
-          <span th:text="#{label.tooltip.last_modified}"></span>
-          <span th:text="|${#temporals.format(wordEkiRecommendation.modifiedOn, 'dd.MM.yyyy')}|"></span>
-        </div>
+      </div>
+      <div class="text-caption recommendation__date" th:if="${wordData.word.wordEkiRecommendationLatestModifiedOn != null}">
+        <span th:text="#{label.tooltip.last_modified}"></span>
+        <span th:text="|${#temporals.format(wordData.word.wordEkiRecommendationLatestModifiedOn, 'dd.MM.yyyy')}|"></span>
       </div>
     </section>
   </th:block>
