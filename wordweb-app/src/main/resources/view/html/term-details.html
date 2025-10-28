@@ -137,11 +137,11 @@
           <th:block th:if="${not #lists.isEmpty(lexeme.meaningMedias)}">
             <div class="mt-3 d-flex flex-wrap row">
               <th:block th:each="media : ${lexeme.meaningMedias}">
-                <div class="col-12 col-md-4 mb-3 d-flex flex-column">
-                  <iframe th:src="${media.url}" allowfullscreen></iframe>
-                  <div th:if="${media.title}">
-                    <span th:text="${media.title}" class="gallery-image__title"></span>
-                  </div>
+                <div class="col-12 col-md-4 mb-3">
+                  <figure class="m-0">
+                    <iframe width="100%" th:src="${media.url}" allowfullscreen></iframe>
+                    <figcaption class="gallery-image__title" th:if="${media.title}" th:text="${media.title}"></figcaption>
+                  </figure>
                 </div>
               </th:block>
             </div>
