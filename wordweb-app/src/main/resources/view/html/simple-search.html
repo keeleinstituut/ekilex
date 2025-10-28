@@ -9,6 +9,7 @@
   <script type="text/javascript" th:src="@{/view/js/ww-common-search.js}"></script>
   <script type="text/javascript" th:src="@{/view/js/ww-search.js}"></script>
   <script type="text/javascript" th:src="@{/view/js/ww-horizontal-scroll-panel.js}"></script>
+  <script type="text/javascript" th:src="@{/view/js/ww-clipboard.js}"></script>
 </th:block>
 </head>
 <body class="survey-active">
@@ -75,10 +76,17 @@
           <th:block th:if="${wordData.lexemesExist}">
             <th:block th:if="${not #lists.isEmpty(wordData.lexLexemes)}">
               <div class="d-flex align-items-end flex-wrap gap-2">
-                <h2 class="search__pre-block-title search__pre-block-title--no-bottom-margin" th:text="#{lexdata.title}"></h2>
-                <button class="btn btn-sm" name="datasetSearchUrl" th:href="${wordData.word.lexSearchUrl}">
-                  <i class="fa fa-copy"></i>
-                </button>
+                <div class="d-flex">
+                  <h2 class="search__pre-block-title search__pre-block-title--no-bottom-margin" th:text="#{lexdata.title}"></h2>
+                  <th:block th:replace="common-app :: clipboard(
+                      word=${wordData.word.value},
+                      homonymNr=${wordData.word.homonymNr},
+                      text=${#messages.msg('label.clipboard.text.lite')
+                    },
+                    link=${wordData.word.lexSearchUrl},
+                    date=${#dates.format(#dates.createNow(), 'dd.MM.yyyy')}
+                    )"></th:block>
+                </div>
                 <div class="text-caption text-darker-gray">
                   <span th:text="#{label.tooltip.last_modified}"></span>
                   <span th:text="${#temporals.format(wordData.word.manualEventOn, 'dd.MM.yyyy')}" th:if="${wordData.word.manualEventOn}"></span>
