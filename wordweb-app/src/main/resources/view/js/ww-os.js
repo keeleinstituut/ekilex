@@ -161,7 +161,6 @@ function initHomonymMobileSelect() {
 		}
 	});
 
-	
 	const listItemLinks = Array.from(list.querySelectorAll('[role="menuitem"]'));
 	toggle.addEventListener('keydown', (e) => {
 		if (e.key === 'Escape') {
@@ -175,6 +174,7 @@ function initHomonymMobileSelect() {
 			}
 		}
 	});
+
 	listItemLinks.forEach(item => {
 		item.addEventListener('keydown', (e) => {
 			const listItem = e.target?.closest('li');
