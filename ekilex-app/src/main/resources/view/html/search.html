@@ -233,7 +233,7 @@
                             th:text="${semanticType.code}">semantic type</option>
                   </select>
                 </div>
-                <div class="value-input-container col-auto flex-grow-1 flex-shrink-1" th:if="${criteria.searchKey.name() == 'PUBLISHING_TARGET'}">
+                <div class="value-input-container col-auto flex-grow-1 flex-shrink-1" th:if="${#strings.startsWith(criteria.searchKey.name(), 'PUBLISHING_')}">
                   <select class="form-control"
                           th:name="'criteriaGroups[' + ${critGroupStat.index} + '].searchCriteria[' + ${critStat.index} + '].searchValue'"
                           data-live-search="true"
@@ -792,6 +792,26 @@
               </select>
             </div>
             <div name="PUBLISHING_TARGET" class="value-input-container col-auto flex-grow-1 flex-shrink-1">
+              <select class="form-control" data-live-search="true" data-style="btn-outline-secondary">
+                <option th:each="publishingTargetName : ${publishingTargetNames}" th:value="${publishingTargetName}" th:text="#{|publishing.target.${publishingTargetName}|}"></option>
+              </select>
+            </div>
+            <div name="PUBLISHING_GRAMMAR" class="value-input-container col-auto flex-grow-1 flex-shrink-1">
+              <select class="form-control" data-live-search="true" data-style="btn-outline-secondary">
+                <option th:each="publishingTargetName : ${publishingTargetNames}" th:value="${publishingTargetName}" th:text="#{|publishing.target.${publishingTargetName}|}"></option>
+              </select>
+            </div>
+            <div name="PUBLISHING_GOVERNMENT" class="value-input-container col-auto flex-grow-1 flex-shrink-1">
+              <select class="form-control" data-live-search="true" data-style="btn-outline-secondary">
+                <option th:each="publishingTargetName : ${publishingTargetNames}" th:value="${publishingTargetName}" th:text="#{|publishing.target.${publishingTargetName}|}"></option>
+              </select>
+            </div>
+            <div name="PUBLISHING_MEANING_MEDIA" class="value-input-container col-auto flex-grow-1 flex-shrink-1">
+              <select class="form-control" data-live-search="true" data-style="btn-outline-secondary">
+                <option th:each="publishingTargetName : ${publishingTargetNames}" th:value="${publishingTargetName}" th:text="#{|publishing.target.${publishingTargetName}|}"></option>
+              </select>
+            </div>
+            <div name="PUBLISHING_LEXEME" class="value-input-container col-auto flex-grow-1 flex-shrink-1">
               <select class="form-control" data-live-search="true" data-style="btn-outline-secondary">
                 <option th:each="publishingTargetName : ${publishingTargetNames}" th:value="${publishingTargetName}" th:text="#{|publishing.target.${publishingTargetName}|}"></option>
               </select>
