@@ -17,7 +17,7 @@
           <th:block th:replace="common-app :: clipboard(
             wordValue=${word.value},
             homonymNr=${word.homonymNr},
-            text=${#messages.msg('label.clipboard.text.lex')},
+            text=#{label.clipboard.text.os},
             link=${word.searchUrl},
             date=${#dates.format(#dates.createNow(), 'dd.MM.yyyy')})">
           </th:block>
