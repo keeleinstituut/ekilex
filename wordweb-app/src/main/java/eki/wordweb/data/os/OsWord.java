@@ -56,6 +56,8 @@ public class OsWord extends AbstractDataObject implements DecoratedWordType {
 
 	private String searchUri;
 
+	private String searchUrl;
+
 	private boolean prefixoid;
 
 	private boolean suffixoid;
@@ -253,6 +255,14 @@ public class OsWord extends AbstractDataObject implements DecoratedWordType {
 
 	public void setSearchUri(String searchUri) {
 		this.searchUri = searchUri;
+	}
+
+	public String getSearchUrl() {
+		return searchUrl;
+	}
+
+	public void setSearchUrl(String searchUrl) {
+		this.searchUrl = searchUrl;
 	}
 
 	@Override

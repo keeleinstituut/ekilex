@@ -13,6 +13,15 @@
         <th:block th:each="wordType : ${word.wordTypes}" th:if="${not #lists.isEmpty(word.wordTypes)}">
           <span class="lang-code text-caption lang-code--unrestricted mr-2" th:text="${wordType.value}"></span>
         </th:block>
+        <div class="mt-2">
+          <th:block th:replace="common-app :: clipboard(
+            wordValue=${word.value},
+            homonymNr=${word.homonymNr},
+            text=${#messages.msg('label.clipboard.text.lex')},
+            link=${word.searchUrl},
+            date=${#dates.format(#dates.createNow(), 'dd.MM.yyyy')})">
+          </th:block>
+        </div>
       </div>
       <div class="search__block search__block--unified text-body-two">
         <th:block th:if="${word.wordOsMorph}">

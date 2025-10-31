@@ -8,26 +8,24 @@ function clipboardCloseCallback(event) {
 	}
 }
 
-$(document).on("click", ".clipboard__trigger", function () {
+$(document).on("click", ".clipboard__trigger", function() {
 	const button = this;
-  const popup = this.closest('.clipboard').querySelector('.clipboard__popup');
+	const popup = this.closest('.clipboard').querySelector('.clipboard__popup');
 	if (!popup) {
 		return;
 	}
-
-  const popperInstance = new Popper(button, popup, {
-    placement: 'bottom-start',
+	const popperInstance = new Popper(button, popup, {
+		placement: 'bottom-start',
 		modifiers: [
-			{name: 'offset', options: {offset: [24, 24]} }
+			{ name: 'offset', options: { offset: [24, 24] } }
 		]
-  });
+	});
 	clearTimeout(clipboardTimeout);
 	try {
 		navigator.clipboard.writeText(popup.getAttribute('data-clipboard-text'));
 	} catch (err) {
 		console.error('Failed to copy: ', err);
 	}
-
 	clipboardTimeout = setTimeout(() => {
 		popperInstance.destroy();
 		document.removeEventListener('click', clipboardCloseCallback);

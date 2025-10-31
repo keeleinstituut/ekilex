@@ -79,12 +79,11 @@
                 <div class="d-flex mr-auto">
                   <h2 class="search__pre-block-title search__pre-block-title--no-bottom-margin" th:text="#{lexdata.title}"></h2>
                   <th:block th:replace="common-app :: clipboard(
-                      word=${wordData.word.value},
+                      wordValue=${wordData.word.value},
                       homonymNr=${wordData.word.homonymNr},
-                      text=${#messages.msg('label.clipboard.text.lite')
-                    },
-                    link=${wordData.word.lexSearchUrl},
-                    date=${#dates.format(#dates.createNow(), 'dd.MM.yyyy')}
+                      text=${#messages.msg('label.clipboard.text.lite')},
+                      link=${wordData.word.lexSearchUrl},
+                      date=${#dates.format(#dates.createNow(), 'dd.MM.yyyy')}
                     )"></th:block>
                 </div>
                 <div class="text-caption text-darker-gray">

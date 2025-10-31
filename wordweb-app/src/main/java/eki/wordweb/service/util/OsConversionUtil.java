@@ -11,6 +11,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import eki.common.constant.GlobalConstant;
+import eki.common.data.AppData;
+import eki.common.web.AppDataHolder;
 import eki.wordweb.data.os.OsDefinition;
 import eki.wordweb.data.os.OsLexemeMeaning;
 import eki.wordweb.data.os.OsLexemeWord;
@@ -21,6 +23,9 @@ import eki.wordweb.web.util.WebUtil;
 
 @Component
 public class OsConversionUtil implements GlobalConstant {
+
+	@Autowired
+	private AppDataHolder appDataHolder;
 
 	@Autowired
 	private ClassifierUtil classifierUtil;
@@ -74,10 +79,14 @@ public class OsConversionUtil implements GlobalConstant {
 
 	private void applySearchUri(OsWord word) {
 
+		AppData appData = appDataHolder.getAppData();
+		String baseUrl = appData.getBaseUrl();
 		String wordValue = word.getValue();
 		Integer homonymNr = word.getHomonymNr();
 		String searchUri = webUtil.composeOsSearchUri(wordValue, homonymNr);
+		String searchUrl = baseUrl + searchUri;
 		word.setSearchUri(searchUri);
+		word.setSearchUrl(searchUrl);
 	}
 
 	private void applyWrapups(OsWord word) {

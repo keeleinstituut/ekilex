@@ -508,11 +508,11 @@
     <button class="clipboard__trigger" th:title="#{button.copy_clipboard}" type="button" aria-haspopup="dialog">
       <span class="material-symbols-outlined" aria-hidden="true">content_copy</span>
     </button>
-    <div class="clipboard__popup" role="dialog" th:data-clipboard-text="|${word} ${text} ${link} (${date})|">
+    <div class="clipboard__popup" role="dialog" th:data-clipboard-text="|${wordValue} ${text} ${link} (${date})|">
       <span th:text="#{label.clipboard.copied}"></span>
       <p>
         <span class="clipboard__word">
-          <th:block th:if="${word}" th:text="${word}">sõna</th:block>
+          <th:block th:if="${wordValue}" th:text="${wordValue}">sõna</th:block>
           <sup th:if="${homonymNr}" th:text="${homonymNr}"></sup>
           <span>.</span>
         </span>
