@@ -4,10 +4,17 @@
   <th:block th:fragment="meaning-data">
     <div class="d-flex">
       <div class="search__block-header">
-        <span class="search__block-title" th:text="${lexeme.datasetName}">EKI ühendsõnastik 2020</span>
-        <button class="btn btn-sm" name="datasetSearchUrl" th:value="${lexeme.datasetSearchUrl}">
-          <i class="fa fa-copy"></i>
-        </button>
+        <div class="d-flex mr-auto">
+          <span class="search__block-title mr-1" th:text="${lexeme.datasetName}">EKI ühendsõnastik 2020</span>
+          <th:block th:replace="common-app :: clipboard(
+              word=${wordData.word.value},
+              homonymNr=${wordData.word.homonymNr},
+              text=${#messages.msg('label.clipboard.text.term', lexeme.datasetName)
+            },
+            link=${lexeme.datasetSearchUrl},
+            date=${#dates.format(#dates.createNow(), 'dd.MM.yyyy')}
+            )"></th:block>
+        </div>
         <div class="meaning-data__modified">
           <span>ID</span>
           <span th:text="${lexeme.meaningId}" th:if="${isProTerm}"></span>
@@ -137,11 +144,11 @@
           <th:block th:if="${not #lists.isEmpty(lexeme.meaningMedias)}">
             <div class="mt-3 d-flex flex-wrap row">
               <th:block th:each="media : ${lexeme.meaningMedias}">
-                <div class="col-12 col-md-4 mb-3 d-flex flex-column">
-                  <iframe th:src="${media.url}" allowfullscreen></iframe>
-                  <div th:if="${media.title}">
-                    <span th:text="${media.title}" class="gallery-image__title"></span>
-                  </div>
+                <div class="col-12 col-md-4 mb-3">
+                  <figure class="m-0">
+                    <iframe width="100%" th:src="${media.url}" allowfullscreen></iframe>
+                    <figcaption class="gallery-image__title" th:if="${media.title}" th:text="${media.title}"></figcaption>
+                  </figure>
                 </div>
               </th:block>
             </div>
