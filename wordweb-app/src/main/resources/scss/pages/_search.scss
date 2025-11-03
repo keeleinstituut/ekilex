@@ -192,7 +192,7 @@
     font-size: 1.25rem;
     font-weight: 700;
     line-height: 24px;
-    margin: 24px 4px 16px 0;
+    margin: 0 4px 16px 0;
     color: var(--color-dark-blue);
 
     &--no-bottom-margin {
@@ -434,7 +434,7 @@
   grid-template-columns: 1fr 30%;
   gap: 16px;
   flex-grow: 1;
-
+  container: results / inline-size;
   @include media-breakpoint-down(sm) {
     grid-template-columns: 1fr;
   }
