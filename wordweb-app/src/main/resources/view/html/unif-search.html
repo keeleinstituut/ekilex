@@ -107,7 +107,7 @@
           <th:block th:if="${wordData.lexemesExist}">
             <th:block th:if="${not #lists.isEmpty(wordData.lexLexemes)}">
               <div class="d-flex align-items-end flex-wrap gap-2">
-                <div class="d-flex mr-auto">
+                <div class="d-flex mr-auto mt-4">
                   <h2 class="search__pre-block-title search__pre-block-title--no-bottom-margin" th:text="#{lexdata.title}"></h2>
                   <th:block th:replace="common-app :: clipboard(
                     wordValue=${wordData.word.value},

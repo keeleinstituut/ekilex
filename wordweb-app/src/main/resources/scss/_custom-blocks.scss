@@ -9,7 +9,7 @@
 
 
 .clipboard {
-  align-self: flex-end;
+  height: 18px;
   &__trigger {
     width: 18px;
     height: 18px;
@@ -35,6 +35,7 @@
     padding: 16px;
     font-size: .75rem;
     z-index: 1;
+    max-width: 100cqw;
 
     & a {
       font-weight: 500;
@@ -42,6 +43,12 @@
 
     & p {
       margin: 0;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    @include media-breakpoint-down(sm) {
+      left: 0px !important;
     }
   }
 

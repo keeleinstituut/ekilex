@@ -15,7 +15,7 @@ $(document).on("click", ".clipboard__trigger", function() {
 		return;
 	}
 	const popperInstance = new Popper(button, popup, {
-		placement: 'bottom-start',
+		placement: 'bottom',
 		modifiers: [
 			{ name: 'offset', options: { offset: [24, 24] } }
 		]
