@@ -983,6 +983,28 @@
       </div>
     </div>
   </div>
+  <div th:id="${'addLexemeNoteSourceLinkDlg_' + lexeme.lexemeId + '_' + note.id}" class="modal"
+       role="dialog"
+       th:fragment="add_lexeme_note_source_link_dlg"
+       data-plugin="initAddSourceLinkWithAutocompletePlugin">
+    <div class="modal-dialog" role="document" style="max-width: 1000px;">
+      <div class="modal-content">
+        <div class="modal-body">
+          <form th:replace="components :: source_search_form"></form>
+        </div>
+        <form name="sourceLinkForm" th:action="@{/create_item}" method="post">
+          <input type="hidden" name="id" th:value="${note.id}">
+          <input type="hidden" name="opCode" value="lexeme_note_source_link">
+          <input type="hidden" name="id2">
+          <input type="hidden" name="value">
+          <div class="modal-body" data-name="sourceLinkDlgContent"></div>
+        </form>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal" th:text="#{common.cancel}">Katkesta</button>
+        </div>
+      </div>
+    </div>
+  </div>
   <div th:id="${'addLexemeFreeformDlg_' + lexeme.lexemeId}"
        th:data-callback="${@viewUtil.composeFunction('loadFullLexemeDetails', lexeme.lexemeId, lexeme.levels)}"
        class="modal" role="dialog" th:fragment="add_lexeme_freeform_dlg" data-plugin="initGenericTextAddDlgAndFocusPlugin">
@@ -1283,6 +1305,28 @@
             <button type="button" class="btn btn-default" data-dismiss="modal" th:text="#{common.cancel}">Katkesta</button>
           </div>
         </form>
+      </div>
+    </div>
+  </div>
+  <div th:id="${'addMeaningNoteSourceLinkDlg_' + lexeme.lexemeId + '_' + note.id}" class="modal"
+        role="dialog"
+        th:fragment="add_meaning_note_source_link_dlg"
+        data-plugin="initAddSourceLinkWithAutocompletePlugin">
+    <div class="modal-dialog" role="document" style="max-width: 1000px;">
+      <div class="modal-content">
+        <div class="modal-body">
+          <form th:replace="components :: source_search_form"></form>
+        </div>
+        <form name="sourceLinkForm" th:action="@{/create_item}" method="post">
+          <input type="hidden" name="id" th:value="${note.id}">
+          <input type="hidden" name="opCode" value="meaning_note_source_link">
+          <input type="hidden" name="id2">
+          <input type="hidden" name="value">
+          <div class="modal-body" data-name="sourceLinkDlgContent"></div>
+        </form>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal" th:text="#{common.cancel}">Katkesta</button>
+        </div>
       </div>
     </div>
   </div>
