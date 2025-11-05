@@ -1186,7 +1186,13 @@ public class SearchFilterHelper implements GlobalConstant, ActivityFunct, Freefo
 		Condition whereEnt;
 		Condition wherePub;
 
-		if (SearchKey.PUBLISHING_GRAMMAR.equals(searchKey)) {
+		if (SearchKey.PUBLISHING_LEXEME.equals(searchKey)) {
+
+			whereEnt = DSL.noCondition();
+			wherePub = pub.ENTITY_NAME.eq(ENTITY_NAME_LEXEME)
+					.and(pub.ENTITY_ID.eq(l.ID));
+
+		} else if (SearchKey.PUBLISHING_GRAMMAR.equals(searchKey)) {
 
 			whereEnt = gra.LEXEME_ID.eq(l.ID);
 			wherePub = pub.ENTITY_NAME.eq(ENTITY_NAME_GRAMMAR)
@@ -1203,12 +1209,6 @@ public class SearchFilterHelper implements GlobalConstant, ActivityFunct, Freefo
 			whereEnt = mm.MEANING_ID.eq(l.MEANING_ID);
 			wherePub = pub.ENTITY_NAME.eq(ENTITY_NAME_MEANING_MEDIA)
 					.and(pub.ENTITY_ID.eq(mm.ID));
-
-		} else if (SearchKey.PUBLISHING_LEXEME.equals(searchKey)) {
-
-			whereEnt = DSL.noCondition();
-			wherePub = pub.ENTITY_NAME.eq(ENTITY_NAME_LEXEME)
-					.and(pub.ENTITY_ID.eq(l.ID));
 		} else {
 			return where;
 		}
@@ -1257,7 +1257,11 @@ public class SearchFilterHelper implements GlobalConstant, ActivityFunct, Freefo
 			wherePubExists = DSL.not(wherePubExists);
 		}
 
-		if (SearchKey.PUBLISHING_GRAMMAR.equals(searchKey)) {
+		if (SearchKey.PUBLISHING_LEXEME.equals(searchKey)) {
+
+			where3 = whereEnt.and(wherePubExists);
+
+		} else if (SearchKey.PUBLISHING_GRAMMAR.equals(searchKey)) {
 
 			where3 = DSL.exists(DSL.select(gra.ID).from(gra).where(whereEnt.and(wherePubExists)));
 
@@ -1268,10 +1272,6 @@ public class SearchFilterHelper implements GlobalConstant, ActivityFunct, Freefo
 		} else if (SearchKey.PUBLISHING_MEANING_MEDIA.equals(searchKey)) {
 
 			where3 = DSL.exists(DSL.select(mm.ID).from(mm).where(whereEnt.and(wherePubExists)));
-
-		} else if (SearchKey.PUBLISHING_LEXEME.equals(searchKey)) {
-
-			where3 = whereEnt.and(wherePubExists);
 
 		} else {
 

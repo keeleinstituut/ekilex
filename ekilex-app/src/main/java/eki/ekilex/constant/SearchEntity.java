@@ -145,10 +145,10 @@ public enum SearchEntity {
 			SearchKey.VALUE_AND_EXISTS,
 			SearchKey.UPDATED_ON),
 	PUBLISHING(
+			SearchKey.PUBLISHING_LEXEME,
 			SearchKey.PUBLISHING_GRAMMAR,
 			SearchKey.PUBLISHING_GOVERNMENT,
-			SearchKey.PUBLISHING_MEANING_MEDIA,
-			SearchKey.PUBLISHING_LEXEME),
+			SearchKey.PUBLISHING_MEANING_MEDIA),
 	CLUELESS(
 			SearchKey.VALUE,
 			SearchKey.SOURCE_REF,
