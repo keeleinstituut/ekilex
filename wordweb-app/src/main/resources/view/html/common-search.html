@@ -227,7 +227,7 @@
     <th:block th:each="lexeme : ${wordData.termLexemes}" th:with="
     isProTerm = ${@viewUtil.isProTermData(lexeme)},
     isLimTerm = ${@viewUtil.isLimTermData(lexeme)}">
-      <div class="search__block" th:id="|lexeme-section-${lexeme.lexemeId}|">
+      <div class="search__block">
         <th:block th:replace="term-details :: meaning-data"></th:block>
       </div>
     </th:block>
