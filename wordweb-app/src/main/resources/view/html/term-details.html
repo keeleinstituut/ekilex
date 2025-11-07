@@ -25,8 +25,10 @@
       class="meaning-data__link"
       th:href="|@{/ds}/${lexeme.datasetCode}|"
       target="_blank"
-      rel="noreferrer"
-      th:text="#{label.view.dataset}">Vaata sõnakogu</a>
+      rel="noreferrer">
+      <span th:text="#{label.view.dataset}"></span>
+      <i class="fas fa-external-link-alt ml-1" th:aria-label="#{aria.new.window}"></i>
+    </a>
     </div>
     <section th:aria-labelledby="|term-meaning-data-${lexeme.meaningId}|">
       <a th:href="${@viewUtil.getEkilexLimTermMeaningDetailsUrl(lexeme.meaningId)}" th:text="${lexeme.meaningId}" th:if="${isLimTerm}"></a>
