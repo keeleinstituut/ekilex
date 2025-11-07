@@ -16,15 +16,6 @@
     font-weight: 400;
     line-height: 20px;
   }
-  .text-caption {
-    color: var(--color-dark-blue);
-    font-family: Inter;
-    font-size: 0.75rem;
-    font-style: normal;
-    font-weight: 400;
-    line-height: normal;
-    letter-spacing: 0.048px;
-  }
   .text-weight-regular {
     font-weight: 400;
   }
@@ -43,6 +34,15 @@
   .text-darker-gray {
     color: var(--color-darker-gray);
   }
+}
+.text-caption {
+  color: var(--color-dark-blue);
+  font-family: Inter;
+  font-size: 0.75rem;
+  font-style: normal;
+  font-weight: 400;
+  line-height: normal;
+  letter-spacing: 0.048px;
 }
 :root {
   --color-gray-010: #f0f0f0;
