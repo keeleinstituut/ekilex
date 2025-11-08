@@ -14,6 +14,9 @@
                   sec:authorize="#vars.details.word.crudGrant">
             <i class="fa fa-plus" aria-hidden="true"></i>
           </button>
+          <button type="button" data-target="#quill-modal" data-toggle="modal" sec:authorize="#vars.details.word.crudGrant">
+            <i class="fa fa-plus" aria-hidden="true"></i>
+          </button>
         </div>
         <div class="ekiAccordion__content">
           <div th:if="${#lists.isEmpty(details.word.wordEkiRecommendations)}" th:text="#{common.no.content}">
@@ -65,6 +68,39 @@
         </div>
       </div>
     </div>
+    <div class="modal"
+        role="dialog"
+        id="quill-modal"
+        th:fragment="quill_modal"
+        data-plugin="initQuill">
+      <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" th:text="#{lex.add.word.eki.recommendation}">Lisa soovitus</h5>
+            <button type="button" class="close" aria-label="Close" data-role="close" data-dismiss="modal">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <p th:text="#{common.content}"></p>
+            <div id="toolbar">
+              <button class="ql-bold" type="button"></button>
+              <button class="ql-italic" type="button"></button>
+              <button class="ql-link" type="button"></button>
+              <button class="ql-image" type="button"></button>
+              <button class="ql-script" value="sub" type="button"></button>
+              <button class="ql-script" value="super" type="button"></button>
+              <button class="ql-clean" type="button"></button>
+            </div>
+            <div id="quill"></div>
+          </div>
+          <div class="modal-footer">
+            <button type="submit" class="btn btn-primary" th:text="#{common.add}">Lisa</button>
+            <button type="button" class="btn btn-default" data-dismiss="modal" th:text="#{common.cancel}">Katkesta</button>
+          </div>
+        </div>
+    </div>
+  </div>
   </th:block>
   <th:block th:fragment="word_os_morph">
     <div class="ekiAccordion__instance">
