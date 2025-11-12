@@ -110,3 +110,46 @@ $.fn.collocRelGroupTogglePlugin = function() {
 		});
 	});
 }
+
+$.fn.collocMemberSearchPlugin = function() {
+	return this.each(function() {
+		const obj = $(this);
+		obj.on('submit', function(e) {
+			e.preventDefault();
+
+			const collocMemberSearchForm = obj;
+			const actionUrl = collocMemberSearchForm.attr('action');
+			const formValue = collocMemberSearchForm.find('input[name="formValue"]').val();
+		
+			if (formValue.length === 0) {
+				return;
+			}
+			openWaitDlg();
+
+			$.ajax({
+				url: actionUrl,
+				data: collocMemberSearchForm.serialize(),
+				method: 'POST'
+			}).done(function(data) {
+				closeWaitDlg();
+				$("button[name='collocMemberCreateBtn']").prop('disabled', false);
+				$('#colloc_members_section').html(data);
+			}).fail(function(data) {
+				console.log(data);
+				closeWaitDlg();
+				openAlertDlg(messages["common.error"]);
+			});
+		})
+	});
+}
+
+$.fn.collocMemberCreatePlugin = function() {
+	return this.each(function() {
+		const obj = $(this);
+		obj.on('click', function(e) {
+			// TODO impl
+		})
+	});
+}
+
+

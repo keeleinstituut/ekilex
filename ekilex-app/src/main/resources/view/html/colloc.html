@@ -6,7 +6,7 @@
     <div th:id="|colloc_section_${lexeme.lexemeId}|" class="colloc__container">
       <th:block th:if="${lexeme.collocationsExist}">
         <div class="row">
-          <hr/>
+          <hr />
           <div class="col pr-0 col-w13rem">
             <span class="lbl" th:text="#{lex.collocations}">Kollokatsioonid</span>
           </div>
@@ -218,8 +218,16 @@
   <th:block th:fragment="colloc_members">
     <div class="row" th:if="${not #lists.isEmpty(lexeme.collocationMembers)}">
       <hr/>
+      <div th:replace="colloc :: add_colloc_member_dlg"></div>
       <div class="col pr-0 col-w13rem">
         <span class="lbl" th:text="#{lex.collocation.members}">Kollokatsiooni liikmed</span>
+        <button type="button" class="btn badge badge-success float-right mr-4"
+                th:title="#{common.add.new}"
+                data-toggle="modal"
+                th:data-target="${'#addCollocMemberDlg_' + lexeme.lexemeId}"
+                sec:authorize="#vars.lexeme.crudGrant">
+          <i class="fa fa-plus" aria-hidden="true"></i>
+        </button>
       </div>
       <div class="col pl-0">
         <table>
@@ -274,5 +282,139 @@
       </div>
     </div>
   </th:block>
+  <div th:id="|addCollocMemberDlg_${lexeme.lexemeId}|"
+       th:data-callback="${@viewUtil.composeFunction('loadFullLexemeDetails', lexeme.lexemeId, lexeme.levels)}"
+       class="modal" role="dialog" th:fragment="add_colloc_member_dlg">
+    <div class="modal-dialog modal-lg" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" th:text="#{colloc.add.member}">Lisa kollokatsiooni liige</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <div>
+            <form th:action="@{/colloc_member_search}" method="post" data-plugin="collocMemberSearchPlugin">
+              <input type="hidden" name="collocLexemeId" th:value="${lexeme.lexemeId}">
+              <input type="hidden" name="lang" th:value="${lexeme.lexemeWord.lang}">
+              <input type="hidden" name="datasetCode" th:value="${lexeme.datasetCode}">
+              <label th:text="#{colloc.title.searchmember}">Otsing</label>
+              <div class="form-group row ui-front">
+                <div class="col-5">
+                  <input type="text" class="form-control" name="formValue" th:placeholder="#{colloc.title.searchform}" autocomplete="off">
+                </div>
+                <div class="col-2">
+                  <button type="submit" class="btn btn-primary" th:text="#{common.search}">Otsi</button>
+                </div>
+              </div>
+            </form>
+          </div>
+          <div id="colloc_members_section">
+            <!-- dynamic content -->
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-primary" name="collocMemberCreateBtn" th:text="#{common.save}" disabled="disabled" data-plugin="collocMemberCreatePlugin">Salvesta</button>
+          <button type="button" class="btn btn-default" data-dismiss="modal" th:text="#{common.cancel}">Katkesta</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div th:fragment="colloc_member_forms">
+    <th:block th:if="${collocMemberFormsExist}">
+      <form th:id="|collocMemberCreateForm_${collocLexemeId}|" th:action="@{/colloc_member_create}" method="post">
+        <div class="mt-3">
+          <div th:text="#{colloc.title.wordandform}">Algvorm ja morfoloogiline vorm</div>
+          <div class="px-4">
+            <table>
+              <th:block th:each="collocMemberForm, collocMemberFormIter : ${collocMemberForms}">
+                <tr>
+                  <td class="form-check">
+                    <input type="radio" 
+                        name="formId"
+                        th:value="${collocMemberForm.formId}" 
+                        th:checked="${collocMemberForm.selected}" 
+                        th:id="|collocMemberFormInp_${collocMemberForm.formId}|" 
+                        data-toggle="collapse"
+                        th:data-target="|#collocMemberFormCollapse_${collocMemberForm.formId}|"
+                        class="form-check-input"/>
+                    <label th:for="|collocMemberFormInp_${collocMemberForm.formId}|" class="form-check-label px-2">
+                      <strong th:text="${collocMemberForm.wordValue}"></strong>
+                    </label>
+                  </td>
+                  <td class="px-2">
+                    <span th:text="${collocMemberForm.morphValue}"></span>
+                  </td>
+                </tr>
+              </th:block>
+            </table>
+          </div>
+        </div>
+        <div class="mt-3">
+          <div class="form-group row ui-front">
+            <div class="col-md-3">
+              <div th:text="#{colloc.title.posgroup}">Pos gr</div>
+              <select required class="form-control" name="posGroupCode">
+                <option value="" hidden disabled="disabled" selected="selected" th:text="#{common.select.value}">vali väärtus...</option>
+                <option th:each="posGroup : ${posGroups}" th:value="${posGroup.code}" th:text="${posGroup.value}">value</option>
+              </select>
+            </div>
+            <div class="col-md-3">
+              <div th:text="#{colloc.title.relgroup}">Rel gr</div>
+              <select required class="form-control" name="relGroupCode">
+                <option value="" hidden disabled="disabled" selected="selected" th:text="#{common.select.value}">vali väärtus...</option>
+                <option th:each="relGroup : ${relGroups}" th:value="${relGroup.code}" th:text="${relGroup.value}">value</option>
+              </select>
+            </div>
+            <div class="col-md-3">
+              <div th:text="#{colloc.title.role}">Roll</div>
+              <select required class="form-control" name="weight">
+                <option value="" hidden disabled="disabled" selected="selected" th:text="#{common.select.value}">vali väärtus...</option>
+                <option th:each="collocWeight : ${collocWeights}" th:value="${collocWeight.value}" th:text="${collocWeight.label}">value</option>
+              </select>
+            </div>
+          </div>
+        </div>
+        <div class="mt-3">
+          <div th:text="#{colloc.title.meanings}">Tähendused</div>
+          <div id="collocMemberFormGroup" class="px-4">
+            <th:block th:each="collocMemberForm, collocMemberFormIter : ${collocMemberForms}">
+              <div th:id="|collocMemberFormCollapse_${collocMemberForm.formId}|" 
+                   class="collapse" 
+                   th:classappend="${collocMemberForm.selected ? 'show' : ''}" 
+                   data-parent="#collocMemberFormGroup">
+                <table>
+                  <th:block th:each="collocMemberMeaning, collocMemberMeaningIter : ${collocMemberForm.collocMemberMeanings}">
+                    <tr>
+                      <td class="form-check">
+                        <input type="radio" 
+                            name="meaningId" 
+                            th:value="${collocMemberMeaning.meaningId}" 
+                            th:id="|collocMemberMeaningInp_${collocMemberForm.formId}_${collocMemberMeaning.meaningId}|" 
+                            class="form-check-input" 
+                            required="required"/>
+                        <label th:for="|collocMemberMeaningInp_${collocMemberForm.formId}_${collocMemberMeaning.meaningId}|" class="form-check-label px-2">
+                          <th:block th:each="definitionValue, definitionValueIter : ${collocMemberMeaning.definitionValues}">
+                            <span th:text="${definitionValue}"></span>
+                            <span th:unless="${definitionValueIter.last}" class="ml-n1">;</span>
+                          </th:block>
+                        </label>
+                      </td>
+                    </tr>
+                  </th:block>
+                </table>
+              </div>
+            </th:block>
+          </div>
+        </div>
+      </form>
+    </th:block>
+    <th:block th:unless="${collocMemberFormsExist}">
+      <div class="alert alert-warning" role="alert">
+        <span>Ei leidnud sellist vormi</span>
+      </div>
+    </th:block>
+  </div>
 </body>
 </html>

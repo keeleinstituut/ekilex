@@ -153,13 +153,13 @@
         </div>
       </div>
       <script th:inline="javascript">
-							var currentWord = /*[[${wordData.word.value}]]*/'';
-							var currentWordId = /*[[${wordData.word.wordId}]]*/'';
-							var currentWordLang = /*[[${wordData.word.lang}]]*/'';
-							var currentWordPosCodes = /*[[${wordData.word.summarisedPosCodesStr}]]*/'';
-							var currentLinkedLexemeId = /*[[${wordData.linkedLexemeId}]]*/'';
-							scrollToLexeme(currentLinkedLexemeId);
-						</script>
+  		var currentWord = /*[[${wordData.word.value}]]*/'';
+  		var currentWordId = /*[[${wordData.word.wordId}]]*/'';
+  		var currentWordLang = /*[[${wordData.word.lang}]]*/'';
+  		var currentWordPosCodes = /*[[${wordData.word.summarisedPosCodesStr}]]*/'';
+  		var currentLinkedLexemeId = /*[[${wordData.linkedLexemeId}]]*/'';
+  		scrollToLexeme(currentLinkedLexemeId);
+  	  </script>
     </div>
   </div>
   <div th:replace="common-app :: footer-content"></div>
