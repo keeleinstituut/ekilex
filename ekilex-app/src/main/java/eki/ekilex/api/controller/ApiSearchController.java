@@ -14,6 +14,12 @@ import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletRequest;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.ArraySchema;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -51,6 +57,7 @@ import eki.ekilex.service.api.LexWordService;
 
 @ConditionalOnWebApplication
 @RestController
+@Tag(name = "Search", description = "Various search functions")
 public class ApiSearchController extends AbstractApiController {
 
 	@Autowired
@@ -68,6 +75,21 @@ public class ApiSearchController extends AbstractApiController {
 	@Autowired
 	private RequestMappingHandlerMapping requestMappingHandlerMapping;
 
+	@Tag(name = "API Documentation", description = "Provides technical metadata for all Ekilex service endpoints")
+	@Operation(
+			summary = "List all API endpoints",
+			description = "Returns a structured list of all Ekilex API endpoints, including HTTP method, URI patterns, path variables, query parameters, request body type, and display order.",
+			responses = {
+					@ApiResponse(
+							responseCode = "200",
+							description = "Successfully retrieved list of API endpoints",
+							content = @Content(
+									array = @ArraySchema(schema = @Schema(implementation = ApiEndpointDescription.class))
+							)
+					),
+					@ApiResponse(responseCode = "500", description = "Internal server error")
+			}
+	)
 	@Order(101)
 	@GetMapping(API_SERVICES_URI + ENDPOINTS_URI)
 	@ResponseBody

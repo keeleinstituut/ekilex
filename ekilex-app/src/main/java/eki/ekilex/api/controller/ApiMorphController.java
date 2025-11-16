@@ -4,6 +4,13 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
+import eki.ekilex.data.api.*;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.ArraySchema;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
 import org.springframework.core.annotation.Order;
@@ -16,11 +23,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import eki.ekilex.data.api.ApiResponse;
-import eki.ekilex.data.api.FormWord;
-import eki.ekilex.data.api.Paradigm;
-import eki.ekilex.data.api.ParadigmWrapper;
 import eki.ekilex.service.api.MorphologyService;
+
+@Tag(name = "Morphology", description = "Operations related to morphological paradigms")
 
 @ConditionalOnWebApplication
 @RestController
@@ -28,6 +33,7 @@ public class ApiMorphController extends AbstractApiController {
 
 	@Autowired
 	private MorphologyService morphologyService;
+
 
 	@Order(401)
 	@GetMapping(API_SERVICES_URI + PARADIGM_URI + DETAILS_URI + "/{wordId}")
@@ -54,7 +60,15 @@ public class ApiMorphController extends AbstractApiController {
 		addRequestStat(authentication, request);
 		return formWords;
 	}
-
+	@Operation(
+			summary = "Save morphological paradigm",
+			description = "Stores a new or updated morphological paradigm. Requires admin privileges.",
+			responses = {
+					@io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "Paradigm saved successfully"),
+					@io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "403", description = "Forbidden – insufficient privileges"),
+					@io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "500", description = "Internal server error")
+			}
+	)
 	@Order(403)
 	@PreAuthorize("principal.admin")
 	@PostMapping(API_SERVICES_URI + PARADIGM_URI + SAVE_URI)

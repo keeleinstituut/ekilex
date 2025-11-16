@@ -2,6 +2,7 @@ package eki.ekilex.api.controller;
 
 import javax.servlet.http.HttpServletRequest;
 
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
 import org.springframework.core.annotation.Order;
@@ -21,6 +22,7 @@ import eki.ekilex.service.api.LexWordService;
 
 @ConditionalOnWebApplication
 @RestController
+@Tag(name = "Lexicography", description = "Operations with lex-words")
 public class ApiLexWordController extends AbstractApiController {
 
 	@Autowired
