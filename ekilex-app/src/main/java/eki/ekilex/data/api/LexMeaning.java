@@ -4,7 +4,6 @@ import java.util.List;
 
 import eki.common.data.AbstractDataObject;
 import eki.ekilex.data.Usage;
-import io.swagger.v3.oas.annotations.Hidden;
 
 
 public class LexMeaning extends AbstractDataObject {
