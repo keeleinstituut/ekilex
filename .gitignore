@@ -1,8 +1,19 @@
-.idea
+
+# IntelliJ IDEA
+.idea/
 *.iml
+*.ipr
+*.iws
+*.idea.xml
+
 PSV_import*
 qq2_load*
-.DS_Store
+
+# Environment variables and local configs
+.env
+.env.*
+.local
+*.local
 
 # Dependency directories
 node_modules/
@@ -11,3 +22,20 @@ node_modules/
 logs
 *.log
 npm-debug.log*
+
+# Mac OS X
+.DS_Store
+.AppleDouble
+._*
+
+# Maven
+.mvn/wrapper/maven-wrapper.jar
+
+
+# Visual Studio Code
+.vscode/
+
+# Files and catalogues
+node_modules/
+target/
+*.class
