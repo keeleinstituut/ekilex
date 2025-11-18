@@ -17,8 +17,6 @@ public class WordRelation extends WordTypeData {
 
 	private Long orderBy;
 
-	private boolean homonymsExist;
-
 	public Long getWordGroupId() {
 		return wordGroupId;
 	}
@@ -57,14 +55,6 @@ public class WordRelation extends WordTypeData {
 
 	public void setOrderBy(Long orderBy) {
 		this.orderBy = orderBy;
-	}
-
-	public boolean isHomonymsExist() {
-		return homonymsExist;
-	}
-
-	public void setHomonymsExist(boolean homonymsExist) {
-		this.homonymsExist = homonymsExist;
 	}
 
 }

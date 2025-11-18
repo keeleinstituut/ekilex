@@ -85,6 +85,7 @@ public class OsConversionUtil implements GlobalConstant {
 
 		AppData appData = appDataHolder.getAppData();
 		String baseUrl = appData.getBaseUrl();
+		baseUrl = StringUtils.replace(baseUrl, "http:", "https:");
 		String wordValue = word.getValue();
 		Integer homonymNr = word.getHomonymNr();
 		String searchUri = webUtil.composeOsSearchUri(wordValue, homonymNr);

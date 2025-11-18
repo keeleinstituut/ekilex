@@ -46,3 +46,10 @@ where
 
 alter table meaning_media add column title text null;
 create index meaning_media_title_idx on meaning_media(title);
+
+-- #4 --
+
+delete from form where morph_code = 'Vlyhi';
+delete from morph_label where code = 'Vlyhi';
+delete from morph where code = 'Vlyhi';
+
