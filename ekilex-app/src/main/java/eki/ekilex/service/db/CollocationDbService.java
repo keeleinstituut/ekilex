@@ -151,6 +151,8 @@ public class CollocationDbService implements GlobalConstant, SystemConstant {
 								.and(l.DATASET_CODE.eq(datasetCode)))
 				.asField();
 
+		// may return duplicates based on paradigms
+
 		return mainDb
 				.select(
 						w.ID.as("word_id"),
