@@ -11,25 +11,29 @@ public class CollocMember extends AbstractDataObject {
 
 	private Long id;
 
-	private String conjunct;
+	private Long collocLexemeId;
 
-	private Long lexemeId;
+	private Long memberLexemeId;
 
-	private Long wordId;
+	private Long memberWordId;
 
-	private String wordValue;
+	private String memberWordValue;
 
 	private Integer homonymNr;
 
 	private String lang;
 
-	private Long formId;
+	private Long memberFormId;
 
-	private String formValue;
+	private String memberFormValue;
 
 	private String morphCode;
 
 	private String morphValue;
+
+	private Long conjunctLexemeId;
+
+	private String conjunctValue;
 
 	private String posGroupCode;
 
@@ -43,7 +47,9 @@ public class CollocMember extends AbstractDataObject {
 
 	private Integer weightLevel;
 
-	private Long memberOrder;
+	private Integer memberOrder;
+
+	private Integer groupOrder;
 
 	private List<String> definitionValues;
 
@@ -55,36 +61,36 @@ public class CollocMember extends AbstractDataObject {
 		this.id = id;
 	}
 
-	public String getConjunct() {
-		return conjunct;
+	public Long getCollocLexemeId() {
+		return collocLexemeId;
 	}
 
-	public void setConjunct(String conjunct) {
-		this.conjunct = conjunct;
+	public void setCollocLexemeId(Long collocLexemeId) {
+		this.collocLexemeId = collocLexemeId;
 	}
 
-	public Long getLexemeId() {
-		return lexemeId;
+	public Long getMemberLexemeId() {
+		return memberLexemeId;
 	}
 
-	public void setLexemeId(Long lexemeId) {
-		this.lexemeId = lexemeId;
+	public void setMemberLexemeId(Long memberLexemeId) {
+		this.memberLexemeId = memberLexemeId;
 	}
 
-	public Long getWordId() {
-		return wordId;
+	public Long getMemberWordId() {
+		return memberWordId;
 	}
 
-	public void setWordId(Long wordId) {
-		this.wordId = wordId;
+	public void setMemberWordId(Long memberWordId) {
+		this.memberWordId = memberWordId;
 	}
 
-	public String getWordValue() {
-		return wordValue;
+	public String getMemberWordValue() {
+		return memberWordValue;
 	}
 
-	public void setWordValue(String wordValue) {
-		this.wordValue = wordValue;
+	public void setMemberWordValue(String memberWordValue) {
+		this.memberWordValue = memberWordValue;
 	}
 
 	public Integer getHomonymNr() {
@@ -103,20 +109,20 @@ public class CollocMember extends AbstractDataObject {
 		this.lang = lang;
 	}
 
-	public Long getFormId() {
-		return formId;
+	public Long getMemberFormId() {
+		return memberFormId;
 	}
 
-	public void setFormId(Long formId) {
-		this.formId = formId;
+	public void setMemberFormId(Long memberFormId) {
+		this.memberFormId = memberFormId;
 	}
 
-	public String getFormValue() {
-		return formValue;
+	public String getMemberFormValue() {
+		return memberFormValue;
 	}
 
-	public void setFormValue(String formValue) {
-		this.formValue = formValue;
+	public void setMemberFormValue(String memberFormValue) {
+		this.memberFormValue = memberFormValue;
 	}
 
 	public String getMorphCode() {
@@ -133,6 +139,22 @@ public class CollocMember extends AbstractDataObject {
 
 	public void setMorphValue(String morphValue) {
 		this.morphValue = morphValue;
+	}
+
+	public Long getConjunctLexemeId() {
+		return conjunctLexemeId;
+	}
+
+	public void setConjunctLexemeId(Long conjunctLexemeId) {
+		this.conjunctLexemeId = conjunctLexemeId;
+	}
+
+	public String getConjunctValue() {
+		return conjunctValue;
+	}
+
+	public void setConjunctValue(String conjunctValue) {
+		this.conjunctValue = conjunctValue;
 	}
 
 	public String getPosGroupCode() {
@@ -183,12 +205,20 @@ public class CollocMember extends AbstractDataObject {
 		this.weightLevel = weightLevel;
 	}
 
-	public Long getMemberOrder() {
+	public Integer getMemberOrder() {
 		return memberOrder;
 	}
 
-	public void setMemberOrder(Long memberOrder) {
+	public void setMemberOrder(Integer memberOrder) {
 		this.memberOrder = memberOrder;
+	}
+
+	public Integer getGroupOrder() {
+		return groupOrder;
+	}
+
+	public void setGroupOrder(Integer groupOrder) {
+		this.groupOrder = groupOrder;
 	}
 
 	public List<String> getDefinitionValues() {

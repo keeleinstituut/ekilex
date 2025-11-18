@@ -18,11 +18,13 @@ import static eki.ekilex.data.db.main.Tables.LEXEME_TAG;
 import static eki.ekilex.data.db.main.Tables.MEANING_DOMAIN;
 import static eki.ekilex.data.db.main.Tables.MEANING_LAST_ACTIVITY_LOG;
 import static eki.ekilex.data.db.main.Tables.MORPH_LABEL;
+import static eki.ekilex.data.db.main.Tables.POS_GROUP_LABEL;
 import static eki.ekilex.data.db.main.Tables.POS_LABEL;
 import static eki.ekilex.data.db.main.Tables.PROFICIENCY_LEVEL_LABEL;
 import static eki.ekilex.data.db.main.Tables.PUBLISHING;
 import static eki.ekilex.data.db.main.Tables.REGION;
 import static eki.ekilex.data.db.main.Tables.REGISTER_LABEL;
+import static eki.ekilex.data.db.main.Tables.REL_GROUP_LABEL;
 import static eki.ekilex.data.db.main.Tables.SOURCE;
 import static eki.ekilex.data.db.main.Tables.USAGE;
 import static eki.ekilex.data.db.main.Tables.USAGE_SOURCE_LINK;
@@ -68,11 +70,13 @@ import eki.ekilex.data.db.main.tables.LexemeTag;
 import eki.ekilex.data.db.main.tables.MeaningDomain;
 import eki.ekilex.data.db.main.tables.MeaningLastActivityLog;
 import eki.ekilex.data.db.main.tables.MorphLabel;
+import eki.ekilex.data.db.main.tables.PosGroupLabel;
 import eki.ekilex.data.db.main.tables.PosLabel;
 import eki.ekilex.data.db.main.tables.ProficiencyLevelLabel;
 import eki.ekilex.data.db.main.tables.Publishing;
 import eki.ekilex.data.db.main.tables.Region;
 import eki.ekilex.data.db.main.tables.RegisterLabel;
+import eki.ekilex.data.db.main.tables.RelGroupLabel;
 import eki.ekilex.data.db.main.tables.Source;
 import eki.ekilex.data.db.main.tables.Usage;
 import eki.ekilex.data.db.main.tables.UsageSourceLink;
@@ -590,35 +594,52 @@ public class QueryHelper implements GlobalConstant, PublishingConstant {
 		Lexeme jl = LEXEME.as("jl");
 		Form mf = FORM.as("mf");
 		MorphLabel mfl = MORPH_LABEL.as("mfl");
+		PosGroupLabel pgl = POS_GROUP_LABEL.as("pgl");
+		RelGroupLabel rgl = REL_GROUP_LABEL.as("rgl");
 
 		Field<JSON> memf = DSL
 				.select(DSL
 						.jsonArrayAgg(DSL
 								.jsonObject(
 										DSL.key("id").value(cm2.ID),
-										DSL.key("conjunct").value(jw.VALUE),
-										DSL.key("lexemeId").value(ml.ID),
-										DSL.key("wordId").value(mw.ID),
-										DSL.key("wordValue").value(mw.VALUE),
+										DSL.key("collocLexemeId").value(cm2.COLLOC_LEXEME_ID),
+										DSL.key("memberLexemeId").value(cm2.MEMBER_LEXEME_ID),
+										DSL.key("memberWordId").value(mw.ID),
+										DSL.key("memberWordValue").value(mw.VALUE),
 										DSL.key("homonymNr").value(mw.HOMONYM_NR),
 										DSL.key("lang").value(mw.LANG),
-										DSL.key("formId").value(mf.ID),
-										DSL.key("formValue").value(mf.VALUE),
+										DSL.key("memberFormId").value(cm2.MEMBER_FORM_ID),
+										DSL.key("memberFormValue").value(mf.VALUE),
 										DSL.key("morphCode").value(mf.MORPH_CODE),
 										DSL.key("morphValue").value(mfl.VALUE),
+										DSL.key("conjunctLexemeId").value(cm2.CONJUNCT_LEXEME_ID),
+										DSL.key("conjunctValue").value(jw.VALUE),
+										DSL.key("posGroupCode").value(cm2.POS_GROUP_CODE),
+										DSL.key("posGroupValue").value(pgl.VALUE),
+										DSL.key("relGroupCode").value(cm2.REL_GROUP_CODE),
+										DSL.key("relGroupValue").value(rgl.VALUE),
 										DSL.key("weight").value(cm2.WEIGHT),
-										DSL.key("memberOrder").value(cm2.MEMBER_ORDER)))
+										DSL.key("memberOrder").value(cm2.MEMBER_ORDER),
+										DSL.key("groupOrder").value(cm2.GROUP_ORDER)))
 						.orderBy(cm2.MEMBER_ORDER))
 				.from(cm2
 						.innerJoin(ml).on(ml.ID.eq(cm2.MEMBER_LEXEME_ID))
 						.innerJoin(mw).on(mw.ID.eq(ml.WORD_ID))
 						.innerJoin(mf).on(mf.ID.eq(cm2.MEMBER_FORM_ID))
-						.leftOuterJoin(jl).on(jl.ID.eq(cm2.CONJUNCT_LEXEME_ID))
-						.leftOuterJoin(jw).on(jw.ID.eq(jl.WORD_ID))
 						.leftOuterJoin(mfl).on(
 								mfl.CODE.eq(mf.MORPH_CODE)
 										.and(mfl.TYPE.eq(classifierLabelTypeCode))
-										.and(mfl.LANG.eq(classifierLabelLang))))
+										.and(mfl.LANG.eq(classifierLabelLang)))
+						.leftOuterJoin(jl).on(jl.ID.eq(cm2.CONJUNCT_LEXEME_ID))
+						.leftOuterJoin(jw).on(jw.ID.eq(jl.WORD_ID))
+						.leftOuterJoin(pgl).on(
+								pgl.CODE.eq(cm2.POS_GROUP_CODE)
+										.and(pgl.TYPE.eq(classifierLabelTypeCode))
+										.and(pgl.LANG.eq(classifierLabelLang)))
+						.leftOuterJoin(rgl).on(
+								rgl.CODE.eq(cm2.REL_GROUP_CODE)
+										.and(rgl.TYPE.eq(classifierLabelTypeCode))
+										.and(rgl.LANG.eq(classifierLabelLang))))
 				.where(cm2.COLLOC_LEXEME_ID.eq(collocLexemeIdField))
 				.asField();
 

@@ -70,6 +70,8 @@ public interface GlobalConstant {
 
 	String LEXEME_POS_CODE_VERB = "v";
 
+	String COLLOCATION_REL_GROUP_CODE_CONJUNCT = "ja/või";
+
 	String[] GOVERNMENT_VALUES_MULTIPLE_CASE = new String[] {"keda", "mida", "keda/mida", "mida/keda"};
 
 	String[] GOVERNMENT_VALUES_PARTITIVE_CASE = new String[] {"keda*", "mida*", "keda/mida*", "mida/keda*"};

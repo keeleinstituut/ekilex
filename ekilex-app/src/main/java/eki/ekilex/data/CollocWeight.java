@@ -12,6 +12,9 @@ public class CollocWeight extends AbstractDataObject {
 
 	private String label;
 
+	public CollocWeight() {
+	}
+
 	public CollocWeight(BigDecimal value, String label) {
 		this.value = value;
 		this.label = label;

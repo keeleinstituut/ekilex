@@ -120,7 +120,7 @@ $.fn.collocMemberSearchPlugin = function() {
 			const collocMemberSearchForm = obj;
 			const actionUrl = collocMemberSearchForm.attr('action');
 			const formValue = collocMemberSearchForm.find('input[name="formValue"]').val();
-		
+
 			if (formValue.length === 0) {
 				return;
 			}
@@ -147,7 +147,30 @@ $.fn.collocMemberCreatePlugin = function() {
 	return this.each(function() {
 		const obj = $(this);
 		obj.on('click', function(e) {
-			// TODO impl
+			e.preventDefault();
+
+			const collocMemberCreateModal = obj.closest('.modal');
+			const collocMemberCreateForm = collocMemberCreateModal.find('form[name="collocMemberCreateForm"]');
+			const successCallback = collocMemberCreateModal.attr("data-callback");
+			let successCallbackFunc = createCallback(successCallback);
+			const actionUrl = collocMemberCreateForm.attr('action');
+
+			$.ajax({
+				url: actionUrl,
+				data: collocMemberCreateForm.serialize(),
+				method: 'POST'
+			}).done(function(data) {
+				if (data.status == 'OK') {
+					collocMemberCreateModal.modal('hide');
+					successCallbackFunc();
+					openMessageDlg(data.message);
+				} else if (data.status == 'INVALID') {
+					openAlertDlg(data.message);
+				}
+			}).fail(function(data) {
+				console.log(data);
+				openAlertDlg(messages["common.error"]);
+			});
 		})
 	});
 }

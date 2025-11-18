@@ -16,6 +16,8 @@ public class CollocMemberMeaning extends AbstractDataObject {
 
 	private List<String> definitionValues;
 
+	private boolean selected;
+
 	public Long getWordId() {
 		return wordId;
 	}
@@ -46,6 +48,14 @@ public class CollocMemberMeaning extends AbstractDataObject {
 
 	public void setDefinitionValues(List<String> definitionValues) {
 		this.definitionValues = definitionValues;
+	}
+
+	public boolean isSelected() {
+		return selected;
+	}
+
+	public void setSelected(boolean selected) {
+		this.selected = selected;
 	}
 
 }

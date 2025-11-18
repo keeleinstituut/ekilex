@@ -1377,14 +1377,16 @@ public class CommonDataDbService extends AbstractDataDbService {
 		return mainDb
 				.select(
 						cm.ID,
-						jw.VALUE.as("conjunct"),
-						ml.ID.as("lexeme_id"),
-						mw.ID.as("word_id"),
-						mw.VALUE.as("word_value"),
-						mf.ID.as("form_id"),
+						cm.COLLOC_LEXEME_ID,
+						cm.MEMBER_LEXEME_ID,
+						mw.ID.as("member_word_id"),
+						mw.VALUE.as("member_word_value"),
+						cm.MEMBER_FORM_ID,
 						mf.VALUE.as("form_value"),
 						mf.MORPH_CODE,
 						mfl.VALUE.as("morph_value"),
+						cm.CONJUNCT_LEXEME_ID,
+						jw.VALUE.as("conjunctValue"),
 						cm.POS_GROUP_CODE,
 						pgrl.VALUE.as("pos_group_value"),
 						cm.REL_GROUP_CODE,
@@ -1392,6 +1394,7 @@ public class CommonDataDbService extends AbstractDataDbService {
 						cm.WEIGHT,
 						wlf.as("weight_level"),
 						cm.MEMBER_ORDER,
+						cm.GROUP_ORDER,
 						mdf.as("definition_values"))
 				.from(cm
 						.innerJoin(ml).on(ml.ID.eq(cm.MEMBER_LEXEME_ID))
