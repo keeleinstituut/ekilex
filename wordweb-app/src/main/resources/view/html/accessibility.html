@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="et" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="common-app :: common_header(~{::title},~{::links},_)">
+<title>Sõnaveeb - Uued sõnad</title>
+<th:block th:fragment="links">
+  <script type="text/javascript" th:src="@{/view/js/hash.js}"></script>
+</th:block>
+</head>
+<body class="survey-active">
+  <th:block th:replace="common-app :: wcag-sidebar"></th:block>
+  <th:block th:replace="common-app :: wcag-main"></th:block>
+  <th:block th:replace="common-app :: ie-user"></th:block>
+  <th:block th:replace="common-app :: header(withSearch = ${false})"></th:block>
+  <div class="news-page__wrapper">
+    <div class="news-page__header">
+      <h1>Ligipääsetavuse teatis</h1>
+    </div>
+    <div class="news-page__content">
+      <div class="news-page__item">
+        <h2>Sissejuhatus</h2>
+        <p>See veebileht kuulub Eesti Keele Instituudile ja me soovime, et https://www.sõnaveeb.ee on vastavuses avaliku teabe seaduse §32 alusel kehtestatud ligipääsetavusnõuetega.</p>
+        <p>Teatise lõpus on välja toodud kontaktandmed, kuhu pöörduda, kui veebilehe ligipääsetavusega ilmneb probleeme.</p>
+      </div>
+      <div class="news-page__item">
+        <h2>Nõuetele vastavuse olek</h2>
+        <p>See veebileht vastab osaliselt ligipääsetavusnõuetele allpool loetletud põhjuste tõttu.</p>
+      </div>
+      <div class="news-page__item">
+        <h2>Sisu ja funktsioonid, mis ei ole ligipääsetavad</h2>
+        <p>a) Allpool loetletud sisu ja funktsioonid on mittevastavuses õigusnormidega.</p>
+        <ul>
+          <li>
+            <p>Videopleier ei toeta kirjeldustõlke taasesitust</p>
+            <ul>
+              <li>
+                <p>Puudujäägi tõttu on mittevastav ligipääsetavusnõue 7.2.1</p>
+              </li>
+            </ul>
+          </li>
+          <li>
+            <p>Pildisõnastiku piltidel puuduvad pildikirjeldused</p>
+            <ul>
+              <li>
+                <p>9.1.1.1</p>
+              </li>
+            </ul>
+          </li>
+          <li>
+            <p>"Õpime eesti keelt" sõnumivahetuse näidisfotol puudub kirjeldus</p>
+            <ul>
+              <li>
+                <p>9.1.1.1 ja 9.1.4.5</p>
+              </li>
+            </ul>
+          </li>
+        </ul>
+        <p>b) Allpool loetletud sisule ja funktsioonidele rakendub ebaproportsionaalne koormuse erand.</p>
+        <p>c) Allpool loetletud sisu ja funktsioonid ei kuulu kohaldatavate õigusnormide kohaldamisalasse.</p>
+      </div>
+      <div class="news-page__item">
+        <h2>Tagasiside</h2>
+        <p>Me püüame pidevalt parandada käesoleva veebilehe ligipääsetavust. Kui te soovite anda tagasisidet ligipääsetavuse kohta või on midagi vajalikku jäänud teie jaoks ligipääsmatuks, siis
+          palun võtke meiega ühendust allpool olevate kontaktide kaudu.</p>
+        <p>E-post: eki@eki.ee</p>
+        <p>Telefon: 617 7500</p>
+        <p>Vastame teile esimesel võimalusel, kuid mitte hiljem kui kolme tööpäeva jooksul.</p>
+      </div>
+      <div class="news-page__item">
+        <h2>Järelevalveasutus</h2>
+        <p>Avaliku sektori veebide ja rakenduste ligipääsetavuse osas teostab järelevalvet Tarbijakaitse ja Tehnilise Järelevalve Amet.</p>
+        <p>Veebileht: www.ttja.ee</p>
+        <p>E-post: info@ttja.ee</p>
+        <p>Telefon: 667 2000</p>
+      </div>
+      <div class="news-page__item">
+        <h2>Teatise koostamine</h2>
+        <p>Käesoleva ligipääsetavuse teatis on koostatud enesehindamise __ põhjal.</p>
+        <p>Käesolev teatis on koostatud 01.05.2025.</p>
+      </div>
+    </div>
+  </div>
+  <div th:replace="common-app :: footer-content"></div>
+  <th:block th:replace="common-app :: content-top"></th:block>
+</body>
+</html>

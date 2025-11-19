@@ -46,6 +46,8 @@ public interface WebConstant {
 
 	String COLLECTIONS_PAGE = "collections";
 
+	String ACCESSIBILITY_PAGE = "accessibility";
+
 	String ABOUT_PAGE = "about";
 
 	String CONTACT_PAGE = "contact";
@@ -101,6 +103,8 @@ public interface WebConstant {
 	String GAMES_URI = "/games";
 
 	String COLLECTIONS_URI = "/collections";
+
+	String ACCESSIBILITY_URI = "/accessibility";
 
 	String CORP_URI = "/corp";
 

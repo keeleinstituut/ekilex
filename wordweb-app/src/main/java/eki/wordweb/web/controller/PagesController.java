@@ -49,6 +49,12 @@ public class PagesController extends AbstractController {
 		return COLLECTIONS_PAGE;
 	}
 
+	@GetMapping(ACCESSIBILITY_URI)
+	public String accessibility(Model model) {
+		populateCommonModel(model);
+		return ACCESSIBILITY_PAGE;
+	}
+
 	@GetMapping(ABOUT_URI)
 	public String about(Model model, Locale locale) {
 		String lang = locale.getLanguage();
