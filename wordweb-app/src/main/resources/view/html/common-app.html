@@ -7,11 +7,14 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-<th:block th:if="${pageContext !='simpleSearch'}">
+<th:block th:if="${pageContext !='simpleSearch' and pageContext != 'OS'}">
   <th:block th:replace=" :: favicon"></th:block>
 </th:block>
-<th:block th:if="${pageContext =='simpleSearch'}">
+<th:block th:if="${pageContext == 'simpleSearch'}">
   <th:block th:replace=" :: faviconSimple"></th:block>
+</th:block>
+<th:block th:if="${pageContext == 'OS'}">
+  <th:block th:replace=" :: faviconOS"></th:block>
 </th:block>
 <th:block th:replace=" :: css"></th:block>
 <th:block th:replace=" :: js"></th:block>
@@ -57,6 +60,13 @@
     <link rel="icon" type="image/png" sizes="32x32" th:href="@{/favicon-32x32-light.png}">
     <link rel="icon" type="image/png" sizes="16x16" th:href="@{/favicon-16x16-light.png}">
     <link rel="icon" type="image/x-icon" th:href="@{/favicon-light.ico}">
+  </th:block>
+    <!-- OS favicon -->
+  <th:block th:fragment="faviconOS">
+    <link rel="apple-touch-icon" sizes="180x180" th:href="@{/apple-touch-icon-os.png}">
+    <link rel="icon" type="image/png" sizes="32x32" th:href="@{/favicon-32x32-os.png}">
+    <link rel="icon" type="image/png" sizes="16x16" th:href="@{/favicon-16x16-os.png}">
+    <link rel="icon" type="image/x-icon" th:href="@{/favicon-os.ico}">
   </th:block>
   <!-- Bootstrap core CSS -->
   <th:block th:fragment="css">
