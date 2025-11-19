@@ -53,3 +53,59 @@ delete from form where morph_code = 'Vlyhi';
 delete from morph_label where code = 'Vlyhi';
 delete from morph where code = 'Vlyhi';
 
+-- #5 --
+
+delete
+from
+	publishing pd
+where
+	pd.entity_name = 'lexeme'
+	and exists (
+		select
+			1
+		from
+			lexeme l 
+		where
+			l.id = pd.entity_id
+			and l.dataset_code = 'eki'
+			and l.is_word = true
+			and l.is_collocation = true
+			and not exists (
+				select
+					1
+				from
+					definition d 
+				where
+					d.meaning_id = l.meaning_id
+			)
+			and exists (
+				select
+					1
+				from
+					publishing p 
+				where
+					p.entity_name = 'lexeme'
+					and p.entity_id = l.id
+			)
+	)
+;
+
+-- #6 --
+
+update dataset set code = 'EK_betoon' where code = 'EELBÜTK';
+
+update
+	domain cl
+set
+	datasets = array_append(cl.datasets, 'EK_betoon')
+where
+	'EELBÜTK' = any(cl.datasets);
+
+update
+	domain cl
+set
+	datasets = array_remove(cl.datasets, 'EELBÜTK')
+where
+	'EELBÜTK' = any(cl.datasets);
+
+
