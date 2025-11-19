@@ -6,10 +6,11 @@
   display: flex;
   flex: 1 1 auto;
   flex-flow: column nowrap;
-  min-height: 100%;
+  min-height: 650px;
 
   @include media-breakpoint-up(md) {
     @include border-radius(.6875rem);
+    min-height: 100%;
   }
 
   >.loading-indicator {
