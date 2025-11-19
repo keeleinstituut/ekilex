@@ -151,8 +151,6 @@ public class CollocationDbService implements GlobalConstant, SystemConstant {
 								.and(l.DATASET_CODE.eq(datasetCode)))
 				.asField();
 
-		// may return duplicates based on paradigms
-
 		return mainDb
 				.select(
 						w.ID.as("word_id"),
@@ -181,6 +179,7 @@ public class CollocationDbService implements GlobalConstant, SystemConstant {
 												l.WORD_ID.eq(w.ID)
 														.and(l.IS_WORD.isTrue())
 														.and(l.DATASET_CODE.eq(datasetCode)))))
+				.groupBy(w.ID, f.ID, mf.CODE, mflbl.VALUE)
 				.orderBy(w.VALUE, mf.ORDER_BY)
 				.fetchInto(CollocMemberForm.class);
 	}

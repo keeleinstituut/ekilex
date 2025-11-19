@@ -4,7 +4,6 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
-import java.util.stream.Collectors;
 
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -116,7 +115,6 @@ public class CollocationService implements SystemConstant, GlobalConstant {
 		List<CollocMemberForm> collocMemberForms = collocationDbService.getCollocMemberForms(formValue, lang, datasetCode, CLASSIF_LABEL_LANG_EST);
 
 		if (CollectionUtils.isNotEmpty(collocMemberForms)) {
-			collocMemberForms = collocMemberForms.stream().distinct().collect(Collectors.toList());
 			CollocMemberForm firstCollocMemberForm = collocMemberForms.get(0);
 			firstCollocMemberForm.setSelected(true);
 			if (collocMemberForms.size() == 1) {
