@@ -107,6 +107,12 @@
 				<spring.boot.mainclass>eki.ekilex.cli.CollocationDuplicatePurger</spring.boot.mainclass>
 			</properties>
 		</profile>
+		<profile>
+			<id>qure</id>
+			<properties>
+				<spring.boot.mainclass>eki.ekilex.cli.QuotationReplacer</spring.boot.mainclass>
+			</properties>
+		</profile>
 	</profiles>
 
 	<build>

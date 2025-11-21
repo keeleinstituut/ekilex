@@ -4,11 +4,18 @@ import static eki.ekilex.data.db.main.Tables.COLLOCATION_MEMBER;
 import static eki.ekilex.data.db.main.Tables.DEFINITION;
 import static eki.ekilex.data.db.main.Tables.DEFINITION_DATASET;
 import static eki.ekilex.data.db.main.Tables.DOMAIN_LABEL;
+import static eki.ekilex.data.db.main.Tables.GRAMMAR;
+import static eki.ekilex.data.db.main.Tables.LEARNER_COMMENT;
 import static eki.ekilex.data.db.main.Tables.LEXEME;
+import static eki.ekilex.data.db.main.Tables.LEXEME_NOTE;
 import static eki.ekilex.data.db.main.Tables.MEANING;
+import static eki.ekilex.data.db.main.Tables.MEANING_FORUM;
+import static eki.ekilex.data.db.main.Tables.MEANING_NOTE;
 import static eki.ekilex.data.db.main.Tables.PUBLISHING;
+import static eki.ekilex.data.db.main.Tables.SOURCE;
 import static eki.ekilex.data.db.main.Tables.USAGE;
 import static eki.ekilex.data.db.main.Tables.WORD;
+import static eki.ekilex.data.db.main.Tables.WORD_EKI_RECOMMENDATION;
 import static eki.ekilex.data.db.main.Tables.WORD_OS_MORPH;
 import static eki.ekilex.data.db.main.Tables.WORD_OS_USAGE;
 import static eki.ekilex.data.db.main.Tables.WORD_RELATION;
@@ -18,6 +25,7 @@ import java.util.List;
 import org.jooq.Condition;
 import org.jooq.Field;
 import org.jooq.JSON;
+import org.jooq.Table;
 import org.jooq.impl.DSL;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -36,6 +44,7 @@ import eki.ekilex.data.db.main.tables.WordOsMorph;
 import eki.ekilex.data.db.main.tables.WordOsUsage;
 import eki.ekilex.data.db.main.tables.WordRelation;
 import eki.ekilex.data.migra.DefinitionDuplicate;
+import eki.ekilex.data.migra.ValueId;
 import eki.ekilex.service.db.util.QueryHelper;
 
 // temporary content for data migration tools
@@ -298,4 +307,75 @@ public class MigrationDbService extends AbstractDataDbService implements Publish
 				.orderBy(w1.ID, wr.ORDER_BY)
 				.fetchInto(eki.ekilex.data.migra.WordRelation.class);
 	}
+
+	public List<ValueId> getWordValues(String containingStr) {
+
+		return getValues(containingStr, WORD);
+	}
+
+	public List<ValueId> getDefinitionValues(String containingStr) {
+
+		return getValues(containingStr, DEFINITION);
+	}
+
+	public List<ValueId> getUsageValues(String containingStr) {
+
+		return getValues(containingStr, USAGE);
+	}
+
+	public List<ValueId> getWordEkiRecommendationValues(String containingStr) {
+
+		return getValues(containingStr, WORD_EKI_RECOMMENDATION);
+	}
+
+	public List<ValueId> getWordOsUsageValues(String containingStr) {
+
+		return getValues(containingStr, WORD_OS_USAGE);
+	}
+
+	public List<ValueId> getMeaningNoteValues(String containingStr) {
+
+		return getValues(containingStr, MEANING_NOTE);
+	}
+
+	public List<ValueId> getLexemeNoteValues(String containingStr) {
+
+		return getValues(containingStr, LEXEME_NOTE);
+	}
+
+	public List<ValueId> getMeaningForumValues(String containingStr) {
+
+		return getValues(containingStr, MEANING_FORUM);
+	}
+
+	public List<ValueId> getLearnerCommentValues(String containingStr) {
+
+		return getValues(containingStr, LEARNER_COMMENT);
+	}
+
+	public List<ValueId> getGrammarValues(String containingStr) {
+
+		return getValues(containingStr, GRAMMAR);
+	}
+
+	public List<ValueId> getSourceValues(String containingStr) {
+
+		return getValues(containingStr, SOURCE);
+	}
+
+	private List<ValueId> getValues(String containingStr, Table<?> t) {
+
+		String containingCrit = "%" + containingStr + "%";
+		Condition where = t.field("value", String.class).like(containingCrit);
+		return mainDb
+				.select(
+						DSL.value(t.getName()).as("entity_name"),
+						t.field("id", Long.class),
+						t.field("value", String.class),
+						t.field("value_prese", String.class))
+				.from(t)
+				.where(where)
+				.fetchInto(ValueId.class);
+	}
+
 }

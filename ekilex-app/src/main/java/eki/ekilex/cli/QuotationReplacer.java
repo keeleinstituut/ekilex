@@ -10,7 +10,7 @@ import org.springframework.boot.autoconfigure.orm.jpa.HibernateJpaAutoConfigurat
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
-import eki.ekilex.cli.runner.CollocationDuplicatePurgerRunner;
+import eki.ekilex.cli.runner.QuotationReplacerRunner;
 
 @SpringBootApplication(scanBasePackages = {
 		"eki.common",
@@ -22,21 +22,21 @@ import eki.ekilex.cli.runner.CollocationDuplicatePurgerRunner;
 		"eki.ekilex.service.util",
 		"eki.ekilex.data"}, exclude = {HibernateJpaAutoConfiguration.class})
 @EnableTransactionManagement
-public class CollocationDuplicatePurger implements CommandLineRunner {
+public class QuotationReplacer implements CommandLineRunner {
 
-	private static Logger logger = LoggerFactory.getLogger(CollocationDuplicatePurger.class);
+	private static Logger logger = LoggerFactory.getLogger(QuotationReplacer.class);
 
 	@Autowired
 	private ConfigurableApplicationContext context;
 
 	@Autowired
-	private CollocationDuplicatePurgerRunner runner;
+	private QuotationReplacerRunner runner;
 
-	//mvn spring-boot:run -P codup -D spring-boot.run.profiles=<dev|prod> 
+	//mvn spring-boot:run -P qure -D spring-boot.run.profiles=<dev|prod> 
 	public static void main(String[] args) {
 		logger.info("Application starting up");
 		System.setProperty("org.jooq.no-logo", "true");
-		SpringApplication.run(CollocationDuplicatePurger.class, args);
+		SpringApplication.run(QuotationReplacer.class, args);
 		logger.info("Application finished");
 	}
 
@@ -46,7 +46,7 @@ public class CollocationDuplicatePurger implements CommandLineRunner {
 		try {
 			runner.execute();
 		} catch (Exception e) {
-			logger.error("Collocation duplicates purger failed with", e);
+			logger.error("Quotation replacer failed with", e);
 		} finally {
 			context.close();
 		}

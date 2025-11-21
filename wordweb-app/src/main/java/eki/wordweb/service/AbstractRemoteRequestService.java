@@ -57,7 +57,7 @@ public abstract class AbstractRemoteRequestService implements SystemConstant, Gl
 			HttpResponse<String> response = client.send(request, BodyHandlers.ofString());
 			int statusCode = response.statusCode();
 			if (statusCode == 200) {
-				responseBody = response.body();				
+				responseBody = response.body();
 			} else {
 				logger.warn("Request returned HTTP{} with: \"{}\"", statusCode, responseBody);
 			}
