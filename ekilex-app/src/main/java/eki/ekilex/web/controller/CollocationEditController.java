@@ -1,15 +1,12 @@
 package eki.ekilex.web.controller;
 
-import java.math.BigDecimal;
 import java.util.List;
-import java.util.Locale;
 
 import org.apache.commons.collections4.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
-import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -19,7 +16,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.SessionAttributes;
 
-import eki.ekilex.constant.ResponseStatus;
 import eki.ekilex.constant.WebConstant;
 import eki.ekilex.data.Classifier;
 import eki.ekilex.data.CollocConjunct;
@@ -145,31 +141,12 @@ public class CollocationEditController extends AbstractPrivatePageController {
 
 	@PostMapping(COLLOC_MEMBER_SAVE_URI)
 	@ResponseBody
-	public Response collocMemberSave(CollocMember collocMember, Model model) {
+	public Response collocMemberSave(CollocMember collocMember, @ModelAttribute(name = SESSION_BEAN) SessionBean sessionBean, Model model) throws Exception {
 
-		Locale locale = LocaleContextHolder.getLocale();
-		BigDecimal weight = collocMember.getWeight();
-		Long memberLexemeId = collocMember.getMemberLexemeId();
+		String roleDatasetCode = getRoleDatasetCode();
+		boolean isManualEventOnUpdateEnabled = sessionBean.isManualEventOnUpdateEnabled();
 
-		ResponseStatus responseStatus;
-		String message;
-
-		if (weight == null) {
-			responseStatus = ResponseStatus.INVALID;
-			message = messageSource.getMessage("colloc.message.norole", new Object[0], locale);
-		} else if (memberLexemeId == null) {
-			responseStatus = ResponseStatus.INVALID;
-			message = messageSource.getMessage("colloc.message.nomeaning", new Object[0], locale);
-		} else {
-			collocationService.saveCollocMember(collocMember);
-			responseStatus = ResponseStatus.OK;
-			message = messageSource.getMessage("colloc.message.createmember", new Object[0], locale);
-		}
-
-		Response response = new Response();
-		response.setStatus(responseStatus);
-		response.setMessage(message);
-
+		Response response = collocationService.saveCollocMember(collocMember, roleDatasetCode, isManualEventOnUpdateEnabled);
 		return response;
 	}
 }

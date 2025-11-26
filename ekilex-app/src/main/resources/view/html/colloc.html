@@ -215,13 +215,6 @@
       </button>
     </td>
   </th:block>
-  
-  
-  
-  
-  
-  
-  
   <th:block th:fragment="colloc_members">
     <div class="row" th:if="${lexeme.collocation}"
          th:with="callback=${@viewUtil.composeFunction('loadFullLexemeDetails', lexeme.lexemeId, lexeme.levels)}">

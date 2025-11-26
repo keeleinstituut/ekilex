@@ -17,6 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 import eki.common.constant.ActivityEntity;
 import eki.common.constant.ActivityOwner;
 import eki.common.constant.GlobalConstant;
+import eki.ekilex.constant.ResponseStatus;
 import eki.ekilex.constant.SystemConstant;
 import eki.ekilex.data.ActivityLogData;
 import eki.ekilex.data.CollocConjunct;
@@ -25,6 +26,7 @@ import eki.ekilex.data.CollocMemberForm;
 import eki.ekilex.data.CollocMemberMeaning;
 import eki.ekilex.data.CollocMemberOrder;
 import eki.ekilex.data.CollocWeight;
+import eki.ekilex.data.Response;
 import eki.ekilex.service.core.ActivityLogService;
 import eki.ekilex.service.db.CollocationDbService;
 
@@ -150,7 +152,7 @@ public class CollocationService implements SystemConstant, GlobalConstant {
 	}
 
 	@Transactional(rollbackFor = Exception.class)
-	public void saveCollocMember(CollocMember collocMember) {
+	public Response saveCollocMember(CollocMember collocMember, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
 
 		Long collocMemberId = collocMember.getId();
 		Long collocLexemeId = collocMember.getCollocLexemeId();
@@ -158,35 +160,63 @@ public class CollocationService implements SystemConstant, GlobalConstant {
 		Long conjunctLexemeId = collocMember.getConjunctLexemeId();
 		String posGroupCode = collocMember.getPosGroupCode();
 		String relGroupCode = collocMember.getRelGroupCode();
+		BigDecimal weight = collocMember.getWeight();
 
-		if (conjunctLexemeId != null) {
-			relGroupCode = COLLOCATION_REL_GROUP_CODE_CONJUNCT;
-		}
-		Integer memberOrder = collocationDbService.getMaxMemberOrder(collocLexemeId);
-		if (memberOrder == null) {
-			memberOrder = 1;
+		Locale locale = LocaleContextHolder.getLocale();
+		ResponseStatus responseStatus;
+		String message;
+
+		if (weight == null) {
+			responseStatus = ResponseStatus.INVALID;
+			message = messageSource.getMessage("colloc.message.norole", new Object[0], locale);
+		} else if (memberLexemeId == null) {
+			responseStatus = ResponseStatus.INVALID;
+			message = messageSource.getMessage("colloc.message.nomeaning", new Object[0], locale);
 		} else {
-			memberOrder = memberOrder + 1;
-		}
-		Integer groupOrder = null;
-		if (StringUtils.isNotBlank(posGroupCode) && StringUtils.isNotBlank(relGroupCode)) {
-			groupOrder = collocationDbService.getMaxGroupOrder(memberLexemeId, posGroupCode, relGroupCode);
-			if (groupOrder == null) {
-				groupOrder = 1;
-			} else {
-				groupOrder = groupOrder + 1;
+
+			if (conjunctLexemeId != null) {
+				relGroupCode = COLLOCATION_REL_GROUP_CODE_CONJUNCT;
 			}
+			Integer memberOrder = collocationDbService.getMaxMemberOrder(collocLexemeId);
+			if (memberOrder == null) {
+				memberOrder = 1;
+			} else {
+				memberOrder = memberOrder + 1;
+			}
+			Integer groupOrder = null;
+			if (StringUtils.isNotBlank(posGroupCode) && StringUtils.isNotBlank(relGroupCode)) {
+				groupOrder = collocationDbService.getMaxGroupOrder(memberLexemeId, posGroupCode, relGroupCode);
+				if (groupOrder == null) {
+					groupOrder = 1;
+				} else {
+					groupOrder = groupOrder + 1;
+				}
+			}
+
+			collocMember.setRelGroupCode(relGroupCode);
+			collocMember.setMemberOrder(memberOrder);
+			collocMember.setGroupOrder(groupOrder);
+
+			ActivityLogData activityLog = activityLogService.prepareActivityLog("saveCollocMember", collocLexemeId, ActivityOwner.LEXEME, roleDatasetCode, isManualEventOnUpdateEnabled);
+
+			if (collocMemberId == null) {
+				collocMemberId = collocationDbService.createCollocMember(collocMember);
+				responseStatus = ResponseStatus.OK;
+				message = messageSource.getMessage("colloc.message.createmember", new Object[0], locale);
+			} else {
+				collocationDbService.updateCollocMember(collocMember);
+				responseStatus = ResponseStatus.OK;
+				message = messageSource.getMessage("colloc.message.updatemember", new Object[0], locale);
+			}
+
+			activityLogService.createActivityLog(activityLog, collocMemberId, ActivityEntity.COLLOC_MEMBER);
 		}
 
-		collocMember.setRelGroupCode(relGroupCode);
-		collocMember.setMemberOrder(memberOrder);
-		collocMember.setGroupOrder(groupOrder);
+		Response response = new Response();
+		response.setStatus(responseStatus);
+		response.setMessage(message);
 
-		if (collocMemberId == null) {
-			collocationDbService.createCollocMember(collocMember);
-		} else {
-			collocationDbService.updateCollocMember(collocMember);
-		}
+		return response;
 	}
 
 	public CollocMember getCollocMember(Long id) {

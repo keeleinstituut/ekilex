@@ -92,12 +92,12 @@ where
 
 -- #6 --
 
-update dataset set code = 'EK_betoon' where code = 'EELBÜTK';
+update dataset set code = 'EK_Betoon' where code = 'EELBÜTK';
 
 update
 	domain cl
 set
-	datasets = array_append(cl.datasets, 'EK_betoon')
+	datasets = array_append(cl.datasets, 'EK_Betoon')
 where
 	'EELBÜTK' = any(cl.datasets);
 
