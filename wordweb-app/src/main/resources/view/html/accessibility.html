@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="et" xmlns:th="http://www.thymeleaf.org">
 <head th:replace="common-app :: common_header(~{::title},~{::links},_)">
-<title>Sõnaveeb - Uued sõnad</title>
+<title>Sõnaveeb - Ligipääsetavuse teatis</title>
 <th:block th:fragment="links">
   <script type="text/javascript" th:src="@{/view/js/hash.js}"></script>
 </th:block>
@@ -27,41 +27,477 @@
       </div>
       <div class="news-page__item">
         <h2>Sisu ja funktsioonid, mis ei ole ligipääsetavad</h2>
-        <p>a) Allpool loetletud sisu ja funktsioonid on mittevastavuses õigusnormidega.</p>
-        <ul>
-          <li>
-            <p>Videopleier ei toeta kirjeldustõlke taasesitust</p>
-            <ul>
-              <li>
-                <p>Puudujäägi tõttu on mittevastav ligipääsetavusnõue 7.2.1</p>
-              </li>
-            </ul>
-          </li>
-          <li>
-            <p>Pildisõnastiku piltidel puuduvad pildikirjeldused</p>
-            <ul>
-              <li>
-                <p>9.1.1.1</p>
-              </li>
-            </ul>
-          </li>
-          <li>
-            <p>"Õpime eesti keelt" sõnumivahetuse näidisfotol puudub kirjeldus</p>
-            <ul>
-              <li>
-                <p>9.1.1.1 ja 9.1.4.5</p>
-              </li>
-            </ul>
-          </li>
-        </ul>
-        <p>b) Allpool loetletud sisule ja funktsioonidele rakendub ebaproportsionaalne koormuse erand.</p>
-        <p>c) Allpool loetletud sisu ja funktsioonid ei kuulu kohaldatavate õigusnormide kohaldamisalasse.</p>
+        <p>Allpool loetletud sisu ja funktsioonid on mittevastavuses õigusnormidega.</p>
+        
+
+
+        <div class="news-page__item">
+          <h3>Sõnaveeb</h3>
+          <ul>
+            <li>
+              <p>Sõnavormide tabeli ridade pealkirjad ei ole programmaatiliselt tähistatud ridade pealkirjana.</p>
+              <ul>
+                <li><p>Puudujäägi tõttu on mittevastav standardi EN 301 549 ligipääsetavusnõue 9.1.3.1 Info and relationships</p></li>
+              </ul>
+            </li>
+            <li>
+              <p>Sünonüümide, näidete, sarnaste sõnade loenditel puudub korrektne loendistruktuur.</p>
+              <ul>
+                <li><p>Puudujäägi tõttu on mittevastav standardi EN 301 549 ligipääsetavusnõue 9.1.3.1 Info and relationships</p></li>
+              </ul>
+            </li>
+            <li>
+              <p>Versiooniuuenduste tegevused ei ole märgitud semantilise loendina.</p>
+              <ul>
+                <li><p>Puudujäägi tõttu on mittevastav standardi EN 301 549 ligipääsetavusnõue 9.1.3.1 Info and relationships</p></li>
+              </ul>
+            </li>
+            <li>
+              <p>Jaluses oleva e-posti aadressi kontrast taustaga on liiga väike.</p>
+              <ul>
+                <li><p>Puudujäägi tõttu on mittevastav standardi EN 301 549 ligipääsetavusnõue 9.1.4.11 Non-text contrast</p></li>
+              </ul>
+            </li>
+            <li>
+              <p>Mõnes kohas kasutatakse ilma tekstilise sildita nuppe.</p>
+              <ul>
+                <li><p>Puudujäägi tõttu on mittevastav standardi EN 301 549 ligipääsetavusnõue 9.2.4.6 Headings and labels</p></li>
+              </ul>
+            </li>
+            <li>
+              <p>Võõrkeelsetel vastetel või näidetel puudub lang atribuut.</p>
+              <ul>
+                <li><p>Puudujäägi tõttu on mittevastav standardi EN 301 549 ligipääsetavusnõue 9.3.1.2 Language of parts</p></li>
+              </ul>
+            </li>
+            <li>
+              <p>Mitme vaste korral ei ole ekraanilugeja kasutajal võimalik veenduda, milline sõna on hetkel aktiivne ning kus lehel asub sõnaga seotud info.</p>
+              <ul>
+                <li><p>Puudujäägi tõttu on mittevastav standardi EN 301 549 ligipääsetavusnõue 9.4.1.2 Name, role, value</p></li>
+              </ul>
+            </li>
+          </ul>
+        </div>
+
+        <div class="news-page__item">
+          <h3>Piltsõnastik</h3>
+          <ul>
+            <li>
+              <p>Sõna kaardi struktuur ei ole ekraanilugejale arusaadav (puudub seos sõnaga).</p>
+              <ul>
+                <li><p>Puudujäägi tõttu on mittevastav standardi EN 301 549 ligipääsetavusnõue 9.1.3.1 Info and relationships</p></li>
+              </ul>
+            </li>
+            <li>
+              <p>Näitelauseid ei ole esitatud loendina.</p>
+              <ul>
+                <li><p>Puudujäägi tõttu on mittevastav standardi EN 301 549 ligipääsetavusnõue 9.1.3.1 Info and relationships</p></li>
+              </ul>
+            </li>
+            <li>
+              <p>Kaartide ala ei ole seotud tab-paneelidega.</p>
+              <ul>
+                <li><p>Puudujäägi tõttu on mittevastav standardi EN 301 549 ligipääsetavusnõue 9.1.3.1 Info and relationships</p></li>
+              </ul>
+            </li>
+            <li>
+              <p>Sõna kaardi peidetud pool on ekraanilugejale nähtav.</p>
+              <ul>
+                <li><p>Puudujäägi tõttu on mittevastav standardi EN 301 549 ligipääsetavusnõue 9.1.3.2 Meaningful sequence</p></li>
+              </ul>
+            </li>
+            <li>
+              <p>Lehe tiitel ei kirjelda sisu.</p>
+              <ul>
+                <li><p>Puudujäägi tõttu on mittevastav standardi EN 301 549 ligipääsetavusnõue 9.2.4.2 Page titled</p></li>
+              </ul>
+            </li>
+            <li>
+              <p>Sõna kaardi pööramine on lahendatud kahe erineva nupuga ja kaardi olek ei ole programmiliselt selge.</p>
+              <ul>
+                <li><p>Puudujäägi tõttu on mittevastavad standardi EN 301 549 ligipääsetavusnõuded 9.2.4.3 Focus Order, 9.3.2.4 Consistent identification, 9.4.1.2 Name, role, value</p></li>
+              </ul>
+            </li>
+            <li>
+              <p>Sõna kaardi pööramisel kaob klaviatuuri fookuse järjekord.</p>
+              <ul>
+                <li><p>Puudujäägi tõttu on mittevastav standardi EN 301 549 ligipääsetavusnõue 9.2.4.3 Focus Order</p></li>
+              </ul>
+            </li>
+            <li>
+              <p>Piltsõnastiku piltidel puuduvad pildikirjeldused.</p>
+              <ul>
+                <li><p>Puudujäägi tõttu on mittevastav standardi EN 301 549 ligipääsetavusnõue 9.1.1.1 Non-text content</p></li>
+              </ul>
+            </li>
+            <li>
+              <p>Tab-menüüs puudub tab'idele vastav klaviatuurikäitumine.</p>
+              <ul>
+                <li><p>Puudujäägi tõttu on mittevastav standardi EN 301 549 ligipääsetavusnõue 9.2.1.1 Keyboard</p></li>
+              </ul>
+            </li>
+            <li>
+              <p>Näitelause kuulamise nupul puudub ligipääsetav nimi.</p>
+              <ul>
+                <li><p>Puudujäägi tõttu on mittevastav standardi EN 301 549 ligipääsetavusnõue 9.4.1.2 Name, role, value</p></li>
+              </ul>
+            </li>
+            <li>
+              <p>Automaatheli lülitil puudub ligipääsetav nimi.</p>
+              <ul>
+                <li><p>Puudujäägi tõttu on mittevastav standardi EN 301 549 ligipääsetavusnõue 9.4.1.2 Name, role, value</p></li>
+              </ul>
+            </li>
+            <li>
+              <p>Mõnes kohas kasutatakse ilma tekstilise sildita nuppe.</p>
+              <ul>
+                <li><p>Puudujäägi tõttu on mittevastav standardi EN 301 549 ligipääsetavusnõue 9.2.4.6 Headings and labels</p></li>
+              </ul>
+            </li>
+          </ul>
+        </div>
+
+        <div class="news-page__item">
+          <h3>Õpime eesti keelt</h3>
+          <ul>
+            <li>
+              <p>Aktiivsel tab'il puudub programmiline olek (aria-selected).</p>
+              <ul>
+                <li><p>Puudujäägi tõttu on mittevastav standardi EN 301 549 ligipääsetavusnõue 9.4.1.2 Name, role, value</p></li>
+              </ul>
+            </li>
+            <li>
+              <p>Grammatikatabelite iframe'il puudub ligipääsetav nimi.</p>
+              <ul>
+                <li><p>Puudujäägi tõttu on mittevastav standardi EN 301 549 ligipääsetavusnõue 9.4.1.2 Name, role, value</p></li>
+              </ul>
+            </li>
+            <li>
+              <p>Arvud, kirjavahemärgid jne on esitatud loendis vaid visuaalselt.</p>
+              <ul>
+                <li><p>Puudujäägi tõttu on mittevastav standardi EN 301 549 ligipääsetavusnõue 9.1.3.1 Info and relationships</p></li>
+              </ul>
+            </li>
+            <li>
+              <p>Sõnumivahetuse näidisfotol puudub kirjeldus.</p>
+              <ul>
+                <li><p>Puudujäägi tõttu on mittevastavad standardi EN 301 549 ligipääsetavusnõuded 9.1.1.1 Non-text content, 9.1.4.5 Images of text</p></li>
+              </ul>
+            </li>
+            <li>
+              <p>Pealkirjade tasemete struktuur jätab vahele tasemeid.</p>
+              <ul>
+                <li><p>Puudujäägi tõttu on mittevastav standardi EN 301 549 ligipääsetavusnõue 9.1.3.1 Info and relationships</p></li>
+              </ul>
+            </li>
+            <li>
+              <p>Tab'ide vahel ei saa klaviatuurikäsklustega navigeerida.</p>
+              <ul>
+                <li><p>Puudujäägi tõttu on mittevastav standardi EN 301 549 ligipääsetavusnõue 9.2.1.1 Keyboard</p></li>
+              </ul>
+            </li>
+            <li>
+              <p>Grammatikatabelite ja maad ja rahvad PDF esituses veebilehel ei kuvata tabeleid ligipääsetavalt.</p>
+              <ul>
+                <li><p>Puudujäägi tõttu on mittevastavad standardi EN 301 549 ligipääsetavusnõuded 9.1.3.1 Info and relationships, 9.1.4.10 Reflow</p></li>
+              </ul>
+            </li>
+            <li>
+              <p>Kirjutamise tab kuvab alammenüüd, mis ei järgi tab paneelide loogikat.</p>
+              <ul>
+                <li><p>Puudujäägi tõttu on mittevastav standardi EN 301 549 ligipääsetavusnõue 9.3.2.4 Consistent identification</p></li>
+              </ul>
+            </li>
+            <li>
+              <p>Mõnes kohas kasutatakse ilma tekstilise sildita nuppe.</p>
+              <ul>
+                <li><p>Puudujäägi tõttu on mittevastav standardi EN 301 549 ligipääsetavusnõue 9.2.4.6 Headings and labels</p></li>
+              </ul>
+            </li>
+          </ul>
+        </div>
+
+        <div class="news-page__item">
+          <h3>Hääldusharjutused</h3>
+          <ul>
+            <li>
+              <p>Videopleier ei toeta kirjeldustõlke taasesitust.</p>
+              <ul>
+                <li><p>Puudujäägi tõttu on mittevastav standardi EN 301 549 ligipääsetavusnõue 7.2.1 Audio description playback</p></li>
+              </ul>
+            </li>
+            <li>
+              <p>Tagasi nupu „EKI hääldusharjutused" sisu on tähistatud pealkirjana.</p>
+              <ul>
+                <li><p>Puudujäägi tõttu on mittevastav standardi EN 301 549 ligipääsetavusnõue 9.1.3.1 Info and relationships</p></li>
+              </ul>
+            </li>
+            <li>
+              <p>Märkeruutude grupp ei ole tarkvaraliselt seotud küsimusega.</p>
+              <ul>
+                <li><p>Puudujäägi tõttu on mittevastav standardi EN 301 549 ligipääsetavusnõue 9.1.3.1 Info and relationships</p></li>
+              </ul>
+            </li>
+            <li>
+              <p>Harjutustes, kus tuleb täita lünk, ei ole lünk ekraanilugejale tajutavalt esitatud.</p>
+              <ul>
+                <li><p>Puudujäägi tõttu on mittevastav standardi EN 301 549 ligipääsetavusnõue 9.1.3.1 Info and relationships</p></li>
+              </ul>
+            </li>
+            <li>
+              <p>„Näita rohkem" nupu vajutamise järel lisatakse uus sisu nupu ette.</p>
+              <ul>
+                <li><p>Puudujäägi tõttu on mittevastavad standardi EN 301 549 ligipääsetavusnõuded 9.1.3.2 Meaningful sequence, 9.2.4.3 Focus Order</p></li>
+              </ul>
+            </li>
+            <li>
+              <p>Täishäälikute helinäidete nupud ei ole klaviatuuriga fookustatavad.</p>
+              <ul>
+                <li><p>Puudujäägi tõttu on mittevastavad standardi EN 301 549 ligipääsetavusnõuded 9.1.3.2 Meaningful sequence, 9.2.1.1 Keyboard, 9.4.1.2 Name, role, value</p></li>
+              </ul>
+            </li>
+            <li>
+              <p>Automaatne sõnade häälduse esitamine ei toimi klaviatuuri fookusega.</p>
+              <ul>
+                <li><p>Puudujäägi tõttu on mittevastav standardi EN 301 549 ligipääsetavusnõue 9.2.1.1 Keyboard</p></li>
+              </ul>
+            </li>
+            <li>
+              <p>Lünga täitmine on võimalik ainult lohistamisega.</p>
+              <ul>
+                <li><p>Puudujäägi tõttu on mittevastavad standardi EN 301 549 ligipääsetavusnõuded 9.2.1.1 Keyboard, 9.2.5.1 Pointer gestures</p></li>
+              </ul>
+            </li>
+            <li>
+              <p>Põhisisu piirkond (&lt;main&gt;) puudub.</p>
+              <ul>
+                <li><p>Puudujäägi tõttu on mittevastav standardi EN 301 549 ligipääsetavusnõue 9.2.4.1 Bypass blocks</p></li>
+              </ul>
+            </li>
+            <li>
+              <p>Piltsõnastiku kategooriatest möödumiseks tuleb klaviatuurikasutajal teha 52 vajutust.</p>
+              <ul>
+                <li><p>Puudujäägi tõttu on mittevastav standardi EN 301 549 ligipääsetavusnõue 9.2.4.1 Bypass blocks</p></li>
+              </ul>
+            </li>
+            <li>
+              <p>Navigatsioonimenüü avamise nupul puudub nimi ja olek.</p>
+              <ul>
+                <li><p>Puudujäägi tõttu on mittevastav standardi EN 301 549 ligipääsetavusnõue 9.4.1.2 Name, role, value</p></li>
+              </ul>
+            </li>
+            <li>
+              <p>Hääldusharjutuste juurde naasmise nupult puudub ligipääsetav nimi.</p>
+              <ul>
+                <li><p>Puudujäägi tõttu on mittevastav standardi EN 301 549 ligipääsetavusnõue 9.4.1.2 Name, role, value</p></li>
+              </ul>
+            </li>
+            <li>
+              <p>Harjutuse sulgemise nupul puudub ligipääsetav nimetus.</p>
+              <ul>
+                <li><p>Puudujäägi tõttu on mittevastav standardi EN 301 549 ligipääsetavusnõue 9.4.1.2 Name, role, value</p></li>
+              </ul>
+            </li>
+            <li>
+              <p>Sõna esitamise nupul puudub ligipääsetav nimetus.</p>
+              <ul>
+                <li><p>Puudujäägi tõttu on mittevastav standardi EN 301 549 ligipääsetavusnõue 9.4.1.2 Name, role, value</p></li>
+              </ul>
+            </li>
+            <li>
+              <p>Raadionuppudel puudub ligipääsetav nimetus.</p>
+              <ul>
+                <li><p>Puudujäägi tõttu on mittevastav standardi EN 301 549 ligipääsetavusnõue 9.4.1.2 Name, role, value</p></li>
+              </ul>
+            </li>
+            <li>
+              <p>Heli esitamise nuppudel ja märkeruutudel puuduvad ligipääsetavad nimetused.</p>
+              <ul>
+                <li><p>Puudujäägi tõttu on mittevastav standardi EN 301 549 ligipääsetavusnõue 9.4.1.2 Name, role, value</p></li>
+              </ul>
+            </li>
+            <li>
+              <p>Videotel puudub kirjeldus või ligipääsetav alternatiiv.</p>
+              <ul>
+                <li><p>Puudujäägi tõttu on mittevastav standardi EN 301 549 ligipääsetavusnõue 9.1.2.3 Audio description or media alternative (pre-recorded)</p></li>
+              </ul>
+            </li>
+            <li>
+              <p>Vale vastuse teade on lisatud raadionupu nimetuse sisse.</p>
+              <ul>
+                <li><p>Puudujäägi tõttu on mittevastavad standardi EN 301 549 ligipääsetavusnõuded 9.1.3.1 Info and relationships, 9.4.1.2 Name, role, value</p></li>
+              </ul>
+            </li>
+            <li>
+              <p>Sõnade kuulamisnupu nimetus ei kirjelda funktsiooni.</p>
+              <ul>
+                <li><p>Puudujäägi tõttu on mittevastav standardi EN 301 549 ligipääsetavusnõue 9.2.4.6 Headings and labels</p></li>
+              </ul>
+            </li>
+            <li>
+              <p>Sõna kuulamise nupu ligipääsetav nimi ei viita heli esitamisele.</p>
+              <ul>
+                <li><p>Puudujäägi tõttu on mittevastav standardi EN 301 549 ligipääsetavusnõue 9.4.1.2 Name, role, value</p></li>
+              </ul>
+            </li>
+            <li>
+              <p>Vale või õige vastuse teadet ei teatata ekraanilugeja kasutajale automaatselt.</p>
+              <ul>
+                <li><p>Puudujäägi tõttu on mittevastav standardi EN 301 549 ligipääsetavusnõue 9.4.1.3 Status messages</p></li>
+              </ul>
+            </li>
+            <li>
+              <p>Mõnes kohas kasutatakse ilma tekstilise sildita nuppe.</p>
+              <ul>
+                <li><p>Puudujäägi tõttu on mittevastav standardi EN 301 549 ligipääsetavusnõue 9.2.4.6 Headings and labels</p></li>
+              </ul>
+            </li>
+          </ul>
+        </div>
+
+        <div class="news-page__item">
+          <h3>Õpetaja tööriistad</h3>
+          <ul>
+            <li>
+              <p>Kasutusolukordade kirjelduses pole plokkide sisu semantiliselt loendina märgendatud.</p>
+              <ul>
+                <li><p>Puudujäägi tõttu on mittevastav standardi EN 301 549 ligipääsetavusnõue 9.1.3.1 Info and relationships</p></li>
+              </ul>
+            </li>
+            <li>
+              <p>Lingid on eristatud vaid madala kontrastsusega värviga.</p>
+              <ul>
+                <li><p>Puudujäägi tõttu on mittevastav standardi EN 301 549 ligipääsetavusnõue 9.1.4.1 Use of colour</p></li>
+              </ul>
+            </li>
+            <li>
+              <p>Paginatsiooni abil lehe vahetumisest ei anta ekraanilugejale teada.</p>
+              <ul>
+                <li><p>Puudujäägi tõttu on mittevastav standardi EN 301 549 ligipääsetavusnõue 9.4.1.3 Status messages</p></li>
+              </ul>
+            </li>
+            <li>
+              <p>Vormiväljade rühmad ei kasuta semantilisi pealkirju.</p>
+              <ul>
+                <li><p>Puudujäägi tõttu on mittevastavad standardi EN 301 549 ligipääsetavusnõuded 9.1.3.1 Info and relationships, 9.3.3.2 Labels or instructions</p></li>
+              </ul>
+            </li>
+            <li>
+              <p>Tagasiside kasti tekst lõigatakse suurendamisel ära.</p>
+              <ul>
+                <li><p>Puudujäägi tõttu on mittevastav standardi EN 301 549 ligipääsetavusnõue 9.1.4.10 Reflow</p></li>
+              </ul>
+            </li>
+            <li>
+              <p>Märkeruutude rühmal puudub programmiline seos.</p>
+              <ul>
+                <li><p>Puudujäägi tõttu on mittevastav standardi EN 301 549 ligipääsetavusnõue 9.1.3.1 Info and relationships</p></li>
+              </ul>
+            </li>
+            <li>
+              <p>Keeleoskuse märkeruutude fookuse indikaatori kontrast on liiga madal 1,37:1.</p>
+              <ul>
+                <li><p>Puudujäägi tõttu on mittevastav standardi EN 301 549 ligipääsetavusnõue 9.1.4.11 Non-text contrast</p></li>
+              </ul>
+            </li>
+            <li>
+              <p>Otsinguparameetri eemaldamise nupu ikooni kontrast on liiga väike.</p>
+              <ul>
+                <li><p>Puudujäägi tõttu on mittevastav standardi EN 301 549 ligipääsetavusnõue 9.1.4.11 Non-text contrast</p></li>
+              </ul>
+            </li>
+            <li>
+              <p>Lehe tiitel ei muutu vastavalt valitud tööriistale.</p>
+              <ul>
+                <li><p>Puudujäägi tõttu on mittevastav standardi EN 301 549 ligipääsetavusnõue 9.2.4.2 Page titled</p></li>
+              </ul>
+            </li>
+            <li>
+              <p>Tagasiside ja „Otsi" nupul puudub nähtav klaviatuurifookus.</p>
+              <ul>
+                <li><p>Puudujäägi tõttu on mittevastav standardi EN 301 549 ligipääsetavusnõue 9.2.4.7 Focus visible</p></li>
+              </ul>
+            </li>
+            <li>
+              <p>„Lisa, +" nupul puudub ligipääsetav nimetus.</p>
+              <ul>
+                <li><p>Puudujäägi tõttu on mittevastav standardi EN 301 549 ligipääsetavusnõue 9.4.1.2 Name, role, value</p></li>
+              </ul>
+            </li>
+            <li>
+              <p>Tabelis on tulbas „Lisainfo" olevad lingid esitatud lihttekstina, kuigi valikud käituvad lingina.</p>
+              <ul>
+                <li><p>Puudujäägi tõttu on mittevastav standardi EN 301 549 ligipääsetavusnõue 9.2.1.1 Keyboard, 9.4.1.2 Name, role, value</p></li>
+              </ul>
+            </li>
+            <li>
+              <p>Peakategooria ja alamkategooria valikukastidel puudub nähtav klaviatuurifookus.</p>
+              <ul>
+                <li><p>Puudujäägi tõttu on mittevastav standardi EN 301 549 ligipääsetavusnõue 9.2.4.7 Focus visible</p></li>
+              </ul>
+            </li>
+            <li>
+              <p>Paginatsiooni linkidel on ingliskeelsed ARIA-sildid.</p>
+              <ul>
+                <li><p>Puudujäägi tõttu on mittevastavad standardi EN 301 549 ligipääsetavusnõuded 9.2.5.3 Label in name, 9.3.1.2 Language of parts</p></li>
+              </ul>
+            </li>
+            <li>
+              <p>Lehe lang atribuut on ingliskeelne.</p>
+              <ul>
+                <li><p>Puudujäägi tõttu on mittevastav standardi EN 301 549 ligipääsetavusnõue 9.3.1.1 Language of page</p></li>
+              </ul>
+            </li>
+            <li>
+              <p>Iga sõna hinnatud tekstis on eraldi &lt;div&gt; element.</p>
+              <ul>
+                <li><p>Puudujäägi tõttu on mittevastav standardi EN 301 549 ligipääsetavusnõue 9.1.3.1 Info and relationships</p></li>
+              </ul>
+            </li>
+            <li>
+              <p>Teksti analüüsi tabel on märgendatud grid-dividena, mitte tabelina.</p>
+              <ul>
+                <li><p>Puudujäägi tõttu on mittevastav standardi EN 301 549 ligipääsetavusnõue 9.1.3.1 Info and relationships</p></li>
+              </ul>
+            </li>
+            <li>
+              <p>Keeletaseme eristus sõnades põhineb ainult värvil.</p>
+              <ul>
+                <li><p>Puudujäägi tõttu on mittevastav standardi EN 301 549 ligipääsetavusnõue 9.1.4.1 Use of colour</p></li>
+              </ul>
+            </li>
+            <li>
+              <p>Tekstistatistika plokk tekitab suurendamisel horisontaalse kerimise.</p>
+              <ul>
+                <li><p>Puudujäägi tõttu on mittevastav standardi EN 301 549 ligipääsetavusnõue 9.1.4.10 Reflow</p></li>
+              </ul>
+            </li>
+            <li>
+              <p>Tekstivälja puhastamise nupul puudub ligipääsetav nimetus.</p>
+              <ul>
+                <li><p>Puudujäägi tõttu on mittevastav standardi EN 301 549 ligipääsetavusnõue 9.4.1.2 Name, role, value</p></li>
+              </ul>
+            </li>
+            <li>
+              <p>Grammatilist infot saab näha ainult hiirega fookustades.</p>
+              <ul>
+                <li><p>Puudujäägi tõttu on mittevastavad standardi EN 301 549 ligipääsetavusnõuded 9.2.1.1 Keyboard, 9.4.1.2 Name, role, value</p></li>
+              </ul>
+            </li>
+            <li>
+              <p>Mõnes kohas kasutatakse ilma tekstilise sildita nuppe.</p>
+              <ul>
+                <li><p>Puudujäägi tõttu on mittevastav standardi EN 301 549 ligipääsetavusnõue 9.2.4.6 Headings and labels</p></li>
+              </ul>
+            </li>
+          </ul>
+        </div>
+
       </div>
       <div class="news-page__item">
         <h2>Tagasiside</h2>
-        <p>Me püüame pidevalt parandada käesoleva veebilehe ligipääsetavust. Kui te soovite anda tagasisidet ligipääsetavuse kohta või on midagi vajalikku jäänud teie jaoks ligipääsmatuks, siis
-          palun võtke meiega ühendust allpool olevate kontaktide kaudu.</p>
-        <p>E-post: eki@eki.ee</p>
+        <p>Me püüame pidevalt parandada käesoleva veebilehe ligipääsetavust. Kui te soovite anda tagasisidet ligipääsetavuse kohta või on midagi vajalikku jäänud teie jaoks ligipääsmatuks, siis palun võtke meiega ühendust allpool olevate kontaktide kaudu.</p>
+        <p>E-post: kasutajatugi@ekilex.ee</p>
         <p>Telefon: 617 7500</p>
         <p>Vastame teile esimesel võimalusel, kuid mitte hiljem kui kolme tööpäeva jooksul.</p>
       </div>
@@ -74,8 +510,7 @@
       </div>
       <div class="news-page__item">
         <h2>Teatise koostamine</h2>
-        <p>Käesoleva ligipääsetavuse teatis on koostatud enesehindamise __ põhjal.</p>
-        <p>Käesolev teatis on koostatud 01.05.2025.</p>
+        <p>Käesoleva ligipääsetavuse teatis on koostatud 26.11.2025.</p>
       </div>
     </div>
   </div>
