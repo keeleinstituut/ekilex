@@ -114,9 +114,11 @@ public interface WebConstant {
 
 	String COLLOC_MEMBER_MOVE_URI = "/colloc_member_move";
 
-	String COLLOC_MEMBER_SEARCH_URI = "/colloc_member_search";
+	String COLLOC_MEMBER_FORM_SEARCH_URI = "/colloc_member_form_search";
 
-	String COLLOC_MEMBER_CREATE_URI = "/colloc_member_create";
+	String COLLOC_MEMBER_MEANING_SEARCH_URI = "/colloc_member_meaning_search";
+
+	String COLLOC_MEMBER_SAVE_URI = "/colloc_member_save";
 
 	String WORD_SELECT_URI = "/wordselect";
 
@@ -259,6 +261,8 @@ public interface WebConstant {
 	String UPDATE_ORDERING_URI = "/update_ordering";
 
 	String UPDATE_COLLOC_MEMBER_GROUP_ORDER_URI = "/update_colloc_member_group_order";
+
+	String UPDATE_COLLOC_MEMBER_ORDER_URI = "/update_colloc_member_order";
 
 	String UPDATE_LEVELS_URI = "/update_levels";
 

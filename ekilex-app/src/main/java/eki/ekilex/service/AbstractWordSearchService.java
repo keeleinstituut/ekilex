@@ -29,6 +29,7 @@ import eki.ekilex.data.SearchFilter;
 import eki.ekilex.data.Word;
 import eki.ekilex.data.WordDescript;
 import eki.ekilex.data.WordsResult;
+import eki.ekilex.service.db.CollocationDbService;
 import eki.ekilex.service.db.LexDataDbService;
 import eki.ekilex.service.db.LexSearchDbService;
 import eki.ekilex.service.db.LookupDbService;
@@ -42,6 +43,9 @@ public abstract class AbstractWordSearchService extends AbstractSearchService {
 
 	@Autowired
 	protected LexDataDbService lexDataDbService;
+
+	@Autowired
+	protected CollocationDbService collocationDbService;
 
 	@Autowired
 	protected LookupDbService lookupDbService;

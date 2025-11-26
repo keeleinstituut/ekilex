@@ -174,11 +174,11 @@ public class LexSearchService extends AbstractWordSearchService {
 
 		Lexeme lexeme = lexSearchDbService.getLexeme(lexemeId, CLASSIF_LABEL_LANG_EST);
 		permCalculator.applyCrud(user, lexeme);
-		List<CollocPosGroup> primaryCollocations = lexDataDbService.getPrimaryCollocations(lexemeId, CLASSIF_LABEL_LANG_EST);
-		List<Colloc> secondaryCollocations = lexDataDbService.getSecondaryCollocations(lexemeId);
-		List<CollocMemberMeaning> collocationMemberMeanings = lexDataDbService.getCollocationMemberMeanings(lexemeId);
-		List<CollocMember> collocationMembers = commonDataDbService.getCollocationMembers(lexemeId, CLASSIF_LABEL_LANG_EST);
-		boolean isCollocationsExist = lexDataDbService.isCollocationsExist(lexemeId);
+		List<CollocPosGroup> primaryCollocations = collocationDbService.getPrimaryCollocations(lexemeId, CLASSIF_LABEL_LANG_EST);
+		List<Colloc> secondaryCollocations = collocationDbService.getSecondaryCollocations(lexemeId);
+		List<CollocMemberMeaning> collocationMemberMeanings = collocationDbService.getCollocationMemberMeanings(lexemeId);
+		List<CollocMember> collocationMembers = collocationDbService.getCollocationMembers(lexemeId, CLASSIF_LABEL_LANG_EST);
+		boolean isCollocationsExist = collocationDbService.isCollocationsExist(lexemeId);
 		boolean isCollocationMemberMeaningCandidacyExist = CollectionUtils.size(collocationMemberMeanings) > 1;
 
 		lexeme.setPrimaryCollocations(primaryCollocations);
@@ -310,11 +310,11 @@ public class LexSearchService extends AbstractWordSearchService {
 			List<CollocPosGroup> primaryCollocations = null;
 			List<Colloc> secondaryCollocations = null;
 			List<CollocMemberMeaning> collocationMemberMeanings = null;
-			List<CollocMember> collocationMembers = commonDataDbService.getCollocationMembers(lexemeId, CLASSIF_LABEL_LANG_EST);
+			List<CollocMember> collocationMembers = collocationDbService.getCollocationMembers(lexemeId, CLASSIF_LABEL_LANG_EST);
 			if (isCollocData) {
-				primaryCollocations = lexDataDbService.getPrimaryCollocations(lexemeId, CLASSIF_LABEL_LANG_EST);
-				secondaryCollocations = lexDataDbService.getSecondaryCollocations(lexemeId);
-				collocationMemberMeanings = lexDataDbService.getCollocationMemberMeanings(lexemeId);
+				primaryCollocations = collocationDbService.getPrimaryCollocations(lexemeId, CLASSIF_LABEL_LANG_EST);
+				secondaryCollocations = collocationDbService.getSecondaryCollocations(lexemeId);
+				collocationMemberMeanings = collocationDbService.getCollocationMemberMeanings(lexemeId);
 			}
 			List<Freeform> meaningFreeforms = commonDataDbService.getMeaningFreeforms(meaningId, CLASSIF_LABEL_LANG_EST);
 			List<LearnerComment> meaningLearnerComments = commonDataDbService.getMeaningLearnerComments(meaningId);
@@ -328,7 +328,7 @@ public class LexSearchService extends AbstractWordSearchService {
 			List<MeaningRelation> meaningRelations = commonDataDbService.getMeaningRelations(meaningId, meaningWordPreferredOrderDatasetCodes, CLASSIF_LABEL_LANG_EST);
 			List<List<MeaningRelation>> viewMeaningRelations = conversionUtil.composeViewMeaningRelations(meaningRelations, userProfile, wordLang, languagesOrder);
 			List<DefinitionLangGroup> definitionLangGroups = conversionUtil.composeMeaningDefinitionLangGroups(definitions, languagesOrder);
-			boolean isCollocationsExist = lexDataDbService.isCollocationsExist(lexemeId);
+			boolean isCollocationsExist = collocationDbService.isCollocationsExist(lexemeId);
 			boolean isCollocationMemberMeaningCandidacyExist = CollectionUtils.size(collocationMemberMeanings) > 1;
 
 			lexeme.setGovernments(governments);

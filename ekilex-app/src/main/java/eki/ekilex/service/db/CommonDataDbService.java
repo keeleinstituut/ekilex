@@ -1,7 +1,6 @@
 package eki.ekilex.service.db;
 
 import static eki.ekilex.data.db.main.Public.PUBLIC;
-import static eki.ekilex.data.db.main.Tables.COLLOCATION_MEMBER;
 import static eki.ekilex.data.db.main.Tables.DATASET;
 import static eki.ekilex.data.db.main.Tables.DATASET_FREEFORM_TYPE;
 import static eki.ekilex.data.db.main.Tables.DATASET_PERMISSION;
@@ -13,7 +12,6 @@ import static eki.ekilex.data.db.main.Tables.DEFINITION_SOURCE_LINK;
 import static eki.ekilex.data.db.main.Tables.DEFINITION_TYPE_LABEL;
 import static eki.ekilex.data.db.main.Tables.DOMAIN;
 import static eki.ekilex.data.db.main.Tables.DOMAIN_LABEL;
-import static eki.ekilex.data.db.main.Tables.FORM;
 import static eki.ekilex.data.db.main.Tables.FREEFORM;
 import static eki.ekilex.data.db.main.Tables.FREEFORM_SOURCE_LINK;
 import static eki.ekilex.data.db.main.Tables.FREEFORM_TYPE;
@@ -41,9 +39,6 @@ import static eki.ekilex.data.db.main.Tables.MEANING_RELATION;
 import static eki.ekilex.data.db.main.Tables.MEANING_REL_TYPE_LABEL;
 import static eki.ekilex.data.db.main.Tables.MEANING_SEMANTIC_TYPE;
 import static eki.ekilex.data.db.main.Tables.MEANING_TAG;
-import static eki.ekilex.data.db.main.Tables.MORPH_LABEL;
-import static eki.ekilex.data.db.main.Tables.POS_GROUP_LABEL;
-import static eki.ekilex.data.db.main.Tables.REL_GROUP_LABEL;
 import static eki.ekilex.data.db.main.Tables.SEMANTIC_TYPE_LABEL;
 import static eki.ekilex.data.db.main.Tables.SOURCE;
 import static eki.ekilex.data.db.main.Tables.TAG;
@@ -77,7 +72,6 @@ import eki.common.constant.AuthorityOperation;
 import eki.common.constant.ClassifierName;
 import eki.common.constant.FreeformOwner;
 import eki.ekilex.data.Classifier;
-import eki.ekilex.data.CollocMember;
 import eki.ekilex.data.Dataset;
 import eki.ekilex.data.LexemeRelation;
 import eki.ekilex.data.MeaningForum;
@@ -86,7 +80,6 @@ import eki.ekilex.data.OrderedClassifier;
 import eki.ekilex.data.Origin;
 import eki.ekilex.data.SearchLangsRestriction;
 import eki.ekilex.data.WordForum;
-import eki.ekilex.data.db.main.tables.CollocationMember;
 import eki.ekilex.data.db.main.tables.DatasetFreeformType;
 import eki.ekilex.data.db.main.tables.Definition;
 import eki.ekilex.data.db.main.tables.DefinitionDataset;
@@ -96,7 +89,6 @@ import eki.ekilex.data.db.main.tables.DefinitionSourceLink;
 import eki.ekilex.data.db.main.tables.DefinitionTypeLabel;
 import eki.ekilex.data.db.main.tables.Domain;
 import eki.ekilex.data.db.main.tables.DomainLabel;
-import eki.ekilex.data.db.main.tables.Form;
 import eki.ekilex.data.db.main.tables.Freeform;
 import eki.ekilex.data.db.main.tables.FreeformSourceLink;
 import eki.ekilex.data.db.main.tables.FreeformType;
@@ -120,9 +112,6 @@ import eki.ekilex.data.db.main.tables.MeaningNote;
 import eki.ekilex.data.db.main.tables.MeaningNoteSourceLink;
 import eki.ekilex.data.db.main.tables.MeaningRelTypeLabel;
 import eki.ekilex.data.db.main.tables.MeaningRelation;
-import eki.ekilex.data.db.main.tables.MorphLabel;
-import eki.ekilex.data.db.main.tables.PosGroupLabel;
-import eki.ekilex.data.db.main.tables.RelGroupLabel;
 import eki.ekilex.data.db.main.tables.Source;
 import eki.ekilex.data.db.main.tables.Usage;
 import eki.ekilex.data.db.main.tables.UsageSourceLink;
@@ -1334,89 +1323,6 @@ public class CommonDataDbService extends AbstractDataDbService {
 				.groupBy(r.ID, l2.ID, w2.ID, rtl.VALUE)
 				.orderBy(r.ORDER_BY)
 				.fetchInto(LexemeRelation.class);
-	}
-
-	public List<CollocMember> getCollocationMembers(Long lexemeId, String classifierLabelLang) {
-
-		final BigDecimal COLLOC_MEMBER_WEIGHT_LEVEL_1 = new BigDecimal("1.0");
-		final BigDecimal COLLOC_MEMBER_WEIGHT_LEVEL_2 = new BigDecimal("0.8");
-		final BigDecimal COLLOC_MEMBER_WEIGHT_LEVEL_3 = new BigDecimal("0.5");
-
-		CollocationMember cm = COLLOCATION_MEMBER.as("cm");
-		Word mw = WORD.as("mw");
-		Word jw = WORD.as("jw");
-		Lexeme ml = LEXEME.as("ml");
-		Lexeme jl = LEXEME.as("jl");
-		Form mf = FORM.as("mf");
-		MorphLabel mfl = MORPH_LABEL.as("mfl");
-		PosGroupLabel pgrl = POS_GROUP_LABEL.as("pgrl");
-		RelGroupLabel rgrl = REL_GROUP_LABEL.as("rgrl");
-		Definition md = DEFINITION.as("md");
-		DefinitionDataset mdd = DEFINITION_DATASET.as("mdd");
-
-		Field<Object> mdf = DSL
-				.select(DSL
-						.arrayAgg(md.VALUE)
-						.orderBy(md.ORDER_BY))
-				.from(md)
-				.where(
-						md.MEANING_ID.eq(ml.MEANING_ID)
-								.andExists(DSL
-										.select(mdd.DEFINITION_ID)
-										.from(mdd)
-										.where(
-												mdd.DEFINITION_ID.eq(md.ID)
-														.and(mdd.DATASET_CODE.eq(DATASET_EKI)))))
-				.asField();
-
-		Field<Integer> wlf = DSL.field(DSL
-				.when(cm.WEIGHT.eq(COLLOC_MEMBER_WEIGHT_LEVEL_1), DSL.value(1))
-				.when(cm.WEIGHT.eq(COLLOC_MEMBER_WEIGHT_LEVEL_2), DSL.value(2))
-				.when(cm.WEIGHT.eq(COLLOC_MEMBER_WEIGHT_LEVEL_3), DSL.value(3)));
-
-		return mainDb
-				.select(
-						cm.ID,
-						cm.COLLOC_LEXEME_ID,
-						cm.MEMBER_LEXEME_ID,
-						mw.ID.as("member_word_id"),
-						mw.VALUE.as("member_word_value"),
-						cm.MEMBER_FORM_ID,
-						mf.VALUE.as("form_value"),
-						mf.MORPH_CODE,
-						mfl.VALUE.as("morph_value"),
-						cm.CONJUNCT_LEXEME_ID,
-						jw.VALUE.as("conjunctValue"),
-						cm.POS_GROUP_CODE,
-						pgrl.VALUE.as("pos_group_value"),
-						cm.REL_GROUP_CODE,
-						rgrl.VALUE.as("rel_group_value"),
-						cm.WEIGHT,
-						wlf.as("weight_level"),
-						cm.MEMBER_ORDER,
-						cm.GROUP_ORDER,
-						mdf.as("definition_values"))
-				.from(cm
-						.innerJoin(ml).on(ml.ID.eq(cm.MEMBER_LEXEME_ID))
-						.innerJoin(mw).on(mw.ID.eq(ml.WORD_ID))
-						.innerJoin(mf).on(mf.ID.eq(cm.MEMBER_FORM_ID))
-						.leftOuterJoin(jl).on(jl.ID.eq(cm.CONJUNCT_LEXEME_ID))
-						.leftOuterJoin(jw).on(jw.ID.eq(jl.WORD_ID))
-						.leftOuterJoin(mfl).on(
-								mfl.CODE.eq(mf.MORPH_CODE)
-										.and(mfl.TYPE.eq(CLASSIF_LABEL_TYPE_DESCRIP))
-										.and(mfl.LANG.eq(classifierLabelLang)))
-						.leftOuterJoin(pgrl).on(
-								pgrl.CODE.eq(cm.POS_GROUP_CODE)
-										.and(pgrl.TYPE.eq(CLASSIF_LABEL_TYPE_DESCRIP))
-										.and(pgrl.LANG.eq(classifierLabelLang)))
-						.leftOuterJoin(rgrl).on(
-								rgrl.CODE.eq(cm.REL_GROUP_CODE)
-										.and(rgrl.TYPE.eq(CLASSIF_LABEL_TYPE_DESCRIP))
-										.and(rgrl.LANG.eq(classifierLabelLang))))
-				.where(cm.COLLOC_LEXEME_ID.eq(lexemeId))
-				.orderBy(cm.MEMBER_ORDER)
-				.fetchInto(CollocMember.class);
 	}
 
 	public List<String> getMeaningTags(Long meaningId) {

@@ -23,6 +23,7 @@ import eki.ekilex.data.CollocConjunct;
 import eki.ekilex.data.CollocMember;
 import eki.ekilex.data.CollocMemberForm;
 import eki.ekilex.data.CollocMemberMeaning;
+import eki.ekilex.data.CollocMemberOrder;
 import eki.ekilex.data.CollocWeight;
 import eki.ekilex.service.core.ActivityLogService;
 import eki.ekilex.service.db.CollocationDbService;
@@ -44,6 +45,87 @@ public class CollocationService implements SystemConstant, GlobalConstant {
 
 	@Autowired
 	private MessageSource messageSource;
+
+	@Transactional(rollbackFor = Exception.class)
+	public void deleteCollocMember(Long collocMemberId, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
+
+		Long lexemeId = activityLogService.getActivityOwnerId(collocMemberId, ActivityEntity.COLLOC_MEMBER);
+		ActivityLogData activityLog = activityLogService.prepareActivityLog("deleteCollocMember", lexemeId, ActivityOwner.LEXEME, roleDatasetCode, isManualEventOnUpdateEnabled);
+		collocationDbService.deleteCollocMember(collocMemberId);
+		activityLogService.createActivityLog(activityLog, collocMemberId, ActivityEntity.COLLOC_MEMBER);
+	}
+
+	@Transactional(rollbackFor = Exception.class)
+	public void updateCollocMemberGroupOrder(
+			Long collocLexemeId,
+			Long memberLexemeId,
+			String direction,
+			String roleDatasetCode,
+			boolean isManualEventOnUpdateEnabled) throws Exception {
+
+		ActivityLogData activityLog = activityLogService.prepareActivityLog("updateCollocMemberGroupOrder", memberLexemeId, ActivityOwner.LEXEME, roleDatasetCode, isManualEventOnUpdateEnabled);
+		List<CollocMemberOrder> collocMembers = collocationDbService.getCollocMemberOrdersOfRelGroup(collocLexemeId, memberLexemeId);
+		int collocMemberCount = collocMembers.size();
+		CollocMemberOrder sourceCollocMember = collocMembers.stream()
+				.filter(collocMember -> collocMember.getCollocLexemeId().equals(collocLexemeId))
+				.findFirst()
+				.get();
+		int sourceCollocMemberIndex = collocMembers.indexOf(sourceCollocMember);
+		if (sourceCollocMemberIndex < 0) {
+			return;
+		}
+		CollocMemberOrder targetCollocMember = null;
+		if (StringUtils.equalsIgnoreCase(direction, "up") && (sourceCollocMemberIndex > 0)) {
+			targetCollocMember = collocMembers.get(sourceCollocMemberIndex - 1);
+		} else if (StringUtils.equalsIgnoreCase(direction, "down") && (sourceCollocMemberIndex < (collocMemberCount - 1))) {
+			targetCollocMember = collocMembers.get(sourceCollocMemberIndex + 1);
+		}
+		if (targetCollocMember != null) {
+			Long sourceCollocMemberId = sourceCollocMember.getId();
+			Integer sourceCollocGroupOrder = sourceCollocMember.getGroupOrder();
+			Long targetCollocMemberId = targetCollocMember.getId();
+			Integer targetCollocGroupOrder = targetCollocMember.getGroupOrder();
+			collocationDbService.updateLexemeCollocMemberGroupOrder(sourceCollocMemberId, targetCollocGroupOrder);
+			collocationDbService.updateLexemeCollocMemberGroupOrder(targetCollocMemberId, sourceCollocGroupOrder);
+		}
+		activityLogService.createActivityLog(activityLog, memberLexemeId, ActivityEntity.LEXEME);
+	}
+
+	@Transactional(rollbackFor = Exception.class)
+	public void updateCollocMemberOrder(
+			Long collocLexemeId,
+			Long memberLexemeId,
+			String direction,
+			String roleDatasetCode,
+			boolean isManualEventOnUpdateEnabled) throws Exception {
+
+		ActivityLogData activityLog = activityLogService.prepareActivityLog("updateCollocMemberOrder", memberLexemeId, ActivityOwner.LEXEME, roleDatasetCode, isManualEventOnUpdateEnabled);
+		List<CollocMemberOrder> collocMembers = collocationDbService.getCollocMemberOrders(collocLexemeId);
+		int collocMemberCount = collocMembers.size();
+		CollocMemberOrder sourceCollocMember = collocMembers.stream()
+				.filter(collocMember -> collocMember.getMemberLexemeId().equals(memberLexemeId))
+				.findFirst()
+				.get();
+		int sourceCollocMemberIndex = collocMembers.indexOf(sourceCollocMember);
+		if (sourceCollocMemberIndex < 0) {
+			return;
+		}
+		CollocMemberOrder targetCollocMember = null;
+		if (StringUtils.equalsIgnoreCase(direction, "up") && (sourceCollocMemberIndex > 0)) {
+			targetCollocMember = collocMembers.get(sourceCollocMemberIndex - 1);
+		} else if (StringUtils.equalsIgnoreCase(direction, "down") && (sourceCollocMemberIndex < (collocMemberCount - 1))) {
+			targetCollocMember = collocMembers.get(sourceCollocMemberIndex + 1);
+		}
+		if (targetCollocMember != null) {
+			Long sourceCollocMemberId = sourceCollocMember.getId();
+			Integer sourceCollocMemberOrder = sourceCollocMember.getMemberOrder();
+			Long targetCollocMemberId = targetCollocMember.getId();
+			Integer targetCollocMemberOrder = targetCollocMember.getMemberOrder();
+			collocationDbService.updateLexemeCollocMemberOrder(sourceCollocMemberId, targetCollocMemberOrder);
+			collocationDbService.updateLexemeCollocMemberOrder(targetCollocMemberId, sourceCollocMemberOrder);
+		}
+		activityLogService.createActivityLog(activityLog, memberLexemeId, ActivityEntity.LEXEME);
+	}
 
 	@Transactional(rollbackFor = Exception.class)
 	public void moveCollocMember(
@@ -68,14 +150,14 @@ public class CollocationService implements SystemConstant, GlobalConstant {
 	}
 
 	@Transactional(rollbackFor = Exception.class)
-	public void createCollocMember(
-			Long collocLexemeId,
-			Long collocMemberLexemeId,
-			Long collocMemberFormId,
-			Long conjunctLexemeId,
-			String posGroupCode,
-			String relGroupCode,
-			BigDecimal weight) {
+	public void saveCollocMember(CollocMember collocMember) {
+
+		Long collocMemberId = collocMember.getId();
+		Long collocLexemeId = collocMember.getCollocLexemeId();
+		Long memberLexemeId = collocMember.getMemberLexemeId();
+		Long conjunctLexemeId = collocMember.getConjunctLexemeId();
+		String posGroupCode = collocMember.getPosGroupCode();
+		String relGroupCode = collocMember.getRelGroupCode();
 
 		if (conjunctLexemeId != null) {
 			relGroupCode = COLLOCATION_REL_GROUP_CODE_CONJUNCT;
@@ -88,7 +170,7 @@ public class CollocationService implements SystemConstant, GlobalConstant {
 		}
 		Integer groupOrder = null;
 		if (StringUtils.isNotBlank(posGroupCode) && StringUtils.isNotBlank(relGroupCode)) {
-			groupOrder = collocationDbService.getMaxGroupOrder(collocMemberLexemeId, posGroupCode, relGroupCode);
+			groupOrder = collocationDbService.getMaxGroupOrder(memberLexemeId, posGroupCode, relGroupCode);
 			if (groupOrder == null) {
 				groupOrder = 1;
 			} else {
@@ -96,20 +178,23 @@ public class CollocationService implements SystemConstant, GlobalConstant {
 			}
 		}
 
-		CollocMember collocMember = new CollocMember();
-		collocMember.setCollocLexemeId(collocLexemeId);
-		collocMember.setMemberLexemeId(collocMemberLexemeId);
-		collocMember.setMemberFormId(collocMemberFormId);
-		collocMember.setConjunctLexemeId(conjunctLexemeId);
-		collocMember.setPosGroupCode(posGroupCode);
 		collocMember.setRelGroupCode(relGroupCode);
-		collocMember.setWeight(weight);
 		collocMember.setMemberOrder(memberOrder);
 		collocMember.setGroupOrder(groupOrder);
 
-		collocationDbService.createCollocMember(collocMember);
+		if (collocMemberId == null) {
+			collocationDbService.createCollocMember(collocMember);
+		} else {
+			collocationDbService.updateCollocMember(collocMember);
+		}
 	}
 
+	public CollocMember getCollocMember(Long id) {
+		CollocMember collocMember = collocationDbService.getCollocMember(id, CLASSIF_LABEL_LANG_EST);
+		return collocMember;
+	}
+
+	@Transactional
 	public List<CollocMemberForm> getCollocMemberForms(String formValue, String lang, String datasetCode) {
 
 		List<CollocMemberForm> collocMemberForms = collocationDbService.getCollocMemberForms(formValue, lang, datasetCode, CLASSIF_LABEL_LANG_EST);
@@ -123,6 +208,32 @@ public class CollocationService implements SystemConstant, GlobalConstant {
 					if (collocMemberMeanings.size() == 1) {
 						CollocMemberMeaning onlyCollocMemberMeaning = collocMemberMeanings.get(0);
 						onlyCollocMemberMeaning.setSelected(true);
+					}
+				}
+			}
+		}
+		return collocMemberForms;
+	}
+
+	@Transactional
+	public List<CollocMemberForm> getCollocMemberForms(CollocMember collocMember) {
+
+		String datasetCode = collocMember.getDatasetCode();
+		String lang = collocMember.getLang();
+		Long memberMeaningId = collocMember.getMemberMeaningId();
+		Long memberFormId = collocMember.getMemberFormId();
+		String memberFormValue = collocMember.getMemberFormValue();
+		List<CollocMemberForm> collocMemberForms = collocationDbService.getCollocMemberForms(memberFormValue, lang, datasetCode, CLASSIF_LABEL_LANG_EST);
+
+		if (CollectionUtils.isNotEmpty(collocMemberForms)) {
+			for (CollocMemberForm collocMemberForm : collocMemberForms) {
+				boolean isFormSelected = memberFormId.equals(collocMemberForm.getFormId());
+				collocMemberForm.setSelected(isFormSelected);
+				List<CollocMemberMeaning> collocMemberMeanings = collocMemberForm.getCollocMemberMeanings();
+				if (CollectionUtils.isNotEmpty(collocMemberMeanings)) {
+					for (CollocMemberMeaning collocMemberMeaning : collocMemberMeanings) {
+						boolean isMeaningSelected = memberMeaningId.equals(collocMemberMeaning.getMeaningId());
+						collocMemberMeaning.setSelected(isMeaningSelected);
 					}
 				}
 			}

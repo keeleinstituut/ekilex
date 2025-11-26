@@ -1,6 +1,5 @@
 package eki.ekilex.service.db;
 
-import static eki.ekilex.data.db.main.Tables.COLLOCATION_MEMBER;
 import static eki.ekilex.data.db.main.Tables.DEFINITION;
 import static eki.ekilex.data.db.main.Tables.DEFINITION_DATASET;
 import static eki.ekilex.data.db.main.Tables.DEFINITION_FREEFORM;
@@ -330,14 +329,6 @@ public class CudDbService extends AbstractDataDbService {
 				.update(FREEFORM)
 				.set(FREEFORM.ORDER_BY, item.getOrderby())
 				.where(FREEFORM.ID.eq(item.getId()))
-				.execute();
-	}
-
-	public void updateLexemeCollocMemberGroupOrder(Long collocMemberId, Integer groupOrder) {
-		mainDb
-				.update(COLLOCATION_MEMBER)
-				.set(COLLOCATION_MEMBER.GROUP_ORDER, groupOrder)
-				.where(COLLOCATION_MEMBER.ID.eq(collocMemberId))
 				.execute();
 	}
 
@@ -2070,20 +2061,6 @@ public class CudDbService extends AbstractDataDbService {
 		mainDb
 				.delete(LEXEME_REGION)
 				.where(LEXEME_REGION.ID.eq(lexemeRegionId))
-				.execute();
-	}
-
-	public void deleteLexemeCollocMembers(Long lexemeId) {
-		mainDb
-				.delete(COLLOCATION_MEMBER)
-				.where(COLLOCATION_MEMBER.MEMBER_LEXEME_ID.eq(lexemeId))
-				.execute();
-	}
-
-	public void deleteCollocMember(Long collocMemberId) {
-		mainDb
-				.delete(COLLOCATION_MEMBER)
-				.where(COLLOCATION_MEMBER.ID.eq(collocMemberId))
 				.execute();
 	}
 

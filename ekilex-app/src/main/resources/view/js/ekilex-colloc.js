@@ -1,3 +1,45 @@
+$.fn.lexemeCollocMemberGroupOrderPlugin = function() {
+	return this.each(function() {
+		const btn = $(this);
+		btn.on('click', function() {
+			const collocLexemeId = btn.attr("data-colloc-lexeme-id");
+			const memberLexemeId = btn.attr("data-member-lexeme-id");
+			const direction = btn.attr("data-direction");
+			const successCallback = btn.attr("data-callback");
+			const successCallbackFunc = createCallback(successCallback);
+			const data = {
+				collocLexemeId: collocLexemeId,
+				memberLexemeId: memberLexemeId,
+				direction: direction
+			};
+			postJson(applicationUrl + 'update_colloc_member_group_order', data).done(function() {
+				successCallbackFunc();
+			});
+		})
+	})
+}
+
+$.fn.collocMemberOrderPlugin = function() {
+	return this.each(function() {
+		const btn = $(this);
+		btn.on('click', function() {
+			const collocLexemeId = btn.attr("data-colloc-lexeme-id");
+			const memberLexemeId = btn.attr("data-member-lexeme-id");
+			const direction = btn.attr("data-direction");
+			const successCallback = btn.attr("data-callback");
+			const successCallbackFunc = createCallback(successCallback);
+			const data = {
+				collocLexemeId: collocLexemeId,
+				memberLexemeId: memberLexemeId,
+				direction: direction
+			};
+			postJson(applicationUrl + 'update_colloc_member_order', data).done(function() {
+				successCallbackFunc();
+			});
+		})
+	})
+}
+
 $.fn.collocMemberMovePlugin = function() {
 	return this.each(function() {
 		const obj = $(this);
@@ -111,7 +153,7 @@ $.fn.collocRelGroupTogglePlugin = function() {
 	});
 }
 
-$.fn.collocMemberSearchPlugin = function() {
+$.fn.collocMemberFormSearchPlugin = function() {
 	return this.each(function() {
 		const obj = $(this);
 		obj.on('submit', function(e) {
@@ -132,8 +174,8 @@ $.fn.collocMemberSearchPlugin = function() {
 				method: 'POST'
 			}).done(function(data) {
 				closeWaitDlg();
-				$("button[name='collocMemberCreateBtn']").prop('disabled', false);
-				$('#colloc_members_section').html(data);
+				$("button[name='collocMemberSaveBtn']").prop('disabled', false);
+				$('#add_colloc_member_section').html(data);
 			}).fail(function(data) {
 				console.log(data);
 				closeWaitDlg();
@@ -143,25 +185,25 @@ $.fn.collocMemberSearchPlugin = function() {
 	});
 }
 
-$.fn.collocMemberCreatePlugin = function() {
+$.fn.collocMemberSavePlugin = function() {
 	return this.each(function() {
 		const obj = $(this);
 		obj.on('click', function(e) {
 			e.preventDefault();
 
-			const collocMemberCreateModal = obj.closest('.modal');
-			const collocMemberCreateForm = collocMemberCreateModal.find('form[name="collocMemberCreateForm"]');
-			const successCallback = collocMemberCreateModal.attr("data-callback");
+			const collocMemberSaveModal = obj.closest('.modal');
+			const collocMemberSaveForm = collocMemberSaveModal.find('form[name="collocMemberSaveForm"]');
+			const successCallback = collocMemberSaveModal.attr("data-callback");
 			let successCallbackFunc = createCallback(successCallback);
-			const actionUrl = collocMemberCreateForm.attr('action');
+			const actionUrl = collocMemberSaveForm.attr('action');
 
 			$.ajax({
 				url: actionUrl,
-				data: collocMemberCreateForm.serialize(),
+				data: collocMemberSaveForm.serialize(),
 				method: 'POST'
 			}).done(function(data) {
 				if (data.status == 'OK') {
-					collocMemberCreateModal.modal('hide');
+					collocMemberSaveModal.modal('hide');
 					successCallbackFunc();
 					openMessageDlg(data.message);
 				} else if (data.status == 'INVALID') {
@@ -175,4 +217,30 @@ $.fn.collocMemberCreatePlugin = function() {
 	});
 }
 
+$.fn.initCollocMemberUpdatePlugin = function() {
+	return this.each(function() {
+		const dlg = $(this);
+		dlg.on('shown.bs.modal', function() {
+
+			const collocMemberMeaningSearchForm = dlg.find('form[name="collocMemberMeaningSearchForm"]');
+			const collocMemberId = collocMemberMeaningSearchForm.find('input[name="id"]').val();
+			const actionUrl = collocMemberMeaningSearchForm.attr('action');
+			openWaitDlg();
+
+			$.ajax({
+				url: actionUrl,
+				data: collocMemberMeaningSearchForm.serialize(),
+				method: 'POST'
+			}).done(function(data) {
+				closeWaitDlg();
+				$("button[name='collocMemberSaveBtn']").prop('disabled', false);
+				$('#edit_colloc_member_section_' + collocMemberId).html(data);
+			}).fail(function(data) {
+				console.log(data);
+				closeWaitDlg();
+				openAlertDlg(messages["common.error"]);
+			});
+		});
+	});
+}
 

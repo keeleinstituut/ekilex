@@ -20,7 +20,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.SessionAttributes;
@@ -37,7 +36,6 @@ import eki.ekilex.data.MeaningWordCandidates;
 import eki.ekilex.data.Response;
 import eki.ekilex.data.SimpleWord;
 import eki.ekilex.data.Tag;
-import eki.ekilex.data.UpdateCollocOrderRequest;
 import eki.ekilex.data.UserContextData;
 import eki.ekilex.data.Word;
 import eki.ekilex.data.WordDetails;
@@ -425,23 +423,4 @@ public class LexEditController extends AbstractPrivatePageController {
 		return RESPONSE_OK_VER2;
 	}
 
-	@ResponseBody
-	@PostMapping(UPDATE_COLLOC_MEMBER_GROUP_ORDER_URI)
-	public String updateCollocMemberGroupOrder(
-			@RequestBody UpdateCollocOrderRequest updateCollocOrderRequest, @ModelAttribute(name = SESSION_BEAN) SessionBean sessionBean) throws Exception {
-
-		logger.debug("Update colloc order for {}", updateCollocOrderRequest);
-
-		UserContextData userContextData = getUserContextData();
-		String userRoleDatasetCode = userContextData.getUserRoleDatasetCode();
-		boolean isManualEventOnUpdateEnabled = sessionBean.isManualEventOnUpdateEnabled();
-
-		Long collocLexemeId = updateCollocOrderRequest.getCollocLexemeId();
-		Long memberLexemeId = updateCollocOrderRequest.getMemberLexemeId();
-		String direction = updateCollocOrderRequest.getDirection();
-
-		cudService.updateCollocMemberGroupOrder(collocLexemeId, memberLexemeId, direction, userRoleDatasetCode, isManualEventOnUpdateEnabled);
-
-		return RESPONSE_OK_VER2;
-	}
 }

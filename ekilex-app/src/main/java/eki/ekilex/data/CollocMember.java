@@ -11,9 +11,13 @@ public class CollocMember extends AbstractDataObject {
 
 	private Long id;
 
+	private String datasetCode;
+
 	private Long collocLexemeId;
 
 	private Long memberLexemeId;
+
+	private Long memberMeaningId;
 
 	private Long memberWordId;
 
@@ -61,6 +65,14 @@ public class CollocMember extends AbstractDataObject {
 		this.id = id;
 	}
 
+	public String getDatasetCode() {
+		return datasetCode;
+	}
+
+	public void setDatasetCode(String datasetCode) {
+		this.datasetCode = datasetCode;
+	}
+
 	public Long getCollocLexemeId() {
 		return collocLexemeId;
 	}
@@ -75,6 +87,14 @@ public class CollocMember extends AbstractDataObject {
 
 	public void setMemberLexemeId(Long memberLexemeId) {
 		this.memberLexemeId = memberLexemeId;
+	}
+
+	public Long getMemberMeaningId() {
+		return memberMeaningId;
+	}
+
+	public void setMemberMeaningId(Long memberMeaningId) {
+		this.memberMeaningId = memberMeaningId;
 	}
 
 	public Long getMemberWordId() {

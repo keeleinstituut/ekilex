@@ -14,6 +14,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.SessionAttributes;
@@ -22,9 +23,12 @@ import eki.ekilex.constant.ResponseStatus;
 import eki.ekilex.constant.WebConstant;
 import eki.ekilex.data.Classifier;
 import eki.ekilex.data.CollocConjunct;
+import eki.ekilex.data.CollocMember;
 import eki.ekilex.data.CollocMemberForm;
 import eki.ekilex.data.CollocWeight;
 import eki.ekilex.data.Response;
+import eki.ekilex.data.UpdateCollocOrderRequest;
+import eki.ekilex.data.UserContextData;
 import eki.ekilex.service.CollocationService;
 import eki.ekilex.web.bean.SessionBean;
 
@@ -37,6 +41,48 @@ public class CollocationEditController extends AbstractPrivatePageController {
 
 	@Autowired
 	private CollocationService collocationService;
+
+	@ResponseBody
+	@PostMapping(UPDATE_COLLOC_MEMBER_GROUP_ORDER_URI)
+	public String updateCollocMemberGroupOrder(
+			@RequestBody UpdateCollocOrderRequest updateCollocOrderRequest,
+			@ModelAttribute(name = SESSION_BEAN) SessionBean sessionBean) throws Exception {
+
+		logger.debug("Update colloc member group order for {}", updateCollocOrderRequest);
+
+		UserContextData userContextData = getUserContextData();
+		String userRoleDatasetCode = userContextData.getUserRoleDatasetCode();
+		boolean isManualEventOnUpdateEnabled = sessionBean.isManualEventOnUpdateEnabled();
+
+		Long collocLexemeId = updateCollocOrderRequest.getCollocLexemeId();
+		Long memberLexemeId = updateCollocOrderRequest.getMemberLexemeId();
+		String direction = updateCollocOrderRequest.getDirection();
+
+		collocationService.updateCollocMemberGroupOrder(collocLexemeId, memberLexemeId, direction, userRoleDatasetCode, isManualEventOnUpdateEnabled);
+
+		return RESPONSE_OK_VER2;
+	}
+
+	@ResponseBody
+	@PostMapping(UPDATE_COLLOC_MEMBER_ORDER_URI)
+	public String updateCollocMemberOrder(
+			@RequestBody UpdateCollocOrderRequest updateCollocOrderRequest,
+			@ModelAttribute(name = SESSION_BEAN) SessionBean sessionBean) throws Exception {
+
+		logger.debug("Update colloc member order for {}", updateCollocOrderRequest);
+
+		UserContextData userContextData = getUserContextData();
+		String userRoleDatasetCode = userContextData.getUserRoleDatasetCode();
+		boolean isManualEventOnUpdateEnabled = sessionBean.isManualEventOnUpdateEnabled();
+
+		Long collocLexemeId = updateCollocOrderRequest.getCollocLexemeId();
+		Long memberLexemeId = updateCollocOrderRequest.getMemberLexemeId();
+		String direction = updateCollocOrderRequest.getDirection();
+
+		collocationService.updateCollocMemberOrder(collocLexemeId, memberLexemeId, direction, userRoleDatasetCode, isManualEventOnUpdateEnabled);
+
+		return RESPONSE_OK_VER2;
+	}
 
 	@PostMapping(COLLOC_MEMBER_MOVE_URI)
 	@ResponseBody
@@ -54,47 +100,56 @@ public class CollocationEditController extends AbstractPrivatePageController {
 		return RESPONSE_OK_VER1;
 	}
 
-	@PostMapping(COLLOC_MEMBER_SEARCH_URI)
-	public String collocMemberSearch(
+	@PostMapping(COLLOC_MEMBER_FORM_SEARCH_URI)
+	public String collocMemberFormSearch(
 			@RequestParam("collocLexemeId") Long collocLexemeId,
 			@RequestParam("formValue") String formValue,
 			@RequestParam("lang") String lang,
 			@RequestParam("datasetCode") String datasetCode,
 			Model model) {
 
+		CollocMember collocMember = new CollocMember();
+		collocMember.setCollocLexemeId(collocLexemeId);
 		List<CollocMemberForm> collocMemberForms = collocationService.getCollocMemberForms(formValue, lang, datasetCode);
+		populateCollocMemberModel(collocMember, collocMemberForms, model);
+
+		return "colloc" + PAGE_FRAGMENT_ELEM + "colloc_member_forms";
+	}
+
+	@PostMapping(COLLOC_MEMBER_MEANING_SEARCH_URI)
+	public String collocMembeMeaningSearch(@RequestParam("id") Long collocMemberId, Model model) {
+
+		CollocMember collocMember = collocationService.getCollocMember(collocMemberId);
+		List<CollocMemberForm> collocMemberForms = collocationService.getCollocMemberForms(collocMember);
+		populateCollocMemberModel(collocMember, collocMemberForms, model);
+
+		return "colloc" + PAGE_FRAGMENT_ELEM + "colloc_member_forms";
+	}
+
+	private void populateCollocMemberModel(CollocMember collocMember, List<CollocMemberForm> collocMemberForms, Model model) {
+
 		List<Classifier> posGroups = commonDataService.getPosGroups();
 		List<Classifier> relGroups = commonDataService.getRelGroups();
 		List<CollocWeight> collocWeights = collocationService.getCollocWeights();
 		List<CollocConjunct> collocConjuncts = collocationService.getCollocConjuncts();
-
 		boolean collocMemberFormsExist = CollectionUtils.isNotEmpty(collocMemberForms);
-		model.addAttribute("collocLexemeId", collocLexemeId);
-		model.addAttribute("formValue", formValue);
-		model.addAttribute("lang", lang);
+
+		model.addAttribute("collocMember", collocMember);
 		model.addAttribute("collocMemberForms", collocMemberForms);
 		model.addAttribute("collocMemberFormsExist", collocMemberFormsExist);
 		model.addAttribute("posGroups", posGroups);
 		model.addAttribute("relGroups", relGroups);
 		model.addAttribute("collocWeights", collocWeights);
 		model.addAttribute("collocConjuncts", collocConjuncts);
-
-		return "colloc" + PAGE_FRAGMENT_ELEM + "colloc_member_forms";
 	}
 
-	@PostMapping(COLLOC_MEMBER_CREATE_URI)
+	@PostMapping(COLLOC_MEMBER_SAVE_URI)
 	@ResponseBody
-	public Response collocMemberCreate(
-			@RequestParam("collocLexemeId") Long collocLexemeId,
-			@RequestParam("collocMemberFormId") Long collocMemberFormId,
-			@RequestParam(name = "collocMemberLexemeId", required = false) Long collocMemberLexemeId,
-			@RequestParam(name = "conjunctLexemeId", required = false) Long conjunctLexemeId,
-			@RequestParam(name = "posGroupCode", required = false) String posGroupCode,
-			@RequestParam(name = "relGroupCode", required = false) String relGroupCode,
-			@RequestParam(name = "weight", required = false) BigDecimal weight,
-			Model model) {
+	public Response collocMemberSave(CollocMember collocMember, Model model) {
 
 		Locale locale = LocaleContextHolder.getLocale();
+		BigDecimal weight = collocMember.getWeight();
+		Long memberLexemeId = collocMember.getMemberLexemeId();
 
 		ResponseStatus responseStatus;
 		String message;
@@ -102,11 +157,11 @@ public class CollocationEditController extends AbstractPrivatePageController {
 		if (weight == null) {
 			responseStatus = ResponseStatus.INVALID;
 			message = messageSource.getMessage("colloc.message.norole", new Object[0], locale);
-		} else if (collocMemberLexemeId == null) {
+		} else if (memberLexemeId == null) {
 			responseStatus = ResponseStatus.INVALID;
 			message = messageSource.getMessage("colloc.message.nomeaning", new Object[0], locale);
 		} else {
-			collocationService.createCollocMember(collocLexemeId, collocMemberLexemeId, collocMemberFormId, conjunctLexemeId, posGroupCode, relGroupCode, weight);
+			collocationService.saveCollocMember(collocMember);
 			responseStatus = ResponseStatus.OK;
 			message = messageSource.getMessage("colloc.message.createmember", new Object[0], locale);
 		}
