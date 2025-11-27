@@ -262,7 +262,7 @@
                       <span th:text="${definitionValue}"></span>
                     </li>
                   </ul>
-                  <div>
+                  <div class="hidden-buttons">
                     <span th:replace="colloc :: edit_colloc_member_pos_group_dlg"></span>
                     <span class="lbl" th:text="#{lex.collocation.pos.group}">Sõnaliik</span>
                     <span th:text="${collocMember.posGroupValue}" th:if="${collocMember.posGroupValue}"></span>
@@ -287,7 +287,7 @@
                       </button>
                     </span>
                   </div>
-                  <div>
+                  <div class="hidden-buttons">
                     <span th:replace="colloc :: edit_colloc_member_rel_group_dlg"></span>
                     <span class="lbl" th:text="#{lex.collocation.rel.group}">Seose liik</span>
                     <span th:text="${collocMember.relGroupValue}" th:if="${collocMember.relGroupValue}"></span>
