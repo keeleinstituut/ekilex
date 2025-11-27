@@ -15536,6 +15536,9 @@ span.material-symbols-outlined--default-size {
 span.material-symbols-outlined--small {
   --fallback-icon-size: 1.3125rem;
 }
+span.material-symbols-outlined--filled {
+  --icon-variation-settings: "FILL" 1;
+}
 .lexeme-level {
   line-height: 24px;
 }
@@ -15586,6 +15589,17 @@ span.material-symbols-outlined--small {
 }
 .search-alert--warning {
   background-color: var(--color-alert-yellow);
+}
+.lexeme-tooltip {
+  border: none;
+  padding: 0;
+  margin: 0;
+  width: 24px;
+  height: 24px;
+  --icon-size: 18px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 .news-page {
   background-color: var(--color-white);
@@ -17785,11 +17799,11 @@ span.material-symbols-outlined--small {
   visibility: hidden;
 }
 .clipboard {
-  height: 18px;
+  height: 24px;
 }
 .clipboard__trigger {
-  width: 18px;
-  height: 18px;
+  width: 24px;
+  height: 24px;
   background-color: transparent;
   border: none;
   padding: 0;
@@ -17832,6 +17846,19 @@ span.material-symbols-outlined--small {
 .clipboard__word sup {
   position: static;
   line-height: 1;
+}
+.tooltip .tooltip-inner {
+  color: var(--color-dark-blue);
+  background-color: var(--color-white);
+  padding: 8px;
+  font-size: 0.75rem;
+  box-shadow: 0px 1px 5px 0px rgba(0, 0, 0, 0.2);
+}
+.tooltip .arrow::before {
+  border-top-color: var(--color-white);
+}
+.tooltip.show {
+  opacity: 1;
 }
 .survey-banner {
   position: fixed;
