@@ -15900,11 +15900,12 @@ span.material-symbols-outlined--filled {
   flex-grow: 1;
   background-repeat: no-repeat, no-repeat;
   background-position: left -150px top 50%, right -80px bottom -80px;
-  background-size: auto 125px, auto 388px;
+  background-image: url(../images/os-tilde.svg), url(../images/os-large-letters.svg);
+  background-size: auto 100px, auto 288px;
 }
 @media (min-width: 500px) {
   .os-home .home-page-content {
-    background-image: url(../images/os-tilde.svg), url(../images/os-large-letters.svg);
+    background-size: auto 125px, auto 388px;
   }
 }
 @media (min-width: 768px) {
