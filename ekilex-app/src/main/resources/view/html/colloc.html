@@ -318,7 +318,7 @@
                     <span th:text="#{lex.collocation.prop.empty}" th:unless="${collocMember.weightLevel}">määramata</span>
                   </div>
                 </td>
-                <td width="120px">
+                <td width="120px" class="hidden-buttons">
                   <th:block th:if="${callback}">
                     <button type="button" 
                             th:title="#{common.edit}"

@@ -115,6 +115,9 @@
                     link=${wordData.word.lexSearchUrl},
                     date=${#dates.format(#dates.createNow(), 'dd.MM.yyyy')})">
                   </th:block>
+                  <button class="lexeme-tooltip" type="button" th:title="#{label.lexeme.tooltip}" data-toggle="tooltip">
+                    <span class="material-symbols-outlined material-symbols-outlined--filled" aria-hidden="true">dictionary</span>
+                  </button>
                 </div>
                 <div class="text-caption text-darker-gray">
                   <span th:text="#{label.tooltip.last_modified}"></span>
