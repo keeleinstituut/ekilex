@@ -859,7 +859,10 @@ public class CommonDataDbService extends AbstractDataDbService {
 		Field<Boolean> wtpf = queryHelper.getWordIsPrefixoidField(w2.ID);
 		Field<Boolean> wtsf = queryHelper.getWordIsSuffixoidField(w2.ID);
 		Field<Boolean> wtz = queryHelper.getWordIsForeignField(w2.ID);
-		Field<String[]> lrc = DSL.field(DSL.select(DSL.arrayAgg(lreg.REGISTER_CODE)).from(lreg).where(lreg.LEXEME_ID.eq(l2.ID)));
+		Field<String[]> lrc = DSL.field(DSL
+				.select(DSL.arrayAgg(lreg.REGISTER_CODE))
+				.from(lreg)
+				.where(lreg.LEXEME_ID.eq(l2.ID)));
 
 		Field<Boolean> whe = DSL
 				.select(DSL.field(DSL.countDistinct(wh.HOMONYM_NR).gt(1)))
@@ -903,7 +906,8 @@ public class CommonDataDbService extends AbstractDataDbService {
 						l2.ID.as("lexeme_id"),
 						l2.WEIGHT.as("lexeme_weight"),
 						l2.IS_PUBLIC.as("is_lexeme_public"),
-						lrc.as("lex_register_codes"),
+						l2.VALUE_STATE_CODE,
+						lrc.as("register_codes"),
 						l2.ORDER_BY)
 				.from(l1, l2, w2)
 				.where(where)
@@ -921,12 +925,12 @@ public class CommonDataDbService extends AbstractDataDbService {
 		Word w2 = WORD.as("w2");
 		Word wh = WORD.as("wh");
 
-		Field<String[]> lexRegisterCodes = DSL
+		Field<String[]> rcf = DSL
 				.select(DSL.arrayAgg(lr.REGISTER_CODE).orderBy(lr.ORDER_BY))
 				.from(lr)
 				.where(lr.LEXEME_ID.eq(l2.ID))
 				.groupBy(l2.ID)
-				.asField("lexeme_register_codes");
+				.asField();
 
 		Table<Record11<Long, Long, Long, Long, String, String, String, Integer, String[], BigDecimal, Long>> mrel = DSL
 				.select(
@@ -938,7 +942,7 @@ public class CommonDataDbService extends AbstractDataDbService {
 						w2.VALUE_PRESE.as("word_value_prese"),
 						w2.LANG.as("word_lang"),
 						w2.HOMONYM_NR.as("word_homonym_nr"),
-						lexRegisterCodes,
+						rcf.as("lexeme_register_codes"),
 						mr.WEIGHT,
 						mr.ORDER_BY)
 				.from(

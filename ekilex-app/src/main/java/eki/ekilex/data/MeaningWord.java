@@ -34,7 +34,9 @@ public class MeaningWord extends AbstractDataObject implements DecoratedWordType
 
 	private boolean isLexemePublic;
 
-	private List<String> lexRegisterCodes;
+	private String valueStateCode;
+
+	private List<String> registerCodes;
 
 	private Long orderBy;
 
@@ -154,12 +156,20 @@ public class MeaningWord extends AbstractDataObject implements DecoratedWordType
 		this.isLexemePublic = lexemePublic;
 	}
 
-	public List<String> getLexRegisterCodes() {
-		return lexRegisterCodes;
+	public String getValueStateCode() {
+		return valueStateCode;
 	}
 
-	public void setLexRegisterCodes(List<String> lexRegisterCodes) {
-		this.lexRegisterCodes = lexRegisterCodes;
+	public void setValueStateCode(String valueStateCode) {
+		this.valueStateCode = valueStateCode;
+	}
+
+	public List<String> getRegisterCodes() {
+		return registerCodes;
+	}
+
+	public void setRegisterCodes(List<String> registerCodes) {
+		this.registerCodes = registerCodes;
 	}
 
 	public Long getOrderBy() {

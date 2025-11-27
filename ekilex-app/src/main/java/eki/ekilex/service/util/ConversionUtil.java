@@ -462,12 +462,17 @@ public class ConversionUtil implements GlobalConstant {
 	}
 
 	public List<SynonymLangGroup> composeSynonymLangGroups(
-			List<MeaningRelation> synMeaningRelations, List<MeaningWord> meaningWords, List<InexactSynonym> inexactSynonyms, EkiUserProfile userProfile,
-			String wordLang, List<ClassifierSelect> languagesOrder) {
+			List<MeaningRelation> synMeaningRelations,
+			List<MeaningWord> meaningWords,
+			List<InexactSynonym> inexactSynonyms,
+			EkiUserProfile userProfile,
+			String wordLang,
+			List<ClassifierSelect> languagesOrder) {
 
 		List<Synonym> synonyms = new ArrayList<>();
 
 		for (MeaningWord meaningWord : meaningWords) {
+
 			Synonym meaningWordSyn = new Synonym();
 			meaningWordSyn.setType(SynonymType.MEANING_WORD);
 			meaningWordSyn.setWordLang(meaningWord.getLang());
@@ -486,7 +491,8 @@ public class ConversionUtil implements GlobalConstant {
 			synWord.setPrefixoid(meaningWord.isPrefixoid());
 			synWord.setSuffixoid(meaningWord.isSuffixoid());
 			synWord.setForeign(meaningWord.isForeign());
-			synWord.setLexemeRegisterCodes(meaningWord.getLexRegisterCodes());
+			synWord.setLexemeValueStateCode(meaningWord.getValueStateCode());
+			synWord.setLexemeRegisterCodes(meaningWord.getRegisterCodes());
 			synWord.setLexemePublic(meaningWord.isLexemePublic());
 			meaningWordSyn.setWords(Arrays.asList(synWord));
 

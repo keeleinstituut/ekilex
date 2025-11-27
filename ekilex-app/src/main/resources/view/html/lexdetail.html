@@ -44,8 +44,13 @@
                           <small class="font-weight-bold text-dark" th:text="${synWord.lexemeLevels}" th:if="${not #strings.isEmpty(synWord.lexemeLevels)}"></small>
                           <span th:utext="${@viewUtil.getWordValueMarkup(synWord)}" th:styleappend="${isMeaningRelSyn ? 'color: #00874F' : ''}"></span>
                           <sup th:if="${synWord.homonymsExist}" th:text="${synWord.homonymNr}"></sup>
-                          <small class="text-gray fontSize-12" th:each="registerCode,regIter : ${synWord.lexemeRegisterCodes}" th:text="${registerCode + (regIter.last ? '' : ', ')}"></small>
-                          <small class="text-gray fontSize-12" th:if="${synWordIter.last}" th:text="${'[' + @viewUtil.getFormattedWeight(syn.weight) + ']'}"></small>
+                          <th:block th:each="registerCode,registerIter : ${synWord.lexemeRegisterCodes}">
+                            <small class="text-gray fontSize-12" th:text="${registerCode}"></small>
+                            <small class="text-gray fontSize-12 ml-n1" th:unless="${registerIter.last}">,</small>
+                            <small class="text-gray fontSize-12 ml-n1" th:if="${registerIter.last && (synWord.lexemeValueStateCode != null)}">,</small>
+                          </th:block>
+                          <small class="text-gray fontSize-12" th:text="${synWord.lexemeValueStateCode}"></small>
+                          <small class="text-gray fontSize-12" th:if="${synWordIter.last}" th:text="|[${@viewUtil.getFormattedWeight(syn.weight)}]|"></small>
                         </button><span th:unless="${synWordIter.last}">,</span>
                       </span>
                     </span>
@@ -216,8 +221,13 @@
                               <small class="font-weight-bold text-dark" th:text="${synWord.lexemeLevels}" th:if="${not #strings.isEmpty(synWord.lexemeLevels)}"></small>
                               <span th:utext="${@viewUtil.getWordValueMarkup(synWord)}" th:styleappend="${isMeaningRelSyn ? 'color: #00874F' : ''}"></span>
                               <sup th:if="${synWord.homonymsExist}" th:text="${synWord.homonymNr}"></sup>
-                              <small class="text-gray fontSize-12" th:each="registerCode,regIter : ${synWord.lexemeRegisterCodes}" th:text="${registerCode + (regIter.last ? '' : ', ')}"></small>
-                              <small class="text-gray fontSize-12" th:if="${synWordIter.last}" th:text="${'[' + @viewUtil.getFormattedWeight(syn.weight) + ']'}"></small>
+                              <th:block th:each="registerCode,registerIter : ${synWord.lexemeRegisterCodes}">
+                                <small class="text-gray fontSize-12" th:text="${registerCode}"></small>
+                                <small class="text-gray fontSize-12 ml-n1" th:unless="${registerIter.last}">,</small>
+                                <small class="text-gray fontSize-12 ml-n1" th:if="${registerIter.last && (synWord.lexemeValueStateCode != null)}">,</small>
+                              </th:block>
+                              <small class="text-gray fontSize-12" th:text="${synWord.lexemeValueStateCode}"></small>
+                              <small class="text-gray fontSize-12" th:if="${synWordIter.last}" th:text="|[${@viewUtil.getFormattedWeight(syn.weight)}]|"></small>
                             </button><span th:unless="${synWordIter.last}">,</span>
                             <th:block th:if="${isMeaningWordSyn}">
                               <div th:replace="lexdialog :: edit_meaning_word_and_lexeme_weight_dlg"></div>
