@@ -19,15 +19,23 @@
           <span th:text="#{label.tooltip.last_modified}"></span>
           <span class="meaning-data__date" th:text="${#temporals.format(lexeme.meaningManualEventOn, 'dd.MM.yyyy')}"></span>
         </div>
+          <a
+          class="meaning-data__link d-block w-100 text-left d-lg-none"
+          th:href="|@{/ds}/${lexeme.datasetCode}|"
+          target="_blank"
+          rel="noreferrer">
+          <span th:text="#{label.view.dataset}"></span>
+          <i class="fas fa-external-link-alt ml-1" th:aria-label="#{aria.new.window}"></i>
+        </a>
       </div>
       <a
-      class="meaning-data__link"
-      th:href="|@{/ds}/${lexeme.datasetCode}|"
-      target="_blank"
-      rel="noreferrer">
-      <span th:text="#{label.view.dataset}"></span>
-      <i class="fas fa-external-link-alt ml-1" th:aria-label="#{aria.new.window}"></i>
-    </a>
+        class="meaning-data__link d-none d-lg-inline-block"
+        th:href="|@{/ds}/${lexeme.datasetCode}|"
+        target="_blank"
+        rel="noreferrer">
+        <span th:text="#{label.view.dataset}"></span>
+        <i class="fas fa-external-link-alt ml-1" th:aria-label="#{aria.new.window}"></i>
+      </a>
     </div>
     <section th:aria-labelledby="|term-meaning-data-${lexeme.meaningId}|">
       <a th:href="${@viewUtil.getEkilexLimTermMeaningDetailsUrl(lexeme.meaningId)}" th:text="${lexeme.meaningId}" th:if="${isLimTerm}"></a>
