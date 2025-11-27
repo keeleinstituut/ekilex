@@ -350,6 +350,12 @@ public class EditController extends AbstractMutableDataPageController implements
 		case "lexeme_note":
 			cudService.updateLexemeNote(id, value, languageCode, isPublic, roleDatasetCode, isManualEventOnUpdateEnabled);
 			break;
+		case "colloc_member_pos_group":
+			collocationService.updateCollocMemberPosGroup(id, value, roleDatasetCode, isManualEventOnUpdateEnabled);
+			break;
+		case "colloc_member_rel_group":
+			collocationService.updateCollocMemberRelGroup(id, value, roleDatasetCode, isManualEventOnUpdateEnabled);
+			break;
 		case "word_value":
 			cudService.updateWordValue(id, value, roleDatasetCode, isManualEventOnUpdateEnabled);
 			break;
@@ -642,6 +648,12 @@ public class EditController extends AbstractMutableDataPageController implements
 			break;
 		case "colloc_member":
 			collocationService.deleteCollocMember(id, roleDatasetCode, isManualEventOnUpdateEnabled);
+			break;
+		case "colloc_member_pos_group":
+			collocationService.updateCollocMemberPosGroup(id, null, roleDatasetCode, isManualEventOnUpdateEnabled);
+			break;
+		case "colloc_member_rel_group":
+			collocationService.updateCollocMemberRelGroup(id, null, roleDatasetCode, isManualEventOnUpdateEnabled);
 			break;
 		case "rus_meaning_lexemes":
 			cudService.deleteLexemeAndMeaningLexemes(id, LANGUAGE_CODE_RUS, roleDatasetCode, isManualEventOnUpdateEnabled);

@@ -263,14 +263,54 @@
                     </li>
                   </ul>
                   <div>
+                    <span th:replace="colloc :: edit_colloc_member_pos_group_dlg"></span>
                     <span class="lbl" th:text="#{lex.collocation.pos.group}">Sõnaliik</span>
                     <span th:text="${collocMember.posGroupValue}" th:if="${collocMember.posGroupValue}"></span>
                     <span th:text="#{lex.collocation.prop.empty}" th:unless="${collocMember.posGroupValue}">määramata</span>
+                    <span class="pl-0">
+                      <button type="button" class="btn badge badge-primary"
+                              th:title="#{common.edit}"
+                              data-toggle="modal"
+                              th:data-target="${'#editCollocMemberPosGroupDlg_' + collocMember.id}"
+                              sec:authorize="#vars.lexeme.crudGrant">
+                        <i class="fa fa-caret-down" aria-hidden="true"></i>
+                      </button>
+                      <button type="button" class="btn badge badge-warning"
+                              th:data-id="${collocMember.id}"
+                              data-op-code="colloc_member_pos_group"
+                              th:data-callback="${callback}"
+                              data-toggle="delete-confirm"
+                              data-placement="right"
+                              th:if="${collocMember.posGroupCode}"
+                              sec:authorize="#vars.lexeme.crudGrant">
+                        <i class="fa fa-remove action-icon" aria-hidden="true"></i>
+                      </button>
+                    </span>
                   </div>
                   <div>
+                    <span th:replace="colloc :: edit_colloc_member_rel_group_dlg"></span>
                     <span class="lbl" th:text="#{lex.collocation.rel.group}">Seose liik</span>
                     <span th:text="${collocMember.relGroupValue}" th:if="${collocMember.relGroupValue}"></span>
                     <span th:text="#{lex.collocation.prop.empty}" th:unless="${collocMember.relGroupValue}">määramata</span>
+                    <span class="pl-0">
+                      <button type="button" class="btn badge badge-primary"
+                              th:title="#{common.edit}"
+                              data-toggle="modal"
+                              th:data-target="${'#editCollocMemberRelGroupDlg_' + collocMember.id}"
+                              sec:authorize="#vars.lexeme.crudGrant">
+                        <i class="fa fa-caret-down" aria-hidden="true"></i>
+                      </button>
+                      <button type="button" class="btn badge badge-warning"
+                              th:data-id="${collocMember.id}"
+                              data-op-code="colloc_member_rel_group"
+                              th:data-callback="${callback}"
+                              data-toggle="delete-confirm"
+                              data-placement="right"
+                              th:if="${collocMember.relGroupCode}"
+                              sec:authorize="#vars.lexeme.crudGrant">
+                        <i class="fa fa-remove action-icon" aria-hidden="true"></i>
+                      </button>
+                    </span>
                   </div>
                   <div>
                     <span class="lbl" th:text="#{lex.collocation.role}">Roll</span>
@@ -332,6 +372,50 @@
       </div>
     </div>
   </th:block>
+  <div th:id="${'editCollocMemberPosGroupDlg_' + collocMember.id}"
+       th:data-callback="${@viewUtil.composeFunction('loadFullLexemeDetails', lexeme.lexemeId, lexeme.levels)}"
+       class="modal select-dlg" role="dialog" th:fragment="edit_colloc_member_pos_group_dlg"
+       data-plugin="initSelectDlgPlugin">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <form th:action="@{/update_item}" method="post">
+          <div class="modal-body">
+            <input type="hidden" name="id" th:value="${collocMember.id}">
+            <input type="hidden" name="opCode" value="colloc_member_pos_group">
+            <input type="hidden" name="value" th:value="${collocMember.posGroupCode}">
+            <select class="form-control" name="value">
+              <option th:each="posGroup : ${posGroups}" 
+                      th:value="${posGroup.code}" 
+                      th:selected="${posGroup.code == collocMember.posGroupCode}"
+                      th:text="${posGroup.value}">value</option>
+            </select>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+  <div th:id="${'editCollocMemberRelGroupDlg_' + collocMember.id}"
+       th:data-callback="${@viewUtil.composeFunction('loadFullLexemeDetails', lexeme.lexemeId, lexeme.levels)}"
+       class="modal select-dlg" role="dialog" th:fragment="edit_colloc_member_rel_group_dlg"
+       data-plugin="initSelectDlgPlugin">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <form th:action="@{/update_item}" method="post">
+          <div class="modal-body">
+            <input type="hidden" name="id" th:value="${collocMember.id}">
+            <input type="hidden" name="opCode" value="colloc_member_rel_group">
+            <input type="hidden" name="value" th:value="${collocMember.relGroupCode}">
+            <select class="form-control" name="value">
+              <option th:each="relGroup : ${relGroups}" 
+                      th:value="${relGroup.code}" 
+                      th:selected="${relGroup.code == collocMember.relGroupCode}"
+                      th:text="${relGroup.value}">value</option>
+            </select>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
   <div th:id="|addCollocMemberDlg_${lexeme.lexemeId}|"
        th:data-callback="${@viewUtil.composeFunction('loadFullLexemeDetails', lexeme.lexemeId, lexeme.levels)}"
        class="modal" role="dialog" th:fragment="add_colloc_member_dlg">

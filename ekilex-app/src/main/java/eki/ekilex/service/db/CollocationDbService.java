@@ -295,6 +295,22 @@ public class CollocationDbService implements GlobalConstant, SystemConstant {
 				.fetchInto(CollocMemberOrder.class);
 	}
 
+	public void updateCollocMemberPosGroup(Long collocMemberId, String posGroupCode) {
+		mainDb
+				.update(COLLOCATION_MEMBER)
+				.set(COLLOCATION_MEMBER.POS_GROUP_CODE, posGroupCode)
+				.where(COLLOCATION_MEMBER.ID.eq(collocMemberId))
+				.execute();
+	}
+
+	public void updateCollocMemberRelGroup(Long collocMemberId, String relGroupCode) {
+		mainDb
+				.update(COLLOCATION_MEMBER)
+				.set(COLLOCATION_MEMBER.REL_GROUP_CODE, relGroupCode)
+				.where(COLLOCATION_MEMBER.ID.eq(collocMemberId))
+				.execute();
+	}
+
 	public void updateLexemeCollocMemberOrder(Long collocMemberId, Integer memberOrder) {
 		mainDb
 				.update(COLLOCATION_MEMBER)
@@ -482,4 +498,5 @@ public class CollocationDbService implements GlobalConstant, SystemConstant {
 				.fetchOptionalInto(String.class)
 				.orElse(null);
 	}
+
 }

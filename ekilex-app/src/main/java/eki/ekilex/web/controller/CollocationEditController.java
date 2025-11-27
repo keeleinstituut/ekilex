@@ -17,7 +17,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.SessionAttributes;
 
 import eki.ekilex.constant.WebConstant;
-import eki.ekilex.data.Classifier;
 import eki.ekilex.data.CollocConjunct;
 import eki.ekilex.data.CollocMember;
 import eki.ekilex.data.CollocMemberForm;
@@ -82,7 +81,7 @@ public class CollocationEditController extends AbstractPrivatePageController {
 
 	@PostMapping(COLLOC_MEMBER_MOVE_URI)
 	@ResponseBody
-	public String collocMemberMove(
+	public String moveCollocMember(
 			@RequestParam("collocLexemeIds") List<Long> collocLexemeIds,
 			@RequestParam("sourceCollocMemberLexemeId") Long sourceCollocMemberLexemeId,
 			@RequestParam("targetCollocMemberLexemeId") Long targetCollocMemberLexemeId,
@@ -97,7 +96,7 @@ public class CollocationEditController extends AbstractPrivatePageController {
 	}
 
 	@PostMapping(COLLOC_MEMBER_FORM_SEARCH_URI)
-	public String collocMemberFormSearch(
+	public String searchCollocMemberForm(
 			@RequestParam("collocLexemeId") Long collocLexemeId,
 			@RequestParam("formValue") String formValue,
 			@RequestParam("lang") String lang,
@@ -113,7 +112,7 @@ public class CollocationEditController extends AbstractPrivatePageController {
 	}
 
 	@PostMapping(COLLOC_MEMBER_MEANING_SEARCH_URI)
-	public String collocMembeMeaningSearch(@RequestParam("id") Long collocMemberId, Model model) {
+	public String searchCollocMembeMeaning(@RequestParam("id") Long collocMemberId, Model model) {
 
 		CollocMember collocMember = collocationService.getCollocMember(collocMemberId);
 		List<CollocMemberForm> collocMemberForms = collocationService.getCollocMemberForms(collocMember);
@@ -124,8 +123,6 @@ public class CollocationEditController extends AbstractPrivatePageController {
 
 	private void populateCollocMemberModel(CollocMember collocMember, List<CollocMemberForm> collocMemberForms, Model model) {
 
-		List<Classifier> posGroups = commonDataService.getPosGroups();
-		List<Classifier> relGroups = commonDataService.getRelGroups();
 		List<CollocWeight> collocWeights = collocationService.getCollocWeights();
 		List<CollocConjunct> collocConjuncts = collocationService.getCollocConjuncts();
 		boolean collocMemberFormsExist = CollectionUtils.isNotEmpty(collocMemberForms);
@@ -133,15 +130,13 @@ public class CollocationEditController extends AbstractPrivatePageController {
 		model.addAttribute("collocMember", collocMember);
 		model.addAttribute("collocMemberForms", collocMemberForms);
 		model.addAttribute("collocMemberFormsExist", collocMemberFormsExist);
-		model.addAttribute("posGroups", posGroups);
-		model.addAttribute("relGroups", relGroups);
 		model.addAttribute("collocWeights", collocWeights);
 		model.addAttribute("collocConjuncts", collocConjuncts);
 	}
 
 	@PostMapping(COLLOC_MEMBER_SAVE_URI)
 	@ResponseBody
-	public Response collocMemberSave(CollocMember collocMember, @ModelAttribute(name = SESSION_BEAN) SessionBean sessionBean, Model model) throws Exception {
+	public Response saveCollocMember(CollocMember collocMember, @ModelAttribute(name = SESSION_BEAN) SessionBean sessionBean, Model model) throws Exception {
 
 		String roleDatasetCode = getRoleDatasetCode();
 		boolean isManualEventOnUpdateEnabled = sessionBean.isManualEventOnUpdateEnabled();

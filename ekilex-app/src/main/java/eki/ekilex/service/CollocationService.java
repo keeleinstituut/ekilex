@@ -58,6 +58,24 @@ public class CollocationService implements SystemConstant, GlobalConstant {
 	}
 
 	@Transactional(rollbackFor = Exception.class)
+	public void updateCollocMemberPosGroup(Long collocMemberId, String posGroupCode, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
+
+		Long lexemeId = activityLogService.getActivityOwnerId(collocMemberId, ActivityEntity.COLLOC_MEMBER);
+		ActivityLogData activityLog = activityLogService.prepareActivityLog("updateCollocMemberPosGroup", lexemeId, ActivityOwner.LEXEME, roleDatasetCode, isManualEventOnUpdateEnabled);
+		collocationDbService.updateCollocMemberPosGroup(collocMemberId, posGroupCode);
+		activityLogService.createActivityLog(activityLog, collocMemberId, ActivityEntity.COLLOC_MEMBER);
+	}
+
+	@Transactional(rollbackFor = Exception.class)
+	public void updateCollocMemberRelGroup(Long collocMemberId, String relGroupCode, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
+
+		Long lexemeId = activityLogService.getActivityOwnerId(collocMemberId, ActivityEntity.COLLOC_MEMBER);
+		ActivityLogData activityLog = activityLogService.prepareActivityLog("updateCollocMemberRelGroup", lexemeId, ActivityOwner.LEXEME, roleDatasetCode, isManualEventOnUpdateEnabled);
+		collocationDbService.updateCollocMemberRelGroup(collocMemberId, relGroupCode);
+		activityLogService.createActivityLog(activityLog, collocMemberId, ActivityEntity.COLLOC_MEMBER);
+	}
+
+	@Transactional(rollbackFor = Exception.class)
 	public void updateCollocMemberGroupOrder(
 			Long collocLexemeId,
 			Long memberLexemeId,

@@ -340,6 +340,16 @@ public abstract class AbstractAuthActionController implements WebConstant, Syste
 				.collect(Collectors.toList());
 	}
 
+	@ModelAttribute("posGroups")
+	public List<Classifier> getPosGroups() {
+		return commonDataService.getPosGroups();
+	}
+
+	@ModelAttribute("relGroups")
+	public List<Classifier> getRelGroups() {
+		return commonDataService.getRelGroups();
+	}
+
 	protected void addRedirectSuccessMessage(RedirectAttributes redirectAttributes, String successMessageKey) {
 
 		UserMessage userMessage = new UserMessage();
