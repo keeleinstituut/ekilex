@@ -109,15 +109,15 @@
               <div class="d-flex align-items-end flex-wrap gap-2">
                 <div class="d-flex mr-auto mt-4">
                   <h2 class="search__pre-block-title search__pre-block-title--no-bottom-margin" th:text="#{lexdata.title}"></h2>
+                  <button class="lexeme-tooltip" type="button" th:title="#{label.lexeme.tooltip}" data-toggle="tooltip">
+                    <span class="material-symbols-outlined" aria-hidden="true">book_ribbon</span>
+                  </button>
                   <th:block th:replace="common-app :: clipboard(
                     word=${wordData.word},
                     text=${#messages.msg('label.clipboard.text.lex')},
                     link=${wordData.word.lexSearchUrl},
                     date=${#dates.format(#dates.createNow(), 'dd.MM.yyyy')})">
                   </th:block>
-                  <button class="lexeme-tooltip" type="button" th:title="#{label.lexeme.tooltip}" data-toggle="tooltip">
-                    <span class="material-symbols-outlined material-symbols-outlined--filled" aria-hidden="true">dictionary</span>
-                  </button>
                 </div>
                 <div class="text-caption text-darker-gray">
                   <span th:text="#{label.tooltip.last_modified}"></span>
