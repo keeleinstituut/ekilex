@@ -55,38 +55,31 @@ delete from morph where code = 'Vlyhi';
 
 -- #5 --
 
-delete
-from
-	publishing pd
+update
+	lexeme l 
+set
+	is_word = false
 where
-	pd.entity_name = 'lexeme'
-	and exists (
+	l.dataset_code = 'eki'
+	and l.is_word = true
+	and l.is_collocation = true
+	and not exists (
 		select
 			1
 		from
-			lexeme l 
+			definition d 
 		where
-			l.id = pd.entity_id
-			and l.dataset_code = 'eki'
-			and l.is_word = true
-			and l.is_collocation = true
-			and not exists (
-				select
-					1
-				from
-					definition d 
-				where
-					d.meaning_id = l.meaning_id
-			)
-			and exists (
-				select
-					1
-				from
-					publishing p 
-				where
-					p.entity_name = 'lexeme'
-					and p.entity_id = l.id
-			)
+			d.meaning_id = l.meaning_id
+	)
+	and not exists (
+		select
+			1
+		from
+			lexeme l2
+		where 
+			l2.meaning_id = l.meaning_id
+			and l2.id != l.id
+			and l2.dataset_code = l.dataset_code
 	)
 ;
 

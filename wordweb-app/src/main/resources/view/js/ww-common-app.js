@@ -13,8 +13,8 @@ $(document).ready(function() {
 });
 
 // Remove other tooltips when a new one opens
-$(document).on('show.bs.tooltip', function () {
-  $('.tooltip').not(this).remove();
+$(document).on('show.bs.tooltip', function() {
+	$('.tooltip').not(this).remove();
 });
 
 $(document).on("click", ".menu-btn", function() {
@@ -29,155 +29,155 @@ $(document).on("click", ".menu-btn", function() {
 });
 
 class Feedback {
-  static serviceUrl = "";
-  static elementIds = [
-    ["modal", "feedback-modal"],
-    ["form", "feedback-form"],
-    ["checkboxGroup", "feedback-modal-checkbox-group"],
-    ["checkbox", "feedback-email-checkbox"],
-    ["submitButton", "feedback-submit"],
-    ["emailInput", "feedback-modal-email"],
-    ["data", "feedback-data"],
-    ["response", "feedback-response"],
-    ["successMessage", "feedback-success-message"],
-    ["errorMessage", "feedback-error-message"],
-    ["title", "feedback-modal-title"],
-    ["successTitle", "feedback-modal-success-title"],
-  ];
+	static serviceUrl = "";
+	static elementIds = [
+		["modal", "feedback-modal"],
+		["form", "feedback-form"],
+		["checkboxGroup", "feedback-modal-checkbox-group"],
+		["checkbox", "feedback-email-checkbox"],
+		["submitButton", "feedback-submit"],
+		["emailInput", "feedback-modal-email"],
+		["data", "feedback-data"],
+		["response", "feedback-response"],
+		["successMessage", "feedback-success-message"],
+		["errorMessage", "feedback-error-message"],
+		["title", "feedback-modal-title"],
+		["successTitle", "feedback-modal-success-title"],
+	];
 
-  static modalElements = {};
+	static modalElements = {};
 
-  static init(serviceUrl) {
-    this.serviceUrl = serviceUrl;
-    this.initElements();
-    if (!this.modalElements.modal) {
-      return;
-    }
-    this.initListeners();
-  }
+	static init(serviceUrl) {
+		this.serviceUrl = serviceUrl;
+		this.initElements();
+		if (!this.modalElements.modal) {
+			return;
+		}
+		this.initListeners();
+	}
 
-  static initElements() {
-    // Get all elements by their ids and combine into one object
-    this.modalElements = this.elementIds.reduce((acc, [key, val]) => {
-      if (acc.modal) {
-        acc[key] = acc.modal.querySelector(`#${val}`);
-      } else {
-        acc[key] = document.getElementById(val);
-      }
-      return acc;
-    }, {});
-  }
+	static initElements() {
+		// Get all elements by their ids and combine into one object
+		this.modalElements = this.elementIds.reduce((acc, [key, val]) => {
+			if (acc.modal) {
+				acc[key] = acc.modal.querySelector(`#${val}`);
+			} else {
+				acc[key] = document.getElementById(val);
+			}
+			return acc;
+		}, {});
+	}
 
-  static initListeners() {
-    this.modalElements.emailInput.addEventListener(
-      "keyup",
-      this.handleEmailInput.bind(this)
-    );
-    $(this.modalElements.modal).on(
-      "show.bs.modal",
-      this.handleModalOpen.bind(this)
-    );
-    $(this.modalElements.modal).on(
-      "hide.bs.modal",
-      this.handleModalClose.bind(this)
-    );
+	static initListeners() {
+		this.modalElements.emailInput.addEventListener(
+			"keyup",
+			this.handleEmailInput.bind(this)
+		);
+		$(this.modalElements.modal).on(
+			"show.bs.modal",
+			this.handleModalOpen.bind(this)
+		);
+		$(this.modalElements.modal).on(
+			"hide.bs.modal",
+			this.handleModalClose.bind(this)
+		);
 
-    this.modalElements.submitButton.addEventListener(
-      "click",
-      this.handleSubmit.bind(this)
-    );
-  }
+		this.modalElements.submitButton.addEventListener(
+			"click",
+			this.handleSubmit.bind(this)
+		);
+	}
 
-  static handleEmailInput(event) {
-    // Toggle the need of checkbox based on whether email has a value
-    if (event.target.value) {
-      this.modalElements.checkboxGroup.classList.remove("d-none");
-      this.modalElements.checkbox.required = true;
-    } else {
-      this.modalElements.checkboxGroup.classList.add("d-none");
-      this.modalElements.checkbox.required = false;
-    }
-  }
+	static handleEmailInput(event) {
+		// Toggle the need of checkbox based on whether email has a value
+		if (event.target.value) {
+			this.modalElements.checkboxGroup.classList.remove("d-none");
+			this.modalElements.checkbox.required = true;
+		} else {
+			this.modalElements.checkboxGroup.classList.add("d-none");
+			this.modalElements.checkbox.required = false;
+		}
+	}
 
-  static handleModalOpen(skipToggle) {
-    this.clearMessages(this.modalElements.modal);
-    this.modalElements.data.classList.remove("d-none");
-    this.modalElements.response.classList.add("d-none");
-    if (!skipToggle) {
-      $(this.modalElements.modal).modal("toggle");
-    }
-  }
+	static handleModalOpen(skipToggle) {
+		this.clearMessages(this.modalElements.modal);
+		this.modalElements.data.classList.remove("d-none");
+		this.modalElements.response.classList.add("d-none");
+		if (!skipToggle) {
+			$(this.modalElements.modal).modal("toggle");
+		}
+	}
 
-  static handleModalClose() {
-    if (!this) {
-      return;
-    }
-    this.clearMessages();
-    const inputs = this.modalElements.form.querySelectorAll?.(
-      "input:not([type='hidden']),textarea:not([type='hidden'])"
-    );
-    // Reset form state on close
-    this.modalElements.checkboxGroup.classList.add("d-none");
-    this.modalElements.checkbox.required = false;
-    [...inputs].forEach((input) => {
-      input.value = "";
-    });
-    this.modalElements.successMessage.classList.add("d-none");
-    this.modalElements.successTitle.classList.add("d-none");
-    this.modalElements.title.classList.remove("d-none");
-    this.modalElements.errorMessage.classList.add("d-none");
-  }
+	static handleModalClose() {
+		if (!this) {
+			return;
+		}
+		this.clearMessages();
+		const inputs = this.modalElements.form.querySelectorAll?.(
+			"input:not([type='hidden']),textarea:not([type='hidden'])"
+		);
+		// Reset form state on close
+		this.modalElements.checkboxGroup.classList.add("d-none");
+		this.modalElements.checkbox.required = false;
+		[...inputs].forEach((input) => {
+			input.value = "";
+		});
+		this.modalElements.successMessage.classList.add("d-none");
+		this.modalElements.successTitle.classList.add("d-none");
+		this.modalElements.title.classList.remove("d-none");
+		this.modalElements.errorMessage.classList.add("d-none");
+	}
 
-  static handleSubmit(event) {
-    if (this.serviceUrl === null) {
-      console.debug("Feedback service configuration is missing.");
-      alert(messages.feedback_missing_service);
-      return;
-    }
+	static handleSubmit(event) {
+		if (this.serviceUrl === null) {
+			console.debug("Feedback service configuration is missing.");
+			alert(messages.feedback_missing_service);
+			return;
+		}
 
-    this.modalElements.form.classList.add("was-validated");
-    if (this.modalElements.form.checkValidity() === false) {
-      event.preventDefault();
-      event.stopPropagation();
-      return;
-    }
+		this.modalElements.form.classList.add("was-validated");
+		if (this.modalElements.form.checkValidity() === false) {
+			event.preventDefault();
+			event.stopPropagation();
+			return;
+		}
 
-    $.ajax({
-      url: feedbackServiceUrl,
-      data: JSON.stringify($(this.modalElements.form).serializeJSON()),
-      method: "POST",
-      dataType: "json",
-      contentType: "application/json",
-    })
-      .done((data) => {
-        // Switch to showing response
-        this.modalElements.data.classList.add("d-none");
-        this.modalElements.response.classList.remove("d-none");
-        if (data.status === "ok") {
-          this.modalElements.successMessage.classList.remove("d-none");
-          this.modalElements.title.classList.add("d-none");
-          this.modalElements.successTitle.classList.remove("d-none");
-        } else {
-          this.modalElements.errorMessage.classList.remove("d-none");
-        }
-      })
-      .fail(() => {
-        this.modalElements.data.classList.add("d-none");
-        this.modalElements.response.classList.remove("d-none");
-        this.modalElements.errorMessage.classList.remove("d-none");
-      });
-  }
+		$.ajax({
+			url: feedbackServiceUrl,
+			data: JSON.stringify($(this.modalElements.form).serializeJSON()),
+			method: "POST",
+			dataType: "json",
+			contentType: "application/json",
+		})
+		.done((data) => {
+			// Switch to showing response
+			this.modalElements.data.classList.add("d-none");
+			this.modalElements.response.classList.remove("d-none");
+			if (data.status === "ok") {
+				this.modalElements.successMessage.classList.remove("d-none");
+				this.modalElements.title.classList.add("d-none");
+				this.modalElements.successTitle.classList.remove("d-none");
+			} else {
+				this.modalElements.errorMessage.classList.remove("d-none");
+			}
+		})
+		.fail(() => {
+			this.modalElements.data.classList.add("d-none");
+			this.modalElements.response.classList.remove("d-none");
+			this.modalElements.errorMessage.classList.remove("d-none");
+		});
+	}
 
-  static clearMessages() {
-    // Clear out any form errors
-    this.modalElements.form.classList.remove("was-validated");
-    const messages = this.modalElements.modal.querySelectorAll(
-      "[name=error_message]"
-    );
-    [...messages].forEach((message) => {
-      message.hidden = true;
-    });
-  }
+	static clearMessages() {
+		// Clear out any form errors
+		this.modalElements.form.classList.remove("was-validated");
+		const messages = this.modalElements.modal.querySelectorAll(
+			"[name=error_message]"
+		);
+		[...messages].forEach((message) => {
+			message.hidden = true;
+		});
+	}
 }
 
 $(document).on('show.bs.modal', '#inflections-modal', function() {
@@ -360,51 +360,51 @@ function handleVirtualKeyboard() {
 }
 
 class Navigation {
-  static navTriggerId = "nav-menu";
-  static navLinksId = "nav-menu-links";
-  static menuOpen = false;
+	static navTriggerId = "nav-menu";
+	static navLinksId = "nav-menu-links";
+	static menuOpen = false;
 
-  static navTrigger = null;
-  static navLinks = null;
+	static navTrigger = null;
+	static navLinks = null;
 
-  static init() {
-    this.navTrigger = document.getElementById(this.navTriggerId);
-    this.navLinks = document.getElementById(this.navLinksId);
-    if (!this.navTrigger || !this.navLinks) {
-      return;
-    }
-    this.navTrigger.addEventListener("click", () => {
-      this.navLinks.classList.toggle("navigation__dropdown-menu--visible");
-      this.menuOpen = !this.menuOpen;
-      this.navTrigger.setAttribute("aria-expanded", this.menuOpen);
-    });
+	static init() {
+		this.navTrigger = document.getElementById(this.navTriggerId);
+		this.navLinks = document.getElementById(this.navLinksId);
+		if (!this.navTrigger || !this.navLinks) {
+			return;
+		}
+		this.navTrigger.addEventListener("click", () => {
+			this.navLinks.classList.toggle("navigation__dropdown-menu--visible");
+			this.menuOpen = !this.menuOpen;
+			this.navTrigger.setAttribute("aria-expanded", this.menuOpen);
+		});
 
-    // Close menu when user clicks outside menu
-    document.addEventListener("click", (e) => {
-      if (
-        !e.target.closest(`#${this.navLinksId}`) &&
-        e.target !== this.navTrigger
-      ) {
-        this.navLinks.classList.remove("navigation__dropdown-menu--visible");
-      }
-    });
+		// Close menu when user clicks outside menu
+		document.addEventListener("click", (e) => {
+			if (
+				!e.target.closest(`#${this.navLinksId}`) &&
+				e.target !== this.navTrigger
+			) {
+				this.navLinks.classList.remove("navigation__dropdown-menu--visible");
+			}
+		});
 
-    document.addEventListener("keydown", (e) => {
-      if (e.key === "Escape") {
-        this.closeMenu();
-      }
-    });
+		document.addEventListener("keydown", (e) => {
+			if (e.key === "Escape") {
+				this.closeMenu();
+			}
+		});
 
-    this.navLinks.addEventListener("focusout", (e) => {
-      if (!e.relatedTarget?.closest?.("#nav-menu-links")) {
-        this.closeMenu();
-      }
-    });
-  }
+		this.navLinks.addEventListener("focusout", (e) => {
+			if (!e.relatedTarget?.closest?.("#nav-menu-links")) {
+				this.closeMenu();
+			}
+		});
+	}
 
-  static closeMenu() {
-    this.menuOpen = false;
-    this.navTrigger.setAttribute("aria-expanded", this.menuOpen);
-    this.navLinks.classList.remove("navigation__dropdown-menu--visible");
-  }
+	static closeMenu() {
+		this.menuOpen = false;
+		this.navTrigger.setAttribute("aria-expanded", this.menuOpen);
+		this.navLinks.classList.remove("navigation__dropdown-menu--visible");
+	}
 }
