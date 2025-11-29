@@ -74,7 +74,7 @@
     <link rel="stylesheet" th:href="@{/view/css/styles.css}" />
     <link rel="stylesheet" th:href="@{/view/js/kiosk-board/src/kioskboard.css}" />
     <!-- TODO MV, palun ressurss lae alla-->
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&icon_names=apps,cancel,content_copy,dictionary,info,keyboard,language,record_voice_over,search,visibility" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&icon_names=apps,book_ribbon,cancel,content_copy,info,keyboard,language,record_voice_over,search,visibility" />
   </th:block>
   <!-- Bootstrap core JS -->
   <th:block th:fragment="js">
@@ -386,6 +386,7 @@
             <a th:href="@{/collections}" th:text="#{label.filter.dataset}">Sõnakogud</a>
             <a th:href="@{/ekilex-api}" th:text="#{menu.ekilexapi}">Ekilex API</a>
             <a th:href="@{/news}" th:text="#{menu.news}">Versiooniajalugu</a>
+            <a th:href="@{/accessibility}" th:text="#{menu.accessibility}">Ligipääsetavus</a>
             <a th:href="@{/regulations}" th:text="#{label.privacy.terms}">Kasutus- ja privaatsustingimused</a>
           </div>
         </div>
