@@ -235,6 +235,13 @@ $.fn.initCollocMemberUpdatePlugin = function() {
 				closeWaitDlg();
 				$("button[name='collocMemberSaveBtn']").prop('disabled', false);
 				$('#edit_colloc_member_section_' + collocMemberId).html(data);
+				// Prevent collapsing if already expanded
+				dlg.find('input[data-toggle="collapse"]').on('click', function(e) {
+					if (e.target.getAttribute('aria-expanded') === 'true') {
+						e.preventDefault();
+						e.stopImmediatePropagation();
+					}
+				});
 			}).fail(function(data) {
 				console.log(data);
 				closeWaitDlg();
