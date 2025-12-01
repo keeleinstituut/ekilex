@@ -498,15 +498,15 @@
                 <tr>
                   <td class="form-check">
                     <input type="radio" 
-                        name="memberFormId"
-                        th:id="|collocMemberFormInp_${collocMemberForm.formId}|" 
-                        th:value="${collocMemberForm.formId}" 
-                        th:checked="${collocMemberForm.selected}" 
-                        data-toggle="collapse"
-                        th:data-target="|#collocMemberFormCollapse_${collocMemberForm.formId}|"
-                        th:aria-expanded="${collocMemberForm.selected}"
-                        class="form-check-input"/>
-                    <label th:for="|collocMemberFormInp_${collocMemberForm.formId}|" class="form-check-label px-2">
+                          name="memberFormId"
+                          th:id="|collocMemberFormInp_${collocMemberForm.wordId}_${collocMemberForm.formId}|" 
+                          th:value="${collocMemberForm.formId}" 
+                          th:checked="${collocMemberForm.selected}" 
+                          data-toggle="collapse"
+                          th:data-target="|#collocMemberFormCollapse_${collocMemberForm.wordId}_${collocMemberForm.formId}|"
+                          th:aria-expanded="${collocMemberForm.selected}"
+                          class="form-check-input"/>
+                    <label th:for="|collocMemberFormInp_${collocMemberForm.wordId}_${collocMemberForm.formId}|" class="form-check-label px-2">
                       <strong th:text="${collocMemberForm.wordValue}"></strong>
                     </label>
                   </td>
@@ -566,7 +566,7 @@
           <div th:text="#{colloc.title.meanings}">Tähendused</div>
           <div th:id="|collocMemberFormGroup_${collocMember.id}|" class="px-4">
             <th:block th:each="collocMemberForm, collocMemberFormIter : ${collocMemberForms}">
-              <div th:id="|collocMemberFormCollapse_${collocMemberForm.formId}|" 
+              <div th:id="|collocMemberFormCollapse_${collocMemberForm.wordId}_${collocMemberForm.formId}|" 
                    class="collapse" 
                    th:classappend="${collocMemberForm.selected ? 'show' : ''}" 
                    th:data-parent="|#collocMemberFormGroup_${collocMember.id}|">
@@ -576,12 +576,12 @@
                       <td class="form-check">
                         <input type="radio" 
                             name="memberLexemeId" 
-                            th:id="|collocMemberMeaningInp_${collocMemberForm.formId}_${collocMemberMeaning.lexemeId}|" 
+                            th:id="|collocMemberMeaningInp_${collocMemberForm.wordId}_${collocMemberForm.formId}_${collocMemberMeaning.lexemeId}|" 
                             th:value="${collocMemberMeaning.lexemeId}" 
                             th:checked="${collocMemberMeaning.selected}" 
                             class="form-check-input" 
                             required="required"/>
-                        <label th:for="|collocMemberMeaningInp_${collocMemberForm.formId}_${collocMemberMeaning.lexemeId}|" class="form-check-label px-2">
+                        <label th:for="|collocMemberMeaningInp_${collocMemberForm.wordId}_${collocMemberForm.formId}_${collocMemberMeaning.lexemeId}|" class="form-check-label px-2">
                           <th:block th:each="definitionValue, definitionValueIter : ${collocMemberMeaning.definitionValues}">
                             <span th:text="${definitionValue}"></span>
                             <span th:unless="${definitionValueIter.last}" class="ml-n1">;</span>
