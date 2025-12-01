@@ -306,17 +306,32 @@ public class CompositionDbService extends AbstractDataDbService implements Globa
 	private void moveCollocationMembers(Long targetLexemeId, Long sourceLexemeId) {
 
 		CollocationMember cm = COLLOCATION_MEMBER.as("cm");
+		CollocationMember cmt = COLLOCATION_MEMBER.as("cmt");
 
 		mainDb
 				.update(cm)
 				.set(cm.MEMBER_LEXEME_ID, targetLexemeId)
-				.where(cm.MEMBER_LEXEME_ID.eq(sourceLexemeId))
+				.where(
+						cm.MEMBER_LEXEME_ID.eq(sourceLexemeId)
+								.andNotExists(DSL
+										.select(cmt.ID)
+										.from(cmt)
+										.where(
+												cmt.MEMBER_LEXEME_ID.eq(targetLexemeId)
+														.and(cmt.COLLOC_LEXEME_ID.eq(cm.COLLOC_LEXEME_ID)))))
 				.execute();
 
 		mainDb
 				.update(cm)
 				.set(cm.COLLOC_LEXEME_ID, targetLexemeId)
-				.where(cm.COLLOC_LEXEME_ID.eq(sourceLexemeId))
+				.where(
+						cm.COLLOC_LEXEME_ID.eq(sourceLexemeId)
+								.andNotExists(DSL
+										.select(cmt.ID)
+										.from(cmt)
+										.where(
+												cmt.COLLOC_LEXEME_ID.eq(targetLexemeId)
+														.and(cmt.MEMBER_LEXEME_ID.eq(cm.MEMBER_LEXEME_ID)))))
 				.execute();
 	}
 
