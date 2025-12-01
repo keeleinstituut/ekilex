@@ -176,6 +176,7 @@ $.fn.collocMemberFormSearchPlugin = function() {
 				closeWaitDlg();
 				$("button[name='collocMemberSaveBtn']").prop('disabled', false);
 				$('#add_colloc_member_section').html(data);
+				initCollapse('#add_colloc_member_section');
 			}).fail(function(data) {
 				console.log(data);
 				closeWaitDlg();
@@ -235,13 +236,7 @@ $.fn.initCollocMemberUpdatePlugin = function() {
 				closeWaitDlg();
 				$("button[name='collocMemberSaveBtn']").prop('disabled', false);
 				$('#edit_colloc_member_section_' + collocMemberId).html(data);
-				// Prevent collapsing if already expanded
-				dlg.find('input[data-toggle="collapse"]').on('click', function(e) {
-					if (e.target.getAttribute('aria-expanded') === 'true') {
-						e.preventDefault();
-						e.stopImmediatePropagation();
-					}
-				});
+				initCollapse('#edit_colloc_member_section_' + collocMemberId);
 			}).fail(function(data) {
 				console.log(data);
 				closeWaitDlg();
@@ -251,3 +246,16 @@ $.fn.initCollocMemberUpdatePlugin = function() {
 	});
 }
 
+function initCollapse(containerSelector) {
+	const wrappedContainer = $(containerSelector);
+	wrappedContainer.find('input[data-toggle="custom-collapse"]').on('click', function(e) {
+		if (e.target.getAttribute('aria-expanded') === 'true') {
+			return;
+		}
+		wrappedContainer.find('input[data-toggle="custom-collapse"]').not(e.target).attr('aria-expanded', 'false');
+		wrappedContainer.find('.collapse').removeClass('show');
+		const target = e.target.getAttribute('data-target');
+		$(target).addClass('show');
+		e.target.setAttribute('aria-expanded', 'true');
+	});
+}

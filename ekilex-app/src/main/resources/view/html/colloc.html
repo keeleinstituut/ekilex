@@ -502,7 +502,7 @@
                           th:id="|collocMemberFormInp_${collocMemberForm.wordId}_${collocMemberForm.formId}|" 
                           th:value="${collocMemberForm.formId}" 
                           th:checked="${collocMemberForm.selected}" 
-                          data-toggle="collapse"
+                          data-toggle="custom-collapse"
                           th:data-target="|#collocMemberFormCollapse_${collocMemberForm.wordId}_${collocMemberForm.formId}|"
                           th:aria-expanded="${collocMemberForm.selected}"
                           class="form-check-input"/>
@@ -519,7 +519,7 @@
           </div>
         </div>
         <div class="mt-3">
-          <div class="form-group row ui-front">
+          <div class="form-group row ui-front mw-100">
             <div class="col-md-3">
               <div th:text="#{colloc.title.posgroup}">Pos gr</div>
               <select required class="form-control" name="posGroupCode">
