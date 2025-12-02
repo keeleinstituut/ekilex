@@ -1,8 +1,82 @@
 Märkused ver 1.44.0 tarne kohta:
 
-kollide duplikaadid
-mvn spring-boot:run -P codup -D spring-boot.run.profiles=dev
-u 1.5 min
+Tarne sisaldab tagasihoidlikul määral andmeparandusi ja andmemudeli täiendusi ekilex ja sõnaveeb andmebaasides.
 
-jutumärgid. küsitav
-mvn spring-boot:run -P qure -D spring-boot.run.profiles=dev
+1) Võta githubist värske tarkvara versioon, mille viite arendaja annab
+
+2) Sõnaveebis on muutunud korpusepäringute liidestuse parameetrid.
+   Juhul, kui vastavad võtmed on rakenduse kohaliku keskkonna profiilifailis application-<env>.properties määratud, siis tuleb need asendada.
+   Juhul, kui neid võtmeid rakenduse kohaliku keskkonna profiilifailis application-<env>.properties pole määratud, siis ära tee midagi, sest korrektsed määrangud on juba juurfailis olemas.
+   
+   corpus.service.est.url=https://korp.eki.ee/api/query
+   corpus.service.est.corpname.detail=SONAVEEB_2023
+
+3) Ehita tarkvara tarkvaraprojekti juurikast.
+
+   ../ekilex>mvn clean install -D skipTests
+
+   Ekilex rakenduse pake asub
+
+   ../ekilex/ekilex-app/target/ekilex-app.jar
+
+   Sõnaveebi rakenduse pake asub
+
+   ../ekilex/wordweb-app/target/wordweb-app.jar
+
+4) Käivita ekilex andmebaasis muudatuste skript:
+
+   ../ekilex/eki-common/src/main/resources/sql/delivery.sql
+   
+   Skript jookseb alla minuti
+   
+5) Seadista ja käivita kollokatsioonide duplikaatide kustutamise utiliit
+
+   1. loo rakenduse "dev"-profiili määrangute fail:
+
+      ../ekilex/ekilex-app/src/main/resources/application-dev.properties
+
+   2. sisusta fail ainult selles kontekstis oluliste rakenduse määrangutega:
+
+      server.port=1234
+      spring.datasource.url=jdbc:postgresql://localhost:5432/ekilex
+      spring.datasource.username=<username>
+      spring.datasource.password=<password>
+      
+      logging.level.root=warn
+      logging.level.eki.ekilex=debug
+      logging.level.eki.common=info
+      logging.level.org.jooq=warn
+      
+      Andmebaasi ühenduse parameetrid peavad olema reaalsed selle keskkonna parameetrid.
+      Kuna erinevad ekilexi rakendused käivitavad ka veebikonteksti siis on oluline, et nende veebi pordid ei konkureeriks.
+      Seepärast määra "server.port"-le mingi ajutine fiktiivne väärtus
+
+   4. käivita rakendus ekilex/ekilex-app rajalt:
+
+      mvn spring-boot:run -P codup -D spring-boot.run.profiles=dev
+      
+      Spring profiil "dev" tähendab automaatselt seda, et rakenduse logi jookseb otse terminali mitte logifaili.
+      See on antud juhul kasulik kiireks tagasisideks rakenduselt.
+	  Progressi edenemise tagasisidet seekord pole.
+	  Rakendus jookseb umbes 1.5 minutit.
+      Logi lõppeb infoga "BUILD SUCCESS".
+      Kui logi lõpetab kirjaga "BUILD FAIL", informeeri arendajat.
+	  
+6) Sõnaveebi andmebaasi agregeerimine.
+
+   1. kustuta ja taasloo Ekilex andmebaasis senised põhi-Sõnaveebiga seotud vaated ja andmetüübid skriptiga:
+
+      ../ekilex/eki-common/src/main/resources/sql/main_create_ww_views.sql
+
+   2. kustuta ja taasloo Sõnaveebi andmebaasis põhi-Sõnaveebi materjaliseeritud vaated ja andmetüübid ja lae andmed skriptiga:
+
+      ../ekilex/wordweb-app/fileresources/sql/create_ww_mviews.sql
+
+      NB! Muuda skriptis dblink parameetreid vastavalt keskkonnale!
+      NB! Ühtegi veateadet ei tohi olla!
+
+      Skript jookseb umbes pool tundi.
+
+7) Seo rakenduste *.jar failid teenustega nagu seni ja käivita. Kontrolli peale käivitamist rakenduste logifailidest kas käivitamisega kaasnesid veateated, neid ei ohiks olla ühtegi.
+
+<märkmete lõpp>
