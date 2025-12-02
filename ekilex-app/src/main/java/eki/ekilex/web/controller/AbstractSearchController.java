@@ -37,6 +37,12 @@ public abstract class AbstractSearchController extends AbstractAuthActionControl
 	@Autowired
 	protected SearchHelper searchHelper;
 
+	protected String simpleSearchCleanup(String searchValue) {
+		searchValue = StringUtils.trim(searchValue);
+		searchValue = StringUtils.replaceChars(searchValue, "%", SEARCH_MASK_CHARS);
+		return searchValue;
+	}
+
 	@ModelAttribute("domains")
 	public Map<String, List<Classifier>> getDomainsInUse() {
 		return commonDataService.getDomainsInUseByOrigin();

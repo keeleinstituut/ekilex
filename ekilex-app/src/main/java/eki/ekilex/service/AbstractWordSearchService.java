@@ -116,6 +116,8 @@ public abstract class AbstractWordSearchService extends AbstractSearchService {
 			wordCount = 0;
 		} else if (StringUtils.containsOnly(searchFilter, SEARCH_MASK_CHARS)) {
 			throw new OperationDeniedException("Please be more specific. Use other means to dump data");
+		} else if (StringUtils.containsOnly(searchFilter, "%")) {
+			throw new OperationDeniedException("Please be more specific. Use other means to dump data");
 		} else {
 			SearchDatasetsRestriction searchDatasetsRestriction = composeDatasetsRestriction(datasetCodes);
 			words = lexSearchDbService.getWords(searchFilter, searchDatasetsRestriction, userRoleDatasetCode, tagNames, offset, maxResultsLimit, noLimit);

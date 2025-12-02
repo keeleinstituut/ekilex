@@ -70,6 +70,7 @@ public class LexSearchController extends AbstractPrivateSearchController {
 		final SearchResultMode resultMode = SearchResultMode.WORD;
 		final String resultLang = null;
 
+		simpleSearchFilter = simpleSearchCleanup(simpleSearchFilter);
 		simpleSearchFilter = valueUtil.trimAndCleanAndRemoveHtmlAndLimit(simpleSearchFilter);
 		formDataCleanup(LEX_SEARCH_PAGE, detailSearchFilter);
 

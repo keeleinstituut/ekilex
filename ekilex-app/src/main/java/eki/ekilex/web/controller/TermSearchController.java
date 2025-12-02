@@ -86,6 +86,7 @@ public class TermSearchController extends AbstractPrivateSearchController {
 			return REDIRECT_PREF + TERM_SEARCH_URI;
 		}
 
+		simpleSearchFilter = simpleSearchCleanup(simpleSearchFilter);
 		simpleSearchFilter = valueUtil.trimAndCleanAndRemoveHtmlAndLimit(simpleSearchFilter);
 		formDataCleanup(TERM_SEARCH_PAGE, detailSearchFilter);
 
