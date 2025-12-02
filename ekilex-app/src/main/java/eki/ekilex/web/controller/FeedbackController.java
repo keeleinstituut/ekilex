@@ -53,7 +53,7 @@ public class FeedbackController extends AbstractPublicPageController {
 		return "{\"status\": \"" + statusMessage + "\"}";
 	}
 
-	@PreAuthorize("principal.datasetCrudPermissionsExist")
+	@PreAuthorize("principal.master")
 	@GetMapping(WW_FEEDBACK_URI)
 	public String init(Model model) {
 
@@ -66,7 +66,7 @@ public class FeedbackController extends AbstractPublicPageController {
 		return WW_FEEDBACK_PAGE;
 	}
 
-	@PreAuthorize("principal.datasetCrudPermissionsExist")
+	@PreAuthorize("principal.master")
 	@GetMapping(WW_FEEDBACK_URI + "/page/{pageNum}")
 	public String page(@PathVariable("pageNum") int pageNum, Model model) {
 
@@ -78,6 +78,7 @@ public class FeedbackController extends AbstractPublicPageController {
 		return WW_FEEDBACK_PAGE;
 	}
 
+	@PreAuthorize("principal.master")
 	@PostMapping(WW_FEEDBACK_URI + SEARCH_URI)
 	public String search(
 			@RequestParam(name = "searchFilter", required = false) String searchFilter,
@@ -101,7 +102,7 @@ public class FeedbackController extends AbstractPublicPageController {
 		return WW_FEEDBACK_PAGE;
 	}
 
-	@PreAuthorize("principal.datasetCrudPermissionsExist")
+	@PreAuthorize("principal.master")
 	@PostMapping(WW_FEEDBACK_URI + "/addcomment")
 	public String addFeedbackComment(
 			@RequestBody Map<String, String> requestBody,
@@ -123,7 +124,7 @@ public class FeedbackController extends AbstractPublicPageController {
 		return WW_FEEDBACK_PAGE + PAGE_FRAGMENT_ELEM + "eki_comments";
 	}
 
-	@PreAuthorize("principal.datasetCrudPermissionsExist")
+	@PreAuthorize("principal.master")
 	@GetMapping(WW_FEEDBACK_URI + "/deletefeedback")
 	public String deleteFeedback(@RequestParam("feedbackId") Long feedbackId, Model model) {
 
