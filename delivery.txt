@@ -1,8 +1,1 @@
-Märkused ver 1.44.0 tarne kohta:
-
-kollide duplikaadid
-mvn spring-boot:run -P codup -D spring-boot.run.profiles=dev
-u 1.5 min
-
-jutumärgid. küsitav
-mvn spring-boot:run -P qure -D spring-boot.run.profiles=dev
+Märkused ver 1.45.0 tarne kohta:
