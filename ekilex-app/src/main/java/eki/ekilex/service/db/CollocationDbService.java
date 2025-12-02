@@ -465,6 +465,7 @@ public class CollocationDbService implements GlobalConstant, SystemConstant {
 						w.LANG.eq(lang)
 								.and(pf.PARADIGM_ID.eq(p.ID))
 								.and(pf.FORM_ID.eq(f.ID))
+								.and(pf.MORPH_EXISTS.isTrue())
 								.and(p.WORD_ID.eq(w.ID))
 								.and(DSL.lower(f.VALUE).eq(formValueLower))
 								.and(f.MORPH_CODE.ne(MORPH_CODE_UNKNOWN))
