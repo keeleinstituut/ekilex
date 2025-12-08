@@ -66,12 +66,12 @@ public abstract class AbstractWordSearchService extends AbstractSearchService {
 			DatasetPermission userRole = user.getRecentRole();
 			userRoleDatasetCode = userRole.getDatasetCode();
 		}
+
 		List<Word> words;
 		int wordCount;
-		if (!isValidSearchFilter(searchFilter)) {
-			words = Collections.emptyList();
-			wordCount = 0;
-		} else {
+
+		if (isValidSearchFilter(searchFilter)) {
+
 			SearchDatasetsRestriction searchDatasetsRestriction = composeDatasetsRestriction(datasetCodes);
 			words = lexSearchDbService.getWords(searchFilter, searchDatasetsRestriction, userRoleDatasetCode, tagNames, offset, maxResultsLimit, noLimit);
 			wordCount = words.size();
@@ -82,6 +82,9 @@ public abstract class AbstractWordSearchService extends AbstractSearchService {
 					words = lexSearchDbService.getWords(searchFilter, searchDatasetsRestriction, userRoleDatasetCode, tagNames, lastPageOffset, maxResultsLimit, noLimit);
 				}
 			}
+		} else {
+			words = Collections.emptyList();
+			wordCount = 0;
 		}
 		WordsResult result = new WordsResult();
 		result.setWords(words);

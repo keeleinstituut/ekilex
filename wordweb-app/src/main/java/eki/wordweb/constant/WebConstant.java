@@ -80,6 +80,8 @@ public interface WebConstant {
 
 	String FEELING_LUCKY_URI = "/feelinglucky";
 
+	String FEEDBACK_URI = "/feedback";
+
 	String NEW_WORDS_URI = "/newwords";
 
 	String NEWS_URI = "/news";

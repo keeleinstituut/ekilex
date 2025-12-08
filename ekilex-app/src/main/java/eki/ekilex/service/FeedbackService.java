@@ -1,10 +1,9 @@
 package eki.ekilex.service;
 
-import static org.apache.commons.lang3.StringUtils.isNotBlank;
-
 import java.util.List;
 
 import org.apache.commons.lang3.ArrayUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.jooq.exception.DataAccessException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -12,6 +11,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
+import eki.common.constant.FeedbackConstant;
+import eki.common.data.AppResponse;
+import eki.common.data.Feedback;
 import eki.ekilex.constant.SystemConstant;
 import eki.ekilex.data.FeedbackLog;
 import eki.ekilex.data.FeedbackLogComment;
@@ -19,19 +21,11 @@ import eki.ekilex.data.FeedbackLogResult;
 import eki.ekilex.service.db.FeedbackDbService;
 
 @Component
-public class FeedbackService implements SystemConstant {
+public class FeedbackService implements SystemConstant, FeedbackConstant {
 
 	private static final Logger logger = LoggerFactory.getLogger(FeedbackService.class);
 
 	private static final int MAX_RESULTS_LIMIT = 20;
-
-	private static final String FEEDBACK_TYPE_WW = "sõnaveeb";
-
-	private static final String FEEDBACK_TYPE_OS = "ÕS";
-
-	private static final String FEEDBACK_TYPE_EXT = "väline";
-
-	private static final String[] FEEDBACK_TYPES = {FEEDBACK_TYPE_WW, FEEDBACK_TYPE_OS, FEEDBACK_TYPE_EXT};
 
 	@Autowired
 	private FeedbackDbService feedbackDbService;
@@ -63,28 +57,27 @@ public class FeedbackService implements SystemConstant {
 		feedbackDbService.createFeedbackLogComment(feedbackId, comment, userName);
 	}
 
-	public boolean isValidFeedbackLog(FeedbackLog newFeedback) {
-
-		if (newFeedback == null) {
-			return false;
-		}
-		String feedbackType = newFeedback.getFeedbackType();
-		String description = newFeedback.getDescription();
-
-		boolean isValid = ArrayUtils.contains(FEEDBACK_TYPES, feedbackType) && isNotBlank(description);
-		return isValid;
-	}
-
 	@Transactional(rollbackFor = Exception.class)
-	public String createFeedbackLog(FeedbackLog feedbackLog) {
-		String retMessage = "ok";
+	public AppResponse createFeedbackLog(Feedback feedback) {
+
+		if (feedback == null) {
+			return new AppResponse(FEEDBACK_ERROR);
+		}
+		String feedbackType = feedback.getFeedbackType();
+		String description = feedback.getDescription();
+		if (!ArrayUtils.contains(FEEDBACK_TYPES, feedbackType)) {
+			return new AppResponse(FEEDBACK_ERROR);
+		}
+		if (StringUtils.isBlank(description)) {
+			return new AppResponse(FEEDBACK_ERROR);
+		}
 		try {
-			feedbackDbService.createFeedbackLog(feedbackLog);
+			feedbackDbService.createFeedbackLog(feedback);
+			return new AppResponse(FEEDBACK_OK);
 		} catch (DataAccessException e) {
 			logger.error("Add new feedback", e);
-			retMessage = "error";
+			return new AppResponse(FEEDBACK_ERROR);
 		}
-		return retMessage;
 	}
 
 	@Transactional(rollbackFor = Exception.class)

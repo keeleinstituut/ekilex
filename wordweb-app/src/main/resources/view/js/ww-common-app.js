@@ -6,7 +6,7 @@ $(document).ready(function() {
 	$('.home-page #search').trigger('focus');
 
 	$('[data-toggle="tooltip"]').tooltip();
-	Feedback.init(feedbackServiceUrl);
+	Feedback.init();
 	closeSurveyBanner();
 	handleVirtualKeyboard();
 	Navigation.init();
@@ -29,7 +29,6 @@ $(document).on("click", ".menu-btn", function() {
 });
 
 class Feedback {
-	static serviceUrl = "";
 	static elementIds = [
 		["modal", "feedback-modal"],
 		["form", "feedback-form"],
@@ -47,8 +46,7 @@ class Feedback {
 
 	static modalElements = {};
 
-	static init(serviceUrl) {
-		this.serviceUrl = serviceUrl;
+	static init() {
 		this.initElements();
 		if (!this.modalElements.modal) {
 			return;
@@ -129,27 +127,18 @@ class Feedback {
 	}
 
 	static handleSubmit(event) {
-		if (this.serviceUrl === null) {
-			console.debug("Feedback service configuration is missing.");
-			alert(messages.feedback_missing_service);
-			return;
-		}
-
 		this.modalElements.form.classList.add("was-validated");
 		if (this.modalElements.form.checkValidity() === false) {
 			event.preventDefault();
 			event.stopPropagation();
 			return;
 		}
-
+		let serviceUrl = this.modalElements.form.getAttribute("action") + "back";
 		$.ajax({
-			url: feedbackServiceUrl,
-			data: JSON.stringify($(this.modalElements.form).serializeJSON()),
-			method: "POST",
-			dataType: "json",
-			contentType: "application/json",
-		})
-		.done((data) => {
+			url: serviceUrl,
+			data: $(this.modalElements.form).serialize(),
+			method: "POST"
+		}).done((data) => {
 			// Switch to showing response
 			this.modalElements.data.classList.add("d-none");
 			this.modalElements.response.classList.remove("d-none");
@@ -160,8 +149,7 @@ class Feedback {
 			} else {
 				this.modalElements.errorMessage.classList.remove("d-none");
 			}
-		})
-		.fail(() => {
+		}).fail(() => {
 			this.modalElements.data.classList.add("d-none");
 			this.modalElements.response.classList.remove("d-none");
 			this.modalElements.errorMessage.classList.remove("d-none");

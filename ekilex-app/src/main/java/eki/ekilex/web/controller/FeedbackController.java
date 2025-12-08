@@ -4,20 +4,16 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.SessionAttributes;
 
 import eki.ekilex.constant.WebConstant;
@@ -30,30 +26,12 @@ import eki.ekilex.web.bean.WwFeedbackSearchBean;
 @ConditionalOnWebApplication
 @Controller
 @SessionAttributes({WebConstant.SESSION_BEAN, WebConstant.WW_FEEDBACK_SEARCH_BEAN})
+@PreAuthorize("principal.master")
 public class FeedbackController extends AbstractPublicPageController {
-
-	private static final Logger logger = LoggerFactory.getLogger(FeedbackController.class);
 
 	@Autowired
 	private FeedbackService feedbackService;
 
-	@CrossOrigin
-	@PostMapping(SEND_FEEDBACK_URI)
-	@ResponseBody
-	public String receiveFeedback(@RequestBody FeedbackLog feedbackLog) {
-
-		logger.info("Wordweb feedback received: \"{}\"", feedbackLog);
-
-		String statusMessage;
-		if (feedbackService.isValidFeedbackLog(feedbackLog)) {
-			statusMessage = feedbackService.createFeedbackLog(feedbackLog);
-		} else {
-			statusMessage = "error";
-		}
-		return "{\"status\": \"" + statusMessage + "\"}";
-	}
-
-	@PreAuthorize("principal.master")
 	@GetMapping(WW_FEEDBACK_URI)
 	public String init(Model model) {
 
@@ -66,7 +44,6 @@ public class FeedbackController extends AbstractPublicPageController {
 		return WW_FEEDBACK_PAGE;
 	}
 
-	@PreAuthorize("principal.master")
 	@GetMapping(WW_FEEDBACK_URI + "/page/{pageNum}")
 	public String page(@PathVariable("pageNum") int pageNum, Model model) {
 
@@ -78,7 +55,6 @@ public class FeedbackController extends AbstractPublicPageController {
 		return WW_FEEDBACK_PAGE;
 	}
 
-	@PreAuthorize("principal.master")
 	@PostMapping(WW_FEEDBACK_URI + SEARCH_URI)
 	public String search(
 			@RequestParam(name = "searchFilter", required = false) String searchFilter,
@@ -102,7 +78,6 @@ public class FeedbackController extends AbstractPublicPageController {
 		return WW_FEEDBACK_PAGE;
 	}
 
-	@PreAuthorize("principal.master")
 	@PostMapping(WW_FEEDBACK_URI + "/addcomment")
 	public String addFeedbackComment(
 			@RequestBody Map<String, String> requestBody,
@@ -124,14 +99,13 @@ public class FeedbackController extends AbstractPublicPageController {
 		return WW_FEEDBACK_PAGE + PAGE_FRAGMENT_ELEM + "eki_comments";
 	}
 
-	@PreAuthorize("principal.master")
 	@GetMapping(WW_FEEDBACK_URI + "/deletefeedback")
 	public String deleteFeedback(@RequestParam("feedbackId") Long feedbackId, Model model) {
 
 		feedbackService.deleteFeedbackLog(feedbackId);
 
 		populateModel(model);
-		
+
 		WwFeedbackSearchBean wwFeedbackSearchBean = getWwFeedbackSearchBean(model);
 		int pageNum = wwFeedbackSearchBean.getPageNum();
 

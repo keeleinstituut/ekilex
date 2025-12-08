@@ -1,6 +1,7 @@
 package eki.ekilex.security;
 
 import java.util.Collection;
+import java.util.Map;
 
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -14,21 +15,15 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.web.authentication.preauth.PreAuthenticatedAuthenticationToken;
 
 import eki.ekilex.constant.ApiConstant;
-import eki.ekilex.data.EkiUser;
-import eki.ekilex.service.UserService;
-import eki.ekilex.service.util.UserValidator;
 
-public class EkiApiAuthenticationManager implements AuthenticationManager, ApiConstant {
+public class EkiAppAuthenticationManager implements AuthenticationManager, ApiConstant {
 
-	private static Logger logger = LoggerFactory.getLogger(EkiApiAuthenticationManager.class);
+	private static Logger logger = LoggerFactory.getLogger(EkiAppAuthenticationManager.class);
 
-	private UserValidator userValidator;
+	private Map<String, String> acceptedAppKeyNameMap;
 
-	private UserService userService;
-
-	public EkiApiAuthenticationManager(UserValidator userValidator, UserService userService) {
-		this.userValidator = userValidator;
-		this.userService = userService;
+	public EkiAppAuthenticationManager(Map<String, String> acceptedAppKeyNameMap) {
+		this.acceptedAppKeyNameMap = acceptedAppKeyNameMap;
 	}
 
 	@Override
@@ -39,26 +34,18 @@ public class EkiApiAuthenticationManager implements AuthenticationManager, ApiCo
 			logger.warn("Api key not provided for authentication");
 			throw new BadCredentialsException("Api key not provided");
 		}
-		String providedApiKey = principal.toString();
-		if (StringUtils.equals(providedApiKey, EMPTY_API_KEY)) {
+		String providedAppKey = principal.toString();
+		if (StringUtils.equals(providedAppKey, EMPTY_API_KEY)) {
 			logger.warn("Api key not provided for authentication");
 			throw new BadCredentialsException("Api key not provided");
 		}
-		EkiUser user = userService.getUserByApiKey(providedApiKey);
-		if (user == null) {
-			logger.warn("No such api key exists: \"{}\"", providedApiKey);
-			throw new BadCredentialsException("Bad api key");
-		}
-		if (!userValidator.isActiveUser(user)) {
-			logger.warn("User not activated: \"{}\"", providedApiKey);
-			throw new BadCredentialsException("User not activated");
-		}
-		if (!userValidator.isEnabledUser(user)) {
-			logger.warn("User not enabled: \"{}\"", providedApiKey);
-			throw new BadCredentialsException("User not enabled");
+		String appName = acceptedAppKeyNameMap.get(providedAppKey);
+		if (appName == null) {
+			logger.warn("No such app key exists: \"{}\"", providedAppKey);
+			throw new BadCredentialsException("Bad app key");
 		}
 		Collection<? extends GrantedAuthority> authorities = CollectionUtils.emptyCollection();
-		PreAuthenticatedAuthenticationToken authenticationToken = new PreAuthenticatedAuthenticationToken(user, authorities);
+		PreAuthenticatedAuthenticationToken authenticationToken = new PreAuthenticatedAuthenticationToken(appName, authorities);
 		authenticationToken.setAuthenticated(true);
 		return authenticationToken;
 	}

@@ -146,8 +146,6 @@ public interface WebConstant {
 
 	String GENERATE_API_KEY = "/generate_api_key";
 
-	String SEND_FEEDBACK_URI = "/send_feedback";
-
 	String WW_FEEDBACK_URI = "/wwfeedback";
 
 	String WW_FEEDBACK_PAGE = "wwfeedback";

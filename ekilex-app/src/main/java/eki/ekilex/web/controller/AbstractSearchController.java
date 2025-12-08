@@ -1,7 +1,5 @@
 package eki.ekilex.web.controller;
 
-import static org.apache.commons.lang3.StringUtils.isNotBlank;
-
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -182,14 +180,17 @@ public abstract class AbstractSearchController extends AbstractAuthActionControl
 	}
 
 	private void convertJsonToClassifier(SearchCriterion crit) throws Exception {
-		if (crit.getSearchValue() != null) {
-			if (isNotBlank(crit.getSearchValue().toString())) {
-				ObjectMapper mapper = new ObjectMapper();
-				Classifier classifier = mapper.readValue(crit.getSearchValue().toString(), Classifier.class);
-				crit.setSearchValue(classifier);
-			} else {
-				crit.setSearchValue(null);
-			}
+		Object searchValueObj = crit.getSearchValue();
+		if (searchValueObj == null) {
+			return;
+		}
+		String searchValue = searchValueObj.toString();
+		if (StringUtils.isBlank(searchValue)) {
+			crit.setSearchValue(null);
+		} else {
+			ObjectMapper mapper = new ObjectMapper();
+			Classifier classifier = mapper.readValue(searchValue, Classifier.class);
+			crit.setSearchValue(classifier);
 		}
 	}
 

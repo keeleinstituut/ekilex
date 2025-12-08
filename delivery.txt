@@ -1,1 +1,10 @@
 Märkused ver 1.45.0 tarne kohta:
+
+wordweb application.properties
+
+#wordweb.feedback.service.url=http://localhost:5555/send_feedback
+wordweb.feedback.service.url=http://localhost:5555/app/feedback
+wordweb.app.key=aZ7pQ3mT91bFs8WkD4yH
+
+ekilex application.properties
+wordweb.app.key=aZ7pQ3mT91bFs8WkD4yH

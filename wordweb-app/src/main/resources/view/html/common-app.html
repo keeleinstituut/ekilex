@@ -23,7 +23,6 @@
 <script th:inline="javascript">
 	var applicationUrl = /*[[@{/}]]*/'/';
 	var sessionTimeoutSec = /*[[${appData == null ? 3600 : appData.sessionTimeoutSec}]]*/3600;
-	const feedbackServiceUrl = /*[[${feedbackServiceUrl}]]*/'http://localhost/blah';
 	const messages = {
     'this_is_form' : /*[[#{label.word.is.form.of}]]*/'see on ka vorm sõnadest',
     'audio_generating_loading': /*[[#{label.audio.generation.loading}]]*/'Heli genereeritakse...',
@@ -285,7 +284,7 @@
           </div>
           <div id="feedback-data" class="modal-body">
             <div>
-              <form id="feedback-form" novalidate>
+              <form id="feedback-form" th:action="@{/feed}" novalidate>
                 <input type="hidden" name="feedbackType" th:value="${feedbackType}">
                 <input type="hidden" name="lastSearch" th:value="${sessionBean == null ? '' : sessionBean.searchWord}">
                 <div class="feedback-modal__group">

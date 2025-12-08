@@ -1,6 +1,11 @@
 package eki.ekilex.app.config;
 
+import java.util.HashMap;
+import java.util.Map;
+
+import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -17,6 +22,7 @@ import eki.ekilex.constant.ApiConstant;
 import eki.ekilex.constant.WebConstant;
 import eki.ekilex.security.ApiKeyAuthFilter;
 import eki.ekilex.security.EkiApiAuthenticationManager;
+import eki.ekilex.security.EkiAppAuthenticationManager;
 import eki.ekilex.security.EkiUserAuthenticationManager;
 import eki.ekilex.security.EkilexPasswordEncoder;
 import eki.ekilex.service.UserService;
@@ -60,7 +66,44 @@ public class SecurityConfig {
 
 	@Configuration
 	@Order(2)
-	public static class HtmlSecurityConfiguration extends WebSecurityConfigurerAdapter implements WebConstant {
+	public static class AppSecurityConfiguration extends WebSecurityConfigurerAdapter implements ApiConstant, InitializingBean {
+
+		@Value("${wordweb.app.key:#{null}}")
+		private String wordwebAppKey;
+
+		private Map<String, String> acceptedAppKeyNameMap;
+
+		@Override
+		public void afterPropertiesSet() throws Exception {
+			acceptedAppKeyNameMap = new HashMap<>();
+			acceptedAppKeyNameMap.put(wordwebAppKey, "wordweb");
+		}
+
+		@Override
+		public void configure(HttpSecurity http) throws Exception {
+
+			http
+					.antMatcher(APP_SERVICES_URI + "/**")
+					.csrf(csrf -> csrf.disable())
+					.sessionManagement(management -> management.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+					.addFilter(createApiKeyAuthFilter())
+					.authorizeHttpRequests()
+					.anyRequest()
+					.authenticated();
+		}
+
+		private ApiKeyAuthFilter createApiKeyAuthFilter() {
+			EkiAppAuthenticationManager authenticationManager = new EkiAppAuthenticationManager(acceptedAppKeyNameMap);
+			ApiKeyAuthFilter apiKeyAuthFilter = new ApiKeyAuthFilter(APP_KEY_HEADER_NAME);
+			apiKeyAuthFilter.setAuthenticationManager(authenticationManager);
+			return apiKeyAuthFilter;
+		}
+
+	}
+
+	@Configuration
+	@Order(3)
+	public static class WebSecurityConfiguration extends WebSecurityConfigurerAdapter implements WebConstant {
 
 		@Autowired
 		private UserValidator userValidator;
@@ -84,7 +127,6 @@ public class SecurityConfig {
 											REGISTER_URI + "/**",
 											TERMS_OF_USE_URI,
 											VIEW_RESOURCES_URI + "/**",
-											SEND_FEEDBACK_URI,
 											FAKE_REGISTER_AND_PASSWORD_RECOVERY_URI,
 											PASSWORD_RECOVERY_URI + "/**",
 											PASSWORD_SET_URI + "/**")
