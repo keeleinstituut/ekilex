@@ -1373,43 +1373,9 @@ public class CommonDataDbService extends AbstractDataDbService {
 		} else if (ClassifierName.DOMAIN.equals(classifierName)) {
 
 			Domain cl = DOMAIN.as("d");
-			DomainLabel cll = DOMAIN_LABEL.as("cll");
+			Condition where = cl.DATASETS.contains(datasetCodes);
 
-			Field<String> clvf = DSL
-					.select(cll.VALUE)
-					.from(cll)
-					.where(
-							cll.CODE.eq(cl.CODE)
-									.and(cll.ORIGIN.eq(cl.ORIGIN))
-									.and(cll.LANG.eq(classifierLabelLang))
-									.and(cll.TYPE.eq(CLASSIF_LABEL_TYPE_DESCRIP)))
-					.limit(1)
-					.asField();
-
-			Field<String> clcf = DSL
-					.select(cll.VALUE)
-					.from(cll)
-					.where(
-							cll.CODE.eq(cl.CODE)
-									.and(cll.ORIGIN.eq(cl.ORIGIN))
-									.and(cll.LANG.eq(classifierLabelLang))
-									.and(cll.TYPE.eq(CLASSIF_LABEL_TYPE_COMMENT)))
-					.limit(1)
-					.asField();
-
-			return mainDb
-					.select(
-							getClassifierNameField(ClassifierName.DOMAIN).as("name"),
-							cl.PARENT_ORIGIN,
-							cl.PARENT_CODE,
-							cl.ORIGIN,
-							cl.CODE,
-							clvf.as("value"),
-							clcf.as("comment"))
-					.from(cl)
-					.where(cl.DATASETS.contains(datasetCodes))
-					.orderBy(cl.ORIGIN, cl.ORDER_BY)
-					.fetchInto(Classifier.class);
+			return getDomains(classifierLabelLang, cl, where);
 		}
 
 		throw new UnsupportedOperationException();

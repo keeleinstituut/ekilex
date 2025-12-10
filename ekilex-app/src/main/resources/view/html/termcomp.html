@@ -1327,7 +1327,7 @@
       </span>
     </div>
   </div>
-  <div class="row no-gutters" th:if="${not #lists.isEmpty(lexeme.registers)}" th:fragment="lexeme_register">
+  <div class="row no-gutters" th:unless="${#lists.isEmpty(lexeme.registers)}" th:fragment="lexeme_register">
     <div class="col pr-0 col-w13rem">
       <span class="lbl" th:text="#{term.lexeme.register}">Register</span>
     </div>

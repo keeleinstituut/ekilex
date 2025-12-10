@@ -6,7 +6,7 @@ public class ValueId extends AbstractDataObject {
 
 	private static final long serialVersionUID = 1L;
 
-	private String entityName;
+	private String tableName;
 
 	private Long id;
 
@@ -14,12 +14,12 @@ public class ValueId extends AbstractDataObject {
 
 	private String valuePrese;
 
-	public String getEntityName() {
-		return entityName;
+	public String getTableName() {
+		return tableName;
 	}
 
-	public void setEntityName(String entityName) {
-		this.entityName = entityName;
+	public void setTableName(String tableName) {
+		this.tableName = tableName;
 	}
 
 	public Long getId() {
