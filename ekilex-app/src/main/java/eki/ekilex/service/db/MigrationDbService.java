@@ -1,5 +1,6 @@
 package eki.ekilex.service.db;
 
+import static eki.ekilex.data.db.main.Public.PUBLIC;
 import static eki.ekilex.data.db.main.Tables.COLLOCATION_MEMBER;
 import static eki.ekilex.data.db.main.Tables.DEFINITION;
 import static eki.ekilex.data.db.main.Tables.DEFINITION_DATASET;
@@ -369,7 +370,7 @@ public class MigrationDbService extends AbstractDataDbService implements Publish
 		Condition where = t.field("value", String.class).like(containingCrit);
 		return mainDb
 				.select(
-						DSL.value(t.getName()).as("entity_name"),
+						DSL.value(t.getName()).as("table_name"),
 						t.field("id", Long.class),
 						t.field("value", String.class),
 						t.field("value_prese", String.class))
@@ -378,4 +379,14 @@ public class MigrationDbService extends AbstractDataDbService implements Publish
 				.fetchInto(ValueId.class);
 	}
 
+	public void updateValue(String tableName, Long id, String value, String valuePrese) {
+
+		Table<?> t = PUBLIC.getTable(tableName).as("t");
+		mainDb
+				.update(t)
+				.set(t.field("value", String.class), value)
+				.set(t.field("value_prese", String.class), valuePrese)
+				.where(t.field("id", Long.class).eq(id))
+				.execute();
+	}
 }

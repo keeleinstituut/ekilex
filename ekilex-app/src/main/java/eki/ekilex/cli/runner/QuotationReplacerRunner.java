@@ -24,13 +24,20 @@ public class QuotationReplacerRunner implements GlobalConstant, SystemConstant {
 
 	private static Logger logger = LoggerFactory.getLogger(QuotationReplacerRunner.class);
 
+	private static final char[] ALT_QUOTATION_CHARS = {'„', '”', '“', '″', '\''};
+
+	private static final char DEFAULT_QUOTATION_CHAR = '"';
+
+	private static final char REPLACE_OPEN_QUOTATION_CHAR = '„';
+
+	private static final char REPLACE_CLOSE_QUOTATION_CHAR = '“';
+
 	@Autowired
 	private MigrationDbService migrationDbService;
 
-	//private final String reportFileName = "odd-num-of-quotation-report.txt";
-	private final String reportFileName = "more-than-2-quotation-report.txt";
+	private final String reportFileName = "double-quotation-replace-report.txt";
 
-	private boolean makeReport = false;
+	private boolean makeReport = true;
 
 	@Transactional(rollbackFor = Exception.class)
 	public void execute() throws Exception {
@@ -44,31 +51,31 @@ public class QuotationReplacerRunner implements GlobalConstant, SystemConstant {
 			reportWriter = new OutputStreamWriter(reportStream, StandardCharsets.UTF_8);
 		}
 
-		final String usualQuotationMark = "\"";
+		final String defaultQuotationStr = String.valueOf(DEFAULT_QUOTATION_CHAR);
 		List<ValueId> valueIds;
 		Count recordCount = new Count();
 
-		valueIds = migrationDbService.getWordValues(usualQuotationMark);
+		valueIds = migrationDbService.getWordValues(defaultQuotationStr);
 		handleValues(valueIds, recordCount, reportWriter);
-		valueIds = migrationDbService.getDefinitionValues(usualQuotationMark);
+		valueIds = migrationDbService.getDefinitionValues(defaultQuotationStr);
 		handleValues(valueIds, recordCount, reportWriter);
-		valueIds = migrationDbService.getUsageValues(usualQuotationMark);
+		valueIds = migrationDbService.getUsageValues(defaultQuotationStr);
 		handleValues(valueIds, recordCount, reportWriter);
-		valueIds = migrationDbService.getWordEkiRecommendationValues(usualQuotationMark);
+		valueIds = migrationDbService.getWordEkiRecommendationValues(defaultQuotationStr);
 		handleValues(valueIds, recordCount, reportWriter);
-		valueIds = migrationDbService.getWordOsUsageValues(usualQuotationMark);
+		valueIds = migrationDbService.getWordOsUsageValues(defaultQuotationStr);
 		handleValues(valueIds, recordCount, reportWriter);
-		valueIds = migrationDbService.getMeaningNoteValues(usualQuotationMark);
+		valueIds = migrationDbService.getMeaningNoteValues(defaultQuotationStr);
 		handleValues(valueIds, recordCount, reportWriter);
-		valueIds = migrationDbService.getLexemeNoteValues(usualQuotationMark);
+		valueIds = migrationDbService.getLexemeNoteValues(defaultQuotationStr);
 		handleValues(valueIds, recordCount, reportWriter);
-		valueIds = migrationDbService.getMeaningForumValues(usualQuotationMark);
+		valueIds = migrationDbService.getMeaningForumValues(defaultQuotationStr);
 		handleValues(valueIds, recordCount, reportWriter);
-		valueIds = migrationDbService.getLearnerCommentValues(usualQuotationMark);
+		valueIds = migrationDbService.getLearnerCommentValues(defaultQuotationStr);
 		handleValues(valueIds, recordCount, reportWriter);
-		valueIds = migrationDbService.getGrammarValues(usualQuotationMark);
+		valueIds = migrationDbService.getGrammarValues(defaultQuotationStr);
 		handleValues(valueIds, recordCount, reportWriter);
-		valueIds = migrationDbService.getSourceValues(usualQuotationMark);
+		valueIds = migrationDbService.getSourceValues(defaultQuotationStr);
 		handleValues(valueIds, recordCount, reportWriter);
 
 		if (makeReport) {
@@ -87,59 +94,57 @@ public class QuotationReplacerRunner implements GlobalConstant, SystemConstant {
 			return;
 		}
 
-		final char[] quotationAltChars = {'"', '„', '”', '“', '″'};
-
-		Count singleCount = new Count();
-		Count doubleCount = new Count();
-		Count overDoubleCount = new Count();
-		String entityName = null;
+		Count matchCount = new Count();
+		String tableName = null;
 
 		recordCount.increment(valueIds.size());
 
 		for (ValueId valueId : valueIds) {
 
-			entityName = valueId.getEntityName();
+			tableName = valueId.getTableName();
+			Long id = valueId.getId();
 			String value = valueId.getValue();
-			int quotationCount = 0;
-			for (char quotationAltChar : quotationAltChars) {
-				int quotationAltCount = StringUtils.countMatches(value, quotationAltChar);
-				quotationCount = quotationCount + quotationAltCount;
+			String valuePrese = valueId.getValuePrese();
+
+			boolean containsAltQuotationChars = StringUtils.containsAny(value, ALT_QUOTATION_CHARS);
+			if (containsAltQuotationChars) {
+				continue;
 			}
-			if (quotationCount == 1) {
-				singleCount.increment();
-			} else if (quotationCount == 2) {
-				doubleCount.increment();
-			} else if (quotationCount > 2) {
-				overDoubleCount.increment();
+			int defaultQuotationCharCount = StringUtils.countMatches(value, DEFAULT_QUOTATION_CHAR);
+			if (defaultQuotationCharCount == 2) {
+				matchCount.increment();
+				String newValue = replaceQuotation(value);
+				String newValuePrese = replaceQuotation(valuePrese);
+				migrationDbService.updateValue(tableName, id, newValue, newValuePrese);
 				if (makeReport) {
-					writeReportLine(valueId, reportWriter);
+					String reportLine = tableName + "\t" + id + "\t" + value + "\t" + newValue + "\t" + newValuePrese + "\n";
+					reportWriter.write(reportLine);
 				}
 			}
 		}
 
-		logger.info("{} quoted values: {}, single quotations: {}, double quoatations: {}, overloaded quotatations: {}",
-				entityName, valueIds.size(), singleCount.getValue(), doubleCount.getValue(), overDoubleCount.getValue());
-
-		/*
-		word quoted values: 549, single quotations: 10, double quoatations: 498, overloaded quotatations: 41
-		definition quoted values: 1157, single quotations: 12, double quoatations: 940, overloaded quotatations: 205
-		usage quoted values: 3485, single quotations: 52, double quoatations: 2810, overloaded quotatations: 623
-		word_eki_recommendation quoted values: 285, single quotations: 0, double quoatations: 185, overloaded quotatations: 100
-		meaning_note quoted values: 2944, single quotations: 14, double quoatations: 1749, overloaded quotatations: 1181
-		lexeme_note quoted values: 2776, single quotations: 7, double quoatations: 1606, overloaded quotatations: 1163
-		meaning_forum quoted values: 1090, single quotations: 2, double quoatations: 471, overloaded quotatations: 617
-		grammar quoted values: 8, single quotations: 0, double quoatations: 4, overloaded quotatations: 4
-		source quoted values: 535, single quotations: 23, double quoatations: 448, overloaded quotatations: 64
-		Altogether handled 12829 records
-		*/
+		logger.info("{} quoted values: {}, matching quoatations: {}", tableName, valueIds.size(), matchCount.getValue());
 	}
 
-	private void writeReportLine(ValueId valueId, OutputStreamWriter reportWriter) throws Exception {
+	private String replaceQuotation(String value) {
 
-		String entityName = valueId.getEntityName();
-		Long id = valueId.getId();
-		String value = valueId.getValue();
-		String reportLine = entityName + "\t" + id + "\t" + value + "\n";
-		reportWriter.write(reportLine);
+		StringBuffer valueBuf = new StringBuffer();
+		char[] valueChars = value.toCharArray();
+		boolean isPairOpen = false;
+		for (char ch : valueChars) {
+			if (ch == DEFAULT_QUOTATION_CHAR) {
+				if (isPairOpen) {
+					valueBuf.append(REPLACE_CLOSE_QUOTATION_CHAR);
+					isPairOpen = false;
+				} else {
+					valueBuf.append(REPLACE_OPEN_QUOTATION_CHAR);
+					isPairOpen = true;
+				}
+			} else {
+				valueBuf.append(ch);
+			}
+		}
+		String newValue = valueBuf.toString();
+		return newValue;
 	}
 }
