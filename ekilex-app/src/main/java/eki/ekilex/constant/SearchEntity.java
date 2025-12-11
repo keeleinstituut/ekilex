@@ -1,8 +1,8 @@
 package eki.ekilex.constant;
 
-import java.util.List;
-
 import static java.util.Arrays.asList;
+
+import java.util.List;
 
 public enum SearchEntity {
 
@@ -144,6 +144,11 @@ public enum SearchEntity {
 	EKI_RECOMMENDATION(
 			SearchKey.VALUE_AND_EXISTS,
 			SearchKey.UPDATED_ON),
+	PUBLISHING(
+			SearchKey.PUBLISHING_LEXEME,
+			SearchKey.PUBLISHING_GRAMMAR,
+			SearchKey.PUBLISHING_GOVERNMENT,
+			SearchKey.PUBLISHING_MEANING_MEDIA),
 	CLUELESS(
 			SearchKey.VALUE,
 			SearchKey.SOURCE_REF,
@@ -171,7 +176,7 @@ public enum SearchEntity {
 	}
 
 	public static List<SearchEntity> getLexEntities() {
-		return asList(HEADWORD, WORD, TAG, FORM, MEANING, DEFINITION, USAGE, NOTE, EKI_RECOMMENDATION, CLUELESS);
+		return asList(HEADWORD, WORD, TAG, FORM, MEANING, DEFINITION, USAGE, NOTE, EKI_RECOMMENDATION, PUBLISHING, CLUELESS);
 	}
 
 	public static List<SearchEntity> getTermEntities() {

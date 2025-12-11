@@ -1,5 +1,6 @@
 package eki.wordweb.service.util;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -23,8 +24,8 @@ import eki.wordweb.data.LexemeWord;
 import eki.wordweb.data.MeaningWord;
 import eki.wordweb.data.SearchContext;
 import eki.wordweb.data.Word;
-import eki.wordweb.data.WordGroup;
 import eki.wordweb.data.WordEkiRecommendation;
+import eki.wordweb.data.WordGroup;
 import eki.wordweb.data.WordRelation;
 import eki.wordweb.data.WordRelationGroup;
 import eki.wordweb.data.WordRelationsTuple;
@@ -288,14 +289,23 @@ public class WordConversionUtil extends AbstractConversionUtil {
 		wordRelationGroups.add(wordRelationGroup);
 	}
 
-	public void composeWordOsRecommendations(Word word, SearchContext searchContext) {
+	public void composeWordEkiRecommendations(Word word, SearchContext searchContext) {
 
 		List<WordEkiRecommendation> wordEkiRecommendations = word.getWordEkiRecommendations();
 		if (CollectionUtils.isEmpty(wordEkiRecommendations)) {
 			return;
 		}
 		wordEkiRecommendations = filter(wordEkiRecommendations, searchContext);
+		LocalDateTime wordEkiRecommendationLatestModifiedOn = null;
+		if (CollectionUtils.isNotEmpty(wordEkiRecommendations)) {
+			wordEkiRecommendationLatestModifiedOn = wordEkiRecommendations.stream()
+					.filter(wordEkiRecomm -> wordEkiRecomm.getModifiedOn() != null)
+					.map(WordEkiRecommendation::getModifiedOn)
+					.max(LocalDateTime::compareTo)
+					.get();
+		}
 		word.setWordEkiRecommendations(wordEkiRecommendations);
+		word.setWordEkiRecommendationLatestModifiedOn(wordEkiRecommendationLatestModifiedOn);
 	}
 
 	public List<String> collectAllRelatedWords(Word word) {
@@ -339,7 +349,7 @@ public class WordConversionUtil extends AbstractConversionUtil {
 
 		summarisedPoses = summarisedPoses.stream().distinct().collect(Collectors.toList());
 		List<String> summarisedPosCodes = summarisedPoses.stream().map(Classifier::getCode).collect(Collectors.toList());
-		String summarisedPosCodesStr = StringUtils.join(summarisedPosCodes, ",");
+		String summarisedPosCodesStr = StringUtils.join(summarisedPosCodes, ", ");
 
 		boolean isShowLexPoses = false;
 		boolean isShowTermPoses = false;

@@ -1,4 +1,4 @@
-$(function(){
+$(function() {
 	$.fn.addFeedbackCommentBtn = function() {
 		const main = $(this);
 		main.on('click', function(e) {
@@ -28,9 +28,9 @@ $(function(){
 function deleteFeedback(feedbackId) {
 	const deleteFeedbackUrl = `${applicationUrl}wwfeedback/deletefeedback/${feedbackId}`;
 	$.get(deleteFeedbackUrl)
-	.done(function(data) {})
-	.fail(function(data) {
-		console.log(data);
-		alert('Viga!');
-	});
+		.done(function(data) { })
+		.fail(function(data) {
+			console.log(data);
+			alert('Viga!');
+		});
 };

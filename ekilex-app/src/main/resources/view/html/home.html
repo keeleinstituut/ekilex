@@ -63,7 +63,7 @@
             <div sec:authorize="#vars.userRoleData.admin" class="p-1">
               <a th:href="@{/fedtermupload}" th:text="#{menu.fedtermupload}">FedTerm liidestus</a>
             </div>
-            <div sec:authorize="#authentication.principal.datasetCrudPermissionsExist" class="p-1">
+            <div sec:authorize="#authentication.principal.master" class="p-1">
               <a th:href="@{/wwfeedback}" th:text="#{menu.wwfeedback}">Sõnaveebi tagasiside</a>
             </div>
             <div class="p-1">

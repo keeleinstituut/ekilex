@@ -157,6 +157,8 @@ public class LexemeWord extends WordTypeData implements LexemeLevel {
 
 	private boolean showWordDataAsHidden;
 
+	private String datasetSearchUrl;
+
 	public Long getLexemeId() {
 		return lexemeId;
 	}
@@ -699,6 +701,14 @@ public class LexemeWord extends WordTypeData implements LexemeLevel {
 
 	public void setShowWordDataAsHidden(boolean showWordDataAsHidden) {
 		this.showWordDataAsHidden = showWordDataAsHidden;
+	}
+
+	public String getDatasetSearchUrl() {
+		return datasetSearchUrl;
+	}
+
+	public void setDatasetSearchUrl(String datasetSearchUrl) {
+		this.datasetSearchUrl = datasetSearchUrl;
 	}
 
 }

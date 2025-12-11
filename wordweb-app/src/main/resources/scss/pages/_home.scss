@@ -14,9 +14,11 @@
   padding-top: 0;
   padding-bottom: 0;
   text-align: center;
+  min-height: 650px;
 
   @include media-breakpoint-up(md) {
     margin-top: 88px;
+    min-height: auto;
   }
 }
 

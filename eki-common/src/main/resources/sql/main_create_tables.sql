@@ -826,6 +826,7 @@ create table meaning_media (
   id bigserial primary key, 
   original_freeform_id bigint, -- to be dropped later
   meaning_id bigint references meaning(id) on delete cascade not null, 
+  title text null, 
   url text not null,
   created_by text null, 
   created_on timestamp null, 

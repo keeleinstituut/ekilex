@@ -1,6 +1,5 @@
 package eki.ekilex.service.db;
 
-import static eki.ekilex.data.db.main.Tables.COLLOCATION_MEMBER;
 import static eki.ekilex.data.db.main.Tables.DEFINITION;
 import static eki.ekilex.data.db.main.Tables.DEFINITION_DATASET;
 import static eki.ekilex.data.db.main.Tables.DEFINITION_FREEFORM;
@@ -330,14 +329,6 @@ public class CudDbService extends AbstractDataDbService {
 				.update(FREEFORM)
 				.set(FREEFORM.ORDER_BY, item.getOrderby())
 				.where(FREEFORM.ID.eq(item.getId()))
-				.execute();
-	}
-
-	public void updateLexemeCollocMemberGroupOrder(Long collocMemberId, Integer groupOrder) {
-		mainDb
-				.update(COLLOCATION_MEMBER)
-				.set(COLLOCATION_MEMBER.GROUP_ORDER, groupOrder)
-				.where(COLLOCATION_MEMBER.ID.eq(collocMemberId))
 				.execute();
 	}
 
@@ -680,7 +671,6 @@ public class CudDbService extends AbstractDataDbService {
 		Map<Field<?>, Object> fieldAndValueMap = new HashMap<>();
 		fieldAndValueMap.put(MEANING_IMAGE.URL, meaningImage.getUrl());
 		fieldAndValueMap.put(MEANING_IMAGE.TITLE, meaningImage.getTitle());
-		//fieldAndValueMap.put(MEANING_IMAGE.IS_PUBLIC, meaningImage.isPublic()); not yet implemented in UI
 		fieldAndValueMap.put(MEANING_IMAGE.MODIFIED_BY, meaningImage.getModifiedBy());
 		fieldAndValueMap.put(MEANING_IMAGE.MODIFIED_ON, meaningImage.getModifiedOn());
 
@@ -695,6 +685,7 @@ public class CudDbService extends AbstractDataDbService {
 
 		Map<Field<?>, Object> fieldAndValueMap = new HashMap<>();
 		fieldAndValueMap.put(MEANING_MEDIA.URL, meaningMedia.getUrl());
+		fieldAndValueMap.put(MEANING_IMAGE.TITLE, meaningMedia.getTitle());
 		fieldAndValueMap.put(MEANING_MEDIA.MODIFIED_BY, meaningMedia.getModifiedBy());
 		fieldAndValueMap.put(MEANING_MEDIA.MODIFIED_ON, meaningMedia.getModifiedOn());
 
@@ -1376,6 +1367,7 @@ public class CudDbService extends AbstractDataDbService {
 				.insertInto(
 						MEANING_MEDIA,
 						MEANING_MEDIA.MEANING_ID,
+						MEANING_MEDIA.TITLE,
 						MEANING_MEDIA.URL,
 						MEANING_MEDIA.CREATED_BY,
 						MEANING_MEDIA.CREATED_ON,
@@ -1383,6 +1375,7 @@ public class CudDbService extends AbstractDataDbService {
 						MEANING_MEDIA.MODIFIED_ON)
 				.values(
 						meaningId,
+						meaningMedia.getTitle(),
 						meaningMedia.getUrl(),
 						meaningMedia.getCreatedBy(),
 						meaningMedia.getCreatedOn(),
@@ -2068,20 +2061,6 @@ public class CudDbService extends AbstractDataDbService {
 		mainDb
 				.delete(LEXEME_REGION)
 				.where(LEXEME_REGION.ID.eq(lexemeRegionId))
-				.execute();
-	}
-
-	public void deleteLexemeCollocMembers(Long lexemeId) {
-		mainDb
-				.delete(COLLOCATION_MEMBER)
-				.where(COLLOCATION_MEMBER.MEMBER_LEXEME_ID.eq(lexemeId))
-				.execute();
-	}
-
-	public void deleteCollocMember(Long collocMemberId) {
-		mainDb
-				.delete(COLLOCATION_MEMBER)
-				.where(COLLOCATION_MEMBER.ID.eq(collocMemberId))
 				.execute();
 	}
 

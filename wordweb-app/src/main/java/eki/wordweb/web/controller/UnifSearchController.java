@@ -31,10 +31,12 @@ import org.springframework.web.util.UriUtils;
 import eki.common.data.SearchStat;
 import eki.wordweb.constant.WebConstant;
 import eki.wordweb.data.AbstractSearchResult;
+import eki.wordweb.data.LexemeWord;
 import eki.wordweb.data.LinkedWordSearchElement;
 import eki.wordweb.data.SearchFilter;
 import eki.wordweb.data.SearchValidation;
 import eki.wordweb.data.UiFilterElement;
+import eki.wordweb.data.Word;
 import eki.wordweb.data.WordData;
 import eki.wordweb.data.WordsData;
 import eki.wordweb.service.UnifSearchService;
@@ -94,7 +96,7 @@ public class UnifSearchController extends AbstractMainSearchController {
 		} else {
 			selectedWordHomonymNr = nullSafe(selectedWordHomonymNrStr);
 		}
-		String searchUri = webUtil.composeDetailSearchUri(destinLangsStr, datasetCodesStr, searchWord, selectedWordHomonymNr, selectedWordLang);
+		String searchUri = webUtil.composeAndEncodeDetailSearchUri(destinLangsStr, datasetCodesStr, searchWord, selectedWordHomonymNr, selectedWordLang);
 		setSearchFormAttribute(redirectAttributes, Boolean.TRUE);
 		redirectAttributes.addFlashAttribute("linkedLexemeId", linkedLexemeId);
 
@@ -206,11 +208,14 @@ public class UnifSearchController extends AbstractMainSearchController {
 		Long linkedLexemeId = sessionBean.getLinkedLexemeId();
 		SearchFilter searchFilter = new SearchFilter(destinLangs, datasetCodes);
 		WordData wordData = unifSearchService.getWordData(wordId, searchFilter);
+		List<LexemeWord> termLexemes = wordData.getTermLexemes();
+		Word word = wordData.getWord();
+		String wordValue = word.getValue();
 		wordData.setLinkedLexemeId(linkedLexemeId);
-
-		String wordValue = wordData.getWord().getValue();
 		sessionBean.setRecentWord(wordValue);
 		sessionBean.setLinkedLexemeId(null);
+		linkUtil.applyLexDetailSearchUrl(word, destinLangs);
+		linkUtil.applyDetailSearchUrl(termLexemes, destinLangs);
 
 		populateUserPref(sessionBean, model);
 		model.addAttribute("wordData", wordData);
@@ -226,7 +231,7 @@ public class UnifSearchController extends AbstractMainSearchController {
 	public String feelingLucky() {
 
 		String randomWord = unifSearchService.getRandomWord();
-		String searchUri = webUtil.composeDetailSearchUri(DESTIN_LANG_ALL, DATASET_ALL, randomWord, null, null);
+		String searchUri = webUtil.composeAndEncodeDetailSearchUri(DESTIN_LANG_ALL, DATASET_ALL, randomWord, null, null);
 
 		return REDIRECT_PREF + searchUri;
 	}
@@ -301,7 +306,7 @@ public class UnifSearchController extends AbstractMainSearchController {
 
 		destinLangsStr = StringUtils.join(searchValidation.getDestinLangs(), UI_FILTER_VALUES_SEPARATOR);
 		datasetCodesStr = StringUtils.join(searchValidation.getDatasetCodes(), UI_FILTER_VALUES_SEPARATOR);
-		String searchUri = webUtil.composeDetailSearchUri(destinLangsStr, datasetCodesStr, searchWord, homonymNr, lang);
+		String searchUri = webUtil.composeAndEncodeDetailSearchUri(destinLangsStr, datasetCodesStr, searchWord, homonymNr, lang);
 
 		searchValidation.setSearchWord(searchWord);
 		searchValidation.setHomonymNr(homonymNr);
@@ -328,7 +333,7 @@ public class UnifSearchController extends AbstractMainSearchController {
 
 		destinLangsStr = StringUtils.join(searchValidation.getDestinLangs(), UI_FILTER_VALUES_SEPARATOR);
 		datasetCodesStr = StringUtils.join(searchValidation.getDatasetCodes(), UI_FILTER_VALUES_SEPARATOR);
-		String searchUri = webUtil.composeDetailSearchUri(destinLangsStr, datasetCodesStr, cleanMaskSearchWord, null, null);
+		String searchUri = webUtil.composeAndEncodeDetailSearchUri(destinLangsStr, datasetCodesStr, cleanMaskSearchWord, null, null);
 
 		searchValidation.setSearchWord(cleanMaskSearchWord);
 		searchValidation.setSearchUri(searchUri);

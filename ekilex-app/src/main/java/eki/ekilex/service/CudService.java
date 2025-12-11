@@ -21,7 +21,6 @@ import eki.common.constant.PermConstant;
 import eki.common.data.AsWordResult;
 import eki.ekilex.data.ActivityLogData;
 import eki.ekilex.data.Classifier;
-import eki.ekilex.data.CollocMemberOrder;
 import eki.ekilex.data.DatasetPermission;
 import eki.ekilex.data.EkiUser;
 import eki.ekilex.data.Freeform;
@@ -38,10 +37,10 @@ import eki.ekilex.data.SimpleWord;
 import eki.ekilex.data.Tag;
 import eki.ekilex.data.Usage;
 import eki.ekilex.data.UsageTranslation;
+import eki.ekilex.data.WordEkiRecommendation;
 import eki.ekilex.data.WordLexemeMeaningDetails;
 import eki.ekilex.data.WordLexemeMeaningIdTuple;
 import eki.ekilex.data.WordOsMorph;
-import eki.ekilex.data.WordEkiRecommendation;
 import eki.ekilex.data.WordOsUsage;
 import eki.ekilex.security.EkilexPermissionEvaluator;
 import eki.ekilex.service.db.CompositionDbService;
@@ -376,10 +375,12 @@ public class CudService extends AbstractCudService implements PermConstant, Acti
 	@Transactional(rollbackFor = Exception.class)
 	public void createMeaningImage(Long meaningId, String url, String title, EkiUser user, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
 
+		if (StringUtils.isBlank(url)) {
+			return;
+		}
 		MeaningImage meaningImage = new MeaningImage();
 		meaningImage.setTitle(title);
 		meaningImage.setUrl(url);
-		meaningImage.setPublic(PUBLICITY_PUBLIC);
 		applyCreateUpdate(meaningImage);
 
 		ActivityLogData activityLog = activityLogService.prepareActivityLog("createMeaningImage", meaningId, ActivityOwner.MEANING, roleDatasetCode, isManualEventOnUpdateEnabled);
@@ -389,9 +390,13 @@ public class CudService extends AbstractCudService implements PermConstant, Acti
 	}
 
 	@Transactional(rollbackFor = Exception.class)
-	public void createMeaningMedia(Long meaningId, String url, EkiUser user, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
+	public void createMeaningMedia(Long meaningId, String url, String title, EkiUser user, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
 
+		if (StringUtils.isBlank(url)) {
+			return;
+		}
 		MeaningMedia meaningMedia = new MeaningMedia();
+		meaningMedia.setTitle(title);
 		meaningMedia.setUrl(url);
 		applyCreateUpdate(meaningMedia);
 
@@ -841,37 +846,6 @@ public class CudService extends AbstractCudService implements PermConstant, Acti
 	}
 
 	@Transactional(rollbackFor = Exception.class)
-	public void updateCollocMemberGroupOrder(Long collocLexemeId, Long memberLexemeId, String direction, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
-
-		ActivityLogData activityLog = activityLogService.prepareActivityLog("updateCollocMemberGroupOrder", memberLexemeId, ActivityOwner.LEXEME, roleDatasetCode, isManualEventOnUpdateEnabled);
-		List<CollocMemberOrder> collocMembers = lookupDbService.getCollocMemberOrdersOfRelGroup(collocLexemeId, memberLexemeId);
-		int collocMemberCount = collocMembers.size();
-		CollocMemberOrder sourceCollocMember = collocMembers.stream()
-				.filter(collocMember -> collocMember.getCollocLexemeId().equals(collocLexemeId))
-				.findFirst()
-				.get();
-		int sourceCollocMemberIndex = collocMembers.indexOf(sourceCollocMember);
-		if (sourceCollocMemberIndex < 0) {
-			return;
-		}
-		CollocMemberOrder targetCollocMember = null;
-		if (StringUtils.equalsIgnoreCase(direction, "up") && (sourceCollocMemberIndex > 0)) {
-			targetCollocMember = collocMembers.get(sourceCollocMemberIndex - 1);
-		} else if (StringUtils.equalsIgnoreCase(direction, "down") && (sourceCollocMemberIndex < (collocMemberCount - 1))) {
-			targetCollocMember = collocMembers.get(sourceCollocMemberIndex + 1);
-		}
-		if (targetCollocMember != null) {
-			Long sourceCollocMemberId = sourceCollocMember.getId();
-			Integer sourceCollocGroupOrder = sourceCollocMember.getGroupOrder();
-			Long targetCollocMemberId = targetCollocMember.getId();
-			Integer targetCollocGroupOrder = targetCollocMember.getGroupOrder();
-			cudDbService.updateLexemeCollocMemberGroupOrder(sourceCollocMemberId, targetCollocGroupOrder);
-			cudDbService.updateLexemeCollocMemberGroupOrder(targetCollocMemberId, sourceCollocGroupOrder);
-		}
-		activityLogService.createActivityLog(activityLog, memberLexemeId, ActivityEntity.LEXEME);
-	}
-
-	@Transactional(rollbackFor = Exception.class)
 	public void updateUsage(Long usageId, String valuePrese, boolean isPublic, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
 
 		Usage usage = new Usage();
@@ -1222,10 +1196,12 @@ public class CudService extends AbstractCudService implements PermConstant, Acti
 	@Transactional(rollbackFor = Exception.class)
 	public void updateMeaningImage(Long meaningImageId, String url, String title, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
 
+		if (StringUtils.isBlank(url)) {
+			return;
+		}
 		MeaningImage meaningImage = new MeaningImage();
-		meaningImage.setUrl(url);
 		meaningImage.setTitle(title);
-		//meaningImage.setPublic(isPublic); not yet implemented in UI
+		meaningImage.setUrl(url);
 		applyUpdate(meaningImage);
 
 		Long meaningId = activityLogService.getActivityOwnerId(meaningImageId, ActivityEntity.MEANING_IMAGE);
@@ -1235,15 +1211,19 @@ public class CudService extends AbstractCudService implements PermConstant, Acti
 	}
 
 	@Transactional(rollbackFor = Exception.class)
-	public void updateMeaningMedia(Long meaningMediaId, String url, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
+	public void updateMeaningMedia(Long meaningMediaId, String url, String title, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
 
-		MeaningMedia meaningImage = new MeaningMedia();
-		meaningImage.setUrl(url);
-		applyUpdate(meaningImage);
+		if (StringUtils.isBlank(url)) {
+			return;
+		}
+		MeaningMedia meaningMedia = new MeaningMedia();
+		meaningMedia.setTitle(title);
+		meaningMedia.setUrl(url);
+		applyUpdate(meaningMedia);
 
 		Long meaningId = activityLogService.getActivityOwnerId(meaningMediaId, ActivityEntity.MEANING_MEDIA);
 		ActivityLogData activityLog = activityLogService.prepareActivityLog("updateMeaningMedia", meaningId, ActivityOwner.MEANING, roleDatasetCode, isManualEventOnUpdateEnabled);
-		cudDbService.updateMeaningMedia(meaningMediaId, meaningImage);
+		cudDbService.updateMeaningMedia(meaningMediaId, meaningMedia);
 		activityLogService.createActivityLog(activityLog, meaningMediaId, ActivityEntity.MEANING_MEDIA);
 	}
 
@@ -1444,7 +1424,7 @@ public class CudService extends AbstractCudService implements PermConstant, Acti
 			activityLogService.createActivityLog("deleteWord", wordId, ActivityOwner.WORD, roleDatasetCode, isManualEventOnUpdateEnabled);
 		}
 		activityLogService.createActivityLog("deleteLexeme", lexemeId, ActivityOwner.LEXEME, roleDatasetCode, isManualEventOnUpdateEnabled);
-		cudDbService.deleteLexemeCollocMembers(lexemeId);
+		collocationDbService.deleteLexemeCollocMembers(lexemeId);
 		cudDbService.deleteLexemeFreeforms(lexemeId);
 		cudDbService.deleteLexeme(lexemeId);
 		if (isOnlyLexemeForMeaning) {
@@ -1544,15 +1524,6 @@ public class CudService extends AbstractCudService implements PermConstant, Acti
 			cudDbService.deleteLexemeTag(lexemeTagId);
 			activityLogService.createActivityLog(activityLog, lexemeTagId, ActivityEntity.TAG);
 		}
-	}
-
-	@Transactional(rollbackFor = Exception.class)
-	public void deleteCollocMember(Long collocMemberId, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
-
-		Long lexemeId = activityLogService.getActivityOwnerId(collocMemberId, ActivityEntity.COLLOC_MEMBER);
-		ActivityLogData activityLog = activityLogService.prepareActivityLog("deleteCollocMember", lexemeId, ActivityOwner.LEXEME, roleDatasetCode, isManualEventOnUpdateEnabled);
-		cudDbService.deleteCollocMember(collocMemberId);
-		activityLogService.createActivityLog(activityLog, collocMemberId, ActivityEntity.COLLOC_MEMBER);
 	}
 
 	@Transactional(rollbackFor = Exception.class)

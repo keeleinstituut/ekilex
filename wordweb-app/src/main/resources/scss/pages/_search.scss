@@ -6,10 +6,11 @@
   display: flex;
   flex: 1 1 auto;
   flex-flow: column nowrap;
-  min-height: 100%;
+  min-height: 650px;
 
   @include media-breakpoint-up(md) {
     @include border-radius(.6875rem);
+    min-height: 100%;
   }
 
   >.loading-indicator {
@@ -192,7 +193,7 @@
     font-size: 1.25rem;
     font-weight: 700;
     line-height: 24px;
-    margin: 24px auto 16px 0;
+    margin: 0 4px 16px 0;
     color: var(--color-dark-blue);
 
     &--no-bottom-margin {
@@ -268,6 +269,7 @@
     font-size: 1rem;
     font-weight: 700;
     margin: var(--search-block-title-margin, 0 auto 16px 0);
+    line-height: 1.5;
   }
 
   &__block-modified {
@@ -434,7 +436,7 @@
   grid-template-columns: 1fr 30%;
   gap: 16px;
   flex-grow: 1;
-
+  container: results / inline-size;
   @include media-breakpoint-down(sm) {
     grid-template-columns: 1fr;
   }
@@ -786,6 +788,10 @@ span.material-symbols-outlined {
   &--small {
     --fallback-icon-size: 1.3125rem;
   }
+
+  &--filled {
+    --icon-variation-settings: 'FILL' 1;
+  }
 }
 
 .lexeme-level {
@@ -856,4 +862,17 @@ span.material-symbols-outlined {
   &--warning {
     background-color: var(--color-alert-yellow);
   }
+}
+
+
+.lexeme-tooltip {
+  border: none;
+  padding: 0;
+  margin: 0;
+  width: 24px;
+  height: 24px;
+  --icon-size: 18px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }

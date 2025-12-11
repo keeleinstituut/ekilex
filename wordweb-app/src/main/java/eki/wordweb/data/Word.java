@@ -52,6 +52,8 @@ public class Word extends WordTypeData {
 
 	private List<WordEkiRecommendation> wordEkiRecommendations;
 
+	private LocalDateTime wordEkiRecommendationLatestModifiedOn;
+
 	private boolean wordMatch;
 
 	private boolean formMatch;
@@ -61,6 +63,8 @@ public class Word extends WordTypeData {
 	private boolean wordRelationsExist;
 
 	private boolean selected;
+
+	private String lexSearchUrl;
 
 	public String getVocalForm() {
 		return vocalForm;
@@ -198,6 +202,14 @@ public class Word extends WordTypeData {
 		this.wordEkiRecommendations = wordEkiRecommendations;
 	}
 
+	public LocalDateTime getWordEkiRecommendationLatestModifiedOn() {
+		return wordEkiRecommendationLatestModifiedOn;
+	}
+
+	public void setWordEkiRecommendationLatestModifiedOn(LocalDateTime wordEkiRecommendationLatestModifiedOn) {
+		this.wordEkiRecommendationLatestModifiedOn = wordEkiRecommendationLatestModifiedOn;
+	}
+
 	public boolean isWordMatch() {
 		return wordMatch;
 	}
@@ -236,6 +248,14 @@ public class Word extends WordTypeData {
 
 	public void setSelected(boolean selected) {
 		this.selected = selected;
+	}
+
+	public String getLexSearchUrl() {
+		return lexSearchUrl;
+	}
+
+	public void setLexSearchUrl(String lexSearchUrl) {
+		this.lexSearchUrl = lexSearchUrl;
 	}
 
 }

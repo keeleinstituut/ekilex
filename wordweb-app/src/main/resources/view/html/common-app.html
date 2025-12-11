@@ -7,11 +7,14 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-<th:block th:if="${pageContext !='simpleSearch'}">
+<th:block th:if="${pageContext !='simpleSearch' and pageContext != 'OS'}">
   <th:block th:replace=" :: favicon"></th:block>
 </th:block>
-<th:block th:if="${pageContext =='simpleSearch'}">
+<th:block th:if="${pageContext == 'simpleSearch'}">
   <th:block th:replace=" :: faviconSimple"></th:block>
+</th:block>
+<th:block th:if="${pageContext == 'OS'}">
+  <th:block th:replace=" :: faviconOS"></th:block>
 </th:block>
 <th:block th:replace=" :: css"></th:block>
 <th:block th:replace=" :: js"></th:block>
@@ -20,7 +23,6 @@
 <script th:inline="javascript">
 	var applicationUrl = /*[[@{/}]]*/'/';
 	var sessionTimeoutSec = /*[[${appData == null ? 3600 : appData.sessionTimeoutSec}]]*/3600;
-	const feedbackServiceUrl = /*[[${feedbackServiceUrl}]]*/'http://localhost/blah';
 	const messages = {
     'this_is_form' : /*[[#{label.word.is.form.of}]]*/'see on ka vorm sõnadest',
     'audio_generating_loading': /*[[#{label.audio.generation.loading}]]*/'Heli genereeritakse...',
@@ -58,13 +60,20 @@
     <link rel="icon" type="image/png" sizes="16x16" th:href="@{/favicon-16x16-light.png}">
     <link rel="icon" type="image/x-icon" th:href="@{/favicon-light.ico}">
   </th:block>
+    <!-- OS favicon -->
+  <th:block th:fragment="faviconOS">
+    <link rel="apple-touch-icon" sizes="180x180" th:href="@{/apple-touch-icon-os.png}">
+    <link rel="icon" type="image/png" sizes="32x32" th:href="@{/favicon-32x32-os.png}">
+    <link rel="icon" type="image/png" sizes="16x16" th:href="@{/favicon-16x16-os.png}">
+    <link rel="icon" type="image/x-icon" th:href="@{/favicon-os.ico}">
+  </th:block>
   <!-- Bootstrap core CSS -->
   <th:block th:fragment="css">
     <link rel="stylesheet" th:href="@{/view/css/jquery-ui.min.css}" />
     <link rel="stylesheet" th:href="@{/view/css/styles.css}" />
     <link rel="stylesheet" th:href="@{/view/js/kiosk-board/src/kioskboard.css}" />
     <!-- TODO MV, palun ressurss lae alla-->
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&icon_names=apps,cancel,info,keyboard,language,record_voice_over,search,visibility" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&icon_names=apps,book_ribbon,cancel,content_copy,info,keyboard,language,record_voice_over,search,visibility" />
   </th:block>
   <!-- Bootstrap core JS -->
   <th:block th:fragment="js">
@@ -154,7 +163,6 @@
         <a class="navigation__link" th:href="@{/os}" target="_blank">
           <img class="navigation__image" th:src="@{'/view/images/os.svg'}" alt="">
           <span th:utext="#{menu.os.title}"></span>
-          <span class="navigation__link-description" th:utext="#{menu.os.description}"></span>
         </a>
         <a class="navigation__link" href="https://eki.ee/keeleinfo/sonastikud/" target="_blank">
           <img class="navigation__image" th:src="@{'/view/images/menu-dictionaries.svg'}" alt="">
@@ -276,7 +284,7 @@
           </div>
           <div id="feedback-data" class="modal-body">
             <div>
-              <form id="feedback-form" novalidate>
+              <form id="feedback-form" th:action="@{/feed}" novalidate>
                 <input type="hidden" name="feedbackType" th:value="${feedbackType}">
                 <input type="hidden" name="lastSearch" th:value="${sessionBean == null ? '' : sessionBean.searchWord}">
                 <div class="feedback-modal__group">
@@ -377,6 +385,7 @@
             <a th:href="@{/collections}" th:text="#{label.filter.dataset}">Sõnakogud</a>
             <a th:href="@{/ekilex-api}" th:text="#{menu.ekilexapi}">Ekilex API</a>
             <a th:href="@{/news}" th:text="#{menu.news}">Versiooniajalugu</a>
+            <a th:href="@{/accessibility}" th:text="#{menu.accessibility}">Ligipääsetavus</a>
             <a th:href="@{/regulations}" th:text="#{label.privacy.terms}">Kasutus- ja privaatsustingimused</a>
           </div>
         </div>
@@ -504,5 +513,25 @@
       </button>
     </div>
   </th:block>
+  <div class="clipboard" th:fragment="clipboard">
+    <button class="clipboard__trigger" th:title="#{button.copy_clipboard}" type="button" aria-haspopup="dialog">
+      <span class="material-symbols-outlined" aria-hidden="true">content_copy</span>
+    </button>
+    <div class="clipboard__popup" role="dialog"
+         th:data-clipboard-text="|${word.value}${word.homonymExists ? word.homonymNr : ''}. ${text} ${link} (${date})|">
+      <span th:text="#{label.clipboard.copied}"></span>
+      <p>
+        <span class="clipboard__word">
+          <span th:text="${word.value}">sõna</span>
+          <sup th:if="${word.homonymExists}" th:text="${word.homonymNr}"></sup>
+          <span>.</span>
+        </span>
+        <th:block th:if="${text}" th:utext="${text}"></th:block>
+        <br/>
+        <a th:if="${link}" th:href="${link}" th:text="${link}"></a>
+        <span th:if="${date}" th:utext="${'(' + date + ')'}"></span>
+      </p>
+    </div>
+  </div>
 </body>
 </html>

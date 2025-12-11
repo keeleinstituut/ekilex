@@ -1,6 +1,7 @@
 package eki.wordweb.web.util;
 
 import java.util.Arrays;
+import java.util.List;
 import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
@@ -40,9 +41,20 @@ public class WebUtil implements WebConstant, SystemConstant, GlobalConstant {
 		return false;
 	}
 
-	public String composeDetailSearchUri(String destinLangsStr, String datasetCodesStr, String wordValue, Integer homonymNr, String lang) {
+	public String composeAndEncodeDetailSearchUri(List<String> destinLangs, String datasetCode, String wordValue, Integer homonymNr, String lang) {
+		String encodedWordValue = encode(wordValue);
+		String destinLangsStr = StringUtils.join(destinLangs, UI_FILTER_VALUES_SEPARATOR);
+		String datasetCodeStr = UriUtils.encode(datasetCode, UTF_8);
+		return composeDetailSearchUri(destinLangsStr, datasetCodeStr, encodedWordValue, homonymNr, lang);
+	}
+
+	public String composeAndEncodeDetailSearchUri(String destinLangsStr, String datasetCodesStr, String wordValue, Integer homonymNr, String lang) {
 		String encodedWordValue = encode(wordValue);
 		String encodedDatasetCodesStr = encodeSeparatedValuesStr(datasetCodesStr);
+		return composeDetailSearchUri(destinLangsStr, encodedDatasetCodesStr, encodedWordValue, homonymNr, lang);
+	}
+
+	private String composeDetailSearchUri(String destinLangsStr, String encodedDatasetCodesStr, String encodedWordValue, Integer homonymNr, String lang) {
 		String searchUri;
 		if (homonymNr == null) {
 			searchUri = StringUtils.join(SEARCH_URI, UNIF_URI, '/', destinLangsStr, '/', encodedDatasetCodesStr, '/', encodedWordValue);
@@ -54,8 +66,18 @@ public class WebUtil implements WebConstant, SystemConstant, GlobalConstant {
 		return searchUri;
 	}
 
-	public String composeSimpleSearchUri(String destinLangsStr, String wordValue, Integer homonymNr, String lang) {
+	public String composeAndEncodeSimpleSearchUri(List<String> destinLangs, String wordValue, Integer homonymNr, String lang) {
 		String encodedWordValue = encode(wordValue);
+		String destinLangsStr = StringUtils.join(destinLangs, UI_FILTER_VALUES_SEPARATOR);
+		return composeSimpleSearchUri(destinLangsStr, encodedWordValue, homonymNr, lang);
+	}
+
+	public String composeAndEncodeSimpleSearchUri(String destinLangsStr, String wordValue, Integer homonymNr, String lang) {
+		String encodedWordValue = encode(wordValue);
+		return composeSimpleSearchUri(destinLangsStr, encodedWordValue, homonymNr, lang);
+	}
+
+	private String composeSimpleSearchUri(String destinLangsStr, String encodedWordValue, Integer homonymNr, String lang) {
 		String searchUri;
 		if (homonymNr == null) {
 			searchUri = StringUtils.join(SEARCH_URI, LITE_URI, '/', destinLangsStr, '/', encodedWordValue);
@@ -116,8 +138,12 @@ public class WebUtil implements WebConstant, SystemConstant, GlobalConstant {
 	}
 
 	private String encodeSeparatedValuesStr(String separatedValuesStr) {
-		String[] valuesArr = StringUtils.split(separatedValuesStr, UI_FILTER_VALUES_SEPARATOR);
-		String encodedSeparatedValuesStr = Arrays.stream(valuesArr)
+		List<String> values = Arrays.asList(StringUtils.split(separatedValuesStr, UI_FILTER_VALUES_SEPARATOR));
+		return encodeValues(values);
+	}
+
+	private String encodeValues(List<String> values) {
+		String encodedSeparatedValuesStr = values.stream()
 				.map(value -> UriUtils.encode(value, UTF_8))
 				.collect(Collectors.joining(String.valueOf(UI_FILTER_VALUES_SEPARATOR)));
 		return encodedSeparatedValuesStr;

@@ -29,6 +29,12 @@ public class ClassifierService implements GlobalConstant, SystemConstant {
 
 	private static final ClassifierName[] NON_EDITABLE_CLASSIFIER_NAMES = new ClassifierName[] {ClassifierName.LABEL_TYPE};
 
+	private static final ClassifierName[] OS_CLASSIFIER_NAMES = new ClassifierName[] {
+			ClassifierName.DISPLAY_MORPH,
+			ClassifierName.WORD_TYPE,
+			ClassifierName.REGISTER,
+			ClassifierName.VALUE_STATE};
+
 	@Autowired
 	private ClassifierDbService classifierDbService;
 
@@ -61,12 +67,20 @@ public class ClassifierService implements GlobalConstant, SystemConstant {
 
 		List<String> labelTypes;
 		boolean hasLabel = classifierName.hasLabel();
+		boolean isOs = ArrayUtils.contains(OS_CLASSIFIER_NAMES, classifierName);
 		if (hasLabel) {
-			labelTypes = Arrays.asList(
-					CLASSIF_LABEL_TYPE_DESCRIP,
-					CLASSIF_LABEL_TYPE_WORDWEB,
-					CLASSIF_LABEL_TYPE_OS,
-					CLASSIF_LABEL_TYPE_COMMENT);
+			if (isOs) {
+				labelTypes = Arrays.asList(
+						CLASSIF_LABEL_TYPE_DESCRIP,
+						CLASSIF_LABEL_TYPE_WORDWEB,
+						CLASSIF_LABEL_TYPE_OS,
+						CLASSIF_LABEL_TYPE_COMMENT);
+			} else {
+				labelTypes = Arrays.asList(
+						CLASSIF_LABEL_TYPE_DESCRIP,
+						CLASSIF_LABEL_TYPE_WORDWEB,
+						CLASSIF_LABEL_TYPE_COMMENT);
+			}
 		} else {
 			labelTypes = Collections.emptyList();
 		}

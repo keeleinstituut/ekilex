@@ -21,7 +21,7 @@
             <span class="material-symbols-outlined" aria-hidden="true">cancel</span>
           </button>
           <div class="keyboard-search">
-            <button id="keyboard-search-btn" type="button" class="btn keyboard-btn" data-toggle="button" aria-pressed="false" autocomplete="off">
+            <button id="keyboard-search-btn" th:aria-label="#{aria.keyboard}" type="button" class="btn keyboard-btn" data-toggle="button" aria-pressed="false" autocomplete="off">
               <span class="material-symbols-outlined" aria-hidden="true">keyboard</span>
             </button>
             <div id="keyboard-lang-search" class="dropdown dropdown-keyboard-lang" style="display: none;">
@@ -227,7 +227,7 @@
     <th:block th:each="lexeme : ${wordData.termLexemes}" th:with="
     isProTerm = ${@viewUtil.isProTermData(lexeme)},
     isLimTerm = ${@viewUtil.isLimTermData(lexeme)}">
-      <div class="search__block" th:id="|lexeme-section-${lexeme.lexemeId}|">
+      <div class="search__block">
         <th:block th:replace="term-details :: meaning-data"></th:block>
       </div>
     </th:block>

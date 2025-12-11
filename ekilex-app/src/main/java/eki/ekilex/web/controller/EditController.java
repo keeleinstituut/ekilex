@@ -38,6 +38,7 @@ import eki.ekilex.data.UpdateItemRequest;
 import eki.ekilex.data.UpdateLexemeLevelsRequest;
 import eki.ekilex.data.UpdateListRequest;
 import eki.ekilex.data.UserContextData;
+import eki.ekilex.service.CollocationService;
 import eki.ekilex.service.ComplexOpService;
 import eki.ekilex.service.CudService;
 import eki.ekilex.service.SourceLinkService;
@@ -55,6 +56,9 @@ public class EditController extends AbstractMutableDataPageController implements
 
 	@Autowired
 	private CudService cudService;
+
+	@Autowired
+	private CollocationService collocationService;
 
 	@Autowired
 	private SynCudService synCudService;
@@ -204,7 +208,7 @@ public class EditController extends AbstractMutableDataPageController implements
 			sessionBean.setMeaningImageExpanded(true);
 			break;
 		case "meaning_media":
-			cudService.createMeaningMedia(id, value, user, roleDatasetCode, isManualEventOnUpdateEnabled);
+			cudService.createMeaningMedia(id, value, value2, user, roleDatasetCode, isManualEventOnUpdateEnabled);
 			sessionBean.setMeaningMediaExpanded(true);
 			break;
 		case "meaning_freeform":
@@ -346,6 +350,12 @@ public class EditController extends AbstractMutableDataPageController implements
 		case "lexeme_note":
 			cudService.updateLexemeNote(id, value, languageCode, isPublic, roleDatasetCode, isManualEventOnUpdateEnabled);
 			break;
+		case "colloc_member_pos_group":
+			collocationService.updateCollocMemberPosGroup(id, value, roleDatasetCode, isManualEventOnUpdateEnabled);
+			break;
+		case "colloc_member_rel_group":
+			collocationService.updateCollocMemberRelGroup(id, value, roleDatasetCode, isManualEventOnUpdateEnabled);
+			break;
 		case "word_value":
 			cudService.updateWordValue(id, value, roleDatasetCode, isManualEventOnUpdateEnabled);
 			break;
@@ -415,7 +425,7 @@ public class EditController extends AbstractMutableDataPageController implements
 			cudService.updateMeaningImage(id, value, value2, roleDatasetCode, isManualEventOnUpdateEnabled);
 			break;
 		case "meaning_media":
-			cudService.updateMeaningMedia(id, value, roleDatasetCode, isManualEventOnUpdateEnabled);
+			cudService.updateMeaningMedia(id, value, value2, roleDatasetCode, isManualEventOnUpdateEnabled);
 			break;
 		case "meaning_freeform":
 			cudService.updateMeaningFreeform(id, value, roleDatasetCode, isManualEventOnUpdateEnabled);
@@ -637,7 +647,13 @@ public class EditController extends AbstractMutableDataPageController implements
 			cudService.deleteLexeme(id, roleDatasetCode, isManualEventOnUpdateEnabled);
 			break;
 		case "colloc_member":
-			cudService.deleteCollocMember(id, roleDatasetCode, isManualEventOnUpdateEnabled);
+			collocationService.deleteCollocMember(id, roleDatasetCode, isManualEventOnUpdateEnabled);
+			break;
+		case "colloc_member_pos_group":
+			collocationService.updateCollocMemberPosGroup(id, null, roleDatasetCode, isManualEventOnUpdateEnabled);
+			break;
+		case "colloc_member_rel_group":
+			collocationService.updateCollocMemberRelGroup(id, null, roleDatasetCode, isManualEventOnUpdateEnabled);
 			break;
 		case "rus_meaning_lexemes":
 			cudService.deleteLexemeAndMeaningLexemes(id, LANGUAGE_CODE_RUS, roleDatasetCode, isManualEventOnUpdateEnabled);

@@ -52,7 +52,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import eki.ekilex.data.Classifier;
-import eki.ekilex.data.CollocMemberOrder;
 import eki.ekilex.data.IdPair;
 import eki.ekilex.data.InexactSynonym;
 import eki.ekilex.data.SearchDatasetsRestriction;
@@ -492,27 +491,6 @@ public class LookupDbService extends AbstractDataDbService {
 				.groupBy(cw.VALUE)
 				.orderBy(cw.VALUE)
 				.fetchInto(String.class);
-	}
-
-	public List<CollocMemberOrder> getCollocMemberOrdersOfRelGroup(Long collocLexemeId, Long memberLexemeId) {
-
-		CollocationMember cm1 = COLLOCATION_MEMBER.as("cm1");
-		CollocationMember cm2 = COLLOCATION_MEMBER.as("cm2");
-
-		return mainDb
-				.selectFrom(cm1)
-				.where(
-						cm1.MEMBER_LEXEME_ID.eq(memberLexemeId)
-								.andExists(DSL
-										.select(cm2.ID)
-										.from(cm2)
-										.where(
-												cm2.COLLOC_LEXEME_ID.eq(collocLexemeId)
-														.and(cm2.MEMBER_LEXEME_ID.eq(cm1.MEMBER_LEXEME_ID))
-														.and(cm2.POS_GROUP_CODE.eq(cm1.POS_GROUP_CODE))
-														.and(cm2.REL_GROUP_CODE.eq(cm1.REL_GROUP_CODE)))))
-				.orderBy(cm1.GROUP_ORDER)
-				.fetchInto(CollocMemberOrder.class);
 	}
 
 	public LexemeRecord getLexemeRecord(Long lexemeId) {

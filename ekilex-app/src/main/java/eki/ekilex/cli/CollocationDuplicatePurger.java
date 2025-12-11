@@ -46,7 +46,7 @@ public class CollocationDuplicatePurger implements CommandLineRunner {
 		try {
 			runner.execute();
 		} catch (Exception e) {
-			logger.error("Definition purger failed with", e);
+			logger.error("Collocation duplicates purger failed with", e);
 		} finally {
 			context.close();
 		}

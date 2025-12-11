@@ -189,8 +189,8 @@
                       <option th:each="domain : ${origin.getValue()}"
                               th:value="${domain.toIdString()}"
                               th:selected="${criteria.searchValue == domain}"
-                              th:text="${#strings.abbreviate(domain.origin + ' - ' + domain.code + ' - ' + domain.value, 100)}"
-                              th:title="${domain.origin + ' - ' + domain.code + ' - ' + domain.value}">domain</option>
+                              th:text="${domain.originCodeValueCommentShort}"
+                              th:title="${domain.originCodeValueCommentFull}">domain</option>
                     </optgroup>
                   </select>
                 </div>
@@ -233,7 +233,7 @@
                             th:text="${semanticType.code}">semantic type</option>
                   </select>
                 </div>
-                <div class="value-input-container col-auto flex-grow-1 flex-shrink-1" th:if="${criteria.searchKey.name() == 'PUBLISHING_TARGET'}">
+                <div class="value-input-container col-auto flex-grow-1 flex-shrink-1" th:if="${#strings.startsWith(criteria.searchKey.name(), 'PUBLISHING_')}">
                   <select class="form-control"
                           th:name="'criteriaGroups[' + ${critGroupStat.index} + '].searchCriteria[' + ${critStat.index} + '].searchValue'"
                           data-live-search="true"
@@ -520,7 +520,7 @@
                     <option th:each="register : ${allLexemeRegisters}"
                             th:value="${register.code}"
                             th:selected="${criteria.searchValue == register.code}"
-                            th:text="${register.value}">register</option>
+                            th:text="${register.valueComment}">register</option>
                   </select>
                 </div>
                 <div class="value-input-container col-auto flex-grow-1 flex-shrink-1" th:if="${criteria.searchKey.name() == 'LEXEME_DERIV'}">
@@ -544,7 +544,7 @@
                     <option th:each="valueState : ${lexemeValueStates}"
                             th:value="${valueState.code}"
                             th:selected="${criteria.searchValue == valueState.code}"
-                            th:text="${valueState.value}">value state</option>
+                            th:text="${valueState.valueComment}">value state</option>
                   </select>
                 </div>
                 <div class="value-input-container col-auto flex-grow-1 flex-shrink-1" th:if="${criteria.searchKey.name() == 'LEXEME_RELATION'}">
@@ -771,8 +771,8 @@
                 <optgroup th:each="origin : ${domains}" th:label="${origin.getKey()}">
                   <option th:each="domain : ${origin.getValue()}"
                           th:value="${domain.toIdString()}"
-                          th:text="${#strings.abbreviate(domain.origin + ' - ' + domain.code + ' - ' + domain.value, 100)}"
-                          th:title="${domain.origin + ' - ' + domain.code + ' - ' + domain.value}">domain</option>
+                          th:text="${domain.originCodeValueCommentShort}"
+                          th:title="${domain.originCodeValueCommentFull}">domain</option>
                 </optgroup>
               </select>
             </div>
@@ -792,6 +792,26 @@
               </select>
             </div>
             <div name="PUBLISHING_TARGET" class="value-input-container col-auto flex-grow-1 flex-shrink-1">
+              <select class="form-control" data-live-search="true" data-style="btn-outline-secondary">
+                <option th:each="publishingTargetName : ${publishingTargetNames}" th:value="${publishingTargetName}" th:text="#{|publishing.target.${publishingTargetName}|}"></option>
+              </select>
+            </div>
+            <div name="PUBLISHING_LEXEME" class="value-input-container col-auto flex-grow-1 flex-shrink-1">
+              <select class="form-control" data-live-search="true" data-style="btn-outline-secondary">
+                <option th:each="publishingTargetName : ${publishingTargetNames}" th:value="${publishingTargetName}" th:text="#{|publishing.target.${publishingTargetName}|}"></option>
+              </select>
+            </div>
+            <div name="PUBLISHING_GRAMMAR" class="value-input-container col-auto flex-grow-1 flex-shrink-1">
+              <select class="form-control" data-live-search="true" data-style="btn-outline-secondary">
+                <option th:each="publishingTargetName : ${publishingTargetNames}" th:value="${publishingTargetName}" th:text="#{|publishing.target.${publishingTargetName}|}"></option>
+              </select>
+            </div>
+            <div name="PUBLISHING_GOVERNMENT" class="value-input-container col-auto flex-grow-1 flex-shrink-1">
+              <select class="form-control" data-live-search="true" data-style="btn-outline-secondary">
+                <option th:each="publishingTargetName : ${publishingTargetNames}" th:value="${publishingTargetName}" th:text="#{|publishing.target.${publishingTargetName}|}"></option>
+              </select>
+            </div>
+            <div name="PUBLISHING_MEANING_MEDIA" class="value-input-container col-auto flex-grow-1 flex-shrink-1">
               <select class="form-control" data-live-search="true" data-style="btn-outline-secondary">
                 <option th:each="publishingTargetName : ${publishingTargetNames}" th:value="${publishingTargetName}" th:text="#{|publishing.target.${publishingTargetName}|}"></option>
               </select>
@@ -916,7 +936,7 @@
             </div>
             <div name="LEXEME_REGISTER" class="value-input-container col-auto flex-grow-1 flex-shrink-1">
               <select class="form-control" data-live-search="true" data-style="btn-outline-secondary">
-                <option th:each="register : ${allLexemeRegisters}" th:value="${register.code}" th:text="${register.value}">register</option>
+                <option th:each="register : ${allLexemeRegisters}" th:value="${register.code}" th:text="${register.valueComment}">register</option>
               </select>
             </div>
             <div name="LEXEME_DERIV" class="value-input-container col-auto flex-grow-1 flex-shrink-1">
@@ -926,7 +946,7 @@
             </div>
             <div name="LEXEME_VALUE_STATE" class="value-input-container col-auto flex-grow-1 flex-shrink-1">
               <select class="form-control" data-live-search="true" data-style="btn-outline-secondary">
-                <option th:each="valueState : ${lexemeValueStates}" th:value="${valueState.code}" th:text="${valueState.value}">value state</option>
+                <option th:each="valueState : ${lexemeValueStates}" th:value="${valueState.code}" th:text="${valueState.valueComment}">value state</option>
               </select>
             </div>
             <div name="LEXEME_RELATION" class="value-input-container col-auto flex-grow-1 flex-shrink-1">

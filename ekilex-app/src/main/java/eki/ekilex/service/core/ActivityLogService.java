@@ -33,6 +33,7 @@ import eki.ekilex.data.ActivityLogData;
 import eki.ekilex.data.ActivityLogOwnerEntityDescr;
 import eki.ekilex.data.Classifier;
 import eki.ekilex.data.Colloc;
+import eki.ekilex.data.CollocMember;
 import eki.ekilex.data.CollocPosGroup;
 import eki.ekilex.data.DatasetPermission;
 import eki.ekilex.data.Definition;
@@ -67,6 +68,7 @@ import eki.ekilex.data.WordOsMorph;
 import eki.ekilex.data.WordOsUsage;
 import eki.ekilex.data.WordRelation;
 import eki.ekilex.service.db.ActivityLogDbService;
+import eki.ekilex.service.db.CollocationDbService;
 import eki.ekilex.service.db.CommonDataDbService;
 import eki.ekilex.service.db.LexDataDbService;
 import eki.ekilex.service.db.LexSearchDbService;
@@ -95,6 +97,9 @@ public class ActivityLogService implements SystemConstant, GlobalConstant, Freef
 
 	@Autowired
 	private LexDataDbService lexDataDbService;
+
+	@Autowired
+	private CollocationDbService collocationDbService;
 
 	@Autowired
 	private SourceDbService sourceDbService;
@@ -581,9 +586,10 @@ public class ActivityLogService implements SystemConstant, GlobalConstant, Freef
 		List<LexemeNote> lexemeNotes = lexeme.getNotes();
 		List<NoteLangGroup> lexemeNoteLangGroups = conversionUtil.composeNoteLangGroups(lexemeNotes, null);
 		List<LexemeRelation> lexemeRelations = commonDataDbService.getLexemeRelations(lexemeId, CLASSIF_LABEL_LANG_EST);
-		List<CollocPosGroup> primaryCollocations = lexDataDbService.getPrimaryCollocations(lexemeId, CLASSIF_LABEL_LANG_EST);
-		List<Colloc> secondaryCollocations = lexDataDbService.getSecondaryCollocations(lexemeId);
-		boolean isCollocationsExist = lexDataDbService.isCollocationsExist(lexemeId);
+		List<CollocMember> collocationMembers = collocationDbService.getCollocationMembers(lexemeId, CLASSIF_LABEL_LANG_EST);
+		List<CollocPosGroup> primaryCollocations = collocationDbService.getPrimaryCollocations(lexemeId, CLASSIF_LABEL_LANG_EST);
+		List<Colloc> secondaryCollocations = collocationDbService.getSecondaryCollocations(lexemeId);
+		boolean isCollocationsExist = collocationDbService.isCollocationsExist(lexemeId);
 
 		lexeme.setLexemeWord(word);
 		lexeme.setMeaningWords(meaningWords);
@@ -592,6 +598,7 @@ public class ActivityLogService implements SystemConstant, GlobalConstant, Freef
 		lexeme.setFreeforms(lexemeFreeforms);
 		lexeme.setNoteLangGroups(lexemeNoteLangGroups);
 		lexeme.setLexemeRelations(lexemeRelations);
+		lexeme.setCollocationMembers(collocationMembers);
 		lexeme.setPrimaryCollocations(primaryCollocations);
 		lexeme.setSecondaryCollocations(secondaryCollocations);
 		lexeme.setCollocationsExist(isCollocationsExist);

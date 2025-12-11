@@ -36,6 +36,7 @@ public abstract class AbstractSearchController extends AbstractController {
 	protected String cleanupMain(String value) {
 
 		value = StringUtils.trim(value);
+		value = StringUtils.remove(value, '%');
 		if (StringUtils.isBlank(value)) {
 			return value;
 		}
@@ -54,6 +55,7 @@ public abstract class AbstractSearchController extends AbstractController {
 	protected String cleanupBasic(String value) {
 
 		value = StringUtils.trim(value);
+		value = StringUtils.remove(value, '%');
 		if (StringUtils.isBlank(value)) {
 			return value;
 		}
@@ -108,6 +110,7 @@ public abstract class AbstractSearchController extends AbstractController {
 		if (StringUtils.isBlank(value)) {
 			return value;
 		}
+		value = StringUtils.remove(value, '%');
 		value = UriUtils.decode(value, UTF_8);
 		value = StringUtils.replace(value, ENCODE_SYM_SLASH, "/");
 		value = StringUtils.replace(value, ENCODE_SYM_BACKSLASH, "\\");

@@ -131,7 +131,8 @@
                 th:text="#{menu.workloadreport}">Muudatuste aruanne</a>
               <a class="dropdown-item side-menu-item" th:classappend="${activeItem == 'fedtermupload' ? 'active' : ''}" th:href="@{/fedtermupload}" sec:authorize="#vars.userRoleData.admin"
                 th:text="#{menu.fedtermupload}">FedTerm liidestus</a>
-              <a class="dropdown-item side-menu-item" th:classappend="${activeItem == 'wwfeedback' ? 'active' : ''}" th:href="@{/wwfeedback}" th:text="#{menu.wwfeedback}">Sõnaveebi tagasiside</a>
+              <a class="dropdown-item side-menu-item" th:classappend="${activeItem == 'wwfeedback' ? 'active' : ''}" th:href="@{/wwfeedback}" sec:authorize="#vars.userRoleData.master"
+                th:text="#{menu.wwfeedback}">Sõnaveebi tagasiside</a>
               <a class="dropdown-item side-menu-item" th:classappend="${activeItem == 'stat' ? 'active' : ''}" th:href="@{/stat}" th:text="#{menu.stat}">Sõnaveebi statistika</a>
               <div class="dropdown-divider"></div>
             </div>

@@ -340,7 +340,7 @@
   // If a table row inside colloc container is hovered or has focus inside it, show hidden buttons for that row
   & tr:hover,
   & tr:focus-within {
-    & .hidden-buttons > * {
+    & .hidden-buttons > *:not([role="dialog"]) {
       display: inline-block;
     }
   }

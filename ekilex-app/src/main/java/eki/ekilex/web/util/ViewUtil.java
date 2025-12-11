@@ -82,26 +82,25 @@ public class ViewUtil implements InitializingBean {
 		return functionSignature;
 	}
 
-	public String getLexRegisterTooltipHtml(List<String> lexRegisterCodes) {
+	public String getLexRegisterTooltipHtml(List<String> registerCodes) {
 
 		StringBuilder htmlBuf = new StringBuilder();
-		if (CollectionUtils.isEmpty(lexRegisterCodes) || StringUtils.isEmpty(lexRegisterCodes.get(0))) {
+
+		if (CollectionUtils.isEmpty(registerCodes)) {
 			htmlBuf.append("register puudub");
+		} else if (registerCodes.size() == 1) {
+			String firstRegisterCode = registerCodes.get(0);
+			htmlBuf.append(firstRegisterCode);
 		} else {
-			boolean multipleRegisters = lexRegisterCodes.size() > 1;
-			if (multipleRegisters) {
-				int definitionsCount = 1;
-				htmlBuf.append("<p style='text-align:left'>");
-				for (String lexRegisterCode : lexRegisterCodes) {
-					htmlBuf.append(definitionsCount++);
-					htmlBuf.append(". ");
-					htmlBuf.append(lexRegisterCode);
-					htmlBuf.append("<br>");
-				}
-				htmlBuf.append("</p>");
-			} else {
-				htmlBuf.append(lexRegisterCodes.get(0));
+			int definitionsCount = 1;
+			htmlBuf.append("<p style='text-align:left'>");
+			for (String registerCode : registerCodes) {
+				htmlBuf.append(definitionsCount++);
+				htmlBuf.append(". ");
+				htmlBuf.append(registerCode);
+				htmlBuf.append("<br>");
 			}
+			htmlBuf.append("</p>");
 		}
 		return htmlBuf.toString();
 	}

@@ -18,6 +18,7 @@ import eki.ekilex.data.Publishing;
 import eki.ekilex.data.SourceLink;
 import eki.ekilex.data.Usage;
 import eki.ekilex.data.WordLexemeMeaningIdTuple;
+import eki.ekilex.service.db.CollocationDbService;
 import eki.ekilex.service.db.CudDbService;
 import eki.ekilex.service.db.LookupDbService;
 import eki.ekilex.service.db.PublishingDbService;
@@ -35,6 +36,9 @@ public abstract class AbstractCudService extends AbstractService implements Publ
 
 	@Autowired
 	protected CudDbService cudDbService;
+
+	@Autowired
+	protected CollocationDbService collocationDbService;
 
 	@Autowired
 	protected SourceLinkDbService sourceLinkDbService;

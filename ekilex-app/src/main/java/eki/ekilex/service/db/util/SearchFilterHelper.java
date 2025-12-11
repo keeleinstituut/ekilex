@@ -25,6 +25,7 @@ import static eki.ekilex.data.db.main.Tables.LEX_RELATION;
 import static eki.ekilex.data.db.main.Tables.MEANING_DOMAIN;
 import static eki.ekilex.data.db.main.Tables.MEANING_FORUM;
 import static eki.ekilex.data.db.main.Tables.MEANING_FREEFORM;
+import static eki.ekilex.data.db.main.Tables.MEANING_MEDIA;
 import static eki.ekilex.data.db.main.Tables.MEANING_NOTE;
 import static eki.ekilex.data.db.main.Tables.MEANING_NOTE_SOURCE_LINK;
 import static eki.ekilex.data.db.main.Tables.MEANING_RELATION;
@@ -79,6 +80,7 @@ import eki.common.constant.ActivityFunct;
 import eki.common.constant.ActivityOwner;
 import eki.common.constant.FreeformConstant;
 import eki.common.constant.GlobalConstant;
+import eki.common.constant.PublishingConstant;
 import eki.common.constant.WordStatus;
 import eki.ekilex.constant.SearchKey;
 import eki.ekilex.constant.SearchOperand;
@@ -110,6 +112,7 @@ import eki.ekilex.data.db.main.tables.Meaning;
 import eki.ekilex.data.db.main.tables.MeaningDomain;
 import eki.ekilex.data.db.main.tables.MeaningForum;
 import eki.ekilex.data.db.main.tables.MeaningFreeform;
+import eki.ekilex.data.db.main.tables.MeaningMedia;
 import eki.ekilex.data.db.main.tables.MeaningNote;
 import eki.ekilex.data.db.main.tables.MeaningNoteSourceLink;
 import eki.ekilex.data.db.main.tables.MeaningRelation;
@@ -132,7 +135,7 @@ import eki.ekilex.data.db.main.tables.WordTag;
 import eki.ekilex.data.db.main.tables.WordWordType;
 
 @Component
-public class SearchFilterHelper implements GlobalConstant, ActivityFunct, FreeformConstant {
+public class SearchFilterHelper implements GlobalConstant, ActivityFunct, FreeformConstant, PublishingConstant {
 
 	private DateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy");
 
@@ -1125,6 +1128,7 @@ public class SearchFilterHelper implements GlobalConstant, ActivityFunct, Freefo
 		List<SearchCriterion> filteredCriteria = searchCriteria.stream()
 				.filter(crit -> SearchKey.PUBLISHING_TARGET.equals(crit.getSearchKey()))
 				.collect(Collectors.toList());
+
 		if (CollectionUtils.isEmpty(filteredCriteria)) {
 			return where;
 		}
@@ -1141,40 +1145,154 @@ public class SearchFilterHelper implements GlobalConstant, ActivityFunct, Freefo
 		if (CollectionUtils.isNotEmpty(equalsCriteria)) {
 
 			Condition where2 = DSL.noCondition().and(where1);
-			for (SearchCriterion criterion : equalsCriteria) {
-				String publishingTargetName = criterion.getSearchValue().toString();
-				boolean isNot = criterion.isNot();
-				Condition critWhere = pub.TARGET_NAME.eq(publishingTargetName);
-				if (isNot) {
-					critWhere = DSL.not(critWhere);
-				}
-				where2 = where2.and(critWhere);
-			}
+			where2 = applyPublishingTargetFilters(equalsCriteria, pub, where2);
 			where = where.and(DSL.exists(DSL.select(pub.ID).from(pub).where(where2)));
 		}
 		if (CollectionUtils.isNotEmpty(notContainsCriteria)) {
 
 			Condition where2 = DSL.noCondition().and(where1);
-			for (SearchCriterion criterion : notContainsCriteria) {
-				String publishingTargetName = criterion.getSearchValue().toString();
-				boolean isNot = criterion.isNot();
-				Condition critWhere = pub.TARGET_NAME.eq(publishingTargetName);
-				if (isNot) {
-					critWhere = DSL.not(critWhere);
-				}
-				where2 = where2.and(critWhere);
-			}
+			where2 = applyPublishingTargetFilters(notContainsCriteria, pub, where2);
 			where = where.and(DSL.notExists(DSL.select(pub.ID).from(pub).where(where2)));
 		}
 		if (existsCritExists) {
-			Condition where2 = DSL.noCondition().and(where1);
 			if (isNotExistsCrit) {
-				where = where.and(DSL.notExists(DSL.select(pub.ID).from(pub).where(where2)));
+				where = where.and(DSL.notExists(DSL.select(pub.ID).from(pub).where(where1)));
 			} else {
-				where = where.and(DSL.exists(DSL.select(pub.ID).from(pub).where(where2)));
+				where = where.and(DSL.exists(DSL.select(pub.ID).from(pub).where(where1)));
 			}
 		}
 		return where;
+	}
+
+	public Condition applyPublishingTargetFilters(List<SearchCriterion> searchCriteria, SearchKey searchKey, Lexeme l, Condition where) {
+
+		List<SearchCriterion> filteredCriteria = searchCriteria.stream()
+				.filter(crit -> searchKey.equals(crit.getSearchKey()))
+				.collect(Collectors.toList());
+
+		if (CollectionUtils.isEmpty(filteredCriteria)) {
+			return where;
+		}
+
+		List<SearchCriterion> equalsCriteria = filterCriteriaBySearchKeyAndOperands(searchCriteria, searchKey, SearchOperand.EQUALS);
+		List<SearchCriterion> notContainsCriteria = filterCriteriaBySearchKeyAndOperands(searchCriteria, searchKey, SearchOperand.NOT_CONTAINS);
+		boolean existsCritExists = filteredCriteria.stream().anyMatch(crit -> SearchOperand.EXISTS.equals(crit.getSearchOperand()));
+		boolean isNotExistsCrit = filteredCriteria.stream().anyMatch(crit -> SearchOperand.EXISTS.equals(crit.getSearchOperand()) && crit.isNot());
+
+		Grammar gra = GRAMMAR.as("gra");
+		Government gov = GOVERNMENT.as("gov");
+		MeaningMedia mm = MEANING_MEDIA.as("mm");
+		Publishing pub = PUBLISHING.as("pub");
+		Condition whereEnt;
+		Condition wherePub;
+
+		if (SearchKey.PUBLISHING_LEXEME.equals(searchKey)) {
+
+			whereEnt = DSL.noCondition();
+			wherePub = pub.ENTITY_NAME.eq(ENTITY_NAME_LEXEME)
+					.and(pub.ENTITY_ID.eq(l.ID));
+
+		} else if (SearchKey.PUBLISHING_GRAMMAR.equals(searchKey)) {
+
+			whereEnt = gra.LEXEME_ID.eq(l.ID);
+			wherePub = pub.ENTITY_NAME.eq(ENTITY_NAME_GRAMMAR)
+					.and(pub.ENTITY_ID.eq(gra.ID));
+
+		} else if (SearchKey.PUBLISHING_GOVERNMENT.equals(searchKey)) {
+
+			whereEnt = gov.LEXEME_ID.eq(l.ID);
+			wherePub = pub.ENTITY_NAME.eq(ENTITY_NAME_GOVERNMENT)
+					.and(pub.ENTITY_ID.eq(gov.ID));
+
+		} else if (SearchKey.PUBLISHING_MEANING_MEDIA.equals(searchKey)) {
+
+			whereEnt = mm.MEANING_ID.eq(l.MEANING_ID);
+			wherePub = pub.ENTITY_NAME.eq(ENTITY_NAME_MEANING_MEDIA)
+					.and(pub.ENTITY_ID.eq(mm.ID));
+		} else {
+			return where;
+		}
+		if (CollectionUtils.isNotEmpty(equalsCriteria)) {
+
+			Condition where3 = composePublishingExists(equalsCriteria, searchKey, gra, gov, mm, pub, whereEnt, wherePub, false);
+			where = where.and(where3);
+		}
+		if (CollectionUtils.isNotEmpty(notContainsCriteria)) {
+
+			Condition where3 = composePublishingExists(notContainsCriteria, searchKey, gra, gov, mm, pub, whereEnt, wherePub, true);
+			where = where.and(where3);
+		}
+		if (existsCritExists) {
+
+			Condition where3 = composePublishingExists(null, searchKey, gra, gov, mm, pub, whereEnt, wherePub, isNotExistsCrit);
+			where = where.and(where3);
+		}
+		return where;
+	}
+
+	private Condition composePublishingExists(
+			List<SearchCriterion> publishingCriteria,
+			SearchKey searchKey,
+			Grammar gra,
+			Government gov,
+			MeaningMedia mm,
+			Publishing pub,
+			Condition whereEnt,
+			Condition wherePub,
+			boolean isNot) {
+
+		Condition wherePubFull = DSL.noCondition().and(wherePub);
+
+		if (CollectionUtils.isNotEmpty(publishingCriteria)) {
+			wherePubFull = applyPublishingTargetFilters(publishingCriteria, pub, wherePubFull);
+		}
+
+		Condition where3 = DSL.noCondition();
+		Condition wherePubExists = DSL
+				.exists(DSL
+						.select(pub.ID)
+						.from(pub)
+						.where(wherePubFull));
+		if (isNot) {
+			wherePubExists = DSL.not(wherePubExists);
+		}
+
+		if (SearchKey.PUBLISHING_LEXEME.equals(searchKey)) {
+
+			where3 = whereEnt.and(wherePubExists);
+
+		} else if (SearchKey.PUBLISHING_GRAMMAR.equals(searchKey)) {
+
+			where3 = DSL.exists(DSL.select(gra.ID).from(gra).where(whereEnt.and(wherePubExists)));
+
+		} else if (SearchKey.PUBLISHING_GOVERNMENT.equals(searchKey)) {
+
+			where3 = DSL.exists(DSL.select(gov.ID).from(gov).where(whereEnt.and(wherePubExists)));
+
+		} else if (SearchKey.PUBLISHING_MEANING_MEDIA.equals(searchKey)) {
+
+			where3 = DSL.exists(DSL.select(mm.ID).from(mm).where(whereEnt.and(wherePubExists)));
+
+		} else {
+
+			return where3;
+		}
+		return where3;
+	}
+
+	private Condition applyPublishingTargetFilters(List<SearchCriterion> equalsCriteria, Publishing pub, Condition wherePub) {
+
+		for (SearchCriterion criterion : equalsCriteria) {
+
+			String publishingTargetName = criterion.getSearchValue().toString();
+			boolean isNot = criterion.isNot();
+			Condition critWhere = pub.TARGET_NAME.eq(publishingTargetName);
+			if (isNot) {
+				critWhere = DSL.not(critWhere);
+			}
+			wherePub = wherePub.and(critWhere);
+		}
+		return wherePub;
 	}
 
 	public Condition applyLexemePosValueFilters(List<SearchCriterion> searchCriteria, Field<Long> lexemeIdField, Condition where) {

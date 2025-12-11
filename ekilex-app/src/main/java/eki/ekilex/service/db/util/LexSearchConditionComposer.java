@@ -473,6 +473,17 @@ public class LexSearchConditionComposer implements GlobalConstant, ActivityFunct
 				where = searchFilterHelper.applyWordEkiRecommendationValueFilters(searchCriteria, w1.ID, where);
 				where = searchFilterHelper.applyWordEkiRecommendationModificationFilters(searchCriteria, w1.ID, where);
 
+			} else if (SearchEntity.PUBLISHING.equals(searchEntity)) {
+
+				Lexeme l1 = Lexeme.LEXEME.as("l1");
+				Condition where1 = l1.WORD_ID.eq(w1.ID);
+				where1 = searchFilterHelper.applyDatasetRestrictions(l1, searchDatasetsRestriction, where1);
+				where1 = searchFilterHelper.applyPublishingTargetFilters(searchCriteria, SearchKey.PUBLISHING_LEXEME, l1, where1);
+				where1 = searchFilterHelper.applyPublishingTargetFilters(searchCriteria, SearchKey.PUBLISHING_GRAMMAR, l1, where1);
+				where1 = searchFilterHelper.applyPublishingTargetFilters(searchCriteria, SearchKey.PUBLISHING_GOVERNMENT, l1, where1);
+				where1 = searchFilterHelper.applyPublishingTargetFilters(searchCriteria, SearchKey.PUBLISHING_MEANING_MEDIA, l1, where1);
+				where = where.andExists(DSL.select(l1.ID).from(l1).where(where1));
+
 			} else if (SearchEntity.CLUELESS.equals(searchEntity)) {
 
 				where = composeCluelessValueFilter(w1, searchCriteria, searchDatasetsRestriction, where);

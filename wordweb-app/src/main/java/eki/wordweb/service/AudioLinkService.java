@@ -48,7 +48,7 @@ public class AudioLinkService extends AbstractRemoteRequestService {
 				.queryParam("tekst", text)
 				.build()
 				.toUri();
-		Map<String, Object> response = request(url);
+		Map<String, Object> response = requestGet(url);
 		String mp3Url = (String) response.get("mp3url");
 		return mp3Url;
 	}

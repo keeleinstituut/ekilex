@@ -44,7 +44,8 @@ public class DataController implements WebConstant, SystemConstant {
 	@Autowired
 	private FileService fileService;
 
-	@GetMapping(value = "/data/app", produces = "application/json;charset=UTF-8")
+	@GetMapping("/data/app")
+	@ResponseBody
 	public AppData getAppData() {
 		return appDataHolder.getAppData();
 	}

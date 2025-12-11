@@ -3,6 +3,8 @@ package eki.wordweb.service.util;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import org.apache.commons.collections4.CollectionUtils;
@@ -11,16 +13,22 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import eki.common.constant.GlobalConstant;
+import eki.common.data.AppData;
+import eki.common.web.AppDataHolder;
 import eki.wordweb.data.os.OsDefinition;
 import eki.wordweb.data.os.OsLexemeMeaning;
 import eki.wordweb.data.os.OsLexemeWord;
 import eki.wordweb.data.os.OsMeaning;
 import eki.wordweb.data.os.OsWord;
 import eki.wordweb.data.os.OsWordRelationGroup;
+import eki.wordweb.data.os.WordEkiRecommendation;
 import eki.wordweb.web.util.WebUtil;
 
 @Component
 public class OsConversionUtil implements GlobalConstant {
+
+	@Autowired
+	private AppDataHolder appDataHolder;
 
 	@Autowired
 	private ClassifierUtil classifierUtil;
@@ -39,6 +47,7 @@ public class OsConversionUtil implements GlobalConstant {
 			classifierUtil.applyOsClassifiers(word, LANGUAGE_CODE_EST);
 			setWordTypeFlags(word);
 			applyWordRelationConversions(word);
+			removeEkiRecommendationLinks(word);
 			setContentExistsFlags(word);
 			applySearchUri(word);
 			applyWrapups(word);
@@ -74,10 +83,15 @@ public class OsConversionUtil implements GlobalConstant {
 
 	private void applySearchUri(OsWord word) {
 
+		AppData appData = appDataHolder.getAppData();
+		String baseUrl = appData.getBaseUrl();
+		baseUrl = StringUtils.replace(baseUrl, "http:", "https:");
 		String wordValue = word.getValue();
 		Integer homonymNr = word.getHomonymNr();
 		String searchUri = webUtil.composeOsSearchUri(wordValue, homonymNr);
+		String searchUrl = baseUrl + searchUri;
 		word.setSearchUri(searchUri);
+		word.setSearchUrl(searchUrl);
 	}
 
 	private void applyWrapups(OsWord word) {
@@ -151,6 +165,59 @@ public class OsConversionUtil implements GlobalConstant {
 		word.setSecondaryWordRelationGroups(secondaryWordRelationGroups);
 	}
 
+	private void removeEkiRecommendationLinks(OsWord word) {
+
+		if (word == null) {
+			return;
+		}
+
+		List<WordEkiRecommendation> wordEkiRecommendations = word.getWordEkiRecommendations();
+		if (CollectionUtils.isEmpty(wordEkiRecommendations)) {
+			return;
+		}
+
+		final Pattern extLinkPattern = Pattern.compile("<ext-link[^>]*>|<\\/ext-link>");
+		final String keepMatchContainingValue = "/eki.ee/teatmik/";
+
+		for (WordEkiRecommendation ekiRecommendation : wordEkiRecommendations) {
+
+			String ekiRecommendationValuePrese = ekiRecommendation.getValuePrese();
+			String ekiRecommendationValuePreseClean = cleanByPattern(extLinkPattern, ekiRecommendationValuePrese, keepMatchContainingValue);
+			ekiRecommendation.setValuePrese(ekiRecommendationValuePreseClean);
+		}
+	}
+
+	private String cleanByPattern(Pattern pattern, String text, String keepMatchContainingValue) {
+
+		StringBuffer textBuf = new StringBuffer();
+		Matcher matcher = pattern.matcher(text);
+		int textLength = text.length();
+		int textStart = 0;
+		int matchStart;
+		int matchEnd;
+		String cleanFragment;
+		String matchFragment;
+
+		while (matcher.find()) {
+
+			matchStart = matcher.start();
+			matchEnd = matcher.end();
+			cleanFragment = StringUtils.substring(text, textStart, matchStart);
+			matchFragment = matcher.group(matcher.groupCount());
+			textBuf.append(cleanFragment);
+			if (StringUtils.contains(matchFragment, keepMatchContainingValue)) {
+				textBuf.append(matchFragment);
+			}
+			textStart = matchEnd;
+		}
+		if (textStart < textLength) {
+
+			cleanFragment = StringUtils.substring(text, textStart, textLength);
+			textBuf.append(cleanFragment);
+		}
+		return textBuf.toString();
+	}
+
 	private void setWordTypeFlags(OsWord word) {
 
 		if (word == null) {
@@ -195,7 +262,7 @@ public class OsConversionUtil implements GlobalConstant {
 		}
 		boolean lexemeMeaningsContentExist = lexemeMeanings.stream()
 				.anyMatch(lexemeMeaning -> StringUtils.isNotBlank(lexemeMeaning.getValueStateCode())
-						|| CollectionUtils.isNotEmpty(lexemeMeaning.getRegisterCodes())
+						|| CollectionUtils.isNotEmpty(lexemeMeaning.getRegisters())
 						|| (lexemeMeaning.getMeaning().getDefinition() != null)
 						|| CollectionUtils.isNotEmpty(lexemeMeaning.getMeaning().getLexemeWords()));
 		selectedWord.setLexemeMeaningsContentExist(lexemeMeaningsContentExist);

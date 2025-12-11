@@ -383,7 +383,7 @@ public class TextDecorationService implements InitializingBean, TextDecoration {
 		return text;
 	}
 
-	private String cleanByReplacingPattern(Pattern pattern, String text) {
+	public String cleanByReplacingPattern(Pattern pattern, String text) {
 
 		StringBuffer decorBuf = new StringBuffer();
 		Matcher matcher = pattern.matcher(text);

@@ -104,15 +104,12 @@ where
 		select
 			1
 		from
-			lexeme l,
-			lexeme_register lr
+			lexeme l
 		where
 			l.word_id = w.id
 			and l.is_public = true
 			and l.is_word = true
 			and l.dataset_code = 'eki'
-			and lr.lexeme_id = l.id
-			and lr.register_code = 'uus'
 	)
 order by
 	w.reg_year desc,
@@ -373,6 +370,7 @@ select
 	end lang_filt,
 	w.lang_order_by,
 	w.homonym_nr,
+	w.homonym_exists,
 	w.display_morph_code,
 	w.gender_code,
 	w.aspect_code,
@@ -398,11 +396,38 @@ from (
 		w.value_prese,
 		w.value_as_word,
 		w.lang,
-		(select lc.order_by
-		from language lc
-		where lc.code = w.lang
-		limit 1) lang_order_by,
+		(select
+			lc.order_by
+		from 
+			language lc
+		where 
+			lc.code = w.lang
+		limit 1
+		) lang_order_by,
 		w.homonym_nr,
+		(exists (
+			select
+				1
+			from
+				word wh
+			where
+				wh.value = w.value
+				and wh.lang = w.lang
+				and wh.id != w.id
+				and wh.is_public = true
+				and exists (
+					select
+						1
+					from
+						lexeme lh
+					where
+						lh.word_id = wh.id
+						and lh.is_public = true
+						and lh.is_word = true
+						and lh.dataset_code != 'ety'
+				)
+			)
+		) homonym_exists,
 		w.display_morph_code,
 		w.gender_code,
 		w.aspect_code,
@@ -567,6 +592,7 @@ from (
 					'value', mw.mw_value,
 					'valuePrese', mw.mw_value_prese,
 					'homonymNr', mw.mw_homonym_nr,
+					'homonymExists', mw.mw_homonym_exists,
 					'lang', mw.mw_lang,
 					'aspectCode', mw.mw_aspect_code,
 					'wordTypeCodes', mw.mw_word_type_codes,
@@ -626,6 +652,29 @@ from (
 				w2.value mw_value,
 				w2.value_prese mw_value_prese,
 				w2.homonym_nr mw_homonym_nr,
+				(exists (
+					select
+						1
+					from
+						word wh
+					where
+						wh.value = w2.value
+						and wh.lang = w2.lang
+						and wh.id != w2.id
+						and wh.is_public = true
+						and exists (
+							select
+								1
+							from
+								lexeme lh
+							where
+								lh.word_id = wh.id
+								and lh.is_public = true
+								and lh.is_word = true
+								and lh.dataset_code != 'ety'
+						)
+					)
+				) mw_homonym_exists,
 				w2.lang mw_lang,
 				(select 
 					array_agg(wt.word_type_code order by wt.order_by)
@@ -1352,6 +1401,7 @@ from (
 					'id', mm.meaning_media_id,
 					'meaningId', mm.meaning_id,
 					'url', mm.url,
+					'title', mm.title,
 					'wwUnif', mm.is_ww_unif,
 					'wwLite', mm.is_ww_lite,
 					'wwOs', mm.is_ww_os
@@ -1364,6 +1414,7 @@ from (
 				mm.id meaning_media_id,
 				mm.meaning_id,
 				mm.url,
+				mm.title,
 				mm.order_by,
 				(exists (
 					select
@@ -2004,6 +2055,7 @@ from
 					'value', mw.mw_value,
 					'valuePrese', mw.mw_value_prese,
 					'homonymNr', mw.mw_homonym_nr,
+					'homonymExists', mw.mw_homonym_exists,
 					'lang', mw.mw_lang,
 					'aspectCode', mw.mw_aspect_code,
 					'wordTypeCodes', mw.mw_word_type_codes,
@@ -2162,6 +2214,29 @@ from
 				w2.value mw_value,
 				w2.value_prese mw_value_prese,
 				w2.homonym_nr mw_homonym_nr,
+				(exists (
+					select
+						1
+					from
+						word wh
+					where
+						wh.value = w2.value
+						and wh.lang = w2.lang
+						and wh.id != w2.id
+						and wh.is_public = true
+						and exists (
+							select
+								1
+							from
+								lexeme lh
+							where
+								lh.word_id = wh.id
+								and lh.is_public = true
+								and lh.is_word = true
+								and lh.dataset_code != 'ety'
+						)
+					)
+				) mw_homonym_exists,
 				w2.lang mw_lang,
 				w2.aspect_code mw_aspect_code,
 				(select 
@@ -2797,7 +2872,7 @@ from
 					'value', wr.related_word_value,
 					'valuePrese', wr.related_word_value_prese,
 					'homonymNr', wr.related_word_homonym_nr,
-					'homonymsExist', wr.related_word_homonyms_exist,
+					'homonymExists', wr.related_word_homonym_exists,
 					'lang', wr.related_word_lang,
 					'aspectCode', wr.related_word_aspect_code,
 					'wordTypeCodes', wr.related_word_type_codes,
@@ -2826,29 +2901,22 @@ from
 						wh.lang = w2.lang
 						and wh.value = w2.value
 						and wh.id != w2.id
+						and wh.is_public = true
 						and exists (
 							select
 								1
 							from
-								lexeme l,
+								lexeme lh,
 								dataset ds
 							where
-								l.word_id = wh.id
-								and l.dataset_code = ds.code
-								and l.is_public = true
+								lh.word_id = wh.id
+								and lh.dataset_code = ds.code
+								and lh.is_word = true
+								and lh.is_public = true
+								and lh.dataset_code != 'ety'
 								and ds.is_public = true
-								and l.dataset_code != 'ety'
-								and (exists (
-										select
-											1
-										from
-											publishing p
-										where
-											p.entity_name = 'lexeme'
-											and p.entity_id = l.id)
-									or l.dataset_code != 'eki')
 						)
-				)) related_word_homonyms_exist,
+				)) related_word_homonym_exists,
 				w2.lang related_word_lang,
 				w2.aspect_code related_word_aspect_code,
 				(
@@ -2966,7 +3034,7 @@ from
 					'value', wg.group_member_word_value,
 					'valuePrese', wg.group_member_word_value_prese,
 					'homonymNr', wg.group_member_homonym_nr,
-					'homonymsExist', wg.group_member_homonyms_exist,
+					'homonymExists', wg.group_member_homonym_exists,
 					'lang', wg.group_member_word_lang,
 					'aspectCode', wg.group_member_aspect_code,
 					'wordTypeCodes', wg.group_member_word_type_codes,
@@ -2996,6 +3064,7 @@ from
 						wh.lang = w2.lang
 						and wh.value = w2.value
 						and wh.id != w2.id
+						and wh.is_public = true
 						and exists (
 							select
 								1
@@ -3005,20 +3074,12 @@ from
 							where
 								l.word_id = wh.id
 								and l.dataset_code = ds.code
+								and l.is_word = true
 								and l.is_public = true
-								and ds.is_public = true
 								and l.dataset_code != 'ety'
-								and (exists (
-										select
-											1
-										from
-											publishing p
-										where
-											p.entity_name = 'lexeme'
-											and p.entity_id = l.id)
-									or l.dataset_code != 'eki')
+								and ds.is_public = true
 						)
-				)) group_member_homonyms_exist,
+				)) group_member_homonym_exists,
 				w2.lang group_member_word_lang,
 				w2.aspect_code group_member_aspect_code,
 				wgm2.order_by group_member_order_by,
@@ -3179,6 +3240,30 @@ select
 			'value', w2.value,
 			'valuePrese', w2.value_prese,
 			'homonymNr', w2.homonym_nr,
+			'homonymExists', (
+				exists (
+					select
+						1
+					from
+						word wh
+					where
+						wh.value = w2.value
+						and wh.lang = w2.lang
+						and wh.id != w2.id
+						and wh.is_public = true
+						and exists (
+							select
+								1
+							from
+								lexeme lh
+							where
+								lh.word_id = wh.id
+								and lh.is_public = true
+								and lh.is_word = true
+								and lh.dataset_code != 'ety'
+						)
+					)
+			),
 			'lang', w2.lang,
 			'aspectCode', w2.aspect_code,
 			'wordTypeCodes', (
@@ -3291,6 +3376,7 @@ select
 			'value', mr.word_value,
 			'valuePrese', mr.word_value_prese,
 			'homonymNr', mr.homonym_nr,
+			'homonymExists', mr.homonym_exists,
 			'lang', mr.word_lang,
 			'aspectCode', mr.aspect_code,
 			'wordTypeCodes', mr.word_type_codes,
@@ -3315,6 +3401,29 @@ from (
 		w2.value word_value,
 		w2.value_prese word_value_prese,
 		w2.homonym_nr,
+		(exists (
+			select
+				1
+			from
+				word wh
+			where
+				wh.value = w2.value
+				and wh.lang = w2.lang
+				and wh.id != w2.id
+				and wh.is_public = true
+				and exists (
+					select
+						1
+					from
+						lexeme lh
+					where
+						lh.word_id = wh.id
+						and lh.is_public = true
+						and lh.is_word = true
+						and lh.dataset_code != 'ety'
+				)
+			)
+		) homonym_exists,
 		w2.lang word_lang,
 		w2.aspect_code,
 		(select

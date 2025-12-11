@@ -4,7 +4,11 @@ public interface ApiConstant {
 
 	String API_SERVICES_URI = "/api";
 
+	String APP_SERVICES_URI = "/app";
+
 	String ENDPOINTS_URI = "/endpoints";
+
+	String FEEDBACK_URI = "/feedback";
 
 	String CLASSIFIERS_URI = "/classifiers";
 
@@ -105,6 +109,8 @@ public interface ApiConstant {
 	String IDS_URI = "/ids";
 
 	String API_KEY_HEADER_NAME = "ekilex-api-key";
+
+	String APP_KEY_HEADER_NAME = "ekilex-app-key";
 
 	String EMPTY_API_KEY = "empty-api-key";
 }

@@ -15,6 +15,7 @@ import org.jooq.impl.DSL;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import eki.common.data.Feedback;
 import eki.ekilex.data.db.main.tables.FeedbackLog;
 import eki.ekilex.data.db.main.tables.FeedbackLogAttr;
 import eki.ekilex.data.db.main.tables.FeedbackLogComment;
@@ -25,7 +26,7 @@ public class FeedbackDbService {
 	@Autowired
 	private DSLContext mainDb;
 
-	public void createFeedbackLog(eki.ekilex.data.FeedbackLog feedbackLog) {
+	public void createFeedbackLog(Feedback feedback) {
 
 		mainDb
 				.insertInto(
@@ -35,10 +36,10 @@ public class FeedbackDbService {
 						FEEDBACK_LOG.LAST_SEARCH,
 						FEEDBACK_LOG.DESCRIPTION)
 				.values(
-						feedbackLog.getFeedbackType(),
-						feedbackLog.getSenderEmail(),
-						feedbackLog.getLastSearch(),
-						feedbackLog.getDescription())
+						feedback.getFeedbackType(),
+						feedback.getSenderEmail(),
+						feedback.getLastSearch(),
+						feedback.getDescription())
 				.execute();
 	}
 

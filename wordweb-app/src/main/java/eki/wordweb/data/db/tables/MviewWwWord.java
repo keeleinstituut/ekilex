@@ -87,6 +87,11 @@ public class MviewWwWord extends TableImpl<MviewWwWordRecord> {
     public final TableField<MviewWwWordRecord, Integer> HOMONYM_NR = createField(DSL.name("homonym_nr"), SQLDataType.INTEGER, this, "");
 
     /**
+     * The column <code>public.mview_ww_word.homonym_exists</code>.
+     */
+    public final TableField<MviewWwWordRecord, Boolean> HOMONYM_EXISTS = createField(DSL.name("homonym_exists"), SQLDataType.BOOLEAN, this, "");
+
+    /**
      * The column <code>public.mview_ww_word.display_morph_code</code>.
      */
     public final TableField<MviewWwWordRecord, String> DISPLAY_MORPH_CODE = createField(DSL.name("display_morph_code"), SQLDataType.VARCHAR(100), this, "");

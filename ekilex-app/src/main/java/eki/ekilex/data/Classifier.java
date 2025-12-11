@@ -27,6 +27,12 @@ public class Classifier extends AbstractDataObject {
 
 	private String comment;
 
+	private String valueComment;
+
+	private String originCodeValueCommentShort;
+
+	private String originCodeValueCommentFull;
+
 	private String[] datasets;
 
 	private String jsonStr;
@@ -87,6 +93,30 @@ public class Classifier extends AbstractDataObject {
 		this.comment = comment;
 	}
 
+	public String getValueComment() {
+		return valueComment;
+	}
+
+	public void setValueComment(String valueComment) {
+		this.valueComment = valueComment;
+	}
+
+	public String getOriginCodeValueCommentShort() {
+		return originCodeValueCommentShort;
+	}
+
+	public void setOriginCodeValueCommentShort(String originCodeValueCommentShort) {
+		this.originCodeValueCommentShort = originCodeValueCommentShort;
+	}
+
+	public String getOriginCodeValueCommentFull() {
+		return originCodeValueCommentFull;
+	}
+
+	public void setOriginCodeValueCommentFull(String originCodeValueCommentFull) {
+		this.originCodeValueCommentFull = originCodeValueCommentFull;
+	}
+
 	public String[] getDatasets() {
 		return datasets;
 	}
@@ -104,12 +134,26 @@ public class Classifier extends AbstractDataObject {
 	}
 
 	public String toIdString() {
-		return new ReflectionToStringBuilder(this, ToStringStyle.JSON_STYLE).setExcludeFieldNames("value", "jsonStr").toString();
+		return new ReflectionToStringBuilder(this, ToStringStyle.JSON_STYLE)
+				.setExcludeFieldNames(
+						"value",
+						"comment",
+						"valueComment",
+						"originCodeValueCommentShort",
+						"originCodeValueCommentFull",
+						"jsonStr")
+				.toString();
 	}
 
 	@Override
 	public boolean equals(Object object) {
-		return EqualsBuilder.reflectionEquals(this, object, "value", "jsonStr");
+		return EqualsBuilder.reflectionEquals(this, object,
+				"value",
+				"comment",
+				"valueComment",
+				"originCodeValueCommentShort",
+				"originCodeValueCommentFull",
+				"jsonStr");
 	}
 
 }

@@ -37,7 +37,7 @@
                   <th:block th:if="${not #maps.isEmpty(lexeme.definitionsByLang)}">
                     <div class="mb-0 d-flex gap-2" th:each="definitionEntry : ${lexeme.definitionsByLang}">
                       <th:block th:with="langData=${@viewUtil.getLangData(definitionEntry.key)}">
-                        <button th:text="${langData.codeIso2}" th:aria-label="|${langData.codeIso2} - ${langData.label}|" th:title="${langData.label}" data-toggle="tooltip" th:unless="${langData.imageName}" class="lang-code text-caption align-self-start lang-code--button">1</button>
+                        <button th:text="${langData.codeIso2}" th:aria-label="|${langData.codeIso2} - ${langData.label}|" th:title="${langData.label}" data-toggle="tooltip" th:unless="${langData.imageName}" class="lang-code text-caption align-self-start">1</button>
                         <img th:src="|@{/view/images}${langData.imageName}|" th:title="${langData.label}" data-toggle="tooltip" th:if="${langData.imageName}" class="lang-code-img align-self-start">
                       </th:block>
                       <span class="lang-code text-caption align-self-start"
@@ -207,7 +207,7 @@
                               th:with="destinLangSyns=${synEntry.value}">
                       <div th:id="${'matches-show-more-panel-' + lexeme.lexemeId + '-' + synEntry.key}" class="d-flex flex-wrap">
                         <th:block th:with="langData=${@viewUtil.getLangData(synEntry.key)}">
-                          <button th:text="${langData.codeIso2}" th:aria-label="|${langData.codeIso2} - ${langData.label}|" type="button" th:title="${langData.label}" data-toggle="tooltip" th:unless="${langData.imageName}" class="lang-code text-caption mr-2 align-self-start lang-code--button">1</button>
+                          <button th:text="${langData.codeIso2}" th:aria-label="|${langData.codeIso2} - ${langData.label}|" type="button" th:title="${langData.label}" data-toggle="tooltip" th:unless="${langData.imageName}" class="lang-code text-caption mr-2 align-self-start">1</button>
                           <img th:src="|@{/view/images}${langData.imageName}|" th:title="${langData.label}" data-toggle="tooltip" th:if="${langData.imageName}" class="lang-code-img mr-2 align-self-start">
                         </th:block>
                         <th:block th:each="syn,synIter : ${destinLangSyns}"
@@ -465,9 +465,12 @@
                   </th:block>
                 </div>
                 <div class="mt-3 d-flex flex-wrap row" th:unless="${#lists.isEmpty(lexeme.meaningMedias)}">
-                  <th:block th:each="mediaFile : ${lexeme.meaningMedias}">
-                    <div class="col-12 col-md-4 mb-3 d-flex flex-column">
-                      <iframe th:src="${mediaFile.url}" allowfullscreen></iframe>
+                  <th:block th:each="media : ${lexeme.meaningMedias}">
+                    <div class="col-12 col-md-4 mb-3">
+                      <figure class="m-0">
+                        <iframe width="100%" th:src="${media.url}" allowfullscreen></iframe>
+                        <figcaption class="gallery-image__title" th:if="${media.title}" th:text="${media.title}"></figcaption>
+                      </figure>
                     </div>
                   </th:block>
                 </div>

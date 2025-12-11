@@ -26,6 +26,7 @@ import eki.wordweb.constant.WebConstant;
 import eki.wordweb.service.CommonDataService;
 import eki.wordweb.service.StatDataCollector;
 import eki.wordweb.web.bean.SessionBean;
+import eki.wordweb.web.util.LinkUtil;
 import eki.wordweb.web.util.UserAgentUtil;
 import eki.wordweb.web.util.WebUtil;
 
@@ -40,14 +41,14 @@ public abstract class AbstractController implements WebConstant, SystemConstant,
 	@Value("${speech.recognition.service.url:}")
 	private String speechRecognitionServiceUrl;
 
-	@Value("${wordweb.feedback.service.url:}")
-	protected String feedbackServiceUrl;
-
 	@Autowired
 	protected TextDecorationService textDecorationService;
 
 	@Autowired
 	protected WebUtil webUtil;
+
+	@Autowired
+	protected LinkUtil linkUtil;
 
 	@Autowired
 	protected UserAgentUtil userAgentUtil;
@@ -96,7 +97,6 @@ public abstract class AbstractController implements WebConstant, SystemConstant,
 		String ekilexLimTermSearchUrl = webUtil.getEkilexLimTermSearchUrl();
 		model.addAttribute("ekiKeeleinfoUrl", ekiKeeleinfoUrl);
 		model.addAttribute("speechRecognitionServiceUrl", speechRecognitionServiceUrl);
-		model.addAttribute("feedbackServiceUrl", feedbackServiceUrl);
 		model.addAttribute("ekilexLimTermSearchUrl", ekilexLimTermSearchUrl);
 		model.addAttribute("yearToday", yearToday);
 		model.addAttribute("feedbackType", "sõnaveeb");
