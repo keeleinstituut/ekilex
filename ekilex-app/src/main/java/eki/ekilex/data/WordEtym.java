@@ -3,22 +3,23 @@ package eki.ekilex.data;
 import java.util.List;
 
 import eki.common.data.AbstractDataObject;
+import io.swagger.v3.oas.annotations.media.Schema;
 
 @Deprecated
 public class WordEtym extends AbstractDataObject {
 
 	private static final long serialVersionUID = 1L;
-
+	@Schema(example = "25953")
 	private Long wordEtymId;
-
+	@Schema(example = "põlissõna")
 	private String etymologyTypeCode;
-
+	@Schema(nullable = true, example = "null")
 	private String etymologyYear;
-
+	@Schema(nullable = true, example = "null")
 	private String comment;
-
+	@Schema(example = "false")
 	private boolean questionable;
-
+	@Schema(example = "[]")
 	private List<SourceLink> wordEtymSourceLinks;
 
 	private List<WordEtymRel> wordEtymRelations;

@@ -1,5 +1,7 @@
 package eki.ekilex.data;
 
+import io.swagger.v3.oas.annotations.media.Schema;
+
 import java.util.List;
 
 public class Usage extends AbstractCreateUpdateEntity implements ValueAndPrese {
@@ -7,17 +9,17 @@ public class Usage extends AbstractCreateUpdateEntity implements ValueAndPrese {
 	private static final long serialVersionUID = 1L;
 
 	private Long id;
-
+	@Schema(example = "Pihlakamarjade kobarad.")
 	private String value;
-
+	@Schema(example = "Pihlakamarjade kobarad.")
 	private String valuePrese;
 
 	private String lang;
 
 	private Long orderBy;
-
+	@Schema(example = "null")
 	private List<UsageTranslation> translations;
-
+	@Schema(example = "null")
 	private List<SourceLink> sourceLinks;
 
 	public Long getId() {

@@ -87,7 +87,11 @@ public class SecurityConfig {
 											SEND_FEEDBACK_URI,
 											FAKE_REGISTER_AND_PASSWORD_RECOVERY_URI,
 											PASSWORD_RECOVERY_URI + "/**",
-											PASSWORD_SET_URI + "/**")
+											PASSWORD_SET_URI + "/**",
+											SWAGGER_UI_PATH,
+											SWAGGER_UI_RESOURCES_PATH,
+											API_DOCS_PATH,
+											API_DOCS_RESOURCES_PATH)
 									.permitAll()
 									.anyRequest()
 									.authenticated())

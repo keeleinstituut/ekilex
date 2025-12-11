@@ -1,17 +1,18 @@
 package eki.ekilex.data;
 
 import eki.common.data.AbstractDataObject;
+import io.swagger.v3.oas.annotations.media.Schema;
 
 public abstract class AbstractPublishingEntity extends AbstractDataObject {
 
 	private static final long serialVersionUID = 1L;
 
 	private boolean isPublic;
-
+	@Schema(description = "Helper field for web views")
 	private boolean isWwUnif;
-
+	@Schema(description = "Helper field for web views")
 	private boolean isWwLite;
-
+	@Schema(description = "Helper field for web views")
 	private boolean isWwOs;
 
 	public boolean isPublic() {

@@ -3,9 +3,9 @@ package eki.ekilex.data.api;
 import java.util.List;
 
 import eki.common.data.AbstractDataObject;
-import io.swagger.v3.oas.annotations.Hidden;
+import io.swagger.v3.oas.annotations.media.Schema;
 
-@Hidden
+@Schema(description = "List of paradigms")
 public class ParadigmWrapper extends AbstractDataObject {
 
 	private static final long serialVersionUID = 1L;

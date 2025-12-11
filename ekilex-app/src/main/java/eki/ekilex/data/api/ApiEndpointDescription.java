@@ -14,7 +14,7 @@ public class ApiEndpointDescription extends AbstractDataObject {
 
 	private static final long serialVersionUID = 1L;
 
-	@Schema(description = "Display order of the endpoint in documentation", hidden = true)
+	@Schema(hidden = true)
 	@JsonIgnore
 	private int order;
 	@Schema(description = "HTTP method used by the endpoint (e.g., GET, POST, PUT, DELETE)", example = "GET")
@@ -22,25 +22,24 @@ public class ApiEndpointDescription extends AbstractDataObject {
 
 	@ArraySchema(
 			arraySchema = @Schema(description = "List of URI patterns associated with the endpoint"),
-			schema = @Schema(type = "string", example = "/api/word/{id}")
+			schema = @Schema(type = "string", example = "/api/classifiers/{classifierName}")
 	)
 	private List<String> uriPatterns;
 
 	@ArraySchema(
 			arraySchema = @Schema(description = "List of path variables in the URI, including their names and types"),
-			schema = @Schema(type = "string", example = "id::java.lang.Long")
+			schema = @Schema(type = "string", example = "classifierName::java.lang.String")
 	)
 	@JsonInclude(Include.NON_EMPTY)
 	private List<String> pathVariables;
 	@ArraySchema(
 			arraySchema = @Schema(description = "List of query parameters accepted by the endpoint, including names and types"),
-			schema = @Schema(type = "string", example = "[\"lang::java.lang.String\"]")
+			schema = @Schema(type = "string")
 	)
 	@JsonInclude(Include.NON_EMPTY)
 	private List<String> requestParameters;
 
-	@Schema(description = "Type of the request body object, if applicable",
-			example = "eki.ekilex.data.WordCreateRequest")
+	@Schema(description = "Type of the request body object, if applicable")
 	@JsonInclude(Include.NON_NULL)
 	private String requestBody;
 
