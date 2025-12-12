@@ -14,6 +14,8 @@ public class ValueId extends AbstractDataObject {
 
 	private String valuePrese;
 
+	private String lang;
+
 	public String getTableName() {
 		return tableName;
 	}
@@ -44,6 +46,14 @@ public class ValueId extends AbstractDataObject {
 
 	public void setValuePrese(String valuePrese) {
 		this.valuePrese = valuePrese;
+	}
+
+	public String getLang() {
+		return lang;
+	}
+
+	public void setLang(String lang) {
+		this.lang = lang;
 	}
 
 }

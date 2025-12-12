@@ -311,60 +311,60 @@ public class MigrationDbService extends AbstractDataDbService implements Publish
 
 	public List<ValueId> getWordValues(String containingStr) {
 
-		return getValues(containingStr, WORD);
+		return getValues(containingStr, WORD, WORD.LANG);
 	}
 
 	public List<ValueId> getDefinitionValues(String containingStr) {
 
-		return getValues(containingStr, DEFINITION);
+		return getValues(containingStr, DEFINITION, DEFINITION.LANG);
 	}
 
 	public List<ValueId> getUsageValues(String containingStr) {
 
-		return getValues(containingStr, USAGE);
+		return getValues(containingStr, USAGE, USAGE.LANG);
 	}
 
 	public List<ValueId> getWordEkiRecommendationValues(String containingStr) {
 
-		return getValues(containingStr, WORD_EKI_RECOMMENDATION);
+		return getValues(containingStr, WORD_EKI_RECOMMENDATION, DSL.value(LANGUAGE_CODE_EST));
 	}
 
 	public List<ValueId> getWordOsUsageValues(String containingStr) {
 
-		return getValues(containingStr, WORD_OS_USAGE);
+		return getValues(containingStr, WORD_OS_USAGE, DSL.value(LANGUAGE_CODE_EST));
 	}
 
 	public List<ValueId> getMeaningNoteValues(String containingStr) {
 
-		return getValues(containingStr, MEANING_NOTE);
+		return getValues(containingStr, MEANING_NOTE, MEANING_NOTE.LANG);
 	}
 
 	public List<ValueId> getLexemeNoteValues(String containingStr) {
 
-		return getValues(containingStr, LEXEME_NOTE);
+		return getValues(containingStr, LEXEME_NOTE, LEXEME_NOTE.LANG);
 	}
 
 	public List<ValueId> getMeaningForumValues(String containingStr) {
 
-		return getValues(containingStr, MEANING_FORUM);
+		return getValues(containingStr, MEANING_FORUM, DSL.value(LANGUAGE_CODE_EST));
 	}
 
 	public List<ValueId> getLearnerCommentValues(String containingStr) {
 
-		return getValues(containingStr, LEARNER_COMMENT);
+		return getValues(containingStr, LEARNER_COMMENT, DSL.value(LANGUAGE_CODE_EST));
 	}
 
 	public List<ValueId> getGrammarValues(String containingStr) {
 
-		return getValues(containingStr, GRAMMAR);
+		return getValues(containingStr, GRAMMAR, GRAMMAR.LANG);
 	}
 
 	public List<ValueId> getSourceValues(String containingStr) {
 
-		return getValues(containingStr, SOURCE);
+		return getValues(containingStr, SOURCE, DSL.value(LANGUAGE_CODE_EST));
 	}
 
-	private List<ValueId> getValues(String containingStr, Table<?> t) {
+	private List<ValueId> getValues(String containingStr, Table<?> t, Field<String> langField) {
 
 		String containingCrit = "%" + containingStr + "%";
 		Condition where = t.field("value", String.class).like(containingCrit);
@@ -373,7 +373,8 @@ public class MigrationDbService extends AbstractDataDbService implements Publish
 						DSL.value(t.getName()).as("table_name"),
 						t.field("id", Long.class),
 						t.field("value", String.class),
-						t.field("value_prese", String.class))
+						t.field("value_prese", String.class),
+						langField.as("lang"))
 				.from(t)
 				.where(where)
 				.fetchInto(ValueId.class);

@@ -4,6 +4,7 @@ import java.io.FileOutputStream;
 import java.io.OutputStreamWriter;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -90,6 +91,12 @@ public class QuotationReplacerRunner implements GlobalConstant, SystemConstant {
 
 	private void handleValues(List<ValueId> valueIds, Count recordCount, OutputStreamWriter reportWriter) throws Exception {
 
+		if (CollectionUtils.isEmpty(valueIds)) {
+			return;
+		}
+		valueIds = valueIds.stream()
+				.filter(valueId -> StringUtils.equals(LANGUAGE_CODE_EST, valueId.getLang()))
+				.collect(Collectors.toList());
 		if (CollectionUtils.isEmpty(valueIds)) {
 			return;
 		}
