@@ -1,30 +1,45 @@
 package eki.ekilex.data.api;
 
 import java.util.List;
-
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
-
 import eki.common.data.AbstractDataObject;
+import io.swagger.v3.oas.annotations.media.ArraySchema;
+import io.swagger.v3.oas.annotations.media.Schema;
 
+
+@Schema(description = "Describes a single Ekilex API endpoint with its technical details")
 public class ApiEndpointDescription extends AbstractDataObject {
 
 	private static final long serialVersionUID = 1L;
 
+	@Schema(hidden = true)
 	@JsonIgnore
 	private int order;
-
+	@Schema(description = "HTTP method used by the endpoint (e.g., GET, POST, PUT, DELETE)", example = "GET")
 	private String requestMethod;
 
+	@ArraySchema(
+			arraySchema = @Schema(description = "List of URI patterns associated with the endpoint"),
+			schema = @Schema(type = "string", example = "/api/classifiers/{classifierName}")
+	)
 	private List<String> uriPatterns;
 
+	@ArraySchema(
+			arraySchema = @Schema(description = "List of path variables in the URI, including their names and types"),
+			schema = @Schema(type = "string", example = "classifierName::java.lang.String")
+	)
 	@JsonInclude(Include.NON_EMPTY)
 	private List<String> pathVariables;
-
+	@ArraySchema(
+			arraySchema = @Schema(description = "List of query parameters accepted by the endpoint, including names and types"),
+			schema = @Schema(type = "string")
+	)
 	@JsonInclude(Include.NON_EMPTY)
 	private List<String> requestParameters;
 
+	@Schema(description = "Type of the request body object, if applicable")
 	@JsonInclude(Include.NON_NULL)
 	private String requestBody;
 

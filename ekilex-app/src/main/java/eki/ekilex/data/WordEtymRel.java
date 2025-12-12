@@ -1,23 +1,24 @@
 package eki.ekilex.data;
 
 import eki.common.data.AbstractDataObject;
+import io.swagger.v3.oas.annotations.media.Schema;
 
 public class WordEtymRel extends AbstractDataObject {
 
 	private static final long serialVersionUID = 1L;
 
 	private Long wordEtymRelId;
-
+	@Schema(example = "537620")
 	private Long relatedWordId;
-
+	@Schema(example = "kopare")
 	private String relatedWord;
-
+	@Schema(example = "fin")
 	private String relatedWordLang;
 
 	private String commentPrese;
-
+	@Schema(example = "false")
 	private boolean questionable;
-
+	@Schema(example = "false")
 	private boolean compound;
 
 	public Long getWordEtymRelId() {

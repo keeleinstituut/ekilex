@@ -1,13 +1,15 @@
 package eki.ekilex.data;
 
+import io.swagger.v3.oas.annotations.media.Schema;
+
 public class WordOsUsage extends AbstractCreateUpdateEntity implements ValueAndPrese {
 
 	private static final long serialVersionUID = 1L;
-
+	@Schema(example = "20441")
 	private Long id;
-
+	@Schema(example = "182736")
 	private Long wordId;
-
+	@Schema(example = "Kobar viinamarju = viinamarjakobar.")
 	private String value;
 
 	private String valuePrese;

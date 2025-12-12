@@ -4,6 +4,7 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,7 +25,7 @@ import eki.ekilex.data.api.SynCandidateWord;
 import eki.ekilex.service.DatasetService;
 import eki.ekilex.service.LookupService;
 import eki.ekilex.service.SynCandidateService;
-
+@Tag(name = "Synonym")
 @ConditionalOnWebApplication
 @RestController
 public class ApiSynController extends AbstractApiController {

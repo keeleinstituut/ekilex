@@ -3,7 +3,10 @@ package eki.ekilex.data;
 import java.util.List;
 
 import eki.common.data.AbstractDataObject;
-
+import io.swagger.v3.oas.annotations.media.ArraySchema;
+import io.swagger.v3.oas.annotations.media.Schema;
+@Schema(description = "An entity that unites extensive details about the queried word.  \n" +
+		"Includes a list of lexemes that contain this word and info about related words.")
 public class WordDetails extends AbstractDataObject {
 
 	private static final long serialVersionUID = 1L;

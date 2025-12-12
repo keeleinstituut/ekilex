@@ -2,6 +2,7 @@ package eki.ekilex.api.controller;
 
 import javax.servlet.http.HttpServletRequest;
 
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
 import org.springframework.core.annotation.Order;
@@ -22,7 +23,7 @@ import eki.ekilex.data.MeaningFreeform;
 import eki.ekilex.data.WordFreeform;
 import eki.ekilex.data.api.ApiResponse;
 import eki.ekilex.service.api.FreeformService;
-
+@Tag(name = "Freeforms", description = "Operations with freeforms")
 @ConditionalOnWebApplication
 @RestController
 public class ApiFreeformController extends AbstractApiController {

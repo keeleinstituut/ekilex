@@ -7,46 +7,48 @@ import com.fasterxml.jackson.annotation.JsonInclude.Include;
 
 import eki.common.constant.DatasetType;
 import eki.common.data.AbstractDataObject;
-
+import io.swagger.v3.oas.annotations.media.Schema;
+@Schema(description = "A collection of words. E.g. a dictionary or a terminology database")
 @JsonInclude(Include.NON_NULL)
 public class Dataset extends AbstractDataObject {
 
 	private static final long serialVersionUID = 1L;
-
+	@Schema(example = "kem")
 	private String code;
-
+	@Schema(example = "TERM")
 	private DatasetType type;
-
+	@Schema(example = "Keemiaterminite baas")
 	private String name;
-
+	@Schema(description = "Description of the database contents and purpose",
+			example = "Eesti- ja ingliskeelsed keemia põhiterminid koos definitsioonidega mõlemas keeles. ")
 	private String description;
 
 	private String contact;
 
 	private String imageUrl;
-
+	@Schema(example = "842")
 	private String fedTermCollectionId;
-
+	@Schema(example = "3606")
 	private String fedTermDomainId;
 
 	private boolean isVisible;
 
 	private boolean isPublic;
-
+	@Schema(example = "false")
 	private boolean isSuperior;
-
+	@Schema(hidden = true)
 	private List<String> origins;
-
+	@Schema(hidden = true)
 	private List<Classifier> domains;
-
+	@Schema(hidden = true)
 	private List<Classifier> languages;
-
+	@Schema(hidden = true)
 	private List<Classifier> wordFreeformTypes;
-
+	@Schema(hidden = true)
 	private List<Classifier> lexemeFreeformTypes;
-
+	@Schema(hidden = true)
 	private List<Classifier> meaningFreeformTypes;
-
+	@Schema(hidden = true)
 	private List<Classifier> definitionFreeformTypes;
 
 	public String getCode() {

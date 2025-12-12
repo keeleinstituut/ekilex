@@ -6,38 +6,39 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 
 import eki.common.data.AbstractDataObject;
-
+import io.swagger.v3.oas.annotations.media.Schema;
+@Schema(description = "Represents a shortened version of word details")
 @JsonInclude(Include.NON_NULL)
 public class Word extends AbstractDataObject {
 
 	private static final long serialVersionUID = 1L;
-
+	@Schema(example = "218160")
 	private Long wordId;
-
+	@Schema(hidden = true)
 	private Long meaningId;
-
+	@Schema(hidden = true)
 	private String lexemeDataset;
-
+	@Schema(example = "plov")
 	private String value;
-
+	@Schema(example = "plov")
 	private String valuePrese;
-
+	@Schema(example = "est")
 	private String lang;
-
+	@Schema(example = "1")
 	private Integer homonymNr;
-
+	@Schema(hidden = true)
 	private String displayMorphCode;
-
+	@Schema(hidden = true)
 	private String genderCode;
-
+	@Schema(hidden = true)
 	private String aspectCode;
-
+	@Schema(example = "[pl`off]")
 	private String vocalForm;
-
+	@Schema(example = "pl`ov")
 	private String morphophonoForm;
-
+	@Schema(example ="[\"eira hääldust\"]")
 	private List<String> tags;
-
+	@Schema(example = "true")
 	private boolean morphExists;
 
 	public Long getWordId() {

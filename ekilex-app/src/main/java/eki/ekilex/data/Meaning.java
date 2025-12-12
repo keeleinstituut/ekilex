@@ -8,15 +8,16 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
 
 import eki.common.util.LocalDateTimeDeserialiser;
-
+import io.swagger.v3.oas.annotations.media.Schema;
+@Schema(description = "An entity that holds definitions that explain the same meaning")
 public class Meaning extends AbstractGrantEntity {
 
 	private static final long serialVersionUID = 1L;
-
+	@Schema(example = "658908")
 	private Long meaningId;
-
+	@Schema(example = "null")
 	private String firstWordValue;
-
+	@Schema(example = "null")
 	private List<Long> lexemeIds;
 
 	private List<Definition> definitions;
@@ -24,33 +25,39 @@ public class Meaning extends AbstractGrantEntity {
 	private List<DefinitionLangGroup> definitionLangGroups;
 
 	private List<Lexeme> lexemes;
-
+	@Schema(example = "null")
 	private List<LexemeLangGroup> lexemeLangGroups;
-
+	@Schema(example = "null")
 	private List<String> lexemeDatasetCodes;
-
+	@Schema(example = "[]")
 	private List<OrderedClassifier> domains;
-
+	@Schema(example = "[\n" +
+			"                    {\n" +
+			"                        \"name\": \"SEMANTIC_TYPE\",\n" +
+			"                        \"code\": \"taim\",\n" +
+			"                        \"value\": \"taim, taimestik\"\n" +
+			"                    }\n" +
+			"                ]")
 	private List<Classifier> semanticTypes;
-
+	@Schema(example = "[]")
 	private List<Freeform> freeforms;
-
+	@Schema(example = "[]")
 	private List<LearnerComment> learnerComments;
-
+	@Schema(example = "[]")
 	private List<MeaningImage> images;
-
+	@Schema(example = "[]")
 	private List<MeaningMedia> medias;
-
+	@Schema(example = "[]")
 	private List<MeaningForum> forums;
-
+	@Schema(example = "[]")
 	private List<NoteLangGroup> noteLangGroups;
-
+	@Schema(example = "[]")
 	private List<MeaningRelation> relations;
-
+	@Schema(example = "[]")
 	private List<List<MeaningRelation>> viewRelations;
-
+	@Schema(example = "[]")
 	private List<SynonymLangGroup> synonymLangGroups;
-
+	@Schema(example = "null")
 	private List<String> tags;
 
 	private boolean activeTagComplete;

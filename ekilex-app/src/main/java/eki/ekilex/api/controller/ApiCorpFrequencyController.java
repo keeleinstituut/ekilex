@@ -4,6 +4,7 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
 import org.springframework.core.annotation.Order;
@@ -22,7 +23,7 @@ import eki.ekilex.data.api.FreqCorpId;
 import eki.ekilex.data.api.MorphFreq;
 import eki.ekilex.data.api.WordFreq;
 import eki.ekilex.service.api.CorpFrequencyService;
-
+@Tag(name = "Corp Frequency")
 @ConditionalOnWebApplication
 @RestController
 public class ApiCorpFrequencyController extends AbstractApiController {

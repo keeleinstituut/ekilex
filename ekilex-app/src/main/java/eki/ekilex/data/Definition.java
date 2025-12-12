@@ -1,31 +1,35 @@
 package eki.ekilex.data;
 
+import io.swagger.v3.oas.annotations.media.Schema;
+
 import java.util.List;
 
 public class Definition extends AbstractGrantEntity {
 
 	private static final long serialVersionUID = 1L;
-
+	@Schema(example = "43367")
 	private Long id;
-
+	@Schema(example = "samal varrel või selle eraldi raokestel kasvavate viljade või õite tihe kogum")
 	private String value;
-
+	@Schema(example = "samal varrel või selle eraldi raokestel kasvavate viljade või õite tihe kogum")
 	private String valuePrese;
-
+	@Schema(example = "est")
 	private String lang;
-
+	@Schema(example = "33368")
 	private Long orderBy;
-
+	@Schema(example = "määramata")
 	private String typeCode;
-
+	@Schema(example = "-")
 	private String typeValue;
-
+	@Schema(example = "[\n" +
+			"\"eki\"\n" +
+			"]")
 	private List<String> datasetCodes;
-
+	@Schema(example = "null")
 	private List<DefinitionNote> notes;
-
+	@Schema(example = "null")
 	private List<SourceLink> sourceLinks;
-
+	@Schema(example = "false")
 	private boolean isEditDisabled;
 
 	public Long getId() {

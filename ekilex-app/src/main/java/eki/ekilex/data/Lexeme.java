@@ -3,37 +3,39 @@ package eki.ekilex.data;
 import java.util.List;
 
 import eki.common.data.LexemeLevel;
-
+import io.swagger.v3.oas.annotations.media.Schema;
+@Schema(description = "Entity that connects a word and a meaning into a single database unit")
 public class Lexeme extends AbstractGrantEntity implements LexemeLevel {
 
 	private static final long serialVersionUID = 1L;
-
+	@Schema(description="Represents a lexical word entry in this lexeme relation")
 	private Word lexemeWord;
 
 	private Meaning meaning;
-
+	@Schema(example = "1208552")
 	private Long lexemeId;
-
+	@Schema(example = "182736")
 	private Long wordId;
 
+	@Schema(example = "658908")
 	private Long meaningId;
-
+	@Schema(example = "eki")
 	private String datasetCode;
-
+	@Schema(example = "EKI ühendsõnastik 2025")
 	private String datasetName;
-
+	@Schema(example = "1")
 	private Integer level1;
-
+	@Schema(example = "1")
 	private Integer level2;
-
+	@Schema(example = "1")
 	private String levels;
 
 	private String lexemeValueStateCode;
-
+	@Schema(example = "[]")
 	private Classifier lexemeValueState;
 
 	private String lexemeProficiencyLevelCode;
-
+	@Schema(example = "[]")
 	private Classifier lexemeProficiencyLevel;
 
 	private Integer reliability;
@@ -45,35 +47,43 @@ public class Lexeme extends AbstractGrantEntity implements LexemeLevel {
 	private boolean isWord;
 
 	private boolean isCollocation;
-
+	@Schema(example = "[\n" +
+			"                \"ÕSi sõna\"\n" +
+			"            ]")
 	private List<String> tags;
-
+	@Schema(example = "[\n" +
+			"                {\n" +
+			"                    \"name\": \"POS\",\n" +
+			"                    \"code\": \"s\",\n" +
+			"                    \"value\": \"nimisõna, substantiiv\"\n" +
+			"                }\n" +
+			"            ]")
 	private List<Classifier> pos;
-
+	@Schema(example = "null")
 	private List<Classifier> derivs;
-
+	@Schema(example = "null")
 	private List<Classifier> registers;
-
+	@Schema(example = "null")
 	private List<Classifier> regions;
-
+	@Schema(example = "[]")
 	private List<Government> governments;
-
+	@Schema(example = "[]")
 	private List<Grammar> grammars;
 
 	private List<Usage> usages;
-
+	@Schema(example = "[]")
 	private List<Freeform> freeforms;
-
+	@Schema(example = "[]")
 	private List<LexemeNote> notes;
-
+	@Schema(example = "[]")
 	private List<NoteLangGroup> noteLangGroups;
-
+	@Schema(example = "[]")
 	private List<LexemeRelation> lexemeRelations;
-
+	@Schema(example = "[]")
 	private List<CollocPosGroup> primaryCollocations;
-
+	@Schema(example = "[]")
 	private List<Colloc> secondaryCollocations;
-
+	@Schema(example = "[]")
 	private List<CollocMember> collocationMembers;
 
 	private List<CollocMemberMeaning> collocationMemberMeanings;

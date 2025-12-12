@@ -4,8 +4,11 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 
 import eki.common.data.AbstractDataObject;
+import io.swagger.v3.oas.annotations.Hidden;
+
 
 @JsonInclude(Include.NON_NULL)
+@Hidden
 public class ApiResponse extends AbstractDataObject {
 
 	private static final long serialVersionUID = 1L;

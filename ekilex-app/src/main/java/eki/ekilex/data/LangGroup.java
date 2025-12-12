@@ -1,11 +1,12 @@
 package eki.ekilex.data;
 
 import eki.common.data.AbstractDataObject;
+import io.swagger.v3.oas.annotations.media.Schema;
 
 public abstract class LangGroup extends AbstractDataObject {
 
 	private static final long serialVersionUID = 1L;
-
+	@Schema(example = "est")
 	private String lang;
 
 	private boolean selected;

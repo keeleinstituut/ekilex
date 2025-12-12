@@ -1,15 +1,18 @@
 package eki.ekilex.data;
 
+import io.swagger.v3.oas.annotations.media.Schema;
+
+@Schema(description = "Word morphology in the dictionary Õigekeelsussõnaraamat")
 public class WordOsMorph extends AbstractCreateUpdateEntity implements ValueAndPrese {
 
 	private static final long serialVersionUID = 1L;
-
+	@Schema(example = "135846")
 	private Long id;
-
+	@Schema(example = "182736")
 	private Long wordId;
-
+	@Schema(example = "kobar, -a, -at 2")
 	private String value;
-
+	@Schema(example = "kobar, -a, -at <ext-link href=\"https://eki.ee/teatmik/kaandsona-tuup-2-opik-minut-akvaarium/#2.-opik\">2</ext-link>")
 	private String valuePrese;
 
 	public Long getId() {
