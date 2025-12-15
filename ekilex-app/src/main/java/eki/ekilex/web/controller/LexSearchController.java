@@ -70,6 +70,7 @@ public class LexSearchController extends AbstractPrivateSearchController {
 		final SearchResultMode resultMode = SearchResultMode.WORD;
 		final String resultLang = null;
 
+		simpleSearchFilter = simpleSearchCleanup(simpleSearchFilter);
 		simpleSearchFilter = valueUtil.trimAndCleanAndRemoveHtmlAndLimit(simpleSearchFilter);
 		formDataCleanup(LEX_SEARCH_PAGE, detailSearchFilter);
 
@@ -206,13 +207,14 @@ public class LexSearchController extends AbstractPrivateSearchController {
 			Model model) throws Exception {
 
 		List<ClassifierSelect> languagesOrder = sessionBean.getLanguagesOrder();
+		boolean isLexemeCollocExpanded = sessionBean.isLexemeCollocExpanded();
 		EkiUser user = userContext.getUser();
 		Long userId = user.getId();
 		EkiUserProfile userProfile = userProfileService.getUserProfile(userId);
 		List<String> datasetCodes = userProfile.getPreferredDatasets();
 		UserContextData userContextData = getUserContextData();
 		Tag activeTag = userContextData.getActiveTag();
-		WordDetails details = lexSearchService.getWordDetails(wordId, selectedMeaningId, datasetCodes, languagesOrder, user, userProfile, activeTag, false, false);
+		WordDetails details = lexSearchService.getWordDetails(wordId, selectedMeaningId, datasetCodes, languagesOrder, user, userProfile, activeTag, isLexemeCollocExpanded, false);
 		model.addAttribute("wordId", wordId);
 		model.addAttribute("details", details);
 

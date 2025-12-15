@@ -7,12 +7,11 @@
         <div class="d-flex mr-auto">
           <h3 class="search__block-title mr-1" th:text="${lexeme.datasetName}" th:id="|term-meaning-data-${lexeme.meaningId}|">EKI ühendsõnastik 2020</h3>
           <th:block th:replace="common-app :: clipboard(
-              wordValue=${wordData.word.value},
-              homonymNr=${wordData.word.homonymNr},
+              word=${wordData.word},
               text=${#messages.msg('label.clipboard.text.term', lexeme.datasetName)},
               link=${lexeme.datasetSearchUrl},
-              date=${#dates.format(#dates.createNow(), 'dd.MM.yyyy')}
-            )"></th:block>
+              date=${#dates.format(#dates.createNow(), 'dd.MM.yyyy')})">
+          </th:block>
         </div>
         <div class="meaning-data__modified">
           <span>ID</span>
@@ -20,15 +19,23 @@
           <span th:text="#{label.tooltip.last_modified}"></span>
           <span class="meaning-data__date" th:text="${#temporals.format(lexeme.meaningManualEventOn, 'dd.MM.yyyy')}"></span>
         </div>
+          <a
+          class="meaning-data__link d-block w-100 text-left d-lg-none"
+          th:href="|@{/ds}/${lexeme.datasetCode}|"
+          target="_blank"
+          rel="noreferrer">
+          <span th:text="#{label.view.dataset}"></span>
+          <i class="fas fa-external-link-alt ml-1" th:aria-label="#{aria.new.window}"></i>
+        </a>
       </div>
       <a
-      class="meaning-data__link"
-      th:href="|@{/ds}/${lexeme.datasetCode}|"
-      target="_blank"
-      rel="noreferrer">
-      <span th:text="#{label.view.dataset}"></span>
-      <i class="fas fa-external-link-alt ml-1" th:aria-label="#{aria.new.window}"></i>
-    </a>
+        class="meaning-data__link d-none d-lg-inline-block"
+        th:href="|@{/ds}/${lexeme.datasetCode}|"
+        target="_blank"
+        rel="noreferrer">
+        <span th:text="#{label.view.dataset}"></span>
+        <i class="fas fa-external-link-alt ml-1" th:aria-label="#{aria.new.window}"></i>
+      </a>
     </div>
     <section th:aria-labelledby="|term-meaning-data-${lexeme.meaningId}|">
       <a th:href="${@viewUtil.getEkilexLimTermMeaningDetailsUrl(lexeme.meaningId)}" th:text="${lexeme.meaningId}" th:if="${isLimTerm}"></a>

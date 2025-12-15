@@ -17,7 +17,7 @@
 <th:block th:replace="common-app :: header(withSearch = ${false})"></th:block>
 <div class="container-fluid learn">
   <div class="row no-gutters learn-container">
-    <aside class="col-12 col-md-4  learn-container-menu" tabindex="0">
+    <aside class="col-12 col-md-4  learn-container-menu" role="navigation" aria-label="Õppemenüü" tabindex="0">
       <div class="col-12">
         <h1 class="mx-lg-4 mt-md-4 font-weight-bold page-title">Õpime eesti keelt</h1>
       </div>
@@ -87,12 +87,14 @@
                id="v-pills-kirjutamine-tab"
                data-toggle="pill"
                href="#v-pills-kirjutamine"
-               aria-haspopup="true"
-               aria-expanded="false">Kirjutamine
-               <i class="nav-link-icon fa fa-caret-down"></i>
+               role="tab"
+               aria-controls="v-pills-kirjutamine"
+               aria-selected="false"
+               >Kirjutamine
+               <i class="nav-link-icon fa fa-caret-down" aria-hidden="true"></i>
             </a>
             <ul class="list-unstyled"
-                role="list">
+                role="list">  
               <li>
                 <a class="nav-link"
                    href="#kirisobrale">Kiri sõbrale või kolleegile</a>
@@ -157,6 +159,7 @@
           </li>
           <li class="has-submenu" role="presentation">
             <a class="nav-link"
+               id="v-pills-kasulikke-tab"
                href="#v-pills-kasulikke"
                data-toggle="pill"
                aria-controls="v-pills-kasulikke"
@@ -322,7 +325,7 @@
                role="tab"
                aria-controls="v-pills-grammatikatabelid"
                aria-selected="false">Grammatikatabelid
-              <i class="fas fa-file-pdf"></i>
+              <i class="fas fa-file-pdf"><span class="sr-only">PDF</span></i>
             </a>
           </li>
           <li role="presentation">
@@ -333,7 +336,7 @@
                role="tab"
                aria-controls="v-pills-regions"
                aria-selected="false">Maad ja rahvad
-              <i class="fas fa-file-pdf"></i>
+              <i class="fas fa-file-pdf"><span class="sr-only">PDF</span></i>
             </a>
           </li>
           <li role="presentation">
@@ -357,957 +360,960 @@
         <div class="tab-pane fade show active"
              id="v-pills-arvud"
              role="tabpanel"
-             aria-labelledby="v-pills-arvud-tab">
-          <h3 class="learn-content-title">Arvud</h3>
+             aria-labelledby="v-pills-arvud-tab"
+             tabindex="-1">
+          <h3 class="learn-content-title" id="arvud" tabindex="-1">Arvud</h3>
           <div class="learn-content">
-            <a id="arvud"></a>
             <div class="row number-rows">
               <div class="col-lg-6 col-sm-12">
                 <div class="row">
-                  <div  class="text"><h6 class="learn-content-subtitle">Põhiarvud</h6></div>
+                  <div class="text"><h6 class="learn-content-subtitle">Põhiarvud</h6></div>
                 </div>
-                <div class="row">
-                  <div class="num">
-                    &nbsp;
-                  </div>
-                  <div class="text"><b>mitu? mitme? mitut?</b></div>
-                </div>
-                <div class="row">
-                  <div class="num">
-                    <span class="number">0</span>
-                  </div>
-                  <div class="text">
-                    null<span class="text-muted small">, nulli, nulli</span>
-                  </div>
-                </div>
-                <div class="row">
-                  <div class="num">
-                    <span class="number">1</span>
-                  </div>
-                  <div class="text">
-                    üks<span class="text-muted small">, ühe, ühte/üht</span>
-                  </div>
-                </div>
-                <div class="row">
-                  <div class="num">
-                    <span class="number">2</span>
-                  </div>
-                  <div class="text">
-                    kaks<span class="text-muted small">, kahe, kahte/kaht</span>
-                  </div>
-                </div>
-                <div class="row">
-                  <div class="num">
-                    <span class="number">3</span>
-                  </div>
-                  <div class="text">
-                    kolm<span class="text-muted small">, kolme, kolme</span>
-                  </div>
-                </div>
-                <div class="row">
-                  <div class="num">
-                    <span class="number">4</span>
-                  </div>
-                  <div class="text">
-                    neli<span class="text-muted small">, nelja, nelja</span>
-                  </div>
-                </div>
-                <div class="row">
-                  <div class="num">
-                    <span class="number">5</span>
-                  </div>
-                  <div class="text">
-                    viis<span class="text-muted small">, viie, viit/viite</span>
-                  </div>
-                </div>
-                <div class="row">
-                  <div class="num">
-                    <span class="number">6</span>
-                  </div>
-                  <div class="text">
-                    kuus<span class="text-muted small">, kuue, kuut/kuute</span>
-                  </div>
-                </div>
-                <div class="row">
-                  <div class="num">
-                    <span class="number">7</span>
-                  </div>
-                  <div class="text">
-                    seitse<span class="text-muted small">, seitsme, seitset</span>
-                  </div>
-                </div>
-                <div class="row">
-                  <div class="num">
-                    <span class="number">8</span>
-                  </div>
-                  <div class="text">
-                    kaheksa<span class="text-muted small">, kaheksa, kaheksat</span>
-                  </div>
-                </div>
-                <div class="row">
-                  <div class="num">
-                    <span class="number">9</span>
-                  </div>
-                  <div class="text">
-                    üheksa<span class="text-muted small">, üheksa, üheksat</span>
-                  </div>
-                </div>
-                <div class="row">
-                  <div class="num">
-                    <span class="number">10</span>
-                  </div>
-                  <div class="text">
-                    kümme<span class="text-muted small">, kümne, kümmet</span>
-                  </div>
-                </div>
-                <div class="row">
-                  <div class="num">
-                    <span class="number">11</span>
-                  </div>
-                  <div class="text">
-                    üksteist<span class="text-muted small">, üheteistkümne, ühtteist/ühteteist</span>
-                  </div>
-                </div>
-                <div class="row">
-                  <div class="num">
-                    <span class="number">12</span>
-                  </div>
-                  <div class="text">
-                    kaksteist<span class="text-muted small">, kaheteistkümne, kahtteist/kahteteist</span>
-                  </div>
-                </div>
-                <div class="row">
-                  <div class="num">
-                    <span class="number">13</span>
-                  </div>
-                  <div class="text">
-                    kolmteist<span class="text-muted small">, kolmeteistkümne, kolmeteist</span>
-                  </div>
-                </div>
-                <div class="row">
-                  <div class="num">
-                    <span class="number">14</span>
-                  </div>
-                  <div class="text">
-                    neliteist<span class="text-muted small">, neljateistkümne, neljateist</span>
-                  </div>
-                </div>
-                <div class="row">
-                  <div class="num">
-                    <span class="number">15</span>
-                  </div>
-                  <div class="text">
-                    viisteist<span class="text-muted small">, viieteistkümne, viitteist/viiteteist</span>
-                  </div>
-                </div>
-                <div class="row">
-                  <div class="num">
-                    <span class="number">16</span>
-                  </div>
-                  <div class="text">
-                    kuusteist<span class="text-muted small">, kuueteistkümne, kuutteist/kuuteteist</span>
-                  </div>
-                </div>
-                <div class="row">
-                  <div class="num">
-                    <span class="number">17</span>
-                  </div>
-                  <div class="text">
-                    seitseteist<span class="text-muted small">, seitsmeteistkümne, seitsetteist</span>
-                  </div>
-                </div>
-                <div class="row">
-                  <div class="num">
-                    <span class="number">18</span>
-                  </div>
-                  <div class="text">
-                    kaheksateist<span class="text-muted small">, kaheksateistkümne, kaheksatteist</span>
-                  </div>
-                </div>
-                <div class="row">
-                  <div class="num">
-                    <span class="number">19</span>
-                  </div>
-                  <div class="text">
-                    üheksateist<span class="text-muted small">, üheksateistkümne, üheksatteist</span>
-                  </div>
-                </div>
-                <div class="row">
-                  <div class="num">
-                    <span class="number">20</span>
-                  </div>
-                  <div class="text">
-                    kakskümmend<span class="text-muted small">, kahekümne, kaht(e)kümmet/kaht(e)kümmend</span>
-                  </div>
-                </div>
-                <div class="row">
-                  <div class="num">
-                    <span class="number">21</span>
-                  </div>
-                  <div class="text">
-                    kakskümmend üks<span class="text-muted small">, kahekümne ühe, kahtekümmend ühte / kahtkümmend üht</span>
-                  </div>
-                </div>
-                <div class="row">
-                  <div class="num">
-                    <span class="number">22</span>
-                  </div>
-                  <div class="text">
-                    kakskümmend kaks<span class="text-muted small">, kahekümne kahe, kahtekümmend kahte / kahtkümmend kaht</span>
-                  </div>
-                </div>
-                <div class="row">
-                  <div class="num">
-                    <span class="number">23</span>
-                  </div>
-                  <div class="text">
-                    kakskümmend kolm<span class="text-muted small">, kahekümne kolme, kaht(e)kümmend kolme</span>
-                  </div>
-                </div>
-                <div class="row">
-                  <div class="num">
-                    <span class="number">24</span>
-                  </div>
-                  <div class="text">
-                    kakskümmend neli<span class="text-muted small">, kahekümne nelja, kaht(e)kümmend nelja</span>
-                  </div>
-                </div>
-                <div class="row">
-                  <div class="num">
-                    <span class="number">25</span>
-                  </div>
-                  <div class="text">
-                    kakskümmend viis<span class="text-muted small">, kahekümne viie, kaht(e)kümmend viit</span>
-                  </div>
-                </div>
-                <div class="row">
-                  <div class="num">
-                    <span class="number">26</span>
-                  </div>
-                  <div class="text">
-                    kakskümmend kuus<span class="text-muted small">, kahekümne kuue, kaht(e)kümmend kuut</span>
-                  </div>
-                </div>
-                <div class="row">
-                  <div class="num">
-                    <span class="number">27</span>
-                  </div>
-                  <div class="text">
-                    kakskümmend seitse<span class="text-muted small">, kahekümne seitsme, kaht(e)kümmend seitset</span>
-                  </div>
-                </div>
-                <div class="row">
-                  <div class="num">
-                    <span class="number">28</span>
-                  </div>
-                  <div class="text">
-                    kakskümmend kaheksa<span class="text-muted small">, kahekümne kaheksa, kaht(e)kümmend kaheksat</span>
-                  </div>
-                </div>
-                <div class="row">
-                  <div class="num">
-                    <span class="number">29</span>
-                  </div>
-                  <div class="text">
-                    kakskümmend üheksa<span class="text-muted small">, kahekümne üheksa, kaht(e)kümmend üheksat</span>
-                  </div>
-                </div>
-                <div class="row">
-                  <div class="num">
-                    <span class="number">30</span>
-                  </div>
-                  <div class="text">
-                    kolmkümmend<span class="text-muted small">, kolmekümne, kolmekümmet/kolmekümmend</span>
-                  </div>
-                </div>
-                <div class="row">
-                  <div class="num">
-                    <span class="number">40</span>
-                  </div>
-                  <div class="text">
-                    nelikümmend<span class="text-muted small">, neljakümne, neljakümmet/neljakümmend</span>
-                  </div>
-                </div>
-                <div class="row">
-                  <div class="num">
-                    <span class="number">50</span>
-                  </div>
-                  <div class="text">
-                    viiskümmend<span class="text-muted small">, viiekümne, viit(e)kümmet/viit(e)kümmend</span>
-                  </div>
-                </div>
-                <div class="row">
-                  <div class="num">
-                    <span class="number">60</span>
-                  </div>
-                  <div class="text">
-                    kuuskümmend<span class="text-muted small">, kuuekümne, kuut(e)kümmet/kuut(e)kümmend</span>
-                  </div>
-                </div>
-                <div class="row">
-                  <div class="num">
-                    <span class="number">70</span>
-                  </div>
-                  <div class="text">
-                    seitsekümmend<span class="text-muted small">, seitsmekümne, seitsetkümmet/seitsetkümmend</span>
-                  </div>
-                </div>
-                <div class="row">
-                  <div class="num">
-                    <span class="number">80</span>
-                  </div>
-                  <div class="text">
-                    kaheksakümmend<span class="text-muted small">, kaheksakümne, kaheksatkümmet/kaheksatkümmend</span>
-                  </div>
-                </div>
-                <div class="row">
-                  <div class="num">
-                    <span class="number">90</span>
-                  </div>
-                  <div class="text">
-                    üheksakümmend<span class="text-muted small">, üheksakümne, üheksatkümmet/üheksatkümmend</span>
-                  </div>
-                </div>
-                <div class="row">
-                  <div class="num">
-                    <span class="number">100</span>
-                  </div>
-                  <div class="text">
-                    sada<span class="text-muted small">, saja, sadat/sada</span>
-                  </div>
-                </div>
-                <div class="row">
-                  <div class="num">
-                    <span class="number">101</span>
-                  </div>
-                  <div class="text">
-                    sada üks<span class="text-muted small">, saja ühe, sada üht(e)</span>
-                  </div>
-                </div>
-                <div class="row">
-                 <div class="num">
-                    <span class="number">102</span>
-                  </div>
-                  <div class="text">
-                    sada kaks<span class="text-muted small">, saja kahe, sada kaht(e)</span>
-                  </div>
-                </div>
-                <div class="row">
-                  <div class="num">
-                    <span class="number">121</span>
-                  </div>
-                  <div class="text">
-                    sada kakskümmend üks<span class="text-muted small">, saja kahekümne ühe, sada kaht(e)kümmend üht(e)</span>
-                  </div>
-                </div>
-                <div class="row">
-                  <div class="num">
-                    <span class="number">200</span>
-                  </div>
-                  <div class="text">
-                    kakssada<span class="text-muted small">, kahesaja, kahtsadat/kahtsada</span>
-                  </div>
-                </div>
-                <div class="row">
-                  <div class="num">
-                    <span class="number">300</span>
-                  </div>
-                  <div class="text">
-                    kolmsada<span class="text-muted small">, kolmesaja, kolmesadat/kolmesada</span>
-                  </div>
-                </div>
-                <div class="row">
-                  <div class="num">
-                    <span class="number">400</span>
-                  </div>
-                  <div class="text">
-                    nelisada<span class="text-muted small">, neljasaja, neljasadat/neljasada</span>
-                  </div>
-                </div>
-                <div class="row">
-                  <div class="num">
-                    <span class="number">500</span>
-                  </div>
-                  <div class="text">
-                    viissada<span class="text-muted small">, viiesaja, viit(e)sadat/viit(e)sada</span>
-                  </div>
-                </div>
-                <div class="row">
-                  <div class="num">
-                    <span class="number">600</span>
-                  </div>
-                  <div class="text">
-                    kuussada<span class="text-muted small">, kuuesaja, kuut(e)sadat/kuut(e)sada</span>
-                  </div>
-                </div>
-                <div class="row">
-                  <div class="num">
-                    <span class="number">700</span>
-                  </div>
-                  <div class="text">
-                    seitsesada<span class="text-muted small">, seitsmesaja, seitsetsadat/seitsetsada</span>
-                  </div>
-                </div>
-                <div class="row">
-                  <div class="num">
-                    <span class="number">800</span>
-                  </div>
-                  <div class="text">
-                    kaheksasada<span class="text-muted small">, kaheksasaja, kaheksatsadat/kaheksatsada</span>
-                  </div>
-                </div>
-                <div class="row">
-                  <div class="num">
-                    <span class="number">900</span>
-                  </div>
-                  <div class="text">
-                    üheksasada<span class="text-muted small">, üheksasaja, üheksatsadat/üheksatsada</span>
-                  </div>
-                </div>
-                <div class="row">
-                  <div class="num">
-                    <span class="number">1000</span>
-                  </div>
-                  <div class="text">
-                    tuhat<span class="text-muted small">, tuhande, tuhandet</span>
-                  </div>
-                </div>
-                <div class="row">
-                  <div class="num">
-                    <span class="number">2000</span>
-                  </div>
-                  <div class="text">
-                    kaks tuhat<span class="text-muted small">, kahe tuhande, kaht(e) tuhandet</span>
-                  </div>
-                </div>
-               <div class="row">
-                  <div class="num">
-                    <span class="number">2020</span>
-                  </div>
-                  <div class="text">
-                    kaks tuhat kakskümmend<span class="text-muted small">, kahe tuhande kahekümne, kaht(e) tuhandet kaht(e)kümmend</span>
-                  </div>
-                </div>
-               <div class="row">
-                  <div class="num">
-                    <span class="number">2021</span>
-                  </div>
-                  <div class="text">
-                    kaks tuhat kakskümmend üks<span class="text-muted small">, kahe tuhande kahekümne ühe, kaht(e) tuhandet kaht(e)kümmend üht(e)</span>
-                  </div>
-                </div>
-               <div class="row">
-                  <div class="num">
-                    <span class="number">10 000</span>
-                  </div>
-                  <div class="text">
-                    kümme tuhat<span class="text-muted small">, kümne tuhande, kümmet tuhandet</span>
-                  </div>
-                </div>
-               <div class="row">
-                  <div class="num">
-                    <span class="number">30 000</span>
-                  </div>
-                  <div class="text">
-                    kolmkümmend tuhat<span class="text-muted small">, kolmekümne tuhande, kolmekümmend tuhandet</span>
-                  </div>
-                </div>
-               <div class="row">
-                  <div class="num">
-                    <span class="number">100 000</span>
-                  </div>
-                  <div class="text">
-                    sada tuhat<span class="text-muted small">, saja tuhande, sadat tuhandet</span>
-                  </div>
-                </div>
-               <div class="row">
-                  <div class="num">
-                    <span class="number small">1 000 000</span>
-                  </div>
-                  <div class="text pl-4">
-                    miljon<span class="text-muted small">, miljoni, miljonit</span>
-                  </div>
-                </div>
-               <div class="row">
-                  <div class="num">
-                    <span class="number small">1 000 000 000</span>
-                  </div>
-                  <div class="text pl-5">
-                    miljard<span class="text-muted small">, miljardi, miljardit</span>
-                  </div>
-                </div>
+                <ul style="list-style: none; padding-left: 0; margin: 0;">
+                  <li class="row">
+                    <div class="num">
+                      &nbsp;
+                    </div>
+                    <div class="text"><b>mitu? mitme? mitut?</b></div>
+                  </li>
+                  <li class="row">
+                    <div class="num">
+                      <span class="number">0</span>
+                    </div>
+                    <div class="text">
+                      null<span class="text-muted small">, nulli, nulli</span>
+                    </div>
+                  </li>
+                  <li class="row">
+                    <div class="num">
+                      <span class="number">1</span>
+                    </div>
+                    <div class="text">
+                      üks<span class="text-muted small">, ühe, ühte/üht</span>
+                    </div>
+                  </li>
+                  <li class="row">
+                    <div class="num">
+                      <span class="number">2</span>
+                    </div>
+                    <div class="text">
+                      kaks<span class="text-muted small">, kahe, kahte/kaht</span>
+                    </div>
+                  </li>
+                  <li class="row">
+                    <div class="num">
+                      <span class="number">3</span>
+                    </div>
+                    <div class="text">
+                      kolm<span class="text-muted small">, kolme, kolme</span>
+                    </div>
+                  </li>
+                  <li class="row">
+                    <div class="num">
+                      <span class="number">4</span>
+                    </div>
+                    <div class="text">
+                      neli<span class="text-muted small">, nelja, nelja</span>
+                    </div>
+                  </li>
+                  <li class="row">
+                    <div class="num">
+                      <span class="number">5</span>
+                    </div>
+                    <div class="text">
+                      viis<span class="text-muted small">, viie, viit/viite</span>
+                    </div>
+                  </li>
+                  <li class="row">
+                    <div class="num">
+                      <span class="number">6</span>
+                    </div>
+                    <div class="text">
+                      kuus<span class="text-muted small">, kuue, kuut/kuute</span>
+                    </div>
+                  </li>
+                  <li class="row">
+                    <div class="num">
+                      <span class="number">7</span>
+                    </div>
+                    <div class="text">
+                      seitse<span class="text-muted small">, seitsme, seitset</span>
+                    </div>
+                  </li>
+                  <li class="row">
+                    <div class="num">
+                      <span class="number">8</span>
+                    </div>
+                    <div class="text">
+                      kaheksa<span class="text-muted small">, kaheksa, kaheksat</span>
+                    </div>
+                  </li>
+                  <li class="row">
+                    <div class="num">
+                      <span class="number">9</span>
+                    </div>
+                    <div class="text">
+                      üheksa<span class="text-muted small">, üheksa, üheksat</span>
+                    </div>
+                  </li>
+                  <li class="row">
+                    <div class="num">
+                      <span class="number">10</span>
+                    </div>
+                    <div class="text">
+                      kümme<span class="text-muted small">, kümne, kümmet</span>
+                    </div>
+                  </li>
+                  <li class="row">
+                    <div class="num">
+                      <span class="number">11</span>
+                    </div>
+                    <div class="text">
+                      üksteist<span class="text-muted small">, üheteistkümne, ühtteist/ühteteist</span>
+                    </div>
+                  </li>
+                  <li class="row">
+                    <div class="num">
+                      <span class="number">12</span>
+                    </div>
+                    <div class="text">
+                      kaksteist<span class="text-muted small">, kaheteistkümne, kahtteist/kahteteist</span>
+                    </div>
+                  </li>
+                  <li class="row">
+                    <div class="num">
+                      <span class="number">13</span>
+                    </div>
+                    <div class="text">
+                      kolmteist<span class="text-muted small">, kolmeteistkümne, kolmeteist</span>
+                    </div>
+                  </li>
+                  <li class="row">
+                    <div class="num">
+                      <span class="number">14</span>
+                    </div>
+                    <div class="text">
+                      neliteist<span class="text-muted small">, neljateistkümne, neljateist</span>
+                    </div>
+                  </li>
+                  <li class="row">
+                    <div class="num">
+                      <span class="number">15</span>
+                    </div>
+                    <div class="text">
+                      viisteist<span class="text-muted small">, viieteistkümne, viitteist/viiteteist</span>
+                    </div>
+                  </li>
+                  <li class="row">
+                    <div class="num">
+                      <span class="number">16</span>
+                    </div>
+                    <div class="text">
+                      kuusteist<span class="text-muted small">, kuueteistkümne, kuutteist/kuuteteist</span>
+                    </div>
+                  </li>
+                  <li class="row">
+                    <div class="num">
+                      <span class="number">17</span>
+                    </div>
+                    <div class="text">
+                      seitseteist<span class="text-muted small">, seitsmeteistkümne, seitsetteist</span>
+                    </div>
+                  </li>
+                  <li class="row">
+                    <div class="num">
+                      <span class="number">18</span>
+                    </div>
+                    <div class="text">
+                      kaheksateist<span class="text-muted small">, kaheksateistkümne, kaheksatteist</span>
+                    </div>
+                  </li>
+                  <li class="row">
+                    <div class="num">
+                      <span class="number">19</span>
+                    </div>
+                    <div class="text">
+                      üheksateist<span class="text-muted small">, üheksateistkümne, üheksatteist</span>
+                    </div>
+                  </li>
+                  <li class="row">
+                    <div class="num">
+                      <span class="number">20</span>
+                    </div>
+                    <div class="text">
+                      kakskümmend<span class="text-muted small">, kahekümne, kaht(e)kümmet/kaht(e)kümmend</span>
+                    </div>
+                  </li>
+                  <li class="row">
+                    <div class="num">
+                      <span class="number">21</span>
+                    </div>
+                    <div class="text">
+                      kakskümmend üks<span class="text-muted small">, kahekümne ühe, kahtekümmend ühte / kahtkümmend üht</span>
+                    </div>
+                  </li>
+                  <li class="row">
+                    <div class="num">
+                      <span class="number">22</span>
+                    </div>
+                    <div class="text">
+                      kakskümmend kaks<span class="text-muted small">, kahekümne kahe, kahtekümmend kahte / kahtkümmend kaht</span>
+                    </div>
+                  </li>
+                  <li class="row">
+                    <div class="num">
+                      <span class="number">23</span>
+                    </div>
+                    <div class="text">
+                      kakskümmend kolm<span class="text-muted small">, kahekümne kolme, kaht(e)kümmend kolme</span>
+                    </div>
+                  </li>
+                  <li class="row">
+                    <div class="num">
+                      <span class="number">24</span>
+                    </div>
+                    <div class="text">
+                      kakskümmend neli<span class="text-muted small">, kahekümne nelja, kaht(e)kümmend nelja</span>
+                    </div>
+                  </li>
+                  <li class="row">
+                    <div class="num">
+                      <span class="number">25</span>
+                    </div>
+                    <div class="text">
+                      kakskümmend viis<span class="text-muted small">, kahekümne viie, kaht(e)kümmend viit</span>
+                    </div>
+                  </li>
+                  <li class="row">
+                    <div class="num">
+                      <span class="number">26</span>
+                    </div>
+                    <div class="text">
+                      kakskümmend kuus<span class="text-muted small">, kahekümne kuue, kaht(e)kümmend kuut</span>
+                    </div>
+                  </li>
+                  <li class="row">
+                    <div class="num">
+                      <span class="number">27</span>
+                    </div>
+                    <div class="text">
+                      kakskümmend seitse<span class="text-muted small">, kahekümne seitsme, kaht(e)kümmend seitset</span>
+                    </div>
+                  </li>
+                  <li class="row">
+                    <div class="num">
+                      <span class="number">28</span>
+                    </div>
+                    <div class="text">
+                      kakskümmend kaheksa<span class="text-muted small">, kahekümne kaheksa, kaht(e)kümmend kaheksat</span>
+                    </div>
+                  </li>
+                  <li class="row">
+                    <div class="num">
+                      <span class="number">29</span>
+                    </div>
+                    <div class="text">
+                      kakskümmend üheksa<span class="text-muted small">, kahekümne üheksa, kaht(e)kümmend üheksat</span>
+                    </div>
+                  </li>
+                  <li class="row">
+                    <div class="num">
+                      <span class="number">30</span>
+                    </div>
+                    <div class="text">
+                      kolmkümmend<span class="text-muted small">, kolmekümne, kolmekümmet/kolmekümmend</span>
+                    </div>
+                  </li>
+                  <li class="row">
+                    <div class="num">
+                      <span class="number">40</span>
+                    </div>
+                    <div class="text">
+                      nelikümmend<span class="text-muted small">, neljakümne, neljakümmet/neljakümmend</span>
+                    </div>
+                  </li>
+                  <li class="row">
+                    <div class="num">
+                      <span class="number">50</span>
+                    </div>
+                    <div class="text">
+                      viiskümmend<span class="text-muted small">, viiekümne, viit(e)kümmet/viit(e)kümmend</span>
+                    </div>
+                  </li>
+                  <li class="row">
+                    <div class="num">
+                      <span class="number">60</span>
+                    </div>
+                    <div class="text">
+                      kuuskümmend<span class="text-muted small">, kuuekümne, kuut(e)kümmet/kuut(e)kümmend</span>
+                    </div>
+                  </li>
+                  <li class="row">
+                    <div class="num">
+                      <span class="number">70</span>
+                    </div>
+                    <div class="text">
+                      seitsekümmend<span class="text-muted small">, seitsmekümne, seitsetkümmet/seitsetkümmend</span>
+                    </div>
+                  </li>
+                  <li class="row">
+                    <div class="num">
+                      <span class="number">80</span>
+                    </div>
+                    <div class="text">
+                      kaheksakümmend<span class="text-muted small">, kaheksakümne, kaheksatkümmet/kaheksatkümmend</span>
+                    </div>
+                  </li>
+                  <li class="row">
+                    <div class="num">
+                      <span class="number">90</span>
+                    </div>
+                    <div class="text">
+                      üheksakümmend<span class="text-muted small">, üheksakümne, üheksatkümmet/üheksatkümmend</span>
+                    </div>
+                  </li>
+                  <li class="row">
+                    <div class="num">
+                      <span class="number">100</span>
+                    </div>
+                    <div class="text">
+                      sada<span class="text-muted small">, saja, sadat/sada</span>
+                    </div>
+                  </li>
+                  <li class="row">
+                    <div class="num">
+                      <span class="number">101</span>
+                    </div>
+                    <div class="text">
+                      sada üks<span class="text-muted small">, saja ühe, sada üht(e)</span>
+                    </div>
+                  </li>
+                  <li class="row">
+                    <div class="num">
+                      <span class="number">102</span>
+                    </div>
+                    <div class="text">
+                      sada kaks<span class="text-muted small">, saja kahe, sada kaht(e)</span>
+                    </div>
+                  </li>
+                  <li class="row">
+                    <div class="num">
+                      <span class="number">121</span>
+                    </div>
+                    <div class="text">
+                      sada kakskümmend üks<span class="text-muted small">, saja kahekümne ühe, sada kaht(e)kümmend üht(e)</span>
+                    </div>
+                  </li>
+                  <li class="row">
+                    <div class="num">
+                      <span class="number">200</span>
+                    </div>
+                    <div class="text">
+                      kakssada<span class="text-muted small">, kahesaja, kahtsadat/kahtsada</span>
+                    </div>
+                  </li>
+                  <li class="row">
+                    <div class="num">
+                      <span class="number">300</span>
+                    </div>
+                    <div class="text">
+                      kolmsada<span class="text-muted small">, kolmesaja, kolmesadat/kolmesada</span>
+                    </div>
+                  </li>
+                  <li class="row">
+                    <div class="num">
+                      <span class="number">400</span>
+                    </div>
+                    <div class="text">
+                      nelisada<span class="text-muted small">, neljasaja, neljasadat/neljasada</span>
+                    </div>
+                  </li>
+                  <li class="row">
+                    <div class="num">
+                      <span class="number">500</span>
+                    </div>
+                    <div class="text">
+                      viissada<span class="text-muted small">, viiesaja, viit(e)sadat/viit(e)sada</span>
+                    </div>
+                  </li>
+                  <li class="row">
+                    <div class="num">
+                      <span class="number">600</span>
+                    </div>
+                    <div class="text">
+                      kuussada<span class="text-muted small">, kuuesaja, kuut(e)sadat/kuut(e)sada</span>
+                    </div>
+                  </li>
+                  <li class="row">
+                    <div class="num">
+                      <span class="number">700</span>
+                    </div>
+                    <div class="text">
+                      seitsesada<span class="text-muted small">, seitsmesaja, seitsetsadat/seitsetsada</span>
+                    </div>
+                  </li>
+                  <li class="row">
+                    <div class="num">
+                      <span class="number">800</span>
+                    </div>
+                    <div class="text">
+                      kaheksasada<span class="text-muted small">, kaheksasaja, kaheksatsadat/kaheksatsada</span>
+                    </div>
+                  </li>
+                  <li class="row">
+                    <div class="num">
+                      <span class="number">900</span>
+                    </div>
+                    <div class="text">
+                      üheksasada<span class="text-muted small">, üheksasaja, üheksatsadat/üheksatsada</span>
+                    </div>
+                  </li>
+                  <li class="row">
+                    <div class="num">
+                      <span class="number">1000</span>
+                    </div>
+                    <div class="text">
+                      tuhat<span class="text-muted small">, tuhande, tuhandet</span>
+                    </div>
+                  </li>
+                  <li class="row">
+                    <div class="num">
+                      <span class="number">2000</span>
+                    </div>
+                    <div class="text">
+                      kaks tuhat<span class="text-muted small">, kahe tuhande, kaht(e) tuhandet</span>
+                    </div>
+                  </li>
+                  <li class="row">
+                    <div class="num">
+                      <span class="number">2020</span>
+                    </div>
+                    <div class="text">
+                      kaks tuhat kakskümmend<span class="text-muted small">, kahe tuhande kahekümne, kaht(e) tuhandet kaht(e)kümmend</span>
+                    </div>
+                  </li>
+                  <li class="row">
+                    <div class="num">
+                      <span class="number">2021</span>
+                    </div>
+                    <div class="text">
+                      kaks tuhat kakskümmend üks<span class="text-muted small">, kahe tuhande kahekümne ühe, kaht(e) tuhandet kaht(e)kümmend üht(e)</span>
+                    </div>
+                  </li>
+                  <li class="row">
+                    <div class="num">
+                      <span class="number">10 000</span>
+                    </div>
+                    <div class="text">
+                      kümme tuhat<span class="text-muted small">, kümne tuhande, kümmet tuhandet</span>
+                    </div>
+                  </li>
+                  <li class="row">
+                    <div class="num">
+                      <span class="number">30 000</span>
+                    </div>
+                    <div class="text">
+                      kolmkümmend tuhat<span class="text-muted small">, kolmekümne tuhande, kolmekümmend tuhandet</span>
+                    </div>
+                  </li>
+                  <li class="row">
+                    <div class="num">
+                      <span class="number">100 000</span>
+                    </div>
+                    <div class="text">
+                      sada tuhat<span class="text-muted small">, saja tuhande, sadat tuhandet</span>
+                    </div>
+                  </li>
+                  <li class="row">
+                    <div class="num">
+                      <span class="number small">1 000 000</span>
+                    </div>
+                    <div class="text pl-4">
+                      miljon<span class="text-muted small">, miljoni, miljonit</span>
+                    </div>
+                  </li>
+                  <li class="row">
+                    <div class="num">
+                      <span class="number small">1 000 000 000</span>
+                    </div>
+                    <div class="text pl-5">
+                      miljard<span class="text-muted small">, miljardi, miljardit</span>
+                    </div>
+                  </li>
+                </ul>
               </div>
               <div class="col-lg-6 col-sm-12">
                  <div class="row">
                    <div class="text"><h6 class="learn-content-subtitle">Järgarvud</h6></div>
                 </div>
-                <div class="row">
-                  <div class="num">
-                    &nbsp;
-                  </div>
-                  <div class="text"><b>mitmes? mitmenda? mitmendat?</b></div>
-                </div>
-                <div class="row">
-                  <div class="num"></div>
-                  <div class="text">&nbsp;</div>
-                </div>
-                <div class="row">
-                  <div class="num">
-                    <span class="number">1.</span>
-                  </div>
-                  <div class="text">
-                    esimene<span class="text-muted small">, esimese, esimest</span>
-                  </div>
-                </div>
-                <div class="row">
-                  <div class="num">
-                    <span class="number">2.</span>
-                  </div>
-                  <div class="text">
-                    teine<span class="text-muted small">, teise, teist</span>
-                  </div>
-                </div>
-                <div class="row">
-                  <div class="num">
-                    <span class="number">3.</span>
-                  </div>
-                  <div class="text">
-                    kolmas<span class="text-muted small">, kolmanda, kolmandat</span>
-                  </div>
-                </div>
-                <div class="row">
-                  <div class="num">
-                    <span class="number">4.</span>
-                  </div>
-                  <div class="text">
-                    neljas<span class="text-muted small">, neljanda, neljandat</span>
-                  </div>
-                </div>
-                <div class="row">
-                  <div class="num">
-                    <span class="number">5.</span>
-                  </div>
-                  <div class="text">
-                    viies<span class="text-muted small">, viienda, viiendat</span>
-                  </div>
-                </div>
-                <div class="row">
-                  <div class="num">
-                    <span class="number">6.</span>
-                  </div>
-                  <div class="text">
-                    kuues<span class="text-muted small">, kuuenda, kuuendat</span>
-                  </div>
-                </div>
-                <div class="row">
-                  <div class="num">
-                    <span class="number">7.</span>
-                  </div>
-                  <div class="text">
-                    seitsmes<span class="text-muted small">, seitsmenda, seitsmendat</span>
-                  </div>
-                </div>
-                <div class="row">
-                  <div class="num">
-                    <span class="number">8.</span>
-                  </div>
-                  <div class="text">
-                    kaheksas<span class="text-muted small">, kaheksanda, kaheksandat</span>
-                  </div>
-                </div>
-                <div class="row">
-                  <div class="num">
-                    <span class="number">9.</span>
-                  </div>
-                  <div class="text">
-                    üheksas<span class="text-muted small">, üheksanda, üheksandat</span>
-                  </div>
-                </div>
-                <div class="row">
-                  <div class="num">
-                    <span class="number">10.</span>
-                  </div>
-                  <div class="text">
-                    kümnes<span class="text-muted small">, kümnenda, kümnendat</span>
-                  </div>
-                </div>
-                <div class="row">
-                  <div class="num">
-                    <span class="number">11.</span>
-                  </div>
-                  <div class="text">
-                    üheteistkümnes<span class="text-muted small">, üheteistkümnenda, üheteistkümnendat</span>
-                  </div>
-                </div>
-                <div class="row">
-                  <div class="num">
-                    <span class="number">12.</span>
-                  </div>
-                  <div class="text">
-                    kaheteistkümnes<span class="text-muted small">, kaheteistkümnenda, kaheteistkümnendat</span>
-                  </div>
-                </div>
-                <div class="row">
-                  <div class="num">
-                    <span class="number">13.</span>
-                  </div>
-                  <div class="text">
-                    kolmeteistkümnes<span class="text-muted small">, kolmeteistkümnenda, kolmeteistkümnendat</span>
-                  </div>
-                </div>
-               <div class="row">
-                  <div class="num">
-                    <span class="number">14.</span>
-                  </div>
-                  <div class="text">
-                    neljateistkümnes<span class="text-muted small">, neljateistkümnenda, neljateistkümnendat</span>
-                  </div>
-                </div>
-               <div class="row">
-                  <div class="num">
-                    <span class="number">15.</span>
-                  </div>
-                  <div class="text">
-                    viieteistkümnes<span class="text-muted small">, viieteistkümnenda, viieteistkümnendat</span>
-                  </div>
-                </div>
-               <div class="row">
-                  <div class="num">
-                    <span class="number">16.</span>
-                  </div>
-                  <div class="text">
-                    kuueteistkümnes<span class="text-muted small">, kuueteistkümnenda, kuueteistkümnendat</span>
-                  </div>
-                </div>
-               <div class="row">
-                  <div class="num">
-                    <span class="number">17.</span>
-                  </div>
-                  <div class="text">
-                    seitsmeteistkümnes<span class="text-muted small">, seitsmeteistkümnenda, seitsmeteistkümnendat</span>
-                  </div>
-                </div>
-               <div class="row">
-                  <div class="num">
-                    <span class="number">18.</span>
-                  </div>
-                  <div class="text">
-                    kaheksateistkümnes<span class="text-muted small">, kaheksateistkümnenda, kaheksateistkümnendat</span>
-                  </div>
-                </div>
-               <div class="row">
-                  <div class="num">
-                    <span class="number">19.</span>
-                  </div>
-                  <div class="text">
-                    üheksateistkümnes<span class="text-muted small">, üheksateistkümnenda, üheksateistkümnendat</span>
-                  </div>
-                </div>
-                <div class="row">
-                  <div class="num">
-                    <span class="number">20.</span>
-                  </div>
-                  <div class="text">
-                    kahekümnes<span class="text-muted small">, kahekümnenda, kahekümnendat</span>
-                  </div>
-                </div>
-                <div class="row">
-                  <div class="num">
-                    <span class="number">21.</span>
-                  </div>
-                  <div class="text">
-                    kahekümne esimene<span class="text-muted small">, kahekümne esimese, kahekümne esimest</span>
-                  </div>
-                </div>
-                <div class="row">
-                  <div class="num">
-                    <span class="number">22.</span>
-                  </div>
-                  <div class="text">
-                    kahekümne teine<span class="text-muted small">, kahekümne teise, kahekümne teist</span>
-                  </div>
-                </div>
-                <div class="row">
-                  <div class="num">
-                    <span class="number">23.</span>
-                  </div>
-                  <div class="text">
-                    kahekümne kolmas<span class="text-muted small">, kahekümne kolmanda, kahekümne kolmandat</span>
-                  </div>
-                </div>
-               <div class="row">
-                  <div class="num">
-                    <span class="number">24.</span>
-                  </div>
-                  <div class="text">
-                    kahekümne neljas<span class="text-muted small">, kahekümne neljanda, kahekümne neljandat</span>
-                  </div>
-                </div>
-               <div class="row">
-                  <div class="num">
-                    <span class="number">25.</span>
-                  </div>
-                  <div class="text">
-                    kahekümne viies<span class="text-muted small">, kahekümne viienda, kahekümne viiendat</span>
-                  </div>
-                </div>
-               <div class="row">
-                  <div class="num">
-                    <span class="number">26.</span>
-                  </div>
-                  <div class="text">
-                    kahekümne kuues<span class="text-muted small">, kahekümne kuuenda, kahekümne kuuendat</span>
-                  </div>
-                </div>
-               <div class="row">
-                  <div class="num">
-                    <span class="number">27.</span>
-                  </div>
-                  <div class="text">
-                    kahekümne seitsmes<span class="text-muted small">, kahekümne seitsmenda, kahekümne seitsmendat</span>
-                  </div>
-                </div>
-               <div class="row">
-                  <div class="num">
-                    <span class="number">28.</span>
-                  </div>
-                  <div class="text">
-                    kahekümne kaheksas<span class="text-muted small">, kahekümne kaheksanda, kahekümne kaheksandat</span>
-                  </div>
-                </div>
-               <div class="row">
-                  <div class="num">
-                    <span class="number">29.</span>
-                  </div>
-                  <div class="text">
-                    kahekümne üheksas<span class="text-muted small">, kahekümne üheksanda, kahekümne üheksandat</span>
-                  </div>
-                </div>
-                <div class="row">
-                  <div class="num">
-                    <span class="number">30.</span>
-                  </div>
-                  <div class="text">
-                    kolmekümnes<span class="text-muted small">, kolmekümnenda, kolmekümnendat</span>
-                  </div>
-                </div>
-                <div class="row">
-                  <div class="num">
-                    <span class="number">40.</span>
-                  </div>
-                  <div class="text">
-                    neljakümnes<span class="text-muted small">, neljakümnenda, neljakümnendat</span>
-                  </div>
-                </div>
-                <div class="row">
-                  <div class="num">
-                    <span class="number">50.</span>
-                  </div>
-                  <div class="text">
-                    viiekümnes<span class="text-muted small">, viiekümnenda, viiekümnendat</span>
-                  </div>
-                </div>
-                <div class="row">
-                  <div class="num">
-                    <span class="number">60.</span>
-                  </div>
-                  <div class="text">
-                    kuuekümnes<span class="text-muted small">, kuuekümnenda, kuuekümnendat</span>
-                  </div>
-                </div>
-                <div class="row">
-                  <div class="num">
-                    <span class="number">70.</span>
-                  </div>
-                  <div class="text">
-                    seitsmekümnes<span class="text-muted small">, seitsmekümnenda, seitsmekümnendat</span>
-                  </div>
-                </div>
-                <div class="row">
-                  <div class="num">
-                    <span class="number">80.</span>
-                  </div>
-                  <div class="text">
-                    kaheksakümnes<span class="text-muted small">, kaheksakümnenda, kaheksakümnendat</span>
-                  </div>
-                </div>
-                <div class="row">
-                  <div class="num">
-                    <span class="number">90.</span>
-                  </div>
-                  <div class="text">
-                    üheksakümnes<span class="text-muted small">, üheksakümnenda, üheksakümnendat</span>
-                  </div>
-                </div>
-                <div class="row">
-                  <div class="num">
-                    <span class="number">100.</span>
-                  </div>
-                  <div class="text">
-                    sajas<span class="text-muted small">, sajanda, sajandat</span>
-                  </div>
-                </div>
-               <div class="row">
-                  <div class="num">
-                    <span class="number">101.</span>
-                  </div>
-                  <div class="text">
-                    saja esimene<span class="text-muted small">, saja esimese, saja esimest</span>
-                  </div>
-                </div>
-               <div class="row">
-                  <div class="num">
-                    <span class="number">102.</span>
-                  </div>
-                  <div class="text">
-                    saja teine<span class="text-muted small">, saja teise, saja teist</span>
-                  </div>
-                </div>
-               <div class="row">
-                  <div class="num">
-                    <span class="number">121.</span>
-                  </div>
-                  <div class="text">
-                    saja kahekümne esimene<span class="text-muted small">, saja kahekümne esimese, saja kahekümne esimest</span>
-                  </div>
-                </div>
-                <div class="row">
-                  <div class="num">
-                    <span class="number">200.</span>
-                  </div>
-                  <div class="text">
-                    kahesajas<span class="text-muted small">, kahesajanda, kahesajandat</span>
-                  </div>
-                </div>
-                <div class="row">
-                  <div class="num">
-                    <span class="number">300.</span>
-                  </div>
-                  <div class="text">
-                    kolmesajas<span class="text-muted small">, kolmesajanda, kolmesajandat</span>
-                  </div>
-                </div>
-                <div class="row">
-                  <div class="num">
-                    <span class="number">400.</span>
-                  </div>
-                  <div class="text">
-                    neljasajas<span class="text-muted small">, neljasajanda, neljasajandat</span>
-                  </div>
-                </div>
-                <div class="row">
-                  <div class="num">
-                    <span class="number">500.</span>
-                  </div>
-                  <div class="text">
-                    viiesajas<span class="text-muted small">, viiesajanda, viiesajandat</span>
-                  </div>
-                </div>
-                <div class="row">
-                  <div class="num">
-                    <span class="number">600.</span>
-                  </div>
-                  <div class="text">
-                    kuuesajas<span class="text-muted small">, kuuesajanda, kuuesajandat</span>
-                  </div>
-                </div>
-                <div class="row">
-                  <div class="num">
-                    <span class="number">700.</span>
-                  </div>
-                  <div class="text">
-                    seitsmesajas<span class="text-muted small">, seitsmesajanda, seitsmesajandat</span>
-                  </div>
-                </div>
-                <div class="row">
-                  <div class="num">
-                    <span class="number">800.</span>
-                  </div>
-                  <div class="text">
-                    kaheksasajas<span class="text-muted small">, kaheksasajanda, kaheksasajandat</span>
-                  </div>
-                </div>
-                <div class="row">
-                  <div class="num">
-                    <span class="number">900.</span>
-                  </div>
-                  <div class="text">
-                    üheksasajas<span class="text-muted small">, üheksasajanda, üheksasajandat</span>
-                  </div>
-                </div>
-                <div class="row">
-                  <div class="num">
-                    <span class="number">1000.</span>
-                  </div>
-                  <div class="text">
-                    tuhandes<span class="text-muted small">, tuhandenda, tuhandendat</span>
-                  </div>
-                </div>
-                <div class="row">
-                  <div class="num">
-                    <span class="number">2000.</span>
-                  </div>
-                  <div class="text">
-                    kahe tuhandes<span class="text-muted small">, kahe tuhandenda, kahe tuhandendat</span>
-                  </div>
-                </div>
-                <div class="row">
-                  <div class="num">
-                    <span class="number">2020.</span>
-                  </div>
-                  <div class="text">
-                    kahe tuhande kahekümnes<span class="text-muted small">, kahe tuhande kahekümnenda, kahe tuhande kahekümnendat</span>
-                  </div>
-                </div>
-               <div class="row">
-                  <div class="num">
-                    <span class="number">2021.</span>
-                  </div>
-                  <div class="text">
-                    kahe tuhande kahekümne esimene<span class="text-muted small">, kahe tuhande kahekümne esimese, kahe tuhande kahekümne esimest</span>
-                  </div>
-                </div>
-               <div class="row">
-                  <div class="num">
-                    <span class="number">10 000.</span>
-                  </div>
-                  <div class="text">
-                    kümne tuhandes<span class="text-muted small">, kümne tuhandenda, kümne tuhandendat</span>
-                  </div>
-                </div>
-               <div class="row">
-                  <div class="num">
-                    <span class="number">30 000.</span>
-                  </div>
-                  <div class="text">
-                    kolmekümne tuhandes<span class="text-muted small">, kolmekümne tuhandenda, kolmekümne tuhandendat</span>
-                  </div>
-                </div>
-               <div class="row">
-                  <div class="num">
-                    <span class="number">100 000.</span>
-                  </div>
-                  <div class="text">
-                    saja tuhandes<span class="text-muted small">, saja tuhandenda, saja tuhandendat</span>
-                  </div>
-                </div>
-               <div class="row">
-                  <div class="num">
-                    <span class="number small">1 000 000.</span>
-                  </div>
-                  <div class="text pl-4">
-                    miljones<span class="text-muted small">, miljonenda, miljonendat</span>
-                  </div>
-                </div>
-                <div class="row">
-                  <div class="num">
-                    <span class="number small">1 000 000 000.</span>
-                  </div>
-                  <div class="text pl-5">
-                    miljardes<span class="text-muted small">, miljardenda, miljardendat</span>
-                  </div>
-                </div>
-
+                <ul style="list-style: none; padding-left: 0; margin: 0;">
+                  <li class="row">
+                    <div class="num">
+                      &nbsp;
+                    </div>
+                    <div class="text"><b>mitmes? mitmenda? mitmendat?</b></div>
+                  </li>
+                  <li class="row">
+                    <div class="num"></div>
+                    <div class="text">&nbsp;</div>
+                  </li>
+                  <li class="row">
+                    <div class="num">
+                      <span class="number">1.</span>
+                    </div>
+                    <div class="text">
+                      esimene<span class="text-muted small">, esimese, esimest</span>
+                    </div>
+                  </li>
+                  <li class="row">
+                    <div class="num">
+                      <span class="number">2.</span>
+                    </div>
+                    <div class="text">
+                      teine<span class="text-muted small">, teise, teist</span>
+                    </div>
+                  </li>
+                  <li class="row">
+                    <div class="num">
+                      <span class="number">3.</span>
+                    </div>
+                    <div class="text">
+                      kolmas<span class="text-muted small">, kolmanda, kolmandat</span>
+                    </div>
+                  </li>
+                  <li class="row">
+                    <div class="num">
+                      <span class="number">4.</span>
+                    </div>
+                    <div class="text">
+                      neljas<span class="text-muted small">, neljanda, neljandat</span>
+                    </div>
+                  </li>
+                  <li class="row">
+                    <div class="num">
+                      <span class="number">5.</span>
+                    </div>
+                    <div class="text">
+                      viies<span class="text-muted small">, viienda, viiendat</span>
+                    </div>
+                  </li>
+                  <li class="row">
+                    <div class="num">
+                      <span class="number">6.</span>
+                    </div>
+                    <div class="text">
+                      kuues<span class="text-muted small">, kuuenda, kuuendat</span>
+                    </div>
+                  </li>
+                  <li class="row">
+                    <div class="num">
+                      <span class="number">7.</span>
+                    </div>
+                    <div class="text">
+                      seitsmes<span class="text-muted small">, seitsmenda, seitsmendat</span>
+                    </div>
+                  </li>
+                  <li class="row">
+                    <div class="num">
+                      <span class="number">8.</span>
+                    </div>
+                    <div class="text">
+                      kaheksas<span class="text-muted small">, kaheksanda, kaheksandat</span>
+                    </div>
+                  </li>
+                  <li class="row">
+                    <div class="num">
+                      <span class="number">9.</span>
+                    </div>
+                    <div class="text">
+                      üheksas<span class="text-muted small">, üheksanda, üheksandat</span>
+                    </div>
+                  </li>
+                  <li class="row">
+                    <div class="num">
+                      <span class="number">10.</span>
+                    </div>
+                    <div class="text">
+                      kümnes<span class="text-muted small">, kümnenda, kümnendat</span>
+                    </div>
+                  </li>
+                  <li class="row">
+                    <div class="num">
+                      <span class="number">11.</span>
+                    </div>
+                    <div class="text">
+                      üheteistkümnes<span class="text-muted small">, üheteistkümnenda, üheteistkümnendat</span>
+                    </div>
+                  </li>
+                  <li class="row">
+                    <div class="num">
+                      <span class="number">12.</span>
+                    </div>
+                    <div class="text">
+                      kaheteistkümnes<span class="text-muted small">, kaheteistkümnenda, kaheteistkümnendat</span>
+                    </div>
+                  </li>
+                  <li class="row">
+                    <div class="num">
+                      <span class="number">13.</span>
+                    </div>
+                    <div class="text">
+                      kolmeteistkümnes<span class="text-muted small">, kolmeteistkümnenda, kolmeteistkümnendat</span>
+                    </div>
+                  </li>
+                  <li class="row">
+                    <div class="num">
+                      <span class="number">14.</span>
+                    </div>
+                    <div class="text">
+                      neljateistkümnes<span class="text-muted small">, neljateistkümnenda, neljateistkümnendat</span>
+                    </div>
+                  </li>
+                  <li class="row">
+                    <div class="num">
+                      <span class="number">15.</span>
+                    </div>
+                    <div class="text">
+                      viieteistkümnes<span class="text-muted small">, viieteistkümnenda, viieteistkümnendat</span>
+                    </div>
+                  </li>
+                  <li class="row">
+                    <div class="num">
+                      <span class="number">16.</span>
+                    </div>
+                    <div class="text">
+                      kuueteistkümnes<span class="text-muted small">, kuueteistkümnenda, kuueteistkümnendat</span>
+                    </div>
+                  </li>
+                  <li class="row">
+                    <div class="num">
+                      <span class="number">17.</span>
+                    </div>
+                    <div class="text">
+                      seitsmeteistkümnes<span class="text-muted small">, seitsmeteistkümnenda, seitsmeteistkümnendat</span>
+                    </div>
+                  </li>
+                  <li class="row">
+                    <div class="num">
+                      <span class="number">18.</span>
+                    </div>
+                    <div class="text">
+                      kaheksateistkümnes<span class="text-muted small">, kaheksateistkümnenda, kaheksateistkümnendat</span>
+                    </div>
+                  </li>
+                  <li class="row">
+                    <div class="num">
+                      <span class="number">19.</span>
+                    </div>
+                    <div class="text">
+                      üheksateistkümnes<span class="text-muted small">, üheksateistkümnenda, üheksateistkümnendat</span>
+                    </div>
+                  </li>
+                  <li class="row">
+                    <div class="num">
+                      <span class="number">20.</span>
+                    </div>
+                    <div class="text">
+                      kahekümnes<span class="text-muted small">, kahekümnenda, kahekümnendat</span>
+                    </div>
+                  </li>
+                  <li class="row">
+                    <div class="num">
+                      <span class="number">21.</span>
+                    </div>
+                    <div class="text">
+                      kahekümne esimene<span class="text-muted small">, kahekümne esimese, kahekümne esimest</span>
+                    </div>
+                  </li>
+                  <li class="row">
+                    <div class="num">
+                      <span class="number">22.</span>
+                    </div>
+                    <div class="text">
+                      kahekümne teine<span class="text-muted small">, kahekümne teise, kahekümne teist</span>
+                    </div>
+                  </li>
+                  <li class="row">
+                    <div class="num">
+                      <span class="number">23.</span>
+                    </div>
+                    <div class="text">
+                      kahekümne kolmas<span class="text-muted small">, kahekümne kolmanda, kahekümne kolmandat</span>
+                    </div>
+                  </li>
+                  <li class="row">
+                    <div class="num">
+                      <span class="number">24.</span>
+                    </div>
+                    <div class="text">
+                      kahekümne neljas<span class="text-muted small">, kahekümne neljanda, kahekümne neljandat</span>
+                    </div>
+                  </li>
+                  <li class="row">
+                    <div class="num">
+                      <span class="number">25.</span>
+                    </div>
+                    <div class="text">
+                      kahekümne viies<span class="text-muted small">, kahekümne viienda, kahekümne viiendat</span>
+                    </div>
+                  </li>
+                  <li class="row">
+                    <div class="num">
+                      <span class="number">26.</span>
+                    </div>
+                    <div class="text">
+                      kahekümne kuues<span class="text-muted small">, kahekümne kuuenda, kahekümne kuuendat</span>
+                    </div>
+                  </li>
+                  <li class="row">
+                    <div class="num">
+                      <span class="number">27.</span>
+                    </div>
+                    <div class="text">
+                      kahekümne seitsmes<span class="text-muted small">, kahekümne seitsmenda, kahekümne seitsmendat</span>
+                    </div>
+                  </li>
+                  <li class="row">
+                    <div class="num">
+                      <span class="number">28.</span>
+                    </div>
+                    <div class="text">
+                      kahekümne kaheksas<span class="text-muted small">, kahekümne kaheksanda, kahekümne kaheksandat</span>
+                    </div>
+                  </li>
+                  <li class="row">
+                    <div class="num">
+                      <span class="number">29.</span>
+                    </div>
+                    <div class="text">
+                      kahekümne üheksas<span class="text-muted small">, kahekümne üheksanda, kahekümne üheksandat</span>
+                    </div>
+                  </li>
+                  <li class="row">
+                    <div class="num">
+                      <span class="number">30.</span>
+                    </div>
+                    <div class="text">
+                      kolmekümnes<span class="text-muted small">, kolmekümnenda, kolmekümnendat</span>
+                    </div>
+                  </li>
+                  <li class="row">
+                    <div class="num">
+                      <span class="number">40.</span>
+                    </div>
+                    <div class="text">
+                      neljakümnes<span class="text-muted small">, neljakümnenda, neljakümnendat</span>
+                    </div>
+                  </li>
+                  <li class="row">
+                    <div class="num">
+                      <span class="number">50.</span>
+                    </div>
+                    <div class="text">
+                      viiekümnes<span class="text-muted small">, viiekümnenda, viiekümnendat</span>
+                    </div>
+                  </li>
+                  <li class="row">
+                    <div class="num">
+                      <span class="number">60.</span>
+                    </div>
+                    <div class="text">
+                      kuuekümnes<span class="text-muted small">, kuuekümnenda, kuuekümnendat</span>
+                    </div>
+                  </li>
+                  <li class="row">
+                    <div class="num">
+                      <span class="number">70.</span>
+                    </div>
+                    <div class="text">
+                      seitsmekümnes<span class="text-muted small">, seitsmekümnenda, seitsmekümnendat</span>
+                    </div>
+                  </li>
+                  <li class="row">
+                    <div class="num">
+                      <span class="number">80.</span>
+                    </div>
+                    <div class="text">
+                      kaheksakümnes<span class="text-muted small">, kaheksakümnenda, kaheksakümnendat</span>
+                    </div>
+                  </li>
+                  <li class="row">
+                    <div class="num">
+                      <span class="number">90.</span>
+                    </div>
+                    <div class="text">
+                      üheksakümnes<span class="text-muted small">, üheksakümnenda, üheksakümnendat</span>
+                    </div>
+                  </li>
+                  <li class="row">
+                    <div class="num">
+                      <span class="number">100.</span>
+                    </div>
+                    <div class="text">
+                      sajas<span class="text-muted small">, sajanda, sajandat</span>
+                    </div>
+                  </li>
+                  <li class="row">
+                    <div class="num">
+                      <span class="number">101.</span>
+                    </div>
+                    <div class="text">
+                      saja esimene<span class="text-muted small">, saja esimese, saja esimest</span>
+                    </div>
+                  </li>
+                  <li class="row">
+                    <div class="num">
+                      <span class="number">102.</span>
+                    </div>
+                    <div class="text">
+                      saja teine<span class="text-muted small">, saja teise, saja teist</span>
+                    </div>
+                  </li>
+                  <li class="row">
+                    <div class="num">
+                      <span class="number">121.</span>
+                    </div>
+                    <div class="text">
+                      saja kahekümne esimene<span class="text-muted small">, saja kahekümne esimese, saja kahekümne esimest</span>
+                    </div>
+                  </li>
+                  <li class="row">
+                    <div class="num">
+                      <span class="number">200.</span>
+                    </div>
+                    <div class="text">
+                      kahesajas<span class="text-muted small">, kahesajanda, kahesajandat</span>
+                    </div>
+                  </li>
+                  <li class="row">
+                    <div class="num">
+                      <span class="number">300.</span>
+                    </div>
+                    <div class="text">
+                      kolmesajas<span class="text-muted small">, kolmesajanda, kolmesajandat</span>
+                    </div>
+                  </li>
+                  <li class="row">
+                    <div class="num">
+                      <span class="number">400.</span>
+                    </div>
+                    <div class="text">
+                      neljasajas<span class="text-muted small">, neljasajanda, neljasajandat</span>
+                    </div>
+                  </li>
+                  <li class="row">
+                    <div class="num">
+                      <span class="number">500.</span>
+                    </div>
+                    <div class="text">
+                      viiesajas<span class="text-muted small">, viiesajanda, viiesajandat</span>
+                    </div>
+                  </li>
+                  <li class="row">
+                    <div class="num">
+                      <span class="number">600.</span>
+                    </div>
+                    <div class="text">
+                      kuuesajas<span class="text-muted small">, kuuesajanda, kuuesajandat</span>
+                    </div>
+                  </li>
+                  <li class="row">
+                    <div class="num">
+                      <span class="number">700.</span>
+                    </div>
+                    <div class="text">
+                      seitsmesajas<span class="text-muted small">, seitsmesajanda, seitsmesajandat</span>
+                    </div>
+                  </li>
+                  <li class="row">
+                    <div class="num">
+                      <span class="number">800.</span>
+                    </div>
+                    <div class="text">
+                      kaheksasajas<span class="text-muted small">, kaheksasajanda, kaheksasajandat</span>
+                    </div>
+                  </li>
+                  <li class="row">
+                    <div class="num">
+                      <span class="number">900.</span>
+                    </div>
+                    <div class="text">
+                      üheksasajas<span class="text-muted small">, üheksasajanda, üheksasajandat</span>
+                    </div>
+                  </li>
+                  <li class="row">
+                    <div class="num">
+                      <span class="number">1000.</span>
+                    </div>
+                    <div class="text">
+                      tuhandes<span class="text-muted small">, tuhandenda, tuhandendat</span>
+                    </div>
+                  </li>
+                  <li class="row">
+                    <div class="num">
+                      <span class="number">2000.</span>
+                    </div>
+                    <div class="text">
+                      kahe tuhandes<span class="text-muted small">, kahe tuhandenda, kahe tuhandendat</span>
+                    </div>
+                  </li>
+                  <li class="row">
+                    <div class="num">
+                      <span class="number">2020.</span>
+                    </div>
+                    <div class="text">
+                      kahe tuhande kahekümnes<span class="text-muted small">, kahe tuhande kahekümnenda, kahe tuhande kahekümnendat</span>
+                    </div>
+                  </li>
+                  <li class="row">
+                    <div class="num">
+                      <span class="number">2021.</span>
+                    </div>
+                    <div class="text">
+                      kahe tuhande kahekümne esimene<span class="text-muted small">, kahe tuhande kahekümne esimese, kahe tuhande kahekümne esimest</span>
+                    </div>
+                  </li>
+                  <li class="row">
+                    <div class="num">
+                      <span class="number">10 000.</span>
+                    </div>
+                    <div class="text">
+                      kümne tuhandes<span class="text-muted small">, kümne tuhandenda, kümne tuhandendat</span>
+                    </div>
+                  </li>
+                  <li class="row">
+                    <div class="num">
+                      <span class="number">30 000.</span>
+                    </div>
+                    <div class="text">
+                      kolmekümne tuhandes<span class="text-muted small">, kolmekümne tuhandenda, kolmekümne tuhandendat</span>
+                    </div>
+                  </li>
+                  <li class="row">
+                    <div class="num">
+                      <span class="number">100 000.</span>
+                    </div>
+                    <div class="text">
+                      saja tuhandes<span class="text-muted small">, saja tuhandenda, saja tuhandendat</span>
+                    </div>
+                  </li>
+                  <li class="row">
+                    <div class="num">
+                      <span class="number small">1 000 000.</span>
+                    </div>
+                    <div class="text pl-4">
+                      miljones<span class="text-muted small">, miljonenda, miljonendat</span>
+                    </div>
+                  </li>
+                  <li class="row">
+                    <div class="num">
+                      <span class="number small">1 000 000 000.</span>
+                    </div>
+                    <div class="text pl-5">
+                      miljardes<span class="text-muted small">, miljardenda, miljardendat</span>
+                    </div>
+                  </li>
+                </ul>
               </div>
             </div>
           </div>
@@ -1317,54 +1323,56 @@
                 <div class="row">
                   <div  class="text"><h6 class="learn-content-subtitle">Murdarvud</h6></div>
                 </div>
-                <div class="row">
-                  <div class="num">
-                    <span class="number">1/2</span>
-                  </div>
-                  <div class="text">
-                    pool<span class="text-muted small">, poole, poolt</span>
-                  </div>
-                </div>
-                <div class="row">
-                  <div class="num">
-                    <span class="number">1/3</span>
-                  </div>
-                  <div class="text">
-                    (üks) kolmandik<span class="text-muted small">, (ühe) kolmandiku, (ühte/üht) kolmandikku</span>
-                  </div>
-                </div>
-                <div class="row">
-                  <div class="num">
-                    <span class="number">1/4</span>
-                  </div>
-                  <div class="text">
-                        (üks) neljandik<span class="text-muted small">, (ühe) neljandiku, (ühte/üht) neljandikku = veerand, veerandi, veerandit</span>
-                  </div>
-                </div>
-                <div class="row">
-                  <div class="num">
-                    <span class="number">1/5</span>
-                  </div>
-                  <div class="text">
-                    (üks) viiendik<span class="text-muted small">, (ühe) viiendiku, (ühte/üht) viiendikku</span>
-                  </div>
-                </div>
-                <div class="row">
-                  <div class="num">
-                    <span class="number">3/4</span>
-                  </div>
-                  <div class="text">
-                    kolm neljandikku<span class="text-muted small">, kolme neljandiku, kolme neljandikku = kolmveerand, kolmveerandi, kolmveerandit</span>
-                  </div>
-                </div>
-                <div class="row">
-                  <div class="num">
-                    <span class="number">1 1/2</span>
-                  </div>
-                  <div class="text">
-                    poolteist<span class="text-muted small">, pooleteise/poolteise, pooltteist</span>
-                  </div>
-                </div>
+                <ul style="list-style: none; padding-left: 0; margin: 0;">
+                  <li class="row">
+                    <div class="num">
+                      <span class="number">1/2</span>
+                    </div>
+                    <div class="text">
+                      pool<span class="text-muted small">, poole, poolt</span>
+                    </div>
+                  </li>
+                  <li class="row">
+                    <div class="num">
+                      <span class="number">1/3</span>
+                    </div>
+                    <div class="text">
+                      (üks) kolmandik<span class="text-muted small">, (ühe) kolmandiku, (ühte/üht) kolmandikku</span>
+                    </div>
+                  </li>
+                  <li class="row">
+                    <div class="num">
+                      <span class="number">1/4</span>
+                    </div>
+                    <div class="text">
+                          (üks) neljandik<span class="text-muted small">, (ühe) neljandiku, (ühte/üht) neljandikku = veerand, veerandi, veerandit</span>
+                    </div>
+                  </li>
+                  <li class="row">
+                    <div class="num">
+                      <span class="number">1/5</span>
+                    </div>
+                    <div class="text">
+                      (üks) viiendik<span class="text-muted small">, (ühe) viiendiku, (ühte/üht) viiendikku</span>
+                    </div>
+                  </li>
+                  <li class="row">
+                    <div class="num">
+                      <span class="number">3/4</span>
+                    </div>
+                    <div class="text">
+                      kolm neljandikku<span class="text-muted small">, kolme neljandiku, kolme neljandikku = kolmveerand, kolmveerandi, kolmveerandit</span>
+                    </div>
+                  </li>
+                  <li class="row">
+                    <div class="num">
+                      <span class="number">1 1/2</span>
+                    </div>
+                    <div class="text">
+                      poolteist<span class="text-muted small">, pooleteise/poolteise, pooltteist</span>
+                    </div>
+                  </li>
+                </ul>
               </div>
             </div>
           </div>
@@ -1556,71 +1564,75 @@
         <div class="tab-pane fade"
              id="v-pills-margid"
              role="tabpanel"
-             aria-labelledby="v-pills-margid-tab">
-          <h3 class="learn-content-title">Märgid</h3>
-          <a id="margid"></a>
+             aria-labelledby="v-pills-margid-tab"
+             tabindex="-1">
+          <h3 class="learn-content-title" id="margid">Märgid</h3>
           <div class="learn-content">
-            <div class="row number-rows">
-              <div class="col-lg-12">
-                <div class="row">
-                  <div class="col-lg-1 col-auto"><span class="number">%</span></div>
-                  <div class="col-lg-2 col-auto">protsent</div>
-                  <div class="col-lg-2 col-auto">45%</div>
-                  <div class="col-lg-7 col-12">nelikümmend viis protsenti</div>
-                </div>
-                <div class="row">
-                  <div class="col-lg-1 col-auto"><span class="number">°</span></div>
-                  <div class="col-lg-2 col-auto">kraad</div>
-                  <div class="col-lg-2 col-auto">22°</div>
-                  <div class="col-lg-7 col-12">kakskümmend kaks kraadi</div>
-                </div>
-                <div class="row">
-                  <div class="col-lg-1 col-auto"><span class="number">+</span></div>
-                  <div class="col-lg-2 col-auto">pluss</div>
-                  <div class="col-lg-2 col-auto">6 + 2 = 8</div>
-                  <div class="col-lg-7 col-12">kuus pluss kaks on kaheksa</div>
-                </div>
-                <div class="row">
-                  <div class="col-lg-1 col-auto"><span class="number">-</span></div>
-                  <div class="col-lg-2 col-auto">miinus</div>
-                  <div class="col-lg-2 col-auto">6 - 2 = 4</div>
-                  <div class="col-lg-7 col-12">kuus miinus kaks on neli</div>
-                </div>
-                <div class="row">
-                  <div class="col-lg-1 col-auto"><span class="number">x</span></div>
-                  <div class="col-lg-2 col-auto">korda</div>
-                  <div class="col-lg-2 col-auto">6 x 3 = 18</div>
-                  <div class="col-lg-7 col-12">kuus korda kolm on kaheksateist</div>
-                </div>
-                <div class="row">
-                  <div class="col-lg-1 col-auto"><span class="number">·</span></div>
-                  <div class="col-lg-2 col-auto">korda</div>
-                  <div class="col-lg-2 col-auto">6 · 3 = 18</div>
-                  <div class="col-lg-7 col-12">kuus korda kolm on kaheksateist</div>
-                </div>
-                <div class="row">
-                  <div class="col-lg-1 col-auto"><span class="number">:</span></div>
-                  <div class="col-lg-2 col-auto">jagada</div>
-                  <div class="col-lg-2 col-auto">24 : 4 = 6</div>
-                  <div class="col-lg-7 col-12">kakskümmend neli jagada neljaga on kuus</div>
-                </div>
-                <div class="row">
-                  <div class="col-lg-1 col-auto"><span class="number">/</span></div>
-                  <div class="col-lg-2 col-auto">jagada</div>
-                  <div class="col-lg-2 col-auto">24 / 4 = 6</div>
-                  <div class="col-lg-7 col-12">kakskümmend neli jagada neljaga on kuus</div>
-                </div>
-              </div>
-            </div>
+            <ul style="list-style: none; padding-left: 0; margin: 0;">
+              <li class="row sr-only">
+                <div>Sümbol</div>
+                <div>Nimetus</div>
+                <div>Näide</div>
+                <div>Lugemine</div>
+              </li>
+              <li class="row">
+                <div class="col-lg-1 col-auto"><span class="number">%</span></div>
+                <div class="col-lg-2 col-auto">protsent</div>
+                <div class="col-lg-2 col-auto">45%</div>
+                <div class="col-lg-7 col-12">nelikümmend viis protsenti</div>
+              </li>
+              <li class="row">
+                <div class="col-lg-1 col-auto"><span class="number">°</span></div>
+                <div class="col-lg-2 col-auto">kraad</div>
+                <div class="col-lg-2 col-auto">22°</div>
+                <div class="col-lg-7 col-12">kakskümmend kaks kraadi</div>
+              </li>
+              <li class="row">
+                <div class="col-lg-1 col-auto"><span class="number">+</span></div>
+                <div class="col-lg-2 col-auto">pluss</div>
+                <div class="col-lg-2 col-auto">6 + 2 = 8</div>
+                <div class="col-lg-7 col-12">kuus pluss kaks on kaheksa</div>
+              </li>
+              <li class="row">
+                <div class="col-lg-1 col-auto"><span class="number">-</span></div>
+                <div class="col-lg-2 col-auto">miinus</div>
+                <div class="col-lg-2 col-auto">6 - 2 = 4</div>
+                <div class="col-lg-7 col-12">kuus miinus kaks on neli</div>
+              </li>
+              <li class="row">
+                <div class="col-lg-1 col-auto"><span class="number">x</span></div>
+                <div class="col-lg-2 col-auto">korda</div>
+                <div class="col-lg-2 col-auto">6 x 3 = 18</div>
+                <div class="col-lg-7 col-12">kuus korda kolm on kaheksateist</div>
+              </li>
+              <li class="row">
+                <div class="col-lg-1 col-auto"><span class="number">·</span></div>
+                <div class="col-lg-2 col-auto">korda</div>
+                <div class="col-lg-2 col-auto">6 · 3 = 18</div>
+                <div class="col-lg-7 col-12">kuus korda kolm on kaheksateist</div>
+              </li>
+              <li class="row">
+                <div class="col-lg-1 col-auto"><span class="number">:</span></div>
+                <div class="col-lg-2 col-auto">jagada</div>
+                <div class="col-lg-2 col-auto">24 : 4 = 6</div>
+                <div class="col-lg-7 col-12">kakskümmend neli jagada neljaga on kuus</div>
+              </li>
+              <li class="row">
+                <div class="col-lg-1 col-auto"><span class="number">/</span></div>
+                <div class="col-lg-2 col-auto">jagada</div>
+                <div class="col-lg-2 col-auto">24 / 4 = 6</div>
+                <div class="col-lg-7 col-12">kakskümmend neli jagada neljaga on kuus</div>
+              </li>
+            </ul>
           </div>
         </div>
         <div class="tab-pane fade"
              id="v-pills-aeg"
              role="tabpanel"
-             aria-labelledby="v-pills-aeg-tab">
-          <h3 class="learn-content-title">Aeg</h3>
+             aria-labelledby="v-pills-aeg-tab"
+             tabindex="-1">
+          <h3 class="learn-content-title" id="aeg">Aeg</h3>
           <div class="learn-content learn-content-border-bottom">
-            <a id="aeg"></a>
             <div class="row">
               <div class="col-lg-12">
                 <h6 class="learn-content-subtitle">Mis kell on? Kui palju kell on?</h6>
@@ -1839,10 +1851,10 @@
         <div class="tab-pane fade"
              id="v-pills-luhendid"
              role="tabpanel"
-             aria-labelledby="v-pills-luhendid-tab">
-          <h3 class="learn-content-title">Lühendid</h3>
+             aria-labelledby="v-pills-luhendid-tab"
+             tabindex="-1">
+          <h3 class="learn-content-title" id="luhendid">Lühendid</h3>
           <div class="learn-content">
-            <a id="luhendid"></a>
             <div class="row number-rows">
               <div class="col-lg-12">
                 <div class="row">
@@ -2086,9 +2098,9 @@
         <div class="tab-pane fade"
              id="v-pills-kirjavahemargid"
              role="tabpanel"
-             aria-labelledby="v-pills-kirjavahemargid-tab">
-          <h3 class="learn-content-title">Kirjavahemärgid</h3>
-          <a id="kirjavahemargid"></a>
+             aria-labelledby="v-pills-kirjavahemargid-tab"
+             tabindex="-1">
+          <h3 class="learn-content-title" id="kirjavahemargid">Kirjavahemärgid</h3>
           <div class="learn-content">
             <div class="row learn-table">
               <div class="col-12 text-center learn-table-header">
@@ -2377,12 +2389,11 @@
         <div class="tab-pane fade"
              id="v-pills-kirjutamine"
              role="tabpanel"
-             aria-labelledby="v-pills-kirjutamine-tab">
-          <a id="kirjutamine"></a>
-          <h3 class="learn-content-title">Kirjutamine</h3>
-          <a id="kirisobrale"></a>
+             aria-labelledby="v-pills-kirjutamine-tab"
+             tabindex="-1">
+          <h3 class="learn-content-title" id="kirjutamine">Kirjutamine</h3>
           <div class="learn-content learn-content-border-bottom">
-            <h4 class="learn-content-subtitle">Kiri sõbrale või kolleegile</h4>
+            <h4 class="learn-content-subtitle" id="kirisobrale">Kiri sõbrale või kolleegile</h4>
             <h6 class="learn-content-subtitle">Kiri sõbrale</h6>
             <div class="row">
               <div class="col-12 mb-4">
@@ -2621,14 +2632,13 @@
                 <h6 class="learn-content-subtitle">Sõnum</h6>
                 <div class="row col-12 mb-4">
                   <img class="lazyload w-100"
-                       th:data-src="@{/view/images/sonum.png}">
+                       th:data-src="@{/view/images/sonum.png}" alt="Eestikeelne vestlus jutumullides">
                 </div>
               </div>
             </div>
           </div>
-          <a id="kiriametlik"></a>
           <div class="learn-content learn-content-border-bottom">
-            <h4 class="learn-content-subtitle">Ametlik ja poolametlik kiri</h4>
+            <h4 class="learn-content-subtitle" id="kiriametlik">Ametlik ja poolametlik kiri</h4>
             <h6 class="learn-content-subtitle">Ametlik kiri</h6>
             <div class="row">
               <div class="col-lg-12 mb-4">
@@ -3063,9 +3073,8 @@
               </div>
             </div>
           </div>
-          <a id="onnitlemine"></a>
           <div class="learn-content learn-content-border-bottom">
-            <h4 class="learn-content-subtitle">Õnnitlemine</h4>
+            <h4 class="learn-content-subtitle" id="onnitlemine">Õnnitlemine</h4>
             <div class="row">
               <div class="col-lg-12">
                 <div class="learn-letter">
@@ -3133,9 +3142,8 @@
               </div>
             </div>
           </div>
-          <a id="kutse"></a>
           <div class="learn-content learn-content-border-bottom">
-            <h4 class="learn-content-subtitle">Kutse</h4>
+            <h4 class="learn-content-subtitle" id="kutse">Kutse</h4>
             <div class="row">
               <div class="col-lg-12 mb-4">
                 <div class="learn-letter">
@@ -3248,9 +3256,8 @@
               </div>
             </div>
           </div>
-          <a id="avaldus"></a>
           <div class="learn-content learn-content-border-bottom">
-            <h4 class="learn-content-subtitle">Avaldus</h4>
+            <h4 class="learn-content-subtitle" id="avaldus" tabindex="-1">Avaldus</h4>
             <h6 class="learn-content-subtitle">Asutuse sees</h6>
             <div class="row">
               <div class="col-lg-12 mb-4">
@@ -3384,9 +3391,8 @@
               </div>
             </div>
           </div>
-          <a id="volitus"></a>
           <div class="learn-content learn-content-border-bottom">
-            <h4 class="learn-content-subtitle">Volitus</h4>
+            <h4 class="learn-content-subtitle" id="volitus">Volitus</h4>
             <div class="row">
               <div class="col-12">
                 <div class="learn-letter">
@@ -3433,9 +3439,8 @@
               </div>
             </div>
           </div>
-          <a id="jareleparimine"></a>
           <div class="learn-content learn-content-border-bottom">
-            <h4 class="learn-content-subtitle">Järelepärimine</h4>
+            <h4 class="learn-content-subtitle" id="jareleparimine">Järelepärimine</h4>
             <div class="row">
               <div class="col-12 mb-4">
                 <div class="learn-letter">
@@ -3470,7 +3475,6 @@
                 </div>
               </div>
             </div>
-            <h6 class="learn-content-subtitle"></h6>
             <div class="row mb-4">
               <div class="col-12">
                 <h6 class="learn-content-subtitle">Info küsimine</h6>
@@ -3551,9 +3555,8 @@
               </div>
             </div>
           </div>
-          <a id="kaebus"></a>
           <div class="learn-content learn-content-border-bottom">
-            <h4 class="learn-content-subtitle">Kaebus</h4>
+            <h4 class="learn-content-subtitle" id="kaebus">Kaebus</h4>
             <div class="row mb-4">
               <div class="col-12">
                 <h6 class="learn-content-subtitle">Väljendeid</h6>
@@ -3601,9 +3604,8 @@
               </div>
             </div>
           </div>
-          <a id="arvamusevaljendamine"></a>
           <div class="learn-content learn-content-border-bottom">
-            <h4 class="learn-content-subtitle">Arvamuse väljendamine</h4>
+            <h4 class="learn-content-subtitle" id="arvamusevaljendamine">Arvamuse väljendamine</h4>
             <div class="row mb-4">
               <div class="col-12">
                 <h6 class="learn-content-subtitle">Ma arvan, et .. </h6>
@@ -3762,9 +3764,8 @@
               </div>
             </div>
           </div>
-          <a id="piltidekirjeldamine"></a>
           <div class="learn-content learn-content-border-bottom">
-            <h4 class="learn-content-subtitle">Piltide kirjeldamine</h4>
+            <h4 class="learn-content-subtitle" id="piltidekirjeldamine">Piltide kirjeldamine</h4>
             <div class="row mb-4">
               <div class="col-12">
                 <h6 class="learn-content-subtitle">Väljendeid</h6>
@@ -3806,9 +3807,8 @@
               </div>
             </div>
           </div>
-          <a id="joonistekirjeldamine"></a>
           <div class="learn-content learn-content-border-bottom">
-            <h4 class="learn-content-subtitle">Jooniste ja graafikute kirjeldamine</h4>
+            <h4 class="learn-content-subtitle" id="joonistekirjeldamine">Jooniste ja graafikute kirjeldamine</h4>
             <div class="row mb-4">
               <div class="col-12">
                 <h6 class="learn-content-subtitle">Väljendeid</h6>
@@ -3853,9 +3853,8 @@
               </div>
             </div>
           </div>
-          <a id="kysitlusekirjeldamine"></a>
           <div class="learn-content learn-content-border-bottom">
-            <h4 class="learn-content-subtitle">Küsitluse andmete kirjeldamine</h4>
+            <h4 class="learn-content-subtitle" id="kysitlusekirjeldamine">Küsitluse andmete kirjeldamine</h4>
             <div class="row mb-4">
               <div class="col-12">
                 <h6 class="learn-content-subtitle">Väljendeid</h6>
@@ -3894,10 +3893,8 @@
               </div>
             </div>
           </div>
-          <a id="kaastundeavaldus"></a>
           <div class="learn-content learn-content-border-bottom">
-            <h4 class="learn-content-subtitle">Kaastunde avaldamine</h4>
-            <h6 class="learn-content-subtitle"></h6>
+            <h4 class="learn-content-subtitle" id="kaastundeavaldus">Kaastunde avaldamine</h4>
             <div class="row">
               <div class="col-lg-12 mb-4">
                 <div class="learn-letter">
@@ -3938,9 +3935,8 @@
               </div>
             </div>
           </div>
-          <a id="cv"></a>
           <div class="learn-content learn-content-border-bottom">
-            <h4 class="learn-content-subtitle">CV</h4>
+            <h4 class="learn-content-subtitle" id="cv">CV</h4>
             <div class="row col-12  mb-4">
               <p>CV ehk <i>curriculum vitae</i> on inimese elulugu kirjeldav dokument.</p>
             </div>
@@ -4083,8 +4079,7 @@
             </div>
           </div>
           <div class="learn-content">
-            <a id="kaaskiri"></a>
-            <h4 class="learn-content-subtitle">Kaaskiri</h4>
+            <h4 class="learn-content-subtitle" id="kaaskiri">Kaaskiri</h4>
             <div class="row">
               <div class="col-12">
                 <div class="learn-letter">
@@ -4142,14 +4137,13 @@
         <div class="tab-pane fade"
              id="v-pills-kasulikke"
              role="tabpanel"
-             aria-labelledby="v-pills-kasulikke-tab">
-          <h3 class="learn-content-title">Kasulikke väljendeid</h3>
-          <a id="kasulikke"></a>
+             aria-labelledby="v-pills-kasulikke-tab"
+             tabindex="-1">
+          <h3 class="learn-content-title" id="kasulikke">Kasulikke väljendeid</h3>
           <div class="row">
             <div class="col-12">
               <div class="learn-content learn-content-border-bottom">
-                <a id="tervitused"></a>
-                <h4 class="learn-content-subtitle">Tervitused</h4>
+                <h4 class="learn-content-subtitle" id="tervitused">Tervitused</h4>
                 <ul>
                   <li>
                     <p>
@@ -4184,8 +4178,7 @@
                 </ul>
               </div>
               <div class="learn-content learn-content-border-bottom">
-                <a id="tervituselejargnevad"></a>
-                <h4 class="learn-content-subtitle">Tervitusele järgnevad väljendid</h4>
+                <h4 class="learn-content-subtitle" id="tervituselejargnevad">Tervitusele järgnevad väljendid</h4>
                 <ul>
                   <li>
                     <p>
@@ -4215,8 +4208,7 @@
                 </ul>
               </div>
               <div class="learn-content learn-content-border-bottom">
-                <a id="lahkumine"></a>
-                <h4 class="learn-content-subtitle">Kellestki lahkumine</h4>
+                <h4 class="learn-content-subtitle" id="lahkumine">Kellestki lahkumine</h4>
                 <ul>
                   <li>
                     <p>
@@ -4256,8 +4248,7 @@
                 </ul>
               </div>
               <div class="learn-content learn-content-border-bottom">
-                <a id="vabandused"></a>
-                <h4 class="learn-content-subtitle">Vabandused</h4>
+                <h4 class="learn-content-subtitle" id="vabandused">Vabandused</h4>
                 <ul>
                   <li>
                     <p>
@@ -4307,8 +4298,7 @@
                 </ul>
               </div>
               <div class="learn-content learn-content-border-bottom">
-                <a id="tanuavaldamine"></a>
-                <h4 class="learn-content-subtitle">Tänu avaldamine</h4>
+                <h4 class="learn-content-subtitle" id="tanuavaldamine">Tänu avaldamine</h4>
                 <ul>
                   <li>
                     <p>
@@ -4338,8 +4328,7 @@
                 </ul>
               </div>
               <div class="learn-content learn-content-border-bottom">
-                <a id="tanuavaldaminevastus"></a>
-                <h4 class="learn-content-subtitle">Vastus tänu avaldamisele</h4>
+                <h4 class="learn-content-subtitle" id="tanuavaldaminevastus">Vastus tänu avaldamisele</h4>
                 <ul>
                   <li>
                     <p>
@@ -4364,8 +4353,7 @@
                 </ul>
               </div>
               <div class="learn-content learn-content-border-bottom">
-                <a id="kohvikrestoran"></a>
-                <h4 class="learn-content-subtitle">Kohvikus või restoranis</h4>
+                <h4 class="learn-content-subtitle" id="kohvikrestoran">Kohvikus või restoranis</h4>
                 <ul>
                   <li>
                     <p>
@@ -4420,8 +4408,7 @@
                 </ul>
               </div>
               <div class="learn-content learn-content-border-bottom">
-                <a id="telefonikone"></a>
-                <h4 class="learn-content-subtitle">Telefonikõne</h4>
+                <h4 class="learn-content-subtitle" id="telefonikone">Telefonikõne</h4>
                 <ul>
                   <li>
                     <p>
@@ -4451,8 +4438,7 @@
                 </ul>
               </div>
               <div class="learn-content learn-content-border-bottom">
-                <a id="arstijuures"></a>
-                <h4 class="learn-content-subtitle">Arsti juures</h4>
+                <h4 class="learn-content-subtitle" id="arstijuures">Arsti juures</h4>
                 <ul>
                   <li>
                     <p>
@@ -4497,8 +4483,7 @@
                 </ul>
               </div>
               <div class="learn-content learn-content-border-bottom">
-                <a id="juhatadateed"></a>
-                <h4 class="learn-content-subtitle">Kuidas juhatada teed</h4>
+                <h4 class="learn-content-subtitle" id="juhatadateed">Kuidas juhatada teed</h4>
                 <ul>
                   <li>
                     <p>
@@ -4523,8 +4508,7 @@
                 </ul>
               </div>
               <div class="learn-content learn-content-border-bottom">
-                <a id="onnitlused"></a>
-                <h4 class="learn-content-subtitle">Õnnitlused, soovid, palved</h4>
+                <h4 class="learn-content-subtitle" id="onnitlused">Õnnitlused, soovid, palved</h4>
                 <ul>
                   <li>
                     <p>
@@ -4639,8 +4623,7 @@
                 </ul>
               </div>
               <div class="learn-content learn-content-border-bottom">
-                <a id="hoiatused"></a>
-                <h4 class="learn-content-subtitle">Hoiatused</h4>
+                <h4 class="learn-content-subtitle" id="hoiatused">Hoiatused</h4>
                 <ul>
                   <li>
                     <p>
@@ -4685,8 +4668,7 @@
                 </ul>
               </div>
               <div class="learn-content learn-content-border-bottom">
-                <a id="kaastunne"></a>
-                <h4 class="learn-content-subtitle">Kaastunde avaldamine</h4>
+                <h4 class="learn-content-subtitle" id="kaastunne">Kaastunde avaldamine</h4>
                 <ul>
                   <li>
                     <p>
@@ -4706,8 +4688,7 @@
                 </ul>
               </div>
               <div class="learn-content learn-content-border-bottom">
-                <a id="tutvustamine"></a>
-                <h4 class="learn-content-subtitle">Tutvus ja tutvustamine</h4>
+                <h4 class="learn-content-subtitle" id="tutvustamine">Tutvus ja tutvustamine</h4>
                 <ul>
                   <li>
                     <p>
@@ -4757,8 +4738,7 @@
                 </ul>
               </div>
               <div class="learn-content learn-content-border-bottom">
-                <a id="bussronglennuk"></a>
-                <h4 class="learn-content-subtitle">Bussis, rongis, lennukis</h4>
+                <h4 class="learn-content-subtitle" id="bussronglennuk">Bussis, rongis, lennukis</h4>
                 <ul>
                   <li>
                     <p>
@@ -4803,8 +4783,7 @@
                 </ul>
               </div>
               <div class="learn-content learn-content-border-bottom">
-                <a id="hotellis"></a>
-                <h4 class="learn-content-subtitle">Hotellis</h4>
+                <h4 class="learn-content-subtitle" id="hotellis">Hotellis</h4>
                 <ul>
                   <li>
                     <p>
@@ -4844,8 +4823,7 @@
                 </ul>
               </div>
               <div class="learn-content">
-                <a id="poes"></a>
-                <h4 class="learn-content-subtitle">Poes</h4>
+                <h4 class="learn-content-subtitle" id="poes">Poes</h4>
                 <ul>
                   <li>
                     <p>
@@ -4890,17 +4868,19 @@
         <div class="tab-pane fade"
              id="v-pills-grammatikatabelid"
              role="tabpanel"
-             aria-labelledby="v-pills-grammatikatabelid-tab">
-          <a id="grammatikatabelid"></a>
-          <h3 class="learn-content-title">
+             aria-labelledby="v-pills-grammatikatabelid-tab"
+             tabindex="-1">
+          <h3 class="learn-content-title" id="grammatikatabelid">
             Grammatikatabelid
             <a href="https://www.eki.ee/dict/psv/grammatikatabelid.pdf" download="grammatikatabelid.pdf"
+               aria-label="Laadi alla grammatikatabelid PDF-dokumendina"
                class="btn p-0 text-primary">
-              <i class="fa fa-download"></i> Laadi alla PDF-ina
+              <i class="fa fa-download" aria-hidden="true"></i> Laadi alla PDF-ina
             </a>
           </h3>
           <div class="learn-content">
             <iframe src="https://www.eki.ee/dict/psv/grammatikatabelid.pdf"
+                    title="Grammatikatabelid"
                     width="100%"
                     height="500px">
             </iframe>
@@ -4909,17 +4889,19 @@
         <div class="tab-pane fade"
              id="v-pills-regions"
              role="tabpanel"
-             aria-labelledby="v-pills-regions-tab">
-          <a id="regions"></a>
-          <h3 class="learn-content-title">
+             aria-labelledby="v-pills-regions-tab"
+             tabindex="-1">
+          <h3 class="learn-content-title" id="regions">
             Maad ja rahvad
             <a href="https://www.eki.ee/dict/psv/maadjarahvad.pdf" download="maadjarahvad.pdf"
+               aria-label="Laadi alla 'Maad ja rahvad' PDF-dokumendina"
                class="btn p-0 text-primary">
-              <i class="fa fa-download"></i> Laadi alla PDF-ina
+              <i class="fa fa-download" aria-hidden="true"></i> Laadi alla PDF-ina
             </a>
           </h3>
           <div class="learn-content">
             <iframe src="https://www.eki.ee/dict/psv/maadjarahvad.pdf"
+                    title="Maad ja rahvad"
                     width="100%"
                     height="500px">
             </iframe>
@@ -4928,9 +4910,9 @@
         <div class="tab-pane fade"
              id="v-pills-keeleabi"
              role="tabpanel"
-             aria-labelledby="v-pills-keeleabi-tab">
-          <a id="keeleabi"></a>
-          <h3 class="learn-content-title">
+             aria-labelledby="v-pills-keeleabi-tab"
+             tabindex="-1">
+          <h3 class="learn-content-title" id="keeleabi">
             EKI teamik
             <a href="https://eki.ee/teatmik/" target="_blank"
                class="btn p-0 text-primary">
@@ -4939,6 +4921,7 @@
           </h3>
           <div class="learn-content">
             <iframe src="https://eki.ee/teatmik/"
+                    title="EKI teamik"
                     width="100%"
                     height="500px">
             </iframe>
@@ -4947,11 +4930,10 @@
         <div class="tab-pane fade"
              id="v-pills-oppetoo"
              role="tabpanel"
-             aria-labelledby="v-pills-oppetoo-tab">
-          <a id="oppetoo"></a>
-          <h3 class="learn-content-title">Õppetöö korraldamise fraasikogu</h3>
+             aria-labelledby="v-pills-oppetoo-tab"
+             tabindex="-1">
+          <h3 class="learn-content-title" id="oppetoo">Õppetöö korraldamise fraasikogu</h3>
           <div class="learn-content learn-content-border-bottom">
-            <a id="sissejuhatuseks"></a>
             <div class="row mt-2">
               <div class="col-lg-12">
                 <p>Õppetöö korraldamise fraasikogu on mõeldud abimaterjaliks põhikooli aineõpetajatele,
@@ -4974,9 +4956,8 @@
               </div>
             </div>
           </div>
-          <a id="tunnialustamine"></a>
           <div class="learn-content learn-content-border-bottom">
-            <h4 class="learn-content-subtitle">1. TUNNI ALUSTAMINE</h4>
+            <h4 class="learn-content-subtitle" id="tunnialustamine">1. TUNNI ALUSTAMINE</h4>
             <h6 class="learn-content-subtitle">1.1. Alustame tunniga</h6>
             <ul>
               <li><p>Alustame tunniga. Alustame tundi.</p></li>
@@ -5032,9 +5013,8 @@
               <li><p>Me alustame tundi rühmatööga. Täna alustame tundi rühmatööga.</p></li>
             </ul>
           </div>
-          <a id="tunnilopetamine"></a>
           <div class="learn-content learn-content-border-bottom">
-            <h4 class="learn-content-subtitle">2. TUNNI LÕPETAMINE</h4>
+            <h4 class="learn-content-subtitle" id="tunnilopetamine">2. TUNNI LÕPETAMINE</h4>
             <h6 class="learn-content-subtitle">2.1. Tunni lõpuni jäänud aeg</h6>
             <ul>
               <li><p>Meil on veel paar minutit aega.</p></li>
@@ -5094,9 +5074,8 @@
               <li><p>Näeme jälle kolmapäeval.</p></li>
             </ul>
           </div>
-          <a id="tunnilabiviimine"></a>
           <div class="learn-content learn-content-border-bottom">
-            <h4 class="learn-content-subtitle">3. TUNNI LÄBIVIIMINE</h4>
+            <h4 class="learn-content-subtitle" id="tunnilabiviimine">3. TUNNI LÄBIVIIMINE</h4>
             <h6 class="learn-content-subtitle">3.1. Tegevuste alustamine ja lõpetamine</h6>
             <ul>
               <li><p>Asume tööle. Hakkame tööle.</p></li>
@@ -5209,9 +5188,8 @@
               <li><p>Pärast tundi jääte klassi ja vastate.</p></li>
             </ul>
           </div>
-          <a id="aktiivneosalemine"></a>
           <div class="learn-content learn-content-border-bottom">
-            <h4 class="learn-content-subtitle">4. AKTIIVNE OSALEMINE</h4>
+            <h4 class="learn-content-subtitle" id="aktiivneosalemine">4. AKTIIVNE OSALEMINE</h4>
             <h6 class="learn-content-subtitle">4.1. Kas kõik kuulevad ja näevad?</h6>
             <ul>
               <li><p>Kas sa näed sealt tagant?</p></li>
@@ -5384,9 +5362,8 @@
               <li><p>Palun korda.</p></li>
             </ul>
           </div>
-          <a id="oppevahenditekasutamine"></a>
           <div class="learn-content learn-content-border-bottom">
-            <h4 class="learn-content-subtitle">5. ÕPPEVAHENDITE KASUTAMINE</h4>
+            <h4 class="learn-content-subtitle" id="oppevahenditekasutamine">5. ÕPPEVAHENDITE KASUTAMINE</h4>
             <h6 class="learn-content-subtitle">5.1. Töölehtede jaotamine</h6>
             <ul>
               <li><p>Täna teeme töölehte.</p></li>
@@ -5469,9 +5446,8 @@
               <li><p>Sõnastik on õpikus.</p></li>
             </ul>
           </div>
-          <a id="kirjalikudjasuulisedylesanded"></a>
           <div class="learn-content learn-content-border-bottom">
-            <h4 class="learn-content-subtitle">6. KIRJALIKUD JA SUULISED ÜLESANDED</h4>
+            <h4 class="learn-content-subtitle" id="kirjalikudjasuulisedylesanded">6. KIRJALIKUD JA SUULISED ÜLESANDED</h4>
             <h6 class="learn-content-subtitle">6.1. Teksti lugemine</h6>
             <ul>
               <li><p>Hakka lugema. Hakkame lugema.</p></li>
@@ -5700,9 +5676,8 @@
               <li><p>Kas kõik on saanud vastata?</p></li>
             </ul>
           </div>
-          <a id="fyysilinetookeskkond"></a>
           <div class="learn-content learn-content-border-bottom">
-            <h4 class="learn-content-subtitle">7. FÜÜSILINE TÖÖKESKKOND</h4>
+            <h4 class="learn-content-subtitle" id="fyysilinetookeskkond">7. FÜÜSILINE TÖÖKESKKOND</h4>
             <h6 class="learn-content-subtitle">7.1. Koht klassis</h6>
             <ul>
               <li><p>Mine tagasi oma kohale. Istu palun oma kohale. Istume tagasi oma kohtadele.</p></li>
@@ -5751,9 +5726,8 @@
               <li><p>Ma teen tahvli puhtaks.</p></li>
             </ul>
           </div>
-          <a id="kaitumisejuhtimine"></a>
           <div class="learn-content learn-content-border-bottom">
-            <h4 class="learn-content-subtitle">8. KÄITUMISE JUHTIMINE</h4>
+            <h4 class="learn-content-subtitle" id="kaitumisejuhtimine">8. KÄITUMISE JUHTIMINE</h4>
             <h6 class="learn-content-subtitle">8.1. Müratase</h6>
             <ul>
               <li><p>Tasa-tasa. Vaikust, palun!</p></li>
@@ -5837,13 +5811,12 @@
           id="v-pills-keelekasutus"
           role="tabpanel"
           aria-labelledby="v-pills-keelekasutus-tab"
+          tabindex="-1"
         >
-          <a id="keelekasutus"></a>
-          <h3 class="learn-content-title">
+          <h3 class="learn-content-title" id="keelekasutus">
             Akadeemilise keelekasutuse fraasikogu
           </h3>
           <div class="learn-content learn-content-border-bottom">
-            <a id="korsisse"></a>
             <div class="row mt-2">
               <div class="col-lg-12">
                 <p>
@@ -5868,9 +5841,8 @@
               </div>
             </div>
           </div>
-          <a id="ettekanne"></a>
           <div class="learn-content learn-content-border-bottom">
-            <h4 class="learn-content-subtitle">1. Ettekanne</h4>
+            <h4 class="learn-content-subtitle" id="ettekanne">1. Ettekanne</h4>
             <h6 class="learn-content-subtitle">1.1. Kuidas alustada</h6>
             <ul>
               <li>
@@ -5941,9 +5913,8 @@
             </ul>
             <br />
           </div>
-          <a id="arvamustevahendamine"></a>
           <div class="learn-content learn-content-border-bottom">
-            <h4 class="learn-content-subtitle">
+            <h4 class="learn-content-subtitle" id="arvamustevahendamine">
               2. Arvamuste ja mõtete vahendamine
             </h4>
             <ul>
@@ -6063,9 +6034,8 @@
             </ul>
             <br />
           </div>
-          <a id="tekstikirjutamine"></a>
           <div class="learn-content learn-content-border-bottom">
-            <h4 class="learn-content-subtitle">
+            <h4 class="learn-content-subtitle" id="tekstikirjutamine" tabindex="-1">
               3. Akadeemilise teksti kirjutamine
             </h4>
             <h6 class="learn-content-subtitle">3.1. Sissejuhatus</h6>
@@ -6752,9 +6722,8 @@
             </ul>
             <br />
           </div>
-          <a id="artiklirefereerimine"></a>
           <div class="learn-content learn-content-border-bottom">
-            <h4 class="learn-content-subtitle">4. Artikli refereerimine</h4>
+            <h4 class="learn-content-subtitle" id="artiklirefereerimine">4. Artikli refereerimine</h4>
             <ul>
               <li>
                 <p>

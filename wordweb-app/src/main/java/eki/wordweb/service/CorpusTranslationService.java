@@ -31,7 +31,7 @@ public class CorpusTranslationService extends AbstractRemoteRequestService {
 	public List<CorpusTranslation> getCorpusTranslations(Long wordId, String wordValue, String wordLang) {
 
 		URI corpusUrl = composeCorpusUri(wordId, wordValue, wordLang);
-		Map<String, Object> response = request(corpusUrl);
+		Map<String, Object> response = requestGet(corpusUrl);
 		List<CorpusTranslation> translations = parseResponse(response);
 		return translations;
 	}

@@ -1,12 +1,6 @@
 package eki.ekilex.service.db;
 
-import static eki.ekilex.data.db.main.Tables.COLLOCATION_MEMBER;
-import static eki.ekilex.data.db.main.Tables.DEFINITION;
 import static eki.ekilex.data.db.main.Tables.LEXEME;
-import static eki.ekilex.data.db.main.Tables.POS_GROUP;
-import static eki.ekilex.data.db.main.Tables.POS_GROUP_LABEL;
-import static eki.ekilex.data.db.main.Tables.REL_GROUP;
-import static eki.ekilex.data.db.main.Tables.REL_GROUP_LABEL;
 import static eki.ekilex.data.db.main.Tables.SOURCE;
 import static eki.ekilex.data.db.main.Tables.WORD;
 import static eki.ekilex.data.db.main.Tables.WORD_ETYMOLOGY;
@@ -20,19 +14,11 @@ import static eki.ekilex.data.db.main.Tables.WORD_REL_TYPE_LABEL;
 import java.util.List;
 
 import org.jooq.Field;
-import org.jooq.JSON;
 import org.jooq.impl.DSL;
 import org.springframework.stereotype.Component;
 
-import eki.ekilex.data.CollocMemberMeaning;
 import eki.ekilex.data.WordEtymTuple;
-import eki.ekilex.data.db.main.tables.CollocationMember;
-import eki.ekilex.data.db.main.tables.Definition;
 import eki.ekilex.data.db.main.tables.Lexeme;
-import eki.ekilex.data.db.main.tables.PosGroup;
-import eki.ekilex.data.db.main.tables.PosGroupLabel;
-import eki.ekilex.data.db.main.tables.RelGroup;
-import eki.ekilex.data.db.main.tables.RelGroupLabel;
 import eki.ekilex.data.db.main.tables.Source;
 import eki.ekilex.data.db.main.tables.Word;
 import eki.ekilex.data.db.main.tables.WordEtymology;
@@ -175,171 +161,4 @@ public class LexDataDbService extends AbstractDataDbService {
 				.fetchInto(WordEtymTuple.class);
 	}
 
-	public boolean isCollocationsExist(Long lexemeId) {
-
-		CollocationMember cm = COLLOCATION_MEMBER.as("cm");
-
-		return mainDb
-				.fetchExists(DSL
-						.select(cm.ID)
-						.from(cm)
-						.where(cm.MEMBER_LEXEME_ID.eq(lexemeId)));
-	}
-
-	public List<eki.ekilex.data.CollocPosGroup> getPrimaryCollocations(Long lexemeId, String classifierLabelLang) {
-
-		PosGroup pg = POS_GROUP.as("pg");
-		PosGroupLabel pgl = POS_GROUP_LABEL.as("pgl");
-		RelGroup rg = REL_GROUP.as("rg");
-		RelGroupLabel rgl = REL_GROUP_LABEL.as("rgl");
-		CollocationMember cm = COLLOCATION_MEMBER.as("cm");
-		CollocationMember cm1 = COLLOCATION_MEMBER.as("cm1");
-		CollocationMember cm3 = COLLOCATION_MEMBER.as("cm3");
-		Word cw = WORD.as("cw");
-		Lexeme cl = LEXEME.as("cl");
-
-		Field<JSON> usaf = queryHelper.getSimpleLexemeUsagesField(cl.ID);
-		Field<JSON> memf = queryHelper.getCollocationMembersField(cl.ID, classifierLabelLang, CLASSIF_LABEL_TYPE_DESCRIP);
-
-		Field<Long> hwmemidf = DSL
-				.select(cm3.ID)
-				.from(cm3)
-				.where(
-						cm3.MEMBER_LEXEME_ID.eq(lexemeId)
-								.and(cm3.COLLOC_LEXEME_ID.eq(cl.ID)))
-				.limit(1)
-				.asField();
-
-		Field<JSON> collf = DSL
-				.select(DSL
-						.jsonArrayAgg(DSL
-								.jsonObject(
-										DSL.key("lexemeId").value(cl.ID),
-										DSL.key("wordId").value(cw.ID),
-										DSL.key("wordValue").value(cw.VALUE),
-										DSL.key("usages").value(usaf),
-										DSL.key("members").value(memf),
-										DSL.key("groupOrder").value(cm1.GROUP_ORDER),
-										DSL.key("headwordCollocMemberId").value(hwmemidf)))
-						.orderBy(cm1.GROUP_ORDER))
-				.from(cw, cl, cm1)
-				.where(
-						cm1.MEMBER_LEXEME_ID.eq(lexemeId)
-								.and(cm1.POS_GROUP_CODE.eq(pg.CODE))
-								.and(cm1.REL_GROUP_CODE.eq(rg.CODE))
-								.and(cm1.COLLOC_LEXEME_ID.eq(cl.ID))
-								.and(cl.WORD_ID.eq(cw.ID)))
-				.asField();
-
-		Field<JSON> rgf = DSL
-				.select(DSL
-						.jsonArrayAgg(DSL
-								.jsonObject(
-										DSL.key("relGroupCode").value(rg.CODE),
-										DSL.key("relGroupValue").value(DSL.coalesce(rgl.VALUE, rg.CODE)),
-										DSL.key("collocations").value(collf)))
-						.orderBy(rg.ORDER_BY))
-				.from(rg
-						.leftOuterJoin(rgl).on(
-								rgl.CODE.eq(rg.CODE)
-										.and(rgl.LANG.eq(classifierLabelLang))
-										.and(rgl.TYPE.eq(CLASSIF_LABEL_TYPE_DESCRIP))))
-				.whereExists(DSL
-						.select(cm.ID)
-						.from(cm)
-						.where(
-								cm.MEMBER_LEXEME_ID.eq(lexemeId)
-										.and(cm.POS_GROUP_CODE.eq(pg.CODE))
-										.and(cm.REL_GROUP_CODE.eq(rg.CODE))))
-				.asField();
-
-		return mainDb
-				.select(
-						pg.CODE.as("pos_group_code"),
-						DSL.coalesce(pgl.VALUE, pg.CODE).as("pos_group_value"),
-						rgf.as("rel_groups"))
-				.from(pg
-						.leftOuterJoin(pgl).on(
-								pgl.CODE.eq(pg.CODE)
-										.and(pgl.LANG.eq(classifierLabelLang))
-										.and(pgl.TYPE.eq(CLASSIF_LABEL_TYPE_DESCRIP))))
-				.whereExists(DSL
-						.select(cm.ID)
-						.from(cm)
-						.where(
-								cm.MEMBER_LEXEME_ID.eq(lexemeId)
-										.and(cm.POS_GROUP_CODE.eq(pg.CODE))))
-				.orderBy(pg.ORDER_BY)
-				.fetchInto(eki.ekilex.data.CollocPosGroup.class);
-
-	}
-
-	public List<eki.ekilex.data.Colloc> getSecondaryCollocations(Long lexemeId) {
-
-		CollocationMember cm1 = COLLOCATION_MEMBER.as("cm1");
-		CollocationMember cm3 = COLLOCATION_MEMBER.as("cm3");
-		Word cw = WORD.as("cw");
-		Lexeme cl = LEXEME.as("cl");
-
-		Field<JSON> usaf = queryHelper.getSimpleLexemeUsagesField(cl.ID);
-		Field<JSON> memf = queryHelper.getCollocationMembersField(cl.ID, null, null);
-
-		Field<Long> hwmemidf = DSL
-				.select(cm3.ID)
-				.from(cm3)
-				.where(
-						cm3.MEMBER_LEXEME_ID.eq(lexemeId)
-								.and(cm3.COLLOC_LEXEME_ID.eq(cl.ID)))
-				.limit(1)
-				.asField();
-
-		return mainDb
-				.select(
-						cl.ID.as("lexeme_id"),
-						cw.ID.as("word_id"),
-						cw.VALUE.as("word_value"),
-						usaf.as("usages"),
-						memf.as("members"),
-						hwmemidf.as("headword_colloc_member_id"))
-				.from(cw, cl, cm1)
-				.where(
-						cm1.MEMBER_LEXEME_ID.eq(lexemeId)
-								.and(cm1.POS_GROUP_CODE.isNull())
-								.and(cm1.COLLOC_LEXEME_ID.eq(cl.ID))
-								.and(cl.WORD_ID.eq(cw.ID)))
-				.orderBy(cw.VALUE)
-				.fetchInto(eki.ekilex.data.Colloc.class);
-	}
-
-	public List<CollocMemberMeaning> getCollocationMemberMeanings(Long collocMemberLexemeId) {
-
-		Lexeme l1 = LEXEME.as("l1");
-		Lexeme l2 = LEXEME.as("l2");
-		Definition d = DEFINITION.as("d");
-
-		Field<String[]> dvf = DSL
-				.select(DSL.arrayAgg(d.VALUE))
-				.from(d)
-				.where(d.MEANING_ID.eq(l2.MEANING_ID))
-				.asField();
-
-		return mainDb
-				.select(
-						l2.WORD_ID,
-						l2.ID.as("lexeme_id"),
-						l2.MEANING_ID,
-						dvf.as("definition_values"))
-				.from(l2)
-				.where(DSL
-						.exists(DSL
-								.select(l1.ID)
-								.from(l1)
-								.where(
-										l1.ID.eq(collocMemberLexemeId)
-												.and(l1.WORD_ID.eq(l2.WORD_ID))
-												.and(l1.DATASET_CODE.eq(l2.DATASET_CODE)))))
-				.orderBy(l2.LEVEL1, l2.LEVEL2)
-				.fetchInto(CollocMemberMeaning.class);
-
-	}
 }

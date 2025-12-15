@@ -20,8 +20,6 @@ public class SynWord extends AbstractDataObject implements DecoratedWordType {
 
 	private String lang;
 
-	private List<String> lexemeRegisterCodes;
-
 	private String[] wordTypeCodes;
 
 	private boolean prefixoid;
@@ -33,6 +31,10 @@ public class SynWord extends AbstractDataObject implements DecoratedWordType {
 	private Long lexemeId;
 
 	private String lexemeLevels;
+
+	private String lexemeValueStateCode;
+
+	private List<String> lexemeRegisterCodes;
 
 	private boolean isLexemePublic;
 
@@ -86,14 +88,6 @@ public class SynWord extends AbstractDataObject implements DecoratedWordType {
 
 	public void setLang(String lang) {
 		this.lang = lang;
-	}
-
-	public List<String> getLexemeRegisterCodes() {
-		return lexemeRegisterCodes;
-	}
-
-	public void setLexemeRegisterCodes(List<String> lexemeRegisterCodes) {
-		this.lexemeRegisterCodes = lexemeRegisterCodes;
 	}
 
 	@Override
@@ -152,11 +146,28 @@ public class SynWord extends AbstractDataObject implements DecoratedWordType {
 		this.lexemeLevels = lexemeLevels;
 	}
 
+	public String getLexemeValueStateCode() {
+		return lexemeValueStateCode;
+	}
+
+	public void setLexemeValueStateCode(String lexemeValueStateCode) {
+		this.lexemeValueStateCode = lexemeValueStateCode;
+	}
+
+	public List<String> getLexemeRegisterCodes() {
+		return lexemeRegisterCodes;
+	}
+
+	public void setLexemeRegisterCodes(List<String> lexemeRegisterCodes) {
+		this.lexemeRegisterCodes = lexemeRegisterCodes;
+	}
+
 	public boolean isLexemePublic() {
 		return isLexemePublic;
 	}
 
-	public void setLexemePublic(boolean lexemePublic) {
-		this.isLexemePublic = lexemePublic;
+	public void setLexemePublic(boolean isLexemePublic) {
+		this.isLexemePublic = isLexemePublic;
 	}
+
 }

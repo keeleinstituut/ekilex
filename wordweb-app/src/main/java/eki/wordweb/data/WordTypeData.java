@@ -19,6 +19,8 @@ public abstract class WordTypeData extends AbstractPublishingEntity implements L
 
 	private Integer homonymNr;
 
+	private boolean homonymExists;
+
 	private String lang;
 
 	private String displayMorphCode;
@@ -89,6 +91,14 @@ public abstract class WordTypeData extends AbstractPublishingEntity implements L
 
 	public void setHomonymNr(Integer homonymNr) {
 		this.homonymNr = homonymNr;
+	}
+
+	public boolean isHomonymExists() {
+		return homonymExists;
+	}
+
+	public void setHomonymExists(boolean homonymExists) {
+		this.homonymExists = homonymExists;
 	}
 
 	@Override

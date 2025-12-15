@@ -122,6 +122,24 @@
         $('.tab-pane').removeClass('show').removeClass('active')
         $(closestTab).addClass('show active')
 
+  
+        // move focus to first meaningful element inside the tab
+        const hashId = window.location.hash.replace('#', '');
+        const hashTarget = document.getElementById(hashId);
+
+        // focus anchor if it exists and is inside the active tab
+        if (hashTarget && closestTab[0].contains(hashTarget)) {
+          hashTarget.setAttribute('tabindex', '-1');
+          hashTarget.focus();
+        } else {
+          // otherwise focus first heading in the tab
+          const heading = closestTab.find('h1, h2, h3, h4, h5, h6').first();
+          if (heading.length) {
+            heading.attr('tabindex', '-1');
+            heading[0].focus();
+          }
+        }
+
         if ($(window).width() <= mdBreakpoint) {
           setTimeout(() => {
             $('html, body').animate({
@@ -129,7 +147,7 @@
             });
           }, 0);
         }
-      }
+        }
     }
 
 

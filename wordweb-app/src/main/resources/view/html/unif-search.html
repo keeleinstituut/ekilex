@@ -109,9 +109,11 @@
               <div class="d-flex align-items-end flex-wrap gap-2">
                 <div class="d-flex mr-auto mt-4">
                   <h2 class="search__pre-block-title search__pre-block-title--no-bottom-margin" th:text="#{lexdata.title}"></h2>
+                  <button class="lexeme-tooltip" type="button" th:title="#{label.lexeme.tooltip}" data-toggle="tooltip">
+                    <span class="material-symbols-outlined" aria-hidden="true">book_ribbon</span>
+                  </button>
                   <th:block th:replace="common-app :: clipboard(
-                    wordValue=${wordData.word.value},
-                    homonymNr=${wordData.word.homonymNr},
+                    word=${wordData.word},
                     text=${#messages.msg('label.clipboard.text.lex')},
                     link=${wordData.word.lexSearchUrl},
                     date=${#dates.format(#dates.createNow(), 'dd.MM.yyyy')})">
@@ -153,13 +155,13 @@
         </div>
       </div>
       <script th:inline="javascript">
-							var currentWord = /*[[${wordData.word.value}]]*/'';
-							var currentWordId = /*[[${wordData.word.wordId}]]*/'';
-							var currentWordLang = /*[[${wordData.word.lang}]]*/'';
-							var currentWordPosCodes = /*[[${wordData.word.summarisedPosCodesStr}]]*/'';
-							var currentLinkedLexemeId = /*[[${wordData.linkedLexemeId}]]*/'';
-							scrollToLexeme(currentLinkedLexemeId);
-						</script>
+  		var currentWord = /*[[${wordData.word.value}]]*/'';
+  		var currentWordId = /*[[${wordData.word.wordId}]]*/'';
+  		var currentWordLang = /*[[${wordData.word.lang}]]*/'';
+  		var currentWordPosCodes = /*[[${wordData.word.summarisedPosCodesStr}]]*/'';
+  		var currentLinkedLexemeId = /*[[${wordData.linkedLexemeId}]]*/'';
+  		scrollToLexeme(currentLinkedLexemeId);
+  	  </script>
     </div>
   </div>
   <div th:replace="common-app :: footer-content"></div>

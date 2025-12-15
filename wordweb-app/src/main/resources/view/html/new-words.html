@@ -10,9 +10,7 @@
     <th:block th:replace="common-app :: wcag-sidebar"></th:block>
     <th:block th:replace="common-app :: wcag-main"></th:block>
     <th:block th:replace="common-app :: ie-user"></th:block>
-    <th:block
-      th:replace="common-app :: header(withSearch = ${false})"
-    ></th:block>
+    <th:block th:replace="common-app :: header(withSearch = ${false})"></th:block>
     <div class="news-page__wrapper">
       <div class="new-words-page__header">
         <h1 th:text="#{label.newwords.title}">Uued sõnad</h1>
@@ -22,27 +20,19 @@
           th:src="@{/view/images/nature.svg}"
           alt=""
           width="60"
-          height="60"
-        />
+          height="60"/>
       </div>
       <div class="new-words-page__content">
         <th:block th:if="${newWordYears}">
           <th:block th:each="newWordYear, newWordYearIter : ${newWordYears}">
-            <div
-              class="new-words-page__separator"
-              th:classappend="${newWordYearIter.isFirst ? 'new-words-page__separator--connected' : ''}"
-            ></div>
-            <h1
-              class="new-words-page__year"
-              th:text="${newWordYear.regYear}"
-            ></h1>
+            <div class="new-words-page__separator" th:classappend="${newWordYearIter.first ? 'new-words-page__separator--connected' : ''}"></div>
+            <h1 class="new-words-page__year" th:text="${newWordYear.regYear}"></h1>
             <div class="new-words-page__word-container">
               <th:block th:each="newWord : ${newWordYear.newWords}">
                 <a
                   class="new-words-page__word"
                   th:href="@{${@viewUtil.getDetailSearchUri(newWord.value, newWord.homonymNr)}}"
-                  th:utext="${@decorUtil.getWordValueMarkup(newWord)}"
-                >
+                  th:utext="${@decorUtil.getWordValueMarkup(newWord)}">
                 Sõna
                 </a>
               </th:block>

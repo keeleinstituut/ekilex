@@ -36,25 +36,25 @@ public class EkiApiAuthenticationManager implements AuthenticationManager, ApiCo
 
 		Object principal = authentication.getPrincipal();
 		if (principal == null) {
-			logger.info("Api key not provided for authentication");
+			logger.warn("Api key not provided for authentication");
 			throw new BadCredentialsException("Api key not provided");
 		}
 		String providedApiKey = principal.toString();
 		if (StringUtils.equals(providedApiKey, EMPTY_API_KEY)) {
-			logger.info("Api key not provided for authentication");
+			logger.warn("Api key not provided for authentication");
 			throw new BadCredentialsException("Api key not provided");
 		}
 		EkiUser user = userService.getUserByApiKey(providedApiKey);
 		if (user == null) {
-			logger.info("No such api key exists: \"{}\"", providedApiKey);
+			logger.warn("No such api key exists: \"{}\"", providedApiKey);
 			throw new BadCredentialsException("Bad api key");
 		}
 		if (!userValidator.isActiveUser(user)) {
-			logger.info("User not activated: \"{}\"", providedApiKey);
+			logger.warn("User not activated: \"{}\"", providedApiKey);
 			throw new BadCredentialsException("User not activated");
 		}
 		if (!userValidator.isEnabledUser(user)) {
-			logger.info("User not enabled: \"{}\"", providedApiKey);
+			logger.warn("User not enabled: \"{}\"", providedApiKey);
 			throw new BadCredentialsException("User not enabled");
 		}
 		Collection<? extends GrantedAuthority> authorities = CollectionUtils.emptyCollection();

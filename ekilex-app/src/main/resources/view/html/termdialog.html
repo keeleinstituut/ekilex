@@ -40,7 +40,7 @@
               <div class="col-md-4">
                 <select required class="form-control value-select required-field">
                   <option value="" hidden disabled selected th:text="#{common.select.value}">vali väärtus...</option>
-                  <option th:each="item : ${lexemeValueStates}" th:value="${item.code}" th:text="${item.value}">value</option>
+                  <option th:each="item : ${lexemeValueStates}" th:value="${item.code}" th:text="${item.valueComment}">value</option>
                 </select>
               </div>
             </div>
@@ -64,7 +64,7 @@
               <div class="col-md-8">
                 <select required class="form-control value-select required-field">
                   <option value="" hidden disabled selected th:text="#{common.select.value}">vali väärtus...</option>
-                  <option th:each="register : ${allLexemeRegisters}" th:value="${register.code}" th:text="${register.value}">register</option>
+                  <option th:each="register : ${allLexemeRegisters}" th:value="${register.code}" th:text="${register.valueComment}">register</option>
                 </select>
               </div>
             </div>
@@ -150,9 +150,10 @@
                 <select required class="form-control classifier-select required-field term-domain-select" data-live-search="true">
                   <option value="" hidden disabled selected th:text="#{common.select.value}">vali väärtus...</option>
                   <optgroup th:each="origin : ${datasetDomains}" th:label="${origin.getKey()}">
-                    <option th:each="domain : ${origin.getValue()}" th:value="${domain.toIdString()}"
-                            th:text="${#strings.abbreviate(domain.origin + ' - ' + domain.code + ' - ' + domain.value, 100) + (domain.comment != null ? ' *' : '')}"
-                            th:title="${domain.origin + ' - ' + domain.code + ' - ' + domain.value}"
+                    <option th:each="domain : ${origin.getValue()}"
+                            th:value="${domain.toIdString()}"
+                            th:text="${domain.originCodeValueCommentShort}"
+                            th:title="${domain.originCodeValueCommentFull}"
                             th:data-tooltip="|${domain.comment}|">domain
                     </option>
                   </optgroup>
@@ -209,9 +210,10 @@
                 <select required class="form-control classifier-select required-field term-domain-select" data-live-search="true">
                   <option value="" hidden disabled selected th:text="#{common.select.value}">vali väärtus...</option>
                   <optgroup th:each="origin : ${datasetDomains}" th:label="${origin.getKey()}">
-                    <option th:each="domain : ${origin.getValue()}" th:value="${domain.toIdString()}"
-                            th:text="${#strings.abbreviate(domain.origin + ' - ' + domain.code + ' - ' + domain.value, 100)}"
-                            th:title="${domain.origin + ' - ' + domain.code + ' - ' + domain.value}">domain
+                    <option th:each="domain : ${origin.getValue()}"
+                            th:value="${domain.toIdString()}"
+                            th:text="${domain.originCodeValueCommentShort}"
+                            th:title="${domain.originCodeValueCommentFull}">domain
                     </option>
                   </optgroup>
                 </select>
@@ -264,7 +266,7 @@
             <input type="hidden" name="id" th:value="${lexeme.lexemeId}">
             <input type="hidden" name="opCode" value="lexeme_value_state">
             <select class="form-control" name="value">
-              <option th:each="item : ${lexemeValueStates}" th:value="${item.code}" th:text="${item.value}" th:selected="${item.code == lexeme.lexemeValueStateCode}">value</option>
+              <option th:each="item : ${lexemeValueStates}" th:value="${item.code}" th:text="${item.valueComment}" th:selected="${item.code == lexeme.lexemeValueStateCode}">value</option>
             </select>
           </div>
         </form>
@@ -321,7 +323,7 @@
             <input type="hidden" name="opCode" value="lexeme_register">
             <input type="hidden" name="currentValue" th:value="${classif.code}">
             <select class="form-control" name="value">
-              <option th:each="item : ${allLexemeRegisters}" th:value="${item.code}" th:text="${item.value}" th:selected="${item.code == classif.code}">value</option>
+              <option th:each="item : ${allLexemeRegisters}" th:value="${item.code}" th:text="${item.valueComment}" th:selected="${item.code == classif.code}">value</option>
             </select>
           </div>
         </form>
@@ -398,10 +400,11 @@
               <select required class="form-control classifier-select" data-live-search="true">
                 <option value="" hidden disabled selected th:text="#{common.select.value}">vali väärtus...</option>
                 <optgroup th:each="origin : ${datasetDomains}" th:label="${origin.getKey()}">
-                  <option th:each="domain : ${origin.getValue()}" th:value="${domain.toIdString()}"
-                          th:text="${#strings.abbreviate(domain.origin + ' - ' + domain.code + ' - ' + domain.value, 100) + (domain.comment != null ? ' *' : '')}"
-                          th:title="${domain.origin + ' - ' + domain.code + ' - ' + domain.value}"
-                          th:data-tooltip="|${domain.comment}|">domain
+                  <option th:each="domain : ${origin.getValue()}"
+                          th:value="${domain.toIdString()}"
+                          th:text="${domain.originCodeValueCommentShort}"
+                          th:title="${domain.originCodeValueCommentFull}"
+                          th:data-tooltip="${domain.comment}">domain
                   </option>
                 </optgroup>
               </select>
@@ -430,10 +433,10 @@
               <optgroup th:each="origin : ${datasetDomains}" th:label="${origin.getKey()}">
                 <option th:each="domain : ${origin.getValue()}"
                         th:value="${domain.toIdString()}"
-                        th:text="${#strings.abbreviate(domain.origin + ' - ' + domain.code + ' - ' + domain.value, 100) + (domain.comment != null ? ' *' : '')}"
-                        th:title="${domain.origin + ' - ' + domain.code + ' - ' + domain.value}"
+                        th:text="${domain.originCodeValueCommentShort}"
+                        th:title="${domain.originCodeValueCommentFull}"
                         th:selected="${domain.toIdString() == classif.toIdString()}"
-                        th:data-tooltip="|${domain.comment}|">domain
+                        th:data-tooltip="${domain.comment}">domain
                 </option>
               </optgroup>
             </select>

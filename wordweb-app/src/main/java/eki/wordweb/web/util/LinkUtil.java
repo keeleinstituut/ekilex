@@ -3,6 +3,7 @@ package eki.wordweb.web.util;
 import java.util.List;
 
 import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -25,6 +26,7 @@ public class LinkUtil implements GlobalConstant {
 
 		AppData appData = appDataHolder.getAppData();
 		String baseUrl = appData.getBaseUrl();
+		baseUrl = StringUtils.replace(baseUrl, "http:", "https:");
 		String wordValue = word.getValue();
 		Integer homonymNr = word.getHomonymNr();
 		String lang = word.getLang();
@@ -38,6 +40,7 @@ public class LinkUtil implements GlobalConstant {
 
 		AppData appData = appDataHolder.getAppData();
 		String baseUrl = appData.getBaseUrl();
+		baseUrl = StringUtils.replace(baseUrl, "http:", "https:");
 		String wordValue = word.getValue();
 		Integer homonymNr = word.getHomonymNr();
 		String lang = word.getLang();
@@ -54,6 +57,7 @@ public class LinkUtil implements GlobalConstant {
 
 		AppData appData = appDataHolder.getAppData();
 		String baseUrl = appData.getBaseUrl();
+		baseUrl = StringUtils.replace(baseUrl, "http:", "https:");
 
 		for (LexemeWord lexeme : lexemes) {
 

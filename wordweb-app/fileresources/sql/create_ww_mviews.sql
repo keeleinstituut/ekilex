@@ -82,6 +82,7 @@ dblink(
 	lang_filt varchar(10),
 	lang_order_by bigint,
 	homonym_nr integer,
+	homonym_exists boolean,
 	display_morph_code varchar(100),
 	gender_code varchar(100),
 	aspect_code varchar(100),

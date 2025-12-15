@@ -2,6 +2,8 @@ package eki.ekilex.service.db.util;
 
 import static eki.ekilex.data.db.main.Tables.ACTIVITY_LOG;
 import static eki.ekilex.data.db.main.Tables.COLLOCATION_MEMBER;
+import static eki.ekilex.data.db.main.Tables.DEFINITION;
+import static eki.ekilex.data.db.main.Tables.DEFINITION_DATASET;
 import static eki.ekilex.data.db.main.Tables.DERIV_LABEL;
 import static eki.ekilex.data.db.main.Tables.DOMAIN_LABEL;
 import static eki.ekilex.data.db.main.Tables.FORM;
@@ -18,11 +20,13 @@ import static eki.ekilex.data.db.main.Tables.LEXEME_TAG;
 import static eki.ekilex.data.db.main.Tables.MEANING_DOMAIN;
 import static eki.ekilex.data.db.main.Tables.MEANING_LAST_ACTIVITY_LOG;
 import static eki.ekilex.data.db.main.Tables.MORPH_LABEL;
+import static eki.ekilex.data.db.main.Tables.POS_GROUP_LABEL;
 import static eki.ekilex.data.db.main.Tables.POS_LABEL;
 import static eki.ekilex.data.db.main.Tables.PROFICIENCY_LEVEL_LABEL;
 import static eki.ekilex.data.db.main.Tables.PUBLISHING;
 import static eki.ekilex.data.db.main.Tables.REGION;
 import static eki.ekilex.data.db.main.Tables.REGISTER_LABEL;
+import static eki.ekilex.data.db.main.Tables.REL_GROUP_LABEL;
 import static eki.ekilex.data.db.main.Tables.SOURCE;
 import static eki.ekilex.data.db.main.Tables.USAGE;
 import static eki.ekilex.data.db.main.Tables.USAGE_SOURCE_LINK;
@@ -34,14 +38,17 @@ import static eki.ekilex.data.db.main.Tables.WORD_LAST_ACTIVITY_LOG;
 import static eki.ekilex.data.db.main.Tables.WORD_TAG;
 import static eki.ekilex.data.db.main.Tables.WORD_WORD_TYPE;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import org.jooq.Condition;
 import org.jooq.Field;
 import org.jooq.JSON;
 import org.jooq.Param;
+import org.jooq.Table;
 import org.jooq.impl.DSL;
 import org.springframework.stereotype.Component;
 
@@ -52,6 +59,8 @@ import eki.common.constant.PublishingConstant;
 import eki.ekilex.data.db.main.tables.ActivityLog;
 import eki.ekilex.data.db.main.tables.CollocationMember;
 import eki.ekilex.data.db.main.tables.Dataset;
+import eki.ekilex.data.db.main.tables.Definition;
+import eki.ekilex.data.db.main.tables.DefinitionDataset;
 import eki.ekilex.data.db.main.tables.DerivLabel;
 import eki.ekilex.data.db.main.tables.DomainLabel;
 import eki.ekilex.data.db.main.tables.Form;
@@ -68,11 +77,13 @@ import eki.ekilex.data.db.main.tables.LexemeTag;
 import eki.ekilex.data.db.main.tables.MeaningDomain;
 import eki.ekilex.data.db.main.tables.MeaningLastActivityLog;
 import eki.ekilex.data.db.main.tables.MorphLabel;
+import eki.ekilex.data.db.main.tables.PosGroupLabel;
 import eki.ekilex.data.db.main.tables.PosLabel;
 import eki.ekilex.data.db.main.tables.ProficiencyLevelLabel;
 import eki.ekilex.data.db.main.tables.Publishing;
 import eki.ekilex.data.db.main.tables.Region;
 import eki.ekilex.data.db.main.tables.RegisterLabel;
+import eki.ekilex.data.db.main.tables.RelGroupLabel;
 import eki.ekilex.data.db.main.tables.Source;
 import eki.ekilex.data.db.main.tables.Usage;
 import eki.ekilex.data.db.main.tables.UsageSourceLink;
@@ -583,46 +594,151 @@ public class QueryHelper implements GlobalConstant, PublishingConstant {
 
 	public Field<JSON> getCollocationMembersField(Field<Long> collocLexemeIdField, String classifierLabelLang, String classifierLabelTypeCode) {
 
-		CollocationMember cm2 = COLLOCATION_MEMBER.as("cm2");
+		CollocationMember cm = COLLOCATION_MEMBER.as("cm2");
 		Word mw = WORD.as("mw");
 		Word jw = WORD.as("jw");
 		Lexeme ml = LEXEME.as("ml");
 		Lexeme jl = LEXEME.as("jl");
 		Form mf = FORM.as("mf");
 		MorphLabel mfl = MORPH_LABEL.as("mfl");
+		PosGroupLabel pgl = POS_GROUP_LABEL.as("pgl");
+		RelGroupLabel rgl = REL_GROUP_LABEL.as("rgl");
 
 		Field<JSON> memf = DSL
 				.select(DSL
 						.jsonArrayAgg(DSL
 								.jsonObject(
-										DSL.key("id").value(cm2.ID),
-										DSL.key("conjunct").value(jw.VALUE),
-										DSL.key("lexemeId").value(ml.ID),
-										DSL.key("wordId").value(mw.ID),
-										DSL.key("wordValue").value(mw.VALUE),
+										DSL.key("id").value(cm.ID),
+										DSL.key("datasetCode").value(ml.DATASET_CODE),
+										DSL.key("collocLexemeId").value(cm.COLLOC_LEXEME_ID),
+										DSL.key("memberLexemeId").value(cm.MEMBER_LEXEME_ID),
+										DSL.key("memberMeaningId").value(ml.MEANING_ID),
+										DSL.key("memberWordId").value(ml.WORD_ID),
+										DSL.key("memberWordValue").value(mw.VALUE),
 										DSL.key("homonymNr").value(mw.HOMONYM_NR),
 										DSL.key("lang").value(mw.LANG),
-										DSL.key("formId").value(mf.ID),
-										DSL.key("formValue").value(mf.VALUE),
+										DSL.key("memberFormId").value(cm.MEMBER_FORM_ID),
+										DSL.key("memberFormValue").value(mf.VALUE),
 										DSL.key("morphCode").value(mf.MORPH_CODE),
 										DSL.key("morphValue").value(mfl.VALUE),
-										DSL.key("weight").value(cm2.WEIGHT),
-										DSL.key("memberOrder").value(cm2.MEMBER_ORDER)))
-						.orderBy(cm2.MEMBER_ORDER))
-				.from(cm2
-						.innerJoin(ml).on(ml.ID.eq(cm2.MEMBER_LEXEME_ID))
+										DSL.key("conjunctLexemeId").value(cm.CONJUNCT_LEXEME_ID),
+										DSL.key("conjunctValue").value(jw.VALUE),
+										DSL.key("posGroupCode").value(cm.POS_GROUP_CODE),
+										DSL.key("posGroupValue").value(pgl.VALUE),
+										DSL.key("relGroupCode").value(cm.REL_GROUP_CODE),
+										DSL.key("relGroupValue").value(rgl.VALUE),
+										DSL.key("weight").value(cm.WEIGHT),
+										DSL.key("memberOrder").value(cm.MEMBER_ORDER),
+										DSL.key("groupOrder").value(cm.GROUP_ORDER)))
+						.orderBy(cm.MEMBER_ORDER))
+				.from(cm
+						.innerJoin(ml).on(ml.ID.eq(cm.MEMBER_LEXEME_ID))
 						.innerJoin(mw).on(mw.ID.eq(ml.WORD_ID))
-						.innerJoin(mf).on(mf.ID.eq(cm2.MEMBER_FORM_ID))
-						.leftOuterJoin(jl).on(jl.ID.eq(cm2.CONJUNCT_LEXEME_ID))
+						.innerJoin(mf).on(mf.ID.eq(cm.MEMBER_FORM_ID))
+						.leftOuterJoin(mfl).on(
+								mfl.CODE.eq(mf.MORPH_CODE)
+										.and(mfl.TYPE.eq(classifierLabelTypeCode))
+										.and(mfl.LANG.eq(classifierLabelLang)))
+						.leftOuterJoin(jl).on(jl.ID.eq(cm.CONJUNCT_LEXEME_ID))
+						.leftOuterJoin(jw).on(jw.ID.eq(jl.WORD_ID))
+						.leftOuterJoin(pgl).on(
+								pgl.CODE.eq(cm.POS_GROUP_CODE)
+										.and(pgl.TYPE.eq(classifierLabelTypeCode))
+										.and(pgl.LANG.eq(classifierLabelLang)))
+						.leftOuterJoin(rgl).on(
+								rgl.CODE.eq(cm.REL_GROUP_CODE)
+										.and(rgl.TYPE.eq(classifierLabelTypeCode))
+										.and(rgl.LANG.eq(classifierLabelLang))))
+				.where(cm.COLLOC_LEXEME_ID.eq(collocLexemeIdField))
+				.asField();
+
+		return memf;
+	}
+
+	public Table<?> getCollocMemberFullJoinTable(CollocationMember cm, Condition where, String classifierLabelLang, String classifierLabelTypeCode) {
+
+		final BigDecimal COLLOC_MEMBER_WEIGHT_LEVEL_1 = new BigDecimal("1.0");
+		final BigDecimal COLLOC_MEMBER_WEIGHT_LEVEL_2 = new BigDecimal("0.8");
+		final BigDecimal COLLOC_MEMBER_WEIGHT_LEVEL_3 = new BigDecimal("0.5");
+
+		Word mw = WORD.as("mw");
+		Word jw = WORD.as("jw");
+		Lexeme ml = LEXEME.as("ml");
+		Lexeme jl = LEXEME.as("jl");
+		Form mf = FORM.as("mf");
+		MorphLabel mfl = MORPH_LABEL.as("mfl");
+		PosGroupLabel pgrl = POS_GROUP_LABEL.as("pgrl");
+		RelGroupLabel rgrl = REL_GROUP_LABEL.as("rgrl");
+		Definition md = DEFINITION.as("md");
+		DefinitionDataset mdd = DEFINITION_DATASET.as("mdd");
+
+		Field<JSON> mdf = DSL
+				.select(DSL
+						.arrayAgg(md.VALUE)
+						.orderBy(md.ORDER_BY))
+				.from(md)
+				.where(
+						md.MEANING_ID.eq(ml.MEANING_ID)
+								.andExists(DSL
+										.select(mdd.DEFINITION_ID)
+										.from(mdd)
+										.where(
+												mdd.DEFINITION_ID.eq(md.ID)
+														.and(mdd.DATASET_CODE.eq(ml.DATASET_CODE)))))
+				.asField();
+
+		Field<Integer> wlf = DSL.field(DSL
+				.when(cm.WEIGHT.eq(COLLOC_MEMBER_WEIGHT_LEVEL_1), DSL.value(1))
+				.when(cm.WEIGHT.eq(COLLOC_MEMBER_WEIGHT_LEVEL_2), DSL.value(2))
+				.when(cm.WEIGHT.eq(COLLOC_MEMBER_WEIGHT_LEVEL_3), DSL.value(3)));
+
+		Table<?> cmst = DSL
+				.select(
+						cm.ID,
+						ml.DATASET_CODE,
+						cm.COLLOC_LEXEME_ID,
+						cm.MEMBER_LEXEME_ID,
+						ml.MEANING_ID.as("member_meaning_id"),
+						ml.WORD_ID.as("member_word_id"),
+						mw.VALUE.as("member_word_value"),
+						mw.HOMONYM_NR,
+						mw.LANG,
+						cm.MEMBER_FORM_ID,
+						mf.VALUE.as("member_form_value"),
+						mf.MORPH_CODE,
+						mfl.VALUE.as("morph_value"),
+						cm.CONJUNCT_LEXEME_ID,
+						jw.VALUE.as("conjunct_value"),
+						cm.POS_GROUP_CODE,
+						pgrl.VALUE.as("pos_group_value"),
+						cm.REL_GROUP_CODE,
+						rgrl.VALUE.as("rel_group_value"),
+						cm.WEIGHT,
+						wlf.as("weight_level"),
+						cm.MEMBER_ORDER,
+						cm.GROUP_ORDER,
+						mdf.as("definition_values"))
+				.from(cm
+						.innerJoin(ml).on(ml.ID.eq(cm.MEMBER_LEXEME_ID))
+						.innerJoin(mw).on(mw.ID.eq(ml.WORD_ID))
+						.innerJoin(mf).on(mf.ID.eq(cm.MEMBER_FORM_ID))
+						.leftOuterJoin(jl).on(jl.ID.eq(cm.CONJUNCT_LEXEME_ID))
 						.leftOuterJoin(jw).on(jw.ID.eq(jl.WORD_ID))
 						.leftOuterJoin(mfl).on(
 								mfl.CODE.eq(mf.MORPH_CODE)
 										.and(mfl.TYPE.eq(classifierLabelTypeCode))
-										.and(mfl.LANG.eq(classifierLabelLang))))
-				.where(cm2.COLLOC_LEXEME_ID.eq(collocLexemeIdField))
-				.asField();
-
-		return memf;
+										.and(mfl.LANG.eq(classifierLabelLang)))
+						.leftOuterJoin(pgrl).on(
+								pgrl.CODE.eq(cm.POS_GROUP_CODE)
+										.and(pgrl.TYPE.eq(classifierLabelTypeCode))
+										.and(pgrl.LANG.eq(classifierLabelLang)))
+						.leftOuterJoin(rgrl).on(
+								rgrl.CODE.eq(cm.REL_GROUP_CODE)
+										.and(rgrl.TYPE.eq(classifierLabelTypeCode))
+										.and(rgrl.LANG.eq(classifierLabelLang))))
+				.where(where)
+				.asTable("cmst");
+		return cmst;
 	}
 
 	public Field<JSON> getMeaningDomainsField(Field<Long> meaningIdField, String classifierLabelLang, String classifierLabelTypeCode) {

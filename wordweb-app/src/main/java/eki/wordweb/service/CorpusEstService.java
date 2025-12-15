@@ -56,7 +56,7 @@ public class CorpusEstService extends AbstractRemoteRequestService {
 	public List<CorpusSentence> getCorpusSentences(String searchMode, String wordValue, List<String> posCodes) {
 
 		URI corpusUrl = composeCorpusUri(searchMode, wordValue, posCodes);
-		Map<String, Object> response = request(corpusUrl);
+		Map<String, Object> response = requestGet(corpusUrl);
 		List<CorpusSentence> corpusSentences = parseResponse(response);
 		return corpusSentences;
 	}

@@ -21,7 +21,6 @@ import eki.common.constant.PermConstant;
 import eki.common.data.AsWordResult;
 import eki.ekilex.data.ActivityLogData;
 import eki.ekilex.data.Classifier;
-import eki.ekilex.data.CollocMemberOrder;
 import eki.ekilex.data.DatasetPermission;
 import eki.ekilex.data.EkiUser;
 import eki.ekilex.data.Freeform;
@@ -847,37 +846,6 @@ public class CudService extends AbstractCudService implements PermConstant, Acti
 	}
 
 	@Transactional(rollbackFor = Exception.class)
-	public void updateCollocMemberGroupOrder(Long collocLexemeId, Long memberLexemeId, String direction, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
-
-		ActivityLogData activityLog = activityLogService.prepareActivityLog("updateCollocMemberGroupOrder", memberLexemeId, ActivityOwner.LEXEME, roleDatasetCode, isManualEventOnUpdateEnabled);
-		List<CollocMemberOrder> collocMembers = lookupDbService.getCollocMemberOrdersOfRelGroup(collocLexemeId, memberLexemeId);
-		int collocMemberCount = collocMembers.size();
-		CollocMemberOrder sourceCollocMember = collocMembers.stream()
-				.filter(collocMember -> collocMember.getCollocLexemeId().equals(collocLexemeId))
-				.findFirst()
-				.get();
-		int sourceCollocMemberIndex = collocMembers.indexOf(sourceCollocMember);
-		if (sourceCollocMemberIndex < 0) {
-			return;
-		}
-		CollocMemberOrder targetCollocMember = null;
-		if (StringUtils.equalsIgnoreCase(direction, "up") && (sourceCollocMemberIndex > 0)) {
-			targetCollocMember = collocMembers.get(sourceCollocMemberIndex - 1);
-		} else if (StringUtils.equalsIgnoreCase(direction, "down") && (sourceCollocMemberIndex < (collocMemberCount - 1))) {
-			targetCollocMember = collocMembers.get(sourceCollocMemberIndex + 1);
-		}
-		if (targetCollocMember != null) {
-			Long sourceCollocMemberId = sourceCollocMember.getId();
-			Integer sourceCollocGroupOrder = sourceCollocMember.getGroupOrder();
-			Long targetCollocMemberId = targetCollocMember.getId();
-			Integer targetCollocGroupOrder = targetCollocMember.getGroupOrder();
-			cudDbService.updateLexemeCollocMemberGroupOrder(sourceCollocMemberId, targetCollocGroupOrder);
-			cudDbService.updateLexemeCollocMemberGroupOrder(targetCollocMemberId, sourceCollocGroupOrder);
-		}
-		activityLogService.createActivityLog(activityLog, memberLexemeId, ActivityEntity.LEXEME);
-	}
-
-	@Transactional(rollbackFor = Exception.class)
 	public void updateUsage(Long usageId, String valuePrese, boolean isPublic, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
 
 		Usage usage = new Usage();
@@ -1456,7 +1424,7 @@ public class CudService extends AbstractCudService implements PermConstant, Acti
 			activityLogService.createActivityLog("deleteWord", wordId, ActivityOwner.WORD, roleDatasetCode, isManualEventOnUpdateEnabled);
 		}
 		activityLogService.createActivityLog("deleteLexeme", lexemeId, ActivityOwner.LEXEME, roleDatasetCode, isManualEventOnUpdateEnabled);
-		cudDbService.deleteLexemeCollocMembers(lexemeId);
+		collocationDbService.deleteLexemeCollocMembers(lexemeId);
 		cudDbService.deleteLexemeFreeforms(lexemeId);
 		cudDbService.deleteLexeme(lexemeId);
 		if (isOnlyLexemeForMeaning) {
@@ -1556,15 +1524,6 @@ public class CudService extends AbstractCudService implements PermConstant, Acti
 			cudDbService.deleteLexemeTag(lexemeTagId);
 			activityLogService.createActivityLog(activityLog, lexemeTagId, ActivityEntity.TAG);
 		}
-	}
-
-	@Transactional(rollbackFor = Exception.class)
-	public void deleteCollocMember(Long collocMemberId, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
-
-		Long lexemeId = activityLogService.getActivityOwnerId(collocMemberId, ActivityEntity.COLLOC_MEMBER);
-		ActivityLogData activityLog = activityLogService.prepareActivityLog("deleteCollocMember", lexemeId, ActivityOwner.LEXEME, roleDatasetCode, isManualEventOnUpdateEnabled);
-		cudDbService.deleteCollocMember(collocMemberId);
-		activityLogService.createActivityLog(activityLog, collocMemberId, ActivityEntity.COLLOC_MEMBER);
 	}
 
 	@Transactional(rollbackFor = Exception.class)

@@ -173,7 +173,6 @@ public class OsSearchController extends AbstractSearchController {
 		if (searchResult != null) {
 			model.addAttribute("searchResult", searchResult);
 		}
-		model.addAttribute("feedbackServiceUrl", feedbackServiceUrl);
 		model.addAttribute("feedbackType", "ÕS");
 	}
 

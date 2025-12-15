@@ -1,10 +1,24 @@
 .colloc-move {
   &__container {
+
     // Hide move toggles if there's no checked checkboxes in the container
     &:not(:has(input:checked)) {
       & .colloc-move__toggle {
         display: none;
       }
     }
+  }
+}
+
+.colloc-member-form {
+  overflow: auto;
+  max-height: 55svh;
+
+  @media (min-height: 600px) {
+    max-height: 60svh;
+  }
+
+  @media (min-height: 900px) {
+    max-height: 70svh;
   }
 }
