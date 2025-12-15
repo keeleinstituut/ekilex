@@ -17,7 +17,7 @@
 <th:block th:replace="common-app :: header(withSearch = ${false})"></th:block>
 <div class="container-fluid learn">
   <div class="row no-gutters learn-container">
-    <aside class="col-12 col-md-4  learn-container-menu" tabindex="0">
+    <aside class="col-12 col-md-4  learn-container-menu" role="navigation" aria-label="Õppemenüü" tabindex="0">
       <div class="col-12">
         <h1 class="mx-lg-4 mt-md-4 font-weight-bold page-title">Õpime eesti keelt</h1>
       </div>
@@ -157,6 +157,7 @@
           </li>
           <li class="has-submenu" role="presentation">
             <a class="nav-link"
+               id="v-pills-kasulikke-tab"
                href="#v-pills-kasulikke"
                data-toggle="pill"
                aria-controls="v-pills-kasulikke"
@@ -322,7 +323,7 @@
                role="tab"
                aria-controls="v-pills-grammatikatabelid"
                aria-selected="false">Grammatikatabelid
-              <i class="fas fa-file-pdf"></i>
+              <i class="fas fa-file-pdf"><span class="sr-only">PDF</span></i>
             </a>
           </li>
           <li role="presentation">
@@ -333,7 +334,7 @@
                role="tab"
                aria-controls="v-pills-regions"
                aria-selected="false">Maad ja rahvad
-              <i class="fas fa-file-pdf"></i>
+              <i class="fas fa-file-pdf"><span class="sr-only">PDF</span></i>
             </a>
           </li>
           <li role="presentation">
@@ -364,7 +365,7 @@
             <div class="row number-rows">
               <div class="col-lg-6 col-sm-12">
                 <div class="row">
-                  <div  class="text"><h6 class="learn-content-subtitle">Põhiarvud</h6></div>
+                  <div class="text"><h6 class="learn-content-subtitle">Põhiarvud</h6></div>
                 </div>
                 <div class="row">
                   <div class="num">
@@ -2621,7 +2622,7 @@
                 <h6 class="learn-content-subtitle">Sõnum</h6>
                 <div class="row col-12 mb-4">
                   <img class="lazyload w-100"
-                       th:data-src="@{/view/images/sonum.png}">
+                       th:data-src="@{/view/images/sonum.png}" alt="Eestikeelne vestlus jutumullides">
                 </div>
               </div>
             </div>
@@ -3470,7 +3471,6 @@
                 </div>
               </div>
             </div>
-            <h6 class="learn-content-subtitle"></h6>
             <div class="row mb-4">
               <div class="col-12">
                 <h6 class="learn-content-subtitle">Info küsimine</h6>
@@ -3897,7 +3897,6 @@
           <a id="kaastundeavaldus"></a>
           <div class="learn-content learn-content-border-bottom">
             <h4 class="learn-content-subtitle">Kaastunde avaldamine</h4>
-            <h6 class="learn-content-subtitle"></h6>
             <div class="row">
               <div class="col-lg-12 mb-4">
                 <div class="learn-letter">
@@ -4895,12 +4894,14 @@
           <h3 class="learn-content-title">
             Grammatikatabelid
             <a href="https://www.eki.ee/dict/psv/grammatikatabelid.pdf" download="grammatikatabelid.pdf"
+               aria-label="Laadi alla grammatikatabelid PDF-dokumendina"
                class="btn p-0 text-primary">
-              <i class="fa fa-download"></i> Laadi alla PDF-ina
+              <i class="fa fa-download" aria-hidden="true"></i> Laadi alla PDF-ina
             </a>
           </h3>
           <div class="learn-content">
             <iframe src="https://www.eki.ee/dict/psv/grammatikatabelid.pdf"
+                    title="Grammatikatabelid"
                     width="100%"
                     height="500px">
             </iframe>
@@ -4914,12 +4915,14 @@
           <h3 class="learn-content-title">
             Maad ja rahvad
             <a href="https://www.eki.ee/dict/psv/maadjarahvad.pdf" download="maadjarahvad.pdf"
+               aria-label="Laadi alla 'Maad ja rahvad' PDF-dokumendina"
                class="btn p-0 text-primary">
-              <i class="fa fa-download"></i> Laadi alla PDF-ina
+              <i class="fa fa-download" aria-hidden="true"></i> Laadi alla PDF-ina
             </a>
           </h3>
           <div class="learn-content">
             <iframe src="https://www.eki.ee/dict/psv/maadjarahvad.pdf"
+                    title="Maad ja rahvad"
                     width="100%"
                     height="500px">
             </iframe>
@@ -4939,6 +4942,7 @@
           </h3>
           <div class="learn-content">
             <iframe src="https://eki.ee/teatmik/"
+                    title="EKI teamik"
                     width="100%"
                     height="500px">
             </iframe>
