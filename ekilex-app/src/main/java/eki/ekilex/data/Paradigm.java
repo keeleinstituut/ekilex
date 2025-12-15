@@ -3,19 +3,21 @@ package eki.ekilex.data;
 import java.util.List;
 
 import eki.common.data.AbstractDataObject;
+import io.swagger.v3.oas.annotations.media.Schema;
 
+@Schema(description = "Morphological paradigm with forms and metadata")
 public class Paradigm extends AbstractDataObject {
 
 	private static final long serialVersionUID = 1L;
-
+	@Schema(example = "1293387")
 	private Long paradigmId;
-
+	@Schema(example = "null")
 	private String comment;
-
+	@Schema(example = "2")
 	private String inflectionType;
-
+	@Schema(example = "2")
 	private String inflectionTypeNr;
-
+	@Schema(example = "noomen")
 	private String wordClass;
 
 	private List<Form> forms;

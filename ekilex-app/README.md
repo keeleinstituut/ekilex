@@ -10,7 +10,7 @@ If you have node and npm installed, then
 * enter the command `npm install` to command line
 
 This should install all the necessary tools for front end development.
-If the install was successful then run the command
+If the install was successful then run the commandcd 
 
 `grunt`
 
@@ -30,7 +30,7 @@ If you want to add new styles then you should do your work in the `src/main/reso
 **styles.scss** is then compiled in to `styles.css` which is then used in production. No changes should be made to **.css** files as they will be lost when generating styles from **.scss**
 
 ## Running developer server
-* Start a tunnel between test database and your computer `ssh username@ekitest.tripledev.ee -L 5433:127.0.0.1:5432 -N` - run it at the root folder of the project. If there is no output from the command then it means everything is working. Otherwise it will output errors.
+* Start a tunnel between test database and your computer `ssh ername@ekitest.tripledev.ee -L 5433:127.0.0.1:5432 -N` - run it at the root folder of the project. If there is no output from the command then it means everything is working. Otherwise it will output errors.
 * Install Maven application (at root folder) - `mvn clean install -D skipTests`
 * Add application-dev.properties file to src/main/resources with this content and tweak as necessary:
 ```

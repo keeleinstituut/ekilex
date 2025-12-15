@@ -2,6 +2,7 @@ package eki.ekilex.api.controller;
 
 import javax.servlet.http.HttpServletRequest;
 
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
@@ -21,7 +22,7 @@ import eki.ekilex.data.api.ApiResponse;
 import eki.ekilex.data.api.TermMeaning;
 import eki.ekilex.service.CudService;
 import eki.ekilex.service.api.TermMeaningService;
-
+@Tag(name = "Term meaning")
 @ConditionalOnWebApplication
 @RestController
 public class ApiTermMeaningController extends AbstractApiController {

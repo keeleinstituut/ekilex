@@ -2,6 +2,7 @@ package eki.ekilex.api.controller;
 
 import javax.servlet.http.HttpServletRequest;
 
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
@@ -22,7 +23,7 @@ import eki.ekilex.data.Source;
 import eki.ekilex.data.SourceSearchResult;
 import eki.ekilex.data.api.ApiResponse;
 import eki.ekilex.service.SourceService;
-
+@Tag(name = "Sources")
 @ConditionalOnWebApplication
 @RestController
 public class ApiSourceController extends AbstractApiController {

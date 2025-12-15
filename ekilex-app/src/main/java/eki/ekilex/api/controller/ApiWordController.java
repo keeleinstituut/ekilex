@@ -2,6 +2,7 @@ package eki.ekilex.api.controller;
 
 import javax.servlet.http.HttpServletRequest;
 
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
 import org.springframework.core.annotation.Order;
@@ -20,7 +21,7 @@ import eki.ekilex.data.api.ApiResponse;
 import eki.ekilex.data.api.WordClassifier;
 import eki.ekilex.data.api.WordRelation;
 import eki.ekilex.service.CudService;
-
+@Tag(name = "Word")
 @ConditionalOnWebApplication
 @RestController
 public class ApiWordController extends AbstractApiController {

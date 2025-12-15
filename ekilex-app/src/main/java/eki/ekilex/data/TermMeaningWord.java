@@ -1,19 +1,45 @@
 package eki.ekilex.data;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import eki.common.data.AbstractDataObject;
 
+@Schema(
+		description = "Represents a single word/term that is associated with a specific meaning. " +
+				"Contains linguistic properties, language information, and metadata about the term."
+)
 public class TermMeaningWord extends AbstractDataObject implements DecoratedWordType {
 
 	private static final long serialVersionUID = 1L;
 
+	@Schema(
+			description = "Unique identifier for this word in the database",
+			example = "175467"
+	)
 	private Long wordId;
 
+	@Schema(
+			description = "The actual word/term value as stored in the database",
+			example = "jääkarussell"
+	)
 	private String wordValue;
 
+	@Schema(
+			description = "Presentation form of the word/term, may include formatting or linguistic markup. " +
+					"Can contain XML tags for special formatting like stress marks.",
+			example = "jääkarussell"
+	)
 	private String wordValuePrese;
 
+	@Schema(
+			description = "Homonym number if multiple entries exist for the same word value. ",
+			example = "1"
+	)
 	private Integer homonymNr;
 
+	@Schema(
+			description = "Language code for this word/term (e.g., 'est' for Estonian, 'eng' for English, 'rus' for Russian)",
+			example = "est"
+	)
 	private String lang;
 
 	private String[] wordTypeCodes;
@@ -22,8 +48,17 @@ public class TermMeaningWord extends AbstractDataObject implements DecoratedWord
 
 	private boolean suffixoid;
 
+	@Schema(
+			description = "Boolean indicating whether this term is a foreign word",
+			example = "false"
+	)
 	private boolean foreign;
 
+	@Schema(
+			description = "Boolean indicating whether this term matches the original search query. " +
+					"True if this is one of the terms the user searched for, false if it's a related/translation term.",
+			example = "true"
+	)
 	private boolean matchingWord;
 
 	private boolean mostPreferred;
@@ -32,6 +67,10 @@ public class TermMeaningWord extends AbstractDataObject implements DecoratedWord
 
 	private boolean isPublic;
 
+	@Schema(
+			description = "Array of dataset codes indicating which terminology databases this term belongs to. ",
+			example = "[\"eki\"]"
+	)
 	private String[] datasetCodes;
 
 	public Long getWordId() {

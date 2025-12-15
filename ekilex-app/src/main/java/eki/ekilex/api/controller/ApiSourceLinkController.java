@@ -2,6 +2,7 @@ package eki.ekilex.api.controller;
 
 import javax.servlet.http.HttpServletRequest;
 
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
 import org.springframework.core.annotation.Order;
@@ -26,7 +27,7 @@ import eki.ekilex.data.SourceLink;
 import eki.ekilex.data.UsageSourceLink;
 import eki.ekilex.data.api.ApiResponse;
 import eki.ekilex.service.SourceLinkService;
-
+@Tag(name = "Source links")
 @ConditionalOnWebApplication
 @RestController
 public class ApiSourceLinkController extends AbstractApiController implements ContentKey {

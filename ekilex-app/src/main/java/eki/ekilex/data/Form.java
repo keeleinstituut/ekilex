@@ -3,30 +3,31 @@ package eki.ekilex.data;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import eki.common.data.AbstractDataObject;
+import io.swagger.v3.oas.annotations.media.Schema;
 
 @JsonIgnoreProperties({"displayMorphCode"})
 public class Form extends AbstractDataObject {
 
 	private static final long serialVersionUID = 1L;
-
+	@Schema(example = "12526010")
 	private Long id;
-
+	@Schema(example = "kobarat")
 	private String value;
-
+	@Schema(example = "kobara<eki-form>t</eki-form>")
 	private String valuePrese;
-
+	@Schema(example = "null")
 	private String[] components;
-
+	@Schema(example = "kobara[t")
 	private String displayForm;
-
+	@Schema(example = "SgP")
 	private String morphCode;
-
+	@Schema(example = "ainsuse osastav")
 	private String morphValue;
-
+	@Schema(example = "null")
 	private String morphFrequency;
-
+	@Schema(example = "null")
 	private String formFrequency;
-
+	@Schema(hidden = true)
 	private boolean isDisplayMorphCode;
 
 	public Form() {

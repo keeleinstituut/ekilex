@@ -8,7 +8,6 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 
 import eki.common.data.AbstractDataObject;
-
 @JsonInclude(Include.NON_NULL)
 public class Classifier extends AbstractDataObject {
 

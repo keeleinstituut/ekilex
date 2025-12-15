@@ -10,82 +10,98 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
 
 import eki.common.util.LocalDateTimeDeserialiser;
+import io.swagger.v3.oas.annotations.media.Schema;
 
+@Schema(description = "Represents a lexical word entry returned in search results")
 @JsonInclude(Include.NON_EMPTY)
 public class Word extends AbstractGrantEntity implements DecoratedWordType {
 
 	private static final long serialVersionUID = 1L;
-
+	@Schema(description = "Unique identifier of the word", example = "182736")
 	private Long wordId;
-
+	@Schema(description = "The actual word string", example = "kobar")
 	private String wordValue;
-
+	@Schema(description = "The presentational value for the word. Can include <eki-...> - markups.", example = "kobar")
 	private String wordValuePrese;
-
+	@Schema(description = "Sequence number of homonyms for this word", example = "1")
 	private Integer homonymNr;
-
+	@Schema(description = "Language code of the word", example = "est")
 	private String lang;
-
+	@Schema(hidden = true)
 	private String displayMorphCode;
-
+	@Schema(hidden = true)
 	private String genderCode;
-
+	@Schema(hidden = true)
 	private String aspectCode;
-
+	@Schema(hidden = true)
 	private String vocalForm;
-
+	@Schema(example = "kobar")
 	private String morphophonoForm;
-
+	@Schema(hidden = true)
 	private String morphComment;
-
+	@Schema(hidden = true)
 	private Integer regYear;
-
+	@Schema(hidden = true)
 	private String wordFrequency;
-
+	@Schema(hidden = true)
 	private String[] wordTypeCodes;
-
+	@Schema(hidden = true)
 	private List<Classifier> wordTypes;
-
+	@Schema(example = "false")
 	private boolean prefixoid;
-
+	@Schema(example = "false")
 	private boolean suffixoid;
-
+	@Schema(description = "Whether the word is foreign or not", example = "false")
 	private boolean foreign;
-
+	@Schema(hidden = true)
 	private boolean isWordPublic;
-
+	@Schema(hidden = true)
 	private Boolean lexemesArePublic;
-
+	@Schema(hidden = true)
 	private List<String> tags;
-
+	@Schema(hidden = true)
 	private List<String> lexemesValueStateLabels;
-
+	@Schema(description = "Active tags on the lexeme", example = "[\"ÕSi sõna\"]")
 	private List<String> lexemesTagNames;
-
+	@Schema(description = "Datasets where this word is included", example = "[\n" +
+			"                \"ait\",\n" +
+			"                \"aso\",\n" +
+			"                \"bks\",\n" +
+			"                \"eiops\",\n" +
+			"                \"eki\",\n" +
+			"                \"esterm\",\n" +
+			"                \"ety\",\n" +
+			"                \"gal\",\n" +
+			"                \"kkt\",\n" +
+			"                \"kool_KV\",\n" +
+			"                \"les\",\n" +
+			"                \"mer\",\n" +
+			"                \"mil\"\n" +
+			"            ]")
 	private List<String> datasetCodes;
-
+	@Schema(hidden = true)
 	private List<WordForum> forums;
-
+	@Schema(hidden = true)
 	private List<WordRelation> relations;
-
+	@Schema(hidden = true)
 	private List<WordGroup> groups;
-
+	@Schema(description = "Etymological details about the word")
 	private List<WordEtym> etymology;
-
+	@Schema(description = "All paradigms and their forms, ordered by inflection type")
 	private List<Paradigm> paradigms;
-
+	@Schema(hidden = true)
 	private List<Freeform> freeforms;
-
+	@Schema(hidden = true)
 	private List<WordEkiRecommendation> wordEkiRecommendations;
-
+	@Schema(description = "Examples of word usages in the dictionary Õigekeelsussõnaraamat")
 	private List<WordOsUsage> wordOsUsages;
 
 	private WordOsMorph wordOsMorph;
-
+	@Schema(example = "2025-07-04T13:37:10.838442")
 	@JsonSerialize(using = LocalDateTimeSerializer.class)
 	@JsonDeserialize(using = LocalDateTimeDeserialiser.class)
 	private LocalDateTime lastActivityEventOn;
-
+	@Schema(hidden = true)
 	@JsonSerialize(using = LocalDateTimeSerializer.class)
 	@JsonDeserialize(using = LocalDateTimeDeserialiser.class)
 	private LocalDateTime manualEventOn;
