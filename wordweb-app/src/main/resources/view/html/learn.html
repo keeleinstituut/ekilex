@@ -87,12 +87,14 @@
                id="v-pills-kirjutamine-tab"
                data-toggle="pill"
                href="#v-pills-kirjutamine"
-               aria-haspopup="true"
-               aria-expanded="false">Kirjutamine
-               <i class="nav-link-icon fa fa-caret-down"></i>
+               role="tab"
+               aria-controls="v-pills-kirjutamine"
+               aria-selected="false"
+               >Kirjutamine
+               <i class="nav-link-icon fa fa-caret-down" aria-hidden="true"></i>
             </a>
             <ul class="list-unstyled"
-                role="list">
+                role="list">  
               <li>
                 <a class="nav-link"
                    href="#kirisobrale">Kiri sõbrale või kolleegile</a>
@@ -358,10 +360,10 @@
         <div class="tab-pane fade show active"
              id="v-pills-arvud"
              role="tabpanel"
-             aria-labelledby="v-pills-arvud-tab">
-          <h3 class="learn-content-title">Arvud</h3>
+             aria-labelledby="v-pills-arvud-tab"
+             tabindex="-1">
+          <h3 class="learn-content-title" id="arvud" tabindex="-1">Arvud</h3>
           <div class="learn-content">
-            <a id="arvud"></a>
             <div class="row number-rows">
               <div class="col-lg-6 col-sm-12">
                 <div class="row">
@@ -1562,9 +1564,9 @@
         <div class="tab-pane fade"
              id="v-pills-margid"
              role="tabpanel"
-             aria-labelledby="v-pills-margid-tab">
-          <h3 class="learn-content-title">Märgid</h3>
-          <a id="margid"></a>
+             aria-labelledby="v-pills-margid-tab"
+             tabindex="-1">
+          <h3 class="learn-content-title" id="margid">Märgid</h3>
           <div class="learn-content">
             <ul style="list-style: none; padding-left: 0; margin: 0;">
               <li class="row sr-only">
@@ -1627,10 +1629,10 @@
         <div class="tab-pane fade"
              id="v-pills-aeg"
              role="tabpanel"
-             aria-labelledby="v-pills-aeg-tab">
-          <h3 class="learn-content-title">Aeg</h3>
+             aria-labelledby="v-pills-aeg-tab"
+             tabindex="-1">
+          <h3 class="learn-content-title" id="aeg">Aeg</h3>
           <div class="learn-content learn-content-border-bottom">
-            <a id="aeg"></a>
             <div class="row">
               <div class="col-lg-12">
                 <h6 class="learn-content-subtitle">Mis kell on? Kui palju kell on?</h6>
@@ -1849,10 +1851,10 @@
         <div class="tab-pane fade"
              id="v-pills-luhendid"
              role="tabpanel"
-             aria-labelledby="v-pills-luhendid-tab">
-          <h3 class="learn-content-title">Lühendid</h3>
+             aria-labelledby="v-pills-luhendid-tab"
+             tabindex="-1">
+          <h3 class="learn-content-title" id="luhendid">Lühendid</h3>
           <div class="learn-content">
-            <a id="luhendid"></a>
             <div class="row number-rows">
               <div class="col-lg-12">
                 <div class="row">
@@ -2096,9 +2098,9 @@
         <div class="tab-pane fade"
              id="v-pills-kirjavahemargid"
              role="tabpanel"
-             aria-labelledby="v-pills-kirjavahemargid-tab">
-          <h3 class="learn-content-title">Kirjavahemärgid</h3>
-          <a id="kirjavahemargid"></a>
+             aria-labelledby="v-pills-kirjavahemargid-tab"
+             tabindex="-1">
+          <h3 class="learn-content-title" id="kirjavahemargid">Kirjavahemärgid</h3>
           <div class="learn-content">
             <div class="row learn-table">
               <div class="col-12 text-center learn-table-header">
@@ -2387,12 +2389,11 @@
         <div class="tab-pane fade"
              id="v-pills-kirjutamine"
              role="tabpanel"
-             aria-labelledby="v-pills-kirjutamine-tab">
-          <a id="kirjutamine"></a>
-          <h3 class="learn-content-title">Kirjutamine</h3>
-          <a id="kirisobrale"></a>
+             aria-labelledby="v-pills-kirjutamine-tab"
+             tabindex="-1">
+          <h3 class="learn-content-title" id="kirjutamine">Kirjutamine</h3>
           <div class="learn-content learn-content-border-bottom">
-            <h4 class="learn-content-subtitle">Kiri sõbrale või kolleegile</h4>
+            <h4 class="learn-content-subtitle" id="kirisobrale">Kiri sõbrale või kolleegile</h4>
             <h6 class="learn-content-subtitle">Kiri sõbrale</h6>
             <div class="row">
               <div class="col-12 mb-4">
@@ -2636,9 +2637,8 @@
               </div>
             </div>
           </div>
-          <a id="kiriametlik"></a>
           <div class="learn-content learn-content-border-bottom">
-            <h4 class="learn-content-subtitle">Ametlik ja poolametlik kiri</h4>
+            <h4 class="learn-content-subtitle" id="kiriametlik">Ametlik ja poolametlik kiri</h4>
             <h6 class="learn-content-subtitle">Ametlik kiri</h6>
             <div class="row">
               <div class="col-lg-12 mb-4">
@@ -3073,9 +3073,8 @@
               </div>
             </div>
           </div>
-          <a id="onnitlemine"></a>
           <div class="learn-content learn-content-border-bottom">
-            <h4 class="learn-content-subtitle">Õnnitlemine</h4>
+            <h4 class="learn-content-subtitle" id="onnitlemine">Õnnitlemine</h4>
             <div class="row">
               <div class="col-lg-12">
                 <div class="learn-letter">
@@ -3143,9 +3142,8 @@
               </div>
             </div>
           </div>
-          <a id="kutse"></a>
           <div class="learn-content learn-content-border-bottom">
-            <h4 class="learn-content-subtitle">Kutse</h4>
+            <h4 class="learn-content-subtitle" id="kutse">Kutse</h4>
             <div class="row">
               <div class="col-lg-12 mb-4">
                 <div class="learn-letter">
@@ -3258,9 +3256,8 @@
               </div>
             </div>
           </div>
-          <a id="avaldus"></a>
           <div class="learn-content learn-content-border-bottom">
-            <h4 class="learn-content-subtitle">Avaldus</h4>
+            <h4 class="learn-content-subtitle" id="avaldus" tabindex="-1">Avaldus</h4>
             <h6 class="learn-content-subtitle">Asutuse sees</h6>
             <div class="row">
               <div class="col-lg-12 mb-4">
@@ -3394,9 +3391,8 @@
               </div>
             </div>
           </div>
-          <a id="volitus"></a>
           <div class="learn-content learn-content-border-bottom">
-            <h4 class="learn-content-subtitle">Volitus</h4>
+            <h4 class="learn-content-subtitle" id="volitus">Volitus</h4>
             <div class="row">
               <div class="col-12">
                 <div class="learn-letter">
@@ -3443,9 +3439,8 @@
               </div>
             </div>
           </div>
-          <a id="jareleparimine"></a>
           <div class="learn-content learn-content-border-bottom">
-            <h4 class="learn-content-subtitle">Järelepärimine</h4>
+            <h4 class="learn-content-subtitle" id="jareleparimine">Järelepärimine</h4>
             <div class="row">
               <div class="col-12 mb-4">
                 <div class="learn-letter">
@@ -3560,9 +3555,8 @@
               </div>
             </div>
           </div>
-          <a id="kaebus"></a>
           <div class="learn-content learn-content-border-bottom">
-            <h4 class="learn-content-subtitle">Kaebus</h4>
+            <h4 class="learn-content-subtitle" id="kaebus">Kaebus</h4>
             <div class="row mb-4">
               <div class="col-12">
                 <h6 class="learn-content-subtitle">Väljendeid</h6>
@@ -3610,9 +3604,8 @@
               </div>
             </div>
           </div>
-          <a id="arvamusevaljendamine"></a>
           <div class="learn-content learn-content-border-bottom">
-            <h4 class="learn-content-subtitle">Arvamuse väljendamine</h4>
+            <h4 class="learn-content-subtitle" id="arvamusevaljendamine">Arvamuse väljendamine</h4>
             <div class="row mb-4">
               <div class="col-12">
                 <h6 class="learn-content-subtitle">Ma arvan, et .. </h6>
@@ -3771,9 +3764,8 @@
               </div>
             </div>
           </div>
-          <a id="piltidekirjeldamine"></a>
           <div class="learn-content learn-content-border-bottom">
-            <h4 class="learn-content-subtitle">Piltide kirjeldamine</h4>
+            <h4 class="learn-content-subtitle" id="piltidekirjeldamine">Piltide kirjeldamine</h4>
             <div class="row mb-4">
               <div class="col-12">
                 <h6 class="learn-content-subtitle">Väljendeid</h6>
@@ -3815,9 +3807,8 @@
               </div>
             </div>
           </div>
-          <a id="joonistekirjeldamine"></a>
           <div class="learn-content learn-content-border-bottom">
-            <h4 class="learn-content-subtitle">Jooniste ja graafikute kirjeldamine</h4>
+            <h4 class="learn-content-subtitle" id="joonistekirjeldamine">Jooniste ja graafikute kirjeldamine</h4>
             <div class="row mb-4">
               <div class="col-12">
                 <h6 class="learn-content-subtitle">Väljendeid</h6>
@@ -3862,9 +3853,8 @@
               </div>
             </div>
           </div>
-          <a id="kysitlusekirjeldamine"></a>
           <div class="learn-content learn-content-border-bottom">
-            <h4 class="learn-content-subtitle">Küsitluse andmete kirjeldamine</h4>
+            <h4 class="learn-content-subtitle" id="kysitlusekirjeldamine">Küsitluse andmete kirjeldamine</h4>
             <div class="row mb-4">
               <div class="col-12">
                 <h6 class="learn-content-subtitle">Väljendeid</h6>
@@ -3903,9 +3893,8 @@
               </div>
             </div>
           </div>
-          <a id="kaastundeavaldus"></a>
           <div class="learn-content learn-content-border-bottom">
-            <h4 class="learn-content-subtitle">Kaastunde avaldamine</h4>
+            <h4 class="learn-content-subtitle" id="kaastundeavaldus">Kaastunde avaldamine</h4>
             <div class="row">
               <div class="col-lg-12 mb-4">
                 <div class="learn-letter">
@@ -3946,9 +3935,8 @@
               </div>
             </div>
           </div>
-          <a id="cv"></a>
           <div class="learn-content learn-content-border-bottom">
-            <h4 class="learn-content-subtitle">CV</h4>
+            <h4 class="learn-content-subtitle" id="cv">CV</h4>
             <div class="row col-12  mb-4">
               <p>CV ehk <i>curriculum vitae</i> on inimese elulugu kirjeldav dokument.</p>
             </div>
@@ -4091,8 +4079,7 @@
             </div>
           </div>
           <div class="learn-content">
-            <a id="kaaskiri"></a>
-            <h4 class="learn-content-subtitle">Kaaskiri</h4>
+            <h4 class="learn-content-subtitle" id="kaaskiri">Kaaskiri</h4>
             <div class="row">
               <div class="col-12">
                 <div class="learn-letter">
@@ -4150,14 +4137,13 @@
         <div class="tab-pane fade"
              id="v-pills-kasulikke"
              role="tabpanel"
-             aria-labelledby="v-pills-kasulikke-tab">
-          <h3 class="learn-content-title">Kasulikke väljendeid</h3>
-          <a id="kasulikke"></a>
+             aria-labelledby="v-pills-kasulikke-tab"
+             tabindex="-1">
+          <h3 class="learn-content-title" id="kasulikke">Kasulikke väljendeid</h3>
           <div class="row">
             <div class="col-12">
               <div class="learn-content learn-content-border-bottom">
-                <a id="tervitused"></a>
-                <h4 class="learn-content-subtitle">Tervitused</h4>
+                <h4 class="learn-content-subtitle" id="tervitused">Tervitused</h4>
                 <ul>
                   <li>
                     <p>
@@ -4192,8 +4178,7 @@
                 </ul>
               </div>
               <div class="learn-content learn-content-border-bottom">
-                <a id="tervituselejargnevad"></a>
-                <h4 class="learn-content-subtitle">Tervitusele järgnevad väljendid</h4>
+                <h4 class="learn-content-subtitle" id="tervituselejargnevad">Tervitusele järgnevad väljendid</h4>
                 <ul>
                   <li>
                     <p>
@@ -4223,8 +4208,7 @@
                 </ul>
               </div>
               <div class="learn-content learn-content-border-bottom">
-                <a id="lahkumine"></a>
-                <h4 class="learn-content-subtitle">Kellestki lahkumine</h4>
+                <h4 class="learn-content-subtitle" id="lahkumine">Kellestki lahkumine</h4>
                 <ul>
                   <li>
                     <p>
@@ -4264,8 +4248,7 @@
                 </ul>
               </div>
               <div class="learn-content learn-content-border-bottom">
-                <a id="vabandused"></a>
-                <h4 class="learn-content-subtitle">Vabandused</h4>
+                <h4 class="learn-content-subtitle" id="vabandused">Vabandused</h4>
                 <ul>
                   <li>
                     <p>
@@ -4315,8 +4298,7 @@
                 </ul>
               </div>
               <div class="learn-content learn-content-border-bottom">
-                <a id="tanuavaldamine"></a>
-                <h4 class="learn-content-subtitle">Tänu avaldamine</h4>
+                <h4 class="learn-content-subtitle" id="tanuavaldamine">Tänu avaldamine</h4>
                 <ul>
                   <li>
                     <p>
@@ -4346,8 +4328,7 @@
                 </ul>
               </div>
               <div class="learn-content learn-content-border-bottom">
-                <a id="tanuavaldaminevastus"></a>
-                <h4 class="learn-content-subtitle">Vastus tänu avaldamisele</h4>
+                <h4 class="learn-content-subtitle" id="tanuavaldaminevastus">Vastus tänu avaldamisele</h4>
                 <ul>
                   <li>
                     <p>
@@ -4372,8 +4353,7 @@
                 </ul>
               </div>
               <div class="learn-content learn-content-border-bottom">
-                <a id="kohvikrestoran"></a>
-                <h4 class="learn-content-subtitle">Kohvikus või restoranis</h4>
+                <h4 class="learn-content-subtitle" id="kohvikrestoran">Kohvikus või restoranis</h4>
                 <ul>
                   <li>
                     <p>
@@ -4428,8 +4408,7 @@
                 </ul>
               </div>
               <div class="learn-content learn-content-border-bottom">
-                <a id="telefonikone"></a>
-                <h4 class="learn-content-subtitle">Telefonikõne</h4>
+                <h4 class="learn-content-subtitle" id="telefonikone">Telefonikõne</h4>
                 <ul>
                   <li>
                     <p>
@@ -4459,8 +4438,7 @@
                 </ul>
               </div>
               <div class="learn-content learn-content-border-bottom">
-                <a id="arstijuures"></a>
-                <h4 class="learn-content-subtitle">Arsti juures</h4>
+                <h4 class="learn-content-subtitle" id="arstijuures">Arsti juures</h4>
                 <ul>
                   <li>
                     <p>
@@ -4505,8 +4483,7 @@
                 </ul>
               </div>
               <div class="learn-content learn-content-border-bottom">
-                <a id="juhatadateed"></a>
-                <h4 class="learn-content-subtitle">Kuidas juhatada teed</h4>
+                <h4 class="learn-content-subtitle" id="juhatadateed">Kuidas juhatada teed</h4>
                 <ul>
                   <li>
                     <p>
@@ -4531,8 +4508,7 @@
                 </ul>
               </div>
               <div class="learn-content learn-content-border-bottom">
-                <a id="onnitlused"></a>
-                <h4 class="learn-content-subtitle">Õnnitlused, soovid, palved</h4>
+                <h4 class="learn-content-subtitle" id="onnitlused">Õnnitlused, soovid, palved</h4>
                 <ul>
                   <li>
                     <p>
@@ -4647,8 +4623,7 @@
                 </ul>
               </div>
               <div class="learn-content learn-content-border-bottom">
-                <a id="hoiatused"></a>
-                <h4 class="learn-content-subtitle">Hoiatused</h4>
+                <h4 class="learn-content-subtitle" id="hoiatused">Hoiatused</h4>
                 <ul>
                   <li>
                     <p>
@@ -4693,8 +4668,7 @@
                 </ul>
               </div>
               <div class="learn-content learn-content-border-bottom">
-                <a id="kaastunne"></a>
-                <h4 class="learn-content-subtitle">Kaastunde avaldamine</h4>
+                <h4 class="learn-content-subtitle" id="kaastunne">Kaastunde avaldamine</h4>
                 <ul>
                   <li>
                     <p>
@@ -4714,8 +4688,7 @@
                 </ul>
               </div>
               <div class="learn-content learn-content-border-bottom">
-                <a id="tutvustamine"></a>
-                <h4 class="learn-content-subtitle">Tutvus ja tutvustamine</h4>
+                <h4 class="learn-content-subtitle" id="tutvustamine">Tutvus ja tutvustamine</h4>
                 <ul>
                   <li>
                     <p>
@@ -4765,8 +4738,7 @@
                 </ul>
               </div>
               <div class="learn-content learn-content-border-bottom">
-                <a id="bussronglennuk"></a>
-                <h4 class="learn-content-subtitle">Bussis, rongis, lennukis</h4>
+                <h4 class="learn-content-subtitle" id="bussronglennuk">Bussis, rongis, lennukis</h4>
                 <ul>
                   <li>
                     <p>
@@ -4811,8 +4783,7 @@
                 </ul>
               </div>
               <div class="learn-content learn-content-border-bottom">
-                <a id="hotellis"></a>
-                <h4 class="learn-content-subtitle">Hotellis</h4>
+                <h4 class="learn-content-subtitle" id="hotellis">Hotellis</h4>
                 <ul>
                   <li>
                     <p>
@@ -4852,8 +4823,7 @@
                 </ul>
               </div>
               <div class="learn-content">
-                <a id="poes"></a>
-                <h4 class="learn-content-subtitle">Poes</h4>
+                <h4 class="learn-content-subtitle" id="poes">Poes</h4>
                 <ul>
                   <li>
                     <p>
@@ -4898,9 +4868,9 @@
         <div class="tab-pane fade"
              id="v-pills-grammatikatabelid"
              role="tabpanel"
-             aria-labelledby="v-pills-grammatikatabelid-tab">
-          <a id="grammatikatabelid"></a>
-          <h3 class="learn-content-title">
+             aria-labelledby="v-pills-grammatikatabelid-tab"
+             tabindex="-1">
+          <h3 class="learn-content-title" id="grammatikatabelid">
             Grammatikatabelid
             <a href="https://www.eki.ee/dict/psv/grammatikatabelid.pdf" download="grammatikatabelid.pdf"
                aria-label="Laadi alla grammatikatabelid PDF-dokumendina"
@@ -4919,9 +4889,9 @@
         <div class="tab-pane fade"
              id="v-pills-regions"
              role="tabpanel"
-             aria-labelledby="v-pills-regions-tab">
-          <a id="regions"></a>
-          <h3 class="learn-content-title">
+             aria-labelledby="v-pills-regions-tab"
+             tabindex="-1">
+          <h3 class="learn-content-title" id="regions">
             Maad ja rahvad
             <a href="https://www.eki.ee/dict/psv/maadjarahvad.pdf" download="maadjarahvad.pdf"
                aria-label="Laadi alla 'Maad ja rahvad' PDF-dokumendina"
@@ -4940,9 +4910,9 @@
         <div class="tab-pane fade"
              id="v-pills-keeleabi"
              role="tabpanel"
-             aria-labelledby="v-pills-keeleabi-tab">
-          <a id="keeleabi"></a>
-          <h3 class="learn-content-title">
+             aria-labelledby="v-pills-keeleabi-tab"
+             tabindex="-1">
+          <h3 class="learn-content-title" id="keeleabi">
             EKI teamik
             <a href="https://eki.ee/teatmik/" target="_blank"
                class="btn p-0 text-primary">
@@ -4960,11 +4930,10 @@
         <div class="tab-pane fade"
              id="v-pills-oppetoo"
              role="tabpanel"
-             aria-labelledby="v-pills-oppetoo-tab">
-          <a id="oppetoo"></a>
-          <h3 class="learn-content-title">Õppetöö korraldamise fraasikogu</h3>
+             aria-labelledby="v-pills-oppetoo-tab"
+             tabindex="-1">
+          <h3 class="learn-content-title" id="oppetoo">Õppetöö korraldamise fraasikogu</h3>
           <div class="learn-content learn-content-border-bottom">
-            <a id="sissejuhatuseks"></a>
             <div class="row mt-2">
               <div class="col-lg-12">
                 <p>Õppetöö korraldamise fraasikogu on mõeldud abimaterjaliks põhikooli aineõpetajatele,
@@ -4987,9 +4956,8 @@
               </div>
             </div>
           </div>
-          <a id="tunnialustamine"></a>
           <div class="learn-content learn-content-border-bottom">
-            <h4 class="learn-content-subtitle">1. TUNNI ALUSTAMINE</h4>
+            <h4 class="learn-content-subtitle" id="tunnialustamine">1. TUNNI ALUSTAMINE</h4>
             <h6 class="learn-content-subtitle">1.1. Alustame tunniga</h6>
             <ul>
               <li><p>Alustame tunniga. Alustame tundi.</p></li>
@@ -5045,9 +5013,8 @@
               <li><p>Me alustame tundi rühmatööga. Täna alustame tundi rühmatööga.</p></li>
             </ul>
           </div>
-          <a id="tunnilopetamine"></a>
           <div class="learn-content learn-content-border-bottom">
-            <h4 class="learn-content-subtitle">2. TUNNI LÕPETAMINE</h4>
+            <h4 class="learn-content-subtitle" id="tunnilopetamine">2. TUNNI LÕPETAMINE</h4>
             <h6 class="learn-content-subtitle">2.1. Tunni lõpuni jäänud aeg</h6>
             <ul>
               <li><p>Meil on veel paar minutit aega.</p></li>
@@ -5107,9 +5074,8 @@
               <li><p>Näeme jälle kolmapäeval.</p></li>
             </ul>
           </div>
-          <a id="tunnilabiviimine"></a>
           <div class="learn-content learn-content-border-bottom">
-            <h4 class="learn-content-subtitle">3. TUNNI LÄBIVIIMINE</h4>
+            <h4 class="learn-content-subtitle" id="tunnilabiviimine">3. TUNNI LÄBIVIIMINE</h4>
             <h6 class="learn-content-subtitle">3.1. Tegevuste alustamine ja lõpetamine</h6>
             <ul>
               <li><p>Asume tööle. Hakkame tööle.</p></li>
@@ -5222,9 +5188,8 @@
               <li><p>Pärast tundi jääte klassi ja vastate.</p></li>
             </ul>
           </div>
-          <a id="aktiivneosalemine"></a>
           <div class="learn-content learn-content-border-bottom">
-            <h4 class="learn-content-subtitle">4. AKTIIVNE OSALEMINE</h4>
+            <h4 class="learn-content-subtitle" id="aktiivneosalemine">4. AKTIIVNE OSALEMINE</h4>
             <h6 class="learn-content-subtitle">4.1. Kas kõik kuulevad ja näevad?</h6>
             <ul>
               <li><p>Kas sa näed sealt tagant?</p></li>
@@ -5397,9 +5362,8 @@
               <li><p>Palun korda.</p></li>
             </ul>
           </div>
-          <a id="oppevahenditekasutamine"></a>
           <div class="learn-content learn-content-border-bottom">
-            <h4 class="learn-content-subtitle">5. ÕPPEVAHENDITE KASUTAMINE</h4>
+            <h4 class="learn-content-subtitle" id="oppevahenditekasutamine">5. ÕPPEVAHENDITE KASUTAMINE</h4>
             <h6 class="learn-content-subtitle">5.1. Töölehtede jaotamine</h6>
             <ul>
               <li><p>Täna teeme töölehte.</p></li>
@@ -5482,9 +5446,8 @@
               <li><p>Sõnastik on õpikus.</p></li>
             </ul>
           </div>
-          <a id="kirjalikudjasuulisedylesanded"></a>
           <div class="learn-content learn-content-border-bottom">
-            <h4 class="learn-content-subtitle">6. KIRJALIKUD JA SUULISED ÜLESANDED</h4>
+            <h4 class="learn-content-subtitle" id="kirjalikudjasuulisedylesanded">6. KIRJALIKUD JA SUULISED ÜLESANDED</h4>
             <h6 class="learn-content-subtitle">6.1. Teksti lugemine</h6>
             <ul>
               <li><p>Hakka lugema. Hakkame lugema.</p></li>
@@ -5713,9 +5676,8 @@
               <li><p>Kas kõik on saanud vastata?</p></li>
             </ul>
           </div>
-          <a id="fyysilinetookeskkond"></a>
           <div class="learn-content learn-content-border-bottom">
-            <h4 class="learn-content-subtitle">7. FÜÜSILINE TÖÖKESKKOND</h4>
+            <h4 class="learn-content-subtitle" id="fyysilinetookeskkond">7. FÜÜSILINE TÖÖKESKKOND</h4>
             <h6 class="learn-content-subtitle">7.1. Koht klassis</h6>
             <ul>
               <li><p>Mine tagasi oma kohale. Istu palun oma kohale. Istume tagasi oma kohtadele.</p></li>
@@ -5764,9 +5726,8 @@
               <li><p>Ma teen tahvli puhtaks.</p></li>
             </ul>
           </div>
-          <a id="kaitumisejuhtimine"></a>
           <div class="learn-content learn-content-border-bottom">
-            <h4 class="learn-content-subtitle">8. KÄITUMISE JUHTIMINE</h4>
+            <h4 class="learn-content-subtitle" id="kaitumisejuhtimine">8. KÄITUMISE JUHTIMINE</h4>
             <h6 class="learn-content-subtitle">8.1. Müratase</h6>
             <ul>
               <li><p>Tasa-tasa. Vaikust, palun!</p></li>
@@ -5850,13 +5811,12 @@
           id="v-pills-keelekasutus"
           role="tabpanel"
           aria-labelledby="v-pills-keelekasutus-tab"
+          tabindex="-1"
         >
-          <a id="keelekasutus"></a>
-          <h3 class="learn-content-title">
+          <h3 class="learn-content-title" id="keelekasutus">
             Akadeemilise keelekasutuse fraasikogu
           </h3>
           <div class="learn-content learn-content-border-bottom">
-            <a id="korsisse"></a>
             <div class="row mt-2">
               <div class="col-lg-12">
                 <p>
@@ -5881,9 +5841,8 @@
               </div>
             </div>
           </div>
-          <a id="ettekanne"></a>
           <div class="learn-content learn-content-border-bottom">
-            <h4 class="learn-content-subtitle">1. Ettekanne</h4>
+            <h4 class="learn-content-subtitle" id="ettekanne">1. Ettekanne</h4>
             <h6 class="learn-content-subtitle">1.1. Kuidas alustada</h6>
             <ul>
               <li>
@@ -5954,9 +5913,8 @@
             </ul>
             <br />
           </div>
-          <a id="arvamustevahendamine"></a>
           <div class="learn-content learn-content-border-bottom">
-            <h4 class="learn-content-subtitle">
+            <h4 class="learn-content-subtitle" id="arvamustevahendamine">
               2. Arvamuste ja mõtete vahendamine
             </h4>
             <ul>
@@ -6076,9 +6034,8 @@
             </ul>
             <br />
           </div>
-          <a id="tekstikirjutamine"></a>
           <div class="learn-content learn-content-border-bottom">
-            <h4 class="learn-content-subtitle">
+            <h4 class="learn-content-subtitle" id="tekstikirjutamine" tabindex="-1">
               3. Akadeemilise teksti kirjutamine
             </h4>
             <h6 class="learn-content-subtitle">3.1. Sissejuhatus</h6>
@@ -6765,9 +6722,8 @@
             </ul>
             <br />
           </div>
-          <a id="artiklirefereerimine"></a>
           <div class="learn-content learn-content-border-bottom">
-            <h4 class="learn-content-subtitle">4. Artikli refereerimine</h4>
+            <h4 class="learn-content-subtitle" id="artiklirefereerimine">4. Artikli refereerimine</h4>
             <ul>
               <li>
                 <p>
