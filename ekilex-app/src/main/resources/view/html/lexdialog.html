@@ -350,7 +350,7 @@
   <div th:id="${'editWordEkiRecommendationDlg_' + wordEkiRecommendation.id}" class="modal"
         role="dialog"
         th:fragment="edit_word_eki_recommendation"
-        data-plugin="initMultipleEkiEditorDlgPlugin">
+        data-plugin="initMultipleQuillEditorDlgPlugin">
     <div class="modal-dialog modal-lg" role="document">
       <div class="modal-content">
         <form th:action="@{/update_item}" method="post">
@@ -365,7 +365,8 @@
             <input type="hidden" name="opCode" value="word_eki_recommendation">
             <input type="hidden" name="value" th:value="${wordEkiRecommendation.valuePrese}">
             <p th:text="#{common.content}"></p>
-            <div th:replace="components :: eki_editor_elem(editFld = 'value')"></div>
+            <!-- <div th:replace="components :: eki_editor_elem(editFld = 'value')"></div> -->
+            <th:block th:replace="components :: quill_editor(editFld = 'value')"></th:block>
           </div>
           <div class="modal-footer">
             <button type="submit" class="btn btn-primary" th:text="#{common.save}">Salvesta</button>

@@ -62,6 +62,40 @@
     background-image: url('../img/ckeditor/highlight.png') !important;
 }
 
+.ql-snow.ql-toolbar {
+    button[data-format] {
+        background-size: 32px;
+        width: 32px;
+        height: 32px;
+        background-repeat: no-repeat;
+        background-position: center;
+
+        &.ql-active {
+            box-shadow: inset 1px 1px 6px var(--color-gray-100);
+        }
+
+        &:not(:first-child) {
+            margin-left: 2px;
+        }
+    }
+
+    button[data-format="bold"] {
+        background-image: url('../img/ckeditor/highlight.png');
+    }
+
+    button[data-format="italic"] {
+        background-image: url('../img/ckeditor/foreign.png');
+    }
+
+    button[data-format="stress"] {
+        background-image: url('../img/ckeditor/ekistress.png');
+    }
+
+    button[data-format="meta"] {
+        background-image: url('../img/ckeditor/meta.png');
+    }
+}
+
 .cke_button__meta_icon {
     background-image: url('../img/ckeditor/meta.png') !important;
 }
