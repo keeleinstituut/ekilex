@@ -18,7 +18,8 @@
             word=${word},
             text=#{label.clipboard.text.os},
             link=${word.searchUrl},
-            date=${#dates.format(#dates.createNow(), 'dd.MM.yyyy')})">
+            date=${#dates.format(#dates.createNow(), 'dd.MM.yyyy')},
+            id=${word.wordId})">
           </th:block>
         </div>
       </div>

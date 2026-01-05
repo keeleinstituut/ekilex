@@ -116,7 +116,8 @@
                     word=${wordData.word},
                     text=${#messages.msg('label.clipboard.text.lex')},
                     link=${wordData.word.lexSearchUrl},
-                    date=${#dates.format(#dates.createNow(), 'dd.MM.yyyy')})">
+                    date=${#dates.format(#dates.createNow(), 'dd.MM.yyyy')},
+                    id=${wordData.word.wordId})">
                   </th:block>
                 </div>
                 <div class="text-caption text-darker-gray">

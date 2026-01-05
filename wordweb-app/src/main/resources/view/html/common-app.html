@@ -518,16 +518,19 @@
       <span class="material-symbols-outlined" aria-hidden="true">content_copy</span>
     </button>
     <div class="clipboard__popup" role="dialog"
-         th:data-clipboard-text="|${word.value}${word.homonymExists ? word.homonymNr : ''}. ${text} ${link} (${date})|">
-      <span th:text="#{label.clipboard.copied}"></span>
-      <p>
+     th:aria-labelledby="|clipboard-label-${id}|"
+     th:aria-describedby="|clipboard-content-${id}|"
+     th:data-announce-prefix="|#{label.clipboard.copied} |"
+     th:data-clipboard-text="|${word.value}${word.homonymExists ? word.homonymNr : ''}. ${text} ${link} (${date})|">
+      <span th:id="|clipboard-label-${id}|" th:text="#{label.clipboard.copied}"></span>
+      <p th:id="|clipboard-content-${id}|">
         <span class="clipboard__word">
           <span th:text="${word.value}">sõna</span>
           <sup th:if="${word.homonymExists}" th:text="${word.homonymNr}"></sup>
           <span>.</span>
         </span>
         <th:block th:if="${text}" th:utext="${text}"></th:block>
-        <br/>
+        <br aria-hidden="true"/>
         <a th:if="${link}" th:href="${link}" th:text="${link}"></a>
         <span th:if="${date}" th:utext="${'(' + date + ')'}"></span>
       </p>
