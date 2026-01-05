@@ -193,7 +193,7 @@
       return Array.prototype.slice.call(anchors).sort(sortByDistance)[0];
 
     };
-    var anchors = document.body.querySelectorAll('.tab-content a[id]');
+    var anchors = document.body.querySelectorAll('.tab-content :is(a, h1, h2, h3, h4, h5, h6)[id]');
 
     var onScroll = function (e) {
       var closest = findClosestAnchor(anchors);

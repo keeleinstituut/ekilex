@@ -10,7 +10,8 @@
               word=${wordData.word},
               text=${#messages.msg('label.clipboard.text.term', lexeme.datasetName)},
               link=${lexeme.datasetSearchUrl},
-              date=${#dates.format(#dates.createNow(), 'dd.MM.yyyy')})">
+              date=${#dates.format(#dates.createNow(), 'dd.MM.yyyy')},
+              id=${lexeme.meaningId})">
           </th:block>
         </div>
         <div class="meaning-data__modified">

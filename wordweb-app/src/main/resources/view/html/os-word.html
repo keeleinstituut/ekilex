@@ -18,7 +18,8 @@
             word=${word},
             text=#{label.clipboard.text.os},
             link=${word.searchUrl},
-            date=${#dates.format(#dates.createNow(), 'dd.MM.yyyy')})">
+            date=${#dates.format(#dates.createNow(), 'dd.MM.yyyy')},
+            id=${word.wordId})">
           </th:block>
         </div>
       </div>
@@ -27,7 +28,7 @@
           <div>
             <div th:text="#{label.os.morpho}" class="text-caption text-darker-gray">Lühimorfo</div>
             <div>
-              <span>&lt;</span><span th:utext="${word.wordOsMorph.valuePrese}"></span><wbr/><span>&gt;</span>
+              <span>&lt;</span><wbr/><span th:utext="${word.wordOsMorph.valuePrese}"></span><wbr/><span>&gt;</span>
             </div>
           </div>
         </th:block>
