@@ -7,7 +7,6 @@
 </th:block>
 </head>
 <body class="home-page d-flex flex-column survey-active os-home">
-  <th:block th:replace="common-app :: ie-user"></th:block>
   <th:block
     th:replace="common-app :: header(
     withLogo = ${false},
@@ -29,7 +28,7 @@
     </a>
   </div>
   <div th:replace="os-comp :: footer"></div>
-  <div th:replace="common-app :: feedback-form"></div>
+  <div th:replace="feedback :: feedback-form"></div>
   <script th:inline="javascript">
   	var searchWordFragUrl = /*[[@{/searchwordfrag/os}]]*/"/searchwordfrag/os";
   </script>

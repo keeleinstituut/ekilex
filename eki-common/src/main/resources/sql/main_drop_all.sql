@@ -16,6 +16,7 @@ drop view if exists view_ww_similarity_judgement_data;
 drop view if exists view_ww_classifier;
 drop view if exists view_ww_dataset;
 drop view if exists view_ww_news_article;
+drop view if exists view_ww_word_suggestion;
 drop view if exists view_od_lexeme_meaning; -- remove later
 drop view if exists view_od_definition_idx; -- remove later
 drop view if exists view_od_definition; -- remove later
@@ -72,6 +73,7 @@ drop table if exists temp_ds_import_pk_map;
 drop table if exists temp_ds_import_queue;
 drop table if exists api_request_count;
 drop table if exists api_error_count;
+drop table if exists word_suggestion;
 drop table if exists feedback_log_comment;
 drop table if exists feedback_log_attr;
 drop table if exists feedback_log;

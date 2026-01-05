@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.servlet.LocaleResolver;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import eki.common.constant.FeedbackType;
 import eki.common.data.SearchStat;
 import eki.wordweb.constant.WebConstant;
 import eki.wordweb.data.WordsMatch;
@@ -173,7 +174,7 @@ public class OsSearchController extends AbstractSearchController {
 		if (searchResult != null) {
 			model.addAttribute("searchResult", searchResult);
 		}
-		model.addAttribute("feedbackType", "ÕS");
+		model.addAttribute("feedbackType", FeedbackType.OS);
 	}
 
 	private SessionBean getOrCreateSessionBean(Model model) {

@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="et" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="common-app :: common_header(~{::title},~{::links},_)">
+<title>Sõnaveeb - Sõnaettepanekud</title>
+<th:block th:fragment="links">
+  <script type="text/javascript" th:src="@{/view/js/ww-word-suggestion.js}"></script>
+</th:block>
+</head>
+<body class="survey-active">
+  <th:block th:replace="common-app :: wcag-sidebar"></th:block>
+  <th:block th:replace="common-app :: wcag-main"></th:block>
+  <th:block th:replace="common-app :: header(withSearch = ${false})"></th:block>
+  <th:block th:replace="word-suggestion :: word-suggestion-form"></th:block>
+  <div class="news-page__wrapper">
+    <div class="news-page__header">
+      <h1 th:text="#{label.wordsuggestion.title}">Teavituste ajalugu</h1>
+      <p th:text="#{label.wordsuggestion.description}">Description</p>
+      <p>
+        <button
+          class="footer__feedback-button"
+          type="button"
+          data-toggle="modal"
+          data-target="#word-suggestion-modal"
+          th:text="#{label.wordsuggestion.send.title}">
+          Saada sõnaettepanek
+        </button>
+      </p>
+    </div>
+    <div class="news-page__content">
+      <h1 th:text="#{label.wordsuggestions.title}">Teavituste ajalugu</h1>
+      <th:block th:unless="${wordSuggestions}">
+        <div th:text="#{label.wordsuggestion.missing.data}">Hetkel andmed puuduvad....</div>
+      </th:block>
+      <th:block th:if="${wordSuggestions}">
+        <th:block th:each="wordSuggestion, wordSuggestionIter : ${wordSuggestions}">
+          <div class="news-page__item">
+            <div>
+              <h2 th:text="${wordSuggestion.wordValue}"></h2>
+            </div>
+            <div>
+              <span th:text="${wordSuggestion.definitionValue}"></span>
+            </div>
+            <div>
+              <small th:text="${wordSuggestion.authorName}" th:if="${wordSuggestion.authorName}"></small>
+              <small th:text="${#temporals.format(wordSuggestion.publicationTime, 'dd.MM.yyyy')}"></small>
+            </div>
+          </div>
+        </th:block>
+      </th:block>
+    </div>
+  </div>
+  <div th:replace="common-app :: footer-content"></div>
+  <th:block th:replace="common-app :: content-top"></th:block>
+  <th:block th:fragment="word-suggestion-form">
+    <div id="word-suggestion-modal" class="modal fade" tabindex="-1" aria-model="true" role="dialog" aria-hidden="false" aria-describedby="word-suggestion-modal-title">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content feedback-modal">
+          <div class="modal-header feedback-modal__header">
+            <h1 class="modal-title" th:text="#{label.wordsuggestion.send.title}" id="word-suggestion-modal-title">Tagasiside</h1>
+            <button type="button" class="feedback-modal__close" data-dismiss="modal" th:aria-label="#{menu.close}">
+              <span class="fa fa-times" aria-hidden="true"></span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <div id="word-suggestion-form-area">
+              <form id="word-suggestion-form" th:action="@{/word}" novalidate="novalidate">
+                <div>
+                  <label th:text="#{label.feedback.word}" class="col-form-label">Pakutav sõna</label>
+                  <input type="text" name="word" th:placeholder="#{label.feedback.word.placeholder}" class="form-control" required="required" autocomplete="off">
+                  <div class="invalid-feedback" th:text="#{message.feedback.missing.word}">Väli on kohustuslik</div>
+                </div>
+                <div class="mt-2">
+                  <label th:text="#{label.feedback.description.wordsuggestion}" class="col-form-label">Tähendus ja näitelaused</label>
+                  <textarea name="description" class="form-control" th:placeholder="#{label.feedback.description.wordsuggestion.placeholder}" required="required" autocomplete="off"></textarea>
+                  <div class="invalid-feedback" th:text="#{message.feedback.missing.description.wordsuggestion}">Väli on kohustuslik</div>
+                </div>
+                <div class="mt-2">
+                  <label th:text="#{label.feedback.name}" class="col-form-label">Nimi</label>
+                  <input type="text" name="senderName" th:placeholder="#{label.feedback.name}" class="form-control" autocomplete="off">
+                  <div>
+                    <small th:text="#{label.feedback.name.comment}">Nimi avaldatakse Sõnaveebis</small>
+                  </div>
+                </div>
+                <div class="mt-2">
+                  <label th:text="#{label.feedback.email}" class="col-form-label">E-post</label>
+                  <input type="email" name="senderEmail" th:placeholder="#{label.feedback.email.placeholder.wordsuggestion}" class="form-control form-email" required="required" autocomplete="off">
+                  <div>
+                    <small th:text="#{label.feedback.email.comment}">E-posti aadressi ei avaldata Sõnaveebis</small>
+                  </div>
+                  <div class="invalid-feedback" th:text="#{message.feedback.missing.email}">Väli on kohustuslik</div>
+                </div>
+                <div class="d-flex flex-column">
+                  <button type="button" class="feedback-modal__button" id="word-suggestion-send-btn" th:text="#{button.send}">Saada</button>
+                </div>
+              </form>
+            </div>
+            <div class="d-flex flex-column mt-3">
+              <div id="word-suggestion-error-message" class="alert alert-danger d-none">Tagasiside saatmine ebaõnnestus, proovige hiljem uuesti.</div>
+              <div id="word-suggestion-success-message" class="alert alert-success d-none" th:text="#{message.feedback.success.wordsuggestion}">Aitäh, saime ettepaneku kätte</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </th:block>
+</body>
+</html>

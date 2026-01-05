@@ -1,23 +1,37 @@
 package eki.common.data;
 
+import eki.common.constant.FeedbackType;
+
 public class Feedback extends AbstractDataObject {
 
 	private static final long serialVersionUID = 1L;
 
-	private String feedbackType;
+	private FeedbackType feedbackType;
+
+	private String senderName;
 
 	private String senderEmail;
 
 	private String lastSearch;
 
+	private String word;
+
 	private String description;
 
-	public String getFeedbackType() {
+	public FeedbackType getFeedbackType() {
 		return feedbackType;
 	}
 
-	public void setFeedbackType(String feedbackType) {
+	public void setFeedbackType(FeedbackType feedbackType) {
 		this.feedbackType = feedbackType;
+	}
+
+	public String getSenderName() {
+		return senderName;
+	}
+
+	public void setSenderName(String senderName) {
+		this.senderName = senderName;
 	}
 
 	public String getSenderEmail() {
@@ -34,6 +48,14 @@ public class Feedback extends AbstractDataObject {
 
 	public void setLastSearch(String lastSearch) {
 		this.lastSearch = lastSearch;
+	}
+
+	public String getWord() {
+		return word;
+	}
+
+	public void setWord(String word) {
+		this.word = word;
 	}
 
 	public String getDescription() {

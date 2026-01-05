@@ -6,6 +6,8 @@ import static eki.ekilex.data.db.main.Tables.DEFINITION;
 import static eki.ekilex.data.db.main.Tables.DEFINITION_DATASET;
 import static eki.ekilex.data.db.main.Tables.DERIV_LABEL;
 import static eki.ekilex.data.db.main.Tables.DOMAIN_LABEL;
+import static eki.ekilex.data.db.main.Tables.FEEDBACK_LOG_ATTR;
+import static eki.ekilex.data.db.main.Tables.FEEDBACK_LOG_COMMENT;
 import static eki.ekilex.data.db.main.Tables.FORM;
 import static eki.ekilex.data.db.main.Tables.FREQ_CORP;
 import static eki.ekilex.data.db.main.Tables.LEXEME;
@@ -35,12 +37,14 @@ import static eki.ekilex.data.db.main.Tables.VALUE_STATE_LABEL;
 import static eki.ekilex.data.db.main.Tables.WORD;
 import static eki.ekilex.data.db.main.Tables.WORD_FREQ;
 import static eki.ekilex.data.db.main.Tables.WORD_LAST_ACTIVITY_LOG;
+import static eki.ekilex.data.db.main.Tables.WORD_SUGGESTION;
 import static eki.ekilex.data.db.main.Tables.WORD_TAG;
 import static eki.ekilex.data.db.main.Tables.WORD_WORD_TYPE;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -53,6 +57,7 @@ import org.jooq.impl.DSL;
 import org.springframework.stereotype.Component;
 
 import eki.common.constant.ClassifierName;
+import eki.common.constant.FeedbackType;
 import eki.common.constant.GlobalConstant;
 import eki.common.constant.LastActivityType;
 import eki.common.constant.PublishingConstant;
@@ -63,6 +68,9 @@ import eki.ekilex.data.db.main.tables.Definition;
 import eki.ekilex.data.db.main.tables.DefinitionDataset;
 import eki.ekilex.data.db.main.tables.DerivLabel;
 import eki.ekilex.data.db.main.tables.DomainLabel;
+import eki.ekilex.data.db.main.tables.FeedbackLog;
+import eki.ekilex.data.db.main.tables.FeedbackLogAttr;
+import eki.ekilex.data.db.main.tables.FeedbackLogComment;
 import eki.ekilex.data.db.main.tables.Form;
 import eki.ekilex.data.db.main.tables.FreqCorp;
 import eki.ekilex.data.db.main.tables.Lexeme;
@@ -92,6 +100,7 @@ import eki.ekilex.data.db.main.tables.ValueStateLabel;
 import eki.ekilex.data.db.main.tables.Word;
 import eki.ekilex.data.db.main.tables.WordFreq;
 import eki.ekilex.data.db.main.tables.WordLastActivityLog;
+import eki.ekilex.data.db.main.tables.WordSuggestion;
 
 @Component
 public class QueryHelper implements GlobalConstant, PublishingConstant {
@@ -792,6 +801,67 @@ public class QueryHelper implements GlobalConstant, PublishingConstant {
 										.and(p.ENTITY_NAME.eq(entityName))
 										.and(p.ENTITY_ID.eq(entityId)))));
 		return pf;
+	}
+
+	public List<Field<?>> getFeedbackLogFields(FeedbackLog fl) {
+
+		FeedbackLogAttr fla = FEEDBACK_LOG_ATTR.as("fla");
+		FeedbackLogComment flc = FEEDBACK_LOG_COMMENT.as("flc");
+		WordSuggestion ws = WORD_SUGGESTION.as("ws");
+
+		Field<JSON> flcf = DSL
+				.select(DSL
+						.jsonArrayAgg(DSL
+								.jsonObject(
+										DSL.key("id").value(flc.ID),
+										DSL.key("feedbackLogId").value(flc.FEEDBACK_LOG_ID),
+										DSL.key("createdOn").value(flc.CREATED_ON),
+										DSL.key("comment").value(flc.COMMENT),
+										DSL.key("userName").value(flc.USER_NAME)))
+						.orderBy(flc.CREATED_ON.desc()))
+				.from(flc)
+				.where(flc.FEEDBACK_LOG_ID.eq(fl.ID))
+				.asField();
+
+		Field<JSON> flaf = DSL
+				.select(DSL
+						.jsonArrayAgg(DSL
+								.jsonObject(
+										DSL.key("id").value(fla.ID),
+										DSL.key("feedbackLogId").value(fla.FEEDBACK_LOG_ID),
+										DSL.key("name").value(fla.NAME),
+										DSL.key("value").value(fla.VALUE)))
+						.orderBy(fla.ID))
+				.from(fla)
+				.where(fla.FEEDBACK_LOG_ID.eq(fl.ID))
+				.asField();
+
+		Field<JSON> wsf = DSL
+				.select(DSL
+						.jsonObject(
+								DSL.key("id").value(ws.ID),
+								DSL.key("feedbackLogId").value(ws.FEEDBACK_LOG_ID),
+								DSL.key("created").value(ws.CREATED),
+								DSL.key("wordValue").value(ws.WORD_VALUE),
+								DSL.key("definitionValue").value(ws.DEFINITION_VALUE),
+								DSL.key("authorName").value(ws.AUTHOR_NAME),
+								DSL.key("authorEmail").value(ws.AUTHOR_EMAIL),
+								DSL.key("public").value(ws.IS_PUBLIC),
+								DSL.key("publicationTime").value(ws.PUBLICATION_TIME)))
+				.from(ws)
+				.where(
+						ws.FEEDBACK_LOG_ID.eq(fl.ID)
+								.and(fl.FEEDBACK_TYPE.eq(FeedbackType.WORD_SUGGESTION.name())))
+				.limit(1)
+				.asField();
+
+		List<Field<?>> fields = new ArrayList<>();
+		fields.addAll(Arrays.asList(fl.fields()));
+		fields.add(flaf.as("feedback_log_attrs"));
+		fields.add(flcf.as("feedback_log_comments"));
+		fields.add(wsf.as("word_suggestion"));
+
+		return fields;
 	}
 
 	public void replaceNullCollections(eki.ekilex.data.Lexeme pojo) {

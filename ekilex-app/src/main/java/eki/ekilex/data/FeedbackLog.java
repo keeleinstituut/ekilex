@@ -7,6 +7,7 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
 
+import eki.common.constant.FeedbackType;
 import eki.common.data.AbstractDataObject;
 import eki.common.util.LocalDateTimeDeserialiser;
 
@@ -18,9 +19,9 @@ public class FeedbackLog extends AbstractDataObject {
 
 	@JsonSerialize(using = LocalDateTimeSerializer.class)
 	@JsonDeserialize(using = LocalDateTimeDeserialiser.class)
-	private LocalDateTime createdOn;
+	private LocalDateTime created;
 
-	private String feedbackType;
+	private FeedbackType feedbackType;
 
 	private String senderEmail;
 
@@ -32,6 +33,8 @@ public class FeedbackLog extends AbstractDataObject {
 
 	private List<FeedbackLogComment> feedbackLogComments;
 
+	private WordSuggestion wordSuggestion;
+
 	public Long getId() {
 		return id;
 	}
@@ -40,19 +43,19 @@ public class FeedbackLog extends AbstractDataObject {
 		this.id = id;
 	}
 
-	public LocalDateTime getCreatedOn() {
-		return createdOn;
+	public LocalDateTime getCreated() {
+		return created;
 	}
 
-	public void setCreatedOn(LocalDateTime createdOn) {
-		this.createdOn = createdOn;
+	public void setCreated(LocalDateTime created) {
+		this.created = created;
 	}
 
-	public String getFeedbackType() {
+	public FeedbackType getFeedbackType() {
 		return feedbackType;
 	}
 
-	public void setFeedbackType(String feedbackType) {
+	public void setFeedbackType(FeedbackType feedbackType) {
 		this.feedbackType = feedbackType;
 	}
 
@@ -94,6 +97,14 @@ public class FeedbackLog extends AbstractDataObject {
 
 	public void setFeedbackLogComments(List<FeedbackLogComment> feedbackLogComments) {
 		this.feedbackLogComments = feedbackLogComments;
+	}
+
+	public WordSuggestion getWordSuggestion() {
+		return wordSuggestion;
+	}
+
+	public void setWordSuggestion(WordSuggestion wordSuggestion) {
+		this.wordSuggestion = wordSuggestion;
 	}
 
 }

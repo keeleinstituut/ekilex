@@ -71,7 +71,7 @@
         'on' : /*[[#{label.wordgame.on}]]*/'Sees',
         'off' : /*[[#{label.wordgame.off}]]*/'Väljas',
         'wordgame' : /*[[#{menu.wordgame}]]*/'Pilt ja heli',
-        'feedback' : /*[[#{feedback.title}]]*/'Tagasiside',
+        'feedback' : /*[[#{label.feedback.title}]]*/'Tagasiside',
         'learningLanguagesList': wordGameLearningLanguages,
         'searchHintsList': wordGameSearchHints
       }
@@ -87,7 +87,6 @@
 <th:block th:replace="common-app :: wcag-sidebar"></th:block>
 <th:block th:replace="common-app :: wcag-main"></th:block>
 <th:block th:replace="common-app :: aria-live-announcer"></th:block>
-<th:block th:replace="common-app :: ie-user"></th:block>
 <th:block th:replace="common-app :: header(withSearch = ${false})"></th:block>
 <div class="container-fluid learn">
     <div id="wordgame"></div>

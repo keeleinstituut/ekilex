@@ -5,7 +5,6 @@
 </head>
 <body class="survey-active" th:with="httpStatus=${T(org.springframework.http.HttpStatus).valueOf(#response.status)}">
   <th:block th:replace="common-app :: wcag-main"></th:block>
-  <th:block th:replace="common-app :: ie-user"></th:block>
   <div id="main" role="main" class="container">
     <div class="card mt-4">
       <div class="card-body">

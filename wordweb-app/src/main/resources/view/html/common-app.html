@@ -24,12 +24,11 @@
 	var applicationUrl = /*[[@{/}]]*/'/';
 	var sessionTimeoutSec = /*[[${appData == null ? 3600 : appData.sessionTimeoutSec}]]*/3600;
 	const messages = {
-    'this_is_form' : /*[[#{label.word.is.form.of}]]*/'see on ka vorm sõnadest',
-    'audio_generating_loading': /*[[#{label.audio.generation.loading}]]*/'Heli genereeritakse...',
+		'this_is_form' : /*[[#{label.word.is.form.of}]]*/'see on ka vorm sõnadest',
+		'audio_generating_loading': /*[[#{label.audio.generation.loading}]]*/'Heli genereeritakse...',
 		'audio_generation_failure' : /*[[#{label.audio.generation.failure}]]*/'Heli genereerimise teenus hetkel ei toimi, proovige hiljem uuesti.',
-    'audio_play_failure': /*[[#{label.audio.play.failure}]]*/'Heli mängimine ebaõnnestus',
-		'search_failure' : /*[[#{label.detail.search.failure}]]*/'Detailide päring ebaõnnestus, proovige hiljem uuesti.',
-		'feedback_missing_service' : /*[[#{label.feedback.missing.service}]]*/'Tagasiside teenus ei ole seadistatud.'
+		'audio_play_failure': /*[[#{label.audio.play.failure}]]*/'Heli mängimine ebaõnnestus',
+		'search_failure' : /*[[#{label.detail.search.failure}]]*/'Detailide päring ebaõnnestus, proovige hiljem uuesti.'
 	}
 </script>
 <!-- Google Tag Manager -->
@@ -125,7 +124,7 @@
         <th:block th:replace=":: navigation"></th:block>
       </div>
     </div>
-    <th:block th:replace=":: feedback-form"></th:block>
+    <th:block th:replace="feedback :: feedback-form"></th:block>
   </th:block>
   <th:block th:fragment="lang-select">
     <div class="dropdown lang-btn">
@@ -262,77 +261,6 @@
       </tr>
     </table>
   </div>
-  <!-- IE user message -->
-  <th:block th:fragment="ie-user">
-    <div class="alert-danger-ie" th:if="${session.ieuser}">
-      <div class="alert-danger-ie-container">
-        <span th:text="#{warning.ieuser}">Bad bad browser, no Cookies for you!!!</span>
-      </div>
-    </div>
-  </th:block>
-  <!-- Feedback dialog -->
-  <th:block th:fragment="feedback-form">
-    <div class="modal fade" id="feedback-modal" tabindex="-1" aria-model="true" role="dialog" aria-hidden="false" aria-describedby="feedback-modal-title">
-      <div class="modal-dialog" role="document">
-        <div class="modal-content feedback-modal">
-          <div class="modal-header feedback-modal__header">
-            <h1 class="modal-title" th:text="#{feedback.title}" id="feedback-modal-title">Tagasiside</h1>
-            <h1 class="modal-title d-none" th:text="#{feedback.success.title}" id="feedback-modal-success-title">Aitäh</h1>
-            <button type="button" class="feedback-modal__close" data-dismiss="modal" th:aria-label="#{menu.close}">
-              <span class="fa fa-times" aria-hidden="true"></span>
-            </button>
-          </div>
-          <div id="feedback-data" class="modal-body">
-            <div>
-              <form id="feedback-form" th:action="@{/feed}" novalidate>
-                <input type="hidden" name="feedbackType" th:value="${feedbackType}">
-                <input type="hidden" name="lastSearch" th:value="${sessionBean == null ? '' : sessionBean.searchWord}">
-                <div class="feedback-modal__group">
-                  <label for="descriptionInput2" class="col-form-label" th:text="#{label.feedback.description}">Probleemi lühikirjeldus</label>
-                  <textarea id="descriptionInput2" class="form-control" name="description" required autocomplete="off" th:placeholder="#{label.feedback.placeholder.description}"></textarea>
-                  <div class="invalid-feedback" th:text="#{label.feedback.required.description}">Väli on kohustuslik</div>
-                </div>
-                <div class="feedback-modal__want-response">
-                  <h2 th:text="#{label.feedback.message.heading}">Kui soovid vastust oma probleemile</h2>
-                  <p th:text="#{label.feedback.message.content}">Kui sul on küsimus....</p>
-                  <div class="feedback-modal__group">
-                    <label for="feedback-modal-email" class="col-form-label" th:text="#{label.feedback.email}">E-post</label>
-                    <input id="feedback-modal-email" type="email" class="form-control form-email" name="senderEmail" autocomplete="email" th:placeholder="#{label.feedback.placeholder.email}">
-                  </div>
-                  <div class="feedback-modal__group d-none" id="feedback-modal-checkbox-group">
-                    <div class="custom-control custom-checkbox">
-                      <input type="checkbox" class="custom-control-input" id="feedback-email-checkbox">
-                      <label class="custom-control-label" for="feedback-email-checkbox">
-                        <span th:text="#{label.feedback.iagree}">Nõustun</span>
-                        <a
-                          target="_blank"
-                          rel="noreferrer"
-                          th:href="@{/regulations}"
-                          data-item-name="regulations"
-                          th:text="#{label.feedback.withterms}">
-                          kasutus- ja privaatsustingimustega
-                        </a>
-                        <span>&ast;</span>
-                      </label>
-                      <div class="invalid-feedback" th:text="#{label.feedback.required.field}">Väli on kohustuslik</div>
-                    </div>
-                  </div>
-                  <button id="feedback-submit" type="button" class="feedback-modal__button" name="feedbackSendBtn" th:text="#{button.send}">Saada</button>
-                </div>
-              </form>
-            </div>
-          </div>
-          <div id="feedback-response" class="modal-body d-none">
-            <div class="d-flex flex-column">
-              <div id="feedback-error-message" class="alert alert-danger d-none" th:text="#{label.feedback.technical.error}">Tagasiside saatmine ebaõnnestus, proovige hiljem uuesti.</div>
-              <p id="feedback-success-message" class="m-0 d-none" th:text="#{label.feedback.success}">Aitäh, saime tagasiside kätte</p>
-              <button type="button" class="feedback-modal__button" data-dismiss="modal" th:text="#{menu.close}">Sulge</button>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </th:block>
   <!-- About, Conditions, API, Regulations secondary IMPORTANT LINK MENU -->
   <th:block th:fragment="important-links-menu">
     <ul class="mt-4 list-unstyled">
@@ -437,8 +365,8 @@
               type="button"
               data-toggle="modal"
               data-target="#feedback-modal"
-              th:text="#{label.feedback.placeholder.description}">
-            Kirjuta meile
+              th:text="#{label.feedback.description.placeholder.generic}">
+              Kirjuta meile
             </button>
           </th:block>
         </div>

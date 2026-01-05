@@ -66,16 +66,16 @@ public class FeedbackLogRecord extends UpdatableRecordImpl<FeedbackLogRecord> im
     }
 
     /**
-     * Setter for <code>public.feedback_log.created_on</code>.
+     * Setter for <code>public.feedback_log.created</code>.
      */
-    public void setCreatedOn(LocalDateTime value) {
+    public void setCreated(LocalDateTime value) {
         set(3, value);
     }
 
     /**
-     * Getter for <code>public.feedback_log.created_on</code>.
+     * Getter for <code>public.feedback_log.created</code>.
      */
-    public LocalDateTime getCreatedOn() {
+    public LocalDateTime getCreated() {
         return (LocalDateTime) get(3);
     }
 
@@ -147,7 +147,7 @@ public class FeedbackLogRecord extends UpdatableRecordImpl<FeedbackLogRecord> im
 
     @Override
     public Field<LocalDateTime> field4() {
-        return FeedbackLog.FEEDBACK_LOG.CREATED_ON;
+        return FeedbackLog.FEEDBACK_LOG.CREATED;
     }
 
     @Override
@@ -177,7 +177,7 @@ public class FeedbackLogRecord extends UpdatableRecordImpl<FeedbackLogRecord> im
 
     @Override
     public LocalDateTime component4() {
-        return getCreatedOn();
+        return getCreated();
     }
 
     @Override
@@ -207,7 +207,7 @@ public class FeedbackLogRecord extends UpdatableRecordImpl<FeedbackLogRecord> im
 
     @Override
     public LocalDateTime value4() {
-        return getCreatedOn();
+        return getCreated();
     }
 
     @Override
@@ -240,7 +240,7 @@ public class FeedbackLogRecord extends UpdatableRecordImpl<FeedbackLogRecord> im
 
     @Override
     public FeedbackLogRecord value4(LocalDateTime value) {
-        setCreatedOn(value);
+        setCreated(value);
         return this;
     }
 
@@ -281,13 +281,13 @@ public class FeedbackLogRecord extends UpdatableRecordImpl<FeedbackLogRecord> im
     /**
      * Create a detached, initialised FeedbackLogRecord
      */
-    public FeedbackLogRecord(Long id, String feedbackType, String senderEmail, LocalDateTime createdOn, String lastSearch, String description) {
+    public FeedbackLogRecord(Long id, String feedbackType, String senderEmail, LocalDateTime created, String lastSearch, String description) {
         super(FeedbackLog.FEEDBACK_LOG);
 
         setId(id);
         setFeedbackType(feedbackType);
         setSenderEmail(senderEmail);
-        setCreatedOn(createdOn);
+        setCreated(created);
         setLastSearch(lastSearch);
         setDescription(description);
     }

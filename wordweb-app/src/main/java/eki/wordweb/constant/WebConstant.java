@@ -34,6 +34,8 @@ public interface WebConstant {
 
 	String NEWS_PAGE = "news";
 
+	String WORD_SUGGESTION_PAGE = "word-suggestion";
+
 	String EKILEX_API_PAGE = "ekilex-api";
 
 	String LEARN_PAGE = "learn";
@@ -88,6 +90,8 @@ public interface WebConstant {
 
 	String NEWS_ACCEPT_URI = "/newsaccept";
 
+	String WORD_SUGGESTION_URI = "/wordsuggestion";
+
 	String EKILEX_API_URI = "/ekilex-api";
 
 	String MORPHO_URI = "/morpho";
@@ -141,8 +145,6 @@ public interface WebConstant {
 	String APP_DATA_MODEL_KEY = "appData";
 
 	String VIEW_UTIL_MODEL_KEY = "viewUtil";
-
-	String IE_USER_FLAG_KEY = "ieuser";
 
 	String REQUEST_START_TIME_KEY = "request_start_time";
 

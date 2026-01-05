@@ -65,9 +65,9 @@ public class FeedbackLog extends TableImpl<FeedbackLogRecord> {
     public final TableField<FeedbackLogRecord, String> SENDER_EMAIL = createField(DSL.name("sender_email"), SQLDataType.CLOB, this, "");
 
     /**
-     * The column <code>public.feedback_log.created_on</code>.
+     * The column <code>public.feedback_log.created</code>.
      */
-    public final TableField<FeedbackLogRecord, LocalDateTime> CREATED_ON = createField(DSL.name("created_on"), SQLDataType.LOCALDATETIME(6).nullable(false).defaultValue(DSL.field("statement_timestamp()", SQLDataType.LOCALDATETIME)), this, "");
+    public final TableField<FeedbackLogRecord, LocalDateTime> CREATED = createField(DSL.name("created"), SQLDataType.LOCALDATETIME(6).nullable(false).defaultValue(DSL.field("statement_timestamp()", SQLDataType.LOCALDATETIME)), this, "");
 
     /**
      * The column <code>public.feedback_log.last_search</code>.
