@@ -69,7 +69,7 @@ public abstract class AbstractMainSearchController extends AbstractSearchControl
 
 	protected void populateLatestNewsModel(HttpServletRequest request, Model model) {
 
-		NewsArticle latestWordwebNewsArticle = commonDataService.getLatestWordwebNewsArticle();
+		NewsArticle latestWordwebNewsArticle = ancillaryDataService.getLatestWordwebNewsArticle();
 		if (latestWordwebNewsArticle == null) {
 			return;
 		}

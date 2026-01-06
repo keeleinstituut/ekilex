@@ -108,6 +108,10 @@
 			<groupId>commons-fileupload</groupId>
 			<artifactId>commons-fileupload</artifactId>
 		</dependency>
+		<dependency>
+			<groupId>commons-validator</groupId>
+			<artifactId>commons-validator</artifactId>
+		</dependency>
 		<!-- web -->
 		<dependency>
 			<groupId>javax.servlet</groupId>

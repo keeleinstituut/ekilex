@@ -79,7 +79,6 @@ class Feedback {
 			"hide.bs.modal",
 			this.handleModalClose.bind(this)
 		);
-
 		this.modalElements.submitButton.addEventListener(
 			"click",
 			this.handleSubmit.bind(this)

@@ -22,6 +22,7 @@ import eki.wordweb.data.db.tables.MviewWwWord;
 import eki.wordweb.data.db.tables.MviewWwWordEtymology;
 import eki.wordweb.data.db.tables.MviewWwWordRelation;
 import eki.wordweb.data.db.tables.MviewWwWordSearch;
+import eki.wordweb.data.db.tables.MviewWwWordSuggestion;
 import eki.wordweb.data.db.tables.OsDefinitionIdx;
 import eki.wordweb.data.db.tables.OsLexemeMeaning;
 import eki.wordweb.data.db.tables.OsWord;
@@ -131,6 +132,11 @@ public class Tables {
      * The table <code>public.mview_ww_word_search</code>.
      */
     public static final MviewWwWordSearch MVIEW_WW_WORD_SEARCH = MviewWwWordSearch.MVIEW_WW_WORD_SEARCH;
+
+    /**
+     * The table <code>public.mview_ww_word_suggestion</code>.
+     */
+    public static final MviewWwWordSuggestion MVIEW_WW_WORD_SUGGESTION = MviewWwWordSuggestion.MVIEW_WW_WORD_SUGGESTION;
 
     /**
      * The table <code>public.os_definition_idx</code>.

@@ -1386,22 +1386,13 @@ create table game_nonword (
 );
 
 create table feedback_log (
-  id bigserial primary key, 
-  created_on timestamp not null default statement_timestamp(), 
-  feedback_type varchar(100) null, 
-  sender_name text null, 
-  sender_email text null, 
-  description text null, 
-  word text null, 
-  definition text null, 
-  definition_source text null, 
-  domain text null, 
-  comments text null, 
-  usage text null, 
-  usage_source text null, 
-  other_info text null, 
-  company text null, 
-  last_search text null
+	id bigserial primary key, 
+	created timestamp not null default statement_timestamp(), 
+	feedback_type varchar(100) null, 
+	sender_email text null,
+	last_search text null,
+	word_value text null,
+	description text null
 );
 alter sequence feedback_log_id_seq restart with 10000;
 
@@ -1415,13 +1406,26 @@ create table feedback_log_attr (
 alter sequence feedback_log_attr_id_seq restart with 10000;
 
 create table feedback_log_comment (
-  id bigserial primary key, 
-  feedback_log_id bigint references feedback_log(id) on delete cascade not null, 
-  created_on timestamp not null default statement_timestamp(),
-  comment text, 
-  user_name text not null
+	id bigserial primary key, 
+	feedback_log_id bigint references feedback_log(id) on delete cascade not null, 
+	created_on timestamp not null default statement_timestamp(),
+	comment text, 
+	user_name text not null
 );
 alter sequence feedback_log_comment_id_seq restart with 10000;
+
+create table word_suggestion (
+	id bigserial primary key,
+	feedback_log_id bigint references feedback_log(id) on delete cascade not null,
+	created timestamp not null default statement_timestamp(), 
+	word_value text not null,
+	definition_value text not null,
+	author_name text not null,
+	author_email text not null,
+	is_public boolean default false,
+	publication_time timestamp
+);
+alter sequence word_suggestion_id_seq restart with 10000;
 
 create table api_request_count (
 	id bigserial primary key,

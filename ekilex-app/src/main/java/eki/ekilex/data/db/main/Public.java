@@ -169,6 +169,7 @@ import eki.ekilex.data.db.main.tables.WordRelType;
 import eki.ekilex.data.db.main.tables.WordRelTypeLabel;
 import eki.ekilex.data.db.main.tables.WordRelation;
 import eki.ekilex.data.db.main.tables.WordRelationParam;
+import eki.ekilex.data.db.main.tables.WordSuggestion;
 import eki.ekilex.data.db.main.tables.WordTag;
 import eki.ekilex.data.db.main.tables.WordType;
 import eki.ekilex.data.db.main.tables.WordTypeLabel;
@@ -1036,6 +1037,11 @@ public class Public extends SchemaImpl {
     public final WordRelationParam WORD_RELATION_PARAM = WordRelationParam.WORD_RELATION_PARAM;
 
     /**
+     * The table <code>public.word_suggestion</code>.
+     */
+    public final WordSuggestion WORD_SUGGESTION = WordSuggestion.WORD_SUGGESTION;
+
+    /**
      * The table <code>public.word_tag</code>.
      */
     public final WordTag WORD_TAG = WordTag.WORD_TAG;
@@ -1227,6 +1233,7 @@ public class Public extends SchemaImpl {
             Sequences.WORD_RELATION_ID_SEQ,
             Sequences.WORD_RELATION_ORDER_BY_SEQ,
             Sequences.WORD_RELATION_PARAM_ID_SEQ,
+            Sequences.WORD_SUGGESTION_ID_SEQ,
             Sequences.WORD_TAG_ID_SEQ,
             Sequences.WORD_TYPE_ORDER_BY_SEQ,
             Sequences.WORD_WORD_TYPE_ID_SEQ,
@@ -1401,6 +1408,7 @@ public class Public extends SchemaImpl {
             WordRelTypeLabel.WORD_REL_TYPE_LABEL,
             WordRelation.WORD_RELATION,
             WordRelationParam.WORD_RELATION_PARAM,
+            WordSuggestion.WORD_SUGGESTION,
             WordTag.WORD_TAG,
             WordType.WORD_TYPE,
             WordTypeLabel.WORD_TYPE_LABEL,

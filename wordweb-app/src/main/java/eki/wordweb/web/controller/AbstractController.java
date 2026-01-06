@@ -19,10 +19,13 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.ui.Model;
 import org.springframework.web.util.UriUtils;
 
+import eki.common.constant.FeedbackConstant;
+import eki.common.constant.FeedbackType;
 import eki.common.constant.GlobalConstant;
 import eki.common.service.TextDecorationService;
 import eki.wordweb.constant.SystemConstant;
 import eki.wordweb.constant.WebConstant;
+import eki.wordweb.service.AncillaryDataService;
 import eki.wordweb.service.CommonDataService;
 import eki.wordweb.service.StatDataCollector;
 import eki.wordweb.web.bean.SessionBean;
@@ -30,10 +33,13 @@ import eki.wordweb.web.util.LinkUtil;
 import eki.wordweb.web.util.UserAgentUtil;
 import eki.wordweb.web.util.WebUtil;
 
-public abstract class AbstractController implements WebConstant, SystemConstant, GlobalConstant {
+public abstract class AbstractController implements WebConstant, SystemConstant, GlobalConstant, FeedbackConstant {
 
 	@Autowired
 	protected CommonDataService commonDataService;
+
+	@Autowired
+	protected AncillaryDataService ancillaryDataService;
 
 	@Value("${eki.keeleinfo.url}")
 	protected String ekiKeeleinfoUrl;
@@ -99,7 +105,7 @@ public abstract class AbstractController implements WebConstant, SystemConstant,
 		model.addAttribute("speechRecognitionServiceUrl", speechRecognitionServiceUrl);
 		model.addAttribute("ekilexLimTermSearchUrl", ekilexLimTermSearchUrl);
 		model.addAttribute("yearToday", yearToday);
-		model.addAttribute("feedbackType", "sõnaveeb");
+		model.addAttribute("feedbackType", FeedbackType.WW);
 
 		return sessionBean;
 	}

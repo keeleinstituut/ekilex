@@ -4,12 +4,12 @@
 <title th:text="#{feedback.title}">Sõnaveebi tagasiside</title>
 <th:block th:fragment="links">
   <style>
-.breakWords {
-	overflow-wrap: break-word;
-	word-break: break-word;
-	word-wrap: break-word
-}
-</style>
+  .breakWords {
+  	overflow-wrap: break-word;
+  	word-break: break-word;
+  	word-wrap: break-word
+  }
+  </style>
 </th:block>
 </head>
 <body class="body-with-navbar">
@@ -41,11 +41,11 @@
         </div>
         <hr />
         <div class="d-flex justify-content-center mb-2">
-          <a th:href="@{'/wwfeedback/page/' + ${feedbackLogResult.pageNum - 1}}" th:hidden="${feedbackLogResult.pageNum == 1}" th:title="#{common.previous.page}" class="btn badge mr-2">
+          <a th:href="|@{/wwfeedback/page/}${feedbackLogResult.pageNum - 1}|" th:hidden="${feedbackLogResult.pageNum == 1}" th:title="#{common.previous.page}" class="btn badge mr-2">
             <i class="fa fa-2x fa-angle-left" aria-hidden="true"></i>
           </a>
-          <span class="mt-1" th:text="${feedbackLogResult.pageNum + ' / ' + feedbackLogResult.pageCount}"></span>
-          <a th:href="@{'/wwfeedback/page/' + ${feedbackLogResult.pageNum + 1}}" th:hidden="${feedbackLogResult.pageNum == feedbackLogResult.pageCount}" th:title="#{common.next.page}"
+          <span class="mt-1" th:text="|${feedbackLogResult.pageNum} / ${feedbackLogResult.pageCount}|"></span>
+          <a th:href="|@{/wwfeedback/page/}${feedbackLogResult.pageNum + 1}|" th:hidden="${feedbackLogResult.pageNum == feedbackLogResult.pageCount}" th:title="#{common.next.page}"
             class="btn badge ml-2">
             <i class="fa fa-2x fa-angle-right" aria-hidden="true"></i>
           </a>
@@ -63,42 +63,59 @@
             </tr>
           </thead>
           <tbody>
-            <tr th:each="feedbackLog : ${feedbackLogResult.feedbackLogs}">
-              <td>
-                <span class="text-nowrap font-weight-light" th:text="${#temporals.format(feedbackLog.createdOn, 'dd.MM.yyyy HH:mm')}"></span>
-                <span class="badge badge-info" th:text="${feedbackLog.feedbackType}"></span>
-              </td>
-              <td>
-                <div class="text-primary" th:text="${feedbackLog.senderEmail}"></div>
-              </td>
-              <td>
-                <span th:text="${feedbackLog.lastSearch}"></span>
-              </td>
-              <td class="breakWords pr-3">
-                <div class="row ml-1" th:unless="${#strings.isEmpty(feedbackLog.description)}">
-                  <span class="lbl pr-2" th:text="#{feedback.description}">Kirjeldus</span>
-                  <span th:text="${feedbackLog.description}"></span>
-                </div>
-                <th:block th:if="${feedbackLog.feedbackLogAttrs}">
-                  <th:block th:each="feedbackLogAttr : ${feedbackLog.feedbackLogAttrs}">
-                    <div class="row ml-1">
-                      <span class="lbl pr-2" th:text="#{|feedback.${feedbackLogAttr.name}|}">Attr name</span>
-                      <span th:text="${feedbackLogAttr.value}"></span>
-                    </div>
+            <th:block th:each="feedbackLog : ${feedbackLogResult.feedbackLogs}">
+              <tr th:id="|feedbackLogRow_${feedbackLog.id}|" th:fragment="feedbacklog_row">
+                <td>
+                  <span class="text-nowrap font-weight-light" th:text="${#temporals.format(feedbackLog.created, 'dd.MM.yyyy HH:mm')}"></span>
+                  <span class="badge badge-info" th:text="#{|enum.feedbacktype.${feedbackLog.feedbackType}|}"></span>
+                </td>
+                <td>
+                  <div class="text-primary" th:text="${feedbackLog.senderEmail}"></div>
+                </td>
+                <td>
+                  <span th:text="${feedbackLog.lastSearch}"></span>
+                </td>
+                <td class="breakWords pr-3">
+                  <div class="row ml-1" th:unless="${#strings.isEmpty(feedbackLog.description)}">
+                    <span class="lbl pr-2" th:text="#{feedback.description}">Kirjeldus</span>
+                    <span th:text="${feedbackLog.description}"></span>
+                  </div>
+                  <th:block th:if="${feedbackLog.feedbackLogAttrs}">
+                    <th:block th:each="feedbackLogAttr : ${feedbackLog.feedbackLogAttrs}">
+                      <div class="row ml-1">
+                        <span class="lbl pr-2" th:text="#{|feedback.${feedbackLogAttr.name}|}">Attr name</span>
+                        <span th:text="${feedbackLogAttr.value}"></span>
+                      </div>
+                    </th:block>
                   </th:block>
-                </th:block>
-              </td>
-              <td>
-                <div th:replace="wwfeedbackdialog :: add_feedback_comment_dlg"></div>
-                <button type="button" class="btn badge badge-success" th:title="#{common.add.new}"
-                        data-toggle="modal" th:data-target="${'#addFeedbackCommentDlg_' + feedbackLog.id}"
-                        sec:authorize="${#vars.isDatasetCrudOwnerOrAdmin}">
-                  <i class="fa fa-plus" aria-hidden="true"></i>
-                </button>
-              </td>
-              <td>
-                <th:block th:fragment="eki_comments">
-                  <table th:id="${'ekiCommentsArea_' + feedbackLog.id}">
+                </td>
+                <td>
+                  <th:block sec:authorize="#authentication.principal.master">
+                    <div th:replace="wwfeedbackdialog :: create_feedback_comment_dlg"></div>
+                    <button type="button" class="btn badge badge-light" th:title="#{feedback.create.comment}"
+                            data-toggle="modal" th:data-target="|#createFeedbackCommentDlg_${feedbackLog.id}|">
+                      <i class="fa fa-comment-o" aria-hidden="true"></i>
+                    </button>
+                    <th:block th:if="${@viewUtil.enumEquals(feedbackLog.feedbackType, T(eki.common.constant.FeedbackType).WORD_SUGGESTION)}">
+                      <th:block th:if="${feedbackLog.wordSuggestion}">
+                        <div th:replace="wwfeedbackdialog :: update_word_suggestion_dlg"></div>
+                        <button type="button" class="btn badge badge-light" th:title="#{feedback.update.wordsuggestion}"
+                                data-toggle="modal" th:data-target="|#updateWordSuggestionDlg_${feedbackLog.wordSuggestion.id}|">
+                          <i class="fa fa-pencil" aria-hidden="true"></i>
+                        </button>
+                      </th:block>
+                      <th:block th:unless="${feedbackLog.wordSuggestion}">
+                        <div th:replace="wwfeedbackdialog :: create_word_suggestion_dlg"></div>
+                        <button type="button" class="btn badge badge-light" th:title="#{feedback.create.wordsuggestion}"
+                                data-toggle="modal" th:data-target="|#createWordSuggestionDlg_${feedbackLog.id}|">
+                          <i class="fa fa-share" aria-hidden="true"></i>
+                        </button>
+                      </th:block>
+                    </th:block>
+                  </th:block>
+                </td>
+                <td>
+                  <table th:id="|ekiCommentsArea_${feedbackLog.id}|">
                     <tr th:each="feedbackLogComment : ${feedbackLog.feedbackLogComments}">
                       <td class="text-nowrap">
                         <div class="font-weight-light" th:text="${#temporals.format(feedbackLogComment.createdOn, 'dd.MM.yyyy HH:mm')}"></div>
@@ -109,26 +126,26 @@
                       <td th:utext="${feedbackLogComment.comment}" class="breakWords"></td>
                     </tr>
                   </table>
-                </th:block>
-              </td>
-              <td>
-                <form th:action="@{/wwfeedback/deletefeedback}">
-                  <input type="hidden" name="feedbackId" th:value="${feedbackLog.id}" />
-                  <button type="button" class="btn badge badge-warning" data-toggle="delete-confirm" data-placement="left" sec:authorize="${#vars.isDatasetCrudOwnerOrAdmin}">
-                    <i class="fa fa-remove" aria-hidden="true"></i>
-                  </button>
-                </form>
-              </td>
-            </tr>
+                </td>
+                <td>
+                  <form th:action="@{/wwfeedback/deletefeedback}">
+                    <input type="hidden" name="feedbackId" th:value="${feedbackLog.id}" />
+                    <button type="button" class="btn badge badge-warning" data-toggle="delete-confirm" data-placement="left" sec:authorize="#authentication.principal.master">
+                      <i class="fa fa-remove" aria-hidden="true"></i>
+                    </button>
+                  </form>
+                </td>
+              </tr>
+            </th:block>
           </tbody>
         </table>
         <hr />
         <div class="d-flex justify-content-center mb-2">
-          <a th:href="@{'/wwfeedback/page/' + ${feedbackLogResult.pageNum - 1}}" th:hidden="${feedbackLogResult.pageNum == 1}" th:title="#{common.previous.page}" class="btn badge mr-2">
+          <a th:href="|@{/wwfeedback/page/}${feedbackLogResult.pageNum - 1}|" th:hidden="${feedbackLogResult.pageNum == 1}" th:title="#{common.previous.page}" class="btn badge mr-2">
             <i class="fa fa-2x fa-angle-left" aria-hidden="true"></i>
           </a>
-          <span class="mt-1" th:text="${feedbackLogResult.pageNum + ' / ' + feedbackLogResult.pageCount}"></span>
-          <a th:href="@{'/wwfeedback/page/' + ${feedbackLogResult.pageNum + 1}}" th:hidden="${feedbackLogResult.pageNum == feedbackLogResult.pageCount}" th:title="#{common.next.page}"
+          <span class="mt-1" th:text="|${feedbackLogResult.pageNum} / ${feedbackLogResult.pageCount}|"></span>
+          <a th:href="|@{/wwfeedback/page/}${feedbackLogResult.pageNum + 1}|" th:hidden="${feedbackLogResult.pageNum == feedbackLogResult.pageCount}" th:title="#{common.next.page}"
             class="btn badge ml-2">
             <i class="fa fa-2x fa-angle-right" aria-hidden="true"></i>
           </a>

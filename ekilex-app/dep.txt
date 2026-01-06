@@ -1,5 +1,5 @@
-eki.ekilex:ekilex-app:jar:1.41-SNAPSHOT
-+- eki.common:eki-common:jar:1.41-SNAPSHOT:compile
+eki.ekilex:ekilex-app:jar:1.45-SNAPSHOT
++- eki.common:eki-common:jar:1.45-SNAPSHOT:compile
 |  +- org.apache.commons:commons-lang3:jar:3.12.0:compile
 |  +- org.springframework:spring-core:jar:5.3.23:compile
 |  |  \- org.springframework:spring-jcl:jar:5.3.23:compile
@@ -93,6 +93,8 @@ eki.ekilex:ekilex-app:jar:1.41-SNAPSHOT
 +- org.springframework.boot:spring-boot-starter-mail:jar:2.6.12:compile
 |  \- com.sun.mail:jakarta.mail:jar:1.6.7:compile
 |     \- com.sun.activation:jakarta.activation:jar:1.2.2:compile
++- com.microsoft.azure:msal4j:jar:1.23.1:compile
+|  \- com.azure:azure-json:jar:1.4.0:compile
 +- com.fasterxml.jackson.core:jackson-core:jar:2.13.4:compile
 +- com.fasterxml.jackson.core:jackson-databind:jar:2.13.4:compile
 +- com.fasterxml.jackson.datatype:jackson-datatype-jsr310:jar:2.13.4:compile

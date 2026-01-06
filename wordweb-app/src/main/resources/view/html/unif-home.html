@@ -12,7 +12,6 @@
   <th:block th:replace="common-app :: update-msg"></th:block>
   <th:block th:replace="common-app :: wcag-search"></th:block>
   <th:block th:replace="common-app :: latest-ww-news-article"></th:block>
-  <th:block th:replace="common-app :: ie-user"></th:block>
   <th:block th:replace="common-app :: header(withLogo = ${false}, withSearch = ${false})"></th:block>
   <div class="container-fluid home-page-content">
     <div class="row">
@@ -58,7 +57,7 @@
     </div>
   </div>
   <div th:replace="common-app :: footer-content"></div>
-  <div th:replace="common-app :: feedback-form"></div>
+  <div th:replace="feedback :: feedback-form"></div>
   <script th:inline="javascript">
   	var currentPage = /*[[@{/}]]*/"/";
   	var searchWordFragUrl = /*[[@{/searchwordfrag/unif}]]*/"/searchwordfrag/unif";

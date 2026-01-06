@@ -1,8 +1,5 @@
 package eki.ekilex.web.controller;
 
-import java.util.List;
-import java.util.Map;
-
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
@@ -12,14 +9,13 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.SessionAttributes;
 
 import eki.ekilex.constant.WebConstant;
 import eki.ekilex.data.FeedbackLog;
-import eki.ekilex.data.FeedbackLogComment;
 import eki.ekilex.data.FeedbackLogResult;
+import eki.ekilex.data.WordSuggestion;
 import eki.ekilex.service.FeedbackService;
 import eki.ekilex.web.bean.WwFeedbackSearchBean;
 
@@ -78,25 +74,30 @@ public class FeedbackController extends AbstractPublicPageController {
 		return WW_FEEDBACK_PAGE;
 	}
 
-	@PostMapping(WW_FEEDBACK_URI + "/addcomment")
-	public String addFeedbackComment(
-			@RequestBody Map<String, String> requestBody,
+	@PostMapping(WW_FEEDBACK_URI + "/createcomment")
+	public String createFeedbackComment(
+			@RequestParam("feedbackLogId") Long feedbackLogId,
+			@RequestParam("comment") String comment,
 			Model model) {
 
 		String userName = userContext.getUserName();
-		Long feedbackLogId = Long.valueOf(requestBody.get("feedbackId"));
-		String comment = requestBody.get("comment");
 
 		feedbackService.createFeedbackLogComment(feedbackLogId, comment, userName);
-
-		List<FeedbackLogComment> comments = feedbackService.getFeedbackLogComments(feedbackLogId);
-		FeedbackLog feedbackLog = new FeedbackLog();
-		feedbackLog.setId(feedbackLogId);
-		feedbackLog.setFeedbackLogComments(comments);
-
+		FeedbackLog feedbackLog = feedbackService.getFeedbackLog(feedbackLogId);
 		model.addAttribute("feedbackLog", feedbackLog);
 
-		return WW_FEEDBACK_PAGE + PAGE_FRAGMENT_ELEM + "eki_comments";
+		return WW_FEEDBACK_PAGE + PAGE_FRAGMENT_ELEM + "feedbacklog_row";
+	}
+
+	@PostMapping(WW_FEEDBACK_URI + "/savewordsuggestion")
+	public String saveWordSuggestion(WordSuggestion wordSuggestion, Model model) {
+
+		Long feedbackLogId = wordSuggestion.getFeedbackLogId();
+		feedbackService.saveWordSuggestion(wordSuggestion);
+		FeedbackLog feedbackLog = feedbackService.getFeedbackLog(feedbackLogId);
+		model.addAttribute("feedbackLog", feedbackLog);
+
+		return WW_FEEDBACK_PAGE + PAGE_FRAGMENT_ELEM + "feedbacklog_row";
 	}
 
 	@GetMapping(WW_FEEDBACK_URI + "/deletefeedback")
@@ -119,7 +120,7 @@ public class FeedbackController extends AbstractPublicPageController {
 		Boolean notCommentedFilter = wwFeedbackSearchBean.getNotCommentedFilter();
 		int pageNum = wwFeedbackSearchBean.getPageNum();
 
-		FeedbackLogResult feedbackLogResult = feedbackService.getFeedbackLog(searchFilter, notCommentedFilter, pageNum);
+		FeedbackLogResult feedbackLogResult = feedbackService.getFeedbackLogs(searchFilter, notCommentedFilter, pageNum);
 		model.addAttribute("feedbackLogResult", feedbackLogResult);
 	}
 

@@ -2,7 +2,6 @@ package eki.wordweb.web.interceptor;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -51,8 +50,6 @@ public class PageRequestPostHandler implements HandlerInterceptor, WebConstant, 
 			return;
 		}
 
-		setIeUserFlag(request);
-
 		ModelMap modelMap = modelAndView.getModelMap();
 		if (!modelMap.containsKey(APP_DATA_MODEL_KEY)) {
 			AppData appData = appDataHolder.getAppData();
@@ -60,14 +57,6 @@ public class PageRequestPostHandler implements HandlerInterceptor, WebConstant, 
 		}
 
 		logRequestProcessTime(request);
-	}
-
-	private void setIeUserFlag(HttpServletRequest request) {
-		HttpSession session = request.getSession();
-		if (session.getAttribute(IE_USER_FLAG_KEY) == null) {
-			boolean isIeUser = userAgentUtil.isTraditionalMicrosoftUser(request);
-			session.setAttribute(IE_USER_FLAG_KEY, isIeUser);
-		}
 	}
 
 	private void logRequestProcessTime(HttpServletRequest request) {

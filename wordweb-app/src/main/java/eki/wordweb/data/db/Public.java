@@ -22,6 +22,7 @@ import eki.wordweb.data.db.tables.MviewWwWord;
 import eki.wordweb.data.db.tables.MviewWwWordEtymology;
 import eki.wordweb.data.db.tables.MviewWwWordRelation;
 import eki.wordweb.data.db.tables.MviewWwWordSearch;
+import eki.wordweb.data.db.tables.MviewWwWordSuggestion;
 import eki.wordweb.data.db.tables.OsDefinitionIdx;
 import eki.wordweb.data.db.tables.OsLexemeMeaning;
 import eki.wordweb.data.db.tables.OsWord;
@@ -150,6 +151,11 @@ public class Public extends SchemaImpl {
     public final MviewWwWordSearch MVIEW_WW_WORD_SEARCH = MviewWwWordSearch.MVIEW_WW_WORD_SEARCH;
 
     /**
+     * The table <code>public.mview_ww_word_suggestion</code>.
+     */
+    public final MviewWwWordSuggestion MVIEW_WW_WORD_SUGGESTION = MviewWwWordSuggestion.MVIEW_WW_WORD_SUGGESTION;
+
+    /**
      * The table <code>public.os_definition_idx</code>.
      */
     public final OsDefinitionIdx OS_DEFINITION_IDX = OsDefinitionIdx.OS_DEFINITION_IDX;
@@ -252,6 +258,7 @@ public class Public extends SchemaImpl {
             MviewWwWordEtymology.MVIEW_WW_WORD_ETYMOLOGY,
             MviewWwWordRelation.MVIEW_WW_WORD_RELATION,
             MviewWwWordSearch.MVIEW_WW_WORD_SEARCH,
+            MviewWwWordSuggestion.MVIEW_WW_WORD_SUGGESTION,
             OsDefinitionIdx.OS_DEFINITION_IDX,
             OsLexemeMeaning.OS_LEXEME_MEANING,
             OsWord.OS_WORD,
