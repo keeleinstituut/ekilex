@@ -148,6 +148,7 @@ import eki.ekilex.data.db.main.tables.ViewWwWord;
 import eki.ekilex.data.db.main.tables.ViewWwWordEtymology;
 import eki.ekilex.data.db.main.tables.ViewWwWordRelation;
 import eki.ekilex.data.db.main.tables.ViewWwWordSearch;
+import eki.ekilex.data.db.main.tables.ViewWwWordSuggestion;
 import eki.ekilex.data.db.main.tables.Word;
 import eki.ekilex.data.db.main.tables.WordActivityLog;
 import eki.ekilex.data.db.main.tables.WordEkiRecommendation;
@@ -901,6 +902,11 @@ public class Tables {
      * The table <code>public.view_ww_word_search</code>.
      */
     public static final ViewWwWordSearch VIEW_WW_WORD_SEARCH = ViewWwWordSearch.VIEW_WW_WORD_SEARCH;
+
+    /**
+     * The table <code>public.view_ww_word_suggestion</code>.
+     */
+    public static final ViewWwWordSuggestion VIEW_WW_WORD_SUGGESTION = ViewWwWordSuggestion.VIEW_WW_WORD_SUGGESTION;
 
     /**
      * The table <code>public.word</code>.

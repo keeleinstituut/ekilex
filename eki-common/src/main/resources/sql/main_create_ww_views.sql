@@ -3858,15 +3858,17 @@ create view view_ww_word_suggestion
 as
 select
 	ws.id word_suggestion_id,
+	ws.created,
 	ws.word_value,
 	ws.definition_value,
-	ws.author_name,
-	ws.publication_time
+	ws.usage_value,
+	ws.author_name
 from
 	word_suggestion ws
 where
 	ws.is_public = true
+	and ws.publication_date <= current_date
 order by
-	ws.publication_time desc
+	ws.created desc
 ;
 

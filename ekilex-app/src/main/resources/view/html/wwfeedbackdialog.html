@@ -31,13 +31,21 @@
               </th:block>
             </div>
             <div class="form-group">
-              <label th:text="#{feedback.definition}" class="col-form-label">Tähendus ja näitelaused</label>
-              <textarea name="definitionValue" th:text="${feedbackLog.description}" rows="4" class="form-control required-field" required="required" autocomplete="off"></textarea>
+              <label th:text="#{feedback.definition}" class="col-form-label">Tähendus</label>
+              <th:block th:each="feedbackLogAttr : ${feedbackLog.feedbackLogAttrs}" th:if="${feedbackLogAttr.name == 'definition'}">
+                <textarea name="definitionValue" th:text="${feedbackLogAttr.value}" rows="4" class="form-control required-field" required="required" autocomplete="off"></textarea>
+              </th:block>
+            </div>
+            <div class="form-group">
+              <label th:text="#{feedback.usage}" class="col-form-label">Näitelaused</label>
+              <th:block th:each="feedbackLogAttr : ${feedbackLog.feedbackLogAttrs}" th:if="${feedbackLogAttr.name == 'usage'}">
+                <textarea name="usageValue" th:text="${feedbackLogAttr.value}" rows="4" class="form-control required-field" required="required" autocomplete="off"></textarea>
+              </th:block>
             </div>
             <div class="form-group">
               <label th:text="#{feedback.author}" class="col-form-label">Nimi</label>
               <th:block th:each="feedbackLogAttr : ${feedbackLog.feedbackLogAttrs}" th:if="${feedbackLogAttr.name == 'sender_name'}">
-                <input type="text" name="authorName" th:value="${feedbackLogAttr.value}" class="form-control" autocomplete="off">
+                <input type="text" name="authorName" th:value="${feedbackLogAttr.value}" class="form-control required-field" autocomplete="off">
               </th:block>
             </div>
             <div class="form-group">
@@ -71,12 +79,16 @@
               <input type="text" name="wordValue" th:value="${feedbackLog.wordSuggestion.wordValue}" class="form-control required-field" required="required" autocomplete="off">
             </div>
             <div class="form-group">
-              <label th:text="#{feedback.definition}" class="col-form-label">Tähendus ja näitelaused</label>
+              <label th:text="#{feedback.definition}" class="col-form-label">Tähendus</label>
               <textarea name="definitionValue" th:text="${feedbackLog.wordSuggestion.definitionValue}" rows="4" class="form-control required-field" required="required" autocomplete="off"></textarea>
             </div>
             <div class="form-group">
+              <label th:text="#{feedback.usage}" class="col-form-label">Näitelaused</label>
+              <textarea name="usageValue" th:text="${feedbackLog.wordSuggestion.usageValue}" rows="4" class="form-control required-field" required="required" autocomplete="off"></textarea>
+            </div>
+            <div class="form-group">
               <label th:text="#{feedback.author}" class="col-form-label">Nimi</label>
-              <input type="text" name="authorName" th:value="${feedbackLog.wordSuggestion.authorName}" class="form-control" autocomplete="off">
+              <input type="text" name="authorName" th:value="${feedbackLog.wordSuggestion.authorName}" class="form-control required-field" autocomplete="off">
             </div>
             <div class="form-group">
               <label th:text="#{feedback.email}" class="col-form-label">E-post</label>

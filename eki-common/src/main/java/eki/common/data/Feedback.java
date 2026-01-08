@@ -8,13 +8,9 @@ public class Feedback extends AbstractDataObject {
 
 	private FeedbackType feedbackType;
 
-	private String senderName;
-
 	private String senderEmail;
 
 	private String lastSearch;
-
-	private String word;
 
 	private String description;
 
@@ -24,14 +20,6 @@ public class Feedback extends AbstractDataObject {
 
 	public void setFeedbackType(FeedbackType feedbackType) {
 		this.feedbackType = feedbackType;
-	}
-
-	public String getSenderName() {
-		return senderName;
-	}
-
-	public void setSenderName(String senderName) {
-		this.senderName = senderName;
 	}
 
 	public String getSenderEmail() {
@@ -48,14 +36,6 @@ public class Feedback extends AbstractDataObject {
 
 	public void setLastSearch(String lastSearch) {
 		this.lastSearch = lastSearch;
-	}
-
-	public String getWord() {
-		return word;
-	}
-
-	public void setWord(String word) {
-		this.word = word;
 	}
 
 	public String getDescription() {

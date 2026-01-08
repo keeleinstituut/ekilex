@@ -13,7 +13,7 @@ import org.jooq.Field;
 import org.jooq.ForeignKey;
 import org.jooq.Name;
 import org.jooq.Record;
-import org.jooq.Row5;
+import org.jooq.Row6;
 import org.jooq.Schema;
 import org.jooq.Table;
 import org.jooq.TableField;
@@ -50,6 +50,11 @@ public class MviewWwWordSuggestion extends TableImpl<MviewWwWordSuggestionRecord
     public final TableField<MviewWwWordSuggestionRecord, Long> WORD_SUGGESTION_ID = createField(DSL.name("word_suggestion_id"), SQLDataType.BIGINT, this, "");
 
     /**
+     * The column <code>public.mview_ww_word_suggestion.created</code>.
+     */
+    public final TableField<MviewWwWordSuggestionRecord, LocalDateTime> CREATED = createField(DSL.name("created"), SQLDataType.LOCALDATETIME(0), this, "");
+
+    /**
      * The column <code>public.mview_ww_word_suggestion.word_value</code>.
      */
     public final TableField<MviewWwWordSuggestionRecord, String> WORD_VALUE = createField(DSL.name("word_value"), SQLDataType.CLOB, this, "");
@@ -60,14 +65,14 @@ public class MviewWwWordSuggestion extends TableImpl<MviewWwWordSuggestionRecord
     public final TableField<MviewWwWordSuggestionRecord, String> DEFINITION_VALUE = createField(DSL.name("definition_value"), SQLDataType.CLOB, this, "");
 
     /**
+     * The column <code>public.mview_ww_word_suggestion.usage_value</code>.
+     */
+    public final TableField<MviewWwWordSuggestionRecord, String> USAGE_VALUE = createField(DSL.name("usage_value"), SQLDataType.CLOB, this, "");
+
+    /**
      * The column <code>public.mview_ww_word_suggestion.author_name</code>.
      */
     public final TableField<MviewWwWordSuggestionRecord, String> AUTHOR_NAME = createField(DSL.name("author_name"), SQLDataType.CLOB, this, "");
-
-    /**
-     * The column <code>public.mview_ww_word_suggestion.publication_time</code>.
-     */
-    public final TableField<MviewWwWordSuggestionRecord, LocalDateTime> PUBLICATION_TIME = createField(DSL.name("publication_time"), SQLDataType.LOCALDATETIME(0), this, "");
 
     private MviewWwWordSuggestion(Name alias, Table<MviewWwWordSuggestionRecord> aliased) {
         this(alias, aliased, null);
@@ -134,11 +139,11 @@ public class MviewWwWordSuggestion extends TableImpl<MviewWwWordSuggestionRecord
     }
 
     // -------------------------------------------------------------------------
-    // Row5 type methods
+    // Row6 type methods
     // -------------------------------------------------------------------------
 
     @Override
-    public Row5<Long, String, String, String, LocalDateTime> fieldsRow() {
-        return (Row5) super.fieldsRow();
+    public Row6<Long, LocalDateTime, String, String, String, String> fieldsRow() {
+        return (Row6) super.fieldsRow();
     }
 }

@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.SessionAttributes;
 
 import eki.common.constant.FeedbackType;
 import eki.common.data.AppResponse;
-import eki.common.data.Feedback;
+import eki.common.data.ExtendedFeedback;
 import eki.wordweb.constant.WebConstant;
 import eki.wordweb.data.WordSuggestion;
 import eki.wordweb.service.FeedbackService;
@@ -50,7 +50,11 @@ public class WordSuggestionController extends AbstractController {
 
 	@PostMapping(WORD_SUGGESTION_URI)
 	@ResponseBody
-	public AppResponse wordSuggestion(Feedback wordSuggestion, @ModelAttribute(SESSION_BEAN) SessionBean sessionBean, Model model) {
+	public AppResponse wordSuggestion(
+			ExtendedFeedback wordSuggestion,
+			@ModelAttribute(SESSION_BEAN) SessionBean sessionBean,
+			Model model) {
+
 		wordSuggestion.setFeedbackType(FeedbackType.WORD_SUGGESTION);
 		wordSuggestion.setLastSearch(sessionBean.getSearchWord());
 		AppResponse response = feedbackService.feedback(wordSuggestion);

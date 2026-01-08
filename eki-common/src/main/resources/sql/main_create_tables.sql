@@ -1420,10 +1420,11 @@ create table word_suggestion (
 	created timestamp not null default statement_timestamp(), 
 	word_value text not null,
 	definition_value text not null,
+	usage_value text not null,
 	author_name text not null,
 	author_email text not null,
 	is_public boolean default false,
-	publication_time timestamp
+	publication_date date
 );
 alter sequence word_suggestion_id_seq restart with 10000;
 

@@ -75,7 +75,7 @@ public class AncillaryDataDbService implements SystemConstant, GlobalConstant {
 
 		return create
 				.selectFrom(ws)
-				.orderBy(ws.PUBLICATION_TIME.desc())
+				.orderBy(ws.CREATED.desc())
 				.fetchInto(WordSuggestion.class);
 	}
 }

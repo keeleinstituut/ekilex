@@ -297,10 +297,11 @@ dblink(
 	'host=localhost user=ekilex password=3kil3x dbname=ekilex',
 	'select * from view_ww_word_suggestion') as word_suggestion(
 	word_suggestion_id bigint,
+	created timestamp,
 	word_value text,
 	definition_value text,
-	author_name text,
-	publication_time timestamp
+	usage_value text,
+	author_name text
 );
 
 create materialized view mview_ww_counts as
@@ -391,5 +392,5 @@ create index mview_ww_counts_lang_idx on mview_ww_counts (lang);
 create index mview_ww_news_article_created_idx on mview_ww_news_article (created);
 create index mview_ww_news_article_type_idx on mview_ww_news_article (type);
 create index mview_ww_news_article_lang_idx on mview_ww_news_article (lang);
-create index mview_ww_word_suggestion_publication_time_idx on mview_ww_word_suggestion (publication_time);
+create index mview_ww_word_suggestion_created_idx on mview_ww_word_suggestion (created);
 

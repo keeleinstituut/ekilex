@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import eki.common.data.AppResponse;
-import eki.common.data.Feedback;
+import eki.common.data.ExtendedFeedback;
 import eki.ekilex.constant.ApiConstant;
 import eki.ekilex.service.FeedbackService;
 
@@ -29,7 +29,7 @@ public class AppServicesController implements ApiConstant {
 	@PostMapping(APP_SERVICES_URI + FEEDBACK_URI)
 	@ResponseBody
 	public AppResponse createFeedback(
-			@RequestBody Feedback feedback,
+			@RequestBody ExtendedFeedback feedback,
 			Authentication authentication,
 			HttpServletRequest request) {
 

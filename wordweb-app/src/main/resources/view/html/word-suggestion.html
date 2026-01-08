@@ -14,7 +14,7 @@
   <div class="news-page__wrapper">
     <div class="news-page__header">
       <h1 th:text="#{label.wordsuggestion.title}">Teavituste ajalugu</h1>
-      <p th:text="#{label.wordsuggestion.description}">Description</p>
+      <p th:utext="#{label.wordsuggestion.description}">Description</p>
       <p>
         <button
           class="footer__feedback-button"
@@ -41,8 +41,11 @@
               <span th:text="${wordSuggestion.definitionValue}"></span>
             </div>
             <div>
-              <small th:text="${wordSuggestion.authorName}" th:if="${wordSuggestion.authorName}"></small>
-              <small th:text="${#temporals.format(wordSuggestion.publicationTime, 'dd.MM.yyyy')}"></small>
+              <span th:text="${wordSuggestion.usageValue}"></span>
+            </div>
+            <div>
+              <small th:text="${wordSuggestion.authorName}"></small>
+              <small th:text="${#temporals.format(wordSuggestion.created, 'dd.MM.yyyy')}"></small>
             </div>
           </div>
         </th:block>
@@ -70,20 +73,26 @@
                   <div class="invalid-feedback" th:text="#{message.feedback.missing.word}">Väli on kohustuslik</div>
                 </div>
                 <div class="mt-2">
-                  <label th:text="#{label.feedback.description.wordsuggestion}" class="col-form-label">Tähendus ja näitelaused</label>
-                  <textarea name="description" class="form-control" th:placeholder="#{label.feedback.description.wordsuggestion.placeholder}" required="required" autocomplete="off"></textarea>
-                  <div class="invalid-feedback" th:text="#{message.feedback.missing.description.wordsuggestion}">Väli on kohustuslik</div>
+                  <label th:text="#{label.feedback.definition}" class="col-form-label">Tähendus</label>
+                  <textarea name="definition" class="form-control" th:placeholder="#{label.feedback.definition.placeholder}" required="required" autocomplete="off"></textarea>
+                  <div class="invalid-feedback" th:text="#{message.feedback.missing.definition}">Väli on kohustuslik</div>
+                </div>
+                <div class="mt-2">
+                  <label th:text="#{label.feedback.usage}" class="col-form-label">Näitelaused</label>
+                  <textarea name="usage" class="form-control" th:placeholder="#{label.feedback.usage.placeholder}" required="required" autocomplete="off"></textarea>
+                  <div class="invalid-feedback" th:text="#{message.feedback.missing.usage}">Väli on kohustuslik</div>
                 </div>
                 <div class="mt-2">
                   <label th:text="#{label.feedback.name}" class="col-form-label">Nimi</label>
-                  <input type="text" name="senderName" th:placeholder="#{label.feedback.name}" class="form-control" autocomplete="off">
+                  <input type="text" name="senderName" th:placeholder="#{label.feedback.name}" class="form-control" required="required" autocomplete="off">
                   <div>
                     <small th:text="#{label.feedback.name.comment}">Nimi avaldatakse Sõnaveebis</small>
                   </div>
+                  <div class="invalid-feedback" th:text="#{message.feedback.missing.name}">Väli on kohustuslik</div>
                 </div>
                 <div class="mt-2">
                   <label th:text="#{label.feedback.email}" class="col-form-label">E-post</label>
-                  <input type="email" name="senderEmail" th:placeholder="#{label.feedback.email.placeholder.wordsuggestion}" class="form-control form-email" required="required" autocomplete="off">
+                  <input type="email" name="senderEmail" th:placeholder="#{label.feedback.email.placeholder}" class="form-control form-email" required="required" autocomplete="off">
                   <div>
                     <small th:text="#{label.feedback.email.comment}">E-posti aadressi ei avaldata Sõnaveebis</small>
                   </div>

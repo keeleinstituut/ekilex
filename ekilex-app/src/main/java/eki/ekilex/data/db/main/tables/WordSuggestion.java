@@ -8,6 +8,7 @@ import eki.ekilex.data.db.main.Keys;
 import eki.ekilex.data.db.main.Public;
 import eki.ekilex.data.db.main.tables.records.WordSuggestionRecord;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
@@ -17,7 +18,7 @@ import org.jooq.ForeignKey;
 import org.jooq.Identity;
 import org.jooq.Name;
 import org.jooq.Record;
-import org.jooq.Row9;
+import org.jooq.Row10;
 import org.jooq.Schema;
 import org.jooq.Table;
 import org.jooq.TableField;
@@ -75,6 +76,11 @@ public class WordSuggestion extends TableImpl<WordSuggestionRecord> {
     public final TableField<WordSuggestionRecord, String> DEFINITION_VALUE = createField(DSL.name("definition_value"), SQLDataType.CLOB.nullable(false), this, "");
 
     /**
+     * The column <code>public.word_suggestion.usage_value</code>.
+     */
+    public final TableField<WordSuggestionRecord, String> USAGE_VALUE = createField(DSL.name("usage_value"), SQLDataType.CLOB.nullable(false), this, "");
+
+    /**
      * The column <code>public.word_suggestion.author_name</code>.
      */
     public final TableField<WordSuggestionRecord, String> AUTHOR_NAME = createField(DSL.name("author_name"), SQLDataType.CLOB.nullable(false), this, "");
@@ -90,9 +96,9 @@ public class WordSuggestion extends TableImpl<WordSuggestionRecord> {
     public final TableField<WordSuggestionRecord, Boolean> IS_PUBLIC = createField(DSL.name("is_public"), SQLDataType.BOOLEAN.defaultValue(DSL.field("false", SQLDataType.BOOLEAN)), this, "");
 
     /**
-     * The column <code>public.word_suggestion.publication_time</code>.
+     * The column <code>public.word_suggestion.publication_date</code>.
      */
-    public final TableField<WordSuggestionRecord, LocalDateTime> PUBLICATION_TIME = createField(DSL.name("publication_time"), SQLDataType.LOCALDATETIME(6), this, "");
+    public final TableField<WordSuggestionRecord, LocalDate> PUBLICATION_DATE = createField(DSL.name("publication_date"), SQLDataType.LOCALDATE, this, "");
 
     private WordSuggestion(Name alias, Table<WordSuggestionRecord> aliased) {
         this(alias, aliased, null);
@@ -188,11 +194,11 @@ public class WordSuggestion extends TableImpl<WordSuggestionRecord> {
     }
 
     // -------------------------------------------------------------------------
-    // Row9 type methods
+    // Row10 type methods
     // -------------------------------------------------------------------------
 
     @Override
-    public Row9<Long, Long, LocalDateTime, String, String, String, String, Boolean, LocalDateTime> fieldsRow() {
-        return (Row9) super.fieldsRow();
+    public Row10<Long, Long, LocalDateTime, String, String, String, String, String, Boolean, LocalDate> fieldsRow() {
+        return (Row10) super.fieldsRow();
     }
 }

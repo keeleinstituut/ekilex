@@ -15,15 +15,17 @@ public class WordSuggestion extends AbstractDataObject {
 
 	private Long wordSuggestionId;
 
+	@JsonSerialize(using = LocalDateTimeSerializer.class)
+	@JsonDeserialize(using = LocalDateTimeDeserialiser.class)
+	private LocalDateTime created;
+
 	private String wordValue;
 
 	private String definitionValue;
 
-	private String authorName;
+	private String usageValue;
 
-	@JsonSerialize(using = LocalDateTimeSerializer.class)
-	@JsonDeserialize(using = LocalDateTimeDeserialiser.class)
-	private LocalDateTime publicationTime;
+	private String authorName;
 
 	public Long getWordSuggestionId() {
 		return wordSuggestionId;
@@ -31,6 +33,14 @@ public class WordSuggestion extends AbstractDataObject {
 
 	public void setWordSuggestionId(Long wordSuggestionId) {
 		this.wordSuggestionId = wordSuggestionId;
+	}
+
+	public LocalDateTime getCreated() {
+		return created;
+	}
+
+	public void setCreated(LocalDateTime created) {
+		this.created = created;
 	}
 
 	public String getWordValue() {
@@ -49,20 +59,20 @@ public class WordSuggestion extends AbstractDataObject {
 		this.definitionValue = definitionValue;
 	}
 
+	public String getUsageValue() {
+		return usageValue;
+	}
+
+	public void setUsageValue(String usageValue) {
+		this.usageValue = usageValue;
+	}
+
 	public String getAuthorName() {
 		return authorName;
 	}
 
 	public void setAuthorName(String authorName) {
 		this.authorName = authorName;
-	}
-
-	public LocalDateTime getPublicationTime() {
-		return publicationTime;
-	}
-
-	public void setPublicationTime(LocalDateTime publicationTime) {
-		this.publicationTime = publicationTime;
 	}
 
 }

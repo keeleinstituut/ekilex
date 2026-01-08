@@ -276,6 +276,8 @@ create index word_suggestion_word_value_idx on word_suggestion(word_value);
 create index word_suggestion_word_value_lower_idx on word_suggestion(lower(word_value));
 create index word_suggestion_author_name_idx on word_suggestion(author_name);
 create index word_suggestion_author_name_lower_idx on word_suggestion(lower(author_name));
+create index word_suggestion_is_public_idx on word_suggestion(is_public);
+create index word_suggestion_publication_date_idx on word_suggestion(publication_date);
 create index api_request_count_auth_name_idx on api_request_count(auth_name);
 create index api_request_count_generic_path_idx on api_request_count(generic_path);
 create index api_request_count_count_idx on api_request_count(count);

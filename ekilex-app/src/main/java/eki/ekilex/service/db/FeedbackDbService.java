@@ -19,6 +19,7 @@ import eki.common.data.Feedback;
 import eki.ekilex.data.db.main.tables.FeedbackLog;
 import eki.ekilex.data.db.main.tables.FeedbackLogAttr;
 import eki.ekilex.data.db.main.tables.FeedbackLogComment;
+import eki.ekilex.data.db.main.tables.WordSuggestion;
 import eki.ekilex.service.db.util.QueryHelper;
 
 @Component
@@ -165,26 +166,41 @@ public class FeedbackDbService {
 				.execute();
 	}
 
+	public eki.ekilex.data.WordSuggestion getWordSuggestion(Long id) {
+
+		WordSuggestion ws = WORD_SUGGESTION.as("ws");
+
+		return mainDb
+				.selectFrom(ws)
+				.where(ws.ID.eq(id))
+				.fetchOptionalInto(eki.ekilex.data.WordSuggestion.class)
+				.orElse(null);
+	}
+
 	public void createWordSuggestion(eki.ekilex.data.WordSuggestion wordSuggestion) {
 
 		mainDb
 				.insertInto(
 						WORD_SUGGESTION,
 						WORD_SUGGESTION.FEEDBACK_LOG_ID,
+						WORD_SUGGESTION.CREATED,
 						WORD_SUGGESTION.WORD_VALUE,
 						WORD_SUGGESTION.DEFINITION_VALUE,
+						WORD_SUGGESTION.USAGE_VALUE,
 						WORD_SUGGESTION.AUTHOR_NAME,
 						WORD_SUGGESTION.AUTHOR_EMAIL,
 						WORD_SUGGESTION.IS_PUBLIC,
-						WORD_SUGGESTION.PUBLICATION_TIME)
+						WORD_SUGGESTION.PUBLICATION_DATE)
 				.values(
 						wordSuggestion.getFeedbackLogId(),
+						wordSuggestion.getCreated(),
 						wordSuggestion.getWordValue(),
 						wordSuggestion.getDefinitionValue(),
+						wordSuggestion.getUsageValue(),
 						wordSuggestion.getAuthorName(),
 						wordSuggestion.getAuthorEmail(),
 						wordSuggestion.isPublic(),
-						wordSuggestion.getPublicationTime())
+						wordSuggestion.getPublicationDate())
 				.execute();
 	}
 
@@ -194,10 +210,11 @@ public class FeedbackDbService {
 				.update(WORD_SUGGESTION)
 				.set(WORD_SUGGESTION.WORD_VALUE, wordSuggestion.getWordValue())
 				.set(WORD_SUGGESTION.DEFINITION_VALUE, wordSuggestion.getDefinitionValue())
+				.set(WORD_SUGGESTION.USAGE_VALUE, wordSuggestion.getUsageValue())
 				.set(WORD_SUGGESTION.AUTHOR_NAME, wordSuggestion.getAuthorName())
 				.set(WORD_SUGGESTION.AUTHOR_EMAIL, wordSuggestion.getAuthorEmail())
 				.set(WORD_SUGGESTION.IS_PUBLIC, wordSuggestion.isPublic())
-				.set(WORD_SUGGESTION.PUBLICATION_TIME, wordSuggestion.getPublicationTime())
+				.set(WORD_SUGGESTION.PUBLICATION_DATE, wordSuggestion.getPublicationDate())
 				.where(WORD_SUGGESTION.ID.eq(wordSuggestion.getId()))
 				.execute();
 	}

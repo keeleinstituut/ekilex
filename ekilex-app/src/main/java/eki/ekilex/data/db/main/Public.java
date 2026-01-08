@@ -148,6 +148,7 @@ import eki.ekilex.data.db.main.tables.ViewWwWord;
 import eki.ekilex.data.db.main.tables.ViewWwWordEtymology;
 import eki.ekilex.data.db.main.tables.ViewWwWordRelation;
 import eki.ekilex.data.db.main.tables.ViewWwWordSearch;
+import eki.ekilex.data.db.main.tables.ViewWwWordSuggestion;
 import eki.ekilex.data.db.main.tables.Word;
 import eki.ekilex.data.db.main.tables.WordActivityLog;
 import eki.ekilex.data.db.main.tables.WordEkiRecommendation;
@@ -932,6 +933,11 @@ public class Public extends SchemaImpl {
     public final ViewWwWordSearch VIEW_WW_WORD_SEARCH = ViewWwWordSearch.VIEW_WW_WORD_SEARCH;
 
     /**
+     * The table <code>public.view_ww_word_suggestion</code>.
+     */
+    public final ViewWwWordSuggestion VIEW_WW_WORD_SUGGESTION = ViewWwWordSuggestion.VIEW_WW_WORD_SUGGESTION;
+
+    /**
      * The table <code>public.word</code>.
      */
     public final Word WORD = Word.WORD;
@@ -1387,6 +1393,7 @@ public class Public extends SchemaImpl {
             ViewWwWordEtymology.VIEW_WW_WORD_ETYMOLOGY,
             ViewWwWordRelation.VIEW_WW_WORD_RELATION,
             ViewWwWordSearch.VIEW_WW_WORD_SEARCH,
+            ViewWwWordSuggestion.VIEW_WW_WORD_SUGGESTION,
             Word.WORD,
             WordActivityLog.WORD_ACTIVITY_LOG,
             WordEkiRecommendation.WORD_EKI_RECOMMENDATION,

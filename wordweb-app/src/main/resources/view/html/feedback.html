@@ -17,16 +17,16 @@
               <form id="feedback-form" th:action="@{/feed}" novalidate="novalidate">
                 <input type="hidden" name="feedbackType" th:value="${feedbackType}">
                 <div class="feedback-modal__group">
-                  <label for="descriptionInput2" class="col-form-label" th:text="#{label.feedback.description.generic}">Probleemi lühikirjeldus</label>
-                  <textarea id="descriptionInput2" class="form-control" name="description" required autocomplete="off" th:placeholder="#{label.feedback.description.placeholder.generic}"></textarea>
-                  <div class="invalid-feedback" th:text="#{message.feedback.missing.description.generic}">Väli on kohustuslik</div>
+                  <label for="descriptionInput2" class="col-form-label" th:text="#{label.feedback.description}">Probleemi lühikirjeldus</label>
+                  <textarea id="descriptionInput2" class="form-control" name="description" required autocomplete="off" th:placeholder="#{label.feedback.description}"></textarea>
+                  <div class="invalid-feedback" th:text="#{message.feedback.missing.description}">Väli on kohustuslik</div>
                 </div>
                 <div class="feedback-modal__want-response">
                   <h2 th:text="#{label.feedback.message.heading}">Kui soovid vastust oma probleemile</h2>
                   <p th:text="#{label.feedback.message.content}">Kui sul on küsimus....</p>
                   <div class="feedback-modal__group">
                     <label for="feedback-modal-email" class="col-form-label" th:text="#{label.feedback.email}">E-post</label>
-                    <input id="feedback-modal-email" type="email" class="form-control form-email" name="senderEmail" autocomplete="email" th:placeholder="#{label.feedback.email.placeholder.generic}">
+                    <input id="feedback-modal-email" type="email" class="form-control form-email" name="senderEmail" autocomplete="email" th:placeholder="#{label.feedback.email.placeholder}">
                   </div>
                   <div class="feedback-modal__group d-none" id="feedback-modal-checkbox-group">
                     <div class="custom-control custom-checkbox">

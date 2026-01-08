@@ -13,10 +13,11 @@ create table word_suggestion (
 	created timestamp not null default statement_timestamp(), 
 	word_value text not null,
 	definition_value text not null,
+	usage_value text not null,
 	author_name text not null,
 	author_email text not null,
 	is_public boolean default false,
-	publication_time timestamp
+	publication_date date
 );
 alter sequence word_suggestion_id_seq restart with 10000;
 
@@ -27,7 +28,7 @@ create index word_suggestion_word_value_lower_idx on word_suggestion(lower(word_
 create index word_suggestion_author_name_idx on word_suggestion(author_name);
 create index word_suggestion_author_name_lower_idx on word_suggestion(lower(author_name));
 create index word_suggestion_is_public_idx on word_suggestion(is_public);
-create index word_suggestion_publication_time_idx on word_suggestion(publication_time);
+create index word_suggestion_publication_date_idx on word_suggestion(publication_date);
 
 -- #2 --
 

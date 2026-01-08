@@ -1,6 +1,6 @@
 package eki.ekilex.service;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
@@ -13,7 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import eki.common.constant.FeedbackConstant;
 import eki.common.data.AppResponse;
-import eki.common.data.Feedback;
+import eki.common.data.ExtendedFeedback;
 import eki.common.data.ValidationResult;
 import eki.common.service.util.FeedbackValidator;
 import eki.ekilex.constant.SystemConstant;
@@ -58,27 +58,33 @@ public class FeedbackService implements SystemConstant, FeedbackConstant {
 	}
 
 	@Transactional(rollbackFor = Exception.class)
-	public AppResponse createFeedbackLog(Feedback feedback) {
+	public AppResponse createFeedbackLog(ExtendedFeedback feedback) {
 
 		ValidationResult validationResult = feedbackValidator.validate(feedback);
 
 		if (!validationResult.isValid()) {
 			return new AppResponse(FEEDBACK_ERROR, validationResult.getMessageKey());
 		}
-		String senderName = feedback.getSenderName();
-		String word = feedback.getWord();
 		try {
 			Long feedbackLogId = feedbackDbService.createFeedbackLog(feedback);
-			if (StringUtils.isNotBlank(word)) {
-				feedbackDbService.createFeedbackLogAttr(feedbackLogId, FEEDBACK_ATTR_WORD, word);
-			}
-			if (StringUtils.isNotBlank(senderName)) {
-				feedbackDbService.createFeedbackLogAttr(feedbackLogId, FEEDBACK_ATTR_SENDER_NAME, senderName);
-			}
+			String senderName = feedback.getSenderName();
+			String word = feedback.getWord();
+			String definition = feedback.getDefinition();
+			String usage = feedback.getUsage();
+			createFeedbackLogAttr(feedbackLogId, FEEDBACK_ATTR_WORD, word);
+			createFeedbackLogAttr(feedbackLogId, FEEDBACK_ATTR_DEFINITION, definition);
+			createFeedbackLogAttr(feedbackLogId, FEEDBACK_ATTR_USAGE, usage);
+			createFeedbackLogAttr(feedbackLogId, FEEDBACK_ATTR_SENDER_NAME, senderName);
 			return new AppResponse(FEEDBACK_OK);
 		} catch (DataAccessException e) {
 			logger.error("Add new feedback", e);
 			return new AppResponse(FEEDBACK_ERROR, "message.feedback.failing.service");
+		}
+	}
+
+	private void createFeedbackLogAttr(Long feedbackLogId, String name, String value) {
+		if (StringUtils.isNotBlank(value)) {
+			feedbackDbService.createFeedbackLogAttr(feedbackLogId, name, value);
 		}
 	}
 
@@ -98,23 +104,44 @@ public class FeedbackService implements SystemConstant, FeedbackConstant {
 		boolean isBlank = StringUtils.isAnyBlank(
 				wordSuggestion.getWordValue(),
 				wordSuggestion.getDefinitionValue(),
+				wordSuggestion.getUsageValue(),
+				wordSuggestion.getAuthorName(),
 				wordSuggestion.getAuthorEmail());
 		if (isBlank) {
 			return;
 		}
 		Long wordSuggestionId = wordSuggestion.getId();
-		boolean isPublic = wordSuggestion.isPublic();
-		LocalDateTime publicationTime = null;
-		if (isPublic) {
-			publicationTime = LocalDateTime.now();
-		} else {
-			publicationTime = null;
-		}
-		wordSuggestion.setPublicationTime(publicationTime);
+		Long feedbackLogId = wordSuggestion.getFeedbackLogId();
 		if (wordSuggestionId == null) {
+			FeedbackLog feedbackLog = feedbackDbService.getFeedbackLog(feedbackLogId);
+			wordSuggestion.setCreated(feedbackLog.getCreated());
+			handlePublication(wordSuggestion);
 			feedbackDbService.createWordSuggestion(wordSuggestion);
 		} else {
+			WordSuggestion existingWordSuggestion = feedbackDbService.getWordSuggestion(wordSuggestionId);
+			wordSuggestion.setPublicationDate(existingWordSuggestion.getPublicationDate());
+			handlePublication(wordSuggestion);
 			feedbackDbService.updateWordSuggestion(wordSuggestion);
 		}
+	}
+
+	private void handlePublication(WordSuggestion wordSuggestion) {
+
+		boolean isPublic = wordSuggestion.isPublic();
+		LocalDate publicationDate = wordSuggestion.getPublicationDate();
+		if (isPublic) {
+			if (publicationDate == null) {
+				LocalDate now = LocalDate.now();
+				int dayNow = now.getDayOfMonth();
+				if (dayNow < WORD_SUGGESTION_PUBLICATION_DAY) {
+					publicationDate = now.withDayOfMonth(WORD_SUGGESTION_PUBLICATION_DAY);
+				} else {
+					publicationDate = now.plusMonths(1).withDayOfMonth(WORD_SUGGESTION_PUBLICATION_DAY);
+				}
+			}
+		} else {
+			publicationDate = null;
+		}
+		wordSuggestion.setPublicationDate(publicationDate);
 	}
 }

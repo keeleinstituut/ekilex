@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.SessionAttributes;
 
 import eki.common.data.AppResponse;
 import eki.common.data.Feedback;
@@ -23,6 +24,7 @@ import eki.wordweb.web.bean.SessionBean;
 
 @ConditionalOnWebApplication
 @Controller
+@SessionAttributes(WebConstant.SESSION_BEAN)
 public class FeedbackController implements WebConstant {
 
 	private static final Logger logger = LoggerFactory.getLogger(FeedbackController.class);
@@ -53,6 +55,7 @@ public class FeedbackController implements WebConstant {
 	@PostMapping(FEEDBACK_URI)
 	@ResponseBody
 	public AppResponse feedback(Feedback feedback, @ModelAttribute(SESSION_BEAN) SessionBean sessionBean) {
+
 		feedback.setLastSearch(sessionBean.getSearchWord());
 		AppResponse response = feedbackService.feedback(feedback);
 		String messageKey = response.getMessageKey();

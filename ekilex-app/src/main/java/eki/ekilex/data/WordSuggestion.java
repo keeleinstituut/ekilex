@@ -1,12 +1,15 @@
 package eki.ekilex.data;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateSerializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
 
 import eki.common.data.AbstractDataObject;
+import eki.common.util.LocalDateDeserialiser;
 import eki.common.util.LocalDateTimeDeserialiser;
 
 public class WordSuggestion extends AbstractDataObject {
@@ -25,15 +28,17 @@ public class WordSuggestion extends AbstractDataObject {
 
 	private String definitionValue;
 
+	private String usageValue;
+
 	private String authorName;
 
 	private String authorEmail;
 
 	private boolean isPublic;
 
-	@JsonSerialize(using = LocalDateTimeSerializer.class)
-	@JsonDeserialize(using = LocalDateTimeDeserialiser.class)
-	private LocalDateTime publicationTime;
+	@JsonSerialize(using = LocalDateSerializer.class)
+	@JsonDeserialize(using = LocalDateDeserialiser.class)
+	private LocalDate publicationDate;
 
 	public Long getId() {
 		return id;
@@ -75,6 +80,14 @@ public class WordSuggestion extends AbstractDataObject {
 		this.definitionValue = definitionValue;
 	}
 
+	public String getUsageValue() {
+		return usageValue;
+	}
+
+	public void setUsageValue(String usageValue) {
+		this.usageValue = usageValue;
+	}
+
 	public String getAuthorName() {
 		return authorName;
 	}
@@ -99,12 +112,12 @@ public class WordSuggestion extends AbstractDataObject {
 		this.isPublic = isPublic;
 	}
 
-	public LocalDateTime getPublicationTime() {
-		return publicationTime;
+	public LocalDate getPublicationDate() {
+		return publicationDate;
 	}
 
-	public void setPublicationTime(LocalDateTime publicationTime) {
-		this.publicationTime = publicationTime;
+	public void setPublicationDate(LocalDate publicationDate) {
+		this.publicationDate = publicationDate;
 	}
 
 }
