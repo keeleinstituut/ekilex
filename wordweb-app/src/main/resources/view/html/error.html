@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="et" xmlns:th="http://www.thymeleaf.org">
-<head th:replace="common-app :: common_header(~{::title},_,_)">
+<head th:replace="common-app :: common_header(~{::title},_,_,'Sõnaveeb - Viga')">
 <title>Sõnaveeb - Viga</title>
 </head>
 <body class="survey-active" th:with="httpStatus=${T(org.springframework.http.HttpStatus).valueOf(#response.status)}">

@@ -1,7 +1,12 @@
 <!DOCTYPE HTML>
 <html xmlns:th="http://www.thymeleaf.org">
-<head th:fragment="common_header(title,links,pageContext)">
+<head th:fragment="common_header(title,links,pageContext,titleString)">
 <title th:replace="${title}" th:text="#{general.title}">Sõnaveeb</title>
+<meta property="og:title" th:content="${titleString} ?: #{general.title}" />
+<meta name="twitter:title" th:content="${titleString} ?: #{general.title}" />
+<meta name="twitter:card" content="summary_large_image" />
+<meta property="og:image:width" content="1200" />
+<meta property="og:image:height" content="630" />
 <!-- Common styles and scripts -->
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -51,9 +56,13 @@
     <link rel="icon" type="image/png" th:href="@{/favicon.png}" />
     <link rel="icon" type="image/x-icon" th:href="@{/favicon.ico}">
     <link rel="apple-touch-icon" sizes="180x180" th:href="@{/apple-touch-icon.png}">
+    <meta property="og:image" th:content="@{/view/images/sonaveeb-logo-sm-og.png}" />
+    <meta name="twitter:image" th:content="@{/view/images/sonaveeb-logo-sm-twitter.png}" />
   </th:block>
   <!-- Simple search favicon -->
   <th:block th:fragment="faviconSimple">
+    <meta property="og:image" th:content="@{/view/images/sonaveeb-logo-light-sm-og.png}" />
+    <meta name="twitter:image" th:content="@{/view/images/sonaveeb-logo-light-sm-twitter.png}" />
     <link rel="apple-touch-icon" sizes="180x180" th:href="@{/apple-touch-icon-light.png}">
     <link rel="icon" type="image/png" sizes="32x32" th:href="@{/favicon-32x32-light.png}">
     <link rel="icon" type="image/png" sizes="16x16" th:href="@{/favicon-16x16-light.png}">
@@ -61,6 +70,8 @@
   </th:block>
     <!-- OS favicon -->
   <th:block th:fragment="faviconOS">
+    <meta property="og:image" th:content="@{/view/images/os-og.png}"  />
+    <meta name="twitter:image" th:content="@{/view/images/os-twitter.png}" />
     <link rel="apple-touch-icon" sizes="180x180" th:href="@{/apple-touch-icon-os.png}">
     <link rel="icon" type="image/png" sizes="32x32" th:href="@{/favicon-32x32-os.png}">
     <link rel="icon" type="image/png" sizes="16x16" th:href="@{/favicon-16x16-os.png}">

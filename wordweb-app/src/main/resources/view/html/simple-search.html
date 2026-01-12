@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="et" xmlns:th="http://www.thymeleaf.org">
-<head th:replace="common-app :: common_header(~{::title},~{::links}, simpleSearch)">
+<head th:replace="common-app :: common_header(~{::title},~{::links}, simpleSearch, #{search.title(${searchWord})})">
 <title th:text="#{search.title(${searchWord})}">Otsing</title>
 <th:block th:fragment="links">
   <script type="text/javascript" th:src="@{/view/js/shared.js}"></script>
