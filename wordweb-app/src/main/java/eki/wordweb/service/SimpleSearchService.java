@@ -91,7 +91,7 @@ public class SimpleSearchService extends AbstractSearchService {
 		// word common
 		wordConversionUtil.composeCommon(word, lexemeWords, null);
 
-		return composeWordData(word, forms, paradigms, lexemeWords, Collections.emptyList(), Collections.emptyList(), searchContext);
+		return composeWordData(word, forms, paradigms, lexemeWords, Collections.emptyList(), searchContext);
 	}
 
 	@Override

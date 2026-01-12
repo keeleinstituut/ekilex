@@ -193,7 +193,6 @@ public abstract class AbstractSearchService implements SystemConstant, WebConsta
 			List<Paradigm> paradigms,
 			List<LexemeWord> lexLexemes,
 			List<LexemeWord> termLexemes,
-			List<LexemeWord> limTermLexemes,
 			SearchContext searchContext) {
 
 		List<String> skellCompatibleLangs = Arrays.asList(LANGUAGE_CODE_ENG, LANGUAGE_CODE_DEU, LANGUAGE_CODE_RUS);
@@ -202,7 +201,7 @@ public abstract class AbstractSearchService implements SystemConstant, WebConsta
 		List<WordRelation> headwordRelatedWords = word.getRelatedWords();
 		List<String> destinLangs = searchContext.getDestinLangs();
 
-		boolean lexemesExist = CollectionUtils.isNotEmpty(lexLexemes) || CollectionUtils.isNotEmpty(termLexemes) || CollectionUtils.isNotEmpty(limTermLexemes);
+		boolean lexemesExist = CollectionUtils.isNotEmpty(lexLexemes) || CollectionUtils.isNotEmpty(termLexemes);
 		boolean relevantDataExists = lexemesExist || CollectionUtils.isNotEmpty(headwordRelatedWords);
 		boolean multipleLexLexemesExist = CollectionUtils.size(lexLexemes) > 1;
 		boolean estHeadword = StringUtils.equals(LANGUAGE_CODE_EST, headwordLang);
@@ -238,7 +237,6 @@ public abstract class AbstractSearchService implements SystemConstant, WebConsta
 		wordData.setWord(word);
 		wordData.setLexLexemes(lexLexemes);
 		wordData.setTermLexemes(termLexemes);
-		wordData.setLimTermLexemes(limTermLexemes);
 		wordData.setParadigms(paradigms);
 		wordData.setFirstAvailableAudioFile(firstAvailableAudioFile);
 		wordData.setAudioFileExists(audioFileExists);

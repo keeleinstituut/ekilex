@@ -1,6 +1,5 @@
 package eki.ekilex.service;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -270,23 +269,11 @@ public class UserService implements WebConstant, GlobalConstant {
 	}
 
 	@Transactional(rollbackFor = Exception.class)
-	public void enableUserWithTestAndLimitedDatasetPerm(Long userId) {
+	public void enableUserWithTestDatasetPerm(Long userId) {
 
 		userDbService.enableUser(userId, true);
 		Long permissionId = permissionDbService.createDatasetPermission(userId, DATASET_TEST, AuthorityItem.DATASET, AuthorityOperation.CRUD, null);
 		userProfileDbService.setRecentDatasetPermission(userId, permissionId);
-		permissionDbService.createDatasetPermission(userId, DATASET_LIMITED, AuthorityItem.DATASET, AuthorityOperation.CRUD, null);
-		updateUserSecurityContext();
-	}
-
-	@Transactional(rollbackFor = Exception.class)
-	public void enableLimitedUser(Long userId) {
-
-		userDbService.enableUser(userId, true);
-		permissionDbService.createDatasetPermission(userId, DATASET_LIMITED, AuthorityItem.DATASET, AuthorityOperation.CRUD, null);
-		EkiUserProfile userProfile = userProfileDbService.getUserProfile(userId);
-		userProfile.setPreferredDatasets(Arrays.asList(DATASET_LIMITED));
-		userProfileDbService.updateUserProfile(userProfile);
 		updateUserSecurityContext();
 	}
 

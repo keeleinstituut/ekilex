@@ -97,10 +97,7 @@ public class UnifSearchService extends AbstractSearchService {
 				.filter(lexeme -> DatasetType.LEX.equals(lexeme.getDatasetType()))
 				.collect(Collectors.toList());
 		List<LexemeWord> termLexemes = lexemeWords.stream()
-				.filter(lexeme -> DatasetType.TERM.equals(lexeme.getDatasetType()) && !StringUtils.equals(lexeme.getDatasetCode(), DATASET_LIMITED))
-				.collect(Collectors.toList());
-		List<LexemeWord> limTermLexemes = lexemeWords.stream()
-				.filter(lexeme -> DatasetType.TERM.equals(lexeme.getDatasetType()) && StringUtils.equals(lexeme.getDatasetCode(), DATASET_LIMITED))
+				.filter(lexeme -> DatasetType.TERM.equals(lexeme.getDatasetType()))
 				.collect(Collectors.toList());
 
 		// lex conv
@@ -118,15 +115,10 @@ public class UnifSearchService extends AbstractSearchService {
 			lexemeConversionUtil.sortTermLexemes(termLexemes, word);
 		}
 
-		// lim term conv
-		if (CollectionUtils.isNotEmpty(limTermLexemes)) {
-			lexemeConversionUtil.sortTermLexemes(limTermLexemes, word);
-		}
-
 		// word common
 		wordConversionUtil.composeCommon(word, lexLexemes, termLexemes);
 
-		return composeWordData(word, forms, paradigms, lexLexemes, termLexemes, limTermLexemes, searchContext);
+		return composeWordData(word, forms, paradigms, lexLexemes, termLexemes, searchContext);
 	}
 
 	@Transactional

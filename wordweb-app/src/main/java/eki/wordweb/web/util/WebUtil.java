@@ -16,14 +16,9 @@ import eki.wordweb.constant.WebConstant;
 @Component
 public class WebUtil implements WebConstant, SystemConstant, GlobalConstant {
 
-	private static final String URL_PLACEHOLDER_MEANING_ID = "{meaningId}";
-
 	private static final String URL_PLACEHOLDER_WORD = "{word}";
 
 	private static final String URL_PLACEHOLDER_LANG = "{lang}";
-
-	@Value("${ekilex.limterm.details.url}")
-	private String ekilexLimTermDetailsUrl;
 
 	@Value("${eki.oldskool.rus.dict.url}")
 	private String ekiOldskoolRusDictUrl;
@@ -103,18 +98,6 @@ public class WebUtil implements WebConstant, SystemConstant, GlobalConstant {
 	public String composeDatasetFirstLetterSearchUri(String datasetCode, Character firstLetter) {
 		String uri = StringUtils.join(DATASET_HOME_URI, '/', datasetCode, '/', firstLetter);
 		return uri;
-	}
-
-	public String composeEkilexLimTermDetailsUrl(Long meaningId) {
-		String limTermDetailsUrl = new String(ekilexLimTermDetailsUrl);
-		limTermDetailsUrl = StringUtils.replace(limTermDetailsUrl, URL_PLACEHOLDER_MEANING_ID, String.valueOf(meaningId));
-		return limTermDetailsUrl;
-	}
-
-	public String getEkilexLimTermSearchUrl() {
-		String limTermSearchUrl = new String(ekilexLimTermDetailsUrl);
-		limTermSearchUrl = StringUtils.substringBefore(limTermSearchUrl, "?");
-		return limTermSearchUrl;
 	}
 
 	public String composeIateSearchUrl(String wordValue, String langIso2) {

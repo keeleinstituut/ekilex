@@ -55,3 +55,36 @@ set
 where
 	feedback_type = 'ÕS'
 ;
+
+-- #3 --
+
+update eki_user_profile 
+	set preferred_datasets = array_remove(preferred_datasets, 'vrk')
+where
+	'vrk' = any(preferred_datasets);
+
+update eki_user_profile
+	set preferred_datasets = null
+where
+	preferred_datasets = '{}';
+
+update eki_user_profile eup
+	set recent_dataset_permission_id = null
+where
+	exists (
+		select
+			1
+		from
+			dataset_permission dp
+		where
+			eup.recent_dataset_permission_id = dp.id
+			and dp.dataset_code = 'vrk'
+	)
+;
+
+delete from dataset_permission where dataset_code = 'vrk';
+delete from lexeme where dataset_code = 'vrk';
+delete from source where dataset_code = 'vrk';
+delete from dataset where code = 'vrk';
+
+

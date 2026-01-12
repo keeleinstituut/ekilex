@@ -89,14 +89,6 @@
     </div>
     <div th:replace="termcomp :: search_result_rows"></div>
   </div>
-  <div class="card-body px-2 pt-1 pb-2" th:fragment="lim_term_search_result">
-    <div class="row no-gutters">
-      <div class="col-auto">
-        <span th:text="#{term.meanings.found} + ' ' + ${termSearchResult.meaningCount}"></span>
-      </div>
-    </div>
-    <div th:replace="termcomp :: search_result_rows"></div>
-  </div>
   <div class="border-bottom pb-2 title-bar" th:fragment="meaning_header">
     <div class="d-flex flex-row align-items-center">
       <div class="dragHandle">
@@ -188,60 +180,6 @@
         onConfirm : duplicateMeaning
       });
     </script>
-  </div>
-  <div class="border-bottom pb-2 title-bar" th:fragment="lim_term_meaning_header">
-    <div class="alert bg-warning text-black px-3 py-1 d-flex align-items-center flex-nowrap" role="alert">
-      <i class="fa fa-exclamation-triangle small mr-2" aria-hidden="true"></i>
-      <span th:text="#{term.lim.term.warning}">Ekilexi keskkonnas tehtud võrgustiku postitused jõuavad sõnaveebi järgmisel päeval</span>
-    </div>
-    <div class="d-flex flex-row align-items-center">
-      <div class="dragHandle">
-        <span class="fa fa-ellipsis-v"></span>
-        <span class="fa fa-ellipsis-v"></span>
-      </div>
-      <div>
-        <h1 class="mb-0"><span th:text="${meaningId}"></span></h1>
-      </div>
-      <div class="ml-2">
-        <button class="btn btn-secondary mr-1"
-                data-toggle="modal"
-                data-target="#newLimTermWordDlg"
-                th:data-meaning-id="${meaningId}"
-                sec:authorize="#vars.isMeaningAnyLexemeCrudGranted && #vars.userRoleData.crudRoleSelected"
-                th:text="#{term.add.term}">Lisa termin</button>
-        <a class="btn btn-secondary mr-1" th:href="@{'/limtermmeaningjoin/' + ${meaningId}}"
-           title="Tähenduste ühendamine"
-           sec:authorize="#vars.meaning.crudGrant"
-           th:text="#{term.join}">Ühenda</a>
-        <button id="duplicateLimTermMeaningBtn"
-                th:title="#{term.duplicate.meaning}"
-                class="btn btn-secondary mr-1"
-                th:data-meaning-id="${meaningId}"
-                sec:authorize="#vars.meaning.crudGrant"
-                data-plugin="duplicateLimTermMeaningPlugin"
-                th:text="#{term.duplicate}">Dubleeri</button>
-        <div class="date-modified d-inline-block" title="" data-toggle="tooltip" data-placement="bottom"
-             th:data-original-title="#{term.last.modified}">
-          <i class="fa fa-calendar"></i><span th:text="${#temporals.format(meaning.lastActivityEventOn, 'dd.MM.yyyy')}"></span>
-        </div>
-        <button class="btn btn-link" type="button"
-                th:data-id="${meaningId}"
-                data-callback="doNewSearchTermSearch"
-                data-toggle="deleteMeaningAndLexemesAndWords"
-                sec:authorize="#vars.isMeaningLexemeCrudGranted"
-                th:text="#{common.delete}">Kustuta</button>
-      </div>
-      <div class="ml-auto d-flex align-items-center flex-row">
-        <a th:href="@{'/meaningactivitylog:' + ${meaningId}}"
-           data-toggle="modal"
-           data-target="#meaningActivityLogDlg"
-           class="btn btn-secondary ml-2"
-           sec:authorize="#vars.meaning.readGrant"
-           th:text="#{term.meaning.activity.log}">Logi</a>
-        <div th:data-id="${meaningId}" data-plugin="contextmenu" data-leftclick="true" data-contextmenu:closepanel="Sulge" class="fa fa-ellipsis-v paneMenu">
-        </div>
-      </div>
-    </div>
   </div>
   <div id="results" class="w-100 h-100 d-flex flex-column" style="overflow:auto; " th:fragment="search_result_rows">
     <div class="entries" style="overflow:auto;">
@@ -696,111 +634,6 @@
         </div>
       </th:block>
     </div>
-  </div>
-  <div class="row no-gutters" th:fragment="lim_term_meaning_note">
-    <div class="col pr-0 col-w13rem">
-      <span class="lbl">
-        Arutelu
-        <button type="button" class="btn badge badge-success float-right mr-4"
-                th:title="#{common.add.new}"
-                data-toggle="modal"
-                th:data-target="${'#addLimTermMeaningNoteDlg_' + meaningId}"
-                sec:authorize="#vars.meaning.crudGrant">
-          <i class="fa fa-plus" aria-hidden="true"></i>
-        </button>
-      </span>
-    </div>
-    <div class="col pl-0">
-      <th:block th:each="noteLangGroup : ${meaning.noteLangGroups}">
-        <div>
-          <span th:text="${@viewUtil.getLangIso2(noteLangGroup.lang)}" class="mr-2"></span>
-          <button name="lang-collapse-btn" type="button" class="btn badge badge-secondary btn-toggle"
-                  th:data-lang="${noteLangGroup.lang}"
-                  th:title="${noteLangGroup.selected} ? #{common.hide.lang.group} : #{common.show.lang.group}"
-                  data-plugin="langCollapsePlugin">
-            <i th:class="${noteLangGroup.selected ? 'fa fa-caret-down' : 'fa fa-caret-right'}" aria-hidden="true"></i>
-          </button>
-        </div>
-        <div th:if="${noteLangGroup.selected}" data-op-code="meaning_note">
-          <div class="ml-4" style="position: relative" th:each="note, itemIter: ${noteLangGroup.notes}">
-            <div th:replace="termdialog :: edit_lim_term_meaning_note_dlg"></div>
-            <div th:replace="termdialog :: add_meaning_note_source_link_dlg"></div>
-            <div style="display: list-item; position: absolute"></div>
-            <div class="invisible-buttons action-buttons-anchor mw-80">
-              <div>
-                <span th:utext="${note.valuePrese}"></span>
-                <span class="ctxt" th:text="'[' + ${note.modifiedBy} + ']'" th:if="${note.modifiedBy != null}"></span>
-                <span class="ctxt" th:text="${#temporals.format(note.modifiedOn, 'dd.MM.yyyy HH:mm')}" th:if="${note.modifiedOn != null}"></span>
-              </div>
-              <span class="show-on-mouseover" th:if="${#lists.isEmpty(note.sourceLinks)}">
-                [
-                <button type="button" class="btn badge badge-secondary"
-                        th:title="#{common.add.source.link}"
-                        data-toggle="modal"
-                        th:data-target="${'#addMeaningNoteSourceLinkDlg_' + meaningId + '_' + note.id}"
-                        sec:authorize="#vars.meaning.crudGrant">
-                  <i class="fa fa-external-link" aria-hidden="true"></i>
-                </button>
-                ]
-              </span>
-              <div class="action-buttons-2">
-                <button type="button" class="btn badge badge-primary"
-                        th:title="#{common.edit}"
-                        data-toggle="modal"
-                        th:data-target="${'#editLimTermMeaningNoteDlg_' + meaningId + '_' + note.id}"
-                        sec:authorize="#vars.meaning.crudGrant">
-                  <i class="fa fa-edit" aria-hidden="true"></i>
-                </button>
-                <button type="button" class="btn badge badge-warning"
-                        th:data-id="${note.id}"
-                        data-op-code="meaning_note"
-                        data-toggle="delete-confirm"
-                        data-placement="right"
-                        sec:authorize="#vars.meaning.crudGrant">
-                  <i class="fa fa-remove" aria-hidden="true"></i>
-                </button>
-              </div>
-            </div>
-            <div class="hidden-buttons">
-              <th:block th:each="sourceLink : ${note.sourceLinks}">
-                <div th:replace="termdialog :: edit_meaning_note_source_link_dlg"></div>
-                <span>
-                  [
-                  <a th:href="@{'/meaning_note_source_link:' + ${sourceLink.id}}" th:text="${sourceLink.sourceName}"></a>
-                  <span th:if="${sourceLink.name != null}">
-                    <span th:text="${sourceLink.name}"></span>
-                  </span>
-                  <button type="button" class="btn badge badge-primary"
-                          th:title="#{common.edit}"
-                          data-toggle="modal"
-                          th:data-target="${'#editMeaningNoteSourceLinkDlg_' + sourceLink.id}"
-                          sec:authorize="#ars.meaning.crudGrant">
-                    <i class="fa fa-edit" aria-hidden="true"></i>
-                  </button>
-                  <button type="button" class="btn badge badge-warning"
-                          th:data-id="${sourceLink.id}"
-                          data-op-code="meaning_note_source_link"
-                          data-toggle="delete-confirm"
-                          data-placement="right"
-                          sec:authorize="#vars.meaning.crudGrant">
-                    <i class="fa fa-remove" aria-hidden="true"></i>
-                  </button>
-                  ]
-                </span>
-              </th:block>
-              <button type="button" class="btn badge badge-secondary"
-                      th:title="#{common.add.source.link}"
-                      data-toggle="modal"
-                      th:data-target="${'#addMeaningNoteSourceLinkDlg_' + meaningId + '_' + note.id}"
-                      sec:authorize="#vars.meaning.crudGrant">
-                <i class="fa fa-external-link" aria-hidden="true"></i>
-              </button>
-            </div>
-          </div>
-        </div>
-      </th:block>
-    </div>
-    <hr/>
   </div>
   <div class="row no-gutters" th:if="${not #lists.isEmpty(meaning.images)}" th:fragment="meaning_image">
     <hr>

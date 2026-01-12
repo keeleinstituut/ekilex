@@ -202,7 +202,6 @@ public class UnifSearchController extends AbstractMainSearchController {
 			@ModelAttribute(SESSION_BEAN) SessionBean sessionBean,
 			Model model) {
 
-		String ekilexLimTermSearchUrl = webUtil.getEkilexLimTermSearchUrl();
 		List<String> destinLangs = sessionBean.getDestinLangs();
 		List<String> datasetCodes = sessionBean.getDatasetCodes();
 		Long linkedLexemeId = sessionBean.getLinkedLexemeId();
@@ -220,7 +219,6 @@ public class UnifSearchController extends AbstractMainSearchController {
 		populateUserPref(sessionBean, model);
 		model.addAttribute("wordData", wordData);
 		model.addAttribute("searchMode", SEARCH_MODE_DETAIL);
-		model.addAttribute("ekilexLimTermSearchUrl", ekilexLimTermSearchUrl);
 		model.addAttribute("ekiKeeleinfoUrl", ekiKeeleinfoUrl);
 		model.addAttribute("selectedLangs", destinLangs);
 
