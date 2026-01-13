@@ -9,54 +9,73 @@
   <th:block th:replace="common :: nav_bar(activeItem = 'home')" sec:authorize="isAuthenticated()"></th:block>
   <eki-toast id="register-error-toast-container"></eki-toast>
   <div class="icons-bg-page">
-    <form class="icons-bg-page__form" id="registerForm" th:action="@{/submit}" method="post">
-      <h1 class="icons-bg-page__title" th:text="#{register.title}">Kasutajaks registreerumine</h1>
-      <th:block th:replace="components :: input_text(
-        id = 'register-name',
-        type = 'email',
-        label = #{register.name},
-        name = 'name',
-        placeholder = #{label.register.name.placeholder},
-        value = ${userName},
-        autofocus = ${userName == null},
-        autocomplete = 'name')"></th:block>
-      <th:block th:replace="components :: input_text(
-        id = 'register-email',
-        type = 'email',
-        label = #{register.email},
-        name = 'email',
-        placeholder = #{label.register.email.placeholder},
-        value = ${userEmail},
-        autocomplete = 'email')"></th:block>
-      <th:block th:replace="components :: input_password(
-        id = 'register-new-password',
-        label = #{register.new.password},
-        name = 'salasona',
-        placeholder = #{label.register.password.placeholder},
-        autofocus = ${userEmail != null})"></th:block>
+    <th:block th:unless="${isRegistered}">
+      <form id="registerForm" th:action="@{/submit}" method="post" class="icons-bg-page__form">
+        <h1 class="icons-bg-page__title" th:text="#{register.title}">Kasutajaks registreerumine</h1>
+        <th:block th:replace="components :: input_text(
+          id = 'register-name',
+          type = 'email',
+          label = #{register.name},
+          name = 'name',
+          placeholder = #{label.register.name.placeholder},
+          value = ${userName},
+          autofocus = ${userName == null},
+          autocomplete = 'name')">
+        </th:block>
+        <th:block th:replace="components :: input_text(
+          id = 'register-email',
+          type = 'email',
+          label = #{register.email},
+          name = 'email',
+          placeholder = #{label.register.email.placeholder},
+          value = ${userEmail},
+          autocomplete = 'email')">
+        </th:block>
         <th:block th:replace="components :: input_password(
-        id = 'register-new-password-repeat',
-        label = #{register.password.again},
-        name = 'salasona2',
-        placeholder = #{label.register.password_repeat.placeholder})"></th:block>
+          id = 'register-new-password',
+          label = #{register.new.password},
+          name = 'salasona',
+          placeholder = #{label.register.password.placeholder},
+          autofocus = ${userEmail != null})">
+        </th:block>
+        <th:block th:replace="components :: input_password(
+          id = 'register-new-password-repeat',
+          label = #{register.password.again},
+          name = 'salasona2',
+          placeholder = #{label.register.password_repeat.placeholder})">
+        </th:block>
         <th:block th:replace="components :: input_checkbox(
             inputName = 'agreement',
             inputValue = ${true},
             inputLabel = #{register.terms.agreement},
-            plugin = 'agreementChkPlugin'
-          )"></th:block>
-      <div class="icons-bg-page__actions">
-        <a class="plain-action" th:href="@{/login}" th:text="#{login.title}">Logi sisse</a>
-        <button
-          class="button"
-          type="button"
-          th:text="#{register.register}"
-          id="registerBtn"
-          th:data-code="${botProtectionCode}"
-          disabled
-          data-plugin="registerClickPlugin">Sisene</button>
+            plugin = 'agreementChkPlugin')">
+          </th:block>
+        <div class="icons-bg-page__actions">
+          <a class="plain-action" th:href="@{/login}" th:text="#{login.title}">Logi sisse</a>
+          <button
+            class="button"
+            type="button"
+            th:text="#{register.register}"
+            id="registerBtn"
+            th:data-code="${botProtectionCode}"
+            disabled
+            data-plugin="registerClickPlugin">Sisene</button>
+        </div>
+      </form>
+    </th:block>
+    <th:block th:if="${isRegistered}">
+      <div class="icons-bg-page__form">
+        <h1 th:text="#{register.user.registered}"></h1>
+        <div>
+          <span th:text="#{register.activation.link.sent}"></span>
+          <span th:text="${email}"></span>
+        </div>
+        <div th:if="${activationLink}" class="alert alert-warning">
+          <div>Testkeskkonna puhul ava hoopis link:</div>
+          <div th:text="${activationLink}"></div>
+        </div>
       </div>
-    </form>
+    </th:block>
   </div>
   <th:block th:replace="components :: footer"></th:block>
   <script th:inline="javascript">
