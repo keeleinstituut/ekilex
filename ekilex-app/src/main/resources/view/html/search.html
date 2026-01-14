@@ -70,7 +70,7 @@
                 <option th:each="entity : ${T(eki.ekilex.constant.SearchEntity).getTermEntities()}"
                         th:value="${entity}" th:selected="${@viewUtil.enumEquals(group.entity, entity)}"
                         th:text="#{|term.search.entity.${entity.name()}|}"
-                        th:if="${searchPageName == 'term_search' || searchPageName == 'lim_term_search'}">entityName</option>
+                        th:if="${searchPageName == 'term_search'}">entityName</option>
                 <option th:each="entity : ${T(eki.ekilex.constant.SearchEntity).getSourceEntities()}"
                         th:value="${entity}" th:selected="${@viewUtil.enumEquals(group.entity, entity)}"
                         th:text="#{|source.search.entity.${entity.name()}|}"
@@ -687,7 +687,7 @@
               </select>
             </div>
             <div th:each="entity : ${T(eki.ekilex.constant.SearchEntity).getTermEntities()}"
-                 th:if="${searchPageName == 'term_search' || searchPageName == 'lim_term_search'}">
+                 th:if="${searchPageName == 'term_search'}">
               <select th:name="${entity}">
                 <option th:each="key : ${entity.getKeys()}" th:value="${key}" th:text="#{|enum.search.key.${key.name()}|}">searchKey</option>
               </select>

@@ -177,65 +177,6 @@
       </div>
     </div>
   </div>
-  <div th:id="${'addLimTermMeaningDataDlg_' + meaningId}" class="modal"
-        role="dialog"
-        th:fragment="add_lim_term_meaning_data_dlg"
-        data-plugin="initAddMultiDataDlgPlugin">
-    <div class="modal-dialog" role="document">
-      <div class="modal-content">
-        <form th:action="@{/create_item}" method="post">
-          <div class="modal-body">
-            <input type="hidden" name="id">
-            <input type="hidden" name="id2" th:value="${meaningId}">
-            <input type="hidden" name="id3">
-            <input type="hidden" name="value">
-            <div class="form-group row">
-              <div class="col-md-6">
-                <select required class="form-control lim-term-meaning-data-select required-field"
-                      name="opCode"
-                      data-plugin="limTermMeaningDataSelectPlugin">
-                  <option value="" hidden disabled selected th:text="#{common.select.value}">vali väärtus...</option>
-                  <option value="meaning_domain" sec:authorize="#vars.meaning.crudGrant" th:text="#{term.meaning.domain}">Valdkond</option>
-                  <option value="addDefinitionDlg" sec:authorize="#vars.isMeaningLexemeCrudGranted" th:text="#{term.meaning.definition}">Mõiste seletus</option>
-                  <option value="addLimTermMeaningNoteDlg" sec:authorize="#vars.meaning.crudGrant" th:text="#{term.lim.term.meaning.note}">Arutelu kommentaar</option>
-                  <option value="addMeaningRelationDlg" sec:authorize="#vars.meaning.crudGrant" th:text="#{term.meaning.relation}">Tähenduse seos</option>
-                  <option value="meaning_semantic_type" sec:authorize="#vars.meaning.crudGrant" th:text="#{term.meaning.semantic.type}">Semantiline tüüp</option>
-                  <option value="addMeaningImageDlg" sec:authorize="#vars.isMeaningLexemeCrudGranted" th:text="#{term.meaning.image}">Pilt</option>
-                  <option value="addMeaningMediaDlg" sec:authorize="#vars.isMeaningLexemeCrudGranted" th:text="#{term.meaning.media}">Videod ja muu meedia</option>
-                </select>
-              </div>
-            </div>
-            <div th:id="${'meaning_domain_' + meaningId}" class="form-group row value-group" style="display: none">
-              <div class="col-md-12">
-                <select required class="form-control classifier-select required-field term-domain-select" data-live-search="true">
-                  <option value="" hidden disabled selected th:text="#{common.select.value}">vali väärtus...</option>
-                  <optgroup th:each="origin : ${datasetDomains}" th:label="${origin.getKey()}">
-                    <option th:each="domain : ${origin.getValue()}"
-                            th:value="${domain.toIdString()}"
-                            th:text="${domain.originCodeValueCommentShort}"
-                            th:title="${domain.originCodeValueCommentFull}">domain
-                    </option>
-                  </optgroup>
-                </select>
-              </div>
-            </div>
-            <div th:id="${'meaning_semantic_type_' + meaningId}" class="form-group row value-group" style="display: none">
-              <div class="col-md-8">
-                <select required class="form-control value-select required-field">
-                  <option value="" hidden disabled selected th:text="#{common.select.value}">vali väärtus...</option>
-                  <option th:each="semanticType : ${semanticTypes}" th:value="${semanticType.code}" th:text="${semanticType.code}">semanticType</option>
-                </select>
-              </div>
-            </div>
-          </div>
-          <div class="modal-footer">
-            <button type="submit" class="btn btn-primary" th:text="#{common.add}">Lisa</button>
-            <button type="button" class="btn btn-default" data-dismiss="modal" th:text="#{common.cancel}">Katkesta</button>
-          </div>
-        </form>
-      </div>
-    </div>
-  </div>
   <div th:id="${'editLexemePublicityDlg_' + lexeme.lexemeId}" class="modal select-dlg"
         role="dialog"
         th:fragment="edit_lexeme_publicity_dlg"
@@ -1352,40 +1293,6 @@
       </div>
     </div>
   </div>
-  <div th:id="${'addLimTermMeaningNoteDlg_' + meaningId}" class="modal"
-        role="dialog"
-        th:fragment="add_lim_term_meaning_note_dlg"
-        data-plugin="initEkiEditorDlgAndFocusPlugin">
-    <div class="modal-dialog modal-lg" role="document">
-      <div class="modal-content">
-        <form th:action="@{/create_item}" method="post">
-          <div class="modal-body">
-            <input type="hidden" name="id" th:value="${meaningId}">
-            <input type="hidden" name="opCode" value="meaning_note">
-            <input type="hidden" name="value">
-            <input type="hidden" name="public" value="true">
-            <div th:replace="components :: eki_editor_elem"></div>
-            <div class="form-group row">
-              <div class="col-md-4">
-                <select required class="form-control classifier-select required-field" data-live-search="true" name="language">
-                  <option value="" hidden disabled th:selected="${#strings.isEmpty(sessionBean.recentNoteLanguage)}" th:text="#{common.select.language}">vali keel...</option>
-                  <option th:each="language : ${userRoleLanguagesLimited}"
-                          th:value="${language.code}"
-                          th:selected="${language.code == sessionBean.recentNoteLanguage}"
-                          th:text="${language.value}">language
-                  </option>
-                </select>
-              </div>
-            </div>
-          </div>
-          <div class="modal-footer">
-            <button type="submit" class="btn btn-primary" th:text="#{common.add}">Lisa</button>
-            <button type="button" class="btn btn-default" data-dismiss="modal" th:text="#{common.cancel}">Katkesta</button>
-          </div>
-        </form>
-      </div>
-    </div>
-  </div>
   <div th:id="${'editMeaningNoteDlg_' + meaningId + '_' + note.id}" class="modal"
         role="dialog"
         th:fragment="edit_meaning_note_dlg"
@@ -1414,39 +1321,6 @@
                 <input class="form-check-input" type="checkbox" name="public" th:checked="${note.public}" value="true">
                 <span th:text="#{boolean.public.true}">Avalik</span>
               </label>
-            </div>
-          </div>
-          <div class="modal-footer">
-            <button type="submit" class="btn btn-primary" th:text="#{common.save}">Salvesta</button>
-            <button type="button" class="btn btn-default" data-dismiss="modal" th:text="#{common.cancel}">Katkesta</button>
-          </div>
-        </form>
-      </div>
-    </div>
-  </div>
-  <div th:id="${'editLimTermMeaningNoteDlg_' + meaningId + '_' + note.id}" class="modal"
-        role="dialog"
-        th:fragment="edit_lim_term_meaning_note_dlg"
-        data-plugin="initEkiEditorDlgAndFocusPlugin">
-    <div class="modal-dialog modal-lg" role="document">
-      <div class="modal-content">
-        <form th:action="@{/update_item}" method="post">
-          <div class="modal-body">
-            <input type="hidden" name="id" th:value="${note.id}">
-            <input type="hidden" name="opCode" value="meaning_note">
-            <input type="hidden" name="value" th:value="${note.valuePrese}">
-            <input type="hidden" name="public" th:value="${note.public}">
-            <div th:replace="components :: eki_editor_elem"></div>
-            <div class="form-group row">
-              <div class="col-md-4">
-                <select required class="form-control classifier-select required-field" data-live-search="true" name="language">
-                  <option th:each="language : ${userRoleLanguagesLimited}"
-                          th:value="${language.code}"
-                          th:selected="${language.code == note.lang}"
-                          th:text="${language.value}">language
-                  </option>
-                </select>
-              </div>
             </div>
           </div>
           <div class="modal-footer">
@@ -2108,39 +1982,6 @@
           <div class="modal-footer">
             <button type="submit" class="btn btn-primary order-2" th:text="#{common.save}">Salvesta</button>
             <button type="button" class="btn btn-default order-1" data-dismiss="modal" th:text="#{common.cancel}">Katkesta</button>
-          </div>
-        </form>
-      </div>
-    </div>
-  </div>
-  <div id="newLimTermWordDlg" class="modal" role="dialog" th:fragment="lim_term_new_word_dlg">
-    <div class="modal-dialog" role="document" th:if="${userRoleData.roleSelected || userRoleData.master}">
-      <div class="modal-content">
-        <form id="addLimTermWordForm" th:action="@{/lim_term_create_word}" method="post">
-          <div class="modal-body">
-            <input type="hidden" name="meaningId">
-            <input type="hidden" name="dataset" th:value="${T(eki.common.constant.GlobalConstant).DATASET_LIMITED}">
-            <div class="form-group row">
-              <div class="col-md-12">
-                <input class="form-control required-field" name="wordValue" th:placeholder="#{term.placeholder.new.word}">
-              </div>
-            </div>
-            <div class="form-group row">
-              <div class="col-md-8">
-                <select required class="form-control required-field classifier-select" data-live-search="true" name="language">
-                  <option value="" hidden disabled th:selected="${#strings.isEmpty(sessionBean.recentLanguage)}" th:text="#{common.select.language}">vali keel...</option>
-                  <option th:each="language : ${userRoleLanguagesExtended}"
-                          th:value="${language.code}"
-                          th:selected="${language.code == sessionBean.recentLanguage}"
-                          th:text="${language.value}">language
-                  </option>
-                </select>
-              </div>
-            </div>
-          </div>
-          <div class="modal-footer">
-            <button id="limTermWordFormSubmitBtn" type="button" class="btn btn-primary" data-plugin="limTermWordFormSubmitPlugin" th:text="#{common.add}">Lisa</button>
-            <button type="button" class="btn btn-default" data-dismiss="modal" th:text="#{common.cancel}">Katkesta</button>
           </div>
         </form>
       </div>

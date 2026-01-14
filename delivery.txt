@@ -11,3 +11,6 @@ wordweb.app.key=aZ7pQ3mT91bFs8WkD4yH
 
 mvn spring-boot:run -P qure -D spring-boot.run.profiles=dev
 u 12 sek
+
+eemaldada application.properties
+ekilex.limterm.details.url 

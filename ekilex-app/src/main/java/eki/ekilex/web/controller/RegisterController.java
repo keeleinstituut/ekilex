@@ -39,6 +39,7 @@ public class RegisterController extends AbstractPublicPageController {
 
 	@GetMapping(REGISTER_URI)
 	public String register(Model model, HttpServletRequest request) {
+
 		boolean isAuthenticatedUser = userContext.isAuthenticatedUser();
 		if (isAuthenticatedUser) {
 			return REDIRECT_PREF + HOME_URI;
@@ -46,6 +47,7 @@ public class RegisterController extends AbstractPublicPageController {
 		String activeTerms = userService.getActiveTermsValue();
 		model.addAttribute("activeTerms", activeTerms);
 		setBotProtectionCode(model, request);
+
 		return REGISTER_PAGE;
 	}
 
@@ -58,7 +60,7 @@ public class RegisterController extends AbstractPublicPageController {
 			@RequestParam("salasona2") String password2,
 			@RequestParam(name = "agreement", required = false) Boolean agreement,
 			Model model,
-			RedirectAttributes attributes,
+			RedirectAttributes redirectAttributes,
 			HttpServletRequest request) {
 
 		boolean isBotProtectionTriggered = checkBotProtection(request, botProtectionCode, email);
@@ -119,15 +121,12 @@ public class RegisterController extends AbstractPublicPageController {
 		}
 
 		String activationLink = userService.createUser(email, name, password);
-		if (emailService.isEnabled()) {
-			String message = messageSource.getMessage("register.activation.link.sent", new Object[0], locale);
-			attributes.addFlashAttribute("successMessage", message + " " + email);
-		} else {
-			String message = messageSource.getMessage("register.activation.link.click", new Object[0], locale);
-			attributes.addFlashAttribute("successMessage", message);
-			attributes.addFlashAttribute("activationLink", activationLink);
+		redirectAttributes.addFlashAttribute("isRegistered", Boolean.TRUE);
+		redirectAttributes.addFlashAttribute("email", email);
+		if (!emailService.isEnabled()) {
+			redirectAttributes.addFlashAttribute("activationLink", activationLink);
 		}
-		return REDIRECT_PREF + LOGIN_URI;
+		return REDIRECT_PREF + REGISTER_URI;
 	}
 
 	@PostMapping(FAKE_REGISTER_AND_PASSWORD_RECOVERY_URI)
@@ -160,9 +159,9 @@ public class RegisterController extends AbstractPublicPageController {
 
 	@GetMapping(PASSWORD_RECOVERY_URI)
 	public String passwordRecoveryPage(Model model, HttpServletRequest request) {
-		setBotProtectionCode(model, request);
 		String activeTerms = userService.getActiveTermsValue();
 		model.addAttribute("activeTerms", activeTerms);
+		setBotProtectionCode(model, request);
 		return PASSWORD_RECOVERY_PAGE;
 	}
 
@@ -229,10 +228,11 @@ public class RegisterController extends AbstractPublicPageController {
 			@RequestParam("salasona2") String password2,
 			@RequestParam("recoveryKey") String recoveryKey,
 			Model model,
-			RedirectAttributes attributes) {
+			RedirectAttributes redirectAttributes) {
 
 		Locale locale = LocaleContextHolder.getLocale();
 		String userEmail = userService.getUserEmailByRecoveryKey(recoveryKey);
+
 		if (StringUtils.isBlank(userEmail)) {
 			String message = messageSource.getMessage("register.unknown.recovery.key", new Object[0], locale);
 			model.addAttribute("warning", message);
@@ -249,8 +249,9 @@ public class RegisterController extends AbstractPublicPageController {
 
 		userService.setUserPassword(userEmail, password);
 		String message = messageSource.getMessage("register.recovery.success", new Object[0], locale);
-		attributes.addFlashAttribute("successMessage", message);
-		attributes.addFlashAttribute("userEmail", userEmail);
+		redirectAttributes.addFlashAttribute("successMessage", message);
+		redirectAttributes.addFlashAttribute("userEmail", userEmail);
+
 		return REDIRECT_PREF + LOGIN_URI;
 	}
 

@@ -55,3 +55,90 @@ set
 where
 	feedback_type = 'ÕS'
 ;
+
+-- #3 --
+
+update eki_user_profile 
+	set preferred_datasets = array_remove(preferred_datasets, 'vrk')
+where
+	'vrk' = any(preferred_datasets);
+
+update eki_user_profile
+	set preferred_datasets = null
+where
+	preferred_datasets = '{}';
+
+update eki_user_profile eup
+	set recent_dataset_permission_id = null
+where
+	exists (
+		select
+			1
+		from
+			dataset_permission dp
+		where
+			eup.recent_dataset_permission_id = dp.id
+			and dp.dataset_code = 'vrk'
+	)
+;
+
+delete from dataset_permission where dataset_code = 'vrk';
+delete from lexeme where dataset_code = 'vrk';
+delete from source where dataset_code = 'vrk';
+delete from dataset where code = 'vrk';
+
+-- #4 --
+
+delete 
+from
+	word_tag wt
+where
+	wt.tag_name in ('ÕSi sõna', 'ÕSi liitsõna')
+;
+
+delete 
+from
+	lexeme_tag lt
+where
+	lt.tag_name in ('ÕSi sõna', 'ÕSi liitsõna')
+;
+
+delete 
+from
+	meaning_tag mt
+where
+	mt.tag_name in ('ÕSi sõna', 'ÕSi liitsõna')
+;
+
+update eki_user_profile 
+	set preferred_tag_names = array_remove(preferred_tag_names, 'ÕSi sõna')
+where
+	'ÕSi sõna' = any(preferred_tag_names)
+;
+
+update eki_user_profile 
+	set preferred_tag_names = array_remove(preferred_tag_names, 'ÕSi liitsõna')
+where
+	'ÕSi liitsõna' = any(preferred_tag_names)
+;
+
+update eki_user_profile
+	set preferred_tag_names = null
+where
+	preferred_tag_names = '{}'
+;
+
+update eki_user_profile
+	set active_tag_name = null
+where
+	active_tag_name in ('ÕSi sõna', 'ÕSi liitsõna')
+;
+
+delete
+from
+	tag t 
+where
+	t."name" in ('ÕSi sõna', 'ÕSi liitsõna')
+;
+
+

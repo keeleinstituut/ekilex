@@ -32,8 +32,6 @@ public interface WebConstant {
 
 	String APPLY_READ = "/apply_read";
 
-	String APPLY_LIMITED_URI = "/apply_limited";
-
 	String PERMISSIONS_PAGE = "permissions";
 
 	String PERMISSIONS_URI = "/permissions";
@@ -82,8 +80,6 @@ public interface WebConstant {
 
 	String UPDATE_USAGES_PUBLICITY_URI = "/update_usages_publicity";
 
-	String LIM_TERM_PAGING_URI = "/lim_term_paging";
-
 	String COMPONENTS_PAGE = "components";
 
 	String TERM_COMPONENTS_PAGE = "termcomp";
@@ -107,8 +103,6 @@ public interface WebConstant {
 	String LEXEME_DETAILS_URI = "/lexemedetails";
 
 	String TERM_MEANING_DETAILS_URI = "/termmeaningdetails";
-
-	String LIM_TERM_MEANING_DETAILS_URI = "/limtermmeaningdetails";
 
 	String LEXEME_COLLOCATION_URI = "/lexemecolloc";
 
@@ -156,10 +150,6 @@ public interface WebConstant {
 
 	String WORKLOAD_REPORT_COMPONENTS_PAGE = "workloadreportcomp";
 
-	String LIM_TERM_SEARCH_URI = "/limtermsearch";
-
-	String LIM_TERM_SEARCH_PAGE = "limtermsearch";
-
 	String LEX_JOIN_SEARCH_URI = "/lexjoinsearch";
 
 	String LEX_JOIN_INIT_URI = "/lexjoininit";
@@ -181,10 +171,6 @@ public interface WebConstant {
 	String MEANING_JOIN_URI = "/meaningjoin";
 
 	String MEANING_JOIN_PAGE = "meaningjoin";
-
-	String LIM_TERM_MEANING_JOIN_URI = "/limtermmeaningjoin";
-
-	String LIM_TERM_MEANING_JOIN_PAGE = "limtermmeaningjoin";
 
 	String VALIDATE_MEANING_JOIN_URI = "/validatemeaningjoin";
 
@@ -241,8 +227,6 @@ public interface WebConstant {
 	String TERM_UPDATE_WORD_URI = "/termupdateword";
 
 	String TERM_UPDATE_WORD_PAGE = "termupdateword";
-
-	String LIM_TERM_CREATE_WORD_URI = "/lim_term_create_word";
 
 	String CREATE_HOMONYM_URI = "/create_homonym";
 
@@ -423,8 +407,6 @@ public interface WebConstant {
 	String LEX_BACK_URI = "/lexback";
 
 	String MEANING_BACK_URI = "/meaningback";
-
-	String LIM_TERM_MEANING_BACK_URI = "/limtermmeaningback";
 
 	String PAGE_FRAGMENT_ELEM = " :: ";
 

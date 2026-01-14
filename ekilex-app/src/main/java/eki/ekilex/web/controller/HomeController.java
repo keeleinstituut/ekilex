@@ -72,10 +72,6 @@ public class HomeController extends AbstractPublicPageController {
 			populateStatDataModel(model);
 			return HOME_PAGE;
 		}
-		boolean isLimitedPageAccessPermitted = permissionEvaluator.isLimitedPageAccessPermitted(authentication);
-		if (isLimitedPageAccessPermitted) {
-			return REDIRECT_PREF + LIM_TERM_SEARCH_URI;
-		}
 		EkiUser user = userContext.getUser();
 		populateUserApplicationData(user, model);
 		return APPLY_PAGE;
@@ -135,23 +131,8 @@ public class HomeController extends AbstractPublicPageController {
 			return HOME_PAGE;
 		}
 		Long userId = user.getId();
-		userService.enableUserWithTestAndLimitedDatasetPerm(userId);
+		userService.enableUserWithTestDatasetPerm(userId);
 		return REDIRECT_PREF + HOME_PAGE;
-	}
-
-	@PostMapping(APPLY_LIMITED_URI)
-	public String applyLimited(Model model) {
-
-		EkiUser user = userContext.getUser();
-		boolean isUserEnabled = Boolean.TRUE.equals(user.getEnabled());
-		boolean datasetPermissionsExist = user.isDatasetPermissionsExist();
-		if (isUserEnabled && datasetPermissionsExist) {
-			populateStatDataModel(model);
-			return HOME_PAGE;
-		}
-		Long userId = user.getId();
-		userService.enableLimitedUser(userId);
-		return REDIRECT_PREF + LIM_TERM_SEARCH_URI;
 	}
 
 	private void populateUserApplicationData(EkiUser user, Model model) {

@@ -31,17 +31,8 @@
             <div class="p-1">
               <a th:href="@{/sourcesearch}" th:text="#{menu.source}">Allikate otsing</a>
             </div>
-            <div class="p-1">
-              <a th:href="@{/limtermsearch}" th:text="#{menu.lim.term}">Võrgustiku otsing</a>
-            </div>
-            <div class="p-1 mt-3">
-              <th:block th:replace="components :: select_role" sec:authorize="#vars.userRoleData.roleChangeEnabled"></th:block>
-            </div>
           </div>
           <div class="col">
-            <div class="p-1">
-              <a th:href="@{/history}" th:text="#{menu.history}">Kustutatud andmed</a>
-            </div>
             <div class="p-1">
               <a th:href="@{/datasets}" th:text="#{menu.datasets}">Sõnakogude haldus</a>
             </div>
@@ -57,17 +48,29 @@
             <div sec:authorize="#vars.userRoleData.admin" class="p-1">
               <a th:href="@{/news}" th:text="#{menu.news}">Uudiste haldus</a>
             </div>
+            <div sec:authorize="#authentication.principal.master" class="p-1">
+              <a th:href="@{/wwfeedback}" th:text="#{menu.wwfeedback}">Sõnaveebi tagasiside</a>
+            </div>
+            <div class="p-1">
+              <a th:href="@{/stat}" th:text="#{menu.stat}">Sõnaveebi statistika</a>
+            </div>
+          </div>
+          <div class="col">
+            <div class="p-1">
+              <a th:href="@{/history}" th:text="#{menu.history}">Kustutatud andmed</a>
+            </div>
             <div sec:authorize="#vars.userRoleData.admin" class="p-1">
               <a th:href="@{/workloadreport}" th:text="#{menu.workloadreport}">Muudatuste aruanne</a>
             </div>
             <div sec:authorize="#vars.userRoleData.admin" class="p-1">
               <a th:href="@{/fedtermupload}" th:text="#{menu.fedtermupload}">FedTerm liidestus</a>
             </div>
-            <div sec:authorize="#authentication.principal.master" class="p-1">
-              <a th:href="@{/wwfeedback}" th:text="#{menu.wwfeedback}">Sõnaveebi tagasiside</a>
-            </div>
-            <div class="p-1">
-              <a th:href="@{/stat}" th:text="#{menu.stat}">Sõnaveebi statistika</a>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col">
+            <div class="p-1 mt-3">
+              <th:block th:replace="components :: select_role" sec:authorize="#vars.userRoleData.roleChangeEnabled"></th:block>
             </div>
           </div>
         </div>

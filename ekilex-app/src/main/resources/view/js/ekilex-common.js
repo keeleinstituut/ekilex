@@ -1162,11 +1162,7 @@ function initializeSearch(type) {
 		}
 	}
 
-	if (viewType === 'lim_term') {
-		initNewLimTermWordDlg();
-	} else {
-		initNewWordDlg();
-	}
+	initNewWordDlg();
 	initClassifierAutocomplete();
 };
 
@@ -1213,9 +1209,6 @@ function loadDetails(wordOrMeaningId, task, lastWordOrMeaningId) {
 	switch (viewType) {
 		case 'term':
 			detailsUrl = applicationUrl + 'termmeaningdetails/' + wordOrMeaningId;
-			break;
-		case 'lim_term':
-			detailsUrl = applicationUrl + 'limtermmeaningdetails/' + wordOrMeaningId;
 			break;
 		default:
 			detailsUrl = applicationUrl + 'worddetails/' + wordOrMeaningId;
