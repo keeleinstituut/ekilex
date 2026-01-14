@@ -14812,77 +14812,6 @@ body {
   background: url(../images/sonaveeb-logo-light-sm.svg) no-repeat;
   background-size: contain;
 }
-.logo-wrapper {
-  position: relative;
-}
-.logo-list {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  justify-content: space-evenly;
-  padding: 0 32px;
-  margin: 24px auto;
-  gap: 20px 40px;
-}
-@media (min-width: 768px) {
-  .logo-list {
-    flex-direction: row;
-    margin-top: 4rem;
-    margin-bottom: 4rem;
-    gap: 20px 64px;
-  }
-}
-.mini-logo {
-  display: block;
-  justify-content: center;
-  background-repeat: no-repeat;
-  background-size: contain;
-}
-.htm-logo {
-  width: 99px;
-  height: 41px;
-  background-image: url(../images/htm.svg);
-}
-@media (min-width: 768px) {
-  .htm-logo {
-    width: 10.5357142857rem;
-    height: 4.375rem;
-  }
-}
-.esf-logo {
-  background-image: url(../images/esf.svg);
-}
-.erf-logo {
-  background-image: url(../images/erf-logo.svg);
-}
-.esf-logo,
-.erf-logo {
-  width: 91px;
-  height: 45px;
-}
-@media (min-width: 768px) {
-  .esf-logo,
-  .erf-logo {
-    width: 10.0568181818rem;
-    height: 5.3125rem;
-  }
-}
-.eki-logo {
-  width: 91px;
-  height: 45px;
-  background-image: url(../images/eki.svg);
-}
-@media (min-width: 768px) {
-  .eki-logo {
-    width: 11.25rem;
-    height: 4.1666666667rem;
-  }
-}
-.eki-logo-wrapper {
-  width: 9.375rem;
-  height: 3.4722222222rem;
-  margin: 0 auto;
-}
 .content-wrap {
   padding-top: 0.625rem;
 }
@@ -16952,7 +16881,7 @@ span.material-symbols-outlined--filled {
 .footer {
   background-color: var(--color-light-gray);
   color: var(--color-dark-blue);
-  padding: 36px 8vw;
+  padding-top: 36px;
   margin-top: auto;
   font-size: 0.875rem;
 }
@@ -16963,6 +16892,7 @@ span.material-symbols-outlined--filled {
   justify-content: center;
   font-weight: 500;
   gap: 24px;
+  padding: 0 8vw 36px;
 }
 .footer__grid a {
   color: inherit;
@@ -17022,6 +16952,25 @@ span.material-symbols-outlined--filled {
 .footer__version {
   font-size: 0.75rem;
   font-weight: 400;
+}
+.footer__logos {
+  display: grid;
+  grid-template-columns: 1fr;
+  justify-items: center;
+  gap: 16px;
+  align-items: center;
+  padding: 24px;
+  background-color: var(--color-white);
+}
+@media (min-width: 768px) {
+  .footer__logos {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+@media (min-width: 1400px) {
+  .footer__logos {
+    grid-template-columns: repeat(4, 1fr);
+  }
 }
 .search-wrap {
   position: sticky;
