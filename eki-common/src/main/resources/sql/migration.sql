@@ -1,9 +1,9 @@
 -- #1 --
 
 update feedback_log
-	set description = substring(description, 1, 1990) || '[piiratud]';
+	set description = substring(description, 1, 1990) || '[piiratud]'
 where
-	length(fl.description) > 2000
+	length(description) > 2000
 ;
 
 update feedback_log 
