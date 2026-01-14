@@ -1,4 +1,19 @@
+var wordSuggestionFormValidator = null;
+
+$(document).ready(function() {
+	var wordSuggestionForm = document.getElementById("word-suggestion-form");
+	if (wordSuggestionForm) {
+		wordSuggestionFormValidator = new FormValidator(wordSuggestionForm);
+	}
+});
+
 $(document).on("click", "#word-suggestion-send-btn", function(event) {
+
+	if (!wordSuggestionFormValidator.validate()) {
+		event.preventDefault();
+		event.stopPropagation();
+		return;
+	}
 
 	let wordSuggestionForm = $(this).closest('form');
 	let actionUrl = wordSuggestionForm.attr('action');
@@ -21,7 +36,7 @@ $(document).on("click", "#word-suggestion-send-btn", function(event) {
 });
 
 $(document).on('show.bs.modal', '#word-suggestion-modal', function() {
-	$("#word-suggestion-form")[0].reset();
+	wordSuggestionFormValidator.reset();
 	resetMessages();
 	$("#word-suggestion-form-area").removeClass('d-none');
 });

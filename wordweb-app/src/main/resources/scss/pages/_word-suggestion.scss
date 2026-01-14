@@ -1,0 +1,116 @@
+.word-suggestion-page {
+  background-color: var(--color-white);
+
+  &__wrapper {
+    display: grid;
+    grid-template-columns: [full-width-start] 4px [content] 1fr [full-width-end] 4px;
+    gap: 4px;
+    flex-grow: 1;
+    margin-bottom: 36px;
+    
+    background-image: url("../images/bg-arrow.svg");
+    background-repeat: no-repeat;
+    background-position: calc(100% - 87px) 310px;
+    
+    @media (max-width: 1200px) {
+      background-image: none;
+    }
+    
+    @include media-breakpoint-up(md) {
+      grid-template-columns: [full-width-start] 1fr [content] minmax(375px, 750px) [full-width-end] 1fr;
+      gap: 36px;
+    }
+  }
+
+  &__header {
+    grid-column: 1/-1;
+    padding: 64px 0;
+    background-color: var(--color-light-blue);
+    display: grid;
+    grid-template-columns: subgrid;
+    align-items: center;
+    text-align: center;
+    gap: 16px;
+    color: var(--color-dark-blue);
+
+    background-image: url("../images/bg-quotes.svg");
+    background-repeat: no-repeat;
+    background-position: 87px 48px;
+
+    & h1,
+    & p {
+      margin: 0;
+      grid-column: content;
+    }
+
+    & h1 {
+      font-size: 2.125rem;
+      font-weight: 400;
+      line-height: 41.15px;
+      letter-spacing: 0.0025em;
+    }
+
+    & p {
+      font-size: .875rem;
+      font-weight: 500;
+      line-height: 19.6px;
+      letter-spacing: 0.0025em;
+    }
+
+    @media (max-width: 1200px) {
+      background-image: none;
+    }
+  }
+
+  &__content {
+    grid-column: content;
+    text-align: center;
+  }
+
+  &__item {
+    padding: 36px 0;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    border-bottom: 1px solid var(--color-light-gray);
+
+    & h2,
+    & p {
+      margin: 0;
+      color: var(--color-dark-blue);
+    }
+
+    & h2,
+    & small {
+      font-weight: 400;
+    }
+
+    & h2 {
+      font-size: 1rem;
+      line-height: 19.36px;
+      letter-spacing: 0.0015em;
+      margin-bottom: 8px;
+      font-weight: 400;
+    }
+
+    & p {
+      font-size: .875rem;
+      font-weight: 500;
+      line-height: 19.6px;
+      letter-spacing: 0.0025em;
+      white-space: pre-line;
+    }
+
+    & small {
+      font-size: .75rem;
+      line-height: 14.52px;
+      letter-spacing: 0.004em;
+      color: var(--color-dark-blue-75);
+      margin-top: 8px;
+    }
+  }
+
+  &__empty-description {
+    margin-bottom: 36px;
+  }
+}
