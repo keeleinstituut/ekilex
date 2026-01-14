@@ -1,10 +1,24 @@
 -- #1 --
 
+update feedback_log
+	set description = substring(description, 1, 1990) || '[piiratud]';
+where
+	length(fl.description) > 2000
+;
+
+update feedback_log 
+set sender_email = null
+where
+	sender_email = ''
+;
+
 alter table feedback_log rename column created_on to created;
 create index feedback_log_created_idx on feedback_log(created);
 create index feedback_log_feedback_type_idx on feedback_log(feedback_type);
 create index feedback_log_sender_email_idx on feedback_log(sender_email);
 create index feedback_log_sender_email_lower_idx on feedback_log(lower(sender_email));
+create index feedback_log_description_idx on feedback_log(description);
+create index feedback_log_description_lower_idx on feedback_log(lower(description));
 create index feedback_log_attr_name_idx on feedback_log_attr(name);
 
 create table word_suggestion (

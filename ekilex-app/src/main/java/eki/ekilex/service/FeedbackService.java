@@ -1,13 +1,16 @@
 package eki.ekilex.service;
 
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.Locale;
 
 import org.apache.commons.lang3.StringUtils;
 import org.jooq.exception.DataAccessException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -17,8 +20,10 @@ import eki.common.data.ExtendedFeedback;
 import eki.common.data.ValidationResult;
 import eki.common.service.util.FeedbackValidator;
 import eki.ekilex.constant.SystemConstant;
+import eki.ekilex.data.EkiUser;
 import eki.ekilex.data.FeedbackLog;
 import eki.ekilex.data.FeedbackLogResult;
+import eki.ekilex.data.FeedbackSearchFilter;
 import eki.ekilex.data.WordSuggestion;
 import eki.ekilex.service.db.FeedbackDbService;
 
@@ -35,13 +40,16 @@ public class FeedbackService implements SystemConstant, FeedbackConstant {
 	@Autowired
 	private FeedbackDbService feedbackDbService;
 
+	@Autowired
+	private MessageSource messageSource;
+
 	@Transactional
-	public FeedbackLogResult getFeedbackLogs(String searchFilter, Boolean notCommentedFilter, int pageNum) {
+	public FeedbackLogResult getFeedbackLogs(FeedbackSearchFilter feedbackSearchFilter, int pageNum) {
 
 		int limit = MAX_RESULTS_LIMIT;
 		int offset = (pageNum - 1) * limit;
-		List<FeedbackLog> feedbackLogs = feedbackDbService.getFeedbackLogs(searchFilter, notCommentedFilter, offset, limit);
-		long feedbackLogCount = feedbackDbService.getFeedbackLogCount(searchFilter, notCommentedFilter);
+		List<FeedbackLog> feedbackLogs = feedbackDbService.getFeedbackLogs(feedbackSearchFilter, offset, limit);
+		long feedbackLogCount = feedbackDbService.getFeedbackLogCount(feedbackSearchFilter);
 		int pageCount = (int) Math.ceil((float) feedbackLogCount / (float) limit);
 
 		FeedbackLogResult feedbackLogResult = new FeedbackLogResult();
@@ -99,7 +107,7 @@ public class FeedbackService implements SystemConstant, FeedbackConstant {
 	}
 
 	@Transactional(rollbackFor = Exception.class)
-	public void saveWordSuggestion(WordSuggestion wordSuggestion) {
+	public void saveWordSuggestion(EkiUser user, WordSuggestion wordSuggestion) {
 
 		boolean isBlank = StringUtils.isAnyBlank(
 				wordSuggestion.getWordValue(),
@@ -115,33 +123,55 @@ public class FeedbackService implements SystemConstant, FeedbackConstant {
 		if (wordSuggestionId == null) {
 			FeedbackLog feedbackLog = feedbackDbService.getFeedbackLog(feedbackLogId);
 			wordSuggestion.setCreated(feedbackLog.getCreated());
-			handlePublication(wordSuggestion);
+			handlePublication(feedbackLogId, user, wordSuggestion, null);
 			feedbackDbService.createWordSuggestion(wordSuggestion);
 		} else {
 			WordSuggestion existingWordSuggestion = feedbackDbService.getWordSuggestion(wordSuggestionId);
-			wordSuggestion.setPublicationDate(existingWordSuggestion.getPublicationDate());
-			handlePublication(wordSuggestion);
+			handlePublication(feedbackLogId, user, wordSuggestion, existingWordSuggestion);
 			feedbackDbService.updateWordSuggestion(wordSuggestion);
 		}
 	}
 
-	private void handlePublication(WordSuggestion wordSuggestion) {
+	private void handlePublication(Long feedbackLogId, EkiUser user, WordSuggestion providedWordSuggestion, WordSuggestion existingWordSuggestion) {
 
-		boolean isPublic = wordSuggestion.isPublic();
-		LocalDate publicationDate = wordSuggestion.getPublicationDate();
+		boolean isPublic = providedWordSuggestion.isPublic();
+		LocalDate publicationDate;
 		if (isPublic) {
-			if (publicationDate == null) {
-				LocalDate now = LocalDate.now();
-				int dayNow = now.getDayOfMonth();
-				if (dayNow < WORD_SUGGESTION_PUBLICATION_DAY) {
-					publicationDate = now.withDayOfMonth(WORD_SUGGESTION_PUBLICATION_DAY);
-				} else {
-					publicationDate = now.plusMonths(1).withDayOfMonth(WORD_SUGGESTION_PUBLICATION_DAY);
+			if (existingWordSuggestion == null) {
+				publicationDate = calculatePublicationDate();
+				createPublicationComment(feedbackLogId, user, publicationDate);
+			} else {
+				publicationDate = existingWordSuggestion.getPublicationDate();
+				if (publicationDate == null) {
+					publicationDate = calculatePublicationDate();
+					createPublicationComment(feedbackLogId, user, publicationDate);
 				}
 			}
 		} else {
 			publicationDate = null;
 		}
-		wordSuggestion.setPublicationDate(publicationDate);
+		providedWordSuggestion.setPublicationDate(publicationDate);
+	}
+
+	private void createPublicationComment(Long feedbackLogId, EkiUser user, LocalDate publicationDate) {
+
+		String userName = user.getName();
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
+		String publicationDateStr = publicationDate.format(formatter);
+		Locale locale = new Locale("et");
+		String comment = messageSource.getMessage("feedback.publication.comment", new String[] {publicationDateStr}, locale);
+		feedbackDbService.createFeedbackLogComment(feedbackLogId, comment, userName);
+	}
+
+	private LocalDate calculatePublicationDate() {
+		LocalDate publicationDate;
+		LocalDate now = LocalDate.now();
+		int dayNow = now.getDayOfMonth();
+		if (dayNow < WORD_SUGGESTION_PUBLICATION_DAY) {
+			publicationDate = now.withDayOfMonth(WORD_SUGGESTION_PUBLICATION_DAY);
+		} else {
+			publicationDate = now.plusMonths(1).withDayOfMonth(WORD_SUGGESTION_PUBLICATION_DAY);
+		}
+		return publicationDate;
 	}
 }
