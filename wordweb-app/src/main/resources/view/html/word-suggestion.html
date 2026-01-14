@@ -6,13 +6,13 @@
   <script type="text/javascript" th:src="@{/view/js/ww-word-suggestion.js}"></script>
 </th:block>
 </head>
-<body class="survey-active">
+<body class="survey-active word-suggestion-page">
   <th:block th:replace="common-app :: wcag-sidebar"></th:block>
   <th:block th:replace="common-app :: wcag-main"></th:block>
   <th:block th:replace="common-app :: header(withSearch = ${false})"></th:block>
   <th:block th:replace="word-suggestion :: word-suggestion-form"></th:block>
-  <div class="news-page__wrapper">
-    <div class="news-page__header">
+  <div class="word-suggestion-page__wrapper">
+    <div class="word-suggestion-page__header">
       <h1 th:text="#{label.wordsuggestion.title}">Teavituste ajalugu</h1>
       <p th:utext="#{label.wordsuggestion.description}">Description</p>
       <p>
@@ -26,23 +26,18 @@
         </button>
       </p>
     </div>
-    <div class="news-page__content">
+    <div class="word-suggestion-page__content">
       <h1 th:text="#{label.wordsuggestions.title}">Teavituste ajalugu</h1>
       <th:block th:unless="${wordSuggestions}">
-        <div th:text="#{label.wordsuggestion.missing.data}">Hetkel andmed puuduvad....</div>
+        <p class="word-suggestion-page__empty-description" th:text="#{label.wordsuggestion.missing.data}">Hetkel andmed puuduvad....</p>
+        <img th:src="@{'/view/images/suggestions-empty.svg'}" alt="" width="213" height="186"/>
       </th:block>
       <th:block th:if="${wordSuggestions}">
         <th:block th:each="wordSuggestion, wordSuggestionIter : ${wordSuggestions}">
-          <div class="news-page__item">
-            <div>
-              <h2 th:text="${wordSuggestion.wordValue}"></h2>
-            </div>
-            <div>
-              <span th:text="${wordSuggestion.definitionValue}"></span>
-            </div>
-            <div>
-              <span th:text="${wordSuggestion.usageValue}"></span>
-            </div>
+          <div class="word-suggestion-page__item">
+            <h2 th:text="${wordSuggestion.wordValue}"></h2>
+            <p th:text="${wordSuggestion.definitionValue}"></p>
+            <p th:text="${wordSuggestion.usageValue}"></p>
             <div>
               <small th:text="${wordSuggestion.authorName}"></small>
               <small th:text="${#temporals.format(wordSuggestion.created, 'dd.MM.yyyy')}"></small>
@@ -55,7 +50,7 @@
   <div th:replace="common-app :: footer-content"></div>
   <th:block th:replace="common-app :: content-top"></th:block>
   <th:block th:fragment="word-suggestion-form">
-    <div id="word-suggestion-modal" class="modal fade" tabindex="-1" aria-model="true" role="dialog" aria-hidden="false" aria-describedby="word-suggestion-modal-title">
+    <div id="word-suggestion-modal" class="modal fade" tabindex="-1" aria-modal="true" role="dialog" aria-hidden="false" aria-labelledby="word-suggestion-modal-title">
       <div class="modal-dialog" role="document">
         <div class="modal-content feedback-modal">
           <div class="modal-header feedback-modal__header">
@@ -66,37 +61,48 @@
           </div>
           <div class="modal-body">
             <div id="word-suggestion-form-area">
+              <p class="mb-3" th:utext="#{label.wordsuggestion.send.description}"></p>
               <form id="word-suggestion-form" th:action="@{/word}" novalidate="novalidate">
                 <div>
-                  <label th:text="#{label.feedback.word}" class="col-form-label">Pakutav sõna</label>
-                  <input type="text" name="word" th:placeholder="#{label.feedback.word.placeholder}" class="form-control" required="required" autocomplete="off">
-                  <div class="invalid-feedback" th:text="#{message.feedback.missing.word}">Väli on kohustuslik</div>
+                  <label for="word-suggestion-word" th:text="#{label.feedback.word}" class="col-form-label">Pakutav sõna</label>
+                  <input type="text" id="word-suggestion-word" name="word" th:placeholder="#{label.feedback.word.placeholder}" class="form-control" required="required" aria-required="true" aria-describedby="word-suggestion-word-error" autocomplete="off">
+                  <div role="alert">
+                    <div id="word-suggestion-word-error" class="invalid-feedback" th:text="#{message.feedback.missing.word}">Väli on kohustuslik</div>
+                  </div>
                 </div>
                 <div class="mt-2">
-                  <label th:text="#{label.feedback.definition}" class="col-form-label">Tähendus</label>
-                  <textarea name="definition" class="form-control" th:placeholder="#{label.feedback.definition.placeholder}" required="required" autocomplete="off"></textarea>
-                  <div class="invalid-feedback" th:text="#{message.feedback.missing.definition}">Väli on kohustuslik</div>
+                  <label for="word-suggestion-definition" th:text="#{label.feedback.definition}" class="col-form-label">Tähendus</label>
+                  <textarea id="word-suggestion-definition" name="definition" class="form-control" th:placeholder="#{label.feedback.definition.placeholder}" required="required" aria-required="true" aria-describedby="word-suggestion-definition-error" autocomplete="off" maxlength="1000"></textarea>
+                  <div role="alert">
+                    <div id="word-suggestion-definition-error" class="invalid-feedback" th:text="#{message.feedback.missing.definition}">Väli on kohustuslik</div>
+                  </div>
                 </div>
                 <div class="mt-2">
-                  <label th:text="#{label.feedback.usage}" class="col-form-label">Näitelaused</label>
-                  <textarea name="usage" class="form-control" th:placeholder="#{label.feedback.usage.placeholder}" required="required" autocomplete="off"></textarea>
-                  <div class="invalid-feedback" th:text="#{message.feedback.missing.usage}">Väli on kohustuslik</div>
+                  <label for="word-suggestion-usage" th:text="#{label.feedback.usage}" class="col-form-label">Näitelaused</label>
+                  <textarea id="word-suggestion-usage" name="usage" class="form-control" th:placeholder="#{label.feedback.usage.placeholder}" required="required" aria-required="true" aria-describedby="word-suggestion-usage-error" autocomplete="off" maxlength="1000"></textarea>
+                  <div role="alert">
+                    <div id="word-suggestion-usage-error" class="invalid-feedback" th:text="#{message.feedback.missing.usage}">Väli on kohustuslik</div>
+                  </div>
                 </div>
                 <div class="mt-2">
-                  <label th:text="#{label.feedback.name}" class="col-form-label">Nimi</label>
-                  <input type="text" name="senderName" th:placeholder="#{label.feedback.name}" class="form-control" required="required" autocomplete="off">
-                  <div>
+                  <label for="word-suggestion-name" th:text="#{label.feedback.name}" class="col-form-label">Nimi</label>
+                  <input type="text" id="word-suggestion-name" name="senderName" th:placeholder="#{label.feedback.name}" class="form-control" required="required" aria-required="true" aria-describedby="word-suggestion-name-hint word-suggestion-name-error" autocomplete="off">
+                  <div id="word-suggestion-name-hint">
                     <small th:text="#{label.feedback.name.comment}">Nimi avaldatakse Sõnaveebis</small>
                   </div>
-                  <div class="invalid-feedback" th:text="#{message.feedback.missing.name}">Väli on kohustuslik</div>
+                  <div role="alert">
+                    <div id="word-suggestion-name-error" class="invalid-feedback" th:text="#{message.feedback.missing.name}">Väli on kohustuslik</div>
+                  </div>
                 </div>
                 <div class="mt-2">
-                  <label th:text="#{label.feedback.email}" class="col-form-label">E-post</label>
-                  <input type="email" name="senderEmail" th:placeholder="#{label.feedback.email.placeholder}" class="form-control form-email" required="required" autocomplete="off">
-                  <div>
+                  <label for="word-suggestion-email" th:text="#{label.feedback.email}" class="col-form-label">E-post</label>
+                  <input type="email" id="word-suggestion-email" name="senderEmail" th:placeholder="#{label.feedback.email.placeholder}" class="form-control form-email" required="required" aria-required="true" aria-describedby="word-suggestion-email-hint word-suggestion-email-error" autocomplete="off">
+                  <div id="word-suggestion-email-hint">
                     <small th:text="#{label.feedback.email.comment}">E-posti aadressi ei avaldata Sõnaveebis</small>
                   </div>
-                  <div class="invalid-feedback" th:text="#{message.feedback.missing.email}">Väli on kohustuslik</div>
+                  <div role="alert">
+                    <div id="word-suggestion-email-error" class="invalid-feedback" th:text="#{message.feedback.missing.email}">Väli on kohustuslik</div>
+                  </div>
                 </div>
                 <div class="d-flex flex-column">
                   <button type="button" class="feedback-modal__button" id="word-suggestion-send-btn" th:text="#{button.send}">Saada</button>
@@ -104,8 +110,12 @@
               </form>
             </div>
             <div class="d-flex flex-column mt-3">
-              <div id="word-suggestion-error-message" class="alert alert-danger d-none">Tagasiside saatmine ebaõnnestus, proovige hiljem uuesti.</div>
-              <div id="word-suggestion-success-message" class="alert alert-success d-none" th:text="#{message.feedback.success.wordsuggestion}">Aitäh, saime ettepaneku kätte</div>
+              <div role="alert">
+                <div id="word-suggestion-error-message" class="alert alert-danger d-none">Tagasiside saatmine ebaõnnestus, proovige hiljem uuesti.</div>
+              </div>
+              <div role="status">
+                <div id="word-suggestion-success-message" class="alert alert-success d-none" th:text="#{message.feedback.success.wordsuggestion}">Aitäh, saime ettepaneku kätte</div>
+              </div>
             </div>
           </div>
         </div>

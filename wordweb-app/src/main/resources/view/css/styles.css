@@ -14812,77 +14812,6 @@ body {
   background: url(../images/sonaveeb-logo-light-sm.svg) no-repeat;
   background-size: contain;
 }
-.logo-wrapper {
-  position: relative;
-}
-.logo-list {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  justify-content: space-evenly;
-  padding: 0 32px;
-  margin: 24px auto;
-  gap: 20px 40px;
-}
-@media (min-width: 768px) {
-  .logo-list {
-    flex-direction: row;
-    margin-top: 4rem;
-    margin-bottom: 4rem;
-    gap: 20px 64px;
-  }
-}
-.mini-logo {
-  display: block;
-  justify-content: center;
-  background-repeat: no-repeat;
-  background-size: contain;
-}
-.htm-logo {
-  width: 99px;
-  height: 41px;
-  background-image: url(../images/htm.svg);
-}
-@media (min-width: 768px) {
-  .htm-logo {
-    width: 10.5357142857rem;
-    height: 4.375rem;
-  }
-}
-.esf-logo {
-  background-image: url(../images/esf.svg);
-}
-.erf-logo {
-  background-image: url(../images/erf-logo.svg);
-}
-.esf-logo,
-.erf-logo {
-  width: 91px;
-  height: 45px;
-}
-@media (min-width: 768px) {
-  .esf-logo,
-  .erf-logo {
-    width: 10.0568181818rem;
-    height: 5.3125rem;
-  }
-}
-.eki-logo {
-  width: 91px;
-  height: 45px;
-  background-image: url(../images/eki.svg);
-}
-@media (min-width: 768px) {
-  .eki-logo {
-    width: 11.25rem;
-    height: 4.1666666667rem;
-  }
-}
-.eki-logo-wrapper {
-  width: 9.375rem;
-  height: 3.4722222222rem;
-  margin: 0 auto;
-}
 .content-wrap {
   padding-top: 0.625rem;
 }
@@ -16058,6 +15987,110 @@ span.material-symbols-outlined--filled {
   line-height: 19.6px;
   letter-spacing: 0.0025em;
 }
+.word-suggestion-page {
+  background-color: var(--color-white);
+}
+.word-suggestion-page__wrapper {
+  display: grid;
+  grid-template-columns: [full-width-start] 4px [content] 1fr [full-width-end] 4px;
+  gap: 4px;
+  flex-grow: 1;
+  margin-bottom: 36px;
+  background-image: url(../images/bg-arrow.svg);
+  background-repeat: no-repeat;
+  background-position: calc(100% - 87px) 310px;
+}
+@media (max-width: 1200px) {
+  .word-suggestion-page__wrapper {
+    background-image: none;
+  }
+}
+@media (min-width: 768px) {
+  .word-suggestion-page__wrapper {
+    grid-template-columns: [full-width-start] 1fr [content] minmax(375px, 750px) [full-width-end] 1fr;
+    gap: 36px;
+  }
+}
+.word-suggestion-page__header {
+  grid-column: 1/-1;
+  padding: 64px 0;
+  background-color: var(--color-light-blue);
+  display: grid;
+  grid-template-columns: subgrid;
+  align-items: center;
+  text-align: center;
+  gap: 16px;
+  color: var(--color-dark-blue);
+  background-image: url(../images/bg-quotes.svg);
+  background-repeat: no-repeat;
+  background-position: 87px 48px;
+}
+.word-suggestion-page__header h1,
+.word-suggestion-page__header p {
+  margin: 0;
+  grid-column: content;
+}
+.word-suggestion-page__header h1 {
+  font-size: 2.125rem;
+  font-weight: 400;
+  line-height: 41.15px;
+  letter-spacing: 0.0025em;
+}
+.word-suggestion-page__header p {
+  font-size: 0.875rem;
+  font-weight: 500;
+  line-height: 19.6px;
+  letter-spacing: 0.0025em;
+}
+@media (max-width: 1200px) {
+  .word-suggestion-page__header {
+    background-image: none;
+  }
+}
+.word-suggestion-page__content {
+  grid-column: content;
+  text-align: center;
+}
+.word-suggestion-page__item {
+  padding: 36px 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  border-bottom: 1px solid var(--color-light-gray);
+}
+.word-suggestion-page__item h2,
+.word-suggestion-page__item p {
+  margin: 0;
+  color: var(--color-dark-blue);
+}
+.word-suggestion-page__item h2,
+.word-suggestion-page__item small {
+  font-weight: 400;
+}
+.word-suggestion-page__item h2 {
+  font-size: 1rem;
+  line-height: 19.36px;
+  letter-spacing: 0.0015em;
+  margin-bottom: 8px;
+  font-weight: 400;
+}
+.word-suggestion-page__item p {
+  font-size: 0.875rem;
+  font-weight: 500;
+  line-height: 19.6px;
+  letter-spacing: 0.0025em;
+  white-space: pre-line;
+}
+.word-suggestion-page__item small {
+  font-size: 0.75rem;
+  line-height: 14.52px;
+  letter-spacing: 0.004em;
+  color: var(--color-dark-blue-75);
+  margin-top: 8px;
+}
+.word-suggestion-page__empty-description {
+  margin-bottom: 36px;
+}
 .header {
   padding: 16px 16px 16px 4px;
   position: sticky;
@@ -16848,7 +16881,7 @@ span.material-symbols-outlined--filled {
 .footer {
   background-color: var(--color-light-gray);
   color: var(--color-dark-blue);
-  padding: 36px 8vw;
+  padding-top: 36px;
   margin-top: auto;
   font-size: 0.875rem;
 }
@@ -16859,6 +16892,7 @@ span.material-symbols-outlined--filled {
   justify-content: center;
   font-weight: 500;
   gap: 24px;
+  padding: 0 8vw 36px;
 }
 .footer__grid a {
   color: inherit;
@@ -16918,6 +16952,25 @@ span.material-symbols-outlined--filled {
 .footer__version {
   font-size: 0.75rem;
   font-weight: 400;
+}
+.footer__logos {
+  display: grid;
+  grid-template-columns: 1fr;
+  justify-items: center;
+  gap: 16px;
+  align-items: center;
+  padding: 24px;
+  background-color: var(--color-white);
+}
+@media (min-width: 768px) {
+  .footer__logos {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+@media (min-width: 1400px) {
+  .footer__logos {
+    grid-template-columns: repeat(4, 1fr);
+  }
 }
 .search-wrap {
   position: sticky;
@@ -19835,6 +19888,9 @@ eki-shy {
   max-height: 220px;
   margin: 0 auto;
   object-fit: contain;
+}
+.was-validated :invalid ~ [role=alert] > .invalid-feedback {
+  display: block;
 }
 /*!
  * Font Awesome Free 5.14.0 by @fontawesome - https://fontawesome.com

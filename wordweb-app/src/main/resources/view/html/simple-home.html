@@ -13,7 +13,7 @@
   <th:block th:replace="common-app :: wcag-search"></th:block>
   <th:block th:replace="common-app :: latest-ww-news-article"></th:block>
   <th:block th:replace="common-app :: header(pageContext = 'simpleSearch', withLogo = ${false}, withSearch = ${false})"></th:block>
-  <div class="container-fluid home-page-content">
+  <div class="container-fluid home-page-content mb-5">
     <div class="row">
       <div class="col align-self-center main-content-wrapper">
         <div class="row">
@@ -25,24 +25,6 @@
           <div class="col-sm-10 col-md-8 col-lg-6 offset-sm-1 offset-md-2 offset-lg-3">
             <div th:replace="common-search :: search"></div>
           </div>
-        </div>
-        <div class="logo-wrapper">
-          <ul class="logo-list list-unstyled">
-						<li>
-              <a href="https://eki.ee" th:aria-label="#{general.eki}" target="_blank">
-                <span class="eki-logo mini-logo"></span>
-              </a>
-            </li>
-            <li>
-              <span class="esf-logo mini-logo"></span>
-            </li>
-            <li>
-              <span class="erf-logo mini-logo"></span>
-            </li>
-            <li>
-              <span class="htm-logo mini-logo"></span>
-            </li>
-          </ul>
         </div>
       </div>
     </div>

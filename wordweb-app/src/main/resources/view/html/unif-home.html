@@ -26,7 +26,7 @@
             <div th:replace="common-search :: search"></div>
           </div>
         </div>
-        <div class="text-center mt-5 d-flex justify-content-center align-items-center gap-10">
+        <div class="text-center my-5 d-flex justify-content-center align-items-center gap-10">
           <a class="simple-search-brand-link" th:href="@{/lite}" target="_blank" data-item-name="search-lite">
             <span th:text="#{menu.search.lite}">Keeleõppija Sõnaveeb</span>
             <i class="fas fa-external-link-alt ml-2" aria-hidden="true"></i>
@@ -34,24 +34,6 @@
           <a th:href="@{/feelinglucky}" class="d-none d-md-inline-flex">
             <span th:text="#{button.label.feelinglucky}">Ehk mul veab</span>
           </a>
-        </div>
-        <div class="logo-wrapper">
-          <ul class="logo-list list-unstyled">
-            <li>
-              <a href="https://eki.ee" th:aria-label="#{general.eki}" target="_blank">
-                <span class="eki-logo mini-logo"></span>
-              </a>
-            </li>
-            <li>
-              <span class="esf-logo mini-logo"></span>
-            </li>
-            <li>
-              <span class="erf-logo mini-logo"></span>
-            </li>
-            <li>
-              <span class="htm-logo mini-logo"></span>
-            </li>
-          </ul>
         </div>
       </div>
     </div>
