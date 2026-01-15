@@ -9,7 +9,6 @@ import eki.ekilex.data.db.main.tables.ApiErrorCount;
 import eki.ekilex.data.db.main.tables.ApiRequestCount;
 import eki.ekilex.data.db.main.tables.Aspect;
 import eki.ekilex.data.db.main.tables.AspectLabel;
-import eki.ekilex.data.db.main.tables.Collocation;
 import eki.ekilex.data.db.main.tables.CollocationMember;
 import eki.ekilex.data.db.main.tables.DataRequest;
 import eki.ekilex.data.db.main.tables.Dataset;
@@ -54,9 +53,6 @@ import eki.ekilex.data.db.main.tables.LabelType;
 import eki.ekilex.data.db.main.tables.Language;
 import eki.ekilex.data.db.main.tables.LanguageLabel;
 import eki.ekilex.data.db.main.tables.LearnerComment;
-import eki.ekilex.data.db.main.tables.LexColloc;
-import eki.ekilex.data.db.main.tables.LexCollocPosGroup;
-import eki.ekilex.data.db.main.tables.LexCollocRelGroup;
 import eki.ekilex.data.db.main.tables.LexRelMapping;
 import eki.ekilex.data.db.main.tables.LexRelType;
 import eki.ekilex.data.db.main.tables.LexRelTypeLabel;
@@ -236,11 +232,6 @@ public class Public extends SchemaImpl {
      * The table <code>public.aspect_label</code>.
      */
     public final AspectLabel ASPECT_LABEL = AspectLabel.ASPECT_LABEL;
-
-    /**
-     * The table <code>public.collocation</code>.
-     */
-    public final Collocation COLLOCATION = Collocation.COLLOCATION;
 
     /**
      * The table <code>public.collocation_member</code>.
@@ -461,21 +452,6 @@ public class Public extends SchemaImpl {
      * The table <code>public.learner_comment</code>.
      */
     public final LearnerComment LEARNER_COMMENT = LearnerComment.LEARNER_COMMENT;
-
-    /**
-     * The table <code>public.lex_colloc</code>.
-     */
-    public final LexColloc LEX_COLLOC = LexColloc.LEX_COLLOC;
-
-    /**
-     * The table <code>public.lex_colloc_pos_group</code>.
-     */
-    public final LexCollocPosGroup LEX_COLLOC_POS_GROUP = LexCollocPosGroup.LEX_COLLOC_POS_GROUP;
-
-    /**
-     * The table <code>public.lex_colloc_rel_group</code>.
-     */
-    public final LexCollocRelGroup LEX_COLLOC_REL_GROUP = LexCollocRelGroup.LEX_COLLOC_REL_GROUP;
 
     /**
      * The table <code>public.lex_rel_mapping</code>.
@@ -1087,7 +1063,6 @@ public class Public extends SchemaImpl {
             Sequences.API_ERROR_COUNT_ID_SEQ,
             Sequences.API_REQUEST_COUNT_ID_SEQ,
             Sequences.ASPECT_ORDER_BY_SEQ,
-            Sequences.COLLOCATION_ID_SEQ,
             Sequences.COLLOCATION_MEMBER_ID_SEQ,
             Sequences.DATA_REQUEST_ID_SEQ,
             Sequences.DATASET_FREEFORM_TYPE_ID_SEQ,
@@ -1131,11 +1106,6 @@ public class Public extends SchemaImpl {
             Sequences.LANGUAGE_ORDER_BY_SEQ,
             Sequences.LEARNER_COMMENT_ID_SEQ,
             Sequences.LEARNER_COMMENT_ORDER_BY_SEQ,
-            Sequences.LEX_COLLOC_ID_SEQ,
-            Sequences.LEX_COLLOC_POS_GROUP_ID_SEQ,
-            Sequences.LEX_COLLOC_POS_GROUP_ORDER_BY_SEQ,
-            Sequences.LEX_COLLOC_REL_GROUP_ID_SEQ,
-            Sequences.LEX_COLLOC_REL_GROUP_ORDER_BY_SEQ,
             Sequences.LEX_REL_TYPE_ORDER_BY_SEQ,
             Sequences.LEX_RELATION_ID_SEQ,
             Sequences.LEX_RELATION_ORDER_BY_SEQ,
@@ -1254,7 +1224,6 @@ public class Public extends SchemaImpl {
             ApiRequestCount.API_REQUEST_COUNT,
             Aspect.ASPECT,
             AspectLabel.ASPECT_LABEL,
-            Collocation.COLLOCATION,
             CollocationMember.COLLOCATION_MEMBER,
             DataRequest.DATA_REQUEST,
             Dataset.DATASET,
@@ -1299,9 +1268,6 @@ public class Public extends SchemaImpl {
             Language.LANGUAGE,
             LanguageLabel.LANGUAGE_LABEL,
             LearnerComment.LEARNER_COMMENT,
-            LexColloc.LEX_COLLOC,
-            LexCollocPosGroup.LEX_COLLOC_POS_GROUP,
-            LexCollocRelGroup.LEX_COLLOC_REL_GROUP,
             LexRelMapping.LEX_REL_MAPPING,
             LexRelType.LEX_REL_TYPE,
             LexRelTypeLabel.LEX_REL_TYPE_LABEL,

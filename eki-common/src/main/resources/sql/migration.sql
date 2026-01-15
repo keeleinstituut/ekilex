@@ -155,4 +155,13 @@ where
 	t."name" in ('ÕSi sõna', 'ÕSi liitsõna')
 ;
 
+-- #5 --
+
+drop table lex_colloc;
+drop table lex_colloc_rel_group;
+drop table lex_colloc_pos_group;
+drop table collocation;
+
+
+
 

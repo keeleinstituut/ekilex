@@ -17,42 +17,17 @@ drop view if exists view_ww_classifier;
 drop view if exists view_ww_dataset;
 drop view if exists view_ww_news_article;
 drop view if exists view_ww_word_suggestion;
-drop view if exists view_od_lexeme_meaning; -- remove later
-drop view if exists view_od_definition_idx; -- remove later
-drop view if exists view_od_definition; -- remove later
-drop view if exists view_od_word_relation_idx; -- remove later
-drop view if exists view_od_word_relation; -- remove later
-drop view if exists view_od_word_od_recommend; -- remove later
-drop view if exists view_od_word_od_usage_idx; -- remove later
-drop view if exists view_od_word_od_usage; -- remove later
-drop view if exists view_od_word_od_morph; -- remove later
-drop view if exists view_od_word; -- remove later
 drop view if exists view_os_lexeme_meaning;
 drop view if exists view_os_definition_idx;
 drop view if exists view_os_definition;
 drop view if exists view_os_word_relation_idx;
 drop view if exists view_os_word_relation;
-drop view if exists view_os_word_os_recommend; -- remove later
 drop view if exists view_os_word_os_recommendation;
 drop view if exists view_os_word_eki_recommendation;
 drop view if exists view_os_word_os_usage_idx;
 drop view if exists view_os_word_os_usage;
 drop view if exists view_os_word_os_morph;
 drop view if exists view_os_word;
-drop type if exists type_meaning_word; -- remove later
-drop type if exists type_note; -- remove later
-drop type if exists type_value_entity; -- remove later
-drop type if exists type_freeform; -- remove later
-drop type if exists type_lang_complexity; -- remove later
-drop type if exists type_definition; -- remove later
-drop type if exists type_media_file; -- remove later
-drop type if exists type_usage; -- remove later
-drop type if exists type_source_link; -- remove later
-drop type if exists type_colloc_member; -- remove later
-drop type if exists type_word_etym_relation; -- remove later
-drop type if exists type_word_relation; -- remove later
-drop type if exists type_lexeme_relation; -- remove later
-drop type if exists type_meaning_relation; -- remove later
 drop type if exists type_domain;
 drop type if exists type_lang_dataset_publishing;
 
@@ -101,11 +76,10 @@ drop table if exists word_etymology_source_link;
 drop table if exists meaning_image_source_link;
 drop table if exists meaning_note_source_link;
 drop table if exists collocation_member;
-drop table if exists lex_colloc;
-drop table if exists lex_colloc_rel_group;
-drop table if exists lex_colloc_pos_group;
+drop table if exists lex_colloc; -- remove later
+drop table if exists lex_colloc_rel_group; -- remove later
+drop table if exists lex_colloc_pos_group; -- remove later
 drop table if exists lex_relation;
-drop table if exists usage_definition; -- remove later
 drop table if exists usage_translation;
 drop table if exists usage;
 drop table if exists grammar;
@@ -118,8 +92,8 @@ drop table if exists lexeme_deriv;
 drop table if exists lexeme_region;
 drop table if exists lexeme_tag;
 drop table if exists lexeme;
-drop table if exists collocation_freeform;
-drop table if exists collocation;
+drop table if exists collocation_freeform; -- remove later
+drop table if exists collocation; -- remove later
 drop table if exists definition_freeform;
 drop table if exists definition_note;
 drop table if exists definition_dataset;
@@ -142,11 +116,7 @@ drop table if exists word_forum;
 drop table if exists word_freeform;
 drop table if exists word_etymology_relation;
 drop table if exists word_etymology;
-drop table if exists word_od_recommendation; -- remove later
-drop table if exists word_od_usage; -- remove later
-drop table if exists word_od_morph; -- remove later
 drop table if exists word_os_homonym_nr;
-drop table if exists word_os_recommendation; -- remove later
 drop table if exists word_eki_recommendation;
 drop table if exists word_os_usage;
 drop table if exists word_os_morph;

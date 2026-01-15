@@ -986,19 +986,6 @@ create table definition_freeform (
 );
 alter sequence definition_freeform_id_seq restart with 10000;
 
--- kollokatsioon
--- TODO to be removed soon
-create table collocation (
-  id bigserial primary key, 
-  value text not null, 
-  definition text, 
-  frequency numeric(14, 4), 
-  score numeric(14, 4), 
-  usages text array, 
-  complexity varchar(100) not null
-);
-alter sequence collocation_id_seq restart with 10000;
-
 -- ilmik
 create table lexeme (
   id bigserial primary key, 
@@ -1191,43 +1178,6 @@ create table lex_relation (
   )
 );
 alter sequence lex_relation_id_seq restart with 10000;
-
--- ilmiku kollokatsiooni grupid
--- TODO to be removed soon
-create table lex_colloc_pos_group (
-  id bigserial primary key, 
-  lexeme_id bigint references lexeme(id) on delete cascade not null, 
-  pos_group_code varchar(100) references pos_group(code) on delete cascade not null, 
-  order_by bigserial
-);
-alter sequence lex_colloc_pos_group_id_seq restart with 10000;
-
--- TODO to be removed soon
-create table lex_colloc_rel_group (
-  id bigserial primary key, 
-  pos_group_id bigint references lex_colloc_pos_group(id) on delete cascade not null, 
-  name text not null, 
-  frequency numeric(14, 4), 
-  score numeric(14, 4), 
-  order_by bigserial
-);
-alter sequence lex_colloc_rel_group_id_seq restart with 10000;
-
--- ilmiku kollokatsioon
--- TODO to be removed soon
-create table lex_colloc (
-  id bigserial primary key, 
-  lexeme_id bigint references lexeme(id) on delete cascade not null, 
-  rel_group_id bigint references lex_colloc_rel_group(id) on delete cascade null, 
-  collocation_id bigint references collocation(id) on delete cascade not null, 
-  member_form text not null, 
-  conjunct varchar(100) null, 
-  weight numeric(14, 4), 
-  member_order integer not null, 
-  group_order integer, 
-  unique(lexeme_id, collocation_id)
-);
-alter sequence lex_colloc_id_seq restart with 10000;
 
 create table collocation_member (
 	id bigserial primary key,

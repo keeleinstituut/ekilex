@@ -160,9 +160,6 @@ public class DatasetDbService {
 		// delete definitions
 		helper.deleteDefinitions(datasetCode, mainDb);
 
-		// delete collocations
-		helper.deleteCollocations(datasetCode, mainDb);
-
 		// delete lexemes, guids, mnrs
 		mainDb.deleteFrom(LEXEME).where(LEXEME.DATASET_CODE.eq(datasetCode)).execute();
 		mainDb.deleteFrom(WORD_GUID).where(WORD_GUID.DATASET_CODE.eq(datasetCode)).execute();

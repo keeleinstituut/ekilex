@@ -41,6 +41,7 @@ import eki.ekilex.service.AbstractLoaderCommons;
 import eki.ekilex.service.cli.TransportService;
 
 // TODO obsolete
+@Deprecated
 @Component
 public class DatasetExporterRunner extends AbstractLoaderCommons implements InitializingBean {
 

@@ -36,11 +36,6 @@ public class Sequences {
     public static final Sequence<Long> ASPECT_ORDER_BY_SEQ = Internal.createSequence("aspect_order_by_seq", Public.PUBLIC, SQLDataType.BIGINT.nullable(false), null, null, null, null, false, null);
 
     /**
-     * The sequence <code>public.collocation_id_seq</code>
-     */
-    public static final Sequence<Long> COLLOCATION_ID_SEQ = Internal.createSequence("collocation_id_seq", Public.PUBLIC, SQLDataType.BIGINT.nullable(false), null, null, null, null, false, null);
-
-    /**
      * The sequence <code>public.collocation_member_id_seq</code>
      */
     public static final Sequence<Long> COLLOCATION_MEMBER_ID_SEQ = Internal.createSequence("collocation_member_id_seq", Public.PUBLIC, SQLDataType.BIGINT.nullable(false), null, null, null, null, false, null);
@@ -254,31 +249,6 @@ public class Sequences {
      * The sequence <code>public.learner_comment_order_by_seq</code>
      */
     public static final Sequence<Long> LEARNER_COMMENT_ORDER_BY_SEQ = Internal.createSequence("learner_comment_order_by_seq", Public.PUBLIC, SQLDataType.BIGINT.nullable(false), null, null, null, null, false, null);
-
-    /**
-     * The sequence <code>public.lex_colloc_id_seq</code>
-     */
-    public static final Sequence<Long> LEX_COLLOC_ID_SEQ = Internal.createSequence("lex_colloc_id_seq", Public.PUBLIC, SQLDataType.BIGINT.nullable(false), null, null, null, null, false, null);
-
-    /**
-     * The sequence <code>public.lex_colloc_pos_group_id_seq</code>
-     */
-    public static final Sequence<Long> LEX_COLLOC_POS_GROUP_ID_SEQ = Internal.createSequence("lex_colloc_pos_group_id_seq", Public.PUBLIC, SQLDataType.BIGINT.nullable(false), null, null, null, null, false, null);
-
-    /**
-     * The sequence <code>public.lex_colloc_pos_group_order_by_seq</code>
-     */
-    public static final Sequence<Long> LEX_COLLOC_POS_GROUP_ORDER_BY_SEQ = Internal.createSequence("lex_colloc_pos_group_order_by_seq", Public.PUBLIC, SQLDataType.BIGINT.nullable(false), null, null, null, null, false, null);
-
-    /**
-     * The sequence <code>public.lex_colloc_rel_group_id_seq</code>
-     */
-    public static final Sequence<Long> LEX_COLLOC_REL_GROUP_ID_SEQ = Internal.createSequence("lex_colloc_rel_group_id_seq", Public.PUBLIC, SQLDataType.BIGINT.nullable(false), null, null, null, null, false, null);
-
-    /**
-     * The sequence <code>public.lex_colloc_rel_group_order_by_seq</code>
-     */
-    public static final Sequence<Long> LEX_COLLOC_REL_GROUP_ORDER_BY_SEQ = Internal.createSequence("lex_colloc_rel_group_order_by_seq", Public.PUBLIC, SQLDataType.BIGINT.nullable(false), null, null, null, null, false, null);
 
     /**
      * The sequence <code>public.lex_rel_type_order_by_seq</code>

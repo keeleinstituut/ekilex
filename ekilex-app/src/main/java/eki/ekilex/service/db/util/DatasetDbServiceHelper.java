@@ -1,13 +1,11 @@
 package eki.ekilex.service.db.util;
 
-import static eki.ekilex.data.db.main.Tables.COLLOCATION;
 import static eki.ekilex.data.db.main.Tables.DEFINITION;
 import static eki.ekilex.data.db.main.Tables.DEFINITION_DATASET;
 import static eki.ekilex.data.db.main.Tables.DEFINITION_FREEFORM;
 import static eki.ekilex.data.db.main.Tables.FREEFORM;
 import static eki.ekilex.data.db.main.Tables.LEXEME;
 import static eki.ekilex.data.db.main.Tables.LEXEME_FREEFORM;
-import static eki.ekilex.data.db.main.Tables.LEX_COLLOC;
 import static eki.ekilex.data.db.main.Tables.MEANING;
 import static eki.ekilex.data.db.main.Tables.MEANING_FREEFORM;
 import static eki.ekilex.data.db.main.Tables.WORD;
@@ -19,12 +17,10 @@ import org.jooq.DSLContext;
 import org.jooq.impl.DSL;
 import org.springframework.stereotype.Component;
 
-import eki.ekilex.data.db.main.tables.Collocation;
 import eki.ekilex.data.db.main.tables.Definition;
 import eki.ekilex.data.db.main.tables.DefinitionDataset;
 import eki.ekilex.data.db.main.tables.DefinitionFreeform;
 import eki.ekilex.data.db.main.tables.Freeform;
-import eki.ekilex.data.db.main.tables.LexColloc;
 import eki.ekilex.data.db.main.tables.Lexeme;
 import eki.ekilex.data.db.main.tables.LexemeFreeform;
 import eki.ekilex.data.db.main.tables.Meaning;
@@ -190,29 +186,6 @@ public class DatasetDbServiceHelper {
 						.select(dd2.DEFINITION_ID)
 						.from(dd2)
 						.where(dd2.DEFINITION_ID.eq(d.ID).and(dd2.DATASET_CODE.ne(datasetCode))))
-				.execute();
-	}
-
-	public void deleteCollocations(String datasetCode, DSLContext db) {
-
-		Lexeme l1 = LEXEME.as("l1");
-		Lexeme l2 = LEXEME.as("l2");
-		Collocation c = COLLOCATION.as("c");
-		LexColloc lc = LEX_COLLOC.as("lc");
-
-		db
-				.deleteFrom(c)
-				.where(c.ID.in(DSL
-						.select(lc.COLLOCATION_ID)
-						.from(lc)
-						.whereExists(DSL
-								.select(l1.ID)
-								.from(l1)
-								.where(l1.ID.eq(lc.LEXEME_ID).and(l1.DATASET_CODE.eq(datasetCode))))
-						.andNotExists(DSL
-								.select(l2.ID)
-								.from(l2)
-								.where(l2.ID.eq(lc.LEXEME_ID).and(l2.DATASET_CODE.ne(datasetCode))))))
 				.execute();
 	}
 }

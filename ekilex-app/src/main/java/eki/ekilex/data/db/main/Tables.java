@@ -9,7 +9,6 @@ import eki.ekilex.data.db.main.tables.ApiErrorCount;
 import eki.ekilex.data.db.main.tables.ApiRequestCount;
 import eki.ekilex.data.db.main.tables.Aspect;
 import eki.ekilex.data.db.main.tables.AspectLabel;
-import eki.ekilex.data.db.main.tables.Collocation;
 import eki.ekilex.data.db.main.tables.CollocationMember;
 import eki.ekilex.data.db.main.tables.DataRequest;
 import eki.ekilex.data.db.main.tables.Dataset;
@@ -54,9 +53,6 @@ import eki.ekilex.data.db.main.tables.LabelType;
 import eki.ekilex.data.db.main.tables.Language;
 import eki.ekilex.data.db.main.tables.LanguageLabel;
 import eki.ekilex.data.db.main.tables.LearnerComment;
-import eki.ekilex.data.db.main.tables.LexColloc;
-import eki.ekilex.data.db.main.tables.LexCollocPosGroup;
-import eki.ekilex.data.db.main.tables.LexCollocRelGroup;
 import eki.ekilex.data.db.main.tables.LexRelMapping;
 import eki.ekilex.data.db.main.tables.LexRelType;
 import eki.ekilex.data.db.main.tables.LexRelTypeLabel;
@@ -207,11 +203,6 @@ public class Tables {
      * The table <code>public.aspect_label</code>.
      */
     public static final AspectLabel ASPECT_LABEL = AspectLabel.ASPECT_LABEL;
-
-    /**
-     * The table <code>public.collocation</code>.
-     */
-    public static final Collocation COLLOCATION = Collocation.COLLOCATION;
 
     /**
      * The table <code>public.collocation_member</code>.
@@ -432,21 +423,6 @@ public class Tables {
      * The table <code>public.learner_comment</code>.
      */
     public static final LearnerComment LEARNER_COMMENT = LearnerComment.LEARNER_COMMENT;
-
-    /**
-     * The table <code>public.lex_colloc</code>.
-     */
-    public static final LexColloc LEX_COLLOC = LexColloc.LEX_COLLOC;
-
-    /**
-     * The table <code>public.lex_colloc_pos_group</code>.
-     */
-    public static final LexCollocPosGroup LEX_COLLOC_POS_GROUP = LexCollocPosGroup.LEX_COLLOC_POS_GROUP;
-
-    /**
-     * The table <code>public.lex_colloc_rel_group</code>.
-     */
-    public static final LexCollocRelGroup LEX_COLLOC_REL_GROUP = LexCollocRelGroup.LEX_COLLOC_REL_GROUP;
 
     /**
      * The table <code>public.lex_rel_mapping</code>.
