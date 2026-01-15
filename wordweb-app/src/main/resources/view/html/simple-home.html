@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="et" xmlns:th="http://www.thymeleaf.org">
-<head th:replace="common-app :: common_header(_,~{::links},simpleSearch)">
+<head th:replace="common-app :: common_header(_,~{::links},simpleSearch,_)">
 <th:block th:fragment="links">
   <script type="text/javascript" th:src="@{/view/js/shared.js}"></script>
   <script type="text/javascript" th:src="@{/view/js/recorder.js}"></script>

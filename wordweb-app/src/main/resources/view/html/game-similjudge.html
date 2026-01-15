@@ -2,7 +2,7 @@
 <html lang="et" xmlns:th="http://www.thymeleaf.org">
 <head>
 <title th:text="#{general.title}">Sõnaveeb - Keelemängud</title>
-<head th:replace="common-app :: common_header(_,~{::links},_)">
+<head th:replace="common-app :: common_header(_,~{::links},_,_)">
 <th:block th:fragment="links">
   <link type="text/css" rel="stylesheet" th:href="@{/view/css/games.css}" />
 </th:block>
