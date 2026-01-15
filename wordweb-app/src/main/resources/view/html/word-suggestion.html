@@ -28,11 +28,11 @@
     </div>
     <div class="word-suggestion-page__content">
       <h1 th:text="#{label.wordsuggestions.title}">Teavituste ajalugu</h1>
-      <th:block th:unless="${wordSuggestions}">
+      <th:block th:if="${#lists.isEmpty(wordSuggestions)}">
         <p class="word-suggestion-page__empty-description" th:text="#{label.wordsuggestion.missing.data}">Hetkel andmed puuduvad....</p>
         <img th:src="@{'/view/images/suggestions-empty.svg'}" alt="" width="213" height="186"/>
       </th:block>
-      <th:block th:if="${wordSuggestions}">
+      <th:block th:unless="${#lists.isEmpty(wordSuggestions)}">
         <th:block th:each="wordSuggestion, wordSuggestionIter : ${wordSuggestions}">
           <div class="word-suggestion-page__item">
             <h2 th:text="${wordSuggestion.wordValue}"></h2>

@@ -14,3 +14,5 @@ u 12 sek
 
 eemaldada application.properties
 ekilex.limterm.details.url 
+
+sõnaveebi sünkimisse lisandub mview_ww_word_suggestion
