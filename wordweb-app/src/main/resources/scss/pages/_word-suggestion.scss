@@ -4,7 +4,7 @@
   &__wrapper {
     display: grid;
     grid-template-columns: [full-width-start] 4px [content] 1fr [full-width-end] 4px;
-    gap: 4px;
+    gap: 16px;
     flex-grow: 1;
     margin-bottom: 36px;
     
