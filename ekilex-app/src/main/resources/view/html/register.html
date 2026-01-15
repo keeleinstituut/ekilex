@@ -64,16 +64,17 @@
       </form>
     </th:block>
     <th:block th:if="${isRegistered}">
-      <div class="icons-bg-page__form">
+      <div class="registered-page__block">
+        <img th:src="@{/view/img/happy-quotation.svg}" alt="" width="73" height="143"/>
         <h1 th:text="#{register.user.registered}"></h1>
-        <div>
+        <p th:unless="${activationLink}">
           <span th:text="#{register.activation.link.sent}"></span>
           <span th:text="${email}"></span>
-        </div>
-        <div th:if="${activationLink}" class="alert alert-warning">
-          <div>Testkeskkonna puhul ava hoopis link:</div>
-          <div th:text="${activationLink}"></div>
-        </div>
+        </p>
+        <p th:if="${activationLink}" class="alert alert-warning">
+          <span>Testkeskkonna puhul ava hoopis link:</span>
+          <span th:text="${activationLink}"></span>
+        </p>
       </div>
     </th:block>
   </div>
