@@ -136,30 +136,43 @@ public class FeedbackService implements SystemConstant, FeedbackConstant {
 
 		boolean isPublic = providedWordSuggestion.isPublic();
 		LocalDate publicationDate;
-		if (isPublic) {
-			if (existingWordSuggestion == null) {
+		if (existingWordSuggestion == null) {
+			if (isPublic) {
 				publicationDate = calculatePublicationDate();
-				createPublicationComment(feedbackLogId, user, publicationDate);
+				createPublicationComment(feedbackLogId, user, "feedback.public.true.comment", publicationDate);
 			} else {
-				publicationDate = existingWordSuggestion.getPublicationDate();
-				if (publicationDate == null) {
-					publicationDate = calculatePublicationDate();
-					createPublicationComment(feedbackLogId, user, publicationDate);
-				}
+				publicationDate = null;
 			}
 		} else {
-			publicationDate = null;
+			publicationDate = existingWordSuggestion.getPublicationDate();
+			if (isPublic) {
+				if (publicationDate == null) {
+					publicationDate = calculatePublicationDate();
+					createPublicationComment(feedbackLogId, user, "feedback.public.true.comment", publicationDate);
+				}
+			} else {
+				publicationDate = null;
+				if (existingWordSuggestion.isPublic()) {
+					createPublicationComment(feedbackLogId, user, "feedback.public.false.comment", null);
+				}
+			}
 		}
 		providedWordSuggestion.setPublicationDate(publicationDate);
 	}
 
-	private void createPublicationComment(Long feedbackLogId, EkiUser user, LocalDate publicationDate) {
+	private void createPublicationComment(Long feedbackLogId, EkiUser user, String commentKey, LocalDate publicationDate) {
 
 		String userName = user.getName();
-		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
-		String publicationDateStr = publicationDate.format(formatter);
 		Locale locale = new Locale("et");
-		String comment = messageSource.getMessage("feedback.publication.comment", new String[] {publicationDateStr}, locale);
+		String[] messageArgs;
+		if (publicationDate == null) {
+			messageArgs = new String[0];
+		} else {
+			DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
+			String publicationDateStr = publicationDate.format(formatter);
+			messageArgs = new String[] {publicationDateStr};
+		}
+		String comment = messageSource.getMessage(commentKey, messageArgs, locale);
 		feedbackDbService.createFeedbackLogComment(feedbackLogId, comment, userName);
 	}
 

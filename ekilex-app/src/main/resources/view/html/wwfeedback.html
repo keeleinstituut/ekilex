@@ -94,6 +94,11 @@
                 <td>
                   <span class="text-nowrap font-weight-light" th:text="${#temporals.format(feedbackLog.created, 'dd.MM.yyyy HH:mm')}"></span>
                   <span class="badge badge-info" th:text="#{|enum.feedbacktype.${feedbackLog.feedbackType}|}"></span>
+                  <th:block th:if="${feedbackLog.wordSuggestion}">
+                    <span class="badge badge-light" th:title="#{feedback.public}" th:if="${feedbackLog.wordSuggestion.public}">
+                      <i class="fa fa-check text-info" aria-hidden="true"></i>
+                    </span>
+                  </th:block>
                 </td>
                 <td class="breakWords pr-3">
                   <div th:if="${feedbackLog.senderEmail}" class="ml-1">
@@ -120,24 +125,30 @@
                 <td>
                   <th:block sec:authorize="#authentication.principal.master">
                     <div th:replace="wwfeedbackdialog :: create_feedback_comment_dlg"></div>
-                    <button type="button" class="btn badge badge-light" th:title="#{feedback.create.comment}"
-                            data-toggle="modal" th:data-target="|#createFeedbackCommentDlg_${feedbackLog.id}|">
-                      <i class="fa fa-comment-o" aria-hidden="true"></i>
-                    </button>
+                    <div>
+                      <button type="button" class="btn badge badge-light" th:title="#{feedback.create.comment}"
+                              data-toggle="modal" th:data-target="|#createFeedbackCommentDlg_${feedbackLog.id}|">
+                        <i class="fa fa-comment-o" aria-hidden="true"></i>
+                      </button>
+                    </div>
                     <th:block th:if="${@viewUtil.enumEquals(feedbackLog.feedbackType, T(eki.common.constant.FeedbackType).WORD_SUGGESTION)}">
                       <th:block th:if="${feedbackLog.wordSuggestion}">
                         <div th:replace="wwfeedbackdialog :: update_word_suggestion_dlg"></div>
-                        <button type="button" class="btn badge badge-light" th:title="#{feedback.update.wordsuggestion}"
-                                data-toggle="modal" th:data-target="|#updateWordSuggestionDlg_${feedbackLog.wordSuggestion.id}|">
-                          <i class="fa fa-pencil" aria-hidden="true"></i>
-                        </button>
+                        <div>
+                          <button type="button" class="btn badge badge-light" th:title="#{feedback.update.wordsuggestion}"
+                                  data-toggle="modal" th:data-target="|#updateWordSuggestionDlg_${feedbackLog.wordSuggestion.id}|">
+                            <i class="fa fa-pencil" aria-hidden="true"></i>
+                          </button>
+                        </div>
                       </th:block>
                       <th:block th:unless="${feedbackLog.wordSuggestion}">
                         <div th:replace="wwfeedbackdialog :: create_word_suggestion_dlg"></div>
-                        <button type="button" class="btn badge badge-light" th:title="#{feedback.create.wordsuggestion}"
-                                data-toggle="modal" th:data-target="|#createWordSuggestionDlg_${feedbackLog.id}|">
-                          <i class="fa fa-share" aria-hidden="true"></i>
-                        </button>
+                        <div>
+                          <button type="button" class="btn badge badge-light" th:title="#{feedback.create.wordsuggestion}"
+                                  data-toggle="modal" th:data-target="|#createWordSuggestionDlg_${feedbackLog.id}|">
+                            <i class="fa fa-share" aria-hidden="true"></i>
+                          </button>
+                        </div>
                       </th:block>
                     </th:block>
                   </th:block>
