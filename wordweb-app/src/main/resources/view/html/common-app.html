@@ -93,6 +93,7 @@
     <script type="text/javascript" th:src="@{/view/js/popper.min.js}"></script>
     <script type="text/javascript" th:src="@{/view/js/bootstrap.min.js}"></script>
     <script type="text/javascript" th:src="@{/view/js/simple-lightbox.js}"></script>
+    <script type="text/javascript" th:src="@{/view/js/ww-form-validator.js}"></script>
     <script type="text/javascript" th:src="@{/view/js/ww-common-app.js}"></script>
     <script type="text/javascript" th:src="@{/view/js/lazysizes.min.js}"></script>
     <script type="text/javascript" th:src="@{/view/js/ww-custom-elements.js}"></script>
@@ -205,6 +206,10 @@
         <a class="navigation__link" th:href="@{/newwords}" target="_blank">
           <img class="navigation__image" th:src="@{'/view/images/menu-new-words.svg'}" alt="">
           <span th:utext="#{menu.newwords}"></span>
+        </a>
+        <a class="navigation__link" th:href="@{/wordsuggestion}" target="_blank">
+          <img class="navigation__image" th:src="@{'/view/images/menu-word-suggestions.svg'}" alt="">
+          <span th:utext="#{menu.word.suggestions}"></span>
         </a>
       </div>
     </div>
@@ -381,6 +386,12 @@
             </button>
           </th:block>
         </div>
+      </div>
+      <div class="footer__logos">
+        <img th:src="@{/view/images/esif.svg}" th:alt="#{label.footer.logos.esif}" width="156" height="91" />
+        <img th:src="@{/view/images/esf.svg}" th:alt="#{label.footer.logos.esf}" width="156" height="82" />
+        <img th:src="@{/view/images/funding.svg}" th:alt="#{label.footer.logos.co_funded_eu}" width="174" height="82" />
+        <img th:src="@{/view/images/htm.svg}" th:alt="#{label.footer.logos.htm}" width="230" height="67" />
       </div>
     </footer>
   </th:block>

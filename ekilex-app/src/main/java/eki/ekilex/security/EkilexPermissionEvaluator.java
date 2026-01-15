@@ -94,31 +94,8 @@ public class EkilexPermissionEvaluator implements PermissionEvaluator, PermConst
 		List<DatasetPermission> datasetPermissions = permissionDbService.getDatasetPermissions(userId);
 		boolean privateAccessPermExists = datasetPermissions.stream()
 				.anyMatch(datasetPermission -> AuthorityItem.DATASET.equals(datasetPermission.getAuthItem())
-						&& AUTH_OPS_READ.contains(datasetPermission.getAuthOperation().name())
-						&& !StringUtils.equals(datasetPermission.getDatasetCode(), DATASET_LIMITED));
+						&& AUTH_OPS_READ.contains(datasetPermission.getAuthOperation().name()));
 		return privateAccessPermExists;
-	}
-
-	@Transactional
-	public boolean isLimitedPageAccessPermitted(Authentication authentication) {
-
-		EkiUser user = (EkiUser) authentication.getPrincipal();
-		Long userId = user.getId();
-		if (!Boolean.TRUE.equals(user.getEnabled())) {
-			return false;
-		}
-		if (user.isAdmin()) {
-			return true;
-		}
-		if (user.isMaster()) {
-			return true;
-		}
-		List<DatasetPermission> datasetPermissions = permissionDbService.getDatasetPermissions(userId);
-		boolean limitedAccessPermExists = datasetPermissions.stream()
-				.anyMatch(datasetPermission -> AuthorityItem.DATASET.equals(datasetPermission.getAuthItem())
-						&& AUTH_OPS_READ.contains(datasetPermission.getAuthOperation().name())
-						&& StringUtils.equals(datasetPermission.getDatasetCode(), DATASET_LIMITED));
-		return limitedAccessPermExists;
 	}
 
 	public boolean isSynPageAccessPermitted(Authentication authentication) {

@@ -2,7 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <body>
   <th:block th:fragment="feedback-form">
-    <div class="modal fade" id="feedback-modal" tabindex="-1" aria-model="true" role="dialog" aria-hidden="false" aria-describedby="feedback-modal-title">
+    <div class="modal fade" id="feedback-modal" tabindex="-1" aria-modal="true" role="dialog" aria-hidden="false" aria-labelledby="feedback-modal-title">
       <div class="modal-dialog" role="document">
         <div class="modal-content feedback-modal">
           <div class="modal-header feedback-modal__header">
@@ -17,9 +17,11 @@
               <form id="feedback-form" th:action="@{/feed}" novalidate="novalidate">
                 <input type="hidden" name="feedbackType" th:value="${feedbackType}">
                 <div class="feedback-modal__group">
-                  <label for="descriptionInput2" class="col-form-label" th:text="#{label.feedback.description}">Probleemi lühikirjeldus</label>
-                  <textarea id="descriptionInput2" class="form-control" name="description" required autocomplete="off" th:placeholder="#{label.feedback.description}"></textarea>
-                  <div class="invalid-feedback" th:text="#{message.feedback.missing.description}">Väli on kohustuslik</div>
+                  <label for="feedback-description" class="col-form-label" th:text="#{label.feedback.description}">Probleemi lühikirjeldus</label>
+                  <textarea id="feedback-description" class="form-control" name="description" required="required" aria-required="true" aria-describedby="feedback-description-error" autocomplete="off" th:placeholder="#{label.feedback.description}"></textarea>
+                  <div role="alert">
+                    <div id="feedback-description-error" class="invalid-feedback" th:text="#{message.feedback.missing.description}">Väli on kohustuslik</div>
+                  </div>
                 </div>
                 <div class="feedback-modal__want-response">
                   <h2 th:text="#{label.feedback.message.heading}">Kui soovid vastust oma probleemile</h2>
@@ -30,7 +32,7 @@
                   </div>
                   <div class="feedback-modal__group d-none" id="feedback-modal-checkbox-group">
                     <div class="custom-control custom-checkbox">
-                      <input type="checkbox" class="custom-control-input" id="feedback-email-checkbox">
+                      <input type="checkbox" class="custom-control-input" id="feedback-email-checkbox" aria-describedby="feedback-checkbox-error">
                       <label class="custom-control-label" for="feedback-email-checkbox">
                         <span th:text="#{label.feedback.iagree}">Nõustun</span>
                         <a
@@ -43,7 +45,9 @@
                         </a>
                         <span>&ast;</span>
                       </label>
-                      <div class="invalid-feedback" th:text="#{label.feedback.required.field}">Väli on kohustuslik</div>
+                      <div role="alert">
+                        <div id="feedback-checkbox-error" class="invalid-feedback" th:text="#{label.feedback.required.field}">Väli on kohustuslik</div>
+                      </div>
                     </div>
                   </div>
                   <button id="feedback-submit" type="button" class="feedback-modal__button" name="feedbackSendBtn" th:text="#{button.send}">Saada</button>
@@ -53,8 +57,12 @@
           </div>
           <div id="feedback-response" class="modal-body d-none">
             <div class="d-flex flex-column">
-              <div id="feedback-error-message" class="alert alert-danger d-none" th:text="#{message.feedback.failing.service}">Tagasiside saatmine ebaõnnestus, proovige hiljem uuesti.</div>
-              <p id="feedback-success-message" class="m-0 d-none" th:text="#{message.feedback.success.generic}">Aitäh, saime tagasiside kätte</p>
+              <div role="alert">
+                <div id="feedback-error-message" class="alert alert-danger d-none" th:text="#{message.feedback.failing.service}">Tagasiside saatmine ebaõnnestus, proovige hiljem uuesti.</div>
+              </div>
+              <div role="status">
+                <p id="feedback-success-message" class="m-0 d-none" th:text="#{message.feedback.success.generic}">Aitäh, saime tagasiside kätte</p>
+              </div>
               <button type="button" class="feedback-modal__button" data-dismiss="modal" th:text="#{menu.close}">Sulge</button>
             </div>
           </div>

@@ -1,5 +1,7 @@
 package eki.ekilex.web.controller;
 
+import java.time.LocalDate;
+
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
@@ -12,18 +14,22 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.SessionAttributes;
 
+import eki.common.constant.FeedbackType;
 import eki.ekilex.constant.WebConstant;
+import eki.ekilex.data.EkiUser;
 import eki.ekilex.data.FeedbackLog;
 import eki.ekilex.data.FeedbackLogResult;
+import eki.ekilex.data.FeedbackSearchFilter;
 import eki.ekilex.data.WordSuggestion;
 import eki.ekilex.service.FeedbackService;
-import eki.ekilex.web.bean.WwFeedbackSearchBean;
 
 @ConditionalOnWebApplication
 @Controller
-@SessionAttributes({WebConstant.SESSION_BEAN, WebConstant.WW_FEEDBACK_SEARCH_BEAN})
+@SessionAttributes({WebConstant.SESSION_BEAN, WebConstant.FEEDBACK_SEARCH_FILTER_KEY})
 @PreAuthorize("principal.master")
 public class FeedbackController extends AbstractPublicPageController {
+
+	private static final int MIN_SEARCH_VALUE_LENGTH = 3;
 
 	@Autowired
 	private FeedbackService feedbackService;
@@ -31,19 +37,25 @@ public class FeedbackController extends AbstractPublicPageController {
 	@GetMapping(WW_FEEDBACK_URI)
 	public String init(Model model) {
 
-		WwFeedbackSearchBean wwFeedbackSearchBean = new WwFeedbackSearchBean();
-		wwFeedbackSearchBean.setPageNum(1);
-		model.addAttribute(WW_FEEDBACK_SEARCH_BEAN, wwFeedbackSearchBean);
+		FeedbackSearchFilter feedbackSearchFilter = new FeedbackSearchFilter();
+		feedbackSearchFilter.setPageNum(1);
+		model.addAttribute(FEEDBACK_SEARCH_FILTER_KEY, feedbackSearchFilter);
 
 		populateModel(model);
 
 		return WW_FEEDBACK_PAGE;
 	}
 
+	@GetMapping(WW_FEEDBACK_URI + SEARCH_URI)
+	public String initRedirect(Model model) {
+
+		return REDIRECT_PREF + WW_FEEDBACK_URI;
+	}
+
 	@GetMapping(WW_FEEDBACK_URI + "/page/{pageNum}")
 	public String page(@PathVariable("pageNum") int pageNum, Model model) {
 
-		WwFeedbackSearchBean wwFeedbackSearchBean = getWwFeedbackSearchBean(model);
+		FeedbackSearchFilter wwFeedbackSearchBean = getFeedbackSearchFilter(model);
 		wwFeedbackSearchBean.setPageNum(pageNum);
 
 		populateModel(model);
@@ -53,21 +65,27 @@ public class FeedbackController extends AbstractPublicPageController {
 
 	@PostMapping(WW_FEEDBACK_URI + SEARCH_URI)
 	public String search(
-			@RequestParam(name = "searchFilter", required = false) String searchFilter,
-			@RequestParam(name = "notCommentedFilter", required = false) Boolean notCommentedFilter,
+			FeedbackSearchFilter feedbackSearchFilter,
 			Model model) {
 
-		if (StringUtils.isBlank(searchFilter) && (notCommentedFilter == null)) {
-			return REDIRECT_PREF + WW_FEEDBACK_URI;
+		if (StringUtils.isNotBlank(feedbackSearchFilter.getSearchValue())
+				&& StringUtils.length(feedbackSearchFilter.getSearchValue()) < MIN_SEARCH_VALUE_LENGTH) {
+			feedbackSearchFilter.setSearchValue(null);
 		}
-		if (StringUtils.isNotBlank(searchFilter) && StringUtils.length(searchFilter) < 3) {
+
+		FeedbackType feedbackType = feedbackSearchFilter.getFeedbackType();
+		String searchValue = feedbackSearchFilter.getSearchValue();
+		LocalDate created = feedbackSearchFilter.getCreated();
+		Boolean notCommented = feedbackSearchFilter.getNotCommented();
+
+		if (StringUtils.isBlank(searchValue)
+				&& (feedbackType == null)
+				&& (created == null)
+				&& (notCommented == null)) {
 			return REDIRECT_PREF + WW_FEEDBACK_URI;
 		}
 
-		WwFeedbackSearchBean wwFeedbackSearchBean = getWwFeedbackSearchBean(model);
-		wwFeedbackSearchBean.setSearchFilter(searchFilter);
-		wwFeedbackSearchBean.setNotCommentedFilter(notCommentedFilter);
-		wwFeedbackSearchBean.setPageNum(1);
+		feedbackSearchFilter.setPageNum(1);
 
 		populateModel(model);
 
@@ -92,8 +110,9 @@ public class FeedbackController extends AbstractPublicPageController {
 	@PostMapping(WW_FEEDBACK_URI + "/savewordsuggestion")
 	public String saveWordSuggestion(WordSuggestion wordSuggestion, Model model) {
 
+		EkiUser user = userContext.getUser();
 		Long feedbackLogId = wordSuggestion.getFeedbackLogId();
-		feedbackService.saveWordSuggestion(wordSuggestion);
+		feedbackService.saveWordSuggestion(user, wordSuggestion);
 		FeedbackLog feedbackLog = feedbackService.getFeedbackLog(feedbackLogId);
 		model.addAttribute("feedbackLog", feedbackLog);
 
@@ -107,7 +126,7 @@ public class FeedbackController extends AbstractPublicPageController {
 
 		populateModel(model);
 
-		WwFeedbackSearchBean wwFeedbackSearchBean = getWwFeedbackSearchBean(model);
+		FeedbackSearchFilter wwFeedbackSearchBean = getFeedbackSearchFilter(model);
 		int pageNum = wwFeedbackSearchBean.getPageNum();
 
 		return REDIRECT_PREF + WW_FEEDBACK_URI + "/page/" + pageNum;
@@ -115,21 +134,19 @@ public class FeedbackController extends AbstractPublicPageController {
 
 	private void populateModel(Model model) {
 
-		WwFeedbackSearchBean wwFeedbackSearchBean = getWwFeedbackSearchBean(model);
-		String searchFilter = wwFeedbackSearchBean.getSearchFilter();
-		Boolean notCommentedFilter = wwFeedbackSearchBean.getNotCommentedFilter();
-		int pageNum = wwFeedbackSearchBean.getPageNum();
+		FeedbackSearchFilter feedbackSearchFilter = getFeedbackSearchFilter(model);
+		int pageNum = feedbackSearchFilter.getPageNum();
 
-		FeedbackLogResult feedbackLogResult = feedbackService.getFeedbackLogs(searchFilter, notCommentedFilter, pageNum);
+		FeedbackLogResult feedbackLogResult = feedbackService.getFeedbackLogs(feedbackSearchFilter, pageNum);
 		model.addAttribute("feedbackLogResult", feedbackLogResult);
 	}
 
-	private WwFeedbackSearchBean getWwFeedbackSearchBean(Model model) {
-		WwFeedbackSearchBean wwFeedbackSearchBean = (WwFeedbackSearchBean) model.asMap().get(WW_FEEDBACK_SEARCH_BEAN);
-		if (wwFeedbackSearchBean == null) {
-			wwFeedbackSearchBean = new WwFeedbackSearchBean();
-			model.addAttribute(WW_FEEDBACK_SEARCH_BEAN, wwFeedbackSearchBean);
+	private FeedbackSearchFilter getFeedbackSearchFilter(Model model) {
+		FeedbackSearchFilter feedbackSearchFilter = (FeedbackSearchFilter) model.asMap().get(FEEDBACK_SEARCH_FILTER_KEY);
+		if (feedbackSearchFilter == null) {
+			feedbackSearchFilter = new FeedbackSearchFilter();
+			model.addAttribute(FEEDBACK_SEARCH_FILTER_KEY, feedbackSearchFilter);
 		}
-		return wwFeedbackSearchBean;
+		return feedbackSearchFilter;
 	}
 }

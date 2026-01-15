@@ -110,7 +110,7 @@ public class MsSmtpEmailRunner implements GlobalConstant, SystemConstant {
 
 		System.out.println("Sending test email...");
 
-		String to = "test@test.com";
+		String to = "martin.laubre@gmail.com";
 		String subject = "Test message";
 		String content = "Test content\nRegards";
 
@@ -144,17 +144,19 @@ public class MsSmtpEmailRunner implements GlobalConstant, SystemConstant {
 			Message message = composeMessage(session, userName, to, subject, content);
 
 			transport = new SmtpTransport(session, null);
+			logger.info("Connecting to server...");
 			transport.connect("smtp.office365.com", userName, accessToken);
 			//smtpTransport.connect("smtp.office365.com", userName, accessToken);
 			//smtpTransport.issueCommand("AUTH XOAUTH2 " + smtpToken, 235);
 			//transport.connect(userName, smtpToken);
 			//transport.connect(userName, accessToken);
-			System.out.println("---> connected: " + transport.isConnected());
-			System.out.println("---> url name: " + transport.getURLName());
-			//transport.sendMessage(message, message.getAllRecipients());
+			//System.out.println("---> connected: " + transport.isConnected());
+			//System.out.println("---> url name: " + transport.getURLName());
+			logger.info("Sending message...");
+			transport.sendMessage(message, message.getAllRecipients());
 			System.out.println("...email sent");
 		} catch (Exception e) {
-			System.out.println("...sending email failed");
+			logger.info("...connecting failed");
 			e.printStackTrace();
 		} finally {
 			try {
@@ -222,11 +224,12 @@ public class MsSmtpEmailRunner implements GlobalConstant, SystemConstant {
 			Message message = composeMessage(session, userName, to, subject, content);
 			Transport transport = session.getTransport("smtp");
 			com.sun.mail.smtp.SMTPTransport smtpTransport = (com.sun.mail.smtp.SMTPTransport) transport;
+			System.out.println("---- connecting....");
 			smtpTransport.connect("smtp.office365.com", userName, accessToken);
 			//smtpTransport.issueCommand("AUTH XOAUTH2 " + smtpToken, 235);
 			//transport.connect(userName, accessToken);
-			System.out.println("---> connected: " + transport.isConnected());
-			System.out.println("---> url name: " + transport.getURLName());
+			//System.out.println("---> connected: " + transport.isConnected());
+			//System.out.println("---> url name: " + transport.getURLName());
 			//transport.sendMessage(message, message.getAllRecipients());
 			System.out.println("...email sent");
 		} catch (Exception e) {

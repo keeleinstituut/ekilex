@@ -5,6 +5,7 @@ import static eki.ekilex.data.db.main.Tables.FEEDBACK_LOG_ATTR;
 import static eki.ekilex.data.db.main.Tables.FEEDBACK_LOG_COMMENT;
 import static eki.ekilex.data.db.main.Tables.WORD_SUGGESTION;
 
+import java.time.LocalDate;
 import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
@@ -15,7 +16,9 @@ import org.jooq.impl.DSL;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import eki.common.constant.FeedbackType;
 import eki.common.data.Feedback;
+import eki.ekilex.data.FeedbackSearchFilter;
 import eki.ekilex.data.db.main.tables.FeedbackLog;
 import eki.ekilex.data.db.main.tables.FeedbackLogAttr;
 import eki.ekilex.data.db.main.tables.FeedbackLogComment;
@@ -87,11 +90,11 @@ public class FeedbackDbService {
 				.orElse(null);
 	}
 
-	public List<eki.ekilex.data.FeedbackLog> getFeedbackLogs(String searchFilter, Boolean notCommentedFilter, int offset, int limit) {
+	public List<eki.ekilex.data.FeedbackLog> getFeedbackLogs(FeedbackSearchFilter feedbackSearchFilter, int offset, int limit) {
 
 		FeedbackLog fl = FEEDBACK_LOG.as("fl");
 		List<Field<?>> fields = queryHelper.getFeedbackLogFields(fl);
-		Condition where = getFeedbackLogCond(fl, searchFilter, notCommentedFilter);
+		Condition where = getFeedbackLogCond(fl, feedbackSearchFilter);
 
 		return mainDb
 				.select(fl.fields())
@@ -104,10 +107,10 @@ public class FeedbackDbService {
 				.fetchInto(eki.ekilex.data.FeedbackLog.class);
 	}
 
-	public long getFeedbackLogCount(String searchFilter, Boolean notCommentedFilter) {
+	public long getFeedbackLogCount(FeedbackSearchFilter feedbackSearchFilter) {
 
 		FeedbackLog fl = FEEDBACK_LOG.as("fl");
-		Condition where = getFeedbackLogCond(fl, searchFilter, notCommentedFilter);
+		Condition where = getFeedbackLogCond(fl, feedbackSearchFilter);
 
 		return mainDb
 				.select(DSL.count(fl.ID))
@@ -116,15 +119,24 @@ public class FeedbackDbService {
 				.fetchOneInto(Long.class);
 	}
 
-	private Condition getFeedbackLogCond(FeedbackLog fl, String searchFilter, Boolean notCommentedFilter) {
+	private Condition getFeedbackLogCond(FeedbackLog fl, FeedbackSearchFilter feedbackSearchFilter) {
+
+		FeedbackType feedbackType = feedbackSearchFilter.getFeedbackType();
+		String searchValue = feedbackSearchFilter.getSearchValue();
+		LocalDate created = feedbackSearchFilter.getCreated();
+		Boolean notCommented = feedbackSearchFilter.getNotCommented();
 
 		FeedbackLogComment flc = FEEDBACK_LOG_COMMENT.as("flc");
 		FeedbackLogAttr fla = FEEDBACK_LOG_ATTR.as("fla");
 		Condition where = DSL.noCondition();
 
-		if (StringUtils.isNotBlank(searchFilter)) {
+		if (feedbackType != null) {
 
-			String searchCrit = "%" + searchFilter + "%";
+			where = where.and(fl.FEEDBACK_TYPE.eq(feedbackType.name()));
+		}
+		if (StringUtils.isNotBlank(searchValue)) {
+
+			String searchCrit = "%" + searchValue + "%";
 			where = where.and(DSL.or(
 					fl.SENDER_EMAIL.likeIgnoreCase(searchCrit),
 					fl.DESCRIPTION.likeIgnoreCase(searchCrit),
@@ -141,7 +153,11 @@ public class FeedbackDbService {
 							.where(flc.FEEDBACK_LOG_ID.eq(fl.ID)
 									.and(flc.COMMENT.likeIgnoreCase(searchCrit))))));
 		}
-		if (Boolean.TRUE.equals(notCommentedFilter)) {
+		if (created != null) {
+
+			where = where.and(DSL.cast(fl.CREATED, LocalDate.class).eq(created));
+		}
+		if (Boolean.TRUE.equals(notCommented)) {
 
 			where = where.andNotExists(DSL
 					.select(flc.ID)

@@ -35,7 +35,7 @@
             <div th:replace="common-search :: search"></div>
           </div>
         </div>
-        <div class="text-center mt-5">
+        <div class="text-center mt-5 mb-2">
           <th:block th:each="firstLetter : ${datasetHomeData.firstLetters}">
             <a th:href="@{${@viewUtil.getDatasetFirstLetterSearchUri(datasetHomeData.dataset.code, firstLetter)}}">
               <span th:text="${firstLetter}"></span>
@@ -43,7 +43,7 @@
           </th:block>
         </div>
         <th:block th:if="${datasetWords != null}">
-          <div class="row">
+          <div class="row mb-2">
             <div class="col-sm-10 col-md-8 col-lg-6 offset-sm-1 offset-md-2 offset-lg-3">
               <hr />
               <th:block th:each="word : ${datasetWords}">
@@ -54,24 +54,6 @@
             </div>
           </div>
         </th:block>
-        <div class="logo-wrapper">
-          <ul class="logo-list list-unstyled">
-						<li>
-              <a href="https://eki.ee" th:aria-label="#{general.eki}" target="_blank">
-                <span class="eki-logo mini-logo"></span>
-              </a>
-            </li>
-            <li>
-              <span class="esf-logo mini-logo"></span>
-            </li>
-            <li>
-              <span class="erf-logo mini-logo"></span>
-            </li>
-            <li>
-              <span class="htm-logo mini-logo"></span>
-            </li>
-          </ul>
-        </div>
       </div>
     </div>
   </div>

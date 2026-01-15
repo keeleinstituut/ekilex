@@ -1,10 +1,24 @@
 -- #1 --
 
+update feedback_log
+	set description = substring(description, 1, 1990) || '[piiratud]'
+where
+	length(description) > 2000
+;
+
+update feedback_log 
+set sender_email = null
+where
+	sender_email = ''
+;
+
 alter table feedback_log rename column created_on to created;
 create index feedback_log_created_idx on feedback_log(created);
 create index feedback_log_feedback_type_idx on feedback_log(feedback_type);
 create index feedback_log_sender_email_idx on feedback_log(sender_email);
 create index feedback_log_sender_email_lower_idx on feedback_log(lower(sender_email));
+create index feedback_log_description_idx on feedback_log(description);
+create index feedback_log_description_lower_idx on feedback_log(lower(description));
 create index feedback_log_attr_name_idx on feedback_log_attr(name);
 
 create table word_suggestion (
@@ -55,3 +69,99 @@ set
 where
 	feedback_type = 'ÕS'
 ;
+
+-- #3 --
+
+update eki_user_profile 
+	set preferred_datasets = array_remove(preferred_datasets, 'vrk')
+where
+	'vrk' = any(preferred_datasets);
+
+update eki_user_profile
+	set preferred_datasets = null
+where
+	preferred_datasets = '{}';
+
+update eki_user_profile eup
+	set recent_dataset_permission_id = null
+where
+	exists (
+		select
+			1
+		from
+			dataset_permission dp
+		where
+			eup.recent_dataset_permission_id = dp.id
+			and dp.dataset_code = 'vrk'
+	)
+;
+
+delete from dataset_permission where dataset_code = 'vrk';
+delete from lexeme where dataset_code = 'vrk';
+delete from source where dataset_code = 'vrk';
+delete from dataset where code = 'vrk';
+
+-- #4 --
+
+delete 
+from
+	word_tag wt
+where
+	wt.tag_name in ('ÕSi sõna', 'ÕSi liitsõna')
+;
+
+delete 
+from
+	lexeme_tag lt
+where
+	lt.tag_name in ('ÕSi sõna', 'ÕSi liitsõna')
+;
+
+delete 
+from
+	meaning_tag mt
+where
+	mt.tag_name in ('ÕSi sõna', 'ÕSi liitsõna')
+;
+
+update eki_user_profile 
+	set preferred_tag_names = array_remove(preferred_tag_names, 'ÕSi sõna')
+where
+	'ÕSi sõna' = any(preferred_tag_names)
+;
+
+update eki_user_profile 
+	set preferred_tag_names = array_remove(preferred_tag_names, 'ÕSi liitsõna')
+where
+	'ÕSi liitsõna' = any(preferred_tag_names)
+;
+
+update eki_user_profile
+	set preferred_tag_names = null
+where
+	preferred_tag_names = '{}'
+;
+
+update eki_user_profile
+	set active_tag_name = null
+where
+	active_tag_name in ('ÕSi sõna', 'ÕSi liitsõna')
+;
+
+delete
+from
+	tag t 
+where
+	t."name" in ('ÕSi sõna', 'ÕSi liitsõna')
+;
+
+-- #5 --
+
+drop table lex_colloc;
+drop table lex_colloc_rel_group;
+drop table lex_colloc_pos_group;
+drop table collocation;
+
+
+
+
