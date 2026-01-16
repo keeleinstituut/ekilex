@@ -1,18 +1,1 @@
-Märkused ver 1.45.0 tarne kohta:
-
-wordweb application.properties
-
-#wordweb.feedback.service.url=http://localhost:5555/send_feedback
-wordweb.feedback.service.url=http://localhost:5555/app/feedback
-wordweb.app.key=aZ7pQ3mT91bFs8WkD4yH
-
-ekilex application.properties
-wordweb.app.key=aZ7pQ3mT91bFs8WkD4yH
-
-mvn spring-boot:run -P qure -D spring-boot.run.profiles=dev
-u 12 sek
-
-eemaldada application.properties
-ekilex.limterm.details.url 
-
-sõnaveebi sünkimisse lisandub mview_ww_word_suggestion
+Märkused ver 1.46.0 tarne kohta:
