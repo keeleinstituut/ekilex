@@ -38,7 +38,7 @@ public class QuotationReplacerRunner implements GlobalConstant, SystemConstant {
 
 	private final String reportFileName = "double-quotation-replace-report.txt";
 
-	private boolean makeReport = true;
+	private boolean makeReport = false;
 
 	@Transactional(rollbackFor = Exception.class)
 	public void execute() throws Exception {

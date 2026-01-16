@@ -1,18 +1,102 @@
 Märkused ver 1.45.0 tarne kohta:
 
-wordweb application.properties
+Tarne sisaldab vähesel määral andmeparandusi ja täiendusi andmemudelisse.
+Muutub Sõnaveebi ja Ekilexi vaheline liides.
+Süsteemi lisandub sõnaettepanekute esitamise, toimetamise ja avaldamise funktsionaalsus.
 
-#wordweb.feedback.service.url=http://localhost:5555/send_feedback
-wordweb.feedback.service.url=http://localhost:5555/app/feedback
-wordweb.app.key=aZ7pQ3mT91bFs8WkD4yH
+1) Võta githubist värske tarkvara versioon, mille viite arendaja annab
 
-ekilex application.properties
-wordweb.app.key=aZ7pQ3mT91bFs8WkD4yH
+2) Sõnaveebi tagasiside esitamine hakkab toimuma üle rakenduste vahelise autentimisega API-liidese.
 
-mvn spring-boot:run -P qure -D spring-boot.run.profiles=dev
-u 12 sek
+   1. Ava Sõnaveebi veebirakenduse toodangu keskkonna määrangute fail application-prod.properties
+      Muuda tagasiside esitamise teenuse rada ja määra <ekilex host> vastavalt keskkonnale:
+	  
+	  wordweb.feedback.service.url=https://<ekilex host>/app/feedback
+	  
+	  Lisa Ekilexi API-ga liidestumiseks vajalik autoriseerimise võti.
+	  Selleks lisa liidese aadressi määrangu kõrvale uus määrang koos kohaliku keskkonna jaoks genereeritud unikaalse räsiga:
+	  
+	  wordweb.app.key=<räsi>
 
-eemaldada application.properties
-ekilex.limterm.details.url 
+   2. Ava Ekilexi veebirakenduse toodangu keskkonna määrangute fail application-prod.properties
+      Lisa Sõnaveebi liidestuse autoriseerimise võti. Määrang on täpselt sama, mis just Sõnaveebi jaoks loodud sai:
+	  
+	  wordweb.app.key=<räsi>
+	  
+3) Eemalda Sõnaveebi veebirakenduse toodangu keskkonna määrangute failist application-prod.properties määrang:
 
-sõnaveebi sünkimisse lisandub mview_ww_word_suggestion
+   ekilex.limterm.details.url=<...>
+
+4) Ehita tarkvara tarkvaraprojekti juurikast.
+
+   ../ekilex>mvn clean install -D skipTests
+
+   Ekilex rakenduse pake asub
+
+   ../ekilex/ekilex-app/target/ekilex-app.jar
+
+   Sõnaveebi rakenduse pake asub
+
+   ../ekilex/wordweb-app/target/wordweb-app.jar
+
+5) Käivita ekilex andmebaasis muudatuste skript:
+
+   ../ekilex/eki-common/src/main/resources/sql/delivery.sql
+
+   Skript jookseb mõne sekundi.
+
+6) Seadista ja käivita tekstides jutumärkide asendamise utiliit
+
+   1. Loo rakenduse "dev"-profiili määrangute fail:
+
+      ../ekilex/ekilex-app/src/main/resources/application-dev.properties
+
+   2. Sisusta fail ainult selles kontekstis oluliste rakenduse määrangutega:
+
+      server.port=1234
+      spring.datasource.url=jdbc:postgresql://localhost:5432/ekilex
+      spring.datasource.username=<username>
+      spring.datasource.password=<password>
+      
+      logging.level.root=warn
+      logging.level.eki.ekilex=debug
+      logging.level.eki.common=info
+      logging.level.org.jooq=warn
+      
+      Andmebaasi ühenduse parameetrid peavad olema reaalsed selle keskkonna parameetrid.
+      Kuna erinevad ekilexi rakendused käivitavad ka veebikonteksti siis on oluline, et nende veebi pordid ei konkureeriks.
+      Seepärast määra "server.port"-le mingi ajutine fiktiivne väärtus
+
+   3. Käivita rakendus ekilex/ekilex-app rajalt:
+
+      mvn spring-boot:run -P qure -D spring-boot.run.profiles=dev
+      
+      Spring profiil "dev" tähendab automaatselt seda, et rakenduse logi jookseb otse terminali mitte logifaili.
+      See on antud juhul kasulik kiireks tagasisideks rakenduselt.
+	  Rakendus logib muudatuste statistikat, mis tarne paigalduse kontekstis pole oluline.
+	  Rakendus jookseb u 10 sekundit.
+      Logi lõppeb infoga "BUILD SUCCESS".
+      Kui logi lõpetab kirjaga "BUILD FAIL", informeeri arendajat.
+
+7) Sõnaveebi andmebaasi agregeerimine.
+
+   1. Kustuta ja taasloo Ekilex andmebaasis senised põhi-Sõnaveebiga seotud vaated ja andmetüübid skriptiga:
+
+      ../ekilex/eki-common/src/main/resources/sql/main_create_ww_views.sql
+
+   2. Kustuta ja taasloo Sõnaveebi andmebaasis põhi-Sõnaveebi materjaliseeritud vaated ja andmetüübid ja lae andmed skriptiga:
+
+      ../ekilex/wordweb-app/fileresources/sql/create_ww_mviews.sql
+
+      NB! Muuda skriptis dblink parameetreid vastavalt keskkonnale!
+      NB! Ühtegi veateadet ei tohi olla!
+
+      Skript jookseb umbes pool tundi.
+
+   3. Lisandunud on sõnaettepanekute andmestruktuur. Sellega seoses lisada Sõnaveebi andmebaasi igaöise sünkimise skripti vastav mat. view:
+   
+      mview_ww_word_suggestion
+
+8) Seo rakenduste *.jar failid teenustega nagu seni ja käivita. Kontrolli peale käivitamist rakenduste logifailidest kas käivitamisega kaasnesid veateated, neid ei ohiks olla ühtegi.
+
+<märkmete lõpp>
