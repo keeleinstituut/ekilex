@@ -449,4 +449,14 @@ public interface WebConstant {
 	// request parameters
 
 	String REQUEST_PARAM_PAGE = "p";
+
+	// OpenAPI / Swagger documentation URIs
+
+	String API_DOCS_PATH = "/v3/api-docs";
+
+	String API_DOCS_RESOURCES_PATH = "/v3/api-docs/**";
+
+	String SWAGGER_UI_PATH = "/api-docs.html";
+
+	String SWAGGER_UI_RESOURCES_PATH = "/swagger-ui/**";
 }
