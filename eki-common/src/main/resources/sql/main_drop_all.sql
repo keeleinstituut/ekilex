@@ -76,11 +76,10 @@ drop table if exists word_etymology_source_link;
 drop table if exists meaning_image_source_link;
 drop table if exists meaning_note_source_link;
 drop table if exists collocation_member;
-drop table if exists lex_colloc; -- remove later
-drop table if exists lex_colloc_rel_group; -- remove later
-drop table if exists lex_colloc_pos_group; -- remove later
 drop table if exists lex_relation;
 drop table if exists usage_translation;
+drop table if exists variant_type_label;
+drop table if exists variant_type;
 drop table if exists usage;
 drop table if exists grammar;
 drop table if exists government;
@@ -92,8 +91,6 @@ drop table if exists lexeme_deriv;
 drop table if exists lexeme_region;
 drop table if exists lexeme_tag;
 drop table if exists lexeme;
-drop table if exists collocation_freeform; -- remove later
-drop table if exists collocation; -- remove later
 drop table if exists definition_freeform;
 drop table if exists definition_note;
 drop table if exists definition_dataset;

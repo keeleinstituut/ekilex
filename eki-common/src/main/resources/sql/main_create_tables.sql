@@ -47,7 +47,6 @@ create table domain_label (
 
 create table value_state (
   code varchar(100) primary key, 
-  datasets varchar(10) array not null, 
   order_by bigserial
 );
 
@@ -62,7 +61,6 @@ create table value_state_label (
 -- klassif. rektsiooni tüüp
 create table government_type (
   code varchar(100) primary key, 
-  datasets varchar(10) array not null, 
   order_by bigserial
 );
 
@@ -77,7 +75,6 @@ create table government_type_label (
 -- register
 create table register (
   code varchar(100) primary key, 
-  datasets varchar(10) array not null, 
   order_by bigserial
 );
 
@@ -92,7 +89,6 @@ create table register_label (
 -- semantiline tüüp
 create table semantic_type (
   code varchar(100) primary key, 
-  datasets varchar(10) array not null, 
   order_by bigserial
 );
 
@@ -107,7 +103,6 @@ create table semantic_type_label (
 -- sõnasort
 create table word_type (
   code varchar(100) primary key, 
-  datasets varchar(10) array not null, 
   order_by bigserial
 );
 
@@ -122,7 +117,6 @@ create table word_type_label (
 -- aspekt
 create table aspect (
   code varchar(100) primary key, 
-  datasets varchar(10) array not null, 
   order_by bigserial
 );
 
@@ -137,7 +131,6 @@ create table aspect_label (
 -- sugu
 create table gender (
   code varchar(100) primary key, 
-  datasets varchar(10) array not null, 
   order_by bigserial
 );
 
@@ -152,7 +145,6 @@ create table gender_label (
 -- sõnaliik
 create table pos (
   code varchar(100) primary key, 
-  datasets varchar(10) array not null, 
   order_by bigserial
 );
 
@@ -167,7 +159,6 @@ create table pos_label (
 -- kol pos grupp
 create table pos_group (
   code varchar(100) primary key, 
-  datasets varchar(10) array not null, 
   order_by bigserial
 );
 
@@ -183,7 +174,6 @@ create table pos_group_label (
 create table rel_group
 (
   code varchar(100) primary key,
-  datasets varchar(10) array not null,
   order_by bigserial
 );
 
@@ -199,7 +189,6 @@ create table rel_group_label
 -- vormi märgend
 create table morph (
   code varchar(100) primary key, 
-  datasets varchar(10) array not null, 
   order_by bigserial
 );
 
@@ -214,7 +203,6 @@ create table morph_label (
 -- kuvatav vormi märgend
 create table display_morph (
   code varchar(100) primary key, 
-  datasets varchar(10) array not null, 
   order_by bigserial
 );
 
@@ -229,7 +217,6 @@ create table display_morph_label (
 -- tuletuskood
 create table deriv (
   code varchar(100) primary key, 
-  datasets varchar(10) array not null, 
   order_by bigserial
 );
 
@@ -244,7 +231,6 @@ create table deriv_label (
 -- ilmiku seose liik
 create table lex_rel_type (
   code varchar(100) primary key, 
-  datasets varchar(10) array not null, 
   order_by bigserial
 );
 
@@ -265,7 +251,6 @@ create table lex_rel_mapping (
 -- keelendi seose liik
 create table word_rel_type (
   code varchar(100) primary key, 
-  datasets varchar(10) array not null, 
   order_by bigserial
 );
 
@@ -286,7 +271,6 @@ create table word_rel_mapping (
 -- tähenduse seose liik
 create table meaning_rel_type (
   code varchar(100) primary key, 
-  datasets varchar(10) array not null, 
   order_by bigserial
 );
 
@@ -306,7 +290,6 @@ create table meaning_rel_mapping (
 
 create table usage_type (
   code varchar(100) primary key, 
-  datasets varchar(10) array not null, 
   order_by bigserial
 );
 
@@ -320,13 +303,11 @@ create table usage_type_label (
 
 create table etymology_type (
   code varchar(100) primary key, 
-  datasets varchar(10) array not null, 
   order_by bigserial
 );
 
 create table definition_type (
   code varchar(100) primary key, 
-  datasets varchar(10) array not null, 
   order_by bigserial
 );
 
@@ -340,22 +321,12 @@ create table definition_type_label (
 
 create table region (
   code varchar(100) primary key, 
-  datasets varchar(10) array not null, 
-  order_by bigserial
-);
-
-create table tag (
-  name varchar(100) primary key, 
-  set_automatically boolean default false not null, 
-  remove_to_complete boolean default true not null, 
-  type varchar(10) not null, 
   order_by bigserial
 );
 
 -- keeletase
 create table proficiency_level (
   code varchar(100) primary key, 
-  datasets varchar(10) array not null, 
   order_by bigserial
 );
 
@@ -370,7 +341,6 @@ create table proficiency_level_label (
 -- vabavormi liik
 create table freeform_type (
 	code varchar(100) primary key,
-	datasets varchar(10) array not null,
 	order_by bigserial
 );
 
@@ -380,6 +350,28 @@ create table freeform_type_label (
 	lang char(3) references language(code) not null,
 	type varchar(10) references label_type(code) not null,
 	unique(code, lang, type)
+);
+
+-- variandi liik
+create table variant_type (
+	code varchar(100) primary key,
+	order_by bigserial
+);
+
+create table variant_type_label (
+	code varchar(100) references variant_type(code) on delete cascade not null,
+	value text not null,
+	lang char(3) references language(code) not null,
+	type varchar(10) references label_type(code) not null,
+	unique(code, lang, type)
+);
+
+create table tag (
+  name varchar(100) primary key, 
+  set_automatically boolean default false not null, 
+  remove_to_complete boolean default true not null, 
+  type varchar(10) not null, 
+  order_by bigserial
 );
 
 ---------------------------
