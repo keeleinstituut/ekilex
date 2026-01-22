@@ -97,36 +97,38 @@
                   <div class="synonyms" th:unless="${#lists.isEmpty(lexeme.sourceLangFullSynonyms)}">
                     <div th:id="${'full-synonym-collapse-panel-' + lexeme.lexemeId}" class="d-flex flex-wrap align-items-center">
                       <span th:text="#{label.syno.full}" class="mr-2 text-caption">sama mis</span>
-                      <th:block th:each="syn,synIter : ${lexeme.sourceLangFullSynonyms}"
-                                th:with="
-                                isCollapsable=${synIter.count > T(eki.wordweb.constant.WebConstant).SYN_WORDS_DISPLAY_LIMIT},
-                                isLimit=${synIter.count == T(eki.wordweb.constant.WebConstant).SYN_WORDS_DISPLAY_LIMIT}">
-                        <span class="text-nowrap mr-1" th:classappend="${isCollapsable ? 'collapse collapse-target' : ''}" >
-                          <a
-                            th:href="@{${@viewUtil.getSearchUri(sessionBean, searchMode, syn.value, syn.homonymNr, syn.lang)}}"
-                            class="synonym"
-                            th:attr="data-toggle=${syn.mwLexemeWeight == 1} ? 'tooltip' : null, title=${syn.mwLexemeWeight == 1} ? #{label.tooltip.synonym.full} : null"
-                            th:utext="${@decorUtil.getWordValueMarkup(syn)}">
-                            tee
-                          </a>
-                          <span th:if="${syn.additionalDataExists}" class="synonym-additional-meta text-small">
-                            <span th:if="${(syn.mwLexemeValueState != null)}" th:text="${syn.mwLexemeValueState.value}"></span>
-                            <th:block th:unless="${#lists.isEmpty(syn.wordTypes)}">
-                              <th:block th:each="wordType,wtIter : ${syn.wordTypes}">
-                                <span th:text="${wordType.value}" class="type-two text-uppercase text-caption search__helper-text"></span>
-                                <span th:unless="${wtIter.last}" class="ml-n1">,</span>
+                      <ul class="list-unstyled m-0 d-inline-block">
+                        <th:block th:each="syn,synIter : ${lexeme.sourceLangFullSynonyms}"
+                                  th:with="
+                                  isCollapsable=${synIter.count > T(eki.wordweb.constant.WebConstant).SYN_WORDS_DISPLAY_LIMIT},
+                                  isLimit=${synIter.count == T(eki.wordweb.constant.WebConstant).SYN_WORDS_DISPLAY_LIMIT}">
+                          <li class="text-nowrap d-inline-block" th:classappend="${isCollapsable ? 'collapse collapse-target' : ''}" >
+                            <a
+                              th:href="@{${@viewUtil.getSearchUri(sessionBean, searchMode, syn.value, syn.homonymNr, syn.lang)}}"
+                              class="synonym"
+                              th:attr="data-toggle=${syn.mwLexemeWeight == 1} ? 'tooltip' : null, title=${syn.mwLexemeWeight == 1} ? #{label.tooltip.synonym.full} : null"
+                              th:utext="${@decorUtil.getWordValueMarkup(syn)}">
+                              tee
+                            </a>
+                            <span th:if="${syn.additionalDataExists}" class="synonym-additional-meta text-small">
+                              <span th:if="${(syn.mwLexemeValueState != null)}" th:text="${syn.mwLexemeValueState.value}"></span>
+                              <th:block th:unless="${#lists.isEmpty(syn.wordTypes)}">
+                                <th:block th:each="wordType,wtIter : ${syn.wordTypes}">
+                                  <span th:text="${wordType.value}" class="type-two text-uppercase text-caption search__helper-text"></span>
+                                  <span th:unless="${wtIter.last}" class="ml-n1">,</span>
+                                </th:block>
                               </th:block>
-                            </th:block>
-                            <th:block th:unless="${#lists.isEmpty(syn.mwLexemeRegisters)}">
-                              <th:block th:each="register, rIter : ${syn.mwLexemeRegisters}">
-                                <span th:text="${register.value}" class="type-two text-uppercase text-caption search__helper-text"></span>
-                                <span th:unless="${rIter.last}" class="ml-n1">,</span>
+                              <th:block th:unless="${#lists.isEmpty(syn.mwLexemeRegisters)}">
+                                <th:block th:each="register, rIter : ${syn.mwLexemeRegisters}">
+                                  <span th:text="${register.value}" class="type-two text-uppercase text-caption search__helper-text"></span>
+                                  <span th:unless="${rIter.last}" class="ml-n1">,</span>
+                                </th:block>
                               </th:block>
-                            </th:block>
-                          </span>
-                          <span th:unless="${synIter.last}" class="ml-n1" th:classappend="${isLimit ? 'collapse-target collapse' : ''}">,</span>
-                        </span>
-                      </th:block>
+                            </span>
+                            <span th:unless="${synIter.last}" class="ml-n1" th:classappend="${isLimit ? 'collapse-target collapse' : ''}">,</span>
+                          </li>
+                        </th:block>
+                      </ul>
                       <button
                             th:id="${'full-synonym-show-more-btn-' + lexeme.lexemeId}"
                             class="btn-collapse show-more-btn btn-ellipsis"
@@ -150,36 +152,38 @@
                   <div class="synonyms" th:unless="${#lists.isEmpty(lexeme.sourceLangNearSynonyms)}">
                     <div th:id="${'near-synonym-collapse-panel-' + lexeme.lexemeId}" class="d-flex flex-wrap align-items-center">
                       <span th:text="#{label.syno.near}" class="mr-2 text-caption">sama mis</span>
-                      <th:block th:each="syn,synIter : ${lexeme.sourceLangNearSynonyms}"
-                                th:with="
-                                isCollapsable=${synIter.count > T(eki.wordweb.constant.WebConstant).SYN_WORDS_DISPLAY_LIMIT},
-                                isLimit=${synIter.count == T(eki.wordweb.constant.WebConstant).SYN_WORDS_DISPLAY_LIMIT}">
-                        <span class="text-nowrap mr-1" th:classappend="${isCollapsable ? 'collapse collapse-target' : ''}" >
-                          <a
-                            th:href="@{${@viewUtil.getSearchUri(sessionBean, searchMode, syn.value, syn.homonymNr, syn.lang)}}"
-                            class="synonym"
-                            th:attr="data-toggle=${syn.mwLexemeWeight == 1} ? 'tooltip' : null, title=${syn.mwLexemeWeight == 1} ? #{label.tooltip.synonym.full} : null"
-                            th:utext="${@decorUtil.getWordValueMarkup(syn)}">
-                            tee
-                          </a>
-                          <span th:if="${syn.additionalDataExists}" class="synonym-additional-meta text-small">
-                            <span th:if="${(syn.mwLexemeValueState != null)}" th:text="${syn.mwLexemeValueState.value}"></span>
-                            <th:block th:unless="${#lists.isEmpty(syn.wordTypes)}">
-                              <th:block th:each="wordType,wtIter : ${syn.wordTypes}">
-                                <span th:text="${wordType.value}" class="type-two text-uppercase text-caption search__helper-text"></span>
-                                <span th:unless="${wtIter.last}" class="ml-n1">,</span>
+                      <ul class="list-unstyled d-inline-block m-0">
+                        <th:block th:each="syn,synIter : ${lexeme.sourceLangNearSynonyms}"
+                                  th:with="
+                                  isCollapsable=${synIter.count > T(eki.wordweb.constant.WebConstant).SYN_WORDS_DISPLAY_LIMIT},
+                                  isLimit=${synIter.count == T(eki.wordweb.constant.WebConstant).SYN_WORDS_DISPLAY_LIMIT}">
+                          <li class="text-nowrap d-inline-block" th:classappend="${isCollapsable ? 'collapse collapse-target' : ''}" >
+                            <a
+                              th:href="@{${@viewUtil.getSearchUri(sessionBean, searchMode, syn.value, syn.homonymNr, syn.lang)}}"
+                              class="synonym"
+                              th:attr="data-toggle=${syn.mwLexemeWeight == 1} ? 'tooltip' : null, title=${syn.mwLexemeWeight == 1} ? #{label.tooltip.synonym.full} : null"
+                              th:utext="${@decorUtil.getWordValueMarkup(syn)}">
+                              tee
+                            </a>
+                            <span th:if="${syn.additionalDataExists}" class="synonym-additional-meta text-small">
+                              <span th:if="${(syn.mwLexemeValueState != null)}" th:text="${syn.mwLexemeValueState.value}"></span>
+                              <th:block th:unless="${#lists.isEmpty(syn.wordTypes)}">
+                                <th:block th:each="wordType,wtIter : ${syn.wordTypes}">
+                                  <span th:text="${wordType.value}" class="type-two text-uppercase text-caption search__helper-text"></span>
+                                  <span th:unless="${wtIter.last}" class="ml-n1">,</span>
+                                </th:block>
                               </th:block>
-                            </th:block>
-                            <th:block th:unless="${#lists.isEmpty(syn.mwLexemeRegisters)}">
-                              <th:block th:each="register, rIter : ${syn.mwLexemeRegisters}">
-                                <span th:text="${register.value}" class="type-two text-uppercase text-caption search__helper-text"></span>
-                                <span th:unless="${rIter.last}" class="ml-n1">,</span>
+                              <th:block th:unless="${#lists.isEmpty(syn.mwLexemeRegisters)}">
+                                <th:block th:each="register, rIter : ${syn.mwLexemeRegisters}">
+                                  <span th:text="${register.value}" class="type-two text-uppercase text-caption search__helper-text"></span>
+                                  <span th:unless="${rIter.last}" class="ml-n1">,</span>
+                                </th:block>
                               </th:block>
-                            </th:block>
-                          </span>
-                          <span th:unless="${synIter.last}" class="ml-n1" th:classappend="${isLimit ? 'collapse-target collapse' : ''}">,</span>
-                        </span>
-                      </th:block>
+                            </span>
+                            <span th:unless="${synIter.last}" class="ml-n1" th:classappend="${isLimit ? 'collapse-target collapse' : ''}">,</span>
+                          </li>
+                        </th:block>
+                      </ul>
                       <button
                             th:id="${'near-synonym-show-more-btn-' + lexeme.lexemeId}"
                             class="btn-collapse show-more-btn btn-ellipsis"
@@ -210,42 +214,44 @@
                           <button th:text="${langData.codeIso2}" th:aria-label="|${langData.codeIso2} - ${langData.label}|" type="button" th:title="${langData.label}" data-toggle="tooltip" th:unless="${langData.imageName}" class="lang-code text-caption mr-2 align-self-start">1</button>
                           <img th:src="|@{/view/images}${langData.imageName}|" th:title="${langData.label}" data-toggle="tooltip" th:if="${langData.imageName}" class="lang-code-img mr-2 align-self-start">
                         </th:block>
-                        <th:block th:each="syn,synIter : ${destinLangSyns}"
-                                  th:with="
-                                  isCollapsable=${synIter.count > T(eki.wordweb.constant.WebConstant).SYN_WORDS_DISPLAY_LIMIT},
-                                  isLimit=${synIter.count == T(eki.wordweb.constant.WebConstant).SYN_WORDS_DISPLAY_LIMIT},
-                                  isNearSyn=${syn.type == T(eki.common.constant.SynonymType).INEXACT_SYN_MEANING_REL}">
-                          <span class="mr-1" th:classappend="${isCollapsable ? 'collapse collapse-target':''}">
-                            <a th:href="@{${@viewUtil.getSearchUri(sessionBean, searchMode, syn.value, syn.homonymNr, syn.lang)}}"
-                               th:classappend="${syn.wordId == wordId ? 'word-matches-search' : ''}"
-                               th:utext="${@decorUtil.getWordValueMarkup(syn)}">
-                               tee
-                            </a>
-                            <span th:if="${syn.additionalDataExists}" class="text-small">
-                              <span th:if="${(syn.mwLexemeValueState != null)}" th:text="${syn.mwLexemeValueState.value}"></span>
-                              <th:block th:unless="${#lists.isEmpty(syn.wordTypes)}">
-                                <th:block th:each="wordType,wtIter : ${syn.wordTypes}">
-                                  <span th:text="${wordType.value}" class="type-two text-uppercase text-caption search__helper-text"></span>
-                                  <span th:unless="${wtIter.last}" class="ml-n1">,</span>
+                        <ul class="list-unstyled m-0 d-inline-block">
+                          <th:block th:each="syn,synIter : ${destinLangSyns}"
+                                    th:with="
+                                    isCollapsable=${synIter.count > T(eki.wordweb.constant.WebConstant).SYN_WORDS_DISPLAY_LIMIT},
+                                    isLimit=${synIter.count == T(eki.wordweb.constant.WebConstant).SYN_WORDS_DISPLAY_LIMIT},
+                                    isNearSyn=${syn.type == T(eki.common.constant.SynonymType).INEXACT_SYN_MEANING_REL}">
+                            <li class="d-inline-block" th:classappend="${isCollapsable ? 'collapse collapse-target':''}">
+                              <a th:href="@{${@viewUtil.getSearchUri(sessionBean, searchMode, syn.value, syn.homonymNr, syn.lang)}}"
+                                th:classappend="${syn.wordId == wordId ? 'word-matches-search' : ''}"
+                                th:utext="${@decorUtil.getWordValueMarkup(syn)}">
+                                tee
+                              </a>
+                              <span th:if="${syn.additionalDataExists}" class="text-small">
+                                <span th:if="${(syn.mwLexemeValueState != null)}" th:text="${syn.mwLexemeValueState.value}"></span>
+                                <th:block th:unless="${#lists.isEmpty(syn.wordTypes)}">
+                                  <th:block th:each="wordType,wtIter : ${syn.wordTypes}">
+                                    <span th:text="${wordType.value}" class="type-two text-uppercase text-caption search__helper-text"></span>
+                                    <span th:unless="${wtIter.last}" class="ml-n1">,</span>
+                                  </th:block>
                                 </th:block>
-                              </th:block>
-                              <th:block th:unless="${#lists.isEmpty(syn.mwLexemeRegisters)}">
-                                <th:block th:each="register, rIter : ${syn.mwLexemeRegisters}">
-                                  <span th:text="${register.value}" class="type-two text-uppercase"></span>
-                                  <span th:unless="${rIter.last}" class="ml-n1">,</span>
+                                <th:block th:unless="${#lists.isEmpty(syn.mwLexemeRegisters)}">
+                                  <th:block th:each="register, rIter : ${syn.mwLexemeRegisters}">
+                                    <span th:text="${register.value}" class="type-two text-uppercase"></span>
+                                    <span th:unless="${rIter.last}" class="ml-n1">,</span>
+                                  </th:block>
                                 </th:block>
-                              </th:block>
-                            </span>
-                            <th:block th:if="${isNearSyn}">
-                              <span th:if="${nearSynDefinitionValue}">
-                                <span class="mr-n1">(</span>
-                                <span th:text="${syn.nearSynDefinitionValue}"></span>
-                                <span class="ml-n1">)</span>
                               </span>
-                            </th:block>
-                            <span th:unless="${synIter.last}" class="ml-n1" th:classappend="${isLimit ? 'collapse-target collapse' : ''}">,</span>
-                          </span>
-                        </th:block>
+                              <th:block th:if="${isNearSyn}">
+                                <span th:if="${nearSynDefinitionValue}">
+                                  <span class="mr-n1">(</span>
+                                  <span th:text="${syn.nearSynDefinitionValue}"></span>
+                                  <span class="ml-n1">)</span>
+                                </span>
+                              </th:block>
+                              <span th:unless="${synIter.last}" class="ml-n1" th:classappend="${isLimit ? 'collapse-target collapse' : ''}">,</span>
+                            </li>
+                          </th:block>
+                        </ul>
                         <button 
                               th:id="${'matches-show-more-btn-' + lexeme.lexemeId + '-' + synEntry.key}"
                               class="btn-collapse show-more-btn btn-ellipsis"
@@ -374,32 +380,34 @@
                 </div>
                 <div class="dependence-group" th:unless="${#lists.isEmpty(lexeme.usages)}">
                   <span class="text-caption" th:text="#{button.label.usages}">Näited</span>
-                  <th:block th:each="usage,usageIter : ${lexeme.usages}"
-                            th:with="isCollapsable=${usageIter.count > T(eki.wordweb.constant.WebConstant).TYPICAL_COLLECTIONS_DISPLAY_LIMIT}">
-                    <div class="usage-item" th:if="${!isCollapsable}">
-                      <div class="example-sentence-wrap">
-                        <span class="example-text example-text-w-audio">
-                          <span class="text-body-two text-weight-medium" th:utext="${usage.valuePrese}"></span>
-                          <button class="btn btn-speaker btn-speaker--inactive" th:aria-label="|#{aria.listen.artificial} - ${usage.value}|" th:if="${usage.langEst}"
-                                  th:data-text="${usage.value}"
-                                  data-service-id="speech"
-                                  onclick="getAndPlayAudio(this)">
-                            <span class="icon icon-speaker icon--small"></span>
-                          </button>
-                        </span>
-                        <th:block th:unless="${#lists.isEmpty(usage.sourceLinks)}">
-                          <span class="example-text" th:each="sourceLink : ${usage.sourceLinks}">
-                            <th:block th:replace="common-app :: source-link"></th:block>
+                  <ul class="list-unstyled m-0 d-inline-block">
+                    <th:block th:each="usage,usageIter : ${lexeme.usages}"
+                              th:with="isCollapsable=${usageIter.count > T(eki.wordweb.constant.WebConstant).TYPICAL_COLLECTIONS_DISPLAY_LIMIT}">
+                      <li class="usage-item d-inline-block" th:if="${!isCollapsable}">
+                        <div class="example-sentence-wrap">
+                          <span class="example-text example-text-w-audio">
+                            <span class="text-body-two text-weight-medium" th:utext="${usage.valuePrese}"></span>
+                            <button class="btn btn-speaker btn-speaker--inactive" th:aria-label="|#{aria.listen.artificial} - ${usage.value}|" th:if="${usage.langEst}"
+                                    th:data-text="${usage.value}"
+                                    data-service-id="speech"
+                                    onclick="getAndPlayAudio(this)">
+                              <span class="icon icon-speaker icon--small"></span>
+                            </button>
                           </span>
-                        </th:block>
-                        <th:block th:unless="${#lists.isEmpty(usage.usageTranslationValues)}">
-                          <span th:each="usageTranslation : ${usage.usageTranslationValues}" class="example-text">
-                            <span class="example-text-value text-body-two text-weight-medium" th:utext="${@viewUtil.wrapDecorations(usageTranslation)}"></span>
-                          </span>
-                        </th:block>
-                      </div>
-                    </div>
-                  </th:block>
+                          <th:block th:unless="${#lists.isEmpty(usage.sourceLinks)}">
+                            <span class="example-text" th:each="sourceLink : ${usage.sourceLinks}">
+                              <th:block th:replace="common-app :: source-link"></th:block>
+                            </span>
+                          </th:block>
+                          <th:block th:unless="${#lists.isEmpty(usage.usageTranslationValues)}">
+                            <span th:each="usageTranslation : ${usage.usageTranslationValues}" class="example-text">
+                              <span class="example-text-value text-body-two text-weight-medium" th:utext="${@viewUtil.wrapDecorations(usageTranslation)}"></span>
+                            </span>
+                          </th:block>
+                        </div>
+                      </li>
+                    </th:block>
+                  </ul>
                   <div th:id="${'lexeme-usages-more-panel-' + lexeme.lexemeId}" class="collapse" th:if="${lexeme.moreUsages}">
                     <div class="d-flex flex-column">
                       <th:block th:each="usage,usageIter : ${lexeme.usages}"
