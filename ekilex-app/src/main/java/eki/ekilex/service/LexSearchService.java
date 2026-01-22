@@ -33,6 +33,7 @@ import eki.ekilex.data.LearnerComment;
 import eki.ekilex.data.Lexeme;
 import eki.ekilex.data.LexemeNote;
 import eki.ekilex.data.LexemeRelation;
+import eki.ekilex.data.LexemeVariant;
 import eki.ekilex.data.Meaning;
 import eki.ekilex.data.MeaningForum;
 import eki.ekilex.data.MeaningImage;
@@ -274,6 +275,7 @@ public class LexSearchService extends AbstractWordSearchService {
 		List<MeaningWord> synMeaningWords = commonDataDbService.getMeaningWords(lexemeId, meaningWordLangsRestriction);
 		List<InexactSynonym> inexactSynonyms = lookupDbService.getMeaningInexactSynonyms(meaningId, wordLang, datasetCode);
 		List<SynonymLangGroup> synonymLangGroups = conversionUtil.composeSynonymLangGroups(synMeaningRelations, synMeaningWords, inexactSynonyms, userProfile, wordLang, languagesOrder);
+		List<LexemeVariant> lexemeVariants = variantDbService.getLexemeVariants(lexemeId, CLASSIF_LABEL_LANG_EST);
 		List<OrderedClassifier> meaningDomains = commonDataDbService.getMeaningDomains(meaningId, CLASSIF_LABEL_LANG_EST);
 		List<Definition> definitions = commonDataDbService.getMeaningDefinitions(meaningId, datasetCode, CLASSIF_LABEL_LANG_EST);
 		List<MeaningForum> meaningForums = commonDataDbService.getMeaningForums(meaningId);
@@ -290,6 +292,7 @@ public class LexSearchService extends AbstractWordSearchService {
 		lexeme.setLexemeWord(word);
 		lexeme.setMeaning(meaning);
 		lexeme.setSynonymLangGroups(synonymLangGroups);
+		lexeme.setLexemeVariants(lexemeVariants);
 
 		if (isFullData) {
 

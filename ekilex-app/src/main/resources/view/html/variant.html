@@ -1,0 +1,119 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head></head>
+<body>
+  <div th:id="|addWordVariantDlg_${lexeme.lexemeId}|"
+       th:data-callback="${@viewUtil.composeFunction('loadFullLexemeDetails', lexeme.lexemeId, lexeme.levels)}"
+       class="modal" role="dialog" th:fragment="add_word_variant_dlg">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <form name="createWordVariantForm" th:action="@{/create_word_variant}" method="post">
+          <div class="modal-header">
+            <h5 class="modal-title" th:text="#{lex.variant.add}">Lisa variant</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <input type="hidden" name="headwordLexemeId" th:value="${lexeme.lexemeId}">
+            <input type="hidden" name="forceHomonym" th:value="${false}">
+            <div class="form-group row">
+              <div class="col-md-12">
+                <input class="form-control required-field" name="wordValue" th:placeholder="#{lex.placeholder.new.word}" autocomplete="off" required="required">
+              </div>
+            </div>
+            <div class="form-group row">
+              <div class="col-md-8">
+                <select name="variantTypeCode" class="form-control classifier-select" data-live-search="true">
+                  <option value="" th:text="#{common.select.type}">vali liik...</option>
+                  <option th:each="variantType : ${variantTypes}"
+                          th:value="${variantType.code}"
+                          th:text="${variantType.value}">
+                    variant type
+                  </option>
+                </select>
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" data-plugin="createWordVariantPlugin" class="btn btn-primary" th:text="#{common.add}">Lisa</button>
+            <button type="button" class="btn btn-default" data-dismiss="modal" th:text="#{common.cancel}">Katkesta</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+  
+  <div th:id="|selectWordVariantDlg_${lexeme.lexemeId}|"
+       th:data-callback="${@viewUtil.composeFunction('loadFullLexemeDetails', lexeme.lexemeId, lexeme.levels)}"
+       class="modal" role="dialog" th:fragment="select_word_variant_dlg">
+    <div class="modal-dialog modal-lg modal-dialog-scrollable" role="document">
+      <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" th:text="#{lex.variant.select}">Otsi varianti</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <div th:id="|select_word_variant_section_${lexeme.lexemeId}|">
+              <!-- dynamic content -->
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal" th:text="#{common.cancel}">Katkesta</button>
+          </div>
+      </div>
+    </div>
+  </div>
+  
+  <div th:fragment="select_word_variant_content">
+    <div class="border rounded p-2 mb-2">
+      <form name="createWordVariantForm" th:action="@{/create_word_variant}" method="post">
+        <input type="hidden" name="wordValue" th:value="${wordVariantCandidates.wordVariant.wordValue}">
+        <input type="hidden" name="headwordLexemeId" th:value="${wordVariantCandidates.wordVariant.headwordLexemeId}">
+        <input type="hidden" name="variantTypeCode" th:value="${wordVariantCandidates.wordVariant.variantTypeCode}">
+        <input type="hidden" name="forceHomonym" th:value="${true}">
+        <span th:text="${wordVariantCandidates.wordVariant.wordValue}" class="ttl"></span>
+        <button type="button" data-plugin="createWordVariantPlugin" class="btn btn-sm btn-primary ml-2" th:text="#{lex.variant.create.homonym}">Uus homonüüm</button>
+      </form>
+    </div>
+    <div>
+      <th:block th:each="wordCandidate : ${wordVariantCandidates.words}">
+        <div class="border rounded p-2 mb-2">
+          <div>
+            <form name="createWordVariantForm" th:action="@{/create_word_variant}" method="post">
+              <input type="hidden" name="wordValue" th:value="${wordVariantCandidates.wordVariant.wordValue}">
+              <input type="hidden" name="headwordLexemeId" th:value="${wordVariantCandidates.wordVariant.headwordLexemeId}">
+              <input type="hidden" name="variantTypeCode" th:value="${wordVariantCandidates.wordVariant.variantTypeCode}">
+              <input type="hidden" name="forceHomonym" th:value="${true}">
+              <span th:utext="${@viewUtil.getWordValueMarkup(wordCandidate.word)}" class="ttl"></span>
+              <span th:text="${wordCandidate.word.homonymNr}" class="ttl"></span>
+              <button type="button" data-plugin="createWordVariantPlugin" class="btn btn-sm btn-primary ml-2" th:text="#{common.select}">Vali</button>
+              <span class="float-right">
+                <b th:text="${#strings.listJoin(wordCandidate.word.datasetCodes, ', ')}"></b>
+              </span>
+            </form>
+          </div>
+          <hr />
+          <div>
+            <span th:each="lexeme, lexemeIter : ${wordCandidate.lexemes}">
+              <span th:each="meaningWord,meaningWordIter : ${lexeme.meaningWords}">
+                <span th:utext="${@viewUtil.getWordValueMarkup(meaningWord)}"></span>
+                <span th:text="${meaningWord.homonymNr}"></span>
+                <span th:text="|(${@viewUtil.getLangIso2(meaningWord.lang)})|"></span>
+                <span th:unless="${meaningWordIter.last}" class="ml-n1">,</span>
+              </span>
+            </span>
+          </div>
+          <div class="mt-2" th:if="${not #lists.isEmpty(wordCandidate.definitions)}">
+            <span class="lbl" th:text="#{lex.definition}">Seletus</span>
+            <div th:each="definition : ${wordCandidate.definitions}" th:utext="${definition}"></div>
+          </div>
+        </div>
+      </th:block>
+    </div>
+  </div>
+
+</body>
+</html>

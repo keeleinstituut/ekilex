@@ -26,6 +26,7 @@ public enum ClassifierName {
 	REGION(false),
 	SEMANTIC_TYPE(true),
 	PROFICIENCY_LEVEL(true),
+	VARIANT_TYPE(true),
 	FREEFORM_TYPE(true)
 	;
 

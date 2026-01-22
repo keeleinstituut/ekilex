@@ -129,6 +129,11 @@ public abstract class AbstractAuthActionController implements WebConstant, Syste
 		return userProfile.getPreferredDatasets();
 	}
 
+	@ModelAttribute("languages")
+	public List<Classifier> getLanguages() {
+		return commonDataService.getLanguages();
+	}
+
 	@ModelAttribute("allDatasets")
 	public List<Dataset> getAllDatasets() {
 		return commonDataService.getVisibleDatasets();
@@ -216,11 +221,6 @@ public abstract class AbstractAuthActionController implements WebConstant, Syste
 		return commonDataService.getFreeformTypes(datasetCode, FreeformOwner.MEANING);
 	}
 
-	@ModelAttribute("languages")
-	public List<Classifier> getLanguages() {
-		return commonDataService.getLanguages();
-	}
-
 	@ModelAttribute("userRoleLanguagesExtended")
 	public List<Classifier> getUserRoleLanguagesExtended() {
 
@@ -305,6 +305,11 @@ public abstract class AbstractAuthActionController implements WebConstant, Syste
 	@ModelAttribute("wordDisplayMorphs")
 	public List<Classifier> getWordDisplayMorphs() {
 		return commonDataService.getDisplayMorphs();
+	}
+
+	@ModelAttribute("variantTypes")
+	public List<Classifier> getVariantTypes() {
+		return commonDataService.getVariantTypes();
 	}
 
 	@ModelAttribute("groupWordRelationTypes")

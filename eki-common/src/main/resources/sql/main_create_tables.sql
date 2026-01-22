@@ -1158,6 +1158,16 @@ create table lexeme_freeform (
 );
 alter sequence lexeme_freeform_id_seq restart with 10000;
 
+create table lexeme_variant (
+	id bigserial primary key,
+	lexeme_id bigint references lexeme(id) on delete cascade not null,
+	variant_lexeme_id bigint references lexeme(id) on delete cascade not null,
+	variant_type_code varchar(100) references variant_type(code) on delete cascade,
+	order_by bigserial,
+	unique(lexeme_id, variant_lexeme_id)
+);
+alter sequence lexeme_variant_id_seq restart with 10000;
+
 -- ilmiku seos
 create table lex_relation (
   id bigserial primary key, 
@@ -1165,9 +1175,7 @@ create table lex_relation (
   lexeme2_id bigint references lexeme(id) on delete cascade not null, 
   lex_rel_type_code varchar(100) references lex_rel_type(code) on delete cascade not null, 
   order_by bigserial, 
-  unique(
-    lexeme1_id, lexeme2_id, lex_rel_type_code
-  )
+  unique(lexeme1_id, lexeme2_id, lex_rel_type_code)
 );
 alter sequence lex_relation_id_seq restart with 10000;
 

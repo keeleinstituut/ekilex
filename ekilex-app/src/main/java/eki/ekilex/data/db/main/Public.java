@@ -68,6 +68,7 @@ import eki.ekilex.data.db.main.tables.LexemeRegion;
 import eki.ekilex.data.db.main.tables.LexemeRegister;
 import eki.ekilex.data.db.main.tables.LexemeSourceLink;
 import eki.ekilex.data.db.main.tables.LexemeTag;
+import eki.ekilex.data.db.main.tables.LexemeVariant;
 import eki.ekilex.data.db.main.tables.Meaning;
 import eki.ekilex.data.db.main.tables.MeaningActivityLog;
 import eki.ekilex.data.db.main.tables.MeaningDomain;
@@ -119,6 +120,8 @@ import eki.ekilex.data.db.main.tables.UsageType;
 import eki.ekilex.data.db.main.tables.UsageTypeLabel;
 import eki.ekilex.data.db.main.tables.ValueState;
 import eki.ekilex.data.db.main.tables.ValueStateLabel;
+import eki.ekilex.data.db.main.tables.VariantType;
+import eki.ekilex.data.db.main.tables.VariantTypeLabel;
 import eki.ekilex.data.db.main.tables.ViewOsDefinition;
 import eki.ekilex.data.db.main.tables.ViewOsDefinitionIdx;
 import eki.ekilex.data.db.main.tables.ViewOsLexemeMeaning;
@@ -529,6 +532,11 @@ public class Public extends SchemaImpl {
     public final LexemeTag LEXEME_TAG = LexemeTag.LEXEME_TAG;
 
     /**
+     * The table <code>public.lexeme_variant</code>.
+     */
+    public final LexemeVariant LEXEME_VARIANT = LexemeVariant.LEXEME_VARIANT;
+
+    /**
      * The table <code>public.meaning</code>.
      */
     public final Meaning MEANING = Meaning.MEANING;
@@ -782,6 +790,16 @@ public class Public extends SchemaImpl {
      * The table <code>public.value_state_label</code>.
      */
     public final ValueStateLabel VALUE_STATE_LABEL = ValueStateLabel.VALUE_STATE_LABEL;
+
+    /**
+     * The table <code>public.variant_type</code>.
+     */
+    public final VariantType VARIANT_TYPE = VariantType.VARIANT_TYPE;
+
+    /**
+     * The table <code>public.variant_type_label</code>.
+     */
+    public final VariantTypeLabel VARIANT_TYPE_LABEL = VariantTypeLabel.VARIANT_TYPE_LABEL;
 
     /**
      * The table <code>public.view_os_definition</code>.
@@ -1129,6 +1147,8 @@ public class Public extends SchemaImpl {
             Sequences.LEXEME_SOURCE_LINK_ID_SEQ,
             Sequences.LEXEME_SOURCE_LINK_ORDER_BY_SEQ,
             Sequences.LEXEME_TAG_ID_SEQ,
+            Sequences.LEXEME_VARIANT_ID_SEQ,
+            Sequences.LEXEME_VARIANT_ORDER_BY_SEQ,
             Sequences.MEANING_ACTIVITY_LOG_ID_SEQ,
             Sequences.MEANING_DOMAIN_ID_SEQ,
             Sequences.MEANING_DOMAIN_ORDER_BY_SEQ,
@@ -1182,6 +1202,7 @@ public class Public extends SchemaImpl {
             Sequences.USAGE_TRANSLATION_ORDER_BY_SEQ,
             Sequences.USAGE_TYPE_ORDER_BY_SEQ,
             Sequences.VALUE_STATE_ORDER_BY_SEQ,
+            Sequences.VARIANT_TYPE_ORDER_BY_SEQ,
             Sequences.WORD_ACTIVITY_LOG_ID_SEQ,
             Sequences.WORD_EKI_RECOMMENDATION_ID_SEQ,
             Sequences.WORD_ETYMOLOGY_ID_SEQ,
@@ -1283,6 +1304,7 @@ public class Public extends SchemaImpl {
             LexemeRegister.LEXEME_REGISTER,
             LexemeSourceLink.LEXEME_SOURCE_LINK,
             LexemeTag.LEXEME_TAG,
+            LexemeVariant.LEXEME_VARIANT,
             Meaning.MEANING,
             MeaningActivityLog.MEANING_ACTIVITY_LOG,
             MeaningDomain.MEANING_DOMAIN,
@@ -1334,6 +1356,8 @@ public class Public extends SchemaImpl {
             UsageTypeLabel.USAGE_TYPE_LABEL,
             ValueState.VALUE_STATE,
             ValueStateLabel.VALUE_STATE_LABEL,
+            VariantType.VARIANT_TYPE,
+            VariantTypeLabel.VARIANT_TYPE_LABEL,
             ViewOsDefinition.VIEW_OS_DEFINITION,
             ViewOsDefinitionIdx.VIEW_OS_DEFINITION_IDX,
             ViewOsLexemeMeaning.VIEW_OS_LEXEME_MEANING,

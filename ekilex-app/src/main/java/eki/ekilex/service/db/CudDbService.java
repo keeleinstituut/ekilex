@@ -914,7 +914,7 @@ public class CudDbService extends AbstractDataDbService {
 				.fetchOne()
 				.getId();
 
-		Long lexemeId = createLexeme(meaningId, wordId, datasetCode, 1, null, isPublic);
+		Long lexemeId = createLexeme(wordId, meaningId, datasetCode, 1, null, isPublic);
 		;
 
 		wordLexemeMeaningId.setWordId(wordId);
@@ -966,7 +966,7 @@ public class CudDbService extends AbstractDataDbService {
 					.getId();
 		}
 
-		Long lexemeId = createLexeme(meaningId, wordId, datasetCode, 1, null, isPublic);
+		Long lexemeId = createLexeme(wordId, meaningId, datasetCode, 1, null, isPublic);
 
 		wordLexemeMeaningId.setWordId(wordId);
 		wordLexemeMeaningId.setLexemeId(lexemeId);
@@ -1506,13 +1506,13 @@ public class CudDbService extends AbstractDataDbService {
 		return meaningSemanticTypeCodeId;
 	}
 
-	private Long createLexeme(Long meaningId, Long wordId, String datasetCode, int lexemeLevel1, String valueStateCode, boolean isPublic) {
+	public Long createLexeme(Long wordId, Long meaningId, String datasetCode, int lexemeLevel1, String valueStateCode, boolean isPublic) {
 
 		Long lexemeId = mainDb
 				.insertInto(
 						LEXEME,
-						LEXEME.MEANING_ID,
 						LEXEME.WORD_ID,
+						LEXEME.MEANING_ID,
 						LEXEME.DATASET_CODE,
 						LEXEME.LEVEL1,
 						LEXEME.LEVEL2,
@@ -1521,8 +1521,8 @@ public class CudDbService extends AbstractDataDbService {
 						LEXEME.IS_COLLOCATION,
 						LEXEME.IS_PUBLIC)
 				.values(
-						meaningId,
 						wordId,
+						meaningId,
 						datasetCode,
 						lexemeLevel1,
 						1,
@@ -1561,7 +1561,7 @@ public class CudDbService extends AbstractDataDbService {
 				return wordLexemeMeaningId;
 			}
 		}
-		Long lexemeId = createLexeme(meaningId, wordId, datasetCode, lexemeLevel1, valueStateCode, isPublic);
+		Long lexemeId = createLexeme(wordId, meaningId, datasetCode, lexemeLevel1, valueStateCode, isPublic);
 
 		wordLexemeMeaningId.setWordId(wordId);
 		wordLexemeMeaningId.setLexemeId(lexemeId);

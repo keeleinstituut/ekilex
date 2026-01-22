@@ -84,6 +84,8 @@ public class Lexeme extends AbstractGrantEntity implements LexemeLevel {
 
 	private List<SynonymLangGroup> synonymLangGroups;
 
+	private List<LexemeVariant> lexemeVariants;
+
 	private boolean collocationsExist;
 
 	private boolean collocationMemberMeaningCandidacyExist;
@@ -399,6 +401,14 @@ public class Lexeme extends AbstractGrantEntity implements LexemeLevel {
 
 	public void setSynonymLangGroups(List<SynonymLangGroup> synonymLangGroups) {
 		this.synonymLangGroups = synonymLangGroups;
+	}
+
+	public List<LexemeVariant> getLexemeVariants() {
+		return lexemeVariants;
+	}
+
+	public void setLexemeVariants(List<LexemeVariant> lexemeVariants) {
+		this.lexemeVariants = lexemeVariants;
 	}
 
 	public boolean isCollocationsExist() {
