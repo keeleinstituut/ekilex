@@ -380,10 +380,10 @@
                 </div>
                 <div class="dependence-group" th:unless="${#lists.isEmpty(lexeme.usages)}">
                   <span class="text-caption" th:text="#{button.label.usages}">Näited</span>
-                  <ul class="list-unstyled m-0 d-inline-block">
+                  <ul class="list-unstyled m-0">
                     <th:block th:each="usage,usageIter : ${lexeme.usages}"
                               th:with="isCollapsable=${usageIter.count > T(eki.wordweb.constant.WebConstant).TYPICAL_COLLECTIONS_DISPLAY_LIMIT}">
-                      <li class="usage-item d-inline-block" th:if="${!isCollapsable}">
+                      <li class="usage-item" th:if="${!isCollapsable}">
                         <div class="example-sentence-wrap">
                           <span class="example-text example-text-w-audio">
                             <span class="text-body-two text-weight-medium" th:utext="${usage.valuePrese}"></span>
