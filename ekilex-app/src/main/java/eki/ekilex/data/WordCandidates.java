@@ -4,20 +4,20 @@ import java.util.List;
 
 import eki.common.data.AbstractDataObject;
 
-public class WordVariantCandidates extends AbstractDataObject {
+public class WordCandidates extends AbstractDataObject {
 
 	private static final long serialVersionUID = 1L;
 
-	private WordVariant wordVariant;
+	private LexemeVariantBean lexemeVariantBean;
 
 	private List<WordDescript> words;
 
-	public WordVariant getWordVariant() {
-		return wordVariant;
+	public LexemeVariantBean getLexemeVariantBean() {
+		return lexemeVariantBean;
 	}
 
-	public void setWordVariant(WordVariant wordVariant) {
-		this.wordVariant = wordVariant;
+	public void setLexemeVariantBean(LexemeVariantBean lexemeVariantBean) {
+		this.lexemeVariantBean = lexemeVariantBean;
 	}
 
 	public List<WordDescript> getWords() {

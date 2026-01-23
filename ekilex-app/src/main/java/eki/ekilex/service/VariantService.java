@@ -11,19 +11,23 @@ import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
+import eki.common.constant.ActivityEntity;
+import eki.common.constant.ActivityOwner;
 import eki.common.constant.GlobalConstant;
 import eki.common.service.TextDecorationService;
 import eki.ekilex.constant.ResponseStatus;
 import eki.ekilex.constant.SystemConstant;
+import eki.ekilex.data.ActivityLogData;
 import eki.ekilex.data.Definition;
 import eki.ekilex.data.Lexeme;
+import eki.ekilex.data.LexemeVariantBean;
 import eki.ekilex.data.MeaningWord;
 import eki.ekilex.data.Response;
 import eki.ekilex.data.Word;
+import eki.ekilex.data.WordCandidates;
 import eki.ekilex.data.WordDescript;
 import eki.ekilex.data.WordLexemeMeaningDetails;
-import eki.ekilex.data.WordVariant;
-import eki.ekilex.data.WordVariantCandidates;
+import eki.ekilex.service.core.ActivityLogService;
 import eki.ekilex.service.db.CommonDataDbService;
 import eki.ekilex.service.db.CudDbService;
 import eki.ekilex.service.db.LookupDbService;
@@ -49,21 +53,24 @@ public class VariantService implements SystemConstant, GlobalConstant {
 	private VariantDbService variantDbService;
 
 	@Autowired
+	private ActivityLogService activityLogService;
+
+	@Autowired
 	private ValueUtil valueUtil;
 
 	@Autowired
 	private MessageSource messageSource;
 
 	@Transactional(rollbackFor = Exception.class)
-	public Response createWordVariant(
-			WordVariant wordVariant,
+	public Response createLexemeVariant(
+			LexemeVariantBean lexemeVariantBean,
 			String roleDatasetCode,
 			boolean isManualEventOnUpdateEnabled) throws Exception {
 
-		String providedVariantWordValue = wordVariant.getWordValue();
-		Long headwordLexemeId = wordVariant.getHeadwordLexemeId();
-		String variantTypeCode = wordVariant.getVariantTypeCode();
-		boolean isForceHomonym = wordVariant.isForceHomonym();
+		String providedVariantWordValue = lexemeVariantBean.getWordValue();
+		Long headwordLexemeId = lexemeVariantBean.getHeadwordLexemeId();
+		String variantTypeCode = lexemeVariantBean.getVariantTypeCode();
+		boolean isForceHomonym = lexemeVariantBean.isForceHomonym();
 		Response response;
 
 		String variantWordValuePrese = valueUtil.trimAndCleanAndRemoveHtmlAndLimit(providedVariantWordValue);
@@ -82,7 +89,7 @@ public class VariantService implements SystemConstant, GlobalConstant {
 
 			if (isForceHomonym) {
 
-				response = createWordVariant(headword, variantWordValue, variantWordValuePrese, variantTypeCode);
+				response = createLexemeVariant(headword, variantWordValue, variantWordValuePrese, variantTypeCode, roleDatasetCode, isManualEventOnUpdateEnabled);
 
 			} else if (variantWordExists) {
 
@@ -91,31 +98,47 @@ public class VariantService implements SystemConstant, GlobalConstant {
 
 			} else {
 
-				response = createWordVariant(headword, variantWordValue, variantWordValuePrese, variantTypeCode);
+				response = createLexemeVariant(headword, variantWordValue, variantWordValuePrese, variantTypeCode, roleDatasetCode, isManualEventOnUpdateEnabled);
 			}
 		}
 
 		return response;
 	}
 
-	private Response createWordVariant(WordLexemeMeaningDetails headword, String variantWordValue, String variantWordValuePrese, String variantTypeCode) {
+	private Response createLexemeVariant(
+			WordLexemeMeaningDetails headword,
+			String variantWordValue,
+			String variantWordValuePrese,
+			String variantTypeCode,
+			String roleDatasetCode,
+			boolean isManualEventOnUpdateEnabled) throws Exception {
 
-		Locale locale = LocaleContextHolder.getLocale();
 		Long headwordLexemeId = headword.getLexemeId();
 		Long meaningId = headword.getMeaningId();
 		String lang = headword.getLanguage();
 		String datasetCode = headword.getDataset();
 		String variantWordValueAsWord = textDecorationService.getValueAsWord(variantWordValue);
+		ActivityLogData activityLog = activityLogService.prepareActivityLog("createLexemeVariant", headwordLexemeId, ActivityOwner.LEXEME, roleDatasetCode, isManualEventOnUpdateEnabled);
 		int variantWordHomNr = cudDbService.getWordNextHomonymNr(variantWordValue, lang);
 		Long variantWordId = cudDbService.createWord(variantWordValue, variantWordValuePrese, variantWordValueAsWord, lang, variantWordHomNr);
 		Long variantLexemeId = cudDbService.createLexeme(variantWordId, meaningId, datasetCode, 1, null, PUBLICITY_PUBLIC);
-		variantDbService.createLexemeVariant(headwordLexemeId, variantLexemeId, variantTypeCode);
+		Long lexemeVariantId = variantDbService.createLexemeVariant(headwordLexemeId, variantLexemeId, variantTypeCode);
+		activityLogService.createActivityLog(activityLog, lexemeVariantId, ActivityEntity.LEXEME_VARIANT);
+
+		Locale locale = LocaleContextHolder.getLocale();
 		String message = messageSource.getMessage("lex.variant.created", new Object[0], locale);
-
-		// TODO create activity log
-
 		Response response = composeResponse(ResponseStatus.OK, message);
 		return response;
+	}
+
+	public void deleteLexemeVariant(Long lexemeVariantId, String roleDatasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
+
+		Long lexemeId = activityLogService.getActivityOwnerId(lexemeVariantId, ActivityEntity.LEXEME_VARIANT);
+		ActivityLogData activityLog = activityLogService.prepareActivityLog("deleteLexemeVariant", lexemeId, ActivityOwner.LEXEME, roleDatasetCode, isManualEventOnUpdateEnabled);
+		Long lexemeVariantLexemeId = variantDbService.getLexemeVariantLexemeId(lexemeVariantId);
+		variantDbService.deleteLexemeVariant(lexemeVariantId);
+		cudDbService.deleteLexeme(lexemeVariantLexemeId);
+		activityLogService.createActivityLog(activityLog, lexemeVariantId, ActivityEntity.LEXEME_VARIANT);
 	}
 
 	private Response composeResponse(ResponseStatus responseStatus, String message) {
@@ -126,10 +149,10 @@ public class VariantService implements SystemConstant, GlobalConstant {
 	}
 
 	@Transactional
-	public WordVariantCandidates getWordVariantCandidates(WordVariant wordVariant) throws Exception {
+	public WordCandidates getLexemeVariantWordCandidates(LexemeVariantBean lexemeVariantBean) throws Exception {
 
-		String wordValue = wordVariant.getWordValue();
-		Long headwordLexemeId = wordVariant.getHeadwordLexemeId();
+		String wordValue = lexemeVariantBean.getWordValue();
+		Long headwordLexemeId = lexemeVariantBean.getHeadwordLexemeId();
 
 		wordValue = valueUtil.trimAndCleanAndRemoveHtmlAndLimit(wordValue);
 		wordValue = textDecorationService.removeEkiElementMarkup(wordValue);
@@ -137,13 +160,13 @@ public class VariantService implements SystemConstant, GlobalConstant {
 		String lang = headword.getLanguage();
 		String datasetCode = headword.getDataset();
 
-		List<Word> words = variantDbService.getWords(wordValue, lang, datasetCode);
-		List<WordDescript> wordCandidates = new ArrayList<>();
+		List<Word> words = variantDbService.getWords(wordValue, lang);
+		List<WordDescript> wordDescripts = new ArrayList<>();
 
 		for (Word word : words) {
 
 			Long wordId = word.getWordId();
-			List<Lexeme> lexemes = variantDbService.getWordLexemes(wordId, datasetCode, CLASSIF_LABEL_LANG_EST);
+			List<Lexeme> lexemes = variantDbService.getWordLexemes(wordId, CLASSIF_LABEL_LANG_EST);
 
 			List<String> allDefinitionValues = new ArrayList<>();
 			lexemes.forEach(lexeme -> {
@@ -165,13 +188,13 @@ public class VariantService implements SystemConstant, GlobalConstant {
 			wordCandidate.setWord(word);
 			wordCandidate.setLexemes(lexemes);
 			wordCandidate.setDefinitions(distinctDefinitionValues);
-			wordCandidates.add(wordCandidate);
+			wordDescripts.add(wordCandidate);
 		}
 
-		WordVariantCandidates wordVariantCandidates = new WordVariantCandidates();
-		wordVariantCandidates.setWordVariant(wordVariant);
-		wordVariantCandidates.setWords(wordCandidates);
+		WordCandidates wordCandidates = new WordCandidates();
+		wordCandidates.setLexemeVariantBean(lexemeVariantBean);
+		wordCandidates.setWords(wordDescripts);
 
-		return wordVariantCandidates;
+		return wordCandidates;
 	}
 }

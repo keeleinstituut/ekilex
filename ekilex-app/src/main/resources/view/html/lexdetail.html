@@ -143,8 +143,8 @@
       <div th:replace="lexdialog :: edit_lexeme_proficiency_level_dlg"></div>
       <div th:replace="lexdialog :: edit_lexeme_levels_dlg"></div>
       <div th:replace="lexdialog :: edit_lexeme_weight_dlg"></div>
-      <div th:replace="variant :: add_word_variant_dlg"></div>
-      <div th:replace="variant :: select_word_variant_dlg"></div>
+      <div th:replace="variant :: add_lexeme_variant_dlg"></div>
+      <div th:replace="variant :: select_lexeme_variant_dlg"></div>
       <button th:data-id="${lexeme.lexemeId}" th:data-lex-levels="${lexeme.levels}"
             style="display: none;"
             id="refresh-open"
@@ -304,37 +304,48 @@
                 </div>
               </th:block>
               <th:block th:if="${not #lists.isEmpty(lexeme.lexemeVariants)}">
-                <div>
-                  <span>variant</span>
-                  <th:block th:each="lexemeVariant, lexemeVariantIter : ${lexeme.lexemeVariants}">
-                    <button type="button"
-                            class="btn btn-link p-0 syn-handle mb-1"
-                            th:data-id="${lexemeVariant.wordId}"
-                            name="details-btn"
-                            data-behaviour="replace"
-                            data-plugin="contextmenu, loadDetailsPlugin"
-                            data-contextmenu:compare="Ava uues paneelis">
-                      <span th:utext="${lexemeVariant.wordValuePrese}"></span>
-                    </button>
-                    <span th:text="|(${lexemeVariant.variantTypeValue})|" th:if="${lexemeVariant.variantTypeValue}"></span>
-                    <span th:unless="${lexemeVariantIter.last}">|</span>
-                  </th:block>
+                <div class="row">
+                  <span class="col-2">variant</span>
+                  <span class="col-10">
+                    <th:block th:each="lexemeVariant, lexemeVariantIter : ${lexeme.lexemeVariants}">
+                      <span class="hidden-buttons text-nowrap">
+                        <button type="button"
+                                class="btn btn-link p-0 syn-handle mb-1"
+                                th:data-id="${lexemeVariant.wordId}"
+                                name="details-btn"
+                                data-behaviour="replace"
+                                data-plugin="contextmenu, loadDetailsPlugin"
+                                data-contextmenu:compare="Ava uues paneelis">
+                          <span th:utext="${lexemeVariant.wordValuePrese}"></span>
+                        </button>
+                        <span th:text="|(${lexemeVariant.variantTypeValue})|" th:if="${lexemeVariant.variantTypeValue}"></span>
+                        <button type="button" class="btn badge badge-warning"
+                                th:data-id="${lexemeVariant.id}"
+                                data-op-code="lexeme_variant"
+                                data-toggle="delete-confirm"
+                                sec:authorize="#vars.lexeme.crudGrant">
+                          <i class="fa fa-remove" aria-hidden="true" data-toggle="tooltip" th:title="#{lex.variant.delete}"></i>
+                        </button>
+                        <span th:unless="${lexemeVariantIter.last}">|</span>
+                      </span>
+                    </th:block>
+                  </span>
                 </div>
               </th:block>
             </div>
             <div class="d-flex w-50 justify-content-end flex-shrink-1 pr-1 align-items-center">
               <th:block
-              sec:authorize="#vars.lexeme.crudGrant"
-              th:replace="components :: entity_publishing(
-                entityId = ${lexeme.lexemeId},
-                entityName = 'lexeme',
-                isPublic = ${lexeme.isPublic},
-                isWwUnif = ${lexeme.wwUnif},
-                isWwLite = ${lexeme.wwLite},
-                isWwOs = ${lexeme.wwOs},
-                callback = ${@viewUtil.composeFunction('loadFullLexemeDetails', lexeme.lexemeId, lexeme.levels)},
-                initAccordion = false,
-                withPublicSwitch = true)">
+                sec:authorize="#vars.lexeme.crudGrant"
+                th:replace="components :: entity_publishing(
+                  entityId = ${lexeme.lexemeId},
+                  entityName = 'lexeme',
+                  isPublic = ${lexeme.isPublic},
+                  isWwUnif = ${lexeme.wwUnif},
+                  isWwLite = ${lexeme.wwLite},
+                  isWwOs = ${lexeme.wwOs},
+                  callback = ${@viewUtil.composeFunction('loadFullLexemeDetails', lexeme.lexemeId, lexeme.levels)},
+                  initAccordion = false,
+                  withPublicSwitch = true)">
               </th:block>
               <b class="ml-2" th:text="${lexeme.datasetName}"></b>
             </div>
@@ -395,7 +406,7 @@
                     Uus tähendus
             </button>
             <button data-toggle="modal"
-                    th:data-target="|#addWordVariantDlg_${lexeme.lexemeId}|"
+                    th:data-target="|#addLexemeVariantDlg_${lexeme.lexemeId}|"
                     sec:authorize="#vars.lexeme.crudGrant"
                     th:text="#{lex.variant.add}"
                     class="btn btn-sm btn-primary px-1 py-0">

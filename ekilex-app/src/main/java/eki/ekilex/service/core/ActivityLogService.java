@@ -149,6 +149,8 @@ public class ActivityLogService implements SystemConstant, GlobalConstant, Freef
 		} else if (ActivityEntity.FREEFORM_SOURCE_LINK.equals(entity)) {
 			ActivityLogOwnerEntityDescr freeformOwnerDescr = getFreeformSourceLinkOwnerDescr(entityId);
 			return freeformOwnerDescr.getOwnerId();
+		} else if (ActivityEntity.LEXEME_VARIANT.equals(entity)) {
+			return activityLogDbService.getLexemeVariantOwnerId(entityId);
 		} else if (ActivityEntity.LEXEME_SOURCE_LINK.equals(entity)) {
 			return activityLogDbService.getLexemeSourceLinkOwnerId(entityId);
 		} else if (ActivityEntity.LEXEME_NOTE.equals(entity)) {

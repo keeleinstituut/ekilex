@@ -2,7 +2,7 @@ package eki.ekilex.data;
 
 import eki.common.data.AbstractDataObject;
 
-public class WordVariant extends AbstractDataObject {
+public class LexemeVariantBean extends AbstractDataObject {
 
 	private static final long serialVersionUID = 1L;
 

@@ -2,12 +2,12 @@
 <html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head></head>
 <body>
-  <div th:id="|addWordVariantDlg_${lexeme.lexemeId}|"
+  <div th:id="|addLexemeVariantDlg_${lexeme.lexemeId}|"
        th:data-callback="${@viewUtil.composeFunction('loadFullLexemeDetails', lexeme.lexemeId, lexeme.levels)}"
-       class="modal" role="dialog" th:fragment="add_word_variant_dlg">
+       class="modal" role="dialog" th:fragment="add_lexeme_variant_dlg">
     <div class="modal-dialog" role="document">
       <div class="modal-content">
-        <form name="createWordVariantForm" th:action="@{/create_word_variant}" method="post">
+        <form name="createLexemeVariantForm" th:action="@{/create_lexeme_variant}" method="post">
           <div class="modal-header">
             <h5 class="modal-title" th:text="#{lex.variant.add}">Lisa variant</h5>
             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
@@ -36,17 +36,16 @@
             </div>
           </div>
           <div class="modal-footer">
-            <button type="button" data-plugin="createWordVariantPlugin" class="btn btn-primary" th:text="#{common.add}">Lisa</button>
+            <button type="button" data-plugin="createLexemeVariantPlugin" class="btn btn-primary" th:text="#{common.add}">Lisa</button>
             <button type="button" class="btn btn-default" data-dismiss="modal" th:text="#{common.cancel}">Katkesta</button>
           </div>
         </form>
       </div>
     </div>
   </div>
-  
-  <div th:id="|selectWordVariantDlg_${lexeme.lexemeId}|"
+  <div th:id="|selectLexemeVariantDlg_${lexeme.lexemeId}|"
        th:data-callback="${@viewUtil.composeFunction('loadFullLexemeDetails', lexeme.lexemeId, lexeme.levels)}"
-       class="modal" role="dialog" th:fragment="select_word_variant_dlg">
+       class="modal" role="dialog" th:fragment="select_lexeme_variant_dlg">
     <div class="modal-dialog modal-lg modal-dialog-scrollable" role="document">
       <div class="modal-content">
           <div class="modal-header">
@@ -56,7 +55,7 @@
             </button>
           </div>
           <div class="modal-body">
-            <div th:id="|select_word_variant_section_${lexeme.lexemeId}|">
+            <div th:id="|select_lexeme_variant_section_${lexeme.lexemeId}|">
               <!-- dynamic content -->
             </div>
           </div>
@@ -66,30 +65,29 @@
       </div>
     </div>
   </div>
-  
-  <div th:fragment="select_word_variant_content">
+  <div th:fragment="select_lexeme_variant_content">
     <div class="border rounded p-2 mb-2">
-      <form name="createWordVariantForm" th:action="@{/create_word_variant}" method="post">
-        <input type="hidden" name="wordValue" th:value="${wordVariantCandidates.wordVariant.wordValue}">
-        <input type="hidden" name="headwordLexemeId" th:value="${wordVariantCandidates.wordVariant.headwordLexemeId}">
-        <input type="hidden" name="variantTypeCode" th:value="${wordVariantCandidates.wordVariant.variantTypeCode}">
+      <form name="createLexemeVariantForm" th:action="@{/create_lexeme_variant}" method="post">
+        <input type="hidden" name="wordValue" th:value="${wordCandidates.lexemeVariantBean.wordValue}">
+        <input type="hidden" name="headwordLexemeId" th:value="${wordCandidates.lexemeVariantBean.headwordLexemeId}">
+        <input type="hidden" name="variantTypeCode" th:value="${wordCandidates.lexemeVariantBean.variantTypeCode}">
         <input type="hidden" name="forceHomonym" th:value="${true}">
-        <span th:text="${wordVariantCandidates.wordVariant.wordValue}" class="ttl"></span>
-        <button type="button" data-plugin="createWordVariantPlugin" class="btn btn-sm btn-primary ml-2" th:text="#{lex.variant.create.homonym}">Uus homonüüm</button>
+        <span th:text="${wordCandidates.lexemeVariantBean.wordValue}" class="ttl"></span>
+        <button type="button" data-plugin="createLexemeVariantPlugin" class="btn btn-sm btn-primary ml-2" th:text="#{lex.variant.create.homonym}">Uus homonüüm</button>
       </form>
     </div>
     <div>
-      <th:block th:each="wordCandidate : ${wordVariantCandidates.words}">
+      <th:block th:each="wordCandidate : ${wordCandidates.words}">
         <div class="border rounded p-2 mb-2">
           <div>
-            <form name="createWordVariantForm" th:action="@{/create_word_variant}" method="post">
-              <input type="hidden" name="wordValue" th:value="${wordVariantCandidates.wordVariant.wordValue}">
-              <input type="hidden" name="headwordLexemeId" th:value="${wordVariantCandidates.wordVariant.headwordLexemeId}">
-              <input type="hidden" name="variantTypeCode" th:value="${wordVariantCandidates.wordVariant.variantTypeCode}">
+            <form name="createLexemeVariantForm" th:action="@{/create_lexeme_variant}" method="post">
+              <input type="hidden" name="wordValue" th:value="${wordCandidates.lexemeVariantBean.wordValue}">
+              <input type="hidden" name="headwordLexemeId" th:value="${wordCandidates.lexemeVariantBean.headwordLexemeId}">
+              <input type="hidden" name="variantTypeCode" th:value="${wordCandidates.lexemeVariantBean.variantTypeCode}">
               <input type="hidden" name="forceHomonym" th:value="${true}">
               <span th:utext="${@viewUtil.getWordValueMarkup(wordCandidate.word)}" class="ttl"></span>
               <span th:text="${wordCandidate.word.homonymNr}" class="ttl"></span>
-              <button type="button" data-plugin="createWordVariantPlugin" class="btn btn-sm btn-primary ml-2" th:text="#{common.select}">Vali</button>
+              <button type="button" data-plugin="createLexemeVariantPlugin" class="btn btn-sm btn-primary ml-2" th:text="#{common.select}">Vali</button>
               <span class="float-right">
                 <b th:text="${#strings.listJoin(wordCandidate.word.datasetCodes, ', ')}"></b>
               </span>
@@ -114,6 +112,5 @@
       </th:block>
     </div>
   </div>
-
 </body>
 </html>

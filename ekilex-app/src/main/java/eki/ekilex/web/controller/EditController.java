@@ -44,6 +44,7 @@ import eki.ekilex.service.CudService;
 import eki.ekilex.service.SourceLinkService;
 import eki.ekilex.service.SynCandidateService;
 import eki.ekilex.service.SynCudService;
+import eki.ekilex.service.VariantService;
 import eki.ekilex.service.util.ConversionUtil;
 import eki.ekilex.web.bean.SessionBean;
 
@@ -59,6 +60,9 @@ public class EditController extends AbstractMutableDataPageController implements
 
 	@Autowired
 	private CollocationService collocationService;
+
+	@Autowired
+	private VariantService variantService;
 
 	@Autowired
 	private SynCudService synCudService;
@@ -606,6 +610,9 @@ public class EditController extends AbstractMutableDataPageController implements
 			break;
 		case "lexeme_freeform":
 			cudService.deleteLexemeFreeform(id, roleDatasetCode, isManualEventOnUpdateEnabled);
+			break;
+		case "lexeme_variant":
+			variantService.deleteLexemeVariant(id, roleDatasetCode, isManualEventOnUpdateEnabled);
 			break;
 		case "government":
 			cudService.deleteLexemeGovernment(id, roleDatasetCode, isManualEventOnUpdateEnabled);

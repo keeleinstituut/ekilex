@@ -19,6 +19,7 @@ import static eki.ekilex.data.db.main.Tables.LEXEME_FREEFORM;
 import static eki.ekilex.data.db.main.Tables.LEXEME_NOTE;
 import static eki.ekilex.data.db.main.Tables.LEXEME_NOTE_SOURCE_LINK;
 import static eki.ekilex.data.db.main.Tables.LEXEME_SOURCE_LINK;
+import static eki.ekilex.data.db.main.Tables.LEXEME_VARIANT;
 import static eki.ekilex.data.db.main.Tables.LEX_RELATION;
 import static eki.ekilex.data.db.main.Tables.MEANING;
 import static eki.ekilex.data.db.main.Tables.MEANING_ACTIVITY_LOG;
@@ -782,6 +783,15 @@ public class ActivityLogDbService implements GlobalConstant, ActivityFunct {
 				.select(MEANING_RELATION.MEANING1_ID)
 				.from(MEANING_RELATION)
 				.where(MEANING_RELATION.ID.eq(meaningRelationId))
+				.fetchOptionalInto(Long.class)
+				.orElse(null);
+	}
+
+	public Long getLexemeVariantOwnerId(Long lexemeVariantId) {
+		return mainDb
+				.select(LEXEME_VARIANT.LEXEME_ID)
+				.from(LEXEME_VARIANT)
+				.where(LEXEME_VARIANT.ID.eq(lexemeVariantId))
 				.fetchOptionalInto(Long.class)
 				.orElse(null);
 	}

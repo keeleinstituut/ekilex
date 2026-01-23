@@ -1,11 +1,11 @@
-$.fn.createWordVariantPlugin = function() {
+$.fn.createLexemeVariantPlugin = function() {
 	return this.each(function() {
 		const btn = $(this);
 		btn.on('click', function(e) {
 			e.preventDefault();
 
 			const actionModal = btn.closest('.modal');
-			const actionForm = btn.closest('form[name="createWordVariantForm"]');
+			const actionForm = btn.closest('form[name="createLexemeVariantForm"]');
 			const successCallback = actionModal.attr("data-callback");
 			let successCallbackFunc = createCallback(successCallback);
 			const actionUrl = actionForm.attr('action');
@@ -25,12 +25,15 @@ $.fn.createWordVariantPlugin = function() {
 			}).done(function(data) {
 				if (data.status == 'OK') {
 					actionModal.modal('hide');
-					$('#select_word_variant_section_' + headwordLexemeId).empty();
+					$('#select_lexeme_variant_section_' + headwordLexemeId).empty();
 					successCallbackFunc();
 					openMessageDlg(data.message);
 				} else if (data.status == 'INVALID') {
 					actionModal.modal('hide');
-					initWordVariantSelecthModal(headwordLexemeId, formData);
+					$('#select_lexeme_variant_section_' + headwordLexemeId).empty();
+					initSelectLexemeVariantModal(headwordLexemeId, formData);
+				} else if (data.status == 'ERROR') {
+					openAlertDlg(messages["common.error"]);
 				}
 				actionForm[0].reset();
 			}).fail(function(data) {
@@ -41,12 +44,12 @@ $.fn.createWordVariantPlugin = function() {
 	});
 }
 
-function initWordVariantSelecthModal(headwordLexemeId, formData) {
+function initSelectLexemeVariantModal(headwordLexemeId, formData) {
 
-	$('#selectWordVariantDlg_' + headwordLexemeId).modal('show');
+	$('#selectLexemeVariantDlg_' + headwordLexemeId).modal('show');
 	openWaitDlg();
 
-	let actionUrl = applicationUrl + 'search_word_variant';
+	let actionUrl = applicationUrl + 'search_lexeme_variant';
 
 	$.ajax({
 		url: actionUrl,
@@ -54,7 +57,7 @@ function initWordVariantSelecthModal(headwordLexemeId, formData) {
 		method: 'POST'
 	}).done(function(data) {
 		closeWaitDlg();
-		$('#select_word_variant_section_' + headwordLexemeId).html(data);
+		$('#select_lexeme_variant_section_' + headwordLexemeId).html(data);
 		$wpm.bindObjects();
 	}).fail(function(data) {
 		console.log(data);

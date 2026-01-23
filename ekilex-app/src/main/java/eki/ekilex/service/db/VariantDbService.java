@@ -49,6 +49,14 @@ public class VariantDbService implements SystemConstant {
 				.getId();
 	}
 
+	public void deleteLexemeVariant(Long id) {
+
+		mainDb
+				.deleteFrom(LEXEME_VARIANT)
+				.where(LEXEME_VARIANT.ID.eq(id))
+				.execute();
+	}
+
 	public List<eki.ekilex.data.LexemeVariant> getLexemeVariants(Long lexemeId, String classifierLabelLang) {
 
 		Word w2 = WORD.as("w2");
@@ -83,7 +91,19 @@ public class VariantDbService implements SystemConstant {
 				.fetchInto(eki.ekilex.data.LexemeVariant.class);
 	}
 
-	public List<eki.ekilex.data.Word> getWords(String wordValue, String lang, String datasetCode) {
+	public Long getLexemeVariantLexemeId(Long lexemeVariantId) {
+
+		LexemeVariant lv = LEXEME_VARIANT.as("lv");
+
+		return mainDb
+				.select(lv.VARIANT_LEXEME_ID)
+				.from(lv)
+				.where(lv.ID.eq(lexemeVariantId))
+				.fetchOptionalInto(Long.class)
+				.orElse(null);
+	}
+
+	public List<eki.ekilex.data.Word> getWords(String wordValue, String lang) {
 
 		Word w = WORD.as("w");
 		Lexeme l = LEXEME.as("l");
@@ -97,8 +117,7 @@ public class VariantDbService implements SystemConstant {
 						.from(l)
 						.where(
 								l.WORD_ID.eq(w.ID)
-										.and(l.IS_WORD.isTrue())
-										.and(l.DATASET_CODE.eq(datasetCode))));
+										.and(l.IS_WORD.isTrue())));
 
 		List<Field<?>> wordFields = queryHelper.getWordFields(w);
 
@@ -110,15 +129,14 @@ public class VariantDbService implements SystemConstant {
 				.fetchInto(eki.ekilex.data.Word.class);
 	}
 
-	public List<eki.ekilex.data.Lexeme> getWordLexemes(Long wordId, String datasetCode, String classifierLabelLang) {
+	public List<eki.ekilex.data.Lexeme> getWordLexemes(Long wordId, String classifierLabelLang) {
 
 		Lexeme l = LEXEME.as("l");
 		Dataset ds = DATASET.as("ds");
 		List<Field<?>> lexemeFields = queryHelper.getLexemeFields(l, ds, classifierLabelLang, CLASSIF_LABEL_TYPE_DESCRIP);
 
 		Condition where = l.WORD_ID.eq(wordId)
-				.and(l.DATASET_CODE.eq(ds.CODE))
-				.and(l.DATASET_CODE.eq(datasetCode));
+				.and(l.DATASET_CODE.eq(ds.CODE));
 
 		return mainDb
 				.select(lexemeFields)
