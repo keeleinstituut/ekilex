@@ -366,6 +366,16 @@ public class Sequences {
     public static final Sequence<Long> LEXEME_TAG_ID_SEQ = Internal.createSequence("lexeme_tag_id_seq", Public.PUBLIC, SQLDataType.BIGINT.nullable(false), null, null, null, null, false, null);
 
     /**
+     * The sequence <code>public.lexeme_variant_id_seq</code>
+     */
+    public static final Sequence<Long> LEXEME_VARIANT_ID_SEQ = Internal.createSequence("lexeme_variant_id_seq", Public.PUBLIC, SQLDataType.BIGINT.nullable(false), null, null, null, null, false, null);
+
+    /**
+     * The sequence <code>public.lexeme_variant_order_by_seq</code>
+     */
+    public static final Sequence<Long> LEXEME_VARIANT_ORDER_BY_SEQ = Internal.createSequence("lexeme_variant_order_by_seq", Public.PUBLIC, SQLDataType.BIGINT.nullable(false), null, null, null, null, false, null);
+
+    /**
      * The sequence <code>public.meaning_activity_log_id_seq</code>
      */
     public static final Sequence<Long> MEANING_ACTIVITY_LOG_ID_SEQ = Internal.createSequence("meaning_activity_log_id_seq", Public.PUBLIC, SQLDataType.BIGINT.nullable(false), null, null, null, null, false, null);
@@ -629,6 +639,11 @@ public class Sequences {
      * The sequence <code>public.value_state_order_by_seq</code>
      */
     public static final Sequence<Long> VALUE_STATE_ORDER_BY_SEQ = Internal.createSequence("value_state_order_by_seq", Public.PUBLIC, SQLDataType.BIGINT.nullable(false), null, null, null, null, false, null);
+
+    /**
+     * The sequence <code>public.variant_type_order_by_seq</code>
+     */
+    public static final Sequence<Long> VARIANT_TYPE_ORDER_BY_SEQ = Internal.createSequence("variant_type_order_by_seq", Public.PUBLIC, SQLDataType.BIGINT.nullable(false), null, null, null, null, false, null);
 
     /**
      * The sequence <code>public.word_activity_log_id_seq</code>

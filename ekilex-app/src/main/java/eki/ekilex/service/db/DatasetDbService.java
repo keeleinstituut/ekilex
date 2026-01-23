@@ -4,7 +4,6 @@ import static eki.ekilex.data.db.main.Tables.DATASET;
 import static eki.ekilex.data.db.main.Tables.DATASET_FREEFORM_TYPE;
 import static eki.ekilex.data.db.main.Tables.DOMAIN;
 import static eki.ekilex.data.db.main.Tables.EKI_USER_PROFILE;
-import static eki.ekilex.data.db.main.Tables.FREEFORM_TYPE;
 import static eki.ekilex.data.db.main.Tables.LANGUAGE;
 import static eki.ekilex.data.db.main.Tables.LEXEME;
 import static eki.ekilex.data.db.main.Tables.MEANING;
@@ -196,16 +195,6 @@ public class DatasetDbService {
 
 			addDatasetToClassifiers(classifierName, datasetCode, classifiers, null);
 
-		} else if (ClassifierName.FREEFORM_TYPE.equals(classifierName)) {
-
-			List<String> codes = classifiers.stream().map(Classifier::getCode).collect(Collectors.toList());
-
-			mainDb
-					.update(FREEFORM_TYPE)
-					.set(FREEFORM_TYPE.DATASETS, DSL.field(PostgresDSL.arrayAppend(FREEFORM_TYPE.DATASETS, datasetCode)))
-					.where(FREEFORM_TYPE.CODE.in(codes))
-					.execute();
-
 		} else if (ClassifierName.DOMAIN.equals(classifierName)) {
 
 			addDatasetToClassifiers(classifierName, datasetCode, classifiers, null);
@@ -234,14 +223,6 @@ public class DatasetDbService {
 					.execute();
 
 		} else if (ClassifierName.FREEFORM_TYPE.equals(classifierName)) {
-
-			mainDb
-					.update(FREEFORM_TYPE)
-					.set(FREEFORM_TYPE.DATASETS, DSL.field(PostgresDSL.arrayAppend(FREEFORM_TYPE.DATASETS, datasetCode)))
-					.where(
-							FREEFORM_TYPE.CODE.in(classifierCodes)
-									.and(DSL.val(datasetCode).ne(DSL.any(FREEFORM_TYPE.DATASETS))))
-					.execute();
 
 			for (String classifierCode : classifierCodes) {
 
@@ -285,12 +266,6 @@ public class DatasetDbService {
 					.execute();
 
 		} else if (ClassifierName.FREEFORM_TYPE.equals(classifierName)) {
-
-			mainDb
-					.update(FREEFORM_TYPE)
-					.set(FREEFORM_TYPE.DATASETS, DSL.field(PostgresDSL.arrayRemove(FREEFORM_TYPE.DATASETS, datasetCode)))
-					.where(DSL.val(datasetCode).eq(DSL.any(FREEFORM_TYPE.DATASETS)))
-					.execute();
 
 			mainDb
 					.deleteFrom(DATASET_FREEFORM_TYPE)

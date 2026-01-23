@@ -33,6 +33,7 @@ import eki.ekilex.service.db.CollocationDbService;
 import eki.ekilex.service.db.LexDataDbService;
 import eki.ekilex.service.db.LexSearchDbService;
 import eki.ekilex.service.db.LookupDbService;
+import eki.ekilex.service.db.VariantDbService;
 import eki.ekilex.service.util.PermCalculator;
 
 @Component
@@ -46,6 +47,9 @@ public abstract class AbstractWordSearchService extends AbstractSearchService {
 
 	@Autowired
 	protected CollocationDbService collocationDbService;
+
+	@Autowired
+	protected VariantDbService variantDbService;
 
 	@Autowired
 	protected LookupDbService lookupDbService;

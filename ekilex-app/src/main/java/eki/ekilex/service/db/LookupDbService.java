@@ -55,6 +55,7 @@ import eki.ekilex.data.Classifier;
 import eki.ekilex.data.IdPair;
 import eki.ekilex.data.InexactSynonym;
 import eki.ekilex.data.SearchDatasetsRestriction;
+import eki.ekilex.data.WordLexemeMeaningDetails;
 import eki.ekilex.data.WordLexemeMeaningIdTuple;
 import eki.ekilex.data.WordRelation;
 import eki.ekilex.data.db.main.tables.CollocationMember;
@@ -86,11 +87,21 @@ public class LookupDbService extends AbstractDataDbService {
 	private SearchFilterHelper searchFilterHelper;
 
 	public String getWordValuePrese(Long wordId) {
-		return mainDb.select(WORD.VALUE_PRESE).from(WORD).where(WORD.ID.eq(wordId)).fetchOptionalInto(String.class).orElse(null);
+		return mainDb
+				.select(WORD.VALUE_PRESE)
+				.from(WORD)
+				.where(WORD.ID.eq(wordId))
+				.fetchOptionalInto(String.class)
+				.orElse(null);
 	}
 
 	public String getWordLang(Long wordId) {
-		return mainDb.select(WORD.LANG).from(WORD).where(WORD.ID.eq(wordId)).fetchOptionalInto(String.class).orElse(null);
+		return mainDb
+				.select(WORD.LANG)
+				.from(WORD)
+				.where(WORD.ID.eq(wordId))
+				.fetchOptionalInto(String.class)
+				.orElse(null);
 	}
 
 	public Long getWordWordTypeId(Long wordId, String typeCode) {
@@ -380,8 +391,35 @@ public class LookupDbService extends AbstractDataDbService {
 				.fetchInto(WordLexemeMeaningIdTuple.class);
 	}
 
+	public WordLexemeMeaningDetails getWordLexemeMeaningDetailsByLexemeId(Long lexemeId) {
+
+		Word w = WORD.as("w");
+		Lexeme l = LEXEME.as("l");
+		Meaning m = MEANING.as("m");
+
+		return mainDb
+				.select(
+						w.ID.as("word_id"),
+						l.ID.as("lexeme_id"),
+						m.ID.as("meaning_id"),
+						w.VALUE.as("word_value"),
+						w.VALUE_PRESE.as("word_value_prese"),
+						w.LANG.as("language"),
+						l.DATASET_CODE.as("dataset"))
+				.from(w, l, m)
+				.where(
+						l.ID.eq(lexemeId)
+								.and(l.WORD_ID.eq(w.ID))
+								.and(l.MEANING_ID.eq(m.ID)))
+				.fetchOptionalInto(WordLexemeMeaningDetails.class)
+				.orElse(null);
+	}
+
 	public WordRecord getWordRecord(Long wordId) {
-		return mainDb.selectFrom(WORD).where(WORD.ID.eq(wordId)).fetchOne();
+		return mainDb
+				.selectFrom(WORD)
+				.where(WORD.ID.eq(wordId))
+				.fetchOne();
 	}
 
 	public String getLexemeDatasetCode(Long lexemeId) {
@@ -1012,13 +1050,13 @@ public class LookupDbService extends AbstractDataDbService {
 		Word w = WORD.as("w");
 
 		return mainDb
-				.select(field(DSL.count(w.ID).gt(0)).as("word_exists"))
-				.from(w)
-				.where(
-						w.VALUE.eq(wordValue)
-								.and(w.LANG.eq(wordLang))
-								.and(w.IS_PUBLIC.isTrue()))
-				.fetchSingleInto(Boolean.class);
+				.fetchExists(DSL
+						.select(w.ID)
+						.from(w)
+						.where(
+								w.VALUE.eq(wordValue)
+										.and(w.LANG.eq(wordLang))
+										.and(w.IS_PUBLIC.isTrue())));
 	}
 
 	public boolean isOnlyLexemeForWord(Long lexemeId) {

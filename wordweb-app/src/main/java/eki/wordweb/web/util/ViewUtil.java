@@ -161,7 +161,7 @@ public class ViewUtil implements WebConstant, SystemConstant, GlobalConstant {
 		}
 		List<Grammar> grammars = lexemeWord.getGrammars();
 		if (CollectionUtils.isNotEmpty(grammars)) {
-			var grammarValues = grammars.stream()
+			String grammarValues = grammars.stream()
 					.map(Grammar::getValue)
 					.collect(Collectors.joining(", "));
 			htmlBuf.append("<div>");

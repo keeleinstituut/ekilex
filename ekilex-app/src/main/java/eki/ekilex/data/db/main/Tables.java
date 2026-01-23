@@ -68,6 +68,7 @@ import eki.ekilex.data.db.main.tables.LexemeRegion;
 import eki.ekilex.data.db.main.tables.LexemeRegister;
 import eki.ekilex.data.db.main.tables.LexemeSourceLink;
 import eki.ekilex.data.db.main.tables.LexemeTag;
+import eki.ekilex.data.db.main.tables.LexemeVariant;
 import eki.ekilex.data.db.main.tables.Meaning;
 import eki.ekilex.data.db.main.tables.MeaningActivityLog;
 import eki.ekilex.data.db.main.tables.MeaningDomain;
@@ -119,6 +120,8 @@ import eki.ekilex.data.db.main.tables.UsageType;
 import eki.ekilex.data.db.main.tables.UsageTypeLabel;
 import eki.ekilex.data.db.main.tables.ValueState;
 import eki.ekilex.data.db.main.tables.ValueStateLabel;
+import eki.ekilex.data.db.main.tables.VariantType;
+import eki.ekilex.data.db.main.tables.VariantTypeLabel;
 import eki.ekilex.data.db.main.tables.ViewOsDefinition;
 import eki.ekilex.data.db.main.tables.ViewOsDefinitionIdx;
 import eki.ekilex.data.db.main.tables.ViewOsLexemeMeaning;
@@ -500,6 +503,11 @@ public class Tables {
     public static final LexemeTag LEXEME_TAG = LexemeTag.LEXEME_TAG;
 
     /**
+     * The table <code>public.lexeme_variant</code>.
+     */
+    public static final LexemeVariant LEXEME_VARIANT = LexemeVariant.LEXEME_VARIANT;
+
+    /**
      * The table <code>public.meaning</code>.
      */
     public static final Meaning MEANING = Meaning.MEANING;
@@ -753,6 +761,16 @@ public class Tables {
      * The table <code>public.value_state_label</code>.
      */
     public static final ValueStateLabel VALUE_STATE_LABEL = ValueStateLabel.VALUE_STATE_LABEL;
+
+    /**
+     * The table <code>public.variant_type</code>.
+     */
+    public static final VariantType VARIANT_TYPE = VariantType.VARIANT_TYPE;
+
+    /**
+     * The table <code>public.variant_type_label</code>.
+     */
+    public static final VariantTypeLabel VARIANT_TYPE_LABEL = VariantTypeLabel.VARIANT_TYPE_LABEL;
 
     /**
      * The table <code>public.view_os_definition</code>.

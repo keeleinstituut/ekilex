@@ -24,6 +24,7 @@ import static eki.ekilex.data.db.main.Tables.LEARNER_COMMENT;
 import static eki.ekilex.data.db.main.Tables.LEXEME;
 import static eki.ekilex.data.db.main.Tables.LEXEME_FREEFORM;
 import static eki.ekilex.data.db.main.Tables.LEXEME_REGISTER;
+import static eki.ekilex.data.db.main.Tables.LEXEME_VARIANT;
 import static eki.ekilex.data.db.main.Tables.LEX_RELATION;
 import static eki.ekilex.data.db.main.Tables.LEX_REL_TYPE_LABEL;
 import static eki.ekilex.data.db.main.Tables.MEANING;
@@ -102,6 +103,7 @@ import eki.ekilex.data.db.main.tables.LexRelation;
 import eki.ekilex.data.db.main.tables.Lexeme;
 import eki.ekilex.data.db.main.tables.LexemeFreeform;
 import eki.ekilex.data.db.main.tables.LexemeRegister;
+import eki.ekilex.data.db.main.tables.LexemeVariant;
 import eki.ekilex.data.db.main.tables.Meaning;
 import eki.ekilex.data.db.main.tables.MeaningDomain;
 import eki.ekilex.data.db.main.tables.MeaningFreeform;
@@ -847,46 +849,53 @@ public class CommonDataDbService extends AbstractDataDbService {
 
 	public List<MeaningWord> getMeaningWords(Long lexemeId, SearchLangsRestriction meaningWordLangsRestriction) {
 
-		boolean noLangsFiltering = meaningWordLangsRestriction.isNoLangsFiltering();
+		boolean isNoLangsFiltering = meaningWordLangsRestriction.isNoLangsFiltering();
 		Lexeme l1 = LEXEME.as("l1");
 		Lexeme l2 = LEXEME.as("l2");
 		Lexeme lh = LEXEME.as("lh");
-		LexemeRegister lreg = LEXEME_REGISTER.as("lreg");
 		Word w2 = WORD.as("w2");
 		Word wh = WORD.as("wh");
+		LexemeRegister lreg2 = LEXEME_REGISTER.as("lreg2");
+		LexemeVariant lv2 = LEXEME_VARIANT.as("lv2");
 
 		Field<String[]> wtf = queryHelper.getWordTypeCodesField(w2.ID);
 		Field<Boolean> wtpf = queryHelper.getWordIsPrefixoidField(w2.ID);
 		Field<Boolean> wtsf = queryHelper.getWordIsSuffixoidField(w2.ID);
 		Field<Boolean> wtz = queryHelper.getWordIsForeignField(w2.ID);
 		Field<String[]> lrc = DSL.field(DSL
-				.select(DSL.arrayAgg(lreg.REGISTER_CODE))
-				.from(lreg)
-				.where(lreg.LEXEME_ID.eq(l2.ID)));
+				.select(DSL.arrayAgg(lreg2.REGISTER_CODE))
+				.from(lreg2)
+				.where(lreg2.LEXEME_ID.eq(l2.ID)));
 
-		Field<Boolean> whe = DSL
-				.select(DSL.field(DSL.countDistinct(wh.HOMONYM_NR).gt(1)))
-				.from(wh)
-				.where(
-						wh.VALUE.eq(w2.VALUE)
-								.and(wh.IS_PUBLIC.isTrue())
-								.andExists(DSL
-										.select(lh.ID)
-										.from(lh)
-										.where(
-												lh.WORD_ID.eq(wh.ID)
-														.and(lh.DATASET_CODE.eq(l2.DATASET_CODE)))))
-				.groupBy(wh.VALUE)
-				.asField();
+		Field<Boolean> w2hef = DSL
+				.field(DSL
+						.exists(DSL
+								.select(wh.ID)
+								.from(wh)
+								.where(
+										wh.VALUE.eq(w2.VALUE)
+												.and(wh.LANG.eq(w2.LANG))
+												.and(wh.IS_PUBLIC.isTrue())
+												.and(wh.ID.ne(w2.ID))
+												.andExists(DSL
+														.select(lh.ID)
+														.from(lh)
+														.where(
+																lh.WORD_ID.eq(wh.ID)
+																		.and(lh.DATASET_CODE.eq(l2.DATASET_CODE)))))));
 
 		Condition where = l1.ID.eq(lexemeId)
 				.and(l2.MEANING_ID.eq(l1.MEANING_ID))
 				.and(l2.ID.ne(l1.ID))
 				.and(l2.DATASET_CODE.eq(l1.DATASET_CODE))
 				.and(l2.WORD_ID.eq(w2.ID))
-				.and(w2.IS_PUBLIC.isTrue());
+				.and(w2.IS_PUBLIC.isTrue())
+				.andNotExists(DSL
+						.select(lv2.ID)
+						.from(lv2)
+						.where(lv2.VARIANT_LEXEME_ID.eq(l2.ID)));
 
-		if (!noLangsFiltering) {
+		if (!isNoLangsFiltering) {
 			List<String> filteringLangs = meaningWordLangsRestriction.getFilteringLangs();
 			where = where.and(w2.LANG.in(filteringLangs));
 		}
@@ -897,7 +906,7 @@ public class CommonDataDbService extends AbstractDataDbService {
 						w2.VALUE.as("word_value"),
 						w2.VALUE_PRESE.as("word_value_prese"),
 						w2.HOMONYM_NR,
-						whe.as("homonyms_exist"),
+						w2hef.as("homonyms_exist"),
 						w2.LANG,
 						wtf.as("word_type_codes"),
 						wtpf.as("prefixoid"),

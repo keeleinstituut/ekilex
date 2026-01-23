@@ -16,7 +16,7 @@ import org.jooq.ForeignKey;
 import org.jooq.Identity;
 import org.jooq.Name;
 import org.jooq.Record;
-import org.jooq.Row3;
+import org.jooq.Row2;
 import org.jooq.Schema;
 import org.jooq.Table;
 import org.jooq.TableField;
@@ -52,11 +52,6 @@ public class PosGroup extends TableImpl<PosGroupRecord> {
      * The column <code>public.pos_group.code</code>.
      */
     public final TableField<PosGroupRecord, String> CODE = createField(DSL.name("code"), SQLDataType.VARCHAR(100).nullable(false), this, "");
-
-    /**
-     * The column <code>public.pos_group.datasets</code>.
-     */
-    public final TableField<PosGroupRecord, String[]> DATASETS = createField(DSL.name("datasets"), SQLDataType.VARCHAR(10).getArrayDataType(), this, "");
 
     /**
      * The column <code>public.pos_group.order_by</code>.
@@ -143,11 +138,11 @@ public class PosGroup extends TableImpl<PosGroupRecord> {
     }
 
     // -------------------------------------------------------------------------
-    // Row3 type methods
+    // Row2 type methods
     // -------------------------------------------------------------------------
 
     @Override
-    public Row3<String, String[], Long> fieldsRow() {
-        return (Row3) super.fieldsRow();
+    public Row2<String, Long> fieldsRow() {
+        return (Row2) super.fieldsRow();
     }
 }
