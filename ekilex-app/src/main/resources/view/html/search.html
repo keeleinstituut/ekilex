@@ -283,6 +283,13 @@
                          autocomplete="off">
                   <div class="invalid-feedback d-block" th:text="${criteria.validationMessage}">warning</div>
                 </div>
+                <div class="value-input-container col-auto flex-grow-1 flex-shrink-1" th:if="${criteria.searchKey.name() == 'VARIANT'}">
+                  <input type="text" class="form-control"
+                         th:value="${criteria.searchValue}"
+                         th:name="'criteriaGroups[' + ${critGroupStat.index} + '].searchCriteria[' + ${critStat.index} + '].searchValue'"
+                         autocomplete="off">
+                  <div class="invalid-feedback d-block" th:text="${criteria.validationMessage}">warning</div>
+                </div>
                 <div class="value-input-container col-auto flex-grow-1 flex-shrink-1" th:if="${criteria.searchKey.name() == 'ID'}">
                   <input type="text" class="form-control"
                          th:value="${criteria.searchValue}"
@@ -719,6 +726,9 @@
               <input type="text" class="form-control" autocomplete="off">
             </div>
             <div name="VALUE_AND_EXISTS" class="value-input-container col-auto flex-grow-1 flex-shrink-1">
+              <input type="text" class="form-control" autocomplete="off">
+            </div>
+            <div name="VARIANT" class="value-input-container col-auto flex-grow-1 flex-shrink-1">
               <input type="text" class="form-control" autocomplete="off">
             </div>
             <div name="ID" class="value-input-container col-auto flex-grow-1 flex-shrink-1">

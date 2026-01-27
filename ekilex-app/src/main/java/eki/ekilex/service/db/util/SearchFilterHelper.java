@@ -21,6 +21,7 @@ import static eki.ekilex.data.db.main.Tables.LEXEME_POS;
 import static eki.ekilex.data.db.main.Tables.LEXEME_REGISTER;
 import static eki.ekilex.data.db.main.Tables.LEXEME_SOURCE_LINK;
 import static eki.ekilex.data.db.main.Tables.LEXEME_TAG;
+import static eki.ekilex.data.db.main.Tables.LEXEME_VARIANT;
 import static eki.ekilex.data.db.main.Tables.LEX_RELATION;
 import static eki.ekilex.data.db.main.Tables.MEANING_DOMAIN;
 import static eki.ekilex.data.db.main.Tables.MEANING_FORUM;
@@ -108,6 +109,7 @@ import eki.ekilex.data.db.main.tables.LexemePos;
 import eki.ekilex.data.db.main.tables.LexemeRegister;
 import eki.ekilex.data.db.main.tables.LexemeSourceLink;
 import eki.ekilex.data.db.main.tables.LexemeTag;
+import eki.ekilex.data.db.main.tables.LexemeVariant;
 import eki.ekilex.data.db.main.tables.Meaning;
 import eki.ekilex.data.db.main.tables.MeaningDomain;
 import eki.ekilex.data.db.main.tables.MeaningForum;
@@ -1565,6 +1567,83 @@ public class SearchFilterHelper implements GlobalConstant, ActivityFunct, Freefo
 		return where;
 	}
 
+	public Condition applyNearSynonymFilters(
+			List<SearchCriterion> searchCriteria,
+			SearchDatasetsRestriction searchDatasetsRestriction,
+			Word w1,
+			Lexeme l1,
+			Condition where) throws Exception {
+
+		List<SearchCriterion> filteredCriteria = filterCriteriaBySearchKey(searchCriteria, SearchKey.SECONDARY_MEANING_WORD);
+
+		if (CollectionUtils.isEmpty(filteredCriteria)) {
+			return where;
+		}
+
+		MeaningRelation mr = MEANING_RELATION.as("mr");
+		Lexeme l2 = Lexeme.LEXEME.as("l2");
+		Word w2 = Word.WORD.as("w2");
+
+		Condition where1 = mr.MEANING1_ID.eq(l1.MEANING_ID)
+				.and(mr.MEANING2_ID.eq(l2.MEANING_ID))
+				.and(mr.MEANING_REL_TYPE_CODE.eq(MEANING_REL_TYPE_CODE_SIMILAR))
+				.and(l2.WORD_ID.eq(w2.ID))
+				.and(w2.LANG.eq(w1.LANG))
+				.and(w2.IS_PUBLIC.isTrue());
+		where1 = applyDatasetRestrictions(l2, searchDatasetsRestriction, where1);
+
+		boolean isNotExistsSearch = isNotExistsSearch(SearchKey.SECONDARY_MEANING_WORD, filteredCriteria);
+		if (isNotExistsSearch) {
+			where = where.and(DSL.notExists(DSL.select(l2.ID).from(l2, w2, mr).where(where1)));
+		} else {
+			Condition where2 = applyValueFilters(SearchKey.SECONDARY_MEANING_WORD, filteredCriteria, w2.VALUE, DSL.noCondition(), true);
+			Condition where3 = applyValueFilters(SearchKey.SECONDARY_MEANING_WORD, filteredCriteria, w2.VALUE_AS_WORD, DSL.noCondition(), true);
+			where1 = where1.and(DSL.or(where2, where3));
+			where = where.and(DSL.exists(DSL.select(l2.ID).from(l2, w2, mr).where(where1)));
+		}
+		return where;
+	}
+
+	public Condition applyLexemeVariantFilter(
+			List<SearchCriterion> searchCriteria,
+			SearchDatasetsRestriction searchDatasetsRestriction,
+			Lexeme l1,
+			Condition where) throws Exception {
+
+		List<SearchCriterion> filteredCriteria = filterCriteriaBySearchKey(searchCriteria, SearchKey.VARIANT);
+
+		if (CollectionUtils.isEmpty(filteredCriteria)) {
+			return where;
+		}
+
+		LexemeVariant lv = LEXEME_VARIANT.as("lv");
+		Lexeme l2 = Lexeme.LEXEME.as("l2");
+		Word w2 = Word.WORD.as("w2");
+
+		Condition where1 = l1.MEANING_ID.eq(l2.MEANING_ID)
+				.and(l2.WORD_ID.eq(w2.ID))
+				.and(w2.IS_PUBLIC.isTrue())
+				.and(l1.ID.ne(l2.ID))
+				.and(l2.IS_WORD.isTrue())
+				.andExists(DSL
+						.select(lv.ID)
+						.from(lv)
+						.where(
+								lv.LEXEME_ID.eq(l1.ID)
+										.and(lv.VARIANT_LEXEME_ID.eq(l2.ID))));
+		where1 = applyDatasetRestrictions(l2, searchDatasetsRestriction, where1);
+
+		for (SearchCriterion criterion : filteredCriteria) {
+			if (criterion.getSearchValue() != null) {
+				String searchValueStr = criterion.getSearchValue().toString();
+				where1 = applyValueFilter(searchValueStr, criterion.isNot(), criterion.getSearchOperand(), w2.VALUE, where1, true);
+			}
+		}
+		where = where.and(DSL.exists(DSL.select(l2.ID).from(l2, w2).where(where1)));
+
+		return where;
+	}
+
 	public Condition applyLexemeFreeformFilters(
 			SearchKey searchKey,
 			String freeformTypeCode,
@@ -1580,7 +1659,9 @@ public class SearchFilterHelper implements GlobalConstant, ActivityFunct, Freefo
 			return where;
 		}
 
-		List<SearchCriterion> existsCriteria = filteredCriteria.stream().filter(crit -> crit.getSearchOperand().equals(SearchOperand.EXISTS)).collect(toList());
+		List<SearchCriterion> existsCriteria = filteredCriteria.stream()
+				.filter(crit -> crit.getSearchOperand().equals(SearchOperand.EXISTS))
+				.collect(toList());
 
 		LexemeFreeform lff = LEXEME_FREEFORM.as("lff");
 		Freeform ff = FREEFORM.as("ff");
