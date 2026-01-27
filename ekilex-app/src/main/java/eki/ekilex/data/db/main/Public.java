@@ -9,7 +9,6 @@ import eki.ekilex.data.db.main.tables.ApiErrorCount;
 import eki.ekilex.data.db.main.tables.ApiRequestCount;
 import eki.ekilex.data.db.main.tables.Aspect;
 import eki.ekilex.data.db.main.tables.AspectLabel;
-import eki.ekilex.data.db.main.tables.Collocation;
 import eki.ekilex.data.db.main.tables.CollocationMember;
 import eki.ekilex.data.db.main.tables.DataRequest;
 import eki.ekilex.data.db.main.tables.Dataset;
@@ -54,9 +53,6 @@ import eki.ekilex.data.db.main.tables.LabelType;
 import eki.ekilex.data.db.main.tables.Language;
 import eki.ekilex.data.db.main.tables.LanguageLabel;
 import eki.ekilex.data.db.main.tables.LearnerComment;
-import eki.ekilex.data.db.main.tables.LexColloc;
-import eki.ekilex.data.db.main.tables.LexCollocPosGroup;
-import eki.ekilex.data.db.main.tables.LexCollocRelGroup;
 import eki.ekilex.data.db.main.tables.LexRelMapping;
 import eki.ekilex.data.db.main.tables.LexRelType;
 import eki.ekilex.data.db.main.tables.LexRelTypeLabel;
@@ -72,6 +68,7 @@ import eki.ekilex.data.db.main.tables.LexemeRegion;
 import eki.ekilex.data.db.main.tables.LexemeRegister;
 import eki.ekilex.data.db.main.tables.LexemeSourceLink;
 import eki.ekilex.data.db.main.tables.LexemeTag;
+import eki.ekilex.data.db.main.tables.LexemeVariant;
 import eki.ekilex.data.db.main.tables.Meaning;
 import eki.ekilex.data.db.main.tables.MeaningActivityLog;
 import eki.ekilex.data.db.main.tables.MeaningDomain;
@@ -123,6 +120,8 @@ import eki.ekilex.data.db.main.tables.UsageType;
 import eki.ekilex.data.db.main.tables.UsageTypeLabel;
 import eki.ekilex.data.db.main.tables.ValueState;
 import eki.ekilex.data.db.main.tables.ValueStateLabel;
+import eki.ekilex.data.db.main.tables.VariantType;
+import eki.ekilex.data.db.main.tables.VariantTypeLabel;
 import eki.ekilex.data.db.main.tables.ViewOsDefinition;
 import eki.ekilex.data.db.main.tables.ViewOsDefinitionIdx;
 import eki.ekilex.data.db.main.tables.ViewOsLexemeMeaning;
@@ -148,6 +147,7 @@ import eki.ekilex.data.db.main.tables.ViewWwWord;
 import eki.ekilex.data.db.main.tables.ViewWwWordEtymology;
 import eki.ekilex.data.db.main.tables.ViewWwWordRelation;
 import eki.ekilex.data.db.main.tables.ViewWwWordSearch;
+import eki.ekilex.data.db.main.tables.ViewWwWordSuggestion;
 import eki.ekilex.data.db.main.tables.Word;
 import eki.ekilex.data.db.main.tables.WordActivityLog;
 import eki.ekilex.data.db.main.tables.WordEkiRecommendation;
@@ -169,6 +169,7 @@ import eki.ekilex.data.db.main.tables.WordRelType;
 import eki.ekilex.data.db.main.tables.WordRelTypeLabel;
 import eki.ekilex.data.db.main.tables.WordRelation;
 import eki.ekilex.data.db.main.tables.WordRelationParam;
+import eki.ekilex.data.db.main.tables.WordSuggestion;
 import eki.ekilex.data.db.main.tables.WordTag;
 import eki.ekilex.data.db.main.tables.WordType;
 import eki.ekilex.data.db.main.tables.WordTypeLabel;
@@ -234,11 +235,6 @@ public class Public extends SchemaImpl {
      * The table <code>public.aspect_label</code>.
      */
     public final AspectLabel ASPECT_LABEL = AspectLabel.ASPECT_LABEL;
-
-    /**
-     * The table <code>public.collocation</code>.
-     */
-    public final Collocation COLLOCATION = Collocation.COLLOCATION;
 
     /**
      * The table <code>public.collocation_member</code>.
@@ -461,21 +457,6 @@ public class Public extends SchemaImpl {
     public final LearnerComment LEARNER_COMMENT = LearnerComment.LEARNER_COMMENT;
 
     /**
-     * The table <code>public.lex_colloc</code>.
-     */
-    public final LexColloc LEX_COLLOC = LexColloc.LEX_COLLOC;
-
-    /**
-     * The table <code>public.lex_colloc_pos_group</code>.
-     */
-    public final LexCollocPosGroup LEX_COLLOC_POS_GROUP = LexCollocPosGroup.LEX_COLLOC_POS_GROUP;
-
-    /**
-     * The table <code>public.lex_colloc_rel_group</code>.
-     */
-    public final LexCollocRelGroup LEX_COLLOC_REL_GROUP = LexCollocRelGroup.LEX_COLLOC_REL_GROUP;
-
-    /**
      * The table <code>public.lex_rel_mapping</code>.
      */
     public final LexRelMapping LEX_REL_MAPPING = LexRelMapping.LEX_REL_MAPPING;
@@ -549,6 +530,11 @@ public class Public extends SchemaImpl {
      * The table <code>public.lexeme_tag</code>.
      */
     public final LexemeTag LEXEME_TAG = LexemeTag.LEXEME_TAG;
+
+    /**
+     * The table <code>public.lexeme_variant</code>.
+     */
+    public final LexemeVariant LEXEME_VARIANT = LexemeVariant.LEXEME_VARIANT;
 
     /**
      * The table <code>public.meaning</code>.
@@ -806,6 +792,16 @@ public class Public extends SchemaImpl {
     public final ValueStateLabel VALUE_STATE_LABEL = ValueStateLabel.VALUE_STATE_LABEL;
 
     /**
+     * The table <code>public.variant_type</code>.
+     */
+    public final VariantType VARIANT_TYPE = VariantType.VARIANT_TYPE;
+
+    /**
+     * The table <code>public.variant_type_label</code>.
+     */
+    public final VariantTypeLabel VARIANT_TYPE_LABEL = VariantTypeLabel.VARIANT_TYPE_LABEL;
+
+    /**
      * The table <code>public.view_os_definition</code>.
      */
     public final ViewOsDefinition VIEW_OS_DEFINITION = ViewOsDefinition.VIEW_OS_DEFINITION;
@@ -931,6 +927,11 @@ public class Public extends SchemaImpl {
     public final ViewWwWordSearch VIEW_WW_WORD_SEARCH = ViewWwWordSearch.VIEW_WW_WORD_SEARCH;
 
     /**
+     * The table <code>public.view_ww_word_suggestion</code>.
+     */
+    public final ViewWwWordSuggestion VIEW_WW_WORD_SUGGESTION = ViewWwWordSuggestion.VIEW_WW_WORD_SUGGESTION;
+
+    /**
      * The table <code>public.word</code>.
      */
     public final Word WORD = Word.WORD;
@@ -1036,6 +1037,11 @@ public class Public extends SchemaImpl {
     public final WordRelationParam WORD_RELATION_PARAM = WordRelationParam.WORD_RELATION_PARAM;
 
     /**
+     * The table <code>public.word_suggestion</code>.
+     */
+    public final WordSuggestion WORD_SUGGESTION = WordSuggestion.WORD_SUGGESTION;
+
+    /**
      * The table <code>public.word_tag</code>.
      */
     public final WordTag WORD_TAG = WordTag.WORD_TAG;
@@ -1075,7 +1081,6 @@ public class Public extends SchemaImpl {
             Sequences.API_ERROR_COUNT_ID_SEQ,
             Sequences.API_REQUEST_COUNT_ID_SEQ,
             Sequences.ASPECT_ORDER_BY_SEQ,
-            Sequences.COLLOCATION_ID_SEQ,
             Sequences.COLLOCATION_MEMBER_ID_SEQ,
             Sequences.DATA_REQUEST_ID_SEQ,
             Sequences.DATASET_FREEFORM_TYPE_ID_SEQ,
@@ -1119,11 +1124,6 @@ public class Public extends SchemaImpl {
             Sequences.LANGUAGE_ORDER_BY_SEQ,
             Sequences.LEARNER_COMMENT_ID_SEQ,
             Sequences.LEARNER_COMMENT_ORDER_BY_SEQ,
-            Sequences.LEX_COLLOC_ID_SEQ,
-            Sequences.LEX_COLLOC_POS_GROUP_ID_SEQ,
-            Sequences.LEX_COLLOC_POS_GROUP_ORDER_BY_SEQ,
-            Sequences.LEX_COLLOC_REL_GROUP_ID_SEQ,
-            Sequences.LEX_COLLOC_REL_GROUP_ORDER_BY_SEQ,
             Sequences.LEX_REL_TYPE_ORDER_BY_SEQ,
             Sequences.LEX_RELATION_ID_SEQ,
             Sequences.LEX_RELATION_ORDER_BY_SEQ,
@@ -1147,6 +1147,8 @@ public class Public extends SchemaImpl {
             Sequences.LEXEME_SOURCE_LINK_ID_SEQ,
             Sequences.LEXEME_SOURCE_LINK_ORDER_BY_SEQ,
             Sequences.LEXEME_TAG_ID_SEQ,
+            Sequences.LEXEME_VARIANT_ID_SEQ,
+            Sequences.LEXEME_VARIANT_ORDER_BY_SEQ,
             Sequences.MEANING_ACTIVITY_LOG_ID_SEQ,
             Sequences.MEANING_DOMAIN_ID_SEQ,
             Sequences.MEANING_DOMAIN_ORDER_BY_SEQ,
@@ -1200,6 +1202,7 @@ public class Public extends SchemaImpl {
             Sequences.USAGE_TRANSLATION_ORDER_BY_SEQ,
             Sequences.USAGE_TYPE_ORDER_BY_SEQ,
             Sequences.VALUE_STATE_ORDER_BY_SEQ,
+            Sequences.VARIANT_TYPE_ORDER_BY_SEQ,
             Sequences.WORD_ACTIVITY_LOG_ID_SEQ,
             Sequences.WORD_EKI_RECOMMENDATION_ID_SEQ,
             Sequences.WORD_ETYMOLOGY_ID_SEQ,
@@ -1227,6 +1230,7 @@ public class Public extends SchemaImpl {
             Sequences.WORD_RELATION_ID_SEQ,
             Sequences.WORD_RELATION_ORDER_BY_SEQ,
             Sequences.WORD_RELATION_PARAM_ID_SEQ,
+            Sequences.WORD_SUGGESTION_ID_SEQ,
             Sequences.WORD_TAG_ID_SEQ,
             Sequences.WORD_TYPE_ORDER_BY_SEQ,
             Sequences.WORD_WORD_TYPE_ID_SEQ,
@@ -1241,7 +1245,6 @@ public class Public extends SchemaImpl {
             ApiRequestCount.API_REQUEST_COUNT,
             Aspect.ASPECT,
             AspectLabel.ASPECT_LABEL,
-            Collocation.COLLOCATION,
             CollocationMember.COLLOCATION_MEMBER,
             DataRequest.DATA_REQUEST,
             Dataset.DATASET,
@@ -1286,9 +1289,6 @@ public class Public extends SchemaImpl {
             Language.LANGUAGE,
             LanguageLabel.LANGUAGE_LABEL,
             LearnerComment.LEARNER_COMMENT,
-            LexColloc.LEX_COLLOC,
-            LexCollocPosGroup.LEX_COLLOC_POS_GROUP,
-            LexCollocRelGroup.LEX_COLLOC_REL_GROUP,
             LexRelMapping.LEX_REL_MAPPING,
             LexRelType.LEX_REL_TYPE,
             LexRelTypeLabel.LEX_REL_TYPE_LABEL,
@@ -1304,6 +1304,7 @@ public class Public extends SchemaImpl {
             LexemeRegister.LEXEME_REGISTER,
             LexemeSourceLink.LEXEME_SOURCE_LINK,
             LexemeTag.LEXEME_TAG,
+            LexemeVariant.LEXEME_VARIANT,
             Meaning.MEANING,
             MeaningActivityLog.MEANING_ACTIVITY_LOG,
             MeaningDomain.MEANING_DOMAIN,
@@ -1355,6 +1356,8 @@ public class Public extends SchemaImpl {
             UsageTypeLabel.USAGE_TYPE_LABEL,
             ValueState.VALUE_STATE,
             ValueStateLabel.VALUE_STATE_LABEL,
+            VariantType.VARIANT_TYPE,
+            VariantTypeLabel.VARIANT_TYPE_LABEL,
             ViewOsDefinition.VIEW_OS_DEFINITION,
             ViewOsDefinitionIdx.VIEW_OS_DEFINITION_IDX,
             ViewOsLexemeMeaning.VIEW_OS_LEXEME_MEANING,
@@ -1380,6 +1383,7 @@ public class Public extends SchemaImpl {
             ViewWwWordEtymology.VIEW_WW_WORD_ETYMOLOGY,
             ViewWwWordRelation.VIEW_WW_WORD_RELATION,
             ViewWwWordSearch.VIEW_WW_WORD_SEARCH,
+            ViewWwWordSuggestion.VIEW_WW_WORD_SUGGESTION,
             Word.WORD,
             WordActivityLog.WORD_ACTIVITY_LOG,
             WordEkiRecommendation.WORD_EKI_RECOMMENDATION,
@@ -1401,6 +1405,7 @@ public class Public extends SchemaImpl {
             WordRelTypeLabel.WORD_REL_TYPE_LABEL,
             WordRelation.WORD_RELATION,
             WordRelationParam.WORD_RELATION_PARAM,
+            WordSuggestion.WORD_SUGGESTION,
             WordTag.WORD_TAG,
             WordType.WORD_TYPE,
             WordTypeLabel.WORD_TYPE_LABEL,

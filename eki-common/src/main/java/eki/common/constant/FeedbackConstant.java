@@ -2,13 +2,13 @@ package eki.common.constant;
 
 public interface FeedbackConstant {
 
-	String FEEDBACK_TYPE_WW = "sõnaveeb";
+	String FEEDBACK_ATTR_SENDER_NAME = "sender_name";
 
-	String FEEDBACK_TYPE_OS = "ÕS";
+	String FEEDBACK_ATTR_WORD = "word";
 
-	String FEEDBACK_TYPE_EXT = "väline";
+	String FEEDBACK_ATTR_DEFINITION = "definition";
 
-	String[] FEEDBACK_TYPES = {FEEDBACK_TYPE_WW, FEEDBACK_TYPE_OS, FEEDBACK_TYPE_EXT};
+	String FEEDBACK_ATTR_USAGE = "usage";
 
 	String FEEDBACK_ERROR = "error";
 

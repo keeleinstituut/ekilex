@@ -224,9 +224,7 @@
     <div th:replace="common-search :: no-lexemes-exist"></div>
   </th:block>
   <th:block th:fragment="term-detail-view">
-    <th:block th:each="lexeme : ${wordData.termLexemes}" th:with="
-    isProTerm = ${@viewUtil.isProTermData(lexeme)},
-    isLimTerm = ${@viewUtil.isLimTermData(lexeme)}">
+    <th:block th:each="lexeme : ${wordData.termLexemes}">
       <div class="search__block">
         <th:block th:replace="term-details :: meaning-data"></th:block>
       </div>

@@ -2878,7 +2878,7 @@
       </div>
     </div>
   </div>
-  <div id="newWordDlg" class="modal" role="dialog" th:fragment="new_word_dlg">
+  <div id="newWordDlg" class="modal" role="dialog" th:fragment="add_word_dlg">
     <div class="modal-dialog" role="document" th:if="${userRoleData.roleSelected || userRoleData.master}">
       <div class="modal-content">
         <form id="addWordForm" th:action="@{/lex_create_word}" method="post">

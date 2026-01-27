@@ -86,22 +86,6 @@
         </div>
       </div>
     </div>
-    <div class="card mt-4 shadow" th:if="${applicationNotSubmitted || applicationReviewPending}">
-      <div class="card-body">
-        <div class="alert alert-info" role="alert">
-          <div th:text="#{apply.limited}">Kui soovid hakata võrgustiku kasutajaks:</div>
-        </div>
-        <div class="container float-left w-50">
-          <form th:action="@{/apply_limited}" method="post">
-            <div class="row">
-              <div class="col mt-3 ml-5">
-                <button type="submit" class="btn btn-primary" th:text="#{apply.join.limited}">Liitu võrgustikuga</button>
-              </div>
-            </div>
-          </form>
-        </div>
-      </div>
-    </div>
   </div>
   <div class="container-fluid" th:if="${applicationDenied}">
     <div class="card mt-4 shadow">

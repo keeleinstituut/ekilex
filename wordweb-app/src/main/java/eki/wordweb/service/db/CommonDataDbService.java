@@ -2,8 +2,6 @@ package eki.wordweb.service.db;
 
 import static eki.wordweb.data.db.Tables.MVIEW_WW_CLASSIFIER;
 import static eki.wordweb.data.db.Tables.MVIEW_WW_DATASET;
-import static eki.wordweb.data.db.Tables.MVIEW_WW_NEWS_ARTICLE;
-import static eki.wordweb.data.db.Tables.MVIEW_WW_NEW_WORD_MENU;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -22,17 +20,12 @@ import org.springframework.stereotype.Component;
 
 import eki.common.constant.ClassifierName;
 import eki.common.constant.GlobalConstant;
-import eki.common.constant.NewsArticleType;
 import eki.common.data.Classifier;
 import eki.wordweb.constant.SystemConstant;
 import eki.wordweb.data.Dataset;
 import eki.wordweb.data.LanguageData;
-import eki.wordweb.data.NewWord;
-import eki.wordweb.data.NewsArticle;
 import eki.wordweb.data.db.tables.MviewWwClassifier;
 import eki.wordweb.data.db.tables.MviewWwDataset;
-import eki.wordweb.data.db.tables.MviewWwNewWordMenu;
-import eki.wordweb.data.db.tables.MviewWwNewsArticle;
 import eki.wordweb.data.type.TypeDomain;
 
 @Component
@@ -402,47 +395,6 @@ public class CommonDataDbService implements SystemConstant, GlobalConstant {
 				.from(ds)
 				.orderBy(orderByFields)
 				.fetchInto(String.class);
-	}
-
-	@Cacheable(value = CACHE_KEY_GENERIC, key = "{#root.methodName, #lang}")
-	public NewsArticle getLatestWordwebNewsArticle(String lang) {
-
-		MviewWwNewsArticle na = MVIEW_WW_NEWS_ARTICLE.as("na");
-
-		return create
-				.selectFrom(na)
-				.where(
-						na.TYPE.eq(NewsArticleType.WORDWEB.name())
-								.and(na.LANG.eq(lang)))
-				.orderBy(na.CREATED.desc())
-				.limit(1)
-				.fetchOptionalInto(NewsArticle.class)
-				.orElse(null);
-	}
-
-	@Cacheable(value = CACHE_KEY_GENERIC, key = "{#root.methodName, #lang}")
-	public List<NewsArticle> getWordwebNewsArticles(String lang) {
-
-		MviewWwNewsArticle na = MVIEW_WW_NEWS_ARTICLE.as("na");
-
-		return create
-				.selectFrom(na)
-				.where(
-						na.TYPE.eq(NewsArticleType.WORDWEB.name())
-								.and(na.LANG.eq(lang)))
-				.orderBy(na.CREATED.desc())
-				.fetchInto(NewsArticle.class);
-	}
-
-	@Cacheable(value = CACHE_KEY_GENERIC, key = "#root.methodName")
-	public List<NewWord> getNewWords() {
-
-		MviewWwNewWordMenu nw = MVIEW_WW_NEW_WORD_MENU.as("nw");
-
-		return create
-				.selectFrom(nw)
-				.orderBy(nw.REG_YEAR.desc(), nw.WORD_ID.desc())
-				.fetchInto(NewWord.class);
 	}
 
 	@Cacheable(value = CACHE_KEY_CLASSIF, key = "#root.methodName")

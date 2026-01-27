@@ -16,7 +16,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Component;
 
-import eki.common.constant.DatasetType;
 import eki.common.constant.GlobalConstant;
 import eki.common.data.Classifier;
 import eki.wordweb.constant.CollocMemberGroup;
@@ -53,22 +52,6 @@ public class ViewUtil implements WebConstant, SystemConstant, GlobalConstant {
 
 	public ViewUtil() {
 		ekilexMarkupPattern = Pattern.compile("<[/]?eki-[^>]*>");
-	}
-
-	public boolean isLexData(LexemeWord lexemeWord) {
-		return DatasetType.LEX.equals(lexemeWord.getDatasetType());
-	}
-
-	public boolean isAnyTermData(LexemeWord lexemeWord) {
-		return DatasetType.TERM.equals(lexemeWord.getDatasetType());
-	}
-
-	public boolean isProTermData(LexemeWord lexemeWord) {
-		return DatasetType.TERM.equals(lexemeWord.getDatasetType()) && !StringUtils.equals(DATASET_LIMITED, lexemeWord.getDatasetCode());
-	}
-
-	public boolean isLimTermData(LexemeWord lexemeWord) {
-		return DatasetType.TERM.equals(lexemeWord.getDatasetType()) && StringUtils.equals(DATASET_LIMITED, lexemeWord.getDatasetCode());
 	}
 
 	public LanguageData getLangData(String langIso3) {
@@ -178,7 +161,7 @@ public class ViewUtil implements WebConstant, SystemConstant, GlobalConstant {
 		}
 		List<Grammar> grammars = lexemeWord.getGrammars();
 		if (CollectionUtils.isNotEmpty(grammars)) {
-			var grammarValues = grammars.stream()
+			String grammarValues = grammars.stream()
 					.map(Grammar::getValue)
 					.collect(Collectors.joining(", "));
 			htmlBuf.append("<div>");
@@ -291,10 +274,6 @@ public class ViewUtil implements WebConstant, SystemConstant, GlobalConstant {
 	public String getDatasetFirstLetterSearchUri(String datasetCode, Character firstLetter) {
 		String uri = webUtil.composeDatasetFirstLetterSearchUri(datasetCode, firstLetter);
 		return uri;
-	}
-
-	public String getEkilexLimTermMeaningDetailsUrl(Long meaningId) {
-		return webUtil.composeEkilexLimTermDetailsUrl(meaningId);
 	}
 
 	public String getIateSearchUrl(String wordValue, String langIso3) {

@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="et" xmlns:th="http://www.thymeleaf.org">
-<head th:replace="common-app :: common_header(~{::title},~{::links},_)">
+<head th:replace="common-app :: common_header(~{::title},~{::links},_, 'Sõnaveeb - Privaatsuspoliitika')">
 <title>Sõnaveeb - Privaatsuspoliitika</title>
 <th:block th:fragment="links">
   <script type="text/javascript" th:src="@{/view/js/hash.js}"></script>
@@ -8,7 +8,6 @@
 </head>
 <body class="survey-active">
   <th:block th:replace="common-app :: wcag-sidebar"></th:block>
-  <th:block th:replace="common-app :: ie-user"></th:block>
   <th:block th:replace="common-app :: header(withSearch = ${false})"></th:block>
   <div class="container">
     <div class="row learn-container">

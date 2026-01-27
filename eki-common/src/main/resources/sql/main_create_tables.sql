@@ -47,7 +47,6 @@ create table domain_label (
 
 create table value_state (
   code varchar(100) primary key, 
-  datasets varchar(10) array not null, 
   order_by bigserial
 );
 
@@ -62,7 +61,6 @@ create table value_state_label (
 -- klassif. rektsiooni tüüp
 create table government_type (
   code varchar(100) primary key, 
-  datasets varchar(10) array not null, 
   order_by bigserial
 );
 
@@ -77,7 +75,6 @@ create table government_type_label (
 -- register
 create table register (
   code varchar(100) primary key, 
-  datasets varchar(10) array not null, 
   order_by bigserial
 );
 
@@ -92,7 +89,6 @@ create table register_label (
 -- semantiline tüüp
 create table semantic_type (
   code varchar(100) primary key, 
-  datasets varchar(10) array not null, 
   order_by bigserial
 );
 
@@ -107,7 +103,6 @@ create table semantic_type_label (
 -- sõnasort
 create table word_type (
   code varchar(100) primary key, 
-  datasets varchar(10) array not null, 
   order_by bigserial
 );
 
@@ -122,7 +117,6 @@ create table word_type_label (
 -- aspekt
 create table aspect (
   code varchar(100) primary key, 
-  datasets varchar(10) array not null, 
   order_by bigserial
 );
 
@@ -137,7 +131,6 @@ create table aspect_label (
 -- sugu
 create table gender (
   code varchar(100) primary key, 
-  datasets varchar(10) array not null, 
   order_by bigserial
 );
 
@@ -152,7 +145,6 @@ create table gender_label (
 -- sõnaliik
 create table pos (
   code varchar(100) primary key, 
-  datasets varchar(10) array not null, 
   order_by bigserial
 );
 
@@ -167,7 +159,6 @@ create table pos_label (
 -- kol pos grupp
 create table pos_group (
   code varchar(100) primary key, 
-  datasets varchar(10) array not null, 
   order_by bigserial
 );
 
@@ -183,7 +174,6 @@ create table pos_group_label (
 create table rel_group
 (
   code varchar(100) primary key,
-  datasets varchar(10) array not null,
   order_by bigserial
 );
 
@@ -199,7 +189,6 @@ create table rel_group_label
 -- vormi märgend
 create table morph (
   code varchar(100) primary key, 
-  datasets varchar(10) array not null, 
   order_by bigserial
 );
 
@@ -214,7 +203,6 @@ create table morph_label (
 -- kuvatav vormi märgend
 create table display_morph (
   code varchar(100) primary key, 
-  datasets varchar(10) array not null, 
   order_by bigserial
 );
 
@@ -229,7 +217,6 @@ create table display_morph_label (
 -- tuletuskood
 create table deriv (
   code varchar(100) primary key, 
-  datasets varchar(10) array not null, 
   order_by bigserial
 );
 
@@ -244,7 +231,6 @@ create table deriv_label (
 -- ilmiku seose liik
 create table lex_rel_type (
   code varchar(100) primary key, 
-  datasets varchar(10) array not null, 
   order_by bigserial
 );
 
@@ -265,7 +251,6 @@ create table lex_rel_mapping (
 -- keelendi seose liik
 create table word_rel_type (
   code varchar(100) primary key, 
-  datasets varchar(10) array not null, 
   order_by bigserial
 );
 
@@ -286,7 +271,6 @@ create table word_rel_mapping (
 -- tähenduse seose liik
 create table meaning_rel_type (
   code varchar(100) primary key, 
-  datasets varchar(10) array not null, 
   order_by bigserial
 );
 
@@ -306,7 +290,6 @@ create table meaning_rel_mapping (
 
 create table usage_type (
   code varchar(100) primary key, 
-  datasets varchar(10) array not null, 
   order_by bigserial
 );
 
@@ -320,13 +303,11 @@ create table usage_type_label (
 
 create table etymology_type (
   code varchar(100) primary key, 
-  datasets varchar(10) array not null, 
   order_by bigserial
 );
 
 create table definition_type (
   code varchar(100) primary key, 
-  datasets varchar(10) array not null, 
   order_by bigserial
 );
 
@@ -340,22 +321,12 @@ create table definition_type_label (
 
 create table region (
   code varchar(100) primary key, 
-  datasets varchar(10) array not null, 
-  order_by bigserial
-);
-
-create table tag (
-  name varchar(100) primary key, 
-  set_automatically boolean default false not null, 
-  remove_to_complete boolean default true not null, 
-  type varchar(10) not null, 
   order_by bigserial
 );
 
 -- keeletase
 create table proficiency_level (
   code varchar(100) primary key, 
-  datasets varchar(10) array not null, 
   order_by bigserial
 );
 
@@ -370,7 +341,6 @@ create table proficiency_level_label (
 -- vabavormi liik
 create table freeform_type (
 	code varchar(100) primary key,
-	datasets varchar(10) array not null,
 	order_by bigserial
 );
 
@@ -380,6 +350,28 @@ create table freeform_type_label (
 	lang char(3) references language(code) not null,
 	type varchar(10) references label_type(code) not null,
 	unique(code, lang, type)
+);
+
+-- variandi liik
+create table variant_type (
+	code varchar(100) primary key,
+	order_by bigserial
+);
+
+create table variant_type_label (
+	code varchar(100) references variant_type(code) on delete cascade not null,
+	value text not null,
+	lang char(3) references language(code) not null,
+	type varchar(10) references label_type(code) not null,
+	unique(code, lang, type)
+);
+
+create table tag (
+  name varchar(100) primary key, 
+  set_automatically boolean default false not null, 
+  remove_to_complete boolean default true not null, 
+  type varchar(10) not null, 
+  order_by bigserial
 );
 
 ---------------------------
@@ -986,19 +978,6 @@ create table definition_freeform (
 );
 alter sequence definition_freeform_id_seq restart with 10000;
 
--- kollokatsioon
--- TODO to be removed soon
-create table collocation (
-  id bigserial primary key, 
-  value text not null, 
-  definition text, 
-  frequency numeric(14, 4), 
-  score numeric(14, 4), 
-  usages text array, 
-  complexity varchar(100) not null
-);
-alter sequence collocation_id_seq restart with 10000;
-
 -- ilmik
 create table lexeme (
   id bigserial primary key, 
@@ -1179,6 +1158,16 @@ create table lexeme_freeform (
 );
 alter sequence lexeme_freeform_id_seq restart with 10000;
 
+create table lexeme_variant (
+	id bigserial primary key,
+	lexeme_id bigint references lexeme(id) on delete cascade not null,
+	variant_lexeme_id bigint references lexeme(id) on delete cascade not null,
+	variant_type_code varchar(100) references variant_type(code) on delete cascade,
+	order_by bigserial,
+	unique(lexeme_id, variant_lexeme_id)
+);
+alter sequence lexeme_variant_id_seq restart with 10000;
+
 -- ilmiku seos
 create table lex_relation (
   id bigserial primary key, 
@@ -1186,48 +1175,9 @@ create table lex_relation (
   lexeme2_id bigint references lexeme(id) on delete cascade not null, 
   lex_rel_type_code varchar(100) references lex_rel_type(code) on delete cascade not null, 
   order_by bigserial, 
-  unique(
-    lexeme1_id, lexeme2_id, lex_rel_type_code
-  )
+  unique(lexeme1_id, lexeme2_id, lex_rel_type_code)
 );
 alter sequence lex_relation_id_seq restart with 10000;
-
--- ilmiku kollokatsiooni grupid
--- TODO to be removed soon
-create table lex_colloc_pos_group (
-  id bigserial primary key, 
-  lexeme_id bigint references lexeme(id) on delete cascade not null, 
-  pos_group_code varchar(100) references pos_group(code) on delete cascade not null, 
-  order_by bigserial
-);
-alter sequence lex_colloc_pos_group_id_seq restart with 10000;
-
--- TODO to be removed soon
-create table lex_colloc_rel_group (
-  id bigserial primary key, 
-  pos_group_id bigint references lex_colloc_pos_group(id) on delete cascade not null, 
-  name text not null, 
-  frequency numeric(14, 4), 
-  score numeric(14, 4), 
-  order_by bigserial
-);
-alter sequence lex_colloc_rel_group_id_seq restart with 10000;
-
--- ilmiku kollokatsioon
--- TODO to be removed soon
-create table lex_colloc (
-  id bigserial primary key, 
-  lexeme_id bigint references lexeme(id) on delete cascade not null, 
-  rel_group_id bigint references lex_colloc_rel_group(id) on delete cascade null, 
-  collocation_id bigint references collocation(id) on delete cascade not null, 
-  member_form text not null, 
-  conjunct varchar(100) null, 
-  weight numeric(14, 4), 
-  member_order integer not null, 
-  group_order integer, 
-  unique(lexeme_id, collocation_id)
-);
-alter sequence lex_colloc_id_seq restart with 10000;
 
 create table collocation_member (
 	id bigserial primary key,
@@ -1386,22 +1336,13 @@ create table game_nonword (
 );
 
 create table feedback_log (
-  id bigserial primary key, 
-  created_on timestamp not null default statement_timestamp(), 
-  feedback_type varchar(100) null, 
-  sender_name text null, 
-  sender_email text null, 
-  description text null, 
-  word text null, 
-  definition text null, 
-  definition_source text null, 
-  domain text null, 
-  comments text null, 
-  usage text null, 
-  usage_source text null, 
-  other_info text null, 
-  company text null, 
-  last_search text null
+	id bigserial primary key, 
+	created timestamp not null default statement_timestamp(), 
+	feedback_type varchar(100) null, 
+	sender_email text null,
+	last_search text null,
+	word_value text null,
+	description text null
 );
 alter sequence feedback_log_id_seq restart with 10000;
 
@@ -1415,13 +1356,27 @@ create table feedback_log_attr (
 alter sequence feedback_log_attr_id_seq restart with 10000;
 
 create table feedback_log_comment (
-  id bigserial primary key, 
-  feedback_log_id bigint references feedback_log(id) on delete cascade not null, 
-  created_on timestamp not null default statement_timestamp(),
-  comment text, 
-  user_name text not null
+	id bigserial primary key, 
+	feedback_log_id bigint references feedback_log(id) on delete cascade not null, 
+	created_on timestamp not null default statement_timestamp(),
+	comment text, 
+	user_name text not null
 );
 alter sequence feedback_log_comment_id_seq restart with 10000;
+
+create table word_suggestion (
+	id bigserial primary key,
+	feedback_log_id bigint references feedback_log(id) on delete cascade not null,
+	created timestamp not null default statement_timestamp(), 
+	word_value text not null,
+	definition_value text not null,
+	usage_value text not null,
+	author_name text not null,
+	author_email text not null,
+	is_public boolean default false,
+	publication_date date
+);
+alter sequence word_suggestion_id_seq restart with 10000;
 
 create table api_request_count (
 	id bigserial primary key,

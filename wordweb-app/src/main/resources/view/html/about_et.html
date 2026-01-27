@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="et" xmlns:th="http://www.thymeleaf.org">
-<head th:replace="common-app :: common_header(~{::title},~{::links},_)">
+<head th:replace="common-app :: common_header(~{::title},~{::links},_, 'Sõnaveeb - Portaalist')">
 <title>Sõnaveeb - Portaalist</title>
 <th:block th:fragment="links">
   <script type="text/javascript" th:src="@{/view/js/hash.js}"></script>
@@ -9,7 +9,6 @@
 <body class="survey-active">
   <th:block th:replace="common-app :: wcag-sidebar"></th:block>
   <th:block th:replace="common-app :: wcag-main"></th:block>
-  <th:block th:replace="common-app :: ie-user"></th:block>
   <th:block th:replace="common-app :: header(withSearch = ${false})"></th:block>
   <div class="container ">
     <div class="row learn-container">
@@ -36,13 +35,28 @@
               <a href="#uue">Uued sõnad ja tähendused</a>
             </li>
             <li>
-              <a href="#osselgitus">ÕSi selgitused</a>
+              <a href="#selgitus">EKI selgitab</a>
+            </li>
+            <li>
+              <a href="#tahendused">Tähendused</a>
             </li>
             <li>
               <a href="#son">Sünonüümid</a>
             </li>
             <li>
-              <a href="#par">Päritolu</a>
+              <a href="#tahendussuhe">Muud tähendussuhted</a>
+            </li>
+            <li>
+              <a href="#naite">Näited</a>
+            </li>
+            <li>
+              <a href="#naaber">Naabersõnad</a>
+            </li>
+            <li>
+              <a href="#veeb">Veebilaused</a>
+            </li>
+            <li>
+              <a href="#rekts">Rektsioon ehk sõltumine</a>
             </li>
             <li>
               <a href="#haa">Hääldus</a>
@@ -54,28 +68,16 @@
               <a href="#sonavorm">Sõnavormid</a>
             </li>
             <li>
+              <a href="#par">Päritolu</a>
+            </li>
+            <li>
               <a href="#sonaseos">Sõna seosed</a>
             </li>
             <li>
               <a href="#uhe">Ühendid</a>
             </li>
             <li>
-              <a href="#tahendused">Tähendused</a>
-            </li>
-            <li>
-              <a href="#tahendussuhe">Tähendussuhted</a>
-            </li>
-            <li>
-              <a href="#naaber">Naabersõnad</a>
-            </li>
-            <li>
-              <a href="#rekts">Rektsioon ehk sõltumine</a>
-            </li>
-            <li>
-              <a href="#naite">Näitelaused</a>
-            </li>
-            <li>
-              <a href="#veeb">Veebilaused</a>
+              <a href="#liits">Liitsõnad</a>
             </li>
             <li>
               <a href="#eri">Õpetaja tööriistad</a>
@@ -89,9 +91,6 @@
             <li>
               <a href="#autor">Autoriõigused</a>
             </li>
-            <li>
-              <a href="#ver">Uued versioonid</a>
-            </li>
             </ul>
         </div>
 
@@ -104,12 +103,12 @@
             Nõuandeid Sõnaveebi kasutajale vaata ka <a href="https://eki.ee/teatmik/sonaveebi-kasutajale/">EKI teatmikust</a>.
           </p>
           <p>
-            <b>Keeleõppija Sõnaveeb</b> on mõeldud eesti keele õppijale (A2 ja B1 keeleoskustasemel). Siin on umbes 6000 sõna.
+            <b>Keeleõppija Sõnaveeb</b> on mõeldud eesti keele õppijale (A2 ja B1 keeleoskustasemel). Siin on umbes 7000 sõna.
           </p>
           <p>
             <b>EKI ühendsõnastik</b> [The EKI Combined Dictionary, CombiDic] on Eesti Keele Instituudi sõnaraamat, mida koostatakse, toimetatakse ja täiendatakse pidevalt.
-            2025. a seisuga on siin umbes 180 000 märksõna.
-            EKI ühendsõnastik esitab eeskätt üldkeele infot. Siia lisanduvad uued sõnad ja tähendused, ÕSi selgitused, sünonüümid, teiste keelte vasted.
+            Siin on umbes 180 000 märksõna.
+            EKI ühendsõnastik esitab eeskätt üldkeele infot. Siia lisanduvad uued sõnad ja tähendused, selgitused ja soovitused, sünonüümid, teiste keelte vasted.
           </p>
           <p>
             Ühendsõnastiku algse tuumiku moodustasid 2019. aastal Sõnaveebis ilmunud Eesti Keele Instituudi üldkeele sõnakogud: “Eesti keele
@@ -118,33 +117,32 @@
             2019. aastast on seda täiendatud "Õigekeelsussõnaraamatu ÕS 2018" infoga. Pidevalt on infot lisandunud ka "Eesti keele seletavast sõnaraamatust" (2009, 1. trükk 1988–2007)
             ja "Võõrsõnade leksikonist" (2012, veebis 2015).
            <br>
-            <b>Tähelepanu!</b> Kuni järgmise ÕSi ilmumiseni määravad kirjakeele normi ÕSi uusim versioon ehk ÕS 2018 ja Emakeele Seltsi keeletoimkonna otsused.
-            <b>Järgmine "Eesti õigekeelsussõnaraamat ÕS 2025" on kirjakeele normi alus alates 1. jaanuarist 2026.</b> ÕS 2025 ilmub paberil, veebis avaldatakse sellele vastav võrguversioon. 
+            <b>Tähelepanu!</b> Kirjakeele normi määravad ÕSi uusim versioon ja Emakeele Seltsi keeletoimkonna otsused. Kirjakeele norm on kohustuslik ametlikus keelekasutuses.
+            Alates 1. jaanuarist 2026 on kirjakeele normi alus <a href="https://sonaveeb.ee/os">"Eesti õigekeelsussõnaraamat ÕS 2025"</a>. EKI ühendsõnastik on kirjakeele normiga kooskõlas. 
           </p>
           <p>
             EKI ühendsõnastikku täiendatakse pidevalt (viitamisel palume märkida kasutamise kuupäev).
           </p>
           <p>
-            <b>Oskussõnastikud.</b> 2025. a seisuga on Sõnaveebis kokku rohkem kui 150 oskussõnastikku ja terminibaasi.
+            <b>Erialasõnastikud.</b> Sõnaveebis on rohkem kui 160 erialasõnastikku ja terminibaasi, kokku umbes 330 000 eesti terminit.
             Alates 2019. aastast korraldab Eesti terminitööd Eesti Keele Instituut.
           </p>
            <p>
-            Oskussõnastikke ja terminibaase täiendatakse pidevalt (viitamisel palume märkida kasutamise kuupäev).
+            Erialasõnastikke ja terminibaase täiendatakse pidevalt (viitamisel palume märkida kasutamise kuupäev).
           </p>
           <p>
             <b>Ekilex</b> on Eesti Keele Instituudi hallatav ja arendatav sõnastiku- ja terminibaas. See on leksikograafide ja terminoloogide
-            profitööriist, mida kasutavad nii EKI enda kui ka majavälised sõnakogude koostajad ja toimetajad. Ekilexis olevat infot kuvatakse kasutajale Sõnaveebis:
-            üldkeeleinfot esitab EKI ühendsõnastik, oskuskeele infot oskussõnastikud.
+            profitööriist, mida kasutavad nii EKI kui ka majavälised sõnakogude koostajad ja toimetajad. Ekilexis olevat infot kuvatakse kasutajale Sõnaveebis:
+            üldkeeleinfot esitab EKI ühendsõnastik, erialakeele infot erialasõnastikud.
           <br><b>NB!</b> <a href="https://ekilex.ee">Ekilexi</a> andmekogude tüüplitsents on
           <a href="https://creativecommons.org/licenses/by/4.0/">CC BY 4.0</a>, mis tähendab, et materjal on <b>vabalt kasutatav</b>.
           Nõutav on vaid viitamine ja teie tehtud muutuste kirjeldamine. Sõnakogude sisu saate alla laadida, kui loote Ekilexis konto,
           taotlete API kasutamiseks vajalikku võtit ja <a href="https://github.com/keeleinstituut/ekilex/wiki/Ekilex-API">tutvute API võimalustega</a>.
           </p>
           <p>
-            Sõnaveebiga on seotud “Eesti keele veebilausete korpus 2020”. Sellest korpusest päritakse veebilauseid korpuspäringusüsteemi
+            Sõnaveebiga on seotud “Eesti keele veebilausete korpus 2023”. Sellest korpusest päritakse veebilauseid korpuspäringusüsteemi
             <a href="https://korp.keeleressursid.ee/#?lang=et&stats_reduce=word&cqp=%5B%5D">KORP</a>
-            <a href="https://github.com/spraakbanken/korp-backend/">API</a>
-            kaudu.
+            <a href="https://github.com/spraakbanken/korp-backend/">API</a> kaudu.
           </p>
           <p>
             Portaali arendamist on rahastatud Haridus- ja Teadusministeeriumi <a href="https://www.hm.ee/et/tegevused/digipoore">digipöörde programmi</a>
@@ -176,7 +174,7 @@
             EKI ühendsõnastik <span th:text="${yearToday}">AASTAARV</span>. Eesti Keele Instituut, Sõnaveeb <span th:text="${yearToday}">AASTAARV</span>. https://sonaveeb.ee/.. [= veebilink] (PP.KK.AAAA)
           </p>
           <p>
-            [Oskussõnastiku või terminibaasi nimetus]. Eesti Keele Instituut, Sõnaveeb <span th:text="${yearToday}">AASTAARV</span>. https://sonaveeb.ee/.. [= veebilink] (PP.KK.AAAA)
+            [Erialasõnastiku või terminibaasi nimetus]. Eesti Keele Instituut, Sõnaveeb <span th:text="${yearToday}">AASTAARV</span>. https://sonaveeb.ee/.. [= veebilink] (PP.KK.AAAA)
           </p>
           <p>
             <b>Sõnale või väljendile viitamine:</b>
@@ -185,31 +183,29 @@
             sõna või väljend. EKI ühendsõnastik <span th:text="${yearToday}">AASTAARV</span>. Eesti Keele Instituut, Sõnaveeb <span th:text="${yearToday}">AASTAARV</span>. https://sonaveeb.ee/.. [= veebilink] (PP.KK.AAAA)
           </p>
           <p>
-            sõna või väljend. [Oskussõnastiku või terminibaasi nimetus]. Eesti Keele Instituut, Sõnaveeb <span th:text="${yearToday}">AASTAARV</span>. https://sonaveeb.ee/.. [= veebilink] (PP.KK.AAAA)
+            sõna või väljend. [Erialasõnastiku või terminibaasi nimetus]. Eesti Keele Instituut, Sõnaveeb <span th:text="${yearToday}">AASTAARV</span>. https://sonaveeb.ee/.. [= veebilink] (PP.KK.AAAA)
           </p>      
           <h5 id="ees" class="highlighted">Keele ja sõnakogu valik</h5>
           <p>Vaikimisi on Sõnaveebis valitud kõik keeled ja kõik sõnakogud. Valikut saab kitsendada nii keelte kui ka sõnakogude kaupa.<br>
           </p>
           <h5 id="det" class="highlighted">Keeleõppija Sõnaveeb</h5>
-          <p>Keeleõppija Sõnaveebis on umbes 6000 sõna, mida on seletatud lihtsas keeles ning mis aitavad nii algajal kui edasijõudnud keeleõppijal
-            (eeskätt A2 ja B1 keeleoskustase) eesti keeles õigesti rääkida ja kirjutada. Need sõnad on seletatud lihtsas keeles ja on
+          <p>Keeleõppija Sõnaveebis on umbes 7000 sõna, mida on seletatud lihtsas keeles ning mis aitavad nii algajal kui edasijõudnud keeleõppijal
+            (eeskätt A2 ja B1 keeleoskustase) eesti keeles õigesti rääkida ja kirjutada. Sõnad on seletatud lihtsas keeles ja on
             varustatud näitelausetega. Näited näitavad, kuidas sõna lauses kasutatakse ning aitavad sõna tähendusest aru saada. Tähenduse paremaks mõistmiseks on mõnede sõnade juurde lisatud pildid.
-            Sõnaveebi avalehel saab kasutaja valida, kas ta eelistab näha põhjalikumat infot (Sõnaveeb) või lihtsamalt ja lühemalt esitatud infot (Keeleõppija Sõnaveeb).
             Kui Keeleõppija Sõnaveebi valikus küsitud sõna puudub, suunatakse kasutaja Sõnaveebi info juurde.</p>
            <p>Keeleõppijat abistavad:</p>
           <ul class="dotted-list">
             <li>
-              õppekommentaarid: näiteks sõna <i>sada</i> juures on kommentaar “Kui on tegemist arvudega üle tuhande, kasuta sõna sada asemel <i>ükssada</i>, näiteks <i>viis tuhat ükssada</i>. Kasuta
-              sõna <i>ükssada</i> ka siis, kui ametlikus dokumendis on vaja sõnadega märkida täpne rahasumma.”
+              õppekommentaarid: <i>sada</i>
             </li>
             <li>
-              suhtlusväljendid: näiteks sõna <i>isu</i> juures on suhtlusväljend <i>Head isu!</i>
+              suhtlusväljendid: <i>isu</i> juures <i>Head isu!</i>
             </li>
             <li>
-              liitsõnad, mida saab otsitud sõna abil moodustada: sõna <i>linn</i> juures on liitsõnad <i>kesklinn, kodulinn, pealinn, südalinn, vanalinn, äärelinn; linnaosa</i> ja <i>linnapea</i>
+              liitsõnad, mida saab otsitud sõna abil moodustada: vt <i>linn</i>
             </li>
             <li>
-              info sarnassõnade kohta: näiteks <i>ehitus</i> ära aja segi <i>ehitis</i>; <i>õieti</i> ära aja segi <i>õigesti</i>
+              info sarnassõnade kohta: <i>ehitus</i> ära aja segi <i>ehitis</i>
             </li>
           </ul>
           <p>
@@ -228,39 +224,37 @@
           <p>Igal aastal lisandub EKI ühendsõnastikku rohkem kui 1500 uut sõna ja väljendit.</p>
           <p>Uute sõnade hulgas on mitmeid uudiskeelendeid ehk neologisme – sõnu ja ühendeid, mis on hiljuti kasutusse tulnud ning tähistavad
             uusi nähtusi, tegevusi ja asju. Uusi sõnu ja tähendusi tähistab märgend UUS, selle juures on ära märgitud ka nende sõnastikku lisamise aasta,
-            nt <i>rohestamine</i> UUS (2020), <i>kobarkäkk</i> UUS (2021), <i>kübersõdur</i> UUS (2022), <i>palgateadlikkus</i> UUS (2023).
-            Sõnastikku lisandub ka uusi laiema levikuga kõnekeelseid sõnu, näiteks <i>salfa</i> (‘salvrätik’), <i>ökoemme</i>,
-            <i>välkar</i> ‘välismaalane’, samuti sõnu, mis on keeles ammu olemas, ent pole varem sõnaraamatuis esinenud.</p>
+            nt <i>rohestamine</i> (2020), <i>kübersõdur</i> (2022), <i>palgateadlikkus</i> (2023), <i>isanali</i> (2025).
+            Sõnastikku lisandub ka uusi laiema levikuga kõnekeelseid sõnu, samuti sõnu, mis on keeles ammu olemas, ent pole varem sõnaraamatuis esinenud.</p>
           <p>Pärisnimesid kirjeldatakse samamoodi nagu mis tahes muid sõnu:
-            tuuakse välja nende sisu, kirjakuju, muutmisviis, kasutuskontekst, paralleelvorm(id) jm keelekasutaja jaoks oluline info.
-            Võõrnimede puhul on ära toodud ka nende hääldus.</p>
+            tuuakse välja nende sisu, kirjakuju, muutmisviis, kasutuskontekst, paralleelvorm(id) jm keelekasutaja jaoks oluline info. Kohanimedele on lisatud <i></i>kuhu</i>-vorm,
+            võõrnimede puhul ka hääldus.</p>
           <p>Uute lisandunud tähenduste puhul on hakatud olemasolevat sõna kasutama uues tähenduses harilikult mingi sarnasuse alusel
             või on võõrsõna tähendus teise keele mõjul avardunud.
           </p>
-          <h5 id="osselgitus" class="highlighted">ÕSi selgitused</h5>
+          <h5 id="selgitus" class="highlighted">EKI selgitab</h5>
           <p>
-            Alates 2019. aastast on täiendatud EKI ühendsõnastikku õigekeelsussõnaraamatu ÕS 2018 infoga. Rubriigis „EKI selgitab“ (varem: „ÕS selgitab“) on esitatud
-            selgitused ja soovitused, mis aitavad keelekasutajal teha teadlikke keelelisi valikuid.
+            Selgitused aitavad keelekasutajal konkreetses kontekstis teadliku valiku teha, pidades silmas õigekirjutuslikku vm keelelist asjaolu. Olenevalt märksõnast
+            sisaldavad need andmeid sõna sobivuse, päritolu, moodustusviisi, kasutussageduse jm kohta. Lisatud on lingid allikatele.
             Selgitusi täiendatakse uute andmete ilmnemisel ja uurimistulemuste järgi pidevalt (lisatud on kuupäev).
-            <b>Tähelepanu!</b> Kirjakeele normi alus kuni uue ÕSi ilmumiseni on viimane ÕS ja Emakeele Seltsi keeletoimkonna otsused.
-            Järgmine "Eesti õigekeelsussõnaraamat ÕS 2025" on kirjakeele normi alus alates 1. jaanuarist 2026.
-            ÕS 2025 ilmub paberil, veebis avaldatakse sellele vastav võrguversioon.
-            </p>
-          <p>
-            <b>EKI ühendsõnastik</b> on ÕSi ja kirjakeele normiga kooskõlas.
-          </p>
-          <p>
-            ÕSis on nii normingud kui ka selgitused.
-          </p>
-          <p>
-            <b>ÕSi normingud</b> käivad sõnade kirjakuju (ortograafia) ja muutevormide (morfoloogia) kohta, neid käsitleb vastavalt esildistele Emakeele Seltsi keeletoimkond.
-          </p>
-          <p>
-            <b>ÕSi selgitused</b> käivad sõnavaliku, tähenduste ja rektsiooni kohta, neid käsitlevad eeskätt EKI ühendsõnastiku ja ÕSi koostajad.
           </p>
           <p>
             EKI ühendsõnastiku ja ÕS 2025 infot täiendab <a href="http://193.40.33.167/teatmik/">EKI teatmik. Eesti õigekeelsuskäsiraamat</a>.
-            Oskuskeele infot saab vaadata Sõnaveebi koondunud terminibaasidest.
+          </p>
+          <h5 id="tahendused" class="highlighted">Tähendused</h5>
+          <p>EKI ühendsõnastiku eesti keele osa põhineb varasematel sõnaraamatutel: “Eesti kirjakeele seletussõnaraamat” (1988–2007), “Eesti keele seletav sõnaraamat” (2009),
+            “Eesti õigekeelsussõnaraamat 2018”, „Eesti keele sõnaraamat 2019“, “Eesti keele naabersõnad” (2019), “Eesti-vene sõnaraamat 2019”, “Võõrsõnade leksikon” (2012).
+            Tähendustasandeid on kaks: põhitähendus (numbritega: 1, 2, 3 jne) ja alltähendus (numbritega: 1.1, 1.2 jne).
+            Nii põhitähendus kui ka alltähendus võib sisaldada semikooloniga eraldatud väga lähedast, muul viisil raskesti eristatavat osa.
+            Ümarsulgudes on kaudsem tähenduse seletus, täpsustus või seletuse osa, mis võib ära jääda.</p>
+          <p>Tähendusinfo täieneb pidevalt. Keel muutub, juurde tekib uusi tähendusi, vastavalt sellele muutub ka keelekirjeldus.</p>
+          <p>Keeleõppija Sõnaveebis avanevad üksnes õppijale mõeldud lihtsamas sõnastuses põhitähendused.</p>
+          <p>
+            Tähendused on üldjuhul järjestatud sageduse järgi: esikohal on keeles kõige sagedamini ettetulev tähendus. Alati pole seda põhimõtet rakendatud: mõnd sõna on olnud parem seletada,
+            arvestades ajaloolist järgnevust või otsese-ülekantud tähenduste suhet.
+          </p>
+          <p>
+            Rubriigis "Hea teada" on antud mitmesugust, hrl entsüklopeedilist lisainfot.
           </p>
           <h5 id="son" class="highlighted">Sünonüümid</h5>
           <p>Sünonüümid on tähenduse poolest sarnased, ent kujult üksteisest erinevad sõnad. EKI ühendsõnastikus on sünonüümid näidatud
@@ -271,6 +265,121 @@
             <b>Sarnase tähendusega</b> on sõnad, mille tähendused erinevad mingi asjaolu poolest. Need on lähisünonüümid ehk osasünonüümid,
              nt <i>rõõmu</i> lähisünonüümid on <i>rõõmutunne</i>, <i>heameel</i>, <i>meelehea</i> jt.
           </p>
+          <h5 id="tahendussuhe" class="highlighted">Muud tähendussuhted</h5>
+          <p>Lisaks sünonüümidele on on esitatud valik sõna tähendussuhteid muude sõnadega: antonüümid (vastandid) ja kaashüponüümid.</p>
+          <p>
+            <b>Antonüümid</b> ehk <b>vastandid</b> on vastandlikud teatava tähendusliku tunnusjoone poolest, nt <i>absoluutne</i> vastand on <i>suhteline</i>.
+          </p>
+          <p>
+            <b>Kaashüponüümid</b> on sõnad, mis on ühesuguses suhtes oma ülemmõistega, olles ülemmõiste suhtes samaväärsed alammõisted. Nad on kõrvutatavate eristustunnustega sõnad.
+            EKI ühendsõnastikus on nad näidatud selgituse “võrdle” abil: <i>riigimets</i> võrdle <i>eramets</i>.
+          </p>
+          <h5 id="naite" class="highlighted">Näited</h5>
+          <p>
+            Näitelause toetab seletust ja aitab tähendust paremini mõista. Näidete valikul on toetutud eesti keele tekstikorpuste andmetele.
+            Vähesel määral on näitelauseid lühendatud ja kohendatud. Keeleõppija Sõnaveebis kuvatakse õppijale mõeldud lühemad ja lihtsamad näitelaused.
+            Näitelaused on leksikograafi valitud.
+          </p>
+         <p>
+            Lisaks leiab näiteid ka naabersõnade ja veebilausete juurest. Naabersõnade üksuses on esitatud valik sagedasemaid sõnaühendeid. Veebilausete üksuses
+            näeb tekstikorpusest automaatselt valitud lauseid.
+          </p>          
+          <h5 id="naaber" class="highlighted">Naabersõnad</h5>
+          <p>
+            Naabersõnad on sõnad, mis esinevad keeles sageli koos. Igal keelel on eriomaseid sõnade kombinatsioone, mille tundmine on vajalik, et oleks võimalik selles keeles loomulikult ja ladusalt
+            rääkida ning kirjutada. Näiteks eesti keeles öeldakse <i>kange kohv</i> ja <i>lahja kohv</i>, mitte <i>tugev kohv</i> või <i>nõrk kohv</i>, aga inglise keeles just <i>strong coffee</i> ja
+            <i>weak coffee</i>. Naabersõnade esitamise eesmärk on aidata eelkõige keeleõppijat ja muuta tema keelekasutus sarnaseks emakeelse kõneleja omaga. Naabersõnade info pärineb sõnakogust
+            “Eesti keele naabersõnad 2019”.
+          </p>
+          <p>
+            EKI ühendsõnastikus saab naabersõnu vaadata umbes 10 000 sõna juures, mis on välja valitud sageduse alusel. Otsitava sõna juures on naabersõnad rühmitatud sõnaliikide kaupa, vastavalt sellele, kas
+            märksõna esineb koos omadussõna, pärisnime, määrsõna, tegusõna, nimisõna või kaassõnaga. Näiteks sõna <i>kohv</i> esineb kõige sagedamini koos omadussõnadega <i>kange, kuum,
+            kofeiinivaba</i> jne. Tegusõnadest on esikohal: <i>kohv aurab, (kohv) jahtub, (kohv) ergutab</i>. Nimisõnadest on sagedamad: <i>kohvi joomine, (kohvi) hind, (kohvi) valmistamine</i>.
+          </p>
+          <p>
+            Naabersõnu saab vaadata ka mõnede mitmesõnaliste tegusõnade juures (<i>nt aru saama, alla kirjutama</i>).
+          </p>
+          <p>
+            Iga rühma või rea alguses on antud näidis koos märksõnaga, mis näitab, millises vormis selle rea naabersõnad esinevad. Kui naabersõnade näidis on <i>kohv aurab, jahtub, ergutab,</i> siis
+            vastavad naabersõnade paarid on <i>kohv aurab, kohv jahtub, kohv ergutab</i>.
+          </p>
+          <p>Naabersõnade info on saadud “Eesti keele ühendkorpusest 2013”. Automaatselt loodud sisu on põhjalikult toimetatud ja vigadest puhastatud.
+          </p>
+          <p>Naabersõnade kasutamist illustreerivad näitelaused. Üldjuhul on antud vähemalt üks näitelause rühma kohta. Kuna naabersõnu on palju, on näitelaused esialgu peidus, et anda
+            sõnapaaridest kiiresti võimalikult terviklik pilt. Kui vajutada kirjale “Kasutusnäited”, avaneb iga rühma all vähemalt üks näitelause.
+          </p>
+          <h5 id="veeb" class="highlighted">Veebilaused</h5>
+          <p>
+            Lisaks leksikograafi valitud näidetele on võimalik vaadata ka automaatselt valitud veebilauseid. Kuna neid valib arvuti, mitte inimene, ning neid ei ole toimetatud,
+            siis võib nende hulka sattuda ebatäpsusi või suisa vigaseid lauseid. Eesti Keele Instituudis arendatakse veebilausete programmi edasi,
+            nõnda muutuvad veebilaused edaspidi täpsemaks. Veebilaused on pärit eesti keele õpikutest, erinevatest meedia-, ilukirjandus-
+            ja teadustekstidest ning eestikeelsest Vikipeediast. Arvuti pärib neid “Eesti keele veebikorpusest 2023”
+            korpuspäringusüsteemi KORP <a href="https://github.com/spraakbanken/korp-backend/">API</a> kaudu.</p>
+          <p>
+            Veebilaused on valitud spetsiaalse programmi (Good Dictionary Example ehk GDEX) abil, toetudes lause teatud tunnustele. Lause pikkus peab olema 3 kuni 20 sõna, lause ei tohi sisaldada väga
+            harva esinevaid sõnu ega väga pikki sõnu jm.
+          </p>
+          <h5 id="rekts" class="highlighted">Rektsioon ehk sõltumine</h5>
+          <p>
+            Rektsioon näitab, millist grammatilist vormi nõuab mingi sõna teistelt temaga koos erinevatelt sõnadelt. Rektsiooni kirjeldatakse mitmesuguste küsimuste abil,
+            nt <i>tutvuma</i> - kellega; <i>usk</i> – kellesse/millesse; <i>viha</i> – kelle/mille vastu; <i>tahe</i> – mida teha.
+            On tegusõnu, mille juures saab kasutada ainult osasihitist, nende rektsioon on tähistatud tärniga, nt <i>alahindama</i> - keda/mida*, <i>kallistama</i> - keda*, <i>alustama</i> - mida*, millega, millest.
+            Rektsiooni kasutamist keeles näitab näitelause.
+          </p>
+          <h5 id="haa" class="highlighted">Hääldus</h5>
+          <p>
+            Võõramate nimede, lühendite ja teistest keeltest tulnud sõnade puhul on sõnadele lisatud hääldus: Ali Baba [alii babaa], <i>alma mater</i> [alma maater], <i>cappuccino</i> [kaputšiino],
+            KGB [kaa-gee-bee], TalTech [tal-tehh, tal-tek]. Eesti Keele Instituudi tänapäeva eesti keele sõnastikes on 2012. aastast kasutusel ühtne hääldusmärkide süsteem,
+            vaata lähemalt <a href="https://eki.ee/teatmik/haaldusmargid-uhendsonastikus-us/">EKI teatmikus</a>.
+          </p>
+          <p>Hääldust saab ka kuulata, selleks tuleb klõpsata kõlari märgile. Kuulatavad hääldused on pärit „Võõrsõnade leksikoni“ (2015) veebiversioonist. Häälduse on sisse lugenud
+            eesti emakeelega inimesed, kes valdavad vastavat võõrkeelt väga hästi, hääldus on originaalilähedane. Hääldused on Eesti Keele Instituudis salvestatud 2016. aasta lõpus ja 2017. aasta
+            alguses.</p>
+          <p>
+            Kuulata saab ka mõnede muutevormide hääldust, selleks tuleb klõpsata kõlari märgile sõnavormide juures: sõna <i>lill</i> juures saab kuulata vorme <i>lill</i> (nimetav kääne), <i>lille</i>
+            (omastav), <i>lille</i> (osastav). Omastava ja osastava vorm erinevad oma välte poolest. Kuulatavad sõnavormide hääldused on pärit „Eesti keele põhisõnavara sõnastiku“ (2014)
+            veebiversioonist. Sõnavormide hääldused on Eesti Keele Instituudis salvestatud 2013. aastal. Häälduse lugesid sisse Eva Klemets ja Marju Avamere.
+          </p>
+          <p>
+            Kuulata saab ka näitelausete hääldusi, selleks tuleb klõpsata kõlari märgile eestikeelse näitelause kõrval. Näitelauset loeb arvuti, mitte inimene. Tegemist on Eesti Keele Instituudis
+            loodud tehishäälega, mida on kasutatud mitmetes
+            <a href="http://www.eki.ee/heli/index.php?option=com_content&view=article&id=5&Itemid=466">kõnesünteesi rakendustes</a>.
+          </p>
+          <h5 id="dik" class="highlighted">Dikteeri!</h5>
+          <p>Otsingusõna või -väljendit saab ka dikteerida. Selleks tuleb sisse lülitada otsingulahtris olev mikrofon ning see pärast dikteerimise lõppemist välja lülitada. Veebibrauser
+            saadab reaalajas kõne TTÜ Küberneetika Instituudi serverisse, kus see muudetakse tekstiks ning saadetakse brauserisse tagasi.</p>
+          <p>Parima tulemuse saamiseks tuleks dikteerida selge häälega ja mõõdukas tempos (umbes nagu raadiodiktor).</p>
+          <p>
+            Kõnetuvastuse rakendus on valminud riikliku programmi Eesti Keeletehnoloogia (2011–2017) projekti
+            <a href="https://www.keeletehnoloogia.ee/et/ekt-projektid/konetuvastus">Kõnetuvastus</a>
+            raames TTÜ Küberneetika Instituudi foneetika ja kõnetehnoloogia laboris. Rakenduse loojad on Tanel Alumäe (serveritarkvara, kõnetuvastus) ja Kaarel Kaljurand (serveriga suhtlev Javascripti
+            moodul).
+          </p>
+          <h5 id="sonavorm" class="highlighted">Sõnavormid</h5>
+          <p>Vaikimisi on näha lühivalik, kus on ainult kõige olulisemad muutevormid:</p>
+          <ul class="dotted-list">
+            <li>
+              muutumatul sõnal tema ainus vorm
+            </li>
+            <li>
+              käändsõnal nimetav, omastav, osastav ainsuses ja mitmuses
+            </li>
+            <li>
+              pöördsõnal kindla kõneviisi oleviku ainsuse 3. pööre, <i>ma</i>-tegevusnimi, <i>da</i>-tegevusnimi, <i>tud</i>-kesksõna
+            </li>
+          </ul>
+          <p>Kõiki muutevorme näeb, kui vajutada nuppu "Näita tabelina". Valik "Märkidega" kuvab tabelina sõnavormide häälduskuju</p>
+          <p>Kui sõna saab käänata või pöörata mitmel moel (mitme eri muuttüübi järgi), siis näidatakse mitut paradigmat (nt <i>koer</i>,
+            <i>kõnelema</i>).</p>
+          <p>Keeleõppija Sõnaveebis on samad vormid, kuid lihtsamal (vähendatud) kujul: kuvamata jäävad käändsõna rohked mitmuse rööpvormid,
+            mis on kasutusel väheste sõnade puhul.</p>
+          <p>Muutevormid on vaikimisi harilikul kirjakujul. Hiirega vormi peale liikudes ilmub nähtavale täpsem info iga vormi kohta:
+            vormi täielik nimi ja muutevormi morfonoloogiline kuju.</p>
+          <p>Morfoloogiline info täieneb pidevalt. Ühendsõnastiku infot täiendavad üksikasjalikumad selgitused
+            <a href="https://eki.ee/teatmik/kaanamine-pooramine/">EKI teatmikus</a>.</p>
+          <p>Vene keele muuttüüpide eristamisel on aluseks <a href="https://gramdict.ru" target="_blank">“Vene keele grammatiline sõnaraamat”</a>. Paradigmade genereerimisel on kasutatud andmebaasi
+            “Täisparadigma. Morfoloogia. Sagedussõnastik. Ühendsõnastik.” (Hagen, 2020) ja <a href="https://ru.wiktionary.org/wiki/Категория:Шаблоны_словоизменений" target="_blank"> vikisõnastiku vene vormimoodustusmalle</a>.
+           </p>
           <h5 id="par" class="highlighted">Päritolu</h5>
           <p>EKI ühendsõnastikus esitatakse infot sõnade ja vahel ka väljendite päritolu kohta. Sõna päritolu on kirjeldatud umbes 20 000 sõna juures. Päritoluinfo pärineb “Eesti keele sõnaraamatust
             2019”. Sõna päritoluinfo on koostanud Udo Uibo.</p>
@@ -352,60 +461,6 @@
             loodud tüvisõna puhul on kasutatud märgendit tehissõna. Nende puhul on autor ja loomisaeg enamasti teada ja ka esitatud: <i>lünk</i> – Johannes Aavik 1917/1921, <i>etlema</i> – Ain Kaalep
             1969.
           </p>
-          <h5 id="haa" class="highlighted">Hääldus</h5>
-          <p>
-            Võõramate nimede, lühendite ja teistest keeltest tulnud sõnade puhul on sõnadele lisatud hääldus: Ali Baba [alii babaa], <i>alma mater</i> [alma maater], <i>cappuccino</i> [kaputšiino],
-            KGB [kaa-gee-bee], TalTech [tal-tehh, tal-tek]. Eesti Keele Instituudi tänapäeva eesti keele sõnastikes on 2012. aastast kasutusel ühtne hääldusmärkide süsteem,
-            vaata lähemalt <a href="https://eki.ee/teatmik/haaldusmargid-uhendsonastikus-us/">EKI teatmikus</a>.
-          </p>
-          <p>Hääldust saab ka kuulata, selleks tuleb klõpsata kõlari märgile. Kuulatavad hääldused on pärit „Võõrsõnade leksikoni“ (2015) veebiversioonist. Häälduse on sisse lugenud
-            eesti emakeelega inimesed, kes valdavad vastavat võõrkeelt väga hästi, hääldus on originaalilähedane. Hääldused on Eesti Keele Instituudis salvestatud 2016. aasta lõpus ja 2017. aasta
-            alguses.</p>
-          <p>
-            Kuulata saab ka mõnede muutevormide hääldust, selleks tuleb klõpsata kõlari märgile sõnavormide juures: sõna <i>lill</i> juures saab kuulata vorme <i>lill</i> (nimetav kääne), <i>lille</i>
-            (omastav), <i>lille</i> (osastav). Omastava ja osastava vorm erinevad oma välte poolest. Kuulatavad sõnavormide hääldused on pärit „Eesti keele põhisõnavara sõnastiku“ (2014)
-            veebiversioonist. Sõnavormide hääldused on Eesti Keele Instituudis salvestatud 2013. aastal. Häälduse lugesid sisse Eva Klemets ja Marju Avamere.
-          </p>
-          <p>
-            Kuulata saab ka näitelausete hääldusi, selleks tuleb klõpsata kõlari märgile eestikeelse näitelause kõrval. Näitelauset loeb arvuti, mitte inimene. Tegemist on Eesti Keele Instituudis
-            loodud tehishäälega, mida on kasutatud mitmetes
-            <a href="http://www.eki.ee/heli/index.php?option=com_content&view=article&id=5&Itemid=466">kõnesünteesi rakendustes</a>.
-          </p>
-          <h5 id="dik" class="highlighted">Dikteeri!</h5>
-          <p>Otsingusõna või -väljendit saab ka dikteerida. Selleks tuleb sisse lülitada otsingulahtris olev mikrofon ning see pärast dikteerimise lõppemist välja lülitada. Veebibrauser
-            saadab reaalajas kõne TTÜ Küberneetika Instituudi serverisse, kus see muudetakse tekstiks ning saadetakse brauserisse tagasi.</p>
-          <p>Parima tulemuse saamiseks tuleks dikteerida selge häälega ja mõõdukas tempos (umbes nagu raadiodiktor).</p>
-          <p>
-            Kõnetuvastuse rakendus on valminud riikliku programmi Eesti Keeletehnoloogia (2011–2017) projekti
-            <a href="https://www.keeletehnoloogia.ee/et/ekt-projektid/konetuvastus">Kõnetuvastus</a>
-            raames TTÜ Küberneetika Instituudi foneetika ja kõnetehnoloogia laboris. Rakenduse loojad on Tanel Alumäe (serveritarkvara, kõnetuvastus) ja Kaarel Kaljurand (serveriga suhtlev Javascripti
-            moodul).
-          </p>
-          <h5 id="sonavorm" class="highlighted">Sõnavormid</h5>
-          <p>Vaikimisi on näha lühivalik, kus on ainult kõige olulisemad muutevormid:</p>
-          <ul class="dotted-list">
-            <li>
-              muutumatul sõnal tema ainus vorm
-            </li>
-            <li>
-              käändsõnal nimetav, omastav, osastav ainsuses ja mitmuses
-            </li>
-            <li>
-              pöördsõnal kindla kõneviisi oleviku ainsuse 3. pööre, <i>ma</i>-tegevusnimi, <i>da</i>-tegevusnimi, <i>tud</i>-kesksõna
-            </li>
-          </ul>
-          <p>Kõiki muutevorme näeb, kui vajutada nuppu "Näita tabelina". Valik "Märkidega" kuvab tabelina sõnavormide häälduskuju</p>
-          <p>Kui sõna saab käänata või pöörata mitmel moel (mitme eri muuttüübi järgi), siis näidatakse mitut paradigmat (nt <i>koer</i>,
-            <i>kõnelema</i>).</p>
-          <p>Keeleõppija Sõnaveebis on samad vormid, kuid lihtsamal (vähendatud) kujul: kuvamata jäävad käändsõna rohked mitmuse rööpvormid,
-            mis on kasutusel väheste sõnade puhul.</p>
-          <p>Muutevormid on vaikimisi harilikul kirjakujul. Hiirega vormi peale liikudes ilmub nähtavale täpsem info iga vormi kohta:
-            vormi täielik nimi ja muutevormi morfonoloogiline kuju.</p>
-          <p>Morfoloogiline info täieneb pidevalt. Ühendsõnastiku infot täiendavad üksikasjalikumad selgitused
-            <a href="https://eki.ee/teatmik/kaanamine-pooramine/">EKI teatmikus</a>.</p>
-          <p>Vene keele muuttüüpide eristamisel on aluseks <a href="https://gramdict.ru" target="_blank">“Vene keele grammatiline sõnaraamat”</a>. Paradigmade genereerimisel on kasutatud andmebaasi
-            “Täisparadigma. Morfoloogia. Sagedussõnastik. Ühendsõnastik.” (Hagen, 2020) ja <a href="https://ru.wiktionary.org/wiki/Категория:Шаблоны_словоизменений" target="_blank"> vikisõnastiku vene vormimoodustusmalle</a>.
-           </p>
           <h5 id="sonaseos" class="highlighted">Sõna seosed</h5>
           <p>Sõna seostena esitatakse otsitava sõnaga mingil viisil seotud sõnad ja väljendid: võrdlusvorme, tuletisi, sarjasõnu, täiendsõnu ja ühendeid.</p>
           <p>
@@ -469,85 +524,17 @@
               mitmesugused vormelid ja retoorilised hüüatused: <i>asi nudi, head aega, okas päkka, põrgu päralt, tere tulemast, tohoh tillae</i>
             </li>
           </ul>
+          <h5 id="liits" class="highlighted">Liitsõnad</h5>
           <p>
-            Teist tüüpi ühendid on <b>naabersõnad</b> ehk <b>kollokatsioonid</b>. Need on sõnad, mis esinevad keeles sageli koos,
-            näiteks sõnapaarid <i>noor inimene, hea inimene, inimene elab, inimene mõtleb</i>.
-            Naabersõnad aitavad nii edasijõudnud keeleõppijat kui emakeelset kõnelejat teksti loomisel. Naabersõnade info pärineb sõnakogust “Eesti keele naabersõnad 2019”.
-          </p>
-          <h5 id="tahendused" class="highlighted">Tähendused</h5>
-          <p>EKI ühendsõnastiku eesti keele osa põhineb varasematel sõnaraamatutel: “Eesti kirjakeele seletussõnaraamat” (1988–2007), “Eesti keele seletav sõnaraamat” (2009),
-            “Eesti õigekeelsussõnaraamat 2018”, „Eesti keele sõnaraamat 2019“, “Eesti keele naabersõnad” (2019), “Eesti-vene sõnaraamat 2019”, “Võõrsõnade leksikon” (2012).
-            Tähendustasandeid on kaks: põhitähendus (numbritega: 1, 2, 3 jne) ja alltähendus (numbritega: 1.1, 1.2 jne).
-            Nii põhitähendus kui ka alltähendus võib sisaldada semikooloniga eraldatud väga lähedast, muul viisil raskesti eristatavat osa.
-            Ümarsulgudes on kaudsem tähenduse seletus, täpsustus või seletuse osa, mis võib ära jääda.</p>
-          <p>Tähendusinfo täieneb pidevalt. Keel muutub, juurde tekib uusi tähendusi, vastavalt sellele muutub ka keelekirjeldus.</p>
-          <p>Keeleõppija Sõnaveebis avanevad üksnes õppijale mõeldud lihtsamas sõnastuses põhitähendused.</p>
-          <p>
-            Tähendused on üldjuhul järjestatud sageduse järgi: esikohal on keeles kõige sagedamini ettetulev tähendus. Alati pole seda põhimõtet rakendatud: mõnd sõna on olnud parem seletada,
-            arvestades ajaloolist järgnevust või otsese-ülekantud tähenduste suhet.
-          </p>
-          <p>
-            Rubriigis "Hea teada" on antud mitmesugust, hrl entsüklopeedilist lisainfot.
-          </p>
-          <h5 id="tahendussuhe" class="highlighted">Tähendussuhted</h5>
-          <p>EKI ühendsõnastikus on esitatud valik sõna tähendussuhteid muude sõnadega: sünonüümid, antonüümid (vastandid) ja kaashüponüümid.</p>
-          <p>
-            <b>Sünonüümid</b> on tähenduse poolest sarnased, ent kujult üksteisest erinevad sõnad, nt <i>hingetoit</i> = <i>vaimutoit</i>.
-          </p>
-          <p>
-            <b>Antonüümid</b> ehk <b>vastandid</b> on vastandlikud teatava tähendusliku tunnusjoone poolest, nt <i>absoluutne</i> vastand on <i>suhteline</i>.
-          </p>
-          <p>
-            <b>Kaashüponüümid</b> on sõnad, mis on ühesuguses suhtes oma ülemmõistega, olles ülemmõiste suhtes samaväärsed alammõisted. Nad on kõrvutatavate eristustunnustega sõnad.
-            EKI ühendsõnastikus on nad näidatud selgituse “võrdle” abil: <i>riigimets</i> võrdle <i>eramets</i>.
-          </p>
-          <h5 id="naaber" class="highlighted">Naabersõnad</h5>
-          <p>
-            Naabersõnad on sõnad, mis esinevad keeles sageli koos. Igal keelel on eriomaseid sõnade kombinatsioone, mille tundmine on vajalik, et oleks võimalik selles keeles loomulikult ja ladusalt
-            rääkida ning kirjutada. Näiteks eesti keeles öeldakse <i>kange kohv</i> ja <i>lahja kohv</i>, mitte <i>tugev kohv</i> või <i>nõrk kohv</i>, aga inglise keeles just <i>strong coffee</i> ja
-            <i>weak coffee</i>. Naabersõnade esitamise eesmärk on aidata eelkõige keeleõppijat ja muuta tema keelekasutus sarnaseks emakeelse kõneleja omaga. Naabersõnade info pärineb sõnakogust
-            “Eesti keele naabersõnad 2019”.
-          </p>
-          <p>
-            EKI ühendsõnastikus saab naabersõnu vaadata umbes 10 000 sõna juures, mis on välja valitud sageduse alusel. Otsitava sõna juures on naabersõnad rühmitatud sõnaliikide kaupa, vastavalt sellele, kas
-            märksõna esineb koos omadussõna, pärisnime, määrsõna, tegusõna, nimisõna või kaassõnaga. Näiteks sõna <i>kohv</i> esineb kõige sagedamini koos omadussõnadega <i>kange, kuum,
-              kofeiinivaba</i> jne. Tegusõnadest on esikohal: <i>kohv aurab, (kohv) jahtub, (kohv) ergutab</i>. Nimisõnadest on sagedamad: <i>kohvi joomine, (kohvi) hind, (kohvi) valmistamine</i>.
-          </p>
-          <p>
-            Naabersõnu saab vaadata ka mõnede mitmesõnaliste tegusõnade juures (<i>nt aru saama, alla kirjutama</i>).
-          </p>
-          <p>
-            Iga rühma või rea alguses on antud näidis koos märksõnaga, mis näitab, millises vormis selle rea naabersõnad esinevad. Kui naabersõnade näidis on <i>kohv aurab, jahtub, ergutab,</i> siis
-            vastavad naabersõnade paarid on <i>kohv aurab, kohv jahtub, kohv ergutab</i>.
-          </p>
-          <p>Naabersõnade info on saadud “Eesti keele ühendkorpusest 2013”. Automaatselt loodud sisu on põhjalikult toimetatud ja vigadest puhastatud.</p>
-          <p>Naabersõnade kasutamist illustreerivad näitelaused. Üldjuhul on antud vähemalt üks näitelause rühma kohta. Kuna naabersõnu on palju, on näitelaused esialgu peidus, et anda
-            sõnapaaridest kiiresti võimalikult terviklik pilt. Kui vajutada kirjale “Kasutusnäited”, avaneb iga rühma all vähemalt üks näitelause.</p>
-          <h5 id="rekts" class="highlighted">Rektsioon ehk sõltumine</h5>
-          <p>
-            Rektsioon näitab, millist grammatilist vormi nõuab mingi sõna teistelt temaga koos erinevatelt sõnadelt. Rektsiooni kirjeldatakse mitmesuguste küsimuste abil,
-            nt <i>tutvuma</i> - kellega; <i>usk</i> – kellesse/millesse; <i>viha</i> – kelle/mille vastu; <i>tahe</i> – mida teha.
-            On tegusõnu, mille juures saab kasutada ainult osasihitist, nende rektsioon on tähistatud tärniga, nt <i>alahindama</i> - keda/mida*, <i>kallistama</i> - keda*, <i>alustama</i> - mida*, millega, millest.
-            Rektsiooni kasutamist keeles näitab näitelause.
-          </p>
-          <h5 id="naite" class="highlighted">Näitelaused</h5>
-          <p>
-            Näitelause toetab seletust ja aitab tähendust paremini mõista. Näidete valikul on toetutud eesti keele tekstikorpuste andmetele.
-            Koostöös firmaga Lexical Computing Ltd. ja Tartu Ülikooliga uuendatakse Eesti Keele Instituudis eesti keele ühendkorpust iga kahe aasta tagant.
-            Näitelaused on valitud võimalikult loomulikud, mõnel määral on näitelauseid sõnaraamatu jaoks kohandatud.
-            Pikemaid infoüksusi saab täielikult avada “Näita rohkem” nupu alt.
-          </p>
-          <p>Keeleõppija Sõnaveebis kuvatakse õppijale mõeldud lühemad ja lihtsamad näitelaused.</p>
-          <h5 id="veeb" class="highlighted">Veebilaused</h5>
-          <p>
-            Lisaks leksikograafi valitud näidetele on võimalik vaadata ka automaatselt valitud veebilauseid. Kuna neid valib arvuti, mitte inimene, ning neid ei ole toimetatud,
-            siis võib nende hulka sattuda ebatäpsusi või suisa vigaseid lauseid. Eesti Keele Instituudis arendatakse veebilausete programmi edasi,
-            nõnda muutuvad veebilaused edaspidi täpsemaks. Veebilaused on pärit eesti keele õpikutest, erinevatest meedia-, ilukirjandus-
-            ja teadustekstidest ning eestikeelsest Vikipeediast. Arvuti pärib neid “Eesti keele veebikorpusest 2020”
-            korpuspäringusüsteemi KORP <a href="https://github.com/spraakbanken/korp-backend/">API</a> kaudu.</p>
-          <p>
-            Veebilaused on valitud spetsiaalse programmi (Good Dictionary Example ehk GDEX) abil, toetudes lause teatud tunnustele. Lause pikkus peab olema 3 kuni 20 sõna, lause ei tohi sisaldada väga
-            harva esinevaid sõnu ega väga pikki sõnu jm.
+            Otsitud sõna juures loetletakse liitsõnad, kus otsitav sõna ühe koostisosana esineb. Liitsõnad on esitatud kahe loendina:
+          <ul class="dotted-list">
+            <li>
+              liitsõnad järelosaga (märksõna on põhisõna): <i>punane</i> juures <i>bordoopunane</i> jt
+            </li>
+            <li>
+              liitsõnad esiosaga (märksõna on laiend): <i>punane</i> juures <i>punaseharjaline</i> jt
+            </li>
+          </ul>
           </p>
           <h5 id="eri" class="highlighted">Õpetaja tööriistad</h5>
           <p>
@@ -613,43 +600,29 @@
           <p><span class="highlighted">Aineõpe</span></p>
           <p>Alates 2021. a märtsist on Sõnaveebis kättesaadavad aastatel 2005–2010 välja antud kakskeelsed (eesti-vene-eesti) koolisõnastikud:
             bioloogia, geograafia, inimeseõpetus, füüsika, keemia, kehaline kasvatus, kirjandus, kodundus, kunstiõpetus, käsitöö, muusikaõpetus, töö- ja tehnoloogiaõpetus,
-            ühiskonnaõpetus. Kokku 21 000 sõna. Aineõppes saab neid kasutada eestikeelsetes õppetekstides sisalduvate sõnade tähenduste otsimiseks ja vastuste kirjutamiseks.</p>
+            ühiskonnaõpetus. Kokku 21 000 sõna. Aineõppes saab neid kasutada eestikeelsetes õppetekstides sisalduvate sõnade tähenduste otsimiseks ja vastuste kirjutamiseks.
+          </p>
           <h5 id="autor" class="highlighted">Autoriõigused</h5>
           <p>
             EKI ühendsõnastiku autoriõiguste omanik on Eesti Keele Instituut.<br>
-            Autoriõigus: Eesti Keele Instituut 2025
+            Autoriõigus: Eesti Keele Instituut <span th:text="${yearToday}">AASTAARV</span>
           </p>
           <p>
             EKI terminibaasi Esterm autoriõiguste omanik on Eesti Keele Instituut.<br>
-            Autoriõigus: Eesti Keele Instituut 2025
+            Autoriõigus: Eesti Keele Instituut <span th:text="${yearToday}">AASTAARV</span>
          </p>
          <p>
-           Oskussõnastike ja terminibaaside autoriõiguste omanikud on autorid.<br>
-           Autoriõigus: autorid
+           Erialasõnastike ja terminibaaside autoriõiguste omanikud on autorid.<br>
+           Autoriõigus: autorid <span th:text="${yearToday}">AASTAARV</span>
          </p>
          <p>
            Keeleportaali Sõnaveeb autoriõiguste omanik on Eesti Keele Instituut.<br>
-           Autoriõigus: Eesti Keele Instituut 2025
+           Autoriõigus: Eesti Keele Instituut <span th:text="${yearToday}">AASTAARV</span>
          </p>
          <p>Sõnastiku- ja terminibaasisüsteemi Ekilex autoriõiguste omanik on Eesti Keele Instituut.<br>
-           Autoriõigus: Eesti Keele Instituut 2025
+           Autoriõigus: Eesti Keele Instituut <span th:text="${yearToday}">AASTAARV</span>
          </p>
-          <h5 id="ver" class="highlighted">Uued versioonid</h5>
-          <p>EKI ühendsõnastikku, EKI terminibaasi Esterm ja paljusid oskussõnastikke ja terminibaase täiendatakse ja toimetatakse
-            pidevalt, sealhulgas kasutajate tagasiside põhjal.
-          </p>
-          <p>
-            Sõnakogude uued versioonid luuakse ja arhiveeritakse kord aastas. Versiooni märgib aastaarv, millele on lisatud
-            versiooni loomise kuupäev, nt EKI ühendsõnastik 2025 (PP.KK.AAAA), EKI terminibaas Esterm 2025 (PP.KK.AAAA).
-          </p>
-          <p>Keeleportaali Sõnaveeb uus versioon luuakse ja arhiveeritakse kord aastas. Versiooni märgib aastaarv, millele on
-            lisatud versiooni loomise kuupäev, nt Sõnaveeb 2025 (PP.KK.AAAA).
-          </p>
-          <p>
-            Iga versioon saab omaette püsiva identifikaatori, mida kasutatakse sellele versioonile viitamisel.
-            Kõik versioonid registreeritakse METASHARE’is ja arhiveeritakse Eesti Keeleressursside Keskuses.
-          </p>
-        </div>
+         </div>
       </main>
     </div>
   </div>

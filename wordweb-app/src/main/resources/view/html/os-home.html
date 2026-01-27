@@ -1,13 +1,12 @@
 <!DOCTYPE html>
 <html lang="et" xmlns:th="http://www.thymeleaf.org">
-<head th:replace="common-app :: common_header(~{::title},~{::links},OS)">
+<head th:replace="common-app :: common_header(~{::title},~{::links},OS, #{menu.os.title})">
 <title th:text="#{menu.os.title}">ÕS</title>
 <th:block th:fragment="links">
   <script type="text/javascript" th:src="@{/view/js/ww-os.js}"></script>
 </th:block>
 </head>
 <body class="home-page d-flex flex-column survey-active os-home">
-  <th:block th:replace="common-app :: ie-user"></th:block>
   <th:block
     th:replace="common-app :: header(
     withLogo = ${false},
@@ -29,7 +28,7 @@
     </a>
   </div>
   <div th:replace="os-comp :: footer"></div>
-  <div th:replace="common-app :: feedback-form"></div>
+  <div th:replace="feedback :: feedback-form"></div>
   <script th:inline="javascript">
   	var searchWordFragUrl = /*[[@{/searchwordfrag/os}]]*/"/searchwordfrag/os";
   </script>

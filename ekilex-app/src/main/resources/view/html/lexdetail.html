@@ -143,6 +143,8 @@
       <div th:replace="lexdialog :: edit_lexeme_proficiency_level_dlg"></div>
       <div th:replace="lexdialog :: edit_lexeme_levels_dlg"></div>
       <div th:replace="lexdialog :: edit_lexeme_weight_dlg"></div>
+      <div th:replace="variant :: add_lexeme_variant_dlg"></div>
+      <div th:replace="variant :: select_lexeme_variant_dlg"></div>
       <button th:data-id="${lexeme.lexemeId}" th:data-lex-levels="${lexeme.levels}"
             style="display: none;"
             id="refresh-open"
@@ -228,7 +230,8 @@
                               </th:block>
                               <small class="text-gray fontSize-12" th:text="${synWord.lexemeValueStateCode}"></small>
                               <small class="text-gray fontSize-12" th:if="${synWordIter.last}" th:text="|[${@viewUtil.getFormattedWeight(syn.weight)}]|"></small>
-                            </button><span th:unless="${synWordIter.last}">,</span>
+                            </button>
+                            <span th:unless="${synWordIter.last}" class="ml-n1">,</span>
                             <th:block th:if="${isMeaningWordSyn}">
                               <div th:replace="lexdialog :: edit_meaning_word_and_lexeme_weight_dlg"></div>
                               <div class="meaning_buttons">
@@ -300,20 +303,49 @@
                   </div>
                 </div>
               </th:block>
+              <th:block th:if="${not #lists.isEmpty(lexeme.lexemeVariants)}">
+                <div class="row">
+                  <span class="col-2">variant</span>
+                  <span class="col-10">
+                    <th:block th:each="lexemeVariant, lexemeVariantIter : ${lexeme.lexemeVariants}">
+                      <span class="hidden-buttons text-nowrap">
+                        <button type="button"
+                                class="btn btn-link p-0 syn-handle mb-1"
+                                th:data-id="${lexemeVariant.wordId}"
+                                name="details-btn"
+                                data-behaviour="replace"
+                                data-plugin="contextmenu, loadDetailsPlugin"
+                                data-contextmenu:compare="Ava uues paneelis">
+                          <span th:utext="${lexemeVariant.wordValuePrese}"></span>
+                        </button>
+                        <span th:text="|(${lexemeVariant.variantTypeValue})|" th:if="${lexemeVariant.variantTypeValue}"></span>
+                        <button type="button" class="btn badge badge-warning"
+                                th:data-id="${lexemeVariant.id}"
+                                data-op-code="lexeme_variant"
+                                data-toggle="delete-confirm"
+                                sec:authorize="#vars.lexeme.crudGrant">
+                          <i class="fa fa-remove" aria-hidden="true" data-toggle="tooltip" th:title="#{lex.variant.delete}"></i>
+                        </button>
+                        <span th:unless="${lexemeVariantIter.last}">|</span>
+                      </span>
+                    </th:block>
+                  </span>
+                </div>
+              </th:block>
             </div>
             <div class="d-flex w-50 justify-content-end flex-shrink-1 pr-1 align-items-center">
               <th:block
-              sec:authorize="#vars.lexeme.crudGrant"
-              th:replace="components :: entity_publishing(
-                entityId = ${lexeme.lexemeId},
-                entityName = 'lexeme',
-                isPublic = ${lexeme.isPublic},
-                isWwUnif = ${lexeme.wwUnif},
-                isWwLite = ${lexeme.wwLite},
-                isWwOs = ${lexeme.wwOs},
-                callback = ${@viewUtil.composeFunction('loadFullLexemeDetails', lexeme.lexemeId, lexeme.levels)},
-                initAccordion = false,
-                withPublicSwitch = true)">
+                sec:authorize="#vars.lexeme.crudGrant"
+                th:replace="components :: entity_publishing(
+                  entityId = ${lexeme.lexemeId},
+                  entityName = 'lexeme',
+                  isPublic = ${lexeme.isPublic},
+                  isWwUnif = ${lexeme.wwUnif},
+                  isWwLite = ${lexeme.wwLite},
+                  isWwOs = ${lexeme.wwOs},
+                  callback = ${@viewUtil.composeFunction('loadFullLexemeDetails', lexeme.lexemeId, lexeme.levels)},
+                  initAccordion = false,
+                  withPublicSwitch = true)">
               </th:block>
               <b class="ml-2" th:text="${lexeme.datasetName}"></b>
             </div>
@@ -336,33 +368,50 @@
                th:href="@{'/lexjoininit/' + ${lexeme.lexemeId}}"
                sec:authorize="#vars.lexeme.crudGrant"
                th:text="#{lex.join}"
-               class="btn btn-sm btn-primary px-1 py-0">Ühenda</a>
-            <button th:id="${'duplicateLexemeBtn_' + lexeme.lexemeId}"
+               class="btn btn-sm btn-primary px-1 py-0">
+               Ühenda
+            </a>
+            <button th:id="|duplicateLexemeBtn_${lexeme.lexemeId}|"
                     th:title="#{lex.duplicate.lexeme}"
                     th:data-lexeme-id="${lexeme.lexemeId}"
                     sec:authorize="#vars.lexeme.crudGrant"
                     data-plugin="duplicateLexemePlugin"
                     th:text="#{lex.duplicate}"
-                    class="btn btn-sm btn-primary px-1 py-0">Duplikaat</button>
+                    class="btn btn-sm btn-primary px-1 py-0">
+                    Duplikaat
+            </button>
             <button data-toggle="modal"
                     data-target="#newWordDlg"
                     th:data-meaning-id="${lexeme.meaningId}"
                     sec:authorize="#vars.isMeaningAnyLexemeCrudGranted && #vars.userRoleData.crudRoleSelected"
                     th:text="#{lex.new.synonym}"
-                    class="btn btn-sm btn-primary px-1 py-0">Uus sünonüüm</button>
+                    class="btn btn-sm btn-primary px-1 py-0">
+                    Uus sünonüüm
+            </button>
             <button th:data-lexeme-id="${lexeme.lexemeId}"
                     data-plugin="duplicateWordAndMoveLexemePlugin"
                     th:text="#{lex.new.homonym}"
                     class="btn btn-sm btn-primary px-1 py-0"
                     title="EI TÖÖTA!"
-                    disabled="disabled">Uus homonüüm</button>
-            <button th:id="${'duplicateEmptyLexemeBtn_' + lexeme.lexemeId}"
+                    disabled="disabled">
+                    Uus homonüüm
+            </button>
+            <button th:id="|duplicateEmptyLexemeBtn_${lexeme.lexemeId}|"
                     th:title="#{lex.add.lexeme.and.meaning}"
                     th:data-lexeme-id="${lexeme.lexemeId}"
                     sec:authorize="#vars.lexeme.crudGrant"
                     data-plugin="duplicateLexemePlugin"
                     th:text="#{lex.add.meaning}"
-                    class="btn btn-sm btn-primary px-1 py-0">Uus tähendus</button>
+                    class="btn btn-sm btn-primary px-1 py-0">
+                    Uus tähendus
+            </button>
+            <button data-toggle="modal"
+                    th:data-target="|#addLexemeVariantDlg_${lexeme.lexemeId}|"
+                    sec:authorize="#vars.lexeme.crudGrant"
+                    th:text="#{lex.variant.add}"
+                    class="btn btn-sm btn-primary px-1 py-0">
+                    Lisa variant
+            </button>
             <span class="dropdown" sec:authorize="#vars.lexeme.crudGrant">
               <button id="deleteButton" type="button" data-toggle="dropdown" aria-haspopup="true"
                       aria-expanded="false" th:text="#{common.delete}"

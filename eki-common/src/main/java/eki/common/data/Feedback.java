@@ -1,10 +1,12 @@
 package eki.common.data;
 
+import eki.common.constant.FeedbackType;
+
 public class Feedback extends AbstractDataObject {
 
 	private static final long serialVersionUID = 1L;
 
-	private String feedbackType;
+	private FeedbackType feedbackType;
 
 	private String senderEmail;
 
@@ -12,11 +14,11 @@ public class Feedback extends AbstractDataObject {
 
 	private String description;
 
-	public String getFeedbackType() {
+	public FeedbackType getFeedbackType() {
 		return feedbackType;
 	}
 
-	public void setFeedbackType(String feedbackType) {
+	public void setFeedbackType(FeedbackType feedbackType) {
 		this.feedbackType = feedbackType;
 	}
 

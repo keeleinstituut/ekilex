@@ -1,13 +1,12 @@
 <!DOCTYPE html>
 <html lang="et" xmlns:th="http://www.thymeleaf.org">
-<head th:replace="common-app :: common_header(_,~{::links},_)">
+<head th:replace="common-app :: common_header(_,~{::links},_, 'Sõnaveeb - Keelemängud')">
 <title>Sõnaveeb - Keelemängud</title>
 <th:block th:fragment="links">
 </th:block>
 </head>
 <body class="survey-active">
   <th:block th:replace="common-app :: wcag-main"></th:block>
-  <th:block th:replace="common-app :: ie-user"></th:block>
   <th:block th:replace="common-app :: header(withSearch = ${false})"></th:block>
   <div class="container games-wrap home-page-content" id="main" role="main">
     <div class="row">

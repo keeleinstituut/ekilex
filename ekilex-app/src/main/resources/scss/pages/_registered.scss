@@ -1,0 +1,29 @@
+.registered-page {
+  &__block {
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    gap: 16px;
+    padding: 36px;
+    background-color: var(--color-white);
+    border-radius: 8px;
+
+    & img {
+      margin-bottom: 24px;
+    }
+
+    & h1,
+    & p {
+      margin: 0;
+    }
+
+    & h1 {
+      font-size: 1.5rem;
+      font-weight: 400;
+    }
+
+    & p {
+      font-weight: 500;
+    }
+  }
+}

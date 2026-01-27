@@ -15,6 +15,7 @@ drop view if exists view_ww_similarity_judgement_data;
 drop view if exists view_ww_classifier;
 drop view if exists view_ww_dataset;
 drop view if exists view_ww_news_article;
+drop view if exists view_ww_word_suggestion;
 drop type if exists type_meaning_word; -- remove later
 drop type if exists type_note; -- remove later
 drop type if exists type_value_entity; -- remove later
@@ -3851,5 +3852,23 @@ from
 	news_article na
 order by
 	na.created desc
+;
+
+create view view_ww_word_suggestion
+as
+select
+	ws.id word_suggestion_id,
+	ws.created,
+	ws.word_value,
+	ws.definition_value,
+	ws.usage_value,
+	ws.author_name
+from
+	word_suggestion ws
+where
+	ws.is_public = true
+	and ws.publication_date <= current_date
+order by
+	ws.created desc
 ;
 

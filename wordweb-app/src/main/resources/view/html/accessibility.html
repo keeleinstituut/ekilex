@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="et" xmlns:th="http://www.thymeleaf.org">
-  <head th:replace="common-app :: common_header(~{::title},~{::links},_)">
+  <head th:replace="common-app :: common_header(~{::title},~{::links},_, 'Sõnaveeb - Ligipääsetavuse teatis')">
     <title>Sõnaveeb - Ligipääsetavuse teatis</title>
     <th:block th:fragment="links">
       <script type="text/javascript" th:src="@{/view/js/hash.js}"></script>
@@ -9,7 +9,6 @@
   <body class="survey-active accessibility-page">
     <th:block th:replace="common-app :: wcag-sidebar"></th:block>
     <th:block th:replace="common-app :: wcag-main"></th:block>
-    <th:block th:replace="common-app :: ie-user"></th:block>
     <th:block
       th:replace="common-app :: header(withSearch = ${false})"
     ></th:block>
@@ -47,20 +46,6 @@
         <div class="accessibility-page__item">
           <h3>Sõnaveeb</h3>
           <ul>
-            <li>
-              <p>
-                Sõnavormide tabeli ridade pealkirjad ei ole programmaatiliselt
-                tähistatud ridade pealkirjana.
-              </p>
-              <ul>
-                <li>
-                  <p>
-                    Puudujäägi tõttu on mittevastav standardi EN 301 549
-                    ligipääsetavusnõue 9.1.3.1 Info and relationships
-                  </p>
-                </li>
-              </ul>
-            </li>
             <li>
               <p>
                 Sünonüümide, näidete, sarnaste sõnade loenditel puudub korrektne
@@ -302,42 +287,6 @@
               </ul>
             </li>
             <li>
-              <p>Grammatikatabelite iframe'il puudub ligipääsetav nimi.</p>
-              <ul>
-                <li>
-                  <p>
-                    Puudujäägi tõttu on mittevastav standardi EN 301 549
-                    ligipääsetavusnõue 9.4.1.2 Name, role, value
-                  </p>
-                </li>
-              </ul>
-            </li>
-            <li>
-              <p>
-                Arvud, kirjavahemärgid jne on esitatud loendis vaid visuaalselt.
-              </p>
-              <ul>
-                <li>
-                  <p>
-                    Puudujäägi tõttu on mittevastav standardi EN 301 549
-                    ligipääsetavusnõue 9.1.3.1 Info and relationships
-                  </p>
-                </li>
-              </ul>
-            </li>
-            <li>
-              <p>Sõnumivahetuse näidisfotol puudub kirjeldus.</p>
-              <ul>
-                <li>
-                  <p>
-                    Puudujäägi tõttu on mittevastavad standardi EN 301 549
-                    ligipääsetavusnõuded 9.1.1.1 Non-text content, 9.1.4.5
-                    Images of text
-                  </p>
-                </li>
-              </ul>
-            </li>
-            <li>
               <p>Pealkirjade tasemete struktuur jätab vahele tasemeid.</p>
               <ul>
                 <li>
@@ -370,31 +319,6 @@
                     Puudujäägi tõttu on mittevastavad standardi EN 301 549
                     ligipääsetavusnõuded 9.1.3.1 Info and relationships,
                     9.1.4.10 Reflow
-                  </p>
-                </li>
-              </ul>
-            </li>
-            <li>
-              <p>
-                Kirjutamise tab kuvab alammenüüd, mis ei järgi tab paneelide
-                loogikat.
-              </p>
-              <ul>
-                <li>
-                  <p>
-                    Puudujäägi tõttu on mittevastav standardi EN 301 549
-                    ligipääsetavusnõue 9.3.2.4 Consistent identification
-                  </p>
-                </li>
-              </ul>
-            </li>
-            <li>
-              <p>Mõnes kohas kasutatakse ilma tekstilise sildita nuppe.</p>
-              <ul>
-                <li>
-                  <p>
-                    Puudujäägi tõttu on mittevastav standardi EN 301 549
-                    ligipääsetavusnõue 9.2.4.6 Headings and labels
                   </p>
                 </li>
               </ul>
@@ -986,7 +910,7 @@
         </div>
         <div class="accessibility-page__item">
           <h2>Teatise koostamine</h2>
-          <p>Käesolev ligipääsetavuse teatis on koostatud 26.11.2025.</p>
+          <p>Käesolev ligipääsetavuse teatis on koostatud 26.01.2026.</p>
         </div>
       </div>
     </div>

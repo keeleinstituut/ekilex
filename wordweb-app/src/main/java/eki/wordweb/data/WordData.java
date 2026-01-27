@@ -14,8 +14,6 @@ public class WordData extends AbstractDataObject {
 
 	private List<LexemeWord> termLexemes;
 
-	private List<LexemeWord> limTermLexemes;
-
 	private List<Paradigm> paradigms;
 
 	private Long linkedLexemeId;
@@ -64,14 +62,6 @@ public class WordData extends AbstractDataObject {
 
 	public void setTermLexemes(List<LexemeWord> termLexemes) {
 		this.termLexemes = termLexemes;
-	}
-
-	public List<LexemeWord> getLimTermLexemes() {
-		return limTermLexemes;
-	}
-
-	public void setLimTermLexemes(List<LexemeWord> limTermLexemes) {
-		this.limTermLexemes = limTermLexemes;
 	}
 
 	public List<Paradigm> getParadigms() {

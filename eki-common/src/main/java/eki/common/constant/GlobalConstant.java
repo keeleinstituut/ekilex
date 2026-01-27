@@ -26,8 +26,6 @@ public interface GlobalConstant {
 
 	String DATASET_ESTERM = "esterm";
 
-	String DATASET_LIMITED = "vrk";
-
 	String DATASET_TEST = "kce";
 
 	String DATASET_NA = "-";

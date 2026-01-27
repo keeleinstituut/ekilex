@@ -91,12 +91,12 @@
   <th:block th:fragment="nav_bar">
     <nav class="navbar navbar-expand-md bg-primary navbar-dark main-navigation" th:classappend="${activeItem == 'partsyn' ? '' : 'fixed-top'}">
       <a th:href="@{/}">
-        <span th:if="${activeItem == 'home' || activeItem == 'limterm'}" class="text-white">
+        <span th:if="${activeItem == 'home'}" class="text-white">
           Ekilex
           <small class="pl-2" th:text="${'v.' + appData.appVersion}">1.0.0</small>
         </span>
       </a>
-      <div th:if="${activeItem != 'home' && activeItem != 'limterm'}" class="dropdown side-menu">
+      <div th:if="${activeItem != 'home'}" class="dropdown side-menu">
         <button type="button" class="btn btn-primary ml-n3 side-menu-btn" id="sideMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
           <i class="fa fa-bars mr-2" aria-hidden="true"></i>
           <span th:text="#{|menu.${activeItem}|}">Aktiivne rakendus</span>
@@ -116,7 +116,6 @@
               <a class="dropdown-item side-menu-item" th:classappend="${activeItem == 'fullsyn' ? 'active' : ''}" th:href="@{/fullsynsearch}" sec:authorize="#vars.userRoleData.crudRoleSelected"
                 th:text="#{menu.fullsyn}">Tõlkevasted</a>
               <a class="dropdown-item side-menu-item" th:classappend="${activeItem == 'source' ? 'active' : ''}" th:href="@{/sourcesearch}" th:text="#{menu.source}">Allikate otsing</a>
-              <a class="dropdown-item side-menu-item" th:classappend="${activeItem == 'limterm' ? 'limterm' : ''}" th:href="@{/limtermsearch}" th:text="#{menu.lim.term}">Võrgustiku otsing</a>
               <div class="dropdown-divider"></div>
               <a class="dropdown-item side-menu-item" th:classappend="${activeItem == 'history' ? 'active' : ''}" th:href="@{/history}" th:text="#{menu.history}">Kustutatud andmed</a>
               <a class="dropdown-item side-menu-item" th:classappend="${activeItem == 'datasets' ? 'active' : ''}" th:href="@{/datasets}" th:text="#{menu.datasets}">Sõnakogude haldus</a>
@@ -151,11 +150,6 @@
           <span th:text="#{term.new.meaning}">Uus Mõiste</span>
         </button>
       </form>
-      <button type="button" class="btn btn-primary rounded-0 border-left ml-2" data-toggle="modal" data-target="#newLimTermWordDlg" sec:authorize="#vars.userRoleData.crudRoleSelected"
-        th:if="${activeItem == 'limterm'}">
-        <i class="fa fa-plus mr-2" aria-hidden="true"></i>
-        <span th:text="#{term.lim.term.new.word}">Uus keelend</span>
-      </button>
       <div th:if="${appData.devEnv}" class="bg-warning ml-2">
         <strong class="px-5" th:text="${appData.envName}">TEST</strong>
       </div>
@@ -175,7 +169,7 @@
           <span th:text="#{common.user.manual}">Kasutusjuhend</span>
         </button>
       </th:block>
-      <div th:if="${activeItem != 'limterm'}" class="navbar-nav" th:classappend="${searchMode == null ? 'ml-auto' : ''}">
+      <div class="navbar-nav" th:classappend="${searchMode == null ? 'ml-auto' : ''}">
         <th:block sec:authorize="isAuthenticated()">
           <div class="dropdown mt-2" th:if="${activeItem == 'home'}">
             <button class="btn btn-primary px-2 dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -241,29 +235,6 @@
             </div>
           </div>
         </th:block>
-      </div>
-      <div th:if="${activeItem == 'limterm'}" class="navbar-nav ml-auto">
-        <div class="btn mr-3" style="font-size: 16px">
-          <a class="btn-primary" href="mailto:kasutajatugi@ekilex.ee?subject=Ekilex" th:title="#{common.user.support}">
-            <i class="fa fa-fw fa-envelope" aria-hidden="true"></i>
-          </a>
-          <a class="btn-primary" href="https://keeleinstituut.github.io/ekilex/" target="ekilexUserManual" th:title="#{common.user.manual}">
-            <i class="fa fa-fw fa-info-circle" aria-hidden="true"></i>
-          </a>
-        </div>
-        <div class="dropdown user-menu">
-          <button class="btn btn-primary dropdown-toggle user-menu-btn text-right mr-n3" type="button" data-toggle="dropdown">
-            <span class="d-flex flex-wrap">
-              <span class="w-100 text-truncate" th:text="${#authentication.name}">Eesnimi</span>
-            </span>
-          </button>
-          <div class="dropdown-menu dropdown-menu-right user-menu-content">
-            <a class="dropdown-item" th:href="@{/dologout}">
-              <span th:text="#{common.log.out}">Logi välja</span>
-              <i class="fa fa-sign-out" aria-hidden="true"></i>
-            </a>
-          </div>
-        </div>
       </div>
     </nav>
   </th:block>

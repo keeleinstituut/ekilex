@@ -263,6 +263,11 @@ public class CommonDataService implements InitializingBean, SystemConstant, Glob
 	}
 
 	@Transactional
+	public List<Classifier> getVariantTypes() {
+		return getDefaultClassifiers(ClassifierName.VARIANT_TYPE);
+	}
+
+	@Transactional
 	public List<Classifier> getClassifiers(ClassifierName classifierName) {
 		if (classifierName == null) {
 			return null;

@@ -14,6 +14,7 @@ drop materialized view if exists mview_ww_meaning_relation;
 drop materialized view if exists mview_ww_classifier;
 drop materialized view if exists mview_ww_dataset;
 drop materialized view if exists mview_ww_news_article;
+drop materialized view if exists mview_ww_word_suggestion;
 
 drop type if exists type_lang_complexity; -- remove later
 drop type if exists type_lang_dataset_publishing;
@@ -290,6 +291,19 @@ dblink(
 	lang char(3)
 );
 
+create materialized view mview_ww_word_suggestion as
+select * from 
+dblink(
+	'host=localhost user=ekilex password=3kil3x dbname=ekilex',
+	'select * from view_ww_word_suggestion') as word_suggestion(
+	word_suggestion_id bigint,
+	created timestamp,
+	word_value text,
+	definition_value text,
+	usage_value text,
+	author_name text
+);
+
 create materialized view mview_ww_counts as
 (select 
 	'dsall' as dataset_code,
@@ -378,4 +392,5 @@ create index mview_ww_counts_lang_idx on mview_ww_counts (lang);
 create index mview_ww_news_article_created_idx on mview_ww_news_article (created);
 create index mview_ww_news_article_type_idx on mview_ww_news_article (type);
 create index mview_ww_news_article_lang_idx on mview_ww_news_article (lang);
+create index mview_ww_word_suggestion_created_idx on mview_ww_word_suggestion (created);
 

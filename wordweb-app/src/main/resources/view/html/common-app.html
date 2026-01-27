@@ -1,7 +1,12 @@
 <!DOCTYPE HTML>
 <html xmlns:th="http://www.thymeleaf.org">
-<head th:fragment="common_header(title,links,pageContext)">
+<head th:fragment="common_header(title,links,pageContext,titleString)">
 <title th:replace="${title}" th:text="#{general.title}">Sõnaveeb</title>
+<meta property="og:title" th:content="${titleString} ?: #{general.title}" />
+<meta name="twitter:title" th:content="${titleString} ?: #{general.title}" />
+<meta name="twitter:card" content="summary_large_image" />
+<meta property="og:image:width" content="1200" />
+<meta property="og:image:height" content="630" />
 <!-- Common styles and scripts -->
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -24,12 +29,11 @@
 	var applicationUrl = /*[[@{/}]]*/'/';
 	var sessionTimeoutSec = /*[[${appData == null ? 3600 : appData.sessionTimeoutSec}]]*/3600;
 	const messages = {
-    'this_is_form' : /*[[#{label.word.is.form.of}]]*/'see on ka vorm sõnadest',
-    'audio_generating_loading': /*[[#{label.audio.generation.loading}]]*/'Heli genereeritakse...',
+		'this_is_form' : /*[[#{label.word.is.form.of}]]*/'see on ka vorm sõnadest',
+		'audio_generating_loading': /*[[#{label.audio.generation.loading}]]*/'Heli genereeritakse...',
 		'audio_generation_failure' : /*[[#{label.audio.generation.failure}]]*/'Heli genereerimise teenus hetkel ei toimi, proovige hiljem uuesti.',
-    'audio_play_failure': /*[[#{label.audio.play.failure}]]*/'Heli mängimine ebaõnnestus',
-		'search_failure' : /*[[#{label.detail.search.failure}]]*/'Detailide päring ebaõnnestus, proovige hiljem uuesti.',
-		'feedback_missing_service' : /*[[#{label.feedback.missing.service}]]*/'Tagasiside teenus ei ole seadistatud.'
+		'audio_play_failure': /*[[#{label.audio.play.failure}]]*/'Heli mängimine ebaõnnestus',
+		'search_failure' : /*[[#{label.detail.search.failure}]]*/'Detailide päring ebaõnnestus, proovige hiljem uuesti.'
 	}
 </script>
 <!-- Google Tag Manager -->
@@ -52,20 +56,29 @@
     <link rel="icon" type="image/png" th:href="@{/favicon.png}" />
     <link rel="icon" type="image/x-icon" th:href="@{/favicon.ico}">
     <link rel="apple-touch-icon" sizes="180x180" th:href="@{/apple-touch-icon.png}">
+    <meta property="og:image" content="https://sonaveeb.ee/view/images/og/sonaveeb-logo-sm-og.png" />
+    <meta name="twitter:image" content="https://sonaveeb.ee/view/images/og/sonaveeb-logo-sm-twitter.png" />
+    <meta property="og:description" th:content="#{label.og.general.description}"/>
   </th:block>
   <!-- Simple search favicon -->
   <th:block th:fragment="faviconSimple">
+    <meta property="og:image" content="https://sonaveeb.ee/view/images/og/sonaveeb-logo-light-sm-og.png" />
+    <meta name="twitter:image" content="https://sonaveeb.ee/view/images/og/sonaveeb-logo-light-sm-twitter.png" />
     <link rel="apple-touch-icon" sizes="180x180" th:href="@{/apple-touch-icon-light.png}">
     <link rel="icon" type="image/png" sizes="32x32" th:href="@{/favicon-32x32-light.png}">
     <link rel="icon" type="image/png" sizes="16x16" th:href="@{/favicon-16x16-light.png}">
     <link rel="icon" type="image/x-icon" th:href="@{/favicon-light.ico}">
+    <meta property="og:description" th:content="#{label.og.lite.description}"/>
   </th:block>
     <!-- OS favicon -->
   <th:block th:fragment="faviconOS">
+    <meta property="og:image" content="https://sonaveeb.ee/view/images/og/os-og.png"  />
+    <meta name="twitter:image" content="https://sonaveeb.ee/view/images/og/os-twitter.png" />
     <link rel="apple-touch-icon" sizes="180x180" th:href="@{/apple-touch-icon-os.png}">
     <link rel="icon" type="image/png" sizes="32x32" th:href="@{/favicon-32x32-os.png}">
     <link rel="icon" type="image/png" sizes="16x16" th:href="@{/favicon-16x16-os.png}">
     <link rel="icon" type="image/x-icon" th:href="@{/favicon-os.ico}">
+    <meta property="og:description" th:content="#{label.og.os.description}"/>
   </th:block>
   <!-- Bootstrap core CSS -->
   <th:block th:fragment="css">
@@ -83,6 +96,7 @@
     <script type="text/javascript" th:src="@{/view/js/popper.min.js}"></script>
     <script type="text/javascript" th:src="@{/view/js/bootstrap.min.js}"></script>
     <script type="text/javascript" th:src="@{/view/js/simple-lightbox.js}"></script>
+    <script type="text/javascript" th:src="@{/view/js/ww-form-validator.js}"></script>
     <script type="text/javascript" th:src="@{/view/js/ww-common-app.js}"></script>
     <script type="text/javascript" th:src="@{/view/js/lazysizes.min.js}"></script>
     <script type="text/javascript" th:src="@{/view/js/ww-custom-elements.js}"></script>
@@ -125,7 +139,7 @@
         <th:block th:replace=":: navigation"></th:block>
       </div>
     </div>
-    <th:block th:replace=":: feedback-form"></th:block>
+    <th:block th:replace="feedback :: feedback-form"></th:block>
   </th:block>
   <th:block th:fragment="lang-select">
     <div class="dropdown lang-btn">
@@ -196,6 +210,10 @@
           <img class="navigation__image" th:src="@{'/view/images/menu-new-words.svg'}" alt="">
           <span th:utext="#{menu.newwords}"></span>
         </a>
+        <a class="navigation__link" th:href="@{/wordsuggestion}" target="_blank">
+          <img class="navigation__image" th:src="@{'/view/images/menu-word-suggestions.svg'}" alt="">
+          <span th:utext="#{menu.word.suggestions}"></span>
+        </a>
       </div>
     </div>
   </th:block>
@@ -262,77 +280,6 @@
       </tr>
     </table>
   </div>
-  <!-- IE user message -->
-  <th:block th:fragment="ie-user">
-    <div class="alert-danger-ie" th:if="${session.ieuser}">
-      <div class="alert-danger-ie-container">
-        <span th:text="#{warning.ieuser}">Bad bad browser, no Cookies for you!!!</span>
-      </div>
-    </div>
-  </th:block>
-  <!-- Feedback dialog -->
-  <th:block th:fragment="feedback-form">
-    <div class="modal fade" id="feedback-modal" tabindex="-1" aria-model="true" role="dialog" aria-hidden="false" aria-describedby="feedback-modal-title">
-      <div class="modal-dialog" role="document">
-        <div class="modal-content feedback-modal">
-          <div class="modal-header feedback-modal__header">
-            <h1 class="modal-title" th:text="#{feedback.title}" id="feedback-modal-title">Tagasiside</h1>
-            <h1 class="modal-title d-none" th:text="#{feedback.success.title}" id="feedback-modal-success-title">Aitäh</h1>
-            <button type="button" class="feedback-modal__close" data-dismiss="modal" th:aria-label="#{menu.close}">
-              <span class="fa fa-times" aria-hidden="true"></span>
-            </button>
-          </div>
-          <div id="feedback-data" class="modal-body">
-            <div>
-              <form id="feedback-form" th:action="@{/feed}" novalidate>
-                <input type="hidden" name="feedbackType" th:value="${feedbackType}">
-                <input type="hidden" name="lastSearch" th:value="${sessionBean == null ? '' : sessionBean.searchWord}">
-                <div class="feedback-modal__group">
-                  <label for="descriptionInput2" class="col-form-label" th:text="#{label.feedback.description}">Probleemi lühikirjeldus</label>
-                  <textarea id="descriptionInput2" class="form-control" name="description" required autocomplete="off" th:placeholder="#{label.feedback.placeholder.description}"></textarea>
-                  <div class="invalid-feedback" th:text="#{label.feedback.required.description}">Väli on kohustuslik</div>
-                </div>
-                <div class="feedback-modal__want-response">
-                  <h2 th:text="#{label.feedback.message.heading}">Kui soovid vastust oma probleemile</h2>
-                  <p th:text="#{label.feedback.message.content}">Kui sul on küsimus....</p>
-                  <div class="feedback-modal__group">
-                    <label for="feedback-modal-email" class="col-form-label" th:text="#{label.feedback.email}">E-post</label>
-                    <input id="feedback-modal-email" type="email" class="form-control form-email" name="senderEmail" autocomplete="email" th:placeholder="#{label.feedback.placeholder.email}">
-                  </div>
-                  <div class="feedback-modal__group d-none" id="feedback-modal-checkbox-group">
-                    <div class="custom-control custom-checkbox">
-                      <input type="checkbox" class="custom-control-input" id="feedback-email-checkbox">
-                      <label class="custom-control-label" for="feedback-email-checkbox">
-                        <span th:text="#{label.feedback.iagree}">Nõustun</span>
-                        <a
-                          target="_blank"
-                          rel="noreferrer"
-                          th:href="@{/regulations}"
-                          data-item-name="regulations"
-                          th:text="#{label.feedback.withterms}">
-                          kasutus- ja privaatsustingimustega
-                        </a>
-                        <span>&ast;</span>
-                      </label>
-                      <div class="invalid-feedback" th:text="#{label.feedback.required.field}">Väli on kohustuslik</div>
-                    </div>
-                  </div>
-                  <button id="feedback-submit" type="button" class="feedback-modal__button" name="feedbackSendBtn" th:text="#{button.send}">Saada</button>
-                </div>
-              </form>
-            </div>
-          </div>
-          <div id="feedback-response" class="modal-body d-none">
-            <div class="d-flex flex-column">
-              <div id="feedback-error-message" class="alert alert-danger d-none" th:text="#{label.feedback.technical.error}">Tagasiside saatmine ebaõnnestus, proovige hiljem uuesti.</div>
-              <p id="feedback-success-message" class="m-0 d-none" th:text="#{label.feedback.success}">Aitäh, saime tagasiside kätte</p>
-              <button type="button" class="feedback-modal__button" data-dismiss="modal" th:text="#{menu.close}">Sulge</button>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </th:block>
   <!-- About, Conditions, API, Regulations secondary IMPORTANT LINK MENU -->
   <th:block th:fragment="important-links-menu">
     <ul class="mt-4 list-unstyled">
@@ -437,11 +384,17 @@
               type="button"
               data-toggle="modal"
               data-target="#feedback-modal"
-              th:text="#{label.feedback.placeholder.description}">
-            Kirjuta meile
+              th:text="#{label.feedback.description.placeholder}">
+              Kirjuta meile
             </button>
           </th:block>
         </div>
+      </div>
+      <div class="footer__logos">
+        <img th:src="@{/view/images/esif.svg}" th:alt="#{label.footer.logos.esif}" width="156" height="91" />
+        <img th:src="@{/view/images/esf.svg}" th:alt="#{label.footer.logos.esf}" width="156" height="82" />
+        <img th:src="@{/view/images/funding.svg}" th:alt="#{label.footer.logos.co_funded_eu}" width="174" height="82" />
+        <img th:src="@{/view/images/htm.svg}" th:alt="#{label.footer.logos.htm}" width="230" height="67" />
       </div>
     </footer>
   </th:block>
@@ -518,16 +471,19 @@
       <span class="material-symbols-outlined" aria-hidden="true">content_copy</span>
     </button>
     <div class="clipboard__popup" role="dialog"
-         th:data-clipboard-text="|${word.value}${word.homonymExists ? word.homonymNr : ''}. ${text} ${link} (${date})|">
-      <span th:text="#{label.clipboard.copied}"></span>
-      <p>
+     th:aria-labelledby="|clipboard-label-${id}|"
+     th:aria-describedby="|clipboard-content-${id}|"
+     th:data-announce-prefix="|#{label.clipboard.copied} |"
+     th:data-clipboard-text="|${word.value}${word.homonymExists ? word.homonymNr : ''}. ${text} ${link} (${date})|">
+      <span th:id="|clipboard-label-${id}|" th:text="#{label.clipboard.copied}"></span>
+      <p th:id="|clipboard-content-${id}|">
         <span class="clipboard__word">
           <span th:text="${word.value}">sõna</span>
           <sup th:if="${word.homonymExists}" th:text="${word.homonymNr}"></sup>
           <span>.</span>
         </span>
         <th:block th:if="${text}" th:utext="${text}"></th:block>
-        <br/>
+        <br aria-hidden="true"/>
         <a th:if="${link}" th:href="${link}" th:text="${link}"></a>
         <span th:if="${date}" th:utext="${'(' + date + ')'}"></span>
       </p>

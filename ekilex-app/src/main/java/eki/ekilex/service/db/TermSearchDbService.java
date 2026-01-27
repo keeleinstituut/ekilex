@@ -3,6 +3,7 @@ package eki.ekilex.service.db;
 import static eki.ekilex.data.db.main.Tables.DATASET;
 import static eki.ekilex.data.db.main.Tables.LANGUAGE;
 import static eki.ekilex.data.db.main.Tables.LEXEME;
+import static eki.ekilex.data.db.main.Tables.LEXEME_VARIANT;
 import static eki.ekilex.data.db.main.Tables.MEANING;
 import static eki.ekilex.data.db.main.Tables.WORD;
 import static eki.ekilex.data.db.main.Tables.WORD_WORD_TYPE;
@@ -32,6 +33,7 @@ import eki.ekilex.data.TermSearchResult;
 import eki.ekilex.data.db.main.tables.Dataset;
 import eki.ekilex.data.db.main.tables.Language;
 import eki.ekilex.data.db.main.tables.Lexeme;
+import eki.ekilex.data.db.main.tables.LexemeVariant;
 import eki.ekilex.data.db.main.tables.Meaning;
 import eki.ekilex.data.db.main.tables.Word;
 import eki.ekilex.data.db.main.tables.WordWordType;
@@ -389,10 +391,19 @@ public class TermSearchDbService extends AbstractDataDbService {
 
 		Meaning m = MEANING.as("m");
 		Lexeme l = LEXEME.as("l");
+		LexemeVariant lv = LEXEME_VARIANT.as("lv2");
 
 		Condition dsWhere = searchFilterHelper.applyDatasetRestrictions(l, searchDatasetsRestriction, null);
 		Field<LocalDateTime> mlacteof = queryHelper.getMeaningLastActivityEventOnField(m.ID, LastActivityType.EDIT);
 		Field<LocalDateTime> mlappeof = queryHelper.getMeaningLastActivityEventOnField(m.ID, LastActivityType.APPROVE);
+
+		Condition where = m.ID.eq(meaningId)
+				.and(l.MEANING_ID.eq(m.ID))
+				.and(dsWhere)
+				.andNotExists(DSL
+						.select(lv.ID)
+						.from(lv)
+						.where(lv.VARIANT_LEXEME_ID.eq(l.ID)));
 
 		return mainDb
 				.select(
@@ -403,10 +414,7 @@ public class TermSearchDbService extends AbstractDataDbService {
 						DSL.arrayAggDistinct(l.ID).orderBy(l.ID).as("lexeme_ids"),
 						DSL.arrayAggDistinct(l.DATASET_CODE).as("lexeme_dataset_codes"))
 				.from(m, l)
-				.where(
-						m.ID.eq(meaningId)
-								.and(l.MEANING_ID.eq(m.ID))
-								.and(dsWhere))
+				.where(where)
 				.groupBy(m.ID)
 				.fetchOptionalInto(eki.ekilex.data.Meaning.class)
 				.orElse(null);

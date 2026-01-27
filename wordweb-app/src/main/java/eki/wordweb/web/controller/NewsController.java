@@ -29,7 +29,7 @@ public class NewsController extends AbstractController {
 	@GetMapping(NEWS_URI)
 	public String news(HttpServletRequest request, HttpServletResponse response, Model model) {
 
-		List<NewsArticle> newsArticles = commonDataService.getWordwebNewsArticles();
+		List<NewsArticle> newsArticles = ancillaryDataService.getWordwebNewsArticles();
 		if (CollectionUtils.isNotEmpty(newsArticles)) {
 			NewsArticle latestWordwebNewsArticle = newsArticles.get(0);
 			handleNewsCookie(latestWordwebNewsArticle, request, response);
@@ -44,7 +44,7 @@ public class NewsController extends AbstractController {
 	@ResponseBody
 	public String newsAccept(HttpServletRequest request, HttpServletResponse response) {
 
-		NewsArticle latestWordwebNewsArticle = commonDataService.getLatestWordwebNewsArticle();
+		NewsArticle latestWordwebNewsArticle = ancillaryDataService.getLatestWordwebNewsArticle();
 		handleNewsCookie(latestWordwebNewsArticle, request, response);
 
 		return NOTHING;

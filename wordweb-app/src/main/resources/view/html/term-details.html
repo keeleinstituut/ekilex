@@ -10,12 +10,13 @@
               word=${wordData.word},
               text=${#messages.msg('label.clipboard.text.term', lexeme.datasetName)},
               link=${lexeme.datasetSearchUrl},
-              date=${#dates.format(#dates.createNow(), 'dd.MM.yyyy')})">
+              date=${#dates.format(#dates.createNow(), 'dd.MM.yyyy')},
+              id=${lexeme.meaningId})">
           </th:block>
         </div>
         <div class="meaning-data__modified">
           <span>ID</span>
-          <span th:text="${lexeme.meaningId}" th:if="${isProTerm}"></span>
+          <span th:text="${lexeme.meaningId}"></span>
           <span th:text="#{label.tooltip.last_modified}"></span>
           <span class="meaning-data__date" th:text="${#temporals.format(lexeme.meaningManualEventOn, 'dd.MM.yyyy')}"></span>
         </div>
@@ -38,7 +39,6 @@
       </a>
     </div>
     <section th:aria-labelledby="|term-meaning-data-${lexeme.meaningId}|">
-      <a th:href="${@viewUtil.getEkilexLimTermMeaningDetailsUrl(lexeme.meaningId)}" th:text="${lexeme.meaningId}" th:if="${isLimTerm}"></a>
       <div class="meaning" th:with="hasDomains=${not #lists.isEmpty(lexeme.domains)},
             hasDefinitionsByLang=${not #maps.isEmpty(lexeme.definitionsByLang)}">
         <div class="definition-row" th:if="${hasDomains} OR ${hasDefinitionsByLang}">
@@ -116,7 +116,6 @@
                   <div class="d-flex" th:id="${'note-entry-text-' + note.id}">
                     <div>
                       <span class="text-body-two" th:utext="${note.valuePrese}"></span>
-                      <span th:if="${isLimTerm}" th:utext="${'[' + note.createdBy + ']'}" class="text-muted text-small"></span>
                       <th:block th:if="${not #lists.isEmpty(note.sourceLinks)}">
                         <span class="definition-sources">
                           <span th:each="sourceLink : ${note.sourceLinks}">
@@ -164,22 +163,24 @@
           <div class="related-meanings mb-2">
             <div class="relation-list d-flex flex-row flex-wrap" th:each="relationType, relationTypeIter : ${lexeme.relatedMeaningsByType.keySet()}">
               <span class="mr-2 text-caption" th:text="${relationType.value}"></span>
-              <th:block th:each="relation, relationIter : ${lexeme.relatedMeaningsByType.get(relationType)}">
-                <div class="relation-item mr-1">
-                  <a th:href="@{${@viewUtil.getSearchUri(sessionBean, searchMode, relation.value, relation.homonymNr, relation.lang)}}">
-                    <span th:utext="${@decorUtil.getWordValueMarkup(relation)}">tee</span>
-                  </a>
-                  <th:block th:if="${not #lists.isEmpty(relation.lexRegisters)}">
-                    <th:block th:each="register, rIter : ${relation.lexRegisters}">
-                      <span class="rections register">
-                        <span th:text="${register.value}" class="text-uppercase text-small"></span>
-                        <span th:unless="${rIter.last}" class="ml-n1">,</span>
-                      </span>
+              <ul class="list-unstyled d-inline-block m-0">
+                <th:block th:each="relation, relationIter : ${lexeme.relatedMeaningsByType.get(relationType)}">
+                  <li class="relation-item d-inline-block">
+                    <a th:href="@{${@viewUtil.getSearchUri(sessionBean, searchMode, relation.value, relation.homonymNr, relation.lang)}}">
+                      <span th:utext="${@decorUtil.getWordValueMarkup(relation)}">tee</span>
+                    </a>
+                    <th:block th:if="${not #lists.isEmpty(relation.lexRegisters)}">
+                      <th:block th:each="register, rIter : ${relation.lexRegisters}">
+                        <span class="rections register">
+                          <span th:text="${register.value}" class="text-uppercase text-small"></span>
+                          <span th:unless="${rIter.last}" class="ml-n1">,</span>
+                        </span>
+                      </th:block>
                     </th:block>
-                  </th:block>
-                  <span th:unless="${relationIter.last}" class="ml-n1">,</span>
-                </div>
-              </th:block>
+                    <span th:unless="${relationIter.last}" class="ml-n1">,</span>
+                  </li>
+                </th:block>
+              </ul>
             </div>
           </div>
         </th:block>
@@ -309,7 +310,7 @@
                 <th:block th:if="${not #maps.isEmpty(meaningLexeme.lexemeNotesByLang)}">
                   <div>
                     <div class="d-flex">
-                      <span class="word-notes__note text-caption" th:text="${isLimTerm ? #messages.msg('label.limterm.note') : #messages.msg('label.public.note')}">Hea teada</span>
+                      <span class="word-notes__note text-caption" th:text="#{label.public.note}">Hea teada</span>
                     </div>
                     <ul class="word-notes__list">
                       <th:block th:each="noteEntry : ${meaningLexeme.lexemeNotesByLang}">

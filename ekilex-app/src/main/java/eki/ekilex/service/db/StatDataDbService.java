@@ -4,7 +4,6 @@ import static eki.ekilex.data.db.main.Tables.ACTIVITY_LOG;
 import static eki.ekilex.data.db.main.Tables.API_ERROR_COUNT;
 import static eki.ekilex.data.db.main.Tables.API_REQUEST_COUNT;
 import static eki.ekilex.data.db.main.Tables.ASPECT;
-import static eki.ekilex.data.db.main.Tables.COLLOCATION;
 import static eki.ekilex.data.db.main.Tables.DATASET;
 import static eki.ekilex.data.db.main.Tables.DEFINITION;
 import static eki.ekilex.data.db.main.Tables.DERIV;
@@ -53,7 +52,7 @@ public class StatDataDbService implements GlobalConstant {
 						DSL.select(DSL.count(DEFINITION.ID)).from(DEFINITION).asField("definition_count"),
 						DSL.select(DSL.count(DATASET.CODE)).from(DATASET).asField("dataset_count"),
 						DSL.select(DSL.count(SOURCE.ID)).from(SOURCE).asField("source_count"),
-						DSL.select(DSL.count(COLLOCATION.ID)).from(COLLOCATION).asField("collocation_count"),
+						DSL.select(DSL.count(LEXEME.ID)).from(LEXEME).where(LEXEME.IS_COLLOCATION.isTrue()).asField("collocation_count"),
 						DSL.select(DSL.count(LANGUAGE.CODE)).from(LANGUAGE).asField("language_count"),
 						DSL.select(DSL.count(REGISTER.CODE)).from(REGISTER).asField("register_count"),
 						DSL.select(DSL.count(ASPECT.CODE)).from(ASPECT).asField("aspect_count"),

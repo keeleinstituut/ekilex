@@ -7,7 +7,6 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Component;
@@ -19,7 +18,6 @@ import eki.common.data.Classifier;
 import eki.wordweb.constant.SystemConstant;
 import eki.wordweb.data.Dataset;
 import eki.wordweb.data.LanguageData;
-import eki.wordweb.data.NewsArticle;
 import eki.wordweb.data.UiFilterElement;
 import eki.wordweb.service.db.CommonDataDbService;
 import eki.wordweb.service.util.ClassifierUtil;
@@ -127,24 +125,4 @@ public class CommonDataService implements SystemConstant {
 		return termDatasets;
 	}
 
-	@Transactional
-	public NewsArticle getLatestWordwebNewsArticle() {
-
-		String displayLang = languageContext.getDisplayLang();
-		NewsArticle newsArticle = commonDataDbService.getLatestWordwebNewsArticle(displayLang);
-		if (newsArticle == null) {
-			return null;
-		}
-		String content = newsArticle.getContent();
-		String contentCut = StringUtils.substringBefore(content, '.');
-		newsArticle.setContentCut(contentCut);
-		return newsArticle;
-	}
-
-	@Transactional
-	public List<NewsArticle> getWordwebNewsArticles() {
-
-		String displayLang = languageContext.getDisplayLang();
-		return commonDataDbService.getWordwebNewsArticles(displayLang);
-	}
 }

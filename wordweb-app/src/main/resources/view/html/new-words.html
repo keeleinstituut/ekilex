@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="et" xmlns:th="http://www.thymeleaf.org">
-  <head th:replace="common-app :: common_header(~{::title},~{::links},_)">
+  <head th:replace="common-app :: common_header(~{::title},~{::links},_, 'Sõnaveeb - Uued sõnad')">
     <title>Sõnaveeb - Uued sõnad</title>
     <th:block th:fragment="links">
       <script type="text/javascript" th:src="@{/view/js/hash.js}"></script>
@@ -9,7 +9,6 @@
   <body class="survey-active">
     <th:block th:replace="common-app :: wcag-sidebar"></th:block>
     <th:block th:replace="common-app :: wcag-main"></th:block>
-    <th:block th:replace="common-app :: ie-user"></th:block>
     <th:block th:replace="common-app :: header(withSearch = ${false})"></th:block>
     <div class="news-page__wrapper">
       <div class="new-words-page__header">

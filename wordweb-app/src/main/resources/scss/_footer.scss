@@ -1,7 +1,7 @@
 .footer {
   background-color: var(--color-light-gray);
   color: var(--color-dark-blue);
-  padding: 36px 8vw;
+  padding-top: 36px;
   margin-top: auto;
   font-size: .875rem;
 
@@ -12,15 +12,17 @@
     justify-content: center;
     font-weight: 500;
     gap: 24px;
+    padding: 0 8vw 36px;
 
     & a {
       color: inherit;
       text-decoration: none;
+
       &:hover {
         text-decoration: underline;
       }
     }
-    
+
     @media (max-width: 767px) {
       grid-template-columns: 1fr;
       text-align: center;
@@ -79,5 +81,23 @@
   &__version {
     font-size: .75rem;
     font-weight: 400;
+  }
+
+  &__logos {
+    display: grid;
+    grid-template-columns: 1fr;
+    justify-items: center;
+    gap: 16px;
+    align-items: center;
+    padding: 24px;
+    background-color: var(--color-white);
+
+    @media (min-width: 768px) {
+      grid-template-columns: repeat(2, 1fr);
+    }
+
+    @media (min-width: 1400px) {
+      grid-template-columns: repeat(4, 1fr);
+    }
   }
 }

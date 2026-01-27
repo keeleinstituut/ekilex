@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="et" xmlns:th="http://www.thymeleaf.org">
-<head th:replace="common-app :: common_header(~{::title},~{::links},_)">
+<head th:replace="common-app :: common_header(~{::title},~{::links},_, #{search.title(${searchWord})})">
 <title th:text="#{search.title(${searchWord})}">Otsing</title>
 <th:block th:fragment="links">
   <script type="text/javascript" th:src="@{/view/js/shared.js}"></script>
@@ -16,7 +16,6 @@
     <th:block th:replace="common-app :: wcag-search"></th:block>
     <th:block th:replace="common-app :: wcag-main"></th:block>
   </div>
-  <th:block th:replace="common-app :: ie-user"></th:block>
   <th:block th:replace="common-app :: header"></th:block>
   <div class="container-fluid homonym-page mb-5">
     <div class="search-results-header">

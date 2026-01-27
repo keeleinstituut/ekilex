@@ -1,11 +1,10 @@
 <!DOCTYPE html>
 <html lang="et" xmlns:th="http://www.thymeleaf.org">
-<head th:replace="common-app :: common_header(~{::title},_,_)">
+<head th:replace="common-app :: common_header(~{::title},_,_,'Sõnaveeb - Viga')">
 <title>Sõnaveeb - Viga</title>
 </head>
 <body class="survey-active" th:with="httpStatus=${T(org.springframework.http.HttpStatus).valueOf(#response.status)}">
   <th:block th:replace="common-app :: wcag-main"></th:block>
-  <th:block th:replace="common-app :: ie-user"></th:block>
   <div id="main" role="main" class="container">
     <div class="card mt-4">
       <div class="card-body">

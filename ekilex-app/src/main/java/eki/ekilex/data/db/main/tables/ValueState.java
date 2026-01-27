@@ -16,7 +16,7 @@ import org.jooq.ForeignKey;
 import org.jooq.Identity;
 import org.jooq.Name;
 import org.jooq.Record;
-import org.jooq.Row3;
+import org.jooq.Row2;
 import org.jooq.Schema;
 import org.jooq.Table;
 import org.jooq.TableField;
@@ -52,11 +52,6 @@ public class ValueState extends TableImpl<ValueStateRecord> {
      * The column <code>public.value_state.code</code>.
      */
     public final TableField<ValueStateRecord, String> CODE = createField(DSL.name("code"), SQLDataType.VARCHAR(100).nullable(false), this, "");
-
-    /**
-     * The column <code>public.value_state.datasets</code>.
-     */
-    public final TableField<ValueStateRecord, String[]> DATASETS = createField(DSL.name("datasets"), SQLDataType.VARCHAR(10).getArrayDataType(), this, "");
 
     /**
      * The column <code>public.value_state.order_by</code>.
@@ -143,11 +138,11 @@ public class ValueState extends TableImpl<ValueStateRecord> {
     }
 
     // -------------------------------------------------------------------------
-    // Row3 type methods
+    // Row2 type methods
     // -------------------------------------------------------------------------
 
     @Override
-    public Row3<String, String[], Long> fieldsRow() {
-        return (Row3) super.fieldsRow();
+    public Row2<String, Long> fieldsRow() {
+        return (Row2) super.fieldsRow();
     }
 }

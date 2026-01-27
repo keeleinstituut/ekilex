@@ -303,7 +303,9 @@ public class LexEditController extends AbstractPrivatePageController {
 
 		String wordValue = wordDetails.getWordValue();
 		String searchUri = "";
+
 		if (StringUtils.isNotBlank(wordValue)) {
+
 			String language = wordDetails.getLanguage();
 			String dataset = wordDetails.getDataset();
 			List<String> allDatasets = commonDataService.getVisibleDatasetCodes();

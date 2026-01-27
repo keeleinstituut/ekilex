@@ -24,6 +24,8 @@ public interface SystemConstant {
 
 	String DELETE_OUTDATED_DATA_REQUESTS_TIME_5_AM = "0 0 5 * * *";
 
+	int WORD_SUGGESTION_PUBLICATION_DAY = 5;
+
 	String CLASSIF_LABEL_LANG_EST = "est";
 
 	String CLASSIF_LABEL_TYPE_DESCRIP = "descrip";

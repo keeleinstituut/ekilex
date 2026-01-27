@@ -4,12 +4,12 @@
 <title th:text="#{feedback.title}">Sõnaveebi tagasiside</title>
 <th:block th:fragment="links">
   <style>
-.breakWords {
-	overflow-wrap: break-word;
-	word-break: break-word;
-	word-wrap: break-word
-}
-</style>
+  .breakWords {
+  	overflow-wrap: break-word;
+  	word-break: break-word;
+  	word-wrap: break-word
+  }
+  </style>
 </th:block>
 </head>
 <body class="body-with-navbar">
@@ -24,11 +24,39 @@
           <form th:action="@{/wwfeedback/search}" method="post">
             <div class="form-group row">
               <div class="col-2">
-                <input type="text" name="searchFilter" th:value="${wwFeedbackSearchBean.searchFilter}" class="form-control" th:placeholder="#{feedback.placeholder.search}" autocomplete="false">
+                <select name="feedbackType" class="form-control">
+                  <option value="" th:text="#{feedback.placeholder.type}"></option>
+                  <option th:each="feedbackType : ${T(eki.common.constant.FeedbackType).values()}"
+                          th:value="${feedbackType}"
+                          th:selected="${@viewUtil.enumEquals(feedbackSearchFilter.feedbackType, feedbackType)}"
+                          th:text="#{|enum.feedbacktype.${feedbackType}|}">Tagasiside liik</option>
+                </select>
+              </div>
+              <div class="col-2">
+                <input type="text" 
+                       name="searchValue"
+                       th:value="${feedbackSearchFilter.searchValue}"
+                       th:placeholder="#{feedback.placeholder.search}"
+                       autocomplete="off"
+                       class="form-control">
+              </div>
+              <div class="col-2">
+                <div class="input-group date" data-provide="datepicker" data-date-language="et" data-date-autoclose="true">
+                  <input type="text" 
+                         name="created"
+                         th:value="${#temporals.format(feedbackSearchFilter.created, 'dd.MM.yyyy')}"
+                         autocomplete="off"
+                         class="form-control">
+                  <div class="input-group-addon input-group-append">
+                    <div class="input-group-text">
+                      <i class="fa fa-calendar fa-lg"></i>
+                    </div>
+                  </div>
+                </div>
               </div>
               <div class="col-2">
                 <div class="form-control">
-                  <input type="checkbox" class="ml-1 form-check-input" name="notCommentedFilter" th:checked="${wwFeedbackSearchBean.notCommentedFilter}">
+                  <input type="checkbox" class="form-check-input ml-1" name="notCommented" th:checked="${feedbackSearchFilter.notCommented}">
                   <label class="ml-4 form-check-label" th:text="#{feedback.not.commented}">Kommenteerimata</label>
                 </div>
               </div>
@@ -41,11 +69,11 @@
         </div>
         <hr />
         <div class="d-flex justify-content-center mb-2">
-          <a th:href="@{'/wwfeedback/page/' + ${feedbackLogResult.pageNum - 1}}" th:hidden="${feedbackLogResult.pageNum == 1}" th:title="#{common.previous.page}" class="btn badge mr-2">
+          <a th:href="|@{/wwfeedback/page/}${feedbackLogResult.pageNum - 1}|" th:hidden="${feedbackLogResult.pageNum == 1}" th:title="#{common.previous.page}" class="btn badge mr-2">
             <i class="fa fa-2x fa-angle-left" aria-hidden="true"></i>
           </a>
-          <span class="mt-1" th:text="${feedbackLogResult.pageNum + ' / ' + feedbackLogResult.pageCount}"></span>
-          <a th:href="@{'/wwfeedback/page/' + ${feedbackLogResult.pageNum + 1}}" th:hidden="${feedbackLogResult.pageNum == feedbackLogResult.pageCount}" th:title="#{common.next.page}"
+          <span class="mt-1" th:text="|${feedbackLogResult.pageNum} / ${feedbackLogResult.pageCount}|"></span>
+          <a th:href="|@{/wwfeedback/page/}${feedbackLogResult.pageNum + 1}|" th:hidden="${feedbackLogResult.pageNum == feedbackLogResult.pageCount}" th:title="#{common.next.page}"
             class="btn badge ml-2">
             <i class="fa fa-2x fa-angle-right" aria-hidden="true"></i>
           </a>
@@ -53,52 +81,80 @@
         <table class="table table-striped table-condensed table-hover" th:with="isDatasetCrudOwnerOrAdmin=${userRoleData.datasetCrudOwnerOrAdmin}">
           <thead class="thead-light">
             <tr>
-              <th th:text="#{feedback.created.on}">Saadetud</th>
-              <th th:text="#{feedback.created.by}">Saatja</th>
-              <th th:text="#{feedback.last.search}">Sõna/Viimane otsing</th>
-              <th th:text="#{feedback.message}">Teade</th>
-              <th></th>
-              <th style="min-width: 350px" th:text="#{feedback.eki.comment}">EKI kommentaarid</th>
+              <th th:text="#{feedback.created.on}" class="col-1">Saadetud</th>
+              <th th:text="#{feedback.message}" class="col-5">Teade</th>
+              <th style="width: 30px"></th>
+              <th th:text="#{feedback.eki.comment}" class="col-5">EKI kommentaarid</th>
               <th></th>
             </tr>
           </thead>
           <tbody>
-            <tr th:each="feedbackLog : ${feedbackLogResult.feedbackLogs}">
-              <td>
-                <span class="text-nowrap font-weight-light" th:text="${#temporals.format(feedbackLog.createdOn, 'dd.MM.yyyy HH:mm')}"></span>
-                <span class="badge badge-info" th:text="${feedbackLog.feedbackType}"></span>
-              </td>
-              <td>
-                <div class="text-primary" th:text="${feedbackLog.senderEmail}"></div>
-              </td>
-              <td>
-                <span th:text="${feedbackLog.lastSearch}"></span>
-              </td>
-              <td class="breakWords pr-3">
-                <div class="row ml-1" th:unless="${#strings.isEmpty(feedbackLog.description)}">
-                  <span class="lbl pr-2" th:text="#{feedback.description}">Kirjeldus</span>
-                  <span th:text="${feedbackLog.description}"></span>
-                </div>
-                <th:block th:if="${feedbackLog.feedbackLogAttrs}">
-                  <th:block th:each="feedbackLogAttr : ${feedbackLog.feedbackLogAttrs}">
-                    <div class="row ml-1">
-                      <span class="lbl pr-2" th:text="#{|feedback.${feedbackLogAttr.name}|}">Attr name</span>
-                      <span th:text="${feedbackLogAttr.value}"></span>
-                    </div>
+            <th:block th:each="feedbackLog : ${feedbackLogResult.feedbackLogs}">
+              <tr th:id="|feedbackLogRow_${feedbackLog.id}|" th:fragment="feedbacklog_row">
+                <td>
+                  <span class="text-nowrap font-weight-light" th:text="${#temporals.format(feedbackLog.created, 'dd.MM.yyyy HH:mm')}"></span>
+                  <span class="badge badge-info" th:text="#{|enum.feedbacktype.${feedbackLog.feedbackType}|}"></span>
+                  <th:block th:if="${feedbackLog.wordSuggestion}">
+                    <span class="badge badge-light" th:title="#{feedback.public}" th:if="${feedbackLog.wordSuggestion.public}">
+                      <i class="fa fa-check text-info" aria-hidden="true"></i>
+                    </span>
                   </th:block>
-                </th:block>
-              </td>
-              <td>
-                <div th:replace="wwfeedbackdialog :: add_feedback_comment_dlg"></div>
-                <button type="button" class="btn badge badge-success" th:title="#{common.add.new}"
-                        data-toggle="modal" th:data-target="${'#addFeedbackCommentDlg_' + feedbackLog.id}"
-                        sec:authorize="${#vars.isDatasetCrudOwnerOrAdmin}">
-                  <i class="fa fa-plus" aria-hidden="true"></i>
-                </button>
-              </td>
-              <td>
-                <th:block th:fragment="eki_comments">
-                  <table th:id="${'ekiCommentsArea_' + feedbackLog.id}">
+                </td>
+                <td class="breakWords pr-3">
+                  <div th:if="${feedbackLog.senderEmail}" class="ml-1">
+                    <span class="lbl pr-2" th:text="#{feedback.created.by}">Saatja</span>
+                    <span th:text="${feedbackLog.senderEmail}" class="text-primary"></span>
+                  </div>
+                  <div class="ml-1" th:unless="${#strings.isEmpty(feedbackLog.description)}">
+                    <span class="lbl pr-2" th:text="#{feedback.description}">Kirjeldus</span>
+                    <span th:text="${feedbackLog.description}"></span>
+                  </div>
+                  <th:block th:if="${feedbackLog.feedbackLogAttrs}">
+                    <th:block th:each="feedbackLogAttr : ${feedbackLog.feedbackLogAttrs}">
+                      <div class="ml-1">
+                        <span class="lbl pr-2" th:text="#{|feedback.${feedbackLogAttr.name}|}">Attr name</span>
+                        <span th:text="${feedbackLogAttr.value}"></span>
+                      </div>
+                    </th:block>
+                  </th:block>
+                  <div th:if="${feedbackLog.lastSearch}" class="ml-1">
+                    <span class="lbl pr-2" th:text="#{feedback.last.search}">Viimane otsing</span>
+                    <span th:text="${feedbackLog.lastSearch}"></span>
+                  </div>
+                </td>
+                <td>
+                  <th:block sec:authorize="#authentication.principal.master">
+                    <div th:replace="wwfeedbackdialog :: create_feedback_comment_dlg"></div>
+                    <div>
+                      <button type="button" class="btn badge badge-light" th:title="#{feedback.create.comment}"
+                              data-toggle="modal" th:data-target="|#createFeedbackCommentDlg_${feedbackLog.id}|">
+                        <i class="fa fa-comment-o" aria-hidden="true"></i>
+                      </button>
+                    </div>
+                    <th:block th:if="${@viewUtil.enumEquals(feedbackLog.feedbackType, T(eki.common.constant.FeedbackType).WORD_SUGGESTION)}">
+                      <th:block th:if="${feedbackLog.wordSuggestion}">
+                        <div th:replace="wwfeedbackdialog :: update_word_suggestion_dlg"></div>
+                        <div>
+                          <button type="button" class="btn badge badge-light" th:title="#{feedback.update.wordsuggestion}"
+                                  data-toggle="modal" th:data-target="|#updateWordSuggestionDlg_${feedbackLog.wordSuggestion.id}|">
+                            <i class="fa fa-pencil" aria-hidden="true"></i>
+                          </button>
+                        </div>
+                      </th:block>
+                      <th:block th:unless="${feedbackLog.wordSuggestion}">
+                        <div th:replace="wwfeedbackdialog :: create_word_suggestion_dlg"></div>
+                        <div>
+                          <button type="button" class="btn badge badge-light" th:title="#{feedback.create.wordsuggestion}"
+                                  data-toggle="modal" th:data-target="|#createWordSuggestionDlg_${feedbackLog.id}|">
+                            <i class="fa fa-share" aria-hidden="true"></i>
+                          </button>
+                        </div>
+                      </th:block>
+                    </th:block>
+                  </th:block>
+                </td>
+                <td class="col-5">
+                  <table th:id="|ekiCommentsArea_${feedbackLog.id}|">
                     <tr th:each="feedbackLogComment : ${feedbackLog.feedbackLogComments}">
                       <td class="text-nowrap">
                         <div class="font-weight-light" th:text="${#temporals.format(feedbackLogComment.createdOn, 'dd.MM.yyyy HH:mm')}"></div>
@@ -109,26 +165,28 @@
                       <td th:utext="${feedbackLogComment.comment}" class="breakWords"></td>
                     </tr>
                   </table>
-                </th:block>
-              </td>
-              <td>
-                <form th:action="@{/wwfeedback/deletefeedback}">
-                  <input type="hidden" name="feedbackId" th:value="${feedbackLog.id}" />
-                  <button type="button" class="btn badge badge-warning" data-toggle="delete-confirm" data-placement="left" sec:authorize="${#vars.isDatasetCrudOwnerOrAdmin}">
-                    <i class="fa fa-remove" aria-hidden="true"></i>
-                  </button>
-                </form>
-              </td>
-            </tr>
+                </td>
+                <td>
+                  <div class="float-right">
+                    <form th:action="@{/wwfeedback/deletefeedback}">
+                      <input type="hidden" name="feedbackId" th:value="${feedbackLog.id}" />
+                      <button type="button" class="btn badge badge-warning" data-toggle="delete-confirm" data-placement="left" sec:authorize="#authentication.principal.master">
+                        <i class="fa fa-remove" aria-hidden="true"></i>
+                      </button>
+                    </form>
+                  </div>
+                </td>
+              </tr>
+            </th:block>
           </tbody>
         </table>
         <hr />
         <div class="d-flex justify-content-center mb-2">
-          <a th:href="@{'/wwfeedback/page/' + ${feedbackLogResult.pageNum - 1}}" th:hidden="${feedbackLogResult.pageNum == 1}" th:title="#{common.previous.page}" class="btn badge mr-2">
+          <a th:href="|@{/wwfeedback/page/}${feedbackLogResult.pageNum - 1}|" th:hidden="${feedbackLogResult.pageNum == 1}" th:title="#{common.previous.page}" class="btn badge mr-2">
             <i class="fa fa-2x fa-angle-left" aria-hidden="true"></i>
           </a>
-          <span class="mt-1" th:text="${feedbackLogResult.pageNum + ' / ' + feedbackLogResult.pageCount}"></span>
-          <a th:href="@{'/wwfeedback/page/' + ${feedbackLogResult.pageNum + 1}}" th:hidden="${feedbackLogResult.pageNum == feedbackLogResult.pageCount}" th:title="#{common.next.page}"
+          <span class="mt-1" th:text="|${feedbackLogResult.pageNum} / ${feedbackLogResult.pageCount}|"></span>
+          <a th:href="|@{/wwfeedback/page/}${feedbackLogResult.pageNum + 1}|" th:hidden="${feedbackLogResult.pageNum == feedbackLogResult.pageCount}" th:title="#{common.next.page}"
             class="btn badge ml-2">
             <i class="fa fa-2x fa-angle-right" aria-hidden="true"></i>
           </a>

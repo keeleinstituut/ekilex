@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="et" xmlns:th="http://www.thymeleaf.org">
-<head th:replace="common-app :: common_header(_,~{::links},simpleSearch)">
+<head th:replace="common-app :: common_header(_,~{::links},simpleSearch,_)">
 <th:block th:fragment="links">
   <script type="text/javascript" th:src="@{/view/js/shared.js}"></script>
   <script type="text/javascript" th:src="@{/view/js/recorder.js}"></script>
@@ -12,9 +12,8 @@
   <th:block th:replace="common-app :: update-msg"></th:block>
   <th:block th:replace="common-app :: wcag-search"></th:block>
   <th:block th:replace="common-app :: latest-ww-news-article"></th:block>
-  <th:block th:replace="common-app :: ie-user"></th:block>
   <th:block th:replace="common-app :: header(pageContext = 'simpleSearch', withLogo = ${false}, withSearch = ${false})"></th:block>
-  <div class="container-fluid home-page-content">
+  <div class="container-fluid home-page-content home-page-content--simple">
     <div class="row">
       <div class="col align-self-center main-content-wrapper">
         <div class="row">
@@ -27,29 +26,11 @@
             <div th:replace="common-search :: search"></div>
           </div>
         </div>
-        <div class="logo-wrapper">
-          <ul class="logo-list list-unstyled">
-						<li>
-              <a href="https://eki.ee" th:aria-label="#{general.eki}" target="_blank">
-                <span class="eki-logo mini-logo"></span>
-              </a>
-            </li>
-            <li>
-              <span class="esf-logo mini-logo"></span>
-            </li>
-            <li>
-              <span class="erf-logo mini-logo"></span>
-            </li>
-            <li>
-              <span class="htm-logo mini-logo"></span>
-            </li>
-          </ul>
-        </div>
       </div>
     </div>
   </div>
   <div th:replace="common-app :: footer-content(pageContext = 'simpleSearch')"></div>
-  <div th:replace="common-app :: feedback-form"></div>
+  <div th:replace="feedback :: feedback-form"></div>
   <script th:inline="javascript">
   	var currentPage = /*[[@{/lite}]]*/"/lite";
   	var searchWordFragUrl = /*[[@{/searchwordfrag/lite}]]*/"/searchwordfrag/lite";

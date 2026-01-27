@@ -45,12 +45,14 @@ class Feedback {
 	];
 
 	static modalElements = {};
+	static formValidator = null;
 
 	static init() {
 		this.initElements();
 		if (!this.modalElements.modal) {
 			return;
 		}
+		this.formValidator = new FormValidator(this.modalElements.form);
 		this.initListeners();
 	}
 
@@ -79,7 +81,6 @@ class Feedback {
 			"hide.bs.modal",
 			this.handleModalClose.bind(this)
 		);
-
 		this.modalElements.submitButton.addEventListener(
 			"click",
 			this.handleSubmit.bind(this)
@@ -127,8 +128,7 @@ class Feedback {
 	}
 
 	static handleSubmit(event) {
-		this.modalElements.form.classList.add("was-validated");
-		if (this.modalElements.form.checkValidity() === false) {
+		if (!this.formValidator.validate()) {
 			event.preventDefault();
 			event.stopPropagation();
 			return;
@@ -158,7 +158,7 @@ class Feedback {
 
 	static clearMessages() {
 		// Clear out any form errors
-		this.modalElements.form.classList.remove("was-validated");
+		this.formValidator?.clearValidation();
 		const messages = this.modalElements.modal.querySelectorAll(
 			"[name=error_message]"
 		);

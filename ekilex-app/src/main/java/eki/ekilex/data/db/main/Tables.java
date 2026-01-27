@@ -9,7 +9,6 @@ import eki.ekilex.data.db.main.tables.ApiErrorCount;
 import eki.ekilex.data.db.main.tables.ApiRequestCount;
 import eki.ekilex.data.db.main.tables.Aspect;
 import eki.ekilex.data.db.main.tables.AspectLabel;
-import eki.ekilex.data.db.main.tables.Collocation;
 import eki.ekilex.data.db.main.tables.CollocationMember;
 import eki.ekilex.data.db.main.tables.DataRequest;
 import eki.ekilex.data.db.main.tables.Dataset;
@@ -54,9 +53,6 @@ import eki.ekilex.data.db.main.tables.LabelType;
 import eki.ekilex.data.db.main.tables.Language;
 import eki.ekilex.data.db.main.tables.LanguageLabel;
 import eki.ekilex.data.db.main.tables.LearnerComment;
-import eki.ekilex.data.db.main.tables.LexColloc;
-import eki.ekilex.data.db.main.tables.LexCollocPosGroup;
-import eki.ekilex.data.db.main.tables.LexCollocRelGroup;
 import eki.ekilex.data.db.main.tables.LexRelMapping;
 import eki.ekilex.data.db.main.tables.LexRelType;
 import eki.ekilex.data.db.main.tables.LexRelTypeLabel;
@@ -72,6 +68,7 @@ import eki.ekilex.data.db.main.tables.LexemeRegion;
 import eki.ekilex.data.db.main.tables.LexemeRegister;
 import eki.ekilex.data.db.main.tables.LexemeSourceLink;
 import eki.ekilex.data.db.main.tables.LexemeTag;
+import eki.ekilex.data.db.main.tables.LexemeVariant;
 import eki.ekilex.data.db.main.tables.Meaning;
 import eki.ekilex.data.db.main.tables.MeaningActivityLog;
 import eki.ekilex.data.db.main.tables.MeaningDomain;
@@ -123,6 +120,8 @@ import eki.ekilex.data.db.main.tables.UsageType;
 import eki.ekilex.data.db.main.tables.UsageTypeLabel;
 import eki.ekilex.data.db.main.tables.ValueState;
 import eki.ekilex.data.db.main.tables.ValueStateLabel;
+import eki.ekilex.data.db.main.tables.VariantType;
+import eki.ekilex.data.db.main.tables.VariantTypeLabel;
 import eki.ekilex.data.db.main.tables.ViewOsDefinition;
 import eki.ekilex.data.db.main.tables.ViewOsDefinitionIdx;
 import eki.ekilex.data.db.main.tables.ViewOsLexemeMeaning;
@@ -148,6 +147,7 @@ import eki.ekilex.data.db.main.tables.ViewWwWord;
 import eki.ekilex.data.db.main.tables.ViewWwWordEtymology;
 import eki.ekilex.data.db.main.tables.ViewWwWordRelation;
 import eki.ekilex.data.db.main.tables.ViewWwWordSearch;
+import eki.ekilex.data.db.main.tables.ViewWwWordSuggestion;
 import eki.ekilex.data.db.main.tables.Word;
 import eki.ekilex.data.db.main.tables.WordActivityLog;
 import eki.ekilex.data.db.main.tables.WordEkiRecommendation;
@@ -169,6 +169,7 @@ import eki.ekilex.data.db.main.tables.WordRelType;
 import eki.ekilex.data.db.main.tables.WordRelTypeLabel;
 import eki.ekilex.data.db.main.tables.WordRelation;
 import eki.ekilex.data.db.main.tables.WordRelationParam;
+import eki.ekilex.data.db.main.tables.WordSuggestion;
 import eki.ekilex.data.db.main.tables.WordTag;
 import eki.ekilex.data.db.main.tables.WordType;
 import eki.ekilex.data.db.main.tables.WordTypeLabel;
@@ -205,11 +206,6 @@ public class Tables {
      * The table <code>public.aspect_label</code>.
      */
     public static final AspectLabel ASPECT_LABEL = AspectLabel.ASPECT_LABEL;
-
-    /**
-     * The table <code>public.collocation</code>.
-     */
-    public static final Collocation COLLOCATION = Collocation.COLLOCATION;
 
     /**
      * The table <code>public.collocation_member</code>.
@@ -432,21 +428,6 @@ public class Tables {
     public static final LearnerComment LEARNER_COMMENT = LearnerComment.LEARNER_COMMENT;
 
     /**
-     * The table <code>public.lex_colloc</code>.
-     */
-    public static final LexColloc LEX_COLLOC = LexColloc.LEX_COLLOC;
-
-    /**
-     * The table <code>public.lex_colloc_pos_group</code>.
-     */
-    public static final LexCollocPosGroup LEX_COLLOC_POS_GROUP = LexCollocPosGroup.LEX_COLLOC_POS_GROUP;
-
-    /**
-     * The table <code>public.lex_colloc_rel_group</code>.
-     */
-    public static final LexCollocRelGroup LEX_COLLOC_REL_GROUP = LexCollocRelGroup.LEX_COLLOC_REL_GROUP;
-
-    /**
      * The table <code>public.lex_rel_mapping</code>.
      */
     public static final LexRelMapping LEX_REL_MAPPING = LexRelMapping.LEX_REL_MAPPING;
@@ -520,6 +501,11 @@ public class Tables {
      * The table <code>public.lexeme_tag</code>.
      */
     public static final LexemeTag LEXEME_TAG = LexemeTag.LEXEME_TAG;
+
+    /**
+     * The table <code>public.lexeme_variant</code>.
+     */
+    public static final LexemeVariant LEXEME_VARIANT = LexemeVariant.LEXEME_VARIANT;
 
     /**
      * The table <code>public.meaning</code>.
@@ -777,6 +763,16 @@ public class Tables {
     public static final ValueStateLabel VALUE_STATE_LABEL = ValueStateLabel.VALUE_STATE_LABEL;
 
     /**
+     * The table <code>public.variant_type</code>.
+     */
+    public static final VariantType VARIANT_TYPE = VariantType.VARIANT_TYPE;
+
+    /**
+     * The table <code>public.variant_type_label</code>.
+     */
+    public static final VariantTypeLabel VARIANT_TYPE_LABEL = VariantTypeLabel.VARIANT_TYPE_LABEL;
+
+    /**
      * The table <code>public.view_os_definition</code>.
      */
     public static final ViewOsDefinition VIEW_OS_DEFINITION = ViewOsDefinition.VIEW_OS_DEFINITION;
@@ -902,6 +898,11 @@ public class Tables {
     public static final ViewWwWordSearch VIEW_WW_WORD_SEARCH = ViewWwWordSearch.VIEW_WW_WORD_SEARCH;
 
     /**
+     * The table <code>public.view_ww_word_suggestion</code>.
+     */
+    public static final ViewWwWordSuggestion VIEW_WW_WORD_SUGGESTION = ViewWwWordSuggestion.VIEW_WW_WORD_SUGGESTION;
+
+    /**
      * The table <code>public.word</code>.
      */
     public static final Word WORD = Word.WORD;
@@ -1005,6 +1006,11 @@ public class Tables {
      * The table <code>public.word_relation_param</code>.
      */
     public static final WordRelationParam WORD_RELATION_PARAM = WordRelationParam.WORD_RELATION_PARAM;
+
+    /**
+     * The table <code>public.word_suggestion</code>.
+     */
+    public static final WordSuggestion WORD_SUGGESTION = WordSuggestion.WORD_SUGGESTION;
 
     /**
      * The table <code>public.word_tag</code>.

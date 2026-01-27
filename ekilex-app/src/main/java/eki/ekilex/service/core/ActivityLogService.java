@@ -46,6 +46,7 @@ import eki.ekilex.data.LearnerComment;
 import eki.ekilex.data.Lexeme;
 import eki.ekilex.data.LexemeNote;
 import eki.ekilex.data.LexemeRelation;
+import eki.ekilex.data.LexemeVariant;
 import eki.ekilex.data.Meaning;
 import eki.ekilex.data.MeaningImage;
 import eki.ekilex.data.MeaningMedia;
@@ -75,6 +76,7 @@ import eki.ekilex.service.db.LexSearchDbService;
 import eki.ekilex.service.db.LookupDbService;
 import eki.ekilex.service.db.OsDataDbService;
 import eki.ekilex.service.db.SourceDbService;
+import eki.ekilex.service.db.VariantDbService;
 import eki.ekilex.service.util.ConversionUtil;
 
 @Component
@@ -100,6 +102,9 @@ public class ActivityLogService implements SystemConstant, GlobalConstant, Freef
 
 	@Autowired
 	private CollocationDbService collocationDbService;
+
+	@Autowired
+	private VariantDbService variantDbService;
 
 	@Autowired
 	private SourceDbService sourceDbService;
@@ -144,6 +149,8 @@ public class ActivityLogService implements SystemConstant, GlobalConstant, Freef
 		} else if (ActivityEntity.FREEFORM_SOURCE_LINK.equals(entity)) {
 			ActivityLogOwnerEntityDescr freeformOwnerDescr = getFreeformSourceLinkOwnerDescr(entityId);
 			return freeformOwnerDescr.getOwnerId();
+		} else if (ActivityEntity.LEXEME_VARIANT.equals(entity)) {
+			return activityLogDbService.getLexemeVariantOwnerId(entityId);
 		} else if (ActivityEntity.LEXEME_SOURCE_LINK.equals(entity)) {
 			return activityLogDbService.getLexemeSourceLinkOwnerId(entityId);
 		} else if (ActivityEntity.LEXEME_NOTE.equals(entity)) {
@@ -580,6 +587,7 @@ public class ActivityLogService implements SystemConstant, GlobalConstant, Freef
 		Long wordId = lexeme.getWordId();
 		Word word = lexSearchDbService.getWord(wordId);
 		List<MeaningWord> meaningWords = commonDataDbService.getMeaningWords(lexemeId);
+		List<LexemeVariant> lexemeVariants = variantDbService.getLexemeVariants(lexemeId, CLASSIF_LABEL_LANG_EST);
 		List<Government> governments = commonDataDbService.getLexemeGovernments(lexemeId);
 		List<Grammar> grammars = commonDataDbService.getLexemeGrammars(lexemeId);
 		List<Freeform> lexemeFreeforms = commonDataDbService.getLexemeFreeforms(lexemeId, CLASSIF_LABEL_LANG_EST);
@@ -593,6 +601,7 @@ public class ActivityLogService implements SystemConstant, GlobalConstant, Freef
 
 		lexeme.setLexemeWord(word);
 		lexeme.setMeaningWords(meaningWords);
+		lexeme.setLexemeVariants(lexemeVariants);
 		lexeme.setGovernments(governments);
 		lexeme.setGrammars(grammars);
 		lexeme.setFreeforms(lexemeFreeforms);
