@@ -100,6 +100,45 @@ $(function () {
   Quill.register(EkiMediaBlot, true);
 });
 
+function createQuillToolbarHtml(uniqueId, basicOnly = false) {
+  const basicButtons = `
+      <button data-format="bold" type="button" title="Rõhutus"></button>
+      <button data-format="italic" type="button" title="Tsitaatsõna"></button>
+      <button data-format="stress" type="button" title="Rõhk"></button>
+      <button data-format="meta" type="button" title="Peidetud"></button>
+      <button data-format="eki-sub" type="button" title="Alaindeks"></button>
+      <button data-format="eki-sup" type="button" title="Ülaindeks"></button>`;
+
+  const advancedButtons = `
+      <button data-format="link" type="button" title="Link"></button>
+      <button data-format="remove-link" type="button" title="Eemalda link"></button>
+      <button data-format="eki-media" type="button" title="Pilt"></button>
+      <button data-format="remove-media" type="button" title="Eemalda pilt"></button>
+      <button data-format="remove-format" type="button" title="Eemalda vorming"></button>
+      <button data-format="undo" type="button" title="Võta tagasi"></button>
+      <button data-format="redo" type="button" title="Tee uuesti"></button>
+      <button data-format="source" type="button" title="Lähtekoodi vaade"></button>`;
+
+  const buttons = basicOnly ? basicButtons : basicButtons + advancedButtons;
+
+  return `
+    <div role="toolbar" class="ql-toolbar ql-snow" data-quill-toolbar="${uniqueId}">
+      ${buttons}
+    </div>
+  `;
+}
+
+function createQuillEditorWrapper(uniqueId, basicOnly = false) {
+  const wrapper = $('<div class="quill-editor-wrapper"></div>');
+  wrapper.append(createQuillToolbarHtml(uniqueId, basicOnly));
+  wrapper.append(`<div data-quill-container="${uniqueId}"></div>`);
+  return wrapper;
+}
+
+function stripPTags(html) {
+  return html.replace(/<p>/g, "").replace(/<\/p>/g, "");
+}
+
 function toggleFormatVisualState(dlg, editor) {
   const formatButtons = dlg.find("[data-format]");
   formatButtons.removeClass("ql-active");
@@ -116,86 +155,133 @@ function toggleFormatVisualState(dlg, editor) {
   });
 }
 
-function initQuillDlg(dlg, options = {}) {
-  const container = dlg.find("[data-quill-container]").get(0);
-  const toolbar = dlg
-    .find(
-      `[data-quill-toolbar="${container.getAttribute("data-quill-container")}"]`,
-    )
-    .get(0);
+function applyQuillOptions(editor, container, options) {
+  if (options.height) {
+    $(container).find(".ql-editor").css("min-height", options.height);
+  }
+  if (options.resizeEnabled === false) {
+    $(container).css("resize", "none");
+  }
+}
 
-  const editor = new Quill(container, {
-    theme: "snow",
-    modules: {
-      toolbar: {
-        container: toolbar,
-      },
-    },
-  });
-  dlg.find("[data-format]").on("click", function () {
+function bindFormatButtons(buttonContainer, editor, dlg) {
+  buttonContainer.find("[data-format]").on("click", function () {
     const format = this.getAttribute("data-format");
-    // Link button opens the link modal instead of toggling format
-    if (format === "link") {
-      const quillLink = new QuillLink(editor, dlg);
-      quillLink.init();
-      return;
-    }
-    // Remove link button clears ekilink/extlink format from selection
-    if (format === "remove-link") {
-      removeQuillLink(editor);
-      return;
-    }
-    if (format === "eki-media") {
-      const quillMedia = new QuillMedia(editor, dlg);
-      quillMedia.init();
-      return;
-    }
-    // Remove selected media
-    if (format === "remove-media") {
-      removeQuillMedia(editor);
-      return;
-    }
-    if (format === "undo") {
-      editor.history.undo();
-      return;
-    }
-    if (format === "redo") {
-      editor.history.redo();
-      return;
-    }
-    if (format === "source") {
-      toggleSourceView(editor, dlg);
-      return;
-    }
-    // Remove all formatting from selection, or move cursor out of current format
-    if (format === "remove-format") {
-      const selection = editor.getSelection();
-      if (selection && selection.length > 0) {
-        editor.removeFormat(selection.index, selection.length);
-      } else if (selection) {
-        // Insert space and move cursor there to break out of formatting
-        const index = selection.index;
-        editor.insertText(index, " ");
-        editor.removeFormat(index, 1);
-        editor.setSelection(index + 1, 0);
-      }
-      return;
+    switch (format) {
+      case "link":
+        new QuillLink(editor, dlg).init();
+        return;
+      case "remove-link":
+        removeQuillLink(editor);
+        return;
+      case "eki-media":
+        new QuillMedia(editor, dlg).init();
+        return;
+      case "remove-media":
+        removeQuillMedia(editor);
+        return;
+      case "undo":
+        editor.history.undo();
+        return;
+      case "redo":
+        editor.history.redo();
+        return;
+      case "source":
+        toggleSourceView(editor, dlg);
+        return;
+      case "remove-format":
+        const selection = editor.getSelection();
+        if (selection && selection.length > 0) {
+          editor.removeFormat(selection.index, selection.length);
+        } else if (selection) {
+          editor.insertText(selection.index, " ");
+          editor.removeFormat(selection.index, 1);
+          editor.setSelection(selection.index + 1, 0);
+        }
+        return;
     }
     const selection = editor.getSelection();
-    if (!selection) {
-      return;
-    }
+    if (!selection) return;
     const currentValue = editor.getFormat(selection.index, selection.length)[
       format
     ];
     editor.format(format, !currentValue);
     toggleFormatVisualState(dlg, editor);
   });
+
   editor.on("selection-change", function () {
     toggleFormatVisualState(dlg, editor);
   });
-  // Enable click-to-select for eki-media elements
+
   initQuillMediaSelection(editor);
+}
+
+function initQuillDlg(dlg, options = {}) {
+  let container = dlg.find("[data-quill-container]").get(0);
+  let toolbar;
+
+  if (!container) {
+    const editorField = dlg.find("[data-editor-field]").first();
+    if (!editorField.length) {
+      console.error("No editor field found in dialog");
+      return null;
+    }
+
+    const editFldId = editorField.attr("data-id") || "editFld";
+    const uniqueId = editFldId + "-" + Math.random().toString(36).substr(2, 9);
+    const wrapper = createQuillEditorWrapper(uniqueId, options.basicOnly);
+
+    editorField.hide();
+    editorField.after(wrapper);
+
+    container = wrapper.find("[data-quill-container]").get(0);
+    toolbar = wrapper.find("[data-quill-toolbar]").get(0);
+  } else {
+    toolbar = dlg
+      .find(
+        `[data-quill-toolbar="${container.getAttribute("data-quill-container")}"]`,
+      )
+      .get(0);
+  }
+
+  const editor = new Quill(container, {
+    theme: "snow",
+    modules: { toolbar: { container: toolbar } },
+  });
+
+  applyQuillOptions(editor, container, options);
+  bindFormatButtons(dlg, editor, dlg);
+
+  return editor;
+}
+
+function initQuillForField(editorField, dlg, options = {}) {
+  const editFldId = editorField.attr("data-id") || "editFld";
+
+  let container = dlg.find(`[data-quill-container="${editFldId}"]`).get(0);
+  let toolbar = dlg.find(`[data-quill-toolbar="${editFldId}"]`).get(0);
+  let buttonContainer = dlg;
+
+  if (!container) {
+    const uniqueId = editFldId + "-" + Math.random().toString(36).substr(2, 9);
+    const wrapper = createQuillEditorWrapper(uniqueId, options.basicOnly);
+
+    editorField.hide();
+    editorField.after(wrapper);
+
+    container = wrapper.find("[data-quill-container]").get(0);
+    toolbar = wrapper.find("[data-quill-toolbar]").get(0);
+    buttonContainer = wrapper;
+  }
+
+  const editor = new Quill(container, {
+    theme: "snow",
+    modules: { toolbar: { container: toolbar } },
+  });
+
+  applyQuillOptions(editor, container, options);
+  bindFormatButtons(buttonContainer, editor, dlg);
+
   return editor;
 }
 
@@ -203,10 +289,83 @@ function setQuillContent(editor, content) {
   editor.root.innerHTML = `<p>${content}</p>`;
 }
 
+function getQuillContent(editor) {
+  return stripPTags(editor.root.innerHTML);
+}
+
+function cleanupQuillEditors(dlg) {
+  dlg.find(".quill-editor-wrapper").remove();
+  dlg.find("[data-editor-field]").show();
+  dlg.find("[data-format]").off("click");
+  dlg
+    .find("[data-quill-container]")
+    .empty()
+    .removeClass("ql-container ql-snow");
+}
+
+function initSingleQuillEditorDlg(editDlg, editorOptions = {}) {
+  cleanupQuillEditors(editDlg);
+
+  const editFldElement = editDlg.find('[data-id="editFld"]');
+  const valueInput = editDlg.find("[name=value]");
+  const footer = editDlg.find(".modal-footer");
+  const cancelBtn = footer.find("[data-dismiss=modal]");
+  const errorText = messages["editor.error.add.note"];
+  const errorTemplate = '<span class="error-text">' + errorText + "</span>";
+
+  const editor = initQuillDlg(editDlg, editorOptions);
+  setQuillContent(editor, valueInput.val());
+
+  cancelBtn.off("click").on("click", function () {
+    footer.find(".error-text").remove();
+  });
+
+  editDlg
+    .find('button[type="submit"]')
+    .off("click")
+    .on("click", function (e) {
+      const editorContent = getQuillContent(editor);
+      const hasContent =
+        editorContent &&
+        editorContent !== "<br>" &&
+        editorContent.trim() !== "";
+      if (hasContent) {
+        const cleanedValue = cleanEkiEditorValue(editorContent);
+        valueInput.val(cleanedValue);
+        footer.find(".error-text").remove();
+        editFldElement.removeClass("is-invalid");
+        submitDialog(e, editDlg, messages["common.data.update.error"]);
+      } else {
+        e.preventDefault();
+        editFldElement.addClass("is-invalid");
+        footer.prepend(errorTemplate);
+      }
+    });
+}
+
 $.fn.initQuill = function () {
   return this.each(function () {
     const obj = $(this);
     initQuillDlg(obj);
+  });
+};
+
+$.fn.initQuillDlgPlugin = function () {
+  return this.each(function () {
+    const obj = $(this);
+    obj.on("show.bs.modal", function () {
+      initSingleQuillEditorDlg(obj);
+    });
+  });
+};
+
+$.fn.initQuillDlgAndFocusPlugin = function () {
+  return this.each(function () {
+    const obj = $(this);
+    obj.on("show.bs.modal", function (e) {
+      initSingleQuillEditorDlg(obj);
+      alignAndFocus(e, obj);
+    });
   });
 };
 
@@ -230,6 +389,8 @@ $.fn.initMultipleQuillEditorDlgAndFocusPlugin = function () {
 };
 
 function initMultipleQuillEditorDlg(editDlg, editorOptions = {}) {
+  cleanupQuillEditors(editDlg);
+
   // Get all editor fields and store them with their respective value fields
   const editFields = editDlg
     .find("[data-editor-field]")
@@ -241,7 +402,6 @@ function initMultipleQuillEditorDlg(editDlg, editorOptions = {}) {
         acc.push({
           editorFieldElement: $(editorField),
           valueField,
-          container: editDlg,
           editor: null,
         });
       } else {
@@ -257,7 +417,11 @@ function initMultipleQuillEditorDlg(editDlg, editorOptions = {}) {
   let errorTemplate = '<span class="error-text">' + errorText + "</span>";
   // Init quill editor for each field
   editFields.forEach((field) => {
-    const editor = initQuillDlg(field.container, editorOptions);
+    const editor = initQuillForField(
+      field.editorFieldElement,
+      editDlg,
+      editorOptions,
+    );
     setQuillContent(editor, field.valueField.val());
     field.editor = editor;
   });
@@ -290,11 +454,7 @@ function initMultipleQuillEditorDlg(editDlg, editorOptions = {}) {
       );
       if (areValuesFilled) {
         editFields.forEach(({ editor, valueField }) => {
-          let editorContent = editor.root.innerHTML;
-          // Strip p tags to match previous behavior
-          editorContent = editorContent
-            .replace(/<p>/g, "")
-            .replace(/<\/p>/g, "");
+          const editorContent = getQuillContent(editor);
           const cleanedValue = cleanEkiEditorValue(editorContent);
           valueField.val(cleanedValue);
         });
@@ -306,6 +466,209 @@ function initMultipleQuillEditorDlg(editDlg, editorOptions = {}) {
       }
     });
 }
+
+$.fn.addUsageMemberQuillDlgPlugin = function () {
+  return this.each(function () {
+    const obj = $(this);
+    obj.on("show.bs.modal", function () {
+      initSingleQuillEditorDlg(obj);
+      initUsageMemberDlg(obj);
+    });
+  });
+};
+
+$.fn.initQuillDlgEtym = function () {
+  const editorOptions = {
+    height: "5em",
+    basicOnly: false,
+  };
+  return this.each(function () {
+    const obj = $(this);
+    const container = obj.parents().find(".wordetym-card");
+    obj.on("click", function () {
+      initSingleQuillEditorDlg(container, editorOptions);
+    });
+  });
+};
+
+$.fn.initQuillEtymTreeLinkDlg = function () {
+  const editorOptions = {
+    height: "5em",
+    basicOnly: false,
+  };
+  return this.each(function () {
+    const obj = $(this);
+    const container = obj.parent().find(".wordetym-card");
+    obj.on("click", function () {
+      initSingleQuillEditorDlg(container, editorOptions);
+    });
+  });
+};
+
+$.fn.initQuillDlgEtymLangRelation = function () {
+  return this.each(function () {
+    const obj = $(this);
+    const container = obj.parents().find(".wordetym-card");
+    obj.on("click", function () {
+      initAddMultiDataDlg(container);
+    });
+  });
+};
+
+$.fn.initLexWordValueQuillDlgAndFocusPlugin = function () {
+  const editorOptions = {
+    height: "5em",
+    basicOnly: true,
+    resizeEnabled: false,
+  };
+  return this.each(function () {
+    const obj = $(this);
+    obj.on("show.bs.modal", function (e) {
+      initSingleQuillEditorDlg(obj, editorOptions);
+      alignAndFocus(e, obj);
+    });
+  });
+};
+
+$.fn.initTermWordValueQuillDlgPlugin = function () {
+  const editorOptions = {
+    height: "5em",
+    basicOnly: true,
+    resizeEnabled: false,
+  };
+  return this.each(function () {
+    const editDlg = $(this);
+    editDlg.on("show.bs.modal", function () {
+      cleanupQuillEditors(editDlg);
+
+      const backUri = getTermSearchBackUri();
+      const backUriFld = editDlg.find('input[name="backUri"]');
+      const valueInput = editDlg.find("[name=wordValuePrese]");
+
+      backUriFld.val(backUri);
+      const editor = initQuillDlg(editDlg, editorOptions);
+      setQuillContent(editor, valueInput.val());
+
+      editDlg
+        .find('button[type="submit"]')
+        .off("click")
+        .on("click", function (e) {
+          e.preventDefault();
+          const submitBtn = $(this);
+          const editorContent = getQuillContent(editor);
+          const hasContent =
+            editorContent &&
+            editorContent !== "<br>" &&
+            editorContent.trim() !== "";
+          if (hasContent) {
+            const cleanedValue = cleanEkiEditorValue(editorContent);
+            valueInput.val(cleanedValue);
+            const editWordForm = submitBtn.closest("form");
+            const isValid = checkRequiredFields(editWordForm);
+            if (isValid) {
+              $.ajax({
+                url: editWordForm.attr("action"),
+                data: editWordForm.serialize(),
+                method: "POST",
+              })
+                .done(function (response) {
+                  editDlg.modal("hide");
+                  refreshDetailsTermsSearch();
+                  if (response.status === "OK") {
+                    if (response.message != null) {
+                      openMessageDlg(response.message);
+                    }
+                  } else if (response.status === "ERROR") {
+                    if (response.message != null) {
+                      openAlertDlg(response.message);
+                    }
+                  } else if (response.status === "MULTIPLE") {
+                    const action = editWordForm.attr("action") + "/init/select";
+                    editWordForm.attr("action", action);
+                    editWordForm.trigger("submit");
+                  } else {
+                    openAlertDlg(messages["common.error"]);
+                  }
+                })
+                .fail(function (data) {
+                  editDlg.modal("hide");
+                  console.log(data);
+                  openAlertDlg(messages["common.error"]);
+                });
+            }
+          }
+        });
+    });
+  });
+};
+
+function initBasicInlineQuillOnContent(obj, callback) {
+  const uniqueId = "inline-quill-" + Math.random().toString(36).substr(2, 9);
+
+  const editContainer = createQuillEditorWrapper(uniqueId, true);
+  editContainer
+    .removeClass("quill-editor-wrapper")
+    .addClass("inline-quill-editor");
+
+  obj.hide();
+  obj.after(editContainer);
+
+  const container = editContainer.find("[data-quill-container]").get(0);
+  const toolbar = editContainer.find("[data-quill-toolbar]").get(0);
+
+  const editor = new Quill(container, {
+    theme: "snow",
+    modules: {
+      toolbar: {
+        container: toolbar,
+      },
+    },
+  });
+
+  editor.root.innerHTML = `<p>${obj.html()}</p>`;
+
+  // Bind format buttons
+  editContainer.find("[data-format]").on("click", function () {
+    const format = this.getAttribute("data-format");
+    const selection = editor.getSelection();
+    if (!selection) return;
+    const currentValue = editor.getFormat(selection.index, selection.length)[
+      format
+    ];
+    editor.format(format, !currentValue);
+  });
+
+  $(document).on("click.replace.quill.editor", function (e) {
+    const isObjParentClosest = $(e.target).closest(obj.parent()).length;
+    if (!isObjParentClosest) {
+      const content = stripPTags(editor.root.innerHTML);
+      obj.html(content);
+      editContainer.remove();
+      obj.show();
+      $(document).off("click.replace.quill.editor");
+
+      if (callback) {
+        callback();
+      }
+    }
+  });
+}
+
+$.fn.initTermMeaningTableQuillDlgOnClickPlugin = function () {
+  return this.each(function () {
+    const obj = $(this);
+    obj.on("click", function (e) {
+      const isEditEnabled = obj.data("edit-enabled");
+      if (isEditEnabled) {
+        const meaningTableRow = $(this).closest(".meaning-table-row");
+        const callbackFunc = () =>
+          submitTermMeaningTableMeaning(meaningTableRow);
+        initBasicInlineQuillOnContent(obj, callbackFunc);
+        e.stopImmediatePropagation();
+      }
+    });
+  });
+};
 
 class QuillLink {
   constructor(editor, dlg) {
@@ -796,9 +1159,7 @@ function toggleSourceView(editor, dlg) {
     dlg.find('[data-format="source"]').removeClass("ql-active");
   } else {
     // Switch to source mode
-    let html = editor.root.innerHTML;
-    // Strip p tags for cleaner source view
-    html = html.replace(/<p>/g, "").replace(/<\/p>/g, "");
+    const html = stripPTags(editor.root.innerHTML);
     const containerHeight = container.height();
     sourceArea = $('<textarea class="ql-source-area"></textarea>');
     sourceArea.val(html);
