@@ -120,7 +120,7 @@ function initQuillDlg(dlg, options = {}) {
   const container = dlg.find("[data-quill-container]").get(0);
   const toolbar = dlg
     .find(
-      `[data-quill-toolbar="${container.getAttribute("data-quill-container")}"]`
+      `[data-quill-toolbar="${container.getAttribute("data-quill-container")}"]`,
     )
     .get(0);
 
@@ -238,14 +238,15 @@ function initMultipleQuillEditorDlg(editDlg, editorOptions = {}) {
       const editorFieldId = editorField.getAttribute("data-id");
       const valueField = editDlg.find(`[name="${editorFieldId}"]`);
       if (valueField.length) {
-        // Editor field will have to be a jquery object for ckeditor
         acc.push({
+          editorFieldElement: $(editorField),
           valueField,
           container: editDlg,
+          editor: null,
         });
       } else {
         console.error(
-          `Could not find a matching value field for ${editorFieldId}`
+          `Could not find a matching value field for ${editorFieldId}`,
         );
       }
       return acc;
@@ -254,10 +255,11 @@ function initMultipleQuillEditorDlg(editDlg, editorOptions = {}) {
   let cancelBtn = footer.find("[data-dismiss=modal]");
   let errorText = messages["editor.error.add.note"];
   let errorTemplate = '<span class="error-text">' + errorText + "</span>";
-  // Init ckeditor for each field
-  editFields.forEach(({ valueField, container }) => {
-    const editor = initQuillDlg(container, editorOptions);
-    setQuillContent(editor, valueField.val());
+  // Init quill editor for each field
+  editFields.forEach((field) => {
+    const editor = initQuillDlg(field.container, editorOptions);
+    setQuillContent(editor, field.valueField.val());
+    field.editor = editor;
   });
 
   cancelBtn.off("click").on("click", function () {
@@ -270,18 +272,30 @@ function initMultipleQuillEditorDlg(editDlg, editorOptions = {}) {
     .find('button[type="submit"]')
     .off("click")
     .on("click", function (e) {
-      const areValuesFilled = editFields.every(({ editorField }) => {
-        if (editorField.val() || editorField.data("optional")) {
-          editorField.removeClass("is-invalid");
-          return true;
-        } else {
-          editorField.addClass("is-invalid");
-          return false;
-        }
-      });
+      const areValuesFilled = editFields.every(
+        ({ editorFieldElement, editor }) => {
+          const editorContent = editor.root.innerHTML;
+          const hasContent =
+            editorContent &&
+            editorContent !== "<p><br></p>" &&
+            editorContent !== "<p></p>";
+          if (hasContent || editorFieldElement.data("optional")) {
+            editorFieldElement.removeClass("is-invalid");
+            return true;
+          } else {
+            editorFieldElement.addClass("is-invalid");
+            return false;
+          }
+        },
+      );
       if (areValuesFilled) {
-        editFields.forEach(({ editorField, valueField }) => {
-          const cleanedValue = cleanEkiEditorValue(editorField.val());
+        editFields.forEach(({ editor, valueField }) => {
+          let editorContent = editor.root.innerHTML;
+          // Strip p tags to match previous behavior
+          editorContent = editorContent
+            .replace(/<p>/g, "")
+            .replace(/<\/p>/g, "");
+          const cleanedValue = cleanEkiEditorValue(editorContent);
           valueField.val(cleanedValue);
         });
         footer.find(".error-text").remove();
@@ -324,7 +338,9 @@ class QuillLink {
     this.parent.after((this.linkContent = $(template)));
     this.linkContent.css(
       "marginBottom",
-      parseInt(this.parentTop) + this.parentHeight - this.linkContent.outerHeight()
+      parseInt(this.parentTop) +
+        this.parentHeight -
+        this.linkContent.outerHeight(),
     );
 
     this.outerLink = {
@@ -337,7 +353,10 @@ class QuillLink {
     };
 
     const selectedText = this.savedSelection
-      ? this.editor.getText(this.savedSelection.index, this.savedSelection.length)
+      ? this.editor.getText(
+          this.savedSelection.index,
+          this.savedSelection.length,
+        )
       : "";
     this.outerLink.title.val(selectedText);
     this.internalLink.title.val(selectedText);
@@ -346,7 +365,9 @@ class QuillLink {
     this.internalTypes = this.linkContent.find("[data-internalType]");
     this.results = this.linkContent.find(".results");
     this.activeType = this.roles.eq(0).attr("data-linkType");
-    this.internalSearchButton = this.linkContent.find('[data-role="internalSearchButton"]');
+    this.internalSearchButton = this.linkContent.find(
+      '[data-role="internalSearchButton"]',
+    );
     this.changeInternalType("meaning");
     this.changeLayout("external");
   }
@@ -393,17 +414,23 @@ class QuillLink {
       this.changeInternalType($(e.currentTarget).attr("data-internalType"));
     });
 
-    this.linkContent.find('[name="internalSearchValue"]').on("keypress", (e) => {
-      const code = e.which || e.keyCode;
-      if (code === 13) {
-        e.preventDefault();
-        this.getSearchResults(this.linkContent.find('[name="internalSearchValue"]').val());
-      }
-    });
+    this.linkContent
+      .find('[name="internalSearchValue"]')
+      .on("keypress", (e) => {
+        const code = e.which || e.keyCode;
+        if (code === 13) {
+          e.preventDefault();
+          this.getSearchResults(
+            this.linkContent.find('[name="internalSearchValue"]').val(),
+          );
+        }
+      });
 
     this.internalSearchButton.on("click", (e) => {
       e.preventDefault();
-      this.getSearchResults(this.linkContent.find('[name="internalSearchValue"]').val());
+      this.getSearchResults(
+        this.linkContent.find('[name="internalSearchValue"]').val(),
+      );
     });
   }
 
@@ -411,7 +438,10 @@ class QuillLink {
     this.activeType = type;
     const buttons = this.linkContent.find("[data-type]");
     buttons.removeClass("active");
-    buttons.filter(`[data-type="${type}"]`).not("[data-internalType]").addClass("active");
+    buttons
+      .filter(`[data-type="${type}"]`)
+      .not("[data-internalType]")
+      .addClass("active");
     this.roles.hide().filter(`[data-linkType="${type}"]`).show();
     this.linkContent.find(".formItem").removeClass("formItem--error");
   }
@@ -421,7 +451,9 @@ class QuillLink {
     const buttons = this.linkContent.find("[data-internalType]");
     buttons.removeClass("active");
     buttons.filter(`[data-internalType="${internalType}"]`).addClass("active");
-    this.linkContent.find('[data-role="title"]').html(this.paths[internalType].title);
+    this.linkContent
+      .find('[data-role="title"]')
+      .html(this.paths[internalType].title);
     this.results.empty().hide();
     this.linkContent.find(".formItem").removeClass("formItem--error");
   }
@@ -430,7 +462,11 @@ class QuillLink {
     const data = {
       searchFilter: value,
     };
-    this.results.show().html('<div class="loader"><i class="fa fa-3x fa-spinner fa-spin"></i></div>');
+    this.results
+      .show()
+      .html(
+        '<div class="loader"><i class="fa fa-3x fa-spinner fa-spin"></i></div>',
+      );
     $.ajax({
       url: this.paths[this.internalType].api,
       method: "POST",
@@ -464,11 +500,15 @@ class QuillLink {
       this.valid.external = false;
     }
     if (this.outerLink.title.val() === "") {
-      this.outerLink.title.parents(".formItem:first").addClass("formItem--error");
+      this.outerLink.title
+        .parents(".formItem:first")
+        .addClass("formItem--error");
       this.valid.external = false;
     }
     if (this.internalLink.title.val() === "") {
-      this.internalLink.title.parents(".formItem:first").addClass("formItem--error");
+      this.internalLink.title
+        .parents(".formItem:first")
+        .addClass("formItem--error");
       this.valid.internal = false;
     }
     if (!this.activeID) {
@@ -478,7 +518,9 @@ class QuillLink {
 
   insertLink() {
     this.validateFields();
-    const index = this.savedSelection ? this.savedSelection.index : this.editor.getLength() - 1;
+    const index = this.savedSelection
+      ? this.savedSelection.index
+      : this.editor.getLength() - 1;
     const length = this.savedSelection ? this.savedSelection.length : 0;
 
     if (this.activeType === "external") {
@@ -489,7 +531,9 @@ class QuillLink {
         this.editor.deleteText(index, length);
       }
       const linkText = this.outerLink.title.val();
-      this.editor.insertText(index, linkText, "extlink", { href: this.outerLink.url.val() });
+      this.editor.insertText(index, linkText, "extlink", {
+        href: this.outerLink.url.val(),
+      });
       // Insert space without format and position cursor after it
       const spaceIndex = index + linkText.length;
       this.editor.insertText(spaceIndex, " ", { extlink: false });
@@ -586,15 +630,15 @@ function removeQuillLink(editor) {
   if (!selection) {
     return;
   }
-  
+
   const formats = editor.getFormat(selection.index, selection.length);
-  
+
   // Check if we're in a link
   if (formats.ekilink || formats.extlink) {
     // Find the end of the current format by scanning forward
     let endIndex = selection.index;
     const editorLength = editor.getLength();
-    
+
     while (endIndex < editorLength) {
       const charFormat = editor.getFormat(endIndex, 1);
       if (!charFormat.ekilink && !charFormat.extlink) {
@@ -602,7 +646,7 @@ function removeQuillLink(editor) {
       }
       endIndex++;
     }
-    
+
     // Move cursor to end of link first, then clear format before inserting space
     editor.setSelection(endIndex, 0);
     editor.format("ekilink", false);
@@ -623,7 +667,10 @@ class QuillMedia {
   }
 
   addTemplate() {
-    const template = quillMediaTemplate.replace("{{parentTop}}", this.parentTop);
+    const template = quillMediaTemplate.replace(
+      "{{parentTop}}",
+      this.parentTop,
+    );
     this.mediaContent = $(template);
     this.url = this.mediaContent.find('input[name="url"]');
     this.parent.after(this.mediaContent);
@@ -659,7 +706,10 @@ class QuillMedia {
     const selection = this.editor.getSelection();
     const index = selection ? selection.index : this.editor.getLength() - 1;
 
-    this.editor.insertEmbed(index, "eki-media", { src: this.url.val(), alt: "" });
+    this.editor.insertEmbed(index, "eki-media", {
+      src: this.url.val(),
+      alt: "",
+    });
     this.editor.setSelection(index + 1, 0);
     this.toggleWindow("hide");
   }
@@ -732,7 +782,7 @@ const quillMediaTemplate = /*html*/ `
 function toggleSourceView(editor, dlg) {
   const container = $(editor.root).parent();
   let sourceArea = container.find(".ql-source-area");
-  
+
   if (sourceArea.length) {
     // Switch back to WYSIWYG mode
     let html = sourceArea.val();

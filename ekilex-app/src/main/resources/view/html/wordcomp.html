@@ -14,9 +14,6 @@
                   sec:authorize="#vars.details.word.crudGrant">
             <i class="fa fa-plus" aria-hidden="true"></i>
           </button>
-          <button type="button" data-target="#quill-modal" data-toggle="modal" sec:authorize="#vars.details.word.crudGrant">
-            <i class="fa fa-plus" aria-hidden="true"></i>
-          </button>
         </div>
         <div class="ekiAccordion__content">
           <div th:if="${#lists.isEmpty(details.word.wordEkiRecommendations)}" th:text="#{common.no.content}">

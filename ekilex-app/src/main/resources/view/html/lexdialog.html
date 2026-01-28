@@ -365,7 +365,6 @@
             <input type="hidden" name="opCode" value="word_eki_recommendation">
             <input type="hidden" name="value" th:value="${wordEkiRecommendation.valuePrese}">
             <p th:text="#{common.content}"></p>
-            <!-- <div th:replace="components :: eki_editor_elem(editFld = 'value')"></div> -->
             <th:block th:replace="components :: quill_editor(editFld = 'value')"></th:block>
           </div>
           <div class="modal-footer">
