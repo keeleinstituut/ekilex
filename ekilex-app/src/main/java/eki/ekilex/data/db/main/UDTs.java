@@ -12,7 +12,6 @@ import eki.ekilex.data.db.main.udt.TypeMtDefinition;
 import eki.ekilex.data.db.main.udt.TypeMtLexeme;
 import eki.ekilex.data.db.main.udt.TypeMtLexemeFreeform;
 import eki.ekilex.data.db.main.udt.TypeMtWord;
-import eki.ekilex.data.db.main.udt.TypeTermMeaningWord;
 import eki.ekilex.data.db.main.udt.TypeValueNameLang;
 import eki.ekilex.data.db.main.udt.TypeWordHomNrDataTuple;
 import eki.ekilex.data.db.main.udt.TypeWordRelMeaning;
@@ -64,11 +63,6 @@ public class UDTs {
      * The type <code>public.type_mt_word</code>
      */
     public static final TypeMtWord TYPE_MT_WORD = eki.ekilex.data.db.main.udt.TypeMtWord.TYPE_MT_WORD;
-
-    /**
-     * The type <code>public.type_term_meaning_word</code>
-     */
-    public static final TypeTermMeaningWord TYPE_TERM_MEANING_WORD = eki.ekilex.data.db.main.udt.TypeTermMeaningWord.TYPE_TERM_MEANING_WORD;
 
     /**
      * The type <code>public.type_value_name_lang</code>

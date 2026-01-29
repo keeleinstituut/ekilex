@@ -182,7 +182,6 @@ import eki.ekilex.data.db.main.udt.TypeMtDefinition;
 import eki.ekilex.data.db.main.udt.TypeMtLexeme;
 import eki.ekilex.data.db.main.udt.TypeMtLexemeFreeform;
 import eki.ekilex.data.db.main.udt.TypeMtWord;
-import eki.ekilex.data.db.main.udt.TypeTermMeaningWord;
 import eki.ekilex.data.db.main.udt.TypeValueNameLang;
 import eki.ekilex.data.db.main.udt.TypeWordHomNrDataTuple;
 import eki.ekilex.data.db.main.udt.TypeWordRelMeaning;
@@ -1423,7 +1422,6 @@ public class Public extends SchemaImpl {
             TypeMtLexeme.TYPE_MT_LEXEME,
             TypeMtLexemeFreeform.TYPE_MT_LEXEME_FREEFORM,
             TypeMtWord.TYPE_MT_WORD,
-            TypeTermMeaningWord.TYPE_TERM_MEANING_WORD,
             TypeValueNameLang.TYPE_VALUE_NAME_LANG,
             TypeWordHomNrDataTuple.TYPE_WORD_HOM_NR_DATA_TUPLE,
             TypeWordRelMeaning.TYPE_WORD_REL_MEANING,
